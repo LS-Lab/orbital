@@ -219,7 +219,7 @@ public class FigureImpl extends Figure {
     /**
      * @internal Checks validity of a path to move per {@link #movePath(Move)}.
      */
-    public final Iterator/*_<Move,Position>_*/ possibleMoves() {
+    public /*final*/ Iterator/*_<Move,Position>_*/ possibleMoves() {
 	final List v = new ArrayList(legalMoves.length);
 	for (int i = 0; i < legalMoves.length; i++) {
 	    Move	 move = legalMoves[i];
@@ -324,8 +324,8 @@ public class FigureImpl extends Figure {
     final Position movePath(final Move move) {
 	if (move == null)
 	    throw new NullPointerException("null is not a move");
-	final Field field = getField();
-	boolean   was_jumping = false;	  					// can jump this step
+	final Field  field = getField();
+	boolean      was_jumping = false;	  					// can jump this step
 	final Moving hyp = (Moving) super.clone();				//@todo should we transform this to new Moving(x, y, direction.clone()) such that we don't get a Figure, here?
 	final String movement = move.movement;
 
@@ -349,9 +349,10 @@ public class FigureImpl extends Figure {
 	    default:
 		break;
 	    }
+
 	    hyp.move(movement.charAt(i));
-	    // left the the Field?
 	    if (!field.inRange(hyp))
+		// left the Field
 		return null;
 
 	    if (was_jumping)
