@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import java.util.Collections;
+import java.util.Arrays;
 import orbital.util.Setops;
 import orbital.util.Utility;
 
@@ -34,6 +35,7 @@ import orbital.util.Utility;
  * @version 0.8, 1999/01/16
  * @version 0.7, 1999/01/16
  * @author  Andr&eacute; Platzer
+ * @internal in fact, we currently don't rely on LogicBasis anyway.
  */
 abstract class ModernFormula extends LogicBasis implements Formula {
     /**
@@ -159,6 +161,21 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	return compose(FORALL, new Formula[] {
 	    compose(ClassicalLogic.LAMBDA, new Formula[] {createSymbol(getUnderlyingLogic(), x), this})
 	});
+    } 
+
+    // Derived logical operations. (in classical logic)
+    //@internal note that we could also rely on LogicBasis, but then formatting would be unintuitive.
+
+    public Formula xor(Formula B) {
+	return compose(XOR, new Formula[] {this, B});
+    } 
+
+    public Formula impl(Formula B) {
+	return compose(IMPL, new Formula[] {this, B});
+    } 
+
+    public Formula equiv(Formula B) {
+	return compose(EQUIV, new Formula[] {this, B});
     } 
 
     private Formula compose(Symbol op, Formula[] arguments) {
@@ -326,9 +343,11 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	case 2:
 	    return new ModernFormula.BinaryAppliedVariableFormula(underlyingLogic, f, (Formula) arguments[0], (Formula) arguments[1], notat);
 	default:
+	    //@xxx provide implementation on Object[]
 	    // could simply compose f(arguments), here, if f understands arrays
+	    return new ModernFormula.NaryAppliedVariableFormula(underlyingLogic, f, (Formula[]) Arrays.asList(arguments).toArray(new Formula[0]), notat);
 	    //@todo which Locator to provide, here?
-	    throw new IllegalArgumentException("illegal number of arguments, " + f + "/" + arguments.length + " is undefined");
+	    //throw new IllegalArgumentException("illegal number of arguments, " + f + " applied to " + Types.typeOf(arguments) + " is undefined. Or " + arguments.length + ">2");
 	}
     }
 
@@ -360,7 +379,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	default:
 	    // could simply compose f(arguments), here, if f understands arrays
 	    //@todo which Locator to provide, here?
-	    throw new IllegalArgumentException("illegal number of arguments, " + f + "/" + arguments.length + " is undefined");
+	    throw new IllegalArgumentException("illegal number of arguments, " + f + " applied to " + Types.typeOf(arguments) + " is undefined. Or " + arguments.length + ">2");
 	}
     }
 
@@ -647,6 +666,97 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 
     }
 
+    /**
+     * n-ary
+     * @version 1.1, 2002-11-25
+     * @author  Andr&eacute; Platzer
+     * @see orbital.math.functional.ComponentCompositions.ComponentCompositeFunction
+     */
+    static class NaryAppliedVariableFormula extends CompositeFormula {
+	protected Formula outer;
+	protected Formula[] inner;
+	public NaryAppliedVariableFormula(Logic underlyingLogic, Formula f, Formula g[], Notation notation) {
+	    super(underlyingLogic, notation);
+	    this.outer = f;
+	    this.inner = g;
+	}
+	public NaryAppliedVariableFormula(Logic underlyingLogic, Formula f, Formula g[]) {
+	    this(underlyingLogic, f, g, null);
+	}
+		
+	private NaryAppliedVariableFormula() {super(null);}
+
+        public Type getType() {
+	    return outer.getType().codomain();
+        }
+
+	//@todo could move to super class of Nary and Binary and formulate in terms of getComponent()
+        public Signature getSignature() {
+	    //@todo could cache signature as well, provided left and right don't change
+	    //@internal @see Setops.all
+	    Signature sigma = outer.getSignature();
+	    for (int i = 0; i < inner.length; i++)
+		sigma = sigma.union(inner[i].getSignature());
+	    return sigma;
+        }
+
+	public Set getFreeVariables() {
+	    //@internal @see Setops.all
+	    Set s = outer.getFreeVariables();
+	    for (int i = 0; i < inner.length; i++)
+		s = Setops.union(s, inner[i].getFreeVariables());
+	    return s;
+	}
+
+	public Set getBoundVariables() {
+	    //@internal @see Setops.all
+	    Set s = outer.getBoundVariables();
+	    for (int i = 0; i < inner.length; i++)
+		s = Setops.union(s, inner[i].getBoundVariables());
+	    return s;
+	}
+
+	/**
+	 * The functions applied are subject to interpretation.
+	 */
+	public Object apply(Object/*>Interpretation<*/ arg) {
+	    Object f = outer.apply(arg);
+	    //@internal @see Setops.all
+	    Object[] x = new Object[inner.length];
+	    for (int i = 0; i < x.length; i++)
+		x[i] = inner[i].apply(arg);
+	    return ((Function) f).apply(x);
+	} 
+		
+
+	// not quite identical to @see orbital.math.functional.ComponentCompositions.ComponentCompositeFunction
+	public Functor getCompositor() {
+	    return outer;
+	} 
+	public Object getComponent() {
+	    return inner;
+	} 
+
+	public void setCompositor(Functor f) throws ClassCastException {
+	    setUnderlyingLogicLikeIn((Formula) f);
+	    this.outer = (Formula) f;
+	}
+	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
+	    Formula[] a = (Formula[]) g;
+	    assert isCompatibleUnderlyingLogic(a) : "only compose formulas of compatible logics";
+	    this.inner = a;
+	}
+
+	private final boolean isCompatibleUnderlyingLogic(Formula[] a) {
+	    //@internal @see Setops.all
+	    for (int i = 0; i < a.length; i++)
+		if (!isCompatibleUnderlyingLogic(a[i]))
+		    return false;
+	    return true;
+	}
+    }
+
+    
 
     // alternative implementation 2 (instant: fixed outer functions)
 	
