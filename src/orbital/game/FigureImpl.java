@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import orbital.util.Pair;
 
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
 /**
  * Implementation of a figure or piece of a board game.
  * <p>
@@ -37,6 +40,7 @@ import orbital.util.Pair;
  */
 public class FigureImpl extends Figure {
     private static final long serialVersionUID = 5872415441343592642L;
+    private static final Logger logger = Logger.getLogger(Figure.class.getPackage().getName());
     /**
      * The Field-Container parent including all figures moving around on it.
      * @serial
@@ -114,14 +118,14 @@ public class FigureImpl extends Figure {
      * Get the field which this figure is contained in.
      * @return the Field-Container parent including ALL figures moving around on it.
      */
-    public final Field getField() {
+    public Field getField() {
 	return field;
     } 
 
     /**
      * Set the field which this figure is contained in.
      */
-    final void setField(Field f) {
+    protected void setField(Field f) {
 	this.field = f;
     } 
 
@@ -152,7 +156,7 @@ public class FigureImpl extends Figure {
      * Moves do also include beats.
      */
     public void setLegalMoves(Move moves[]) {
-	legalMoves = moves;
+	this.legalMoves = moves;
     } 
     
     public void setEmpty() {
@@ -181,7 +185,7 @@ public class FigureImpl extends Figure {
      * the elements sequentially.
      */
     public final Iterator/*_<Move>_*/ iterator() {
-	return Arrays.asList(legalMoves).iterator();
+	return Arrays.asList(getLegalMoves()).iterator();
     } 
 
     /**
@@ -192,6 +196,7 @@ public class FigureImpl extends Figure {
      * @deprecated Since Orbital1.1 use {@link Figure#possibleMoves()} instead.
      */
     public final Iterator/*_<Move>_*/ iterateValid() {
+	final Move legalMoves[] = getLegalMoves();
 	final List v = new ArrayList(legalMoves.length);
 	for (int i = 0; i < legalMoves.length; i++) {
 	    Position destination = movePath(legalMoves[i]);
@@ -213,6 +218,7 @@ public class FigureImpl extends Figure {
      * @deprecated Since Orbital1.1 use {@link Figure#validMoves()} instead.
      */
     public final Iterator/*_<Move,Position>_*/ iterateValidPairs() {
+	final Move legalMoves[] = getLegalMoves();
 	final List v = new ArrayList(legalMoves.length);
 	for (int i = 0; i < legalMoves.length; i++) {
 	    Move     move = legalMoves[i];
@@ -240,6 +246,7 @@ public class FigureImpl extends Figure {
      * @todo explicit constructive iterator?
      */
     public /*final*/ Iterator/*_<Option>_*/ possibleMoves() {
+	final Move legalMoves[] = getLegalMoves();
 	final List v = new ArrayList(legalMoves.length);
 	for (int i = 0; i < legalMoves.length; i++) {
 	    Move     move = legalMoves[i];
@@ -266,14 +273,17 @@ public class FigureImpl extends Figure {
      */
     public Position moveFigure(Move move) {
 	if (move == null)
-	    throw new NullPointerException();
+	    throw new NullPointerException("illegal move: " + move);
+	final Move legalMoves[] = getLegalMoves();
 	// contained in legalMoves?
 	for (int i = 0; i < legalMoves.length; i++)
 	    if (move.equals(legalMoves[i])) {
 		Position destination = movePath(move);
 		return destination != null && moving(move, destination) ? destination : null;
-	    } 
-	throw new IllegalArgumentException("illegal move");
+	    }
+	if (logger.isLoggable(Level.FINER))
+	    logger.log(Level.FINER, "illegal move {0} for {1} not in the {3} options {2}", new Object[] {move, this, Arrays.asList(legalMoves), new Integer(legalMoves.length)});
+	throw new IllegalArgumentException("illegal move: " + move + " for " + this);
     } 
 
     /**
@@ -346,8 +356,10 @@ public class FigureImpl extends Figure {
 	    throw new NullPointerException("null is not a move");
 	final Field  field = getField();
 	boolean      was_jumping = false;	  					// can jump this step
-	final Moving hyp = (Moving) super.clone();				//@todo should we transform this to new Moving(x, y, direction.clone()) such that we don't get a Figure, here?
+	final Moving hyp = new Moving(this);				//@todo should we transform this to new Moving(x, y, direction.clone()) such that we don't get a Figure, here?, or to (Moving) super.clone()
 	final String movement = move.getMovementString();
+	if (!field.inRange(hyp))
+	    throw new IllegalStateException("illegal position not on field, so we cannot move at all");
 
 	moves:
 	for (int i = 0; i < movement.length(); i++) {
