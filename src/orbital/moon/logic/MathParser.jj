@@ -30,21 +30,18 @@ import orbital.logic.functor.Notation.NotationSpecification;
 import orbital.logic.trs.Substitutions;
 import java.util.*;
 import java.lang.reflect.*;
-import java.io.StringReader;
-import orbital.io.IOUtilities;
 import java.beans.IntrospectionException;
 
 /**
  * This class implements a parser for mathematical expressions.
  * <p>
- * Note that function evaluation expressions are usually denoted with rectangular brackets as in
- * "sin[2 + 4/15]". Nevertheless, normal brackets () will often work as well.</p>
+ * Note that function evaluation expressions can be denoted with rectangular brackets as in
+ * "sin[2 + 4/15]". Nevertheless, normal brackets () will work as well.</p>
  * @version 0.9, 2000/09/02
  * @author  Andr&eacute; Platzer
- * @structure depends orbital.logic.functor.Notation Uses registered notation functors reverse.
+ * @see MathExpressionSyntax#createExpression(String)
  * @see <a href="doc-files/MathParser_grammar.html">Grammar</a>
  * @see #parseExpression()
- * @todo introduce a lambda expression that uses the lambda operator implemented by substitution (see ...)
  */
 public class MathParser {
     /**
@@ -53,24 +50,6 @@ public class MathParser {
      */
     private static final Type UNKNOWN = Types.INDIVIDUAL;
     
-    /**
-     * tool-main
-     */
-    public static void main(String arg[]) throws Exception {
-	if (orbital.signe.isHelpRequest(arg)) {
-	    System.out.println(usage);
-	    return;
-	} 
-	System.out.print("Type expression: ");
-	System.out.flush();
-	String expr = IOUtilities.readLine(System.in);
-	Object p = createExpression(expr);
-	System.out.println("Original expression:\t" + expr);
-	System.out.println("Parsed function:\t" + p);
-	System.out.println("Evaluates to:\t" + (p instanceof Function ? ((Function) p).apply(null) : p));	//XXX: erm why null?
-    } 
-    public static final String usage = "usage: \n\tstart and enter a correct mathematical expression to evaluate\n\tremember that function evaluation expressions are denoted with rectangular\n\tbrackets as in \"sin[2 + 4/15] + 3*x\"";
-
     private static final Values valueFactory = Values.getDefaultInstance();
 	
     /**
@@ -85,17 +64,6 @@ public class MathParser {
     public void setSyntax(ExpressionBuilder syntax) {
 	this.syntax = syntax;
     }
-
-    public static/**/ Object createExpression(String expression) throws orbital.logic.imp.ParseException {
-	if (expression == null)
-	    return null;
-	try {
-	    MathParser parser = new MathParser(new StringReader(expression));
-	    return parser.parseExpression();
-	} catch (ParseException ex) {
-	    throw new orbital.logic.imp.ParseException(ex.getMessage(), ex.currentToken.next.beginLine, ex.currentToken.next.beginColumn, ex);
-	} 
-    } 
 
     /**
      * unary junctors.
@@ -231,35 +199,6 @@ public class MathParser {
     }
     
     /**
-     * convert a orbital.logic.functor.Function to a orbital.math.functional.Function 
-     * that does not support other operations than apply.
-     */
-    private static final Function convert(final orbital.logic.functor.Function f) {
-	return new AbstractFunction() {
-		public Object apply(Object o) {
-		    return f.apply(o);
-		}
-		public Function derive() {
-		    throw new UnsupportedOperationException("not yet implemented, symbolic");
-		} 
-		public Function integrate() {
-		    throw new UnsupportedOperationException("not yet implemented, symbolic");
-		} 
-		public Real norm() {
-		    throw new UnsupportedOperationException();
-		}
-		public boolean equals(Object o) {
-		    return f.equals(o);
-		}
-		public int hashCode() {
-		    return f.hashCode();
-		}
-		public String toString() {
-		    return f.toString();
-		} 
-	    };
-    }
-    /**
      * Create a good parse exception with the specified message for the given token parsed.
      */
     static ParseException newParseException(String message, Token tok, Exception cause) {
@@ -270,9 +209,6 @@ public class MathParser {
 	x.currentToken = tok;
     	return x;
     }
-
-    // identical to @see orbital.math.functional.Function (below)
-    /*private static*/ static abstract class AbstractFunction/*<A implements Arithmetic, B implements Arithmetic>*/  extends orbital.moon.math.AbstractFunctor implements Function/*<A,B>*/ {}
 }
 PARSER_END(MathParser)
 
@@ -301,11 +237,11 @@ TOKEN :
  * Start to parse an arithmetic formula expression.
  * @internal we require <EOF> to be sure we parsed all, and no syntactic garbage lurks around at the end of the input
  */
-Arithmetic parseExpression() :
+Expression parseExpression() :
 {Expression expr;}
 {
     expr = term() <EOF>
-	{ return (Arithmetic) MathExpressionSyntax.getValueOf(expr); }
+	{ return expr; }
   | <EOF>
 	{ return null; }
 }
@@ -491,12 +427,17 @@ Symbol literal() :
  *  because the return types don't fit.
  */
 Expression functionApplication() :
-{Token tok;MathFunctor f;Expression[] s;}
+{Token tok;Expression f;Expression[] arg;}
 {
-    tok = function() s = Arguments()
-	{return apply(tok, s, UNKNOWN);}
-    //|   f = lambdaAbstraction() s = Arguments()
-    //	{return apply(f, s);}
+    tok = function() arg = Arguments()
+	{return apply(tok, arg, UNKNOWN);}
+|   f = lambdaAbstraction() arg = Arguments()
+        {
+	    if (arg.length != 1)
+	        throw new ParseException("only unary application of lambda abstractions is supported");
+	    //@todo which exact optok token?
+	    return composeWrapper(null, f, arg);
+	}
 }
 
 /**
@@ -511,27 +452,23 @@ Token function() :
 
 /**
  * &lambda;-abstraction term.
- *@todo change return-type to MathFunctor or at least Functor such that we can as well accept
- * &lambda;-abstractions
- * However, the (known static) lookup mechanism in functionApplication() depends upon
- * the arity and type of arguments
- *@todo let our surroundings (not us) also support variables/constants bound to &lambda;-abstractions.
- * @xxx note that (\x.2*x) can be parsed as expected because .2 is not a real number but only 0.2
+ * @todo let our surroundings (not us) also support variables/constants bound to &lambda;-abstractions.
+ * @note that (\x.2*x) can be parsed as expected because .2 is not a real number but only 0.2
  * @see orbital.logic.trs.Substitutions#lambda
  */
-Function lambdaAbstraction() :
-{Token x;Expression t;}
+Expression lambdaAbstraction() :
+{Token tok, x;Expression t;}
 {
-    "(" <LAMBDA> x = <IDENTIFIER> "." t = term() ")"
-{return convert((orbital.logic.functor.Function) Substitutions.lambda.apply(valueFactory.symbol(x.image), t));}
+    "(" tok = <LAMBDA> x = <IDENTIFIER> "." t = term() ")"
+	{return composeWrapper(tok, MathExpressionSyntax.LAMBDA, new Expression[] {syntax.createAtomic(new SymbolBase(x.image, Types.INDIVIDUAL)), t});}
 }
 
 Expression[] Arguments() :
 {Expression[] s = null;}
 {
 (
-/*    "(" [ s = Argument_list() ] ")"
-|*/
+    "(" [ s = Argument_list() ] ")"
+|
     "[" [ s = Argument_list() ] "]"
 )
 {return s;}
