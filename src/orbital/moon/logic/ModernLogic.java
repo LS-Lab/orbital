@@ -78,9 +78,9 @@ abstract class ModernLogic implements Logic {
      * @see LogicParser#readTRS(Reader,ExpressionSyntax,Function)
      */
     protected static final boolean proveAll(Reader rd, ModernLogic logic, boolean all_true) throws ParseException, IOException {
-	return proveAll(rd, logic, all_true, false, false);
+	return proveAll(rd, logic, all_true, false, false, false);
     }
-    static final boolean proveAll(Reader rd, ModernLogic logic, boolean all_true, boolean normalForm, boolean verbose) throws ParseException, IOException {
+    static final boolean proveAll(Reader rd, ModernLogic logic, boolean all_true, boolean normalForm, boolean closure, boolean verbose) throws ParseException, IOException {
 	DateFormat df = new SimpleDateFormat("H:mm:ss:S");
 	df.setTimeZone(TimeZone.getTimeZone("Greenwich/Meantime"));
 	Date	loadeta;
@@ -161,21 +161,43 @@ abstract class ModernLogic implements Logic {
 	    // verify equivalence of its NF
 	    if (normalForm) {
 		Formula f = (Formula) logic.createExpression(formula);
-		String normalFormName[] = {
+		String formName[] = {
 		    "disjunctive",
 		    "conjunctive"
 		};
-		Formula nf[] = {
+		Formula form[] = {
 		    ClassicalLogic.Utilities.disjunctiveForm(f, true),
 		    ClassicalLogic.Utilities.conjunctiveForm(f, true)
 		};
-		for (int i = 0; i < nf.length; i++) {
+		for (int i = 0; i < form.length; i++) {
 		    if (verbose)
-			System.out.println(normalFormName[i] + " normal form: " + nf[i]);
-		    if (!logic.inference().infer(new Formula[] {f}, nf[i]))
-			throw new InternalError("wrong NF " + nf[i] + " =| for " + formula);
-		    if (!logic.inference().infer(new Formula[] {nf[i]}, f))
-			throw new InternalError("wrong NF " + nf[i] + " |= for " + formula);
+			System.out.println(formName[i] + " normal form: " + form[i]);
+		    if (!logic.inference().infer(new Formula[] {f}, form[i]))
+			throw new InternalError("wrong " + formName[i] + "NF " + form[i] + " =| for " + formula);
+		    if (!logic.inference().infer(new Formula[] {form[i]}, f))
+			throw new InternalError("wrong " + formName[i] + "NF " + form[i] + " |= for " + formula);
+		}
+	    }
+
+	    // 
+	    if (closure) {
+		Formula f = (Formula) logic.createExpression(formula);
+		String formName[] = {
+		    "universal",
+		    "existential",
+		    "constant"
+		};
+		Formula form[] = {
+		    ClassicalLogic.Utilities.universalClosure(f),
+		    ClassicalLogic.Utilities.existentialClosure(f),
+		    ClassicalLogic.Utilities.constantClosure(f)
+		};
+		System.out.println("FV(" + f + ") = " + f.getFreeVariables());
+		System.out.println("BV(" + f + ") = " + f.getBoundVariables());
+		System.out.println(" V(" + f + ") = " + f.getVariables());
+		System.out.println("Sigma(" + f + ") = " + f.getSignature());
+		for (int i = 0; i < form.length; i++) {
+		    System.out.println(formName[i] + " closure: " + form[i]);
 		}
 	    }
 

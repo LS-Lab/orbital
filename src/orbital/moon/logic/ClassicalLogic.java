@@ -175,8 +175,10 @@ public class ClassicalLogic extends ModernLogic {
 	    return;
 	} 
 	try {
+	    // possible command-line options
 	    boolean normalForm = false;
 	    boolean verbose = false;
+	    boolean closure = false;
 	    String charset = null;
 
 	    ClassicalLogic logic = new ClassicalLogic();
@@ -186,6 +188,8 @@ public class ClassicalLogic extends ModernLogic {
 	    for (int option = 0; option < arg.length; option++) {
 		if ("-normalForm".equals(arg[option]))
 		    normalForm = true;
+		else if ("-closure".equals(arg[option]))
+		    closure = true;
 		else if ("-verbose".equals(arg[option]))
 		    verbose = true;
 		else if ("-resolution".equals(arg[option]))
@@ -237,13 +241,13 @@ public class ClassicalLogic extends ModernLogic {
 			    } else
 				throw new InternalError("none of the cases of which one occurs is true");
 			    rd = new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/" + resName), DEFAULT_CHARSET);
-			    if (expected != proveAll(rd, logic, expected, normalForm, verbose))
+			    if (expected != proveAll(rd, logic, expected, normalForm, closure, verbose))
 				throw new LogicException("instantiated " + logic + " which does " + (expected ? "not support all conjectures" : "a contradictory conjecture") + " of " + resName + ". Either the logic is non-classical, or the resource file is corrupt.");
 			} else {
 			    rd = charset == null
 				? new FileReader(file)
 				: new InputStreamReader(new FileInputStream(file), charset);
-			    if (!proveAll(rd, logic, true, normalForm, verbose))
+			    if (!proveAll(rd, logic, true, normalForm, closure, verbose))
 				System.err.println("could not prove all conjectures");
 			    else
 				System.err.println("all conjectures were proven successfully");
@@ -271,7 +275,7 @@ public class ClassicalLogic extends ModernLogic {
 		Reader rd = null;
 		try {
 		    rd = new InputStreamReader(System.in);
-		    proveAll(rd, logic, true, normalForm, verbose);
+		    proveAll(rd, logic, true, normalForm, closure, verbose);
 		}
 		finally {
 		    if (rd != null)
@@ -291,7 +295,7 @@ public class ClassicalLogic extends ModernLogic {
     /**
      * @todo move content to the ResourceBundle.
      */
-    public static final String usage = "usage: [options] [all|none|properties|fol|<filename>|table]\n\tall\tprove important semantic-equivalence expressions\n\tnone\ttry to prove some semantic-garbage expressions\n\tproperties\tprove some properties of classical logic inference relation\n\tfol\tprove important equivalences of first-order logic\n\n\t<filename>\ttry to prove all expressions in the given file\n\ttable\tprint a function table of the expression instead\n\t-\tUse no arguments at all to be asked for expressions\n\t\tto prove.\noptions:\n\t-normalForm\tcheck the conjunctive and disjunctive forms in between\n\t-resolution\tuse resolution instead of semantic inference\n\t-verbose\tbe more verbose (f.ex. print normal forms if -normalForm)\n\t-charset=<encoding>\tthe character set or encoding to use for reading files\n\nTo check whether A and B are equivalent, enter '|= A<->B'";
+    public static final String usage = "usage: [options] [all|none|properties|fol|<filename>|table]\n\tall\tprove important semantic-equivalence expressions\n\tnone\ttry to prove some semantic-garbage expressions\n\tproperties\tprove some properties of classical logic inference relation\n\tfol\tprove important equivalences of first-order logic\n\n\t<filename>\ttry to prove all expressions in the given file\n\ttable\tprint a function table of the expression instead\n\t-\tUse no arguments at all to be asked for expressions\n\t\tto prove.\noptions:\n\t-normalForm\tcheck the conjunctive and disjunctive forms in between\n\t-closure\tprint the all/existence closures in between\n\t-resolution\tuse resolution instead of semantic inference\n\t-verbose\tbe more verbose (f.ex. print normal forms if -normalForm)\n\t-charset=<encoding>\tthe character set or encoding to use for reading files\n\nTo check whether A and B are equivalent, enter '|= A<->B'";
 
 
     
@@ -1483,6 +1487,75 @@ public class ClassicalLogic extends ModernLogic {
 	    }
 	}
 
+	// closure operators for free variables
+	
+	/**
+	 * Get the &forall;-closure of a formula.
+	 * @param F the formula having free variables FV(F)=:{<var>x<sub>1</sub></var>,...,<var>x<sub>n</sub></var>}.
+	 * @return the universal closure
+	 *  Cl<sub>&forall;</sub>F = &forall;<var>x<sub>1</sub></var>...&forall;<var>x<sub>n</sub></var> F
+	 * @post RES.getFreeVariables()=&empty; &and; RES=F.getFreeVariables()->iterate(x;G=F;G=G.forall(x))
+	 * @see #existentialClosure(Formula)
+	 * @see #constantClosure(Formula)
+	 */
+	public static final Formula universalClosure(Formula F) {
+	    //@todo rewrite pure functional foldLeft
+	    for (Iterator i = F.getFreeVariables().iterator();
+		 i.hasNext();
+		 )
+		F = F.forall((Symbol)i.next());
+	    return F;
+	}
+
+	/**
+	 * Get the &exist;-closure of a formula.
+	 * @param F the formula having free variables FV(F)=:{<var>x<sub>1</sub></var>,...,<var>x<sub>n</sub></var>}.
+	 * @return the existential closure
+	 *  Cl<sub>&exist;</sub>F = &exist;<var>x<sub>1</sub></var>...&exist;<var>x<sub>n</sub></var> F
+	 * @post RES.getFreeVariables()=&empty; &and; RES=F.getFreeVariables()->iterate(x;G=F;G=G.exist(x))
+	 * @see #universalClosure(Formula)
+	 * @see #constantClosure(Formula)
+	 */
+	public static final Formula existentialClosure(Formula F) {
+	    //@todo rewrite pure functional foldLeft
+	    for (Iterator i = F.getFreeVariables().iterator();
+		 i.hasNext();
+		 )
+		F = F.exists((Symbol)i.next());
+	    return F;
+	}
+
+	/**
+	 * Get the constant-closure of a formula.
+	 * <p>
+	 * This method replaces all free variables by constants of the same signifier, type and notation.
+	 * Especially, in combination with other formulas of the same free variables, the closure constants
+	 * will be the same, unlike any skolem constants introduced in the &exists;-closures of those
+	 * formulas.
+	 * </p>
+	 * @param F the formula having free variables FV(F)=:{<var>x<sub>1</sub></var>,...,<var>x<sub>n</sub></var>}.
+	 * @return the constant closure
+	 *  Cl<sub>const</sub>F = F[<var>x<sub>1</sub></var>&rarr;x<sub>1</sub>,...,<var>x<sub>n</sub></var>&rarr;x<sub>n</sub>]
+	 * @post RES.getFreeVariables()=&empty; &and; RES=...
+	 * @see #existentialClosure(Formula)
+	 * @see #universalClosure(Formula)
+	 */
+	public static final Formula constantClosure(Formula F) {
+	    return (Formula) Substitutions.getInstance(Functionals.map(new Function/*<Symbol,Matcher>*/() {
+		    public Object apply(Object o) {
+			Symbol x = (Symbol)o;
+			assert x.isVariable() : "FV are free _variables_";
+			Symbol xconst = new SymbolBase(x.getSignifier(),
+						       x.getType(),
+						       x.getNotation(),
+						       false);
+			return Substitutions.createExactMatcher(logic.createAtomic(x),
+								logic.createAtomic(xconst));
+		    }
+		}, F.getFreeVariables())).apply(F);
+	}
+	
+	
 	/**
 	 * Reads a term-rewrite system from a stream.
 	 * The syntax is
