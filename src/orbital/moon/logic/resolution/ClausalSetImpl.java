@@ -17,9 +17,10 @@ import orbital.logic.functor.Functionals;
  * @version 0.8, 2003-04-23
  * @author  Andr&eacute; Platzer
  */
-class ClausalSetImpl extends HashSet/*_<Clause>_*/ implements ClausalSet {
+public class ClausalSetImpl extends HashSet/*_<Clause>_*/ implements ClausalSet {
     /**
      * Copy constructor.
+     * @internal transitively public constructors required for Functionals.map to produce Clauses.
      */
     public ClausalSetImpl(Set/*<Formula>*/ clauses) {
 	super(clauses);

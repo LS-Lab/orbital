@@ -33,11 +33,12 @@ import java.util.logging.Level;
  * @version 0.8, 2003-04-23
  * @author  Andr&eacute; Platzer
  */
-class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
+public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
     private static final Logger logger = Logger.getLogger(ClauseImpl.class.getName());
 
     /**
      * Copy constructor.
+     * @internal transitively public constructors required for Functionals.map to produce Clauses.
      */
     public ClauseImpl(Set/*<Formula>*/ literals) {
 	super(literals);
