@@ -40,13 +40,12 @@ class UniqueShuffle {
      * shuffle values with Random-Generator.
      */
     public void reShuffle(Random random) {
-	int n = order.length;
-	for (int i = n - 1; i >= 0; i--) {
+	for (int i = order.length; i>1; i--) {
 	    int r = random.nextInt(i);
-	    int t = order[i];	 // swap i, r
-	    order[i] = order[r];
+	    int t = order[i-1];	 // swap i-1, r
+	    order[i-1] = order[r];
 	    order[r] = t;		 // don't use twice
-	} 
+	}
 	index = 0;
     } 
     public void reShuffle() {
