@@ -92,6 +92,10 @@ import java.util.Set;
  * @note boolean formulas (of propositional logic) can also be represented with (reduced) OBDDs, for performance in some applications.
  */
 public interface Formula extends Expression, Function/*<Interpretation, Object>*/ {
+
+    //@xxx move to Expression? and document (implementation necessary for TRS' fixedPoints and perhaps unification to work)
+    boolean equals(Object o);
+    int hashCode();
 	
     // Get/Set Methods
 	

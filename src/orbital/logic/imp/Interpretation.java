@@ -28,7 +28,10 @@ import orbital.logic.functor.Functor;
  *     I:&Sigma;<sub class="type">&tau;</sub>&rarr;<span class="set">D</span><sub class="type">&tau;</sub>
  *     for each type <span class="type">&tau;</span>, with
  *     <ul>
+ * <!-- @todo use I(<span class="type">&sigma;</span>) instead of <span class="set">D</span><sub class="type">&tau;</sub> througout? -->
  *       <li>I maps symbols of {@link Type type} <span class="type">&tau;</span> to elements of the set I(<span class="type">&tau;</span>):=<span class="set">D</span><sub class="type">&tau;</sub> &ne; &empty;.</li>
+ *       <li>I respects subtypes: for types <span class="type">&sigma;</span>,<span class="type">&sigma;</span>:{@link Types#TYPE <span class="type">*</span>}
+ *         with <span class="type">&sigma;</span>&le;<span class="type">&tau;</span> sets satisfy I(<span class="type">&sigma;</span>)&sube;I(<span class="type">&tau;</span>).</li>
  *       <li><span class="set">D</span><sub class="type">&omicron;</sub> is the set of truth-values for the type <span class="type">&omicron;</span> = <span class="type">()</span> of truth-values
  *         (also the type of atomic formulas).
  *         For two-valued logics this means <span class="set">D</span><sub class="type">&omicron;</sub> := <span class="set">Boole</span> := {True,False}.
