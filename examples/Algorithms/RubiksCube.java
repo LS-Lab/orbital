@@ -50,7 +50,7 @@ import util.Basic;
  * @author  Andr&eacute; Platzer
  * @see <a href="http://www.npac.syr.edu/projects/java/magic/">Visualization of Rubik's Cube</a>
  */
-public class RubicsCube implements GeneralSearchProblem {
+public class RubiksCube implements GeneralSearchProblem {
 
     /**
      * Up to which depth to search for a solution.
@@ -88,17 +88,17 @@ public class RubicsCube implements GeneralSearchProblem {
 	Date	 loadeta;
 	Function h;
 	try {
-	    File databaseFile = new File("RubicsCube.patterndb");
+	    File databaseFile = new File(RubiksCubeCreatePattern.patternDatabaseFile);
 	    if (!databaseFile.exists()) {
 		System.err.println("File \"" + databaseFile + "\" does not exist.  Will create one.");
-		RubicsCubeCreatePattern.main(arg);
+		RubiksCubeCreatePattern.main(arg);
 	    } 
 
 	    // load patterns
 	    System.out.println("Loading");
 	    long	loading = System.currentTimeMillis();
 	    InputStream fis = new FileInputStream(databaseFile);
-	    if (RubicsCubeCreatePattern.compressed)
+	    if (RubiksCubeCreatePattern.compressed)
 		fis = new InflaterInputStream(fis);
 	    ObjectInputStream is = new ObjectInputStream(fis);
 	    final int	      patternDepth = is.readInt();
@@ -115,15 +115,15 @@ public class RubicsCube implements GeneralSearchProblem {
 	    h = new HeuristicAlgorithm.PatternDatabaseHeuristic(h, patternDatabase);
 	    loadeta = new Date(System.currentTimeMillis() - loading);
 	    System.out.println("Completed loading " + df.format(loadeta));
-	    if (patternDepth != RubicsCubeCreatePattern.MAX_STEPS) {
+	    if (patternDepth != RubiksCubeCreatePattern.MAX_STEPS) {
 		System.out.println("Warning: File \"" + databaseFile + "\" does not seem up to date. Consider calling");
-		System.out.println("\tjava RubicsCubeCreatePattern");
+		System.out.println("\tjava RubiksCubeCreatePattern");
 		System.out.println("to re-create \"" + databaseFile + "\".");
 	    } 
 	} catch (IOException x) {
 	    System.err.println(x);
 	    System.err.println("Make sure that the pattern database file has been created by calling");
-	    System.err.println("\tjava RubicsCubeCreatePattern");
+	    System.err.println("\tjava RubiksCubeCreatePattern");
 	    return;
 	} 
 
@@ -140,7 +140,7 @@ public class RubicsCube implements GeneralSearchProblem {
 
 		
 	// really solve our problem
-	Cube solution = (Cube) s.solve(new RubicsCube(SIZE));
+	Cube solution = (Cube) s.solve(new RubiksCube(SIZE));
 
 	Date eta = new Date(System.currentTimeMillis() - start);
 
@@ -193,8 +193,8 @@ public class RubicsCube implements GeneralSearchProblem {
      */
     private final Cube _initialState;
 
-    public RubicsCube(int size) {
-	RubicsCube.size = size;
+    public RubiksCube(int size) {
+	RubiksCube.size = size;
 	if (size != 2)
 	    throw new InternalError("only implemented for size 2");
 	this._initialState = constructInitialState();

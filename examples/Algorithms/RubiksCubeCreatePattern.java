@@ -1,5 +1,3 @@
-
-
 import orbital.algorithm.template.*;
 import orbital.logic.functor.Function;
 import orbital.math.*;
@@ -9,13 +7,13 @@ import java.io.*;
 import java.util.zip.*;
 
 /**
- * Creates the pattern database for the rubic's cube heuristic.
+ * Creates the pattern database for the Rubik's cube heuristic.
  * 
  * @version 0.9, 2000/09/24
  * @author  Andr&eacute; Platzer
  * @internal note that our heuristic does not always return zero for (rotation symmetric) goal states! The same goes true for states that can more easily be reached from rotated states.
  */
-public class RubicsCubeCreatePattern extends RubicsCube {
+public class RubiksCubeCreatePattern extends RubiksCube {
     /**
      * Whether to compress the pattern database.
      */
@@ -25,13 +23,17 @@ public class RubicsCubeCreatePattern extends RubicsCube {
      * Up to which depth to produce entries in the pattern database.
      */
     public static final int     MAX_STEPS = 8;
+    /**
+     * The database file where the Rubik's cube heuristics are stored.
+     */
+    public static final String  patternDatabaseFile = "RubiksCube.patterndb";
 
     public static void main(String arg[]) throws Exception {
 	final Map patternDatabase = new HashOnlyMap();
 	System.out.println("Note that creating the pattern database file may take a while\ndepending upon the pattern depth (" + MAX_STEPS + ")");
 	System.out.println("creating pattern database ...");
 
-	RubicsCubeCreatePattern problem = new RubicsCubeCreatePattern(RubicsCube.SIZE);
+	RubiksCubeCreatePattern problem = new RubiksCubeCreatePattern(RubiksCube.SIZE);
 	final Function accumulatedCostFunction = problem.getAccumulatedCostFunction();
 	GeneralSearch s = new BranchAndBound(new Function() {
 
@@ -55,7 +57,7 @@ public class RubicsCubeCreatePattern extends RubicsCube {
 	System.out.println("up to depth " + MAX_STEPS);
 
 	// store patterns
-	OutputStream fos = new FileOutputStream("RubicsCube.patterndb");
+	OutputStream fos = new FileOutputStream(patternDatabaseFile);
 	if (compressed)
 	    fos = new DeflaterOutputStream(fos, new Deflater(Deflater.BEST_COMPRESSION));
 	ObjectOutputStream os = new ObjectOutputStream(fos);
@@ -64,7 +66,7 @@ public class RubicsCubeCreatePattern extends RubicsCube {
 	os.close();
     } 
 
-    public RubicsCubeCreatePattern(int size) {
+    public RubiksCubeCreatePattern(int size) {
 	super(size);
     }
 
