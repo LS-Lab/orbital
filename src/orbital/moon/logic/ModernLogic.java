@@ -310,8 +310,8 @@ abstract class ModernLogic implements Logic {
 	    throw new TypeException("compositor " + Types.toTypedString(compositor) + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments) + ':' + Types.typeOf(arguments), compositor.getType().domain(), Types.typeOf(arguments));
 
 	Expression.Composite RES = composeImpl(compositor, arguments);
-	assert RES != null : "@postconditions RES != null";	     
-	assert !TYPE_CHECK || RES.getType().equals(compositor.getType().on(Types.typeOf(arguments))) : "@postconditions " + RES.getType() + " = " + compositor.getType() + "(on)" + Types.typeOf(arguments) + " = " + compositor.getType().on(Types.typeOf(arguments)) + " (right type compose)\n\tfor " + RES + " = compose(" + compositor + " , " + MathUtilities.format(arguments) + ")";
+	assert RES != null : "@postconditions RES != null";
+	assert validateCheckCompositionType(RES, compositor, arguments);
 	return RES;
     }
     Expression.Composite composeImpl(Expression compositor, Expression arguments[]) throws ParseException {
@@ -338,6 +338,39 @@ abstract class ModernLogic implements Logic {
 	}
     }
 
+    /**
+     * Checks for right composition type.
+     */
+    private final boolean validateCheckCompositionType(Expression.Composite RES, Expression compositor, Expression arguments[]) {
+	Type actualType = RES.getType();
+	Type composedType = null;
+	try {
+	    composedType = compositor.getType().on(Types.typeOf(arguments));
+	}
+	catch (TypeException incomposable) {
+	    if (TYPE_CHECK) {
+		assert false : "incomposable types in @postconditions " + RES.getType() + " = " + compositor.getType() + "(on)" + Types.typeOf(arguments) + " = <{" + incomposable + "}> (right type compose)\n\tfor " + RES + " = compose(" + compositor + " , " + MathUtilities.format(arguments) + ")";
+	    } else {
+		logger.log(Level.WARNING, "incomposable types in @postconditions " + RES.getType() + " = " + compositor.getType() + "(on)" + Types.typeOf(arguments) + " = <{" + incomposable + "}> (right type compose)\n\tfor " + RES + " = compose(" + compositor + " , " + MathUtilities.format(arguments) + ")");
+	    }
+	    //@internal assertions either have trapped already, or should not be trapped at all
+	    return true;
+	}
+	{
+	    if (actualType.equals(composedType)) {
+		return true;
+	    } else {
+		if (TYPE_CHECK) {
+		    assert false : "@postconditions " + RES.getType() + " = " + compositor.getType() + "(on)" + Types.typeOf(arguments) + " = " + composedType + " (right type compose)\n\tfor " + RES + " = compose(" + compositor + " , " + MathUtilities.format(arguments) + ")";
+		} else {
+		    logger.log(Level.WARNING, "@postconditions " + RES.getType() + " = " + compositor.getType() + "(on)" + Types.typeOf(arguments) + " = " + composedType + " (right type compose)\n\tfor " + RES + " = compose(" + compositor + " , " + MathUtilities.format(arguments) + ")");
+		}
+		//@internal assertions either have trapped already, or should not be trapped at all
+		return true;
+	    }
+	}
+    }
+    
 
     // delegation helper methods
     
