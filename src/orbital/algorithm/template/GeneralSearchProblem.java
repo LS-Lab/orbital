@@ -65,6 +65,7 @@ import orbital.math.MathUtilities;
  * @see BacktrackingProblem
  * @see MarkovDecisionProblem
  * @todo introduce dynamic backtracking on search graphs
+ * @todo we could extend TransitionModel if we would do without expand(Option) and rather use the pair of methods, actions and transitions with the latter returning a single option, only.
  */
 public interface GeneralSearchProblem/*<S,A>*/ extends AlgorithmicProblem {
     /**

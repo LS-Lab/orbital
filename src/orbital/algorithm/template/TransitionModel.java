@@ -54,6 +54,11 @@ import java.util.Iterator;
  *        <div>&tau;(a)(s,s&#697;) := <b>P</b>(s&#697;|s,a)</div>
  *      </li>
  *    </ul>
+ *    As a notation for a transition from s&isin;S to s&#697;&isin;S under the
+ *    action a&isin;A(s) with a transition probability p&isin;[0,1] we sometimes
+ *    use
+ *    <div style="text-align: center"> <img src="doc-files/transition_notation.png" /> <!-- s &rarr;<sup>p</<sup><sub>a</sub> s&#697;--> </div>
+ *    here.
  *  </li>
  * </ul>
  * <p>
@@ -67,6 +72,7 @@ import java.util.Iterator;
  * @version 1.0, 2002/05/30
  * @author  Andr&eacute; Platzer
  * @see orbital.logic.functor.BinaryPredicate
+ * @see TransitionModelPath
  * @xxx didn't we model the case of a non-deterministic transition function with type O, and the special case of O=Option being the combined function of stochastic transtition probabilities?
  * @todo improve and generalize TransitionModel (which might also be applicable in the implementation of SimulatedAnnealing)
  */
