@@ -105,8 +105,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     boolean isCompatibleUnderlyingLogic(Formula formula) {
 	Logic myUnderlying = getUnderlyingLogic();
 	Logic itsUnderlying = ((ModernFormula)formula).getUnderlyingLogic();
-	return myUnderlying == null || itsUnderlying == null
-	    || myUnderlying.getClass().equals(itsUnderlying.getClass());
+	return myUnderlying == null || ((ModernLogic)myUnderlying).compatible(itsUnderlying);
     }
 
     /**
@@ -803,6 +802,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	protected Formula inner;
 	public AppliedFormula(Logic underlyingLogic, Symbol fsymbol, Function f, Formula g, Notation notation) {
 	    super(underlyingLogic, notation);
+	    if (fsymbol == null)
+		throw new IllegalArgumentException("illegal compositor symbol " + fsymbol + " for compositor referent " + f + " applied to " + g);
 	    this.outerSymbol = fsymbol;
 	    this.outer = f;
 	    this.inner = g;
@@ -813,11 +814,18 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 		
 	private AppliedFormula() {super(null);}
 		
+	public orbital.logic.Composite construct(Object f, Object g) {
+	    BinaryAppliedFormula c = (BinaryAppliedFormula) super.construct(f, g);
+	    c.outerSymbol = outerSymbol;
+	    return c;
+	}
+
         public Type getType() {
+	    assert outerSymbol != null && outerSymbol.getType() != null : outerSymbol + " != null && " + (outerSymbol == null ? null : outerSymbol.getType()) + " != null\ncompositor symbol " + outerSymbol + " for compositor referent " + outer + " applied to " + inner;
 	    return outerSymbol.getType().codomain();
         }
         public Signature getSignature() {
-	    //@xxx shouldn't we unify with getCompositor().getSignature() in case of formulas representing predicate or function?
+	    //@xxx shouldn't we unite with getCompositor().getSignature() in case of formulas representing predicate or function?
 	    return ((Formula) getComponent()).getSignature();
         }
 
@@ -878,6 +886,13 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	}
 		
 	private BinaryAppliedFormula() {super(null);}
+
+	public orbital.logic.Composite construct(Object f, Object g) {
+	    BinaryAppliedFormula c = (BinaryAppliedFormula) super.construct(f, g);
+	    c.outerSymbol = outerSymbol;
+	    return c;
+	}
+
 
         public Type getType() {
 	    assert outerSymbol != null && outerSymbol.getType() != null : outerSymbol + " != null && " + (outerSymbol == null ? null : outerSymbol.getType()) + " != null\ncompositor symbol " + outerSymbol + " for compositor referent " + outer + " applied to " + left + " and " + right;
