@@ -125,3 +125,31 @@ all x p(x) |= p(a)	# universal specialization
 all x (p(x)->q(x)) |= (all x p(x)) -> (all x q(x))
 # some rules
 (p(x) & q(x)) |= (p(x)) & (q(x))
+
+
+#
+# No more rules but only significant tests
+#
+all x p(x) |= all x p(f(x))		# variant renaming necessary
+all x all y (p(x) | p(y)) |= some u some v (p(u) & p(v))   # (initial) factorization necessary thus mere resolution without factorization is incomplete
+all x (p(x) | r), all x (p(f(x)) | ~r), ~p(f(a)) | s  |= p(f(b)) & s   # (intermediate) factorization necessary? thus mere resolution without factorization is incomplete
+###@fixme p(0), all x (p(x) -> p(s(x))) |=  some x p(s(s(s(s(x)))))  # some x p(s^2^n(x)) has a resolution of length n+5
+#
+# test cases for variable scope and that no variable renaming variant has been forgotten in the implementation
+#
+|= ~((all x p(x)) & (all x ~p(f(x))))
+|= ~((all x p(x)) & (all y ~p(f(y))))
+all x p(x) |= ~(all x ~p(f(x)))
+all x p(x) |= ~(all y ~p(f(y)))
+all x p(x) |= ~(some x ~p(f(x)))
+all x p(x) |= all x p(f(x))
+all x p(x) |= some x p(f(x))
+all x p(x) |= some y p(f(y))
+|= ~(all x (p(x) & ~p(f(x))))
+|= ~(all x all y (p(x) & ~p(f(y))))
+|= some x (~p(x) | p(f(x)))
+|= some x some y (~p(x) | p(f(y)))
+|= all x (p(x)&q(x)) -> some y (((p(y)|r)|q(a))&p(b))	# no premature closing in tableaus ([Beckert, Hähnle 2001 Automatisches Beweisen] p39)
+p(n), all x (p(x)->p(s(x))) |= p(s(s(n)))		# fair choice of literals for closure needed for completeness ([Beckert, Hähnle 2001 Automatisches Beweisen] p45)
+|= ~((all x p(x)) & (q&~q))					# blind repeated expansion of gamma formulas destroys completeness ([Beckert, Hähnle 2001 Automatisches Beweisen] p45)
+p(a), all x ( (p(b)&b(c)->p(x)) -> ~(q(x)->q(b)|q(c)) ) |= q(d)	# blindly preferring closures destroys completeness ([Beckert, Hähnle 2001 Automatisches Beweisen] p45)
