@@ -567,11 +567,11 @@ public class ClassicalLogic extends ModernLogic {
 	     new NotationSpecification(916, xfy, Notation.INFIX)},
 	    //@fixme (a->b)->c gets formatted as a -> b -> c, just as a->(b->c)
 	    {LogicFunctions.impl,         // "->"
-	     new NotationSpecification(920, "xfx", Notation.INFIX)},
+	     new NotationSpecification(920, "xfy", Notation.INFIX)},
 	    {LogicFunctions.reverseImpl, // "<-"
 	     new NotationSpecification(920, "xfx", Notation.INFIX)},
 	    {LogicFunctions.equiv,        // "<->"
-	     new NotationSpecification(920, xfy, Notation.INFIX)}
+	     new NotationSpecification(921, xfy, Notation.INFIX)}
 	}, false, true, true);
     private static final Signature _coreSignature = _coreInterpretation.getSignature();
 

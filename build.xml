@@ -232,6 +232,9 @@
 	    <report todir="${reports.tests}"/>
         </junitreport>
     </target>
+    <target name="test" depends="init, run.tests"
+            description="run and report test result (synonym)">
+    </target>
 
     <target name="parser" depends="init"
             description="compile *.jj (=> ./classes)">

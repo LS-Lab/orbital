@@ -752,7 +752,7 @@ Expression EquivalenceExpression() :
 Expression ImplicationExpression() :
 {Token tok;Expression a,b;}
 {
-    a = InclusiveOrExpression() ( tok = <IMPLY> b = InclusiveOrExpression() {a = combine(tok, a,b);} )*
+    a = InclusiveOrExpression() ( tok = <IMPLY> b = ImplicationExpression() {a = combine(tok, a,b);} )?
 	{return a;}
 }
 
@@ -801,7 +801,13 @@ Expression QuantifiedExpression() :
 }
 {
     //@internal this lookahead specifies that we prefer not to have quantifiers in the following UnaryExpression
-    (LOOKAHEAD(<FORALL>|<EXISTS>) (tok = <FORALL> | tok = <EXISTS>) x = VariableDeclaration() {scope.declare(x);xs.add(x);})+
+    (LOOKAHEAD(<FORALL>|<EXISTS>) (tok = <FORALL> | tok = <EXISTS>)
+     (
+          x = VariableDeclaration() {scope.declare(x);xs.add(x);}
+      |   //@internal an optional lambda case is required to reparse the notation all \x. p
+          <LAMBDA> x = VariableDeclaration() "." {scope.declare(x);xs.add(x);}
+      )
+    )+
     a = UnaryExpression()
 	{
 	    for (Iterator i = xs.iterator(); i.hasNext(); ) {

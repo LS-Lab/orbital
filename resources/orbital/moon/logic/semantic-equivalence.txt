@@ -60,7 +60,7 @@ a^b == (a|b) & (~a|~b)	# antivalence in CNF
 a^a == false
 (a^b)^c == a^(b^c)	# associative
 (a^b)^c == a<->b<->c	#
-(a->b)->c == a->b && b->c	# @fixme what, which brackets, what sense, who, which way?
+# (a->b)->c == a->b && b->c	# @xxx this formula lost its brackets or operators
 a->(b->c) == (a&b)->c	# exportation / importation [Lex exportationis, Lex importationis]
 a->b |= (b->c)->(a->c)	# transitive ->
 a->(b->c) == (a->b)->(a->c)	# distributive -> over ->

@@ -25,7 +25,7 @@ class NonrepetitiveCombination extends Combinatorical {
      */
     public NonrepetitiveCombination(int r, int n) {
     	if (!(r <= n))
-	    throw new IllegalArgumentException("only r <= n combinations without repetition exist");
+	    throw new IllegalArgumentException("only r <= n combinations without repetition exist, cannot pick more than present");
     	this.r = r;
     	this.n = n;
     	this.combination = new int[r];
@@ -36,7 +36,13 @@ class NonrepetitiveCombination extends Combinatorical {
     }
 
     public boolean hasNext() {
-	return combination[0] < n - combination.length;
+	// search for the (for example rightmost) element that is below its maximum
+	for (int i = combination.length - 1; i >= 0; i--) {
+	    if (combination[i] < i + n - combination.length)
+		return true;
+	}
+	return false;
+	//@todo could optimise with something like return combination[0] < n - combination.length;
     } 
 
     public int[] next() {

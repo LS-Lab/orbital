@@ -43,7 +43,6 @@ a^b == (a|b) & (~a|~b)	# antivalence in CNF
 ##inconsistent a^a == false
 ## @fixme substitutionBug (a^b)^c == a^(b^c)	# associative
 ## (a^b)^c == a<->b<->c	#
-(a->b)->c == a->b && b->c
 a&b->c == a->(b->c)	# exportation / importation [Lex exportationis, Lex importationis]
 ~a == a->false		# not in INF
 #

@@ -335,7 +335,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @param notation the notation for the composition (usually determined by the composing symbol).
      */
     public static Formula.Composite composeDelayed(Logic underlyingLogic, Formula f, Expression arguments[], Notation notation) {
-        //@xxx @fixme was notat = notation; but either we disable DEFAULT=BESTFIX formatting, or we ignore the signature's notation choice
+        //@xxx was notat = notation; but either we disable DEFAULT=BESTFIX formatting, or we ignore the signature's notation choice
         Notation notat = notation;
 	switch(arguments.length) {
 	case 0:
@@ -361,12 +361,14 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @param fsymbol the symbol with with the fixed interpretation f.
      */
     public static Formula.Composite composeFixed(Logic underlyingLogic, Symbol fsymbol, Functor f, Expression arguments[]) {
-        //@xxx @fixme was notat = fsymbol.getNotation().getNotation(); but either we disable DEFAULT=BESTFIX formatting, or we ignore the signature's notation choice
-        Notation notat = fsymbol.getNotation().getNotation();
+        //@internal formulas always use default format and ignore signature's notation choice of fsymbol.getNotation().getNotation()
+	// Instead, symbols (of fixed core interpretation) can register their default notation in Notation.setNotation.
+        Notation notat = Notation.DEFAULT;
 	switch(arguments.length) {
 	case 0:
 	    if (f instanceof VoidPredicate && !(f instanceof VoidFunction))
 		f = Functionals.asFunction((VoidPredicate) f);
+	    //@todo should use parameter notat, instead?
 	    return new ModernFormula.AppliedFormula(underlyingLogic, fsymbol, Functionals.onVoid((VoidFunction) f), (Formula) arguments[0], fsymbol.getNotation().getNotation());
 	case 1:
 	    if (f instanceof Predicate && !(f instanceof Function))
