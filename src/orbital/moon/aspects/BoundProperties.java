@@ -62,27 +62,27 @@ aspect BoundProperties implements Serializable /*of nothing*/ of eachobject(inst
     //FUTURE: the generic way "abstract pointcut types();" is not yet provided
     introduction(Point) {
   
-      implements Serializable;
+	implements Serializable;
   
-      public void addPropertyChangeListener(PropertyChangeListener listener){
-          BoundProperties.aspectOf(this).getSupport().addPropertyChangeListener(listener);
-      }
+	public void addPropertyChangeListener(PropertyChangeListener listener){
+	    BoundProperties.aspectOf(this).getSupport().addPropertyChangeListener(listener);
+	}
   
-      public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener){
-          BoundProperties.aspectOf(this).getSupport().addPropertyChangeListener(propertyName, listener);
-      }
+	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener){
+	    BoundProperties.aspectOf(this).getSupport().addPropertyChangeListener(propertyName, listener);
+	}
   
-      public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-          BoundProperties.aspectOf(this).getSupport().removePropertyChangeListener(propertyName, listener);
-      }
+	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+	    BoundProperties.aspectOf(this).getSupport().removePropertyChangeListener(propertyName, listener);
+	}
   
-      public void removePropertyChangeListener(PropertyChangeListener listener) {
-          BoundProperties.aspectOf(this).getSupport().removePropertyChangeListener(listener);
-      }
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+	    BoundProperties.aspectOf(this).getSupport().removePropertyChangeListener(listener);
+	}
   
-      public void hasListeners(String propertyName) {
-          BoundProperties.aspectOf(this).getSupport().hasListeners(propertyName);
-      }
+	public void hasListeners(String propertyName) {
+	    BoundProperties.aspectOf(this).getSupport().hasListeners(propertyName);
+	}
   
     }
   
@@ -100,39 +100,39 @@ aspect BoundProperties implements Serializable /*of nothing*/ of eachobject(inst
      */
     around() returns void: setters() {
         String propertyName = Introspector.decapitalize(thisJoinPoint.methodName.substring("set".length()));
-  		try {
-	       	Method reader = getPropertyReadMethod(bean.getClass(), propertyName);
-	       	if (reader == null)
-	       		throw new NullPointerException("no read method for " + propertyName);
-        	Object old = reader.invoke(bean, NO_ARGUMENTS);
+	try {
+	    Method reader = getPropertyReadMethod(bean.getClass(), propertyName);
+	    if (reader == null)
+		throw new NullPointerException("no read method for " + propertyName);
+	    Object old = reader.invoke(bean, NO_ARGUMENTS);
             thisJoinPoint.runNext();
             firePropertyChange(propertyName, old, reader.invoke(bean, NO_ARGUMENTS));
-  		} catch (IntrospectionException x) {
+	} catch (IntrospectionException x) {
             thisJoinPoint.runNext();
-  		} catch (IllegalAccessException x) {
+	} catch (IllegalAccessException x) {
             thisJoinPoint.runNext();
-  		} catch (InvocationTargetException x) {
+	} catch (InvocationTargetException x) {
             thisJoinPoint.runNext();
-  		} 
+	} 
     }
 
-	private static final Object[] NO_ARGUMENTS = new Object[0];
-	private static Method getPropertyReadMethod(Class beanClass, String propertyName) throws IntrospectionException {
-		BeanInfo info = Introspector.getBeanInfo(beanClass, Introspector.USE_ALL_BEANINFO);
-		if (info == null)
-			throw new NullPointerException("no BeanInfo for class: " + beanClass);
-		BeanDescriptor desc = info.getBeanDescriptor();
-		if (desc == null)
-			throw new NullPointerException("no BeanDescriptor for class: " + beanClass);
-		PropertyDescriptor[] beanProperties = info.getPropertyDescriptors();
-		if (beanProperties == null)
-			throw new NullPointerException("no PropertyDescriptors for class: " + beanClass);
+    private static final Object[] NO_ARGUMENTS = new Object[0];
+    private static Method getPropertyReadMethod(Class beanClass, String propertyName) throws IntrospectionException {
+	BeanInfo info = Introspector.getBeanInfo(beanClass, Introspector.USE_ALL_BEANINFO);
+	if (info == null)
+	    throw new NullPointerException("no BeanInfo for class: " + beanClass);
+	BeanDescriptor desc = info.getBeanDescriptor();
+	if (desc == null)
+	    throw new NullPointerException("no BeanDescriptor for class: " + beanClass);
+	PropertyDescriptor[] beanProperties = info.getPropertyDescriptors();
+	if (beanProperties == null)
+	    throw new NullPointerException("no PropertyDescriptors for class: " + beanClass);
 
-		for (int i = 0; i < beanProperties.length; i++)
-			if (propertyName.equals(beanProperties[i].getName()))
-				return beanProperties[i].getReadMethod();
-		return null;
-  	}
+	for (int i = 0; i < beanProperties.length; i++)
+	    if (propertyName.equals(beanProperties[i].getName()))
+		return beanProperties[i].getReadMethod();
+	return null;
+    }
   
     /**
      * Lazy initialize the property change support object so that
@@ -145,7 +145,7 @@ aspect BoundProperties implements Serializable /*of nothing*/ of eachobject(inst
             else
                 throw new Error("BoundProperties<<aspect>>: " + 
                 		"can't initialize property change support -- " +
-                        "no object reference yet.");
+				"no object reference yet.");
         return support;
     }
   

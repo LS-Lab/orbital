@@ -169,7 +169,13 @@ public class SimpleGSP implements GeneralSearchProblem {
 	return getClass().getName() + "[start=" + start + " to goal=" + goal + "]";
     }
 
+    /**
+     * The representation of a state of the agent.
+     */
     private static class State {
+	/**
+	 * The position of the agent.
+	 */
 	int position;
 	double accumulatedCost;
 	public State(int position) {

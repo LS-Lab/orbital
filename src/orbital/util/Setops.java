@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Comparator;
@@ -22,14 +23,11 @@ import orbital.logic.functor.Predicates;
 
 import orbital.util.ReverseComparator;
 import java.util.HashSet;
+import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Collections;
 import orbital.util.Pair;
-import java.util.ListIterator;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
@@ -755,6 +753,22 @@ public final class Setops {
 
 // 	    };
 //     }
+
+    /**
+     * Converts an array of key and values to a map.
+     * @param entries Contains keys and their values.
+     *  Stored as an array of length-2 arrays
+     *  with entries[i][0] being the key {@link String},
+     *  and entries[i][1] being the value {@link Object}.
+     * @see Collections#asList(Object[])
+     */
+    public static final Map asMap(Object[][] entries) {
+	Map map = new HashMap();
+	for (int i = 0; i < entries.length; i++) {
+	    map.put((String)entries[i][0], entries[i][1]);
+	}
+	return Collections.unmodifiableMap(map);
+    }
 
     // selection methods
 
