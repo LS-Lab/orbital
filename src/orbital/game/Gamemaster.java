@@ -63,7 +63,7 @@ public class Gamemaster implements Runnable {
     private FieldChangeListener endOfGameListener = new FieldChangeAdapter() {
 		//@internal we are transient
 		public void stateChanged(FieldChangeEvent evt) {
-		    //@todo assert evt.getField() == getField() : "we have only registered ourselves to our field";
+		    //@todo assert evt.getField() == getField() : "we have only registered ourselves to our field " + getField() + " source=" + evt.getField();
 		    if (evt.getType() == FieldChangeEvent.END_OF_GAME)
 			stop();
 		}
@@ -122,19 +122,44 @@ public class Gamemaster implements Runnable {
 
     /**
      * Get all players currently playing.
+     * @return the individual players of our game.
+     *  If a component is <code>null</code>, a human player will take the part of that league.
+     *  Especially, the value of <code>players[Figure.NOONE]</code> will be ignored.
      */
     public Function[] getPlayers() {
-	return players;
+	Function players[] = getPlayersInternal();
+	Function c[] = new Function[players.length];
+	for (int i = Figure.NOONE + 1; i < players.length; i++) {
+	    c[i] = players[i] instanceof HumanPlayer
+		? null
+		: players[i];
+	}
+	return c;
     }
     private void setPlayers(Function newPlayers[]) {
 	assert newPlayers[Figure.NOONE] == null : Figure.NOONE + " needs no player, so you can safely set it to null";
-	this.players = new Function[newPlayers.length];
+	Function players[] = new Function[newPlayers.length];
 	for (int i = Figure.NOONE + 1; i < players.length; i++) {
-	    this.players[i] = newPlayers[i] != null
+	    players[i] = newPlayers[i] != null
 		? newPlayers[i]
 		//@xxx horribly complicated formulation
 		: (this.humanPlayer = (this.humanPlayer != null ? this.humanPlayer : new HumanPlayer()));
 	}
+	setPlayersInternal(players);
+    }	
+    /**
+     * Get all players currently playing (internal version).
+     * @return the individual players of our game.
+     *  If a component is <code>instanceof HumanPlayer</code>, a human player will take the part of that league.
+     *  Especially, the value of <code>players[Figure.NOONE]</code> will be ignored.
+     * @post null&notin;RES
+     */
+    protected Function[] getPlayersInternal() {
+	return players;
+    }
+    private void setPlayersInternal(Function newPlayers[]) {
+	assert newPlayers[Figure.NOONE] == null : Figure.NOONE + " needs no player, so you can safely set it to null";
+	this.players = newPlayers;
     }	
     
     /**
@@ -143,8 +168,9 @@ public class Gamemaster implements Runnable {
     public Field getField() {
 	return field;
     }
-    protected final void setField(Field field) {
-	this.field = field;
+    protected final void setField(Field newField) {
+	//System.out.println("Gamemaster.setField(" + System.identityHashCode(newField) + ")");
+	this.field = newField;
     }
 
     /**
@@ -160,6 +186,7 @@ public class Gamemaster implements Runnable {
      * (Start entry point) starts a new game.
      */
     public void start() {
+	//System.out.println("Gamemaster.start()");
 	if (getField() == null)
 	    setField(rules.startField(component));
 	getField().addFieldChangeListener(endOfGameListener);
@@ -236,7 +263,10 @@ public class Gamemaster implements Runnable {
 		// if we could rely on our AI, then we could optimize away this expensive moving and simply use the resulting setField(move.getState());
 		// But unfortunately, all our field's listeners would then vanish, possibly including end of game checks.
 		//@internal cloning the position information is necessary, otherwise move would detect that it gets lost during swap.
-		if (!getField().move(source, move.getMove()))
+		Field field = getField();
+		if (field == null)
+		    throw new NullPointerException("illegal field: " + field);
+		if (!field.move(source, move.getMove()))
 		    throw new Error("player " + players[turn] + " for league " + turn + " should only take legal moves: " + move);
 	    } else
 		throw new Error("player " + players[turn] + " for league " + turn + " found no move: " + action);
@@ -280,7 +310,7 @@ public class Gamemaster implements Runnable {
 	    }
 	}
 	public void movePerformed(FieldChangeEvent evt) {
-	    assert evt.getField() == getField() : "we have only registered ourselves to our field";
+	    assert evt.getField() == getField() : "we have only registered ourselves to our field " + getField() + " source=" + evt.getField();
 	    if ((evt.getType() & (FieldChangeEvent.USER_ACTION | FieldChangeEvent.MOVE)) == (FieldChangeEvent.USER_ACTION | FieldChangeEvent.MOVE)) {
 		synchronized(userAction) {
 		    this.option = (Option) evt.getChangeInfo();
