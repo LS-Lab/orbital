@@ -48,7 +48,7 @@ public class SetOfSupportResolution extends ResolutionBase {
 
     /**
      * Delete superfluous clauses.
-     * Apply any deletion strategies to the specified sets of clauses U and S.
+     * Apply any deletion strategies to the specified sets of clauses R, U and S.
      * @param newResolvents the new resolvents just resolved most recently.
      * @param usable the set of usable clauses in the knowledgebase which are not in the set of support.
      * @param setOfSupport the current set of support prior to adding newResolvents.
@@ -122,10 +122,12 @@ public class SetOfSupportResolution extends ResolutionBase {
 		    }
 		}
 	    }
+	    //assert !newResolvents.isEmpty() || !resolvable: "there are no resolvents => !resolvable";
 	    if (!resolvable) {
 		//@internal if C had not been resolvable (and we have no links, so that this has not been detected), remove C also from U. This will be performed generally once we implement links (and sublinks etc.).
 		// remove link-less C also from U
 		usable.remove(C);
+		continue;
 	    }
 
 	    System.out.println("  setOfSupport " + setOfSupport.size() + "\tusable " + usable.size() + "\tresolvents " + newResolvents.size());
