@@ -92,6 +92,7 @@ p |= p|q		# weakening addition (alias '|' introduction)
 p&q |= p		# weakening subtraction (alias '&' elimination)
 a |= b->a		# weakening conditional
 a->b, b->c |= a->c	# transitivity
+(Gamma&p => a), (Gamma&q->a) |= Gamma&(p|q) => a	# Dilemma rule, lowered from meta statements about |= to statements about implication =>
 #
 # tautological properties of == aka |=| (thus inference rules, as well)
 #
