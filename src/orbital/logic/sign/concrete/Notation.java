@@ -473,6 +473,29 @@ public abstract class Notation implements Serializable, Comparable {
     }
 	
     /**
+     * Sets all notations contained in an array.
+     * @param functorsAndNotations Contains functors and their notation specifications.
+     *  Stored as an array of length-2 arrays
+     *  with functors[i][0] being the interpretation {@link Functor},
+     *  and functor[i][1] being a {@link Notation.NotationSpecification}.
+     * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience Method</a>
+     * @see #setNotation(Functor, Notation.NotationSpecification)
+     */
+    public static final void setAllNotations(Object[][] functorsAndNotations) {
+	for (int i = 0; i < functorsAndNotations.length; i++) {
+	    if (functorsAndNotations[i].length != 2)
+		throw new IllegalArgumentException("array of dimension [][2] expected");
+	    final Functor f = (Functor)functorsAndNotations[i][0];
+	    NotationSpecification notation = (NotationSpecification)functorsAndNotations[i][1];
+	    if (f == null)
+		throw new NullPointerException("illegal functor " + f + " for " + notation);
+	    if (notation == null)
+		throw new NullPointerException("illegal notation " + notation + " for " + f);
+	    Notation.setNotation(f, notation);
+	}
+    }
+
+    /**
      * Whether the functor has a default notation defined and is unary,
      * thus displayed with compact (i.e. invisible) brackets.
      */
@@ -660,58 +683,12 @@ public abstract class Notation implements Serializable, Comparable {
      * Asssociates functors to their default notation (in precedence order).
      * @todo invariant sorted and without duplicates
      * @todo use LinkedHashMap instead to ensure sorting??
+     * @todo couldn't we switch to storing this in MathExpressionSyntax.coreSignature()
      */
     private static Map/*_<Functor, NotationSpecification>_*/		functorNotation;
 
-    /**
-     * Contains initial functors who have a default notation set, in precedence order.
-     * In the same order as {@link #initialFunctorNotation}
-     * @todo couldn't we switch to storing this in MathExpressionSyntax.coreSignature()
-     * @invariants sorted, i.e. precedenceOf[i] < precedenceOf[i+1]
-     * @xxx shouldn't we let Operations register itself instead of this package dependendy?
-     */
-    //TODO: use List(new KeyValuePair()) instead of functorList<->functorNotation synchronization
-    private static final Functor[]		initialFunctorList       = {
-	Operations.inverse,						// "^-1",
-	Operations.power,						// "^",
-	Operations.times, Operations.divide,	// "*", "/"
-	Operations.minus,						// "-"/1,
-	Operations.plus, Operations.subtract,	// "+", "-"/2
-
-	Predicates.equal,						// "=="
-	Predicates.unequal,						// "!="
-	Predicates.greater,						// ">"
-	Predicates.less,						// "<"
-	Predicates.greaterEqual,				// ">="
-	Predicates.lessEqual,					// "=<"
-    };
-
-    /**
-     * Contains notation specifications of the initial registered functors.
-     * In the same order as {@link #initialFunctorList}.
-     * @invariants in the same order as initialFunctorList
-     * @TODO: + and * could have yfy as well? Would avoid 1+(2+3)
-     */
-    private static final NotationSpecification[] initialFunctorNotation = {
-	new NotationSpecification(195, "xf", POSTFIX),
-	new NotationSpecification(200, "xfy", INFIX),
-	new NotationSpecification(400, "yfx", INFIX), new NotationSpecification(400, "yfx", INFIX),
-	new NotationSpecification(500, "fx", PREFIX),
-	new NotationSpecification(500, "yfx", INFIX), new NotationSpecification(500, "yfx", INFIX),
-
-	new NotationSpecification(700, "xfx", INFIX),
-	new NotationSpecification(700, "xfx", INFIX),
-	new NotationSpecification(700, "xfx", INFIX),
-	new NotationSpecification(700, "xfx", INFIX),
-	new NotationSpecification(700, "xfx", INFIX),
-	new NotationSpecification(700, "xfx", INFIX),
-    };
-	
     static {
 	functorNotation = new HashMap();
-	assert initialFunctorNotation.length == initialFunctorList.length : "initial functor containers have equal lengths";
-	for (int i = 0; i < initialFunctorNotation.length; i++)
-	    functorNotation.put(initialFunctorList[i], initialFunctorNotation[i]);
 	defaultNotation = BESTFIX;
     }
 }
