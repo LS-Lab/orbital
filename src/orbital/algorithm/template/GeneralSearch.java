@@ -63,7 +63,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * Whether this search algorithm is optimal.
      * <p>
      * If a search algorithm is not optimal, i.e. it might find solutions that are
-     * sub optimal only, then it can only reliably find solutions, not best solutions.
+     * sub optimal only, then it can only (perhaps) reliably find solutions, not best solutions.
      * However, those solutions still provide an upper bound to the optimal solution.
      * </p>
      * @return whether this search algorithm is optimal, i.e. whether solutions are guaranteed to be optimal.
@@ -139,6 +139,15 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
 
     /**
      * Define a traversal order by creating an iterator for the problem's state space.
+     * <p>
+     * Lays a linear order through the state space which the search
+     * can simply follow sequentially. Thus a traversal policy effectively reduces a search
+     * problem through a graph to a search problem through a linear sequence of states.
+     * Of course, the mere notion of a traversal policy does not yet solve the task of finding
+     * a good order of states, but only encapsulate it.
+     * Complete search algorithms result from traversal policies that have a linear sequence
+     * through the whole state space.
+     * </p>
      * @param problem the problem whose state space to create a traversal iterator for.
      * @return an iterator over the {@link GeneralSearchProblem.Option options}
      *  of the problem's state space thereby encapsulating and hiding the traversal order.
@@ -164,7 +173,8 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * @internal
      *  Implemented as an iterative unrolling of a right-linear tail-recursion.
      *  Otherwise it would be important to shallow-clone the nodes list
-     *  for byvalue semantics of recursion call.</p>
+     *  for byvalue semantics of recursion call.
+     * @internal see orbital.util.Setops#find(Iterator, Predicate) identical implementation
      */
     protected Option search(Iterator/*<Option<S,A>>*/ nodes) {
 	while (nodes.hasNext()) {
@@ -200,6 +210,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * @version 0.8, 2001/08/01
      * @author  Andr&eacute; Platzer
      * @see <a href="{@docRoot}/DesignPatterns/Strategy.html">Strategy</a>
+     * @see GeneralSearch#createTraversal(GeneralSearchProblem)
      */
     public static abstract class OptionIterator implements Iterator/*_<Option>_*/, Serializable {
 	private static final long serialVersionUID = 6410799454884265654L;

@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Collections;
 import java.util.Comparator;
+import orbital.math.MathUtilities;
 
 import orbital.math.Values;
 
@@ -25,6 +26,7 @@ import orbital.math.Values;
  * Hill-climbing search.
  * An heuristic search algorithm and local optimizer.
  * <p>
+ * ({@link #LOCAL_BEST_IMPROVEMENT One variant} of hill-climbing)
  * Expands best nodes first, i.e. those that have min h(n) and forgets about the alternatives.</p>
  * <p>
  * Hill climbing is neither complete <em>nor</em> optimal,
@@ -47,33 +49,11 @@ import orbital.math.Values;
  * </small>
  * </p>
  * <p>
- * Variations of hill-climbing include the following
- * <ul>
- *   <li>
- *     accept the best improvement (like this implementation).
- *     Although we have a local convergence criterion then,
- *     that is no good for very high branching factors (or expensive expansions).
- *   </li>
- *   <li>
- *     + accept the first (randomly chosen) improvement.
- *     At least for local derivable evaluation functions, the expected
- *     number of random trials until finding an improvement is 2.
- *   </li>
- *   <li>
- *     -- accept the first improvement trying nodes according to a given order.
- *     At least for local derivable evaluation functions, the worst
- *     number of random trials until finding an improvement is b/2,
- *     and may lead to the worst possible improvement.
- *   </li>
- * </ul>
- * </p>
- * <p>
- * Note that hill-climbing approximates gradient descent if the evaluation function is a cost
- * rather than a quality.
+ * Note that hill-climbing approximates gradient descent.
  * If the state space is spanned by a system of linear unequalities, and
  * the evaluation function is linear, then hill-climbing equals
- * the Simplex algorithm of linear programming.
- * Local optimization guarantees that local optimum is global optimum since
+ * the simplex algorithm of linear programming.
+ * Local optimization guarantees that local optimum is global optimum if
  * the state-space as well as the evaluation function are convex, then.
  * </p>
  * <p>
@@ -84,30 +64,146 @@ import orbital.math.Values;
  *
  * @version 1.0, 2000/09/17
  * @author  Andr&eacute; Platzer
- * @todo why do some authors think that hill climbing should not forget about other alternatives, but remember them as depth-first search does. Will this really be another / or better algorithm, then?
  * @note the father of local optimizers, also the most simple version
- * @see SimulatedAnnealing
  * @see Greedy
  */
-public class HillClimbing extends GeneralSearch implements HeuristicAlgorithm, ProbabilisticAlgorithm {
+public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgorithm {
     private static final long serialVersionUID = -3281919447532950063L;
+    /**
+     * The local selection mechanism used to evaluate states.
+     * Determines the exact type of hill-climbing specifying which exact variant is used.
+     * @version 1.1, 2002/06/04
+     * @author  Andr&eacute; Platzer
+     * @see <a href="{@docRoot}/DesignPatterns/enum.html">typesafe enum pattern</a>
+     * @internal typesafe enumeration pattern class currently specifies whole OptionIterator
+     * @invariant a.equals(b) &hArr; a==b
+     */
+    public static abstract class LocalSelection {
+	/**
+	 * the name to display for this enum value
+	 * @serial
+	 */
+	private final String	  name;
+
+	/**
+	 * Ordinal of next enum value to be created
+	 */
+	private static int	  nextOrdinal = 0;
+
+	/**
+	 * Table of all canonical references to enum value classes.
+	 */
+	private static LocalSelection[] values = new LocalSelection[3];
+
+	/**
+	 * Assign an ordinal to this enum value
+	 * @serial
+	 */
+	private final int		  ordinal = nextOrdinal++;
+
+	LocalSelection(String name) {
+	    this.name = name;
+	    values[nextOrdinal - 1] = this;
+	}
+	/**
+	 * Maintains the guarantee that all equal objects of the enumerated type are also identical.
+	 * @post a.equals(b) &hArr; if a==b.
+	 */
+	public final boolean equals(Object that) {
+	    return super.equals(that);
+	} 
+	public final int hashCode() {
+	    return super.hashCode();
+	} 
+
+	/**
+	 * Maintains the guarantee that there is only a single object representing each enum constant.
+	 * @serialData canonicalized deserialization
+	 */
+	private Object readResolve() throws java.io.ObjectStreamException {
+	    // canonicalize
+	    return values[ordinal];
+	}
+
+	public String toString() {
+	    return this.name;
+	}
+
+	
+	abstract Iterator createTraversal(GeneralSearchProblem problem, HillClimbing algorithm);
+    }
+
+    // enumeration of LocalSelections
+    
+    /**
+     * accept the best improvement (like this implementation).
+     * Although we have a local convergence criterion then, that
+     * variant is no good for very high branching factors (or
+     * expensive expansions).
+     * @see BestFirstSearch
+     * @todo why do some authors think that hill climbing should not forget about other alternatives, but remember them as depth-first search does. Will this really be another / or better algorithm, then?
+     */
+    public static final LocalSelection LOCAL_BEST_IMPROVEMENT = new LocalSelection("LocalBest") {
+	    Iterator createTraversal(GeneralSearchProblem problem, HillClimbing algorithm) {
+		return algorithm.new OptionIterator(problem);
+	    }
+	};
+    /**
+     * + accept the first (randomly chosen) improvement.  At least for
+     * local derivable evaluation functions, the expected number of
+     * random trials until finding an improvement is 2, anyway.
+     */
+    public static final LocalSelection LOCAL_FIRST_IMPROVEMENT = new LocalSelection("LocalFirst") {
+	    Iterator createTraversal(GeneralSearchProblem problem, HillClimbing algorithm) {
+		return new OptionIterator_First(problem, algorithm);
+	    }
+	};
+    /**
+     * -- accept the first improvement trying nodes according to a given order.
+     * At least for local derivable evaluation functions, the worst
+     * number of random trials until finding an improvement is b/2,
+     * and may lead to the worst possible improvement.
+     * (Not implemented).
+     * <p>
+     * Returning the options in the right order is the responsibility of
+     * {@link GeneralSearchProblem#expand(GeneralSearchProblem.Option)}.
+     * </p>
+     */
+    static final LocalSelection LOCAL_ORDERED_IMPROVEMENT = null;
+    /**
+     * The exact type of hill-climbing specifying which exact variant is used.
+     * @serial
+     */
+    private LocalSelection type;
     /**
      * The applied heuristic cost function h:S&rarr;<b>R</b> embedded in the evaluation function f(n) = h(n).
      * @serial
      */
     private Function heuristic;
     /**
-     * The random generator source.
-     * @serial the random source is serialized to let the seed persist.
+     * Create a new instance of hill climbing search.
+     * @param heuristic the heuristic cost function h:S&rarr;<b>R</b> to be used as evaluation function f(n) = h(n).
+     * @param acceptionType the exact type of hill-climbing specifying which exact variant is used.
+     * @see #LOCAL_BEST_IMPROVEMENT
+     * @see #LOCAL_FIRST_IMPROVEMENT
      */
-    private Random random;
+    public HillClimbing(Function heuristic, LocalSelection acceptionType) {
+    	this.heuristic = heuristic;
+	setType(acceptionType);
+    }
     /**
      * Create a new instance of hill climbing search.
      * @param heuristic the heuristic cost function h:S&rarr;<b>R</b> to be used as evaluation function f(n) = h(n).
      */
     public HillClimbing(Function heuristic) {
-    	this.heuristic = heuristic;
-    	this.random = new Random();
+    	this(heuristic, LOCAL_BEST_IMPROVEMENT);
+    }
+
+    private void setType(LocalSelection type) {
+	this.type = type;
+    }
+    private LocalSelection getType() {
+	return type;
     }
 
     public Function getHeuristic() {
@@ -118,20 +214,10 @@ public class HillClimbing extends GeneralSearch implements HeuristicAlgorithm, P
 	this.heuristic = heuristic;
     }
 
-    public boolean isCorrect() {
-	return false;
-    }
-
-    public Random getRandom() {
-	return random;
-    }
-    public void setRandom(Random random) {
-	this.random = random;
-    }
-
     /**
      * f(n) = h(n).
-     * @todo sure
+     * @internal wenn ich sonst einen Übergang wegen zu hoher akkumulierter Kosten verschmähen
+     *  würde, käm ich ja nie mehr von meinem eingeschlagenen (evtl. Sackgassen) Pfad weg.
      */
     public Function getEvaluation() {
     	return getHeuristic();
@@ -153,8 +239,12 @@ public class HillClimbing extends GeneralSearch implements HeuristicAlgorithm, P
     	return false;
     }
 
+    public boolean isCorrect() {
+	return false;
+    }
+
     protected Iterator createTraversal(GeneralSearchProblem problem) {
-	return new OptionIterator(problem);
+	return getType().createTraversal(problem, this);
     }
 
     /**
@@ -208,6 +298,44 @@ public class HillClimbing extends GeneralSearch implements HeuristicAlgorithm, P
 	    nodes = newNodes;
 	    return newNodes.hasNext();
         }
+    };
+
+    /**
+     * An iterator over a state space in (probabilistic) greedy order for hill-climbing.
+     * @version 1.0, 2001/08/01
+     * @author  Andr&eacute; Platzer
+     */
+    private static class OptionIterator_First extends LocalOptimizerSearch.OptionIterator {
+	private static final long serialVersionUID = -3674513421043835094L;
+	public OptionIterator_First(GeneralSearchProblem problem, LocalOptimizerSearch algorithm) {
+	    super(problem, algorithm);
+	    this.currentValue = ((Number) algorithm.getEvaluation().apply(getState())).doubleValue();
+	}
+
+	private double currentValue;
+
+	/**
+	 * {@inheritDoc}.
+	 * <p>
+	 * This implementation will only move to better nodes, categorically.</p>
+	 * @internal we avoid using the help of EvaluativeComparator here, because we ourselves can cache currentValue
+	 */
+	public boolean accept(GeneralSearchProblem.Option state, GeneralSearchProblem.Option sp) {
+	    final ScheduledLocalOptimizerSearch algorithm = (ScheduledLocalOptimizerSearch) getAlgorithm();
+	    final double value = ((Number) algorithm.getEvaluation().apply(sp)).doubleValue();
+	    final double deltaEnergy = value - currentValue;
+
+	    if (deltaEnergy <= 0) {
+		// an improvement
+		currentValue = value;
+		return true;
+	    } else
+		return false;
+	}
+
+	public boolean hasNext() {
+	    return true;
+	}
     };
 
 

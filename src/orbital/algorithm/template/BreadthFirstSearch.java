@@ -37,6 +37,7 @@ public class BreadthFirstSearch extends GeneralSearch {
      * O(b<sup>d</sup>) where b is the branching factor and d the solution depth.
      * DepthFirstSearch might not find a solution for search space graphs with inifinite breadth.
      * O(<span class="Formula">(b<sup>d</sup>-1)/(b-1) + b<sup>d</sup></span>) more precisely.
+     * @todo O(|V|+|E|) on a graph (V,E) with vertexes V and edges E.
      */
     public Function complexity() {
 	return (Function) Operations.power.apply(Values.symbol("b"),Functions.id);

@@ -72,6 +72,9 @@ import java.util.Iterator;
  * &tau;(a<sup>*</sup>) = &tau;(a)<sup>&infin;</sup> is the transitive closure with a fixed action.
  * </p>
  * <p>
+ * A non-deterministic transition model is a Semi-Thue system with CH3 acception rules
+ * (more precise: reductions).</p>
+ * <p>
  * Note that you can as well use this interface in its raw version (i.e. without instantiating
  * template parameters) for mere non-deterministic transitions without stochastic information
  * by ignoring the type-restriction of {@link TransitionModel.Option} to {@link #transitions(Object,Object)}.
@@ -86,7 +89,47 @@ import java.util.Iterator;
  */
 public interface TransitionModel/*<A,S, O extends Option>*/ {
     /**
+     * Checks two transition models for equality (optional).
+     * <p>
+     * Since checking two transition models for equivalence is rather difficult,
+     * most implementations may safely skip this method.
+     * </p>
+     * <p>
+     * Two non-deterministic transition models with transition relations
+     * &sigma:A&rarr;&weierp;(S&times;S) and &tau;:A&rarr;&weierp;(T&times;T)
+     * are equivalent, if the have a bisimulation.
+     * &rho;&sube;S&times;T is a <dfn>bisimulation</dfn> of &sigma; and &tau; :&hArr;
+     * <div>&forall;s&isin;S&forall;t&isin;T <big>(</big>s&rho;t &rarr; &forall;a&isin;A (&forall;s&#697;&isin;S &sigma;(a)(s,s&#697;)&rarr;&exist;t&#697;&isin;T &tau;(a)(t,t&#697;)&and;s&#697;&rho;t&#697;)<br />
+     *     &forall;t&#697;&isin;T &tau;(a)(t,t&#697;)&rarr;&exist;s&#697;&isin;S &sigma;(a)(s,s&#697;)&and;s&#697;&rho;t&#697;)) <big>)</big>
+     * </div>
+     * </p>
+     * <ul>
+     *   <li>S=T &rArr; bisimulation is the same as compatible?</li>
+     *   <li>&rho; functional &rArr; (bi?)simulation is the same as homomorphism?</li>
+     *   <li>&weierp;(S&times;T) has a maximum bisimulation which equals max fix<sub>&rho;</sub> BISIM(&rho;)
+     *     where BISIM(&rho;) = &lambda;s&lambda;t. &forall;a&isin;A (&forall;s&#697;&isin;S (&sigma;(a)(s,s&#697;)&rarr;&exist;t&#697;&isin;T &tau;(a)(t,t&#697;)&and;s&#697;&rho;t&#697;)<br />
+     *     &forall;t&#697;&isin;T &tau;(a)(t,t&#697;)&rarr;&exist;s&#697;&isin;S &sigma;(a)(s,s&#697;)&and;s&#697;&rho;t&#697;).
+     *   </li>
+     * </ul>
+     */
+    //boolean equals(Object x);
+    /**
+     * Ha, ha.
+     */
+    //int hashCode();
+
+    /**
      * Get the applicable actions of a state.
+     * <p>
+     * For several reasons (including performance) it is widely recommended that
+     * A(s) = {s&#697;&isin;S &brvbar; <b>P</b>(s&#697;|s,a)&gt;0}.
+     * In fact, this is not a <em>strict</em> requirement, if the computation would be far too
+     * expensive. However, the TransitionModel implementation would then have to deal with
+     * cases where an action was chosen that has later been found out to be inapplicable,
+     * contrary to the initial guess of {@link #actions(Object)}.
+     * Since this may result in rather messy implementations, reliefing this requirement
+     * should generally be limited to very specific and well documented cases.
+     * </p>
      * @param state the state s&isin;S whose applicable actions to determine.
      * @pre s&isin;S
      * @return A(s)&sube;A, a list of alternative actions applicable in the state s&isin;S.
@@ -101,7 +144,7 @@ public interface TransitionModel/*<A,S, O extends Option>*/ {
     /**
      * Get all transitions possible at a state under a given action.
      * <p>
-     * For efficiency reasons it is recommended that this method does only return
+     * For performance reasons it is recommended that this method does only return
      * those states s&#697;&isin;S that can be reached (i.e. where <b>P</b>(s&#697;|s,a) &gt; 0).
      * Although this is not strictly required if it would be too expensive to determine.
      * </p>

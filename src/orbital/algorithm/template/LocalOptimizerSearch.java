@@ -10,7 +10,6 @@ import orbital.algorithm.template.GeneralSearchProblem.Option;
 import java.util.Iterator;
 import java.io.Serializable;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -24,6 +23,8 @@ import orbital.util.Setops;
  * promise to lead to improvements. In order to achieve that, most of these local optimizers
  * use some sort of randomization and a probability depending on the degree of improvement or
  * decrease.
+ * In fact, most uses of local optimizers also depend more or less on a random initial state.
+ * Then, some of them may profit from random-restart.
  * </p>
  * <p>
  * Subclasses usually use the {@link LocalOptimizerSearch.OptionIterator} provided
@@ -32,9 +33,9 @@ import orbital.util.Setops;
  *
  * @version 1.1, 2002/06/01
  * @author  Andr&eacute; Platzer
- * @todo let HillClimbing derive this class.
+ * @todo should we implement HeuristicAlgorithm and provide get/setHeuristic, just because most of our subclasses are?
  */
-public abstract class LocalOptimizerSearch extends GeneralSearch implements ProbabilisticAlgorithm {
+public abstract class LocalOptimizerSearch extends GeneralSearch implements ProbabilisticAlgorithm, EvaluativeAlgorithm {
     private static final long serialVersionUID = 465553782601369843L;
     /**
      * The random generator source.
@@ -47,10 +48,6 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
     }
     public LocalOptimizerSearch(Random random) {
 	this.random = random;
-    }
-
-    public boolean isCorrect() {
-	return false;
     }
 
     public Random getRandom() {
@@ -91,28 +88,31 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
      * @see TransitionPath
      * @internal optimized version of a TransitionPath sandwhiched with a TransitionModel and an action iterator.
      * @todo introduce template method  select(...) for selection strategy?
+     * @todo would we benfit from extending GeneralSearchProblem.OptionIterator?
      */
     public static abstract class OptionIterator implements Iterator, Serializable {
 	private static final long serialVersionUID = -658271440377589506L;
     	/**
     	 * The search problem to solve.
     	 * @serial
+	 * @internal we do not use algorithm.getProblem() for performance and (perhaps) update reasons.
     	 */
     	private final GeneralSearchProblem/*<S,A>*/ problem;
 	/**
-	 * The probabilistic algorithm using this random order iterator.
+	 * The algorithm using this (randomized) iterator.
+	 * @serial
 	 */
-	private final ProbabilisticAlgorithm probabilisticAlgorithm;
+	private final LocalOptimizerSearch algorithm;
 	/**
 	 * The current state s&isin;S of this transition path.
 	 * @serial
 	 */
 	private Option state;
-	public OptionIterator(GeneralSearchProblem problem, ProbabilisticAlgorithm probabilisticAlgorithm) {
+	public OptionIterator(GeneralSearchProblem problem, LocalOptimizerSearch algorithm) {
 	    this.problem = problem;
 	    //@todo super(problem); extend GeneralSearch.OptionIterator and use its select()?
 	    this.state = new GeneralSearchProblem.Option(getProblem().getInitialState());
-	    this.probabilisticAlgorithm = probabilisticAlgorithm;
+	    this.algorithm = algorithm;
 	}
 
     	/**
@@ -125,6 +125,13 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
     	}
 
 	/**
+	 * Get the algorithm using this (randomized) iterator.
+	 */
+	protected final LocalOptimizerSearch getAlgorithm() {
+	    return algorithm;
+	}
+
+	/**
 	 * Get the current state s&isin;S of this transition path.
 	 * i.e. the last state returned by {@link #next()}, or the initial state if no transition has
 	 * already occurred.
@@ -134,15 +141,15 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
 	}
 
 	public Object next() {
-	    //@internal this has a horrible performance if constructing states is an expensive operation, and the technique of lazy state construction is not applied. @todo Could perhaps solve by transforming GSP into a TransitionModel with separated actions() and transitions() with the latter constructing the state.
+	    //@internal optimize: this has a horrible performance if constructing states is an expensive operation, and the technique of lazy state construction is not applied. @todo Could perhaps solve by transforming GSP into a TransitionModel with separated actions() and transitions() with the latter constructing the state.
 	    List nodes = Setops.asList(problem.expand(state));
 	    if (nodes.isEmpty())
 		//@internal note that hasNext() will not consider this case, since it is considered as an error
 		throw new NoSuchElementException("specification hurt: there are no transitions from " + state);
 
-	    // randomly select
+	    // randomly select @todo s.a. s.a.
 	    Option sp =  (Option)
-		nodes.get(probabilisticAlgorithm.getRandom().nextInt(nodes.size()));
+		nodes.get(algorithm.getRandom().nextInt(nodes.size()));
 
 	    if (accept(state, sp)) {
 		// accept the transition current->sp

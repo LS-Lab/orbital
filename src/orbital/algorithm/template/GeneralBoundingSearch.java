@@ -105,6 +105,7 @@ public abstract class GeneralBoundingSearch extends GeneralSearch implements Eva
      * @return whether the node is out of current bounds.
      * @see #getBound()
      * @see <a href="{@docRoot}/DesignPatterns/TemplateMethod.html">Template Method</a>
+     * @todo would we profit from transforming bound into a Real?
      */
     protected boolean isOutOfBounds(Option node) {
 	return Values.valueOf(getBound()).compareTo(getEvaluation().apply(node)) < 0;

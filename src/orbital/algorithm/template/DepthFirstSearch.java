@@ -45,6 +45,7 @@ public class DepthFirstSearch extends GeneralSearch {
      * DepthFirstSearch might not find a solution for search space graphs with inifinite depth
      * or infinite breadth.
      * o(d+1) up to O(<span class="Formula">(b<sup>d+1</sup>-1)/(b-1)</span>) more precisely. On average &asym;<span class="Formula">b<sup>d</sup>/2</span>.
+     * @todo O(|V|+|E|) on a graph (V,E) with vertexes V and edges E.
      */
     public Function complexity() {
 	//TODO: think about changing all infinite functions to symbolic or anything which is not(!) constant, but still supports norm=infinity

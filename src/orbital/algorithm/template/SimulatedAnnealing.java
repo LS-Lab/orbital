@@ -7,17 +7,11 @@
 package orbital.algorithm.template;
 
 import java.util.Iterator;
-import java.util.Collection;
-import java.util.Random;
-
-import java.util.List;
 
 import orbital.logic.functor.Function;
 
 import orbital.math.Values;
 
-import java.util.Collections;
-import orbital.util.Setops;
 import orbital.util.Utility;
 
 import java.util.logging.Logger;
@@ -89,28 +83,32 @@ import java.util.logging.Level;
  * with non-zero transition probability). It also converges if the Markov system
  * is homogenous (i.e. transition probabilities independent from time) and aperiodic.
  * Also, for example, the condition with the acceptance probability is satisfied
- * by simulated annealing, and thus metropolis search.
+ * by simulated annealing, and thus metropolis search
+ * (metropolis search is simulated annealing at a <em>fixed</em> temperature T).
  * </p>
  *
  * @version 0.9, 2001/05/11
  * @author  Andr&eacute; Platzer
  * @see HillClimbing
+ * @see ThresholdAccepting
  * @todo could move some parts into a super class
+ * @note The Boltzman-machine is simulated annealing with the Boltzman distribution applied
+ *  also to cases of improvements, instead of accepting all improvements.
+ * @note could introduce MeanfieldAnnealing (alias Hopfield/Tank neural networks)
+ * @internal variants:
+ *  - simulated annealing with backtracking I to the (currently) best solution when reaching a limit T.
+ *  + simulated annealing with backtracking II to the (currently) best solution at the end of each temperature step.
+ *  parallel simulated annealing with k independent searches starting at the (currently) best solution at the end of each temperature step.
+ *  "feedback annealing" with adaptive scheduling according to the acceptance statistics at the current temperature step.
+ *  Also cool are nested optimizers like simulated annealing on local optima (SA on hill-climbing optima)
+ *  simulated annealing with bouncing (periodic spontaneous temperature "eruptions", either decreasing or not)
+ * @internal However, it could be proven (Braun, H.) that neither threshold accepting, nor simulated annealing with backtracking I, nor sintflood have a schedule that reaches the global optimum with probability 1.
+ *  Contrary to simulated annealing with backtracking II.
+ * @todo improve simulated annealing, threshold accepting and hill-climbing by remembering and returning the best solution found so far.
  */
-public class SimulatedAnnealing extends LocalOptimizerSearch implements HeuristicAlgorithm, ProbabilisticAlgorithm {
+public class SimulatedAnnealing extends ScheduledLocalOptimizerSearch {
     private static final long serialVersionUID = -1780030298934767181L;
     private static final Logger logger = Logger.getLogger(SimulatedAnnealing.class.getName());
-    /**
-     * The heuristic cost function h:S&rarr;<b>R</b> to be used as evaluation function f(n) = h(n).
-     * @serial
-     */
-    private Function/*<GeneralSearchProblem.Option, Arithmetic>*/ heuristic;
-    /**
-     * A mapping <b>N</b>&rarr;<b>R</b> from time to "temperature"
-     * controlling the cooling, and thus the probability of downward steps.
-     * @serial
-     */
-    private Function/*<Integer, Double>*/ schedule;
     /**
      * Create a new instance of simulated annealing search.
      * @param heuristic the heuristic cost function h:S&rarr;<b>R</b> to be used as evaluation function f(n) = h(n).
@@ -120,40 +118,14 @@ public class SimulatedAnnealing extends LocalOptimizerSearch implements Heuristi
      *  Algorithm stops if the temperature drops to <span class="Number">0</span>
      *  (or isSolution is <span class="keyword">true</span>,
      *  or it fails due to a lack of alternative expansion nodes).
+     * @pre ( lim<sub>t&rarr;&infin;</sub>schedule(t) = 0 &and; schedule decreases monotonically ) || abnormal(schedule)
      */
-    public SimulatedAnnealing(Function heuristic, Function schedule) {
-    	this.heuristic = heuristic;
-    	this.schedule = schedule;
-    }
-
-    public Function getHeuristic() {
-	return heuristic;
-    }
-
-    public void setHeuristic(Function heuristic) {
-	this.heuristic = heuristic;
-    }
-
-    /**
-     * Get the scheduling function.
-     * @return a mapping <b>N</b>&rarr;<b>R</b>
-     *  from time to "temperature" controlling the cooling, and thus
-     *  the probability of downward steps.
-     *  Algorithm stops if the temperature drops to <span class="Number">0</span>
-     *  (or isSolution is <span class="keyword">true</span>,
-     *  or it fails due to a lack of alternative expansion nodes).
-     */
-    public Function getSchedule() {
-	return schedule;
-    }
-
-    public void setSchedule(Function schedule) {
-	this.schedule = schedule;
+    public SimulatedAnnealing(Function/*<GeneralSearchProblem.Option, Arithmetic>*/ heuristic, Function/*<Integer, Real>*/ schedule) {
+    	super(heuristic, schedule);
     }
 
     /**
      * f(n) = h(n).
-     * @todo sure??
      */
     public Function getEvaluation() {
     	return getHeuristic();
@@ -188,11 +160,11 @@ public class SimulatedAnnealing extends LocalOptimizerSearch implements Heuristi
      * @version 1.0, 2001/08/01
      * @author  Andr&eacute; Platzer
      */
-    private class OptionIterator extends LocalOptimizerSearch.OptionIterator {
+    private static class OptionIterator extends LocalOptimizerSearch.OptionIterator {
 	private static final long serialVersionUID = -5170488902830279816L;
-	public OptionIterator(GeneralSearchProblem problem, ProbabilisticAlgorithm probabilisticAlgorithm) {
-	    super(problem, probabilisticAlgorithm);
-	    this.currentValue = ((Number) getEvaluation().apply(getState())).doubleValue();
+	public OptionIterator(GeneralSearchProblem problem, ScheduledLocalOptimizerSearch algorithm) {
+	    super(problem, algorithm);
+	    this.currentValue = ((Number) algorithm.getEvaluation().apply(getState())).doubleValue();
 	    this.t = 0;
 	    // initialize to any value !=0 for hasNext() to return true. The real value will be calculated in  in accept(), anyway
 	    this.T = Double.POSITIVE_INFINITY;
@@ -211,11 +183,12 @@ public class SimulatedAnnealing extends LocalOptimizerSearch implements Heuristi
 	 * depending upon the decrease &Delta;:=f(s&#697;)-f(s).</p>
 	 */
 	public boolean accept(GeneralSearchProblem.Option state, GeneralSearchProblem.Option sp) {
+	    final ScheduledLocalOptimizerSearch algorithm = (ScheduledLocalOptimizerSearch) getAlgorithm();
 	    // current temperature scheduled for successive cooling
-	    this.T = ((Number) getSchedule().apply(new Integer(t))).doubleValue();
+	    this.T = ((Number) algorithm.getSchedule().apply(Values.valueOf(t))).doubleValue();
 	    this.t++;
 
-	    final double value = ((Number) getEvaluation().apply(sp)).doubleValue();
+	    final double value = ((Number) algorithm.getEvaluation().apply(sp)).doubleValue();
 	    final double deltaEnergy = value - currentValue;
 
 	    // usually solution isSolution test is omitted, anyway, but we'll still call
@@ -226,7 +199,7 @@ public class SimulatedAnnealing extends LocalOptimizerSearch implements Heuristi
 	    // always move to better nodes,
 	    // but move to worse nodes, only with a certain probability
 	    if (deltaEnergy <= 0
-		|| Utility.flip(getRandom(), Math.exp(-deltaEnergy / T))) {
+		|| Utility.flip(algorithm.getRandom(), Math.exp(-deltaEnergy / T))) {
 		if (logger.isLoggable(Level.FINER))
 		    logger.log(Level.FINER, "simulated annealing update (" + currentValue +") to (" + value + ") delta=" + deltaEnergy + (deltaEnergy > 0 ? "" : " with probability " + Math.exp(-deltaEnergy / T)));
 		// either an improvement, or decreasing by chance
@@ -277,7 +250,7 @@ public class SimulatedAnnealing extends LocalOptimizerSearch implements Heuristi
 // 	double currentValue = Double.POSITIVE_INFINITY;
 // 	for (int t = 0; !nodes.isEmpty(); t++) {
 // 	    // current temperature scheduled for successive cooling
-// 	    final double T = ((Number) getSchedule().apply(new Integer(t))).doubleValue();
+// 	    final double T = ((Number) getSchedule().apply(Values.valueOf(t))).doubleValue();
 // 	    if (T == 0)
 // 		return current;
 // 	    final GeneralSearchProblem.Option node = select(nodes);

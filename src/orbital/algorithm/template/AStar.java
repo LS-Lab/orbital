@@ -77,6 +77,7 @@ public class AStar extends BestFirstSearch implements HeuristicAlgorithm {
     }
     private transient Function evaluation = createEvaluation();
     private final Function createEvaluation() {
+	//@todo could transform into a package-protected Support class with a constructor argument of HeuristicAlgorithm
 	return new Function() {
     		public Object apply(Object a) {
 		    GeneralSearchProblem.Option o = (GeneralSearchProblem.Option)a;
