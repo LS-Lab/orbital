@@ -53,19 +53,6 @@ class LocalOptimizerSearch extends GeneralSearch implements ProbabilisticAlgorit
 	 * @serial
 	 */
 	private Object/*>S<*/ state;
-	/**
-	 * The predicate asked whether to accept a transition.
-	 * <div>s&rarr;<sub>a</sub>s&#697; is accepted iff accept(s,s&#697;)</div>
-	 * @todo remove and replace by an abstract method accept() in this class?
-	 */
-	private final BinaryPredicate accept;
-	/**
-	 * The predicate asked whether to continue or stop further transition.
-	 * <div>transitions are continued further iff cont(s)</div>
-	 * where s is the current state.
-	 * @todo remove and replace by an abstract method hasNext() in this class?
-	 */
-	private final Predicate cont;
 	public OptionIterator(GeneralSearchProblem problem, ProbabilisticAlgorithm probabilisticAlgorithm, BinaryPredicate accept, Predicate cont) {
 	    super(problem);
 	    this.state = new GeneralSearchProblem.Option(getProblem().getInitialState());
@@ -90,6 +77,19 @@ class LocalOptimizerSearch extends GeneralSearch implements ProbabilisticAlgorit
 	    return state;
 	}
 
+	/**
+	 * The predicate asked whether to accept a transition.
+	 * <div>s&rarr;<sub>a</sub>s&#697; is accepted iff accept(s,s&#697;)</div>
+	 * @todo remove and replace by an abstract method accept() in this class?
+	 */
+	private final BinaryPredicate accept;
+	/**
+	 * The predicate asked whether to continue or stop further transition.
+	 * <div>transitions are continued further iff cont(s)</div>
+	 * where s is the current state.
+	 * @todo remove and replace by an abstract method hasNext() in this class?
+	 */
+	private final Predicate cont;
 	/**
 	 * Decides whether to stop further transitions.
 	 */

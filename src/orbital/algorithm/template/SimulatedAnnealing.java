@@ -196,10 +196,53 @@ public class SimulatedAnnealing extends GeneralSearch implements HeuristicAlgori
 	return search(nodes);
     }
 
-    protected Iterator createTraversal(GeneralSearchProblem problem) {
-	throw new InternalError("not yet implemented");
+    protected Iterator createTraversal(final GeneralSearchProblem problem) {
+	if (true)
+	    throw new InternalError("not yet implemented");
+	
+	this.currentValue = ((Number) getEvaluation().apply(getState())).doubleValue();
     }
 
+    /**
+     * @version 1.0, 2001/08/01
+     * @author  Andr&eacute; Platzer
+     */
+    private static class Coordinator implements BinaryPredicate, Predicate {
+	public OptionIterator(GeneralSearchProblem problem, ProbabilisticAlgorithm probabilisticAlgorithm) {
+	    super(problem, probabilisticAlgorithm);
+	}
+
+	private double currentValue = Double.POSITIVE_INFINITY;
+	private int t = 0;
+	// current temperature scheduled for successive cooling
+	private double T;
+
+	public boolean apply(Object state, Object sp) {
+	    final double value = ((Number) getEvaluation().apply(sp)).doubleValue();
+	    final double deltaEnergy = value - currentValue;
+
+	    //@note negated use of deltaEnergy values everywhere since the evaluation evaluates cost and not utility (unlike Russel & Norvig who seem to consider maximizing energy instead of minimizing)
+	    // always move to better nodes,
+	    // but move to worse nodes, only with a certain probability
+	    if (deltaEnergy <= 0
+		|| Utility.flip(getRandom(), Math.exp(-deltaEnergy / T))) {
+		if (logger.isLoggable(Level.FINER))
+		    logger.log(Level.FINER, "simulated annealing update (" + currentValue +") to (" + value + ") delta=" + deltaEnergy + (deltaEnergy > 0 ? "" : " with probability " + Math.exp(-deltaEnergy / T)));
+		// either an improvement, or decreasing by chance
+		currentValue = value;
+		return true;
+	    } else
+		return false;
+	}
+
+	public boolean apply(Object sp) {
+	    // current temperature scheduled for successive cooling
+	    T = ((Number) getSchedule().apply(new Integer(t))).doubleValue();
+	    return T != 0;
+	}
+    };
+
+    
     /**
      * An iterator over a state space in random order.
      * @version 1.0, 2001/08/01
@@ -286,7 +329,7 @@ public class SimulatedAnnealing extends GeneralSearch implements HeuristicAlgori
 	    if (deltaEnergy <= 0
 		|| Utility.flip(getRandom(), Math.exp(-deltaEnergy / T))) {
 		if (logger.isLoggable(Level.FINER))
-		    logger.log(Level.FINER, "simulated annealing update (" + currentValue +") to (" + value + ") delta=" + deltaEnergy + (deltaEnergy > 0 ? "" : " with probability " + Math.exp(deltaEnergy / T)));
+		    logger.log(Level.FINER, "simulated annealing update (" + currentValue +") to (" + value + ") delta=" + deltaEnergy + (deltaEnergy > 0 ? "" : " with probability " + Math.exp(-deltaEnergy / T)));
 		// either an improvement, or decreasing by chance
 		current = node;
 		currentValue = value;
