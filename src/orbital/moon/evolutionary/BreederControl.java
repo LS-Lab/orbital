@@ -196,6 +196,7 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
     JMenuItem			 jMenuPopulationSave = new JMenuItem();
     JMenuItem			 jMenuPopulationSaveAs = new JMenuItem();
     JMenuItem			 jMenuPopulationCreateAndGo = new JMenuItem();
+    JMenuItem			 jMenuPopulationSwitchGAP = new JMenuItem();
     JMenuItem			 jMenuProperties = new JMenuItem();
     JMenu				 menuHelp = new JMenu();
     JMenuItem			 jMenuGenomeNew = new JMenuItem();
@@ -331,8 +332,9 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
      */
     protected Genome createGenome() {
 	JOptionPane.showMessageDialog(this, resources.getString("message.genome.newRandom.warning.text"), resources.getString("message.genome.newRandom.warning.title"), JOptionPane.WARNING_MESSAGE);
-	//XXX: where to get the prototype from?
-	return new Genome(new Gene.BitSet(20));
+	//@internal almost identical to return (Genome) Selectors.uniform().apply(getGeneticAlgorithmProblem().getPopulation());
+	Population temppop = getGeneticAlgorithmProblem().getPopulation();
+	return temppop.get(getGeneticAlgorithm().getRandom().nextInt(temppop.size()));
     }
 
     protected GeneticAlgorithm create() throws InstantiationException {
@@ -809,6 +811,17 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
 			}).start();
 		}
 	    });
+	jMenuPopulationSwitchGAP.setText("Switch Problem...");
+	jMenuPopulationSwitchGAP.addActionListener(new java.awt.event.ActionListener() {
+
+		public void actionPerformed(final ActionEvent e) {
+		    new Thread(new Runnable() {
+			    public void run() {
+				jMenuPopulationSwitchGAP_actionPerformed(e);
+			    }
+			}).start();
+		}
+	    });
 	menuHelp.setMnemonic('?');
 	menuHelp.setText("?");
 	jMenuGenomeNew.setText("New random");
@@ -956,6 +969,7 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
 	menuPopulation.add(jMenuPopulationSave);
 	menuPopulation.add(jMenuPopulationSaveAs);
 	menuPopulation.addSeparator();
+	menuPopulation.add(jMenuPopulationSwitchGAP);
 	menuPopulation.add(jMenuPopulationCreateAndGo);
 	menuPopulation.addSeparator();
 	menuPopulation.add(jMenuProperties);
@@ -1029,6 +1043,32 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
 	setGeneticAlgorithm(ga);
 	history();
 	ready();
+    }
+
+    void jMenuPopulationSwitchGAP_actionPerformed(ActionEvent e) {
+	String problem
+	    = JOptionPane.showInputDialog(this, resources.getString("dialog.problem.switch.text"), resources.getString("dialog.problem.switch.title"), JOptionPane.PLAIN_MESSAGE);
+	if (problem == null)
+	    return;
+	try {
+	    setGeneticAlgorithmProblem((GeneticAlgorithmProblem) Class.forName(problem).newInstance());
+	    JOptionPane.showMessageDialog(this, resources.getString("dialog.problem.switch.success.text"), resources.getString("dialog.problem.switch.success.title"), JOptionPane.INFORMATION_MESSAGE);
+	}
+	catch (ClassNotFoundException x) {
+	    logger.log(Level.WARNING, "message.problem.switch.error.ClassNotFoundException.title", x);
+	    JOptionPane.showMessageDialog(this, resources.getString("message.problem.switch.error.ClassNotFoundException.text") + x, resources.getString("message.problem.switch.error.ClassNotFoundException.title"), JOptionPane.ERROR_MESSAGE);
+	    return;
+	}
+	catch (InstantiationException x) {
+	    logger.log(Level.WARNING, "message.problem.switch.error.InstantiationException.title", x);
+	    JOptionPane.showMessageDialog(this, resources.getString("message.problem.switch.error.InstantiationException.text") + x, resources.getString("message.problem.switch.error.InstantiationException.title"), JOptionPane.ERROR_MESSAGE);
+	    return;
+	}
+	catch (IllegalAccessException x) {
+	    logger.log(Level.WARNING, "message.problem.switch.error.IllegalAccessException.title", x);
+	    JOptionPane.showMessageDialog(this, resources.getString("message.problem.switch.error.IllegalAccessException.text") + x, resources.getString("message.problem.switch.error.IllegalAccessException.title"), JOptionPane.ERROR_MESSAGE);
+	    return;
+	}
     }
 
     /**
