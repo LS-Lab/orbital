@@ -59,9 +59,13 @@ public final class Setops {
      * Points to java.util.RandomAccess in case that class is available at runtime.
      */
     private static final Class randomAccessClass = possiblyClassForName("java.util.RandomAccess");
+    /**
+     * Points to java.util.LinkedHashSet in case that class is available at runtime.
+     */
+    private static final Class linkedHashSetClass = possiblyClassForName("java.util.LinkedHashSet");
     private static Class possiblyClassForName(String name) {
 	try {
-	    return Class.forName("java.util.RandomAccess");
+	    return Class.forName(name);
 	}
 	catch (ClassNotFoundException priorToJDK1_4) {
 	    return null;
@@ -449,7 +453,9 @@ public final class Setops {
 	if (c instanceof java.util.SortedSet) {
 	    return new java.util.TreeSet/*_<A>_*/(((SortedSet)c).comparator());
 	} else if (c instanceof java.util.Set) {
-	    return new java.util.HashSet/*_<A>_*/();
+	    return linkedHashSetClass != null && linkedHashSetClass.isInstance(c)
+		? (Set) new java.util.LinkedHashSet/*_<A>_*/(c.size())
+		: (Set) new java.util.HashSet/*_<A>_*/();
 	} else if (c instanceof java.util.List) {
 	    return randomAccessClass != null && randomAccessClass.isInstance(c)
 		? (List) new java.util.ArrayList/*_<A>_*/(c.size())
