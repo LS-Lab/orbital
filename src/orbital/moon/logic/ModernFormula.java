@@ -360,8 +360,63 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	}
     }
 
+    /**
+     * Encapsulates the common implementation part of composite formulas.
+     * @author Andr&eacute; Platzer
+     * @verion 1.1, 2002-11-10
+     */
+    private static abstract class CompositeFormula extends ModernFormula implements Function.Composite {
+	protected CompositeFormula(Logic underlyingLogic, Notation notation) {
+	    super(underlyingLogic);
+	    setNotation(notation);
+	}
+	protected CompositeFormula(Logic underlyingLogic) {
+	    this(underlyingLogic, null);
+	}
 
-    // alternative implementation 2 (delayed: variable outer functions defined by formulas)
+    	// identical to @see orbital.logic.functor.Functor.Composite.Abstract
+
+	/**
+	 * the current notation used for displaying this composite functor.
+	 * @serial
+	 */
+	private Notation notation;
+	public Notation getNotation() {
+	    return notation;
+	}
+	public void setNotation(Notation notation) {
+	    this.notation = notation == null ? Notation.DEFAULT : notation;
+	}
+		
+	/**
+	 * Checks for equality.
+	 * Two CompositeFunctors are equal iff their classes,
+	 * their compositors and their components are equal.
+	 */
+	public boolean equals(Object o) {
+	    if (o == null || getClass() != o.getClass())
+		return false;
+	    // note that it does not matter to which .Composite we cast since we have already checked for class equality
+	    Composite b = (Composite) o;
+	    return Utility.equals(getCompositor(), b.getCompositor())
+		&& Utility.equalsAll(getComponent(), b.getComponent());
+	}
+
+	public int hashCode() {
+	    return Utility.hashCode(getCompositor()) ^ Utility.hashCodeAll(getComponent());
+	}
+
+	/**
+	 * Get a string representation of the composite functor.
+	 * @return <code>{@link Notation#format(Object, Object) notation.format}(getCompositor(), getComponent())</code>.
+	 */
+	public String toString() {
+	    return getNotation().format(getCompositor(), getComponent());
+	}
+    }
+
+
+    // alternative implementation 1 (delayed: variable outer functions defined by formulas)
 	
     /**
      * <p>
@@ -375,12 +430,11 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @see AppliedFormula
      * @internal apply is the S combinator
      */
-    static class AppliedVariableFormula extends ModernFormula implements Function.Composite {
+    static class AppliedVariableFormula extends CompositeFormula {
 	protected Formula outer;
 	protected Formula inner;
 	public AppliedVariableFormula(Logic underlyingLogic, Formula f, Formula g, Notation notation) {
-	    super(underlyingLogic);
-	    setNotation(notation);
+	    super(underlyingLogic, notation);
 	    this.outer = f;
 	    this.inner = g;
 	}
@@ -388,7 +442,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    this(underlyingLogic, f, g, null);
 	}
 		
-	private AppliedVariableFormula() {super(null);setNotation(null);}
+	private AppliedVariableFormula() {super(null);}
 		
         public Type getType() {
 	    return outer.getType().domain();
@@ -434,45 +488,6 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    assert isCompatibleUnderlyingLogic((Formula)g) : "only compose formulas of compatible logics";
 	    this.inner = (Formula) g;
 	}
-
-	// identical to @see orbital.logic.functor.Functor.Composite.Abstract
-	/**
-	 * the current notation used for displaying this composite functor.
-	 * @serial
-	 */
-	private Notation notation;
-	public Notation getNotation() {
-	    return notation;
-	}
-	public void setNotation(Notation notation) {
-	    this.notation = notation == null ? Notation.DEFAULT : notation;
-	}
-		
-	/**
-	 * Checks for equality.
-	 * Two CompositeFunctors are equal iff their classes,
-	 * their compositors and their components are equal.
-	 */
-	public boolean equals(Object o) {
-	    if (o == null || getClass() != o.getClass())
-		return false;
-	    // note that it does not matter to which .Composite we cast since we have already checked for class equality
-	    Composite b = (Composite) o;
-	    return Utility.equals(getCompositor(), b.getCompositor())
-		&& Utility.equalsAll(getComponent(), b.getComponent());
-	}
-
-	public int hashCode() {
-	    return Utility.hashCode(getCompositor()) ^ Utility.hashCodeAll(getComponent());
-	}
-
-	/**
-	 * Get a string representation of the composite functor.
-	 * @return <code>{@link Notation#format(Object, Object) notation.format}(getCompositor(), getComponent())</code>.
-	 */
-	public String toString() {
-	    return getNotation().format(getCompositor(), getComponent());
-	}
     }
 
     /**
@@ -485,18 +500,17 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @todo change type of outer to Formula, and use ConstantFormulas for coreInterpretation instead
      * @see AppliedFormula
      */
-    static class VoidAppliedVariableFormula extends ModernFormula implements Function.Composite {
+    static class VoidAppliedVariableFormula extends CompositeFormula {
 	protected Formula outer;
 	public VoidAppliedVariableFormula(Logic underlyingLogic, Formula f, Notation notation) {
-	    super(underlyingLogic);
-	    setNotation(notation);
+	    super(underlyingLogic, notation);
 	    this.outer = f;
 	}
 	public VoidAppliedVariableFormula(Logic underlyingLogic, Formula f) {
 	    this(underlyingLogic, f, null);
 	}
 		
-	private VoidAppliedVariableFormula() {super(null);setNotation(null);}
+	private VoidAppliedVariableFormula() {super(null);}
 		
         public Type getType() {
 	    return outer.getType().domain();
@@ -544,44 +558,6 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 		throw new IllegalArgumentException("illegal component for arity 0: " + g + " of " + g.getClass());
 	}
 
-	// identical to @see orbital.logic.functor.Functor.Composite.Abstract
-	/**
-	 * the current notation used for displaying this composite functor.
-	 * @serial
-	 */
-	private Notation notation;
-	public Notation getNotation() {
-	    return notation;
-	}
-	public void setNotation(Notation notation) {
-	    this.notation = notation == null ? Notation.DEFAULT : notation;
-	}
-		
-	/**
-	 * Checks for equality.
-	 * Two CompositeFunctors are equal iff their classes,
-	 * their compositors and their components are equal.
-	 */
-	public boolean equals(Object o) {
-	    if (o == null || getClass() != o.getClass())
-		return false;
-	    // note that it does not matter to which .Composite we cast since we have already checked for class equality
-	    Composite b = (Composite) o;
-	    return Utility.equals(getCompositor(), b.getCompositor())
-		&& Utility.equalsAll(getComponent(), b.getComponent());
-	}
-
-	public int hashCode() {
-	    return Utility.hashCode(getCompositor()) ^ Utility.hashCodeAll(getComponent());
-	}
-
-	/**
-	 * Get a string representation of the composite functor.
-	 * @return <code>{@link Notation#format(Object, Object) notation.format}(getCompositor(), getComponent())</code>.
-	 */
-	public String toString() {
-	    return getNotation().format(getCompositor(), getComponent());
-	}
     }
 
     /**
@@ -593,13 +569,12 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @structure inherits Functionals.BinaryCompositeFunction
      * @see BinaryAppliedFormula
      */
-    static class BinaryAppliedVariableFormula extends ModernFormula implements Function.Composite {
+    static class BinaryAppliedVariableFormula extends CompositeFormula {
 	protected Formula outer;
 	protected Formula left;
 	protected Formula right;
 	public BinaryAppliedVariableFormula(Logic underlyingLogic, Formula f, Formula g, Formula h, Notation notation) {
-	    super(underlyingLogic);
-	    setNotation(notation);
+	    super(underlyingLogic, notation);
 	    this.outer = f;
 	    this.left = g;
 	    this.right = h;
@@ -608,7 +583,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    this(underlyingLogic, f, g, h, null);
 	}
 		
-	private BinaryAppliedVariableFormula() {super(null);setNotation(null);}
+	private BinaryAppliedVariableFormula() {super(null);}
 
         public Type getType() {
 	    return outer.getType().domain();
@@ -666,48 +641,10 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    this.right = a[1];
 	}
 
-	// identical to @see orbital.logic.functor.Functor.Composite.Abstract
-	/**
-	 * the current notation used for displaying this composite functor.
-	 * @serial
-	 */
-	private Notation notation;
-	public Notation getNotation() {
-	    return notation;
-	}
-	public void setNotation(Notation notation) {
-	    this.notation = notation == null ? Notation.DEFAULT : notation;
-	}
-		
-	/**
-	 * Checks for equality.
-	 * Two CompositeFunctors are equal iff their classes,
-	 * their compositors and their components are equal.
-	 */
-	public boolean equals(Object o) {
-	    if (o == null || getClass() != o.getClass())
-		return false;
-	    // note that it does not matter to which .Composite we cast since we have already checked for class equality
-	    Composite b = (Composite) o;
-	    return Utility.equals(getCompositor(), b.getCompositor())
-		&& Utility.equalsAll(getComponent(), b.getComponent());
-	}
-
-	public int hashCode() {
-	    return Utility.hashCode(getCompositor()) ^ Utility.hashCodeAll(getComponent());
-	}
-
-	/**
-	 * Get a string representation of the composite functor.
-	 * @return <code>{@link Notation#format(Object, Object) notation.format}(getCompositor(), getComponent())</code>.
-	 */
-	public String toString() {
-	    return getNotation().format(getCompositor(), getComponent());
-	}
     }
 
 
-    // alternative implementation 1 (instant: fixed outer functions)
+    // alternative implementation 2 (instant: fixed outer functions)
 	
     /**
      * <p>
@@ -718,7 +655,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @structure inherits Compositions.CompositeFunction
      * @todo change type of outer to Formula, and use ConstantFormulas for coreInterpretation instead
      */
-    static class AppliedFormula extends ModernFormula implements Function.Composite {
+    static class AppliedFormula extends CompositeFormula {
 	/**
 	 * The symbol of the fixed interpretation outer.
 	 */
@@ -726,8 +663,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	protected Function outer;
 	protected Formula inner;
 	public AppliedFormula(Logic underlyingLogic, Symbol fsymbol, Function f, Formula g, Notation notation) {
-	    super(underlyingLogic);
-	    setNotation(notation);
+	    super(underlyingLogic, notation);
 	    this.outerSymbol = fsymbol;
 	    this.outer = f;
 	    this.inner = g;
@@ -736,7 +672,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    this(underlyingLogic, fsymbol, f, g, null);
 	}
 		
-	private AppliedFormula() {super(null);setNotation(null);}
+	private AppliedFormula() {super(null);}
 		
         public Type getType() {
 	    return outerSymbol.getType().domain();
@@ -774,44 +710,6 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    return outer.apply(inner.apply(arg));
 	} 
 		
-	// identical to @see orbital.logic.functor.Functor.Composite.Abstract
-	/**
-	 * the current notation used for displaying this composite functor.
-	 * @serial
-	 */
-	private Notation notation;
-	public Notation getNotation() {
-	    return notation;
-	}
-	public void setNotation(Notation notation) {
-	    this.notation = notation == null ? Notation.DEFAULT : notation;
-	}
-		
-	/**
-	 * Checks for equality.
-	 * Two CompositeFunctors are equal iff their classes,
-	 * their compositors and their components are equal.
-	 */
-	public boolean equals(Object o) {
-	    if (o == null || getClass() != o.getClass())
-		return false;
-	    // note that it does not matter to which .Composite we cast since we have already checked for class equality
-	    Composite b = (Composite) o;
-	    return Utility.equals(getCompositor(), b.getCompositor())
-		&& Utility.equalsAll(getComponent(), b.getComponent());
-	}
-
-	public int hashCode() {
-	    return Utility.hashCode(getCompositor()) ^ Utility.hashCodeAll(getComponent());
-	}
-
-	/**
-	 * Get a string representation of the composite functor.
-	 * @return <code>{@link Notation#format(Object, Object) notation.format}(getCompositor(), getComponent())</code>.
-	 */
-	public String toString() {
-	    return getNotation().format(getCompositor(), getComponent());
-	}
     }
 
     /**
@@ -822,14 +720,13 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @structure inherits ModernFormula
      * @structure inherits Functionals.BinaryCompositeFunction
      */
-    static class BinaryAppliedFormula extends ModernFormula implements Function.Composite {
+    static class BinaryAppliedFormula extends CompositeFormula {
 	protected Symbol outerSymbol;
 	protected BinaryFunction outer;
 	protected Formula left;
 	protected Formula right;
 	public BinaryAppliedFormula(Logic underlyingLogic, Symbol fsymbol, BinaryFunction f, Formula g, Formula h, Notation notation) {
-	    super(underlyingLogic);
-	    setNotation(notation);
+	    super(underlyingLogic, notation);
 	    this.outerSymbol = fsymbol;
 	    this.outer = f;
 	    this.left = g;
@@ -839,7 +736,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    this(underlyingLogic, fsymbol, f, g, h, null);
 	}
 		
-	private BinaryAppliedFormula() {super(null);setNotation(null);}
+	private BinaryAppliedFormula() {super(null);}
 
         public Type getType() {
 	    return outerSymbol.getType().domain();
@@ -886,44 +783,6 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    return outer.apply(left.apply(arg), right.apply(arg));
 	} 
 		
-	// identical to @see orbital.logic.functor.Functor.Composite.Abstract
-	/**
-	 * the current notation used for displaying this composite functor.
-	 * @serial
-	 */
-	private Notation notation;
-	public Notation getNotation() {
-	    return notation;
-	}
-	public void setNotation(Notation notation) {
-	    this.notation = notation == null ? Notation.DEFAULT : notation;
-	}
-		
-	/**
-	 * Checks for equality.
-	 * Two CompositeFunctors are equal iff their classes,
-	 * their compositors and their components are equal.
-	 */
-	public boolean equals(Object o) {
-	    if (o == null || getClass() != o.getClass())
-		return false;
-	    // note that it does not matter to which .Composite we cast since we have already checked for class equality
-	    Composite b = (Composite) o;
-	    return Utility.equals(getCompositor(), b.getCompositor())
-		&& Utility.equalsAll(getComponent(), b.getComponent());
-	}
-
-	public int hashCode() {
-	    return Utility.hashCode(getCompositor()) ^ Utility.hashCodeAll(getComponent());
-	}
-
-	/**
-	 * Get a string representation of the composite functor.
-	 * @return <code>{@link Notation#format(Object, Object) notation.format}(getCompositor(), getComponent())</code>.
-	 */
-	public String toString() {
-	    return getNotation().format(getCompositor(), getComponent());
-	}
     }
 
 }
