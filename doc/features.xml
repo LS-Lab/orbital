@@ -9,27 +9,22 @@
 <head>
   <meta name="Description" content="Summary of all features of the Orbital library"/>
   <meta name="Classification" content="documentation/features"/>
-  <meta name="KeyWords" content="Orbital library, orbital library services, Orbital library for Java, mathematical and statistical utilities and interfaces, graphical utilities and AWT-Extension Beans., a generic framework for logical systems, functional evaluation with functor interfaces, IO-Extensions, networking protocols and corresponding document encoding, Scanner&amp;Parser base classes, a generic game abstraction framework, 3D Worlds engine, Evolutionary (genetic) algorithm implementation, CORBA with inter-ORB protocol, RMI with Sun Remote Method Invocation protocol, Port Servers with socket based internet text protocol, jini fluid objects via jini distributed objects model architecture, term rewrite sytem, symbolic derivation, numerical algorithms, Robinson unification, fixed point operators, symbolic mathematics, arithmetic objects"/>
+  <meta name="Keywords" content="Orbital library, orbital library services, Orbital library for Java, mathematical and statistical utilities and interfaces, graphical utilities and AWT-Extension Beans., a generic framework for logical systems, functional evaluation with functor interfaces, IO-Extensions, networking protocols and corresponding document encoding, Scanner&amp;Parser base classes, a generic game abstraction framework, 3D Worlds engine, Evolutionary (genetic) algorithm implementation, CORBA with inter-ORB protocol, RMI with Sun Remote Method Invocation protocol, Port Servers with socket based internet text protocol, jini fluid objects via jini distributed objects model architecture, term rewrite sytem, symbolic derivation, numerical algorithms, Robinson unification, fixed point operators, symbolic mathematics, arithmetic objects"/>
   <title>Summary of some Important Features</title>
 </head>
 
 <body>
 
-The Orbital library is a general extension to the java packages in the form of a
-foundation class library. It specifies several central concept classes (<i>Core
-Packages</i>), and whole class networks that contain extended components,
-generic abstractions, and additional services of reusable Java classes (<i>Extension
-Packages</i>).
-<p>Especially promising contents are logical functors and their mathematical
-counter part with numerical and symbolic mathematics, as well as functional
-evaluation and several algorithmic templates including search and planning.</p>
+The Orbital library is a class library providing object-oriented representations and algorithms for logic, mathematics and artificial intelligence. It comprises theorem proving, computer algebra, search and planning, as well as machine learning algorithms.
+<p>Especially promising contents are logical functor compositions and their mathematical counterpart with numerical and symbolic mathematics, as well as functional evaluation and several algorithmic templates including search and planning. Further, there are implementations of different logics and automated theorem proving systems.</p>
 <h3>These packages include:</h3>
 <ul>
   <li>Logic
     <ol>
-      <li>a generic framework for logical systems. It includes implementations
+      <li>A generic framework for logical systems. It includes implementations
         for classical logic and fuzzy logic. The classical logic part also
-        supports resolution. Note that this is a framework in the sense of
+        supports an automated theorem prover based on resolution and Davis-Putnam-Loveland
+        algorithm. Note that this is a framework in the sense of
         logic, but not in the sense of software architecture. Therefore it
         provides you with all logical operations without restricting the
         architecture of your application.</li>
@@ -37,18 +32,22 @@ evaluation and several algorithmic templates including search and planning.</p>
         term unification and substitution.</li>
       <li>A parser for logical and mathematical expressions including &#955;-operator
         notation of &#955;-calculus.</li>
+      <li>Amonst other things supports classical logic resolution, 
+        fast propositional Davis-Putnam-Loveland inference, modal logic,
+	fuzzy logic, Robinson unification etc.</li>
     </ol>
   </li>
   <li>Mathematics
     <ol>
-      <li>functional evaluation with functor interfaces and function notation
-        classes.</li>
-      <li>mathematical, algebraic, numerical, and statistical utilities, and
-        conceptual interfaces for mathematics.</li>
-      <li><i>Arithmetic objects</i> with uniform mathematical operations like +,
-        -, *, /, ^. This enables us to use a uniform calculation with various
-        arithmetic implementation objects. Those implementations include
-        tensors, matrices, vectors, and scalar types like integers, rationals,
+      <li>Functional evaluation and recursive composition schemes with functor
+        interfaces and function notation classes.</li>
+      <li>Mathematical, symbolic, numerical, and statistical algorithms, and
+        conceptual representation interfaces for mathematics.</li>
+      <li>Computer algebra based on <i>Arithmetic objects</i> with uniform
+        mathematical operations like +, -, *, /, ^. This enables us to use
+	a uniform calculation with various arithmetic implementation objects.
+	Those implementations include  tensors, matrices, vectors, and scalar
+	types like integers, rationals,
         real and complex numbers, (multivariate) polynomials, quotients, and
         fractions. Even full symbolic calculations, also combined with modulo
         calculations are possible. For example, quotients of multivariate
@@ -59,6 +58,9 @@ evaluation and several algorithmic templates including search and planning.</p>
         compatibility. Additionally, mathematical functions can be handled like
         arithmetic objects whenever this more general view is of advantage. For
         example, you can simple subtract functions from one another.</li>
+      <li>Amonst other things supports LU, Choleksy, cg, splines, interpolation,
+        numeric integration, Groebner bases, CRT, gcd, basic descriptive statistics,
+	regression, trigonometrics, sinh, arsinh, etc.</li>
     </ol>
   </li>
   <li>Algorithms
@@ -66,19 +68,28 @@ evaluation and several algorithmic templates including search and planning.</p>
       <li>Several algorithmic templates are provided that are extremely helpful
         for rapid prototyping. Those algorithmic templates also include several
         (about 15) important (blind and heuristic) state space search
-        algorithms. Even some implementations of planning algorithms are
-        provided.</li>
-      <li>algorithmic template frameworks including (about 5) implementations of
+        algorithms. Even some implementations of planning and machine learning
+	algorithms have been provided. (Artificial Intelligence)</li>
+      <li>Algorithmic template frameworks including (about 5) implementations of
         evolutionary and genetic algorithms.</li>
+      <li>Amonst other things supports DFS (depth-first search), BrFS (breadth-first search),
+        A<sup>*</sup>, WA<sup>*</sup>, IDA<sup>*</sup>, ID, IE,
+	simulated annealing, hill-climbing, threshold accepting,
+	B&amp;B, parallel B&amp;B, GSDP (Gau&#223;-Seidel dynamic programming),
+	RTDP (Real-Time Dynamic Programming),
+	incremental and steady-state genetic algorithms, concurrent genetic algorithms,
+	etc.</li>
     </ol>
   </li>
   <li>Utilities
     <ol>
-      <li>a generic board game abstraction framework.</li>
-      <li>graphical user interface (GUI) utilities and Java Beans.</li>
-      <li>lightweight 3D worlds vector graphics engine.</li>
+      <li>A generic board game abstraction framework, including &#945;-&#946;-pruning
+        adversary search.</li>
+      <li>Graphical user interface (GUI) utilities and Java Beans, including a generic
+        bean customizer for fully-automatic customization dialogues.</li>
       <li>I/O-Extensions.</li>
-      <li>Scanner&amp;Parser base classes for simple parsing jobs.</li>
+      <li>(lightweight 3D worlds vector graphics engine. Discontinued)</li>
+      <li>(Scanner&amp;Parser base classes for simple parsing jobs. Discontinued)</li>
       <li>some document encoding and formatting classes.</li>
       <li>concurrent synchronous and asynchronous connectors that supports a
         programming style with coroutines.</li>
