@@ -49,8 +49,6 @@
         <property name="resources" value="${basedir}/resources"/>
         <property name="examples" value="${basedir}/examples"/>
 
-        <property name="tmp" value="${basedir}/tmp"/>
-
         <property name="version" value="1.0.7"/>
         <property name="version_brief" value="1.0"/>
 
@@ -65,7 +63,8 @@
              has to be relative to basedir! -->
         <property name="checkstyle.dir" value="src"/>
 	<!-- default value, may be overwritten by 'build.properties' -->
-	<property name="javadoc.link.jdk" value="http://java.sun.com/products/jdk/1.3/docs/api/"/>
+	<property name="javadoc.link.jdk" value="http://java.sun.com/products/jdk/1.4/docs/api/"/>
+	<property name="javadoc.link.jdk.offline" value="false"/>
 
 
         <path id="project.classpath">
@@ -76,8 +75,6 @@
             </fileset>
             <pathelement location="${resources}"/>
         </path>
-
-        <mkdir dir="${tmp}"/>
     </target>
 
     <target name="all" depends="init, clean, fixCRLF, compile, doc"
@@ -93,6 +90,7 @@
         <copy file="${sources}/orbital/signe.java" todir="${sources}/t"/>
         <replace file="${sources}/t/signe.java" token="@VERSION@" value="${version}"/>
  
+        <!-- @todo on parameter, use GetRidOfAssert.sed instead of source="1.4" -->
         <javac srcdir="${sources}"
                destdir="${classes}"
                debug="on"
@@ -191,7 +189,7 @@
                  author="true"
                  version="true"
                  use="true"
-		 additionalparam="-source 1.4 -tag param -tag pre:mc:&quot;Preconditions:&quot; -tag post:mc:&quot;Postconditions:&quot; -tag return -tag throws -tag stereotype:a:&quot;Stereotype:&quot; -tag structure:t:&quot;Structure:&quot; -tag invariant:t:&quot;Invariants:&quot; -tag attribute:a:&quot;Attributes:&quot; -tag version -tag author -tag see"
+		 additionalparam="-source 1.4"
 
                  windowtitle="Orbital"
                  doctitle="Orbital library&lt;br&gt;API Specification"
@@ -202,12 +200,22 @@
 		 excludepackagenames="orbital,orbital.robotic.strategy,orbital.util.graph,orbital.moon.aspects,orbital.moon.deprecated"
                  Private="${doc.internal}">
             <bottom><![CDATA[<span style='font-size: smaller; font-style: italic;'>Copyright &copy; 1996-2002 Andr&eacute; Platzer<br />All Rights Reserved.</span>]]></bottom>
-	    <link href="file:///D:/Sprachen/java/docs/api"/>
-            <!-- @todo for dist. link href="${javadoc.link.jdk}"/ -->
+	    <!-- -tag param -tag pre:mc:&quot;Preconditions:&quot; -tag post:mc:&quot;Postconditions:&quot; -tag return -tag throws -tag stereotype:a:&quot;Stereotype:&quot; -tag structure:t:&quot;Structure:&quot; -tag invariant:t:&quot;Invariants:&quot; -tag attribute:a:&quot;Attributes:&quot; -tag version -tag author -tag see -->
+	    <tag name="pre" scope="methods,constructors" description="Preconditions:"/>
+	    <tag name="post" scope="methods,constructors" description="Postconditions:"/>
+	    <tag name="stereotype" scope="all" description="Stereotype:"/>
+	    <tag name="structure" scope="types,methods" description="Structure:"/>
+	    <tag name="invariant" scope="types,fields" description="Invariants:"/>
+	    <tag name="attribute" scope="all" description="Attributes:"/>
+	    <tag name="note" scope="all" description="Note:" enabled="true"/>
+	    <tag name="internal" scope="all" description="Internal:" enabled="false"/>
+	    <tag name="todo" scope="all" description="Todo:" enabled="false"/>
+	    <tag name="xxx" scope="all" description="Todo:" enabled="false"/>
+	    <tag name="fixme" scope="all" description="Fixme:" enabled="false"/>
 	    <group title="Core Packages" packages="orbital.logic*:orbital.math:orbital.math*:orbital.util"/>
 	    <group title="Extension Packages" packages="orbital.algorithm*:orbital.awt*:orbital.game:orbital.io:orbital.robotic"/>
 	    <group title="Implementation Packages" packages="orbital.io.encoding:orbital.io.parsing:orbital.text:orbital.net:orbital.net.mail:orbital.moon*"/>
-    		 <!--       -tag todo:Xa -tag xxx:Xa -tag fixme:Xa" -->
+	    <link href="${javadoc.link.jdk}" offline="${javadoc.link.jdk.offline}" packagelistLoc="${javadoc.link.jdk.loc}"/>
         </javadoc>
 
 	<antcall target="jjdoc"/>
@@ -282,24 +290,23 @@
         <delete file="${dist}/lib/orbital-core.jar"/>
         <delete file="${dist}/lib/orbital-ext.jar"/>
 
-	<manifest file="${tmp}/MANIFEST-core.MF">
-            <attribute name="Built-By" value="${user.name}"/>
-	    <attribute name="Extension-Name" value="orbital-core"/>
-            <attribute name="Specification-Title" value="Orbital library draft" />
-            <attribute name="Specification-Vendor" value="Andre Platzer" />
-            <attribute name="Specification-Version" value="${version}" />
-            <attribute name="Implementation-Title" value="The Orbital library core" />
-            <attribute name="Implementation-Vendor" value="Andre Platzer" />
-            <attribute name="Implementation-Vendor-Id" value="orbital.moon.ap" />
-            <attribute name="Implementation-Version" value="${version} ${TODAY}" /> 
-            <attribute name="Package-Title" value="orbital-core" />
-            <attribute name="Package-Vendor" value="Andre Platzer" />
-            <attribute name="Package-Version" value="${version} ${TODAY}" /> 
-            <attribute name="Sealed" value="true"/>
-        </manifest>
+        <jar destfile="${dist}/lib/orbital-core.jar">
+	    <manifest>
+	        <attribute name="Built-By" value="${user.name}"/>
+	        <attribute name="Extension-Name" value="orbital-core"/>
+	        <attribute name="Specification-Title" value="Orbital library draft" />
+	        <attribute name="Specification-Vendor" value="Andre Platzer" />
+	        <attribute name="Specification-Version" value="${version}" />
+	        <attribute name="Implementation-Title" value="The Orbital library core" />
+	        <attribute name="Implementation-Vendor" value="Andre Platzer" />
+	        <attribute name="Implementation-Vendor-Id" value="orbital.moon.ap" />
+	        <attribute name="Implementation-Version" value="${version} ${TODAY}" /> 
+	        <attribute name="Package-Title" value="orbital-core" />
+	        <attribute name="Package-Vendor" value="Andre Platzer" />
+	        <attribute name="Package-Version" value="${version} ${TODAY}" /> 
+	        <attribute name="Sealed" value="true"/>
+	    </manifest>
 
-        <jar destfile="${dist}/lib/orbital-core.jar"
-	     manifest="${tmp}/Manifest-core.mf">
             <fileset dir="${classes}">
                 <include name="orbital/logic/**/*.class"/>
                 <include name="orbital/math/**/*.class"/>
@@ -308,52 +315,51 @@
             </fileset>
         </jar>
 
-	<manifest file="${tmp}/MANIFEST-ext.MF">
-            <attribute name="Built-By" value="${user.name}"/>
-	    <attribute name="Extension-Name" value="orbital-ext"/>
-            <attribute name="Specification-Title" value="Orbital library draft" />
-            <attribute name="Specification-Vendor" value="Andre Platzer" />
-            <attribute name="Specification-Version" value="${version}" />
-            <attribute name="Implementation-Title" value="The Orbital library extension" />
-            <attribute name="Implementation-Vendor" value="Andre Platzer" />
-            <attribute name="Implementation-Vendor-Id" value="orbital.moon.ap" />
-            <attribute name="Implementation-Version" value="${version} ${TODAY}" /> 
-            <attribute name="Package-Title" value="orbital-ext" />
-            <attribute name="Package-Vendor" value="Andre Platzer" />
-            <attribute name="Package-Version" value="${version} ${TODAY}" /> 
-	    <attribute name="Class-Path" value="orbital-core.jar" />
-            <attribute name="Sealed" value="true"/>
-	    <attribute name="Main-Class" value="orbital.moon.setup"/>
-	    <attribute name="Main-Icon" value="orbital/resources/orbital.gif"/>
+        <jar destfile="${dist}/lib/orbital-ext.jar">
+    	    <manifest>
+	        <attribute name="Built-By" value="${user.name}"/>
+    	        <attribute name="Extension-Name" value="orbital-ext"/>
+                    <attribute name="Specification-Title" value="Orbital library draft" />
+                    <attribute name="Specification-Vendor" value="Andre Platzer" />
+                    <attribute name="Specification-Version" value="${version}" />
+                    <attribute name="Implementation-Title" value="The Orbital library extension" />
+                    <attribute name="Implementation-Vendor" value="Andre Platzer" />
+                    <attribute name="Implementation-Vendor-Id" value="orbital.moon.ap" />
+                    <attribute name="Implementation-Version" value="${version} ${TODAY}" /> 
+                    <attribute name="Package-Title" value="orbital-ext" />
+                    <attribute name="Package-Vendor" value="Andre Platzer" />
+                    <attribute name="Package-Version" value="${version} ${TODAY}" /> 
+    	        <attribute name="Class-Path" value="orbital-core.jar" />
+                    <attribute name="Sealed" value="true"/>
+    	        <attribute name="Main-Class" value="orbital.moon.setup"/>
+    	        <attribute name="Main-Icon" value="orbital/resources/orbital.gif"/>
+    	    
+    	        <section name="orbital/awt/ChartModel.class">
+    	            <attribute name="Java-Bean" value="True"/>
+    	        </section>
+    	        <section name="orbital/awt/NumberInput.class">
+    	            <attribute name="Java-Bean" value="True"/>
+    	        </section>
+    	        <section name="orbital/awt/Plot2D.class">
+    	            <attribute name="Java-Bean" value="True"/>
+    	        </section>
+    	        <section name="orbital/awt/virtual/v_Canvas.class">
+    	            <attribute name="Java-Bean" value="True"/>
+    	        </section>
+    	        <section name="orbital/awt/virtual/v_View.class">
+    	            <attribute name="Java-Bean" value="True"/>
+    	        </section>
+    	        <section name="orbital/algorithm/evolutionary/GeneticAlgorithm.class">
+    	            <attribute name="Java-Bean" value="True"/>
+    	        </section>
+    	        <section name="orbital/algorithm/evolutionary/Population.class">
+    	            <attribute name="Java-Bean" value="True"/>
+    	        </section>
+    	        <!-- section name="orbital/algorithm/evolutionary/Chromosome.class">
+    	            <attribute name="Java-Bean" value="True"/>
+    	        </section -->
+            </manifest>
 
-	    <section name="orbital/awt/ChartModel.class">
-	        <attribute name="Java-Bean" value="True"/>
-	    </section>
-	    <section name="orbital/awt/NumberInput.class">
-	        <attribute name="Java-Bean" value="True"/>
-	    </section>
-	    <section name="orbital/awt/Plot2D.class">
-	        <attribute name="Java-Bean" value="True"/>
-	    </section>
-	    <section name="orbital/awt/virtual/v_Canvas.class">
-	        <attribute name="Java-Bean" value="True"/>
-	    </section>
-	    <section name="orbital/awt/virtual/v_View.class">
-	        <attribute name="Java-Bean" value="True"/>
-	    </section>
-	    <section name="orbital/algorithm/evolutionary/GeneticAlgorithm.class">
-	        <attribute name="Java-Bean" value="True"/>
-	    </section>
-	    <section name="orbital/algorithm/evolutionary/Population.class">
-	        <attribute name="Java-Bean" value="True"/>
-	    </section>
-	    <!-- section name="orbital/algorithm/evolutionary/Chromosome.class">
-	        <attribute name="Java-Bean" value="True"/>
-	    </section -->
-        </manifest>
-
-        <jar destfile="${dist}/lib/orbital-ext.jar"
-	     manifest="${tmp}/Manifest-ext.mf">
             <fileset dir="${classes}">
                 <include name="orbital/algorithm/**/*.class"/>
                 <include name="orbital/awt/**/*.class"/>
@@ -366,8 +372,11 @@
             <fileset dir="${sources}">
                 <include name="orbital/awt/*.gif"/>
             </fileset>
-            <fileset dir="${resources}">
-            </fileset>
+            <zipfileset dir="${resources}" prefix="orbital/resources">
+            </zipfileset>
+            <zipfileset dir="${doc}" prefix="orbital/resources">
+	        <include name="license.txt"/>
+            </zipfileset>
             <fileset dir="${sources}/orbital/meta-inf/services">
             </fileset>
         </jar>
@@ -382,15 +391,18 @@
 	        <include name="*.jar"/>
 	    </fileset>
 	</touch>
-
-	<delete file="${tmp}/Manifest-core.mf"/>
-	<delete file="${tmp}/Manifest-ext.mf"/>
     </target>
 
 
 
-    <target name="dist" depends="init, jar, doc, compile.examples"
+    <target name="dist" depends="init, jar, compile.examples"
             description="create all distributions (=> ./dist/*.zip)">
+        <antcall target="doc">
+            <param name="javadoc.link.jdk" value="http://java.sun.com/products/jdk/1.4/docs/api/"/>
+            <param name="javadoc.link.jdk.offline" value="true"/>
+            <param name="javadoc.link.jdk.loc" value="D:\Sprachen\java\docs\api"/>
+        </antcall>
+
         <mkdir dir="${dist}"/>
         <delete file="${dist}/ap_orbital_rt${version_brief}.zip"/>
         <delete file="${dist}/ap_orbital_doc${version_brief}.zip"/>
