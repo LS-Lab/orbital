@@ -41,7 +41,7 @@ import java.util.logging.Level;
  * @invariants sub classes support nullary constructor && isRectangular(field).
  * @see orbital.robotic.Table
  */
-public class Field implements Serializable {
+public class Field implements Serializable, Cloneable {
     private static final long serialVersionUID = -5715424141700986103L;
     private static final Logger logger = Logger.getLogger(Field.class.getPackage().getName());
     /**
@@ -59,7 +59,7 @@ public class Field implements Serializable {
     /**
      * @serial
      */
-    private FieldChangeSupport changeSupport = new FieldChangeSupport();
+    private /*@fixme transient?*/ FieldChangeSupport changeSupport = new FieldChangeSupport();
 
     public Field(int width, int height) {
 	this.field = new Figure[height][width];
@@ -78,36 +78,35 @@ public class Field implements Serializable {
 
     /**
      * Creates a deep copy clone of the object.
+     * @note All our fields (also of subclasses) have alread been
+     * shallow-copied since we implement Cloneable. Only the figures
+     * will get shallow-copied.  Overwrite for different behaviour.
      * @return		a clone of this Object with the same type, and a deep clone field.
      * @postconditions RES.getClass() == getClass() && "RES.field.equals(this.field)" && RES.field != field
      * @throws	CloneNotSupportedException Object explicitly does not
      * want to be cloned, or does not support a nullary constructor.
      */
     public Object clone() throws CloneNotSupportedException {
-	try {
-	    Field	  f = (Field) getClass().newInstance();
-	    f.field = new Figure[field.length][field[0].length];
-	    for (int y = 0; y < field.length; y++)
-		for (int x = 0; x < field[0].length; x++) {
-		    // Position p = new Position(x, y);
-		    // f.setFigure(p, (Figure) getFigure(p).clone());
-		    //@internal optimized version
-		    Figure figure = (Figure) field[y][x].clone();
-		    f.field[y][x] = figure;
-		    if (figure != null) {
-			// figure might be changed
-			figure.setField(f);
-		    }
+	Field	  f = (Field) super.clone();
+	//@internal undo the shallow-copy of change support
+	f.changeSupport = new FieldChangeSupport();
+	// deep-copy of field
+	f.field = new Figure[field.length][field[0].length];
+	for (int y = 0; y < field.length; y++)
+	    for (int x = 0; x < field[0].length; x++) {
+		// Position p = new Position(x, y);
+		// Figure figure = getFigure(p);
+		// f.setFigure(p, figure == null ? null : (Figure) figure.clone());
+		//@internal optimized version
+		Figure figure = (Figure) field[y][x];
+		Figure cf = figure == null ? null : (Figure) figure.clone();
+		f.field[y][x] = cf;
+		if (cf != null) {
+		    // figure might be changed
+		    cf.setField(f);
 		}
-	    f.turn = turn;
-	    return f;
-    	}
-    	catch (InstantiationException ass) {
-	    throw (CloneNotSupportedException) new CloneNotSupportedException("invariant: sub classes of " + Field.class + " must support nullary constructor for cloning").initCause(ass);
-    	}
-    	catch (IllegalAccessException ass) {
-	    throw (CloneNotSupportedException) new CloneNotSupportedException("invariant: sub classes of " + Field.class + " must support nullary constructor for cloning").initCause(ass);
-    	}
+	    }
+	return f;
     } 
 
     /**
