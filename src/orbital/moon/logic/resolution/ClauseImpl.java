@@ -430,8 +430,9 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
 	    //@see orbital.moon.logic.functor.Operations.and on Formulas
 	    new BinaryFunction() {
 		public Object apply(Object F, Object G) {
-		    return ((Formula)F).and((Formula)G);
+		    return ((Formula)F).or((Formula)G);
 		}
+		//@internal evaluation order dependent
 	    }, i.next(), i);
     }
 

@@ -64,6 +64,7 @@ public interface ClausalFactory {
      * Converts the given formula to CNF in clausal set representation.
      * </p>
      * @see ClassicalLogic.Utilities#clausalForm(Formula)
+     * @postconditions (RES.toFormula() <=> formula) &and; RES in CNF
      */
     ClausalSet asClausalSet(Formula formula);
 }

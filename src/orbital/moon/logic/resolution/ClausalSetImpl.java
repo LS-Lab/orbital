@@ -15,6 +15,7 @@ import java.util.Iterator;
 import orbital.util.Utility;
 import orbital.util.Setops;
 import orbital.logic.functor.Functionals;
+import orbital.logic.functor.Function;
 import orbital.logic.functor.BinaryFunction;
 import orbital.logic.sign.SymbolBase;
 import orbital.logic.sign.type.Types;
@@ -74,7 +75,11 @@ removeSubsumed:
     }
 
     public Formula toFormula() {
-	Iterator i = iterator();
+	Iterator i = Functionals.map(new Function() {
+		public Object apply(Object C) {
+		    return ((Clause)C).toFormula();
+		}
+	    }, iterator());
 	Formula f0;
 	if (!i.hasNext())
 	    return FORMULA_TRUE;
@@ -82,8 +87,9 @@ removeSubsumed:
 	    //@see orbital.moon.logic.functor.Operations.or on Formulas
 	    new BinaryFunction() {
 		public Object apply(Object F, Object G) {
-		    return ((Formula)F).or((Formula)G);
+		    return ((Formula)F).and((Formula)G);
 		}
+		//@internal evaluation order dependent
 	    }, i.next(), i);
     }
 }
