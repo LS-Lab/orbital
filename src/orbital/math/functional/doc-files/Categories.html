@@ -118,7 +118,8 @@ complex&quot;</p>
   <dt id="naturalTransformation">natural<br>
     trans-<br>
     formation</dt>
-  <dd>A natural transformation (or morphism of functors) α:F<span class="category"></span>→G 
+  <dd><img class="annotatingDiagram" src="diagram/commutative/naturalTransformation.jpg"> 
+    A natural transformation (or morphism of functors) α:F<span class="category"></span>→G 
     between the functors F,G:<span class="category">C</span>→<span class="category">D</span> 
     is a family <span class="seriesOperator">(</span>α<sub>C</sub>∈Mor<span class="category"><sub>D</sub></span>(F(C),G(C))<span class="seriesOperator">)</span><sub>C∈Ob 
     <span class="category">C</span></sub> of morphisms such that
@@ -180,11 +181,11 @@ are called <dfn>automorphisms</dfn>.</p>
         <td>∘ is distributive over +, i.e.
           <ul>
             <li>∀A,B,C∈Ob <span class="category">C</span> ∀f∈Hom<span class="category"><sub>C</sub></span>(B,C) 
-              ∀g,h∈Hom<span class="category"><sub>C</sub></span>(A,B) f∘(g+h) 
-              = (f∘g) + (f∘h)</li>
+              ∀g,h∈Hom<span class="category"><sub>C</sub></span>(A,B) 
+              f∘(g+h) = (f∘g) + (f∘h)</li>
             <li>∀A,B,C∈Ob <span class="category">C</span> ∀f,g∈Hom<span class="category"><sub>C</sub></span>(B,C) 
-              ∀h∈Hom<sub><span class="category">C</span></sub>(A,B) (f+g)∘h 
-              = (f∘h) + (g∘h)</li>
+              ∀h∈Hom<sub><span class="category">C</span></sub>(A,B) 
+              (f+g)∘h = (f∘h) + (g∘h)</li>
           </ul>
         </td>
         <td>&quot;distributive&quot;</td>
@@ -392,21 +393,56 @@ categories).</p>
       </tr>
     </table>
   </dd>
+  <dt id="leftExact">right exact</dt>
+  <dd>F:<span class="category">A</span>→<span class="category">A'</span> is 
+    right exact :⇔ F:<span class="category">A</span>→<span class="category">A'</span> 
+    is a (covariant) additive functor, and
+    <table>
+      <tr>
+        <td>If</td>
+        <td>0</td>
+        <td>→</td>
+        <td><span class="category">A'</span></td>
+        <td>→<sup>α</sup></td>
+        <td><span class="category">A</span></td>
+        <td>→<sup>β</sup></td>
+        <td><span class="category">A''</span></td>
+        <td>→</td>
+        <td>0</td>
+        <td>is an exact sequence in <span class="category">A</span></td>
+      </tr>
+      <tr>
+        <td>Then</td>
+        <td></td>
+        <td></td>
+        <td>F(<span class="category">A'</span>)</td>
+        <td>→<sup>F(α)</sup></td>
+        <td>F(<span class="category">A</span>)</td>
+        <td>→<sup>F(β)</sup></td>
+        <td>F(<span class="category">A''</span>)</td>
+        <td>→</td>
+        <td>0</td>
+        <td>is an exact sequence in <span class="category">A'</span></td>
+      </tr>
+    </table>
+    So left exact and right exact are dual ....</dd>
 </dl>
 <h2 id="universalElements">Universal Elements</h2>
 <p>Let <span class="category">C</span> be a category.
 <dl class="def">
   <dt id="initial">initial<br>
     object</dt>
-  <dd>A∈Ob <span class="category">C</span> is an initial object :⇔ ∀B∈Ob 
-    <span class="category">C</span> ∃!φ∈Mor<sub><span class="category">C</span></sub>(A,B)<br>
+  <dd><img class="annotatingDiagram" src="diagram/commutative/initial.jpg"> 
+    A∈Ob <span class="category">C</span> is an initial object :⇔ ∀B∈Ob <span class="category">C</span> 
+    ∃!φ∈Mor<sub><span class="category">C</span></sub>(A,B)<br>
     initial objects are uniquely isomorph, i.e. each two initial objects A,B 
     have a unique isomorphism A→B.</dd>
   <dt id="terminal">terminal<br>
     object</dt>
-  <dd>A∈Ob <span class="category">C</span> is a terminal object :⇔ ∀B∈Ob 
-    <span class="category">C</span> ∃!φ∈Mor<sub><span class="category">C</span></sub>(B,A) 
-    ⇔ A is an initial object in <span class="category">C°</span>.<br>
+  <dd><img class="annotatingDiagram" src="diagram/commutative/terminal.jpg"> 
+    A∈Ob <span class="category">C</span> is a terminal object :⇔ ∀B∈Ob <span class="category">C</span> 
+    ∃!φ∈Mor<sub><span class="category">C</span></sub>(B,A) ⇔ A is an 
+    initial object in <span class="category">C°</span>.<br>
     terminal objects are uniquely isomorph, i.e. each two terminal objects A,B 
     have a unique isomorphism A→B.</dd>
   <dt id="presentable">presentable</dt>
@@ -445,7 +481,8 @@ presentable covariant functor.
 <dl class="def">
   Let <span class="category">C</span> be a category, and I be a set.
   <dt id="product">product</dt>
-  <dd>P∈Ob <span class="category">C</span>, with the projectors π<sub>i</sub>∈Mor(P,A<sub>i</sub>) 
+  <dd><img class="annotatingDiagram" src="diagram/commutative/product.jpg"> 
+    P∈Ob <span class="category">C</span>, with the projectors π<sub>i</sub>∈Mor(P,A<sub>i</sub>) 
     for i∈I, is a product of the objects <span class="seriesOperator">(</span>A<sub>i</sub><span class="seriesOperator">)</span><sub>i∈I</sub>⊆Ob 
     <span class="category">C</span> :⇔ <center><big>(</big>∀C∈Ob <span class="category">C</span> 
     ∀<span class="seriesOperator">(</span>g<sub>i</sub><sub></sub>∈Mor<sub><span class="category">C</span></sub>(C,A<sub>i</sub>)<span class="seriesOperator">)</span><sub>i∈I</sub><br />
@@ -454,7 +491,8 @@ presentable covariant functor.
     </sub>&quot;product is universally attracting&quot;, and it is just a 
     terminal object in a suitable category.</dd>
   <dt id="coproduct">coproduct</dt>
-  <dd>S∈Ob <span class="category">C</span>, with the inclusions ι<sub>i</sub>∈Mor(A<sub>i</sub>,S) 
+  <dd><img class="annotatingDiagram" src="diagram/commutative/coproduct.jpg"> 
+    S∈Ob <span class="category">C</span>, with the inclusions ι<sub>i</sub>∈Mor(A<sub>i</sub>,S) 
     for i∈I, is a coproduct of the objects <span class="seriesOperator">(</span>A<sub>i</sub><span class="seriesOperator">)</span><sub>i∈I</sub>⊆Ob 
     <span class="category">C</span> :⇔ <center><big>(</big>∀C∈Ob <span class="category">C</span> 
     ∀<span class="seriesOperator">(</span>g<sub>i</sub><sub></sub>∈Mor<sub><span class="category">C</span></sub>(A<sub>i</sub>,C)<span class="seriesOperator">)</span><sub>i∈I</sub><br />
