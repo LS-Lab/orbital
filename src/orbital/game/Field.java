@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.Arrays;
 import orbital.util.Pair;
+import orbital.util.Utility;
 
 import orbital.game.AdversarySearch.Option;
 
@@ -76,7 +77,7 @@ public class Field implements Serializable {
 		for (int x = 0; x < field[0].length; x++) {
 		    // Position p = new Position(x, y);
 		    // f.setFigure(p, (Figure) getFigure(p).clone());
-		    // optimized version
+		    //@internal optimized version
 		    Figure figure = (Figure) field[y][x].clone();
 		    f.field[y][x] = figure;
 		    if (figure != null) {
@@ -109,7 +110,7 @@ public class Field implements Serializable {
 	    while (t.hasNext() && e.hasNext()) {
 		Figure f1 = (Figure) t.next();
 		Figure f2 = (Figure) e.next();
-		if (!f1.equals(f2))
+		if (!Utility.equals(f1, f2))
 		    return false;
 	    }
 
@@ -299,14 +300,18 @@ public class Field implements Serializable {
     public/*@xxx protected*/ void swap(Position a, Position b) {
 	if (a.equals(b))
 	    return;
-	Figure t = getFigure(a);
-	if (t == a || t == b)
-	    throw new IllegalArgumentException("do not  specify positions with those figures on the field that will get swapped. Otherwise, their position information will get lost.");
-	Figure s = getFigure(b);
-	if (s == a || s == b)
-	    throw new IllegalArgumentException("do not  specify positions with those figures on the field that will get swapped. Otherwise, their position information will get lost.");
-	setFigure(a, s);
-	setFigure(b, t);
+	Figure fa = getFigure(a);
+	if (fa == a)
+	    throw new IllegalArgumentException("do not  specify positions with those figures on the field that will get swapped. Otherwise, their position information will get lost. But a==getFigure(a)");
+	if (fa == b)
+	    throw new IllegalArgumentException("do not  specify positions with those figures on the field that will get swapped. Otherwise, their position information will get lost. But b==getFigure(a)");
+	Figure fb = getFigure(b);
+	if (fb == a)
+	    throw new IllegalArgumentException("do not  specify positions with those figures on the field that will get swapped. Otherwise, their position information will get lost. But a==getFigure(b)");
+	if (fb == b)
+	    throw new IllegalArgumentException("do not  specify positions with those figures on the field that will get swapped. Otherwise, their position information will get lost. But b==getFigure(b)");
+	setFigure(a, fb);
+	setFigure(b, fa);
     } 
 
     /**
