@@ -69,6 +69,33 @@ public class StandardTypeSystem implements TypeSystem {
     //@internal tricky: we have to make sure the static initialization (which uses mymap...) can run before typeSystem is set. Java does not truely care about the static initialization order.
     private static final StandardTypeSystem typeSystem = new StandardTypeSystem();
     /**
+     * Checks whether something is a <dfn>kind</dfn> k:&#9633;.
+     * (does contain meta-types as well).
+     * @todo if this is good, move to TypeSystem.
+     * @xxx is the terminology ok?
+     * @internal Functionals.banana(...)
+     */
+    public static final Predicate kind = new Predicate() {
+	    public boolean apply(Object expression) {
+		if (expression instanceof Type.Composite) {
+		    Type.Composite c = (Type.Composite)expression;
+		    //@internal see import orbital.logic.sign.concrete.Notation.compositorTree(...)
+		    Object     compositor = c.getCompositor();
+		    Collection components = Utility.asCollection(c.getComponent());
+		    if (components == null)
+			throw new NullPointerException(c + " of " + c.getClass() + " has compositor " + compositor + " and components " + components);
+		    return apply(compositor) || Setops.some(components, this);
+		} else
+		    return Utility.isIteratable(expression)
+			? Setops.some(Utility.asIterator(expression), this)
+			: typeSystem.TYPE().equals(expression)
+			//@xxx the following would no longer be necessary, if MapTypes s->t would be compose of -> and {s,t} as well.
+			|| apply(((Type)expression).domain())
+			|| apply(((Type)expression).codomain());
+	    }
+	};
+    
+    /**
      * @see Type#compareTo(Object)
      * @see StandardTypeSystem.TypeObject#compareToSemiImpl(Type)
      */
@@ -837,6 +864,7 @@ public class StandardTypeSystem implements TypeSystem {
      * @author Andr&eacute; Platzer
      * @version 1.1, 2002-10-04
      * @todo should we extend AbstractCompositeType?
+     * @todo could change internal representation to "LinkedHashSet<Type> components".
      */
     private static final class InfimumType extends NonMapType {
 	private static final long serialVersionUID = -6251593765414274805L;
