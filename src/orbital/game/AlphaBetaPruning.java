@@ -24,23 +24,28 @@ import java.util.logging.Level;
  * minimizer's bound. (But those bounds interact!) In other words,
  * &alpha;-&beta;-pruning is just Branch&amp;Bound in the adversary
  * search case.
+ * @attribute time complexity O((b<sup>d+1</sup>-1)/(b-1)) in depth d with branching factor b.
+ * @attribute query complexity {@link #getUtility()} O(b<sup>d</sup>) in depth d with branching factor b.
  * @see orbital.algorithm.template.BranchAndBound
  * @version 0.8, 2001/07/01
  * @author  Andr&eacute; Platzer
  * @internal min-max trees with compact values in [0,1] are and-or trees with fuzzy logic operators.
  * @todo generalize? implement a general interface?
  * @todo could optimize calculation to spend some memory for reuse of the last move's search tree
- * @todo in addition to the worst-case minimax values computed for decision, we could additionally
- *  compute estimates of the probable values. These can be estimated from the average minimax values
- *  found in a node's succcessors so far. However, the distribution is not easy, since the "Stichprobe"
- *  stems from a kind of bounded drawing which is quitted (pruned) once too good?? or too bad options occurred.
- *  The advantage is that when _max knows several options which have equally bad minimax values, then
- *  it could prefer the one with higher (estimated) probabile value. So in a sense, when our opponent
- *  is not perfectly rational (according to our utility), then we can still hope for the better cases.
- *  Actually, there's also a trade-off when to prefer probably better ones to worst-case better ones.
- *  But all this must be optional behaviour (so implemented in a subclass).
- * @attribute time complexity O((b<sup>d+1</sup>-1)/(b-1)) in depth d with branching factor b.
- * @attribute query complexity {@link #getUtility()} O(b<sup>d</sup>) in depth d with branching factor b.
+ * @todo in addition to the worst-case minimax values computed for
+ * decision, we could additionally compute estimates of the probable
+ * values. These can be estimated from the average minimax values
+ * found in a node's succcessors so far. However, the distribution is
+ * not easy, since the "Stichprobe" stems from a kind of bounded
+ * drawing which is quitted (pruned) once too good?? or too bad
+ * options occurred.  The advantage is that when _max knows several
+ * options which have equally bad minimax values, then it could prefer
+ * the one with higher (estimated) probable utility value. So in a
+ * sense, when our opponent is not perfectly rational (according to
+ * our utility), then we can still hope for the better cases.
+ * Actually, there's also a trade-off when to prefer probably better
+ * ones to worst-case better ones.  But all this must be optional
+ * behaviour (so implemented in a subclass).
  */
 public class AlphaBetaPruning extends AdversarySearch {
     static final Logger logger = Logger.getLogger(AlphaBetaPruning.class.getName());
@@ -119,16 +124,23 @@ public class AlphaBetaPruning extends AdversarySearch {
      * </p>
      * @return Whether a node with value v is preferred over one with w.
      * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
+     * @todo should we add (or change) arguments to Option v, Option w? But then max/min would need to keep track of bestOption like max_ does.
      */
     protected boolean isPreferred(double v, double w) {
 	return v > w;
     }
 
     /**
+     * The current depth during the current search.
+     */
+    protected final int getCurrentDepth() {
+	return currentDepth;
+    }
+
+    /**
      * Search for the best option to take.
      * @param state in which state to choose an action.
      * @return the best move option (according to h).
-     * @preconditions this implementation assumes a two player game
      * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
      */
     public Option solve(Field state) {
@@ -264,7 +276,7 @@ public class AlphaBetaPruning extends AdversarySearch {
     }
 
     protected boolean isOurLeaguesTurn(Field state) {
-	return currentDepth % 2 == 0;
+	return getCurrentDepth() % 2 == 0;
     }
 
     /**

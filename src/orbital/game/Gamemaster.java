@@ -283,6 +283,7 @@ public class Gamemaster implements Runnable {
      * A human player that waits for user I/O and delivers the user's decision.
      * @version 1.1, 2003-01-04
      * @author Andr&eacute; Platzer
+     * @xxx the Gameboard will also pass to us moves performed when computer player thinks. They will then result in an error. Reject them.
      */
     private class HumanPlayer extends FieldChangeAdapter implements Function {
 	//@internal we are transient

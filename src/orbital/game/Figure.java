@@ -206,7 +206,7 @@ public abstract class Figure extends Moving {
     public abstract void paint(Graphics g, Rectangle box);
 
     /**
-     * Returns a string representation of the object.
+     * Returns a string representation of this object.
      */
     public String toString() {
 	return getClass().getName() + "[" + getLeague() + ":" + getType() + " @(" + x + '|' + y + ' ' + direction.toString() + ")]";
