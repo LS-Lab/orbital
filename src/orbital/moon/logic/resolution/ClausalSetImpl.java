@@ -31,8 +31,11 @@ public class ClausalSetImpl extends LinkedHashSet/*_<Clause>_*/ implements Claus
     public ClausalSetImpl() {}
 
     public boolean removeAllSubsumedBy(ClausalSet T) {
+	boolean avoidSelf = false;
 	if (T.isEmpty()) {
 	    return false;
+	} else if (this == T) {
+	    avoidSelf = true;
 	} else if (this.equals(T)) {
 	    throw new IllegalArgumentException("directly subsuming a set of clauses with itself would illegally result in the empty set (without additional constraints): \n   " + this + "\n = " + T);
 	}
@@ -43,6 +46,9 @@ removeSubsumed:
 	
 	    for (Iterator j = T.iterator(); j.hasNext(); ) {
 		final Clause C = (Clause)j.next();
+		if (avoidSelf && C == D)
+		    // avoid self-subsumption, since then everything would be subsumed
+		    continue;
 
 		if (C.subsumes(D)) {
 		    i.remove();
