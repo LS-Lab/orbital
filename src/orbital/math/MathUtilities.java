@@ -220,6 +220,7 @@ public final class MathUtilities {
 	return fract(value) == 0.0;
     } 
 
+    // divisibility (gcd, lcm) and CRT
 
     /**
      * Returns greatest common divisor (GCD) of two elements of a ring.
@@ -382,6 +383,54 @@ public final class MathUtilities {
 	return a * b / gcd(a, b);
     } 
 
+    /**
+     * Simulatenously solve independent congruences.
+     * <center>x &equiv; x<sub>i</sub> (mod m<sub>i</sub>) for i=1,...,n</center>
+     * The Chinese Remainder Theorem guarantees a unique solution x
+     * (modulo m<sub>1</sub>*...*m<sub>n</sub>), if the m<sub>i</sub> are coprime,
+     * i.e. (m<sub>i</sub>)+(m<sub>j</sub>)=(1).
+     * <p>
+     *    Remark: the isomorphisms involved are useful for computing with the Chinese remainder algorithm. They are
+     *    <ul>
+     *      <li>x &#8614; <big>(</big>x (mod m<sub>1</sub>),...,x (mod m<sub>n</sub>)<big>)</big></li>
+     *      <li>&sum;<sub>i=1,...,n</sub> x<sub>i</sub><big>(</big>(&prod;<sub>j&ne;i</sub> m<sub>j</sub>)<sup>-1</sup> (mod m<sub>i</sub>)<big>)</big>&prod;<sub>j&ne;i</sub> m<sub>j</sub> &#8612; (x<sub>1</sub>,...,x<sub>n</sub>)</li>
+     *    </ul>
+     * </p>
+     * <p>
+     * The incremental algorithm is
+     * <pre>
+     * x := x<sub>1</sub>
+     * M := 1
+     * <span class="keyword">for</span> i := 2 <span class="keyword">to</span> n <span class="keyword">do</span>
+     *     M := M*m<sub>i-1</sub>
+     *     x := x + <big>(</big>(x<sub>i</sub> - x)*(M<sup>-1</sup> mod m<sub>i</sub>) mod m<sub>i</sub><big>)</big> * M
+     * <span class="keyword">end for</span>
+     * <span class="keyword">return</span> x
+     * </pre>
+     * </p>
+     * @param x the array of congruence values x<sub>1</sub>,...,x<sub>n</sub>.
+     * @param m the array of corresponding moduli m<sub>1</sub>,...,m<sub>n</sub>.
+     * @pre &forall;i&ne;j (x[i])+(x[j])=(1), i.e. gcd(x[i],x[j])=1.
+     * @return the unique solution x (modulo m<sub>1</sub>*...*m<sub>n</sub>).
+     * @internal implements Chinese remainder algorithm which is a direct consequence of the
+     *  Chinese Remainder Theorem.
+     */
+    public static final Arithmetic chineseRemainder(Arithmetic x[], Arithmetic m[]) {
+	if (x.length != m.length)
+	    throw new IllegalArgumentException("must give the same number of congruence values and modulos");
+	Arithmetic xStar = x[0];
+	Arithmetic M = xStar.one();
+	for (int i = 1; i < m.length; i++) {
+	    M = M.multiply(m[i-1]);
+	    final Arithmetic c = Values.quotient((Euclidean) M, (Euclidean) m[i]).inverse()/*.representative()*/;		// the inverse modulo m[i] of m
+	    final Arithmetic s = Values.quotient((Euclidean) (x[i].subtract(xStar)).multiply(c), (Euclidean) m[i]).representative();
+	    xStar = xStar.add(s.multiply(M));
+	}
+	return xStar;
+    }
+
+    // primes
+    
     /**
      * Generate a probable prime number. The BigInteger returned is prime with
      * a certain probability depending on the value certainty.
