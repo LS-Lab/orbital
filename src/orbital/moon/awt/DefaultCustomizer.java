@@ -556,7 +556,8 @@ public class DefaultCustomizer extends JPanel implements Customizer {
 	    return info.getPropertyDescriptors();
 	// set without duplicates that is not consistent with equals (which does not matter)
 	// Caution: using a Set instead of a List here shuffles the property order which Introspector does, anyway (Bug-Id 4088897 closed)
-	Set l = new TreeSet(featureDescriptorComparator);;
+	//@internal perhaps we could also use a LinkedHashSet or even LinkedIdentityHashSet here for keeping the initial order instead of sorting
+	Set l = new TreeSet(featureDescriptorComparator);
 	l.addAll(Arrays.asList(info.getPropertyDescriptors()));
 	// add all properties not yet contained
 	for (int i = additional.length - 1; i>= 0; i--) {
