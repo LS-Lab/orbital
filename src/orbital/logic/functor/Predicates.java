@@ -8,6 +8,7 @@ package orbital.logic.functor;
 
 
 import orbital.util.Utility;
+import orbital.logic.functor.Notation.NotationSpecification;
 
 /**
  * Predicate Implementations.
@@ -18,6 +19,7 @@ import orbital.util.Utility;
  * @see Functionals
  */
 public final class Predicates {
+
     /**
      * Class alias object.
      */
@@ -170,4 +172,21 @@ public final class Predicates {
 	    public String toString() { return ">="; }
 	};
 
+    //@internal must be down here such that static initialization of Predicates.equal != null has already happened
+    static {
+	Notation.setAllNotations(new Object[][] {
+	    {Predicates.equal,						// "=="
+	     new NotationSpecification(700, "xfx", Notation.INFIX)},
+	    {Predicates.unequal,					// "!="
+	     new NotationSpecification(700, "xfx", Notation.INFIX)},
+	    {Predicates.greater,					// ">"
+	     new NotationSpecification(700, "xfx", Notation.INFIX)},
+	    {Predicates.less,						// "<"
+	     new NotationSpecification(700, "xfx", Notation.INFIX)},
+	    {Predicates.greaterEqual,				        // ">="
+	     new NotationSpecification(700, "xfx", Notation.INFIX)},
+	    {Predicates.lessEqual,					// "=<"
+	     new NotationSpecification(700, "xfx", Notation.INFIX)}
+	});
+    }
 }
