@@ -928,6 +928,7 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
 	menuBar1.add(menuGenome);
     	menuBar1.add(jMenuOptions);
 	menuBar1.add(jMenuBreed);
+        menuBar1.add(Box.createHorizontalGlue());
 	//menuBar1.setHelpMenu(menuHelp);
 	menuBar1.add(menuHelp);
 	this.setJMenuBar(menuBar1);
