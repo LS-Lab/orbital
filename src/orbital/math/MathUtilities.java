@@ -85,9 +85,8 @@ public final class MathUtilities {
     /**
      * The default number of precision digits (for display etc.).
      * @see #setDefaultPrecisionDigits(int)
-     * @todo privatize
      */
-    public static int	 DefaultPrecisionDigits = 8;
+    private static int	 DefaultPrecisionDigits = 8;
     /**
      * The default tolerance for two numbers to be treated equal.
      * (experimental)

@@ -183,7 +183,7 @@ public class ArithmeticFormat extends Format {
 	//@xxx this numberFormat instance cannot format 17*10^50 and perhaps not even 1.23456789e-10
 	numberFormat = NumberFormat.getNumberInstance(locale);
 	numberFormat.setGroupingUsed(false);
-	numberFormat.setMaximumFractionDigits(MathUtilities.DefaultPrecisionDigits);
+	numberFormat.setMaximumFractionDigits(MathUtilities.getDefaultPrecisionDigits());
     }
 
     /**
