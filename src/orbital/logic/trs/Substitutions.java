@@ -489,7 +489,7 @@ public class Substitutions {
 	Object x;
 	Object t;
 	if (t1 == null || t2 == null)
-	    throw new NullPointerException("cannot unify (" + t1 + "," + t2 +") null does not unify anything.");
+	    throw new NullPointerException("cannot unify (" + t1 + "," + t2 +") because null does not unify anything.");
 	// if one of the two terms is a variable x, call the other term t
        	if ((isVariable(x = t1) && other(t = t2))
 	    || (isVariable(x = t2) && other(t = t1))) {
@@ -511,12 +511,12 @@ public class Substitutions {
 	    }
 	    // true decomposition case
 	    Functor.Composite c1 = (Functor.Composite) t1;
-	    Functor			  f = c1.getCompositor();
-	    Collection		  xs = Utility.asCollection(c1.getComponent());
+	    Functor	      f = c1.getCompositor();
+	    Collection	      xs = Utility.asCollection(c1.getComponent());
 	    Functor.Composite c2 = (Functor.Composite) t2;
-	    Functor			  g = c2.getCompositor();
-	    Collection		  ys = Utility.asCollection(c2.getComponent());
-	    if (!(c1.getClass() == c2.getClass() && f.equals(g)))
+	    Functor	      g = c2.getCompositor();
+	    Collection	      ys = Utility.asCollection(c2.getComponent());
+	    if (!(c1.getClass() == c2.getClass() && Utility.equals(f, g)))
 		return null;
 	    else {
 		// f=g und daher auch m=n

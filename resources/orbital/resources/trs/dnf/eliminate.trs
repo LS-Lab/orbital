@@ -1,3 +1,4 @@
+# eliminate derived junctors not in the basis (&forall;,&exist;,&and;,&or;&not;) to DNF
 # eliminate implications
 _X1->_X2 |- ~_X1|_X2
 # eliminate equivalences

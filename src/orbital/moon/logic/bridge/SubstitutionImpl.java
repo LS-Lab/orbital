@@ -106,8 +106,8 @@ public class SubstitutionImpl implements Substitution, Serializable {
             	g.setComponent(apply(f.getComponent()));
             	return g;
             }
-            catch (InstantiationException e) {throw (IllegalArgumentException) new IllegalArgumentException("the argument type does not support a no-arg constructor").initCause(e);}
-            catch (IllegalAccessException e) {throw (IllegalArgumentException) new IllegalArgumentException("the argument type does not support a no-arg constructor").initCause(e);}
+            catch (InstantiationException e) {throw (IllegalArgumentException) new IllegalArgumentException("the argument type of " + term.getClass() + " does not support a no-arg constructor which is required for substitution").initCause(e);}
+            catch (IllegalAccessException e) {throw (IllegalArgumentException) new IllegalArgumentException("the argument type of " + term.getClass() + " does not support a no-arg constructor which is requried for substitution").initCause(e);}
 	// almost identical to @see Utility#asIterator, and @see Functionals.ListableFunction
 	//@todo could we really use Functionals.ListableFunction instead? Would we benefit from that?
 	else if (term instanceof Collection)

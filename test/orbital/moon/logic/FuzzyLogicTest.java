@@ -27,7 +27,41 @@ public class FuzzyLogicTest extends check.TestCase {
 
     protected void test(String formula, boolean satisfied) {
 	assertSat(formula, satisfied);
-	//@todo test fuzzy logic axioms (neutral, commutative,...) for formula
+
+	// test some fuzzy logic axioms (neutral, commutative,...) for formula
+
+	// some fuzzy and operator axioms
+	formula = "(" + formula + ")";
+	// neutral
+	assertEquiv(formula + "&1", formula);
+	//
+	assertEquiv(formula + "&0", "0");
+	// boundary conditions
+	assertEquiv("0&0", "0");
+	assertEquiv("1&0", "0");
+	assertEquiv("0&1", "0");
+	assertEquiv("1&1", "1");
+
+	// some fuzzy or operator axioms
+	// neutral
+	assertEquiv(formula + "|0", formula);
+	//
+	assertEquiv(formula + "|1", "1");
+	// boundary conditions
+	assertEquiv("0|0", "0");
+	assertEquiv("1|0", "1");
+	assertEquiv("0|1", "1");
+	assertEquiv("1|1", "1");
+
+	// some fuzzy not operator axioms
+	// boundary conditions
+	assertEquiv("~1", "0");
+	assertEquiv("~0", "1");
+    }
+    protected void assertEquiv(String formula1, String formula2) {
+	formula1 = "(" + formula1 + ")";
+	formula2 = "(" + formula2 + ")";
+	assertSat(formula1 + "&" + formula2 + " | ~" + formula1 + "&~" + formula2, true);
     }
     protected void assertSat(String formula, boolean satisfied) {
 	try {
@@ -43,6 +77,7 @@ public class FuzzyLogicTest extends check.TestCase {
 	logic = new FuzzyLogic();
 	test("0.5&~0.2", false);
 	test("0.5&~(0.2|0.1)|0.4", false);
+	test("0.5|0.5", false);
 	test("~0.005|0.995", false);
 	test("0.9995|1", true);
     }
@@ -50,6 +85,7 @@ public class FuzzyLogicTest extends check.TestCase {
 	logic = new FuzzyLogic(FuzzyLogic.PRODUCT);
 	test("0.5&~0.2", false);
 	test("0.5&~(0.2|0.1)|0.4", false);
+	test("0.5|0.5", false);
 	test("~0.005|0.995", true);
     }
     public void testBounded() {
@@ -64,42 +100,53 @@ public class FuzzyLogicTest extends check.TestCase {
 	logic = new FuzzyLogic(FuzzyLogic.DRASTIC);
 	test("0.5&~0.2", false);
 	test("0.5&~(0.2|0.1)|0.4", false);
+	test("0.5|0.5", true);
+	test("0.1|0.1", true);
 	test("~(0.995&0.995)", true);
 	test("~0.995|0.001", true);
     }
     public void testHamacher() {
 	logic = new FuzzyLogic(FuzzyLogic.HAMACHER(1));
 	test("0.5&~0.2", false);
+	test("0.5|0.5", false);
 
 	logic = new FuzzyLogic(FuzzyLogic.HAMACHER(2));
 	test("0.5&~0.2", false);
+	test("0.5|0.5", false);
 
 	logic = new FuzzyLogic(FuzzyLogic.HAMACHER(0.1));
 	test("0.5&~0.2", false);
+	test("0.5|0.5", false);
 
 	logic = new FuzzyLogic(FuzzyLogic.HAMACHER(0));
 	test("0.5&~0.2", false);
+	test("0.5|0.5", false);
     }
     public void testYager() {
 	logic = new FuzzyLogic(FuzzyLogic.YAGER(1));
 	test("0.5&~0.2", false);
+	test("0.5|0.5", false);
 
 	logic = new FuzzyLogic(FuzzyLogic.YAGER(2));
 	test("0.5&~0.2", false);
+	test("0.5|0.5", false);
 
 	logic = new FuzzyLogic(FuzzyLogic.YAGER(0.1));
 	test("0.5&~0.2", false);
+	test("0.5|0.5", false);
 
 	// approaching Goedel
 	logic = new FuzzyLogic(FuzzyLogic.YAGER(1e4));
 	test("0.5&~0.2", false);
 	test("0.5&~(0.2|0.1)|0.4", false);
+	test("0.5|0.5", false);
 	test("~0.005|0.995", false);
 	test("0.9995|1", true);
 
 	logic = new FuzzyLogic(FuzzyLogic.YAGER(Double.POSITIVE_INFINITY));
 	test("0.5&~0.2", false);
 	test("0.5&~(0.2|0.1)|0.4", false);
+	test("0.5|0.5", false);
 	test("~0.005|0.995", false);
 	test("0.9995|1", true);
     }
