@@ -24,7 +24,7 @@ public class ClausalSetImpl extends LinkedHashSet/*_<Clause>_*/ implements Claus
      * Copy constructor.
      * @internal transitively public constructors required for Functionals.map to produce Clauses.
      */
-    public ClausalSetImpl(Set/*<Formula>*/ clauses) {
+    public ClausalSetImpl(Set/*_<Clause>_*/ clauses) {
 	super(clauses);
 	assert Setops.all(clauses, Functionals.bindSecond(Utility.instanceOf, Clause.class)) : "instanceof Set<Formula>";
     }

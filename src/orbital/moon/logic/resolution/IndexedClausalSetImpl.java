@@ -21,6 +21,8 @@ import orbital.logic.sign.*;
  * Implementation of a representation of a set of clauses with clause indexing.
  * @version 1.2, 2004-01-07
  * @author  Andr&eacute; Platzer
+ * @see ClauseIndex
+ * @internal straightforward combination of ClausalSetImpl and ClauseIndex
  */
 public class IndexedClausalSetImpl extends ClausalSetImpl {
 
@@ -35,7 +37,7 @@ public class IndexedClausalSetImpl extends ClausalSetImpl {
      * Copy constructor.
      * @internal transitively public constructors required for Functionals.map to produce Clauses.
      */
-    public IndexedClausalSetImpl(Set/*<Formula>*/ clauses) {
+    public IndexedClausalSetImpl(Set/*_<Clause>_*/ clauses) {
 	//@internal this order is important, otherwise index will not yet have been initialized
 	super();
 	addAll(clauses);
