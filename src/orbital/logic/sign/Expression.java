@@ -62,6 +62,34 @@ package orbital.logic.imp;
  *         </td>
  *       </tr>
  *       <tr>
+ *         <td colspan="2">
+ *           The corresponding abstract syntax is
+ *         </td>
+ *       </tr>
+ *       <tr>
+ *         <td colspan="3">
+ *           <span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&tau;</sub> &rarr;
+ *         </td>
+ *       </tr>
+ *       <tr>
+ *         <td rowspan="2">
+ *         </td>
+ *         <td>
+ *           &Sigma;<sub class="type">&tau;</span>
+ *         </td>
+ *         <td class="defTerm">
+ *           {@link ExpressionBuilder#createAtomic(Symbol) atomic symbols}
+ *         </td>
+ *       </tr>
+ *       <tr>
+ *         <td>
+ *           | <span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&sigma;&rarr;&tau;</sub> <big>(</big><span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&le;&sigma;</sub><big>)</big>
+ *         </td>
+ *         <td class="defTerm">
+ *           {@link ExpressionBuilder#compose(Expression,Expression[]) composites} (<dfn>ascriptors</dfn>)
+ *         </td>
+ *       </tr>
+ *       <tr>
  *         <td colspan="3">The terms of subtypes of <span class="type">&tau;</span> are</td>
  *       </tr>
  *       <tr>

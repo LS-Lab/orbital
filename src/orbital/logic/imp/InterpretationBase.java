@@ -16,6 +16,12 @@ import java.util.TreeMap;
 
 import orbital.util.InnerCheckedException;
 import orbital.util.Utility;
+import java.util.Collection;
+import orbital.logic.imp.Interpretation;
+import orbital.logic.imp.Signature;
+import java.util.Set;
+import java.util.Map;
+import java.util.Collections;
 
 /**
  * A basic interpretation implementation.
@@ -63,7 +69,17 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
 	this(sigma);
 	putAll(associations);
     }
-    
+
+    /**
+     * Only for delegation to interpretations used in
+     * {@link #unmodifiableInterpretation(Interpretation)}.
+     */
+    private InterpretationBase(Interpretation delegatee) {
+	super(delegatee);
+	// getSignature() is overwritten, anyway
+	this.sigma = null;
+    }
+
     public boolean equals(Object o) {
     	if (o instanceof Interpretation) {
 	    Interpretation b = (Interpretation) o;
@@ -181,7 +197,7 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
      */
     private final void validate(Object symbol) {
 	try {
-	    if (!sigma.contains(symbol))
+	    if (symbol == null || !sigma.contains(symbol))
 		throw new NoSuchElementException("Symbol '" + symbol + "' not in signature");
 	}
 	catch (ClassCastException ex) {
@@ -197,6 +213,7 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
 	return ((Symbol)symbol).getType().apply(referent);
     }
 
+
     /**
      * Create a new instance of the exact same type.
      * Used to create an object of the same type without copying its data.
@@ -207,5 +224,124 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
     	}
     	catch (InstantiationException nonconform) {throw new InnerCheckedException("invariant: sub classes of " + InterpretationBase.class + " must support no-arg constructor for virtual new instance.", nonconform);}
     	catch (IllegalAccessException nonconform) {throw new InnerCheckedException("invariant: sub classes of " + InterpretationBase.class + " must support no-arg constructor for virtual new instance.", nonconform);}
+    }
+
+
+    // Utilities methods
+    
+    /**
+     * Returns an unmodifiable view of the specified interpretation.
+     * The result is a <a href="../../math/Values.html#readOnlyView">read only view</a>.
+     */
+    public static final Interpretation unmodifiableInterpretation(final Interpretation i) {
+	return /*refine/delegate Interpretation*/ new InterpretationBase(i) {
+		//private static final long serialVersionUID = 0;
+		// Code for delegation of orbital.logic.imp.Interpretation methods to i
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @param param2 <description>
+		 * @return <description>
+		 * @see orbital.logic.imp.Interpretation#put(Object, Object)
+		 */
+		public Object put(Object param1, Object param2)
+		{
+		    throw new UnsupportedOperationException();
+		}
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @see orbital.logic.imp.Interpretation#putAll(Map)
+		 */
+		public void putAll(Map param1)
+		{
+		    throw new UnsupportedOperationException();
+		}
+
+		/**
+		 *
+		 * @return <description>
+		 * @see orbital.logic.imp.Interpretation#getSignature()
+		 */
+		public Signature getSignature()
+		{
+		    return SignatureBase.unmodifiableSignature(i.getSignature());
+		}
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @return <description>
+		 * @see orbital.logic.imp.Interpretation#union(Interpretation)
+		 */
+		public Interpretation union(Interpretation param1)
+		{
+		    return i.union(param1);
+		}
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @see orbital.logic.imp.Interpretation#setSignature(Signature)
+		 */
+		public void setSignature(Signature param1)
+		{
+		    throw new UnsupportedOperationException();
+		}
+		// Code for delegation of java.util.Map methods to i
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @return <description>
+		 * @see java.util.Map#remove(Object)
+		 */
+		public Object remove(Object param1)
+		{
+		    throw new UnsupportedOperationException();
+		}
+
+		/**
+		 *
+		 * @return <description>
+		 * @see java.util.Map#values()
+		 */
+		public Collection values()
+		{
+		    return Collections.unmodifiableCollection(i.values());
+		}
+
+		/**
+		 *
+		 * @see java.util.Map#clear()
+		 */
+		public void clear()
+		{
+		    throw new UnsupportedOperationException();
+		}
+
+		/**
+		 *
+		 * @return <description>
+		 * @see java.util.Map#keySet()
+		 */
+		public Set keySet()
+		{
+		    return Collections.unmodifiableSet(i.keySet());
+		}
+
+		/**
+		 *
+		 * @return <description>
+		 * @see java.util.Map#entrySet()
+		 */
+		public Set entrySet()
+		{
+		    throw new UnsupportedOperationException("not yet implemented: unmodifiable view of entrySet() with unmodifiable entries");
+		}
+
+	    };
     }
 }

@@ -64,7 +64,6 @@ import orbital.logic.functor.Notation.NotationSpecification;
  * @see Signature
  * @todo done? respect orbital.logic.trs.Variable
  * @todo is there a difference between symbol (Symbol) and sign (Zeichen) or signifier()? Should we rename this class to Sign, or keep the name Symbol in order to underline that the usual signs in logic are used purely symbolically and not with any necessity (either proper or lawful)
- * @todo perhaps we should let the user decide better whether a symbol is meant constant or variable for PL2 even for any arity and type or notation specifiers.
  */
 public interface Symbol extends Variable, Comparable/*<Symbol>*/{
     // triple &lang;signifier, type, notation&rang; constraints to equality

@@ -16,6 +16,22 @@ import java.util.TreeSet;
 import java.util.Collections;
 import orbital.util.Setops;
 import orbital.util.InnerCheckedException;
+import java.util.Collection;
+import orbital.logic.imp.Signature;
+import java.util.Set;
+import java.util.Iterator;
+import java.util.SortedSet;
+import java.util.Comparator;
+import orbital.logic.imp.Type;
+import orbital.logic.imp.Symbol;
+import java.util.Collection;
+import orbital.logic.imp.Signature;
+import java.util.Set;
+import java.util.Iterator;
+import java.util.SortedSet;
+import java.util.Comparator;
+import orbital.logic.imp.Type;
+import orbital.logic.imp.Symbol;
 
 /**
  * A basic signature implementation.
@@ -88,23 +104,39 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
     
     // Extended operations for functor symbols
 
+    /**
+     * @deprecated Since Orbital1.1 use {@link #get(String,Object[])}&ne;null instead.
+     */
     public boolean contains(String signifier, Object[] arg) {
 	return get(signifier, arg) != null;
     }
     public Symbol get(String signifier, Object[] arg) {
+	//@todo should we call get(signifier, Types.map(Types.typeOf((Expression[])arg)), Types.UNIVERSAL), which was possible.
 	for (Iterator i = iterator(); i.hasNext(); ) {
-	    Object o = i.next();
+	    final Object o = i.next();
 	    assert o instanceof Symbol : "signature isa " + SortedSet.class.getName() + '<' + Symbol.class.getName() + '>';
-	    Symbol s = (Symbol) o;
+	    final Symbol s = (Symbol) o;
 	    if (signifier.equals(s.getSignifier()))
 		if (arg instanceof Expression[]) {
 		    if (Types.isApplicableTo(s.getType(), (Expression[])arg))
 			//@xxx if multiple symbols are applicable use dynamic dispatch / overloading etc.
-			//TODO: check arity of s.notation with arg.length, as well?
+			//TODO: assert check arity of s.notation with arg.length, as well?
 			return s;
 		} else
 		    //@todo how to check in case of !(arg instanceof Expression[])?
 		    throw new UnsupportedOperationException("type checking requires that the arguments are instances of " + Expression.class);
+	}
+	return null;
+    }
+    public Symbol get(String signifier, Type maxType) {
+	for (Iterator i = iterator(); i.hasNext(); ) {
+	    final Object o = i.next();
+	    assert o instanceof Symbol : "signature isa " + SortedSet.class.getName() + '<' + Symbol.class.getName() + '>';
+	    final Symbol s = (Symbol) o;
+	    if (signifier.equals(s.getSignifier()))
+		if (s.getType().subtypeOf(maxType))
+		    //@xxx if multiple symbols are compatible use dynamic dispatch / overloading etc.
+		    return s;
 	}
 	return null;
     }
@@ -166,5 +198,164 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
 	    return super.add(o);
 	else
 	    throw new ClassCastException(o + " is not an instance of " + Symbol.class);
+    }
+
+    // Utilities methods
+
+    /**
+     * Returns an unmodifiable view of the specified signature.
+     * The result is a <a href="../../math/Values.html#readOnlyView">read only view</a>.
+     * @todo or only structurally unmodifiable because iterator().next().setSignifier will still work?
+     */
+    public static final Signature unmodifiableSignature(final Signature s) {
+	return /*refine/delegate Signature*/ new SignatureBase(s) {
+		//private static final long serialVersionUID = 0;
+		// Code for delegation of java.util.Set methods to s
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @return <description>
+		 * @see java.util.Set#addAll(Collection)
+		 */
+		public boolean addAll(Collection param1)
+		{
+		    throw new UnsupportedOperationException();
+		}
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @return <description>
+		 * @see java.util.Set#add(Object)
+		 */
+		public boolean add(Object param1)
+		{
+		    throw new UnsupportedOperationException();
+		}
+
+		/**
+		 *
+		 * @return <description>
+		 * @see java.util.Set#iterator()
+		 */
+		public Iterator iterator()
+		{
+		    return Setops.unmodifiableIterator(s.iterator());
+		}
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @return <description>
+		 * @see java.util.Set#remove(Object)
+		 */
+		public boolean remove(Object param1)
+		{
+		    throw new UnsupportedOperationException();
+		}
+
+		/**
+		 *
+		 * @see java.util.Set#clear()
+		 */
+		public void clear()
+		{
+		    throw new UnsupportedOperationException();
+		}
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @return <description>
+		 * @see java.util.Set#removeAll(Collection)
+		 */
+		public boolean removeAll(Collection param1)
+		{
+		    throw new UnsupportedOperationException();
+		}
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @return <description>
+		 * @see java.util.Set#retainAll(Collection)
+		 */
+		public boolean retainAll(Collection param1)
+		{
+		    throw new UnsupportedOperationException();
+		}
+
+		// Code for delegation of orbital.logic.imp.Signature methods to s
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @param param2 <description>
+		 * @return <description>
+		 * @see orbital.logic.imp.Signature#get(String, Type)
+		 */
+		public Symbol get(String param1, Type param2)
+		{
+		    return s.get(param1, param2);
+		}
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @param param2 <description>
+		 * @return <description>
+		 * @see orbital.logic.imp.Signature#get(String, Object[])
+		 */
+		public Symbol get(String param1, Object[] param2)
+		{
+		    return s.get(param1, param2);
+		}
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @return <description>
+		 * @see orbital.logic.imp.Signature#union(Signature)
+		 */
+		public Signature union(Signature param1)
+		{
+		    return s.union(param1);
+		}
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @return <description>
+		 * @see orbital.logic.imp.Signature#intersection(Signature)
+		 */
+		public Signature intersection(Signature param1)
+		{
+		    return s.intersection(param1);
+		}
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @return <description>
+		 * @see orbital.logic.imp.Signature#difference(Signature)
+		 */
+		public Signature difference(Signature param1)
+		{
+		    return s.difference(param1);
+		}
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @return <description>
+		 * @see orbital.logic.imp.Signature#symmetricDifference(Signature)
+		 */
+		public Signature symmetricDifference(Signature param1)
+		{
+		    return s.symmetricDifference(param1);
+		}
+
+	    };
     }
 }
