@@ -1,7 +1,7 @@
 import orbital.math.*;
 import java.util.Arrays;
 import orbital.math.functional.*;
-import orbital.moon.math.CoordinateCompositeFunction;
+import orbital.moon.math.functional.CoordinateCompositeFunction;
 
 public class StatisticsDemo {
     private static final java.io.PrintStream log = System.out;
