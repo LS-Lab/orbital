@@ -23,6 +23,7 @@ import orbital.robotic.Position;
  * @version 1.1, 2003-01-03
  * @author Andr&eacute; Platzer
  * @xxx performedMove: perhaps we can get rid of this old way of using events. Also we need a more customizable way of deciding when to end a turn (f.ex. some games may allow a player to perform multiple moves before ending his turn)
+ * @internal it is better to clone a new gamemaster in order to not let the last gamemaster finally {setField(null)} at end of run() and our field is lost again (f.ex. after the first move).
  */
 public class Gamemaster implements Runnable {
     // {{DECLARE_PARAMETERS
@@ -252,7 +253,7 @@ public class Gamemaster implements Runnable {
 	{
 	    final Field field = getField();
 	    if (field == null)
-		throw new IllegalStateException("illegal field: " + field);
+		throw new IllegalStateException("illegal field for starting the game: " + field);
 	    field.getFieldChangeMulticaster().stateChanged(new FieldChangeEvent(field, FieldChangeEvent.BEGIN_OF_GAME, null));
 	}
 	// do moves while it's an AI's turn
@@ -262,7 +263,8 @@ public class Gamemaster implements Runnable {
 		throw new IllegalStateException("illegal field: " + field);
 	    final int turn = field.getTurn();
 	    ////showStatus(getResources().getString("statusbar.ai.thinking"));
-	    System.err.println("statusbar.ai.thinking");
+	    if (!(players[turn] instanceof HumanPlayer))
+		System.err.println("statusbar.ai.thinking");
 	    Object action = players[turn].apply(getField());
 	    ////showStatus(getResources().getString("statusbar.ai.moving"));
 	    if (action instanceof Option) {
