@@ -4,7 +4,7 @@
  * Copyright (c) 2003 Andre Platzer. All Rights Reserved.
  */
 
-package orbital.logic.imp;
+package orbital.logic.sign.type;
 
 /**
  * Thrown whenever an exception due to invalid typing occurs.

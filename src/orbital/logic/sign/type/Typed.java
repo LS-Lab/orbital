@@ -4,7 +4,7 @@
  * Copyright (c) 2003 Andre Platzer. All Rights Reserved.
  */
 
-package orbital.logic.imp;
+package orbital.logic.sign.type;
 
 /**
  * An interface for typed objects.  All objects that have a {@link

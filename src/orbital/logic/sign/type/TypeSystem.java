@@ -4,7 +4,7 @@
  * Copyright (c) 2003 Andre Platzer. All Rights Reserved.
  */
 
-package orbital.logic.imp;
+package orbital.logic.sign.type;
 
 import orbital.logic.functor.Function;
 import orbital.logic.functor.BinaryFunction;
@@ -17,6 +17,7 @@ import orbital.logic.functor.BinaryFunction;
  * @author <a href="mailto:">Andr&eacute; Platzer</a>
  * @version 1.1, 2003-01-18
  * @see Types#getDefault()
+ * @see Type#typeSystem()
  * @see Type
  */
 public interface TypeSystem {

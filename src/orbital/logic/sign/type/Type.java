@@ -4,7 +4,7 @@
  * Copyright (c) 2002 Andre Platzer. All Rights Reserved.
  */
 
-package orbital.logic.imp;
+package orbital.logic.sign.type;
 
 import orbital.logic.functor.Predicate;
 

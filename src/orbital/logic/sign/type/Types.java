@@ -4,11 +4,15 @@
  * Copyright (c) 2002 Andre Platzer. All Rights Reserved.
  */
 
-package orbital.logic.imp;
-import orbital.logic.imp.Type.Composite;
+package orbital.logic.sign.type;
+import orbital.logic.sign.type.Type.Composite;
+
+import orbital.logic.sign.Expression;
 
 import orbital.logic.trs.Variable;
 import orbital.logic.functor.Functor;
+
+import orbital.logic.sign.Symbol;
 
 import java.beans.IntrospectionException;
 import orbital.util.InnerCheckedException;
@@ -35,7 +39,7 @@ public final class Types {
     /**
      * Default instance.
      */
-    private static TypeSystem defaultTypeSystem = new orbital.moon.logic.imp.StandardTypeSystem();
+    private static TypeSystem defaultTypeSystem = new orbital.moon.logic.sign.type.StandardTypeSystem();
 
     /**
      * Get the (single) default type system instance.
@@ -112,11 +116,23 @@ public final class Types {
     /**
      * Get the number of components n of a product type <span class="type">&prod;<sub>i</sub>&tau;<sub>i</sub></span> = <span class="type">&tau;<sub>1</sub>&times;&#8230;&times;&tau;<sub>n</sub></span>.
      * @todo rename
-     * @todo improve concept to make product accessible (perhaps already in type?) or package-level-protectize
-     * @internal only moved implementation to orbital.moon.logic.imp.StandardTypeSysten because that class would not otherwise have access to this method.
      */
-    static final int arityOf(Type type) {
-	return orbital.moon.logic.imp.StandardTypeSystem.arityOf(type);
+    public static final int arityOf(Type type) {
+	final TypeSystem typeSystem = type.typeSystem();
+	return type == typeSystem.ABSURD()
+	    // strict
+	    ? Integer.MIN_VALUE
+	    : type.equals(typeSystem.NOTYPE())
+	    ? 0
+	    : arityOf_perhapsProduct(type);
+    }
+    private static final int arityOf_perhapsProduct(Type type) {
+	if (type instanceof Type.Composite) {
+	    Type.Composite t = (Type.Composite)type;
+	    if (t.getCompositor() == type.typeSystem().product())
+		return ((Type[]) t.getComponent()).length;
+	}
+	return 1;
     }
     
     /**
