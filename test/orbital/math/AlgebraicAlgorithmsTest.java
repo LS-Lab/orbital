@@ -9,6 +9,7 @@ package orbital.math;
 import java.util.*;
 import orbital.math.functional.Operations;
 import junit.framework.*;
+import junit.extensions.*;
 
 /**
  * A test case, testing .
@@ -21,49 +22,53 @@ public class AlgebraicAlgorithmsTest extends check.TestCase {
     private static final Comparator order = AlgebraicAlgorithms.LEXICOGRAPHIC;
 
     private static final Values vf = Values.getDefaultInstance();
-    private Random random;
     public static void main(String[] args) {
 	junit.textui.TestRunner.run(suite());
     }
     public static Test suite() {
-	return new TestSuite(AlgebraicAlgorithmsTest.class);
+	TestSuite suite = new TestSuite(AlgebraicAlgorithmsTest.class);
+	suite.addTest(new RepeatedTest(new TestCase("add") {
+		public void runTest() {
+		    casetestChineseRemainder();
+		}
+	    }, TEST_REPETITIONS));
+	return suite;
     }
     protected void setUp() {
-	random = new Random();
     }
 
     /**
      * @internal similar to the algorithm computing exact solution to integer LGS.
      */
-    public void testChineseRemainder() {
-	for (int rep = 0; rep < TEST_REPETITIONS; rep++) {
-	    final Integer result = vf.valueOf(random.nextInt(MAX));
-	    // choose enough coprime numbers (we simply use primes) such that the result is unique
-	    Integer M = vf.valueOf(1);
-	    Set coprimes = new HashSet();   // nonempty set, in fact contains even primes
-	    do {
-		Integer prime = vf.valueOf(MathUtilities.generatePrime(PRIMES_BIT_LENGTH, random));
-		if (coprimes.contains(prime))
-		    continue;
-		coprimes.add(prime);
-		M = M.multiply(prime);
-	    } while (M.compareTo(result) <= 0);
-	    final Integer m[] = (Integer[]) coprimes.toArray(new Integer[0]);
-	    final Integer x[] = new Integer[m.length];
-	    for (int i = 0; i < x.length; i++)
-		x[i] = (Integer) vf.quotient(result, m[i]).representative();
-	    final Integer umod = (Integer) Operations.product.apply(vf.valueOf(m));
-	    assert umod.equals(M) : umod + " = " + M;
-
-	    System.out.println("expect solution:  " + result);
-	    System.out.println("#congruences:     " + m.length);
-	    System.out.println("congruent values: " + MathUtilities.format(x));
-	    System.out.println("modulo values:    " + MathUtilities.format(m));
-	    System.out.println("solution:         " + AlgebraicAlgorithms.chineseRemainder(x,m));
-	    System.out.println("is unique modulo: " + umod);
-	    System.out.println();
-	    assertEquals(result, AlgebraicAlgorithms.chineseRemainder(x,m).representative());
+    private static void casetestChineseRemainder() {
+	final Random random = new Random();
+	final Integer result = vf.valueOf(random.nextInt(MAX));
+	// choose enough coprime numbers (we simply use primes) such that the result is unique
+	Integer M = vf.valueOf(1);
+	Set coprimes = new HashSet();   // nonempty set, in fact contains even primes
+	do {
+	    Integer prime = vf.valueOf(MathUtilities.generatePrime(PRIMES_BIT_LENGTH, random));
+	    if (coprimes.contains(prime))
+		continue;
+	    coprimes.add(prime);
+	    M = M.multiply(prime);
+	} while (M.compareTo(result) <= 0);
+	final Integer m[] = (Integer[]) coprimes.toArray(new Integer[0]);
+	final Integer x[] = new Integer[m.length];
+	for (int i = 0; i < x.length; i++) {
+	    x[i] = (Integer) vf.quotient(result, m[i]).representative();
 	}
+	final Integer umod = (Integer) Operations.product.apply(vf.valueOf(m));
+	assert umod.equals(M) : umod + " = " + M;
+	
+	System.out.println("expect solution:  " + result);
+	System.out.println("#congruences:     " + m.length);
+	System.out.println("congruent values: " + MathUtilities.format(x));
+	System.out.println("modulo values:    " + MathUtilities.format(m));
+	System.out.println("solution:         " + AlgebraicAlgorithms.chineseRemainder(x,m));
+	System.out.println("is unique modulo: " + umod);
+	System.out.println();
+	assertEquals(result, AlgebraicAlgorithms.chineseRemainder(x,m).representative());
     }
     
     public void testGroebnerBasisSimple() {

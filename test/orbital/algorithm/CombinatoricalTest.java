@@ -7,6 +7,7 @@
 package orbital.algorithm;
 
 import junit.framework.*;
+import junit.extensions.*;
 
 import java.util.Random;
 import orbital.logic.functor.*;
@@ -25,7 +26,7 @@ public class CombinatoricalTest extends check.TestCase {
 	junit.textui.TestRunner.run(suite());
     }
     public static Test suite() {
-	return new TestSuite(CombinatoricalTest.class);
+	return new RepeatedTest(new TestSuite(CombinatoricalTest.class), 5);
     }
     protected void setUp() {
 	random = new Random();
