@@ -146,7 +146,7 @@ public interface GeneralSearchProblem/*<S,A>*/ extends AlgorithmicProblem {
     Iterator/*<Option<S,A>>*/ expand(Option/*<S,A>*/ n);
 	
     /**
-     * Get the cost of an option to take.
+     * Get the immediate cost of an option to take.
      * <p>
      * Note that this method usually will only get called
      * if the {@link GeneralSearchProblem.Option#GeneralSearchProblem.Option(Object,Object,GeneralSearchProblem.Option,GeneralSearchProblem) convenience constructor}
