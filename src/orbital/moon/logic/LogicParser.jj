@@ -101,11 +101,6 @@ public class LogicParser {
 	this.syntax = syntax;
 	this.coreSignature = syntax.coreSignature();
     }
-    private void reinitSymbolMap() {
-	if (syntax == null)
-	    throw new IllegalStateException("no syntax has been set, use setSyntax(...)");
-	this.scopeSymbolMap = new SignatureBase();
-    }
 
     /**
      * Reads a term-rewrite system from a stream.
@@ -226,8 +221,9 @@ public class LogicParser {
 	    op = "?";
 
 	if (!x.isVariable())
-	    throw new java.lang.AssertionError("parser would only combine quantifiers with variable symbols " + op + " " + x);
-	scopeSymbolMap.add(x);
+	    throw new AssertionError("parser would only combine quantifiers with variable symbols " + op + " " + x);
+	if (!scopeSymbolMap.contains(x))
+	    throw new AssertionError("only symbols in the symbol map of current scope are quantified over");
 	if ("free".equals(op))
 	    // quantifier with pure syntactic function and no semantic aspect at all
 	    return a;
@@ -287,6 +283,12 @@ public class LogicParser {
 
     // symbol declaration handling
 
+    private void reinitSymbolMap() {
+	if (syntax == null)
+	    throw new IllegalStateException("no syntax has been set, use setSyntax(...)");
+	this.scopeSymbolMap = new SignatureBase();
+    }
+
     /**
      * declare a new symbol.
      */
@@ -320,7 +322,7 @@ public class LogicParser {
      * Prefers corresponding entries in the coreSignature.
      * @param expectedType the type expected as derived from the context.
      */
-    private Symbol symbolFor(String signifier, Type expectedType) {
+    private Symbol getSymbol(String signifier, Type expectedType) {
 	// do we already know it is a variable due to a quantifier within whose scope we are?
 	for (Iterator i = scopeSymbolMap.iterator(); i.hasNext(); ) {
 	    Symbol s = (Symbol) i.next();
@@ -328,7 +330,7 @@ public class LogicParser {
 		return s;
 	}
 	// else it is treated "the default way"
-	return defaultSymbolFor(signifier, expectedType);
+	return getDefaultSymbol(signifier, expectedType);
     }
 
     //@todo remove this garbage, because we should always let the user decide what's constant and what's variable, (or at least let him choose the capital/lower convention)
@@ -337,22 +339,13 @@ public class LogicParser {
     //@todo rely on FreeDeclarationExpression
     /**
      * lets _ modify whether it is a variable, not touching its type.
+     * @xxx can we somehow get rid of this?
      */
-    private static Symbol defaultSymbolFor(String signifier, Type expectedType) {
+    static Symbol getDefaultSymbol(String signifier, Type expectedType) {
     	//@xxx currently we (in addition to $) distinguish between variables and constants according to their first character
     	return signifier.charAt(0) == '_'
 	    ? new SymbolBase(signifier, expectedType, null, true)
 	    : new SymbolBase(signifier, expectedType, null, false);
-    }
-    /**
-     * Get the default symbol of a specified string, guessing its type and variable.
-     * @xxx get rid of this quick-hack since scanSignature usually won't work reliably anyway.
-     */
-    static Symbol defaultSymbolFor(String signifier) {
-    	//@xxx currently we (in addition to $) distinguish between variables and constants according to their first character
-    	return signifier.charAt(0) == '_'
-	    ? new SymbolBase(signifier, SymbolBase.UNIVERSAL_ATOM, null, true)
-	    : new SymbolBase(signifier, SymbolBase.BOOLEAN_ATOM, null, false);
     }
 
     /**
@@ -603,7 +596,7 @@ Expression Atom() :
 	{return a;}
     |
 	tok = <IDENTIFIER>
-	{return (Expression) syntax.createAtomic(symbolFor(tok.image, Types.TRUTH));}
+	{return (Expression) syntax.createAtomic(getSymbol(tok.image, Types.TRUTH));}
     |
 	sym = NumberLiteralValue()
 	{return (Expression) syntax.createAtomic(sym);}
@@ -869,7 +862,7 @@ Symbol ConstantOrVariable() :
 	    ( "." tok = <IDENTIFIER>  {signifier += "." + tok.image;} )
 	    )*
     */
-    {return symbolFor(signifier, Types.INDIVIDUAL);}
+    {return getSymbol(signifier, Types.INDIVIDUAL);}
 }
 
 

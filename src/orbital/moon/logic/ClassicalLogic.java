@@ -828,11 +828,6 @@ public class ClassicalLogic extends ModernLogic implements Logic {
     } 
 	
 
-    /**
-     * character element of core signature.
-     */
-    private static final String operators = "~! |&^-><=(,)°?\\";
-
     //@todo remove this bugfix that replaces "xfy" by "yfy" associativity only for *.jj parsers to work without inefficient right-associative lookahead.
     private static final String xfy = "yfy";
 
@@ -884,13 +879,6 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	     new NotationSpecification(1100, "fxx", Notation.PREFIX)}
 	}, false);
     private static final Signature _coreSignature = _coreInterpretation.getSignature();
-    /**
-     * reserved keywords: core signature symbols.
-     * Contains supposed variable symbols due to a misinterpretation, instead of the real
-     * symbols. Especially specifies the wrong type.
-     * @todo adapt? to new situation of createAtomic(<u>Symbol</u>)
-     */
-    private static Set keywords = new HashSet(Arrays.asList(new Object[] {LogicParser.defaultSymbolFor("true"), LogicParser.defaultSymbolFor("false"), LogicParser.defaultSymbolFor("xor"), LogicParser.defaultSymbolFor("all"), LogicParser.defaultSymbolFor("some"), LogicParser.defaultSymbolFor("lambda")}));
 
     // Helper utilities.
 
@@ -1183,22 +1171,8 @@ public class ClassicalLogic extends ModernLogic implements Logic {
     public Interpretation coreInterpretation() {
 	return _coreInterpretation;
     }
-    public Signature scanSignature(String expression) {
-	return new SignatureBase(scanSignatureImpl(expression));
-    } 
-    //@todo (half-done?) Use LogicParser to find out the Signature, also adapt it such that he finds out new symbols like in ~p(X)
-    private static Set scanSignatureImpl(String expression) {
-	if (expression == null)
-	    throw new NullPointerException("null is not an expression");
-	Collection		names = new LinkedList();
-	StringTokenizer st = new StringTokenizer(expression, operators, false);
-	while (st.hasMoreElements()) {
-	    names.add(LogicParser.defaultSymbolFor((String) st.nextElement()));
-	}
-	names = new TreeSet(names);
-	// the signature really should not include core signature symbols
-	names.removeAll(keywords);
-	return (Set) names;
+    public Signature scanSignature(String expression) throws ParseException {
+	return createFormula(expression).getSignature();
     } 
 
 

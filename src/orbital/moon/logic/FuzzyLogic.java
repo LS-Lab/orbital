@@ -244,7 +244,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     /**
      * list of static elements of signature.
      */
-    private static final String operators = "~! |&^-><=(),";
+    private static final String operators = "~! \t\r\n|&^-><=(),";
 
     /**
      * Remembers the fuzzy logic operators used in coreInterpretation().
@@ -340,15 +340,14 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     static Set scanSignatureImpl(String expression) {
 	if (expression == null)
 	    return SignatureBase.EMPTY;
-	Collection		names = new LinkedList();
+	Collection      names = new LinkedList();
 	StringTokenizer st = new StringTokenizer(expression, operators, false);
 	while (st.hasMoreElements())
-	    //XXX: undo pair unless comparable
-	    names.add(LogicParser.defaultSymbolFor((String) st.nextElement()));
+	    names.add(LogicParser.getDefaultSymbol((String) st.nextElement(), Types.TRUTH));
 	names = new TreeSet(names);
 	// the signature really should not include core signature symbols
-	names.remove(LogicParser.defaultSymbolFor("true"));
-	names.remove(LogicParser.defaultSymbolFor("false"));
+	names.remove(LogicParser.getDefaultSymbol("true", Types.TRUTH));
+	names.remove(LogicParser.getDefaultSymbol("false", Types.TRUTH));
 	return (Set) names;
     } 
 
