@@ -70,8 +70,8 @@ public class Huffman implements GreedyProblem {
 
     /**
      * Extends the choices with a new_choice if that is feasible, otherwise nothing is changed.
-     * @pre choices is a valid partial solution, new_choice has maximum local weight.
-     * @post RES new solution value that includes new_choice if feasible.
+     * @preconditions choices is a valid partial solution, new_choice has maximum local weight.
+     * @postconditions RES new solution value that includes new_choice if feasible.
      */ 
     public List nextPartialSolution(List choices, Object new_choice) {
     	// we use huffman_trie instead of choices

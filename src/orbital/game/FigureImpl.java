@@ -267,7 +267,7 @@ public class FigureImpl extends Figure {
      * @return the destination position that was reached after the move
      * or <code>null</code> if the Move was invalid and therefore cancelled.
      * @throws IllegalArgumentException if this move is not in the list of legal moves.
-     * @post getField() = getField()@pre
+     * @postconditions getField() = getField()@pre
      * @see Field#move(Position, Move)
      * @see #movePath(Move)
      * @see #moving

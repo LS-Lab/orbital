@@ -88,7 +88,7 @@ public class Gamemaster implements Runnable {
      *  Especially, the value of <code>players[Figure.NOONE]</code> will be ignored.
      * @param initialField the field to play the game on.
      *  When <code>null</code>, a new field will be {@link GameRules#startField(Component) started from the rules}.
-     * @pre initialField fits to rules
+     * @preconditions initialField fits to rules
      */
     public Gamemaster(Component component, GameRules rules, Function players[], Field initialField) {
 	if (players.length != rules.getLeagues())
@@ -153,7 +153,7 @@ public class Gamemaster implements Runnable {
      * @return the individual players of our game.
      *  If a component is <code>instanceof HumanPlayer</code>, a human player will take the part of that league.
      *  Especially, the value of <code>players[Figure.NOONE]</code> will be ignored.
-     * @post null&notin;RES
+     * @postconditions null&notin;RES
      */
     protected Function[] getPlayersInternal() {
 	return players;
@@ -165,7 +165,7 @@ public class Gamemaster implements Runnable {
 
     /**
      * Get the total number of players.
-     * @post RES = getPlayers().length
+     * @postconditions RES = getPlayers().length
      */
     public int getPlayersCount() {
 	return getPlayersInternal().length;
@@ -173,7 +173,7 @@ public class Gamemaster implements Runnable {
 
     /**
      * Get the number of human players.
-     * @post RES = number of null occurrences in getPlayers() excluding getPlayers()[Figure.NOONE]
+     * @postconditions RES = number of null occurrences in getPlayers() excluding getPlayers()[Figure.NOONE]
      */
     public int getNumberOfHumanPlayers() {
 	Function players[] = getPlayersInternal();
