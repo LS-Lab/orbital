@@ -65,6 +65,12 @@ final class LogicSupport {
 		    continue;
 		else
 		    throw new NullPointerException("illegal functor " + f + " for " + notation);
+	    // debug notation, setting everything to prefix
+// 	    try {
+// 		Notation.setDefault(Notation.PREFIX);
+// 		notation = new NotationSpecification(Types.arityOf(Types.declaredTypeOf(f)));
+// 	    }
+// 	    catch (IntrospectionException ex) {throw new InnerCheckedException("could not detect specification", ex);}
 	    if (notation == null)
 		if (useRegisteredNotationsOnNull)
 		    notation = Notation.getNotation(f);
