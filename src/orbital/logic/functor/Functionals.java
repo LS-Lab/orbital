@@ -1667,6 +1667,10 @@ public class Functionals {
      * <p>Also known as fold, reduce.
      * Implemented as a linear right tail-recurrence.
      * </p>
+     * <p>
+     * This function takes values &isin;A<sup>*</sup> represented as a {@link orbital.util.Utility#asIterator(Object) generalized iteratable},
+     * like f.ex. {@link java.util.Iterator}.
+     * </p>
      * @see Functionals#banana(Object, BinaryFunction, Iterator)
      * @see Functionals#foldRight(BinaryFunction, Object, Iterator)
      * @see Functionals#foldRight(BinaryFunction, Object, List)
@@ -2099,9 +2103,9 @@ public class Functionals {
      * </blockquote>
      * If q = sup ||f'(z)|| &lt; 1, then f is a contraction with q.
      * </p>
-     * @para f the (continuous) functon to apply repeatedly for searching a fixed point.
-     * @para x where to start searching a fixed point.
-     * @para maxIteration the maximum number of iterations waiting for a convergence to a fixed point.
+     * @param f the (continuous) functon to apply repeatedly for searching a fixed point.
+     * @param x where to start searching a fixed point.
+     * @param maxIteration the maximum number of iterations waiting for a convergence to a fixed point.
      * Will then throw an IterationLimitException
      * @throws IterationLimitException when the maximum number of iterations maxIteration is overrun.
      */
