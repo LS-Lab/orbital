@@ -40,7 +40,7 @@ import java.util.logging.Level;
  * Although there is a {@link #getInstance(Locale)} method that is aware of a locale,
  * this class will most likely be instantiated in a locale-independent manner
  * using scientific mathematical notation (see {@link #getDefaultInstance()}).
- * Nevertheless ArithmeticFormat's formatting details can be configured
+ * Anyway, ArithmeticFormat's formatting details can be configured
  * to fit different notation requirements.
  * </p>
  * <p>
@@ -210,6 +210,7 @@ public class ArithmeticFormat extends Format {
 	this.numberFormat = newNumberFormat;
     }
 
+
     // formatting
 	
     /**
@@ -222,11 +223,108 @@ public class ArithmeticFormat extends Format {
 
     /**
      * Specialization of format.
+     * @internal these specializations which are identical to {@link #format(Arithmetic)}
+     * do not change the functionality but speed up dynamic dispatch because the right (sub-type) method
+     * can be selected at compile time.
      */
     public String format(Scalar obj) {
         return format(obj, new StringBuffer(), new FieldPosition(0)).toString();
     }
 
+    /**
+     * Specialization of format.
+     */
+    public String format(Tensor obj) {
+        return format(obj, new StringBuffer(), new FieldPosition(0)).toString();
+    }
+
+    /**
+     * Specialization of format.
+     */
+    public String format(Vector obj) {
+        return format(obj, new StringBuffer(), new FieldPosition(0)).toString();
+    }
+
+    /**
+     * Specialization of format.
+     */
+    public String format(Matrix obj) {
+        return format(obj, new StringBuffer(), new FieldPosition(0)).toString();
+    }
+
+    /**
+     * Specialization of format.
+     */
+    public String format(Complex obj) {
+        return format(obj, new StringBuffer(), new FieldPosition(0)).toString();
+    }
+
+    /**
+     * Specialization of format.
+     */
+    public String format(Real obj) {
+        return format(obj, new StringBuffer(), new FieldPosition(0)).toString();
+    }
+
+    /**
+     * Specialization of format.
+     */
+    public String format(Rational obj) {
+        return format(obj, new StringBuffer(), new FieldPosition(0)).toString();
+    }
+
+    /**
+     * Specialization of format.
+     */
+    public String format(Integer obj) {
+        return format(obj, new StringBuffer(), new FieldPosition(0)).toString();
+    }
+
+    /**
+     * Specialization of format.
+     */
+    public String format(Polynomial obj) {
+        return format(obj, new StringBuffer(), new FieldPosition(0)).toString();
+    }
+
+    /**
+     * Specialization of format.
+     */
+    public String format(UnivariatePolynomial obj) {
+        return format(obj, new StringBuffer(), new FieldPosition(0)).toString();
+    }
+
+    /**
+     * Specialization of format.
+     */
+    public String format(Quotient obj) {
+        return format(obj, new StringBuffer(), new FieldPosition(0)).toString();
+    }
+
+    /**
+     * Specialization of format.
+     */
+    public String format(Fraction obj) {
+        return format(obj, new StringBuffer(), new FieldPosition(0)).toString();
+    }
+
+    /**
+     * Specialization of format.
+     */
+    public String format(Symbol obj) {
+        return format(obj, new StringBuffer(), new FieldPosition(0)).toString();
+    }
+
+    /**
+     * Specialization of format.
+     */
+    public String format(MathFunctor obj) {
+        return format(obj, new StringBuffer(), new FieldPosition(0)).toString();
+    }
+
+
+    // formatting implementation
+    
     public StringBuffer format(Object obj, StringBuffer result, FieldPosition fieldPosition) {
 	if (obj == null)
 	    return new StringBuffer("null");
@@ -361,6 +459,49 @@ public class ArithmeticFormat extends Format {
     /**
      * Specialization of format.
      */
+    public StringBuffer format(Vector v, StringBuffer result, FieldPosition fieldPosition) {
+        fieldPosition.setBeginIndex(0);
+        fieldPosition.setEndIndex(0);
+		
+	result.append(vectorPrefix);
+	for (Iterator i = v.iterator(); i.hasNext(); ) {
+	    format(i.next(), result, fieldPosition);
+	    if (i.hasNext())
+		result.append(vectorSeparator);
+	}
+	result.append(vectorSuffix);
+
+	return result;
+    }
+
+    /**
+     * Specialization of format.
+     */
+    public StringBuffer format(Matrix v, StringBuffer result, FieldPosition fieldPosition) {
+        fieldPosition.setBeginIndex(0);
+        fieldPosition.setEndIndex(0);
+
+	result.append(matrixPrefix);
+	for (int i = 0; i < v.dimension().height; i++) {
+	    if (i != 0)
+		result.append(matrixRowSeparator);
+	    result.append(matrixRowPrefix);
+	    for (int j = 0; j < v.dimension().width; j++) {
+		if (j != 0)
+		    result.append(matrixSeparator);
+		format(v.get(i, j), result, fieldPosition);
+	    }
+	    result.append(matrixRowSuffix);
+	} 
+	result.append(matrixSuffix);
+
+	return result;
+    }
+
+    /**
+     * Specialization of format.
+     * @todo should we again defer v instanceof Real if someone calls us with format((Complex)(Real)r)?
+     */
     public StringBuffer format(Complex v, StringBuffer result, FieldPosition fieldPosition) {
 	if (!Complex.hasType.apply(v))
 	    return format((Scalar)v, result, fieldPosition);
@@ -452,48 +593,6 @@ public class ArithmeticFormat extends Format {
 	if (!Integer.hasType.apply(v))
 	    return format((Scalar)v, result, fieldPosition);
 	return numberFormat.format(v.longValue(), result, fieldPosition);
-    }
-
-    /**
-     * Specialization of format.
-     */
-    public StringBuffer format(Vector v, StringBuffer result, FieldPosition fieldPosition) {
-        fieldPosition.setBeginIndex(0);
-        fieldPosition.setEndIndex(0);
-		
-	result.append(vectorPrefix);
-	for (Iterator i = v.iterator(); i.hasNext(); ) {
-	    format(i.next(), result, fieldPosition);
-	    if (i.hasNext())
-		result.append(vectorSeparator);
-	}
-	result.append(vectorSuffix);
-
-	return result;
-    }
-
-    /**
-     * Specialization of format.
-     */
-    public StringBuffer format(Matrix v, StringBuffer result, FieldPosition fieldPosition) {
-        fieldPosition.setBeginIndex(0);
-        fieldPosition.setEndIndex(0);
-
-	result.append(matrixPrefix);
-	for (int i = 0; i < v.dimension().height; i++) {
-	    if (i != 0)
-		result.append(matrixRowSeparator);
-	    result.append(matrixRowPrefix);
-	    for (int j = 0; j < v.dimension().width; j++) {
-		if (j != 0)
-		    result.append(matrixSeparator);
-		format(v.get(i, j), result, fieldPosition);
-	    }
-	    result.append(matrixRowSuffix);
-	} 
-	result.append(matrixSuffix);
-
-	return result;
     }
 
     /**
