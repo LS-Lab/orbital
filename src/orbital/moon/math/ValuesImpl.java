@@ -33,6 +33,12 @@ import orbital.math.functional.Functions;
  * 
  * @version 1.1, 2002-12-06
  * @author  Andr&eacute; Platzer
+ * @todo Think about using a two-dimensional dynamic dispatch in two variables for
+ * +:RxS->T. with plus[inf{r.typeId(),s.typeId()}][inf{r.precisionId(),s.precisionId()}]
+ * Use internal interfaces orbital.moon.math.TypeIdentified {int typeId();}
+ * This way we achieve a prioritized rule-based system for addition operation "rules".
+ * Also achieve fast normalizers with one dimensional dynamich dispatch in two variables
+ * getValueFactory().getNormalizer().apply((Arithmetic)x) performs internalTypeNormalizer[x.typeId()].apply(x) which only gets called with object of one fitting type.
  */
 public class ValuesImpl extends AbstractValues {
     // instantiation
@@ -50,6 +56,8 @@ public class ValuesImpl extends AbstractValues {
 		return o;
 	    } 
 	    });
+	//@todo improve normalizer implementation and use it within our implementation
+	initialSetNormalizer(orbital.logic.functor.Functions.id);
     }
 
     // scalar value constructors - facade factory
