@@ -15,6 +15,15 @@ import orbital.logic.functor.Functor.Specification;
  * A symbol is a triple &lang;<var class="signifier">signifier</var>, type, notation&rang;
  * consisting of a signifier, its type specification, and its notation.
  * Each symbol is either a constant symbol or a variable symbol.
+ * <p id="type">
+ * The types of a symbol form a <a href="Expression.html#freeAlgebraOfTerms">free algebra of terms</a>
+ * over {<span class="type">&iota;</span>,<span class="type">&rarr;</span>,<span class="type">()</span>}.
+ * Intuitively, <span class="type">&iota;</span> is the type for individuals,
+ * <span class="type">&sigma;&rarr;&tau;</span> the type for maps from <span class="type">&sigma;</span> to <span class="type">&tau;</span>,
+ * and <span class="type">(&sigma;)</span>=<span class="type">&sigma;&rarr;&omicron;</span> the type for predicates of <span class="type">&sigma;</span>,
+ * likewise <span class="type">&omicron;</span>=<span class="type">()</span> is the type of truth-values.
+ * But there is also a precise <a href="Interpretation.html#interpretation">semantic</a>.
+ * </p>
  * <p>
  * Symbols can be names for various kinds of objects in the (logical) universe:
  * <ul>
@@ -23,7 +32,7 @@ import orbital.logic.functor.Functor.Specification;
  *    is sometimes denoted as <var class="meta">f</var>/<var class="meta">n</var>.
  *    Function-symbols especially include
  *    <ul>
- *      <li>constant symbols (as functions of arity 0).
+ *      <li>constant symbols of type <span class="type">&iota;</span> (as functions of arity 0).
  *        <h5 class="compact">Note</h5>
  *        however, that we could as well avoid constant symbols, and just use defined free variables, instead.
  *        Or if we restrict sets of formulas to finite sets, then we could just as well turn constants
@@ -33,14 +42,14 @@ import orbital.logic.functor.Functor.Specification;
  *  </li>
  *  <li>predicate-symbols for relations of type <span class="type">(&sigma;)</span>
  *    <ul>
- *      <li>atomic propositions (as predicates of arity 0).</li>
+ *      <li>atomic propositions of type <span class="type">&omicron;</span> (as predicates of arity 0).</li>
  *      <li>properties of objects (represented as unary predicates).</li>
  *      <li>relations between objects (represented as n-ary predicates).</li>
  *    </ul>
  *  </li>
  *  <li>variables of a set V&sube;&Sigma;, where
  *    <ul>
- *      <li>object variables are variable terms of type <span class="type">t</span>.</li>
+ *      <li>object variables are variable terms of type <span class="type">&iota;</span>.</li>
  *      <li>function-variables are variable "frames" of functions.</li>
  *      <li>predicate-variables are variable "frames" of relations.</li>
  *    </ul>
@@ -49,7 +58,7 @@ import orbital.logic.functor.Functor.Specification;
  * </ul>
  * </p>
  * <p>
- * There should never be two equal symbols (i.e. with equal signifier, spec, and notation)
+ * There should never be two equal symbols (i.e. with equal signifier, type, and notation)
  * with one being constant, and the other variable.
  * </p>
  *
@@ -66,7 +75,7 @@ import orbital.logic.functor.Functor.Specification;
  * @todo perhaps we should let the user decide better whether a symbol is meant constant or variable for PL2 even for any arity and type or notation specifiers.
  */
 public interface Symbol extends Variable, Comparable/*<Symbol>*/{
-    // triple &lang;signifier, spec, notation&rang; constraints to equality
+    // triple &lang;signifier, type, notation&rang; constraints to equality
     
     /**
      * Compares two symbols for equality according to their three components.
@@ -121,7 +130,7 @@ public interface Symbol extends Variable, Comparable/*<Symbol>*/{
     void setSignifier(String signifier);
 
     /**
-     * Get the (arity and) type specification of this symbol.
+     * Get the type specification of this symbol.
      * @pre true
      * @return the type specification <span class="type">&tau;</span> of this symbol.
      * @see Expression#getType()
@@ -129,12 +138,12 @@ public interface Symbol extends Variable, Comparable/*<Symbol>*/{
      */
     Specification getType();
     /**
-     * Set the (arity and) type specification of this symbol.
-     * @param spec the type specification <span class="type">&tau;</span> of this symbol.
-     * @pre spec&ne;null
+     * Set the type specification of this symbol.
+     * @param type the type specification <span class="type">&tau;</span> of this symbol.
+     * @pre type&ne;null
      * @todo wouldn't we prefer <span class="keyword">null</span> for the bottom type, or the undefined type, or perhaps the errorneous type?
      */
-    void setType(Specification spec);
+    void setType(Specification type);
 
     /**
      * Get the notation used when this symbol occurs.

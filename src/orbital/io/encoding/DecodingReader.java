@@ -59,7 +59,7 @@ public abstract class DecodingReader extends FilterReader {
      * @throws UnsupportedEncodingException if no reader is found for the given encoding.
      * @throws IOException if the instantiation throws an IOException.
      * @see java.io.InputStreamReader#InputStreamReader(java.io.InputStream, java.lang.String)
-     * @see <a href="{@docRoot}/DesignPatterns/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      */
     public static DecodingReader getInstance(Reader rd, String encoding) throws UnsupportedEncodingException, IOException {
 	if (encoding == null)

@@ -236,7 +236,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    if (!hasBeenProving) {
 		// we did not have something to prove yet, so go ask the user what to do
 		//@todo we could just as well append "-verbose", "con" to the arguments instead
-		System.out.println("Enter logic sequences 'A |= C' or equivalences 'A == C' to verify.");
+		System.out.println("Enter logic sequences 'A |= C' or equivalences 'A == C' to prove.");
 		System.out.println("Simply leave blank to denote the empty set {}.");
 		System.out.println("Type EOF (Ctrl-Z or C-d) to quit proving further formulas.");
 		verbose = true;
@@ -770,7 +770,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 
     /**
      * facade for convenience.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Method</a>
      */
     public boolean infer(String expression, String exprDerived) throws java.text.ParseException {
 	if (expression == null)
@@ -958,8 +958,29 @@ public class ClassicalLogic extends ModernLogic implements Logic {
     }
 
     //@xxx get rid of these shared static variables
-    static final Symbol APPLY = _coreSignature.get("@", new Expression[2]);
+    private static final Symbol APPLY = _coreSignature.get("@", new Expression[2]);
     static final Symbol LAMBDA  = _coreSignature.get("\\", new Expression[2]);
+    public Expression compose(Expression op, Expression arguments[]) throws java.text.ParseException {
+	if (op == null)
+	    throw new NullPointerException("illegal arguments: operator " + op + " composed with " + MathUtilities.format(arguments));
+        if (!op.getType().isApplicableTo(arguments))
+	    throw new java.text.ParseException("operator " + op + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments), ClassicalLogic.COMPLEX_ERROR_OFFSET);
+
+	// handle special cases of term construction, first
+	if ((op instanceof ModernFormula.FixedAtomicSymbol)
+	    && ((ModernFormula.FixedAtomicSymbol)op).getSymbol().equals(LAMBDA)) {
+	    //@todo if we stick to compose(Expression,Expression[]) then perhaps we could provide &lambda;-abstractions by introducing a core symbol LAMBDA that has as fixed interpretation a binary function that ... But of &lambda;(x.t), x will never get interpreted, so it is a bit different than composeFixed(lambda,{x,t}) would suggest. &lambda;-abstraction are not truth-functional!
+	    assert arguments.length == 2;
+	    assert arguments[0] instanceof ModernFormula.AtomicSymbol : "Symbols when converted to formulas become AtomicSymbols";
+	    Symbol x = (Symbol) ((Formula)arguments[0]).getSignature().iterator().next();
+	    assert x.isVariable() : "we only form lambda abstractions with respect to variables";
+	    return createLambdaProp(x, (Formula) arguments[1]);
+	} else
+	    return super.compose(op, arguments);
+    }
+    /**
+     * @deprecated Use {@link #compose(Expression,Expression[])} instead, converting op via {@link ExpressionBuilder#createAtomic(Symbol)}.
+     */
     public Expression compose(Symbol op, Expression arguments[]) throws java.text.ParseException {
 	if (op == null)
 	    throw new NullPointerException("illegal arguments: operator " + op + " composed with " + MathUtilities.format(arguments));
@@ -967,14 +988,14 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    throw new java.text.ParseException("operator " + op + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments), ClassicalLogic.COMPLEX_ERROR_OFFSET);
 
 	// handle special cases of term construction, first
-	if (op.equals(APPLY))
-	    switch (arguments.length - 1) {
-	    case 1:
-		return new ModernFormula.CompositeVariableFormula(this, (Formula)arguments[0], (Formula)arguments[1]);
-	    default:
-		throw new UnsupportedOperationException("only unary application f(x) has been implemented");
-	    }
-	else if (op.equals(LAMBDA)) {
+	if (op.equals(APPLY)) {
+	    //@deprecated since compose(Expression,Expression[]) already can do this, directly.
+	    // do we still need such a language operator for something, or can it be removed (no one ever calls) and use the meta-operator instead
+	    Expression rest[] = new Expression[arguments.length - 1];
+	    System.arraycopy(arguments, 1, rest, 0, rest.length);
+	    return compose(arguments[0], rest);
+	} else if (op.equals(LAMBDA)) {
+	    //@todo if we stick to compose(Expression,Expression[]) then perhaps we could provide &lambda;-abstractions by introducing a core symbol LAMBDA that has as fixed interpretation a binary function that ... But of &lambda;(x.t), x will never get interpreted, so it is a bit different than composeFixed(lambda,{x,t}) would suggest.
 	    assert arguments.length == 2;
 	    assert arguments[0] instanceof ModernFormula.AtomicSymbol : "Symbols when converted to formulas become AtomicSymbols";
 	    Symbol x = (Symbol) ((Formula)arguments[0]).getSignature().iterator().next();
@@ -1037,7 +1058,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	
 	// implementation of orbital.logic.imp.Expression interface
 	public Specification getType() {
-	    throw new UnsupportedOperationException("@xxx how to represent the type " + x.getType() + "->" + term.getType());
+	    return new Specification(new Specification[] {x.getType()}, term.getType());
 	}
         public Signature getSignature() {
 	    Signature sigma = new SignatureBase(term.getSignature());

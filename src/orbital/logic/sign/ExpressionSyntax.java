@@ -73,7 +73,7 @@ public interface ExpressionSyntax extends ExpressionBuilder {
      *  (optional behaviour for performance reasons)
      *  Will not throw ParseExceptions if createExpression would not either.
      * @see #coreSignature()
-     * @see <a href="{@docRoot}/DesignPatterns/FactoryMethod.html">&quot;Factory Method&quot;</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">&quot;Factory Method&quot;</a>
      */
     Signature scanSignature(String expression) throws ParseException;
 
@@ -88,7 +88,7 @@ public interface ExpressionSyntax extends ExpressionBuilder {
      * @return an instance of Expression that represents the given expression string in this logic.
      * @throws ParseException when the expression is syntactically malformed.
      *  Either due to a lexical or grammatical error.
-     * @see <a href="{@docRoot}/DesignPatterns/FactoryMethod.html">Factory Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      * @note could just as well be renamed to parseExpression(String)
      */
     Expression createExpression(String expression) throws ParseException;

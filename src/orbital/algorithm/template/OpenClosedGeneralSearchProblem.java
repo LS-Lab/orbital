@@ -32,7 +32,7 @@ import java.util.LinkedList;
  * @version 0.9, 2001/05/09
  * @author  Andr&eacute; Platzer
  * @see DynamicBacktracking
- * @see <a href="{@docRoot}/DesignPatterns/Decorator.html">Decorator</a>
+ * @see <a href="{@docRoot}/Patterns/Design/Decorator.html">Decorator</a>
  * @todo optimizable for A* since then we can replace a child c which is already in the open set of candidates by c when c can be reached by a shorter path.
  */
 public class OpenClosedGeneralSearchProblem/*<A,S>*/ implements GeneralSearchProblem/*<A,S>*/, Serializable {

@@ -227,7 +227,7 @@ public final class Stat {
      * <p>
      * Unlike {@link #regression(Function[],Matrix)}, this method is a facade
      * that works for single parametric functions, only.</p>
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      */
     public static Function functionalRegression(final Function composedFunc, Matrix experiment) {
 	Function	 theories[] = {composedFunc};

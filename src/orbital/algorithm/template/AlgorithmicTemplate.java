@@ -27,7 +27,7 @@ import orbital.math.functional.Function;
  * @version 1.0, 2000/07/07
  * @author  Andr&eacute; Platzer
  * @see AlgorithmicProblem
- * @see <a href="{@docRoot}/DesignPatterns/Strategy.html">&asymp;Strategy</a>
+ * @see <a href="{@docRoot}/Patterns/Design/Strategy.html">&asymp;Strategy</a>
  */
 public interface AlgorithmicTemplate/*<Problem extends AlgorithmicProblem, Solution extends Object>*/ {
 

@@ -65,7 +65,7 @@ import orbital.util.Utility;
  * @see BinaryFunction
  * @see java.util.Collection
  * @see java.util.Iterator
- * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+ * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
  * @note compose methods cannot have a return-type of Function.Composite etc. since they optimize away compositions with 1 and 0.
  */
 public class Functionals extends orbital.logic.functor.Functionals /*@todo uncomment once all compiling errors have been removed extends orbital.logic.functor.Functionals*/ {
@@ -86,7 +86,7 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
     /**
      * compose:  (f,g) &#8614; f &#8728; g := f(g).
      * @return x&#8614;f &#8728; g (x) = f<big>(</big>g(x)<big>)</big>.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      * @see Function.Composite
      */
     public static Function compose(Function f, Function g) {
@@ -100,7 +100,7 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
     /**
      * compose:  (f,g,h) &#8614; f &#8728; (g &times; h) := f(g,h) .
      * @return (x,y)&#8614;f<big>(</big>g(x,y),h(x,y)<big>)</big>.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      * @see BinaryFunction.Composite
      */
     public static BinaryFunction compose(BinaryFunction f, BinaryFunction g, BinaryFunction h) {
@@ -113,7 +113,7 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
     /**
      * compose:  (f,g,h) &#8614; f &#8728; (g &times; h) := f(g,h) .
      * @return x&#8614;f<big>(</big>g(x),h(x)<big>)</big>.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      * @see BinaryCompositeFunction
      */
     public static Function compose(BinaryFunction f, Function g, Function h) {
@@ -230,7 +230,7 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
      * generic compose calls the compose function appropriate for the type of g.
      * @param g having one of the types {@link orbital.math.functional.Function}, {@link orbital.math.functional.Function Function[]}, {@link orbital.math.functional.Function Function[][]}, and {@link orbital.math.Arithmetic}.
      *  In the latter case, composition is done using a constant function.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      * @todo note that we might better resolve compositions with constants by binding in order to support the problem with reverting from constant functions back to normal in @see orbital.logic.trs.Substitutions#lambda
      */
     public static MathFunctor genericCompose(Function f, Object g) {
@@ -249,7 +249,7 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
      * generic compose uses component compose function appropriate for the type of g.
      * @param f an object having one of the types {@link orbital.math.functional.Function Function[]}, {@link orbital.math.functional.Function Function[][]},
      * {@link orbital.math.functional.BinaryFunction BinaryFunction[]}, {@link orbital.math.functional.BinaryFunction BinaryFunction[][]}.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      * @todo document
      */
     public/**/ static MathFunctor.Composite genericCompose(Object f) {
@@ -272,7 +272,7 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
      * @param h having one of the types {@link orbital.math.functional.Function}, {@link orbital.math.functional.BinaryFunction}
      *  and {@link orbital.math.Arithmetic}.
      *  In the latter case, composition is done using a constant function.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      */
     public static MathFunctor genericCompose(BinaryFunction f, Object g, Object h) {
 	if (g instanceof MathFunctor || h instanceof MathFunctor) {

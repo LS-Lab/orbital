@@ -21,12 +21,11 @@ import java.util.NoSuchElementException;
  * @see java.util.List
  * @see java.util.Iterator
  * @see java.util.ListIterator
- * @see <a href="{@docRoot}/DesignPatterns/iterator.html">Iterator Pattern</a>
+ * @see <a href="{@docRoot}/Patterns/Design/iterator.html">Iterator Pattern</a>
  * @invariant hasNext() <=> SUCCEEDS(next())
  * && hasPrevious() <=> SUCCEEDS(previous())
  */
-public
-interface Sequence extends ListIterator {
+public interface Sequence extends ListIterator {
 
 	/**
 	 * Returns the element with index in the Sequence.

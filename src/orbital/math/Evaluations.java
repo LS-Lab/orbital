@@ -32,7 +32,7 @@ import orbital.util.Setops;
  * @author  Andr&eacute; Platzer
  * @see orbital.math.MathUtilities
  * @see orbital.math.functional.Operations
- * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade</a>
+ * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade</a>
  */
 public final class Evaluations {
 

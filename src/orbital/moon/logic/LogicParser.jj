@@ -103,11 +103,8 @@ public class LogicParser {
 	    case '¬': op = "~"; break;
 	    default: /*ignore*/
 	    }
-        try {
-	    final Expression[] arg = new Expression[] {a};
-	    return syntax.compose(coreSignature.get(op, arg), arg);
-    	}
-    	catch (java.text.ParseException ex) {throw newParseException(ex.getMessage(), optok);}
+	final Expression[] arg = new Expression[] {a};
+	return composeWrapper(optok, coreSignature.get(op, arg), arg);
     }
 
     /**
@@ -153,11 +150,8 @@ public class LogicParser {
 
 	default: /*ignore*/
         }
-       	try {
-	    final Expression[] arg = new Expression[] {a, b};
-	    return syntax.compose(coreSignature.get(op, arg), arg);
-    	}
-    	catch (java.text.ParseException ex) {throw newParseException(ex.getMessage(), optok);}
+	final Expression[] arg = new Expression[] {a, b};
+	return composeWrapper(optok, coreSignature.get(op, arg), arg);
     }
 
     /**
@@ -179,41 +173,44 @@ public class LogicParser {
 	    op = "°";
     	else if ("some".equals(op))
 	    op = "?";
-	try {
-            if (!x.isVariable())
-            	throw new java.lang.AssertionError("parser would only combine quantifiers with variable symbols " + op + " " + x);
-	    scopeSymbolMap.add(x);
-	    if ("free".equals(op))
-		// quantifier with pure syntactic function
-		return a;
-	    final Expression[] arg = new Expression[] {syntax.createAtomic(x), a};
-	    return syntax.compose(coreSignature.get(op, arg), arg);
-    	}
-    	catch (java.text.ParseException ex) {throw newParseException(ex.getMessage(), optok);}
+
+	if (!x.isVariable())
+	    throw new java.lang.AssertionError("parser would only combine quantifiers with variable symbols " + op + " " + x);
+	scopeSymbolMap.add(x);
+	if ("free".equals(op))
+	    // quantifier with pure syntactic function and no semantic aspect at all
+	    return a;
+	final Expression[] arg = new Expression[] {syntax.createAtomic(x), a};
+	return composeWrapper(optok, coreSignature.get(op, arg), arg);
     }
 
     /**
      * n-ary predicates or functions.
      * @param type specifies the result type. Object.class for functions, and Boolean.class for predicates.
-     * @see Logic#compose(Symbol,Expression[])
+     * @see ExpressionBuilder#compose(Expression,Expression[])
      */
     protected Expression apply(Token optok, Expression[] a, Class type) throws ParseException {
     	final String op = optok.image;
-	try {
-	    return syntax.compose(new SymbolBase(op, new Specification(a.length, type), new NotationSpecification(a.length)), a);
-    	}
-    	catch (java.text.ParseException ex) {throw newParseException(ex.getMessage(), optok);}
+	return composeWrapper(optok, new SymbolBase(op, new Specification(a.length, type), new NotationSpecification(a.length)), a);
     }
 
     /**
-     * Wraps calls to {@link Logic#compose(Symbol,Expression[])} in an exception handling block.
+     * Wraps calls to {@link ExpressionBuilder#compose(Expression,Expression[])} in an exception handling block.
      * @param optok the token that initiated this operation (used in case of ParseExceptions to define the position).
      */
-    private Expression composeWrapper(Token optok, Symbol op, Expression[] a) throws ParseException {
+    private Expression composeWrapper(Token optok, Expression op, Expression[] a) throws ParseException {
 	try {
 	    return syntax.compose(op, a);
     	}
     	catch (java.text.ParseException ex) {throw newParseException(ex.getMessage(), optok);}
+    }
+    /**
+     * Wraps calls to {@link ExpressionBuilder#compose(Expression,Expression[])} in an exception handling block.
+     * @param optok the token that initiated this operation (used in case of ParseExceptions to define the position).
+     * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience method</a>
+     */
+    private Expression composeWrapper(Token optok, Symbol op, Expression[] a) throws ParseException {
+	return composeWrapper(optok, syntax.createAtomic(op), a);
     }
 
     // symbol declaration handling
@@ -519,9 +516,9 @@ Expression CompoundFormula() :
     p = LambdaAbstractionPredicate() arg = Arguments()
         {
 	    if (arg.length != 1)
-	        throw new ParseException("only unary application of lambda abstractions is supported");
+	        throw new ParseException("only unary application of lambda abstractions is supported. Use currying");
 	    //@todo which exact optok token?
-	    return composeWrapper(null, ClassicalLogic.APPLY, new Expression[] {p, arg[0]});
+	    return composeWrapper(null, p, arg);
 	}
 }
 
@@ -606,7 +603,7 @@ Expression CompoundTerm() :
 	    if (arg.length != 1)
 	        throw new ParseException("only unary application of lambda abstractions is supported");
 	    //@todo which exact optok token?
-	    return composeWrapper(null, ClassicalLogic.APPLY, new Expression[] {p, arg[0]});
+	    return composeWrapper(null, p, arg);
 	}
 }
 

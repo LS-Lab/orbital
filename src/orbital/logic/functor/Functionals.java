@@ -53,7 +53,7 @@ import java.util.LinkedList;
  * @see java.util.Collection
  * @see java.util.Iterator
  * @see orbital.math.functional.Functionals
- * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+ * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
  * @see orbital.logic.trs.Substitutions#lambda
  * @todo improve names of conversion methods: onVoid, asFunction, onThisAndThat, asSuchAndSuch ...
  * @todo would we benefit from turning functional methods into true functionals, i.e. BinaryFunction<Function<A,B1>, Function<A,B2>, BinaryFunction<A,B1,B2>>? How do we document them without using Pizzadoc, then?
@@ -111,7 +111,7 @@ public class Functionals {
     /**
      * compose: Map(B,C)&times;Map(A,B)&rarr;Map(A,C); (f,g) &#8614; f &#8728; g := f(g).
      * @return x &#8614; (f&#8728;g)(x) = f<big>(</big>g(x)<big>)</big>.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      * @see #compose
      */
     public static /*<A, B, C>*/ Function/*<A, C>*/.Composite compose(Function/*<B, C>*/ f, Function/*<A, B>*/ g) {
@@ -121,7 +121,7 @@ public class Functionals {
     /**
      * compose: Map(B<sub>1</sub>&times;B<sub>2</sub>,C)&times;(Map(A<sub>1</sub>&times;A<sub>2</sub>,B<sub>1</sub>)&times;Map(A<sub>1</sub>&times;A<sub>2</sub>,B<sub>2</sub>))&rarr;Map(A<sub>1</sub>&times;A<sub>2</sub>,C); (f,g,h) &#8614; f &#8728; (g &times; h) := f(g,h) .
      * @return (x,y) &#8614; f<big>(</big>g(x,y),h(x,y)<big>)</big>.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      */
     public static /*<A1, A2, B1, B2, C>*/ BinaryFunction/*<A1, A2, C>*/.Composite compose(BinaryFunction/*<B1, B2, C>*/ f, BinaryFunction/*<A1, A2, B1>*/ g, BinaryFunction/*<A1, A2, B2>*/ h) {
 	return new Compositions.CompositeBinaryFunction/*<A1, A2, B1, B2, C>*/(f, g, h);
@@ -130,7 +130,7 @@ public class Functionals {
     /**
      * compose: Map(B<sub>1</sub>&times;B<sub>2</sub>,C)&times;(Map(A,B<sub>1</sub>)&times;Map(A,B<sub>2</sub>))&rarr;Map(A,C); (f,g,h) &#8614; f &#8728; (g &times; h) := f(g,h) .
      * @return x &#8614; f<big>(</big>g(x),h(x)<big>)</big>.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      * @internal see Functionals.BinaryCompositeFunction
      */
     public static /*<A, B1, B2, C>*/ Function/*<A, C>*/.Composite compose(BinaryFunction/*<B1, B2, C>*/ f, Function/*<A, B1>*/ g, Function/*<A, B2>*/ h) {
@@ -215,7 +215,7 @@ public class Functionals {
     /**
      * compose: Map(B,C)&times;Map({()},B)&rarr;Map({()},C); (f,g) &#8614; f &#8728; g := f(g).
      * @return () &#8614; (f &#8728; g) () = f<big>(</big>g()<big>)</big>.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      */
     public static /*<B, C>*/ VoidFunction/*<C>*/.Composite compose(Function/*<B,C>*/ f, VoidFunction/*<B>*/ g) {
 	return new Compositions.CompositeVoidFunction/*<B,C>*/(f, g);
@@ -224,7 +224,7 @@ public class Functionals {
     /**
      * compose: Map(B<sub>1</sub>&times;B<sub>2</sub>,C)&times;(Map({()},B<sub>1</sub>)&times;Map({()},B<sub>2</sub>))&rarr;Map({()},C); (f,g,h) &#8614; f &#8728; (g &times; h) := f(g,h) .
      * @return () &#8614; f<big>(</big>g(),h()<big>)</big>.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      * @internal see Functionals.BinaryCompositeVoidFunction
      */
     public static /*<B1, B2, C>*/ VoidFunction/*<C>*/.Composite compose(BinaryFunction/*<B1, B2, C>*/ f, VoidFunction/*<B1>*/ g, VoidFunction/*<B2>*/ h) {
@@ -309,7 +309,7 @@ public class Functionals {
     /**
      * compose: &weierp;(B)&times;Map(A,B)&rarr;&weierp;(A); (P,g) &#8614; P &#8728; g := P(g).
      * @return P &#8728; g = &lambda;x. P<big>(</big>g(x)<big>)</big> = {x&isin;A &brvbar; P<big>(</big>g(x)<big>)</big>}.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      */
     public static /*<A, B>*/ Predicate/*<A>*/.Composite compose(Predicate/*<B>*/ P, Function/*<A, B>*/ g) {
 	return new Compositions.CompositePredicate/*<A, B>*/(P, g);
@@ -318,7 +318,7 @@ public class Functionals {
     /**
      * compose: &weierp;(B<sub>1</sub>&times;B<sub>2</sub>)&times;(Map(A<sub>1</sub>&times;A<sub>2</sub>,B<sub>1</sub>)&times;Map(A<sub>1</sub>&times;A<sub>2</sub>,B<sub>2</sub>))&rarr;&weierp;(A<sub>1</sub>&times;A<sub>2</sub>); (P,g,h) &#8614; P &#8728; (g &times; h) := P(g,h) .
      * @return P &#8728; (g &times; h) = &lambda;x,y. P<big>(</big>g(x,y),h(x,y)<big>)</big> = {(x,y)&isin;A<sub>1</sub>&times;A<sub>2</sub> &brvbar; P<big>(</big>g(x,y),h(x,y)<big>)</big>}.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      */
     public static /*<A1, A2, B1, B2>*/ BinaryPredicate/*<A1, A2>*/.Composite compose(BinaryPredicate/*<B1, B2>*/ P, BinaryFunction/*<A1, A2, B1>*/ g, BinaryFunction/*<A1, A2, B2>*/ h) {
 	return new Compositions.CompositeBinaryPredicate/*<A1, A2, B1, B2>*/(P, g, h);
@@ -327,7 +327,7 @@ public class Functionals {
     /**
      * compose: &weierp;(B<sub>1</sub>&times;B<sub>2</sub>)&times;(Map(A,B<sub>1</sub>)&times;Map(A,B<sub>2</sub>))&rarr;&weierp;(A); (P,g,h) &#8614; P &#8728; (g &times; h) := P(g,h) .
      * @return P &#8728; (g &times; h) = &lambda;x. P<big>(</big>g(x),h(x)<big>)</big> = {x&isin;A &brvbar; P<big>(</big>g(x),h(x)<big>)</big>}.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      * @see Functionals.BinaryCompositePredicate
      */
     public static /*<A, B1, B2>*/ Predicate/*<A>*/.Composite compose(BinaryPredicate/*<B1, B2>*/ P, Function/*<A, B1>*/ g, Function/*<A, B2>*/ h) {
@@ -411,7 +411,7 @@ public class Functionals {
     /**
      * compose: &weierp;(B)&times;Map({()},B)&rarr;&weierp;({()}); (P,g) &#8614; P &#8728; g := P(g).
      * @return &lambda;(). P<big>(</big>g()<big>)</big>.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      */
     public static /*<B>*/ VoidPredicate.Composite compose(Predicate P, VoidFunction g) {
 	return new Compositions.CompositeVoidPredicate/*<B>*/(P, g);
@@ -420,7 +420,7 @@ public class Functionals {
     /**
      * compose: &weierp;(B<sub>1</sub>&times;B<sub>2</sub>)&times;(Map({()},B<sub>1</sub>)&times;Map({()},B<sub>2</sub>))&rarr;&weierp;({()}); (P,g,h) &#8614; P &#8728; (g &times; h) := P(g,h) .
      * @return &lambda;(). P<big>(</big>g(),h()<big>)</big>.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      * @see Functionals.BinaryCompositeVoidPredicate
      */
     public static /*<B1, B2>*/ VoidPredicate.Composite compose(BinaryPredicate/*<B1, B2>*/ P, VoidFunction/*<B1>*/ g, VoidFunction/*<B2>*/ h) {
@@ -533,7 +533,7 @@ public class Functionals {
      * apply is the inverse operator of {@link orbital.logic.trs.Substitutions#lambda &lambda;}.
      * </p>
      * @return (f,x)&#8614;f(x).
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      * @todo could we somehow generalize this? What about f being a BinaryFunction, or a VoidFunction, or a Predicate?
      */
     public static final /*<A,B>*/ BinaryFunction/*<Function<A,B>,A, B>*/ apply = new BinaryFunction/*<Function<A,B>,A, B>*/() {
@@ -549,7 +549,7 @@ public class Functionals {
     /**
      * generic compose calls the compose function appropriate for the type of g.
      * @pre g is "composable"
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      * @see #compose
      * @deprecated Use {@link #compose} instead.
      */
@@ -571,7 +571,7 @@ public class Functionals {
      * and non-functor {@link java.lang.Object}.
      * In the latter case, composition is done using a {@link Functions#constant(Object) constant function}.
      * @pre g and h are "compatible"
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      */
     public static Functor.Composite genericCompose(BinaryFunction f, Object g, Object h) {
 	if (g instanceof Functor && h instanceof Functor) {
@@ -603,7 +603,7 @@ public class Functionals {
     /**
      * generic compose calls the compose function appropriate for the type of g and h.
      * @pre g and h are "compatible"
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      */
     public static Functor.Composite genericCompose(BinaryPredicate P, Object g, Object h) {
 	if (g instanceof Function && h instanceof Function)
@@ -618,14 +618,105 @@ public class Functionals {
     } 
 
 
+    // currying (formal argument shifting)
+
+    /**
+     * Currys a binary function to a function mapping to a function.
+     * <p>
+     * curry: Map(A<sub>1</sub>&times;A<sub>2</sub>,B)&rarr;Map(A<sub>1</sub>,Map(A<sub>2</sub>,B)); f &#8614; (x&#8614;f(x,&middot;)) = (x&#8614;(y&#8614;f(x,y))).
+     * </p>
+     * @return x&#8614;f(x,&middot;)
+     * @see #uncurry(Function)
+     * @see #bindFirst(BinaryFunction,Object)
+     */
+    public static /*<A1, A2, B>*/ Function/*<A1, Function<A2,B>>*/ curry(BinaryFunction/*<A1, A2, B>*/ f) {
+	return new CurryFunction/*<A1, A2, B>*/(f);
+    } 
+    private static class CurryFunction/*<A1, A2, B>*/ extends AbstractCompositeFunctor implements Function/*<A1, Function<A2,B>>*/ {
+	private static final long serialVersionUID = 2879348438992826191L;
+	/**
+	 * @serial
+	 */
+	protected final BinaryFunction/*<A1, A2, B>*/ f;
+	public CurryFunction(BinaryFunction/*<A1, A2, B>*/ f, Notation notation) {
+	    super(notation);
+	    this.f = f;
+	}
+	public CurryFunction(BinaryFunction/*<A1, A2, B>*/ f) {
+	    this(f, null);
+	}
+	public Object/*>Function<A2,B><*/ apply(final Object/*>A1<*/ x) {
+	    return bindFirst(f, x);
+	} 
+
+	public Functor getCompositor() {
+	    return null;
+	}
+	public Object getComponent() {
+	    return new BinaryFunction[] {f};
+	} 
+
+	public void setCompositor(Functor f) throws ClassCastException {
+	    throw new UnsupportedOperationException("how to do");
+	}
+	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
+	    throw new UnsupportedOperationException("how to do");
+	}
+    } 
+    /**
+     * Uncurrys a curried function to a binary function.
+     * <p>
+     * uncurry: Map(A<sub>1</sub>,Map(A<sub>2</sub>,B))&rarr;Map(A<sub>1</sub>&times;A<sub>2</sub>,B); f &#8614; ((x,y)&#8614;f(x)(y)).
+     * </p>
+     * @return (x,y)&#8614;f(x)(y)
+     * @see #curry(BinaryFunction)
+     */
+    public static /*<A1, A2, B>*/ BinaryFunction/*<A1,A2, B>*/ uncurry(Function/*<A1, Function<A2, B>>*/ f) {
+	return f instanceof CurryFunction
+	    ? ((CurryFunction)f).f
+	    : new UnCurryFunction/*<A1, A2, B>*/(f);
+    } 
+    private static class UnCurryFunction/*<A1, A2, B>*/ extends AbstractCompositeFunctor implements BinaryFunction/*<A1,A2, B>*/ {
+	private static final long serialVersionUID = -5388743542535388907L;
+	/**
+	 * @serial
+	 */
+	protected final Function/*<A1, Function<A2, B>>*/ f;
+	public UnCurryFunction(Function/*<A1, Function<A2, B>>*/ f, Notation notation) {
+	    super(notation);
+	    this.f = f;
+	}
+	public UnCurryFunction(Function/*<A1, Function<A2, B>>*/ f) {
+	    this(f, null);
+	}
+	public Object/*>B<*/ apply(Object/*>A1<*/ x, Object/*>A2<*/ y) {
+	    return ((Function)f.apply(x)).apply(y);
+	} 
+
+	public Functor getCompositor() {
+	    return null;
+	}
+	public Object getComponent() {
+	    return new Function[] {f};
+	} 
+
+	public void setCompositor(Functor f) throws ClassCastException {
+	    throw new UnsupportedOperationException("how to do");
+	}
+	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
+	    throw new UnsupportedOperationException("how to do");
+	}
+    } 
+
     // argument binding
 
     /**
      * Binds the first argument of a BinaryFunction to a fixed value.
      * <p>
      * bindFirst: Map(A<sub>1</sub>&times;A<sub>2</sub>,B)&rarr;Map(A<sub>2</sub>,B); f&#8614;f(x,&middot;).
-     * The unary left-adjoint got from f by "currying".</p>
+     * The unary left-adjoint got from f by currying and single application.</p>
      * @return f(x,&middot;):A<sub>2</sub>&rarr;B; y &#8614; f(y) := f(x, y)
+     * @see #curry(BinaryFunction)
      */
     public static /*<A1, A2, B>*/ Function/*<A2, B>*/ bindFirst(BinaryFunction/*<A1, A2, B>*/ f, Object/*>A1<*/ x) {
 	return new BindFirstFunction/*<A1, A2, B>*/(f, x);
@@ -1008,8 +1099,8 @@ public class Functionals {
      * onFirst: f&#8614;g.</p>
      * <p><b><i>Evolves</i>:</b> might be renamed or removed.</p>
      * @return (x,y) &#8614; g(x,y) := f(x)
-     * @see <a href="{@docRoot}/DesignPatterns/Adapter.html">Adapter Pattern</a>
-     * @todo is this "uncurrying"? Also, the documentation arraws etc. are garbage. See bind*
+     * @see <a href="{@docRoot}/Patterns/Design/Adapter.html">Adapter Pattern</a>
+     * @todo this is &lambda;-abstraction that is subject to &eta;-conversion. Also, the documentation arrows etc. are garbage. See bind*
      */
     public static /*<A1, B>*/ BinaryFunction/*<A1,Object, B>*/ onFirst(final Function/*<A1, B>*/ f) {
 	return new BinaryFunctionOnFirst/*<A1,Object, B>*/(f);
@@ -1044,7 +1135,7 @@ public class Functionals {
      * onFirst: f&#8614;g;.</p>
      * <p><b><i>Evolves</i>:</b> might be renamed or removed.</p>
      * @return (x,y) &#8614; g(x,y) := f(x)
-     * @see <a href="{@docRoot}/DesignPatterns/Adapter.html">Adapter Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Adapter.html">Adapter Pattern</a>
      */
     public static /*<A1>*/ BinaryPredicate/*<A1, Object>*/ onFirst(final Predicate/*<A1>*/ p) {
 	return new BinaryPredicateOnFirst/*<A1,Object>*/(p);
@@ -1079,7 +1170,7 @@ public class Functionals {
      * onSecond:  f&#8614;g;.</p>
      * <p><b><i>Evolves</i>:</b> might be renamed or removed.</p>
      * @return (x,y) &#8614; g(x,y) := f(y)
-     * @see <a href="{@docRoot}/DesignPatterns/Adapter.html">Adapter Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Adapter.html">Adapter Pattern</a>
      */
     public static /*<A2, B>*/ BinaryFunction/*<Object, A2, B>*/ onSecond(final Function/*<A2, B>*/ f) {
 	return new BinaryFunctionOnSecond/*<A2, B>*/(f);
@@ -1113,7 +1204,7 @@ public class Functionals {
      * onSecond: f&#8614;g;.</p>
      * <p><b><i>Evolves</i>:</b> might be renamed or removed.</p>
      * @return (x,y) &#8614; g(x,y) := f(y)
-     * @see <a href="{@docRoot}/DesignPatterns/Adapter.html">Adapter Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Adapter.html">Adapter Pattern</a>
      */
     public static /*<A2>*/ BinaryPredicate/*<Object, A2>*/ onSecond(final Predicate/*<A2>*/ p) {
 	return new BinaryPredicateOnSecond/*<A2>*/(p);
@@ -1147,7 +1238,7 @@ public class Functionals {
      * onVoid:  f&#8614;g;.</p>
      * <p><b><i>Evolves</i>:</b> might be renamed or removed.</p>
      * @return x &#8614; g(x) := f()
-     * @see <a href="{@docRoot}/DesignPatterns/Adapter.html">Adapter Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Adapter.html">Adapter Pattern</a>
      */
     public static /*<A, B>*/ Function/*<A, B>*/ onVoid(final VoidFunction/*<B>*/ f) {
 	return new FunctionOnVoid/*<A, B>*/(f);
@@ -1179,7 +1270,7 @@ public class Functionals {
      * onVoid:  f&#8614;g;.</p>
      * <p><b><i>Evolves</i>:</b> might be renamed or removed.</p>
      * @return x &#8614; g(x) := f()
-     * @see <a href="{@docRoot}/DesignPatterns/Adapter.html">Adapter Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Adapter.html">Adapter Pattern</a>
      */
     public static /*<A>*/ Predicate/*<A>*/ onVoid(final VoidPredicate p) {
 	return new PredicateOnVoid(p);
@@ -1314,7 +1405,7 @@ public class Functionals {
      * This method acts as a bridge between predicates and functions in case
      * a predicate representation is not acceptable.
      * </p>
-     * @see <a href="{@docRoot}/DesignPatterns/Adapter.html">Adapter Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Adapter.html">Adapter Pattern</a>
      */
     public static VoidFunction/*<Boolean>*/ asFunction(VoidPredicate p) {
 	return new VoidPredicateFunction(p);
@@ -1359,7 +1450,7 @@ public class Functionals {
      * </p>
      * @return the characteristic function &chi;<sub>p</sub> with &chi;<sub>&rho;</sub>(x)=1 iff x&isin;&rho;,
      *  and &chi;<sub>&rho;</sub>(x)=0 iff x&notin;&rho;.
-     * @see <a href="{@docRoot}/DesignPatterns/Adapter.html">Adapter Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Adapter.html">Adapter Pattern</a>
      */
     public static /*<A>*/ Function/*<A, Boolean>*/ asFunction(Predicate/*<A>*/ p) {
 	return new PredicateFunction/*<A>*/(p);
@@ -1406,7 +1497,7 @@ public class Functionals {
      * This method acts as a bridge between predicates and functions in case
      * a predicate representation is not acceptable.
      * </p>
-     * @see <a href="{@docRoot}/DesignPatterns/Adapter.html">Adapter Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Adapter.html">Adapter Pattern</a>
      */
     public static /*<A1, A2>*/ BinaryFunction/*<A1, A2, Boolean>*/ asFunction(BinaryPredicate/*<A1, A2>*/ p) {
 	return new BinaryPredicateFunction/*<A1, A2>*/(p);

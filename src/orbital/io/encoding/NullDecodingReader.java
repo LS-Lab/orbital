@@ -13,7 +13,7 @@ import java.io.IOException;
  * no encoding.
  * @version 0.9, 02/02/98
  * @author  Andr&eacute; Platzer
- * @see <a href="{@docRoot}/DesignPatterns/NullObject.html">Null Object</a>
+ * @see <a href="{@docRoot}/Patterns/Design/NullObject.html">Null Object</a>
  */
 class NullDecodingReader extends DecodingReader {
     public NullDecodingReader(Reader rd) {

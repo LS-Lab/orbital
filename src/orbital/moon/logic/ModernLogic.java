@@ -53,10 +53,12 @@ abstract class ModernLogic implements Logic {
 	    Object o = i.next();
 	    assert o instanceof Symbol : "signature isa Set<" + Symbol.class.getName() + '>';
 	    Symbol s = (Symbol) o;
-	    if (s.getSignifier().equals(signifier))
+	    if (s.getSignifier().equals(signifier)) {
 		//@xxx should we check for compatibility of symbol and s so as to detect misunderstandings during parse?
 		// fixed interpretation of core signature
-		return createFixedSymbol(s, coreInterpretation().get(s), true);
+		Object ref = coreInterpretation().get(s);
+		return createFixedSymbol(s, ref, true);
+	    }
 	}
 	// ordinary (new) symbols
 	assert !("true".equals(signifier) || "false".equals(signifier)) : "true and false are in core signature and no ordinary symbols";
@@ -78,7 +80,42 @@ abstract class ModernLogic implements Logic {
 	return createSymbol(symbol);
     } 
 
+    public Expression compose(Expression op, Expression arguments[]) throws java.text.ParseException {
+	if (op == null)
+	    throw new NullPointerException("illegal arguments: compositor " + op + " composed with " + MathUtilities.format(arguments));
+        if (!op.getType().isApplicableTo(arguments))
+	    throw new java.text.ParseException("compositor " + op + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments), ClassicalLogic.COMPLEX_ERROR_OFFSET);
+
+	if (!(op instanceof ModernFormula.FixedAtomicSymbol))
+	    return composeDelayed((Formula) op,
+				  arguments,
+				  op instanceof ModernFormula.AtomicSymbol
+				  ? ((ModernFormula.AtomicSymbol)op).getSymbol().getNotation().getNotation()
+				  : Notation.DEFAULT);
+	else {
+	    // optimized composition for fixed interpretation compositors
+	    ModernFormula.FixedAtomicSymbol opfix = (ModernFormula.FixedAtomicSymbol) op;
+	    Functor ref = (Functor) opfix.getReferent();
+	    assert ref.toString().equals(opfix.getSymbol().getSignifier()) : "interprets with a functor of the same string representation (functor " + ref + " for symbol " + opfix.getSymbol() + ")";
+	    try {
+		// core-symbols
+		// fixed interpretation of core signature
+		Symbol s2 = null;
+		assert (s2 = coreSignature().get(ref.toString(), arguments)) != null : "composition functors occur in the signature";
+		assert opfix.getSymbol().equals(s2) : "enforce any potential unambiguities of operators";
+		return composeFixed(opfix.getSymbol(), (Functor)ref, arguments);
+	    }
+	    catch (IllegalArgumentException ex) {throw new java.text.ParseException(ex.getMessage(), COMPLEX_ERROR_OFFSET);}
+	}
+    }
+
+    /**
+     * @deprecated Use {@link #compose(Expression,Expression[])} instead, converting op via {@link ExpressionBuilder#createAtomic(Symbol)}.
+     * @todo remove deprecated
+     */
     public Expression compose(Symbol op, Expression arguments[]) throws java.text.ParseException {
+	if (true)
+	    return compose(createAtomic(op), arguments);
 	if (op == null)
 	    throw new NullPointerException("illegal arguments: operator " + op + " composed with " + MathUtilities.format(arguments));
         if (!op.getType().isApplicableTo(arguments))
@@ -90,7 +127,7 @@ abstract class ModernLogic implements Logic {
         }
         catch (NoSuchElementException nocore) {
 	    // non-core symbols
-	    return composeDelayed((Formula) createSymbol(op), op, arguments);
+	    return composeDelayed((Formula) createSymbol(op), arguments, op.getNotation().getNotation());
         }
         assert f.toString().equals(op) : "get returns the right functor for the string representation";
         try {
@@ -99,8 +136,8 @@ abstract class ModernLogic implements Logic {
 	    Symbol op2 = null;
 	    assert (op2 = coreSignature().get(f.toString(), arguments)) != null : "composition functors occur in the signature";
 	    assert op.equals(op2) : "enforce any potential unambiguities of operators";
-	    return composeFixed((Functor)f, op, arguments);
-	    //return composeDelayed((Formula)createFixedSymbol(op, f, true), op, arguments);
+	    return composeFixed(op, (Functor)f, arguments);
+	    //return composeDelayed((Formula)createFixedSymbol(op, f, true), arguments, op.getNotation().getNotation());
         }
         catch (IllegalArgumentException ex) {throw new java.text.ParseException(ex.getMessage(), COMPLEX_ERROR_OFFSET);}
     }
@@ -133,23 +170,23 @@ abstract class ModernLogic implements Logic {
     /**
      * Delayed composition of a symbol with some arguments.
      * Usually for user-defined predicates etc. or predicates subject to interpretation.
-     * @param f the formula really performing the (outer part of the) composition by op.
-     * @param op the (outer part of the) composing symbol.
-     * @param arguments the arguments to the composition by op.
+     * @param f the compositing formula.
+     * @param arguments the arguments to the composition by f.
+     * @param notation the notation for the composition (usually determined by the composing symbol).
      */
-    public Formula composeDelayed(Formula f, Symbol op, Expression arguments[]) {
-	return ModernFormula.composeDelayed(this, f, op, arguments);
+    public Formula composeDelayed(Formula f, Expression arguments[], Notation notation) {
+	return ModernFormula.composeDelayed(this, f, arguments, notation);
     }
 
     /**
      * Instant composition of functors with a fixed core interperation
      * Usually for predicates etc. subject to fixed core interpretation.
-     * @param f the functor really performing the (outer part of the) composition by op.
-     * @param op the (outer part of the) composing symbol.
-     * @param arguments the arguments to the composition by op.
+     * @param f the compositing formula.
+     * @param arguments the arguments to the composition by f.
+     * @param fsymbol the symbol with with the fixed interpretation f.
      */
-    public Formula composeFixed(Functor f, Symbol op, Expression arguments[]) {
-	return ModernFormula.composeFixed(this, f, op, arguments);
+    public Formula composeFixed(Symbol fsymbol, Functor f, Expression arguments[]) {
+	return ModernFormula.composeFixed(this, fsymbol, f, arguments);
     }
 
     // parsing

@@ -45,11 +45,19 @@ import orbital.logic.Relation;
  * <dl class="def">
  * The inference relation <span class="inference">|~</span> is:
  *   <dt>reflexive</dt> <dd>if <span class="Formula"><span class="set">A</span>&sube;<span class="inferenceOperation">C</span>(<span class="set">A</span>)</span>.</dd>
- *   <dt>sectioning</dt> <dd>if <span class="Formula"><span class="set">A</span>&sube;<span class="set">B</span>&sube;<span class="inferenceOperation">C</span>(<span class="set">A</span>)</span> implies <span class="Formula"><span class="inferenceOperation">C</span>(<span class="set">B</span>)&sube;<span class="inferenceOperation">C</span>(<span class="set">A</span>)</span>.</dd>
+ *   <dt>cut</dt> <dd>if <span class="Formula"><span class="set">A</span>&sube;<span class="set">B</span>&sube;<span class="inferenceOperation">C</span>(<span class="set">A</span>)</span> implies <span class="Formula"><span class="inferenceOperation">C</span>(<span class="set">B</span>)&sube;<span class="inferenceOperation">C</span>(<span class="set">A</span>)</span>.</dd>
  *   <dt>cautiously monotonic</dt> <dd>if <span class="Formula"><span class="set">A</span>&sube;<span class="set">B</span>&sube;<span class="inferenceOperation">C</span>(<span class="set">A</span>)</span> implies <span class="Formula"><span class="inferenceOperation">C</span>(<span class="set">A</span>)&sube;<span class="inferenceOperation">C</span>(<span class="set">B</span>)</span>.</dd>
- * <!-- @fixme add from PL1.doc -->
- *   <dt>cumulative</dt> <dd>if it is sectioning and cautiously monotonic.<br />
+ *   <dt>left logical equivalent</dt> <dd>if <span class="inference">|~</span><span class="Formula"><span class="Formula">A</span>&harr;<span class="Formula">B</span></span> implies <span class="Formula"><span class="inferenceOperation">C</span>(<span class="Formula">A</span>)=<span class="inferenceOperation">C</span>(<span class="Formula">B</span>)</span>.</dd>
+ *   <dt>right weakening</dt> <dd>if <span class="inference">|~</span><span class="Formula"><span class="Formula">A</span>&rarr;<span class="Formula">B</span></span> implies <span class="Formula"><sup>-1</sup><span class="inferenceOperation">C</span>({<span class="Formula">A</span>})&sube;<sup>-1</sup><span class="inferenceOperation">C</span>({<span class="Formula">B</span>})</span>.
+ *     <div>i.e. if <span class="inference">|~</span><span class="Formula"><span class="Formula">A</span>&rarr;<span class="Formula">B</span></span>,<span class="Formula">C</span><span class="inference">|~</span><span class="Formula">A</span> implies <span class="Formula">C</span><span class="inference">|~</span><span class="Formula">B</span></div>
+ *   </dd>
+ *   <dt id="cumulative">cumulative</dt> <dd>if it is cut and cautiously monotonic.<br />
  *   (thus <span class="Formula"><span class="set">A</span>&sube;<span class="set">B</span>&sube;<span class="inferenceOperation">C</span>(<span class="set">A</span>)</span> implies <span class="Formula"><span class="inferenceOperation">C</span>(<span class="set">B</span>)=<span class="inferenceOperation">C</span>(<span class="set">A</span>)</span>).</dd>
+ *   <dt>idempotent</dt> <dd>if <span class="Formula"><span class="inferenceOperation">C</span>(<span class="set">A</span>)=<span class="inferenceOperation">C</span>(<span class="inferenceOperation">C</span>(<span class="set">A</span>))</span>.</dd>
+ *   <dt>reciprocal</dt> <dd>if <span class="Formula"><span class="set">A</span>&sube;<span class="inferenceOperation">C</span>(<span class="set">B</span>)</span>, <span class="Formula"><span class="set">B</span>&sube;<span class="inferenceOperation">C</span>(<span class="set">A</span>)</span> implies <span class="Formula"><span class="inferenceOperation">C</span>(<span class="set">A</span>)=<span class="inferenceOperation">C</span>(<span class="set">B</span>)</span>.</dd>
+ *   <dt>...</dt> <dd>if <span class="Formula"><span class="Formula">A</span>&sube;<span class="inferenceOperation">C</span>({<span class="Formula">A</span>&or;<span class="Formula">B</span>})</span> implies <span class="Formula"><span class="inferenceOperation">C</span>(<span class="Formula">A</span>)&sube;<span class="inferenceOperation">C</span>({<span class="Formula">A</span>&or;<span class="Formula">B</span>})</span>.</dd>
+ *   <dt xml:lang="la">modus ponens in consequentia</dt> <dd>if <span class="Formula"><span class="Formula">F</span>,<span class="Formula">F</span>&rarr;<span class="Formula">G</span>&isin;<span class="inferenceOperation">C</span>(<span class="set">A</span>)</span> implies <span class="Formula"><span class=Formula">G</span>&isin;<span class="inferenceOperation">C</span>(<span class="set">A</span>)</span>.</dd>
+ *   <dt id="supraclassical">supraclassical</dt> <dd>if <span class="Formula">A</span>&#8866;<span class="Formula">B</span> implies <span class="Formula">A</span><span class="inference">|~</span><span class="Formula">B</span>.</dd>
  *   <dt>monotonic</dt> <dd>if <span class="Formula"><span class="set">A</span>&sube;<span class="set">B</span></span> implies <span class="Formula"><span class="inferenceOperation">C</span>(<span class="set">A</span>)&sube;<span class="inferenceOperation">C</span>(<span class="set">B</span>)</span>.
  *     <div>&lArr; <span class="inference">|~</span> is reflexive and transitive</div>
  *   </dd>
@@ -71,6 +79,13 @@ import orbital.logic.Relation;
  *   </dd>
  * </dl>
  * <span class="Formula">&forall;<span class="set">A</span>,<span class="set">B</span>&sube;Formula(&Sigma;)</span>.
+ * By an abuse of language, an inference relation that is reflexive, cut, and cautiously monotonic
+ * is called <dfn>cumulative inference relation</dfn> (it satisfies cumulative).
+ * Intersections of cumulative inference relations are cumulative inference relations.
+ * An inference relation satisfies the <dfn><b>C</b>-system</dfn> if it is a cumulative inference relation
+ * that further supports left logical equivalent and right weakening. There are several implications
+ * <!-- see Text/ai/PL1 -->
+ * within the above properties. For example <b>C</b>-system inference relation also satisfies <a href="#cumulative">(6)</a>-<a href="#supraclassical">(11)</a>.
  * </p>
  *
  * <hr size="6" />
@@ -168,7 +183,7 @@ public interface Inference extends Relation {
      * @pre true
      * @post ( (RES==true && isSound()) => w <span class="satisfaction">|&asymp;</span> d )
      *  && ( (w <span class="satisfaction">|&asymp;</span> d && isComplete()) => RES==true )
-     * @see <a href="{@docRoot}/DesignPatterns/Strategy.html">Strategy Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Strategy.html">Strategy Pattern</a>
      * @todo should we change the return-value to Object for probabilistic logic to return a Double? Or is it still a boolean, then?
      */
     boolean infer(Formula[] w, Formula d) throws LogicException;

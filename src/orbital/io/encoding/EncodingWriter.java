@@ -82,7 +82,7 @@ public abstract class EncodingWriter extends FilterWriter {
      * @throws UnsupportedEncodingException if no writer is found for the given encoding.
      * @throws IOException if the instantiation throws an IOException.
      * @see java.io.OutputStreamWriter#OutputStreamWriter(java.io.OutputStream, java.lang.String)
-     * @see <a href="{@docRoot}/DesignPatterns/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      */
     public static EncodingWriter getInstance(Writer wr, String encoding) throws UnsupportedEncodingException, IOException {
 	if (encoding == null)

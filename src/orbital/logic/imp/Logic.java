@@ -116,7 +116,7 @@ import java.text.ParseException;
  * @see Formula
  * @see Interpretation
  * @see Inference
- * @see <a href="{@docRoot}/DesignPatterns/Strategy.html">Strategy Pattern</a>
+ * @see <a href="{@docRoot}/Patterns/Design/Strategy.html">Strategy Pattern</a>
  */
 public interface Logic extends ExpressionSyntax {
 
@@ -184,14 +184,14 @@ public interface Logic extends ExpressionSyntax {
      * @post RES instanceof Formula
      * @todo use covariant return-types?
      */
-    Expression createAtomic(Symbol  expression);
+    Expression createAtomic(Symbol symbol);
 
     /**
      * {@inheritDoc}
      * @post RES instanceof Formula
      * @todo use covariant return-types?
      */
-    Expression compose(Symbol functor, Expression[] arg) throws ParseException;
+    Expression compose(Expression compositor, Expression[] arg) throws ParseException;
 
     /**
      * {@inheritDoc}

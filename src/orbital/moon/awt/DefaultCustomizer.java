@@ -252,7 +252,7 @@ public class DefaultCustomizer extends JPanel implements Customizer {
      * @see PropertyEditor#supportsCustomEditor()
      * @see PropertyEditor#getTags()
      * @see DefaultCustomizer.PropertyEditingChange
-     * @see <a href="{@docRoot}/DesignPatterns/FactoryMethod.html">Factory Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      */
     protected Component createPropertyEditorComponent(PropertyDescriptor property, PropertyEditor peditor) throws IntrospectionException {
 	logger.log(Level.FINER, "property {1} of {0} has editor {2}", new Object[] {beanClass, UIUtilities.info(property), peditor});

@@ -63,7 +63,7 @@ abstract class AbstractUnivariatePolynomial/*<R implements Arithmetic>*/ extends
      * @return a vector of the same type as this, dimension as specified
      * The elements need not be initialized since they will soon be by the calling method.
      * @post RES != RES
-     * @see <a href="{@docRoot}/DesignPatterns/FactoryMethod.html">Factory Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      * @see #clone()
      */
     protected abstract UnivariatePolynomial/*<R>*/ newInstance(int degree);

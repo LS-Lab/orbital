@@ -36,7 +36,7 @@ public abstract class AdversarySearch {
      * Get all reachable states.
      * @return an iterator of options that are the successors of state.
      * @see Field#expand()
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade</a>
      */
     protected Iterator successors(Field state) {
     	return state.expand();

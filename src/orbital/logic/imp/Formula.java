@@ -87,7 +87,7 @@ import java.util.Set;
  * @see Inference#infer
  * @see LogicBasis
  * @see ExpressionSyntax#createAtomic
- * @see <a href="{@docRoot}/DesignPatterns/Interpreter.html">Interpreter</a>
+ * @see <a href="{@docRoot}/Patterns/Design/Interpreter.html">Interpreter</a>
  * @see "Daniel Leivant. Higher order logic, Chapter 3.6 Formulas as higher order functions. In: Dov M. Gabbay, editor, Handbook of Logic in Artificial Intelligence and Logic Programming, pages 247-248. Oxford University Press. 1994"
  * @note boolean formulas (of propositional logic) can also be represented with (reduced) OBDDs, for performance in some applications.
  */
@@ -326,8 +326,8 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      * </p>
      * @param I the interpretation inducing the truth-function I(_).
      * @return I(this).
-     * @see <a href="{@docRoot}/DesignPatterns/Interpreter.html">Interpreter</a>
-     * @see <a href="{@docRoot}/DesignPatterns/Visitor.html">&quot;Visitor&quot;</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Interpreter.html">Interpreter</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Visitor.html">&quot;Visitor&quot;</a>
      * @see Logic#satisfy(Interpretation, Formula)
      */
     Object apply(Object/*>Interpretation<*/ I);

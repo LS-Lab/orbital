@@ -22,7 +22,7 @@ public interface GameRules {
      * Constructs a new Field to start the Game on.
      * @param component for which component to load images etc.
      *  Will often be an instance of <code>java.applet.Applet</code>.
-     * @see <a href="{@docRoot}/DesignPatterns/FactoryMethod.html">Factory Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      */
     Field startField(Component component);
 
@@ -31,7 +31,7 @@ public interface GameRules {
      * @param arg can contain any value used to initialize the AI, including <code>null</code>.
      * @return a function that, when called with a situation state as its argument,
      *  will return the action it wants to take in that state. (See {@link MoveWeighting.Argument}).
-     * @see <a href="{@docRoot}/DesignPatterns/FactoryMethod.html">Factory Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      */
     Function startAIntelligence(String arg);
 

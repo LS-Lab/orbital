@@ -112,7 +112,7 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
      * Determines which transitions may take part in attempts of acception.
      * @version 1.1, 2002/06/04
      * @author  Andr&eacute; Platzer
-     * @see <a href="{@docRoot}/DesignPatterns/enum.html">typesafe enum pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/enum.html">typesafe enum pattern</a>
      * @internal typesafe enumeration pattern class currently specifies whole OptionIterator
      * @invariant a.equals(b) &hArr; a==b
      * @todo turn into a Decorator of GeneralSearchProblem instead

@@ -50,9 +50,9 @@ import orbital.math.Tensor;
  * 
  * @version 1.0, 2000/08/08
  * @author  Andr&eacute; Platzer
- * @see <a href="{@docRoot}/DesignPatterns/AbstractFactory.html">Abstract Factory</a>
- * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade</a>
- * @see <a href="{@docRoot}/DesignPatterns/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+ * @see <a href="{@docRoot}/Patterns/Design/AbstractFactory.html">Abstract Factory</a>
+ * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade</a>
+ * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
  * @see #getInstance()
  * @see #getDefaultInstance()
  * @see java.util.Arrays
@@ -102,7 +102,7 @@ public class Values {
 
     /**
      * Returns a new value factory with default settings.
-     * @see <a href="{@docRoot}/DesignPatterns/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      * @todo provide configurable settings like
      *  whether polynomials save their coefficients in tensors (like ArithmeticMultivariatePolynomial), or in Maps.
      *  whether Quotient or Fraction use lazy representatives, i.e. only calculate their representative when representative() (or numerator?) gets called.
@@ -120,8 +120,8 @@ public class Values {
 	
     /**
      * Get the (single) default instance of this factory.
-     * @see <a href="{@docRoot}/DesignPatterns/Singleton.html">&quot;Singleton&quot;</a>
-     * @see <a href="{@docRoot}/DesignPatterns/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Singleton.html">&quot;Singleton&quot;</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      */
     public static final Values getDefaultInstance() {
 	return defaultValues;
@@ -183,7 +183,7 @@ public class Values {
     /**
      * Returns an Scalar whose value is equal to that of the specified primitive type.
      * @post RES.intValue() == val
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      * @see java.math.BigInteger#valueOf(long)
      */
     public Integer valueOf(int val) {
@@ -203,7 +203,7 @@ public class Values {
     /**
      * Returns a Scalar whose value is equal to that of the specified primitive type.
      * @post RES.longValue() == val
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      * @see java.math.BigInteger#valueOf(long)
      */
     public Integer valueOf(long val) {
@@ -240,7 +240,7 @@ public class Values {
     /**
      * Returns a Scalar whose value is equal to that of the specified primitive type.
      * @post RES.doubleValue() == val
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      * @see java.math.BigInteger#valueOf(long)
      */
     public Real valueOf(double val) {
@@ -252,7 +252,7 @@ public class Values {
     /**
      * Returns a Scalar whose value is equal to that of the specified primitive type.
      * @post RES.floatValue() == val
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      * @see java.math.BigInteger#valueOf(long)
      */
     public Real valueOf(float val) {
@@ -276,7 +276,7 @@ public class Values {
      * Returns a Scalar whose value is equal to that of the specified number.
      * Legacy conversion method.
      * @return an instance of scalar that has the same value as the number.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      * @see #valueOf(double)
      */
     public Scalar valueOf(Number val) {
@@ -405,7 +405,7 @@ public class Values {
      * Note that the resulting vector may or may not be backed by the
      * specified array.
      * </p>
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      * @see #tensor(Arithmetic[])
      */
     public /*<R implements Arithmetic>*/ Vector/*<R>*/ valueOf(Arithmetic/*>R<*/[] values) {
@@ -437,7 +437,7 @@ public class Values {
      * @param dimensions the dimension of the vector.
      * @return a vector of the specified dimension, with undefined components.
      * @post RES.dimension() == dimension()
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      */
     public /*<R implements Arithmetic>*/ Vector/*<R>*/ newInstance(int dim) {
 	return new ArithmeticVector/*<R>*/(dim);
@@ -532,7 +532,7 @@ public class Values {
      * </p>
      * @param values the element values of the matrix to create.
      *  The matrix may be backed by this exact array per reference.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      * @see #tensor(Arithmetic[][])
      */
     public /*<R implements Arithmetic>*/ Matrix/*<R>*/ valueOf(Arithmetic/*>R<*/[][] values) {
@@ -561,7 +561,7 @@ public class Values {
      * @param dimension the dimension of the matrix.
      * @return a matrix of the specified dimensions, with undefined components.
      * @post RES.dimension().equals(dimension)
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      */
     public /*<R implements Arithmetic>*/ Matrix/*<R>*/ newInstance(Dimension dimension) {
 	return new ArithmeticMatrix/*<R>*/(dimension);
@@ -688,7 +688,7 @@ public class Values {
      * Note that the resulting vector may or may not be backed by the
      * specified array.
      * </p>
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      */
     public /*<R implements Arithmetic>*/ Vector/*<R>*/ tensor(Arithmetic/*>R<*/[] values) {
 	return valueOf(values);
@@ -707,7 +707,7 @@ public class Values {
      * </p>
      * @param values the element values of the matrix to create.
      *  The matrix may be backed by this exact array per reference.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      */
     public /*<R implements Arithmetic>*/ Matrix/*<R>*/ tensor(Arithmetic/*>R<*/[][] values) {
 	return valueOf(values);
@@ -728,7 +728,7 @@ public class Values {
      *  The tensor may be backed by this exact array per reference.
      * @pre values is a rectangular multi-dimensional array of {@link Arithmetic arithmetic objects}
      *  or of primitive types
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      */
     public Tensor tensor(Object values) {
 	AbstractTensor t = new ArithmeticTensor(values);
@@ -754,7 +754,7 @@ public class Values {
      *  of the tensor.
      * @return a tensor of the specified dimensions, with undefined components.
      * @post Utilities.equalsAll(RES.dimensions(), dimensions)
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      */
     public Tensor newInstance(int[] dimensions) {
 	// tensors of rank 1 or rank 2 are converted to vectors or matrices
@@ -1104,7 +1104,7 @@ public class Values {
      * @pre coefficients is a rectangular multi-dimensional array of {@link Arithmetic arithmetic objects}
      *  or of primitive types
      * @return the polynomial <var>a</var><sub>0,...,0</sub> + <var>a</var><sub>1,0,...,0</sub>X<sub>1</sub> + <var>a</var><sub>1,1,0,....,0</sub>X<sub>1</sub>X<sub>2</sub> + ... + <var>a</var><sub>2,1,0,....,0</sub>X<sub>1</sub><sup>2</sup>X<sub>2</sub> + ... + <var>a</var><sub>d<sub>1</sub>,...,d<sub>n</sub></sub>X<sub>1</sub><sup>d<sub>1</sub></sup>...&X<sub>n</sub><sup>d<sub>n</sub></sup>.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      */
     public /*<R implements Arithmetic>*/ Polynomial/*<R>*/ polynomial(Object coefficients) {
 	return asPolynomial(tensor(coefficients));
@@ -1188,7 +1188,7 @@ public class Values {
      * The monomial 1&middot;X<sup>i</sup>.
      * Note that the coefficient is {@link #ONE 1}&isin;<b>Z</b>.
      * @param exponent the exponent i of the monomial.
-     * @see <a href="{@docRoot}/DesignPatterns/Convenience.html">Convenience Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience Method</a>
      * @see #MONOMIAL(Arithmetic,Arithmetic)
      */
     public final Polynomial/*<R implements Scalar,S>*/ MONOMIAL(Arithmetic/*>S<*/ exponent) {
@@ -1199,7 +1199,7 @@ public class Values {
      * Note that the coefficient is {@link #ONE 1}&isin;<b>Z</b>.
      * @param exponents the exponents i of the monomial.
      *  The number of variables is <code>n:=exponents.length</code>.
-     * @see <a href="{@docRoot}/DesignPatterns/Convenience.html">Convenience Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience Method</a>
      * @see #MONOMIAL(Arithmetic,int[])
      */
     public final Polynomial/*<R implements Scalar>*/ MONOMIAL(int[] exponents) {
@@ -1214,12 +1214,12 @@ public class Values {
      * Note that the resulting polynomial may or may not be backed by the
      * specified array.
      * </p>
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      * @param coefficients an array <var>a</var> containing the
      * coefficients of the polynomial.
      * @return the polynomial <var>a</var><sub>0</sub> + <var>a</var><sub>1</sub>X + <var>a</var><sub>2</sub>X<sup>2</sup> + ... + <var>a</var><sub>n</sub>X<sup>n</sup> for n=coefficients.length-1.
      * @see #asPolynomial(Vector)
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      */
     public /*<R implements Arithmetic>*/ UnivariatePolynomial/*<R>*/ polynomial(Arithmetic/*>R<*/[] coefficients) {
     	return new ArithmeticUnivariatePolynomial/*<R>*/(coefficients);
@@ -1388,7 +1388,7 @@ public class Values {
      * Although this case appears rather often, it is by far not the
      * only case of quotients, of course.
      * </p>
-     * @see <a href="{@docRoot}/DesignPatterns/Convenience.html">Convenience Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience Method</a>
      * @see #quotient(Euclidean,Euclidean)
      */
     public Quotient/*<Integer>*/ quotient(int a, int m) {
@@ -1439,7 +1439,7 @@ public class Values {
      * @param s the string to be parsed.
      * @return an instance of arithmetic that is equal to the representation in s.
      * @throws NumberFormatException if the string does not contain a parsable arithmetic object.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      */
     public Arithmetic valueOf(String s) throws NumberFormatException {
 	try {

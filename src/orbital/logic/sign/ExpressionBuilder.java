@@ -21,7 +21,8 @@ import java.text.ParseException;
  * @invariant true
  * @version 1.1, 2002/04/09
  * @author  Andr&eacute; Platzer
- * @see <a href="{@docRoot}/DesignPatterns/Builder.html">Builder</a>
+ * @see Expression
+ * @see <a href="{@docRoot}/Patterns/Design/Builder.html">Builder</a>
  * @todo perhaps import coreSignature() from ExpressionSyntax, because LogicParser needs it?
  *  However conceptually, that method does not really fit.
  * @todo improve documentation above
@@ -33,8 +34,11 @@ public interface ExpressionBuilder {
     /**
      * Create an <dfn>atomic</dfn> expression representation of a non-compound sign.
      * <p>
-     * Atomic symbols are either elemental atoms, strings or numbers.
-     * An atom is a logical formula that is not compound of something.
+     * <a href="Expression.html#atomicSymbol">Atomic symbols</a> are either
+     * elemental atoms, strings or numbers.
+     * <span style="float: left; font-size: 200%">&#9761;</span>
+     * In contrast, a logical formula that is not compound of something
+     * (on the level of logical junctors) like "P(x,y)" is sometimes called atom.
      * </p>
      * <p>
      * <h5>Note</h5>
@@ -46,37 +50,37 @@ public interface ExpressionBuilder {
      * @param symbol the symbol whose atomic expression representation to create.
      * @pre symbol&isin;&Sigma;&cup;V&cup;... is a syntactically valid symbol
      * @return an instance of Expression that represents the atomic symbol in this logic.
-     * @post RES.isVariable() &hArr; symbol.isVariable()
+     * @post RES.getType().equals(symbol.getType()) &and; (RES.isVariable() &hArr; symbol.isVariable())
      * @throws IllegalArgumentException if the symbol is illegal for some reasons.
      *  Note that this is a rather rare case and no parsing is involved at all,
      *  which is why this method does not throw a ParseException.
      * @todo think about exceptions
-     * @see <a href="{@docRoot}/DesignPatterns/FactoryMethod.html">Factory Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      */
     Expression createAtomic(Symbol symbol);
 
-    // Create a compound <dfn>term</dfn> expression
+    // Create a <dfn>compound term</dfn> expression
 
     //@TODO complete the design of any additional(?) methods
     /**
      * Create a compound expression representation with a composition operation.
-     * Connects expressions with a composing functor<!-- @todo always a connector or formator? -->
-     * to a <dfn>complex</dfn> expression (<dfn>ascriptor</dfn>).
+     * Connects expressions with a compositor<!-- @todo always a connector or formator? -->
+     * to a <a href="Expression.html#compositeExpression">complex</a> expression.
      * <p>
      * {@link Signature#get(String,Object[])} may be useful for determining the right functor symbol
-     * for a composition.
+     * for a composition with an {@link #createAtomic(Symbol) atomic} compositor.
      * </p>
-     * @param functor the symbol for the functor that performs the desired composition of arguments.
+     * @param compositor the expression that is used for composing the arguments.
      * @param arg the arguments <var>a</var> passed to the combining operation.
-     * @pre functor&ne;null &and; functor(arg)&isin;<i>L</i>
-     *  "functor applied to arg represents a syntactically well-formed expression"
+     * @pre compositor&ne;null &and; compositor(arg)&isin;<i>L</i>
+     *  "compositor applied to arg represents a syntactically well-formed expression"
      * @return an instance of Expression that represents the combined operation with arguments, like in
-     *  <div><code>functor(<var>a</var><span class="operator">[</span><span class="number">0</span><span class="operator">]</span>,...,<var>a</var><span class="operator">[</span><var>a</var>.length<span class="operator">-</span><span class="number">1</span><span class="operator">]</span>)</code></div>
+     *  <div><code>compositor(<var>a</var><span class="operator">[</span><span class="number">0</span><span class="operator">]</span>,...,<var>a</var><span class="operator">[</span><var>a</var>.length<span class="operator">-</span><span class="number">1</span><span class="operator">]</span>)</code></div>
      * @throws ParseException when the composition expression is syntactically malformed.
-     *  Either due to a lexical or grammatical error (also due to wrong arity and type of the arguments).
+     *  Either due to a lexical or grammatical error (also due to wrong type of arguments).
      * @internal this is a meta-operator. We could also choose a simpler compositor part orbital.logic.imp.Symbol but would then need an undefined language primitive "apply" for compose("apply",{f,a}) = f(a). So this formal trick soon looses its simplicity and thus is inferior to the approach of compositors in Term(&Sigma;) instead of just &Sigma;.
-     * @see <a href="{@docRoot}/DesignPatterns/FactoryMethod.html">Factory Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      */
-    Expression compose(Symbol functor, Expression[] arg) throws ParseException;
+    Expression compose(Expression compositor, Expression[] arg) throws ParseException;
 
 }

@@ -32,7 +32,7 @@ import orbital.algorithm.Combinatorical;
  * @author  Andr&eacute; Platzer
  */
 abstract class AbstractMultivariatePolynomial/*<R implements Arithmetic>*/ extends AbstractPolynomial/*<R,Vector<Integer>>*/ {
-    //private static final long serialVersionUID = 0;
+    private static final long serialVersionUID = -2237060189065872837L;
     
     /**
      * The index (0,...,0) of the constant term.
@@ -88,7 +88,7 @@ abstract class AbstractMultivariatePolynomial/*<R implements Arithmetic>*/ exten
      * @return a vector of the same type as this, dimension as specified
      * The elements need not be initialized since they will soon be by the calling method.
      * @post RES != RES
-     * @see <a href="{@docRoot}/DesignPatterns/FactoryMethod.html">Factory Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      * @see #clone()
      */
     protected abstract Polynomial/*<R>*/ newInstance(int[] dimensions);

@@ -21,7 +21,7 @@ import java.io.OutputStream;
  * @version 0.9, 1999/03/21
  * @author  Andr&eacute; Platzer
  * @see RandomInputStream
- * @see <a href="{@docRoot}/DesignPatterns/Null.html">Null object</a>
+ * @see <a href="{@docRoot}/Patterns/Design/Null.html">Null object</a>
  * @deprecated This class is not applicable in a broad range.
  *  So it is considered generally worthless
  *  and might be removed in future releases.

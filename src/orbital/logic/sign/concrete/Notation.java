@@ -30,7 +30,7 @@ import orbital.util.Utility;
 
 /**
  * Represents notational variants of functor applications.
- * @see <a href="{@docRoot}/DesignPatterns/enum.html">typesafe enum pattern</a>
+ * @see <a href="{@docRoot}/Patterns/Design/enum.html">typesafe enum pattern</a>
  * @version 1.0, 2000/08/25
  * @author  Andr&eacute; Platzer
  * @internal typesafe enumeration pattern class to specify functor notation

@@ -30,7 +30,7 @@ import orbital.math.Values;
  * @author  Andr&eacute; Platzer
  * @see GeneralSearchProblem
  * @see <a href="http://www.ldc.usb.ve/~hector">Hector Geffner. Modelling and Problem Solving</a>
- * @see <a href="{@docRoot}/DesignPatterns/Strategy.html">Strategy</a>
+ * @see <a href="{@docRoot}/Patterns/Design/Strategy.html">Strategy</a>
  * @see <a href="doc-files/AlgorithmicTable.png">Table of Algorithms in Comparison</a>
  * @todo introduce BidirectionalSearch and a BidirectionalSearchProblem (either extending GeneralSearchProblem complementing expand and getInitialState with methods working backwards from the goal, or feed BidirectionalSearch with two complementary GeneralSearchProblem objects). They work like Backchaining from the goal instead of "usual" Forward chaining from the initial state.
  * @todo introduce TabuSearch
@@ -110,7 +110,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      *  or <code>null</code> if no solution was found at all.
      * @pre true
      * @post solution == null &or; p.isSolution(solution)
-     * @see <a href="{@docRoot}/DesignPatterns/TemplateMethod.html">Template Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
      * @see #solveImpl(GeneralSearchProblem)
      */
     public final Object/*>S<*/ solve(GeneralSearchProblem/*<A,S>*/ p) {
@@ -169,7 +169,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * @return an iterator over the options
      *  of the problem's state space thereby encapsulating and hiding the traversal order.
      * @attribute secret traversal order
-     * @see <a href="{@docRoot}/DesignPatterns/FactoryMethod.html">Factory Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      * @see GeneralSearch.OptionIterator
      */
     protected abstract Iterator/*<S>*/ createTraversal(GeneralSearchProblem/*<A,S>*/ problem);
@@ -186,7 +186,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      *  which determines the traversal order.
      * @return the solution found searching the state space via <var>nodes</var>.
      * @post solution == null &or; p.isSolution(solution)
-     * @see <a href="{@docRoot}/DesignPatterns/TemplateMethod.html">Template Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
      * @internal
      *  Implemented as an iterative unrolling of a right-linear tail-recursion.
      *  Otherwise it would be important to shallow-clone the nodes list
@@ -226,7 +226,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * @invariant sub classes maintain a collection of nodes to select from
      * @version 0.8, 2001/08/01
      * @author  Andr&eacute; Platzer
-     * @see <a href="{@docRoot}/DesignPatterns/Strategy.html">Strategy</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Strategy.html">Strategy</a>
      * @see GeneralSearch#createTraversal(GeneralSearchProblem)
      */
     public static abstract class OptionIterator implements Iterator/*_<S>_*/, Serializable {
@@ -302,7 +302,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
     	/**
     	 * {@inheritDoc}
     	 * @pre true
-    	 * @see <a href="{@docRoot}/DesignPatterns/TemplateMethod.html">Template Method</a>
+    	 * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
     	 */
     	public boolean hasNext() {
 	    if (!isEmpty())
@@ -321,7 +321,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
     	 * <p>
     	 * Will expand the last element returned, and select a state option to visit.</p>
     	 * @pre hasNext()
-    	 * @see <a href="{@docRoot}/DesignPatterns/TemplateMethod.html">Template Method</a>
+    	 * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
     	 */
     	public Object/*_>S<_*/ next() {
 	    if (lastRet != null)
@@ -399,7 +399,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
     //     * Get a new instance of the implementation data structure.
     //     * <p>
     //     * Implementing methods could return special list implementations like stacks or queues.</p>
-    //	 * @see <a href="{@docRoot}/DesignPatterns/FactoryMethod.html">Factory Method</a>
+    //	 * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
     //	 * @todo remove
     //     */
     //	protected Collection/*<Option>*/ createCollection() {
@@ -435,7 +435,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
     //	 * Overwrite to provide a whole different search scheme.</p>
     //	 * @param nodes is the list of nodes to visit (sometimes called open set).
     //	 * @return the solution found searching the state space starting with nodes.
-    //	 * @see <a href="{@docRoot}/DesignPatterns/TemplateMethod.html">Template Method</a>
+    //	 * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
     //	 * @todo remove
     //	 */
     //	protected Option search(Collection/*<Option>*/ nodes) {

@@ -349,7 +349,7 @@ public class Population implements Serializable /*//TODO: extends DelegateList<G
      *  The prototype must have the right structure to serve as a problem specific solution,
      *  but does not necessarily need to have meaningful values.
      * @return a new random population with genomes according to the prototype.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Method</a>
      * @see Genome#mutate(double)
      * @see Genome#inverse()
      */
@@ -372,7 +372,7 @@ public class Population implements Serializable /*//TODO: extends DelegateList<G
      *  but does not necessarily need to have meaningful values.
      * @return the population filled with random genomes according to the prototype.
      *  <b>Note:</b> this population will not yet have been {@link #evaluate(boolean) evaluated}.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Method</a>
      * @see Genome#mutate(double)
      * @see Genome#inverse()
      */

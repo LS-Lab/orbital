@@ -17,7 +17,7 @@ import java.util.Iterator;
  *
  * @author Andr&eacute; Platzer
  * @version 2002/07/13
- * @see <a href="{@docRoot}/DesignPatterns/Decorator.html">Decorator</a>
+ * @see <a href="{@docRoot}/Patterns/Design/Decorator.html">Decorator</a>
  */
 class RestrictingGeneralSearchProblem extends DelegateGeneralSearchProblem {
     public RestrictingGeneralSearchProblem(GeneralSearchProblem problem){

@@ -592,7 +592,7 @@ public class Game extends Applet implements Runnable {
      * If you desire your own package to be default, simply overwrite this method with the body<pre>
      * super.load(is);
      * </pre>to circumvent confusion with different default packages.</p>
-     * @see <a href="{@docRoot}/DesignPatterns/FactoryMethod.html">Factory Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      * @see GameRules#getImage(Figure)
      * @see #createGameRules(java.lang.String)
      */

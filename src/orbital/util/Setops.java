@@ -92,7 +92,7 @@ public final class Setops {
      * Checks whether all objects in a collection satisfy the specified predicate.
      * @return true if all objects satisfy the predicate, false if one does not.
      *  Returns an optimized version of <code>Functionals.map(and, Functionals.map(Functionals.asFunction(found), i))</code>.
-     * @see <a href="{@docRoot}/DesignPatterns/InternalIterator.html">Internal Iterator</a>
+     * @see <a href="{@docRoot}/Patterns/Design/InternalIterator.html">Internal Iterator</a>
      * @see orbital.logic.functor.Functionals
      * @todo document banana application @see Operations.andAll
      */
@@ -121,7 +121,7 @@ public final class Setops {
      * Checks whether some objects (at least one) in a collection satisfy the specified predicate.
      * @return true if at least one objects satisfies the predicate, false if none does.
      *  Returns an optimized version of return <code>Functionals.map(or, Functionals.map(Functionals.asFunction(found), i))</code>.
-     * @see <a href="{@docRoot}/DesignPatterns/InternalIterator.html">Internal Iterator</a>
+     * @see <a href="{@docRoot}/Patterns/Design/InternalIterator.html">Internal Iterator</a>
      * @see orbital.logic.functor.Functionals
      * @todo document banana application @see Operations.orSome
      */
@@ -587,7 +587,7 @@ public final class Setops {
 
     /**
      * Returns a reverse view of a list.
-     * @see <a href="{@docRoot}/DesignPatterns/Decorator.html">Decorator</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Decorator.html">Decorator</a>
      */
 //     public static final List reverse(final List l) {
 // 	return new AbstractSequentialList() {
@@ -762,7 +762,7 @@ public final class Setops {
      * @param asc whether to use ascending order, or descending.
      *  If false, orderBy comparator will be used reverse.
      * @return a filter that selects the specified data from the source of data it is applied upon.
-     * @see <a href="{@docRoot}/DesignPatterns/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      * @see Filters
      */
     public static final Function/**<Collection &cup; Iterator, Collection>**/ createSelection(final Function/*<Collection, Collection>*/ what,
@@ -814,7 +814,7 @@ public final class Setops {
      * @param orderBy states how to sort every two data elements. No sorting if null.
      * @param asc whether to use ascending order, or descending.
      *  If false, orderBy comparator will be used reverse.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      * @see Filters
      */
     public static final Collection select(Function/*<Collection, Collection>*/ what,

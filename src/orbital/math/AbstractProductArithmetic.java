@@ -70,7 +70,7 @@ abstract class AbstractProductArithmetic/*<R implements Arithmetic, T implements
      * The elements need not be initialized since they will soon be by the calling method.
      * @post RES&ne;RES
      * @throws ClassCastException if productIndexSet has an illegal type for index set specifiers.
-     * @see <a href="{@docRoot}/DesignPatterns/FactoryMethod.html">Factory Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      * @see #clone()
      */
     protected abstract Arithmetic/*>T<*/ newInstance(Object productIndexSet);

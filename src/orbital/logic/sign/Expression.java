@@ -1,7 +1,7 @@
 /**
- * @(#)Expression.java 1.0 2000/03/19 Andre Platzer
+ * @(#)Expression.java 1.0 2000-03-19 Andre Platzer
  * 
- * Copyright (c) 2000 Andre Platzer. All Rights Reserved.
+ * Copyright (c) 2000-2002 Andre Platzer. All Rights Reserved.
  */
 
 package orbital.logic.imp;
@@ -12,24 +12,36 @@ import orbital.logic.functor.Functor.Specification;
  * An interface for representations of expressions.
  * <p>
  * This interface is implemented by objects representing syntactic expressions like those created by
- * {@link ExpressionBuilder#createAtomic(Symbol)}, {@link ExpressionBuilder#compose(Symbol,Expression[])},
+ * {@link ExpressionBuilder#createAtomic(Symbol)}, {@link ExpressionBuilder#compose(Expression,Expression[])},
  * or {@link ExpressionSyntax#createExpression(String)}.
  * </p>
- * Given a signature &Sigma; we can define a general term algebra. We use an abstract
- * notation not saying anything about the particular syntax.
+ * <p>
+ * Given a signature &Sigma; we define a general term algebra and thus the (abstract) syntax of the
+ * expressions. However, the abstract syntax notation does not say anything about the particular syntax.
  * <dl class="def">
- *   <dt>expressions</dt>
- *   <dd>The expressions over a signature &Sigma; of type <span class="type">&tau;</span> are
+ *   <dt id="freeAlgebraOfTerms">free algebra of terms</dt>
+ *   <dd>The free algebra of terms over a signature &Sigma; is a universal &Sigma;-algebra
+ *     (with &empty; as axioms) and also an instance of it.
+ *     It is defined by
  *     <table>
  *       <tr>
- *         <td colspan="2">
- *           Term(&Sigma;)<sub class="type">&tau;</sub> :=
+ *         <td>
+ *           <span class="UniversalAlgebra">T</span>(&Sigma;) :=
+ *         </td>
+ *         <td>
+ *           &#8899;&#775;<sub class="type">&tau;</sub> <span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&tau;</sub>
  *         </td>
  *       </tr>
  *       <tr>
- *         <td rowspan="2" style="width: 5%">
- *           <p>&nbsp;
- *           </p>
+ *         <td colspan="3">The terms (or expressions) of <a href="Symbol.html#type">type</a> <span class="type">&tau;</span> are</td>
+ *       </tr>
+ *       <tr>
+ *         <td colspan="3">
+ *           <span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&tau;</sub> :=
+ *         </td>
+ *       </tr>
+ *       <tr id="atomicSymbol">
+ *         <td rowspan="3">
  *         </td>
  *         <td>
  *           &Sigma;<sub class="type">&tau;</span>
@@ -38,12 +50,12 @@ import orbital.logic.functor.Functor.Specification;
  *           atomic symbols
  *         </td>
  *       </tr>
- *       <tr>
+ *       <tr id="compositeExpression">
  *         <td>
- *           &cup; {<var class="meta">&Phi;</var>(t) &brvbar; <var class="meta">&Phi;</var>&isin;Term(&Sigma;)<sub class="type">&sigma;&rarr;&tau;</sub> and t&isin;Term(&Sigma;)<sub class="type">&sigma;</sub>}
+ *           &cup; {<var class="meta">&upsilon;</var>(t) &brvbar; <var class="meta">&upsilon;</var>&isin;<span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&sigma;&rarr;&tau;</sub> and t&isin;<span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&le;&sigma;</sub>}
  *         </td>
  *         <td class="defTerm">
- *           composites
+ *           composites (<dfn>ascriptors</dfn>)
  *         </td>
  *       </tr>
  *       <tr>
@@ -51,14 +63,15 @@ import orbital.logic.functor.Functor.Specification;
  *           be minimal, i.e. min fix
  *         </td>
  *       </tr>
- *     </table>
- *   </dd>
- *   <dt>(untyped) expressions</dt>
- *   <dd>The expressions over a signature &Sigma; of arbitrary types are
- *     <table>
  *       <tr>
- *         <td colspan="2">
- *           Term(&Sigma;) := &#8899;<sub>&tau;</sub> Term(&Sigma;)<sub class="type">&tau;</sub>
+ *         <td colspan="3">The terms of subtypes of <span class="type">&tau;</span> are</td>
+ *       </tr>
+ *       <tr>
+ *         <td>
+ *           <span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&le;&tau;</sub> :=
+ *         </td>
+ *         <td>
+ *           &#8899;&#775;<sub><span class="type">&rho;</span>&le;<span class="type">&tau;</span></sub> <span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&rho;</sub>
  *         </td>
  *       </tr>
  *     </table>
@@ -68,18 +81,24 @@ import orbital.logic.functor.Functor.Specification;
  * higher arities <var class="meta">n</var> and type
  * <span class="type">&sigma;<sub>1</sub></span>&times;<span class="type">&sigma;<sub>2</sub></span>&times;&#8230;&times;<span class="type">&sigma;<sub><var class="meta">n</var></sub></span>&rarr;<span class="type">&tau;</span>
  * by formally setting <span class="type">&sigma;</span> := <span class="type">&sigma;<sub>1</sub></span>&times;<span class="type">&sigma;<sub>2</sub></span>&times;&#8230;&times;<span class="type">&sigma;<sub><var class="meta">n</var></sub></span>.
- * And the brief notation is justified formally by currying.
- * If we also identify {()}&rarr;<span class="type">&tau;</span> with &tau; it would even include
- * the case of atomic symbols.
- * Also note that <var class="meta">&Phi;</var> does not need to be a function or predicate,
- * but is a meta-variable that may stand for any syntactic composition.
+ * This brief notation is justified formally by {@link orbital.logic.functor.Functionals#curry(BinaryFunction) currying}.
+ * Also note that <var class="meta">&upsilon;</var> is not restricted to functions and predicates,
+ * but is a meta-variable that may stand for any syntactic compositor.
+ * </p>
+ * <p>
+ * With the above decomposition, terms are (at least) a graded magma with the non-commutative magma
+ * of types as graduation. However both compositions involved are partial and may result in
+ * errorneous type &perp; or undefined terms.
+ * </p>
  * 
- * @version 1.0, 2000/03/19
+ * @version 1.0, 2002-09-06
+ * @version 1.0, 2000-03-19
  * @author  Andr&eacute; Platzer
  * @see ExpressionBuilder
  * @see ExpressionBuilder#createAtomic(Symbol)
- * @see ExpressionBuilder#compose(Symbol,Expression[])
+ * @see ExpressionBuilder#compose(Expression,Expression[])
  * @see ExpressionSyntax#createExpression(String)
+ * @todo everywhere distinguish "Term(&Sigma;)" of predicate logic from "<span class="UniversalAlgebra">T</span>(&Sigma;)" general expressions of a term algebra.
  */
 public interface Expression {
     /**

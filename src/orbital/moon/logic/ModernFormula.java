@@ -171,7 +171,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 
     private Formula compose(Symbol op, Formula[] arguments) {
 	try {
-	    return (Formula) logic.compose(op, arguments);
+	    return (Formula) logic.compose(logic.createAtomic(op), arguments);
 	}
 	catch (ParseException ex) {throw (InternalError) new InternalError("errorneous internal composition").initCause(ex);}
     }
@@ -224,6 +224,9 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    return symbol.getType();
         }
 	public boolean isVariable() {return symbol.isVariable();}
+	Symbol getSymbol() {
+	    return symbol;
+	}
 
         public Signature getSignature() {
 	    return new SignatureBase(Collections.singleton(symbol));
@@ -281,7 +284,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	public String toString() { return symbol + ""; }
     }
     //@todo should we also implement VoidFunction?
-    private static class FixedAtomicSymbol extends AtomicSymbol {
+    static class FixedAtomicSymbol extends AtomicSymbol {
 	private Object referent;
 	private boolean core;
 	/**
@@ -303,6 +306,9 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	public int hashCode() {
 	    return Utility.hashCode(referent);
 	}
+	Object getReferent() {
+	    return referent;
+	}
         public Signature getSignature() {
 	    return core ? SignatureBase.EMPTY : super.getSignature();
 	}
@@ -316,20 +322,20 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     /**
      * Delayed composition of a symbol with some arguments.
      * Usually for user-defined predicates etc. or predicates subject to interpretation.
-     * @param f the formula really performing the (outer part of the) composition by op.
-     * @param op the (outer part of the) composing symbol.
-     * @param arguments the arguments to the composition by op.
+     * @param f the compositing formula.
+     * @param arguments the arguments to the composition by f.
+     * @param notation the notation for the composition (usually determined by the composing symbol).
      */
-    public static Formula composeDelayed(Logic underlyingLogic, Formula f, Symbol op, Expression arguments[]) {
-        //@fixme was notation = op.getNotation().getNotation(); but either we disable DEFAULT=BESTFIX formatting, or we ignore the signature's notation choice
-        Notation notation = Notation.DEFAULT;
+    public static Formula composeDelayed(Logic underlyingLogic, Formula f, Expression arguments[], Notation notation) {
+        //@fixme was notat = notation; but either we disable DEFAULT=BESTFIX formatting, or we ignore the signature's notation choice
+        Notation notat = Notation.DEFAULT;
 	switch(arguments.length) {
 	case 0:
-	    return new ModernFormula.VoidCompositeVariableFormula(underlyingLogic, f, op.getNotation().getNotation());
+	    return new ModernFormula.VoidCompositeVariableFormula(underlyingLogic, f, notation);
 	case 1:
-	    return new ModernFormula.CompositeVariableFormula(underlyingLogic, f, (Formula) arguments[0], notation);
+	    return new ModernFormula.CompositeVariableFormula(underlyingLogic, f, (Formula) arguments[0], notat);
 	case 2:
-	    return new ModernFormula.BinaryCompositeVariableFormula(underlyingLogic, f, (Formula) arguments[0], (Formula) arguments[1], notation);
+	    return new ModernFormula.BinaryCompositeVariableFormula(underlyingLogic, f, (Formula) arguments[0], (Formula) arguments[1], notat);
 	default:
 	    // could simply compose f(arguments), here, if f understands arrays
 	    //@todo which Locator to provide, here?
@@ -340,26 +346,26 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     /**
      * Instant composition of functors with a fixed core interperation
      * Usually for predicates etc. subject to fixed core interpretation.
-     * @param f the functor really performing the (outer part of the) composition by op.
-     * @param op the (outer part of the) composing symbol.
-     * @param arguments the arguments to the composition by op.
+     * @param f the compositing formula.
+     * @param arguments the arguments to the composition by f.
+     * @param fsymbol the symbol with with the fixed interpretation f.
      */
-    public static Formula composeFixed(Logic underlyingLogic, Functor f, Symbol op, Expression arguments[]) {
-        //@fixme was notation = op.getNotation().getNotation(); but either we disable DEFAULT=BESTFIX formatting, or we ignore the signature's notation choice
-        Notation notation = Notation.DEFAULT;
+    public static Formula composeFixed(Logic underlyingLogic, Symbol fsymbol, Functor f, Expression arguments[]) {
+        //@fixme was notat = notation; but either we disable DEFAULT=BESTFIX formatting, or we ignore the signature's notation choice
+        Notation notat = Notation.DEFAULT;
 	switch(arguments.length) {
 	case 0:
 	    if (f instanceof VoidPredicate && !(f instanceof VoidFunction))
 		f = Functionals.asFunction((VoidPredicate) f);
-	    return new ModernFormula.CompositeFormula(underlyingLogic, Functionals.onVoid((VoidFunction) f), (Formula) arguments[0], op.getNotation().getNotation());
+	    return new ModernFormula.CompositeFormula(underlyingLogic, fsymbol, Functionals.onVoid((VoidFunction) f), (Formula) arguments[0], fsymbol.getNotation().getNotation());
 	case 1:
 	    if (f instanceof Predicate && !(f instanceof Function))
 		f = Functionals.asFunction((Predicate) f);
-	    return new ModernFormula.CompositeFormula(underlyingLogic, (Function) f, (Formula) arguments[0], notation);
+	    return new ModernFormula.CompositeFormula(underlyingLogic, fsymbol, (Function) f, (Formula) arguments[0], notat);
 	case 2:
 	    if (f instanceof BinaryPredicate && !(f instanceof BinaryFunction))
 		f = Functionals.asFunction((BinaryPredicate) f);
-	    return new ModernFormula.BinaryCompositeFormula(underlyingLogic, (BinaryFunction) f, (Formula) arguments[0], (Formula) arguments[1], notation);
+	    return new ModernFormula.BinaryCompositeFormula(underlyingLogic, fsymbol, (BinaryFunction) f, (Formula) arguments[0], (Formula) arguments[1], notat);
 	default:
 	    // could simply compose f(arguments), here, if f understands arrays
 	    //@todo which Locator to provide, here?
@@ -368,231 +374,6 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     }
 
 
-    // alternative implementation 1 (instant: fixed outer functions)
-	
-    /**
-     * <p>
-     * This class is in fact a workaround for multiple inheritance of
-     * {@link ModernFormula} and {@link orbital.logic.functor.Compositions.CompositeFunction}.</p>
-     * 
-     * @structure inherits ModernFormula
-     * @structure inherits Compositions.CompositeFunction
-     * @todo change type of outer to Formula, and use ConstantFormulas for coreInterpretation instead
-     */
-    static class CompositeFormula extends ModernFormula implements Function.Composite {
-	protected Function outer;
-	protected Formula inner;
-	public CompositeFormula(Logic underlyingLogic, Function f, Formula g, Notation notation) {
-	    super(underlyingLogic);
-	    setNotation(notation);
-	    this.outer = f;
-	    this.inner = g;
-	}
-	public CompositeFormula(Logic underlyingLogic, Function f, Formula g) {
-	    this(underlyingLogic, f, g, null);
-	}
-		
-	private CompositeFormula() {super(null);setNotation(null);}
-		
-        public Specification getType() {
-	    throw new UnsupportedOperationException("not yet implemented");
-        }
-        public Signature getSignature() {
-	    //@todo shouldn't we unify with getCompositor().getSignature() in case of formulas representing predicate or function?
-	    return ((Formula) getComponent()).getSignature();
-        }
-
-	public Set getFreeVariables() {
-	    return inner.getFreeVariables();
-	}
-
-	public Set getBoundVariables() {
-	    return inner.getBoundVariables();
-	}
-
-	// identical to @see orbital.logic.functor.Compositions.CompositeFunction
-	public Functor getCompositor() {
-	    return outer;
-	} 
-	public Object getComponent() {
-	    return inner;
-	} 
-
-	public void setCompositor(Functor f) throws ClassCastException {
-	    this.outer = (Function) f;
-	}
-	public void setComponent(Object g) throws ClassCastException {
-	    setUnderlyingLogicLikeIn((Formula) g);
-	    this.inner = (Formula) g;
-	}
-
-	public Object apply(Object/*>Interpretation<*/ arg) {
-	    return outer/*.apply(arg)*/.apply(inner.apply(arg));
-	} 
-		
-	// identical to @see orbital.logic.functor.Functor.Composite.Abstract
-	/**
-	 * the current notation used for displaying this composite functor.
-	 * @serial
-	 */
-	private Notation notation;
-	public Notation getNotation() {
-	    return notation;
-	}
-	public void setNotation(Notation notation) {
-	    this.notation = notation == null ? Notation.DEFAULT : notation;
-	}
-		
-	/**
-	 * Checks for equality.
-	 * Two CompositeFunctors are equal iff their classes,
-	 * their compositors and their components are equal.
-	 */
-	public boolean equals(Object o) {
-	    if (o == null || getClass() != o.getClass())
-		return false;
-	    // note that it does not matter to which .Composite we cast since we have already checked for class equality
-	    Composite b = (Composite) o;
-	    return Utility.equals(getCompositor(), b.getCompositor())
-		&& Utility.equalsAll(getComponent(), b.getComponent());
-	}
-
-	public int hashCode() {
-	    return Utility.hashCode(getCompositor()) ^ Utility.hashCodeAll(getComponent());
-	}
-
-	/**
-	 * Get a string representation of the composite functor.
-	 * @return <code>{@link Notation#format(Object, Object) notation.format}(getCompositor(), getComponent())</code>.
-	 */
-	public String toString() {
-	    return getNotation().format(getCompositor(), getComponent());
-	}
-    }
-
-    /**
-     * <p>
-     * This class is in fact a workaround for multiple inheritance of
-     * {@link ModernFormula} and {@link orbital.logic.functor.Functionals.BinaryCompositeFunction}.</p>
-     * 
-     * @structure inherits ModernFormula
-     * @structure inherits Functionals.BinaryCompositeFunction
-     */
-    static class BinaryCompositeFormula extends ModernFormula implements Function.Composite {
-	protected BinaryFunction outer;
-	protected Formula left;
-	protected Formula right;
-	public BinaryCompositeFormula(Logic underlyingLogic, BinaryFunction f, Formula g, Formula h, Notation notation) {
-	    super(underlyingLogic);
-	    setNotation(notation);
-	    this.outer = f;
-	    this.left = g;
-	    this.right = h;
-	}
-	public BinaryCompositeFormula(Logic underlyingLogic, BinaryFunction f, Formula g, Formula h) {
-	    this(underlyingLogic, f, g, h, null);
-	}
-		
-	private BinaryCompositeFormula() {super(null);setNotation(null);}
-
-        public Specification getType() {
-	    throw new UnsupportedOperationException("not yet implemented");
-        }
-        public Signature getSignature() {
-	    //@todo could cache signature as well, provided left and right don't change
-	    return left.getSignature().union(right.getSignature());
-        }
-
-	public Set getFreeVariables() {
-	    if (bindingExpressions.contains(outer)) {
-		Set M = right.getFreeVariables();
-		assert left instanceof AtomicSymbol && left.getFreeVariables().size() == 1 : "quantifiers bind an atomic symbol formula";
-		M.removeAll(left.getFreeVariables());
-		return M;
-	    }
-	    return Setops.union(left.getFreeVariables(),
-				right.getFreeVariables());
-	}
-
-	public Set getBoundVariables() {
-	    if (bindingExpressions.contains(outer)) {
-		Set M = right.getBoundVariables();
-		assert left instanceof AtomicSymbol && left.getFreeVariables().size() == 1 : "quantifiers bind an atomic symbol formula";
-		M.addAll(left.getFreeVariables());
-		return M;
-	    }
-	    return Setops.union(left.getBoundVariables(),
-				right.getBoundVariables());
-	}
-
-	// identical to @see orbital.logic.functor.Functionals.BinaryCompositeFunction
-	public Functor getCompositor() {
-	    return outer;
-	} 
-	public Object getComponent() {
-	    return new Formula[] {
-		left, right
-	    };
-	} 
-
-	public void setCompositor(Functor f) throws ClassCastException {
-	    this.outer = (BinaryFunction) f;
-	}
-	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
-	    Formula[] a = (Formula[]) g;
-	    if (a.length != 2)
-		throw new IllegalArgumentException(Formula.class + "[2] expected");
-	    assert ((ModernFormula)a[0]).isCompatibleUnderlyingLogic(a[1]) : "only compose formulas of compatible logics";
-	    setUnderlyingLogicLikeIn(a[0]);
-	    this.left = a[0];
-	    this.right = a[1];
-	}
-
-	public Object apply(Object/*>Interpretation<*/ arg) {
-	    return outer.apply(left.apply(arg), right.apply(arg));
-	} 
-		
-	// identical to @see orbital.logic.functor.Functor.Composite.Abstract
-	/**
-	 * the current notation used for displaying this composite functor.
-	 * @serial
-	 */
-	private Notation notation;
-	public Notation getNotation() {
-	    return notation;
-	}
-	public void setNotation(Notation notation) {
-	    this.notation = notation == null ? Notation.DEFAULT : notation;
-	}
-		
-	/**
-	 * Checks for equality.
-	 * Two CompositeFunctors are equal iff their classes,
-	 * their compositors and their components are equal.
-	 */
-	public boolean equals(Object o) {
-	    if (o == null || getClass() != o.getClass())
-		return false;
-	    // note that it does not matter to which .Composite we cast since we have already checked for class equality
-	    Composite b = (Composite) o;
-	    return Utility.equals(getCompositor(), b.getCompositor())
-		&& Utility.equalsAll(getComponent(), b.getComponent());
-	}
-
-	public int hashCode() {
-	    return Utility.hashCode(getCompositor()) ^ Utility.hashCodeAll(getComponent());
-	}
-
-	/**
-	 * Get a string representation of the composite functor.
-	 * @return <code>{@link Notation#format(Object, Object) notation.format}(getCompositor(), getComponent())</code>.
-	 */
-	public String toString() {
-	    return getNotation().format(getCompositor(), getComponent());
-	}
-    }
-
-    
     // alternative implementation 2 (delayed: variable outer functions defined by formulas)
 	
     /**
@@ -729,7 +510,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	private VoidCompositeVariableFormula() {super(null);setNotation(null);}
 		
         public Specification getType() {
-	    throw new UnsupportedOperationException("not yet implemented");
+	    return new Specification(new Class[0], outer.getType().getReturnType());
         }
         public Signature getSignature() {
 	    return outer.getSignature();
@@ -841,6 +622,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	private BinaryCompositeVariableFormula() {super(null);setNotation(null);}
 
         public Specification getType() {
+	    if (true)
+		throw new UnsupportedOperationException("@xxx is this composition in the sense of Functionals.compose(BinaryFunction,BinaryFunction,BinaryFunction) or of Functionals.compose(BinaryFunction,Function,Function) or of what?");
 	    if (!Utility.equalsAll(left.getType().getParameterTypes(), right.getType().getParameterTypes()))
 		throw new InternalError("@todo not sure whether composition of inhomogenous types is allowed at all");
 	    return new Specification(left.getType().getParameterTypes(), outer.getType().getReturnType());
@@ -937,6 +720,239 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    return getNotation().format(getCompositor(), getComponent());
 	}
     }
+
+
+    // alternative implementation 1 (instant: fixed outer functions)
+	
+    /**
+     * <p>
+     * This class is in fact a workaround for multiple inheritance of
+     * {@link ModernFormula} and {@link orbital.logic.functor.Compositions.CompositeFunction}.</p>
+     * 
+     * @structure inherits ModernFormula
+     * @structure inherits Compositions.CompositeFunction
+     * @todo change type of outer to Formula, and use ConstantFormulas for coreInterpretation instead
+     */
+    static class CompositeFormula extends ModernFormula implements Function.Composite {
+	/**
+	 * The symbol of the fixed interpretation outer.
+	 */
+	protected Symbol outerSymbol;
+	protected Function outer;
+	protected Formula inner;
+	public CompositeFormula(Logic underlyingLogic, Symbol fsymbol, Function f, Formula g, Notation notation) {
+	    super(underlyingLogic);
+	    setNotation(notation);
+	    this.outerSymbol = fsymbol;
+	    this.outer = f;
+	    this.inner = g;
+	}
+	public CompositeFormula(Logic underlyingLogic, Symbol fsymbol, Function f, Formula g) {
+	    this(underlyingLogic, fsymbol, f, g, null);
+	}
+		
+	private CompositeFormula() {super(null);setNotation(null);}
+		
+        public Specification getType() {
+	    return new Specification(inner.getType().getParameterTypes(), outerSymbol.getType().getReturnType());
+        }
+        public Signature getSignature() {
+	    //@todo shouldn't we unify with getCompositor().getSignature() in case of formulas representing predicate or function?
+	    return ((Formula) getComponent()).getSignature();
+        }
+
+	public Set getFreeVariables() {
+	    return inner.getFreeVariables();
+	}
+
+	public Set getBoundVariables() {
+	    return inner.getBoundVariables();
+	}
+
+	// identical to @see orbital.logic.functor.Compositions.CompositeFunction
+	public Functor getCompositor() {
+	    return outer;
+	} 
+	public Object getComponent() {
+	    return inner;
+	} 
+
+	public void setCompositor(Functor f) throws ClassCastException {
+	    this.outer = (Function) f;
+	}
+	public void setComponent(Object g) throws ClassCastException {
+	    setUnderlyingLogicLikeIn((Formula) g);
+	    this.inner = (Formula) g;
+	}
+
+	public Object apply(Object/*>Interpretation<*/ arg) {
+	    return outer.apply(inner.apply(arg));
+	} 
+		
+	// identical to @see orbital.logic.functor.Functor.Composite.Abstract
+	/**
+	 * the current notation used for displaying this composite functor.
+	 * @serial
+	 */
+	private Notation notation;
+	public Notation getNotation() {
+	    return notation;
+	}
+	public void setNotation(Notation notation) {
+	    this.notation = notation == null ? Notation.DEFAULT : notation;
+	}
+		
+	/**
+	 * Checks for equality.
+	 * Two CompositeFunctors are equal iff their classes,
+	 * their compositors and their components are equal.
+	 */
+	public boolean equals(Object o) {
+	    if (o == null || getClass() != o.getClass())
+		return false;
+	    // note that it does not matter to which .Composite we cast since we have already checked for class equality
+	    Composite b = (Composite) o;
+	    return Utility.equals(getCompositor(), b.getCompositor())
+		&& Utility.equalsAll(getComponent(), b.getComponent());
+	}
+
+	public int hashCode() {
+	    return Utility.hashCode(getCompositor()) ^ Utility.hashCodeAll(getComponent());
+	}
+
+	/**
+	 * Get a string representation of the composite functor.
+	 * @return <code>{@link Notation#format(Object, Object) notation.format}(getCompositor(), getComponent())</code>.
+	 */
+	public String toString() {
+	    return getNotation().format(getCompositor(), getComponent());
+	}
+    }
+
+    /**
+     * <p>
+     * This class is in fact a workaround for multiple inheritance of
+     * {@link ModernFormula} and {@link orbital.logic.functor.Functionals.BinaryCompositeFunction}.</p>
+     * 
+     * @structure inherits ModernFormula
+     * @structure inherits Functionals.BinaryCompositeFunction
+     */
+    static class BinaryCompositeFormula extends ModernFormula implements Function.Composite {
+	protected Symbol outerSymbol;
+	protected BinaryFunction outer;
+	protected Formula left;
+	protected Formula right;
+	public BinaryCompositeFormula(Logic underlyingLogic, Symbol fsymbol, BinaryFunction f, Formula g, Formula h, Notation notation) {
+	    super(underlyingLogic);
+	    setNotation(notation);
+	    this.outerSymbol = fsymbol;
+	    this.outer = f;
+	    this.left = g;
+	    this.right = h;
+	}
+	public BinaryCompositeFormula(Logic underlyingLogic, Symbol fsymbol, BinaryFunction f, Formula g, Formula h) {
+	    this(underlyingLogic, fsymbol, f, g, h, null);
+	}
+		
+	private BinaryCompositeFormula() {super(null);setNotation(null);}
+
+        public Specification getType() {
+	    throw new UnsupportedOperationException("not yet implemented");
+        }
+        public Signature getSignature() {
+	    //@todo could cache signature as well, provided left and right don't change
+	    return left.getSignature().union(right.getSignature());
+        }
+
+	public Set getFreeVariables() {
+	    if (bindingExpressions.contains(outer)) {
+		Set M = right.getFreeVariables();
+		assert left instanceof AtomicSymbol && left.getFreeVariables().size() == 1 : "quantifiers bind an atomic symbol formula";
+		M.removeAll(left.getFreeVariables());
+		return M;
+	    }
+	    return Setops.union(left.getFreeVariables(),
+				right.getFreeVariables());
+	}
+
+	public Set getBoundVariables() {
+	    if (bindingExpressions.contains(outer)) {
+		Set M = right.getBoundVariables();
+		assert left instanceof AtomicSymbol && left.getFreeVariables().size() == 1 : "quantifiers bind an atomic symbol formula";
+		M.addAll(left.getFreeVariables());
+		return M;
+	    }
+	    return Setops.union(left.getBoundVariables(),
+				right.getBoundVariables());
+	}
+
+	// identical to @see orbital.logic.functor.Functionals.BinaryCompositeFunction
+	public Functor getCompositor() {
+	    return outer;
+	} 
+	public Object getComponent() {
+	    return new Formula[] {
+		left, right
+	    };
+	} 
+
+	public void setCompositor(Functor f) throws ClassCastException {
+	    this.outer = (BinaryFunction) f;
+	}
+	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
+	    Formula[] a = (Formula[]) g;
+	    if (a.length != 2)
+		throw new IllegalArgumentException(Formula.class + "[2] expected");
+	    assert ((ModernFormula)a[0]).isCompatibleUnderlyingLogic(a[1]) : "only compose formulas of compatible logics";
+	    setUnderlyingLogicLikeIn(a[0]);
+	    this.left = a[0];
+	    this.right = a[1];
+	}
+
+	public Object apply(Object/*>Interpretation<*/ arg) {
+	    return outer.apply(left.apply(arg), right.apply(arg));
+	} 
+		
+	// identical to @see orbital.logic.functor.Functor.Composite.Abstract
+	/**
+	 * the current notation used for displaying this composite functor.
+	 * @serial
+	 */
+	private Notation notation;
+	public Notation getNotation() {
+	    return notation;
+	}
+	public void setNotation(Notation notation) {
+	    this.notation = notation == null ? Notation.DEFAULT : notation;
+	}
+		
+	/**
+	 * Checks for equality.
+	 * Two CompositeFunctors are equal iff their classes,
+	 * their compositors and their components are equal.
+	 */
+	public boolean equals(Object o) {
+	    if (o == null || getClass() != o.getClass())
+		return false;
+	    // note that it does not matter to which .Composite we cast since we have already checked for class equality
+	    Composite b = (Composite) o;
+	    return Utility.equals(getCompositor(), b.getCompositor())
+		&& Utility.equalsAll(getComponent(), b.getComponent());
+	}
+
+	public int hashCode() {
+	    return Utility.hashCode(getCompositor()) ^ Utility.hashCodeAll(getComponent());
+	}
+
+	/**
+	 * Get a string representation of the composite functor.
+	 * @return <code>{@link Notation#format(Object, Object) notation.format}(getCompositor(), getComponent())</code>.
+	 */
+	public String toString() {
+	    return getNotation().format(getCompositor(), getComponent());
+	}
+    }
+
 }
 
 

@@ -312,7 +312,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 
     /**
      * facade for convenience.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade</a>
      */
     public boolean infer(String expression, String exprDerived) throws java.text.ParseException {
 	Signature sigma = scanSignature(expression).union(scanSignature(exprDerived));
@@ -390,7 +390,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      * Instances will define the set of fuzzy logic operators applied.
      * @version 1.0, 2002/05/29
      * @author  Andr&eacute; Platzer
-     * @see <a href="{@docRoot}/DesignPatterns/enum.html">typesafe enum pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/enum.html">typesafe enum pattern</a>
      * @internal typesafe enumeration pattern class to specify fuzzy logic operators
      * @invariant a.equals(b) &hArr; a==b
      * @todo improve name

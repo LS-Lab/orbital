@@ -196,7 +196,7 @@ public class ArithmeticFormat extends Format {
     }
 
     /**
-     * @see <a href="{@docRoot}/DesignPatterns/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      */
     public static ArithmeticFormat getInstance(Locale locale) {
 	return new ArithmeticFormat(locale);
@@ -205,7 +205,7 @@ public class ArithmeticFormat extends Format {
     /**
      * Returns the default number format for the current default locale.
      * @see #getDefaultInstance()
-     * @see <a href="{@docRoot}/DesignPatterns/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      */
     public static ArithmeticFormat getInstance() {
 	return new ArithmeticFormat(Locale.getDefault());
@@ -220,7 +220,7 @@ public class ArithmeticFormat extends Format {
      * Get the default instance of format that does scientific mathematical formatting.
      * Used in {@link Object#toString()} methods in this package.
      * @see java.text.NumberFormat#getScientificInstance()
-     * @see <a href="{@docRoot}/DesignPatterns/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      * @todo rename to getMathematicalInstance() or getScientificInstance()?
      */
     public static final ArithmeticFormat getDefaultInstance() {

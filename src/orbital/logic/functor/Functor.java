@@ -130,7 +130,7 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
      * @version 1.0, 2000/08/23
      * @author  Andr&eacute; Platzer
      * @internal see AbstractFunctorComposite
-     * @see <a href="{@docRoot}/DesignPatterns/Composite.html">(unidirectional and multiple) Composite Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Composite.html">(unidirectional and multiple) Composite Pattern</a>
      */
     static interface Composite extends Functor {
 	/**
@@ -269,6 +269,23 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	    this.spec_parameterTypes = parameterTypes;
 	    this.spec_returnType = returnType;
 	}
+	/**
+	 * Create an exact specification with all properties declared.
+	 * The types given are represented themselves as specifications.
+	 * @param parameterTypes an array of all parameter-types in order of calling. Its length is called arity.
+	 * @param returnType the type of a resulting value.
+	 * @pre parameterTypes&ne;null &and; returnType&ne;null
+	 */
+	public Specification(Specification[] parameterTypes, Specification returnType) {
+	    // for n=1 would need Specification(Function<parameterTypes[0].getParameterTypes(),parameterTypes[0].getReturnType()>, Function<returnType.getParameterTypes(),returnType.getReturnType()>);
+	    if (parameterTypes.length == 1 && parameterTypes[0].arity() == 0
+		&& returnType.arity() == 0) {
+		this.spec_parameterTypes = new Class[] {parameterTypes[0].getReturnType()};
+		this.spec_returnType = returnType.getReturnType();
+	    } else
+		throw new UnsupportedOperationException("@xxx how to represent the type " + orbital.math.MathUtilities.format(parameterTypes) + "->" + returnType);
+	}
+
 	/**
 	 * Create an exact <em>predicate</em> specification with all properties declared.
 	 * <p>
@@ -424,8 +441,10 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	 * they are of the same kind (same type or a subtype).
 	 * </p>
 	 * @param b the specification of the functor that is to be checked for compatibility with this specification.
-	 * @return whether <code>b &le; this</code>, i.e. if this specification is more general than b.
-	 *  This means that b is more special than this and fulfills the requirements of this specification.
+	 * @return whether <code>b &le; this</code>,
+	 *  i.e. if this specification is more general than b.
+	 *  This means that b is more special than this and fulfills the requirements
+	 *  of this specification, thus can be considered a subtype.
 	 * @see #isApplicableTo(Object[])
 	 * @see java.lang.Class#isAssignableFrom(java.lang.Class)
 	 */

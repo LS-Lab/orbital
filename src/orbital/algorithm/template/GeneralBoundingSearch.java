@@ -104,7 +104,7 @@ public abstract class GeneralBoundingSearch extends GeneralSearch implements Eva
      * @param node the node to check.
      * @return whether the node is out of current bounds.
      * @see #getBound()
-     * @see <a href="{@docRoot}/DesignPatterns/TemplateMethod.html">Template Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
      * @todo would we profit from transforming bound into a Real?
      */
     protected boolean isOutOfBounds(Object/*>S<*/ node) {
@@ -139,7 +139,7 @@ public abstract class GeneralBoundingSearch extends GeneralSearch implements Eva
 
     /**
      * {@inheritDoc}	
-     * @see <a href="{@docRoot}/DesignPatterns/TemplateMethod.html">Template Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
      * @internal Implemented as an iterative unrolling of a right-linear tail-recursion.
      */
     protected Object/*>S<*/ search(Iterator nodes) {

@@ -93,7 +93,7 @@ public class IterativeBroadening extends DepthFirstBoundingSearch {
 	}
         protected boolean add(final Iterator newNodes) {
 	    return super.add(new Iterator() {
-		    // @see <a href="{@docRoot}/DesignPatterns/Decorator.html">Decorator</a>
+		    // @see <a href="{@docRoot}/Patterns/Design/Decorator.html">Decorator</a>
 		    /**
 		     * How often we have successfully expanded by a call to next().
 		     */

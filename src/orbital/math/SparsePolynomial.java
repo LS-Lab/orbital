@@ -22,7 +22,7 @@ import java.util.HashMap;
  * @author  Andr&eacute; Platzer
  */
 class SparsePolynomial/*<R implements Arithmetic, S implements Arithmetic>*/ extends AbstractPolynomial/*<R,S>*/ {
-    //private static final long serialVersionUID = 0;
+    private static final long serialVersionUID = -8833160240745985849L;
 
     /**
      * Maps indices in S to the corresponding coefficients &iota;(s)&isin;R.

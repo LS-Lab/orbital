@@ -64,7 +64,7 @@ public class AlphaBetaPruning extends AdversarySearch {
      * @param state in which state to choose an action.
      * @return the best move option (according to h).
      * @pre this implementation assumes a two player game
-     * @see <a href="{@docRoot}/DesignPatterns/TemplateMethod.html">Template Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
      */
     public Option solve(Field state) {
     	assert currentDepth == 0 : "search starts at currentDepth 0, and should as well come back to 0";

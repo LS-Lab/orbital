@@ -66,7 +66,7 @@ import orbital.util.Utility;
  *
  * @version 0.9, 2001/06/20
  * @author  Andr&eacute; Platzer
- * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+ * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
  * @see #lambda
  */
 public class Substitutions {
@@ -104,7 +104,7 @@ public class Substitutions {
      * @param replacements the set of elementary replacements.
      * @pre replacements[i] instanceof {@link Substitution.Matcher} &and; &forall;i&ne;j replacements[i].pattern()&ne;replacements[j].pattern()
      * @return &sigma; = [replacements].
-     * @see <a href="{@docRoot}/DesignPatterns/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      */
     public static final Substitution getInstance(Collection/*_<Matcher>_*/ replacements) {
     	assert validateDistinctPatterns(replacements) : "multiple elementary replacements with the same pattern do not form a true substitution: " + replacements;
@@ -135,7 +135,7 @@ public class Substitutions {
      * </p>
      * @param pattern The object against which to match with {@link Object#equals(Object)}.
      * @substitute The substitute substituting terms that matched.
-     * @see <a href="{@docRoot}/DesignPatterns/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      */
     public static final Matcher createExactMatcher(Object pattern, Object substitute) {
     	return new SubstitutionImpl.MatcherImpl(pattern, substitute);
@@ -146,7 +146,7 @@ public class Substitutions {
      * This matcher performs exact matching with means of {@link Object#equals(Object)}, only.
      * </p>
      * @param pattern The object against which to match with {@link Object#equals(Object)}.
-     * @see <a href="{@docRoot}/DesignPatterns/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      */
     public static final Matcher createExactMatcher(Object pattern) {
     	return new SubstitutionImpl.MatcherImpl(pattern);
@@ -173,7 +173,7 @@ public class Substitutions {
      * @param substitute The substitute substituting terms that matched, after transforming <code>substitute</code>
      *  with the unifier that performed the matching.
      * @todo improve name (and concept)
-     * @see <a href="{@docRoot}/DesignPatterns/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      */
     public static final Matcher createSingleSidedMatcher(Object pattern, Object substitute) {
     	return new SubstitutionImpl.UnifyingMatcher(pattern, substitute);
@@ -182,7 +182,7 @@ public class Substitutions {
      * Create a new single sided matcher with unification that does not perform substitution.
      * @param pattern The object against which to (single side) match with {@link Substitutions#unify(Collection)}.
      * @see #createSingleSidedMatcher(Object, Object)
-     * @see <a href="{@docRoot}/DesignPatterns/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      */
     public static final Matcher createSingleSidedMatcher(Object pattern) {
     	return new SubstitutionImpl.UnifyingMatcher(pattern);

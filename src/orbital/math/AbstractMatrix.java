@@ -199,7 +199,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
      * @return a matrix of the same type as this, dimension as specified.
      * The elements need not be initialized since they will soon be by the calling method.
      * @post RES != RES
-     * @see <a href="{@docRoot}/DesignPatterns/FactoryMethod.html">Factory Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      * @see #clone()
      */
     protected abstract Matrix/*<R>*/ newInstance(Dimension dim);

@@ -69,7 +69,7 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractProdu
      * @return a tensor of the same type as this, dimensions as specified.
      * The elements need not be initialized since they will soon be by the calling method.
      * @post RES != RES
-     * @see <a href="{@docRoot}/DesignPatterns/FactoryMethod.html">Factory Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      * @see #clone()
      */
     protected abstract Tensor/*<R>*/ newInstance(int[] dim);

@@ -25,7 +25,7 @@ package orbital.algorithm.template;
  * @version 1.0, 2000/07/07
  * @author  Andr&eacute; Platzer
  * @see AlgorithmicTemplate
- * @see <a href="{@docRoot}/DesignPatterns/TemplateMethod.html">Template Method</a>
+ * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
  */
 public abstract interface AlgorithmicProblem {
 

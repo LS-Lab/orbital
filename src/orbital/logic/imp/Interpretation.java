@@ -15,7 +15,11 @@ import orbital.logic.functor.Functor;
  * with the entities in the world (for semantics).
  * The arbitrary symbols in the signature are given a meaning with an interpretation, only.
  * <p>
- * A (denotational) interpretation is a mapping from signs to interpretants (alias referents).
+ * In principle, semantics of syntactic expressions are usually defined with denotational semantics for interpretations,
+ * with operational semantics for a calculus, and sometimes with algebraic semantics or logical semantics.</p>
+ * </p>
+ * <p>
+ * A (denotational) interpretation is a mapping from signs to referents.
  * More precisely
  * <dl class="def">
  *   <dt id="interpretation">interpretation</dt>
@@ -24,13 +28,13 @@ import orbital.logic.functor.Functor;
  *     I:&Sigma;<sub class="type">&tau;</sub>&rarr;<span class="set">D</span><sub class="type">&tau;</sub>
  *     for each type <span class="type">&tau;</span>, with
  *     <ul>
- *       <li>I maps symbols of type <span class="type">&tau;</span> to elements of <span class="set">D</span><sub class="type">&tau;</sub>.</li>
- *       <li><span class="set">D</span><sub class="type">t</sub> := <span class="set">Boole</span> := {True,False} for the type <span class="type">t</span> of truth-values.</li>
- *       <li><span class="set">D</span><sub class="type">e</sub> := <span class="set">D</span> is a set called universe or domain of I for the type <span class="type">e</span> of entities.
+ *       <li>I maps symbols of <a href="Symbol.html#type">type</a> <span class="type">&tau;</span> to elements of <span class="set">D</span><sub class="type">&tau;</sub>.</li>
+ *       <li><span class="set">D</span><sub class="type">&omicron;</sub> := <span class="set">Boole</span> := {True,False} for the type <span class="type">&omicron;</span>=<span class="type">()</span> of truth-values (also the type of atomic formulas).</li>
+ *       <li><span class="set">D</span><sub class="type">&iota;</sub> := <span class="set">D</span> is a set called universe or domain of I for the type <span class="type">&iota;</span> of individuals.
  *         It is non-empty by presupposition of existence.</li>
  *       <li><span class="set">D</span><sub class="type">&sigma;&rarr;&tau;</sub> := Map(<span class="set">D</span><sub class="type">&sigma;</sub>,<span class="set">D</span><sub class="type">&tau;</sub>) = <span class="set">D</span><sub class="type">&tau;</sub><sup><span class="set">D</span><sub class="type">&sigma;</sub></sup>.</li>
- *       <li><span class="set">D</span><sub class="type">(&sigma;)</sub> = <span class="set">D</span><sub class="type">&sigma;&rarr;t</sub> &cong; &weierp;(<span class="set">D</span><sub class="type">&sigma;</sub>)
- *         since the predicate type <span class="type">(&sigma;)</span> abbreviates the function type <span class="type">&sigma;&rarr;t</span>,
+ *       <li><span class="set">D</span><sub class="type">(&sigma;)</sub> = <span class="set">D</span><sub class="type">&sigma;&rarr;&omicron;</sub> &cong; &weierp;(<span class="set">D</span><sub class="type">&sigma;</sub>)
+ *         since the predicate type <span class="type">(&sigma;)</span> abbreviates the function type <span class="type">&sigma;&rarr;&omicron;</span>,
  *         and we can identify subsets &rho;&isin;&weierp;(<span class="set">D</span><sub class="type">&sigma;</sub>)
  *         with their characterisitic functions &chi;<sub>&rho;</sub>&isin;Map(<span class="set">D</span><sub class="type">&sigma;</sub>,{True,False}).</li>
  *     </ul>
@@ -39,33 +43,38 @@ import orbital.logic.functor.Functor;
  *   </dd>
  *   <dt>homomorphism</dt>
  *   <dd>
- *     Let I:&Sigma;&rarr;<span class="set">D</span> be an interpretation.
- *     <table border="0">
+ *     <table>
  *       <tr>
- * <!-- @todo simplify by joining Term(&Sigma;) and Formula(&Sigma;) into single set like in Expression.java -->
- *         <td colspan="4">&nbsp;&phi;:&Sigma;&cup;Term(&Sigma;)&cup;Formula(&Sigma;)&rarr;<span class="set">D</span>&cup;<span class="set">D</span>&cup;Boole
- *           is a homomorphism of &Sigma;-expressions, if</td>
+ *         <td colspan="4">&phi;:<span class="UniversalAlgebra">T</span>(&Sigma;)&rarr;<span class="set">D</span>
+ *           is a <dfn>homomorphism of (typed) &Sigma;-algebras</dfn>, i.e. a family of maps
+ *           &phi;:<span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&tau;</sub>&rarr;<span class="set">D</span><sub class="type">&tau;</sub>,
+ *           if
+ *         </td>
  *       </tr>
  *       <tr>
- *         <td width="6%" rowspan="3">&nbsp;</td>
+ *         <td width="6%" rowspan="4">&nbsp;</td>
  *       </tr>
  *       <tr>
- *         <td>&phi;(f(t<sub>1</sub>,&#8230;,t<sub>n</sub>))</td>
+ *         <td>&phi;(<var class="meta">&upsilon;</var>(t))</td>
+ *         <td>= &phi;(<var class="meta">&upsilon;</var>)<big>(</big>&phi;(t)<big>)</big></td>
+ *         <td>for <var class="meta">&upsilon;</var>&isin;&Sigma;<sub class="type">&sigma;&rarr;&tau;</sub>, t&isin;<span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&le;&sigma;</sub></td>
+ * <!-- @todo or <var class="meta">&upsilon;</var>&isin;<span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&sigma;&rarr;&tau;</sub>? -->
+ *       </tr>
+ *       <tr>
+ *         <td colspan="3">Especially</td>
+ *       </tr>
+ *       <tr>
+ *         <td>&phi;(&upsilon;(t<sub>1</sub>,&#8230;,t<sub>n</sub>))</td>
  *         <td>= &phi;(f)<big>(</big>&phi;(t<sub>1</sub>),&#8230;,&phi;(t<sub>n</sub>)<big>)</big></td>
- *         <td>if f&isin;&Sigma;<sub>n</sub> is a function, t<sub>1</sub>,&#8230;,t<sub>n</sub>&isin;Term(&Sigma;)</td>
- *       </tr>
- *       <tr>
- *         <td>&phi;(P(t<sub>1</sub>,&#8230;,t<sub>n</sub>))</td>
- *         <td>&hArr; &phi;(P)<big>(</big>&phi;(t<sub>1</sub>),&#8230;,&phi;(t<sub>n</sub>)<big>)</big></td>
- *         <td>if P&isin;&Sigma;<sub>n</sub> is a predicate, t<sub>1</sub>,&#8230;,t<sub>n</sub>&isin;Term(&Sigma;)</td>
+ *         <td>for f&isin;&Sigma;<sub>n</sub> is a function, t<sub>1</sub>,&#8230;,t<sub>n</sub>&isin;<span class="UniversalAlgebra">T</span>(&Sigma;)</td>
  *       </tr>
  *     </table>
  *   </dd>
  *   <dt>truth-functional</dt>
  *   <dd>
  *     If for every interpretation I:&Sigma;&rarr;<span class="set">D</span> there is a unique continuation
- *     &phi;:&Sigma;&cup;Term(&Sigma;)&cup;Formula(&Sigma;)&rarr;<span class="set">D</span>&cup;<span class="set">D</span>&cup;Boole
- *     that is a homomorphism of &Sigma;-expressions, i.e.
+ *     &phi;:<span class="UniversalAlgebra">T</span>(&Sigma;)&rarr;<span class="set">D</span>
+ *     that is a homomorphism of &Sigma;-algebras, i.e.
  *     <center>&phi;|&Sigma; = I and &phi; is homomorph</center>
  *     Then the logic is called truth-functional,
  *     and that unique homomorphism &phi; is called the (expression) evaluation or truth-function,
@@ -82,22 +91,19 @@ import orbital.logic.functor.Functor;
  *     can be defined with the combined semantics of the components and junctors.
  *     Then the junctors are treated truth-functionally, that is, every junctor is defined
  *     by its corresponding function that maps the combined truth-values to resulting truth-values.
+ *     This is denoted with truth-tables.
  *     </p>
  *   </dd>
  * </dl>
  * </p>
- * <p id="satisfactionRelation">
- * If we have a truth-functional logic, we can define the satisfaction relation
+ * <p>
+ * If we have a truth-functional logic, we can define the <dfn id="satisfactionRelation">satisfaction relation</dfn>
  * with truth-functions
  *   <center>I &#8871; F :&hArr; I(F) = true</center>
  * The satisfaction relation defines the semantics of a formula.
  * In effect, it encapsulates the details of truth-functions into a single relation.
- * Although this may not instantly appear to be advantageous, we then receive the
+ * Although this may not instantly appear to be of advantage, we then receive the
  * freedom of interchanging the satisfaction relation (or even any truth-functions underlying it).
- * </p>
- * <p>
- * In principle, semantics of syntactic expressions are usually defined with denotational semantics for interpretations,
- * with operational semantics for a calculus, and sometimes with algebraic semantics or logical semantics.</p>
  * </p>
  * <p>
  * <a id="Model"></a>

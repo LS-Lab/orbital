@@ -94,7 +94,7 @@ public class Selections {
      * @param orderBy states how to sort every two data elements. No sorting if null.
      * @param asc whether to use ascending order, or descending.
      *  If false, orderBy comparator will be used reverse.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      */
     public static final Collection select(Function/*<Collection, Collection>*/ what,
 					  Collection from,

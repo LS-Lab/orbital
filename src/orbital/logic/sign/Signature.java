@@ -14,7 +14,8 @@ import java.util.SortedSet;
  * A signature is the vocabulary or alphabet of logical signs of which to
  * build well-formed formulas. It is assumed to be provided effectively.
  * <p>
- * A signature &Sigma; often is partitioned into sets &Sigma;<sub class="type">&tau;</sub>
+ * A signature &Sigma; =: &#8899;&#775;<sub class="type">&tau;</sub> &Sigma;<sub class="type">&tau;</sub>
+ * often is partitioned into disjunct sets &Sigma;<sub class="type">&tau;</sub>
  * according to the types {@link Symbol#getType() <span class="type">&tau;</span>} of its symbols.
  * Then &Sigma;<sub class="type">&tau;</sub>&sube;&Sigma; is the subset of symbols
  * of type <span class="type">&tau;</span>.

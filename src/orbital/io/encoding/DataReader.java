@@ -160,7 +160,7 @@ public class DataReader extends AnyInputStream implements DataInput {
      * or <code>null</code> if no decoding is necessary. (for efficiency reasons).
      * @throws UnsupportedEncodingException if no reader is found for the given encoding.
      * @throws IOException if the instantiation throws an IOException.
-     * @see <a href="{@docRoot}/DesignPatterns/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      */
     public static DataReader getInstance(Reader rd, String encoding) throws UnsupportedEncodingException, IOException {
 	if (encoding == null)
@@ -190,7 +190,7 @@ public class DataReader extends AnyInputStream implements DataInput {
      * @throws UnsupportedEncodingException if no reader is found for the given encoding.
      * @throws IOException if the instantiation throws an IOException.
      * @see #getInstance(Reader, String)
-     * @see <a href="{@docRoot}/DesignPatterns/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      */
     public static DataReader getInstance(InputStream is, String encoding) throws UnsupportedEncodingException, IOException {
 	if (encoding == null)

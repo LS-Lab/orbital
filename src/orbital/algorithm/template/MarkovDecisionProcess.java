@@ -227,7 +227,7 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
     	 * However, beware of implicit function approximization and generalization techniques for
     	 * U, that might disturb the convergence of RTDP.</p>
     	 * @return an arbitrary table-like implementation ready to keep values for arguments.
-	 * @see <a href="{@docRoot}/DesignPatterns/FactoryMethod.html">Factory Method</a>
+	 * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
     	 */
     	protected MutableFunction createMap() {
 	    return new MutableFunction.TableFunction(getEvaluation());

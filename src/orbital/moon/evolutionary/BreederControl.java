@@ -311,7 +311,7 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
     /**
      * Create a problem-specific genome prototype.
      * Used for mutation etc.
-     * @see <a href="{@docRoot}/DesignPatterns/FactoryMethod.html">Factory Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      */
     protected Genome createGenome() {
 	//XXX: where to get the prototype from?
@@ -965,7 +965,7 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
     
     /**
      * Create a status bar to display.
-     * @see <a href="{@docRoot}/DesignPatterns/FactoryMethod.html">Factory Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      */
     protected Component createStatusBar() {
 	statusBar.setText("");
