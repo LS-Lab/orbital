@@ -101,7 +101,7 @@ public class SetOfSupportResolution extends ResolutionBase {
 		 i2.hasNext(); ) {
 		final Clause D = (Clause) i2.next();
 		// try to resolve C with D
-		for (Iterator resolvents = C.resolveWithVariant(D); resolvents.hasNext(); ) {
+		for (Iterator resolvents = ((ClauseImpl)C).resolveWithVariantFactors(D); resolvents.hasNext(); ) {
 		    resolvable = true;
 		    final Clause R = (Clause)resolvents.next();
 		    if (usable.contains(R) || setOfSupport.contains(R)) {
