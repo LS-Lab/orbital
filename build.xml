@@ -499,7 +499,7 @@
         </jar>
 
 	<!-- all-in-one jar version: union of orbital-core.jar and orbital-ext.jar -->
-        <jar destfile="${dist}/lib/orbital${version.brief}.jar">
+        <jar destfile="${dist}/lib/orbital${version_brief}.jar">
 	    <manifest>
 	        <attribute name="Built-By" value="${user.name}"/>
 	        <attribute name="Extension-Name" value="orbital"/>
@@ -580,6 +580,7 @@
 	    addproperty="pass"/>
 	<signjar jar="${dist}/lib/orbital-core.jar" alias="Andre" storepass="${pass}"/>
 	<signjar jar="${dist}/lib/orbital-ext.jar" alias="Andre" storepass="${pass}"/>
+	<signjar jar="${dist}/lib/orbital.jar" alias="Andre" storepass="${pass}"/>
 
 	<touch datetime="${TODAY} 1:01 am">
 	    <fileset dir="${dist}/lib">
