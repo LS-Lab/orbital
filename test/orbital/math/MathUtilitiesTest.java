@@ -33,13 +33,13 @@ public class MathUtilitiesTest extends check.TestCase {
 	assertEquals(AlgebraicAlgorithms.gcd(vf.valueOf(8), vf.valueOf(4)), vf.valueOf(4));
 	//assertEquals(AlgebraicAlgorithms.gcd(vf.valueOf(-8), vf.valueOf(-4)), vf.valueOf(4));
 	assertEquals(AlgebraicAlgorithms.gcd(vf.valueOf(-8), vf.valueOf(4)), vf.valueOf(4));
-	assertEquals(AlgebraicAlgorithms.gcd(vf.valueOf(8), vf.valueOf(-4)), vf.valueOf(4));
+	assertTrue(associated(AlgebraicAlgorithms.gcd(vf.valueOf(8), vf.valueOf(-4)), vf.valueOf(4)));
 	assertEquals(AlgebraicAlgorithms.gcd(vf.valueOf(8), vf.valueOf(6)), vf.valueOf(2));
-	assertEquals(AlgebraicAlgorithms.gcd(vf.valueOf(-8), vf.valueOf(-6)), vf.valueOf(2));
-	assertEquals(AlgebraicAlgorithms.gcd(vf.valueOf(-8), vf.valueOf(6)), vf.valueOf(2));
+	assertTrue(associated(AlgebraicAlgorithms.gcd(vf.valueOf(-8), vf.valueOf(-6)), vf.valueOf(2)));
+	assertTrue(associated(AlgebraicAlgorithms.gcd(vf.valueOf(-8), vf.valueOf(6)), vf.valueOf(2)));
 	assertEquals(AlgebraicAlgorithms.gcd(vf.valueOf(8), vf.valueOf(-6)), vf.valueOf(2));
 
-	assertEquals(AlgebraicAlgorithms.gcd(vf.valueOf(-8), vf.valueOf(-4)), vf.valueOf(4));
+	assertTrue(associated(AlgebraicAlgorithms.gcd(vf.valueOf(-8), vf.valueOf(-4)), vf.valueOf(4)));
     }
     private static String expectedRomans[] = {
 	null,
@@ -107,5 +107,19 @@ public class MathUtilitiesTest extends check.TestCase {
     public void testPrimes() {
 	for (BigInteger p = BigInteger.valueOf(0); p.compareTo(BigInteger.valueOf(140)) < 0; p = p.add(BigInteger.valueOf(1)))
 	    assertTrue(p + (expectedPrime[p.intValue()] ? " is " : " is not ") + "prime", MathUtilities.isPrime(p) == expectedPrime[p.intValue()]);
-    } 
+    }
+
+    /**
+     * Checks whether two elements are associated, i.e. only differ by a unit.
+     * @internal Heuristic implementation.
+     */
+    protected static final boolean associated(Arithmetic a, Arithmetic b) {
+	return a.divide(b).getClass().equals(a)
+	    && b.divide(a).getClass().equals(a);
+    }
+    protected static final boolean associated(Arithmetic a, Integer b) {
+	//@internal optimized version for integers having units 1,-1
+	return a.equals(b)
+	    || a.equals(b.minus());
+    }
 }
