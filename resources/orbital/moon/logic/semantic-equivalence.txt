@@ -130,6 +130,9 @@ p->r, q->r |= (p|q)->r
 |= (f->g) | (g->f)	# material implication has strange causal relations
 c&a | ~c&b == c&a | ~c&b | a&b	# consensus rule <= (absorbtion,n,tertium non datur,d)
 (c|a) & (~c|b) == (c|a) & (~c|b) & (a|b)	# consensus rule <= (absorbtion,n,tertium non datur,d)
+|= ((p->q)->p)->p	# Peirce's axiom is the "difference" between an intuitionist system of propositional calculus and a classical system and is not accepted by intuitionists.
+|= (((((p->q)->(~r->~s))->r)->t)->((t->p)->(s->p)))	# Carew Meredith's (1904-1976) sole axiom for propositional calculus. Thought to be the shortest possible single axiom for propositional calculus using ~,->,mp
+
 #
 # <-> (or better yet <=>) is a congruence
 #
