@@ -76,7 +76,7 @@ public interface Signature extends SortedSet/*<Symbol>*/ {
      *  <code>null</code>, or an array of length <span class="number">0</span> can be used for zero arguments.
      * @return the symbol that has the specified signifier and is applicable to <tt>arg</tt>, if exists.
      *  Returns <code>null</code> otherwise.
-     * @postconditions (RES = &iota;[s&isin;this (s.getSignifier().equals(signifier) &and; succeedes(s.getType().on(typeOf(arg))))] &or; RES=null) &and; this.equals(OLD)
+     * @postconditions (RES = &iota;[s&isin;this (s.getSignifier().equals(signifier) &and; s.getType().isApplicableTo(arg))] &or; RES=null) &and; this.equals(OLD)
      * @see #get(String,Type)
      */
     //@todo perhaps we should ignore notation of Symbols (especially precedence etc.), since some callers may not know the exact precedence.

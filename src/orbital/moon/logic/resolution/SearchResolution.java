@@ -1,5 +1,5 @@
 /**
- * @(#)Resolution.java 0.9 2001/07/30 Andre Platzer
+ * @(#)SearchResolution.java 0.9 2001/07/30 Andre Platzer
  *
  * Copyright (c) 2001 Andre Platzer. All Rights Reserved.
  */
@@ -10,24 +10,14 @@ import orbital.moon.logic.ClassicalLogic.Utilities;
 
 import orbital.logic.imp.*;
 import orbital.logic.sign.*;
-import orbital.logic.sign.type.Types;
-import orbital.logic.sign.Expression.Composite;
 
 import orbital.algorithm.template.GeneralSearchProblem;
 import orbital.algorithm.template.*;
 import orbital.logic.functor.*;
-import orbital.logic.trs.Substitution;
-import orbital.logic.trs.Substitutions;
-
-import orbital.moon.logic.bridge.SubstitutionImpl.UnifyingMatcher;
 
 import orbital.util.SequenceIterator;
 import orbital.util.StreamMethod;
-import orbital.util.Setops;
 import java.util.*;
-
-import orbital.logic.functor.Functor.Specification;
-import orbital.logic.sign.concrete.Notation.NotationSpecification;
 
 import orbital.math.Values;
 
@@ -35,48 +25,10 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 
 /**
- * Set of support resolution.
- * <p>
- * General resolution procedure for M<sub>1</sub>,...,M<sub>n</sub> &#8872; A is
- * <ol>
- *   <li>E := {Cl<sub>&forall;</sub>M<sub>1</sub>,...,Cl<sub>&forall;</sub>M<sub>1</sub>,&not;Cl<sub>&forall;</sub>A}</li>
- *   <li>transform each formula in E to prenex normal form</li>
- *   <li>
- *     transform each formula in E to Skolem normal form with matrices in conjunctive normal form.
- *     The Skolem-functions introduced are new and distinct.
- *   </li>
- *   <li>drop the &forall;-quantifiers and write the remaining conjunctions of disjunctions of literals
- *     as sets of clauses.
- *     The union of these clauses is (again) called E.
- *   </li>
- *   <li>
- *     try to resolve from E (with building variants to achieve disjunct variables) the empty clause &#9633;:
- *     <pre>
- *     R := E
- *     <span class="keyword">while</span> &#9633;&notin;R <span class="keyword">do</span>
- *         <span class="keyword">if</span> there are clauses C<sub>1</sub>,C<sub>2</sub>&isin;R, and a variable renaming &rho;
- *                 with Resolvent(C<sub>1</sub>, &rho;(C<sub>2</sub>)) &notin; R
- *         <span class="keyword">then</span>
- *             <span class="keyword">choose</span> such clauses C<sub>1</sub>,C<sub>2</sub>&isin;R, and
- *             <span class="keyword">choose</span> such a variable renaming &rho;
- *             R := R&cup;{Resolvent(C<sub>1</sub>, &rho;(C<sub>2</sub>))}
- *         <span class="keyword">else</span>
- *             <span class="keyword">return</span> fail
- *         <span class="keyword">fi</span>
- *     <span class="keyword">end</span>
- *     <span class="keyword">return</span> success
- *     </pre>
- *   </li>
- * </ol>
- * </p>
+ * Set of support resolution based on search.
  *
  * @version 0.7, 2001/07/30
  * @author  Andr&eacute; Platzer
- * @todo introduce "class Clause extends Set<Formula>" adding more type-safety for clauses and sets of clauses which are both sets.
- * @todo Skolem-Normalfrom mit KNF-Matrix (mit Erweiterung der Signatur)
- * @todo schlaues pränex-Normalform Bilden, um einfacher skolemisieren zu können. Minimiere die Anzahl der Allquantoren vor den Existenzquantoren.
- *  etwa &exist;x&forall;y P &and; &exist;z&forall;w Q  == &exist;x&exist;z &forall;y&forall;w P&and;Q statt == &exist;x&forall;y&exist;z&forall;w P&and;Q denn im ersteren Fall skolemisiert x zu a und z zu b, im zweiteren aber x zu a und z zu f(y).
- *  Oder wähle alternativen (einfacheren?) TRS-Algorithmus Ü 7.95
  * @todo use do/undo instead of copying the whole set of derived formulas every time.
  * @todo use optimizations of "Deduktions- und Inferenzsysteme"
  * @internal proving F |= A->B and F |= B->A separately often is far more performant than proving F |= A<->B.
@@ -89,22 +41,14 @@ import java.util.logging.Level;
  * But we can only prove when that's the first conjecture, when it's hidden in "modal-equivalence.txt" our proof does not terminate either.
  * It also depends on how many conjectures are in "modal-equivalence.txt"
  */
-public class Resolution implements Inference {
+public class SearchResolution extends ResolutionBase {
     private static final boolean ASYNCHRONOUS_EXPAND = false;
-    /**
-     * Whether or not to use simplified clausal forms.
-     */
-    private static final boolean SIMPLIFYING = false;
-
-    private static final Logger logger = Logger.getLogger(Resolution.class.getName());
-    private static final ClassicalLogic logic = new ClassicalLogic();
-	
     /**
      * the search algorithm used.
      * @xxx maybe for reentrance we should always instantiate a new search algorithm for each infer() ?
      */
     private final GeneralSearch search;
-    public Resolution() {
+    public SearchResolution() {
 	//@internal we do search for cheapest solutions but for first solution
         //this.search = new IterativeDeepening();
         //@xxx BreadthFirstSearch will lead us to producing a lot of dangling threads if ASYNCHRONOUS_EXPAND=true
@@ -118,88 +62,16 @@ public class Resolution implements Inference {
 	//this.search = new IterativeDeepeningAStar(orbital.math.functional.Functions.constant(Values.getDefaultInstance().valueOf(0)));
 
         this.search = new IterativeDeepeningAStar(heuristic);
+	//@todo since resolution proving is proof confluent, we can use a hill-climber and do not need backtracking, once we provide fairness
+        //this.search = new HillClimbing(heuristic);
     }
 
-    public boolean infer(final Formula[] B, final Formula D) {
-        // skolemize B and drop quantifiers
-        final List/*_<Formula>_*/ skolemizedB = new ArrayList(B.length);
-        for (int i = 0; i < B.length; i++) {
-	    skolemizedB.add(Utilities.dropQuantifiers(Utilities.skolemForm(B[i])));
-	    if (logger.isLoggable(Level.FINEST))
-		logger.log(Level.FINEST, "in W skolemForm( {0} ) == {1}", new Object[] {B[i], Utilities.skolemForm(B[i])});
-	}
-
-        // convert B to clausalForm knowledgebase
-	// @internal knowledgebase = Functionals.map(clausalForm, skolemizedB)
-        ClausalSet knowledgebase = new ClausalSetImpl();
-        for (Iterator i = skolemizedB.iterator(); i.hasNext(); ) {
-	    knowledgebase.addAll(clausalForm((Formula) i.next(), SIMPLIFYING));
-	}
-
-	// factorize
-        knowledgebase = (ClausalSet) Functionals.map(factorize, knowledgebase);
-
-	// remove tautologies and handle contradictions
-    	// for all clauses F&isin;knowledgebase
-    	for (Iterator i = knowledgebase.iterator(); i.hasNext(); ) {
-	    final Clause F = (Clause) i.next();
-	    if (F.equals(Utilities.CONTRADICTION))
-		throw new IllegalStateException("premises are inconsistent since they already contain a contradiction, so ex falso quodlibet");
-	    else if (F.isElementaryValid())
-		// if F is obviously valid, forget about it for resolving a contradiction
-		i.remove();
-	}
-
-        logger.log(Level.FINE, "W == {0}", knowledgebase);
-        if (logger.isLoggable(Level.FINEST))
-	    for (int i = 0; i < B.length; i++)
-		logger.log(Level.FINEST, "W thus contains transformation of original formula {0}", Utilities.conjunctiveForm(B[i], SIMPLIFYING));
-
-        // negate query since we are a negative test calculus
-        final Formula query = D.not();
-
-	// skolemize (negated) query
-	//@todo could we optimize by already transforming query to CNF, somewhat earlier? At least avoid transforming ~(a<->b) to ~(cnf(a<->b))
-	final Formula skolemizedQuery = Utilities.dropQuantifiers(Utilities.skolemForm(query));
-	logger.log(Level.FINER, "in S skolemForm( {0} ) == {1}", new Object[] {query, skolemizedQuery});
-
-        // convert (negated) query to clausalForm S, forming the initial set of support
-	ClausalSet S = clausalForm(skolemizedQuery, SIMPLIFYING);
-	logger.log(Level.FINER, "in S clausalForm( {0} ) == {1}", new Object[] {skolemizedQuery, new HashSet(S)});
-
-	// factorize
-        S = (ClausalSet) Functionals.map(factorize, S);
-
-	// remove tautologies and handle contradictions
-    	// for all clauses F&isin;S
-    	for (Iterator i = S.iterator(); i.hasNext(); ) {
-	    final Clause F = (Clause) i.next();
-	    if (F.equals(Utilities.CONTRADICTION))
-		// note that we could just as well check for contradictions prior to factorizing, because factorization does not introduce contradictions
-		throw new IllegalStateException("the query already contains a contradiction: " + D.not() + " = " + S);
-	    if (F.isElementaryValid())
-		// if F is obviously valid, forget about it for resolving a contradiction
-		i.remove();
-	}    		
-
-        if (logger.isLoggable(Level.FINEST))
-	    logger.log(Level.FINEST, "negated goal S == {0}\n == {1}\n (== {2} original in CNF)", new Object[] {skolemizedQuery, S, Utilities.conjunctiveForm(query, SIMPLIFYING)});
-	logger.log(Level.FINE, "negated goal S == {0}\n == {1}", new Object[] {skolemizedQuery, S});
-
-        final Object solution = search.solve(new ResolutionProblem(knowledgebase, S));
+    protected boolean prove(ClausalSet knowledgebase, ClausalSet query) {
+        final Object solution = search.solve(new ResolutionProblem(knowledgebase, query));
 	logger.log(Level.FINE, "found solution {0}", solution);
         return solution != null;
     }
 	
-    public boolean isSound() {
-	return true;
-    }
-
-    public boolean isComplete() {
-	// assuming knowledge base W is consistent, we are refutation-complete
-	return true;
-    }
-
     /**
      * A (non-admissible) heuristic that prefers smaller length of clauses for resolving.
      * @internal in each resolution step only one literal is resolved so the size decreases by one
@@ -214,6 +86,7 @@ public class Resolution implements Inference {
 	};
 
     /**
+     * Resolution proving represented as an infinite search problem.
      * @internal we identify S=A here such that we can perform all work in actions().
      */
     private final class ResolutionProblem implements GeneralSearchProblem/*<Proof,Proof>*/ {
@@ -255,7 +128,7 @@ public class Resolution implements Inference {
 	    };
         public boolean isSolution(Object n) {
 	    final ClausalSet S = ((Proof) n).setOfSupport;
-	    // solely rely on goal lookahead (see below)
+	    // solely rely on goal lookahead (@see #actions(Object))
 	    final boolean goal = S.size() == 1 && S.contains(Utilities.CONTRADICTION);
 	    logger.log(Level.FINE, "isSolution=={0} of the clauses {1}", new Object[] {new Boolean(goal), S});
 	    return goal;
@@ -265,7 +138,12 @@ public class Resolution implements Inference {
 	    return new StreamMethod(ASYNCHRONOUS_EXPAND) {
 		    public void runStream() {
                 	final ClausalSet S = ((Proof) n).setOfSupport;
-			// we use a list view of the set S for optimized resolving (after having resolved G with F, we won't resolve F with G again). But we only modify the set F&isin;S=listS, and thus - indirectly - S and listS.
+			// we use a list view of the set S for
+			// optimized resolving (after having resolved
+			// G with F, we won't resolve F with G
+			// again). But we only modify the set
+			// F&isin;S=listS, and thus - indirectly - S
+			// and listS.
 			final List	 listS = Collections.unmodifiableList(new LinkedList(S));
                 	Collection	 r = new LinkedList();
                 	// choose any clause G&isin;S
@@ -279,17 +157,9 @@ public class Resolution implements Inference {
 			    // choose any clause F&isin;W&cup;S (that does not occur before G in S)
 			    for (Iterator i2 = new SequenceIterator(new Iterator[] {knowledgebase.iterator(), listS.listIterator(i.previousIndex())});
 				 i2.hasNext(); ) {
-				Clause             F = (Clause) i2.next();
-				final Signature	   FVariables = F.getFreeVariables();
-				final Signature	   overlappingVariables = GVariables.intersection(FVariables);
-				if (!overlappingVariables.isEmpty()) {
-				    // make a variant of F such that the variables of F and G are disjunct
-				    //@todo optimize would it be quicker if we always build variants, regardless of disjunctness or not?
-				    F = F.variant(overlappingVariables);
-				}
-
+				final Clause F = (Clause) i2.next();
 				// try to resolve G with F (to L)
-                        	for (Iterator resolvents = F.resolveWith(G); resolvents.hasNext(); ) {
+                        	for (Iterator resolvents = F.resolveWithVariant(G); resolvents.hasNext(); ) {
 				    resolvable = true;
 				    Clause R = (Clause)resolvents.next();
 				    // goal lookahead
@@ -325,7 +195,7 @@ public class Resolution implements Inference {
 	}
 
 	public TransitionModel.Transition transition(Object action, Object state, Object statep) {
-	    return new Transition(action, 1);
+	    return new Transition(action, Values.ONE);
 	}
     }
 
@@ -338,7 +208,7 @@ public class Resolution implements Inference {
     private static class Proof {
 	/**
 	 * the current set of support.
-	 * (containing all formulas already deduced, or in initial set of support)
+	 * (containing all formulas already deduced, or in the initial set of support)
 	 */
 	ClausalSet setOfSupport;
 
@@ -358,36 +228,4 @@ public class Resolution implements Inference {
 	    this.accumulatedCost = accumulatedCost;
 	}
     }	    
-
-    // Tools
-
-    /**
-     * Transforms into clausal form.
-     * <p>
-     * Defined per structural induction.
-     * </p>
-     * @param simplifying Whether or not to use simplified CNF for calculating clausal forms.
-     * @todo assert
-     * @todo move to orbital.moon.logic.resolution....?
-     */
-    public static final ClausalSet clausalForm(Formula f, boolean simplifying) {
-	return new ClausalSetImpl
-	    (
-	     Functionals.map(new Function() {
-		     public Object apply(Object C) {
-			 return new ClauseImpl((Set)C);
-		     }
-		 }, ClassicalLogic.Utilities.clausalForm(f, simplifying))
-	     );
-    }
-
-    /**
-     * Factorize a clause as much as possible.
-     * @see Clause#factorize()
-     */
-    private static final Function/*<Clause,Clause>*/ factorize = new Function() {
-	    public Object apply(Object C) {
-		return ((Clause)C).factorize();
-	    }
-	};
 }

@@ -95,26 +95,18 @@ public final class Types {
      * @param compositorType the type of the compositor to apply to the arguments.
      * @param args the arguments to check for compatibility with this symbol.
      *  <code>null</code>, or an array of length <span class="number">0</span> can be used for zero arguments.
-     * @return whether a compositor of type compositorType is <a href="../Expression.html#freeAlgebraOfTerms">applicable</a> to the given arguments.
+     * @return whether a compositor of type compositorType is <a href="Expression.html#freeAlgebraOfTerms">applicable</a> to the given arguments.
      *  Which means that the arguments are assignable to the required parameter types of this symbol.
      *  This especially includes whether the number of arguments matches the arity of the compositorTypes' domain.
      * @postconditions RES == (typeOf(args) &le; compositorType.domain()) == (compositorType &le; typeOf(args)<span class="type">&rarr;&#8868;</span>)
-     *  == succeedes(compositorType.on(typeOf(args)))
      * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience method</a>
-     * @see Type#on(Type)
      * @see Type#subtypeOf(Type)
      * @see orbital.logic.functor.Functor.Specification#isApplicableTo(Object[])
      * @todo introduce isComposableWith(Type,Type) or anything that uses argType.codomain() =< compositorType.domain()
      * @xxx remove convenience?
      */
     public static final boolean isApplicableTo(Type compositorType, Expression[] args) {
-	try {
-	    compositorType.on(typeOf(args));
-	    return true;
-	}
-	catch (TypeException incompatibleTypes) {
-	    return false;
-	}
+	return typeOf(args).subtypeOf(compositorType.domain());
     }
 
     // Stuff

@@ -51,7 +51,7 @@ import orbital.logic.functor.Functor;
  *         with their characterisitic functions &chi;<sub>&delta;&rho;</sub>&isin;Map(<span class="set">D</span><sub class="type">&sigma;</sub>,{True,False}).</li>
  *     </ul>
  *     Also we can identify (<span class="set">D</span><sup>0</sup>&rarr;<span class="set">D</span>)&cong;<span class="set">D</span>, as well as &weierp;(<span class="set">D</span><sup>0</sup>)={&empty;,{()}}&cong;{True,False}.
- *     <!-- @todo make sure this uniform referent is a good idea in conjunction with the strong type system of Java? -->
+ *     <!-- @todo is this a good idea in conjunction with the strong type system of Java? -->
  *     Interpretations are homomorphisms.
  *   </dd>
  *   <dt>homomorphism</dt>
