@@ -151,16 +151,23 @@
             <classpath refid="project.classpath"/>
         </javac>
 
-        <!-- cleanup temporary files -->
+        <!-- cleanup temporary files from stamp -->
         <delete dir="${sources}/t" failonerror="false"/>
     </target>
 
     <target name="stamp" depends="init" unless="signe.isUpToDate"
             description="prepare files for compile">
         <mkdir dir="${sources}/t"/>
+        <!-- @internal due to signe.isUpToDate predication, buildnumber -->
+	<!-- will only increase during clean compilation/jar/dist etc. -->
+        <buildnumber/>
         <!-- introduce version information -->
         <copy file="${sources}/orbital/signe.java" todir="${sources}/t"/>
-        <replace file="${sources}/t/signe.java" token="@VERSION@" value="${version}"/>
+        <replace file="${sources}/t/signe.java"
+		propertyfile="${basedir}/build.number">
+            <replacefilter token="@VERSION@" value="${version}"/>
+            <replacefilter token="@BUILD@" property="build.number"/>
+        </replace>
     </target>
  
 
@@ -704,15 +711,15 @@
             <zipfileset dir="${dist}" prefix="Orbital">
 	        <include name="readme.html"/>
 	    </zipfileset>
+<!--
             <zipfileset dir="${lib}" prefix="Orbital/lib">
                 <include name="**/*.jar"/>
                 <include name="**/*.zip"/>
             </zipfileset>
-<!--
+-->
             <zipfileset dir="${dist}" includes="lib/*.jar" prefix="Orbital">
                 <exclude name="lib/orbital${version_brief}.jar"/>
             </zipfileset>
--->
             <zipfileset dir="${bin}" prefix="Orbital/bin">
 	        <include name="**/*.bat"/>
 	        <include name="**/*.sh"/>
