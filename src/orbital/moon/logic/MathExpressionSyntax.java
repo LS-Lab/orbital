@@ -165,7 +165,7 @@ public class MathExpressionSyntax implements ExpressionSyntax {
 	    else if (cod.subtypeOf(Types.objectType(Arithmetic.class)))
 		return new MathExpression(valueFactory.valueOf(symbol.getSignifier()), symbol.getType());
 	    else
-		throw new IllegalArgumentException("strange (unknown) type " + symbol.getType() + " of " + symbol);
+		throw new IllegalArgumentException("strange (unknown) type " + symbol.getType() + " of symbol " + symbol);
 	else {
 	    return new MathExpression(findFunction(symbol.getSignifier()), symbol.getType());
 	}
