@@ -193,6 +193,9 @@ public class ClassicalLogic extends ModernLogic {
 	    ClassicalLogic logic = new ClassicalLogic();
 	    boolean hasBeenProving = false;
 
+	    if ("-test".equals(arg[0]))
+		logic.parseTypeExpressionTest();
+
 	    //@todo we should print an error if there already was a file in arg, but the last options are not followed by a file again and are completely vain
 	    for (int option = 0; option < arg.length; option++) {
 		if ("-normalForm".equals(arg[option]))
@@ -506,6 +509,8 @@ public class ClassicalLogic extends ModernLogic {
 	     new NotationSpecification(500, "fx", Notation.PREFIX)},
 	    {typeSystem.map(),
 	     new NotationSpecification(500, "xfx", Notation.INFIX)},
+	    {typeSystem.product(),
+	     new NotationSpecification(500, "fx", Notation.PREFIX)},
 
 	    {Operations.plus, null},
 	    {Operations.minus, null},
@@ -534,7 +539,7 @@ public class ClassicalLogic extends ModernLogic {
 	    {LogicFunctions.exists,       // "?"
 	     new NotationSpecification(900, "fy", Notation.PREFIX)},
 	    {LogicFunctions.lambda,       // "\\"
-	     new NotationSpecification(900, "fxy", NOTATION_LAMBDA)},
+	      new NotationSpecification(900, "fxy", NOTATION_LAMBDA)},
 	    {LogicFunctions.pi,           // "\\\\"
 	     new NotationSpecification(900, "fxx", Notation.PREFIX)},
 
@@ -555,6 +560,69 @@ public class ClassicalLogic extends ModernLogic {
 	}, false, true, true);
     private static final Signature _coreSignature = _coreInterpretation.getSignature();
 
+    private final void parseTypeExpressionTest() {
+	//TYPE_CHECK = false;
+	try {
+	    Symbol tau = new SymbolBase("tau", typeSystem.TYPE(), null, true);
+	    Symbol MAP = coreSignature().get("->", typeSystem.map(typeSystem.product(new Type[] {typeSystem.TYPE(), typeSystem.TYPE()}), typeSystem.TYPE()));
+	    Symbol truth = coreSignature().get("truth", typeSystem.TYPE());
+	    Type t = new PiAbstractionType(tau,
+					   (Formula) compose(createAtomic(MAP), new Expression[] {createAtomic(tau), createAtomic(truth)}),
+					   InterpretationBase.EMPTY(coreSignature()));
+	    System.err.println(t);
+	    Symbol PRODUCT = coreSignature().get("*", typeSystem.map(typeSystem.list(typeSystem.TYPE()), typeSystem.TYPE()));
+	    Symbol sigma = new SymbolBase("sigma", typeSystem.TYPE(), null, true);
+	    t = new PiAbstractionType(sigma,
+				      new PiAbstractionExpression(tau, (Formula)
+								  compose(createAtomic(MAP), new Expression[] {
+								      compose(createAtomic(PRODUCT), new Expression[] {new FormulaSequence(new Expression[] {createAtomic(sigma), createAtomic(tau)})}),
+								      compose(createAtomic(MAP), new Expression[] {createAtomic(sigma), createAtomic(tau)})
+								  })),
+				      InterpretationBase.EMPTY(coreSignature()));
+	    System.err.println(t);
+	    t = parseTypeExpression("(\\\\s . (s->truth)->truth)");
+	    System.err.println(t);
+	    t = parseTypeExpression("(\\\\s . (s->truth))");
+	    System.err.println(t);
+	    Symbol ALL2 = new SymbolBase("o", t);
+	    System.err.println(createAtomic(ALL2));
+	    System.err.println(Types.toTypedString(compose(createAtomic(ALL2), new Expression[] {
+		createAtomic(new SymbolBase("p", typeSystem.map(typeSystem.objectType(String.class, "string"), Types.TRUTH))),
+	    })));
+
+	    t = parseTypeExpression("(\\\\s . s->(s->s))");
+	    System.err.println(t);
+	    t = parseTypeExpression("(\\\\s . (\\\\t. t))");
+	    System.err.println(t);
+	    t = parseTypeExpression("(\\\\s . (\\\\t . s->(t->(s->t))))");
+	    System.err.println(t);
+	    Symbol LAMBDA2 = new SymbolBase("l", t);
+	    System.err.println(createAtomic(LAMBDA2));
+	    System.err.println(Types.toTypedString(compose(compose(createAtomic(LAMBDA2), new Expression[] {
+		createAtomic(new SymbolBase("x", typeSystem.objectType(String.class, "string"), null, true)),
+	    }), new Expression[] {
+		createAtomic(new SymbolBase("a", typeSystem.objectType(Boolean.class, "truth"))),
+	    })));
+	} catch (orbital.logic.sign.ParseException ex) {
+	    throw (InternalError) new InternalError("Unexpected syntax in internal term construction")
+		.initCause(ex);
+	}
+    }
+    private final Type parseTypeExpression(String expression) {
+	try {
+	    LogicParser parser = new LogicParser(new StringReader(expression));
+	    parser.setSyntax(this);
+	    return parser.parseType();
+	} catch (orbital.moon.logic.ParseException ex) {
+	    throw (InternalError) new InternalError("Unexpected syntax in internal term construction")
+		.initCause(new ParseException(ex.getMessage() + "\nIn expression: " + expression,
+					      ex.currentToken == null ? COMPLEX_ERROR_OFFSET : ex.currentToken.next.beginLine,
+					      ex.currentToken == null ? COMPLEX_ERROR_OFFSET : ex.currentToken.next.beginColumn,
+					      ex)
+			   );
+	}
+    }
+    
     // Helper utilities.
 
     static class LogicFunctions {
@@ -701,23 +769,78 @@ public class ClassicalLogic extends ModernLogic {
 	assert LAMBDA != null : "lambda operator found";
 	PI = _coreSignature.get("\\\\", new Expression[] {BOTTOM,BOTTOM}); //@todo
     }
+    /**
+     * @internal replaces
+     *  [(f:&Pi;x.t)(a:&tau;) &rarr; <big>(</big>&lt;to (&Pi;x.t)(&mu;(x))&gt;(f)<big>)</big>(a:&tau;)]
+     *  where &mu; = mgU(&tau;,t)
+     */
     public Expression.Composite compose(Expression compositor, Expression arguments[]) throws ParseException {
 	// handle special cases of term construction, first and before type checking occurs since the type &Pi;-abstractions need more flexibility
 	if (compositor.getType() instanceof PiAbstractionType) {
-	    PiAbstractionType piabst = (PiAbstractionType) compositor.getType();
+	    final PiAbstractionType piabst = (PiAbstractionType) compositor.getType();
 	    //@xxx to be honest, we somehow need to unify? For example, if &forall; : (\\s:*.(s&rarr;o)&rarr;o) and if f:i&rarr;o then &forall;(f) : o.
-	    Type apType = Types.typeOf(arguments);
-	    logger.log(Level.FINEST, "compositor {0} : {1} applied to the {2} arguments {3} : {4}. Result has type {5}", new Object[] {compositor, compositor.getType(), new java.lang.Integer(arguments.length), MathUtilities.format(arguments), Types.typeOf(arguments), piabst.apply(Types.typeOf(arguments))});
+	    // but what to apply piabst on? On mu(s), n'est-ce pas?
+
+	    /**
+	     * Converts a type to a formula representing a type.
+	     * @version 1.1, 2003-02-05
+	     * @author Andr&eacute; Platzer
+	     * @see LogicParser#asType(Expression)
+	     */
+	    class TypeToFormula implements Function {
+		public Object apply(Object o) {
+		    if (o instanceof Type.Composite) {
+			try {
+			    Type.Composite c = (Type.Composite)o;
+			    return compose(createAtomic(coreSignature().get(c.getCompositor().toString(),
+									    Types.declaredTypeOf((Functor)c.getCompositor()))),
+					   (Expression[])
+					   ((Collection)
+					    Functionals.map(this, Utility.asCollection(c.getComponent())))
+					   //@internal first of all Functionals.map has ArrayStoreException. Second, getComponent() does not need to be an array, but can also be a Type.
+					   .toArray(new Expression[0])
+					   );
+			}
+			catch (ParseException ex) {
+			    throw new InnerCheckedException(ex);
+			}
+			catch (IntrospectionException ex) {
+			    throw new InnerCheckedException(ex);
+			}
+		    } else
+			return createAtomic(coreSignature().get(o.toString(),
+								typeSystem.TYPE()));
+		}
+	    }
+
+	    // the required application type
+	    final Formula reqApType = (Formula) new TypeToFormula().apply(Types.typeOf(arguments));
+	    System.err.println("unify " + reqApType + "\n  and " + ((Object[])piabst.getComponent())[1]);
+	    final Substitution mu = Substitutions.unify(Arrays.asList(new Object[] {
+		reqApType,
+		((Object[])piabst.getComponent())[1]
+	    }));
+	    System.err.println("  is " + mu);
+	    if (mu == null)
+		throw new Error("could not unify types");
+	    // the application type actually passed as parameter to the &Pi;-abstraction.
+	    final Type parameterApType = LogicParser.myasType((Expression)mu.apply(createAtomic(piabst.getVariable())), coreSignature());
+	    logger.log(Level.FINEST, "compositor {0} : {1} applied to the {2} arguments {3} : {4} (= {5}). Result has 'instantiated' type {6} by parameter {7}.", new Object[] {compositor, compositor.getType(), new java.lang.Integer(arguments.length), MathUtilities.format(arguments), Types.typeOf(arguments), reqApType, piabst.apply(parameterApType), parameterApType});
 	    //@todo could we exchange compositor by a formula that only differs in type, and thus avoid conversion formula?
-	    return super.compose(super.compose(new PiApplicationExpression(piabst,
-									   piabst.apply(apType)
+	    return super.compose(
+				 super.compose(new PiApplicationExpression(piabst,
+									   piabst.apply(parameterApType)
 									   ),
 					       new Expression[] {compositor}
 					       ),
-				 arguments);
+				 arguments
+				 );
 	}
 	return super.compose(compositor, arguments);
     }
+    /**
+     * @internal special handling of compositors &lambda; and &Pi;.
+     */
     Expression.Composite composeImpl(Expression compositor, Expression arguments[]) throws ParseException {
 	// handle special cases of term construction, first
 	if ((compositor instanceof ModernFormula.FixedAtomicSymbol)
@@ -738,7 +861,9 @@ public class ClassicalLogic extends ModernLogic {
 	} else
 	    return super.composeImpl(compositor, arguments);
     }
-    
+
+    // &lambda;
+
     /**
      * Term constructor &lambda;&#8728; on propositions.
      * The &lambda;-operator cannot be interpreted truth-functionally but needs structural
@@ -855,11 +980,12 @@ public class ClassicalLogic extends ModernLogic {
 	}
     }
 
+    // &Pi;
+
     /**
-     * (&Pi;x.term):*&rarr;*
+     * (&Pi;x.term):*&rarr;* type constructor expression.
      * @author Andr&eacute; Platzer
      * @version 1.1, 2002-11-10
-     * @xxx in fact this is not truely a type :* but a constructor? :*->*
      */
     private static class PiAbstractionExpression extends ModernFormula.AbstractCompositeFormula {
 	private Symbol x;
@@ -871,8 +997,9 @@ public class ClassicalLogic extends ModernLogic {
 	    super(null);//@xxx
 	    this.x = x;
 	    this.term = term;
-	    if (term.getType() != term.getType().typeSystem().TYPE())
-		throw new TypeException("would not expect type " + term.getType() + " for type expressions @xxx except for other kinds like *->*", term.getType().typeSystem().TYPE(), term.getType());
+	    if (!orbital.moon.logic.sign.type.StandardTypeSystem.kind.apply(term.getType()))
+		//@xxx expected type is not complete
+		throw new TypeException("would not expect type " + term.getType() + " for type expressions, but a kind:[]", term.getType().typeSystem().TYPE(), term.getType());
 	}
 
 	// identical to @see orbital.logic.functor.Functionals.BinaryCompositeFunction
@@ -926,11 +1053,11 @@ public class ClassicalLogic extends ModernLogic {
 	    return Setops.union(term.getVariables(), Collections.singleton(x));
 	}
 
-	// return I(&lambda;x.t)
+	// return I(&Pi;x.term)
 	//@see LambdaAbstractionFormula#apply(Object)
 	public Object apply(Object i) {
 	    final Interpretation I = (Interpretation)i;
-	    // return I(&lambda;x.t)
+	    // return I(&Pi;x.term)
 	    return new PiAbstractionType(x, term, I);
 	}
 
@@ -940,12 +1067,12 @@ public class ClassicalLogic extends ModernLogic {
     }
 
     /**
-     * (&Pi;x.term):*&rarr;*
+     * (&Pi;x.term):*&rarr;* type.
      * @author Andr&eacute; Platzer
      * @version 1.1, 2002-11-10
      * @xxx in fact this is not truely a type :* but a constructor? :*->*
      */
-    static class PiAbstractionType implements Type, Functor.Composite/**@xxx should be Types.Composite*/ {
+    static class PiAbstractionType implements Type.Composite {
 	static final Specification callTypeDeclaration = new Specification(new Class[] {Type.class}, Type.class);
 	
 	private Symbol x;
@@ -956,12 +1083,17 @@ public class ClassicalLogic extends ModernLogic {
 	    this.x = x;
 	    this.term = term;
 	    this.I = I;
-	    if (term.getType() != term.getType().typeSystem().TYPE())
-		throw new TypeException("would not expect type " + term.getType() + " for type expressions @xxx except for other kinds like *->*", term.getType().typeSystem().TYPE(), term.getType());
+	    if (!orbital.moon.logic.sign.type.StandardTypeSystem.kind.apply(term.getType()))
+		//@xxx expected type is not complete
+		throw new TypeException("would not expect type " + term.getType() + " for type expressions, but a kind:[]", term.getType().typeSystem().TYPE(), term.getType());
 	}
 
 	public TypeSystem typeSystem() {
 	    return term.getType().typeSystem();
+	}
+
+	Symbol getVariable() {
+	    return x;
 	}
 
 	// identical to @see orbital.logic.functor.Functionals.BinaryCompositeFunction
@@ -1017,7 +1149,7 @@ public class ClassicalLogic extends ModernLogic {
 	    if (o == null || getClass() != o.getClass())
 		return false;
 	    // note that it does not matter to which .Composite we cast since we have already checked for class equality
-	    Functor.Composite b = (Functor.Composite) o;
+	    Type.Composite b = (Type.Composite) o;
 	    return Utility.equals(getCompositor(), b.getCompositor())
 		&& Utility.equalsAll(getComponent(), b.getComponent());
 	}
@@ -1062,7 +1194,7 @@ public class ClassicalLogic extends ModernLogic {
 		return false;
 	}
 
-	// return (&Pi;x.t)(a) = t[x&rarr;a]
+	// return (&Pi;x:*.t)(a:*) = t[x&rarr;a]
 	//@see LambdaAbstractionFormula#apply(Object)
 	public Type apply(Type a) {
 	    // interpret term in the modification I<x/a> of I.
