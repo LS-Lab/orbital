@@ -106,6 +106,11 @@ public class Substitutions {
 	    }
 	};
 
+    /**
+     * The absurd substitution for nonunifiable objects.
+     */
+    private static final Substitution NONUNIFIABLE = null;
+    
 
     // facade factory
 	
@@ -524,8 +529,13 @@ public class Substitutions {
 	case 0: /* fall-through */
 	case 1: return id;
 	case 2: {
-	    Object[] t = T.toArray();
-	    return unify(t[0], t[1]);
+	    final Iterator i = T.iterator();
+	    assert i.hasNext() : "Collection.size() is consistent with Collection.iterator()";
+	    final Object o0 = i.next();
+	    assert i.hasNext() : "Collection.size() is consistent with Collection.iterator()";
+	    final Object o1 = i.next();
+	    assert !i.hasNext() : "Collection.size() is consistent with Collection.iterator()";
+	    return unify(o0, o1);
 	}
 	default:
 	    //@todo at least fold T with unify(Object,Object) provided that mgU is associative
@@ -537,79 +547,92 @@ public class Substitutions {
      * @todo could possibly implement the almost linear unification algorithm
      */
     static final Substitution unify(Object t1, Object t2) {
-	Object x;
-	Object t;
-	if (t1 == null || t2 == null)
-	    throw new NullPointerException("cannot unify (" + t1 + "," + t2 +") because null does not unify anything.");
-	// tricky (*) if one of the two terms is a variable x, call the other term t
-       	if ((isVariable(x = t1) && other(t = t2))
-	    || (isVariable(x = t2) && other(t = t1))) {
-	    if (x.equals(t))
-		return id;
-	    else if (occur(x, t)) { // checks whether x occurs in t
-		//@internal Then t is not a variable, so the other
-		// term could not have been chosen as x as well in (*)
-		assert !isVariable(t) : t + " is not variable if " + x + "!=" + t + " occurs within";
-		return null;
-	    } else {
-		if (x instanceof Typed && t instanceof Typed) {
-		    final Type taux = ((Typed)x).getType();
-		    final Type taut = ((Typed)t).getType();
-		    if (taut.subtypeOf(taux)) {
-			assert taux.typeSystem().inf(new Type[] {taux, taut}).equals(taut) : "inf@postconditions: " + taut + "=<" + taux + " iff " + taux.typeSystem().inf(new Type[] {taux, taut}) + " = " + taux + " inf " + taut + " = " + taut;
-			// ordinary unifiable subtype case: fall-through
-		    } else {
-			assert !taux.typeSystem().inf(new Type[] {taux, taut}).equals(taut) : "inf@postconditions: not(" + taut + "=<" + taux + ") iff " + taux.typeSystem().inf(new Type[] {taux, taut}) + " = " + taux + " inf " + taut + " != " + taut;
-			if (isVariable(t)) {
-			    final Type both = taux.typeSystem().inf(new Type[] {taux, taut});
-			    if (both == both.typeSystem().ABSURD())
-				// variables x and t have incompatible types, cannot unify
-				return null;
-			    // in (*) we could also have called x and t precisely the other way around
-			    // return [x:taux->t:both , t:taut->t:both]
-			    throw new UnsupportedOperationException("modification cloning does not yet generally allow changing the type of a Typed object");
-			} else
-			    // cannot unify because the term t does not deliver a subtype of the type that x must be bound to.
-			    return null;
-		    }
-		}
-		// return [x->t]
-		return getInstance(Collections.singletonList(createExactMatcher(x, t)));
-	    }
-        } else {
-	    //@todo should we implicitly assume all collections as composed of the collection constructor with the elements? This would safe them all implementing Composite. However, collections which have a different way of composition then would have a little problem with our default treatment.
-	    // let t1=:f(x1,...xm), t2=:g(y1,...yn)
-	    if (!((t1 instanceof Composite) && (t2 instanceof Composite))) {
-		// catch case m=0 first, since it's no true decomposition then
-            	if (!(t1.getClass() == t2.getClass() && t1.equals(t2)))
-		    return null;
-            	else
+	try {
+	    Object x;
+	    Object t;
+	    // tricky (*) if one of the two terms is a variable x, call the other term t
+	    if ((isVariable(x = t1) && other(t = t2))
+		|| (isVariable(x = t2) && other(t = t1))) {
+		if (x.equals(t)) {
 		    return id;
+		} else if (occur(x, t)) { // checks whether x occurs in t
+		    //@internal Then t is not a variable, so the other
+		    // term could not have been chosen as x as well in (*)
+		    assert !isVariable(t) : t + " is not variable if " + x + "!=" + t + " occurs within";
+		    return NONUNIFIABLE;
+		} else {
+		    //@todo delay these checks to the forming of the substitution below. then return NONUNIFIABLE on Incompatible-TypeException
+		    if (x instanceof Typed && t instanceof Typed) {
+			final Type taux = ((Typed)x).getType();
+			final Type taut = ((Typed)t).getType();
+			if (taut.subtypeOf(taux)) {
+			    assert taux.typeSystem().inf(new Type[] {taux, taut}).equals(taut) : "inf@postconditions: " + taut + "=<" + taux + " iff " + taux.typeSystem().inf(new Type[] {taux, taut}) + " = " + taux + " inf " + taut + " = " + taut;
+			    // ordinary unifiable subtype case: fall-through
+			} else {
+			    assert !taux.typeSystem().inf(new Type[] {taux, taut}).equals(taut) : "inf@postconditions: not(" + taut + "=<" + taux + ") iff " + taux.typeSystem().inf(new Type[] {taux, taut}) + " = " + taux + " inf " + taut + " != " + taut;
+			    if (isVariable(t)) {
+				final Type both = taux.typeSystem().inf(new Type[] {taux, taut});
+				if (both == both.typeSystem().ABSURD())
+				    // variables x and t have incompatible types, cannot unify
+				    return NONUNIFIABLE;
+				// in (*) we could also have called x and t precisely the other way around
+				// return [x:taux->t:both , t:taut->t:both]
+				throw new UnsupportedOperationException("modification cloning does not yet generally allow changing the type of a Typed object");
+			    } else
+				// cannot unify because the term t does not deliver a subtype of the type that x must be bound to.
+				return NONUNIFIABLE;
+			}
+		    }
+		    // return [x->t]
+		    return getInstance(Collections.singletonList(createExactMatcher(x, t)));
+		}
+	    } else {
+		// both terms, t1 and t2, are no variables
+		//@todo should we implicitly assume all collections as composed of the collection constructor with the elements? This would safe them all implementing Composite. However, collections which have a different way of composition then would have a little problem with our default treatment.
+		// let t1=:f(x1,...xm), t2=:g(y1,...yn)
+		if (!((t1 instanceof Composite) && (t2 instanceof Composite))) {
+		    // catch case m=0 first, since it is no true decomposition then
+		    if (!t1.equals(t2)) {
+			return NONUNIFIABLE;
+		    } else {
+			return id;
+		    }
+		} //@todo explicitly add else{}
+		// true decomposition case
+		final Composite  c1 = (Composite) t1;
+		final Object    f = c1.getCompositor();
+		final Composite c2 = (Composite) t2;
+		final Object    g = c2.getCompositor();
+		if (!Utility.equals(f, g)) {
+		    return NONUNIFIABLE;
+		} else {
+		    final Collection xs = Utility.asCollection(c1.getComponent());
+		    final Collection ys = Utility.asCollection(c2.getComponent());
+		    // f=g und daher auch m=n
+		    assert xs.size() == ys.size() : "f==g implies m==n for the number of arguments m resp. n";
+		    Substitution s = id;
+		    for (Iterator xi = xs.iterator(), yi = ys.iterator(); xi.hasNext(); ) {
+			// (<var>unifiable</var>, &sigma;<sub>1</sub>) := <i>unify</i>(&sigma;(x<sub>i</sub>), &sigma;(y<sub>i</sub>))
+			Substitution s1 = unify(s.apply(xi.next()), s.apply(yi.next()));
+			if (s1 == NONUNIFIABLE) {
+			    return NONUNIFIABLE;
+			}
+			// s := s1 &#8728; s
+			s = compose(s1, s);
+		    }
+		    return s;
+		}
 	    }
-	    // true decomposition case
-	    Composite  c1 = (Composite) t1;
-	    Object     f = c1.getCompositor();
-	    Collection xs = Utility.asCollection(c1.getComponent());
-	    Composite  c2 = (Composite) t2;
-	    Object     g = c2.getCompositor();
-	    Collection ys = Utility.asCollection(c2.getComponent());
-	    if (!(c1.getClass() == c2.getClass() && Utility.equals(f, g)))
-		return null;
-	    else {
-		// f=g und daher auch m=n
-		assert xs.size() == ys.size() : "f==g implies m==n for the number of arguments m resp. n";
-		Substitution s = id;
-                for (Iterator xi = xs.iterator(), yi = ys.iterator(); xi.hasNext(); ) {
-		    // (<var>unifiable</var>, &sigma;<sub>1</sub>) := <i>unify</i>(&sigma;(x<sub>i</sub>), &sigma;(y<sub>i</sub>))
-		    Substitution s1 = unify(s.apply(xi.next()), s.apply(yi.next()));
-		    if (s1 == null)
-			return null;
-		    // s := s1 &#8728; s
-		    s = compose(s1, s);
-                }
-                return s;
+	}
+	catch (NullPointerException ex) {
+	    //@internal possibly quicker variant to explicit prechecks for null: simply let this exceptional case occur, and then handle it.
+	    if (t1 == null || t2 == null) {
+		throw new NullPointerException("cannot unify (" + t1 + "," + t2 +") because null does not unify anything.");
+	    } else {
+		// another cause for the NullPointerException than null arguments
+		throw ex;
 	    }
-        }
+	}
     }
 	
     /**
