@@ -174,7 +174,7 @@ import orbital.util.Utility;
  * @author  Andr&eacute; Platzer
  * @see "Klir, G. and Folger, T. (1988), Fuzzy Sets, Uncertainty and Information, Prentice-Hall, Englewood Cliffs."
  */
-public class FuzzyLogic implements Logic {
+public class FuzzyLogic extends ModernLogic implements Logic {
     /**
      * tool-main
      */
@@ -233,24 +233,29 @@ public class FuzzyLogic implements Logic {
      */
     protected static String   operators = "~! |&^-><=(),";
 
+    //@todo remove this bugfix that replaces "xfy" by "yfy" associativity only for *.jj parsers to work without inefficient right-associative lookahead.
+    private static final String xfy = "yfy";
+
     private static final Interpretation _coreInterpretation =
 	LogicSupport.arrayToInterpretation(new Object[][] {
-	    {LogicFunctions.not,			// "~",
+	    {LogicFunctions.not,          // "~"
 	     new NotationSpecification(900, "fy", Notation.PREFIX)},
-	    {LogicFunctions.and,			// "&"
-	     new NotationSpecification(1000, "xfy", Notation.INFIX)},
-	    {LogicFunctions.xor,			// "^"
-	     new NotationSpecification(1080, "xfy", Notation.INFIX)},
-	    {LogicFunctions.or,			// "|"
-	     new NotationSpecification(1100, "xfy", Notation.INFIX)},
-	    {LogicFunctions.impl,		// "->"
-	     new NotationSpecification(1050+100, "xfy", Notation.INFIX)},		//TODO: precedence ok?
-	    {LogicFunctions.equiv,       // "<->"
-	     new NotationSpecification(1200, "xfy", Notation.INFIX)},
-	    {LogicFunctions.forall,
-	     new NotationSpecification(1300, "fxx", Notation.PREFIX)},
-	    {LogicFunctions.exists,
-	     new NotationSpecification(1300, "fxx", Notation.PREFIX)}
+	    {LogicFunctions.and,          // "&"
+	     new NotationSpecification(910, xfy, Notation.INFIX)},
+	    {LogicFunctions.xor,          // "^"
+	     new NotationSpecification(914, xfy, Notation.INFIX)},
+	    {LogicFunctions.or,           // "|"
+	     new NotationSpecification(916, xfy, Notation.INFIX)},
+	    {LogicFunctions.impl,         // "->"
+	     new NotationSpecification(920, xfy, Notation.INFIX)},
+	    {LogicFunctions.leftwardImpl, // "<-"
+	     new NotationSpecification(920, xfy, Notation.INFIX)},
+	    {LogicFunctions.equiv,        // "<->"
+	     new NotationSpecification(920, xfy, Notation.INFIX)},
+	    {LogicFunctions.forall,       // "°"
+	     new NotationSpecification(950, "fxx", Notation.PREFIX)},
+	    {LogicFunctions.exists,       // "?"
+	     new NotationSpecification(950, "fxx", Notation.PREFIX)}
 	}, true);
 
     private static final Signature _coreSignature = _coreInterpretation.getSignature();
@@ -281,49 +286,8 @@ public class FuzzyLogic implements Logic {
     } 
 
     
-    public Expression createExpression(String expression) throws java.text.ParseException {
-	if (expression == null)
-	    throw new NullPointerException("null is not an expression");
-	try {
-	    LogicParser parser = new LogicParser(new StringReader(expression));
-	    Expression x = parser.parseFormula(this);
-	    if (x == null) {
-		assert "".equals(expression) : "the empty expression is \"\"";
-		throw new java.text.ParseException("empty string \"\" is not a formula", ClassicalLogic.COMPLEX_ERROR_OFFSET);
-	    } else
-		return x;
-	} catch (ParseException x) {
-	    throw new java.text.ParseException(x.getMessage(), ClassicalLogic.COMPLEX_ERROR_OFFSET);
-	} 
-    } 
     private Formula createFormula(String expression) throws java.text.ParseException {
 	return (Formula) createExpression(expression);
-    }
-
-
-    public Expression createAtomic(Symbol symbol) {
-	//@todo use sophisticated implementation of ClassicalLogic.createAtomic?
-	return FuzzyLogicFormula.symbol(symbol);
-    } 
-
-    public Expression compose(Symbol op, Expression arguments[]) throws java.text.ParseException {
-	//@todo use sophisticated implementation of ClassicalLogic.compose?
-	if (op == null)
-	    throw new NullPointerException("illegal arguments " + op + " composed with " + MathUtilities.format(arguments));
-        if (!op.isCompatible(arguments))
-	    throw new java.text.ParseException("operator " + op + " not applicable to " + arguments.length + " arguments " + MathUtilities.format(arguments), ClassicalLogic.COMPLEX_ERROR_OFFSET);
-
-        Functor f = (Functor) coreInterpretation().get(op);
-        if (f == null)
-	    throw new Error("operator '" + op + "/'" + arguments.length + " not defined (in core)");
-	switch (arguments.length) {
-	case 1:
-	    return new FuzzyLogicFormula.CompositeFormula((Function) f, (Formula) arguments[0], op.getNotation().getNotation());
-	case 2:
-	    return new FuzzyLogicFormula.BinaryCompositeFormula((BinaryFunction) f, (Formula) arguments[0], (Formula) arguments[1], op.getNotation().getNotation()	);
-	default:
-	    throw new IllegalArgumentException("illegal number of arguments (" + arguments.length + ')');
-	}
     }
 
     static class LogicFunctions {
@@ -375,6 +339,8 @@ public class FuzzyLogic implements Logic {
     	//@todo how about =< as an implementation of the implication in fuzzy logic?
     	public static final BinaryFunction impl = null;
 
+    	public static final BinaryFunction leftwardImpl = null;
+
     	public static final BinaryFunction equiv = null;
 
 	// Basic logical operations (elemental quantifiers).
@@ -382,298 +348,5 @@ public class FuzzyLogic implements Logic {
     	public static final BinaryFunction forall = null;
 
     	public static final BinaryFunction exists = null;
-    }
-}
-
-
-
-
-abstract class FuzzyLogicFormula extends LogicBasis implements Formula, Expression {
-    public Object apply(Object I) {
-	return interpret((Interpretation) I);
-    }
-    abstract Object interpret(Interpretation I);
-	
-    static Expression symbol(final Symbol symbol) {
-	return new FuzzyLogicSymbol(symbol);
-    }
-    /**
-     * This atomic expression formula is variable iff its symbols is.
-     * @structure delegate symbol:Variable
-     */
-    private static class FuzzyLogicSymbol extends FuzzyLogicFormula implements orbital.logic.trs.Variable {
-	private Symbol symbol;
-	public FuzzyLogicSymbol(Symbol symbol) {
-	    this.symbol = symbol;
-	}
-		
-	public boolean equals(Object o) {
-	    return (o instanceof FuzzyLogicSymbol) && Utility.equals(symbol, ((FuzzyLogicSymbol) o).symbol);
-	}
-		
-	public int hashCode() {
-	    return Utility.hashCode(symbol);
-	}
-
-	public boolean isVariable() {return symbol.isVariable();}
-
-	public Signature getSignature() {
-	    return new SignatureBase(Collections.singleton(symbol));
-        }
-
-	public Object interpret(Interpretation I) {
-	    // literals
-	    try {
-		return interpretationOf(symbol.getSignifier());
-	    }
-	    catch (IllegalArgumentException trial) {}
-	    if (I == null)
-		throw new IllegalStateException("cannot get the truth-value of symbol " + symbol + " without an interpretation");
-
-	    // symbols
-	    try {
-		return interpretationOf(I.get(symbol));
-	    }
-	    catch (IllegalArgumentException trial) {
-		throw new IllegalStateException("atomic symbol " + symbol + " is interpreted with an invalid truth-value")/*.initCause*/;
-	    }
-	} 
-
-	public String toString() { return symbol.toString(); }
-    } 
-    private static Object interpretationOf(Object desc) {
-	if (desc.equals("true"))
-	    return new Double(1);
-	if (desc.equals("false"))
-	    return new Double(0);
-	try {
-	    return Double.valueOf((String) desc);
-	}
-	catch (ClassCastException x) {}
-	catch (NumberFormatException x) {}
-	throw new IllegalArgumentException();
-    }
-
-    public Set getVariables() {
-     	return FuzzyLogic.scanSignatureImpl(toString());
-    }
-   
-    public Set getFreeVariables() {
-    	throw new UnsupportedOperationException("not yet implemented");
-    }
-
-    public Set getBoundVariables() {
-    	throw new UnsupportedOperationException("not yet implemented");
-    }
-
-
-    public Formula not() {
-	//@todo won't work
-	return (Formula) FuzzyLogic.LogicFunctions.not.apply(this);
-    } 
-
-    public Formula and(Formula B) {
-	//@todo won't work ...
-	return (Formula) FuzzyLogic.LogicFunctions.and.apply(this, B);
-    } 
-
-    public Formula or(Formula B) {
-	return (Formula) FuzzyLogic.LogicFunctions.or.apply(this, B);
-    } 
-
-    public Formula xor(Formula B) throws UnsupportedOperationException {
-	throw new UnsupportedOperationException();
-    } 
-    public Formula impl(Formula B) throws UnsupportedOperationException {
-	throw new UnsupportedOperationException();
-    } 
-    public Formula exists(Object o) throws UnsupportedOperationException {
-	throw new UnsupportedOperationException("quantifiers not supported for fuzzy logic");
-    } 
-
-    /**
-     * <p>
-     * This class is in fact a workaround for multiple inheritance of
-     * {@link FuzzyLogicFormula} and {@link orbital.logic.functor.Compositions.CompositeFunction}.</p>
-     * 
-     * @structure inherits FuzzyLogicFormula
-     * @structure inherits Compositions.CompositeFunction
-     */
-    static class CompositeFormula extends FuzzyLogicFormula implements Function.Composite {
-	protected Function outer;
-	protected Formula inner;
-	public CompositeFormula(Function f, Formula g, Notation notation) {
-	    this.notation = notation == null ? Notation.DEFAULT : notation;
-	    this.outer = f;
-	    this.inner = g;
-	}
-	public CompositeFormula(Function f, Formula g) {
-	    this(f, g, null);
-	}
-		
-	private CompositeFormula() {setNotation(null);}
-
-        public Signature getSignature() {
-	    return ((Formula) getComponent()).getSignature();
-        }
-
-	public Object interpret(Interpretation I) {
-	    return apply(I);
-	}
-
-	// identical to @see orbital.logic.functor.Function.CompositeFunction
-	public Functor getCompositor() {
-	    return outer;
-	} 
-	public Object getComponent() {
-	    return inner;
-	} 
-
-	public void setCompositor(Functor f) throws ClassCastException {
-	    this.outer = (Function) f;
-	}
-	public void setComponent(Object g) throws ClassCastException {
-	    this.inner = (Formula) g;
-	}
-
-	public Object apply(Object/*>Interpretation<*/ arg) {
-	    return outer.apply(inner.apply(arg));
-	} 
-		
-	// identical to @see orbital.logic.functor.Functor.Composite.Abstract
-	/**
-	 * the current notation used for displaying this composite functor.
-	 * @serial
-	 */
-	private Notation notation;
-	public Notation getNotation() {
-	    return notation;
-	}
-	public void setNotation(Notation notation) {
-	    this.notation = notation == null ? Notation.DEFAULT : notation;
-	}
-    		
-	/**
-	 * Checks for equality.
-	 * Two CompositeFunctors are equal iff their classes,
-	 * their compositors and their components are equal.
-	 */
-	public boolean equals(Object o) {
-	    if (o == null || getClass() != o.getClass())
-		return false;
-	    // note that it does not matter to which .Composite we cast since we have already checked for class equality
-	    Composite b = (Composite) o;
-	    return Utility.equals(getCompositor(), b.getCompositor())
-		&& Utility.equalsAll(getComponent(), b.getComponent());
-	}
-    
-	public int hashCode() {
-	    return Utility.hashCode(getCompositor()) ^ Utility.hashCodeAll(getComponent());
-	}
-    
-	/**
-	 * Get a string representation of the composite functor.
-	 * @return <code>{@link Notation#format(Object, Object) notation.format}(getCompositor(), getComponent())</code>.
-	 */
-	public String toString() {
-	    return getNotation().format(getCompositor(), getComponent());
-	}
-    }
-
-    /**
-     * <p>
-     * This class is in fact a workaround for multiple inheritance of
-     * {@link FuzzyLogicFormula} and {@link orbital.logic.functor.Functionals.BinaryCompositeFunction}.</p>
-     * 
-     * @structure inherits FuzzyLogicFormula
-     * @structure inherits Functionals.BinaryCompositeFunction
-     */
-    static class BinaryCompositeFormula extends FuzzyLogicFormula implements Function.Composite {
-	protected BinaryFunction outer;
-	protected Formula left;
-	protected Formula right;
-	public BinaryCompositeFormula(BinaryFunction f, Formula g, Formula h, Notation notation) {
-	    this.notation = notation == null ? Notation.DEFAULT : notation;
-	    this.outer = f;
-	    this.left = g;
-	    this.right = h;
-	}
-	public BinaryCompositeFormula(BinaryFunction f, Formula g, Formula h) {
-	    this(f, g, h, null);
-	}
-		
-	private BinaryCompositeFormula() {setNotation(null);}
-
-        public Signature getSignature() {
-	    return left.getSignature().union(right.getSignature());
-        }
-
-	public Object interpret(Interpretation I) {
-	    return apply(I);
-	}
-
-	// identical to @see orbital.logic.functor.Functionals.BinaryCompositeFunction
-	public Functor getCompositor() {
-	    return outer;
-	} 
-	public Object getComponent() {
-	    return new Formula[] {
-		left, right
-	    };
-	} 
-
-	public void setCompositor(Functor f) throws ClassCastException {
-	    this.outer = (BinaryFunction) f;
-	}
-	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
-	    Formula[] a = (Formula[]) g;
-	    if (a.length != 2)
-		throw new IllegalArgumentException(Formula.class + "[2] expected");
-	    this.left = a[0];
-	    this.right = a[1];
-	}
-
-	public Object apply(Object/*>Interpretation<*/ arg) {
-	    return outer.apply(left.apply(arg), right.apply(arg));
-	} 
-		
-	// identical to @see orbital.logic.functor.Functor.Composite.Abstract
-	/**
-	 * the current notation used for displaying this composite functor.
-	 * @serial
-	 */
-	private Notation notation;
-	public Notation getNotation() {
-	    return notation;
-	}
-	public void setNotation(Notation notation) {
-	    this.notation = notation == null ? Notation.DEFAULT : notation;
-	}
-    		
-	/**
-	 * Checks for equality.
-	 * Two CompositeFunctors are equal iff their classes,
-	 * their compositors and their components are equal.
-	 */
-	public boolean equals(Object o) {
-	    if (o == null || getClass() != o.getClass())
-		return false;
-	    // note that it does not matter to which .Composite we cast since we have already checked for class equality
-	    Composite b = (Composite) o;
-	    return Utility.equals(getCompositor(), b.getCompositor())
-		&& Utility.equalsAll(getComponent(), b.getComponent());
-	}
-    
-	public int hashCode() {
-	    return Utility.hashCode(getCompositor()) ^ Utility.hashCodeAll(getComponent());
-	}
-    
-	/**
-	 * Get a string representation of the composite functor.
-	 * @return <code>{@link Notation#format(Object, Object) notation.format}(getCompositor(), getComponent())</code>.
-	 */
-	public String toString() {
-	    return getNotation().format(getCompositor(), getComponent());
-	}
     }
 }
