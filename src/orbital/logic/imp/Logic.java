@@ -116,7 +116,7 @@ import orbital.logic.sign.type.TypeException;
  * @invariants true
  * @version 1.0, 2001/01/14
  * @author  Andr&eacute; Platzer
- * @see Signature
+ * @see orbital.logic.sign.Signature
  * @see Formula
  * @see Interpretation
  * @see Inference
