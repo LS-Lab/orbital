@@ -130,8 +130,8 @@ public class RubicsCube implements GeneralSearchProblem {
 	// here we decide which exact search algorithm to use
 	// the single difference in using another search algorithm
 	// would only concern the constructor call
-	//s = new IterativeDeepeningAStar(h);
-	s = new IterativeExpansion(h);
+	s = new IterativeDeepeningAStar(h);
+	//s = new IterativeExpansion(h);
 
 		
 	// really solve our problem

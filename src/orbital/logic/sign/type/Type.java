@@ -42,6 +42,7 @@ import orbital.logic.functor.Predicate;
  * @see java.lang.Class
  * @xxx some things have generic/parametric types like
  *  &forall; : (&Delta;&tau;.(&tau;&rarr;&omicron;)&rarr;&omicron;
+ * @todo decouple from the type system such that a flexible type system can even be built at runtime. for example with pure type system?
  */
 public interface Type extends Comparable, Predicate {
     /**

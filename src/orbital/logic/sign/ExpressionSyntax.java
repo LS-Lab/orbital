@@ -66,9 +66,9 @@ public interface ExpressionSyntax extends ExpressionBuilder {
      * @pre expression&isin;<i>L</i>
      * @return Signature of the syntactic symbols in expression except those of the core signature.
      * @post createExpression(expression) instanceof Formula &rArr; createExpression(expression).getSignature().equals(scanSignature(expression))
-     * @throws ParseException when the expression is syntactically malformed.
+     * @throws ParseException (optional) when the expression is syntactically malformed.
      *  Either due to a lexical or grammatical error.
-     *  (optional behaviour for performance reasons)
+     *  (optional behaviour for performance reasons).
      *  Will not throw ParseExceptions if createExpression would not either.
      * @see #coreSignature()
      * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">&quot;Factory Method&quot;</a>

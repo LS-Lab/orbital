@@ -188,9 +188,9 @@ public class SymbolBase implements Symbol, Serializable {
     public String toString() {
     	Type type = getType();
 	if (Logger.global.isLoggable(Level.FINEST))
-	    return getSignifier() + '/' + type;
-    	// short representation for symbols of arity 0
-    	return type.codomain().equals(Types.NOTYPE)
+	    return getSignifier() + ':' + type;
+    	// short representation
+    	return type.equals(Types.TRUTH)
 	    ? getSignifier()
 	    : (getSignifier() + '/' + Types.arityOf(type.codomain()));
     }
