@@ -36,9 +36,8 @@ import orbital.logic.functor.Predicate;
  *
  * @author <a href="mailto:">Andr&eacute; Platzer</a>
  * @version 1.1, 2002-09-08
- * @see Types
- * @see Symbol#getType()
- * @see Expression#getType()
+ * @see TypeSystem
+ * @see Typed#getType()
  * @see java.lang.Class
  * @xxx some things have generic/parametric types like
  *  &forall; : (&Delta;&tau;.(&tau;&rarr;&omicron;)&rarr;&omicron;
@@ -121,13 +120,12 @@ public interface Type extends Comparable, Predicate {
      * For composite types.
      * Type constructs consisting of a type constructor and argument types implement this interface.
      * 
-     * @structure is {@link orbital.logic.functor.Functor.Composite}&cap;{@link Type}
-     * @structure extends Functor.Composite
+     * @structure is {@link orbital.logic.Composite}&cap;{@link Type}
+     * @structure extends Composite
      * @structure extends Type
      * @version 1.1, 2002-11-24
      * @author  Andr&eacute; Platzer
-     * @xxx change base class to orbital.logic.Composite
      */
-    static interface Composite extends orbital.logic.functor.Functor.Composite, Type {}
+    static interface Composite extends orbital.logic.Composite, Type {}
 
 }// Type
