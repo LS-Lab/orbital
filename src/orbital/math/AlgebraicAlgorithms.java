@@ -345,7 +345,9 @@ public final class AlgebraicAlgorithms {
      * </p>
      * @param elements an array {a<sub>0</sub>,&#8230;,a<sub>n-1</sub>} &sube; R whose gcd to determine.
      * @preconditions &not;&forall;i elements[i]=0
-     * @return an array {s<sub>0</sub>,&#8230;,s<sub>n-1</sub>, d} &sube; R where
+     * @return an array {s<sub>0</sub>,&#8230;,s<sub>n-1</sub>, d} &sube; R with
+     *  cofactors s<sub>i</sub> and greatest common divisor d,
+     *  where
      *  d = gcd({a<sub>0</sub>,&#8230;,a<sub>n-1</sub>}) = &sum;<sub>i=0,&#8230;,n-1</sub> s<sub>i</sub>*a<sub>i</sub>.
      * @internal gcd({a<sub>0</sub>,&#8230;,a<sub>n-1</sub>}) = gcd(gcd({a<sub>0</sub>,&#8230;,a<sub>n-2</sub>}),a<sub>n-2</sub>)
      * @internal ELBA (Euclid-Lagrange-Berlekamp Algorithm) for a decomposition into d=gcd(a,b),r,s in R such that d = r*a + s*b
@@ -491,7 +493,8 @@ public final class AlgebraicAlgorithms {
      * </p>
      * @param x the array of congruence values x<sub>1</sub>,&#8230;,x<sub>n</sub>.
      * @param m the array of corresponding moduli m<sub>1</sub>,&#8230;,m<sub>n</sub>.
-     * @preconditions &forall;i&ne;j (m[i])+(m[j])=(1), i.e. gcd(m[i],m[j])=1.
+     * @preconditions &forall;i&ne;j (m[i])+(m[j])=(1), i.e. gcd(m[i],m[j])=1
+     *  &and; m[i] use compatible representatives.
      * @return the unique solution x (modulo m<sub>1</sub>*&#8230;*m<sub>n</sub>).
      * @note Newton interpolation and especially Lagrange interpolation are just special cases of
      * incremental Chinese Remainder Theorem.
