@@ -3,30 +3,44 @@
 #  revert-to-1.3.sh     
 #  (c) 2002 Ute Platzer
 #
-#
-#  This script can revert orbital sources for java 1.4 to java 1.3 version.
-#  To work, the following requirements must be fulfilled:
-# 
-#  1. orbital sources must be in a subdirectory of the current directory 
-#     calles j4-src/
-#
-#  2. special modified java.util.logging sources must be in a directory
-#     called resources/java/util/logging
-#
-#  3. the sed-script revert-to-1.3.sed must be in the current directory
-#
-#  (4. for ant to run properly, a directory lib/ mut be present)
-#
-#  If these requirements are met, just call this script and it will generate
-#  Java 1.3 compatible source code in a directory called src/
-#  After that, call "ant" to compile the new sources, and if compilation is
-#  successful, call "ant jar" to create the orbital.jar file in the dist/ 
-#  directory. 
-#
+
+if ($#argv == 0) then 
+echo ""
+echo ""
+echo " This script can revert orbital sources for java 1.4 to java 1.3 version."
+echo " To work, the following requirements must be fulfilled:"
+echo ""
+echo " 1. orbital sources must be in a subdirectory of the current directory" 
+echo "    calles j4-src/ (if j4-src does not exist, we assume that the sources"
+echo "	  are still in src/ and therefore the script moves src/ to j4-src/)"
+echo "" 
+echo " 2. special modified java.util.logging sources must be in a directory"
+echo "	   called resources/java/util/logging"
+echo "" 
+echo " 3. the sed-script revert-to-1.3.sed must be in the current directory"
+echo ""
+echo " (4. for ant to run properly, a directory lib/ mut be present)"
+echo ""  
+echo " If these requirements are met, just call this script and it will"  
+echo " generate  Java 1.3 compatible source code in a directory called src/" 
+echo " After that, call 'ant' to compile the new sources, and if " 
+echo " compilation is successful, call 'ant jar' to create the orbital.jar"
+echo " file in the dist/ directory." 
+echo ""
+echo " To run the script, pass a parameter to indicte your acceptance."
+echo ""
+echo ""
+exit(-1)
+endif
 
 # remove old versions: 
-echo removing src directory...
-rm -rf src/
+if ( -e j4-src ) then
+  echo removing old src directory...
+  rm -rf src/
+else
+  echo moving sources to j4-src/
+  mv src/ j4-src
+endif
 
 # create the directory tree structure: 
 echo creating new src directory...
@@ -83,5 +97,8 @@ mv -f t src/orbital/util/InnerCheckedException.java
 # remove unwanted instantiation of InternalError: 
 sed -e 's/throw new InternalError(asserted)/throw new InternalError(asserted.toString())/' src/orbital/algorithm/evolutionary/Gene.java > t
 mv -f t src/orbital/algorithm/evolutionary/Gene.java
+
+# copy LogicParser.jj
+cp j4-src/orbital/moon/logic/LogicParser.jj src/orbital/moon/logic/
 
 #
