@@ -161,7 +161,7 @@
         </javac>
     </target>
 
-    <target name="run.tests" depends="init, compile.tests"
+    <target name="run.tests.internal" depends="init, compile.tests"
             description="run test/*Test*.java">
 	<echo>
           With assertions turned on, this test suite runs about 7 hours. (or 1 hour without ModalLogicTest?)
@@ -190,7 +190,7 @@
         </junit>
     </target>
 
-    <target name="report.tests" depends="init, run.tests"
+    <target name="run.tests" depends="init, run.tests.internal"
             description="report test result">
         <mkdir dir="${reports.tests}"/>
         <junitreport todir="${reports.tests}">
