@@ -247,6 +247,7 @@ public class ClassicalLogic extends ModernLogic {
 			    ) {
 			    //@internal our resolution does not prove things resulting from contradictious facts (after simplification) so avoid those cases by providing a special file for resolution.
 			    final String mech = logic.getInferenceMechanism() == RESOLUTION_INFERENCE
+				|| logic.getInferenceMechanism() == RESOLUTION2_INFERENCE
 				? "resolution"
 				: "semantic";
 			    String resName;
@@ -414,6 +415,11 @@ public class ClassicalLogic extends ModernLogic {
     public ClassicalLogic() {
 	this(SEMANTIC_INFERENCE);
     }
+    /**
+     * Create a classical logic with the specified inference mechanism.
+     * @param inferenceMechanism the inference mechanism applied for the {@link #inference() inference relation}.
+     * @see #setInferenceMechanism(InferenceMechanism)
+     */
     public ClassicalLogic(InferenceMechanism inferenceMechanism) {
 	setInferenceMechanism(inferenceMechanism);
     }
