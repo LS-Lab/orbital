@@ -195,7 +195,7 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
      * <p>
      * A functor f is specified by a signature declaration of the form
      * <blockquote>
-     *   f/n: A<sub>1</sub> &times; A<sub>2</sub> &times ... A<sub>n</sub>&rarr;B
+     *   f/n: A<sub>1</sub>&times;A<sub>2</sub>&times;&#8230;&times;A<sub>n</sub>&rarr;B
      * </blockquote>
      * Such a declaration is represented as the functor signature pecification
      * which specifies its arity <var>n</var>, argument-types <var>A<sub>1</sub></var>,...,<var>A<sub>n</sub></var> and return-type <var>B</var>
@@ -214,7 +214,7 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
      * <p>
      * The exact signature specification of a functor can either be defined
      * explicitly with a sub interface of <code>Functor</code> that encapsulates those methods,
-     * or generically with an implicit interface introspected by {@link Functor.Specification#getSpecification(Functor) getSpecification()}
+     * or generically with an implicit interface introspected by {@link Functor.Specification#getSpecification(Functor)}
      * with the use of reflection.
      * </p>
      * <p>
@@ -412,6 +412,8 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	    this.spec_returnType = newReturnType;
 	} 
 
+	// type compatibility query method
+
 	/**
 	 * Checks whether the given specification is compatible with this.
 	 * measures compatibility.
@@ -419,11 +421,12 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	 * This method will check the given specification against this.
 	 * The given specification is compatible if it fulfills the arity and returnType of this specification
 	 * as well as all arguments are assignement compatible with this, i.e.
-	 * they have the same kind (same type or a subtype).
+	 * they are of the same kind (same type or a subtype).
 	 * </p>
 	 * @param b the specification of the functor that is to be checked for compatibility with this specification.
 	 * @return whether <code>b &le; this</code>, i.e. if this specification is more general than b.
 	 *  This means that b is more special than this and fulfills the requirements of this specification.
+	 * @see #isApplicableTo(Object[])
 	 * @see java.lang.Class#isAssignableFrom(java.lang.Class)
 	 */
 	public boolean isCompatible(Specification b) {
@@ -435,6 +438,29 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 		    return false;
 	    return true;
 	} 
+
+	/**
+	 * Checks whether the type specification is compatible with the given list of arguments.
+	 * @pre true
+	 * @param args the arguments to check for compatibility with this symbol.
+	 *  <code>null</code>, or an array of length <span class="number">0</span> can be used for zero arguments.
+	 * @return whether the arguments are assignable to the required parameter types of this symbol.
+	 *  This especially includes whether the number of arguments matches this symbol's arity.
+	 * @see #isCompatible(Functor.Specification)
+	 */
+	public boolean isApplicableTo(Object[] args) {
+	    if ((args == null || args.length == 0) && arity() == 0)
+		return true;
+	    //@internal now we could as well call isCompatible(Specification) with a specification that we generate from args, setting the expected return type of getType().
+	    if (args.length != arity())
+		return false;
+	    Class[] spec_parameterTypes = getParameterTypes();
+	    assert args.length == spec_parameterTypes.length : "same arity same parameter length";
+	    for (int i = 0; i < spec_parameterTypes.length; i++)
+		if (!(args[i] == null | spec_parameterTypes[i].isInstance(args[i])))
+		    return false;
+	    return true;
+	}
 
 	/**
 	 * Checks whether the given functor object is conform to this specification.
@@ -455,6 +481,8 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	    catch (NoSuchMethodException no) {return false;}
 	}
 
+	// apply
+	
 	/**
 	 * Get the apply method in a given class that corresponds to this specification.
 	 * @param cls the class whose apply method to get.
@@ -474,7 +502,7 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	} 
 
 	/**
-	 * Get a human readable string representation of this specification for a functor.
+	 * Get a human readable string representation of this specification of a functor.
 	 */
 	public String toString() {
 	    String argumentTypes = typeListSpec(getParameterTypes());
@@ -556,13 +584,19 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	 * @see Method#invoke(Object, Object[])
 	 */
 	public static final Object invoke(Functor f, Object[] args) throws IntrospectionException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
+	    Specification spec = getSpecification(f);
 	    try {
-		Method apply = getSpecification(f).getMethod(f.getClass());
+		Method apply = spec.getMethod(f.getClass());
 		if (!apply.isAccessible())
 		    apply.setAccessible(true);
-		return apply.invoke(f, args);
+		Object r = apply.invoke(f, args);
+		assert spec.isApplicableTo(args) : "(at least) when apply succeeded, its specification was applicable to the arguments";
+		return r;
 	    } catch (IllegalAccessException inner) {
 		throw (IntrospectionException) new IntrospectionException("invalid functor").initCause(inner);
+	    } catch (IllegalArgumentException ex) {
+		//assert !spec.isApplicableTo(args) : "when the arguments were wrong, then its specification was not applicable to the arguments";
+		throw ex;
 	    } 
 	} 
 

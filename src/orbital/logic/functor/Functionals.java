@@ -536,10 +536,14 @@ public class Functionals {
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
      * @todo could we somehow generalize this? What about f being a BinaryFunction, or a VoidFunction, or a Predicate?
      */
-    public static final BinaryFunction apply = new BinaryFunction() {
+    public static final /*<A,B>*/ BinaryFunction/*<Function<A,B>,A, B>*/ apply = new BinaryFunction/*<Function<A,B>,A, B>*/() {
+	    private final Specification specification = new Specification(new Class[] {
+		Function/*_<A,B>_*/.class, Object/*_>A<_*/.class
+	    }, Object/*_>B<_*/.class);
 	    public Object apply(Object f, Object x) {
 		return ((Function)f).apply(x);
 	    }
+	    public String toString() { return "@"; }
 	};
 
     /**

@@ -199,21 +199,6 @@ public class SymbolBase implements Symbol, Serializable {
 	return variable;
     }
     
-    public boolean isCompatible(Object[] args) {
-    	Specification type = getType();
-	if ((args == null || args.length == 0) && (type == null || type.arity() == 0))
-	    return true;
-	//@internal now could as well call isCompatible(Specification) with a specification that we generate from args, setting the expected return type of getType().
-	if (args.length != type.arity())
-	    return false;
-	Class[] spec_parameterTypes = type.getParameterTypes();
-	assert args.length == spec_parameterTypes.length : "same arity same parameter length";
-	for (int i = 0; i < spec_parameterTypes.length; i++)
-	    if (!(args[i] == null | spec_parameterTypes[i].isInstance(args[i])))
-		return false;
-	return true;
-    }
-
     public String toString() {
     	Specification type = getType();
 	if (Logger.global.isLoggable(Level.FINEST))

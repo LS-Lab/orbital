@@ -97,7 +97,7 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
 	    if (!(o instanceof Symbol))
 		continue;
 	    Symbol s = (Symbol) o;
-	    if (signifier.equals(s.getSignifier()) && s.isCompatible(arg))
+	    if (signifier.equals(s.getSignifier()) && s.getType().isApplicableTo(arg))
 		//TODO: check arity of s.notation with arg.length, as well?
 		return s;
 	}

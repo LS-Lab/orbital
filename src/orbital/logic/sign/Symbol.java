@@ -169,17 +169,4 @@ public interface Symbol extends Variable, Comparable/*<Symbol>*/{
      * @see orbital.logic.trs.Variable
      */
     boolean isVariable();
-    
-    // type compatibility query method
-
-    /**
-     * Checks whether our type specification is compatible with the given list of arguments.
-     * @pre true
-     * @param args the arguments to check for compatibility with this symbol.
-     *  <code>null</code>, or an array of length <span class="number">0</span> can be used for zero arguments.
-     * @return whether the arguments are assignable to the required parameter types of this symbol.
-     *  This especially includes whether the number of arguments matches this symbol's arity.
-     * @see orbital.logic.functor.Functor.Specification#isCompatible(orbital.logic.functor.Functor.Specification)
-     */
-    public boolean isCompatible(Object[] args);
 }

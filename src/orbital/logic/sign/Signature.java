@@ -17,7 +17,7 @@ import java.util.SortedSet;
  * A signature &Sigma; often is partitioned into sets &Sigma;<sub class="type">&tau;</sub>
  * according to the types {@link Symbol#getType() <span class="type">&tau;</span>} of its symbols.
  * Then &Sigma;<sub class="type">&tau;</sub>&sube;&Sigma; is the subset of symbols
- * of type <span class="type">&tau;</span.
+ * of type <span class="type">&tau;</span>.
  * It can also be partitioned into &Sigma;<sub>0</sub>, &Sigma;<sub>1</sub>, ... &Sigma;<sub>n</sub>
  * according to the arity of its symbols.
  * Constant-symbols are defined as functions of arity 0.

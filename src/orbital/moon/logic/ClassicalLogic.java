@@ -963,8 +963,8 @@ public class ClassicalLogic extends ModernLogic implements Logic {
     public Expression compose(Symbol op, Expression arguments[]) throws java.text.ParseException {
 	if (op == null)
 	    throw new NullPointerException("illegal arguments: operator " + op + " composed with " + MathUtilities.format(arguments));
-        if (!op.isCompatible(arguments))
-	    throw new java.text.ParseException("operator " + op + " not applicable to " + arguments.length + " arguments " + MathUtilities.format(arguments), ClassicalLogic.COMPLEX_ERROR_OFFSET);
+        if (!op.getType().isApplicableTo(arguments))
+	    throw new java.text.ParseException("operator " + op + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments), ClassicalLogic.COMPLEX_ERROR_OFFSET);
 
 	// handle special cases of term construction, first
 	if (op.equals(APPLY))
