@@ -15,7 +15,7 @@ import java.util.Set;
  * @see <a href="{@docRoot}/Patterns/Design/AbstractFactory.html">Abstract Factory</a>
  */
 public class DefaultClausalFactory implements ClausalFactory {
-    private static final boolean ORDERED = true;
+    private static final boolean ORDERED = false;
 
     private static boolean verbose = false;
     /**
