@@ -8,7 +8,11 @@ echo    -pause     pause after each step
   echo adding resources
     if not exist %JAVA_HOME%\classes\orbital md %JAVA_HOME%\classes\orbital
     if not exist %JAVA_HOME%\classes\orbital\resources md %JAVA_HOME%\classes\orbital\resources
-    copy resources %JAVA_HOME%\classes\orbital\resources
+    copy ..\resources %JAVA_HOME%\classes\orbital\resources
+    copy ..\..\COPYRIGHT.txt %JAVA_HOME%\classes\orbital\resources
+    copy ..\..\license.txt %JAVA_HOME%\classes\orbital\resources
+    copy ..\..\orbital.gif %JAVA_HOME%\classes\orbital\resources
+    copy ..\..\orbital.ico %JAVA_HOME%\classes\orbital\resources
     if not exist %JAVA_HOME%\classes\orbital\awt md %JAVA_HOME%\classes\orbital\awt
     copy awt\*.gif %JAVA_HOME%\classes\orbital\awt
   echo adding manifest
