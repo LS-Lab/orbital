@@ -6,7 +6,7 @@
 
 package orbital.math.functional;
 
-import orbital.moon.math.AbstractFunctor;
+import orbital.moon.math.functional.AbstractFunctor;
 
 //TODO: make public or make public inner class of Function?
 // this implements the union of MathFunctor and Function, and extends the default pointwise arithmetic operations

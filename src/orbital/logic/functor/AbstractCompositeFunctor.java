@@ -26,7 +26,7 @@ import orbital.util.Utility;
  */
 abstract class AbstractCompositeFunctor implements Composite, Serializable {
     private static final long serialVersionUID = 4993561537088832042L;
-    // identical copy under @see orbital.math.functional.MathFunctor_CompositeFunctor and orbital.moon.logic.*Formula.*CompositeFormula and also @see orbital.moon.math.CoordinateCompositeFunction and @see orbital.logic.imp.Types.AbstractCompositeType
+    // identical copy under @see orbital.math.functional.MathFunctor_CompositeFunctor and orbital.moon.logic.*Formula.*CompositeFormula and also @see orbital.moon.math.functional.CoordinateCompositeFunction and @see orbital.logic.imp.Types.AbstractCompositeType
     /**
      * the current notation used for displaying this composite functor.
      * @serial

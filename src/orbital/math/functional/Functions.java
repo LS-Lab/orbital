@@ -14,7 +14,7 @@ import orbital.math.Normed;
 import orbital.logic.functor.Notation;
 import orbital.logic.functor.Predicate;
 
-import orbital.moon.math.AbstractFunctor;
+import orbital.moon.math.functional.AbstractFunctor;
 
 import orbital.math.Matrix;
 import java.awt.Dimension;
