@@ -360,7 +360,7 @@ public class GameView extends Applet {
 
 	// {{INIT_CONTROLS
 	final Container pane = this;
-	setLayout(new BorderLayout());
+	pane.setLayout(new BorderLayout());
 
 	if (control == null) {
 	    control = createControl();
