@@ -21,7 +21,8 @@
   <li><a href="#products">Product and Coproduct</a></li>
 </ul>
 <h2 id="categoriesAndFunctors">Categories and Functors</h2>
-<p>&quot;general abstract nonsense&quot;</p>
+<p>&quot;general abstract nonsense&quot;, &quot;functors leave complexes 
+complex&quot;</p>
 <dl class="def">
   <dt id="category">category</dt>
   <dd>A category <span class="category">C</span> consists of a family Ob <span class="category">C</span> 
@@ -128,15 +129,41 @@
     <!-- @todo add the commutative diagram -->
     The functors <span class="category">C</span>→<span class="category">D</span> 
     form a category with natural transformations being the morphisms.<br>
-    Remark: an isomorphism of functors is just a family of isomorphisms <span class="seriesOperator">(</span>α<sub>C</sub><span class="seriesOperator">)</span><sub>C∈Ob 
-    <span class="category">C</span></sub> with the above property, especially 
-    F(C)≅G(C) ∧ G(f) = α<sub>C'</sub>∘F(f)∘α<sub>C</sub><sup>-1</sup>.</dd>
+    Remark: an isomorphism of functors is just a family of isomorphisms <span class="seriesOperator">(</span>α<sub>C</sub><sub></sub>∈Iso<span class="category"><sub>D</sub></span>(F(C),G(C))<span class="seriesOperator"></span><span class="seriesOperator">)</span><sub>C∈Ob 
+    <span class="category">C</span></sub> with the above property (⇒ 
+    especially F(C)≅G(C) ∧ G(f) = α<sub>C'</sub>∘F(f)∘α<sub>C</sub><sup>-1</sup>).</dd>
 </dl>
 <p>The elements of the monoid Mor<span class="category"><sub>C</sub></span>(A,A) 
 are called <dfn>endomorphisms</dfn> of A. The elements of Mor<span class="category"><sub>C</sub></span>(A,B) 
 that have an inverse in Mor<span class="category"><sub>C</sub></span>(B,A) are 
 called <dfn>isomorphisms</dfn>. The elements of the group of isomorphisms in Mor<span class="category"><sub>C</sub></span>(A,A) 
 are called <dfn>automorphisms</dfn>.</p>
+<table width="100%" class="def">
+  <tr>
+    <td colspan="3">Let f∈Mor<span class="category"><sub>C</sub></span>(C,C') 
+      be a morphism.</td>
+  </tr>
+  <tr>
+    <td class="defTerm" id="monomorphism">monomorphism</td>
+    <td>∀A∈Ob <span class="category">C</span> m<sub>A</sub>(f) injective</td>
+    <td>&quot;f is left cancelable&quot;</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>⇔ f injective</td>
+    <td>(if <span class="category">C</span>=<span class="category">Ens</span> )</td>
+  </tr>
+  <tr>
+    <td class="defTerm" id="epimorphism">epimorphism</td>
+    <td>∀A∈Ob <span class="category">C</span> m<sup>A</sup>(f) injective</td>
+    <td>&quot;f is right cancelable&quot;</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>⇔ f surjective</td>
+    <td>(if <span class="category">C</span>=<span class="category">Ens</span> )</td>
+  </tr>
+</table>
 <dl class="def">
   <dt id="additive">additive</dt>
   <dd>A category <span class="category">C</span> is additive, if
@@ -144,7 +171,8 @@ are called <dfn>automorphisms</dfn>.</p>
       <tr>
         <th>()</th>
         <td>∀A,B∈Ob <span class="category">C</span> Hom<sub><span class="category">C</span></sub>(A,B) 
-          := Mor<sub><span class="category">C</span></sub>(A,B) Abelian group</td>
+          := Mor<sub><span class="category">C</span></sub>(A,B) is an Abelian 
+          group</td>
         <td></td>
       </tr>
       <tr>
@@ -211,14 +239,160 @@ are called <dfn>automorphisms</dfn>.</p>
         (f∈Mor<span class="category"><sub>C</sub></span>(Y,Z)) ↦ <big>(</big>m<sup>X</sup>(f):Mor<span class="category"><sub>C</sub></span>(Z,X)→Mor<span class="category"><sub>C</sub></span>(Y,X); 
         g↦g∘f<big>)</big></li>
     </ul>
-    <p>The properties of being a functor coincides with the properties of 
-    morphisms (n) and (a), here. m<sup>X</sup> is the opposite of m<sub>X</sub>. 
-    If <span class="category">C</span> is additive we write Hom<span class="category"><sub>C</sub></span>(X,·):=h<sub>X</sub>:=m<sub>X</sub>, 
+    <p>They result from currying ∘. The properties of being a functor 
+    coincides with the properties of morphisms (n) and (a), here. m<sup>X</sup> 
+    is the opposite of m<sub>X</sub>. If <span class="category">C</span> is 
+    additive we write Hom<span class="category"><sub>C</sub></span>(X,·):=h<sub>X</sub>:=m<sub>X</sub>, 
     and Hom<span class="category"><sub>C</sub></span>(·,X):=h<sup>X</sup>:=m<sup>X</sup> 
-    for the corresponding functors <span class="category">C</span>→<span class="category">Ab</span>.</p>
+    for these additive functors in <span class="category">C</span>→<span class="category">Ab</span>. 
+    The properties of h<sub>X</sub>,h<sup>X</sup> being additive coincides with 
+    (d).</p>
   </li>
 </ol>
 <!--@todo check names of Y<sub>∗</sub>, and Y<sup>∗</sup> .-->
+<h3>Additional definitions....</h3>
+<dl>
+  <dt id="Yoneda">Yoneda-Lemma</dt>
+  <dd>Let <span class="category">F</span> be the category of functors <span class="category">C</span>→<span class="category">Ens</span><br />
+    ⇒ ∀A,B∈Ob <span class="category">C</span> the following map is 
+    bijective<br>
+    <table>
+      <tr>
+        <td class="nameOfMap" rowspan="3">α:</td>
+        <td class="leftOfMap">Mor<span class="category"><sub>C</sub></span>(A,B)</td>
+        <td class="arrowOfMap">→̃</td>
+        <td>Mor<span class="category"><sub>F</sub></span>(m<sub>B</sub>,m<sub>A</sub>)</td>
+      </tr>
+      <tr>
+        <td class="leftOfMap">τ<sub>B</sub>(id<sub>B</sub>)</td>
+        <td class="arrowOfMap">↤</td>
+        <td class="rightOfMap">τ</td>
+      </tr>
+      <tr>
+        <td class="leftOfMap">φ</td>
+        <td class="arrowOfMap">↦</td>
+        <td class="rightOfMap">
+          <table>
+            <tr>
+              <td class="nameOfMap">α<sub>φ</sub>:</td>
+              <td class="leftOfMap">m<sub>B</sub>
+              <td class="arrowOfMap">→</td>
+              <td class="rightOfMap">m<sub>A</sub></td>
+            <tr>
+              <td rowspan="2" class="nameOfMap">(α<sub>φ</sub>)<span class="category"><sub>C</sub></span>:</td>
+              <td class="leftOfMap">Mor<span class="category"><sub>C</sub></span>(B,C)
+              <td class="arrowOfMap">→</td>
+              <td class="rightOfMap">Mor<span class="category"><sub>C</sub></span>(A,C)</td>
+            </tr>
+            <tr>
+              <td class="leftOfMap">f</td>
+              <td class="arrowOfMap">↦</td>
+              <td class="rightOfMap">f∘φ</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p>If <span class="category">C</span> is additive and <span class="category">F</span> 
+    the category of (additive?) functors <span class="category">C</span>→<span class="category">Ab</span>, 
+    then α is an isomorphism of groups.</dd>
+</dl>
+<dl class="def">
+  <dt id="adjoint">adjoint</dt>
+  <dd>F:<span class="category">C</span>→<span class="category">C'</span> 
+    left-adjoint to G:<span class="category">C'</span>→<span class="category">C</span> 
+    (and G right-adjoint to F) :⇔
+    <div>
+      m<sub>F</sub> := Mor<span class="category"><sub>C'</sub></span>(F(·),·) 
+      ≅ m<sub>F</sub> := Mor<span class="category"><sub>C</sub></span>(·,G(·)) 
+      =: m<sup>G</sup> in <span class="category">C</span><span class="category">°</span>×<span class="category">C'</span>→<span class="category">Ens</span>
+    </div>
+  </dd>
+  <dt id="equivalentCategories">equivalent<br>
+    categories</dt>
+  <dd>F:<span class="category">C</span>→<span class="category">C'</span> is an 
+    equivalence of categories :⇔
+    <div>
+      ∃G:<span class="category">C'</span>→<span class="category">C</span> 
+      with F∘G≅id<sub class="category">C'</sub> ∧ G∘F≅id<sub class="category">C</sub>
+    </div>
+    <div>
+      ⇒ F left-adjoint to G and conversely
+    </div>
+  </dd>
+</dl>
+<p>For the following definition, <span class="category">A</span> and <span class="category">A'</span> 
+must be categories that have exact sequences (more precisely: Abelian 
+categories).</p>
+<dl class="def">
+  <dt id="exact">exact</dt>
+  <dd>F:<span class="category">A</span>→<span class="category">A'</span> is 
+    exact :⇔ F:<span class="category">A</span>→<span class="category">A'</span> 
+    is a (covariant) additive functor, and
+    <table>
+      <tr>
+        <td>If</td>
+        <td>0</td>
+        <td>→</td>
+        <td><span class="category">A'</span></td>
+        <td>→<sup>α</sup></td>
+        <td><span class="category">A</span></td>
+        <td>→<sup>β</sup></td>
+        <td><span class="category">A''</span></td>
+        <td>→</td>
+        <td>0</td>
+        <td>is an exact sequence in <span class="category">A</span></td>
+      </tr>
+      <tr>
+        <td>Then</td>
+        <td>0</td>
+        <td>→</td>
+        <td>F(<span class="category">A'</span>)</td>
+        <td>→<sup>F(α)</sup></td>
+        <td>F(<span class="category">A</span>)</td>
+        <td>→<sup>F(β)</sup></td>
+        <td>F(<span class="category">A''</span>)</td>
+        <td>→</td>
+        <td>0</td>
+        <td>is an exact sequence in <span class="category">A'</span></td>
+      </tr>
+    </table>
+    That the image under F of the sequence (or any complex) is a complex, is 
+    always true since F is a functor.</dd>
+  <dt id="leftExact">left exact</dt>
+  <dd>F:<span class="category">A</span>→<span class="category">A'</span> is 
+    left exact :⇔ F:<span class="category">A</span>→<span class="category">A'</span> 
+    is a (covariant) additive functor, and
+    <table>
+      <tr>
+        <td>If</td>
+        <td>0</td>
+        <td>→</td>
+        <td><span class="category">A'</span></td>
+        <td>→<sup>α</sup></td>
+        <td><span class="category">A</span></td>
+        <td>→<sup>β</sup></td>
+        <td><span class="category">A''</span></td>
+        <td>→</td>
+        <td>0</td>
+        <td>is an exact sequence in <span class="category">A</span></td>
+      </tr>
+      <tr>
+        <td>Then</td>
+        <td>0</td>
+        <td>→</td>
+        <td>F(<span class="category">A'</span>)</td>
+        <td>→<sup>F(α)</sup></td>
+        <td>F(<span class="category">A</span>)</td>
+        <td>→<sup>F(β)</sup></td>
+        <td>F(<span class="category">A''</span>)</td>
+        <td></td>
+        <td></td>
+        <td>is an exact sequence in <span class="category">A'</span></td>
+      </tr>
+    </table>
+  </dd>
+</dl>
 <h2 id="universalElements">Universal Elements</h2>
 <p>Let <span class="category">C</span> be a category.
 <dl class="def">
@@ -244,13 +418,15 @@ are called <dfn>automorphisms</dfn>.</p>
   <dd>If F:<span class="category">C</span>→<span class="category">Ens</span> 
     is a presentable covariant functor with a corresponding isomorphism of 
     functors α:m<sub>A</sub>→F, then u<sub>F</sub> := α<sub>A</sub>(id<sub>A</sub>) 
-    ∈ F(A) is called universal element of F.
+    ∈ F(A) is called universal element of F <!-- "das Bild vom Faulpelz" -->.
     <div>
       ⇒ ∀B∈Ob <span class="category">C</span> ∀x∈F(B) ∃!f∈Mor<sub class="category">C</sub>(A,B)=m<sub>A</sub>(B) 
       x = F(f)(u<sub>F</sub>)
       <ul>
         <li><small>(The converse is also true)</small></li>
-        <li>and the mapping (B,x)↦f is bijective.</li>
+        <li>(and this mapping α<sub>B</sub><sup>-1</sup>:x↦f is bijective)</li>
+        <li>&nbsp;if F:<span class="category">C</span>→<span class="category">Ens</span> 
+          is additive, then the α<sub>B</sub> are isomorphisms of groups</li>
       </ul>
     </div>
   </dd>
@@ -258,9 +434,9 @@ are called <dfn>automorphisms</dfn>.</p>
 Let F:<span class="category">C</span>→<span class="category">Ens</span> be a 
 presentable covariant functor.
 <ul>
-  <li>&nbsp;presenting objects for F are uniquely isomorph. Precisely: for all 
+  <li>presenting objects for F are uniquely isomorph. Precisely: for all 
     isomorphisms of functors α:m<sub>A</sub>→F, α':m<sub>A'</sub>→F ∃!φ:A<sub></sub>→A' 
-    isomorphism with α∘α<sub>φ</sub> = α'. (See Yoneda-Lemma).</li>
+    isomorphism with α∘α<sub>φ</sub> = α'. (See <a href="#Yoneda">Yoneda-Lemma</a>).</li>
   <li>an isomorphism of functors α:m<sub>A</sub>→F is uniquely determined by 
     its universal element, i.e. ∀x∈F(A) there is at most one α:m<sub>A</sub>→F 
     with α<sub>A</sub>(id<sub>A</sub>)=x.</li>
@@ -284,7 +460,7 @@ presentable covariant functor.
     ∀<span class="seriesOperator">(</span>g<sub>i</sub><sub></sub>∈Mor<sub><span class="category">C</span></sub>(A<sub>i</sub>,C)<span class="seriesOperator">)</span><sub>i∈I</sub><br />
     ∃!g∈Mor<sub><span class="category">C</span></sub>(S,C) ∀i∈I g∘ι<sub>i</sub> 
     = g<sub>i</sub> <big>)</big></center>Write: S = ∐<sub>i∈I</sub>A<sub>i</sub> 
-    = ⊕<sub>i∈I</sub>A<sub>i</sub> = ∑<sub>i∈I</sub>A<sub>i</sub><br>
+    (= ∑<sub>i∈I</sub>A<sub>i</sub>, sometimes ⊕<sub>i∈I</sub>A<sub>i</sub>)<br>
     &quot;coproduct is universally repelling&quot;, and it is just an initial 
     object in&nbsp; a suitable category. A coproduct in <span class="category">C</span> 
     is just a product in <span class="category">C°</span>.</dd>
