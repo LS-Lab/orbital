@@ -6,8 +6,10 @@
 
 package orbital.algorithm.template;
 
-import java.util.Collection;
-import java.util.Set;
+import java.util.Iterator;
+import java.io.Serializable;
+
+import orbital.util.Utility;
 
 /**
  * Hook class for MarkovDecisionProcess algorithm. Objects implementing this interface represent
@@ -18,6 +20,8 @@ import java.util.Set;
  * An MDP is a special kind of sequential decision problem.
  * It is characterized by
  * <ul>
+ *  <li>a {@link TransitionModel transition model} with transition relations
+ * <!--
  *  <li>a state space S.</li>
  *  <li>a set of actions A.</li>
  *  <li>sets of actions A(s)&sube;A applicable in each state s&isin;S.</li>
@@ -48,6 +52,7 @@ import java.util.Set;
  *        Stochastic transitions provide the most general case of these types of transitions.
  *      </li>
  *    </ul>
+ * -->
  *    Which all satisfy the <dfn>Markov property</dfn> for states,
  *    <center>
  *        <span class="Formula"><b>P</b>(s<sub>t+1</sub>=s'|s<sub>t</sub>,a<sub>t</sub>,s<sub>t-1</sub>,a<sub>t-1</sub>,...,s<sub>0</sub>,a<sub>0</sub>) = <b>P</b>(s<sub>t+1</sub>=s'|s<sub>t</sub>,a<sub>t</sub>)</span>
@@ -96,7 +101,7 @@ import java.util.Set;
  * @see "A. Barto, S. Bradtke, and S. Singh. Learning to act using real-time dynamic programming. <i>Artificial Intelligence</i>, 72:81-138, 1995."
  * @see "Stanis&#322;aw Lem. Doktor Diagoras in: Sterntageb&uuml;cher, suhrkamp p491, 1978. (original edition 1971)"
  */
-public interface MarkovDecisionProblem extends AlgorithmicProblem {
+public interface MarkovDecisionProblem extends TransitionModel/*<A,S,Option>*/, AlgorithmicProblem {
     /**
      * Check whether the given state is a goal state (a valid solution to the problem).
      * @pre s&isin;S
@@ -105,56 +110,77 @@ public interface MarkovDecisionProblem extends AlgorithmicProblem {
      */
     boolean isSolution(Object state);
 
-    /**
-     * Get the next applicable actions.
-     * @param state the state s&isin;S to expand for applicable actions.
-     * @pre s&isin;S
-     * @return A(s), a list of alternative actions applicable in the state s&isin;S.
-     *  The order of the list is decisive because for actions with equal costs
-     *  the first will be selected.
-     * @post RES=A(s)
-     * @see GeneralSearchProblem#expand(GeneralSearchProblem.Option)
-     * @see GreedyProblem#nextCandidates(List)
-     */
-    Collection nextActions(Object state);
-	
-    /**
-     * Get the next states that could be reached.
-     * <p>
-     * For efficiency reasons it is recommended that this method does return
-     * only those states s'&isin;S that can be reached (i.e. where <b>P</b>(s'|s,a) &gt; 0)
-     * if that is cheap to determine.
-     * Although this is not strictly required.</p>
-     * @param state the state s&isin;S.
-     * @param action the action a&isin;A(s) that must be applicable in state s&isin;S.
-     * @pre s&isin;S &and; a&isin;A(s)
-     * @return a list of states t(s,a) that could be reached when performing
-     *  the action a in the state s.
-     *  Where
-     *  t:S&times;A(s)&rarr;&weierp;(S) is the non-deterministic transition function.
-     *  For probabilistic actions it is t(s,a) = {s'&isin;S &brvbar; <b>P</b>(s'|s,a) &gt; 0}.
-     */
-    Set nextStates(Object state, Object action);
-	
-    /**
-     * Transition probability.
-     * @param sp the state s'&isin;S of which we want to know the probability of reaching it.
-     * @param state the state s&isin;S we are in.
-     * @param action the action a&isin;A(s) to perform.
-     * @pre s&isin;S &and; a&isin;A(s) &and; s'&isin;S
-     * @return <b>P</b>(s'|s,a) = P<sub>a</sub>(s'|s) = P<sub>a</sub>(s' &cap; s) / P<sub>a</sub>(s),
-     *  the probability of reaching state s' if performing the action a in state s.
-     * @post RES&isin;[0,1] &and; &sum;<sub>a&isin;A(s),s'&isin;S</sub> transitionProbability(s',state,a) = 1
-     */
-    double transitionProbability(Object sp, Object state, Object action);
-	
-    /**
-     * Get the cost of an option to take.
-     * @param state in which state s&isin;S an action is taken.
-     * @param action specifies which action a&isin;A(s) is taken.
-     * @pre s&isin;S &and; a&isin;A(s)
-     * @return c(s,a), the cost of taking the action a in state s.
-     * @post c(s,a)>0 &or; c(s,a)&isin;[0,&infin;)
-     */
-    double getCost(Object state, Object action);
+    public static class Option implements TransitionModel.Option, Serializable {
+	/**
+	 * the (target) state s&#697;&isin;S of this option node.
+	 * @serial
+	 */
+	private Object/*>S<*/ state;
+	/**
+	 * the probability of reaching this state.
+	 * @serial
+	 */
+	private double probability;
+	/**
+	 * the accumulated cost c=g(s) up to this state.
+	 * @serial
+	 */
+	private double cost;
+
+	/**
+	 * Create a new option &lang;s&#697;,p,c&rang;.
+	 * @param state the state s&#697;&isin;S.
+	 * @param probability the probability of reaching state s&#697;.
+	 * @param cost the cost of taking the action which took us here.
+	 */
+	public Option(Object/*>S<*/ state, double probability, double cost) {
+	    this.state = state;
+	    this.probability = probability;
+	    this.cost = cost;
+	}
+
+	public boolean equals(Object o) {
+	    if (!(o instanceof Option))
+		return false;
+	    Option b = (Option) o;
+	    return Utility.equals(getState(), b.getState());
+	}
+		
+	public int hashCode() {
+	    return Utility.hashCode(getState());
+	}
+		
+	/**
+	 * Compares options according to their probabilities.
+	 */
+	public int compareTo(Object o) {
+	    //@see Double#compare(double,double)
+	    return new Double(getProbability()).compareTo(new Double(((Option)o).getProbability()));
+	}
+		
+	public String toString() {
+	    return getClass().getName() + "[" + state + "," + probability + "]";
+	}
+		
+	public Object/*>S<*/ getState() {
+	    return state;
+	}
+		
+	public double getProbability() {
+	    return probability;
+	}
+
+	/**
+	 * Get the cost of taking this option.
+	 * <p>
+	 * Note the cost should only depend on the action a taken, and the state s in which
+	 * it was taken, not the actual outcome (which is unknown a priori).
+	 * </p>
+	 * @return c(s,a), the cost of taking the action a in state s.
+	 * @post RES>0 &or; RES&isin;[0,&infin;)
+	 */
+	public double getCost() {
+	    return cost;
+	}
+    }
 }

@@ -5,6 +5,7 @@
  */
 
 package orbital.algorithm.template;
+import orbital.algorithm.template.MarkovDecisionProblem.Option;
 
 import orbital.logic.functor.Function;
 import orbital.logic.functor.BinaryFunction;
@@ -240,26 +241,25 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
          * @param state the state s&isin;S in which an action is to take.
          * @return the Pair (a, Q)&isin;A(s)&times;<b>R</b> with maximum expected utility,
          *  which means minimum expected cost sum in this case.
-         * @post a = arg min<sub>a'&isin;A(s)</sub> Q(s,a')
+         * @post RES = (a,Q) &and; a = arg min<sub>a'&isin;A(s)</sub> Q(s,a')
          *  &and; Q = min<sub>a'&isin;A(s)</sub> Q(s,a').
          */
         protected orbital.util.Pair/*<Object, Number>*/ maximumExpectedUtility(BinaryFunction Q, Object state) {
-	    Collection actions = getProblem().nextActions(state);
+	    Iterator actions = getProblem().actions(state);
 
 	    // search minimal expected cost applicable action
 	    // best (minimum) action
 	    Object action = null;
 	    // expected cost of best action (minimal)
 	    Double expectedCost = new Double(Double.POSITIVE_INFINITY);
-	    Iterator i = actions.iterator();
 	    do {
-		Object a = i.next();
-		Double cost = (Double) Q.apply(state, a);
+		final Object a = actions.next();
+		final Double cost = (Double) Q.apply(state, a);
 		if (cost.compareTo(expectedCost) < 0) {
 		    expectedCost = cost;
 		    action = a;
 		}
-	    } while(i.hasNext());
+	    } while (actions.hasNext());
 
 	    // return the maximum expected utility action along with its expected cost
 	    return new Pair/*<Object, Double>*/(action, expectedCost);
@@ -277,14 +277,21 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
 		    public Object apply(Object state, Object action) {
             		// cost = Q<sub>U</sub>(s,a)
             		double cost = 0;
-            		if (logger.isLoggable(Level.FINEST)) logger.log(Level.FINEST, "DPMDP.Q", "\tc(" + action + "," + state + ")\t= " + getProblem().getCost(state, action));
-            		for (Iterator r = getProblem().nextStates(state, action).iterator(); r.hasNext(); ) {
-			    Object sp = r.next();
-			    if (logger.isLoggable(Level.FINEST)) logger.log(Level.FINEST, "DPMDP.Q", "\t    + " + getProblem().transitionProbability(sp, state, action) + " * " + U.apply(sp) + " for " + sp);
-			    cost += getProblem().transitionProbability(sp, state, action) * ((Number) U.apply(sp)).doubleValue();
+			double originalCost = Double.NaN;
+            		if (logger.isLoggable(Level.FINEST)) logger.log(Level.FINEST, "DPMDP.Q", "\tc(" + action + "," + state + ") ...");
+			Iterator r = getProblem().transitions(state, action);
+			assert r.hasNext() : "@post";
+            		while (r.hasNext()) {
+			    final Option p = (Option) r.next();
+			    final Object sp = p.getState();
+			    if (logger.isLoggable(Level.FINEST)) logger.log(Level.FINEST, "DPMDP.Q", "\t    + " + p.getProbability() + " * " + U.apply(sp) + " for " + sp);
+			    cost += p.getProbability() * ((Number) U.apply(sp)).doubleValue();
+			    final double c = p.getCost();
+			    assert !(originalCost != c) : "@post(getCost()): cost of transitions with the same action from the same state should be equal";
+			    originalCost = c;
             		}
-            		if (logger.isLoggable(Level.FINER)) logger.log(Level.FINER, "DPMDP.Q", "\tc(" + action + "," + state + ")\t= " + getProblem().getCost(state, action) + " + " + getDiscount() + " * " +  cost);
-            		return new Double(getProblem().getCost(state, action) + getDiscount() * cost);
+            		if (logger.isLoggable(Level.FINER)) logger.log(Level.FINER, "DPMDP.Q", "\tc(" + action + "," + state + ")\t= " + originalCost + " + " + getDiscount() + " * " +  cost);
+            		return new Double(originalCost + getDiscount() * cost);
 		    }
     		};
     	}
