@@ -11,13 +11,13 @@ import orbital.logic.functor.Function;
 import java.awt.Component;
 
 import orbital.robotic.Position;
+import orbital.robotic.Move;
 
 /**
  * Gamemaster manages a game and coordinates the interactions of its
  * players.  To let the gamemaster run a specific game, you must define
  * the games' rules with any instance implementing the {@link
- * GameRules} interface.  This interface can then start an AI upon
- * request via {@link GameRules#startAIntelligence(String)}.
+ * GameRules} interface.
  *
  * @events FieldChangeEvent.END_OF_GAME at the end of game.
  * @version 1.1, 2003-01-03
@@ -204,6 +204,17 @@ public class Gamemaster implements Runnable {
 	return runner;
     }
 
+
+    /**
+     * Requests that the argument string be displayed in the "status
+     * window". Many browsers and applet viewers provide such a
+     * window, where the application can inform users of its current
+     * state.
+     */
+    public void showStatus(String msg) {
+	System.out.println(msg);
+    }
+
     
     /**
      * (Start entry point) starts a new game.
@@ -281,24 +292,34 @@ public class Gamemaster implements Runnable {
 	    if (field == null)
 		throw new IllegalStateException("illegal field: " + field);
 	    final int turn = field.getTurn();
-	    ////showStatus(getResources().getString("statusbar.ai.thinking"));
-	    if (!(players[turn] instanceof HumanPlayer))
+	    showStatus("statusbar.ai.thinking " + players[turn]);////showStatus(getResources().getString("statusbar.ai.thinking"));
+	    if (!(players[turn] instanceof HumanPlayer)) {
 		System.err.println("statusbar.ai.thinking");
+	    }
 	    Object action = players[turn].apply(getField());
-	    ////showStatus(getResources().getString("statusbar.ai.moving"));
+	    showStatus("statusbar.ai.decided " + players[turn]);////showStatus(getResources().getString("statusbar.ai.decided"));
 	    if (action instanceof Option) {
 		Option move = (Option) action;
-		Position source = new Position(move.getFigure());
-		// if we could rely on our AI, then we could optimize away this expensive moving and simply use the resulting setField(move.getState());
-		// But unfortunately, all our field's listeners would then vanish, possibly including end of game checks.
-		//@internal cloning the position information is necessary, otherwise move would detect that it gets lost during swap.
-		if (!field.move(source, move.getMove()))
-		    throw new Error("player " + players[turn] + " for league " + turn + " should only take legal moves: " + move);
-	    } else
+		if (move.isNoMove()) {
+		    // no move performed, so do nothing
+		} else {
+		    showStatus("statusbar.ai.moving " + players[turn]);////showStatus(getResources().getString("statusbar.ai.moving"));
+		    Position source = new Position(move.getFigure());
+		    // if we could rely on our AI, then we could optimize away this expensive moving and simply use the resulting setField(move.getState());
+		    // But unfortunately, all our field's listeners would then vanish, possibly including end of game checks.
+		    //@internal cloning the position information is necessary, otherwise move would detect that it gets lost during swap.
+		    if (!field.move(source, move.getMove())) {
+			throw new Error("player " + players[turn] + " for league " + turn + " should only take legal moves: " + move);
+		    }
+		}
+	    } else {
 		throw new Error("player " + players[turn] + " for league " + turn + " found no move: " + action);
+	    }
 	} 
     } 
 
+    
+    // helper tools
 
     /**
      * A human player that waits for user I/O and delivers the user's decision.
@@ -311,21 +332,22 @@ public class Gamemaster implements Runnable {
 	/**
 	 * The option that the user has chosen.
 	 */
-	private Option option;
+	private volatile Option option;
 	/**
 	 * The communication lock.
 	 */
-	private final Object userAction = new Object();
+	private final Object userAction = new Object() {};
 	public Object apply(Object field) {
-	    Option user;
+	    Option userOption;
 	    try {
 		synchronized(userAction) {
-		    if (option == null)
+		    if (option == null) {
 			userAction.wait();
-		    user = this.option;
+		    }
+		    userOption = this.option;
 		    this.option = null;
 		}
-		return user;
+		return userOption;
 	    }
 	    catch (InterruptedException interrupt) {
 		Thread r = runner;
@@ -336,11 +358,24 @@ public class Gamemaster implements Runnable {
 		throw new InternalError("OutOfCheeseError");
 	    }
 	}
+
+	// event handler
 	public void movePerformed(FieldChangeEvent evt) {
 	    assert evt.getField() == getField() : "we have only registered ourselves to our field " + getField() + " source=" + evt.getField();
 	    if ((evt.getType() & (FieldChangeEvent.USER_ACTION | FieldChangeEvent.MOVE)) == (FieldChangeEvent.USER_ACTION | FieldChangeEvent.MOVE)) {
 		synchronized(userAction) {
 		    this.option = (Option) evt.getChangeInfo();
+		    userAction.notify();
+		}
+	    }
+	}
+	public void stateChanged(FieldChangeEvent evt) {
+	    assert evt.getField() == getField() : "we have only registered ourselves to our field " + getField() + " source=" + evt.getField();
+	    if ((evt.getType() & (/*FieldChangeEvent.USER_ACTION |*/ FieldChangeEvent.END_OF_TURN)) == (/*FieldChangeEvent.USER_ACTION |*/ FieldChangeEvent.END_OF_TURN)) {
+		synchronized(userAction) {
+		    //@internal special NO_MOVE option
+		    this.option = Option.createNoMove(evt.getField());
+		    assert this.option.isNoMove();
 		    userAction.notify();
 		}
 	    }
