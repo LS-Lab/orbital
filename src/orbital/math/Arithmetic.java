@@ -229,18 +229,18 @@ public interface Arithmetic extends Normed {
 
     // law of action &lowast;
     
-//     /**
-//      * Multiplies a scalar with this arithmetic object returning the result.
-//      * @return &alpha;&lowast;this
-//      * @throws ArithmeticException if an exceptional arithmetic condition has occurred while
-//      *  performing the operation.
-//      * @throws IllegalArgumentException if the argument type is illegal for this operation.
-//      *  Note: for single type handling it is also allowed to throw a ClassCastException, instead.
-//      * @throws UnsupportedOperationException if this class does not support this operation, principially,
-//      *  regardless of the argument.
-//      * @see #multiply(Arithmetic)
-//      */
-//     Arithmetic scale(Arithmetic alpha) throws ArithmeticException, UnsupportedOperationException;
+    /**
+     * Multiplies a scalar with this arithmetic object returning the result.
+     * @return &alpha;&lowast;this
+     * @throws ArithmeticException if an exceptional arithmetic condition has occurred while
+     *  performing the operation.
+     * @throws IllegalArgumentException if the argument type is illegal for this operation.
+     *  Note: for single type handling it is also allowed to throw a ClassCastException, instead.
+     * @throws UnsupportedOperationException if this class does not support this operation, principially,
+     *  regardless of the argument.
+     * @see #multiply(Arithmetic)
+     */
+    Arithmetic scale(Arithmetic alpha) throws ArithmeticException, UnsupportedOperationException;
 
     // extended laws
 

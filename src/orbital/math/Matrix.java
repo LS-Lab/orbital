@@ -526,6 +526,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * @todo multiply(Arithmetic) would need to determine type of s deep, in case it is not a scalar, but a matrix, or anything in R. Except if we separated ring and scalar (and perhaps tensor) multiplication by name.
      */
     Matrix/*<R>*/ multiply(Scalar s);
+    Matrix/*<R>*/ scale(Scalar s);
 
     /**
      * Multiplies a matrix with a vector returning a vector.

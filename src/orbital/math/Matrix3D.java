@@ -19,116 +19,116 @@ package orbital.math;
  */
 public class Matrix3D extends RMatrix {
 
-	/**
-	 * The identity Matrix.
-	 * It has all elements set to <code>0</code>, except the main-diagonal <code>m<sub>i,i</sub></code> set to <code>1</code>.
-	 */
-	public static final Matrix3D IDENTITY = new Matrix3D(Values.constant(RMatrix.IDENTITY(4)));
-	public Matrix3D() {
-		super(4, 4);
-		set(IDENTITY);
-	}
-	public Matrix3D(Matrix B) {
-		// we restrict ourselves to AbstractMatrix here, for speed considerations
-		super(MathUtilities.toDoubleArray(B));
-		if (dimension().width != 4 || dimension().height != 4)
-			throw new IllegalArgumentException("Matrix3D must be a 4 by 4 Matrix");
-	}
-	private Matrix3D(double[][] D) {
-		super(D);
-		if (dimension().width != 4 || dimension().height != 4)
-			throw new IllegalArgumentException("Matrix3D must be a 4 by 4 Matrix");
-	}
+    /**
+     * The identity Matrix.
+     * It has all elements set to <code>0</code>, except the main-diagonal <code>m<sub>i,i</sub></code> set to <code>1</code>.
+     */
+    public static final Matrix3D IDENTITY = new Matrix3D(Values.constant(RMatrix.IDENTITY(4)));
+    public Matrix3D() {
+	super(4, 4);
+	set(IDENTITY);
+    }
+    public Matrix3D(Matrix B) {
+	// we restrict ourselves to AbstractMatrix here, for speed considerations
+	super(MathUtilities.toDoubleArray(B));
+	if (dimension().width != 4 || dimension().height != 4)
+	    throw new IllegalArgumentException("Matrix3D must be a 4 by 4 Matrix");
+    }
+    private Matrix3D(double[][] D) {
+	super(D);
+	if (dimension().width != 4 || dimension().height != 4)
+	    throw new IllegalArgumentException("Matrix3D must be a 4 by 4 Matrix");
+    }
 
-	public Object clone() {
-		return new Matrix3D(D);
-	} 
+    public Object clone() {
+	return new Matrix3D(D);
+    } 
 
-	private void set(Matrix A) {
-		set(((RMatrix) A).D);
-	} 
+    private void set(Matrix A) {
+	set(((RMatrix) A).D);
+    } 
 
-	/**
-	 * a sinus/cosinus for degrees
-	 * @see java.lang.Math#toRadian(double)
-	 * @todo use Math.toRadian(double), instead?
-	 */
-	private double sin(double deg) {
-		return Math.sin(deg * Math.PI / 180);
-	} 
-	private double cos(double deg) {
-		return Math.cos(deg * Math.PI / 180);
-	} 
+    /**
+     * a sinus/cosinus for degrees
+     * @see java.lang.Math#toRadian(double)
+     * @todo use Math.toRadian(double), instead?
+     */
+    private double sin(double deg) {
+	return Math.sin(deg * Math.PI / 180);
+    } 
+    private double cos(double deg) {
+	return Math.cos(deg * Math.PI / 180);
+    } 
 
-	 // caution(!) the order of transformations is NOT commutative.
-	 // it might be reverse ordered by v_View.move()
+    // caution(!) the order of transformations is NOT commutative.
+    // it might be reverse ordered by v_View.move()
 
-	/**
-	 * Scales a Matrix.
-	 * This is a linear isometric transformation.
-	 */
-	public void scale(double sxf, double syf, double szf) {
-		set(this.multiply(DIAGONAL(new RVector(new double[] {sxf, syf, szf, 1}))));
-	} 
+    /**
+     * Scales a Matrix.
+     * This is a linear isometric transformation.
+     */
+    public void scale(double sxf, double syf, double szf) {
+	set(this.multiply(DIAGONAL(new RVector(new double[] {sxf, syf, szf, 1}))));
+    } 
 
-	/**
-	 * Translates a Matrix.
-	 * This is an affine isometric transformation.
-	 * Especially, it is an affinity (bijective affine mapping).
-	 */
-	public void translate(double xt, double yt, double zt) {
-		Matrix3D t = (Matrix3D) IDENTITY.clone();
-		t.set(0, 3, xt);
-		t.set(1, 3, yt);
-		t.set(2, 3, zt);
-		set(this.multiply(t));
-	} 
+    /**
+     * Translates a Matrix.
+     * This is an affine isometric transformation.
+     * Especially, it is an affinity (bijective affine mapping).
+     */
+    public void translate(double xt, double yt, double zt) {
+	Matrix3D t = (Matrix3D) IDENTITY.clone();
+	t.set(0, 3, xt);
+	t.set(1, 3, yt);
+	t.set(2, 3, zt);
+	set(this.multiply(t));
+    } 
 
-	/**
-	 * Rotates a Matrix around the x-axis.
-	 * This is a linear isometric transformation.
-	 */
-	public void rotatex(double ax) {
-		Matrix3D xmat = (Matrix3D) IDENTITY.clone();
-		xmat.set(1, 1, cos(ax));
-		xmat.set(2, 1, sin(ax));
-		xmat.set(1, 2, -sin(ax));
-		xmat.set(2, 2, cos(ax));	// x -?
-		set(this.multiply(xmat));
-	} 
-	/**
-	 * Rotates a Matrix around the y-axis.
-	 * This is a linear isometric transformation.
-	 */
-	public void rotatey(double ay) {
-		Matrix3D ymat = (Matrix3D) IDENTITY.clone();
-		ymat.set(0, 0, cos(ay));
-		ymat.set(2, 0, -sin(ay));
-		ymat.set(0, 2, sin(ay));
-		ymat.set(2, 2, cos(ay));	// -? x
-		set(this.multiply(ymat));
-	} 
-	/**
-	 * Rotates a Matrix around the z-axis.
-	 * This is a linear isometric transformation.
-	 */
-	public void rotatez(double az) {
-		Matrix3D zmat = (Matrix3D) IDENTITY.clone();
-		zmat.set(0, 0, cos(az));
-		zmat.set(1, 0, sin(az));
-		zmat.set(0, 1, -sin(az));
-		zmat.set(1, 1, cos(az));
-		set(this.multiply(zmat));
-	} 
-	/**
-	 * Rotates a Matrix around the every axis.
-	 * This is a linear isometric transformation.
-	 */
-	public void rotate(double ax, double ay, double az) {
-		rotatex(ax);
-		rotatey(ay);
-		rotatez(az);
-	} 
+    /**
+     * Rotates a Matrix around the x-axis.
+     * This is a linear isometric transformation.
+     */
+    public void rotatex(double ax) {
+	Matrix3D xmat = (Matrix3D) IDENTITY.clone();
+	xmat.set(1, 1, cos(ax));
+	xmat.set(2, 1, sin(ax));
+	xmat.set(1, 2, -sin(ax));
+	xmat.set(2, 2, cos(ax));	// x -?
+	set(this.multiply(xmat));
+    } 
+    /**
+     * Rotates a Matrix around the y-axis.
+     * This is a linear isometric transformation.
+     */
+    public void rotatey(double ay) {
+	Matrix3D ymat = (Matrix3D) IDENTITY.clone();
+	ymat.set(0, 0, cos(ay));
+	ymat.set(2, 0, -sin(ay));
+	ymat.set(0, 2, sin(ay));
+	ymat.set(2, 2, cos(ay));	// -? x
+	set(this.multiply(ymat));
+    } 
+    /**
+     * Rotates a Matrix around the z-axis.
+     * This is a linear isometric transformation.
+     */
+    public void rotatez(double az) {
+	Matrix3D zmat = (Matrix3D) IDENTITY.clone();
+	zmat.set(0, 0, cos(az));
+	zmat.set(1, 0, sin(az));
+	zmat.set(0, 1, -sin(az));
+	zmat.set(1, 1, cos(az));
+	set(this.multiply(zmat));
+    } 
+    /**
+     * Rotates a Matrix around the every axis.
+     * This is a linear isometric transformation.
+     */
+    public void rotate(double ax, double ay, double az) {
+	rotatex(ax);
+	rotatey(ay);
+	rotatez(az);
+    } 
 }
 
 

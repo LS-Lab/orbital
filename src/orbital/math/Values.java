@@ -400,6 +400,7 @@ public final class Values {
 		public Arithmetic subtract(Arithmetic b) { return v.subtract(b); }
 		public Arithmetic minus() { return v.minus(); }
 		public Arithmetic multiply(Arithmetic b) { return v.multiply(b); }
+		public Arithmetic scale(Arithmetic b) { return v.scale(b); }
 		public Arithmetic inverse() { return v.inverse(); }
 		public Arithmetic divide(Arithmetic b) { return v.divide(b); }
 		public Arithmetic power(Arithmetic b) { return v.power(b); }
@@ -551,6 +552,7 @@ public final class Values {
 		public Arithmetic minus() {return m.minus();}
 		public Arithmetic subtract(Arithmetic b) {return m.subtract(b);}
 		public Arithmetic multiply(Arithmetic b) {return m.multiply(b);}
+		public Arithmetic scale(Arithmetic b) { return m.scale(b); }
 		public Arithmetic inverse() {return m.inverse();}
 		public Arithmetic divide(Arithmetic b) {return m.divide(b);}
 		public Arithmetic power(Arithmetic b) {return m.power(b);}

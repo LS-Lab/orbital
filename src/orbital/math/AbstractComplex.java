@@ -11,175 +11,175 @@ import orbital.math.functional.Operations;
 import orbital.math.functional.Functions;
 
 abstract class AbstractComplex extends AbstractScalar implements Complex {
-	private static class Debug {
-		private Debug() {}
-		public static void main(String arg[]) throws Exception {
-			ArithmeticFormat.getDefaultInstance().getNumberFormat().setMaximumFractionDigits(8);
-			System.out.println(new ComplexImpl(1,0) + ", " + new ComplexImpl(-1,0) + ", " + new ComplexImpl(0,1) + ", " + new ComplexImpl(0,-1) + ", " + new ComplexImpl(1,1) + ", " + new ComplexImpl(1,-1) + ", " + new ComplexImpl(-1,1) + ", " + new ComplexImpl(-1,-1));
-			System.out.println(new ComplexImpl(2,0) + ", " + new ComplexImpl(-2,0) + ", " + new ComplexImpl(0,2) + ", " + new ComplexImpl(0,-2) + ", " + new ComplexImpl(2,2) + ", " + new ComplexImpl(2,-2) + ", " + new ComplexImpl(-2,2) + ", " + new ComplexImpl(-2,-2));
-			Complex a = new ComplexImpl(2, 1);
-			Complex b = new ComplexImpl(3, -4);
-			System.out.println(a + "+" + b + " == " + a.add(b));
-			System.out.println(a + "-(" + b + ") == " + a.subtract(b));
-			System.out.println("(" + a + ")*(" + b + ") == " + a.multiply(b));
-			System.out.println("(" + a + ")/(" + b + ") == " + a.divide(b));
-			System.out.println("-(" + a + ") == " + a.minus());
-			System.out.println("(" + a + ")^-1 == " + a.inverse());
-			System.out.println("(" + a + ")^(" + b + ") == " + a.power(b));
-			System.out.println("(" + a + ")*i =" + a.multiply(Values.i));
-			System.out.println("e^(" + a + ") == " + Functions.exp.apply(a));
-			System.out.println("log(" + a + ") == " + Functions.log.apply(a));
-			System.out.println("sin(" + a + ") == " + Functions.sin.apply(a));
-			System.out.println("cos(" + a + ") == " + Functions.cos.apply(a));
-			System.out.println("tan(" + a + ") == " + Functions.tan.apply(a));
-			System.out.println("sinh(" + a + ") == " + Functions.sinh.apply(a));
-			System.out.println("cosh(" + a + ") == " + Functions.cosh.apply(a));
-			System.out.println("tanh(" + a + ") == " + Functions.tanh.apply(a));
-		} 
-	}	 // Debug
+    private static class Debug {
+	private Debug() {}
+	public static void main(String arg[]) throws Exception {
+	    ArithmeticFormat.getDefaultInstance().getNumberFormat().setMaximumFractionDigits(8);
+	    System.out.println(new ComplexImpl(1,0) + ", " + new ComplexImpl(-1,0) + ", " + new ComplexImpl(0,1) + ", " + new ComplexImpl(0,-1) + ", " + new ComplexImpl(1,1) + ", " + new ComplexImpl(1,-1) + ", " + new ComplexImpl(-1,1) + ", " + new ComplexImpl(-1,-1));
+	    System.out.println(new ComplexImpl(2,0) + ", " + new ComplexImpl(-2,0) + ", " + new ComplexImpl(0,2) + ", " + new ComplexImpl(0,-2) + ", " + new ComplexImpl(2,2) + ", " + new ComplexImpl(2,-2) + ", " + new ComplexImpl(-2,2) + ", " + new ComplexImpl(-2,-2));
+	    Complex a = new ComplexImpl(2, 1);
+	    Complex b = new ComplexImpl(3, -4);
+	    System.out.println(a + "+" + b + " == " + a.add(b));
+	    System.out.println(a + "-(" + b + ") == " + a.subtract(b));
+	    System.out.println("(" + a + ")*(" + b + ") == " + a.multiply(b));
+	    System.out.println("(" + a + ")/(" + b + ") == " + a.divide(b));
+	    System.out.println("-(" + a + ") == " + a.minus());
+	    System.out.println("(" + a + ")^-1 == " + a.inverse());
+	    System.out.println("(" + a + ")^(" + b + ") == " + a.power(b));
+	    System.out.println("(" + a + ")*i =" + a.multiply(Values.i));
+	    System.out.println("e^(" + a + ") == " + Functions.exp.apply(a));
+	    System.out.println("log(" + a + ") == " + Functions.log.apply(a));
+	    System.out.println("sin(" + a + ") == " + Functions.sin.apply(a));
+	    System.out.println("cos(" + a + ") == " + Functions.cos.apply(a));
+	    System.out.println("tan(" + a + ") == " + Functions.tan.apply(a));
+	    System.out.println("sinh(" + a + ") == " + Functions.sinh.apply(a));
+	    System.out.println("cosh(" + a + ") == " + Functions.cosh.apply(a));
+	    System.out.println("tanh(" + a + ") == " + Functions.tanh.apply(a));
+	} 
+    }	 // Debug
     
     
-	private static final long serialVersionUID = 6174516422770428710L;
+    private static final long serialVersionUID = 6174516422770428710L;
 
-	protected AbstractComplex() {}
+    protected AbstractComplex() {}
 
-	/**
-	 * Complex numbers are <em>not</em> ordered.
-	 */
-	public int compareTo(Object o) {
-		throw new UnsupportedOperationException("complex numbers not ordered");
-	} 
+    /**
+     * Complex numbers are <em>not</em> ordered.
+     */
+    public int compareTo(Object o) {
+	throw new UnsupportedOperationException("complex numbers not ordered");
+    } 
 
-	public boolean equals(Object o) {
-		if (Complex.isa.apply(o)) {
-			Complex b = (Complex) o;
-			return re().equals(b.re()) && im().equals(b.im());
-		} else
-			return false;
-	} 
+    public boolean equals(Object o) {
+	if (Complex.isa.apply(o)) {
+	    Complex b = (Complex) o;
+	    return re().equals(b.re()) && im().equals(b.im());
+	} else
+	    return false;
+    } 
 
-	public int hashCode() {
-		//@see Double#hashCode()
-		long bits = java.lang.Double.doubleToLongBits(realValue());
-		int hash = (int)(bits ^ (bits >>> 32));
-		//@see Double#hashCode()
-		bits = java.lang.Double.doubleToLongBits(imaginaryValue());
-		hash = hash ^ (int)(bits ^ (bits >>> 32));
-		assert imaginaryValue()!=0 || hash == Values.valueOf(realValue()).hashCode() : "for im()=0, hash is already the same return value as for reals";
-		return hash;
-	} 
+    public int hashCode() {
+	//@see Double#hashCode()
+	long bits = java.lang.Double.doubleToLongBits(realValue());
+	int hash = (int)(bits ^ (bits >>> 32));
+	//@see Double#hashCode()
+	bits = java.lang.Double.doubleToLongBits(imaginaryValue());
+	hash = hash ^ (int)(bits ^ (bits >>> 32));
+	assert imaginaryValue()!=0 || hash == Values.valueOf(realValue()).hashCode() : "for im()=0, hash is already the same return value as for reals";
+	return hash;
+    } 
 
-	/**
-	 * Throws an UnsupportedOperationException if this complex has an imaginary part.
-	 */
-	public double doubleValue() {
-		if (imaginaryValue() == 0)
-			return realValue();
-		else
-			throw new UnsupportedOperationException("complex value has no real value");
+    /**
+     * Throws an UnsupportedOperationException if this complex has an imaginary part.
+     */
+    public double doubleValue() {
+	if (imaginaryValue() == 0)
+	    return realValue();
+	else
+	    throw new UnsupportedOperationException("complex value has no real value");
 
-		// return java.lang.Double.NaN;
-	} 
+	// return java.lang.Double.NaN;
+    } 
     
     //@todo think about these shortcuts to re().doubleValue() and im().doubleValue(). They effectively prevent new subclasses of AbstractComplex that wish to reuse some methods.
-	abstract double realValue();
-	abstract double imaginaryValue();
+    abstract double realValue();
+    abstract double imaginaryValue();
 
-	public Real norm() {
-		return Values.valueOf(Math.sqrt(normSquare()));
-	} 
-	double normSquare() {
-		double real = realValue();
-		double imaginary = imaginaryValue();
-		return real * real + imaginary * imaginary;
-	} 
+    public Real norm() {
+	return Values.valueOf(Math.sqrt(normSquare()));
+    } 
+    double normSquare() {
+	double real = realValue();
+	double imaginary = imaginaryValue();
+	return real * real + imaginary * imaginary;
+    } 
 
-	/**
-	 * Returns the principal angle (argument) component of a polar complex.
-	 * But adding 2k&pi; to the principle angle will be an angle as well.
-	 * @return the angle &phi; of r*<b>e</b><sup><b>i</b>&phi;</sup>.
-	 *  The angle &ang; &phi; in radians is measured counter-clockwise from the real axis.
-	 *  Value will be in range [-&pi;,&pi;] and is not yet in the correct sector!
-	 * @see #norm()
-	 */
-	public Real arg() {
-		return Values.valueOf(Math.atan2(imaginaryValue(), realValue()));
-		//return Math.acos(realValue() / norm());
-	} 
+    /**
+     * Returns the principal angle (argument) component of a polar complex.
+     * But adding 2k&pi; to the principle angle will be an angle as well.
+     * @return the angle &phi; of r*<b>e</b><sup><b>i</b>&phi;</sup>.
+     *  The angle &ang; &phi; in radians is measured counter-clockwise from the real axis.
+     *  Value will be in range [-&pi;,&pi;] and is not yet in the correct sector!
+     * @see #norm()
+     */
+    public Real arg() {
+	return Values.valueOf(Math.atan2(imaginaryValue(), realValue()));
+	//return Math.acos(realValue() / norm());
+    } 
 
-	/**
-	 * Whether this complex number is infinite.
-	 * @return whether the real or imaginary part is infinite.
-	 * @see java.lang.Double#isInfinite(double)
-	 */
-	public boolean isInfinite() {
-		return java.lang.Double.isInfinite(realValue()) || java.lang.Double.isInfinite(imaginaryValue());
-	} 
+    /**
+     * Whether this complex number is infinite.
+     * @return whether the real or imaginary part is infinite.
+     * @see java.lang.Double#isInfinite(double)
+     */
+    public boolean isInfinite() {
+	return java.lang.Double.isInfinite(realValue()) || java.lang.Double.isInfinite(imaginaryValue());
+    } 
 
-	/**
-	 * Whether this complex number is NaN.
-	 * @return whether the real or imaginary part is NaN.
-	 * @see java.lang.Double#isNaN(double)
-	 */
-	public boolean isNaN() {
-		return java.lang.Double.isNaN(realValue()) || java.lang.Double.isNaN(imaginaryValue());
-	} 
+    /**
+     * Whether this complex number is NaN.
+     * @return whether the real or imaginary part is NaN.
+     * @see java.lang.Double#isNaN(double)
+     */
+    public boolean isNaN() {
+	return java.lang.Double.isNaN(realValue()) || java.lang.Double.isNaN(imaginaryValue());
+    } 
     
     // arithmetic operations
 	
     public Arithmetic zero() {return Values.ZERO;}
     public Arithmetic one() {return Values.ONE;}
     
-	/**
-	 * power of complex numbers.
-	 */
-	public Complex power(Complex x) {
-		return (Complex) Functions.exp.apply(x.multiply((Complex) Functions.log.apply(this)));
-	}
+    /**
+     * power of complex numbers.
+     */
+    public Complex power(Complex x) {
+	return (Complex) Functions.exp.apply(x.multiply((Complex) Functions.log.apply(this)));
+    }
 
-	// Arithmetic implementation synonyms
-	public Arithmetic add(Arithmetic b) {
-		if (b instanceof Complex)
-			return add((Complex) b);
-		return (Arithmetic) Operations.plus.apply(this, b);
-	} 
-	public Arithmetic subtract(Arithmetic b) {
-		if (b instanceof Complex)
-			return subtract((Complex) b);
-		return (Arithmetic) Operations.subtract.apply(this, b);
-	} 
+    // Arithmetic implementation synonyms
+    public Arithmetic add(Arithmetic b) {
+	if (b instanceof Complex)
+	    return add((Complex) b);
+	return (Arithmetic) Operations.plus.apply(this, b);
+    } 
+    public Arithmetic subtract(Arithmetic b) {
+	if (b instanceof Complex)
+	    return subtract((Complex) b);
+	return (Arithmetic) Operations.subtract.apply(this, b);
+    } 
 
-	/**
-	 * The negative of a complex number. Result has the same length but the angle differs by &pi;.
-	 */
-	public Arithmetic multiply(Arithmetic b) {
-		if (b instanceof Complex)
-			return multiply((Complex) b);
-		return (Arithmetic) Operations.times.apply(this, b);
-	} 
-	public Arithmetic divide(Arithmetic b) {
-		if (b instanceof Complex)
-			return divide((Complex) b);
-		return (Arithmetic) Operations.divide.apply(this, b);
-	} 
+    /**
+     * The negative of a complex number. Result has the same length but the angle differs by &pi;.
+     */
+    public Arithmetic multiply(Arithmetic b) {
+	if (b instanceof Complex)
+	    return multiply((Complex) b);
+	return (Arithmetic) Operations.times.apply(this, b);
+    } 
+    public Arithmetic divide(Arithmetic b) {
+	if (b instanceof Complex)
+	    return divide((Complex) b);
+	return (Arithmetic) Operations.divide.apply(this, b);
+    } 
 
-	public Arithmetic power(Arithmetic x) {
-		return (Arithmetic) Functions.exp.apply(x.multiply((Complex) Functions.log.apply(this)));
-	} 
+    public Arithmetic power(Arithmetic x) {
+	return (Arithmetic) Functions.exp.apply(x.multiply((Complex) Functions.log.apply(this)));
+    } 
 
-	/**
-	 * Returns a string representation of the object.
-	 */
-	/*public String toString() {
-		// beautiful format  a+i*b, a-i*b, a, i*b, -i, i, etc.
-		if (im() == 0 && !Logger.global.isLoggable(Level.DEBUG))
-			return MathUtilities.format(re());
-		String imformat = "i" + (Math.abs(im()) == 1 ? "" : "*" + MathUtilities.format(Math.abs(im())));
-		if (re() == 0 && !Logger.global.isLoggable(Level.DEBUG))
-			return (im() >= 0 ? "" : "-") + imformat;
-		else
-			return MathUtilities.format(re()) + (im() >= 0 ? "+" : "-") + imformat;
-	}*/
+    /**
+     * Returns a string representation of the object.
+     */
+    /*public String toString() {
+    // beautiful format  a+i*b, a-i*b, a, i*b, -i, i, etc.
+    if (im() == 0 && !Logger.global.isLoggable(Level.DEBUG))
+    return MathUtilities.format(re());
+    String imformat = "i" + (Math.abs(im()) == 1 ? "" : "*" + MathUtilities.format(Math.abs(im())));
+    if (re() == 0 && !Logger.global.isLoggable(Level.DEBUG))
+    return (im() >= 0 ? "" : "-") + imformat;
+    else
+    return MathUtilities.format(re()) + (im() >= 0 ? "+" : "-") + imformat;
+    }*/
 
     /**
      * Represents a complex number a + <b>i</b>*b&isin;<b>C</b>.
@@ -209,63 +209,63 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
     	 * @param b imaginary part of the complex number.
     	 */
     	public ComplexImpl(double a, double b) {
-    		real = a;
-    		imaginary = b;
+	    real = a;
+	    imaginary = b;
     	}
     	public ComplexImpl(Number a, Number b) {
-    		this(a.doubleValue(), b.doubleValue());
+	    this(a.doubleValue(), b.doubleValue());
     	}
     	public ComplexImpl(Real a, Real b) {
-    		//@xxx we might loose some precision here
-    		this(a.doubleValue(), b.doubleValue());
-    		if (!((a instanceof AbstractReal.Double) || (a instanceof AbstractReal.Float) || (a instanceof Rational)))
-	    		//@xxx instances of Rational could still lead to a loss of precision (if outside of this package, for example)
-    			throw new UnsupportedOperationException("the precision of " + a.getClass() + " is currently not yet supported");
-    		else if (!((b instanceof AbstractReal.Double) || (b instanceof AbstractReal.Float) ||(b instanceof Rational)))
-    			throw new UnsupportedOperationException("the precision of " + b.getClass() + " is currently not yet supported");
+	    //@xxx we might loose some precision here
+	    this(a.doubleValue(), b.doubleValue());
+	    if (!((a instanceof AbstractReal.Double) || (a instanceof AbstractReal.Float) || (a instanceof Rational)))
+		//@xxx instances of Rational could still lead to a loss of precision (if outside of this package, for example)
+		throw new UnsupportedOperationException("the precision of " + a.getClass() + " is currently not yet supported");
+	    else if (!((b instanceof AbstractReal.Double) || (b instanceof AbstractReal.Float) ||(b instanceof Rational)))
+		throw new UnsupportedOperationException("the precision of " + b.getClass() + " is currently not yet supported");
     	}
     
     	/**
     	 * creates a new complex number with real part, only.
     	 */
     	public ComplexImpl(double real) {
-    		this(real, 0);
+	    this(real, 0);
     	}
     	public ComplexImpl(Number real) {
-    		this(real.doubleValue(), 0);
+	    this(real.doubleValue(), 0);
     	}
     
     	/**
     	 * creates a new complex, zero.
     	 */
     	public ComplexImpl() {
-    		this(0, 0);
+	    this(0, 0);
     	}
     
     	public boolean equals(Object o) {
-    		if (o instanceof ComplexImpl) {
-    			// optimized version
-    			AbstractComplex b = (AbstractComplex) o;
-    			return java.lang.Double.doubleToLongBits(realValue()) == java.lang.Double.doubleToLongBits(b.realValue())
-    					&& java.lang.Double.doubleToLongBits(imaginaryValue()) == java.lang.Double.doubleToLongBits(b.imaginaryValue());
-    		} else
-    			return super.equals(o);
+	    if (o instanceof ComplexImpl) {
+		// optimized version
+		AbstractComplex b = (AbstractComplex) o;
+		return java.lang.Double.doubleToLongBits(realValue()) == java.lang.Double.doubleToLongBits(b.realValue())
+		    && java.lang.Double.doubleToLongBits(imaginaryValue()) == java.lang.Double.doubleToLongBits(b.imaginaryValue());
+	    } else
+		return super.equals(o);
     	} 
     	public boolean equals(Object o, Real tolerance) {
-    		if (o instanceof ComplexImpl) {
-    			// optimized version
-    			AbstractComplex b = (AbstractComplex) o;
-    			final double deltare = realValue() - b.realValue();
-    			final double deltaim = imaginaryValue() - b.imaginaryValue();
-    			return deltare*deltare + deltaim*deltaim < tolerance.doubleValue();
-    		} else
-    			return super.equals(o, tolerance);
+	    if (o instanceof ComplexImpl) {
+		// optimized version
+		AbstractComplex b = (AbstractComplex) o;
+		final double deltare = realValue() - b.realValue();
+		final double deltaim = imaginaryValue() - b.imaginaryValue();
+		return deltare*deltare + deltaim*deltaim < tolerance.doubleValue();
+	    } else
+		return super.equals(o, tolerance);
     	}
     	/**
     	 * creates a copy of a complex number.
     	 */
     	public Object clone() {
-    		return new ComplexImpl(real, imaginary);
+	    return new ComplexImpl(real, imaginary);
     	} 
     
     	/**
@@ -273,10 +273,10 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
     	 * @return re z = re (a + <b>i</b>b) = a = (z+<span class="conjugate">z</span>) / 2
     	 */
     	public Real re() {
-    		return Values.valueOf(real);
+	    return Values.valueOf(real);
     	} 
     	double realValue() {
-    		return real;
+	    return real;
     	} 
     
     	/**
@@ -284,10 +284,10 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
     	 * @return im z = im (a + <b>i</b>b) = b = (z-<span class="conjugate">z</span>) / (2<b>i</b>)
     	 */
     	public Real im() {
-    		return Values.valueOf(imaginary);
+	    return Values.valueOf(imaginary);
     	} 
     	double imaginaryValue() {
-    		return imaginary;
+	    return imaginary;
     	} 
     
     	/**
@@ -297,7 +297,7 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
     	 * @return the complex number a - <b>i</b>*b.
     	 */
     	public Complex conjugate() {
-    		return new ComplexImpl(realValue(), -imaginaryValue());
+	    return new ComplexImpl(realValue(), -imaginaryValue());
     	} 
     
         // arithmetic operations
@@ -306,35 +306,35 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
     	 * adds two Complexes returning a third as a result
     	 */
     	public Complex add(Complex b) {
-    		return new ComplexImpl(re().add(b.re()), im().add(b.im()));
+	    return new ComplexImpl(re().add(b.re()), im().add(b.im()));
     	} 
     
     	/**
     	 * subtracts two Complexes returning a third as a result
     	 */
     	public Complex subtract(Complex b) {
-    		return new ComplexImpl(re().subtract(b.re()), im().subtract(b.im()));
+	    return new ComplexImpl(re().subtract(b.re()), im().subtract(b.im()));
     	} 
     
     	/**
     	 * multiplies two Complexes returning a third as a result
     	 */
     	public Complex multiply(Complex b) {
-    		return new ComplexImpl(re().multiply(b.re()).subtract(im().multiply(b.im())), re().multiply(b.im()).add(im().multiply(b.re())));
+	    return new ComplexImpl(re().multiply(b.re()).subtract(im().multiply(b.im())), re().multiply(b.im()).add(im().multiply(b.re())));
     	} 
     
     	/**
     	 * divides two complex numbers.
     	 */
     	public Complex divide(Complex b) {
-    		return multiply((Complex) b.inverse());
+	    return multiply((Complex) b.inverse());
     	} 
     
     	/**
     	 * The negative of a complex number. Result has the same length but the angle differs by &pi;.
     	 */
     	public Arithmetic minus() {
-    		return new ComplexImpl(-realValue(), -imaginaryValue());
+	    return new ComplexImpl(-realValue(), -imaginaryValue());
     	} 
     
     	/**
@@ -342,8 +342,8 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
     	 * @return z<sup>-1</sup> = <span class="conjugate">z</span>/|z|<sup>2</sup>.
     	 */
     	public Arithmetic inverse() {
-    		double s = normSquare();
-    		return new ComplexImpl(realValue() / s, -imaginaryValue() / s);
+	    double s = normSquare();
+	    return new ComplexImpl(realValue() / s, -imaginaryValue() / s);
     	} 
     }
 }

@@ -216,6 +216,16 @@ class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractArithmetic
 	return (Polynomial) add(b.minus());
     }
 
+    public Arithmetic scale(Arithmetic/*<R>*/ alpha) {
+	if (degreeValue() < 0)
+	    return this;
+	Arithmetic/*>R<*/ r[] = new Arithmetic/*>R<*/[degreeValue() + 1];
+	for (int i = 0; i < r.length; i++) {
+	    r[i] = (Arithmetic/*>R<*/) get(i).scale(alpha);
+	}
+	return representative(r);
+    }
+
     public Arithmetic multiply(Arithmetic b) {
 	return multiply((Polynomial)b);
     }

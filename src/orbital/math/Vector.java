@@ -224,6 +224,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * @return s&lowast;v
      */
     Vector/*<R>*/ multiply(Scalar s);
+    Vector/*<R>*/ scale(Scalar s);
 
     /**
      * Multiplies a vector with a matrix returning a vector.

@@ -380,10 +380,14 @@ abstract class AbstractVector/*<R implements Arithmetic>*/ implements Vector/*<R
     } 
 
     public Vector/*<R>*/ multiply(Scalar s) {
-	return multiplyComponentwise(s);
-    } 
+	//@todo outroduce
+	return (Vector) scale(s);
+    }
+    public Vector/*<R>*/ scale(Scalar s) {
+	return (Vector) scale(s);
+    }
     // will also work for other "scalar-like" objects of type Arithmetic
-    Vector multiplyComponentwise(Arithmetic s) {
+    public Arithmetic scale(Arithmetic s) {
 	Vector ret = newInstance(dimension());
 
 	// component-wise
@@ -417,13 +421,13 @@ abstract class AbstractVector/*<R implements Arithmetic>*/ implements Vector/*<R
     } 
     public Arithmetic multiply(Arithmetic b) {
 	if (b instanceof Scalar)
-	    return multiply((Scalar) b);
+	    return scale((Scalar) b);
 	if (b instanceof Matrix)
 	    return multiply((Matrix) b);
 	if (b instanceof Vector)
 	    return multiply((Vector) b);
 	if (b instanceof Symbol || b instanceof orbital.math.functional.MathFunctor)
-	    return multiplyComponentwise(b);
+	    return scale(b);
 	throw new IllegalArgumentException("wrong type: " + b.getClass());
     } 
     public Arithmetic inverse() {

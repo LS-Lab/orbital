@@ -133,4 +133,5 @@ public interface Quotient/*<M implements Arithmetic>*/ extends Arithmetic {
     Quotient/*<M>*/ multiply(Quotient/*<M>*/ b);
     Quotient/*<M>*/ divide(Quotient/*<M>*/ b) throws ArithmeticException;
     Quotient/*<M>*/ power(Quotient/*<M>*/ b);
+    //@todo when covariant return-types : Quotient/*<M>*/ scale(Arithmetic alpha);
 }

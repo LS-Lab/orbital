@@ -135,10 +135,10 @@ public class NumericalAlgorithms {
 	    Vector o_r = (Vector) r.clone();	// old residual
 	    Vector a = A.multiply(p);
 	    Scalar alpha = (Scalar/*__*/) ((Scalar/*__*/)Functions.square.apply(r.norm(2))).divide(a.multiply(p));
-	    x = x.add(p.multiply(alpha));
-	    r = r.subtract(a.multiply(alpha));
+	    x = x.add(p.scale(alpha));
+	    r = r.subtract(a.scale(alpha));
 	    Scalar beta = (Scalar/*__*/) ((Scalar/*__*/)Functions.square.apply(r.norm(2))).divide((Scalar/*__*/)Functions.square.apply(o_r.norm(2)));
-	    p = r.add(p.multiply(beta));
+	    p = r.add(p.scale(beta));
 	    logger.log(Level.FINE, "cg-iteration {0}, a={1}\nalpha={2}\nx={3}\nr={4}\nbeta={5}\np={6}", new Object[] {new java.lang.Integer(m), a, alpha, x, r, beta, p});
 	} 
 
@@ -472,6 +472,6 @@ public class NumericalAlgorithms {
     	double array[] = new double[lambda.length];
     	for (int k = 0; k < array.length; k++)
 	    array[k] = lambda[k] * ((Number) f.apply(a.add(Values.valueOf(k * h)))).doubleValue();
-    	return b.subtract(a).multiply(Values.valueOf(Evaluations.sum(array)));
+    	return b.subtract(a).scale(Values.valueOf(Evaluations.sum(array)));
     }
 }

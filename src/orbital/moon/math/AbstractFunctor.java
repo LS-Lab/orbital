@@ -67,6 +67,11 @@ public abstract class AbstractFunctor implements MathFunctor {
 	return Functionals.genericCompose(Operations.subtract, this, b);
     } 
     
+    public Arithmetic scale(Arithmetic alpha) throws ArithmeticException {
+	//@xxx not quite right
+	return multiply(alpha);
+    }
+
     public Arithmetic multiply(Arithmetic b) throws ArithmeticException {
 	// simple-case optimization
 	if (b instanceof Scalar) {

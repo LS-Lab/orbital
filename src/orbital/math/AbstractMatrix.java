@@ -162,9 +162,11 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
     			
 		M = (Matrix) B.clone();
 		B2 = (Matrix) M.clone();
+		System.out.println("appending columns\n" + M + "\nto\n" + M + " ...");
 		assert M.insertColumns(M).equals(M) : "return this";
-		System.out.println("appended columns\n" + M);
+		System.out.println("... is\n" + M);
 		assert !M.equals(B2) : "structure change mutates";
+
 		B2 = (Matrix) M.clone();
 		Matrix N = M.subMatrix(0,1, 1,3);
 		assert !N.equals(M) : "sub-view different";
@@ -934,9 +936,13 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
     } 
 
     public Matrix/*<R>*/ multiply(Scalar s) {
-	return multiplyComponentwise(s);
+	//@todo outroduce
+	return (Matrix) scale(s);
     } 
-    Matrix multiplyComponentwise(Arithmetic s) {
+    public Matrix/*<R>*/ scale(Scalar s) {
+	return (Matrix) scale(s);
+    } 
+    public Arithmetic scale(Arithmetic s) {
 	Matrix ret = newInstance(dimension());
 
 	// component-wise
@@ -972,7 +978,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
     } 
     public Arithmetic multiply(Arithmetic b) {
 	if (b instanceof Scalar)
-	    return multiply((Scalar) b);
+	    return scale((Scalar) b);
 	if (b instanceof Vector)
 	    return multiply((Vector) b);
 	if (b instanceof Matrix)
@@ -1041,9 +1047,9 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
 	    // perhaps tensor products would help?
 
 	    // row to be transformed
-	    Vector urow = ((AbstractVector) A.getRow(i)).multiplyComponentwise(apinv);
+	    Vector urow = (Vector) A.getRow(i).scale(apinv);
 	    A.setRow(i, urow);
-	    Vector urowI = ((AbstractVector) AI.getRow(i)).multiplyComponentwise(apinv);
+	    Vector urowI = (Vector) AI.getRow(i).scale(apinv);
 	    AI.setRow(i, urowI);
 	    for (int j = 0; j < dimension().height; j++) {
 		if (j == i)
@@ -1054,9 +1060,9 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
 		if (f.norm().equals(Values.ZERO))
 		    continue;
 		if (logger.isLoggable(Level.FINEST))
-		    logger.log(Level.FINEST, "Matrix.inverse() \t{0} - {1}\n\t\t{2} - {3}", new Object[] {A.getRow(j), urow.multiply(f), AI.getRow(j), urowI.multiply(f)});
-		A.setRow(j, (Vector) A.getRow(j).subtract(urow.multiply(f)));
-		AI.setRow(j, (Vector) AI.getRow(j).subtract(urowI.multiply(f)));
+		    logger.log(Level.FINEST, "Matrix.inverse() \t{0} - {1}\n\t\t{2} - {3}", new Object[] {A.getRow(j), urow.scale(f), AI.getRow(j), urowI.scale(f)});
+		A.setRow(j, (Vector) A.getRow(j).subtract(urow.scale(f)));
+		AI.setRow(j, (Vector) AI.getRow(j).subtract(urowI.scale(f)));
 	    } 
 	} 
 

@@ -138,6 +138,10 @@ class AbstractQuotient/*<M implements Arithmetic>*/ implements Quotient/*<M>*/, 
 	return equivalenceClass(representative().subtract(b.representative()));
     } 
 
+    public Arithmetic scale(Arithmetic alpha) {
+	return equivalenceClass(representative().scale(alpha));
+    } 
+
     public Quotient/*<M>*/ multiply(Quotient/*<M>*/ b) {
 	if (!getQuotientOperator().equals(b.getQuotientOperator()))
 	    throw new ArithmeticException("different modulus " + getQuotientOperator() + "!=" + b.getQuotientOperator());
