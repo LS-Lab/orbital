@@ -220,12 +220,18 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 			assert mu.apply(Fi).equals(mu.apply(Fj));
 			j.remove();
 			// apply unification and remove duplicates, but convert to list again.
-			final List t = new LinkedList(new HashSet(Functionals.map(mu, listF)));
-			//@internal instead of working on t and returning t to our caller, we make listF look the same. Perhaps this is not the most clear idea.
-			listF.clear();
-			listF.addAll(t);
+			{
+			    //@todo optimize this clumsy implementation.
+			    List t = new LinkedList(new HashSet(Functionals.map(mu, listF)));
+			    //@internal instead of working on t and returning t to our caller, we make listF look the same. Perhaps this is not the most clear idea.
+			    listF.clear();
+			    listF.addAll(t);
+			    t = null;
+			}
 			assert this.equals(previous) : "modifications during factorization work on copies, and leave the original clause unmodified";
-			logger.log(Level.FINEST, "factorized {1} from {0} by unifying {3} and {4} with {2}", new Object[] {logPrevious, construct(new HashSet(listF)), mu, Fi, Fj});
+			if (logger.isLoggable(Level.FINEST)) {
+			    logger.log(Level.FINEST, "factorized {1} from {0} by unifying {3} and {4} with {2}", new Object[] {logPrevious, construct(new HashSet(listF)), mu, Fi, Fj});
+			}
 			// factorize again
 			//@todo could optimize away recursive call
 			factorizeImpl(listF);
