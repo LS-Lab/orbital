@@ -28,16 +28,21 @@ import java.util.logging.Level;
 
 /**
  * This class contains basic mathematical utilities.
- * <p><a id="SystemProperties">Properties</a>:
- * <ul>
- *   <li>Math precision settings:
- *     <ul>
- *       <li><tt>orbital.math.MathUtilities.defaultPrecisionDigits</tt> - the default number of precision digits (for display etc.).</li>
- *       <li><tt>orbital.math.MathUtilities.defaultTolerance</tt> - the default tolerance for two numbers to be treated equal. (experimental)</li>
- *     </ul>
- *   </li>
- * </ul>
- * </p>
+ * <table id="SystemProperties" border="2">
+ *   <caption>Properties: math precision settings</caption>
+ *   <tr>
+ *     <th>Property Name</th>
+ *     <th>Property Value</th>
+ *   </tr>
+ *   <tr>
+ *     <td><tt>orbital.math.MathUtilities.defaultPrecisionDigits</tt></td>
+ *     <td>the default number of precision digits (for display etc.).</td>
+ *   </tr>
+ *   <tr>
+ *     <td><tt>orbital.math.MathUtilities.defaultTolerance</tt></td>
+ *     <td>the default tolerance for two numbers to be treated equal. (experimental)</td>
+ *   </tr>
+ * </table>
  * 
  * @stereotype &laquo;Utilities&raquo;
  * @stereotype &laquo;Module&raquo;
@@ -77,14 +82,16 @@ public final class MathUtilities {
     static {
 	String property = MathUtilities.class.getName() + ".defaultPrecisionDigits";
 	try {
-	    String desc = System.getProperty(property, DefaultPrecisionDigits + "");
+	    String desc = (String) java.security.AccessController.doPrivileged(
+                            new GetPropertyAction(property, DefaultPrecisionDigits + ""));
 	    try {
 		DefaultPrecisionDigits = java.lang.Integer.parseInt(desc);
 	    } catch (NumberFormatException nonumber) {
 		logger.log(Level.SEVERE, "invalid property setting {0}={1}" , new Object[] {property, desc});
 	    } 
 	    property = MathUtilities.class.getName() + ".defaultTolerance";
-	    desc = System.getProperty(property, DefaultTolerance + "");
+	    desc = (String) java.security.AccessController.doPrivileged(
+                            new GetPropertyAction(property, DefaultTolerance + ""));
 	    try {
 		DefaultTolerance = java.lang.Double.parseDouble(desc);
 	    } catch (NumberFormatException nonumber) {

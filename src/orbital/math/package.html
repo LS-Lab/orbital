@@ -80,17 +80,26 @@ Provides <em>arithmetic objects</em> and mathematical algorithms.
     <td>a&#8260;s &isin; S<sup>-1</sup>A</td>
   </tr>
 </table>
-</center>Here A denotes a set of arbitrary arithmetic objects, R is a ring. <b>Z</b> is the
+</center>
+Here A denotes a set of arbitrary arithmetic objects, R is a ring. <b>Z</b> is the
 set of integers, <b>Q</b> is the set of rational numers, <b>R</b> is the set of
 real values, and <b>C</b> is the set of complex numbers. Then the type hierarchy
 of the arithmetic objects realize the mathematical inclusion <center><b>Z</b>
 &#8834; <b>Q</b> &#8834; <b>R</b> &#8834; <b>C</b></center>
-<p>Since most general arithmetic objects are modelled as interfaces to provide a
+<p>
+Since our general arithmetic objects are modelled as interfaces to provide a
 maximum of flexibility, you need factory methods to create an arithmetic object
 value. The class <tt><a href="Values.html">Values</a></tt> is that central
 factory class which can create arithmetic object values from all kinds of
-primitive types.</p>
-<p>Mathematical function types are provided in a sub package <tt><a href="functional/package-summary.html">orbital.math.functional</a></tt>.</p>
+primitive types.
+It also provides a "pluggable value factory implementation" that allow other vendor's implementation of arithmetic objects to be used. 
+Especially, this makes it possible to switch to an implementation with different numerical
+properties or differing levels of integration of symbolic mathematics. Even switching to
+implementations with lazy evaluation would be possible.
+</p>
+<p>
+Mathematical function types are provided in a sub package <tt><a href="functional/package-summary.html">orbital.math.functional</a></tt>.
+</p>
 <dl>
   <dt><b>See Also:</b></dt>
   <dd><tt><a href="functional/package-summary.html">orbital.math.functional</a></tt>,

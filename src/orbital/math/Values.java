@@ -33,24 +33,44 @@ import java.util.Iterator;
 import orbital.math.Tensor;
 
 /**
- * Scalar value and arithmetic object value constructor and utilities class.
+ * Scalar value and arithmetic object value constructor factory.
  * <p>
- * This class is the central factory facade for instantiating new arithmetic objects
- * from primitive types values.
+ * This class is the central factory facade for instantiating new arithmetic objects. It also
+ * provides "pluggable value factory implementation" that allow other vendor's implementation
+ * of arithmetic objects to be used.
  * </p>
  * <p>
- * Since most general arithmetic objects are modelled as interfaces to provide a maximum of
+ * Since our general arithmetic objects are modelled as interfaces to provide a maximum of
  * flexibility, you need factory methods to create an arithmetic object value. The class
  * <tt><a href="Values.html">Values</a></tt> is that central factory class which can
  * create arithmetic object values from all kinds of primitive types.
  * This indirection introduces a more loosely coupled binding between users and providers
  * of arithmetic object classes.
- * When using a static final singleton factory like from {@link #getDefaultInstance()},
- * JIT compilers can optimize the resulting code to prevent performance loss.
+ * When using a static final singleton factory like from {@link #getDefault()},
+ * closed-world JIT compilers can optimize the resulting code to prevent performance loss.
  * Indeed, because of this delegative construction the
  * factory method can chose the best implementation class suitable for a specific primitive type
  * and size.
  * </p>
+ * <table id="SystemProperties" border="2">
+ *   <caption>Properties: math implementation settings</caption>
+ *   <tr>
+ *     <th>Property Name</th>
+ *     <th>Property Value</th>
+ *   </tr>
+ *   <tr>
+ *     <td><tt>orbital.math.Values.implementation</tt></td>
+ *     <td>class name of the Values implementation used for creating values and thus returned by {@link #getInstance()}.</td>
+ *   </tr>
+ *   <tr>
+ *     <td><tt>orbital.math.Values.default</tt></td>
+ *     <td>class name of the initial default Values instance returned by {@link #getDefault()}.
+ *       If not set defaults to value of <tt>orbital.math.Values.implementation</tt>.
+ *     </td>
+ *   </tr>
+ * </table>
+ * These properties allow a different vendor's factory implementation of arithmetic objects
+ * to be "plugged in".
  * 
  * @version 1.0, 2000/08/08
  * @author  Andr&eacute; Platzer
@@ -58,7 +78,7 @@ import orbital.math.Tensor;
  * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade</a>
  * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
  * @see #getInstance()
- * @see #getDefaultInstance()
+ * @see #getDefault()
  * @see java.util.Arrays
  * @todo perhaps we should only call true primitive and java.lang.Number type conversion methods valueOf(...). rename the rest of them according to the type they return. 
  */
@@ -89,22 +109,92 @@ public class Values {
      *  whether Real... automatically narrows doens its results.
      */
     public static Values getInstance() {
-	return new Values();
+	return instantiate((String) java.security.AccessController.doPrivileged(
+                            new GetPropertyAction(Values.class.getName() + ".implementation", "orbital.math.Values")));
     }
 
+    private static final Values instantiate(String className) {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        if (cl == null)
+            cl = ClassLoader.getSystemClassLoader();
+
+        try {
+            return (Values) Class.forName(className, true, cl).newInstance();
+        } catch (Exception ex) {
+	    throw new FactoryConfigurationError("can't instantiate Values implementation " + className, ex);
+        }
+    }
+    
     /**
      * Default instance.
      */
-    private static final Values defaultValues = getInstance();
+    private static Values defaultValueFactory;
+    static {
+	String defaultValueFactoryClass
+	    = (String) java.security.AccessController.doPrivileged(
+                            new GetPropertyAction(Values.class.getName() + ".default", null));
+	defaultValueFactory = defaultValueFactoryClass != null
+	    ? instantiate(defaultValueFactoryClass)
+	    : getInstance();
+    }
 	
     /**
      * Get the (single) default instance of this factory.
+     * <p>
+     * This is the old name for {@link #getDefault()}.
+     * </p>
      * @see <a href="{@docRoot}/Patterns/Design/Singleton.html">&quot;Singleton&quot;</a>
      * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+     * @see #setDefault(Values)
      */
     public static final Values getDefaultInstance() {
-	return defaultValues;
+	return defaultValueFactory;
     }
+
+    /**
+     * Get the (single) default instance of this factory.
+     * <p>
+     * This is the new name for {@link #getDefaultInstance()}.
+     * </p>
+     * @see <a href="{@docRoot}/Patterns/Design/Singleton.html">&quot;Singleton&quot;</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+     * @see #setDefault(Values)
+     */
+    public static final Values getDefault() {
+	return defaultValueFactory;
+    }
+
+    /**
+     * Set the (single) default instance of this factory.
+     * <p>
+     * Since changing the default factory may affect many different areas of functionality,
+     * this method should only be used if the caller is prepared to reinitialize values
+     * which ought to use the new kind of factory.
+     * </p>
+     * @param newValueFactory the new default value factory of this Virtual Machine.
+     * @see #getDefault()
+     * @permission orbital.math.Values.default write
+     */
+    public static final void setDefaultInstance(Values newValueFactory) {
+        if (newValueFactory == null)
+            throw new NullPointerException("Can't set default value factory to " + newValueFactory);
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null) sm.checkPermission(new java.util.PropertyPermission
+                        ("orbital.math.Values.default", "write"));
+	defaultValueFactory = newValueFactory;
+    }
+
+    /**
+     * Set the (single) default instance of this factory.
+     * <p>
+     * This is the new name for {@link #setDefaultInstance(Values)}.
+     * </p>
+     * @see #getDefault()
+     */
+    public static final void setDefault(Values newValueFactory) {
+	setDefaultInstance(newValueFactory);
+    }
+
 
     // legacy conversion primitve wrapper utilities
     
