@@ -142,6 +142,7 @@ public class AlphaBetaPruning extends AdversarySearch {
      * Also note that this method's return value affects the utility value of the initial state.
      * </p>
      * @return a preference relation on {@link AdversarySearch.Option}s.
+     * @postconditions RESULT should favour any option to NoOptions
      * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
      */
     protected BinaryPredicate/*<Option,Option>*/ getPreference() {
