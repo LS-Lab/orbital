@@ -95,8 +95,8 @@ public class SetOfSupportResolution extends ResolutionBase {
 	    boolean resolvable = false;
 	    // choose any clause D&isin;U&cup;S
 	    for (Iterator i2 = new SequenceIterator(new Iterator[] {
-		    usable.probableComplementsOf(C),
-		    setOfSupport.probableComplementsOf(C)
+		    usable.getProbableComplementsOf(C),
+		    setOfSupport.getProbableComplementsOf(C)
 	        });
 		 i2.hasNext(); ) {
 		final Clause D = (Clause) i2.next();
