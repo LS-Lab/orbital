@@ -1,3 +1,5 @@
  |= (4 >= 5)
  |= (λ x . (7 =< x))(2)
 ##  |= ((λ x . (2 + x))(3) >= 7) # not yet available due to generic type parameter
+ |= (λ x . (x != x))(7)
+ |= (4 != 4)
