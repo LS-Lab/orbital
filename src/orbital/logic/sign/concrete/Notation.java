@@ -503,6 +503,8 @@ public abstract class Notation implements Serializable, Comparable {
 	return n;
     } 
 
+
+    
     /**
      * Contains the specification of the default notation for a functor.
      * @invariant precedence > 0 && associativity and notation match

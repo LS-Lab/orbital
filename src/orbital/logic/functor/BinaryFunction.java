@@ -31,6 +31,7 @@ import orbital.logic.functor.Functor.Specification;
  * @version 1.0, 1998/11/14
  * @author  Andr&eacute; Platzer
  * @see Function
+ * @internal alternative implementation would regard BinaryFunctions as Function<Object[],B> but that would loose even more type safety.
  */
 public /*template*/ interface BinaryFunction/*<A1, A2, B>*/ extends Functor {
 

@@ -359,7 +359,7 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	 */
 	public int compareTo(Object o) {
 	    Specification b = (Specification) o;
-	    int			  order = arity() - b.arity();
+	    int order = arity() - b.arity();
 	    if (order != 0)
 		return order;
 	    assert spec_parameterTypes.length == arity() && b.spec_parameterTypes.length == arity() : "arity is the number of arguments, and difference of arities is zero";
@@ -570,7 +570,6 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	 * @internal see #getStaticSpecification(Class)
 	 * @internal see #searchMethod(Class)
 	 * @permission Needs access to the functor class and will therefore call {@link java.lang.reflect.AccessibleObject#setAccessible(boolean) setAccessible(true)}.
-	 * @todo could use field public static final Specification specification if available.
 	 */
 	public static final Specification getSpecification(Functor f) throws IntrospectionException {
 	    Specification spec;
@@ -665,14 +664,14 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	 * Implementations may also consider non-static fields of the same name.
 	 * @permission Needs access to the functor class and will therefore call {@link java.lang.reflect.AccessibleObject#setAccessible(boolean) setAccessible(true)}.
 	 * @see #getSpecification(Functor)
+	 * @xxx getField(...) won't work for non-public fields.
 	 */
 	private static Specification getStaticSpecification(Class c) {
 	    try {
 		Field spec = c.getField("specification");
-		int   expectedModifier = Modifier.STATIC | Modifier.FINAL;
+		//int   expectedModifier = Modifier.STATIC | Modifier.FINAL;
 		int   requiredModifier = Modifier.FINAL;
-		if (((spec.getModifiers() & expectedModifier) == expectedModifier
-		     || (spec.getModifiers() & requiredModifier) == requiredModifier)
+		if ((spec.getModifiers() & requiredModifier) == requiredModifier
 		    && Specification.class.isAssignableFrom(spec.getType())) {
 		    if (!spec.isAccessible())
 			spec.setAccessible(true);
