@@ -6,6 +6,8 @@
 
 package orbital.logic.imp;
 
+import orbital.logic.functor.Functor.Specification;
+
 /**
  * An interface for representations of expressions.
  * <p>
@@ -86,5 +88,11 @@ public interface Expression {
      */
     Signature getSignature();
 
-    //@xxx //@todo introduce Specification getType(); returning the type &tau; of this expression.
+    /**
+     * Get the type of this expression.
+     * @pre true
+     * @return the type <span class="type">&tau;</span> of this expression.
+     * @see Symbol#getType()
+     */
+    Specification getType();
 }

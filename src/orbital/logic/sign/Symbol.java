@@ -124,6 +124,8 @@ public interface Symbol extends Variable, Comparable/*<Symbol>*/{
      * Get the (arity and) type specification of this symbol.
      * @pre true
      * @return the type specification <span class="type">&tau;</span> of this symbol.
+     * @see Expression#getType()
+     * @todo do we have to change the return type or Functor.Specification in order to reflect such types as (sigma->rho)->(tau->nu) as in ClassicalLogic.LambdaAbstractionFormula? This cannot precisely be represented by Class[]->Class, since with Class=Function we loose the information that Class=Function<tau,nu>.
      */
     Specification getType();
     /**
