@@ -31,6 +31,15 @@ public class ResolutionTest extends ClassicalLogicTest {
 	    fail(ex.getMessage());
 	}
     }
+    public void testEquivalences() {
+	test("all");
+    }
+    public void testGarbage() {
+	test("none");
+    }
+    public void testProperties() {
+	test("properties");
+    }
     public void testFol() {
 	test("fol");
     }

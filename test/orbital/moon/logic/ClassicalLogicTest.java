@@ -38,6 +38,6 @@ public class ClassicalLogicTest extends check.TestCase {
 	test("none");
     }
     public void testProperties() {
-	test("porperties");
+	test("properties");
     }
 }
