@@ -236,7 +236,6 @@
 
         <javadoc maxmemory="256M"
                  failonerror="true"
-                 sourcepath="${sources}" 
                  destdir="${doc}/api"
                  author="true"
                  version="true"
@@ -248,10 +247,13 @@
                  header="&lt;b&gt;Orbital library&lt;/b&gt;"
                  footer="&lt;b&gt;Orbital library&lt;/b&gt;&lt;br&gt;${timestamp}"
 		 overview="${doc}/overview.html"
-                 packagenames="orbital.*"
-		 excludepackagenames="orbital,orbital.robotic.strategy,orbital.util.graph,orbital.moon,orbital.moon.aspects,orbital.moon.deprecated,orbital.moon.math,orbital.moon.logic.bridge,orbital.moon.awt.virtual"
                  Private="${doc.internal}">
             <bottom><![CDATA[<span style='font-size: smaller; font-style: italic;'>Copyright &copy; 1996-2002 Andr&eacute; Platzer<br />All Rights Reserved.</span>]]></bottom>
+	    <packageset dir="${sources}" defaultexcludes="no"
+	         excludes="orbital,orbital/robotic/strategy,orbital/util/graph,orbital/moon,orbital/moon/aspects,orbital/moon/deprecated,orbital/moon/math,orbital/moon/logic/bridge,orbital/moon/awt/virtual">
+	        <include name="orbital/**"/>
+	    </packageset>
+
 	    <!-- -tag param -tag pre:mc:&quot;Preconditions:&quot; -tag post:mc:&quot;Postconditions:&quot; -tag return -tag throws -tag stereotype:a:&quot;Stereotype:&quot; -tag structure:t:&quot;Structure:&quot; -tag invariant:t:&quot;Invariants:&quot; -tag attribute:a:&quot;Attributes:&quot; -tag version -tag author -tag see -->
 	    <tag name="pre" scope="methods,constructors" description="Preconditions:"/>
 	    <tag name="post" scope="methods,constructors" description="Postconditions:"/>
