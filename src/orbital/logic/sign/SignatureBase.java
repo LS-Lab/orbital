@@ -51,9 +51,13 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
      * but will be transformed into this signature set with the call to this constructor.</p>
      * @param symbols the set of symbols in the signature.
      * @preconditions &forall;s&isin;symbols: s instanceof orbital.logic.imp.Symbol
+     * @todo 19 optimize the TreeSet which takes time during proving
      */
     public SignatureBase(Collection/*<Symbol>*/ symbols) {
-	this(new TreeSet/*<Symbol>*/(symbols));
+	this(new TreeSet/*<Symbol>*/(symbols), true);
+    }
+    public SignatureBase(SortedSet/*<Symbol>*/ symbols) {
+	this(new TreeSet/*<Symbol>*/(symbols), true);
     }
 
     /**
@@ -63,7 +67,7 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
 	super(new TreeSet/*<Symbol>*/());
     }
 
-    private SignatureBase(SortedSet/*<Symbol>*/ symbols) {
+    private SignatureBase(SortedSet/*<Symbol>*/ symbols, boolean unusedParameter) {
 	super(symbols);
 	assert Setops.all(getDelegatee(), new orbital.logic.functor.Predicate() { public boolean apply(Object s) {return s instanceof Symbol;} }) : "instanceof SortedSet<Symbol>";
     }
