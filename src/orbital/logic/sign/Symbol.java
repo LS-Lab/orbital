@@ -44,7 +44,11 @@ import orbital.logic.functor.Notation.NotationSpecification;
  *      <li>predicate-variables are variable "frames" of relations.</li>
  *    </ul>
  *  </li>
- *  <li>(perhaps types <span class="type">&tau;</span> and type identifier predicates <span class="type">&tau;</span>).</li>
+ *  <li>types <span class="type">&tau;</span> and type identifier predicates <span class="type">&tau;</span>
+ *      of type <span class="type">*</span>.
+ *  </li>
+ *  <li>type constructors, f.ex. of type <span class="type">(*&rarr;*)&rarr;*</span>
+ *  </li>
  * </ul>
  * </p>
  * <p>
