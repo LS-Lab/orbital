@@ -63,7 +63,7 @@
              has to be relative to basedir! -->
         <property name="checkstyle.dir" value="src"/>
 	<!-- default values, may be overwritten by 'build.properties' -->
-	<property name="javadoc.link.jdk" value="http://java.sun.com/products/jdk/1.4/docs/api/"/>
+	<property name="javadoc.link.jdk" value="http://java.sun.com/products/jdk/1.4.2/docs/api/"/>
 	<property name="javadoc.link.jdk.offline" value="false"/>
 	<property name="env.javacchome" value="unknown"/>
 	<property name="javac.source" value="1.4"/>
@@ -400,7 +400,7 @@
     <target name="doc.dist" depends="init"
             description="generate javadoc (distrribution version)">
         <antcall target="doc">
-            <param name="javadoc.link.jdk" value="http://java.sun.com/products/jdk/1.4/docs/api/"/>
+            <param name="javadoc.link.jdk" value="http://java.sun.com/products/jdk/1.4.2/docs/api/"/>
             <param name="javadoc.link.jdk.offline" value="true"/>
         </antcall>
     </target>
