@@ -481,7 +481,7 @@ public class ClassicalLogic extends ModernLogic {
     private static final Interpretation _coreInterpretation =
 	LogicSupport.arrayToInterpretation(new Object[][] {
 	    /**
-	     * Contains ordered map (in precedence order) of initial functors
+	     * Contains (usually ordered) map (in precedence order) of initial functors
 	     * and their notation specifications.
 	     * Stored internally as an array of length-2 arrays.
 	     * @invariants sorted, i.e. precedenceOf[i] < precedenceOf[i+1]
@@ -662,6 +662,31 @@ public class ClassicalLogic extends ModernLogic {
 	}
     }
     
+    /**
+     * Parses single term.
+     * @see #createExpression(String)
+     */
+    public Expression createTerm(String expression) throws ParseException {
+	if (expression == null)
+	    throw new NullPointerException("null is not an expression");
+	try {
+	    LogicParser parser = new LogicParser(new StringReader(expression));
+	    parser.setSyntax(this);
+	    return parser.parseTerm();
+	} catch (orbital.moon.logic.ParseException ex) {
+	    throw new ParseException(ex.getMessage() + "\nIn expression: " + expression,
+				     ex.currentToken == null ? COMPLEX_ERROR_OFFSET : ex.currentToken.next.beginLine,
+				     ex.currentToken == null ? COMPLEX_ERROR_OFFSET : ex.currentToken.next.beginColumn,
+				     ex);
+	} catch (TypeException ex) {
+	    //@internal we could also elongate "\nIn expression: " + expression, to the exception message.
+	    throw ex;
+	} catch (IllegalArgumentException ex) {
+	    //@internal we could also elongate "\nIn expression: " + expression, to the exception message.
+	    throw ex;
+	} 
+    }
+
     // Helper utilities.
 
     static class LogicFunctions {
@@ -1425,7 +1450,7 @@ public class ClassicalLogic extends ModernLogic {
      * Inference mechanism driven by full first-order resolution.
      * @attribute computability semi-decidable
      */
-    static final InferenceMechanism RESOLUTION2_INFERENCE = new InferenceMechanism("RESOLUTION2") {
+    public static final InferenceMechanism RESOLUTION2_INFERENCE = new InferenceMechanism("RESOLUTION2") {
 	    private final Inference _resolution = new orbital.moon.logic.resolution.Resolution();
 	    Inference inference() {
 		return _resolution;
