@@ -1,7 +1,7 @@
 /**
  * @(#)ClassicalLogic.java 0.7 1999/01/16 Andre Platzer
  * 
- * Copyright (c) 1999-2002 Andre Platzer. All Rights Reserved.
+ * Copyright (c) 1999-2004 Andre Platzer. All Rights Reserved.
  * 
  * This software is the confidential and proprietary information
  * of Andre Platzer. ("Confidential Information"). You
@@ -110,7 +110,7 @@ import orbital.algorithm.Combinatorical;
  * Alonzo Church (1936) and Alan Turing (1936) simultaneously showed that &#8872; is <a href="../../algorithm/doc-files/computability.html#undecidable">undecidable</a>.
  * (Since the tautological formulas are <a href="../../algorithm/doc-files/computability.html#undecidable">undecidable</a>,
  *  and therefore satisfiable formulas are not even <a href=""../../algorithm/doc-files/computability.html#semi-decidable">semi-decidable</a>.)
- * <span class="@todo is Schöning sure?">As a corollary, consistency of formulas is also just semi-decidable.</span>
+ * <span class="@todo is Schï¿½ning sure?">As a corollary, consistency of formulas is also just semi-decidable.</span>
  * The first constructive proof for a sound and complete calculus for &#8872; was due to Robinson (1965).
  * </p>
  * <p>
@@ -126,6 +126,7 @@ import orbital.algorithm.Combinatorical;
  * which is called propositional logic, has a simple sound and complete calculus that makes
  * it decidable.
  * </p>
+ * @version 1.1.2.2, 2003-11-08
  * @version 0.8, 1999/01/16
  * @version 0.7, 1999/01/16
  * @author  Andr&eacute; Platzer
@@ -490,6 +491,7 @@ public class ClassicalLogic extends ModernLogic {
     private static final String typAssoc = "f";  //@xxx should be "fx"?
 
     //@todo unmodifiable view
+    //@internal see far below the last static initializer block still modifies this
     private static final Interpretation _coreInterpretation =
 	LogicSupport.arrayToInterpretation(new Object[][] {
 	    /**
@@ -518,7 +520,17 @@ public class ClassicalLogic extends ModernLogic {
 	    {typeSystem.map(),
 	     new NotationSpecification(500, "xfx", Notation.INFIX)},
 	    {typeSystem.product(),
-	     new NotationSpecification(500, "fx", Notation.PREFIX)},
+	      new NotationSpecification(500, "fx", Notation.PREFIX)},
+	    //{new BinaryFunction/*<Type,Type,Type>*/() {
+	    /*  private final Type logicalTypeDeclaration = typeSystem.map(typeSystem.product(new Type[] {typeSystem.TYPE(), typeSystem.TYPE()}), typeSystem.TYPE());
+		public Object apply(Object t1, Object t2) {
+		    return typeSystem.product(new Type[] {(Type)t1, (Type)t2});
+		}
+		public String toString() {
+		    return "\u00d7";
+		}
+	    },
+	    new NotationSpecification(500, "xfx", Notation.INFIX)},*/
 
 	    {Operations.plus, null},
 	    {Operations.minus, null},
@@ -542,10 +554,10 @@ public class ClassicalLogic extends ModernLogic {
 	    {Predicates.lessEqual,        // "=<"
 	     new NotationSpecification(700, "xfx", Notation.INFIX)},
 
-	    {LogicFunctions.forall,       // "°"
-	     new NotationSpecification(900, "fy", Notation.PREFIX)},
-	    {LogicFunctions.exists,       // "?"
-	     new NotationSpecification(900, "fy", Notation.PREFIX)},
+	    ///////	    {LogicFunctions.forall,       // "ï¿½"
+	    ///////	     new NotationSpecification(900, "fy", Notation.PREFIX)},
+	    ///////         {LogicFunctions.exists,       // "?"
+	    ///////          new NotationSpecification(900, "fy", Notation.PREFIX)},
 	    //@internal &lambda; is the only non-functional operator, both with (single-shot) lazy evaluation and with eager evaluation.
 	    {LogicFunctions.lambda,       // "\\"
 	      new NotationSpecification(900, "fxy", NOTATION_LAMBDA)},
@@ -574,7 +586,7 @@ public class ClassicalLogic extends ModernLogic {
      * applicable to the given argument type.
      * Thereby we try to unify the &Pi;-abstracted type term with the actual argument type,
      * successively descending into the domains if necessary.
-     * @param argumentType the à priori required application type is
+     * @param argumentType the ï¿½ priori required application type is
      * the type of the argument passed to the expression of the given
      * &Pi;-abstraction type.
      * @return the application type actually passed as parameter to
@@ -602,15 +614,15 @@ public class ClassicalLogic extends ModernLogic {
 	while (true) {
 	    // the required application type
 	    final Formula reqApType = (Formula) new TypeToFormula().apply(argumentType);
-	    System.err.println("    unify " + reqApType + "\n      and " + abstractedType);
 	    final Substitution mu = Substitutions.unify(Arrays.asList(new Object[] {
 		reqApType,
 		abstractedType
 	    }));
-	    System.err.println("      is " + mu);
+	    logger.log(Level.FINEST, "\t    unify {0}\n\t      and {1}\n\t    is {2}", new Object[] {reqApType, abstractedType, mu});
 	    if (mu != null) {
 		// the application type actually passed as parameter to the &Pi;-abstraction.
 		final Type parameterApType = LogicParser.myasType((Expression)mu.apply(createAtomic(piabst.getVariable())), coreSignature());
+		logger.log(Level.FINEST, "\t leads to parameter type {0}", parameterApType);
 		logger.log(Level.FINEST, "compositor of type {0} applied to the arguments of type{1} (= {2}). Result has 'instantiated' type {3} by parameter {4}.", new Object[] {piabst, argumentType, reqApType, piabst.apply(parameterApType), parameterApType});
 		return parameterApType;
 	    } if (abstractedType instanceof Expression.Composite
@@ -780,32 +792,6 @@ public class ClassicalLogic extends ModernLogic {
 		public String toString() { return "<->"; }
 	    };
 
-	// Basic logical operations (elemental quantifiers).
-
-	//@todo we could implement a semantic apply() if only Interpretations would tell us a collection of entities in the universe
-	//@todo somehow turn forall into type (&sigma;&rarr;t)&rarr;t alias Function<Function<S,boolean>,boolean> and use &forall;(&lambda;x.t)
-    	public static final Function forall = new ForallPlaceholder();
-	private static final class ForallPlaceholder implements Function {
-	    //@todo also templatize with t somehow? should be (t->TRUTH)->truth
-	    //private final Type logicalTypeDeclaration = typeSystem.map(typeSystem.product(new Type[] {Types.INDIVIDUAL, Types.TRUTH}), Types.TRUTH);
-	    private final Type logicalTypeDeclaration = typeSystem.map(typeSystem.map(Types.INDIVIDUAL, Types.TRUTH), Types.TRUTH);
-	    public Object apply(Object f) {
-		throw new LogicException("quantified formulas only have a semantic value with respect to a possibly infinite domain. They are available for inference, but they cannot be interpreted with finite means.");
-	    }
-	    public String toString() { return "°"; }
-	};
-
-    	public static final Function exists = new ExistsPlaceholder();
-	private static final class ExistsPlaceholder implements Function {
-	    //@todo also templatize with t somehow? should be (t->TRUTH)->truth
-	    private final Type logicalTypeDeclaration = typeSystem.map(typeSystem.map(Types.INDIVIDUAL, Types.TRUTH), Types.TRUTH);
-	    public Object apply(Object f) {
-		throw new LogicException("quantified formulas only have a semantic value with respect to a possibly infinite domain. They are available for inference, but they cannot be interpreted with finite means.");
-	    }
-	    public String toString() { return "?"; }
-	};
-
-	
 	//@xxx trick for functions that never get called
     	public static final BinaryFunction lambda = new LambdaPlaceholder();
 	private static final class LambdaPlaceholder implements BinaryFunction {
@@ -831,7 +817,64 @@ public class ClassicalLogic extends ModernLogic {
 	};
     }
     
+    static class LogicFunctions2 {
+        LogicFunctions2() {}
+	// Basic logical operations (elemental quantifiers).
+	
+	//@todo we could implement a semantic apply() if only Interpretations would tell us a collection of entities in the universe
+	//@todo somehow turn forall into type (&sigma;&rarr;t)&rarr;t alias Function<Function<S,boolean>,boolean> and use &forall;(&lambda;x.t)
+    	public static final Function forall = new ForallPlaceholder();
+	private static final class ForallPlaceholder implements Function {
+	    //@todo also templatize with t somehow? should be (t->TRUTH)->truth
+	    //private final Type logicalTypeDeclaration = typeSystem.map(typeSystem.product(new Type[] {Types.INDIVIDUAL, Types.TRUTH}), Types.TRUTH);
+	    //private final Type logicalTypeDeclaration = typeSystem.map(typeSystem.map(Types.INDIVIDUAL, Types.TRUTH), Types.TRUTH);
+	    //////private final Type logicalTypeDeclaration = ClassicalLogic.Utilities.logic.parseTypeExpression("(\\\\s. (s->truth)->truth)");
+	    private final Type logicalTypeDeclaration = computeTypeDeclaration();
+	    public Object apply(Object f) {
+		throw new LogicException("quantified formulas only have a semantic value with respect to a possibly infinite domain. They are available for inference, but they cannot be interpreted with finite means.");
+	    }
+	    public String toString() { return "ï¿½"; }
 
+	    static final Type computeTypeDeclaration() {
+		//@todo this causes an initialization dependency cycle. First use non-typed quantifier (or none at all), and only add this generically typed quantifier lateron
+		final Logic logic = ClassicalLogic.Utilities.logic;
+		final Symbol MAP = logic.coreSignature().get("->", typeSystem.map(typeSystem.product(new Type[] {typeSystem.TYPE(), typeSystem.TYPE()}), typeSystem.TYPE()));
+		final Symbol truth = logic.coreSignature().get("truth", typeSystem.TYPE());
+		// construction of type parseTypeExpression("(\\\\s . (s->truth)->truth)") without parsing
+		final Symbol s = new SymbolBase("_XT1", Types.getDefault().TYPE(), null, true);
+		final Expression se = logic.createAtomic(s);
+		try {
+		    final Expression helperType = logic.compose(logic.createAtomic(MAP), new Expression[] {
+			logic.compose(logic.createAtomic(MAP), new Expression[] {se, logic.createAtomic(truth)}),
+			logic.createAtomic(truth)
+		    });
+		    final Expression tve = logic.compose(logic.createAtomic(PI), new Expression[] {se, helperType});
+		    final Type tv = LogicParser.myasType(tve, logic.coreSignature());
+		    return tv;
+		}
+		catch (ParseException ex) {
+		    throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
+		}
+	    }
+	    
+	};
+
+
+    	public static final Function exists = new ExistsPlaceholder();
+	private static final class ExistsPlaceholder implements Function {
+	    //@todo also templatize with t somehow? should be (t->TRUTH)->truth
+	    //private final Type logicalTypeDeclaration = typeSystem.map(typeSystem.product(new Type[] {Types.INDIVIDUAL, Types.TRUTH}), Types.TRUTH);
+	    //private final Type logicalTypeDeclaration = typeSystem.map(typeSystem.map(Types.INDIVIDUAL, Types.TRUTH), Types.TRUTH);
+	    //////private final Type logicalTypeDeclaration = ClassicalLogic.Utilities.logic.parseTypeExpression("(\\\\s. (s->truth)->truth)");
+	    private final Type logicalTypeDeclaration = ForallPlaceholder.computeTypeDeclaration();
+	    public Object apply(Object f) {
+		throw new LogicException("quantified formulas only have a semantic value with respect to a possibly infinite domain. They are available for inference, but they cannot be interpreted with finite means.");
+	    }
+	    public String toString() { return "?"; }
+	};
+    }
+
+    
     //@xxx get rid of these shared static variables
     // perhaps, LAMBDA is that important, that we should even publicize it to orbital.logic.imp.*? Or let them query it from the coreSignature() by "\\"?
     static final Symbol LAMBDA;
@@ -858,6 +901,8 @@ public class ClassicalLogic extends ModernLogic {
 	    //@todo could we exchange compositor by a formula that only differs in type, and thus avoid conversion formula?
 	    Expression typeConv = null;
 	    try {
+		//System.out.println("\t\t applied Pi abstraction type leads to " + piabst.apply(parameterApType));
+		logger.log(Level.FINEST, "\t applied Pi abstraction type leads to {0}", piabst.apply(parameterApType));
 		return super.compose(
 				     typeConv = super.compose(new PiApplicationExpression(piabst,
 									   piabst.apply(parameterApType)
@@ -943,7 +988,7 @@ public class ClassicalLogic extends ModernLogic {
 	    return c;
 	}
 
-	// identical to @see orbital.logic.functor.Functionals.BinaryCompositeFunction
+	// partially identical to @see orbital.logic.functor.Functionals.BinaryCompositeFunction
 	public Object getCompositor() {
 	    //@internal this trick will allow LambdaAbstractionFormulas to unify. null does not unify anything.
 	    return LogicFunctions.lambda;
@@ -1216,7 +1261,9 @@ public class ClassicalLogic extends ModernLogic {
 	
 
 	public boolean apply(Object o) {
-	    throw new UnsupportedOperationException();
+	    //@internal let's just assume the types are somehow compatible, and not really check this //@xxx
+	    return true;
+	    //throw new UnsupportedOperationException();
 	}
 
 	public Type domain() {
@@ -1254,7 +1301,11 @@ public class ClassicalLogic extends ModernLogic {
 	    // @return (&Pi;x:*. s->t)(a:*) = t mu
 	    // with mu=mgU(s,a)
 	    //@xxx is this correct? And what about the implementation?
-	    return apply(a);
+
+	    // the application type actually passed as parameter to the &Pi;-abstraction.
+	    final Type parameterApType = Utilities.logic.calculateParameterTypeForPiAbstraction(this, a);
+	    logger.log(Level.FINEST, "type {0} applied on {1} leads to instantiated result type {2} by parameter {3}.", new Object[] {this, a, apply(parameterApType), parameterApType});
+	    return apply(parameterApType);
 	}
 	/**
 	 * @return (&Pi;x:*.t)(a:*) = t[x&rarr;a]
@@ -1598,8 +1649,8 @@ public class ClassicalLogic extends ModernLogic {
 	 * Since every formula has an equivalent in DNF the transformation itself must be NP-complete.
 	 * </p>
 	 * @see "Rolf Socher-Ambrosius. Boolean algebra admits no convergent term rewriting system, Springer Lecture Notes in Computer Science 488, RTA '91."
-	 * @internal see mathematische Berechnungstheorie vermittelt, daß es nicht immer möglich ist, mit einer endlichen Folge von Transformationen je zwei beliebig gewählte Ausdrücke in ihre Normalform zu überführen.
-	 * @todo Sollten DNF/KNF von "innen nach außen" erstellt werden?
+	 * @internal see mathematische Berechnungstheorie vermittelt, daï¿½ es nicht immer mï¿½glich ist, mit einer endlichen Folge von Transformationen je zwei beliebig gewï¿½hlte Ausdrï¿½cke in ihre Normalform zu ï¿½berfï¿½hren.
+	 * @todo Sollten DNF/KNF von "innen nach auï¿½en" erstellt werden?
 	 * @preconditions true
 	 * @postconditions RES &equiv; f
 	 * @attribute time complexity NP-complete
@@ -1729,6 +1780,7 @@ public class ClassicalLogic extends ModernLogic {
 	 */
 	public static final Set/*_<Formula>_*/ CONTRADICTION = Collections.EMPTY_SET;
 
+	//@internal no more? it seems to be of importance to the static initializer order, that these occur not much earlier than here, because they trigger the static initialization of ModernFormula
 	private static final Formula FORMULA_FALSE = (Formula) logic.createAtomic(new SymbolBase("false", Types.TRUTH));
 	private static final Formula FORMULA_TRUE = (Formula) logic.createAtomic(new SymbolBase("true", Types.TRUTH));
 	
@@ -1750,7 +1802,7 @@ public class ClassicalLogic extends ModernLogic {
 		return clausalFormClauses(Utilities.conjunctiveForm(f, simplifying));
 	    }
 	    catch (IllegalArgumentException ex) {
-		throw (AssertionError) new AssertionError(ex.getMessage() + " in " + Utilities.conjunctiveForm(f, simplifying) + " of " + f).initCause(ex);
+		throw (AssertionError) new AssertionError(ex.getMessage() + " in CNF " + Utilities.conjunctiveForm(f, simplifying) + " of " + f).initCause(ex);
 	    }
 	}
 	/**
@@ -1848,18 +1900,63 @@ public class ClassicalLogic extends ModernLogic {
 	 * Will simply remove every quantifier from F.
 	 */
 	public static final Formula dropQuantifiers(Formula F) {
-	    try {
-		// quantifier drop transform TRS
-		if (QuantifierDropTransform == null) QuantifierDropTransform = Substitutions.getInstance(Arrays.asList(new Object[] {
-		    //@xxx note that A should be a metavariable for a formula
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("°_X1 _A"), logic.createExpression("_A")),
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("?_X1 _A"), logic.createExpression("_A")),
-		}));
-		return (Formula) Functionals.fixedPoint(QuantifierDropTransform, F);
-	    } catch (ParseException ex) {
-		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
-	    }
+	    // quantifier drop transform TRS
+	    if (QuantifierDropTransform == null) QuantifierDropTransform = Substitutions.getInstance(Collections.singleton(
+	        //@internal performs all _X _A |= _A with _X of any generic sort matching
+	        //@internal performs some _X _A |= _A with _X of any generic sort matching
+		new Substitution.Matcher() {
+		    //@attribute meta
+		    private final Symbol ALL = logic.coreSignature().get("ï¿½", typeSystem.UNIVERSAL());
+		    private final Symbol SOME = logic.coreSignature().get("?", typeSystem.UNIVERSAL());
+		    private Object replacement = null;
+		    public Object pattern() {
+			return "<quantifier>";
+		    }
+		    public boolean matches(Object t) {
+			if (t instanceof Formula.Composite) {
+			    Formula.Composite c = (Formula.Composite)t;
+			    Object f = c.getCompositor();
+			    logger.log(Level.FINEST, "{0} composed of {1} of {2}", new Object[] {c, f, c.getClass()});
+			    f = unPiApplication(f);
+			    if (!(f instanceof ModernFormula.AtomicSymbol
+				 && (
+				    ALL.equals(((ModernFormula.AtomicSymbol)f).getSymbol())
+				    || SOME.equals(((ModernFormula.AtomicSymbol)f).getSymbol()))))
+				return false;
+			    //LogicSupport.printTermStructure(c);
+			    Formula g = (Formula) c.getComponent();
+			    assert g instanceof Formula.Composite : "@todo and g is lambda";
+			    this.replacement = ((Object[])
+						((Formula.Composite)g).getComponent()
+						)[1];
+			    logger.log(Level.FINEST, " {0} of {1} replaced by {2}", new Object[] {c.getComponent(), c.getComponent().getClass(), replacement});
+			    return true;
+			} else {
+			    return false;
+			}
+		    }
+
+		    public Object replace(Object t) {
+			return replacement;
+		    }
+		}
+		));
+	    return (Formula) Functionals.fixedPoint(QuantifierDropTransform, F);
 	}
+
+	/**
+	 * skip any PiApplicationExpressions in front of f
+	 */
+	private static final Object unPiApplication(Object f) {
+	    if (f instanceof Composite) {
+		Composite c = (Composite)f;
+		if (c.getCompositor() instanceof PiApplicationExpression) {
+		    return unPiApplication(c.getComponent());
+		}
+	    }
+	    return f;
+	}
+	    
 
 	// lazy initialized cache for TRS rules
 	private static Substitution QuantifierDropTransform;
@@ -1888,20 +1985,13 @@ public class ClassicalLogic extends ModernLogic {
 	public static final Formula skolemForm(Formula F) {
 	    // transform to negation normal form
 	    F = negationForm(F);
-	    try {
 		// skolem transform TRS
 		if (SkolemTransform == null) SkolemTransform = Substitutions.getInstance(Collections.singletonList(
 		    //@xxx note that A should be a metavariable for a formula
-		    new SkolemizingUnifyingMatcher(logic.createExpression("?_X1 _A"),
-						   logic.createExpression("_A"),
-						   //@internal note that _X1 should have the same type as in ?_X1 _A above
-						   new SymbolBase("_X1", Types.INDIVIDUAL, null, true)
-						   )
+		    //@fixme this does not work for typed quantifiers
+		    new SkolemizingUnifyingMatcher()
 		    ));
 		return (Formula) Functionals.fixedPoint(SkolemTransform, F);
-	    } catch (ParseException ex) {
-		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
-	    }
 	}
 	// lazy initialized cache for TRS rules
 	private static Substitution SkolemTransform;
@@ -1916,29 +2006,58 @@ public class ClassicalLogic extends ModernLogic {
 	 *
 	 * @version 0.9, 2001/07/14
 	 * @author  Andr&eacute; Platzer
+	 * @attribute meta
 	 * @todo could also skolemize second-order quantified predicates
 	 */
-	private static class SkolemizingUnifyingMatcher extends UnifyingMatcher {
-	    private static final long serialVersionUID = 5595771241916973901L;
+	private static class SkolemizingUnifyingMatcher implements Substitution.Matcher{
+	    //private static final long serialVersionUID = 0
 	    private Object skolemizedVariable;
 	    /**
 	     * Unifying matcher that skolemizes.
 	     */
-	    public SkolemizingUnifyingMatcher(Object pattern, Object substitute, Object skolemizedVariable) {
-		super(pattern, substitute);
-		this.skolemizedVariable = skolemizedVariable;
+	    public SkolemizingUnifyingMatcher() {
+	    }
+
+	    //@internal performs ?_X1 _A |= skolemise _A with _X of any generic sort matching
+	    private final Symbol SOME = logic.coreSignature().get("?", typeSystem.UNIVERSAL());
+	    private Object replacement = null;
+	    public Object pattern() {
+		return "<skolemise>";
+	    }
+	    public boolean matches(Object t) {
+		if (t instanceof Formula.Composite) {
+		    Formula.Composite c = (Formula.Composite)t;
+		    Object f = c.getCompositor();
+		    logger.log(Level.FINEST, "{0} composed of {1} of {2}", new Object[] {c, f, c.getClass()});
+		    f = unPiApplication(f);
+		    if (!(f instanceof ModernFormula.AtomicSymbol
+			  && SOME.equals(((ModernFormula.AtomicSymbol)f).getSymbol())))
+			return false;
+		    Formula g = (Formula) c.getComponent();
+		    assert g instanceof Formula.Composite : "@todo and g is lambda";
+		    Object[] compo = (Object[]) ((Formula.Composite)g).getComponent();
+		    this.skolemizedVariable = compo[0];
+		    this.replacement = compo[1];
+		    logger.log(Level.FINEST, " {0} of {1} replaced by {2} for {3}", new Object[] {c.getComponent(), c.getComponent().getClass(), replacement, skolemizedVariable});
+		    return true;
+		} else {
+		    return false;
+		}
 	    }
 
 	    public Object replace(final Object t) {
-		final Object r = super.replace(t);
-		final Object x = getUnifier().apply(skolemizedVariable);
+		final Object r = replacement;
+		final Typed x = (Typed)skolemizedVariable;
 		// now substitute "[x->s(FV(t))]"
 		final Set freeVariables = ((Formula)t).getFreeVariables();
 		final Type skolemType;
 		{
 		    Type arguments[] = new Type[freeVariables.size()];
-		    Arrays.fill(arguments, Types.INDIVIDUAL);
-		    skolemType = typeSystem.map(typeSystem.product(arguments), Types.INDIVIDUAL);
+		    int i = 0;
+		    for (Iterator it = freeVariables.iterator(); it.hasNext(); ) {
+			arguments[i++] = ((Typed/*__*/)it.next()).getType();
+		    }
+		    skolemType = typeSystem.map(typeSystem.product(arguments), x.getType());
 		}
 		final Symbol skolemFunctionSymbol = new UniqueSymbol("s", skolemType, null, false);
 
@@ -1961,7 +2080,7 @@ public class ClassicalLogic extends ModernLogic {
 		    }));
 
 		    if (logger.isLoggable(Level.FINEST))
-			logger.log(Level.FINEST, "skolemForm( {0} ) = {1} by {2} due to skolem variable={3} and FV={4}. Initially matched expression to skolemize by {5}", new Object[] {t, skolemizer.apply(r), skolemizer, x, freeVariables, getUnifier()});
+			logger.log(Level.FINEST, "skolemForm( {0} ) = {1} by {2} due to skolem variable={3} and FV={4}. Initially matched expression to skolemize", new Object[] {t, skolemizer.apply(r), skolemizer, x, freeVariables});
 		    return skolemizer.apply(r);
 		} catch (ParseException ex) {
 		    throw (InternalError) new InternalError("Unexpected syntax in internal term construction").initCause(ex);
@@ -2141,4 +2260,28 @@ public class ClassicalLogic extends ModernLogic {
     public Formula createFormula(String expression) throws ParseException {
 	return (Formula) createExpression(expression);
     } 
+
+
+    static {
+	//@internal modifies coreInterpretation and coreSignature
+	//@xxx this is a horrible implementation with various dependencies
+	Interpretation newCore = _coreInterpretation.union(
+	LogicSupport.arrayToInterpretation(new Object[][] {
+	    /**
+	     * Contains (usually ordered) map (in precedence order) of initial functors
+	     * and their notation specifications.
+	     * Stored internally as an array of length-2 arrays.
+	     * @invariants sorted, i.e. precedenceOf[i] < precedenceOf[i+1]
+	     */
+	    {LogicFunctions2.forall,       // "ï¿½"
+	     new NotationSpecification(900, "fy", Notation.PREFIX)},
+	    {LogicFunctions2.exists,       // "?"
+	     new NotationSpecification(900, "fy", Notation.PREFIX)}
+	}, false, true, true)
+	);
+	_coreInterpretation.setSignature(newCore.getSignature());
+	_coreSignature.addAll(_coreInterpretation.getSignature());
+	_coreInterpretation.putAll(newCore);
+	ModernFormula.clinit2();
+    }
 }

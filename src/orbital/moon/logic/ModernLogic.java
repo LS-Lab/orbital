@@ -57,7 +57,7 @@ abstract class ModernLogic implements Logic {
     /**
      * Whether runtime type checks are enabled.
      */
-    private static /*final*/ boolean TYPE_CHECK = true;
+    private static /*final*/ boolean TYPE_CHECK = false;//true;
     /**
      * Enable or disable runtime type checks.
      */
@@ -279,6 +279,7 @@ abstract class ModernLogic implements Logic {
 	}
 	// ordinary (new) symbols
 	assert !("true".equals(signifier) || "false".equals(signifier)) : "true and false are in core signature and no ordinary symbols";
+	assert !("�".equals(signifier) || "?".equals(signifier)) : "all and some are in core signature and no ordinary symbols";
 
 	// test for syntactically legal <INTEGER_LITERAL> | <FLOATING_POINT_LITERAL>
 	//@todo could also move to an infinite coreInterpretation()
@@ -330,8 +331,8 @@ abstract class ModernLogic implements Logic {
 		// core-symbols
 		// fixed interpretation of core signature
 		Symbol s2 = null;
-		assert (s2 = coreSignature().get(ref.toString(), arguments)) != null : "composition functors occur in the signature";
-		assert opfix.getSymbol().equals(s2) : "enforce any potential unambiguities of operators";
+		assert (s2 = coreSignature().get(ref.toString(), arguments)) != null : "composition functor " + ref + " = " + opfix + " applied to " + Types.toTypedString(arguments) + " occurs in the signature";
+		assert opfix.getSymbol().equals(s2) : "enforce any potential unambiguities of operators, fixed composition operator " + opfix + " is the operator from the core signature " + s2;
 		return composeFixed(opfix.getSymbol(), (Functor)ref, arguments);
 	    }
 	    catch (IllegalArgumentException ex) {throw new ParseException(ex.getMessage(), COMPLEX_ERROR_OFFSET);}

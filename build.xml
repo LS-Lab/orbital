@@ -303,6 +303,7 @@
  
     <target name="fixCRLF" depends="init"
             description="fix DOS linefeeds (CRLF)">
+<!-- @internal deactivate due to dull encoding changes under linux
         <fixcrlf srcdir="${sources}"
                  eol="lf" eof="remove"
                  includes="**/*.java, **/*.jj"/>
@@ -312,6 +313,7 @@
         <fixcrlf srcdir="${src.tests}"
                  eol="lf" eof="remove"
                  includes="**/*.java, **/*.jj"/>
+-->
     </target>
 
     <target name="doc" depends="init, prepareEnvironment, parser"

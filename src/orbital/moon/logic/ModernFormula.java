@@ -54,7 +54,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     /**
      * The symbols of the logical junctors.
      */
-    private static final Symbol NOT, AND, OR, XOR, IMPL, EQUIV, FORALL, EXISTS;
+    private static final Symbol NOT, AND, OR, XOR, IMPL, EQUIV;
+    private static /*assert final*/ Symbol FORALL, EXISTS;
     static {
 	//@note assuming the symbols and notation of ClassicalLogic, here
 	final Logic logic = new ClassicalLogic();
@@ -78,10 +79,15 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	assert IMPL != null : "operators in core signature";
 	EQUIV = core.get("<->", arguments);
 	assert EQUIV != null : "operators in core signature";
+    }
 
+    static void clinit2() {
+	//@note assuming the symbols and notation of ClassicalLogic, here
+	final Logic logic = new ClassicalLogic();
+	final Signature core = logic.coreSignature();
 	final Formula f = (Formula) logic.createAtomic(new SymbolBase("f", Types.getDefault().map(Types.INDIVIDUAL,Types.TRUTH)));
-	arguments = new Formula[] {f};
-	FORALL = core.get("°", arguments);
+	Formula[] arguments = new Formula[] {f};
+	FORALL = core.get("ï¿½", arguments);
 	assert FORALL != null : "operators in core signature";
 	EXISTS = core.get("?", arguments);
 	assert EXISTS != null : "operators in core signature";
@@ -117,10 +123,11 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      *  isCompatibleUnderlyingLogic(formula)
      */
     void setUnderlyingLogicLikeIn(Formula formula) {
+	assert isCompatibleUnderlyingLogic(formula) : "expected compatible underlying logics";
 	Logic myUnderlying = getUnderlyingLogic();
 	Logic itsUnderlying = ((ModernFormula)formula).getUnderlyingLogic();
-	assert isCompatibleUnderlyingLogic(formula) : "expected compatible underlying logics";
 	setUnderlyingLogic(itsUnderlying);
+	assert isCompatibleUnderlyingLogic(formula) : "reflexive compatible underlying logics";
     }
 
     
@@ -181,8 +188,9 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     } 
     */
     private Formula compose(Symbol op, Formula[] arguments) {
+	assert getUnderlyingLogic() != null : "underlying logic set";
 	try {
-	    return (Formula) logic.compose(logic.createAtomic(op), arguments);
+	    return (Formula) getUnderlyingLogic().compose(getUnderlyingLogic().createAtomic(op), arguments);
 	}
 	catch (ParseException ex) {throw (InternalError) new InternalError("errorneous internal composition").initCause(ex);}
     }
@@ -373,8 +381,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	case 1:
 	    if (f instanceof Predicate && !(f instanceof Function))
 		f = Functionals.asFunction((Predicate) f);
-	    assert f instanceof Function : f + " of " + f.getClass() + " instanceof " + Function.class;
-	    assert arguments[0] instanceof Formula : arguments[0] + " of " + arguments[0].getClass() + " instanceof " + Formula.class;
+	    assert f instanceof Function : f + " of " + f.getClass() + " instanceof " + Function.class + "\nfor composition of " + fsymbol + " with " + Types.toTypedString(arguments);
+	    assert arguments[0] instanceof Formula : arguments[0] + " of " + arguments[0].getClass() + " instanceof " + Formula.class + "\nfor composition of " + fsymbol + " with " + Types.toTypedString(arguments);
 	    return new ModernFormula.AppliedFormula(underlyingLogic, fsymbol, (Function) f, (Formula) arguments[0], notat);
 	case 2:
 	    if (f instanceof BinaryPredicate && !(f instanceof BinaryFunction))
