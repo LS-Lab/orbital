@@ -14,7 +14,7 @@ import java.io.Serializable;
  * 
  * @version 0.9, 04/05/98
  * @author  Andr&eacute; Platzer
- * @TODO: transform to n-dimensional point and provide n-dimensional(?) directions, as well
+ * @todo transform to n-dimensional point and provide n-dimensional(?) directions, as well
  */
 public class Position extends Point implements Serializable {
     private static final long serialVersionUID = 7705012188222777623L;

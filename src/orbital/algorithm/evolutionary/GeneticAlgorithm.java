@@ -340,8 +340,8 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
      * This operation is sometimes called breeding.
      * @see #selection
      * @see Genome#recombine(Gene[],int,double)
-     * @see #maximumRecombination
-     * @see #maximumMutation
+     * @see PopulationImpl#getMaximumRecombination()
+     * @see PopulationImpl#getMaximumMutation()
      */
     public abstract void evolve();
 

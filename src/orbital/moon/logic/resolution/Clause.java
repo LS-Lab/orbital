@@ -79,7 +79,7 @@ interface Clause extends Set/*<Formula>*/ {
      * @todo or even when there is a single-sided matcher of p and q in p&or;&not;q?
      * @preconditions true
      * @todo look for true&isin;F?
-     * @attribute derived {@link isElementaryValidUnion(Clause)
+     * @attribute derived {@link #isElementaryValidUnion(Clause)}
      */
     public boolean isElementaryValid();
 

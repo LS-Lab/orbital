@@ -254,7 +254,6 @@ public interface Gene {
     	}
 
     	/**
-	 * {@inheritDoc}.
     	 * <p>Implemented as element-wise recombination, each gene does recombine, separately.</p>
     	 */
     	protected Gene[] elementwiseRecombine(final Gene[] parents, int childrenCount, double recombinationProbability) {
@@ -321,7 +320,6 @@ public interface Gene {
     	}
     
     	/**
-	 * {@inheritDoc}
     	 * <p>Implemented as uniform recombination, uniformly distributes genes to
     	 * the children.</p>
     	 */

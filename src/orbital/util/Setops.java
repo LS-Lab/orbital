@@ -774,7 +774,7 @@ public final class Setops {
      *  Stored as an array of length-2 arrays
      *  with entries[i][0] being the key {@link String},
      *  and entries[i][1] being the value {@link Object}.
-     * @see Collections#asList(Object[])
+     * @see java.util.Arrays#asList(Object[])
      */
     public static final Map asMap(Object[][] entries) {
 	Map map = new HashMap();

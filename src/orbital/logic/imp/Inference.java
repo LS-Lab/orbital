@@ -163,7 +163,7 @@ import orbital.logic.Relation;
  * @author  Andr&eacute; Platzer
  * @invariants true
  * @see Formula
- * @see Signature
+ * @see orbital.logic.sign.Signature
  * @see Logic#inference()
  * @see <a href="doc-files/inferential.html">several inference relations</a>
  */

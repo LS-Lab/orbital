@@ -19,12 +19,12 @@ import orbital.logic.sign.concrete.Notation.NotationSpecification;
  * <p>
  * Symbols can be names for various kinds of objects in the (logical) universe:
  * <ul>
- *   <li>function-symbols for functions of type {@link Types#map(Type,Type) <span class="type">&sigma;&rarr;&tau;</span>}.
+ *   <li>function-symbols for functions of type {@link orbital.logic.sign.type.TypeSystem#map(Type,Type) <span class="type">&sigma;&rarr;&tau;</span>}.
  *     A function <var class="meta">f</var> of arity (number of arguments) <var class="meta">n</var>
  *     is sometimes denoted as <var class="meta">f</var>/<var class="meta">n</var>.
  *     Function-symbols especially include
  *     <ul>
- *       <li>constant symbols of type {@link Types#INDIVIDUAL <span class="type">&iota;</span>} (as functions of arity 0).
+ *       <li>constant symbols of type {@link orbital.logic.sign.type.Types#INDIVIDUAL <span class="type">&iota;</span>} (as functions of arity 0).
  *         <h5 class="compact">Note</h5>
  *         however, that we could as well avoid constant symbols, and just use defined free variables, instead.
  *         Or if we restrict sets of formulas to finite sets, then we could just as well turn constants
@@ -32,15 +32,15 @@ import orbital.logic.sign.concrete.Notation.NotationSpecification;
  *       </li>
  *     </ul>
  *   </li>
- *   <li>predicate-symbols for relations of type {@link Types#predicate(Type) <span class="type">(&sigma;)</span>}
+ *   <li>predicate-symbols for relations of type {@link orbital.logic.sign.type.TypeSystem#predicate(Type) <span class="type">(&sigma;)</span>}
  *     <ul>
- *       <li>atomic propositions of type {@link Types#TRUTH <span class="type">&omicron;</span>} (as predicates of arity 0).</li>
+ *       <li>atomic propositions of type {@link orbital.logic.sign.type.Types#TRUTH <span class="type">&omicron;</span>} (as predicates of arity 0).</li>
  *       <li>properties of objects (represented as unary predicates).</li>
  *       <li>relations between objects (represented as n-ary predicates).</li>
  *     </ul>
  *   </li>
- *   <li>types <span class="type">&tau;</span> of type {@link Types#TYPE <span class="type">*</span>}
- *       and the corresponding type identifier predicates <span class="type">&tau;</span> of type {@link Types#predicate(Type) <span class="type">(&#8868;)</span>}.
+ *   <li>types <span class="type">&tau;</span> of type {@link orbital.logic.sign.type.TypeSystem#TYPE() <span class="type">*</span>}
+ *       and the corresponding type identifier predicates <span class="type">&tau;</span> of type {@link orbital.logic.sign.type.TypeSystem#predicate(Type) <span class="type">(&#8868;)</span>}.
  *   </li>
  *   <li>type constructors, f.ex. of type <span class="type">(*&rarr;*)&rarr;*</span> or any other kind.</li>
  *   <li>variables <var>x</var> of a set V&sube;&Sigma;, where

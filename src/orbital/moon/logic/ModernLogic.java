@@ -332,7 +332,7 @@ abstract class ModernLogic implements Logic {
     /**
      * Construct (a formula view of) an atomic symbol.
      * @param symbol the symbol for which to create a formula representation
-     * @see Logic#createAtomic(Symbol)
+     * @see orbital.logic.sign.ExpressionBuilder#createAtomic(Symbol)
      */
     public Formula createSymbol(Symbol symbol) {
 	return ModernFormula.createSymbol(this, symbol);
@@ -342,7 +342,7 @@ abstract class ModernLogic implements Logic {
      * @param symbol the symbol for which to create a formula representation
      * @param referent the fixed interpretation of this symbol
      * @param core whether symbol is in the core such that it does not belong to the proper signature.
-     * @see Logic#createAtomic(Symbol)
+     * @see orbital.logic.sign.ExpressionBuilder#createAtomic(Symbol)
      */
     public Formula createFixedSymbol(Symbol symbol, Object referent, boolean core) {
 	return ModernFormula.createFixedSymbol(this, symbol, referent, core);
@@ -418,7 +418,7 @@ abstract class ModernLogic implements Logic {
      * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience Method</a>
      * @see #createAllExpressions(String)
      * @see #createExpression(String)
-     * @see #infer(Formula[],Formula)
+     * @see orbital.logic.imp.Inference#infer(Formula[],Formula)
      */
     public boolean infer(String w, String d) throws ParseException {
 	return infer(w, d, false);

@@ -29,14 +29,18 @@ import java.awt.Point;
 import java.awt.event.InputEvent;
 
 /**
- * This class is a CustomizerViewController that can be registered to a Bean and
- * controls showing a Customizer on double-click.
- * <p>
- * A default customizer is used, if no Bean-specific customizer is registered in the BeanInfo
- * class, or no BeanInfo class is available at all. This default customizer already possesses
- * most features of a good dialog for customization by the user. While for complex dialogs, it
- * can even be extended by providing advanced information in a BeanInfo class, or by
- * {@link java.beans.PropertyEditorManager registering new PropertyEditors} to the system.
+ * This class is a CustomizerViewController that can be registered to
+ * a Bean and controls showing a Customizer on double-click.
+ * <p> A
+ * {@link DefaultCustomizer default customizer} is used, if no
+ * Bean-specific customizer has been registered in the BeanInfo class,
+ * or no BeanInfo class is available at all. This default customizer
+ * is a fully-automatic generic bean customizer and already possesses
+ * most features of a good adjustment dialog for customization
+ * by the user. While for complex dialogs, it can even be extended by
+ * providing advanced information in a BeanInfo class, or by {@link
+ * java.beans.PropertyEditorManager registering new PropertyEditors}
+ * to the system.
  * </p>
  * 
  * @version 1.0, 2000/03/31

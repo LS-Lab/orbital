@@ -199,8 +199,8 @@ public final class Types {
      * @preconditions true
      * @param args the arguments whose (combined) type to return.
      *  <code>null</code>, or an array of length <span class="number">0</span> can be used for zero arguments.
-     * @see Types#product(Type[])
-     * @see Types#type(Class)
+     * @see TypeSystem#product(Type[])
+     * @see TypeSystem#objectType(Class)
      */
     private static final Type typeOf(Class[] args) {
 	if (args == null || args.length == 0)

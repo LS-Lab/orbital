@@ -193,7 +193,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     /**
      * Construct (a formula view of) an atomic symbol.
      * @param symbol the symbol for which to create a formula representation
-     * @see Logic#createAtomic(Symbol)
+     * @see orbital.logic.sign.ExpressionBuilder#createAtomic(Symbol)
      */
     public static Formula createSymbol(Logic underlyingLogic, Symbol symbol) {
 	return new AtomicSymbol(underlyingLogic, symbol);
@@ -203,7 +203,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @param symbol the symbol for which to create a formula representation
      * @param referent the fixed interpretation of this symbol
      * @param core whether symbol is in the core such that it does not belong to the proper signature.
-     * @see Logic#createAtomic(Symbol)
+     * @see orbital.logic.sign.ExpressionBuilder#createAtomic(Symbol)
      */
     public static Formula createFixedSymbol(Logic underlyingLogic, Symbol symbol, Object referent, boolean core) {
 	return new FixedAtomicSymbol(underlyingLogic, symbol, referent, core);
@@ -455,7 +455,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 
 	/**
 	 * Get a string representation of the composite functor.
-	 * @return <code>{@link Notation#format(Object, Object) notation.format}(getCompositor(), getComponent())</code>.
+	 * @return <code>{@link orbital.logic.sign.concrete.Notation#format(Object, Object) notation.format}(getCompositor(), getComponent())</code>.
 	 */
 	public String toString() {
 	    return getNotation().format((Functor)getCompositor(), getComponent());
@@ -541,7 +541,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     /**
      * <p>
      * This class is in fact a workaround for multiple inheritance of
-     * {@link ModernFormula} and {@link orbital.logic.functor.Compositions.VoidCompositeFunction}.</p>
+     * {@link ModernFormula} and {@link orbital.logic.functor.Compositions.CompositeVoidFunction}.</p>
      * 
      * @structure inherits ModernFormula
      * @structure inherits Compositions.CompositeFunction
@@ -587,7 +587,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	} 
 		
 
-	// identical? to @see orbital.logic.functor.Compositions.VoidCompositeFunction (apart from Formula instead of Function)
+	// identical? to @see orbital.logic.functor.Compositions.CompositeVoidFunction (apart from Formula instead of Function)
 	public Object getCompositor() {
 	    return outer;
 	} 

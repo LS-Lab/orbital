@@ -110,7 +110,7 @@ package orbital.math;
  *  This would need covariant return types and(!) dispatched covariant parameter types which are usually illegal since only contravariant parameter types have a general meaning.
  * @todo should we split multiplication into inner ring multiplication and outer module multiplication?
  * @todo link to a document doc-files containing definitions of magmas, monoids, groups, abelian groups, pseudo-rings, rings, commutative rings, fields, algebras, modules,...
- * @TODO: enhance documentation and improve consistency with K-Algebras
+ * @todo enhance documentation and improve consistency with K-Algebras
  * @todo think about turning into a template class for compile-time type safety.
  * @todo would we need something like "implements Typed/orbital.logic.sign.type.Type getType()" which returns Integer, Real, Matrix ... for checking whether two objects have the same abstract mathematical type, regardless of their implementation class. @see MathUtilitiesTest#associated(Arithmetic,Arithmetic)
  */

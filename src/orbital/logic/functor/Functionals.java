@@ -93,8 +93,8 @@ public class Functionals {
      * Another notation for the function cross-product is f &times; g = f &#8855; g = f || g.</p>
      * @return x&#8614;f &times; g (x) = <big>(</big>f(x), g(x)<big>)</big> as a {@link orbital.util.Pair}.
      */
-    //@XXX: //@TODO: introduce Function cross(Function[]); as a cross product f1&times;f2&times;f3...&times;fn perhaps in subclass orbital.math.functional.Functionals?
-    //@XXX: how should resulting Pairs ever be an argument to a BinaryFunction?
+    //@xxx //@todo introduce Function cross(Function[]); as a cross product f1&times;f2&times;f3...&times;fn perhaps in subclass orbital.math.functional.Functionals?
+    //@xxx how should resulting Pairs ever be an argument to a BinaryFunction?
     public static /*<A, B1, B2>*/ Function/*<A, Pair>*/ cross(final Function/*<A, B1>*/ f, final Function/*<A, B2>*/ g) {
 	return new Function/*<A, Pair>*/() {
 		public Object/*>Pair<*/ apply(Object/*>A<*/ x) {
@@ -135,7 +135,7 @@ public class Functionals {
      * @internal see Functionals.BinaryCompositeFunction
      */
     public static /*<A, B1, B2, C>*/ Function/*<A, C>*/.Composite compose(BinaryFunction/*<B1, B2, C>*/ f, Function/*<A, B1>*/ g, Function/*<A, B2>*/ h) {
-	//TODO: would we like a BinaryFunction composed with a Function, as well?
+	//todo would we like a BinaryFunction composed with a Function, as well?
 	return new BinaryCompositeFunction/*<A, B1, B2, C>*/(f, g, h);
     } 
     /**
@@ -614,7 +614,7 @@ public class Functionals {
 	if (g instanceof VoidFunction && h instanceof VoidFunction)
 	    return Functionals.compose(P, (VoidFunction)g, (VoidFunction)h);
 
-	//TODO: copy implementation for mixed types as well?
+	//todo copy implementation for mixed types as well?
 	throw new ClassCastException("the type of the arguments to compose do not match "+ (g == null ? "null" : g.getClass() + "") + ", " + (h == null ? "null" : h.getClass() + ""));
     } 
 
@@ -722,8 +722,8 @@ public class Functionals {
     public static /*<A1, A2, B>*/ Function/*<A2, B>*/ bindFirst(BinaryFunction/*<A1, A2, B>*/ f, Object/*>A1<*/ x) {
 	return new BindFirstFunction/*<A1, A2, B>*/(f, x);
     } 
-    //TODO: binding can be reduced to composition along with constant. Would this be simpler?
-    //TODO: is it of advantage when we derived orbital.math.functional.Functionals.BindFirstFunction from this class?
+    //@todo binding can be reduced to composition along with constant. Would this be simpler?
+    //@todo is it of advantage when we derived orbital.math.functional.Functionals.BindFirstFunction from this class?
     // except for the AbstractFunction problem!
     private static class BindFirstFunction/*<A1, A2, B>*/ extends AbstractCompositeFunctor implements Function/*<A2, B>*/ {
 	private static final long serialVersionUID = -5691828471790998657L;
@@ -1121,7 +1121,7 @@ public class Functionals {
 	    return f.apply(first);
 	} 
 
-	//TODO: implement equals(Object)
+	//@todo implement equals(Object)
 	// not quite beautiful for all functors
 	public String toString() {
 	    return Notation.DEFAULT.format(f, new String[] {
@@ -1156,7 +1156,7 @@ public class Functionals {
 	    return f.apply(first);
 	} 
 
-	//TODO: implement equals(Object)
+	//@todo implement equals(Object)
 	// not quite beautiful for all functors
 	public String toString() {
 	    return Notation.DEFAULT.format(f, new String[] {
@@ -1912,8 +1912,8 @@ public class Functionals {
 	return r;
     }
 
-    //TODO: introduce Function thread(Function f)
-    //TODO: introduce Function outer(Function f)
+    //@todo introduce Function thread(Function f)
+    //@todo introduce Function outer(Function f)
 
     // functional-style high-order functions
     // general recursion schemes
@@ -2195,7 +2195,7 @@ public class Functionals {
      * @see Functionals#envelope(Object, BinaryFunction, Function, Predicate, Object)
      * @see <a href="http://wwwhome.cs.utwente.nl/~fokkinga/index.html#mmf91m">Meijer, E. and Fokkinga, M.M. and Paterson, R., Functional Programming with Bananas, Lenses, Envelopes and Barbed Wire, FPCA91: Functional Programming Languages and Computer Architecture, pp. 124--144, volume 523, Lecture Notes in Computer Science, Springer-Verlag, 1991.</a>
      */
-    //TODO: check types for abstract template public static /* abstract template*/ class Hylomorphism/* abstract <C c, T f(C,List), g, boolean p(C)> abstract */ implements Function {
+    //@todo check types for abstract template public static /* abstract template*/ class Hylomorphism/* abstract <C c, T f(C,List), g, boolean p(C)> abstract */ implements Function {
     public static class Hylomorphism/*<A, B, C>*/ implements Function/*<A, C>*/, Serializable {
 	private static final long serialVersionUID = 8982420605715979366L;
 	/**
@@ -2287,7 +2287,7 @@ public class Functionals {
      * @version 1.0, 2000/06/14
      * @author  Andr&eacute; Platzer
      * @see Functionals#barbedwire(Object, BinaryFunction, Iterator)
-     * @see Functionals#barbedwire(int, BinaryFunction)
+     * @see Functionals#barbedwire(int, BinaryFunction, int)
      * @see "Lambert Meertens. Paramorphisms. In: Formal Aspects of Computing, 1990."
      * @see <a href="http://wwwhome.cs.utwente.nl/~fokkinga/index.html#mmf91m">Meijer, E. and Fokkinga, M.M. and Paterson, R., Functional Programming with Bananas, Lenses, Envelopes and Barbed Wire, FPCA91: Functional Programming Languages and Computer Architecture, pp. 124--144, volume 523, Lecture Notes in Computer Science, Springer-Verlag, 1991.</a>
      */
@@ -2380,10 +2380,10 @@ public class Functionals {
      * 
      * @param b is the basevalue to use.
      * @param f is a binary function.
-     * @param a is a starting value.
-     * @return <span class="barbedwireBracket">{|</span>b,f<span class="barbedwireBracket">|}</span> a
+     * @return <span class="barbedwireBracket">{|</span>b,f<span class="barbedwireBracket">|}</span>
+     * still depending on the is a starting value a.
      * @see "Lambert Meertens. Paramorphisms. In: Formal Aspects of Computing, 1990."
-     * @TODO think about changing from java.lang.Integer to java.lang.Number to support java.lang.Double and orbital.math.Integer as well
+     * @todo think about changing from java.lang.Integer to java.lang.Number to support java.lang.Double and orbital.math.Integer as well
      * @todo publicize
      */
     protected static Function/*<Integer, Integer>*/ paramorphism(final int b, final BinaryFunction/*<Integer, Integer, Integer>*/ f) {
@@ -2408,7 +2408,7 @@ public class Functionals {
      * Generalized inner product.
      */
 
-    //TODO: implement inner, outer
+    //@todo implement inner, outer
 
     /*
       public Object inner(BinaryFunction inner, Object[] A, Object[] B, BinaryFunction outer) {

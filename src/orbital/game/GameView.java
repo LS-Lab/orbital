@@ -657,8 +657,7 @@ class AwtResourceDecoder {
     /**
      * This is the hook through which all menu items are
      * created.  It registers the result with the menuitem
-     * hashtable so that it can be fetched with getMenuItem().
-     * @see #getMenuItem
+     * hashtable so that it can be fetched.
      * @see Notepad
      * @internal see Notepad for more features
      */

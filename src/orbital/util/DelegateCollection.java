@@ -185,7 +185,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      * Note that <tt>toArray(new Object[0])</tt> is identical in function to
      * <tt>toArray()</tt>.
      * 
-     * @param the array into which the elements of this collection are to be
+     * @param a the array into which the elements of this collection are to be
      * stored, if it is big enough; otherwise, a new array of the same
      * runtime type is allocated for this purpose.
      * @return an array containing the elements of this collection

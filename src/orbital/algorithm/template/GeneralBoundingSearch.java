@@ -57,7 +57,7 @@ public abstract class GeneralBoundingSearch extends GeneralSearch implements Eva
 	//TODO: make "bound" a bound property?
     }
     /**
-     * @deprecated Since Orbital1.1 use {@link setBound(Real)} instead.
+     * @deprecated Since Orbital1.1 use {@link #setBound(Real)} instead.
      */
     protected void setBound(double bound) {
 	setBound(Values.getDefaultInstance().valueOf(bound));

@@ -416,7 +416,7 @@ public final class NumericalAlgorithms {
      * </p>
      * @param t0 the starting point in the parameter interval [t0,..tz].
      * @param tz the ending point in the parameter interval [t0,..tz].
-     * @param bezierNodess the row-vectors specify the bezier nodes in the given order.
+     * @param bezierNodes the row-vectors specify the bezier nodes in the given order.
      * @return a vectorial bezier curve with the specified bezier nodes and a parameter from t0 to tz.
      */
     public static Function bezierCurve(double t0, double tz, Matrix bezierNodes) {

@@ -511,7 +511,7 @@ class Resolution implements Inference {
      * </p>
      * @return the factorized clause, or the reference <code>F</code>
      * if no factorization had been possible.
-     * @poscondition F=OLD(F)
+     * @posconditions F=OLD(F)
      */
     private static final Set/*_<Formula>_*/ factorize(Set/*_<Formula>_*/ F) {
 	// we need a list view of the set for traversing distinct literals, but we will only need to modify the set F

@@ -36,14 +36,14 @@ final class LogicSupport {
      * Converts an array to an interpretation (adding true, false).
      * <p>
      * Apart from adding true and false, this method also registers the functor's
-     * notations at {@link Notation#setNotation(Functor,Notation.NotationSpecification)}.
+     * notations at {@link Notation#setNotation(Object,Notation.NotationSpecification)}.
      * </p>
      * @param functors Contains functors and their notation specifications.
      *  Stored as an array of length-2 arrays
      *  with functors[i][0] being the interpretation {@link Functor},
      *  and functor[i][1] being a {@link NotationSpecification}.
      * @param skipNull whether to skip functors for which the array contains <code>null</code>.
-     * @param useRegisteredNotationsOnNull whether to use {@link Notation#getNotation(Functor) regisitered notations}
+     * @param useRegisteredNotationsOnNull whether to use {@link Notation#getNotation(Object) regisitered notations}
      *  if the array contains <code>null</code> as notation specification.
      * @param appendTrueFalse whether to introduce true false constants.
      * @throws NullPointerException if skipNull==<code>false</code> but a functor of the array is <code>null</code>.

@@ -123,7 +123,7 @@ public class Buffer {
      * @param len the number of bytes to be copied.
      * @throws ArrayIndexOutOfBoundsException if the part to be set exceeds the current dimension.
      * @throws IllegalArgumentException if the offset or length are negative.
-     * @see java.lang.System#arraycopy(byte[],int,byte[],int,int)
+     * @see java.lang.System#arraycopy(Object,int,Object,int,int)
      */
     public synchronized void setBytes(byte[] part, int srcOff, int dstOff, int len) {
 	if (len < 0)

@@ -193,7 +193,7 @@ public abstract class Values implements ValueFactory {
      * </p>
      * @see <a href="{@docRoot}/Patterns/Design/Singleton.html">&quot;Singleton&quot;</a>
      * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
-     * @see #setDefault(Values)
+     * @see #setDefault(ValueFactory)
      */
     public static final Values getDefaultInstance() {
 	return defaultValueFactory;
@@ -206,7 +206,7 @@ public abstract class Values implements ValueFactory {
      * </p>
      * @see <a href="{@docRoot}/Patterns/Design/Singleton.html">&quot;Singleton&quot;</a>
      * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
-     * @see #setDefault(Values)
+     * @see #setDefault(ValueFactory)
      */
     public static final ValueFactory getDefault() {
 	return defaultValueFactory;

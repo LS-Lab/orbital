@@ -57,7 +57,7 @@ import orbital.logic.sign.concrete.Notation.NotationSpecification;
  *     <span class="keyword">return</span> (<span class="Orbital">Arithmetic</span>) <span class="Orbital">Operations</span>.plus.apply(<span class="keyword">this</span>, b);
  * }
  * </pre>
- * Which implicitly uses the tranformation function {@link orbital.math.Values#getCoercer()}.
+ * Which implicitly uses the tranformation function {@link orbital.math.ValueFactory#getCoercer()}.
  * The static functions provided in <tt>Operations</tt> delegate type handling like in
  * <pre>
  *     <span class="Orbital">Arithmetic</span> operands[] <span class="operator">=</span> (<span class="Orbital">Arithmetic</span>[]) <span class="Orbital">Values</span>.getDefaultInstance().getCoercer().apply(<span class="keyword">new</span> <span class="Orbital">Arithmetic</span>[] {x, y});
@@ -65,7 +65,7 @@ import orbital.logic.sign.concrete.Notation.NotationSpecification;
  * </pre>
  * </p>
  * 
- * @structure depends {@link orbital.math.MathUtilities#getCoercer()}
+ * @structure depends {@link orbital.math.ValueFactory#getCoercer()}
  * @version 1.0, 2000/08/03
  * @author  Andr&eacute; Platzer
  * @see orbital.math.Arithmetic

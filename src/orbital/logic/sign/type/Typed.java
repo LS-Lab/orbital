@@ -22,7 +22,6 @@ public interface Typed {
      * Proper type means the most specific type, not only a supertype.
      * @preconditions true
      * @return the type <span class="type">&tau;</span> of this expression in <span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&tau;</sub>.
-     * @see Symbol#getType()
      */
     Type getType();
 

@@ -27,7 +27,7 @@ import java.util.Set;
  *     if <span class="Formula">Mod<sub>&Sigma;</sub>(F)=Int(&Sigma;)</span>,
  *     that is, if it is satisfied by all interpretations.
  *     A formula is tautological, if it is not falsifiable.
- *     <div>&hArr; {@link orbital.moon.logic.ClassicalLogic.Utilities#allClosure(Formula) Cl<sub>&forall;</sub>} F is valid</div>
+ *     <div>&hArr; {@link orbital.moon.logic.ClassicalLogic.Utilities#universalClosure(Formula) Cl<sub>&forall;</sub>} F is valid</div>
  *   </dd>
  *   <dt>satisfiable (or consistent or possible)</dt>
  *   <dd>
@@ -38,7 +38,7 @@ import java.util.Set;
  *     <div>&hArr; F &#8872;&#824; false</div>
  *     <div>&hArr; there is no A&isin;Formula(&Sigma;) with F &#8872; A and F &#8872; &not;A</div>
  *     <div>&hArr; F has a class of models</div>
- *     <div>&hArr; {@link orbital.moon.logic.ClassicalLogic.Utilities#existenceClosure(Formula) Cl<sub>&exist;</sub>} F is satisfiable</div>
+ *     <div>&hArr; {@link orbital.moon.logic.ClassicalLogic.Utilities#existentialClosure(Formula) Cl<sub>&exist;</sub>} F is satisfiable</div>
  *   </dd>
  *   <dt>falsifiable</dt>
  *   <dd>

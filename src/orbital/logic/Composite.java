@@ -49,7 +49,7 @@ public interface Composite /*<Compositor,Component>*/ {
      *  or g the wrong type for a component.
      *  Depending upon context, this method may also throw IllegalArgumentException, instead.
      * @throws UnsupportedOperationException if this method does not support modification cloning.
-     * @see #clone()
+     * @see Object#clone()
      */
     Composite construct(Object/*>Compositor<*/ compositor, Object/*>Component<*/ component) throws IllegalArgumentException, ClassCastException;
 

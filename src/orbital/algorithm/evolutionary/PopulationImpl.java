@@ -198,7 +198,7 @@ public class PopulationImpl extends Population {
      * Performs one reproduction returning the resulting children.
      * Selects parents and will recombine and mutate to produce children genomes.
      * @return the children produced.
-     * @see #getSelection()
+     * @see GeneticAlgorithm#getSelection()
      * @see Genome#recombine(Gene[],int,double)
      * @see #getMaximumRecombination()
      * @see Genome#mutate(double)

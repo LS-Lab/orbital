@@ -214,7 +214,7 @@ public class FigureImpl extends Figure {
      * Checks validity of a path to move per {@link #movePath(Move)}.
      * @see #iterateValid()
      * @postconditions &forall;i&isin;RES moveFigure(i.A).equals(i.B)
-     * @deprecated Since Orbital1.1 use {@link Figure#validMoves()} instead.
+     * @deprecated Since Orbital1.1 use {@link Figure#possibleMoves()} instead.
      */
     public final Iterator/*_<Move,Position>_*/ iterateValidPairs() {
 	final Move legalMoves[] = getLegalMoves();

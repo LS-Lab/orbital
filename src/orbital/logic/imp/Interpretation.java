@@ -31,11 +31,11 @@ import orbital.logic.functor.Functor;
  *     for each type <span class="type">&tau;</span>, with
  *     <ul>
  * <!-- @todo use I(<span class="type">&sigma;</span>) instead of <span class="set">D</span><sub class="type">&tau;</sub> througout? -->
- *       <li>I maps symbols of {@link Type type} <span class="type">&tau;</span> to elements of the class I(<span class="type">&tau;</span>):=<span class="set">D</span><sub class="type">&tau;</sub> &ne; &empty;.
+ *       <li>I maps symbols of {@link orbital.logic.sign.type.Type type} <span class="type">&tau;</span> to elements of the class I(<span class="type">&tau;</span>):=<span class="set">D</span><sub class="type">&tau;</sub> &ne; &empty;.
  *          Especially in computer settings, the class I(<span class="type">&tau;</span>) is often assumed to be a set, even though this is rather irrelevant.
  *          <cite>"Wilfrid Hodges. Elementary Predicate Logic. In: Dov M. Gabbay and F. Guenther. Handbook of philosophical logic Volume 1 2nd edition. paragraph 17 theorem 10"</cite>
  *       </li>
- *       <li>I respects subtypes: for types <span class="type">&sigma;</span>,<span class="type">&sigma;</span>:{@link Types#TYPE <span class="type">*</span>}
+ *       <li>I respects subtypes: for types <span class="type">&sigma;</span>,<span class="type">&sigma;</span>:{@link orbital.logic.sign.type.TypeSystem#TYPE() <span class="type">*</span>}
  *         with <span class="type">&sigma;</span>&le;<span class="type">&tau;</span> sets satisfy I(<span class="type">&sigma;</span>)&sube;I(<span class="type">&tau;</span>).</li>
  *       <li><span class="set">D</span><sub class="type">&omicron;</sub> is the set of truth-values for the type <span class="type">&omicron;</span> = <span class="type">()</span> of truth-values
  *         (also the type of atomic formulas).
@@ -280,7 +280,7 @@ public interface Interpretation extends Map/*<Symbol, Object>*/ {
      * Set the referent associated with the given symbol in this interpretation.
      * @preconditions symbol.getType().apply(referent)
      * @throws java.util.NoSuchElementException if the symbol is not in the current signature &Sigma;.
-     * @throws TypeException if the referent is not of the type of symbol.
+     * @throws orbital.logic.sign.type.TypeException if the referent is not of the type of symbol.
      */
     Object put(Object/*>Symbol<*/ symbol, Object referent);
 
@@ -289,7 +289,7 @@ public interface Interpretation extends Map/*<Symbol, Object>*/ {
      * @preconditions (&Sigma; == null &or; keySet() &sube; &Sigma;) &and; &forall;(s,v)&isin;associations {@preconditions #put(Symbol, Object) put(s,v)}
      * @throws IllegalArgumentException if associations does contain a symbol which is not contained in the signature.
      *  This is not checked if &Sigma; is <code>null</code>.
-     * @throws TypeException if one of the values is not of the type of its symbol.
+     * @throws orbital.logic.sign.type.TypeException if one of the values is not of the type of its symbol.
      * @throws NullPointerException if associations is <code>null</code>.
      */
     void putAll(Map/*<Symbol, Object>*/ associations);

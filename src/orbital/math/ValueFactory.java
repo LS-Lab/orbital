@@ -48,20 +48,20 @@ public interface ValueFactory {
     /**
      * 0&isin;<b>Z</b>.
      * The neutral element of addition in <b>Z</b>,<b>R</b> etc.
-     * @post RES == OLD(RES) &and; RES = valueOf(0)
+     * @postconditions RES == OLD(RES) &and; RES = valueOf(0)
      */
     Integer ZERO();
 
     /**
      * 1&isin;<b>Z</b>.
      * The neutral element of multiplication in <b>Z</b>,<b>R</b> etc.
-     * @post RES == OLD(RES) &and; RES = valueOf(1)
+     * @postconditions RES == OLD(RES) &and; RES = valueOf(1)
      */
     Integer ONE();
 
     /**
      * -1&isin;<b>Z</b>.
-     * @post RES == OLD(RES) &and; RES = valueOf(-1)
+     * @postconditions RES == OLD(RES) &and; RES = valueOf(-1)
      */
     Integer MINUS_ONE();
 
@@ -69,7 +69,7 @@ public interface ValueFactory {
      * +&infin;&isisn;<b>R</b>.
      * @see #INFINITY
      * @see #NEGATIVE_INFINITY
-     * @post RES == OLD(RES)
+     * @postconditions RES == OLD(RES)
      */
     Real POSITIVE_INFINITY();
 
@@ -77,7 +77,7 @@ public interface ValueFactory {
      * -&infin;&isisn;<b>R</b>.
      * @see #INFINITY
      * @see #POSITIVE_INFINITY
-     * @post RES == OLD(RES)
+     * @postconditions RES == OLD(RES)
      */
     Real NEGATIVE_INFINITY();
 
@@ -85,20 +85,20 @@ public interface ValueFactory {
      * &pi; = 3.14159265... .
      * The proportion of the circumference of a circle to its diameter.
      * &pi; is transcendental over <b>Q</b>.
-     * @post RES == OLD(RES)
+     * @postconditions RES == OLD(RES)
      */
     Real PI();
     /**
      * <b>e</b> = 2.71828... .
      * The base of the natural logarithm.
      * <b>e</b> is transcendental over <b>Q</b>.
-     * @post RES == OLD(RES)
+     * @postconditions RES == OLD(RES)
      */
     Real E();
 
     /**
      * not a number &perp;&isin;<b>R</b>&cup;{&perp;}.
-     * @post RES == OLD(RES)
+     * @postconditions RES == OLD(RES)
      */
     Real NaN();
 
@@ -106,14 +106,14 @@ public interface ValueFactory {
      * The imaginary unit <b>i</b>&isin;<b>C</b>.
      * Alternative name for {@link #i()}.
      * @see #i
-     * @post RES == OLD(RES) &and; RES = complex(0, 1)
+     * @postconditions RES == OLD(RES) &and; RES = complex(0, 1)
      */
     Complex I();
     /**
      * The imaginary unit <b>i</b>&isin;<b>C</b>.
      * Alternative name for {@link #I()}.
      * @see #I
-     * @post RES == OLD(RES) &and; RES = complex(0, 1)
+     * @postconditions RES == OLD(RES) &and; RES = complex(0, 1)
      */
     Complex i();
 
@@ -121,7 +121,7 @@ public interface ValueFactory {
      * complex infinity &infin;&isin;<b>C</b>.
      * @see #INFINITY
      * @todo only in compactification of C.
-     * @post RES == OLD(RES)
+     * @postconditions RES == OLD(RES)
      */
     Complex INFINITY();
 
@@ -273,12 +273,12 @@ public interface ValueFactory {
 
     /**
      * Creates a new instance of vector with the specified dimension.
-     * @param dimensions the dimension of the vector.
+     * @param dimension the dimension of the vector.
      * @return a vector of the specified dimension, with undefined components.
      * @postconditions RES.dimension() == dimension()
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      */
-    public abstract /*<R implements Arithmetic>*/ Vector/*<R>*/ newInstance(int dim);
+    public abstract /*<R implements Arithmetic>*/ Vector/*<R>*/ newInstance(int dimension);
 
     /**
      * Gets zero Vector, with all elements set to <code>0</code>.
@@ -663,7 +663,8 @@ public interface ValueFactory {
      * for polynomials. This type ambiguity will not occur at all, if
      * templates have been enabled.</small>
      * </p>
-     * @param m is the quotient operator applied (see {@link Quotient#getQuotientOperator()}).
+     * @param a the value
+     * @param mod is the quotient operator applied (see {@link Quotient#getQuotientOperator()}).
      * @see #quotient(Arithmetic,Function)
      * @internal only for provoking a compile time type ambiguity error for (Euclidean,Polynomial).
      */

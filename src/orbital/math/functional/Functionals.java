@@ -35,7 +35,8 @@ import orbital.util.Utility;
  * i.e. high-order functions that have a Function in their signature.
  * <p>
  * The Functionals class comes in two versions:<ul>
- * <li><tt>orbital.logic.functor.Functionals</tt> which is responsible for general functors
+ * <li><tt>{@linkplain orbital.logic.functor.Functionals orbital.logic.functor.Functionals}</tt>
+ * which is responsible for general functors
  * like functions and predicates that do not satisfy the criteria of full
  * mathematical functions with all the possible operations like derivation,
  * or that do not need this overhead.
@@ -43,8 +44,8 @@ import orbital.util.Utility;
  * make much sense for mathematical functions, or would hurt derivation operations
  * (with a possible infinite recursion).
  * </li>
- * <li><tt>orbital.math.functional.Functionals</tt> which is an specialized extension
- * for mathematical functions
+ * <li><tt>{@linkplain orbital.math.functional.Functionals orbital.math.functional.Functionals}</tt>
+ * which is an specialized extension for mathematical functions
  * that can be derived or integrated and possibly need this behaviour.
  * Mathematical functions will usually be called with arithmetic objects and functions
  * only.

@@ -251,7 +251,6 @@ public class Gamemaster implements Runnable {
 
     /**
      * Runnable-start entry point.
-     * @see #action(Event, Object)
      * @internal see #turn()
      */
     public void run() {
@@ -266,9 +265,7 @@ public class Gamemaster implements Runnable {
     /**
      * Called at the end of each user turn.
      * Once all real players made their turn, it will let all AIs take their actions.
-     * Notifies the current GameRules implementation that a turn is done.
-     * @see GameRules#performedMove(Field)
-     * @internal this is a kind of event handler.
+     * @internal Usually, the gamerules implementation notifies its listeners whenever a turn is done.
      */
     private final void playGame() {
 	final Thread thisThread = Thread.currentThread();

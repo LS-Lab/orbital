@@ -513,7 +513,7 @@ public class LogicParser {
      *  prior to constructing the substitution.
      * @throws IOException when an error occurs while reading from the reader.
      * @throws orbital.logic.sign.ParseException when a syntax error occurs in the source.
-     * @see ModernLogic#proveAll(Reader,boolean)
+     * @see ModernLogic#proveAll(Reader,ModernLogic,boolean)
      */
     public static final Substitution readTRS(final Reader reader, final ExpressionSyntax syntax, final Function expressionTransformation)
 	throws IOException, orbital.logic.sign.ParseException {

@@ -215,7 +215,7 @@ public class ArithmeticFormat extends Format {
 	
     /**
      * Get a formatted string representation of an arithmetic object.
-     * {@inheritDoc}
+     * @see #format(Object)
      */
     public String format(Arithmetic obj) {
         return format(obj, new StringBuffer(), new FieldPosition(0)).toString();
@@ -758,7 +758,7 @@ public class ArithmeticFormat extends Format {
 
     /**
      * Parse an arithmetic object string representation.
-     * {@inheritDoc}
+     * @see NumberFormat#parse(String, ParsePosition)
      */
     public Arithmetic parse(String source, ParsePosition status) {
 	int initialIndex = status.getIndex();
@@ -958,7 +958,7 @@ public class ArithmeticFormat extends Format {
 
     /**
      * Parse an arithmetic object string representation.
-     * {@inheritDoc}
+     * @see #parse(String, ParsePosition)
      */
     public Arithmetic parse(String source) throws ParseException {
         ParsePosition status = new ParsePosition(0);

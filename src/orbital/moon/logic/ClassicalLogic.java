@@ -535,7 +535,7 @@ public class ClassicalLogic extends ModernLogic {
 	     new NotationSpecification(900, "fy", Notation.PREFIX)},
 	    {LogicFunctions.exists,       // "?"
 	     new NotationSpecification(900, "fy", Notation.PREFIX)},
-	    //@internal &lambda; is the only non-functional operator, both with (single) lazy evaluation and with eager evaluation.
+	    //@internal &lambda; is the only non-functional operator, both with (single-shot) lazy evaluation and with eager evaluation.
 	    {LogicFunctions.lambda,       // "\\"
 	      new NotationSpecification(900, "fxy", NOTATION_LAMBDA)},
 	    {LogicFunctions.pi,           // "\\\\"
@@ -802,7 +802,7 @@ public class ClassicalLogic extends ModernLogic {
 	    /*private static*/ final Specification callTypeDeclaration = new Specification(new Class[] {
 		Object.class, Object.class
 	    }, Function.class);
-	    //@todo also templatize with t somehow? //@xxx type should be s*t->(s->t)
+	    //@todo also templatize with t somehow? //@xxx type should be &Pi;s&Pi;t. (s*t->(s->t))
 	    //private final Type logicalTypeDeclaration = typeSystem.map(typeSystem.product(new Type[] {typeSystem.UNIVERSAL(), typeSystem.UNIVERSAL()}), typeSystem.map(typeSystem.UNIVERSAL(), typeSystem.UNIVERSAL()));
 	    //private final Type logicalTypeDeclaration = typeSystem.map(typeSystem.product(new Type[] {Types.INDIVIDUAL, Types.INDIVIDUAL}), typeSystem.map(Types.INDIVIDUAL, Types.INDIVIDUAL));
 	    private final Type logicalTypeDeclaration = typeSystem.map(typeSystem.product(new Type[] {Types.INDIVIDUAL, Types.TRUTH}), typeSystem.map(Types.INDIVIDUAL, Types.TRUTH));
@@ -1011,6 +1011,13 @@ public class ClassicalLogic extends ModernLogic {
     /**
      * (&Pi;x.term):*&rarr;* type constructor expression.
      * An expression that represents a &Pi;-abstraction and has a canonical interpretation.
+     * <p>
+     * (&Pi;x.term) is a prototype which only becomes a type by instantiation, i.e.
+     * feeding its formal parameter x with a type as an argument.
+     * Conceptual realisation of generic types or parametric types.
+     * The massive problem arises from: what is the type of the constructor &Pi;?
+     * Do we need meta-language, and then meta-meta-language, or not?
+     * (&Pi;x.term) in turn is required to type &lambda;.
      * @author Andr&eacute; Platzer
      * @version 1.1, 2002-11-10
      * @fixme This class captures interpretations of s:* in some cases, like nested Pis.
@@ -1106,6 +1113,7 @@ public class ClassicalLogic extends ModernLogic {
 
     /**
      * (&Pi;x.term):*&rarr;* type.
+     * @see PiAbstractionExpression
      * @author Andr&eacute; Platzer
      * @version 1.1, 2002-11-10
      * @xxx in fact this is not truely a type :* but a constructor? :*->*

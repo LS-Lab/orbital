@@ -26,7 +26,7 @@ public interface Symbol extends Arithmetic, orbital.logic.trs.Variable {
     /**
      * Get the signifier representing this symbol (the symbol's name).
      * @preconditions true
-     * @see orbital.logic.imp.Symbol#getSignifier()
+     * @see orbital.logic.sign.Symbol#getSignifier()
      */
     String getSignifier();
 	

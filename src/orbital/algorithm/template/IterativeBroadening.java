@@ -27,7 +27,7 @@ import java.util.NoSuchElementException;
  *
  * @version 0.8, 2001/05/09
  * @author  Andr&eacute; Platzer
- * @see PackageUtilities#top(int,GeneralSearchProblem,Function)
+ * @see PackageUtilities#restrictTop(int,GeneralSearchProblem,Function)
  * @attribute usually inferior to {@link IterativeDeepening}
  * @todo aspect of iterative broadening of search space.
  */

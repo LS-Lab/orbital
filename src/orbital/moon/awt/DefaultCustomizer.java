@@ -67,9 +67,10 @@ import java.awt.TextField;
 import java.awt.TextComponent;
 
 /**
- * This class is a DefaultCustomizer.
+ * Provides a fully-automatic generic JavaBean customizer.
  * This customizer is displaying fields according to the introspection of the target class
- * revealing all bean properties.
+ * revealing all bean properties. Thereby, it provides average complexity
+ * customizers for all beans, automatically, without a need for programming by hand.
  * <p>
  * For {@link PropertyEditor}s that support a custom editor, this customizer supports an extra
  * method in the {@link PropertyEditor} implementation. If it exists, the method of the signature
