@@ -35,6 +35,17 @@ public interface ClausalSet extends Set/*_<Clause>_*/ {
     //@todo introduce method for fast indexed lookup of complementary top-level(c'est assez) symbols
 
     /**
+     * Get (an iterator over) all clauses contained in this set that
+     * may possibly form a complement to C for resolution. The clauses
+     * returned will more likely qualify for resolution with C, but
+     * need not do so with absolute confidence.  <p>Implementations
+     * may use indexing to estimate the clauses to return very
+     * quickly.</p>
+     * @postconditions RES&sube;this
+     */
+    Iterator/*_<Clause>_*/ probableComplementsOf(Clause C);
+
+    /**
      * Remove all clauses from this set which are subsumed by any of
      * the clauses of T. <p> In case of T == this, don't let clauses
      * remove by mutual subsumption, or by self-subsumption.</p>

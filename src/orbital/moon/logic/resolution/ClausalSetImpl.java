@@ -30,6 +30,11 @@ public class ClausalSetImpl extends LinkedHashSet/*_<Clause>_*/ implements Claus
     }
     public ClausalSetImpl() {}
 
+    public Iterator/*_<Clause>_*/ probableComplementsOf(Clause C) {
+	//@todo use indexing for far better implementation
+	return iterator();
+    }
+
     public boolean removeAllSubsumedBy(ClausalSet T) {
 	boolean avoidSelf = false;
 	if (T.isEmpty()) {
