@@ -246,7 +246,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      * Inner product of a tensor with a tensor returning a tensor.
      * <table>
      *   <tr>
-     *     <td class="nameOfMap" rowspan="2">·:</td>
+     *     <td class="nameOfMap" rowspan="2">·</td>
      *     <td class="leftOfMap">R<sup>n<sub>0</sub>&times;&#8230;&times;n<sub>r-1</sub>&times;h</sup>&times;R<sup>h&times;m<sub>0</sub>&times;&#8230;&times;m<sub>s-1</sub></sup></td>
      *     <td class="arrowOfMap">&rarr;</td>
      *     <td class="rightOfMap">R<sup>n<sub>0</sub>&times;&#8230;&times;n<sub>r-1</sub>&times;h</sup>&times;R<sup>h&times;m<sub>0</sub>&times;&#8230;&times;m<sub>s-1</sub></sup></td>
@@ -268,7 +268,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      * Tensor product of a tensor with a tensor returning a tensor.
      * <table>
      *   <tr>
-     *     <td class="nameOfMap" rowspan="2">&otimes;:</td>
+     *     <td class="nameOfMap" rowspan="2">&otimes;</td>
      *     <td class="leftOfMap">R<sup>n<sub>0</sub>&times;&#8230;&times;n<sub>r-1</sub></sup>&times;R<sup>m<sub>0</sub>&times;&#8230;&times;m<sub>s-1</sub></sup></td>
      *     <td class="arrowOfMap">&rarr;</td>
      *     <td class="rightOfMap">R<sup>n<sub>0</sub>&times;&#8230;&times;n<sub>r-1</sub>&times;m<sub>0</sub>&times;&#8230;&times;m<sub>s-1</sub></sup></td>

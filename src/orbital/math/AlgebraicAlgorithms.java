@@ -756,9 +756,9 @@ public final class AlgebraicAlgorithms {
      */
     private static final Predicate isZeroPolynomial = new Predicate() {
 	    public boolean apply(Object p) {
-		AbstractPolynomial r = (AbstractPolynomial) p;
+		Polynomial r = (Polynomial) p;
 		return r.degreeValue() < 0
-		    || r.tensorViewOfCoefficients().norm().equals(Values.ZERO, Values.valueOf(MathUtilities.getDefaultTolerance()));
+		    || Values.asTensor(r).norm().equals(Values.ZERO, Values.valueOf(MathUtilities.getDefaultTolerance()));
 	    }
 	};
 

@@ -1096,7 +1096,7 @@ public final class Values {
 	    // @todo implement a true view flexible for changes (but only if Polynomial.set(...) has been introduced)
 	    return polynomial((Arithmetic[]) ((AbstractTensor)coefficients).toArray__Tensor());
 	default:
-	    return new ArithmeticPolynomial(coefficients);
+	    return new ArithmeticMultivariatePolynomial(coefficients);
 	}
     }
 
@@ -1107,10 +1107,12 @@ public final class Values {
      * It interprets the coefficients of the polynomial as the components
      * of a tensor.</p>
      * @return the tensor (<var>a</var><sub>0,...,0</sub>,...,<var>a</var><sub>d<sub>1</sub>,...,d<sub>n</sub></sub>).
+     * @throws ClassCastException if p does not have S=<b>N</b><sup>n</sup> as indices,
+     *  and thus is not a multivariate polynomial in the proper sense.
      * @see #asPolynomial(Tensor)
      */
     public static /*<R implements Arithmetic>*/ Tensor/*<R>*/ asTensor(Polynomial/*<R>*/ p) {
-    	return ((AbstractPolynomial)p).tensorViewOfCoefficients();
+	return ((AbstractMultivariatePolynomial)p).tensorViewOfCoefficients();
     }
 
     /**
@@ -1127,9 +1129,10 @@ public final class Values {
      * The monomial c&middot;X<sup>i</sup>.
      * @param coefficient the coefficient c of the monomial.
      * @param exponent the exponent i of the monomial.
+     * @todo implementation could be generalized to non-AbstractMultivariatePolynomials.
      */
     public static final Polynomial/*<R,S>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, Arithmetic/*>S<*/ exponent) {
-	return MONOMIAL(coefficient, ArithmeticPolynomial.convertIndex(exponent));
+	return MONOMIAL(coefficient, ArithmeticMultivariatePolynomial.convertIndex(exponent));
     }
     /**
      * The monomial c&middot;X<sub>0</sub><sup>i[0]</sup>...X<sub>n-1</sub><sup>i[n-1]</sup>.
@@ -1142,7 +1145,7 @@ public final class Values {
 	int[] dim = new int[exponents.length];
 	for (int k = 0; k < dim.length; k++)
 	    dim[k] = exponents[k] + 1;
-	AbstractPolynomial m = new ArithmeticPolynomial(dim);
+	AbstractMultivariatePolynomial m = new ArithmeticMultivariatePolynomial(dim);
 	m.set(m.CONSTANT_TERM, coefficient.zero());
 	m.setAllZero(m);
 	m.set(exponents, coefficient);
@@ -1155,7 +1158,7 @@ public final class Values {
      * @see #MONOMIAL(Arithmetic,Arithmetic)
      */
     public static final Polynomial/*<R implements Scalar,S>*/ MONOMIAL(Arithmetic/*>S<*/ exponent) {
-	return MONOMIAL(ONE, ArithmeticPolynomial.convertIndex(exponent));
+	return MONOMIAL(ONE, exponent);
     }
     /**
      * The monomial 1&middot;X<sub>0</sub><sup>i[0]</sup>...X<sub>n-1</sub><sup>i[n-1]</sup>.

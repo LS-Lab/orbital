@@ -7,58 +7,46 @@
 package orbital.math;
 
 import orbital.math.functional.Function;
-import java.io.Serializable;
 import java.util.ListIterator;
 import java.util.Iterator;
 
-import java.util.NoSuchElementException;
-import java.util.ConcurrentModificationException;
-
 import orbital.math.functional.Functionals;
 import orbital.logic.functor.BinaryFunction;
-
+import orbital.logic.functor.Predicate;
 import orbital.math.functional.Operations;
-
 import orbital.util.Setops;
-import orbital.logic.functor.Predicates;
-import orbital.util.Utility;
-import java.util.Arrays;
-import java.lang.reflect.Array;
-
-import orbital.algorithm.Combinatorical;
+import orbital.util.Pair;
 
 /**
  * @version 1.1, 2002/08/21
  * @author  Andr&eacute; Platzer
- * @todo this implementation could be split in two.
+ * @todo (working on it) this implementation could be split in two.
  *  One part that is general for every S,
  *  and one part that specially assumes S=<b>N</b><sup>n</sup>.
  */
-abstract class AbstractPolynomial/*<R implements Arithmetic, S implements Arithmetic>*/ extends AbstractProductArithmetic implements Polynomial/*<R,S>*/, Serializable {
+abstract class AbstractPolynomial/*<R implements Arithmetic, S implements Arithmetic>*/ extends AbstractProductArithmetic implements Polynomial/*<R,S>*/ {
     private static final long serialVersionUID = 4336092442446250306L;
 	
-    /**
-     * The index (0,...,0) of the constant term.
-     * @invariant subclasses must set this value to {0,...,0}&isin;<b>N</b><sup>indexSet()</sup>
-     */
-    transient int[] CONSTANT_TERM;
     public AbstractPolynomial() {
     }
   
     public boolean equals(Object o) {
-	// would need dimensions() to reduce to non-zero part
-    	//return (o instanceof Polynomial) && super.equals(o);
 	if (o instanceof Polynomial) {
-	    AbstractPolynomial/*>T<*/ b = (AbstractPolynomial) o;
-	    final int[] d = Functionals.map(Operations.max, dimensions(), b.dimensions());
-	    return Setops.all(iterator(d), b.iterator(d), Predicates.equal);
+	    final Polynomial/*>T<*/ b = (Polynomial) o;
+	    Setops.all(combinedIndices(this, b),
+		       new Predicate() {
+			   public boolean apply(Object o) {
+			       Arithmetic/*>S<*/ i = (Arithmetic)o;
+			       return get(i).equals(b.get(i));
+			   }
+		       });
 	} 
 	return false;
     } 
 
     public int hashCode() {
 	//@xxx throw new UnsupportedOperationException("would require dimensions() to reduce to non-zero part");
-	// the following is ok (though, perhaps, not ver surjective), since 0 has hashCode 0 anyway
+	// the following is ok (though, perhaps, not very surjective), since 0 has hashCode 0 anyway
 	int hash = 0;
 	//@todo functional?
 	for (java.util.Iterator i = iterator(this); i.hasNext(); ) {
@@ -76,232 +64,23 @@ abstract class AbstractPolynomial/*<R implements Arithmetic, S implements Arithm
      * Sets a value for the coefficient specified by index.
      * @pre i&isin;S
      * @throws UnsupportedOperationException if this polynomial is constant and does not allow modifications.
+     * @todo move to Polynomial?
      */
-    protected abstract void set(Arithmetic/*>S<*/ i, Arithmetic vi);
+    protected abstract void set(Arithmetic/*>S<*/ i, Arithmetic/*>R<*/ vi);
 
-    //@xxx we do not ultimately need these following methods, but only have them for performance for S=<b>N</b><sup>n</sup>
-    
-    /**
-     * Get the the (partial) degree of this polynomial with respect to the single variables.
-     * @see #degree()
-     * @todo rename?
-     */
-    protected abstract int[] dimensions();
-
-    /**
-     * Get a tensor view of the coefficients.
-     * @xxx somehow get rid of this trick
-     */
-    abstract Tensor tensorViewOfCoefficients();
-
-    protected abstract Arithmetic get(int[] i);
-    /**
-     * Sets a value for the coefficient specified by index.
-     * @pre i&isin;<b>N</b><sup>n</sup>
-     * @throws UnsupportedOperationException if this polynomial is constant and does not allow modifications.
-     */
-    protected abstract void set(int[] i, Arithmetic vi);
-	
-    protected final Object productIndexSet(Arithmetic/*>T<*/ productObject) {
-	return dimensions();
+    protected Object productIndexSet(Arithmetic/*>T<*/ productObject) {
+	return indexSet();
     }
 
     protected ListIterator/*_<R>_*/ iterator(Arithmetic/*>T<*/ productObject) {
 	return ((Polynomial)productObject).iterator();
     }
+
     
-    // factory-methods
-    
     /**
-     * instantiate a new polynomial with storage for a polynomial of degree.
-     * @param dim the dimension desired for the vector.
-     * @return a vector of the same type as this, dimension as specified
-     * The elements need not be initialized since they will soon be by the calling method.
-     * @post RES != RES
-     * @see <a href="{@docRoot}/DesignPatterns/FactoryMethod.html">Factory Method</a>
-     * @see #clone()
-     */
-    protected abstract Polynomial/*<R>*/ newInstance(int[] dimensions);
-	
-    protected final Arithmetic/*>T<*/ newInstance(Object productIndexSet) {
-	return newInstance((int[])productIndexSet);
-    }
-
-    // iterator-views
-    
-    public final ListIterator iterator() {
-	return iterator(dimensions());
-    }
-
-    /**
-     * The number of times this object has been structurally modified.
-     * Structural modifications are those that change the number of elements in
-     * the object or otherwise modify its internal structure.
-     * This field is used to make iterators of the object fail-fast.
-     * <p>
-     * To use this feature, increase modCount whenever an implementation method changes
-     * this tensor.</p>
-     * @see java.util.ConcurrentModificationException
-     */
-    protected transient int modCount = 0;
-
-    public Iterator indices() {
-	return new ListIterator() {
-		//@structure delegates to cursor wrapping int[] into Vector<Integer>
-		private final Combinatorical cursor = Combinatorical.getPermutations(dimensions());
-        	/**
-        	 * The modCount value that the iterator believes that the backing
-        	 * object should have. If this expectation is violated, the iterator
-        	 * has detected concurrent modification.
-        	 */
-        	private transient int expectedModCount = modCount;
-		public boolean hasNext() {
-		    return cursor.hasNext();
-		} 
-		public Object next() {
-		    try {
-			Object v = Values.tensor(cursor.next());
-			checkForComodification();
-			return v;
-		    }
-		    catch(IndexOutOfBoundsException e) {
-			checkForComodification();
-			throw (AssertionError) new AssertionError("cursor should already have thrown a NoSuchElementException").initCause(e);
-        	    }
-		} 
-		public boolean hasPrevious() {
-		    return cursor.hasPrevious();
-		} 
-		public Object previous() {
-		    try {
-			Object v = Values.tensor(cursor.previous());
-			checkForComodification();
-			return v;
-		    }
-		    catch(IndexOutOfBoundsException e) {
-			checkForComodification();
-			throw (AssertionError) new AssertionError("cursor should already have thrown a NoSuchElementException").initCause(e);
-        	    }
-		} 
-
-		// UnsupportedOperationException, categorically
-
-        	public void set(Object o) {
-		    throw new UnsupportedOperationException("setting elements in an index set of a polynomial is undefined");
-        	}
-
-		public int nextIndex() {
-		    throw new UnsupportedOperationException("a polynomial does not have a one-dimensional index");
-		}
-		public int previousIndex() {
-		    throw new UnsupportedOperationException("a polynomial does not have a one-dimensional index");
-		}
-
-		public void add(Object o) {
-		    throw new UnsupportedOperationException("adding elements to an index set of a polynomial is undefined");
-		} 
-		public void remove() {
-		    throw new UnsupportedOperationException("removing elements from an index set of a polynomial is undefined");
-		} 
-
-        	private final void checkForComodification() {
-        	    if (modCount != expectedModCount)
-			throw new ConcurrentModificationException();
-        	}
-	    };
-    } 
-
-    /**
-     * Provides an iterator over the coefficients of the specified dimensions.
-     * @pre &forall;k dim[k]&ge;dimensions()[k]
-     * @todo wouldn't Polynomial need to have this?
-     * @internal almost identical to @see AbstractTensor.iterator()
-     */
-    ListIterator iterator(final int[] dim) {
-	for (int k = 0; k < dim.length; k++)
-	    Utility.pre(dim[k]>=dimensions()[k], "forall k dim[k]>=dimensions()[k]");
-	return new ListIterator() {
-		private final Combinatorical cursor = Combinatorical.getPermutations(dim);
-		//@internal we could just as well store lastRet as Vector<Integer> but int[] saves a lot of wrapping/unwrapping
-		private int[] lastRet = null;
-        	/**
-        	 * The modCount value that the iterator believes that the backing
-        	 * object should have. If this expectation is violated, the iterator
-        	 * has detected concurrent modification.
-        	 */
-        	private transient int expectedModCount = modCount;
-		public boolean hasNext() {
-		    return cursor.hasNext();
-		} 
-		public Object next() {
-		    try {
-			Object v = get(lastRet = (int[])cursor.next().clone());
-			checkForComodification();
-			return v;
-		    }
-		    catch(IndexOutOfBoundsException e) {
-			checkForComodification();
-			throw (AssertionError) new AssertionError("cursor should already have thrown a NoSuchElementException").initCause(e);
-        	    }
-		} 
-		public boolean hasPrevious() {
-		    return cursor.hasPrevious();
-		} 
-		public Object previous() {
-		    try {
-			Object v = get(lastRet = (int[])cursor.previous().clone());
-			checkForComodification();
-			return v;
-		    }
-		    catch(IndexOutOfBoundsException e) {
-			checkForComodification();
-			throw (AssertionError) new AssertionError("cursor should already have thrown a NoSuchElementException").initCause(e);
-        	    }
-		} 
-
-        	public void set(Object o) {
-        	    if (!(o instanceof Arithmetic))
-        	    	throw new IllegalArgumentException();
-        	    if (lastRet == null)
-            		throw new IllegalStateException();
-		    checkForComodification();
-        
-        	    try {
-            		AbstractPolynomial.this.set(lastRet, (Arithmetic)o);
-            		expectedModCount = modCount;
-        	    } catch(IndexOutOfBoundsException e) {
-			throw new ConcurrentModificationException();
-        	    }
-        	}
-
-		// UnsupportedOperationException, categorically
-
-		public int nextIndex() {
-		    throw new UnsupportedOperationException("a polynomial does not have a one-dimensional index");
-		}
-		public int previousIndex() {
-		    throw new UnsupportedOperationException("a polynomial does not have a one-dimensional index");
-		}
-
-		public void add(Object o) {
-		    throw new UnsupportedOperationException("adding a single element from a polynomial is impossible");
-		} 
-		public void remove() {
-		    throw new UnsupportedOperationException("removing a single element from a polynomial is impossible");
-		} 
-
-        	private final void checkForComodification() {
-        	    if (modCount != expectedModCount)
-			throw new ConcurrentModificationException();
-        	}
-	    };
-    } 
-	
-    /**
-     * Evaluate this multinomial at <var>a</var>.
+     * Evaluate this polynomial at <var>a</var>.
      * Using the "Einsetzungshomomorphismus".
-     * @return f(a) = f(X)|<sub>X=a</sub> = (f(X) mod (X-a))
-     * @todo copy horner scheme to examples
+     * @return f(a) = f(X)|<sub>X=a</sub> =
      * @todo we could just as well generalize the argument and return type of R
      */
     public Object/*>R<*/ apply(Object/*>R<*/ a) {
@@ -313,23 +92,7 @@ abstract class AbstractPolynomial/*<R implements Arithmetic, S implements Arithm
     } 
 
     public Function integrate() {
-	throw new ArithmeticException();
-    }
-
-    public Arithmetic zero() {
-	int[] dim = new int[((Integer)indexSet()).intValue()];
-	Arrays.fill(dim, 1);
- 	Object r = Array.newInstance(Arithmetic/*>R<*/.class, dim);
-	Utility.setPart(r, CONSTANT_TERM, get(CONSTANT_TERM).zero());
-	return Values.polynomial(r);
-    }
-
-    public Arithmetic one() {
-	int[] dim = new int[((Integer)indexSet()).intValue()];
-	Arrays.fill(dim, 1);
- 	Object r = Array.newInstance(Arithmetic/*>R<*/.class, dim);
-	Utility.setPart(r, CONSTANT_TERM, get(CONSTANT_TERM).one());
-	return Values.polynomial(r);
+	throw new ArithmeticException(this + " is only (undefinitely) integrable with respect to a single variable");
     }
 
     public Real norm() {
@@ -338,18 +101,23 @@ abstract class AbstractPolynomial/*<R implements Arithmetic, S implements Arithm
 
     //@todo we should also support adding other functions (like in AbstractFunctor)?
 
-    private Arithmetic operatorImpl(BinaryFunction op, Arithmetic bb) {
-	// only cast since Polynomial does not (yet?) have iterator(int[])
-	AbstractPolynomial b = (AbstractPolynomial)bb;
+    protected Arithmetic operatorImpl(final BinaryFunction op, Arithmetic bb) {
+	final Polynomial b = (Polynomial)bb;
 	if (!indexSet().equals(b.indexSet()))
-	    throw new IllegalArgumentException("a+b only defined for equal indexSet()");
-	final int[] d = Functionals.map(Operations.max, dimensions(), b.dimensions());
-	AbstractPolynomial/*>T<*/ ret = (AbstractPolynomial)newInstance(d);
+	    throw new IllegalArgumentException("a" + op + "b only defined for equal indexSet()");
+	//@internal assuming the dimensions will grow as required
+	Polynomial/*>T<*/ ret = (Polynomial) newInstance(indexSet());
 
 	// component-wise
 	ListIterator dst;
-	Setops.copy(dst = ret.iterator(d), Functionals.map(op, iterator(d), b.iterator(d)));
-	assert !dst.hasNext() : "equal dimensions for iterator view implies equal structure of iterators";
+	Setops.copy(dst = ret.iterator(), Functionals.map(new orbital.logic.functor.Function() {
+		public Object apply(Object o) {
+		    //@todo could rewrite pure functional even more (by using pair copy function etc)
+		    Arithmetic/*>S<*/ i = (Arithmetic)o;
+		    return op.apply(get(i), b.get(i));
+		}
+	    }, combinedIndices(this,b)));
+	assert !dst.hasNext() : "equal indexSet() for iterator view implies equal structure of iterators";
 	return ret;
     }
     
@@ -371,31 +139,31 @@ abstract class AbstractPolynomial/*<R implements Arithmetic, S implements Arithm
 	return multiply((Polynomial)b);
     }
 
-    //@todo optimizable by far
+    //@internal subclasses can optimize by far when using knowledge of the structure of S
     public Polynomial/*<R>*/ multiply(Polynomial/*<R>*/ bb) {
-	// only cast since Polynomial does not know an equivalent of dimensions()
-	AbstractPolynomial b = (AbstractPolynomial)bb;
+	Polynomial b = (Polynomial)bb;
 	if (degreeValue() < 0)
 	    return this;
 	else if (b.degreeValue() < 0)
 	    return b;
-	final int[] d = Functionals.map(Operations.plus, dimensions(), b.dimensions());
-	Polynomial/*<R>*/ ret = newInstance(d);
+	//@internal assuming the dimensions will grow as required
+	AbstractPolynomial/*<R>*/ ret = (AbstractPolynomial)newInstance(indexSet());
 	setAllZero(ret);
-	// ret = &sum;<sub>i&isin;dimensions()</sub> a<sub>i</sub>X<sup>i</sup> * b
-	// perform (slow) multiplications on monomial base
-	for (Combinatorical index = Combinatorical.getPermutations(dimensions()); index.hasNext(); ) {
-	    int[] i = index.next();
-	    // si = a<sub>i</sub>X<sup>i</sup> * b
-	    AbstractPolynomial/*<R>*/ si = (AbstractPolynomial)newInstance(Functionals.map(Operations.plus, i, b.dimensions()));
-	    setAllZero(si);
-	    final int[] sidim = si.dimensions();
-	    final int[] sidim_1 = new int[sidim.length];
-	    for (int k = 0; k < sidim_1.length; k++)
-		sidim_1[k] = sidim[k] - 1;
-	    ((AbstractTensor)si.tensorViewOfCoefficients()).setSubTensor(i, sidim_1,
-			 ((AbstractPolynomial)b.scale(get(i))).tensorViewOfCoefficients());
-	    ret = ret.add(si);
+	// ret = &sum;<sub>i&isin;indices(),j&isin;b.indices()</sub> a<sub>i</sub>b<sub>j</sub>X<sup>i * j</sup>
+	// perform (very slow) multiplications "jeder mit jedem"
+	for (Iterator index = Setops.cross(indices(), b.indices()); index.hasNext(); ) {
+	    Pair pair = (Pair) index.next();
+	    Arithmetic/*>S<*/ i = (Arithmetic/*>S<*/)pair.A;
+	    Arithmetic/*>S<*/ j = (Arithmetic/*>S<*/)pair.B;
+	    //@internal assuming (S,+) here
+	    Arithmetic/*>S<*/ Xij = i.add(j);
+	    // a<sub>i</sub>b<sub>j</sub>
+	    Arithmetic/*>R<*/ aibj = get(i).multiply(b.get(j));
+
+	    // + a<sub>i</sub>b<sub>j</sub>X<sup>i * j</sup>
+
+	    Arithmetic cXij = ret.get(Xij);
+	    ret.set(Xij, cXij != null ? cXij.add(aibj) : aibj);
 	}
 	return ret;
     }
@@ -404,9 +172,10 @@ abstract class AbstractPolynomial/*<R implements Arithmetic, S implements Arithm
      * Sets all coefficients of p to 0.
      */
     void setAllZero(Polynomial p) {
+	final Arithmetic/*>R<*/ ZERO = get((Arithmetic/*_>S<_*/)indices().next()).zero();
 	for (ListIterator i = p.iterator(); i.hasNext(); ) {
 	    i.next();
-	    i.set(get(CONSTANT_TERM).zero());
+	    i.set(ZERO);
 	}
     }
 
@@ -420,5 +189,12 @@ abstract class AbstractPolynomial/*<R implements Arithmetic, S implements Arithm
 
     public String toString() {
 	return ArithmeticFormat.getDefaultInstance().format(this);
+    }
+
+    /**
+     * return an iterator over all indices occurring in either polynomial.
+     */
+    private static final Iterator combinedIndices(Polynomial f, Polynomial g) {
+	return Setops.union(Setops.asList(f.indices()), Setops.asList(g.indices())).iterator();
     }
 }
