@@ -20,6 +20,11 @@ import orbital.math.functional.Operations;
 import orbital.math.Real;
 import orbital.math.Values;
 
+import java.util.LinkedList;
+
+import orbital.util.Pair;
+import orbital.util.KeyValuePair;
+
 /**
  * Iterative Expansion (IE).
  *
@@ -87,66 +92,85 @@ public class IterativeExpansion extends GeneralSearch implements EvaluativeAlgor
     public orbital.math.functional.Function spaceComplexity() {
 	throw new UnsupportedOperationException("@todo");
     }
+    /**
+     * O(b<sup>d</sup>) where b is the branching factor and d the solution depth.
+     */
     public orbital.math.functional.Function complexity() {
-	throw new UnsupportedOperationException("@todo");
+	return (orbital.math.functional.Function) Operations.power.apply(Values.symbol("b"),Functions.id);
     }
     /**
-     * Optimal if heuristic is admissible.
+     * Optimal if heuristic is admissible, and initial bound sufficiently large (usually &infin;).
      */
     public boolean isOptimal() {
     	return true;
     }
 
     protected Object/*>S<*/ solveImpl(GeneralSearchProblem/*<A,S>*/ problem) {
-	return solveByIterativeExpand(problem.getInitialState(), Values.POSITIVE_INFINITY);
+	return solveByIterativeExpand(problem.getInitialState(), Values.POSITIVE_INFINITY).A;
     }
 
-    //@todo optimizable by far, also modularize to an OptionIterator?
-    private final Object/*>S<*/ solveByIterativeExpand(Object/*>S<*/ node, Real bound) {
+    /**
+     * @return a Pair of solution state and new cost of node.
+     * @internal we do not need to set the f-cost, but only tell our caller the new f-cost for updating successors.
+     * @todo optimizable by far, also modularize to an OptionIterator?
+     */
+    private final Pair/*<S,Real>*/ solveByIterativeExpand(Object/*>S<*/ node, Real bound) {
 	if (!(bound.compareTo(Values.ZERO) >= 0 && !bound.isNaN()))
 	    throw new AssertionError("bound " + bound + " is a nonnegative value");
 	Real cost = (Real) getEvaluation().apply(node);
-	System.err.println(node + ",\t" + cost + "/" + bound);
+	//System.err.println(node + ",\t" + cost + "/" + bound);
 	if (cost.compareTo(bound) > 0)
-	    {System.err.println("cut");
-	    return null;}
+	    {//System.err.println("cut");
+	    return new Pair(null, cost);}
 	else if (getProblem().isSolution(node))
-	    return node;
-	List successors = Setops.asList(GeneralSearch.expand(getProblem(), node));
+	    return new Pair(node, cost);
+	//@internal optimizable by using a (min) heap instead of a list that is kept in sorted order
+	// here, we currently use a (sorted) list of KeyValuePairs with the key that is used for ordering being the f-cost
+	List/*_<KeyValuePair>_*/ successors = new LinkedList();
+	{
+	    Function f = getEvaluation();
+	    for (Iterator i = GeneralSearch.expand(getProblem(), node); i.hasNext(); ) {
+		Object o = i.next();
+		successors.add(new KeyValuePair(f.apply(o), o));
+	    }
+	}
 	if (successors.isEmpty())
-	    return null;
+	    return new Pair(null, cost);
 	// sort successors in order to have fast access to min and second-best min
-	Collections.sort(successors, new EvaluationComparator(getEvaluation()));
-	if (!orbital.util.Utility.sorted(successors, new EvaluationComparator(getEvaluation())))
-	    throw new AssertionError();
+	Collections.sort(successors);
 	while (cost.compareTo(bound) <= 0) {
-	    final Object/*>S<*/ best = successors.get(0);
+	    final KeyValuePair bestPair = (KeyValuePair)successors.get(0);
+	    final Object/*>S<*/ best = bestPair.getValue();
 	    if (Setops.some(successors, new orbital.logic.functor.Predicate() {
 		    public boolean apply(Object o) {
-			return ((Comparable)getEvaluation().apply(o)).compareTo(getEvaluation().apply(best)) < 0;
+			return ((Comparable)((KeyValuePair)o).getKey()).compareTo(bestPair.getKey()) < 0;
 		    }
 		}))
 		throw new AssertionError("best has lowest f-cost");
-	    final Real newbound = (Real) Operations.min.apply(bound, (Real)getEvaluation().apply(successors.get(1)));
-	    System.err.println(node + ",\t" + cost + "/" + bound + "\t expanding to " + best + ",\t" + getEvaluation().apply(best) + "/" + newbound + "\n\t\talternative " + successors.get(1) + ", " + getEvaluation().apply(successors.get(1)));
-	    final Object/*>S<*/ solution = solveByIterativeExpand(best, newbound);
+	    final Real newbound = (Real) Operations.min.apply(bound, (Real)((KeyValuePair)successors.get(1)).getKey());
+	    //System.err.println(node + ",\t" + cost + "/" + bound + "\t expanding to " + best + ",\t" + bestPair.getKey() + "/" + newbound + "\n\t\talternative " + ((KeyValuePair)successors.get(1)).getValue() + ", " + ((KeyValuePair)successors.get(1)).getKey());
+	    final Pair solutionAndCostUpdate = solveByIterativeExpand(best, newbound);
+	    final Object/*>S<*/ solution = solutionAndCostUpdate.A;
 	    if (solution != null)
-		return solution;
-	    //@todo optimizable by far, the only node's f-cost that might have changed is best (successors[0])
-	    Collections.sort(successors, new EvaluationComparator(getEvaluation()));
-	    if (!orbital.util.Utility.sorted(successors, new EvaluationComparator(getEvaluation())))
-		throw new AssertionError();
-	    cost = (Real) getEvaluation().apply(successors.get(0));
-	    System.err.println(node + ",\t" + cost + "/" + bound + "\tupdate cost to " + cost);
+		return new Pair(solution, cost);
+	    // circumscription of getEvaluation().set(best, its new cost (from recursive call));
+	    //System.err.println(best + ",\t" + solutionAndCostUpdate.B + "/" + newbound + "\treally updated cost to " + solutionAndCostUpdate.B);
+	    successors.remove(0);
+	    successors.add(new KeyValuePair(solutionAndCostUpdate.B, best));
+	    //@todo optimizable by far, the only node's f-cost that might have changed is best (successors[0]). Insertion would suffice.
+	    Collections.sort(successors);
+	    //System.err.print(node + ",\t" + cost + "/" + bound);
+	    cost = (Real) ((KeyValuePair)successors.get(0)).getKey();
+	    //System.err.println("\tupdated cost to " + cost + " (due to " + ((KeyValuePair)successors.get(0)).getValue() + ")");
 	}
 
 	// circumscription of getEvaluation().set(node, cost);
 	//@internal we do not need to set the f-cost, but only tell our caller the new f-cost for updating successors
 	// @fixme change the f-cost or the heuristics, not the accumulated cost!
-	getProblem().getAccumulatedCostFunction().set(node, cost.subtract((Real)getHeuristic().apply(node)));
-	if (!cost.equals(getEvaluation().apply(node)))
-	    throw new AssertionError("setting f-cost did not work as expected");
-	return null;
+	//getProblem().getAccumulatedCostFunction().set(node, cost.subtract((Real)getHeuristic().apply(node)));
+	//if (!cost.equals(getEvaluation().apply(node)))
+	//    throw new AssertionError("setting f-cost did not work as expected");
+	return new Pair(null, cost);
     }
 
     protected Iterator createTraversal(GeneralSearchProblem problem) {
