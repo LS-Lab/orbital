@@ -393,7 +393,7 @@ public class Field implements Serializable, Cloneable {
 	    return false;
 	//@xxx the arguments are not entirely correct: now, this still is the wrong nextField  for Option, but sourceFigure still is the right source.
 	changeSupport.movePerformed(new FieldChangeEvent(this, FieldChangeEvent.MOVE,
-							 new Option(this, destination, sourceFigure, move)));
+							 new Option(null, destination, sourceFigure, move)));
 	swap(source, destination);
 	return true;
     } 
