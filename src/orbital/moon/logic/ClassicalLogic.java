@@ -50,6 +50,7 @@ import java.io.InputStreamReader;
 import orbital.util.Utility;
 import orbital.math.MathUtilities;
 import orbital.util.InnerCheckedException;
+import orbital.util.IncomparableException;
 import java.beans.IntrospectionException;
 import java.io.*;
 
@@ -64,8 +65,6 @@ import java.text.SimpleDateFormat;
 
 import java.util.logging.Logger;
 import java.util.logging.Level;
-import orbital.logic.imp.Signature;
-import orbital.logic.imp.Expression;
 
 /**
  * Implementation of modern but classical predicate logic (first-order logic).
@@ -833,6 +832,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
     public boolean infer(String expression, String exprDerived) throws ParseException {
 	Formula B[] = (Formula[]) Arrays.asList(createAllExpressions(expression)).toArray(new Formula[0]);
 	Formula D = (Formula) createExpression(exprDerived);
+	logger.log(Level.FINE, "{0} has type {1} with sigma={2}", new Object[] {D, D.getType(), D.getSignature()});
 	return inference().infer(B, D);
     } 
 	
@@ -905,6 +905,8 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    {LogicFunctions.exists,       // "?"
 	     new NotationSpecification(950, "fxx", Notation.PREFIX)},
 	    {LogicFunctions.lambda,       // "\\"
+	     new NotationSpecification(1100, "fxx", Notation.PREFIX)},
+	    {LogicFunctions.pi,           // "\\\\"
 	     new NotationSpecification(1100, "fxx", Notation.PREFIX)}
 	}, false, true, true);
     private static final Signature _coreSignature = _coreInterpretation.getSignature();
@@ -1032,27 +1034,58 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    }
 	    public String toString() { return "\\"; }
 	};
+    	public static final BinaryFunction pi = new PiPlaceholder();
+	private static final class PiPlaceholder implements BinaryFunction {
+	    private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.TYPE, Types.TYPE}), Types.map(Types.TYPE, Types.TYPE));
+	    public Object apply(Object x, Object t) {
+		throw new AssertionError("this method never gets called since pi is an abstract type construction");
+	    }
+	    public String toString() { return "\\\\"; }
+	};
     }
 
     //@xxx get rid of these shared static variables
     // perhaps, LAMBDA is that important, that we should even publicize it to orbital.logic.imp.*? Or let them query it from the coreSignature() by "\\"?
     static final Symbol LAMBDA;
+    static final Symbol PI;
     static {
 	//@internal we need some valid non-null arguments. We use one that can be converted to any type lambda might need
 	Expression BOTTOM = Utilities.logic.createAtomic(new SymbolBase("BOTTOM", Types.ABSURD));
 	LAMBDA = _coreSignature.get("\\", new Expression[] {BOTTOM,BOTTOM});
 	assert LAMBDA != null : "lambda operator found";
+	PI = _coreSignature.get("\\\\", new Expression[] {BOTTOM,BOTTOM}); //@todo
+    }
+    public Expression compose(Expression op, Expression arguments[]) throws ParseException {
+	// handle special cases of term construction, first and before type checking occurs since the type &Pi;-abstractions need more flexibility
+	if (op.getType() instanceof PiAbstractionType) {
+	    PiAbstractionType piabst = (PiAbstractionType) op.getType();
+	    //@todo to be honest, we need to unify? For example, if &forall; : (\\s:*.(s&rarr;o)&rarr;o) and if f:i&rarr;o then &forall;(f) : o.
+	    //@todo would need to exchange op by a formula that only differs in type?
+	    logger.log(Level.FINEST, "compositor {0} : {1} applied to the {2} arguments {3} : {4}. Result has type {5}", new Object[] {op, op.getType(), new java.lang.Integer(arguments.length), MathUtilities.format(arguments), Types.typeOf(arguments), piabst.apply(Types.typeOf(arguments))});
+	    return super.compose(super.compose(new PiApplicationExpression(piabst, piabst.apply(Types.typeOf(arguments))),
+					       new Expression[] {op}
+					       ),
+				 arguments);
+	}
+	return super.compose(op, arguments);
     }
     Expression composeImpl(Expression op, Expression arguments[]) throws ParseException {
 	// handle special cases of term construction, first
 	if ((op instanceof ModernFormula.FixedAtomicSymbol)
 	    && LAMBDA.equals(((ModernFormula.FixedAtomicSymbol)op).getSymbol())) {
-	    //@todo if we stick to compose(Expression,Expression[]) then perhaps we could provide &lambda;-abstractions by introducing a core symbol LAMBDA that has as fixed interpretation a binary function that ... But of &lambda;(x.t), x will never get interpreted, so it is a bit different than composeFixed(lambda,{x,t}) would suggest. &lambda;-abstraction are not truth-functional!
+	    //@todo we provide &lambda;-abstractions by introducing a core symbol LAMBDA that has as fixed interpretation a binary function that ... But of &lambda;(x.t), x will never get interpreted, so it is a bit different than composeFixed(lambda,{x,t}) would suggest. &lambda;-abstraction are not truth-functional!
 	    assert arguments.length == 2;
 	    assert arguments[0] instanceof ModernFormula.AtomicSymbol : "Symbols when converted to formulas become AtomicSymbols";
 	    Symbol x = (Symbol) ((Formula)arguments[0]).getSignature().iterator().next();
 	    assert x.isVariable() : "we only form lambda abstractions with respect to variables";
 	    return createLambdaProp(x, (Formula) arguments[1]);
+	} else if ((op instanceof ModernFormula.FixedAtomicSymbol)
+	    && PI.equals(((ModernFormula.FixedAtomicSymbol)op).getSymbol())) {
+	    assert arguments.length == 2;
+	    assert arguments[0] instanceof ModernFormula.AtomicSymbol : "Symbols when converted to formulas become AtomicSymbols";
+	    Symbol x = (Symbol) ((Formula)arguments[0]).getSignature().iterator().next();
+	    assert x.isVariable() : "we only form lambda abstractions with respect to variables";
+	    return new PiAbstractionExpression(x, (Formula) arguments[1]);
 	} else
 	    return super.composeImpl(op, arguments);
     }
@@ -1110,7 +1143,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
 	    Object[] a = (/*@xxx which type? Formula*/Object[]) g;
 	    if (a.length != 2)
-		throw new IllegalArgumentException(Formula.class + "[2] expected");
+		throw new IllegalArgumentException(Object.class + "[2] expected");
 	    setUnderlyingLogicLikeIn((Formula)a[1]);
 	    this.x = (Symbol)a[0];
 	    this.term = (Formula)a[1];
@@ -1122,6 +1155,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
 	}
 	    
+	// identical to @see orbital.logic.functor.Function.Composite.Abstract
 	/**
 	 * Checks for equality.
 	 * Two CompositeFunctors are equal iff their classes,
@@ -1168,10 +1202,9 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    return new Function() {
 		    public Object apply(Object a) {
 			// interpret term in the modification I<x/a> of I.
-			Map modif = new HashMap();
-			modif.put(x, a);
 			Interpretation modification =
-			    new InterpretationBase(new SignatureBase(Collections.singleton(x)), modif);
+			    new InterpretationBase(new SignatureBase(Collections.singleton(x)),
+						   Collections.singletonMap(x, a));
 			Interpretation modifiedI =
 			    new QuickUnitedInterpretation(modification, I);
 			logger.log(Level.FINER, "{0}\nper modification <{1}/{2}> in {3}", new Object[] {modifiedI, x, a, term});
@@ -1185,6 +1218,308 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	}
     }
 
+    /**
+     * (&Pi;x.term):*&rarr;*
+     * @author Andr&eacute; Platzer
+     * @version 1.1, 2002-11-10
+     * @xxx in fact this is not truely a type :* but a constructor? :*->*
+     */
+    private static class PiAbstractionExpression extends ModernFormula implements Function.Composite {
+	private Symbol x;
+	private Formula term;
+	private PiAbstractionExpression() {
+	    super(null);
+	}
+	public PiAbstractionExpression(Symbol x, Formula term) {
+	    super(null);//@xxx
+	    this.x = x;
+	    this.term = term;
+	    if (term.getType() != Types.TYPE)
+		throw new IllegalArgumentException("would not expect type " + term.getType() + " for type expressions @xxx except for other kinds like *->*");
+	}
+
+	// identical to @see orbital.logic.functor.Functionals.BinaryCompositeFunction
+	public Functor getCompositor() {
+	    //@internal this trick will allow formulas to unify. null does not unify anything.
+	    return LogicFunctions.pi;
+	} 
+	public Object getComponent() {
+	    return new Object[] {
+		x, term
+	    };
+	} 
+
+	public void setCompositor(Functor f) throws ClassCastException {
+	    if (f != LogicFunctions.pi)
+		throw new IllegalArgumentException("special compositor of &Pi;-abstractions expected");
+	}
+	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
+	    Object[] a = (Object[]) g;
+	    if (a.length != 2)
+		throw new IllegalArgumentException(Object.class + "[2] expected");
+	    this.x = (Symbol)a[0];
+	    this.term = (Formula)a[1];
+	}
+	public Notation getNotation() {
+	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
+	}
+	public void setNotation(Notation notation) {
+	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
+	}
+	    
+	// identical to @see orbital.logic.functor.Function.Composite.Abstract
+	/**
+	 * Checks for equality.
+	 * Two CompositeFunctors are equal iff their classes,
+	 * their compositors and their components are equal.
+	 */
+	public boolean equals(Object o) {
+	    if (o == null || getClass() != o.getClass())
+		return false;
+	    // note that it does not matter to which .Composite we cast since we have already checked for class equality
+	    Composite b = (Composite) o;
+	    return Utility.equals(getCompositor(), b.getCompositor())
+		&& Utility.equalsAll(getComponent(), b.getComponent());
+	}
+
+	public int hashCode() {
+	    return Utility.hashCode(getCompositor()) ^ Utility.hashCodeAll(getComponent());
+	}
+	
+	// implementation of orbital.logic.imp.Expression interface
+	public Type getType() {
+	    //@xxx wrong type? And equals *&rarr;*?
+	    return Types.map(x.getType(), term.getType());
+	}
+        public Signature getSignature() {
+	    Signature sigma = new SignatureBase(term.getSignature());
+	    sigma.add((Symbol)x);
+	    return sigma;
+        }
+	public Set getFreeVariables() {
+	    return Setops.difference(term.getFreeVariables(), Collections.singleton(x));
+	}
+
+	public Set getBoundVariables() {
+	    return Setops.union(term.getBoundVariables(), Collections.singleton(x));
+	}
+
+	public Set getVariables() {
+	    return Setops.union(term.getVariables(), Collections.singleton(x));
+	}
+
+	// return I(&lambda;x.t)
+	//@see LambdaAbstractionFormula#apply(Object)
+	public Object apply(Object i) {
+	    final Interpretation I = (Interpretation)i;
+	    // return I(&lambda;x.t)
+	    return new PiAbstractionType(x, term, I);
+	}
+
+	public String toString() {
+	    //@todo use notation like all others do.
+	    return "(\\\\" + x + "." + term + ")";
+	}
+    }
+
+    /**
+     * (&Pi;x.term):*&rarr;*
+     * @author Andr&eacute; Platzer
+     * @version 1.1, 2002-11-10
+     * @xxx in fact this is not truely a type :* but a constructor? :*->*
+     */
+    static class PiAbstractionType implements Type, Functor.Composite {
+	static final Specification callTypeDeclaration = new Specification(new Class[] {Type.class}, Type.class);
+	
+	private Symbol x;
+	private Formula term;
+	private Interpretation I;
+	private PiAbstractionType() {
+	}
+	public PiAbstractionType(Symbol x, Formula term, Interpretation I) {
+	    this.x = x;
+	    this.term = term;
+	    this.I = I;
+	    if (term.getType() != Types.TYPE)
+		throw new IllegalArgumentException("would not expect type " + term.getType() + " for type expressions @xxx except for other kinds like *->*");
+	}
+
+	// identical to @see orbital.logic.functor.Functionals.BinaryCompositeFunction
+	public Functor getCompositor() {
+	    //@internal this trick will allow &Pi;-types to unify. null does not unify anything.
+	    return LogicFunctions.pi;
+	} 
+	public Object getComponent() {
+	    return new Object[] {
+		x, term
+	    };
+	} 
+
+	public void setCompositor(Functor f) throws ClassCastException {
+	    if (f != LogicFunctions.pi)
+		throw new IllegalArgumentException("special compositor of &Pi;-abstractions expected");
+	}
+	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
+	    Object[] a = (Object[]) g;
+	    if (a.length != 2)
+		throw new IllegalArgumentException(Object.class + "[2] expected");
+	    this.x = (Symbol)a[0];
+	    this.term = (Formula)a[1];
+	}
+	public Notation getNotation() {
+	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
+	}
+	public void setNotation(Notation notation) {
+	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
+	}
+	    
+	// identical to @see orbital.logic.functor.Function.Composite.Abstract
+	/**
+	 * Checks for equality.
+	 * Two CompositeFunctors are equal iff their classes,
+	 * their compositors and their components are equal.
+	 */
+	public boolean equals(Object o) {
+	    if (o == null || getClass() != o.getClass())
+		return false;
+	    // note that it does not matter to which .Composite we cast since we have already checked for class equality
+	    Functor.Composite b = (Functor.Composite) o;
+	    return Utility.equals(getCompositor(), b.getCompositor())
+		&& Utility.equalsAll(getComponent(), b.getComponent());
+	}
+
+	public int hashCode() {
+	    return Utility.hashCode(getCompositor()) ^ Utility.hashCodeAll(getComponent());
+	}
+	
+
+	public boolean apply(Object o) {
+	    throw new UnsupportedOperationException();
+	}
+
+	public Type codomain() {
+	    //@xxx sure?
+	    return x.getType();
+	}
+	public Type domain() {
+	    return term.getType();
+	}
+	public int compareTo(Object tau) {
+	    //@xxx
+	    if (equals(tau))
+		return 0;
+	    else if (tau == Types.UNIVERSAL)
+		return -1;
+	    else if (tau == Types.ABSURD)
+		return 1;
+	    else
+		throw new IncomparableException(this + " compared to " + tau);
+	}
+	public boolean subtypeOf(Type tau) {
+	    //@xxx
+	    if (equals(tau))
+		return true;
+	    else if (tau == Types.UNIVERSAL)
+		return true;
+	    else if (tau == Types.ABSURD)
+		return false;
+	    else
+		//@xxx throw new UnsupportedOperationException(this + " =< " + tau);
+		return false;
+	}
+
+	// return (&Pi;x.t)(a) = t[x&rarr;a]
+	//@see LambdaAbstractionFormula#apply(Object)
+	public Type apply(Type a) {
+	    // interpret term in the modification I<x/a> of I.
+	    Interpretation modification =
+		new InterpretationBase(new SignatureBase(Collections.singleton(x)),
+				       Collections.singletonMap(x, a));
+	    Interpretation modifiedI =
+		new QuickUnitedInterpretation(modification, I);
+	    logger.log(Level.FINER, "{0}\nper modification <{1}/{2}> in {3}", new Object[] {modifiedI, x, a, term});
+	    return (Type)/*LogicParser.asType((Expression)*/( term.apply(modifiedI));
+	}
+
+	public String toString() {
+	    //@todo use notation like all others do.
+	    return "(\\\\" + x + "." + term + ")";
+	}
+    }
+
+    /**
+     * &Pi;-application is in fact only a type conversion expression.
+     * For a &Pi;-abstraction &Pi;x:*.t, when given a type &alpha;:<span class="type">*</span>
+     * this conversion has the type
+     * (&Pi;x:*.t) &rarr; (&Pi;x:*.t)(&alpha;) = t[x&#8614;&alpha;]
+     * @author Andr&eacute; Platzer
+     * @version 1.1, 2002-11-19
+     * @internal currently this is only type conversion and has nothing to do with the particular task of &Pi;-application.
+     */
+    private static class PiApplicationExpression extends ModernFormula {
+	private PiAbstractionType abstraction;
+	/**
+	 * applied = (&Pi;x:*.t)(&alpha;) = t[x&#8614;&alpha;]
+	 */
+	private Type applied;
+	private PiApplicationExpression() {
+	    super(null);
+	}
+	public PiApplicationExpression(PiAbstractionType abstraction, Type applied) {
+	    super(null);//@xxx
+	    this.abstraction = abstraction;
+	    this.applied = applied;
+	}
+
+	// identical to @see orbital.logic.functor.Function.Composite.Abstract
+	/**
+	 * Checks for equality.
+	 * Two CompositeFunctors are equal iff their classes,
+	 * their compositors and their components are equal.
+	 */
+	public boolean equals(Object o) {
+	    if (o == null || getClass() != o.getClass())
+		return false;
+	    PiApplicationExpression b = (PiApplicationExpression)o;
+	    return Utility.equals(applied, b.applied)
+		&& Utility.equals(abstraction, b.abstraction);
+	}
+
+	public int hashCode() {
+	    return Utility.hashCode(applied) ^ Utility.hashCode(abstraction);
+	}
+	
+	// implementation of orbital.logic.imp.Expression interface
+	public Type getType() {
+	    return Types.map(abstraction, applied);
+	}
+        public Signature getSignature() {
+	    return SignatureBase.EMPTY;
+        }
+	public Set getFreeVariables() {
+	    return Collections.EMPTY_SET;
+	}
+
+	public Set getBoundVariables() {
+	    return Collections.EMPTY_SET;
+	}
+
+	public Set getVariables() {
+	    return Collections.EMPTY_SET;
+	}
+
+	public Object apply(Object i) {
+	    final Interpretation I = (Interpretation)i;
+	    return Functions.id;
+	}
+
+	public String toString() {
+	    if (Logger.global.isLoggable(Level.FINEST))
+		return "<to " + applied + ">";
+	    else
+		return "";
+	}
+    }
 
     // Logic implementation
 

@@ -36,11 +36,14 @@ import orbital.math.MathUtilities;
 
 import java.io.*;
 
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
 /**
+ * It parses a concrete syntax (usually respecting the {@link Symbol#getNotation() notation of symbols}).
  * This class implements a parser for logic and mathematical formulas that can be used
  * for every logic after being bound to it. This parser calls {@link ExpressionBuilder}
  * on every connection point (which specify the parser actions).
- * It parses a concrete syntax (usually respecting the {@link Symbol#getNotation() notation of symbols}).
  * Most ExpressionBuilders will simply construct a tree of Expressions (usually Formulas)
  * whose implementation depends on the logic.
  * <p>
@@ -64,15 +67,17 @@ import java.io.*;
  * @see ExpressionSyntax#createExpression(String)
  * @see #parseFormula()
  * @see #parseFormulas()
- * @see #setSyntax(ExpressionSyntax)
  * @todo should use precedence and associativity information from
- * orbital.logic.imp.Symbol instead of hard wiring parser. Precedence Grammar instead of LL?
- * @todo join symbiose of MathParser and LogicParser by letting expression() accept term(), directly as well? Instead of just providing two distinct start productions.
+ * orbital.logic.imp.Symbol instead of hard wiring parser.
  * @xxx "disambiguate" language and disallow acception of $p(x) as $p (x) and °p(x) as °p (x) and alike
- * @todo get rid of all this exception wrapping and unwrapping by wrapping the final orbital.logic.imp.ParseException inside an unchecked exception once, and unwrap it once again? Necessary? There's not that much wrapping.
+ * @todo get rid of all this (sometimes) triple exception wrapping and unwrapping by wrapping the final orbital.logic.imp.ParseException inside an unchecked exception once, and unwrap it once
  * @internal note that all this nested lookahead with a lot of backtracking kills performance.
+ * @todo join symbiose of MathParser and LogicParser by letting expression() accept term(), directly as well? Instead of just providing two distinct start productions.
+ * @todo get rid of all this exception wrapping and unwrapping by wrapping the final orbital.logic.imp.ParseException inside an unchecked exception once, and unwrap it once again? Necessary? There's not that much wrapping.
  */
 public class LogicParser {
+    private static final Logger logger = Logger.getLogger(LogicParser.class.getName());
+
     /**
      * Delegate to the current syntax implementation that is used for building expressions.
      */
@@ -128,6 +133,24 @@ public class LogicParser {
 		    ? ((MathExpressionSyntax)syntax).coreInterpretation().get(symbol)
 		    : null
 		    );
+    }
+
+    /**
+     * Converts an expression to the type it represents.
+     * <table>
+     * <tr>
+     * <td>Expression<sub class="type">*</sub>&rarr;Type</td>
+     * </tr>
+     * <tr>
+     * <td>f &#8614; (Type) I<sub>0</sub>(f)</td>
+     * </tr>
+     * </table>
+     */
+    protected Type asType(Expression f) {
+	//@xxx
+	if (false && f.getType() != Types.TYPE)
+	    throw new IllegalArgumentException("would not expect type " + f + " for type expressions @xxx except for other kinds like *->*");
+	return (Type) ((Formula) f).apply(InterpretationBase.EMPTY(syntax.coreSignature()));
     }
 
     /**
@@ -226,12 +249,13 @@ public class LogicParser {
     
     /**
      * n-ary predicates or functions.
-     * @param result specifies the result type. Object.class for functions, and Boolean.class for predicates.
+     * @param reqResult specifies the required result type, as derived from the context.
+     *  Object.class for functions, and Boolean.class for predicates.
      * @see ExpressionBuilder#compose(Expression,Expression[])
      */
-    protected Expression apply(Token optok, Expression[] a, Type result) throws ParseException {
+    protected Expression apply(Token optok, Expression[] a, Type reqResult) throws ParseException {
     	String op = optok.image;
-	Symbol s = scope.getSymbol(op, Types.map(Types.typeOf(a), result), true);
+	Symbol s = scope.getSymbol(op, Types.map(Types.typeOf(a), reqResult), true);
 	return composeWrapper(optok, s, a);
     }
 
@@ -265,6 +289,7 @@ public class LogicParser {
     private Expression composeWrapper(Token optok, String op, Expression[] arg) throws ParseException {
 	Symbol s = scope.getSymbol(op, Types.map(Types.typeOf(arg), Types.UNIVERSAL), false);
 	if (s == null) {
+	    //@todo remove since this does not occur because we don't use tryGetScope any more.
 	    //@xxx an error is to come up, so already print some information about it
 	    System.err.println(">> in signature ");
 	    for (Iterator i = syntax.coreSignature().iterator(); i.hasNext(); ) {
@@ -345,8 +370,55 @@ public class LogicParser {
 	 * @param variable whether the symbol is expected to be a variable.
 	 * @param autoDeclare whether to declare a new symbol if it is unknown,
 	 *  instead of returning <code>null</code>.
+	 * @return the symbol if exists.
+	 * @throws IllegalArgumentException if no such symbol exists.
 	 */
 	public Symbol getSymbol(String signifier, Type maxType, boolean variable, boolean autoDeclare) {
+	    Symbol s = tryGetSymbol(signifier, maxType, variable, autoDeclare);
+	    if (s == null)
+		throw new IllegalArgumentException("illegal symbol: " + signifier);
+	    else
+		return s;
+	}
+	public Symbol getSymbol(String signifier, Type maxType, boolean autoDeclare) {
+	    return getSymbol(signifier, maxType, false, autoDeclare);
+	}
+
+	/**
+	 * Get a symbol of the specified signifier and expected type.
+	 * Will lookup current scope and outer scope.
+	 * @param maxType the maximum type expected as derived from the context.
+	 * @param variable whether the symbol is expected to be a variable.
+	 * @param autoDeclare whether to declare a new symbol if it is unknown,
+	 *  instead of returning <code>null</code>.
+	 * @return the symbol or <code>null</code>.
+	 */
+	private Symbol tryGetSymbol(String signifier, Type maxType, boolean variable, boolean autoDeclare) {
+	    if (true && signifier.equals("x")) autoDeclare = false;
+	    Symbol s = tryGetSymbol(signifier, maxType);
+	    if (s != null)
+		return s;
+	    if (outer != null) {
+		// declared in the parent's (outer) scope, but don't autoDeclare there
+		s = outer.tryGetSymbol(signifier, maxType, variable, false);
+		if (s != null)
+		    return s;
+	    }
+
+	    //@internal first look if there is a symbol of parametric type matching ours
+	    //@fixme note that this does not only find those of parametric types but may hit the first with non-parametric type
+	    s = tryGetSymbol(signifier, Types.UNIVERSAL);
+	    if (s != null && s.getType() instanceof ClassicalLogic.PiAbstractionType)
+		return s;
+
+	    // treated "the default way"
+	    return autoDeclare
+		? variable
+		  ? new SymbolBase(signifier, maxType, null, variable)
+		  : getDefaultSymbol(signifier, maxType)
+		: null;
+	}
+	private Symbol tryGetSymbol(String signifier, Type maxType) {
 	    Symbol s = symbolMap.get(signifier, maxType);
 	    if (s != null) {
 		// we already know it due to a quantifier within whose scope we are
@@ -357,20 +429,14 @@ public class LogicParser {
 		else
 		    return s;
 	    }
-	    if (outer != null)
-		// declared in the parent's (outer) scope
-		return outer.getSymbol(signifier, maxType, autoDeclare);
-	    // treated "the default way"
-	    return autoDeclare
-		? variable
-		  ? new SymbolBase(signifier, maxType, null, variable)
-		  : getDefaultSymbol(signifier, maxType)
-		: null;
+	    return s;
 	}
-	public Symbol getSymbol(String signifier, Type maxType, boolean autoDeclare) {
-	    return getSymbol(signifier, maxType, false, autoDeclare);
+
+	public String toString() {
+	    return "{<" + outer + " scope " + symbolMap + ">}";
 	}
     }
+
     //@todo remove this garbage, because we should always let the user decide what's constant and what's variable, (or at least let him choose the capital/lower convention)
     // either the user can call createExpression(String expr, Signature allowed),
     // or he should explicitly mention any free variables, and all other symbols are either explicitly quantified, or treated as constant
@@ -509,6 +575,7 @@ TOKEN :
 | <GREATER_EQUAL: "\u2265" | ">=">
 
 | <LAMBDA: "\u03bb" | "\\">
+| <PI: "\u03a0" | "\\\\">
 }
 
 /**
@@ -593,7 +660,13 @@ Expression FreeDeclarationExpression() :
     scope = new Scope(scope);
 }
 {
-    (tok = <DECLARE_FREE> x = VariableDeclaration() {scope.declare(x);})*
+    (tok = <DECLARE_FREE> x = VariableDeclaration()
+	{
+	    scope.declare(x);
+	    logger.log(Level.FINER, "declared {0}:{1}", new Object[] {x, x.getType()});
+	}
+     )*
+
     a = QuantifiedExpression()
 {
     scope = scope.leave();
@@ -730,7 +803,7 @@ Expression CompoundFormula() :
     p = LambdaAbstractionPredicate() arg = Arguments()
         {
 	    if (arg.length != 1)
-	        throw newParseException("only unary application of lambda abstractions is supported. Use currying", null);
+ 	        throw newParseException("only unary application of lambda abstractions is supported. Use currying instead.", null);
 	    //@todo which exact optok token?
 	    return composeWrapper(null, p, arg);
 	}
@@ -963,7 +1036,7 @@ Symbol NumberLiteralValue() :
  * Parses a constant or a variable atomic term,
  * depending upon known symbols in context.
  * @see #Variable()
- * @todo reject boolean types, since this production only gets called from term(), not expression().?
+ * @internal we reject boolean types, since this production only gets called from term(), not expression().?
  */
 Symbol ConstantOrVariable() :
 {String signifier;Token tok;String s = "";}
@@ -973,7 +1046,8 @@ Symbol ConstantOrVariable() :
 	    ( "." tok = <IDENTIFIER>  {signifier += "." + tok.image;} )
 	    )*
     */
-    {return scope.getSymbol(signifier, INDIVIDUAL, true);}
+    //@xxx which exact type? univ\truth?
+    {return scope.getSymbol(signifier, Types.UNIVERSAL, true);}
 }
 
 
@@ -1013,7 +1087,7 @@ Type typeUse() :
 {
     a = type()
     {
-	return (Type) ((Formula) a).apply(new InterpretationBase(syntax.coreSignature(), java.util.Collections.EMPTY_MAP));
+	return asType(a);
     }
 }
 
@@ -1035,6 +1109,21 @@ Expression MapType() :
 	{return a;}
 }
 
+Expression PiAbstractionType() :
+{
+    Token tok, xtok; Symbol x; Expression t;
+    scope = new Scope(scope);
+}
+{
+    "(" tok = <PI> xtok = <IDENTIFIER> "."
+	{scope.declare(x = scope.getSymbol(xtok.image, Types.TYPE, true, true));}
+    t = type() ")"
+{
+    scope = scope.leave();
+    return composeWrapper(tok, ClassicalLogic.PI, new Expression[] {syntax.createAtomic(x), t});
+}
+}
+
 /**
  * A primary type.
  */
@@ -1045,6 +1134,11 @@ Expression PrimaryType() :
     tok = <IDENTIFIER>
 	{return syntax.createAtomic(scope.getSymbol(tok.image, Types.TYPE, true));}
     |   "[" a = CompoundType() "]"
+	{return a;}
+    | LOOKAHEAD(2)
+	a = PiAbstractionType()
+	{return a;}
+    |   "(" a = type() ")"
 	{return a;}
 }
 
