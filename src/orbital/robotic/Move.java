@@ -102,9 +102,7 @@ public class Move implements Serializable {
     }
 	
     public boolean equals(Object o) {
-	if (!(o instanceof Move))
-	    return false;
-	return movement.equals(((Move) o).movement);
+	return o instanceof Move && movement.equals(((Move) o).movement);
     }
 	
     public int hashCode() {
