@@ -165,8 +165,10 @@ public class MathExpressionSyntax implements ExpressionSyntax {
 		return new MathExpression(valueFactory.symbol(symbol.getSignifier()), symbol.getType());
 	    else if (cod.subtypeOf(typeSystem.objectType(Arithmetic.class)))
 		return new MathExpression(valueFactory.valueOf(symbol.getSignifier()), symbol.getType());
-	    else
-		throw new IllegalArgumentException("strange (unknown) type " + symbol.getType() + " of symbol " + symbol);
+	    else {
+		TypeSystem typeSystem = symbol.getType().typeSystem();
+		throw new TypeException("strange (unknown) type " + symbol.getType() + " of symbol " + symbol, typeSystem.sup(new Type[] {Types.INDIVIDUAL, typeSystem.objectType(Arithmetic.class)}), symbol.getType());
+	    }
 	else {
 	    return new MathExpression(findFunction(symbol.getSignifier()), symbol.getType());
 	}
@@ -175,7 +177,7 @@ public class MathExpressionSyntax implements ExpressionSyntax {
     public Expression compose(Expression compositor, Expression arguments[]) throws ParseException {
 	MathExpression op = (MathExpression)compositor;
 	if (!Types.isApplicableTo(compositor.getType(), arguments))
-	    throw new ParseException("compositor " + Types.toTypedString(compositor) + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments) + ':' + Types.typeOf(arguments), ModernLogic.COMPLEX_ERROR_OFFSET);
+	    throw new TypeException("compositor " + Types.toTypedString(compositor) + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments) + ':' + Types.typeOf(arguments), compositor.getType().domain(), Types.typeOf(arguments));
 
 	// handle special cases of term construction, first
 	if (LAMBDA.equals(op.referee)) {
@@ -290,7 +292,7 @@ public class MathExpressionSyntax implements ExpressionSyntax {
 	private Type type;
 	public MathExpression(Object referee, Type type) {
 	    if (!type.apply(referee))
-		throw new IllegalArgumentException("interpretation " + referee + " is not of type " + type);
+		throw new TypeException("interpretation " + referee + " is not of type " + type, type, Types.typeOf(referee));
 	    this.referee = referee;
 	    this.type = type;
 	}

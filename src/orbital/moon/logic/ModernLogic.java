@@ -260,11 +260,11 @@ abstract class ModernLogic implements Logic {
     } 
 
     
-    public Expression compose(Expression compositor, Expression arguments[]) throws ParseException {
+    public Expression compose(Expression compositor, Expression arguments[]) throws ParseException, TypeException {
 	if (compositor == null)
 	    throw new NullPointerException("illegal arguments: compositor " + compositor + " composed with " + MathUtilities.format(arguments));
         if (TYPE_CHECK && !Types.isApplicableTo(compositor.getType(), arguments))
-	    throw new ParseException("compositor " + Types.toTypedString(compositor) + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments) + ':' + Types.typeOf(arguments), COMPLEX_ERROR_OFFSET);
+	    throw new TypeException("compositor " + Types.toTypedString(compositor) + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments) + ':' + Types.typeOf(arguments), compositor.getType().domain(), Types.typeOf(arguments));
 
 	Expression RES = composeImpl(compositor, arguments);
 	assert RES != null : "@postconditions RES != null";	     

@@ -282,7 +282,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    else if (symbol.getType().apply(desc))
 		return true;
 	    else
-		throw new IllegalArgumentException("incompatible interpretation " + desc + " of " + desc.getClass() + " for " + symbol.getType());
+		throw new TypeException("incompatible interpretation " + desc + " of " + desc.getClass() + " for " + symbol.getType(), symbol.getType(), Types.typeOf(desc));
     	}
 
 	public String toString() { return symbol + ""; }
@@ -302,7 +302,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    if (symbol.isVariable())
 		throw new IllegalArgumentException("do not use fixed referents for variable symbols");
 	    if (!symbol.getType().apply(referent))
-		throw new IllegalArgumentException("incompatible interpretation " + referent + " of " + referent.getClass() + " for " + symbol.getType());
+		throw new TypeException("incompatible interpretation " + referent + " of " + referent.getClass() + " for " + symbol.getType(), symbol.getType(), Types.typeOf(referent));
 	    this.referent= referent;
 	    this.core = core;
 	}

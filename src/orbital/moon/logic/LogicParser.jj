@@ -160,7 +160,7 @@ public class LogicParser {
     protected Type asType(Expression f) {
 	//@xxx
 	if (false && f.getType() != typeSystem.TYPE())
-	    throw new IllegalArgumentException("would not expect type " + f + " for type expressions @xxx except for other kinds like *->*");
+	    throw new TypeException("would not expect type " + f + " for type expressions @xxx except for other kinds like *->*", typeSystem.TYPE(), f.getType());
 	return (Type) ((Formula) f).apply(InterpretationBase.EMPTY(syntax.coreSignature()));
     }
 
@@ -283,6 +283,7 @@ public class LogicParser {
 	    return syntax.compose(op, arg);
     	}
     	catch (orbital.logic.imp.ParseException ex) {throw newParseException(ex.getMessage(), optok, ex);}
+    	catch (orbital.logic.imp.TypeException ex) {throw newParseException(ex.getMessage(), optok, ex);}
     }
     /**
      * Wraps calls to {@link ExpressionBuilder#compose(Expression,Expression[])} in an exception handling block.
@@ -478,7 +479,7 @@ public class LogicParser {
 	    super(predefinedSymbols);
 	}
 	public void declare(Symbol x) {
-	    throw new InternalError("modifying the root scope is not allowed");
+	    throw new InternalError("modifying the predefined root scope is not allowed");
 	}
     }
 
