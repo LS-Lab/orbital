@@ -347,7 +347,7 @@ public class GameView extends Applet {
 		players[i] = arg == null || arg.equals("null")
 		    ? null
 		    //@todo shouldn't we restart players in start()?
-		    : rules.startAIntelligence(arg);
+		    : rules.startAIntelligence(i, arg);
 	    }
 	    this.setGamemaster(new Gamemaster(this,
 					     rules,
