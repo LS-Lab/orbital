@@ -73,6 +73,9 @@
 
         <mkdir dir="${lib}"/>
 
+
+	<!-- reusable classpaths -->
+
         <path id="project.classpath">
             <pathelement location="${classes}"/>
             <fileset dir="${lib}">
@@ -88,6 +91,8 @@
             <pathelement path="${build.tests}" />
             <pathelement path="${java.class.path}" />
 
+	    <pathelement location="${com.wolfram.jlink.path}"/>
+
 	    <!-- refid="project.classpath" -->
             <pathelement location="${classes}"/>
 	    <fileset dir="${lib}">
@@ -97,6 +102,15 @@
 	    <pathelement location="${resources}"/>
 	</path>
 
+	<path	id="jcoverage">
+	    <fileset dir="${lib.jcoverage}">
+	        <include name="jcoverage.jar"/>
+	    </fileset>
+        </path>
+
+
+	<taskdef classpathref="jcoverage" resource="tasks.properties"/>
+
 	<condition property="signe.isUpToDate">
 	    <and>
 	        <uptodate srcfile="${sources}/orbital/signe.java"
@@ -105,14 +119,6 @@
 	                  targetfile="${classes}/orbital/signe.class"/>
 	    </and>
 	</condition>
-
-	<path	id="jcoverage">
-	    <fileset dir="${lib.jcoverage}">
-	        <include name="jcoverage.jar"/>
-	    </fileset>
-        </path>
-
-	<taskdef classpathref="jcoverage" resource="tasks.properties"/>
     </target>
 
     <target name="prepareEnvironment" depends="init"
