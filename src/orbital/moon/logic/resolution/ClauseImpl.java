@@ -74,8 +74,11 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
 	// choose any literal L&isin;F
 	for (Iterator j = iterator(); j.hasNext(); ) {
 	    final Formula L = (Formula) j.next();
+	    // list versions of probable unifiables
+	    final List/*_<Formula>_*/ puinGwithnotL =
+		new ArrayList(Setops.asList(G.getProbableUnifiables(ClassicalLogic.Utilities.negation(L))));
 	    // choose any literal K&isin;G
-	    for (Iterator k = G.iterator(); k.hasNext(); ) {
+	    for (Iterator k = puinGwithnotL.iterator(); k.hasNext(); ) {
 		final Formula K = (Formula) k.next();
 		// resolution
 		final Clause  R = resolventWith(G, L, K);
@@ -94,31 +97,39 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
 	final ClauseImpl F = this;
 	final ClauseImpl G = (ClauseImpl)_G;
 	assert F.getFreeVariables().intersection(G.getFreeVariables()).isEmpty() : "@preconditions disjoint variable variants required for resolution";
-	// list views
-	final List/*_<Formula>_*/ listF = new ArrayList(F);
-	final List/*_<Formula>_*/ listG = new ArrayList(G);
 
+	// list version F, just necessary for formulating assertions
+	final List/*_<Formula>_*/ listF = new ArrayList(F);
+	
 	// resolvents will contain all resolvents of F and G
 	Set/*_<Clause>_*/ resolvents = new LinkedHashSet();
 	// try to resolve G with F
 	// choose any literal L&isin;F
 	for (ListIterator j = listF.listIterator(); j.hasNext(); ) {
 	    final Formula L = (Formula) j.next();
+	    // list versions of probable unifiables
+	    final List/*_<Formula>_*/ puinFwithL =
+		new ArrayList(Setops.asList(F.getProbableUnifiables(L)));
+	    final List/*_<Formula>_*/ puinGwithnotL =
+		new ArrayList(Setops.asList(G.getProbableUnifiables(ClassicalLogic.Utilities.negation(L))));
+	    final int puinFwithL_Lindex = puinFwithL.indexOf(L);
+	    assert puinFwithL_Lindex >= 0 : L + " is probably unifiable with itself";
 	    // choose any literal K&isin;G
-	    for (ListIterator k = listG.listIterator(); k.hasNext(); ) {
+	    for (ListIterator k = puinGwithnotL.listIterator(); k.hasNext(); ) {
 		final Formula K = (Formula) k.next();
 		// resolution
 		final Clause  R = resolventWith(G, L, K);
 		if (R != null) {
 		    resolvents.add(R);
 
+		    assert getUnifiablesOf(puinFwithL.subList(puinFwithL_Lindex + 1, puinFwithL.size()), L).equals(getUnifiablesOf(listF.subList(j.nextIndex(), listF.size()), L)) : "the same set of unifiables results, regardless of the base list used. Extracting probable unifiables either from to the right of the total list, or from to the right of the occurrence in the _stable_ probable unifiable list results in the same set of unifiables.";
 		    // also add resolvents of factors of F and G
 		    // form all subsets of literals (that are unifiable with L) to the right of L that really include L
 		    final Set/*_<Set<Formula>>_*/ factorFLiteralCombinations =
-			Setops.powerset(F.getUnifiables(listF.subList(j.nextIndex(), listF.size()), L));
+			Setops.powerset(getUnifiablesOf(puinFwithL.subList(puinFwithL_Lindex + 1, puinFwithL.size()), L));
 		    // form all subsets of literals (that are unifiable with K) to the right of K that really include K
 		    final Set/*_<Set<Formula>>_*/ factorGLiteralCombinations =
-			Setops.powerset(G.getUnifiables(listG.subList(k.nextIndex(), listG.size()), K));
+			Setops.powerset(getUnifiablesOf(puinGwithnotL.subList(k.nextIndex(), puinGwithnotL.size()), K));
 		    for (Iterator f = factorFLiteralCombinations.iterator(); f.hasNext(); ) {
 			final Set/*_<Formula>_*/ factorFLiterals = (Set)f.next();
 			factorFLiterals.add(L);
@@ -263,7 +274,8 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
 	    final Formula Fj = (Formula) j.next();
 	    final Formula notFj = Utilities.negation(Fj);
 	    // for all literals Gk&isin;G
-	    for (Iterator k = G.iterator(); k.hasNext(); ) {
+	    //@internal we can use Gk&isin;G.getProbableUnifiables(notFj) instead, since this usually is a smaller set
+	    for (Iterator k = G.getProbableUnifiables(notFj); k.hasNext(); ) {
 		final Formula Gk = (Formula) k.next();
 		if (Gk.equals(notFj))
 		    return true;
@@ -332,7 +344,7 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
 	if (size() > D.size())
 	    return false;
 	// negate D and replace all variables with distinct constants (also distinct for each literal)
-	final ClausalSet notDground = getClausalFactory().newClausalSet();
+	final ClausalSet notDground = newClausalSet();
 	for (Iterator i = D.iterator(); i.hasNext(); ) {
 	    final ClauseImpl notDi = (ClauseImpl)getClausalFactory().createClause(Collections.singleton(Utilities.negation((Formula)i.next())));
 	    final Clause notDiground = notDi.variant(notDi.getFreeVariables(), true);
@@ -356,7 +368,7 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
 		assert !C1.equals(Clause.CONTRADICTION) : "already checked for contradiction";
 
 		// choose any clause C2&isin;input
-		for (Iterator i2 = input.iterator(); i2.hasNext(); ) {
+		for (Iterator i2 = input.getProbableComplementsOf(C1); i2.hasNext(); ) {
 		    final Clause C2 = (Clause) i2.next();
 		    // try to resolve C1 with C2
 		    //@internal no variant forming needed since input of unit input resolution is ground
@@ -383,26 +395,28 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
     // lookup methods
 
     public Iterator/*_<Formula>_*/ getProbableUnifiables(Formula L) {
-	//@todo use indexing for far better implementation
 	return iterator();
     }
 
     public Set/*_<Formula>_*/ getUnifiables(Formula L) {
-	return getUnifiables(this, L);
+	return getUnifiablesOf(getProbableUnifiables(L), L);
     }
+
+    // Helpers
     
     /**
-     * Get all literals contained in C that unify with
-     * L. <p>Implementations may use indexing or links to estimate the
-     * clauses to return very quickly.</p>
-     * @preconditions C&sube;this
-     * @postconditions RES = {F&isin;this &exist;mgU{L,F}}
+     * Get all literals contained in C that unify with L.
+     * @postconditions RES = {K&isin;C &exist;mgU{L,K}}
      * @see #getProbableUnifiables(Formula)
+     * @see #getUnifiables(Formula)
      */
-    public Set/*_<Formula>_*/ getUnifiables(Collection/*_<Formula>_*/ C, Formula L) {
+    private static Set/*_<Formula>_*/ getUnifiablesOf(Collection/*_<Formula>_*/ C, Formula L) {
+	return getUnifiablesOf(C.iterator(), L);
+    }
+    private static Set/*_<Formula>_*/ getUnifiablesOf(Iterator/*_<Formula>_*/ C, Formula L) {
 	Set/*_<Formula>_*/ r = new LinkedHashSet();
-	for (Iterator i = C.iterator(); i.hasNext(); ) {
-	    Formula F = (Formula)i.next();
+	while (C.hasNext()) {
+	    Formula F = (Formula)C.next();
 	    //@todo optimizable, we could remember the unifier instead of recalculating it lateron (f.ex. during factorization)
 	    if (Substitutions.unify(Arrays.asList(new Formula[] {L,F})) != null) {
 		r.add(F);
@@ -438,6 +452,15 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
 	Set Sp = new LinkedHashSet(S);
 	Sp.remove(x);
 	return Sp;
+    }
+
+    /**
+     * Delegates to {@link ClausalFactory#newClausalSet()}.
+     */
+    private final ClausalSet newClausalSet() {
+	return SetOfSupportResolution.INDEXING
+	    ? new ClausalSetImpl()
+	    : getClausalFactory().newClausalSet();
     }
 
 }
