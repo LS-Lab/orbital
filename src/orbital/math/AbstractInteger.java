@@ -166,7 +166,14 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
 	    return quotient((Integer)b);
     	}
     	public Integer modulo(Integer b) {
-	    return new Long(longValue() % b.longValue());
+	    long m = b.longValue();
+	    long v = longValue() % m;
+	    //@internal assure mathematical nonnegative modulus
+	    if (v < 0)
+		v += m;
+	    assert (v - (longValue() % m)) % m == 0 : "change of canonical representative, only";
+	    assert v >= 0 : "nonnegative representative chosen";
+	    return new Long(v);
     	}
     	public Euclidean modulo(Euclidean b) {
 	    return modulo((Integer)b);
@@ -251,7 +258,14 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
 	    return quotient((Integer)b);
     	}
     	public Integer modulo(Integer b) {
-	    return new Int(intValue() % b.intValue());
+	    int m = b.intValue();
+	    int v = intValue() % m;
+	    //@internal assure mathematical nonnegative modulus
+	    if (v < 0)
+		v += m;
+	    assert (v - (intValue() % m)) % m == 0 : "change of canonical representative, only";
+	    assert v >= 0 : "nonnegative representative chosen";
+	    return new Int(v);
     	}
     	public Euclidean modulo(Euclidean b) {
 	    return modulo((Integer)b);
