@@ -7,11 +7,13 @@
 package orbital.math;
 
 import junit.framework.*;
+import junit.extensions.*;
 import java.util.*;
 
 /**
  * A sample test case, testing Values.
  * @version 1.1, 2002-09-14
+ * @xxx add a test case testing all arithmetic objects, at least like examples/math/MathTest
  */
 public class ValuesTest extends check.TestCase {
     private static final int TEST_REPETITION = 10;
@@ -24,7 +26,7 @@ public class ValuesTest extends check.TestCase {
 	junit.textui.TestRunner.run(suite());
     }
     public static Test suite() {
-	return new TestSuite(ValuesTest.class);
+	return new RepeatedTest(new TestSuite(ValuesTest.class), TEST_REPETITION);
     }
     protected void setUp() {
 	vf = Values.getDefaultInstance();
@@ -54,42 +56,51 @@ public class ValuesTest extends check.TestCase {
 	}
     }
 
+    public void testInteroperableTypeSubtract() {
+	for (int k = 0; k < a.length; k++) {
+	    System.out.println(a[k].getClass() + " arithmetic combined with various types");
+	    for (int i = 0; i < b.length; i++)
+		System.out.println(a[k] + "+" + b[i] + " = " + a[k].subtract(b[i]) + "\tof " + a[k].subtract(b[i]).getClass());
+	    Object x1, x2;
+	    assertTrue( (x1 = a[k].subtract(b[0])).equals(x2 = a[k].subtract((Integer) b[0])) , "compile-time sub-type result equals run-time sub-type result");
+	    assertTrue( x1.getClass() == x2.getClass(), "compile-time sub-type result equals run-time sub-type");
+	    assertTrue( (x1 = a[k].subtract(b[1])).equals(x2 = a[k].subtract((Rational) b[1])) , "compile-time sub-type result equals run-time sub-type result");
+	    assertTrue( x1.getClass() == x2.getClass(), "compile-time sub-type result equals run-time sub-type");
+	    assertTrue( (x1 = a[k].subtract(b[2])).equals(x2 = a[k].subtract((Real) b[2])) , "compile-time sub-type result equals run-time sub-type result");
+	    assertTrue( x1.getClass() == x2.getClass(), "compile-time sub-type result equals run-time sub-type");
+	    assertTrue( (x1 = a[k].subtract(b[3])).equals(x2 = a[k].subtract((Complex) b[3])) , "compile-time sub-type result equals run-time sub-type result");
+	    assertTrue( x1.getClass() == x2.getClass(), "compile-time sub-type result equals run-time sub-type");
+	}
+    }
+    
     private int integerArgument(int min, int max) {
 	return min + (min == max ? 0 : random.nextInt(max-min));
     }
     public void testTrivialTensors_valueOf_ArithmeticArray() {
 	System.out.println("ValueFactor.valueOf(Arithmetic[])");
-	for (int i = 0; i < TEST_REPETITION; i++) {
-	    Integer v = vf.valueOf(integerArgument(-10,10));
-	    test(vf.valueOf(new Arithmetic[] {v}), v);
-	}
+	Integer v = vf.valueOf(integerArgument(-10,10));
+	test1(vf.valueOf(new Arithmetic[] {v}), v);
     }
     public void testTrivialTensors_valueOf_intArray() {
 	System.out.println("ValueFactor.valueOf(int[])");
-	for (int i = 0; i < TEST_REPETITION; i++) {
-	    Integer v = vf.valueOf(integerArgument(-10,10));
-	    test(vf.valueOf(new int[] {v.intValue()}), v);
-	}
+	Integer v = vf.valueOf(integerArgument(-10,10));
+	test1(vf.valueOf(new int[] {v.intValue()}), v);
     }
     public void testTrivialTensors_tensor_ArithmeticArray() {
 	System.out.println("ValueFactor.tensor(Arithmetic[])");
-	for (int i = 0; i < TEST_REPETITION; i++) {
-	    Integer v = vf.valueOf(integerArgument(-10,10));
-	    test(vf.tensor(new Arithmetic[] {v}), v);
-	}
+	Integer v = vf.valueOf(integerArgument(-10,10));
+	test1(vf.tensor(new Arithmetic[] {v}), v);
     }
     public void testTrivialTensors_tensor_intArray() {
 	System.out.println("ValueFactor.tensor(int[])");
-	for (int i = 0; i < TEST_REPETITION; i++) {
-	    Integer v = vf.valueOf(integerArgument(-10,10));
-	    test(vf.tensor(new int[] {v.intValue()}), v);
-	}
+	Integer v = vf.valueOf(integerArgument(-10,10));
+	test1(vf.tensor(new int[] {v.intValue()}), v);
     }
 
     /**
      * Test tensor to have expected value as its only component.
      */
-    private void test(Tensor t, Arithmetic expected) {
+    private void test1(Tensor t, Arithmetic expected) {
 	System.out.println(t.getClass() + " " + t + " corresponds to " + expected);
 	assertEquals(t.rank(), 1);
 	assertEquals(t.dimensions().length, 1);
