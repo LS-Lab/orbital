@@ -501,12 +501,13 @@ public class GameView extends Applet {
 	    throw new IOException("illegal format of stream content");
 	Field field = (Field) is.readObject();
 	//System.out.println("GameView.load() field= " + System.identityHashCode(field));
+	start(field);
+	// reload images
 	for (Iterator i = field.iterateNonEmpty(); i.hasNext(); ) {
 	    Figure f = (Figure) i.next();
 	    if (f instanceof FigureImpl)
 		((FigureImpl)f).setImage(getGameRules().getImage(f));
 	} 
-	start(field);
     } 
 
     /**

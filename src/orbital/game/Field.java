@@ -266,10 +266,12 @@ public class Field implements Serializable, Cloneable {
     //
     
     /**
-     * Check whether a Point <code>(x|y)</code> is within the range.
+     * Check whether a point <code>(x|y)</code> is within the range.
      * @see orbital.robotic.Table#inRange(Point)
      */
     public final boolean inRange(Point p) {
+	if (p == null)
+	    throw new NullPointerException("illegal position: null");
 	if (p.x < 0 || p.x >= field[0].length)
 	    return false;
 	if (p.y < 0 || p.y >= field.length)
