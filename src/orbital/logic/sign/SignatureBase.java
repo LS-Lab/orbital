@@ -152,4 +152,13 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
     	catch (InstantiationException nonconform) {throw new InnerCheckedException("invariant: sub classes of " + SignatureBase.class + " must support no-arg constructor for virtual new instance.", nonconform);}
     	catch (IllegalAccessException nonconform) {throw new InnerCheckedException("invariant: sub classes of " + SignatureBase.class + " must support no-arg constructor for virtual new instance.", nonconform);}
     }
+
+    // some type-safe checks (ensuring implements SortedSet<Symbol>)
+
+    public boolean add(Object o) {
+	if (o instanceof Symbol)
+	    return super.add(o);
+	else
+	    throw new ClassCastException(o + " is not an instance of " + Symbol.class);
+    }
 }

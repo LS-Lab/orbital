@@ -23,29 +23,28 @@ import java.util.HashMap;
  * @version 0.9, 2001/06/10
  * @author  Andr&eacute; Platzer
  */
-public
-interface MutableFunction/*<A, B>*/ extends Function/*<A, B>*/ {
-	/**
-	 * Set f(arg) := value.
-	 * <p>
-	 * Modifies a function by assigning a new value to the function at a specified argument.</p>
-	 * @param arg the argument for which to change the function.
-	 * @param value the new value this function should have for argument arg, from now on.
-	 * @return the old value f(arg) prior to updating the function.
-	 * @post RES == OLD(apply(arg)) && apply(arg) == value
-	 */
-	Object/*>B<*/ set(Object/*>A<*/ arg, Object/*>B<*/ value);
+public interface MutableFunction/*<A, B>*/ extends Function/*<A, B>*/ {
+    /**
+     * Set f(arg) := value.
+     * <p>
+     * Modifies a function by assigning a new value to the function at a specified argument.</p>
+     * @param arg the argument for which to change the function.
+     * @param value the new value this function should have for argument arg, from now on.
+     * @return the old value f(arg) prior to updating the function.
+     * @post RES == OLD(apply(arg)) && apply(arg) == value
+     */
+    Object/*>B<*/ set(Object/*>A<*/ arg, Object/*>B<*/ value);
 	
-	/**
-	 * @throws CloneNotSupportedException if this function does not support cloning.
-	 * @post RES != RES
-	 */
-	Object clone() throws CloneNotSupportedException;
+    /**
+     * @throws CloneNotSupportedException if this function does not support cloning.
+     * @post RES != RES
+     */
+    Object clone() throws CloneNotSupportedException;
     
     /**
      * A mutable function implemented as a tabular HashMap.
-	 * @version 0.9, 2001/06/10
-	 * @author  Andr&eacute; Platzer
+     * @version 0.9, 2001/06/10
+     * @author  Andr&eacute; Platzer
      * @see java.util.HashMap
      */
     public static class TableFunction/*<A, B>*/ implements MutableFunction/*<A, B>*/ {
@@ -64,31 +63,31 @@ interface MutableFunction/*<A, B>*/ extends Function/*<A, B>*/ {
     	 *  function performs expensive calculation.
     	 */
     	public TableFunction(Function/*<A, B>*/ initialization, boolean cache) {
-    		this.map = new HashMap/* <A, B> */();
-    		this.initialization = initialization;
-    		this.cache = cache;
+	    this.map = new HashMap/* <A, B> */();
+	    this.initialization = initialization;
+	    this.cache = cache;
     	}
     	public TableFunction(Function/*<A, B>*/ initialization) {
-    		this(initialization, true);
+	    this(initialization, true);
     	}
     	/**
     	 * Create a table-based mutable function without lazy initialization.
     	 */
     	public TableFunction() {
-    		this(null);
+	    this(null);
     	}
         
         public Object clone() {
-        	TableFunction clone = new TableFunction(initialization);
-        	clone.map.putAll(map);
-        	return clone;
+	    TableFunction clone = new TableFunction(initialization);
+	    clone.map.putAll(map);
+	    return clone;
         }
         
         /**
          * Get the initialization function h.
          */
         public Function/*<A, B>*/ getInitialization() {
-        	return initialization;
+	    return initialization;
         }
         /**
          * Set the initialization function h to use.
@@ -98,7 +97,7 @@ interface MutableFunction/*<A, B>*/ extends Function/*<A, B>*/ {
     	 *  leading to <code>null</code> being the value for yet unknown arguments.
     	 */
         public void setInitialization(Function/*<A, B>*/ h) {
-        	this.initialization = h;
+	    this.initialization = h;
         }
         
     	/**
@@ -107,23 +106,23 @@ interface MutableFunction/*<A, B>*/ extends Function/*<A, B>*/ {
     	 *  Implicitly lazy initializing f(x) = h(x) for yet unknown arguments x.
     	 */
     	public Object/*>B<*/ apply(Object/*>A<*/ arg) {
-    		Object/*>B<*/ value = (Object/*>B<*/) map.get(arg);
-    		if (value == null && initialization != null) {
-    			value = initialization.apply(arg);
-    			if (cache)
-    				map.put(arg, value);
-    		}
-    		return value;
+	    Object/*>B<*/ value = (Object/*>B<*/) map.get(arg);
+	    if (value == null && initialization != null) {
+		value = initialization.apply(arg);
+		if (cache)
+		    map.put(arg, value);
+	    }
+	    return value;
     	}
     
     	/**
     	 * Update the value at an argument.
     	 * @param arg the argument x whose cost to update.
     	 * @param value the new value f(x) to set for argument x.
-		 * @return the old value f(arg) prior to updating the function.
+	 * @return the old value f(arg) prior to updating the function.
     	 */
     	public Object/*>B<*/ set(Object/*>A<*/ arg, Object/*>B<*/ value) {
-    		return (Object/*>B<*/) map.put(arg, value);
+	    return (Object/*>B<*/) map.put(arg, value);
     	}
     }
 }
