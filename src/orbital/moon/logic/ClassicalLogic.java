@@ -1824,8 +1824,10 @@ public class ClassicalLogic extends ModernLogic {
 	 *   <li>sk(&forall;x A) = &forall;x sk(A)</li>
 	 *   <li>sk(&exist;x A) = sk(A[x&rarr;f(x<sub>1</sub>,...,x<sub>n</sub>)]) where FV(&exist;x A) = {x<sub>1</sub>,...,x<sub>n</sub>}</li>
 	 *   <!-- @todo how "meta" is the following, or would it simply work? -->
-	 *   <li>sk(&exist;&lambda;x A) = sk((&lambda;x A)(f(x<sub>1</sub>,...,x<sub>n</sub>))) where FV(&exist;x A) = {x<sub>1</sub>,...,x<sub>n</sub>}</li>
+	 *   <li>sk(&exist;&lambda;x A) = sk((&lambda;x A)(f(x<sub>1</sub>,...,x<sub>n</sub>))) where FV(&exist;&lambda;x A) = {x<sub>1</sub>,...,x<sub>n</sub>}</li>
 	 * </ul>
+	 * Skolemization is
+	 * <center class="Formula">&forall;x&exist;y &phi; &cong; &exist;F&forall;x &phi;[y&#8614;F(x)]</center>
 	 * </p>
 	 * This method will call {@link #negationForm(Formula)}.
 	 */
@@ -1834,14 +1836,14 @@ public class ClassicalLogic extends ModernLogic {
 	    F = negationForm(F);
 	    try {
 		// skolem transform TRS
-		if (SkolemTransform == null) SkolemTransform = Substitutions.getInstance(Arrays.asList(new Object[] {
+		if (SkolemTransform == null) SkolemTransform = Substitutions.getInstance(Collections.singletonList(
 		    //@xxx note that A should be a metavariable for a formula
 		    new SkolemizingUnifyingMatcher(logic.createExpression("?_X1 _A"),
 						   logic.createExpression("_A"),
 						   //@internal note that _X1 should have the same type as in ?_X1 _A above
 						   new SymbolBase("_X1", Types.INDIVIDUAL, null, true)
 						   )
-		}));
+		    ));
 		return (Formula) Functionals.fixedPoint(SkolemTransform, F);
 	    } catch (ParseException ex) {
 		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
