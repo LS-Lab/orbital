@@ -101,9 +101,10 @@ public abstract class Figure extends Moving {
 
     /**
      * Set the field which this figure is contained in.
+     * Notified when we are {@link Field#setFigure(Position,Figure) set} on a field.
      * Optional implementation.
      */
-    void setField(Field f) {
+    protected void setField(Field f) {
     } 
 
     /**
@@ -209,6 +210,6 @@ public abstract class Figure extends Moving {
      * Returns a string representation of this object.
      */
     public String toString() {
-	return getClass().getName() + "[" + getLeague() + ":" + getType() + " @(" + x + '|' + y + ' ' + direction.toString() + ")]";
+	return getClass().getName() + "[" + getLeague() + ":" + getType() + " @(" + x + '|' + y + ' ' + getDirection().toString() + ")]";
     } 
 }
