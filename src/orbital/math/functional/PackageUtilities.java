@@ -6,6 +6,7 @@
 
 package orbital.math.functional;
 
+import orbital.math.ValueFactory;
 import orbital.math.Values;
 
 /**
@@ -14,5 +15,5 @@ import orbital.math.Values;
  * @author  Andr&eacute; Platzer
  */
 final class PackageUtilities {
-    static final Values valueFactory = Values.getDefaultInstance();
+    static final ValueFactory valueFactory = Values.getDefault();
 }

@@ -57,15 +57,15 @@ import orbital.logic.sign.concrete.Notation.NotationSpecification;
  *     <span class="keyword">return</span> (<span class="Orbital">Arithmetic</span>) <span class="Orbital">Operations</span>.plus.apply(<span class="keyword">this</span>, b);
  * }
  * </pre>
- * Which implicitly uses the tranformation function {@link orbital.math.Values#getEqualizer()}.
+ * Which implicitly uses the tranformation function {@link orbital.math.Values#getCoercer()}.
  * The static functions provided in <tt>Operations</tt> delegate type handling like in
  * <pre>
- *     <span class="Orbital">Arithmetic</span> operands[] <span class="operator">=</span> (<span class="Orbital">Arithmetic</span>[]) <span class="Orbital">Values</span>.getDefaultInstance().getEqualizer().apply(<span class="keyword">new</span> <span class="Orbital">Arithmetic</span>[] {x, y});
+ *     <span class="Orbital">Arithmetic</span> operands[] <span class="operator">=</span> (<span class="Orbital">Arithmetic</span>[]) <span class="Orbital">Values</span>.getDefaultInstance().getCoercer().apply(<span class="keyword">new</span> <span class="Orbital">Arithmetic</span>[] {x, y});
  *     <span class="keyword">return</span> operands[<span class="Number">0</span>].add(operands[<span class="Number">1</span>]);
  * </pre>
  * </p>
  * 
- * @structure depends {@link orbital.math.MathUtilities#getEqualizer()}
+ * @structure depends {@link orbital.math.MathUtilities#getCoercer()}
  * @version 1.0, 2000/08/03
  * @author  Andr&eacute; Platzer
  * @see orbital.math.Arithmetic
@@ -96,7 +96,7 @@ public interface Operations /* implements ArithmeticOperations */ {
 	    //@xxx either add this everywhere, or remove it here (otherwise it won't work)
 	    //private final orbital.logic.imp.Type logicalTypeDeclaration = orbital.logic.imp.Types.map(orbital.logic.imp.Types.product(new orbital.logic.imp.Type[] {orbital.logic.imp.Types.objectType(Arithmetic.class), orbital.logic.imp.Types.objectType(Arithmetic.class)}), orbital.logic.imp.Types.objectType(Arithmetic.class));
 	    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
-		Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getEqualizer().apply(new Arithmetic[] {
+		Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer().apply(new Arithmetic[] {
 		    (Arithmetic) x, (Arithmetic) y
 		});
 		return operands[0].add(operands[1]);
@@ -186,7 +186,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final BinaryFunction subtract = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
 	    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
-		Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getEqualizer().apply(new Arithmetic[] {
+		Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer().apply(new Arithmetic[] {
 		    (Arithmetic) x, (Arithmetic) y
 		});
 		return operands[0].subtract(operands[1]);
@@ -228,7 +228,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final BinaryFunction times = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
 	    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
-		Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getEqualizer().apply(new Arithmetic[] {
+		Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer().apply(new Arithmetic[] {
 		    (Arithmetic) x, (Arithmetic) y
 		});
 		return operands[0].multiply(operands[1]);
@@ -318,7 +318,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final BinaryFunction divide = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
 	    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
-		Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getEqualizer().apply(new Arithmetic[] {
+		Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer().apply(new Arithmetic[] {
 		    (Arithmetic) x, (Arithmetic) y
 		});
 		return operands[0].divide(operands[1]);
@@ -355,7 +355,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final BinaryFunction power = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
 	    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
-		Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getEqualizer().apply(new Arithmetic[] {
+		Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer().apply(new Arithmetic[] {
 		    (Arithmetic) x, (Arithmetic) y
 		});
 		return operands[0].power(operands[1]);
