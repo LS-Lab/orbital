@@ -267,7 +267,7 @@ public class FigureImpl extends Figure {
      * @return the destination position that was reached after the move
      * or <code>null</code> if the Move was invalid and therefore cancelled.
      * @throws IllegalArgumentException if this move is not in the list of legal moves.
-     * @postconditions getField() = getField()@pre
+     * @postconditions getField() = getField()@pre &and; this = this@pre
      * @see Field#move(Position, Move)
      * @see #movePath(Move)
      * @see #moving(Move,Position)
@@ -345,6 +345,7 @@ public class FigureImpl extends Figure {
      * will also be returned as valid.
      * @param move the movement to try.
      * @preconditions {@link #field} contains the current field considered whether the path is empty
+     * @postconditions getField() = getField()@pre &and; this = this@pre
      * @return the destination position if the given move is passable
      *  or <code>null</code> if the movement path is invalid.
      * @see #isEmpty()
