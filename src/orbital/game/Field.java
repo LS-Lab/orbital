@@ -148,10 +148,11 @@ public class Field implements Serializable, Cloneable {
 
     /**
      * Returns Figure at Position p
+     * @throws IndexOutOfBoundsException if p is not inRange(p).
      */
     public Figure getFigure(Position p) {
 	if (!inRange(p))
-	    throw new ArrayIndexOutOfBoundsException("position " + p + " exceeds bounds " + getDimension());
+	    throw new IndexOutOfBoundsException("position " + p + " exceeds bounds " + getDimension());
 	Figure f = field[p.y][p.x];
 	assert !(f instanceof FigureImpl) || ((FigureImpl)f).getField() == this : "figures know on which field they are: " + f + " on field " + this + " thinks it is on field " + ((FigureImpl)f).getField();
 	assert f == null || (f.x == p.x && f.y == p.y) : "figures know their position: " + f + " knows it is at " + p;
@@ -162,6 +163,7 @@ public class Field implements Serializable, Cloneable {
      * Sets Figure at Position p.
      * <p>
      * Automatically updates the Figure's internal position and field container reference.</p>
+     * @throws IndexOutOfBoundsException if p is not inRange(p).
      * @internal see #clone()
      */
     public void setFigure(Position p, Figure f) {
