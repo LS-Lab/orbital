@@ -118,7 +118,7 @@
             description="prepare system for compiling">
         <javac srcdir="${taglet}"
                destdir="${taglet}"
-               debug="on"
+               debug="yes"
 	       source="${javac.source}">
 	</javac>
     </target>
@@ -134,7 +134,7 @@
         <!-- @todo on parameter, use GetRidOfAssert.sed instead of source="1.4" -->
         <javac srcdir="${sources}"
                destdir="${classes}"
-               debug="on"
+               debug="yes"
 	       source="${javac.source}"
 	       excludes="orbital/moon/aspects/**,orbital/moon/deprecated/*,orbital/*">
             <classpath refid="project.classpath"/>
@@ -157,7 +157,7 @@
             description="compile test/*.java (=> ./classes)">
         <javac srcdir="${src.tests}"
                destdir="${build.tests}"
-               debug="on"
+               debug="yes"
 	       source="${javac.source}">
             <classpath refid="tests.classpath"/>
         </javac>
@@ -166,7 +166,7 @@
     <target name="compile.examples" depends="init, compile"
             description="compile examples/*.java (=> ./classes)">
         <javac srcdir="${examples}"
-               debug="on"
+               debug="yes"
 	       source="${javac.source}"
 	       excludes="SimpleDemos/SpecDemo.java">
             <classpath refid="tests.classpath"/>
@@ -183,12 +183,12 @@
 	</echo>
         <mkdir dir="${reports.tests}"/>
         <junit printsummary="yes" haltonfailure="yes" fork="yes" showoutput="true">
-	  <!-- prefer any existing instrumented classes, only for run.coverage -->
-	  <classpath location="${build.coverage}"/>
+	  <classpath location="${run.tests.classpath}"/>
 	  <classpath refid="jcoverage"/>
 
           <classpath refid="tests.classpath"/>
 	  <jvmarg value="${run.tests.jvmarg}"/>
+	  <sysproperty key="com.wolfram.jlink.kernel" value="${com.wolfram.jlink.kernel}"/>
         
           <formatter type="plain" />
           <formatter type="xml" />
@@ -233,6 +233,7 @@
             <fileset dir="${build.tests}/">
                 <include name="**/*.class"/>
             </fileset>
+            <fileset dir="${build.coverage}"/>
 <!--            <fileset dir="${dist}">
 	        <exclude name="${doc.api.dest}"/>
 	        <exclude name="${doc.dest}"/>
@@ -255,6 +256,8 @@
             <fileset dir="${doc.api.dest}"/>
             <fileset dir="${doc.dest}"/>
             <fileset dir="${reports.tests}"/>
+            <fileset dir="${reports.coverage}"/>
+            <!-- <fileset dir="${basedir}" name="jcoverage.ser"/> -->
         </delete>
     </target>
 
@@ -741,18 +744,47 @@
     </target>
 
 
-    <target name="compile.coverage" depends="init"
+    <target name="compile.coverage" depends="init, compile.tests"
             description="compile coverage tests">
+	<!-- @internal Unfortunately we have to split instrumentation to prevent CreateProcess error of instrument call -->
+	<instrument todir="${build.coverage}">
+	    <fileset dir="${classes}">
+	        <include name="orbital/logic/**/*.class"/>
+	    </fileset>
+	</instrument>
+	<instrument todir="${build.coverage}">
+	    <fileset dir="${classes}">
+	        <include name="orbital/math/**/*.class"/>
+	    </fileset>
+	</instrument>
+	<instrument todir="${build.coverage}">
+	    <fileset dir="${classes}">
+	        <include name="orbital/algorithm/**/*.class"/>
+	    </fileset>
+	</instrument>
+	<instrument todir="${build.coverage}">
+	    <fileset dir="${classes}">
+	        <include name="orbital/moon/**/*.class"/>
+	    </fileset>
+	</instrument>
 	<instrument todir="${build.coverage}">
 	    <fileset dir="${classes}">
 	        <include name="**/*.class"/>
+	        <exclude name="orbital/logic/**/*.class"/>
+	        <exclude name="orbital/math/**/*.class"/>
+	        <exclude name="orbital/algorithm/**/*.class"/>
+	        <exclude name="orbital/moon/**/*.class"/>
 	    </fileset>
 	</instrument>
     </target>
 
-    <target name="run.coverage" depends="init, compile.coverage, run.tests"
+    <target name="run.coverage" depends="init, compile.coverage"
             description="run and report coverage tests">
-	<report srcdir="${basedir}" destdir="${reports.coverage}"/>
+        <antcall target="run.tests">
+	    <!-- prefer any existing instrumented classes, only for run.coverage -->
+            <param name="run.tests.classpath" value="${build.coverage}"/>
+        </antcall>
+	<report srcdir="${sources}" destdir="${reports.coverage}"/>
     </target>
 
 
