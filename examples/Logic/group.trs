@@ -1,0 +1,27 @@
+# axiom left identity
+1*_X |- _X
+# axiom left inverse
+_X^-1*_X |- 1
+# axiom associative
+(_X1*_X2)*_X3 |- _X1*(_X2*_X3)
+#
+_X1^-1*(_X1*_X2) |- _X2
+# identity is idem potent
+1^-1 |- 1
+# right identity
+_X*1 |- _X
+# inversion is involutive
+(_X^-1)^-1 |- _X
+# right inverse
+_X*_X^-1 |- 1
+#
+_X1*((_X1^-1)*_X8) |- _X8
+# inverse of a product
+(_X1*_X2)^-1 |- _X2^-1*_X1^-1
+
+# (defined) power, some possible rules
+_X^1 |- _X
+_X^_n * _X^_m |- _X ^ (_n+_m)
+_X    * _X^_m |- _X ^ (1+_m)
+_X^_n * _X    |- _X ^ (_n+1)
+_X1^_n * _X2^_n |- (_X1*_X2)^_n
