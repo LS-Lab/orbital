@@ -443,7 +443,7 @@ abstract class ModernLogic implements Logic {
 	    ? (Formula[]) B_parsed
 	    : (Formula[]) Arrays.asList(B_parsed).toArray(new Formula[0]);
 	Formula D = (Formula) createExpression(d);
-	logger.log(Level.FINE, "Formula {0} has type {1} with sigma={2}", new Object[] {D, D.getType(), D.getSignature()});
+	logger.log(Level.FINEST, "Formula {0} has type {1} with sigma={2}", new Object[] {D, D.getType(), D.getSignature()});
 	if (verbose)
 	    System.out.println(MathUtilities.format(B) + "\t|=\t" + D + " ??");
 	return inference().infer(B, D);
