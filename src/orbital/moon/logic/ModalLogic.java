@@ -162,10 +162,12 @@ public class ModalLogic extends ClassicalLogic {
 		return classicalInference.infer(Bred, Dred);
 	    }
 	    public boolean isSound() {
-		return true;
+		// without proper typed logic we are still unsound
+		return false;
 	    } 
 	    public boolean isComplete() {
-		return true;
+		// without proper typed logic we are still incomplete
+		return false;
 	    } 
 	};
 
