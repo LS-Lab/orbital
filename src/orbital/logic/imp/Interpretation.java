@@ -26,17 +26,17 @@ import orbital.logic.functor.Functor;
  * <dl class="def">
  *   <dt id="interpretation">interpretation</dt>
  *   <dd>
- *     an interpretation I:&Sigma;&rarr;<span class="set">D</span> is a familiy of maps
+ *     an interpretation I:&Sigma;&rarr;<span class="set">D</span> is a family of maps
  *     I:&Sigma;<sub class="type">&tau;</sub>&rarr;<span class="set">D</span><sub class="type">&tau;</sub>
  *     for each type <span class="type">&tau;</span>, with
  *     <ul>
  * <!-- @todo use I(<span class="type">&sigma;</span>) instead of <span class="set">D</span><sub class="type">&tau;</sub> througout? -->
  *       <li>I maps symbols of {@link orbital.logic.sign.type.Type type} <span class="type">&tau;</span> to elements of the class I(<span class="type">&tau;</span>):=<span class="set">D</span><sub class="type">&tau;</sub> &ne; &empty;.
- *          Especially in computer settings, the class I(<span class="type">&tau;</span>) is often assumed to be a set, even though this is rather irrelevant.
+ *          Especially in computer science, the class I(<span class="type">&tau;</span>) is often assumed to be a set, even though this is rather irrelevant.
  *          <cite>"Wilfrid Hodges. Elementary Predicate Logic. In: Dov M. Gabbay and F. Guenther. Handbook of philosophical logic Volume 1 2nd edition. paragraph 17 theorem 10"</cite>
  *       </li>
- *       <li>I respects subtypes: for types <span class="type">&sigma;</span>,<span class="type">&sigma;</span>:{@link orbital.logic.sign.type.TypeSystem#TYPE() <span class="type">*</span>}
- *         with <span class="type">&sigma;</span>&le;<span class="type">&tau;</span> sets satisfy I(<span class="type">&sigma;</span>)&sube;I(<span class="type">&tau;</span>).</li>
+ *       <li>I respects subtypes: for types <!-- <span class="type">&sigma;</span>,<span class="type">&tau;</span>:{@link orbital.logic.sign.type.TypeSystem#TYPE() <span class="type">*</span>} with -->
+ *         <span class="type">&sigma;</span>&le;<span class="type">&tau;</span> the sets satisfy I(<span class="type">&sigma;</span>)&sube;I(<span class="type">&tau;</span>).</li>
  *       <li><span class="set">D</span><sub class="type">&omicron;</sub> is the set of truth-values for the type <span class="type">&omicron;</span> = <span class="type">()</span> of truth-values
  *         (also the type of atomic formulas).
  *         For two-valued logics this means <span class="set">D</span><sub class="type">&omicron;</sub> := <span class="set">Boole</span> := {True,False}.
@@ -71,7 +71,7 @@ import orbital.logic.functor.Functor;
  *         <td>&phi;(<var class="meta.disabled">&upsilon;</var>(t))</td>
  *         <td>= &phi;(<var class="meta.disabled">&upsilon;</var>)<big>(</big>&phi;(t)<big>)</big></td>
  *         <td>for <var class="meta.disabled">&upsilon;</var>&isin;&Sigma;<sub class="type">&sigma;&rarr;&tau;</sub>, t&isin;<span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&le;&sigma;</sub></td>
- * <!-- @todo or <var class="meta.disabled">&upsilon;</var>&isin;<span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&sigma;&rarr;&tau;</sub>? -->
+ * <!-- @todo or   <var class="meta.disabled">&upsilon;</var>&isin;<span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&sigma;&rarr;&tau;</sub>? -->
  *       </tr>
  *       <tr>
  *         <td colspan="3">Especially</td>
@@ -88,7 +88,7 @@ import orbital.logic.functor.Functor;
  *     If for every interpretation I:&Sigma;&rarr;<span class="set">D</span> there is a unique continuation
  *     &phi;:<span class="UniversalAlgebra">T</span>(&Sigma;)&rarr;<span class="set">D</span>
  *     that is a homomorphism of &Sigma;-algebras, i.e.
- *     <center>&phi;|<sub>&Sigma;</sub> = I and &phi; is homomorph</center>
+ *     <center>&phi;|<sub>&Sigma;</sub> = I and &phi; is homomorphic</center>
  *     Then the logic is called truth-functional,
  *     and that unique homomorphism &phi; is called the (expression) valuation
  *     or truth-function, which is again denoted by I.
