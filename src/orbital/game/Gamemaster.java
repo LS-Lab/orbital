@@ -292,18 +292,19 @@ public class Gamemaster implements Runnable {
 	    if (field == null)
 		throw new IllegalStateException("illegal field: " + field);
 	    final int turn = field.getTurn();
-	    showStatus("statusbar.ai.thinking " + players[turn]);////showStatus(getResources().getString("statusbar.ai.thinking"));
+	    showStatus("statusbar.ai.thinking " + turn + " " + players[turn]);////showStatus(getResources().getString("statusbar.ai.thinking"));
 	    if (!(players[turn] instanceof HumanPlayer)) {
 		System.err.println("statusbar.ai.thinking");
 	    }
 	    Object action = players[turn].apply(getField());
-	    showStatus("statusbar.ai.decided " + players[turn]);////showStatus(getResources().getString("statusbar.ai.decided"));
+	    showStatus("statusbar.ai.decided " + turn + " " + players[turn]);////showStatus(getResources().getString("statusbar.ai.decided"));
 	    if (action instanceof Option) {
 		Option move = (Option) action;
 		if (move.isNoMove()) {
 		    // no move performed, so do nothing
+		    showStatus("statusbar.ai.notmoving " + turn + " " + players[turn]);////showStatus(getResources().getString("statusbar.ai.notmoving"));
 		} else {
-		    showStatus("statusbar.ai.moving " + players[turn]);////showStatus(getResources().getString("statusbar.ai.moving"));
+		    showStatus("statusbar.ai.moving " + turn + " " + players[turn]);////showStatus(getResources().getString("statusbar.ai.moving"));
 		    Position source = new Position(move.getFigure());
 		    // if we could rely on our AI, then we could optimize away this expensive moving and simply use the resulting setField(move.getState());
 		    // But unfortunately, all our field's listeners would then vanish, possibly including end of game checks.
@@ -371,7 +372,7 @@ public class Gamemaster implements Runnable {
 	}
 	public void stateChanged(FieldChangeEvent evt) {
 	    assert evt.getField() == getField() : "we have only registered ourselves to our field " + getField() + " source=" + evt.getField();
-	    if ((evt.getType() & (/*FieldChangeEvent.USER_ACTION |*/ FieldChangeEvent.END_OF_TURN)) == (/*FieldChangeEvent.USER_ACTION |*/ FieldChangeEvent.END_OF_TURN)) {
+	    if ((evt.getType() & (FieldChangeEvent.USER_ACTION | FieldChangeEvent.END_OF_TURN)) == (FieldChangeEvent.USER_ACTION | FieldChangeEvent.END_OF_TURN)) {
 		synchronized(userAction) {
 		    //@internal special NO_MOVE option
 		    this.option = Option.createNoMove(evt.getField());
