@@ -44,7 +44,6 @@ public class SimpleGSP implements GeneralSearchProblem {
 	// the single difference in using another search algorithm
 	// would only concern the constructor call
 	s = new IterativeDeepeningAStar(h);
-	s = new IterativeExpansion(h); /**@fixme remove this line**/
 
 	GeneralSearchProblem problem = new SimpleGSP(1, 8);
 

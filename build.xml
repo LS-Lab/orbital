@@ -166,8 +166,6 @@
             description="compile *.jj (=> ./classes)">
         <javacc target="${sources}/orbital/moon/logic/LogicParser.jj" 
 		javacchome="d:/Sprachen/java/Utilities/JavaCC"/>
-        <javacc target="${sources}/orbital/moon/logic/MathParser.jj" 
-		javacchome="d:/Sprachen/java/Utilities/JavaCC"/>
     </target>
 
     <target name="clean" depends="init"
@@ -187,7 +185,7 @@
 		<exclude name="Algorithms/util/*"/>
 	    </fileset>
 	    <fileset dir="${sources}/orbital/moon/logic"
-	        includes="SimpleCharStream.java, Token.java, TokenManager.java, TokenMgrError.java, ParseException.java, MathParser.java, MathParserTokenManager.java, MathParserConstants.java, LogicParser.java, LogicParserTokenManager.java, LogicParserConstants.java"/>
+	        includes="SimpleCharStream.java, Token.java, TokenManager.java, TokenMgrError.java, ParseException.java, LogicParser.java, LogicParserTokenManager.java, LogicParserConstants.java"/>
         </delete>
     </target>
 
@@ -298,12 +296,6 @@
 	</exec>
 	<exec dir="${doc}/api/orbital/moon/logic" executable="jjdoc" os="Linux">
 	    <arg line="-OUTPUT_FILE:doc-files/LogicParser_grammar.html ${sources}/orbital/moon/logic/LogicParser.jj"/>
-	</exec>
-	<exec dir="${doc}/api/orbital/moon/logic" executable="cmd.exe" os="Windows 2000">
-	    <arg line="/c jjdoc -OUTPUT_FILE:doc-files/MathParser_grammar.html ${sources}/orbital/moon/logic/MathParser.jj"/>
-	</exec>
-	<exec dir="${doc}/api/orbital/moon/logic" executable="jjdoc" os="Linux">
-	    <arg line="-OUTPUT_FILE:doc-files/MathParser_grammar.html ${sources}/orbital/moon/logic/MathParser.jj"/>
 	</exec>
 	<exec dir="${doc}/api/orbital/moon/logic" executable="cmd.exe" os="Windows 2000">
 	    <arg line="/c &quot;copy /A doc-files\LogicParser_grammar.html + ${basedir}\src\orbital\moon\logic\doc-files\LogicParser_lexical.html doc-files\LogicParser_grammar.html&quot;"/>
