@@ -1,4 +1,18 @@
 #
+# completely wrong in (most) systems
+#
+
+[]A |= []B
+[]A |= <>B
+<>A |= []A
+[]A |= A
+<>A |= A
+A |= <>A
+
+|= [](A|B) -> ([]A|[]B)		# not even in S5
+|= (<>A&<>B) -> (<>A&<>B)	# not even in S5  @fixme
+
+#
 # still right in higher systems
 #
 
@@ -6,9 +20,9 @@
 # Inference Rules
 #
 A |- []A					# necessitation "Gödelregel" (for global consequence)
-##@fixme suspends proving |- []A->A					# in System T
-##@fixme |- []A->[][]A				# in System S4
-##@fixme |- <>A->[]<>A				# in System S5
+|- []A->A					# in System T
+|- []A->[][]A				# in System S4
+|- <>A->[]<>A				# in System S5
 
 ## are the following true? (see NKL U3.1.3), or only for propositional A
 #
@@ -18,31 +32,14 @@ A |- []A					# necessitation "Gödelregel" (for global consequence)
 #
 
 |= []A -> A				# in System T
-##@fixme suspends proving |= A -> <>A				# in System T
-|= [][]A -> []A				# in System T
+|= A -> <>A				# in System T
+|= [][]A -> []A				# in System T	@fixme
 |= []<>A -> <>A				# in System T
-##@fixme |= []A -> <>[]A				# in System T
-|= <>A -> <><>A			# in System T
+|= []A -> <>[]A				# in System T
+|= <>A -> <><>A				# in System T	@fixme
 
-##@fixme |= [][]A <-> []A				# in System S4
-##@fixme |= <><>A <-> <>A				# in System S4
+##@fixme time > |= [][]A <-> []A				# in System S4
+##@fixme time > |= <><>A <-> <>A				# in System S4
 
 ##@fixme |= <>[]A <-> []A				# in System S5
-|= []<>A <-> <>A				# in System S5
-
-
-
-
-#
-# completely wrong in (most) systems
-#
-
-##[]A |= []B
-[]A |= <>B
-<>A |= []A
-##[]A |= A
-<>A |= A			# @fixme true?
-##A |= <>A			# ??
-
-##|= [](A|B) -> ([]A|[]B)		# not even in S5
-##|= (<>A&<>B) -> (<>A&<>B)	# not even in S5
+##@xxx space > 80Mb |= []<>A <-> <>A				# in System S5
