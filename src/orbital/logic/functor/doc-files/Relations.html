@@ -30,8 +30,8 @@
 <blockquote>
   ρ ⊆ A
 </blockquote>
-<p>The set of all predicates (or relations) of type (A×B) is the power set <dfn>℘(A×B)</dfn>. 
-These predicates have the form:
+<p>Particularly, the set of all binary predicates (or binary relations) of type 
+(A×B) is the power set <dfn>℘(A×B)</dfn>. These predicates have the form:
 <blockquote>
   ρ ⊆ A × B
 </blockquote>
@@ -71,7 +71,9 @@ properties.</p>
   <dt>transitive</dt>
   <dd>if <span class="Formula">∀a,b,c∈M (a ~ b ∧ b ~ c ⇒ a ~ c)</span>.</dd>
   <dt>euclidean</dt>
-  <dd>if <span class="Formula">∀a,b,c∈M (a ~ c ∧ b ~ c ⇒ a ~ b)</span>.</dd>
+  <dd>if <span class="Formula">∀a,b,c∈M (a ~ c ∧ b ~ c ⇒ a ~ b), 
+    sometimes also formulated as ∀a,b,c∈M (a ~ b ∧ a ~ c ⇒ b ~ c), 
+    instead</span>.</dd>
   <dt>equivalence</dt>
   <dd>if it is reflexive, symmetric, and transitive.</dd>
   <dt>(partial) order</dt>
@@ -91,6 +93,16 @@ properties.</p>
       a≡b :⇔ a~b∧b~a.
     </div>
   </dd>
+  <dt>dense</dt>
+  <dd><span class="Formula">∀a,b∈M (a ~ b ⇒ ∃z∈M (a ~ z ∧ z ~ b))</span>.</dd>
+  <dt>weakly connected</dt>
+  <dd><span class="Formula">∀a,b,c∈M (a ~ b ∧ a ~ c ⇒ (b = c ∨ b ~ c 
+    ∨ c ~ b))</span>.</dd>
+  <dt>weak directed, directly confluent</dt>
+  <dd><span class="Formula">∀a,b,c∈M (a ~ b ∧ a ~ c ⇒ ∃w∈M (b ~ w 
+    ∧ c ~ w)).</span></dd>
+  <dt>confluent?</dt>
+  <dd><span class="Formula">∀a,b∈M (a ~ b ⇒ ∃w∈M (a ~ w ∧ b ~ w)).</span></dd>
 </dl>
 With the diagonal Δ := {(a,a) ¦ a∈M}.
 <p>Orders ≤ ⊆ M×M and strict orders &lt; ⊆ M×M bijectively correspond to 
@@ -128,7 +140,8 @@ define further properties of relations like the following.</p>
 <dl class="def">
   The relation ~ ⊆ A×B is:
   <dt>left-total</dt>
-  <dd>if <span class="Formula">∀x∈A∃y∈B x ~ y</span>.</dd>
+  <dd>if <span class="Formula">∀x∈A∃y∈B x ~ y</span>. Also called 
+    &quot;serial&quot; which is a kind of existence presupposition in ∘R.</dd>
   <dt>right-total</dt>
   <dd>if <span class="Formula">∀y∈B∃x∈A x ~ y</span>.</dd>
   <dt>left-unique</dt>
