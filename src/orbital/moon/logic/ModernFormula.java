@@ -253,7 +253,9 @@ abstract class ModernFormula extends LogicBasis implements Formula {
             
 	    // symbols
 	    try {
-		return interpretationOf(I.get(symbol));
+		Object referent = I.get(symbol);
+		assert validInterpretation(referent) : "check referent has legal type";
+		return referent;
 	    }
 	    catch (NullPointerException ex) {
 		throw (IllegalStateException) new IllegalStateException("interpretation of '" + symbol + "' is invalid, due to " + ex + " in " + I).initCause(ex);
@@ -268,11 +270,11 @@ abstract class ModernFormula extends LogicBasis implements Formula {
          * allow more than Boolean, but assert that the types of symbol and desc fit.
 	 * @todo document update this old documentation
          */ 
-    	protected final Object interpretationOf(Object desc) {
+    	private final boolean validInterpretation(Object desc) {
 	    if (desc == null)
 		throw new NullPointerException(desc + " is not a valid interpretation");
 	    else if (symbol.getType().apply(desc))
-		return desc;
+		return true;
 	    else
 		throw new IllegalArgumentException("incompatible interpretation " + desc + " of " + desc.getClass() + " for " + symbol.getType());
     	}

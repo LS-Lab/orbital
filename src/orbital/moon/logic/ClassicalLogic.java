@@ -228,7 +228,6 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 				expected = true;
 			    } else
 				throw new InternalError("none of the cases of which one occurs is true");
-			    System.err.println("proving " + resName + " ...");
 			    rd = new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/" + resName), DEFAULT_CHARSET);
 			    if (expected != proveAll(rd, logic, expected, normalForm, verbose))
 				throw new LogicException("instantiated " + logic + " which does " + (expected ? "not support all conjectures" : "a contradictory conjecture") + " of " + resName + ". Either the logic is non-classical, or the resource file is corrupt.");
@@ -243,9 +242,8 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 			}
 		    }
 		    catch (FileNotFoundException x) {
-			System.err.println(x);
 			System.err.println(orbital.signe.getHelpAboutHelp());
-			return;
+			throw x;
 		    }
 		    finally {
 			if (rd != null)
@@ -684,7 +682,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		F = (Formula) Functionals.fixedPoint(CNFeliminate, F);
 		// negation normal form transform TRS
 		if (NegationNFTransform == null)
-		    NegationNFTransform = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/negationNF")));
+		    NegationNFTransform = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/negationNF.trs")));
 		return (Formula) Functionals.fixedPoint(NegationNFTransform, F);
 	    } catch (java.text.ParseException ex) {
 		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
