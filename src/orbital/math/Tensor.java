@@ -13,12 +13,7 @@ import java.awt.Dimension;
 import java.util.NoSuchElementException;
 
 /**
- * Represents a tensor of any dimensions n<sub>1</sub>&times;n<sub>2</sub>&times;&#8230;&times;n<sub>1</sub>.
- * <p>
- * The components v<sub>i</sub>&isin;R are any arithmetic objects forming a ring.
- * (R<sup>n</sup>,+,&lowast;) form a (free) R-module
- * with the law of composition + and the law of action &lowast;.
- * </p>
+ * Represents a tensor of any dimensions n<sub>1</sub>&times;n<sub>2</sub>&times;&#8230;&times;n<sub>r</sub>.
  * <p>
  * If you intend to use <em>mutable</em> arithmetic elements, note the discussion of
  * mutations per reference vs. explicit cloning in {@link Matrix#set(int,int,Arithmetic)}
@@ -34,6 +29,10 @@ import java.util.NoSuchElementException;
  * @structure extends Iteratable
  * @version 1.1, 2002/06/09
  * @author  Andr&eacute; Platzer
+ * @see Values#tensor(Arithmetic[])
+ * @see Values#tensor(Arithmetic[][])
+ * @see Values#tensor(Arithmetic[][][])
+ * @see Values#tensor(Object[])
  */
 public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
     // object-methods
@@ -48,6 +47,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
     /**
      * Get the rank of the tensor.
      * The rank is the number of dimensions needed as indices for its components.
+     * @see Matrix#linearRank()
      */
     int rank();
     
@@ -60,12 +60,18 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
 
     /**
      * Get the value at the component specified by index.
+     * <p>
+     * Of course, this method only has a meaning for tensors of free modules like vector spaces.
+     * </p>
      * @pre valid(i) := (i.length == rank() &and; &forall;k 0&le;i[k]&le;dimensions()[k]-1)
      */
     Arithmetic/*>R<*/ get(int[] i);
 
     /**
      * Sets a value at the component specified by index.
+     * <p>
+     * Of course, this method only has a meaning for tensors of free modules like vector spaces.
+     * </p>
      * @pre valid(i)
      * @throws UnsupportedOperationException if this tensor is constant and does not allow modifications.
      */
@@ -75,7 +81,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
 
     /**
      * Returns an iterator over all elements.
-     * @return an iterator that iterates over v<sub>0,&#8230;,0</sub>,&#8230;v<sub>1,&#8230;,0</sub>,&#8230;,v<sub>n<sub>1</sub>-1,&#8230;,n<sub>r</sub>-1</sub>.
+     * @return an iterator that iterates over v<sub>0,&#8230;,0</sub>,&#8230;,v<sub>1,&#8230;,0</sub>,&#8230;,v<sub>n<sub>1</sub>-1,&#8230;,n<sub>r</sub>-1</sub>.
      */
     Iterator/*_<R>_*/ iterator();
     
@@ -112,6 +118,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
     /**
      * Adds two tensors returning a tensor.
      * @pre Arrays.equals(dimensions(), b.dimension())
+     *  otherwise there can only be a purely symbolic result
      * @post Arrays.equals(RES.dimensions(), dimensions())
      *  	&& RES.get(i) == get(i) + b.get(i)
      * @attribute associative
@@ -124,6 +131,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
     /**
      * Subtracts two tensors returning a tensor.
      * @pre Arrays.equals(dimensions(), b.dimension())
+     *  otherwise there can only be a purely symbolic result
      * @post Arrays.equals(RES.dimensions(), dimensions())
      *  	&& RES.get(i) == get(i) - b.get(i)
      * @attribute associative
@@ -149,6 +157,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      * the resulting column-tensor <code>v&middot;A</code> is sized <code>m</code>.
      * @pre dimension() == B.dimension().height
      */
+    //@note tensor product is one multiplication on graded tensor algebra
     //@todo Tensor/*<R>*/ multiply(Matrix/*<R>*/ B);
 
     // operations on tensors

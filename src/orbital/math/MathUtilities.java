@@ -221,7 +221,7 @@ public final class MathUtilities {
      * Returns greatest common divisor (GCD) of two elements of a ring.
      * The GCD is the greatest (with respect to dividability) element in the ring which divides both, a and b.
      * <p>
-     * In an euclidean ring R it is true that
+     * In an Euclidean ring R it is true that
      * <ul>
      *   <li>&forall;a&isin;R\{0} gcd(a, 0) = a</li>
      *   <li>&forall;a&isin;R,b&isin;R\{0} gcd(a, b) = gcd(b, a mod b)</li>
@@ -233,7 +233,7 @@ public final class MathUtilities {
      * @pre &not;(a==0 &and; b==0)
      * @return gcd(a,b) := inf(a,b) with divides as a partial order (N,|).
      * @note the father of all algorithms: Euclid.
-     * @note the mother of all data structures: ADT euclidean ring
+     * @note the mother of all data structures: ADT Euclidean ring
      * @note There are even principal rings which are not Euclidean but where one can define the equivalent of the Euclidean algorithm.
      *  The algorithm for rational numbers was given in Book VII of Euclid's Elements, and the algorithm for reals appeared in Book X,
      *  and is the earliest example of an integer relation algorithm (Ferguson et al. 1999, also see Ferguson-Forcade algorithm in Ferguson et al. 1999). 
@@ -321,20 +321,20 @@ public final class MathUtilities {
      * Returns greatest common divisor (GCD) of two integers.
      * The GCD is the greatest integer which divides both numbers.
      * <p>
-     * In an euclidean ring R it is true that
+     * In an Euclidean ring R it is true that
      * <ul>
      *   <li>&forall;a&isin;R gcd(a, 0) = a</li>
      *   <li>&forall;a&isin;R,b&isin;R\{0} gcd(a, b) = gcd(b, a mod b)</li>
      * </ul>
      * <p>
-     * This implementation uses the non-extended euclidian algorithm.
+     * This implementation uses the non-extended Euclidian algorithm.
      * </p>
      * @pre &not;(a==0 &and; b==0)
      * @return gcd(a,b) := inf(a,b) with divides as a partial order (N,|).
      * @note the father of all algorithms: Euclid.
-     * @note the mother of all data structures: ADT euclidean ring
-     * @internal note see extended euclidian algorithm ELBA (Euclid-Lagrange-Berlekamp Algorithm) for a decomposition into g=ggT(a,b),r,s in R such that g = r*a + s*b
-     * @todo can we generalize this algorithm such that it works for any euclidian ring?
+     * @note the mother of all data structures: ADT Euclidean ring
+     * @internal note see extended Euclidian algorithm ELBA (Euclid-Lagrange-Berlekamp Algorithm) for a decomposition into g=ggT(a,b),r,s in R such that g = r*a + s*b
+     * @todo can we generalize this algorithm such that it works for any Euclidian ring?
      * @todo optimize
      * @has time complexity gcd&isin;O(&#13266;(max{||a||, ||b||}))
      */

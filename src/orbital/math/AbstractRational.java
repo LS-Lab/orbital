@@ -1,7 +1,7 @@
 /**
  * @(#)AbstractRational.java 1.0 2000/08/03 Andre Platzer
  * 
- * Copyright (c) 1996 Andre Platzer. All Rights Reserved.
+ * Copyright (c) 2000 Andre Platzer. All Rights Reserved.
  */
 
 package orbital.math;
@@ -177,9 +177,6 @@ abstract class AbstractRational extends AbstractReal implements Rational {
 	    return new RationalImpl(numerator, denominator);
     	} 
     
-    	/**
-    	 * returns the numerator component.
-    	 */
     	public Integer numerator() {
 	    return Values.valueOf(numerator);
     	} 
@@ -187,9 +184,6 @@ abstract class AbstractRational extends AbstractReal implements Rational {
 	    return numerator;
     	} 
     
-    	/**
-    	 * returns the denominator component.
-    	 */
     	public Integer denominator() {
 	    return Values.valueOf(denominator);
     	} 
@@ -198,9 +192,6 @@ abstract class AbstractRational extends AbstractReal implements Rational {
     	} 
     
     	// Arithmetic implementation synonyms
-    	/**
-    	 * adds two Rationals returning a third as a result
-    	 */
     	public Rational add(Rational b) {
 	    final int b_denominator = validate(b.denominator()).intValue();
 	    int m = MathUtilities.lcm(denominatorValue(), b_denominator);
@@ -208,25 +199,16 @@ abstract class AbstractRational extends AbstractReal implements Rational {
 	    return new RationalImpl(f1 * numeratorValue() + f2 * validate(b.numerator()).intValue(),
 				    m).representative();
     	} 
-    	/**
-    	 * subtracts two Rationals returning a third as a result
-    	 */
     	public Rational subtract(Rational b) {
 	    return add((Rational) b.minus());
     	} 
     	public Arithmetic minus() {
 	    return new RationalImpl(-numeratorValue(), denominatorValue());
     	} 
-    	/**
-    	 * multiplies two Rationals returning a third as a result
-    	 */
     	public Rational multiply(Rational b) {
 	    return new RationalImpl(numeratorValue() * validate(b.numerator()).intValue(),
 				    denominatorValue() * validate(b.denominator()).intValue()).representative();
     	} 
-    	/**
-    	 * divides two Rationals returning a third as a result
-    	 */
     	public Rational divide(Rational b) {
 	    return new RationalImpl(numeratorValue() * validate(b.denominator()).intValue(),
 				    denominatorValue() * validate(b.numerator()).intValue()).representative();
@@ -249,6 +231,7 @@ abstract class AbstractRational extends AbstractReal implements Rational {
 		p = -p;
 		q = -q;
 	    }
+	    // cancel
 	    int d = MathUtilities.gcd(p, q);
 	    return d != 1
 		? new RationalImpl(p / d, q / d)

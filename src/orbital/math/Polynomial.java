@@ -16,10 +16,12 @@ import java.util.ListIterator;
  * Let R be a commutative ring with 1.
  * The polynomial ring over R in one variable X is
  * <center>R[X] := {&sum;<sub>i&isin;<b>N</b></sub> a<sub>i</sub>X<sup>i</sup> = (a<sub>i</sub>)<sub>i&isin;<b>N</b></sub> &brvbar; a<sub>i</sub>=0 p.t. i&isin;<b>N</b> &and; &forall;i&isin;<b>N</b> a<sub>i</sub>&isin;R}</center>
- * It is a commutative ring with 1.
- * If R is an integrity domain, then R[X] as well, and R[X]<sup>&times;</sup> = R<sup>&times;</sup>.
- * If R is factorial (a unique factorization domain), then R[X] as well.
- * If R is Noetherian, then R[X] as well.
+ * It is a commutative, unital, and associative, graded R-algebra.
+ * R[X] inherits the properties of being an integrity domain, factorial (a unique factorization domain), Noetherian from R.
+ * Additionally, if R is an integrity domain, then R[X]<sup>&times;</sup> = R<sup>&times;</sup>.
+ * </p>
+ * <p>
+ * The polynomial ring over a field in <em>one</em> variable even is Euclidean.
  * </p>
  *
  * @version 1.1, 2001/12/09
@@ -30,13 +32,14 @@ import java.util.ListIterator;
  * @see NumericalAlgorithms#polynomialInterpolation(Matrix)
  * @todo implements Function<T,T> instead with T a "compatible" type (see Algebra I) and evaluation of Horner-Scheme
  * @todo implements orbital.math.functional.Function<T,T> instead of orbital.logic.functor.Function<R,R>
+ * @todo generalize to multivariat polynomials (which are no longer Euclidean)
  */
 public interface Polynomial/*<R implements Arithmetic>*/ extends Euclidean, Function/*<R,R>*/ {
     // Get/Set properties
     /**
      * Get the degree of this polynomial.
      * <p>
-     * This degree is the euclidean degree function &delta; for polynomials.
+     * This degree is the Euclidean degree function &delta; for polynomials.
      * </p>
      * @return deg(this) = max {i&isin;<b>N</b> &brvbar; a<sub>i</sub>&ne;0}
      */
@@ -62,7 +65,7 @@ public interface Polynomial/*<R implements Arithmetic>*/ extends Euclidean, Func
 	
     /**
      * Evaluate this polynomial at <var>a</var>.
-     * Using the "Einsetzungshomomorphismus".
+     * Using the <span xml:lang="de">"Einsetzungshomomorphismus"</span>.
      * @return f(a) = f(X)|<sub>X=a</sub> = (f(X) mod (X-a))
      * @todo we could just as well generalize the argument and return type of R
      */

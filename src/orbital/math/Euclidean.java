@@ -10,8 +10,8 @@ package orbital.math;
  * Euclidean ring interface.
  * <dl class="def">
  * Let R be an integrity domain.
- *   <dt>euclidean ring</dt>
- *   <dd>R is an euclidean ring :&hArr;
+ *   <dt>Euclidean ring</dt>
+ *   <dd>R is an Euclidean ring :&hArr;
  *     &exist;&delta;:R&#8726;{0}&rarr;<b>N</b>
  *     <blockquote>
  *       &forall;f&isin;R&forall;g&isin;R&#8726;{0} &exist;q,r&isin;R f = q&sdot;g + r
@@ -19,9 +19,9 @@ package orbital.math;
  *     </blockquote>
  *     with &delta;(r) &lt; &delta;(g) &or; r = 0.
  *     <div>
- *       &delta; is called euclidean degree of R.
- *       The euclidean &quot;quotient&quot; q is denoted by f div g,
- *       the euclidean remainder r is denoted by f mod g.
+ *       &delta; is called Euclidean degree of R.
+ *       The Euclidean &quot;quotient&quot; q is denoted by f div g,
+ *       the Euclidean remainder r is denoted by f mod g.
  *     </div>
  *   </dd>
  * </dl>
@@ -38,24 +38,24 @@ package orbital.math;
 public interface Euclidean extends Arithmetic {
 	
     /**
-     * Get the euclidean degree.
-     * @return the euclidean degree &delta;(this) of this value.
+     * Get the Euclidean degree.
+     * @return the Euclidean degree &delta;(this) of this value.
      * @post RES=&delta;(this)
      */
     Integer degree();
 	
     /**
-     * Get the euclidean &quot;quotient&quot; by g.
+     * Get the Euclidean &quot;quotient&quot; by g.
      * @return this div g &isin; R.
      * @throws IllegalArgumentException if the argument type is illegal for this operation.
      *  Note: for single type handling it is also allowed to throw a ClassCastException, instead.
-     * @note the euclidean quotient f div g is distinct from the fractional quotient f/g=f.{@link Arithmetic#divide(Arithmetic) divide}(g).
+     * @note the Euclidean quotient f div g is distinct from the fractional quotient f/g=f.{@link Arithmetic#divide(Arithmetic) divide}(g).
      * @todo rename since quotient is f/g in the quotient ring itself.
      */
     Euclidean quotient(Euclidean g);
 
     /**
-     * Get the euclidean remainder, modulo g.
+     * Get the Euclidean remainder, modulo g.
      * @return this mod g &isin; R.
      * @post RES.degree() < g.degree() &or; RES==0
      * @throws IllegalArgumentException if the argument type is illegal for this operation.

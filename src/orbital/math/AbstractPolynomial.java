@@ -338,11 +338,11 @@ class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractArithmetic
     }
 
     public Arithmetic divide(Arithmetic b) throws UnsupportedOperationException {
-	throw new UnsupportedOperationException("dividing euclideans is not generally defined");
+	throw new UnsupportedOperationException("dividing Euclideans is not generally defined");
     } 
 
     public Arithmetic inverse() throws UnsupportedOperationException {
-	throw new UnsupportedOperationException("inverse of euclideans is not generally defined");
+	throw new UnsupportedOperationException("inverse of Euclideans is not generally defined");
     } 
 
     public Euclidean quotient(Euclidean g) {

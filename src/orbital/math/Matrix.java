@@ -29,11 +29,11 @@ import java.util.NoSuchElementException;
  * <p>
  * The components m<sub>i,j</sub>&isin;R are any arithmetic objects.
  * If R is a true ring with 1,
- * the matrices (R<sup>n&times;n</sup>,+,&lowast;,&middot;) form a
+ * the square matrices (R<sup>n&times;n</sup>,+,&lowast;,&middot;) form a
  * unital, associative R-<a href="doc-files/AlgebraicStructures.html#laws_2_1">algebra</a>
  * with the laws of composition + and &middot; and the law of action &lowast;.
  * But it is non-commutative and has zero divisors for n&ge;2.
- * The matrices (R<sup>n&times;m</sup>,+,&lowast;)  form an
+ * The general matrices (R<sup>n&times;m</sup>,+,&lowast;) form an
  * R-<a href="doc-files/AlgebraicStructures.html#laws_1_1">module</a>,
  * at least,
  * with the law of composition + and the law of action &lowast;.
@@ -55,6 +55,7 @@ import java.util.NoSuchElementException;
  * @structure extends Tensor
  * @version 1.0, 2000/08/08
  * @author  Andr&eacute; Platzer
+ * @see Values#tensor(Arithmetic[][])
  * @see Values#valueOf(Arithmetic[][])
  * @see Values#valueOf(double[][])
  * @todo turn into a template Matrix<R implements Arithmetic>
@@ -69,6 +70,9 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
 
     /**
      * Returns the value at a position (i|j).
+     * <p>
+     * Of course, this method only has a meaning for free modules like vector spaces.
+     * </p>
      * @param i the row of the value to get.
      * @param j the column of the value to get.
      * @return m<sub>i,j</sub>.
@@ -77,6 +81,9 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
 
     /**
      * Sets a value at a position (i|j).
+     * <p>
+     * Of course, this method only has a meaning for free modules like vector spaces.
+     * </p>
      * @param i the row of the value to set.
      * @param j the column of the value to set.
      * @param m the value to set for the element m<sub>i,j</sub> at position (i|j)
@@ -242,6 +249,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * Rank of this matrix.
      * i.e. the maximum number of column vectors (or row vectors) that are linear independent.
      * @return rank M = dim<sub>K</sub>(im(M)).
+     * @see Tensor#rank()
      */
     int linearRank();
 
@@ -263,6 +271,13 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * </ul>
      * which is a measure for how much A stretches vectors.
      * </p>
+     * <p>This method should implement induced p-norms, where
+     * <ul>
+     *   <li>||A||<sub>1</sub> = max {&sum;<span class="doubleIndex"><sub>i=1</sub><sup>n</sup></span>|a<sub>ij</sub>| &brvbar; 1&le;j&le;m} is the norm of column sums.</li>
+     *   <li>||A||<sub>&infin;</sub> = max {&sum;<span class="doubleIndex"><sub>j=1</sub><sup>m</sup></span>|a<sub>ij</sub>| &brvbar; 1&le;i&le;n} is the norm of row sums.</li>
+     *   <li>||A||<sub>2</sub> = sqrt max Eigenvalues(A<sup>*</sup>&middot;A) is the spectral norm. (optional operation)</li>
+     * </ul>
+     * </p>
      * @todo document again, the norms implemented by AbstractMatrix.
      * @pre p>=1
      */
@@ -279,7 +294,9 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
 
     /**
      * Returns the determinant of the matrix representation. The determinant is useful to determine if the
-     * matrix can be inverted. The determinant invariant is denoted as det M = |M|.
+     * matrix can be inverted. The determinant is denoted as det M = |M|.
+     * It is the universal alternating mapping R<sup>n&times;</sup>&cong;(R<sup>n</sup>)<sup>n</sup>&rarr;&Lambda;<sup>n</sup>(R<sup>n</sup>)&cong;R
+     * of the exterior product &Lambda;<sup>n</sup>(R<sup>n</sup>).
      * <p>
      * <table>
      * <tr><td colspan="3">det:R<sup>n&times;n</sup>&rarr;R exists and is uniquely
@@ -325,12 +342,12 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      *         <td align="center">a<sub>n-1</sub></td>
      *       </tr>
      *     </table></td>
-     *     <td>&quot;multi-linear&quot; (here linear in each row)</td>
+     *     <td>&quot;multi-linear&quot; (linear in each row)</td>
      *   </tr>
      *   <tr>
      *     <td>( )</td>
      *     <td>rank M &lt; n &hArr; det(M)=0</td>
-     *     <td>&nbsp;</td>
+     *     <td>&quot;&asymp;alternating&quot;</td>
      *   </tr>
      *   <tr>
      *     <td>(1)</td>

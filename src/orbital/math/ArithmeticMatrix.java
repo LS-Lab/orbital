@@ -55,7 +55,7 @@ class ArithmeticMatrix/*<R implements Arithmetic>*/ extends AbstractMatrix/*<R>*
 	    System.out.println("norm ||N||\t=" + N.norm());
 	    System.out.println("column sum norm\t=" + N.norm(1));
 	    System.out.println("row sum norm\t=" + N.norm(Double.POSITIVE_INFINITY));
-	    System.out.println("Rank N\t=" + N.rank());
+	    System.out.println("Rank N\t=" + N.linearRank());
 	    System.out.println("det N\t= |N|=" + N.det());
 	    System.out.println("Tr N\t=" + N.trace());
 	    System.out.println("N^-1\t=" + N.inverse());

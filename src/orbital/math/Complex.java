@@ -17,16 +17,16 @@ import orbital.logic.functor.Predicate;
  * </p>
  * <p>
  * <span style="float: left; font-size: 200%">&#9761;</span>
- * Complex numbers are not real numbers. They are not ordered.
+ * Since complex numbers are a field, they are also an {@link Euclidean Euclidean ring}.
+ * However, because fields are (in a way) &quot;degenerate&quot;
+ * Euclidean rings, they do not extend the {@link Euclidean} interface.
+ * The Euclidean quotient and remainder operations would not perform
+ * very interesting calculations, and the Euclidean quotient would
+ * fully coincide with ordinary division in a field.
  * </p>
  * <p>
  * <span style="float: left; font-size: 200%">&#9761;</span>
- * Since complex numbers are a field, they are also an {@link Euclidean euclidean ring}.
- * However, because fields are (in a way) &quot;degenerate&quot;
- * euclidean rings, they do not extend the {@link Euclidean} interface.
- * The euclidean quotient and remainder operations would not perform
- * very interesting calculations, and the euclidean quotient would
- * fully coincide with ordinary division in a field.
+ * Complex numbers are not like real numbers. They are not ordered.
  * </p>
  * 
  * @invariant &not;super &and; &not; (this is Comparable) || abnormal(&not; Comparable)

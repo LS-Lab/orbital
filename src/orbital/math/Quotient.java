@@ -10,6 +10,7 @@ import orbital.logic.functor.Function;
 
 /**
  * Quotient represents an (algebraic) equivalence class a&#772;=&atilde;=[a]&isin;M/~.
+ * The quotient M/~ has the same algebraic structure as M.
  * <p>
  * Let &pi;:M&#8608;M/~;a&#8614;a&#772; be the canonical projection to the equivalence classes.
  * When <strong>choosing</strong> one <em>left</em>-inverse &pi;<sup>-1</sup>, we have a
@@ -122,7 +123,7 @@ public interface Quotient/*<M implements Arithmetic>*/ extends Arithmetic {
      * Returns (modular) multiplicative inverse of this (mod ~).
      * @throws ArithmeticException if this quotient has no
      * multiplicative inverse modulo ~.
-     * At least in quotients of {@link Euclidean euclidean rings} R
+     * At least in quotients of {@link Euclidean Euclidean rings} R
      * an element a&isin;R/(m) does not have a multiplicative inverse,
      * iff gcd(a, m)&ne;1.
      */
@@ -133,5 +134,10 @@ public interface Quotient/*<M implements Arithmetic>*/ extends Arithmetic {
     Quotient/*<M>*/ multiply(Quotient/*<M>*/ b);
     Quotient/*<M>*/ divide(Quotient/*<M>*/ b) throws ArithmeticException;
     Quotient/*<M>*/ power(Quotient/*<M>*/ b);
-    //@todo when covariant return-types : Quotient/*<M>*/ scale(Arithmetic alpha);
+    /**
+     * {@inheritDoc}
+     * @post RES instanceof Quotient<M>
+     * @todo when covariant return-types change return-type to Quotient<M>.
+     */
+    Arithmetic scale(Arithmetic alpha);
 }

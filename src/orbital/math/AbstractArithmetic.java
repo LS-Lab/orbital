@@ -60,7 +60,7 @@ abstract class AbstractArithmetic implements Arithmetic {
 	    throw new UnsupportedOperationException("default power only implemented for scalar integer numbers");
 	}
 	Arithmetic r = this;
-	int		   n = Math.abs(s.intValue());
+	int	   n = Math.abs(s.intValue());
 	for (int i = 0; i < n; i++)
 	    r = r.multiply(this);
 	if (s.intValue() < 0)

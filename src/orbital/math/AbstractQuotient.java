@@ -35,7 +35,7 @@ class AbstractQuotient/*<M implements Arithmetic>*/ implements Quotient/*<M>*/, 
 	//this.value = val == null ? null : (Arithmetic/*>M<*/) quotientOperator.apply(val);
     }
     /**
-     * Special remainder classes modulo m in euclidean rings.
+     * Special remainder classes modulo m in Euclidean rings.
      * @note assuming that M extends Euclidean
      */
     public AbstractQuotient(Euclidean/*>M<*/ val, Euclidean m) {
@@ -159,7 +159,7 @@ class AbstractQuotient/*<M implements Arithmetic>*/ implements Quotient/*<M>*/, 
 	Function/*<M,M>*/ quotientOperator = getQuotientOperator();
 	if (quotientOperator instanceof EuclideanModulo) {
 	    Euclidean m = ((EuclideanModulo) quotientOperator).getModulus();
-	    assert representative() instanceof Euclidean : "euclidean modulo requires elements of the euclidean ring";
+	    assert representative() instanceof Euclidean : "Euclidean modulo requires elements of the Euclidean ring";
 	    // 1 = gcd(a,m) = r*a + s*m &hArr; 1 = r*a (mod m) &hArr; r = a^-1 (mod m)
 	    Euclidean r[] = MathUtilities.gcd(new Euclidean[] {(Euclidean) representative(), m});
 	    if (r[r.length - 1].one().equals(r[r.length - 1]))
@@ -167,12 +167,12 @@ class AbstractQuotient/*<M implements Arithmetic>*/ implements Quotient/*<M>*/, 
 	    else
 		throw new ArithmeticException("(" + representative() + ", " + m + ") are not coprime");
 	} else
-	    //@xxx should still implement better (with ELBA-gcd on euclidean?) if we only get invertible modulo modulus m. Since 7 has no inverse in Z but in Z<sub>16</sub>
+	    //@xxx should still implement better (with ELBA-gcd on Euclidean?) if we only get invertible modulo modulus m. Since 7 has no inverse in Z but in Z<sub>16</sub>
 	    try {
 		return equivalenceClass(representative().inverse());
 	    }
-	    catch (ArithmeticException unable) {throw new UnsupportedOperationException("can only invert quotients with non-invertible representatives in euclidean rings");}
-	    catch (UnsupportedOperationException unable) {throw new UnsupportedOperationException("can only invert quotients with non-invertible representatives in euclidean rings");}
+	    catch (ArithmeticException unable) {throw new UnsupportedOperationException("can only invert quotients with non-invertible representatives in Euclidean rings");}
+	    catch (UnsupportedOperationException unable) {throw new UnsupportedOperationException("can only invert quotients with non-invertible representatives in Euclidean rings");}
     } 
 
     public Quotient/*<M>*/ power(Quotient/*<M>*/ b) throws ArithmeticException {

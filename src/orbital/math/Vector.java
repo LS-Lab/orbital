@@ -78,6 +78,7 @@ import java.util.NoSuchElementException;
  * @structure extends Tensor
  * @version 1.0, 2000/08/08
  * @author  Andr&eacute; Platzer
+ * @see Values#tensor(Arithmetic[])
  * @see Values#valueOf(Arithmetic[])
  * @see Values#valueOf(double[])
  * @todo turn into a template Vector<R implements Arithmetic>
@@ -92,12 +93,18 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     int dimension();
 
     /**
-     * returns the value at component specified by index.
+     * Returns the value at the component specified by index.
+     * <p>
+     * Of course, this method only has a meaning for free modules like vector spaces.
+     * </p>
      */
     Arithmetic/*>R<*/ get(int i);
 
     /**
-     * sets a value at component specified by index.
+     * Sets a value at the component specified by index.
+     * <p>
+     * Of course, this method only has a meaning for free modules like vector spaces.
+     * </p>
      * @throws UnsupportedOperationException if this vector is constant and does not allow modifications.
      */
     void set(int i, Arithmetic/*>R<*/ vi) throws UnsupportedOperationException;

@@ -237,6 +237,8 @@ public class ArithmeticFormat extends Format {
 	    return format((Polynomial) obj, result, fieldPosition);
 	else if (obj instanceof Symbol)
 	    return format((Symbol) obj, result, fieldPosition);
+	else if (obj instanceof Fraction)
+	    return format((Fraction) obj, result, fieldPosition);
 	else if (obj instanceof Quotient)
 	    return format((Quotient) obj, result, fieldPosition);
 	else if (obj instanceof MathFunctor)
@@ -436,6 +438,14 @@ public class ArithmeticFormat extends Format {
      */
     public StringBuffer format(Quotient q, StringBuffer result, FieldPosition fieldPosition) {
 	result.append(q.representative().toString());
+	return result;
+    }
+
+    /**
+     * Specialization of format.
+     */
+    public StringBuffer format(Fraction as, StringBuffer result, FieldPosition fieldPosition) {
+	result.append("(" + as.numerator() + ") / (" + as.denominator() + ")");
 	return result;
     }
 

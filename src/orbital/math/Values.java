@@ -309,6 +309,7 @@ public final class Values {
      * specified array.
      * </p>
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     * @see #tensor(Arithmetic[])
      */
     public static /*<R implements Arithmetic>*/ Vector/*<R>*/ valueOf(Arithmetic/*>R<*/[] values) {
 	return new ArithmeticVector/*<R>*/(values);
@@ -325,7 +326,6 @@ public final class Values {
 	return v;
     } 
 
-    //@todo introduce Vector vector(List<R> values) and Matrix matrix(List<List<R>> values)
     static /*<R implements Arithmetic>*/ Vector/*<R>*/ vector(List/*_<R>_*/ values) {
 	Vector/*<R>*/   r = Values.getInstance(values.size());
 	Iterator/*_<R>_*/   it = values.iterator();
@@ -432,6 +432,7 @@ public final class Values {
      * @param values the element values of the matrix to create.
      *  The matrix may be backed by this exact array per reference.
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     * @see #tensor(Arithmetic[][])
      */
     public static /*<R implements Arithmetic>*/ Matrix/*<R>*/ valueOf(Arithmetic/*>R<*/[][] values) {
 	return new ArithmeticMatrix/*<R>*/(values);
@@ -449,6 +450,10 @@ public final class Values {
 		v.set(i, j, valueOf(values[i][j]));
 	return v;
     } 
+
+    static /*<R implements Arithmetic>*/ Matrix/*<R>*/ matrix(List/*_<List<R>>_*/ values) {
+	throw new UnsupportedOperationException("not yet implemented");
+    }
 
     /**
      * Creates a new instance of matrix with the specified dimension.
@@ -569,6 +574,63 @@ public final class Values {
 	    };
     }
 
+    // tensor constructors
+    
+    /**
+     * Returns a vector containing the specified arithmetic objects.
+     * Vectors are the tensors of rank 1.
+     * <p>
+     * Note that the resulting vector may or may not be backed by the
+     * specified array.
+     * </p>
+     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     */
+    public static /*<R implements Arithmetic>*/ Vector/*<R>*/ tensor(Arithmetic/*>R<*/[] values) {
+	return valueOf(values);
+    }
+    /**
+     * Returns a matrix containing the specified arithmetic objects.
+     * Matrices are the tensors of rank 2.
+     * <p>
+     * Matrix components are expected row-wise, which means that
+     * as the first index in <code>values</code>, the row i is used
+     * and as the second index in <code>values</code>, the column j is used.
+     * </p>
+     * <p>
+     * Note that the resulting vector may or may not be backed by the
+     * specified array.
+     * </p>
+     * @param values the element values of the matrix to create.
+     *  The matrix may be backed by this exact array per reference.
+     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     */
+    public static /*<R implements Arithmetic>*/ Matrix/*<R>*/ tensor(Arithmetic/*>R<*/[][] values) {
+	return valueOf(values);
+    }
+    public static /*<R implements Arithmetic>*/ Tensor/*<R>*/ tensor(Arithmetic/*>R<*/[][][] values) {
+	throw new UnsupportedOperationException("not yet implemented");
+    }
+    /**
+     * Returns a tensor of rank k containing the specified arithmetic objects.
+     * <p>
+     * Note that the resulting tensor may or may not be backed by the
+     * specified array.
+     * </p>
+     * @param values the element values of the tensor to create.
+     *  The tensor may be backed by this exact array per reference.
+     * @pre values is a rectangular multi-dimensional array of {@link Arithmetic arithmetic objects}
+     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     */
+    public static Tensor tensor(Object[] values) {
+	if (values.getClass().getComponentType().isArray())
+	    //@todo check for rectangular arrays
+	    return tensor((Object[])values[0]);
+	else if (Arithmetic.class.isAssignableFrom(values.getClass()))
+	    throw new UnsupportedOperationException("not yet supported");
+	else
+	    throw new IllegalArgumentException("multi-dimensional array of " + Arithmetic.class + " expected");
+    }
+    
     // polynomial constructors and utilities
 
     /**
@@ -633,30 +695,30 @@ public final class Values {
 
     /**
      * Returns a new quotient a&#772;=[a]&isin;M/mod
-     * of the givne value reduced with the quotient operator.
+     * of the given value reduced with the quotient operator.
      * <p>
-     * Note that unlike {@link #quotient(Euclidean,Euclidean) quotients of euclidean rings}
+     * Note that unlike {@link #quotient(Euclidean,Euclidean) quotients of Euclidean rings}
      * and due to the black-box behaviour of the quotient operator
-     * these quotients do not guarantee and implementation of {@link #inverse()}.
+     * these quotients do not guarantee an implementation of {@link #inverse()}.
      * </p>
      * @param mod is the quotient operator applied (see {@link Quotient#getQuotientOperator()}).
      */
     public static /*<M implements Arithmetic>*/ Quotient/*<M>*/ quotient(Arithmetic/*>M<*/ a, Function/*<M,M>*/ mod) {
-	return new AbstractQuotient(a, mod);
+	return new AbstractQuotient/*<M>*/(a, mod);
     }
     /**
      * Returns a new quotient a&#772;=[a]&isin;M/(m) of the given
      * value reduced modulo m.
      * <p> Will use special remainder classes
-     * modulo m in euclidean rings.  These remainder classes are those
-     * induced by the {@link Euclidean#modulo(Euclidean) euclidean
-     * remainder} operator.  Quotients of euclidean rings have the big
+     * modulo m in Euclidean rings.  These remainder classes are those
+     * induced by the {@link Euclidean#modulo(Euclidean) Euclidean remainder}
+     * operator.  Quotients of Euclidean rings have the big
      * advantage of supporting a simple calculation of multiplicative
      * inverses modulo m.
      * </p>
      */
     public static /*<M implements Euclidean>*/ Quotient/*<M>*/ quotient(Euclidean/*>M<*/ a, Euclidean/*>M<*/ m) {
-	return new AbstractQuotient(a, m);
+	return new AbstractQuotient/*<M>*/(a, m);
     }
     /**
      * Returns a new quotient a&#772;=[a]&isin;M/(m)
@@ -678,13 +740,38 @@ public final class Values {
      * This is only a convenience constructor for a special case of
      * M=<b>Z</b>, M/(m)=<b>Z</b>/m<b>Z</b>.
      * Although this case appears rather often, it is by far not the
-     * only case of quotients.
+     * only case of quotients, of course.
      * </p>
      * @see <a href="{@docRoot}/DesignPatterns/Convenience.html">Convenience Method</a>
      * @see #quotient(Euclidean,Euclidean)
      */
     public static Quotient/*<Integer>*/ quotient(int a, int m) {
 	return quotient(valueOf(a), valueOf(m));
+    }
+
+    // fraction constructors
+
+    /**
+     * Returns a new fraction <span class="Formula">a&#8260;s &isin; S<sup>-1</sup>M = M<sub>S</sub></span>.
+     * <p>
+     * Note that this implementation does not check whether denominators are in the
+     * submonoid S, but only check for them to have the right type S. Since if S really is a
+     * monoid, it would suffice to check this at the instantiation, here.
+     * However, additionally this implementation does not check the prerequisite of {@link #inverse()}
+     * to have a numerator in the submonoid S, but only check for its type, again.
+     * </p>
+     * <p>
+     * The only alternative would require users to provide predicates checking for containement
+     * in the submonoid S, all the time.
+     * </p>
+     * <p>
+     * Also note that due to computational aspects, we generally assume the underlying
+     * ring to be an integrity domain for equality checking, of course.
+     * </p>
+     * @todo introduce the second case with explicit checking via a third argument predicate?
+     */
+    public static /*<M implements Arithmetic, S implements Arithmetic>*/ Fraction/*<M,S>*/ fraction(Arithmetic/*>M<*/ a, Arithmetic/*<S>*/ s) {
+	return new AbstractFraction/*<M,S>*/(a, s);
     }
 
     // symbol constructors
