@@ -1,5 +1,0 @@
-Manifest-Version: 1.0
-Specification-Title: Simple Browser
-Specification-Vendor: Andre Platzer
-Implementation-Vendor: Andre Platzer
-Main-Class: Browser
