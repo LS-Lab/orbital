@@ -1,0 +1,21 @@
+TODO make a questionaire
+What are your major priorities for further development?
+search algorithms
+planning algorithms
+genetic algorithms
+neural network [no final release yet]
+more or extended logics
+calculus and theorem proving
+mathematical data-types and representation
+numerical algorithms
+symbolic algebra
+other:
+
+In the past, we have been using
+
+In the future, we plan to start or increase use of the following topics
+
+We would prefer 
+1. Extending with new features
+2. Increase stability
+3. Verify implementation
