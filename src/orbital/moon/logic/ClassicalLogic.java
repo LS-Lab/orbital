@@ -207,6 +207,9 @@ public class ClassicalLogic extends ModernLogic {
 		    String mechanismDescription = arg[option].substring("-inference=".length()).toUpperCase();
 		    try {
 			InferenceMechanism mechanism = (InferenceMechanism) logic.getClass().getField(mechanismDescription).get(null);
+			if (mechanism.inference() instanceof orbital.moon.logic.resolution.ResolutionBase) {
+			    ((orbital.moon.logic.resolution.ResolutionBase) mechanism.inference()).setVerbose(verbose);
+			}
 			logic.setInferenceMechanism(mechanism);
 			System.out.println("Using " + mechanism);
 		    }
