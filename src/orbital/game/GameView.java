@@ -359,13 +359,14 @@ public class GameView extends Applet {
 	// }}
 
 	// {{INIT_CONTROLS
+	final Container pane = this;
 	setLayout(new BorderLayout());
 
 	if (control == null) {
 	    control = createControl();
-	    add(control, BorderLayout.NORTH);
+	    pane.add(control, BorderLayout.NORTH);
 	    setGameboard(new Gameboard());
-	    add(board, BorderLayout.CENTER);
+	    pane.add(board, BorderLayout.CENTER);
 	    final MenuBar ourBar = createMenuBar();
 	    if (ourBar != null)
 		try {
@@ -392,6 +393,11 @@ public class GameView extends Applet {
      * Applet-start entry point.
      */
     public void start() {
+	start(null);
+    }
+    private void start(Field initialField) {
+	//@internal that's better in order to not let the last gamemaster finally {setField(null)} at end of run() and our field's lost again after the first move.
+	setGamemaster(new Gamemaster(this, getGamemaster().getGameRules(), getGamemaster().getPlayers(), initialField));
 	getGamemaster().start();
 	setField(getGamemaster().getField());
 	showStatus(getResources().getString("statusbar.game.start"));
@@ -491,22 +497,16 @@ public class GameView extends Applet {
      */
     public void load(ObjectInputStream is) throws ClassNotFoundException, IOException {
 	stop();
-	//@internal that's better in order to not let the last gamemaster finally {setField(null)} at end of run() and our field's lost again after the first move.
-	setGamemaster(new Gamemaster(this, getGamemaster().getGameRules(), getGamemaster().getPlayers()));
-
 	if (!FILE_IDENTIFIER.equals(is.readUTF()))
 	    throw new IOException("illegal format of stream content");
 	Field field = (Field) is.readObject();
 	//System.out.println("GameView.load() field= " + System.identityHashCode(field));
-	setField(field);
-	//@todo should we start gamemaster on field?
-	getGamemaster().setField(field);
 	for (Iterator i = field.iterateNonEmpty(); i.hasNext(); ) {
 	    Figure f = (Figure) i.next();
 	    if (f instanceof FigureImpl)
 		((FigureImpl)f).setImage(getGameRules().getImage(f));
 	} 
-	getGamemaster().start();
+	start(field);
     } 
 
     /**
