@@ -150,6 +150,7 @@ public interface Expression extends Typed {
 
     /**
      * The base interface for all composite expressions that are composed of other expressions.
+     * Composite expressions are also called compound expressions.
      * @structure is {@link orbital.logic.Composite}&cap;{@link Expression}
      * @version 1.1, 2002-11-27
      * @author  Andr&eacute; Platzer
