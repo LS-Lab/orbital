@@ -9,7 +9,7 @@
 #
 |- A=>(B=>A)				# Ax1 weakening
 ##|- (A=>(B=>C)) => ((A=>B)=>(A=>C))	# Ax2 distributive
-##|- (~A=>B)=>(B=>A)			# Ax3 contra positive
+|- (~A=>~B)=>(B=>A)			# Ax3 contra positive
 |- [](A->B)->([]A->[]B)
 ##|- []A->A					# in System T
 |- []A->[][]A				# in System S4
@@ -26,25 +26,81 @@ A |- []A					# necessitation "Gödelregel" due to definition of |= A
 #   "<->"
 ## []A == ~<>~A
 
+#
+# 
+#
+
 #   "->"
 <>A |= ~[]~A
 #   "<-"
 ~[]~A |= <>A
 #   "<->"
 ## <>A == ~[]~A
-|= ([]A|[]B) -> [](A|B)
-|= <>(A&B) -> (<>A&<>B)
+
+|= [](A->B) -> ([]A->[]B)			# Ax
+
 # "<->" [](A&B) <-> ([]A&[]B)
 #   "->"
 ##|= [](A&B) -> ([]A&[]B)
 #   "<-"
 ##|= ([]A&[]B) -> [](A&B)
+# combined results already proven above, individually as "->" and "<-"
+##|= [](A&B) <-> ([]A&[]B)
+|= <>(A&B) -> (<>A&<>B)
+
 # "<->" <>(A|B) <-> (<>A|<>B)
 #   "->"
 |= <>(A|B) -> (<>A|<>B)
 #   "<-"
 ##|= (<>A|<>B) -> <>(A|B)
-
 # combined results already proven above, individually as "->" and "<-"
-##|= [](A&B) <-> ([]A&[]B)
 ##|= <>(A|B) <-> (<>A|<>B)
+|= ([]A|[]B) -> [](A|B)
+
+
+## are the following true? (see NKL Ü 3.1.3), or only for propositional A
+#
+
+#
+# modal literal relations
+#
+
+|= []A -> A				# in System T
+|= A -> <>A				# in System T
+|= [][]A -> []A				# in System T
+|= []<>A -> <>A				# in System T
+|= []A -> <>[]A				# in System T
+|= <>A -> <><>A			# in System T
+
+|= [][]A <-> []A				# in System S4
+|= <><>A <-> <>A				# in System S4
+
+|= <>[]A <-> []A				# in System S5
+|= []<>A <-> <>A				# in System S5
+
+
+#
+# modal Logic Square in D
+#
+# []A	--contrary---	[]~A==~<>A
+#   |	     contra	  |
+#   v	     dictory	  v
+# <>A	-sub contrary-	<>~A==~[]A
+
+
+# top left to down left sub alternative
+|= []A -> <>A
+# top right to down right sub alternative
+|= ~<>A -> ~[]A
+# top left to top right contrary (not both true)
+|= ~([]A & []~A)
+# down left to down right sub contrary (not both false)
+|= <>A | <>~A
+# top left to down right contradictory
+|= []A <=>~( <>~A )
+# down left to top right contradictory
+|= <>A <=>~( []~A )
+
+# thereby note
+[]~A == ~<>A
+<>~A == ~[]A
