@@ -305,9 +305,9 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	    {op.or(),           // "|"
 	     new NotationSpecification(916, xfy, Notation.INFIX)},
 	    {LogicFunctions.impl,         // "->"
-	     new NotationSpecification(920, xfy, Notation.INFIX)},
+	     new NotationSpecification(920, "xfx", Notation.INFIX)},
 	    {LogicFunctions.leftwardImpl, // "<-"
-	     new NotationSpecification(920, xfy, Notation.INFIX)},
+	     new NotationSpecification(920, "xfx", Notation.INFIX)},
 	    {LogicFunctions.equiv,        // "<->"
 	     new NotationSpecification(920, xfy, Notation.INFIX)}
 	}, true, false, true);
