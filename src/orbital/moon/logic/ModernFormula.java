@@ -16,6 +16,7 @@ import orbital.logic.imp.*;
 import orbital.logic.sign.*;
 import orbital.logic.sign.type.*;
 import orbital.logic.sign.ParseException;
+import orbital.logic.sign.concrete.Notation;
 
 import orbital.logic.functor.Functor;
 import orbital.logic.functor.Functor.Composite; //@todo sure? or better Expression.Composite
@@ -333,9 +334,9 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @param arguments the arguments to the composition by f.
      * @param notation the notation for the composition (usually determined by the composing symbol).
      */
-    public static Formula composeDelayed(Logic underlyingLogic, Formula f, Expression arguments[], Notation notation) {
+    public static Formula.Composite composeDelayed(Logic underlyingLogic, Formula f, Expression arguments[], Notation notation) {
         //@xxx was notat = notation; but either we disable DEFAULT=BESTFIX formatting, or we ignore the signature's notation choice
-        Notation notat = Notation.DEFAULT;
+        Notation notat = notation;
 	switch(arguments.length) {
 	case 0:
 	    return new ModernFormula.VoidAppliedVariableFormula(underlyingLogic, f, notation);
@@ -359,9 +360,9 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @param arguments the arguments to the composition by f.
      * @param fsymbol the symbol with with the fixed interpretation f.
      */
-    public static Formula composeFixed(Logic underlyingLogic, Symbol fsymbol, Functor f, Expression arguments[]) {
+    public static Formula.Composite composeFixed(Logic underlyingLogic, Symbol fsymbol, Functor f, Expression arguments[]) {
         //@xxx was notat = fsymbol.getNotation().getNotation(); but either we disable DEFAULT=BESTFIX formatting, or we ignore the signature's notation choice
-        Notation notat = fsymbol.getNotation().getNotation(); //Notation.DEFAULT;
+        Notation notat = fsymbol.getNotation().getNotation();
 	switch(arguments.length) {
 	case 0:
 	    if (f instanceof VoidPredicate && !(f instanceof VoidFunction))
@@ -385,14 +386,6 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     }
 
     
-    /**
-     * Formula.Composite.
-     * @structure is Function.Composite&cap;Expression.Composite
-     * @author  Andr&eacute; Platzer
-     * @version 1.1, 2002-11-27
-     */
-    static interface Composite extends Function.Composite, Expression.Composite {}
-
     /**
      * Encapsulates the common implementation part of composite formulas.
      * @author  Andr&eacute; Platzer

@@ -194,7 +194,7 @@ public interface Logic extends ExpressionSyntax {
      * @postconditions RES instanceof Formula
      * @todo use covariant return-types?
      */
-    Expression compose(Expression compositor, Expression[] arg) throws ParseException, TypeException;
+    Expression.Composite compose(Expression compositor, Expression[] arg) throws ParseException, TypeException;
 
     /**
      * {@inheritDoc}

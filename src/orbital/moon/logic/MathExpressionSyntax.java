@@ -177,7 +177,7 @@ public class MathExpressionSyntax implements ExpressionSyntax {
 	}
     }
     
-    public Expression compose(Expression compositor, Expression arguments[]) throws ParseException {
+    public Expression.Composite compose(Expression compositor, Expression arguments[]) throws ParseException {
 	MathExpression op = (MathExpression)compositor;
 	if (!Types.isApplicableTo(compositor.getType(), arguments))
 	    throw new TypeException("compositor " + Types.toTypedString(compositor) + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments) + ':' + Types.typeOf(arguments), compositor.getType().domain(), Types.typeOf(arguments));
@@ -290,7 +290,13 @@ public class MathExpressionSyntax implements ExpressionSyntax {
     /*private static*/ static abstract class AbstractFunction/*<A implements Arithmetic, B implements Arithmetic>*/  extends orbital.moon.math.functional.AbstractFunctor implements Function/*<A,B>*/ {}
 
 
-    private static class MathExpression implements Expression {
+    /**
+     * Mathematical expressions with instant evaluation.
+     * Thus the composition information is lost.
+     * @version 1.1, 2002-10-17
+     * @author  Andr&eacute; Platzer
+     */
+    private static class MathExpression implements Expression.Composite {
 	private Object referee;
 	private Type type;
 	public MathExpression(Object referee, Type type) {
@@ -300,6 +306,10 @@ public class MathExpressionSyntax implements ExpressionSyntax {
 	    this.type = type;
 	}
 	
+	public String toString() {
+	    return referee.toString();
+	}
+
 	public Object getValue() {
 	    return referee;
 	}
@@ -312,8 +322,27 @@ public class MathExpressionSyntax implements ExpressionSyntax {
 	    throw new UnsupportedOperationException("not yet implemented");
 	}
 
-	public String toString() {
-	    return referee.toString();
+	public Notation getNotation() {
+	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
+	}
+	public void setNotation(Notation notation) {
+	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
+	}
+		
+	public orbital.logic.Composite construct(Object f, Object g) {
+	    throw new UnsupportedOperationException();
+	}
+	public Object getCompositor() {
+	    throw new UnsupportedOperationException("instant evaluation does not keep composition information");
+	}
+	public void setCompositor(Object f) {
+	    throw new UnsupportedOperationException("instant evaluation does not keep composition information");
+	}
+	public Object getComponent() {
+	    throw new UnsupportedOperationException("instant evaluation does not keep composition information");
+	}
+	public void setComponent(Object g) {
+	    throw new UnsupportedOperationException("instant evaluation does not keep composition information");
 	}
     }
 }

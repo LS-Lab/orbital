@@ -282,27 +282,27 @@ abstract class ModernLogic implements Logic {
     } 
 
     
-    public Expression compose(Expression compositor, Expression arguments[]) throws ParseException, TypeException {
+    public Expression.Composite compose(Expression compositor, Expression arguments[]) throws ParseException, TypeException {
 	if (compositor == null)
 	    throw new NullPointerException("illegal arguments: compositor " + compositor + " composed with " + MathUtilities.format(arguments));
         if (TYPE_CHECK && !Types.isApplicableTo(compositor.getType(), arguments))
 	    throw new TypeException("compositor " + Types.toTypedString(compositor) + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments) + ':' + Types.typeOf(arguments), compositor.getType().domain(), Types.typeOf(arguments));
 
-	Expression RES = composeImpl(compositor, arguments);
+	Expression.Composite RES = composeImpl(compositor, arguments);
 	assert RES != null : "@postconditions RES != null";	     
 	assert !TYPE_CHECK || RES.getType().equals(compositor.getType().codomain()) : "@postconditions " + RES.getType() + "=" + compositor.getType().codomain() + "\n\tfor " + RES + " = compose(" + compositor + " , " + MathUtilities.format(arguments) + ")";
 	return RES;
     }
-    Expression composeImpl(Expression op, Expression arguments[]) throws ParseException {
-	if (!(op instanceof ModernFormula.FixedAtomicSymbol))
-	    return composeDelayed((Formula) op,
+    Expression.Composite composeImpl(Expression compositor, Expression arguments[]) throws ParseException {
+	if (!(compositor instanceof ModernFormula.FixedAtomicSymbol))
+	    return composeDelayed((Formula) compositor,
 				  arguments,
-				  op instanceof ModernFormula.AtomicSymbol
-				  ? ((ModernFormula.AtomicSymbol)op).getSymbol().getNotation().getNotation()
+				  compositor instanceof ModernFormula.AtomicSymbol
+				  ? ((ModernFormula.AtomicSymbol)compositor).getSymbol().getNotation().getNotation()
 				  : Notation.DEFAULT);
 	else {
 	    // optimized composition for fixed interpretation compositors
-	    ModernFormula.FixedAtomicSymbol opfix = (ModernFormula.FixedAtomicSymbol) op;
+	    ModernFormula.FixedAtomicSymbol opfix = (ModernFormula.FixedAtomicSymbol) compositor;
 	    Functor ref = (Functor) opfix.getReferent();
 	    assert ref.toString().equals(opfix.getSymbol().getSignifier()) : "interprets with a functor of the same string representation (functor " + ref + " for symbol " + opfix.getSymbol() + ")";
 	    try {
@@ -350,7 +350,7 @@ abstract class ModernLogic implements Logic {
      * @param arguments the arguments to the composition by f.
      * @param notation the notation for the composition (usually determined by the composing symbol).
      */
-    public Formula composeDelayed(Formula f, Expression arguments[], Notation notation) {
+    public Formula.Composite composeDelayed(Formula f, Expression arguments[], Notation notation) {
 	return ModernFormula.composeDelayed(this, f, arguments, notation);
     }
 
@@ -361,7 +361,7 @@ abstract class ModernLogic implements Logic {
      * @param arguments the arguments to the composition by f.
      * @param fsymbol the symbol with with the fixed interpretation f.
      */
-    public Formula composeFixed(Symbol fsymbol, Functor f, Expression arguments[]) {
+    public Formula.Composite composeFixed(Symbol fsymbol, Functor f, Expression arguments[]) {
 	return ModernFormula.composeFixed(this, fsymbol, f, arguments);
     }
 
