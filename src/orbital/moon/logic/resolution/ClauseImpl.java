@@ -58,10 +58,10 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
 
     public Signature getFreeVariables() {
 	// return banana (|&empty;,&cup;|) (map ((&lambda;x)x.freeVariables()), this)
-	Set freeVariables = new LinkedHashSet();
+	Signature freeVariables = new SignatureBase();
 	for (Iterator i = iterator(); i.hasNext(); )
 	    freeVariables.addAll(((Formula)i.next()).getVariables());
-	return new SignatureBase(freeVariables);
+	return freeVariables;
     }
     
     //@internal could also use a StreamMethod for implementation.
