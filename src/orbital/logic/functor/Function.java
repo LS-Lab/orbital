@@ -44,10 +44,10 @@ public /*template*/ interface Function/*<A, B>*/ extends Functor {
 
 
     /**
-     * specification of these functors
+     * specification of these functors.
      * @todo what to specify at runtime when templates are enabled?
      */
-    static final Specification specification = new Specification(1 /*, new Class[] {A.class}, B.class*/);
+    static final Specification callTypeDeclaration = new Specification(1 /*, new Class[] {A.class}, B.class*/);
 
     /**
      * A composed Function.

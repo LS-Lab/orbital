@@ -113,7 +113,7 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
      * @see java.lang.reflect.Method
      * @todo remove since usually accessible via reflection.
      */
-    //Specification specification();
+    //Specification callTypeDeclaration();
 
 
     /**
@@ -466,6 +466,7 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	 * @return whether the arguments are assignable to the required parameter types of this symbol.
 	 *  This especially includes whether the number of arguments matches this symbol's arity.
 	 * @see #isCompatible(Functor.Specification)
+	 * @see Types#isApplicableTo(Type,Expression[])
 	 */
 	public boolean isApplicableTo(Object[] args) {
 	    if ((args == null || args.length == 0) && arity() == 0)
@@ -658,7 +659,7 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	 * Get the fixed static specification specified in the given functor class.
 	 * Get the specification specified by the field with the signature
 	 * <pre>
-	 * <span class="keyword">static</span> <span class="keyword">final</span> <span class="Orbital">Functor.Specification</span> specification;
+	 * <span class="keyword">static</span> <span class="keyword">final</span> <span class="Orbital">Functor.Specification</span> callTypeDeclaration;
 	 * </pre>
 	 * or <code>null</code> if no such field exists.
 	 * Implementations may also consider non-static fields of the same name.
@@ -669,7 +670,7 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	 */
 	private static Specification getStaticSpecification(Class c) {
 	    try {
-		Field spec = c.getField("specification");
+		Field spec = c.getField("callTypeDeclaration");
 		//int   expectedModifier = Modifier.STATIC | Modifier.FINAL;
 		int   requiredModifier = Modifier.FINAL;
 		if ((spec.getModifiers() & requiredModifier) == requiredModifier

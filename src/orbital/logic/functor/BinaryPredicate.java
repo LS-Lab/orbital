@@ -42,9 +42,9 @@ public interface BinaryPredicate/*<A1, A2>*/ extends Functor /*abstract template
     boolean apply(Object/*>A1<*/ first, Object/*>A2<*/ second);
 
     /**
-     * specification of these functors
+     * specification of these functors.
      */
-    static final Specification specification = new Specification(2, java.lang.Boolean.TYPE);
+    static final Specification callTypeDeclaration = new Specification(2, java.lang.Boolean.TYPE);
 
     /**
      * A composed BinaryPredicate.

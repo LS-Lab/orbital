@@ -43,9 +43,9 @@ public interface Predicate/*<A>*/ extends Functor /*abstract template extends Fu
     boolean apply(Object/*>A<*/ arg);
 
     /**
-     * specification of these functors
+     * specification of these functors.
      */
-    static final Specification specification = new Specification(1, java.lang.Boolean.TYPE);
+    static final Specification callTypeDeclaration = new Specification(1, java.lang.Boolean.TYPE);
 
     /**
      * A composed Predicate.

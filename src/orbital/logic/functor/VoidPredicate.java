@@ -39,9 +39,9 @@ public interface VoidPredicate extends Functor /*abstract template extends VoidF
     boolean apply();
 
     /**
-     * specification of these functors
+     * specification of these functors.
      */
-    static final Specification specification = new Specification(0, java.lang.Boolean.TYPE);
+    static final Specification callTypeDeclaration = new Specification(0, java.lang.Boolean.TYPE);
 
     /**
      * A composed VoidPredicate.

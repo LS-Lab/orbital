@@ -45,9 +45,9 @@ public /*template*/ interface BinaryFunction/*<A1, A2, B>*/ extends Functor {
     Object/*>B<*/ apply(Object/*>A1<*/ first, Object/*>A2<*/ second);
 
     /**
-     * specification of these functors
+     * specification of these functors.
      */
-    static final Specification specification = new Specification(2);
+    static final Specification callTypeDeclaration = new Specification(2);
 
     /**
      * A composed BinaryFunction.

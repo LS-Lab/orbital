@@ -43,9 +43,9 @@ public interface VoidFunction/*<B>*/ extends Functor {
     Object/*>B<*/ apply();
 
     /**
-     * specification of a Function
+     * specification of these functors.
      */
-    static final Specification specification = new Specification(0);
+    static final Specification callTypeDeclaration = new Specification(0);
 
     /**
      * A composed VoidFunction.
