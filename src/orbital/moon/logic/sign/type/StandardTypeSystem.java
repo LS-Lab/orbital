@@ -248,7 +248,17 @@ public final class StandardTypeSystem implements TypeSystem {
 	return _NOTYPE;
     }
 
+    
     public StandardTypeSystem() {}
+
+    public boolean equals(Object o) {
+	return o instanceof TypeSystem && getClass().equals(o.getClass());
+    }
+
+    public int hashCode() {
+	return getClass().hashCode();
+    }
+
 
     
     // base classes
@@ -263,6 +273,10 @@ public final class StandardTypeSystem implements TypeSystem {
 	private static final Type logicalTypeDeclaration = _TYPE;
 	protected TypeObject() {}
 
+	public TypeSystem typeSystem() {
+	    return typeSystem;
+	}
+	
 	/**
 	 * The priority of the comparison rule implemented in {@link #compareToImpl(Type)}.
 	 * Higher values are for higher priorities.
