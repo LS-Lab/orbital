@@ -173,9 +173,9 @@ import orbital.logic.functor.Functor;
  * <p>
  * Now we consider possible equivalence relations of interpretations.
  * <dl class="def">
- *   <dt>elementarily equivalent</dt>
+ *   <dt>elementary equivalent</dt>
  *   <dd>
- *     Two interpretations I:&Sigma;&rarr;<span class="set">D</span>, and J:&Sigma;&rarr;<span class="set">E</span> are elementarily equivalent, iff
+ *     Two interpretations I:&Sigma;&rarr;<span class="set">D</span>, and J:&Sigma;&rarr;<span class="set">E</span> are elementary equivalent, iff
  *     <center>Theory({I}) = Theory({J})</center>
  *     i.e. they satisfy the same formulas of the logic <var>L</var>.
  *   </dd>
@@ -202,9 +202,9 @@ import orbital.logic.functor.Functor;
  *       </tr>
  *     </table>
  *     The interpretations I:&Sigma;&rarr;<span class="set">D</span>, and J:&Sigma;&rarr;<span class="set">E</span>
- *     are <dfn>isomorph</dfn> if there is an
+ *     are <dfn>isomorphic</dfn> if there is an
  *     isomorphism &phi;:<span class="set">D</span>&rarr;<span class="set">E</span>, i.e. a bijective homomorphism.
- *     Isomorph interpretations are elementarily equivalent.
+ *     Isomorphic interpretations are elementary equivalent.
  *   </dd>
  * </dl>
  * </p>
