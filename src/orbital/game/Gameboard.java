@@ -75,6 +75,7 @@ public class Gameboard extends Canvas implements ImageObserver, Serializable {
 	invalidate();
 	repaint();
 	field.addFieldChangeListener(new FieldChangeAdapter() {
+		//@internal we are transient
 		public void componentChanged(FieldChangeEvent e) {
 		    assert e.getField() == getField() : "we have only registered ourselves at our field";
 		    assert e.getType() == FieldChangeEvent.SET_FIGURE : "SET_FIGURE assumed";
