@@ -1524,6 +1524,18 @@ public class ClassicalLogic extends ModernLogic {
 	return createAtomic(new SymbolBase(signifier, Types.TRUTH, null, false));
     }
 
+    public Expression[] createAllExpressions(String expressions) throws ParseException {
+	if (expressions == null)
+	    throw new NullPointerException("null is not an expression");
+	final String s = expressions.trim();
+	if (s.length() == 0)
+	    return new Formula[0];
+	else if (!(s.charAt(0) == '{' && s.charAt(s.length()-1) == '}'))
+	    //@internal adapt from older syntax
+	    expressions = "{" + expressions + "}";
+	return super.createAllExpressions(expressions);
+    }
+
     /**
      * Convenience method.
      * @deprecated Use <code>(Formula) createExpression(expression)</code> instead.
@@ -1532,22 +1544,4 @@ public class ClassicalLogic extends ModernLogic {
     public Formula createFormula(String expression) throws ParseException {
 	return (Formula) createExpression(expression);
     } 
-   
-    /**
-     * @deprecated empty formulas are not defined
-     */
-    static Formula EMPTY = new ModernFormula(new ClassicalLogic()) {
-	    public Type getType() {
-		return Types.TRUTH;
-	    }
-	    public Signature getSignature() {
-		return SignatureBase.EMPTY;
-	    }
-	    public Object apply(Object I) {return Boolean.TRUE;}
-	    public String toString() {return "";}
-	    public Formula not() {
-		// optimized display, otherwise EMPTY.not().toString() = "~"
-		throw new UnsupportedOperationException("deprecated. Use 'true' or 'false' instead of empty formulas");
-	    } 
-	};
 }
