@@ -405,6 +405,10 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    super(underlyingLogic);
 	    this.notation = Notation.DEFAULT;
 	}
+	// for modification cloning
+	protected AbstractCompositeFormula() {
+	    this(null);
+	}
 
     	// identical to @see orbital.logic.functor.Functor.Composite.Abstract
 
@@ -422,6 +426,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 		
 	public orbital.logic.Composite construct(Object f, Object g) {
 	    try {
+		//@internal our sub classes' nullary constructors must be accessible to us, for newInstance() to work
 		orbital.logic.Composite c = (orbital.logic.Composite) getClass().newInstance();
 		c.setCompositor(f);
 		c.setComponent(g);
@@ -489,7 +494,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    this(underlyingLogic, f, g, null);
 	}
 		
-	private AppliedVariableFormula() {super(null);}
+	// for modification cloning
+	protected AppliedVariableFormula() {}
 		
         public Type getType() {
 	    return outer.getType().codomain();
@@ -557,7 +563,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    this(underlyingLogic, f, null);
 	}
 		
-	private VoidAppliedVariableFormula() {super(null);}
+	// for modification cloning
+	protected VoidAppliedVariableFormula() {}
 		
         public Type getType() {
 	    return outer.getType().codomain();
@@ -630,7 +637,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    this(underlyingLogic, f, g, h, null);
 	}
 		
-	private BinaryAppliedVariableFormula() {super(null);}
+	// for modification cloning
+	protected BinaryAppliedVariableFormula() {}
 
         public Type getType() {
 	    return outer.getType().codomain();
@@ -708,7 +716,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    this(underlyingLogic, f, g, null);
 	}
 		
-	private NaryAppliedVariableFormula() {super(null);}
+	// for modification cloning
+	protected NaryAppliedVariableFormula() {}
 
         public Type getType() {
 	    return outer.getType().codomain();
@@ -812,10 +821,11 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    this(underlyingLogic, fsymbol, f, g, null);
 	}
 		
-	private AppliedFormula() {super(null);}
+	// for modification cloning
+	protected AppliedFormula() {}
 		
 	public orbital.logic.Composite construct(Object f, Object g) {
-	    BinaryAppliedFormula c = (BinaryAppliedFormula) super.construct(f, g);
+	    AppliedFormula c = (AppliedFormula) super.construct(f, g);
 	    c.outerSymbol = outerSymbol;
 	    return c;
 	}
@@ -885,7 +895,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    this(underlyingLogic, fsymbol, f, g, h, null);
 	}
 		
-	private BinaryAppliedFormula() {super(null);}
+	// for modification cloning
+	protected BinaryAppliedFormula() {}
 
 	public orbital.logic.Composite construct(Object f, Object g) {
 	    BinaryAppliedFormula c = (BinaryAppliedFormula) super.construct(f, g);
@@ -895,7 +906,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 
 
         public Type getType() {
-	    assert outerSymbol != null && outerSymbol.getType() != null : outerSymbol + " != null && " + (outerSymbol == null ? null : outerSymbol.getType()) + " != null\ncompositor symbol " + outerSymbol + " for compositor referent " + outer + " applied to " + left + " and " + right;
+	    assert outerSymbol != null && outerSymbol.getType() != null : "outer symbol " + outerSymbol + " != null && its type " + (outerSymbol == null ? null : outerSymbol.getType()) + " != null\ncompositor symbol " + outerSymbol + " for compositor referent " + outer + " applied to " + left + " and " + right;
 	    return outerSymbol.getType().codomain();
         }
         public Signature getSignature() {
