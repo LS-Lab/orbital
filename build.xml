@@ -334,7 +334,7 @@
                  windowtitle="Orbital"
                  doctitle="Orbital library&lt;br&gt;API Specification"
                  header="&lt;b&gt;Orbital library&lt;/b&gt;"
-                 footer="&lt;b&gt;Orbital library&lt;/b&gt;&lt;br&gt;${timestamp}"
+                 footer="&lt;b&gt;Orbital library&lt;/b&gt;&lt;br /&gt;${version}: ${timestamp}"
 		 overview="${doc}/overview.html"
                  Private="${doc.internal}">
             <bottom><![CDATA[<span style='font-size: smaller; font-style: italic;'>Copyright &copy; 1996-2003 Andr&eacute; Platzer<br />All Rights Reserved.</span>]]></bottom>
@@ -365,6 +365,7 @@
 	    <tag name="internal" scope="all" description="Internal:" enabled="false"/>
 
 	    <tag name="todo" scope="all" description="Todo:" enabled="false"/>
+	    <!-- @todo rename xxx to todo 1y. Rename fixme to todo 0y. -->
 	    <tag name="xxx" scope="all" description="Todo:" enabled="false"/>
 	    <tag name="fixme" scope="all" description="Fixme:" enabled="false"/>
 	    <taglet name="StereotypeTaglet" path="${taglet}"/>
