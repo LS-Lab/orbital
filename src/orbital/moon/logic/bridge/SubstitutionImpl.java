@@ -130,6 +130,7 @@ public class SubstitutionImpl implements Substitution, Serializable {
 	else if (term instanceof Iterator)
 	    throw new IllegalArgumentException("iterators are not supported, since they should not be required at all");
 	else
+	    // atomic
             /*
              * skip atomic parts that are not substituted
              * y[x->s]	= y	if x&ne;y &isin; Atoms
