@@ -300,6 +300,7 @@ public class LogicParser {
     }
 
     // symbol declaration handling
+    //@todo encapsulate into an own (non-public) class
 
     private void reinitSymbolMap() {
 	if (syntax == null)
@@ -405,7 +406,7 @@ TOKEN :
 | <EQUIV: "\u2194" | "\u21d4" | "<->" | "<=>">
 | <IMPLY: "\u2192" | "\u21d2" | "->" | "=>">
 | <OR: "\u2228" | "|" | "||">
-		     //@todo use a better symbol than ^ for xor. Otherwise 4^5 could mean 4 to the power of 5, or 4 xor 5.
+	//@todo use a better symbol than ^ for xor. Otherwise 4^5 could mean 4 to the power of 5, or 4 xor 5.
 | <XOR: "\u2228\u0307" | "xor" | "^">
 | <AND: "\u2227" | "&" | "&&">
 
