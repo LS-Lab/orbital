@@ -115,6 +115,11 @@ public class RubicsCube implements GeneralSearchProblem {
 	    h = new HeuristicAlgorithm.PatternDatabaseHeuristic(h, patternDatabase);
 	    loadeta = new Date(System.currentTimeMillis() - loading);
 	    System.out.println("Completed loading " + df.format(loadeta));
+	    if (patternDepth != RubicsCubeCreatePattern.MAX_STEPS) {
+		System.out.println("Warning: File \"" + databaseFile + "\" does not seem up to date. Consider calling");
+		System.out.println("\tjava RubicsCubeCreatePattern");
+		System.out.println("to re-create \"" + databaseFile + "\".");
+	    } 
 	} catch (IOException x) {
 	    System.err.println(x);
 	    System.err.println("Make sure that the pattern database file has been created by calling");
@@ -179,12 +184,20 @@ public class RubicsCube implements GeneralSearchProblem {
 	Color.orange.darker(), Color.blue, Color.yellow.brighter(), Color.white, Color.red, Color.green
     };
 
+    /**
+     * The size of the Rubik's cube.
+     */
     protected static int	   size;
+    /**
+     * The actual problem to solve.
+     */
+    private final Cube _initialState;
 
     public RubicsCube(int size) {
 	RubicsCube.size = size;
 	if (size != 2)
 	    throw new InternalError("only implemented for size 2");
+	this._initialState = constructInitialState();
     }
 
     public MutableFunction getAccumulatedCostFunction() {
@@ -204,8 +217,10 @@ public class RubicsCube implements GeneralSearchProblem {
 	    }
 	};
 
-    public Object getInitialState() {
-
+    /**
+     * Pose the problem by constructing the initial Rubik's cube state.
+     */
+    private Cube constructInitialState() {
 	// 'mache einen heilen Würfel:
 	Cube c = new Cube(size, 0.0);
 	switch (SEQUENCE) {
@@ -236,10 +251,14 @@ public class RubicsCube implements GeneralSearchProblem {
 	    throw new IllegalStateException(SEQUENCE + " is an illegal mode for SEQUENCE");
 	} 
 
-	System.out.println(c + " to be solved\n");
-	printcubus(c.feld, 2, 2);
 	return c;
     } 
+
+    public Object getInitialState() {
+	System.out.println(_initialState + " to be solved\n");
+	printcubus(_initialState.feld, 2, 2);
+	return _initialState.clone();
+    }
 
     public boolean isSolution(Object n) {
 	Cube c = (Cube) n;
@@ -453,8 +472,6 @@ public class RubicsCube implements GeneralSearchProblem {
 
     /**
      * Display the cube.
-     * @xxx why does the display sometimes shuffle some of the colors at the beginning?
-     * Well it's a nice animation feature, but we don't need it at all.
      */
     protected static void printcubus(int feld[], int y, int x) {
 
