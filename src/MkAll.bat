@@ -81,7 +81,7 @@ REM Skip this Section
     jarsigner orbital-ext.jar Andre <%tmp%\xy
     copy nul %tmp%\xy
     del %tmp%\xy
-    touch -t01:00:05 orbital*.jar
+    C:\bin\touch -t01:00:07 orbital*.jar
     copy orbital*.jar %HOME%\www\orbital
     if exist orbital-dl.jar move orbital-dl.jar remote\orbital-dl.jar
     popd
