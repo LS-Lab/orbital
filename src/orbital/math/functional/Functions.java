@@ -33,7 +33,7 @@ import orbital.util.GeneralComplexionException;
 
 /**
  * Common function implementations.
- * @stereotype &laquo;Module&raquo;
+ * @stereotype Module
  * @version 1.0, 2000/08/01
  * @author  Andr&eacute; Platzer
  */

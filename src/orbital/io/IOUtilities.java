@@ -28,7 +28,7 @@ import java.io.ByteArrayOutputStream;
 /**
  * The IOUtilities contain useful static functions for IO-Handling.
  * 
- * @stereotype &laquo;Utilities&raquo;
+ * @stereotype Utilities
  * @version 0.9, 2000/01/18
  * @author  Andr&eacute; Platzer
  * @see orbital.util.Utility

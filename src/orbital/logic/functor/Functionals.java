@@ -1542,7 +1542,7 @@ public class Functionals {
     // functional-style bulk operations
 
     /**
-     * Get a listable function autmatically mapping itself over lists (recursively).
+     * Get a listable function automatically mapping itself over lists (recursively).
      * <p>
      * listable: Map(A,B)&rarr;Map(A&cup;A<sup>*</sup>,C&cup;C<sup>*</sup>); f &#8614; f<sup>*</sup>.
      * </p>
@@ -1716,7 +1716,7 @@ public class Functionals {
     }
 
     /**
-     * Get a listable function autmatically mapping itself over lists (recursively).
+     * Get a listable function automatically mapping itself over lists (recursively).
      * <p>
      * listable: Map(A,B)&rarr;Map(A&cup;A<sup>*</sup>,C&cup;C<sup>*</sup>); f &#8614; f<sup>*</sup>.</p>
      * <p>

@@ -610,7 +610,7 @@ public class ClassicalLogic extends ModernLogic {
 	    //private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.INDIVIDUAL, Types.INDIVIDUAL}), Types.map(Types.INDIVIDUAL, Types.INDIVIDUAL));
 	    private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.INDIVIDUAL, Types.TRUTH}), Types.map(Types.INDIVIDUAL, Types.TRUTH));
 	    public Object apply(Object x, Object t) {
-		throw new AssertionError("this method never gets called since lambda cannot be interpreted truthh-functionally, but already receives a structural modification in compose(...)");
+		throw new AssertionError("this method never gets called since lambda cannot be interpreted truth-functionally, but already receives a structural modification in compose(...)");
 	    }
 	    public String toString() { return "\\"; }
 	};
@@ -694,7 +694,8 @@ public class ClassicalLogic extends ModernLogic {
      * @author Andr&eacute; Platzer
      * @version 2002/07/15
      * @see orbital.logic.trs.Substitutions#lambda
-     * @internal note that regarding &forall;x a as &forall(&lambda;x.a) may consume a little more time since one additional composition must be considered for unifications. However, the more systematic concept and simplified (since localized) handling of bindings is worth it.
+     * @note &lambda; has no functional interpretation, regardless of whether eager or lazy evaluation is used.
+     * @internal note that regarding &forall;x a as &forall(&lambda;x.a) may consume a little more time since one additional composition must be considered for unifications. However, the more systematic concept and simplified (since localized) handling of bindings is worth it. Also quantifiers are functional, then, and only &lambda; is not.
      */
     private static class LambdaAbstractionFormula extends ModernFormula.AbstractCompositeFormula {
 	private Symbol x;
@@ -1246,8 +1247,8 @@ public class ClassicalLogic extends ModernLogic {
     
     /**
      * Formula transformation utilities.
-     * @stereotype &laquo;Utilities&raquo;
-     * @stereotype &laquo;Module&raquo;
+     * @stereotype Utilities
+     * @stereotype Module
      * @version 1.0, 1999/01/16
      * @author  Andr&eacute; Platzer
      * @see orbital.util.Utility

@@ -235,7 +235,7 @@ public interface GeneralSearchProblem/*<A,S>*/ extends MarkovDecisionProblem/*<A
      * <p>
      * An option node is a tuple &lang;a,c&rang;&isin;A&times;<b>R</b>
      * of an action performed to reach a state s&#697; from a state s, and the immediate action cost.</p>
-     * @stereotype &laquo;Structure&raquo;
+     * @stereotype Structure
      * @invariant getAction()&isin;A(s)
      */
     public static class Transition implements MarkovDecisionProblem.Transition, Serializable {

@@ -18,7 +18,7 @@ import orbital.logic.functor.Predicate;
  * </p>
  * 
  * @invariant usually this is Comparable || <span class="provable">&#9633;</span>abnormal(Comparable)
- * @stereotype &laquo;data-type&raquo;
+ * @stereotype data-type
  * @version 1.0, 2000/08/08
  * @author  Andr&eacute; Platzer
  * @todo perhaps drop Comparable here?

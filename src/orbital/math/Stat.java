@@ -20,8 +20,8 @@ import orbital.util.Utility;
  * It works much like the standard class {@link java.lang.Math} extended for
  * statistics.
  * 
- * @stereotype &laquo;Utilities&raquo;
- * @stereotype &laquo;Module&raquo;
+ * @stereotype Utilities
+ * @stereotype Module
  * @version 1.0, 1999/03/08
  * @author  Andr&eacute; Platzer
  * @see orbital.math.MathUtilities

@@ -7,9 +7,10 @@
 package orbital.math;
 
 /**
- * Thrown when a problem with configuration with the factories exists.
- * This error will typically be thrown when the class of a Values factory specified
- * in the system properties cannot be found or instantiated. 
+ * Thrown when a problem with configuration of the factories exists.
+ * This error will typically be thrown when the class of a ValueFactory specified
+ * in the <a href="Values.html#SystemProperties">system properties</a>
+ * cannot be found or instantiated. 
  *
  * @version 1.1, 2002-12-06
  * @author <a href="">Andr&eacute; Platzer</a>

@@ -30,7 +30,7 @@ import javax.swing.*;
 /**
  * Utilities for User-Interface.
  * 
- * @stereotype &laquo;Utilities&raquo;
+ * @stereotype Utilities
  * @version 0.9, 2000/03/08
  * @author  Andr&eacute; Platzer
  * @see orbital.util.Utility

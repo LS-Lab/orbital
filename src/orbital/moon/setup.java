@@ -43,7 +43,7 @@ import orbital.signe;
 /**
  * Runnable application setup program.
  * 
- * @stereotype &laquo;Tool&raquo;
+ * @stereotype Tool
  * @version 0.8,, 2000/06/24
  * @author  Andr&eacute; Platzer
  */

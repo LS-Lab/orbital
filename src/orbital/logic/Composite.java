@@ -8,14 +8,14 @@ package orbital.logic;
 
 /**
  * The base interface for all things that are composed of other things.
- * Such compositions include but are not limited to functors.
+ * Such compositions include but are not limited to functors, expressions, and types.
  * 
  * @structure aggregate compositor:Object
  * @structure aggregate component:Object
  * @version 1.1, 2002-11-27
  * @author  Andr&eacute; Platzer
  * @see <a href="{@docRoot}/Patterns/Design/Composite.html">(unidirectional and multiple) Composite Pattern</a>
- * @todo move to another package?
+ * @todo move to another package? Perhaps orbital.logic.sign, but this would be together with syntax part of orbital.logic.imp.
  */
 public interface Composite /*<Compositor,Component>*/ {
     /**
@@ -62,7 +62,8 @@ public interface Composite /*<Compositor,Component>*/ {
      *  Depending upon context, this method may also throw ClassCastException, instead.
      * @throws ClassCastException if f has the wrong type for a compositor.
      *  Depending upon context, this method may also throw IllegalArgumentException, instead.
-     * @throws UnsupportedOperationException if this method is not supported by this object, or this object is immutable.
+     * @throws UnsupportedOperationException if this method is not supported by this object,
+     *  or this object is immutable.
      */
     void setCompositor(Object/*>Compositor<*/ f) throws IllegalArgumentException, ClassCastException;
 
@@ -74,7 +75,8 @@ public interface Composite /*<Compositor,Component>*/ {
      *  Depending upon context, this method may also throw ClassCastException, instead.
      * @throws ClassCastException if g has the wrong type for a component.
      *  Depending upon context, this method may also throw IllegalArgumentException, instead.
-     * @throws UnsupportedOperationException if this method is not supported by this object, or this object is immutable.
+     * @throws UnsupportedOperationException if this method is not supported by this object,
+     *  or this object is immutable.
      */
     void setComponent(Object/*>Component<*/ g) throws IllegalArgumentException, ClassCastException;
 }

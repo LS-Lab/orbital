@@ -226,7 +226,7 @@ public interface TransitionModel/*<A,S, M extends Transition>*/ {
      * (in the corresponding context, i.e. from a state s&isin;S with an action a&isin;A(s)).
      * However, it may contain any additional information about the transition.
      * </p>
-     * @stereotype &laquo;Structure&raquo;
+     * @stereotype Structure
      * @internal should we always bookkeep the state and action that took us to s´ as well as s´? No.
      * @version 1.0, 2002/05/30
      * @author  Andr&eacute; Platzer

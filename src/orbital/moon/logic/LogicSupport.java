@@ -21,7 +21,7 @@ import orbital.util.InnerCheckedException;
 /**
  * @version 0.7, 2002/05/09
  * @author  Andr&eacute; Platzer
- * @stereotype &laquo;Module&raquo;
+ * @stereotype Module
  * @todo provide a basis to derive from, such that impl is defined in terms of not and or.
  */
 final class LogicSupport {

@@ -408,7 +408,7 @@ public class ChartModel implements Serializable {
      * @structure aggregate graph:java.lang.Object unidirectional
      * @structure aggregate attributes:java.util.Map unidirectional
      * 
-     * @stereotype &laquo;Structure&raquo;
+     * @stereotype Structure
      * @version 0.9, 1999/03/23
      * @author  Andr&eacute; Platzer
      */

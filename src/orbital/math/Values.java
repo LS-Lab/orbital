@@ -14,8 +14,8 @@ import orbital.logic.functor.Function;
  * <p>
  * Simple applications will generally use {@link #getDefault()} to get the current
  * system default value factory. While applications that require more control over
- * the particular arithmetic object implementations will get their own
- * {@link #getInstance() instance} and configure it according to their needs.
+ * the particular arithmetic object implementations will {@link #getInstance() get their own instance}
+ * and configure it according to their needs.
  * </p>
  * <p>
  * <table id="SystemProperties" border="2">
@@ -42,6 +42,7 @@ import orbital.logic.functor.Function;
  * @version 1.0, 2000/08/08
  * @author  Andr&eacute; Platzer
  * @see ValueFactory
+ * @todo somehow dynamically load services like sun.misc.Service does. But that doesn't improve things except if those providers somehow tell what they can do for us. So this is not a very important todo.
  */
 public abstract class Values implements ValueFactory {
     private orbital.logic.functor.Function/*<Object[],Object[]>*/ equalizer = null;

@@ -25,7 +25,7 @@ import java.util.LinkedList;
  * 
  * @version 1.0, 2000/11/01
  * @author  Andr&eacute; Platzer
- * @stereotype &laquo;Module&raquo;
+ * @stereotype Module
  * @see orbital.util.Utility
  * @see java.util.Collection
  * @see orbital.algorithm.evolutionary.Selectors

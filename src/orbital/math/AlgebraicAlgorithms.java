@@ -40,11 +40,11 @@ import java.util.logging.Level;
 /**
  * Algebraic algorithms.
  *
- * @stereotype &laquo;Utilities&raquo;
+ * @stereotype Utilities
+ * @stereotype Module
  * @author Andr&eacute; Platzer
  * @version 1.1, 2002-08-21
  * @see MathUtilities
- * @stereotype &laquo;Module&raquo;
  * @see orbital.util.Utility
  */
 public final class AlgebraicAlgorithms {

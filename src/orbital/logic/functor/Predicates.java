@@ -12,7 +12,7 @@ import orbital.util.Utility;
 /**
  * Predicate Implementations.
  * 
- * @stereotype &laquo;Module&raquo;
+ * @stereotype Module
  * @version 0.7, 2001/05/25
  * @author  Andr&eacute; Platzer
  * @see Functionals

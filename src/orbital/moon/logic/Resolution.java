@@ -77,7 +77,7 @@ import java.util.logging.Level;
  * @todo use do/undo instead of copying the whole set of derived formulas every time.
  * @todo use optimizations of "Deduktions- und Inferenzsysteme"
  * @internal proving F |= A->B and F |= B->A separately often is far more performant than proving F |= A<->B.
- * @todo sometime. Could perhaps optimize by
+ * @todo sometime. By using that "<->" is a congruence, we could perhaps optimize the following:
  *  A premise p<->q could be used to substitute p by q throughout.
  *  A premise p<->F&G... could be used to substitute p by F&G... throughout.
  *  But a premise p|q<->a|b cannot, generally.
@@ -381,7 +381,7 @@ class Resolution implements Inference {
 
     /**
      * The state during a proof (i.e. a set of formulas forming the current set of support).
-     * @stereotype &laquo;Structure&raquo;
+     * @stereotype Structure
      * @author Andr&eacute; Platzer
      */
     private static class Proof {

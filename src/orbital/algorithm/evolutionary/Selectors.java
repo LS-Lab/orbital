@@ -16,7 +16,7 @@ import orbital.util.Utility;
  * Selection schemes for evolutionary genetic algorithms.
  * Selectors <i>select</i> a parent from the genomes.
  * 
- * @stereotype &laquo;Module&raquo;
+ * @stereotype Module
  * @version 1.0, 2000/11/01
  * @author  Andr&eacute; Platzer
  * @see orbital.util.Setops

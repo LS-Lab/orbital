@@ -22,7 +22,7 @@ import java.util.logging.Level;
  * A (syntactic) symbol is a triple &lang;name, spec, notation&rang;
  * consisting of a name, its (arity and) type specification, and its notation.
  *
- * @stereotype &laquo;Structure&raquo;
+ * @stereotype Structure
  * @structure implements Symbol
  * @structure implements java.io.Serializable
  * @version 1.0, 2001/04/07

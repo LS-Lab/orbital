@@ -30,7 +30,7 @@ import orbital.util.Pair;
  * beat other figures. Which of those legal moves are valid in a certain position
  * is determined by {@link #movePath(Move)}.
  * 
- * @stereotype &laquo;Structure&raquo;
+ * @stereotype Structure
  * @version 1.0, 13/07/98
  * @author  Andr&eacute; Platzer
  */

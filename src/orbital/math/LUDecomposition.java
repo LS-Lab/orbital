@@ -24,8 +24,8 @@ import orbital.logic.functor.Predicates;
  *
  * @version 0.9, 2000/09/09
  * @author  Andr&eacute; Platzer
- * @stereotype &laquo;Structure&raquo;
- * @stereotype &laquo;Wrapper&raquo;
+ * @stereotype Structure
+ * @stereotype Wrapper
  * @invariant !isInvertible() || getP().multiply(A).equals(getL().multiply(getU()))
  * @see #decompose(Matrix)
  * @see NumericalAlgorithms

@@ -28,7 +28,7 @@ import java.util.logging.Level;
  * modified by mouse-dragging.
  * 
  * @actions "turnDone" to parent when move/beat has been processed.
- * @stereotype &laquo;UI&raquo;
+ * @stereotype UI
  * @version 0.9, 14/07/98
  * @author  Andr&eacute; Platzer
  */

@@ -130,7 +130,7 @@ public interface MarkovDecisionProblem extends TransitionModel/*<A,S,O extends T
      * of a probability of reaching a state (in the corresponding context), and the cost
      * of the action taken to reach it.
      * </p>
-     * @stereotype &laquo;Structure&raquo;
+     * @stereotype Structure
      * @version 1.0, 2002/05/30
      * @author  Andr&eacute; Platzer
      */
@@ -152,8 +152,8 @@ public interface MarkovDecisionProblem extends TransitionModel/*<A,S,O extends T
 
     /**
      * Default implementation of transition options for Markov decision processes.
-     * @stereotype &laquo;Structure&raquo;
-     * @stereotype &laquo;Implementation&raquo;
+     * @stereotype Structure
+     * @stereotype Implementation
      * @version 1.0, 2002/05/30
      * @author  Andr&eacute; Platzer
      */

@@ -55,7 +55,7 @@ import orbital.util.InnerCheckedException;
  * implementing the GameRules Interface.
  * This Interface can then start an AI on request via {@link GameRules#startAIntelligence(String)}.
  * 
- * @stereotype &laquo;UI&raquo;
+ * @stereotype UI
  * @version 1.0, 2000/02/26
  * @author Andr&eacute; Platzer
  * @see <a href="doc-files/Game.html">Game applet parameter example</a>

@@ -63,8 +63,8 @@ import java.util.PropertyResourceBundle;
 /**
  * front-end for evolutionary algorithms.
  *
- * @stereotype &laquo;UI&raquo;
- * @stereotype &laquo;Tool&raquo;
+ * @stereotype UI
+ * @stereotype Tool
  * @version 0.9, 2000/03/19
  * @author  Andr&eacute; Platzer
  * @todo could distribute BreederControl and the Server running the GeneticAlgorithm, remotely.
@@ -297,12 +297,20 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
      */
     protected GeneticAlgorithm				 ga;
 
+    /**
+     * Get the current genetic algorithm problem to solve.
+     * @see #problem
+     */
     protected final GeneticAlgorithmProblem getGeneticAlgorithmProblem() {
 	return problem;
     }
     protected final void setGeneticAlgorithmProblem(GeneticAlgorithmProblem gap) {
 	this.problem = gap;
     }
+    /**
+     * Get the current genetic algorithm used for solving.
+     * @see #ga
+     */
     protected final GeneticAlgorithm getGeneticAlgorithm() {
 	return ga;
     }
