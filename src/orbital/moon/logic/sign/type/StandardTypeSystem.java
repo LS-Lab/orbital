@@ -66,7 +66,7 @@ public class StandardTypeSystem implements TypeSystem {
      */
     private static final char GROUPING_BRACKET_OPEN = '[';
     private static final char GROUPING_BRACKET_CLOSE = ']';
-    //@internal tricky: we have to make sure the static initialization (which uses mymap...) can run before typeSystem is set. Java does not truely care about the static initialization order.
+    //@internal tricky: we have to make sure the (static) initialization (which uses mymap...) can run before typeSystem is set. Java does not truely care about the static initialization order.
     private static final StandardTypeSystem typeSystem = new StandardTypeSystem();
     /**
      * Checks whether something is a <dfn>kind</dfn> k:&#9633;.
@@ -88,10 +88,7 @@ public class StandardTypeSystem implements TypeSystem {
 		} else
 		    return Utility.isIteratable(expression)
 			? Setops.some(Utility.asIterator(expression), this)
-			: typeSystem.TYPE().equals(expression)
-			//@xxx the following would no longer be necessary, if MapTypes s->t would be compose of -> and {s,t} as well.
-			|| apply(((Type)expression).domain())
-			|| apply(((Type)expression).codomain());
+			: typeSystem.TYPE().equals(expression);
 	    }
 	};
     
@@ -127,6 +124,18 @@ public class StandardTypeSystem implements TypeSystem {
      */
     private static final BinaryPredicate supertypeOf/*<Type,Type>*/ = Functionals.swap(subtypeOf);
 
+    //@internal tricky: we have to make sure the initialization runs in precisely the right order. Java does not truely care about the initialization order.
+    private static final BinaryFunction/*<Type,Type,Type>*/ _map;
+    private static final Function/*<Type,Type>*/ _predicate;
+    private static final Function/*<Type[],Type>*/ _product;
+    private static final Function/*<Type[],Type>*/ _inf;
+    private static final Function/*<Type[],Type>*/ _sup;
+    private static final CollectionTypeConstructor _collection;
+    private static final CollectionTypeConstructor _set;
+    private static final CollectionTypeConstructor _list;
+    private static final Function/*<Type,Type>*/ _bag;
+    
+    
     private static final Type _UNIVERSAL = new UniversalType();
     public final Type UNIVERSAL() {
 	return _UNIVERSAL;
@@ -295,7 +304,7 @@ public class StandardTypeSystem implements TypeSystem {
     // base classes
     
     /**
-     * The root object for type implementations.
+     * The root class for type implementations.
      * @author Andr&eacute; Platzer
      * @version 1.1, 2002-09-11
      */
@@ -365,13 +374,89 @@ public class StandardTypeSystem implements TypeSystem {
     }
 
     /**
-     * Basic implementation of Type.
+     * Root class for composite types.
+     * @author Andr&eacute; Platzer
+     * @version 1.1, 2002-11-24
+     */
+    private static abstract class AbstractCompositeType extends TypeObject implements Type.Composite {
+	private static final long serialVersionUID = 5980179612049115956L;
+	// identical copy under @see orbital.logic.functor.Functor.Composite.Abstract
+	/**
+	 * the current notation used for displaying this composite functor.
+	 * @serial
+	 */
+	private Notation notation;
+	protected AbstractCompositeType(Notation notation) {
+	    setNotation(notation);
+	}
+	protected AbstractCompositeType() {
+	    this(null);
+	}
+    
+	public orbital.logic.Composite construct(Object f, Object g) {
+	    try {
+		orbital.logic.Composite c = (orbital.logic.Composite) getClass().newInstance();
+		c.setCompositor(f);
+		c.setComponent(g);
+		return c;
+	    }
+	    catch (InstantiationException ass) {
+		throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite construct(Object,Object)").initCause(ass);
+	    }
+	    catch (IllegalAccessException ass) {
+		throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite construct(Object,Object)").initCause(ass);
+	    }
+	}
+
+	/**
+	 * Checks for equality.
+	 * Two CompositeFunctors are equal iff their classes,
+	 * their compositors and their components are equal.
+	 */
+	public boolean equals(Object o) {
+	    if (o == null || getClass() != o.getClass())
+		return false;
+	    // note that it does not matter to which .Composite we cast since we have already checked for class equality
+	    Composite b = (Composite) o;
+	    return Utility.equals(getCompositor(), b.getCompositor())
+		&& Utility.equalsAll(getComponent(), b.getComponent());
+	}
+    
+	public int hashCode() {
+	    return Utility.hashCode(getCompositor()) ^ Utility.hashCodeAll(getComponent());
+	}
+    
+	/**
+	 * Get a string representation of the composite functor.
+	 * @return <code>{@link Notation#format(Object, Object) notation.format}(getCompositor(), getComponent())</code>.
+	 */
+	public String toString() {
+	    return getNotation().format((Functor)getCompositor(), getComponent());
+	}
+
+	/**
+	 * Get the notation used for displaying this composite functor.
+	 */
+	public Notation getNotation() {
+	    return notation;
+	}
+	/**
+	 * Set the notation used for displaying this composite functor.
+	 */
+	public void setNotation(Notation notation) {
+	    this.notation = notation == null ? Notation.DEFAULT : notation;
+	}
+    }
+    
+    /**
+     * Basic implementation of map-like Types.
      * @author Andr&eacute; Platzer
      * @version 1.1, 2002-09-08
+     * @internal this implementation also makes sense for non-composite types, but single inheritance prevents this.
      */
-    private static abstract class TypeBase extends TypeObject {
+    private static abstract class MapTypeBase extends TypeObject { /////AbstractCompositeType {
 	private static final long serialVersionUID = -5981946381802191256L;
-	protected TypeBase() {}
+	protected MapTypeBase() {}
 	public boolean equals(Object o) {
 	    if (o instanceof Type) {
 		Type b = (Type)o;
@@ -406,12 +491,12 @@ public class StandardTypeSystem implements TypeSystem {
     }
 
     /**
-     * Base class for non-map types i.e. with void domain.
+     * Base class for (composite) non-map types i.e. with void domain.
      * @author Andr&eacute; Platzer
      * @version 1.1, 2002/10/06
      * @see StandardTypeSystem.MapType
      */
-    private static abstract class NonMapType extends TypeObject {
+    private static abstract class NonMapCompositeType extends AbstractCompositeType {
 	private static final long serialVersionUID = -6241523127417780697L;
 	public Type domain() {
 	    return typeSystem.NOTYPE();
@@ -421,81 +506,6 @@ public class StandardTypeSystem implements TypeSystem {
 	}
     }
 
-    /**
-     * .
-     * @author Andr&eacute; Platzer
-     * @version 1.1, 2002-11-24
-     */
-    private static abstract class AbstractCompositeType extends NonMapType implements Type.Composite {
-	private static final long serialVersionUID = 5980179612049115956L;
-	// identical copy under @see orbital.logic.functor.Functor.Composite.Abstract
-	/**
-	 * the current notation used for displaying this composite functor.
-	 * @serial
-	 */
-	private Notation notation;
-	protected AbstractCompositeType(Notation notation) {
-	    setNotation(notation);
-	}
-	protected AbstractCompositeType() {
-	    this(null);
-	}
-    
-	public orbital.logic.Composite construct(Object f, Object g) {
-	    try {
-		orbital.logic.Composite c = (orbital.logic.Composite) getClass().newInstance();
-		c.setCompositor(f);
-		c.setComponent(g);
-		return c;
-	    }
-	    catch (InstantiationException ass) {
-		throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite construct(Object,Object)").initCause(ass);
-	    }
-	    catch (IllegalAccessException ass) {
-		throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite construct(Object,Object)").initCause(ass);
-	    }
-	}
-
-	/**
-	 * Get the notation used for displaying this composite functor.
-	 */
-	public Notation getNotation() {
-	    return notation;
-	}
-	/**
-	 * Set the notation used for displaying this composite functor.
-	 */
-	public void setNotation(Notation notation) {
-	    this.notation = notation == null ? Notation.DEFAULT : notation;
-	}
-    		
-	/**
-	 * Checks for equality.
-	 * Two CompositeFunctors are equal iff their classes,
-	 * their compositors and their components are equal.
-	 */
-	public boolean equals(Object o) {
-	    if (o == null || getClass() != o.getClass())
-		return false;
-	    // note that it does not matter to which .Composite we cast since we have already checked for class equality
-	    Composite b = (Composite) o;
-	    return Utility.equals(getCompositor(), b.getCompositor())
-		&& Utility.equalsAll(getComponent(), b.getComponent());
-	}
-    
-	public int hashCode() {
-	    return Utility.hashCode(getCompositor()) ^ Utility.hashCodeAll(getComponent());
-	}
-    
-	/**
-	 * Get a string representation of the composite functor.
-	 * @return <code>{@link Notation#format(Object, Object) notation.format}(getCompositor(), getComponent())</code>.
-	 */
-	public String toString() {
-	    return getNotation().format((Functor)getCompositor(), getComponent());
-	}
-    }
-    
 
     // factories
     
@@ -517,7 +527,7 @@ public class StandardTypeSystem implements TypeSystem {
      * @author Andr&eacute; Platzer
      * @version 1.1, 2002-09-11
      */
-    private static abstract class FundamentalType extends NonMapType {
+    private static abstract class FundamentalType extends TypeObject {
 	private static final long serialVersionUID = 7364608656416736898L;
 	/**
 	 * Get the class underlying this fundamental type.
@@ -536,6 +546,7 @@ public class StandardTypeSystem implements TypeSystem {
 	public String toString() {
 	    return getFundamental().getName().toString();
 	}
+
 
 	protected int comparisonPriority() {
 	    return 50;
@@ -557,6 +568,14 @@ public class StandardTypeSystem implements TypeSystem {
 	    //@xxx check that all tests are really correct. What's up with VoidFunction, and Function<Object,Boolean> etc?
 	    // if (x instanceof Functor && spec.isConform((Functor) x)) return true;
 	    return Functionals.bindSecond(Utility.instanceOf, getFundamental()).apply(x);
+	}
+
+	//@internal identical to @see NonMapCompositeType
+	public Type domain() {
+	    return typeSystem.NOTYPE();
+	}
+	public Type codomain() {
+	    return this;
 	}
     }
 
@@ -603,15 +622,6 @@ public class StandardTypeSystem implements TypeSystem {
 	    throw new UnsupportedOperationException(_ABSURD + " maps not yet supported");
 	return domain.equals(_NOTYPE) ? codomain : new MapType(domain, codomain);
     }
-    private static final BinaryFunction/*<Type,Type,Type>*/ _map = new BinaryFunction/*<Type,Type,Type>*/() {
-	    private final Type logicalTypeDeclaration = mymap(myproduct(new Type[] {_TYPE,_TYPE}), _TYPE);
-	    public Object apply(Object s, Object t) {
-		return typeSystem.map((Type)s, (Type)t);
-	    }
-	    public String toString() {
-		return "->";
-	    }
-	};
     public BinaryFunction/*<Type,Type,Type>*/ map() {
 	return _map;
     };
@@ -619,15 +629,6 @@ public class StandardTypeSystem implements TypeSystem {
     public Type predicate(Type domain) {
 	return map(domain, TRUTH);
     }
-    private static final Function/*<Type,Type>*/ _predicate = new Function/*<Type,Type>*/() {
-	    private final Type logicalTypeDeclaration = mymap(_TYPE, _TYPE);
-	    public Object apply(Object t) {
-		return typeSystem.predicate((Type)t);
-	    }
-	    public String toString() {
-		return "pred";
-	    }
-	};
     public final Function/*<Type,Type>*/ predicate() {
 	return _predicate;
     }
@@ -637,14 +638,48 @@ public class StandardTypeSystem implements TypeSystem {
      * @author Andr&eacute; Platzer
      * @version 1.1, 2002-09-08
      * @see StandardTypeSystem.NonMapType
+     * @todo extend AbstractCompositeType, or at least Composite
      */
-    private static final class MapType extends TypeBase {
+    private static final class MapType extends MapTypeBase implements Type.Composite {
 	private static final long serialVersionUID = 9148024444083534208L;
-	private final Type codom;
 	private final Type dom;
+	private final Type codom;
 	public MapType(Type domain, Type codomain) {
 	    this.dom = domain;
 	    this.codom = codomain;
+	}
+
+	public orbital.logic.Composite construct(Object f, Object g) {
+	    try {
+		orbital.logic.Composite c = (orbital.logic.Composite) getClass().newInstance();
+		c.setCompositor(f);
+		c.setComponent(g);
+		return c;
+	    }
+	    catch (InstantiationException ass) {
+		throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite construct(Object,Object)").initCause(ass);
+	    }
+	    catch (IllegalAccessException ass) {
+		throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite construct(Object,Object)").initCause(ass);
+	    }
+	}
+
+	public Object getCompositor() {
+	    return typeSystem.map();
+	}
+	public Object getComponent() {
+	    return new Type[] {domain(), codomain()};
+	}
+	public void setCompositor(Object compositor) {
+	    if (compositor != getCompositor())
+		throw new IllegalArgumentException("special compositor of " + getClass() + " expected");
+	}
+	public void setComponent(Object component) {
+	    if (((Object[])component).length != 2)
+		throw new IllegalArgumentException();
+	    throw new UnsupportedOperationException("not yet implemented");
+	    //this.dom = ((Type[]) component)[0];
+	    //this.codom = ((Type[]) component)[1];
 	}
 
 	public Type codomain() {
@@ -696,18 +731,6 @@ public class StandardTypeSystem implements TypeSystem {
 	default: return new ProductType(components);
 	}
     }
-    private static final Function/*<Type[],Type>*/ _product = new Function/*<Type[],Type>*/() {
-	    private final Type logicalTypeDeclaration = mymap(typeSystem.list(_TYPE), _TYPE);
-	    public Object apply(Object t) {
-		return typeSystem.product(t instanceof Type[]
-					  ? (Type[]) t
-					  : (Type[]) Setops.asList(Utility.asIterator(t)).toArray(new Type[0])
-					  );
-	    }
-	    public String toString() {
-		return "*";
-	    }
-	};
     public final Function/*<Type[],Type>*/ product() {
 	return _product;
     }
@@ -718,7 +741,7 @@ public class StandardTypeSystem implements TypeSystem {
      * @version 1.1, 2002-09-08
      * @internal which interface for product types? The answer may be: nothing particular, since the typical operations should rely on compareTo and equals.
      */
-    private static final class ProductType extends AbstractCompositeType {
+    private static final class ProductType extends NonMapCompositeType {
 	private static final long serialVersionUID = -6667362786622508551L;
 	private Type components[];
 	private ProductType() {
@@ -846,15 +869,6 @@ public class StandardTypeSystem implements TypeSystem {
 	}
     }
 
-    private static final Function/*<Type[],Type>*/ _inf = new Function/*<Type[],Type>*/() {
-	    private final Type logicalTypeDeclaration = mymap(typeSystem.set(_TYPE), _TYPE);
-	    public Object apply(Object t) {
-		return typeSystem.infImpl(Setops.asList(Utility.asIterator(t)));
-	    }
-	    public String toString() {
-		return "&";
-	    }
-	};
     public final Function/*<Type[],Type>*/ inf() {
 	return _inf;
     }
@@ -866,7 +880,7 @@ public class StandardTypeSystem implements TypeSystem {
      * @todo should we extend AbstractCompositeType?
      * @todo could change internal representation to "LinkedHashSet<Type> components".
      */
-    private static final class InfimumType extends NonMapType {
+    private static final class InfimumType extends NonMapCompositeType {
 	private static final long serialVersionUID = -6251593765414274805L;
 	private Type components[];
 	private InfimumType() {}
@@ -879,7 +893,7 @@ public class StandardTypeSystem implements TypeSystem {
 	}
 	
 	public int hashCode() {
-	    return 1 ^ Utility.hashCodeAllSet(components);
+	    return 1 ^ Utility.hashCodeSet(components);
 	}
 	
 	public String toString() {
@@ -981,15 +995,6 @@ public class StandardTypeSystem implements TypeSystem {
 	}
     }
 
-    private static final Function/*<Type[],Type>*/ _sup = new Function/*<Type[],Type>*/() {
-	    private final Type logicalTypeDeclaration = mymap(typeSystem.set(_TYPE), _TYPE);
-	    public Object apply(Object t) {
-		return typeSystem.supImpl(Setops.asList(Utility.asIterator(t)));
-	    }
-	    public String toString() {
-		return "|";
-	    }
-	};
     public final Function/*<Type[],Type>*/ sup() {
 	return _sup;
     }
@@ -999,7 +1004,7 @@ public class StandardTypeSystem implements TypeSystem {
      * @author Andr&eacute; Platzer
      * @version 1.1, 2002-10-04
      */
-    private static final class SupremumType extends NonMapType {
+    private static final class SupremumType extends NonMapCompositeType {
 	private static final long serialVersionUID = 2673832577121308931L;
 	private Type components[];
 	private SupremumType() {}
@@ -1012,7 +1017,7 @@ public class StandardTypeSystem implements TypeSystem {
 	}
 	
 	public int hashCode() {
-	    return 7 ^ Utility.hashCodeAllSet(components);
+	    return 7 ^ Utility.hashCodeSet(components);
 	}
 	
 	public String toString() {
@@ -1078,71 +1083,49 @@ public class StandardTypeSystem implements TypeSystem {
     }
 
     // collection types
+
+    /**
+     * Internal super class for type constructors of collection types.
+     * @author Andr&eacute; Platzer
+     * @version 1.1, 2003-02-04
+     */
+    private static abstract class CollectionTypeConstructor implements Function/*<Type,Type>*/ {
+	private final Class collection;
+	protected CollectionTypeConstructor(Class collection) {
+	    this.collection = collection;
+	}
+	/**
+	 * Geth the Java class that objects must be an
+	 * instance of for counting as a collection of our type.
+	 * @internal could be replaced by boolean isInstance(Object x), which is (almost)
+	 * the only thing used by CollectionType.
+	 */
+	Class getCollectionClass() {
+	    return collection;
+	}
+    }
     
     public Type collection(Type element) {
-	return new CollectionType(Collection.class, element, "collection(", ")");
+	return new CollectionType(_collection, element, "collection(", ")");
     }
-    private static final Function/*<Type,Type>*/ _collection = new Function() {
-	    private final Type logicalTypeDeclaration = mymap(_TYPE, _TYPE);
-	    public Object apply(Object o) {
-		return typeSystem.collection((Type)o);
-	    }
-	    public String toString() {
-		return "collection";
-	    }
-	};
     public final Function/*<Type,Type>*/ collection() {
 	return _collection;
     }
     public Type set(Type element) {
-	return new CollectionType(Set.class, element, "{", "}");
+	return new CollectionType(_set, element, "{", "}");
     }
-    private final Function/*<Type,Type>*/ _set = new Function() {
-	    private final Type logicalTypeDeclaration = mymap(_TYPE, _TYPE);
-	    public Object apply(Object o) {
-		return typeSystem.set((Type)o);
-	    }
-	    public String toString() {
-		return "set";
-	    }
-	};
     public final Function/*<Type,Type>*/ set() {
 	return _set;
     }
     public final Type list(Type element) {
-	return new CollectionType(List.class, element, "<", ">");
+	return new CollectionType(_list, element, "<", ">");
     }
-    /**
-     * list: <span class="type">* &rarr; *</span>; <span class="type">&tau;</span> &#8614; <span class="type">&lang;&tau;&rang;</span>.
-     * <p>
-     * The list type constructor.
-     * </p>
-     * @see #list(Type)
-     */
-    private static final Function/*<Type,Type>*/ _list = new Function() {
-	    private final Type logicalTypeDeclaration = mymap(_TYPE, _TYPE);
-	    public Object apply(Object o) {
-		return typeSystem.list((Type)o);
-	    }
-	    public String toString() {
-		return "list";
-	    }
-	};
     public final Function/*<Type,Type>*/ list() {
 	return _list;
     }
     public final Type bag(Type element) {
 	throw new UnsupportedOperationException("bag interface is not part of Java 1.4");
     }
-    private static final Function/*<Type,Type>*/ _bag = new Function() {
-	    private final Type logicalTypeDeclaration = mymap(_TYPE, _TYPE);
-	    public Object apply(Object o) {
-		return typeSystem.bag((Type)o);
-	    }
-	    public String toString() {
-		return "bag";
-	    }
-	};
     public final Function/*<Type,Type>*/ bag() {
 	return _bag;
     }
@@ -1152,31 +1135,52 @@ public class StandardTypeSystem implements TypeSystem {
      * @author Andr&eacute; Platzer
      * @version 1.1, 2002/10/06
      */
-    private static class CollectionType extends NonMapType {
+    private static class CollectionType extends NonMapCompositeType {
 	private static final long serialVersionUID = -1113530540489964295L;
-	private final Class collection;
+	/**
+	 * The type constructor that would be required for constructing the type we are.
+	 */
+	private final CollectionTypeConstructor constructor;
 	private final Type element;
 	private final String toStringPrefix;
 	private final String toStringSuffix;
-	public CollectionType(Class collection, Type element, String toStringPrefix, String toStringSuffix) {
-	    this.collection = collection;
+	public CollectionType(CollectionTypeConstructor constructor, Type element, String toStringPrefix, String toStringSuffix) {
+	    this.constructor = constructor;
 	    this.element = element;
 	    this.toStringPrefix = toStringPrefix;
 	    this.toStringSuffix = toStringSuffix;
+	    if (constructor == null)
+		throw new IllegalArgumentException("illegal constructor null (perhaps wrong static initialization order?)");
 	}
 	public boolean equals(Object b) {
 	    if (b instanceof CollectionType) {
 		CollectionType tau = (CollectionType)b;
-		return collection.equals(tau.collection) && element.equals(tau.element);
+		return constructor.equals(tau.constructor) && element.equals(tau.element);
 	    } else
 		return false;
 	}
 	public int hashCode() {
-	    return 13 ^ collection.hashCode() ^ element.hashCode();
+	    return 13 ^ constructor.hashCode() ^ element.hashCode();
 	}
 	public String toString() {
 	    return toStringPrefix + element + toStringSuffix;
 	}
+
+	public Object getCompositor() {
+	    return constructor;
+	}
+	public Object getComponent() {
+	    return element;
+	}
+	public void setCompositor(Object compositor) {
+	    if (compositor != getCompositor())
+		throw new IllegalArgumentException("special compositor of " + getClass() + " expected");
+	}
+	public void setComponent(Object component) {
+	    throw new UnsupportedOperationException("not yet implemented");
+	    //this.element = (Type) component;
+	}
+	
 	protected int comparisonPriority() {
 	    return 60;
 	}
@@ -1193,13 +1197,14 @@ public class StandardTypeSystem implements TypeSystem {
 		throw new IncomparableException(this + " is incomparable with " + b);
 	}
 	public boolean apply(Object x) {
-	    return collection.isInstance(x) && Setops.all((Collection)x, element);
+	    return constructor.getCollectionClass().isInstance(x)
+		&& Setops.all((Collection)x, element);
 	}
 	/**
 	 * @internal collection types and product types are different, but they compare in the same way
 	 */
 	private Type comparisonInternalRepresentation() {
-	    return new ProductType(new Type[] {typeSystem.objectType(collection), element});
+	    return new ProductType(new Type[] {typeSystem.objectType(constructor.getCollectionClass()), element});
 	}
     }
 
@@ -1284,4 +1289,116 @@ public class StandardTypeSystem implements TypeSystem {
 		throw new IllegalArgumentException("unknown types to compare lexicographically:\n type " + a + " of " + a.getClass() + "\n and  " + b + " of " + b.getClass());
 	    }
 	};
+
+
+    /**
+     * Explicit Initialization Order.  The dependencies are (according
+     * to uses in logicalTypeDeclaration initialization, and, perhaps
+     * use in list(Type), etc.):
+     * <ul>
+     *   <li>_map &larr; map, product</li>
+     *   <li>_list &larr; map</li>
+     *   <li>list(Type) &larr; _list</li>
+     *   <li>_product &larr; map, list</li>
+     *   <li>_predicate &larr; map</li>
+     *   <li>_inf &larr; map, set</li>
+     *   <li>_sup &larr; map, set</li>
+     *   <li>_collection &larr; map</li>
+     *   <li>collection(Type) &larr; _collection</li>
+     *   <li>_set &larr; map</li>
+     *   <li>set(Type) &larr; _set</li>
+     *   <li>_bag &larr; map</li>
+     *   <li>bag(Type) &larr; _bag</li>
+     *   <li>typeSystem &larr; _*</li>
+     * </ul>
+     *@internal tricky: we have to make sure the initialization runs in precisely the right order. Java does not truely care about the initialization order.
+     */
+    static {
+	_map = new BinaryFunction/*<Type,Type,Type>*/() {
+		private final Type logicalTypeDeclaration = mymap(myproduct(new Type[] {_TYPE,_TYPE}), _TYPE);
+		public Object apply(Object s, Object t) {
+		    return typeSystem.map((Type)s, (Type)t);
+		}
+		public String toString() {
+		    return "->";
+		}
+	    };
+	_list = new CollectionTypeConstructor(List.class) {
+		private final Type logicalTypeDeclaration = typeSystem.map(_TYPE, _TYPE);
+		public Object apply(Object o) {
+		    return typeSystem.list((Type)o);
+		}
+		public String toString() {
+		    return "list";
+		}
+	    };
+	_product = new Function/*<Type[],Type>*/() {
+		private final Type logicalTypeDeclaration = typeSystem.map(typeSystem.list(_TYPE), _TYPE);
+		public Object apply(Object t) {
+		    return typeSystem.product(t instanceof Type[]
+					      ? (Type[]) t
+					      : (Type[]) Setops.asList(Utility.asIterator(t)).toArray(new Type[0])
+					      );
+		}
+		public String toString() {
+		    return "*";
+		}
+	    };
+
+	_collection = new CollectionTypeConstructor(Collection.class) {
+		private final Type logicalTypeDeclaration = typeSystem.map(_TYPE, _TYPE);
+		public Object apply(Object o) {
+		    return typeSystem.collection((Type)o);
+		}
+		public String toString() {
+		    return "collection";
+		}
+	    };
+	_set = new CollectionTypeConstructor(Set.class) {
+		private final Type logicalTypeDeclaration = typeSystem.map(_TYPE, _TYPE);
+		public Object apply(Object o) {
+		    return typeSystem.set((Type)o);
+		}
+		public String toString() {
+		    return "set";
+		}
+	    };
+	_bag = new Function() {
+		private final Type logicalTypeDeclaration = typeSystem.map(_TYPE, _TYPE);
+		public Object apply(Object o) {
+		    return typeSystem.bag((Type)o);
+		}
+		public String toString() {
+		    return "bag";
+		}
+	    };
+	
+	_predicate = new Function/*<Type,Type>*/() {
+		private final Type logicalTypeDeclaration = typeSystem.map(_TYPE, _TYPE);
+		public Object apply(Object t) {
+		    return typeSystem.predicate((Type)t);
+		}
+		public String toString() {
+		    return "pred";
+		}
+	    };
+	_inf = new Function/*<Type[],Type>*/() {
+		private final Type logicalTypeDeclaration = typeSystem.map(typeSystem.set(_TYPE), _TYPE);
+		public Object apply(Object t) {
+		    return typeSystem.infImpl(Setops.asList(Utility.asIterator(t)));
+		}
+		public String toString() {
+		    return "&";
+		}
+	    };
+	_sup = new Function/*<Type[],Type>*/() {
+		private final Type logicalTypeDeclaration = typeSystem.map(typeSystem.set(_TYPE), _TYPE);
+		public Object apply(Object t) {
+		    return typeSystem.supImpl(Setops.asList(Utility.asIterator(t)));
+		}
+		public String toString() {
+		    return "|";
+		}
+	    };
+    }	
 }// StandardTypeSystem
