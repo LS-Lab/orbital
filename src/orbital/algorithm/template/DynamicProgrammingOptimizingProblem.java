@@ -9,10 +9,8 @@ package orbital.algorithm.template;
 import java.util.Collection;
 import orbital.logic.functor.Function;
 
-import orbital.robotic.strategy.Evaluation;
-import orbital.robotic.strategy.Selection.Selecting;
-
 import orbital.util.Utility;
+import orbital.util.Pair;
 
 /**
  * Base hook class for problems solved by DynamicProgramming for optimization.
@@ -39,7 +37,7 @@ public abstract class DynamicProgrammingOptimizingProblem implements DynamicProg
      * Get the partial weight corresponding to the part specification.
      */
     public double getPartialWeight(int[] part) {
-	Number w = ((Number) DynamicProgramming.getSolutionPart(part, partialWeights));
+	Number w = ((Number) Utility.getPart(partialWeights, part));
 	return w == null ? Double.NaN : w.doubleValue();
     } 
 
@@ -72,12 +70,10 @@ public abstract class DynamicProgrammingOptimizingProblem implements DynamicProg
 
     public Object solve(int[] part, Object[] partialSolutions) {
 	Collection options = getOptionsFor(part);
-	Evaluation eval = new Evaluation(Selecting.max(), getWeightingFor(part));
-	eval.addAll(options);
-	Object optimum = eval.evaluate();
+	Pair optimum = PackageUtilities.max(options.iterator(), getWeightingFor(part));
 
 	// memorize weights as well to be dynamic
-	Utility.setPart(partialWeights, part, eval.getSelection().getWeight());
-	return optimum;
+	Utility.setPart(partialWeights, part, (Number)optimum.B);
+	return optimum.A;
     } 
 }

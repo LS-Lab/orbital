@@ -9,9 +9,6 @@ package orbital.algorithm.template;
 import java.util.List;
 import orbital.math.functional.Function;
 
-import orbital.robotic.strategy.Evaluation;
-import orbital.robotic.strategy.Selection;
-import orbital.robotic.strategy.Selection.Selecting;
 import java.util.LinkedList;
 
 import orbital.math.functional.Functions;
@@ -73,22 +70,17 @@ public class Greedy implements AlgorithmicTemplate {
      * </pre>
      * </p>
      * @return the list of the candidates chosen for the solution.
-     * @internal note that using orbital.robotic.strategy.Evaluation wastes O(b) space since we only select the single maximum anyway.
+     * @internal optimizable we could remember the index of the current best candidate during search for removing it later on
      */
     public List solve(GreedyProblem p) {
-	List	   C = p.getInitialCandidates();
-	List	   S = new LinkedList();
-	Evaluation eval = new Evaluation(Selecting.max(), p.getWeightingFor(S));
+	List C = p.getInitialCandidates();
+	List S = new LinkedList();
 	while (p.isPartialSolution(S) && !C.isEmpty()) {
 
 	    // weighting is quality criterium
-	    eval.setWeighting(p.getWeightingFor(S));
-	    eval.addAll(C);
-
 	    // retract x from C such that w(x) is maximal;
-	    Object x = eval.evaluate();
+	    final Object x = PackageUtilities.max(C.iterator(), p.getWeightingFor(S)).A;
 	    C.remove(x);
-	    eval.clear();
 
 	    // nextPartialSolution computes new partial solution that includes x if feasible
 	    S = p.nextPartialSolution(S, x);

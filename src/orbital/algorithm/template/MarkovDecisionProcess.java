@@ -11,6 +11,8 @@ import orbital.logic.functor.Function;
 import orbital.logic.functor.BinaryFunction;
 import orbital.logic.functor.MutableFunction;
 
+import orbital.logic.functor.Functionals;
+
 import java.util.Iterator;
 import java.util.Collection;
 
@@ -247,7 +249,7 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
          */
         protected orbital.util.Pair/*<Object, Number>*/ maximumExpectedUtility(BinaryFunction Q, Object state) {
 	    // search for minimal expected cost applicable action
-	    return PackageUtilities.min(Functionals.bindLeft(Q, state), getProblem().actions(state));
+	    return PackageUtilities.min(getProblem().actions(state), Functionals.bindFirst(Q, state));
         }
 
     	/**
