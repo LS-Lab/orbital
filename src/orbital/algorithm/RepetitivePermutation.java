@@ -105,6 +105,6 @@ class RepetitivePermutation extends Combinatorical {
      */
 	 
     public String toString() {
-	return getClass().getName() + " of " + r + " elements out of " + n;
+	return getClass().getName() + "[of " + r + " elements out of " + n + "]";
     }
 }
