@@ -941,7 +941,7 @@ public final class Types {
 	return new CollectionType(Set.class, component, "{", "}");
     }
     /**
-     * The list type <span class="type">&lt;&tau;&gt;</span>.
+     * The list type <span class="type">&lang;&tau;&rang;</span>.
      * Lists are ordered (but not sorted) and not limited to containing unique elements.
      * @see #collection(Type)
      * @see java.util.List
@@ -950,7 +950,7 @@ public final class Types {
 	return new CollectionType(List.class, component, "<", ">");
     }
     /**
-     * The bag/multiset type <span class="type">{{&tau;}}</span>.
+     * The bag/multiset type <span class="type">&#12308;&tau;&#12309;</span>.
      * Bags are orderless and not limited to containing unique elements.
      * So each element of a bag has a certain multiplicity.
      * @see #collection(Type)

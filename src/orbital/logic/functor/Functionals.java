@@ -2067,7 +2067,7 @@ public class Functionals {
      * Anamorphism recursion functional scheme (lense).
      * <p><a id="Theory"></a>
      * An anamorphism is denoted by concave lenses.
-     * <center>this = <span class="lenseBracket">|(</span>g,p<span class="lenseBracket">)|</span></center>
+     * <center>this = <span class="lenseBracket">|(</span>g,p<span class="lenseBracket">)|</span> = &#12310;g,p&#12311;</center>
      * </p>
      * <p>Also known as unfold.</p>
      * @version 1.0, 2000/06/14
@@ -2149,7 +2149,7 @@ public class Functionals {
      * Hylomorphism recursion functional scheme (envelope).
      * <p><a id="Theory"></a>
      * A hylomorphism is denoted by envelopes.
-     * <center>this = <span class="envelopeBracket">[[</span>(c,f),(g,p)<span class="envelopeBracket">]]</span> = <span class="envelopeBracket">|[</span>(c,f),(g,p)<span class="envelopeBracket">]|</span></center>
+     * <center>this = <span class="envelopeBracket">[[</span>(c,f),(g,p)<span class="envelopeBracket">]]</span> = <span class="envelopeBracket">|[</span>(c,f),(g,p)<span class="envelopeBracket">]|</span> = &#12314;(c,f),(g,p)&#12315;</center>
      * </p>
      * <p><a id="Properties"></a>
      * A hylomorphism corresponds to the composition of an anamorphism and a catamorphism.<center>

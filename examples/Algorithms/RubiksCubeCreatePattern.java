@@ -22,7 +22,7 @@ public class RubiksCubeCreatePattern extends RubiksCube {
     /**
      * Up to which depth to produce entries in the pattern database.
      */
-    public static final int     MAX_STEPS = 9;
+    public static final int     MAX_STEPS = 8;
     /**
      * The database file where the Rubik's cube heuristics are stored.
      */

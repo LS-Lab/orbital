@@ -13,7 +13,7 @@ import orbital.logic.functor.Predicate;
  * <p id="type">
  * The types form a <a href="Expression.html#freeAlgebraOfTerms">free algebra of terms</a>
  * &Tau; over {<span class="type">&iota;</span>,<span class="type">&rarr;</span>,<span class="type">()</span>}
- * plus perhaps <big>{</big><span class="type">&times;</span>,<span class="type">&cap;</span>,<span class="type">&cup;</span>,<span class="type">{}</span>,<span class="type">&lt;&gt;</span>,<span class="type">{{}}</span><big>}</big>.
+ * plus perhaps <big>{</big><span class="type">&times;</span>,<span class="type">&cap;</span>,<span class="type">&cup;</span>,<span class="type">{}</span>,<span class="type">&lang;&rang;</span>,<span class="type">&#12308;&#12309;</span><big>}</big>.
  * Intuitively, {@link Types#INDIVIDUAL <span class="type">&iota;</span>} is the type for individuals,
  * {@link Types#map(Type,Type) <span class="type">&sigma;&rarr;&tau;</span>} the type for maps from <span class="type">&sigma;</span> to <span class="type">&tau;</span>,
  * and {@link Types#predicate(Type) <span class="type">(&sigma;)</span> = <span class="type">&sigma;&rarr;&omicron;</span>} the type for predicates of <span class="type">&sigma;</span>,
