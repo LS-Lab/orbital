@@ -943,9 +943,10 @@ public final class Values {
      * that both have the same minimum (that is most restrictive) type.
      * This means that an integer will be returned instead of a real whenever possible,
      * a real instead of a complex and so on.
-     * But it will always be true that both elements returned have exactly the same type.
+     * But it will always be true that both elements returned have exactly the same type:
+     * the common superclass of the classes of a and b.
      * @see MathUtilities#getEqualizer()
-     * @post RES[0].getClass() == RES[1].getClass()
+     * @post RES[0].getClass() == RES[1].getClass() == a.getClass()&cup;b.getClass()
      */
     public static Scalar[] minimumEqualized(Number a, Number b) {
 	//@xxx adapt better to new Complex>Real>Rational>Integer type hierarchy and conform to a new OBDD (ordered binary decision diagram)

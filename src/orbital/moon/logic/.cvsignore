@@ -9,3 +9,4 @@ MathParserConstants.java
 LogicParser.java
 LogicParserTokenManager.java
 LogicParserConstants.java
+mkdoc.bat

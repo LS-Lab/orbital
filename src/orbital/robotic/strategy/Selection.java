@@ -73,7 +73,7 @@ public interface Selection {
 
 	/**
 	 * selects the minimum of all weights that are not Double.NaN.
-	 * @see orbital.algorithm.template.PackageUtilities#min(Iterator,Function)
+	 * @see orbital.util.Setops#argmin(Iterator,Function)
 	 */
 	public static final Selection min() {
 	    return new SelectionImpl() {

@@ -44,20 +44,21 @@ import java.text.ParseException;
  * </dl>
  * <h4>2 Semantics</h4>
  * <dl class="def">
- * <!-- single symbol interpretation is secondness, although full function I is thirdness, I guess. -->
+ * <!-- single symbol interpretation is secondness, although full function I is thirdness because it mediates between syntactic formulas and individuals of the world. -->
  *   <dt id="Interpretation">Interpretations:</dt>
  *   <dd>A &Sigma;-interpretation <span class="Formula">I&isin;Int(&Sigma;)</span> of a signature &Sigma;
  *   is the association of the syntactic symbols in &Sigma; with the semantic elements in the world.
  *   Such elements are objects of the universe, functions within the model world and relations in it.
  *   Only the interpretation gives a semantic meaning to the arbitrary names of the signature.
  *   </dd>
- * <!-- @todo is this really secondness, still? Apply Peirce's phenomenology (the categorization of concepts and relations into the classes of Phanerons (Firstness,Secondness,Thirdness)) -->
  *   <dt id="SatisfactionRelation">Satisfaction Relations:</dt>
  *   <dd>A (semantic) satisfaction relation <span class="Formula">&#8871; &sube; Int(&Sigma;)&times;Formula(&Sigma;)</span> of a signature &Sigma;
  *   is the connection between syntactic representation formulas and their semantic interpretations for the world.
- *   <span class="Formula">I &#8871; F</span> says whether a (composed) formula F is valid in an interpretation I.
+ *   <span class="Formula">I &#8871; F</span> says whether a (compound) formula F is valid in an interpretation I.
  *   </dd>
  * </dl>
+ * Pragmatics comes into play when we consider the consequences of interpreting formulas
+ * in the semantics of the specific application at hand.
  * <hr size="6" />
  * For a logic, one or more {@link Inference inference relations} between
  * existing knowledge and derived knowledge can be defined.

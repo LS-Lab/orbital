@@ -75,7 +75,7 @@ public class LUDecomposition/*<R implements Arithmetic>*/ implements Serializabl
 
 	    // column pivotising
 	    {
-		// @see orbital.algorithm.template.PackageUtilities#max
+		// @see orbital.util.Setops#argmax
 		int pivot = k;
 		for (int i = k + 1; i < A.dimension().height; i++)
 		    if (((Real) A.get(i, k)).compareTo(A.get(pivot, k)) > 0)

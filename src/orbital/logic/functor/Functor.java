@@ -48,7 +48,8 @@ import orbital.util.Utility;
  * it induces an implicit function with the same extensional semantics
  * <div><sub>P</sub>f/(n-1) := <big>{</big>f(a<sub>1</sub>,...,a<sub>k-1</sub>,a<sub>k+1</sub>,...a<sub>n</sub>):=a<sub>k</sub> &brvbar; P(a<sub>1</sub>,a<sub>2</sub>,...,a<sub>n</sub>) is true<big>}</big></div>
  * Also, whether the extension of a predicate is specified as a subset &rho;&isin;&weierp;(A),
- * or with its characterisitic function &chi;<sub>&rho;</sub> with &chi;<sub>&rho;</sub>(x)=1 iff x&isin;&rho;
+ * or with its {@link Functionals#asFunction(Predicate) characterisitic function}
+ * &chi;<sub>&rho;</sub> with &chi;<sub>&rho;</sub>(x)=1 iff x&isin;&rho;
  * is a matter purely syntactic variant.
  * Note however, that inspite of all this duality, functions and predicates can differ intensionally
  * regardless of their extensional equality.

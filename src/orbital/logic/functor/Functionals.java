@@ -1272,6 +1272,8 @@ public class Functionals {
      * This method acts as a bridge between predicates and functions in case
      * a predicate representation is not acceptable.
      * </p>
+     * @return the characteristic function &chi;<sub>p</sub> with &chi;<sub>&rho;</sub>(x)=1 iff x&isin;&rho;,
+     *  and &chi;<sub>&rho;</sub>(x)=0 iff x&notin;&rho;.
      * @see <a href="{@docRoot}/DesignPatterns/Adapter.html">Adapter Pattern</a>
      */
     public static /*<A>*/ Function/*<A, Boolean>*/ asFunction(Predicate/*<A>*/ p) {

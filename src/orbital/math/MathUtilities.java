@@ -643,7 +643,9 @@ public final class MathUtilities {
      *   <dd>if either <ul>
      *   <li>they have the same type, and this type is the minimum type (the most restrictive one).
      *   So whenever possible an integer will be preferred over a rational,
-     *   a rational over a real and that over a complex.</li>
+     *   a rational over a real and that over a complex.
+     *   That is they are instances of the common superclass.
+     *   </li>
      *   <li>or they have minimum compatible types, such as a matrix and a vector.</li>
      *   </ul>
      * </dd>

@@ -77,7 +77,7 @@ public class BananaTest {
 	List formula = Arrays.asList(new Object[] {
 	    Values.symbol("a"), Values.symbol("b"), Values.symbol("c")
 	});
-	System.out.println("because symbolic it is");
+	System.out.println("because with symbolic evaluation it is");
 	System.out.println("  " + new Functionals.Catamorphism(Values.valueOf(1), g).apply(formula.iterator()) + "\tfor banana");
 	System.out.println("  " + Functionals.foldRight(g, Values.valueOf(1), formula) + "\tfor foldRight");
 	System.out.println("  " + Functionals.foldLeft(g, Values.valueOf(1), formula) + "\tfor foldLeft");
@@ -86,16 +86,17 @@ public class BananaTest {
 	System.out.println("  " + new Functionals.Catamorphism(Values.valueOf(1), h).apply(formula.iterator()) + "\tfor banana");
 	System.out.println("  " + Functionals.foldRight(h, Values.valueOf(1), formula) + "\tfor foldRight");
 	System.out.println("  " + Functionals.foldLeft(h, Values.valueOf(1), formula) + "\tfor foldLeft");
-	System.out.println(h + " / d(x,y) = " + h.derive() + "\n  integral " + h + " dx = " + h.integrate(0));
-	System.out.println(h + " / d(x,y) = " + h.derive() + "\n  integral " + h + " dy = " + h.integrate(1));
+	System.out.println("d" + h + " / d(x,y) = " + h.derive() + "\n  integral " + h + " dx = " + h.integrate(0));
+	System.out.println("d" + h + " / d(x,y) = " + h.derive() + "\n  integral " + h + " dy = " + h.integrate(1));
     } 
 
 
     /**
+     * Filters all elements of a collection/iterator that match the given predicate P.
      * filter = (|nil, f|)
      * Where
      * f(a, as) = cons(a, as)  <= p(a)
-     * = as           <= not p(a)
+     * f(a, as) = as           <= not p(a)
      */
     public static Function filter(final Predicate p) {
 	return new Functionals.Catamorphism(new LinkedList(), new BinaryFunction() {
@@ -110,6 +111,7 @@ public class BananaTest {
     } 
 
     /**
+     * Maps a function f to each element of an iterator a.
      * banana map
      * map == (|nil, g|)
      * Where
@@ -121,6 +123,7 @@ public class BananaTest {
      */
 
     /**
+     * Maps a function f to each element of an iterator a.
      * lense map
      * map == |(g, p)|
      * Where
@@ -148,6 +151,7 @@ public class BananaTest {
      */
 
     /**
+     * Calculates the factorial (n!).
      * Hylomorphism factorial.
      * @return <span class="envelopeBracket">[[</span>(1,*),(g,&lambda;x. x==0)<span class="envelopeBracket">]]</span> n.
      *  where g(1 + n) = (1 + n, n).
@@ -162,6 +166,7 @@ public class BananaTest {
     } 
 
     /**
+     * Calculates the factorial (n!).
      * efficient factorial with barbed wire.
      * @return <span class="barbedwireBracket">{|</span>1, (1+x)*y<span class="barbedwireBracket">|}</span> n
      */
