@@ -120,32 +120,32 @@ convenient for usual cases.
   </tr>
   <tr id="magma">
     <td class="defID">(s)</td>
-    <td class="defCond">⋅:M×M→M is a law of composition</td>
+    <td class="defCond" id="stable">⋅:M×M→M is a law of composition</td>
     <td class="defVerbal">&quot;stable&quot;</td>
     <td class="defTerm"><dfn>magma</dfn></td>
   </tr>
   <tr id="semigroup">
     <td class="defID">(a)</td>
-    <td class="defCond">∀x,y,z∈M (x⋅y)⋅z = x⋅(y⋅z)</td>
+    <td class="defCond" id="associative">∀x,y,z∈M (x⋅y)⋅z = x⋅(y⋅z)</td>
     <td class="defVerbal">&quot;associative&quot;</td>
     <td class="defTerm"><dfn>semigroup</dfn> ⊂ magma</td>
   </tr>
   <tr id="monoid">
     <td class="defID">(n)</td>
-    <td class="defCond">∃1∈M ∀x∈M 1⋅x = x = x⋅1</td>
+    <td class="defCond" id="neutral">∃1∈M ∀x∈M 1⋅x = x = x⋅1</td>
     <td class="defVerbal">&quot;neutral&quot;</td>
     <td class="defTerm"><dfn>monoid</dfn> ⊂ semigroup</td>
   </tr>
   <tr id="group">
     <td class="defID">(i)</td>
-    <td class="defCond">∀x∈M ∃x<sup>-1</sup>∈M x⋅x<sup>-1</sup> = 1 = 
-      x<sup>-1</sup>⋅x</td>
+    <td class="defCond" id="inverses">∀x∈M ∃x<sup>-1</sup>∈M x⋅x<sup>-1</sup> 
+      = 1 = x<sup>-1</sup>⋅x</td>
     <td class="defVerbal">&quot;inverses&quot;</td>
     <td class="defTerm"><dfn>group</dfn> ⊂ monoid</td>
   </tr>
   <tr id="AbelianGroup">
     <td class="defID">(c)</td>
-    <td class="defCond">∀x,y∈M x⋅y = y⋅x</td>
+    <td class="defCond" id="commutative">∀x,y∈M x⋅y = y⋅x</td>
     <td class="defVerbal">&quot;commutative&quot;</td>
     <td class="defTerm"><dfn>Abelian group</dfn> ⊂ group</td>
   </tr>
@@ -159,8 +159,8 @@ element, and at most one inverse of any element.&nbsp; M<sup>×</sup> := {x∈M
 <table width="100%" class="def" id="morph_1_0">
   <caption>Homomorphisms of algebraic structures with one law of composition</caption>
   <tr>
-    <td class="defContext" colspan="4">Let (M,⋅), (N,∗) be magmas/semigroups/monoids/groups/Abelian 
-      groups, and φ:M→N a map.</td>
+    <td class="defContext" colspan="4">Let (M,⋅), (N,∗) be 
+      magmas/semigroups/monoids/groups/Abelian groups, and φ:M→N a map.</td>
   </tr>
   <tr>
     <th class="defID"></th>
@@ -186,18 +186,19 @@ element, and at most one inverse of any element.&nbsp; M<sup>×</sup> := {x∈M
 <p>Remember that the definitions for homomorphisms are meant cumulative. This 
 means that for φ to be a homomorphism of monoids, both (m) and (1) must be 
 true. In fact, although both of these must also be true for homomorphisms of 
-groups, the property (1) already follows from (m) provided that M, N are groups. 
-So the property (1) only must be verified for monoids, which is the 
+groups, the property (1) already follows from (m) provided that M and N are 
+groups. So the property (1) only must be verified for monoids, which is the 
 justification for the suggestive notation in the table above.</p>
 <p>If φ:M→N is a homomorphism (of magmas), it carries much of the algebraic 
-structure of M over to f(M)⊆N. (f(M),∗) inherits the properties (s),(a),(n),(i),(c) 
-from (M,⋅), however in general it may be f(1)≠1.</p>
+structure of M over to f(M)⊆N. (f(M),∗) inherits the properties (s),(a),(n),(i),(c),<a href="#distributive">(d)</a> 
+from (M,⋅), however in general if N is no group it may be f(1)≠1 (and thus 
+f(x<sup>-1</sup>)≠f(x)<sup>-1</sup>).</p>
 <h3 class="inner">Examples</h3>
 <ol>
   <li>For every set X there is the <dfn>free magma</dfn> M(X) := .</li>
   <li>For every set X there is the <dfn>free semigroup</dfn> (of words) F<sup>a</sup>(X) 
     := X<sup>+</sup> := ⋃<sub>n∈<b>N</b>\{0}</sub> X<sup>n</sup>.</li>
-  <li>For every set X there is the <dfn>free monioid</dfn> (of words) Mo(X) := X<sup>*</sup> 
+  <li>For every set X there is the <dfn>free monoid</dfn> (of words) Mo(X) := X<sup>*</sup> 
     := ⋃<sub>n∈<b>N</b></sub> X<sup>n</sup>.</li>
   <li>For every set X there is the <dfn>free group</dfn> F(X) with basis X with<br>
     ∀y∈F(X) ∃!x<sub>1</sub><sup>ε<sub>1</sub></sup>⋅...⋅x<sub>n</sub><sup>ε<sub>n</sub></sup> 
@@ -226,7 +227,7 @@ from (M,⋅), however in general it may be f(1)≠1.</p>
       <ul>
         <li>(R,+) is an Abelian group</li>
         <li>(R,⋅) is a semigroup</li>
-        <li><b>(d)</b> ⋅ is distributive over +, i.e.
+        <li id="distributive"><b>(d)</b> ⋅ is distributive over +, i.e.
           <ul>
             <li>∀x,y,z∈R x⋅(y+z) = (x⋅y) + (x⋅z)</li>
             <li>∀x,y,z∈R (x+y)⋅z = (x⋅z) + (y⋅z)</li>
@@ -290,8 +291,8 @@ true rings with 1.</p>
     <td class="defID">(m)</td>
     <td class="defCond">
       <ul>
-        <li>φ:(R,+)→(R',+) is a homomorphism of groups</li>
-        <li>φ:(R,⋅)→(R',⋅) is a homomorphism of semigroups</li>
+        <li>φ:(R,+)→(R',+) is a homomorphism of groups.</li>
+        <li>φ:(R,⋅)→(R',⋅) is a homomorphism of semigroups.</li>
       </ul>
     </td>
     <td class="defVerbal">&quot;morph&quot;</td>
@@ -299,7 +300,8 @@ true rings with 1.</p>
   </tr>
   <tr>
     <td class="defID">(1)</td>
-    <td class="defCond">φ(1) = 1</td>
+    <td class="defCond">φ(1) = 1, i.e. φ:(R,⋅)→(R',⋅) is a homomorphism 
+      of monoids.</td>
     <td class="defVerbal">&quot;unital&quot;</td>
     <td class="defTerm"><dfn>homomorphism</dfn> of ... ⊂<br>
       homomorphism of pseudo-ring</td>
@@ -307,8 +309,9 @@ true rings with 1.</p>
 </table>
 <h5 class="compact">Note:</h5>
 <p>Compare with <a href="#morph_1_0">homomorphisms of groups</a> to see that for 
-homomorphisms of skew-fields the property (1) follows from (m). Also note that 
-homomorphisms of rings from a skew-field are injective, since <span class="category">Ring1</span>→<span class="category">Grp</span>; 
+homomorphisms of skew-fields R and R' the property (1) follows from (m). Also 
+note that homomorphisms of rings with 1 from a skew-field R are injective, since 
+<span class="category">Ring1</span>→<span class="category">Grp</span>; 
 (R,+,⋅)↦R<sup>×</sup> is a covariant functor implying that homomorphisms φ 
 satisfy φ(R<sup>×</sup>)⊆(R')<sup>×</sup>.</p>
 <h3>Modules</h3>
@@ -383,7 +386,7 @@ R-vector spaces are simply called R-vector spaces.</p>
   </tr>
   <tr>
     <td class="defID">(m)</td>
-    <td class="defCond">
+    <td class="defCond" id="linear">
       <ul>
         <li>φ:(R,+)→(R',+) is a homomorphism of groups</li>
         <li>∀α∈R∀x∈M φ(α∗x) = α∗φ(x)</li>
@@ -487,8 +490,7 @@ R-vector spaces are simply called R-vector spaces.</p>
   <tr>
     <td class="defID">( )</td>
     <td class="defCond">ι:R→E is a homomorphism of rings.<br>
-      (setting α∗x := ι(α)⋅x, and note that the algebra will inherit 
-      unital from ι)</td>
+      (setting α∗x := ι(α)⋅x, and the algebra E inherits unital from ι)</td>
     <td class="defTerm">associative R-algebra</td>
   </tr>
 </table>
@@ -534,17 +536,18 @@ homomorphism of rings.</p>
   <li>A commutative ring R with 1 is a unital and commutative associative 
     R-algebra.</li>
   <li>Let A := 〈x<sub>1</sub>,...,x<sub>n</sub>〉 be a finitely generated 
-    R-algebra, then A ≅ R[X<sub>1</sub>,...,X<sub>n</sub>]/I with an I⊴R[X<sub>1</sub>,...,X<sub>n</sub>].</li>
+    R-algebra, then A ≅ R[X<sub>1</sub>,...,X<sub>n</sub>]/I for a I⊴R[X<sub>1</sub>,...,X<sub>n</sub>].</li>
   <li>If R≤R' is a ring extension then R' is an R-algebra.</li>
   <li>If I⊴R is an ideal, R/I is an R-algebra.</li>
   <li><b>Z</b>-<span class="category">Algas</span>≅<span class="category">PseudoRing</span>, 
     <b>Z</b>-<span class="category">Algasu</span>≅<span class="category">Ring1</span>.</li>
-  <li>If S is a magma, then R<sup>(S)</sup> is an R-algebra (and associative, 
-    unital, or commutative if S is), by ι(s)⋅ι(t) := ι(s⋅t) from the 
-    canonical injection ι:S→R<sup>(S)</sup>. Especially, there is the free 
-    R-algebra Lib<sub>R</sub>(I) := R<sup>(M(I))</sup>, the free associative 
-    R-algebra Libas<sub>R</sub>(I) := R<sup>(Mo(I))</sup>, and the free 
-    commutative and associative R-algebra Libasc<sub>R</sub>(I) := R<sup>(N<sup>(I)</sup>)</sup>.</li>
+  <li>If S is a magma, then R<sup>(S)</sup> is an R-algebra (also inheriting 
+    associative, unital, or commutative from S), by ι(s)⋅ι(t) := ι(s⋅t) 
+    from the canonical injection ι:S→R<sup>(S)</sup>. Especially, there is 
+    the <dfn>free R-algebra</dfn> Lib<sub>R</sub>(I) := R<sup>(M(I))</sup>, the <dfn>free 
+    associative R-algebra</dfn> Libas<sub>R</sub>(I) := R<sup>(Mo(I))</sup>, and 
+    the <dfn>free commutative and associative R-algebra</dfn> Libasc<sub>R</sub>(I) 
+    := R<sup>(N<sup>(I)</sup>)</sup> (= R[X<sub>...</sub>] ?).</li>
   <li>R<sup>F</sup>....</li>
 </ol>
 <h2 id="quotient">Quotient Structures</h2>

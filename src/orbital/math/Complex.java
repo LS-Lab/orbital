@@ -29,7 +29,7 @@ import orbital.logic.functor.Predicate;
  * Complex numbers are not like real numbers. They are not ordered.
  * </p>
  * 
- * @invariant &not;super &and; &not; (this is Comparable) || abnormal(&not; Comparable)
+ * @invariant (&not;super &and; &not;(this is Comparable)) &or; <span class="provable">&#9633;</span>abnormal(&not; Comparable)
  * @version 1.0, 1996/02/03
  * @author  Andr&eacute; Platzer
  * @see Values#complex(Real, Real)

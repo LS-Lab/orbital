@@ -307,7 +307,7 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	 * @param parameterTypes an array of all parameter-types in order of calling. Must have the length arity.
 	 * @param returnType the type of a resulting value.
 	 * @pre parameterTypes&ne;null &and; returnType&ne;null &and; method&ne;null
-	 * @post abnormal(name of applyMethod)
+	 * @post <span class="consistent">&#9671;</span>abnormal(name of applyMethod)
 	 */
 	public Specification(String method, Class[] parameterTypes, Class returnType) {
 	    this(parameterTypes, returnType);

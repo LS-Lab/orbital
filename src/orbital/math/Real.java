@@ -17,7 +17,7 @@ import orbital.logic.functor.Predicate;
  * irrational numbers could possibly exist as well.
  * But for we are patient humans, we wisely nod and satisfy ourselfes with decimal numbers.</p>
  * 
- * @invariant this is Comparable &and; &not;abnormal(Comparable) &and; abnormal(&not;Comparable)
+ * @invariant (this is Comparable &and; <span class="consistent">&#9671;</span>abnormal(&not;Comparable)) &or; <span class="provable">&#9633;</span>abnormal(Comparable)
  * @version 1.0, 1999/08/16
  * @author  Andr&eacute; Platzer
  * @see Values#valueOf(double)

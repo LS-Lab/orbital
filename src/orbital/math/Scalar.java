@@ -17,7 +17,7 @@ import orbital.logic.functor.Predicate;
  * to do so, since that would break the freedom of inheriting from another base class.
  * </p>
  * 
- * @invariant usually this is Comparable || abnormal(Comparable)
+ * @invariant usually this is Comparable || <span class="provable">&#9633;</span>abnormal(Comparable)
  * @version 1.0, 2000/08/08
  * @author  Andr&eacute; Platzer
  * @todo perhaps drop Comparable here?

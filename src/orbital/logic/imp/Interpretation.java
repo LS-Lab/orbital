@@ -149,6 +149,10 @@ import orbital.logic.functor.Functor;
  * </dl>
  * </p>
  * <p>
+ * In addition to this syntactic aspect, theories, when applied to a particular domain, should just
+ * as well explain observed facts.
+ * </p>
+ * <p>
  * Now we consider possible equivalence relations of interpretations.
  * <dl class="def">
  *   <dt>elementar equivalence</dt>
