@@ -463,6 +463,7 @@ public final class Setops {
 	    }
 	    catch (NoSuchElementException ex) {
 		//@internal that's better than querying dest.hasNext() in order to let growing ListIterators (like Polynomial.iterator()) have a chance of growing on demand.
+		// but also see Functionals.mapInto
 		throw new IndexOutOfBoundsException("destination ListIterator has less storage than source iterator");
 	    }
 	    dest.set(src.next());

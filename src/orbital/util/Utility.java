@@ -514,7 +514,7 @@ public final class Utility {
      * </p>
      * @internal Iteratable would have
      *  (List)Iterator iterator();
-     *  Object structure(); // supporting equals like AbstractProductArithmetic#productIndexSet(), Multinomial#indexSet()
+     *  Object structure(); // supporting equals like AbstractProductArithmetic#productIndexSet(), Polynomial#indexSet()
      *  Iteratable newInstance(Object structure)
      */
     public static boolean isIteratable(Object a) {
