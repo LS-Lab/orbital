@@ -1,0 +1,453 @@
+/**
+ * @(#)MathParser.java 1.0 2000/09/02 Andre Platzer
+ *
+ * Copyright (c) 2000 Andre Platzer. All Rights Reserved.
+ *
+ * This software is the confidential and proprietary information
+ * of Andre Platzer. ("Confidential Information"). You
+ * shall not disclose such Confidential Information and shall use
+ * it only in accordance with the terms of the license agreement
+ * you entered into.
+ */
+
+options {
+    LOOKAHEAD = 1;
+    STATIC = false;
+    UNICODE_INPUT = true;
+}
+
+PARSER_BEGIN(MathParser)
+package orbital.moon.logic;
+
+import orbital.math.*;
+import orbital.math.functional.*;
+import orbital.logic.functor.Functor;
+import orbital.logic.functor.Notation;
+
+import orbital.logic.trs.Substitutions;
+import java.util.*;
+import java.lang.reflect.*;
+import java.io.StringReader;
+import orbital.io.IOUtilities;
+
+/**
+ * This class implements a parser for mathematical expressions.
+ * <p>
+ * Note that function evaluation expressions are usually denoted with rectangular brackets as in
+ * "sin[2 + 4/15]". Nevertheless, normal brackets () will often work as well.</p>
+ * @version 0.9, 2000/09/02
+ * @author  Andr&eacute; Platzer
+ * @dependency orbital.logic.functor.Notation Uses registered notation functors reverse.
+ * @see <a href="doc-files/MathParser_grammar.html">Grammar</a>
+ * @see #parseExpression()
+ * @todo introduce a lambda expression that uses the lambda operator implemented by substitution (see ...)
+ */
+public class MathParser {
+    /**
+     * tool-main
+     */
+    public static void main(String arg[]) throws Exception {
+	if (arg.length > 0 && "-?".equals(arg[0])) {
+	    System.out.println(usage);
+	    return;
+	} 
+	System.out.print("Type expression: ");
+	System.out.flush();
+	String expr = IOUtilities.readLine(System.in);
+	Object p = createExpression(expr);
+	System.out.println("Original expression:\t" + expr);
+	System.out.println("Parsed function:\t" + p);
+	System.out.println("Evaluates to:\t" + (p instanceof Function ? ((Function) p).apply(null) : p));	//XXX: erm why null?
+    } 
+    public static final String usage = "usage: \n\tstart and enter a correct mathematical expression to evaluate\n\tremember that function evaluation expressions are denoted with rectangular\n\tbrackets as in \"sin[2 + 4/15] + 3*x\"";
+	
+    public static/**/ Object createExpression(String expression) throws orbital.io.ParseException {
+	if (expression == null)
+	    return null;
+	try {
+	    MathParser parser = new MathParser(new StringReader(expression));
+	    return parser.parseExpression();
+	} catch (ParseException x) {
+	    throw new orbital.io.ParseException(x.getMessage(), x.currentToken.next.beginLine, x.currentToken.next.beginColumn);
+	} 
+    } 
+
+    /**
+     * unary junctors.
+     */
+    protected static Arithmetic combine(Token optok, Arithmetic a) throws ParseException {
+	String op = optok.image;
+	if ("+".equals(op))
+	    return a;
+	Functor f = Notation.functorOf(op, new Arithmetic[] {a});
+	if (f != null)
+	    return (Function) Functionals.genericCompose((Function) f, a);
+	throw LogicParser.newParseException("Unary operator '" + op + "/1' not defined", optok);
+    }
+    /**
+     * binary junctors.
+     */
+    protected static Arithmetic combine(Token optok, Object a, Object b) throws ParseException {
+	String op = optok.image;
+	Functor f = Notation.functorOf(op, new Object[] {a,b});
+	if (f != null)
+	    return /*(BinaryFunction)*/ Functionals.genericCompose((BinaryFunction) f, a, b);
+	throw LogicParser.newParseException("Binary operator '" + op + "/2' not defined", optok);
+    }
+
+    /**
+     * Find the function for a function call.
+     * <p>
+     * Will lookup known functions in {@link orbital.math.functional.Functions}
+     * depending upon the arguments.
+     * </p>
+     */
+    protected static MathFunctor findFunction(Token ftok, Object[] arg) throws ParseException {
+	final String f = ftok.image;
+	try {
+	    switch(arg.length) {
+	    case 1: {
+		final Field exists = Functions.class.getField(f);
+		if (!Function.class.isAssignableFrom(exists.getType()))
+		    throw LogicParser.newParseException("Function '" + f + "/" + arg.length + "' not defined as unary", ftok);
+		return (Function) exists.get(null);
+	    }
+	    case 2: {
+		final Field exists = Functions.class.getField(f);
+		if (!BinaryFunction.class.isAssignableFrom(exists.getType()))
+		    throw LogicParser.newParseException("Function '" + f + "/" + arg.length + "' not defined as binary", ftok);
+		return (BinaryFunction) exists.get(null);
+	    }
+	    default:
+		throw new IllegalArgumentException("Calling a function '" + f  + "/" + arg.length + "' is not supported. Only 1 or two arguments can be used, yet");
+	    }
+	} catch(NoSuchFieldException notdefined) {
+	    throw LogicParser.newParseException("Function '" + f + "/" + arg.length + "' not defined", ftok);
+	} catch(IllegalAccessException ex) {
+	    throw (InternalError) new InternalError(ex.getMessage()).initCause(ex);
+	} catch(SecurityException ex) {
+	    throw (InternalError) new InternalError(ex.getMessage()).initCause(ex);
+	}
+    }
+
+    /**
+     * function application.
+     * <p>
+     * Will compose the function with its arguments in order to represent the function
+     * application parsed now.
+     * </p>
+     * @note a functor is returned since the function application is not evaluated, but
+     *  only <em>parsed</em>.
+     *  This method results in a composition of function and arguments instead of
+     *  the value of the function at the specified arguments.
+     * @todo perhaps weaken to Functor for lambda expressions?
+     */
+    protected static MathFunctor apply(MathFunctor f, Object[] arg) throws ParseException {
+	switch(arg.length) {
+	case 1:
+	    if (f instanceof Function)
+		return Functionals.genericCompose((Function) f, arg[0]);
+	    else
+		throw new IllegalStateException("Function '" + f + "/" + arg.length + "' not defined as unary");
+	case 2: {
+	    if (f instanceof BinaryFunction)
+		return Functionals.genericCompose((BinaryFunction) f, arg[0], arg[1]);
+	    else
+		throw new IllegalStateException("Function '" + f + "/" + arg.length + "' not defined as binary");
+	}
+	default:
+	    throw new IllegalArgumentException("Calling a function '" + f  + "/" + arg.length + "' is not supported. Only 1 or two arguments can be used, yet");
+	}
+    }
+    
+    /**
+     * convert a orbital.logic.functor.Function to a orbital.math.functional.Function 
+     * that does not support other operations than apply.
+     */
+    private static final Function convert(final orbital.logic.functor.Function f) {
+	return new AbstractFunction() {
+		public Object apply(Object o) {
+		    return f.apply(o);
+		}
+		public Function derive() {
+		    throw new UnsupportedOperationException("not yet implemented, symbolic");
+		} 
+		public Function integrate() {
+		    throw new UnsupportedOperationException("not yet implemented, symbolic");
+		} 
+		public Real norm() {
+		    throw new UnsupportedOperationException();
+		}
+		public boolean equals(Object o) {
+		    return f.equals(o);
+		}
+		public int hashCode() {
+		    return f.hashCode();
+		}
+		public String toString() {
+		    return f.toString();
+		} 
+	    };
+    }
+    // identical to @see orbital.math.functional.Function (below)
+    /*private static*/ static abstract class AbstractFunction/*<A implements Arithmetic, B implements Arithmetic>*/  extends orbital.moon.math.AbstractFunctor implements Function/*<A,B>*/ {}
+}
+PARSER_END(MathParser)
+
+SKIP :
+{
+    " "
+|   "\r"
+|   "\t"
+|   < EOL: "\n" >
+}
+
+SPECIAL_TOKEN : /* COMMENTS */
+{
+  <SINGLE_LINE_COMMENT: "//" (~["\n","\r"])* ("\n"|"\r"|"\r\n")>
+| <FORMAL_COMMENT: "/**" (~["*"])* "*" ("*" | (~["*","/"] (~["*"])* "*"))* "/">
+| <MULTI_LINE_COMMENT: "/*" (~["*"])* "*" ("*" | (~["*","/"] (~["*"])* "*"))* "/">
+}
+
+TOKEN :
+{
+    < EOS: "." >
+| <LAMBDA : "\\" | "\u03bb">
+}
+
+/**
+ * Start to parse an arithmetic formula expression.
+ * @internal we require <EOF> to be sure we parsed all, and no syntactic garbage lurks around at the end of the input
+ */
+Arithmetic parseExpression() :
+{Arithmetic expr;}
+{
+    expr = term() <EOF>
+	{ return expr; }
+  | <EOF>
+	{ return null; }
+}
+
+/*TOKEN :
+{
+    <OPERATOR:("<"|">"|"=="|"<="|">="| "&&"|"||"| "&"|"|"| "+"|"-"|"*"|"/"| "^"|"->"|"<=>")>
+|   <UNARY_OPERATOR:("~")>
+}*/
+
+// expression parsing methods
+
+Arithmetic term() :
+{Arithmetic f;}
+{
+	f = SumExpression()
+{return f;}
+}
+
+// junctors
+
+Arithmetic SumExpression() :
+{Token tok;Arithmetic a, b;}
+{
+    a = ProductExpression() ( (tok = "+" | tok = "-") b = ProductExpression() {a = combine(tok, a, b);} )*
+{return a;}
+}
+
+Arithmetic ProductExpression() :
+{Token tok;Arithmetic a, b;}
+{
+    a = PowerExpression() ( (tok = "*" | tok = "/") b = PowerExpression() {a = combine(tok, a, b);} )*
+{return a;}
+}
+
+Arithmetic PowerExpression() :
+{Token tok;Arithmetic a, b;}
+{
+    // right associative xfy
+     /*
+      * right associtivity is expressed using a right-recursive grammar
+      * specification. The LOOKAHEAD specification tells JavaCC to look ahead
+      * for a "^" token, otherwise the correct match won't be taken. 
+      * @todo or tok = "**"
+      */
+    a = UnaryExpression() (LOOKAHEAD("^") tok = "^" b = PowerExpression() {a = combine(tok, a, b);} )*
+{return a;}
+}
+
+// unary operators
+
+Arithmetic UnaryExpression() :
+{Token tok;Arithmetic v;}
+{
+    ( tok = "+" | tok = "-" ) v = UnaryExpression() {return combine(tok, v);}
+    //TODO: unary x^-1
+|   v = value() {return v;}
+}
+
+// atomic values
+
+Arithmetic value() :
+{Arithmetic f;}
+{
+( LOOKAHEAD(2)
+	f = functionApplication()
+|
+	f = literal()
+|	"(" f = term() ")"
+)
+{return f;}
+}
+
+
+/* LITERALS (same as LogicParser) */
+
+TOKEN :
+{
+  < INTEGER_LITERAL:
+        <DECIMAL_LITERAL>
+  >
+|
+  < #DECIMAL_LITERAL: (<DIGIT>)+ >
+|
+  < FLOATING_POINT_LITERAL:
+        (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)?
+//      | "." (["0"-"9"])+ (<EXPONENT>)?			// removed due to lambdaAbstraction (\x.2*x)
+      | (["0"-"9"])+ (<EXPONENT>)?
+  >
+|
+  < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
+|
+  < STRING_LITERAL:
+      "\""
+      (   (~["\"","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )*
+      "\""
+  >
+|   <#DIGIT : ["0"-"9"]>
+}
+
+/* IDENTIFIERS */
+
+TOKEN :
+{
+  < IDENTIFIER: <LETTER> (<LETTER>|<DIGIT_OR_ALIKE>)* >
+|
+  < #LETTER:
+      [
+//       "\u0024",
+       "\u0041"-"\u005a",
+       "\u005f",
+       "\u0061"-"\u007a",
+       "\u00c0"-"\u00d6",
+       "\u00d8"-"\u00f6",
+       "\u00f8"-"\u00ff",
+       "\u0100"-"\u1fff",
+       "\u3040"-"\u318f",
+       "\u3300"-"\u337f",
+       "\u3400"-"\u3d2d",
+       "\u4e00"-"\u9fff",
+       "\uf900"-"\ufaff"
+      ]
+  >
+|
+  < #DIGIT_OR_ALIKE:
+      [
+       "\u0030"-"\u0039",
+       "\u0660"-"\u0669",
+       "\u06f0"-"\u06f9",
+       "\u0966"-"\u096f",
+       "\u09e6"-"\u09ef",
+       "\u0a66"-"\u0a6f",
+       "\u0ae6"-"\u0aef",
+       "\u0b66"-"\u0b6f",
+       "\u0be7"-"\u0bef",
+       "\u0c66"-"\u0c6f",
+       "\u0ce6"-"\u0cef",
+       "\u0d66"-"\u0d6f",
+       "\u0e50"-"\u0e59",
+       "\u0ed0"-"\u0ed9",
+       "\u1040"-"\u1049"
+      ]
+  >
+}
+
+/**
+ * Parse an atomic literal value (atom or number or string).
+ */
+Arithmetic literal() :
+{Token tok;}
+{
+    //@todo depending upon number of digits, we could parse optmized <INTEGER_LITERAL>	{return new Integer.Long(Long.parseLong(tok.image));}
+    tok = <INTEGER_LITERAL>     	{return Values.valueOf(tok.image);}
+|   tok = <FLOATING_POINT_LITERAL>	{return Values.valueOf(tok.image);}
+|   tok = <STRING_LITERAL>			{return Values.symbol(/* @todo remove " quotes? */tok.image);}
+|   tok = <IDENTIFIER>				{return Values.symbol(tok.image);}
+}
+
+/**
+ * application alias function call.
+ * Will resolve multiple applicable functions by arity and type of the arguments.
+ * @note a functor is returned since the function application is not evaluated, but only <em>parsed</em>.
+ *  This method results in a composition of function and arguments instead of
+ *  the value of the function at the specified arguments.
+ * @internal we cannot move the lambdaAbstraction() case into function()
+ *  because the return types don't fit.
+ */
+MathFunctor functionApplication() :
+{Token tok;MathFunctor f;Object[] s;}
+{
+    tok = function() s = Arguments()
+	{return apply(findFunction(tok, s), s);}
+|	f = lambdaAbstraction() s = Arguments()
+	{return apply(f, s);}
+}
+
+/**
+ * Ordinary function (predefined, or built-in, or ...).
+ */
+Token function() :
+{Token tok;}
+{
+    tok = <IDENTIFIER>
+{return tok;}
+}
+
+/**
+ * &lambda;-abstraction term.
+ *@todo change return-type to MathFunctor or at least Functor such that we can as well accept
+ * &lambda;-abstractions
+ * However, the (known static) lookup mechanism in functionApplication() depends upon
+ * the arity and type of arguments
+ *@todo let our surroundings (not us) also support variables/constants bound to &lambda;-abstractions.
+ * @xxx note that (\x.2*x) can be parsed as expected because .2 is not a real number but only 0.2
+ * @see orbital.logic.trs.Substitutions#lambda
+ */
+Function lambdaAbstraction() :
+{Token x;Arithmetic t;}
+{
+    "(" <LAMBDA> x = <IDENTIFIER> "." t = term() ")"
+{return convert((orbital.logic.functor.Function) Substitutions.lambda.apply(Values.symbol(x.image), t));}
+}
+
+Object[] Arguments() :
+{Object[] s = null;}
+{
+(
+/*    "(" [ s = Argument_list() ] ")"
+|*/
+    "[" [ s = Argument_list() ] "]"
+)
+{return s;}
+}
+
+Object[] Argument_list() :
+{List r = new LinkedList(); Object x;}
+{
+    x = term() {r.add(x);} ( "," x = term() {r.add(x);} )*
+{return r.toArray();}
+}
