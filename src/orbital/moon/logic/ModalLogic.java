@@ -1,4 +1,4 @@
-/*
+/**
  * @(#)ModalLogic.java 1.1 2002-11-23 Andre Platzer
  * 
  * Copyright (c) 2002 Andre Platzer. All Rights Reserved.
@@ -57,7 +57,6 @@ import java.util.logging.Level;
 public class ModalLogic extends ClassicalLogic {
     /**
      * tool-main
-     * @todo parse arguments in order to obtain OperatorSet used
      */
     public static void main(String arg[]) throws Exception {
 	if (orbital.signe.isHelpRequest(arg)) {
@@ -68,7 +67,7 @@ public class ModalLogic extends ClassicalLogic {
 	ModalLogic logic = new ModalLogic();
 	Reader rd = null;
 	try {
-	    rd = new InputStreamReader(System.in);
+	    rd = arg.length > 0 ? new FileReader(arg[0]) : new InputStreamReader(System.in);
 	    proveAll(rd, logic, true);
 	}
 	finally {
@@ -133,16 +132,18 @@ public class ModalLogic extends ClassicalLogic {
      */
     private final Inference _reductionInference = new Inference() {
 	    public boolean infer(Formula[] B, Formula D) {
-	    final Inference classicalInference = classical.inference();
+		final Inference classicalInference = classical.inference();
+		//@todo should add sorted type-safety information Kripke etc.
 		Formula[] Bred = new Formula[B.length];
+		System.err.print("  ");
 		for (int i = 0; i < B.length; i++) {
 		    Bred[i] = Utilities.modalReduce(B[i]);
 		    if (i > 0 )
-			System.err.print(", ");
-		    System.err.println(Bred[i]);
+			System.err.print(" , ");
+		    System.err.print(Bred[i]);
 		}
 		Formula Dred = Utilities.modalReduce(D);
-		System.err.println(" |-<red> " + Dred + " ??");
+		System.err.println("  |-<red> " + Dred);
 		return classicalInference.infer(Bred, Dred);
 	    }
 	    public boolean isSound() {
@@ -291,15 +292,24 @@ public class ModalLogic extends ClassicalLogic {
 		}
 
 		try {
-		    Expression[]      argWithContext = new Expression[arg.length + 1];
+		    Expression[] argWithContext = new Expression[arg.length + 1];
 		    System.arraycopy(arg, 0, argWithContext, 0, arg.length);
 		    argWithContext[argWithContext.length - 1] = logic.CURRENT_WORLD_form;
 		    Type tau = p.getType().domain();
+		    Type taumod;
+		    if (tau instanceof /*Type*/Functor.Composite
+			&& ((Functor.Composite)tau).getCompositor() == Types.product) {
+			Type[] argt = (Type[]) ((Functor.Composite)tau).getComponent();
+			Type[] argtWithContext = new Type[arg.length + 1];
+			System.arraycopy(argt, 0, argtWithContext, 0, argt.length);
+			argtWithContext[argtWithContext.length - 1] = WORLD;
+			taumod = Types.product(argtWithContext);
+		    } else
+			taumod = Types.product(new Type[] {tau, WORLD});
 		    NotationSpecification notat = p.getNotation();
 		    Symbol pmod =
 			new SymbolBase(p.getSignifier(),
-				       //@fixme type extension does not truely work for tau = product type
-				       Types.map(Types.product(new Type[] {tau, WORLD}), p.getType().codomain()),
+				       Types.map(taumod, p.getType().codomain()),
 				       new NotationSpecification(notat.getPrecedence(),
 								 notat.getAssociativity() + "x",
 								 notat.getNotation()),
