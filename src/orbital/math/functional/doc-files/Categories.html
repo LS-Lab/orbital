@@ -4,10 +4,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Language" content="en-gb">
 <meta name="author" content="Andre Platzer">
-<meta name="copyright" content="© 2002 André Platzer">
+<meta name="copyright" content="© 2002-2003 André Platzer">
 <meta name="classification" content="Science/Mathematics/Category/Basics">
-<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
-<meta name="ProgId" content="FrontPage.Editor.Document">
 <title>Category theory</title>
 <link rel="stylesheet" href="../../../../stylist.css" type="text/css" charset="utf-8" title="layout">
 <link rel="stylesheet" href="../../../../math.css" type="text/css" charset="utf-8" title="layout">
@@ -27,11 +25,11 @@
 complex&quot;</p>
 <dl class="def">
   <dt id="category">category</dt>
-  <dd>A category <span class="categorie">C</span> consists of a family Ob <span class="categorie">C</span> 
-    of <i>objects</i>, and for each <span class="objet">A</span>,<span class="objet">B</span>∈Ob 
-    <span class="categorie">C</span> a set Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">A</span>,<span class="objet">B</span>) 
-    of <i>morphisms</i> between <span class="objet">A</span> and <span class="objet">B</span> 
-    such that
+  <dd>A category <span class="categorie">C</span> consists of a family Ob <span class="categorie">C</span>   
+    of <i>objects</i>, and for each <span class="objet">A</span>,<span class="objet">B</span>∈Ob   
+    <span class="categorie">C</span> a set Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">A</span>,<span class="objet">B</span>)   
+    of <i>morphisms</i> between <span class="objet">A</span> and <span class="objet">B</span>   
+    such that  
     <table>
       <tr>
         <td class="defID">r</td>
@@ -41,8 +39,8 @@ complex&quot;</p>
       </tr>
       <tr>
         <td class="defID">t</td>
-        <td class="defCond">∀<span class="objet">A</span>,<span class="objet">B</span>,<span class="objet">C</span>∈Ob 
-          <span class="categorie">C</span> ∃∘:Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">B</span>,<span class="objet">C</span>)×Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">A</span>,<span class="objet">B</span>)→Mor<span class="categorie"><sub>C</sub></span>(A,<span class="objet">C</span>) 
+        <td class="defCond">∀<span class="objet">A</span>,<span class="objet">B</span>,<span class="objet">C</span>∈Ob   
+          <span class="categorie">C</span> ∃∘:Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">B</span>,<span class="objet">C</span>)×Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">A</span>,<span class="objet">B</span>)→Mor<span class="categorie"><sub>C</sub></span>(A,<span class="objet">C</span>)   
           with</td>
         <td class="defVerbal">transitive, composition</td>
       </tr>
@@ -66,11 +64,11 @@ complex&quot;</p>
         <td class="defVerbal">associative</td>
       </tr>
     </table>
-    We usually assume that Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">A</span>,<span class="objet">B</span>) 
-    ∩ Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">C</span>,<span class="objet">D</span>) 
-    = ∅ unless <span class="objet">A</span>=<span class="objet">C</span> ∧ 
+    We usually assume that Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">A</span>,<span class="objet">B</span>)   
+    ∩ Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">C</span>,<span class="objet">D</span>)   
+    = ∅ unless <span class="objet">A</span>=<span class="objet">C</span> ∧   
     B=<span class="objet">D</span>.<br>
-    Write: f:<span class="objet">A</span>→<span class="objet">B</span> for 
+    Write: f:<span class="objet">A</span>→<span class="objet">B</span> for   
     f∈Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">A</span>,<span class="objet">B</span>)
     <p><span style="float: left; font-size: 200%">☡</span> Beware: Unlike Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">A</span>,<span class="objet">B</span>), 
     Ob <span class="categorie">C</span> does not need to be a set of objects, 
@@ -107,12 +105,12 @@ complex&quot;</p>
   <dt>contra-<br>
     variant<br>
     functor</dt>
-  <dd>A contravariant functor <span class="foncteur">F</span>:<span class="categorie">C</span>→<span class="categorie">D</span> 
-    between two categories <span class="categorie">C</span> and <span class="categorie">D</span> 
-    consists of a map <span class="foncteur">F</span>:Ob <span class="categorie">C</span>→Ob 
-    <span class="categorie">D</span> and for each <span class="objet">A</span>,<span class="objet">B</span>∈Ob 
-    <span class="categorie">C</span> a map <span class="foncteur">F</span>:Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">A</span>,<span class="objet">B</span>)→Mor<span class="categorie"><sub>D</sub></span>(<span class="foncteur">F</span>(<span class="objet">B</span>),<span class="foncteur">F</span>(<span class="objet">A</span>)) 
-    that satisfies the following conditions
+  <dd>A contravariant functor <span class="foncteur">F</span>:<span class="categorie">C</span>→<span class="categorie">D</span>   
+    between two categories <span class="categorie">C</span> and <span class="categorie">D</span>   
+    consists of a map <span class="foncteur">F</span>:Ob <span class="categorie">C</span>→Ob   
+    <span class="categorie">D</span> and for each <span class="objet">A</span>,<span class="objet">B</span>∈Ob   
+    <span class="categorie">C</span> a map <span class="foncteur">F</span>:Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">A</span>,<span class="objet">B</span>)→Mor<span class="categorie"><sub>D</sub></span>(<span class="foncteur">F</span>(<span class="objet">B</span>),<span class="foncteur">F</span>(<span class="objet">A</span>))   
+    that satisfies the following conditions  
     <table>
       <tr>
         <td class="defID">1</td>
@@ -123,35 +121,35 @@ complex&quot;</p>
       </tr>
       <tr>
         <td class="defID">m°</td>
-        <td class="defCond">∀f∈Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">A</span>,<span class="objet">B</span>)∀g∈Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">B</span>,<span class="objet">C</span>) 
-          <span class="foncteur">F</span>(g∘f) = <span class="foncteur">F</span>(f) 
-          ∘ <span class="foncteur">F</span>(g)</td>
+        <td class="defCond">∀f∈Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">A</span>,<span class="objet">B</span>)∀g∈Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">B</span>,<span class="objet">C</span>)   
+          <span class="foncteur">F</span>(g∘f) = <span class="foncteur">F</span>(f)   
+          ∘ <span class="foncteur">F</span>(g)</td>  
         <td class="defVerbal">contra-morph</td>
       </tr>
     </table>
-    A contravariant functor <span class="foncteur">F</span>:<span class="categorie">C</span>→<span class="categorie">D</span> 
-    is a covariant functor <span class="foncteur">F</span>:<span class="categorie">C</span>→<span class="categorie">D°</span> 
-    (or <span class="foncteur">F</span>:<span class="categorie">C</span><span class="categorie">°</span>→<span class="categorie">D</span>).</dd>
+    A contravariant functor <span class="foncteur">F</span>:<span class="categorie">C</span>→<span class="categorie">D</span>   
+    is a covariant functor <span class="foncteur">F</span>:<span class="categorie">C</span>→<span class="categorie">D°</span>   
+    (or <span class="foncteur">F</span>:<span class="categorie">C</span><span class="categorie">°</span>→<span class="categorie">D</span>).</dd>  
   <dt id="naturalTransformation">natural<br>
     trans-<br>
     formation</dt>
   <dd><img class="annotatingDiagram" src="diagram/commutative/naturalTransformation.jpg" width="221" height="128"> 
-    A natural transformation (or morphism of functors) <span class="transformationNaturelle">α</span>:<span class="foncteur">F</span>→<span class="foncteur">G</span> 
-    between the functors <span class="foncteur">F</span>,<span class="foncteur">G</span>:<span class="categorie">C</span>→<span class="categorie">D</span> 
-    is a family <span class="seriesOperator">(</span><span class="transformationNaturelle">α</span><span class="objet"><sub>C</sub></span>∈Mor<span class="categorie"><sub>D</sub></span>(<span class="foncteur">F</span>(<span class="objet">C</span>),<span class="foncteur">G</span>(<span class="objet">C</span>))<span class="seriesOperator">)</span><span class="objet"><sub>C</sub></span><sub>∈Ob 
-    <span class="categorie">C</span></sub> of morphisms such that
+    A natural transformation (or morphism of functors) <span class="transformationNaturelle">α</span>:<span class="foncteur">F</span>→<span class="foncteur">G</span>   
+    between the functors <span class="foncteur">F</span>,<span class="foncteur">G</span>:<span class="categorie">C</span>→<span class="categorie">D</span>   
+    is a family <span class="seriesOperator">(</span><span class="transformationNaturelle">α</span><span class="objet"><sub>C</sub></span>∈Mor<span class="categorie"><sub>D</sub></span>(<span class="foncteur">F</span>(<span class="objet">C</span>),<span class="foncteur">G</span>(<span class="objet">C</span>))<span class="seriesOperator">)</span><span class="objet"><sub>C</sub></span><sub>∈Ob   
+    <span class="categorie">C</span></sub> of morphisms such that  
     <div>
-      ∀f∈Mor<sub><span class="categorie">C</span></sub>(<span class="objet">C</span>,<span class="objet">C</span>') 
+      ∀f∈Mor<sub><span class="categorie">C</span></sub>(<span class="objet">C</span>,<span class="objet">C</span>')   
       <span class="foncteur">G</span>(f)∘<span class="transformationNaturelle">α</span><span class="objet"><sub>C</sub></span> 
-      = <span class="transformationNaturelle">α</span><span class="objet"><sub>C'</sub></span>∘<span class="foncteur">F</span>(f)
+      = <span class="transformationNaturelle">α</span><span class="objet"><sub>C'</sub></span>∘<span class="foncteur">F</span>(f)  
     </div>
     <!-- @todo add the commutative diagram -->
-    The functors <span class="categorie">C</span>→<span class="categorie">D</span> 
-    form a category with natural transformations being the morphisms.<br>
-    Remark: an isomorphism of functors is just a family of isomorphisms <span class="seriesOperator">(</span><span class="transformationNaturelle">α</span><span class="objet"><sub>C</sub></span>∈Iso<span class="categorie"><sub>D</sub></span>(<span class="foncteur">F</span>(<span class="objet">C</span>),<span class="foncteur">G</span>(<span class="objet">C</span>))<span class="seriesOperator"></span><span class="seriesOperator">)</span><span class="objet"><sub>C</sub></span><sub>∈Ob 
-    <span class="categorie">C</span></sub> with the above property (⇒ 
-    especially <span class="foncteur">F</span>(<span class="objet">C</span>)≅<span class="foncteur">G</span>(<span class="objet">C</span>) 
-    ∧ <span class="foncteur">G</span>(f) = <span class="transformationNaturelle">α</span><span class="objet"><sub>C'</sub></span>∘<span class="foncteur">F</span>(f)∘<span class="transformationNaturelle">α</span><span class="objet"><sub>C</sub></span><sup>-1</sup>).</dd>
+    The functors <span class="categorie">C</span>→<span class="categorie">D</span>   
+    form a category with natural transformations being the morphisms.<br>  
+    Remark: an isomorphism of functors is just a family of isomorphisms <span class="seriesOperator">(</span><span class="transformationNaturelle">α</span><span class="objet"><sub>C</sub></span>∈Iso<span class="categorie"><sub>D</sub></span>(<span class="foncteur">F</span>(<span class="objet">C</span>),<span class="foncteur">G</span>(<span class="objet">C</span>))<span class="seriesOperator"></span><span class="seriesOperator">)</span><span class="objet"><sub>C</sub></span><sub>∈Ob   
+    <span class="categorie">C</span></sub> with the above property (⇒   
+    especially <span class="foncteur">F</span>(<span class="objet">C</span>)≅<span class="foncteur">G</span>(<span class="objet">C</span>)   
+    ∧ <span class="foncteur">G</span>(f) = <span class="transformationNaturelle">α</span><span class="objet"><sub>C'</sub></span>∘<span class="foncteur">F</span>(f)∘<span class="transformationNaturelle">α</span><span class="objet"><sub>C</sub></span><sup>-1</sup>).</dd>  
 </dl>
 <p>The elements of the monoid Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">A</span>,<span class="objet">A</span>) 
 are called <dfn>endomorphisms</dfn> of A. The elements of Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">A</span>,<span class="objet">B</span>) 
@@ -233,15 +231,15 @@ are called <dfn>automorphisms</dfn>.</p>
 <h3>Important Examples</h3>
 <ol>
   <li id="opposite">
-    <p>For every category <span class="categorie">C</span>, there is the <dfn>opposite</dfn> 
-    (dual) category <span class="categorie">C°</span> obtained by &quot;turning 
-    the arrows around&quot;, per Ob <span class="categorie">C°</span> := Ob <span class="categorie">C</span>, 
-    and Mor<span class="categorie"><sub>C°</sub></span>(A,B) := Mor<span class="categorie"><sub>C</sub></span>(B,A), 
-    whereas the identity morphisms are the same, and the composition is f∘<span class="categorie"><sub>C°</sub></span>g 
-    := g∘<span class="categorie"><sub>C</sub></span>f.<br>
-    <b>Duality Principle</b>: Any theorem holding for a category <span class="categorie">C</span> 
-    also holds <i>(in <span class="categorie">C°</span>)</i> with <em>all</em> 
-    arrows reversed.</p>
+    <p>For every category <span class="categorie">C</span>, there is the <dfn>opposite</dfn>   
+    (dual) category <span class="categorie">C°</span> obtained by &quot;turning   
+    the arrows around&quot;, per Ob <span class="categorie">C°</span> := Ob <span class="categorie">C</span>,   
+    and Mor<span class="categorie"><sub>C°</sub></span>(A,B) := Mor<span class="categorie"><sub>C</sub></span>(B,A),   
+    whereas the identity morphisms are the same, and the composition is f∘<span class="categorie"><sub>C°</sub></span>g   
+    := g∘<span class="categorie"><sub>C</sub></span>f.<br>  
+    <b>Duality Principle</b>: Any theorem holding for a category <span class="categorie">C</span>   
+    also holds <i>(in <span class="categorie">C°</span>)</i> with <em>all</em>   
+    arrows reversed.</p>  
   </li>
   <li>
     <p>Categories together with functors form a category.</p>
@@ -257,7 +255,7 @@ are called <dfn>automorphisms</dfn>.</p>
     <p>Let <span class="categorie">C</span> be a category. For each X∈Ob <span class="categorie">C</span> 
     there are two functors</p>
     <ul>
-      <li>covariant hom-functor
+      <li>covariant hom-functor  
         <table>
           <tr>
             <td class="nameOfMap" rowspan="3"><span class="foncteur">m<sub>X</sub></span>:=Mor<span class="categorie"><sub>C</sub></span>(X,·)</td>
@@ -278,7 +276,7 @@ are called <dfn>automorphisms</dfn>.</p>
           </tr>
         </table>
       </li>
-      <li>contravariant hom-functor<br>
+      <li>contravariant hom-functor<br>  
         <table>
           <tr>
             <td class="nameOfMap" rowspan="3"><span class="foncteur">m<sup>X</sup></span>:=Mor<span class="categorie"><sub>C</sub></span>(·,X)</td>
@@ -300,21 +298,21 @@ are called <dfn>automorphisms</dfn>.</p>
         </table>
       </li>
     </ul>
-    <p>They result from currying ∘. The properties of being a functor 
-    coincides with the properties of morphisms (n) and (a), here. <span class="foncteur">m<sup>X</sup></span> 
-    is the opposite of <span class="foncteur">m<sub>X</sub></span>. If <span class="categorie">C</span> 
-    is additive we write Hom<span class="categorie"><sub>C</sub></span>(X,·):=<span class="foncteur">h<sub>X</sub></span>:=<span class="foncteur">m<sub>X</sub></span>, 
-    and Hom<span class="categorie"><sub>C</sub></span>(·,X):=<span class="foncteur">h<sup>X</sup></span>:=<span class="foncteur">m<sup>X</sup></span> 
-    for these (now additive) functors in <span class="categorie">C</span>→<span class="categorie">Ab</span>. 
-    The properties of being additive coincides with (d).</p>
+    <p>They result from currying ∘. The properties of being a functor   
+    coincides with the properties of morphisms (n) and (a), here. <span class="foncteur">m<sup>X</sup></span>   
+    is the opposite of <span class="foncteur">m<sub>X</sub></span>. If <span class="categorie">C</span>   
+    is additive we write Hom<span class="categorie"><sub>C</sub></span>(X,·):=<span class="foncteur">h<sub>X</sub></span>:=<span class="foncteur">m<sub>X</sub></span>,   
+    and Hom<span class="categorie"><sub>C</sub></span>(·,X):=<span class="foncteur">h<sup>X</sup></span>:=<span class="foncteur">m<sup>X</sup></span>   
+    for these (now additive) functors in <span class="categorie">C</span>→<span class="categorie">Ab</span>.   
+    The properties of being additive coincides with (d).</p>  
   </li>
 </ol>
 <!--@todo check names of Y<sub>∗</sub>, and Y<sup>∗</sup> .-->
 <h3>Further Terminology</h3>
 <dl>
   <dt id="Yoneda">Yoneda-Lemma</dt>
-  <dd>Let <span class="categorie">F</span> be the category of functors <span class="categorie">C</span>→<span class="categorie">Ens</span><br />
-    ⇒ ∀A,B∈Ob <span class="categorie">C</span> the following map is 
+  <dd>Let <span class="categorie">F</span> be the category of functors <span class="categorie">C</span>→<span class="categorie">Ens</span><br />  
+    ⇒ ∀A,B∈Ob <span class="categorie">C</span> the following map is   
     bijective<br>
     <table>
       <tr>
@@ -353,26 +351,26 @@ are called <dfn>automorphisms</dfn>.</p>
         </td>
       </tr>
     </table>
-    <p>If <span class="categorie">C</span> is additive and <span class="categorie">F</span> 
-    the category of (additive?) functors <span class="categorie">C</span>→<span class="categorie">Ab</span>, 
-    then α is an isomorphism of groups.</dd>
+    <p>If <span class="categorie">C</span> is additive and <span class="categorie">F</span>   
+    the category of (additive?) functors <span class="categorie">C</span>→<span class="categorie">Ab</span>,   
+    then α is an isomorphism of groups.</dd>  
 </dl>
 <dl class="def">
   <dt id="adjoint">adjoint</dt>
   <dd><img class="annotatingDiagram" src="diagram/commutative/adjoint.jpg" width="511" height="302"> 
-    <span class="foncteur">F</span>:<span class="categorie">C</span>→<span class="categorie">C'</span> 
-    left-adjoint to <span class="foncteur">G</span>:<span class="categorie">C'</span>→<span class="categorie">C</span> 
-    (and <span class="foncteur">G</span> right-adjoint to <span class="foncteur">F</span>) 
+    <span class="foncteur">F</span>:<span class="categorie">C</span>→<span class="categorie">C'</span>   
+    left-adjoint to <span class="foncteur">G</span>:<span class="categorie">C'</span>→<span class="categorie">C</span>   
+    (and <span class="foncteur">G</span> right-adjoint to <span class="foncteur">F</span>)   
     :⇔
     <div>
       <span class="foncteur">m<sub><span class="foncteur">F</span></sub></span> 
-      := Mor<span class="categorie"><sub>C'</sub></span>(<span class="foncteur">F</span>(·),·) 
-      ≅ Mor<span class="categorie"><sub>C</sub></span>(·,<span class="foncteur">G</span>(·)) 
-      =: <span class="foncteur">m<sup><span class="foncteur">G</span></sup></span> 
-      in <span class="categorie">C</span><span class="categorie">°</span>×<span class="categorie">C'</span>→<span class="categorie">Ens</span>
+      := Mor<span class="categorie"><sub>C'</sub></span>(<span class="foncteur">F</span>(·),·)   
+      ≅ Mor<span class="categorie"><sub>C</sub></span>(·,<span class="foncteur">G</span>(·))   
+      =: <span class="foncteur">m<sup><span class="foncteur">G</span></sup></span>   
+      in <span class="categorie">C</span><span class="categorie">°</span>×<span class="categorie">C'</span>→<span class="categorie">Ens</span>  
     </div>
-    &quot;what F does to the source (adding primes) is what G does to the domain 
-    (removing primes)&quot;</dd>
+    &quot;what F does to the source (adding primes) is what G does to the domain   
+    (removing primes)&quot;</dd>  
   <dt id="equivalentCategories">equivalent<br>
     categories</dt>
   <dd><span class="foncteur">F</span>:<span class="categorie">C</span>→<span class="categorie">C'</span> 
@@ -394,8 +392,8 @@ categories) <!-- <source>Pareigis, 4.2</source> -->.</p>
 <dl class="def">
   <dt id="exact">exact</dt>
   <dd><span class="foncteur">F</span>:<span class="categorie">A</span>→<span class="categorie">A'</span> 
-    is exact :⇔ <span class="foncteur">F</span>:<span class="categorie">A</span>→<span class="categorie">A'</span> 
-    is a (covariant) additive functor, and
+    is exact :⇔ <span class="foncteur">F</span>:<span class="categorie">A</span>→<span class="categorie">A'</span>   
+    is a (covariant) additive functor, and  
     <table>
       <tr>
         <td>If</td>
@@ -424,13 +422,13 @@ categories) <!-- <source>Pareigis, 4.2</source> -->.</p>
         <td>is an exact sequence in <span class="categorie">A'</span></td>
       </tr>
     </table>
-    That the image under <span class="foncteur">F</span> of the sequence (or any 
-    complex) is a complex, is always true since <span class="foncteur">F</span> 
-    is a functor.</dd>
+    That the image under <span class="foncteur">F</span> of the sequence (or any   
+    complex) is a complex, is always true since <span class="foncteur">F</span>   
+    is a functor.</dd>  
   <dt id="leftExact">left exact</dt>
   <dd><span class="foncteur">F</span>:<span class="categorie">A</span>→<span class="categorie">A'</span> 
-    is left exact :⇔ <span class="foncteur">F</span>:<span class="categorie">A</span>→<span class="categorie">A'</span> 
-    is a (covariant) additive functor, and
+    is left exact :⇔ <span class="foncteur">F</span>:<span class="categorie">A</span>→<span class="categorie">A'</span>   
+    is a (covariant) additive functor, and  
     <table>
       <tr>
         <td>If</td>
@@ -462,8 +460,8 @@ categories) <!-- <source>Pareigis, 4.2</source> -->.</p>
   </dd>
   <dt id="leftExact">right exact</dt>
   <dd><span class="foncteur">F</span>:<span class="categorie">A</span>→<span class="categorie">A'</span> 
-    is right exact :⇔ <span class="foncteur">F</span>:<span class="categorie">A</span>→<span class="categorie">A'</span> 
-    is a (covariant) additive functor, and
+    is right exact :⇔ <span class="foncteur">F</span>:<span class="categorie">A</span>→<span class="categorie">A'</span>   
+    is a (covariant) additive functor, and  
     <table>
       <tr>
         <td>If</td>
@@ -493,8 +491,8 @@ categories) <!-- <source>Pareigis, 4.2</source> -->.</p>
       </tr>
     </table>
     <span class="foncteur">F</span>:<span class="categorie">A</span>→<span class="categorie">A'</span> 
-    is right exact ⇔ <span class="foncteur">F</span>:<span class="categorie">A°</span>→<span class="categorie">A'°</span> 
-    is left exact.</dd>
+    is right exact ⇔ <span class="foncteur">F</span>:<span class="categorie">A°</span>→<span class="categorie">A'°</span>   
+    is left exact.</dd>  
 </dl>
 <h2 id="universalElements">Universal Elements</h2>
 <p>Let <span class="categorie">C</span> be a category.
@@ -502,137 +500,141 @@ categories) <!-- <source>Pareigis, 4.2</source> -->.</p>
   <dt id="initial">initial<br>
     object</dt>
   <dd><img class="annotatingDiagram" src="diagram/commutative/initial.jpg" width="102" height="89"> 
-    A∈Ob <span class="categorie">C</span> is an initial object :⇔ ∀B∈Ob <span class="categorie">C</span> 
-    ∃!φ∈Mor<sub><span class="categorie">C</span></sub>(A,B)<br>
-    initial objects are uniquely isomorph, i.e. each two initial objects A,B 
-    have a unique isomorphism A→B. 
+    A∈Ob <span class="categorie">C</span> is an initial object :⇔ ∀B∈Ob <span class="categorie">C</span>   
+    ∃!φ∈Mor<sub><span class="categorie">C</span></sub>(A,B)<br>  
+    initial objects are uniquely isomorph, i.e. each two initial objects A,B   
+    have a unique isomorphism A→B.   
     <!-- free object iff initial object? -->
   </dd>
   <dt id="terminal">terminal<br>
     object</dt>
   <dd><img class="annotatingDiagram" src="diagram/commutative/terminal.jpg" width="128" height="82"> 
-    A∈Ob <span class="categorie">C</span> is a terminal object :⇔ ∀B∈Ob <span class="categorie">C</span> 
-    ∃!φ∈Mor<sub><span class="categorie">C</span></sub>(B,A) ⇔ A is an 
-    initial object in <span class="categorie">C°</span>.<br>
-    terminal objects are uniquely isomorph, i.e. each two terminal objects A,B 
-    have a unique isomorphism A→B.</dd>
+    A∈Ob <span class="categorie">C</span> is a terminal object :⇔ ∀B∈Ob <span class="categorie">C</span>   
+    ∃!φ∈Mor<sub><span class="categorie">C</span></sub>(B,A) ⇔ A is an   
+    initial object in <span class="categorie">C°</span>.<br>  
+    terminal objects are uniquely isomorph, i.e. each two terminal objects A,B   
+    have a unique isomorphism A→B.</dd>  
   <dt id="presentable">presentable</dt>
   <dd>a covariant (resp. contravariant) functor <span class="foncteur">F</span>:<span class="categorie">C</span>→<span class="categorie">Ens</span> 
     is presentable :⇔ ∃A∈Ob <span class="categorie">C</span> <span class="foncteur">F</span>≅<span class="foncteur">m<sub>A</sub></span> 
     (resp. <span class="foncteur">F</span>≅<span class="foncteur">m<sup>A</sup></span>)<br>
     A is called presenting object for <span class="foncteur">F</span>.</dd>
   <dt id="universalElement">universal element</dt>
-  <dd>If <span class="foncteur">F</span>:<span class="categorie">C</span>→<span class="categorie">Ens</span> 
-    is a presentable covariant functor with a corresponding isomorphism of 
-    functors <span class="transformationNaturelle">α</span>:<span class="foncteur">m<sub>A</sub></span>→<span class="foncteur">F</span>, 
-    then u<sub><span class="foncteur">F</span></sub> := <span class="transformationNaturelle">α</span><sub>A</sub>(id<sub>A</sub>) 
-    ∈ <span class="foncteur">F</span>(A) is called universal element of <span class="foncteur">F</span> <!-- "das Bild vom Faulpelz" -->.
+  <dd>If <span class="foncteur">F</span>:<span class="categorie">C</span>→<span class="categorie">Ens</span>   
+    is a presentable covariant functor with a corresponding isomorphism of   
+    functors <span class="transformationNaturelle">α</span>:<span class="foncteur">m<sub>A</sub></span>→<span class="foncteur">F</span>,   
+    then u<sub><span class="foncteur">F</span></sub> := <span class="transformationNaturelle">α</span><sub>A</sub>(id<sub>A</sub>)   
+    ∈ <span class="foncteur">F</span>(A) is called universal element of <span class="foncteur">F</span> <!-- "das Bild vom Faulpelz" -->.  
     <div>
-      ⇒ ∀B∈Ob <span class="categorie">C</span> ∀x∈<span class="foncteur">F</span>(B) 
-      ∃!f∈Mor<sub class="categorie">C</sub>(A,B)=<span class="foncteur">m<sub>A</sub></span>(B) 
-      x = <span class="foncteur">F</span>(f)(u<sub><span class="foncteur">F</span></sub>)
+      ⇒ ∀B∈Ob <span class="categorie">C</span> ∀x∈<span class="foncteur">F</span>(B)   
+      ∃!f∈Mor<sub class="categorie">C</sub>(A,B)=<span class="foncteur">m<sub>A</sub></span>(B)   
+      x = <span class="foncteur">F</span>(f)(u<sub><span class="foncteur">F</span></sub>)  
       <ul>
         <li><small>(The converse is also true)</small></li>
-        <li>&nbsp;if <span class="categorie">C</span> and <span class="categorie">Ens</span> 
-          (then <span class="categorie">Ab</span>) are additive, then (<span class="foncteur">m<sub>A</sub></span>,<span class="foncteur">F</span> 
-          are and) the <span class="transformationNaturelle">α</span><sub>B</sub> 
-          are isomorphisms of groups.</li>
-        <li>More generally, if <span class="foncteur">F</span> (on morphisms) is 
-          a homomorphism of a law + that <span class="transformationNaturelle"></span>∘ 
-          is distributive over, then the <span class="transformationNaturelle">α</span><sub>B</sub> 
-          are isomorphisms of +.</li>
+        <li>&nbsp;if <span class="categorie">C</span> and <span class="categorie">Ens</span>   
+          (then <span class="categorie">Ab</span>) are additive, then (<span class="foncteur">m<sub>A</sub></span>,<span class="foncteur">F</span>   
+          are and) the <span class="transformationNaturelle">α</span><sub>B</sub>   
+          are isomorphisms of groups.</li>  
+        <li>More generally, if <span class="foncteur">F</span> (on morphisms) is   
+          a homomorphism of a law + that <span class="transformationNaturelle"></span>∘   
+          is distributive over, then the <span class="transformationNaturelle">α</span><sub>B</sub>   
+          are isomorphisms of +.</li>  
       </ul>
     </div>
   </dd>
 </dl>
-Let <span class="foncteur">F</span>:<span class="categorie">C</span>→<span class="categorie">Ens</span> 
-be a presentable covariant functor.
+Let <span class="foncteur">F</span>:<span class="categorie">C</span>→<span class="categorie">Ens</span>   
+be a presentable covariant functor.  
 <ul>
-  <li>presenting objects for <span class="foncteur">F</span> are uniquely 
-    isomorph. Precisely: for all isomorphisms of functors <span class="transformationNaturelle">α</span>:<span class="foncteur">m<sub>A</sub></span>→<span class="foncteur">F</span>, 
+  <li>presenting objects for <span class="foncteur">F</span> are uniquely   
+    isomorph. Precisely: for all isomorphisms of functors <span class="transformationNaturelle">α</span>:<span class="foncteur">m<sub>A</sub></span>→<span class="foncteur">F</span>,   
     <span class="transformationNaturelle">α'</span>:<span class="foncteur">m<sub>A</sub></span><sub>'</sub>→<span class="foncteur">F</span> 
-    ∃!φ:A<sub></sub>→A' isomorphism with <span class="transformationNaturelle">α</span>∘α<sub>φ</sub> 
-    = <span class="transformationNaturelle">α</span>'. (Because of <a href="#Yoneda">Yoneda-Lemma</a>).</li>
-  <li>an isomorphism of functors <span class="transformationNaturelle">α</span>:<span class="foncteur">m<sub>A</sub></span>→<span class="foncteur">F</span> 
-    is uniquely determined by its universal element, i.e. ∀u∈<span class="foncteur">F</span>(A) 
-    there is at most one <span class="transformationNaturelle">α</span>:<span class="foncteur">m<sub>A</sub></span>→<span class="foncteur">F</span> 
-    with <span class="transformationNaturelle">α</span><sub>A</sub>(id<sub>A</sub>)=u.</li>
+    ∃!φ:A<sub></sub>→A' isomorphism with <span class="transformationNaturelle">α</span>∘α<sub>φ</sub>   
+    = <span class="transformationNaturelle">α</span>'. (Because of <a href="#Yoneda">Yoneda-Lemma</a>).</li>  
+  <li>an isomorphism of functors <span class="transformationNaturelle">α</span>:<span class="foncteur">m<sub>A</sub></span>→<span class="foncteur">F</span>   
+    is uniquely determined by its universal element, i.e. ∀u∈<span class="foncteur">F</span>(A)   
+    there is at most one <span class="transformationNaturelle">α</span>:<span class="foncteur">m<sub>A</sub></span>→<span class="foncteur">F</span>   
+    with <span class="transformationNaturelle">α</span><sub>A</sub>(id<sub>A</sub>)=u.</li>  
 </ul>
 <h2 id="products">Product and Coproduct</h2>
 <dl class="def">
-  Let <span class="categorie">C</span> be a category, and I be a set.
-  <dt id="product">product</dt>
+  Let <span class="categorie">C</span> be a category, and I be a set.  
+  <dt id="product">product &le; limit</dt>
   <dd><img class="annotatingDiagram" src="diagram/commutative/product.jpg" width="149" height="148"> 
-    P∈Ob <span class="categorie">C</span>, with the projectors π<sub>i</sub>∈Mor(P,A<sub>i</sub>) 
-    for i∈I, is a product of the objects <span class="seriesOperator">(</span>A<sub>i</sub><span class="seriesOperator">)</span><sub>i∈I</sub>⊆Ob 
-    <span class="categorie">C</span> :⇔
+    P∈Ob <span class="categorie">C</span>, with the projectors π<sub>i</sub>∈Mor(P,A<sub>i</sub>)   
+    for i∈I, is a product of the objects <span class="seriesOperator">(</span>A<sub>i</sub><span class="seriesOperator">)</span><sub>i∈I</sub>⊆Ob   
+    <span class="categorie">C</span> :⇔  
     <div style="text-align: center">
-      <big>(</big>∀C∈Ob <span class="categorie">C</span> ∀<span class="seriesOperator">(</span>g<sub>i</sub><sub></sub>∈Mor<sub><span class="categorie">C</span></sub>(C,A<sub>i</sub>)<span class="seriesOperator">)</span><sub>i∈I</sub><br />
-      ∃!g∈Mor<sub><span class="categorie">C</span></sub>(C,P) ∀i∈I π<sub>i</sub>∘g 
-      = g<sub>i</sub> <big>)</big>
+      <big>(</big>∀C∈Ob <span class="categorie">C</span> ∀<span class="seriesOperator">(</span>g<sub>i</sub><sub></sub>∈Mor<sub><span class="categorie">C</span></sub>(C,A<sub>i</sub>)<span class="seriesOperator">)</span><sub>i∈I</sub><br />  
+      ∃!g∈Mor<sub><span class="categorie">C</span></sub>(C,P) ∀i∈I π<sub>i</sub>∘g   
+      = g<sub>i</sub> <big>)</big>  
     </div>
-    Write: P = ∏<sub>i∈I</sub>A<sub>i</sub><br>
-    &quot;product is universally attracting&quot;, and it is just a terminal 
-    object in a suitable category.</dd>
-  <dt id="coproduct">coproduct</dt>
+    Write: P = ∏<sub>i∈I</sub>A<sub>i</sub><br>  
+    &quot;product is universally attracting&quot;, and it is just a terminal   
+    object in a suitable category.</dd>  
+  <dt id="coproduct">coproduct &le; colimit</dt>
   <dd><img class="annotatingDiagram" src="diagram/commutative/coproduct.jpg" width="176" height="159"> 
-    S∈Ob <span class="categorie">C</span>, with the inclusions ι<sub>i</sub>∈Mor(A<sub>i</sub>,S) 
-    for i∈I, is a coproduct of the objects <span class="seriesOperator">(</span>A<sub>i</sub><span class="seriesOperator">)</span><sub>i∈I</sub>⊆Ob 
-    <span class="categorie">C</span> :⇔
+    S∈Ob <span class="categorie">C</span>, with the inclusions ι<sub>i</sub>∈Mor(A<sub>i</sub>,S)   
+    for i∈I, is a coproduct of the objects <span class="seriesOperator">(</span>A<sub>i</sub><span class="seriesOperator">)</span><sub>i∈I</sub>⊆Ob   
+    <span class="categorie">C</span> :⇔  
     <div style="text-align: center">
-      <big>(</big>∀C∈Ob <span class="categorie">C</span> ∀<span class="seriesOperator">(</span>g<sub>i</sub><sub></sub>∈Mor<sub><span class="categorie">C</span></sub>(A<sub>i</sub>,C)<span class="seriesOperator">)</span><sub>i∈I</sub><br />
-      ∃!g∈Mor<sub><span class="categorie">C</span></sub>(S,C) ∀i∈I g∘ι<sub>i</sub> 
-      = g<sub>i</sub> <big>)</big>
+      <big>(</big>∀C∈Ob <span class="categorie">C</span> ∀<span class="seriesOperator">(</span>g<sub>i</sub><sub></sub>∈Mor<sub><span class="categorie">C</span></sub>(A<sub>i</sub>,C)<span class="seriesOperator">)</span><sub>i∈I</sub><br />  
+      ∃!g∈Mor<sub><span class="categorie">C</span></sub>(S,C) ∀i∈I g∘ι<sub>i</sub>   
+      = g<sub>i</sub> <big>)</big>  
     </div>
-    Write: S = ∐<sub>i∈I</sub>A<sub>i</sub> (= ∑<sub>i∈I</sub>A<sub>i</sub>, 
-    sometimes ⊕<sub>i∈I</sub>A<sub>i</sub>)<br>
-    &quot;coproduct is universally repelling&quot;, and it is just an initial 
-    object in&nbsp; a suitable category. A coproduct in <span class="categorie">C</span> 
-    is just a product in <span class="categorie">C°</span>.</dd>
+    Write: S = ∐<sub>i∈I</sub>A<sub>i</sub> (= ∑<sub>i∈I</sub>A<sub>i</sub>,   
+    sometimes ⊕<sub>i∈I</sub>A<sub>i</sub>)<br>  
+    &quot;coproduct is universally repelling&quot;, and it is just an initial   
+    object in&nbsp; a suitable category. A coproduct in <span class="categorie">C</span>   
+    is just a product in <span class="categorie">C°</span>.</dd>  
 </dl>
-<p>As terminal or initial objects, products and coproducts are uniquely 
-determined up to a unique isomorphism.</p>
-<h2 id="limits">Limits and Colimits</h2>
+<p>As terminal or initial objects, products and coproducts are uniquely  
+determined up to a unique isomorphism. Even more so as they are special cases of 
+limits and colimits.</p>
+<h2 id="limits">Limits and Colimits</h2> 
 <dl class="def">
-  Let <span class="categorie">C</span>, <span class="categorie">J</span> be 
+  Let <span class="categorie">C</span>, <span class="categorie">J</span> be  
   categories.
   <dt id="limit">limit</dt>
+  <!-- generalizes inverse limits and products -->
   <dd><img class="annotatingDiagram" src="diagram/commutative/limit2.jpg" width="231" height="155"> 
-    L∈Ob <span class="categorie">C</span>, with φ<sub class="objet">X</sub>∈Mor<sub><span class="categorie">C</span></sub>(L,F(X)) 
-    for X∈Ob <span class="categorie">J</span>, is a limit of the covariant 
-    functor <span class="foncteur">F</span>:<span class="categorie">J</span>→<span class="categorie">C</span>&nbsp; 
+    L∈Ob <span class="categorie">C</span>, with φ<sub class="objet">X</sub>∈Mor<sub><span class="categorie">C</span></sub>(L,F(X))  
+    for X∈Ob <span class="categorie">J</span>, is a limit of the covariant  
+    functor <span class="foncteur">F</span>:<span class="categorie">J</span>→<span class="categorie">C</span>&nbsp;  
     :⇔
     <div style="text-align: center">
-      ∀f∈Mor<sub><span class="categorie">J</span></sub>(<span class="objet">X</span>,<spanclass="objet">Y) 
+      ∀f∈Mor<sub><span class="categorie">J</span></sub>(<span class="objet">X</span>,<spanclass="objet">Y)  
       F(f)<sub></sub>∘φ<sub class="objet">X</sub>=φ<sub class="objet">Y</sub><br />
-      and <span class="seriesOperator">(</span>∀N∈Ob <span class="categorie">C</span> 
-      ∀<span class="seriesOperator">(</span>ψ<sub class="objet">X</sub>∈Mor<sub><span class="categorie">C</span></sub>(N,F(X))<span class="seriesOperator">)</span><sub>X∈Ob 
+      and <span class="seriesOperator">(</span>∀N∈Ob <span class="categorie">C</span>  
+      ∀<span class="seriesOperator">(</span>ψ<sub class="objet">X</sub>∈Mor<sub><span class="categorie">C</span></sub>(N,F(X))<span class="seriesOperator">)</span><sub>X∈Ob  
       <span class="categorie">J</span></sub><br />
-      (∀f∈Mor<sub><span class="categorie">J</span></sub>(<span class="objet">X</span>,<spanclass="objet">Y) 
+      (∀f∈Mor<sub><span class="categorie">J</span></sub>(<span class="objet">X</span>,<spanclass="objet">Y)  
       F(f)<sub></sub>∘ψ<sub class="objet">X</sub>=ψ<sub class="objet">Y</sub>)<br>
-      ⇒ ∃!u∈Mor<sub><span class="categorie">C</span></sub>(N,L) ∀X∈Ob <span class="categorie">J</span> 
-      φ<sub class="objet">X</sub>∘u = ψ<sub class="objet">X</sub> <span class="seriesOperator">)</span>
+      ⇒ ∃!u∈Mor<sub><span class="categorie">C</span></sub>(N,L) ∀X∈Ob <span class="categorie">J</span>  
+      φ<sub class="objet">X</sub>∘u = ψ<sub class="objet">X</sub> <span class="seriesOperator">)</span> 
     </div>
-    Write: L = lim <span class="foncteur">F</span></dd>
+    Write: L = lim <span class="foncteur">F</span> 
+    = lim<sub>←</sub> F "glue together related objects by morphisms"</dd> 
   <dt id="colmit">colimit</dt>
+  <!-- generalizes direct limits -->
   <dd><img class="annotatingDiagram" src="diagram/commutative/colimit2.jpg" width="231" height="155"> 
-    L∈Ob <span class="categorie">C</span>, with φ<sub class="objet">X</sub>∈Mor<sub><span class="categorie">C</span></sub>(F(X),L) 
-    for X∈Ob <span class="categorie">J</span>, is a colimit of the covariant 
-    functor <span class="foncteur">F</span>:<span class="categorie">J</span>→<span class="categorie">C</span>&nbsp; 
+    L∈Ob <span class="categorie">C</span>, with φ<sub class="objet">X</sub>∈Mor<sub><span class="categorie">C</span></sub>(F(X),L)  
+    for X∈Ob <span class="categorie">J</span>, is a colimit of the covariant  
+    functor <span class="foncteur">F</span>:<span class="categorie">J</span>→<span class="categorie">C</span>&nbsp;  
     :⇔
     <div style="text-align: center">
-      ∀f∈Mor<sub><span class="categorie">J</span></sub>(<span class="objet">X</span>,<spanclass="objet">Y) 
+      ∀f∈Mor<sub><span class="categorie">J</span></sub>(<span class="objet">X</span>,<spanclass="objet">Y)  
       φ<sub>Y</sub>∘F(f)=φ<sub>X</sub><br />
-      and <span class="seriesOperator">(</span>∀N∈Ob <span class="categorie">C</span> 
-      ∀<span class="seriesOperator">(</span>ψ<sub class="objet">X</sub>∈Mor<sub><span class="categorie">C</span></sub>(F(X),N)<span class="seriesOperator">)</span><sub>X∈Ob 
+      and <span class="seriesOperator">(</span>∀N∈Ob <span class="categorie">C</span>  
+      ∀<span class="seriesOperator">(</span>ψ<sub class="objet">X</sub>∈Mor<sub><span class="categorie">C</span></sub>(F(X),N)<span class="seriesOperator">)</span><sub>X∈Ob  
       <span class="categorie">J</span></sub><br />
-      (∀f∈Mor<sub><span class="categorie">J</span></sub>(<span class="objet">X</span>,<spanclass="objet">Y) 
+      (∀f∈Mor<sub><span class="categorie">J</span></sub>(<span class="objet">X</span>,<spanclass="objet">Y)  
       ψ<sub>Y</sub>∘F(f)=ψ<sub>X</sub>)<br>
-      ⇒ ∃!u∈Mor<sub><span class="categorie">C</span></sub>(L,N) ∀X∈Ob <span class="categorie">J</span> 
-      u<sub class="objet"></sub>∘φ<sub class="objet">X</sub> = ψ<sub class="objet">X</sub> 
-      <span class="seriesOperator">)</span>
+      ⇒ ∃!u∈Mor<sub><span class="categorie">C</span></sub>(L,N) ∀X∈Ob <span class="categorie">J</span>  
+      u<sub class="objet"></sub>∘φ<sub class="objet">X</sub> = ψ<sub class="objet">X</sub>  
+      <span class="seriesOperator">)</span> 
     </div>
-    Write: L = colim <span class="foncteur">F</span></dd>
+    Write: L = colim <span class="foncteur">F = lim<sub>→</sub> F</span></dd>
 </dl>
 <p>As terminal or initial objects(?), limits and colimits are uniquely 
 determined up to a unique isomorphism.</p>
