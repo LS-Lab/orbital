@@ -1,0 +1,12 @@
+This software is the confidential and proprietary information
+of Andre Platzer. ("Confidential Information"). You
+shall not disclose such Confidential Information and shall use
+it only in accordance with the terms of the license agreement
+you entered into.
+
+NO WARRANTIES ARE GIVEN for any function (express or implied) these
+files and documents might or might not have. The licenser shall never
+be liable for any damage suffered by licensee as a result of
+using these files or derivatives.
+
+Copyright (c) 1996-2002 Andre Platzer. All Rights Reserved.

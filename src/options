@@ -1,0 +1,6 @@
+-source 1.4
+-author -version
+-use
+-windowtitle "Orbital" -doctitle "Orbital library"
+-header "<b>Orbital library</b>" -footer "<b>Orbital library</b>"
+-bottom '<span style="font-size: smaller">Copyright &copy; 1996-2002 Andr&eacute; Platzer<br />All Rights Reserved.</span>'

@@ -1,0 +1,1 @@
+-tag param -tag pre:mc:"Preconditions:" -tag post:mc:"Postconditions:" -tag return -tag throws -tag structure:t:"Structure:" -tag invariant:t:"Invariants:" -tag attribute:a:"Attributes:" -tag version -tag author -tag see
