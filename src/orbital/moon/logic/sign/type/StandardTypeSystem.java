@@ -491,7 +491,14 @@ public class StandardTypeSystem implements TypeSystem {
 	}
 
 	public Type on(Type sigma) {
-	    if (!subtypeOf(typeSystem().map(sigma, typeSystem().UNIVERSAL()))) {
+	    if (sigma == typeSystem().ABSURD()) {
+		// handle special sub-case first, since we do not yet support absurd maps for the check
+		if (!sigma.subtypeOf(domain())) {
+		    throw new TypeException("objects of type " + this + " not applicable to arguments of type " + sigma, domain(), sigma);
+		} else {
+		    return codomain();
+		}
+	    } else if (!subtypeOf(typeSystem().map(sigma, typeSystem().UNIVERSAL()))) {
 		throw new TypeException("objects of type " + this + " not applicable to arguments of type " + sigma, domain(), sigma);
 	    } else {
 		return codomain();
@@ -515,7 +522,12 @@ public class StandardTypeSystem implements TypeSystem {
 	}
 
 	public Type on(Type sigma) {
-	    throw new TypeException("non-map composite types cannot be applied to anything, not even arguments of type " + sigma, typeSystem().NOTYPE(), sigma);
+	    if (sigma == typeSystem().NOTYPE()) {
+		// since NOTYPE->t = t by uniform referent, we can be applied to empty objects of void type.
+		return this;
+	    } else {
+		throw new TypeException("non-map composite types cannot be applied to anything, not even arguments of type " + sigma, typeSystem().NOTYPE(), sigma);
+	    }
 	}
     }
 
@@ -584,7 +596,12 @@ public class StandardTypeSystem implements TypeSystem {
 	}
 
 	public Type on(Type sigma) {
-	    throw new TypeException("fundamental types cannot be applied to anything, not even arguments of type " + sigma, typeSystem().NOTYPE(), sigma);
+	    if (sigma == typeSystem().NOTYPE()) {
+		// since NOTYPE->t = t by uniform referent, we can be applied to empty objects of void type.
+		return this;
+	    } else {
+		throw new TypeException("fundamental types cannot be applied to anything, not even arguments of type " + sigma, typeSystem().NOTYPE(), sigma);
+	    }
 	}
 
 	//@internal identical to @see NonMapCompositeType
@@ -636,8 +653,11 @@ public class StandardTypeSystem implements TypeSystem {
 	if (domain == _ABSURD)
 	    // strict? after change also @see MathExpressionSyntax.createAtomic
 	    // or ABSURD->t = t is true in some type systems, = ABSURD in others.
-	    throw new UnsupportedOperationException(_ABSURD + " maps not yet supported");
-	return domain.equals(_NOTYPE) ? codomain : new MapType(domain, codomain);
+	    throw new UnsupportedOperationException(_ABSURD + " maps from absurdity to anywhere not yet supported");
+	return domain.equals(_NOTYPE)
+	    //@internal because supplying nothing when nothing is needed, seems simple
+	    ? codomain
+	    : new MapType(domain, codomain);
     }
     public BinaryFunction/*<Type,Type,Type>*/ map() {
 	return _map;
