@@ -184,6 +184,7 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
     }
 
     public boolean isElementaryValid() {
+	//@todo if we had lists, we could implement a slightly quicker version of return isElementaryValidUnion(this); which uses j>k
 	return isElementaryValidUnion(this);
     }
 	
@@ -191,17 +192,18 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 	// we need a list version("view") of the set for traversing distinct literals, then we will also only modify listF not this
 	final List listF = new LinkedList(this);
 	assert this.equals(new HashSet(listF)) : "factorizing initial list version of this";
-	if (factorizeImpl(listF))
+	final List listFfactorized = factorizeImpl(listF);
+	if (listFfactorized != listF)
 	    return construct(new HashSet(listF));
 	else
 	    return this;
     }
     /**
      * Implementation of {@link #factorize()}.
-     * @param listF list of literals which will be <em>modified</em> according to factorization.
-     * @return whether factorization was possible, and thus listF has changed.
+     * @param listF list of literals.
+     * @return a new list if factorization was possible, and listF if no factorization was possible.
      */
-    private boolean factorizeImpl(List listF) {
+    private List factorizeImpl(List listF) {
 	Clause previous = null;
 	assert (previous = construct(new HashSet(this))) != null;
 	try {
@@ -220,27 +222,19 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 			assert mu.apply(Fi).equals(mu.apply(Fj));
 			j.remove();
 			// apply unification and remove duplicates, but convert to list again.
-			{
-			    //@todo optimize this clumsy implementation.
-			    List t = new LinkedList(new HashSet(Functionals.map(mu, listF)));
-			    //@internal instead of working on t and returning t to our caller, we make listF look the same. Perhaps this is not the most clear idea.
-			    listF.clear();
-			    listF.addAll(t);
-			    t = null;
-			}
+			listF = new LinkedList(new HashSet(Functionals.map(mu, listF)));
 			assert this.equals(previous) : "modifications during factorization work on copies, and leave the original clause unmodified";
 			if (logger.isLoggable(Level.FINEST)) {
 			    logger.log(Level.FINEST, "factorized {1} from {0} by unifying {3} and {4} with {2}", new Object[] {logPrevious, construct(new HashSet(listF)), mu, Fi, Fj});
 			}
 			// factorize again
 			//@todo could optimize away recursive call
-			factorizeImpl(listF);
-			return true;
+			return factorizeImpl(listF);
 		    }
 		}
 	    }
 	    // no factorization possible
-	    return false;
+	    return listF;
 	}
 	finally {
 	    assert this.equals(previous) : "modifications during factorization work on copies, and leave the original clause unmodified";
