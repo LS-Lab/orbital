@@ -329,7 +329,8 @@ public class LogicParser {
     }
 
     /**
-     * Symbol declaration handling
+     * Symbol declaration handling.
+     * Name analysis module administrating the (internal) definition table.
      * @author Andr&eacute; Platzer
      * @version 1.1, 2002-11-01
      */
@@ -362,6 +363,14 @@ public class LogicParser {
 	public Scope(Scope outer) {
 	    this.outer = outer;
 	    this.symbolMap = new SignatureBase();
+	}
+
+	/**
+	 * Enter a new scope.
+	 * @return the new inner scope of this outer scope.
+	 */
+	public Scope enter() {
+	    return new Scope(this);
 	}
 
 	/**
@@ -713,7 +722,7 @@ Expression expression() :
 Expression FreeDeclarationExpression() :
 {
     Token tok = null;Symbol x = null;Expression a;
-    scope = new Scope(scope);
+    scope = scope.enter();
 }
 {
     (tok = <DECLARE_FREE> x = VariableDeclaration()
@@ -788,7 +797,7 @@ Expression UnaryExpression() :
 Expression QuantifiedExpression() :
 {
     Token tok = null;List xs = new LinkedList();Symbol x = null;Expression a = null;
-    scope = new Scope(scope);
+    scope = scope.enter();
 }
 {
     //@internal this lookahead specifies that we prefer not to have quantifiers in the following UnaryExpression
@@ -914,7 +923,7 @@ Expression EqualityExpression() :
 Expression LambdaAbstractionPredicate() :
 {
     Token tok; Symbol x;Expression t;
-    scope = new Scope(scope);
+    scope = scope.enter();
 }
 {
     "(" tok = <LAMBDA> x = VariableDeclaration() "." {scope.declare(x);} t = expression() ")"
@@ -1018,7 +1027,7 @@ Expression CompoundTerm() :
 Expression LambdaAbstraction() :
 {
     Token tok; Symbol x; Expression t;
-    scope = new Scope(scope);
+    scope = scope.enter();
 }
 {
     "(" tok = <LAMBDA> x = VariableDeclaration() "." {scope.declare(x);} t = term() ")"
@@ -1191,7 +1200,7 @@ Expression MapType() :
 Expression PiAbstractionType() :
 {
     Token tok, xtok; Symbol x; Expression t;
-    scope = new Scope(scope);
+    scope = scope.enter();
 }
 {
     "(" tok = <PI> xtok = <IDENTIFIER> "."
