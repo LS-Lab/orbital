@@ -34,10 +34,27 @@ import java.util.logging.Level;
  */
 public class AlphaBetaPruning extends AdversarySearch {
     private static final Logger logger = Logger.getLogger(AlphaBetaPruning.class.getName());
+    /**
+     * the maximum number of (half-) turns to look into the future
+     * during search.  0 would mean no move, but does not make any
+     * sense, since not a single option would then be inspected.
+     * @serial
+     */
     private int maxDepth;
-    private int currentDepth;
+    /**
+     * the utility function with which to evaluate the
+     * utility of a state beyond cut-off.
+     * @serial
+     */
     private Function/*<Object, Number>*/ utility;
 	
+    /**
+     * The current depth during the current search.
+     * @internal at least if not concurrent thread sychronizes us off while we are still running,
+     *  we do not need to store this value.
+     */
+    private transient int currentDepth;
+
     /**
      * Create a new instance of &alph;-&beta;-pruning adversary search.
      * @param maxDepth the maximum number of (half-) turns to look
@@ -48,13 +65,9 @@ public class AlphaBetaPruning extends AdversarySearch {
      * utility of a state beyond cut-off.
      */
     public AlphaBetaPruning(int maxDepth, Function/*<Object, Number>*/ utility) {
-	if (utility == null)
-	    throw new NullPointerException("not a utility function " + utility);
-	if (maxDepth < 0)
-	    throw new IllegalArgumentException("illegal maxDepth " + maxDepth + " < 0");
-        this.maxDepth = maxDepth;
+        this.setMaxDepth(maxDepth);
+        this.setUtility(utility);
         this.currentDepth = 0;
-        this.utility = utility;
     }
     
     /**
@@ -66,6 +79,25 @@ public class AlphaBetaPruning extends AdversarySearch {
     	return maxDepth;
     }
 
+    private void setMaxDepth(int argMaxDepth) {
+	if (argMaxDepth < 0)
+	    throw new IllegalArgumentException("illegal maxDepth " + argMaxDepth + " < 0");
+    	this.maxDepth = argMaxDepth;
+    }
+
+    /**
+     * Get the utility function with which to evaluate the
+     * utility of a state beyond cut-off.
+     */
+    public Function/*<Object, Number>*/ getUtility() {
+	return utility;
+    }
+    private void setUtility(Function/*<Object, Number>*/ argUtility) {
+	if (argUtility == null)
+	    throw new NullPointerException("not a utility function " + argUtility);
+	this.utility = argUtility;
+    }
+
     /**
      * Whether a node with value v is preferred over one with w.
      * <p>
@@ -74,6 +106,7 @@ public class AlphaBetaPruning extends AdversarySearch {
      * Overwrite to get additional behaviour.
      * </p>
      * @return Whether a node with value v is preferred over one with w
+     * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
      */
     protected boolean isPreferred(double v, double w) {
 	return v > w;
@@ -87,8 +120,13 @@ public class AlphaBetaPruning extends AdversarySearch {
      * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
      */
     public Option solve(Field state) {
-    	assert currentDepth == 0 : "search starts at currentDepth 0, and should as well come back to 0";
-    	return max_(state, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+    	assert currentDepth == 0 : "search starts at currentDepth 0";
+	try {
+	    return max_(state, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+	}
+	finally {
+	    assert currentDepth == 0 : "search ends at currentDepth 0";
+	}
     }
     
     /**
@@ -101,7 +139,7 @@ public class AlphaBetaPruning extends AdversarySearch {
      * @return the best option (according to its &alpha;-value).
      */
     private Option max_(final Field state, double alpha, final double beta) {
-	assert isOurLeague(state) : "otherwise ours would not have an opportunity to move, anyway";
+	assert isOurLeaguesTurn(state) : "otherwise ours would not have an opportunity to move, anyway";
     	currentDepth++;
     	try {
 	    Option bestOption = null;							// the best move found so far, has value alpha
@@ -110,7 +148,6 @@ public class AlphaBetaPruning extends AdversarySearch {
 	    else
 		for (Iterator s = successors(state); s.hasNext(); ) {
 		    Option p = (Option) s.next();
-		    assert !isOurLeague(p.getState()) : "our implementation does not yet work for generalized cases";
 		    double v = minmax(p.getState(), alpha, beta);
 		    if (isPreferred(v, alpha)) {
 			logger.log(Level.FINEST, "evaluate utility", v + " for " + p + " PREFERRED");
@@ -143,7 +180,7 @@ public class AlphaBetaPruning extends AdversarySearch {
      * @return the minimax value of state.
      */
     private double minmax(final Field state, double alpha, double beta) {
-	return isOurLeague(state)
+	return isOurLeaguesTurn(state)
 	    ? max(state, alpha, beta)
 	    : min(state, alpha, beta);
     }
@@ -164,7 +201,6 @@ public class AlphaBetaPruning extends AdversarySearch {
 	    else
 		for (Iterator s = successors(state); s.hasNext(); ) {
 		    final Field nextState = ((Option) s.next()).getState();
-		    assert !isOurLeague(nextState) : "our implementation does not yet work for generalized cases";
 		    alpha = Math.max(alpha, minmax(nextState, alpha, beta));
 		    if (alpha >= beta)
 			return beta;
@@ -192,7 +228,6 @@ public class AlphaBetaPruning extends AdversarySearch {
 	    else
             	for (Iterator s = successors(state); s.hasNext(); ) {
 		    final Field nextState = ((Option) s.next()).getState();
-		    assert isOurLeague(nextState) : "our implementation does not yet work for generalized cases";
 		    beta = Math.min(beta, minmax(nextState, alpha, beta));
 		    if (beta <= alpha)
 			return alpha;
@@ -204,7 +239,7 @@ public class AlphaBetaPruning extends AdversarySearch {
         }
     }
 
-    protected boolean isOurLeague(Field state) {
+    protected boolean isOurLeaguesTurn(Field state) {
 	return currentDepth % 2 == 0;
     }
 
@@ -214,6 +249,7 @@ public class AlphaBetaPruning extends AdversarySearch {
      * This implementation will cut off search after maxDepth.
      * Overwrite to get sophisticated behaviour.
      * </p>
+     * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
      */
     protected boolean cutOff(Field state) {
 	return currentDepth > maxDepth;
