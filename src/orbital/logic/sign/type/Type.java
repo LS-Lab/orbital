@@ -78,15 +78,6 @@ public interface Type extends Comparable, Predicate {
     /**
      * Compares two types for subtype inclusions.
      * Note that this is only a partial order, but it is still consistent with equals.
-     * <p>
-     * The subtype relation of types extends to map types as follows
-     * <div>
-     *   <span class="type">&sigma;&rarr;&tau;</span> &le; <span class="type">&sigma;'&rarr;&tau;'</span>
-     *   :&hArr; <span class="type">&sigma;'</span>&le;<span class="type">&sigma;</span> &and; <span class="type">&tau;</span>&le;<span class="type">&tau;'</span>
-     *   &hArr; <span class="type">&sigma;</span>&ge;<span class="type">&sigma;'</span> &and; <span class="type">&tau;</span>&le;<span class="type">&tau;'</span>.
-     * </div>
-     * This means that functor subtypes have contravariant parameters and covariant return-types.
-     * </p>
      * @pre tau instanceof Type
      * @param tau the type <span class="type">&tau;</span> to check for being a supertype, subtype of us, or equals.
      * @return Returns an x &lt; 0 if this &lt; <span class="type">&tau;</span> (this is a proper subtype of <span class="type">&tau;</span>).<br />

@@ -188,12 +188,14 @@ public final class Types {
      *  <code>null</code>, or an array of length <span class="number">0</span> can be used for zero arguments.
      * @return whether a compositor of type compositorType is <a href="Expression.html#freeAlgebraOfTerms">applicable</a> to the given arguments.
      *  Which means that the arguments are assignable to the required parameter types of this symbol.
-     *  This especially includes whether the number of arguments matches this symbol's arity.
+     *  This especially includes whether the number of arguments matches the arity of the compositorTypes' codomain.
+     * @post RES == (typeOf(args) &le; compositorType.codomain())
      * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience method</a>
      * @see Type#subtypeOf(Type)
+     * @see orbital.logic.functor.Functor.Specification#isApplicableTo(Object[])
+     * @todo introduce isComposableWith(Type,Type) or anything that uses argType.domain() =< compositorType.codomain()
      */
     public static final boolean isApplicableTo(Type compositorType, Expression[] args) {
-	//@xxx wouldn't we need the individual codomain() of args as in ModernFormula.BinaryCompositeVariableFormula, for composition (instead of application)?
 	return typeOf(args).subtypeOf(compositorType.codomain());
     }
 
@@ -343,7 +345,7 @@ public final class Types {
 
 	public boolean apply(Object x) {
 	    //@xxx check that all tests are really correct. What's up with VoidFunction, and Function<Object,Boolean> etc?
-	    // if (referent instanceof Functor && spec.isConform((Functor) referent)) return true;
+	    // if (x instanceof Functor && spec.isConform((Functor) x)) return true;
 	    return Functionals.bindSecond(Utility.instanceOf, getFundamental()).apply(x);
 	}
     }
@@ -370,6 +372,15 @@ public final class Types {
     
     /**
      * Get the map type <span class="type">&sigma;&rarr;&tau;</span>.
+     * <p>
+     * The subtype relation of types extends to map types as follows
+     * <div>
+     *   <span class="type">&sigma;&rarr;&tau;</span> &le; <span class="type">&sigma;'&rarr;&tau;'</span>
+     *   :&hArr; <span class="type">&sigma;'</span> &le; <span class="type">&sigma;</span> &and; <span class="type">&tau;</span> &le; <span class="type">&tau;'</span>
+     *   &hArr; <span class="type">&sigma;</span> &ge; <span class="type">&sigma;'</span> &and; <span class="type">&tau;</span> &le; <span class="type">&tau;'</span>.
+     * </div>
+     * This means that map subtypes have contravariant parameters and covariant return-types.
+     * </p>
      * @param codomain the {@link Type#codomain() codomain} <span class="type">&sigma;</span>.
      * @param domain the {@link Type#domain() domain} <span class="type">&tau;</span>.
      * @todo assure canonical identity?
@@ -385,8 +396,8 @@ public final class Types {
     /**
      * Get the predicate type <span class="type">(&sigma;)</span> = <span class="type">&sigma;&rarr;&omicron;</span>.
      * @param codomain the {@link Type#codomain() codomain} <span class="type">&sigma;</span>.
+     * @see #map(Type,Type)
      * @todo assure canonical identity?
-     * @todo check that empty predicate type () equals TRUTH.
      */
     public static final Type predicate(Type codomain) {
 	if (codomain == ABSURD)
@@ -459,6 +470,13 @@ public final class Types {
      * Get the product type <span class="type">&prod;<sub>i</sub>&tau;<sub>i</sub></span> = <span class="type">&tau;<sub>1</sub>&times;&#8230;&times;&tau;<sub>n</sub></span>.
      * <p>
      * Also called tuple type.
+     * </p>
+     * <p>
+     * The subtype relation of types extends to product types as follows
+     * <div>
+     *   <span class="type">&prod;<sub>i&isin;I</sub>&sigma;<sub>i</sub></span> &le; <span class="type">&prod;<sub>j&isin;J</sub>&tau;<sub>j</sub></span>
+     *   :&hArr; I=J &and; &forall;i&isin;I <span class="type">&sigma;<sub>i</sub></span> &le; <span class="type">&tau;<sub>i</sub></span>
+     * </div>
      * </p>
      * @param components the components <span class="type">&tau;<sub>i</sub></span> of the product type.
      */
@@ -564,7 +582,14 @@ public final class Types {
     /**
      * Get the infimum type <span class="type">&#8898;<sub>i</sub>&tau;<sub>i</sub></span> = <span class="type">&tau;<sub>1</sub>&cap;&#8230;&cap;&tau;<sub>n</sub></span>.
      * inf is the most general common subtype, also called intersection.
-     * @attribute neutral #UNIVERSAL
+     * <!-- p>
+     * The subtype relation of types extends to infimum types as follows
+     * <div>
+     *   <span class="type">&#8898;<sub>i&isin;I</sub>&sigma;<sub>i</sub></span> &le; <span class="type">&#8898;<sub>j&isin;J</sub>&tau;<sub>j</sub></span>
+     *   :&hArr; &forall;i&isin;I <span class="type">&sigma;<sub>i</sub></span>&le;<span class="type">&tau;<sub>i</sub></span>
+     * </div>
+     * </p -->
+     * @attribute neutral {@link #UNIVERSAL <span class="type">&#8868;</span>}
      */
     public static final Type inf(Type components[]) {
 	//@internal although we still work on components, t keeps the simplified version of components.
@@ -576,6 +601,7 @@ public final class Types {
 		throw new NullPointerException("illegal arguments containing " + ti);
 	    for (int j = i + 1; j < components.length; j++) {
 		Type tj = components[j];
+		// remove redundant supertypes of comparable types in t
 		if (ti.subtypeOf(tj))
 		    t.remove(tj);
 	    }
@@ -672,7 +698,7 @@ public final class Types {
     /**
      * Get the supremum type <span class="type">&#8899;<sub>i</sub>&tau;<sub>i</sub></span> = <span class="type">&tau;<sub>1</sub>&cup;&#8230;&cup;&tau;<sub>n</sub></span>.
      * sup is the most special common supertype, also called union.
-     * @attribute neutral #ABSURD
+     * @attribute neutral {@link #ABSURD <span class="type">&perp;</span>}
      * @todo strict or ignore absurd?
      */
     public static final Type sup(Type components[]) {
@@ -685,6 +711,7 @@ public final class Types {
 		throw new NullPointerException("illegal arguments containing " + ti);
 	    for (int j = i + 1; j < components.length; j++) {
 		Type tj = components[j];
+		// remove redundant subtypes of comparable types
 		if (ti.subtypeOf(tj))
 		    t.remove(ti);
 	    }
@@ -783,6 +810,14 @@ public final class Types {
     /**
      * The general collection type <span class="type">collection(&tau;)</span>.
      * This is the supertype for all collections in the sense of mereology.
+     * The subtype relation extends to collection types as follows
+     * <div>
+     *   <span class="type">c(&tau;)</span> &le; <span class="type">c'(&tau;')</span>
+     *   :&hArr; <span class="type">c</span> &le; <span class="type">c'</span> &and; <span class="type">&tau;</span> &le; <span class="type">&tau;'</span>
+     *   <br />
+     *   where for <span class="type">c</span> the subtype relations are<br />
+     *   collection &le; list, collection &le; set, collection &le; bag
+     * </div>
      * @see #list(Type)
      * @see #set(Type)
      * @see #bag(Type)
@@ -893,6 +928,7 @@ public final class Types {
 	}
     }
 
+    // Stuff
 
     //@xxx decide acccessibility (privatize or package-level protect if possible)
     
@@ -901,7 +937,7 @@ public final class Types {
      * @todo rename
      * @todo improve concept to make product accessible (perhaps already in type?) or package-level-protectize
      */
-    public/*@xxx*/ static final int arityOf(Type type) {
+    static final int arityOf(Type type) {
 	return type == ABSURD
 	    // strict
 	    ? Integer.MIN_VALUE
@@ -935,8 +971,9 @@ public final class Types {
 
     /**
      * Converts a functor specification to a type (guesses it from the declared type information).
+     * (experimental)
      * @todo package protect but share with orbital.moon.logic
-     * @fixme we cannot know that ClassicalLogic & Co implement AND as a BinaryFunction, not as a BinaryPRedicate<Boolean,Boolean>
+     * @fixme we cannot know that ClassicalLogic & Co implement AND as a BinaryFunction, not as a BinaryPredicate<Boolean,Boolean>
      */
     private static final Type declaredTypeOf(Functor.Specification spec) {
 	return map(typeOf(spec.getParameterTypes()), type(spec.getReturnType()));
@@ -945,6 +982,7 @@ public final class Types {
     /**
      * Converts a functor specification to a type (guesses it from the declared type information).
      * Also looks for additional declarations of logical type.
+     * (experimental)
      * @throws IntrospectionException if an exception occurs during introspection.
      * @todo package protect but share with orbital.moon.logic
      * @fixme we cannot know that ClassicalLogic & Co implement AND as a BinaryFunction, not as a BinaryPRedicate<Boolean,Boolean>

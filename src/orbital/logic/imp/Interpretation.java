@@ -79,7 +79,7 @@ import orbital.logic.functor.Functor;
  *     If for every interpretation I:&Sigma;&rarr;<span class="set">D</span> there is a unique continuation
  *     &phi;:<span class="UniversalAlgebra">T</span>(&Sigma;)&rarr;<span class="set">D</span>
  *     that is a homomorphism of &Sigma;-algebras, i.e.
- *     <center>&phi;|&Sigma; = I and &phi; is homomorph</center>
+ *     <center>&phi;|<sub>&Sigma;</sub> = I and &phi; is homomorph</center>
  *     Then the logic is called truth-functional,
  *     and that unique homomorphism &phi; is called the (expression) evaluation or truth-function,
  *     which is again denoted by I.

@@ -84,11 +84,11 @@ public interface ExpressionBuilder {
      * </p>
      * @param compositor the expression that is used for composing the arguments.
      * @param arg the arguments <var>a</var> passed to the combining operation.
-     * @pre compositor&ne;null &and; compositor.getType().isApplicableTo(arg) &and; compositor(arg)&isin;<i>L</i>
+     * @pre compositor&ne;null &and; Types.isApplicableTo(compositor.getType(), arg) &and; compositor(arg)&isin;<i>L</i>
      *  "compositor applied to arg represents a syntactically well-formed expression"
      * @return an instance of Expression that represents the combined operation with arguments, like in
      *  <div><code>compositor(<var>a</var><span class="operator">[</span><span class="number">0</span><span class="operator">]</span>,...,<var>a</var><span class="operator">[</span><var>a</var>.length<span class="operator">-</span><span class="number">1</span><span class="operator">]</span>)</code></div>
-     * @post RES&ne;null &and; RES.getType().equals(compositor.getType().domain()) &and; ....
+     * @post RES&ne;null &and; RES.getType()=compositor.getType().domain() &and; ....
      * @throws ParseException when the composition expression is syntactically malformed.
      *  Either due to a lexical or grammatical error (also due to wrong type of arguments).
      * @internal this is a meta-operator. We could also choose a simpler compositor part orbital.logic.imp.Symbol but would then need an undefined language primitive "apply" for compose("apply",{f,a}) = f(a). So this formal trick soon looses its simplicity and thus is inferior to the approach of compositors in Term(&Sigma;) instead of just &Sigma;.
