@@ -26,12 +26,13 @@ import java.util.LinkedList;
  * @see GeneralSearchProblem
  * @see <a href="http://www.ldc.usb.ve/~hector">Hector Geffner. Modelling and Problem Solving</a>
  * @see <a href="{@docRoot}/DesignPatterns/Strategy.html">Strategy</a>
- * @see <a href="doc-files/AlgorithmicTable.gif">Table of Algorithms in Comparison</a>
+ * @see <a href="doc-files/AlgorithmicTable.png">Table of Algorithms in Comparison</a>
  * @todo introduce BidirectionalSearch and a BidirectionalSearchProblem (either extending GeneralSearchProblem complementing expand and getInitialState with methods working backwards from the goal, or feed BidirectionalSearch with two complementary GeneralSearchProblem objects). They work like Backchaining from the goal instead of "usual" Forward chaining from the initial state.
  * @todo introduce TabuSearch
  * @todo once we have decided once and for all against expand-Collections we can get rid of createCollection(), select(Collection), add(Collection,Collection), and search(Collection) in our subclasses.
  */
 public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSearchProblem,Object>*/, Serializable {
+    
     /**
      * The search problem to solve.
      * @serial
@@ -322,7 +323,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
     	 * Removes from the list of exandable nodes the last element returned by the iterator.
     	 * <p>
     	 * When calling this method, the last node that was returned by this iterator will be pruned
-    	 * and not be expanded any further.
+    	 * and not expanded any further.
     	 * </p>
     	 * @throws UnsupportedOperationException if the <code>remove</code> operation is not supported by this Iterator.
 	 * @throws IllegalStateException if the <code>next</code> method has not yet been called, or the <code>remove</code> method has already been called after the last call to the <code>next</code> method.
