@@ -123,12 +123,12 @@ public abstract class Values implements ValueFactory {
      *   </tr>
      *   <tr>
      *     <td><tt>orbital.math.Scalar.narrow</tt></td>
-     *     <td>Use <code>"auto"</code> for automatical narrowing after each operation,
+     *     <td>Use <code>"auto"</code> for automatic narrowing after each operation,
      *       <code>"none"</code> for {@link ValueFactory#narrow(Scalar) explicit normalization}, only.</td>
      *   </tr>
      *   <tr>
      *     <td><tt>orbital.math.Scalar.fallback</tt></td>
-     *     <td>Use <code>"auto"</code> for automatical fallback to bigger precision when result could otherwise overflow,
+     *     <td>Use <code>"auto"</code> for automatic fallback to bigger precision when result could otherwise overflow,
      *       <code>"none"</code> sticks to machine-size at the risk of overflows.</td>
      *   </tr>
      * </table>

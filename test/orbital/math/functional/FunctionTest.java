@@ -19,7 +19,7 @@ import java.awt.Dimension;
 import orbital.util.*;
 
 /**
- * Automatical test-driver checking (some parts of) orbital.math.functional.* against Mathematica.
+ * Automatic test-driver checking (some parts of) orbital.math.functional.* against Mathematica.
  *
  * @version 1.0, 2002-03-24
  * @author  Andr&eacute; Platzer

@@ -188,7 +188,7 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractProdu
     // sub-views
 	
     /**
-     * Grants access to a tensor with automatical index transformation.
+     * Grants access to a tensor with automatic index transformation.
      * @author Andr&eacute; Platzer
      * @version 1.0, 2002-08-11
      * @structure delegates m:AbstractTensor (minimal part)

@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 
 /**
- * Automatical test-driver checking (descendants of) orbital.algorithm.template.GeneralSearch.
+ * Automatic test-driver checking (descendants of) orbital.algorithm.template.GeneralSearch.
  * Tests all known GeneralSearch implementations
  *
  * @version 0.8, 2002/04/06

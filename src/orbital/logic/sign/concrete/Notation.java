@@ -158,7 +158,7 @@ public abstract class Notation implements Serializable, Comparable {
 	};
 
     /**
-     * Specifies automatical compositor-dependant notation as registered.
+     * Specifies automatic compositor-dependant notation as registered.
      * <p>
      * Delegates to the registered notation.
      * Compositors with registered default notation like +, -, *, /, ^ have a notation set.
