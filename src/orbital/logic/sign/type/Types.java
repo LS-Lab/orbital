@@ -22,6 +22,7 @@ import orbital.util.Utility;
 import orbital.util.Setops;
 import orbital.math.MathUtilities;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.HashSet;
 
 import java.beans.IntrospectionException;
@@ -29,7 +30,7 @@ import orbital.util.InnerCheckedException;
 import java.lang.reflect.*;
 
 /**
- * Provides implementations and factories for types.
+ * Provides type constructors, implementations, and factories for types.
  *
  * @author <a href="mailto:">Andr&eacute; Platzer</a>
  * @version 1.1, 2002-09-08
@@ -54,7 +55,8 @@ public final class Types {
 	    }
 	};
     /**
-     * The universal type <span class="type">&#8868;</span>.
+     * The universal type
+     * <span class="type">&#8868;</span> = <span class="type">&#8898;<sub>&empty;</sub></span>.
      * It is the top element of the lattice &Tau; of types, has no differentiae and satisfies
      * <ul>
      *   <li>(&exist;x) <span class="type">&#8868;</span>(x)</li>
@@ -85,7 +87,10 @@ public final class Types {
 	}
 
 	public Class getFundamental() {
-	    return Object.class;
+	    //@internal returning null here is safe and assures that !INDIVIDUAL.equals(this);
+	    return null;
+	    //@internal the root of the Java class hierarchy
+	    //return Object.class;
 	}
 	protected int comparisonPriority() {
 	    return Integer.MAX_VALUE;
@@ -103,11 +108,6 @@ public final class Types {
 	}
     };
     /**
-     * The void type <span class="type">&prod;<sub>&empty;</sub></span> = <span class="type">&prod;<sub>i&isin;&empty;</sub>i</span>.
-     * The extension of the type void is void, i.e. it does not have any elements at all.
-     */
-    public static final Type VOID = new FundamentalTypeImpl(Void.TYPE);
-    /**
      * The type <span class="type">&iota;</span> of individuals ({@link java.lang.Object objects}).
      */
     public static final Type INDIVIDUAL = type(Object.class);
@@ -118,7 +118,13 @@ public final class Types {
      */
     public static final Type TRUTH = new FundamentalTypeImpl(Boolean.class);
     /**
-     * The absurd type <span class="type">&perp;</span>.
+     * The void type <span class="type">&prod;<sub>&empty;</sub></span> = <span class="type">&prod;<sub>i&isin;&empty;</sub>i</span>.
+     * The extension of the type void is void, i.e. it does not have any elements at all.
+     */
+    public static final Type VOID = new FundamentalTypeImpl(Void.TYPE);
+    /**
+     * The absurd type
+     * <span class="type">&perp;</span> = <span class="type">&#8899;<sub>&empty;</sub></span>.
      * It is the bottom element of the lattice &Tau; of types,
      * it cannot be the type of anything that exists, and it satisfies.
      * <ul>
@@ -177,15 +183,18 @@ public final class Types {
      * Checks whether the type specification is compatible with the given list of arguments.
      * Convenience method.
      * @pre true
+     * @param compositorType the type of the compositor to apply to the arguments.
      * @param args the arguments to check for compatibility with this symbol.
      *  <code>null</code>, or an array of length <span class="number">0</span> can be used for zero arguments.
-     * @return whether the arguments are assignable to the required parameter types of this symbol.
+     * @return whether a compositor of type compositorType is <a href="Expression.html#freeAlgebraOfTerms">applicable</a> to the given arguments.
+     *  Which means that the arguments are assignable to the required parameter types of this symbol.
      *  This especially includes whether the number of arguments matches this symbol's arity.
      * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience method</a>
      * @see Type#subtypeOf(Type)
      */
-    public static final boolean isApplicableTo(Type type, Expression[] args) {
-	return typeOf(args).subtypeOf(type.codomain());
+    public static final boolean isApplicableTo(Type compositorType, Expression[] args) {
+	//@xxx wouldn't we need the individual codomain() of args as in ModernFormula.BinaryCompositeVariableFormula, for composition (instead of application)?
+	return typeOf(args).subtypeOf(compositorType.codomain());
     }
 
     // factories
@@ -215,8 +224,12 @@ public final class Types {
 	 * @todo adapt documentation to actual implementation
 	 */
 	protected abstract int compareToSemiImpl(Type b);
-	public int compareTo(Object b) {
-	    return subtypeOrder.compare(this, (Type)b);
+	public final int compareTo(Object b) {
+	    int cmp = subtypeOrder.compare(this, (Type)b);
+	    assert !((cmp == 0) ^ this.equals(b)) : "antisymmetry resp. consistent with equals: " + this + ", " + b + "\n" + this + toString(cmp) + b + "\n" + this + (this.equals(b) ? "=" : "!=") + b;
+	    assert subtypeOrder.compare(this, this) == 0 : "reflexive: " + this;
+	    assert MathUtilities.sign(cmp) == -MathUtilities.sign(subtypeOrder.compare((Type)b, this)) : "antisymmetry: " + this + ", " + b;
+	    return cmp;
 	}
 
 	public final boolean subtypeOf(Type tau) {
@@ -226,6 +239,10 @@ public final class Types {
 	    catch (IncomparableException incomparable) {
 		return false;
 	    }
+	}
+
+	private static final String toString(int comparisonResult) {
+	    return new String[] {"=<", "=", ">="} [MathUtilities.sign(comparisonResult) + 1];
 	}
     }
 
@@ -265,7 +282,7 @@ public final class Types {
 	    else if (coc <= 0 && doc >= 0)
 		return 1;
 	    else
-		throw new IncomparableException();
+		throw new IncomparableException(this + " is incomparable with " + b);
 	}
     }
 
@@ -321,7 +338,7 @@ public final class Types {
 		else if (getFundamental().isAssignableFrom(tau.getFundamental()))
 		    return 1;
 	    }
-	    throw new IncomparableException();
+	    throw new IncomparableException(this + " is incomparable with " + b);
 	}
 
 	public boolean apply(Object x) {
@@ -356,6 +373,7 @@ public final class Types {
      * @param codomain the {@link Type#codomain() codomain} <span class="type">&sigma;</span>.
      * @param domain the {@link Type#domain() domain} <span class="type">&tau;</span>.
      * @todo assure canonical identity?
+     * @xxx really strict? This contradicts the usual case, since ABSURD->t >= s->t because ABSURD =< s. Although ABSURD =< s->t.
      */
     public static final Type map(Type codomain, Type domain) {
 	if (codomain == ABSURD || domain == ABSURD)
@@ -440,6 +458,7 @@ public final class Types {
     /**
      * Get the product type <span class="type">&prod;<sub>i</sub>&tau;<sub>i</sub></span> = <span class="type">&tau;<sub>1</sub>&times;&#8230;&times;&tau;<sub>n</sub></span>.
      * <p>
+     * Also called tuple type.
      * </p>
      * @param components the components <span class="type">&tau;<sub>i</sub></span> of the product type.
      */
@@ -504,11 +523,11 @@ public final class Types {
 	    if (tau instanceof ProductType) {
 		Type taui[] = ((ProductType)tau).components;
 		if (components.length != taui.length)
-		    throw new IncomparableException();
+		    throw new IncomparableException(this + " is incomparable with " + tau);
 		int cmp = 0;
 		for (int i = 0; i < components.length; i++) {
 		    final int cmpi = MathUtilities.sign(components[i].compareTo(taui[i]));
-		    if (cmpi == 0)
+		    if (cmpi == cmp || cmpi == 0)
 			// always ok
 			;
 		    else if (cmpi < cmp && cmp == 0)
@@ -516,14 +535,14 @@ public final class Types {
 		    else if (cmpi > cmp && cmp == 0)
 			cmp = cmpi;
 		    else
-			throw new IncomparableException();
+			throw new IncomparableException(this + " is incomparable with " + tau);
 		}
 		return cmp;
 	    } else if (tau.equals(UNIVERSAL))
 		//@todo still needed?
 		return 0;
 	    else
-		throw new IncomparableException();
+		throw new IncomparableException(this + " is incomparable with " + tau);
 	}
 
 	public boolean apply(Object x) {
@@ -545,10 +564,11 @@ public final class Types {
     /**
      * Get the infimum type <span class="type">&#8898;<sub>i</sub>&tau;<sub>i</sub></span> = <span class="type">&tau;<sub>1</sub>&cap;&#8230;&cap;&tau;<sub>n</sub></span>.
      * inf is the most general common subtype, also called intersection.
+     * @attribute neutral #UNIVERSAL
      */
     public static final Type inf(Type components[]) {
 	//@internal although we still work on components, t keeps the simplified version of components.
-	List/*<Type>*/ t = Arrays.asList(components);
+	List/*<Type>*/ t = new LinkedList(Arrays.asList(components));
 	//@internal this canonical simplification also assures strict
 	for (int i = 0; i < components.length; i++) {
 	    Type ti = components[i];
@@ -556,7 +576,7 @@ public final class Types {
 		throw new NullPointerException("illegal arguments containing " + ti);
 	    for (int j = i + 1; j < components.length; j++) {
 		Type tj = components[j];
-		if (ti.compareTo(tj) <= 0)
+		if (ti.subtypeOf(tj))
 		    t.remove(tj);
 	    }
 	}
@@ -621,20 +641,20 @@ public final class Types {
 		else if (compareSupertypeOf(tau))
 		    return 1;
 		else
-		    throw new IncomparableException();
+		    throw new IncomparableException(this + " is incomparable with " + tau);
 	    } else
 		throw new UnsupportedOperationException("comparing infimum and supremum types is not yet supported");
 	}
-	private boolean compareSupertypeOf(Object tau) {
+	private boolean compareSupertypeOf(Type tau) {
 	    for (int i = 0; i < components.length; i++) {
-		if (!(components[i].compareTo(tau) >= 0))
+		if (!tau.subtypeOf(components[i]))
 		    return false;
 	    }
 	    return true;
 	}
-	private boolean compareSubtypeOf(Object tau) {
+	private boolean compareSubtypeOf(Type tau) {
 	    for (int i = 0; i < components.length; i++) {
-		if (components[i].compareTo(tau) <= 0)
+		if (components[i].subtypeOf(tau))
 		    return true;
 	    }
 	    return false;
@@ -652,11 +672,12 @@ public final class Types {
     /**
      * Get the supremum type <span class="type">&#8899;<sub>i</sub>&tau;<sub>i</sub></span> = <span class="type">&tau;<sub>1</sub>&cup;&#8230;&cup;&tau;<sub>n</sub></span>.
      * sup is the most special common supertype, also called union.
+     * @attribute neutral #ABSURD
      * @todo strict or ignore absurd?
      */
     public static final Type sup(Type components[]) {
 	//@internal although we still work on components, t keeps the simplified version of components.
-	List/*<Type>*/ t = Arrays.asList(components);
+	List/*<Type>*/ t = new LinkedList(Arrays.asList(components));
 	//@internal this canonical simplification also assures strict
 	for (int i = 0; i < components.length; i++) {
 	    Type ti = components[i];
@@ -664,7 +685,7 @@ public final class Types {
 		throw new NullPointerException("illegal arguments containing " + ti);
 	    for (int j = i + 1; j < components.length; j++) {
 		Type tj = components[j];
-		if (ti.compareTo(tj) <= 0)
+		if (ti.subtypeOf(tj))
 		    t.remove(ti);
 	    }
 	}
@@ -719,8 +740,8 @@ public final class Types {
 	public int compareToSemiImpl(Type tau) {
 	    if (equals(tau))
 		return 0;
-	    if (!(tau instanceof SupremumType)) {
-		if (tau instanceof InfimumType)
+	    if (!(tau instanceof InfimumType)) {
+		if (tau instanceof SupremumType)
 		    throw new UnsupportedOperationException("this kind of comparison is not yet supported");
 
 		//@todo either improve or rewrite pure functionally
@@ -729,20 +750,20 @@ public final class Types {
 		else if (compareSupertypeOf(tau))
 		    return 1;
 		else
-		    throw new IncomparableException();
+		    throw new IncomparableException(this + " is incomparable with " + tau);
 	    } else
 		throw new UnsupportedOperationException("comparing infimum and supremum types is not yet supported");
 	}
-	private boolean compareSupertypeOf(Object tau) {
+	private boolean compareSupertypeOf(Type tau) {
 	    for (int i = 0; i < components.length; i++) {
-		if (components[i].compareTo(tau) >= 0)
+		if (tau.subtypeOf(components[i]))
 		    return true;
 	    }
 	    return false;
 	}
-	private boolean compareSubtypeOf(Object tau) {
+	private boolean compareSubtypeOf(Type tau) {
 	    for (int i = 0; i < components.length; i++) {
-		if (!(components[i].compareTo(tau) <= 0))
+		if (!components[i].subtypeOf(tau))
 		    return false;
 	    }
 	    return true;
@@ -757,8 +778,18 @@ public final class Types {
 	}
     }
 
-    // special types
+    // collection types
     
+    /**
+     * The general collection type <span class="type">collection(&tau;)</span>.
+     * This is the supertype for all collections in the sense of mereology.
+     * @see #list(Type)
+     * @see #set(Type)
+     * @see #bag(Type)
+     */
+    public static final Type collection(Type component) {
+	return new CollectionType(Collection.class, component, "collection(", ")");
+    }
     /**
      * The set type <span class="type">{&tau;}</span>.
      * Sets are orderless and contain unique elements.
@@ -786,6 +817,8 @@ public final class Types {
      *  </table>
      * Also see <a href="Interpretation.html#interpretation">identification with characteristic function</a>.
      * </p>
+     * @see #collection(Type)
+     * @see java.util.Set
      */
     public static final Type set(Type component) {
 	return new CollectionType(Set.class, component, "{", "}");
@@ -793,6 +826,8 @@ public final class Types {
     /**
      * The list type <span class="type">&lt;&tau;&gt;</span>.
      * Lists are ordered (but not sorted) and not limited to containing unique elements.
+     * @see #collection(Type)
+     * @see java.util.List
      */
     public static final Type list(Type component) {
 	return new CollectionType(List.class, component, "<", ">");
@@ -801,9 +836,10 @@ public final class Types {
      * The bag/multiset type <span class="type">{{&tau;}}</span>.
      * Bags are orderless and not limited to containing unique elements.
      * So each element of a bag has a certain multiplicity.
+     * @see #collection(Type)
      */
     public static final Type bag(Type component) {
-	return new CollectionType(Collection.class, component, "{{", "}}");
+	throw new UnsupportedOperationException("bag interface is not part of Java 1.4");
     }
     /**
      * Collection types.
@@ -821,6 +857,13 @@ public final class Types {
 	    this.toStringPrefix = toStringPrefix;
 	    this.toStringSuffix = toStringSuffix;
 	}
+	public boolean equals(Object b) {
+	    if (b instanceof CollectionType) {
+		CollectionType tau = (CollectionType)b;
+		return collection.equals(tau.collection) && component.equals(tau.component);
+	    } else
+		return false;
+	}
 	public String toString() {
 	    return toStringPrefix + component + toStringSuffix;
 	}
@@ -830,15 +873,23 @@ public final class Types {
 	public int compareToSemiImpl(Type b) {
 	    if (b instanceof CollectionType) {
 		CollectionType tau = (CollectionType)b;
-		if (!collection.equals(tau.collection))
-		    throw new UnsupportedOperationException("comparing different collection types");
-		assert toStringPrefix.equals(tau.toStringPrefix) && toStringSuffix.equals(tau.toStringSuffix) : "equal collection type constructors imply equal notation"; 
-		return component.compareTo(tau.component);
+		return comparisonInternalRepresentation().compareTo(tau.comparisonInternalRepresentation());
+// 		if (!collection.equals(tau.collection))
+// 		    //@xxx return -1 if collection < tau.collection and component < tau.component etc.
+// 		    throw new UnsupportedOperationException("comparing different collection types");
+// 		assert toStringPrefix.equals(tau.toStringPrefix) && toStringSuffix.equals(tau.toStringSuffix) : "equal collection type constructors imply equal notation"; 
+// 		return component.compareTo(tau.component);
 	    } else
-		throw new IncomparableException();	    
+		throw new IncomparableException(this + " is incomparable with " + b);
 	}
 	public boolean apply(Object x) {
 	    return collection.isInstance(x) && Setops.all((Collection)x, component);
+	}
+	/**
+	 * @internal collection types and product types are different, but they compare in the same way
+	 */
+	private Type comparisonInternalRepresentation() {
+	    return new ProductType(new Type[] {Types.type(collection), component});
 	}
     }
 
@@ -848,8 +899,9 @@ public final class Types {
     /**
      * Get the number of components n of a product type <span class="type">&prod;<sub>i</sub>&tau;<sub>i</sub></span> = <span class="type">&tau;<sub>1</sub>&times;&#8230;&times;&tau;<sub>n</sub></span>.
      * @todo rename
+     * @todo improve concept to make product accessible (perhaps already in type?) or package-level-protectize
      */
-    static final int arityOf(Type type) {
+    public/*@xxx*/ static final int arityOf(Type type) {
 	return type == ABSURD
 	    // strict
 	    ? Integer.MIN_VALUE

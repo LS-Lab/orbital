@@ -18,7 +18,7 @@ import orbital.util.Setops;
 import orbital.util.InnerCheckedException;
 
 /**
- * A basic Signature implementation.
+ * A basic signature implementation.
  * 
  * @invariant sub classes support no-arg constructor (for virtual new instance)
  * @structure implements java.util.SortedSet

@@ -6,8 +6,6 @@
 
 package orbital.logic.imp;
 
-import java.text.ParseException;
-
 /**
  * Provides a unified encapsulation of logical systems.
  * This interface encapsulates access to the logic inference relations and satisfaction relations

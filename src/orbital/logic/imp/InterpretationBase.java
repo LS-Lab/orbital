@@ -18,7 +18,7 @@ import orbital.util.InnerCheckedException;
 import orbital.util.Utility;
 
 /**
- * A basic Interpretation implementation.
+ * A basic interpretation implementation.
  * 
  * @invariant sub classes support no-arg constructor (for virtual new instance).
  * @version 1.0, 2001/06/12

@@ -324,7 +324,7 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      * and stick to the core interpretation at the time of formula construction.
      * <small>The later may be ensured by formulas of fixed interpretations.</small>
      * </p>
-     * @param I the interpretation inducing the truth-function I(_).
+     * @param I the interpretation I.
      * @return I(this).
      * @see <a href="{@docRoot}/Patterns/Design/Interpreter.html">Interpreter</a>
      * @see <a href="{@docRoot}/Patterns/Design/Visitor.html">&quot;Visitor&quot;</a>
@@ -403,7 +403,7 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      * Sometimes, this is also denoted as &#8896;<sub>x</sub> <span class="Formula">F</span>.
      * </p>
      * <p>
-     * &forall; is not truth-functional.
+     * &forall; is not (compositional or) truth-functional.
      * </p>
      * @param x is a symbol for all elements of the world.
      * @pre x.isVariable()
@@ -417,7 +417,7 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      * Sometimes, this is also denoted as &#8897;<sub>x</sub> <span class="Formula">F</span>.
      * </p>
      * <p>
-     * &forall; is not truth-functional.
+     * &forall; is not (compositional or) truth-functional.
      * </p>
      * @param x is an element of the world.
      * @pre x.isVariable()

@@ -6,8 +6,6 @@
 
 package orbital.logic.imp;
 
-import java.text.ParseException;
-
 /**
  * Defines general methods for constructing and handling expressions of a language.
  * Implementations of this interface are responsible for analyzing and constructing expressions (like terms, formulas)

@@ -76,10 +76,11 @@ package orbital.logic.imp;
  *   </dd>
  * </dl>
  * Note that the case of composite symbols also includes compound symbols with compositors of
- * higher arities <var class="meta">n</var> and type
+ * higher arity <var class="meta">n</var> and type
  * <span class="type">&sigma;<sub>1</sub></span>&times;<span class="type">&sigma;<sub>2</sub></span>&times;&#8230;&times;<span class="type">&sigma;<sub><var class="meta">n</var></sub></span>&rarr;<span class="type">&tau;</span>
  * by formally setting <span class="type">&sigma;</span> := <span class="type">&sigma;<sub>1</sub></span>&times;<span class="type">&sigma;<sub>2</sub></span>&times;&#8230;&times;<span class="type">&sigma;<sub><var class="meta">n</var></sub></span>.
- * This brief notation is justified formally by {@link orbital.logic.functor.Functionals#curry(BinaryFunction) currying}.
+ * This brief notation is justified formally by {@link orbital.logic.functor.Functionals#curry(BinaryFunction) currying}
+ * or product construction.
  * Also note that <var class="meta">&upsilon;</var> is not restricted to functions and predicates,
  * but is a meta-variable that may stand for any syntactic compositor.
  * </p>

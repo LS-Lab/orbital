@@ -6,15 +6,13 @@
 
 package orbital.logic.imp;
 
-import java.text.ParseException;
-
 /**
  * Defines a general interface for constructing complex expressions.
  * Implementations of this interface are responsible for constructing compound expressions (like terms, formulas).
  * They usually correspond to a formal language of a corresponding expression syntax.
  * This interface effectively works as a builder for syntactic expressions.
  * <p>
- * Refer to the {@link orbital.io.ParseException ParseException dilemma} to read about
+ * Refer to the {@link ParseException ParseException dilemma} to read about
  * why the exception types may have to change some day.
  * </p>
  * 
@@ -65,10 +63,24 @@ public interface ExpressionBuilder {
     /**
      * Create a compound expression representation with a composition operation.
      * Connects expressions with a compositor<!-- @todo always a connector or formator? -->
-     * to a <a href="Expression.html#compositeExpression">complex</a> expression.
+     * to form a <a href="Expression.html#compositeExpression">complex</a> expression.
      * <p>
      * {@link Signature#get(String,Object[])} may be useful for determining the right functor symbol
      * for a composition with an {@link #createAtomic(Symbol) atomic} compositor.
+     * </p>
+     * <p>
+     * <span style="float: left; font-size: 200%">&#9761;</span>
+     * Be aware that this method does a composition (in the sense of semiotics) of expressions,
+     * but not usually a composition (in the sense of mathematics) of functions. Mathematically
+     * speaking, the composition that this method performs would usually be called application
+     * instead of composition. Although composition (in the sense of mathematics) and application
+     * are correlated, they have different types at first sight
+     * <div style="text-align:center;">{@link orbital.logic.functor.Functionals#compose &#8728;}:<span class="type">(&sigma;&rarr;&tau;)&times;(&tau;'&rarr;&sigma;') &rarr; (&tau;&rarr;&tau;')</span>; (g,f) &#8614; g&#8728;f = (x&#8614;g(f(x))), provided that <span class="type">&sigma;'</span> &le; <span class="type">&sigma;</span></div>
+     * <div style="text-align:center;">{@link orbital.logic.functor.Functionals#apply _(_)}:<span class="type">(&sigma;&rarr;&tau;)&times;&sigma;' &rarr; &tau;</span>; (f,x) &#8614; f(x) provided that <span class="type">&sigma;'</span> &le; <span class="type">&sigma;</span></div>
+     * Yet together with {@link orbital.logic.trs.Substitutions#lambda &lambda;}-abstraction,
+     * composition can be expressed (as in the definition above) in terms of application.
+     * And in conjunction with the identification of type <span class="type">void&rarr;&sigma;'</span> with <span class="type">&sigma;'</span>
+     * application can also be expressed per composition.
      * </p>
      * @param compositor the expression that is used for composing the arguments.
      * @param arg the arguments <var>a</var> passed to the combining operation.

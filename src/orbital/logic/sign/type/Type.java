@@ -40,7 +40,8 @@ import orbital.logic.functor.Predicate;
  * @see Symbol#getType()
  * @see Expression#getType()
  * @see java.lang.Class
- * @todo remove type documentation from Symbol, and use Type throughout
+ * @xxx some things have generic/parametric types like
+ *  &forall; : (&Delta;&tau;.(&tau;&rarr;&omicron;)&rarr;&omicron;
  */
 public interface Type extends Comparable, Predicate {
     /**
@@ -86,9 +87,10 @@ public interface Type extends Comparable, Predicate {
      * </div>
      * This means that functor subtypes have contravariant parameters and covariant return-types.
      * </p>
+     * @pre tau instanceof Type
      * @param tau the type <span class="type">&tau;</span> to check for being a supertype, subtype of us, or equals.
-     * @return Returns an x &lt; 0 if this &lt; <span class="type">&tau;</span> (this is a proper subtype of <span class="type">&tau;</span>).
-     *  Returns an x &gt; 0 if this &gt; <span class="type">&tau;</span> (this is a proper supertype of <span class="type">&tau;</span>).
+     * @return Returns an x &lt; 0 if this &lt; <span class="type">&tau;</span> (this is a proper subtype of <span class="type">&tau;</span>).<br />
+     *  Returns an x &gt; 0 if this &gt; <span class="type">&tau;</span> (this is a proper supertype of <span class="type">&tau;</span>).<br />
      *  Returns 0 if this = <span class="type">&tau;</span> (which is the case if and only if this &le; <span class="type">&tau;</span> and this &ge; <span class="type">&tau;</span>).
      * @throws IncomparableException if the types are incomparable.
      * @see #subtypeOf(Type)
