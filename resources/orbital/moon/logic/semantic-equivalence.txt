@@ -60,8 +60,17 @@ a^b == (a|b) & (~a|~b)	# antivalence in CNF
 a^a == false
 (a^b)^c == a^(b^c)	# associative
 (a^b)^c == a<->b<->c	#
-(a->b)->c == a->b && b->c
-a&b->c == a->(b->c)	# exportation / importation [Lex exportationis, Lex importationis]
+(a->b)->c == a->b && b->c	# @fixme what, which brackets, what sense, who, which way?
+a->(b->c) == (a&b)->c	# exportation / importation [Lex exportationis, Lex importationis]
+a->(b->c) == (a->b)->(a->c)	# distributive -> over ->
+c->(a->b) == (c->a)->(c->b)	# distributive -> over ->
+c->(a&b) == (c->a)&(c->b)	# distributive -> over &
+c->(a|b) == (c->a)|(c->b)	# distributive -> over |
+c->(a<->b) == (c->a)<->(c->b)	# distributive -> over <->
+(a&b)->c == (a->c)|(b->c)	# codistributive -> over &
+(a|b)->c == (a->c)&(b->c)	# codistributive -> over |
+(a^b)->c == (a->c)<->(b->c)	# codistributive -> over ^
+
 ~a == a->false		# not in INF
 ~a == a<->false		# not with equivalence
 #
@@ -88,7 +97,7 @@ a->b, b->c |= a->c	# transitivity
 p->~p == ~p
 (p->q), (p->r) == p->(q&r)
 p->(q->r) == (p&q)->r	# chain rule
-p->(q->r) == (p&q)->r	# distribute
+p->(q->r) == (p&q)->r	# distribute aka exportation / importation
 p->(q->r) == (p->q)->(p->r)	# distributive
 # Rules for quantifiers
 # some rules
@@ -117,6 +126,16 @@ p<->~q == ~p<->q
 p->q |= (p|r)->(q|r)
 p->r, q->r |= (p|q)->r
 |= (f->g) | (g->f)	# material implication has strange causal relations
+#
+# <-> (or better yet <=>) is a congruence
+#
+c<->d |= (~c) <-> (~d)
+c<->d |= (a&c) <-> (a&d)
+c<->d |= (a|c) <-> (a|d)
+c<->d |= (a->c) <-> (a->d)
+c<->d |= (a<->c) <-> (a<->d)
+c<->d |= (a^c) <-> (a^d)
+
 #
 # definitions
 #
