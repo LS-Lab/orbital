@@ -109,7 +109,8 @@
             description="compile examples/*.java (=> ./classes)">
         <javac srcdir="${examples}"
                debug="on"
-	       source="1.4">
+	       source="1.4"
+	       excludes="SimpleDemos/SpecDemo.java">
             <classpath>
 	        <pathelement location="${examples}/Algorithms"/>
 
@@ -388,7 +389,7 @@
 
 
 
-    <target name="dist" depends="init, jar, compile.examples"
+    <target name="dist" depends="init, jar, doc, compile.examples"
             description="create all distributions (=> ./dist/*.zip)">
         <mkdir dir="${dist}"/>
         <delete file="${dist}/ap_orbital_rt${version_brief}.zip"/>
@@ -399,7 +400,7 @@
         <replace file="${dist}/readme.html" token="@VERSION_DATE@" value="${VERSION_DATE}"/>
 
         <!-- make zip-file -->
-        <zip destfile="${dist}/ap_orbital_rt${version_brief}.zip">
+        <zip destfile="${dist}/ap_orbital_rt${version_brief}.zip" duplicate="fail">
             <zipfileset dir="${basedir}" includes="COPYRIGHT.*" prefix="Orbital"/>
             <zipfileset dir="${doc}" prefix="Orbital">
 	        <include name="license.txt"/>
@@ -422,25 +423,32 @@
 	    </zipfileset>
         </zip>
 
-        <zip destfile="${dist}/ap_orbital_doc${version_brief}.zip">
-            <zipfileset dir="${basedir}" includes="COPYRIGHT.*" prefix="Orbital"/>
-            <zipfileset dir="${doc}" prefix="Orbital">
+        <zip destfile="${dist}/ap_orbital_doc${version_brief}.zip" duplicate="fail">
+            <zipfileset dir="${basedir}" includes="COPYRIGHT.*" prefix="Orbital-doc"/>
+            <zipfileset dir="${doc}" prefix="Orbital-doc">
 	        <include name="license.txt"/>
 	        <include name="changes.txt"/>
 	        <include name="orbital.gif"/>
 	        <include name="orbital.ico"/>
 	        <include name="recommendations.html"/>
 	    </zipfileset>
-            <zipfileset dir="${dist}" prefix="Orbital">
+            <zipfileset dir="${dist}" prefix="Orbital-doc">
 	        <include name="readme.html"/>
 	    </zipfileset>
-            <zipfileset dir="${doc}/api" prefix="Orbital/api"/>
-            <zipfileset dir="${examples}" prefix="Orbital/examples">
+            <zipfileset dir="${doc}/api" prefix="Orbital-doc/api"/>
+            <zipfileset dir="${examples}" prefix="Orbital-doc/examples">
 	        <exclude name="**/CVS/*"/>
+	        <exclude name="**/*.jpx*"/>
 		<exclude name="Algorithms/RubicsCube.patterndb"/>
 		<exclude name="ReCompileAll.bat"/>
 	    </zipfileset>
         </zip>
+
+	<touch datetime="${TODAY} 1:00 am">
+	    <fileset dir="${dist}">
+	        <include name="*.zip"/>
+	    </fileset>
+	</touch>
 
         <!-- cleanup temporary files -->
         <delete file="${dist}/readme.html"/>
