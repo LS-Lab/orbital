@@ -12,7 +12,6 @@ import orbital.logic.imp.*;
 import orbital.util.*;
 import java.util.*;
 import orbital.logic.functor.*;
-import orbital.logic.trs.Substitutions;
 
 import orbital.moon.logic.ClassicalLogic;
 import orbital.logic.sign.*;
@@ -39,9 +38,7 @@ public class IndexedClauseImpl extends ClauseImpl {
      * @internal transitively public constructors required for Functionals.map to produce Clauses.
      */
     public IndexedClauseImpl(Set/*_<Formula>_*/ literals) {
-	//@internal this order is important, otherwise index will not yet have been initialized
-	super();
-	addAll(literals);
+	super(literals);
     }
     public IndexedClauseImpl() {}
 
