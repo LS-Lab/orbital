@@ -44,7 +44,7 @@ import orbital.logic.sign.concrete.Notation.NotationSpecification;
 import orbital.util.Utility;
 
 /**
- * A FuzzyLogic class that represents logic values in quantitative fuzzy logic.
+ * Implementation of quantitative fuzzy logics.
  * <p>
  * Fuzzy logic is a numeric approach in which truth-values represent a degree of truth
  * specified as a real number in the range [0,1].
@@ -178,6 +178,11 @@ import orbital.util.Utility;
  * </table>
  * </p>
  * <p>
+ * Derived operators are the fuzzy implication and bisubjunction.
+ * <div>a&rarr;b := sup{c &brvbar; a&#8911;c&le;b}</div>
+ * <div>a&harr;b := (a&rarr;b)&#8911;(b&rarr;a)</div>
+ * </p>
+ * <p>
  * G&ouml;del and drastic operator sets bound all operator sets. For any operators (&#8911;,&#8910;)
  * it is
  * <div style="text-align: center">max{a,b}&le;a&#8910;b&le;{@link #DRASTIC u<sup>*</sup>}(a,b) &le; {@link #DRASTIC i<sup>*</sup>}(a,b)&le;a&#8911;b&le;min{a,b}</div>
@@ -212,6 +217,8 @@ import orbital.util.Utility;
  * @version 0.7, 1999/01/11
  * @author  Andr&eacute; Platzer
  * @see "Klir, G. and Folger, T. (1988), Fuzzy Sets, Uncertainty and Information, Prentice-Hall, Englewood Cliffs."
+ * @see "Gottwald, Siegfried. A Treatise On Many-Valued Logics, volume 9 of Studies in Logic and Computation. Research Studies Press, Baldock, Hertfordshire, England, 2001."
+ * @see "H&aacute;jek, Petr. Metamathematics of Fuzzy Logic, volume 4 of Trends in Logic - Studia Logica Library. Kluwer Academic Publishers, 1998."
  */
 public class FuzzyLogic extends ModernLogic implements Logic {
     /**
@@ -234,7 +241,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	System.out.println("Enter sequence 'A|~C' to verify. Simply leave blank to type 'false' or {} or null.");
 	System.out.print("Type base expression (A): ");
 	System.out.flush();
-	String expr = IOUtilities.readLine(System.in);
+	String expr = "{" + IOUtilities.readLine(System.in) + "}";
 	System.out.print("Type sequence expression (C): ");
 	System.out.flush();
 	String  expr2 = IOUtilities.readLine(System.in);
@@ -340,7 +347,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     } 
 
     public Inference inference() {
-	throw new InternalError("no calculus implemented");
+	throw new InternalError("no calculus implemented. Only use explicit interpretation");
     } 
 
     public Signature coreSignature() {
@@ -405,9 +412,9 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	 * Assign an ordinal to this enum value
 	 * @serial
 	 */
-	private final int		  ordinal = nextOrdinal++;
+	private final int	  ordinal = nextOrdinal++;
 
-	OperatorSet(String name) {
+	protected OperatorSet(String name) {
 	    this.name = name;
 	    values[nextOrdinal - 1] = this;
 	}
@@ -444,23 +451,30 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	    return values[ordinal];
 	} 
 
-	//@todo publicize?
 	/**
-	 * Defines the not operator to use in the fuzzy logic.
+	 * Defines the NOT operator to use in the fuzzy logic.
 	 * @postconditions RES==OLD(RES)
 	 */
-	abstract Function not();
+	public abstract Function not();
 
-    	abstract BinaryFunction and();
+	/**
+	 * Defines the fuzzy AND operator to use in the fuzzy logic.
+	 * @postconditions RES==OLD(RES)
+	 */
+    	public abstract BinaryFunction and();
     
-    	abstract BinaryFunction or();
+	/**
+	 * Defines the fuzzy OR operator to use in the fuzzy logic.
+	 * @postconditions RES==OLD(RES)
+	 */
+    	public abstract BinaryFunction or();
 
 	/**
 	 * Defines the implication operator to use in the fuzzy logic.
-	 * A&rarr;B := sup{c &brvbar; A&#8911;c&le;B}.
+	 * a&rarr;b := sup{c &brvbar; a&#8911;c&le;b}.
 	 * @postconditions RES==OLD(RES)
 	 */
-    	abstract BinaryFunction impl();
+    	public abstract BinaryFunction impl();
     }
 
     // enumeration of fuzzy logic operators
@@ -482,11 +496,11 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      */
     public static OperatorSet GOEDEL = new OperatorSet("Gödel") {
 	    private static final long serialVersionUID = 2408339318090056142L;
-	    Function not() {
+	    public Function not() {
 		return LogicFunctions.not;
 	    }
 
-	    BinaryFunction and() {
+	    public BinaryFunction and() {
 		return new BinaryFunction() {
 			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			public Object apply(Object a, Object b) {
@@ -496,7 +510,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 		    };
 	    }
     
-	    BinaryFunction or() {
+	    public BinaryFunction or() {
 		return new BinaryFunction() {
 			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			public Object apply(Object a, Object b) {
@@ -506,7 +520,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 		    };
 	    }
 
-	    BinaryFunction impl() {
+	    public BinaryFunction impl() {
 		return new BinaryFunction() {
 			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			public Object apply(Object wa, Object wb) {
@@ -528,11 +542,11 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     public static OperatorSet PRODUCT = new OperatorSet("Product") {
 	    private static final long serialVersionUID = 1914120346137890612L;
 	    private static final double tolerance = 0.000001;
-	    Function not() {
+	    public Function not() {
 		return LogicFunctions.not;
 	    }
 
-	    BinaryFunction and() {
+	    public BinaryFunction and() {
 		return new BinaryFunction() {
 			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			public Object apply(Object a, Object b) {
@@ -542,7 +556,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 		    };
 	    }
     
-	    BinaryFunction or() {
+	    public BinaryFunction or() {
 		return new BinaryFunction() {
 			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			public Object apply(Object wa, Object wb) {
@@ -554,7 +568,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 		    };
 	    }
 
-	    BinaryFunction impl() {
+	    public BinaryFunction impl() {
 		return new BinaryFunction() {
 			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			public Object apply(Object wa, Object wb) {
@@ -577,11 +591,11 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      */
     public static OperatorSet BOUNDED = new OperatorSet("Bounded") {
 	    private static final long serialVersionUID = 2512028904916107754L;
-	    Function not() {
+	    public Function not() {
 		return LogicFunctions.not;
 	    }
 
-	    BinaryFunction and() {
+	    public BinaryFunction and() {
 		return new BinaryFunction() {
 			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			public Object apply(Object a, Object b) {
@@ -591,7 +605,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 		    };
 	    }
     
-	    BinaryFunction or() {
+	    public BinaryFunction or() {
 		return new BinaryFunction() {
 			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			public Object apply(Object a, Object b) {
@@ -601,7 +615,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 		    };
 	    }
 
-	    BinaryFunction impl() {
+	    public BinaryFunction impl() {
 		return new BinaryFunction() {
 			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			public Object apply(Object a, Object b) {
@@ -627,11 +641,11 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	    new OperatorSet("Hamacher(0)") {
 		// special case handling polarities for gamma=0
 		private static final double tolerance = 0.000001;
-		Function not() {
+		public Function not() {
 		    return LogicFunctions.not;
 		}
 
-		BinaryFunction and() {
+		public BinaryFunction and() {
 		    return new BinaryFunction() {
 			    private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			    public Object apply(Object wa, Object wb) {
@@ -646,7 +660,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 			};
 		}
     
-		BinaryFunction or() {
+		public BinaryFunction or() {
 		    return new BinaryFunction() {
 			    private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			    public Object apply(Object wa, Object wb) {
@@ -661,7 +675,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 			};
 		}
 
-		BinaryFunction impl() {
+		public BinaryFunction impl() {
 		    return new BinaryFunction() {
 			    private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			    public Object apply(Object a, Object b) {
@@ -674,11 +688,11 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	    : (OperatorSet)
 	    new OperatorSet("Hamacher(" + gamma + ")") {
 		private static final long serialVersionUID = -8210989001070817280L;
-		Function not() {
+		public Function not() {
 		    return LogicFunctions.not;
 		}
 
-		BinaryFunction and() {
+		public BinaryFunction and() {
 		    return new BinaryFunction() {
 			    private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			    public Object apply(Object wa, Object wb) {
@@ -691,7 +705,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 			};
 		}
     
-		BinaryFunction or() {
+		public BinaryFunction or() {
 		    return new BinaryFunction() {
 			    private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			    public Object apply(Object wa, Object wb) {
@@ -704,7 +718,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 			};
 		}
 
-		BinaryFunction impl() {
+		public BinaryFunction impl() {
 		    return new BinaryFunction() {
 			    private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			    public Object apply(Object a, Object b) {
@@ -729,12 +743,12 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	final double inverse_p = 1/p;
 	return new OperatorSet("Yager(" + p + ")") {
 		private static final long serialVersionUID = 5886310887805210830L;
-		Function not() {
+		public Function not() {
 		    //@internal there also is a Yager complement (1-a<sup>p</sup>)<sup>1/p</sup>, but the ususal complement satisfies the duality. (There are even more fuzzy NOT operators: drastic, continuous fuzzy complement, Sugeno, Yager, and the natural complement)
 		    return LogicFunctions.not;
 		}
 
-		BinaryFunction and() {
+		public BinaryFunction and() {
 		    return new BinaryFunction() {
 			    private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			    public Object apply(Object wa, Object wb) {
@@ -746,7 +760,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 			};
 		}
     
-		BinaryFunction or() {
+		public BinaryFunction or() {
 		    return new BinaryFunction() {
 			    private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			    public Object apply(Object wa, Object wb) {
@@ -758,7 +772,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 			};
 		}
 
-		BinaryFunction impl() {
+		public BinaryFunction impl() {
 		    return new BinaryFunction() {
 			    private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			    public Object apply(Object a, Object b) {
@@ -782,11 +796,11 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      */
     public static OperatorSet DRASTIC = new OperatorSet("Drastic") {
 	    private static final long serialVersionUID = -2065043465614357255L;
-	    Function not() {
+	    public Function not() {
 		return LogicFunctions.not;
 	    }
 
-	    BinaryFunction and() {
+	    public BinaryFunction and() {
 		return new BinaryFunction() {
 			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			public Object apply(Object wa, Object wb) {
@@ -798,7 +812,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 		    };
 	    }
     
-	    BinaryFunction or() {
+	    public BinaryFunction or() {
 		return new BinaryFunction() {
 			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			public Object apply(Object wa, Object wb) {
@@ -810,7 +824,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 		    };
 	    }
 
-	    BinaryFunction impl() {
+	    public BinaryFunction impl() {
 		return new BinaryFunction() {
 			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			public Object apply(Object wa, Object wb) {
