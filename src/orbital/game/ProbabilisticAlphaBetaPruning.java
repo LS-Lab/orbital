@@ -84,12 +84,12 @@ public class ProbabilisticAlphaBetaPruning extends AlphaBetaPruning /*implements
      */
     protected Iterator successors(Field state) {
         Iterator s = state.expand();
-	if (!randomizeSuccessors)
-	    return s;
-	else {
+	if (randomizeSuccessors) {
 	    List s2 = Setops.asList(s);
 	    Collections.shuffle(s2, getRandom());
 	    return s2.iterator();
+	} else {
+	    return s;
 	}
     }
 
