@@ -21,6 +21,7 @@ import orbital.logic.sign.*;
  * Manages a clause index.
  * @version 1.2, 2004-01-08
  * @author  Andr&eacute; Platzer
+ * @todo rename to ClausalIndex which is a top name
  */
 public class ClauseIndex {
     /**
@@ -162,11 +163,13 @@ public class ClauseIndex {
      * (clause,literal2).
      */
     private final Iterator/*_<Clause>_*/ projectClause(Iterator/*_<Pair<Clause,Formula>>_*/ i) {
-	return Setops.asSet(Functionals.map(new Function() {
+	Set res = Setops.asSet(Functionals.map(new Function() {
 		public Object apply(Object o) {
 		    return ((Pair)o).A;
 		}
-	    }, i)).iterator();
+	    }, i));
+	assert !Setops.hasDuplicates(res.iterator()) : "no duplicates occur in " + res;
+	return res.iterator();
     }
 
     /**
