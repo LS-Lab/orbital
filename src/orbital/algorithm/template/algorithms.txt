@@ -1,0 +1,70 @@
+Other Optimization algorithms
+	gradient descent on derivable objective functions. greedy (siehe Nichtklassische Optimierung)
+	-- Sintflut algorithm
+	Threshold accepting
+	Tabu search
+	Metropolis search
+
+Heuristic Algorithms
+	A-Search, A*-Search (optimization according to an evaluation function)
+
+Graphs
+	depth-first search (over Stack)	O(|e|+|v|)
+	breadth-first search (over Queue)	O(|e|+|v|)
+
+Linear Programming
+	zum Lösen von Integergleichungen
+	hill climbing
+	
+Parallel Algorithms
+	ergebisparallel
+	datenparallel
+	spekulativ parallel
+	Aktor/Workflow parallel
+
+Probabilistic algorithms for approximative solution
+	Monte Carlo (mostly correct)
+	Las Vegas (repetitive randomization until solution is verified to be found)
+
+Genetic Algorithm
+
+Neuronal Net and Bayesian Believe Networks
+
+Amortisierte Analyse
+
+Vorberechnung
+
+
+Problemlösungsverfahren
+--------------------
+methodisch taxonomiert
+- Analogieschlüsse und Extrapolation
+- Vorberechnung und Tabellenwerke	(Britisch Museum Methode)
+- Interpolation und Approximation	(numerisch auf Daten)
+- Divide et Impera
+- Divide et Collige "Teilen und wieder einsammlen"
+- Parallelismus:
+    - Hardware additiv verteilen
+    - intelligente Software+Hardware reduziert Komplexität
+- Lösung durch Absuchen	(exponentiell)
+- Schubladenverfahren	(z.B. hashing, Indizierung)
+- Greedy alias Raffke Algorithmen	(z.B. Q-Rucksack, Huffman)
+(amortisierte Analyse)
+- Dynamische Programmierung (z.B. Matrixkettenmultiplikation, Lempel-Ziv, Move-to-front(?))
+- Problemapproximationsverfahren	(Problem abändern)
+- Indeterminismus	(Orakel, NP)
+- Stochastische Verfahren
+    - Monte Carlo
+    - Las Vegas
+- Fuzzy
+
+Problemlösungsarchitekturen
+-----------------------
+- "neuartige" Konzepte (digital)
+- analog Rechnen
+- Neuronale Netze
+- Fuzzy Control
+- Optische Verarbeitung
+- DNA-Computing
+- Quantencomputing
+- Problemlösung durch Multiparty Prozesse
