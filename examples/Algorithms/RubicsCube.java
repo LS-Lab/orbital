@@ -267,7 +267,7 @@ public class RubicsCube implements GeneralSearchProblem {
 	return Collections.singleton(action).iterator();
     } 
 
-    public ProbabilisticTransition transition(Object action, Object state, Object statep) {
+    public TransitionModel.Transition transition(Object action, Object state, Object statep) {
 	// uniform cost 1
 	return new Transition(action, 1);
     } 

@@ -15,6 +15,7 @@ import java.util.*;
  *   <li>"go left (one field)"</li>
  *   <li>"go right two fields"</li>
  *   <li>"stay where you are"</li>
+ *   <li>(each action cost is 1 with extra payment for passing the goal)</li>
  * </ul>
  * Well of course, the solution is to always go into the direction of the goal,
  * but our simple agent does not know anything about its environment.
@@ -43,7 +44,7 @@ public class SimpleGSP implements GeneralSearchProblem {
 	// the single difference in using another search algorithm
 	// would only concern the constructor call
 	s = new IterativeDeepeningAStar(h);
-	s = new IterativeExpansion(h); /****/
+	s = new IterativeExpansion(h); /**@fixme remove this line**/
 
 	GeneralSearchProblem problem = new SimpleGSP(1, 8);
 
@@ -146,7 +147,7 @@ public class SimpleGSP implements GeneralSearchProblem {
 	return Collections.singletonList(r).iterator();
     } 
 
-    public ProbabilisticTransition transition(Object action, Object state, Object statep) {
+    public TransitionModel.Transition transition(Object action, Object state, Object statep) {
 	String a = (String) action;
 	return new Transition(a, getCost((State)statep, a));
     } 

@@ -148,7 +148,7 @@ public class EightPuzzle implements GeneralSearchProblem {
 	return Collections.singletonList(new State(swap(s.slides, empty, pos), empty)).iterator();
     } 
     
-    public ProbabilisticTransition transition(Object action, Object state, Object statep) {
+    public TransitionModel.Transition transition(Object action, Object state, Object statep) {
 	// uniform cost 1
 	return new Transition(action, 1);
     } 
