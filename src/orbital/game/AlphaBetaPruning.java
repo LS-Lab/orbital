@@ -7,8 +7,12 @@
 package orbital.game;
 
 import orbital.logic.functor.Function;
+import orbital.logic.functor.BinaryPredicate;
 
+import orbital.logic.functor.Predicates;
 import java.util.Iterator;
+import orbital.robotic.Position;
+import orbital.robotic.Move;
 
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -64,6 +68,12 @@ public class AlphaBetaPruning extends AdversarySearch {
     private Function/*<Object, Number>*/ utility;
 	
     /**
+     * The preference relation for options.
+     * @serial
+     */
+    private BinaryPredicate/*<Option, Option>*/ preference;
+
+    /**
      * The current depth during the current search.
      * @internal at least if not concurrent thread sychronizes us off while we are still running,
      *  we do not need to store this value.
@@ -78,12 +88,23 @@ public class AlphaBetaPruning extends AdversarySearch {
      * inspected.
      * @param utility the utility function with which to evaluate the
      * utility of a state beyond cut-off.
+     * @param preference the {@link #getPreference() preference relation} to use.
      */
-    public AlphaBetaPruning(int maxDepth, Function/*<Object, Number>*/ utility) {
+    public AlphaBetaPruning(int maxDepth, Function/*<Object, Number>*/ utility, BinaryPredicate/*<Option,Option>*/ preference) {
         this.setMaxDepth(maxDepth);
         this.setUtility(utility);
+	this.setPreference(preference);
         this.currentDepth = 0;
     }
+    /**
+     * Create a new instance of &alph;-&beta;-pruning adversary search
+     * with default preference.
+     * <p>
+     * Use a preference relation that checks prefers v to w whenever v &gt; w.</p>
+     */
+     public AlphaBetaPruning(int maxDepth, Function/*<Object, Number>*/ utility) {
+	this(maxDepth, utility, Predicates.greater);
+     }
     
     /**
      * Get the maximum number of (half-) turns to look into the future
@@ -114,20 +135,20 @@ public class AlphaBetaPruning extends AdversarySearch {
     }
 
     /**
-     * Whether a node with value v is preferred over one with w.
+     * Get the preference relation deciding which options to prefer.
      * <p>
      * Called to check which action to choose best.
-     * This implementation checks whether the v &gt; w.
-     * Overwrite to get additional behaviour.
-     * Note that this method is only relevant at the first layer of states in the search tree.
-     * Also note that this method's return value affects the minimax value of the initial state.
+     * Note that this method is (currently) only relevant at the first layer of states in the search tree.
+     * Also note that this method's return value affects the utility value of the initial state.
      * </p>
-     * @return Whether a node with value v is preferred over one with w.
+     * @return a preference relation on {@link AdversarySearch.Option}s.
      * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
-     * @todo should we add (or change) arguments to Option v, Option w? But then max/min would need to keep track of bestOption like max_ does.
      */
-    protected boolean isPreferred(double v, double w) {
-	return v > w;
+    protected BinaryPredicate/*<Option,Option>*/ getPreference() {
+	return preference;
+    }
+    private void setPreference(BinaryPredicate/*<Option,Option>*/ newPreferenceRelation) {
+	this.preference = newPreferenceRelation;
     }
 
     /**
@@ -166,14 +187,19 @@ public class AlphaBetaPruning extends AdversarySearch {
 	assert isOurLeaguesTurn(state) : "otherwise ours would not have an opportunity to move, anyway";
     	currentDepth++;
     	try {
-	    Option bestOption = null;							// the best move found so far, has value alpha
+	    final BinaryPredicate preference = getPreference();
+	    final orbital.math.ValueFactory valueFactory = orbital.math.Values.getDefault();
+	    // the best move found so far, always has utility alpha
+	    Option bestOption = new NoOption();
+	    bestOption.setUtility(alpha);
 	    if (cutOff(state))
 		throw new AssertionError("should never cut off the very first node prior to attempting any moves. currentDepth=" + currentDepth + ", maxDepth=" + maxDepth);
 	    else
 		for (Iterator s = successors(state); s.hasNext(); ) {
 		    Option p = (Option) s.next();
 		    double v = minimax(p.getState(), alpha, beta);
-		    if (isPreferred(v, alpha)) {
+		    p.setUtility(v);
+		    if (preference.apply(p, bestOption)) {
 			logger.log(Level.FINEST, "evaluate utility: {1} for {0} preferred to {2} of {3}", new Object[] {format(v), p, format(alpha), bestOption});
 			//@internal may also decrease alpha below  "alpha = Math.max(alpha, v);", but if that's our clients preference...
 			alpha = v;
@@ -185,16 +211,32 @@ public class AlphaBetaPruning extends AdversarySearch {
 		    if (alpha >= beta)
 			break;
             	}
-	    if (bestOption != null)
-		bestOption.setUtility(alpha);
-	    else {
-		assert !successors(state).hasNext() || alpha != Double.NEGATIVE_INFINITY || beta != Double.POSITIVE_INFINITY: "at least with usual arguments there must have been no successors in order to produce no best option";
+	    if (bestOption instanceof NoOption) {
+		assert !successors(state).hasNext() || alpha != Double.NEGATIVE_INFINITY || beta != Double.POSITIVE_INFINITY : "at least with usual arguments there must have been no successors in order to produce no best option";
+		return null;
+	    } else {
+		assert bestOption.getUtility() == alpha : "the best move found so far, has utility alpha";
+		return bestOption;
 	    }
-	    return bestOption;
         }
         finally {
 	    currentDepth--;
         }
+    }
+
+    /**
+     * Initial no option place holder.
+     * @author Andr&eacute; Platzer
+     * @version 1.1, 2003-01-20
+     */
+    private static class NoOption extends Option {
+	public NoOption() {
+	    super((Field) null, (Position)null, (Figure)null, (Move)null);
+	}
+
+	public String toString() {
+	    return getClass().getName();
+	}
     }
 
     /**
@@ -233,7 +275,7 @@ public class AlphaBetaPruning extends AdversarySearch {
     	currentDepth++;
     	try {
 	    if (cutOff(state))
-		return ((Number) utility.apply(state)).doubleValue();
+		return ((Number) getUtility().apply(state)).doubleValue();
 	    else
 		for (Iterator s = successors(state); s.hasNext(); ) {
 		    final Field nextState = ((Option) s.next()).getState();
@@ -260,7 +302,7 @@ public class AlphaBetaPruning extends AdversarySearch {
     	currentDepth++;
     	try {
 	    if (cutOff(state))
-		return ((Number) utility.apply(state)).doubleValue();
+		return ((Number) getUtility().apply(state)).doubleValue();
 	    else
             	for (Iterator s = successors(state); s.hasNext(); ) {
 		    final Field nextState = ((Option) s.next()).getState();
