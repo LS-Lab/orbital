@@ -36,16 +36,20 @@ public class SimpleGSP implements GeneralSearchProblem {
      */
     static final int PAY_FOR_PASSING = 4;
     public static void main(String arg[]) {
-	Function	  h = createHeuristic();
+	Function      h = createHeuristic();
 	GeneralSearch s;
 
 	// here we decide which exact search algorithm to use
 	// the single difference in using another search algorithm
 	// would only concern the constructor call
 	s = new IterativeDeepeningAStar(h);
+	s = new IterativeExpansion(h); /****/
+
+	GeneralSearchProblem problem = new SimpleGSP(1, 8);
 
 	// really solve our problem
-	State solution = (State) s.solve(new SimpleGSP(1, 8));
+	System.out.println("solving " + problem);
+	State solution = (State) s.solve(problem);
 
 	System.out.println("Found solution:\n" + solution + " for total accumulated cost " + solution.getAccumulatedCost());
     } 
@@ -162,7 +166,7 @@ public class SimpleGSP implements GeneralSearchProblem {
     }     
 
     public String toString() {
-	return getClass().getName() + "[" + start + " --> " + goal + "]";
+	return getClass().getName() + "[start=" + start + " to goal=" + goal + "]";
     }
 
     private static class State {
@@ -181,7 +185,7 @@ public class SimpleGSP implements GeneralSearchProblem {
 	}
 
 	public String toString() {
-	    return position + "(" + getAccumulatedCost() + ")";
+	    return (char) (position-1 + 'A') + "(" + getAccumulatedCost() + ")";
 	}
     }
 }

@@ -20,7 +20,7 @@ import javax.swing.table.*;
  */
 public class AlgorithmicTable {
     public static final String defaultAlgo[] = {
-	"DepthFirstSearch", "BreadthFirstSearch", "IterativeDeepening", "IterativeBroadening", "AStar", "IterativeDeepeningAStar", "BranchAndBound", "ParallelBranchAndBound",
+	"DepthFirstSearch", "BreadthFirstSearch", "IterativeDeepening", "IterativeBroadening", "AStar", "IterativeDeepeningAStar", "IterativeExpansion", "BranchAndBound", "ParallelBranchAndBound",
 	"HillClimbing", "SimulatedAnnealing", "ThresholdAccepting",
 	"GaussSeidelDynamicProgramming", "RealTimeDynamicProgramming",
 	"IncrementalGeneticAlgorithm", "SimpleGeneticAlgorithm", "SteadyStateGeneticAlgorithm", "ConcurrenceGeneticAlgorithm",
@@ -95,6 +95,8 @@ public class AlgorithmicTable {
 	f.getContentPane().add(new JScrollPane(table = new JTable(new ArrayTableModel(columnNames, data))), BorderLayout.CENTER);
 	table.setAutoCreateColumnsFromModel(true);
 	table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	table.getColumnModel().getColumn(0).setMinWidth(100);
+	table.getColumnModel().getColumn(0).setPreferredWidth(220);
 	f.pack();
 	f.setVisible(true);
     } 

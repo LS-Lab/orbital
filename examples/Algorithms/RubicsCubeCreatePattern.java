@@ -16,7 +16,6 @@ import java.util.zip.*;
  * @internal note that our heuristic does not always return zero for (rotation symmetric) goal states! The same goes true for states that can more easily be reached from rotated states.
  */
 public class RubicsCubeCreatePattern extends RubicsCube {
-
     /**
      * Whether to compress the pattern database.
      */
@@ -25,26 +24,34 @@ public class RubicsCubeCreatePattern extends RubicsCube {
     /**
      * Up to which depth to produce entries in the pattern database.
      */
-    public static final int		MAX_STEPS = 8;
+    public static final int     MAX_STEPS = 8;
+
     public static void main(String arg[]) throws Exception {
 	final Map patternDatabase = new HashOnlyMap();
 	System.err.println("Note that creating the pattern database file may take a while\ndepending upon the pattern depth (" + MAX_STEPS + ")");
 	System.out.println("creating pattern database ...");
+
+	RubicsCubeCreatePattern problem = new RubicsCubeCreatePattern(RubicsCube.SIZE);
+	final Function accumulatedCostFunction = problem.getAccumulatedCostFunction();
 	GeneralSearch s = new BranchAndBound(new Function() {
 
-		// creates the pattern database
-		public Object apply(Object o) {
-		    Option n = (Option) o;
-		    Scalar old = (Scalar) patternDatabase.get(n.getState());
-		    Real v = Values.valueOf(n.getCost());
+		// creates the pattern database in passing
+		public Object apply(Object n) {
+		    Scalar old = (Scalar) patternDatabase.get(n);
+		    Real v = (Real) accumulatedCostFunction.apply(n);
 
 		    // store better value
 		    if (old == null || v.compareTo(old) < 0)
-			patternDatabase.put(n.getState(), v);
+			patternDatabase.put(n, v);
+
+		    // categorically underestimate (we don't really
+		    // need a solution, so the heuristic isn't very
+		    // important either
 		    return Values.valueOf(1);
 		} 
 	    }, MAX_STEPS);
-	s.solve(new RubicsCubeCreatePattern(RubicsCube.SIZE));
+
+	s.solve(problem);
 	System.out.println("up to depth " + MAX_STEPS);
 
 	// store patterns
@@ -62,12 +69,12 @@ public class RubicsCubeCreatePattern extends RubicsCube {
     }
 
     public Object getInitialState() {
-
-	// 'mache einen heilen Würfel:
-	return new Cube(size);
+	// we start with a good cube and count the cost to all
+	// reachable states (up to MAX_STEPS)
+	return new Cube(size, 0.0);
     } 
 
-    public boolean isSolution(Option n) {
+    public boolean isSolution(Object n) {
 	return false;
     } 
 }

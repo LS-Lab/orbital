@@ -1,7 +1,6 @@
-
-
 import orbital.algorithm.template.*;
 import orbital.logic.functor.Function;
+import orbital.logic.functor.MutableFunction;
 import orbital.math.*;
 import java.util.*;
 import java.util.zip.*;
@@ -55,32 +54,33 @@ public class RubicsCube implements GeneralSearchProblem {
     /**
      * Up to which depth to search for a solution.
      */
-    public static final int		MAX_STEPS = 8;
+    public static final int MAX_STEPS = 8;
 
+    // enum for SEQUENCE
     /**
      * The SEQUENCE mode with a random sequence of at most depth MAX_STEPS.
      */
-    public static final int		RANDOM = 0;
+    public static final int RANDOM = 0;
     /**
      * The SEQUENCE mode with a complex sequence of swapping two edges without distrubing the rest.
      * Has a known minimum step depth of 12.
      * The complex sequence cannot be solved, if MAX_STEPS < 12.
      */
-    public static final int		COMPLEX = 1;
+    public static final int COMPLEX = 1;
     /**
      * The SEQUENCE mode with a standard sequence 
      * The complex sequence cannot be solved, if MAX_STEPS is too small.
      */
-    public static final int		STANDARD = 2;
+    public static final int STANDARD = 2;
     /**
      * Choose which SEQUENCE to solve.
      */
-    public static final int		SEQUENCE = STANDARD;
+    public static int SEQUENCE = RANDOM;
 
     /**
      * The size of the Rubik's cube to solve.
      */
-    public static final int		SIZE = 2;
+    public static final int SIZE = 2;
     public static void main(String arg[]) throws Exception {
 	DateFormat df = new SimpleDateFormat("H:mm:ss:S");
 	df.setTimeZone(TimeZone.getTimeZone("Greenwich/Meantime"));
@@ -95,13 +95,13 @@ public class RubicsCube implements GeneralSearchProblem {
 
 	    // load patterns
 	    System.out.println("Loading");
-	    long		loading = System.currentTimeMillis();
+	    long	loading = System.currentTimeMillis();
 	    InputStream fis = new FileInputStream(databaseFile);
 	    if (RubicsCubeCreatePattern.compressed)
 		fis = new InflaterInputStream(fis);
 	    ObjectInputStream is = new ObjectInputStream(fis);
-	    final int		  patternDepth = is.readInt();
-	    Map				  patternDatabase = (Map) is.readObject();
+	    final int	      patternDepth = is.readInt();
+	    Map		      patternDatabase = (Map) is.readObject();
 	    is.close();
 	    h = new Function() {
 		    public Object apply(Object o) {
@@ -122,7 +122,7 @@ public class RubicsCube implements GeneralSearchProblem {
 	} 
 
 	System.out.println("Start");
-	long		  start = System.currentTimeMillis();
+	long	      start = System.currentTimeMillis();
 
 	GeneralSearch s;
 
@@ -133,17 +133,17 @@ public class RubicsCube implements GeneralSearchProblem {
 
 		
 	// really solve our problem
-	Option solution = s.solve(new RubicsCube(SIZE));
+	Cube solution = (Cube) s.solve(new RubicsCube(SIZE));
 
-	Date   eta = new Date(System.currentTimeMillis() - start);
+	Date eta = new Date(System.currentTimeMillis() - start);
 
 	console.color(Color.white);
 	if (solution != null) {
-	    System.out.println("Found:\n" + solution.getState() + "\n\tfor total accumulated cost " + solution.getCost());
-	    printcubus(((Cube) solution.getState()).feld, 2, 30);
+	    System.out.println("Found:\n" + solution + "\n");
+	    printcubus(solution.feld, 2, 30);
 	    console.color(Color.white);
 	    console.LOCATE(4, 9);
-	    console.print("total accumulated cost of " + NumberFormat.getInstance().format(solution.getCost()) + " steps", false);
+	    console.print("total accumulated cost of " + NumberFormat.getInstance().format(solution.accumulatedCost) + " steps", false);
 	} else {
 	    System.out.println("NO solution");
 	    console.LOCATE(30, 2);
@@ -185,10 +185,27 @@ public class RubicsCube implements GeneralSearchProblem {
 	    throw new InternalError("only implemented for size 2");
     }
 
+    public MutableFunction getAccumulatedCostFunction() {
+	return _accumulatedCostFunction;
+    }
+    private static final MutableFunction _accumulatedCostFunction = new MutableFunction() {
+	    public Object apply(Object state) {
+		return Values.valueOf(((Cube)state).accumulatedCost);
+	    }
+	    public Object set(Object state, Object accumulatedCost) {
+		Object old = Values.valueOf(((Cube)state).accumulatedCost);
+		((Cube)state).accumulatedCost = ((orbital.math.Real)accumulatedCost).doubleValue();
+		return old;
+	    }
+	    public Object clone() {
+		throw new UnsupportedOperationException();
+	    }
+	};
+
     public Object getInitialState() {
 
 	// 'mache einen heilen Würfel:
-	Cube c = new Cube(size);
+	Cube c = new Cube(size, 0.0);
 	switch (SEQUENCE) {
 	case COMPLEX:
 	    // '2 ecken gedreht
@@ -222,29 +239,36 @@ public class RubicsCube implements GeneralSearchProblem {
 	return c;
     } 
 
-    public boolean isSolution(Option n) {
-	Cube c = (Cube) n.getState();
+    public boolean isSolution(Object n) {
+	Cube c = (Cube) n;
 	if (c.isGood()) {
-	    System.out.println("Solution actions: " + n.getAction());
+	    System.out.println("Solution: " + n);
+	    //@todo we could also print a protocol of all moves that lead to the solution
 	    return true;
 	} 
 	return false;
     } 
 
-    public Iterator expand(Option n) {
-	Cube s = (Cube) n.getState();
+    public Iterator actions(Object n) {
+	Cube s = (Cube) n;
 	List ex = new LinkedList();
 	for (int seite = front; seite <= down; seite++)
 	    for (int dir = -1; dir <= 1; dir += 2) {
 		Cube t = (Cube) s.clone();
 		t.drehe(seite, dir);
-		ex.add(new Option(t, n.getAction() + "," + names[seite] + dir, n.getCost() + getCost(null)));
+		ex.add(t);
+		// could protocol action per s.getAction() + "," + names[seite] + dir
 	    } 
 	return ex.iterator();
     } 
 
-    public double getCost(Option n) {
-	return 1;
+    public Iterator states(Object action, Object state) {
+	return Collections.singleton(action).iterator();
+    } 
+
+    public ProbabilisticTransition transition(Object action, Object state, Object statep) {
+	// uniform cost 1
+	return new Transition(action, 1);
     } 
 
 
@@ -255,18 +279,29 @@ public class RubicsCube implements GeneralSearchProblem {
      */
     protected static class Cube {
 	int[] feld;
+	double accumulatedCost;
 
-	public Cube(int[] field) {
+	private Cube(int[] field, double accumulatedCost) {
 	    this.feld = field;
+	    this.accumulatedCost = accumulatedCost;
+	}
+	private Cube(int[] field) {
+	    this(field, Double.NaN);
 	}
 
 	/**
 	 * Create initial cube with all sides good.
 	 */
 	public Cube(int size) {
+	    this(size, Double.NaN);
+	}
+	/**
+	 * Create initial cube with all sides good.
+	 */
+	public Cube(int size, double accumulatedCost) {
+	    this(new int[size * size * 6], accumulatedCost);
 	    if (size != 2)
-		throw new InternalError("not implemented");
-	    feld = new int[size * size * 6];
+		throw new InternalError("not implemented for size " + size);
 	    for (int i = 0; i < 4; i++)
 		feld[i] = orange;
 	    for (int i = 4; i < 8; i++)
@@ -280,6 +315,40 @@ public class RubicsCube implements GeneralSearchProblem {
 	    for (int i = 20; i < 24; i++)
 		feld[i] = green;
 	}
+
+	public Object clone() {
+	    return new Cube((int[]) feld.clone(), accumulatedCost);
+	} 
+
+	public boolean equals(Object o) {
+	    if (!(o instanceof Cube))
+		return false;
+	    Cube b = (Cube) o;
+	    if (feld.length != b.feld.length)
+		return false;
+	    for (int i = 0; i < feld.length; i++)
+		if (feld[i] != b.feld[i])
+		    return false;
+	    return true;
+	} 
+
+	/**
+	 * good hashCode required for pattern database.
+	 */
+	public int hashCode() {
+	    int hash = 0;
+	    int shift = 0;
+	    for (int i = 0; i < feld.length; i++) {
+		hash |= feld[i] << shift;
+		if ((shift += 3) + 2 >= 32)
+		    shift -= 32 - 2;
+	    } 
+	    return hash;
+	} 
+
+	public String toString() {
+	    return MathUtilities.format(feld) + "\n for total accumulated cost " + accumulatedCost;
+	} 
 
 	public boolean isGood() {
 	    for (int i = 0; i < feld.length; i = i + 4) {
@@ -347,40 +416,6 @@ public class RubicsCube implements GeneralSearchProblem {
 	} 
 
 
-	public Object clone() {
-	    return new Cube((int[]) feld.clone());
-	} 
-
-	public boolean equals(Object o) {
-	    if (!(o instanceof Cube))
-		return false;
-	    Cube b = (Cube) o;
-	    if (feld.length != b.feld.length)
-		return false;
-	    for (int i = 0; i < feld.length; i++)
-		if (feld[i] != b.feld[i])
-		    return false;
-	    return true;
-	} 
-
-	/**
-	 * good hashCode required for pattern database
-	 */
-	public int hashCode() {
-	    int hash = 0;
-	    int shift = 0;
-	    for (int i = 0; i < feld.length; i++) {
-		hash |= feld[i] << shift;
-		if ((shift += 3) + 2 >= 32)
-		    shift -= 32 - 2;
-	    } 
-	    return hash;
-	} 
-
-	public String toString() {
-	    return MathUtilities.format(feld);
-	} 
-
         /*protected int seiteheil (int feld[], int seite) {
           int i = seite * 4 - 3;
           if (feld[i] == feld[i + 1] && feld[i] == feld[i + 2] && feld[i] == feld[i + 3] ) {
@@ -416,6 +451,8 @@ public class RubicsCube implements GeneralSearchProblem {
 
     /**
      * Display the cube.
+     * @fixme why does the display shuffle some of the colors at the beginning?
+     * Well it's a nice animation feature, but we don't need it at all.
      */
     protected static void printcubus(int feld[], int y, int x) {
 

@@ -31,8 +31,8 @@ public class ComplexEmulation {
 	Complex bc = complexForm(b);
 	// i in C corresponds to X in R[X]/(X^2+1)
 	Quotient/*<Polynomial<Real>>*/ i = Values.quotient(
-						       Values.asPolynomial(Values.valueOf(new double[] {0,1})),
-						       m);
+							   Values.asPolynomial(Values.valueOf(new double[] {0,1})),
+							   m);
 	// perform calculations in both fields
 	System.out.println("(" + a + ") + (" + b + ") = " + a.add(b));
 	compare(a.add(b), ac.add(bc));

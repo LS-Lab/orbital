@@ -1,14 +1,15 @@
 import orbital.algorithm.template.*;
 import orbital.logic.functor.Function;
+import orbital.logic.functor.MutableFunction;
 import orbital.math.*;
 import java.util.*;
 
 /**
- * For 8-puzzle the goal is to place (n^2-1)=8 (or 15,...) tiles in the right order on an (n x n) sliding puzzle
- * by moving tiles next to the single empty tile.
- * <p>
- * Note that the generalization of 6-puzzle to n-puzzle is NP-complete.
- * </p>
+ * For 8-puzzle the goal is to place (n^2-1)=8 (or 15,...) tiles in
+ * the right order on an (n x n) sliding puzzle by moving tiles next
+ * to the single empty tile.
+ * <p> Note that the generalization of
+ * 6-puzzle to n-puzzle is NP-complete. </p>
  */
 public class EightPuzzle implements GeneralSearchProblem {
     public static final int MAX_STEPS = 12;
@@ -22,19 +23,19 @@ public class EightPuzzle implements GeneralSearchProblem {
 	s = new AStar(h);
 
 	// really solve our problem
-	Option solution = s.solve(new EightPuzzle(8));
+	State solution = (State) s.solve(new EightPuzzle(8));
 
-	System.out.println("Found solution:\n" + MathUtilities.format((int[][]) solution.getState()) + " for total accumulated cost " + solution.getCost());
+	System.out.println("Found solution:\n" + solution);
     } 
 
     protected static final Function createHeuristic() {
 	return new Function() {
 		public Object apply(Object n) {
-		    Option  o = (Option) n;
-		    int[][] s = (int[][]) o.getState();
-		    int	    pos[] = (int[]) o.getAction();
+		    State  o = (State) n;
+		    int[][] s = o.slides;
+		    int	    pos[] = o.tileMoved;
 
-		    // no action yet? initial state is for free
+		    // no action yet? then initial state "is for free"
 		    if (pos == null)
 			return Values.valueOf(0);
 		    else
@@ -88,16 +89,32 @@ public class EightPuzzle implements GeneralSearchProblem {
 	this.goal = goalState(size);
     }
 
+    public MutableFunction getAccumulatedCostFunction() {
+	return _accumulatedCostFunction;
+    }
+    private static final MutableFunction _accumulatedCostFunction = new MutableFunction() {
+	    public Object apply(Object state) {
+		return Values.valueOf(((State)state).accumulatedCost);
+	    }
+	    public Object set(Object state, Object accumulatedCost) {
+		Object old = Values.valueOf(((State)state).accumulatedCost);
+		((State)state).accumulatedCost = ((orbital.math.Real)accumulatedCost).doubleValue();
+		return old;
+	    }
+	    public Object clone() {
+		throw new UnsupportedOperationException();
+	    }
+	};
+
     public Object getInitialState() {
-	int[][] r = null;
-	r = shuffle(goalState(size));
-	System.out.println(MathUtilities.format(r) + " to be solved\n");
+	State r = new State(shuffle(goalState(size)), null, 0.0);
+	System.out.println(r + " to be solved\n");
 	return r;
     } 
 
-    public boolean isSolution(Option n) {
-	int[][] s = (int[][]) n.getState();
-	System.out.println(MathUtilities.format(s) + " for " + n.getCost() + "\n");
+    public boolean isSolution(Object n) {
+	int[][] s = ((State) n).slides;
+	System.out.println(n + "\n");
 	for (int i = 0; i < s.length; i++)
 	    for (int j = 0; j < s[i].length; j++)
 		if (s[i][j] != goal[i][j])
@@ -105,23 +122,35 @@ public class EightPuzzle implements GeneralSearchProblem {
 	return true;
     } 
 
-    public Iterator expand(Option n) {
-	int[][] s = (int[][]) n.getState();
-	int	e[] = indexOf(s, EMPTY);
-	List	ex = new LinkedList();
+    public Iterator actions(Object n) {
+	State s = (State) n;
+	int   empty[] = indexOf(s.slides, EMPTY);
+	List  ex = new LinkedList();
 	for (int dir = 0; dir <= MAX_MOVE; dir++) {
-	    int[] t = nextOf(e, dir);
+	    int[] pos = nextOf(empty, dir);
 
-	    // use the old position of the empty tile (is the new position of the tile moved)
-	    // as the action
-	    if (t != null)
-		ex.add(new Option(swap(s, e, t), e, n.getCost() + getCost(null)));
+	    if (pos != null)
+		ex.add(pos);
 	} 
 	return ex.iterator();
     } 
 
-    public double getCost(Option n) {
-	return 1;
+    public Iterator states(Object action, Object n) {
+	State s = (State) n;
+	int   empty[] = indexOf(s.slides, EMPTY);
+	int[] pos = (int[]) action;
+	//@todo could assert that pos is really a neighbour of empty
+	// but we simply believe that since actions(Object) constructs that
+	
+	// we remember the the old position of the empty tile (which
+	// is the new position of the tile moved) in the state,
+	// because our heuristic performs calculations with that
+	return Collections.singletonList(new State(swap(s.slides, empty, pos), empty)).iterator();
+    } 
+    
+    public ProbabilisticTransition transition(Object action, Object state, Object statep) {
+	// uniform cost 1
+	return new Transition(action, 1);
     } 
 
 
@@ -153,7 +182,8 @@ public class EightPuzzle implements GeneralSearchProblem {
     } 
 
     /**
-     * Get the indices of the tile next to i, or null if not on the sliding puzzle.
+     * Get the indices of the tile next to i, or <code>null</code> if that is
+     * not on the sliding puzzle.
      */
     static int[] nextOf(int[] i, int direction) {
 	int[] r = (int[]) i.clone();
@@ -219,4 +249,32 @@ public class EightPuzzle implements GeneralSearchProblem {
 	r[r.length - 1][r[r.length - 1].length - 1] = EMPTY;
 	return r;
     } 
+
+    static class State {
+	int[][] slides;
+	double accumulatedCost;
+	/**
+	 * just jor easying the work of our heuristic.
+	 */
+	int[] tileMoved;
+	public State(int[][] slides, int[] tileMoved) {
+	    this(slides, tileMoved, Double.NaN);
+	}
+	public State(int[][] slides, double accumulatedCost) {
+	    this(slides, null, accumulatedCost);
+	}
+	private State(int[][] slides, int[] tileMoved, double accumulatedCost) {
+	    this.slides = slides;
+	    this.tileMoved = tileMoved;
+	    this.accumulatedCost = accumulatedCost;
+	}
+
+	double getAccumulatedCost() {
+	    return accumulatedCost;
+	}
+
+	public String toString() {
+	    return MathUtilities.format(slides) + "(" + getAccumulatedCost() + ")";
+	}
+    }
 }

@@ -9,71 +9,71 @@ import java.awt.Color;
  * @see ProgSettingsBeanInfo
  */
 public class ProgSettings {
-	private String			title;
-	private int				priority;
-	private boolean			backup;
-	private int				usage;
-	private String			comment;
-	private Color			textColor;
+    private String			title;
+    private int				priority;
+    private boolean			backup;
+    private int				usage;
+    private String			comment;
+    private Color			textColor;
 
-	/**
-	 * possible values for usage
-	 */
-	public static final int EVALUATION = 1;
-	public static final int TESTING = 2;
-	public static final int END_USER = 3;
+    /**
+     * possible values for usage
+     */
+    public static final int EVALUATION = 1;
+    public static final int TESTING = 2;
+    public static final int END_USER = 3;
 
-	public ProgSettings() {
-		title = "Application";
-		comment = "simple demonstration of application settings";
-		usage = END_USER;
-	}
+    public ProgSettings() {
+	title = "Application";
+	comment = "simple demonstration of application settings";
+	usage = END_USER;
+    }
 
-	public String getTitle() {
-		return title;
-	} 
+    public String getTitle() {
+	return title;
+    } 
 
-	public void setTitle(String newTitle) {
-		title = newTitle;
-	} 
+    public void setTitle(String newTitle) {
+	title = newTitle;
+    } 
 
-	public void setPriority(int newPriority) {
-		priority = newPriority;
-	} 
+    public void setPriority(int newPriority) {
+	priority = newPriority;
+    } 
 
-	public int getPriority() {
-		return priority;
-	} 
+    public int getPriority() {
+	return priority;
+    } 
 
-	public void setBackup(boolean newBackup) {
-		backup = newBackup;
-	} 
+    public void setBackup(boolean newBackup) {
+	backup = newBackup;
+    } 
 
-	public boolean isBackup() {
-		return backup;
-	} 
+    public boolean isBackup() {
+	return backup;
+    } 
 
-	public void setUsage(int newUsage) {
-		usage = newUsage;
-	} 
+    public void setUsage(int newUsage) {
+	usage = newUsage;
+    } 
 
-	public int getUsage() {
-		return usage;
-	} 
+    public int getUsage() {
+	return usage;
+    } 
 
-	public void setComment(String newComment) {
-		comment = newComment;
-	} 
+    public void setComment(String newComment) {
+	comment = newComment;
+    } 
 
-	public String getComment() {
-		return comment;
-	} 
+    public String getComment() {
+	return comment;
+    } 
 
-	public void setTextColor(Color newTextColor) {
-		textColor = newTextColor;
-	} 
+    public void setTextColor(Color newTextColor) {
+	textColor = newTextColor;
+    } 
 
-	public Color getTextColor() {
-		return textColor;
-	} 
+    public Color getTextColor() {
+	return textColor;
+    } 
 }

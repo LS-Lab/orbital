@@ -19,21 +19,21 @@ public class Game extends orbital.game.Game {
     /**
      * Application-start entry point.
      */
-	public static void main(String args[]) throws Exception {
-		System.out.println("usage: java Game gameRules=ChessRules aIntelligence=1\nor\tjava Game gameRules=ChessRules aIntelligence=0");
-		AppletFrame.showApplet(new Game(), "Game Application", args);
-	} 
+    public static void main(String args[]) throws Exception {
+	System.out.println("usage: java Game gameRules=ChessRules aIntelligence=1\nor\tjava Game gameRules=ChessRules aIntelligence=0");
+	AppletFrame.showApplet(new Game(), "Game Application", args);
+    } 
 
     /**
      * Runnable-init entry point.
      */
-	public Game() {}
+    public Game() {}
 
-	protected GameRules createGameRules(String gameRules) throws InstantiationException, IllegalAccessException, ClassNotFoundException, ClassCastException {
-		return (GameRules) Class.forName(gameRules).newInstance();
-	} 
+    protected GameRules createGameRules(String gameRules) throws InstantiationException, IllegalAccessException, ClassNotFoundException, ClassCastException {
+	return (GameRules) Class.forName(gameRules).newInstance();
+    } 
 
-	public void load(ObjectInputStream is) throws ClassNotFoundException, IOException {
-		super.load(is);
-	} 
+    public void load(ObjectInputStream is) throws ClassNotFoundException, IOException {
+	super.load(is);
+    } 
 }

@@ -155,7 +155,7 @@ public class RobotNavigation implements MarkovDecisionProblem {
 
     public ProbabilisticTransition transition(Object action, Object state, Object statep) {
 	return new MarkovDecisionProblem.DefaultTransition(transitionProbability((Moving)statep, (Moving)state, action),
-						    getCost((Moving)state, action));
+							   getCost((Moving)state, action));
     }
 	
     private double transitionProbability(Moving sp, Moving s, Object action) {

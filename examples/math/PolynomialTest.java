@@ -1,7 +1,5 @@
 import orbital.math.*;
 
-import orbital.SP;
-
 class PolynomialTest {
     private PolynomialTest() {}
     public static void main(String arg[]) {
@@ -31,11 +29,11 @@ class PolynomialTest {
 	System.out.println("(" + f + ") mod (" + g + ") = " + f.modulo(g));
 	Euclidean rem = f.modulo(Values.polynomial(new Rational[] {(Rational) a.minus(), Values.ONE}));
 	System.out.println("(" + f + ")(" + a + ") = " + f.apply(a) + " = " + rem);
-	SP.assert(f.apply(a).toString().equals(rem.toString()), "weak form of constant polynomial / rational equality");
+	assert f.apply(a).toString().equals(rem.toString()) : "weak form of constant polynomial / rational equality";
 	a = Values.rational(2,7);
 	rem = f.modulo(Values.polynomial(new Rational[] {(Rational) a.minus(), Values.ONE}));
 	System.out.println("(" + f + ")(" + a + ") = " + f.apply(a) + " = " + rem);
-	SP.assert(f.apply(a).toString().equals(rem.toString()), "weak form of constant polynomial / rational equality");
+	assert f.apply(a).toString().equals(rem.toString()) : "weak form of constant polynomial / rational equality";
 	v = MathUtilities.gcd(new Polynomial/*<Rational>*/[] {f, g});
 	System.out.println("gcd(" + f + "," + g + ") = " + v[v.length - 1] + " = (" + v[0] + ")*(" + f + ") + (" + v[1] + ")*(" + g + ")");
     }
