@@ -24,6 +24,9 @@ import orbital.math.Matrix;
 import java.util.Arrays;
 import orbital.util.Utility;
 
+import orbital.logic.functor.Notation;
+import orbital.logic.functor.Notation.NotationSpecification;
+
 // due to JDK1.3 bug  Bug-ID: 4306909
 // this class can only be compiled with JDK1.4, JDK1.3.1 or JDK 1.2.2, but not with JDK 1.3.0 or JDK 1.3.0_02
 // due to JDK1.3 bug  Bug-ID: 4401422
@@ -73,21 +76,6 @@ import orbital.util.Utility;
  * @see orbital.logic.functor.Functionals.Catamorphism
  */
 public interface Operations /* implements ArithmeticOperations */ {
-    /**
-     * Class alias object.
-     * <p>
-     * To alias the methods in this class for longer terms, use an idiom like<pre>
-     * <span class="comment">// alias object</span>
-     * <span class="Orbital">Functions</span> F = <span class="Orbital">Functions</span>.functions;
-     * <span class="Orbital">Operations</span> op = <span class="Orbital">Operations</span>.operations;
-     * <span class="comment">// use alias</span>
-     * <span class="Orbital">Function</span> f = (<span class="Orbital">Function</span>) op.times.apply(F.sin, op.plus.apply(F.square, F.cos));
-     * <span class="comment">// instead of the long form</span>
-     * <span class="Orbital">Function</span> f = (<span class="Orbital">Function</span>) <span class="Orbital">Operations</span>.times.apply(<span class="Orbital">Functions</span>.sin, <span class="Orbital">Operations</span>.plus.apply(<span class="Orbital">Functions</span>.square, <span class="Orbital">Functions</span>.cos));
-     * </pre>
-     * </p>
-     */
-    public static final Operations operations = new Operations() {};
 
     // the functions below all follow the same recursion scheme but its too reflectious to stamp into a generic delegate
 
@@ -525,6 +513,49 @@ public interface Operations /* implements ArithmeticOperations */ {
 		return "\u2294";
 	    } 
 	};
+
+    
+    //@internal must be down here such that static initialization of Predicates.equal != null has already happened
+
+    /**
+     * Class alias object.
+     * <p>
+     * To alias the methods in this class for longer terms, use an idiom like<pre>
+     * <span class="comment">// alias object</span>
+     * <span class="Orbital">Functions</span> F = <span class="Orbital">Functions</span>.functions;
+     * <span class="Orbital">Operations</span> op = <span class="Orbital">Operations</span>.operations;
+     * <span class="comment">// use alias</span>
+     * <span class="Orbital">Function</span> f = (<span class="Orbital">Function</span>) op.times.apply(F.sin, op.plus.apply(F.square, F.cos));
+     * <span class="comment">// instead of the long form</span>
+     * <span class="Orbital">Function</span> f = (<span class="Orbital">Function</span>) <span class="Orbital">Operations</span>.times.apply(<span class="Orbital">Functions</span>.sin, <span class="Orbital">Operations</span>.plus.apply(<span class="Orbital">Functions</span>.square, <span class="Orbital">Functions</span>.cos));
+     * </pre>
+     * </p>
+     */
+    public static final Operations operations = new Operations() {
+	    //@internal neither interfaces nor inner classes can have a static initializer block, so we keep a dummy variable initialization here, even though we could just as well keep it in any other inner class.
+	    private final short dummy = initialize();
+	    private final short initialize() {
+		//@TODO: + and * could have yfy as well? Would avoid 1+(2+3)
+		Notation.setAllNotations(new Object[][] {
+		    {Operations.inverse,					// "^-1"
+		     new NotationSpecification(195, "xf", Notation.POSTFIX)},
+		    {Operations.power,						// "^"
+		     new NotationSpecification(200, "xfy", Notation.INFIX)},
+		    {Operations.times,	                                        // "*" 
+		     new NotationSpecification(400, "yfx", Notation.INFIX)},
+		    {Operations.divide,                                         // "/"
+		     new NotationSpecification(400, "yfx", Notation.INFIX)},
+		    {Operations.minus,						// "-"/1
+		     new NotationSpecification(500, "fx", Notation.PREFIX)},
+		    {Operations.plus,                                        	// "+"
+		     new NotationSpecification(500, "yfx", Notation.INFIX)},
+		    {Operations.subtract,                                       // "-"/2
+		     new NotationSpecification(500, "yfx", Notation.INFIX)}
+		});
+		return Short.MIN_VALUE;
+	    }
+	};
+
 }
 
 
