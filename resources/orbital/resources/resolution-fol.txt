@@ -62,3 +62,30 @@ all a r(a,a) , all a all b all c (r(a,c)&r(b,c)=>r(a,b)) |= all a all b (r(a,b) 
 all a r(a,a) , all a all b all c (r(a,c)&r(b,c)=>r(a,b)) |= all a all b all c (r(a,b)&r(b,c)=>r(a,c))
 #   "=>" (1+2+3) r reflexive and Euclidean => r equivalence
 all a r(a,a) , all a all b all c (r(a,c)&r(b,c)=>r(a,b)) |= (all a r(a,a)) & (all a all b (r(a,b) => r(b,a))) & (all a all b all c (r(a,b)&r(b,c)=>r(a,c))) # @fixme
+
+
+#
+# quantifier Logic Square
+#
+# °x A	 --contrary---	°x ~A==~?x A
+#   |	     contra	  |
+#   v	     dictory	  v
+# ?x A	-sub contrary-	?x ~A==~°x A
+
+
+# top left to down left sub alternative
+|= all x A -> some x A
+# top right to down right sub alternative
+|= ~ (some x A) -> ~(all x A)
+# top left to top right contrary (not both true)
+|= ~((all x A) & (all x ~A))
+# down left to down right sub contrary (not both false)
+|= (some x A) | ~(all x A)
+# top left to down right contradictory
+|= (all x A) <=>~( some x ~A )
+# down left to top right contradictory
+|= (some x A) <=>~( all x ~A )
+
+# thereby note
+all x ~A == ~some x A
+some x ~A == ~all x A
