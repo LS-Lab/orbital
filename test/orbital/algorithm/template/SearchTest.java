@@ -5,6 +5,7 @@
  */
 
 import junit.framework.*;
+import junit.extensions.*;
 
 import orbital.algorithm.template.*;
 import orbital.algorithm.template.AlgorithmicTemplate.Configuration;
@@ -34,7 +35,7 @@ import java.util.logging.Level;
  */
 public class SearchTest extends check.TestCase {
     private static final Logger logger = Logger.global;
-    private static final int TEST_REPETITION = 1;
+    private static final int INTERNAL_TEST_REPETITION = 1;
     private static final int SIMPLE_GSP_RANGE = 5;
     private static final int UNSOLVABLE_GSP_RANGE = 4;
 
@@ -44,7 +45,7 @@ public class SearchTest extends check.TestCase {
 	junit.textui.TestRunner.run(suite());
     }
     public static Test suite() {
-	return new TestSuite(SearchTest.class);
+	return new RepeatedTest(new TestSuite(SearchTest.class), 4);
     }
 
     protected void setUp() {
@@ -136,7 +137,7 @@ public class SearchTest extends check.TestCase {
 	    optimal = algo instanceof GeneralSearch && ((GeneralSearch) algo).isOptimal();
 
 	    // test problems that have a solution
-	    for (int rep = 0; rep < TEST_REPETITION; rep++) {
+	    for (int rep = 0; rep < INTERNAL_TEST_REPETITION; rep++) {
 		VerifyingSimpleGSP p = new VerifyingSimpleGSP((int)(random.nextFloat()*2*SIMPLE_GSP_RANGE-SIMPLE_GSP_RANGE), (int)(random.nextFloat()*2*SIMPLE_GSP_RANGE-SIMPLE_GSP_RANGE));
 		System.out.println("Test solvable problem " + p + " for " + algo);
 		Object solution = algo.solve(p);
@@ -148,7 +149,7 @@ public class SearchTest extends check.TestCase {
 	    }
 				
 	    // test problems that do not have a solution (but a finite search space)
-	    for (int rep = 0; rep < TEST_REPETITION; rep++) {
+	    for (int rep = 0; rep < INTERNAL_TEST_REPETITION; rep++) {
 		UnsolvableSimpleGSP p = new UnsolvableSimpleGSP((int)(random.nextFloat()*UNSOLVABLE_GSP_RANGE));
 		System.out.println("Test unsolvable problem " + p + " for " + algo);
 		try {
