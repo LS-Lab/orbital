@@ -40,7 +40,7 @@ public interface TypeSystem {
      * The type <span class="type">*</span> and every type containing <span class="type">*</span>
      * is a kind, with the latter being types for type constructors.
      * <i>Types containing meta-types as well as ordinary types are currently undefined.</i>
-     * @post RES == OLD(RES)
+     * @postconditions RES == OLD(RES)
      */
     Type TYPE();
 
@@ -53,7 +53,7 @@ public interface TypeSystem {
      *   <li>(&forall;x) <span class="type">&#8868;</span>(x)</li>
      *   <li>(&forall;<span class="type">&tau;</span>:Type) <span class="type">&tau;</span>&le;<span class="type">&#8868;</span></li>
      * </ul>
-     * @post RES == OLD(RES)
+     * @postconditions RES == OLD(RES)
      * @see #ABSURD
      * @internal everything (besides primitive types) is an instance of or a subclass of our fundamental class.
      * @todo how to distinguish fundamental types UNIVERSAL and INDIVIDUAL on the object level?
@@ -68,7 +68,7 @@ public interface TypeSystem {
      *   <li>&not;(&exist;x) <span class="type">&perp;</span>(x)</li>
      *   <li>(&forall;<span class="type">&tau;</span>:Type) <span class="type">&perp;</span>&le;<span class="type">&tau;</span></li>
      * </ul>
-     * @post RES == OLD(RES)
+     * @postconditions RES == OLD(RES)
      * @see #UNIVERSAL
      * @internal nothing (besides that single object whose reference no one knows) is an instance of or a subclass of a fundamental anonymous class. But the same already goes true for Void.TYPE, so let's use that.
      */
@@ -77,7 +77,7 @@ public interface TypeSystem {
      * Not a type.
      * The type of expressions that do not have any type at all.
      * This type has extension &empty;.
-     * @post RES == OLD(RES)
+     * @postconditions RES == OLD(RES)
      * @see #ABSURD
      * @xxx is NOTYPE=ABSURD? for product,sup,inf,collection and extension they have are equal.
      *  So at most the condition <li>(&forall;<span class="type">&tau;</span>:Type) <span class="type">&perp;</span>&le;<span class="type">&tau;</span></li> might be different.
@@ -165,7 +165,7 @@ public interface TypeSystem {
      * <p>
      * The map type constructor.
      * </p>
-     * @post RES == OLD(RES)
+     * @postconditions RES == OLD(RES)
      * @see #map(Type,Type)
      */
     BinaryFunction/*<Type,Type,Type>*/ map();
@@ -186,7 +186,7 @@ public interface TypeSystem {
      * <p>
      * The predicate type constructor.
      * </p>
-     * @post RES == OLD(RES)
+     * @postconditions RES == OLD(RES)
      * @see #predicate(Type)
      */
     Function/*<Type,Type>*/ predicate();
@@ -213,7 +213,7 @@ public interface TypeSystem {
      * <p>
      * The product type constructor.
      * </p>
-     * @post RES == OLD(RES)
+     * @postconditions RES == OLD(RES)
      * @see #product(Type[])
      */
     Function/*<Type[],Type>*/ product();
@@ -223,6 +223,7 @@ public interface TypeSystem {
     /**
      * Get the infimum type <span class="type">&#8898;<sub>i</sub>&tau;<sub>i</sub></span> = <span class="type">&tau;<sub>1</sub>&cap;&#8230;&cap;&tau;<sub>n</sub></span>.
      * inf is the most general common subtype, also called intersection.
+     * Especially, it is &forall;i <span class="type">&#8898;<sub>i</sub>&tau;<sub>i</sub></span> &le; <span class="type">&tau;<sub>i</sub></span>.
      * <p>
      * The subtype relation of types extends to infimum types as follows
      * <div>
@@ -235,12 +236,16 @@ public interface TypeSystem {
      * </div>
      * provided that <span class="type">&tau;</span> is not again an infimum type nor contains one.
      * </p>
-     * @attribute neutral {@link #UNIVERSAL <span class="type">&#8868;</span>}
+     * @postconditions RES is infimum of components with respect to {@link Type#compareTo(Object) &le;}
      * @attribute associative
+     * @attribute neutral {@link #UNIVERSAL <span class="type">&#8868;</span>}
+     * @attribute commutative
      * @attribute distributive {@link #sup}
+     * @attribute idempotent
      * @attribute 
      *   <span class="type">&sigma;</span> &le; <span class="type">&tau;</span>
-     *   &rArr; <span class="type">&sigma;&cap;&tau;</span> = <span class="type">&sigma;</span>
+     *   &hArr; <span class="type">&sigma;&cap;&tau;</span> = <span class="type">&sigma;</span>
+     * @see Type#compareTo(Object)
      */
     public Type inf(Type components[]);
     /**
@@ -248,14 +253,16 @@ public interface TypeSystem {
      * <p>
      * The infimum type constructor.
      * </p>
-     * @post RES == OLD(RES)
+     * @postconditions RES == OLD(RES)
      * @see #inf(Type[])
+     * @see Type#compareTo(Object)
      */
     Function/*<Type[],Type>*/ inf();
 
     /**
      * Get the supremum type <span class="type">&#8899;<sub>i</sub>&tau;<sub>i</sub></span> = <span class="type">&tau;<sub>1</sub>&cup;&#8230;&cup;&tau;<sub>n</sub></span>.
      * sup is the most special common supertype, also called union.
+     * Especially, it is &forall;i <span class="type">&tau;<sub>i</sub></span> &le; <span class="type">&#8899;<sub>i</sub>&tau;<sub>i</sub></span>.
      * <p>
      * The subtype relation of types extends to supremum types as follows
      * <div>
@@ -268,13 +275,17 @@ public interface TypeSystem {
      * </div>
      * provided that <span class="type">&tau;</span> is not again a supremum type nor contains one.
      * </p>
-     * @attribute neutral {@link #ABSURD <span class="type">&perp;</span>}
+     * @postconditions RES is supremum of components with respect to {@link Type#compareTo(Object) &le;}
      * @attribute associative
+     * @attribute neutral {@link #ABSURD <span class="type">&perp;</span>}
+     * @attribute commutative
      * @attribute distributive {@link #inf}
+     * @attribute idempotent
      * @attribute 
      *   <span class="type">&sigma;</span> &le; <span class="type">&tau;</span>
-     *   &rArr; <span class="type">&sigma;&cap;&tau;</span> = <span class="type">&tau;</span>
+     *   &hArr; <span class="type">&sigma;&cup;&tau;</span> = <span class="type">&tau;</span>
      * @todo what's this property called? somewhat like absorption?
+     * @see Type#compareTo(Object)
      * @todo strict or ignore absurd?
      */
     public Type sup(Type components[]);
@@ -284,8 +295,9 @@ public interface TypeSystem {
      * <p>
      * The supremum type constructor.
      * </p>
-     * @post RES == OLD(RES)
+     * @postconditions RES == OLD(RES)
      * @see #sup(Type[])
+     * @see Type#compareTo(Object)
      */
     Function/*<Type[],Type>*/ sup();
 
@@ -312,7 +324,7 @@ public interface TypeSystem {
      * <p>
      * The collection type constructor.
      * </p>
-     * @post RES == OLD(RES)
+     * @postconditions RES == OLD(RES)
      * @see #collection(Type)
      */
     Function/*<Type,Type>*/ collection();
@@ -352,7 +364,7 @@ public interface TypeSystem {
      * <p>
      * The set type constructor.
      * </p>
-     * @post RES == OLD(RES)
+     * @postconditions RES == OLD(RES)
      * @see #set(Type)
      */
     Function/*<Type,Type>*/ set();
@@ -368,7 +380,7 @@ public interface TypeSystem {
      * <p>
      * The list type constructor.
      * </p>
-     * @post RES == OLD(RES)
+     * @postconditions RES == OLD(RES)
      * @see #list(Type)
      */
     Function/*<Type,Type>*/ list();

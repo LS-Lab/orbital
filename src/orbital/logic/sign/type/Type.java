@@ -85,14 +85,18 @@ public interface Type extends Comparable, Predicate {
 
     /**
      * Compares two types for subtype inclusions.
-     * Note that this is only a partial order, but it is still consistent with equals.
+     * Defines the subtype relation on types.
+     * Note that this only is a <a href="../functor/doc-files/Relations.html#PartialOrder">partial order</a>,
+     * but it is still consistent with equals (thus not only a quasi-order).
      * @preconditions tau instanceof Type
      * @param tau the type <span class="type">&tau;</span> to check for being a supertype, subtype of us, or equals.
-     * @return Returns an x &lt; 0 if this &lt; <span class="type">&tau;</span> (this is a proper subtype of <span class="type">&tau;</span>).<br />
-     *  Returns an x &gt; 0 if this &gt; <span class="type">&tau;</span> (this is a proper supertype of <span class="type">&tau;</span>).<br />
+     * @return Returns a value &lt; 0 if this &lt; <span class="type">&tau;</span> (this is a proper subtype of <span class="type">&tau;</span>).<br />
+     *  Returns a value &gt; 0 if this &gt; <span class="type">&tau;</span> (this is a proper supertype of <span class="type">&tau;</span>).<br />
      *  Returns 0 if this = <span class="type">&tau;</span> (which is the case if and only if this &le; <span class="type">&tau;</span> and this &ge; <span class="type">&tau;</span>).
      * @throws IncomparableException if the types are incomparable.
      * @see #subtypeOf(Type)
+     * @see TypeSystem#inf()
+     * @see TypeSystem#sup()
      */
     int compareTo(Object tau);
     /**
