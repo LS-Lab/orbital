@@ -20,6 +20,9 @@ import java.util.TreeMap;
 import java.beans.IntrospectionException;
 import orbital.util.InnerCheckedException;
 
+import orbital.logic.Composite;
+
+
 /**
  * @version 0.7, 2002/05/09
  * @author  Andr&eacute; Platzer
@@ -88,5 +91,52 @@ final class LogicSupport {
 	}
 	Signature signature = new SignatureBase(assoc.keySet());
 	return new InterpretationBase(signature, assoc);
+    }
+
+
+    static void printTermStructure(Object c) {
+	System.out.println(" decomposing " + c);
+	new orbital.logic.functor.Predicate() {
+	    private int indent = 2;
+	    public boolean apply(Object o) {
+		//@internal full qualification necessary
+		if (o instanceof orbital.logic.Composite) {
+		    orbital.logic.Composite c = (orbital.logic.Composite)o;
+		    indent+=2;
+		    apply(c.getCompositor());
+		    for (int i = 0; i < indent; i++)
+			System.out.print(' ');
+		    System.out.println("(");
+		    indent+=2;
+		    apply(c.getComponent());
+		    indent-=2;
+		    for (int i = 0; i < indent; i++)
+			System.out.print(' ');
+		    System.out.println(")");
+		    indent-=2;
+		} else if (o instanceof Object[]) {
+		    Object[] a = (Object[])o;
+		    for (int i = 0; i < indent; i++)
+			System.out.print(' ');
+		    System.out.println("[");
+		    indent+=2;
+		    for (int i = 0; i < a.length; i++) {
+			apply(a[i]);
+		    }
+		    indent-=2;
+		    for (int i = 0; i < indent; i++)
+			System.out.print(' ');
+		    System.out.println("]");
+		} else {
+		    for (int i = 0; i < indent; i++)
+			System.out.print(' ');
+		    if (o instanceof Typed)
+			System.out.println(Types.toTypedString((Typed)o) + "\tof " + o.getClass() + " atom");
+		    else
+			System.out.println(o + " : untyped " + "\tof " + o.getClass() + " atom");
+		}
+		return true;
+	    }
+	}.apply(c);
     }
 }
