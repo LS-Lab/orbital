@@ -523,7 +523,7 @@
             <zipfileset dir="${examples}" prefix="Orbital-doc/examples">
 	        <exclude name="**/CVS/*"/>
 	        <exclude name="**/*.jpx*"/>
-		<exclude name="Algorithms/RubicsCube.patterndb"/>
+		<exclude name="Algorithms/RubiksCube.patterndb"/>
 		<exclude name="ReCompileAll.bat"/>
 	    </zipfileset>
         </zip>
