@@ -81,9 +81,14 @@ public interface GeneralSearchProblem/*<A,S>*/ extends MarkovDecisionProblem/*<A
      * <p>
      * Note that a single initial state is no restriction since one can always introduce
      * 0-cost transitions from a single artificial initial state to a set of true initial states
-     * without affecting the search problem.</p>
+     * without affecting the search problem.
+     * </p>
+     * <p>
+     * Make sure that this method consistently returns the initial state even for repeated
+     * invocations, since some iterative search algorithms may rely on this feature.
+     * </p>
      * @return s<sub>0</sub> &isin; S.
-     * @post getAccumulatedCostFunction().apply(RES) = 0
+     * @post getAccumulatedCostFunction().apply(RES) = 0 &and; (RES==OLD(RES) or problem changed)
      */
     Object/*>S<*/ getInitialState();
 
