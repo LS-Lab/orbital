@@ -6,6 +6,12 @@
 
 package orbital.logic.imp;
 
+import orbital.logic.sign.ExpressionSyntax;
+import orbital.logic.sign.Expression;
+import orbital.logic.sign.Symbol;
+import orbital.logic.sign.ParseException;
+import orbital.logic.sign.type.TypeException;
+
 /**
  * Provides a unified encapsulation of logical systems.
  * This interface encapsulates access to the logic inference relations and satisfaction relations
@@ -135,8 +141,6 @@ public interface Logic extends ExpressionSyntax {
     // like "&"/2 |-> LogicBinaryFunction.and
     //      "="/2 |-> LogicBinaryFunction.equals
     // could map & to Formula.and(Formula) then
-    // see Notation.functorOf()
-    // see combine(...)
     Interpretation coreInterpretation();
 
     // operation methods

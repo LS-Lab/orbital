@@ -6,6 +6,8 @@
 
 package orbital.logic.imp;
 
+import orbital.logic.sign.Signature;
+import orbital.logic.sign.Symbol;
 import java.util.Map;
 import java.util.Iterator;
 import orbital.logic.functor.Functor;

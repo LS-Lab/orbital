@@ -6,6 +6,8 @@
 
 package orbital.logic.imp;
 
+import orbital.logic.sign.Symbol;
+
 /**
  * This abstract LogicBasis class derives the extended logic operations
  * depending upon basic logic operations.

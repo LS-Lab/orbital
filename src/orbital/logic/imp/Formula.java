@@ -6,6 +6,10 @@
 
 package orbital.logic.imp;
 
+import orbital.logic.sign.Expression;
+import orbital.logic.sign.Symbol;
+import orbital.logic.sign.Signature;
+
 import orbital.logic.functor.Function;
 import java.util.Set;
 

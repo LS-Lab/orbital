@@ -6,6 +6,11 @@
 
 package orbital.logic.imp;
 
+import orbital.logic.sign.Signature;
+import orbital.logic.sign.SignatureBase;
+import orbital.logic.sign.Symbol;
+import orbital.logic.sign.type.TypeException;
+import orbital.logic.sign.type.Types;
 import java.util.Map;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -17,8 +22,6 @@ import java.util.TreeMap;
 import orbital.util.InnerCheckedException;
 import orbital.util.Utility;
 import java.util.Collection;
-import orbital.logic.imp.Interpretation;
-import orbital.logic.imp.Signature;
 import java.util.Set;
 import java.util.Map;
 import java.util.Collections;

@@ -4,9 +4,9 @@
  * Copyright (c) 2003 Andre Platzer. All Rights Reserved.
  */
 
-package orbital.moon.logic.imp;
-import orbital.logic.imp.Type.Composite;
-import orbital.logic.imp.*;
+package orbital.moon.logic.sign.type;
+import orbital.logic.sign.type.Type.Composite;
+import orbital.logic.sign.type.*;
 
 import java.util.Comparator;
 import orbital.util.IncomparableException;
@@ -623,9 +623,9 @@ public final class StandardTypeSystem implements TypeSystem {
 	}
 
 	public boolean apply(Object x) {
-	    assert StandardTypeSystem.arityOf(dom) > 0 : "map(Type,Type) canonically filters domain=NOTYPE. But the domain of " + this + " of " + getClass() + " has arity " + StandardTypeSystem.arityOf(dom);
+	    assert Types.arityOf(dom) > 0 : "map(Type,Type) canonically filters domain=NOTYPE. But the domain of " + this + " of " + getClass() + " has arity " + Types.arityOf(dom);
 	    //@xxx originally was  referent instanceof Functor && spec.isConform((Functor) referent)
-	    if (false && StandardTypeSystem.arityOf(dom) <= 1)
+	    if (false && Types.arityOf(dom) <= 1)
 		return Functionals.bindSecond(Utility.instanceOf, codom.equals(TRUTH)
 					      ? Predicate.class
 					      : Function.class).apply(x);
@@ -1160,27 +1160,6 @@ public final class StandardTypeSystem implements TypeSystem {
     // Stuff
 
     /**
-     * Get the number of components n of a product type <span class="type">&prod;<sub>i</sub>&tau;<sub>i</sub></span> = <span class="type">&tau;<sub>1</sub>&times;&#8230;&times;&tau;<sub>n</sub></span>.
-     * @todo rename
-     * @todo improve concept to make product accessible (perhaps already in type?) or package-level-protectize
-     */
-    public static final int arityOf(Type type) {
-	return type == Types.getDefault().ABSURD()
-	    // strict
-	    ? Integer.MIN_VALUE
-	    : type.equals(Types.getDefault().NOTYPE())
-	    ? 0
-	    : arityOf_perhapsProduct(type);
-    }
-    private static final int arityOf_perhapsProduct(Type type) {
-	if (type instanceof Type.Composite) {
-	    Type.Composite t = (Type.Composite)type;
-	    if (t.getCompositor() == Types.getDefault().product())
-		return ((Type[]) t.getComponent()).length;
-	}
-	return 1;
-    }
-    /**
      * Lexicographic order on types.
      * <p>
      * This implementation compares for arity in favor of domain-type in favor of codomain-type.
@@ -1192,7 +1171,7 @@ public final class StandardTypeSystem implements TypeSystem {
 		return compare((Type)a, (Type)b);
 	    }
 	    private final int compare(Type a, Type b) {
-		int order = StandardTypeSystem.arityOf(a) - StandardTypeSystem.arityOf(b);
+		int order = Types.arityOf(a) - Types.arityOf(b);
 		if (order != 0)
 		    return order;
 		if (a == typeSystem.UNIVERSAL() || b == typeSystem.UNIVERSAL())
