@@ -2016,7 +2016,8 @@ public class Functionals {
      * </center>
      * </p>
      * <p>Also known as fold, reduce.
-     * Implemented as a linear right tail-recurrence.
+     * Usually implemented as a linear right tail-recurrence, however, associative f
+     * permit parallelising<!-- thereby approaching complete binary expression evaluation trees-->.
      * </p>
      * <p>
      * This function takes values &isin;A<sup>*</sup> represented as a {@link Utility#isIteratable(Object) generalized iteratable},
