@@ -388,8 +388,8 @@ public final class Values {
 		protected Vector/*<R>*/ newInstance(int d) {throw new AssertionError("this method should never get called in this context");}
 		public int dimension() { return v.dimension(); }
 		public Arithmetic/*>R<*/ get(int i) { return v.get(i); }
-		public void set(int i, Arithmetic/*>R<*/ v) { throw new UnsupportedOperationException(); }
-		protected void set(Arithmetic/*>R<*/ v[]) { throw new UnsupportedOperationException(); }
+		public void set(int i, Arithmetic/*>R<*/ vi) { throw new UnsupportedOperationException(); }
+		protected void set(Arithmetic/*>R<*/ vs[]) { throw new UnsupportedOperationException(); }
 		public Iterator iterator() { return Setops.unmodifiableListIterator((ListIterator)v.iterator()); }
 		public boolean equals(Object b) { return v.equals(b); }
 		public int hashCode() { return v.hashCode(); }
