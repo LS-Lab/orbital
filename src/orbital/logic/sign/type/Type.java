@@ -11,14 +11,15 @@ import orbital.logic.functor.Predicate;
 /**
  * Representation of a type.
  * <p id="type">
- * The types form a <a href="Expression.html#freeAlgebraOfTerms">free algebra of terms</a>
+ * The types form a <a href="../Expression.html#freeAlgebraOfTerms">free algebra of terms</a>
  * &Tau; over {<span class="type">&iota;</span>,<span class="type">&rarr;</span>,<span class="type">()</span>}
  * plus perhaps <big>{</big><span class="type">&times;</span>,<span class="type">&cap;</span>,<span class="type">&cup;</span>,<span class="type">{}</span>,<span class="type">&lang;&rang;</span>,<span class="type">&#12308;&#12309;</span><big>}</big>.
  * Intuitively, {@link Types#INDIVIDUAL <span class="type">&iota;</span>} is the type for individuals,
  * {@link Types#map(Type,Type) <span class="type">&sigma;&rarr;&tau;</span>} the type for maps from <span class="type">&sigma;</span> to <span class="type">&tau;</span>,
  * and {@link Types#predicate(Type) <span class="type">(&sigma;)</span> = <span class="type">&sigma;&rarr;&omicron;</span>} the type for predicates of <span class="type">&sigma;</span>,
  * likewise {@link Types#TRUTH <span class="type">&omicron;</span> = <span class="type">()</span>} is the type of truth-values.
- * But there is also a precise <a href="Interpretation.html#interpretation">semantic</a>.
+ * A type denotes the set of possible values for a quantity.
+ * But there is also a precise <a href="../../imp/Interpretation.html#interpretation">semantics</a>.
  * </p>
  * <p>
  * <h5>Need for this class</h5>
@@ -68,7 +69,7 @@ public interface Type extends Comparable, Predicate {
     /**
      * Get the domain <span class="type">&sigma;</span> of a type <span class="type">&sigma;&rarr;&tau;</span>.
      * @return the type of the parameter domain.
-     *  {@link Types#NOTYPE} if this type does not take parameters.
+     *  {@link TypeSystem#NOTYPE()} if this type does not take parameters.
      */
     Type domain();
 
@@ -87,7 +88,7 @@ public interface Type extends Comparable, Predicate {
     /**
      * Compares two types for subtype inclusions.
      * Defines the subtype relation on types.
-     * Note that this only is a <a href="../functor/doc-files/Relations.html#PartialOrder">partial order</a>,
+     * Note that this only is a <a href="../../functor/doc-files/Relations.html#PartialOrder">partial order</a>,
      * but it is still consistent with equals (thus not only a quasi-order).
      * @preconditions tau instanceof Type
      * @param tau the type <span class="type">&tau;</span> to check for being a supertype, subtype of us, or equals.
@@ -101,7 +102,13 @@ public interface Type extends Comparable, Predicate {
      */
     int compareTo(Object tau);
     /**
-     * Checks whether this type is a subtype of tau.
+     * Checks whether this type is a subtype of tau. <span
+     * class="type">&sigma;</span> is a <dfn>subtype</dfn> of <span
+     * class="type">&tau;</span>, written <span
+     * class="type">&sigma;</span> &le; <span
+     * class="type">&tau;</span>, if in every context using values of
+     * type <span class="type">&tau;</span>, any value of type <span
+     * class="type">&sigma;</span> would be permitted as well.
      * Convenience method.
      * @return whether this &le; <span class="type">&tau;</span>.
      *  Especially returns <span class="boolean">false</span> in case of incomparable types.

@@ -7,9 +7,9 @@
 package orbital.logic.sign.type;
 
 /**
- * An interface for typed objects.  All objects that have a {@link
- * Type type} implement this interface. This especially includes
- * expressions and symbols.
+ * An interface for typed objects.  All objects that have an
+ * (explicitly modelled) {@link Type type} implement this
+ * interface. This especially includes expressions and symbols.
  *
  * @author <a href="mailto:NOSPAM@functologic.com">Andr&eacute; Platzer</a>
  * @version 1.1, 2003-01-18

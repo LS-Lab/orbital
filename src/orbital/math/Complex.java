@@ -159,7 +159,8 @@ public interface Complex extends Scalar {
 	};
 
     /**
-     * Checks whether the given number is in the set of complexes and not a subset.
+     * Checks whether the given number is a proper complex, i.e. it is
+     * in the set of complexes and not a subset.
      * return whether v&isin;<b>C</b>\<b>R</b> is complex, but not real.
      */
     public static final Predicate/*<Object>*/ hasType = new Predicate/*<Object>*/() {

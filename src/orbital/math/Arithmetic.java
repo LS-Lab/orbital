@@ -112,7 +112,7 @@ package orbital.math;
  * @todo link to a document doc-files containing definitions of magmas, monoids, groups, abelian groups, pseudo-rings, rings, commutative rings, fields, algebras, modules,...
  * @TODO: enhance documentation and improve consistency with K-Algebras
  * @todo think about turning into a template class for compile-time type safety.
- * @todo would we need something like "Class type()" which returns Integer, Real, Matrix ... for checking whether two objects have the same abstract mathematical type, regardless of their implementation class. @see MathUtilitiesTest#associated(Arithmetic,Arithmetic)
+ * @todo would we need something like "implements Typed/orbital.logic.sign.type.Type getType()" which returns Integer, Real, Matrix ... for checking whether two objects have the same abstract mathematical type, regardless of their implementation class. @see MathUtilitiesTest#associated(Arithmetic,Arithmetic)
  */
 public interface Arithmetic extends Normed {
 
