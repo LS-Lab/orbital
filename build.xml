@@ -69,6 +69,7 @@
 	<!-- default value, may be overwritten by 'build.properties' -->
 	<property name="javadoc.link.jdk" value="http://java.sun.com/products/jdk/1.4/docs/api/"/>
 	<property name="javadoc.link.jdk.offline" value="false"/>
+	<property name="env.javacchome" value="unknown"/>
 
 
         <path id="project.classpath">
@@ -165,7 +166,7 @@
     <target name="parser" depends="init"
             description="compile *.jj (=> ./classes)">
         <javacc target="${sources}/orbital/moon/logic/LogicParser.jj" 
-		javacchome="d:/Sprachen/java/Utilities/JavaCC"/>
+		javacchome="${env.javacchome}"/>
     </target>
 
     <target name="clean" depends="init"
@@ -454,16 +455,15 @@
 
 
 
-    <target name="dist" depends="init, jar, run.tests, dist.notests"
+    <target name="dist" depends="init, fixCRLF, jar, run.tests, dist.notests"
             description="create all distributions (=> ./dist/*.zip)">
     </target>
 
-    <target name="dist.notests" depends="init, jar, compile.examples"
+    <target name="dist.notests" depends="init, fixCRLF, jar, compile.examples"
             description="create all distributions (=> ./dist/*.zip), but do not run tests">
         <antcall target="doc">
             <param name="javadoc.link.jdk" value="http://java.sun.com/products/jdk/1.4/docs/api/"/>
             <param name="javadoc.link.jdk.offline" value="true"/>
-            <param name="javadoc.link.jdk.loc" value="D:\Sprachen\java\docs\api"/>
         </antcall>
 
         <mkdir dir="${dist}"/>
