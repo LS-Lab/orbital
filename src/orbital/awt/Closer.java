@@ -53,17 +53,6 @@ import java.io.NotSerializableException;
  * @author  Andr&eacute; Platzer
  */
 public final class Closer extends WindowAdapter implements ActionListener, Predicate {
-    private static class Debug {
-	private Debug() {}
-	public static void main(String arg[]) throws Exception {
-	    Frame f = new Frame();
-	    f.setSize(300, 200);
-	    new Closer(f, f, true, true);
-	    f.setVisible(true);
-	} 
-    }
-
-
     /**
      * parental frame. If set, will ask before closing.
      */
