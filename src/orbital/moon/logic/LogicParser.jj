@@ -88,9 +88,8 @@ public class LogicParser {
 
     /**
      * The current type system used.
-     * @todo read from syntax.coreSignature().get(...) or from Type.getTypeSystem()?
      */
-    private static TypeSystem typeSystem = Types.getDefault();
+    private transient TypeSystem typeSystem = Types.getDefault();
 
     // caches important types
     private transient Type TRUTH;
@@ -113,6 +112,13 @@ public class LogicParser {
     protected Scope scope;
 
     /**
+     * The current type system used.
+     */
+    private TypeSystem typeSystem() {
+	return typeSystem;
+    }
+
+    /**
      * Set the current syntax for parsing.
      * @param syntax the expression syntax to use for parsing expressions (formulas).
      */
@@ -122,6 +128,8 @@ public class LogicParser {
 	this.root = new RootScope(coreSignature);
 	this.TRUTH = queryType(syntax, "truth");
 	this.INDIVIDUAL = queryType(syntax, "individual");
+	// @todo read from syntax.coreSignature().get(...) or from Type.typeSystem()?
+	this.typeSystem = TRUTH.typeSystem();
 	//@todo should we ask the syntax?
 	this.UNIVERSAL = queryType(syntax, "univ");
 	this.FLOAT_LITERAL_TYPE = queryType(syntax, "real");
@@ -159,8 +167,8 @@ public class LogicParser {
      */
     protected Type asType(Expression f) {
 	//@xxx
-	if (false && f.getType() != typeSystem.TYPE())
-	    throw new TypeException("would not expect type " + f + " for type expressions @xxx except for other kinds like *->*", typeSystem.TYPE(), f.getType());
+	if (false && f.getType() != typeSystem().TYPE())
+	    throw new TypeException("would not expect type " + f + " for type expressions @xxx except for other kinds like *->*", typeSystem().TYPE(), f.getType());
 	return (Type) ((Formula) f).apply(InterpretationBase.EMPTY(syntax.coreSignature()));
     }
 
@@ -268,7 +276,7 @@ public class LogicParser {
      */
     protected Expression apply(Token optok, Expression[] a, Type reqResult) throws ParseException {
     	String op = optok.image;
-	Symbol s = scope.getSymbol(op, typeSystem.map(Types.typeOf(a), reqResult), true);
+	Symbol s = scope.getSymbol(op, typeSystem().map(Types.typeOf(a), reqResult), true);
 	return composeWrapper(optok, s, a);
     }
 
@@ -301,7 +309,7 @@ public class LogicParser {
      * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience method</a>
      */
     private Expression composeWrapper(Token optok, String op, Expression[] arg) throws ParseException {
-	Symbol s = scope.getSymbol(op, typeSystem.map(Types.typeOf(arg), UNIVERSAL), false);
+	Symbol s = scope.getSymbol(op, typeSystem().map(Types.typeOf(arg), UNIVERSAL), false);
 	if (s == null) {
 	    //@todo remove since this does not occur because we don't use tryGetScope any more.
 	    //@xxx an error is to come up, so already print some information about it
@@ -320,7 +328,7 @@ public class LogicParser {
      * @author Andr&eacute; Platzer
      * @version 1.1, 2002-11-01
      */
-    private static class Scope {
+    private class Scope {
 	/**
 	 * the outer parental scope around this scope.
 	 */
@@ -422,7 +430,7 @@ public class LogicParser {
 
 	    //@internal first look if there is a symbol of parametric type matching ours
 	    //@xxx note that this does not only find those of parametric types, but may get stuck at the first with non-parametric type as well. However this does not incubate problems if only symbols of parameteric types are not overloaded (i.e. their signifier is unique).
-	    s = tryGetSymbol(signifier, typeSystem.UNIVERSAL());
+	    s = tryGetSymbol(signifier, typeSystem().UNIVERSAL());
 	    if (s != null && s.getType() instanceof ClassicalLogic.PiAbstractionType)
 		return s;
 
@@ -437,8 +445,8 @@ public class LogicParser {
 	    Symbol s = symbolMap.get(signifier, maxType);
 	    if (s != null) {
 		// we already know it due to a quantifier within whose scope we are
-		//@todo use typeSystem.map(typeSystem.product(arityOf(maxType.domain()), UNIVERSAL), UNIVERSAL) instead to catch even more similarities?
-		Symbol s2 = symbolMap.get(signifier, typeSystem.map(maxType.domain(), typeSystem.UNIVERSAL()));
+		//@todo use typeSystem().map(typeSystem().product(arityOf(maxType.domain()), UNIVERSAL), UNIVERSAL) instead to catch even more similarities?
+		Symbol s2 = symbolMap.get(signifier, typeSystem().map(maxType.domain(), typeSystem().UNIVERSAL()));
 		if (!s.equals(s2))
 		    throw new IllegalArgumentException("nonunique names\n\t" + signifier + ":" + maxType + " ressembles\n\t" + s + " of type " + s.getType() +"\n\tand " + s2 + " of type " + s2.getType() + " too much.");
 		else
@@ -471,7 +479,7 @@ public class LogicParser {
      * @author Andr&eacute; Platzer
      * @version 1.1, 2002-11-05
      */
-    private static class RootScope extends Scope {
+    private class RootScope extends Scope {
 	/**
 	 * Create a new scope with predefined symbols.
 	 */
@@ -1158,7 +1166,7 @@ Expression PiAbstractionType() :
 }
 {
     "(" tok = <PI> xtok = <IDENTIFIER> "."
-	{scope.declare(x = scope.getSymbol(xtok.image, typeSystem.TYPE(), true, true));}
+	{scope.declare(x = scope.getSymbol(xtok.image, typeSystem().TYPE(), true, true));}
     t = type() ")"
 {
     scope = scope.leave();
@@ -1174,7 +1182,7 @@ Expression PrimaryType() :
 {
     LOOKAHEAD(2)
     tok = <IDENTIFIER>
-	{return syntax.createAtomic(scope.getSymbol(tok.image, typeSystem.TYPE(), true));}
+	{return syntax.createAtomic(scope.getSymbol(tok.image, typeSystem().TYPE(), true));}
     |   "[" a = CompoundType() "]"
 	{return a;}
     | LOOKAHEAD(2)
@@ -1191,7 +1199,7 @@ Expression CompoundType() :
 {Token tok; Expression[] arg;}
 {
     tok = <IDENTIFIER> arg = Types()
-	{return apply(tok, arg, typeSystem.TYPE());}
+	{return apply(tok, arg, typeSystem().TYPE());}
 }
 
 // Parsing Helpers
