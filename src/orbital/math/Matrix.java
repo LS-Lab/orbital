@@ -203,19 +203,24 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
 
     /**
      * Checks whether this square matrix is symmetric.
-     * Symmetric matrices are those that satisfy m<sub>i,j</sub>=m<sub>j,i</sub> &forall;i,j&isin;<b>N</b>.
+     * Symmetric matrices are those that satisfy M<sup>T</sup> = M
+     * alias m<sub>i,j</sub>=m<sub>j,i</sub> &forall;i,j&isin;<b>N</b>.
+     * <p>
+     * In <b>R</b><sup>n&times;m</sup>, symmetric is the same as self-adjoint.
+     * </p>
      * @pre isSquare()
      * @post RES.equals(transpose().equals(this))
      * @throws ArithmeticException if this is not a square matrix since only square matrices can be symmetric.
      */
     boolean isSymmetric() throws ArithmeticException;
-	
+
     /**
      * Checks whether this squary matrix is regular.
-     * Regular matrices are those that are invertible, which are those with determinant &ne;0.
-     * @return <code>true</code> if this matrix is regular (thereby invertible) and <code>false</code> if it is singular (Rang&lt;n).
+     * Regular matrices are those that are invertible,
+     * which are those with invertible determinant.
+     * @return <code>true</code> if this matrix is regular (thereby invertible) and <code>false</code> if it is singular (linear Rank&lt;n).
      * @pre isSquare()
-     * @post RES &hArr; det()&ne;0
+     * @post RES &hArr; det()&isin;R<sup>&times;</sup>
      * @throws ArithmeticException if this is not a square matrix since only square matrices can be regular.
      */
     boolean isRegular() throws ArithmeticException;
@@ -248,7 +253,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     /**
      * Rank of this matrix.
      * i.e. the maximum number of column vectors (or row vectors) that are linear independent.
-     * @return rank M = dim<sub>K</sub>(im(M)).
+     * @return (linear) rank M := dim<sub>K</sub>(im(M)).
      * @see Tensor#rank()
      */
     int linearRank();
@@ -410,8 +415,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      *   </tr>
      *   <tr>
      *     <td>( )</td>
-     *     <td>M&isin;GL(n,R) &hArr; det(M)&ne;0<br />
-     *     &rArr;det(M<sup>-1</sup>) = det(M)
+     *     <td>M&isin;GL(n,R) &hArr; det(M)&isin;R<sup>&times;</sup><br />
+     *     &rArr;det(M<sup>-1</sup>) = det(M)<sup>-1</sup>
      *     </td>
      *     <td>&nbsp;</td>
      *   </tr>
@@ -587,8 +592,13 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      *   <li>(&lambda;&middot;A)<sup>&#8889;</sup> = <span style="text-decoration: overline">&lambda;</span>&middot;A<sup>&#8889;</sup> = &lambda;<sup>*</sup>&middot;A<sup>&#8889;</sup></li>
      *   <li>(A&middot;C)<sup>&#8889;</sup> = C<sup>&#8889;</sup>&middot;A<sup>&#8889;</sup></li>
      *   <li><big>(</big>A<sup>&#8889;</sup><big>)<sup>&#8889;</sup></big> = A</li>
+     *   <li>.<sup>&#8889;</sup> = .<sup>T</sup> on <b>R</b><sup>n&times;m</sup></li>
      * </ul>
-     * &forall;A,B&isin;R<sup>n&times;m</sup>,C&isin;R<sup>m&times;l</sup>, &lambda;&isin;R</p>
+     * &forall;A,B&isin;R<sup>n&times;m</sup>,C&isin;R<sup>m&times;l</sup>, &lambda;&isin;R.
+     * </p>
+     * <p>
+     * Relative to a finite orthonormal basis .<sup>&#8889;</sup> is the adjoint operator.
+     * </p>
      * @return the m&times;n matrix M<sup>&#8889;</sup>=<span style="text-decoration: overline">M</span><sup>T</sup>.
      * @post RES.get(j,i) == conjugate(get(i,j)) RES.dimension().width == dimension().height && RES.dimension().height == dimension().width
      * @see Complex#conjugate()
