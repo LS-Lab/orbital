@@ -200,7 +200,11 @@ public class SymbolBase implements Symbol, Serializable {
 	if (Logger.global.isLoggable(Level.FINEST)
 	    || getType().equals(Types.getDefault().TYPE()))
 	    //@internal equivalent to Types.toTypedString(this) but different: else infinite recursion
-	    return getSignifier() + ':' + getType() + (Logger.global.isLoggable(Level.ALL) && isVariable() ? "[var]" : "");
+	    return getSignifier() + ':' + getType()
+		+ (Logger.global.isLoggable(Level.ALL)
+		   ? (isVariable() ? "[var]" : "[const]")
+		   : ""
+		   );
 	//@todo now depend on System property
 	if (true)
 	    return getSignifier();
