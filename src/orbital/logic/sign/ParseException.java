@@ -24,6 +24,7 @@ package orbital.logic.imp;
  * @see orbital.io.ParseException
  * @see <a href="http://www.webgain.com/products/java_cc/">JavaCC's ParseException</a>
  * @xxx extend a more general parse exception class. Neither java.text.ParseException nor org.xml.sax.SAXParseException will do. However, how do we reuse all them nice constructors, then?
+ * @todo make this a more verbose exception, one that knows about beginning and ending lines and columns, cause and ID.
  */
 public class ParseException extends Exception {
     private static final long serialVersionUID = 9011745358925992935L;

@@ -73,7 +73,7 @@ public interface Signature extends SortedSet/*<Symbol>*/ {
      *  <code>null</code>, or an array of length <span class="number">0</span> can be used for zero arguments.
      * @return the symbol that has the specified signifier and is applicable to <tt>arg</tt>, if exists.
      *  Returns <code>null</code> otherwise.
-     * @post (RES = &iota;s&isin;this (s.getSignifier().equals(signifier) &and; s.getType().isApplicableTo(arg)) &or; RES=null) &and; this.equals(OLD)
+     * @post (RES = &iota;[s&isin;this (s.getSignifier().equals(signifier) &and; s.getType().isApplicableTo(arg))] &or; RES=null) &and; this.equals(OLD)
      * @see #get(String,Type)
      */
     //@todo perhaps we should ignore notation of Symbols (especially precedence etc.), since some callers may not know the exact precedence.
@@ -93,7 +93,7 @@ public interface Signature extends SortedSet/*<Symbol>*/ {
      * @param maxType the maximum type that the symbol can have.
      * @return the symbol that has the specified signifier and type &le; maxType, if exists.
      *  Returns <code>null</code> otherwise.
-     * @post (RES = &iota;s&isin;this (s.getSignifier().equals(signifier) &and; s.getType().subtypeOf(maxType)) &or; RES=null) &and; this.equals(OLD)
+     * @post (RES = &iota;[s&isin;this (s.getSignifier().equals(signifier) &and; s.getType().subtypeOf(maxType))] &or; RES=null) &and; this.equals(OLD)
      * @see #get(String,Object[])
      */
     Symbol get(String signifier, Type maxType);

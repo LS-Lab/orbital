@@ -41,6 +41,15 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
      */
     private Signature sigma;
 
+    /**
+     * The empty interpretation &empty; for the given signature.
+     * Note that it is generally not useful to use empty interpretations, however
+     * there are some special applications.
+     */
+    public static final Interpretation EMPTY(Signature sigma) {
+	return new InterpretationBase(sigma, Collections.EMPTY_MAP);
+    }
+
     private InterpretationBase() {
 	super(new TreeMap());
     }
