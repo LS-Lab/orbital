@@ -92,7 +92,7 @@ public interface MarkovDecisionProblem extends TransitionModel/*<A,S,O extends T
      * @param state the state s&isin;S to check for being a goal state.
      * @return G(s), resp. whether s&isin;G.
      */
-    boolean isSolution(Object state);
+    boolean isSolution(Object/*>S<*/ state);
 
     /**
      * Represents a transition option during a Markov decision process.

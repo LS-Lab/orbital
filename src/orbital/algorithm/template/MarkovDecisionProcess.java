@@ -125,9 +125,10 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
     
     /**
      * Solves an MDP problem.
-     * @return the solution policy function S&rarr;A found, or null.
+     * @return the solution policy function S&rarr;A found,
+     *  or <code>null</code> if no solution could be found.
      */
-    public Function solve(MarkovDecisionProblem p) {
+    public Function/*<S,A>*/ solve(MarkovDecisionProblem p) {
     	setProblem(p);
     	return plan();
     }
@@ -136,9 +137,10 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
     
     /**
      * Run the planning.
-     * @return the solution policy function S&rarr;A found, or null.
+     * @return the solution policy function S&rarr;A found,
+     *  or <code>null</code> if no solution could be found.
      */
-    protected abstract Function plan();
+    protected abstract Function/*<S,A>*/ plan();
 
     /**
      * Abstract base class for Markov decision processes solved per dynamic programming.
@@ -258,7 +260,7 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
          * @postconditions RES = (a,Q) &and; a = argmin<sub>a'&isin;A(s)</sub> Q(s,a')
          *  &and; Q = min<sub>a'&isin;A(s)</sub> Q(s,a').
          */
-        protected orbital.util.Pair/*<Object, Number>*/ maximumExpectedUtility(BinaryFunction Q, Object state) {
+        protected orbital.util.Pair/*<A, Number>*/ maximumExpectedUtility(BinaryFunction/*<S,A,Real>*/ Q, Object/*>S<*/ state) {
 	    // search for minimal expected cost applicable action
 	    return PackageUtilities.min(getProblem().actions(state), Functionals.bindFirst(Q, state));
         }
@@ -270,8 +272,8 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
     	 *  Q<sub>U</sub>(s,a) is the action-value cost of the action a&isin;A(s) in state s&isin;S as evaluated by U.
     	 * @see "C. J. C. H. Watkins. Learning from Delayed Rewards. PhD thesis, Cambridge University, Cambridge, England, 1989."
     	 */
-    	protected BinaryFunction getActionValue(final Function U) {
-	    return new BinaryFunction() {
+    	protected BinaryFunction/*<S,A,Real>*/ getActionValue(final Function/*<S,Real>*/ U) {
+	    return new BinaryFunction/*<S,A,Real>*/() {
 		    public Object apply(Object state, Object action) {
             		// cost = Q<sub>U</sub>(s,a)
             		Scalar cost = valueFactory.ZERO;
@@ -303,8 +305,8 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
          * @see #getActionValue(Function)
          * @interal see #maximumExpectedUtility(Object)
          */
-        protected Function getGreedyPolicy(final BinaryFunction Q) {
-	    return new Function() {
+        protected Function/*<S,A>*/ getGreedyPolicy(final BinaryFunction/*<S,A,Real>*/ Q) {
+	    return new Function/*<S,A>*/() {
 		    public Object apply(Object state) {
 			if (logger.isLoggable(Level.FINER)) {
 			    logger.log(Level.FINER, "DPMDP.policy", "CHOOSING " + state);
