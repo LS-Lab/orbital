@@ -327,7 +327,7 @@
                  failonerror="true"
                  destdir="${doc.api.dest}"
                  author="true"
-                 version="true"
+                 version="false"
                  use="true"
 		 additionalparam="-source 1.4 -docfilessubdirs -excludedocfilessubdir CVS:**/CVS"
 
