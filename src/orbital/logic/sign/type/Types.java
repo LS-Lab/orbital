@@ -336,6 +336,11 @@ public final class Types {
 	 */
 	protected abstract int compareToSemiImpl(Type b);
 	public final int compareTo(Object b) {
+	    if (!(b instanceof TypeObject))
+		if (b == null)
+		    throw new NullPointerException("illegal type " + b + " to compare " + this + " of " + getClass() + " with");
+		else
+		    throw new InternalError("no rule for comparing " + this + " of " + getClass() + " with " + b + " of " + b.getClass());
 	    int cmp = subtypeOrder.compare(this, (Type)b);
 	    assert !((cmp == 0) ^ this.equals(b)) : "antisymmetry resp. consistent with equals: " + this + ", " + b + "\n" + this + toString(cmp) + b + "\n" + this + (this.equals(b) ? "=" : "!=") + b;
 	    assert subtypeOrder.compare(this, this) == 0 : "reflexive: " + this;

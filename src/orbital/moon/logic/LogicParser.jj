@@ -380,6 +380,8 @@ public class LogicParser {
 	 * @throws IllegalArgumentException if no such symbol exists.
 	 */
 	public Symbol getSymbol(String signifier, Type maxType, boolean variable, boolean autoDeclare) {
+	    if (maxType == null)
+		throw new NullPointerException("illegal type " + maxType + " for " + signifier);
 	    Symbol s = tryGetSymbol(signifier, maxType, variable, autoDeclare);
 	    if (s == null)
 		throw new IllegalArgumentException("unknown symbol: " + signifier);
