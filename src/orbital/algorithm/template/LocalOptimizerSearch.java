@@ -38,6 +38,7 @@ import orbital.math.Values;
  * @version 1.1, 2002/06/01
  * @author  Andr&eacute; Platzer
  * @todo should we implement HeuristicAlgorithm and provide get/setHeuristic, just because most of our subclasses are?
+ * @see Greedy
  */
 public abstract class LocalOptimizerSearch extends GeneralSearch implements ProbabilisticAlgorithm, EvaluativeAlgorithm {
     private static final long serialVersionUID = 465553782601369843L;

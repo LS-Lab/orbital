@@ -13,6 +13,7 @@ import java.util.LinkedList;
 
 import orbital.math.functional.Functions;
 import orbital.math.functional.Operations;
+import orbital.util.Setops;
 
 /**
  * Framework (template class) for Greedy Algorithms.
@@ -79,7 +80,7 @@ public class Greedy implements AlgorithmicTemplate {
 
 	    // weighting is quality criterium
 	    // retract x from C such that w(x) is maximal;
-	    final Object x = PackageUtilities.max(C.iterator(), p.getWeightingFor(S)).A;
+	    final Object x = Setops.argmax(C.iterator(), p.getWeightingFor(S));
 	    C.remove(x);
 
 	    // nextPartialSolution computes new partial solution that includes x if feasible

@@ -72,6 +72,7 @@ public interface EvaluativeAlgorithm extends AlgorithmicTemplate {
 	 */
 	//private Map cache = /*//TODO:constrained(size=4)*/ new WeakHashMap();
 	/**
+	 * Compares according to evaluation function.
 	 * @return f(o1).compareTo(f(o2))
 	 */
 	public final int compare(Object o1, Object o2) {

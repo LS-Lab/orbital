@@ -241,7 +241,7 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
          * Calculate the maximum expected utility (MEU) action.
          * @param Q the action-value cost function Q:S&times;A(s)&rarr;<b>R</b>
          *  evaluating the expected utility of actions in states.
-         * @param state the state s&isin;S in which an action is to take.
+         * @param state the state s&isin;S in which to take an action.
          * @return the Pair (a, Q)&isin;A(s)&times;<b>R</b> with maximum expected utility,
          *  which means minimum expected cost sum in this case.
          * @post RES = (a,Q) &and; a = arg min<sub>a'&isin;A(s)</sub> Q(s,a')

@@ -72,7 +72,7 @@ public abstract class DynamicProgrammingOptimizingProblem implements DynamicProg
 	Collection options = getOptionsFor(part);
 	Pair optimum = PackageUtilities.max(options.iterator(), getWeightingFor(part));
 
-	// memorize weights as well to be dynamic
+	// memorize weights as well in order to do dynamic programming
 	Utility.setPart(partialWeights, part, (Number)optimum.B);
 	return optimum.A;
     } 

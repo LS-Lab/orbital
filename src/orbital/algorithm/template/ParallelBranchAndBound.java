@@ -149,7 +149,7 @@ public class ParallelBranchAndBound extends BranchAndBound {
 		    synchronized(bestSolutionLock) {
 			// comparison is not necessary for BranchAndBound(!), but its more safe to
 			// no Double-checked locking due to errors until after new semantics @see #bestSolution
-			//@link PackageUtilities#min
+			//@link orbital.util.Setops#argmin
 			if (bestSolution == null || accumulatedCost.compareTo(bestAccumulatedCost) < 0) {
 			    bestSolution = solution;
 			    bestAccumulatedCost = accumulatedCost;

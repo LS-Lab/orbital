@@ -66,6 +66,7 @@ import orbital.math.Values;
  * @author  Andr&eacute; Platzer
  * @note the father of local optimizers, also the most simple version
  * @see Greedy
+ * @todo terminate search on local optimum in case of LOCAL_BEST_IMPROVEMENT.
  */
 public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgorithm {
     private static final long serialVersionUID = -3281919447532950063L;
@@ -253,6 +254,7 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
      * @version 1.0, 2001/08/01
      * @author  Andr&eacute; Platzer
      * @todo really turn this class into a inner static class whose constructor requires an EvaluativeAlgorithm that also is a ProbabilisticAlgorithm?
+     * @todo replace by acceptStep(restrictRandomly(restrictBest(problem),problem,1))
      */
     public class OptionIterator extends GeneralSearch.OptionIterator {
 	private static final long serialVersionUID = -6802484555661425572L;
@@ -270,11 +272,11 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
         }
         /**
          * Select the node with min f(n).
-	 * @see PackageUtilities#min
+	 * @see orbital.util.Setops#argmin
          */
         protected Object/*>S<*/ select() {
 	    Comparator comparator = new EvaluationComparator(HillClimbing.this);
-	    // modified minimum greedy search that keeps track of the index, additionally
+	    // aggregate minimum greedy search
 	    Object candidate = nodes.next();
 	    // contains all candidates that are as well as candidate
 	    List candidates = new LinkedList();
@@ -288,7 +290,11 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
 		    candidates = new LinkedList();
 		    candidates.add(candidate);
 		} else if (cmp == 0)
+		    // collect all best candidates
 		    candidates.add(candidate);
+		else
+		    // forget about worse candidates
+		    ;
 	    }
 	    // for multiple candidates with optimal evaluation value, select one, randomly
 	    return candidates.get(getRandom().nextInt(candidates.size()));
@@ -306,6 +312,7 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
      * An iterator over a state space in (probabilistic) greedy order for hill-climbing.
      * @version 1.0, 2001/08/01
      * @author  Andr&eacute; Platzer
+     * @todo replace by acceptStep(restrictRandomly(problem,1))
      */
     private static class OptionIterator_First extends LocalOptimizerSearch.OptionIterator {
 	private static final long serialVersionUID = -3674513421043835094L;

@@ -42,6 +42,7 @@ import java.util.List;
  * @author  Andr&eacute; Platzer
  * @see orbital.util.Utility
  * @see orbital.algorithm.evolutionary.Selectors
+ * @see java.util.Collections
  * @see <a href="http://www.sql.org">Structured Query Language (SQL)</a>
  */
 public final class Setops {
@@ -139,6 +140,74 @@ public final class Setops {
 		return true;
 	return false;
     } 
+
+    // arg min / arg max
+
+    /**
+     * Get the minimum argument.
+     * @param choices the available choices M.
+     * @param f the evaluation function f:M&rarr;<b>R</b>.
+     * @return arg min<sub>a&isin;M</sub> f(a) with minimum f-value in choices.
+     * @pre choices.hasNext()
+     * @post RES = arg min<sub>a'&isin;M</sub> f(a'), i.e. &forall;a'&isin;M f(RES)&le;f(a')
+     * @throws NoSuchElementException if !choices.hasNext()
+     * @see orbital.math.functional.Operations#inf
+     * @see java.util.Collections#min(Collection,Comparator)
+     * @see orbital.logic.functor.Functionals#foldLeft
+     * @see orbital.algorithm.template.EvaluativeAlgorithm.EvaluationComparator
+     */
+    public static final Object/*_>A<_*/ argmin(Iterator/*_<A>_*/ choices, Function/*<A,Comparable>*/ f) {
+	// search for minimum f in choices
+	// current best choice of choices
+	Object best = choices.next();
+	// f(best)
+	Comparable bestValue = (Comparable) f.apply(best);
+	while (choices.hasNext()) {
+	    final Object o = choices.next();
+	    final Comparable value = (Comparable) f.apply(o);
+	    if (value.compareTo(bestValue) < 0) {
+		bestValue = value;
+		best = o;
+	    }
+	    assert true : "invariant: " + bestValue + "=< f-value of each choice seen so far & " + f.apply(best) + "==" + bestValue;
+	}
+
+	// return the best choice
+	return best;
+    }
+
+    /**
+     * Get the maximum argument.
+     * @param choices the available choices M.
+     * @param f the evaluation function f:M&rarr;<b>R</b>.
+     * @return arg max<sub>a&isin;M</sub> f(a) with maximum f-value in choices.
+     * @pre choices.hasNext()
+     * @post RES = arg max<sub>a'&isin;M</sub> f(a'), i.e. &forall;a'&isin;M f(RES)&ge;f(a')
+     * @throws NoSuchElementException if !choices.hasNext()
+     * @see orbital.math.functional.Operations#sup
+     * @see java.util.Collections#max(Collection,Comparator)
+     * @see orbital.logic.functor.Functionals#foldLeft
+     * @see orbital.algorithm.template.EvaluativeAlgorithm.EvaluationComparator
+     */
+    public static final Object/*_>A<_*/ argmax(Iterator/*_<A>_*/ choices, Function/*<A,Comparable>*/ f) {
+	// search for maximum f in choices
+	// current best choice of choices
+	Object best = choices.next();
+	// f(best)
+	Comparable bestValue = (Comparable) f.apply(best);
+	while (choices.hasNext()) {
+	    final Object o = choices.next();
+	    final Comparable value = (Comparable) f.apply(o);
+	    if (value.compareTo(bestValue) > 0) {
+		bestValue = value;
+		best = o;
+	    }
+	    assert true : "invariant: " + bestValue + ">= f-value of each choice seen so far & " + f.apply(best) + "==" + bestValue;
+	}
+
+	// return the best choice
+	return best;
+    }
 
 
     // set operations
