@@ -56,19 +56,6 @@ abstract class AbstractCompositeFunctor implements Composite, Serializable {
     }
 
     /**
-     * Get the notation used for displaying this composite functor.
-     */
-    public Notation getNotation() {
-	return notation;
-    }
-    /**
-     * Set the notation used for displaying this composite functor.
-     */
-    public void setNotation(Notation notation) {
-	this.notation = notation == null ? Notation.DEFAULT : notation;
-    }
-    		
-    /**
      * Checks for equality.
      * Two CompositeFunctors are equal iff their classes,
      * their compositors and their components are equal.
@@ -92,5 +79,18 @@ abstract class AbstractCompositeFunctor implements Composite, Serializable {
      */
     public String toString() {
 	return getNotation().format(getCompositor(), getComponent());
+    }
+
+    /**
+     * Get the notation used for displaying this composite functor.
+     */
+    public Notation getNotation() {
+	return notation;
+    }
+    /**
+     * Set the notation used for displaying this composite functor.
+     */
+    public void setNotation(Notation notation) {
+	this.notation = notation == null ? Notation.DEFAULT : notation;
     }
 }
