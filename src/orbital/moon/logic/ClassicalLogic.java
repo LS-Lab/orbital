@@ -1017,7 +1017,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 
 	//@xxx trick for functions that never get called
     	public static final BinaryFunction lambda = new BinaryFunction() {
-		/*private static*/ final Specification specification = new Specification(new Class[] {
+		/*private static*/ final Specification callTypeDeclaration = new Specification(new Class[] {
 		    Object.class, Object.class
 		}, Function.class);
     		public Object apply(Object x, Object t) {
@@ -1027,7 +1027,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    };
     	public static final BinaryFunction apply = new BinaryFunction() {
 		//@internal (almost) identical to @see orbital.logic.functor.Functionals#apply but additionally asserting that no one every really calls apply.
-		private /*static*/ final Specification specification = new Specification(new Class[] {
+		private /*static*/ final Specification callTypeDeclaration = new Specification(new Class[] {
 		    Function/*_<A,B>_*/.class, Object/*_>A<_*/.class
 		}, Object/*_>B<_*/.class);
     		public Object apply(Object f, Object g) {

@@ -222,7 +222,8 @@ abstract class ModernLogic implements Logic {
 	    throw new NullPointerException("null is not an expression");
 	try {
 	    LogicParser parser = new LogicParser(new StringReader(expressions));
-	    Expression B[] = parser.parseFormulas(this);
+	    parser.setSyntax(this);
+	    Expression B[] = parser.parseFormulas();
 	    assert !Utility.containsIdenticalTo(B, null) : "empty string \"\" is not a formula, but only an empty set of formulas.";
 	    return B;
 	} catch (orbital.moon.logic.ParseException ex) {
@@ -234,7 +235,8 @@ abstract class ModernLogic implements Logic {
 	    throw new NullPointerException("null is not an expression");
 	try {
 	    LogicParser parser = new LogicParser(new StringReader(expression));
-	    Expression x = parser.parseFormula(this);
+	    parser.setSyntax(this);
+	    Expression x = parser.parseFormula();
 	    if (x == null) {
 		assert "".equals(expression) : "only the empty formula \"\" can lead to the forbidden case of a null expression";
 		throw new ParseException("empty string \"\" is not a formula", COMPLEX_ERROR_OFFSET);

@@ -78,6 +78,14 @@ public class MathParser {
      */
     protected static ExpressionBuilder syntax = new MathExpressionSyntax();
 
+    /**
+     * Set the current syntax for parsing.
+     * @param syntax the expression syntax to use for parsing expressions (formulas).
+     */
+    public void setSyntax(ExpressionBuilder syntax) {
+	this.syntax = syntax;
+    }
+
     public static/**/ Object createExpression(String expression) throws orbital.logic.imp.ParseException {
 	if (expression == null)
 	    return null;

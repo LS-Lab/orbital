@@ -385,6 +385,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @structure inherits Compositions.CompositeFunction
      * @todo change type of outer to Formula, and use ConstantFormulas for coreInterpretation instead
      * @see AppliedFormula
+     * @internal apply is a kind of S combinator
      */
     static class AppliedVariableFormula extends ModernFormula implements Function.Composite {
 	protected Formula outer;

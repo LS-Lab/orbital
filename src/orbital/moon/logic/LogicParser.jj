@@ -50,8 +50,8 @@ import java.util.Iterator;
  * @version 1.0, 2001/01/16
  * @author  Andr&eacute; Platzer
  * @see <a href="doc-files/LogicParser_grammar.html">Grammar</a>
- * @see #parseFormula(ExpressionSyntax)
- * @see #parseFormulas(ExpressionSyntax)
+ * @see #parseFormula()
+ * @see #parseFormulas()
  * @todo use a UTF-8 input stream and support the true Unicode
  * characters for forall, exist, and, or, not, ...
  * @todo unite with MathParser! Especially provide arbitrary functions
@@ -87,9 +87,17 @@ public class LogicParser {
      */
     protected Signature scopeSymbolMap;
 
-    protected void setSyntax(ExpressionSyntax syntax) {
+    /**
+     * Set the current syntax for parsing.
+     * @param syntax the expression syntax to use for parsing expressions (formulas).
+     */
+    public void setSyntax(ExpressionSyntax syntax) {
 	this.syntax = syntax;
 	this.coreSignature = syntax.coreSignature();
+    }
+    private void initSymbolMap() {
+	if (syntax == null)
+	    throw new IllegalStateException("no syntax has been set, use setSyntax(...)");
 	this.scopeSymbolMap = new SignatureBase();
     }
 
@@ -356,17 +364,16 @@ TOKEN :
 }
 
 /**
- * Start to parse a set of logic formulas with the given syntax.
+ * Start to parse a set of logic formulas with the current syntax.
  * @return the set of formulas parsed,
  *  or an array of length 0 if only the empty set of formulas was found.
- * @param syntax the expression syntax to use for parsing expressions (formulas).
- * @see #parseFormula(ExpressionSyntax)
+ * @see #parseFormula()
  * @todo should we really introduce this method into orbital.logic.imp.Logic/ExpressionSyntax? What would be the delimiters of the individual formulas of a set?
  * @internal we require <EOF> to be sure we parsed all, and no syntactic garbage lurks around at the end of the input
  */
-Expression[] parseFormulas(ExpressionSyntax syntax) :
+Expression[] parseFormulas() :
 {
-    setSyntax(syntax);
+    initSymbolMap();
     List r = new LinkedList();
     Expression expr;
 }
@@ -379,14 +386,13 @@ Expression[] parseFormulas(ExpressionSyntax syntax) :
 
 
 /**
- * Start to parse a logic formula with the given syntax.
- * @param syntax the expression syntax to use for parsing expressions (formulas).
+ * Start to parse a logic formula with the current syntax.
  * @see #parseFormulas(ExpressionSyntax)
  * @internal we require <EOF> to be sure we parsed all, and no syntactic garbage lurks around at the end of the input
  */
-Expression parseFormula(ExpressionSyntax syntax) :
+Expression parseFormula() :
 {
-    setSyntax(syntax);
+    initSymbolMap();
     Expression expr;
 }
 {

@@ -38,7 +38,7 @@ public class MathExpressionSyntax implements ExpressionBuilder {
     public Expression createAtomic(Symbol symbol) {
 	Type cod = symbol.getType().codomain();
 	Type doc = symbol.getType().domain();
-	assert cod != Types.ABSURD;
+	assert cod != Types.ABSURD : "@xxx currently assume map as strict";
 	if (cod.equals(Types.VOID))
 	    if (doc.equals(Types.INDIVIDUAL))
 		return new MathExpression(valueFactory.symbol(symbol.getSignifier()), symbol.getType());
