@@ -25,7 +25,6 @@ import orbital.logic.functor.*;
 
 import java.io.StringReader;
 
-import orbital.util.Utility;
 import orbital.math.MathUtilities;
 import orbital.math.Arithmetic;
 import orbital.math.Values;
@@ -317,60 +316,22 @@ abstract class ModernLogic implements Logic {
     }
 
     // parsing
-    
-    // this is an additional method related to createExpression(String)
+
     /**
-     * Create a sequence of (compound) expressions by parsing a list of expressions.
-     * This method is the list version of {@link #createExpression(String)}.
-     * <p>
-     * For example, in the context of conjectures when given
-     * <pre>
-     * A&B, A&~C
-     * </pre>
-     * an implementation could parse it as two formulas <code>A&B</code> and <code>A&~C</code>.
-     * </p>
-     * @param expressions the comma separated list of expressions to parse.
-     * @throws UnsupportedOperationException if no syntax notation for sequences of formulas
-     *  has been defined.
-     * @post RES instanceof Formula[] covariant return-type
-     * @see #createExpression(String)
+     * {@inheritDoc}.
+     * Parses single formulas or sequences of formulas delimited by comma and enclosed in curly brackets.
+     * Sequences of expressions are represented by a <em>special</em> compound expression encapsulating the array of
+     * expressions as its {@link Expression.Composite#getComponent() component}.
+     * @todo enhance documentation (and implementation) of how to distinguish this special ExpressionSequence
+     * from other compound expressions.
      */
-    public Expression[] createAllExpressions(String expressions) throws ParseException {
-	if (expressions == null)
-	    throw new NullPointerException("null is not an expression");
-	try {
-	    String s = expressions.trim();
-	    if (s.length() == 0)
-		return new Formula[0];
-	    if (!(s.charAt(0) == '{' && s.charAt(s.length()-1) == '}'))
-		//@internal adapt from older syntax
-		expressions = "{" + expressions + "}";
-	    LogicParser parser = new LogicParser(new StringReader(expressions));
-	    parser.setSyntax(this);
-	    Expression B[] = parser.parseFormulas();
-	    assert !Utility.containsIdenticalTo(B, null) : "empty string \"\" is not a formula, but only an empty set of formulas.";
-	    return B instanceof Formula[]
-		? (Formula[]) B
-		: (Formula[]) Arrays.asList(B).toArray(new Formula[0]);
-	} catch (orbital.moon.logic.ParseException ex) {
-	    throw new ParseException(ex.getMessage() + "\nIn expressions: " + expressions,
-				     ex.currentToken == null ? COMPLEX_ERROR_OFFSET : ex.currentToken.next.beginLine,
-				     ex.currentToken == null ? COMPLEX_ERROR_OFFSET : ex.currentToken.next.beginColumn,
-				     ex);
-	}                                                                                                                                      
-    }
     public Expression createExpression(String expression) throws ParseException {
 	if (expression == null)
 	    throw new NullPointerException("null is not an expression");
 	try {
 	    LogicParser parser = new LogicParser(new StringReader(expression));
 	    parser.setSyntax(this);
-	    Expression x = parser.parseFormula();
-	    if (x == null) {
-		assert "".equals(expression) : "only the empty formula \"\" can lead to the forbidden case of a null expression";
-		throw new ParseException("empty string \"\" is not a formula", COMPLEX_ERROR_OFFSET);
-	    } else
-		return x;
+	    return parser.parseFormulas();
 	} catch (orbital.moon.logic.ParseException ex) {
 	    throw new ParseException(ex.getMessage() + "\nIn expression: " + expression,
 				     ex.currentToken == null ? COMPLEX_ERROR_OFFSET : ex.currentToken.next.beginLine,
@@ -384,7 +345,7 @@ abstract class ModernLogic implements Logic {
     }
 
 
-    // Helpers
+    // convenience helpers
 
     /**
      * Inference (facade for convenience).
@@ -406,6 +367,35 @@ abstract class ModernLogic implements Logic {
 	return inference().infer(B, D);
     } 
 	
+    /**
+     * Create a sequence of (compound) expressions by parsing a list of expressions.
+     * This method is like {@link #createExpression(String)}, but restricted to lists of expressions.
+     * <p>
+     * For example, in the context of conjectures when given
+     * <pre>
+     * {A&B, A&~C}
+     * </pre>
+     * an implementation could parse it as two formulas <code>A&B</code> and <code>A&~C</code>.
+     * </p>
+     * @param expressions the comma separated list of expressions to parse.
+     * @throws UnsupportedOperationException if no syntax notation for sequences of formulas
+     *  has been defined.
+     * @post RES instanceof Formula[] covariant return-type
+     * @todo deprecated
+     * @note This method is superfluous since its sole function is to unwrap the result of
+     *  {@link #createExpression(String)} for sequences of expressions. So you are advised to
+     *  stick to the interface method {@link #createExpression(String)} to minimize implementation
+     *  dependencies of your code.
+     * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience Method</a>
+     * @see #createExpression(String)
+     */
+    public Expression[] createAllExpressions(String expressions) throws ParseException {
+	Expression expr = createExpression(expressions);
+	assert expr instanceof ExpressionSequence : "parsed sequence of expressions";
+	return (Formula[]) Arrays.asList((Expression[]) ((ExpressionSequence)expr).getComponent())
+	    .toArray(new Formula[0]);
+    }
+
     /**
      * test for syntactically legal <IDENTIFIER>
      * @throws IllegalArgumentException if signifier is not an IDENTIFIER.

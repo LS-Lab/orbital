@@ -33,6 +33,7 @@ import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.Iterator;
 import orbital.math.MathUtilities;
+import orbital.util.Utility;
 
 import java.io.*;
 
@@ -596,7 +597,7 @@ TOKEN :
  * @see #parseFormula()
  * @internal we require <EOF> to be sure we parsed all, and no syntactic garbage lurks around at the end of the input
  */
-Expression[] parseFormulas() :
+Expression parseFormulas() :
 {
     scope = new Scope(root);
     List r = new LinkedList();
@@ -604,9 +605,16 @@ Expression[] parseFormulas() :
 }
 {   LOOKAHEAD(2)
     "{" expr = expression() {r.add(expr);} ( "," expr = expression() {r.add(expr);} )* "}" <EOF>
-	{return (Expression[]) r.toArray(new Expression[0]);}
+	{
+	    Expression[] exprList = (Expression[]) r.toArray(new Expression[0]);
+	    if (Utility.containsIdenticalTo(exprList, null))
+		throw new AssertionError("empty string \"\" is not a formula, but only an empty set of formulas.");
+	    return new ExpressionSequence(exprList);
+	}
     | "{" "}" <EOF>
-	{ return new Expression[0];}
+	{ return new ExpressionSequence(new Expression[0]);}
+    | expr = parseFormula()
+	{ return expr; }
 }
 
 
@@ -623,8 +631,6 @@ Expression parseFormula() :
 {
     expr = expression() <EOF>
 	{ return expr; }
-    | <EOF>
-	{ return null;/* must be converted later into a denotation of the empty formula */ }
 }
 
 /**
@@ -639,8 +645,6 @@ Expression parseTerm() :
 {
     expr = term() <EOF>
 	{ return expr; }
-  | <EOF>
-	{ return null; }
 }
 
 // formula parsing methods
