@@ -9,13 +9,24 @@ package orbital.logic;
 /**
  * The base interface for all things that are composed of other things.
  * Such compositions include but are not limited to functors, expressions, and types.
+ * <p>
+ * Explicit composition information alas to this interface is
+ * required in several situations that have a structurally inductive
+ * effect. Like when they need to structurally decompose objects in
+ * order to define {@link orbital.logic.sign.Substitution
+ * substitution}, {@link
+ * orbital.logic.sign.Substitutions#unify(Collection) unification},
+ * {@link orbital.logic.sign.Substitution$Matcher matching} {@link
+ * orbital.logic.sign.concrete.Notation formatting}, {@link
+ * orbital.math.functional.Function#derive() derivation},
+ * general transformations, etc.
+ * </p>
  * 
  * @structure aggregate compositor:Object
  * @structure aggregate component:Object
  * @version 1.1, 2002-11-27
  * @author  Andr&eacute; Platzer
  * @see <a href="{@docRoot}/Patterns/Design/Composite.html">(unidirectional and multiple) Composite Pattern</a>
- * @todo really move to another package? Perhaps orbital.logic.sign, but this would be together with syntax part of orbital.logic.imp. ? Perhaps orbital.logic.Composite is not too bad for logically composite things.
  */
 public interface Composite/*<Compositor,Component>*/ {
     /**
