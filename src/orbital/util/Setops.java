@@ -790,14 +790,18 @@ public final class Setops {
      *     <tr><td>f a as</td> <td>=</td> <td>as</td> <td>&lArr; &not;p(a)</td></tr>
      *   </table>
      * </center>
-     * @param what states what data in the collection is requested. All if null. See Also {@link Filters}.
-     * @param where states what predicate is checked as condition for selecting data elements. None if null.
-     * @param orderBy states how to sort every two data elements. No sorting if null.
+     * @param what states what data in the collection is requested. All if <code>null</code>. See Also {@link Filters}.
+     * @param where states what predicate is checked as condition for selecting data elements. No condition if <code>null</code>.
+     * @param orderBy states how to sort every two data elements. No sorting if <code>null</code>.
      * @param asc whether to use ascending order, or descending.
-     *  If false, orderBy comparator will be used reverse.
+     *  If <code>false</code>, orderBy comparator will be used reverse.
      * @return a filter that selects the specified data from the source of data it is applied upon.
+     *  It will apply on arguments of type {@link Collection},{@link Iterator}.
+     * @xxx we always return a List.
+     * @todo Utility#generalizedIteratable
      * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      * @see Filters
+     * @see orbital.logic.functor.Functionals.Catamorphism
      */
     public static final Function/**<Collection &cup; Iterator, Collection>**/ createSelection(final Function/*<Collection, Collection>*/ what,
 											      final Predicate where,
@@ -834,6 +838,9 @@ public final class Setops {
 		}
 	    };
     } 
+    public static final Function/**<Collection &cup; Iterator, Collection>**/ createSelection(final Predicate where) {
+	return createSelection(null, where, null, true);
+    }
 
     /**
      * Select filter operation.
@@ -850,6 +857,7 @@ public final class Setops {
      *  If false, orderBy comparator will be used reverse.
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      * @see Filters
+     * @see #createSelection(Function,Predicate,Comparator,boolean)
      */
     public static final Collection select(Function/*<Collection, Collection>*/ what,
 					  Collection from,
