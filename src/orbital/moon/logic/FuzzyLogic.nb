@@ -1,0 +1,184 @@
+(***********************************************************************
+
+                    Mathematica-Compatible Notebook
+
+This notebook can be used on any computer system with Mathematica 4.0,
+MathReader 4.0, or any compatible application. The data for the notebook 
+starts with the line containing stars above.
+
+To get the notebook into a Mathematica-compatible application, do one of 
+the following:
+
+* Save the data starting with the line of stars above into a file
+  with a name ending in .nb, then open the file inside the application;
+
+* Copy the data starting with the line of stars above to the
+  clipboard, then use the Paste menu command inside the application.
+
+Data for notebooks contains only printable 7-bit ASCII and can be
+sent directly in email or through ftp in text mode.  Newlines can be
+CR, LF or CRLF (Unix, Macintosh or MS-DOS style).
+
+NOTE: If you modify the data for this notebook not in a Mathematica-
+compatible application, you must delete the line below containing the 
+word CacheID, otherwise Mathematica-compatible applications may try to 
+use invalid cache data.
+
+For more information on notebooks and Mathematica-compatible 
+applications, contact Wolfram Research:
+  web: http://www.wolfram.com
+  email: info@wolfram.com
+  phone: +1-217-398-0700 (U.S.)
+
+Notebook reader applications are available free of charge from 
+Wolfram Research.
+***********************************************************************)
+
+(*CacheID: 232*)
+
+
+(*NotebookFileLineBreakTest
+NotebookFileLineBreakTest*)
+(*NotebookOptionsPosition[      3701,        125]*)
+(*NotebookOutlinePosition[      4358,        148]*)
+(*  CellTagsIndexPosition[      4314,        144]*)
+(*WindowFrame->Normal*)
+
+
+
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[{
+    \(and[
+        YAGER[p_]]\  = \ \((1\  - \ 
+            Min[1, \((\((1 - #1)\)\^p + \((1 - #2)\)\^p)\)^\((1/
+                    p)\)])\) &\), "\[IndentingNewLine]", 
+    \(or[YAGER[
+          p_]]\  = \ \((Min[
+            1, \((#1\^p + #2\^p)\)\^\(1/p\)])\) &\), "\[IndentingNewLine]", 
+    \(not[YAGER[p_]]\  = \ \((1 - #1)\) &\)}], "Input"],
+
+Cell[BoxData[
+    \(1 - 
+        Min[1, \((\((1 - #1)\)\^p + \((1 - #2)\)\^p)\)\^\(1/p\)] &\)], \
+"Output"],
+
+Cell[BoxData[
+    \(Min[1, \((#1\^p + #2\^p)\)\^\(1/p\)] &\)], "Output"],
+
+Cell[BoxData[
+    \(1 - #1 &\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+    \(l = YAGER[\[Infinity]]\), "\[IndentingNewLine]", 
+    \(\(or[l]\)[\(not[l]\)[0.005], 0.995]\), "\[IndentingNewLine]", 
+    \(l = YAGER[\[Infinity]]\), "\[IndentingNewLine]", 
+    \(\(and[l]\)[0.5, \(not[l]\)[0.2]]\)}], "Input"],
+
+Cell[BoxData[
+    RowBox[{"YAGER", "[", 
+      InterpretationBox["\[Infinity]",
+        DirectedInfinity[ 1]], "]"}]], "Output"],
+
+Cell[BoxData[
+    \(Power::"indet" \(\(:\)\(\ \)\) 
+      "Indeterminate expression \!\(0\^0\) encountered."\)], "Message"],
+
+Cell[BoxData[
+    \(Indeterminate\)], "Output"],
+
+Cell[BoxData[
+    RowBox[{"YAGER", "[", 
+      InterpretationBox["\[Infinity]",
+        DirectedInfinity[ 1]], "]"}]], "Output"],
+
+Cell[BoxData[
+    \(Power::"indet" \(\(:\)\(\ \)\) 
+      "Indeterminate expression \!\(0\^0\) encountered."\)], "Message"],
+
+Cell[BoxData[
+    \(Indeterminate\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+    \(l = YAGER[\[Infinity]]\), "\[IndentingNewLine]", 
+    \(\(or[l]\)[0.5, 0.5]\)}], "Input"],
+
+Cell[BoxData[
+    RowBox[{"YAGER", "[", 
+      InterpretationBox["\[Infinity]",
+        DirectedInfinity[ 1]], "]"}]], "Output"],
+
+Cell[BoxData[
+    \(Power::"indet" \(\(:\)\(\ \)\) 
+      "Indeterminate expression \!\(0\^0\) encountered."\)], "Message"],
+
+Cell[BoxData[
+    \(Indeterminate\)], "Output"]
+}, Open  ]]
+},
+FrontEndVersion->"4.0 for Microsoft Windows",
+ScreenRectangle->{{0, 1280}, {0, 920}},
+WindowSize->{531, 535},
+WindowMargins->{{Automatic, 212}, {-75, Automatic}}
+]
+
+
+(***********************************************************************
+Cached data follows.  If you edit this Notebook file directly, not using
+Mathematica, you must remove the line containing CacheID at the top of 
+the file.  The cache data will then be recreated when you save this file 
+from within Mathematica.
+***********************************************************************)
+
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+
+(*NotebookFileOutline
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[1739, 51, 363, 8, 261, "Input"],
+Cell[2105, 61, 107, 3, 124, "Output"],
+Cell[2215, 66, 72, 1, 56, "Output"],
+Cell[2290, 69, 42, 1, 55, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[2369, 75, 248, 4, 191, "Input"],
+Cell[2620, 81, 128, 3, 55, "Output"],
+Cell[2751, 86, 123, 2, 106, "Message"],
+Cell[2877, 90, 47, 1, 55, "Output"],
+Cell[2927, 93, 128, 3, 55, "Output"],
+Cell[3058, 98, 123, 2, 106, "Message"],
+Cell[3184, 102, 47, 1, 55, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[3268, 108, 110, 2, 89, "Input"],
+Cell[3381, 112, 128, 3, 55, "Output"],
+Cell[3512, 117, 123, 2, 106, "Message"],
+Cell[3638, 121, 47, 1, 55, "Output"]
+}, Open  ]]
+}
+]
+*)
+
+
+
+
+(***********************************************************************
+End of Mathematica Notebook file.
+***********************************************************************)
+

@@ -1,0 +1,51 @@
+# quantified modal logic  -->  two-sorted first-order logic
+# the free variable s:world always is the current world
+# reduction of quantified modal logic to two-sorted first-order logic.
+  red(p(t1,....,tn)) = p(t1,...,tn,s)&w(s)
+  red([]a) = all t:world (R(s,t)->red(a)[s->t]) where t is new in a
+  red(<>a) = some t:world (R(s,t)&red(a)[s->t]) where t is new in a
+  # sorten
+  red(some x a) = some x:object (~w(x)&red(a))
+  red(all x a)  = all x:object  (~w(x)->red(a))
+  # recursive
+  red(a&b) = red(a)&red(b)
+  red(~a) = ~red(a)
+
+
+
+#      A |- B in modal logic K
+# iff  {all s (w(s)->red(F)) | F&isin;A}, Kripke |- all s (w(s)->red(B)) in first-order logic.
+
+
+# Kripke consists of the following set of formulas
+# presupposition of existence
+some s:world w(s)
+# sortentrennung
+all s:world all t:world (R(s,t)->(w(t)&w(s)))
+for each predicate p in Sigma:
+  all x1,...,xn:object,s:world (p(x1,...,xn,s)->~w(x1)&...&~w(xn)&w(s)
+for each function f in Sigma:
+  all x1,...,xn:object (~w(x1)&...&~w(xn) -> ~w(f(x1,...,xn)))
+  all x1,...,xn:object (w(x1)|...|w(xn) -> f(x1,...,xn)=c)
+w(c)  where c:world is a new constant.
+
+
+
+
+# Allgemeine?? Sortentrennung according to the cases see above
+# typed first-order logic  -->  type-free first-order logic
+p(a1:t1,...,an:tn) |- p(a1,...,an)&t1(a1)&...&tn(an)
+°x:t a |- °x (t(x)->a)
+?x:t a |- ?x (t(x)&a)
+
+# additional premises
+# for each type t:* occuring in &Sigma;
+    ?x t(x)							# presupposition of existence
+# for each predicate p:...->o occuring in &Sigma;
+    all x1,...,xn (p(x1,...,xn) -> t1(x1)&...&tn(xn))		# only well-typed
+# for each function  f:...->s occuring in &Sigma;
+    all x1,...,xn (t1(x1)&...&tn(xn) -> s(f(x1,...,xn)))	# application type
+    all x1,...,xn (~(t1(x1)&...&tn(xn)) -> f(x1,...,xn)=c_s)
+    s(c_s)							# where c_s is a new constant for the type s
+# for each (direct) type hierarchy s=<t
+    all x (s(x) -> t(x))
