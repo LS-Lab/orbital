@@ -142,12 +142,21 @@ public interface Clause extends Set/*<Formula>*/ {
 
     // lookup methods
 
+
+    /**
+     * Select some literals of this clause, which are usable for resolution.
+     * @postconditions RES &sube; this
+     */
+    Iterator/*_<Formula>_*/ getResolvableLiterals();
+
     /**
      * Get (an iterator over) all literals contained in this clause
      * that may possibly unify with L. The formulas returned will more
      * likely qualify for unification with C, but need not do so with
      * absolute confidence.  <p>Implementations may use indexing or
-     * links to estimate the clauses to return very quickly.</p>
+     * links to estimate the clauses to return very
+     * quickly. Furthermore, implementations may apply selection
+     * refinements.</p>
      * @postconditions RES&sube;this &and; RES&supe;getUnifiables(L) 
      * @see #getUnifiables(Formula)
      */
@@ -156,7 +165,8 @@ public interface Clause extends Set/*<Formula>*/ {
     /**
      * Get all literals contained in this clause that unify with
      * L. <p>Implementations may use indexing or links to estimate the
-     * clauses to return very quickly.</p>
+     * clauses to return very quickly. Furthermore, implementations
+     * may apply selection refinements.</p>
      * @postconditions RES = {K&isin;this &exist;mgU{L,K}}
      * @see #getProbableUnifiables(Formula)
      */

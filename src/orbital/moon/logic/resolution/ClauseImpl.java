@@ -72,7 +72,7 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
 	Set/*_<Clause>_*/ resolvents = new LinkedHashSet();
 	// try to resolve G with F
 	// choose any literal L&isin;F
-	for (Iterator j = iterator(); j.hasNext(); ) {
+	for (Iterator j = F.getResolvableLiterals(); j.hasNext(); ) {
 	    final Formula L = (Formula) j.next();
 	    // list versions of probable unifiables
 	    final List/*_<Formula>_*/ puinGwithnotL =
@@ -99,7 +99,7 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
 	assert F.getFreeVariables().intersection(G.getFreeVariables()).isEmpty() : "@preconditions disjoint variable variants required for resolution";
 
 	// list version F, just necessary for formulating assertions
-	final List/*_<Formula>_*/ listF = new ArrayList(F);
+	final List/*_<Formula>_*/ listF = new ArrayList(Setops.asList(F.getResolvableLiterals()));
 	
 	// resolvents will contain all resolvents of F and G
 	Set/*_<Clause>_*/ resolvents = new LinkedHashSet();
@@ -345,9 +345,11 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
 	}
     }
 
-    
+
+    /**
+     * Implements subsumption based on unit input semi-ground resolution.
+     */
     public boolean subsumes(Clause D) {
-if (true) return false;
 	if (size() > D.size())
 	    return false;
 	// negate D and replace all variables with distinct constants (also distinct for each literal)
@@ -379,7 +381,7 @@ if (true) return false;
 		for (Iterator i2 = input.getProbableComplementsOf(C1); i2.hasNext(); ) {
 		    final Clause C2 = (Clause) i2.next();
 		    // try to resolve C1 with C2
-		    //@internal no variant forming needed since input of unit input resolution is ground
+		    //@internal no variant forming needed since the input of the unit input resolution is ground
 		    for (Iterator resolvents = C1.resolveWith(C2); resolvents.hasNext(); ) {
 			final Clause R = (Clause)resolvents.next();
 			if (R.equals(Clause.CONTRADICTION)) {
@@ -401,6 +403,10 @@ if (true) return false;
 
 
     // lookup methods
+
+    public Iterator/*_<Formula>_*/ getResolvableLiterals() {
+	return iterator();
+    }
 
     public Iterator/*_<Formula>_*/ getProbableUnifiables(Formula L) {
 	return iterator();
