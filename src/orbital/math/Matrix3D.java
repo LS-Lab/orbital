@@ -8,7 +8,16 @@ package orbital.math;
 
 /**
  * This class uses a 4&times;4 Matrix to encapsulate three dimensional
- * affine transformations including affine translations.
+ * affine transformations (including affine translations).
+ * <p>
+ * The affine group 
+ * <table>
+ *   <tr><td rowspan="2">Aff(<b>R</b><sup>n</sup>) := {</td>
+ *       <td rowspan="2" style="font-size: 200%; font-weight: 100">[</td> <td>A</td> <td>t</td> <td rowspan="2" style="font-size: 200%; font-weight: 100">]</td> <td rowspan="2">&brvbar;</td> <td rowspan="2">A&isin;GL<sub>n</sub>(<b>R</b>),t&isin;<b>R</b><sup>n</sup>} &lt; GL<sub>n+1</sub>(<b>R</b>)</td></tr>
+ *   <tr> <td>0</td> <td>1</td> </tr>
+ * </table>
+ * is the (external) semi-direct product <b>R</b><sup>n</sup> &#8906;<sub>&phi;</sub> GL<sub>n</sub>(<b>R</b>) per &phi;:GL<sub>n</sub>(<b>R</b>)&rarr;Aut(<b>R</b><sup>n</sup>); A&#8614;(v&#8614;Av).
+ * </p>
  * <p>
  * <b>Note:</b> the angles in the methods of this class are interpreted as degree instead of radian.</p>
  * 

@@ -11,12 +11,15 @@ import java.util.Comparator;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.Collections;
 import java.util.List;
 
 import java.util.TreeSet;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import orbital.math.functional.Functionals;
@@ -35,7 +38,6 @@ import java.util.logging.Level;
 
 /**
  * Algebraic algorithms.
- *
  *
  * @author Andr&eacute; Platzer
  * @version 1.1, 2002-08-21
@@ -57,10 +59,11 @@ public class AlgebraicAlgorithms {
      * The monomials are expected to be encoded as their exponents in the form of
      * <code>int[]</code>s.
      * <div>
-     *   X<sub>0</sub><sup>i<sub>0</sub></sup>&sdot;X<sub>1</sub><sup>i<sub>1</sub></sup>&sdot;...&sdot;X<sub>n-1</sub><sup>i<sub>n-1</sub></sup> &le; X<sub>0</sub><sup>j<sub>0</sub></sup>&sdot;X<sub>1</sub><sup>j<sub>1</sub></sup>&sdot;...&sdot;X<sub>n-1</sub><sup>j<sub>n-1</sub></sup>
-     *   :&hArr; X<sub>0</sub><sup>i<sub>0</sub></sup>&sdot;X<sub>1</sub><sup>i<sub>1</sub></sup>&sdot;...&sdot;X<sub>n-1</sub><sup>i<sub>n-1</sub></sup>=X<sub>0</sub><sup>j<sub>0</sub></sup>&sdot;X<sub>1</sub><sup>j<sub>1</sub></sup>&sdot;...&sdot;X<sub>n-1</sub><sup>j<sub>n-1</sub></sup> &or; i<sub>k</sub>&lt;j<sub>k</sub> for k := min{k &brvbar; i<sub>k</sub>&ne;j<sub>k</sub>}
+     *   X<sub>0</sub><sup>i<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>i<sub>n-1</sub></sup> &le; X<sub>0</sub><sup>j<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>j<sub>n-1</sub></sup>
+     *   :&hArr; X<sub>0</sub><sup>i<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>i<sub>n-1</sub></sup>=X<sub>0</sub><sup>j<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>j<sub>n-1</sub></sup> <br />
+     *   &or; i<sub>k</sub>&lt;j<sub>k</sub> for k := min{k &brvbar; i<sub>k</sub>&ne;j<sub>k</sub>}
      * </div>
-     * Especially X<sub>0</sub> &gt; X<sub>1</sub> &gt; ... &gt; X<sub>n-1</sub>.
+     * Especially X<sub>0</sub><sup>2</sup> &gt; X<sub>0</sub> &gt; X<sub>1</sub><sup>2</sup> &gt; X<sub>1</sub> &gt; &#8230; &gt; X<sub>n-1</sub> &gt; 1.
      */
     public static final Comparator LEXICOGRAPHIC = new Comparator() {
 	    public int compare(Object m1, Object m2) {
@@ -83,10 +86,11 @@ public class AlgebraicAlgorithms {
      * The monomials are expected to be encoded as their exponents in the form of
      * <code>int[]</code>s.
      * <div>
-     *   X<sub>0</sub><sup>i<sub>0</sub></sup>&sdot;X<sub>1</sub><sup>i<sub>1</sub></sup>&sdot;...&sdot;X<sub>n-1</sub><sup>i<sub>n-1</sub></sup> &le; X<sub>0</sub><sup>j<sub>0</sub></sup>&sdot;X<sub>1</sub><sup>j<sub>1</sub></sup>&sdot;...&sdot;X<sub>n-1</sub><sup>j<sub>n-1</sub></sup>
-     *   :&hArr; X<sub>0</sub><sup>i<sub>0</sub></sup>&sdot;X<sub>1</sub><sup>i<sub>1</sub></sup>&sdot;...&sdot;X<sub>n-1</sub><sup>i<sub>n-1</sub></sup>=X<sub>0</sub><sup>j<sub>0</sub></sup>&sdot;X<sub>1</sub><sup>j<sub>1</sub></sup>&sdot;...&sdot;X<sub>n-1</sub><sup>j<sub>n-1</sub></sup> &or; i<sub>k</sub>&lt;j<sub>k</sub> for k := max{k &brvbar; i<sub>k</sub>&ne;j<sub>k</sub>}
+     *   X<sub>0</sub><sup>i<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>i<sub>n-1</sub></sup> &le; X<sub>0</sub><sup>j<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>j<sub>n-1</sub></sup>
+     *   :&hArr; X<sub>0</sub><sup>i<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>i<sub>n-1</sub></sup>=X<sub>0</sub><sup>j<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>j<sub>n-1</sub></sup> <br />
+     *   &or; i<sub>k</sub>&lt;j<sub>k</sub> for k := max{k &brvbar; i<sub>k</sub>&ne;j<sub>k</sub>}
      * </div>
-     * Especially X<sub>0</sub> &lt; X<sub>1</sub> &lt; ... &lt; X<sub>n-1</sub>.
+     * Especially 1 &lt; X<sub>0</sub> &lt; X<sub>0</sub><sup>2</sup> &lt; X<sub>1</sub> &lt; X<sub>1</sub><sup>2</sup> &lt; &#8230; &lt; X<sub>n-1</sub>.
      */
     public static final Comparator REVERSE_LEXICOGRAPHIC = new Comparator() {
 	    public int compare(Object m1, Object m2) {
@@ -110,9 +114,11 @@ public class AlgebraicAlgorithms {
      * The monomials are expected to be encoded as their exponents in the form of
      * <code>int[]</code>s.
      * <div>
-     *   X<sub>0</sub><sup>i<sub>0</sub></sup>&sdot;X<sub>1</sub><sup>i<sub>1</sub></sup>&sdot;...&sdot;X<sub>n-1</sub><sup>i<sub>n-1</sub></sup> &le; X<sub>0</sub><sup>j<sub>0</sub></sup>&sdot;X<sub>1</sub><sup>j<sub>1</sub></sup>&sdot;...&sdot;X<sub>n-1</sub><sup>j<sub>n-1</sub></sup>
-     *   :&hArr; deg(X<sub>0</sub><sup>i<sub>0</sub></sup>&sdot;X<sub>1</sub><sup>i<sub>1</sub></sup>&sdot;...&sdot;X<sub>n-1</sub><sup>i<sub>n-1</sub></sup>)&lt;deg(X<sub>0</sub><sup>j<sub>0</sub></sup>&sdot;X<sub>1</sub><sup>j<sub>1</sub></sup>&sdot;...&sdot;X<sub>n-1</sub><sup>j<sub>n-1</sub></sup>) &or; <big>(</big>deg(X<sub>0</sub><sup>i<sub>0</sub></sup>&sdot;X<sub>1</sub><sup>i<sub>1</sub></sup>&sdot;...&sdot;X<sub>n-1</sub><sup>i<sub>n-1</sub></sup>)=deg(X<sub>0</sub><sup>j<sub>0</sub></sup>&sdot;X<sub>1</sub><sup>j<sub>1</sub></sup>&sdot;...&sdot;X<sub>n-1</sub><sup>j<sub>n-1</sub></sup>) &and; X<sub>0</sub><sup>i<sub>0</sub></sup>&sdot;X<sub>1</sub><sup>i<sub>1</sub></sup>&sdot;...&sdot;X<sub>n-1</sub><sup>i<sub>n-1</sub></sup> {@link #LEXICOGRAPHIC &lt;<sub>lexico</sub>} X<sub>0</sub><sup>j<sub>0</sub></sup>&sdot;X<sub>1</sub><sup>j<sub>1</sub></sup>&sdot;...&sdot;X<sub>n-1</sub><sup>j<sub>n-1</sub></sup><big>)</big>
+     *   X<sub>0</sub><sup>i<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>i<sub>n-1</sub></sup> &le; X<sub>0</sub><sup>j<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>j<sub>n-1</sub></sup>
+     *   :&hArr; deg(X<sub>0</sub><sup>i<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>i<sub>n-1</sub></sup>)&lt;deg(X<sub>0</sub><sup>j<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>j<sub>n-1</sub></sup>) <br />
+     *   &or; <big>(</big>deg(X<sub>0</sub><sup>i<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>i<sub>n-1</sub></sup>)=deg(X<sub>0</sub><sup>j<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>j<sub>n-1</sub></sup>) &and; X<sub>0</sub><sup>i<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>i<sub>n-1</sub></sup> {@link #LEXICOGRAPHIC &lt;<sub>lexico</sub>} X<sub>0</sub><sup>j<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>j<sub>n-1</sub></sup><big>)</big>
      * </div>
+     * Especially X<sub>0</sub><sup>2</sup> &gt; X<sub>1</sub><sup>2</sup> &gt; X<sub>0</sub> &gt; X<sub>1</sub> &gt; &#8230; &gt; X<sub>n-1</sub> &gt; 1.
      */
     public static final Comparator DEGREE_LEXICOGRAPHIC = new Comparator() {
 	    public int compare(Object m1, Object m2) {
@@ -132,6 +138,19 @@ public class AlgebraicAlgorithms {
     
     /**
      * The (partial) order on polynomials induced by an admissible total order on monomials.
+     * <dl class="def">
+     * Let &le; &sube; M<sub>n</sub> &times; M<sub>n</sub> be a total order on the monoid of monomials
+     * M<sub>n</sub> := {X<sup class="vector">&nu;</sup> := X<sub>1</sub><sup>&nu;<sub>1</sub></sup>&sdot;&#8230;&sdot;X<sub>n</sub><sup>&nu;<sub>n</sub></sup> &brvbar; <span class="vector">&nu;</span>=(&nu;<sub>1</sub>,&#8230;,&nu;<sub>n</sub>) &isin; <b>N</b><sup>n</sup>}.
+     *   <dt id="admissible">admissible</dt>
+     *   <dd>&le; is admissible, if
+     *     <ol class="and">
+     *       <li>&forall;X<sup class="vector">&nu;</sup>,X<sup class="vector">&mu;</sup>&isin;M<sub>n</sub> X<sup class="vector">&nu;</sup> &le; X<sup class="vector">&mu;</sup> &rArr; &forall;X<sup class="vector">&lambda;</sup>&isin;M<sub>n</sub> X<sup class="vector">&nu;</sup>&sdot;X<sup class="vector">&lambda;</sup> &le; X<sup class="vector">&mu;</sup>&sdot;X<sup class="vector">&lambda;</sup></li>
+     *       <li>&#8739; &sube; &le;<br />
+     *         (&hArr; 1 = min M<sub>n</sub>)</li>
+     *     </ol>
+     *     &rArr; M<sub>n</sub> is well-ordered with &le;.
+     *   </dd>
+     * </dl>
      * @param monomialOrder is the underlying admissible total order on the monoid of monomials to use.
      */
     public static final Comparator INDUCED(final Comparator monomialOrder) {
@@ -162,13 +181,13 @@ public class AlgebraicAlgorithms {
 			    return -1;
 			else if (((Multinomial)p2).degreeValue() < 0)
 			    return 1;
-		    else
-			throw new IndexOutOfBoundsException();
-// 		    //@todo verify: in case of different number of occurring monomials, the one that has more is greater
-// 		    if (!i.hasNext())
-// 			return -1;
-// 		    else if (!j.hasNext())
-// 			return 1;
+			else
+			    throw new IndexOutOfBoundsException();
+		    // 		    //@todo verify: in case of different number of occurring monomials, the one that has more is greater
+		    // 		    if (!i.hasNext())
+		    // 			return -1;
+		    // 		    else if (!j.hasNext())
+		    // 			return 1;
 		    int cmp = monomialOrder.compare(i.next(), j.next());
 		    if (cmp != 0)
 			return cmp;
@@ -239,21 +258,34 @@ public class AlgebraicAlgorithms {
     // divisibility (gcd, lcm) and CRT
 
     /**
-     * Returns greatest common divisor (GCD) of two elements of a ring.
-     * The GCD is the greatest (with respect to dividability) element in the ring which divides both, a and b.
+     * Returns greatest common divisor (gcd) of two elements of an (Euclidean) ring.
+     * @see #gcd(Euclidean,Euclidean)
+     */
+    public static final BinaryFunction gcd = new BinaryFunction/*<Euclidean,Euclidean,Euclidean>*/() {
+	    public Object apply(Object a, Object b) {
+		return gcd((Euclidean)a, (Euclidean)b);
+	    }
+	};
+    /**
+     * Returns greatest common divisor (gcd) of two elements of an (Euclidean) ring.
+     * The gcd is the greatest element (with respect to divisibility) in the ring which divides both, a and b.
      * <p>
      * In an Euclidean ring R it is true that
      * <ul>
      *   <li>&forall;a&isin;R\{0} gcd(a, 0) = a</li>
      *   <li>&forall;a&isin;R,b&isin;R\{0} gcd(a, b) = gcd(b, a mod b)</li>
+     *   <li>Also see {@link Euclidean}</li>
      * </ul>
+     * </p>
      * @pre &not;(a==0 &and; b==0)
-     * @return gcd(a,b) := inf(a,b) with divides as a partial order (N,|).
+     * @return gcd(a,b) := inf(a,b) with divides (&#8739;) as a partial order on R.
      * @note the father of all algorithms is Euclid.
      * @note the mother of all data structures are Euclidean rings.
-     * @note There are even principal rings which are not Euclidean but where one can define the equivalent of the Euclidean algorithm.
+     * @note There are even principal ideal rings which are not Euclidean but where one can define the equivalent of the Euclidean algorithm.
      *  The algorithm for rational numbers was given in Book VII of Euclid's Elements, and the algorithm for reals appeared in Book X,
-     *  and is the earliest example of an integer relation algorithm (Ferguson et al. 1999, also see Ferguson-Forcade algorithm in Ferguson et al. 1999). 
+     *  and is the earliest example of an integer relation algorithm (Ferguson et al. 1999, also see Ferguson-Forcade algorithm in Ferguson et al. 1999).
+     * @note gcd and lcm also exist in factorial rings (unique factorization domains), although they
+     *  do not possess the same properties and their computation is far more expensive then.
      * @see "Ferguson, H. R. P.; Bailey, D. H.; and Arno, S. "Analysis of PSLQ, An Integer Relation Finding Algorithm." Math. Comput. 68, 351-369, 1999."
      * @todo optimize
      * @has time complexity gcd&isin;O(log(max{||a||, ||b||}))
@@ -263,6 +295,13 @@ public class AlgebraicAlgorithms {
 	Euclidean list[] = {a, b};
 	return gcd(list)[list.length];		//sic(!)
     }
+    /**
+     * Returns least common multiple (lcm) of two ring elements.
+     * The lcm is the smallest ring element (with respect to divisibility) which is a multiple of both.
+     * <p>
+     * This implementation uses <code>a*b/gcd(a,b)</code>.</p>
+     * @return lcm(a,b) := sup(a,b) with &#8739; "divides" as a partial order on R.
+     */
     public static Euclidean lcm(Euclidean a, Euclidean b) {
 	return (Euclidean) a.multiply(b).divide(gcd(a,b));
     }
@@ -272,11 +311,12 @@ public class AlgebraicAlgorithms {
      * This implementation uses the extended euclidian algorithm, 
      * Euclid-Lagrange-Berlekamp Algorithm (ELBA).
      * </p>
-     * @param elements an array {a<sub>0</sub>,...,a<sub>n-1</sub>} &sube; R whose gcd to determine.
-     * @pre &not;&forall;i elements[i]==0
-     * @return an array {s<sub>0</sub>,...,s<sub>n-1</sub>, d} &sube; R where
-     *  d = gcd({a<sub>0</sub>,...,a<sub>n-1</sub>}) = &sum;<sub>i=0,...,n-1</sub> s<sub>i</sub>*a<sub>i</sub>.
-     * @internal note see extended euclidian algorithm ELBA (Euclid-Lagrange-Berlekamp Algorithm) for a decomposition into d=gcd(a,b),r,s in R such that d = r*a + s*b
+     * @param elements an array {a<sub>0</sub>,&#8230;,a<sub>n-1</sub>} &sube; R whose gcd to determine.
+     * @pre &not;&forall;i elements[i]=0
+     * @return an array {s<sub>0</sub>,&#8230;,s<sub>n-1</sub>, d} &sube; R where
+     *  d = gcd({a<sub>0</sub>,&#8230;,a<sub>n-1</sub>}) = &sum;<sub>i=0,&#8230;,n-1</sub> s<sub>i</sub>*a<sub>i</sub>.
+     * @internal gcd({a<sub>0</sub>,&#8230;,a<sub>n-1</sub>}) = gcd(gcd({a<sub>0</sub>,&#8230;,a<sub>n-2</sub>}),a<sub>n-2</sub>)
+     * @internal ELBA (Euclid-Lagrange-Berlekamp Algorithm) for a decomposition into d=gcd(a,b),r,s in R such that d = r*a + s*b
      * @todo use documentation from gcd(Euclidean, Euclidean)
      * @see #gcd(Euclidean,Euclidean)
      */
@@ -290,7 +330,8 @@ public class AlgebraicAlgorithms {
 	    // see below
 	    break;
 	default:
-	    //@todo fold a with gcd, and somehow combine the overall gcd
+	    //@todo fold a with gcd, and somehow combine the overall gcd, and the s[i]
+	    Euclidean d = (Euclidean) Functionals.foldLeft(gcd, elements[0], elements);
 	    throw new UnsupportedOperationException("gcd of more than two elements not yet implemented");
 	}
 	final Euclidean a = elements[0], b = elements[1];
@@ -339,22 +380,9 @@ public class AlgebraicAlgorithms {
     } 
 
     /**
-     * Returns greatest common divisor (GCD) of two integers.
-     * The GCD is the greatest integer which divides both numbers.
-     * <p>
-     * In an Euclidean ring R it is true that
-     * <ul>
-     *   <li>&forall;a&isin;R gcd(a, 0) = a</li>
-     *   <li>&forall;a&isin;R,b&isin;R\{0} gcd(a, b) = gcd(b, a mod b)</li>
-     * </ul>
-     * <p>
-     * This implementation uses the non-extended Euclidian algorithm.
-     * </p>
+     * Returns greatest common divisor (gcd) of two integers.
      * @pre &not;(a==0 &and; b==0)
-     * @return gcd(a,b) := inf(a,b) with | (divides) as a partial order on <b>N</b>.
-     * @internal note see extended Euclidian algorithm ELBA (Euclid-Lagrange-Berlekamp Algorithm) for a decomposition into g=ggT(a,b),r,s in R such that g = r*a + s*b
-     * @todo optimize
-     * @has time complexity gcd&isin;O(&#13266;(max{||a||, ||b||}))
+     * @todo optimize, or simply call {@link #gcd(Euclidean,Euclidean)}
      */
     public static int gcd(int a, int b) {
 	if ((a == 0 && b == 0))
@@ -386,11 +414,8 @@ public class AlgebraicAlgorithms {
     } 
 
     /**
-     * Returns least common multiple (LCM) of two integers.
-     * The LCM is the smallest integer which is a multiple of both numbers.
-     * <p>
-     * This implementation uses <code>a*b/gcd(a,b)</code>.</p>
-     * @return lcm(a,b) := sup(a,b) with | "divides" as a partial order on <b>N</b>.
+     * Returns least common multiple (lcm) of two integers.
+     * @see #lcm(Euclidean,Euclidean)
      */
     public static int lcm(int a, int b) {
 	return a * b / gcd(a, b);
@@ -398,26 +423,26 @@ public class AlgebraicAlgorithms {
 
     /**
      * Simulatenously solve independent congruences.
-     * <center>x &equiv; x<sub>i</sub> (mod m<sub>i</sub>) for i=1,...,n</center>
+     * <center>x &equiv; x<sub>i</sub> (mod m<sub>i</sub>) for i=1,&#8230;,n</center>
      * The Chinese Remainder Theorem guarantees a unique solution x
-     * (modulo m<sub>1</sub>*...*m<sub>n</sub>), if the m<sub>i</sub> are coprime,
+     * (modulo m<sub>1</sub>*&#8230;*m<sub>n</sub>), if the m<sub>i</sub> are coprime,
      * i.e. (m<sub>i</sub>)+(m<sub>j</sub>)=(1).
      * <table>
      *   <caption>The isomorphisms involved form the Chinese remainder algorithm</caption>
      *   <tr>
-     *     <td class="leftOfMap">R<big>/</big>&#8898;<sub>&#957;=1,...,n</sub> I<sub>&#957;</sub></td>
+     *     <td class="leftOfMap">R<big>/</big>&#8898;<sub>&#957;=1,&#8230;,n</sub> I<sub>&#957;</sub></td>
      *     <td class="arrowOfMap">&rarr;&#771;</td>
      *     <td class="rightOfMap">R/I<sub>1</sub> &times; &#8230; &times; R/I<sub>n</sub></td>
      *   </tr>
      *   <tr>
      *     <td class="leftOfMap">x</td>
      *     <td class="arrowOfMap">&#8614;</td>
-     *     <td class="rightOfMap"><big>(</big>x (mod m<sub>1</sub>),...,x (mod m<sub>n</sub>)<big>)</big></td>
+     *     <td class="rightOfMap"><big>(</big>x (mod m<sub>1</sub>),&#8230;,x (mod m<sub>n</sub>)<big>)</big></td>
      *   </tr>
      *   <tr>
-     *     <td class="leftOfMap">&sum;<sub>i=1,...,n</sub> x<sub>i</sub><big>(</big>(&prod;<sub>j&ne;i</sub> m<sub>j</sub>)<sup>-1</sup> (mod m<sub>i</sub>)<big>)</big>&prod;<sub>j&ne;i</sub> m<sub>j</sub></td>
+     *     <td class="leftOfMap">&sum;<sub>i=1,&#8230;,n</sub> x<sub>i</sub><big>(</big>(&prod;<sub>j&ne;i</sub> m<sub>j</sub>)<sup>-1</sup> (mod m<sub>i</sub>)<big>)</big>&prod;<sub>j&ne;i</sub> m<sub>j</sub></td>
      *     <td class="arrowOfMap">&#8612;</td>
-     *     <td class="rightOfMap">(x<sub>1</sub>,...,x<sub>n</sub>)</td>
+     *     <td class="rightOfMap">(x<sub>1</sub>,&#8230;,x<sub>n</sub>)</td>
      *   </tr>
      * </table>
      * <p>
@@ -432,10 +457,10 @@ public class AlgebraicAlgorithms {
      * <span class="keyword">return</span> x
      * </pre>
      * </p>
-     * @param x the array of congruence values x<sub>1</sub>,...,x<sub>n</sub>.
-     * @param m the array of corresponding moduli m<sub>1</sub>,...,m<sub>n</sub>.
+     * @param x the array of congruence values x<sub>1</sub>,&#8230;,x<sub>n</sub>.
+     * @param m the array of corresponding moduli m<sub>1</sub>,&#8230;,m<sub>n</sub>.
      * @pre &forall;i&ne;j (x[i])+(x[j])=(1), i.e. gcd(x[i],x[j])=1.
-     * @return the unique solution x (modulo m<sub>1</sub>*...*m<sub>n</sub>).
+     * @return the unique solution x (modulo m<sub>1</sub>*&#8230;*m<sub>n</sub>).
      * @internal implements Chinese remainder algorithm which is a direct consequence of the
      *  Chinese Remainder Theorem.
      */
@@ -457,22 +482,28 @@ public class AlgebraicAlgorithms {
 
     /**
      * Reduce f with respect to g.
+     * @param g the collection of multinomials for reducing f. 
      * @param monomialOrder the order of monomials, which is decisive for the time complexity.
      * @return h if h is a reduced reduction of f with respect to g.
      * @internal elementaryReduction = "wenn ein Monom verschwindet und der Rest kleiner wird"
      * @internal reduction = transitiveClosure(elementaryReduction)
      */
-    public static final Multinomial/*<R>*/ reduce(Multinomial/*<R>*/ f, Multinomial/*<R>*/[] g, final Comparator monomialOrder) {
-	logger.log(Level.FINER, "reducing ({0} with respect to {1} ...", new Object[] {f, MathUtilities.format(g)});
+    public static final Multinomial/*<R>*/ reduce(Multinomial/*<R>*/ f, Collection/*_Multinomial<R>_*/ g, final Comparator monomialOrder) {
+	return (Multinomial) reduce(g, monomialOrder).apply(f);
+    }
+    private static final Function/*<Multinomial<R>,Multinomial<R>>*/ reduce(final Collection/*_Multinomial<R>_*/ g, final Comparator monomialOrder) {
 	// enrich g with exponents of leading monomials
-	final Pair/*<Multinomial<R>,int[]>*/[] basis = new Pair[g.length];
-	for (int i = 0; i < basis.length; i++) {
-	    final Multinomial gi = g[i];
-	    final int[] leadingMonomial = leadingMonomial(gi, monomialOrder);
-	    basis[i] = new Pair(gi, leadingMonomial);
+	final Pair/*<Multinomial<R>,int[]>*/[] basis = new Pair[g.size()];
+	{
+	    Iterator it = g.iterator();
+	    for (int i = 0; i < basis.length; i++) {
+		final Multinomial gi = (Multinomial) it.next();
+		final int[] leadingMonomial = leadingMonomial(gi, monomialOrder);
+		basis[i] = new Pair(gi, leadingMonomial);
+	    }
 	}
 	//@internal would we profit from using orbital.logic.trs, even though polynomials do not currently have an introspectable internal structure per Functor.Composite?
-	Function elementaryReduce = new Function/*<Multinomial,Multinomial>*/() {
+	final Function elementaryReduce = new Function/*<Multinomial,Multinomial>*/() {
 		public Object apply(Object o) {
 		    // only cast since Multinomial does not yet have dimensions()
 		    final AbstractMultinomial f = (AbstractMultinomial)o;
@@ -507,14 +538,158 @@ public class AlgebraicAlgorithms {
 				throw new AssertionError(reduction + "<" + f);
 			    logger.log(Level.FINEST, "elementary reduction {0} - {1} * ({2}) == {3}", new Object[] {f, q, gj, reduction});
 			    return reduction;
-		}
+			}
 		    }
 		    return f;
 		}
 	    };
-	return (Multinomial) Functionals.fixedPoint(elementaryReduce, f);
+	return new Function() {
+		public Object apply(Object f) {
+		    logger.log(Level.FINEST, "reducing ({0} with respect to {1} ...", new Object[] {f, g});
+		    return Functionals.fixedPoint(elementaryReduce, f);
+		}
+	    };
     }
 
+    /**
+     * Get the reduced Groebner basis of g.
+     * <p>
+     * <dl class="def">
+     *   <dt>Groebner basis</dt>
+     *   <dd>
+     *     A finite generating system G is a Groebner basis of I&#8884;K[X<sub>1</sub>,&#8230;,X<sub>n</sub>]
+     *     if one of the following equivalent conditions is satisfied.
+     *     <ol class="equiv">
+     *       <li>L(I)=L(G)
+     *           where L(A) := {l(a)X<sup class="vector">&nu;</sup> &brvbar; a&isin;A,X<sup class="vector">&nu;</sup>&isin;M<sub>n</sub>} "&#8884;" M<sub>n</sub> for A&sube;M<sub>n</sub>
+     *       </li>
+     *       <li>&forall;f&isin;I\{0} &exist;g&isin;G l(g) &#8739; l(f)</li>
+     *       <li>&forall;f&isin;I f is reduced to 0 with respect to G</li>
+     *       <li><big>(</big>f&isin;I &hArr; &exist;q<sub>g</sub>&isin;K[X<sub>1</sub>,&#8230;,X<sub>n</sub>] f = &sum;<sub>g&isin;G</sub> q<sub>g</sub>g &and; l(f) = max{l(q<sub>g</sub>g) &brvbar; g&isin;G}<big>)</big></li>
+     *       <li>each f&isin;K[X<sub>1</sub>,&#8230;,X<sub>n</sub>] has a unique (reduced) reduction with respect to G</li>
+     *       <li>the G-reduced polynomials form a system of representatives of K[X<sub>1</sub>,&#8230;,X<sub>n</sub>]/I</li>
+     *       <li>&forall;f&ne;g&isin;G 0 is a reduction of
+     *         S(f,g) := 1&#8725;l<sub>c</sub>(f)*X<sup class="vector">&nu;</sup>&sdot;f - 1&#8725;l<sub>c</sub>(g)*X<sup class="vector">&mu;</sup>&sdot;g <br />
+     *         where X<sup class="vector">&nu;</sup>,X<sup class="vector">&mu;</sup> are coprime and such that
+     *         l(X<sup class="vector">&nu;</sup>&sdot;f)=l(X<sup class="vector">&mu;</sup>&sdot;g)
+     *       </li>
+     *     </ol>
+     *   </dd>
+     * </dl>
+     * <dl class="def">
+     * A Groebner basis G of I &#8884; K[X<sub>1</sub>,&#8230;,X<sub>n</sub>] is
+     *   <dt>minimal</dt>
+     *   <dd>&forall;g&ne;h&isin;G l(g) &#8740; l(h)</dd>
+     *   <dt>reduced</dt>
+     *   <dd>&forall;g&isin;G g reduced with respect to G\{g}
+     *     <div>&rArr; G minimal</div>
+     *   </dd>
+     * </dl>
+     * Two minimal Groebner bases have the same number of elements and the same leading monomials.
+     * There is a unique reduced Groebner basis.
+     * </p>
+     * @param g the collection of multinomials that is a generating system of the ideal (g)
+     *  for which to construct a Groebner basis.
+     * @param monomialOrder the order of monomials, which is decisive for the time complexity.
+     * @note The Buchberger algorithm used to construct a Groebner basis is equivalent
+     *  to {@link #gcd(Euclidean[])} in case of one variable,
+     *  and to {@link LUDecomposition} in case of linear polynomials.
+     * @internal whenever an elementary reduction is possible, use the reduced polynomial instead of the original polynomial.
+     * @internal GroebnerBasis = "if the term rewrite system for reduce is confluent"
+     * @todo scale to get rid of denominators, and of non-primitive polynomials (divide by gcd of coefficients)
+     */
+    public static final Set/*_<Multinomial<R>>_*/ groebnerBasis(Set/*_<Multinomial<R>>_*/ g, final Comparator monomialOrder) {
+	Set/*_<Multinomial<R>>_*/ rgb = reducedGroebnerBasis(g, monomialOrder);
+	Set temp, nrgb = null;
+	assert (temp = reducedGroebnerBasis(rgb, monomialOrder)).equals(rgb) : "reduced Groebner basis " + temp + " of a reduced Groebner basis equals the former Groebner basis";
+	assert (temp = groebnerBasisImpl(rgb, monomialOrder)).equals(rgb) : "(non-reduced) Groebner basis " + temp + " of a (reduced) Groebner basis " + rgb + " equals the former Groebner basis";
+	assert containsAll(nrgb = groebnerBasisImpl(g, monomialOrder), g, monomialOrder) : "the original generating system " + g + " is in the ideal spanned by its (non-reduced) Groebner basis " + nrgb;
+	assert equalSpan(rgb, nrgb, monomialOrder) : "reduced Groebner basis " + rgb + " and (non-reduced) Groebner basis " + nrgb + " of " + g + " have equal span";
+	assert containsAll(rgb, g, monomialOrder) : "the original generating system " + g + " is in the ideal spanned by its (reduced) Groebner basis " + rgb;
+	return rgb;
+    }
+    /**
+     * Get the reduced Groebner basis of g (Implementation).
+     */
+    private static final Set/*_<Multinomial<R>>_*/ reducedGroebnerBasis(Collection/*_<Multinomial<R>>_*/ g, final Comparator monomialOrder) {
+	return new HashSet(reduceGroebnerBasis(new ArrayList(groebnerBasisImpl(g, monomialOrder)), monomialOrder));
+    }
+    /**
+     * Get the non-reduced Groebner basis of g (Implementation).
+     */
+    private static final Set/*_<Multinomial<R>>_*/ groebnerBasisImpl(Collection/*_<Multinomial<R>>_*/ gg, final Comparator monomialOrder) {
+	final List/*_<Multinomial<R>>_*/ g = new ArrayList(gg);
+	ergaenzeGroebnerBasis:
+	while (true) {
+	    for (int i = 0; i < g.size(); i++) {
+		for (int j = i + 1; j < g.size(); j++) {
+		    final Multinomial/*<R>*/ gi = (Multinomial)g.get(i);
+		    final Multinomial/*<R>*/ gj = (Multinomial)g.get(j);
+		    // construct Sgigj = S(g[i], g[j])
+		    final int[] lgi = leadingMonomial(gi, monomialOrder);
+		    final int[] lgj = leadingMonomial(gj, monomialOrder);
+		    // construct X^nu and X^mu coprime such that l(X^nu*g[i])==l(X^mu*g[j]) (also @see #lcm(Euclidean,Euclidean))
+		    final int[] d = Functionals.map(Operations.max, lgi, lgj);
+		    final int[] nu = Functionals.map(Operations.subtract, d, lgi);
+		    final int[] mu = Functionals.map(Operations.subtract, d, lgj);
+		    assert Setops.all(Values.valueOf(nu).iterator(), Values.valueOf(mu).iterator(), new orbital.logic.functor.BinaryPredicate() { public boolean apply(Object nui, Object mui) {return nui.equals(Values.ZERO) || mui.equals(Values.ZERO);} }) : "coprime " + AbstractMultinomial.MONOMIAL(Values.ONE, nu) + " and " + AbstractMultinomial.MONOMIAL(Values.ONE, mu);
+		    // Xpowernugi = 1/lc(g[i]) * X<sup>nu</sup>*g[i]
+		    final Multinomial Xpowernugi = AbstractMultinomial.MONOMIAL(gi.get(lgi).inverse(), nu).multiply(gi);
+		    // Xpowernugi = 1/lc(g[j]) * X<sup>mu</sup>*g[j]
+		    final Multinomial Xpowermugj = AbstractMultinomial.MONOMIAL(gj.get(lgj).inverse(), mu).multiply(gj);
+		    assert Utility.equalsAll(leadingMonomial(Xpowernugi, monomialOrder), leadingMonomial(Xpowermugj, monomialOrder)) : "construction should generate equal leading monomials (" + leadingMonomial(Xpowernugi, monomialOrder) + " of " + Xpowernugi + " and " + leadingMonomial(Xpowermugj, monomialOrder) + " of " + Xpowermugj + ") which vanish by subtraction";
+		    final Multinomial Sgigj = Xpowernugi.subtract(Xpowermugj);
+		    assert Sgigj.get(d).norm().equals(Values.ZERO) : "construction should generate equal leading monomials which vanish by subtraction";
+		    final Multinomial r = reduce(Sgigj, g, monomialOrder);
+		    logger.log(Level.FINER, "S({0},{1}) = {2} * ({3})  -  {4} * ({5}) = {6} reduced to {7}", new Object[] {gi, gj, AbstractMultinomial.MONOMIAL(gi.get(lgi).inverse(), nu), gi, AbstractMultinomial.MONOMIAL(gj.get(lgj).inverse(), mu), gj, Sgigj, r});
+		    if (isZeroPolynomial.apply(r))
+			logger.log(Level.FINE, "skip reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
+		    else {
+			logger.log(Level.FINE, "add reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
+			g.add(r);
+			continue ergaenzeGroebnerBasis;
+		    }
+		}
+	    }
+	    break ergaenzeGroebnerBasis;
+	}
+	return new HashSet(g);
+    }
+
+    /**
+     * Reduce the Groebner basis g.
+     */
+    private static final List/*_<Multinomial<R>>_*/ reduceGroebnerBasis(Collection/*_<Multinomial<R>>_*/ g, final Comparator monomialOrder) {
+	final List basis = new ArrayList(g);
+	logger.log(Level.FINE, "reducing Groebner basis {0}", basis);
+	replaceWithReductions:
+	while (true) {
+	    for (int i = 0; i < basis.size(); i++) {
+		final Multinomial gi = (Multinomial) basis.get(i);
+		final List others = new LinkedList(basis);
+		others.remove(i);
+		final Multinomial r = reduce(gi, others, monomialOrder);
+		if (!r.equals(gi)) {
+		    // g[i] not reduced with respect to the others, so replace by its reduction
+		    basis.remove(i);
+		    if (isZeroPolynomial.apply(r)) 
+			// skip adding 0
+			logger.log(Level.FINER, "remove {0} and skip adding reduction {1}", new Object[] {gi, r});
+		    else {
+			basis.add(r);
+			logger.log(Level.FINER, "replace {0} by reduction {1}", new Object[] {gi, r});
+		    }
+		    //@internal or go on with this for loop until nothing changes anymore
+		    continue replaceWithReductions;
+		}
+	    }
+	    break replaceWithReductions;
+	}
+	return basis;
+    }
+
+    // Implementation helpers
+    
     /**
      * Get a collection of those (exponents of) monomials that occur in f
      * (i.e. with coefficient &ne;0).
@@ -536,90 +711,38 @@ public class AlgebraicAlgorithms {
     }
 
     /**
-     * Get the reduced Groebner basis of g.
-     * <p>
-     * <dl>
-     * A Groebner basis G &sube; I &#8884; K[X<sub>1</sub>,...,X<sub>n</sub>] is
-     *   <dt>minimal</dt>
-     *   <dd>&forall;g,h&isin;G l(g) &#8740; l(h)</dd>
-     *   <dt>reduced</dt>
-     *   <dd>&forall;g&isin;G g reduced with respect to G\{g}
-     *     <div>&rArr; G minimal</div>
-     *   </dd>
-     * </dl>
-     * Two minimal Groebner bases have the same number of elements and the same leading monomials.
-     * The reduced Groebner basis exists and is unique.
-     * </p>
-     * @param monomialOrder the order of monomials, which is decisive for the time complexity.
-     * @note The Buchberger algorithm used to construct a Groebner basis is equivalent
-     *  to {@link #gcd(Euclidean[])} in case of one variable,
-     *  and to {@link LUDecomposition} in case of linear polynomials.
-     * @internal whenever an elementary reduction is possible, use the reduced polynomial instead of the original polynomial.
-     * @xxx do we really get the unique reduced Groebner basis? The elements seem to be reduced, though they are perhaps not unique. However, different monomial orders may have been the cause.
-     * @internal GroebnerBasis = "if the term rewrite system for reduce is confluent"
+     * tolerant equality to 0 (or roughly 0) for polynomials.
      */
-    public static final Multinomial/*<R>*/[] groebnerBasis(Multinomial/*<R>*/[] g, final Comparator monomialOrder) {
-	ergaenzeBasis:
-	while (true) {
-	    for (int i = 0; i < g.length; i++) {
-		for (int j = i + 1; j < g.length; j++) {
-		    // construct Sgigj = S(g[i], g[j])
-		    final int[] lgi = leadingMonomial(g[i], monomialOrder);
-		    final int[] lgj = leadingMonomial(g[j], monomialOrder);
-		    // construct X^nu and X^mu such that l(X^nu*g[i])==l(X^mu*g[j]) (also @see #lcm(Euclidean,Euclidean))
-		    final int[] d = Functionals.map(Operations.max, lgi, lgj);
-		    final int[] nu = Functionals.map(Operations.subtract, d, lgi);
-		    final int[] mu = Functionals.map(Operations.subtract, d, lgj);
-		    assert Setops.all(Values.valueOf(nu).iterator(), Values.valueOf(mu).iterator(), new orbital.logic.functor.BinaryPredicate() { public boolean apply(Object nui, Object mui) {return nui.equals(Values.ZERO) || mui.equals(Values.ZERO);} }) : "coprime " + AbstractMultinomial.MONOMIAL(Values.ONE, nu) + " and " + AbstractMultinomial.MONOMIAL(Values.ONE, mu);
-		    // Xpowernugi = 1/lc(g[i]) * X<sup>nu</sup>*g[i]
-		    final Multinomial Xpowernugi = AbstractMultinomial.MONOMIAL(g[i].get(lgi).inverse(), nu).multiply(g[i]);
-		    // Xpowernugi = 1/lc(g[j]) * X<sup>mu</sup>*g[j]
-		    final Multinomial Xpowermugj = AbstractMultinomial.MONOMIAL(g[j].get(lgj).inverse(), mu).multiply(g[j]);
-		    assert Utility.equalsAll(leadingMonomial(Xpowernugi, monomialOrder), leadingMonomial(Xpowermugj, monomialOrder)) : "construction should generate equal leading monomials (" + leadingMonomial(Xpowernugi, monomialOrder) + " of " + Xpowernugi + " and " + leadingMonomial(Xpowermugj, monomialOrder) + " of " + Xpowermugj + ") which vanish by subtraction";
-		    final Multinomial Sgigj = Xpowernugi.subtract(Xpowermugj);
-		    assert Sgigj.get(d).norm().equals(Values.ZERO) : "construction should generate equal leading monomials which vanish by subtraction";
-		    logger.log(Level.FINER, "S(gi,gj) = {0} * ({1})  -  {2} * ({3})", new Object[] {AbstractMultinomial.MONOMIAL(g[i].get(lgi).inverse(), nu), g[i], AbstractMultinomial.MONOMIAL(g[j].get(lgj).inverse(), mu), g[j]});
-		    final Multinomial r = reduce(Sgigj, g, monomialOrder);
-		    // tolerant equality to 0 (roughly 0)
-		    if (r.degreeValue() >= 0
-			&& ((AbstractMultinomial)r).tensorViewOfCoefficients().norm().equals(Values.ZERO, Values.valueOf(MathUtilities.getDefaultTolerance()))) {
-			logger.log(Level.FINE, "add reduction {0}", r);
-			List bprime = new LinkedList(Arrays.asList(g));
-			bprime.add(r);
-			g = (Multinomial[]) bprime.toArray(new Multinomial[0]);
-			continue ergaenzeBasis;
-		    }
-		}
+    private static final Predicate isZeroPolynomial = new Predicate() {
+	    public boolean apply(Object p) {
+		AbstractMultinomial r = (AbstractMultinomial) p;
+		return r.degreeValue() < 0
+		    || r.tensorViewOfCoefficients().norm().equals(Values.ZERO, Values.valueOf(MathUtilities.getDefaultTolerance()));
 	    }
-	    break ergaenzeBasis;
-	}
-	return reduceGroebnerBasis(g, monomialOrder);
-    }
+	};
 
-    private static final Multinomial/*<R>*/[] reduceGroebnerBasis(Multinomial/*<R>*/[] g, final Comparator monomialOrder) {
-	List basis = new LinkedList(Arrays.asList(g));
-	logger.log(Level.FINE, "reducing Groebner basis {0}", basis);
-	replaceWithReductions:
-	while (true) {
-	    for (int i = 0; i < basis.size(); i++) {
-		Multinomial gi = (Multinomial) basis.get(i);
-		List others = new LinkedList(basis);
-		others.remove(i);
-		Multinomial r = reduce(gi, (Multinomial[])others.toArray(new Multinomial[0]), monomialOrder);
-		if (!r.equals(gi)) {
-		    // g[i] not reduced with respect to the others, so replace by its reduction
-		    basis.remove(i);
-		    if (r.degreeValue() < 0)
-			// skip adding 0
-			logger.log(Level.FINER, "skip {0}", r);
-		    else
-			basis.add(r);
-		    //@internal or go on with this for loop until nothing changes anymore
-		    continue replaceWithReductions;
-		}
-	    }
-	    break replaceWithReductions;
-	}
-	return (Multinomial[]) basis.toArray(new Multinomial[0]);
+    /**
+     * Whether the ideal spanned by the given Groebner basis contains all elements of f.
+     */
+    private static final boolean containsAll(Set/*_<Multinomial<R>>_*/ groebnerBasis, Collection/*_<Multinomial<R>>_*/ f, Comparator monomialOrder) {
+	// reduces its arguments with respect to groebnerBasis
+	final Function reductor = Functionals.bindFirst(Functionals.apply, reduce(groebnerBasis, monomialOrder));
+	//final Arithmetic zero = ((Multinomial)groebnerBasis.iterator().next()).zero();
+	// whether argument is in the ideal spanned by groebnerBasis
+	//final Predicate isZero = Functionals.bindSecond(Predicates.equal, zero);
+	final Predicate isZero = isZeroPolynomial;
+	final Predicate inIdeal = Functionals.compose(isZero, reductor);
+	System.err.println("\t>> " + Functionals.map(reductor ,new LinkedList(f)));
+	System.err.println("\t>> " + Functionals.map(Functionals.asFunction(inIdeal),new LinkedList(f)));
+	System.err.println("\t>> " + Setops.all(f, inIdeal));
+	return Setops.all(f, inIdeal);
+    }
+    
+    /**
+     * Whether the two Groebner bases span the same ideal.
+     */
+    private static final boolean equalSpan(Set/*_<Multinomial<R>>_*/ groebnerBasis1, Set/*_<Multinomial<R>>_*/ groebnerBasis2, Comparator monomialOrder) {
+	return containsAll(groebnerBasis1, groebnerBasis2, monomialOrder)
+	    && containsAll(groebnerBasis2, groebnerBasis1, monomialOrder);
     }
 }// AlgebraicAlgorithms

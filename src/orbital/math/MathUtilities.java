@@ -49,7 +49,7 @@ import java.util.logging.Level;
  * @see Evaluations
  * @see Stat
  * @see NumericalAlgorithms
- * @xxx move algebraic utilities into an own class AlgebraicAlgorithms.
+ * @see AlgebraicAlgorithms
  */
 public final class MathUtilities {
     private static class Debug {

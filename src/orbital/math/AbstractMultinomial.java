@@ -50,7 +50,15 @@ abstract class AbstractMultinomial/*<R implements Arithmetic>*/ extends Abstract
     } 
 
     public int hashCode() {
-	throw new UnsupportedOperationException("would need dimensions() to reduce to non-zero part");
+	//@xxx throw new UnsupportedOperationException("would require dimensions() to reduce to non-zero part");
+	// the following is ok (though, perhaps, not ver surjective), since 0 has hashCode 0 anyway
+	int hash = 0;
+	//@todo functional?
+	for (java.util.Iterator i = iterator(this); i.hasNext(); ) {
+	    Object e = i.next();
+	    hash += e == null ? 0 : e.hashCode();
+	} 
+	return hash;
     }
 
     public Integer degree() {
