@@ -121,8 +121,10 @@
     </div>
     The functors <span class="category">C</span>→<span class="category">D</span> 
     form a category with natural transformations being the morphisms.<br>
-    Remark??: an isomorphism of functors is just a family of isomorphisms <span class="seriesOperator">(</span>α<sub>C</sub><span class="seriesOperator">)</span><sub>C∈Ob 
-    <span class="category">C</span></sub> with the above property.</dd>
+    Remark?: an isomorphism of functors is just a family of isomorphisms <span class="seriesOperator">(</span>α<sub>C</sub><span class="seriesOperator">)</span><sub>C∈Ob 
+    <span class="category">C</span></sub> with the above property.        
+    <!-- @todo add the commutative diagram -->
+  </dd>
 </dl>
 <p>The elements of the monoid Mor<span class="category"><sub>C</sub></span>(A,A) 
 are called <dfn>endomorphisms</dfn> of A. The elements of Mor<span class="category"><sub>C</sub></span>(A,B) 
@@ -174,9 +176,9 @@ are called <dfn>automorphisms</dfn>.</p>
     and Mor<span class="category"><sub>C°</sub></span>(A,B) := Mor<span class="category"><sub>C</sub></span>(B,A) 
     whereas the identity morphisms are the same, and the composition is f∘<span class="category"><sub>C°</sub></span>g 
     := g∘<span class="category"><sub>C</sub></span>f.<br>
-    <b>Duality Principle</b>: Any theorem holding for all categories <span class="category">C</span> 
-    also holds <i>(in <span class="category">C°</span>)</i> with all arrows 
-    reversed.</p>
+    <b>Duality Principle</b>: Any theorem holding for a category <span class="category">C</span> 
+    also holds <i>(in <span class="category">C°</span>)</i> with <em>all</em> 
+    arrows reversed.</p>
   </li>
   <li id="hom-functor">
     <p>Categories together with functors form a category.</p>
@@ -185,29 +187,32 @@ are called <dfn>automorphisms</dfn>.</p>
     <p>Additive categories form a category together with additive functors.</p>
   </li>
   <li id="hom-functor">
+    <p>Functors of fixed categories together with their natural transformations 
+    form a category (s.a.).</p>
+  </li>
+  <li id="hom-functor">
     <p>Let <span class="category">C</span> be a category. For each X∈Ob <span class="category">C</span> 
     there are two functors</p>
     <ul>
       <li>covariant functor<br>
         m<sub>X</sub>:=Mor<span class="category"><sub>C</sub></span>(X,·):<span class="category">C</span>→<span class="category">Ens</span><br>
-        Y ↦ m<sub>X</sub>(Y) := Y<font size="3"><sub>∗</sub></font>:=Mor<span class="category"><sub>C</sub></span>(X,Y)<br>
-        f ↦ <big>(</big>m<sub>X</sub>(f):Mor<span class="category"><sub>C</sub></span>(X,Y)→Mor<span class="category"><sub>C</sub></span>(X,Z); 
+        Y ↦ m<sub>X</sub>(Y) := Y<sub>∗</sub>:=Mor<span class="category"><sub>C</sub></span>(X,Y)<br>
+        (f∈Mor<span class="category"><sub>C</sub></span>(Y,Z)) ↦ <big>(</big>m<sub>X</sub>(f):Mor<span class="category"><sub>C</sub></span>(X,Y)→Mor<span class="category"><sub>C</sub></span>(X,Z); 
         g↦f∘g<big>)</big></li>
       <li>contravariant functor<br>
         m<sup>X</sup>:=Mor<span class="category"><sub>C</sub></span>(·,X):<span class="category">C</span>→<span class="category">Ens</span><br>
-        Y ↦ m<sup>X</sup>(Y) := Y<font size="3"><sup>∗</sup></font>:=Mor<span class="category"><sub>C</sub></span>(Y,X)<br>
-        f ↦ <big>(</big>m<sup>X</sup>(f):Mor<span class="category"><sub>C</sub></span>(Z,X)→Mor<span class="category"><sub>C</sub></span>(Y,X); 
+        Y ↦ m<sup>X</sup>(Y) := Y<sup>∗</sup>:=Mor<span class="category"><sub>C</sub></span>(Y,X)<br>
+        (f∈Mor<span class="category"><sub>C</sub></span>(Y,Z)) ↦ <big>(</big>m<sup>X</sup>(f):Mor<span class="category"><sub>C</sub></span>(Z,X)→Mor<span class="category"><sub>C</sub></span>(Y,X); 
         g↦g∘f<big>)</big></li>
     </ul>
     <p>The properties of being a functor coincides with the properties of 
-    morphisms (n) and (a), here.<br>
+    morphisms (n) and (a), here. m<sup>X</sup> is the opposite of m<sub>X</sub>. 
     If <span class="category">C</span> is additive we write Hom<span class="category"><sub>C</sub></span>(X,·):=h<sub>X</sub>:=m<sub>X</sub>, 
     and Hom<span class="category"><sub>C</sub></span>(·,X):=h<sup>X</sup>:=m<sup>X</sup> 
     for the corresponding functors <span class="category">C</span>→<span class="category">Ab</span>.</p>
   </li>
 </ol>
-<p>@todo check names of Y<font size="3"><sub>∗</sub>, and </font>Y<font size="3"><sup>∗</sup> 
-.</font></p>
+<!--@todo check names of Y<sub>∗</sub>, and Y<sup>∗</sup> .-->
 <h2>Universal Elements</h2>
 <p>Let <span class="category">C</span> be a category.
 <dl class="def">
@@ -224,7 +229,32 @@ are called <dfn>automorphisms</dfn>.</p>
     ⇔ A is an initial object in <span class="category">C°</span>.<br>
     terminal objects are uniquely isomorph, i.e. each two terminal objects A,B 
     have a unique isomorphism A→B.</dd>
+  <dt>presentable</dt>
+  <dd>a covariant (resp. contravariant) functor F:<span class="category">C</span>→<span class="category">Ens</span> 
+    is presentable :⇔ ∃A∈Ob <span class="category">C</span> F≅m<sub>A</sub> 
+    (resp. F≅m<sup>A</sup>)<br>
+    A is called presenting object for F.</dd>
+  <dt>universal element</dt>
+  <dd>If F:<span class="category">C</span>→<span class="category">Ens</span> 
+    is a presentable covariant functor, and α:m<sub>A</sub>→F a corresponding 
+    isomorphism of functors, then u<sub>F</sub> := α<sub>A</sub>(id<sub>A</sub>) 
+    ∈ F(A) is called universal element of F.
+    <div>
+      ⇒ ∀B∈Ob <span class="category">C</span> ∀x∈F(B) ∃!f∈Mor<sub class="category">C</sub>(A,B) 
+      x = F(f)(u<sub>F</sub>)
+    </div>
+  </dd>
 </dl>
+Let F:<span class="category">C</span>→<span class="category">Ens</span> be a 
+presentable covariant functor.
+<ul>
+  <li>&nbsp;presenting objects for F are uniquely isomorph. Precisely: for all 
+    isomorphisms of functors α:m<sub>A</sub>→F, α':m<sub>A'</sub>→F ∃!φ:A<sub></sub>→A' 
+    isomorphism with α∘α<sub>φ</sub> = α'. (See Yoneda-Lemma).</li>
+  <li>an isomorphism of functors α:m<sub>A</sub>→F is uniquely determined by 
+    its universal element, i.e. ∀x∈F(A) there is at most one α:m<sub>A</sub>→F 
+    with α<sub>A</sub>(id<sub>A</sub>)=x.</li>
+</ul>
 <h2>Product and Coproduct</h2>
 <dl class="def">
   Let <span class="category">C</span> be a category, and I be a set.

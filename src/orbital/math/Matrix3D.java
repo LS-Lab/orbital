@@ -15,9 +15,9 @@ package orbital.math;
  * @version 0.9, 1996/03/02
  * @author  Andr&eacute; Platzer
  * @see "J.D FOLEY A.VAN DAM. Fundamentals of Interactive Computer Graphics. Addison-Wesley ISBN 0-201-14468-9 pp 245-265"
+ * @todo somehow get rid of this 3D class, but without loosing its affine transformation functionality (perhaps generalized to >=3D)?
  */
-public
-class Matrix3D extends RMatrix {
+public class Matrix3D extends RMatrix {
 
 	/**
 	 * The identity Matrix.

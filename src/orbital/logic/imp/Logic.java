@@ -42,7 +42,7 @@ import java.text.ParseException;
  *   Quantifiers are logic operations like, for example, the existence quantifier (short <b>&exist;</b>) and the all-quantifier (short <b>&forall;</b>).
  *   </dd>
  * </dl>
- * <h4>2 Semantic</h4>
+ * <h4>2 Semantics</h4>
  * <dl class="def">
  * <!-- single symbol interpretation is secondness, but full function I is thirdness, I guess. -->
  *   <dt id="Interpretation">Interpretations:</dt>
@@ -64,7 +64,7 @@ import java.text.ParseException;
  * Logic systems can formally be classified with the characteristics of their inference relations.
  * </p>
  * <p>
- * One important semantic inference relation is the <dfn>logic sequence</dfn> (or entailment) between Formulas
+ * One important semantic inference relation is the <dfn>logic sequence</dfn> (or entailment) between formulas
  * which is again denoted as &#8872;.
  * It can easily be adapted from the satisfaction relation.
  * Then for <span class="Formula">W &#8872; F</span> all those interpretations I that satisfy the Formulas in W are considered:

@@ -25,12 +25,12 @@ import java.util.NoSuchElementException;
  * </p>
  * <p>
  * The components v<sub>i</sub>&isin;R are any arithmetic objects forming a ring.
- * (R<sup>n</sup>,+,&lowast;) form an R-module
+ * (R<sup>n</sup>,+,&lowast;) form a (free) R-module
  * with the law of composition + and the law of action &lowast;.
  * If R is a field the vectors even form a vector space over R, which justifies the name vector.
  * </p>
  * <hr />
- * A <a href="doc-files/AlgebraicStructures.html#laws_1_1"><dfn>vector space</dfn></a> over a field R is a set V with an algebraic structure of
+ * A <a href="doc-files/AlgebraicStructures.html#vectorSpace"><dfn>vector space</dfn></a> over a field R is a set V with an algebraic structure of
  * <table style="border: none; padding: 3">
  *   <tr>
  *     <td>(1)</td>
@@ -94,7 +94,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Arithmetic {
     // get/set-methods
 	
     /**
-     * Returns the dimension of the Vector.
+     * Returns the dimension of the vector.
      * The dimension is the number <code>n</code> of elements contained.
      */
     int dimension();
@@ -136,7 +136,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Arithmetic {
     // norm
 	
     /**
-     * Returns the norm || ||<sub>p</sub> of this Vector.
+     * Returns the norm || ||<sub>p</sub> of this vector.
      * <p>This method implements p-norms, where<br>
      * <span class="Formula">||x||<sub>p</sub> = (|x<sub>1</sub>|<sup>p</sup> + ... + |x<sub>n</sub>|<sup>p</sup>)<sup>1/p</sup></span>.<br>
      * <span class="Formula">||x||<sub>&infin;</sub> = max {|x<sub>1</sub>|,...,|x<sub>n</sub>|}</span>.</p>
@@ -221,7 +221,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Arithmetic {
     Arithmetic/*>R<*/ multiply(Vector/*<R>*/ b);
 
     /**
-     * Multiplies a Vector with a scalar returning a vector.
+     * Multiplies a vector with a scalar returning a vector.
      * @pre true
      * @post RES.dimension().equals(dimension())
      *  	&& RES.get(i) == s&sdot;get(i)
@@ -232,10 +232,10 @@ public interface Vector/*<R implements Arithmetic>*/ extends Arithmetic {
     Vector/*<R>*/ multiply(Scalar s);
 
     /**
-     * Multiplies a Vector with a Matrix returning a vector.
+     * Multiplies a vector with a matrix returning a vector.
      * If column-vector <code>v</code> is sized <code>n</code> and transposed and
-     * the Matrix <code>A</code> is sized <code>n&times;m</code>,
-     * the resulting column-Vector <code>v&middot;A</code> is sized <code>m</code>.
+     * the matrix <code>A</code> is sized <code>n&times;m</code>,
+     * the resulting column-vector <code>v&middot;A</code> is sized <code>m</code>.
      * @pre dimension() == B.dimension().height
      */
     Vector/*<R>*/ multiply(Matrix/*<R>*/ B);
@@ -257,7 +257,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Arithmetic {
     // operations on vectors
 	
     /**
-     * Returns this Vector transposed.
+     * Returns this vector transposed.
      * Also distinguished via vector.multiply(matrix) or matrix.multiply(vector) instead.
      * @see Matrix#transpose()
      */

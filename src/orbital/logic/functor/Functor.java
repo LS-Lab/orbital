@@ -42,10 +42,10 @@ import orbital.util.Utility;
  *   <dt>functionals</dt> <dd>(a higher-order function) are special functions where the return-type or any of the argument-types will be a kind of <code>Functor</code>.</dd>
  * </dl>
  * <a id="FunctionalRelationalDuality">Duality between functions and predicates:</a>
- * Every function f/n:A&rarr;B induces an implicit predicate with the same extensional semantic
+ * Every function f/n:A&rarr;B induces an implicit predicate with the same extensional semantics
  * <div><sub>f</sub>P/(n+1) := <big>{(</big>a<sub>1</sub>,...,a<sub>n</sub>,f(a<sub>1</sub>,...,a<sub>n</sub>)<big>)</big> &brvbar; (a<sub>1</sub>,a<sub>2</sub>,...,a<sub>n</sub>)&isin;A<big>}</big></div>
  * If a predicate P/n&sube;A is unique with respect to a certain parameter a<sub>k</sub>
- * it induces an implicit function with the same extensional semantic
+ * it induces an implicit function with the same extensional semantics
  * <div><sub>P</sub>f/(n-1) := <big>{</big>f(a<sub>1</sub>,...,a<sub>k-1</sub>,a<sub>k+1</sub>,...a<sub>n</sub>):=a<sub>k</sub> &brvbar; P(a<sub>1</sub>,a<sub>2</sub>,...,a<sub>n</sub>) is true<big>}</big></div>
  * Note however, that functions and predicates can differ intensionally regardless of their
  * extensional equality.

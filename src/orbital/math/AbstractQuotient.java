@@ -198,6 +198,6 @@ class AbstractQuotient/*<M implements Arithmetic>*/ implements Quotient/*<M>*/, 
     } 
 
     public String toString() {
-	return representative().toString();
+	return ArithmeticFormat.getDefaultInstance().format(this);
     } 
 }

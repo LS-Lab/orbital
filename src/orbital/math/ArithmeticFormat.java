@@ -218,22 +218,28 @@ public class ArithmeticFormat extends Format {
     public StringBuffer format(Object obj, StringBuffer result, FieldPosition fieldPosition) {
 	if (obj == null)
 	    return new StringBuffer("null");
-	if (obj instanceof Scalar) {
+	if (obj instanceof Arithmetic)
+	    return format((Arithmetic)obj, result, fieldPosition);
+	else
+            throw new IllegalArgumentException("Cannot format given Object as an arithmetic object: " + obj.getClass());
+    }
+
+    public StringBuffer format(Arithmetic obj, StringBuffer result, FieldPosition fieldPosition) {
+	if (obj == null)
+	    return new StringBuffer("null");
+	if (obj instanceof Scalar)
 	    return format((Scalar) obj, result, fieldPosition);
-	} else if (obj instanceof Vector)
+	else if (obj instanceof Vector)
 	    return format((Vector) obj, result, fieldPosition);
 	else if (obj instanceof Matrix)
 	    return format((Matrix) obj, result, fieldPosition);
 	else if (obj instanceof Polynomial)
 	    return format((Polynomial) obj, result, fieldPosition);
-	else if (obj instanceof Symbol) {
-	    if (fieldPosition.getField() == SYMBOL_FIELD)
-		fieldPosition.setBeginIndex(result.length());
-	    result.append(obj.toString());
-	    if (fieldPosition.getField() == SYMBOL_FIELD)
-		fieldPosition.setEndIndex(result.length());
-	    return result;
-	} else if (obj instanceof MathFunctor)
+	else if (obj instanceof Symbol)
+	    return format((Symbol) obj, result, fieldPosition);
+	else if (obj instanceof Quotient)
+	    return format((Quotient) obj, result, fieldPosition);
+	else if (obj instanceof MathFunctor)
 	    return format((MathFunctor) obj, result, fieldPosition);
 	else
             throw new IllegalArgumentException("Cannot format given Object as an arithmetic object: " + obj.getClass());
@@ -422,6 +428,26 @@ public class ArithmeticFormat extends Format {
 	}
 	result.append(polynomialSuffix);
 
+	return result;
+    }
+
+    /**
+     * Specialization of format.
+     */
+    public StringBuffer format(Quotient q, StringBuffer result, FieldPosition fieldPosition) {
+	result.append(q.representative().toString());
+	return result;
+    }
+
+    /**
+     * Specialization of format.
+     */
+    public StringBuffer format(Symbol s, StringBuffer result, FieldPosition fieldPosition) {
+	if (fieldPosition.getField() == SYMBOL_FIELD)
+	    fieldPosition.setBeginIndex(result.length());
+	result.append(s.toString());
+	if (fieldPosition.getField() == SYMBOL_FIELD)
+	    fieldPosition.setEndIndex(result.length());
 	return result;
     }
 

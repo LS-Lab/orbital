@@ -29,7 +29,7 @@ import java.math.BigInteger;
  * 
  * <p>Note that operations with different modulus values are semantically undefined.</p>
  * <p>
- * <i><b>Note:</b> This class may be made private. Then it will only be accessible by
+ * <i><b>Note:</b> This class is deprecated and may be removed. Then it will only be accessible by
  * a factory method in {@link Values}.</i>
  * Essentially BigModulus is only a combination
  * of those concepts accessible from {@link Values}, anyway.
@@ -46,7 +46,7 @@ import java.math.BigInteger;
  * @version 0.9, 27/11/98
  * @author  Andr&eacute; Platzer
  * @see java.math.BigInteger
- * @deprecated Since Orbital1.1 use quotient instead.
+ * @deprecated Since Orbital1.1 use quotient instead (see below).
  */
 public class BigModulus extends AbstractScalar implements Quotient {
 

@@ -118,32 +118,32 @@ convenient for usual cases.
     <th class="defVerbal"></th>
     <th class="defTerm">Then M is a</th>
   </tr>
-  <tr>
+  <tr id="magma">
     <td class="defID">(s)</td>
     <td class="defCond">⋅:M×M→M is a law of composition</td>
     <td class="defVerbal">&quot;stable&quot;</td>
     <td class="defTerm"><dfn>magma</dfn></td>
   </tr>
-  <tr>
+  <tr id="semigroup">
     <td class="defID">(a)</td>
     <td class="defCond">∀x,y,z∈M (x⋅y)⋅z = x⋅(y⋅z)</td>
     <td class="defVerbal">&quot;associative&quot;</td>
     <td class="defTerm"><dfn>semigroup</dfn> ⊂ magma</td>
   </tr>
-  <tr>
+  <tr id="monoid">
     <td class="defID">(n)</td>
     <td class="defCond">∃1∈M ∀x∈M 1⋅x = x = x⋅1</td>
     <td class="defVerbal">&quot;neutral&quot;</td>
     <td class="defTerm"><dfn>monoid</dfn> ⊂ semigroup</td>
   </tr>
-  <tr>
+  <tr id="group">
     <td class="defID">(i)</td>
     <td class="defCond">∀x∈M ∃x<sup>-1</sup>∈M x⋅x<sup>-1</sup> = 1 = 
       x<sup>-1</sup>⋅x</td>
     <td class="defVerbal">&quot;inverses&quot;</td>
     <td class="defTerm"><dfn>group</dfn> ⊂ monoid</td>
   </tr>
-  <tr>
+  <tr id="AbelianGroup">
     <td class="defID">(c)</td>
     <td class="defCond">∀x,y∈M x⋅y = y⋅x</td>
     <td class="defVerbal">&quot;commutative&quot;</td>
@@ -192,7 +192,7 @@ for the suggestive notation in the table above.</p>
 <p>If φ:M→N is a homomorphism (of magmas), it carries much of the algebraic 
 structure of M over to f(M)⊆N. (f(M),∗) inherits the properties (s),(a),(n),(c) 
 from (M,⋅), however in general it may be f(1)≠1.</p>
-<h3>Rings</h3>
+<h3 id="ring">Rings</h3>
 <table width="100%" class="def" id="laws_2_0">
   <caption>Algebraic structures with two laws of composition</caption>
   <tr>
@@ -203,7 +203,7 @@ from (M,⋅), however in general it may be f(1)≠1.</p>
     <th class="defCond">If</th>
     <th class="defTerm">Then R is a</th>
   </tr>
-  <tr>
+  <tr id="pseudoRing">
     <td class="defID">( )</td>
     <td class="defCond">
       <ul>
@@ -219,24 +219,24 @@ from (M,⋅), however in general it may be f(1)≠1.</p>
     </td>
     <td class="defTerm"><dfn>pseudo-ring</dfn></td>
   </tr>
-  <tr>
+  <tr id="ring1">
     <td class="defID">( )</td>
     <td class="defCond">(R,⋅) is a monoid</td>
-    <td class="defTerm"><dfn>ring (with 1)</dfn> ⊂ pseudo-ring</td>
+    <td class="defTerm"><dfn>ring with 1</dfn> ⊂ pseudo-ring</td>
   </tr>
   <tr>
     <td class="defID">( )</td>
     <td class="defCond">(R,⋅) is commutative</td>
-    <td class="defTerm"><dfn>commutative ring (with 1)</dfn> ⊂ ring with 1</td>
+    <td class="defTerm"><dfn>commutative ring with 1</dfn> ⊂ ring with 1</td>
   </tr>
-  <tr>
+  <tr id="skewField">
     <td class="defID">( )</td>
     <td class="defCond">(R\{0},⋅) is a group, resp. the R<sup>×</sup> = R\{0}</td>
     <td class="defTerm"><dfn>skew field</dfn> ⊂ ring with 1</td>
   </tr>
-  <tr>
+  <tr id="field">
     <td class="defID">( )</td>
-    <td class="defCond">(R,⋅) commutative group.</td>
+    <td class="defCond">(R\{0},⋅) commutative group.</td>
     <td class="defTerm"><dfn>field</dfn><br>
       = commutative ring ∩ skew field</td>
   </tr>
@@ -305,12 +305,12 @@ satisfy φ(R<sup>×</sup>)⊆(R')<sup>×</sup>.</p>
     <th class="defCond">If</th>
     <th class="defTerm">Then M is a</th>
   </tr>
-  <tr>
+  <tr id="module">
     <td class="defID">( )</td>
     <td class="defCond">
       <ul>
         <li>(M,+) is an Abelian group</li>
-        <li>∗:R×M→M is a law of action with the operators in R.</li>
+        <li>∗:R×M→M is a law of action with operators R.</li>
         <li><b>(d)</b> ∗ is distributive over +, i.e.
           <ul>
             <li>∀α∈R ∀x,y∈M α∗(x+y) = (α∗x) + (α∗y)</li>
@@ -329,14 +329,14 @@ satisfy φ(R<sup>×</sup>)⊆(R')<sup>×</sup>.</p>
     <td class="defID">( )</td>
     <td class="defCond">The same as for left R-modules, except that
       <ul>
-        <li>∀α,β∈A ∀x∈M α∗(β∗x) = (β⋅α)∗x (for right 
-          R-modules)</li>
+        <li><b>(„a‟) </b>∀α,β∈A ∀x∈M α∗(β∗x) = (β⋅α)∗x 
+          (for right R-modules)</li>
       </ul>
       <p>Therefore, the law of action may be suggestively written as ∗:M×R→M 
       instead.</td>
     <td class="defTerm"><dfn>right R-module</dfn></td>
   </tr>
-  <tr>
+  <tr id="vectorSpace">
     <td class="defID">( )</td>
     <td class="defCond">R is a field</td>
     <td class="defTerm"><dfn>left R-vector space</dfn> ⊂<br>
@@ -402,13 +402,12 @@ R-vector spaces are simply called R-vector spaces.</p>
     <th class="defCond">If</th>
     <th class="defTerm">Then E is a</th>
   </tr>
-  <tr>
+  <tr id="algebra">
     <td class="defID">( )</td>
     <td class="defCond">
       <ul>
         <li>E is an R-module</li>
-        <li>⋅:E×E→E is a law of composition that is a bilinear mapping, 
-          i.e.
+        <li>⋅:E×E→E is a law of composition that is bilinear, i.e.
           <ul>
             <li><b>(l)</b>=<b>(d)<br>
               </b>(x+y)⋅z = (x⋅z) + (y⋅z)<br>
@@ -535,7 +534,7 @@ homomorphism of rings.</p>
     ~ ⋆(y<sub>1</sub>,…,y<sub>n</sub>)<big>)</big></center>for all operators 
     ⋆∈Σ of any arity n, occuring in the Σ-algebra M.</li>
 </ol>
-Then the quotient <center>M/~ := M̄ := {x̄ ¦ x∈M} with<br />
+Then the <dfn>quotient</dfn> <center>M/~ := M̄ := {x̄ ¦ x∈M} with<br />
 x̄ := <sup>-1</sup>f({f(x)}) = {y∈M ¦ x~y} for x∈M </center>has the same 
 algebraic structure as M. If M is a magma, semi-group, monoid, group, Abelian 
 group, ring, R-module, or vector space, then M/~ is as well. The laws of 
@@ -543,7 +542,7 @@ composition ⋆ and laws of action ∗ on M/~ are obtained by passing to the
 quotient: <center>x̄⋆ȳ = <span style="text-decoration: overline;">x⋆y</span></center> 
 <center>α∗x̄ = <span style="text-decoration: overline;">α∗x</span></center>
 <p>It is true that M/~ is a partition of M <center>∀x̄,ȳ∈M (x̄∩ȳ=∅ 
-xor x̄=ȳ)</center> Although conversely, every partition of M defines an 
+xor x̄=ȳ)</center>Although conversely, every partition of M defines an 
 equivalence relation, that relation does not need to be a congruence compatible 
 with the algebraic structure of M.</p>
 <p>Note that these congruence relations ~ on M often correspond bijectively to 
