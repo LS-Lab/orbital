@@ -39,8 +39,9 @@ import orbital.util.Utility;
  */
 public abstract class Notation implements Serializable, Comparable {
     private static final long serialVersionUID = -3071672372655194662L;
-    private static final int PRECEDENCE_DEFAULT = 100;
     private static final int PRECEDENCE_HIGH = 499;
+    private static final int PRECEDENCE_LOW = 500;
+    private static final int PRECEDENCE_DEFAULT = PRECEDENCE_LOW;
 
     /**
      * the name to display for this enum value
@@ -479,7 +480,7 @@ public abstract class Notation implements Serializable, Comparable {
     private static boolean hasCompactBrackets(Object compositor) {
 	// distinguish unary from binary registered compositors
 	NotationSpecification spec = getNotation(compositor);
-	return spec != null ? spec.associativity.length() == 1+1 : false;
+	return spec != null && spec.arity() == 1;
     } 
     
     /**
@@ -560,6 +561,13 @@ public abstract class Notation implements Serializable, Comparable {
 		throw new IllegalArgumentException("associativity description " + associativity + " with " + assocArity + " arguments must match arity " + arity);
 	}
 	/**
+	 * Create a specification of a compositor's notation.
+	 * @see #associativity
+	 */
+	public NotationSpecification(int precedence, Notation notation, int arity) {
+	    this(precedence, prefixNonAssociativity(arity), notation);
+	}
+	/**
 	 * Create a specification of a compositor's notation with automatic notation resolution.
 	 * <p>
 	 * This constructor will determine the notation object to use for formatting
@@ -587,7 +595,7 @@ public abstract class Notation implements Serializable, Comparable {
 	 * </p>
 	 */
 	public NotationSpecification(int arity) {
-	    this(PRECEDENCE_DEFAULT, prefixNonAssociativity(arity), Notation.DEFAULT);
+	    this(PRECEDENCE_DEFAULT, Notation.DEFAULT, arity);
 	}
 	private static final String prefixNonAssociativity(int arity) {
 	    char associativityArguments[] = new char[arity];
@@ -664,6 +672,13 @@ public abstract class Notation implements Serializable, Comparable {
 	 */
 	public Notation getNotation() {
 	    return notation;
+	}
+	/**
+	 * Get the arity to use for formatting, i.e. the number of
+	 * argument places in the associativity description.
+	 */
+	int arity() {
+	    return getAssociativity().length() - 1;
 	}
     }
 
