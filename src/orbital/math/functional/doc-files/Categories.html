@@ -20,6 +20,7 @@
   <li><a href="#categoriesAndFunctors">Categories and Functors</a>
   <li><a href="#universalElements">Universal Elements</a></li>
   <li><a href="#products">Product and Coproduct</a></li>
+  <li><a href="#limits">Limits and Colimits</a></li>
 </ul>
 <h2 id="categoriesAndFunctors">Categories and Functors</h2>
 <p>&quot;general abstract nonsense&quot;, &quot;functors leave complexes 
@@ -47,14 +48,14 @@ complex&quot;</p>
       </tr>
       <tr>
         <td class="defID" rowspan="2">n</td>
-        <td class="defCond">∀<span class="objet">A</span>,<span class="objet">B</span>∈Ob <span class="categorie">C</span> 
-          ∀g∈Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">A</span>,<span class="objet">B</span>) 
+        <td class="defCond">∀<span class="objet">A</span>,<span class="objet">B</span>∈Ob 
+          <span class="categorie">C</span> ∀g∈Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">A</span>,<span class="objet">B</span>) 
           g∘id<span class="objet"><sub>A</sub></span> = g</td>
         <td class="defVerbal" rowspan="2">neutral</td>
       </tr>
       <tr>
-        <td class="defCond">∀<span class="objet">A</span>,<span class="objet">B</span>∈Ob <span class="categorie">C</span> 
-          ∀f∈Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">B</span>,A) 
+        <td class="defCond">∀<span class="objet">A</span>,<span class="objet">B</span>∈Ob 
+          <span class="categorie">C</span> ∀f∈Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">B</span>,A) 
           id<span class="objet"><sub>A</sub></span>∘f = f</td>
       </tr>
       <tr>
@@ -165,8 +166,8 @@ are called <dfn>automorphisms</dfn>.</p>
   </tr>
   <tr>
     <td class="defTerm" id="monomorphism">monomorphism</td>
-    <td class="defCond">∀<span class="objet">B</span>∈Ob <span class="categorie">C</span> <span class="foncteur">m<sub class="objet">B</sub></span>(f) 
-      injective</td>
+    <td class="defCond">∀<span class="objet">B</span>∈Ob <span class="categorie">C</span> 
+      <span class="foncteur">m<sub class="objet">B</sub></span>(f) injective</td>
     <td class="defVerbal">f is left cancelable</td>
   </tr>
   <tr>
@@ -177,8 +178,8 @@ are called <dfn>automorphisms</dfn>.</p>
   </tr>
   <tr>
     <td class="defTerm" id="epimorphism">epimorphism</td>
-    <td class="defCond">∀<span class="objet">B</span>∈Ob <span class="categorie">C</span> <span class="foncteur">m<sup class="objet">B</sup></span>(f) 
-      injective</td>
+    <td class="defCond">∀<span class="objet">B</span>∈Ob <span class="categorie">C</span> 
+      <span class="foncteur">m<sup class="objet">B</sup></span>(f) injective</td>
     <td class="defVerbal">f is right cancelable</td>
   </tr>
   <tr>
@@ -194,8 +195,8 @@ are called <dfn>automorphisms</dfn>.</p>
     <table>
       <tr>
         <td class="defID"></td>
-        <td class="defCond">∀<span class="objet">A</span>,<span class="objet">B</span>∈Ob <span class="categorie">C</span> 
-          Hom<sub><span class="categorie">C</span></sub>(<span class="objet">A</span>,<span class="objet">B</span>) 
+        <td class="defCond">∀<span class="objet">A</span>,<span class="objet">B</span>∈Ob 
+          <span class="categorie">C</span> Hom<sub><span class="categorie">C</span></sub>(<span class="objet">A</span>,<span class="objet">B</span>) 
           := Mor<sub><span class="categorie">C</span></sub>(<span class="objet">A</span>,<span class="objet">B</span>) 
           is an Abelian(<a href="../../doc-files/AlgebraicStructures.html#commutativeMagmaHom">!</a>) 
           group</td>
@@ -309,7 +310,7 @@ are called <dfn>automorphisms</dfn>.</p>
   </li>
 </ol>
 <!--@todo check names of Y<sub>∗</sub>, and Y<sup>∗</sup> .-->
-<h3>Additional definitions....</h3>
+<h3>Further Terminology</h3>
 <dl>
   <dt id="Yoneda">Yoneda-Lemma</dt>
   <dd>Let <span class="categorie">F</span> be the category of functors <span class="categorie">C</span>→<span class="categorie">Ens</span><br />
@@ -358,7 +359,8 @@ are called <dfn>automorphisms</dfn>.</p>
 </dl>
 <dl class="def">
   <dt id="adjoint">adjoint</dt>
-  <dd><span class="foncteur">F</span>:<span class="categorie">C</span>→<span class="categorie">C'</span> 
+  <dd><img class="annotatingDiagram" src="diagram/commutative/adjoint.jpg" width="511" height="302"> 
+    <span class="foncteur">F</span>:<span class="categorie">C</span>→<span class="categorie">C'</span> 
     left-adjoint to <span class="foncteur">G</span>:<span class="categorie">C'</span>→<span class="categorie">C</span> 
     (and <span class="foncteur">G</span> right-adjoint to <span class="foncteur">F</span>) 
     :⇔
@@ -369,7 +371,8 @@ are called <dfn>automorphisms</dfn>.</p>
       =: <span class="foncteur">m<sup><span class="foncteur">G</span></sup></span> 
       in <span class="categorie">C</span><span class="categorie">°</span>×<span class="categorie">C'</span>→<span class="categorie">Ens</span>
     </div>
-  </dd>
+    &quot;what F does to the source (adding primes) is what G does to the domain 
+    (removing primes)&quot;</dd>
   <dt id="equivalentCategories">equivalent<br>
     categories</dt>
   <dd><span class="foncteur">F</span>:<span class="categorie">C</span>→<span class="categorie">C'</span> 
@@ -383,7 +386,7 @@ are called <dfn>automorphisms</dfn>.</p>
       ⇒ <span class="foncteur">F</span> left-adjoint to <span class="foncteur">G</span> 
       and conversely
     </div>
-  </dd>
+    Ismomorphic categories are equivalent.</dd>
 </dl>
 <p>For the following definition, <span class="categorie">A</span> and <span class="categorie">A'</span> 
 must be categories that have exact sequences (more precisely: Abelian 
@@ -560,26 +563,75 @@ be a presentable covariant functor.
   <dd><img class="annotatingDiagram" src="diagram/commutative/product.jpg" width="149" height="148"> 
     P∈Ob <span class="categorie">C</span>, with the projectors π<sub>i</sub>∈Mor(P,A<sub>i</sub>) 
     for i∈I, is a product of the objects <span class="seriesOperator">(</span>A<sub>i</sub><span class="seriesOperator">)</span><sub>i∈I</sub>⊆Ob 
-    <span class="categorie">C</span> :⇔ <center><big>(</big>∀C∈Ob <span class="categorie">C</span> 
-    ∀<span class="seriesOperator">(</span>g<sub>i</sub><sub></sub>∈Mor<sub><span class="categorie">C</span></sub>(C,A<sub>i</sub>)<span class="seriesOperator">)</span><sub>i∈I</sub><br />
-    ∃!g∈Mor<sub><span class="categorie">C</span></sub>(C,P) ∀i∈I π<sub>i</sub>∘g 
-    = g<sub>i</sub> <big>)</big></center>Write: P = ∏<sub>i∈I</sub>A<sub>i</sub><sub><br>
-    </sub>&quot;product is universally attracting&quot;, and it is just a 
-    terminal object in a suitable category.</dd>
+    <span class="categorie">C</span> :⇔
+    <div style="text-align: center">
+      <big>(</big>∀C∈Ob <span class="categorie">C</span> ∀<span class="seriesOperator">(</span>g<sub>i</sub><sub></sub>∈Mor<sub><span class="categorie">C</span></sub>(C,A<sub>i</sub>)<span class="seriesOperator">)</span><sub>i∈I</sub><br />
+      ∃!g∈Mor<sub><span class="categorie">C</span></sub>(C,P) ∀i∈I π<sub>i</sub>∘g 
+      = g<sub>i</sub> <big>)</big>
+    </div>
+    Write: P = ∏<sub>i∈I</sub>A<sub>i</sub><br>
+    &quot;product is universally attracting&quot;, and it is just a terminal 
+    object in a suitable category.</dd>
   <dt id="coproduct">coproduct</dt>
   <dd><img class="annotatingDiagram" src="diagram/commutative/coproduct.jpg" width="176" height="159"> 
     S∈Ob <span class="categorie">C</span>, with the inclusions ι<sub>i</sub>∈Mor(A<sub>i</sub>,S) 
     for i∈I, is a coproduct of the objects <span class="seriesOperator">(</span>A<sub>i</sub><span class="seriesOperator">)</span><sub>i∈I</sub>⊆Ob 
-    <span class="categorie">C</span> :⇔ <center><big>(</big>∀C∈Ob <span class="categorie">C</span> 
-    ∀<span class="seriesOperator">(</span>g<sub>i</sub><sub></sub>∈Mor<sub><span class="categorie">C</span></sub>(A<sub>i</sub>,C)<span class="seriesOperator">)</span><sub>i∈I</sub><br />
-    ∃!g∈Mor<sub><span class="categorie">C</span></sub>(S,C) ∀i∈I g∘ι<sub>i</sub> 
-    = g<sub>i</sub> <big>)</big></center>Write: S = ∐<sub>i∈I</sub>A<sub>i</sub> 
-    (= ∑<sub>i∈I</sub>A<sub>i</sub>, sometimes ⊕<sub>i∈I</sub>A<sub>i</sub>)<br>
+    <span class="categorie">C</span> :⇔
+    <div style="text-align: center">
+      <big>(</big>∀C∈Ob <span class="categorie">C</span> ∀<span class="seriesOperator">(</span>g<sub>i</sub><sub></sub>∈Mor<sub><span class="categorie">C</span></sub>(A<sub>i</sub>,C)<span class="seriesOperator">)</span><sub>i∈I</sub><br />
+      ∃!g∈Mor<sub><span class="categorie">C</span></sub>(S,C) ∀i∈I g∘ι<sub>i</sub> 
+      = g<sub>i</sub> <big>)</big>
+    </div>
+    Write: S = ∐<sub>i∈I</sub>A<sub>i</sub> (= ∑<sub>i∈I</sub>A<sub>i</sub>, 
+    sometimes ⊕<sub>i∈I</sub>A<sub>i</sub>)<br>
     &quot;coproduct is universally repelling&quot;, and it is just an initial 
     object in&nbsp; a suitable category. A coproduct in <span class="categorie">C</span> 
     is just a product in <span class="categorie">C°</span>.</dd>
 </dl>
 <p>As terminal or initial objects, products and coproducts are uniquely 
+determined up to a unique isomorphism.</p>
+<h2 id="limits">Limits and Colimits</h2>
+<dl class="def">
+  Let <span class="categorie">C</span>, <span class="categorie">J</span> be 
+  categories.
+  <dt id="limit">limit</dt>
+  <dd><img class="annotatingDiagram" src="diagram/commutative/limit.jpg" width="184" height="182"> 
+    L∈Ob <span class="categorie">C</span>, with φ<sub class="objet">X</sub>∈Mor<sub><span class="categorie">C</span></sub>(L,F(X)) 
+    for X∈Ob <span class="categorie">J</span>, is a limit of the covariant 
+    functor <span class="foncteur">F</span>:<span class="categorie">J</span>→<span class="categorie">C</span>&nbsp; 
+    :⇔
+    <div style="text-align: center">
+      ∀f∈Mor<sub><span class="categorie">J</span></sub>(<span class="objet">X</span>,<spanclass="objet">Y) 
+      F(f)<sub></sub>∘φ<sub class="objet">X</sub>=φ<sub class="objet">Y</sub><br />
+      and <span class="seriesOperator">(</span>∀N∈Ob <span class="categorie">C</span> 
+      ∀<span class="seriesOperator">(</span>ψ<sub class="objet">X</sub>∈Mor<sub><span class="categorie">C</span></sub>(N,F(X))<span class="seriesOperator">)</span><sub>X∈Ob 
+      <span class="categorie">J</span></sub><br />
+      (∀f∈Mor<sub><span class="categorie">J</span></sub>(<span class="objet">X</span>,<spanclass="objet">Y) 
+      F(f)<sub></sub>∘ψ<sub class="objet">X</sub>=ψ<sub class="objet">Y</sub>)<br>
+      ⇒ ∃!u∈Mor<sub><span class="categorie">C</span></sub>(N,L) ∀X∈Ob <span class="categorie">J</span> 
+      φ<sub class="objet">X</sub>∘u = ψ<sub class="objet">X</sub> <span class="seriesOperator">)</span>
+    </div>
+    Write: L = lim <span class="foncteur">F</span></dd>
+  <dt id="colmit">colimit</dt>
+  <dd>&nbsp;L∈Ob <span class="categorie">C</span>, with φ<sub class="objet">X</sub>∈Mor<sub><span class="categorie">C</span></sub>(F(X),L) 
+    for X∈Ob <span class="categorie">J</span>, is a colimit of the covariant 
+    functor <span class="foncteur">F</span>:<span class="categorie">J</span>→<span class="categorie">C</span>&nbsp; 
+    :⇔
+    <div style="text-align: center">
+      ∀f∈Mor<sub><span class="categorie">J</span></sub>(<span class="objet">X</span>,<spanclass="objet">Y) 
+      φ<sub>Y</sub>∘F(f)=φ<sub>X</sub><br />
+      and <span class="seriesOperator">(</span>∀N∈Ob <span class="categorie">C</span> 
+      ∀<span class="seriesOperator">(</span>ψ<sub class="objet">X</sub>∈Mor<sub><span class="categorie">C</span></sub>(F(X),N)<span class="seriesOperator">)</span><sub>X∈Ob 
+      <span class="categorie">J</span></sub><br />
+      (∀f∈Mor<sub><span class="categorie">J</span></sub>(<span class="objet">X</span>,<spanclass="objet">Y) 
+      ψ<sub>Y</sub>∘F(f)=ψ<sub>X</sub>)<br>
+      ⇒ ∃!u∈Mor<sub><span class="categorie">C</span></sub>(L,N) ∀X∈Ob <span class="categorie">J</span> 
+      u<sub class="objet"></sub>∘φ<sub class="objet">X</sub> = ψ<sub class="objet">X</sub> 
+      <span class="seriesOperator">)</span>
+    </div>
+    Write: L = colim <span class="foncteur">F</span></dd>
+</dl>
+<p>As terminal or initial objects(?), limits and colimits are uniquely 
 determined up to a unique isomorphism.</p>
 
 </body>

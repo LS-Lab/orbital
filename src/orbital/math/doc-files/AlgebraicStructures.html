@@ -171,8 +171,9 @@ structure of M over to φ(M)⊆N. The image (φ(M),∗) inherits the properties
 general if N is not a group and φ not unital it may be φ(1)≠1 (and thus φ(x<sup>-1</sup>)≠φ(x)<sup>-1</sup>). 
 If φ:M→N is a homomorphism of <span class="signifier">T</span>, then Im(φ):=φ(M)≤N 
 and Ker(φ):=<sup>-1</sup>φ({0})⊴M are sub-<span class="signifier">T</span> 
-(and Ker(φ) even is a normal subgroups resp. an ideal for groups resp. rings or 
-algebras).</p>
+(and Ker(φ) even is a normal subgroup resp. an ideal for groups resp. rings or 
+algebras). Also for N'≤N, <sup>-1</sup>φ(N')≤M is a sub-<span class="signifier">T</span> 
+(and even a normal subgroup resp. ideal if N' is).</p>
 <h4 class="inner">Examples</h4>
 <ol>
   <li>For every set X there is the <dfn>free magma</dfn> M(X) is the free 
@@ -194,15 +195,15 @@ algebras).</p>
     (but <span class="categorie">Fld</span> has no product).<br>
     Especially A<sup>I</sup> := ∏<sub>i∈I</sub> A.</li>
   <li>The direct sum <big>⊕</big><sub>i∈I</sub> A<sub>i</sub> := {(a<sub>i</sub>)<sub>i∈I</sub> 
-    <sub></sub>∈ ∏<sub>i∈I</sub> A<sub>i</sub> ¦ a<sub>i</sub>=1 p.t. 
-    i∈I} with component-wise laws is the coproduct in <span class="categorie">cMon</span>, 
+    <sub></sub>∈ ∏<sub>i∈I</sub> A<sub>i</sub> ¦ a<sub>i</sub>=1 p.t. i∈I} 
+    with component-wise laws is the coproduct in <span class="categorie">cMon</span>, 
     <span class="categorie">Mon??</span>,<span class="categorie">Ab</span>,R-<span class="categorie">Mod</span>,K-<span class="categorie">Vec</span>,..., 
     but that is <em>not</em> the coproduct in <span class="categorie">Gr</span> 
     nor in R-<span class="categorie">Alg</span>.<br>
     Especially A<sup>(I)</sup> := <big>⊕</big><sub>i∈I</sub> A.</li>
-  <li>(X<sup>X</sup>,∘) is a monoid for any set X, and S<sub>X</sub> := 
-    Perm(X) := (X<sup>X</sup>)<sup>×</sup> ≤ X is the symmetric group. If M 
-    is a magma, then Aut(M)≤S<sub>M</sub>.</li>
+  <li>(X<sup>X</sup>,∘) is a monoid for any set X, and S<sub>X</sub> := Perm(X) 
+    := (X<sup>X</sup>)<sup>×</sup> ≤ X is the symmetric group. If M is a 
+    magma, then Aut(M)≤S<sub>M</sub>.</li>
   <li id="commutativeMagmaHom">If M is a magma and C a <dfn>commutative</dfn> 
     magma, then Hom(M,C)≤C<sup>M</sup> is a commutative sub-<span class="signifier">T</span>.</li>
 </ol>
@@ -329,9 +330,9 @@ actions.</p>
   </tr>
 </table>
 <h5 class="compact">Note</h5>
-<p class="preciseClarification">Also compare with <a href="#morph_1_0">homomorphisms 
-of groups</a> to see that for <em>groups </em>operating on a set, the action 
-even is a map ·:G→S<sub>E</sub>.</p>
+<p class="preciseClarification">G is called transformation group of E. Also 
+compare with <a href="#morph_1_0">homomorphisms of groups</a> to see that for <em>groups 
+</em>operating on a set, the action even is a map ·:G→S<sub>E</sub>.</p>
 <table width="100%" class="def">
   <caption>Homomorphisms of groups operating on a set</caption>
   <tr>
@@ -762,7 +763,7 @@ homomorphisms of rings:</p>
   <li>A commutative pseudo-ring R is a commutative associative R-algebra.</li>
   <li>A commutative ring R with 1 is a unital and commutative associative 
     R-algebra.</li>
-  <li>A ring extension R'≥R is an R-algebra.</li>
+  <li>A ring extension R'≥R is an associative R-algebra.</li>
   <li>If I⊴R is an ideal, R/I is an R-algebra.</li>
   <li><b>Z</b>-<span class="categorie">Algas</span>≅<span class="categorie">PseudoRing</span>, 
     <b>Z</b>-<span class="categorie">Algasu</span>≅<span class="categorie">Rng1</span>, 
@@ -803,7 +804,7 @@ homomorphisms of rings:</p>
         <tr>
           <td class="leftOfMap"><span class="objet">E</span></td>
           <td class="arrowOfMap">↦</td>
-          <td class="rightOfMap">Mor<span class="categorie"><sub>Mag</sub></span>(S,(E,⋅))                                   
+          <td class="rightOfMap">Mor<span class="categorie"><sub>Mag</sub></span>(S,(E,⋅))                                     
             <!-- @todo or Hom as for <b>Z</b>[G]? --> </td>
         </tr>
       </tbody>
@@ -811,7 +812,7 @@ homomorphisms of rings:</p>
     Therefore it enjoys the following universal mapping property
     <div class="UniversalMappingProperty">
       ∀φ:S→(E,⋅) homomorphism of magmas/monoids into an R-algebra E<br />
-      ∃!Φ:R<sup>(S)</sup>→E R-algebra homomorphism with Φ|<sub>S</sub>=φ <!-- @todo Φ is the Einsetzungshomomorphismus -->               
+      ∃!Φ:R<sup>(S)</sup>→E R-algebra homomorphism with Φ|<sub>S</sub>=φ <!-- @todo Φ is the Einsetzungshomomorphismus -->                 
     </div>
   </li>
   <li>R<sup>X</sup> = ∏<sub>x</sub><sub>∈X</sub> R is a commutative 
@@ -859,8 +860,8 @@ subgroups in groups, subgroups in Abelian groups, ideals (i.e. sub-R-modules) in
 rings, submodules in R-modules, ideals (i.e. sub-R-modules <em>and</em> ideals 
 of the ring structure) in R-algebras (which in R-<span class="categorie">Algasu</span> 
 are identical with the ideals of the ring structure). For example, if (G,⋅) is 
-a group with a normal subgroup N⊴G, then there is a homomorphism φ with 
-N=Ker(φ) inducing a congruence relation ~, and <center>G/N := G/~ = <big>{</big>g⋅N:={g⋅n 
+a group with a normal subgroup N⊴G, then there is a homomorphism φ with N=Ker(φ) 
+inducing a congruence relation ~, and <center>G/N := G/~ = <big>{</big>g⋅N:={g⋅n 
 ¦ n∈N} ¦ g∈G<big>}</big> = <big>{</big>N⋅g:={n⋅g ¦ n∈N} ¦ g∈G<big>}</big></center>equals 
 the set of left <dfn>cosets</dfn> or the set of right cosets. Although the left 
 and right cosets are also defined for ordinary subgroups H≤G instead of N, 

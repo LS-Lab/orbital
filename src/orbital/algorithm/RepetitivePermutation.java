@@ -20,9 +20,9 @@ import orbital.util.SuspiciousError;
  */
 class RepetitivePermutation extends Combinatorical {
     private static final long serialVersionUID = 787550243481366022L;
-    private int     r;
-    private int     n;
-    private int[]   permutation;
+    private final int r;
+    private final int n;
+    private final int[] permutation;
     public RepetitivePermutation(int r, int n) {
     	this.r = r;
     	this.n = n;
@@ -41,6 +41,9 @@ class RepetitivePermutation extends Combinatorical {
     } 
 
     public int[] next() {
+	//@fixme hasNext() does not yet respect this case. it always returns 0 since the prestep wasn't performed
+	if (permutation.length == 0)
+	    return permutation;
 	if (!hasNext())
 	    throw new NoSuchElementException();
 	for (int i = permutation.length - 1; i >= 0; i--) {
@@ -49,10 +52,7 @@ class RepetitivePermutation extends Combinatorical {
 	    else
 		return permutation;
 	} 
-	if (permutation.length == 0)
-	    return permutation;
-	else
-	    throw new SuspiciousError();
+	throw new SuspiciousError();
     } 
 
     public boolean hasPrevious() {

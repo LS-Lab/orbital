@@ -665,6 +665,7 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	 * @permission Needs access to the functor class and will therefore call {@link java.lang.reflect.AccessibleObject#setAccessible(boolean) setAccessible(true)}.
 	 * @see #getSpecification(Functor)
 	 * @xxx getField(...) won't work for non-public fields.
+	 * @todo rename "specification" field to "declaredType/declaredSpecification"?
 	 */
 	private static Specification getStaticSpecification(Class c) {
 	    try {

@@ -9,19 +9,11 @@ import java.io.Serializable;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
-class ChessAspects implements Serializable {
-    public double offensiveFigure = 0.1;			// offensive kind of figure
-    public double beatingEnemies = 3.6;				// beating enemies now
-    public double stormingOffensive = 1.0;			// storming to front and further
-    public double topStorm = 0.01;					// storm from top flanke down
-    public int	  maxDepth = 1;						// maximum search depth
-}
-
 /**
  * Implements a naive Computer-Player for Chess to show how it works.
- * To see what can be done with a better implementation there is
- * a Game called Seti.
- * @see <a href="http://beam.to/Twiph/">Seti Game</a>
+ * To see what can be done with a more interesting game there is
+ * an implementation of a board game called Seti.
+ * @see <a href="http://www.functologic.com/">Seti Game</a>
  * @see orbital.game.AlphaBetaPruning
  * @todo use new AlphaBetaPruning capabilities
  */
