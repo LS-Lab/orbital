@@ -43,25 +43,7 @@ import orbital.math.MathUtilities;
  * @internal in fact, we currently don't rely on LogicBasis anyway.
  */
 abstract class ModernFormula extends LogicBasis implements Formula {
-    /**
-     * The underlying logic of this formula (used for composition).
-     * @note an alternative implementation would make this class an inner instance class of a Logic implementation basis, saving this instance variable.
-     * @xxx then, however, default constructor newInstance() can no longer set the right underlying logic. And that logic cannot even be set directly by setComponent, setCompositor
-     * @internal refactorised implementation such that underlyingLogic!=null is an invariant and prerequisite to the constructor call.
-     * @todo instead we could implement getUnderlyingLogic() with dynamic chaining to subformulas, and result caching/memoisation for retaining performance
-     */
-    private Logic underlyingLogic = new ClassicalLogic();
-    protected ModernFormula(Logic underlyingLogic) {
-	if (underlyingLogic == null)
-	    throw new NullPointerException("invalid underlying logic: " + underlyingLogic);
-	this.underlyingLogic = underlyingLogic;
-    }
-
-    // for modification cloning, in @see #construct(Object,Object)
-    protected ModernFormula() {
-	//@internal preliminary, has to be set accordingly by @see #construct(Object,Object)
-	this.underlyingLogic = null;
-    }
+    protected ModernFormula() {}
     
     /**
      * The symbols of the logical junctors.
@@ -106,43 +88,23 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     }
 
     /**
-     * Get the underlying logic of this formula.
+     * Get the underlying logic of this formula. Used for composition.
+     * @note an alternative implementation would make this class an inner instance class of a Logic implementation basis, saving this instance variable.
+     * @xxx then, however, default constructor newInstance() can no longer set the right underlying logic. And that logic cannot even be set directly by setComponent, setCompositor
+     * @internal refactorised implementation such that underlyingLogic!=null is an invariant and prerequisite to the constructor call.
+     * @todo instead we could implement getUnderlyingLogic() with dynamic chaining to subformulas, and result caching/memoisation for retaining performance
      */
-    Logic getUnderlyingLogic() {
-	return underlyingLogic;
-    }
-
-    /**
-     * Set the underlying logic of this formula.
-     */
-    private void setUnderlyingLogic(Logic newUnderlyingLogic) {
-	this.underlyingLogic = newUnderlyingLogic;
-    }
+    protected abstract Logic getUnderlyingLogic();
 
     /**
      * Checks whether the underlying logics of this formula and the given one are compatible.
-     * An undefined underlying logic of <code>null</code> is compatible with any logic.
      */
     boolean isCompatibleUnderlyingLogic(Formula formula) {
 	Logic myUnderlying = getUnderlyingLogic();
 	Logic itsUnderlying = ((ModernFormula)formula).getUnderlyingLogic();
-	return myUnderlying == null || ((ModernLogic)myUnderlying).compatible(itsUnderlying);
+	return myUnderlying != null && ((ModernLogic)myUnderlying).compatible(itsUnderlying);
     }
 
-    /**
-     * Set our underlying logic like the underlying logic of the given formula.
-     * @preconditions getUnderlyingLogic()&ne;null &and; formula.getUnderlyingLogic()&ne;null &rArr;
-     *  isCompatibleUnderlyingLogic(formula)
-     */
-    void setUnderlyingLogicLikeIn(Formula formula) {
-	assert isCompatibleUnderlyingLogic(formula) : "expected compatible underlying logics";
-	Logic myUnderlying = getUnderlyingLogic();
-	Logic itsUnderlying = ((ModernFormula)formula).getUnderlyingLogic();
-	setUnderlyingLogic(itsUnderlying);
-	assert isCompatibleUnderlyingLogic(formula) : "reflexive compatible underlying logics";
-    }
-
-    
     // Formula implementation
 
     public Set getVariables() {
@@ -241,22 +203,27 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      */
     static class AtomicSymbol extends ModernFormula implements orbital.logic.trs.Variable {
 	private Symbol symbol;
+	private Logic underlyingLogic = null;
 	/**
 	 * Construct (a formula view of) an atomic symbol.
 	 * @param symbol the symbol for which to create a formula representation
 	 */
 	public AtomicSymbol(Logic underlyingLogic, Symbol symbol) {
-	    super(underlyingLogic);
 	    if (underlyingLogic == null)
 		throw new NullPointerException("invalid underlying logic: " + underlyingLogic);
+	    this.underlyingLogic = underlyingLogic;
 	    this.symbol = symbol;
 	}
-		
+
 	public boolean equals(Object o) {
 	    return getClass() == o.getClass() && Utility.equals(symbol, ((AtomicSymbol) o).symbol);
 	}
 	public int hashCode() {
 	    return Utility.hashCode(symbol);
+	}
+		
+	protected Logic getUnderlyingLogic() {
+	    return underlyingLogic;
 	}
 		
         public Type getType() {
@@ -363,19 +330,20 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @param notation the notation for the composition (usually determined by the composing symbol).
      */
     public static Formula.Composite composeDelayed(Logic underlyingLogic, Formula f, Expression arguments[], Notation notation) {
+	//@internal underlyingLogic is unused, here. Could be used for assertion of return.getUnderlyingLogic().equals(underlyingLogic)
         //@xxx was notat = notation; but either we disable DEFAULT=BESTFIX formatting, or we ignore the signature's notation choice
         Notation notat = notation;
 	switch(arguments.length) {
 	case 0:
-	    return new ModernFormula.VoidAppliedVariableFormula(underlyingLogic, f, notation);
+	    return new ModernFormula.VoidAppliedVariableFormula(f, notation);
 	case 1:
-	    return new ModernFormula.AppliedVariableFormula(underlyingLogic, f, (Formula) arguments[0], notat);
+	    return new ModernFormula.AppliedVariableFormula(f, (Formula) arguments[0], notat);
 	case 2:
-	    return new ModernFormula.BinaryAppliedVariableFormula(underlyingLogic, f, (Formula) arguments[0], (Formula) arguments[1], notat);
+	    return new ModernFormula.BinaryAppliedVariableFormula(f, (Formula) arguments[0], (Formula) arguments[1], notat);
 	default:
 	    //@xxx provide implementation on Object[]
 	    // could simply compose f(arguments), here, if f understands arrays
-	    return new ModernFormula.NaryAppliedVariableFormula(underlyingLogic, f, (Formula[]) Arrays.asList(arguments).toArray(new Formula[0]), notat);
+	    return new ModernFormula.NaryAppliedVariableFormula(f, (Formula[]) Arrays.asList(arguments).toArray(new Formula[0]), notat);
 	    //@todo which Locator to provide, here?
 	    //throw new IllegalArgumentException("illegal number of arguments, " + f + " applied to " + Types.typeOf(arguments) + " is undefined. Or " + arguments.length + ">2");
 	}
@@ -422,18 +390,66 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @version 1.1, 2002-11-10
      */
     static abstract class AbstractCompositeFormula extends ModernFormula implements Composite {
-	protected AbstractCompositeFormula(Logic underlyingLogic, Notation notation) {
-	    super(underlyingLogic);
+	protected AbstractCompositeFormula(Notation notation) {
 	    setNotation(notation);
 	}
-	protected AbstractCompositeFormula(Logic underlyingLogic) {
-	    super(underlyingLogic);
-	    this.setNotation(Notation.DEFAULT);
-	}
-	// for modification cloning
 	protected AbstractCompositeFormula() {
-	    super();
-	    this.setNotation(Notation.DEFAULT);
+	    this(Notation.DEFAULT);
+	}
+
+
+	/**
+	 * Compute the underlying logic of this formula, as derived
+	 * from its constituents.
+	 */
+	protected Logic computeUnderlyingLogic() {
+	    // LAG(1) attribute grammar run with first fit
+	    if (getCompositor() instanceof ModernFormula) {
+		return ((ModernFormula)getCompositor()).getUnderlyingLogic();
+	    } else if (getComponent() instanceof ModernFormula) {
+		return ((ModernFormula)getComponent()).getUnderlyingLogic();
+	    } else if (getComponent() instanceof Object[]) {
+		Object a[] = (Object[])getComponent();
+		for (int i = 0; i < a.length; i++) {
+		    if (a[i] instanceof ModernFormula) {
+			return ((ModernFormula)a[i]).getUnderlyingLogic();
+		    }
+		}
+	    }
+	    throw new IllegalStateException("formula " + this + ", which is not composed of subformulas cannot deduce their underlying logic from their subformulas");
+	}
+	/**
+	 * Validate that the constituents underlying logics are compatible with our.
+	 * @todo also assert mutual compatibility of constituents' underlying logics?
+	 */
+	protected boolean validateUnderlyingLogic() {
+	    // LAG(1) attribute grammar run for compatibility condition
+	    return (getCompositor() instanceof ModernFormula
+		    ? isCompatibleUnderlyingLogic((ModernFormula)getCompositor())
+		    : true)
+		&& (getComponent() instanceof ModernFormula
+		    ? isCompatibleUnderlyingLogic((ModernFormula)getComponent())
+		    : Setops.all(Utility.asIterator(getComponent()),
+			      new Predicate() {
+				  public boolean apply(Object ai) {
+				      return !(ai instanceof ModernFormula)
+					  || isCompatibleUnderlyingLogic((ModernFormula)ai);
+				  }
+			      }));
+	}
+	/**
+	 * Set the underlying logic of this formula.
+	 */
+	private void setUnderlyingLogic(Logic newUnderlyingLogic) {
+	    this.underlyingLogic = newUnderlyingLogic;
+	}
+	//@internal used as a cache for the computed value for performance reasons
+	private Logic underlyingLogic = null;
+	protected Logic getUnderlyingLogic() {
+	    if (this.underlyingLogic == null) {
+		setUnderlyingLogic(computeUnderlyingLogic());
+	    }
+	    return this.underlyingLogic;
 	}
 
     	// identical to @see orbital.logic.functor.Functor.Composite.Abstract
@@ -458,7 +474,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 		c.setComponent(g);
 		//@internal cannot copy notation. Where from? So keep DEFAULT.
 		assert getUnderlyingLogic() != null : "construct(Object,Object) sets underlying logic for " + c + " of " + c.getClass() + " via setCompositor(Object) or setComponent(Object) from " + f + " of " + f.getClass() + " on " + MathUtilities.format(g) + " of " + g.getClass();
-		//@todo assert compatibility of underlying logics?
+		if (!validateUnderlyingLogic())
+		    throw new IllegalArgumentException("incompatible underlying logics prohibit construction: " + f + " of " + f.getClass() + " on " + MathUtilities.format(g) + " of " + g.getClass());
 		return c;
 	    }
 	    catch (InstantiationException ass) {
@@ -515,13 +532,13 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     static class AppliedVariableFormula extends AbstractCompositeFormula {
 	protected Formula outer;
 	protected Formula inner;
-	public AppliedVariableFormula(Logic underlyingLogic, Formula f, Formula g, Notation notation) {
-	    super(underlyingLogic, notation);
+	public AppliedVariableFormula(Formula f, Formula g, Notation notation) {
+	    super(notation);
 	    this.outer = f;
 	    this.inner = g;
 	}
-	public AppliedVariableFormula(Logic underlyingLogic, Formula f, Formula g) {
-	    this(underlyingLogic, f, g, null);
+	public AppliedVariableFormula(Formula f, Formula g) {
+	    this(f, g, null);
 	}
 		
 	// for modification cloning
@@ -565,11 +582,9 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	} 
 
 	public void setCompositor(Object f) throws ClassCastException {
-	    setUnderlyingLogicLikeIn((Formula) f);
 	    this.outer = (Formula) f;
 	}
 	public void setComponent(Object g) throws ClassCastException {
-	    assert isCompatibleUnderlyingLogic((Formula)g) : "only compose formulas of compatible logics";
 	    this.inner = (Formula) g;
 	}
     }
@@ -586,12 +601,12 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      */
     static class VoidAppliedVariableFormula extends AbstractCompositeFormula {
 	protected Formula outer;
-	public VoidAppliedVariableFormula(Logic underlyingLogic, Formula f, Notation notation) {
-	    super(underlyingLogic, notation);
+	public VoidAppliedVariableFormula(Formula f, Notation notation) {
+	    super(notation);
 	    this.outer = f;
 	}
-	public VoidAppliedVariableFormula(Logic underlyingLogic, Formula f) {
-	    this(underlyingLogic, f, null);
+	public VoidAppliedVariableFormula(Formula f) {
+	    this(f, null);
 	}
 		
 	// for modification cloning
@@ -632,7 +647,6 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	} 
 
 	public void setCompositor(Object f) throws ClassCastException {
-	    setUnderlyingLogicLikeIn((Formula) f);
 	    this.outer = (Formula) f;
 	}
 	public void setComponent(Object g) throws ClassCastException {
@@ -658,14 +672,14 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	protected Formula outer;
 	protected Formula left;
 	protected Formula right;
-	public BinaryAppliedVariableFormula(Logic underlyingLogic, Formula f, Formula g, Formula h, Notation notation) {
-	    super(underlyingLogic, notation);
+	public BinaryAppliedVariableFormula(Formula f, Formula g, Formula h, Notation notation) {
+	    super(notation);
 	    this.outer = f;
 	    this.left = g;
 	    this.right = h;
 	}
-	public BinaryAppliedVariableFormula(Logic underlyingLogic, Formula f, Formula g, Formula h) {
-	    this(underlyingLogic, f, g, h, null);
+	public BinaryAppliedVariableFormula(Formula f, Formula g, Formula h) {
+	    this(f, g, h, null);
 	}
 		
 	// for modification cloning
@@ -718,14 +732,12 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	} 
 
 	public void setCompositor(Object f) throws ClassCastException {
-	    setUnderlyingLogicLikeIn((Formula) f);
 	    this.outer = (Formula) f;
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
 	    Formula[] a = (Formula[]) g;
 	    if (a.length != 2)
 		throw new IllegalArgumentException(Formula.class + "[2] expected");
-	    assert isCompatibleUnderlyingLogic(a[0]) && isCompatibleUnderlyingLogic(a[1]) : "only compose formulas of compatible logics";
 	    this.left = a[0];
 	    this.right = a[1];
 	}
@@ -741,13 +753,13 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     static class NaryAppliedVariableFormula extends AbstractCompositeFormula {
 	protected Formula outer;
 	protected Formula[] inner;
-	public NaryAppliedVariableFormula(Logic underlyingLogic, Formula f, Formula g[], Notation notation) {
-	    super(underlyingLogic, notation);
+	public NaryAppliedVariableFormula(Formula f, Formula g[], Notation notation) {
+	    super(notation);
 	    this.outer = f;
 	    this.inner = g;
 	}
-	public NaryAppliedVariableFormula(Logic underlyingLogic, Formula f, Formula g[]) {
-	    this(underlyingLogic, f, g, null);
+	public NaryAppliedVariableFormula(Formula f, Formula g[]) {
+	    this(f, g, null);
 	}
 		
 	// for modification cloning
@@ -805,21 +817,11 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	} 
 
 	public void setCompositor(Object f) throws ClassCastException {
-	    setUnderlyingLogicLikeIn((Formula) f);
 	    this.outer = (Formula) f;
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
 	    Formula[] a = (Formula[]) g;
-	    assert isCompatibleUnderlyingLogic(a) : "only compose formulas of compatible logics";
 	    this.inner = a;
-	}
-
-	private final boolean isCompatibleUnderlyingLogic(Formula[] a) {
-	    //@internal @see Setops.all
-	    for (int i = 0; i < a.length; i++)
-		if (!isCompatibleUnderlyingLogic(a[i]))
-		    return false;
-	    return true;
 	}
     }
 
@@ -844,7 +846,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	protected Function outer;
 	protected Formula inner;
 	public AppliedFormula(Logic underlyingLogic, Symbol fsymbol, Function f, Formula g, Notation notation) {
-	    super(underlyingLogic, notation);
+	    //@internal inherited value underlyingLogic is still ignored rather than determining computeUnderlyingLogic
+	    super(notation);
 	    if (fsymbol == null)
 		throw new IllegalArgumentException("illegal compositor symbol " + fsymbol + " for compositor referent " + f + " applied to " + g);
 	    this.outerSymbol = fsymbol;
@@ -893,7 +896,6 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    this.outer = (Function) f;
 	}
 	public void setComponent(Object g) throws ClassCastException {
-	    setUnderlyingLogicLikeIn((Formula) g);
 	    this.inner = (Formula) g;
 	}
 
@@ -917,7 +919,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	protected Formula left;
 	protected Formula right;
 	public BinaryAppliedFormula(Logic underlyingLogic, Symbol fsymbol, BinaryFunction f, Formula g, Formula h, Notation notation) {
-	    super(underlyingLogic, notation);
+	    //@internal inherited value underlyingLogic is still ignored rather than determining computeUnderlyingLogic
+	    super(notation);
 	    if (fsymbol == null)
 		throw new IllegalArgumentException("illegal compositor symbol " + fsymbol + " for compositor referent " + f + " applied to " + g + " and " + h);
 	    this.outerSymbol = fsymbol;
@@ -979,10 +982,11 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    Formula[] a = (Formula[]) g;
 	    if (a.length != 2)
 		throw new IllegalArgumentException(Formula.class + "[2] expected");
-	    assert ((ModernFormula)a[0]).isCompatibleUnderlyingLogic(a[1]) : "only compose formulas of compatible logics";
-	    setUnderlyingLogicLikeIn(a[0]);
 	    this.left = a[0];
 	    this.right = a[1];
+	}
+	protected Logic computeUnderlyingLogic() {
+	    return ((ModernFormula)right).getUnderlyingLogic();
 	}
 
 	public Object apply(Object/*>Interpretation<*/ arg) {

@@ -974,20 +974,26 @@ public class ClassicalLogic extends ModernLogic {
     private static class LambdaAbstractionFormula extends ModernFormula.AbstractCompositeFormula {
 	private Symbol x;
 	private Formula term;
+	private Logic underlyingLogic;
 	private LambdaAbstractionFormula() {
 	    super();
 	}
-	public LambdaAbstractionFormula(Logic logic, Symbol x, Formula term) {
-	    super(logic);
+	public LambdaAbstractionFormula(Logic underlyingLogic, Symbol x, Formula term) {
 	    this.x = x;
 	    this.term = term;
+	    this.underlyingLogic = underlyingLogic;
 	}
 
 	public orbital.logic.Composite construct(Object f, Object g) {
 	    LambdaAbstractionFormula c = new LambdaAbstractionFormula();
 	    c.setCompositor(f);
 	    c.setComponent(g);
+	    c.underlyingLogic = underlyingLogic;
 	    return c;
+	}
+
+	protected Logic getUnderlyingLogic() {
+	    return underlyingLogic;
 	}
 
 	// partially identical to @see orbital.logic.functor.Functionals.BinaryCompositeFunction
@@ -1009,9 +1015,11 @@ public class ClassicalLogic extends ModernLogic {
 	    Object[] a = (/*@xxx which type? Formula*/Object[]) g;
 	    if (a.length != 2)
 		throw new IllegalArgumentException(Object.class + "[2] expected");
-	    setUnderlyingLogicLikeIn((Formula)a[1]);
 	    this.x = (Symbol)a[0];
 	    this.term = (Formula)a[1];
+	}
+	protected Logic computeUnderlyingLogic() {
+	    return ((ModernFormula)term).getUnderlyingLogic();
 	}
 	public Notation getNotation() {
 	    return Notation.DEFAULT;
@@ -1083,23 +1091,29 @@ public class ClassicalLogic extends ModernLogic {
     private static class PiAbstractionExpression extends ModernFormula.AbstractCompositeFormula {
 	private Symbol x;
 	private Formula term;
+	private Logic underlyingLogic;
 	private PiAbstractionExpression() {
 	    super();
 	}
 	public PiAbstractionExpression(Logic underlyingLogic, Symbol x, Formula term) {
-	    super(underlyingLogic);
 	    this.x = x;
 	    this.term = term;
 	    if (!orbital.moon.logic.sign.type.StandardTypeSystem.kind.apply(term.getType()))
 		//@xxx expected type is not complete
 		throw new TypeException("would not expect type " + term.getType() + " for type expressions, but a kind:[]", term.getType().typeSystem().TYPE(), term.getType());
+	    this.underlyingLogic = underlyingLogic;
 	}
 
 	public orbital.logic.Composite construct(Object f, Object g) {
 	    PiAbstractionExpression c = new PiAbstractionExpression();
 	    c.setCompositor(f);
 	    c.setComponent(g);
+	    c.underlyingLogic = underlyingLogic;
 	    return c;
+	}
+
+	protected Logic getUnderlyingLogic() {
+	    return underlyingLogic;
 	}
 
 	// identical to @see orbital.logic.functor.Functionals.BinaryCompositeFunction
@@ -1123,7 +1137,9 @@ public class ClassicalLogic extends ModernLogic {
 		throw new IllegalArgumentException(Object.class + "[2] expected");
 	    this.x = (Symbol)a[0];
 	    this.term = (Formula)a[1];
-	    setUnderlyingLogicLikeIn(term);
+	}
+	protected Logic computeUnderlyingLogic() {
+	    return ((ModernFormula)term).getUnderlyingLogic();
 	}
 	public Notation getNotation() {
 	    return Notation.DEFAULT;
@@ -1360,14 +1376,15 @@ public class ClassicalLogic extends ModernLogic {
 	 * applied = (&Pi;x:*.t)(&alpha;) = t[x&#8614;&alpha;]
 	 */
 	private Type applied;
-	private PiApplicationExpression() {
-	    super();
-	}
+	private Logic underlyingLogic;
 	public PiApplicationExpression(Logic underlyingLogic, PiAbstractionType abstraction, Type applied) {
-	    //@xxx what about promoting underlyingLogic to construct() derivatives of this?
-	    super(underlyingLogic);
 	    this.abstraction = abstraction;
 	    this.applied = applied;
+	    this.underlyingLogic = underlyingLogic;
+	}
+
+	protected Logic getUnderlyingLogic() {
+	    return underlyingLogic;
 	}
 
 	// identical to @see orbital.logic.functor.Function.Composite.Abstract
