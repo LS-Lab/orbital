@@ -90,7 +90,7 @@ public class SetOfSupportResolution extends ResolutionBase {
 	    usable.add(C);
 
 	    // the set of resolvents obtained from resolution of C with any D that are new to us
-	    ClausalSet newResolvents = new ClausalSetImpl();
+	    ClausalSet newResolvents = getClausalFactory().newClausalSet();
 	    // whether C has been resolved with any D
 	    boolean resolvable = false;
 	    // choose any clause D&isin;U&cup;S

@@ -40,6 +40,10 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
     //@xxx do not stick to this single logic, here, although resolution is rather limited to classical logic
     private static final Logic logic = new ClassicalLogic();
 
+    protected static ClausalFactory getClausalFactory() {
+	return ResolutionBase.getClausalFactory();
+    }
+
     /**
      * Copy constructor.
      * @internal transitively public constructors required for Functionals.map to produce Clauses.
@@ -49,32 +53,6 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
 	assert Setops.all(literals, Functionals.bindSecond(Utility.instanceOf, Formula.class)) : "instanceof Set<Formula>";
     }
     public ClauseImpl() {}
-
-    // factory-methods
-    
-    /**
-     * Instantiates a new clause.
-     * @return a new (yet empty) clause of the same type as this.
-     * @postconditions RES&ne;RES
-     * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
-     * @see #clone()
-     */
-    protected Clause newInstance() {
-	return new ClauseImpl();
-    }
-
-    /**
-     * Instantiates a new clause.
-     * @param literals the set of literals for the new clause.
-     * @return a new clause of the same type as this, with the specified literals.
-     * @postconditions RES&ne;RES
-     * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
-     * @see #clone()
-     * @todo rename or remove
-     */
-    protected ClauseImpl construct(Set literals) {
-	return new ClauseImpl(literals);
-    }
 
     //
 
@@ -331,7 +309,7 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
 	    return new Pair(Substitutions.id, this);
 	}
 	Clause previous = null;
-	assert (previous = construct(this)) != null;
+	assert (previous = getClausalFactory().createClause(this)) != null;
 	final Substitution mu = Substitutions.unify(literals);
 	assert this.equals(previous) : "modifications during factorization work on copies, and leave the original clause unmodified";
 	if (mu == null) {
@@ -343,7 +321,7 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
 	    Clause factor = map(mu, this);
 	    assert this.equals(previous) : "modifications during factorization work on copies, and leave the original clause unmodified";
 	    if (logger.isLoggable(Level.FINEST)) {
-		logger.log(Level.FINEST, "factorized {1} from {0} by unifying {2} by {3}", new Object[] {construct(this), construct(factor), mu, literals});
+		logger.log(Level.FINEST, "factorized {1} from {0} by unifying {2} by {3}", new Object[] {getClausalFactory().createClause(this), getClausalFactory().createClause(factor), mu, literals});
 	    }
 	    return new Pair(mu, factor);
 	}
@@ -354,23 +332,23 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
 	if (size() > D.size())
 	    return false;
 	// negate D and replace all variables with distinct constants (also distinct for each literal)
-	final ClausalSet notDground = new ClausalSetImpl();
+	final ClausalSet notDground = getClausalFactory().newClausalSet();
 	for (Iterator i = D.iterator(); i.hasNext(); ) {
-	    final ClauseImpl notDi = new ClauseImpl(Collections.singleton(Utilities.negation((Formula)i.next())));
+	    final ClauseImpl notDi = (ClauseImpl)getClausalFactory().createClause(Collections.singleton(Utilities.negation((Formula)i.next())));
 	    final Clause notDiground = notDi.variant(notDi.getFreeVariables(), true);
 	    assert notDiground.getFreeVariables().isEmpty() : "ground instances have no free variables " + notDiground + " stemming from " + notDi + " has FV=" + notDiground.getFreeVariables();
 	    notDground.add(notDiground);
 	}
 
-	ClausalSet u = new ClausalSetImpl();
-	u.add(new ClauseImpl(this));
+	ClausalSet u = getClausalFactory().newClausalSet();
+	u.add(getClausalFactory().createClause(this));
 	final ClausalSet input = notDground;
 	assert !input.contains(Clause.CONTRADICTION) : "contains no elementary contradiction";
 	assert !u.contains(Clause.CONTRADICTION) : "contains no elementary contradiction, otherwise " + this + " is " + Clause.CONTRADICTION;
 	int count = 0;
 	while (!u.isEmpty()) {
 	    // the set of resolvents obtained from resolution of any C1 with any C2
-	    final ClausalSet newResolvents = new ClausalSetImpl();
+	    final ClausalSet newResolvents = getClausalFactory().newClausalSet();
 
 	    // for each clause C1&isin;U
 	    for (Iterator i = u.iterator(); i.hasNext(); ) {
@@ -441,14 +419,14 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
      */
     private Clause map(Function f, Clause c) {
 	Set fc = (Set) Functionals.map(f, c);
-	return fc instanceof Clause ? (Clause)fc : construct(fc);
+	return fc instanceof Clause ? (Clause)fc : getClausalFactory().createClause(fc);
     }
 
     /**
      * @return S\{x} as a new clause.
      */
     private Clause clauseWithout(Clause S, Object x) {
-	Clause Sp = construct(S);
+	Clause Sp = getClausalFactory().createClause(S);
 	Sp.remove(x);
 	return Sp;
     }

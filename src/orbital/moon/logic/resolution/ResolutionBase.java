@@ -70,17 +70,20 @@ public abstract class ResolutionBase implements Inference {
 
     static final Logger logger = Logger.getLogger(ResolutionBase.class.getName());
 
-    private static boolean verbose = false;
+    private static final ClausalFactory clausalFactory = new DefaultClausalFactory();
+    protected static ClausalFactory getClausalFactory() {
+	return clausalFactory;
+    }
+    
     /**
      * Add verbosity, i.e. print out a proof tree.
      */
     public void setVerbose(boolean newVerbose) {
-	this.verbose = newVerbose;
+	if (getClausalFactory() instanceof DefaultClausalFactory) {
+	    ((DefaultClausalFactory)getClausalFactory()).setVerbose(newVerbose);
+	}
     }
-    private static boolean isVerbose() {
-	return verbose;
-    }
-    
+
     /**
      * {@inheritDoc}
      * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
@@ -144,7 +147,7 @@ public abstract class ResolutionBase implements Inference {
 
         // convert B to clausalForm clausebase
 	// @internal clausebase = Functionals.map(clausalForm, skolemizedB)
-        ClausalSet clausebase = new ClausalSetImpl();
+        ClausalSet clausebase = getClausalFactory().newClausalSet();
         for (Iterator i = skolemizedB.iterator(); i.hasNext(); ) {
 	    clausebase.addAll(clausalForm((Formula) i.next(), SIMPLIFYING));
 	}
@@ -180,13 +183,11 @@ public abstract class ResolutionBase implements Inference {
      * @todo move to orbital.moon.logic.resolution....?
      */
     public static final ClausalSet clausalForm(Formula f, boolean simplifying) {
-	return new ClausalSetImpl
+	return getClausalFactory().createClausalSet
 	    (
 	     Functionals.map(new Function() {
 		     public Object apply(Object C) {
-			 return isVerbose()
-			     ? new TraceableClauseImpl((Set)C)
-			     : new ClauseImpl((Set)C);
+			 return getClausalFactory().createClause((Set)C);
 		     }
 		 }, ClassicalLogic.Utilities.clausalForm(f, simplifying))
 	     );

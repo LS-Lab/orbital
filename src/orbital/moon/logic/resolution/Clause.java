@@ -28,7 +28,7 @@ public interface Clause extends Set/*<Formula>*/ {
      * contradictory singleton set of clauses} is {&empty;}={&#9633;}
      * while the tautological set of clauses is {}.  </p>
      */
-    static final Clause CONTRADICTION = new ClauseImpl(Collections.EMPTY_SET);
+    static final Clause CONTRADICTION = ResolutionBase.getClausalFactory().createClause(Collections.EMPTY_SET);
 
     /**
      * Get the free variables of a formula represented as a clause.
@@ -157,7 +157,7 @@ public interface Clause extends Set/*<Formula>*/ {
      * Get all literals contained in this clause that unify with
      * L. <p>Implementations may use indexing or links to estimate the
      * clauses to return very quickly.</p>
-     * @postconditions RES = {F&isin;this &exist;mgU{L,F}}
+     * @postconditions RES = {K&isin;this &exist;mgU{L,K}}
      * @see #getProbableUnifiables(Formula)
      */
     Set/*_<Formula>_*/ getUnifiables(Formula L);
