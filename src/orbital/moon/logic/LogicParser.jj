@@ -72,14 +72,14 @@ public class LogicParser {
     private static final Type BOOLEAN = Types.type(Boolean.class);
 	
     /**
-     * Delegate to the current Syntax implementation that is used for creating Atoms.
+     * Delegate to the current syntax implementation that is used for building expressions.
      */
     protected ExpressionSyntax syntax;
 
     /**
-     * The core signature of {@link #syntax}.
+     * Caches the core signature of {@link #syntax}.
      */
-    private Signature coreSignature;
+    private transient Signature coreSignature;
 
     /**
      * The accumulated signature already occured in the current scope of the current
@@ -95,7 +95,7 @@ public class LogicParser {
 	this.syntax = syntax;
 	this.coreSignature = syntax.coreSignature();
     }
-    private void initSymbolMap() {
+    private void reinitSymbolMap() {
 	if (syntax == null)
 	    throw new IllegalStateException("no syntax has been set, use setSyntax(...)");
 	this.scopeSymbolMap = new SignatureBase();
@@ -112,8 +112,7 @@ public class LogicParser {
 	    case '¬': op = "~"; break;
 	    default: /*ignore*/
 	    }
-	final Expression[] arg = new Expression[] {a};
-	return composeWrapper(optok, op, arg);
+	return composeWrapper(optok, op, new Expression[] {a});
     }
 
     /**
@@ -159,8 +158,7 @@ public class LogicParser {
 
 	default: /*ignore*/
         }
-	final Expression[] arg = new Expression[] {a, b};
-	return composeWrapper(optok, op, arg);
+	return composeWrapper(optok, op, new Expression[] {a, b});
     }
 
     /**
@@ -189,8 +187,7 @@ public class LogicParser {
 	if ("free".equals(op))
 	    // quantifier with pure syntactic function and no semantic aspect at all
 	    return a;
-	final Expression[] arg = new Expression[] {syntax.createAtomic(x), a};
-	return composeWrapper(optok, op, arg);
+	return composeWrapper(optok, op, new Expression[] {syntax.createAtomic(x), a});
     }
 
     // support
@@ -373,7 +370,7 @@ TOKEN :
  */
 Expression[] parseFormulas() :
 {
-    initSymbolMap();
+    reinitSymbolMap();
     List r = new LinkedList();
     Expression expr;
 }
@@ -392,7 +389,7 @@ Expression[] parseFormulas() :
  */
 Expression parseFormula() :
 {
-    initSymbolMap();
+    reinitSymbolMap();
     Expression expr;
 }
 {
@@ -626,7 +623,7 @@ Expression PrimaryTerm() :
     (   LOOKAHEAD(2)
      	a = CompoundTerm()
      |  a = AtomicTerm()
-     |	"(" a = expression() ")"
+     |	"(" a = expression() /* @xxx better? = term() */")"
      )
 	{return a;}
 }
@@ -659,7 +656,7 @@ Expression CompoundTerm() :
  * @see orbital.logic.trs.Substitutions#lambda
  */
 Expression LambdaAbstraction() :
-{Token tok;Symbol x;Expression t;}
+{Token tok; Symbol x; Expression t;}
 {
     "(" tok = <LAMBDA> x = VariableDeclaration() "." {declare(x);} t = term() ")"
 {
@@ -778,7 +775,7 @@ Symbol Variable() :
  * an atomic variable term with a type declaration.
  */
 Symbol VariableDeclaration() :
-{String signifier;Token tok;String s = "";Type type = Types.INDIVIDUAL;}
+{String signifier;Token tok;Type type = Types.INDIVIDUAL;}
 {
     tok = <IDENTIFIER> {signifier = tok.image;}
     (":" type = TypeConstruct())?

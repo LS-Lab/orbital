@@ -38,8 +38,8 @@ import java.beans.IntrospectionException;
  * "sin[2 + 4/15]". Nevertheless, normal brackets () will work as well.</p>
  * @version 0.9, 2000/09/02
  * @author  Andr&eacute; Platzer
- * @see MathExpressionSyntax#createExpression(String)
  * @see <a href="doc-files/MathParser_grammar.html">Grammar</a>
+ * @see MathExpressionSyntax#createExpression(String)
  * @see #parseExpression()
  */
 public class MathParser {
@@ -49,12 +49,10 @@ public class MathParser {
      */
     private static final Type UNKNOWN = Types.INDIVIDUAL;
     
-    private static final Values valueFactory = Values.getDefaultInstance();
-	
     /**
-     * Delegate to the current Syntax implementation that is used for creating Atoms.
+     * Delegate to the current syntax implementation that is used for building expressions.
      */
-    protected static ExpressionBuilder syntax = new MathExpressionSyntax();
+    protected static ExpressionBuilder syntax;
 
     /**
      * Set the current syntax for parsing.
@@ -233,19 +231,17 @@ Expression UnaryExpression() :
 {Token tok;Expression v;}
 {
     ( tok = "+" | tok = "-" ) v = UnaryExpression() {return combine(tok, v);}
-    //TODO: unary x^-1
-|   v = value() {return v;}
+|   v = PrimaryTerm() {return v;}
 }
 
 // atomic values
 
-Expression value() :
+Expression PrimaryTerm() :
 {Expression f;}
 {
 ( LOOKAHEAD(2)
-	f = functionApplication()
-|
-        f = AtomicTerm()
+	f = CompoundTerm()
+|       f = AtomicTerm()
 |	"(" f = term() ")"
 )
 {return f;}
@@ -253,12 +249,47 @@ Expression value() :
 
 
 /**
+ * application alias function call.
+ * Will resolve multiple applicable functions by arity and type of the arguments.
+ */
+Expression CompoundTerm() :
+{Token tok; Expression f; Expression[] arg;}
+{
+    tok = <IDENTIFIER> arg = Arguments()
+	{return apply(tok, arg, UNKNOWN);}
+|
+    f = LambdaAbstraction() arg = Arguments()
+        {
+	    if (arg.length != 1)
+	        throw new ParseException("only unary application of lambda abstractions is supported");
+	    //@todo which exact optok token?
+	    return composeWrapper(null, f, arg);
+	}
+}
+
+/**
+ * &lambda;-abstraction term.
+ * @todo let our surroundings (not us) also support variables/constants bound to &lambda;-abstractions.
+ * @note that (\x.2*x) can be parsed as expected because .2 is not a real number but only 0.2
+ * @see orbital.logic.trs.Substitutions#lambda
+ */
+Expression LambdaAbstraction() :
+{Token tok; Symbol x; Expression t;}
+{
+    "(" tok = <LAMBDA> x = VariableDeclaration() "." t = term() ")"
+	{return composeWrapper(tok, MathExpressionSyntax.LAMBDA, new Expression[] {syntax.createAtomic(x), t});}
+}
+
+/**
  * Parse an atomic term.
  */
 Expression AtomicTerm() :
 {Symbol s;}
 {
-    s = literal()
+    (
+        s = LiteralValue()
+     |	s = ConstantOrVariable()
+    )
 	{return (Expression) syntax.createAtomic(s);}
 }
 
@@ -274,7 +305,6 @@ TOKEN :
 |
   < FLOATING_POINT_LITERAL:
         (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)?
-//      | "." (["0"-"9"])+ (<EXPONENT>)?			// removed due to lambdaAbstraction (\x.2*x)
       | (["0"-"9"])+ (<EXPONENT>)?
   >
 |
@@ -343,60 +373,36 @@ TOKEN :
 /**
  * Parse an atomic literal value (atom or number or string).
  */
-Symbol literal() :
+Symbol LiteralValue() :
 {Token tok;}
 {
-    //@todo depending upon number of digits, we could parse optmized <INTEGER_LITERAL>	{return new Integer.Long(Long.parseLong(tok.image));}
+    //@todo depending upon number of digits, we could parse optimized <INTEGER_LITERAL>	{return new Integer.Long(Long.parseLong(tok.image));}
     tok = <INTEGER_LITERAL>     	{return new SymbolBase(tok.image, LogicParser.INTEGER_LITERAL_TYPE);}
 |   tok = <FLOATING_POINT_LITERAL>	{return new SymbolBase(tok.image, LogicParser.FLOAT_LITERAL_TYPE);}
 |   tok = <STRING_LITERAL>		{return new SymbolBase(tok.image, LogicParser.STRING_LITERAL_TYPE);}
-|   tok = <IDENTIFIER>			{return new SymbolBase(tok.image, Types.INDIVIDUAL);}
 }
 
 /**
- * application alias function call.
- * Will resolve multiple applicable functions by arity and type of the arguments.
- * @note a functor is returned since the function application is not evaluated, but only <em>parsed</em>.
- *  This method results in a composition of function and arguments instead of
- *  the value of the function at the specified arguments.
- * @internal we cannot move the lambdaAbstraction() case into function()
- *  because the return types don't fit.
+ * Parses a constant or a variable atomic term,
+ * depending upon known symbols in context.
+ * @see #Variable()
+ * @todo reject boolean types, since this production only gets called from term(), not expression().
  */
-Expression functionApplication() :
-{Token tok;Expression f;Expression[] arg;}
+Symbol ConstantOrVariable() :
+{String signifier;Token tok;String s = "";}
 {
-    tok = function() arg = Arguments()
-	{return apply(tok, arg, UNKNOWN);}
-|   f = lambdaAbstraction() arg = Arguments()
-        {
-	    if (arg.length != 1)
-	        throw new ParseException("only unary application of lambda abstractions is supported");
-	    //@todo which exact optok token?
-	    return composeWrapper(null, f, arg);
-	}
+    tok = <IDENTIFIER> {signifier = tok.image;}
+    {return new SymbolBase(signifier, Types.INDIVIDUAL);}
 }
-
 /**
- * Ordinary function (predefined, or built-in, or ...).
+ * an atomic variable term with a type declaration.
  */
-Token function() :
-{Token tok;}
+Symbol VariableDeclaration() :
+{String signifier;Token tok;Type type = Types.INDIVIDUAL;}
 {
-    tok = <IDENTIFIER>
-{return tok;}
-}
-
-/**
- * &lambda;-abstraction term.
- * @todo let our surroundings (not us) also support variables/constants bound to &lambda;-abstractions.
- * @note that (\x.2*x) can be parsed as expected because .2 is not a real number but only 0.2
- * @see orbital.logic.trs.Substitutions#lambda
- */
-Expression lambdaAbstraction() :
-{Token tok, x;Expression t;}
-{
-    "(" tok = <LAMBDA> x = <IDENTIFIER> "." t = term() ")"
-	{return composeWrapper(tok, MathExpressionSyntax.LAMBDA, new Expression[] {syntax.createAtomic(new SymbolBase(x.image, Types.INDIVIDUAL)), t});}
+    tok = <IDENTIFIER> {signifier = tok.image;}
+    (":" /*@xxx type = TypeConstruct()*/ <IDENTIFIER>)?
+    {return new SymbolBase(signifier, type, null, true);}
 }
 
 Expression[] Arguments() :
