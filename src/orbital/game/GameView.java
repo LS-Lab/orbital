@@ -252,6 +252,9 @@ public class GameView extends Applet {
     public Gameboard getGameboard() {
 	return board;
     }
+    private void setGameboard(Gameboard newGameboard) {
+	this.board = newGameboard;
+    }
 
     /**
      * Get the container for the control-panel displayed.
@@ -300,6 +303,9 @@ public class GameView extends Applet {
 	return actions;
     }
 
+    /**
+     * Called when setting a new field
+     */
     private void setField(Field field) {
 	board.setField(field);
 	field.addFieldChangeListener(new FieldChangeAdapter() {
@@ -346,7 +352,7 @@ public class GameView extends Applet {
 	if (control == null) {
 	    control = createControl();
 	    add(control, BorderLayout.NORTH);
-	    board = new Gameboard();
+	    setGameboard(new Gameboard());
 	    add(board, BorderLayout.CENTER);
 	    final MenuBar ourBar = createMenuBar();
 	    if (ourBar != null)

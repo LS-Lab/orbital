@@ -296,7 +296,7 @@ public class Field implements Serializable, Cloneable {
     /**
      * Returns an iterator over all non-empty Figures. Use the Iterator methods on
      * the returned object to fetch the elements sequentially.
-     * @todo make a true iterator whose set method writes through to this field.
+     * @todo make a true explicit iterator (perhaps even whose set method writes through to this field).
      */
     public final Iterator/*_<Figure>_*/ iterateNonEmpty() {
 	Dimension dim = getDimension();

@@ -218,11 +218,13 @@ public class FigureImpl extends Figure {
 
     /**
      * @internal Checks validity of a path to move per {@link #movePath(Move)}.
+     * @todo we could improve performance if we already returned the field that would result from field.move(...) and thereby save one call to movePath.
+     * @todo explicit constructive iterator?
      */
     public /*final*/ Iterator/*_<Move,Position>_*/ possibleMoves() {
 	final List v = new ArrayList(legalMoves.length);
 	for (int i = 0; i < legalMoves.length; i++) {
-	    Move	 move = legalMoves[i];
+	    Move     move = legalMoves[i];
 	    Position destination = movePath(move);
 	    if (destination != null)					 // reaches legally => move valid
 		v.add(new Pair/*<Move,Position>*/(move, destination));	 //@TODO: Use a Map instead? List(new KeyValuePair())
