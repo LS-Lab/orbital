@@ -101,4 +101,26 @@ p->r, q->r |= (p|q)->r
 #
 # definitions
 #
-##no e-resolution or paramodulation yet x!=y == ~(x=y)
+##no e-resolution or paramodulation yet
+#=#   x!=y == ~(x=y)
+
+#
+# quantifiers
+#
+
+$x p(x) |= p(a)
+$x p(x) |= $y p(y)
+$x p(x) |= $x p(x)
+
+# skolemized form (original form see semantic-pl.txt)
+
+# rules for quantifiers
+# @todo denote metavariables correctly.
+#
+$ x p(x) |= p(a)	#  universal specialization
+#@fixme p(a) |= p(s)	# existential generalization  #@fixme doesn't work since when?
+~($x p(x)) |= ~p(xp)	# ~all~ conversion (even |=|)
+#~some p(x) |= $x ~p(x)	# ~some~ conversion (even |=|)
+$x (p(x)->q(x)) |= ($x p(x)) -> ($x q(x))
+# some rules
+(p(x) & q(x)) |= (p(x)) & (q(x))

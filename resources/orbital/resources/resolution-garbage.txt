@@ -1,0 +1,4 @@
+#
+# contains false conjectures
+#
+$x p(x) |= q(a) | ~p(a)

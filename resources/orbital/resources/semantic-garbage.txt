@@ -1,3 +1,6 @@
+#
+# contains false conjectures
+# 
 true == (a&b<=>a) => (a|(b&c)<=>(a|b)&c)	# modular a=<b implies a|(b&c)<=>(a|b)&c
 a|b == a
 a&b == b

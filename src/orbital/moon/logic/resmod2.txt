@@ -1,5 +1,3 @@
-# forgotten again
-p->r, q->s |= p&q->r&s
 # not yet proven
 (a<->b)<->c == a<->(b<->c)	# associative
 (a^b)^c == a<->b<->c	#
