@@ -175,7 +175,7 @@ public class DefaultCustomizer extends JPanel implements Customizer {
 	// note that setEnabled(false);setEnabled(true); on getComponents() might reenable a component although it was never enabled at all
 	// however setEnabled(false); on propertyEditorComponents will let additional components be enabled
 	Component components[] = propertyEditorComponents;			//getComponents();
-	if (enabled)
+	if (enabled) {
 	    for (int i = 0; i < components.length; i++) {
 		// only re-enable components that have a property editor (otherwise it's pointless) and who is paintable, or supports a custom editor, or at least is writable
 		components[i].setEnabled(enabled && propertyEditors[i] != null &&
@@ -186,11 +186,44 @@ public class DefaultCustomizer extends JPanel implements Customizer {
 					  )
 					 );
 	    }
-	else	// only an optimized version for enabled = false
-	    for (int i = 0; i < components.length; i++)
+	} else {	// only an optimized version for enabled = false
+	    for (int i = 0; i < components.length; i++) {
 		components[i].setEnabled(enabled);
+	    }
+	}
     }
-	
+
+    /**
+     * write-through editable to all content property editor
+     * components.  Components that don't support a writable editable
+     * property will instead have {@link #setEnabled(boolean)} called.
+     */
+    public void setEditabled(boolean editable) {
+	final Boolean editableWrapped = editable ? Boolean.TRUE : Boolean.FALSE;
+	logger.log(Level.FINEST, "DefaultCustomizer.setEditable={0}", editableWrapped);
+	// note that setEditabled(false);setEditabled(true); on getComponents() might reeditable a component although it was never editabled at all
+	// however setEditabled(false); on propertyEditorComponents will let additional components be editabled
+	Component components[] = propertyEditorComponents;			//getComponents();
+	for (int i = 0; i < components.length; i++) {
+	    final Component c = components[i];
+	    // try to invoke setEditable on c
+	    try {
+		c.getClass().getMethod("setEditable", new Class[] {Boolean.TYPE})
+		    .invoke(c, new Object[] {editableWrapped});
+		continue;
+	    }
+	    catch (NoSuchMethodException noEditableChange) {}
+	    catch (SecurityException security) {}
+	    catch (IllegalAccessException inaccessible) {}
+	    catch (InvocationTargetException exception) {
+		throw new InnerCheckedException("Could not " + c.getClass() + ".setEditable(" + editable +")", exception);
+	    }
+	    logger.log(Level.FINEST, "searching for {0}.setEditable(boolean) was not successful", c.getClass());
+	    //@internal treat like setEnabled(editable)
+	    c.setEnabled(editable);
+	}
+    }
+    
     // visual view methods
 	
     /**
