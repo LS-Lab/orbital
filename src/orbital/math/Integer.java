@@ -11,11 +11,11 @@ import orbital.logic.functor.Predicate;
 /**
  * Representation of an integer number <span class="Formula">k&isin;<b>Z</b></span>.
  * <p>
- * Integer numbers are a sub group of <b>Q</b> for '+', it is embedded in <b>Q</b> for the field operation '*'.
+ * Integer numbers are a subgroup of <b>Q</b> for '+', it is embedded in <b>Q</b> for the field operation '*'.
  * Integers are the group of differences of <b>N</b>.</p>
  * <p>
  * <small>
- * On the importance of <code><span class="Orbital">Quotient</span>&lt;<span class="Orbital">Integer</span>&gt;</code>
+ * On the importance of <code><span class="Orbital">Quotient</span>&lt;<span class="Orbital">Integer</span>&gt;</code>:
  * all cyclic groups are <b>Z</b>/n<b>Z</b> with n&isin;<b>Z</b>.
  * All finitely generated Abelian groups are direct sums of cyclic groups, hence
  * <code><span class="Orbital">Vector</span>&lt;<span class="Orbital">Quotient</span>&lt;<span class="Orbital">Integer</span>&gt;&gt;</code>

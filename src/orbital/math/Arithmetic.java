@@ -70,7 +70,8 @@ package orbital.math;
  *     <td width="5%"></td>
  *     <td>{@link #power(Arithmetic) power}</td>
  *     <td>^:M×M&rarr;M; (a,b)&#8614;a^b = a<sup>b</sup></td>
- *     <td>for rings,<br>requires &#13266; and <b>e</b><sup>a</sup> in general case</br></td>
+ *     <td>for rings,<br />requires &#13266; and <b>e</b><sup>a</sup> in general case,<br />
+ *         Will often work only for b&isin;<b>Z</b></td>
  *   </tr>
  * </table>
  * <p>

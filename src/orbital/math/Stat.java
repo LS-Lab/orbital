@@ -124,6 +124,7 @@ public final class Stat {
      * @param x the <b>sorted</b> array of double values representing the set of statistical data.
      * @preconditions sorted(x)
      * @return <code>x<sub>(n-1)/2</sub></code> if n is odd, and <code>(x<sub>n/2-1</sub> + x<sub>n/2</sub>) / 2</code> if n is even.
+     * @note The complexity of determining the median of an unsorted sequence of length n is in &Theta;(n).
      * @see java.util.Arrays#sort(double[])
      * @see java.lang.System#arraycopy
      */
