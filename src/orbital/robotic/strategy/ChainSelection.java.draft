@@ -1,0 +1,35 @@
+/*
+ * @(#)ChainSelection.java 0.9 1996/03/02 Andre Platzer
+ *
+ * Copyright (c) 1996 Andre Platzer. All Rights Reserved.
+ */
+
+package orbital.strategy;
+
+import java.util.Enumeration;
+
+/**
+ * ChainSelection selects results of Selection A via Selection B
+ * or of the original Enumeration if A selected -1.
+ *
+ * @version 0.9, 04/03/96
+ * @author  Andr&eacute; Platzer
+ */
+
+public
+class ChainSelection extends SelectionImpl implements Selection {
+    protected Selection A;
+    protected Selection B;
+    public ChainSelection(Selection A, Selection B) {
+    }
+    /**
+     * returns index of last selected best maximum weight.
+     */
+    public int select(Enumeration weights) {
+    int sel = A.select(weights);
+    if (sel==-1)
+        return B.select(weights);
+    else
+        return B.select(weights[sel]);
+    }
+}

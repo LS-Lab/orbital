@@ -1,0 +1,168 @@
+// Title:        Breeder
+// Version:
+// Copyright:    Copyright (c) 1999
+// Author:       André Platzer
+// Company:
+// Description:  front-end for evolutionary algorithms
+
+package orbital.moon.evolutionary;
+
+import java.awt.*;
+import orbital.awt.*;
+import java.beans.*;
+import orbital.algorithm.evolutionary.GeneticAlgorithm;
+import orbital.algorithm.evolutionary.Population;
+import java.awt.event.*;
+
+public
+class GeneticAlgorithmCustomizer extends Panel implements Customizer {
+	private GeneticAlgorithm ga = null;
+	private boolean			 populationSize_changed = false;
+	GridBagLayout			 gridBagLayout1 = new GridBagLayout();
+	Label					 label1 = new Label();
+	Label					 label2 = new Label();
+	Label					 label3 = new Label();
+	TextField				 chromosomeLength = new TextField();
+	Label					 label4 = new Label();
+	Label					 label5 = new Label();
+	Label					 label6 = new Label();
+	Label					 label7 = new Label();
+	NumberInput				 populationSize = new NumberInput();
+	NumberInput				 nParents = new NumberInput();
+	NumberInput				 nChildren = new NumberInput();
+	NumberInput				 maxCrossover = new NumberInput();
+	NumberInput				 maxMutation = new NumberInput();
+
+	public GeneticAlgorithmCustomizer() {
+		try {
+			jbInit();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} 
+	}
+
+	private void jbInit() throws Exception {
+		label2.setText("Length of Chromosome:");
+		label1.setText("Size of Population:");
+		this.setLayout(gridBagLayout1);
+		label3.setText("Number of Parents:");
+		chromosomeLength.setName("");
+		chromosomeLength.setEditable(false);
+		label4.setText("Number of Children:");
+		label5.setText("Maximum Crossover:");
+		label6.setText("Maximum Mutation:");
+		label7.setText("Reproduction:");
+		nParents.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+
+			public void propertyChange(PropertyChangeEvent e) {
+				nParents_propertyChange(e);
+			} 
+		});
+		nChildren.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+
+			public void propertyChange(PropertyChangeEvent e) {
+				nChildren_propertyChange(e);
+			} 
+		});
+		maxCrossover.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+
+			public void propertyChange(PropertyChangeEvent e) {
+				maxCrossover_propertyChange(e);
+			} 
+		});
+		maxMutation.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+
+			public void propertyChange(PropertyChangeEvent e) {
+				maxMutation_propertyChange(e);
+			} 
+		});
+		if (UIUtilities.getParentalWindow(populationSize) != null)
+			UIUtilities.getParentalWindow(populationSize).addWindowListener(new orbital.moon.awt.AWTMonitor());
+		populationSize.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+
+			public void propertyChange(PropertyChangeEvent e) {
+				populationSize_propertyChange(e);
+			} 
+		});
+		populationSize.addComponentListener(new java.awt.event.ComponentAdapter() {
+
+			public void componentHidden(ComponentEvent e) {
+				populationSize_componentHidden(e);
+			} 
+		});
+		this.add(label1, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		this.add(label3, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		this.add(label2, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		this.add(chromosomeLength, new GridBagConstraints(1, 0, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		this.add(label4, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		this.add(label5, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		this.add(label6, new GridBagConstraints(0, 6, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		this.add(label7, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		this.add(populationSize, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		this.add(nParents, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		this.add(nChildren, new GridBagConstraints(1, 4, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		this.add(maxCrossover, new GridBagConstraints(1, 5, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		this.add(maxMutation, new GridBagConstraints(1, 6, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+	} 
+
+
+	void nParents_propertyChange(PropertyChangeEvent e) {
+		if (ga != null)
+			ga.setParentCount(nParents.getValue().intValue());
+	} 
+
+	void nChildren_propertyChange(PropertyChangeEvent e) {
+		if (ga != null)
+			ga.setChildrenCount(nChildren.getValue().intValue());
+	} 
+
+	void maxCrossover_propertyChange(PropertyChangeEvent e) {
+		if (ga != null)
+			ga.setMaximumCrossover(maxCrossover.getValue().doubleValue());
+	} 
+
+	void maxMutation_propertyChange(PropertyChangeEvent e) {
+		if (ga != null)
+			ga.setMaximumMutation(maxMutation.getValue().doubleValue());
+	} 
+
+	void populationSize_propertyChange(PropertyChangeEvent e) {
+		if (e.getOldValue() == null && e.getNewValue() == null)
+			return;
+		if (e.getNewValue() != null && e.getNewValue().equals(e.getOldValue()))
+			return;
+		if (ga != null)
+			populationSize_changed = true;
+		if (ga != null && populationSize_changed)
+			//XXX: check: where to get the prototype from?
+			ga.setPopulation(Population.create(ga.getPopulation().get(0), populationSize.getValue().intValue()));
+	} 
+	void populationSize_componentHidden(ComponentEvent e) {
+		// TODO: register to windowDeactivated event instead
+		throw new orbital.util.OutOfCheeseError("component hidden event really occured!");
+	} 
+
+	public void setObject(Object bean) {
+		this.ga = null;
+		populationSize_changed = false;
+		GeneticAlgorithm ga = (GeneticAlgorithm) bean;
+		//TODO: remove chromosomeLength.setText("" + ga.getPopulation().getInitialLength());
+		populationSize.setValue(new Integer(ga.getPopulation().size()));
+		nParents.setValue(new Integer(ga.getParentCount()));
+		nChildren.setValue(new Integer(ga.getChildrenCount()));
+		maxCrossover.setValue(new Double(ga.getMaximumCrossover()));
+		maxMutation.setValue(new Double(ga.getMaximumMutation()));
+		setVisible(true);
+		this.ga = ga;
+	} 
+
+	private final PropertyChangeSupport propertyChangeListeners = new PropertyChangeSupport(this);
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		propertyChangeListeners.addPropertyChangeListener(listener);
+	} 
+
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		propertyChangeListeners.removePropertyChangeListener(listener);
+	} 
+
+}

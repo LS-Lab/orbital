@@ -1,0 +1,24 @@
+@ECHO Off
+setlocal
+    REM if not exist Operations.java.javadocbug echo Obacht javadocbug fehlt && goto :EOF
+    REM ren Operations.java Operations.java.javadocbak && ren Operations.java.javadocbug Operations.java
+    set dst=%tmp%\substitute%RANDOM%
+    if exist %dst% goto Warn
+    mkdir %dst%
+    for %%f in (*.java) do sed -f %home%\Java\InstantiateTemplates.sed %%f > %dst%\%%f
+    rem collect some stuff because of funny gjc bug
+    mkdir %dst%\functor
+    pushd %home%\Java\orbital\logic\functor
+    for %%f in (*.java) do sed -f %home%\Java\InstantiateTemplates.sed %%f > %dst%\functor\%%f
+    popd
+    pushd %dst%
+    call gjc -nowarn -unchecked -d %JAVA_HOME%\classes %1 %2 %3 %4 %5 *.java functor\*.java
+    popd
+    rd %dst% /S /Q
+    REM if not exist Operations.java.javadocbak echo Obacht javadocbak fehlt && goto :EOF
+    REM ren Operations.java Operations.java.javadocbug && ren Operations.java.javadocbak Operations.java
+goto :EOF
+
+:Warn
+    echo WARNING: temporary directory %dst% does alread exist
+goto :EOF

@@ -1,0 +1,16 @@
+# //TODO
+
+#
+# encodings that are available
+#
+
+# default, none
+orbital.io.encoding.EncodingWriter
+# quoted-printable
+orbital.io.encoding.QuotedPrintableWriter
+# base64
+orbital.io.encoding.Base64Writer
+# oem
+orbital.io.encoding.OEMWriter
+# ansi
+orbital.io.encoding.AnsiWriter

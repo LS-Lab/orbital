@@ -1,0 +1,243 @@
+//Handcrafted string parsers
+/**
+ * new style:
+ */
+	public static Vector valueOf(String s) throws NumberFormatException {
+		try {
+			return (Vector) ArithmeticFormat.getDefaultInstance().parse(s);
+		}
+		catch(ClassCastException x) {throw new NumberFormatException();}
+		catch(ParseException x) {throw new NumberFormatException(x.toString());}
+	} 
+
+/**
+ * handcrafted old style:
+ */
+
+//Vector
+	//TODO: test
+	public static Vector valueOf(String s) throws NumberFormatException {
+		Enumeration st = new StringTokenizer(s, delim, true);
+		List		val = new LinkedList();
+		while (st.hasMoreElements()) {
+			String tok = st.nextElement() + "";
+
+			// is delimiter?
+			if (tok.length() == 1 && delim.indexOf(tok.charAt(0)) >= 0)
+				;
+			else
+				val.add(tok);
+		} 
+		Vector v = Vector.getInstance(val.size());
+		for (int i = 0; i < v.dimension(); i++)
+			v.set(i, Scalar.valueOf(MathUtilities.parse((String) val.get(i))));
+		return v;
+	} 
+	private static String coldelim = " \t,|";
+	private static String vectordelim = "[]\n;";
+	private static String delim = coldelim + vectordelim;
+
+
+// Matrix
+	public static Matrix valueOf(String s) throws NumberFormatException {
+		if (rowdelim.indexOf(s.charAt(s.length() - 1)) < 0)
+			s += ';';
+		int			colWidth = 0;
+		List		rows = new LinkedList();
+		List		col = new ArrayList();
+		Enumeration st = /* new TokenSequence */ (new StringTokenizer(s, skip + delim, true));
+		String		tok = null;
+		while (st.hasMoreElements()) {
+			while (tok == null)							  // skipping skip tokens
+				tok = advance(st);
+			String m = tok;								  // a number
+			tok = advance(st);
+			String d = tok;
+			while (tok != null && opt_delim.indexOf(tok) >= 0) {	// get optional delimiters
+				d = tok;
+				tok = advance(st);
+			} 
+			if (tok != null && delim.indexOf(tok) >= 0) {	 // get delimiter if any
+				d = tok;
+				tok = advance(st);
+			} 
+			while (tok != null && opt_delim.indexOf(tok) >= 0) {	// get optional delimiters
+				d = tok;
+				tok = advance(st);
+			} 
+			if (d != null && coldelim.indexOf(d) >= 0)	  // column delimiter
+				col.add(m);
+			else if (d == null || rowdelim.indexOf(d) >= 0) {	 // row delimiter
+				col.add(m);
+				rows.add(col);
+				if (col.size() > colWidth)
+					colWidth = col.size();
+				col = new ArrayList(colWidth);
+			} else
+				throw new NumberFormatException("Matrix values separated by illegal characters '" + d + "' at '" + tok + "'");
+		} 
+		Matrix M = Matrix.getInstance(new Dimension(rows.size(), colWidth));
+		for (int i = 0; i < M.dimension().height; i++) {
+			col = (List) rows.get(i);
+			for (int j = 0; j < M.dimension().width; j++) {
+				M.set(i, j, j < col.size() ? Scalar.valueOf(MathUtilities.parse((String) col.get(j))) : Scalar.valueOf(0));
+			} 
+		} 
+		return M;
+	} 
+
+	private static String opt_delim = " \t\n";
+	private static String coldelim = " \t,|";
+	private static String rowdelim = "\n;]";
+	private static String delim = coldelim + rowdelim;
+	private static String skip = "[\r";
+
+	private static String advance(Enumeration st) {
+		String tok = null;
+		if (!st.hasMoreElements())
+			return null;
+		do {
+			tok = (String) st.nextElement();	// next token
+		} while (st.hasMoreElements() && (delim.indexOf(tok) < 0 && skip.indexOf(tok) >= 0));	 // skipping skip tokens
+		return tok;
+	} 
+
+
+//Rational
+	public static /*Rational*/Scalar valueOf(String s) {
+		try {
+    		StreamTokenizer st = new StreamTokenizer(new StringReader(s));
+    		st.ordinaryChar('.');
+    		st.ordinaryChar('/');
+    		st.slashSlashComments(false);
+    		st.slashStarComments(false);
+    		if (st.nextToken() != StreamTokenizer.TT_NUMBER)
+    			if (st.ttype != '+' || st.nextToken() != StreamTokenizer.TT_NUMBER)
+    				throw new NumberFormatException("number expected");
+    		int p = (int)st.nval;
+    		switch(st.nextToken()) {
+    			case StreamTokenizer.TT_EOF:
+    				return new Rational(p);
+    			case '/': {
+    				if (st.nextToken() != StreamTokenizer.TT_NUMBER)
+		    			if (st.ttype != '+' || st.nextToken() != StreamTokenizer.TT_NUMBER)
+    						throw new NumberFormatException("number expected");
+    				int q = (int)st.nval;
+    				if (st.nextToken() != StreamTokenizer.TT_EOF)
+    					throw new NumberFormatException("illegal characters: "+st);
+    				return new Rational(p, q);
+    			}
+    			default:
+    				throw new NumberFormatException("illegal characters: "+st);
+    		}
+    	}
+    	catch(IOException x) {throw new NumberFormatException();}
+	}
+
+//Complex
+	/**
+	 * Parses a complex number out of a string.
+	 * <p>
+	 * Recognizes the following regular expressions, with a and b denoting real numbers<pre>
+	 * a[[+]i[[*]b]]
+	 * a[-i[[*]b]]
+	 * a[[+]b[*]i]
+	 * a[-b[*]i]
+	 * [+]i[[*]b]
+	 * -i[[*]b]
+	 * </pre></p>
+	 */
+	public static /*Complex*/Scalar valueOf(String s) {
+		try {
+    		StreamTokenizer st = new StreamTokenizer(new StringReader(s));
+    		st.ordinaryChar('i');
+    		st.ordinaryChar('I');
+    		st.ordinaryChar('*');
+    		st.slashSlashComments(false);
+    		st.slashStarComments(false);
+    		int sign = 1;
+    		// first part
+    		switch(st.nextToken()) {
+    			case StreamTokenizer.TT_NUMBER:
+    				break;
+    			case 'I':
+    			case 'i':
+   					st.pushBack();
+    				/* fall-through */
+    			case '-':
+    				if (st.ttype == '-')							// (!) fall-through handling
+    					sign = -1;
+    				/* fall-through */
+    			case '+': {
+    				if (st.nextToken() == StreamTokenizer.TT_NUMBER)
+    					break;                                        
+    				if (st.ttype != 'i')
+    					throw new NumberFormatException("illegal format "+st);
+    				// imaginary part only case
+    				// skip '*'
+    				if (st.nextToken() != '*')
+    					if (st.ttype == StreamTokenizer.TT_EOF)		// +i or -i case
+    						return new Complex(0, sign*1);
+    					else if (st.ttype == StreamTokenizer.TT_NUMBER)
+    						return new Complex(0, sign*st.nval);
+    					else
+    						throw new NumberFormatException("illegal format "+st);
+    				if (st.nextToken() != StreamTokenizer.TT_NUMBER)
+		    			if (st.ttype != '+' || st.nextToken() != StreamTokenizer.TT_NUMBER)
+    						throw new NumberFormatException("number expected");
+    				double b = st.nval;
+    				if (st.nextToken() != StreamTokenizer.TT_EOF)
+    					throw new NumberFormatException("illegal characters: "+st);
+    				return new Complex(0, sign*b);
+        			}
+    			default:
+    				throw new NumberFormatException("illegal characters: "+st);
+    		}
+    		double a = st.nval;										// real number part
+    		boolean had_i = false;                                  // whether we already had an i in the imaginary part
+    		// secondary and imaginary part
+    		switch(st.nextToken()) {
+    			case StreamTokenizer.TT_EOF:
+    				return new Complex(a);
+    			case 'I':
+    			case 'i':
+   					st.pushBack();
+    				/* fall-through */
+    			case '-':
+    				if (st.ttype == '-')							// (!) fall-through handling
+    					sign = -1;
+    				/* fall-through */
+    			case '+': {
+    				// skip 'i'
+    				if (st.nextToken() == 'i') {
+    					had_i = true;
+    					// skip '*' but assure there's no eof afterwards
+        				if (st.nextToken() == '*')
+        					if (st.nextToken() == StreamTokenizer.TT_EOF)
+        						throw new NumberFormatException("unexpected end");
+        				st.pushBack();
+    				} else
+    					st.pushBack();
+    				if (st.ttype == StreamTokenizer.TT_EOF)		// +i or -i case
+    					return new Complex(a, sign*1);
+    				break;
+    			}
+    			default:
+    				throw new NumberFormatException("illegal characters: "+st);
+    		}
+			if (st.nextToken() != StreamTokenizer.TT_NUMBER)
+    			if (st.ttype != '+' || st.nextToken() != StreamTokenizer.TT_NUMBER)
+					throw new NumberFormatException("number expected");
+			double b = st.nval;
+			if (!had_i) {
+				if (st.nextToken() != '*')
+					st.pushBack();
+				if (st.nextToken() != 'i')
+					throw new NumberFormatException("illegal format: "+s);
+			}
+			if (st.nextToken() != StreamTokenizer.TT_EOF)
+				throw new NumberFormatException("illegal characters: "+st);
+			return new Complex(a, sign*b);
+    	}
+    	catch(IOException x) {throw new NumberFormatException();}
+	}

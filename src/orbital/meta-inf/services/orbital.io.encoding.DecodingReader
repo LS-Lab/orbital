@@ -1,0 +1,16 @@
+# //TODO
+
+#
+# decodings that are available
+#
+
+# default, none
+orbital.io.encoding.DecodingReader
+# quoted-printable
+orbital.io.encoding.QuotedPrintableReader
+# base64
+orbital.io.encoding.Base64Reader
+# oem
+orbital.io.encoding.OEMReader
+# ansi
+orbital.io.encoding.AnsiReader

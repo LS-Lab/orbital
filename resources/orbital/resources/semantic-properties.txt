@@ -1,0 +1,8 @@
+# properties of junctors in analogy to relations
+# Note however, that junctors are no relations, and thus the names are in scare quotes
+|= a->a				# "reflexive" ->
+a->b, b->c |= a->c		# Principle of Syllogism (affinity to mode Barbara)
+
+|= a<=>a			# "reflexive" <=>
+a<=>b |= b<=>a			# "symmetric"
+a<=>b, b<=>c |= a<=>c		# "transitive"

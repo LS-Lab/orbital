@@ -1,0 +1,57 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="Andre Platzer">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>logic functor package</title>
+</head>
+
+<body>
+
+Contains template interfaces for logic functors like Predicates and Functions that can be
+used for generalized call-back.
+<p>The <tt>orbital.logic.functor.Functor</tt> interface is the basic interface
+tagging all sub interfaces that define functors. Instances of implementing
+classes can be used as a call-back through this common interface. Predicates are
+special Functors returning a boolean (success or failure), while Functions are
+Functors returning arbitrary objects (return value).<p>Note that this package
+contains <a href="../../../templates.html">templates</a>.&nbsp;
+<p>Common logic functor interfaces:
+<ul>
+  <li><tt>orbital.logic.functor.Functor</tt>
+    <ul>
+      <li>Functions
+        <ul>
+          <li><tt>VoidFunction&lt;B&gt;</tt>: f:Ø&rarr;B</li>
+          <li><tt>Function&lt;A,B&gt;</tt> (unary): f:A&rarr;B;x&#8614;f(x)</li>
+          <li><tt>BinaryFunction&lt;A<sub>1</sub>,A<sub>2</sub>,B&gt;</tt>: f:A<sub>1</sub>×A<sub>2</sub>&rarr;B;(x,y)&#8614;f(x,y)
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <ul>
+      <li>Predicates
+        <ul>
+          <li><tt>VoidPredicate</tt>: P&sube;Ø</li>
+          <li><tt>Predicate&lt;A&gt;</tt> (unary): P&sube;A</li>
+          <li><tt>BinaryPredicate&lt;A<sub>1</sub>,A<sub>2</sub>&gt;</tt>: P&sube;A<sub>1</sub>×A<sub>2</sub></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+<dl>
+  The class <tt>orbital.logic.functor.Functionals</tt> defines several useful
+  static methods for composing or converting functors and for applying them in
+  various recursion schemes.
+  <dt><b>See Also:</b></dt>
+  <dd><tt><a href="../../math/functional/package-summary.html">orbital.math.functional</a></tt>
+    (dual to this package), <a href="../../../templates.html">Java templates</a>.</dd>
+</dl>
+
+</body>
+
+</html>

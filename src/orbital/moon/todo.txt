@@ -1,0 +1,16 @@
+//TODO: *
+
+DefaultCustomizer.setTruncation() document
+
+boolean equals(Object) muß immer und ausnahmslos int hashCode() nach sich ziehen! Notfalls per throw Exception.
+
+Orbital package-namen und struktur(!), sowie Package-Einteilung überdenken. Bei den diversen Utility-Klassen muß auch die Aufteilung der Methoden überprüft werden. see changes.txt
+
+implement RemoteThreads that are obtained from a ThreadQueue and executed on a remote host on demand. Requires mobility! @see com.objectspace.voyager.mobility.Mobility
+
+orbital.awt.virtual does not comply to the naming convention but uses small v_Object, instead of capital V_Object, or VObject, or Object - style friends, style. Additionally it works on int instead of float for some reason.
+
+test whether BindFunction.derive() etc really fulfill:
+	scalar-product:	(x . y)' = (y, x)
+	quadrat. fkt:	(x . x)' = 2x = (||x||^2)'
+	euclidian-norm:	(||x||)' = (Sqrt(||x||^2))' = x / ||x||

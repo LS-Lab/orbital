@@ -1,0 +1,10 @@
+[PropertyInfo]
+fitnessArray,double[],false,false, , ,false,<default>
+generation,int,false,false, ,the current generation count,true,<default>
+members,List,false,false, ,members of population,true,<default>
+size,int,false,false,,size of population,true,<default>
+[IconNames]
+
+
+
+

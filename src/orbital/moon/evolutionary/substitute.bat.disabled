@@ -1,0 +1,6 @@
+@ECHO Off
+REM only required for rebuild
+pushd ..\..\..
+rem will hopefully find orbital\algorithm\evolutionary as well
+call mklib orbital\moon\evolutionary
+popd

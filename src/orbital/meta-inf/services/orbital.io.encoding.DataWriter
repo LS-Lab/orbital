@@ -1,0 +1,10 @@
+# //TODO
+
+#
+# DataWriter implementations
+#
+
+# default, none
+orbital.io.encoding.DataWriter
+# basic
+orbital.io.encoding.BasicDataWriter

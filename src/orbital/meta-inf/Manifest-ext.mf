@@ -1,0 +1,44 @@
+Manifest-Version: 1.0
+Extension-Name: orbital-ext
+Specification-Title: Orbital library draft
+Specification-Vendor: Andre Platzer
+Specification-Version: 1.1.0
+Created-By: 1.3.1 (Sun Microsystems Inc.)
+Package-Title: orbital-ext
+Package-Version: 1.0.5
+Package-Vendor: Andre Platzer
+Implementation-Title: The Orbital library extension
+Implementation-Vendor-Id: orbital.moon.ap
+Implementation-Vendor: Andre Platzer
+Implementation-Version: 1.0.0
+Class-Path: orbital-core.jar
+Sealed: true
+Main-Class: orbital.moon.setup
+Main-Icon: orbital/resources/orbital.gif
+
+Name: orbital/awt/ChartModel.class
+Java-Bean: True
+
+Name: orbital/awt/ImageCanvas.class
+Java-Bean: True
+
+Name: orbital/awt/NumberInput.class
+Java-Bean: True
+
+Name: orbital/awt/Plot2D.class
+Java-Bean: True
+
+Name: orbital/algorithm/evolutionary/Chromosome.class
+Java-Bean: True
+
+Name: orbital/algorithm/evolutionary/GeneticAlgorithm.class
+Java-Bean: True
+
+Name: orbital/algorithm/evolutionary/Population.class
+Java-Bean: True
+
+Name: orbital/awt/virtual/v_Canvas.class
+Java-Bean: True
+
+Name: orbital/awt/virtual/v_View.class
+Java-Bean: True

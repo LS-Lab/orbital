@@ -1,0 +1,81 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="Andre Platzer">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+</head>
+
+<body>
+
+Contains mathematical functors and extended functional operations.
+<p>This package is dual to orbital.logic.functor, it provides mathematical
+extensions that inherit from <i>logic functors </i>(that are in turn derived
+from <tt><a href="../../logic/functor/Functor.html">orbital.logic.functor.Functor</a></tt>)
+in a conform way. <i>Mathematical functors </i>extend their logic counterpart
+and additionally implement <tt><a href="MathFunctor.html">orbital.math.functional.MathFunctor</a></tt>.<br>
+So for instance there's an interface <tt>orbital.math.functional.BinaryFunction</tt>
+that extends both, <tt>orbital.logic.functor.BinaryFunction</tt> and <tt>orbital.math.functional.MathFunctor</tt>.<br>
+Though this might see a little subtile it has the advantage that methods written
+for general logical functors will work for mathematical functors as well. So
+both types of functors are rather compatible.
+<p>The class <tt>orbital.math.functional.Functionals</tt> defines
+High-Order-Functions for functional style evaluation. With Functionals one can
+apply Functions to collections and arrays of values as well as compose
+functions.<br>
+Mathematical operations for major mathematical functions are pre-defined in the
+class <tt><a href="Operations.html">orbital.math.functional.Operations</a></tt>.
+<p>The inheritance hierarchy of common mathematical functor interfaces:
+<ul>
+  <li><tt>orbital.logic.functor.Functor</tt>
+    <ul>
+      <li>Functions
+        <ul>
+          <li><tt>orbital.logic.functor.Function&lt;A,B&gt;</tt>: f:A&rarr;B;x&#8614;f(x)
+            <ul>
+              <li><tt>orbital.math.functional.Function</tt>: f:A&rarr;B;x&#8614;f(x)<br>
+                <tt>(also extends orbital.math.functional.MathFunctor)</tt></li>
+            </ul>
+          </li>
+        </ul>
+        <ul>
+          <li><tt>orbital.logic.functor.BinaryFunction&lt;A<sub>1</sub>,A<sub>2</sub>,B&gt;</tt>: f:A<sub>1</sub>×A<sub>2</sub>&rarr;B;(x,y)&#8614;f(x,y)
+            <ul>
+              <li><tt>orbital.math.functional.BinaryFunction</tt>: f:A<sub>1</sub>×A<sub>2</sub>&rarr;B;(x,y)&#8614;f(x,y)<br>
+                <tt>(also extends orbital.math.functional.MathFunctor)</tt></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><tt>orbital.math.functional.MathFunctor<br>
+        (also extends orbital.math.Arithmetic)</tt>
+        <ul>
+          <li><tt>orbital.math.functional.Function</tt>: f:A&rarr;B;x&#8614;f(x)<br>
+            <tt>(also extends orbital.logic.functor.Function)</tt></li>
+        </ul>
+        <ul>
+          <li><tt>orbital.math.functional.BinaryFunction</tt>: f:A<sub>1</sub>×A<sub>2</sub>&rarr;B;(x,y)&#8614;f(x,y)<br>
+            <tt>(also extends orbital.logic.functor.BinaryFunction)</tt></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+<dl>
+  <dt><b>Extends:</b></dt>
+  <dd><tt><a href="../../logic/functor/package-summary.html">orbital.logic.functor</a></tt>
+    (dual to this package)
+  </dd>
+</dl>
+<dl>
+  <dt><b>See Also:</b></dt>
+  <dd><tt><a href="../../moon/logic/MathParser.html">orbital.moon.logic.MathParser</a></tt>,
+  <tt><a href="../../awt/Plot2D.html">orbital.awt.Plot2D</a></tt>
+  </dd>
+</dl>
+
+</body>
+
+</html>

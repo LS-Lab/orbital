@@ -1,0 +1,36 @@
+public
+class ArithmeticOperationsBase implements ArithmeticOperations {
+	protected final int leftDim, rightDim;
+	protected final int resultDim;
+	public ArithmeticOperationsBase(int leftdim, int rightdim, int resultdim) {
+	leftDim = leftdim;
+	rightDim = rightdim;
+	resultDim = resultdim;
+	}
+	public BinaryFunction plus() { return new DimensionedBinaryFunction() {
+		public Object apply(Object x,Object y) { return ((Arithmetic)x).add(y); }
+		public BinaryFunction leftDerive(int i) { return Functionals.ignoreSecond(BinaryFunction.Functions.id); }
+		public BinaryFunction rightDerive(int i) { return Functionals.ignoreFirst(BinaryFunction.Functions.id); }
+	};
+	}
+	public BinaryFunction minus() { return new DimensionedBinaryFunction() {
+		public Object apply(Object x,Object y) { return ((Arithmetic)x).subtract(y); }
+		public BinaryFunction leftDerive(int i) { return Functionals.ignoreSecond(BinaryFunction.Functions.id); }
+		public BinaryFunction rightDerive(int i) { return Function.Functions.minus; }
+	};
+	}
+	public BinaryFunction times() { return new DimensionedBinaryFunction() {
+		public Object apply(Object x,Object y) { return ((Arithmetic)x).multiply(y); }
+		public BinaryFunction leftDerive(int i) { return Functionals.compose(times(),BinaryFunction.Functions.id); }
+		public BinaryFunction rightDerive(int i) { return Function.Functions.minus; }
+	};
+	}
+	BinaryFunction divide();
+	BinaryFunction power();
+
+	private abstract class DimensionedBinaryFunction() {
+		public int leftArgumentDimension() { return leftDim; }
+		public int rightArgumentDimension() { return rightDim; }
+		public int dimension() { return resultDim; }
+	}
+}

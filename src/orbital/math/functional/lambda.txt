@@ -1,0 +1,277 @@
+		    ALGEBRA AND THE LAMBDA CALCULUS
+
+			   by Aubrey Jaffer
+
+ABSTRACT: An algebraic system which includes Church's lambda calculus
+and currying is presented.  Closures, applications, and currying are
+implemented using variable elimination.
+
+The usual connection made between the lambda calculus and algebra is
+to construct the integers using the lambda calculus and then construct
+algebraic (and other formulas) by Godelizing them.
+
+The system described here reverses this connection by implementing the
+lambda calculus in an algebraic system.  It is used in the JACAL
+symbolic mathematics system and gives JACAL the ability to represent
+functions as members of the algebraic system.  All of the system's
+operations (including simplification) can then be applied to functions
+as easily as to expressions.
+
+		       ALGEBRAIC REPRESENTATION
+
+Given an underlying representation for multivariate polynomials we
+can represent an equation as a multivariate polynomial with the
+understanding that the polynomial is equal to zero.  We can convert
+typical equations to this form by multiplying both sides by the
+denominators and then subtracting the left side from both sides.  For
+instance:
+
+	f/(c+d) = (a-b)/g;
+
+Yields:
+
+	0 = (a - b) c + (a - b) d - f g
+
+How to represent expressions?  The usual approach is to use a
+polynomial or a ratio of polynomials.  Instead, we will introduce a
+special variable "@", calling it the value variable.  The value of a
+polynomial involving @ is that polynomial "solved" for @.  For
+instance, the expression:
+
+	-1 + x
+	------
+	1 + x
+
+is represented internally as:
+
+	0 = -1 + x + (-1 - x) @
+
+This allows us to represent irrational expressions as well:
+
+			  5
+	0 = -1 - y - @ - @ 
+
+Is the root of a fifth degree polynomial.
+
+For the rest of this paper the examples will not show @ if the values
+can be represented in usual mathematical notation without it (as JACAL
+does).
+
+			     SUBSTITUTION
+
+At this level of algebraic abstraction we do all operations using
+variable elimination.  Variable elimination is the process of
+combining n polynomial equations so that m variables do not appear in
+the (n-m) resulting equations (where n > m).  Common techniques used
+include resultants [1][2][4][5] and Groebner Bases [3][4][5].
+
+	eliminate([a+c^2=b,b+c^2=2],[c]);
+
+Yields:
+
+	0 = 2 + a - 2 b
+
+Common symbolic transformations can be done by constructing auxiliary
+polynomial equations and eliminating variables between them and the
+original polynomial equations.  The operation we are interested in for
+the next section is substitution.  We can substitute an expression for
+a variable by constructing an auxiliary equation of the variable and
+then eliminating that variable.  Suppose we want to substitute
+(a*x+b)^2 for g in g+1/g.  We construct the equation g=(a*x+b)^2
+and then:
+
+	eliminate([g=(a*x+b)^2, g+1/g],[g]);
+
+	     4        3        2  2  2      3    3    4  4
+	1 + b  + 4 a b  x + 6 a  b  x  + 4 a  b x  + a  x
+	--------------------------------------------------
+		        2              2  2
+		       b  + 2 a b x + a  x
+
+Eliminate deals only with polynomial equations so remember that g+1/g
+internally is:
+
+		 2
+	0 = 1 + g  - g @
+
+and similarly for the result.
+
+			      FUNCTIONS
+
+A similar approach to the use of @ can be used for arguments as well.
+We will name these arguments @1, @2, and so on.
+
+Functions do not need to use all of their arguments.  However, in this
+system, a function must use at least one of its arguments.  With this
+constraint, the only difference between a function and an expression is
+the presence of @n variables.  Our functions can return either
+equations or expressions; those containing @ are expressions and those
+without, equations.
+
+A function which ignores its first two arguments is
+lambda([x,y,z],1/z-z), which would be represented as
+
+	      2
+	1 - @3
+	-------
+	  @3
+
+These functions can freely mix bound and free variables.  The
+following expression, with free c and bound x and y,
+
+	f : lambda([x,y],c*(y+x)/(y-x));
+
+is simply:
+
+	c @1 + c @2
+	-----------
+	 - @1 + @2
+
+We can now apply this function.  We don't have to always apply it to
+two arguments, we can apply it to just one also.  This is called
+"currying" an argument.  The application
+
+	g : f(x);
+
+substitutes x for @1 from the polynomial equation for f.  It also
+"bumps" @2 down to @1 (also by substitution).  This results in a new
+function of one argument:
+
+	c x + c @1
+	----------
+	 - x + @1
+
+It this function is applied to one argument (which is a non-function)
+the result will be a non-function.  For example g(a+b) yields:
+
+	(- a - b) c - c x
+	-----------------
+	   - a - b + x
+
+This result is exactly the same as the result of applying f(x,a+b).
+
+			   ALPHA-CONVERSION
+
+The above method is sufficient when the arguments to functions are not
+themselves functions.  But when applying functions to functions
+differences in the order of elimination produce different results.
+Consider applying @1-@2 to the arguments (@2, @1).  The result should
+be @2-@1.  But if we curry an argument we get @2-@2 -> 0 applied to
+@1.
+
+This problem is similar to the inadvertent capture of free identifiers
+by macros in languages like C and Lisp.  The solution to this problem
+is called alpha-conversion in the lambda calculus and Hygenic Macro
+Expansion in a paper of that title by E.E.Kohlbecker, D.P.Friedman,
+M.Fellinson, and B.Duba [6].
+
+Since the names of bound identifiers are unimportant we will
+substitute new names for those lambda variables for which we will
+later substitute arguments.  This eliminates possible conflicts between
+the variables bound in the current function and variables in its
+arguments (which are free relative to this function).
+
+In the above example substitute :@1 for @1 and :@2 for @2 in @1-@2
+yielding :@1-:@2.  Now substitute @2 for :@1 and @1 for :@2.  This
+then yields the desired result @2-@1.
+
+Currying an argument would substitute @2 for :@1 and @1 for :@2 in
+:@1-:@2 to produce @2-@1.  When this function is applied to the
+remaining argument, @1, the result is @2-@1 as before.
+
+				LAMBDA
+
+A symmetrical situation to currying of arguments is binding a variable
+over a function.  lambda([y],lambda([x],x-y)) should yield the same
+function as lambda([y,x],x-y).  The trick here is to "bump up" any
+lambda variables in an expression when binding additional variables.
+To execute lambda([y],@1-y) we substitute @2 for @1 and then @1 for y.
+
+			 VECTORS AND MATRICES
+
+Vector and matrix valued functions can be represented by vectors and
+matrices some of whose entries are lambda expressions.  Clearly a
+vector or matrix function applied to scalar arguments should return a
+vector or matrix with the same shape as the function.
+
+The case of a scalar function applied vector arguments can work if the
+multiplication used by the function is of a type compatible with the
+arguments.  Inner product is commutative while matrix multiplication
+is not.  Another possiblity here is to have a mechanism for allowing
+lambda expressions to reference elements vector and matrix arguments.
+
+The case of vector or matrix functions applied to vector or matrix
+arguments gets stickier.  Allowing only elements of the arguements to
+be operated on is one solution; Another is to incorporate the
+structure of the arguments inside the structure of the function or
+vice versa.
+
+			 DIFFERENTIAL ALGEBRA
+
+These techniques can be extended to differential algebra as well.  In
+differential algebra the derivative of a variable, written v', can act
+as an variable in polynomials.  Derivatives of derivatives are also
+allowed and can be written v'' and so on.
+
+When applying a function, each distinct derivative of a lambda
+variable with a corresponding argument requires that an equation be
+generated and that derivative variable be eliminated.  We equate the
+nth derivative variable with the nth total derivative of its
+corresponding argument.  For instance to apply the function @1'/@2' to
+(x^3,x) we
+
+	eliminate([@1'/@2',@1'=(x^3)',@2'=(x)'],[@1',@2']);
+
+	   2
+	3 x
+
+As illustrated by this example, differential operators are now as
+easily expressed as functions.  This worked well for the univariate
+case; what about multiple variables?  (@1'/@2')((x+y)^2,x) yields
+
+	2 x x' + 2 x' y + (2 x + 2 y) y'
+	--------------------------------
+	               x'
+
+We need to set y' to 0 to get the expected answer 2 x + 2 y.  But when
+we curry we need to have the differentials remain until all the lambda
+variables are consumed. (@1'/@2')((x+y)^2) gives
+
+	2 x x' + 2 x' y + (2 x + 2 y) y'
+	--------------------------------
+	              @1'
+
+We don't want to set x' and y' to 0 in the numerator because the
+result would be 0.  We don't know which differential until @1' is
+substituted for.  I think the solution here is to set to zero
+differentials occuring only in the numerator and only for those
+expressions containing no lambda variables or their derivatives.
+
+			      CONCLUSION
+
+I have shown how to implement functional abstraction (lambda),
+application and partial application (currying) in a system built on
+variable elimination from polynomials.
+
+			     BIBLIOGRAPHY
+
+[1] Bareiss, E.H.: Sylvester's identity and multistep
+    integer-preserving Gaussian elimination. Mathematics of
+    Computation 22, 565-578, 1968.
+
+[2] Uspensky, J.V.: Theory of Equations
+    McGraw-Hill Book Co., Inc., 1948
+
+[3] Thomas W. Dube: "The Structure of Polynomial Ideals and Groebner
+    Bases", SIAM JOURNAL ON COMPUTING, (19,4) (August 1990) pp. 750-773.
+
+[4] Hoffmann, C. M.: Geometric and Solid Modeling: An Introduction.
+    Morgan Kaufmann Publishers, Inc. San Mateo, California, 1989
+
+[5] Geddes, K.O., Czapor, S.R., Labahn, G.: Algorithms for Computer
+    Algebra. Kluwer Academic Publishers
+
+[6] Hygenic Macro Expansion
+    E.E.Kohlbecker, D.P.Friedman, M.Fellinson, and B.Duba
+    1986 ACM Conference on Lisp and Functional Programming
+    Pages 151-159

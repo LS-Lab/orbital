@@ -1,0 +1,8 @@
+# forgotten again
+p->r, q->s |= p&q->r&s
+# not yet proven
+(a<->b)<->c == a<->(b<->c)	# associative
+(a^b)^c == a<->b<->c	#
+# not proven due to detected inconsistency
+a|true == true		# (dual to neutral element)
+(a^b)^c == a^(b^c)	# associative

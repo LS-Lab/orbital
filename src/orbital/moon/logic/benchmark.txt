@@ -1,0 +1,21 @@
+#
+# unofficial benchmark set
+#
+# tautologies
+a&b == b&a		# commutative (Huntington axiom)
+a|b == b|a		# commutative (Huntington axiom)
+(a&b)|c == (a|c)&(b|c)	# distributive (Huntington axiom)
+a&a == a		# idempotent
+~(a&b) == ~a|~b		# deMorgan
+(a->b)->c == a->b && b->c
+a&b->c == a->(b->c)	# exportation / importation [Lex exportationis, Lex importationis]
+# properties of |=
+p->q, p |= q		# Modus (ponendo) ponens	 (resp. assuming p->q, p is sufficient for q. repeated application is forward chaining)
+p->q, ~q |= ~p		# Modus (tollendo) tollens (resp. assuming p->q, q is necessary for p. repeated application is backward chaining)
+p->q, q->r |= p->r	# hypothetical "syllogism" Principle of Syllogism (due to affinity to mode Barbara)
+p|q, ~p |= q		# disjunctive "syllogism"
+p, q |= p&q		# conjunction
+p |= p|q		# weakening addition (alias '|' introduction)
+p&q |= p		# weakening subtraction (alias '&' elimination)
+a |= b->a		# weakening conditional
+a->b, b->c |= a->c	# transitivity

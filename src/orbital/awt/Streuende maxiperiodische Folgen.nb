@@ -1,0 +1,1393 @@
+(***********************************************************************
+
+                    Mathematica-Compatible Notebook
+
+This notebook can be used on any computer system with Mathematica 4.0,
+MathReader 4.0, or any compatible application. The data for the notebook 
+starts with the line containing stars above.
+
+To get the notebook into a Mathematica-compatible application, do one of 
+the following:
+
+* Save the data starting with the line of stars above into a file
+  with a name ending in .nb, then open the file inside the application;
+
+* Copy the data starting with the line of stars above to the
+  clipboard, then use the Paste menu command inside the application.
+
+Data for notebooks contains only printable 7-bit ASCII and can be
+sent directly in email or through ftp in text mode.  Newlines can be
+CR, LF or CRLF (Unix, Macintosh or MS-DOS style).
+
+NOTE: If you modify the data for this notebook not in a Mathematica-
+compatible application, you must delete the line below containing the 
+word CacheID, otherwise Mathematica-compatible applications may try to 
+use invalid cache data.
+
+For more information on notebooks and Mathematica-compatible 
+applications, contact Wolfram Research:
+  web: http://www.wolfram.com
+  email: info@wolfram.com
+  phone: +1-217-398-0700 (U.S.)
+
+Notebook reader applications are available free of charge from 
+Wolfram Research.
+***********************************************************************)
+
+(*CacheID: 232*)
+
+
+(*NotebookFileLineBreakTest
+NotebookFileLineBreakTest*)
+(*NotebookOptionsPosition[     40400,       1273]*)
+(*NotebookOutlinePosition[     41092,       1297]*)
+(*  CellTagsIndexPosition[     41048,       1293]*)
+(*WindowFrame->Normal*)
+
+
+
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["\<\
+Fr\[UDoubleDot]hstreuende maximal-periodische Folgen mit Modulooperationen\
+\>", "Title"],
+
+Cell[CellGroupData[{
+
+Cell["Einf\[UDoubleDot]hrung in die Problemstellung", "Section"],
+
+Cell[TextData[{
+  "Gesucht sind zwei Zahlen s, m, wobei m am besten eine Zehnerpotenz ist, so \
+dass f\[UDoubleDot]r die Folge ",
+  Cell[BoxData[
+      FormBox[
+        SubscriptBox[\((a\_k)\), 
+          RowBox[{"k", "\[Element]", 
+            StyleBox["N",
+              FontWeight->"Bold"]}]], TraditionalForm]]],
+  " mit dem Wertebereich M={0,..m-1} in der rekursiven Berechnungsformel\n",
+  StyleBox[Cell[BoxData[
+      \(TraditionalForm\`a\_0 = \ 0\)], "NumberedEquation"], 
+    "NumberedEquation"],
+  StyleBox[", ", "NumberedEquation"],
+  StyleBox[Cell[BoxData[
+      \(TraditionalForm\`a\_k = \ \((a\_\(k - 1\) + s\ mod\ m)\)\)], 
+    "NumberedEquation"], "NumberedEquation"],
+  "\nbzw. in der \[ADoubleDot]quivalenten iterativen Berechnungsformel\n",
+  StyleBox[Cell[BoxData[
+      \(TraditionalForm\`a\_k = \ \((k*s\ mod\ m)\)\)], "NumberedEquation"], 
+    "NumberedEquation"],
+  "\ngilt:\n1. die Folge ",
+  Cell[BoxData[
+      \(TraditionalForm\`\((a\_k)\)\_\(k \[Element] N\)\)]],
+  " ist maxi-periodisch, d.h. sie hat eine m\[ODoubleDot]glichst gro\[SZ]e \
+Periode \[Pi], f\[UDoubleDot]r die ",
+  Cell[BoxData[
+      \(TraditionalForm\`a\_\(k + \[Pi]\) = a\_k\)]],
+  " f\[UDoubleDot]r alle k\[Epsilon]",
+  StyleBox["N",
+    FontWeight->"Bold"],
+  " gilt.\n2. die Folge ",
+  Cell[BoxData[
+      \(TraditionalForm\`\((a\_k)\)\_\(k \[Element] N\)\)]],
+  " streut beliebig fr\[UDoubleDot]h \[UDoubleDot]ber den ganzen Wertebereich \
+M, d.h. f\[UDoubleDot]r alle n\[Element]",
+  StyleBox["N",
+    FontWeight->"Bold"],
+  " sind ",
+  Cell[BoxData[
+      \(TraditionalForm\`a\_1,  .. , a\_n\)]],
+  " gleichm\[ADoubleDot]\[SZ]ig \[UDoubleDot]ber den Wertebereich M verteilt, \
+also beispielsweise ungef\[ADoubleDot]hr \[ADoubleDot]quidistant."
+}], "Text",
+  CellDingbat->None]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Konstruktion", "Section"],
+
+Cell[TextData[{
+  "Die Folge kann beispielsweise so konstruiert werden, dass, wenn ",
+  Cell[BoxData[
+      \(TraditionalForm\`p\_\(i - 1\)\/q\_\(i - 1\)*s\  = \ m\)]],
+  " gilt, so wird so verfeinert, dass die Periode erh\[ODoubleDot]ht wird und \
+der neue Folgenwert mit gleichem Abstand zwischen zwei bisherigen \
+Folgengliedern liegt: ",
+  Cell[BoxData[
+      \(TraditionalForm\`p\_\(i - 1\)*s\  = \ 
+        s\/2\^i\  + \ q\_\(i - 1\)*m\)]],
+  ", was gleichbedeutend ist mit ",
+  Cell[BoxData[
+      \(TraditionalForm\`\(p\_\(i - 1\)*2\^i\  - \ 1\)\/\(2\^i*q\_\(i - 1\)\)*
+          s\  = \ m\)]],
+  ". Also bestehen die Rekursionsformeln ",
+  Cell[BoxData[
+      \(TraditionalForm\`p\_i\  = \ \(p\_\(i - 1\)*2\^i\  - \ 1\  \[And] \ 
+            q\_i\  = \ q\_\(i - 1\)*2\^i\)\)]],
+  ". Angefangen bei ",
+  Cell[BoxData[
+      \(TraditionalForm\`p\_0 = \(2\  \[And] \ q\_0 = 1\)\)]],
+  " ergibt sich so eine beliebig fr\[UDoubleDot]h streuende, maxi-periodische \
+Folge ",
+  Cell[BoxData[
+      FormBox[
+        SubscriptBox[\((a\_i)\), 
+          RowBox[{"i", "\[Element]", 
+            StyleBox["N",
+              FontWeight->"Bold"]}]], TraditionalForm]]],
+  " gem\[ADoubleDot]\[SZ] den obigen Rekursionsformeln durch geeignete Wahl \
+von s und den Modulowert als ",
+  Cell[BoxData[
+      \(TraditionalForm\`m\  = \ c\_i\ *\ s\)]],
+  " mit ",
+  Cell[BoxData[
+      \(TraditionalForm\`c\_i\  := \ p\_i\/q\_i\)]],
+  "."
+}], "Text",
+  TextAlignment->Left,
+  TextJustification->1]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Explizite Darstellung", "Section"],
+
+Cell[BoxData[{
+    \(p\_0\  = \ 2; \ q\_0\  = \ 1;\), "\[IndentingNewLine]", 
+    \(p\_i_\  := \ 
+      p\_\(i - 1\)*2\^i\  - \ 1\ \  /; \ 
+        i \[Element] Integers\  \[And] \ i > 0\), "\[IndentingNewLine]", 
+    \(q\_i_\  := \ 
+      q\_\(i - 1\)*2\^i\ \  /; \ 
+        i \[Element] Integers\  \[And] \ i > 0\), "\[IndentingNewLine]", 
+    \(c\_i_\  := \ 
+      p\_i\/q\_i /; \ i \[Element] Integers\  \[And] \ i > 0\)}], "Input",
+  CellLabel->"In[1]:="],
+
+Cell[BoxData[{
+    \(a\_k_\  := \ Mod[k*s, \ m]\), "\[IndentingNewLine]", 
+    \(\(a[i_]\)\_k_\  := \ 
+      Block[{s = Denominator[c\_i], m = c\_i*s}, \ a\_k]\)}], "Input",
+  CellLabel->"In[5]:="],
+
+Cell[CellGroupData[{
+
+Cell["Tabelle der Konstruktionszahlen", "Subsection"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Table[\ {i, N[c\_i], c\_i}, \ {i, 0, 8}]\)], "Input",
+  CellLabel->"In[7]:="],
+
+Cell[BoxData[
+    \({{0, c\_0.`, c\_0}, {1, 1.5`, 3\/2}, {2, 1.375`, 11\/8}, {3, 1.359375`, 
+        87\/64}, {4, 1.3583984375`, 1391\/1024}, {5, 1.358367919921875`, 
+        44511\/32768}, {6, 1.3583674430847168`, 2848703\/2097152}, {7, 
+        1.3583674393594265`, 364633983\/268435456}, {8, 1.3583674393448746`, 
+        93346299647\/68719476736}}\)], "Output",
+  CellLabel->"Out[7]="]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Tabelle der Folgenwerte", "Subsection"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Block[{i = 3}, \[IndentingNewLine]Table[\ \(a[i]\)\_k, \ {k, 0, 
+          c\_i*Denominator[c\_i] - 1}]\[IndentingNewLine]]\)], "Input",
+  CellLabel->"In[8]:="],
+
+Cell[BoxData[
+    \({0, 64, 41, 18, 82, 59, 36, 13, 77, 54, 31, 8, 72, 49, 26, 3, 67, 44, 
+      21, 85, 62, 39, 16, 80, 57, 34, 11, 75, 52, 29, 6, 70, 47, 24, 1, 65, 
+      42, 19, 83, 60, 37, 14, 78, 55, 32, 9, 73, 50, 27, 4, 68, 45, 22, 86, 
+      63, 40, 17, 81, 58, 35, 12, 76, 53, 30, 7, 71, 48, 25, 2, 66, 43, 20, 
+      84, 61, 38, 15, 79, 56, 33, 10, 74, 51, 28, 5, 69, 46, 23}\)], "Output",\
+
+  CellLabel->"Out[8]="]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+  "Graphische Repr\[ADoubleDot]sentation der fr\[UDoubleDot]hstreuenden \
+maxiperiondischen Folge ",
+  Cell[BoxData[
+      \(TraditionalForm\`\((a\_k)\)\)]]
+}], "Subsection"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+    \(Block[{i = 3}, \[IndentingNewLine]Block[{s = Denominator[c\_i], 
+          m = c\_i*
+              s}, \[IndentingNewLine]ListPlot[\ \
+\[IndentingNewLine]Table[{\(a[i]\)\_k, k}, \ {k, 0, m - 1}]\ , \ 
+          PlotLabel \[Rule] "\<k*\>"\  <> \ 
+              ToString[s]\  <> \ "\< mod \>" <> \ 
+              ToString[\ 
+                m]\[IndentingNewLine]]\ \[IndentingNewLine]]\
+\[IndentingNewLine]]\), "\[IndentingNewLine]", 
+    \(Block[{i = 3}, \[IndentingNewLine]Block[{s = Denominator[c\_i], 
+          m = c\_i*
+              s}, \[IndentingNewLine]ListPlot[\ \[IndentingNewLine]Table[{m - \
+\(a[i]\)\_k, k}, \ {k, 0, m - 1}]\ , \ 
+          PlotLabel \[Rule] "\<k*\>"\  <> \ 
+              ToString[s]\  <> \ "\< mod \>" <> \ 
+              ToString[\ 
+                m]\[IndentingNewLine]]\ \[IndentingNewLine]]\
+\[IndentingNewLine]]\)}], "Input",
+  CellLabel->"In[9]:="],
+
+Cell[GraphicsData["PostScript", "\<\
+%!
+%%Creator: Mathematica
+%%AspectRatio: .61803 
+MathPictureStart
+/Mabs {
+Mgmatrix idtransform
+Mtmatrix dtransform
+} bind def
+/Mabsadd { Mabs
+3 -1 roll add
+3 1 roll add
+exch } bind def
+%% Graphics
+%%IncludeResource: font Courier
+%%IncludeFont: Courier
+/Courier findfont 10  scalefont  setfont
+% Scaling calculations
+0.0238095 0.0110742 0.0147151 0.00684423 [
+[.24529 .00222 -6 -9 ]
+[.24529 .00222 6 0 ]
+[.46678 .00222 -6 -9 ]
+[.46678 .00222 6 0 ]
+[.68826 .00222 -6 -9 ]
+[.68826 .00222 6 0 ]
+[.90975 .00222 -6 -9 ]
+[.90975 .00222 6 0 ]
+[.01131 .1516 -12 -4.5 ]
+[.01131 .1516 0 4.5 ]
+[.01131 .28848 -12 -4.5 ]
+[.01131 .28848 0 4.5 ]
+[.01131 .42537 -12 -4.5 ]
+[.01131 .42537 0 4.5 ]
+[.01131 .56225 -12 -4.5 ]
+[.01131 .56225 0 4.5 ]
+[.5 .63053 -35 0 ]
+[.5 .63053 35 14 ]
+[ 0 0 0 0 ]
+[ 1 .61803 0 0 ]
+] MathScale
+% Start of Graphics
+1 setlinecap
+1 setlinejoin
+newpath
+0 g
+.25 Mabswid
+[ ] 0 setdash
+.24529 .01472 m
+.24529 .02097 L
+s
+[(20)] .24529 .00222 0 1 Mshowa
+.46678 .01472 m
+.46678 .02097 L
+s
+[(40)] .46678 .00222 0 1 Mshowa
+.68826 .01472 m
+.68826 .02097 L
+s
+[(60)] .68826 .00222 0 1 Mshowa
+.90975 .01472 m
+.90975 .02097 L
+s
+[(80)] .90975 .00222 0 1 Mshowa
+.125 Mabswid
+.07918 .01472 m
+.07918 .01847 L
+s
+.13455 .01472 m
+.13455 .01847 L
+s
+.18992 .01472 m
+.18992 .01847 L
+s
+.30066 .01472 m
+.30066 .01847 L
+s
+.35604 .01472 m
+.35604 .01847 L
+s
+.41141 .01472 m
+.41141 .01847 L
+s
+.52215 .01472 m
+.52215 .01847 L
+s
+.57752 .01472 m
+.57752 .01847 L
+s
+.63289 .01472 m
+.63289 .01847 L
+s
+.74363 .01472 m
+.74363 .01847 L
+s
+.799 .01472 m
+.799 .01847 L
+s
+.85437 .01472 m
+.85437 .01847 L
+s
+.96512 .01472 m
+.96512 .01847 L
+s
+.25 Mabswid
+0 .01472 m
+1 .01472 L
+s
+.02381 .1516 m
+.03006 .1516 L
+s
+[(20)] .01131 .1516 1 0 Mshowa
+.02381 .28848 m
+.03006 .28848 L
+s
+[(40)] .01131 .28848 1 0 Mshowa
+.02381 .42537 m
+.03006 .42537 L
+s
+[(60)] .01131 .42537 1 0 Mshowa
+.02381 .56225 m
+.03006 .56225 L
+s
+[(80)] .01131 .56225 1 0 Mshowa
+.125 Mabswid
+.02381 .04894 m
+.02756 .04894 L
+s
+.02381 .08316 m
+.02756 .08316 L
+s
+.02381 .11738 m
+.02756 .11738 L
+s
+.02381 .18582 m
+.02756 .18582 L
+s
+.02381 .22004 m
+.02756 .22004 L
+s
+.02381 .25426 m
+.02756 .25426 L
+s
+.02381 .32271 m
+.02756 .32271 L
+s
+.02381 .35693 m
+.02756 .35693 L
+s
+.02381 .39115 m
+.02756 .39115 L
+s
+.02381 .45959 m
+.02756 .45959 L
+s
+.02381 .49381 m
+.02756 .49381 L
+s
+.02381 .52803 m
+.02756 .52803 L
+s
+.02381 .59647 m
+.02756 .59647 L
+s
+.25 Mabswid
+.02381 0 m
+.02381 .61803 L
+s
+gsave
+.5 .63053 -96 -4 Mabsadd m
+1 1 Mabs scale
+currentpoint translate
+/MISOfy
+{
+    /newfontname exch def
+    /oldfontname exch def
+
+    oldfontname findfont
+    dup length dict begin
+        {1 index /FID ne {def} {pop pop} ifelse} forall
+        /Encoding ISOLatin1Encoding def
+        currentdict
+    end
+
+    newfontname exch definefont pop
+} def
+
+0 22 translate 1 -1 scale
+63.000 14.000 moveto
+%%IncludeResource: font Courier
+%%IncludeFont: Courier
+/Courier findfont 10.000 scalefont
+[1 0 0 -1 0 0 ] makefont setfont
+0.000 0.000 0.000 setrgbcolor
+0.000 0.000 rmoveto
+63.000 14.000 moveto
+%%IncludeResource: font Courier
+%%IncludeFont: Courier
+/Courier findfont 10.000 scalefont
+[1 0 0 -1 0 0 ] makefont setfont
+0.000 0.000 0.000 setrgbcolor
+(k) show
+69.000 14.000 moveto
+%%IncludeResource: font Math1Mono
+%%IncludeFont: Math1Mono
+/Math1Mono findfont 10.000 scalefont
+[1 0 0 -1 0 0 ] makefont setfont
+0.000 0.000 0.000 setrgbcolor
+(*) show
+75.000 14.000 moveto
+%%IncludeResource: font Courier
+%%IncludeFont: Courier
+/Courier findfont 10.000 scalefont
+[1 0 0 -1 0 0 ] makefont setfont
+0.000 0.000 0.000 setrgbcolor
+(64) show
+93.000 14.000 moveto
+(mod) show
+117.000 14.000 moveto
+(87) show
+129.000 14.000 moveto
+%%IncludeResource: font Courier
+%%IncludeFont: Courier
+/Courier findfont 10.000 scalefont
+[1 0 0 -1 0 0 ] makefont setfont
+0.000 0.000 0.000 setrgbcolor
+0.000 0.000 rmoveto
+1.000 setlinewidth
+grestore
+0 0 m
+1 0 L
+1 .61803 L
+0 .61803 L
+closepath
+clip
+newpath
+.008 w
+.02381 .01472 Mdot
+.73256 .02156 Mdot
+.47785 .0284 Mdot
+.22315 .03525 Mdot
+.93189 .04209 Mdot
+.67719 .04894 Mdot
+.42248 .05578 Mdot
+.16777 .06262 Mdot
+.87652 .06947 Mdot
+.62182 .07631 Mdot
+.36711 .08316 Mdot
+.1124 .09 Mdot
+.82115 .09685 Mdot
+.56645 .10369 Mdot
+.31174 .11053 Mdot
+.05703 .11738 Mdot
+.76578 .12422 Mdot
+.51107 .13107 Mdot
+.25637 .13791 Mdot
+.96512 .14476 Mdot
+.71041 .1516 Mdot
+.4557 .15844 Mdot
+.201 .16529 Mdot
+.90975 .17213 Mdot
+.65504 .17898 Mdot
+.40033 .18582 Mdot
+.14563 .19267 Mdot
+.85437 .19951 Mdot
+.59967 .20635 Mdot
+.34496 .2132 Mdot
+.09025 .22004 Mdot
+.799 .22689 Mdot
+.5443 .23373 Mdot
+.28959 .24057 Mdot
+.03488 .24742 Mdot
+.74363 .25426 Mdot
+.48893 .26111 Mdot
+.23422 .26795 Mdot
+.94297 .2748 Mdot
+.68826 .28164 Mdot
+.43355 .28848 Mdot
+.17885 .29533 Mdot
+.8876 .30217 Mdot
+.63289 .30902 Mdot
+.37818 .31586 Mdot
+.12348 .32271 Mdot
+.83223 .32955 Mdot
+.57752 .33639 Mdot
+.32281 .34324 Mdot
+.06811 .35008 Mdot
+.77685 .35693 Mdot
+.52215 .36377 Mdot
+.26744 .37062 Mdot
+.97619 .37746 Mdot
+.72148 .3843 Mdot
+.46678 .39115 Mdot
+.21207 .39799 Mdot
+.92082 .40484 Mdot
+.66611 .41168 Mdot
+.41141 .41852 Mdot
+.1567 .42537 Mdot
+.86545 .43221 Mdot
+.61074 .43906 Mdot
+.35604 .4459 Mdot
+.10133 .45275 Mdot
+.81008 .45959 Mdot
+.55537 .46643 Mdot
+.30066 .47328 Mdot
+.04596 .48012 Mdot
+.75471 .48697 Mdot
+.5 .49381 Mdot
+.24529 .50066 Mdot
+.95404 .5075 Mdot
+.69934 .51434 Mdot
+.44463 .52119 Mdot
+.18992 .52803 Mdot
+.89867 .53488 Mdot
+.64396 .54172 Mdot
+.38926 .54857 Mdot
+.13455 .55541 Mdot
+.8433 .56225 Mdot
+.58859 .5691 Mdot
+.33389 .57594 Mdot
+.07918 .58279 Mdot
+.78793 .58963 Mdot
+.53322 .59647 Mdot
+.27852 .60332 Mdot
+% End of Graphics
+MathPictureEnd
+\
+\>"], "Graphics",
+  CellLabel->"From In[9]:=",
+  ImageSize->{288, 177.938},
+  ImageMargins->{{34, 0}, {0, 1}},
+  ImageRegion->{{0, 1}, {0, 1}},
+  ImageCache->GraphicsData["Bitmap", "\<\
+CF5dJ6E]HGAYHf4PAg9QL6QYHg<PAVmbKF5d0`40004P0000/A000`40O003h00Oofmk8Fmk001@Kg/4
+0003Kg/2000_Kg/30002Kg/2000^Kg/30004Kg/2000^Kg/20004Kg/2000TKg/0051_N`03001_Nfmk
+00=_N`04001_Nfmk000_Kg/01000Kg]_N`000Vmk00<006mkKg/0:fmk00@006mkKg/0009_N`04001_
+Nfmk000/Kg/01000Kg]_N`000Vmk00@006mkKg/002=_N`00DFmk00<006mkKg/00Vmk00@006mkKg/0
+02a_N`D00005Kg/006mkKg/0000]Kg/01000Kg]_N`000Vmk00@006mkKg/002a_N`04001_Nfmk0002
+Kg/01000Kg]_N`008fmk001BKg/01@00Kg]_Nfmk00000Vmk00<006mkKg/0:Vmk00@006mkKg/0009_
+N`04001_Nfmk000]Kg/30003Kg/01000Kg]_N`00;Fmk0P000fmk00@006mkKg/002=_N`00D6mk00@0
+06mkKg/0009_N`04001_Nfmk000]Kg/00`00Kg/00002Kg/01000Kg]_N`00;Vmk00<006mkKg/00Vmk
+00@006mkKg/002a_N`04001_Nfmk0002Kg/01000Kg]_N`008fmk001AKg/20004Kg/2000_Kg/20003
+Kg/2000_Kg/30003Kg/2000^Kg/20004Kg/2000TKg/00?m_Nb5_N`007fmk00<006mkKg/0oVmk000O
+Kg/00`00Kg]_N`3nKg/001m_N`03001_Nfmk0?i_N`007fmk00<006mkKg/0oVmk000IKg_f000AKg/0
+01m_N`03001_Nfmk00]_N`03001_Nfmk00Y_N`03001_Nfmk00]_N`03001_Nfmk00Y_N`03001_Nfmk
+00]_N`03001_Nfmk00Y_N`03001_Nfmk00]_N`03001_Nfmk00Y_N`03001_Nfmk00]_N`03001_Nfmk
+00]_N`03001_Nfmk00Y_N`03001_Nfmk00]_N`03001_Nfmk00M_N`04001_Nfmk000=Kg/00`00Kg]_
+N`0:Kg/00`00Kg]_N`0;Kg/00`00Kg]_N`0;Kg/00`00Kg]_N`0GKg/001m_N`03001_Nfmk06a_N`03
+001_Nfmk08m_N`007fmk00<006mkKg/0oVmk000OKg/00`00Kg]_N`0]Kg/00`00Kg]_N`3>Kg/001m_
+N`03001_Nfmk0?i_N`007fmk00<006mkKg/0ffmk00<006mkKg/086mk000OKg/00`00Kg]_N`2MKg/0
+0`00Kg]_N`1NKg/001m_N`800?m_N`007fmk00<006mkKg/0GVmk00<006mkKg/0WFmk000OKg/00`00
+Kg]_N`3nKg/001m_N`03001_Nfmk021_N`03001_Nfmk0=]_N`007fmk00<006mkKg/0cFmk00<006mk
+Kg/0;Vmk000OKg/00`00Kg]_N`3nKg/001m_N`03001_Nfmk08m_N`03001_Nfmk06a_N`007fmk00<0
+06mkKg/0oVmk000OKg/2001BKg/00`00Kg]_N`2ZKg/001m_N`03001_Nfmk0?i_N`007fmk00<006mk
+Kg/04Vmk00<006mkKg/0jFmk000OKg/00`00Kg]_N`30Kg/00`00Kg]_N`0kKg/001m_N`03001_Nfmk
+0?i_N`007fmk00<006mkKg/0PFmk00<006mkKg/0NVmk000OKg/00`00Kg]_N`3nKg/001m_N`03001_
+Nfmk04=_N`03001_Nfmk0;Q_N`007fmk00<006mkKg/01Fmk00<006mkKg/0mVmk000OKg/2003oKg/0
+01m_N`03001_Nfmk0;9_N`03001_Nfmk04U_N`007fmk00<006mkKg/0oVmk000OKg/00`00Kg]_N`1d
+Kg/00`00Kg]_N`27Kg/001m_N`03001_Nfmk03E_N`03001_Nfmk0<I_N`007fmk00<006mkKg/0oVmk
+000AKg/40003Kg/20005Kg/00`00Kg]_N`3SKg/00`00Kg]_N`0HKg/0015_N`03001_Nfmk00=_N`04
+001_Nfmk0004Kg/00`00Kg]_N`3nKg/0019_N`03001_Nfmk009_N`04001_Nfmk0004Kg/2002VKg/0
+0`00Kg]_N`1FKg/001=_N`05001_NfmkKg/00002Kg/00`00Kg]_N`02Kg/00`00Kg]_N`1VKg/00`00
+Kg]_N`2EKg/0015_N`04001_Nfmk0002Kg/01000Kg]_N`0016mk00<006mkKg/0oVmk000BKg/20004
+Kg/20005Kg/00`00Kg]_N`0XKg/00`00Kg]_N`3CKg/001m_N`03001_Nfmk0?i_N`007fmk00<006mk
+Kg/0eVmk00<006mkKg/09Fmk000OKg/00`00Kg]_N`2GKg/00`00Kg]_N`1TKg/001m_N`03001_Nfmk
+0?i_N`007fmk00<006mkKg/0FFmk00<006mkKg/0XVmk000OKg/2003oKg/001m_N`03001_Nfmk01Y_
+N`03001_Nfmk0>5_N`007fmk00<006mkKg/0b6mk00<006mkKg/0<fmk000OKg/00`00Kg]_N`3nKg/0
+01m_N`03001_Nfmk08Y_N`03001_Nfmk075_N`007fmk00<006mkKg/0oVmk000OKg/00`00Kg]_N`1;
+Kg/00`00Kg]_N`2`Kg/001m_N`03001_Nfmk00e_N`03001_Nfmk0>i_N`007fmk0P00ofmk000OKg/0
+0`00Kg]_N`2jKg/00`00Kg]_N`11Kg/001m_N`03001_Nfmk0?i_N`007fmk00<006mkKg/0O6mk00<0
+06mkKg/0Ofmk000OKg/00`00Kg]_N`0nKg/00`00Kg]_N`2mKg/001m_N`03001_Nfmk0?i_N`007fmk
+00<006mk0000oVmk000OKg/00`00Kg]_N`3nKg/001m_N`800:i_N`03001_Nfmk04i_N`007fmk00<0
+06mkKg/0KVmk00<006mkKg/0SFmk000OKg/00`00Kg]_N`3nKg/001m_N`03001_Nfmk031_N`03001_
+Nfmk0<]_N`007fmk00<006mkKg/0oVmk000OKg/00`00Kg]_N`3NKg/00`00Kg]_N`0MKg/001m_N`03
+001_Nfmk09m_N`03001_Nfmk05a_N`004fmk0`000Vmk0P001Fmk00<006mkKg/0oVmk000DKg/01000
+Kg]_N`000Vmk00<006mkKg/00Vmk00<006mkKg/0HFmk00<006mkKg/0VVmk000AKg/500001Fmk001_
+Nfmk000016mk0P00ofmk000AKg/01000Kg]_N`000Vmk00@006mkKg/000A_N`03001_Nfmk029_N`03
+001_Nfmk0=U_N`004Vmk00<006mk00000Vmk00@006mkKg/000A_N`03001_Nfmk0=1_N`03001_Nfmk
+02]_N`004fmk0P000fmk0P001Fmk00<006mkKg/0oVmk000OKg/00`00Kg]_N`2BKg/00`00Kg]_N`1Y
+Kg/001m_N`03001_Nfmk0?i_N`007fmk00<006mkKg/0Dfmk00<006mkKg/0Z6mk000OKg/00`00Kg]_
+N`3nKg/001m_N`8001I_N`03001_Nfmk0>I_N`007fmk00<006mkKg/0`fmk00<006mkKg/0>6mk000O
+Kg/00`00Kg]_N`3nKg/001m_N`03001_Nfmk08A_N`03001_Nfmk07M_N`007fmk00<006mkKg/0oVmk
+000OKg/00`00Kg]_N`16Kg/00`00Kg]_N`2eKg/001m_N`03001_Nfmk00M_N`03001_Nfmk0?A_N`00
+7fmk00<006mkKg/0oVmk000OKg/2002fKg/00`00Kg]_N`16Kg/001m_N`03001_Nfmk0?i_N`007fmk
+00<006mkKg/0Mfmk00<006mkKg/0Q6mk000OKg/00`00Kg]_N`0hKg/00`00Kg]_N`33Kg/001m_N`03
+001_Nfmk0?i_N`007fmk00<006mkKg/0iVmk00<006mkKg/05Fmk000OKg/00`00Kg]_N`3nKg/001m_
+N`03001_Nfmk0:M_N`03001_Nfmk05A_N`007fmk00<006mkKg/0JFmk00<006mkKg/0TVmk000OKg/2
+003oKg/001m_N`03001_Nfmk02]_N`03001_Nfmk0=1_N`007fmk00<006mkKg/0oVmk000OKg/00`00
+Kg]_N`3HKg/00`00Kg]_N`0SKg/001m_N`03001_Nfmk09Y_N`03001_Nfmk065_N`007fmk00<006mk
+Kg/0oVmk000AKg/30004Kg/20005Kg/00`00Kg]_N`1KKg/00`00Kg]_N`2PKg/0015_N`04001_Nfmk
+0002Kg/01000Kg]_N`0016mk00<006mkKg/0oVmk000AKg/01000Kg]_N`000Vmk00@006mkKg/000A_
+N`8001i_N`03001_Nfmk0=i_N`004Fmk0`000fmk00@006mkKg/000A_N`03001_Nfmk0<]_N`03001_
+Nfmk031_N`004Vmk00<006mkKg/00Vmk00@006mkKg/000A_N`03001_Nfmk0?i_N`004Vmk0`000fmk
+0P001Fmk00<006mkKg/0S6mk00<006mkKg/0Kfmk000OKg/00`00Kg]_N`3nKg/001m_N`03001_Nfmk
+04i_N`03001_Nfmk0:e_N`007fmk00<006mkKg/046mk00<006mkKg/0jfmk000OKg/00`00Kg]_N`3n
+Kg/001m_N`03001_Nfmk0;e_N`03001_Nfmk03i_N`007fmk0P00ofmk000OKg/00`00Kg]_N`1oKg/0
+0`00Kg]_N`1lKg/001m_N`03001_Nfmk041_N`03001_Nfmk0;]_N`007fmk00<006mkKg/0oVmk000O
+Kg/00`00Kg]_N`02Kg/00`00Kg]_N`3iKg/001m_N`03001_Nfmk0?i_N`007fmk00<006mkKg/0/6mk
+00<006mkKg/0Bfmk000OKg/00`00Kg]_N`1aKg/00`00Kg]_N`2:Kg/001m_N`800?m_N`007fmk00<0
+06mkKg/0<fmk00<006mkKg/0b6mk000OKg/00`00Kg]_N`3nKg/001m_N`03001_Nfmk0>1_N`03001_
+Nfmk01]_N`007fmk00<006mkKg/0XVmk00<006mkKg/0FFmk000OKg/00`00Kg]_N`3nKg/001m_N`03
+001_Nfmk06A_N`03001_Nfmk09M_N`007fmk00<006mkKg/0oVmk000OKg/2000VKg/00`00Kg]_N`3F
+Kg/001m_N`03001_Nfmk0?i_N`007fmk00<006mkKg/0dfmk00<006mkKg/0:6mk000OKg/00`00Kg]_
+N`2DKg/00`00Kg]_N`1WKg/001m_N`03001_Nfmk0?i_N`007fmk00<006mkKg/0EVmk00<006mkKg/0
+YFmk000OKg/00`00Kg]_N`3nKg/0019_N`8000A_N`8000E_N`03001_Nfmk01Q_N`03001_Nfmk0>=_
+N`004Fmk00@006mkKg/0009_N`04001_Nfmk0004Kg/00`00Kg]_N`35Kg/00`00Kg]_N`0fKg/0015_
+N`04001_Nfmk0002Kg/01000Kg]_N`0016mk0P00ofmk000BKg/20003Kg/01000Kg]_N`0016mk00<0
+06mkKg/0Qfmk00<006mkKg/0M6mk000AKg/01000Kg]_N`000Vmk00@006mkKg/000A_N`03001_Nfmk
+0?i_N`004Vmk0P0016mk0P001Fmk00<006mkKg/0B6mk00<006mkKg/0/fmk000OKg/00`00Kg]_N`0:
+Kg/00`00Kg]_N`3aKg/001m_N`03001_Nfmk0?i_N`007fmk00<006mkKg/0^6mk00<006mkKg/0@fmk
+000OKg/00`00Kg]_N`3nKg/001m_N`8007Y_N`03001_Nfmk089_N`007fmk00<006mkKg/0>fmk00<0
+06mkKg/0`6mk000OKg/00`00Kg]_N`3nKg/001m_N`03001_Nfmk0?i_N`007fmk00<006mkKg/0oVmk
+000OKg/00`00Kg]_N`3nKg/00?m_Nb5_N`00ofmk8Fmk003oKg/QKg/00?m_Nb5_N`00ofmk8Fmk003o
+Kg/QKg/00?m_Nb5_N`00Lfmk0P0000=_N`0000000fmk00<006mk00000Vmk0`001Fmk0`001Vmk0P00
+00A_N`00Kg/0009_N`8000A_N`@000Q_N`8000E_N`03001_Nfmk06]_N`00M6mk00<006mk00001Fmk
+00D006mkKg]_N`00009_N`03001_Nfmk00=_N`03001_Nfmk00I_N`07001_N`00Kg/006mk00000Vmk
+00@006mkKg/0009_N`03001_Nfmk00I_N`04001_Nfmk0004Kg/00`00Kg]_N`1[Kg/007A_N`<000=_
+N`D00005Kg/006mkKg/00002Kg/50007Kg/01`00Kg/006mk001_N`00009_N`04001_Nfmk0002Kg/0
+0`00Kg]_N`06Kg/01000Kg]_N`0016mk00<006mkKg/0Jfmk001dKg/01000Kg/0000016mk00@006mk
+Kg]_N`<000=_N`04001_Nfmk0007Kg/300000fmk001_N`02Kg/20004Kg/30009Kg/20006Kg/00`00
+Kg]_N`1ZKg/007A_N`03001_Nfmk00Y_N`03001_Nfmk00=_N`03001_N`0001M_N`03001_Nfmk00I_
+N`04001_Nfmk0002Kg/01000Kg]_N`00K6mk001cKg/2000<Kg/30004Kg/2000FKg/20009Kg/20003
+Kg/4001/Kg/00?m_Nb5_N`00ofmk8Fmk003oKg/QKg/00?m_Nb5_N`00\
+\>"],
+  ImageRangeCache->{{{0, 287}, {176.938, 0}} -> {-11.5908, -7.19335, \
+0.368571, 0.596361}}],
+
+Cell[BoxData[
+    TagBox[\(\[SkeletonIndicator]  Graphics  \[SkeletonIndicator]\),
+      False,
+      Editable->False]], "Output",
+  CellLabel->"Out[9]="],
+
+Cell[GraphicsData["PostScript", "\<\
+%!
+%%Creator: Mathematica
+%%AspectRatio: .61803 
+MathPictureStart
+/Mabs {
+Mgmatrix idtransform
+Mtmatrix dtransform
+} bind def
+/Mabsadd { Mabs
+3 -1 roll add
+3 1 roll add
+exch } bind def
+%% Graphics
+%%IncludeResource: font Courier
+%%IncludeFont: Courier
+/Courier findfont 10  scalefont  setfont
+% Scaling calculations
+0.0238095 0.0109469 0.0147151 0.00684423 [
+[.24275 .00222 -6 -9 ]
+[.24275 .00222 6 0 ]
+[.46169 .00222 -6 -9 ]
+[.46169 .00222 6 0 ]
+[.68062 .00222 -6 -9 ]
+[.68062 .00222 6 0 ]
+[.89956 .00222 -6 -9 ]
+[.89956 .00222 6 0 ]
+[.01131 .1516 -12 -4.5 ]
+[.01131 .1516 0 4.5 ]
+[.01131 .28848 -12 -4.5 ]
+[.01131 .28848 0 4.5 ]
+[.01131 .42537 -12 -4.5 ]
+[.01131 .42537 0 4.5 ]
+[.01131 .56225 -12 -4.5 ]
+[.01131 .56225 0 4.5 ]
+[.5 .63053 -35 0 ]
+[.5 .63053 35 14 ]
+[ 0 0 0 0 ]
+[ 1 .61803 0 0 ]
+] MathScale
+% Start of Graphics
+1 setlinecap
+1 setlinejoin
+newpath
+0 g
+.25 Mabswid
+[ ] 0 setdash
+.24275 .01472 m
+.24275 .02097 L
+s
+[(20)] .24275 .00222 0 1 Mshowa
+.46169 .01472 m
+.46169 .02097 L
+s
+[(40)] .46169 .00222 0 1 Mshowa
+.68062 .01472 m
+.68062 .02097 L
+s
+[(60)] .68062 .00222 0 1 Mshowa
+.89956 .01472 m
+.89956 .02097 L
+s
+[(80)] .89956 .00222 0 1 Mshowa
+.125 Mabswid
+.07854 .01472 m
+.07854 .01847 L
+s
+.13328 .01472 m
+.13328 .01847 L
+s
+.18801 .01472 m
+.18801 .01847 L
+s
+.29748 .01472 m
+.29748 .01847 L
+s
+.35222 .01472 m
+.35222 .01847 L
+s
+.40695 .01472 m
+.40695 .01847 L
+s
+.51642 .01472 m
+.51642 .01847 L
+s
+.57115 .01472 m
+.57115 .01847 L
+s
+.62589 .01472 m
+.62589 .01847 L
+s
+.73536 .01472 m
+.73536 .01847 L
+s
+.79009 .01472 m
+.79009 .01847 L
+s
+.84483 .01472 m
+.84483 .01847 L
+s
+.9543 .01472 m
+.9543 .01847 L
+s
+.25 Mabswid
+0 .01472 m
+1 .01472 L
+s
+.02381 .1516 m
+.03006 .1516 L
+s
+[(20)] .01131 .1516 1 0 Mshowa
+.02381 .28848 m
+.03006 .28848 L
+s
+[(40)] .01131 .28848 1 0 Mshowa
+.02381 .42537 m
+.03006 .42537 L
+s
+[(60)] .01131 .42537 1 0 Mshowa
+.02381 .56225 m
+.03006 .56225 L
+s
+[(80)] .01131 .56225 1 0 Mshowa
+.125 Mabswid
+.02381 .04894 m
+.02756 .04894 L
+s
+.02381 .08316 m
+.02756 .08316 L
+s
+.02381 .11738 m
+.02756 .11738 L
+s
+.02381 .18582 m
+.02756 .18582 L
+s
+.02381 .22004 m
+.02756 .22004 L
+s
+.02381 .25426 m
+.02756 .25426 L
+s
+.02381 .32271 m
+.02756 .32271 L
+s
+.02381 .35693 m
+.02756 .35693 L
+s
+.02381 .39115 m
+.02756 .39115 L
+s
+.02381 .45959 m
+.02756 .45959 L
+s
+.02381 .49381 m
+.02756 .49381 L
+s
+.02381 .52803 m
+.02756 .52803 L
+s
+.02381 .59647 m
+.02756 .59647 L
+s
+.25 Mabswid
+.02381 0 m
+.02381 .61803 L
+s
+gsave
+.5 .63053 -96 -4 Mabsadd m
+1 1 Mabs scale
+currentpoint translate
+/MISOfy
+{
+    /newfontname exch def
+    /oldfontname exch def
+
+    oldfontname findfont
+    dup length dict begin
+        {1 index /FID ne {def} {pop pop} ifelse} forall
+        /Encoding ISOLatin1Encoding def
+        currentdict
+    end
+
+    newfontname exch definefont pop
+} def
+
+0 22 translate 1 -1 scale
+63.000 14.000 moveto
+%%IncludeResource: font Courier
+%%IncludeFont: Courier
+/Courier findfont 10.000 scalefont
+[1 0 0 -1 0 0 ] makefont setfont
+0.000 0.000 0.000 setrgbcolor
+0.000 0.000 rmoveto
+63.000 14.000 moveto
+%%IncludeResource: font Courier
+%%IncludeFont: Courier
+/Courier findfont 10.000 scalefont
+[1 0 0 -1 0 0 ] makefont setfont
+0.000 0.000 0.000 setrgbcolor
+(k) show
+69.000 14.000 moveto
+%%IncludeResource: font Math1Mono
+%%IncludeFont: Math1Mono
+/Math1Mono findfont 10.000 scalefont
+[1 0 0 -1 0 0 ] makefont setfont
+0.000 0.000 0.000 setrgbcolor
+(*) show
+75.000 14.000 moveto
+%%IncludeResource: font Courier
+%%IncludeFont: Courier
+/Courier findfont 10.000 scalefont
+[1 0 0 -1 0 0 ] makefont setfont
+0.000 0.000 0.000 setrgbcolor
+(64) show
+93.000 14.000 moveto
+(mod) show
+117.000 14.000 moveto
+(87) show
+129.000 14.000 moveto
+%%IncludeResource: font Courier
+%%IncludeFont: Courier
+/Courier findfont 10.000 scalefont
+[1 0 0 -1 0 0 ] makefont setfont
+0.000 0.000 0.000 setrgbcolor
+0.000 0.000 rmoveto
+1.000 setlinewidth
+grestore
+0 0 m
+1 0 L
+1 .61803 L
+0 .61803 L
+closepath
+clip
+newpath
+.008 w
+.97619 .01472 Mdot
+.27559 .02156 Mdot
+.52737 .0284 Mdot
+.77915 .03525 Mdot
+.07854 .04209 Mdot
+.33032 .04894 Mdot
+.5821 .05578 Mdot
+.83388 .06262 Mdot
+.13328 .06947 Mdot
+.38506 .07631 Mdot
+.63684 .08316 Mdot
+.88862 .09 Mdot
+.18801 .09685 Mdot
+.43979 .10369 Mdot
+.69157 .11053 Mdot
+.94335 .11738 Mdot
+.24275 .12422 Mdot
+.49453 .13107 Mdot
+.74631 .13791 Mdot
+.0457 .14476 Mdot
+.29748 .1516 Mdot
+.54926 .15844 Mdot
+.80104 .16529 Mdot
+.10044 .17213 Mdot
+.35222 .17898 Mdot
+.604 .18582 Mdot
+.85577 .19267 Mdot
+.15517 .19951 Mdot
+.40695 .20635 Mdot
+.65873 .2132 Mdot
+.91051 .22004 Mdot
+.20991 .22689 Mdot
+.46169 .23373 Mdot
+.71346 .24057 Mdot
+.96524 .24742 Mdot
+.26464 .25426 Mdot
+.51642 .26111 Mdot
+.7682 .26795 Mdot
+.0676 .2748 Mdot
+.31938 .28164 Mdot
+.57115 .28848 Mdot
+.82293 .29533 Mdot
+.12233 .30217 Mdot
+.37411 .30902 Mdot
+.62589 .31586 Mdot
+.87767 .32271 Mdot
+.17707 .32955 Mdot
+.42885 .33639 Mdot
+.68062 .34324 Mdot
+.9324 .35008 Mdot
+.2318 .35693 Mdot
+.48358 .36377 Mdot
+.73536 .37062 Mdot
+.03476 .37746 Mdot
+.28654 .3843 Mdot
+.53831 .39115 Mdot
+.79009 .39799 Mdot
+.08949 .40484 Mdot
+.34127 .41168 Mdot
+.59305 .41852 Mdot
+.84483 .42537 Mdot
+.14423 .43221 Mdot
+.396 .43906 Mdot
+.64778 .4459 Mdot
+.89956 .45275 Mdot
+.19896 .45959 Mdot
+.45074 .46643 Mdot
+.70252 .47328 Mdot
+.9543 .48012 Mdot
+.25369 .48697 Mdot
+.50547 .49381 Mdot
+.75725 .50066 Mdot
+.05665 .5075 Mdot
+.30843 .51434 Mdot
+.56021 .52119 Mdot
+.81199 .52803 Mdot
+.11138 .53488 Mdot
+.36316 .54172 Mdot
+.61494 .54857 Mdot
+.86672 .55541 Mdot
+.16612 .56225 Mdot
+.4179 .5691 Mdot
+.66968 .57594 Mdot
+.92146 .58279 Mdot
+.22085 .58963 Mdot
+.47263 .59647 Mdot
+.72441 .60332 Mdot
+% End of Graphics
+MathPictureEnd
+\
+\>"], "Graphics",
+  CellLabel->"From In[9]:=",
+  ImageSize->{288, 177.938},
+  ImageMargins->{{34, 0}, {0, 1}},
+  ImageRegion->{{0, 1}, {0, 1}},
+  ImageCache->GraphicsData["Bitmap", "\<\
+CF5dJ6E]HGAYHf4PAg9QL6QYHg<PAVmbKF5d0`40004P0000/A000`40O003h00Oofmk8Fmk001@Kg/4
+0003Kg/2000^Kg/30002Kg/2000]Kg/30004Kg/2000^Kg/20004Kg/2000VKg/0051_N`03001_Nfmk
+00=_N`04001_Nfmk000^Kg/01000Kg]_N`000Vmk00<006mkKg/0:Vmk00@006mkKg/0009_N`04001_
+Nfmk000/Kg/01000Kg]_N`000Vmk00@006mkKg/002E_N`00DFmk00<006mkKg/00Vmk00@006mkKg/0
+02]_N`D00005Kg/006mkKg/0000/Kg/01000Kg]_N`000Vmk00@006mkKg/002a_N`04001_Nfmk0002
+Kg/01000Kg]_N`009Fmk001BKg/01@00Kg]_Nfmk00000Vmk00<006mkKg/0:Fmk00@006mkKg/0009_
+N`04001_Nfmk000/Kg/30003Kg/01000Kg]_N`00;Fmk0P000fmk00@006mkKg/002E_N`00D6mk00@0
+06mkKg/0009_N`04001_Nfmk000/Kg/00`00Kg/00002Kg/01000Kg]_N`00;Fmk00<006mkKg/00Vmk
+00@006mkKg/002a_N`04001_Nfmk0002Kg/01000Kg]_N`009Fmk001AKg/20004Kg/2000^Kg/20003
+Kg/2000^Kg/30003Kg/2000^Kg/20004Kg/2000VKg/00?m_Nb5_N`007fmk00<006mkKg/0oVmk000O
+Kg/00`00Kg]_N`3nKg/001m_N`03001_Nfmk0?i_N`007fmk00<006mkKg/0iVmk00<006mkKg/05Fmk
+000IKg_f000AKg/001m_N`03001_Nfmk00Y_N`03001_Nfmk00]_N`03001_Nfmk00Y_N`03001_Nfmk
+00]_N`03001_Nfmk00A_N`03001_Nfmk00=_N`03001_Nfmk00Y_N`03001_Nfmk00]_N`03001_Nfmk
+00Y_N`03001_Nfmk00]_N`03001_Nfmk00Y_N`03001_Nfmk00Y_N`03001_Nfmk00]_N`03001_Nfmk
+00Y_N`03001_Nfmk00]_N`03001_Nfmk00Y_N`03001_Nfmk00]_N`03001_Nfmk00Y_N`03001_Nfmk
+01Y_N`007fmk00<006mkKg/0N6mk00<006mkKg/0Pfmk000OKg/00`00Kg]_N`3nKg/001m_N`03001_
+Nfmk0;I_N`03001_Nfmk04E_N`007fmk00<006mkKg/0oVmk000OKg/00`00Kg]_N`0:Kg/00`00Kg]_
+N`3aKg/001m_N`03001_Nfmk04Q_N`03001_Nfmk0;=_N`007fmk0P00ofmk000OKg/00`00Kg]_N`25
+Kg/00`00Kg]_N`1fKg/001m_N`03001_Nfmk0?i_N`007fmk00<006mkKg/0`fmk00<006mkKg/0>6mk
+000OKg/00`00Kg]_N`0GKg/00`00Kg]_N`3TKg/001m_N`03001_Nfmk0?i_N`007fmk00<006mkKg/0
+EFmk00<006mkKg/0YVmk000OKg/00`00Kg]_N`3nKg/001m_N`8009A_N`03001_Nfmk06Q_N`007fmk
+00<006mkKg/0oVmk000OKg/00`00Kg]_N`3@Kg/00`00Kg]_N`0[Kg/001m_N`03001_Nfmk02E_N`03
+001_Nfmk0=I_N`007fmk00<006mkKg/0oVmk000OKg/00`00Kg]_N`1RKg/00`00Kg]_N`2IKg/001m_
+N`03001_Nfmk0?i_N`007fmk00<006mkKg/0X6mk00<006mkKg/0Ffmk000OKg/00`00Kg]_N`3NKg/0
+0`00Kg]_N`0MKg/001m_N`800?m_N`007fmk00<006mkKg/0<Vmk00<006mkKg/0bFmk000OKg/00`00
+Kg]_N`3nKg/001m_N`03001_Nfmk071_N`03001_Nfmk08]_N`007fmk00<006mkKg/0[Vmk00<006mk
+Kg/0CFmk000OKg/00`00Kg]_N`3nKg/0015_N`@000=_N`8000E_N`03001_Nfmk009_N`03001_Nfmk
+0?U_N`004Fmk00<006mkKg/00fmk00@006mkKg/000A_N`03001_Nfmk0?i_N`004Vmk00<006mkKg/0
+0Vmk00@006mkKg/000A_N`80045_N`03001_Nfmk0;]_N`004fmk00D006mkKg]_N`00009_N`03001_
+Nfmk009_N`03001_Nfmk07e_N`03001_Nfmk07i_N`004Fmk00@006mkKg/0009_N`04001_Nfmk0004
+Kg/00`00Kg]_N`3nKg/0019_N`8000A_N`8000E_N`03001_Nfmk0;]_N`03001_Nfmk041_N`007fmk
+00<006mkKg/0oVmk000OKg/00`00Kg]_N`0?Kg/00`00Kg]_N`3/Kg/001m_N`03001_Nfmk04e_N`03
+001_Nfmk0:i_N`007fmk00<006mkKg/0oVmk000OKg/00`00Kg]_N`2;Kg/00`00Kg]_N`1`Kg/001m_
+N`800?m_N`007fmk00<006mkKg/0b6mk00<006mkKg/0<fmk000OKg/00`00Kg]_N`0MKg/00`00Kg]_
+N`3NKg/001m_N`03001_Nfmk0?i_N`007fmk00<006mkKg/0FVmk00<006mkKg/0XFmk000OKg/00`00
+Kg]_N`3nKg/001m_N`03001_Nfmk09Q_N`03001_Nfmk06=_N`007fmk00<006mkKg/0eVmk00<006mk
+Kg/09Fmk000OKg/2003oKg/001m_N`03001_Nfmk02Y_N`03001_Nfmk0=5_N`007fmk00<006mkKg/0
+oVmk000OKg/00`00Kg]_N`1XKg/00`00Kg]_N`2CKg/001m_N`03001_Nfmk0:E_N`03001_Nfmk05I_
+N`007fmk00<006mkKg/0oVmk000OKg/00`00Kg]_N`3SKg/00`00Kg]_N`0HKg/001m_N`03001_Nfmk
+0?i_N`007fmk0P00>Fmk00<006mkKg/0`fmk000OKg/00`00Kg]_N`1eKg/00`00Kg]_N`26Kg/001m_
+N`03001_Nfmk0?i_N`007fmk00<006mkKg/0/fmk00<006mkKg/0B6mk000OKg/00`00Kg]_N`3nKg/0
+01m_N`03001_Nfmk00M_N`03001_Nfmk0?A_N`007fmk00<006mkKg/0AFmk00<006mkKg/0]Vmk000C
+Kg/30002Kg/20005Kg/00`00Kg]_N`3nKg/001A_N`04001_Nfmk0002Kg/00`00Kg]_N`02Kg/00`00
+Kg]_N`23Kg/00`00Kg]_N`1hKg/0015_N`D00005Kg/006mkKg/00004Kg/2003oKg/0015_N`04001_
+Nfmk0002Kg/01000Kg]_N`0016mk00<006mkKg/0`6mk00<006mkKg/0>fmk000BKg/00`00Kg/00002
+Kg/01000Kg]_N`0016mk00<006mkKg/05Fmk00<006mkKg/0iVmk000CKg/20003Kg/20005Kg/00`00
+Kg]_N`3nKg/001m_N`03001_Nfmk059_N`03001_Nfmk0:U_N`007fmk00<006mkKg/0oVmk000OKg/0
+0`00Kg]_N`2@Kg/00`00Kg]_N`1[Kg/001m_N`03001_Nfmk0?i_N`007fmk0P00cfmk00<006mkKg/0
+;Fmk000OKg/00`00Kg]_N`0RKg/00`00Kg]_N`3IKg/001m_N`03001_Nfmk0?i_N`007fmk00<006mk
+Kg/0H6mk00<006mkKg/0Vfmk000OKg/00`00Kg]_N`3nKg/001m_N`03001_Nfmk09e_N`03001_Nfmk
+05i_N`007fmk00<006mkKg/0ffmk00<006mkKg/086mk000OKg/00`00Kg]_N`3nKg/001m_N`80031_
+N`03001_Nfmk0<a_N`007fmk00<006mkKg/0oVmk000OKg/00`00Kg]_N`1]Kg/00`00Kg]_N`2>Kg/0
+01m_N`03001_Nfmk0:]_N`03001_Nfmk051_N`007fmk00<006mkKg/0oVmk000OKg/00`00Kg/0003n
+Kg/001m_N`03001_Nfmk0?i_N`007fmk00<006mkKg/0?Fmk00<006mkKg/0_Vmk000OKg/00`00Kg]_
+N`1kKg/00`00Kg]_N`20Kg/001m_N`800?m_N`007fmk00<006mkKg/0^6mk00<006mkKg/0@fmk000O
+Kg/00`00Kg]_N`3nKg/001m_N`03001_Nfmk00e_N`03001_Nfmk0>i_N`007fmk00<006mkKg/0BVmk
+00<006mkKg/0/Fmk000OKg/00`00Kg]_N`3nKg/0015_N`<000A_N`8000E_N`03001_Nfmk08Q_N`03
+001_Nfmk07=_N`004Fmk00@006mkKg/0009_N`04001_Nfmk0004Kg/00`00Kg]_N`3nKg/0015_N`04
+001_Nfmk0002Kg/01000Kg]_N`0016mk0P00afmk00<006mkKg/0=Fmk000AKg/30003Kg/01000Kg]_
+N`0016mk00<006mkKg/06Vmk00<006mkKg/0hFmk000BKg/00`00Kg]_N`02Kg/01000Kg]_N`0016mk
+00<006mkKg/0oVmk000BKg/30003Kg/20005Kg/00`00Kg]_N`1HKg/00`00Kg]_N`2SKg/001m_N`03
+001_Nfmk0?i_N`007fmk00<006mkKg/0UFmk00<006mkKg/0IVmk000OKg/00`00Kg]_N`3CKg/00`00
+Kg]_N`0XKg/001m_N`03001_Nfmk0?i_N`007fmk00<006mkKg/09fmk00<006mkKg/0e6mk000OKg/2
+003oKg/001m_N`03001_Nfmk06E_N`03001_Nfmk09I_N`007fmk00<006mkKg/0Xfmk00<006mkKg/0
+F6mk000OKg/00`00Kg]_N`3nKg/001m_N`03001_Nfmk0>1_N`03001_Nfmk01]_N`007fmk00<006mk
+Kg/0oVmk000OKg/00`00Kg]_N`0eKg/00`00Kg]_N`36Kg/001m_N`03001_Nfmk07=_N`03001_Nfmk
+08Q_N`007fmk0P00ofmk000OKg/00`00Kg]_N`2`Kg/00`00Kg]_N`1;Kg/001m_N`03001_Nfmk0?i_
+N`007fmk00<006mkKg/01Fmk00<006mkKg/0mVmk000OKg/00`00Kg]_N`12Kg/00`00Kg]_N`2iKg/0
+01m_N`03001_Nfmk0?i_N`007fmk00<006mkKg/0P6mk00<006mkKg/0Nfmk000OKg/00`00Kg]_N`3n
+Kg/001m_N`800;m_N`03001_Nfmk03e_N`007fmk00<006mkKg/0oVmk000OKg/00`00Kg]_N`0BKg/0
+0`00Kg]_N`3YKg/001m_N`03001_Nfmk051_N`03001_Nfmk0:]_N`007fmk00<006mkKg/0oVmk000O
+Kg/00`00Kg]_N`2=Kg/00`00Kg]_N`1^Kg/001m_N`03001_Nfmk0?i_N`004Vmk0P0016mk0P001Fmk
+00<006mkKg/0bfmk00<006mkKg/0<6mk000AKg/01000Kg]_N`000Vmk00@006mkKg/000A_N`03001_
+Nfmk01m_N`03001_Nfmk0=a_N`004Fmk00@006mkKg/0009_N`04001_Nfmk0004Kg/2003oKg/0019_
+N`8000=_N`04001_Nfmk0004Kg/00`00Kg]_N`1MKg/00`00Kg]_N`2NKg/0015_N`04001_Nfmk0002
+Kg/01000Kg]_N`0016mk00<006mkKg/0oVmk000BKg/20004Kg/20005Kg/00`00Kg]_N`2KKg/00`00
+Kg]_N`1PKg/001m_N`03001_Nfmk0=Q_N`03001_Nfmk02=_N`007fmk00<006mkKg/0oVmk000OKg/0
+0`00Kg]_N`0]Kg/00`00Kg]_N`3>Kg/001m_N`03001_Nfmk0?i_N`007fmk0P00Jfmk00<006mkKg/0
+TFmk000OKg/00`00Kg]_N`2XKg/00`00Kg]_N`1CKg/001m_N`03001_Nfmk0?i_N`007fmk00<006mk
+Kg/0oVmk000OKg/00`00Kg]_N`3nKg/001m_N`03001_Nfmk0?i_N`00ofmk8Fmk003oKg/QKg/00?m_
+Nb5_N`00ofmk8Fmk003oKg/QKg/00?m_Nb5_N`00ofmk8Fmk001cKg/200000fmk00000003Kg/00`00
+Kg/00002Kg/30005Kg/30006Kg/2000016mk001_N`000Vmk0P0016mk100026mk0P001Fmk00<006mk
+Kg/0Jfmk001dKg/00`00Kg/00005Kg/01@00Kg]_Nfmk00000Vmk00<006mkKg/00fmk00<006mkKg/0
+1Vmk00L006mk001_N`00Kg/00002Kg/01000Kg]_N`000Vmk00<006mkKg/01Vmk00@006mkKg/000A_
+N`03001_Nfmk06]_N`00M6mk0`000fmk1@0000E_N`00Kg]_N`00009_N`D000M_N`07001_N`00Kg/0
+06mk00000Vmk00@006mkKg/0009_N`03001_Nfmk00I_N`04001_Nfmk0004Kg/00`00Kg]_N`1[Kg/0
+07A_N`04001_N`000004Kg/01000Kg]_Nfmk0`000fmk00@006mkKg/000M_N`<00003Kg/006mk009_
+N`8000A_N`<000U_N`8000I_N`03001_Nfmk06Y_N`00M6mk00<006mkKg/02Vmk00<006mkKg/00fmk
+00<006mk00005fmk00<006mkKg/01Vmk00@006mkKg/0009_N`04001_Nfmk001/Kg/007=_N`8000a_
+N`<000A_N`8001I_N`8000U_N`8000=_N`@006a_N`00ofmk8Fmk003oKg/QKg/00?m_Nb5_N`00ofmk
+8Fmk0000\
+\>"],
+  ImageRangeCache->{{{0, 287}, {176.938, 0}} -> {-11.7256, -7.19335, \
+0.372857, 0.596361}}],
+
+Cell[BoxData[
+    TagBox[\(\[SkeletonIndicator]  Graphics  \[SkeletonIndicator]\),
+      False,
+      Editable->False]], "Output",
+  CellLabel->"Out[10]="]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Konvergenzbetrachtung", "Section"],
+
+Cell[TextData[{
+  "Ausfaktorisierte iterative Formulierung der rekursionsbeziehung f\
+\[UDoubleDot]r die Koeffizienten liefert ",
+  Cell[BoxData[
+      \(TraditionalForm\`c\_i\  = \ \(p\_i\/q\_i\  = \ \(\(p\_\(i - 1\)*2\^i\ \
+ - \ 1\)\/\(q\_\(i - 1\)*2\^i\)\  = \ \(p\_\(i - 1\)\/q\_\(i - 1\) - \ 
+                1\/\(q\_\(i - 1\)*2\^i\)\  = \ \(p\_0\/q\_0 - \[Sum]\+\(k = 1\
+\)\%i 1\/\(q\_o*\(\[Product]\+\(l = 1\)\%k 2\^l\)\)\  = \ 
+                p\_0\/q\_0 - \ 
+                  1\/q\_0*\(\[Sum]\+\(k = 1\)\%i 2\^\(\(-\(k(k + \
+1)\)\)\/2\)\)\)\)\)\)\)]]
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+    \( (*\ proof\ *) \[IndentingNewLine]FullSimplify[
+      p\_0\/q\_0 - \ 
+          1\/q\_0*\(\[Sum]\+\(k = 1\)\%i 2\^\(-\(\[Sum]\+\(l = 1\)\%k l\)\)\)\
+\  == \ p\_i\/q\_i, \ 
+      i \[Element] Integers\  \[And] \ i > 0\  \[And] \ 
+        i \[Equal] 3]\), "\[IndentingNewLine]", 
+    \(FunctionExpand[
+      p\_0\/q\_0 - \ 
+          1\/q\_0*\(\[Sum]\+\(k = 1\)\%i 2\^\(-\(\[Sum]\+\(l = 1\)\%k l\)\)\)\
+\  == \ p\_i\/q\_i, \ \ i \[Element] Integers\  \[And] \ 
+        i > 0\ ]\), "\[IndentingNewLine]", 
+    \(With[{i = 10}, \ 
+      Reduce[p\_0\/q\_0 - \ 
+            1\/q\_0*\(\[Sum]\+\(k = 1\)\%i 2\^\(-\(\[Sum]\+\(l = 1\)\%k l\)\)\
+\)\  == \ p\_i\/q\_i]]\), "\[IndentingNewLine]", 
+    \(Reduce[
+      p\_0\/q\_0 - \ 
+          1\/q\_0*\(\[Sum]\+\(k = 1\)\%i 2\^\(-\(\[Sum]\+\(l = 1\)\%k l\)\)\)\
+\  == \ p\_i\/q\_i]\)}], "Input",
+  CellLabel->"In[11]:="],
+
+Cell[BoxData[
+    \(41\/64 == \[Sum]\+\(k = 1\)\%i 2\^\(-\(\[Sum]\+\(l = 1\)\%k l\)\)\)], \
+"Output",
+  CellLabel->"Out[11]="],
+
+Cell[BoxData[
+    \(2 - \[Sum]\+\(k = 1\)\%i 2\^\(-\(\[Sum]\+\(l = 1\)\%k l\)\) == 
+      p\_i\/q\_i\)], "Output",
+  CellLabel->"Out[12]="],
+
+Cell[BoxData[
+    \(True\)], "Output",
+  CellLabel->"Out[13]="],
+
+Cell[BoxData[
+    \(NSum::"precw" \(\(:\)\(\ \)\) 
+      "The precision of the argument function (\!\(2.`17\^\(\(\(-\(\(1\/2\)\)\
+\)\)\\ k\\ \(\((1 + k)\)\)\)\)) is less than WorkingPrecision \
+(\!\(27\))."\)], "Message",
+  CellLabel->"From In[11]:="],
+
+Cell[BoxData[
+    \(NSum::"nslim" \(\(:\)\(\ \)\) 
+      "Limit of summation \!\(i\) is not a number."\)], "Message",
+  CellLabel->"From In[11]:="],
+
+Cell[BoxData[
+    \(NSum::"precw" \(\(:\)\(\ \)\) 
+      "The precision of the argument function \
+(\!\(2.`17\^\(-\(\(\(\[Sum]\+\(l = 1\)\%k\) l\)\)\)\)) is less than \
+WorkingPrecision (\!\(27\))."\)], "Message",
+  CellLabel->"From In[11]:="],
+
+Cell[BoxData[
+    \(NSum::"nslim" \(\(:\)\(\ \)\) 
+      "Limit of summation \!\(i\) is not a number."\)], "Message",
+  CellLabel->"From In[11]:="],
+
+Cell[BoxData[
+    \(NSum::"precw" \(\(:\)\(\ \)\) 
+      "The precision of the argument function (\!\(2.`17\^\(\(\(-\(\(1\/2\)\)\
+\)\)\\ k\\ \(\((1 + k)\)\)\)\)) is less than WorkingPrecision \
+(\!\(27\))."\)], "Message",
+  CellLabel->"From In[11]:="],
+
+Cell[BoxData[
+    \(General::"stop" \(\(:\)\(\ \)\) 
+      "Further output of \!\(NSum :: \"precw\"\) will be suppressed during \
+this calculation."\)], "Message",
+  CellLabel->"From In[11]:="],
+
+Cell[BoxData[
+    \(NSum::"nslim" \(\(:\)\(\ \)\) 
+      "Limit of summation \!\(i\) is not a number."\)], "Message",
+  CellLabel->"From In[11]:="],
+
+Cell[BoxData[
+    \(General::"stop" \(\(:\)\(\ \)\) 
+      "Further output of \!\(NSum :: \"nslim\"\) will be suppressed during \
+this calculation."\)], "Message",
+  CellLabel->"From In[11]:="],
+
+Cell[BoxData[
+    \(p\_i == \(-q\_i\)\ \((\(-2\) + \[Sum]\+\(k = 1\)\%i 2\^\(\(-\(1\/2\)\)\ \
+k\ \((1 + k)\)\))\) && q\_i \[NotEqual] 0\)], "Output",
+  CellLabel->"Out[14]="]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(\(\( (*\ \(Limit[x\_i, \ 
+          i \[Rule] \[Infinity]]\)\(\ \)\(=\)\ \
+*) \)\(\[IndentingNewLine]\)\(Limit[\ \ p\_0\/q\_0 - \ 
+        1\/q\_0*\(\[Sum]\+\(k = 1\)\%i 2\^\(\(-\(k \((k + 1)\)\)\)\/2\)\), \ 
+      i \[Rule] \[Infinity]]\)\)\)], "Input",
+  CellLabel->"In[15]:="],
+
+Cell[BoxData[
+    RowBox[{"Limit", "[", 
+      RowBox[{\(2 - \[Sum]\+\(k = 1\)\%i 2\^\(\(-\(1\/2\)\)\ \((k\ \((k + \
+1)\))\)\)\), ",", 
+        RowBox[{"i", "\[Rule]", 
+          InterpretationBox["\[Infinity]",
+            DirectedInfinity[ 1]]}]}], "]"}]], "Output",
+  CellLabel->"Out[15]="]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(\(\(Limit[c\^n, \ n \[Rule] \[Infinity], \ 
+      Assumptions \[Rule] {c > 0, c < 1}]\)\(\[IndentingNewLine]\)\( (*\ 
+      Limit[x\_i, \ i \[Rule] \[Infinity]]\ *) \)\)\)], "Input",
+  CellLabel->"In[16]:="],
+
+Cell[BoxData[
+    RowBox[{\(Limit::"optx"\), \(\(:\)\(\ \)\), "\<\"Unknown option \
+\\!\\(Assumptions\\) in \\!\\(Limit[\\(\\(c\\^n, \\(\\(n \[Rule] \
+\\*InterpretationBox[\\\"\[Infinity]\\\", DirectedInfinity[1]]\\)\\), \
+\\(\\(Assumptions \[Rule] \\(\\({\\(\\(c > 0\\)\\), \\(\\(c < \
+1\\)\\)}\\)\\)\\)\\)\\)\\)]\\).\"\>"}]], "Message",
+  CellLabel->"From In[16]:="],
+
+Cell[BoxData[
+    RowBox[{"Limit", "[", 
+      RowBox[{\(c\^n\), ",", 
+        RowBox[{"n", "\[Rule]", 
+          InterpretationBox["\[Infinity]",
+            DirectedInfinity[ 1]]}], 
+        ",", \(Assumptions \[Rule] {c > 0, c < 1}\)}], "]"}]], "Output",
+  CellLabel->"Out[16]="]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+},
+FrontEndVersion->"4.0 for Microsoft Windows",
+ScreenRectangle->{{0, 800}, {0, 527}},
+WindowSize->{693, 484},
+WindowMargins->{{0, Automatic}, {Automatic, 0}},
+StyleDefinitions -> "ArticleModern.nb"
+]
+
+
+(***********************************************************************
+Cached data follows.  If you edit this Notebook file directly, not using
+Mathematica, you must remove the line containing CacheID at the top of 
+the file.  The cache data will then be recreated when you save this file 
+from within Mathematica.
+***********************************************************************)
+
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+
+(*NotebookFileOutline
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[1739, 51, 99, 2, 115, "Title"],
+
+Cell[CellGroupData[{
+Cell[1863, 57, 64, 0, 63, "Section"],
+Cell[1930, 59, 1780, 44, 175, "Text"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[3747, 108, 31, 0, 63, "Section"],
+Cell[3781, 110, 1484, 39, 154, "Text"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[5302, 154, 40, 0, 63, "Section"],
+Cell[5345, 156, 460, 10, 120, "Input"],
+Cell[5808, 168, 197, 4, 71, "Input"],
+
+Cell[CellGroupData[{
+Cell[6030, 176, 53, 0, 54, "Subsection"],
+
+Cell[CellGroupData[{
+Cell[6108, 180, 97, 2, 45, "Input"],
+Cell[6208, 184, 389, 6, 125, "Output"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[6646, 196, 45, 0, 54, "Subsection"],
+
+Cell[CellGroupData[{
+Cell[6716, 200, 180, 3, 85, "Input"],
+Cell[6899, 205, 426, 7, 101, "Output"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[7374, 218, 190, 5, 54, "Subsection"],
+
+Cell[CellGroupData[{
+Cell[7589, 227, 907, 19, 345, "Input"],
+Cell[8499, 248, 13132, 424, 195, 5598, 326, "GraphicsData", "PostScript", \
+"Graphics"],
+Cell[21634, 674, 154, 4, 44, "Output"],
+Cell[21791, 680, 13169, 425, 195, 5602, 326, "GraphicsData", "PostScript", \
+"Graphics"],
+Cell[34963, 1107, 155, 4, 44, "Output"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[35179, 1118, 40, 0, 63, "Section"],
+Cell[35222, 1120, 572, 11, 78, "Text"],
+
+Cell[CellGroupData[{
+Cell[35819, 1135, 879, 20, 223, "Input"],
+Cell[36701, 1157, 126, 3, 66, "Output"],
+Cell[36830, 1162, 139, 3, 66, "Output"],
+Cell[36972, 1167, 63, 2, 44, "Output"],
+Cell[37038, 1171, 251, 5, 38, "Message"],
+Cell[37292, 1178, 147, 3, 14, "Message"],
+Cell[37442, 1183, 243, 5, 35, "Message"],
+Cell[37688, 1190, 147, 3, 14, "Message"],
+Cell[37838, 1195, 251, 5, 38, "Message"],
+Cell[38092, 1202, 193, 4, 14, "Message"],
+Cell[38288, 1208, 147, 3, 14, "Message"],
+Cell[38438, 1213, 193, 4, 14, "Message"],
+Cell[38634, 1219, 174, 3, 66, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[38845, 1227, 299, 6, 88, "Input"],
+Cell[39147, 1235, 293, 7, 66, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[39477, 1247, 227, 4, 65, "Input"],
+Cell[39707, 1253, 368, 6, 14, "Message"],
+Cell[40078, 1261, 282, 7, 44, "Output"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+
+
+
+(***********************************************************************
+End of Mathematica Notebook file.
+***********************************************************************)
+

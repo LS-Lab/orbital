@@ -1,0 +1,74 @@
+[Project ID]
+Signature=UE Proj: v.1
+[Project Information]
+Project Directory=C:\Personal\Java\orbital\logic\algorithm\template\
+Use Relative Directory=1
+Relative to Project File=1
+Project Wordfile=
+[Open Files]
+Open File0=C:\Personal\Java\orbital\algorithm\template\SimulatedAnnealing.java
+Open File Pos0=1805
+Open File Line0=1805
+Open File Window Pos0=0,1,-1,-1,-4,-23,88,88,756,405
+Open File1=C:\Personal\Java\orbital\algorithm\template\GeneralSearch.java
+Open File Pos1=4262
+Open File Line1=3644
+Active File Index=1
+Open File Window Pos1=2,3,-1,-1,-4,-23,88,88,756,405
+Open File2=
+Active File Display Mode=3
+Open File Pos2=1767
+Open File Line2=974
+Open File Window Pos2=2,3,-1,-1,-4,-23,66,66,734,383
+Open File3=
+Open File Pos3=1969
+Open File Line3=0
+Open File Window Pos3=2,3,-1,-1,-4,-23,44,44,712,361
+Open File4=
+Open File Pos4=1154
+Open File Line4=657
+Open File Window Pos4=2,3,-1,-1,-1,-1,22,22,690,344
+Open File5=
+[File View]
+Current Select=Open Files\
+[Files]
+0=AlgorithmicProblem.java
+1=AlgorithmicTemplate.java
+2=AStar.java
+3=Backtracking.java
+4=BacktrackingProblem.java
+5=BestFirstSearch.java
+6=BranchAndBound.java
+7=BreadthFirstSearch.java
+8=DepthFirstSearch.java
+9=DivideAndConquer.java
+10=DivideAndConquerProblem.java
+11=DynamicProgramming.java
+12=DynamicProgrammingOptimizingProblem.java
+13=DynamicProgrammingProblem.java
+14=GeneralBoundingSearch.java
+15=GeneralSearch.java
+16=GeneralSearchProblem.java
+17=Greedy.java
+18=GreedyProblem.java
+19=HeuristicSearch.java
+20=HillClimbing.java
+21=IterativeDeepening.java
+22=IterativeDeepeningAStar.java
+23=MarkovDecisionProcess.java
+24=MarkovDecisionProcessProblem.java
+25=package.html
+26=ParallelBranchAndBound.java
+27=RealTimeDynamicProgrammingMDP.java
+28=WAStar.java
+[Files - Examples]
+0=C:\Personal\www\orbital\orbital.doc\docs\examples\Algorithms\AlgorithmicTable.java
+1=C:\Personal\www\orbital\orbital.doc\docs\examples\Algorithms\EightPuzzle.java
+2=C:\Personal\www\orbital\orbital.doc\docs\examples\Algorithms\EightPuzzle_asynchronous.java
+3=C:\Personal\www\orbital\orbital.doc\docs\examples\Algorithms\RobotNavigation.java
+4=C:\Personal\www\orbital\orbital.doc\docs\examples\Algorithms\RubicsCube.java
+5=C:\Personal\www\orbital\orbital.doc\docs\examples\Algorithms\RubicsCubeCreatePattern.java
+6=C:\Personal\www\orbital\orbital.doc\docs\examples\Algorithms\SimpleGSP.java
+[Group]
+0=Examples
+2=

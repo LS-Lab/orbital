@@ -1,0 +1,20 @@
+true == (a&b<=>a) => (a|(b&c)<=>(a|b)&c)	# modular a=<b implies a|(b&c)<=>(a|b)&c
+a|b == a
+a&b == b
+a&b == b|a
+a|b == b&a
+(a&b)&c == a&(b|c)
+a&(a|b) == b
+a|(a&b) == a&b
+~(~a) == ~a
+~(a&b) == ~a&~b
+~(a|b) == ~a|~b
+a |= b
+a |= ~a
+a->b == ~a->~b
+a->b == ~a&b
+a<=>b == (a->~b)&(~b->a)
+a|~a == b->~b
+(a=>b)=>c == a=>(b=>c)				# non-associative
+a=>(b=>c) == a=>b && b=>c
+a=>(b=>c) == a=>b || b=>c

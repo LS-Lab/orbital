@@ -1,0 +1,87 @@
+/**
+ * @(#)Encoding.java 0.9 2000/03/27 Andre Platzer
+ *
+ * Copyright (c) 2000 Andre Platzer. All Rights Reserved.
+ */
+
+//TODO: generic instantiation with an argument?
+
+package orbital.io.encoding;
+
+import java.security.Provider;
+
+import orbital.logic.setop.Setops;
+import orbital.logic.functor.Predicate;
+import java.util.List;
+import java.util.ArrayList;
+
+/**
+ * This class is a Encoding.
+ *
+ * @version 0.9, 2000/03/27
+ * @author  Andr&eacute; Platzer
+ */
+public
+class Encoding {
+	private static List providers = new ArrayList();
+	
+	private Encoding() {}
+    
+    /**
+     * Adds a provider to the next position available. 
+     * @return the preference position in which the provider was added, or -1 if the provider was not added because it is already installed.
+     */
+    public static int addProvider(Provider provider) {
+	return insertProviderAt(provider, providers.size() + 1);
+    }
+    
+    /**
+     * Adds a new provider, at a specified position. The position is
+     * the preference order in which providers are searched for
+     * requested algorithms.
+     *
+     * @param provider the provider to be added.
+     *
+     * @param position the preference position that the caller would
+     * like for this provider.
+     * 
+     * @return the actual preference position in which the provider was 
+     * added, or -1 if the provider was not added because it is
+     * already installed.
+     */
+    public static int insertProviderAt(Provider provider, int position) {
+	/* First check if the provider is already installed */
+	if (getProvider(provider.getName()) != null)
+	    return -1;
+	int size = providers.size();
+	if (position > size || position <= 0)
+	    position = size+1;
+	providers.add(position-1, provider);
+	return position;
+	}
+	
+    /**
+     * Removes the provider with the specified name. 
+     */
+    public static void removeProvider(String name) {
+    providers.remove(getProvider(name));
+    }
+    
+    /**
+     * Returns an array containing all the installed providers. The order of the providers in the array is their preference order.
+     */
+    public static Provider[] getProviders() {
+    return (Provider[])providers.toArray();
+    }
+    
+    /**
+     * Returns the provider installed with the specified name, if any. Returns null if no provider with the speicified name is installed.
+     */
+    public static Provider getProvider(final String name) {
+    return (Provider)Setops.find(providers,new Predicate() {
+    	public boolean apply(Object o) {
+    	return name.equals(((Provider)o).getName());
+    	}
+    });
+    }
+}

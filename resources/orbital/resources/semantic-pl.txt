@@ -1,0 +1,37 @@
+#
+# rules for quantifiers
+# @todo denote metavariables correctly.
+#
+all x p(x) |= p(a)	# universal specialization
+p(a) |= some x p(x)	# existential generalization
+## some x p(x), ~occured(_a) |= p(_a)	# existential specialization (provided that _a is a new constant and has never occured yet)
+~all x p(x) |= some x ~p(x)	# ~all~ conversion (even |=|)
+~some x p(x) |= all x ~p(x)	# ~some~ conversion (even |=|)
+all x (p(x)->q(x)) |= (all x p(x)) -> (all x q(x))
+# some rules
+some x (p(x) & q(x)) |= (some x p(x)) & (some x q(x))
+all y ((some x R(x,y)) & (some x all z (R(z,y)->z=x))) == all y some x (R(x,y) & all z (R(z,y)->z=x))	# there is at least one and at most one, is equivalent to there is exactly one
+#
+# axioms of set theory
+#
+# unique determination of "="
+|= all x x=x		# ID1 axiom of identity. "=" reflexive
+|= all x all y (a=b -> (p(a) -> p(b))) # ID2 principle of substitution (more general form: P(a) is an arbitrary formula containing the constant a, and P(b)=P(a)[a->b] is the result of a substitution with the constant b)
+a=b, p(a) |= p(b)	# (specialized formulation)
+#|= all M all N all x (x&isin;M <=> x&isin;N) -> M=N)	# EXT axiom of extensionality
+#|= all M some N N = {x&isin;M | p(x)}	# AUS "Aussonderungsaxiome"
+#|= all M some N all L (L&sube;M -> L&isin;N)	# POT axiom of potence set
+#|= all M all N some L all x(x&isin;M | x&isin;N -> x&isin;L)	# &cup;-Ax axiom of union
+# derived properties
+|= all x all y (x=y -> y=x)	# "=" symmetric
+|= all x all y all z (x=y & y=z -> x=z)	# "=" transitive
+|= all x all y all z (x=z & y=z -> x=y)	# "=" euclidian
+#
+# definitions
+#
+#N&sube;M := all x(x&isin;N -> x&isin;M)
+#N&supe;M := M&sube;N
+#|= all M all N (M=N <=> M&sube;N & N&sube;M)
+#|= all M M&sube;M
+#|= all x x&notin;&empty;
+#|= all M &empty;&sube;M

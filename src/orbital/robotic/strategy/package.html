@@ -1,0 +1,38 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta name="Author" content="Andre Platzer">
+<title>robotic strategy package</title>
+</head>
+
+<body>
+
+Contains an architecture for strategies that select objects with regard to their
+weight.
+<p>(Not to be mixed up with the Design Pattern &quot;Strategy&quot;).
+<p>Basic interface is the Selection, its implementations select from an
+Enumeration of Objects (<i>or Collection</i>) according to their weight. The
+Algorithm for weighting an Object is done by user defined implementations of the
+interface Weighting.
+<p>The strategy is selected by Evaluation that evaluates a Selection of all
+Objects already weighted by <b>Evaluation</b>. The Weighting is delegated to a
+user defined Weighting instance.
+<p>The Selection algorithms implemented are:
+<ul>
+  <li>Selection.Selecting.best()</li>
+  <li>Selection.Selecting.min()</li>
+  <li>Selection.Selecting.max()</li>
+  <li>Selection.Selecting.sum()</li>
+</ul>
+<dl>
+  <dt><b>See Also:</b></dt>
+  <dd><tt><a href="../../logic/algorithm/template/package-summary.html">orbital.logic.algorithm.template</a></tt></dd>
+</dl>
+
+</body>
+
+</html>
