@@ -136,7 +136,7 @@ public final class NumericalAlgorithms {
 	p = (Vector) r.clone();
 	final Vector zero = Values.getDefaultInstance().ZERO(r.dimension());
 	final Real tolerance = Values.getDefaultInstance().valueOf(MathUtilities.getDefaultTolerance());
-	for (int m = 0; m < A.dimension().width && !((AbstractVector) r).equals(zero, tolerance); m++) {
+	for (int m = 0; m < A.dimension().width && !r.equals(zero, tolerance); m++) {
 	    Vector o_r = (Vector) r.clone();	// old residual
 	    Vector a = A.multiply(p);
 	    Scalar alpha = (Scalar/*__*/) ((Scalar/*__*/)Functions.square.apply(r.norm(2))).divide(a.multiply(p));

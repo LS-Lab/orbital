@@ -16,7 +16,7 @@ import orbital.moon.math.CoordinateCompositeFunction;
 import orbital.util.Utility;
 
 /**
- * This class contains algorithms and utlities for stochastics and statistical mathematics.
+ * This class contains algorithms and utilities for stochastics and statistical mathematics.
  * It works much like the standard class {@link java.lang.Math} extended for
  * statistics.
  * 
