@@ -23,7 +23,7 @@ import java.util.Set;
  *     if <span class="Formula">Mod<sub>&Sigma;</sub>(F)=Int(&Sigma;)</span>,
  *     that is, if it is satisfied by all interpretations.
  *     A formula is tautological, if it is not falsifiable.
- *     <div>&hArr; Cl<sub>&forall;</sub> F is valid</div>
+ *     <div>&hArr; {@link orbital.moon.logic.ClassicalLogic.Utilities#allClosure(Formula) Cl<sub>&forall;</sub>} F is valid</div>
  *   </dd>
  *   <dt>satisfiable (or consistent or possible)</dt>
  *   <dd>
@@ -34,7 +34,7 @@ import java.util.Set;
  *     <div>&hArr; F &#8872;&#824; false</div>
  *     <div>&hArr; there is no A&isin;Formula(&Sigma;) with F &#8872; A and F &#8872; &not;A</div>
  *     <div>&hArr; F has a class of models</div>
- *     <div>&hArr; Cl<sub>&exist;</sub> F is satisfiable</div>
+ *     <div>&hArr; {@link orbital.moon.logic.ClassicalLogic.Utilities#existenceClosure(Formula) Cl<sub>&exist;</sub>} F is satisfiable</div>
  *   </dd>
  *   <dt>falsifiable</dt>
  *   <dd>
@@ -116,13 +116,13 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      *     <td rowspan="3" style="width: 5%">
      *     </td>
      *     <td>
-     *       <p>FV(x)</p>
+     *       <p>FV(<var>x</var>)</p>
      *     </td>
      *     <td>
-     *       <p>= {x}</p>
+     *       <p>= {<var>x</var>}</p>
      *     </td>
      *     <td>
-     *       <p>if x&isin;V</p>
+     *       <p>if <var>x</var>&isin;V</p>
      *     </td>
      *   </tr>
      *   <tr>
@@ -198,10 +198,10 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      *   </tr>
      *   <tr>
      *     <td>
-     *       <p>FV(@xG)</p>
+     *       <p>FV(@<var>x</var>G)</p>
      *     </td>
      *     <td>
-     *       <p>= FV(G) &#8726; {x}</p>
+     *       <p>= FV(G) &#8726; {<var>x</var>}</p>
      *     </td>
      *     <td>
      *       <p>if bound by a @&isin;{&forall;,&exist;}</p>
@@ -284,10 +284,10 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      *   </tr>
      *   <tr>
      *     <td>
-     *       <p>BV(@xG)</p>
+     *       <p>BV(@<var>x</var>G)</p>
      *     </td>
      *     <td>
-     *       <p>= BV(G) &cup; {x}</p>
+     *       <p>= BV(G) &cup; {<var>x</var>}</p>
      *     </td>
      *     <td>
      *       <p>if bound by a @&isin;{&forall;,&exist;}</p>
@@ -402,29 +402,29 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
     // Basic logical operations (elemental quantifiers).
 
     /**
-     * Universal-quantifier forall: &forall;x <span class="Formula">F</span>.
+     * Universal-quantifier forall: &forall;<var>x</var> <span class="Formula">F</span>.
      * <p>
-     * Sometimes, this is also denoted as &#8896;<sub>x</sub> <span class="Formula">F</span>.
+     * Sometimes, this is also denoted as &#8896;<sub><var>x</var></sub> <span class="Formula">F</span>.
      * </p>
      * <p>
      * &forall; is not (compositional or) truth-functional.
      * </p>
-     * @param x is a symbol for all elements of the world.
-     * @pre x.isVariable()
+     * @param x is a symbol <var>x</var> for all elements of the world.
+     * @pre <var>x</var>.isVariable()
      * @throws UnsupportedOperationException if this quantifier is not supported by the representation.
      */
     Formula forall(Symbol x);
 
     /**
-     * Existential-quantifier exists: &exist;x <span class="Formula">F</span>.
+     * Existential-quantifier exists: &exist;<var>x</var> <span class="Formula">F</span>.
      * <p>
-     * Sometimes, this is also denoted as &#8897;<sub>x</sub> <span class="Formula">F</span>.
+     * Sometimes, this is also denoted as &#8897;<sub><var>x</var></sub> <span class="Formula">F</span>.
      * </p>
      * <p>
      * &forall; is not (compositional or) truth-functional.
      * </p>
-     * @param x is an element of the world.
-     * @pre x.isVariable()
+     * @param x is a symbol <var>x</var> for an element of the world.
+     * @pre <var>x</var>.isVariable()
      * @throws UnsupportedOperationException if this quantifier is not supported by the representation.
      */
     Formula exists(Symbol x);

@@ -41,7 +41,7 @@ import orbital.logic.functor.Notation.NotationSpecification;
  *       and the corresponding type identifier predicates <span class="type">&tau;</span> of type {@link Types#predicate(Type) <span class="type">(&#8868;)</span>}.
  *   </li>
  *   <li>type constructors, f.ex. of type <span class="type">(*&rarr;*)&rarr;*</span> or any other kind.</li>
- *   <li>variables of a set V&sube;&Sigma;, where
+ *   <li>variables <var>x</var> of a set V&sube;&Sigma;, where
  *     <ul>
  *       <li>object variables are variable terms of type <span class="type">&iota;</span>.</li>
  *       <li>function-variables are variable "frames" of functions.</li>

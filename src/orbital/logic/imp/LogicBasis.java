@@ -61,8 +61,8 @@ public abstract class LogicBasis implements Formula {
 
 
     /**
-     * All-quantifier forall: <code>&forall;x A</code> is calced <code>&not;&exist;x &not;A</code>.
-     * <code>x</code> for all elements of the world.
+     * All-quantifier forall: <code>&forall;<var>x</var> A</code> is calced <code>&not;&exist;<var>x</var> &not;A</code>.
+     * <code><var>x</var></code> for all elements of the world.
      * <p>
      * Should be overwritten to throw UnsupportedOperationException if neither
      * forall nor exists are supported.</p>
@@ -86,8 +86,8 @@ public abstract class LogicBasis implements Formula {
     private boolean quantifier_called = false;
 
     /**
-     * Existence-quantifier exists: <code>&exist;x A</code> is calced <code>&not;&forall;x &not;A</code>.
-     * <code>x</code> is an element of the world.
+     * Existence-quantifier exists: <code>&exist;<var>x</var> A</code> is calced <code>&not;&forall;<var>x</var> &not;A</code>.
+     * <code><var>x</var></code> is an element of the world.
      * <p>
      * Should be overwritten to throw UnsupportedOperationException if neither
      * forall nor exists are supported.</p>
