@@ -1,0 +1,53 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Mathematical plotting engine with expression parser</title>
+</head>
+
+<body>
+
+<form name="controlInfo">
+  <input type="hidden" name="overDoc" value="applets.html#INDEX"><input type="hidden" name="backDoc" value="applet/VectorAnimation.html"><input type="hidden" name="nextDoc" value="applet/Folge.html"><input type="hidden" name="homeDoc" value="home.html">
+</form>
+<center>
+<h2><a name="TITLE"></a> <font color="#0060B0">MathPlotter with expression
+Parser</font></h2>
+</center>
+<hr size="8">
+<a name="CONTENT"></a>New applet with full runtime expression
+parser support. Java 1.1 or 1.2 required.<br>
+See the <a href="MathPlot.html">old applet</a> with smaller memory foot-print
+for earlier Java versions.
+<hr>
+<applet code="MathPlotter.class" archive="MathPlotter.jar" width="400" height="400">
+  You should enable Java
+</applet>
+<p>A nice example function to display is f(x) := 1 / cos[1/x*4]. In order to display
+this function</p>
+<ol>
+  <li>type its function term<br>
+    <code>1 / cos[1/x * 4]</code><br>
+    and confirm with <kbd>Enter</kbd>.</li>
+  <li>Then you should see the graph.</li>
+  <li>To adjust which part of the graph is shown, either use the arrow buttons,
+    or double-click on the panel and change the range settings, directly. Good
+    settings for f(x) is the range from -10 to 10 for both, x and y values.</li>
+</ol>
+<p>Please make sure that you always use square brackets [] to denote function
+application. Also x is the variable for the x-axis, and the function term you type
+gives the valuees for the y-axis.</p>
+<hr size="8">
+<a name="ADDRESS"></a>
+<address>
+  Copyright © Andre Platzer
+</address>
+<small>
+<script type="text/javascript"> <!--
+   document.write("last update on "+document.lastModified);
+   //-->
+</script></small>
+
+</body>
+
+</html>
