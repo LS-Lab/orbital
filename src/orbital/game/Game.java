@@ -60,8 +60,8 @@ import orbital.util.InnerCheckedException;
  * @version 1.0, 2000/02/26
  * @author Andr&eacute; Platzer
  * @see <a href="doc-files/Game.html">Game applet parameter example</a>
- * @invariants 0 <= realPlayersActions && realPlayersActions <= realPlayers
  * @attribute resources = menubar and popup menu
+ * @internal note It is possible to add functionality for playing our games by email or via TCP/IP server communication. Serialization of the field (plus perhaps of the move information for authentic tracking) should do the job.
  * @xxx turnDone should be called "performedMove" and perhaps we can get rid of this old way of using events. Also we need a more customizable way of deciding when to end a turn (f.ex. some games may allow a player to perform multiple moves before ending his turn)
  */
 public class Game extends Applet implements Runnable {
@@ -91,64 +91,52 @@ public class Game extends Applet implements Runnable {
     // {{DECLARE_PARAMETERS
 
     /**
-     * name of the game.
+     * The name of the game.
      * @serial
      */
-    private String			gameName = null;
+    private String      gameName = null;
 
     /**
-     * instance of the game rules to use.
+     * Instance of the game rules to use.
      * @serial
      */
-    private GameRules		rules;
+    private GameRules   rules;
 
     /**
-     * arguments passed to the AIs in {@link #aIntel}.
+     * Arguments passed to the AIs in {@link #player}.
      * @serial
      */
-    private String			aiArgument[];
+    private String	playerArgument[];
 
     /**
-     * the diverse AI-players.
+     * The diverse AI-players.
+     * <code>players[i] == null</code> if and only if <code>i</code> is a human player.
      * @serial
      */
-    private Function		aIntel[];
+    private Function	players[];
 
     // }}
-
-    /**
-     * number of real players that are non-ai driven.
-     * @structure derived
-     * @serial
-     */
-    private int				realPlayers;
-
-    /**
-     * number of real players that already made their actions this turn.
-     * @serial
-     */
-    private int				realPlayersActions;
 
     // {{DECLARE_CONTROLS
 
     /**
-     * a gameboard displaying the field to play on.
+     * A gameboard displaying the field to play on.
      * Also handles mouse drags.
      * @serial
      */
-    private Gameboard		board;
+    private Gameboard	board;
 
     /**
      * Container for the control panel of the UserDialog.
      * @serial
      */
-    private Container		control = null;
+    private Container	control = null;
 
     /**
      * The heading label.
      * @serial
      */
-    private Label			nameLabel;
+    private Label	nameLabel;
 
     // }}
 	
@@ -246,19 +234,12 @@ public class Game extends Applet implements Runnable {
     }
 
     /**
-     * Get all AIs currently playing.
+     * Get all players currently playing.
      */
-    public Function[] getAIntelligences() {
-	return aIntel;
+    public Function[] getPlayers() {
+	return players;
     } 
     
-    /**
-     * Get the number of real players that are non-ai driven.
-     */
-    public int getRealPlayers() {
-	return realPlayers;
-    }
-
     /**
      * Get the gameboard.
      * That gameboard also handles mouse drags.
@@ -328,19 +309,12 @@ public class Game extends Applet implements Runnable {
 	param = getParameter("gameRules");
 	String gameRules = param == null ? "YourGameRules" : param;
 
-	param = getParameter("aIntelligence-count");
-	int aIntelligence = param == null ? 1 : Integer.parseInt(param);
-
 	try {
 	    setGameRules(createGameRules(gameRules));
-	    if (Figure.NOONE < aIntelligence && aIntelligence < rules.getLeagues())
-		aIntel = new Function[aIntelligence];
-	    else
-		aIntel = new Function[0];
-	    realPlayers = rules.getLeagues() - 1 - aIntel.length;
-	    aiArgument = new String[aIntel.length];
-	    for (int i = 0; i < aIntel.length; i++)
-		aiArgument[i] = getParameter("aIntelligence-" + i);
+	    players = new Function[rules.getLeagues()];
+	    playerArgument = new String[players.length];
+	    for (int i = 0; i < players.length; i++)
+		playerArgument[i] = getParameter("player-" + i);
 	} catch (Exception e) {
 	    log(e);
 	} 
@@ -382,17 +356,26 @@ public class Game extends Applet implements Runnable {
     public void start() {
 	Field field = rules.startField(this);
 	board.setField(field);
-	realPlayersActions = 0;
-	for (int i = 0; i < aIntel.length; i++)
-	    aIntel[i] = rules.startAIntelligence(aiArgument[i]);
+	int realPlayers = 0;
+	for (int i = Figure.NOONE + 1; i < players.length; i++) {
+	    if (playerArgument[i] == null) {
+		players[i] = null;
+		realPlayers++;
+	    } else
+		players[i] = rules.startAIntelligence(playerArgument[i]);
+	}
 	repaint();
 
 	// computer players only
-	if (rules.getLeagues() - 1 == aIntel.length) {
+	if (realPlayers == 0) {
 	    runner = new Thread(this, "AI_Runner");
 	    runner.start();
-	} else
+	} else {
 	    runner = null;
+	    if (players[board.getField().getTurn()] != null)
+		// if a computer commences, let him act
+		turn();
+	}
 	showStatus(getResources().getString("statusbar.game.start"));
     } 
 
@@ -422,8 +405,8 @@ public class Game extends Applet implements Runnable {
 	removeAll();
 	control = null;
 	rules = null;
-	aIntel = null;
-	aiArgument = null;
+	players = null;
+	playerArgument = null;
 	this.resources = null;
 	//runner.destroy();
 	super.destroy();
@@ -438,13 +421,14 @@ public class Game extends Applet implements Runnable {
     public void run() {
 	Thread thisThread = Thread.currentThread();
 	while (runner == thisThread && !Thread.interrupted()) {
+	    //@xxx the above check executes no longer since change of turn to infinite loop.
 	    if (turn() != Figure.NOONE)
 		return;
 	}
 	// clean up: forget about references
 	board = null;
-	for (int i = 0; i < aIntel.length; i++)
-	    aIntel[i] = null;
+	for (int i = 0; i < players.length; i++)
+	    players[i] = null;
     } 
 
     /**
@@ -459,47 +443,33 @@ public class Game extends Applet implements Runnable {
 	if (winner != Figure.NOONE) {
 	    displayWinner(winner);
 	    return winner;
-	} 
-
-	if (!rules.isNextTurn())
-	    // wait for the end of turn
-	    return winner;
-
-	// check that all real players have already ended their turns
-	if (realPlayers > 0) {
-	    assert 0 <= realPlayersActions && realPlayersActions < realPlayers : "invariant prior to increase of realPlayersActions";
-	    // only continue when all real players already made their move this turn!
-	    if (++realPlayersActions != realPlayers)
-		return winner;
-	    else
-		realPlayersActions = 0;
 	}
 
-	// all AIs take their actions
-	for (int i = 0; i < aIntel.length; i++) {
-	    // do moves until it's the next player's turn
-	    // @xxx doesn't this policy conflict with AlphaBetaPruning which simply doesn't know about it?
-	    do {
-		showStatus(getResources().getString("statusbar.ai.thinking"));
-		Object action = aIntel[i].apply(board.getField());
-		showStatus(getResources().getString("statusbar.ai.moving"));
-		if (action instanceof MoveWeighting.Argument) {
-		    MoveWeighting.Argument move = (MoveWeighting.Argument) action;
-		    Position source = new Position(move.figure);
-		    // if we could rely on our AI, then we could optimize away this expensive moving and simply use the resulting field = move.field
-		    //@internal cloning the position information is necessary, otherwise move would detect that it gets lost during swap.
-		    if (!board.getField().move(source, move.move))
-			throw new Error("AI should only take legal moves: " + move);
-		    board.repaint(source);
-		    board.repaint(move.destination);
-		} else
-		    throw new Error("AI found no move: " + action);
-		winner = rules.turnDone(board.getField());
-		if (winner != Figure.NOONE) {
-		    displayWinner(winner);
-		    return winner;
-		} 
-	    } while (!rules.isNextTurn());
+	// do moves while it's an AI's turn
+	for (int turn = board.getField().getTurn();
+	     players[turn] != null;
+	     turn = board.getField().getTurn()) {
+	    // @xxx doesn't this policy (a single player can move several times until it's another player's turn) conflict with AlphaBetaPruning which simply doesn't know about it?
+	    showStatus(getResources().getString("statusbar.ai.thinking"));
+	    Object action = players[turn].apply(board.getField());
+	    showStatus(getResources().getString("statusbar.ai.moving"));
+	    if (action instanceof MoveWeighting.Argument) {
+		MoveWeighting.Argument move = (MoveWeighting.Argument) action;
+		Position source = new Position(move.figure);
+		// if we could rely on our AI, then we could optimize away this expensive moving and simply use the resulting field = move.field
+		//@internal cloning the position information is necessary, otherwise move would detect that it gets lost during swap.
+		if (!board.getField().move(source, move.move))
+		    throw new Error("AI should only take legal moves: " + move);
+		board.repaint(source);
+		board.repaint(move.destination);
+	    } else
+		throw new Error("AI found no move: " + action);
+	    //@xxx rename to moveDone?
+	    winner = rules.turnDone(board.getField());
+	    if (winner != Figure.NOONE) {
+		displayWinner(winner);
+		return winner;
+	    }
 	} 
 
 	return winner;
@@ -555,7 +525,7 @@ public class Game extends Applet implements Runnable {
     protected void displayWinner(int league) {
 	showStatus(getResources().getString("statusbar.game.end"));
 	ResourceBundle resources = getResources();
-	String	   winner = (Math.abs(league) <= realPlayers ? resources.getString("text.player") : resources.getString("text.computer")) + " (" + Math.abs(league) + ')';
+	String	   winner = (players[Math.abs(league)] == null ? resources.getString("text.player") : resources.getString("text.computer")) + " (" + Math.abs(league) + ')';
 	int selected = JOptionPane.showConfirmDialog(UIUtilities.getParentalFrame(this), winner + ' ' + resources.getString("dialog.game.finish.hasWon") + (league > 0 ? resources.getString("dialog.game.finish.won") : resources.getString("dialog.game.finish.survived")) + resources.getString("dialog.game.finish.tryAgain"), resources.getString("dialog.game.finish.title"), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 	if (selected == JOptionPane.YES_OPTION) {
 	    stop();
@@ -657,8 +627,7 @@ public class Game extends Applet implements Runnable {
 	String[][] info = {
 	    {"gameName", "String", "name of the concrete Game"},
 	    {"gameRules", "String", "parameter describing the GameRules. Per default the name of a class that implements GameRules."},
-	    {"aIntelligence-count", "int", "number of Players lead by an AI instead of a real Player"},
-	    {"aIntelligence-X", "String", "the argument to pass when starting AI number X"}
+	    {"player-X", "String", "the argument to pass when starting player number X. If left out, a human player will play X."}
 	};
 	return info;
     } 
