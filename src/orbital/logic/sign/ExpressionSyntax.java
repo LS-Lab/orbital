@@ -7,14 +7,16 @@
 package orbital.logic.imp;
 
 /**
- * Defines general methods for constructing and handling expressions of a language.
+ * Defines general methods for constructing and handling expressions of a formal language.
  * Implementations of this interface are responsible for analyzing and constructing expressions (like terms, formulas)
- * in the language of the corresponding term algebra defining a specific syntax.
+ * in the language of the corresponding term algebra defining a specific abstract syntax.
  * <p>
  * ExpressionSyntax defines a formal language over an alphabet and thus has a corresponding
- * description with a Chomsky grammar.
- * Implementations define the concrete syntax for the set of legal expressions
- * over a given signature &Sigma; (including a set of variables V).
+ * description with a Chomsky grammar defining its abstract syntax. It only defines the
+ * abstract syntax in terms of composition (in the sense of semiotics) of signs,
+ * whilst the concrete syntax is determined by the parser and the notations of the symbols involved.
+ * Implementations define the syntax for the set of legal expressions over a given signature &Sigma;
+ * (including a set V of variables and any core symbols).
  * Its language <i>L</i>(&Sigma;) is the set of all well-formed expressions according to this syntax.
  * It is usually a requirement that this language <i>L</i>(&Sigma;) is a decidable set of finite objects
  * over the alphabet &Sigma;, and the alphabet &Sigma; itself is decidable, as well.
@@ -77,22 +79,28 @@ public interface ExpressionSyntax extends ExpressionBuilder {
 
     /**
      * Create a term representation by parsing a (compound) expression.
+     * <p>
+     * In fact, parsing expressions is only possible with a concrete syntax. So implementations
+     * of this method are encouraged to define and parse a standard notation which can often be
+     * close to the default notation of the abstract syntax.
+     * </p>
      * @param expression the compound expression to parse.
      *  A string of <code class="String">""</code> denotes the empty expression.
      *  However note that the empty expression may not be accepted in some term algebras.
      *  Those parsers rejecting the empty expression are then inclined to throw a ParseException,
      *  instead.
      * @pre expression&isin;<i>L</i>(scanSignature(expression))
-     * @return an instance of Expression that represents the given expression string in this logic.
+     * @return an instance of Expression that represents the given expression string in this language.
      * @throws ParseException when the expression is syntactically malformed.
      *  Either due to a lexical or grammatical error.
      * @throws IllegalArgumentException if the symbol is illegal for some reasons.
      *  This may occur like in {@link ExpressionBuilder#createAtomic(Symbol)}, and due to the same reasons.
+     *  However, most of the causes (like f.ex. spaces in the signifier) cannot occur here anyway,
+     *  except when the parser underlying this method's implementation has errors.
      * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      * @note could just as well be renamed to parseExpression(String)
      */
     Expression createExpression(String expression) throws ParseException, IllegalArgumentException;
 
-    //@todo introduce? Expression[] createAllExpressions(String expressions) throws ParseException; No its not very useful in general case.
-
+    //@todo somehow let createExpresion return an expression decomposable into a set (or list) of expressions. Perhaps via Functor.Composite? Instead of introducing an ugly Expression[] createAllExpressions(String expressions).
 }

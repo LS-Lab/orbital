@@ -49,7 +49,9 @@ import orbital.logic.functor.Notation.NotationSpecification;
  * </p>
  * <p>
  * There should never be two equal symbols (i.e. with equal signifier, type, and notation)
- * with one being constant, and the other variable.
+ * with one being constant, and the other variable. And it is also recommended not to use
+ * symbols of equal signifier and type but with different notations (except perhaps if they
+ * have the same semantics).
  * </p>
  *
  * @invariant true
@@ -137,6 +139,9 @@ public interface Symbol extends Variable, Comparable/*<Symbol>*/{
     /**
      * Get the notation used when this symbol occurs.
      * This includes precedence and associativity information, as well.
+     * The notation is not truely part of the abstract syntax of a formal language,
+     * but still useful for formatting and parsing. For this reason, the notation is
+     * included as a non-obligate recommendation.
      * @pre true
      * @return the notation used when this symbol occurs.
      */

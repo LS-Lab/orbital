@@ -94,12 +94,12 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
     public Symbol get(String signifier, Object[] arg) {
 	for (Iterator i = iterator(); i.hasNext(); ) {
 	    Object o = i.next();
-	    if (!(o instanceof Symbol))
-		continue;
+	    assert o instanceof Symbol : "signature isa " + SortedSet.class.getName() + '<' + Symbol.class.getName() + '>';
 	    Symbol s = (Symbol) o;
 	    if (signifier.equals(s.getSignifier()))
 		if (arg instanceof Expression[]) {
 		    if (Types.isApplicableTo(s.getType(), (Expression[])arg))
+			//@xxx if multiple symbols are applicable use dynamic dispatch / overloading etc.
 			//TODO: check arity of s.notation with arg.length, as well?
 			return s;
 		} else

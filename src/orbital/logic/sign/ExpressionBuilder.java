@@ -9,7 +9,7 @@ package orbital.logic.imp;
 /**
  * Defines a general interface for constructing complex expressions.
  * Implementations of this interface are responsible for constructing compound expressions (like terms, formulas).
- * They usually correspond to a formal language of a corresponding expression syntax.
+ * They usually correspond to a formal language of a corresponding abstract syntax for expressions.
  * This interface effectively works as a builder for syntactic expressions.
  * <p>
  * Refer to the {@link ParseException ParseException dilemma} to read about
@@ -52,10 +52,10 @@ public interface ExpressionBuilder {
      * @throws IllegalArgumentException if the symbol is illegal for some reasons.
      *  Note that this is a rather rare case and no parsing is involved at all,
      *  which is why this method does not throw a ParseException.
-     * @todo think about exceptions
      * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
+     * @todo think about exceptions. Could also use ParseException instead of IllegalArgumentException also simplifying exception handling in createExpression(String).
      */
-    Expression createAtomic(Symbol symbol);
+    Expression createAtomic(Symbol symbol) throws IllegalArgumentException;
 
     // Create a <dfn>compound term</dfn> expression
 

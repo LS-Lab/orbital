@@ -182,7 +182,7 @@ public interface Logic extends ExpressionSyntax {
      * @post RES instanceof Formula
      * @todo use covariant return-types?
      */
-    Expression createAtomic(Symbol symbol);
+    Expression createAtomic(Symbol symbol) throws IllegalArgumentException;
 
     /**
      * {@inheritDoc}
@@ -197,6 +197,6 @@ public interface Logic extends ExpressionSyntax {
      * @post RES instanceof Formula
      * @todo use covariant return-types?
      */
-    Expression createExpression(String expression) throws ParseException;
+    Expression createExpression(String expression) throws ParseException, IllegalArgumentException;
 
 }
