@@ -25,8 +25,11 @@ import javax.swing.JScrollPane;
  * @author  Andr&eacute; Platzer
  */
 public class AboutDialog {
-    public static void showAboutDialog(Frame parent, String info, String title) {
+    public static void showAboutDialog(Component parent, String info, String title) {
 	JOptionPane.showMessageDialog(parent, createPanel(info), title, JOptionPane.PLAIN_MESSAGE);
+    }
+    public static void showAboutDialog(Frame parent, String info, String title) {
+	showAboutDialog((Component)parent, info, title);
     }
 
     private static Component createPanel(String info) {
