@@ -142,9 +142,10 @@ public class SymbolBase implements Symbol, Serializable {
     /**
      * Compares two symbols.
      * <p>
-     * This implementation compares for notation precedence in favor of type (lexicographical) in favor of symbol name.
+     * This implementation compares for notation precedence in favor of symbol name in favor of type (lexicographical).
      * </p>
      * @postconditions only <em>semi</em>-consistent with equals (since Notation is)
+     * @internal this order is quicker than comparison according to compares notation precedence in favor of type (lexicographical) in favor of symbol name.
      */
     public int compareTo(Object o) {
 	Symbol b = (Symbol) o;
@@ -152,8 +153,8 @@ public class SymbolBase implements Symbol, Serializable {
 	a = Utility.compare(getNotation(), b.getNotation());
 	if (a != 0)
 	    return a;
-	a = orbital.moon.logic.sign.type.StandardTypeSystem.LEXICOGRAPHIC.compare(getType(), b.getType());
-	return a != 0 ? a : Utility.compare(getSignifier(), b.getSignifier());
+	a = Utility.compare(getSignifier(), b.getSignifier());
+	return a != 0 ? a : orbital.moon.logic.sign.type.StandardTypeSystem.LEXICOGRAPHIC.compare(getType(), b.getType());
     } 
 
     public int hashCode() {
