@@ -21,18 +21,18 @@ import orbital.logic.functor.Functor;
  *   <dt id="interpretation">interpretation</dt>
  *   <dd>
  *     an interpretation I:&Sigma;&rarr;<span class="set">D</span> is a familiy of maps
- *     I:&Sigma;<sub>&tau;</sub>&rarr;<span class="set">D</span><sub>&tau;</sub>
- *     for each type &tau;, with
+ *     I:&Sigma;<sub class="type">&tau;</sub>&rarr;<span class="set">D</span><sub class="type">&tau;</sub>
+ *     for each type <span class="type">&tau;</span>, with
  *     <ul>
- *       <li>I maps symbols of type &tau; to elements of <span class="set">D</span><sub>&tau;</sub>.</li>
- *       <li><span class="set">D</span><sub>t</sub> := <span class="set">Boole</span> := {True,False} for the type t of truth-values.</li>
- *       <li><span class="set">D</span><sub>e</sub> = <span class="set">D</span> is a set called universe or domain of I for the type e of entities.
+ *       <li>I maps symbols of type <span class="type">&tau;</span> to elements of <span class="set">D</span><sub class="type">&tau;</sub>.</li>
+ *       <li><span class="set">D</span><sub class="type">t</sub> := <span class="set">Boole</span> := {True,False} for the type <span class="type">t</span> of truth-values.</li>
+ *       <li><span class="set">D</span><sub class="type">e</sub> := <span class="set">D</span> is a set called universe or domain of I for the type <span class="type">e</span> of entities.
  *         It is non-empty by presupposition of existence.</li>
- *       <li><span class="set">D</span><sub>&sigma;&rarr;&tau;</sub> := Map(<span class="set">D</span><sub>&sigma;</sub>,<span class="set">D</span><sub>&tau;</sub>) = <span class="set">D</span><sub>&tau;</sub><sup><span class="set">D</span><sub>&sigma;</sub></sup>.</li>
- *       <li><span class="set">D</span><sub>(&sigma;)</sub> = <span class="set">D</span><sub>&sigma;&rarr;t</sub> &cong; &weierp;(<span class="set">D</span><sub>&sigma;</sub>)
- *         since the predicate type (&sigma;) abbreviates the function type &sigma;&rarr;t,
- *         and we can identify subsets &rho;&isin;&weierp;(<span class="set">D</span><sub>&sigma;</sub>)
- *         with their characterisitic functions &chi;<sub>&rho;</sub>&isin;Map(<span class="set">D</span><sub>&sigma;</sub>,{True,False}).</li>
+ *       <li><span class="set">D</span><sub class="type">&sigma;&rarr;&tau;</sub> := Map(<span class="set">D</span><sub class="type">&sigma;</sub>,<span class="set">D</span><sub class="type">&tau;</sub>) = <span class="set">D</span><sub class="type">&tau;</sub><sup><span class="set">D</span><sub class="type">&sigma;</sub></sup>.</li>
+ *       <li><span class="set">D</span><sub class="type">(&sigma;)</sub> = <span class="set">D</span><sub class="type">&sigma;&rarr;t</sub> &cong; &weierp;(<span class="set">D</span><sub class="type">&sigma;</sub>)
+ *         since the predicate type <span class="type">(&sigma;)</span> abbreviates the function type <span class="type">&sigma;&rarr;t</span>,
+ *         and we can identify subsets &rho;&isin;&weierp;(<span class="set">D</span><sub class="type">&sigma;</sub>)
+ *         with their characterisitic functions &chi;<sub>&rho;</sub>&isin;Map(<span class="set">D</span><sub class="type">&sigma;</sub>,{True,False}).</li>
  *     </ul>
  *     Also we can identify (<span class="set">D</span><sup>0</sup>&rarr;<span class="set">D</span>)&cong;<span class="set">D</span>, as well as &weierp;(<span class="set">D</span><sup>0</sup>)={&empty;,{()}}&cong;{True,False}.
  *     <!-- @todo is this a good idea in conjunction with the strong type system of Java? -->
@@ -42,6 +42,7 @@ import orbital.logic.functor.Functor;
  *     Let I:&Sigma;&rarr;<span class="set">D</span> be an interpretation.
  *     <table border="0">
  *       <tr>
+ * <!-- @todo simplify by joining Term(&Sigma;) and Formula(&Sigma;) into single set like in Expression.java -->
  *         <td colspan="4">&nbsp;&phi;:&Sigma;&cup;Term(&Sigma;)&cup;Formula(&Sigma;)&rarr;<span class="set">D</span>&cup;<span class="set">D</span>&cup;Boole
  *           is a homomorphism of &Sigma;-expressions, if</td>
  *       </tr>
@@ -49,14 +50,14 @@ import orbital.logic.functor.Functor;
  *         <td width="6%" rowspan="3">&nbsp;</td>
  *       </tr>
  *       <tr>
- *         <td>&phi;(f(t<sub>1</sub>,...,t<sub>n</sub>))</td>
- *         <td>= &phi;(f)<big>(</big>&phi;(t<sub>1</sub>),...,&phi;(t<sub>n</sub>)<big>)</big></td>
- *         <td>if f&isin;&Sigma;<sub>n</sub> is a function, t<sub>1</sub>,...,t<sub>n</sub>&isin;Term(&Sigma;)</td>
+ *         <td>&phi;(f(t<sub>1</sub>,&#8230;,t<sub>n</sub>))</td>
+ *         <td>= &phi;(f)<big>(</big>&phi;(t<sub>1</sub>),&#8230;,&phi;(t<sub>n</sub>)<big>)</big></td>
+ *         <td>if f&isin;&Sigma;<sub>n</sub> is a function, t<sub>1</sub>,&#8230;,t<sub>n</sub>&isin;Term(&Sigma;)</td>
  *       </tr>
  *       <tr>
- *         <td>&phi;(P(t<sub>1</sub>,...,t<sub>n</sub>))</td>
- *         <td>&hArr; &phi;(P)<big>(</big>&phi;(t<sub>1</sub>),...,&phi;(t<sub>n</sub>)<big>)</big></td>
- *         <td>if P&isin;&Sigma;<sub>n</sub> is a predicate, t<sub>1</sub>,...,t<sub>n</sub>&isin;Term(&Sigma;)</td>
+ *         <td>&phi;(P(t<sub>1</sub>,&#8230;,t<sub>n</sub>))</td>
+ *         <td>&hArr; &phi;(P)<big>(</big>&phi;(t<sub>1</sub>),&#8230;,&phi;(t<sub>n</sub>)<big>)</big></td>
+ *         <td>if P&isin;&Sigma;<sub>n</sub> is a predicate, t<sub>1</sub>,&#8230;,t<sub>n</sub>&isin;Term(&Sigma;)</td>
  *       </tr>
  *     </table>
  *   </dd>
@@ -112,8 +113,8 @@ import orbital.logic.functor.Functor;
  *     <div class="Formula">Mod<sub>&Sigma;</sub>(<span class="set">A</span>) := {I&isin;Int(&Sigma;) &brvbar; for all F&isin;<span class="set">A</span> I &#8871; F}</div>
  *   </li>
  *   <li>
- *     For finite sets <span class="Formula"><span class="set">A</span> = {F<sub>1</sub>,...,F<sub>n</sub>}</span> it is true that
- *     <div class="Formula">I &#8871; <span class="set">A</span></span> if and only if <span class="Formula">I &#8871; F<sub>1</sub>&and;...&and;F<sub>n</sub></div>
+ *     For finite sets <span class="Formula"><span class="set">A</span> = {F<sub>1</sub>,&#8230;,F<sub>n</sub>}</span> it is true that
+ *     <div class="Formula">I &#8871; <span class="set">A</span></span> if and only if <span class="Formula">I &#8871; F<sub>1</sub>&and;&#8230;&and;F<sub>n</sub></div>
  *   </li>
  * </ul>
  * </p>
@@ -168,14 +169,14 @@ import orbital.logic.functor.Functor;
  *         <td width="6%" rowspan="3">&nbsp;</td>
  *       </tr>
  *       <tr>
- *         <td>&phi;<big>(</big>I(f)(d<sub>1</sub>,...,d<sub>n</sub>)<big>)</big></td>
- *         <td>= J(f)<big>(</big>&phi;(d<sub>1</sub>),...,&phi;(d<sub>n</sub>)<big>)</big></td>
- *         <td>if f&isin;&Sigma;<sub>n</sub> is a function, d<sub>1</sub>,...,d<sub>n</sub>&isin;<span class="set">D</span></td>
+ *         <td>&phi;<big>(</big>I(f)(d<sub>1</sub>,&#8230;,d<sub>n</sub>)<big>)</big></td>
+ *         <td>= J(f)<big>(</big>&phi;(d<sub>1</sub>),&#8230;,&phi;(d<sub>n</sub>)<big>)</big></td>
+ *         <td>if f&isin;&Sigma;<sub>n</sub> is a function, d<sub>1</sub>,&#8230;,d<sub>n</sub>&isin;<span class="set">D</span></td>
  *       </tr>
  *       <tr>
- *         <td>I(p)<big>(</big>d<sub>1</sub>,...,d<sub>n</sub><big>)</big></td>
- *         <td>&hArr; J(p)<big>(</big>&phi;(d<sub>1</sub>),...,&phi;(d<sub>n</sub>)<big>)</big></td>
- *         <td>if p&isin;&Sigma;<sub>n</sub> is a predicate, d<sub>1</sub>,...,d<sub>n</sub>&isin;<span class="set">D</span></td>
+ *         <td>I(p)<big>(</big>d<sub>1</sub>,&#8230;,d<sub>n</sub><big>)</big></td>
+ *         <td>&hArr; J(p)<big>(</big>&phi;(d<sub>1</sub>),&#8230;,&phi;(d<sub>n</sub>)<big>)</big></td>
+ *         <td>if p&isin;&Sigma;<sub>n</sub> is a predicate, d<sub>1</sub>,&#8230;,d<sub>n</sub>&isin;<span class="set">D</span></td>
  *       </tr>
  *     </table>
  *     The interpretations I:&Sigma;&rarr;<span class="set">D</span>, and J:&Sigma;&rarr;<span class="set">E</span>
@@ -192,7 +193,7 @@ import orbital.logic.functor.Functor;
  *
  * @structure extends java.util.Map<Symbol,Object>
  * @invariant (&Sigma; == null &or; keySet() &sube; &Sigma;)
- *  		&and; &forall;(s,v)&isin;this s.getSpecification().isConform(v)
+ *  		&and; &forall;(s,v)&isin;this s.getType().isConform(v)
  * @version 1.0, 2001/01/12
  * @author  Andr&eacute; Platzer
  * @see Logic#satisfy
@@ -238,14 +239,14 @@ public interface Interpretation extends Map/*<Symbol, Object>*/ {
      * Overwrite along with other map operations like {@link java.util.Set#contains(Object)} to implement
      * a different source for symbol associations.
      * </p>
-     * @post symbol.getSpecification().isConform(RES)
+     * @post symbol.getType().isConform(RES)
      * @throws java.util.NoSuchElementException if the symbol is not in the current signature &Sigma;.
      */
     Object get(Object/*>Symbol<*/ symbol);
 
     /**
      * Set the object value associated with the given symbol in this interpretation.
-     * @pre symbol.getSpecification().isConform(value)
+     * @pre symbol.getType().isConform(value)
      * @throws java.util.NoSuchElementException if the symbol is not in the current signature &Sigma;.
      */
     Object put(Object/*>Symbol<*/ symbol, Object value);

@@ -101,6 +101,7 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      * <dfn>free variables</dfn> FV(t) of a term t&isin;Term(&Sigma;)
      * with V&sube;&Sigma; being the set of variables are:
      * </p>
+     * <!-- @todo use nameOfMap, leftOfMap etc. -->
      * <table>
      *   <tr>
      *     <td colspan="3">
@@ -108,9 +109,7 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      *     </td>
      *   </tr>
      *   <tr>
-     *     <td rowspan="3">
-     *       <p>&nbsp;
-     *       </p>
+     *     <td rowspan="3" style="width: 5%">
      *     </td>
      *     <td>
      *       <p>FV(x)</p>
@@ -124,17 +123,6 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      *   </tr>
      *   <tr>
      *     <td>
-     *       <p>FV(c)</p>
-     *     </td>
-     *     <td>
-     *       <p>= &empty;</p>
-     *     </td>
-     *     <td>
-     *       <p>if c&isin;Func/0</p>
-     *     </td>
-     *   </tr>
-     *   <tr>
-     *     <td>
      *       <p>FV(f(t<sub>1</sub>,...,t<sub>n</sub>))</p>
      *     </td>
      *     <td>
@@ -142,6 +130,17 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      *     </td>
      *     <td>
      *       <p>if f&isin;Func/n</p>
+     *     </td>
+     *   </tr>
+     *   <tr>
+     *     <td>
+     *       <p>FV(c)</p>
+     *     </td>
+     *     <td>
+     *       <p>= &empty;</p>
+     *     </td>
+     *     <td>
+     *       <p>if c&isin;Func/0</p>
      *     </td>
      *   </tr>
      * </table>
@@ -156,21 +155,8 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      *     </td>
      *   </tr>
      *   <tr>
-     *     <td rowspan="5">
-     *       <p>&nbsp;
-     *       </p>
+     *     <td rowspan="5" style="width: 5%">
      *     </td>
-     *     <td>
-     *       <p>FV(P)</p>
-     *     </td>
-     *     <td>
-     *       <p>= &empty;</p>
-     *     </td>
-     *     <td>
-     *       <p>if P&isin;Pred/0</p>
-     *     </td>
-     *   </tr>
-     *   <tr>
      *     <td>
      *       <p>FV(P(t<sub>1</sub>,...,t<sub>n</sub>))</p>
      *     </td>
@@ -217,6 +203,17 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      *       <p>if bound by a @&isin;{&forall;,&exist;}</p>
      *     </td>
      *   </tr>
+     *   <tr>
+     *     <td>
+     *       <p>FV(P)</p>
+     *     </td>
+     *     <td>
+     *       <p>= &empty;</p>
+     *     </td>
+     *     <td>
+     *       <p>if P&isin;Pred/0</p>
+     *     </td>
+     *   </tr>
      * </table>
      * <p>
      * A formula F is ground or closed if it holds no free variables FV(F) = &empty;,
@@ -245,21 +242,8 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      *     </td>
      *   </tr>
      *   <tr>
-     *     <td rowspan="5">
-     *       <p>&nbsp;
-     *       </p>
+     *     <td rowspan="5" style="width: 5%">
      *     </td>
-     *     <td>
-     *       <p>BV(P)</p>
-     *     </td>
-     *     <td>
-     *       <p>= &empty;</p>
-     *     </td>
-     *     <td>
-     *       <p>if P&isin;Pred/0</p>
-     *     </td>
-     *   </tr>
-     *   <tr>
      *     <td>
      *       <p>BV(P(t<sub>1</sub>,...,t<sub>n</sub>))</p>
      *     </td>
@@ -305,6 +289,17 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      *       <p>if bound by a @&isin;{&forall;,&exist;}</p>
      *     </td>
      *   </tr>
+     *   <tr>
+     *     <td>
+     *       <p>BV(P)</p>
+     *     </td>
+     *     <td>
+     *       <p>= &empty;</p>
+     *     </td>
+     *     <td>
+     *       <p>if P&isin;Pred/0</p>
+     *     </td>
+     *   </tr>
      * </table>
      *
      * @return BV(this).
@@ -340,22 +335,26 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
     // Basic logical operations (elemental junctors).
 
     /**
-     * Negation not: &not;A.
+     * Negation not: &not;<span class="Formula">F</span>.
      * @throws UnsupportedOperationException if this junctor is not supported by the representation.
      */
     Formula not();
 
     /**
-     * Conjunction and: A &and; B.
+     * Conjunction and: <span class="Formula">F</span> &and; <span class="Formula">G</span>.
      * <p>
-     * Also denoted as A &amp; B.
+     * Also denoted as <span class="Formula">F</span> &amp; <span class="Formula">G</span>.
+     * Sometimes even as <span class="Formula">F</span>&#8201;<span class="Formula">G</span>, <span class="Formula">F</span>.<span class="Formula">G</span>, <span xml:lang="po">K</span> <span class="Formula">F</span><span class="Formula">G</span>.
      * </p>
      * @throws UnsupportedOperationException if this junctor is not supported by the representation.
      */
     Formula and(Formula B);
 
     /**
-     * Disjunction or: A &or; B.
+     * Disjunction or: <span class="Formula">F</span> &or; <span class="Formula">G</span>.
+     * <p>
+     * Sometimes also denoted as <span xml:lang="po">A</span> <span class="Formula">F</span><span class="Formula">G</span>.
+     * </p>
      * @throws UnsupportedOperationException if this junctor is not supported by the representation.
      */
     Formula or(Formula B);
@@ -363,28 +362,34 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
     // Extended logical operations.
 
     /**
-     * Exclusion xor: A &or;&#775; B = A xor B.
+     * Exclusion xor: <span class="Formula">F</span> &or;&#775; <span class="Formula">G</span> = <span class="Formula">F</span> xor <span class="Formula">G</span>.
      * <p>
-     * Xor is also called antivalence and sometimes denoted as A &#8622; B.</p>
+     * Xor is also called antivalence and sometimes denoted as <span class="Formula">F</span> &#8622; <span class="Formula">G</span>.</p>
      * @throws UnsupportedOperationException if this junctor is not supported by the representation.
      */
     Formula xor(Formula B);
 
     /**
-     * Implication impl: A &rarr; B.
+     * Implication impl: <span class="Formula">F</span> &rarr; <span class="Formula">G</span>.
      * <p>
-     * This implication is also called subjunction and denoted as A <!-- @todo is there a better turned consequence sign for subjunctor than subset -->&#8835;</span> B.
-     * Sometimes implication is also denoted as A &rArr; B to underline that it is a
+     * This implication is also called subjunction and denoted as <span class="Formula">F</span> <!-- @todo is there a better turned consequence sign for subjunctor than subset -->&#8835;</span> <span class="Formula">G</span>.
+     * Sometimes implication is also denoted as <span class="Formula">F</span> &rArr; <span class="Formula">G</span> to underline that it is a
      * material implications.
+     * Sometimes also denoted as <span xml:lang="po">C</span> <span class="Formula">F</span><span class="Formula">G</span>.
+     * </p>
+     * <p>
+     * &not;<span class="Formula">G</span>&rarr;&not;<span class="Formula">F</span> is called contra position of <span class="Formula">F</span>&rarr;<span class="Formula">G</span>.
+     * <span class="Formula">G</span>&rarr;<span class="Formula">F</span> is called reciprocal of <span class="Formula">F</span>&rarr;<span class="Formula">G</span>.
      * </p>
      * @throws UnsupportedOperationException if this junctor is not supported by the representation.
      */
     Formula impl(Formula B);
 
     /**
-     * Equivalence equiv: A &harr; B.
+     * Equivalence equiv: <span class="Formula">F</span> &harr; <span class="Formula">G</span>.
      * <p>
-     * Sometimes this is also called bisubjunction and denoted as A &hArr; B, or even A &#8801; B.
+     * Sometimes this is also called bisubjunction and denoted as <span class="Formula">F</span> &hArr; <span class="Formula">G</span>, or even <span class="Formula">F</span> &#8801; <span class="Formula">G</span>.
+     * Sometimes also denoted as <span xml:lang="po">E</span> <span class="Formula">F</span><span class="Formula">G</span>.
      * </p>
      * @throws UnsupportedOperationException if this junctor is not supported by the representation.
      */
@@ -393,9 +398,9 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
     // Basic logical operations (elemental quantifiers).
 
     /**
-     * Universal-quantifier forall: &forall;x A.
+     * Universal-quantifier forall: &forall;x <span class="Formula">F</span>.
      * <p>
-     * Sometimes, this is also denoted as &#8896;<sub>x</sub> A.
+     * Sometimes, this is also denoted as &#8896;<sub>x</sub> <span class="Formula">F</span>.
      * </p>
      * <p>
      * &forall; is not truth-functional.
@@ -407,9 +412,9 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
     Formula forall(Symbol x);
 
     /**
-     * Existential-quantifier exists: &exist;x A.
+     * Existential-quantifier exists: &exist;x <span class="Formula">F</span>.
      * <p>
-     * Sometimes, this is also denoted as &#8897;<sub>x</sub> A.
+     * Sometimes, this is also denoted as &#8897;<sub>x</sub> <span class="Formula">F</span>.
      * </p>
      * <p>
      * &forall; is not truth-functional.

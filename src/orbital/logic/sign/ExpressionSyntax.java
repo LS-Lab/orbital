@@ -9,7 +9,7 @@ package orbital.logic.imp;
 import java.text.ParseException;
 
 /**
- * Defines general methods for constructing expressions.
+ * Defines general methods for constructing and handling expressions of a language.
  * Implementations of this interface are responsible for analyzing and constructing expressions (like terms, formulas)
  * in the language of the corresponding term algebra defining a specific syntax.
  * <p>
@@ -26,15 +26,10 @@ import java.text.ParseException;
  * nor a symbol,
  * i.e. we generally assume that <code class="keyword">null</code>&notin;<i>L</i>(&Sigma;)&cup;&Sigma;.
  * </p>
- * <p>
- * Refer to the {@link orbital.io.ParseException ParseException dilemma} to read about
- * why the exception types may have to change some day.
- * </p>
  * 
  * @invariant true
  * @version 1.0, 2000/02/23
  * @author  Andr&eacute; Platzer
- * @todo saw this interface and move a part into a separate ExpressionBuilder (createAtomic, compose) leaving (createExpression alias parseExpression and getSignature) as is.
  */
 public interface ExpressionSyntax extends ExpressionBuilder {
 	
@@ -98,6 +93,6 @@ public interface ExpressionSyntax extends ExpressionBuilder {
      */
     Expression createExpression(String expression) throws ParseException;
 
-    //@todo introduce? Expression[] createAllExpressions(String expressions) throws ParseException; No its not very useful in general case
+    //@todo introduce? Expression[] createAllExpressions(String expressions) throws ParseException; No its not very useful in general case.
 
 }

@@ -76,7 +76,7 @@ public class SymbolBase implements Symbol, Serializable {
      * The (arity and) type specification of this symbol.
      * @serial
      */
-    private Specification			specification;
+    private Specification			type;
     /**
      * The notation used when this symbol occurs.
      * This includes precedence and associativity information, as well.
@@ -94,7 +94,7 @@ public class SymbolBase implements Symbol, Serializable {
     /**
      * Construct a symbol with a signifier, type specification, and notation.
      * @param signifier the string representation of this symbol.
-     * @param specification the (arity and) type specification of this symbol.
+     * @param type the type specification of this symbol.
      * @param notation The notation used when this symbol occurs.
      *  This includes precedence and associativity information, as well.
      *  May be <code>null</code> for symbols with arity 0,
@@ -102,14 +102,12 @@ public class SymbolBase implements Symbol, Serializable {
      * @param variable whether this is a variable symbol.
      *  <code>true</code> if this symbol is a variable symbol,
      *  and <code>false</code> if this symbol is a constant symbol.
-     * @todo could check whether specification and notation match in arity
+     * @todo could check whether type and notation match in arity
      */
-    public SymbolBase(String signifier, Specification specification, NotationSpecification notation, boolean variable) {
-    	if (specification == null)
-	    throw new IllegalArgumentException("not a valid arity and type specification: " + specification);
+    public SymbolBase(String signifier, Specification type, NotationSpecification notation, boolean variable) {
         this.signifier = signifier;
-        this.specification = specification;
-        this.notation = notation != null ? notation : new NotationSpecification(specification.arity());
+        this.setType(type);
+        this.notation = notation != null ? notation : new NotationSpecification(type.arity());
         this.variable = variable;
     }
 
@@ -118,33 +116,33 @@ public class SymbolBase implements Symbol, Serializable {
     /**
      * Construct a constant symbol with a signifier, type specification, and notation.
      * @param signifier the string representation of this symbol.
-     * @param specification the (arity and) type specification of this symbol.
+     * @param type the type specification of this symbol.
      * @param notation The notation used when this symbol occurs.
      *  This includes precedence and associativity information, as well.
      *  May be <code>null</code> for symbols with arity 0,
      *  which will be converted to the {@link Notation.NotationSpecification#Notation.NotationSpecification(int) default notation specification}, then.
      * @post &not;isVariable()
      */
-    public SymbolBase(String signifier, Specification specification, NotationSpecification notation) {
-        this(signifier, specification, notation, false);
+    public SymbolBase(String signifier, Specification type, NotationSpecification notation) {
+        this(signifier, type, notation, false);
     }
 
     /**
      * Construct a constant symbol with a signifier, and type specification.
      * The notation is chosen to be the {@link Notation.NotationSpecification#Notation.NotationSpecification(int) default notation specification}.
      * @param signifier the string representation of this symbol.
-     * @param specification the (arity and) type specification of this symbol.
+     * @param type the type specification of this symbol.
      * @post &not;isVariable()
      */
-    public SymbolBase(String signifier, Specification specification) {
-        this(signifier, specification, null);
+    public SymbolBase(String signifier, Specification type) {
+        this(signifier, type, null);
     }
     
     public boolean equals(Object o) {
     	if (o instanceof Symbol) {
 	    Symbol b = (Symbol) o;
 	    if (Utility.equals(getSignifier(), b.getSignifier())
-		&& Utility.equals(getSpecification(), b.getSpecification())
+		&& Utility.equals(getType(), b.getType())
 		&& Utility.equals(getNotation(), b.getNotation())) {
 		assert isVariable() == b.isVariable() : "same symbols are consistently either both variable or both constant";
 		return true;
@@ -157,7 +155,7 @@ public class SymbolBase implements Symbol, Serializable {
     /**
      * Compares two symbols.
      * <p>
-     * This implementation compares for notation (precedence) in favor of specification in favor of specification in favor of symbol name.
+     * This implementation compares for notation (precedence) in favor of type in favor of symbol name.
      * </p>
      * @post only <em>semi</em>-consistent with equals (since Notation is)
      */
@@ -167,12 +165,12 @@ public class SymbolBase implements Symbol, Serializable {
 	a = Utility.compare(getNotation(), b.getNotation());
 	if (a != 0)
 	    return a;
-	a = Utility.compare(getSpecification(), b.getSpecification());
+	a = Utility.compare(getType(), b.getType());
 	return a != 0 ? a : Utility.compare(getSignifier(), b.getSignifier());
     } 
 
     public int hashCode() {
-    	return Utility.hashCode(getSignifier()) ^ Utility.hashCode(getSpecification()) ^ Utility.hashCode(getNotation());
+    	return Utility.hashCode(getSignifier()) ^ Utility.hashCode(getType()) ^ Utility.hashCode(getNotation());
     }
     
     // get/set properties
@@ -182,11 +180,13 @@ public class SymbolBase implements Symbol, Serializable {
     public void setSignifier(String signifier) {
     	this.signifier = signifier;
     }
-    public Specification getSpecification() {
-    	return specification;
+    public Specification getType() {
+    	return type;
     }
-    public void setSpecification(Specification spec) {
-    	this.specification = spec;
+    public void setType(Specification type) {
+    	if (type == null)
+	    throw new IllegalArgumentException("invalid type specification: " + type);
+    	this.type = type;
     }
     public NotationSpecification getNotation() {
     	return notation;
@@ -200,26 +200,27 @@ public class SymbolBase implements Symbol, Serializable {
     }
     
     public boolean isCompatible(Object[] args) {
-    	Specification specification = getSpecification();
-	if ((args == null || args.length == 0) && (specification == null || specification.arity() == 0))
+    	Specification type = getType();
+	if ((args == null || args.length == 0) && (type == null || type.arity() == 0))
 	    return true;
-	if (args.length != specification.arity())
+	//@internal now could as well call isCompatible(Specification) with a specification that we generate from args, setting the expected return type of getType().
+	if (args.length != type.arity())
 	    return false;
-	Class[] parameterTypes = specification.getParameterTypes();
-	assert args.length == parameterTypes.length : "same arity same parameter length";
-	for (int i = 0; i < parameterTypes.length; i++)
-	    if (!(args[i] == null | parameterTypes[i].isInstance(args[i])))
+	Class[] spec_parameterTypes = type.getParameterTypes();
+	assert args.length == spec_parameterTypes.length : "same arity same parameter length";
+	for (int i = 0; i < spec_parameterTypes.length; i++)
+	    if (!(args[i] == null | spec_parameterTypes[i].isInstance(args[i])))
 		return false;
 	return true;
     }
 
     public String toString() {
-    	Specification specification = getSpecification();
+    	Specification type = getType();
 	if (Logger.global.isLoggable(Level.FINEST))
-	    return getSignifier() + specification;
+	    return getSignifier() + type;
     	// short representation for symbols of arity 0
-    	return specification.arity() == 0
+    	return type.arity() == 0
 	    ? getSignifier()
-	    : (getSignifier() + '/' + specification.arity());
+	    : (getSignifier() + '/' + type.arity());
     }
 }

@@ -1,4 +1,4 @@
-/*
+/**
  * @(#)Signature.java 1.0 1999/01/12 Andre Platzer
  * 
  * Copyright (c) 1999-2001 Andre Platzer. All Rights Reserved.
@@ -14,11 +14,12 @@ import java.util.SortedSet;
  * A signature is the vocabulary or alphabet of logical signs of which to
  * build well-formed formulas. It is assumed to be provided effectively.
  * <p>
- * A signature &Sigma; can be partitioned into &Sigma;<sub>0</sub>, &Sigma;<sub>1</sub>, ... &Sigma;<sub>n</sub>
+ * A signature &Sigma; often is partitioned into sets &Sigma;<sub class="type">&tau;</sub>
+ * according to the types {@link Symbol#getType() <span class="type">&tau;</span>} of its symbols.
+ * Then &Sigma;<sub class="type">&tau;</sub>&sube;&Sigma; is the subset of symbols
+ * of type <span class="type">&tau;</span.
+ * It can also be partitioned into &Sigma;<sub>0</sub>, &Sigma;<sub>1</sub>, ... &Sigma;<sub>n</sub>
  * according to the arity of its symbols.
- * Then &Sigma;<sub>n</sub>&sube;&Sigma; is the subset of symbols
- * with arity n (i.e. of n arguments).
- * It can also be partitioned into &Sigma;<sub>&tau;</sub> according to the type &tau; of its symbols.
  * Constant-symbols are defined as functions of arity 0.
  * </p>
  * <p>

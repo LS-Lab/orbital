@@ -11,16 +11,17 @@ import orbital.logic.functor.Notation.NotationSpecification;
 import orbital.logic.functor.Functor.Specification;
 
 /**
- * Represents a symbol in a signature.
- * A (syntactic) symbol is a triple &lang;<var class="signifier">signifier</var>, spec, notation&rang;
- * consisting of a signifier, its (arity and) type specification, and its notation.
+ * Represents a symbol of a signature.
+ * A symbol is a triple &lang;<var class="signifier">signifier</var>, type, notation&rang;
+ * consisting of a signifier, its type specification, and its notation.
  * Each symbol is either a constant symbol or a variable symbol.
  * <p>
  * Symbols can be names for various kinds of objects in the (logical) universe:
  * <ul>
- *  <li>function-symbols for functions of type &sigma;&rarr;&tau;,
- *    with a specified arity denoted as function/<var>arity</var>,
- *    especially including
+ *  <li>function-symbols for functions of type <span class="type">&sigma;&rarr;&tau;</span>.
+ *    A function <var class="meta">f</var> of arity (number of arguments) <var class="meta">n</var>
+ *    is sometimes denoted as <var class="meta">f</var>/<var class="meta">n</var>.
+ *    Function-symbols especially include
  *    <ul>
  *      <li>constant symbols (as functions of arity 0).
  *        <h5 class="compact">Note</h5>
@@ -30,30 +31,26 @@ import orbital.logic.functor.Functor.Specification;
  *      </li>
  *    </ul>
  *  </li>
- *  <li>predicate-symbols for relations of type (&sigma;)
+ *  <li>predicate-symbols for relations of type <span class="type">(&sigma;)</span>
  *    <ul>
  *      <li>atomic propositions (as predicates of arity 0).</li>
- *      <li>properties of objects (represented as unary predicates)</li>
- *      <li>relations between objects (represented as n-ary predicates)</li>
+ *      <li>properties of objects (represented as unary predicates).</li>
+ *      <li>relations between objects (represented as n-ary predicates).</li>
  *    </ul>
  *  </li>
  *  <li>variables of a set V&sube;&Sigma;, where
  *    <ul>
- *      <li>object variables are variable terms of type t</li>
- *      <li>function-variables are variable "frames" of functions</li>
- *      <li>predicate-variables are variable "frames" of relations</li>
+ *      <li>object variables are variable terms of type <span class="type">t</span>.</li>
+ *      <li>function-variables are variable "frames" of functions.</li>
+ *      <li>predicate-variables are variable "frames" of relations.</li>
  *    </ul>
  *  </li>
- *  <li>(perhaps types &tau; and type identifier predicates &tau;)</li>
+ *  <li>(perhaps types <span class="type">&tau;</span> and type identifier predicates <span class="type">&tau;</span>).</li>
  * </ul>
  * </p>
  * <p>
  * There should never be two equal symbols (i.e. with equal signifier, spec, and notation)
  * with one being constant, and the other variable.
- * </p>
- * <p>
- * Depending upon terminology, the "name" of a symbol is known as
- * sign, signifier or token.
  * </p>
  *
  * @invariant true
@@ -76,7 +73,7 @@ public interface Symbol extends Variable, Comparable/*<Symbol>*/{
      * Two symbols are equal if they have the same signifier, type specification and notation.
      * Then it should be asserted that they are either both variable, or both constant,
      * because the sets of variable symbols and constant symbols are usually assumed disjunct.
-     * @post o instanceof Symbol &rarr; (RES &hArr; (getSignifier().equals(o.getSignifier()) &and; getSpecification().equals(o.getSpecification()) &and; getNotation().equals(o.getNotation())))
+     * @post o instanceof Symbol &rarr; (RES &hArr; (getSignifier().equals(o.getSignifier()) &and; getType().equals(o.getType()) &and; getNotation().equals(o.getNotation())))
      */
     /*final*/ boolean equals(Object o);
     /**
@@ -84,7 +81,7 @@ public interface Symbol extends Variable, Comparable/*<Symbol>*/{
      * The hash code of a symbol is defined to be the bitwise exclusive or of its components:
      * signifier, type specification, and notation.
      * @pre true
-     * @post getSignifier() xor getSpecification() xor getNotation()
+     * @post getSignifier() xor getType() xor getNotation()
      */
     /*final*/ int hashCode();
 
@@ -93,6 +90,8 @@ public interface Symbol extends Variable, Comparable/*<Symbol>*/{
      * Get the signifier representing this symbol.
      * <p>
      * Synonym(!): sign (C.S.Peirce), signifier (Saussure), token.
+     * Depending upon terminology, the "name" of a symbol is known as
+     * sign, signifier or token.
      * </p>
      * <p>
      * Generally the three constituents - according to C.S.Peirce - 
@@ -124,15 +123,16 @@ public interface Symbol extends Variable, Comparable/*<Symbol>*/{
     /**
      * Get the (arity and) type specification of this symbol.
      * @pre true
-     * @return the (arity and) type specification &tau; of this symbol.
+     * @return the type specification <span class="type">&tau;</span> of this symbol.
      */
-    Specification getSpecification();
+    Specification getType();
     /**
      * Set the (arity and) type specification of this symbol.
-     * @param spec the (arity and) type specification of this symbol.
+     * @param spec the type specification <span class="type">&tau;</span> of this symbol.
      * @pre spec&ne;null
+     * @todo wouldn't we prefer <span class="keyword">null</span> for the bottom type, or the undefined type, or perhaps the errorneous type?
      */
-    void setSpecification(Specification spec);
+    void setType(Specification spec);
 
     /**
      * Get the notation used when this symbol occurs.

@@ -114,7 +114,7 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
 	validate(symbol);
 	//@todo is this the referent or the signified?
 	Object referent = super.get(symbol);
-	assert validate(symbol, referent) : "referent " + referent + " must conform to the specification " + ((Symbol) symbol).getSpecification() + " of the symbol " + symbol;
+	assert validate(symbol, referent) : "referent " + referent + " must conform to the specification " + ((Symbol) symbol).getType() + " of the symbol " + symbol;
 	return referent;
     } 
 
@@ -126,7 +126,7 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
     public Object put(Object symbol, Object value) {
 	validate(symbol);
 	if (!validate(symbol, value))
-	    throw new IllegalArgumentException("referent " + value + " must conform to the specification " + ((Symbol) symbol).getSpecification() + " of the symbol " + symbol);
+	    throw new IllegalArgumentException("referent " + value + " must conform to the specification " + ((Symbol) symbol).getType() + " of the symbol " + symbol);
 	return super.put(symbol, value);
     } 
 
@@ -135,7 +135,7 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
 	    for (Iterator it = associations.entrySet().iterator(); it.hasNext(); ) {
 		Map.Entry e = (Map.Entry) it.next();
 		if (!validate(e.getKey(), e.getValue()))
-		    throw new IllegalArgumentException("referent " + e.getValue() + " must conform to the specification " + ((Symbol) e.getKey()).getSpecification() + " of the symbol " + e.getKey());
+		    throw new IllegalArgumentException("referent " + e.getValue() + " must conform to the specification " + ((Symbol) e.getKey()).getType() + " of the symbol " + e.getKey());
 		if (!sigma.contains(e.getKey()))
 		    throw new IllegalArgumentException("symbol " + e.getKey() + " not in signature. Association map is invalid for this signature.");
 	    }
@@ -241,7 +241,7 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
      * @todo enhance type checks
      */
     private final boolean validate(Object symbol, Object referent) {
-	Functor.Specification spec = ((Symbol) symbol).getSpecification();
+	Functor.Specification spec = ((Symbol) symbol).getType();
 	return spec.arity() != 0
 	    ? referent instanceof Functor && spec.isConform((Functor) referent)
 	    : referent instanceof Functor

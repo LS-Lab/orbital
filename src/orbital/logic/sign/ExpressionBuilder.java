@@ -46,7 +46,7 @@ public interface ExpressionBuilder {
      * @param symbol the symbol whose atomic expression representation to create.
      * @pre symbol&isin;&Sigma;&cup;V&cup;... is a syntactically valid symbol
      * @return an instance of Expression that represents the atomic symbol in this logic.
-     * @post RES isVariable &hArr; symbol isVariable
+     * @post RES.isVariable() &hArr; symbol.isVariable()
      * @throws IllegalArgumentException if the symbol is illegal for some reasons.
      *  Note that this is a rather rare case and no parsing is involved at all,
      *  which is why this method does not throw a ParseException.
@@ -57,9 +57,11 @@ public interface ExpressionBuilder {
 
     // Create a compound <dfn>term</dfn> expression
 
-    //@TODO complete the design of additional(?) methods
+    //@TODO complete the design of any additional(?) methods
     /**
-     * Create a compound expression representation of a composition operation.
+     * Create a compound expression representation with a composition operation.
+     * Connects expressions with a composing functor<!-- @todo always a connector or formator? -->
+     * to a <dfn>complex</dfn> expression (<dfn>ascriptor</dfn>).
      * <p>
      * {@link Signature#get(String,Object[])} may be useful for determining the right functor symbol
      * for a composition.
@@ -72,6 +74,7 @@ public interface ExpressionBuilder {
      *  <div><code>functor(<var>a</var><span class="operator">[</span><span class="number">0</span><span class="operator">]</span>,...,<var>a</var><span class="operator">[</span><var>a</var>.length<span class="operator">-</span><span class="number">1</span><span class="operator">]</span>)</code></div>
      * @throws ParseException when the composition expression is syntactically malformed.
      *  Either due to a lexical or grammatical error (also due to wrong arity and type of the arguments).
+     * @internal this is a meta-operator. We could also choose a simpler compositor part orbital.logic.imp.Symbol but would then need an undefined language primitive "apply" for compose("apply",{f,a}) = f(a). So this formal trick soon looses its simplicity and thus is inferior to the approach of compositors in Term(&Sigma;) instead of just &Sigma;.
      * @see <a href="{@docRoot}/DesignPatterns/FactoryMethod.html">Factory Method</a>
      */
     Expression compose(Symbol functor, Expression[] arg) throws ParseException;
