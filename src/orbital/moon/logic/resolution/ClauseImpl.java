@@ -56,8 +56,9 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
     
     public Iterator/*_<Clause>_*/ resolveWith(Clause G) {
 	final Clause F = this;
+	// resolvents will contain all resolvents of F and G
 	Set/*_<Clause>_*/ resolvents = new HashSet();
-	// try to resolve G with F (to L)
+	// try to resolve G with F
 	// choose any literal Fj&isin;F
 	for (Iterator j = iterator(); j.hasNext(); ) {
 	    final Formula Fj = (Formula) j.next();
@@ -69,7 +70,7 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 		final Substitution mu = Substitutions.unify(Arrays.asList(new Object[] {Gk, notFj}));
 		logger.log(Level.FINEST, "resolving literals {0} with {1} is {2}", new Object[] {Gk, notFj, mu});
 		if (mu != null) {
-		    // resolve F and G into a new clause L
+		    // resolve F and G at complementary literals Fj resp. Gk
 		    final Clause Gp = new ClauseImpl((Set) Functionals.map(mu, setWithout(G, Gk)));
 		    final Clause Fp = new ClauseImpl((Set) Functionals.map(mu, setWithout(F, Fj)));
                         				
@@ -79,7 +80,8 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 			// cut that possibility since resolving with tautologies will never lead to false (the contradiction)
 			//@xxx 100% sure that for completeness, we can also remove G from setOfSupport, if it only resolves to isElementaryValid clauses. Or must we keep it, even though we don't have to keep the (elementary true) resolvent
 			continue;
-                        				
+
+		    // the resolvent R of F and G at complementary literals Fj resp. Gk
 		    final Clause R = Gp;
 		    R.addAll(Fp);
 		    final Clause factorizedR = R.factorize();
@@ -150,7 +152,8 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 		if (mu != null) {
 		    // factorize
                     final String logPrevious = logger.isLoggable(Level.FINEST) ? F + "" : "";
-		    // optimized removing Fj from the set, since mu(Fj) = mu(Fk) anyway (notice the set representation)
+		    // optimized removing Fi from the set, since mu(Fi) = mu(Fj) anyway (notice the set representation)
+		    assert mu.apply(Fi).equals(mu.apply(Fj));
 		    j.remove();
                     listF = Functionals.map(mu, listF);
                     logger.log(Level.FINEST, "factorized {1} from {0} by unifying {3} and {4} with {2}", new Object[] {logPrevious, F, mu, Fi, Fj});

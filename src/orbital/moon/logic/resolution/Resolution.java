@@ -50,7 +50,8 @@ import java.util.logging.Level;
  *     The union of these clauses is (again) called E.
  *   </li>
  *   <li>
- *     try to resolve from E (with building variants to achieve disjunct variables) the empty clause &#9633;:
+ *     try to resolve from E (with building variants to achieve disjunct variables) the empty clause &#9633;.
+ *     Use a refinement or stronger variant of the following nondeterministic procedure:
  *     <pre>
  *     R := E
  *     <span class="keyword">while</span> &#9633;&notin;R <span class="keyword">do</span>
@@ -137,9 +138,11 @@ public class Resolution implements Inference {
         for (Iterator i = skolemizedB.iterator(); i.hasNext(); ) {
 	    knowledgebase.addAll(clausalForm((Formula) i.next(), SIMPLIFYING));
 	}
+        logger.log(Level.FINER, "clausal W == {0}", knowledgebase);
 
 	// factorize
-        knowledgebase = (ClausalSet) Functionals.map(factorize, knowledgebase);
+        knowledgebase.addAll((ClausalSet) Functionals.map(factorize, knowledgebase));
+        logger.log(Level.FINER, "factorized W == {0}", knowledgebase);
 
 	// remove tautologies and handle contradictions
     	// for all clauses F&isin;knowledgebase
@@ -163,14 +166,15 @@ public class Resolution implements Inference {
 	// skolemize (negated) query
 	//@todo could we optimize by already transforming query to CNF, somewhat earlier? At least avoid transforming ~(a<->b) to ~(cnf(a<->b))
 	final Formula skolemizedQuery = Utilities.dropQuantifiers(Utilities.skolemForm(query));
-	logger.log(Level.FINER, "in S skolemForm( {0} ) == {1}", new Object[] {query, skolemizedQuery});
+	logger.log(Level.FINER, "in S skolemForm( {0} )\n == {1}", new Object[] {query, skolemizedQuery});
 
         // convert (negated) query to clausalForm S, forming the initial set of support
 	ClausalSet S = clausalForm(skolemizedQuery, SIMPLIFYING);
-	logger.log(Level.FINER, "in S clausalForm( {0} ) == {1}", new Object[] {skolemizedQuery, new HashSet(S)});
+	logger.log(Level.FINER, "in S clausalForm( {0} )\n == {1}", new Object[] {skolemizedQuery, new HashSet(S)});
 
 	// factorize
-        S = (ClausalSet) Functionals.map(factorize, S);
+        S.addAll((ClausalSet) Functionals.map(factorize, S));
+	logger.log(Level.FINER, "in S factorized ( {0} )\n == {1}", new Object[] {skolemizedQuery, new HashSet(S)});
 
 	// remove tautologies and handle contradictions
     	// for all clauses F&isin;S
@@ -183,6 +187,7 @@ public class Resolution implements Inference {
 		// if F is obviously valid, forget about it for resolving a contradiction
 		i.remove();
 	}    		
+	logger.log(Level.FINER, "in S factorized to\n {0}", S);
 
         if (logger.isLoggable(Level.FINEST))
 	    logger.log(Level.FINEST, "negated goal S == {0}\n == {1}\n (== {2} original in CNF)", new Object[] {skolemizedQuery, S, Utilities.conjunctiveForm(query, SIMPLIFYING)});
@@ -268,7 +273,12 @@ public class Resolution implements Inference {
 	    return new StreamMethod(ASYNCHRONOUS_EXPAND) {
 		    public void runStream() {
                 	final ClausalSet S = ((Proof) n).setOfSupport;
-			// we use a list view of the set S for optimized resolving (after having resolved G with F, we won't resolve F with G again). But we only modify the set F&isin;S=listS, and thus - indirectly - S and listS.
+			// we use a list view of the set S for
+			// optimized resolving (after having resolved
+			// G with F, we won't resolve F with G
+			// again). But we only modify the set
+			// F&isin;S=listS, and thus - indirectly - S
+			// and listS.
 			final List	 listS = Collections.unmodifiableList(new LinkedList(S));
                 	Collection	 r = new LinkedList();
                 	// choose any clause G&isin;S

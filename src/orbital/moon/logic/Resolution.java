@@ -49,7 +49,8 @@ import java.util.logging.Level;
  *     The union of these clauses is (again) called E.
  *   </li>
  *   <li>
- *     try to resolve from E (with building variants to achieve disjunct variables) the empty clause &#9633;:
+ *     try to resolve from E (with building variants to achieve disjunct variables) the empty clause &#9633;.
+ *     Use a refinement or stronger variant of the following nondeterministic procedure:
  *     <pre>
  *     R := E
  *     <span class="keyword">while</span> &#9633;&notin;R <span class="keyword">do</span>
@@ -121,9 +122,11 @@ class Resolution implements Inference {
 	//this.search = new IterativeDeepeningAStar(orbital.math.functional.Functions.constant(Values.getDefaultInstance().valueOf(0)));
 
         this.search = new IterativeDeepeningAStar(heuristic);
+	//@todo since resolution proving is proof confluent, we can use a hill-climber and do not need backtracking, once we provide fairness
+        //this.search = new HillClimbing(heuristic);
     }
 
-    public boolean infer(Formula[] B, Formula D) {
+    public boolean infer(final Formula[] B, final Formula D) {
         // skolemize B and drop quantifiers
         final List/*_<Formula>_*/ skolemizedB = new ArrayList(B.length);
         for (int i = 0; i < B.length; i++) {
@@ -203,8 +206,6 @@ class Resolution implements Inference {
     }
 
     public boolean isComplete() {
-	if (UNDER_CONSTRUCTION)
-	    return false;
 	// assuming knowledge base W is consistent, we are refutation-complete
 	return true;
     }
@@ -223,6 +224,7 @@ class Resolution implements Inference {
 	};
 
     /**
+     * Resolution proving represented as an infinite search problem.
      * @internal we identify S=A here such that we can perform all work in actions().
      */
     private final class ResolutionProblem implements GeneralSearchProblem/*<Proof,Proof>*/ {
@@ -264,7 +266,7 @@ class Resolution implements Inference {
 	    };
         public boolean isSolution(Object n) {
 	    final Set/*_<Set<Formula>>_*/ S = ((Proof) n).setOfSupport;
-	    // solely rely on goal lookahead (see below)
+	    // solely rely on goal lookahead (@see #actions(Object))
 	    final boolean goal = S.size() == 1 && S.contains(Utilities.CONTRADICTION);
 	    logger.log(Level.FINE, "isSolution=={0} of the clauses {1}", new Object[] {new Boolean(goal), S});
 	    return goal;
@@ -315,10 +317,9 @@ class Resolution implements Inference {
 					return;
 				    }
 				    
-				    final Set/*_<Set<Formula>>_*/ resultingClauseSet = new HashSet(S);
-				    resultingClauseSet.add(R);
-
 				    if (!S.contains(R)) {
+					final Set/*_<Set<Formula>>_*/ resultingClauseSet = new HashSet(S);
+					resultingClauseSet.add(R);
 					logger.log(Level.FINE, "appended resolvent {0}\n from {1}\nand  {2}\nto   {3}.\nLengths are {4} from {5} and {6} to {7} thereof.", new Object[] {R, F, G, new HashSet(S), new Integer(R.size()), new Integer(F.size()), new Integer(G.size()), new Integer(S.size())});
 					resumedReturn(new Proof(resultingClauseSet, R));
 				    }
@@ -340,7 +341,7 @@ class Resolution implements Inference {
 	}
 
 	public TransitionModel.Transition transition(Object action, Object state, Object statep) {
-	    return new Transition(action, 1);
+	    return new Transition(action, Values.ONE);
 	}
 
 	/**
@@ -403,13 +404,12 @@ class Resolution implements Inference {
     private static class Proof {
 	/**
 	 * the current set of support.
-	 * (containing all formulas already deduced, or in initial set of support)
+	 * (containing all formulas already deduced, or in the initial set of support)
 	 */
 	Set/*_<Set<Formula>>_*/ setOfSupport;
 
 	/**
-	 * the current set of support.
-	 * (containing all formulas already deduced, or in initial set of support)
+	 * the current resolvent resolved.
 	 */
 	Set/*_<Formula>_*/ resolvent;
 
