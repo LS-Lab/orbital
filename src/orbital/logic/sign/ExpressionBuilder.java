@@ -86,13 +86,13 @@ public interface ExpressionBuilder {
      * application can also be expressed per composition.
      * </p>
      * @param compositor the expression that is used for composing the arguments.
-     * @param arg the arguments <var>a</var> passed to the combining operation.
+     * @param arg the arguments <code><var>a</var></code> passed to the combining operation.
      * @preconditions compositor&ne;null
      *  &and; Types.isApplicableTo(compositor.getType(), arg)
      *  &and; compositor(arg)&isin;<i>L</i>
      *  "compositor applied to arg represents a syntactically well-formed expression"
      * @return an expression that represents the combined operation with its arguments, like in
-     *  <div><code>compositor(<var>a</var><span class="operator">[</span><span class="number">0</span><span class="operator">]</span>,...,<var>a</var><span class="operator">[</span><var>a</var>.length<span class="operator">-</span><span class="number">1</span><span class="operator">]</span>)</code></div>
+     *  <div><code>compositor(<var>a</var><span class="operator">[</span><span class="number">0</span><span class="operator">]</span>,&#8230;,<var>a</var><span class="operator">[</span><var>a</var>.length<span class="operator">-</span><span class="number">1</span><span class="operator">]</span>)</code></div>
      * @postconditions RES&ne;null &and; RES.getType()=compositor.getType().codomain() &and; ....
      * @throws ParseException if the composition expression is syntactically malformed.
      *  Either due to a lexical or grammatical error (also due to wrong type of arguments).
@@ -106,6 +106,6 @@ public interface ExpressionBuilder {
      * @internal understanding it as a combination of application and composition is always possible from a type theory point of view (apart from composing fg from g:X->{g} which is a kind of Russel paradoxon). However we chose to separate those (related but) distinct concepts.
      * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      */
-    Expression compose(Expression compositor, Expression[] arg) throws ParseException, TypeException;
+    Expression.Composite compose(Expression compositor, Expression[] arg) throws ParseException, TypeException;
 
 }
