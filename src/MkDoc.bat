@@ -16,20 +16,20 @@ rem once Emacs knows Unicode we could switch Javadoc to -charset "utf-8"
     if "%1"=="-standard" shift
   echo make jjdoc
     rem todo let jjdoc include brief TOKEN declarations
-    pushd %src%\orbital\moon\logic
-    if not exist doc-files mkdir doc-files
-    for %%U in (*.jj) do call jjdoc -OUTPUT_FILE:doc-files\%%~nU_grammar.html %%U
+    if not exist %JDK_HOME%\docs\orbitaldoc\orbital\moon\logic\doc-files mkdir %JDK_HOME%\docs\orbitaldoc\orbital\moon\logic\doc-files
+    pushd %JDK_HOME%\docs\orbitaldoc\orbital\moon\logic\
+    for %%U in (%src%\orbital\moon\logic\*.jj) do call jjdoc -OUTPUT_FILE:doc-files\%%~nU_grammar.html %%U
     if errorlevel 1 goto Errored
-    copy /A doc-files\LogicParser_grammar.html + doc-files\LogicParser_lexical.html doc-files\LogicParser_grammar.html
+    copy /A doc-files\LogicParser_grammar.html + %src%\orbital\moon\logic\doc-files\LogicParser_lexical.html doc-files\LogicParser_grammar.html
     popd
 
 
     if exist orbital\moon\io\cryptix\Stegano*.java ren orbital\moon\io\cryptix\Stegano*.java *.restricted
     pushd %JDK_HOME%\docs\orbitaldoc
-    copy %base%\recommendations.*html
-    copy %base%\features.*html
-    copy %base%\recommendations.*html %HOME%\www\orbital\
-    copy %base%\features.*html %HOME%\www\orbital\
+    copy %base%\doc\recommendations.*html
+    copy %base%\doc\features.*html
+    copy %base%\doc\recommendations.*html %HOME%\www\orbital\
+    copy %base%\doc\features.*html %HOME%\www\orbital\
   echo make javadoc
     javadoc %s% -d . -sourcepath %src%;%CLASSPATH% -link ../api -overview %base%\overview.html @%src%\options @%src%\package-grouping @%src%\package-list %1 %2 %3 %4 %5 %6 %7 %8 %9 > %temp%\doc
     if errorlevel 1 set wasError=true
@@ -37,7 +37,7 @@ rem once Emacs knows Unicode we could switch Javadoc to -charset "utf-8"
     copy /A stylesheet.css +stylist.css
     echo "@media screen { a:link, a:visited {color:blue} }" >> stylesheet.css
     if "%wasError%" == "true" goto Errored
-    start /B xcopy *.* %base%\api\ /S /Q /Y
+    start /B xcopy *.* %base%\doc\api\ /S /Q /Y
     copy %src%\orbital\META-INF\Manifest-all.mf %HOME%\www\orbital\compack\*.*
 goto :Fin
 
@@ -50,7 +50,7 @@ rem fall-through
  :Fin
   echo clean up
     popd
-    if exist moon\io\cryptix\*.restricted ren moon\io\cryptix\Stegano*.restricted *.java
+    if exist orbital\moon\io\cryptix\*.restricted ren orbital\moon\io\cryptix\Stegano*.restricted *.java
     set src=
     set base=
     set s=

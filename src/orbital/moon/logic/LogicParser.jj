@@ -373,7 +373,7 @@ Expression expression() :
 	{return f;}
 }
 
-//@todo jota x.t  or epsilon x.t
+//@todo jota x.t  or epsilon x.t operators
 
 /**
  * free scope "quantifier"

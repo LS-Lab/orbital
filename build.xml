@@ -58,6 +58,7 @@
         clean.bak - remove all backup files *.bak, *~, .#*
         fixCRLF   - fix DOS linefeeds (CRLF)
         doc       - generate javadoc (=> ./doc/api/)
+	jjdoc	  - generate jjdoc (=> ./doc/api)
         jar       - build dist/*.jar
         env       - print out some properties for debugging build.xml
  
@@ -68,7 +69,7 @@
             description="clean + fixCRLF + compile">
     </target>
  
-    <target name="compile" depends="init, compilerCompile"
+    <target name="compile" depends="init"
             description="compile *.java (=> ./classes)">
         <mkdir dir="${classes}"/>
  
@@ -83,8 +84,6 @@
 
     <target name="compilerCompile" depends="init"
             description="compile *.jj (=> ./classes)">
-        <mkdir dir="${classes}"/>
- 
         <javacc target="${sources}/orbital/moon/logic/LogicParser.jj" 
 		javacchome="d:/Sprachen/java/Utilities/JavaCC"/>
         <javacc target="${sources}/orbital/moon/logic/MathParser.jj" 
@@ -129,8 +128,7 @@
         <delete includeEmptyDirs="true">
             <fileset dir="${doc}/api"/>
         </delete>
-        <mkdir dir="${doc}/api"/>
- 
+
         <javadoc maxmemory="256M"
                  failonerror="true"
                  sourcepath="${sources}" 
@@ -138,23 +136,55 @@
                  author="true"
                  version="true"
                  use="true"
+		 additionalparam="-source 1.4 -tag param -tag pre:mc:&quot;Preconditions:&quot; -tag post:mc:&quot;Postconditions:&quot; -tag return -tag throws -tag stereotype:a:&quot;Stereotype:&quot; -tag structure:t:&quot;Structure:&quot; -tag invariant:t:&quot;Invariants:&quot; -tag attribute:a:&quot;Attributes:&quot; -tag version -tag author -tag see"
+
                  windowtitle="Orbital"
                  doctitle="Orbital library&lt;br&gt;API Specification"
-                 header="&lt;b&gt;Orbital library&lt;/b&gt;&lt;br&gt;${timestamp}"
+                 header="&lt;b&gt;Orbital library&lt;/b&gt;"
                  footer="&lt;b&gt;Orbital library&lt;/b&gt;&lt;br&gt;${timestamp}"
-		 overview="{@doc}/overview.html"
-		 additionalparam="-source 1.4"
+		 overview="${doc}/overview.html"
                  packagenames="orbital.*"
 		 excludepackagenames="orbital,orbital.robotic.strategy,orbital.util.graph,orbital.moon.aspects,orbital.moon.deprecated"
                  Public="true">
-<!-- @todo package grouping -->
             <bottom><![CDATA[<span style='font-size: smaller; font-style: italic;'>Copyright &copy; 1996-2002 Andr&eacute; Platzer<br />All Rights Reserved.</span>]]></bottom>
 	    <group title="Core Packages" packages="orbital.logic*:orbital.math:orbital.math*:orbital.util"/>
 	    <group title="Extension Packages" packages="orbital.algorithm*:orbital.awt*:orbital.game:orbital.io:orbital.robotic"/>
 	    <group title="Implementation Packages" packages="orbital.io.encoding:orbital.io.parsing:orbital.text:orbital.net:orbital.net.mail:orbital.moon*"/>
+    		 <!--       -tag todo:Xa -tag xxx:Xa -tag fixme:Xa" -->
             <!-- link href="http://java.sun.com/products/jdk/1.3/docs/api/"/ -->
         </javadoc>
+
+	<antcall target="jjdoc"/>
+
+	<copy todir="${doc}/api/DesignPatterns">
+	    <fileset dir="${doc}/DesignPatterns"/>
+	</copy>
+
+	<copy todir="${doc}/api">
+	    <fileset dir="${doc}"
+		includes="stylist.css, recommendations.*html, features.*html, templates.*html"/>
+	</copy>
+
+        <echo file="${doc}/api/stylesheet.css" append="true">	
+	@media screen { a:link, a:visited {color:blue} }
+	@import url("stylist.css");
+	</echo>
     </target>
+
+    <target name="jjdoc" depends="init"
+            description="generate jjdoc (=> ./doc/api/)">
+        <mkdir dir="${doc}/api/orbital/moon/logic/doc-files"/>
+	<exec dir="${doc}/api/orbital/moon/logic" executable="cmd.exe" os="Windows 2000">
+	    <arg line="/c jjdoc -OUTPUT_FILE:doc-files/LogicParser_grammar.html ${sources}/orbital/moon/logic/LogicParser.jj"/>
+	</exec>
+	<exec dir="${doc}/api/orbital/moon/logic" executable="cmd.exe" os="Windows 2000">
+	    <arg line="/c jjdoc -OUTPUT_FILE:doc-files/MathParser_grammar.html ${sources}/orbital/moon/logic/MathParser.jj"/>
+	</exec>
+	<exec dir="${doc}/api/orbital/moon/logic" executable="cmd.exe" os="Windows 2000">
+	    <arg line=" /c &quot;copy /A doc-files\LogicParser_grammar.html + ${basedir}\src\orbital\moon\logic\doc-files\LogicParser_lexical.html doc-files\LogicParser_grammar.html&quot;"/>
+	</exec>
+    </target>
+
 
     <target name="jar" depends="init, clean, compile"
             description="build dist/*.jar">
