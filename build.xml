@@ -786,6 +786,12 @@
 
     <target name="run.coverage" depends="init, compile.coverage"
             description="run and report coverage tests">
+	<echo>
+          With assertions turned on, this test suite runs about 20 hours. (or about 6 hours without ModalLogicTest and PropositionalInferenceTest?)
+	  With assertions turned off, this test suite runs about .... min
+           (but only without orbital.moon.logic.ModalLogicTest).
+          Assertions are set to "${run.tests.jvmarg}"
+	</echo>
         <antcall target="run.tests">
 	    <!-- prefer any existing instrumented classes, only for run.coverage -->
             <param name="run.tests.classpath" value="${build.coverage}"/>
