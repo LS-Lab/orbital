@@ -19,7 +19,12 @@ import java.util.logging.Level;
  * &alpha;-&beta;-pruning performs exactly the same computation as a normal minimax search, but
  * prunes the search tree at nodes that permit moves even worse than the best one found so far.</p>
  *
- * @internal so to say, the pruning is the bound part of BranchAndBound.
+ * @internal so to say, the pruning is the bound part of
+ * BranchAndBound, &alpha; is the maximizer's bound and &beta; the
+ * minimizer's bound. (But those bounds interact!) In other words,
+ * &alpha;-&beta;-pruning is just Branch&amp;Bound in the adversary
+ * search case.
+ * @see orbital.algorithm.template.BranchAndBound
  * @version 0.8, 2001/07/01
  * @author  Andr&eacute; Platzer
  * @internal min-max trees with compact values in [0,1] are and-or trees with fuzzy logic operators.
@@ -52,10 +57,15 @@ public class AlphaBetaPruning extends AdversarySearch {
         this.utility = utility;
     }
     
-    
+    /**
+     * Get the maximum number of (half-) turns to look into the future
+     * during search.  0 would mean no move, but does not make any
+     * sense, since not a single option would then be inspected.
+     */
     public int getMaxDepth() {
     	return maxDepth;
     }
+
     /**
      * Whether a node with value v is preferred over one with w.
      * <p>
@@ -82,13 +92,16 @@ public class AlphaBetaPruning extends AdversarySearch {
     }
     
     /**
-     * a modification of max(Field,double,double) that returns the best move,
+     * A modification of {@link #max(Field,double,double)} that returns the best move,
      * instead of its &alpha;-value.
-     * @param alpha the value of the best choice we have found so far at any choice point along the path for the maximizer.
-     * @param beta the value of the best (i.e., lowest-value) choice we have found so far at any choice point along the path for the minimizer.
+     * @param alpha the value of the best (i.e. highest-utility) choice we have found so far,
+     *  at any choice point along the path to state for the maximizer.
+     * @param beta the value of the best (i.e., lowest-value) choice we have found so far,
+     *  at any choice point along the path to state for the minimizer.
      * @return the best option (according to its &alpha;-value).
      */
     private Option max_(final Field state, double alpha, final double beta) {
+	assert isOurLeague(state) : "otherwise ours would not have an opportunity to move, anyway";
     	currentDepth++;
     	try {
 	    Option bestOption = null;							// the best move found so far, has value alpha
@@ -97,7 +110,8 @@ public class AlphaBetaPruning extends AdversarySearch {
 	    else
 		for (Iterator s = successors(state); s.hasNext(); ) {
 		    Option p = (Option) s.next();
-		    double v = min(p.getState(), alpha, beta);
+		    assert !isOurLeague(p.getState()) : "our implementation does not yet work for generalized cases";
+		    double v = minmax(p.getState(), alpha, beta);
 		    if (isPreferred(v, alpha)) {
 			logger.log(Level.FINEST, "evaluate utility", v + " for " + p + " PREFERRED");
 			bestOption = p;
@@ -120,9 +134,26 @@ public class AlphaBetaPruning extends AdversarySearch {
     }
 
     /**
-     * maximizer decision.
-     * @param alpha the value of the best choice we have found so far at any choice point along the path for the maximizer.
-     * @param beta the value of the best (i.e., lowest-value) choice we have found so far at any choice point along the path for the minimizer.
+     * Maximizer or minimizer decision.
+     * Whether maximizer or minimizer decides is up to {@link #isOurLeague(Field)}.
+     * @param alpha the value of the best (i.e. highest-utility) choice we have found so far,
+     *  at any choice point along the path to state for the maximizer.
+     * @param beta the value of the best (i.e., lowest-value) choice we have found so far,
+     *  at any choice point along the path to state for the minimizer.
+     * @return the minimax value of state.
+     */
+    private double minmax(final Field state, double alpha, double beta) {
+	return isOurLeague(state)
+	    ? max(state, alpha, beta)
+	    : min(state, alpha, beta);
+    }
+    
+    /**
+     * Maximizer decision.
+     * @param alpha the value of the best (i.e. highest-utility) choice we have found so far,
+     *  at any choice point along the path to state for the maximizer.
+     * @param beta the value of the best (i.e., lowest-value) choice we have found so far,
+     *  at any choice point along the path to state for the minimizer.
      * @return the minimax value of state.
      */
     private double max(final Field state, double alpha, final double beta) {
@@ -130,11 +161,14 @@ public class AlphaBetaPruning extends AdversarySearch {
     	try {
 	    if (cutOff(state))
 		return ((Number) utility.apply(state)).doubleValue();
-	    else for (Iterator s = successors(state); s.hasNext(); ) {
-		alpha = Math.max(alpha, min(((Option) s.next()).getState(), alpha, beta));
-		if (alpha >= beta)
-		    return beta;
-	    }
+	    else
+		for (Iterator s = successors(state); s.hasNext(); ) {
+		    final Field nextState = ((Option) s.next()).getState();
+		    assert !isOurLeague(nextState) : "our implementation does not yet work for generalized cases";
+		    alpha = Math.max(alpha, minmax(nextState, alpha, beta));
+		    if (alpha >= beta)
+			return beta;
+		}
 	    return alpha;
         }
         finally {
@@ -143,9 +177,11 @@ public class AlphaBetaPruning extends AdversarySearch {
     }
 
     /**
-     * minimizer decision.
-     * @param alpha the value of the best choice we have found so far at any choice point along the path for the maximizer.
-     * @param beta the value of the best (i.e., lowest-value) choice we have found so far at any choice point along the path for the minimizer.
+     * Minimizer decision.
+     * @param alpha the value of the best (i.e. highest-utility) choice we have found so far,
+     *  at any choice point along the path to state for the maximizer.
+     * @param beta the value of the best (i.e., lowest-value) choice we have found so far,
+     *  at any choice point along the path to state for the minimizer.
      * @return the minimax value of state.
      */
     private double min(final Field state, final double alpha, double beta) {
@@ -155,7 +191,9 @@ public class AlphaBetaPruning extends AdversarySearch {
 		return ((Number) utility.apply(state)).doubleValue();
 	    else
             	for (Iterator s = successors(state); s.hasNext(); ) {
-		    beta = Math.min(beta, max(((Option) s.next()).getState(), alpha, beta));
+		    final Field nextState = ((Option) s.next()).getState();
+		    assert isOurLeague(nextState) : "our implementation does not yet work for generalized cases";
+		    beta = Math.min(beta, minmax(nextState, alpha, beta));
 		    if (beta <= alpha)
 			return alpha;
             	}
@@ -164,6 +202,10 @@ public class AlphaBetaPruning extends AdversarySearch {
         finally {
 	    currentDepth--;
         }
+    }
+
+    protected boolean isOurLeague(Field state) {
+	return currentDepth % 2 == 0;
     }
 
     /**
