@@ -163,10 +163,10 @@ public class LogicParser {
      * Converts an expression to the type it represents.
      * <table>
      *   <tr>
-     *     <td>Expression<sub class="type">*</sub>&rarr;Type</td>
+     *     <td class="leftOfMap">Expression<sub class="type">*</sub></td><td class="arrowOfMap">&rarr;</td><td class="rightOfMap">Type</td>
      *   </tr>
      *   <tr>
-     *     <td>f &#8614; (Type) I<sub>0</sub>(f)</td>
+     *     <td class="leftOfMap">f </td><td class="arrowOfMap">&#8614;</td><td class="rightOfMap"> (Type) I<sub>0</sub>(f)</td>
      *   </tr>
      * </table>
      */
@@ -174,7 +174,10 @@ public class LogicParser {
 	//@xxx
 	if (false && f.getType() != typeSystem().TYPE())
 	    throw new TypeException("would not expect type " + f + " for type expressions @xxx except for other kinds like *->*", typeSystem().TYPE(), f.getType());
-	return (Type) ((Formula) f).apply(InterpretationBase.EMPTY(syntax.coreSignature()));
+	return myasType(f, syntax.coreSignature());
+    }
+    static Type myasType(Expression f, Signature sigma) {
+	return (Type) ((Formula) f).apply(InterpretationBase.EMPTY(sigma));
     }
 
     /**
@@ -405,7 +408,7 @@ public class LogicParser {
 		throw new NullPointerException("illegal type " + maxType + " for " + signifier);
 	    Symbol s = tryGetSymbol(signifier, maxType, variable, autoDeclare);
 	    if (s == null)
-		throw new IllegalArgumentException("unknown symbol: `" + signifier + "' : =<" + maxType);
+		throw new IllegalArgumentException("unknown symbol: `" + signifier + "' : =<" + maxType + "\n in " + this);
 	    else
 		return s;
 	}
@@ -671,6 +674,20 @@ Expression parseTerm() :
 }
 {
     expr = term() <EOF>
+	{ return expr; }
+}
+
+/**
+ * Start production parsing a type expression with the current syntax.
+ * @internal we require <EOF> to be sure we parsed all, and no syntactic garbage lurks around at the end of the input
+ */
+Type parseType() :
+{
+    scope = new Scope(root);
+    Type expr;
+}
+{
+    expr = typeUse() <EOF>
 	{ return expr; }
 }
 
