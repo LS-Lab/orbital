@@ -168,6 +168,74 @@ public abstract class Values implements ValueFactory {
     }
 
 
+    // Constants
+
+    /**
+     * 0&isin;<b>Z</b>.
+     * The neutral element of addition in <b>Z</b>,<b>R</b> etc.
+     */
+    public static final Integer ZERO = Values.getDefault().ZERO();
+
+    /**
+     * 1&isin;<b>Z</b>.
+     * The neutral element of multiplication in <b>Z</b>,<b>R</b> etc.
+     */
+    public static final Integer ONE = Values.getDefault().ONE();
+
+    /**
+     * -1&isin;<b>Z</b>.
+     */
+    public static final Integer MINUS_ONE = Values.getDefault().MINUS_ONE();
+
+    /**
+     * +&infin;.
+     * @see #INFINITY
+     * @see #NEGATIVE_INFINITY
+     */
+    public static final Real POSITIVE_INFINITY = Values.getDefault().POSITIVE_INFINITY();
+
+    /**
+     * -&infin;.
+     * @see #INFINITY
+     * @see #POSITIVE_INFINITY
+     */
+    public static final Real NEGATIVE_INFINITY = Values.getDefault().NEGATIVE_INFINITY();
+
+    /**
+     * &pi; = 3.14159265... .
+     * The proportion of the circumference of a circle to its diameter. 
+     */
+    public static final Real PI = Values.getDefault().PI();
+    /**
+     * <b>e</b> = 2.71828... .
+     * The base of the natural logarithm.
+     */
+    public static final Real E = Values.getDefault().E();
+
+    /**
+     * not a number &perp;&isin;<b>R</b>&cup;{&perp;}.
+     */
+    public static final Real NaN = Values.getDefault().NaN();
+
+    /**
+     * The imaginary unit <b>i</b>&isin;<b>C</b>.
+     * @see #i
+     */
+    public static final Complex I = Values.getDefault().I();
+    /**
+     * The imaginary unit <b>i</b>&isin;<b>C</b>.
+     * @see #I
+     */
+    public static final Complex i = I;
+
+    /**
+     * complex infinity &infin;&isin;<b>C</b>.
+     * @see #INFINITY
+     * @todo only in compactification of C.
+     */
+    public static final Complex INFINITY = Values.getDefault().INFINITY();
+
+
     // legacy conversion primitive wrapper utilities
     
     /**

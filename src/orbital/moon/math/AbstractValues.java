@@ -37,7 +37,61 @@ import java.util.Iterator;
  * @author  Andr&eacute; Platzer
  */
 abstract class AbstractValues extends Values {
-    private orbital.logic.functor.Function/*<Object[],Object[]>*/ equalizer = null;
+    private orbital.logic.functor.Function/*<Object[],Object[]>*/ coercer = null;
+
+    // Constants
+
+    public Integer ZERO() {
+	return ZEROImpl;
+    }
+    private final Integer ZEROImpl = valueOf(0);
+
+    public Integer ONE() {
+	return ONEImpl;
+    }
+    private final Integer ONEImpl = valueOf(1);
+
+    public Integer MINUS_ONE() {
+	return MINUS_ONEImpl;
+    }
+    private final Integer MINUS_ONEImpl = valueOf(-1);
+
+    public Real POSITIVE_INFINITY() {
+	return POSITIVE_INFINITYImpl;
+    }
+    private final Real POSITIVE_INFINITYImpl = valueOf(java.lang.Double.POSITIVE_INFINITY);
+
+    public Real NEGATIVE_INFINITY() {
+	return NEGATIVE_INFINITYImpl;
+    }
+    private final Real NEGATIVE_INFINITYImpl = valueOf(java.lang.Double.NEGATIVE_INFINITY);
+
+    public Real PI() {
+	return PIImpl;
+    }
+    private final Real PIImpl = valueOf(Math.PI);
+    public Real E() {
+	return EImpl;
+    }
+    private final Real EImpl = valueOf(Math.E);
+
+    public Real NaN() {
+	return NaNImpl;
+    }
+    private final Real NaNImpl = valueOf(java.lang.Double.NaN);
+
+    public Complex I() {
+	return IImpl;
+    }
+    private final Complex IImpl = complex(0, 1);
+    public Complex i() {
+	return IImpl;
+    }
+
+    public Complex INFINITY() {
+	return INFINITYImpl;
+    }
+    private final Complex INFINITYImpl = complex(java.lang.Double.POSITIVE_INFINITY, java.lang.Double.NaN);
 
     // scalar value constructors - facade factory
 
@@ -72,11 +126,11 @@ abstract class AbstractValues extends Values {
     protected AbstractValues() {}
 
     /**
-     * Create a new value factory where the sub class already sets the equalizer.
-     * @see #setEqualizer(orbital.logic.functor.Function)
+     * Create a new value factory where the sub class already sets the coercer.
+     * @see #seCoercer(orbital.logic.functor.Function)
      */
-    protected AbstractValues(orbital.logic.functor.Function/*<Object[],Object[]>*/ equalizer) {
-	this.equalizer = equalizer;
+    protected AbstractValues(orbital.logic.functor.Function/*<Object[],Object[]>*/ coercer) {
+	this.coercer = coercer;
     }
 
     // scalar value constructors - facade factory
@@ -661,20 +715,20 @@ abstract class AbstractValues extends Values {
     }
 
 
-    // arithmetic widening equalizer
+    // arithmetic widening coercer
 	
-    public final orbital.logic.functor.Function/*<Object[],Object[]>*/ getEqualizer() {
-	return equalizer;
+    public final orbital.logic.functor.Function/*<Object[],Object[]>*/ getCoercer() {
+	return coercer;
     } 
 
-    protected final void initialSetEqualizer(orbital.logic.functor.Function/*<Object[],Object[]>*/ equalizer) {
-	this.equalizer = equalizer;
+    protected final void initialSetCoercer(orbital.logic.functor.Function/*<Object[],Object[]>*/ coercer) {
+	this.coercer = coercer;
     } 
-    public final void setEqualizer(orbital.logic.functor.Function/*<Object[],Object[]>*/ equalizer) throws SecurityException {
+    public final void setCoercer(orbital.logic.functor.Function/*<Object[],Object[]>*/ coercer) throws SecurityException {
 	SecurityManager security = System.getSecurityManager();
 	if (security != null) {
-	    security.checkPermission(new java.util.PropertyPermission(ValueFactory.class.getName() + ".equalizer", "write"));
+	    security.checkPermission(new java.util.PropertyPermission(ValueFactory.class.getName() + ".coercer", "write"));
 	} 
-	initialSetEqualizer(equalizer);
+	initialSetCoercer(coercer);
     } 
 }

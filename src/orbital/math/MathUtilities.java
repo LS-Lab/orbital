@@ -518,17 +518,17 @@ public final class MathUtilities {
     // arithmetic widening equalizer
 	
     /**
-     * @deprecated Since Orbital.1.1 use {@link Values#getDefaultInstance()}.{@link Values#getEqualizer()} instead.
+     * @deprecated Since Orbital.1.1 use {@link Values#getDefault()}.{@link ValueFactory#getCoercer()} instead.
      */
     public static final orbital.logic.functor.Function/*<Object[],Object[]>*/ getEqualizer() {
-	return Values.getDefaultInstance().getEqualizer();
+	return Values.getDefault().getCoercer();
     } 
 
     /**
-     * @deprecated Since Orbital.1.1 use {@link Values#getDefaultInstance()}.{@link Values#setEqualizer(orbital.logic.functor.Function)} instead.
+     * @deprecated Since Orbital.1.1 use {@link Values#getDefault()}.{@link ValueFactory#setCoercer(orbital.logic.functor.Function)} instead.
      */
     public static final void setEqualizer(orbital.logic.functor.Function/*<Object[],Object[]>*/ equalizer) throws SecurityException {
-	Values.getDefaultInstance().setEqualizer(equalizer);
+	Values.getDefault().setCoercer(equalizer);
     } 
     
     // diverse

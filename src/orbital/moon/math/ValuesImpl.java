@@ -38,14 +38,14 @@ public class ValuesImpl extends AbstractValues {
     // instantiation
 
     public ValuesImpl() {
-	//@internal with this extra method we circumvent the compile-time initializer problem of the super(...) solution, and the permission problem for applets in the setEqualizer(...) solution-
-	initialSetEqualizer(new orbital.logic.functor.Function/*<Object[],Object[]>*/() {
+	//@internal with this extra method we circumvent the compile-time initializer problem of the super(...) solution, and the permission problem for applets in the setCoercer(...) solution-
+	initialSetCoercer(new orbital.logic.functor.Function/*<Object[],Object[]>*/() {
 	    public Object/*>Object[]<*/ apply(Object/*>Object[]<*/ o) {
 		if (o instanceof Arithmetic[]) {
 		    Arithmetic operands[] = (Arithmetic[]) o;
 		    if (operands.length <= 1)
 			return operands;
-		    return minimumEqualized(operands);
+		    return minimumCoerced(operands);
 		} 
 		return o;
 	    } 
@@ -449,12 +449,12 @@ public class ValuesImpl extends AbstractValues {
      * a real instead of a complex and so on.
      * But it will always be true that both elements returned have exactly the same type:
      * the common superclass of the classes of a and b.
-     * @see #getEqualizer()
+     * @see #getCoercer()
      * @postconditions RES[0].getClass() == RES[1].getClass() == a.getClass()&cup;b.getClass()
      * @todo privatize
      * @todo optimize hotspot
      */
-    public Scalar[] minimumEqualized(Number a, Number b) {
+    public Scalar[] minimumCoerced(Number a, Number b) {
 	//@xxx adapt better to new Complex>Real>Rational>Integer type hierarchy and conform to a new OBDD (ordered binary decision diagram)
 	//@todo partial order with Arithmetic>Scalar>Complex>Real>Rational>Integer and greatest common super type of A,B being A&cup;B = sup {A,B}
 	//@todo implement sup along with conversion routines. Perhaps introduce "int AbstractScalar.typeLevel()" and "int AbstractScalar.precisionLevel()" such that we can compute the maximum level of both with just two method calls. And introduce "Object AbstractScalar.convertTo(int typeLevel, int precisionLevel)" for conversion.
@@ -487,18 +487,18 @@ public class ValuesImpl extends AbstractValues {
 	};
     } 
 
-    // arithmetic widening equalizer
+    // arithmetic widening coercer
 	
     /*
      * @todo optimize hotspot
      */
-    private final Arithmetic[] minimumEqualized(Arithmetic[] a) {
+    private final Arithmetic[] minimumCoerced(Arithmetic[] a) {
 	assert a.length == 2 : "currently for binary operations, only";
 	//@todo!
 	if (a[0].getClass() == a[1].getClass())
 	    return a;
 	else if (a[0] instanceof Number && a[1] instanceof Number)
-	    return minimumEqualized((Number) a[0], (Number) a[1]);
+	    return minimumCoerced((Number) a[0], (Number) a[1]);
 	else if (a[0] instanceof Tensor || a[1] instanceof Tensor)
 	    return a;
 	else if (a[0] instanceof MathFunctor || a[0] instanceof Symbol)
@@ -507,7 +507,7 @@ public class ValuesImpl extends AbstractValues {
 	    return new Arithmetic[] {
 		makeSymbolAware(a[0]), a[1]
 	    };	//XXX: how exactly?
-	throw new AssertionError("the types of the arguments could not be equalized: " + (a == null ? "null" : a[0].getClass() + "") + " and " + (a[1] == null ? "null" : a[1].getClass() + ""));
+	throw new AssertionError("the types of the arguments could not be coerced: " + (a == null ? "null" : a[0].getClass() + "") + " and " + (a[1] == null ? "null" : a[1].getClass() + ""));
     } 
 
     /**
