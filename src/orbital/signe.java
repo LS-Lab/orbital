@@ -83,7 +83,7 @@ public final class signe extends Applet implements Runnable {
      */
     public void init() {
 	add("North", new Label("signe"));		   // @version 1.0
-	add("Center", new TextArea(getInfo() + ", " + getVersion()));	   // @version 1.0
+	add("Center", new TextArea(getInfo() + ", " + getVersion() + "\nBuild " + getBuild()));	   // @version 1.0
     } 
 
     /**
@@ -130,6 +130,11 @@ public final class signe extends Applet implements Runnable {
      */
     private static final String	version = "@VERSION@";
 
+    /**
+     * Contains the unique build number.
+     */
+    private static final String	build = "@BUILD@";
+    
     /**
      * Contains the default name for the <em>Orbital library service</em>.
      */
@@ -181,6 +186,14 @@ public final class signe extends Applet implements Runnable {
     } 
 
     /**
+     * Get the build information.
+     * @see #build
+     */
+    public static String getBuild() {
+	return build;
+    } 
+
+    /**
      * Get the version number information.
      * Returns a double with the dot separation of all minor version numbers stripped of.
      * @see #version
@@ -214,7 +227,7 @@ public final class signe extends Applet implements Runnable {
      * Manifest.
      */
     public static String getManifest() {
-	return getInfo() + ", " + getVersion() + " Copyright (c) " + getCreated() + " by " + getCreator() + "\n" + getNote();
+	return getInfo() + ", " + getVersion() + " Build " + getBuild() + " Copyright (c) " + getCreated() + " by " + getCreator() + "\n" + getNote();
     } 
 
     /**
