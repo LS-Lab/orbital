@@ -156,7 +156,7 @@ public class ArithmeticTest extends check.TestCase {
 	} else if (op == Operations.subtract) {
 	    found = x.subtract(y);
 	} else if (op == Operations.times) {
-	    found = x.times(y);
+	    found = x.multiply(y);
 	} else if (op == Operations.divide) {
 	    found = x.divide(y);
 	} else if (op == Operations.power) {
