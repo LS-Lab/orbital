@@ -403,7 +403,7 @@ public class LogicParser {
 		throw new NullPointerException("illegal type " + maxType + " for " + signifier);
 	    Symbol s = tryGetSymbol(signifier, maxType, variable, autoDeclare);
 	    if (s == null)
-		throw new IllegalArgumentException("unknown symbol: " + signifier);
+		throw new IllegalArgumentException("unknown symbol: `" + signifier + "' : =<" + maxType);
 	    else
 		return s;
 	}
@@ -578,7 +578,9 @@ SPECIAL_TOKEN : /* COMMENTS */
 | <MULTI_LINE_COMMENT: "/*" (~["*"])* "*" ("*" | (~["*","/"] (~["*"])* "*"))* "/">
 }
 
-// operator tokens
+/**
+ * operator tokens
+ */
 TOKEN :
 {
   <DECLARE_FREE: "$" | "free">
@@ -603,6 +605,11 @@ TOKEN :
 | <GREATER: ">">
 | <LESS_EQUAL: "\u2264" | "=<">
 | <GREATER_EQUAL: "\u2265" | ">=">
+
+| <PLUS: "+">
+| <MINUS: "-">
+| <TIMES: "\u22c5" | "*">
+| <DIVIDE: "\u2215" | "/">
 
 | <LAMBDA: "\u03bb" | "\\">
 | <PI: "\u03a0" | "\\\\">
@@ -803,9 +810,11 @@ Expression PrimaryExpression() :
 	{return a;}
 }
 
-/* IDENTIFIERS */
-
-//@note must be below the keyword tokens like "and", "xor" due to (first) longest-possible match
+/**
+ * IDENTIFIERS
+ * @internal note must be below the keyword tokens like "and", "xor"
+ *  due to (first) longest-possible match.
+ */
 TOKEN :
 {
     <IDENTIFIER : <LETTER> (<LETTER>|<DIGIT_OR_ALIKE>)* >
@@ -919,14 +928,14 @@ Expression term() :
 Expression SumTerm() :
 {Token tok;Expression a, b;}
 {
-    a = ProductTerm() ( (tok = "+" | tok = "-") b = ProductTerm() {a = combine(tok, a, b);} )*
+    a = ProductTerm() ( (tok = <PLUS> | tok = <MINUS>) b = ProductTerm() {a = combine(tok, a, b);} )*
 {return a;}
 }
 
 Expression ProductTerm() :
 {Token tok;Expression a, b;}
 {
-    a = PowerTerm() ( (tok = "*" | tok = "/") b = PowerTerm() {a = combine(tok, a, b);} )*
+    a = PowerTerm() ( (tok = <TIMES> | tok = <DIVIDE>) b = PowerTerm() {a = combine(tok, a, b);} )*
 {return a;}
 }
 
@@ -944,7 +953,7 @@ Expression PowerTerm() :
 Expression UnaryTerm() :
 {Token tok;Expression v;}
 {
-    ( tok = "+" | tok = "-" ) v = UnaryTerm() {return combine(tok, v);}
+    ( tok = <PLUS> | tok = <MINUS> ) v = UnaryTerm() {return combine(tok, v);}
 |   v = PrimaryTerm() {return v;}
 }
 
@@ -1018,8 +1027,9 @@ Expression AtomicTerm() :
 
 // atomic values
 
-/* LITERALS */
-
+/**
+ * LITERALS
+ */
 TOKEN :
 {
     <INTEGER_LITERAL: <DECIMAL_LITERAL> >
@@ -1027,8 +1037,8 @@ TOKEN :
     <#DECIMAL_LITERAL: (<DIGIT>)+ >
 |
     <FLOATING_POINT_LITERAL:
-          <DECIMAL_LITERAL> "." (<DECIMAL_LITERAL>)? (<EXPONENT>)?
-	| <DECIMAL_LITERAL> (<EXPONENT>)?
+          <DECIMAL_LITERAL> "." <DECIMAL_LITERAL> (<EXPONENT>)?
+	| <DECIMAL_LITERAL> <EXPONENT>
     >
 |
     <#EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
