@@ -46,6 +46,10 @@ abstract class ModernLogic implements Logic {
      */
     static final int COMPLEX_ERROR_OFFSET = -1;
 
+    public String toString() {
+	return getClass().getName() + '[' + ']';
+    }
+
     // heavy implementation
 
     public Expression createAtomic(Symbol symbol) {
@@ -175,6 +179,19 @@ abstract class ModernLogic implements Logic {
     // parsing
     
     // this is an additional method related to createExpression(String)
+    /**
+     * Create a list of (compound) expressions by parsing a list of expressions.
+     * This method is the list version of {@link #createExpression(String)}.
+     * <p>
+     * For example,
+     * <pre>
+     *  A&B, A&~C
+     * </pre>
+     * will be parsed as two formulas <code>A&B</code> and <code>A&~C</code>.
+     * </p>
+     * @param expressions the comma separated list of expressions to parse.
+     * @see #createExpression(String)
+     */
     public Expression[] createAllExpressions(String expressions) throws ParseException {
 	if (expressions == null)
 	    throw new NullPointerException("null is not an expression");
@@ -211,4 +228,7 @@ abstract class ModernLogic implements Logic {
 	} 
     }
     
+    public Signature scanSignature(String expression) throws ParseException {
+	return ((Formula)createExpression(expression)).getSignature();
+    } 
 }
