@@ -124,10 +124,10 @@ public class SearchTest extends check.TestCase {
 	    }
 	    catch(UnsupportedOperationException x) {logger.log(Level.INFO, "unsupported", x);}
 	    try {
-		correct = algo instanceof ProbabilisticAlgorithm ? ((ProbabilisticAlgorithm) algo).isCorrect() : true;
+		correct = !(algo instanceof ProbabilisticAlgorithm) || ((ProbabilisticAlgorithm) algo).isCorrect();
 	    }
 	    catch(UnsupportedOperationException x) {logger.log(Level.INFO, "unsupported", x);}
-	    optimal = algo instanceof GeneralSearch ? ((GeneralSearch) algo).isOptimal() : false;
+	    optimal = algo instanceof GeneralSearch && ((GeneralSearch) algo).isOptimal();
 
 	    // test problems that have a solution
 	    for (int rep = 0; rep < TEST_REPETITION; rep++) {
