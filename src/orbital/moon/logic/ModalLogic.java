@@ -243,7 +243,7 @@ public class ModalLogic extends ClassicalLogic {
 	 * @author  Andr&eacute; Platzer
 	 */
 	private static class FlattenFunctionalUnifyingMatcher extends MatcherImpl {
-	    //private static final long serialVersionUID = 0;
+	    private static final long serialVersionUID = 2043059559362466049L;
 	    public FlattenFunctionalUnifyingMatcher() {
 		super("<functional application>", "<flattened contextualized>");
 	    }
@@ -405,8 +405,7 @@ public class ModalLogic extends ClassicalLogic {
 	 * @todo could also transform to dscr(s, p(s))? @see Sowa
 	 */
 	private static class ContextualizeUnifyingMatcher extends MatcherImpl {
-	    //private static final long serialVersionUID = 0;
-	    private static final Set coreReferents = new HashSet(logic.coreInterpretation().values());
+	    private static final long serialVersionUID = -4249009438954204460L;
 	    public ContextualizeUnifyingMatcher() {
 		super("<predicate application>", "<contextualized>");
 	    }
@@ -453,7 +452,7 @@ public class ModalLogic extends ClassicalLogic {
 	 * @author  Andr&eacute; Platzer
 	 */
 	private static class BoxUnifyingMatcher extends UnifyingMatcher {
-	    //private static final long serialVersionUID = 0;
+	    private static final long serialVersionUID = 251247643742594505L;
 	    public BoxUnifyingMatcher(Object pattern, Object substitute) {
 		super(pattern, substitute);
 	    }
@@ -494,7 +493,7 @@ public class ModalLogic extends ClassicalLogic {
 	 * @author  Andr&eacute; Platzer
 	 */
 	private static class DiamondUnifyingMatcher extends UnifyingMatcher {
-	    //private static final long serialVersionUID = 0;
+	    private static final long serialVersionUID = -8620217380815936952L;
 	    public DiamondUnifyingMatcher(Object pattern, Object substitute) {
 		super(pattern, substitute);
 	    }
