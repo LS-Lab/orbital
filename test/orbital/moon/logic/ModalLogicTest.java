@@ -27,7 +27,7 @@ public class ModalLogicTest extends check.TestCase {
     protected void test(String name, boolean allTrue) {
 	try {
 	    ModalLogic logic = new ModalLogic();
-	    ModalLogic.proveAll(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/" + name)), logic, allTrue);
+	    ModalLogic.proveAll(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/moon/logic/" + name)), logic, allTrue);
 	}
 	catch (Throwable ex) {
 	    ex.printStackTrace();

@@ -119,7 +119,7 @@ public class setup extends WizardView implements Runnable, GUITool {
 	this.libraryPath = System.getProperty("java.ext.dirs");
 	try {
 	    try {
-		resources = new PropertyResourceBundle(getClass().getResourceAsStream("/orbital/resources/setup.properties"));
+		resources = new PropertyResourceBundle(getClass().getResourceAsStream("/orbital/moon/setup.properties"));
 	    }
 	    catch (IOException x) {throw x;}
 	    catch (Exception x) {throw new IOException(x.toString());}
@@ -134,7 +134,7 @@ public class setup extends WizardView implements Runnable, GUITool {
 	    // read license
 	    Container step = ((Container) getSteps()[1]);
 	    TextArea t;
-	    step.add(t = new TextArea(readFully(getClass().getResource("/orbital/resources/license.txt")), 10, 60, TextArea.SCROLLBARS_VERTICAL_ONLY));
+	    step.add(t = new TextArea(readFully(getClass().getResource("/orbital/moon/license.txt")), 10, 60, TextArea.SCROLLBARS_VERTICAL_ONLY));
 	    t.setEditable(false);
 	    Panel p = new Panel(new FlowLayout(FlowLayout.CENTER));
 	    p.add(acceptLicense = new Checkbox("I do accept the License Agreement", false));

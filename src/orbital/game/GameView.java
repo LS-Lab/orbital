@@ -283,7 +283,7 @@ public class GameView extends Applet {
 		System.out.println("no resources specified for: " + getClass().getName() + "\nUsing default resources\n" + trial);
 		// else try to get our resource bundle
 		try {
-		    return resources = ResourceBundle.getBundle("orbital.resources.Game");
+		    return resources = ResourceBundle.getBundle(GameView.class.getName());
 		} catch (MissingResourceException missing) {
 		    log("missing resource: An error occured initializing " + GameView.class.getName() + ".\nThe package seems corrupt or a resource is missing, aborting\n" + missing);
 		    //JOptionPane.showMessageDialog(null, "An error occured initializing " + Game.class.getName() + ".\nThe package seems corrupt or a resource is missing, aborting\n" + missing, "Error", JOptionPane.ERROR_MESSAGE);

@@ -160,7 +160,7 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
 
     public static final String usage = "usage: " + BreederControl.class.getName() + " [gapClassName]" + System.getProperty("line.separator") + "    gapClassName - name of the class\n    that implements the\n    GeneticAlgorithmProblem to solve";
     
-    private static final String RESOURCE_BUNDLE_NAME = "orbital.resources.BreederControl";
+    private static final String RESOURCE_BUNDLE_NAME = BreederControl.class.getName();
     /**
      * Program resources.
      */

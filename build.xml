@@ -458,7 +458,7 @@
     	        <attribute name="Class-Path" value="orbital-core.jar" />
                 <attribute name="Sealed" value="true"/>
     	        <!-- <attribute name="Main-Class" value="orbital.moon.setup"/> -->
-    	        <attribute name="Main-Icon" value="orbital/resources/orbital.gif"/>
+    	        <attribute name="Main-Icon" value="orbital/moon/orbital.gif"/>
     	    
     	        <section name="orbital/awt/ChartModel.class">
     	            <attribute name="Java-Bean" value="True"/>
@@ -502,8 +502,9 @@
             <fileset dir="${resources}">
 	        <exclude name="java/**"/>
             </fileset>
-            <zipfileset dir="${doc}" prefix="orbital/resources">
+            <zipfileset dir="${doc}" prefix="orbital/moon">
 	        <include name="license.txt"/>
+	        <include name="orbital.gif"/>
             </zipfileset>
             <fileset dir="${sources}/orbital">
 	        <include name="META-INF/services/*"/>
@@ -528,7 +529,7 @@
 	        <attribute name="Sealed" value="true"/>
 
     	        <!-- <attribute name="Main-Class" value="orbital.moon.setup"/> -->
-    	        <attribute name="Main-Icon" value="orbital/resources/orbital.gif"/>
+    	        <attribute name="Main-Icon" value="orbital/moon/orbital.gif"/>
     	    
     	        <section name="orbital/awt/ChartModel.class">
     	            <attribute name="Java-Bean" value="True"/>
@@ -580,8 +581,9 @@
             <fileset dir="${resources}">
 	        <exclude name="java/**"/>
             </fileset>
-            <zipfileset dir="${doc}" prefix="orbital/resources">
+            <zipfileset dir="${doc}" prefix="orbital/moon">
 	        <include name="license.txt"/>
+	        <include name="orbital.gif"/>
             </zipfileset>
             <fileset dir="${sources}/orbital">
 	        <include name="META-INF/services/*"/>
