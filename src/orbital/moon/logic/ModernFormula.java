@@ -150,11 +150,15 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     //@todo introduce (currently derived from LogicBasis) xor, impl, equiv
 
     public Formula exists(Symbol x) {
-	return compose(EXISTS, new Formula[] {createSymbol(getUnderlyingLogic(), x), this});
+	return compose(EXISTS, new Formula[] {
+	    compose(ClassicalLogic.LAMBDA, new Formula[] {createSymbol(getUnderlyingLogic(), x), this})
+	});
     } 
 	
     public Formula forall(Symbol x) {
-	return compose(FORALL, new Formula[] {createSymbol(getUnderlyingLogic(), x), this});
+	return compose(FORALL, new Formula[] {
+	    compose(ClassicalLogic.LAMBDA, new Formula[] {createSymbol(getUnderlyingLogic(), x), this})
+	});
     } 
 
     private Formula compose(Symbol op, Formula[] arguments) {
@@ -727,6 +731,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	protected Formula right;
 	public BinaryAppliedFormula(Logic underlyingLogic, Symbol fsymbol, BinaryFunction f, Formula g, Formula h, Notation notation) {
 	    super(underlyingLogic, notation);
+	    if (fsymbol == null)
+		throw new IllegalArgumentException("illegal compositor symbol " + fsymbol + " for compositor referent " + f + " applied to " + g + " and " + h);
 	    this.outerSymbol = fsymbol;
 	    this.outer = f;
 	    this.left = g;
@@ -739,6 +745,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	private BinaryAppliedFormula() {super(null);}
 
         public Type getType() {
+	    assert outerSymbol != null && outerSymbol.getType() != null : outerSymbol + " != null && " + (outerSymbol == null ? null : outerSymbol.getType()) + " != null\ncompositor symbol " + outerSymbol + " for compositor referent " + outer + " applied to " + left + " and " + right;
 	    return outerSymbol.getType().codomain();
         }
         public Signature getSignature() {

@@ -58,11 +58,6 @@ import orbital.logic.functor.Notation;
 import orbital.logic.functor.Notation.NotationSpecification;
 import orbital.logic.functor.Functor.Specification;
 
-import java.util.Date;
-import java.util.TimeZone;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
 import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.util.ListIterator;
@@ -297,127 +292,6 @@ public class ClassicalLogic extends ModernLogic {
      * @todo move content to the ResourceBundle.
      */
     public static final String usage = "usage: [options] [all|none|properties|fol|<filename>|table]\n\tall\tprove important semantic-equivalence expressions\n\tnone\ttry to prove some semantic-garbage expressions\n\tproperties\tprove some properties of classical logic inference relation\n\tfol\tprove important equivalences of first-order logic\n\n\t<filename>\ttry to prove all expressions in the given file\n\ttable\tprint a function table of the expression instead\n\t-\tUse no arguments at all to be asked for expressions\n\t\tto prove.\noptions:\n\t-normalForm\tcheck the conjunctive and disjunctive forms in between\n\t-resolution\tuse resolution instead of semantic inference\n\t-verbose\tbe more verbose (f.ex. print normal forms if -normalForm)\n\t-charset=<encoding>\tthe character set or encoding to use for reading files\n\nTo check whether A and B are equivalent, enter '|= A<->B'";
-
-    /**
-     * Prove all conjectures read from a reader.
-     * @param rd the source for the conjectures to prove.
-     * @param logic the logic to use.
-     * @param all_true If <code>true</code> this method will return whether all conjectures in rd
-     *  could be proven.
-     *  If <code>false</code> this method will return whether some conjectures in rd
-     *  could be proven.
-     * @return a value depending upon all_true.
-     */
-    public static boolean proveAll(Reader rd, ClassicalLogic logic, boolean all_true) throws ParseException, IOException {
-	return proveAll(rd, logic, all_true, false, false);
-    }
-    private static boolean proveAll(Reader rd, ClassicalLogic logic, boolean all_true, boolean normalForm, boolean verbose) throws ParseException, IOException {
-	DateFormat df = new SimpleDateFormat("H:mm:ss:S");
-	df.setTimeZone(TimeZone.getTimeZone("Greenwich/Meantime"));
-	Date	   loadeta;
-	long	   start = System.currentTimeMillis();
-
-	boolean some = false;
-	boolean all = true;
-
-	boolean eof = false;
-	do {
-	    String formula = "";
-	    String comment = null;					// not in comment mode
-
-	    boolean wasWhitespace = false;
-	    while (!eof) {
-		int ch = rd.read();
-		if (ch == -1) {
-		    eof = true;
-		    break;
-		} else if (ch == '\r')
-		    continue;
-		else if (ch == '\n')
-		    break;
-		else if ((ch == ' ' || ch == '\t')) {
-		    //@todo why should we want to skip multiple whitespaces, except for trailing comments?
-		    if (comment != null || !wasWhitespace) {
-			wasWhitespace = true;
-			// add to comment or formula, depending upon whether in comment mode or not
-			if (comment == null)
-			    formula += (char) ch;
-			else
-			    comment += (char) ch;
-		    } else
-			// skip multiple nonbreaking white-spaces unless in comment mode
-			continue;
-		} else if (ch == '#')
-		    // enter comment mode
-		    comment = "";
-		else {
-		    wasWhitespace = false;
-		    // add to comment or formula, depending upon whether in comment mode or not
-		    if (comment == null)
-			formula += (char) ch;
-		    else
-			comment += (char) ch;
-		}
-	    }
-			
-	    if ("".equals(formula)) {
-		if (comment != null)
-		    System.out.println('#' + comment);
-		// skip proving comment-only lines since it's pointless
-		continue;
-	    }
-
-
-	    // split formula into knowledge and formula
-	    String knowledge = "";
-	    // some term substitutions (currently substitutes only once)
-	    final int eq = formula.indexOf("==");
-	    int e = eq;
-	    if (e >= 0)
-		formula = "(" + formula.substring(0, e) + ")" + " <=> " + "(" + formula.substring(e + 2) + ")";
-	    e = Math.max(formula.indexOf("|="), formula.indexOf("|-"));
-	    if (e >= 0) {
-		knowledge = formula.substring(0, e);
-		formula = formula.substring(e + 2);
-	    }
-	    if (eq >= 0)
-		//@xxx better use a Parser for this, f.ex. by turning a==b into a|=b and b|=a otherwise we would do garbage for "p->q,r->s==x" or even "p(x,y) |= p(a,b)"
-		formula = formula.replace(',', '&');
-
-
-	    // infer
-	    final boolean sat = logic.infer(knowledge, formula);
-	    System.out.println(knowledge + (sat ? "\t|= " : "\tNOT|= ") + formula);
-
-	    // verify equivalence of its NF
-	    if (normalForm) {
-		String normalFormName[] = {
-		    "disjunctive",
-		    "conjunctive"
-		};
-		Formula nf[] = {
-		    Utilities.disjunctiveForm(logic.createFormula(formula), true),
-		    Utilities.conjunctiveForm(logic.createFormula(formula), true)
-		};
-		for (int i = 0; i < nf.length; i++) {
-		    if (verbose)
-			System.out.println(normalFormName[i] + " normal form: " + nf[i]);
-		    if (!logic.inference().infer(new Formula[] {logic.createFormula(formula)}, nf[i]))
-			throw new InternalError("wrong NF " + nf[i] + " =| for " + formula);
-		    if (!logic.inference().infer(new Formula[] {nf[i]}, logic.createFormula(formula)))
-			throw new InternalError("wrong NF " + nf[i] + " |= for " + formula);
-		}
-	    }
-
-	    // keep records
-	    some |= sat;
-	    all &= sat;
-	} while (!eof);
-
-	Date   eta = new Date(System.currentTimeMillis() - start);
-	logger.log(Level.INFO, "timing is Proof duration {0}", df.format(eta));
-	return all_true ? all : some;
-    } 
 
 
     
@@ -1301,7 +1175,7 @@ public class ClassicalLogic extends ModernLogic {
 	};
     /**
      * Resolution inference.
-     * Inference mechanism driven by full resolution.
+     * Inference mechanism driven by full first-order resolution.
      */
     public static final InferenceMechanism RESOLUTION_INFERENCE = new InferenceMechanism("RESOLUTION") {
 	    private final Inference _resolution = new Resolution();
@@ -1674,20 +1548,6 @@ public class ClassicalLogic extends ModernLogic {
 	return (Formula) createExpression(expression);
     } 
    
-    /**
-     * facade for convenience.
-     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Method</a>
-     * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience Method</a>
-     * @see #createExpression(String)
-     * @see #infer(Formula[],Formula)
-     */
-    public boolean infer(String expression, String exprDerived) throws ParseException {
-	Formula B[] = (Formula[]) Arrays.asList(createAllExpressions(expression)).toArray(new Formula[0]);
-	Formula D = (Formula) createExpression(exprDerived);
-	logger.log(Level.FINE, "Formula {0} has type {1} with sigma={2}", new Object[] {D, D.getType(), D.getSignature()});
-	return inference().infer(B, D);
-    } 
-	
     /**
      * @deprecated empty formulas are not defined
      */

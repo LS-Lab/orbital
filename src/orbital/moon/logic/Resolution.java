@@ -77,7 +77,7 @@ import java.util.logging.Level;
  * @todo use optimizations of "Deduktions- und Inferenzsysteme"
  */
 class Resolution implements Inference {
-    private static final boolean UNDER_CONSTRUCTION = true;
+    private static final boolean UNDER_CONSTRUCTION = false;
     private static final boolean ASYNCHRONOUS_EXPAND = false;
     private static final Logger logger = Logger.getLogger(Resolution.class.getPackage().getName());
     private static final ClassicalLogic logic = new ClassicalLogic();

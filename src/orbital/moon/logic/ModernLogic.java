@@ -24,10 +24,20 @@ import orbital.logic.trs.Variable;
 import orbital.logic.functor.*;
 
 import java.io.StringReader;
+
 import orbital.util.Utility;
 import orbital.math.MathUtilities;
 import orbital.math.Arithmetic;
 import orbital.math.Values;
+import java.util.Arrays;
+
+import java.util.logging.Logger;
+import java.util.logging.Level;
+import java.io.*;
+import java.util.Date;
+import java.util.TimeZone;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 /**
  * A support class for implementing modern logic.
@@ -41,10 +51,144 @@ import orbital.math.Values;
  * @see ModernFormula
  */
 abstract class ModernLogic implements Logic {
+    private static final Logger logger = Logger.getLogger(ModernLogic.class.getName());
+    /**
+     * Whether runtime type checks are enabled.
+     */
+    private static final boolean TYPE_CHECK = false;
     /**
      * A complex error offset that is not representable by a locator for ParseException.
      */
     static final int COMPLEX_ERROR_OFFSET = -1;
+
+    /**
+     * Prove all conjectures read from a reader.
+     * The conjectures have the following forms
+     * <pre>
+     * &lt;premise&gt; (, &lt;premise&gt;)<sup>*</sup> |= &lt;conclusion&gt;    # &lt;comment&gt; &lt;EOL&gt;
+     * &lt;formula&gt; == &lt;formula&gt;    # &lt;comment&gt; &lt;EOL&gt;
+     * ...
+     * </pre>
+     * @param rd the source for the conjectures to prove.
+     * @param logic the logic to use.
+     * @param all_true If <code>true</code> this method will return whether all conjectures in rd
+     *  could be proven.
+     *  If <code>false</code> this method will return whether some conjectures in rd
+     *  could be proven.
+     * @return a value depending upon all_true.
+     * @see LogicParser#readTRS(Reader,ExpressionSyntax,Function)
+     */
+    protected static final boolean proveAll(Reader rd, ModernLogic logic, boolean all_true) throws ParseException, IOException {
+	return proveAll(rd, logic, all_true, false, false);
+    }
+    static final boolean proveAll(Reader rd, ModernLogic logic, boolean all_true, boolean normalForm, boolean verbose) throws ParseException, IOException {
+	DateFormat df = new SimpleDateFormat("H:mm:ss:S");
+	df.setTimeZone(TimeZone.getTimeZone("Greenwich/Meantime"));
+	Date	loadeta;
+	long	start = System.currentTimeMillis();
+
+	boolean some = false;
+	boolean all = true;
+
+	boolean eof = false;
+	do {
+	    String formula = "";
+	    String comment = null;					// not in comment mode
+
+	    boolean wasWhitespace = false;
+	    while (!eof) {
+		int ch = rd.read();
+		if (ch == -1) {
+		    eof = true;
+		    break;
+		} else if (ch == '\r')
+		    continue;
+		else if (ch == '\n')
+		    break;
+		else if ((ch == ' ' || ch == '\t')) {
+		    //@todo why should we want to skip multiple whitespaces, except for trailing comments?
+		    if (comment != null || !wasWhitespace) {
+			wasWhitespace = true;
+			// add to comment or formula, depending upon whether in comment mode or not
+			if (comment == null)
+			    formula += (char) ch;
+			else
+			    comment += (char) ch;
+		    } else
+			// skip multiple nonbreaking white-spaces unless in comment mode
+			continue;
+		} else if (ch == '#')
+		    // enter comment mode
+		    comment = "";
+		else {
+		    wasWhitespace = false;
+		    // add to comment or formula, depending upon whether in comment mode or not
+		    if (comment == null)
+			formula += (char) ch;
+		    else
+			comment += (char) ch;
+		}
+	    }
+			
+	    if ("".equals(formula)) {
+		if (comment != null)
+		    System.out.println('#' + comment);
+		// skip proving comment-only lines since it's pointless
+		continue;
+	    }
+
+
+	    // split formula into knowledge and formula
+	    String knowledge = "";
+	    // some term substitutions (currently substitutes only once)
+	    final int eq = formula.indexOf("==");
+	    int e = eq;
+	    if (e >= 0)
+		formula = "(" + formula.substring(0, e) + ")" + " <=> " + "(" + formula.substring(e + 2) + ")";
+	    e = Math.max(formula.indexOf("|="), formula.indexOf("|-"));
+	    if (e >= 0) {
+		knowledge = formula.substring(0, e);
+		formula = formula.substring(e + 2);
+	    }
+	    if (eq >= 0)
+		//@xxx better use a Parser for this, f.ex. by turning a==b into a|=b and b|=a otherwise we would do garbage for "p->q,r->s==x" or even "p(x,y) |= p(a,b)"
+		formula = formula.replace(',', '&');
+
+
+	    // infer
+	    final boolean sat = logic.infer(knowledge, formula);
+	    System.out.println(knowledge + (sat ? "\t|= " : "\tNOT|= ") + formula);
+
+	    // verify equivalence of its NF
+	    if (normalForm) {
+		Formula f = (Formula) logic.createExpression(formula);
+		String normalFormName[] = {
+		    "disjunctive",
+		    "conjunctive"
+		};
+		Formula nf[] = {
+		    ClassicalLogic.Utilities.disjunctiveForm(f, true),
+		    ClassicalLogic.Utilities.conjunctiveForm(f, true)
+		};
+		for (int i = 0; i < nf.length; i++) {
+		    if (verbose)
+			System.out.println(normalFormName[i] + " normal form: " + nf[i]);
+		    if (!logic.inference().infer(new Formula[] {f}, nf[i]))
+			throw new InternalError("wrong NF " + nf[i] + " =| for " + formula);
+		    if (!logic.inference().infer(new Formula[] {nf[i]}, f))
+			throw new InternalError("wrong NF " + nf[i] + " |= for " + formula);
+		}
+	    }
+
+	    // keep records
+	    some |= sat;
+	    all &= sat;
+	} while (!eof);
+
+	Date   eta = new Date(System.currentTimeMillis() - start);
+	logger.log(Level.INFO, "timing is Proof duration {0}", df.format(eta));
+	return all_true ? all : some;
+    } 
 
     public String toString() {
 	return getClass().getName() + '[' + ']';
@@ -55,7 +199,7 @@ abstract class ModernLogic implements Logic {
     public Expression createAtomic(Symbol symbol) {
 	Expression RES = createAtomicImpl(symbol);
 	assert RES != null : "@post RES != null";	     
-	assert RES.getType().equals(symbol.getType()) && (((RES instanceof Variable) && ((Variable)RES).isVariable()) == symbol.isVariable()) : "@post " + RES.getType() + "=" + symbol.getType() + " & (" + ((RES instanceof Variable) && ((Variable)RES).isVariable()) + "<->" + symbol.isVariable() + ") for " + symbol + " = " + RES;
+	assert !TYPE_CHECK || RES.getType().equals(symbol.getType()) && (((RES instanceof Variable) && ((Variable)RES).isVariable()) == symbol.isVariable()) : "@post " + RES.getType() + "=" + symbol.getType() + " & (" + ((RES instanceof Variable) && ((Variable)RES).isVariable()) + "<->" + symbol.isVariable() + ") for " + symbol + " = " + RES;
 	return RES;
     }
 
@@ -91,12 +235,12 @@ abstract class ModernLogic implements Logic {
     public Expression compose(Expression compositor, Expression arguments[]) throws ParseException {
 	if (compositor == null)
 	    throw new NullPointerException("illegal arguments: compositor " + compositor + " composed with " + MathUtilities.format(arguments));
-        if (!Types.isApplicableTo(compositor.getType(), arguments))
+        if (TYPE_CHECK && !Types.isApplicableTo(compositor.getType(), arguments))
 	    throw new ParseException("compositor " + compositor + " : " + compositor.getType() + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments) + " : " + Types.typeOf(arguments), COMPLEX_ERROR_OFFSET);
 
 	Expression RES = composeImpl(compositor, arguments);
 	assert RES != null : "@post RES != null";	     
-	assert RES.getType().equals(compositor.getType().codomain()) : "@post " + RES.getType() + "=" + compositor.getType().codomain() + "\n\tfor " + RES + " = compose(" + compositor + " , " + MathUtilities.format(arguments) + ")";
+	assert !TYPE_CHECK || RES.getType().equals(compositor.getType().codomain()) : "@post " + RES.getType() + "=" + compositor.getType().codomain() + "\n\tfor " + RES + " = compose(" + compositor + " , " + MathUtilities.format(arguments) + ")";
 	return RES;
     }
     Expression composeImpl(Expression op, Expression arguments[]) throws ParseException {
@@ -230,6 +374,23 @@ abstract class ModernLogic implements Logic {
 
     // Helpers
 
+    /**
+     * Inference (facade for convenience).
+     * @param w the comma separated list of premise expressions to parse.
+     * @return whether w <span class="inference">|~</span><sub>K</sub> d.
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience Method</a>
+     * @see #createAllExpressions(String)
+     * @see #createExpression(String)
+     * @see #infer(Formula[],Formula)
+     */
+    public boolean infer(String w, String d) throws ParseException {
+	Formula B[] = (Formula[]) Arrays.asList(createAllExpressions(w)).toArray(new Formula[0]);
+	Formula D = (Formula) createExpression(d);
+	logger.log(Level.FINE, "Formula {0} has type {1} with sigma={2}", new Object[] {D, D.getType(), D.getSignature()});
+	return inference().infer(B, D);
+    } 
+	
     /**
      * test for syntactically legal <IDENTIFIER>
      * @throws IllegalArgumentException if signifier is not an IDENTIFIER.

@@ -164,6 +164,8 @@ public class LogicParser {
 	    switch (op.charAt(0)) {
 	    case '!': /*fall-through*/
 	    case '¬': op = "~"; break;
+	    case '\u25a1': op = "[]"; break;
+	    case '\u25c7': op = "<>"; break;
 	    default: /*ignore*/
 	    }
 	return composeWrapper(optok, op, new Expression[] {a});
@@ -486,6 +488,7 @@ public class LogicParser {
      *  prior to constructing the substitution.
      * @throws IOException when an error occurs while reading from the reader.
      * @throws orbital.logic.imp.ParseException when a syntax error occurs in the source.
+     * @see ModernLogic#proveAll(Reader,boolean)
      */
     public static final Substitution readTRS(final Reader reader, final ExpressionSyntax syntax, final Function expressionTransformation)
 	throws IOException, orbital.logic.imp.ParseException {
@@ -567,6 +570,9 @@ TOKEN :
 | <AND: "\u2227" | "&" | "&&">
 
 | <NOT: "¬" | "~" | "!">
+
+| <BOX: "\u25a1" | "[]">
+| <DIAMOND: "\u25c7" | "<>">
 
 | <EQUAL: "=" | "==">
 | <UNEQUAL: "\u2260" | "!=">
@@ -741,8 +747,17 @@ Expression UnaryExpression() :
 {Token tok;Expression f;}
 {
     tok = <NOT> f = UnaryExpression() {return combine(tok, f);}
+    | f = ModalExpression()
+	{return f;}
     | f = PrimaryExpression()
 	{return f;}
+}
+
+Expression ModalExpression() :
+{Token tok;Expression f;}
+{
+    tok = <BOX> f = UnaryExpression() {return combine(tok, f);}
+|   tok = <DIAMOND> f = UnaryExpression() {return combine(tok, f);}
 }
 
 /**
