@@ -79,4 +79,8 @@ A, A=>B |- B				# Mp modus (ponendo) ponens
 
 # thereby note
 # []~A == ~<>A	# @fixme time >
+  []~A |= ~<>A
+  ~<>A |= []~A
 # <>~A == ~[]A	# @fixme time >
+  <>~A |= ~[]A
+  ~[]A |= <>~A
