@@ -98,7 +98,11 @@ public class AlphaBetaPruning extends AdversarySearch {
 		    if (alpha >= beta)
 			break;
             	}
-	    bestOption.setUtility(alpha);
+	    if (bestOption != null)
+		bestOption.setUtility(alpha);
+	    else {
+		assert alpha != Double.NEGATIVE_INFINITY || beta != Double.POSITIVE_INFINITY || !successors(state).hasNext() : "at least with usual arguments there must have been no successors in order to produce no best option";
+	    }
 	    return bestOption;
         }
         finally {
