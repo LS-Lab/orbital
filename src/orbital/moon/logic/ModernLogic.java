@@ -17,27 +17,12 @@ import orbital.logic.imp.*;
 import orbital.logic.functor.Functor;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import orbital.math.MathUtilities;
 
-
-import orbital.logic.functor.Functor.Composite;
 import orbital.logic.functor.*;
-import orbital.logic.functor.Predicates;
 
 import java.io.StringReader;
-
-import java.util.Set;
-
-import java.util.Map;
-import java.util.Collection;
-import java.util.Iterator;
-
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-
-import java.util.Collections;
-import orbital.util.Setops;
 import orbital.util.Utility;
+import orbital.math.MathUtilities;
 
 /**
  * A support class for implementing modern logic.

@@ -15,9 +15,8 @@ package orbital.moon.logic;
 import orbital.logic.imp.*;
 
 import orbital.logic.functor.Functor;
-import orbital.logic.functor.Functor.Composite;
+import orbital.logic.functor.Functor.Composite; //@todo sure?
 import orbital.logic.functor.*;
-import orbital.logic.functor.Predicates;
 
 import java.text.ParseException;
 
