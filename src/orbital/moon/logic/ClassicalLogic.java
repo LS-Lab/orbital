@@ -431,6 +431,7 @@ public class ClassicalLogic extends ModernLogic {
 
     //@todo remove this bugfix that replaces "xfy" by "yfy" associativity only for *.jj parsers to work without inefficient right-associative lookahead.
     private static final String xfy = "yfy";
+    private static final String typAssoc = "f";  //@xxx should be "fx"?
 
     //@todo unmodifiable view
     private static final Interpretation _coreInterpretation =
@@ -441,19 +442,18 @@ public class ClassicalLogic extends ModernLogic {
 	     * Stored internally as an array of length-2 arrays.
 	     * @invariants sorted, i.e. precedenceOf[i] < precedenceOf[i+1]
 	     */
-	    //@fixme debug why the thing ~(a->a) is displayed as ~a->a etc.  Use BESTFIX! (@see Notation#hasCompactBrackets)
 	    {typeSystem.UNIVERSAL(),
-	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+	     new NotationSpecification(500, typAssoc, Notation.POSTFIX)},
 	    {typeSystem.objectType(java.lang.Boolean.class, "truth"),
-	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+	     new NotationSpecification(500, typAssoc, Notation.POSTFIX)},
 	    {typeSystem.objectType(java.lang.Object.class, "individual"),
-	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+	     new NotationSpecification(500, typAssoc, Notation.POSTFIX)},
 	    {typeSystem.objectType(orbital.math.Integer.class, "integer"),
-	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+	     new NotationSpecification(500, typAssoc, Notation.POSTFIX)},
 	    {typeSystem.objectType(orbital.math.Real.class, "real"),
-	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+	     new NotationSpecification(500, typAssoc, Notation.POSTFIX)},
 	    {typeSystem.objectType(String.class, "string"),
-	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+	     new NotationSpecification(500, typAssoc, Notation.POSTFIX)},
 
 	    {typeSystem.list(),
 	     new NotationSpecification(500, "fx", Notation.PREFIX)},
@@ -479,16 +479,16 @@ public class ClassicalLogic extends ModernLogic {
 	     new NotationSpecification(700, "xfx", Notation.INFIX)},
 
 	    {LogicFunctions.forall,       // "°"
-	     new NotationSpecification(900, "fxx", Notation.PREFIX)},
+	     new NotationSpecification(900, "fy", Notation.PREFIX)},
 	    {LogicFunctions.exists,       // "?"
-	     new NotationSpecification(900, "fxx", Notation.PREFIX)},
+	     new NotationSpecification(900, "fy", Notation.PREFIX)},
 	    {LogicFunctions.lambda,       // "\\"
-	     new NotationSpecification(900, "fxx", Notation.PREFIX)},
+	     new NotationSpecification(900, "fxy", Notation.PREFIX)},
 	    {LogicFunctions.pi,           // "\\\\"
 	     new NotationSpecification(900, "fxx", Notation.PREFIX)},
 
 	    {LogicFunctions.not,          // "~"
-	     new NotationSpecification(900, "fy", Notation.PREFIX)},
+	     new NotationSpecification(900, "fx", Notation.PREFIX)},
 	    {LogicFunctions.and,          // "&"
 	     new NotationSpecification(910, xfy, Notation.INFIX)},
 	    {LogicFunctions.xor,          // "^"
@@ -722,6 +722,13 @@ public class ClassicalLogic extends ModernLogic {
 	    this.term = term;
 	}
 
+	public orbital.logic.Composite construct(Object f, Object g) {
+	    LambdaAbstractionFormula c = new LambdaAbstractionFormula();
+	    c.setCompositor(f);
+	    c.setComponent(g);
+	    return c;
+	}
+
 	// identical to @see orbital.logic.functor.Functionals.BinaryCompositeFunction
 	public Object getCompositor() {
 	    //@internal this trick will allow LambdaAbstractionFormulas to unify. null does not unify anything.
@@ -792,7 +799,7 @@ public class ClassicalLogic extends ModernLogic {
 	}
 	public String toString() {
 	    //@todo use notation like all others do. Should we also pretty-print &forall;(&lambda;x.p) as &forall;x p or something?
-	    return "(\\" + x + "." + term + ")";
+	    return "\\" + x + "." + term;
 	}
     }
 
