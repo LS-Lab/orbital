@@ -30,18 +30,18 @@ import java.util.logging.Level;
  * @internal min-max trees with compact values in [0,1] are and-or trees with fuzzy logic operators.
  * @todo generalize? implement a general interface?
  * @todo could optimize calculation to spend some memory for reuse of the last move's search tree
- * @todo in addition to the worst-case minmax values computed for decision, we could additionally
- *  compute estimates of the probable values. These can be estimated from the average minmax values
+ * @todo in addition to the worst-case minimax values computed for decision, we could additionally
+ *  compute estimates of the probable values. These can be estimated from the average minimax values
  *  found in a node's succcessors so far. However, the distribution is not easy, since the "Stichprobe"
  *  stems from a kind of bounded drawing which is quitted (pruned) once too good?? or too bad options occurred.
- *  The advantage is that when _max knows several options which have equally bad minmax values, then
+ *  The advantage is that when _max knows several options which have equally bad minimax values, then
  *  it could prefer the one with higher (estimated) probabile value. So in a sense, when our opponent
  *  is not perfectly rational (according to our utility), then we can still hope for the better cases.
  *  Actually, there's also a trade-off when to prefer probably better ones to worst-case better ones.
  *  But all this must be optional behaviour (so implemented in a subclass).
  */
 public class AlphaBetaPruning extends AdversarySearch {
-    private static final Logger logger = Logger.getLogger(AlphaBetaPruning.class.getName());
+    static final Logger logger = Logger.getLogger(AlphaBetaPruning.class.getName());
     /**
      * the maximum number of (half-) turns to look into the future
      * during search.  0 would mean no move, but does not make any
@@ -112,8 +112,10 @@ public class AlphaBetaPruning extends AdversarySearch {
      * Called to check which action to choose best.
      * This implementation checks whether the v &gt; w.
      * Overwrite to get additional behaviour.
+     * Note that this method is only relevant at the first layer of states in the search tree.
+     * Also note that this method's return value affects the minimax value of the initial state.
      * </p>
-     * @return Whether a node with value v is preferred over one with w
+     * @return Whether a node with value v is preferred over one with w.
      * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
      */
     protected boolean isPreferred(double v, double w) {
@@ -156,26 +158,38 @@ public class AlphaBetaPruning extends AdversarySearch {
 	    else
 		for (Iterator s = successors(state); s.hasNext(); ) {
 		    Option p = (Option) s.next();
-		    double v = minmax(p.getState(), alpha, beta);
+		    double v = minimax(p.getState(), alpha, beta);
 		    if (isPreferred(v, alpha)) {
-			logger.log(Level.FINEST, "evaluate utility", v + " for " + p + " PREFERRED");
+			logger.log(Level.FINEST, "evaluate utility: {1} for {0} preferred to {2} of {3}", new Object[] {format(v), p, format(alpha), bestOption});
+			//@internal may also decrease alpha below  "alpha = Math.max(alpha, v);", but if that's our clients preference...
+			alpha = v;
 			bestOption = p;
-		    } else
-			logger.log(Level.FINEST, "evaluate utility", v + " for " + p + " =< " + alpha);
-		    alpha = Math.max(alpha, v);
+		    } else {
+			assert bestOption != null : "always prefer choices to null";
+			logger.log(Level.FINEST, "evaluate utility: {1} for {0} =< {2} for {3}", new Object[] {format(v), p, format(alpha), bestOption});
+		    }
 		    if (alpha >= beta)
 			break;
             	}
 	    if (bestOption != null)
 		bestOption.setUtility(alpha);
 	    else {
-		assert alpha != Double.NEGATIVE_INFINITY || beta != Double.POSITIVE_INFINITY || !successors(state).hasNext() : "at least with usual arguments there must have been no successors in order to produce no best option";
+		assert !successors(state).hasNext() || alpha != Double.NEGATIVE_INFINITY || beta != Double.POSITIVE_INFINITY: "at least with usual arguments there must have been no successors in order to produce no best option";
 	    }
 	    return bestOption;
         }
         finally {
 	    currentDepth--;
         }
+    }
+
+    /**
+     * Just a hook for nice formatting in logger outputs.
+     */
+    static final Number format(double d) {
+	return new Double(d);
+	/*return Double.isNaN(d) ? "<NaN>" : d == Double.POSITIVE_INFINITY ? "+<inf>"
+	  : d == Double.NEGATIVE_INFINITY ? "-<inf>" : (d + "");*/
     }
 
     /**
@@ -187,7 +201,7 @@ public class AlphaBetaPruning extends AdversarySearch {
      *  at any choice point along the path to state for the minimizer.
      * @return the minimax value of state.
      */
-    private double minmax(final Field state, double alpha, double beta) {
+    private double minimax(final Field state, double alpha, double beta) {
 	return isOurLeaguesTurn(state)
 	    ? max(state, alpha, beta)
 	    : min(state, alpha, beta);
@@ -209,7 +223,7 @@ public class AlphaBetaPruning extends AdversarySearch {
 	    else
 		for (Iterator s = successors(state); s.hasNext(); ) {
 		    final Field nextState = ((Option) s.next()).getState();
-		    alpha = Math.max(alpha, minmax(nextState, alpha, beta));
+		    alpha = Math.max(alpha, minimax(nextState, alpha, beta));
 		    if (alpha >= beta)
 			return beta;
 		}
@@ -236,7 +250,7 @@ public class AlphaBetaPruning extends AdversarySearch {
 	    else
             	for (Iterator s = successors(state); s.hasNext(); ) {
 		    final Field nextState = ((Option) s.next()).getState();
-		    beta = Math.min(beta, minmax(nextState, alpha, beta));
+		    beta = Math.min(beta, minimax(nextState, alpha, beta));
 		    if (beta <= alpha)
 			return alpha;
             	}
