@@ -538,7 +538,7 @@ public class Substitutions {
 	Object t;
 	if (t1 == null || t2 == null)
 	    throw new NullPointerException("cannot unify (" + t1 + "," + t2 +") because null does not unify anything.");
-	// (*) if one of the two terms is a variable x, call the other term t
+	// tricky (*) if one of the two terms is a variable x, call the other term t
        	if ((isVariable(x = t1) && other(t = t2))
 	    || (isVariable(x = t2) && other(t = t1))) {
 	    if (x.equals(t))
