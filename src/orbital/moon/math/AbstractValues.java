@@ -16,12 +16,14 @@ import orbital.math.functional.MathFunctor;
 import orbital.logic.functor.Predicate;
 import orbital.logic.functor.Functor;
 import java.util.Collection;
+import java.util.Map;
 
 import java.util.List;
 
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Arrays;
+import java.util.Collections;
 import orbital.util.Setops;
 import orbital.util.Utility;
 
@@ -31,13 +33,47 @@ import java.util.Iterator;
 
 /**
  * Abstract base class for arithmetic object value constructor factories, already
- * implementing basic methods.
+ * implementing basic methods. Does not take (many) design decisions.
+ * Defers the most implementation issues to abstract methods.
  * 
  * @version 1.1, 2002-12-06
  * @author  Andr&eacute; Platzer
  */
-abstract class AbstractValues extends Values {
+public abstract class AbstractValues extends Values {
     private orbital.logic.functor.Function/*<Object[],Object[]>*/ coercer = null;
+    private orbital.logic.functor.Function/*<Arithmetic,Arithmetic>*/ normalizer = null;
+    private Map/*<String,Object>*/ parameters = Collections.EMPTY_MAP;
+
+    // instantiation
+
+    protected AbstractValues() {}
+
+    /**
+     * Create a new value factory where the sub class already sets the coercer.
+     * @see #setCoercer(orbital.logic.functor.Function)
+     */
+    protected AbstractValues(orbital.logic.functor.Function/*<Object[],Object[]>*/ coercer) {
+	this.coercer = coercer;
+    }
+    /**
+     * Create a new value factory where the sub class already sets the coercer and normalizer.
+     * @see #setCoercer(orbital.logic.functor.Function)
+     * @see #setNormalizer(orbital.logic.functor.Function)
+     */
+    protected AbstractValues(orbital.logic.functor.Function/*<Object[],Object[]>*/ coercer,
+			     orbital.logic.functor.Function/*<Arithmetic,Arithmetic>*/ normalizer) {
+	this.coercer = coercer;
+	this.normalizer = normalizer;
+    }
+
+    // get/set properties
+    
+    public void setParameters(Map/*<String,Object>*/ parameters) {
+	this.parameters = parameters;
+    }
+    protected Map/*<String,Object>*/ getParameters() {
+	return parameters;
+    }
 
     // Constants
 
@@ -119,18 +155,6 @@ abstract class AbstractValues extends Values {
 	    return ((ValueFactory)this).valueOf((java.math.BigDecimal) val);
 	else
 	    return narrow(valueOf(val.doubleValue()));
-    }
-
-    // instantiation
-
-    protected AbstractValues() {}
-
-    /**
-     * Create a new value factory where the sub class already sets the coercer.
-     * @see #seCoercer(orbital.logic.functor.Function)
-     */
-    protected AbstractValues(orbital.logic.functor.Function/*<Object[],Object[]>*/ coercer) {
-	this.coercer = coercer;
     }
 
     // scalar value constructors - facade factory
@@ -730,5 +754,20 @@ abstract class AbstractValues extends Values {
 	    security.checkPermission(new java.util.PropertyPermission(ValueFactory.class.getName() + ".coercer", "write"));
 	} 
 	initialSetCoercer(coercer);
+    } 
+
+    public final orbital.logic.functor.Function/*<Arithmetic,Arithmetic>*/ getNormalizer() {
+	return normalizer;
+    } 
+
+    protected final void initialSetNormalizer(orbital.logic.functor.Function/*<Arithmetic,Arithmetic>*/ normalizer) {
+	this.normalizer = normalizer;
+    } 
+    public final void setNormalizer(orbital.logic.functor.Function/*<Arithmetic,Arithmetic>*/ normalizer) throws SecurityException {
+	SecurityManager security = System.getSecurityManager();
+	if (security != null) {
+	    security.checkPermission(new java.util.PropertyPermission(ValueFactory.class.getName() + ".normalizer", "write"));
+	} 
+	initialSetNormalizer(normalizer);
     } 
 }
