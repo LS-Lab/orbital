@@ -444,7 +444,12 @@ public final class Values {
     public static /*<R implements Arithmetic>*/ Vector/*<R>*/ constant(final Vector/*<R>*/ v) {
 	return /*refine/delegate Vector*/ new AbstractVector/*<R>*/() {
 		private static final long serialVersionUID = 4473448798599904941L;
-		protected Vector/*<R>*/ newInstance(int d) {throw new AssertionError("this method should never get called in this context");}
+		protected Vector/*<R>*/ newInstance(int d) {
+		    assert false : "this method should never get called in this context of constant(...)";
+		    //@todo there are still some methods missing for the above assertion to prove true. transpose, Tensor add(Tensor);
+		    // so we simply pass it through until all these have been added
+		    return ((AbstractVector)v).newInstance(d);
+		}
 		public int dimension() { return v.dimension(); }
 		public Arithmetic/*>R<*/ get(int i) { return v.get(i); }
 		public void set(int i, Arithmetic/*>R<*/ vi) { throw new UnsupportedOperationException(); }
@@ -599,7 +604,12 @@ public final class Values {
     public static /*<R implements Arithmetic>*/ Matrix/*<R>*/ constant(final Matrix/*<R>*/ m) {
 	return /*refine/delegate Matrix*/ new AbstractMatrix/*<R>*/() {
 		private static final long serialVersionUID = 482711902153502751L;
-		protected Matrix/*<R>*/ newInstance(Dimension d) {throw new AssertionError("this method should never get called in this context");}
+		protected Matrix/*<R>*/ newInstance(Dimension d) {
+		    assert false : "this method should never get called in this context of constant(...)";
+		    //@todo there are still some methods missing for the above assertion to prove true. transpose, Tensor add(Tensor);
+		    // so we simply pass it through until all these have been added
+		    return ((AbstractMatrix)m).newInstance(d);
+		}
 		public Dimension dimension() { return m.dimension(); }
 		public Arithmetic/*>R<*/ get(int i, int j) { return m.get(i,j); }
 		public void set(int i, int j, Arithmetic/*>R<*/ v) { throw new UnsupportedOperationException(); }
@@ -632,6 +642,11 @@ public final class Values {
 		public Arithmetic inverse() {return m.inverse();}
 		public Arithmetic divide(Arithmetic b) {return m.divide(b);}
 		public Arithmetic power(Arithmetic b) {return m.power(b);}
+		public Matrix add(Matrix b) {return m.add(b);}
+		public Matrix subtract(Matrix b) {return m.subtract(b);}
+		public Matrix multiply(Matrix b) {return m.multiply(b);}
+		public Matrix scale(Scalar b) { return m.scale(b); }
+		public Vector multiply(Vector b) {return m.multiply(b);}
 		public Matrix/*<R>*/ transpose() { return m.transpose(); }
 		public Matrix/*<R>*/ pseudoInverse() { return m.pseudoInverse(); }
 		public Matrix/*<R>*/ appendColumns(Matrix/*<R>*/ b) { throw new UnsupportedOperationException(); }
@@ -764,7 +779,12 @@ public final class Values {
 	// but then some tensors would no longer be AbstractTensors.
 	//@todo so perhaps just identify multiple delegations to Tensor, or to Polynomial etc.
 	return /*refine/delegate Tensor*/ new AbstractTensor/*<R>*/() {
-		protected Tensor/*<R>*/ newInstance(int[] dim) {throw new AssertionError("this method should never get called in this context");}
+		protected Tensor/*<R>*/ newInstance(int[] dim) {
+		    assert false : "this method should never get called in this context of constant(...)";
+		    //@todo there are still some methods missing for the above assertion to prove true. transpose, Tensor add(Tensor);
+		    // so we simply pass it through until all these have been added
+		    return ((AbstractTensor)t).newInstance(dim);
+		}
 		// Code for delegation of orbital.math.Normed methods to t
 
 		/**

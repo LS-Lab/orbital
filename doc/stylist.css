@@ -57,6 +57,12 @@
     *.signified:before {content: close-quote;}
     *.signified:after {content: open-quote;}
     
+    /**
+     * XML for objects (referents) of semiotics.
+     */
+    *.referent {
+    }
+
     /* identifiers */
     
     /**

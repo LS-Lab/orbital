@@ -16,7 +16,7 @@ import orbital.moon.math.CoordinateCompositeFunction;
 import orbital.util.Utility;
 
 /**
- * This class contains general static helper functions for statistical mathematics.
+ * This class contains algorithms and utlities for stochastics and statistical mathematics.
  * It works much like the standard class {@link java.lang.Math} extended for
  * statistics.
  * 
@@ -192,14 +192,6 @@ public final class Stat {
     } 
 
     /**
-     * Number of elements in the specified array.
-     * @return a.length
-     */
-    public static int num(double a[]) {
-	return a.length;
-    } 
-
-    /**
      * Returns a string with the usual descriptive statistics for an array of double values.
      */
     public static String statistics(double x[]) {
@@ -232,7 +224,8 @@ public final class Stat {
      * Performs linear regression to estimate a composed function with
      * least squares.
      * <p>
-     * This works for single parametric functions, only.</p>
+     * Unlike {@link #regression(Function[],Matrix)}, this method is a facade
+     * that works for single parametric functions, only.</p>
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
      */
     public static Function functionalRegression(final Function composedFunc, Matrix experiment) {

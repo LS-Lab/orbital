@@ -94,6 +94,24 @@ public interface Symbol extends Variable, Comparable/*<Symbol>*/{
      * <p>
      * Synonym(!): sign (C.S.Peirce), signifier (Saussure), token.
      * </p>
+     * <p>
+     * Generally the three constituents - according to C.S.Peirce - 
+     * of a sign are (in their special notations, and with todays most common terminology)
+     * <ul>
+     *   <li>
+     *     <var class="signifier">signifier</var>
+     *     <!-- <span xml:lang="de">Signifikans</span> synonym: Repraesentamen (C.S.Peirce)  -->
+     *   </li>
+     *   <li>
+     *     <var class="signified">signified</var> (especially in computer science these are often C.S.Peirce's interpretants).
+     *     <!-- <span xml:lang="de">Signifikat</span> -->
+     *   </li>
+     *   <li>
+     *     <var class="referent">object</var>
+     *     <!-- synonym: referent -->
+     *   </li>
+     * </ul>
+     * </p>
      * @pre true
      */
     String getSignifier();

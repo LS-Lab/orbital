@@ -15,7 +15,7 @@ package orbital.math;
  * (&hArr; a&sdot;t-b&sdot;s = 0 if M is an integrity domain)</div>
  * is the R<sub>S</sub>-module (or ring or monoid) of <dfn>fractions</dfn> of the R-module (or commutative ring with 1 or monoid) M
  * with denominators in S&le;(R,&sdot;).
- * Where S&le;(R,&sdot;) is a submonoid of the multiplicative group of R. <!-- @todo clearify for modules and rings -->
+ * This means that S&le;(R,&sdot;) is a submonoid of the multiplicative group of R. <!-- @todo clearify for modules and rings -->
  * S<sup>-1</sup>M is also called <dfn>localisation of M to S</dfn>.
  * If p&#8882;R is prime, then R<sub>p</sub> := R<sub>R\p</sub> is called <dfn>localisation of R in p</dfn>
  * and is a local ring.
@@ -37,7 +37,23 @@ package orbital.math;
  * <p>
  * There is the canonical embedding homomorphism &iota;<sub>S</sub>:a&#8614;a&#8260;1
  * which is injective if and only if S does not contain zero divisors.
- * The universal mapping property is
+ * The ring of fractions R<sub>S</sub>is the presenting object of 
+ * the presentable functor
+ * <table>
+ *    <tbody>
+ *      <tr>
+ *        <td class="leftOfMap"><span class="categorie">Rng1</span></td>
+ *        <td class="arrowOfMap">&rarr;</td>
+ *        <td class="rightOfMap"><span class="categorie">Ens</span><!-- @todo even Ab because (R',+) is Abelian group --></td>
+ *      </tr>
+ *      <tr>
+ *        <td class="leftOfMap"><span class="objet">R'</span></td>
+ *        <td class="arrowOfMap">&#8614;</td>
+ *        <td class="rightOfMap">{&phi;&isin;Hom<sub class="categorie">Rng1</sub>(<span class="objet">R</span>,<span class="objet">R'</span>) &brvbar; &phi;(S)&sube;(<span class="objet">R'</span>)<sup>&times;</sup>}</td>
+ *      </tr>
+ *    </tbody>
+ * </table>
+ * Therefore it enjoys the following universal mapping property
  * <div class="UniversalMappingProperty">&forall;&phi;:R&rarr;R' homomorphism of rings with 1 with &phi;(S)&sube;(R')<sup>&times;</sup><br />
  * &exist;!&phi;&#771;:R<sub>S</sub>&rarr;R' homomorphism of rings with 1 where &phi;=&phi;&#771;&#8728;&iota;<sub>S</sub></div>
  * </p>

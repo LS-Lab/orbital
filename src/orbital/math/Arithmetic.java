@@ -133,14 +133,15 @@ public interface Arithmetic extends Normed {
      * 0 = 0&lowast;x.</p>
      * @attribute neutral element for Operations.plus
      * @return the neutral element 0 for addition in this algebraic structure (if it is a unital magma or monoid).
-     * @throws ArithmeticException if this algebraic structure does not have a 0.
+     * @throws UnsupportedOperationException if this algebraic structure does not have a 0.
+     *  This should not happen for monoids of +.
      * @todo should we demand instead, that there are static fields "T ZERO" and "T ONE" in a "class T implements Arithmetic"?
      *  or "Arithmetic ZERO", "Arithmetic ONE", or functions "T zero()" and "T one()" with postcondition RES==OLD(RES)? What about matrices with different ZEROs?
      * @internal perhaps the best model would demand from a parametric type to have a field ZERO and a field ONE. This would even hold for the type Matrix<Rational,4,5>.ZERO etc. However this is neither possible with Java Generics, nor (as far as I know) with compile-time templates of C++.
      * @todo if this is a good thing, then use x.zero() etc throughout
      * @post RES == OLD(RES) &and; this.getClass().isInstance(RES)
      */
-    Arithmetic zero() throws ArithmeticException;
+    Arithmetic zero() throws UnsupportedOperationException;
     /**
      * 1.
      * <p>
@@ -149,6 +150,7 @@ public interface Arithmetic extends Normed {
      * @return the neutral element 1 for multiplication in this algebraic structure
      * (if it is a true ring with 1, or ...).
      * @throws UnsupportedOperationException if this algebraic structure does not have a 1.
+     *  This should not happen for monoids of &sdot;.
      * @post RES == OLD(RES) &and; this.getClass().isInstance(RES)
      */
     Arithmetic one() throws UnsupportedOperationException;
@@ -159,7 +161,7 @@ public interface Arithmetic extends Normed {
      * Adds an arithmetic object to this returning the result.
      * @return this+b.
      * @throws ArithmeticException if an exceptional arithmetic condition has occurred while
-     * performing the operation.
+     *  performing the operation. This should not happen for magmas of +.
      * @throws IllegalArgumentException if the argument type is illegal for this operation.
      *  Note: for single type handling it is also allowed to throw a ClassCastException, instead.
      */
@@ -169,7 +171,7 @@ public interface Arithmetic extends Normed {
      * Returns the additive inverse of this arithmetic object.
      * @return &minus;this.
      * @throws ArithmeticException if an exceptional arithmetic condition has occurred while
-     *  performing the operation.
+     *  performing the operation. This should not happen for groups of +.
      */
     Arithmetic minus() throws ArithmeticException;
 
@@ -177,7 +179,7 @@ public interface Arithmetic extends Normed {
      * Subtracts an arithmetic object from this returning the result.
      * @return this-b.
      * @throws ArithmeticException if an exceptional arithmetic condition has occurred while
-     *  performing the operation.
+     *  performing the operation. This should not happen for groups of +.
      * @throws IllegalArgumentException if the argument type is illegal for this operation.
      *  Note: for single type handling it is also allowed to throw a ClassCastException, instead.
      */
@@ -194,7 +196,7 @@ public interface Arithmetic extends Normed {
      * </p>
      * @return this&sdot;b.
      * @throws ArithmeticException if an exceptional arithmetic condition has occurred while
-     * performing the operation.
+     *  performing the operation. This should not happen for magmas of &sdot;.
      * @throws IllegalArgumentException if the argument type is illegal for this operation.
      *  Note: for single type handling it is also allowed to throw a ClassCastException, instead.
      * @throws UnsupportedOperationException if this class does not support this operation, principially,
@@ -207,7 +209,7 @@ public interface Arithmetic extends Normed {
      * Returns the multiplicative inverse of this arithmetic object.
      * @return this<sup>-1</sup>.
      * @throws ArithmeticException if an exceptional arithmetic condition has occurred while
-     *  performing the operation.
+     *  performing the operation. This should not happen for groups of &sdot;.
      * @throws UnsupportedOperationException if this class does not support this operation, principially,
      *  regardless of the argument.
      */
@@ -217,7 +219,7 @@ public interface Arithmetic extends Normed {
      * Divides this by an arithmetic object returning the result.
      * @return this&#8725;b.
      * @throws ArithmeticException if an exceptional arithmetic condition has occurred while
-     * performing the operation.
+     *  performing the operation. This should not happen for groups of &sdot;.
      * @throws IllegalArgumentException if the argument type is illegal for this operation.
      *  Note: for single type handling it is also allowed to throw a ClassCastException, instead.
      * @throws UnsupportedOperationException if this class does not support this operation, principially,
@@ -231,9 +233,9 @@ public interface Arithmetic extends Normed {
      * Multiplies a scalar with this arithmetic object returning the result.
      * @return &alpha;&lowast;this
      * @throws ArithmeticException if an exceptional arithmetic condition has occurred while
-     *  performing the operation.
+     *  performing the operation. This should not happen for R-modules (where R=alpha.getClass()).
      * @throws IllegalArgumentException if the argument type is illegal for this operation.
-     *  Note: for single type handling it is also allowed to throw a ClassCastException, instead.
+     *  Note: it is also allowed to throw a ClassCastException, instead.
      * @throws UnsupportedOperationException if this class does not support this operation, principially,
      *  regardless of the argument.
      * @see #multiply(Arithmetic)

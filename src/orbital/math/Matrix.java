@@ -575,17 +575,17 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
 
     /**
      * Returns this matrix transposed.<br>
-     * .<sup>T</sup>:R<sup>n&times;m</sup>&rarr;R<sup>m&times;n</sup>; <span class="matrix">M</span>&#8614;<span class="matrix">M</span><sup>T</sup>:=(t<sub>i,j</sub>) with t<sub>i,j</sub> = m<sub>j,i</sub>.
+     * <sup>t</sup>&middot;:R<sup>n&times;m</sup>&rarr;R<sup>m&times;n</sup>; <span class="matrix">M</span>&#8614;<sup>t</sup><span class="matrix">M</span>:=<span class="matrix">M</span><sup>T</sup>:=(t<sub>i,j</sub>) with t<sub>i,j</sub> = m<sub>j,i</sub>.
      * <p>
      * <ul id="Properties">
-     *   <li>(<span class="matrix">A</span>+<span class="matrix">B</span>)<sup>T</sup> = <span class="matrix">A</span><sup>T</sup> + <span class="matrix">B</span><sup>T</sup></li>
-     *   <li>(&lambda;&lowast;<span class="matrix">A</span>)<sup>T</sup> = &lambda;&lowast;<span class="matrix">A</span><sup>T</sup></li>
-     *   <li>(<span class="matrix">A</span>&middot;<span class="matrix">C</span>)<sup>T</sup> = <span class="matrix">C</span><sup>T</sup>&middot;<span class="matrix">A</span><sup>T</sup></li>
-     *   <li><big>(</big><span class="matrix">A</span><sup>T</sup><big>)<sup>T</sup></big> = <span class="matrix">A</span></li>
+     *   <li><sup>t</sup>(<span class="matrix">A</span>+<span class="matrix">B</span>) = <sup>t</sup><span class="matrix">A</span> + <sup>t</sup><span class="matrix">B</span></li>
+     *   <li><sup>t</sup>(&lambda;&lowast;<span class="matrix">A</span>) = &lambda;&lowast;<sup>t</sup><span class="matrix">A</span></li>
+     *   <li><sup>t</sup>(<span class="matrix">A</span>&middot;<span class="matrix">C</span>) = <sup>t</sup><span class="matrix">C</span>&middot;<sup>t</sup><span class="matrix">A</span></li>
+     *   <li><big><sup>t</sup>(</big><sup>t</sup><span class="matrix">A</span><big>)</big> = <span class="matrix">A</span></li>
      * </ul>
      * &forall;<span class="matrix">A</span>,<span class="matrix">B</span>&isin;R<sup>n&times;m</sup>,<span class="matrix">C</span>&isin;R<sup>m&times;l</sup> &forall;&lambda;&isin;R
      * </p>
-     * @return the m&times;n matrix <span class="matrix">M</span><sup>T</sup>=(t<sub>i,j</sub>) with elements t<sub>i,j</sub> = m<sub>j,i</sub>.
+     * @return the m&times;n matrix <sup>t</sup><span class="matrix">M</span>=(t<sub>i,j</sub>) with elements t<sub>i,j</sub> = m<sub>j,i</sub>.
      * @post RES.get(j,i) == get(i,j) && RES.dimension().width == dimension().height && RES.dimension().height == dimension().width
      * @see #conjugate()
      */
@@ -593,7 +593,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
 
     /**
      * Returns this matrix conjugate transposed.<br>
-     * .<sup>&#8889;</sup>:R<sup>n&times;m</sup>&rarr;R<sup>m&times;n</sup>; <span class="matrix">M</span>&#8614;<span class="matrix">M</span><sup>&#8889;</sup>:=<span style="text-decoration: overline"><span class="matrix">M</span></span><sup>T</sup> = (t<sub>i,j</sub>) with t<sub>i,j</sub> = <span style="text-decoration: overline">m</span><sub>j,i</sub>.
+     * .<sup>&#8889;</sup>:R<sup>n&times;m</sup>&rarr;R<sup>m&times;n</sup>; <span class="matrix">M</span>&#8614;<span class="matrix">M</span><sup>&#8889;</sup>:=<sup>t</sup><span class="Matrix" style="text-decoration: overline">M</span> = (t<sub>i,j</sub>) with t<sub>i,j</sub> = <span style="text-decoration: overline">m</span><sub>j,i</sub>.
      * <p>
      * <ul id="Properties">
      *   <li>(<span class="matrix">A</span>+<span class="matrix">B</span>)<sup>&#8889;</sup> = <span class="matrix">A</span><sup>&#8889;</sup> + <span class="matrix">B</span><sup>&#8889;</sup></li>
@@ -607,8 +607,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * <p>
      * Relative to a finite orthonormal basis .<sup>&#8889;</sup> is the adjoint operator.
      * </p>
-     * @return the m&times;n matrix <span class="matrix">M</span><sup>&#8889;</sup>=<span style="text-decoration: overline"><span class="matrix">M</span></span><sup>T</sup>.
-     * @post RES.get(j,i) == conjugate(get(i,j)) RES.dimension().width == dimension().height && RES.dimension().height == dimension().width
+     * @return the m&times;n matrix <span class="matrix">M</span><sup>&#8889;</sup>=<sup>t</sup><span class="Matrix" style="text-decoration: overline">M</span>.
+     * @post RES.get(j,i) == get(i,j).conjugate() RES.dimension().width == dimension().height && RES.dimension().height == dimension().width
      * @see Complex#conjugate()
      * @see #transpose()
      */

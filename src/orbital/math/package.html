@@ -4,22 +4,20 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta name="Author" content="Andre Platzer">
-<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
-<meta name="ProgId" content="FrontPage.Editor.Document">
 <title>math package</title>
 </head>
 
 <body>
 
-Provides <i>arithmetic objects</i> and mathematical utility classes.
-<p>Arithmetic Objects contained in this package are:<br>
+Provides <em>arithmetic objects</em> and mathematical algorithms.
+<p>Arithmetic objects contained in this package are:<br>
 &nbsp;<center>
-<table border="1" width="66%">
-  <caption>Types of Arithmetic Objects provided</caption>
+<table border="1">
+  <caption>Types of arithmetic objects provided</caption>
   <tr>
     <th>Group</th>
     <th>Class</th>
-    <th>value representation</th>
+    <th>Value Representation</th>
   </tr>
   <tr>
     <td rowspan="4">scalar types</td>
@@ -40,11 +38,11 @@ Provides <i>arithmetic objects</i> and mathematical utility classes.
   </tr>
   <tr>
     <td rowspan="4">vector space types</td>
-    <td>Vector</td>
+    <td>Vector&lt;A&gt;</td>
     <td><span class="vector">v</span> &isin; A<sup>n</sup></td>
   </tr>
   <tr>
-    <td>Matrix</td>
+    <td>Matrix&lt;A&gt;</td>
     <td><span class="matrix">M</span> &isin; A<sup>m×n</sup></td>
   </tr>
   <tr>
@@ -52,20 +50,20 @@ Provides <i>arithmetic objects</i> and mathematical utility classes.
     <td><span class="matrix">M</span> &isin; <b>R</b><sup>4×4</sup> (fast 3D affine transformations)</td>
   </tr>
   <tr>
-    <td>Tensor</td>
+    <td>Tensor&lt;A&gt;</td>
     <td><span class="tensor">t</span> &isin; A<sup>n<sub>1</sub>&times;n<sub>2</sub>&times;&#8230;&times;n<sub>r</sub></sup></td>
   </tr>
   <tr>
     <td rowspan="3">polynomial types</td>
-    <td>UnivariatePolynomial</td>
+    <td>UnivariatePolynomial&lt;R&gt;</td>
     <td>p &isin; R[X]</td>
   </tr>
   <tr>
-    <td>Polynomial</td>
+    <td>Polynomial&lt;R,Vector&lt;Integer&gt;&gt;</td>
     <td>p &isin; R[X<sub>0</sub>,...,X<sub>n-1</sub>]</td>
   </tr>
   <tr>
-    <td>Polynomial</td>
+    <td>Polynomial&lt;R,S&gt;</td>
     <td>p &isin; R[S]</td>
   </tr>
   <tr>
@@ -74,11 +72,11 @@ Provides <i>arithmetic objects</i> and mathematical utility classes.
     <td>&quot;x&quot;</td>
   </tr>
   <tr>
-    <td>Quotient</td>
+    <td>Quotient&lt;A&gt;</td>
     <td>a&#772; &isin; A/~</td>
   </tr>
   <tr>
-    <td>Fraction</td>
+    <td>Fraction&lt;A,S&gt;</td>
     <td>a&#8260;s &isin; S<sup>-1</sup>A</td>
   </tr>
 </table>

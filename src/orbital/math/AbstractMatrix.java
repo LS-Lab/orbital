@@ -978,9 +978,8 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
 	Matrix/*<R>*/ T = newInstance(dimension().width, dimension().height);
 	for (int i = 0; i < dimension().height; i++)
 	    for (int j = 0; j < dimension().width; j++) {
-		Arithmetic/*>R<*/ a = get(i, j);
-		a = (Arithmetic/*>R<*/) ((Complex) a).conjugate();
-		T.set(j, i, a);
+		//@todo what to do for hyper matrices
+		T.set(j, i, ((Complex) get(i,j)).conjugate());
 	    }
 	return T;
     } 

@@ -12,19 +12,24 @@
 <link rel="stylesheet" href="../../../../stylist.css" type="text/css" title="layout">
 <style type="text/css">
 <!--
-.Category    { font-family: Arioso }
 *.annotatingDiagramSomewhere { float: right; clear: none }
 -->
   </style>
+<!--
+dt:before    {
+    content: counter(homomorphicTheorem) ". Homomorphiesatz";
+    counter-increment: homomorphicTheorem
+}
+-->
 </head>
 
 <body>
 
 <h2>Properties of Homomorphisms</h2>
 <dl>
-  <dt id="homomorphicProjection" class="UniversalMappingProperty">&quot;1. 
-    Homomorphiesatz, Projektionssatz&quot; (Universal Mapping Property)</dt>
-  <dd><img class="annotatingDiagram" src="diagram/commutative/homomorphicProjection.jpg" width="141" height="120"> 
+  <dt id="homomorphicProjection">&quot;1. Homomorphiesatz, Projektionssatz&quot; 
+    (Universal Mapping Property)</dt>
+  <dd class="UniversalMappingProperty"><img class="annotatingDiagram" src="diagram/commutative/homomorphicProjection.jpg" width="141" height="120"> 
     Let f:A→B be a homomorphism of Σ-Algebras<br>
     ⇒
     <ul>
@@ -32,8 +37,7 @@
       <li>∃!f̅:A/~<sub>f</sub>→B homomorph such that f = f̅∘π</li>
       <li>f̅ is injective</li>
       <li>f surjective ⇒ f̅ surjective</li>
-      <li>A/Ker(f)≅Im(f) <small>at least if it is provided that f is a 
-        homomorphism of groups</small></li>
+      <li>A/Ker(f)≅Im(f)</li>
     </ul>
     Alternatively: (Universal Mapping Property of factor groups)<br>
     Let f:G→G' be a homomorphism of groups, with N⊴G and N⊆Ker(f)<br>
@@ -42,7 +46,9 @@
       <li>∃!f̅:G/N→G' homomorph of groups such that f = f̅∘π</li>
     </ul>
     <small>The same goes true for homomorphisms of rings with ideals N⊴G, and 
-    for R-linear mappings with sub-R-modules N≤G, etc.</small></dd>
+    for R-linear mappings with sub-R-modules N≤G, etc. So in these cases <span class="signifier">T</span>→<span class="categorie">Ens</span>; 
+    G'↦{φ∈Hom<sub class="signifier">T</sub>(G,G') ¦ N⊆Ker(φ)} has G/N 
+    as presenting object.</small></dd>
   <dt id="homomorphicEmbedding"><img class="annotatingDiagram" src="diagram/commutative/homomorphicEmbedding.jpg" width="201" height="233"> 
     <img class="annotatingDiagramSomewhere" src="visualize/homomorphicEmbedding.jpg" width="137" height="150"> 
     &quot;2. Homomorphiesatz, Einbettungssatz&quot;</dt>
@@ -80,8 +86,8 @@
   <dd>Let R be a commutative ring with one, and I<sub>1</sub>,…,I<sub>n</sub>⊴R 
     be ideals. Then the following conditions are equivalent.
     <ol type="i">
-      <li>I<sub>1</sub>,…,I<sub>n</sub> are coprime, i.e. ∀ν≠μ I<sub>ν</sub>+I<sub>μ</sub>:=(I<sub>ν</sub>∪I<sub>μ</sub>) 
-        = R</li>
+      <li>I<sub>1</sub>,…,I<sub>n</sub> are <dfn>coprime</dfn>, i.e. ∀ν≠μ 
+        I<sub>ν</sub>+I<sub>μ</sub>:=(I<sub>ν</sub>∪I<sub>μ</sub>) = R</li>
       <li>⇔ R<big>/</big>⋂<sub>ν=1,...,n</sub> I<sub>ν</sub> ≅ ∏<sub>ν=1,...,n</sub> 
         R/I<sub>ν</sub> (injective by construction)</li>
     </ol>

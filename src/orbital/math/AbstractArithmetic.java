@@ -31,10 +31,11 @@ abstract class AbstractArithmetic implements Arithmetic {
 
     /**
      * Divides this by an arithmetic object returning the result.
-     * @return (b<sup>&minus;1</sup>)&sdot;this.
+     * @return this&sdot;(b<sup>&minus;1</sup>).
+     * @todo which order in case of non-commutative?
      */
     public Arithmetic divide(Arithmetic b) throws ArithmeticException, UnsupportedOperationException {
-	return b.inverse().multiply(this);
+	return multiply(b.inverse());
     } 
 
     /**

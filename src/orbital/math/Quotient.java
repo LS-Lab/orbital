@@ -30,7 +30,8 @@ import orbital.logic.functor.Function;
  * this very carefully because it may affect precision considerations.
  * </p>
  * <p>
- * The universal mapping property is <a href="functional/doc-files/Homomorphic.html#homomorphicProjection">there</a>.
+ * c.f. the <a href="functional/doc-files/Homomorphic.html#homomorphicProjection">universal mapping property</a>
+ * of the quotient.
  * </p>
  * <p>
  * For R-modules M it is
@@ -136,18 +137,29 @@ public interface Quotient/*<M implements Arithmetic>*/ extends Arithmetic {
      * At least in quotients of {@link Euclidean Euclidean rings} R
      * an element a&isin;R/(m) does not have a multiplicative inverse,
      * iff gcd(a, m)&ne;1.
+     * @throws UnsupportedOperationException if this class does not support this operation, principially,
+     *  regardless of the argument.
      */
-    Arithmetic inverse() throws ArithmeticException;
+    Arithmetic inverse() throws ArithmeticException, UnsupportedOperationException;
 
-    Quotient/*<M>*/ add(Quotient/*<M>*/ b);
-    Quotient/*<M>*/ subtract(Quotient/*<M>*/ b);
-    Quotient/*<M>*/ multiply(Quotient/*<M>*/ b);
-    Quotient/*<M>*/ divide(Quotient/*<M>*/ b) throws ArithmeticException;
-    Quotient/*<M>*/ power(Quotient/*<M>*/ b);
+    Quotient/*<M>*/ add(Quotient/*<M>*/ b) throws ArithmeticException;
+    Quotient/*<M>*/ subtract(Quotient/*<M>*/ b) throws ArithmeticException;
+    Quotient/*<M>*/ multiply(Quotient/*<M>*/ b) throws ArithmeticException, UnsupportedOperationException;
+    Quotient/*<M>*/ divide(Quotient/*<M>*/ b) throws ArithmeticException, UnsupportedOperationException;
+    Quotient/*<M>*/ power(Quotient/*<M>*/ b) throws ArithmeticException, UnsupportedOperationException;
     /**
      * {@inheritDoc}
      * @post RES instanceof Quotient<M>
      * @todo when covariant return-types change return-type to Quotient<M>.
      */
-    Arithmetic scale(Arithmetic alpha);
+    //Arithmetic scale(Arithmetic alpha);
+    /**
+     * R/I is an R-algebra, if R is a ring.
+     * {@inheritDoc}
+     * @post RES instanceof Quotient<M>
+     * @todo when covariant return-types change return-type to Quotient<M>.
+     * @throws UnsupportedOperationException if this class does not support this operation, principially,
+     *  regardless of the argument. This would only be the case if M did not support it.
+     */
+    Arithmetic/*>Quotient<M><*/ scale(Arithmetic/*>M<*/ alpha) throws ArithmeticException, UnsupportedOperationException;
 }
