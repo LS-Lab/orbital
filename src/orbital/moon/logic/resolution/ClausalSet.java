@@ -20,7 +20,7 @@ import java.util.Collections;
  * @author  Andr&eacute; Platzer
  * @todo rename
  */
-interface ClausalSet extends Set/*_<Clause>_*/ {
+public interface ClausalSet extends Set/*_<Clause>_*/ {
     /**
      * The contradictory <em>singleton</em> set of clauses {&#9633;}.
      */
