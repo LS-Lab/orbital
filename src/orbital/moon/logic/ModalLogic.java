@@ -253,6 +253,16 @@ public class ModalLogic extends ClassicalLogic {
 		super("<predicate application>", "<contextualized>");
 	    }
 
+	    /**
+	     * Matches predicate applications.
+	     * <pre>
+	     *  |
+	     * / \
+	     * | |
+	     * p t
+	     * </pre>
+	     * 
+	     */
 	    public boolean matches(Object term) {
 		if (term instanceof Formula) {
 		    if (term instanceof Functor.Composite) {
