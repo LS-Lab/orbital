@@ -147,7 +147,7 @@ public abstract class ResolutionBase implements Inference {
     	// for all clauses F&isin;clausebase
     	for (Iterator i = clausebase.iterator(); i.hasNext(); ) {
 	    final Clause F = (Clause) i.next();
-	    if (F.equals(Utilities.CONTRADICTION))
+	    if (F.equals(Clause.CONTRADICTION))
 		throw new IllegalStateException("clauses are inconsistent since they already contain a contradiction");
 	    else if (F.isElementaryValid())
 		// if F is obviously valid, forget about it for resolving a contradiction
