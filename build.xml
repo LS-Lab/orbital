@@ -282,6 +282,7 @@
 	    <tag name="structure" scope="types,methods" description="Structure:"/>
 	    <tag name="stereotype" scope="all" description="Stereotype:"/>
 	    <tag name="attribute" scope="all" description="Attributes:"/>
+	    <tag name="events" scope="types,methods" description="Events:"/>
 
 	    <tag name="note" scope="all" description="Note:" enabled="true"/>
 	    <tag name="internal" scope="all" description="Internal:" enabled="false"/>
