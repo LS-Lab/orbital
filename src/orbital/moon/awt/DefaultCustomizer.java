@@ -87,6 +87,7 @@ import java.awt.TextComponent;
  * @version 1.0, 2000/03/30
  * @author  Andr&eacute; Platzer
  * @author  Ute Platzer
+ * @author  Rolf Lohaus
  * @see orbital.awt.CustomizerViewController
  * @see orbital.awt.CustomizerViewController#customizerFor(Class)
  * @todo support multiple register tabs for different groups of properties. One register tab for each BeanInfo, and each BeanInfo got from getAdditionalBeanInfo(). Use ResourceBundle for the names of these tabs à la getClass().getName() + ".tab"
@@ -128,6 +129,12 @@ public class DefaultCustomizer extends JPanel implements Customizer {
      */
     private int	                   truncation = 30;
 
+    /**
+     * whether or not to put spacing between property fields
+     * @serial
+     */
+    private boolean                spacing = false;
+
 
     /**
      * Create a default customizer initialized to customize a bean class.
@@ -163,7 +170,17 @@ public class DefaultCustomizer extends JPanel implements Customizer {
     public void setTruncation(int truncateAfter) {
 	truncation = truncateAfter;
     }
-	
+
+    /**
+     * Whether or not to put spacing (additional insets) between property fields.
+     * Default is disabled.
+     *
+     * @param value <code>true</code> to enable, <code>false</code> to disable
+     */
+    public void setSpacing(boolean value) {
+	spacing = value;
+    }
+
     /**
      * write-through to enable or disable all content property editor components.
      * @note lightweight components used as property editor components
@@ -199,29 +216,55 @@ public class DefaultCustomizer extends JPanel implements Customizer {
      * components.  Components that don't support a writable editable
      * property will instead have {@link #setEnabled(boolean)} called.
      */
-    public void setEditabled(boolean editable) {
+    public void setEditable(boolean editable) {
 	final Boolean editableWrapped = editable ? Boolean.TRUE : Boolean.FALSE;
 	logger.log(Level.FINEST, "DefaultCustomizer.setEditable={0}", editableWrapped);
 	// note that setEditabled(false);setEditabled(true); on getComponents() might reeditable a component although it was never editabled at all
 	// however setEditabled(false); on propertyEditorComponents will let additional components be editabled
 	Component components[] = propertyEditorComponents;			//getComponents();
 	for (int i = 0; i < components.length; i++) {
-	    final Component c = components[i];
-	    // try to invoke setEditable on c
-	    try {
-		c.getClass().getMethod("setEditable", new Class[] {Boolean.TYPE})
-		    .invoke(c, new Object[] {editableWrapped});
-		continue;
-	    }
-	    catch (NoSuchMethodException noEditableChange) {}
-	    catch (SecurityException security) {}
-	    catch (IllegalAccessException inaccessible) {}
-	    catch (InvocationTargetException exception) {
-		throw new InnerCheckedException("Could not " + c.getClass() + ".setEditable(" + editable +")", exception);
+	    final Component c = unwrapComponent(components[i]);
+	    // try to invoke setEditable on c, only if it is a
+	    // JTextComponent, such that it seems to have the same
+	    // semantic understanding of what setEditable(boolean)
+	    // should do
+	    if (c instanceof JTextComponent) {
+		try {
+		    c.getClass().getMethod("setEditable", new Class[] {Boolean.TYPE})
+			.invoke(c, new Object[] {editableWrapped});
+		    continue;
+		}
+		catch (NoSuchMethodException noEditableChange) {}
+		catch (SecurityException security) {}
+		catch (IllegalAccessException inaccessible) {}
+		catch (InvocationTargetException exception) {
+		    throw new InnerCheckedException("Could not " + c.getClass() + ".setEditable(" + editable +")", exception);
+		}
 	    }
 	    logger.log(Level.FINEST, "searching for {0}.setEditable(boolean) was not successful", c.getClass());
 	    //@internal treat like setEnabled(editable)
 	    c.setEnabled(editable);
+	}
+    }
+
+    /**
+     * Unwraps components wrapped inside mere "decorators" to find the
+     * component that holds the final responsibility for displaying
+     * and editing it.
+     * @internal recursively unwraps components from scroll panes and
+     * InlinePaintablePropertyEditorComponents.
+     */
+    private static final Component unwrapComponent(Component c) {
+	while (true) {
+	    // try to find a JTextComponent
+	    if ((c instanceof InlinePaintablePropertyEditorComponent)
+		&& (((InlinePaintablePropertyEditorComponent)c).customEditor != null)) {
+		c = ((InlinePaintablePropertyEditorComponent)c).customEditor;
+	    } else if (c instanceof JScrollPane) {
+		c = ((JScrollPane)c).getViewport().getView();
+	    } else {
+		return c;
+	    }
 	}
     }
     
@@ -245,12 +288,21 @@ public class DefaultCustomizer extends JPanel implements Customizer {
 	this.setLayout(new GridBagLayout());
 	GridBagConstraints l = new GridBagConstraints();	// left labels
 	l.anchor = GridBagConstraints.NORTHWEST;
-	l.insets = new Insets(0, 0, 0, 10);
+	l.insets = new Insets(0, 0, 0, 12);
 	GridBagConstraints r = new GridBagConstraints();	// right components
 	r.gridwidth = GridBagConstraints.REMAINDER;
 	r.anchor = GridBagConstraints.NORTHWEST;
 	r.fill = GridBagConstraints.BOTH;
 	r.weightx = 1;
+	GridBagConstraints v = new GridBagConstraints();	// vertical spacing
+	v.gridwidth = GridBagConstraints.REMAINDER;
+	v.anchor = GridBagConstraints.NORTH;
+	v.fill = GridBagConstraints.BOTH;
+	GridBagConstraints f = new GridBagConstraints();	// vertical filler
+	f.gridwidth = GridBagConstraints.REMAINDER;
+	f.anchor = GridBagConstraints.NORTH;
+	f.fill = GridBagConstraints.BOTH;
+	f.weighty = 0.5;
 
 	propertyEditors = new PropertyEditor[beanProperties.length];
 	propertyEditorComponents = new Component[beanProperties.length];
@@ -260,10 +312,26 @@ public class DefaultCustomizer extends JPanel implements Customizer {
 		propertyEditors[i] = null;
 		propertyEditorComponents[i] = null;
 		continue;
-	    } 
-	    JLabel label = new JLabel(beanProperties[i].getDisplayName());
+	    }
+
+	    // Inserts a vertical component spacing. The height of the space is
+	    // 5 pixels as specified in the Java Look and Feel Design Guidelines
+	    if (spacing && (i != 0)) {
+		Component verticalStrut = Box.createVerticalStrut(5);
+		this.add(verticalStrut, v);
+	    }
+
+	    String displayName = beanProperties[i].getDisplayName();
+	    // add colon to label if there is none
+	    if ((displayName != null) && (displayName.length() != 0)
+		&& (displayName.charAt(displayName.length() - 1) != ':'))
+	    {
+		displayName += ":";
+	    }
+	    JLabel label = new JLabel(displayName);
 	    label.setToolTipText(beanProperties[i].getShortDescription());
 	    this.add(label, l);
+
 
 	    // get a bean defined or property editor manager defined property editor.
 	    propertyEditors[i] = getPropertyEditor(beanProperties[i]);
@@ -273,8 +341,15 @@ public class DefaultCustomizer extends JPanel implements Customizer {
 	    registerPropertyChangeUpdater(beanProperties[i], propertyEditors[i], propertyEditorComponents[i]);
 	    this.add(propertyEditorComponents[i], r);
 	    label.setLabelFor(propertyEditorComponents[i]);
-	} 
-    } 
+	}
+
+	// Inserts a vertical filler to occupy any remaining vertical space
+	// at the bottom.
+	if (spacing) {
+	    Component verticalGlue = Box.createVerticalGlue();
+	    this.add(verticalGlue, f);
+	}
+    }
 
     /**
      * Create a component to use as an editor for the property specified.
@@ -983,3 +1058,4 @@ public class DefaultCustomizer extends JPanel implements Customizer {
 	}
     }
 }
+
