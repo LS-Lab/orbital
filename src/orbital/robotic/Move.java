@@ -18,6 +18,7 @@ import java.io.Serializable;
  * @author  Andr&eacute; Platzer
  */
 public class Move implements Serializable {
+    private static final long serialVersionUID = 6779406874030679132L;
 
     // named Move constants
 
@@ -110,6 +111,10 @@ public class Move implements Serializable {
 	return movement.hashCode();
     }
 
+    public final String getMovementString() {
+	return movement;
+    }
+    
     /**
      * get the length of the movement.
      * @see #movement

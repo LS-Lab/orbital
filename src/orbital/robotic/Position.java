@@ -17,6 +17,7 @@ import java.io.Serializable;
  * @TODO: transform to n-dimensional point and provide n-dimensional(?) directions, as well
  */
 public class Position extends Point implements Serializable {
+    private static final long serialVersionUID = 7705012188222777623L;
     public Position(int x, int y) {
 	super(x, y);
     }
