@@ -4,9 +4,8 @@
  * Copyright (c) 2001 Andre Platzer. All Rights Reserved.
  */
 
-package orbital.moon.logic.functor;
+package orbital.logic.functor;
 
-import orbital.logic.functor.Function;
 
 import java.util.Map;
 
