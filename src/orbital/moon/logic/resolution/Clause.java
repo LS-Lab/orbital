@@ -13,8 +13,9 @@ import java.util.Iterator;
 import java.util.Collections;
 
 /**
- * Represents a clause, i.e. a set of literals.
- * The individual literals, i.e. positive or negated atoms are ordinary formulas.
+ * Represents a clause, i.e. a set of literals.  The individual
+ * literals, i.e. positive or negated atoms are ordinary formulas.
+ * This set representation already incorporates associative and commutative.
  *
  * @version 0.8, 2003-04-23
  * @author  Andr&eacute; Platzer

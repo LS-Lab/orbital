@@ -15,7 +15,8 @@ import java.util.Collections;
 /**
  * Represents a set of clauses. A set of clauses
  * {C<sub>1</sub>,...,C<sub>n</sub>} is a different notation for the
- * conjunction C<sub>1</sub>&and;...&and;C<sub>n</sub>.
+ * conjunction C<sub>1</sub>&and;...&and;C<sub>n</sub>. This set
+ * representation already incorporates associative and commutative.
  * @version 0.8, 2003-04-23
  * @author  Andr&eacute; Platzer
  * @todo rename
