@@ -15,6 +15,7 @@ import java.util.Set;
  * @see <a href="{@docRoot}/Patterns/Design/AbstractFactory.html">Abstract Factory</a>
  */
 public class DefaultClausalFactory implements ClausalFactory {
+    private static final boolean ORDERED = true;
 
     private static boolean verbose = false;
     /**
@@ -30,16 +31,21 @@ public class DefaultClausalFactory implements ClausalFactory {
     // factory-methods
     
     public Clause newClause() {
+	//@todo 13 I'm not sure whether ordered resolution is complete for subsumption. Since conservative approximations suffice, this is not critical to proof completeness, but still a thing to find out about.
 	//@todo indexed clauses don't really help better than memorizing (clause,literal) pairs except in the rare cases of factorization?
 	//return new ClauseImpl();
-	return new IndexedClauseImpl();
+	return ORDERED
+	    ? (Clause) new OrderedClauseImpl()
+	    : (Clause) new IndexedClauseImpl();
     }
 
     public Clause createClause(Set/*_<Formula>_*/ literals) {
 	return isVerbose()
-	    ? (ClauseImpl)new TraceableClauseImpl(literals)
+	    ? (Clause)new TraceableClauseImpl(literals)
 	    //      : new ClauseImpl(literals);
-	: (ClauseImpl)new IndexedClauseImpl(literals);
+	    : ORDERED
+	    ? (Clause)new OrderedClauseImpl(literals)
+	    : (Clause)new IndexedClauseImpl(literals);
     }
 
     public ClausalSet newClausalSet() {
