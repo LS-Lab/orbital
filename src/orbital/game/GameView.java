@@ -219,6 +219,7 @@ public class GameView extends Applet {
 	return gamemaster;
     }
     protected void setGamemaster(Gamemaster newMaster) {
+	//System.out.println("GameView.setGamemaster");
 	this.gamemaster = newMaster;
     }
 
@@ -307,11 +308,12 @@ public class GameView extends Applet {
      * Called when setting a new field
      */
     private void setField(Field field) {
+	//System.out.println("GameView.setField(" + System.identityHashCode(field) + ")");
 	board.setField(field);
 	field.addFieldChangeListener(new FieldChangeAdapter() {
 		//@internal are transient
 		public void stateChanged(FieldChangeEvent evt) {
-		    //@todo assert evt.getField() == getGamemaster().getField() : "we have only registered ourselves to our field";
+		    //@todo assert evt.getField() == getGamemaster().getField() : "we have only registered ourselves to our field " + getGamemaster().getField() + " source=" + evt.getField();
 		    if (evt.getType() == FieldChangeEvent.END_OF_GAME)
 			displayWinner(((Integer) evt.getChangeInfo()).intValue());
 		}
@@ -483,18 +485,23 @@ public class GameView extends Applet {
      * @see #createGameRules(java.lang.String)
      */
     public void load(ObjectInputStream is) throws ClassNotFoundException, IOException {
+	stop();
+	//@internal that's better in order to not let the last gamemaster finally {setField(null)} at end of run() and our field's lost again after the first move.
+	setGamemaster(new Gamemaster(this, getGamemaster().getGameRules(), getGamemaster().getPlayers()));
+
 	if (!FILE_IDENTIFIER.equals(is.readUTF()))
 	    throw new IOException("illegal format of stream content");
 	Field field = (Field) is.readObject();
+	//System.out.println("GameView.load() field= " + System.identityHashCode(field));
 	setField(field);
 	//@todo should we start gamemaster on field?
 	getGamemaster().setField(field);
-	getGamemaster().start();
 	for (Iterator i = field.iterateNonEmpty(); i.hasNext(); ) {
 	    Figure f = (Figure) i.next();
 	    if (f instanceof FigureImpl)
 		((FigureImpl)f).setImage(getGameRules().getImage(f));
 	} 
+	getGamemaster().start();
     } 
 
     /**
