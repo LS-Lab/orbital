@@ -1,0 +1,28 @@
+/**
+ * @(#)MagicSquare.java 1.1 2002-11-11 Andre Platzer
+ *
+ * Copyright (c) 2002 Andre Platzer. All Rights Reserved.
+ */
+
+import orbital.algorithm.evolutionary.*;
+
+/**
+ * MagicSquare.java
+ *
+ *
+ * @author <a href="mailto:">Andr&eacute; Platzer</a>
+ * @version 1.1, 2002-11-11
+ * @todo implement with
+ *  representation?
+ *  reproduction:
+ *    recombine?
+ *    mutation: swap two numbers with probability anti-proportional to difference
+ *  weighting: square error terms for differences in rowsum / column sum / diagonal sum
+ *  selection
+ */
+public class MagicSquare implements GeneticAlgorithmProblem {
+    public MagicSquare() {
+	
+    }
+    
+}// MagicSquare
