@@ -97,9 +97,9 @@ public class ModalLogic extends ClassicalLogic {
 	this.classical = new ClassicalLogic(ClassicalLogic.RESOLUTION_INFERENCE);
 	_coreInterpretation =
 	    LogicSupport.arrayToInterpretation(new Object[][] {
-		{LogicFunctions.necessary,          // "[]"
+		{LogicFunctions.box,          // "[]"
 		 new NotationSpecification(900, "fy", Notation.PREFIX)},
-		{LogicFunctions.possible,           // "<>"
+		{LogicFunctions.diamond,           // "<>"
 		 new NotationSpecification(900, "fy", Notation.PREFIX)}
 	    }, true, false, true).union(new ClassicalLogic().coreInterpretation());
 	_coreSignature = _coreInterpretation.getSignature();
@@ -170,14 +170,14 @@ public class ModalLogic extends ClassicalLogic {
 	private static final Type UNARY_LOGICAL_JUNCTOR = Types.map(Types.TRUTH, Types.TRUTH);
 	private static final Type BINARY_LOGICAL_JUNCTOR = Types.map(Types.product(new Type[] {Types.TRUTH, Types.TRUTH}), Types.TRUTH);
 
-    	public static final Function necessary = new Function() {
+    	public static final Function box = new Function() {
 		private final Type logicalTypeDeclaration = UNARY_LOGICAL_JUNCTOR;
     		public Object apply(Object a) {
 		    throw new LogicException("modal formulas only have a semantic value with respect to a possibly infinite set of possible worlds along with an accessibility relation. They are available for inference, but they cannot be interpreted with finite means.");
         	}
 		public String toString() { return "[]"; }
 	    }; 
-    	public static final Function possible = new Function() {
+    	public static final Function diamond = new Function() {
 		private final Type logicalTypeDeclaration = UNARY_LOGICAL_JUNCTOR;
     		public Object apply(Object a) {
 		    throw new LogicException("modal formulas only have a semantic value with respect to a possibly infinite set of possible worlds along with an accessibility relation. They are available for inference, but they cannot be interpreted with finite means.");
@@ -203,6 +203,149 @@ public class ModalLogic extends ClassicalLogic {
 	private Utilities() {}
 
 	/**
+	 * Reduces a formula with (higher-order) functionals to first-order logic,
+	 * as far as possible.
+	 * <ul>
+	 *   <li>red(f(a1,...,am)(t1,....,tn)) = f(a1,...,am,t1,...,tn).</li>
+	 * </ul>
+	 * @xxx would need to use fixedPoint if f(a)(t)(b) should be reduced as well.
+	 */
+	private static final Formula functionalReduce(Formula F) {
+	    if (functionalReduceTransform == null)
+	        functionalReduceTransform = Substitutions.getInstance(Collections.singleton(
+	    	    new FlattenFunctionalUnifyingMatcher()
+	        ));
+	    return (Formula) functionalReduceTransform.apply(F);
+	}
+
+	// lazy initialized cache for TRS rules
+	private static Substitution functionalReduceTransform;
+
+	/**
+	 * Unifying matcher that flattens functionals by adding context arguments.
+	 * <p>
+	 * f(a1,....,am)(t1,....,tn) &#8614; f(a1,...,am,t1,...,tn)
+	 * </p>
+	 *
+	 * @version 1.1, 2002-11-25
+	 * @author  Andr&eacute; Platzer
+	 */
+	private static class FlattenFunctionalUnifyingMatcher extends MatcherImpl {
+	    //private static final long serialVersionUID = 0;
+	    public FlattenFunctionalUnifyingMatcher() {
+		super("<functional application>", "<flattened contextualized>");
+	    }
+
+	    /**
+	     * Matches "nested" applications.
+	     * <pre>
+	     *    |
+	     *   / \
+	     *  /   \
+	     * / \   \
+	     * | |    |
+	     * f a    t
+	     * </pre>
+	     * 
+	     */
+	    public boolean matches(Object term) {
+		if (term instanceof Formula && term instanceof Functor.Composite) {
+		    Functor.Composite oappl = (Functor.Composite) term;
+		    Functor           oop = (Functor) oappl.getCompositor();
+		    Object            t = oappl.getComponent();
+		    assert t instanceof Formula[] || t instanceof Formula : "expected: applied to >=1 arguments";
+		    if (oop instanceof Formula && oop instanceof Functor.Composite) {
+			Functor.Composite appl = (Functor.Composite) oop;
+			Functor           f = (Functor) appl.getCompositor();
+			Object            a = appl.getComponent();
+			assert a instanceof Formula[] || a instanceof Formula : "expected: applied to >=1 arguments";
+			if (f instanceof Formula) {
+			    if (f instanceof ModernFormula.AtomicSymbol)
+				// only match atomic terms
+				return true;
+			}
+		    }
+		    return false;
+		}
+		return false;
+	    }
+
+	    public Object replace(Object term) {
+		Symbol       f;
+		Expression[] a;
+		Expression[] t;
+		// reconstruct situation of matches(Object)
+		if (term instanceof Formula && term instanceof Functor.Composite) {
+		    Functor.Composite oappl = (Functor.Composite) term;
+		    Functor           oop = (Functor) oappl.getCompositor();
+		    t = asExpressionArray(oappl.getComponent());
+		    if (oop instanceof Formula && oop instanceof Functor.Composite) {
+			Functor.Composite appl = (Functor.Composite) oop;
+			f = ((ModernFormula.AtomicSymbol)(Functor) appl.getCompositor()).getSymbol();
+			a = asExpressionArray(appl.getComponent());
+		    } else
+			throw new AssertionError("only cause for matches(Object)==true");
+		} else
+		    throw new AssertionError("only cause for matches(Object)==true");
+
+		assert a.length > 0 && t.length > 0 : "nested functional application of >=1 argument each";
+
+		// modify
+		try {
+		    // concat arguments
+		    Expression[] flatArguments = new Expression[a.length + t.length];
+		    System.arraycopy(a, 0, flatArguments, 0, a.length);
+		    System.arraycopy(t, 0, flatArguments, a.length, t.length);
+		    // concat argument types
+		    Type[] aType = asTypeArray(f.getType().domain());
+		    Type[] tType = asTypeArray(f.getType().codomain().domain());
+		    assert a.length == aType.length : "number of arguments fit to type arity";
+		    assert t.length == tType.length : "number of arguments fit to type arity";
+		    Type[] flatType = new Type[aType.length + tType.length];
+		    System.arraycopy(aType, 0, flatType, 0, aType.length);
+		    System.arraycopy(tType, 0, flatType, aType.length, tType.length);
+
+		    Type fmodType = Types.map(Types.product(flatType), f.getType().codomain().codomain());
+		    NotationSpecification notat = f.getNotation();
+		    char associativityArguments[] = new char[t.length];
+		    Arrays.fill(associativityArguments, 'y');
+		    Symbol fmod =
+			new SymbolBase(f.getSignifier(),
+				       fmodType,
+				       new NotationSpecification(notat.getPrecedence(),
+								 notat.getAssociativity() + associativityArguments,
+								 notat.getNotation()),
+				       f.isVariable());
+		    Object RES = logic.compose(logic.createAtomic(fmod), flatArguments);
+		    if (logger.isLoggable(Level.FINER))
+			logger.log(Level.FINER, "functionalReduce red({0})={1} by {3} instead of {2} thereby flattening nested argument types {4} and {5} for arguments {6} and {7}", new Object[] {term, RES, f, fmod, MathUtilities.format(aType), MathUtilities.format(tType), MathUtilities.format(a), MathUtilities.format(t)});
+		    return RES;
+		} catch (ParseException ex) {
+		    throw (InternalError) new InternalError("Unexpected syntax in internal term construction").initCause(ex);
+		}
+	    }
+
+	    private static final Expression[] asExpressionArray(Object o) {
+		if (o instanceof Expression[])
+		    return (Expression[])o;
+		else if (o instanceof Expression)
+		    return new Expression[] {(Expression)o};
+		else if (o instanceof Object[] && ((Object[])o).length == 0)
+		    return new Expression[] {};
+		else
+		    throw new IllegalArgumentException(o + " of " + o.getClass());
+	    }
+
+	    private static final Type[] asTypeArray(Type tau) {
+		    if (tau instanceof /*Type*/Functor.Composite
+			&& ((Functor.Composite)tau).getCompositor() == Types.product)
+			return (Type[]) ((Functor.Composite)tau).getComponent();
+		    else
+			return new Type[] {tau};
+	    }
+	}
+
+	/**
 	 * Reduces a formula of quantified modal logic to classical first-order logic.
 	 * <ul>
 	 *   <li>red(p(t1,....,tn)) = p(t1,...,tn,s)&w(s) if p is a predicate.</li>
@@ -224,11 +367,11 @@ public class ModalLogic extends ClassicalLogic {
 		if (modalReduceTransform == null)
 		    modalReduceTransform = Substitutions.getInstance(Arrays.asList(new Object[] {
 			//@xxx note that A should be a metavariable for a formula
-			new NecessaryUnifyingMatcher(logic.createExpression("[](_A)"), logic.createExpression("_A")),
-			new PossibleUnifyingMatcher(logic.createExpression("<>(_A)"), logic.createExpression("_A")),
+			new BoxUnifyingMatcher(logic.createExpression("[](_A)"), logic.createExpression("_A")),
+			new DiamondUnifyingMatcher(logic.createExpression("<>(_A)"), logic.createExpression("_A")),
 			new ContextualizeUnifyingMatcher(),
 		    }));
-		return (Formula) modalReduceTransform.apply(F);
+		return functionalReduce((Formula) modalReduceTransform.apply(F));
 	    } catch (ParseException ex) {
 		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
 	    }
@@ -240,7 +383,9 @@ public class ModalLogic extends ClassicalLogic {
 	/**
 	 * Unifying matcher that adds context arguments to predicates.
 	 * <p>
-	 * p(t1,....,tn) &#8614; p(t1,...,tn,s)
+	 * p &#8614; p(s)  if p is a predicate
+	 * # especially:
+	 * p(t1,....,tn) &#8614; p(s)(t1,...,tn,s)
 	 * </p>
 	 *
 	 * @version 1.1, 2002-11-23
@@ -254,91 +399,35 @@ public class ModalLogic extends ClassicalLogic {
 	    }
 
 	    /**
-	     * Matches predicate applications.
-	     * <pre>
-	     *  |
-	     * / \
-	     * | |
-	     * p t
-	     * </pre>
-	     * 
+	     * Matches predicates.
 	     */
 	    public boolean matches(Object term) {
 		if (term instanceof Formula) {
-		    if (term instanceof Functor.Composite) {
-			Functor.Composite f = (Functor.Composite) term;
-			Functor           op = (Functor) f.getCompositor();
-			if (coreReferents.contains(op))
-			    // do not change elements of the coreSignature()
-			    return false;
-			if (op instanceof Formula) {
-			    // op has type =< ABSURD&rarr;TRUTH
-			    if (((Formula)op).getType().codomain().subtypeOf(Types.TRUTH))
-				if (op instanceof ModernFormula.AtomicSymbol)
-				    // only match predicates
-				    return true;
-			}
-			return false;
-		    } else
-			// term has type =< ABSURD&rarr;TRUTH
-			if (((Formula)term).getType().codomain().subtypeOf(Types.TRUTH))
-			    if (term instanceof ModernFormula.AtomicSymbol)
-				// only match predicates
-				return true;
+		    // term has type =< ABSURD&rarr;TRUTH
+		    if (((Formula)term).getType().codomain().subtypeOf(Types.TRUTH))
+			if (term instanceof ModernFormula.AtomicSymbol)
+			    // only match predicates
+			    return true;
 		}
 		return false;
 	    }
 	    public Object replace(Object term) {
-		Expression[] arg;
-		Symbol       p;
-		if (term instanceof Functor.Composite) {
-		    Functor.Composite f = (Functor.Composite) term;
-		    Functor           op = (Functor) f.getCompositor();
-		    arg = asExpressionArray(f.getComponent());
-		    p = ((ModernFormula.AtomicSymbol)op).getSymbol();
-		} else {
-		    arg = new Expression[0];
-		    p = ((ModernFormula.AtomicSymbol)term).getSymbol();
-		}
+		Symbol       p = ((ModernFormula.AtomicSymbol)term).getSymbol();
 
 		try {
-		    Expression[] argWithContext = new Expression[arg.length + 1];
-		    System.arraycopy(arg, 0, argWithContext, 0, arg.length);
-		    argWithContext[argWithContext.length - 1] = logic.CURRENT_WORLD_form;
-		    Type tau = p.getType().domain();
-		    Type taumod;
-		    if (tau instanceof /*Type*/Functor.Composite
-			&& ((Functor.Composite)tau).getCompositor() == Types.product) {
-			Type[] argt = (Type[]) ((Functor.Composite)tau).getComponent();
-			Type[] argtWithContext = new Type[arg.length + 1];
-			System.arraycopy(argt, 0, argtWithContext, 0, argt.length);
-			argtWithContext[argtWithContext.length - 1] = WORLD;
-			taumod = Types.product(argtWithContext);
-		    } else
-			taumod = Types.product(new Type[] {tau, WORLD});
 		    NotationSpecification notat = p.getNotation();
 		    Symbol pmod =
 			new SymbolBase(p.getSignifier(),
-				       Types.map(taumod, p.getType().codomain()),
+				       Types.map(WORLD, p.getType()),
 				       new NotationSpecification(notat.getPrecedence(),
 								 notat.getAssociativity() + "x",
 								 notat.getNotation()),
 				       p.isVariable());
-		    return logic.compose(logic.createAtomic(pmod), argWithContext);
+		    return logic.compose(logic.createAtomic(pmod),
+					 new Expression[] {logic.CURRENT_WORLD_form});
 		} catch (ParseException ex) {
 		    throw (InternalError) new InternalError("Unexpected syntax in internal term construction").initCause(ex);
 		}
-	    }
-
-	    private static final Expression[] asExpressionArray(Object o) {
-		if (o instanceof Expression[])
-		    return (Expression[])o;
-		else if (o instanceof Expression)
-		    return new Expression[] {(Expression)o};
-		else if (o instanceof Object[] && ((Object[])o).length == 0)
-		    return new Expression[] {};
-		else
-		    throw new IllegalArgumentException(o + " of " + o.getClass());
 	    }
 	}
 
@@ -350,9 +439,9 @@ public class ModalLogic extends ClassicalLogic {
 	 * @version 1.1, 2002-11-23
 	 * @author  Andr&eacute; Platzer
 	 */
-	private static class NecessaryUnifyingMatcher extends UnifyingMatcher {
+	private static class BoxUnifyingMatcher extends UnifyingMatcher {
 	    //private static final long serialVersionUID = 0;
-	    public NecessaryUnifyingMatcher(Object pattern, Object substitute) {
+	    public BoxUnifyingMatcher(Object pattern, Object substitute) {
 		super(pattern, substitute);
 	    }
 
@@ -391,9 +480,9 @@ public class ModalLogic extends ClassicalLogic {
 	 * @version 1.1, 2002-11-23
 	 * @author  Andr&eacute; Platzer
 	 */
-	private static class PossibleUnifyingMatcher extends UnifyingMatcher {
+	private static class DiamondUnifyingMatcher extends UnifyingMatcher {
 	    //private static final long serialVersionUID = 0;
-	    public PossibleUnifyingMatcher(Object pattern, Object substitute) {
+	    public DiamondUnifyingMatcher(Object pattern, Object substitute) {
 		super(pattern, substitute);
 	    }
 
