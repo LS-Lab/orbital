@@ -25,6 +25,8 @@ import java.util.*;
 import orbital.logic.functor.Functor.Specification;
 import orbital.logic.functor.Notation.NotationSpecification;
 
+import orbital.math.Values;
+
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
@@ -71,9 +73,9 @@ import java.util.logging.Level;
  *  etwa &exist;x&forall;y P &and; &exist;z&forall;w Q  == &exist;x&exist;z &forall;y&forall;w P&and;Q statt == &exist;x&forall;y&exist;z&forall;w P&and;Q denn im ersteren Fall skolemisiert x zu a und z zu b, im zweiteren aber x zu a und z zu f(y).
  *  Oder wähle alternativen (einfacheren?) TRS-Algorithmus Ü 7.95
  * @todo use do/undo instead of copying the whole set of derived formulas every time.
- * @todo delegate GSP into a private inner class
  * @todo use optimizations of "Deduktions- und Inferenzsysteme"
  * @xxx there seems to be a bug in the normalization of the query in "r reflexive and Euclidean => r equivalence"
+ * @xxx since? we have switched to new GSPs we can no longer prove "r symmetric => (r euclidean <=> r transitive)"
  */
 class Resolution implements Inference {
     private static final boolean UNDER_CONSTRUCTION = true;
@@ -187,8 +189,11 @@ class Resolution implements Inference {
 	// assuming knowledge base W is consistent, we are refutation-complete
 	return true;
     }
-	
-    private final class ResolutionProblem implements GeneralSearchProblem {
+
+    /**
+     * @internal we identify S=A here such that we can perform all work in actions().
+     */
+    private final class ResolutionProblem implements GeneralSearchProblem/*<Proof,Proof>*/ {
     	/**
     	 * knowledge base W assumed consistent.
     	 * W is kept in clausal normal form, and thus contains sets of literals.
@@ -204,28 +209,44 @@ class Resolution implements Inference {
     	}
 
         public Object getInitialState() {
-	    return setOfSupport;
+	    return new Proof(setOfSupport, Values.ZERO);
     	}
-        public boolean isSolution(Option n) {
-	    logger.log(Level.FINE, "isSolution=={0} of the option {1}", new Object[] {new Boolean(CONTRADICTION.equals(n.getAction())), n});
-	    // solely rely on goal lookahead
-	    return CONTRADICTION.equals(n.getAction());
-	    /*Set S = (Set) n.getState();
-	      return S.contains(CONTRADICTION);*/
+	public MutableFunction getAccumulatedCostFunction() {
+	    return _accumulatedCostFunction;
+	}
+	private final MutableFunction _accumulatedCostFunction = new MutableFunction() {
+		public Object apply(Object s) {
+		    return ((Proof) s).accumulatedCost;
+		}
+		public Object set(Object s, Object accumulatedCost) {
+		    Object old = ((Proof) s).accumulatedCost;
+		    ((Proof) s).accumulatedCost = accumulatedCost;
+		    return old;
+		}
+		public Object clone() {
+		    throw new UnsupportedOperationException();
+		}
+	    };
+        public boolean isSolution(Object n) {
+	    final Set/*_<Set<Formula>>_*/ S = ((Proof) n).setOfSupport;
+	    // solely rely on goal lookahead (see below)
+	    final boolean goal = S.size() == 1 && S.contains(CONTRADICTION);
+	    logger.log(Level.FINE, "isSolution=={0} of the clauses {1}", new Object[] {new Boolean(goal), S});
+	    return goal;
     	}
         //@todo optimizable by far! And also optimize space by do/undo
-        public Iterator expand(final Option n) {
+        public Iterator actions(final Object/*>S<*/ n) {
 	    return new StreamMethod(ASYNCHRONOUS_EXPAND) {
 		    public void runStream() {
-                	final Set/*_<Set<Formula>>_*/ S = (Set) n.getState();
+                	final Set/*_<Set<Formula>>_*/ S = ((Proof) n).setOfSupport;
 			// we use a list view of the set for optimized resolving (after having resolved G with F, we won't resolve F with G again), but we will only need to modify the set F
-			final List					  listS = Collections.unmodifiableList(new LinkedList(S));
-                	Collection					  r = new LinkedList();
+			final List		      listS = Collections.unmodifiableList(new LinkedList(S));
+                	Collection		      r = new LinkedList();
                 	// choose any clause G&isin;S
                 	for (ListIterator i = listS.listIterator(); i.hasNext(); ) {
 			    final Set/*_<Formula>_*/ G = (Set) i.next();
-			    final Signature			 GVariables = clausalFreeVariables(G);
-			    boolean					 resolvable = false;
+			    final Signature	     GVariables = clausalFreeVariables(G);
+			    boolean		     resolvable = false;
 			    assert !G.equals(CONTRADICTION) : "already checked for goal in isSolution() although this is somewhat less performant";
     
 			    // if we already tried to resolve F with G, we don't need to resolve G with F, again, so
@@ -246,7 +267,7 @@ class Resolution implements Inference {
 				    final Formula notFj = negation(Fj);
 				    // choose any literal Gk&isin;G
 				    for (Iterator k = G.iterator(); k.hasNext(); ) {
-                            		final Formula	   Gk = (Formula) k.next();
+                            		final Formula      Gk = (Formula) k.next();
                             		// generalized resolution
 					final Substitution mu = Substitutions.unify(Arrays.asList(new Object[] {Gk, notFj}));
 					logger.log(Level.FINEST, "resolving literals {0} with {1} leads to {2}", new Object[] {Gk, notFj, mu});
@@ -270,33 +291,64 @@ class Resolution implements Inference {
 					    final Set factorizedR = factorize(R);
 					    if (factorizedR != null)
 						R = factorizedR;
-					    final Set resultingClauseSet = new HashSet(S);
+					    final Set/*_<Set<Formula>>_*/ resultingClauseSet = new HashSet(S);
 					    resultingClauseSet.add(R);
 					    logger.log(Level.FINEST, "RESRET {0} @todo what's this?", R);
-					    resumedReturn(new Option(resultingClauseSet, R, n.getCost() + getCost(null)));
-                        				
+
 					    // goal lookahead
 					    if (R.equals(CONTRADICTION)) {
 						logger.log(Level.FINE, "resolved contradiction {0} from {1} and {2}",  new Object[] {R, F, G});
-						// cut the search tree after resuming with CONTRADICTION as action
+						// construct a special clause, that only contains the contradiction (in order to simplify isSolution)
+						resumedReturn(new Proof(Collections.singleton(CONTRADICTION)));
+						// cut the search tree after resuming with {CONTRADICTION} as clauses
 						return;
 					    }
+
+					    resumedReturn(new Proof(resultingClauseSet));
 					}
 				    }
 				}
 			    }
     
 			    if (!resolvable)
-				//@todo couldn't we somehow now the index from our list iterator i for removing G by i.remove()?
+				//@todo couldn't we somehow know the index from our list iterator i for removing G by i.remove()?
 				S.remove(G);
                 	}
 		    }
     		}.apply();
     	}
-        public double getCost(Option n) {
-	    return 1;
-    	}
+
+	public Iterator states(Object action, Object state) {
+	    // since A=S
+	    return Collections.singletonList(action).iterator();
+	}
+
+	public ProbabilisticTransition transition(Object action, Object state, Object statep) {
+	    return new Transition(action, 1);
+	}
+
     }
+    /**
+     * The state during a proof (i.e. a set of formulas forming the current set of support).
+     * @stereotype &laquo;Structure&raquo;
+     */
+    private static class Proof {
+	/**
+	 * the current set of support.
+	 * (containing all formulas already deduced, or in initial set of support)
+	 */
+	Set/*_<Set<Formula>>_*/ setOfSupport;
+
+	Object accumulatedCost;
+
+	public Proof(Set/*_<Set<Formula>>_*/ setOfSupport) {
+	    this.setOfSupport = setOfSupport;
+	}
+	public Proof(Set/*_<Set<Formula>>_*/ setOfSupport, Object accumulatedCost) {
+	    this.setOfSupport = setOfSupport;
+	    this.accumulatedCost = accumulatedCost;
+	}
+    }	    
     
     // clause and clause set handling
 	
