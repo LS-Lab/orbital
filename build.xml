@@ -292,12 +292,12 @@
                  Private="${doc.internal}">
             <bottom><![CDATA[<span style='font-size: smaller; font-style: italic;'>Copyright &copy; 1996-2003 Andr&eacute; Platzer<br />All Rights Reserved.</span>]]></bottom>
  	    <packageset dir="${sources}" defaultexcludes="no"
- 	         excludes="orbital,orbital/robotic/strategy,orbital/util/graph,orbital/moon,orbital/moon/aspects,orbital/moon/deprecated,orbital/moon/math/**,orbital/moon/logic/bridge,orbital/moon/logic/sign/type,orbital/moon/awt/virtual">
+ 	         excludes="orbital,orbital/robotic/strategy,orbital/util/graph,orbital/moon,orbital/moon/aspects,orbital/moon/deprecated,orbital/moon/math/**,orbital/moon/logic/bridge,orbital/moon/logic/sign/type,orbital/moon/awt/virtual,orbital/util/logging">
  	        <include name="orbital/**"/>
  	    </packageset>
 <!--
 	    <fileset dir="${sources}" defaultexcludes="no"
-	         excludes="orbital/*.java,orbital/robotic/strategy/*.java,orbital/util/graph/*.java,orbital/moon/*.java,orbital/moon/aspects/*.java,orbital/moon/deprecated/*.java,orbital/moon/math/*.java,orbital/moon/logic/bridge/*.java,orbital/moon/logic/imp/*.java,orbital/moon/awt/virtual/*.java">
+	         excludes="orbital/*.java,orbital/robotic/strategy/*.java,orbital/util/graph/*.java,orbital/moon/*.java,orbital/moon/aspects/*.java,orbital/moon/deprecated/*.java,orbital/moon/math/*.java,orbital/moon/logic/bridge/*.java,orbital/moon/logic/imp/*.java,orbital/moon/awt/virtual/*.java,orbital/util/logging/*.java">
 	        <include name="orbital/**/*.java"/>
 		<exclude name="**/*BeanInfo.java"/>
 	    </fileset>
@@ -634,7 +634,9 @@
                 <include name="**/*.jar"/>
                 <include name="**/*.zip"/>
             </zipfileset>
-            <zipfileset dir="${dist}" includes="lib/*.jar" prefix="Orbital"/>
+            <zipfileset dir="${dist}" includes="lib/*.jar" prefix="Orbital">
+                <exclude name="lib/orbital${version_brief}.jar"/>
+            </zipfileset>
             <zipfileset dir="${bin}" prefix="Orbital/bin">
 	        <include name="**/*.bat"/>
 	        <include name="**/*.sh"/>
