@@ -1290,7 +1290,7 @@ class PopulationTableModel extends AbstractTableModel implements TableModel {
 	case 1:
 	    return row < population.size() ? new Double(population.get(row).getFitness()) : null;
 	case 2:
-	    return "<data>";	// population.get(row).get();
+	    return population.get(row).get().toString();
 	default:
 	    throw new IllegalArgumentException("invalid column");
 	}
