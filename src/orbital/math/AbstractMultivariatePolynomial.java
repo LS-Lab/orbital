@@ -52,11 +52,8 @@ abstract class AbstractMultivariatePolynomial/*<R implements Arithmetic>*/ exten
 	return false;
     } 
 
-    public Integer degree() {
-	return Values.getDefaultInstance().valueOf(degreeValue());
-    }
-
     protected Object productIndexSet(Arithmetic/*>T<*/ productObject) {
+	//@xxx note that this ruins compatibility with instances of superclass, only
 	return dimensions();
     }
 

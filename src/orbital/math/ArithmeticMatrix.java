@@ -44,7 +44,13 @@ class ArithmeticMatrix/*<R implements Arithmetic>*/ extends AbstractMatrix/*<R>*
 	    System.out.println(M + "*" + v + "=" + M.multiply(v));
 	    System.out.println(u + "*" + v + "=" + u.multiply(v));
 	    System.out.println(v + "*" + 2 + "=" + v.multiply(vf.valueOf(2)));
-	    System.out.println("M^-1=" + M.inverse());
+	    System.out.println("norm ||M||\t=" + M.norm());
+	    System.out.println("column sum norm\t=" + M.norm(1));
+	    System.out.println("row sum norm\t=" + M.norm(Double.POSITIVE_INFINITY));
+	    System.out.println("Rank M\t=" + M.linearRank());
+	    System.out.println("det M\t= |M|=" + M.det());
+	    System.out.println("Tr M\t=" + M.trace());
+	    System.out.println("M^-1\t=" + M.inverse());
 	    System.out.println("Type examination Matrix N to multiply M with");
 	    String n = "";
 	    while (true) {

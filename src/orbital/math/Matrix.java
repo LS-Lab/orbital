@@ -263,7 +263,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * </ul>
      * which is a measure for how much <span class="matrix">A</span> stretches vectors.
      * </p>
-     * <p>This method should implement induced p-norms, where
+     * <p>This method should at least implement those induced p-norms
      * <ul>
      *   <li>||<span class="matrix">A</span>||<sub>1</sub> = max {&sum;<span class="doubleIndex"><sub>i=1</sub><sup>n</sup></span>|a<sub>ij</sub>| &brvbar; 1&le;j&le;m} is the norm of column sums.</li>
      *   <li>||<span class="matrix">A</span>||<sub>&infin;</sub> = max {&sum;<span class="doubleIndex"><sub>j=1</sub><sup>m</sup></span>|a<sub>ij</sub>| &brvbar; 1&le;i&le;n} is the norm of row sums.</li>
@@ -283,7 +283,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * </p>
      * <p>
      * Note that the Frobenius norm is not a p-norm.
-     * It is a norm got by identifying matrices with vectors.</p>
+     * It is a norm got by {@link Values#asVector(Matrix) identifying matrices with vectors}.</p>
      */
     Real norm();
 

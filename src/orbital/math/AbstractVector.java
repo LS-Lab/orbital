@@ -289,12 +289,11 @@ abstract class AbstractVector/*<R implements Arithmetic>*/ extends AbstractTenso
      */
     private static double DefaultNorm = 2;
 
-    // @todo test rewrite pure functional
     public Real norm(double p) {
 	if (!(p >= 1))
 	    throw new IllegalArgumentException("p-norm defined for p>=1");
 	if (p == Double.POSITIVE_INFINITY)
-	    return (Real/*__*/) Operations.sup.apply(Evaluations.abs(this));
+	    return (Real/*__*/) Operations.sup.apply(Functionals.map(Functions.norm, this));
 	return (Real/*__*/) Operations.power.apply(Operations.sum.apply(Functionals.map(Functions.pow(p), Functionals.map(Functions.norm, iterator()))), Values.getDefaultInstance().valueOf(1 / p));
     } 
 

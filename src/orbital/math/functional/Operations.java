@@ -172,7 +172,7 @@ public interface Operations /* implements ArithmeticOperations */ {
 		return ((Arithmetic) x).minus();
 	    } 
 	    public Function derive() {
-		return Functions.constant(Values.getDefaultInstance().valueOf(-1));
+		return Functions.constant(Values.MINUS_ONE);
 	    } 
 	    public Function integrate() {
 		// return (Function) minus.apply(Functions.id.integrate());
@@ -203,7 +203,7 @@ public interface Operations /* implements ArithmeticOperations */ {
 	    } 
 	    public BinaryFunction derive() {
 		return (BinaryFunction) Functionals.genericCompose(new BinaryFunction[][] {
-		    {Functions.binaryConstant(Values.getDefaultInstance().valueOf(1)), Functions.binaryConstant(Values.getDefaultInstance().valueOf(-1))}
+		    {Functions.binaryConstant(Values.getDefaultInstance().valueOf(1)), Functions.binaryConstant(Values.MINUS_ONE)}
 		});
 	    } 
 	    public BinaryFunction integrate(int i) {

@@ -851,24 +851,21 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
 	return (Real/*__*/) Functions.sqrt.apply(Operations.sum.apply(Functionals.map(Functions.square, Functionals.map(Functions.norm, iterator()))));
     } 
 
-    // @TODO: rewrite pure functional
     public Real norm(double p) {
 	Utility.pre(p >= 1, "p-norm defined for p>=1");
+	final orbital.logic.functor.Function sumOfNorms = new orbital.logic.functor.Function() {
+		//@internal this only is a composition with listable, but we require non-recursive map
+		public Object apply(Object v) {
+		    return Operations.sum.apply(orbital.math.functional.Functionals.map(Functions.norm, (Vector)v));
+		}
+	    };
 	if (p == Double.POSITIVE_INFINITY) {
 	    // norm of maximum row sum
-	    Arithmetic[] rowsum = new Arithmetic[dimension().height];
-	    for (int i = 0; i < rowsum.length; i++)
-		rowsum[i] = (Arithmetic) Operations.sum.apply(Evaluations.abs(getRow(i)));
-	    return (Real/*__*/) Operations.sup.apply(Values.getDefaultInstance().valueOf(rowsum));
-	} 
-	if (p == 1) {
+	    return (Real) Operations.sup.apply(Functionals.map(sumOfNorms, getRows()));
+	} else if (p == 1) {
 	    // norm of maximum column sum
-	    Arithmetic[] colsum = new Arithmetic[dimension().width];
-	    for (int j = 0; j < colsum.length; j++)
-		colsum[j] = (Arithmetic) Operations.sum.apply(Evaluations.abs(getColumn(j)));
-	    return (Real/*__*/) Operations.sup.apply(Values.getDefaultInstance().valueOf(colsum));
-	} 
-	if (p == 2) {
+	    return (Real) Operations.sup.apply(Functionals.map(sumOfNorms, getColumns()));
+	} else if (p == 2) {
 	    // Spectral norm
 	    // = Sqrt(maximum eigenvalue (A^* . A))
 	    throw new UnsupportedOperationException("Spectral norm not yet implemented");
