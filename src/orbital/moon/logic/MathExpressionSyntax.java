@@ -178,9 +178,14 @@ public class MathExpressionSyntax implements ExpressionSyntax {
     }
     
     public Expression.Composite compose(Expression compositor, Expression arguments[]) throws ParseException {
-	MathExpression op = (MathExpression)compositor;
-	if (!Types.isApplicableTo(compositor.getType(), arguments))
+	final MathExpression op = (MathExpression)compositor;
+	Type result = null;
+	try {
+	    result = compositor.getType().on(Types.typeOf(arguments));
+	}
+	catch (TypeException incompatibleTypes) {
 	    throw new TypeException("compositor " + Types.toTypedString(compositor) + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments) + ':' + Types.typeOf(arguments), compositor.getType().domain(), Types.typeOf(arguments));
+	}
 
 	// handle special cases of term construction, first
 	if (LAMBDA.equals(op.referee)) {
@@ -195,7 +200,7 @@ public class MathExpressionSyntax implements ExpressionSyntax {
 	Object[] arg = new Object[arguments.length];
 	for (int i = 0; i < arg.length; i++)
 	    arg[i] = getValueOf(arguments[i]);
-	return new MathExpression(apply(f, arg), op.getType().codomain());
+	return new MathExpression(apply(f, arg), result);
     }
 
     /**

@@ -119,7 +119,28 @@ public interface Type extends Comparable, Predicate {
     boolean subtypeOf(Type tau);
 
     /**
-     * Checks whether x is an instance of this type.
+     * Applies this type on sigma returning the resulting type.
+     * <p>
+     * Applying objects of type <span class="type">&tau;</span>&isin;&Tau; on
+     * objects of type <span class="type">&sigma;</span>&isin;&Tau; gives objects of
+     * type <span class="type">&tau;</span>&#8728;<span class="type">&sigma;</span>&isin;&Tau;.
+     * For example,
+     * <div>(<span class="type">&sigma;&rarr;&tau;</span>)&#8728;<span class="type">&sigma;</span> = <span class="type">&tau;</span></div>
+     * </p>
+     * @param sigma the type <span class="type">&sigma;</span> that this type is applied on.
+     * @return this type applied on sigma, i.e. the type
+     *  <span class="type">&tau;</span>&#8728;<span class="type">&sigma;</span>
+     *  all objects f(x) will have if f:<span class="type">&tau;</span>
+     *  and x:<span class="type">&sigma;</span>.
+     * @throws TypeException if <span class="type">&tau;</span>&#8728;<span class="type">&sigma;</span>
+     *  is undefined, i.e. objects of this type <span class="type">&tau;</span>
+     *  cannot be applied to objects of type <span class="type">&sigma;</span>.
+     * @todo rename, clarify documentation
+     */
+    Type on(Type sigma);
+
+    /**
+     * Checks whether an object x is an instance of this type.
      * Applies the type identifier predicate belonging to this type.
      * <p>
      * The type identifier predicate belonging to the type <span class="type">&tau;</span>, is:
@@ -127,6 +148,7 @@ public interface Type extends Comparable, Predicate {
      * The extension, &delta;<span class="type">&tau;</span>, of this predicate is the set of all
      * actually existing elements of type <span class="type">&tau;</span>.
      * </p>
+     * @return whether <span class="type">&tau;</span>(x), i.e. x is an instance of this type <span class="type">&tau;</span>.
      * @see java.lang.Class#isInstance(Object)
      * @todo rename, clarify documentation
      * @todo introduce implements Predicate?

@@ -489,6 +489,14 @@ public class StandardTypeSystem implements TypeSystem {
 	    else
 		throw new IncomparableException(this + " is incomparable with " + b);
 	}
+
+	public Type on(Type sigma) {
+	    if (!subtypeOf(typeSystem().map(sigma, typeSystem().UNIVERSAL()))) {
+		throw new TypeException("objects of type " + this + " not applicable to arguments of type " + sigma, domain(), sigma);
+	    } else {
+		return codomain();
+	    }
+	}
     }
 
     /**
@@ -504,6 +512,10 @@ public class StandardTypeSystem implements TypeSystem {
 	}
 	public Type codomain() {
 	    return this;
+	}
+
+	public Type on(Type sigma) {
+	    throw new TypeException("non-map composite types cannot be applied to anything, not even arguments of type " + sigma, typeSystem().NOTYPE(), sigma);
 	}
     }
 
@@ -569,6 +581,10 @@ public class StandardTypeSystem implements TypeSystem {
 	    //@xxx check that all tests are really correct. What's up with VoidFunction, and Function<Object,Boolean> etc?
 	    // if (x instanceof Functor && spec.isConform((Functor) x)) return true;
 	    return Functionals.bindSecond(Utility.instanceOf, getFundamental()).apply(x);
+	}
+
+	public Type on(Type sigma) {
+	    throw new TypeException("fundamental types cannot be applied to anything, not even arguments of type " + sigma, typeSystem().NOTYPE(), sigma);
 	}
 
 	//@internal identical to @see NonMapCompositeType
