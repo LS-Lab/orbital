@@ -22,3 +22,7 @@ a|~a == b->~b
 a=>(b=>c) == a=>b && b=>c
 a=>(b=>c) == a=>b || b=>c
 a->b == b->a					# direction matters
+
+c->(a^b) == (c->a)<->(c->b)	# distributive -> over ^
+(a<->b)->c == (a->c)^(b->c)	# codistributive -> over <->
+(a<->b)->c == (a->c)<->(b->c)	# distributive -> over <->
