@@ -921,7 +921,7 @@ public class StandardTypeSystem implements TypeSystem {
 	    sb.append(GROUPING_BRACKET_OPEN);
 	    sb.append(components[0].toString());
 	    for (int i = 1; i < components.length; i++) {
-		sb.append('*');
+		sb.append('\u00d7');
 		sb.append(components[i]);
 	    }
 	    sb.append(GROUPING_BRACKET_CLOSE);
@@ -1425,7 +1425,9 @@ public class StandardTypeSystem implements TypeSystem {
 		
 		if (a.equals(b))
 		    return 0;
-		
+
+		if (true)
+		    return a.toString().compareTo(b.toString());
 		throw new IllegalArgumentException("unknown types to compare lexicographically:\n type " + a + " of " + a.getClass() + "\n and  " + b + " of " + b.getClass());
 	    }
 	};
@@ -1481,7 +1483,7 @@ public class StandardTypeSystem implements TypeSystem {
 					      );
 		}
 		public String toString() {
-		    return "*";
+		    return "\u00d7";
 		}
 	    };
 
