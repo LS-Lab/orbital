@@ -205,7 +205,7 @@
                 <include name="**/*~"/>
                 <include name="**/.#*"/>
             </fileset>
-            <fileset dir="${tests}/" defaultexcludes="no">
+            <fileset dir="${src.tests}/" defaultexcludes="no">
                 <include name="**/*.bak"/>
                 <include name="**/*~"/>
                 <include name="**/.#*"/>
