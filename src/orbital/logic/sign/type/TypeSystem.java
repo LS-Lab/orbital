@@ -13,6 +13,14 @@ import orbital.logic.functor.BinaryFunction;
  * type-system. Type constructors create new types depending on some
  * existing types. Factories, instead, create completely new types.
  * For example, there are type constructors for map types.
+ * <p>
+ * <pre>
+ * [A <def>type system</def> is a] tractable syntactic method for proving the
+ * absence of certain program behaviors by classifying phrases
+ * according to the kinds of values they compute.<br />
+ * (Types and Programming Languages, MIT Press, 2002)
+ * </pre>
+ * </p>
  *
  * @author <a href="mailto:">Andr&eacute; Platzer</a>
  * @version 1.1, 2003-01-18
