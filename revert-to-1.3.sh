@@ -23,7 +23,7 @@ if ($#argv == 0) then
     echo "" 
     echo " 3. the sed-script revert-to-1.3.sed must be in the current directory"
     echo ""
-    echo " 4. the source=1.4 option should be removed from build.properties"
+    echo " 4. the javac.source=1.3 option should be put into build.properties"
     echo ""  
     echo " If these requirements are met, just call this script and it will"  
     echo " generate  Java 1.3 compatible source code in the directories called" 
