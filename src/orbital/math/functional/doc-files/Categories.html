@@ -6,8 +6,11 @@
 <meta name="author" content="Andre Platzer">
 <meta name="copyright" content="© 2002 André Platzer">
 <meta name="classification" content="Science/Mathematics/Category/Basics">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
 <title>Category theory</title>
 <link rel="stylesheet" href="../../../../stylist.css" type="text/css" charset="utf-8" title="layout">
+<link rel="stylesheet" href="../../../../math.css" type="text/css" charset="utf-8" title="layout">
 </head>
 
 <body class="unicode">
@@ -30,36 +33,36 @@ complex&quot;</p>
     such that
     <table>
       <tr>
-        <th>(r)</th>
-        <td>∀<span class="objet">A</span>∈Ob <span class="categorie">C</span> 
+        <td class="defID">r</td>
+        <td class="defCond">∀<span class="objet">A</span>∈Ob <span class="categorie">C</span> 
           ∃id<span class="objet"><sub>A</sub></span>∈Mor<sub><span class="categorie">C</span></sub>(<span class="objet">A</span>,<span class="objet">A</span>)</td>
-        <td>&quot;reflexive, identity&quot;</td>
+        <td class="defVerbal">reflexive, identity</td>
       </tr>
       <tr>
-        <th>(t)</th>
-        <td>∀<span class="objet">A</span>,<span class="objet">B</span>,<span class="objet">C</span>∈Ob 
+        <td class="defID">t</td>
+        <td class="defCond">∀<span class="objet">A</span>,<span class="objet">B</span>,<span class="objet">C</span>∈Ob 
           <span class="categorie">C</span> ∃∘:Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">B</span>,<span class="objet">C</span>)×Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">A</span>,<span class="objet">B</span>)→Mor<span class="categorie"><sub>C</sub></span>(A,<span class="objet">C</span>) 
           with</td>
-        <td>&quot;transitive, composition&quot;</td>
+        <td class="defVerbal">transitive, composition</td>
       </tr>
       <tr>
-        <th rowspan="2">(n)</th>
-        <td>∀<span class="objet">A</span>,<span class="objet">B</span>∈Ob <span class="categorie">C</span> 
+        <td class="defID" rowspan="2">n</td>
+        <td class="defCond">∀<span class="objet">A</span>,<span class="objet">B</span>∈Ob <span class="categorie">C</span> 
           ∀g∈Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">A</span>,<span class="objet">B</span>) 
           g∘id<span class="objet"><sub>A</sub></span> = g</td>
-        <td rowspan="2">&quot;neutral&quot;</td>
+        <td class="defVerbal" rowspan="2">neutral</td>
       </tr>
       <tr>
-        <td>∀<span class="objet">A</span>,<span class="objet">B</span>∈Ob <span class="categorie">C</span> 
+        <td class="defCond">∀<span class="objet">A</span>,<span class="objet">B</span>∈Ob <span class="categorie">C</span> 
           ∀f∈Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">B</span>,A) 
           id<span class="objet"><sub>A</sub></span>∘f = f</td>
       </tr>
       <tr>
-        <th>(a)</th>
-        <td>∀<span class="objet">A</span>,<span class="objet">B</span>,<span class="objet">C</span>,<span class="objet">D</span>∈Ob 
+        <td class="defID">a</td>
+        <td class="defCond">∀<span class="objet">A</span>,<span class="objet">B</span>,<span class="objet">C</span>,<span class="objet">D</span>∈Ob 
           <span class="categorie">C</span> ∀f∈Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">A</span>,<span class="objet">B</span>)∀g∈Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">B</span>,<span class="objet">C</span>)∀h∈Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">C</span>,<span class="objet">D</span>) 
           (h∘g)∘f = h∘(g∘f)</td>
-        <td>&quot;associative&quot;</td>
+        <td class="defVerbal">associative</td>
       </tr>
     </table>
     We usually assume that Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">A</span>,<span class="objet">B</span>) 
@@ -82,17 +85,17 @@ complex&quot;</p>
     that satisfies the following conditions
     <table>
       <tr>
-        <th>(1)</th>
-        <td>∀<span class="objet">A</span>∈Ob <span class="categorie">C</span> 
+        <td class="defID">1</td>
+        <td class="defCond">∀<span class="objet">A</span>∈Ob <span class="categorie">C</span> 
           <span class="foncteur">F</span>(id<sub class="objet">A</sub>) = id<sub><span class="foncteur">F</span>(<span class="objet">A</span>)</sub></td>
-        <td>&quot;unit&quot;</td>
+        <td class="defVerbal">unital</td>
       </tr>
       <tr>
-        <th>(m)</th>
+        <td class="defID">m</td>
         <td>∀f∈Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">A</span>,<span class="objet">B</span>)∀g∈Mor<span class="categorie"><sub>C</sub></span>(B,C) 
           <span class="foncteur">F</span>(g∘f) = <span class="foncteur">F</span>(g) 
           ∘ <span class="foncteur">F</span>(f)</td>
-        <td>&quot;morph&quot;</td>
+        <td class="defVerbal">morph</td>
       </tr>
     </table>
     <p><span style="float: left; font-size: 200%">☡</span> Beware: <span class="foncteur">F</span>:<span class="categorie">C</span>→<span class="categorie">D</span> 
@@ -111,18 +114,18 @@ complex&quot;</p>
     that satisfies the following conditions
     <table>
       <tr>
-        <th>(1)</th>
-        <td>∀<span class="objet">A</span>∈Ob <span class="categorie">C</span> 
+        <td class="defID">1</td>
+        <td class="defCond">∀<span class="objet">A</span>∈Ob <span class="categorie">C</span> 
           <span class="foncteur">F</span>(id<span class="objet"><sub>A</sub></span>) 
           = id<sub><span class="foncteur">F</span>(</sub><span class="objet"><sub>A</sub></span><sub>)</sub></td>
-        <td>&quot;unit&quot;</td>
+        <td class="defVerbal">unital</td>
       </tr>
       <tr>
-        <th>(m')</th>
-        <td>∀f∈Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">A</span>,<span class="objet">B</span>)∀g∈Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">B</span>,<span class="objet">C</span>) 
+        <td class="defID">m°</td>
+        <td class="defCond">∀f∈Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">A</span>,<span class="objet">B</span>)∀g∈Mor<span class="categorie"><sub>C</sub></span>(<span class="objet">B</span>,<span class="objet">C</span>) 
           <span class="foncteur">F</span>(g∘f) = <span class="foncteur">F</span>(f) 
           ∘ <span class="foncteur">F</span>(g)</td>
-        <td>&quot;contra-morph&quot;</td>
+        <td class="defVerbal">contra-morph</td>
       </tr>
     </table>
     A contravariant functor <span class="foncteur">F</span>:<span class="categorie">C</span>→<span class="categorie">D</span> 
@@ -162,21 +165,21 @@ are called <dfn>automorphisms</dfn>.</p>
   </tr>
   <tr>
     <td class="defTerm" id="monomorphism">monomorphism</td>
-    <td>∀<span class="objet">B</span>∈Ob <span class="categorie">C</span> <span class="foncteur">m<sub class="objet">B</sub></span>(f) 
+    <td class="defCond">∀<span class="objet">B</span>∈Ob <span class="categorie">C</span> <span class="foncteur">m<sub class="objet">B</sub></span>(f) 
       injective</td>
-    <td>&quot;f is left cancelable&quot;</td>
+    <td class="defVerbal">f is left cancelable</td>
   </tr>
   <tr>
     <td></td>
-    <td>⇔ f injective</td>
+    <td class="defCond">⇔ f injective</td>
     <td>(if <span class="categorie">C</span>=<span class="categorie">Ens</span> 
       )</td>
   </tr>
   <tr>
     <td class="defTerm" id="epimorphism">epimorphism</td>
-    <td>∀<span class="objet">B</span>∈Ob <span class="categorie">C</span> <span class="foncteur">m<sup class="objet">B</sup></span>(f) 
+    <td class="defCond">∀<span class="objet">B</span>∈Ob <span class="categorie">C</span> <span class="foncteur">m<sup class="objet">B</sup></span>(f) 
       injective</td>
-    <td>&quot;f is right cancelable&quot;</td>
+    <td class="defVerbal">f is right cancelable</td>
   </tr>
   <tr>
     <td></td>
@@ -190,17 +193,17 @@ are called <dfn>automorphisms</dfn>.</p>
   <dd>A category <span class="categorie">C</span> is additive, if
     <table>
       <tr>
-        <th>()</th>
-        <td>∀<span class="objet">A</span>,<span class="objet">B</span>∈Ob <span class="categorie">C</span> 
+        <td class="defID"></td>
+        <td class="defCond">∀<span class="objet">A</span>,<span class="objet">B</span>∈Ob <span class="categorie">C</span> 
           Hom<sub><span class="categorie">C</span></sub>(<span class="objet">A</span>,<span class="objet">B</span>) 
           := Mor<sub><span class="categorie">C</span></sub>(<span class="objet">A</span>,<span class="objet">B</span>) 
           is an Abelian(<a href="../../doc-files/AlgebraicStructures.html#commutativeMagmaHom">!</a>) 
           group</td>
-        <td></td>
+        <td class="defVerbal"></td>
       </tr>
       <tr>
-        <th>(d)</th>
-        <td>∘ is distributive over +, i.e.
+        <td class="defID">d</td>
+        <td class="defCond">∘ is distributive over +, i.e.
           <ul>
             <li>∀A,B,C∈Ob <span class="categorie">C</span> ∀f∈Hom<span class="categorie"><sub>C</sub></span>(B,C) 
               ∀g,h∈Hom<span class="categorie"><sub>C</sub></span>(A,B) f∘(g+h) 
@@ -210,7 +213,7 @@ are called <dfn>automorphisms</dfn>.</p>
               = (f∘h) + (g∘h)</li>
           </ul>
         </td>
-        <td>&quot;distributive&quot;</td>
+        <td class="defVerbal">distributive</td>
       </tr>
     </table>
   </dd>
@@ -232,7 +235,7 @@ are called <dfn>automorphisms</dfn>.</p>
     <p>For every category <span class="categorie">C</span>, there is the <dfn>opposite</dfn> 
     (dual) category <span class="categorie">C°</span> obtained by &quot;turning 
     the arrows around&quot;, per Ob <span class="categorie">C°</span> := Ob <span class="categorie">C</span>, 
-    and Mor<span class="categorie"><sub>C°</sub></span>(A,B) := Mor<span class="categorie"><sub>C</sub></span>(B,A) 
+    and Mor<span class="categorie"><sub>C°</sub></span>(A,B) := Mor<span class="categorie"><sub>C</sub></span>(B,A), 
     whereas the identity morphisms are the same, and the composition is f∘<span class="categorie"><sub>C°</sub></span>g 
     := g∘<span class="categorie"><sub>C</sub></span>f.<br>
     <b>Duality Principle</b>: Any theorem holding for a category <span class="categorie">C</span> 
@@ -246,7 +249,7 @@ are called <dfn>automorphisms</dfn>.</p>
     <p>Additive categories form a category together with additive functors.</p>
   </li>
   <li>
-    <p>Functors of a fixed category together with their natural transformations 
+    <p>Functors of fixed categories together with their natural transformations 
     form a category.</p>
   </li>
   <li id="hom-functor">
@@ -301,9 +304,8 @@ are called <dfn>automorphisms</dfn>.</p>
     is the opposite of <span class="foncteur">m<sub>X</sub></span>. If <span class="categorie">C</span> 
     is additive we write Hom<span class="categorie"><sub>C</sub></span>(X,·):=<span class="foncteur">h<sub>X</sub></span>:=<span class="foncteur">m<sub>X</sub></span>, 
     and Hom<span class="categorie"><sub>C</sub></span>(·,X):=<span class="foncteur">h<sup>X</sup></span>:=<span class="foncteur">m<sup>X</sup></span> 
-    for these functors in <span class="categorie">C</span>→<span class="categorie">Ab</span>, 
-    which are additive, then. The properties of being additive coincides with 
-    (d).</p>
+    for these (now additive) functors in <span class="categorie">C</span>→<span class="categorie">Ab</span>. 
+    The properties of being additive coincides with (d).</p>
   </li>
 </ol>
 <!--@todo check names of Y<sub>∗</sub>, and Y<sup>∗</sup> .-->
@@ -385,7 +387,7 @@ are called <dfn>automorphisms</dfn>.</p>
 </dl>
 <p>For the following definition, <span class="categorie">A</span> and <span class="categorie">A'</span> 
 must be categories that have exact sequences (more precisely: Abelian 
-categories).</p>
+categories) <!-- <source>Pareigis, 4.2</source> -->.</p>
 <dl class="def">
   <dt id="exact">exact</dt>
   <dd><span class="foncteur">F</span>:<span class="categorie">A</span>→<span class="categorie">A'</span> 
@@ -530,8 +532,8 @@ categories).</p>
           (then <span class="categorie">Ab</span>) are additive, then (<span class="foncteur">m<sub>A</sub></span>,<span class="foncteur">F</span> 
           are and) the <span class="transformationNaturelle">α</span><sub>B</sub> 
           are isomorphisms of groups.</li>
-        <li>More generally, if the <span class="foncteur">F</span> (on 
-          morphisms) is a homomorphism of a law + that <span class="transformationNaturelle"></span>∘ 
+        <li>More generally, if <span class="foncteur">F</span> (on morphisms) is 
+          a homomorphism of a law + that <span class="transformationNaturelle"></span>∘ 
           is distributive over, then the <span class="transformationNaturelle">α</span><sub>B</sub> 
           are isomorphisms of +.</li>
       </ul>
@@ -545,7 +547,7 @@ be a presentable covariant functor.
     isomorph. Precisely: for all isomorphisms of functors <span class="transformationNaturelle">α</span>:<span class="foncteur">m<sub>A</sub></span>→<span class="foncteur">F</span>, 
     <span class="transformationNaturelle">α'</span>:<span class="foncteur">m<sub>A</sub></span><sub>'</sub>→<span class="foncteur">F</span> 
     ∃!φ:A<sub></sub>→A' isomorphism with <span class="transformationNaturelle">α</span>∘α<sub>φ</sub> 
-    = <span class="transformationNaturelle">α</span>'. (See <a href="#Yoneda">Yoneda-Lemma</a>).</li>
+    = <span class="transformationNaturelle">α</span>'. (Because of <a href="#Yoneda">Yoneda-Lemma</a>).</li>
   <li>an isomorphism of functors <span class="transformationNaturelle">α</span>:<span class="foncteur">m<sub>A</sub></span>→<span class="foncteur">F</span> 
     is uniquely determined by its universal element, i.e. ∀u∈<span class="foncteur">F</span>(A) 
     there is at most one <span class="transformationNaturelle">α</span>:<span class="foncteur">m<sub>A</sub></span>→<span class="foncteur">F</span> 

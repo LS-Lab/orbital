@@ -1,5 +1,5 @@
 #
-# Huntington axioms of boolean algebraic logic
+# Huntington axioms of the logic of Boolean algebra
 #
 a&b == b&a		# commutative (Huntington axiom)
 a|b == b|a		# commutative (Huntington axiom)
@@ -68,7 +68,7 @@ a&b->c == a->(b->c)	# exportation / importation [Lex exportationis, Lex importat
 # some important tautologies from axioms
 #
 |= ~(a&~a)		# Principium contradictionis
-|= a | ~a		# Tertium non datur, law of excluded middle (Russel/Whitehead. Principia Mathematica. 1910, 101 *2.11)
+|= a | ~a		# tertium non datur, law of excluded middle (Russel/Whitehead. Principia Mathematica. 1910, 101 *2.11)
 |= a -> a		# self implication (c reflexive)
 #
 # implicative properties of |= and thus inference rules
@@ -120,6 +120,6 @@ p->r, q->r |= (p|q)->r
 #
 # definitions
 #
-X!=Y == ~(X=Y)
+#X!=Y == ~(X=Y)
 # a nor b == ~(a|b)		# Peirce function
 # a nand b == ~(a&b)	

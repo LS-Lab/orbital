@@ -452,8 +452,8 @@ public class Values {
     } 
 
     /**
-     * Gets unit base Vector <span class="vector">e<sub>i</sub></span>,
-     * with all elements set to <code>0</code> except element <code>i</code> set to <code>1</code>.
+     * Gets a vector <span class="vector">e<sub>i</sub></span> of an ONB of R<sup>n</sup>.
+     * It has all elements set to <code>0</code> except element <code>i</code> set to <code>1</code>.
      * These <span class="vector">e<sub>i</sub></span> are the standard base of <b>R</b><sup>n</sup>:
      * &forall;<span class="vector">x</span>&isin;<b>R</b><sup>n</sup> &exist;! x<sub>k</sub>&isin;<b>R</b>: <span class="vector">x</span> = x<sub>1</sub>*<span class="vector">e<sub>1</sub></span> + ... + x<sub>n</sub>*<span class="vector">e<sub>n</sub></span>.
      */
