@@ -30,6 +30,7 @@ public class ModalLogicTest extends check.TestCase {
 	    ModalLogic.proveAll(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/" + name)), logic, allTrue);
 	}
 	catch (Throwable ex) {
+	    ex.printStackTrace();
 	    fail(ex.getMessage() + " in file " + name);
 	}
     }

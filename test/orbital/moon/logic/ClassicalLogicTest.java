@@ -28,6 +28,7 @@ public class ClassicalLogicTest extends check.TestCase {
 	    ClassicalLogic.main(new String[] {name});
 	}
 	catch (Throwable ex) {
+	    ex.printStackTrace();
 	    fail(ex.getMessage() + " in file " + name);
 	}
     }
