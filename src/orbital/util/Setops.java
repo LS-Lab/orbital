@@ -35,11 +35,15 @@ import java.util.NoSuchElementException;
 /**
  * Contains utility methods for common set operations and more general collection operations.
  * 
- * <p>
- * The selection methods ({@link #select(Function, Collection, Predicate, Comparator, boolean)}) encapsulate a generalization of queries over Collections.
- * These queries are build just like data queries over tables with SQL.
- * In a selection query, a Collection is filtered to obtain the desired subset of data
- * which matches the criteria, with the order being induced by a Comparator.</p>
+ * <p> The selection methods ({@link #select(Function, Collection,
+ * Predicate, Comparator, boolean)}) encapsulate a generalization of
+ * queries over Collections.  These queries are build just like data
+ * queries over tables with SQL.  In a selection query, a Collection
+ * is filtered to obtain the desired subset of data which matches the
+ * criteria, with the order being induced by a Comparator.</p> <p>
+ * With its highly flexible bulk-style data-processing operations,
+ * {@link orbital.logic.functor.Functionals} is a worthwhile and
+ * extremely powerful supplement to {@link Setops}.</p>
  *
  * @stereotype Utilities
  * @version 1.0, 2000/08/15
