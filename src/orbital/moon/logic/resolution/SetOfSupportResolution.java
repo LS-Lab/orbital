@@ -54,7 +54,7 @@ public class SetOfSupportResolution extends ResolutionBase {
 	//@internal first letting setOfSupport subsume newResolvents seems better, perhaps because setOfSupport already survived a longer time so it is more likely for them to be more general in the subsumption hierarchy.
 	newResolvents.removeAllSubsumedBy(setOfSupport);
 	setOfSupport.removeAllSubsumedBy(newResolvents);
-	if (false)
+	if (true)
 	    return;
 	// remove tautologies and handle contradictions
     	// for all clauses F&isin;newResolvents
@@ -78,6 +78,10 @@ public class SetOfSupportResolution extends ResolutionBase {
 	assert !query.contains(Clause.CONTRADICTION) : "query contains no elementary contradiction any more";
 	ClausalSet usable = knowledgebase;
 	ClausalSet setOfSupport = query;
+	setOfSupport.removeAllSubsumedBy(setOfSupport);
+	usable.removeAllSubsumedBy(setOfSupport);
+	usable.removeAllSubsumedBy(usable);
+
 	while (!setOfSupport.isEmpty()) {
 	    // fairly choose any clause C&isin;S
 	    final Clause C = selectClause(setOfSupport);
@@ -90,7 +94,10 @@ public class SetOfSupportResolution extends ResolutionBase {
 	    // whether C has been resolved with any D
 	    boolean resolvable = false;
 	    // choose any clause D&isin;U&cup;S
-	    for (Iterator i2 = new SequenceIterator(new Iterator[] {usable.iterator(), setOfSupport.iterator()});
+	    for (Iterator i2 = new SequenceIterator(new Iterator[] {
+		    usable.probableComplementsOf(C),
+		    setOfSupport.probableComplementsOf(C)
+	        });
 		 i2.hasNext(); ) {
 		final Clause D = (Clause) i2.next();
 		// try to resolve C with D
@@ -113,7 +120,9 @@ public class SetOfSupportResolution extends ResolutionBase {
 		usable.remove(C);
 	    }
 
+	    System.out.println("  setOfSupport " + setOfSupport.size() + "\tusable " + usable.size() + "\tresolvents " + newResolvents.size());
 	    deletion(newResolvents, usable, setOfSupport);
+	    System.out.println(" >setOfSupport " + setOfSupport.size() + "\tusable " + usable.size() + "\tresolvents " + newResolvents.size());
 	    setOfSupport.addAll(newResolvents);
 	}
 
