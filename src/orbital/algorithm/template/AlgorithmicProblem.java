@@ -12,7 +12,11 @@ package orbital.algorithm.template;
  * An <dfn>algorithmic problem interface</dfn> is the hook declaring the problem-specific properties
  * for the algorithmic template class that solves the general problem.
  * After implementing such an algorithmic problem interface, it can simply be plugged into the
- * corresponding algorithmic template class to start solving the problem.</p>
+ * corresponding algorithmic template class to start solving the problem.
+ * So algorithmic problem interfaces contain the inherent properties describing the specific
+ * problem at hand. Thereby it specifies <em>what</em> the problem really is,
+ * but usually not (or not much of) <em>how</em> the problem should be solved.
+ * </p>
  * <p>
  * Apart from the relief from implementing the algorithm itself, using algorithmic
  * templates often has the powerful advantage that several different

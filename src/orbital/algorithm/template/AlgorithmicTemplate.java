@@ -14,11 +14,16 @@ import orbital.math.functional.Function;
  * An <dfn>algorithmic template</dfn> is a class that implements a problem-solving algorithm in a
  * general way, such that it is applicable in a multitude of different problems with the same
  * essential structure. It solves this whole bunch of problems by providing a maximum of methods
- * with shared behaviour, and deferring the problem-specific part into an interface.
- * Each algorithmic template class has an associated hook which is a sub-interface of
+ * with shared behaviour, and deferring the problem-specific part into a problem interface.
+ * Each algorithmic template class has an associated hook interface which is a sub-interface of
  * {@link AlgorithmicProblem} and declares the wholes to fill.
  * So this hook interface will contain the part that distinguishes two individual problems of the
- * same common structure solved by the algorithmic template class.</p>
+ * same common structure solved by the algorithmic template class.
+ * In short, algorithmic templates decouple algorithms from the problems such that they the
+ * solution procedure is independent of the specific problem at hand. They determine <em>how</em>
+ * instances of the problem are solved in general, perhaps still providing some additional
+ * parameters for adjusting the concrete problem solving approach.
+ * </p>
  * <p>
  * Of course, algorithmic templates are more useful if they only require a very small
  * and almost declarative algorithmic problem hook.</p>
