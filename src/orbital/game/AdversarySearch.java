@@ -28,6 +28,7 @@ public abstract class AdversarySearch {
     /**
      * Search for the best option to take.
      * @param state in which state to choose an action.
+     * @preconditions this implementation assumes a two league game (but not necessarily two player game)
      * @return the best move option found.
      */
     public abstract Option solve(Field state);
@@ -96,7 +97,8 @@ public abstract class AdversarySearch {
 	 * Create a new option.
 	 * @param state the state s&isin;S.
 	 * @param destination the destination that the figure reached.
-	 * @param figure the acting figure moved to reach the state.
+	 * @param figure the acting figure moved to reach the state
+	 * (at the original position on the initial field).
 	 * @param move the applicable move performed by the figure to reach the state.
 	 * @param utility the utility u(s) of the state.
 	 */
@@ -106,6 +108,7 @@ public abstract class AdversarySearch {
 	    this.figure = figure;
 	    this.move = move;
 	    this.utility = utility;
+	    //@todo assert state != figure.getField() : "(next) state different from the source state figure.getField()";
 	}
 	public Option(Field state, Position destination, Figure figure, Move move) {
 	    this(state, destination, figure, move, 0/*@xxx Double.NaN instead?*/);
@@ -147,6 +150,7 @@ public abstract class AdversarySearch {
 	/**
 	 * Get the figure moving.
 	 * @return the acting figure moved to reach this state.
+	 * (at the original position on the initial field).
 	 */
 	public Figure getFigure() {
 	    return figure;
@@ -210,7 +214,7 @@ public abstract class AdversarySearch {
 	}
 		
 	public String toString() {
-	    return "[" + figure.x + "|" + figure.y + "--" + move.movement + "-->" + destination.x + "|" + destination.y + "]";
+	    return "[" + figure.x + "|" + figure.y + "--" + move.getMovementString() + "-->" + destination.x + "|" + destination.y + "]";
 	} 
     }
 }
