@@ -23,6 +23,9 @@ import java.beans.PropertyChangeSupport;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
+import orbital.util.Pair;
+import java.util.Iterator;
+
 /**
  * Gameboard class is an AWT-view of a Field which can be
  * modified by mouse-dragging.
@@ -39,7 +42,7 @@ public class Gameboard extends Canvas implements ImageObserver, Serializable {
      * The Field displayed.
      * @serial
      */
-    private Field						field = null;
+    private Field field = null;
 
     /**
      * The position whose figure is currently being dragged elsewhere.
@@ -49,7 +52,7 @@ public class Gameboard extends Canvas implements ImageObserver, Serializable {
     /**
      * Whether we currently seem to perform layouting.
      */
-    private transient boolean			layouting = false;
+    private transient boolean layouting = false;
 
     public Gameboard() {}
     public Gameboard(Field f) {
@@ -99,8 +102,10 @@ public class Gameboard extends Canvas implements ImageObserver, Serializable {
 	propertyChangeListeners.removePropertyChangeListener(l);
     } 
 
+    
+    
     /**
-     * Returns the Field-Position (i|j) of a graphical Point (x|y).
+     * Returns the field-position (i|j) of a graphical point (x|y).
      * @see Field#boundsOf(Rectangle, Position)
      */
     public Position figureOn(int x, int y) {
@@ -110,6 +115,8 @@ public class Gameboard extends Canvas implements ImageObserver, Serializable {
 	return new Position(x * dim.width / size().width, y * dim.height / size().height);	  // @version 1.1
     } 
 
+    // view
+    
     public void paint(Graphics g) {
 	update(g);
     } 
@@ -151,13 +158,15 @@ public class Gameboard extends Canvas implements ImageObserver, Serializable {
 	return true;
     } 
 
+    // controller
+    
     public boolean mouseDown(Event evt, int x, int y) {
 	dragging = figureOn(x, y);
 	return true;
     } 
     public boolean mouseUp(Event evt, int x, int y) {
 	Position src = dragging;
-	//XXX: if EventHandler wasn't synchronizing events, concurrent synchronization could be required since dragging could already have changed again
+	//@internal if EventHandler wasn't synchronizing events, concurrent synchronization could be required since dragging could already have changed again
 	dragging = null;
 	if (src == null || field.getFigure(src) == null)
 	    // ignore
@@ -166,10 +175,13 @@ public class Gameboard extends Canvas implements ImageObserver, Serializable {
 	if (dst == null /*@xxx remove condition || src.equals(dst)*/)
 	    // ignore
 	    return super.mouseUp(evt, x, y);
+
 	//@xxx only allow an operation for real players!
-	Move moveToDst = PackageUtilities.findValidPath(field.getFigure(src), dst);
+
+	Move moveToDst = findValidPath(field.getFigure(src), dst);
 	boolean validOperation =
 	    moveToDst != null && field.move(src, moveToDst);	   // is this a correct move/beat?
+
 	repaint(src);
 	repaint(dst);
 	if (validOperation)
@@ -179,4 +191,41 @@ public class Gameboard extends Canvas implements ImageObserver, Serializable {
 	}
 	return true;
     } 
+
+    // how to move a figure to a destination on user click
+
+    /**
+     * Finds a valid path to a destination position.
+     * <p>works like:
+     * <code lang="prolog">?- movePath(X)==destination.</code></p>
+     * <p>
+     * You can overwrite this method if you have special case rules to determine
+     * which exact move to perform upon user request. Also overwrite if you want to
+     * let the user choose which one of multiple possible moves to the destination
+     * he intended.
+     * </p>
+     * @return any legal move-path from the source figure which reaches the destination position.
+     *  <code>null</code> if destination field cannot be reached at all, or is not empty but cannot be beaten.
+     * @postconditions (&exist;i RES.equals(getLegalMoves()[i]) &and; movePath(RES).equals(destination)) xor RES == null
+     * @internal @see Figure#validMoves()
+     */
+    protected Move findValidPath(final Figure source, final Position destination) {
+	for (Iterator i = source.validMoves(); i.hasNext(); ) {
+	    Pair     p = (Pair) i.next();
+	    Move     move = (Move) p.A;
+	    Position dst = (Position) p.B;
+
+	    // if (move.movement.indexOf(Move.Teleport)!=-1)
+	    //      // well Teleport reaches destination
+	    //      return i;
+			
+	    // reaches destination?
+	    if (destination.equals(dst)) {
+		assert dst != null : "destination.equals(null) == false";
+		return move;
+	    }
+	} 
+	return null;
+    } 
+
 }
