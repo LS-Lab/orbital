@@ -93,7 +93,7 @@ public class SymbolBase implements Symbol, Serializable {
     public SymbolBase(String signifier, Type type, NotationSpecification notation, boolean variable) {
         this.signifier = signifier;
         this.setType(type);
-        this.notation = notation != null ? notation : new NotationSpecification(Types.arityOf(type.domain()));
+	this.mysetNotation(notation);
         this.variable = variable;
     }
 
@@ -177,8 +177,18 @@ public class SymbolBase implements Symbol, Serializable {
     public NotationSpecification getNotation() {
     	return notation;
     }
+    private void mysetNotation(NotationSpecification notation) {
+	// check arity of notation again
+	try {
+	    assert notation == null || new NotationSpecification(notation.getPrecedence(), notation.getAssociativity(), notation.getNotation(), Types.arityOf(type.domain())).equals(notation);
+	}
+	catch (IllegalArgumentException ex) {
+	    throw (AssertionError) new AssertionError("illegal notation specification " + notation + " for symbol " + this).initCause(ex);
+	}
+        this.notation = notation != null ? notation : new NotationSpecification(Types.arityOf(type.domain()));
+    }
     public void setNotation(NotationSpecification notation) {
-    	this.notation = notation;
+        mysetNotation(notation);
     }
     
     public boolean isVariable() {
