@@ -42,6 +42,19 @@ public abstract class AdversarySearch {
     	return state.expand();
     }
 
+    /**
+     * Whether the turn of the given state is up to our league.
+     * <p>
+     * Thus when <code>true</code> it's a maximizer's turn,
+     * when <code> false</code> it's a minimizer's turn.
+     * </p>
+     * @return whether the active league that performs the next move is of our league,
+     *  or belongs to the opponents.
+     * @todo improve name to isOurLeague'sTurn, or ourLeagueMoves, ...
+     */
+    protected abstract boolean isOurLeague(Field state);
+    
+    
 
     /**
      * Represents an option node during an adversary search problem.
@@ -94,7 +107,10 @@ public abstract class AdversarySearch {
 	    this.utility = utility;
 	}
 	public Option(Field state, Position destination, Figure figure, Move move) {
-	    this(state, destination, figure, move, 0);
+	    this(state, destination, figure, move, 0/*@xxx Double.NaN instead?*/);
+	}
+	public Option(Field state, Figure figure, Move move, Position destination) {
+	    this(state, destination, figure, move);
 	}
 	/**
 	 * @deprecated Since 1.0, this constructor is for convenience of converting old code, only.
