@@ -95,6 +95,7 @@ public class StandardTypeSystem implements TypeSystem {
     /**
      * @see Type#compareTo(Object)
      * @see StandardTypeSystem.TypeObject#compareToSemiImpl(Type)
+     * @todo 19 optimize this hotspot during proving??
      */
     private static final Comparator subtypeOrder = new Comparator() {
 	    public int compare(Object o1, Object o2) {
@@ -172,6 +173,10 @@ public class StandardTypeSystem implements TypeSystem {
 	    //@internal assume canonical
 	    return this == b ? 0 : 1;
 	}
+	public final int lexicographicCompareToTie(Type b) {
+	    assert b == this : "only one single universal type exists";
+	    return 0;
+	}
 	public final boolean apply(Object x) {
 	    return true;
 	}
@@ -213,6 +218,10 @@ public class StandardTypeSystem implements TypeSystem {
 		return 0;
 	    else
 		throw new IncomparableException();
+	}
+	public final int lexicographicCompareToTie(Type b) {
+	    assert b == this : "only one single universal meta-type exists";
+	    return 0;
 	}
 	public final boolean apply(Object x) {
 	    //@internal interpretations of types are sets
@@ -268,10 +277,14 @@ public class StandardTypeSystem implements TypeSystem {
 	    return type;
 	}
 	protected int comparisonPriority() {
-	    return Integer.MAX_VALUE - 10;
+	    return Integer.MAX_VALUE - 11;
 	}
 	public final int compareToSemiImpl(Type b) {
 	    return this == b ? 0 : -1;
+	}
+	public final int lexicographicCompareToTie(Type b) {
+	    assert b == this : "only one single absurd type exists";
+	    return 0;
 	}
 	public final boolean apply(Object x) {
 	    return false;
@@ -323,6 +336,7 @@ public class StandardTypeSystem implements TypeSystem {
 	 * This method induces a total order on the individual comparison rules and decides
 	 * which rule is applied.
 	 * This way we achieve a prioritized rule-based system for comparison rules.
+	 * @note For simple lexicographical comparison, comparisonPriorities are assumed distinct.
 	 * @postconditions RES==OLD(RES) && RES>=0
 	 */
 	protected abstract int comparisonPriority();
@@ -359,6 +373,15 @@ public class StandardTypeSystem implements TypeSystem {
 	    //assert (cmp >= 0) == typeSystem().inf(new Type[] {(Type)b, this}).equals(b) : "TypeSystem.inf@postconditions " + b + "=<" + this + " iff " + typeSystem.inf(new Type[] {(Type)b, this}) + " = " + b + " inf " + this + " = " + b;
 	    return cmp;
 	}
+
+	/**
+	 * Semi-implementation of {@link Type#compareTo(Object)} for
+	 * lexicographical order (unlike subtype order).  Called from
+	 * {@link StandardTypeSystem#LEXICOGRAPHIC} in case comparison
+	 * priority does not impose an order.
+	 * @preconditions comparisonPriority() = ((TypeObject)b).comparisonPriority()
+	 */
+	protected abstract int lexicographicCompareToTie(Type b);
 
 	public final boolean subtypeOf(Type tau) {
 	    try {
@@ -477,17 +500,25 @@ public class StandardTypeSystem implements TypeSystem {
 	
 	public int compareToSemiImpl(Type b) {
 	    assert codomain() != typeSystem.ABSURD() && b.codomain() != typeSystem.ABSURD() : "s->ABSURD = ABSURD is no map type (and has higher comparisonPriority)";
-	    int doc = domain().compareTo(b.domain());
-	    int coc = codomain().compareTo(b.codomain());
+	    final int doc = domain().compareTo(b.domain());
+	    final int coc = codomain().compareTo(b.codomain());
 	    if (coc == 0 && doc == 0)
 		return 0;
-	    else if ((doc >= 0 && coc <= 0)
-		     || b.equals(typeSystem.UNIVERSAL())) //@todo still needed?
+	    else if ((doc >= 0 && coc <= 0))
 		return -1;
 	    else if (doc <= 0 && coc >= 0)
 		return 1;
 	    else
 		throw new IncomparableException(this + " is incomparable with " + b);
+	}
+
+	public int lexicographicCompareToTie(Type b) {
+	    // compare for domain in favor of codomain
+	    int order = LEXICOGRAPHIC.compare(domain(), b.domain());
+	    if (order != 0)
+		return order;
+	    else
+		return LEXICOGRAPHIC.compare(codomain(), b.codomain());
 	}
 
 	public Type on(Type sigma) {
@@ -588,6 +619,10 @@ public class StandardTypeSystem implements TypeSystem {
 	    }
 	    throw new IncomparableException(this + " is incomparable with " + b);
 	}
+	public int lexicographicCompareToTie(Type b) {
+	    // lexicographic compare of names
+	    return this.getFundamental().getName().compareTo(((FundamentalType)b).getFundamental().getName());
+	}
 
 	public boolean apply(Object x) {
 	    //@xxx check that all tests are really correct. What's up with VoidFunction, and Function<Object,Boolean> etc?
@@ -637,6 +672,10 @@ public class StandardTypeSystem implements TypeSystem {
 	public String toString() {
 	    return signifier;
 	}
+
+	protected final int comparisonPriority() {
+	    return 50;
+	}
     }
 
     // special type factories
@@ -678,7 +717,10 @@ public class StandardTypeSystem implements TypeSystem {
 	public int hashCode() {
 	    return signifier.hashCode();
 	}
-	
+
+	public String getSignifier() {
+	    return signifier;
+	}
 
 
 	protected int comparisonPriority() {
@@ -690,6 +732,9 @@ public class StandardTypeSystem implements TypeSystem {
 	    } else {
 		throw new IncomparableException(this + " is incomparable with " + b);
 	    }
+	}
+	public final int lexicographicCompareToTie(Type b) {
+	    return this.getSignifier().compareTo(((SpecialType)b).getSignifier());
 	}
 
 	public boolean apply(Object x) {
@@ -928,6 +973,21 @@ public class StandardTypeSystem implements TypeSystem {
 		throw new IncomparableException(this + " is incomparable with " + tau);
 	}
 
+	public final int lexicographicCompareToTie(Type b) {
+	    Type as[] = (Type[]) this.getComponent();
+	    Type bs[] = (Type[]) ((ProductType)b).getComponent();
+	    int order = as.length - bs.length;
+	    if (order != 0)
+		return order;
+	    assert as.length == bs.length : "equal arities means equal number of components";
+	    for (int i = 0; i < as.length; i++) {
+		order = LEXICOGRAPHIC.compare(as[i], bs[i]);
+		if (order != 0)
+		    return order;
+	    }
+	    return 0;
+	}
+
 	public boolean apply(Object x) {
 	    if (x instanceof Object[]) {
 		Object xs[] = (Object[])x;
@@ -1038,7 +1098,7 @@ public class StandardTypeSystem implements TypeSystem {
 	}
 
 	protected int comparisonPriority() {
-	    return 200;
+	    return 200-1;
 	}
 	public int compareToSemiImpl(Type tau) {
 	    if (equals(tau))
@@ -1060,6 +1120,10 @@ public class StandardTypeSystem implements TypeSystem {
 	}
 	private boolean compareSupertypeOf(Type tau) {
 	    return Setops.all(Arrays.asList(components), Functionals.bindFirst(subtypeOf, tau));
+	}
+
+	public final int lexicographicCompareToTie(Type b) {
+	    throw new UnsupportedOperationException("not yet implemented");
 	}
 
 	public boolean apply(Object x) {
@@ -1186,6 +1250,10 @@ public class StandardTypeSystem implements TypeSystem {
 	    return Setops.some(Arrays.asList(components), Functionals.bindFirst(subtypeOf, tau));
 	}
 
+	public final int lexicographicCompareToTie(Type b) {
+	    throw new UnsupportedOperationException("not yet implemented");
+	}
+
 	public boolean apply(Object x) {
 	    //@todo rewrite pure functional
 	    for (int i = 0; i < components.length; i++)
@@ -1309,6 +1377,12 @@ public class StandardTypeSystem implements TypeSystem {
 	    } else
 		throw new IncomparableException(this + " is incomparable with " + b);
 	}
+
+	public final int lexicographicCompareToTie(Type b) {
+	    return LEXICOGRAPHIC.compare(((CollectionType)this).comparisonInternalRepresentation(),
+				   ((CollectionType)b).comparisonInternalRepresentation());
+	}
+
 	public boolean apply(Object x) {
 	    return constructor.getCollectionClass().isInstance(x)
 		&& Setops.all((Collection)x, element);
@@ -1331,74 +1405,24 @@ public class StandardTypeSystem implements TypeSystem {
      * This implementation compares for arity in favor of domain-type in favor of codomain-type.
      * </p>
      * @see orbital.logic.functor.Functor.Specification#compareTo(Object)
-     * @todo 19 optimize this hotspot during proving
+     * @todo 19 optimize this hotspot during proving. Done?
      */
     public static final Comparator LEXICOGRAPHIC = new Comparator() {
 	    public int compare(Object a, Object b) {
 		return compare((Type)a, (Type)b);
 	    }
 	    private final int compare(Type a, Type b) {
-		//@todo how about using the comparisonPriority?
-		
-		int order = Types.arityOf(a) - Types.arityOf(b);
-		if (order != 0)
-		    return order;
-		else if (a == typeSystem.UNIVERSAL() || b == typeSystem.UNIVERSAL())
-		    // UNIVERSAL type is also lexicographically the largest
-		    return a == typeSystem.UNIVERSAL() && b == typeSystem.UNIVERSAL() ? 0 : a == typeSystem.UNIVERSAL() ? +1 : -1;
-		else if (a == typeSystem.ABSURD() || b == typeSystem.ABSURD())
-		    // ABSURD type is also lexicographically the smallest
-		    return a == typeSystem.ABSURD() && b == typeSystem.ABSURD() ? 0 : a == typeSystem.ABSURD() ? -1 : +1;
-		else if ((a instanceof FundamentalType) || (b instanceof FundamentalType))
-		    return !(a instanceof FundamentalType)
-			// fundamental types are smaller than others
-			? 1
-			: !(b instanceof FundamentalType)
-			// fundamental types are smaller than others
-			? -1
-			// lexicographic compare of names
-			: ((FundamentalType)a).getFundamental().getName().compareTo(((FundamentalType)b).getFundamental().getName());
-		else if ((a instanceof MapType) || (b instanceof MapType)) {
-		    //@internal could avoid checking for MapType and rely on domain() and codomain() instead
-		    if (!(a instanceof MapType))
-			// map types are smaller than product types
-			return 1;
-		    else if (!(b instanceof MapType))
-			// map types are smaller than product types
-			return -1;
-		    order = compare(a.domain(), b.domain());
+		if (a instanceof TypeObject && b instanceof TypeObject) {
+		    TypeObject ta = (TypeObject)a;
+		    TypeObject tb = (TypeObject)b;
+		    //@internal we abuse the comparisonPriority for establishing a quick lexicographical order as well. Only types of equal comparisonPriority need a lexicographical comparison routine, then. The implementation is faster, simpler and more reliable than an explicit if-cascade.
+		    int order = ta.comparisonPriority() - tb.comparisonPriority();
 		    if (order != 0)
 			return order;
 		    else
-			return compare(a.codomain(), b.codomain());
-		} else if ((a instanceof ProductType) || (b instanceof ProductType))
-		    if (!(a instanceof ProductType) || !(b instanceof ProductType))
-			// fall-through
-			;
-		    else {
-			Type as[] = (Type[]) ((ProductType)a).getComponent();
-			Type bs[] = (Type[]) ((ProductType)b).getComponent();
-			assert as.length == bs.length : "equal arities means equal number of components";
-			for (int i = 0; i < as.length; i++) {
-			    order = compare(as[i], bs[i]);
-			    if (order != 0)
-				return order;
-			}
-			return 0;
-		    }
-
-		if (a instanceof TypeObject && b instanceof TypeObject) {
-		    //@internal abuse the comparisonPriority for lexicographical comparison. Much simpler
-		    order = ((TypeObject)a).comparisonPriority() - ((TypeObject)b).comparisonPriority();
-		    if (order != 0)
-			return order;
-		    // fall-through
+			return ta.lexicographicCompareToTie(tb);
 		}
-		if ((a instanceof CollectionType) && (b instanceof CollectionType)) {
-		    return compare(((CollectionType)a).comparisonInternalRepresentation(),
-				   ((CollectionType)b).comparisonInternalRepresentation());
-		}
-
+		
 		if (a.equals(b))
 		    return 0;
 		
