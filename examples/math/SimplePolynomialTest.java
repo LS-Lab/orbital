@@ -13,17 +13,19 @@ import orbital.math.functional.*;
 
 public class SimplePolynomialTest {
     public static void main(String arg[]) {
+	// get us a value factory for creating arithmetic objects
+	final Values vf = Values.getDefaultInstance();
 	Function p = Functions.polynom(5);
-	final Symbol x = Values.symbol("X");
+	final Symbol x = vf.symbol("X");
 
-	p = Values.asPolynomial(Values.valueOf(new int[] {1,2,3,4}));
+	p = vf.asPolynomial(vf.valueOf(new int[] {1,2,3,4}));
 	System.out.println("polynomial p=" + p);
 	System.out.println("derive\t(" + p + ")' =\t" + p.derive());
 	System.out.println("derive\t(" + p.apply(x) + ")' =\t" + p.derive().apply(x));
 	System.out.println("integrate\t(" + p + ") =\t" + p.integrate());
 	System.out.println("integrate\t(" + p.apply(x) + ") =\t" + p.integrate().apply(x));
 
-	p = Functions.polynom(Values.valueOf(new int[] {1,2,3,4}));
+	p = Functions.polynom(vf.valueOf(new int[] {1,2,3,4}));
 	System.out.println("derive\t(" + p + ")' =\t" + p.derive());
 	System.out.println("derive\t(" + p.apply(x) + ")' =\t" + p.derive().apply(x));
 	System.out.println("integrate\t(" + p + ") =\t" + p.integrate());

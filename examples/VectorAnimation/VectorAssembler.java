@@ -8,6 +8,7 @@ import orbital.io.encoding.*;
 import java.util.*;
 import orbital.math.MathUtilities;
 import orbital.math.Values;
+import orbital.math.Vector;
 import orbital.math.Real;
 import orbital.util.*;
 import java.awt.Color;
@@ -361,7 +362,7 @@ public class VectorAssembler {
 	//assert 1 <= command.cmd && command.cmd <= 3 :: "move, scale, or rotate";
 	String s = in.readLine();
 	System.err.println("  at " + s);
-	orbital.math.Vector v = (orbital.math.Vector) Values.valueOf(s);
+	Vector v = (Vector) Values.getDefaultInstance().valueOf(s);
 	command.x_data = ((Real) v.get(0)).doubleValue();
 	command.y_data = ((Real) v.get(1)).doubleValue();
 	command.z_data = ((Real) v.get(2)).doubleValue();

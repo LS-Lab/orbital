@@ -37,7 +37,7 @@ abstract class DepthFirstBoundingSearch extends GeneralBoundingSearch {
      * O(b*d) where b is the branching factor and d the solution depth.
      */
     public Function spaceComplexity() {
-	return Functions.linear(Values.symbol("b"));
+	return Functions.linear(Values.getDefaultInstance().symbol("b"));
     }
 
     protected Iterator createTraversal(GeneralSearchProblem problem) {

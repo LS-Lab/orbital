@@ -103,9 +103,11 @@ import orbital.math.functional.Operations;
  */
 public class CRTApplication{
     public static void main(String[] args){
-	Integer x[] = {Values.valueOf(0), Values.valueOf(1), Values.valueOf(3)};
-	Integer m[] = {Values.valueOf(3), Values.valueOf(4), Values.valueOf(5)};
-	Integer umod = (Integer) Operations.product.apply(Values.valueOf(m));
+	// get us a value factory for creating arithmetic objects
+	final Values vf = Values.getDefaultInstance();
+	Integer x[] = {vf.valueOf(0), vf.valueOf(1), vf.valueOf(3)};
+	Integer m[] = {vf.valueOf(3), vf.valueOf(4), vf.valueOf(5)};
+	Integer umod = (Integer) Operations.product.apply(vf.valueOf(m));
 
 	System.out.println("computing \"Anzahl Tage vor dem 2.Advent fuer erstes Treffen\"");
 	System.out.println("computing \"number of days before 2.Advent for the first meeting\"");
@@ -119,14 +121,14 @@ public class CRTApplication{
 	System.out.println("is unique modulo: " + umod);
 	System.out.println();
 
-	x = new Integer[] {Values.valueOf(0), Values.valueOf(1), Values.valueOf(3), Values.valueOf(6)};
-	m = new Integer[] {Values.valueOf(3), Values.valueOf(4), Values.valueOf(5), Values.valueOf(7)};
+	x = new Integer[] {vf.valueOf(0), vf.valueOf(1), vf.valueOf(3), vf.valueOf(6)};
+	m = new Integer[] {vf.valueOf(3), vf.valueOf(4), vf.valueOf(5), vf.valueOf(7)};
 
 	System.out.println("computing \"Anzahl Tage bis zum ersten Skatspiel\"");
 	System.out.println("computing \"number of day to first game of \"Skat\"\"");
 	System.out.println("congruent values: " + MathUtilities.format(x));
 	System.out.println("modulo values:    " + MathUtilities.format(m));
 	System.out.println("solution:         " + AlgebraicAlgorithms.chineseRemainder(x,m));
-	System.out.println("is unique modulo: " + Operations.product.apply(Values.valueOf(m)));
+	System.out.println("is unique modulo: " + Operations.product.apply(vf.valueOf(m)));
     }
 } // CRTApplication

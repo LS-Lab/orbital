@@ -14,6 +14,7 @@ import orbital.util.Utility;
 /**
  * Function Implementations.
  * 
+ * @stereotype &laquo;Module&raquo;
  * @version 1.0, 2000/08/03
  * @author  Andr&eacute; Platzer
  * @see Functionals

@@ -45,7 +45,7 @@ public class ParallelBranchAndBound extends BranchAndBound {
      * O(b<sup>d</sup>) where b is the branching factor and d the solution depth.
      */
     public orbital.math.functional.Function spaceComplexity() {
-	return (orbital.math.functional.Function) Operations.power.apply(Values.symbol("b"), Functions.id);
+	return (orbital.math.functional.Function) Operations.power.apply(Values.getDefaultInstance().symbol("b"), Functions.id);
     }
 
     protected Object/*>S<*/ solveImpl(GeneralSearchProblem problem) {

@@ -29,6 +29,7 @@ import orbital.util.Utility;
  * </p>
  * 
  * @stereotype &laquo;Utilities&raquo;
+ * @stereotype &laquo;Module&raquo;
  * @version 1.0, 2000/06/10
  * @author  Andr&eacute; Platzer
  * @see orbital.math.MathUtilities
@@ -94,21 +95,22 @@ public final class NumericalAlgorithms {
 	Utility.pre(A.isSymmetric() && A.isDefinite() > 0, "Only symmetric and positive-definite matrices can be Cholesky-decomposed");
 	// Utility.pre(A.isPositiveDefinite(), "Only positive-definite matrices can be Cholesky-decomposed");
 	// we restrict ourselves to AbstractMatrix because they have these fast getDoubleValue methods
+	final Values vf = Values.getDefaultInstance();
 	AbstractMatrix A_ = (AbstractMatrix) A;
-	AbstractMatrix L = (AbstractMatrix) Values.ZERO(A.dimension().width, A.dimension().width);
+	AbstractMatrix L = (AbstractMatrix) vf.ZERO(A.dimension().width, A.dimension().width);
 	for (int k = 0; k < A_.dimension().width; k++) {
 	    double t = 0;
 	    for (int j = 0; j < k; j++) {
 		double L_kj = L.getDoubleValue(k, j);
 		t += L_kj * L_kj;
 	    } 
-	    L.set(k, k, Values.valueOf(Math.sqrt(A_.getDoubleValue(k, k) - t)));
+	    L.set(k, k, vf.valueOf(Math.sqrt(A_.getDoubleValue(k, k) - t)));
 
 	    for (int i = k + 1; i < A_.dimension().height; i++) {
 		t = 0;
 		for (int j = 0; j < k; j++)
 		    t += L.getDoubleValue(i, j) * L.getDoubleValue(k, j);
-		L.set(i, k, Values.valueOf((A_.getDoubleValue(i, k) - t) / L.getDoubleValue(k, k)));
+		L.set(i, k, vf.valueOf((A_.getDoubleValue(i, k) - t) / L.getDoubleValue(k, k)));
 	    } 
 	} 
 	assert L.multiply(L.transpose()).equals(A_) : "L.L^T = A";
@@ -132,8 +134,9 @@ public final class NumericalAlgorithms {
 	Vector x = (Vector) x0.clone();			  // trial solution
 	Vector r = b.subtract(A.multiply(x0));	  // residual
 	p = (Vector) r.clone();
-	final Real tolerance = Values.valueOf(MathUtilities.getDefaultTolerance());
-	for (int m = 0; m < A.dimension().width && !((AbstractVector) r).equals(Values.ZERO(r.dimension()), tolerance); m++) {
+	final Vector zero = Values.getDefaultInstance().ZERO(r.dimension());
+	final Real tolerance = Values.getDefaultInstance().valueOf(MathUtilities.getDefaultTolerance());
+	for (int m = 0; m < A.dimension().width && !((AbstractVector) r).equals(zero, tolerance); m++) {
 	    Vector o_r = (Vector) r.clone();	// old residual
 	    Vector a = A.multiply(p);
 	    Scalar alpha = (Scalar/*__*/) ((Scalar/*__*/)Functions.square.apply(r.norm(2))).divide(a.multiply(p));
@@ -200,7 +203,7 @@ public final class NumericalAlgorithms {
 	    for (int k = 1; k < t.length; k++)
 		for (int i = k; i < t.length; i++)
 		    p[i][k] = p[i][k - 1] + (p[i][k - 1] - p[i - 1][k - 1]) * (x - t[i]) / (t[i] - t[i - k]);
-	    return Values.valueOf(p[t.length - 1][t.length - 1]);
+	    return Values.getDefaultInstance().valueOf(p[t.length - 1][t.length - 1]);
 	} 
 	public Function derive() throws ArithmeticException {
 	    // coefficients already constructed as a sum in p after each call to apply
@@ -281,10 +284,11 @@ public final class NumericalAlgorithms {
 	if (k != 4)
 	    throw new UnsupportedOperationException("spline interpolation not yet implemented for k!=4");
 	Utility.pre(A.dimension().width == 2, "supporting nodes matrix 2 x m");
-	double[]       t = MathUtilities.toDoubleArray(A.getColumn(0));
-	double[]	   f = MathUtilities.toDoubleArray(A.getColumn(1));
+	double[] t = MathUtilities.toDoubleArray(A.getColumn(0));
+	double[] f = MathUtilities.toDoubleArray(A.getColumn(1));
 	assert t.length == f.length : "same number of supporting x-values as corresponding y-values";
-	int			   l = t.length - 2;
+	int   l = t.length - 2;
+	final Values vf = Values.getDefaultInstance();
 
 	// node distances
 	double[]	   h = new double[t.length];
@@ -294,18 +298,18 @@ public final class NumericalAlgorithms {
 	// calculate momentum
 	Matrix mom; // = Matrix.getInstance(l + 2, l + 2);
 	// avoid null in the sparse tridiagonal matrix to allow multiplication
-	mom = Values.ZERO(l + 2, l + 2);
-	Vector d = Values.newInstance(l + 2);
+	mom = vf.ZERO(l + 2, l + 2);
+	Vector d = vf.newInstance(l + 2);
 	for (int j = 0; j < mom.dimension().height; j++)
-	    mom.set(j, j, Values.valueOf(2));
+	    mom.set(j, j, vf.valueOf(2));
 	for (int j = 1; j <= l; j++) {
 	    double lambdaj = h[j + 1] / (h[j] + h[j + 1]);
 	    // lambda[j]
-	    mom.set(j, j + 1, Values.valueOf(lambdaj));
+	    mom.set(j, j + 1, vf.valueOf(lambdaj));
 	    // my[j]
-	    mom.set(j, j - 1, Values.valueOf(1 - lambdaj));
+	    mom.set(j, j - 1, vf.valueOf(1 - lambdaj));
 	    // d[j]
-	    d.set(j, Values.valueOf(((f[j + 1] - f[j]) / h[j + 1] - (f[j] - f[j - 1]) / h[j]) * 6 / (h[j] + h[j + 1])));
+	    d.set(j, vf.valueOf(((f[j + 1] - f[j]) / h[j + 1] - (f[j] - f[j - 1]) / h[j]) * 6 / (h[j] + h[j + 1])));
 	} 
 
 	switch (interpolationType) {
@@ -313,10 +317,10 @@ public final class NumericalAlgorithms {
 	    // s'(a) = f'(a), s'(b) = f'(b)
 	    double fda = ((Number) config[0]).doubleValue();	// f'(a)
 	    double fdb = ((Number) config[1]).doubleValue();	// f'(b)
-	    mom.set(0, 1, Values.valueOf(1));					// lambda[0]
-	    d.set(0, Values.valueOf(((f[1] - f[0]) / h[1] - fda) * 6 / h[1]));	  // d[0]
-	    mom.set(l + 1, l, Values.ONE);				// my[l+1]
-	    d.set(l + 1, Values.valueOf((fdb - (f[l + 1] - f[1]) / h[l + 1]) * 6 / h[l + 1]));	  // d[l+1]
+	    mom.set(0, 1, vf.valueOf(1));					// lambda[0]
+	    d.set(0, vf.valueOf(((f[1] - f[0]) / h[1] - fda) * 6 / h[1]));	  // d[0]
+	    mom.set(l + 1, l, vf.ONE);				// my[l+1]
+	    d.set(l + 1, vf.valueOf((fdb - (f[l + 1] - f[1]) / h[l + 1]) * 6 / h[l + 1]));	  // d[l+1]
 	    break;
 	case NATURAL_SPLINE_INTERPOLATION:						// natural interpolation
 	    // s''(a) = 0 = s''(b)
@@ -389,7 +393,7 @@ public final class NumericalAlgorithms {
 		r += coefficients[j][i] * partialExp;
 		partialExp *=  x - t[j];
 	    }
-	    return Values.valueOf(r);
+	    return Values.getDefaultInstance().valueOf(r);
 	} 
 	public Function derive() throws ArithmeticException {
 	    //@todo already constructed as s_j'[t[j]] = coefficients[j][1]?
@@ -414,7 +418,7 @@ public final class NumericalAlgorithms {
      * @return a vectorial bezier curve with the specified bezier nodes and a parameter from t0 to tz.
      */
     public static Function bezierCurve(double t0, double tz, Matrix bezierNodes) {
-
+	final Values vf = Values.getDefaultInstance();
 	/* array of bezier nodes */
 	Vector[] bezier = new Vector[bezierNodes.dimension().height];
 	{
@@ -424,7 +428,7 @@ public final class NumericalAlgorithms {
 	} 
 
 	/* the transformation of [t0..tz] to [0..1] phi(t) = (t-a)/(b-a) */
-	Function	 phi = (Function) Operations.times.apply(Functions.constant(Values.valueOf(1 / (tz - t0))), Functionals.bindSecond(Operations.subtract, Values.valueOf(t0)));
+	Function phi = (Function) Operations.times.apply(Functions.constant(vf.valueOf(1 / (tz - t0))), Functionals.bindSecond(Operations.subtract, vf.valueOf(t0)));
 
 	/*
 	 * The sub polynoms b<span class="doubleIndex"><sub>i</sub><sup>k</sup></span> = b[i][k].
@@ -471,9 +475,10 @@ public final class NumericalAlgorithms {
     	
     	// return (b-a) * &sum;(lambda[k] * f(a + k*h))
     	// @see Functionals#banana
+	final Values vf = Values.getDefaultInstance();
     	double array[] = new double[lambda.length];
     	for (int k = 0; k < array.length; k++)
-	    array[k] = lambda[k] * ((Number) f.apply(a.add(Values.valueOf(k * h)))).doubleValue();
-    	return b.subtract(a).scale(Values.valueOf(Evaluations.sum(array)));
+	    array[k] = lambda[k] * ((Number) f.apply(a.add(vf.valueOf(k * h)))).doubleValue();
+    	return b.subtract(a).scale(vf.valueOf(Evaluations.sum(array)));
     }
 }

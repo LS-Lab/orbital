@@ -152,10 +152,11 @@ public class ChartModel implements Serializable {
      * Set the scale such that at least a specified number of marks is visible on each axis.
      */
     public void setScaleMarks(double marks) {
-	Vector scale = Values.newInstance(range.min.dimension());
+	final Values vf = Values.getDefaultInstance(); 
+	Vector scale = vf.newInstance(range.min.dimension());
 	for (int i = 0; i < scale.dimension(); i++)
 	    //@todo round to get more regular results. Perhaps n scales at the shortest axis, and the same scales at the longer axes
-	    scale.set(i, Values.valueOf(MathUtilities.ceily((((Number) range.max.get(i)).doubleValue() - ((Number) range.min.get(i)).doubleValue()) / marks, MathUtilities.precisionFor(range.getLength(i), 0.1))));
+	    scale.set(i, vf.valueOf(MathUtilities.ceily((((Number) range.max.get(i)).doubleValue() - ((Number) range.min.get(i)).doubleValue()) / marks, MathUtilities.precisionFor(range.getLength(i), 0.1))));
 	setScale(scale);
     } 
 
@@ -310,6 +311,7 @@ public class ChartModel implements Serializable {
     public void setAutoScaling() {
 	Vector min = null;
 	Vector max = null;
+	final Values vf = Values.getDefaultInstance(); 
 
 	// find minimum and maximum (x|y)-values from matrices
 	for (Iterator i = graphs.iterator(); i.hasNext(); ) {
@@ -348,8 +350,8 @@ public class ChartModel implements Serializable {
 
 	// use default x-values otherwise (when no Matrix wass found)
 	if (min == null || max == null) {
-	    min = Values.valueOf(new double[] {-4, 0});
-	    max = Values.valueOf(new double[] {+4, 0});
+	    min = vf.valueOf(new double[] {-4, 0});
+	    max = vf.valueOf(new double[] {+4, 0});
 	}
 
 	// for getSpecifiedPrecision to work, we need to set this right now
@@ -364,7 +366,7 @@ public class ChartModel implements Serializable {
 		double precision = getSpecifiedPrecision(e.getAttributes(), DEFAULT_PRECISION_POINTS);
 		//@todo How to determine "bound" min f(x) and max f(x) that do not consider infinite singularities?
 		for (double t = ((Real) min.get(0)).doubleValue(); t < ((Real)max.get(0)).doubleValue(); t += precision) {
-		    Arithmetic v = (Arithmetic) f.apply(Values.valueOf(t + precision));
+		    Arithmetic v = (Arithmetic) f.apply(vf.valueOf(t + precision));
 		    if (!(v instanceof Scalar))
 			// can only handle functions R->R, here.
 			break;
@@ -381,7 +383,7 @@ public class ChartModel implements Serializable {
 
 	// standard scale: 10 marks
 	setScaleMarks(10);
-	setRange(new Range(min.subtract(scale.scale(Values.valueOf(.3))), max.add(scale.scale(Values.valueOf(.3)))));
+	setRange(new Range(min.subtract(scale.scale(vf.valueOf(.3))), max.add(scale.scale(vf.valueOf(.3)))));
     } 
 
     double getSpecifiedPrecision(Map attribs, int defaultPrecisionPoints) {

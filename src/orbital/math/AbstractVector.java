@@ -40,7 +40,7 @@ abstract class AbstractVector/*<R implements Arithmetic>*/ extends AbstractTenso
     protected abstract Vector/*<R>*/ newInstance(int dim);
     
     protected final Tensor/*<R>*/ newInstance(int[] dim) {
-	return dim.length == 1 ? newInstance(dim[0]) : Values.newInstance(dim);
+	return dim.length == 1 ? newInstance(dim[0]) : Values.getDefaultInstance().newInstance(dim);
     }
 
     // get/set-methods
@@ -295,12 +295,12 @@ abstract class AbstractVector/*<R implements Arithmetic>*/ extends AbstractTenso
 	    throw new IllegalArgumentException("p-norm defined for p>=1");
 	if (p == Double.POSITIVE_INFINITY)
 	    return (Real/*__*/) Operations.sup.apply(Evaluations.abs(this));
-	return (Real/*__*/) Operations.power.apply(Operations.sum.apply(Functionals.map(Functions.pow(p), Functionals.map(Functions.norm, iterator()))), Values.valueOf(1 / p));
+	return (Real/*__*/) Operations.power.apply(Operations.sum.apply(Functionals.map(Functions.pow(p), Functionals.map(Functions.norm, iterator()))), Values.getDefaultInstance().valueOf(1 / p));
     } 
 
     // arithmetic-operations
 
-    public Arithmetic zero() {return Values.ZERO(dimension());}
+    public Arithmetic zero() {return Values.getDefaultInstance().ZERO(dimension());}
     public Arithmetic one() {throw new UnsupportedOperationException("vector spaces do not have a 1");}
     
     public Vector/*<R>*/ add(Vector/*<R>*/ b) {
@@ -376,15 +376,15 @@ abstract class AbstractVector/*<R implements Arithmetic>*/ extends AbstractTenso
 	    r.set(0, (Arithmetic/*>R<*/) get(1).multiply(b.get(2)).subtract(get(2).multiply(b.get(1))));
 	    r.set(1, (Arithmetic/*>R<*/) get(2).multiply(b.get(0)).subtract(get(0).multiply(b.get(2))));
 	} else {
-	    r.set(0, (Arithmetic/*>R<*/) Values.valueOf(0));
-	    r.set(1, (Arithmetic/*>R<*/) Values.valueOf(0));
+	    r.set(0, (Arithmetic/*>R<*/) Values.ZERO);
+	    r.set(1, (Arithmetic/*>R<*/) Values.ZERO);
 	}
 	r.set(2, (Arithmetic/*>R<*/) get(0).multiply(b.get(1)).subtract(get(1).multiply(b.get(0))));
 	return r;
     } 
 
     public Matrix/*<R>*/ transpose() {
-	Matrix/*<R>*/ r = Values.newInstance(new Dimension(1, dimension()));
+	Matrix/*<R>*/ r = (Matrix) newInstance(new int[] {1, dimension()});
 	r.setRow(0, this);
 	return r;
     } 

@@ -62,7 +62,7 @@ public class SimpleGSP implements GeneralSearchProblem {
 		 */
 		public Object apply(Object n) {
 		    State s = (State) n;
-		    return Values.valueOf(estimate(Math.abs(s.position - goal)));
+		    return Values.getDefaultInstance().valueOf(estimate(Math.abs(s.position - goal)));
 		} 
 			
 		/**
@@ -103,10 +103,10 @@ public class SimpleGSP implements GeneralSearchProblem {
     }
     private static final MutableFunction _accumulatedCostFunction = new MutableFunction() {
 	    public Object apply(Object state) {
-		return Values.valueOf(((State)state).accumulatedCost);
+		return Values.getDefaultInstance().valueOf(((State)state).accumulatedCost);
 	    }
 	    public Object set(Object state, Object accumulatedCost) {
-		Object old = Values.valueOf(((State)state).accumulatedCost);
+		Object old = Values.getDefaultInstance().valueOf(((State)state).accumulatedCost);
 		((State)state).accumulatedCost = ((orbital.math.Real)accumulatedCost).doubleValue();
 		return old;
 	    }

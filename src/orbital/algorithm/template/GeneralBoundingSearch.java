@@ -108,7 +108,7 @@ public abstract class GeneralBoundingSearch extends GeneralSearch implements Eva
      * @todo would we profit from transforming bound into a Real?
      */
     protected boolean isOutOfBounds(Object/*>S<*/ node) {
-	return Values.valueOf(getBound()).compareTo(getEvaluation().apply(node)) < 0;
+	return Values.getDefaultInstance().valueOf(getBound()).compareTo(getEvaluation().apply(node)) < 0;
     }
 	
     //	protected Option search(Collection nodes) {

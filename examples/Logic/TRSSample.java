@@ -30,16 +30,18 @@ public class TRSSample {
 	    System.out.println("Evaluates to:\t\t" + (p instanceof Function ? ((Function) p).apply(null) : p));	//XXX: erm why null?
 	} catch (Exception ignore) {}
 		
+	// get us a value factory for creating arithmetic objects
+	final Values vf = Values.getDefaultInstance();
 	// apply a nice substitution
 	Substitution sigma = Substitutions.getInstance(Arrays.asList(new Object[] {
-	    Substitutions.createExactMatcher(Functions.constant(Values.symbol("x")), Functions.id),
+	    Substitutions.createExactMatcher(Functions.constant(vf.symbol("x")), Functions.id),
 	    Substitutions.createExactMatcher(Functions.sin, Functions.cos),
-	    Substitutions.createExactMatcher(Functions.constant(Values.valueOf(7)), Functions.square),
-	    Substitutions.createExactMatcher(Functions.constant(Values.symbol("z")), Functions.constant(Values.symbol("tau")))
+	    Substitutions.createExactMatcher(Functions.constant(vf.valueOf(7)), Functions.square),
+	    Substitutions.createExactMatcher(Functions.constant(vf.symbol("z")), Functions.constant(vf.symbol("tau")))
 	}));
 	// or apply a substitution that performs unification as well
 	/*sigma = Substitutions.getInstance(Arrays.asList(new Object[] {
-	  Substitutions.createSingleSidedMatcher(orbital.math.functional.Operations.times.apply(Values.symbol("x"), Values.valueOf(8)), Functions.constant(Values.symbol("x")))
+	  Substitutions.createSingleSidedMatcher(orbital.math.functional.Operations.times.apply(vf.symbol("x"), vf.valueOf(8)), Functions.constant(vf.symbol("x")))
 	  }));*/
 		
 	//logger.log(Level.DEBUG, "term construction is " + p.getClass() + "@ " + functionTree(p));
@@ -49,9 +51,9 @@ public class TRSSample {
 	System.out.println("Leads to the replacement:\t\t" + t);
 	System.out.println("which");
 	try {
-	    Arithmetic v = Values.valueOf(3);
+	    Arithmetic v = vf.valueOf(3);
 	    System.out.println("at " + v + " Evaluates to:\t" + (t instanceof Function ? ((Function) t).apply(v) : t));	//XXX: erm why null?
-	    v = Values.valueOf(5);
+	    v = vf.valueOf(5);
 	    System.out.println("at " + v + " Evaluates to:\t" + (t instanceof Function ? ((Function) t).apply(v) : t));	//XXX: erm why null?
 	} catch (Exception ignore) {}
 		
@@ -59,7 +61,7 @@ public class TRSSample {
 	System.out.println("TRS:\t\t\t" + Functionals.fixedPoint(sigma, p));
 
 	// try to unify the parsed expression with b
-	Function b = Functionals.compose(Functions.sin, Functions.constant(Values.symbol("x")));
+	Function b = Functionals.compose(Functions.sin, Functions.constant(vf.symbol("x")));
 	Substitution mu = Substitutions.unify(Arrays.asList(new Object[] {p, b}));
 	if (mu == null)
 	    System.out.println("not unifiable with " + b);

@@ -29,21 +29,22 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
 	private Debug() {}
 	//@todo class Debug produces an error with gjc error: type parameter orbital.math.Arithmetic[] is not within its bound orbital.math.Arithmetic
 	public static void main(String arg[]) throws Exception {
-	    Matrix M = Values.valueOf(new Arithmetic[][] {
-		{Values.symbol("a"), Values.symbol("b")},
-		{Values.symbol("c"), Values.symbol("d")}
+	    final Values vf = Values.getDefaultInstance();
+	    Matrix M = vf.valueOf(new Arithmetic[][] {
+		{vf.symbol("a"), vf.symbol("b")},
+		{vf.symbol("c"), vf.symbol("d")}
 	    });
-	    Vector v = Values.valueOf(new Arithmetic[] {
-		Values.valueOf(1), Values.valueOf(2)
+	    Vector v = vf.valueOf(new Arithmetic[] {
+		vf.valueOf(1), vf.valueOf(2)
 	    });
 	    System.out.println(M + "*" + v + "=" + M.multiply(v));
 	    System.out.println(M + "^-1 =\n" + M.inverse());
-	    M = Values.valueOf(new Arithmetic[][] {
-		{Values.valueOf(2), Values.symbol("a")},
-		{Values.symbol("d"), Values.valueOf(4)}
+	    M = vf.valueOf(new Arithmetic[][] {
+		{vf.valueOf(2), vf.symbol("a")},
+		{vf.symbol("d"), vf.valueOf(4)}
 	    });
-	    v = Values.valueOf(new Arithmetic[] {
-		Values.valueOf(1), Values.valueOf(2)
+	    v = vf.valueOf(new Arithmetic[] {
+		vf.valueOf(1), vf.valueOf(2)
 	    });
 	    System.out.println(M + "*" + v + "=" + M.multiply(v));
 	} 
@@ -118,7 +119,7 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
 	if (b instanceof Scalar) {
 	    if (Values.ONE.equals(b))
 		return this;
-	    else if (Values.valueOf(-1).equals(b))
+	    else if (Values.getDefaultInstance().valueOf(-1).equals(b))
 		return minus();
 	    else if (Values.ZERO.equals(b))
 		return Values.ZERO;
@@ -133,7 +134,7 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
 	if (b instanceof Scalar) {
 	    if (Values.ONE.equals(b))
 		return this;
-	    else if (Values.valueOf(-1).equals(b))
+	    else if (Values.getDefaultInstance().valueOf(-1).equals(b))
 		return minus();
 	    else if (Values.ZERO.equals(b))
 		throw new ArithmeticException("division by zero");
@@ -146,7 +147,7 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
 	if (b instanceof Scalar) {
 	    if (Values.ONE.equals(b))
 		return this;
-	    else if (Values.valueOf(-1).equals(b))
+	    else if (Values.getDefaultInstance().valueOf(-1).equals(b))
 		return inverse();
 	    else if (Values.ZERO.equals(b))
 		return Values.ONE;

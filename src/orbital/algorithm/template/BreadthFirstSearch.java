@@ -40,7 +40,7 @@ public class BreadthFirstSearch extends GeneralSearch {
      * @todo O(|V|+|E|) on a graph (V,E) with vertexes V and edges E.
      */
     public Function complexity() {
-	return (Function) Operations.power.apply(Values.symbol("b"),Functions.id);
+	return (Function) Operations.power.apply(Values.getDefaultInstance().symbol("b"),Functions.id);
     }
     /**
      * O(b<sup>d</sup>) where b is the branching factor and d the solution depth.

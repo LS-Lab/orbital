@@ -36,7 +36,7 @@ class ArithmeticMultivariatePolynomial/*<R implements Arithmetic>*/ extends Abst
      */
     private transient int degree;
     public ArithmeticMultivariatePolynomial(int[] dimensions) {
- 	coefficients = Values.newInstance(dimensions);
+ 	coefficients = Values.getDefaultInstance().newInstance(dimensions);
 	this.CONSTANT_TERM = new int[dimensions.length];
 	Arrays.fill(CONSTANT_TERM, 0);
     }
@@ -71,7 +71,7 @@ class ArithmeticMultivariatePolynomial/*<R implements Arithmetic>*/ extends Abst
 	    final int[] i = index.next();
 	    final Arithmetic vi = coefficients.get(i);
 	    if (vi != null && !vi.norm().equals(Values.ZERO)) {
-		final int sum = ((Integer)Operations.sum.apply(Values.valueOf(i))).intValue();
+		final int sum = ((Integer)Operations.sum.apply(Values.getDefaultInstance().valueOf(i))).intValue();
 		if (sum > d)
 		    d = sum;
 	    }
@@ -80,7 +80,7 @@ class ArithmeticMultivariatePolynomial/*<R implements Arithmetic>*/ extends Abst
     }
 	
     public Object indexSet() {
-	return Values.valueOf(coefficients.rank());
+	return Values.getDefaultInstance().valueOf(coefficients.rank());
     }
 
     public int[] dimensions() {
@@ -91,7 +91,7 @@ class ArithmeticMultivariatePolynomial/*<R implements Arithmetic>*/ extends Abst
     private void set(Object coefficients) {
 	if (coefficients == null)
 	    throw new IllegalArgumentException("illegal coefficients array: " + coefficients);
- 	set(Values.tensor(coefficients));
+ 	set(Values.getDefaultInstance().tensor(coefficients));
     }
     private void set(Tensor coefficients) {
 	if (coefficients == null)
@@ -130,7 +130,7 @@ class ArithmeticMultivariatePolynomial/*<R implements Arithmetic>*/ extends Abst
 	    throw new IllegalArgumentException("illegal coefficient value: " + vi);
 	final Integer oldDegree = degree();
 	coefficients.set(i, vi);
-	if (oldDegree.compareTo(Operations.sum.apply(Values.valueOf(i))) <= 0)
+	if (oldDegree.compareTo(Operations.sum.apply(Values.getDefaultInstance().valueOf(i))) <= 0)
 	    this.degree = degreeImpl(coefficients);
     }
     public final void set(Arithmetic i, Arithmetic/*>R<*/ vi) {

@@ -73,6 +73,7 @@ public class Substitutions {
 
     /**
      * prevent instantiation - module class
+     * @todo sure, aren't we
      */
     private Substitutions() {}
 

@@ -1,5 +1,3 @@
-
-
 import orbital.math.Vector;
 import orbital.math.Matrix;
 import orbital.math.Scalar;
@@ -12,6 +10,8 @@ import java.beans.*;
 
 public class Plotting {
     public static void main(String arg[]) throws Exception {
+	// get us a value factory for creating arithmetic objects
+	final Values vf = Values.getDefaultInstance();
 	double	   data[][] = {
 	    {-3, -5},
 	    {1, 0},
@@ -20,7 +20,7 @@ public class Plotting {
 	    {4, 6},
 	    {5, 12}
 	};
-	Matrix	   Ex = (Matrix) Values.valueOf(data);
+	Matrix	   Ex = (Matrix) vf.valueOf(data);
 	ChartModel model = (ChartModel) Beans.instantiate(Plotting.class.getClassLoader(), ChartModel.class.getName());
 	model.setRainbow(true);
 	model.add(Ex);
@@ -30,7 +30,7 @@ public class Plotting {
 	model.add(new orbital.logic.functor.Function() {
 		public Object apply(Object arg) {
 		    double x = ((Number) arg).doubleValue();
-		    return Values.valueOf(2 - 3 * x + x * x);
+		    return vf.valueOf(2 - 3 * x + x * x);
 		} 
 	    });
 
@@ -40,7 +40,7 @@ public class Plotting {
 	    Functions.cos, Functions.sin
 	});
 	model.setAutoScaling();
-	model.setScale(Values.CONST(2, Values.valueOf(1)));
+	model.setScale(vf.CONST(2, vf.valueOf(1)));
 	System.out.println("Range: " + model.getRange() + " Scalings: " + model.getScale());
 	Frame f = new Frame();
 	f.setLayout(new BorderLayout());

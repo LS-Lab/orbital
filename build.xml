@@ -197,7 +197,7 @@
                  footer="&lt;b&gt;Orbital library&lt;/b&gt;&lt;br&gt;${timestamp}"
 		 overview="${doc}/overview.html"
                  packagenames="orbital.*"
-		 excludepackagenames="orbital,orbital.robotic.strategy,orbital.util.graph,orbital.moon.aspects,orbital.moon.deprecated,orbital.moon.math,orbital.moon.logic.bridge,orbital.moon.awt.virtual"
+		 excludepackagenames="orbital,orbital.robotic.strategy,orbital.util.graph,orbital.moon,orbital.moon.aspects,orbital.moon.deprecated,orbital.moon.math,orbital.moon.logic.bridge,orbital.moon.awt.virtual"
                  Private="${doc.internal}">
             <bottom><![CDATA[<span style='font-size: smaller; font-style: italic;'>Copyright &copy; 1996-2002 Andr&eacute; Platzer<br />All Rights Reserved.</span>]]></bottom>
 	    <!-- -tag param -tag pre:mc:&quot;Preconditions:&quot; -tag post:mc:&quot;Postconditions:&quot; -tag return -tag throws -tag stereotype:a:&quot;Stereotype:&quot; -tag structure:t:&quot;Structure:&quot; -tag invariant:t:&quot;Invariants:&quot; -tag attribute:a:&quot;Attributes:&quot; -tag version -tag author -tag see -->

@@ -167,37 +167,37 @@ public class Plot2DCustomizer extends Panel implements Customizer {
 
     void xmin_propertyChange(PropertyChangeEvent e) {
 	Range r = (Range) model.getRange().clone();
-	r.min.set(0, Values.valueOf((Number) e.getNewValue()));
+	r.min.set(0, Values.getDefaultInstance().valueOf((Number) e.getNewValue()));
 	model.setRange(r);
     } 
 
     void ymin_propertyChange(PropertyChangeEvent e) {
 	Range r = (Range) model.getRange().clone();
-	r.min.set(1, Values.valueOf((Number) e.getNewValue()));
+	r.min.set(1, Values.getDefaultInstance().valueOf((Number) e.getNewValue()));
 	model.setRange(r);
     } 
 
     void xmax_propertyChange(PropertyChangeEvent e) {
 	Range r = (Range) model.getRange().clone();
-	r.max.set(0, Values.valueOf((Number) e.getNewValue()));
+	r.max.set(0, Values.getDefaultInstance().valueOf((Number) e.getNewValue()));
 	model.setRange(r);
     } 
 
     void ymax_propertyChange(PropertyChangeEvent e) {
 	Range r = (Range) model.getRange().clone();
-	r.max.set(1, Values.valueOf((Number) e.getNewValue()));
+	r.max.set(1, Values.getDefaultInstance().valueOf((Number) e.getNewValue()));
 	model.setRange(r);
     } 
 
     void xscale_propertyChange(PropertyChangeEvent e) {
 	Vector s = model.getScale();
-	s.set(0, Values.valueOf((Number) e.getNewValue()));
+	s.set(0, Values.getDefaultInstance().valueOf((Number) e.getNewValue()));
 	model.setScale(s);
     } 
 
     void yscale_propertyChange(PropertyChangeEvent e) {
 	Vector s = model.getScale();
-	s.set(1, Values.valueOf((Number) e.getNewValue()));
+	s.set(1, Values.getDefaultInstance().valueOf((Number) e.getNewValue()));
 	model.setScale(s);
     } 
 

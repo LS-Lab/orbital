@@ -10,6 +10,8 @@ import java.util.*;
  */
 public class Groebner extends MathTest {
     private static final Comparator order = AlgebraicAlgorithms.LEXICOGRAPHIC;
+    // get us a value factory for creating arithmetic objects
+    private static final Values vf = Values.getDefaultInstance();
     public static void main(String arg[]) {
 	test_simple();
 	System.out.println();
@@ -22,7 +24,7 @@ public class Groebner extends MathTest {
     private static void test_simple() {
 	// some polynomials in <b>Q</b>[X,Y]
 	Polynomial/*<Rational>*/ g =
-	    Values.polynomial(new int[][] {
+	    vf.polynomial(new int[][] {
 		{0, 1},
 		{1, 0}
 	    });
@@ -47,11 +49,11 @@ public class Groebner extends MathTest {
     private static void test_more() {
 	// some polynomials in <b>Q</b>[X,Y]
 	Polynomial/*<Rational>*/ Garray[] = {
-	    Values.polynomial(new int[][] {
+	    vf.polynomial(new int[][] {
 		{0, 0, 4},
 		{3, 0, 2}
 	    }),
-	    Values.polynomial(new int[][] {
+	    vf.polynomial(new int[][] {
 		{-2, -2, 1}
 	    })
 	};
@@ -59,7 +61,7 @@ public class Groebner extends MathTest {
 	
 	printArithmetic(Garray[0], Garray[1], false);
 
-	Polynomial/*<Rational>*/ f = Values.polynomial(new int[][] {
+	Polynomial/*<Rational>*/ f = vf.polynomial(new int[][] {
 	    {0, 0, 2, 0},
 	    {0, 0, 0, 0},
 	    {0, 0, 0, 0},
@@ -79,18 +81,18 @@ public class Groebner extends MathTest {
 	    // alternative form of construction: explicit concatenation
 	    // of monomials. This is more to type, but also more
 	    // simple to construct
-	    Values.MONOMIAL(new int[] {0,2}).subtract(Values.MONOMIAL(new int[] {3,0}))
-	    .subtract(Values.MONOMIAL(new int[] {2,0}))
+	    vf.MONOMIAL(new int[] {0,2}).subtract(vf.MONOMIAL(new int[] {3,0}))
+	    .subtract(vf.MONOMIAL(new int[] {2,0}))
 	    });
 	// the Groebner basis of m
 	final Set gm = AlgebraicAlgorithms.groebnerBasis(new HashSet(m), order);
 	Quotient/*<Polynomial<Real>>*/ f =
-	    Values.quotient(Values.polynomial(new double[][] {
+	    vf.quotient(vf.polynomial(new double[][] {
 		{2,1},
 		{3,0}
 	    }), gm, order);
 	Quotient/*<Polynomial<Real>>*/ g =
-	    Values.quotient(Values.polynomial(new double[][] {
+	    vf.quotient(vf.polynomial(new double[][] {
 		{-1,1},
 		{1,1}
 	    }), gm, order);
@@ -99,7 +101,7 @@ public class Groebner extends MathTest {
 	System.out.println("perform calculations in a quotient ring modulo " + m);
 	printArithmetic(f, g, false);
 
-	f = Values.quotient(Values.polynomial(new double[][] {
+	f = vf.quotient(vf.polynomial(new double[][] {
 		{2,-1},
 		{3,0},
 		{-1,0}
@@ -108,34 +110,34 @@ public class Groebner extends MathTest {
     }
 
     private static void quadraticAlgebra() {
-	final Arithmetic alpha = Values.valueOf(4);
-	final Arithmetic beta = Values.valueOf(2);
+	final Arithmetic alpha = vf.valueOf(4);
+	final Arithmetic beta = vf.valueOf(2);
 	System.out.println("calculate in a quadratic algebra of type (" + alpha + "," + beta + ")");
 	final Collection m = Arrays.asList(new Polynomial[] {
-	    Values.polynomial(new int[][] {
+	    vf.polynomial(new int[][] {
 		{0},
 		{-1},
 		{1}
 	    }),
-	    Values.polynomial(new int[][] {
+	    vf.polynomial(new int[][] {
 		{0,-1},
 		{0,1}
 	    }),
-	    Values.polynomial(new Arithmetic[][] {
-		{Values.ZERO,beta,Values.valueOf(-1)},
-		{alpha,Values.ZERO,Values.ZERO}
+	    vf.polynomial(new Arithmetic[][] {
+		{vf.ZERO,beta,vf.valueOf(-1)},
+		{alpha,vf.ZERO,vf.ZERO}
 	    })
 	});
 	// the Groebner basis of m
 	final Set gm = AlgebraicAlgorithms.groebnerBasis(new HashSet(m), order);
 
 	Quotient/*<Polynomial<Real>>*/ f =
-	    Values.quotient(Values.polynomial(new double[][] {
+	    vf.quotient(vf.polynomial(new double[][] {
 		{2,1},
 		{3,0}
 	    }), gm, order);
 	Quotient/*<Polynomial<Real>>*/ g =
-	    Values.quotient(Values.polynomial(new double[][] {
+	    vf.quotient(vf.polynomial(new double[][] {
 		{-1,1},
 		{1,1}
 	    }), gm, order);
@@ -144,7 +146,7 @@ public class Groebner extends MathTest {
 	System.out.println("perform calculations in a quotient ring modulo " + m);
 	printArithmetic(f, g, false);
 
-	f = Values.quotient(Values.polynomial(new double[][] {
+	f = vf.quotient(vf.polynomial(new double[][] {
 		{2,-1},
 		{3,0},
 		{-1,0}

@@ -150,7 +150,7 @@ public class v_Vertex implements v_Component {
     public static v_Vertex valueOf(String s) throws NumberFormatException {
 	if (s.indexOf('.') >= 0)
 	    throw new NumberFormatException("integer values expected, not decimals");
-	orbital.math.Vector v = (orbital.math.Vector) orbital.math.Values.valueOf(s);
+	orbital.math.Vector v = (orbital.math.Vector) orbital.math.Values.getDefaultInstance().valueOf(s);
 	if (v.dimension() != 3)
 	    throw new NumberFormatException("illegal dimension");
 	return new v_Vertex((int) ((Real) v.get(0)).doubleValue(), (int) ((Real)v.get(1)).doubleValue(), (int) ((Real)v.get(2)).doubleValue());

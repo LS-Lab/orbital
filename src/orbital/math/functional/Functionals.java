@@ -77,6 +77,7 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
 
     /**
      * prevent instantiation - module class
+     * @todo sure?
      */
     protected Functionals() {}
 
@@ -506,7 +507,7 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
      */
     public static /*<A1, A2, B>*/ Tensor/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, Tensor/*_<A1>_*/ x, Tensor/*_<A2>_*/ y) {
 	Utility.pre(Utility.equalsAll(x.dimensions(), y.dimensions()), "compatible dimensions");
-	Tensor r = Values.newInstance(x.dimensions());
+	Tensor r = Values.getDefaultInstance().newInstance(x.dimensions());
 	mapInto(f, x.iterator(), y.iterator(), r.iterator());
 	return r;
     }
@@ -524,9 +525,10 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
      * @see orbital.logic.functor.Functionals#foldRight(orbital.logic.functor.BinaryFunction, Object, Object[])
      */
     public static double foldRight(orbital.logic.functor.BinaryFunction f, double c, double[] a) {
-	Object result = Values.valueOf(c);
+	final Values vf = Values.getDefaultInstance();
+	Object result = vf.valueOf(c);
 	for (int i = a.length - 1; i >= 0; i--)
-	    result = f.apply(Values.valueOf(a[i]), result);
+	    result = f.apply(vf.valueOf(a[i]), result);
 	return ((Number) result).doubleValue();
     } 
     
@@ -534,9 +536,10 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
      * @see orbital.logic.functor.Functionals#map(orbital.logic.functor.Function, Object[])
      */
     public static double[] map(orbital.logic.functor.Function f, double[] a) {
+	final Values vf = Values.getDefaultInstance();
 	double[] r = new double[a.length];
 	for (int i = 0; i < r.length; i++)
-	    r[i] = ((Number) f.apply(Values.valueOf(a[i]))).doubleValue();
+	    r[i] = ((Number) f.apply(vf.valueOf(a[i]))).doubleValue();
 	return r;
     } 
     public static int[] map(orbital.logic.functor.Function f, int[] a) {
@@ -557,9 +560,10 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
      */
     private static Object mapImpl(orbital.logic.functor.Function f, Object a) {
 	Utility.pre(a != null && a.getClass().isArray(), "map(Function, Object) works on arrays of primitive types or their compound wrapper classes, only");
+	final Values vf = Values.getDefaultInstance();
 	Object r = Array.newInstance(a.getClass().getComponentType(), Array.getLength(a));
 	for (int i = 0; i < Array.getLength(r); i++) {
-	    Object o = f.apply(Values.valueOf((Number) Array.get(a, i)));
+	    Object o = f.apply(vf.valueOf((Number) Array.get(a, i)));
 	    Array.set(r, i, Values.isPrimitiveWrapper(o.getClass()) ? o : Values.toPrimitiveWrapper((Scalar)o));
 	}
 	return r;
@@ -571,9 +575,10 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
      */
     public static double[] map(orbital.logic.functor.BinaryFunction f, double[] x, double[] y) {
 	Utility.pre(x.length == y.length, "argument arrays must have same length");
+	final Values vf = Values.getDefaultInstance();
 	double[] a = new double[x.length];
 	for (int i = 0; i < a.length; i++)
-	    a[i] = ((Number) f.apply(Values.valueOf(x[i]), Values.valueOf(y[i]))).doubleValue();
+	    a[i] = ((Number) f.apply(vf.valueOf(x[i]), vf.valueOf(y[i]))).doubleValue();
 	return a;
     } 
     public static int[] map(orbital.logic.functor.BinaryFunction f, int[] x, int[] y) {
@@ -596,9 +601,10 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
 	Utility.pre(x != null && x.getClass().isArray()
 		    && y != null && y.getClass().isArray(), "map(BinaryFunction, Object, Object) works on arrays of primitive types or their compound wrapper classes, only");
 	Utility.pre(Array.getLength(x) == Array.getLength(y), "argument arrays must have same length");
+	final Values vf = Values.getDefaultInstance();
 	Object r = Array.newInstance(x.getClass().getComponentType(), Array.getLength(x));
 	for (int i = 0; i < Array.getLength(r); i++) {
-	    Object o = f.apply(Values.valueOf((Number) Array.get(x, i)), Values.valueOf((Number) Array.get(y, i)));
+	    Object o = f.apply(vf.valueOf((Number) Array.get(x, i)), vf.valueOf((Number) Array.get(y, i)));
 	    Array.set(r, i, Values.isPrimitiveWrapper(o.getClass()) ? o : Values.toPrimitiveWrapper((Scalar)o));
 	}
 	return r;

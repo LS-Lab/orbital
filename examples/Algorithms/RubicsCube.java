@@ -109,7 +109,7 @@ public class RubicsCube implements GeneralSearchProblem {
 
 			// out of exact pattern heuristic, so we need more than patternDepth steps
 			// XXX: need better heuristics!! Count number of tiles in wrong position, etc.
-			return Values.valueOf(patternDepth + 1);
+			return Values.getDefaultInstance().valueOf(patternDepth + 1);
 		    } 
 		};
 	    h = new HeuristicAlgorithm.PatternDatabaseHeuristic(h, patternDatabase);
@@ -191,10 +191,10 @@ public class RubicsCube implements GeneralSearchProblem {
     }
     private static final MutableFunction _accumulatedCostFunction = new MutableFunction() {
 	    public Object apply(Object state) {
-		return Values.valueOf(((Cube)state).accumulatedCost);
+		return Values.getDefaultInstance().valueOf(((Cube)state).accumulatedCost);
 	    }
 	    public Object set(Object state, Object accumulatedCost) {
-		Object old = Values.valueOf(((Cube)state).accumulatedCost);
+		Object old = Values.getDefaultInstance().valueOf(((Cube)state).accumulatedCost);
 		((Cube)state).accumulatedCost = ((orbital.math.Real)accumulatedCost).doubleValue();
 		return old;
 	    }

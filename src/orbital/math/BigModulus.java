@@ -95,7 +95,7 @@ public class BigModulus extends AbstractScalar implements Quotient {
     } 
 
     public Real norm() {
-	return Values.valueOf(value.abs());
+	return Values.getDefaultInstance().valueOf(value.abs());
     } 
 
     // get/set Methods.
@@ -127,7 +127,7 @@ public class BigModulus extends AbstractScalar implements Quotient {
     } 
 
     public Arithmetic representative() {
-	return Values.valueOf(getValue());
+	return Values.getDefaultInstance().valueOf(getValue());
     }
 
     public orbital.logic.functor.Function getQuotientOperator() {

@@ -80,6 +80,7 @@ public class Functionals {
 
     /**
      * prevent instantiation - module class
+     * @todo sure?
      */
     protected Functionals() {}
 

@@ -5,6 +5,8 @@ import orbital.moon.math.CoordinateCompositeFunction;
 
 public class StatisticsDemo {
     private static final java.io.PrintStream log = System.out;
+    // get us a value factory for creating arithmetic objects
+    private static final Values vf = Values.getDefaultInstance();
     public static void main(String arg[]) throws Exception {
 	descriptive();
 	linRegCompare();
@@ -38,9 +40,9 @@ public class StatisticsDemo {
 	double _aa = Stat.mean(vy) - _ba * Stat.mean(vx);
 	log.println("Simplified formula results in... y=" + _aa + "+" + _ba + "*x");
 
-	Matrix A = Values.getInstance(vx.length, 2);
-	A.setColumn(0, Values.valueOf(vx));
-	A.setColumn(1, Values.valueOf(vy));
+	Matrix A = vf.newInstance(vx.length, 2);
+	A.setColumn(0, vf.valueOf(vx));
+	A.setColumn(1, vf.valueOf(vy));
 	Function	   fls[] = {
 	    Functions.one, Functions.id
 	};
@@ -63,7 +65,7 @@ public class StatisticsDemo {
 	    {4, 6},
 	    {5, 12}
 	};
-	Matrix		   Ex = Values.valueOf(data);
+	Matrix		   Ex = vf.valueOf(data);
 	Function	   fs[] = {
 	    Functions.one, Functions.id, Functions.square
 	};
@@ -74,12 +76,12 @@ public class StatisticsDemo {
 	log.println("regression: lets look if it fits and what it interpolates");
 	Arithmetic x;
 	for (int i = 1; i <= 5; i++) {
-	    x = Values.valueOf(i);
+	    x = vf.valueOf(i);
 	    log.println(x + "|" + f.apply(x) + "\t");
 	} 
-	x = Values.valueOf(4.5);
+	x = vf.valueOf(4.5);
 	log.println(x + "|" + f.apply(x) + "\t");
-	x = Values.valueOf(5.5);
+	x = vf.valueOf(5.5);
 	log.println(x + "|" + f.apply(x) + "\t");
     } 
 }

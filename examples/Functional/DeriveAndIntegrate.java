@@ -11,11 +11,11 @@ public class DeriveAndIntegrate {
     } 
     private static void test_unary() throws Exception {
 	System.out.println("Derivatives elemental unary functions");
-	Function f = Functions.constant(Values.valueOf(7));
+	Function f = Functions.constant(Values.getDefaultInstance().valueOf(7));
 	System.out.println(f + " ' = " + f.derive() + "\n  integral " + f + " = " + f.integrate());
 	f = Functions.id;
 	System.out.println(f + " ' = " + f.derive() + "\n  integral " + f + " = " + f.integrate());
-	f = Functions.pow(Values.valueOf(5));
+	f = Functions.pow(Values.getDefaultInstance().valueOf(5));
 	System.out.println(f + " ' = " + f.derive() + "\n  integral " + f + " = " + f.integrate());
 	f = Functions.reciprocal;
 	System.out.println(f + " ' = " + f.derive() + "\n  integral " + f + " = " + f.integrate());
@@ -23,7 +23,7 @@ public class DeriveAndIntegrate {
 	System.out.println(f + " ' = " + f.derive() + "\n  integral " + f + " = " + f.integrate());
 	f = Functions.log;
 	System.out.println(f + " ' = " + f.derive() + "\n  integral " + f + " = " + f.integrate());
-	f = Functions.exp(Values.valueOf(10));
+	f = Functions.exp(Values.getDefaultInstance().valueOf(10));
 	System.out.println(f + " ' = " + f.derive() + "\n  integral " + f + " = " + f.integrate());
     } 
 

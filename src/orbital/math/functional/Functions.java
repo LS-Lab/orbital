@@ -32,6 +32,7 @@ import orbital.util.GeneralComplexionException;
 
 /**
  * Common function implementations.
+ * @stereotype &laquo;Module&raquo;
  * @version 1.0, 2000/08/01
  * @author  Andr&eacute; Platzer
  */
@@ -52,7 +53,9 @@ public final class Functions {
      */
     public static final Functions functions = new Functions();
 
-    private static final Scalar TWO = Values.valueOf(2);
+    private static final Values valueFactory = Values.getDefaultInstance();
+
+    private static final Scalar TWO = valueFactory.valueOf(2);
 
     /**
      * prevent instantiation - module class
@@ -68,14 +71,14 @@ public final class Functions {
      * zero: R&rarr;R; x &#8614; 0 .
      * @todo should we return x.zero()
      */
-    public static final Function zero = constant(Values.valueOf(0));
+    public static final Function zero = constant(valueFactory.valueOf(0));
     //TODO: transform to anonymous inner class to improve integration (zero or id for below)
 
     /**
      * one: R&rarr;R; x &#8614; 1 .
      * @todo should we return x.one()
      */
-    public static final Function one = constant(Values.valueOf(1));
+    public static final Function one = constant(valueFactory.valueOf(1));
 
     /**
      * constant &acirc;: R&rarr;R; x &#8614; a .
@@ -254,7 +257,7 @@ public final class Functions {
 	return Functionals.bindSecond(Operations.power, p);
     } 
     public static final Function pow(double p) {
-	return pow(Values.valueOf(p));
+	return pow(valueFactory.valueOf(p));
     }
 
     /**
@@ -270,7 +273,7 @@ public final class Functions {
 		    return v.multiply(v);
 		} else if (x instanceof Number) {
 		    double v = ((Number) x).doubleValue();
-		    return Values.valueOf(v * v);
+		    return valueFactory.valueOf(v * v);
 		} else {
 		    Arithmetic v = (Arithmetic) x;
 		    return v.multiply(v);
@@ -294,17 +297,17 @@ public final class Functions {
      * But just like real numbers, the negative of this is a square root as well.</p>
      * </p>
      */
-    public static final Function sqrt = new SynonymFunction(pow(Values.valueOf(0.5))) {
+    public static final Function sqrt = new SynonymFunction(pow(valueFactory.valueOf(0.5))) {
 	    public Object/*>Complex<*/ apply(Object/*>Complex<*/ x) {
 		if (Complex.hasType.apply(x)) {
 		    Complex v = (Complex) x;
-		    return Values.polar((Real/*__*/)apply(v.norm()), v.arg().divide(Values.valueOf(2)));
+		    return valueFactory.polar((Real/*__*/)apply(v.norm()), v.arg().divide(valueFactory.valueOf(2)));
 		} 
 		else if (x instanceof Number) {
 		    double r = ((Number) x).doubleValue();
 		    if (!(r == r))			// Double.isNaN
 			return Values.NaN;
-		    return r >= 0 ? Values.valueOf(Math.sqrt(r)) : apply(Values.cartesian(r, 0));
+		    return r >= 0 ? valueFactory.valueOf(Math.sqrt(r)) : apply(valueFactory.cartesian(r, 0));
 		}
 		return (Complex) super.apply(x);
 	    } 
@@ -337,14 +340,14 @@ public final class Functions {
 	    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x) {
 		if (Complex.hasType.apply(x)) {
 		    Complex z = (Complex) x;
-		    return Values.polar((Real) apply(z.re()), z.im());
+		    return valueFactory.polar((Real) apply(z.re()), z.im());
 		} 
 		else if (x instanceof Number)
-		    return Values.valueOf(Math.exp(((Number) x).doubleValue()));
+		    return valueFactory.valueOf(Math.exp(((Number) x).doubleValue()));
 		else if (x instanceof orbital.math.Matrix)
 		    throw new UnsupportedOperationException("not yet implemented - limit or at least jordan normalization required");
 		else if (x instanceof orbital.math.Symbol)
-		    return Values.symbol("e").power((Arithmetic) x);
+		    return valueFactory.symbol("e").power((Arithmetic) x);
 		else if (x instanceof Arithmetic)
 		    throw new UnsupportedOperationException("not yet implemented - dunno");
 
@@ -381,11 +384,11 @@ public final class Functions {
 	    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x) {
 		if (Complex.hasType.apply(x)) {
 		    Complex v = (Complex) x;
-		    return Values.cartesian((Real/*__*/) this.apply(v.norm()), v.arg());
+		    return valueFactory.cartesian((Real/*__*/) this.apply(v.norm()), v.arg());
 		} 
 		else if (x instanceof Number) {
 		    double r = ((Number) x).doubleValue();
-		    return r >= 0 ? Values.valueOf(Math.log(r)) : apply(Values.cartesian(r, 0));
+		    return r >= 0 ? valueFactory.valueOf(Math.log(r)) : apply(valueFactory.cartesian(r, 0));
 		} else if (x instanceof orbital.math.Matrix)
 		    throw new UnsupportedOperationException("not yet implemented - something like limit required");
 		else if (x instanceof Arithmetic)
@@ -443,7 +446,7 @@ public final class Functions {
 		if (Complex.hasType.apply(x))
 		    return ((Arithmetic) sinh.apply(Values.i.multiply((Arithmetic) x))).divide(Values.i);
 		else if (x instanceof Number)
-		    return Values.valueOf(Math.sin(((Number) x).doubleValue()));
+		    return valueFactory.valueOf(Math.sin(((Number) x).doubleValue()));
 		throw new UnsupportedOperationException("not implemented for type: " + x.getClass());
 	    } 
 	    public Function derive() {
@@ -475,7 +478,7 @@ public final class Functions {
 		if (Complex.hasType.apply(x))
 		    return cosh.apply(Values.i.multiply((Arithmetic) x));
 		else if (x instanceof Number)
-		    return Values.valueOf(Math.cos(((Number) x).doubleValue()));
+		    return valueFactory.valueOf(Math.cos(((Number) x).doubleValue()));
 		throw new UnsupportedOperationException("not implemented for type: " + x.getClass());
 	    } 
 	    public Function derive() {
@@ -503,7 +506,7 @@ public final class Functions {
     public static final Function tan = new SynonymFunction(Functionals.compose(Operations.divide, sin, cos)) {
 	    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x) {
 		if (x instanceof Number && !Complex.hasType.apply(x))
-		    return Values.valueOf(Math.tan(((Number) x).doubleValue()));
+		    return valueFactory.valueOf(Math.tan(((Number) x).doubleValue()));
 		return super.apply(x);
 	    } 
 	    public Function derive() {
@@ -580,7 +583,7 @@ public final class Functions {
     public static final Function arcsin = new AbstractFunction/*<Real,Real>*/() {
 	    public Object/*>Real<*/ apply(Object/*>Real<*/ x) {
     		if (x instanceof Number)
-		    return Values.valueOf(Math.asin(((Number) x).doubleValue()));
+		    return Values.getDefaultInstance().valueOf(Math.asin(((Number) x).doubleValue()));
     		throw new UnsupportedOperationException("not implemented for type: " + x.getClass());
 	    } 
 	    public Function derive() {
@@ -590,7 +593,7 @@ public final class Functions {
     		return (Function) Operations.plus.apply(Operations.times.apply(id, this), Functionals.compose(sqrt, Functionals.compose(Operations.subtract, one, square)));
 	    }
 	    public Real norm() {
-    		return Values.valueOf(Math.PI / 2);
+    		return valueFactory.valueOf(Math.PI / 2);
 	    }
 	    public String toString() {
     		return "arcsin";
@@ -608,7 +611,7 @@ public final class Functions {
     public static final Function arccos = new AbstractFunction/*<Real,Real>*/() {
 	    public Object/*>Real<*/ apply(Object/*>Real<*/ x) {
     		if (x instanceof Number)
-		    return Values.valueOf(Math.acos(((Number) x).doubleValue()));
+		    return valueFactory.valueOf(Math.acos(((Number) x).doubleValue()));
     		throw new UnsupportedOperationException("not implemented for type: " + x.getClass());
 	    } 
 	    public Function derive() {
@@ -637,7 +640,7 @@ public final class Functions {
     public static final Function arctan = new AbstractFunction/*<Real,Real>*/() {
 	    public Object/*>Real<*/ apply(Object/*>Real<*/ x) {
     		if (x instanceof Number)
-		    return Values.valueOf(Math.atan(((Number) x).doubleValue()));
+		    return valueFactory.valueOf(Math.atan(((Number) x).doubleValue()));
     		throw new UnsupportedOperationException("not implemented for type: " + x.getClass());
 	    } 
 	    public Function derive() {
@@ -647,7 +650,7 @@ public final class Functions {
     		return (Function) Operations.subtract.apply(Operations.times.apply(id, this), Functionals.compose(log, Functionals.compose(Operations.plus, square, one)).divide(TWO));
 	    }
 	    public Real norm() {
-    		return Values.valueOf(Math.PI / 2);
+    		return valueFactory.valueOf(Math.PI / 2);
 	    }
 	    public String toString() {
     		return "arctan";
@@ -667,7 +670,7 @@ public final class Functions {
 	    private final double PI_HALF = Math.PI / 2;
 	    public Object/*>Real<*/ apply(Object/*>Real<*/ x) {
     		if (x instanceof Number)
-		    return Values.valueOf(PI_HALF - Math.atan(((Number) x).doubleValue()));
+		    return valueFactory.valueOf(PI_HALF - Math.atan(((Number) x).doubleValue()));
     		throw new UnsupportedOperationException("not implemented for type: " + x.getClass());
 	    } 
 	    public Function derive() {
@@ -1055,10 +1058,10 @@ public final class Functions {
      * @see orbital.math.UnivariatePolynomial
      */
     public static final UnivariatePolynomial polynom(final int degree) {
-	return polynom(Values.IDENTITY(degree, degree).getDiagonal());
+	return polynom(valueFactory.IDENTITY(degree, degree).getDiagonal());
 	// 	    Function p[] = new Function[degree];
 	// 	    for (int i = 0; i < degree; i++)
-	// 		p[i] = Functions.pow(Values.valueOf(i));
+	// 		p[i] = Functions.pow(valueFactory.valueOf(i));
 	// 	    return new ComponentCompositeFunction(p) {
 	// 		    public Real norm() {
 	// 			return degree == 0 ? Values.ZERO : Values.POSITIVE_INFINITY;
@@ -1079,7 +1082,7 @@ public final class Functions {
      * @internal see #polynom(int)
      */
     public static final UnivariatePolynomial polynom(Vector coeff) {
-	return Values.asPolynomial(coeff);
+	return valueFactory.asPolynomial(coeff);
 	// @xxx ClassCastException due to ArithmeticVector
 	// return (Function) Operations.times.apply(coeff, polynom(coeff.dimension()));
     } 
@@ -1092,12 +1095,12 @@ public final class Functions {
      * The logistic function is a sigmoid function, and resembles the continuous logistic distribution.</p>
      * @see #sign
      */
-    public static final Function logistic = new SynonymFunction((Function) ((Function) Operations.plus.apply(Values.valueOf(1), Functionals.compose(exp, Operations.minus))).inverse()) {
+    public static final Function logistic = new SynonymFunction((Function) ((Function) Operations.plus.apply(valueFactory.valueOf(1), Functionals.compose(exp, Operations.minus))).inverse()) {
 	    public Function derive() {
 		// a little bit optimized version of usual derivative, avoiding some 1* and 0* factors.
 		// e^-x
 		Function emx = Functionals.compose(exp, Operations.minus);
-		return (Function) emx.divide(Functionals.compose(square, (Function) Operations.plus.apply(Values.valueOf(1), emx)));
+		return (Function) emx.divide(Functionals.compose(square, (Function) Operations.plus.apply(valueFactory.valueOf(1), emx)));
 		//@todo return logistic * (1 - logistic)
 	    } 
 	    public Real norm() {
@@ -1122,7 +1125,7 @@ public final class Functions {
 		    return abs.equals(Values.ZERO) ? Values.ZERO : z.divide(abs);
 		}
 		int cmp = Values.ZERO.compareTo(x);
-		return Values.valueOf(cmp < 0 ? -1 : cmp > 0 ? 1 : 0);
+		return valueFactory.valueOf(cmp < 0 ? -1 : cmp > 0 ? 1 : 0);
 	    } 
 	    public Function derive() {
 		return diracDelta;
@@ -1150,7 +1153,7 @@ public final class Functions {
     public static final Function step(final Real t) {
 	return new AbstractFunction/*<Real,Integer>*/() {
 		public Object/*>Integer<*/ apply(Object/*>Real<*/ x) {
-		    return Values.valueOf(t.compareTo(x) < 0 ? 0 : 1);
+		    return valueFactory.valueOf(t.compareTo(x) < 0 ? 0 : 1);
 		} 
 		public Function derive() {
 		    return Functionals.compose(diracDelta, Functionals.bindFirst(Operations.subtract, t));
@@ -1321,8 +1324,8 @@ public final class Functions {
 
     // binary functions
 	
-    static final BinaryFunction binaryzero = binaryConstant(Values.valueOf(0));
-    static final BinaryFunction binaryone = binaryConstant(Values.valueOf(1));
+    static final BinaryFunction binaryzero = binaryConstant(valueFactory.valueOf(0));
+    static final BinaryFunction binaryone = binaryConstant(valueFactory.valueOf(1));
 
     /**
      * constant &acirc;: R&times;R&rarr;R; (x,y) &#8614; a.
@@ -1469,7 +1472,7 @@ public final class Functions {
      */
     public static final BinaryFunction delta = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Integer>*/() {
 	    public Object/*>Integer<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
-		return Values.valueOf(x.equals(y) ? 1 : 0);
+		return valueFactory.valueOf(x.equals(y) ? 1 : 0);
 	    } 
 	    public BinaryFunction derive() {
 		throw new UnsupportedOperationException("delta'");

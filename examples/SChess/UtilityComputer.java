@@ -30,7 +30,8 @@ public class UtilityComputer extends Computer {
 		    int done = ChessRules.turnDoneImpl(field);
 		    double winningPart = done == ChessRules.NOONE ? 0 : done == our ? 1 : -1;
 		    //@todo add win/loose heuristic
-		    return Functions.tanh.apply(Values.valueOf(winningPart * 4 + 0.1 * (count[ChessRules.KING] + count[ChessRules.PAWN])));
+		    return Functions.tanh.apply(Values.getDefaultInstance().
+						valueOf(winningPart * 4 + 0.1 * (count[ChessRules.KING] + count[ChessRules.PAWN])));
     		}
     		private int opponent(int league) {
 		    switch (league) {

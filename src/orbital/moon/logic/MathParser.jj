@@ -60,6 +60,8 @@ public class MathParser {
 	System.out.println("Evaluates to:\t" + (p instanceof Function ? ((Function) p).apply(null) : p));	//XXX: erm why null?
     } 
     public static final String usage = "usage: \n\tstart and enter a correct mathematical expression to evaluate\n\tremember that function evaluation expressions are denoted with rectangular\n\tbrackets as in \"sin[2 + 4/15] + 3*x\"";
+
+    private static final Values valueFactory = Values.getDefaultInstance();
 	
     public static/**/ Object createExpression(String expression) throws orbital.io.ParseException {
 	if (expression == null)
@@ -383,10 +385,10 @@ Arithmetic literal() :
 {Token tok;}
 {
     //@todo depending upon number of digits, we could parse optmized <INTEGER_LITERAL>	{return new Integer.Long(Long.parseLong(tok.image));}
-    tok = <INTEGER_LITERAL>     	{return Values.valueOf(tok.image);}
-|   tok = <FLOATING_POINT_LITERAL>	{return Values.valueOf(tok.image);}
-|   tok = <STRING_LITERAL>			{return Values.symbol(/* @todo remove " quotes? */tok.image);}
-|   tok = <IDENTIFIER>				{return Values.symbol(tok.image);}
+    tok = <INTEGER_LITERAL>     	{return valueFactory.valueOf(tok.image);}
+|   tok = <FLOATING_POINT_LITERAL>	{return valueFactory.valueOf(tok.image);}
+|   tok = <STRING_LITERAL>			{return valueFactory.symbol(/* @todo remove " quotes? */tok.image);}
+|   tok = <IDENTIFIER>				{return valueFactory.symbol(tok.image);}
 }
 
 /**
@@ -431,7 +433,7 @@ Function lambdaAbstraction() :
 {Token x;Arithmetic t;}
 {
     "(" <LAMBDA> x = <IDENTIFIER> "." t = term() ")"
-{return convert((orbital.logic.functor.Function) Substitutions.lambda.apply(Values.symbol(x.image), t));}
+{return convert((orbital.logic.functor.Function) Substitutions.lambda.apply(valueFactory.symbol(x.image), t));}
 }
 
 Object[] Arguments() :

@@ -402,6 +402,6 @@ public class Population implements Serializable /*//TODO: extends DelegateList<G
 	Real difference = measure.distance(c[0], c[c.length - 1]);
 	for (int i = 0; i < c.length - 1; i++)
 	    difference = difference.add(measure.distance(c[i], c[i + 1]).norm());
-	return difference.divide(Values.valueOf(c.length)).doubleValue();
+	return difference.divide(Values.getDefaultInstance().valueOf(c.length)).doubleValue();
     } 
 }

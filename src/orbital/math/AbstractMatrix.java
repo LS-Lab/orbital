@@ -39,41 +39,42 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
     private static class Debug {
 	private static final Logger test = Logger.getLogger("orbital.test");
 	private Debug() {}
+	private static final Values vf = Values.getDefaultInstance();
 	public static void main(String arg[]) throws Exception {
 	    assert_conditions();
 	    test.info("mixed-type matrix");
 	    //@xxx class Debug produces an error with gjc error: type parameter orbital.math.Arithmetic[] is not within its bound orbital.math.Arithmetic
-	    // this is because he confuses Values.valueOf(R[]) with Values.valueOf(R[][]) although R is bound to be orbital.math.Arithmetic
-	    Matrix/*<Scalar>*/ M = Values.valueOf(new Scalar[][] {
-		{Values.valueOf(2), Values.rational(3, 4), Values.rational(-1, 2)},
-		{Values.rational(3, 4), Values.rational(1, 2), Values.valueOf(-1)},
-		{Values.rational(-1, 2), Values.valueOf(0), Values.rational(1)}
+	    // this is because he confuses vf.valueOf(R[]) with vf.valueOf(R[][]) although R is bound to be orbital.math.Arithmetic
+	    Matrix/*<Scalar>*/ M = vf.valueOf(new Scalar[][] {
+		{vf.valueOf(2), vf.rational(3, 4), vf.rational(-1, 2)},
+		{vf.rational(3, 4), vf.rational(1, 2), vf.valueOf(-1)},
+		{vf.rational(-1, 2), vf.valueOf(0), vf.rational(1)}
 	    });
-	    Vector/*<Rational>*/ v = Values.valueOf(new Rational[] {
-		Values.valueOf(1), Values.rational(-1, 3), Values.rational(1, 2)
+	    Vector/*<Rational>*/ v = vf.valueOf(new Rational[] {
+		vf.valueOf(1), vf.rational(-1, 3), vf.rational(1, 2)
 	    });
 	    System.out.println(M + "*" + v + "=" + M.multiply(v));
 	    System.out.println("|M|=" + M.det() + "\t||M||=" + M.norm() + "\tM^-1=\n" + M.inverse());
 	    test.info("complex matrix");
-	    Matrix/*<Complex>*/ M2 = Values.valueOf(new Complex[][] {
-		{Values.complex(1, 2), Values.complex(2, -1)},
-		{Values.complex(1, -2), Values.complex(-1, -1)}
+	    Matrix/*<Complex>*/ M2 = vf.valueOf(new Complex[][] {
+		{vf.complex(1, 2), vf.complex(2, -1)},
+		{vf.complex(1, -2), vf.complex(-1, -1)}
 	    });
-	    v = Values.valueOf(new Scalar[] {
-		Values.valueOf(1), Values.complex(1, 2)
+	    v = vf.valueOf(new Scalar[] {
+		vf.valueOf(1), vf.complex(1, 2)
 	    });
 	    System.out.println(M2 + "*" + v + "=" + M2.multiply(v));
 	    System.out.println("|M|=" + M2.det() + "\t||M||=" + M2.norm() + "\tM^-1=\n" + M2.inverse());
 	    test.info("hypermatrix");
-	    /*Matrix M3 = Values.valueOf(new Arithmetic[][] {
-	      {Values.valueOf(2), Values.valueOf(3)},
-	      {Values.valueOf(-3), Values.valueOf(2)}
+	    /*Matrix M3 = vf.valueOf(new Arithmetic[][] {
+	      {vf.valueOf(2), vf.valueOf(3)},
+	      {vf.valueOf(-3), vf.valueOf(2)}
 	      });
-	      Matrix M4 = Values.valueOf(new Arithmetic[][] {
-	      {Values.rational(1, 3), Values.valueOf(2)},
-	      {Values.rational(-3, 2), Values.rational(-2, 4)}
+	      Matrix M4 = vf.valueOf(new Arithmetic[][] {
+	      {vf.rational(1, 3), vf.valueOf(2)},
+	      {vf.rational(-3, 2), vf.rational(-2, 4)}
 	      });
-	      Matrix hypermatrix = Values.valueOf(new Arithmetic[][] {
+	      Matrix hypermatrix = vf.valueOf(new Arithmetic[][] {
 	      {M.subMatrix(0,1, 0,1), M2},
 	      {M3, M4}
 	      });
@@ -84,16 +85,16 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
 
 	// (partial) assertion condition checks
 	public static void assert_conditions() throws Exception {
-	    Matrix M = Values.valueOf(new Arithmetic[][] {
-		{Values.valueOf(2), Values.rational(3, 4)},
-		{Values.rational(-1, 2), Values.valueOf(0)}
+	    Matrix M = vf.valueOf(new Arithmetic[][] {
+		{vf.valueOf(2), vf.rational(3, 4)},
+		{vf.rational(-1, 2), vf.valueOf(0)}
 	    });
-	    Vector v = Values.valueOf(new Arithmetic[] {
-		Values.valueOf(1), Values.rational(-1, 3)
+	    Vector v = vf.valueOf(new Arithmetic[] {
+		vf.valueOf(1), vf.rational(-1, 3)
 	    });
 	    for (int i = 0; i < 2; i++) {
 		test.info("reference behaviour part " + i);
-		Scalar s = Values.valueOf(-2);
+		Scalar s = vf.valueOf(-2);
 		Matrix B = (Matrix) M.clone();
 		Vector b = (Vector) v.clone();
 		assert M != B && M.equals(B) : "clone";
@@ -130,7 +131,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
 		assert v.remove(0).equals(v) : "return this";
 		System.out.println("removed " + v);
 		assert !v.equals(b) : "structure change mutates";
-		assert v.insert(Values.valueOf(7)).equals(v) : "return this";
+		assert v.insert(vf.valueOf(7)).equals(v) : "return this";
 		System.out.println("appended " + v);
 // 		assert !v.equals(b) : "structure change mutates";
 // 		assert v.insert(v).equals(v) : "return this";
@@ -145,14 +146,14 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
 		test.info("reference behaviour: sub-view");
 		v = M.getColumn(1);
 		System.out.println(M + ", column " + v);
-		v.set(1, Values.valueOf(42));
+		v.set(1, vf.valueOf(42));
 		assert !v.equals(b) && !M.equals(B) : "sub-view modifications write through";
 		System.out.println(M + ", column " + v);
 
 		B2 = (Matrix) M.clone();
 		v = M.getRow(0);
 		System.out.println(M + ", row " + v);
-		v.set(1, Values.valueOf(-42));
+		v.set(1, vf.valueOf(-42));
 		assert !v.equals(b) && !M.equals(B2) : "sub-view modifications write through";
 		System.out.println(M + ", row " + v);
     			
@@ -168,14 +169,14 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
 		Matrix N = M.subMatrix(0,1, 1,3);
 		assert !N.equals(M) : "sub-view different";
 		System.out.println("Matrix\n" + M + ", sub-view\n" + N);
-		N.set(1, 1, Values.NEGATIVE_INFINITY);
+		N.set(1, 1, vf.NEGATIVE_INFINITY);
 		System.out.println("Matrix\n" + M + ", sub-view\n" + N);
 		assert !M.equals(B2) : "sub-view modifications write through";
 
 		B2 = (Matrix) M.clone();
 		v = M.getRow(0);
 		System.out.println(M + ", row " + v);
-		v.set(1, Values.valueOf(-444));
+		v.set(1, vf.valueOf(-444));
 		assert !v.equals(b) && !M.equals(B2) : "sub-view modifications write through";
 		System.out.println(M + ", row " + v);
 
@@ -213,7 +214,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
 	return newInstance(new Dimension(width, height));
     } 
     protected final Tensor/*<R>*/ newInstance(int[] dim) {
-	return dim.length == 2 ? newInstance(dim[0], dim[1]) : Values.newInstance(dim);
+	return dim.length == 2 ? newInstance(dim[0], dim[1]) : Values.getDefaultInstance().newInstance(dim);
     }
 
     // get/set-methods
@@ -564,7 +565,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
     	}
     
     	protected Vector/*<R>*/ newInstance(int dim) {
-	    return Values.newInstance(dim);
+	    return (Vector) m.newInstance(new int[] {dim});
     	} 
     
     	public final int dimension() {
@@ -623,7 +624,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
     	}
     
     	protected Vector/*<R>*/ newInstance(int dim) {
-	    return Values.newInstance(dim);
+	    return (Vector) m.newInstance(new int[] {dim});
     	} 
     
     	public final int dimension() {
@@ -773,7 +774,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
 	//@todo could also be seen as a view, in principle
 	if (!isSquare())
 	    throw new ArithmeticException("Only square matrices have a diagonal vector");
-	Vector/*<R>*/ diagon = Values.newInstance(dimension().height);
+	Vector/*<R>*/ diagon = (Vector) newInstance(new int[] {dimension().height});
 	for (int i = 0; i < diagon.dimension(); i++)
 	    diagon.set(i, get(i, i));
 	return diagon;
@@ -858,14 +859,14 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
 	    Arithmetic[] rowsum = new Arithmetic[dimension().height];
 	    for (int i = 0; i < rowsum.length; i++)
 		rowsum[i] = (Arithmetic) Operations.sum.apply(Evaluations.abs(getRow(i)));
-	    return (Real/*__*/) Operations.sup.apply(Values.valueOf(rowsum));
+	    return (Real/*__*/) Operations.sup.apply(Values.getDefaultInstance().valueOf(rowsum));
 	} 
 	if (p == 1) {
 	    // norm of maximum column sum
 	    Arithmetic[] colsum = new Arithmetic[dimension().width];
 	    for (int j = 0; j < colsum.length; j++)
 		colsum[j] = (Arithmetic) Operations.sum.apply(Evaluations.abs(getColumn(j)));
-	    return (Real/*__*/) Operations.sup.apply(Values.valueOf(colsum));
+	    return (Real/*__*/) Operations.sup.apply(Values.getDefaultInstance().valueOf(colsum));
 	} 
 	if (p == 2) {
 	    // Spectral norm
@@ -890,12 +891,13 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
 	if (dimension().width == 2)
 	    return (Arithmetic/*>R<*/) get(0, 0).multiply(get(1, 1)).subtract(get(1, 0).multiply(get(0, 1)));
 
-	Arithmetic/*>R<*/  det = (Arithmetic/*>R<*/) Values.valueOf(0);
+	Integer MINUS_ONE = (Integer) Values.ONE.minus();
+	Arithmetic/*>R<*/  det = (Arithmetic/*>R<*/) Values.ZERO;
 	// development of 0-th row
 	Matrix/*<R>*/ innerMatrix = ((Matrix) clone()).removeRow(0);
 	for (int j = 0; j < dimension().width; j++) {
 	    // recursion
-	    det = (Arithmetic/*>R<*/) det.add(Values.valueOf((j & 1) == 0 ? 1 : -1).multiply(get(0, j)).multiply(((Matrix) innerMatrix.clone()).removeColumn(j).det()));
+	    det = (Arithmetic/*>R<*/) det.add(((j & 1) == 0 ? Values.ONE : MINUS_ONE).multiply(get(0, j)).multiply(((Matrix) innerMatrix.clone()).removeColumn(j).det()));
 	} 
 	return det;
     } 
@@ -903,11 +905,11 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
     // arithmetic-operations
 	
     //@todo that's not quite true for strange R
-    public Arithmetic zero() {return Values.ZERO(dimension());}
+    public Arithmetic zero() {return Values.getDefaultInstance().ZERO(dimension());}
     public Arithmetic one() {
     	if (!isSquare())
 	    throw new UnsupportedOperationException("only square matrices have an identity matrix");
-    	return Values.IDENTITY(dimension());
+    	return Values.getDefaultInstance().IDENTITY(dimension());
     }
     
      public Matrix/*<R>*/ add(Matrix/*<R>*/ B) {
@@ -939,7 +941,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
 
     public Vector/*<R>*/ multiply(Vector/*<R>*/ B) {
 	Utility.pre(dimension().width == B.dimension(), "row vector A.v only defined for Matrix multiplied with row vector of dimension width. " + dimension().width + "!=" + B.dimension());
-	Vector/*<R>*/ ret = Values.newInstance(dimension().height);	// column vector
+	Vector/*<R>*/ ret = (Vector) newInstance(new int[] {dimension().height});	// column vector
 	for (int i = 0; i < ret.dimension(); i++)
 	    ret.set(i, getRow(i).multiply(B));
 	return ret;
@@ -1004,7 +1006,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
     public Arithmetic inverse() throws ArithmeticException {
 	assert isSquare() : "only square matrices can be inverted " + this;
 	Matrix/*<R>*/ A = (Matrix) clone();						
-	Matrix/*<R>*/ AI = Values.IDENTITY(dimension().width, dimension().width);
+	Matrix/*<R>*/ AI = Values.getDefaultInstance().IDENTITY(dimension().width, dimension().width);
 	// now transform
 	// A        ---> Identity
 	// Identity ---> A^-1
@@ -1045,7 +1047,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
 	    } 
 	} 
 
-	if (!MathUtilities.equalsCa(A, Values.IDENTITY(dimension().width, dimension().width))) {
+	if (!MathUtilities.equalsCa(A, Values.getDefaultInstance().IDENTITY(dimension().width, dimension().width))) {
 	    logger.log(Level.FINEST, "found a supposed inverse:\n{0} but failed to transform to identity matrix:\n{1} ({2})", new Object[] {AI, A, A.getClass()});
 	    assert !isRegular() : "a matrix is singular <=> determinant=0 <=> it cannot be inverted (apart from numerical uncertainty)";
 	    throw new ArithmeticException("NoninvertibleMatrixException: singular matrix");
@@ -1054,7 +1056,6 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
     } 
 
     public Matrix/*<R>*/ pseudoInverse() {
-
 	//@TODO: implement with QR-decompositon and so on (for more general matrices of lesser rank)
 
 	// assume Rank A = min {n=dimension().height, m=dimension().width}
@@ -1224,15 +1225,6 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
     } 
 
     public String toString() {
-	/*String		 nl = System.getProperty("line.separator");
-	  StringBuffer sb = new StringBuffer();
-	  for (int i = 0; i < dimension().height; i++) {
-	  sb.append((i == 0 ? "" : nl) + '[');
-	  for (int j = 0; j < dimension().width; j++)
-	  sb.append((j == 0 ? "" : ",\t") + get(i, j));
-	  sb.append(']');
-	  } 
-	  return sb.toString();*/
 	return ArithmeticFormat.getDefaultInstance().format(this);
     } 
 }

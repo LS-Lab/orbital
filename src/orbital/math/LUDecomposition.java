@@ -70,7 +70,7 @@ public final class LUDecomposition/*<R implements Arithmetic>*/ implements Seria
 	    throw new IllegalArgumentException("only square matrices can be LU-decomposed");
 	// we restrict ourselves to AbstractMatrix because they have these nice swapRows methods which might possibly have an incredible speed
 	AbstractMatrix/*<R>*/ A = (AbstractMatrix) M.clone();
-	AbstractMatrix/*<R>*/ P = (AbstractMatrix/*<R>*/) (Matrix/*<R>*/) Values.IDENTITY(A.dimension());
+	AbstractMatrix/*<R>*/ P = (AbstractMatrix/*<R>*/) (Matrix/*<R>*/) Values.getDefaultInstance().IDENTITY(A.dimension());
 	sign = true;
 	for (int k = 0; k < A.dimension().width - 1; k++) {	   /* last column need not be eliminated, so -1 */
 
@@ -175,7 +175,7 @@ public final class LUDecomposition/*<R implements Arithmetic>*/ implements Seria
      * @see Matrix#det()
      */
     public Arithmetic/*>R<*/ det() {
-	Arithmetic/*>R<*/ detU = (Arithmetic/*>R<*/) Functionals.foldRight(Operations.times, Values.valueOf(1), A.getDiagonal().iterator());
+	Arithmetic/*>R<*/ detU = (Arithmetic/*>R<*/) Functionals.foldRight(Operations.times, Values.ONE, A.getDiagonal().iterator());
 	return sign ? detU : (Arithmetic/*>R<*/) detU.minus();
     }
 
@@ -187,7 +187,7 @@ public final class LUDecomposition/*<R implements Arithmetic>*/ implements Seria
      * with an absolute &le;1.</p>
      */
     public Matrix/*<R>*/ getL() {
-	Matrix/*<R>*/ L = Values.IDENTITY(A.dimension());
+	Matrix/*<R>*/ L = Values.getDefaultInstance().IDENTITY(A.dimension());
 	for (int i = 0; i < A.dimension().height; i++)
 	    for (int j = 0; j < i; j++)
 		L.set(i, j, A.get(i, j));
@@ -198,7 +198,7 @@ public final class LUDecomposition/*<R implements Arithmetic>*/ implements Seria
      * upper triangular matrix <span class="matrix">U</span>.
      */
     public Matrix/*<R>*/ getU() {
-	Matrix/*<R>*/ U = Values.ZERO(A.dimension());
+	Matrix/*<R>*/ U = Values.getDefaultInstance().ZERO(A.dimension());
 	for (int i = 0; i < A.dimension().height; i++)
 	    for (int j = i; j < A.dimension().width; j++)
 		U.set(i, j, A.get(i, j));
@@ -223,7 +223,7 @@ public final class LUDecomposition/*<R implements Arithmetic>*/ implements Seria
      */
     public Vector/*<R>*/ solve(Vector/*<R>*/ b) {
 	Vector/*<R>*/ c = P.multiply(b);
-	Vector/*<R>*/ z = Values.newInstance(A.dimension().width);
+	Vector/*<R>*/ z = Values.getDefaultInstance().newInstance(A.dimension().width);
 	// forward-substitution of L.z = P.b = c
 	for (int i = 0; i < A.dimension().height; i++) {
 	    Arithmetic/*>R<*/ t = c.get(i);
@@ -233,7 +233,7 @@ public final class LUDecomposition/*<R implements Arithmetic>*/ implements Seria
 	    z.set(i, t);
 	}
 
-	Vector/*<R>*/ x = Values.newInstance(A.dimension().width);
+	Vector/*<R>*/ x = Values.getDefaultInstance().newInstance(A.dimension().width);
 	// backward-substitution of R.x = z
 	for (int i = A.dimension().height - 1; i >= 0; i--) {
 	    Arithmetic/*>R<*/ t = c.get(i);

@@ -23,10 +23,11 @@ import orbital.util.Setops;
 /**
  * Contains evaluation functions for mathematical objects.
  *
- * @deprecated since Orbital1.1 This class is deprecated since its methods are mere facades for convenience.
+ * @deprecated since Orbital1.1 This class is deprecated since its (simple) methods are mere facades for convenience.
  * Directly use the functions in {@link orbital.math.functional.Operations}
  * and {@link orbital.logic.functor.Functionals}, instead.
  * @stereotype &laquo;Utilities&raquo;
+ * @stereotype &laquo;Module&raquo;
  * @version 0.8, 2000/07/24
  * @author  Andr&eacute; Platzer
  * @see orbital.math.MathUtilities
@@ -55,7 +56,7 @@ public final class Evaluations {
      * Returns the average of all elements in this Vector.
      */
     public static /*<R implements Arithmetic>*/ Arithmetic average(Vector/*<R>*/ v) {
-	return sum(v).divide(Values.valueOf(v.dimension()));
+	return sum(v).divide(Values.getDefaultInstance().valueOf(v.dimension()));
     } 
     public static double average(double[] v) {
 	return sum(v) / v.length;
@@ -134,7 +135,7 @@ public final class Evaluations {
      * Returns the average of all elements in this Matrix.
      */
     public static /*<R implements Arithmetic>*/ Arithmetic average(Matrix/*<R>*/ M) {
-	return sum(M).divide(Values.valueOf(M.dimension().width * M.dimension().height));
+	return sum(M).divide(Values.getDefaultInstance().valueOf(M.dimension().width * M.dimension().height));
     } 
 
     /**

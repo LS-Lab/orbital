@@ -394,7 +394,7 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
     } 
 
     public orbital.math.functional.Function spaceComplexity() {
-	return (orbital.math.functional.Function) Operations.power.apply(Values.valueOf(getPopulationGrowth()), orbital.math.functional.Functions.id);
+	return (orbital.math.functional.Function) Operations.power.apply(Values.getDefaultInstance().valueOf(getPopulationGrowth()), orbital.math.functional.Functions.id);
     }
 
 

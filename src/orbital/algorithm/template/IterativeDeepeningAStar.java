@@ -98,7 +98,7 @@ public class IterativeDeepeningAStar extends DepthFirstBoundingSearch implements
      * O(b<sup>d</sup>) where b is the branching factor and d the solution depth.
      */
     public orbital.math.functional.Function complexity() {
-	return (orbital.math.functional.Function) Operations.power.apply(Values.symbol("b"),Functions.id);
+	return (orbital.math.functional.Function) Operations.power.apply(Values.getDefaultInstance().symbol("b"),Functions.id);
     }
     /**
      * Optimal if heuristic is admissible.
@@ -113,7 +113,7 @@ public class IterativeDeepeningAStar extends DepthFirstBoundingSearch implements
      */
     protected boolean isOutOfBounds(Object/*>S<*/ node) {
 	Real v = (Real) getEvaluation().apply(node);
-	if (v.compareTo(Values.valueOf(getBound())) <= 0)
+	if (v.compareTo(Values.getDefaultInstance().valueOf(getBound())) <= 0)
 	    return false;
 	// OutOfBounds -> nextBound is cheapest node pruned (minimum)
 	if (nextBound == null || v.compareTo(nextBound) < 0)

@@ -118,7 +118,7 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
      * O(b) where b is the branching factor and d the solution depth.
      */
     public orbital.math.functional.Function spaceComplexity() {
-	return orbital.math.functional.Functions.constant(Values.symbol("b"));
+	return orbital.math.functional.Functions.constant(Values.getDefaultInstance().symbol("b"));
     }
     public boolean isOptimal() {
     	return false;

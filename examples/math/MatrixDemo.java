@@ -4,6 +4,8 @@ import orbital.math.*;
 
 public class MatrixDemo {
     public static void main(String arg[]) throws Exception {
+	// get us a value factory for creating arithmetic objects
+	final Values vf = Values.getDefaultInstance();
 	double ms[][] = {
 	    {2,1,0,-2},
 	    {1,2,4,1},
@@ -15,12 +17,12 @@ public class MatrixDemo {
 	double us[] = {
 	    2, 1, 0, -3
 	};
-	Matrix M = Values.valueOf(ms);
-	Vector v = Values.valueOf(vs);
-	Vector u = Values.valueOf(us);
+	Matrix M = vf.valueOf(ms);
+	Vector v = vf.valueOf(vs);
+	Vector u = vf.valueOf(us);
 	System.out.println(M + "*" + v + "=" + M.multiply(v));
 	System.out.println(u + "*" + v + "=" + u.multiply(v));
-	System.out.println(v + "*" + 2 + "=" + v.multiply(Values.valueOf(2)));
+	System.out.println(v + "*" + 2 + "=" + v.multiply(vf.valueOf(2)));
 	System.out.println("M^-1=" + M.inverse());
 	System.out.println("Type examination Matrix N to multiply with");
 	String n = "";
@@ -30,7 +32,7 @@ public class MatrixDemo {
 		break;
 	    n += (char) ch;
 	} 
-	Matrix N = (Matrix) Values.valueOf(n);
+	Matrix N = (Matrix) vf.valueOf(n);
 	System.out.println("||N||=" + N.norm());
 	System.out.println("|N|=" + N.det());
 	System.out.println("Tr N=" + N.trace());

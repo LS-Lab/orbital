@@ -77,7 +77,7 @@ public class AlgorithmicTable {
 		    data[i][j++] = new Boolean(algo[i].complexity() != Functions.nondet 
 
 					       // FIXME: norm is infinite for all polynoms, what else!
-					       &&!(algo[i].complexity().equals(Functions.constant(Values.valueOf(Double.POSITIVE_INFINITY)))));
+					       &&!(algo[i].complexity().equals(Functions.constant(Values.POSITIVE_INFINITY))));
 		}
 		catch(UnsupportedOperationException x) {logger.log(Level.INFO, "unsupported", x);}
 		try {
@@ -87,8 +87,8 @@ public class AlgorithmicTable {
 		data[i][j++] = algo[i] instanceof GeneralSearch ? new Boolean(((GeneralSearch) algo[i]).isOptimal()) : null;
 		data[i][j++] = new Boolean(algo[i] instanceof HeuristicAlgorithm);
 		data[i][j++] = new Boolean(algo[i] instanceof ProbabilisticAlgorithm);
-		data[i][j++] = "O(" + (algo[i].complexity() != Functions.nondet ? algo[i].complexity().apply(Values.symbol("n")) : algo[i].complexity()) + ")";
-		data[i][j++] = "O(" + (algo[i].spaceComplexity() != Functions.nondet ? algo[i].spaceComplexity().apply(Values.symbol("n")) : algo[i].spaceComplexity()) + ")";
+		data[i][j++] = "O(" + (algo[i].complexity() != Functions.nondet ? algo[i].complexity().apply(Values.getDefaultInstance().symbol("n")) : algo[i].complexity()) + ")";
+		data[i][j++] = "O(" + (algo[i].spaceComplexity() != Functions.nondet ? algo[i].spaceComplexity().apply(Values.getDefaultInstance().symbol("n")) : algo[i].spaceComplexity()) + ")";
 	    } catch (Exception ignore) {
 		logger.log(Level.FINER, "introspection", ignore);
 	    } 

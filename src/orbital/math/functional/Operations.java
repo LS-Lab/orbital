@@ -54,10 +54,10 @@ import orbital.util.Utility;
  *     <span class="keyword">return</span> (<span class="Orbital">Arithmetic</span>) <span class="Orbital">Operations</span>.plus.apply(<span class="keyword">this</span>, b);
  * }
  * </pre>
- * Which implicitly uses the tranformation function {@link orbital.math.MathUtilities#getEqualizer()}.
+ * Which implicitly uses the tranformation function {@link orbital.math.Values#getEqualizer()}.
  * The static functions provided in <tt>Operations</tt> delegate type handling like in
  * <pre>
- *     <span class="Orbital">Arithmetic</span> operands[] <span class="operator">=</span> (<span class="Orbital">Arithmetic</span>[]) <span class="Orbital">MathUtilities</span>.getEqualizer().apply(<span class="keyword">new</span> <span class="Orbital">Arithmetic</span>[] {x, y});
+ *     <span class="Orbital">Arithmetic</span> operands[] <span class="operator">=</span> (<span class="Orbital">Arithmetic</span>[]) <span class="Orbital">Values</span>.getDefaultInstance().getEqualizer().apply(<span class="keyword">new</span> <span class="Orbital">Arithmetic</span>[] {x, y});
  *     <span class="keyword">return</span> operands[<span class="Number">0</span>].add(operands[<span class="Number">1</span>]);
  * </pre>
  * </p>
@@ -106,7 +106,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final BinaryFunction plus = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
 	    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
-		Arithmetic operands[] = (Arithmetic[]) MathUtilities.getEqualizer().apply(new Arithmetic[] {
+		Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getEqualizer().apply(new Arithmetic[] {
 		    (Arithmetic) x, (Arithmetic) y
 		});
 		return operands[0].add(operands[1]);
@@ -118,7 +118,7 @@ public interface Operations /* implements ArithmeticOperations */ {
 	    } 
 	    public BinaryFunction integrate(int i) {
 		Utility.pre(0 <= i && i <= 1, "binary integral");
-		return (BinaryFunction) plus.apply( times.apply(Functions.projectFirst, Functions.projectSecond), divide.apply(Functionals.on(i, Functions.square), Values.valueOf(2)));
+		return (BinaryFunction) plus.apply( times.apply(Functions.projectFirst, Functions.projectSecond), divide.apply(Functionals.on(i, Functions.square), Values.getDefaultInstance().valueOf(2)));
 	    } 
 	    public Real norm() {
 		return Values.POSITIVE_INFINITY;
@@ -172,11 +172,11 @@ public interface Operations /* implements ArithmeticOperations */ {
 		return ((Arithmetic) x).minus();
 	    } 
 	    public Function derive() {
-		return Functions.constant(Values.valueOf(-1));
+		return Functions.constant(Values.getDefaultInstance().valueOf(-1));
 	    } 
 	    public Function integrate() {
 		// return (Function) minus.apply(Functions.id.integrate());
-		return (Function) minus.apply( Operations.divide.apply(Functions.square, Values.valueOf(2)) );
+		return (Function) minus.apply( Operations.divide.apply(Functions.square, Values.getDefaultInstance().valueOf(2)) );
 	    }
 	    public Real norm() {
 		return Values.POSITIVE_INFINITY;
@@ -196,21 +196,21 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final BinaryFunction subtract = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
 	    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
-		Arithmetic operands[] = (Arithmetic[]) MathUtilities.getEqualizer().apply(new Arithmetic[] {
+		Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getEqualizer().apply(new Arithmetic[] {
 		    (Arithmetic) x, (Arithmetic) y
 		});
 		return operands[0].subtract(operands[1]);
 	    } 
 	    public BinaryFunction derive() {
 		return (BinaryFunction) Functionals.genericCompose(new BinaryFunction[][] {
-		    {Functions.binaryConstant(Values.valueOf(1)), Functions.binaryConstant(Values.valueOf(-1))}
+		    {Functions.binaryConstant(Values.getDefaultInstance().valueOf(1)), Functions.binaryConstant(Values.getDefaultInstance().valueOf(-1))}
 		});
 	    } 
 	    public BinaryFunction integrate(int i) {
 		Utility.pre(0 <= i && i <= 1, "binary integral");
 		return i == 0
-		    ? (BinaryFunction) subtract.apply( divide.apply(Functionals.onFirst(Functions.square), Values.valueOf(2)), times.apply(Functions.projectFirst, Functions.projectSecond))
-		    : (BinaryFunction) subtract.apply( times.apply(Functions.projectFirst, Functions.projectSecond), divide.apply(Functionals.onSecond(Functions.square), Values.valueOf(2)));
+		    ? (BinaryFunction) subtract.apply( divide.apply(Functionals.onFirst(Functions.square), Values.getDefaultInstance().valueOf(2)), times.apply(Functions.projectFirst, Functions.projectSecond))
+		    : (BinaryFunction) subtract.apply( times.apply(Functions.projectFirst, Functions.projectSecond), divide.apply(Functionals.onSecond(Functions.square), Values.getDefaultInstance().valueOf(2)));
 	    } 
 	    public Real norm() {
 		return Values.POSITIVE_INFINITY;
@@ -238,7 +238,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final BinaryFunction times = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
 	    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
-		Arithmetic operands[] = (Arithmetic[]) MathUtilities.getEqualizer().apply(new Arithmetic[] {
+		Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getEqualizer().apply(new Arithmetic[] {
 		    (Arithmetic) x, (Arithmetic) y
 		});
 		return operands[0].multiply(operands[1]);
@@ -251,8 +251,8 @@ public interface Operations /* implements ArithmeticOperations */ {
 	    public BinaryFunction integrate(int i) {
 		Utility.pre(0 <= i && i <= 1, "binary integral");
 		return i == 0
-		    ? (BinaryFunction) divide.apply( times.apply(Functionals.onFirst(Functions.square), Functions.projectSecond), Values.valueOf(2))
-		    : (BinaryFunction) divide.apply( times.apply(Functions.projectFirst, Functionals.onSecond(Functions.square)), Values.valueOf(2));
+		    ? (BinaryFunction) divide.apply( times.apply(Functionals.onFirst(Functions.square), Functions.projectSecond), Values.getDefaultInstance().valueOf(2))
+		    : (BinaryFunction) divide.apply( times.apply(Functions.projectFirst, Functionals.onSecond(Functions.square)), Values.getDefaultInstance().valueOf(2));
 	    } 
 	    public Real norm() {
 		return Values.POSITIVE_INFINITY;
@@ -305,7 +305,7 @@ public interface Operations /* implements ArithmeticOperations */ {
 		return ((Arithmetic) x).inverse();
 	    } 
 	    public Function derive() {
-		return Functionals.compose(minus, Functions.pow(Values.valueOf(-2)));
+		return Functionals.compose(minus, Functions.pow(Values.getDefaultInstance().valueOf(-2)));
 	    } 
 	    public Function integrate() {
 		return Functions.log;
@@ -328,7 +328,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final BinaryFunction divide = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
 	    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
-		Arithmetic operands[] = (Arithmetic[]) MathUtilities.getEqualizer().apply(new Arithmetic[] {
+		Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getEqualizer().apply(new Arithmetic[] {
 		    (Arithmetic) x, (Arithmetic) y
 		});
 		return operands[0].divide(operands[1]);
@@ -342,7 +342,7 @@ public interface Operations /* implements ArithmeticOperations */ {
 	    public BinaryFunction integrate(int i) {
 		Utility.pre(0 <= i && i <= 1, "binary integral");
 		return i == 0
-		    ? (BinaryFunction) divide.apply(divide.apply(Functionals.onFirst(Functions.square), Functions.projectSecond), Values.valueOf(2))
+		    ? (BinaryFunction) divide.apply(divide.apply(Functionals.onFirst(Functions.square), Functions.projectSecond), Values.getDefaultInstance().valueOf(2))
 		    : (BinaryFunction) times.apply(Functionals.onSecond(Functions.log), Functions.projectFirst);
 	    } 
 	    public Real norm() {
@@ -365,7 +365,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final BinaryFunction power = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
 	    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
-		Arithmetic operands[] = (Arithmetic[]) MathUtilities.getEqualizer().apply(new Arithmetic[] {
+		Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getEqualizer().apply(new Arithmetic[] {
 		    (Arithmetic) x, (Arithmetic) y
 		});
 		return operands[0].power(operands[1]);
@@ -378,7 +378,7 @@ public interface Operations /* implements ArithmeticOperations */ {
 	    public BinaryFunction integrate(int i) {
 		Utility.pre(0 <= i && i <= 1, "binary integral");
 		return i == 0
-		    ? (BinaryFunction) divide.apply(power.apply(Functions.projectFirst, plus.apply(Functions.projectSecond, Values.valueOf(1))), plus.apply(Functions.projectSecond, Values.valueOf(1)))
+		    ? (BinaryFunction) divide.apply(power.apply(Functions.projectFirst, plus.apply(Functions.projectSecond, Values.getDefaultInstance().valueOf(1))), plus.apply(Functions.projectSecond, Values.getDefaultInstance().valueOf(1)))
 		    : (BinaryFunction) divide.apply(power, Functionals.onFirst(Functions.log));
 	    } 
 	    public Real norm() {

@@ -372,7 +372,7 @@ public interface Gene {
 			difference += singleDistance;
 		    }
 		    assert !i.hasNext() && !j.hasNext() : "equally sized collections have iterators with equal lengths";
-		    return Values.valueOf(difference / a.size());
+		    return Values.getDefaultInstance().valueOf(difference / a.size());
     		} 
 	    };
 
@@ -589,7 +589,7 @@ public interface Gene {
 		    for (int i = 0; i < a.length(); i++)
 			if (a.data[i] != b.data[i])
 			    differences++;
-		    return Values.valueOf((double) differences / a.length());
+		    return Values.getDefaultInstance().valueOf((double) differences / a.length());
     		} 
 	    };
     
@@ -689,7 +689,7 @@ public interface Gene {
     	} 
     	private static final Metric metric = new Metric() {
     		public Real distance(Object o1, Object o2) {
-		    return Values.valueOf(d(((Number) o1).doubleValue(), ((Number) o2).doubleValue()));
+		    return Values.getDefaultInstance().valueOf(d(((Number) o1).doubleValue(), ((Number) o2).doubleValue()));
     		} 
 	    };
     

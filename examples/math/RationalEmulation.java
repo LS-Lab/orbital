@@ -20,14 +20,16 @@ public class RationalEmulation extends MathTest {
 	simpleCalculation();
     }
     private static void simpleCalculation() {
+	// get us a value factory for creating arithmetic objects
+	final Values vf = Values.getDefaultInstance();
 	System.out.println("perform some calculations in Q[X] = Quot(Q[X]) = Quot(Z[X])");
 	// create elements in Q(X) = Quot(Q[X]) = Quot(Z[X])
 	Fraction/*<Polynomial<Rational>,Polynomial<Rational>>*/ f =
-	    Values.fraction(Values.polynomial(new Rational[] {Values.ONE, Values.valueOf(2)}),
-			    Values.polynomial(new Rational[] {Values.ONE, Values.ONE, Values.ONE, Values.ONE, Values.ONE, Values.ONE}));
+	    vf.fraction(vf.polynomial(new Rational[] {vf.ONE, vf.valueOf(2)}),
+			vf.polynomial(new Rational[] {vf.ONE, vf.ONE, vf.ONE, vf.ONE, vf.ONE, vf.ONE}));
 	Fraction/*<Polynomial<Rational>,Polynomial<Rational>>*/ g =
-	    Values.fraction(Values.polynomial(new Rational[] {Values.ZERO, Values.ONE, Values.valueOf(2)}),
-			    Values.polynomial(new Rational[] {Values.ONE, Values.valueOf(2), Values.ONE, Values.valueOf(-4)}));
+	    vf.fraction(vf.polynomial(new Rational[] {vf.ZERO, vf.ONE, vf.valueOf(2)}),
+			vf.polynomial(new Rational[] {vf.ONE, vf.valueOf(2), vf.ONE, vf.valueOf(-4)}));
 
 	// perform calculations in Q(X)
 	printArithmetic(f,g,true);
@@ -37,13 +39,15 @@ public class RationalEmulation extends MathTest {
      * Rational emulation.
      */
     private static void emulationCalculation() {
+	// get us a value factory for creating arithmetic objects
+	final Values vf = Values.getDefaultInstance();
 	System.out.println("emulate rational numbers with fractions of integers");
 	// create elements in Q alias Quot(Z)
 	Fraction/*<Integer,Integer>*/ a =
-	    Values.fraction(Values.valueOf(3), Values.valueOf(7));
+	    vf.fraction(vf.valueOf(3), vf.valueOf(7));
 	Rational ac = rationalForm(a);
 	Fraction/*<Integer,Integer>*/ b =
-	    Values.fraction(Values.valueOf(5), Values.valueOf(8));
+	    vf.fraction(vf.valueOf(5), vf.valueOf(8));
 	Rational bc = rationalForm(b);
 
 	// perform calculations in both fields
@@ -75,6 +79,6 @@ public class RationalEmulation extends MathTest {
      * Convert a fraction of integers to rational form.
      */
     private static Rational rationalForm(Fraction/*<Integer>*/ fclass) {
-	return Values.rational((Integer)fclass.numerator(), (Integer)fclass.denominator());
+	return Values.getDefaultInstance().rational((Integer)fclass.numerator(), (Integer)fclass.denominator());
     }
 }

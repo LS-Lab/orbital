@@ -46,7 +46,7 @@ abstract class AbstractRational extends AbstractReal implements Rational {
     } 
 
     public Real norm() {
-	return Values.rational((Integer)numerator().norm(), (Integer)denominator().norm());
+	return Values.getDefaultInstance().rational((Integer)numerator().norm(), (Integer)denominator().norm());
     } 
     
     // Arithmetic implementation synonyms
@@ -78,7 +78,7 @@ abstract class AbstractRational extends AbstractReal implements Rational {
 	if (b instanceof Integer) {
 	    return power_((Integer) b);
 	} else if (b instanceof Rational)
-	    return (Arithmetic) Operations.power.apply(this, Values.valueOf(((Number)b).doubleValue()));
+	    return (Arithmetic) Operations.power.apply(this, Values.getDefaultInstance().valueOf(((Number)b).doubleValue()));
 	return (Arithmetic) Operations.power.apply(this, b);
     } 
 
@@ -185,14 +185,14 @@ abstract class AbstractRational extends AbstractReal implements Rational {
     	} 
     
     	public Integer numerator() {
-	    return Values.valueOf(numerator);
+	    return Values.getDefaultInstance().valueOf(numerator);
     	} 
     	int numeratorValue() {
 	    return numerator;
     	} 
     
     	public Integer denominator() {
-	    return Values.valueOf(denominator);
+	    return Values.getDefaultInstance().valueOf(denominator);
     	} 
     	int denominatorValue() {
 	    return denominator;

@@ -8,7 +8,7 @@ import orbital.math.*;
  */
 public abstract class MathTest {
     public static final void printArithmetic(Arithmetic x, Arithmetic y, boolean withDivisions) {
-	Rational a = Values.valueOf(4);
+	Rational a = Values.getDefaultInstance().valueOf(4);
 	Arithmetic zero = x.zero();
 	Arithmetic one = x.one();
 	System.out.println("(" + zero + ") + (" + x + ") = " + zero.add(x));

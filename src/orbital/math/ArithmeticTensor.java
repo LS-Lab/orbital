@@ -79,7 +79,7 @@ class ArithmeticTensor/*<R implements Arithmetic>*/ extends AbstractTensor/*<R>*
 	    Utility.pre(primitive == Values.isPrimitiveWrapper(ai.getClass()), "multi-dimensional array either consistently has " + Arithmetic.class + " or consistently contains primitive types");
 	    if (primitive) {
 		assert ai instanceof Number : "primitive type get wrapped into instances of " + Number.class;
-		Utility.setPart(D, i, Values.valueOf((Number)ai));
+		Utility.setPart(D, i, Values.getDefaultInstance().valueOf((Number)ai));
 	    }
 	}
     }

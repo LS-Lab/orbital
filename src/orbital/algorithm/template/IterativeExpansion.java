@@ -107,7 +107,7 @@ public class IterativeExpansion extends GeneralSearch implements EvaluativeAlgor
      * O(b<sup>d</sup>) where b is the branching factor and d the solution depth.
      */
     public orbital.math.functional.Function complexity() {
-	return (orbital.math.functional.Function) Operations.power.apply(Values.symbol("b"),Functions.id);
+	return (orbital.math.functional.Function) Operations.power.apply(Values.getDefaultInstance().symbol("b"),Functions.id);
     }
     /**
      * Optimal if heuristic is admissible, and initial bound sufficiently large (usually &infin;).

@@ -10,6 +10,8 @@ import java.awt.Dimension;
 import java.text.ParseException;
 import orbital.logic.functor.Function;
 
+import orbital.math.functional.MathFunctor;
+
 import java.util.List;
 
 import java.util.Iterator;
@@ -29,7 +31,7 @@ import orbital.math.Tensor;
 /**
  * Scalar value and arithmetic object value constructor and utilities class.
  * <p>
- * This class is the central static factory facade for instantiating new arithmetic objects
+ * This class is the central factory facade for instantiating new arithmetic objects
  * from primitive types values.
  * </p>
  * <p>
@@ -39,8 +41,9 @@ import orbital.math.Tensor;
  * create arithmetic object values from all kinds of primitive types.
  * This indirection introduces a more loosely coupled binding between users and providers
  * of arithmetic object classes.
- * As the indirection is provided by static methods, JIT compilers can optimize the resulting
- * code to prevent performance loss. Indeed, because of this delegative construction the
+ * When using a static final singleton factory like from {@link #getDefaultInstance()},
+ * JIT compilers can optimize the resulting code to prevent performance loss.
+ * Indeed, because of this delegative construction the
  * factory method can chose the best implementation class suitable for a specific primitive type
  * and size.
  * </p>
@@ -50,19 +53,22 @@ import orbital.math.Tensor;
  * @see <a href="{@docRoot}/DesignPatterns/AbstractFactory.html">Abstract Factory</a>
  * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade</a>
  * @see <a href="{@docRoot}/DesignPatterns/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+ * @see #getInstance()
+ * @see #getDefaultInstance()
  * @see java.util.Arrays
  * @todo perhaps we should only call true primitive and java.lang.Number type conversion methods valueOf(...). rename the rest of them according to the type they return. 
  */
-public final class Values {
+public class Values {
     private static class Debug {
 	private static final java.util.logging.Logger test = java.util.logging.Logger.getLogger("orbital.test");
 	private Debug() {}
 	public static void main(String arg[]) throws Exception {
+	    final Values vf = Values.getDefaultInstance();
 	    Arithmetic a[] = new Arithmetic[] {
-		Values.valueOf(5), Values.rational(1, 4), Values.valueOf(1.23456789), Values.complex(-1, 2)
+		vf.valueOf(5), vf.rational(1, 4), vf.valueOf(1.23456789), vf.complex(-1, 2)
 	    };
 	    Arithmetic b[] = new Arithmetic[] {
-		Values.valueOf(7), Values.rational(3, 4), Values.valueOf(3.1415926), Values.complex(3, 2)
+		vf.valueOf(7), vf.rational(3, 4), vf.valueOf(3.1415926), vf.complex(3, 2)
 	    };
 	    for (int k = 0; k < a.length; k++) {
 		test.info(a[k].getClass() + " arithmetic combined with various types");
@@ -78,159 +84,51 @@ public final class Values {
     }	 // Debug
 
     
+    private orbital.logic.functor.Function/*<Object[],Object[]>*/ equalizer = new orbital.logic.functor.Function/*<Object[],Object[]>*/() {
+	    public Object/*>Object[]<*/ apply(Object/*>Object[]<*/ o) {
+		if (o instanceof Arithmetic[]) {
+		    Arithmetic operands[] = (Arithmetic[]) o;
+		    if (operands.length <= 1)
+			return operands;
+		    return minimumEqualized(operands);
+		} 
+		return o;
+	    } 
+	};
+
+    // instantiation
+
+    protected Values() {}
+
     /**
-     * prevent instantiation - module class
+     * Returns a new value factory with default settings.
+     * @see <a href="{@docRoot}/DesignPatterns/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+     * @todo provide configurable settings like
+     *  whether polynomials save their coefficients in tensors (like ArithmeticMultivariatePolynomial), or in Maps.
+     *  whether Quotient or Fraction use lazy representatives, i.e. only calculate their representative when representative() (or numerator?) gets called.
+     *  whether Real... automatically fallback to bigger or more general implementations (including Real.Big), instead of sticking to machine-size at the risk of overflows.
+     *  whether Real... automatically narrows doens its results.
      */
-    private Values() {}
+    public static Values getInstance() {
+	return new Values();
+    }
+
+    /**
+     * Default instance.
+     */
+    private static final Values defaultValues = getInstance();
+	
+    /**
+     * Get the (single) default instance of this factory.
+     * @see <a href="{@docRoot}/DesignPatterns/Singleton.html">&quot;Singleton&quot;</a>
+     * @see <a href="{@docRoot}/DesignPatterns/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+     */
+    public static final Values getDefaultInstance() {
+	return defaultValues;
+    }
+
+    // legacy conversion primitve wrapper utilities
     
-    // scalar value constructors - facade factory
-    // primitive type conversion methods
-
-    // integer scalar value constructors - facade factory
-
-    /**
-     * Returns an Scalar whose value is equal to that of the specified primitive type.
-     * @post RES.intValue() == val
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
-     * @see java.math.BigInteger#valueOf(long)
-     */
-    public static Integer valueOf(int val) {
-	// If -MAX_CONSTANT < val < MAX_CONSTANT, return stashed constant
-	if (val == 0)
-	    return ZERO;
-	if (val > 0 && val <= MAX_CONSTANT)
-	    return posConst[val];
-	else if (val < 0 && val >= -MAX_CONSTANT)
-	    return negConst[-val];
-	else
-	    return new AbstractInteger.Int(val);
-    } 
-    public static Integer valueOf(java.lang.Integer val) {
-	return valueOf(val.intValue());
-    }
-    /**
-     * Returns a Scalar whose value is equal to that of the specified primitive type.
-     * @post RES.longValue() == val
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
-     * @see java.math.BigInteger#valueOf(long)
-     */
-    public static Integer valueOf(long val) {
-	return -MAX_CONSTANT < val && val < MAX_CONSTANT
-	    ? valueOf((int) val)
-	    : new AbstractInteger.Long(val);
-    }
-    public static Integer valueOf(java.lang.Long val) {
-	return valueOf(val.longValue());
-    }
-    public static Integer valueOf(byte val) {
-	return valueOf((int) val);
-    }
-    public static Integer valueOf(java.lang.Byte val) {
-	return valueOf(val.byteValue());
-    }
-    public static Integer valueOf(short val) {
-	return valueOf((int) val);
-    }
-    public static Integer valueOf(java.lang.Short val) {
-	return valueOf(val.shortValue());
-    }
-    /**
-     * Not yet supported.
-     * Legacy conversion method.
-     * @todo introduce valueOf(BigInteger) and valueOf(BigDecimal) some day. However, care about non-associative precisions.
-     */
-    public static Integer valueOf(java.math.BigInteger val) {
-	throw new UnsupportedOperationException("conversion from " + val.getClass() + " is not currently supported, first convert it to a primitive type, instead");
-    }
-
-    // real scalar value constructors - facade factory
-
-    /**
-     * Returns a Scalar whose value is equal to that of the specified primitive type.
-     * @post RES.doubleValue() == val
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
-     * @see java.math.BigInteger#valueOf(long)
-     */
-    public static Real valueOf(double val) {
-	return new AbstractReal.Double(val);
-    } 
-    public static Real valueOf(java.lang.Double val) {
-	return valueOf(val.doubleValue());
-    }
-    /**
-     * Returns a Scalar whose value is equal to that of the specified primitive type.
-     * @post RES.floatValue() == val
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
-     * @see java.math.BigInteger#valueOf(long)
-     */
-    public static Real valueOf(float val) {
-	//@xxx return new AbstractReal.Float(val)
-	return new AbstractReal.Double(val);
-    } 
-    public static Real valueOf(java.lang.Float val) {
-	return valueOf(val.floatValue());
-    }
-    /**
-     * Not yet supported.
-     * Legacy conversion method.
-     */
-    public static Real valueOf(java.math.BigDecimal val) {
-	throw new UnsupportedOperationException("conversion from " + val.getClass() + " is not currently supported, first convert it to a primitive type, instead");
-    }
-
-    // scalar value constructors - facade factory
-
-    /**
-     * Returns a Scalar whose value is equal to that of the specified number.
-     * Legacy conversion method.
-     * @return an instance of scalar that has the same value as the number.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
-     * @see #valueOf(double)
-     */
-    public static Scalar valueOf(Number val) {
-	if (val == null)
-	    return null;
-	else if (val instanceof Scalar)
-	    return (Scalar) val;
-	else if (val instanceof java.lang.Integer)
-	    return valueOf((java.lang.Integer) val);
-	else if (val instanceof java.lang.Long)
-	    return valueOf((java.lang.Long) val);
-	else if (val instanceof java.lang.Double)
-	    return valueOf((java.lang.Double) val);
-	else if (val instanceof java.lang.Float)
-	    return valueOf((java.lang.Float) val);
-	else if (val instanceof java.lang.Byte)
-	    return valueOf((java.lang.Byte) val);
-	else if (val instanceof java.lang.Short)
-	    return valueOf((java.lang.Short) val);
-	else if (val instanceof java.math.BigInteger)
-	    return valueOf((java.math.BigInteger) val);
-	else if (val instanceof java.math.BigDecimal)
-	    return valueOf((java.math.BigDecimal) val);
-	else
-	    return narrow(valueOf(val.doubleValue()));
-    }
-
-    /**
-     * Returns a primitive type wrapper for the specified scalar.
-     * Legacy conversion method.
-     * Determines whether the specified class is an (old JDK1.0) wrapper for a primitive type.
-     * @see #valueOf(Number)
-     * @see #isPrimitiveWrapper(Class)
-     * @todo when to return java.lang.Float etc.?
-     */
-    public static Number toPrimitiveWrapper(Scalar val) {
-	if (Integer.hasType.apply(val))
-	    return new java.lang.Integer(((Integer)val).intValue());
-	else if (Real.hasType.apply(val))
-	    return new java.lang.Double(((Real)val).doubleValue());
-	else if (Rational.hasType.apply(val))
-	    return new java.lang.Double(((Real)val).doubleValue());
-	else
-	    throw new IllegalArgumentException("cannot be wrapped in a primitive wrapper type " + val.getClass());
-    }
-
     /**
      * Determines whether the specified class is an (old JDK1.0) wrapper for a primitive type.
      * Legacy query method.
@@ -255,6 +153,157 @@ public final class Values {
 		|| java.lang.Short.class.equals(clazz);
     }
 
+    /**
+     * Returns a primitive type wrapper for the specified scalar.
+     * Legacy conversion method.
+     * Determines whether the specified class is an (old JDK1.0) wrapper for a primitive type.
+     * @see #valueOf(Number)
+     * @see #isPrimitiveWrapper(Class)
+     * @todo when to return java.lang.Float etc.?
+     */
+    public static Number toPrimitiveWrapper(Scalar val) {
+	if (Integer.hasType.apply(val))
+	    return new java.lang.Integer(((Integer)val).intValue());
+	else if (Real.hasType.apply(val))
+	    return new java.lang.Double(((Real)val).doubleValue());
+	else if (Rational.hasType.apply(val))
+	    return new java.lang.Double(((Real)val).doubleValue());
+	else
+	    throw new IllegalArgumentException("cannot be wrapped in a primitive wrapper type " + val.getClass());
+    }
+
+
+    
+    
+    // scalar value constructors - facade factory
+    // primitive type conversion methods
+
+    // integer scalar value constructors - facade factory
+
+    /**
+     * Returns an Scalar whose value is equal to that of the specified primitive type.
+     * @post RES.intValue() == val
+     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     * @see java.math.BigInteger#valueOf(long)
+     */
+    public Integer valueOf(int val) {
+	// If -MAX_CONSTANT < val < MAX_CONSTANT, return stashed constant
+	if (val == 0)
+	    return ZERO;
+	if (val > 0 && val <= MAX_CONSTANT)
+	    return posConst[val];
+	else if (val < 0 && val >= -MAX_CONSTANT)
+	    return negConst[-val];
+	else
+	    return new AbstractInteger.Int(val);
+    } 
+    public Integer valueOf(java.lang.Integer val) {
+	return valueOf(val.intValue());
+    }
+    /**
+     * Returns a Scalar whose value is equal to that of the specified primitive type.
+     * @post RES.longValue() == val
+     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     * @see java.math.BigInteger#valueOf(long)
+     */
+    public Integer valueOf(long val) {
+	return -MAX_CONSTANT < val && val < MAX_CONSTANT
+	    ? valueOf((int) val)
+	    : new AbstractInteger.Long(val);
+    }
+    public Integer valueOf(java.lang.Long val) {
+	return valueOf(val.longValue());
+    }
+    public Integer valueOf(byte val) {
+	return valueOf((int) val);
+    }
+    public Integer valueOf(java.lang.Byte val) {
+	return valueOf(val.byteValue());
+    }
+    public Integer valueOf(short val) {
+	return valueOf((int) val);
+    }
+    public Integer valueOf(java.lang.Short val) {
+	return valueOf(val.shortValue());
+    }
+    /**
+     * Not yet supported.
+     * Legacy conversion method.
+     * @todo introduce valueOf(BigInteger) and valueOf(BigDecimal) some day. However, care about non-associative precisions.
+     */
+    public Integer valueOf(java.math.BigInteger val) {
+	throw new UnsupportedOperationException("conversion from " + val.getClass() + " is not currently supported, first convert it to a primitive type, instead");
+    }
+
+    // real scalar value constructors - facade factory
+
+    /**
+     * Returns a Scalar whose value is equal to that of the specified primitive type.
+     * @post RES.doubleValue() == val
+     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     * @see java.math.BigInteger#valueOf(long)
+     */
+    public Real valueOf(double val) {
+	return new AbstractReal.Double(val);
+    } 
+    public Real valueOf(java.lang.Double val) {
+	return valueOf(val.doubleValue());
+    }
+    /**
+     * Returns a Scalar whose value is equal to that of the specified primitive type.
+     * @post RES.floatValue() == val
+     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     * @see java.math.BigInteger#valueOf(long)
+     */
+    public Real valueOf(float val) {
+	//@xxx return new AbstractReal.Float(val)
+	return new AbstractReal.Double(val);
+    } 
+    public Real valueOf(java.lang.Float val) {
+	return valueOf(val.floatValue());
+    }
+    /**
+     * Not yet supported.
+     * Legacy conversion method.
+     */
+    public Real valueOf(java.math.BigDecimal val) {
+	throw new UnsupportedOperationException("conversion from " + val.getClass() + " is not currently supported, first convert it to a primitive type, instead");
+    }
+
+    // scalar value constructors - facade factory
+
+    /**
+     * Returns a Scalar whose value is equal to that of the specified number.
+     * Legacy conversion method.
+     * @return an instance of scalar that has the same value as the number.
+     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     * @see #valueOf(double)
+     */
+    public Scalar valueOf(Number val) {
+	if (val == null)
+	    return null;
+	else if (val instanceof Scalar)
+	    return (Scalar) val;
+	else if (val instanceof java.lang.Integer)
+	    return valueOf((java.lang.Integer) val);
+	else if (val instanceof java.lang.Long)
+	    return valueOf((java.lang.Long) val);
+	else if (val instanceof java.lang.Double)
+	    return valueOf((java.lang.Double) val);
+	else if (val instanceof java.lang.Float)
+	    return valueOf((java.lang.Float) val);
+	else if (val instanceof java.lang.Byte)
+	    return valueOf((java.lang.Byte) val);
+	else if (val instanceof java.lang.Short)
+	    return valueOf((java.lang.Short) val);
+	else if (val instanceof java.math.BigInteger)
+	    return valueOf((java.math.BigInteger) val);
+	else if (val instanceof java.math.BigDecimal)
+	    return valueOf((java.math.BigDecimal) val);
+	else
+	    return narrow(valueOf(val.doubleValue()));
+    }
+
 	
     // non-standard naming scalar value constructors
 
@@ -263,20 +312,20 @@ public final class Values {
      * @param p the numerator of p/q.
      * @param q the denominator p/q.
      */
-    public static Rational rational(Integer p, Integer q) {
+    public Rational rational(Integer p, Integer q) {
 	return new AbstractRational.RationalImpl((AbstractInteger) p, (AbstractInteger) q);
     } 
-    public static Rational rational(int p, int q) {
+    public Rational rational(int p, int q) {
 	return new AbstractRational.RationalImpl(p, q);
     } 
     /**
      * Returns a new (integer) rational whose value is equal to p/1.
      * @param p the numerator of p/1.
      */
-    public static Rational rational(Integer p) {
+    public Rational rational(Integer p) {
 	return new AbstractRational.RationalImpl((AbstractInteger) p);
     } 
-    public static Rational rational(int p) {
+    public Rational rational(int p) {
 	return new AbstractRational.RationalImpl(p);
     } 
 
@@ -289,19 +338,19 @@ public final class Values {
      * @return a + <b>i</b>*b.
      * @see #cartesian(Real, Real)
      */
-    public static Complex complex(Real a, Real b) {
+    public Complex complex(Real a, Real b) {
 	return cartesian(a, b);
     } 
-    public static Complex complex(double a, double b) {
+    public Complex complex(double a, double b) {
 	return cartesian(a, b);
     } 
-    public static Complex complex(float a, float b) {
+    public Complex complex(float a, float b) {
 	return complex((double)a, (double)b);
     }
-    public static Complex complex(int a, int b) {
+    public Complex complex(int a, int b) {
 	return complex((double)a, (double)b);
     }
-    public static Complex complex(long a, long b) {
+    public Complex complex(long a, long b) {
 	return complex((double)a, (double)b);
     }
 
@@ -311,10 +360,10 @@ public final class Values {
      * @return a + <b>i</b>*0.
      * @see #complex(Real, Real)
      */
-    public static Complex complex(Real a) {
+    public Complex complex(Real a) {
 	return complex(a, Values.ZERO);
     } 
-    public static Complex complex(double a) {
+    public Complex complex(double a) {
 	return complex(a, 0);
     } 
 
@@ -325,10 +374,10 @@ public final class Values {
      * @return a + <b>i</b>*b.
      * @see #polar(Real, Real)
      */
-    public static Complex cartesian(Real a, Real b) {
+    public Complex cartesian(Real a, Real b) {
 	return new AbstractComplex.ComplexImpl(a, b);
     } 
-    public static Complex cartesian(double a, double b) {
+    public Complex cartesian(double a, double b) {
 	return new AbstractComplex.ComplexImpl(a, b);
     } 
 
@@ -340,15 +389,15 @@ public final class Values {
      * @return r*<b>e</b><sup><b>i</b>&phi;</sup> = r * (cos &phi; + <b>i</b> sin &phi;).
      * @see #cartesian(Real, Real)
      */
-    public static Complex polar(Real r, Real phi) {
+    public Complex polar(Real r, Real phi) {
 	return new AbstractComplex.ComplexImpl(r.multiply((Real) Functions.cos.apply(phi)), r.multiply((Real) Functions.sin.apply(phi)));
     } 
-    public static Complex polar(double r, double phi) {
+    public Complex polar(double r, double phi) {
 	return new AbstractComplex.ComplexImpl(r * Math.cos(phi), r * Math.sin(phi));
     } 
 
 
-    // static utilities concerning Vectors
+    // vector constructors and conversion utilities
 	 
     /**
      * Returns a Vector containing the specified arithmetic objects.
@@ -359,14 +408,14 @@ public final class Values {
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
      * @see #tensor(Arithmetic[])
      */
-    public static /*<R implements Arithmetic>*/ Vector/*<R>*/ valueOf(Arithmetic/*>R<*/[] values) {
+    public /*<R implements Arithmetic>*/ Vector/*<R>*/ valueOf(Arithmetic/*>R<*/[] values) {
 	return new ArithmeticVector/*<R>*/(values);
     } 
     //@todo couldn't we even return Vector<Real>?
-    public static Vector valueOf(double[] values) {
+    public Vector valueOf(double[] values) {
 	return new RVector(values);
     } 
-    public static Vector/*<Integer>*/ valueOf(int[] values) {
+    public Vector/*<Integer>*/ valueOf(int[] values) {
 	// kind of map valueOf
 	Vector/*<Integer>*/ v = newInstance(values.length);
 	for (int i = 0; i < values.length; i++)
@@ -374,8 +423,8 @@ public final class Values {
 	return v;
     } 
 
-    static /*<R implements Arithmetic>*/ Vector/*<R>*/ vector(List/*_<R>_*/ values) {
-	Vector/*<R>*/   r = Values.newInstance(values.size());
+    /*<R implements Arithmetic>*/ Vector/*<R>*/ vector(List/*_<R>_*/ values) {
+	Vector/*<R>*/   r = newInstance(values.size());
 	Iterator/*_<R>_*/   it = values.iterator();
 	for (int i = 0; i < values.size(); i++)
 	    r.set(i, (Arithmetic/*>R<*/) it.next());
@@ -390,21 +439,15 @@ public final class Values {
      * @post RES.dimension() == dimension()
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
      */
-    public static /*<R implements Arithmetic>*/ Vector/*<R>*/ newInstance(int dim) {
+    public /*<R implements Arithmetic>*/ Vector/*<R>*/ newInstance(int dim) {
 	return new ArithmeticVector/*<R>*/(dim);
-    }
-    /**
-     * @deprecated Use {@link #newInstance(int)} instead.
-     */
-    public static /*<R implements Arithmetic>*/ Vector/*<R>*/ getInstance(int dim) {
-	return newInstance(dim);
     }
 
     /**
      * Gets zero Vector, with all elements set to <code>0</code>.
      * @internal could also call ZERO(int[]), but the CONST implementation may be faster.
      */
-    public static Vector ZERO(int n) {
+    public Vector ZERO(int n) {
 	return CONST(n, Values.ZERO);
     } 
 
@@ -414,17 +457,17 @@ public final class Values {
      * These <span class="vector">e<sub>i</sub></span> are the standard base of <b>R</b><sup>n</sup>:
      * &forall;<span class="vector">x</span>&isin;<b>R</b><sup>n</sup> &exist;! x<sub>k</sub>&isin;<b>R</b>: <span class="vector">x</span> = x<sub>1</sub>*<span class="vector">e<sub>1</sub></span> + ... + x<sub>n</sub>*<span class="vector">e<sub>n</sub></span>.
      */
-    public static /*<R implements Scalar>*/ Vector/*<R>*/ BASE(int n, int i) {
+    public /*<R implements Scalar>*/ Vector/*<R>*/ BASE(int n, int i) {
 	ArithmeticVector/*<R>*/ base = (ArithmeticVector/*<R>*/) (Vector/*<R>*/) newInstance(n);
-	for (int i = 0; i < base.dimension(); i++)
-	    base.D[i] = (Arithmetic/*>R<*/) Values.valueOf(i == e_i ? 1 : 0);
+	for (int j = 0; j < base.dimension(); j++)
+	    base.D[j] = (Arithmetic/*>R<*/) (j == i ? ONE : ZERO);
 	return base;
     } 
 
     /**
      * Gets a constant Vector, with all elements set to <code>c</code>.
      */
-    public static /*<R implements Arithmetic>*/ Vector/*<R>*/ CONST(int n, Arithmetic/*>R<*/ c) {
+    public /*<R implements Arithmetic>*/ Vector/*<R>*/ CONST(int n, Arithmetic/*>R<*/ c) {
 	ArithmeticVector/*<R>*/ constant = (ArithmeticVector/*<R>*/) (Vector/*<R>*/) newInstance(n);
 	Arrays.fill(constant.D, c);
 	return constant;
@@ -474,7 +517,7 @@ public final class Values {
 	    };
     }
 
-    // static utilitiy methods concerning Matrices
+    // matrix constructors and conversion utilities
 
     /**
      * Returns a Matrix containing the specified arithmetic objects.
@@ -492,13 +535,13 @@ public final class Values {
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
      * @see #tensor(Arithmetic[][])
      */
-    public static /*<R implements Arithmetic>*/ Matrix/*<R>*/ valueOf(Arithmetic/*>R<*/[][] values) {
+    public /*<R implements Arithmetic>*/ Matrix/*<R>*/ valueOf(Arithmetic/*>R<*/[][] values) {
 	return new ArithmeticMatrix/*<R>*/(values);
     } 
-    public static Matrix valueOf(double[][] values) {
+    public Matrix valueOf(double[][] values) {
 	return new RMatrix(values);
     } 
-    public static Matrix/*<Integer>*/ valueOf(int[][] values) {
+    public Matrix/*<Integer>*/ valueOf(int[][] values) {
 	for (int i = 1; i < values.length; i++)
 	    Utility.pre(values[i].length == values[i - 1].length, "rectangular array required");
 	// kind of map valueOf
@@ -520,32 +563,20 @@ public final class Values {
      * @post RES.dimension().equals(dimension)
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
      */
-    public static /*<R implements Arithmetic>*/ Matrix/*<R>*/ newInstance(Dimension dimension) {
+    public /*<R implements Arithmetic>*/ Matrix/*<R>*/ newInstance(Dimension dimension) {
 	return new ArithmeticMatrix/*<R>*/(dimension);
     } 
-    public static /*<R implements Arithmetic>*/ Matrix/*<R>*/ newInstance(int height, int width) {
+    public /*<R implements Arithmetic>*/ Matrix/*<R>*/ newInstance(int height, int width) {
 	return new ArithmeticMatrix/*<R>*/(height, width);
     } 
-    /**
-     * @deprecated Use {@link #newInstance(Dimension)} instead.
-     */
-    public static /*<R implements Arithmetic>*/ Matrix/*<R>*/ getInstance(Dimension dimension) {
-	return newInstance(dimension);
-    }
-    /**
-     * @deprecated Use {@link #newInstance(int,int)} instead.
-     */
-    public static /*<R implements Arithmetic>*/ Matrix/*<R>*/ getInstance(int height, int width) {
-	return newInstance(height, width);
-    }
 
     /**
      * Gets zero Matrix, with all elements set to 0.
      */
-    public static /*<R implements Arithmetic>*/ Matrix/*<R>*/ ZERO(Dimension dim) {
+    public /*<R implements Arithmetic>*/ Matrix/*<R>*/ ZERO(Dimension dim) {
 	return ZERO(dim.height, dim.width);
     } 
-    public static /*<R implements Arithmetic>*/ Matrix/*<R>*/ ZERO(int height, int width) {
+    public /*<R implements Arithmetic>*/ Matrix/*<R>*/ ZERO(int height, int width) {
 	return (Matrix) ZERO(new int[] {height, width});
     }
 
@@ -553,7 +584,7 @@ public final class Values {
      * Gets the identity Matrix, with all elements set to 0, except the leading diagonal m<sub>i,i</sub> set to 1.
      * @pre dim.width == dim.height
      */
-    public static /*<R implements Arithmetic>*/ Matrix/*<R>*/ IDENTITY(Dimension dim) {
+    public /*<R implements Arithmetic>*/ Matrix/*<R>*/ IDENTITY(Dimension dim) {
 	return IDENTITY(dim.height, dim.width);
     } 
     /**
@@ -562,25 +593,26 @@ public final class Values {
      * @see Functions#delta
      * @see #IDENTITY(Dimension)
      */
-    public static /*<R implements Scalar>*/ Matrix/*<R>*/ IDENTITY(int height, int width) {
+    public /*<R implements Scalar>*/ Matrix/*<R>*/ IDENTITY(int height, int width) {
 	if (!(width == height))
 	    throw new IllegalArgumentException("identity matrix is square");
 	ArithmeticMatrix/*<R>*/ identity = (ArithmeticMatrix/*<R>*/) (Matrix/*<R>*/) newInstance(height, width);
 	for (int i = 0; i < identity.dimension().height; i++)
 	    for (int j = 0; j < identity.dimension().width; j++)
-		identity.D[i][j] = (Arithmetic/*>R<*/) Values.valueOf(orbital.math.functional.Functions.delta(i, j));
+		identity.D[i][j] = (Arithmetic/*>R<*/) valueOf(orbital.math.functional.Functions.delta(i, j));
 	return identity;
     } 
 
     /**
      * Gets diagonal Matrix, with all elements set to 0, except the leading diagonal m<sub>i,i</sub> set to v<sub>i</sub>.
      * @see Functions#delta
+     * @todo turn into a true view?
      */
-    public static /*<R implements Scalar>*/ Matrix/*<R>*/ DIAGONAL(Vector/*<R>*/ diagon) {
+    public /*<R implements Scalar>*/ Matrix/*<R>*/ DIAGONAL(Vector/*<R>*/ diagon) {
 	Matrix/*<R>*/ diagonal = newInstance(new Dimension(diagon.dimension(), diagon.dimension()));
 	for (int i = 0; i < diagonal.dimension().height; i++)
 	    for (int j = 0; j < diagonal.dimension().width; j++)
-		diagonal.set(i, j, i == j ? diagon.get(i) : (Arithmetic/*>R<*/) Values.valueOf(0));
+		diagonal.set(i, j, i == j ? diagon.get(i) : (Arithmetic/*>R<*/) ZERO);
 	return diagonal;
     } 
 
@@ -658,7 +690,7 @@ public final class Values {
      * </p>
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
      */
-    public static /*<R implements Arithmetic>*/ Vector/*<R>*/ tensor(Arithmetic/*>R<*/[] values) {
+    public /*<R implements Arithmetic>*/ Vector/*<R>*/ tensor(Arithmetic/*>R<*/[] values) {
 	return valueOf(values);
     }
     /**
@@ -677,10 +709,10 @@ public final class Values {
      *  The matrix may be backed by this exact array per reference.
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
      */
-    public static /*<R implements Arithmetic>*/ Matrix/*<R>*/ tensor(Arithmetic/*>R<*/[][] values) {
+    public /*<R implements Arithmetic>*/ Matrix/*<R>*/ tensor(Arithmetic/*>R<*/[][] values) {
 	return valueOf(values);
     }
-    public static /*<R implements Arithmetic>*/ Tensor/*<R>*/ tensor(Arithmetic/*>R<*/[][][] values) {
+    public /*<R implements Arithmetic>*/ Tensor/*<R>*/ tensor(Arithmetic/*>R<*/[][][] values) {
 	return new ArithmeticTensor(values);
     }
     /**
@@ -698,7 +730,7 @@ public final class Values {
      *  or of primitive types
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
      */
-    public static Tensor tensor(Object values) {
+    public Tensor tensor(Object values) {
 	AbstractTensor t = new ArithmeticTensor(values);
 	// tensors of rank 1 or rank 2 are converted to vectors or matrices
 	switch (t.rank()) {
@@ -724,7 +756,7 @@ public final class Values {
      * @post Utilities.equalsAll(RES.dimensions(), dimensions)
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
      */
-    public static Tensor newInstance(int[] dimensions) {
+    public Tensor newInstance(int[] dimensions) {
 	// tensors of rank 1 or rank 2 are converted to vectors or matrices
 	switch (dimensions.length) {
 	case 0:
@@ -741,7 +773,7 @@ public final class Values {
     /**
      * Gets zero tensor, with all elements set to 0.
      */
-    public static /*<R implements Arithmetic>*/ Tensor/*<R>*/ ZERO(int[] dimensions) {
+    public /*<R implements Arithmetic>*/ Tensor/*<R>*/ ZERO(int[] dimensions) {
 	Tensor zero = newInstance(dimensions);
 	for (ListIterator i = zero.iterator(); i.hasNext(); ) {
 	    i.next();
@@ -1074,7 +1106,7 @@ public final class Values {
      * @return the polynomial <var>a</var><sub>0,...,0</sub> + <var>a</var><sub>1,0,...,0</sub>X<sub>1</sub> + <var>a</var><sub>1,1,0,....,0</sub>X<sub>1</sub>X<sub>2</sub> + ... + <var>a</var><sub>2,1,0,....,0</sub>X<sub>1</sub><sup>2</sup>X<sub>2</sub> + ... + <var>a</var><sub>d<sub>1</sub>,...,d<sub>n</sub></sub>X<sub>1</sub><sup>d<sub>1</sub></sup>...&X<sub>n</sub><sup>d<sub>n</sub></sup>.
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
      */
-    public static /*<R implements Arithmetic>*/ Polynomial/*<R>*/ polynomial(Object coefficients) {
+    public /*<R implements Arithmetic>*/ Polynomial/*<R>*/ polynomial(Object coefficients) {
 	return asPolynomial(tensor(coefficients));
     }
 
@@ -1090,7 +1122,7 @@ public final class Values {
      * @see #polynomial(Object)
      * @see #asTensor(Polynomial)
      */
-    public static /*<R implements Arithmetic>*/ Polynomial/*<R>*/ asPolynomial(Tensor/*<R>*/ coefficients) {
+    public /*<R implements Arithmetic>*/ Polynomial/*<R>*/ asPolynomial(Tensor/*<R>*/ coefficients) {
 	// polynomials in 1 variable are converted to UnivariatePolynomials
 	switch (coefficients.rank()) {
 	case 1:
@@ -1112,7 +1144,7 @@ public final class Values {
      *  and thus is not a multivariate polynomial in the proper sense.
      * @see #asPolynomial(Tensor)
      */
-    public static /*<R implements Arithmetic>*/ Tensor/*<R>*/ asTensor(Polynomial/*<R>*/ p) {
+    public /*<R implements Arithmetic>*/ Tensor/*<R>*/ asTensor(Polynomial/*<R>*/ p) {
 	return ((AbstractMultivariatePolynomial)p).tensorViewOfCoefficients();
     }
 
@@ -1132,7 +1164,7 @@ public final class Values {
      * @param exponent the exponent i of the monomial.
      * @todo implementation could be generalized to non-AbstractMultivariatePolynomials.
      */
-    public static final Polynomial/*<R,S>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, Arithmetic/*>S<*/ exponent) {
+    public final Polynomial/*<R,S>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, Arithmetic/*>S<*/ exponent) {
 	return MONOMIAL(coefficient, ArithmeticMultivariatePolynomial.convertIndex(exponent));
     }
     /**
@@ -1142,7 +1174,7 @@ public final class Values {
      *  The number of variables is <code>n:=exponents.length</code>.
      * @internal horribly complicate implementation
      */
-    public static final Polynomial/*<R>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, int[] exponents) {
+    public final Polynomial/*<R>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, int[] exponents) {
 	int[] dim = new int[exponents.length];
 	for (int k = 0; k < dim.length; k++)
 	    dim[k] = exponents[k] + 1;
@@ -1159,7 +1191,7 @@ public final class Values {
      * @see <a href="{@docRoot}/DesignPatterns/Convenience.html">Convenience Method</a>
      * @see #MONOMIAL(Arithmetic,Arithmetic)
      */
-    public static final Polynomial/*<R implements Scalar,S>*/ MONOMIAL(Arithmetic/*>S<*/ exponent) {
+    public final Polynomial/*<R implements Scalar,S>*/ MONOMIAL(Arithmetic/*>S<*/ exponent) {
 	return MONOMIAL(ONE, exponent);
     }
     /**
@@ -1170,7 +1202,7 @@ public final class Values {
      * @see <a href="{@docRoot}/DesignPatterns/Convenience.html">Convenience Method</a>
      * @see #MONOMIAL(Arithmetic,int[])
      */
-    public static final Polynomial/*<R implements Scalar>*/ MONOMIAL(int[] exponents) {
+    public final Polynomial/*<R implements Scalar>*/ MONOMIAL(int[] exponents) {
 	return MONOMIAL(ONE, exponents);
     }
 
@@ -1189,21 +1221,21 @@ public final class Values {
      * @see #asPolynomial(Vector)
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
      */
-    public static /*<R implements Arithmetic>*/ UnivariatePolynomial/*<R>*/ polynomial(Arithmetic/*>R<*/[] coefficients) {
+    public /*<R implements Arithmetic>*/ UnivariatePolynomial/*<R>*/ polynomial(Arithmetic/*>R<*/[] coefficients) {
     	return new ArithmeticUnivariatePolynomial/*<R>*/(coefficients);
     }
     /**
      * @see #polynomial(Arithmetic[])
      * @see #polynomial(Object)
      */
-    public static UnivariatePolynomial/*<Real>*/ polynomial(double[] coefficients) {
+    public UnivariatePolynomial/*<Real>*/ polynomial(double[] coefficients) {
 	return (UnivariatePolynomial) polynomial((Object)coefficients);
     }
     /**
      * @see #polynomial(Arithmetic[])
      * @see #polynomial(Object)
      */
-    public static UnivariatePolynomial/*<Integer>*/ polynomial(int[] coefficients) {
+    public UnivariatePolynomial/*<Integer>*/ polynomial(int[] coefficients) {
 	return (UnivariatePolynomial) polynomial((Object)coefficients);
     }
 
@@ -1218,7 +1250,7 @@ public final class Values {
      * @see #asVector(UnivariatePolynomial)
      * @todo implement a true view flexible for changes (but only if Polynomial.set(...) has been introduced)
      */
-    public static /*<R implements Arithmetic>*/ UnivariatePolynomial/*<R>*/ asPolynomial(Vector/*<R>*/ a) {
+    public /*<R implements Arithmetic>*/ UnivariatePolynomial/*<R>*/ asPolynomial(Vector/*<R>*/ a) {
     	return polynomial((Arithmetic/*>R<*/[])a.toArray());
     }
 
@@ -1232,7 +1264,7 @@ public final class Values {
      * @see UnivariatePolynomial#getCoefficients()
      * @see #asPolynomial(Vector)
      */
-    public static /*<R implements Arithmetic>*/ Vector/*<R>*/ asVector(UnivariatePolynomial/*<R>*/ p) {
+    public /*<R implements Arithmetic>*/ Vector/*<R>*/ asVector(UnivariatePolynomial/*<R>*/ p) {
     	return (Vector) asTensor(p);
     }
 
@@ -1259,7 +1291,7 @@ public final class Values {
      * </p>
      * @param mod is the quotient operator applied (see {@link Quotient#getQuotientOperator()}).
      */
-    public static /*<M implements Arithmetic>*/ Quotient/*<M>*/ quotient(Arithmetic/*>M<*/ a, Function/*<M,M>*/ mod) {
+    public /*<M implements Arithmetic>*/ Quotient/*<M>*/ quotient(Arithmetic/*>M<*/ a, Function/*<M,M>*/ mod) {
 	return new AbstractQuotient/*<M>*/(a, mod);
     }
     /**
@@ -1273,7 +1305,7 @@ public final class Values {
      * inverses modulo m.
      * </p>
      */
-    public static /*<M implements Euclidean>*/ Quotient/*<M>*/ quotient(Euclidean/*>M<*/ a, Euclidean/*>M<*/ m) {
+    public /*<M implements Euclidean>*/ Quotient/*<M>*/ quotient(Euclidean/*>M<*/ a, Euclidean/*>M<*/ m) {
 	return new AbstractQuotient/*<M>*/(a, m);
     }
     /**
@@ -1287,7 +1319,7 @@ public final class Values {
      * modulo whose generated ideal (m) to form the quotients.
      * @param monomialOrder the monomial order applied for reducing polynomials.
      */
-    public static /*<R implements Arithmetic>*/ Quotient/*<Polynomial<R,S>>*/ quotient(Polynomial/*<R,S>*/ a, java.util.Set/*_<Polynomial<R,S>>_*/ m, java.util.Comparator/*_<S>_*/ monomialOrder) {
+    public /*<R implements Arithmetic>*/ Quotient/*<Polynomial<R,S>>*/ quotient(Polynomial/*<R,S>*/ a, java.util.Set/*_<Polynomial<R,S>>_*/ m, java.util.Comparator/*_<S>_*/ monomialOrder) {
 	return new AbstractQuotient(a, m, monomialOrder);
     }
 
@@ -1305,7 +1337,7 @@ public final class Values {
      * </p>
      * @see #quotient(Euclidean,Euclidean)
      */
-    public static /*<M implements Euclidean>*/ Quotient/*<M>*/ quotient(Euclidean/*>M<*/ a, UnivariatePolynomial m) {
+    public /*<M implements Euclidean>*/ Quotient/*<M>*/ quotient(Euclidean/*>M<*/ a, UnivariatePolynomial m) {
 	return quotient(a, (Euclidean)m);
     }
     /**
@@ -1322,7 +1354,7 @@ public final class Values {
      * @see #quotient(Arithmetic,Function)
      * @internal only for provoking a compile time type ambiguity error for (Euclidean,Polynomial).
      */
-    public static /*<M implements Euclidean>*/ Quotient/*<M>*/ quotient(Euclidean/*>M<*/ a, Function/*<M,M>*/ mod) {
+    public /*<M implements Euclidean>*/ Quotient/*<M>*/ quotient(Euclidean/*>M<*/ a, Function/*<M,M>*/ mod) {
 	return quotient((Arithmetic)a, mod);
     }
     /**
@@ -1340,7 +1372,7 @@ public final class Values {
      * @throws ClassCastException if a and m are not both instances of Euclidean.
      * @see #quotient(Arithmetic,Function)
      */
-    public static Quotient quotient(Arithmetic a, Polynomial m) {
+    public Quotient quotient(Arithmetic a, Polynomial m) {
 	if ((a instanceof Euclidean) && (m instanceof Euclidean))
 	    return quotient((Euclidean)a, (Euclidean)m);
 	else
@@ -1359,7 +1391,7 @@ public final class Values {
      * @see <a href="{@docRoot}/DesignPatterns/Convenience.html">Convenience Method</a>
      * @see #quotient(Euclidean,Euclidean)
      */
-    public static Quotient/*<Integer>*/ quotient(int a, int m) {
+    public Quotient/*<Integer>*/ quotient(int a, int m) {
 	return quotient(valueOf(a), valueOf(m));
     }
 
@@ -1384,7 +1416,7 @@ public final class Values {
      * </p>
      * @todo introduce the second case with explicit checking via a third argument predicate?
      */
-    public static /*<M implements Arithmetic, S implements Arithmetic>*/ Fraction/*<M,S>*/ fraction(Arithmetic/*>M<*/ a, Arithmetic/*<S>*/ s) {
+    public /*<M implements Arithmetic, S implements Arithmetic>*/ Fraction/*<M,S>*/ fraction(Arithmetic/*>M<*/ a, Arithmetic/*<S>*/ s) {
 	return new AbstractFraction/*<M,S>*/(a, s);
     }
 
@@ -1394,10 +1426,11 @@ public final class Values {
      * Returns a new algebraic symbol.
      * @return the algebraic symbol "signifier".
      */
-    public static Symbol symbol(String signifier) {
+    public Symbol symbol(String signifier) {
 	return new AbstractSymbol(signifier);
     }
 
+    
     // general static methods for scalar values
 
     /**
@@ -1408,7 +1441,7 @@ public final class Values {
      * @throws NumberFormatException if the string does not contain a parsable arithmetic object.
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
      */
-    public static Arithmetic valueOf(String s) throws NumberFormatException {
+    public Arithmetic valueOf(String s) throws NumberFormatException {
 	try {
 	    return ArithmeticFormat.getDefaultInstance().parse(s);
 	}
@@ -1423,7 +1456,7 @@ public final class Values {
      * The result is a structurally unmodifiable <a href="Tensor.html#view">view</a>.
      * @see #asVector(Tensor)
      */
-    public static /*<R implements ListIterator,  Arithmetic>*/ Vector/*<R>*/ asVector(final Matrix/*<R>*/ m) {
+    public /*<R implements ListIterator,  Arithmetic>*/ Vector/*<R>*/ asVector(final Matrix/*<R>*/ m) {
 	return /*refine/delegate Vector*/ new AbstractVector/*<R>*/() {
 		private static final long serialVersionUID = 7697252236109892826L;
 		protected Vector/*<R>*/ newInstance(int dim) {
@@ -1466,7 +1499,7 @@ public final class Values {
      * The tensor is interpreted row-wise as a vector.
      * </p>
      */
-    public static /*<R implements ListIterator,  Arithmetic>*/ Vector/*<R>*/ asVector(final Tensor/*<R>*/ t) {
+    public /*<R implements ListIterator,  Arithmetic>*/ Vector/*<R>*/ asVector(final Tensor/*<R>*/ t) {
 	if (t instanceof Vector)
 	    return (Vector)t;
 	else if (t instanceof Matrix)
@@ -1484,7 +1517,7 @@ public final class Values {
      * @post RES.equals(val)
      * @todo optimize by avoiding to create intermediate objects, f.ex. convert complex(2+i*0) -> real(2) -> rational(2) -> integer(2) also use OBDD
      */
-    public static final Scalar narrow(Scalar val) {
+    public final Scalar narrow(Scalar val) {
 	if (val instanceof Integer)
 	    return val;
 	if (Complex.hasType.apply(val)) {
@@ -1522,10 +1555,10 @@ public final class Values {
      * a real instead of a complex and so on.
      * But it will always be true that both elements returned have exactly the same type:
      * the common superclass of the classes of a and b.
-     * @see MathUtilities#getEqualizer()
+     * @see #getEqualizer()
      * @post RES[0].getClass() == RES[1].getClass() == a.getClass()&cup;b.getClass()
      */
-    public static Scalar[] minimumEqualized(Number a, Number b) {
+    public Scalar[] minimumEqualized(Number a, Number b) {
 	//@xxx adapt better to new Complex>Real>Rational>Integer type hierarchy and conform to a new OBDD (ordered binary decision diagram)
 	//@todo partial order with Arithmetic>Scalar>Complex>Real>Rational>Integer and greatest common super type of A,B being A&cup;B = sup {A,B}
 	if (Complex.hasType.apply(a) || Complex.hasType.apply(b))
@@ -1557,6 +1590,98 @@ public final class Values {
 	};
     } 
 
+    // arithmetic widening equalizer
+	
+    /**
+     * Get the transformation function for minimum widening equalized Arithmetic objects.
+     * This transformation is a logical function that transforms an array of arithmetic objects
+     * into an array of minimum widening equalized arithmetic objects whose values are equal to the original ones.
+     * <dl class="def">
+     *   <dt>minimum widening equalized</dt>
+     *   <dd>arithmetic objects are minimum widening equalized if either
+     *     <ul class="or">
+     *       <li>they have the same type, and this type is the minimum type (the most restrictive one).
+     *       So whenever possible an integer will be preferred over a rational,
+     *       a rational over a real and that over a complex.
+     *       That is they are instances of the common superclass.
+     *       </li>
+     *       <li>or they have minimum compatible types, such as a matrix and a vector.</li>
+     *     </ul>
+     *   </dd>
+     * </dl>
+     * <p>
+     * This transformation function is often used to implement sly arithmetic operations with
+     * full dynamic dispatch by {@link orbital.math.functional.Operations}.
+     * </p>
+     * @return a logical transformation function that takes an array of objects (usually Arithmetic objects)
+     * and returns an array of the same length (usually 2).
+     * The elements returned have the same value as the elements in the argument array.
+     * And all will have the same minimum (that is most restrictive) type.
+     * This means that an integer will be returned instead of a real whenever possible,
+     * a real instead of a complex and so on.
+     * But it will always be true that both elements returned have exactly the same
+     * or a very compatible type.
+     * @pre 0<=args.length && args.length<=2 (currently)
+     * @post RES.length==args.length
+     *   && (RES[0].getClass() "compatible to" RES[1].getClass() || RES[0].getClass() == RES[1].getClass())
+     * @see #minimumEqualized(Number, Number)
+     * @see orbital.math.functional.Operations
+     * @see #setEqualizer(orbital.logic.functor.Function)
+     */
+    public final orbital.logic.functor.Function/*<Object[],Object[]>*/ getEqualizer() {
+	return equalizer;
+    } 
+
+    /**
+     * Set the transformation function for minimum widening equalized Arithmetic objects.
+     * <p>
+     * The transformation function set here must fulfill the same criteria the default one
+     * does as described in the getEqualizer() method. To simply hook an additional
+     * transformation, implement your transformation function on top of the one got from
+     * getEqualizer().</p>
+     * @see #getEqualizer()
+     */
+    public final void setEqualizer(orbital.logic.functor.Function/*<Object[],Object[]>*/ equalizer) throws SecurityException {
+	SecurityManager security = System.getSecurityManager();
+	if (security != null) {
+	    security.checkPermission(new RuntimePermission("setStatic.equalizer"));
+	} 
+	this.equalizer = equalizer;
+    } 
+
+    private final Arithmetic[] minimumEqualized(Arithmetic[] a) {
+	assert a.length == 2 : "currently for binary operations, only";
+	//@todo!
+	if (a[0] == null || a[1] == null)
+	    throw new NullPointerException("null is no true arithmetic object");
+	if (/*(a[0] == null || a[1] == null)
+	      ||*/ a[0].getClass() == a[1].getClass())
+	    return a;
+	else if (a[0] instanceof Number && a[1] instanceof Number)
+	    return minimumEqualized((Number) a[0], (Number) a[1]);
+	else if ((a[0] instanceof Matrix || a[1] instanceof Matrix)
+		 || (a[0] instanceof Vector || a[1] instanceof Vector))
+	    return a;
+	else if ((a[0] instanceof MathFunctor || a[0] instanceof Symbol) || (a[1] instanceof MathFunctor || a[1] instanceof Symbol))
+	    if (a[0] instanceof MathFunctor || a[0] instanceof Symbol)
+		return a;
+	    else
+		return new Arithmetic[] {
+		    makeSymbolAware(a[0]), a[1]
+		};	//XXX: how exactly?
+	throw new AssertionError("the types of the arguments could not be equalized: " + (a == null ? "null" : a[0].getClass() + "") + " and " + (a[1] == null ? "null" : a[1].getClass() + ""));
+    } 
+
+    /**
+     * @todo beautify and check whether it is necessary to convert numbers to those symbolic arithmetic function trucs!
+     * @todo xxx see Functionals.genericCompose(*Function, ...) calls to constant(...)
+     */
+    private static final Arithmetic makeSymbolAware(Arithmetic x) {
+	assert !(x instanceof MathFunctor || x instanceof Symbol) : "math functors and symbols are already aware of symbols";
+	//TODO: think about
+	return orbital.math.functional.Functions.constant(x);
+    } 
+    
     // Constants
 
     /**
@@ -1589,40 +1714,45 @@ public final class Values {
     public static final Integer ONE = posConst[1];
 
     /**
+     * -1&isin;<b>Z</b>.
+     */
+    public static final Integer MINUS_ONE = negConst[1];
+
+    /**
      * +&infin;.
      * @see #INFINITY
      * @see #NEGATIVE_INFINITY
      */
-    public static final Real POSITIVE_INFINITY = valueOf(java.lang.Double.POSITIVE_INFINITY);
+    public static final Real POSITIVE_INFINITY = getDefaultInstance().valueOf(java.lang.Double.POSITIVE_INFINITY);
 
     /**
      * -&infin;.
      * @see #INFINITY
      * @see #POSITIVE_INFINITY
      */
-    public static final Real NEGATIVE_INFINITY = valueOf(java.lang.Double.NEGATIVE_INFINITY);
+    public static final Real NEGATIVE_INFINITY = getDefaultInstance().valueOf(java.lang.Double.NEGATIVE_INFINITY);
 
     /**
      * &pi;.
      * The proportion of the circumference of a circle to its diameter. 
      */
-    public static final Real PI = valueOf(Math.PI);
+    public static final Real PI = getDefaultInstance().valueOf(Math.PI);
     /**
      * <b>e</b>.
      * The base of the natural logarithm.
      */
-    public static final Real E = valueOf(Math.E);
+    public static final Real E = getDefaultInstance().valueOf(Math.E);
 
     /**
      * not a number &perp;&isin;<b>R</b>&cup;{&perp;}.
      */
-    public static final Real NaN = valueOf(java.lang.Double.NaN);
+    public static final Real NaN = getDefaultInstance().valueOf(java.lang.Double.NaN);
 
     /**
      * The imaginary unit <b>i</b>&isin;<b>C</b>.
      * @see #i
      */
-    public static final Complex I = complex(0, 1);
+    public static final Complex I = getDefaultInstance().complex(0, 1);
     /**
      * The imaginary unit <b>i</b>&isin;<b>C</b>.
      * @see #I
@@ -1633,5 +1763,5 @@ public final class Values {
      * complex infinity &infin;&isin;<b>C</b>.
      * @see #INFINITY
      */
-    public static final Complex INFINITY = complex(java.lang.Double.POSITIVE_INFINITY, java.lang.Double.NaN);
+    public static final Complex INFINITY = getDefaultInstance().complex(java.lang.Double.POSITIVE_INFINITY, java.lang.Double.NaN);
 }

@@ -18,10 +18,12 @@ public class ModuloArithmeticTest extends MathTest {
 	moreSophisticatedCalculation();
     }
     private static void simpleCalculation() {
+	// get us a value factory for creating arithmetic objects
+	final Values vf = Values.getDefaultInstance();
 	// create elements in Z/nZ
 	final int n = 17;
-	Quotient/*<Integer>*/ i = Values.quotient(8, n);
-	Quotient/*<Integer>*/ j = Values.quotient(11, n);
+	Quotient/*<Integer>*/ i = vf.quotient(8, n);
+	Quotient/*<Integer>*/ j = vf.quotient(11, n);
 
 	// perform calculations in Z/mZ
    	System.out.println("Calculating modulo n=" + n + "\tfast normalization to (-n,n)");
@@ -31,14 +33,16 @@ public class ModuloArithmeticTest extends MathTest {
     }
 
     private static void moreSophisticatedCalculation() {
+	// get us a value factory for creating arithmetic objects
+	final Values vf = Values.getDefaultInstance();
     	System.out.println("Calculating modulo m=" + modulus + "\tnormalization to [0,m)");
     	final Function/*<Integer,Integer>*/ m = new Function/*<Integer,Integer>*/() {
     		public Object/*>Integer<*/ apply(Object/*>Integer<*/ i) {
-		    return Values.valueOf(((((Integer)i).intValue() % modulus) + modulus) % modulus);
+		    return vf.valueOf(((((Integer)i).intValue() % modulus) + modulus) % modulus);
     		}
 	    };
-        Quotient/*<Integer>*/ i = Values.quotient(Values.valueOf(3), m);
-        Quotient/*<Integer>*/ j = Values.quotient(Values.valueOf(-1), m);
+        Quotient/*<Integer>*/ i = vf.quotient(vf.valueOf(3), m);
+        Quotient/*<Integer>*/ j = vf.quotient(vf.valueOf(-1), m);
 	// perform calculations in Z / modulus*Z
 	printArithmetic(i, j, false);
 	//System.out.println("(" + i + ") / (" + j + ") = " + i.divide(j));

@@ -276,7 +276,7 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractProdu
     	public SubTensor(AbstractTensor/*<R>*/ m, int[] i1, int[] i2) {
 	    super(m);
 	    Utility.pre(i1.length == m.rank() && i2.length == m.rank(), "indices must be of correct rank.");
-	    Utility.pre(Setops.all(Values.valueOf(i1).iterator(), Values.valueOf(i2).iterator(), Predicates.lessEqual), "Ending indices cannot be less than starting indices.");
+	    Utility.pre(Setops.all(Values.getDefaultInstance().valueOf(i1).iterator(), Values.getDefaultInstance().valueOf(i2).iterator(), Predicates.lessEqual), "Ending indices cannot be less than starting indices.");
 	    m.validate(i1);
 	    m.validate(i2);
 	    this.offset = i1;
@@ -363,12 +363,12 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractProdu
     	public TransposedTensor(final AbstractTensor/*<R>*/ m, int[] permutation) {
 	    super(m);
 	    Utility.pre(permutation.length == m.rank(), "indices must be of correct rank.");
-	    Utility.pre(Setops.all(Values.valueOf(permutation).iterator(), new Predicate() {
+	    Utility.pre(Setops.all(Values.getDefaultInstance().valueOf(permutation).iterator(), new Predicate() {
 		    public boolean apply(Object o) {
 			return (o instanceof Integer) && MathUtilities.isin(((Integer)o).intValue(), 0, m.rank() - 1);
 		    }
 		}), "The mapping table of a permutation in S_n contains the integers {0,...,n-1}.");
-	    Utility.pre(new HashSet(Setops.asList(Values.valueOf(permutation).iterator())).size() == m.rank(), "A permutation is bijective, so its mapping table should not contain duplicates.");
+	    Utility.pre(new HashSet(Setops.asList(Values.getDefaultInstance().valueOf(permutation).iterator())).size() == m.rank(), "A permutation is bijective, so its mapping table should not contain duplicates.");
 	    this.permutation = permutation;
     	}
     
@@ -410,7 +410,7 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractProdu
     // arithmetic-operations
 	
     //@todo that's not quite true for strange R
-    public Arithmetic zero() {return Values.ZERO(dimensions());}
+    public Arithmetic zero() {return Values.getDefaultInstance().ZERO(dimensions());}
     public Arithmetic one() {
 	throw new UnsupportedOperationException();
     }

@@ -75,7 +75,7 @@ public class DynamicProgramming implements AlgorithmicTemplate {
      * O(n<sup>2</sup>)
      */
     public Function complexity() {
-	return Functions.pow(Values.valueOf(2));
+	return Functions.pow(Values.getDefaultInstance().valueOf(2));
     } 
 
     public Function spaceComplexity() {

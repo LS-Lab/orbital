@@ -26,8 +26,8 @@ public class Range {
 	this.max = max;
     }
     public Range(double minx, double miny, double maxx, double maxy) {
-	min = Values.valueOf(new double[] {minx, miny});
-	max = Values.valueOf(new double[] {maxx, maxy});
+	this(Values.getDefaultInstance().valueOf(new double[] {minx, miny}),
+	     Values.getDefaultInstance().valueOf(new double[] {maxx, maxy}));
     }
     
     public Object clone() {

@@ -84,7 +84,7 @@ class GeneralizedPermutation extends Combinatorical {
     } 
 
     public int count() {
-	return ((Integer) Operations.product.apply(Values.valueOf(dimensions))).intValue();
+	return ((Integer) Operations.product.apply(Values.getDefaultInstance().valueOf(dimensions))).intValue();
     } 
 
     public String toString() {

@@ -57,7 +57,7 @@ public class DepthFirstSearch extends GeneralSearch {
      * O(<span class="Formula">(b-1)*d + 1</span>) more precisely.
      */
     public Function spaceComplexity() {
-	return Functions.linear(Values.symbol("b"));
+	return Functions.linear(Values.getDefaultInstance().symbol("b"));
     }
     public boolean isOptimal() {
     	return false;

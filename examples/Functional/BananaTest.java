@@ -20,15 +20,17 @@ import java.util.*;
  */
 public class BananaTest {
     public static void main(String arg[]) {
+	// get us a value factory for creating arithmetic objects
+	final Values vf = Values.getDefaultInstance();
 	List numbers = Arrays.asList(new Object[] {
-	    Values.valueOf(1), Values.valueOf(2), Values.valueOf(3), Values.valueOf(9), Values.valueOf(7)
+	    vf.valueOf(1), vf.valueOf(2), vf.valueOf(3), vf.valueOf(9), vf.valueOf(7)
 	});
 	System.out.println("Testing banana (|..|) with sum functional");
-	System.out.print(new Functionals.Catamorphism(Values.valueOf(0), Operations.plus).apply(numbers.iterator()) + " = ");
+	System.out.print(new Functionals.Catamorphism(vf.valueOf(0), Operations.plus).apply(numbers.iterator()) + " = ");
 	System.out.println(Operations.sum.apply(numbers.iterator()));
 	System.out.println("Testing banana (|..|) foldLeft with prod functional");
 	System.out.println(Operations.product.apply(numbers.iterator()));
-	Predicate P = Functionals.bindSecond(Predicates.greater, Values.valueOf(2));
+	Predicate P = Functionals.bindSecond(Predicates.greater, vf.valueOf(2));
 	System.out.println("Testing banana (|..|) with filter " + P);
 	System.out.println(filter(P).apply(numbers.iterator()));
 	Function f = Functions.pow(2);
@@ -61,31 +63,31 @@ public class BananaTest {
 
 	System.out.println("Comparing recursive banana (|..|) with iterative foldRight and iterative foldLeft for associativity");
 
-	// short hand form of g = (BinaryFunction) Operations.plus.apply(Functions.projectFirst, Functionals.onSecond(Functions.linear(Values.valueOf(2))));
+	// short hand form of g = (BinaryFunction) Operations.plus.apply(Functions.projectFirst, Functionals.onSecond(Functions.linear(vf.valueOf(2))));
 	BinaryFunction g = new BinaryFunction() {
 		public Object apply(Object a, Object b) {
-		    return ((Arithmetic) a).add(Values.valueOf(2).multiply((Arithmetic) b));
+		    return ((Arithmetic) a).add(vf.valueOf(2).multiply((Arithmetic) b));
 		} 
 		public String toString() {
 		    return "x + 2*y";
 		} 
 	    };
 	System.out.println("for the binary function g(x,y) := " + g);
-	System.out.print("is " + new Functionals.Catamorphism(Values.valueOf(0), g).apply(numbers.iterator()));
-	System.out.print(" == " + Functionals.foldRight(g, Values.valueOf(0), numbers));
-	System.out.println(" == " + Functionals.foldLeft(g, Values.valueOf(0), numbers) + ", or not?");
+	System.out.print("is " + new Functionals.Catamorphism(vf.valueOf(0), g).apply(numbers.iterator()));
+	System.out.print(" == " + Functionals.foldRight(g, vf.valueOf(0), numbers));
+	System.out.println(" == " + Functionals.foldLeft(g, vf.valueOf(0), numbers) + ", or not?");
 	List formula = Arrays.asList(new Object[] {
-	    Values.symbol("a"), Values.symbol("b"), Values.symbol("c")
+	    vf.symbol("a"), vf.symbol("b"), vf.symbol("c")
 	});
 	System.out.println("because with symbolic evaluation it is");
-	System.out.println("  " + new Functionals.Catamorphism(Values.valueOf(1), g).apply(formula.iterator()) + "\tfor banana");
-	System.out.println("  " + Functionals.foldRight(g, Values.valueOf(1), formula) + "\tfor foldRight");
-	System.out.println("  " + Functionals.foldLeft(g, Values.valueOf(1), formula) + "\tfor foldLeft");
+	System.out.println("  " + new Functionals.Catamorphism(vf.valueOf(1), g).apply(formula.iterator()) + "\tfor banana");
+	System.out.println("  " + Functionals.foldRight(g, vf.valueOf(1), formula) + "\tfor foldRight");
+	System.out.println("  " + Functionals.foldLeft(g, vf.valueOf(1), formula) + "\tfor foldLeft");
 	orbital.math.functional.BinaryFunction h = Functions.binarySymbolic("f");
 	System.out.println("for an arbitrary symbolic function " + h + "(x,y) it is");
-	System.out.println("  " + new Functionals.Catamorphism(Values.valueOf(1), h).apply(formula.iterator()) + "\tfor banana");
-	System.out.println("  " + Functionals.foldRight(h, Values.valueOf(1), formula) + "\tfor foldRight");
-	System.out.println("  " + Functionals.foldLeft(h, Values.valueOf(1), formula) + "\tfor foldLeft");
+	System.out.println("  " + new Functionals.Catamorphism(vf.valueOf(1), h).apply(formula.iterator()) + "\tfor banana");
+	System.out.println("  " + Functionals.foldRight(h, vf.valueOf(1), formula) + "\tfor foldRight");
+	System.out.println("  " + Functionals.foldLeft(h, vf.valueOf(1), formula) + "\tfor foldLeft");
 	System.out.println("d" + h + " / d(x,y) = " + h.derive() + "\n  integral " + h + " dx = " + h.integrate(0));
 	System.out.println("d" + h + " / d(x,y) = " + h.derive() + "\n  integral " + h + " dy = " + h.integrate(1));
     } 
@@ -157,12 +159,14 @@ public class BananaTest {
      *  where g(1 + n) = (1 + n, n).
      */
     public static int factorial(int n) {
-	return ((Number) Functionals.envelope(Values.valueOf(1), Operations.times, new Function() {
+	// get us a value factory for creating arithmetic objects
+	final Values vf = Values.getDefaultInstance();
+	return ((Number) Functionals.envelope(vf.valueOf(1), Operations.times, new Function() {
 		public Object apply(Object no) {
 		    int n = ((Number) no).intValue();
-		    return new Pair(no, Values.valueOf(n - 1));
+		    return new Pair(no, vf.valueOf(n - 1));
 		} 
-	    }, Functionals.bindSecond(Predicates.equal, Values.valueOf(0)), Values.valueOf(n))).intValue();
+	    }, Functionals.bindSecond(Predicates.equal, vf.valueOf(0)), vf.valueOf(n))).intValue();
     } 
 
     /**

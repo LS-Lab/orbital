@@ -36,9 +36,9 @@ public class SpecDemo {
 
     private static void useSpecifications() {
 	System.out.println("use specifications for complex number arithmetic...");
-	Complex a = Values.complex(2, 5);
+	Complex a = Values.getDefaultInstance().complex(2, 5);
 	SP.asserts(a != null, "instantiation should work");
-	Complex b = Values.complex(3, -1);
+	Complex b = Values.getDefaultInstance().complex(3, -1);
 	SP.asserts(b != null, "instantiation should work");
 	Complex c = a.multiply(b);
 	SP.asserts(c != null, "multiplication returns a valid object");

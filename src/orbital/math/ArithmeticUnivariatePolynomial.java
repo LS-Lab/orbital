@@ -104,6 +104,6 @@ class ArithmeticUnivariatePolynomial/*<R implements Arithmetic>*/ extends Abstra
     } 
 
     Tensor tensorViewOfCoefficients() {
-	return Values.tensor(coefficients);
+	return Values.getDefaultInstance().tensor(coefficients);
     }
 }

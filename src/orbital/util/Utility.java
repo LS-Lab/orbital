@@ -547,7 +547,7 @@ public final class Utility {
 	else if ((a instanceof Object/*_>A<_*/[]) && !a.getClass().getComponentType().isArray())
 	    return Arrays.asList((Object/*_>A<_*/[]) a).listIterator();
 	else if (a.getClass().isArray())
-	    return Values.tensor(a).iterator();
+	    return Values.getDefaultInstance().tensor(a).iterator();
 	throw new ClassCastException(a.getClass().getName() + " expected " + generalizedIteratableTypes);
     }
 
@@ -570,7 +570,7 @@ public final class Utility {
 	    return Setops.newCollectionLike((Collection) a);
 	else if (a instanceof Tensor)
 	    //@see AbstractTensor#newInstance
-	    return Values.tensor(((Tensor)a).dimensions());
+	    return Values.getDefaultInstance().tensor(((Tensor)a).dimensions());
 	else if (a.getClass().isArray())
 	    return Array.newInstance(getComponentType(a), dimensions(a));
 	throw new ClassCastException(a.getClass().getName() + " expected " + generalizedIteratableTypes);

@@ -7,11 +7,9 @@
 package orbital.math;
 
 import orbital.math.functional.Function;
-import java.io.Serializable;
 import java.util.ListIterator;
 import java.util.Iterator;
 
-import java.util.NoSuchElementException;
 import java.util.ConcurrentModificationException;
 
 import orbital.math.functional.Functionals;
@@ -55,7 +53,7 @@ abstract class AbstractMultivariatePolynomial/*<R implements Arithmetic>*/ exten
     } 
 
     public Integer degree() {
-	return Values.valueOf(degreeValue());
+	return Values.getDefaultInstance().valueOf(degreeValue());
     }
 
     protected Object productIndexSet(Arithmetic/*>T<*/ productObject) {
@@ -135,7 +133,7 @@ abstract class AbstractMultivariatePolynomial/*<R implements Arithmetic>*/ exten
 		} 
 		public Object next() {
 		    try {
-			Object v = Values.tensor(cursor.next());
+			Object v = Values.getDefaultInstance().tensor(cursor.next());
 			checkForComodification();
 			return v;
 		    }
@@ -149,7 +147,7 @@ abstract class AbstractMultivariatePolynomial/*<R implements Arithmetic>*/ exten
 		} 
 		public Object previous() {
 		    try {
-			Object v = Values.tensor(cursor.previous());
+			Object v = Values.getDefaultInstance().tensor(cursor.previous());
 			checkForComodification();
 			return v;
 		    }

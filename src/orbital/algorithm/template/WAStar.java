@@ -50,7 +50,7 @@ public class WAStar extends AStar {
     	this.W = W;
     }
     public WAStar(double W, Function heuristic) {
-    	this(Values.valueOf(W), heuristic);
+    	this(Values.getDefaultInstance().valueOf(W), heuristic);
     }
     public WAStar(Function heuristic) {
 	this(1, heuristic);

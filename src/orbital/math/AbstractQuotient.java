@@ -44,6 +44,7 @@ class AbstractQuotient/*<M implements Arithmetic>*/ implements Quotient/*<M>*/, 
 	private static final long serialVersionUID = -8846695670222356251L;
 	private final Euclidean m;
 	public EuclideanModulo(Euclidean m) {
+	    //@internal allow M/(0) &cong; M as well
 	    this.m = m.norm().equals(Values.ZERO) ? null : m;
 	}
 	public boolean equals(Object o) {

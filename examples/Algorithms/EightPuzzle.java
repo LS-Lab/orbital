@@ -37,9 +37,9 @@ public class EightPuzzle implements GeneralSearchProblem {
 
 		    // no action yet? then initial state "is for free"
 		    if (pos == null)
-			return Values.valueOf(0);
+			return Values.getDefaultInstance().valueOf(0);
 		    else
-			return Values.valueOf(manhattan(pos, s[pos[0]][pos[1]]));
+			return Values.getDefaultInstance().valueOf(manhattan(pos, s[pos[0]][pos[1]]));
 
 		    /*
 		     * note that a better heuristic would be a pairwise manhattan distance
@@ -94,10 +94,10 @@ public class EightPuzzle implements GeneralSearchProblem {
     }
     private static final MutableFunction _accumulatedCostFunction = new MutableFunction() {
 	    public Object apply(Object state) {
-		return Values.valueOf(((State)state).accumulatedCost);
+		return Values.getDefaultInstance().valueOf(((State)state).accumulatedCost);
 	    }
 	    public Object set(Object state, Object accumulatedCost) {
-		Object old = Values.valueOf(((State)state).accumulatedCost);
+		Object old = Values.getDefaultInstance().valueOf(((State)state).accumulatedCost);
 		((State)state).accumulatedCost = ((orbital.math.Real)accumulatedCost).doubleValue();
 		return old;
 	    }

@@ -105,7 +105,7 @@ class RVector extends AbstractVector implements Cloneable {
 
     public Arithmetic get(int i) {
 	validate(i);
-	return Values.valueOf(D[i]);
+	return Values.getDefaultInstance().valueOf(D[i]);
     } 
     public double getDoubleValue(int i) {
 	validate(i);
@@ -178,7 +178,7 @@ class RVector extends AbstractVector implements Cloneable {
 	double  ret = 0;
 	for (int i = 0; i < dimension(); i++)
 	    ret += D[i] * bb.D[i];
-	return Values.valueOf(ret);
+	return Values.getDefaultInstance().valueOf(ret);
     } 
 
     /**

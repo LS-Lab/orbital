@@ -9,8 +9,6 @@ package orbital.math;
 import orbital.logic.functor.Functor;
 import java.math.BigInteger;
 
-import orbital.math.functional.MathFunctor;
-
 import java.lang.reflect.Array;
 import java.text.NumberFormat;
 import java.text.DecimalFormat;
@@ -42,6 +40,7 @@ import java.util.logging.Level;
  * </p>
  * 
  * @stereotype &laquo;Utilities&raquo;
+ * @stereotype &laquo;Module&raquo;
  * @version 0.9, 1999/03/15
  * @author  Andr&eacute; Platzer
  * @see java.lang.Math
@@ -517,104 +516,17 @@ public final class MathUtilities {
     // arithmetic widening equalizer
 	
     /**
-     * Get the transformation function for minimum widening equalized Arithmetic objects.
-     * This transformation is a logical function that transforms an array of arithmetic objects
-     * into an array of minimum widening equalized arithmetic objects whose values are equal to the original ones.
-     * <dl class="def">
-     *   <dt>minimum widening equalized</dt>
-     *   <dd>arithmetic objects are minimum widening equalized if either
-     *     <ul class="or">
-     *       <li>they have the same type, and this type is the minimum type (the most restrictive one).
-     *       So whenever possible an integer will be preferred over a rational,
-     *       a rational over a real and that over a complex.
-     *       That is they are instances of the common superclass.
-     *       </li>
-     *       <li>or they have minimum compatible types, such as a matrix and a vector.</li>
-     *     </ul>
-     *   </dd>
-     * </dl>
-     * <p>
-     * This transformation function is often used to implement sly arithmetic operations with
-     * full dynamic dispatch by {@link orbital.math.functional.Operations}.
-     * </p>
-     * @return a logical transformation function that takes an array of objects (usually Arithmetic objects)
-     * and returns an array of the same length (usually 2).
-     * The elements returned have the same value as the elements in the argument array.
-     * And all will have the same minimum (that is most restrictive) type.
-     * This means that an integer will be returned instead of a real whenever possible,
-     * a real instead of a complex and so on.
-     * But it will always be true that both elements returned have exactly the same
-     * or a very compatible type.
-     * @pre 0<=args.length && args.length<=2 (currently)
-     * @post RES.length==args.length
-     *   && (RES[0].getClass() "compatible to" RES[1].getClass() || RES[0].getClass() == RES[1].getClass())
-     * @see Values#minimumEqualized(Number, Number)
-     * @see orbital.math.functional.Operations
-     * @see #setEqualizer(orbital.logic.functor.Function)
+     * @deprecated Since Orbital.1.1 use {@link Values#getDefaultInstance()}.{@link Values#getEqualizer()} instead.
      */
     public static final orbital.logic.functor.Function/*<Object[],Object[]>*/ getEqualizer() {
-	return equalizer;
+	return Values.getDefaultInstance().getEqualizer();
     } 
 
     /**
-     * Set the transformation function for minimum widening equalized Arithmetic objects.
-     * <p>
-     * The transformation function set here must fulfill the same criteria the default one
-     * does as described in the getEqualizer() method. To simply hook an additional
-     * transformation, implement your transformation function on top of the one got from
-     * getEqualizer().</p>
-     * @see #getEqualizer()
+     * @deprecated Since Orbital.1.1 use {@link Values#getDefaultInstance()}.{@link Values#setEqualizer(orbital.logic.functor.Function)} instead.
      */
     public static final void setEqualizer(orbital.logic.functor.Function/*<Object[],Object[]>*/ equalizer) throws SecurityException {
-	SecurityManager security = System.getSecurityManager();
-	if (security != null) {
-	    security.checkPermission(new RuntimePermission("setStatic.equalizer"));
-	} 
-	MathUtilities.equalizer = equalizer;
-    } 
-
-    private static orbital.logic.functor.Function/*<Object[],Object[]>*/ equalizer = new orbital.logic.functor.Function/*<Object[],Object[]>*/() {
-	    public Object/*>Object[]<*/ apply(Object/*>Object[]<*/ o) {
-		if (o instanceof Arithmetic[]) {
-		    Arithmetic operands[] = (Arithmetic[]) o;
-		    if (operands.length <= 1)
-			return operands;
-		    return minimumEqualized(operands);
-		} 
-		return o;
-	    } 
-	};
-    private static final Arithmetic[] minimumEqualized(Arithmetic[] a) {
-	assert a.length == 2 : "currently for binary operations, only";
-	//@todo!
-	if (a[0] == null || a[1] == null)
-	    throw new NullPointerException("null is no true arithmetic object");
-	if (/*(a[0] == null || a[1] == null)
-	      ||*/ a[0].getClass() == a[1].getClass())
-	    return a;
-	else if (a[0] instanceof Number && a[1] instanceof Number)
-	    return Values.minimumEqualized((Number) a[0], (Number) a[1]);
-	else if ((a[0] instanceof Matrix || a[1] instanceof Matrix)
-		 || (a[0] instanceof Vector || a[1] instanceof Vector))
-	    return a;
-	else if ((a[0] instanceof MathFunctor || a[0] instanceof Symbol) || (a[1] instanceof MathFunctor || a[1] instanceof Symbol))
-	    if (a[0] instanceof MathFunctor || a[0] instanceof Symbol)
-		return a;
-	    else
-		return new Arithmetic[] {
-		    makeSymbolAware(a[0]), a[1]
-		};	//XXX: how exactly?
-	throw new AssertionError("the types of the arguments could not be equalized: " + (a == null ? "null" : a[0].getClass() + "") + " and " + (a[1] == null ? "null" : a[1].getClass() + ""));
-    } 
-
-    /**
-     * @todo beautify and check whether it is necessary to convert numbers to those symbolic arithmetic function trucs!
-     * @todo xxx see Functionals.genericCompose(*Function, ...) calls to constant(...)
-     */
-    private static final Arithmetic makeSymbolAware(Arithmetic x) {
-	assert !(x instanceof MathFunctor || x instanceof Symbol) : "math functors and symbols are already aware of symbols";
-	//TODO: think about
-	return orbital.math.functional.Functions.constant(x);
+	Values.getDefaultInstance().setEqualizer(equalizer);
     } 
     
     // diverse
@@ -700,7 +612,7 @@ public final class MathUtilities {
 		return format(((Number) o).doubleValue());
 	else if (o.getClass().isArray())
 	    if (Array.getLength(o) != 0)
-		return Values.tensor(o).toString();
+		return Values.getDefaultInstance().tensor(o).toString();
 	    else
 		return "{}";
 	else

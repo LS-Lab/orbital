@@ -57,7 +57,7 @@ abstract class AbstractPolynomial/*<R implements Arithmetic, S implements Arithm
     }
 
     public Integer degree() {
-	return Values.valueOf(degreeValue());
+	return Values.getDefaultInstance().valueOf(degreeValue());
     }
 
     /**

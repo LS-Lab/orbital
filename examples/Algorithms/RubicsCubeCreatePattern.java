@@ -47,7 +47,7 @@ public class RubicsCubeCreatePattern extends RubicsCube {
 		    // categorically underestimate (we don't really
 		    // need a solution, so the heuristic isn't very
 		    // important either
-		    return Values.valueOf(1);
+		    return Values.getDefaultInstance().valueOf(1);
 		} 
 	    }, MAX_STEPS);
 
@@ -117,7 +117,7 @@ class HashOnlyMap extends DelegateMap implements Externalizable {
 	int size = in.readInt();
 	setDelegatee(new HashMap(size));
 	for (int i = 0; i < size; i++) {
-	    put(new java.lang.Integer(in.readInt()), Values.valueOf(in.readFloat()));
+	    put(new java.lang.Integer(in.readInt()), Values.getDefaultInstance().valueOf(in.readFloat()));
 	} 
     } 
 }

@@ -34,6 +34,7 @@ class RMatrix extends AbstractMatrix {
     private static class Debug {
 	private Debug() {}
 	public static void main(String arg[]) throws Exception {
+	    final Values vf = Values.getDefaultInstance();
 	    Matrix M = new RMatrix(new double[][] {
 		{2, 1, 0, -2},
 		{1, 2, 4, 1},
@@ -48,11 +49,11 @@ class RMatrix extends AbstractMatrix {
 	    });
 	    System.out.println(M + "*" + v + "=" + M.multiply(v));
 	    System.out.println(u + "*" + v + "=" + u.multiply(v));
-	    System.out.println(v + "*" + 2 + "=" + v.multiply(Values.valueOf(2)));
+	    System.out.println(v + "*" + 2 + "=" + v.multiply(vf.valueOf(2)));
 	    System.out.println("M^-1=" + M.inverse());
 	    System.out.println("fall-back to real matrix");
-	    v = Values.valueOf(new Arithmetic[] {
-		Values.valueOf(1), Values.complex(3,-4), Values.rational(-1, 3), Values.rational(1, 2)
+	    v = vf.valueOf(new Arithmetic[] {
+		vf.valueOf(1), vf.complex(3,-4), vf.rational(-1, 3), vf.rational(1, 2)
 	    });
 	    System.out.println(M + "*" + v + "=" + M.multiply(v));
 	} 
@@ -172,7 +173,7 @@ class RMatrix extends AbstractMatrix {
     } 
 
     public Arithmetic get(int i, int j) {
-	return Values.valueOf(getDoubleValue(i, j));
+	return Values.getDefaultInstance().valueOf(getDoubleValue(i, j));
     } 
     public double getDoubleValue(int i, int j) {
 	validate(i, j);
@@ -229,7 +230,7 @@ class RMatrix extends AbstractMatrix {
     }
 
     public Arithmetic det() {
-	return Values.valueOf(determinantImpl());
+	return Values.getDefaultInstance().valueOf(determinantImpl());
     } 
     private double determinantImpl() {
 	if (!isSquare())

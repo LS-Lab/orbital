@@ -61,13 +61,14 @@ public class ArithmeticFormat extends Format {
 	private Debug() {}
 	//@fixme class Debug produces an error with gjc error: type parameter orbital.math.Arithmetic[] is not within its bound orbital.math.Arithmetic
 	public static void main(String arg[]) throws Exception {
-	    Matrix M = Values.valueOf(new Arithmetic[][] {
-		{Values.valueOf(2), Values.complex(3, 4), Values.rational(-1, 2)},
-		{Values.valueOf(3.12), Values.rational(1, 2), Values.valueOf(-1)},
-		{Values.rational(-1, 2), Values.valueOf(0), Values.rational(1)}
+	    final Values vf = Values.getDefaultInstance();
+	    Matrix M = vf.valueOf(new Arithmetic[][] {
+		{vf.valueOf(2), vf.complex(3, 4), vf.rational(-1, 2)},
+		{vf.valueOf(3.12), vf.rational(1, 2), vf.valueOf(-1)},
+		{vf.rational(-1, 2), vf.valueOf(0), vf.rational(1)}
 	    });
-	    Vector v = Values.valueOf(new Arithmetic[] {
-		Values.valueOf(1), Values.rational(-1, 3), Values.rational(1, 2)
+	    Vector v = vf.valueOf(new Arithmetic[] {
+		vf.valueOf(1), vf.rational(-1, 3), vf.rational(1, 2)
 	    });
 	    System.out.println(M + "*" + v + "=" + M.multiply(v));
 	    ArithmeticFormat f = ArithmeticFormat.getDefaultInstance();
@@ -180,6 +181,57 @@ public class ArithmeticFormat extends Format {
     private String multinomialPlusOperator = "+";
     private String multinomialPlusAlternative = "-";
     private String multinomialSuffix	= "";
+
+
+    // instantiation
+    
+    /**
+     * Create a new arithmetic formatter for a specific locale.
+     */
+    public ArithmeticFormat(Locale locale) {
+	//@xxx this numberFormat instance cannot format 17*10^50 and perhaps not even 1.23456789e-10
+	numberFormat = NumberFormat.getNumberInstance(locale);
+	numberFormat.setGroupingUsed(false);
+	numberFormat.setMaximumFractionDigits(MathUtilities.getDefaultPrecisionDigits());
+    }
+
+    /**
+     * @see <a href="{@docRoot}/DesignPatterns/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+     */
+    public static ArithmeticFormat getInstance(Locale locale) {
+	return new ArithmeticFormat(locale);
+    }
+
+    /**
+     * Returns the default number format for the current default locale.
+     * @see #getDefaultInstance()
+     * @see <a href="{@docRoot}/DesignPatterns/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+     */
+    public static ArithmeticFormat getInstance() {
+	return new ArithmeticFormat(Locale.getDefault());
+    }
+
+    /**
+     * Default instance of format for use in toString methods in this package.
+     */
+    private static final ArithmeticFormat defaultFormat = getInstance(Locale.ENGLISH);
+	
+    /**
+     * Get the default instance of format that does scientific mathematical formatting.
+     * Used in {@link Object#toString()} methods in this package.
+     * @see java.text.NumberFormat#getScientificInstance()
+     * @see <a href="{@docRoot}/DesignPatterns/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+     * @todo rename to getMathematicalInstance() or getScientificInstance()?
+     */
+    public static final ArithmeticFormat getDefaultInstance() {
+	return defaultFormat;
+    }
+    /*static final ArithmeticFormat getScientificInstance() {
+		
+    }*/
+
+
+    // get/set properties
     
     public String getPolynomialVariable() {
 	return polynomialVariable;
@@ -191,16 +243,6 @@ public class ArithmeticFormat extends Format {
      */
     public void setPolynomialVariable(String polynomialVariable) {
 	this.polynomialVariable = polynomialVariable;
-    }
-
-    /**
-     * Create a new arithmetic formatter for a specific locale.
-     */
-    public ArithmeticFormat(Locale locale) {
-	//@xxx this numberFormat instance cannot format 17*10^50 and perhaps not even 1.23456789e-10
-	numberFormat = NumberFormat.getNumberInstance(locale);
-	numberFormat.setGroupingUsed(false);
-	numberFormat.setMaximumFractionDigits(MathUtilities.getDefaultPrecisionDigits());
     }
 
     /**
@@ -216,6 +258,8 @@ public class ArithmeticFormat extends Format {
     protected void setNumberFormat(NumberFormat newNumberFormat) {
 	this.numberFormat = newNumberFormat;
     }
+
+    // formatting
 	
     /**
      * Get a formatted string representation of an arithmetic object.
@@ -666,6 +710,7 @@ public class ArithmeticFormat extends Format {
      */
     public Arithmetic parse(String source, ParsePosition status) {
 	int initialIndex = status.getIndex();
+	final Values vf = Values.getDefaultInstance();
 	try {
 	    do {
 		// Matrix
@@ -692,7 +737,7 @@ public class ArithmeticFormat extends Format {
 			    break;
 		    }
 		    consume(matrixSuffix, source, status);
-		    Matrix v = Values.newInstance(rows.size(), colWidth);
+		    Matrix v = vf.newInstance(rows.size(), colWidth);
 		    for (int i = 0; i < v.dimension().height; i++) {
 			col = (List) rows.get(i);
 			for (int j = 0; j < v.dimension().width; j++) {
@@ -712,7 +757,7 @@ public class ArithmeticFormat extends Format {
 			    break;
 		    }
 		    consume(vectorSuffix, source, status);
-		    Vector v = Values.newInstance(components.size());
+		    Vector v = vf.newInstance(components.size());
 		    for (int i = 0; i < v.dimension(); i++)
 			v.set(i, (Arithmetic) components.get(i));
 		    return v;
@@ -759,7 +804,7 @@ public class ArithmeticFormat extends Format {
                 		
 			    // use values
 			    if (val != null) {
-				val = Values.valueOf(sign * val.doubleValue());
+				val = vf.valueOf(sign * val.doubleValue());
 				if (imaginaryPart)
 				    if (im == null)
 					im = val;
@@ -778,14 +823,14 @@ public class ArithmeticFormat extends Format {
 			    else if (found("+", source, status)) {
 				assert val == null : "else-case";
 				if (im == null && imaginaryPart) {
-				    im = Values.valueOf(sign * 1);
+				    im = vf.valueOf(sign * 1);
 				}
 				sign = 1;
 				imaginaryPart = false;
 			    } else if (found("-", source, status)) {
 				assert val == null : "else-case";
 				if (im == null && imaginaryPart) {
-				    im = Values.valueOf(sign * 1);
+				    im = vf.valueOf(sign * 1);
 				}
 				sign = -1;
 				imaginaryPart = false;
@@ -795,15 +840,15 @@ public class ArithmeticFormat extends Format {
 			// process i and -i
 			if (im == null && imaginaryPart) {
 			    assert val == null : "";
-			    im = Values.valueOf(sign * 1);
+			    im = vf.valueOf(sign * 1);
 			}
         
 			if (im == null)
 			    throw new NumberFormatException("real value does not need to be parsed as a complex");
 			else if (re == null)
-			    return Values.complex(Values.ZERO, im);
+			    return vf.complex(Values.ZERO, im);
 			else
-			    return Values.complex(re, im);
+			    return vf.complex(re, im);
 		    }
 		    catch(NumberFormatException trial) {
 			status.setIndex(fallbackIndex);
@@ -816,15 +861,15 @@ public class ArithmeticFormat extends Format {
 		    try {
 			NumberFormat f = (NumberFormat) numberFormat.clone();
 			f.setParseIntegerOnly(true);
-			Integer numerator = (Integer) Values.valueOf(f.parse(source, status));
+			Integer numerator = (Integer) vf.valueOf(f.parse(source, status));
 			if (numerator == null)
 			    throw new NumberFormatException("numerator expected");
 			if (!found(rationalSeparator, source, status))
 			    throw new NumberFormatException("'" + rationalSeparator + "' expected");
-			Integer denominator = (Integer) Values.valueOf(f.parse(source, status));
+			Integer denominator = (Integer) vf.valueOf(f.parse(source, status));
 			if (denominator == null)
 			    throw new NumberFormatException("denominator expected");
-			return Values.rational(numerator, denominator);
+			return vf.rational(numerator, denominator);
 		    }
 		    catch(NumberFormatException trial) {
 			status.setIndex(fallbackIndex);
@@ -835,7 +880,7 @@ public class ArithmeticFormat extends Format {
 		Number n = numberFormat.parse(source, status);
 		//@todo parse Real.Big and Integer.Big as well
 		if (n != null)
-		    return Values.narrow(Values.valueOf(n));
+		    return vf.narrow(vf.valueOf(n));
     		
 		// skip any whitespaces not yet recognized
 		if (Character.isWhitespace(source.charAt(status.getIndex())))
@@ -919,43 +964,8 @@ public class ArithmeticFormat extends Format {
 	
     //@todo introduce for JDK1.4 public AttributedCharacterIterator formatToCharacterIterator(Object obj)
 	
-    /**
-     * @see <a href="{@docRoot}/DesignPatterns/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
-     */
-    public static ArithmeticFormat getInstance(Locale locale) {
-	return new ArithmeticFormat(locale);
-    }
-
-    /**
-     * Returns the default number format for the current default locale.
-     * @see #getDefaultInstance()
-     * @see <a href="{@docRoot}/DesignPatterns/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
-     */
-    public static ArithmeticFormat getInstance() {
-	return new ArithmeticFormat(Locale.getDefault());
-    }
-
-    /**
-     * Default instance of format for use in toString methods in this package.
-     */
-    private static final ArithmeticFormat defaultFormat = getInstance(Locale.ENGLISH);
-	
-    /**
-     * Get the default instance of format that does scientific mathematical formatting.
-     * Used in {@link Object#toString()} methods in this package.
-     * @see java.text.NumberFormat#getScientificInstance()
-     * @see <a href="{@docRoot}/DesignPatterns/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
-     * @todo rename to getMathematicalInstance() or getScientificInstance()?
-     */
-    public static final ArithmeticFormat getDefaultInstance() {
-	return defaultFormat;
-    }
-    /*static final ArithmeticFormat getScientificInstance() {
-		
-    }*/
-	
     private static final Real realValueOf(Number number) {
-	return number == null ? null : Values.valueOf(number.doubleValue());
+	return number == null ? null : Values.getDefaultInstance().valueOf(number.doubleValue());
     }
 }
 

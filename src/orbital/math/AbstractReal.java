@@ -30,7 +30,7 @@ abstract class AbstractReal extends AbstractComplex implements Real {
     }
 
     public Real norm() {
-	return Values.valueOf(Math.abs(doubleValue()));
+	return Values.getDefaultInstance().valueOf(Math.abs(doubleValue()));
     } 
 
     // order

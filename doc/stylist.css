@@ -52,10 +52,10 @@
      */
     *.signified {
     	font-family: italic;
-	quotes: "«" "»"
+	quotes: "Â«" "Â»"
     }
-    *.signified:before {content: "»";}
-    *.signified:after {content: "«";}
+    *.signified:before {content: close-quote;}
+    *.signified:after {content: open-quote;}
     
     /**
      * XML for objects (referents) of semiotics.

@@ -65,7 +65,7 @@ public class IterativeDeepening extends DepthFirstBoundingSearch {
      * On average &asym;<span class="Formula">(b+1)<sup>d+1</sup>/(2*(b-1)<sup>2</sup>)</span>.
      */
     public orbital.math.functional.Function complexity() {
-	return (orbital.math.functional.Function) Operations.power.apply(Values.symbol("b"),Functions.id);
+	return (orbital.math.functional.Function) Operations.power.apply(Values.getDefaultInstance().symbol("b"),Functions.id);
     }
     public boolean isOptimal() {
     	return true;

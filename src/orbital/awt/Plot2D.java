@@ -106,10 +106,10 @@ public class Plot2D extends Canvas implements Printable, Serializable {
 		    double m_y = vy(e.getY());
 		    dx *= zoom;
 		    dy *= zoom;
-		    range.min = Values.valueOf(new double[] {
+		    range.min = Values.getDefaultInstance().valueOf(new double[] {
 			m_x - dx / 2, m_y - dy / 2
 		    });
-		    range.max = Values.valueOf(new double[] {
+		    range.max = Values.getDefaultInstance().valueOf(new double[] {
 			m_x + dx / 2, m_y + dy / 2
 		    });
 		    Plot2D.this.model.setRange(range);
@@ -491,11 +491,12 @@ public class Plot2D extends Canvas implements Printable, Serializable {
 	} 
 	double precision = model.getSpecifiedPrecision(attribs, DEFAULT_PRECISION_POINTS);
 
+	final Values vf = Values.getDefaultInstance();
 	// will always contain next x|y value
 	Vector n = applyFunction(f, range.min.get(0));
 	for (double t = ((Real)range.min.get(0)).doubleValue(); t < ((Real)range.max.get(0)).doubleValue(); t += precision) {
 	    Vector v = n;
-	    n = applyFunction(f, Values.valueOf(t + precision));
+	    n = applyFunction(f, vf.valueOf(t + precision));
 
 	    // TODO: check for NaN and do not draw then
 	    // TODO: think if it is useful to interpolate with cubical polynoms, ... here
@@ -513,7 +514,7 @@ public class Plot2D extends Canvas implements Printable, Serializable {
 	    assert vector.dimension() == 2 : "Plot2D only handles 2-dimensional vectors";
 	    return vector;
 	} else
-	    return Values.valueOf(new Arithmetic[] {
+	    return Values.getDefaultInstance().valueOf(new Arithmetic[] {
 		arg, value
 	    });
     } 

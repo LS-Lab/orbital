@@ -50,21 +50,23 @@ public class StreamMethodUsage {
 
     private void computeSomeHigherRoots() {
 	System.out.println("\nhigher roots ...");
+	// get us a value factory for creating arithmetic objects
+	final Values vf = Values.getDefaultInstance();
 
     	// print all 2nd roots of 16
-    	printAllRoots(2, Values.valueOf(16.0));
+    	printAllRoots(2, vf.valueOf(16.0));
     	// print all 3rd roots of 16
-    	printAllRoots(3, Values.valueOf(16.0));
+    	printAllRoots(3, vf.valueOf(16.0));
     	// print all 3rd roots of 2+i
-    	printAllRoots(3, Values.complex(2, 1));
+    	printAllRoots(3, vf.complex(2, 1));
     	// print all 4th roots of 2+i
-    	printAllRoots(4, Values.complex(2, 1));
+    	printAllRoots(4, vf.complex(2, 1));
     	// print all 5th roots of 2+i
-    	printAllRoots(5, Values.complex(2, 1));
+    	printAllRoots(5, vf.complex(2, 1));
     	// print all 6th roots of 2+i
-    	printAllRoots(6, Values.complex(2, 1));
+    	printAllRoots(6, vf.complex(2, 1));
     	// print all 3rd roots of 2-2i
-    	printAllRoots(3, Values.complex(2, -2));
+    	printAllRoots(3, vf.complex(2, -2));
     }
     
     private void printAllRoots(int n, Complex value) {
@@ -114,7 +116,7 @@ class SquareRoot {
 		    double pi = Math.PI;
 
 		    for (int k = 0; k < n; k++) {
-			Complex root = Values.polar(Math.pow(r, 1.0/n), (phi + 2*k*pi) / n);
+			Complex root = Values.getDefaultInstance().polar(Math.pow(r, 1.0/n), (phi + 2*k*pi) / n);
 			resumedReturn(root);
 		    }
 		}

@@ -21,6 +21,7 @@ import orbital.util.Utility;
  * statistics.
  * 
  * @stereotype &laquo;Utilities&raquo;
+ * @stereotype &laquo;Module&raquo;
  * @version 1.0, 1999/03/08
  * @author  Andr&eacute; Platzer
  * @see orbital.math.MathUtilities
@@ -263,6 +264,7 @@ public final class Stat {
 	Utility.pre(experiment.dimension().width - 1 == funcs.length, "Experiments parametric data and linear combination of functions must fit");
 	if (experiment.dimension().width != 2)
 	    throw new UnsupportedOperationException("Regression with >2 parameters not yet supported by this method. Use regression(Vector,Matrix,Matrix) instead");
+	final Values vf = Values.getDefaultInstance();
 	// find maximum argument dimension required by the funcs
 	int dimensions[] = new int[funcs.length];
 	// foreach Function v in funcs
@@ -270,7 +272,7 @@ public final class Stat {
 	    dimensions[v] = funcs[v] instanceof CoordinateCompositeFunction
 		? ((CoordinateCompositeFunction) funcs[v]).dimension()
 		: 1;
-	Matrix A = Values.newInstance(experiment.dimension().height, Evaluations.max(dimensions));
+	Matrix A = vf.newInstance(experiment.dimension().height, Evaluations.max(dimensions));
 	if (A.dimension().width > A.dimension().height)
 	    throw new ArithmeticException("linear coefficients exceed experiment datasets (" + A.dimension().width + ">" + A.dimension().height + ") the statistical solution is ambiguous and (n-m) parametric");
 
@@ -283,7 +285,7 @@ public final class Stat {
 		arg = arg.remove(arg.dimension() - 1);					// strip response variable
 		if (arg.dimension() == 1)								// extend single value to whole vector?
 		    if (funcs[v] instanceof CoordinateCompositeFunction)
-			arg = Values.CONST( ((CoordinateCompositeFunction) funcs[v]).argumentDimension(), arg.get(0));
+			arg = vf.CONST( ((CoordinateCompositeFunction) funcs[v]).argumentDimension(), arg.get(0));
 		    else
 			throw new UnsupportedOperationException("Supports only regression for single or full parameters. Use elementary regression(Vector, Matrix, Matrix) instead");
 		A.setRow(j, (Vector) funcs[v].apply(arg));
@@ -291,7 +293,7 @@ public final class Stat {
 	Vector u = experiment.getColumn(experiment.dimension().width - 1);
 
 	// println("u="+u+"="+A+"*"+experiment.getColumn(0)+" estimation...");
-	return regression(u, A, Values.IDENTITY(A.dimension().height, A.dimension().height));
+	return regression(u, A, vf.IDENTITY(A.dimension().height, A.dimension().height));
     } 
 
     /**

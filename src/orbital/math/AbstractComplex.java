@@ -55,7 +55,7 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
 	    Complex b = (Complex) o;
 	    return re().equals(b.re()) && im().equals(b.im());
     	} else if (o != null && Values.isPrimitiveWrapper(o.getClass())) {
-	    if (equals(Values.valueOf((Number)o)))
+	    if (equals(Values.getDefaultInstance().valueOf((Number)o)))
 		throw new IllegalArgumentException("comparing " + Scalar.class.getName() + "s with primitive wrapper type " + o.getClass() + " is not supported (since then Object.equals(Object) is symmetric)");
 	    else
 		return false;
@@ -70,7 +70,7 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
 	//@see Double#hashCode()
 	bits = java.lang.Double.doubleToLongBits(imaginaryValue());
 	hash = hash ^ (int)(bits ^ (bits >>> 32));
-	assert imaginaryValue()!=0 || hash == Values.valueOf(realValue()).hashCode() : "for im()=0, hash is already the same return value as for reals";
+	assert imaginaryValue()!=0 || hash == Values.getDefaultInstance().valueOf(realValue()).hashCode() : "for im()=0, hash is already the same return value as for reals";
 	return hash;
     } 
 
@@ -91,7 +91,7 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
     abstract double imaginaryValue();
 
     public Real norm() {
-	return Values.valueOf(Math.sqrt(normSquare()));
+	return Values.getDefaultInstance().valueOf(Math.sqrt(normSquare()));
     } 
     double normSquare() {
 	double real = realValue();
@@ -108,7 +108,7 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
      * @see #norm()
      */
     public Real arg() {
-	return Values.valueOf(Math.atan2(imaginaryValue(), realValue()));
+	return Values.getDefaultInstance().valueOf(Math.atan2(imaginaryValue(), realValue()));
 	//return Math.acos(realValue() / norm());
     } 
 
@@ -282,7 +282,7 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
     	 * @return re z = re (a + <b>i</b>b) = a = (z+<span class="conjugate">z</span>) / 2
     	 */
     	public Real re() {
-	    return Values.valueOf(real);
+	    return Values.getDefaultInstance().valueOf(real);
     	} 
     	double realValue() {
 	    return real;
@@ -293,7 +293,7 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
     	 * @return im z = im (a + <b>i</b>b) = b = (z-<span class="conjugate">z</span>) / (2<b>i</b>)
     	 */
     	public Real im() {
-	    return Values.valueOf(imaginary);
+	    return Values.getDefaultInstance().valueOf(imaginary);
     	} 
     	double imaginaryValue() {
 	    return imaginary;

@@ -44,13 +44,14 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
     public Arithmetic divide(Arithmetic b) {
 	if (b instanceof Integer) {
 	    assert java.lang.Integer.MIN_VALUE <= longValue() && longValue() <= java.lang.Integer.MAX_VALUE && java.lang.Integer.MIN_VALUE <= ((Integer) b).longValue() && ((Integer) b).longValue() <= java.lang.Integer.MAX_VALUE : "avoid possible loss of precision";
-	    return Values.narrow(Values.rational((int) intValue(), ((Integer) b).intValue()));
+	    final Values vf = Values.getDefaultInstance();
+	    return vf.narrow(vf.rational((int) intValue(), ((Integer) b).intValue()));
 	} 
 	return (Arithmetic) Operations.divide.apply(this, b);
     } 
     public Arithmetic inverse() {
 	assert java.lang.Integer.MIN_VALUE <= longValue() && longValue() <= java.lang.Integer.MAX_VALUE : "possible loss of precision";
-	return Values.rational(1, intValue());
+	return Values.getDefaultInstance().rational(1, intValue());
     } 
     public Arithmetic power(Arithmetic b) {
 	if (b instanceof Integer)
@@ -75,6 +76,11 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
 	return this;
     }
     // end of overwrite rational
+
+    // Euclidean
+    public Integer degree() {
+	return (Integer) norm();
+    }
 
     // delegate super class operations
     public Rational add(Rational b) {
@@ -132,7 +138,7 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
     	} 
     
 	public Real norm() {
-	    return Values.valueOf(Math.abs(longValue()));
+	    return Values.getDefaultInstance().valueOf(Math.abs(longValue()));
 	} 
 
     	// Arithmetic implementation synonyms
@@ -153,9 +159,6 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
     	}
     	
     	// Euclidean implementation
-	public Integer degree() {
-	    return Values.valueOf(Math.abs(longValue()));
-	}
     	public Integer quotient(Integer b) {
 	    return new Long(longValue() / b.longValue());
     	}
@@ -204,7 +207,7 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
     	} 
     
 	public Real norm() {
-	    return Values.valueOf(Math.abs(intValue()));
+	    return Values.getDefaultInstance().valueOf(Math.abs(intValue()));
 	} 
 
     	// Arithmetic implementation synonyms
@@ -241,9 +244,6 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
     	} 
 
     	// Euclidean implementation
-	public Integer degree() {
-	    return Values.valueOf(Math.abs(intValue()));
-	}
     	public Integer quotient(Integer b) {
 	    return new Int(intValue() / b.intValue());
     	}

@@ -44,6 +44,7 @@ import java.util.logging.Level;
  * @author Andr&eacute; Platzer
  * @version 1.1, 2002-08-21
  * @see MathUtilities
+ * @stereotype &laquo;Module&raquo;
  * @see orbital.util.Utility
  */
 public final class AlgebraicAlgorithms {
@@ -204,7 +205,7 @@ public final class AlgebraicAlgorithms {
 	    } catch (IndexOutOfBoundsException differentLengthOfMonomials) {
 		Function Xpower = new Function() {
 			public Object apply(Object i) {
-			    return Values.MONOMIAL(Values.ONE, (int[])i);
+			    return Values.getDefaultInstance().MONOMIAL((int[])i);
 			}
 			public String toString() {
 			    return "X0^.*...Xn^.";
@@ -249,7 +250,7 @@ public final class AlgebraicAlgorithms {
 	    final int[] dim = new int[tdim.length + sdim.length];
 	    System.arraycopy(tdim, 0, dim, 0, tdim.length);
 	    System.arraycopy(sdim, 0, dim, tdim.length, sdim.length);
-	    Tensor r = Values.newInstance(dim);
+	    Tensor r = Values.getDefaultInstance().newInstance(dim);
 	    for (Combinatorical index = Combinatorical.getPermutations(r.dimensions()); index.hasNext(); ) {
 		int[] i = index.next();
 		int[] ai = new int[tdim.length];
@@ -475,12 +476,13 @@ public final class AlgebraicAlgorithms {
     public static final Arithmetic chineseRemainder(Arithmetic x[], Arithmetic m[]) {
 	if (x.length != m.length)
 	    throw new IllegalArgumentException("must give the same number of congruence values and modulos");
+	final Values vf = Values.getDefaultInstance();
 	Arithmetic xStar = x[0];
 	Arithmetic M = xStar.one();
 	for (int i = 1; i < m.length; i++) {
 	    M = M.multiply(m[i-1]);
-	    final Arithmetic c = Values.quotient((Euclidean) M, (Euclidean) m[i]).inverse()/*.representative()*/;		// the inverse modulo m[i] of m
-	    final Arithmetic s = Values.quotient((Euclidean) (x[i].subtract(xStar)).multiply(c), (Euclidean) m[i]).representative();
+	    final Arithmetic c = vf.quotient((Euclidean) M, (Euclidean) m[i]).inverse()/*.representative()*/;		// the inverse modulo m[i] of m
+	    final Arithmetic s = vf.quotient((Euclidean) (x[i].subtract(xStar)).multiply(c), (Euclidean) m[i]).representative();
 	    xStar = xStar.add(s.multiply(M));
 	}
 	return xStar;
@@ -533,6 +535,7 @@ public final class AlgebraicAlgorithms {
 	    this.elementaryReduce = new Function/*<Polynomial,Polynomial>*/() {
 		    public Object apply(Object o) {
 			final Polynomial f = (Polynomial)o;
+			final Values vf = Values.getDefaultInstance();
 			//@internal we would prefer reverse direction, also starting with leading coefficient
 			final SortedSet occurring = new TreeSet(new ReverseComparator(monomialOrder));
 			occurring.addAll(occurringMonomials(f));
@@ -561,12 +564,12 @@ public final class AlgebraicAlgorithms {
 				    continue reductionPolynomials;
 				}
 				// divisible, then q := cdiv*X<sup>xdiv</sup>
-				final Polynomial q = Values.MONOMIAL(cdiv, xdiv);
+				final Polynomial q = vf.MONOMIAL(cdiv, xdiv);
 				final Polynomial reduction = f.subtract(q.multiply(gj));
-				assert reduction.get(nu).norm().equals(Values.ZERO) : Values.MONOMIAL(Values.ONE, nu) + " does not occur in " + reduction + " anymore";
+				assert reduction.get(nu).norm().equals(Values.ZERO) : vf.MONOMIAL(Values.ONE, nu) + " does not occur in " + reduction + " anymore";
 				assert INDUCED(monomialOrder).compare(reduction, f) < 0 : reduction + "<" + f;
 				if (!reduction.get(nu).norm().equals(Values.ZERO))
-				    throw new AssertionError(Values.MONOMIAL(Values.ONE, nu) + " does not occur in " + reduction + " anymore");
+				    throw new AssertionError(vf.MONOMIAL(Values.ONE, nu) + " does not occur in " + reduction + " anymore");
 				if (!(INDUCED(monomialOrder).compare(reduction, f) < 0))
 				    throw new AssertionError(reduction + "<" + f);
 				logger.log(Level.FINEST, "elementary reduction {0} - {1} * ({2}) == {3}", new Object[] {f, q, gj, reduction});
@@ -659,6 +662,7 @@ public final class AlgebraicAlgorithms {
      */
     private static final Set/*_<Polynomial<R,S>>_*/ groebnerBasisImpl(Collection/*_<Polynomial<R,S>>_*/ gg, final Comparator monomialOrder) {
 	final List/*_<Polynomial<R,S>>_*/ g = new ArrayList(gg);
+	final Values vf = Values.getDefaultInstance();
 	ergaenzeGroebnerBasis:
 	while (true) {
 	    for (int i = 0; i < g.size(); i++) {
@@ -673,16 +677,16 @@ public final class AlgebraicAlgorithms {
 		    final Vector/*>S<*/ d = Functionals.map(Operations.max, lgi, lgj);
 		    final Vector/*>S<*/ nu = d.subtract(lgi);
 		    final Vector/*>S<*/ mu = d.subtract(lgj);
-		    assert Setops.all(nu.iterator(), mu.iterator(), new orbital.logic.functor.BinaryPredicate() { public boolean apply(Object nui, Object mui) {return nui.equals(Values.ZERO) || mui.equals(Values.ZERO);} }) : "coprime " + Values.MONOMIAL(Values.ONE, nu) + " and " + Values.MONOMIAL(Values.ONE, mu);
+		    assert Setops.all(nu.iterator(), mu.iterator(), new orbital.logic.functor.BinaryPredicate() { public boolean apply(Object nui, Object mui) {return nui.equals(Values.ZERO) || mui.equals(Values.ZERO);} }) : "coprime " + vf.MONOMIAL( nu) + " and " + vf.MONOMIAL(mu);
 		    // Xpowernugi = 1/lc(g[i]) * X<sup>nu</sup>*g[i]
-		    final Polynomial Xpowernugi = Values.MONOMIAL(gi.get(lgi).inverse(), nu).multiply(gi);
+		    final Polynomial Xpowernugi = vf.MONOMIAL(gi.get(lgi).inverse(), nu).multiply(gi);
 		    // Xpowernugi = 1/lc(g[j]) * X<sup>mu</sup>*g[j]
-		    final Polynomial Xpowermugj = Values.MONOMIAL(gj.get(lgj).inverse(), mu).multiply(gj);
+		    final Polynomial Xpowermugj = vf.MONOMIAL(gj.get(lgj).inverse(), mu).multiply(gj);
 		    assert leadingMonomial(Xpowernugi, monomialOrder).equals(leadingMonomial(Xpowermugj, monomialOrder)) : "construction should generate equal leading monomials (" + leadingMonomial(Xpowernugi, monomialOrder) + " of " + Xpowernugi + " and " + leadingMonomial(Xpowermugj, monomialOrder) + " of " + Xpowermugj + ") which vanish by subtraction";
 		    final Polynomial Sgigj = Xpowernugi.subtract(Xpowermugj);
 		    assert Sgigj.get(d).norm().equals(Values.ZERO) : "construction should generate equal leading monomials which vanish by subtraction";
 		    final Polynomial r = reduce(Sgigj, g, monomialOrder);
-		    logger.log(Level.FINER, "S({0},{1}) = {2} * ({3})  -  {4} * ({5}) = {6} reduced to {7}", new Object[] {gi, gj, Values.MONOMIAL(gi.get(lgi).inverse(), nu), gi, Values.MONOMIAL(gj.get(lgj).inverse(), mu), gj, Sgigj, r});
+		    logger.log(Level.FINER, "S({0},{1}) = {2} * ({3})  -  {4} * ({5}) = {6} reduced to {7}", new Object[] {gi, gj, vf.MONOMIAL(gi.get(lgi).inverse(), nu), gi, vf.MONOMIAL(gj.get(lgj).inverse(), mu), gj, Sgigj, r});
 		    if (isZeroPolynomial.apply(r))
 			logger.log(Level.FINE, "skip reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
 		    else {
@@ -757,8 +761,9 @@ public final class AlgebraicAlgorithms {
     private static final Predicate isZeroPolynomial = new Predicate() {
 	    public boolean apply(Object p) {
 		Polynomial r = (Polynomial) p;
+		final Values vf = Values.getDefaultInstance();
 		return r.degreeValue() < 0
-		    || Values.asTensor(r).norm().equals(Values.ZERO, Values.valueOf(MathUtilities.getDefaultTolerance()));
+		    || vf.asTensor(r).norm().equals(Values.ZERO, vf.valueOf(MathUtilities.getDefaultTolerance()));
 	    }
 	};
 

@@ -3,31 +3,33 @@ import orbital.math.*;
 class PolynomialTest extends MathTest {
     private PolynomialTest() {}
     public static void main(String arg[]) {
+	// get us a value factory for creating arithmetic objects
+	final Values vf = Values.getDefaultInstance();
 	{
-	    Polynomial/*<Real>*/ f = Values.polynomial(new double[] {2,1,4,2});
-	    Polynomial/*<Real>*/ g = Values.polynomial(new double[] {3,5,8,-1});
+	    Polynomial/*<Real>*/ f = vf.polynomial(new double[] {2,1,4,2});
+	    Polynomial/*<Real>*/ g = vf.polynomial(new double[] {3,5,8,-1});
 	    System.out.println("(" + f + ") * (" + g + ") = " + f.multiply(g));
 	}
-	UnivariatePolynomial/*<Rational>*/ f = Values.polynomial(new Rational[] {Values.ZERO, Values.ZERO, Values.ONE});
-	UnivariatePolynomial/*<Rational>*/ g = Values.polynomial(new Rational[] {Values.ZERO, Values.ONE});
-	Rational a = Values.rational(4);
+	UnivariatePolynomial/*<Rational>*/ f = vf.polynomial(new Rational[] {vf.ZERO, vf.ZERO, vf.ONE});
+	UnivariatePolynomial/*<Rational>*/ g = vf.polynomial(new Rational[] {vf.ZERO, vf.ONE});
+	Rational a = vf.rational(4);
 	printArithmetic(f,g,false);
 	System.out.println("(" + f + ") div (" + g + ") = " + f.quotient(g));
 	System.out.println("(" + f + ") mod (" + g + ") = " + f.modulo(g));
-	System.out.println("(" + f + ")(" + a + ") = " + f.apply(a) + " = " + f.modulo(Values.polynomial(new Rational[] {(Rational) a.minus(), Values.ONE})));
+	System.out.println("(" + f + ")(" + a + ") = " + f.apply(a) + " = " + f.modulo(vf.polynomial(new Rational[] {(Rational) a.minus(), vf.ONE})));
 	Euclidean v[] = AlgebraicAlgorithms.gcd(new Euclidean[] {f, g});
 	System.out.println("gcd(" + f + "," + g + ") = " + v[v.length - 1] + " = (" + v[0] + ")*(" + f + ") + (" + v[1] + ")*(" + g + ")");
 
-	f = Values.polynomial(new Rational[] {Values.ONE, Values.ONE, Values.ONE, Values.ONE, Values.ONE, Values.ONE});
-	g = Values.polynomial(new Rational[] {Values.ONE, Values.valueOf(-1), Values.ZERO, Values.valueOf(-1), Values.ONE});
+	f = vf.polynomial(new Rational[] {vf.ONE, vf.ONE, vf.ONE, vf.ONE, vf.ONE, vf.ONE});
+	g = vf.polynomial(new Rational[] {vf.ONE, vf.valueOf(-1), vf.ZERO, vf.valueOf(-1), vf.ONE});
 	printArithmetic(f,g,false);
 	System.out.println("(" + f + ") div (" + g + ") = " + f.quotient(g));
 	System.out.println("(" + f + ") mod (" + g + ") = " + f.modulo(g));
-	Euclidean rem = f.modulo(Values.polynomial(new Rational[] {(Rational) a.minus(), Values.ONE}));
+	Euclidean rem = f.modulo(vf.polynomial(new Rational[] {(Rational) a.minus(), vf.ONE}));
 	System.out.println("(" + f + ")(" + a + ") = " + f.apply(a) + " = " + rem);
 	assert f.apply(a).toString().equals(rem.toString()) : "weak form of constant polynomial / rational equality";
-	a = Values.rational(2,7);
-	rem = f.modulo(Values.polynomial(new Rational[] {(Rational) a.minus(), Values.ONE}));
+	a = vf.rational(2,7);
+	rem = f.modulo(vf.polynomial(new Rational[] {(Rational) a.minus(), vf.ONE}));
 	System.out.println("(" + f + ")(" + a + ") = " + f.apply(a) + " = " + rem);
 	assert f.apply(a).toString().equals(rem.toString()) : "weak form of constant polynomial / rational equality";
 	v = AlgebraicAlgorithms.gcd(new Euclidean[] {f, g});

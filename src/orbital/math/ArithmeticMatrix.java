@@ -27,22 +27,23 @@ class ArithmeticMatrix/*<R implements Arithmetic>*/ extends AbstractMatrix/*<R>*
 	public static void main(String arg[]) throws Exception {
 	    // use new ArithmeticMatrix(Values.valueOf( ... double[][] ... ).toArray() )
 	    // to force usage of an arithmetic matrix for testing purpose
-	    Matrix M = new ArithmeticMatrix(Values.valueOf(new double[][] {
+	    final Values vf = Values.getDefaultInstance();
+	    Matrix M = new ArithmeticMatrix(vf.valueOf(new double[][] {
 		{2, 1, 0, -2},
 		{1, 2, 4, 1},
 		{-2, 1, 2, -2},
 		{-3, 0, 1, -4}
 	    }).toArray());
 	    //@xxx class Debug produces an error with gjc error: type parameter double[] is not within its bound orbital.math.Arithmetic
-	    Vector v = new ArithmeticVector(Values.valueOf(new double[] {
+	    Vector v = new ArithmeticVector(vf.valueOf(new double[] {
 		1, 2, 1, 2
 	    }).toArray());
-	    Vector u = new ArithmeticVector(Values.valueOf(new double[] {
+	    Vector u = new ArithmeticVector(vf.valueOf(new double[] {
 		2, 1, 0, -3
 	    }).toArray());
 	    System.out.println(M + "*" + v + "=" + M.multiply(v));
 	    System.out.println(u + "*" + v + "=" + u.multiply(v));
-	    System.out.println(v + "*" + 2 + "=" + v.multiply(Values.valueOf(2)));
+	    System.out.println(v + "*" + 2 + "=" + v.multiply(vf.valueOf(2)));
 	    System.out.println("M^-1=" + M.inverse());
 	    System.out.println("Type examination Matrix N to multiply M with");
 	    String n = "";
@@ -52,7 +53,7 @@ class ArithmeticMatrix/*<R implements Arithmetic>*/ extends AbstractMatrix/*<R>*
 		    break;
 		n += (char) ch;
 	    } 
-	    Matrix N = (Matrix) Values.valueOf(n);
+	    Matrix N = (Matrix) vf.valueOf(n);
 	    System.out.println("norm ||N||\t=" + N.norm());
 	    System.out.println("column sum norm\t=" + N.norm(1));
 	    System.out.println("row sum norm\t=" + N.norm(Double.POSITIVE_INFINITY));

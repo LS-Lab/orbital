@@ -86,9 +86,9 @@ import orbital.util.Utility;
 		public Object apply(Object x) {
 			// convert single scalar to constant vector
 			if (!(x instanceof Vector) && x instanceof Scalar)
-				x = Values.CONST(dimension(), (Arithmetic)x);
+				x = Values.getDefaultInstance().CONST(dimension(), (Arithmetic)x);
 			Vector xv = (Vector) x;
-			Vector r = Values.newInstance(dimension());
+			Vector r = Values.getDefaultInstance().newInstance(dimension());
 			for (int i = 0; i < r.dimension(); i++)
 				r.set(i, (Arithmetic) componentFunction[i].apply(xv.get(i)));
 			return r;

@@ -145,7 +145,7 @@ public class SimulatedAnnealing extends ScheduledLocalOptimizerSearch {
      * O(b) where b is the branching factor and d the solution depth.
      */
     public orbital.math.functional.Function spaceComplexity() {
-	return orbital.math.functional.Functions.constant(Values.symbol("b"));
+	return orbital.math.functional.Functions.constant(Values.getDefaultInstance().symbol("b"));
     }
     public boolean isOptimal() {
     	return false;
@@ -189,7 +189,7 @@ public class SimulatedAnnealing extends ScheduledLocalOptimizerSearch {
 	public boolean accept(Object/*>S<*/ state, Object/*>S<*/ sp) {
 	    final ScheduledLocalOptimizerSearch algorithm = (ScheduledLocalOptimizerSearch) getAlgorithm();
 	    // current temperature scheduled for successive cooling
-	    this.T = ((Number) algorithm.getSchedule().apply(Values.valueOf(t))).doubleValue();
+	    this.T = ((Number) algorithm.getSchedule().apply(Values.getDefaultInstance().valueOf(t))).doubleValue();
 	    this.t++;
 
 	    final double value = ((Number) algorithm.getEvaluation().apply(sp)).doubleValue();
@@ -254,7 +254,7 @@ public class SimulatedAnnealing extends ScheduledLocalOptimizerSearch {
 // 	double currentValue = Double.POSITIVE_INFINITY;
 // 	for (int t = 0; !nodes.isEmpty(); t++) {
 // 	    // current temperature scheduled for successive cooling
-// 	    final double T = ((Number) getSchedule().apply(Values.valueOf(t))).doubleValue();
+// 	    final double T = ((Number) getSchedule().apply(Values.getDefaultInstance().valueOf(t))).doubleValue();
 // 	    if (T == 0)
 // 		return current;
 // 	    final GeneralSearchProblem.Option node = select(nodes);
