@@ -251,13 +251,15 @@ public class Gamemaster implements Runnable {
 	final Thread thisThread = Thread.currentThread();
 	{
 	    final Field field = getField();
+	    if (field == null)
+		throw new IllegalStateException("illegal field: " + field);
 	    field.getFieldChangeMulticaster().stateChanged(new FieldChangeEvent(field, FieldChangeEvent.BEGIN_OF_GAME, null));
 	}
 	// do moves while it's an AI's turn
 	while (runner == thisThread && !Thread.interrupted()) {
 	    final Field field = getField();
 	    if (field == null)
-		throw new NullPointerException("illegal field: " + field);
+		throw new IllegalStateException("illegal field: " + field);
 	    final int turn = field.getTurn();
 	    ////showStatus(getResources().getString("statusbar.ai.thinking"));
 	    System.err.println("statusbar.ai.thinking");

@@ -58,7 +58,7 @@ public class Field implements Serializable, Cloneable {
     /**
      * @serial
      */
-    private /*@fixme transient?*/ FieldChangeSupport changeSupport = new FieldChangeSupport();
+    private FieldChangeSupport changeSupport = new FieldChangeSupport();
 
     public Field(int width, int height) {
 	this.field = new Figure[height][width];
