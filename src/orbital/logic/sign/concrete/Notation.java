@@ -46,12 +46,12 @@ public abstract class Notation implements Serializable, Comparable {
      * the name to display for this enum value
      * @serial
      */
-    private final String	  name;
+    private final String name;
 
     /**
      * Ordinal of next enum value to be created
      */
-    private static int		  nextOrdinal = 0;
+    private static int nextOrdinal = 0;
 
     /**
      * Table of all canonical references to Notation classes
@@ -62,7 +62,7 @@ public abstract class Notation implements Serializable, Comparable {
      * Assign an ordinal to this enum value
      * @serial
      */
-    private final int		  ordinal = nextOrdinal++;
+    private final int ordinal = nextOrdinal++;
 
     /**
      * Which notation to use for DEFAULT.
@@ -170,7 +170,7 @@ public abstract class Notation implements Serializable, Comparable {
     public static final Notation AUTO = new Notation("auto") {
 	    private static final long serialVersionUID = -5725522528292770323L;
 	    public String format(Object functor, Object arg) {
-		NotationSpecification spec = notationOf(functor);
+		NotationSpecification spec = getNotation(functor);
 		if (spec != null)
 		    return spec.notation.format(functor, arg);
 		else
@@ -288,7 +288,7 @@ public abstract class Notation implements Serializable, Comparable {
 			private final String visit(Node node) {
 			    if (node.isLeaf())
 				return ((KeyValuePair) node).getValue() + "";
-			    NotationSpecification spec = notationOf(((KeyValuePair) node).getKey());
+			    NotationSpecification spec = getNotation(((KeyValuePair) node).getKey());
 			    int	   apos = 0;
 
 			    // will contain formatted arguments
@@ -300,7 +300,7 @@ public abstract class Notation implements Serializable, Comparable {
 				if (spec != null && spec.associativity.charAt(apos) == 'f')
 				    apos++;
 				Node                  n = (Node) it.next();
-				NotationSpecification childSpec = notationOf(((KeyValuePair) n).getKey());
+				NotationSpecification childSpec = getNotation(((KeyValuePair) n).getKey());
 				String                inner = visit(n);
 
 				// handle associativity if specified
@@ -402,17 +402,19 @@ public abstract class Notation implements Serializable, Comparable {
      * @param notation the notation string of the functor.
      * @param arg the arguments the functor belonging to the notation is called with.
      * @return the functor belonging to the notation if registered, or <tt>null</tt>.
-     * @see #notationOf(Object)
+     * @see #getNotation(Object)
      * @todo change arguments to (String, Object) as well?
      */
     public static Functor functorOf(String notation, Object[] arg) {
 	assert arg.length <= 2 : "functor notations are currently used for at most 2 arguments";
 	for (Iterator/*_<Functor>_*/ i = functorNotation.keySet().iterator(); i.hasNext(); ) {
 	    Functor functor = (Functor/*__*/) i.next();
-	    if (arg.length == 1 && !((functor instanceof Function) || (functor instanceof Predicate)))
-		continue;
-	    if (arg.length == 2 && !((functor instanceof BinaryFunction) || (functor instanceof BinaryPredicate)))
-		continue;
+	    try {
+		if (arg.length != Functor.Specification.getSpecification(functor).arity())
+		    continue;
+	    } catch (IntrospectionException ex) {
+		throw new orbital.util.InnerCheckedException(ex);
+	    }
 	    if (notation.equals(functor.toString()))
 		return functor;
 	}
@@ -424,17 +426,17 @@ public abstract class Notation implements Serializable, Comparable {
      * @return the default notation specification of the functor, or <code>null</code> if not set.
      * @see #functorOf(String, Object[])
      */
-    protected static NotationSpecification notationOf(Object functor) {
+    public static NotationSpecification getNotation(Object functor) {
 	return (NotationSpecification/*__*/) functorNotation.get(functor);
     } 
 
     /**
      * Get the precedence of a functor (with 1 being the highest precedence).
      * @return the precedence of the functor, or 0 if not set.
-     * @see #notationOf(Object)
+     * @see #getNotation(Object)
      */
     protected static int precedenceOf(Object functor) {
-	NotationSpecification spec = notationOf(functor);
+	NotationSpecification spec = getNotation(functor);
 	return spec != null ? spec.precedence : 0;
     } 
 
@@ -470,7 +472,7 @@ public abstract class Notation implements Serializable, Comparable {
      */
     private static boolean hasCompactBrackets(Object functor) {
 	// distinguish unary from binary registered functors
-	NotationSpecification spec = notationOf(functor);
+	NotationSpecification spec = getNotation(functor);
 	return spec != null ? spec.associativity.length() == 2 : false;
     } 
     
