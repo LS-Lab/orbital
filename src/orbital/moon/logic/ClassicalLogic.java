@@ -56,8 +56,8 @@ import orbital.util.IncomparableException;
 import java.beans.IntrospectionException;
 import java.io.*;
 
-import orbital.logic.functor.Notation;
-import orbital.logic.functor.Notation.NotationSpecification;
+import orbital.logic.sign.concrete.Notation;
+import orbital.logic.sign.concrete.Notation.NotationSpecification;
 import orbital.logic.functor.Functor.Specification;
 
 import java.util.logging.Logger;
@@ -435,6 +435,44 @@ public class ClassicalLogic extends ModernLogic {
     	return inferenceMechanism;
     }
 
+    /**
+     * Specifies special &lambda; notation <code>"\x.t"</code>.
+     */
+    private static final Notation NOTATION_LAMBDA = new Notation("lambda") {
+	    //private static final long serialVersionUID = 0
+	    public String format(Object compositor, Object arg) {
+		StringBuffer sb = new StringBuffer();
+		if (compositor != null) {
+		    if (compositor instanceof Composite)
+			// descend into composite compositors. will receive brackets, automatically, since !hasCompactBrackets("")
+			sb.append(Notation.DEFAULT.format("", compositor));
+		    else
+			sb.append(compositor + "");
+		}
+		if (arg == null)
+		    throw new NullPointerException();
+		if (arg != null) {
+		    Collection a = Utility.asCollection(arg);
+		    if (a.size() != 2)
+			throw new IllegalArgumentException("argument of size 2 expected");
+		    Iterator i = a.iterator();
+		    sb.append(i.next());
+		    sb.append('.');
+		    sb.append(i.next());
+		    assert !i.hasNext() : "size 2";
+		} 
+		return sb.toString();
+	    }
+	    /**
+	     * Maintains the guarantee that there is only a single object representing each enum constant.
+	     * @serialData canonicalized deserialization
+	     */
+	    private Object readResolve() throws java.io.ObjectStreamException {
+		// canonicalize
+		return NOTATION_LAMBDA;
+	    } 
+	};
+
     //@todo remove this bugfix that replaces "xfy" by "yfy" associativity only for *.jj parsers to work without inefficient right-associative lookahead.
     private static final String xfy = "yfy";
     private static final String typAssoc = "f";  //@xxx should be "fx"?
@@ -489,7 +527,7 @@ public class ClassicalLogic extends ModernLogic {
 	    {LogicFunctions.exists,       // "?"
 	     new NotationSpecification(900, "fy", Notation.PREFIX)},
 	    {LogicFunctions.lambda,       // "\\"
-	     new NotationSpecification(900, "fxy", Notation.PREFIX)},
+	     new NotationSpecification(900, "fxy", NOTATION_LAMBDA)},
 	    {LogicFunctions.pi,           // "\\\\"
 	     new NotationSpecification(900, "fxx", Notation.PREFIX)},
 
@@ -643,6 +681,7 @@ public class ClassicalLogic extends ModernLogic {
 	    public String toString() { return "\\\\"; }
 	};
     }
+    
 
     //@xxx get rid of these shared static variables
     // perhaps, LAMBDA is that important, that we should even publicize it to orbital.logic.imp.*? Or let them query it from the coreSignature() by "\\"?
@@ -760,7 +799,7 @@ public class ClassicalLogic extends ModernLogic {
 	    this.term = (Formula)a[1];
 	}
 	public Notation getNotation() {
-	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
+	    return Notation.DEFAULT;
 	}
 	public void setNotation(Notation notation) {
 	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
@@ -805,8 +844,7 @@ public class ClassicalLogic extends ModernLogic {
 		};
 	}
 	public String toString() {
-	    //@todo use notation like all others do. Should we also pretty-print &forall;(&lambda;x.p) as &forall;x p or something?
-	    return "\\" + x + "." + term;
+	    return getNotation().format(getCompositor(), getComponent());
 	}
     }
 
@@ -853,7 +891,7 @@ public class ClassicalLogic extends ModernLogic {
 	    this.term = (Formula)a[1];
 	}
 	public Notation getNotation() {
-	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
+	    return Notation.DEFAULT;
 	}
 	public void setNotation(Notation notation) {
 	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
@@ -890,8 +928,7 @@ public class ClassicalLogic extends ModernLogic {
 	}
 
 	public String toString() {
-	    //@todo use notation like all others do.
-	    return "(\\\\" + x + "." + term + ")";
+	    return getNotation().format(getCompositor(), getComponent());
 	}
     }
 
@@ -958,7 +995,7 @@ public class ClassicalLogic extends ModernLogic {
 	    }
 	}
 	public Notation getNotation() {
-	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
+	    return Notation.DEFAULT;
 	}
 	public void setNotation(Notation notation) {
 	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
@@ -1033,8 +1070,7 @@ public class ClassicalLogic extends ModernLogic {
 	}
 
 	public String toString() {
-	    //@todo use notation like all others do.
-	    return "(\\\\" + x + "." + term + ")";
+	    return getNotation().format(getCompositor(), getComponent());
 	}
     }
 
