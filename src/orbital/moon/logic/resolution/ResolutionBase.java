@@ -70,6 +70,17 @@ public abstract class ResolutionBase implements Inference {
 
     static final Logger logger = Logger.getLogger(ResolutionBase.class.getName());
 
+    private static boolean verbose = false;
+    /**
+     * Add verbosity, i.e. print out a proof tree.
+     */
+    public void setVerbose(boolean newVerbose) {
+	this.verbose = newVerbose;
+    }
+    private static boolean isVerbose() {
+	return verbose;
+    }
+    
     /**
      * {@inheritDoc}
      * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
@@ -137,11 +148,11 @@ public abstract class ResolutionBase implements Inference {
         for (Iterator i = skolemizedB.iterator(); i.hasNext(); ) {
 	    clausebase.addAll(clausalForm((Formula) i.next(), SIMPLIFYING));
 	}
-        logger.log(Level.FINER, "{0} clausal {1}", new Object[] {logPrefix, clausebase});
+        logger.log(Level.FINER, "{0} as clausal {1}", new Object[] {logPrefix, clausebase});
 
 	// factorize
         clausebase.addAll((ClausalSet) Functionals.map(factorize, clausebase));
-        logger.log(Level.FINER, "{0} factorized to {0}", new Object[] {logPrefix, clausebase});
+        logger.log(Level.FINER, "{0} factorized to {1}", new Object[] {logPrefix, clausebase});
 
 	// remove tautologies and handle contradictions
     	// for all clauses F&isin;clausebase
@@ -177,7 +188,9 @@ public abstract class ResolutionBase implements Inference {
 	    (
 	     Functionals.map(new Function() {
 		     public Object apply(Object C) {
-			 return new ClauseImpl((Set)C);
+			 return isVerbose()
+			     ? new TraceableClauseImpl((Set)C)
+			     : new ClauseImpl((Set)C);
 		     }
 		 }, ClassicalLogic.Utilities.clausalForm(f, simplifying))
 	     );
