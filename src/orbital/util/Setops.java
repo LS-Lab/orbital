@@ -444,6 +444,25 @@ public final class Setops {
 		}
 	    };
     }
+    /**
+     * Returns an unmodifiable view of the same type as the collection specified.
+     * @see #newCollectionLike(Collection)
+     * @see Collections#unmodifiableCollection(Collection)
+     * @see Collections#unmodifiableList(List)
+     * @see Collections#unmodifiableSet(Set)
+     * @see Collections#unmodifiableSortedSet(SortedSet)
+     */
+    public static Collection/*_<A>_*/ unmodifiableCollectionLike(final Collection/*_<A>_*/ c) {
+	// find a rather similar collection type
+	if (c instanceof java.util.SortedSet)
+	    return Collections.unmodifiableSortedSet((SortedSet)c);
+	else if (c instanceof java.util.Set)
+	    return Collections.unmodifiableSet((Set)c);
+	else if (c instanceof java.util.List)
+	    return Collections.unmodifiableList((List)c);
+	else
+	    return Collections.unmodifiableCollection(c);
+    }
 
     /**
      * Copies all of the elements from one list-iterator into another.
