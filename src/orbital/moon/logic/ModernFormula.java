@@ -330,11 +330,11 @@ abstract class ModernFormula extends LogicBasis implements Formula {
         Notation notat = Notation.DEFAULT;
 	switch(arguments.length) {
 	case 0:
-	    return new ModernFormula.VoidCompositeVariableFormula(underlyingLogic, f, notation);
+	    return new ModernFormula.VoidAppliedVariableFormula(underlyingLogic, f, notation);
 	case 1:
-	    return new ModernFormula.CompositeVariableFormula(underlyingLogic, f, (Formula) arguments[0], notat);
+	    return new ModernFormula.AppliedVariableFormula(underlyingLogic, f, (Formula) arguments[0], notat);
 	case 2:
-	    return new ModernFormula.BinaryCompositeVariableFormula(underlyingLogic, f, (Formula) arguments[0], (Formula) arguments[1], notat);
+	    return new ModernFormula.BinaryAppliedVariableFormula(underlyingLogic, f, (Formula) arguments[0], (Formula) arguments[1], notat);
 	default:
 	    // could simply compose f(arguments), here, if f understands arrays
 	    //@todo which Locator to provide, here?
@@ -356,15 +356,15 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	case 0:
 	    if (f instanceof VoidPredicate && !(f instanceof VoidFunction))
 		f = Functionals.asFunction((VoidPredicate) f);
-	    return new ModernFormula.CompositeFormula(underlyingLogic, fsymbol, Functionals.onVoid((VoidFunction) f), (Formula) arguments[0], fsymbol.getNotation().getNotation());
+	    return new ModernFormula.AppliedFormula(underlyingLogic, fsymbol, Functionals.onVoid((VoidFunction) f), (Formula) arguments[0], fsymbol.getNotation().getNotation());
 	case 1:
 	    if (f instanceof Predicate && !(f instanceof Function))
 		f = Functionals.asFunction((Predicate) f);
-	    return new ModernFormula.CompositeFormula(underlyingLogic, fsymbol, (Function) f, (Formula) arguments[0], notat);
+	    return new ModernFormula.AppliedFormula(underlyingLogic, fsymbol, (Function) f, (Formula) arguments[0], notat);
 	case 2:
 	    if (f instanceof BinaryPredicate && !(f instanceof BinaryFunction))
 		f = Functionals.asFunction((BinaryPredicate) f);
-	    return new ModernFormula.BinaryCompositeFormula(underlyingLogic, fsymbol, (BinaryFunction) f, (Formula) arguments[0], (Formula) arguments[1], notat);
+	    return new ModernFormula.BinaryAppliedFormula(underlyingLogic, fsymbol, (BinaryFunction) f, (Formula) arguments[0], (Formula) arguments[1], notat);
 	default:
 	    // could simply compose f(arguments), here, if f understands arrays
 	    //@todo which Locator to provide, here?
@@ -378,32 +378,31 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     /**
      * <p>
      * This class is in fact a workaround for multiple inheritance of
-     * {@link ModernFormula} and {@link orbital.logic.functor.Compositions.CompositeFunction}.</p>
+     * {@link ModernFormula}, {@link orbital.logic.functor.Functor.Composite.Abstract}
+     * and some parts of {@link orbital.logic.functor.Compositions.CompositeFunction}.</p>
      * 
      * @structure inherits ModernFormula
      * @structure inherits Compositions.CompositeFunction
      * @todo change type of outer to Formula, and use ConstantFormulas for coreInterpretation instead
-     * @see CompositeFormula
+     * @see AppliedFormula
      */
-    static class CompositeVariableFormula extends ModernFormula implements Function.Composite {
+    static class AppliedVariableFormula extends ModernFormula implements Function.Composite {
 	protected Formula outer;
 	protected Formula inner;
-	public CompositeVariableFormula(Logic underlyingLogic, Formula f, Formula g, Notation notation) {
+	public AppliedVariableFormula(Logic underlyingLogic, Formula f, Formula g, Notation notation) {
 	    super(underlyingLogic);
 	    setNotation(notation);
 	    this.outer = f;
 	    this.inner = g;
-	    if (!inner.getType().domain().subtypeOf(outer.getType().codomain()))
-		throw new IllegalArgumentException("illegal composition types " + outer + " composed with " + inner);
 	}
-	public CompositeVariableFormula(Logic underlyingLogic, Formula f, Formula g) {
+	public AppliedVariableFormula(Logic underlyingLogic, Formula f, Formula g) {
 	    this(underlyingLogic, f, g, null);
 	}
 		
-	private CompositeVariableFormula() {super(null);setNotation(null);}
+	private AppliedVariableFormula() {super(null);setNotation(null);}
 		
         public Type getType() {
-	    return Types.map(inner.getType().codomain(), outer.getType().domain());
+	    return outer.getType().domain();
         }
         public Signature getSignature() {
 	    return inner.getSignature().union(outer.getSignature());
@@ -495,20 +494,20 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @structure inherits ModernFormula
      * @structure inherits Compositions.CompositeFunction
      * @todo change type of outer to Formula, and use ConstantFormulas for coreInterpretation instead
-     * @see CompositeFormula
+     * @see AppliedFormula
      */
-    static class VoidCompositeVariableFormula extends ModernFormula implements Function.Composite {
+    static class VoidAppliedVariableFormula extends ModernFormula implements Function.Composite {
 	protected Formula outer;
-	public VoidCompositeVariableFormula(Logic underlyingLogic, Formula f, Notation notation) {
+	public VoidAppliedVariableFormula(Logic underlyingLogic, Formula f, Notation notation) {
 	    super(underlyingLogic);
 	    setNotation(notation);
 	    this.outer = f;
 	}
-	public VoidCompositeVariableFormula(Logic underlyingLogic, Formula f) {
+	public VoidAppliedVariableFormula(Logic underlyingLogic, Formula f) {
 	    this(underlyingLogic, f, null);
 	}
 		
-	private VoidCompositeVariableFormula() {super(null);setNotation(null);}
+	private VoidAppliedVariableFormula() {super(null);setNotation(null);}
 		
         public Type getType() {
 	    return outer.getType().domain();
@@ -603,40 +602,27 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * 
      * @structure inherits ModernFormula
      * @structure inherits Functionals.BinaryCompositeFunction
-     * @see BinaryCompositeFormula
+     * @see BinaryAppliedFormula
      */
-    static class BinaryCompositeVariableFormula extends ModernFormula implements Function.Composite {
+    static class BinaryAppliedVariableFormula extends ModernFormula implements Function.Composite {
 	protected Formula outer;
 	protected Formula left;
 	protected Formula right;
-	public BinaryCompositeVariableFormula(Logic underlyingLogic, Formula f, Formula g, Formula h, Notation notation) {
+	public BinaryAppliedVariableFormula(Logic underlyingLogic, Formula f, Formula g, Formula h, Notation notation) {
 	    super(underlyingLogic);
 	    setNotation(notation);
 	    this.outer = f;
 	    this.left = g;
 	    this.right = h;
-	    //@xxx this is incompatible with Types.isApplicableTo. We use .domain() on the individual arguments.
-	    if (!Types.product(new Type[] {
-		left.getType().domain(),
-		right.getType().domain()
-	    }).subtypeOf(outer.getType().codomain()))
-		throw new IllegalArgumentException("illegal composition types " + outer + " composed with " + left + ", " + right);
 	}
-	public BinaryCompositeVariableFormula(Logic underlyingLogic, Formula f, Formula g, Formula h) {
+	public BinaryAppliedVariableFormula(Logic underlyingLogic, Formula f, Formula g, Formula h) {
 	    this(underlyingLogic, f, g, h, null);
 	}
 		
-	private BinaryCompositeVariableFormula() {super(null);setNotation(null);}
+	private BinaryAppliedVariableFormula() {super(null);setNotation(null);}
 
         public Type getType() {
-	    if (left.getType().codomain().equals(Types.VOID) && right.getType().codomain().equals(Types.VOID))
-		return Types.map(left.getType().codomain(), outer.getType().domain());
-	    else
-	    if (true)
-		throw new UnsupportedOperationException("@xxx is this composition in the sense of Functionals.compose(BinaryFunction,BinaryFunction,BinaryFunction) or of Functionals.compose(BinaryFunction,Function,Function) or of what?");
-	    if (!Utility.equals(left.getType().codomain(), right.getType().codomain()))
-		throw new InternalError("@todo not sure whether composition of inhomogenous types is allowed at all");
-	    return Types.map(left.getType().codomain(), outer.getType().domain());
+	    return outer.getType().domain();
         }
         public Signature getSignature() {
 	    //@todo could cache signature as well, provided left and right don't change
@@ -743,30 +729,28 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @structure inherits Compositions.CompositeFunction
      * @todo change type of outer to Formula, and use ConstantFormulas for coreInterpretation instead
      */
-    static class CompositeFormula extends ModernFormula implements Function.Composite {
+    static class AppliedFormula extends ModernFormula implements Function.Composite {
 	/**
 	 * The symbol of the fixed interpretation outer.
 	 */
 	protected Symbol outerSymbol;
 	protected Function outer;
 	protected Formula inner;
-	public CompositeFormula(Logic underlyingLogic, Symbol fsymbol, Function f, Formula g, Notation notation) {
+	public AppliedFormula(Logic underlyingLogic, Symbol fsymbol, Function f, Formula g, Notation notation) {
 	    super(underlyingLogic);
 	    setNotation(notation);
 	    this.outerSymbol = fsymbol;
 	    this.outer = f;
 	    this.inner = g;
-	    if (!inner.getType().domain().subtypeOf(fsymbol.getType().codomain()))
-		throw new IllegalArgumentException("illegal composition types " + fsymbol.getType() + " composed with " + inner);
 	}
-	public CompositeFormula(Logic underlyingLogic, Symbol fsymbol, Function f, Formula g) {
+	public AppliedFormula(Logic underlyingLogic, Symbol fsymbol, Function f, Formula g) {
 	    this(underlyingLogic, fsymbol, f, g, null);
 	}
 		
-	private CompositeFormula() {super(null);setNotation(null);}
+	private AppliedFormula() {super(null);setNotation(null);}
 		
         public Type getType() {
-	    return Types.map(inner.getType().codomain(), outerSymbol.getType().domain());
+	    return outerSymbol.getType().domain();
         }
         public Signature getSignature() {
 	    //@todo shouldn't we unify with getCompositor().getSignature() in case of formulas representing predicate or function?
@@ -849,12 +833,12 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @structure inherits ModernFormula
      * @structure inherits Functionals.BinaryCompositeFunction
      */
-    static class BinaryCompositeFormula extends ModernFormula implements Function.Composite {
+    static class BinaryAppliedFormula extends ModernFormula implements Function.Composite {
 	protected Symbol outerSymbol;
 	protected BinaryFunction outer;
 	protected Formula left;
 	protected Formula right;
-	public BinaryCompositeFormula(Logic underlyingLogic, Symbol fsymbol, BinaryFunction f, Formula g, Formula h, Notation notation) {
+	public BinaryAppliedFormula(Logic underlyingLogic, Symbol fsymbol, BinaryFunction f, Formula g, Formula h, Notation notation) {
 	    super(underlyingLogic);
 	    setNotation(notation);
 	    this.outerSymbol = fsymbol;
@@ -862,17 +846,14 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    this.left = g;
 	    this.right = h;
 	}
-	public BinaryCompositeFormula(Logic underlyingLogic, Symbol fsymbol, BinaryFunction f, Formula g, Formula h) {
+	public BinaryAppliedFormula(Logic underlyingLogic, Symbol fsymbol, BinaryFunction f, Formula g, Formula h) {
 	    this(underlyingLogic, fsymbol, f, g, h, null);
 	}
 		
-	private BinaryCompositeFormula() {super(null);setNotation(null);}
+	private BinaryAppliedFormula() {super(null);setNotation(null);}
 
         public Type getType() {
-	    if (left.getType().codomain().equals(Types.VOID) && right.getType().codomain().equals(Types.VOID))
-		return Types.map(left.getType().codomain(), outerSymbol.getType().domain());
-	    else
-	    throw new UnsupportedOperationException("not yet implemented");
+	    return outerSymbol.getType().domain();
         }
         public Signature getSignature() {
 	    //@todo could cache signature as well, provided left and right don't change
@@ -979,7 +960,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 //     /**
 //      * Get the symbol bound by this binding expression.
 //      * @todo generalize to a set of symbols bound alltogether?
-//      * @note however for BindingExpression functions cannot guess their left expression symbol with which they are composed in a CompositeFormula.
+//      * @note however for BindingExpression functions cannot guess their left expression symbol with which they are composed in a AppliedFormula.
 //      */
 //     Symbol binding();
 // }

@@ -31,9 +31,6 @@ import java.lang.reflect.Field;
  * @version 1.1, 2002-10-17
  * @author  Andr&eacute; Platzer
  * @structure depends orbital.logic.functor.Notation Uses registered notation functors reverse.
- * @see <a href="doc-files/MathExpressionSyntax_grammar.html">Grammar</a>
- * @see #parseExpression()
- * @todo introduce a lambda expression that uses the lambda operator implemented by substitution (see ...)
  */
 public class MathExpressionSyntax implements ExpressionBuilder {
     private static final Values valueFactory = Values.getDefaultInstance();
@@ -66,7 +63,7 @@ public class MathExpressionSyntax implements ExpressionBuilder {
     public Expression compose(Expression compositor, Expression arguments[]) throws ParseException {
 	MathExpression op = (MathExpression)compositor;
 	if (!Types.isApplicableTo(compositor.getType(), arguments))
-	    throw new ParseException("operator " + compositor + ":" + compositor.getType() + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments) + ":" + Types.typeOf(arguments), ClassicalLogic.COMPLEX_ERROR_OFFSET);
+	    throw new ParseException("compositor " + compositor + ":" + compositor.getType() + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments) + ":" + Types.typeOf(arguments), ModernLogic.COMPLEX_ERROR_OFFSET);
 	MathFunctor f = (MathFunctor) op.getValue();
 	Object[] arg = new Object[arguments.length];
 	for (int i = 0; i < arg.length; i++)
