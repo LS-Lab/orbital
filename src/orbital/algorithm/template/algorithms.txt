@@ -10,7 +10,7 @@ Graphs
 	depth-first search (over Stack)	O(|e|+|v|)
 	breadth-first search (over Queue)	O(|e|+|v|)
 
-Linear Programming
+Linear Programming (alias mathematical programming)
 	zum Lösen von Integergleichungen
 	simplex
 	hill-climbing
@@ -27,11 +27,9 @@ Probabilistic algorithms for approximative solution
 	Monte Carlo (mostly correct)
 	Las Vegas (repetitive randomization until solution is verified to be found)
 
-Genetic Algorithm
-
 Neuronal Net and Bayesian Believe Networks
 
-
+---
 Amortisierte Analyse
 
 Vorberechnung

@@ -19,18 +19,19 @@ import java.util.ArrayList;
 
 
 /**
+ *
  * @version 1.0, 2002/07/06
  * @author  Andr&eacute; Platzer
  */
 final class PackageUtilities {
     /**
      * Get the minimum argument (and its f-value).
-     * This method is a combination of min and arg min.
+     * This method is a combination of min and argmin.
      * @param choices the available choices in M.
      * @param f the evaluation function f:M&rarr;<b>R</b>.
      * @return the Pair (a, f(a))&isin;M&times;<b>R</b> with minimum f(a).
      * @pre choices.hasNext()
-     * @post RES = (a,v) &and; a = arg min<sub>a'&isin;M</sub> f(a')
+     * @post RES = (a,v) &and; a = argmin<sub>a'&isin;M</sub> f(a')
      *  &and; v = min<sub>a'&isin;M</sub> f(a').
      * @throws NoSuchElementException if !choices.hasNext()
      * @see orbital.util.Setops#argmin(Iterator,Function)
@@ -87,9 +88,11 @@ final class PackageUtilities {
     /**
      * Decorator restricting transitions of a GSP randomly.
      * This filters A(s) to a random subset.
+     * @param problem the problem to decorate.
      * @param numberOfChoices the (maximum) number of random choices for each transition.
      * @param algorithm the probabilistic algorithm using this restriction.
      *  That instance is needed for providing {@link ProbabilisticAlgorithm#getRandom()}.
+     * @todo might also provide a Random generator explicitly, if we would not like changing it during a search, anyway.
      * @return the decorated problem.
      */
     public GeneralSearchProblem restrictRandomly(GeneralSearchProblem problem, final int numberOfChoices, final ProbabilisticAlgorithm algorithm) {
@@ -104,7 +107,7 @@ final class PackageUtilities {
 			actions.remove(index);
 			assert true : "invariant: restrictedActions contains a subset of OLD(actions) of the size i, actions does not contain those elements in restrictedActions any more (except for duplicats)";
 		    }
-		    assert true : "elite&sube;getDelegatee().actions(state)";
+		    assert true : "restrictedActions&sube;getDelegatee().actions(state)";
 		    return Setops.unmodifiableIterator(restrictedActions.iterator());
 		}
 	    };
@@ -113,12 +116,13 @@ final class PackageUtilities {
     /**
      * Decorator restricting transitions of a GSP to the best local transitions.
      * This filters A(s) to the subset of its best elements.
+     * @param problem the problem to decorate.
      * @param evaluationFunction the function S&rarr;<b>R</b> used to evalute the state s&#697;=t(s,a)&isin;S
      *  resulting from each action a&isin;A(s). Used for selecting the best f-values.
      * @return the decorated problem.
      * @see PackageUtilities#min
      */
-    public GeneralSearchProblem restrictBest(final Function evaluationFunction, GeneralSearchProblem problem) {
+    public GeneralSearchProblem restrictBest(GeneralSearchProblem problem, final Function evaluationFunction) {
 	return new DelegateGeneralSearchProblem(problem) {
 		public Iterator actions(Object state) {
 		    final GeneralSearchProblem problem = getDelegatee();

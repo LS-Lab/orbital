@@ -254,7 +254,7 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
      * @version 1.0, 2001/08/01
      * @author  Andr&eacute; Platzer
      * @todo really turn this class into a inner static class whose constructor requires an EvaluativeAlgorithm that also is a ProbabilisticAlgorithm?
-     * @todo replace by acceptStep(restrictRandomly(restrictBest(problem),problem,1))
+     * @todo replace by acceptStep(restrictRandomly(restrictBest(problem),algorithm,1))
      */
     public class OptionIterator extends GeneralSearch.OptionIterator {
 	private static final long serialVersionUID = -6802484555661425572L;
@@ -312,7 +312,7 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
      * An iterator over a state space in (probabilistic) greedy order for hill-climbing.
      * @version 1.0, 2001/08/01
      * @author  Andr&eacute; Platzer
-     * @todo replace by acceptStep(restrictRandomly(problem,1))
+     * @todo replace by acceptStep(restrictRandomly(problem,algorithm,1))
      */
     private static class OptionIterator_First extends LocalOptimizerSearch.OptionIterator {
 	private static final long serialVersionUID = -3674513421043835094L;

@@ -166,6 +166,7 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
 	    final List actions = Setops.asList(problem.actions(state));
 	    if (actions.isEmpty())
 		//@internal note that hasNext() will not respect this case, since it is considered as an error
+		//@xxx
 		throw new NoSuchElementException("specification hurt? there are no transitions from " + state);
 
 	    final Object/*>A<*/ a = actions.get(algorithm.getRandom().nextInt(actions.size()));
