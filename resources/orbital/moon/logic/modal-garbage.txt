@@ -6,7 +6,7 @@
 # Inference Rules
 #
 A |- []A					# necessitation "Gödelregel" (for global consequence)
-|- []A->A					# in System T
+##@fixme suspends proving |- []A->A					# in System T
 ##@fixme |- []A->[][]A				# in System S4
 ##@fixme |- <>A->[]<>A				# in System S5
 
@@ -18,7 +18,7 @@ A |- []A					# necessitation "Gödelregel" (for global consequence)
 #
 
 |= []A -> A				# in System T
-|= A -> <>A				# in System T
+##@fixme suspends proving |= A -> <>A				# in System T
 |= [][]A -> []A				# in System T
 |= []<>A -> <>A				# in System T
 ##@fixme |= []A -> <>[]A				# in System T
