@@ -9,7 +9,8 @@ and additional files, you need the following software.
 
 JDK 1.4
 Ant
-JavaCC
+JavaCC 2.1
 JUnit
 
+JLink 2.1
 JCoverage
