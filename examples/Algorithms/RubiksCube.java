@@ -59,7 +59,7 @@ public class RubiksCube implements GeneralSearchProblem {
     /**
      * Up to which depth to search for a solution.
      */
-    public static final int MAX_STEPS = 8;
+    public static final int MAX_STEPS = 16;
 
     // enum for SEQUENCE
     /**
@@ -69,7 +69,7 @@ public class RubiksCube implements GeneralSearchProblem {
     /**
      * The SEQUENCE mode with a complex sequence of swapping two edges without distrubing the rest.
      * Has a known minimum step depth of 12.
-     * The complex sequence cannot be solved, if MAX_STEPS < 12.
+     * The complex sequence cannot be solved, with MAX_STEPS < 12.
      */
     public static final int COMPLEX = 1;
     /**
@@ -81,6 +81,16 @@ public class RubiksCube implements GeneralSearchProblem {
      * Choose which SEQUENCE to solve.
      */
     public static int SEQUENCE = RANDOM;
+
+    /**
+     * Whether to restrict actions "canonically", and allow only
+     * turning front/right/down.  These "canonical" actions
+     * can(@todo?) sometimes emulate the others, but will generally
+     * require more moves.  Except for rotational symmetries of the
+     * whole cube, which would allow the restriction without changing
+     * the search depth.
+     */
+    private static final boolean RESTRICT_TO_CANONICAL_ACTIONS = true;
 
     /**
      * The size of the Rubik's cube to solve.
@@ -141,7 +151,7 @@ public class RubiksCube implements GeneralSearchProblem {
 	// the single difference in using another search algorithm
 	// would only concern the constructor call
 	//s = new IterativeDeepeningAStar(h);
-	//s = new BranchAndBound(h, MAX_STEPS *2);
+	//s = new BranchAndBound(h, MAX_STEPS + 1);
 	s = new IterativeExpansion(h);
 
 		
@@ -230,12 +240,16 @@ public class RubiksCube implements GeneralSearchProblem {
 	case RANDOM:
 	    {
 		Random random = new Random();
+		final int MIN_ACTION =
+		    RESTRICT_TO_CANONICAL_ACTIONS
+		    ? front
+		    : left;
 		for (int i = 0; i < MAX_STEPS; i++) {
-		    int side = left + random.nextInt(down - front + 1);
+		    int side = MIN_ACTION + random.nextInt(down - MIN_ACTION + 1);
 		    int direction = -1 + 2 * random.nextInt(2);
 		    c.drehe(side, direction);
 		}
-		System.out.println(c);
+		System.out.println(c + " of maximum depth " + MAX_STEPS);
 	    }
 	    break;
 	default:
@@ -264,7 +278,12 @@ public class RubiksCube implements GeneralSearchProblem {
     public Iterator actions(Object n) {
 	Cube s = (Cube) n;
 	List ex = new LinkedList();
-	for (int side = front; side <= down; side++)
+	final int MIN_ACTION =
+	    RESTRICT_TO_CANONICAL_ACTIONS
+	    ? front
+	    : left;
+	    
+	for (int side = MIN_ACTION; side <= down; side++)
 	    for (int dir = -1; dir <= 1; dir += 2) {
 		Cube t = (Cube) s.clone();
 		t.drehe(side, dir);
@@ -305,10 +324,25 @@ public class RubiksCube implements GeneralSearchProblem {
 	
     /**
      * The cube state class.
+     * @author Ute Platzer
      */
     protected static class Cube {
 	/**
 	 * The internal description of the cube's state.
+	 * front side of cube is in the middle (12,13,14,15). Back side is to the right
+	 * (4,5,6,7).
+	 * <pre>
+	 *        +-------+
+	 *        | 8   9 | 
+	 *        | 11 10 |
+	 * +------+-------+-------+------+
+	 * | 1  2 | 12 13 | 19 16 | 6  7 |
+	 * | 0  3 | 15 14 | 18 17 | 5  4 | 
+	 * +------+-------+-------+------+
+	 *        | 22 23 |
+	 *        | 21 20 |
+	 *        +-------+
+	 * </pre>
 	 */
 	private int[] feld;
 	/**
@@ -432,7 +466,7 @@ public class RubiksCube implements GeneralSearchProblem {
 		reihentausch(10, 6, 20, 14, direction);
 		break;
 	    case down:		// 'down
-		reihentausch(20, 21, 23, 23, direction);
+		reihentausch(20, 21, 22, 23, direction);
 		reihentausch(5, 0, 15, 18, direction);
 		reihentausch(4, 3, 14, 17, direction);
 		break;
