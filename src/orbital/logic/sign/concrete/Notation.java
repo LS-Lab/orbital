@@ -30,7 +30,7 @@ import orbital.util.Utility;
 
 /**
  * Represents notational variants of compositor applications.
- * Defines the concrete syntax.
+ * Defines the concrete syntax and thus the linearization of symbols.
  * @see <a href="{@docRoot}/Patterns/Design/enum.html">typesafe enum pattern</a>
  * @version 1.0, 2000/08/25
  * @author  Andr&eacute; Platzer
@@ -518,50 +518,27 @@ public abstract class Notation implements Serializable, Comparable {
      * @invariants precedence > 0 && associativity and notation match
      * @version 1.0, 2000/08/25
      * @author  Andr&eacute; Platzer
+     * @stereotype data-type
      */
     public static class NotationSpecification implements Comparable, Serializable {
 	private static final long serialVersionUID = -8249931256922519844L;
 	/**
-	 * The precedence of the compositor (with 1 being the highest precedence).
+	 * The precedence of the sign (with 1 being the highest precedence).
 	 * @serial
 	 */
-	protected int precedence;
+	private int precedence;
 	/**
-	 * The associativity specification of the compositor.
-    	 * Associativity is one of
-    	 * <pre>
-    	 * xf, yf, xfx, xfy, yfx, yfy, fy, fx
-    	 * </pre>
-    	 * (and alike for compositors of arbitrary arity).
-    	 * Where
-    	 * <ul>
-    	 *   <li>f specifies the position of the compositor.</li>
-    	 *   <li>x specifies the position of an argument with precedence of y &lt; the precedence of f.</li>
-    	 *   <li>y specifies the position of an argument with precedence of y &le; the precedence of f.</li>
-    	 * </ul>
-    	 * <table>
-    	 *   <caption>Quick overview of associativty specification</caption>
-    	 *   <tr><th>specification</th> <th>effect</th></tr>
-    	 *   <tr><td colspan="2">prefix notation</td></tr>
-    	 *   <tr><td>fx</td> <td>unary prefix notation non-associative</td></tr>
-    	 *   <tr><td>fy</td> <td>unary prefix notation associative</td></tr>
-    	 *   <tr><td colspan="2">infix notation</td></tr>
-    	 *   <tr><td>yfx</td> <td>left associative</td></tr>
-    	 *   <tr><td>xfy</td> <td>right associative</td></tr>
-    	 *   <tr><td>xfx</td> <td>non-associative</td></tr>
-    	 * </table>
-    	 * The compositor position specification used <em>must</em> match the concept of notation objects.
-    	 * </p>
+	 * The associativity specification of the sign.
 	 * @serial
 	 */
-	protected String associativity;
+	private String associativity;
 	/**
 	 * The notation object to use for formatting.
 	 * @serial
 	 */
-	protected Notation notation;
-	//TODO: generalize to specify arity as well, to distinguish -/2 from -/1, from -/7, or rely on Compositor.Specification for that?
-	//TODO: do we even need to introduce protected String compositor; ?
+	private Notation notation;
+	//TODO: generalize to specify arity as well, to distinguish -/2 from -/1, from -/7, or rely on Functor.Specification for that? No! That's what the object formatted should know itself.
+	//TODO: do we even need to introduce protected String compositor;? No, because object should know as well?
 	/**
 	 * Create a specification of a compositor's notation.
 	 * @see #associativity
@@ -645,12 +622,46 @@ public abstract class Notation implements Serializable, Comparable {
 	    return "[" + precedence + "," + associativity + "," + notation + "]";
 	}
 		
+	/**
+	 * Get the precedence of the sign (with 1 being the highest precedence).
+	 */
 	public int getPrecedence() {
 	    return precedence;
 	}
+	/**
+	 * Get the associativity specification of the sign.
+    	 * Associativity is one of
+    	 * <pre>
+    	 * xf, yf, xfx, xfy, yfx, yfy, fy, fx
+    	 * </pre>
+    	 * (and alike for compositors of arbitrary arity).
+    	 * Where
+    	 * <ul>
+    	 *   <li>f specifies the position of the compositor.</li>
+    	 *   <li>x specifies the position of an argument with precedence of y &lt; the precedence of f.</li>
+    	 *   <li>y specifies the position of an argument with precedence of y &le; the precedence of f.</li>
+    	 * </ul>
+    	 * <table>
+    	 *   <caption>Quick overview of associativty specification</caption>
+    	 *   <tr><th>specification</th> <th>effect</th></tr>
+    	 *   <tr><td colspan="2">(unary) prefix notation</td></tr>
+    	 *   <tr><td>fx</td> <td>unary prefix notation non-associative</td></tr>
+    	 *   <tr><td>fy</td> <td>unary prefix notation associative</td></tr>
+    	 *   <tr><td colspan="2">(binary) infix notation</td></tr>
+    	 *   <tr><td>yfx</td> <td>left associative</td></tr>
+    	 *   <tr><td>xfy</td> <td>right associative</td></tr>
+    	 *   <tr><td>xfx</td> <td>non-associative</td></tr>
+    	 * </table>
+	 * <p>
+    	 * The compositor position specification used <em>must</em> match the concept of notation objects.
+    	 * </p>
+	 */
 	public String getAssociativity() {
 	    return associativity;
 	}
+	/**
+	 * Get the notation object to use for formatting.
+	 */
 	public Notation getNotation() {
 	    return notation;
 	}
