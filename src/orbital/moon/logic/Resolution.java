@@ -41,7 +41,7 @@ import java.util.logging.Level;
  *     transform each formula in E to Skolem normal form with matrices in conjunctive normal form.
  *     The Skolem-functions introduced are new and distinct.
  *   </li>
- *   <li>drop the &forall;-quantifiers and write the remaining conunctions of disjunctions of literals
+ *   <li>drop the &forall;-quantifiers and write the remaining conjunctions of disjunctions of literals
  *     als sets of clauses.
  *     The union of these clauses is (again) called E.
  *   </li>
@@ -105,8 +105,9 @@ class Resolution implements Inference {
     private final GeneralSearch search;
     public Resolution() {
         //@xxx IterativeDeepending does not want to stop sometimes (f.ex. for (a|a)<=>~a which is false) even for (a&b)<=>(b&a) which is true?
+	// nowadays, it fails too early even for solvable problems
         //this.search = new IterativeDeepening();
-        //@xxx BreadthFirstSearch will lead us to producing a lot of dangling threads
+        //@xxx BreadthFirstSearch will lead us to producing a lot of dangling threads if ASYNCHRONOUS_EXPAND=true
         this.search = new BreadthFirstSearch();
     }
 

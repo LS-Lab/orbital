@@ -241,6 +241,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     public static final String usage = "interpret fuzzy logic";
 
 
+    private static final Type TRUTH = Types.objectType(orbital.math.Real.class, "truth");
     /**
      * list of static elements of signature.
      */
@@ -273,9 +274,10 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	final OperatorSet op = fuzzyLogicOperators;
 	this._coreInterpretation =
 	LogicSupport.arrayToInterpretation(new Object[][] {
-	    {Types.objectType(java.lang.Number.class, "truth"),
+	    {TRUTH,
 	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
-	    {Types.objectType(java.lang.Number.class, "real"),
+	    //@fixme
+	    {Types.objectType(orbital.math.Real.class, "real"),
 	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
 
 	    {op.not(),          // "~"
@@ -309,12 +311,9 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade</a>
      */
     public boolean infer(String expression, String exprDerived) throws ParseException {
-	Signature sigma = scanSignature(expression).union(scanSignature(exprDerived));
-	Formula B[] = {
-	    createFormula(expression)
-	};
-	Formula D = createFormula(exprDerived);
-	System.err.println(B[0] + " is interpreted to " + B[0].apply(null));
+	Formula B[] = (Formula[]) Arrays.asList(createAllExpressions(expression)).toArray(new Formula[0]);
+	Formula D = (Formula) createExpression(exprDerived);
+	System.err.println(B.length > 0 ? B[0] + " is interpreted to " + B[0].apply(null) : "");
 	System.err.println(D + " is interpreted to " + D.apply(null));
 	return inference().infer(B, D);
     } 
@@ -325,7 +324,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	assert F instanceof ModernFormula && getClass().isInstance(((ModernFormula)F).getUnderlyingLogic()) : "F is a formula in this logic";
         // assure core interpretation unless overwritten
         I = new QuickUnitedInterpretation(_coreInterpretation, I);
-	return MathUtilities.equals(((Number) F.apply(I)).doubleValue(), 1, 0.001);
+	return MathUtilities.equals(((Number) F.apply(I)).doubleValue(), 1.0, 0.001);
     } 
 
     public Inference inference() {
@@ -339,21 +338,8 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	return _coreInterpretation;
     }
 
-    public Signature scanSignature(String expression) {
-	return new SignatureBase(scanSignatureImpl(expression));
-    } 
-    static Set scanSignatureImpl(String expression) {
-	if (expression == null)
-	    return SignatureBase.EMPTY;
-	Collection      names = new LinkedList();
-	StringTokenizer st = new StringTokenizer(expression, operators, false);
-	while (st.hasMoreElements())
-	    names.add(LogicParser.getDefaultSymbol((String) st.nextElement(), Types.TRUTH));
-	names = new TreeSet(names);
-	// the signature really should not include core signature symbols
-	names.remove(LogicParser.getDefaultSymbol("true", Types.TRUTH));
-	names.remove(LogicParser.getDefaultSymbol("false", Types.TRUTH));
-	return (Set) names;
+    public Signature scanSignature(String expression) throws ParseException {
+	return createFormula(expression).getSignature();
     } 
 
     
@@ -572,7 +558,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     /**
      * Hamacher operators in fuzzy logic.
      * <div class="Formula">a &#8911; b = a&sdot;b / <big>(</big>&gamma;+(1-&gamma;)(a+b-a&sdot;b)<big>)</big></div>
-     * <div class="Formula">a &#8910; b = <big>(</big>a+b-(2-&gamm;)a&sdot;b<big>)</big> / <big>(</big>1-(1-&gamma;)a&sdot;b<big>)</big></div>
+     * <div class="Formula">a &#8910; b = <big>(</big>a+b-(2-&gamma;)a&sdot;b<big>)</big> / <big>(</big>1-(1-&gamma;)a&sdot;b<big>)</big></div>
      * @param gamma the parameter &gamma;.
      * @pre gamma&ge;0
      */
@@ -701,8 +687,8 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     static class LogicFunctions {
         private LogicFunctions() {}
     
-	private static final Type UNARY_LOGICAL_JUNCTOR = Types.predicate(Types.TRUTH);
-	private static final Type BINARY_LOGICAL_JUNCTOR = Types.predicate(Types.product(new Type[] {Types.TRUTH, Types.TRUTH}));
+	private static final Type UNARY_LOGICAL_JUNCTOR = Types.map(TRUTH, TRUTH);
+	private static final Type BINARY_LOGICAL_JUNCTOR = Types.map(Types.product(new Type[] {TRUTH, TRUTH}), TRUTH);
 
 	// Basic logical operations (elemental junctors).
     	public static final Function not = new Function() {

@@ -110,60 +110,6 @@ public class LogicParser {
     }
 
     /**
-     * Reads a term-rewrite system from a stream.
-     * The concrete syntax of the TRS specification source is
-     * <pre>
-     * &lt;matchingSide&gt; |- &lt;replacementSide&gt;    # &lt;comment&gt; &lt;EOL&gt;
-     * ...
-     * </pre>
-     * where <code>&lt;matchingSide&gt;</code> and <code>&lt;replacementSide&gt;</code>
-     * are well-formed expressions of the {@link ExpressionSyntax#createExpression(String) (concrete) syntax}
-     * defined by <code>syntax</code>.
-     * @param reader the source for the TRS specification.
-     * @param syntax the syntax for parsing expressions.
-     * @param expressionTransformation the function {@link Expression}&rarr;T used for transforming
-     *  the expressions parsed (<code>&lt;matchingSide&gt;</code> and <code>&lt;replacementSide&gt;</code>)
-     *  prior to constructing the substitution.
-     * @throws IOException when an error occurs while reading from the reader.
-     * @throws orbital.logic.imp.ParseException when a syntax error occurs in the source.
-     */
-    public static final Substitution readTRS(final Reader reader, final ExpressionSyntax syntax, final Function expressionTransformation)
-	throws IOException, orbital.logic.imp.ParseException {
-	final String ruleDelim = "|-";
-	final LineNumberReader rd = new LineNumberReader(reader);
-	final List rules = new LinkedList();
-	String l;
-	while ((l=rd.readLine()) != null) {
-	    final String original = l;
-	    if (l.indexOf('#') >= 0)
-		// strip comment
-		l = l.substring(0, l.indexOf('#'));
-	    l = l.trim();
-	    if (l.length() == 0)
-		continue;
-	    int rule = l.indexOf(ruleDelim);
-	    if (rule < 0)
-		throw new orbital.logic.imp.ParseException("neither comment nor whitespace nor rule", rd.getLineNumber(), 1);
-	    rules.add(
-		      Substitutions.createSingleSidedMatcher(
-							     expressionTransformation.apply(syntax.createExpression(l.substring(0, rule))),
-							     expressionTransformation.apply(syntax.createExpression(l.substring(rule + ruleDelim.length())))
-							     )
-		      );
-	}
-	return Substitutions.getInstance(new ArrayList(rules));
-    }
-    /**
-     * Reads a term-rewrite system from a stream.
-     * Using the identity transformation.
-     * @see #readTRS(Reader,ExpressionSyntax,Function)
-     */
-    public static final Substitution readTRS(final Reader reader, final ExpressionSyntax syntax)
-	throws IOException, orbital.logic.imp.ParseException {
-	return readTRS(reader, syntax, Functions.id);
-    }
-
-    /**
      * unary junctors.
      */
     protected Expression combine(Token optok, Expression a) throws ParseException {
@@ -431,6 +377,60 @@ public class LogicParser {
 	public void declare(Symbol x) {
 	    throw new InternalError("modifying the root scope is not allowed");
 	}
+    }
+
+    /**
+     * Reads a term-rewrite system from a stream.
+     * The concrete syntax of the TRS specification source is
+     * <pre>
+     * &lt;matchingSide&gt; |- &lt;replacementSide&gt;    # &lt;comment&gt; &lt;EOL&gt;
+     * ...
+     * </pre>
+     * where <code>&lt;matchingSide&gt;</code> and <code>&lt;replacementSide&gt;</code>
+     * are well-formed expressions of the {@link ExpressionSyntax#createExpression(String) (concrete) syntax}
+     * defined by <code>syntax</code>.
+     * @param reader the source for the TRS specification.
+     * @param syntax the syntax for parsing expressions.
+     * @param expressionTransformation the function {@link Expression}&rarr;T used for transforming
+     *  the expressions parsed (<code>&lt;matchingSide&gt;</code> and <code>&lt;replacementSide&gt;</code>)
+     *  prior to constructing the substitution.
+     * @throws IOException when an error occurs while reading from the reader.
+     * @throws orbital.logic.imp.ParseException when a syntax error occurs in the source.
+     */
+    public static final Substitution readTRS(final Reader reader, final ExpressionSyntax syntax, final Function expressionTransformation)
+	throws IOException, orbital.logic.imp.ParseException {
+	final String ruleDelim = "|-";
+	final LineNumberReader rd = new LineNumberReader(reader);
+	final List rules = new LinkedList();
+	String l;
+	while ((l=rd.readLine()) != null) {
+	    final String original = l;
+	    if (l.indexOf('#') >= 0)
+		// strip comment
+		l = l.substring(0, l.indexOf('#'));
+	    l = l.trim();
+	    if (l.length() == 0)
+		continue;
+	    int rule = l.indexOf(ruleDelim);
+	    if (rule < 0)
+		throw new orbital.logic.imp.ParseException("neither comment nor whitespace nor rule", rd.getLineNumber(), 1);
+	    rules.add(
+		      Substitutions.createSingleSidedMatcher(
+							     expressionTransformation.apply(syntax.createExpression(l.substring(0, rule))),
+							     expressionTransformation.apply(syntax.createExpression(l.substring(rule + ruleDelim.length())))
+							     )
+		      );
+	}
+	return Substitutions.getInstance(new ArrayList(rules));
+    }
+    /**
+     * Reads a term-rewrite system from a stream.
+     * Using the identity transformation.
+     * @see #readTRS(Reader,ExpressionSyntax,Function)
+     */
+    public static final Substitution readTRS(final Reader reader, final ExpressionSyntax syntax)
+	throws IOException, orbital.logic.imp.ParseException {
+	return readTRS(reader, syntax, Functions.id);
     }
 
     /**

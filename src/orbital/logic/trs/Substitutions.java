@@ -261,7 +261,7 @@ public class Substitutions {
      *       &lambda;v.t = &lambda;w.t[v&rarr;w]
      *     </td>
      *     <td>
-     *       if [v&rarr;w] is admissible
+     *       if [v&rarr;w] is admissible, i.e. w&notin;FV(t)
      *     </td>
      *     <td>
      *       "bound rename"
@@ -295,10 +295,26 @@ public class Substitutions {
      *       &nbsp;
      *     </td>
      *   </tr>
+     *   <tr>
+     *     <td>
+     *       (ext)
+     *     </td>
+     *     <td>
+     *       f(x)=g(x) implies f=g
+     *     </td>
+     *     <td>
+     *       if x&notin;FV(Ass&cup;{f,g})
+     *     </td>
+     *     <td>
+     *       "extensionality"
+     *     </td>
+     *   </tr>
      * </table>
-     * The &eta;-conversion leads to extensional equality for functions.
+     * The &eta;-conversion and extensionality are equivalent given the other axioms.
      * A substitution t[v&rarr;s] is <dfn>admissible</dfn> if it does not introduce new bindings,
      * i.e. no free variable of s would be bound by a &lambda;-operator in t[v&rarr;s].
+     * Typed &lambda;-calculus satisfies strong normalization and Church-Rosser properties
+     * (with unique normal forms up to &alpha;-conversion).
      * </p>
      * <p>
      * Applying the &lambda;-operator to a variable x and an expression f

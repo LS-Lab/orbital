@@ -646,6 +646,8 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	 *   <li>sk(A&or;B) = sk(A)&or;sk(B)</li>
 	 *   <li>sk(&forall;x A) = &forall;x sk(A)</li>
 	 *   <li>sk(&exist;x A) = sk(A[x&rarr;f(x<sub>1</sub>,...,x<sub>n</sub>)]) where FV(&exist;x A) = {x<sub>1</sub>,...,x<sub>n</sub>}</li>
+	 *   <!-- @todo how "meta" is the following, or would it simply work? -->
+	 *   <li>sk(&exist;&lambda;x A) = sk((&lambda;x A)(f(x<sub>1</sub>,...,x<sub>n</sub>))) where FV(&exist;x A) = {x<sub>1</sub>,...,x<sub>n</sub>}</li>
 	 * </ul>
 	 * </p>
 	 * This method will call {@link #negationForm(Formula)}.
@@ -821,8 +823,6 @@ public class ClassicalLogic extends ModernLogic implements Logic {
      * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience Method</a>
      */
     public boolean infer(String expression, String exprDerived) throws ParseException {
-	if (expression == null)
-	    throw new NullPointerException("null is not an expression");
 	Formula B[] = (Formula[]) Arrays.asList(createAllExpressions(expression)).toArray(new Formula[0]);
 	Formula D = (Formula) createExpression(exprDerived);
 	return inference().infer(B, D);
@@ -980,7 +980,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	// Basic logical operations (elemental quantifiers).
 
 	//@todo we could implement a semantic apply() if only Interpretations would tell us a collection of entities in the universe
-	//@todo could we turn forall into type (&sigma;&rarr;t)&rarr;t alias Function<Function<S,boolean>,boolean> and use &forall;(&lambda;x.t)
+	//@todo somehow turn forall into type (&sigma;&rarr;t)&rarr;t alias Function<Function<S,boolean>,boolean> and use &forall;(&lambda;x.t)
     	public static final BinaryFunction forall = new BinaryFunction() {
 		//@todo also templatize with t somehow?
 		private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.INDIVIDUAL, Types.TRUTH}), Types.TRUTH);
@@ -1238,8 +1238,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
      * @xxx somehow in a formula like (\x. x>2)(7) the numbers 2, and 7 are also subject to interpretation by true or false.
      */
     private static Interpretation[] createAllInterpretations(Signature propositionalSigma, Signature sigma) {
-	if (sigma == null || propositionalSigma == null)
-	    throw new NullPointerException("invalid signatures: " + propositionalSigma + ", " + sigma);
+	assert sigma != null && propositionalSigma != null : "signatures are !=null: " + propositionalSigma + ", " + sigma;
 	assert sigma.containsAll(propositionalSigma) : propositionalSigma + " subset of " + sigma;
 	// determine the non-fixed propositional part of propositionalSigma
 	final Signature sigmaComb = new SignatureBase(propositionalSigma);
