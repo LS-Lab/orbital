@@ -543,9 +543,12 @@ public class Substitutions {
 	    || (isVariable(x = t2) && other(t = t1))) {
 	    if (x.equals(t))
 		return id;
-	    else if (occur(x, t)) // checks whether x occurs in t
+	    else if (occur(x, t)) { // checks whether x occurs in t
+		//@internal Then t is not a variable, so the other
+		// term could not have been chosen as x as well in (*)
+		assert !isVariable(t) : t + " is not variable if " + x + "!=" + t + " occurs within";
 		return null;
-	    else {
+	    } else {
 		if (x instanceof Typed && t instanceof Typed) {
 		    final Type taux = ((Typed)x).getType();
 		    final Type taut = ((Typed)t).getType();
