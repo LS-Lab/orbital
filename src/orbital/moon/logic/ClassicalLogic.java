@@ -901,7 +901,7 @@ public class ClassicalLogic extends ModernLogic {
 	    //@todo could we exchange compositor by a formula that only differs in type, and thus avoid conversion formula?
 	    Expression typeConv = null;
 	    try {
-		System.out.println("\t\t applied Pi abstraction type leads to " + piabst.apply(parameterApType));
+		//System.out.println("\t\t applied Pi abstraction type leads to " + piabst.apply(parameterApType));
 		logger.log(Level.FINEST, "\t applied Pi abstraction type leads to {0}", piabst.apply(parameterApType));
 		return super.compose(
 				     typeConv = super.compose(new PiApplicationExpression(piabst,
