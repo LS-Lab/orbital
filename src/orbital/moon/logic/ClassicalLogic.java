@@ -542,6 +542,7 @@ public class ClassicalLogic extends ModernLogic {
 	     new NotationSpecification(900, "fy", Notation.PREFIX)},
 	    {LogicFunctions.exists,       // "?"
 	     new NotationSpecification(900, "fy", Notation.PREFIX)},
+	    //@internal &lambda; is the only non-functional operator, both with (single) lazy evaluation and with eager evaluation.
 	    {LogicFunctions.lambda,       // "\\"
 	      new NotationSpecification(900, "fxy", NOTATION_LAMBDA)},
 	    {LogicFunctions.pi,           // "\\\\"
@@ -558,7 +559,7 @@ public class ClassicalLogic extends ModernLogic {
 	    //@fixme (a->b)->c gets formatted as a -> b -> c, just as a->(b->c)
 	    {LogicFunctions.impl,         // "->"
 	     new NotationSpecification(920, "xfx", Notation.INFIX)},
-	    {LogicFunctions.leftwardImpl, // "<-"
+	    {LogicFunctions.reverseImpl, // "<-"
 	     new NotationSpecification(920, "xfx", Notation.INFIX)},
 	    {LogicFunctions.equiv,        // "<->"
 	     new NotationSpecification(920, xfy, Notation.INFIX)}
@@ -735,7 +736,7 @@ public class ClassicalLogic extends ModernLogic {
 	    };
 
     	//@todo rename
-    	public static final BinaryFunction leftwardImpl = new BinaryFunction() {
+    	public static final BinaryFunction reverseImpl = new BinaryFunction() {
 		private final Type logicalTypeDeclaration = BINARY_LOGICAL_JUNCTOR;
     		public Object apply(Object a, Object b) {
 		    return getInt(getTruth(a) || !getTruth(b));
@@ -1426,6 +1427,17 @@ public class ClassicalLogic extends ModernLogic {
 		return _propositional;
 	    }
 	};
+    /**
+     * New Resolution inference.
+     * Inference mechanism driven by full first-order resolution.
+     * @attribute computability semi-decidable
+     */
+    static final InferenceMechanism RESOLUTION2_INFERENCE = new InferenceMechanism("RESOLUTION2") {
+	    private final Inference _resolution = new orbital.moon.logic.resolution.Resolution();
+	    Inference inference() {
+		return _resolution;
+	    }
+	};
 
     /**
      * Get all possible &Sigma;-Interpretations associating
@@ -1667,7 +1679,7 @@ public class ClassicalLogic extends ModernLogic {
 	 * while the tautological set of clauses is {}.
 	 * </p>
 	 */
-	static final Set/*_<Formula>_*/ CONTRADICTION = Collections.EMPTY_SET;
+	public static final Set/*_<Formula>_*/ CONTRADICTION = Collections.EMPTY_SET;
 
 	private static final Formula FORMULA_FALSE = (Formula) logic.createAtomic(new SymbolBase("false", Types.TRUTH));
 	private static final Formula FORMULA_TRUE = (Formula) logic.createAtomic(new SymbolBase("true", Types.TRUTH));
@@ -1679,6 +1691,7 @@ public class ClassicalLogic extends ModernLogic {
 	 * </p>
 	 * @param simplifying Whether or not to use simplified CNF for calculating clausal forms.
 	 * @todo assert
+	 * @todo move to orbital.moon.logic.resolution.?
 	 */
 	public static final Set/*_<Set<Formula>>_*/ clausalForm(Formula f, boolean simplifying) {
 	    try {
@@ -1762,18 +1775,19 @@ public class ClassicalLogic extends ModernLogic {
 	    return r;
 	}
 
-	/**
-	 * Get the free variables of a formula represented as a clause.
-	 * @return freeVariables(clause)
-	 * @internal note that for clauses FV(C)=V(C) &and; BV(C)=&empty;
-	 */
-	static final Signature clausalFreeVariables(Set/*_<Formula>_*/ clause) {
-	    // return banana (|&empty;,&cup;|) (map ((&lambda;x)x.freeVariables()), clause)
-	    Set freeVariables = new HashSet();
-	    for (Iterator i = clause.iterator(); i.hasNext(); )
-		freeVariables.addAll(((Formula)i.next()).getVariables());
-	    return new SignatureBase(freeVariables);
-	}
+ 	/**
+ 	 * Get the free variables of a formula represented as a clause.
+ 	 * @return freeVariables(clause)
+ 	 * @internal note that for clauses FV(C)=V(C) &and; BV(C)=&empty;
+	 * @deprecated Since Orbital 1.2 use {@link orbital.moon.logic.resolution.Clause#getFreeVariables()} instead.
+ 	 */
+ 	static final Signature clausalFreeVariables(Set/*_<Formula>_*/ clause) {
+ 	    // return banana (|&empty;,&cup;|) (map ((&lambda;x)x.freeVariables()), clause)
+ 	    Set freeVariables = new HashSet();
+ 	    for (Iterator i = clause.iterator(); i.hasNext(); )
+ 		freeVariables.addAll(((Formula)i.next()).getVariables());
+ 	    return new SignatureBase(freeVariables);
+ 	}
 
 	// first-order
 
@@ -1967,6 +1981,34 @@ public class ClassicalLogic extends ModernLogic {
 		}, F.getFreeVariables())).apply(F);
 	}
 	
+
+	// negation aware of duplex negatio est affirmatio
+	
+	/**
+	 * Get the negation of F without introducing duplex negatios.
+	 * @return G if F=&not;G, and &not;F otherwise.
+	 * @preconditions F==ClassicalLogic.conjunctiveForm(F)
+	 * @postconditions RES==ClassicalLogic.conjunctiveForm(F.not())
+	 * @todo to ClassicalLogic.Utilities?
+	 */
+	public static final Formula negation(Formula F) {
+	    // used duplex negatio est affirmatio (optimizable)
+	    if ((F instanceof Composite)) {
+		Composite f = (Composite) F;
+		Object    g = f.getCompositor();
+		if (g == ClassicalLogic.LogicFunctions.not)
+		    // use duplex negatio est affirmatio to avoid double negations
+		    return (Formula) f.getComponent();
+	    }
+	    // two special cases of negation that can be evaluated
+	    if (FORMULA_FALSE.equals(F))
+		return FORMULA_TRUE;
+	    else if (FORMULA_TRUE.equals(F))
+		return FORMULA_FALSE;
+	    return F.not();
+	}
+
+	// Helper
 	
 	/**
 	 * Reads a term-rewrite system from a stream.

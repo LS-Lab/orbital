@@ -20,7 +20,7 @@ import orbital.logic.functor.*;
  * of UniqueSymbols with Symbols (then that's achieved by reference comparison).
  * @invariants (this.equals(b) &hArr; this == b) &and; this.hashCode() == System.identityHashCode(this)
  */
-final class UniqueSymbol extends SymbolBase {
+public final class UniqueSymbol extends SymbolBase {
     private static final long serialVersionUID = 6846367078565847459L;
     /**
      * the next ID for distinct symbols.
