@@ -1,13 +1,16 @@
-<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
-<html>
+<?xml version="1.0" encoding="ISO-8859-1"?> 
 
+<!DOCTYPE html [<!ENTITY menupunkt SYSTEM "../menupunkte.xml">]>
+                                    
+<html>
+<menu id="orbital/recommendations">&menupunkt;</menu>
+<date>$Date$</date>
+<file>$Source$</file>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta name="Author" content="Andre Platzer">
-<meta name="Description" content="Recommending very important classes of the Orbital library">
-<meta name="Classification" content="documentation/features">
-<meta name="Keywords" content="Orbital library, Orbital library for Java, orbital library services, mathematical and statistical utilities and interfaces, graphical utilities and AWT-Extension Beans., a generic framework for logical systems, functional evaluation with functor interfaces, IO-Extensions, networking protocols and corresponding document encoding, Scanner&amp;Parser base classes, a generic game abstraction framework, 3D Worlds engine, Evolutionary (genetic) algorithm implementation, CORBA with inter-ORB protocol, RMI with Sun Remote Method Invocation protocol, Port Servers with socket based internet text protocol, jini fluid objects via jini distributed objects model architecture, term rewrite sytem, symbolic derivation, numerical algorithms, Robinson unification, fixed point operators, symbolic mathematics, arithmetic objects">
-<title>Recommending Very Important Classes</title>
+  <meta name="Description" content="Recommending very important classes of the Orbital library"/>
+  <meta name="Classification" content="documentation/features"/>
+  <meta name="Keywords" content="Orbital library, Orbital library for Java, orbital library services, mathematical and statistical utilities and interfaces, graphical utilities and AWT-Extension Beans., a generic framework for logical systems, functional evaluation with functor interfaces, IO-Extensions, networking protocols and corresponding document encoding, Scanner&amp;Parser base classes, a generic game abstraction framework, 3D Worlds engine, Evolutionary (genetic) algorithm implementation, CORBA with inter-ORB protocol, RMI with Sun Remote Method Invocation protocol, Port Servers with socket based internet text protocol, jini fluid objects via jini distributed objects model architecture, term rewrite sytem, symbolic derivation, numerical algorithms, Robinson unification, fixed point operators, symbolic mathematics, arithmetic objects"/>
+  <title>Recommending Very Important Classes</title>
 <style type="text/css"> <!--
 samp a, a samp {
 	font-family: courier;
@@ -18,7 +21,6 @@ samp a, a samp {
 
 <body>
 
-<h2>Important Classes</h2>
 This document provides pointers to the most useful classes of the Orbital library
 along with a brief description of possible applications. It helps you
 jump right into action, profiting from the various features of the Orbital
@@ -59,7 +61,7 @@ you should still browse the primary documentation.
     accessible through a common unified interface for arithmetic operations like
     +,-,*,/,^. Like with polymorphic operators, the advantage of using the
     Arithmetic interface for implementing an algorithm or function is, that it
-    will run unchanged for other algebraic data types of&nbsp; the same
+    will run unchanged for other algebraic data types of the same
     structure and laws. This way, many operations will as well work with
     ordinary double value, specialized integer, complex-valued or matrix-valued
     data through one single interface. Implementations of arithmetic objects

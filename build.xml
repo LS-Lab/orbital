@@ -30,19 +30,20 @@
         </tstamp>
 
         <!-- basedir will be set to parent directory of this file -->
-        <property name="classes" value="${basedir}/classes"/>
-        <property name="sources" value="${basedir}/src"/>
-
         <property name="lib" value="${basedir}/lib"/>
-        <property name="doc" value="${basedir}/doc"/>
-        <property name="dist" value="${basedir}/dist"/>
-        <property name="bin" value="${basedir}/bin"/>
         <property name="resources" value="${basedir}/resources"/>
+        <property name="sources" value="${basedir}/src"/>
         <property name="src.tests" value="${basedir}/test"/>
         <property name="examples" value="${basedir}/examples"/>
+        <property name="doc" value="${basedir}/doc"/>
+
+        <property name="classes" value="${basedir}/classes"/>
+        <property name="dist" value="${basedir}/dist"/>
+        <property name="bin" value="${basedir}/bin"/>
 
         <property name="taglet" value="${lib}/build/taglet"/>
 
+        <property name="doc.dest" value="${doc}/api"/>
         <property name="build.tests" value="${basedir}/test"/>
         <property name="reports.tests" value="${basedir}/report/test"/>
 
@@ -262,14 +263,19 @@
 
     <target name="doc" depends="init, prepareEnvironment"
             description="generate javadoc (=> ./doc/api/)">
-        <mkdir dir="${doc}/api"/>
+        <mkdir dir="${doc.dest}"/>
         <delete includeEmptyDirs="true">
-            <fileset dir="${doc}/api"/>
+            <fileset dir="${doc.dest}"/>
         </delete>
+
+	<xslt basedir="${doc}" destdir="${doc.dest}" style="${doc}/main.xsl">
+             <include name="**/*.xml"/>
+             <exclude name="**/menupunkte.xml"/>
+        </xslt>
 
         <javadoc maxmemory="256M"
                  failonerror="true"
-                 destdir="${doc}/api"
+                 destdir="${doc.dest}"
                  author="true"
                  version="true"
                  use="true"
@@ -294,7 +300,7 @@
 	    </fileset>
 -->
 	    <!-- @xxx the following line unfortunately does not fix the problem that filesets won't link themselves -->
-	    <link href="${doc}/api"/>
+	    <link href="${doc.dest}"/>
 
 	    <!-- -tag param -tag pre:mc:&quot;Preconditions:&quot; -tag post:mc:&quot;Postconditions:&quot; -tag return -tag throws -tag stereotype:a:&quot;Stereotype:&quot; -tag structure:t:&quot;Structure:&quot; -tag invariant:t:&quot;Invariants:&quot; -tag attribute:a:&quot;Attributes:&quot; -tag version -tag author -tag see -->
 	    <tag name="preconditions" scope="methods,constructors" description="Preconditions:"/>
@@ -318,21 +324,21 @@
 	    <link href="${javadoc.link.jdk}" offline="${javadoc.link.jdk.offline}" packagelistLoc="${javadoc.link.jdk.loc}"/>
         </javadoc>
 
-	<copy todir="${doc}/api/Patterns">
+	<copy todir="${doc.dest}/Patterns">
 	    <fileset dir="${doc}/Patterns"/>
 	</copy>
 
-	<copy todir="${doc}/api">
+	<copy todir="${doc.dest}">
 	    <fileset dir="${doc}"
 		includes="*.css, recommendations.*html, features.*html, templates.*html"/>
 	</copy>
 
         <delete>
 		<!-- @xxx does not remove CVS subdirs -->
-            <fileset dir="${doc}/api" includes="**/CVS/*"/>
+            <fileset dir="${doc.dest}" includes="**/CVS/*"/>
         </delete>
 
-        <echo file="${doc}/api/stylesheet.css" append="true">	
+        <echo file="${doc.dest}/stylesheet.css" append="true">	
 	@media screen { a:link, a:visited {color:blue} }
 	@import url("stylist.css");
 	</echo>
@@ -349,14 +355,14 @@
                   </uptodate>
              in the target called jjdoc.check
          -->
-        <mkdir dir="${doc}/api/orbital/moon/logic/doc-files"/>
-	<exec dir="${doc}/api/orbital/moon/logic" executable="cmd.exe" os="Windows 2000">
+        <mkdir dir="${doc.dest}/orbital/moon/logic/doc-files"/>
+	<exec dir="${doc.dest}/orbital/moon/logic" executable="cmd.exe" os="Windows 2000">
 	    <arg line="/c jjdoc -OUTPUT_FILE:doc-files/LogicParser_grammar.html ${sources}/orbital/moon/logic/LogicParser.jj"/>
 	</exec>
-	<exec dir="${doc}/api/orbital/moon/logic" executable="jjdoc" os="Linux">
+	<exec dir="${doc.dest}/orbital/moon/logic" executable="jjdoc" os="Linux">
 	    <arg line="-OUTPUT_FILE:doc-files/LogicParser_grammar.html ${sources}/orbital/moon/logic/LogicParser.jj"/>
 	</exec>
-	<exec dir="${doc}/api/orbital/moon/logic" executable="cmd.exe" os="Windows 2000">
+	<exec dir="${doc.dest}/orbital/moon/logic" executable="cmd.exe" os="Windows 2000">
 	    <arg line="/c &quot;copy /A doc-files\LogicParser_grammar.html + ${basedir}\src\orbital\moon\logic\doc-files\LogicParser_lexical.html doc-files\LogicParser_grammar.html&quot;"/>
 	</exec>
 	<!-- @todo cat input1 input2 > output for linux, but input1!=output -->
@@ -644,7 +650,7 @@
 	        <include name="recommendations.html"/>
 	    </zipfileset>
             <zipfileset dir="${dist}" includes="readme.html" prefix="Orbital-doc"/>
-            <zipfileset dir="${doc}/api" prefix="Orbital-doc/api">
+            <zipfileset dir="${doc.dest}" prefix="Orbital-doc/api">
 	        <exclude name="**/CVS/*"/>
 	    </zipfileset>
             <zipfileset dir="${examples}" prefix="Orbital-doc/examples">

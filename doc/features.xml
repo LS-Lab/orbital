@@ -1,21 +1,20 @@
-<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
-<html>
+<?xml version="1.0" encoding="ISO-8859-1"?> 
 
+<!DOCTYPE html [<!ENTITY menupunkt SYSTEM "../menupunkte.xml">]>
+                                    
+<html>
+<menu id="orbital/features">&menupunkt;</menu>
+<date>$Date$</date>
+<file>$Source$</file>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta name="Author" content="Andre Platzer">
-<meta name="Description" content="Summary of all features of the Orbital library">
-<meta name="Classification" content="documentation/features">
-<meta name="KeyWords" content="Orbital library, orbital library services, Orbital library for Java, mathematical and statistical utilities and interfaces, graphical utilities and AWT-Extension Beans., a generic framework for logical systems, functional evaluation with functor interfaces, IO-Extensions, networking protocols and corresponding document encoding, Scanner&amp;Parser base classes, a generic game abstraction framework, 3D Worlds engine, Evolutionary (genetic) algorithm implementation, CORBA with inter-ORB protocol, RMI with Sun Remote Method Invocation protocol, Port Servers with socket based internet text protocol, jini fluid objects via jini distributed objects model architecture, term rewrite sytem, symbolic derivation, numerical algorithms, Robinson unification, fixed point operators, symbolic mathematics, arithmetic objects">
-<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
-<meta name="ProgId" content="FrontPage.Editor.Document">
-<link rel="stylesheet" href="../layout.css" type="text/css" title="layout">
-<title>Summary of some important features</title>
+  <meta name="Description" content="Summary of all features of the Orbital library"/>
+  <meta name="Classification" content="documentation/features"/>
+  <meta name="KeyWords" content="Orbital library, orbital library services, Orbital library for Java, mathematical and statistical utilities and interfaces, graphical utilities and AWT-Extension Beans., a generic framework for logical systems, functional evaluation with functor interfaces, IO-Extensions, networking protocols and corresponding document encoding, Scanner&amp;Parser base classes, a generic game abstraction framework, 3D Worlds engine, Evolutionary (genetic) algorithm implementation, CORBA with inter-ORB protocol, RMI with Sun Remote Method Invocation protocol, Port Servers with socket based internet text protocol, jini fluid objects via jini distributed objects model architecture, term rewrite sytem, symbolic derivation, numerical algorithms, Robinson unification, fixed point operators, symbolic mathematics, arithmetic objects"/>
+  <title>Summary of some Important Features</title>
 </head>
 
 <body>
 
-<h2>Important Features</h2>
 The Orbital library is a general extension to the java packages in the form of a
 foundation class library. It specifies several central concept classes (<i>Core
 Packages</i>), and whole class networks that contain extended components,
@@ -86,8 +85,6 @@ evaluation and several algorithmic templates including search and planning.</p>
     </ol>
   </li>
 </ul>
-<!--#include virtual="../bottom.shtml"-->
-
 
 </body>
 
