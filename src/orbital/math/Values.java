@@ -1144,6 +1144,14 @@ public final class Values {
     }
 
     /**
+     * The monomial c&lowast;X<sup>i</sup>.
+     * @param coefficient the coefficient c of the monomial.
+     * @param exponent the exponent i of the monomial.
+     */
+    public static final Multinomial/*<R,S>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, Arithmetic/*>S<*/ exponent) {
+	return MONOMIAL(coefficient, ArithmeticMultinomial.convertIndex(exponent));
+    }
+    /**
      * The monomial c&lowast;X<sub>0</sub><sup>i[0]</sup>...X<sub>n-1</sub><sup>i[n-1]</sup>.
      * @param coefficient the coefficient c of the monomial.
      * @param exponents the exponents i of the monomial.
@@ -1159,6 +1167,15 @@ public final class Values {
 	m.setAllZero(m);
 	m.set(exponents, coefficient);
 	return m;
+    }
+    /**
+     * The monomial 1&lowast;X<sup>i</sup>.
+     * Note that the coefficient is {@link #ONE 1}&isin;<b>Z</b>.
+     * @param exponent the exponent i of the monomial.
+     * @see #MONOMIAL(Arithmetic,Arithmetic)
+     */
+    public static final Multinomial/*<R implements Scalar,S>*/ MONOMIAL(Arithmetic/*>S<*/ exponent) {
+	return MONOMIAL(ONE, ArithmeticMultinomial.convertIndex(exponent));
     }
     /**
      * The monomial 1&lowast;X<sub>0</sub><sup>i[0]</sup>...X<sub>n-1</sub><sup>i[n-1]</sup>.

@@ -75,8 +75,8 @@ class ArithmeticMultinomial/*<R implements Arithmetic>*/ extends AbstractMultino
 	return d;
     }
 	
-    public int numberOfVariables() {
-	return coefficients.rank();
+    public Object indexSet() {
+	return Values.valueOf(coefficients.rank());
     }
 
     public int[] dimensions() {
@@ -96,8 +96,21 @@ class ArithmeticMultinomial/*<R implements Arithmetic>*/ extends AbstractMultino
 	Arrays.fill(CONSTANT_TERM, 0);
     }
 
+    /**
+     * Converts an index (exponent) from Vector<Integer> to int[].
+     */
+    static final int[] convertIndex(Arithmetic indexAsVector) {
+	Vector/*<Integer>*/ index = (Vector) indexAsVector;
+	int[] i = new int[index.dimension()];
+	for (int k = 0; k < i.length; k++)
+	    i[k] = ((Integer)index.get(k)).intValue();
+	return i;
+    }
+    public final Arithmetic/*>R<*/ get(Arithmetic i) {
+	return get(convertIndex(i));
+    }
     public Arithmetic/*>R<*/ get(int[] i) {
-	Utility.pre(i.length == numberOfVariables(), "illegal number of indices (" + i.length + " indices) for a coefficient of a polynomial with " + numberOfVariables() + " variables");
+	Utility.pre(i.length == ((Integer)indexSet()).intValue(), "illegal number of indices (" + i.length + " indices) for a coefficient of a polynomial with " + indexSet() + " variables");
 	for (int k = 0; k < i.length; k++)
 	    if (i[k] >= dimensions()[k])
 		return get(CONSTANT_TERM).zero();
@@ -111,6 +124,9 @@ class ArithmeticMultinomial/*<R implements Arithmetic>*/ extends AbstractMultino
 	coefficients.set(i, vi);
 	if (oldDegree.compareTo(Operations.sum.apply(Values.valueOf(i))) <= 0)
 	    this.degree = degreeImpl(coefficients);
+    }
+    public final void set(Arithmetic i, Arithmetic/*>R<*/ vi) {
+	set(convertIndex(i), vi);
     }
 
     Tensor tensorViewOfCoefficients() {

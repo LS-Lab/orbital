@@ -317,6 +317,7 @@ abstract class AbstractVector/*<R implements Arithmetic>*/ extends AbstractTenso
      */
     public Arithmetic/*>R<*/ multiply(Vector/*<R>*/ b) {
 	Utility.pre(dimension() == b.dimension(), "vectors for dot-product must have equal dimension");
+	// need Functionals.map(Function,Tensor) and Functionals.foldRight(Function,Object,Tensor)
 	return (Arithmetic/*>R<*/) Functionals.foldRight(Operations.plus, Values.ZERO, Functionals.map(Operations.times, iterator(), b.iterator()));
     } 
 

@@ -562,14 +562,14 @@ public class ArithmeticFormat extends Format {
         fieldPosition.setEndIndex(0);
 	final int initialIndex = result.length();
 	// whether we add indices to the variables (X0,X1,X2,X3,... instead of X,Y,Z)
-	final boolean addIndex = p.numberOfVariables() > multinomialVariables.length;
+	final boolean addIndex = ((Integer)p.indexSet()).intValue() > multinomialVariables.length;
 		
 	// @todo improve format
 	result.append(multinomialPrefix);
-	for (Combinatorical index = Combinatorical.getPermutations(p.dimensions()); index.hasNext(); ) {
-	    final int[] i = index.next();
+	for (Iterator index = p.indices(); index.hasNext(); ) {
+	    final Vector/*<Integer>*/ i = (Vector)index.next();
 	    final Arithmetic ci = p.get(i);
-	    final boolean constantTerm = Setops.all(Values.valueOf(i).iterator(), Functionals.bindSecond(Predicates.equal, Values.ZERO));
+	    final boolean constantTerm = Setops.all(i.iterator(), Functionals.bindSecond(Predicates.equal, Values.ZERO));
 	    // only print nonzero elements (but print the 0-th coefficient if it is the only one)
 	    if (!ci.norm().equals(Values.ZERO)
 		|| (constantTerm && p.degreeValue() <= 0)) {
@@ -595,8 +595,10 @@ public class ArithmeticFormat extends Format {
 		    result.insert(startIndex, multinomialPlusOperator);
 		
 		boolean firstVariableAfterCoefficient = true;
-		for (int k = 0; k < p.numberOfVariables(); k++)
-		    if (i[k] != 0) {
+		int countk = 0;
+		for (Iterator k = i.iterator(); k.hasNext(); countk++) {
+		    final Integer exponent = (Integer)k.next();
+		    if (!exponent.equals(Values.ZERO)) {
 			if (firstVariableAfterCoefficient)
 			    if (skipped)
 				// only skip times operator if coefficient was skipped
@@ -605,11 +607,12 @@ public class ArithmeticFormat extends Format {
 				result.append(multinomialTimesOperator);
 			else
 			    result.append(multinomialVariableTimesOperator);
-			result.append(addIndex ? multinomialVariables[0] + k : multinomialVariables[k]);
-			if (i[k] > 1)
-			    result.append(multinomialPowerOperator + i[k]);
+			result.append(addIndex ? multinomialVariables[0] + countk : multinomialVariables[countk]);
+			if (exponent.compareTo(Values.ONE) > 0)
+			    result.append(multinomialPowerOperator + exponent);
 			firstVariableAfterCoefficient = false;
 		    }
+		}
 	    }
 	}
 	result.append(multinomialSuffix);

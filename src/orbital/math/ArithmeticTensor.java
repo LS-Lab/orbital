@@ -61,7 +61,7 @@ class ArithmeticTensor/*<R implements Arithmetic>*/ extends AbstractTensor/*<R>*
 	    throw new NullPointerException("illegal tensor " + values);
 	else if (!values.getClass().isArray())
 	    throw new UnsupportedOperationException("tensors of rank 0 should not get wrapped into tensors of non array type");
-	final int[] dim = dimensions(values);
+	final int[] dim = Utility.dimensions(values);
 	// check rectangular and that base type is instanceof Arithmetic or primitive
 	Utility.pre(checkRectangular(dim, 0, values), "multi-dimensional array of " + Arithmetic.class + " expected");
 	final Combinatorical index = Combinatorical.getPermutations(dim);
@@ -120,53 +120,12 @@ class ArithmeticTensor/*<R implements Arithmetic>*/ extends AbstractTensor/*<R>*
 
     public final int rank() {
 	//@todo optimize cache result
-	return rank(D);
-    }
-    private static final int rank(Object[] D) {
-	//@todo optimize cache result
-    	Object[] o = D;
-        int r = 1;
-	while (o[0] instanceof Object[]) {
-	    o = (Object[])o[0];
-	    r++;
-	}
-	return r;
-    }
-    private static final int rank(Object D) {
-    	Object o = D;
-        int r = 0;
-	while (o.getClass().isArray()) {
-	    o = Array.get(o, 0);
-	    r++;
-	}
-	return r;
+	return Utility.rank(D);
     }
 
     public final int[] dimensions() {
 	//@todo optimize cache result
-	return dimensions(D);
-    }
-    private static final int[] dimensions(Object[] D) {
-	int[] dim = new int[rank(D)];
-    	Object[] o = D;
-	for (int i = 0; i < dim.length - 1; i++) {
-	    dim[i] = o.length;
-	    assert o[0] instanceof Object[] : "by definition of rank";
-	    o = (Object[])o[0];
-	}
-	dim[dim.length - 1] = o.length;
-	return dim;
-    }
-    private static final int[] dimensions(Object D) {
-	int[] dim = new int[rank(D)];
-    	Object o = D;
-	for (int i = 0; i < dim.length; i++) {
-	    assert o.getClass().isArray() : "by definition of rank";
-	    dim[i] = Array.getLength(o);
-	    o = Array.get(o, 0);
-	}
-	assert !o.getClass().isArray() : "by definition of rank";
-	return dim;
+	return Utility.dimensions(D);
     }
 
     public Arithmetic/*>R<*/ get(int[] i) {

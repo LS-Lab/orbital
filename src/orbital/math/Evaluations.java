@@ -116,7 +116,7 @@ public final class Evaluations {
      * Returns the vector with the absolutes of all elements in this Vector.
      */
     public static /*<R implements Arithmetic>*/ Vector/*<R>*/ abs(Vector/*<R>*/ v) {
-	return Values.vector(Setops.asList(Functionals.map(Functions.norm, v.iterator())));
+	return Functionals.map(Functions.norm, v);
     } 
     public static double[] abs(double[] v) {
 	return Functionals.map(Functions.norm, v);

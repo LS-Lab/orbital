@@ -8,6 +8,8 @@ package orbital.math;
 
 import orbital.math.functional.Function;
 import java.io.Serializable;
+import java.util.ListIterator;
+import java.util.Iterator;
 
 import java.util.NoSuchElementException;
 import java.util.ConcurrentModificationException;
@@ -25,14 +27,12 @@ import java.lang.reflect.Array;
 
 import orbital.algorithm.Combinatorical;
 
-import java.util.ListIterator;
-
 abstract class AbstractMultinomial/*<R implements Arithmetic>*/ extends AbstractProductArithmetic implements Multinomial/*<R>*/, Serializable {
     private static final long serialVersionUID = 4336092442446250306L;
 	
     /**
      * The index (0,...,0) of the constant term.
-     * @invariant subclasses must set this value to {0,...,0}&isin;<b>N</b><sup>numberOfVariables()</sup>
+     * @invariant subclasses must set this value to {0,...,0}&isin;<b>N</b><sup>indexSet()</sup>
      */
     transient int[] CONSTANT_TERM;
     public AbstractMultinomial() {
@@ -66,11 +66,28 @@ abstract class AbstractMultinomial/*<R implements Arithmetic>*/ extends Abstract
     }
 
     /**
+     * Sets a value for the coefficient specified by index.
+     * @pre i&isin;S
+     * @throws UnsupportedOperationException if this polynomial is constant and does not allow modifications.
+     */
+    protected abstract void set(Arithmetic/*>S<*/ i, Arithmetic vi);
+
+    //@xxx we do not ultimately need these following methods, but only have them for performance for S=<b>N</b><sup>n</sup>
+    
+    /**
+     * Get the the (partial) degree of this polynomial with respect to the single variables.
+     * @see #degree()
+     * @todo rename?
+     */
+    protected abstract int[] dimensions();
+
+    /**
      * Get a tensor view of the coefficients.
      * @xxx somehow get rid of this trick
      */
     abstract Tensor tensorViewOfCoefficients();
 
+    protected abstract Arithmetic get(int[] i);
     /**
      * Sets a value for the coefficient specified by index.
      * @pre i&isin;<b>N</b><sup>n</sup>
@@ -121,6 +138,72 @@ abstract class AbstractMultinomial/*<R implements Arithmetic>*/ extends Abstract
      */
     protected transient int modCount = 0;
 
+    public Iterator indices() {
+	return new ListIterator() {
+		//@structure delegates to cursor wrapping int[] into Vector<Integer>
+		private final Combinatorical cursor = Combinatorical.getPermutations(dimensions());
+        	/**
+        	 * The modCount value that the iterator believes that the backing
+        	 * object should have. If this expectation is violated, the iterator
+        	 * has detected concurrent modification.
+        	 */
+        	private transient int expectedModCount = modCount;
+		public boolean hasNext() {
+		    return cursor.hasNext();
+		} 
+		public Object next() {
+		    try {
+			Object v = Values.tensor(cursor.next());
+			checkForComodification();
+			return v;
+		    }
+		    catch(IndexOutOfBoundsException e) {
+			checkForComodification();
+			throw (AssertionError) new AssertionError("cursor should already have thrown a NoSuchElementException").initCause(e);
+        	    }
+		} 
+		public boolean hasPrevious() {
+		    return cursor.hasPrevious();
+		} 
+		public Object previous() {
+		    try {
+			Object v = Values.tensor(cursor.previous());
+			checkForComodification();
+			return v;
+		    }
+		    catch(IndexOutOfBoundsException e) {
+			checkForComodification();
+			throw (AssertionError) new AssertionError("cursor should already have thrown a NoSuchElementException").initCause(e);
+        	    }
+		} 
+
+		// UnsupportedOperationException, categorically
+
+        	public void set(Object o) {
+		    throw new UnsupportedOperationException("setting elements in an index set of a polynomial is undefined");
+        	}
+
+		public int nextIndex() {
+		    throw new UnsupportedOperationException("a polynomial does not have a one-dimensional index");
+		}
+		public int previousIndex() {
+		    throw new UnsupportedOperationException("a polynomial does not have a one-dimensional index");
+		}
+
+		public void add(Object o) {
+		    throw new UnsupportedOperationException("adding elements to an index set of a polynomial is undefined");
+		} 
+		public void remove() {
+		    throw new UnsupportedOperationException("removing elements from an index set of a polynomial is undefined");
+		} 
+
+        	private final void checkForComodification() {
+        	    if (modCount != expectedModCount)
+			throw new ConcurrentModificationException();
+        	}
+	    };
+    } 
+
     /**
      * Provides an iterator over the coefficients of the specified dimensions.
      * @pre &forall;k dim[k]&ge;dimensions()[k]
@@ -131,7 +214,8 @@ abstract class AbstractMultinomial/*<R implements Arithmetic>*/ extends Abstract
 	for (int k = 0; k < dim.length; k++)
 	    Utility.pre(dim[k]>=dimensions()[k], "forall k dim[k]>=dimensions()[k]");
 	return new ListIterator() {
-		private Combinatorical cursor = Combinatorical.getPermutations(dim);
+		private final Combinatorical cursor = Combinatorical.getPermutations(dim);
+		//@internal we could just as well store lastRet as Vector<Integer> but int[] saves a lot of wrapping/unwrapping
 		private int[] lastRet = null;
         	/**
         	 * The modCount value that the iterator believes that the backing
@@ -226,7 +310,7 @@ abstract class AbstractMultinomial/*<R implements Arithmetic>*/ extends Abstract
     }
 
     public Arithmetic zero() {
-	int[] dim = new int[numberOfVariables()];
+	int[] dim = new int[((Integer)indexSet()).intValue()];
 	Arrays.fill(dim, 1);
  	Object r = Array.newInstance(Arithmetic/*>R<*/.class, dim);
 	Utility.setPart(r, CONSTANT_TERM, get(CONSTANT_TERM).zero());
@@ -234,7 +318,7 @@ abstract class AbstractMultinomial/*<R implements Arithmetic>*/ extends Abstract
     }
 
     public Arithmetic one() {
-	int[] dim = new int[numberOfVariables()];
+	int[] dim = new int[((Integer)indexSet()).intValue()];
 	Arrays.fill(dim, 1);
  	Object r = Array.newInstance(Arithmetic/*>R<*/.class, dim);
 	Utility.setPart(r, CONSTANT_TERM, get(CONSTANT_TERM).one());
@@ -250,8 +334,8 @@ abstract class AbstractMultinomial/*<R implements Arithmetic>*/ extends Abstract
     private Arithmetic operatorImpl(BinaryFunction op, Arithmetic bb) {
 	// only cast since Multinomial does not (yet?) have iterator(int[])
 	AbstractMultinomial b = (AbstractMultinomial)bb;
-	if (numberOfVariables() != b.numberOfVariables())
-	    throw new IllegalArgumentException("a+b only defined for equal numberOfVariables()");
+	if (!indexSet().equals(b.indexSet()))
+	    throw new IllegalArgumentException("a+b only defined for equal indexSet()");
 	final int[] d = Functionals.map(Operations.max, dimensions(), b.dimensions());
 	AbstractMultinomial/*>T<*/ ret = (AbstractMultinomial)newInstance(d);
 
@@ -281,7 +365,9 @@ abstract class AbstractMultinomial/*<R implements Arithmetic>*/ extends Abstract
     }
 
     //@todo optimizable by far
-    public Multinomial/*<R>*/ multiply(Multinomial/*<R>*/ b) {
+    public Multinomial/*<R>*/ multiply(Multinomial/*<R>*/ bb) {
+	// only cast since Multinomial does not know an equivalent of dimensions()
+	AbstractMultinomial b = (AbstractMultinomial)bb;
 	if (degreeValue() < 0)
 	    return this;
 	else if (b.degreeValue() < 0)
@@ -289,11 +375,11 @@ abstract class AbstractMultinomial/*<R implements Arithmetic>*/ extends Abstract
 	final int[] d = Functionals.map(Operations.plus, dimensions(), b.dimensions());
 	Multinomial/*<R>*/ ret = newInstance(d);
 	setAllZero(ret);
-	// ret = &sum;<sub>i&isin;dimensions()</sub> a<sub>i</sub>X<sub>0</sub><sup>i<sub>0</sub></sup>&sdot;...&sdot;X<sub>n-1</sub><sup>i<sub>n-1</sub></sup> * b
+	// ret = &sum;<sub>i&isin;dimensions()</sub> a<sub>i</sub>X<sup>i</sup> * b
 	// perform (slow) multiplications on monomial base
 	for (Combinatorical index = Combinatorical.getPermutations(dimensions()); index.hasNext(); ) {
 	    int[] i = index.next();
-	    // si = a<sub>i</sub>X<sub>0</sub><sup>i<sub>0</sub></sup>&sdot;...&sdot;X<sub>n-1</sub><sup>i<sub>n-1</sub></sup> * b
+	    // si = a<sub>i</sub>X<sup>i</sup> * b
 	    AbstractMultinomial/*<R>*/ si = (AbstractMultinomial)newInstance(Functionals.map(Operations.plus, i, b.dimensions()));
 	    setAllZero(si);
 	    final int[] sidim = si.dimensions();

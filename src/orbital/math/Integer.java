@@ -28,6 +28,7 @@ import orbital.logic.functor.Predicate;
  * @see Values#valueOf(short)
  * @see Values#valueOf(byte)
  * @see Values#valueOf(java.math.BigInteger)
+ * @todo introduce subclass Natural for <b>N</b>?
  */
 public interface Integer extends Rational, Euclidean {
     /**

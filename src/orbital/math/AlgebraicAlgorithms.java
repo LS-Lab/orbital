@@ -69,12 +69,13 @@ public final class AlgebraicAlgorithms {
      */
     public static final Comparator LEXICOGRAPHIC = new Comparator() {
 	    public int compare(Object m1, Object m2) {
-		final int[] nu = (int[]) m1;
-		final int[] mu = (int[]) m2;
-		if (nu.length != mu.length)
+		final Vector/*<Integer>*/ nu = (Vector/*<Integer>*/) m1;
+		final Vector/*<Integer>*/ mu = (Vector/*<Integer>*/) m2;
+		if (nu.dimension() != mu.dimension())
 		    throw new IllegalArgumentException("incompatible monomial exponents from polynomial rings with a different number of variables");
-		for (int k = 0; k < nu.length; k++) {
-		    int c = nu[k] - mu[k];
+		for (Iterator k = nu.iterator(), j = mu.iterator(); k.hasNext() || j.hasNext(); ) {
+		    assert k.hasNext() && j.hasNext() : "equal dimensions have equally structured iterators";
+		    int c = ((Integer)k.next()).subtract((Integer)j.next()).intValue();
 		    if (c != 0)
 			return c;
 		}
@@ -96,12 +97,12 @@ public final class AlgebraicAlgorithms {
      */
     public static final Comparator REVERSE_LEXICOGRAPHIC = new Comparator() {
 	    public int compare(Object m1, Object m2) {
-		final int[] nu = (int[]) m1;
-		final int[] mu = (int[]) m2;
-		if (nu.length != mu.length)
+		final Vector/*<Integer>*/ nu = (Vector/*<Integer>*/) m1;
+		final Vector/*<Integer>*/ mu = (Vector/*<Integer>*/) m2;
+		if (nu.dimension() != mu.dimension())
 		    throw new IllegalArgumentException("incompatible monomial exponents from polynomial rings with a different number of variables");
-		for (int k = nu.length - 1; k >= 0; k--) {
-		    int c = nu[k] - mu[k];
+		for (int k = nu.dimension() - 1; k >= 0; k--) {
+		    int c = ((Integer)nu.get(k)).subtract((Integer)mu.get(k)).intValue();
 		    if (c != 0)
 			return c;
 		}
@@ -124,12 +125,13 @@ public final class AlgebraicAlgorithms {
      */
     public static final Comparator DEGREE_LEXICOGRAPHIC = new Comparator() {
 	    public int compare(Object m1, Object m2) {
-		final int[] nu = (int[]) m1;
-		final int[] mu = (int[]) m2;
-		if (nu.length != mu.length)
+		//@fixme
+		final Vector/*<Integer>*/ nu = (Vector/*<Integer>*/) m1;
+		final Vector/*<Integer>*/ mu = (Vector/*<Integer>*/) m2;
+		if (nu.dimension() != mu.dimension())
 		    throw new IllegalArgumentException("incompatible monomial exponents from polynomial rings with a different number of variables");
-		int c = ((Integer)Operations.sum.apply(Values.valueOf(nu))).intValue()
-		    - ((Integer)Operations.sum.apply(Values.valueOf(mu))).intValue();
+		int c = ((Integer)Operations.sum.apply(nu)).intValue()
+		    - ((Integer)Operations.sum.apply(mu)).intValue();
 		if (c != 0)
 		    return c;
 		else
@@ -502,7 +504,7 @@ public final class AlgebraicAlgorithms {
      * @param monomialOrder the <a href="#monomialOrder">order of monomials</a>, which is decisive for the time complexity.
      * @return a function that reduces polynomials with respect to g.
      * @see Values#quotient(Multinomial,Set,Comparator)
-     * @internal elementaryReduction = "wenn ein Monom verschwindet und der Rest kleiner wird"
+     * @internal elementaryReduction = "wenn ein Monom verschwindet (mit Hilfe des Leitmonomos eines der g) und der Rest kleiner wird"
      * @internal reduction = transitiveClosure(elementaryReduction)
      */
     public static final Function/*<Multinomial<R>,Multinomial<R>>*/ reduce(Collection/*_Multinomial<R>_*/ g, Comparator monomialOrder) {
@@ -518,12 +520,12 @@ public final class AlgebraicAlgorithms {
 	    this.g = g;
 	    this.monomialOrder = newmonomialOrder;
 	    // enrich g with exponents of leading monomials
-	    final Pair/*<Multinomial<R>,int[]>*/[] basis = new Pair[g.size()];
+	    final Pair/*<Multinomial<R,S>,S>*/[] basis = new Pair[g.size()];
 	    {
 		Iterator it = g.iterator();
 		for (int i = 0; i < basis.length; i++) {
 		    final Multinomial gi = (Multinomial) it.next();
-		    final int[] leadingMonomial = leadingMonomial(gi, monomialOrder);
+		    final Arithmetic leadingMonomial = leadingMonomial(gi, monomialOrder);
 		    basis[i] = new Pair(gi, leadingMonomial);
 		}
 	    }
@@ -535,23 +537,30 @@ public final class AlgebraicAlgorithms {
 			final SortedSet occurring = new TreeSet(new ReverseComparator(monomialOrder));
 			occurring.addAll(occurringMonomials(f));
 			for (Iterator index = occurring.iterator(); index.hasNext(); ) {
-			    final int[] nu = (int[]) index.next();
+			    final Arithmetic/*>S<*/ nu = (Arithmetic) index.next();
 			    final Arithmetic/*>R<*/ cnu = f.get(nu);
 			    assert !cnu.norm().equals(Values.ZERO) : "@post of occurringMonomials(...)";
 			    reductionPolynomials:
 			    for (int j = 0; j < basis.length; j++) {
 				final Multinomial gj = (Multinomial)basis[j].A;
-				final int[] lgj = (int[])basis[j].B;
-				// always divisible in fields: coefficient cnu by lc(gj)=gj.get(lgj)
-				final Arithmetic/*>R<*/ cdiv = cnu.divide(gj.get(lgj));
-				// test divisibility of monomial X^nu by l(gj)
-				final int[] xdiv = new int[lgj.length];
-				for (int k = 0; k < xdiv.length; k++) {
-				    xdiv[k] = nu[k] -  lgj[k];
-				    if (xdiv[k] < 0)
+				final Arithmetic/*>S<*/ lgj = (Arithmetic)basis[j].B;
+
+				// test divisibility
+				final Arithmetic/*>R<*/ cdiv;
+				final Arithmetic xdiv;
+				try {
+				    // test divisibility of coefficient cnu by lc(gj)=gj.get(lgj)
+				    cdiv = cnu.divide(gj.get(lgj));
+				    // test divisibility of monomial X^nu by l(gj)
+				    xdiv = nu.subtract(lgj);
+				    //@internal the following is a trick for S=<b>N</b><sup>n</sup> represented as <b>Z</b><sup>n</sup> (get rid when introducing Natural extends Integer)
+				    if (Setops.some(((Vector)xdiv).iterator(), Functionals.bindSecond(Predicates.less, Values.ZERO)))
 					continue reductionPolynomials;
 				}
-				// divisible
+				catch (ArithmeticException indivisible) {
+				    continue reductionPolynomials;
+				}
+				// divisible, then q := cdiv*X<sup>xdiv</sup>
 				final Multinomial q = Values.MONOMIAL(cdiv, xdiv);
 				final Multinomial reduction = f.subtract(q.multiply(gj));
 				assert reduction.get(nu).norm().equals(Values.ZERO) : Values.MONOMIAL(Values.ONE, nu) + " does not occur in " + reduction + " anymore";
@@ -657,18 +666,19 @@ public final class AlgebraicAlgorithms {
 		    final Multinomial/*<R>*/ gi = (Multinomial)g.get(i);
 		    final Multinomial/*<R>*/ gj = (Multinomial)g.get(j);
 		    // construct Sgigj = S(g[i], g[j])
-		    final int[] lgi = leadingMonomial(gi, monomialOrder);
-		    final int[] lgj = leadingMonomial(gj, monomialOrder);
+		    final Vector/*>S<*/ lgi = (Vector) leadingMonomial(gi, monomialOrder);
+		    final Vector/*>S<*/ lgj = (Vector) leadingMonomial(gj, monomialOrder);
 		    // construct X^nu and X^mu coprime such that l(X^nu*g[i])==l(X^mu*g[j]) (also @see #lcm(Euclidean,Euclidean))
-		    final int[] d = Functionals.map(Operations.max, lgi, lgj);
-		    final int[] nu = Functionals.map(Operations.subtract, d, lgi);
-		    final int[] mu = Functionals.map(Operations.subtract, d, lgj);
-		    assert Setops.all(Values.valueOf(nu).iterator(), Values.valueOf(mu).iterator(), new orbital.logic.functor.BinaryPredicate() { public boolean apply(Object nui, Object mui) {return nui.equals(Values.ZERO) || mui.equals(Values.ZERO);} }) : "coprime " + Values.MONOMIAL(Values.ONE, nu) + " and " + Values.MONOMIAL(Values.ONE, mu);
+		    //@xxx we could use Functionals.map(Function,Tensor)
+		    final Vector/*>S<*/ d = Functionals.map(Operations.max, lgi, lgj);
+		    final Vector/*>S<*/ nu = d.subtract(lgi);
+		    final Vector/*>S<*/ mu = d.subtract(lgj);
+		    assert Setops.all(nu.iterator(), mu.iterator(), new orbital.logic.functor.BinaryPredicate() { public boolean apply(Object nui, Object mui) {return nui.equals(Values.ZERO) || mui.equals(Values.ZERO);} }) : "coprime " + Values.MONOMIAL(Values.ONE, nu) + " and " + Values.MONOMIAL(Values.ONE, mu);
 		    // Xpowernugi = 1/lc(g[i]) * X<sup>nu</sup>*g[i]
 		    final Multinomial Xpowernugi = Values.MONOMIAL(gi.get(lgi).inverse(), nu).multiply(gi);
 		    // Xpowernugi = 1/lc(g[j]) * X<sup>mu</sup>*g[j]
 		    final Multinomial Xpowermugj = Values.MONOMIAL(gj.get(lgj).inverse(), mu).multiply(gj);
-		    assert Utility.equalsAll(leadingMonomial(Xpowernugi, monomialOrder), leadingMonomial(Xpowermugj, monomialOrder)) : "construction should generate equal leading monomials (" + leadingMonomial(Xpowernugi, monomialOrder) + " of " + Xpowernugi + " and " + leadingMonomial(Xpowermugj, monomialOrder) + " of " + Xpowermugj + ") which vanish by subtraction";
+		    assert leadingMonomial(Xpowernugi, monomialOrder).equals(leadingMonomial(Xpowermugj, monomialOrder)) : "construction should generate equal leading monomials (" + leadingMonomial(Xpowernugi, monomialOrder) + " of " + Xpowernugi + " and " + leadingMonomial(Xpowermugj, monomialOrder) + " of " + Xpowermugj + ") which vanish by subtraction";
 		    final Multinomial Sgigj = Xpowernugi.subtract(Xpowermugj);
 		    assert Sgigj.get(d).norm().equals(Values.ZERO) : "construction should generate equal leading monomials which vanish by subtraction";
 		    final Multinomial r = reduce(Sgigj, g, monomialOrder);
@@ -725,20 +735,20 @@ public final class AlgebraicAlgorithms {
      * Get a collection of those (exponents of) monomials that occur in f
      * (i.e. with coefficient &ne;0).
      */
-    private static Collection/*_<int[]>_*/ occurringMonomials(final Multinomial f) {
+    private static Collection/*_<S>_*/ occurringMonomials(final Multinomial/*<S>*/ f) {
 	return Setops.select(null,
-			     Setops.asList(Combinatorical.asIterator(Combinatorical.getPermutations(f.dimensions()))),
+			     Setops.asList(f.indices()),
 			     new Predicate() {
 				 public boolean apply(Object i) {
-				     return !f.get((int[])i).norm().equals(Values.ZERO);
+				     return !f.get((Arithmetic)i).norm().equals(Values.ZERO);
 				 }
 			     });
     }
     /**
      * Get (the exponent of) the leading monomial l(f) of f.
      */
-    private static int[] leadingMonomial(Multinomial f, Comparator monomialOrder) {
-	return (int[]) Collections.max(occurringMonomials(f), monomialOrder);
+    private static Arithmetic/*>S<*/ leadingMonomial(Multinomial/*<S>*/ f, Comparator monomialOrder) {
+	return (Arithmetic/*>S<*/) Collections.max(occurringMonomials(f), monomialOrder);
     }
 
     /**
