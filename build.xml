@@ -83,6 +83,7 @@
         </path>
         <path id="tests.classpath">
 	    <pathelement location="${examples}/Algorithms"/>
+	    <pathelement location="${examples}/math"/>
 
             <pathelement path="${build.tests}" />
             <pathelement path="${java.class.path}" />
@@ -200,7 +201,12 @@
               <exclude name="check/TestCase.java" />
 	      <!-- special handling since SearchTest has no package (because of examples/Algorithms/SimpleGSP does not) -->
               <include name="SearchTest.class" />
+	      <!-- special handling since MarkovDecisionProcessTest has no package (because of examples/Algorithms/RobotNavigation does not) -->
+              <include name="MarkovDecisionProcessTest.class" />
               <exclude name="orbital/algorithm/template/*" />
+	      <!-- special handling since it has no package (because of examples/math/* does not) -->
+              <include name="DiverseMathTest.class" />
+              <exclude name="orbital/math/DiverseMathTest*" />
             </fileset>
           </batchtest>
         </junit>
