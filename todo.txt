@@ -20,4 +20,4 @@ Orbital package-namen und struktur(!), sowie Package-Einteilung überdenken. Bei 
 test whether BindFunction.derive() etc really fulfill:
 	scalar-product:	(x . y)' = (y, x)
 	quadrat. fkt:	(x . x)' = 2x = (||x||^2)'
-	euclidian-norm:	(||x||)' = (Sqrt(||x||^2))' = x / ||x||
+	Euclidian-norm:	(||x||)' = (Sqrt(||x||^2))' = x / ||x||
