@@ -1,0 +1,13 @@
+# neutral element
+_X+0 |- _X
+0+_X |- _X
+_X-0 |- _X
+0-_X |- -_X
+_X*1 |- _X
+1*_X |- _X
+# inverse
+_X+(-_X) |- 0
+(-_X)+_X |- 0
+_X-_X |- 0
+
+
