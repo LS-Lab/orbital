@@ -126,6 +126,10 @@ public class SearchTest extends check.TestCase {
 	    }
 	    catch(UnsupportedOperationException x) {logger.log(Level.INFO, "unsupported", x);}
 	    try {
+		algo.spaceComplexity();
+	    }
+	    catch(UnsupportedOperationException x) {logger.log(Level.INFO, "unsupported", x);}
+	    try {
 		correct = !(algo instanceof ProbabilisticAlgorithm) || ((ProbabilisticAlgorithm) algo).isCorrect();
 	    }
 	    catch(UnsupportedOperationException x) {logger.log(Level.INFO, "unsupported", x);}
