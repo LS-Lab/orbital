@@ -57,7 +57,7 @@ import orbital.logic.sign.type.TypeException;
  *   </dd>
  *   <dt id="SatisfactionRelation">Satisfaction Relations:</dt>
  *   <dd>A (semantic) satisfaction relation <span class="Formula">&#8871; &sube; Int(&Sigma;)&times;Formula(&Sigma;)</span> of a signature &Sigma;
- *   is the connection between syntactic representation formulas and their semantic interpretations for the world.
+ *   is the connection between syntactic representation with formulas and their semantic interpretations for the world.
  *   <span class="Formula">I &#8871; F</span> says whether a (compound) formula F is valid in an interpretation I.
  *   </dd>
  * </dl>

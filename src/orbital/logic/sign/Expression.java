@@ -120,7 +120,7 @@ import orbital.logic.sign.type.Typed;
  * With the above decomposition, terms are a graded magma with the magma
  * &Tau; of types as graduation. Also &Sigma;&sube;<span class="UniversalAlgebra">T</span>(&Sigma;)
  * operates (left and right) on <span class="UniversalAlgebra">T</span>(&Sigma;)
- * with an action with which the graduation is compatible.
+ * by an action with which the graduation is compatible.
  * However the compositions involved are partial and may result in
  * errorneous type &perp; or undefined terms.
  * </p>
