@@ -10,6 +10,7 @@ import orbital.algorithm.template.MarkovDecisionProblem.Transition;
 import orbital.logic.functor.Function;
 import orbital.logic.functor.BinaryFunction;
 import orbital.logic.functor.MutableFunction;
+import java.io.Serializable;
 
 import orbital.logic.functor.Functionals;
 
@@ -51,7 +52,7 @@ import java.util.logging.Level;
  *   Given an action-value function Q:S&times;A(s)&rarr;<b>R</b>,
  *   one greedy policy &pi;<sub>Q</sub> with respect to Q is given by
  *   <center>
- *       <span class="Formula">&pi;<sub>Q</sub>(s) = arg min<sub>a&isin;A(s)</sub> Q(s,a)</span>
+ *       <span class="Formula">&pi;<sub>Q</sub>(s) = argmin<sub>a&isin;A(s)</sub> Q(s,a)</span>
  *   </center>
  *   Similarly, &pi;<sub>f</sub> := &pi;<sub>Q<sub>f</sub></sub> is one
  *   greedy policy with respect to an evaluation function f:S&rarr;<b>R</b>.
@@ -92,7 +93,8 @@ import java.util.logging.Level;
  * @todo @see "H. Geffner and B. Bonet. Solving Large POMDPs using Real Time Dynamic Programming."
  * @TODO extend more general base class or interface Planning
  */
-public abstract class MarkovDecisionProcess /*extends Planning*/ implements AlgorithmicTemplate/*<MarkovDecisionProblem,Function>*/ {
+public abstract class MarkovDecisionProcess /*extends Planning*/ implements AlgorithmicTemplate/*<MarkovDecisionProblem,Function>*/, Serializable {
+    private static final long serialVersionUID = 2351017747303613618L;
     private static final Logger logger = Logger.getLogger(MarkovDecisionProcess.class.getName());
     public Object solve(AlgorithmicProblem p) {
     	return solve((MarkovDecisionProblem) p);
@@ -148,6 +150,7 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
      * @todo possible to unify with orbital.algorithm.template.DynamicProgramming?
      */
     public static abstract class DynamicProgramming extends MarkovDecisionProcess implements HeuristicAlgorithm {
+	private static final long serialVersionUID = 6262421425846708636L;
     	/**
     	 * the current discount factor &gamma;.
     	 * @serial
@@ -244,7 +247,7 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
          * @param state the state s&isin;S in which to take an action.
          * @return the Pair (a, Q)&isin;A(s)&times;<b>R</b> with maximum expected utility,
          *  which means minimum expected cost sum in this case.
-         * @post RES = (a,Q) &and; a = arg min<sub>a'&isin;A(s)</sub> Q(s,a')
+         * @post RES = (a,Q) &and; a = argmin<sub>a'&isin;A(s)</sub> Q(s,a')
          *  &and; Q = min<sub>a'&isin;A(s)</sub> Q(s,a').
          */
         protected orbital.util.Pair/*<Object, Number>*/ maximumExpectedUtility(BinaryFunction Q, Object state) {
@@ -287,7 +290,7 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
         /**
          * Get a greedy policy with respect to an action-value cost function Q.
          * @param Q an action-value cost function Q:S&times;A(s)&rarr;<b>R</b>.
-         * @return &pi;<sub>Q</sub> = &lambda;s: arg min<sub>a&isin;A(s)</sub> Q(s,a).
+         * @return &pi;<sub>Q</sub> = &lambda;s. argmin<sub>a&isin;A(s)</sub> Q(s,a).
          * @see Greedy
          * @see #getActionValue(Function)
          * @interal see #maximumExpectedUtility(Object)

@@ -29,35 +29,34 @@ import orbital.math.functional.Function;
  * @see AlgorithmicProblem
  * @see <a href="{@docRoot}/DesignPatterns/Strategy.html">&asymp;Strategy</a>
  */
-public
-interface AlgorithmicTemplate/*<Problem extends AlgorithmicProblem, Solution extends Object>*/ {
+public interface AlgorithmicTemplate/*<Problem extends AlgorithmicProblem, Solution extends Object>*/ {
 
-	/**
-	 * Generic solve method for a given algorithmic problem.
-	 * @param p algorithmic problem hook class which must fit the concrete
-	 * algorithmic template framework implementation.
-	 * @return the solution to the problem p, or null if solving failed.
-	 * @see orbital.logic.functor.Function#apply(Object)
-	 */
-	Object/*>Solution<*/ solve(AlgorithmicProblem/*>Problem<*/ p);
+    /**
+     * Generic solve method for a given algorithmic problem.
+     * @param p algorithmic problem hook class which must fit the concrete
+     * algorithmic template framework implementation.
+     * @return the solution to the problem p, or null if solving failed.
+     * @see orbital.logic.functor.Function#apply(Object)
+     */
+    Object/*>Solution<*/ solve(AlgorithmicProblem/*>Problem<*/ p);
 
-	/**
-	 * Measure for the asymptotic time complexity of the central solution operation in O-notation.
-	 * @return the function f for which the solve() method of this algorithm runs in O<big>(</big>f(n)<big>)</big>
-	 *  assuming the algorithmic problem hook to run in O(1).
-	 * @pre true
-	 * @post RES == OLD(RES) && OLD(this) == this
-	 * @see #solve(AlgorithmicProblem)
-	 */
-	Function complexity();
+    /**
+     * Measure for the asymptotic time complexity of the central solution operation in O-notation.
+     * @return the function f for which the solve() method of this algorithm runs in O<big>(</big>f(n)<big>)</big>
+     *  assuming the algorithmic problem hook to run in O(1).
+     * @pre true
+     * @post RES == OLD(RES) && OLD(this) == this
+     * @see #solve(AlgorithmicProblem)
+     */
+    Function complexity();
 
-	/**
-	 * Measure for the asymptotic space complexity of the central solution operation in O-notation.
-	 * @return the function f for which the solve() method of this algorithm consumes memory with an amount in O<big>(</big>f(n)<big>)</big>
-	 *  assuming the algorithmic problem hook uses space in O(1).
-	 * @pre true
-	 * @post RES == OLD(RES) && OLD(this) == this
-	 * @see #solve(AlgorithmicProblem)
-	 */
-	Function spaceComplexity();
+    /**
+     * Measure for the asymptotic space complexity of the central solution operation in O-notation.
+     * @return the function f for which the solve() method of this algorithm consumes memory with an amount in O<big>(</big>f(n)<big>)</big>
+     *  assuming the algorithmic problem hook uses space in O(1).
+     * @pre true
+     * @post RES == OLD(RES) && OLD(this) == this
+     * @see #solve(AlgorithmicProblem)
+     */
+    Function spaceComplexity();
 }

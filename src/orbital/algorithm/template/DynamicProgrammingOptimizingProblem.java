@@ -8,6 +8,7 @@ package orbital.algorithm.template;
 
 import java.util.Collection;
 import orbital.logic.functor.Function;
+import java.io.Serializable;
 
 import orbital.util.Utility;
 import orbital.util.Pair;
@@ -18,10 +19,11 @@ import orbital.util.Pair;
  * @version 0.9, 2000/08/01
  * @author  Andr&eacute; Platzer
  */
-public abstract class DynamicProgrammingOptimizingProblem implements DynamicProgrammingProblem {
+public abstract class DynamicProgrammingOptimizingProblem implements DynamicProgrammingProblem, Serializable {
 
     /**
      * memorize weights analogue to partialSolutions
+     * @serial
      */
     private Object[] partialWeights;
 

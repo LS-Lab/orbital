@@ -24,6 +24,7 @@ import orbital.util.Setops;
  * @see GreedyProblem
  * @see DynamicProgramming
  * @see HillClimbing
+ * @attribute stateless
  * @note an optimization could keep the candidates in a heap if only our GreedyProblem would promise not to remove any candidates (and tells us new candidates only instead of those that we already knew). However which heap to choose might depend on the problem, binomial, fibonacci, ...
  */
 public class Greedy implements AlgorithmicTemplate {

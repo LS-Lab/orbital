@@ -38,6 +38,11 @@ import orbital.util.Utility;
  * @todo could introduce an implicit form of DP that uses recursion to a base case with value reuse. However, explicit DP has a dramatic advantage in stack space consumption
  */
 public class DynamicProgramming implements AlgorithmicTemplate {
+    /**
+     * a (possibly multidimensional) array containing the partial solutions already solved, or null.
+     */
+    private Object[] partialSolutions;
+
     public Object solve(AlgorithmicProblem p) {
 	return solve((DynamicProgrammingProblem) p);
     } 
@@ -50,7 +55,20 @@ public class DynamicProgramming implements AlgorithmicTemplate {
      */
     public Object solve(DynamicProgrammingProblem p) {
 	partialSolutions = p.getInitialPartialSolutions();
-	return solveByDynamicProgramming(p);
+	while (!p.isSolution(partialSolutions)) {
+
+	    // the next part we divided the problem into
+	    int[]  part = p.nextPart();
+
+	    // solve part
+	    Object psol = p.solve(part, partialSolutions);
+
+	    // memorize this partial solution
+	    setSolutionPart(part, partialSolutions, psol);
+	} 
+
+	// merge all partial solutions into the complete solution
+	return p.merge(partialSolutions);
     } 
 
     /**
@@ -65,28 +83,6 @@ public class DynamicProgramming implements AlgorithmicTemplate {
 	return complexity();
     } 
 
-    /**
-     * a (possibly multidimensional) array containing the partial solutions already solved, or null.
-     */
-    private Object[] partialSolutions;
-
-    private final Object solveByDynamicProgramming(DynamicProgrammingProblem p) {
-	while (!p.isSolution(partialSolutions)) {
-
-	    // the next part we divided the problem into
-	    int[]  part = p.nextPart();
-
-	    // solve part
-	    Object psol = p.solve(part, partialSolutions);
-
-	    // memorize this partial solution
-	    setSolutionPart(part, partialSolutions, psol);
-	} 
-
-	// merge all partial solutions to the solution
-	return p.merge(partialSolutions);
-    } 
-    
     // Convenience utilities methods @todo move to Utilities
 	
     /**

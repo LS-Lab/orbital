@@ -71,6 +71,7 @@ import java.util.logging.Level;
  * @todo could we plot the resulting evaluation function with a Plot3D in some examples to visualize what's happening?
  */
 public class RealTimeDynamicProgramming extends MarkovDecisionProcess.DynamicProgramming implements HeuristicAlgorithm {
+    private static final long serialVersionUID = 8603555888863789157L;
     private static final Logger logger = Logger.getLogger(RealTimeDynamicProgramming.class.getName());
     public RealTimeDynamicProgramming(Function heuristic) {
 	super(heuristic);
@@ -84,7 +85,7 @@ public class RealTimeDynamicProgramming extends MarkovDecisionProcess.DynamicPro
 	 */
 	final MutableFunction U = createMap();
 	final BinaryFunction Q = getActionValue(U);
-	// explicitly initialize U(s) = h(s)
+	// alternative: explicitly initialize U(s) = h(s)
 	/*for (Iterator i = problem.getStates().iterator(); i.hasNext(); ) {
 	  Object state = i.next();
 	  putCost(v, state, getEvaluation().apply(state));

@@ -23,22 +23,25 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 
 /**
- * Gau&szlig;-Seidel Dynamic Programming.
+ * Gau&szlig;-Seidel dynamic programming.
  * <p>
- * Gau&szlig;-Seidel Dynamic Programming is a variant of synchronous Dynamic Programming performing
+ * Gau&szlig;-Seidel dynamic programming is a variant of synchronous dynamic programming performing
  * value iteration in a sequential "sweep" of all the states after each state backup.
- * Due to this fact, it can even be seen half-way as asynchronous Dynamic Programming.
- * For the same reason, Gau&szlig;-Seidel Dynamic Programming usually converges faster than
- * sychronous Dynamic Programming.</p>
+ * Due to this fact, it can even be seen half-way as asynchronous dynamic programming.
+ * For the same reason, Gau&szlig;-Seidel dynamic programming usually converges faster than
+ * sychronous dynamic programming.</p>
  * <p>
- * Gau&szlig;-Seidel Dynamic Programming permanently uses a dynamic programming variant of value iteration
+ * Gau&szlig;-Seidel dynamic programming permanently uses a dynamic programming variant of value iteration
  * for the sequence of utility functions U<sub>k</sub>.
- * <center>
- *   <span class="Formula">U<sub>k+1</sub>(s) := min<sub>a&isin;A(s)</sub> Q<sub>U</sub>(s,a)</span>
+ * <center class="Formula">
+ *   U<sub>k+1</sub>(s) := min<sub>a&isin;A(s)</sub> Q<sub>U</sub>(s,a)
  * </center>
  * where
- * <center>
- *   <span class="Formula">U(t) := U<sub>k+1</sub>(t) &lArr; t&lt;s, U(t) := U<sub>k</sub>(t) &lArr; t&ge;s</span>
+ * <center class="Formula">
+ *   U(t) := U<sub>k+1</sub>(t) &lArr; t&lt;s
+ * </center>
+ * <center class="Formula">
+ *  U(t) := U<sub>k</sub>(t) &lArr; t&ge;s
  * </center>
  * </p>
  *
@@ -49,8 +52,18 @@ import java.util.logging.Level;
  * @see "A. Barto, S. Bradtke, and S. Singh. Learning to act using real-time dynamic programming. <i>Artificial Intelligence</i>, 72:81-138, 1995."
  */
 public class GaussSeidelDynamicProgramming extends MarkovDecisionProcess.DynamicProgramming implements HeuristicAlgorithm {
+    private static final long serialVersionUID = -5923519196510123671L;
     private static final Logger logger = Logger.getLogger(GaussSeidelDynamicProgramming.class.getName());
+    /**
+     * the tolerance value below which the evaluation function is considered
+     *  to have converged.
+     * @serial
+     */
     private double tolerance;
+    /**
+     * the full set S of <em>all</em> states of the problem.
+     * @serial
+     */
     private Collection states;
     /**
      * @param states the full set S of <em>all</em> states of the problem.
