@@ -227,7 +227,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      * @todo parse arguments in order to obtain OperatorSet used
      */
     public static void main(String arg[]) throws Exception {
-	if (arg.length > 0 && "-?".equals(arg[0])) {
+	if (orbital.signe.isHelpRequest(arg)) {
 	    System.out.println(usage);
 	    System.out.println("Core operators:\n\t" + new FuzzyLogic().coreSignature());
 	    return;
@@ -307,7 +307,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	assert F instanceof FuzzyLogicFormula : "F is a formula in this logic";
         // assure core interpretation unless overwritten
         I = new QuickUnitedInterpretation(_coreInterpretation, I);
-	return MathUtilities.equals(((Double) F.apply(I)).doubleValue(), 1, 0.001);
+	return MathUtilities.equals(((Number) F.apply(I)).doubleValue(), 1, 0.001);
     } 
 
     public Inference inference() {
@@ -349,6 +349,23 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	return (Formula) createExpression(expression);
     }
 
+    // Helpers
+    
+    /**
+     * interpretation for a truth-value
+     */
+    static final Object getInt(double v) {
+	return (Number) new Double(v);
+    } 
+    
+    /**
+     * truth-value of a Formulas Interpretation
+     */
+    static final double getTruth(Object f) {
+	return ((Number) f).doubleValue();
+    } 
+    
+    
     /**
      * Specifies the type of fuzzy logic to use.
      * Instances will define the fuzzy logic operators applied.
@@ -418,16 +435,6 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	    // canonicalize
 	    return values[ordinal];
 	} 
-
-    	// interpretation for a truth-value
-    	static final Object getInt(double v) {
-	    return new Double(v);
-    	} 
-    
-    	// truth-value of a Formulas Interpretation
-    	static final double getTruth(Object f) {
-	    return ((Double) f).doubleValue();
-    	} 
 
 	/**
 	 * Defines the not operator to use in the fuzzy logic.
@@ -649,16 +656,6 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 
     static class LogicFunctions {
         private LogicFunctions() {}
-    
-    	// interpretation for a truth-value
-    	protected static final Object getInt(double v) {
-	    return new Double(v);
-    	} 
-    
-    	// truth-value of a Formulas Interpretation
-    	protected static final double getTruth(Object f) {
-	    return ((Double) f).doubleValue();
-    	} 
     
 	// Basic logical operations (elemental junctors).
     	public static final Function not = new Function() {
