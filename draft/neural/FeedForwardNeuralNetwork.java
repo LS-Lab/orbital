@@ -175,7 +175,7 @@ class FeedForwardNeuralNetwork extends NeuralNetwork {
 		}
 		
 		// return output activity
-		Vector outputVector = Values.getInstance(outputLayer.size());
+		Vector outputVector = Values.getDefault().newInstance(outputLayer.size());
 		Iterator it = outputLayer.iterator();
 		for (int i = 0; i < outputVector.dimension(); i++)
 			outputVector.set(i, ((Neuron) ((Vertex) it.next()).getObject()).getActivity());

@@ -58,7 +58,7 @@ public interface Neuron extends Arithmetic {
      * @author  Andr&eacute; Platzer
      * @todo extend Real??, instead to remove double activity variables
      */
-    static abstract class Abstract extends orbital.math.AbstractReal.Double implements Neuron, Serializable {
+    static abstract class Abstract extends orbital.moon.math.AbstractReal.Double implements Neuron, Serializable {
     	private static final long serialVersionUID = -2711865166630462282L;
         /**
          * The current activity level a<sub>i</sub> of this neuron with index i.
@@ -74,7 +74,7 @@ public interface Neuron extends Arithmetic {
 	    super(java.lang.Double.NaN);
     	}
     	public Abstract(double activity) {
-	    this(Values.valueOf(activity));
+	    this(Values.getDefault().valueOf(activity));
     	}
 
         public boolean equals(Object o) {

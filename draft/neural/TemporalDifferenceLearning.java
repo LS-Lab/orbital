@@ -117,7 +117,7 @@ class TemporalDifferenceLearning implements Serializable {
 
 		// optimized call to {@link #learn(Vector, Vector) learn}(input, expectedOutput)
 		// compute the error
-		Vector error = Values.valueOf(new double[] {getLearningRate() * (reward + getDiscount() * usp - us)});
+		Vector error = Values.getDefault().valueOf(new double[] {getLearningRate() * (reward + getDiscount() * usp - us)});
 		((Backpropagation) U).learn(error);
 	}
 	

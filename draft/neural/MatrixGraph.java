@@ -75,7 +75,7 @@ public class MatrixGraph implements Graph, Serializable {
 
     public MatrixGraph() {
         nodes = new ArrayList();
-        edges = Values.getInstance(0, 0);
+        edges = Values.getDefault().newInstance(0, 0);
     }
 
     public MatrixGraph(int capacity) {
@@ -124,7 +124,7 @@ public class MatrixGraph implements Graph, Serializable {
 	    //@todo optimize enlarge with more than one additional row and column
 	    if (edges.dimension().equals(new Dimension(0, 0)))
 		// explicit construction since in this case, insertColumns does not do anything, so insertRows will result in the wrong size, as well
-		edges = Values.getInstance(1, 1);
+		edges = Values.getDefault().newInstance(1, 1);
 	    else {
 		edges.insertColumns(index, unconnectedMatrix(edges.dimension().height, 1));
 		edges.insertRows(index, unconnectedMatrix(1, edges.dimension().width));
@@ -350,7 +350,7 @@ public class MatrixGraph implements Graph, Serializable {
      * it contains no single edge.
      */
     private static Matrix unconnectedMatrix(int height, int width) {
-	Matrix unconnectedMatrix = Values.getInstance(height, width);
+	Matrix unconnectedMatrix = Values.getDefault().newInstance(height, width);
 	for (int i = 0; i < unconnectedMatrix.dimension().height; i++)
 	    for (int j = 0; j < unconnectedMatrix.dimension().width; j++)
 		unconnectedMatrix.set(i, j, null);
@@ -422,9 +422,6 @@ public class MatrixGraph implements Graph, Serializable {
     	}
         public GraphFactory getGraphFactory() {
 	    return graph.getGraphFactory();
-        }
-        public void setGraphFactory(GraphFactory factory) {
-	    graph.setGraphFactory(factory);
         }
     }
 }

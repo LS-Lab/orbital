@@ -168,7 +168,7 @@ abstract class NeuralNetwork extends MatrixGraph implements orbital.logic.functo
 	public double getActivity() {
 		Collection vertices = getVertices();
 		// activity vector <span class="vector">a</span>
-		Vector a = Values.getInstance(vertices.size());
+		Vector a = Values.getDefault().newInstance(vertices.size());
 		int j = 0;
 		for (Iterator i = vertices.iterator(); i.hasNext(); j++)
 			a.set(j, (Arithmetic) ((Vertex) i.next()).getObject());
@@ -247,7 +247,7 @@ abstract class NeuralNetwork extends MatrixGraph implements orbital.logic.functo
         // get/set methods
         
         public Real getActivity() {
-        	return Values.valueOf(-1);
+        	return Values.getDefault().valueOf(-1);
         }
        
         public void setActivity(Real a) {

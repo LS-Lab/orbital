@@ -184,7 +184,7 @@ public class Backpropagation extends FeedForwardNeuralNetwork implements Mutable
 
 		// second, update link weight to reduce error
 		// change <span class="matrix">W</span><sub>j,i</sub> by &lambda;*<span class="vector">a</span><sub>j</sub>*&Delta;<sub>i</sub>*&phi;'(u<sub>i</sub>)
-		update(e, Values.valueOf(getLearningRate()).multiply(aj).multiply(deltai));
+		update(e, Values.getDefault().valueOf(getLearningRate()).multiply(aj).multiply(deltai));
 	    }
 	}
     }
@@ -194,7 +194,7 @@ public class Backpropagation extends FeedForwardNeuralNetwork implements Mutable
      */
     private static final Arithmetic errorSum(Collection edges) {
     	// dot-product
-    	Arithmetic delta = Values.valueOf(0);
+    	Arithmetic delta = Values.getDefault().valueOf(0);
     	for (Iterator i = edges.iterator(); i.hasNext(); ) {
 	    Edge e = (Edge) i.next();
 	    delta = delta.add(((Arithmetic) e).multiply(((NeuronImpl) e.getToVertex().getObject()).getDelta()));
@@ -257,7 +257,7 @@ public class Backpropagation extends FeedForwardNeuralNetwork implements Mutable
 	    // link weights as edge-marking
 	    // simply use random initialization in (-0.05, +0.05]
 	    //@internal the initial network weights should be uniformly distributed and small, such that the activation function is in the "Schaltungsbereich".
-	    e.setObject(Values.valueOf(0.05 - 0.1 * random.nextDouble()));
+	    e.setObject(Values.getDefault().valueOf(0.05 - 0.1 * random.nextDouble()));
 	    return e;
     	}
         public Graph createGraph() {

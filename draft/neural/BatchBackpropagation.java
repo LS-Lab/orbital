@@ -115,7 +115,7 @@ class BatchBackpropagation extends Backpropagation {
     				if (e != null)
     					//@todo was division by example set size, ok? Verify theoretically! Perhaps, it is only required for unbound activation functions. Provably, for a constant set of examples, it just decreases the learning rate, so it will still converge, though perhaps more slowly.
     					//@todo optimizable
-    					super.update((Edge) e, updates.get(i, j).divide(orbital.math.Values.valueOf(updateCount)));
+    					super.update((Edge) e, updates.get(i, j).divide(orbital.math.Values.getDefault().valueOf(updateCount)));
     			}
 		}
 		// init and reset
@@ -129,7 +129,7 @@ class BatchBackpropagation extends Backpropagation {
 	 * @see #update()
 	 */
 	private final void reinit() {
-		this.updates = Values.ZERO(edges.dimension());
+		this.updates = Values.getDefault().ZERO(edges.dimension());
 		this.updateCount = 0;
 		logger.log(Level.FINER, "update reinit");
 	}

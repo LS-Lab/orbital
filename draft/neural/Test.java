@@ -36,7 +36,7 @@ class Test {
 	Backpropagation net = new Backpropagation();
 	net.createLayers(new int[] {4, 2, 1});
 	net.setActivationFunction(Functions.logistic);
-	Vector v = Values.valueOf(new double[] {1, 1, 1, 2});
+	Vector v = Values.getDefault().valueOf(new double[] {1, 1, 1, 2});
 	System.out.println(v + " -->");
 	System.out.println("--> " + net.apply(v));
 	show(net);
@@ -48,19 +48,19 @@ class Test {
 	net.setActivationFunction(Functions.id);
 	net.setLearningRate(.2);
 
-	Function f = (Function) Operations.plus.apply(Functions.linear(Values.valueOf(1/4.)), Functions.constant(Values.valueOf(.3)));
+	Function f = (Function) Operations.plus.apply(Functions.linear(Values.getDefault().valueOf(1/4.)), Functions.constant(Values.getDefault().valueOf(.3)));
 	Vector e[] = new Vector[20], t[] = new Vector[e.length];
 	for (int i = 0; i < e.length; i++) {
 	    double x = Math.random();
-	    e[i] = Values.valueOf(new double[] {x});
-	    t[i] = Values.valueOf(new Arithmetic[] {(Arithmetic) f.apply(Values.valueOf(x))});
+	    e[i] = Values.getDefault().valueOf(new double[] {x});
+	    t[i] = Values.getDefault().valueOf(new Arithmetic[] {(Arithmetic) f.apply(Values.getDefault().valueOf(x))});
 	}
         
         for (int i = 0; i < 400; i++)
 	    net.learn(e, t);
 
 	System.out.println("learning " + f);
-	Vector v = Values.valueOf(new double[] {.5});
+	Vector v = Values.getDefault().valueOf(new double[] {.5});
 	System.out.println(v + " -->");
 	System.out.println("--> " + net.apply(v));
 	System.out.println("correct value " + f.apply(v.get(0)));
@@ -78,11 +78,11 @@ class Test {
 	Function f = majority;
 	Vector e[] = new Vector[40], t[] = new Vector[e.length];
 	for (int i = 0; i < e.length; i++) {
-	    Vector x = Values.getInstance(size);
+	    Vector x = Values.getDefault().newInstance(size);
 	    for (int j = 0; j < x.dimension(); j++)
-		x.set(j, Values.valueOf(r.nextInt(2)));
+		x.set(j, Values.getDefault().valueOf(r.nextInt(2)));
 	    e[i] = x;
-	    t[i] = Values.valueOf(new Arithmetic[] {(Arithmetic) f.apply(x)});
+	    t[i] = Values.getDefault().valueOf(new Arithmetic[] {(Arithmetic) f.apply(x)});
 	}
         
         for (int i = 0; i < 1000; i++)
@@ -91,9 +91,9 @@ class Test {
 	System.out.println("learning " + f);
 
 	// test result
-	Vector v = Values.getInstance(size);
+	Vector v = Values.getDefault().newInstance(size);
 	for (int j = 0; j < v.dimension(); j++)
-	    v.set(j, Values.valueOf(r.nextInt(2)));
+	    v.set(j, Values.getDefault().valueOf(r.nextInt(2)));
 	System.out.println(v + " -->");
 	System.out.println("--> " + net.apply(v));
 	System.out.println("correct value " + f.apply(v));
@@ -110,8 +110,8 @@ class Test {
 		for (int i = 0; i < v.dimension(); i++)
 		    if (v.get(i).norm().equals(Values.ZERO))
 			if (++count > v.dimension() / 2)
-			    return Values.valueOf(1);
-		return Values.valueOf(0);
+			    return Values.getDefault().valueOf(1);
+		return Values.getDefault().valueOf(0);
 	    }
 	};
 
@@ -121,19 +121,19 @@ class Test {
 	net.setActivationFunction(Functions.id);
 	net.setLearningRate(.2);
 
-	Function f = (Function) Operations.plus.apply(Functions.linear(Values.valueOf(1/4.)), Functions.constant(Values.valueOf(.3)));
+	Function f = (Function) Operations.plus.apply(Functions.linear(Values.getDefault().valueOf(1/4.)), Functions.constant(Values.getDefault().valueOf(.3)));
 	Vector e[] = new Vector[10], t[] = new Vector[e.length];
 	for (int i = 0; i < e.length; i++) {
 	    double x = Math.random();
-	    e[i] = Values.valueOf(new double[] {x});
-	    t[i] = Values.valueOf(new Arithmetic[] {(Arithmetic) f.apply(Values.valueOf(x))});
+	    e[i] = Values.getDefault().valueOf(new double[] {x});
+	    t[i] = Values.getDefault().valueOf(new Arithmetic[] {(Arithmetic) f.apply(Values.getDefault().valueOf(x))});
 	}
         
         for (int i = 0; i < 200; i++)
 	    net.learn(e, t);
         
 	System.out.println("learning " + f);
-	Vector v = Values.valueOf(new double[] {.5});
+	Vector v = Values.getDefault().valueOf(new double[] {.5});
 	System.out.println(v + " -->");
 	System.out.println("--> " + net.apply(v));
 	System.out.println("correct value " + f.apply(v.get(0)));
