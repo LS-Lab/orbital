@@ -1,7 +1,7 @@
 /**
- * @(#)stylist.css 0.9 2000/10/23 Andre Platzer
+ * @(#)stylist.css 1.0 2000-10-23 Andre Platzer
  *
- * Copyright (c) 2000 Andre Platzer. All Rights Reserved.
+ * Copyright (c) 2000-2002 Andre Platzer. All Rights Reserved.
  */
 
     /**
@@ -69,10 +69,10 @@
      * For meta-variable identifiers.
      */
     var.meta {
-    	font-family: "Arioso", italic;
+    	font-family: "Monotype Corsiva", "FreestyleScrD", "Arioso", "CroissantD", "Merlin", "Vivienne", "Script", script, italic;
     }
 
-    /* special identifier types */
+    /* special type identifiers */
 
     /**
      * identifies vector symbols.
@@ -110,14 +110,14 @@
      */
     *.family {
     	font-style: italic;
-    	font-family: "Vivienne", "Arioso", cursive, italic;
+    	font-family: "Vivienne", "Arioso", "Monotype Corsiva", "FreestyleScrD", "CroissantD", "Merlin", "Script", script, cursive, italic;
     }
 
     /**
      * identifies category symbols.
      */
     *.categorie, *.category    {
-	font-family: "Arioso", cursive, italic;
+	font-family: "Arioso", "Monotype Corsiva", "FreestyleScrD", "Vivienne", "CroissantD", "Merlin", "Script", script, cursive, italic;
 	text-decoration: underline;
     }
 
