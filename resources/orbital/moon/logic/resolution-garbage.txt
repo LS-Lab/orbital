@@ -9,3 +9,8 @@ q(x), p(x)->q(x) |= p(x)
 ##@xxx no time (some x p(x)) & (some x q(x)) |= some x (p(x)&q(x))
 ##@xxx no time all x (p(x) | q(x)) |= (all x p(x)) | (all x q(x))
 ##all x p(x) == some x p(x)		# @xxx time >3h
+
+#
+# Some test cases
+#
+p(a,c), all x all y all y (l(x,y)&l(y,z)->p(x,y,z)) |= all x all y l(x,y)	# test case for bug fixed in ClauseImpl 1.7
