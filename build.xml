@@ -282,7 +282,7 @@
 
 	<copy todir="${doc}/api">
 	    <fileset dir="${doc}"
-		includes="stylist.css, recommendations.*html, features.*html, templates.*html"/>
+		includes="*.css, recommendations.*html, features.*html, templates.*html"/>
 	</copy>
 
         <delete>
