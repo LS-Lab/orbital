@@ -109,6 +109,8 @@ public class NotationTest extends check.TestCase {
 	equal("~a & b | c", "~(a & b | c)", false);
 	equal("a -> b <-> c", "(a -> b) <-> c", true);
 	equal("a -> b <-> c", "a -> (b <-> c)", false);
+	equal("a -> b -> c", "a -> (b -> c)", true);
+	equal("a -> b -> c", "(a -> b) -> c", false);
 	equal("all x p(x) <-> q(x)", "(all x p(x)) <-> q(x)", true);
 	equal("all x p(x) <-> q(x)", "all x (p(x) <-> q(x))", false);
 	equal("some x p(x) <-> q(x)", "(some x p(x)) <-> q(x)", true);
