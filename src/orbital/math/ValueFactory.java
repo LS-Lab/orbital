@@ -66,7 +66,7 @@ public interface ValueFactory {
     Integer MINUS_ONE();
 
     /**
-     * +&infin;&isisn;<b>R</b>.
+     * +&infin;&isin;<b>R</b>.
      * @see #INFINITY
      * @see #NEGATIVE_INFINITY
      * @postconditions RES == OLD(RES)
@@ -74,7 +74,7 @@ public interface ValueFactory {
     Real POSITIVE_INFINITY();
 
     /**
-     * -&infin;&isisn;<b>R</b>.
+     * -&infin;&isin;<b>R</b>.
      * @see #INFINITY
      * @see #POSITIVE_INFINITY
      * @postconditions RES == OLD(RES)

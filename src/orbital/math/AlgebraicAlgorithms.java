@@ -672,6 +672,9 @@ public final class AlgebraicAlgorithms {
      * @internal whenever an elementary reduction is possible, use the reduced polynomial instead of the original polynomial.
      * @internal GroebnerBasis = "if the term rewrite system for reduce is confluent"
      * @todo scale to get rid of denominators, and of non-primitive polynomials (divide by gcd of coefficients)
+     * @see "Buchberger, Bruno. <i>Ein Algorithmus zum Auffinden der Basiselemente des Restklassenrings nach einem nulldimensionalen Polynomideal</i>. PhD thesis, Universit&auml;t Innsbruck, 1965."
+     * @see "Buchberger, Bruno. Gr&oouml;bner bases: An algorithmic method in polynomial ideal theory. In Bose, N.K., editor, <i>Recent Trends in Multidimensional Systems Theory</i>. Reidel Publ.Co., 1985."
+     * @see "Knuth, Donald E. and Bendix, P.B. Simple word problems in universal algebras. In Leech, J., editor, <i>Computational Problems in Abstract Algebras</i>. p263-297. Pergamon Press, Oxford, 1970."
      */
     public static final Set/*_<Polynomial<R,S>>_*/ groebnerBasis(Set/*_<Polynomial<R,S>>_*/ g, final Comparator/*_<S>_*/ monomialOrder) {
 	Set/*_<Polynomial<R,S>>_*/ rgb = reducedGroebnerBasis(g, monomialOrder);
