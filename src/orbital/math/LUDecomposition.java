@@ -17,7 +17,8 @@ import orbital.math.functional.Functions;
 import orbital.logic.functor.Predicates;
 
 /**
- * LUDecomposition class, decomposing <span class="matrix">A</span> into <span class="matrix">P</span>&middot;<span class="matrix">A</span> = <span class="matrix">L</span>&middot;<span class="matrix">U</span>.
+ * LUDecomposition class, decomposing <span class="matrix">A</span>
+ * into <span class="matrix">P</span>&#8729;<span class="matrix">A</span> = <span class="matrix">L</span>&#8729;<span class="matrix">U</span>.
  *
  * @version 0.9, 2000/09/09
  * @author  Andr&eacute; Platzer
@@ -136,7 +137,7 @@ public final class LUDecomposition/*<R implements Arithmetic>*/ implements Seria
     
     /**
      * Get the Gaussian LU-decomposition of a matrix.
-     * Such that <span class="matrix">P</span>.<span class="matrix">A</span> = <span class="matrix">L</span>.<span class="matrix">U</span>
+     * Such that <span class="matrix">P</span>&#8729;<span class="matrix">A</span> = <span class="matrix">L</span>&#8729;<span class="matrix">U</span>
      * <p>Number of multiplications is 1/3*(n<sup>3</sup>-n)</p>
      * @pre M.isSquare()
      */
@@ -170,7 +171,7 @@ public final class LUDecomposition/*<R implements Arithmetic>*/ implements Seria
      * The determinant of <span class="matrix">A</span>.
      * <p>
      * det <span class="matrix">A</span> = (-1)<sup>p</sup>*det <span class="matrix">U</span> where p = sign <span class="matrix">P</span> is the number of permutations in <span class="matrix">P</span>.
-     * Since det(<span class="matrix">P</span>)*det(<span class="matrix">A</span>) = det(<span class="matrix">P</span>&middot;<span class="matrix">A</span>) = det(<span class="matrix">L</span>&middot;<span class="matrix">U</span>) = det(<span class="matrix">L</span>)*det(<span class="matrix">U</span>) = det(<span class="matrix">U</span>).</p>
+     * Since det(<span class="matrix">P</span>)*det(<span class="matrix">A</span>) = det(<span class="matrix">P</span>&#8729;<span class="matrix">A</span>) = det(<span class="matrix">L</span>&#8729;<span class="matrix">U</span>) = det(<span class="matrix">L</span>)*det(<span class="matrix">U</span>) = det(<span class="matrix">U</span>).</p>
      * @see Matrix#det()
      */
     public Arithmetic/*>R<*/ det() {
@@ -212,12 +213,13 @@ public final class LUDecomposition/*<R implements Arithmetic>*/ implements Seria
     }
 
     /**
-     * Solve LES <span class="matrix">A</span>&middot;x=b.
+     * Solve LES <span class="matrix">A</span>&#8729;<span class="vector>x</span>=<span class="vector>b</span>.
      * <p>
      * Implementation solves
-     * <span class="matrix">L</span>.z = <span class="matrix">P</span>.b per forward-substitution, and then solves
-     * R.x = z per backward-substitution.
-     * @return x such that <span class="matrix">A</span>&middot;x = b.
+     * <span class="matrix">L</span>&#8729;<span class="vector">z</span> = <span class="matrix">P</span>&#8729;<span class="vector">b</span>
+     * per forward-substitution, and then solves
+     * <span class="matrix">R</span>&#8729;<span class="vector">x</span> = <span class="vector">z</span> per backward-substitution.
+     * @return x such that <span class="matrix">A</span>&#8729;<span class="vector">x</span> = <span class="vector">b</span>.
      */
     public Vector/*<R>*/ solve(Vector/*<R>*/ b) {
 	Vector/*<R>*/ c = P.multiply(b);

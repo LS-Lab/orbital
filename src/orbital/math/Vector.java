@@ -25,8 +25,8 @@ import java.util.NoSuchElementException;
  * </p>
  * <p>
  * The components v<sub>i</sub>&isin;R are any arithmetic objects forming a ring.
- * (R<sup>n</sup>,+,&lowast;) form a (free) R-module
- * with the law of composition + and the law of action &lowast;.
+ * (R<sup>n</sup>,+,&middot;) form a (free) R-module
+ * with the law of composition + and the law of action &middot;.
  * If R is a field the vectors even form a vector space over R, which justifies the name vector.
  * If R is an integrity domain, then R<sup>n</sup>&cong;R<sup>m</sup> &hArr; n=m.
  * </p>
@@ -42,27 +42,27 @@ import java.util.NoSuchElementException;
  *   </tr>
  *   <tr>
  *     <td>(2)</td>
- *     <td>&lowast;:R×V&rarr;V; (&lambda;,<span class="vector">v</span>)&#8614;&lambda;&lowast;<span class="vector">v</span>
- *       is a law of action (the scalar multiplication &lowast; or sometimes ·)</td>
+ *     <td>&middot;:R×V&rarr;V; (&lambda;,<span class="vector">v</span>)&#8614;&lambda;&middot;<span class="vector">v</span>
+ *       is a law of action (the scalar multiplication &middot; or sometimes ·)</td>
  *   </tr>
  *   <tr>
  *     <td>&nbsp;(&quot;a&quot;)</td>
- *     <td>&lambda;&lowast;(&mu;&lowast;<span class="vector">v</span>) = (&lambda;&sdot;&mu;)&lowast;<span class="vector">v</span></td>
+ *     <td>&lambda;&middot;(&mu;&middot;<span class="vector">v</span>) = (&lambda;&sdot;&mu;)&middot;<span class="vector">v</span></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td>&nbsp;(&quot;d&quot;)</td>
- *     <td>(&lambda;+&mu;)&lowast;<span class="vector">v</span> = &lambda;&lowast;<span class="vector">v</span> + &mu;&lowast;<span class="vector">v</span></td>
+ *     <td>(&lambda;+&mu;)&middot;<span class="vector">v</span> = &lambda;&middot;<span class="vector">v</span> + &mu;&middot;<span class="vector">v</span></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td>&nbsp;(&quot;d&quot;)</td>
- *     <td>&lambda;&lowast;(<span class="vector">v</span>+<span class="vector">w</span>) = &lambda;&lowast;<span class="vector">v</span> + &lambda;&lowast;<span class="vector">w</span></td>
+ *     <td>&lambda;&middot;(<span class="vector">v</span>+<span class="vector">w</span>) = &lambda;&middot;<span class="vector">v</span> + &lambda;&middot;<span class="vector">w</span></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td>&nbsp;(&quot;n&quot;)</td>
- *     <td>1&lowast;<span class="vector">v</span> = <span class="vector">v</span></td>
+ *     <td>1&middot;<span class="vector">v</span> = <span class="vector">v</span></td>
  *     <td></td>
  *   </tr>
  * </table>
@@ -231,7 +231,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      *  	&& RES.get(i) == s&sdot;get(i)
      * @attribute associative
      * @attribute neutral
-     * @return s&lowast;<span class="vector">v</span>
+     * @return s&middot;<span class="vector">v</span>
      */
     Vector/*<R>*/ scale(Scalar s);
     /**
@@ -245,7 +245,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * Multiplies a vector with a matrix returning a vector.
      * If row-vector <code><span class="vector">v</span></code> is sized <code>n</code> and
      * the matrix <code class="matrix">A</code> is sized <code>n&times;m</code>,
-     * the resulting row-vector <code><span class="vector">v</span>&middot;<span class="matrix">A</span></code> is sized <code>m</code>.
+     * the resulting row-vector <code><span class="vector">v</span>&#8729;<span class="matrix">A</span></code> is sized <code>m</code>.
      * This is an inner product.
      * @pre dimension() == <span class="matrix">B</span>.dimension().height
      */

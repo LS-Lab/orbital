@@ -116,7 +116,8 @@ public final class NumericalAlgorithms {
     } 
 
     /**
-     * cg-algorithm for solving A&middot;x=b iteratively starting with x0.
+     * cg-algorithm for solving A&#8729;x=b iteratively starting with x0.
+     * Conjugate gradients algorithm.
      * @pre A.isPositiveDefinite() && b.dimension()==A.dimension().width && x0.dimension() == A.dimension().width
      * @post A.multiply(x) == b
      * @return the solution vector x solving Ax=b.

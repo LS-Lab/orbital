@@ -223,7 +223,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      *  	&& RES.get(i) == s&sdot;get(i)
      * @attribute associative
      * @attribute left-neutral (1)
-     * @return s&lowast;this
+     * @return s&middot;this
      * @note once we have covariant return-types.
      */
     //Tensor/*<R>*/ scale(Scalar s);
@@ -264,11 +264,11 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      *     <td class="arrowOfMap">&#8614;</td>
      *     <td class="rightOfMap">(a<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub></sub></sub>&sdot;b<sub>j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub>)<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub>,j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub>
      *     =&#770;
-     *     (a<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub></sub></sub>&lowast;b)<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub></sub>
+     *     (a<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub></sub></sub>&middot;b)<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub></sub>
      *     </td>
      *   </tr>
      * </table>
-     * At least formally, the last form of the calculation resembles the scalar multiplication b&lowast;a
+     * At least formally, the last form of the calculation resembles the scalar multiplication b&middot;a
      * if a was a vector of a left-R<sup>m<sub>0</sub>&times;&#8230;&times;m<sub>s-1</sub></sup>-modules.
      * @todo so why don't we unify tensor and scale? Because there may as well be distinct definitions?
      * @return the tensor product (or outer product) a&otimes;b.

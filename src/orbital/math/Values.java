@@ -1200,7 +1200,7 @@ public final class Values {
     }
 
     /**
-     * The monomial c&lowast;X<sup>i</sup>.
+     * The monomial c&middot;X<sup>i</sup>.
      * @param coefficient the coefficient c of the monomial.
      * @param exponent the exponent i of the monomial.
      */
@@ -1208,7 +1208,7 @@ public final class Values {
 	return MONOMIAL(coefficient, ArithmeticPolynomial.convertIndex(exponent));
     }
     /**
-     * The monomial c&lowast;X<sub>0</sub><sup>i[0]</sup>...X<sub>n-1</sub><sup>i[n-1]</sup>.
+     * The monomial c&middot;X<sub>0</sub><sup>i[0]</sup>...X<sub>n-1</sub><sup>i[n-1]</sup>.
      * @param coefficient the coefficient c of the monomial.
      * @param exponents the exponents i of the monomial.
      *  The number of variables is <code>n:=exponents.length</code>.
@@ -1225,7 +1225,7 @@ public final class Values {
 	return m;
     }
     /**
-     * The monomial 1&lowast;X<sup>i</sup>.
+     * The monomial 1&middot;X<sup>i</sup>.
      * Note that the coefficient is {@link #ONE 1}&isin;<b>Z</b>.
      * @param exponent the exponent i of the monomial.
      * @see #MONOMIAL(Arithmetic,Arithmetic)
@@ -1234,7 +1234,7 @@ public final class Values {
 	return MONOMIAL(ONE, ArithmeticPolynomial.convertIndex(exponent));
     }
     /**
-     * The monomial 1&lowast;X<sub>0</sub><sup>i[0]</sup>...X<sub>n-1</sub><sup>i[n-1]</sup>.
+     * The monomial 1&middot;X<sub>0</sub><sup>i[0]</sup>...X<sub>n-1</sub><sup>i[n-1]</sup>.
      * Note that the coefficient is {@link #ONE 1}&isin;<b>Z</b>.
      * @param exponents the exponents i of the monomial.
      *  The number of variables is <code>n:=exponents.length</code>.

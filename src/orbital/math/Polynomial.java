@@ -128,12 +128,12 @@ public interface Polynomial/*<R implements Arithmetic, S implements Arithmetic>*
     /**
      * Multiplies two polynomials.
      * <div>
-     *   (&sum;<sub>s&isin;S</sub> &alpha;<sub>s</sub>&lowast;&iota;(s))&sdot;(&sum;<sub>s&isin;S</sub>
-     *   &beta;<sub>s</sub>&lowast;&iota;(s)) = &sum;<sub>s&isin;S</sub> (&sum;<sub>t&sdot;u=s</sub>
-     *   &alpha;<sub>t</sub>&beta;<sub>u</sub>)&lowast;&iota;(s)
-     *   = &sum;<sub>s&isin;S</sub> &alpha;<sub>s</sub>&lowast;(&sum;<sub>t&isin;S</sub>
-     *   &beta;<sub>t</sub>&lowast;&iota;(t))&sdot;&iota;(s)
-     *   = &sum;<sub>s,t&isin;S</sub> (&alpha;<sub>s</sub>&sdot;&beta;<sub>t</sub>)&lowast;(&iota;(s)&sdot;&iota;(t))
+     *   (&sum;<sub>s&isin;S</sub> &alpha;<sub>s</sub>&middot;&iota;(s))&sdot;(&sum;<sub>s&isin;S</sub>
+     *   &beta;<sub>s</sub>&middot;&iota;(s)) = &sum;<sub>s&isin;S</sub> (&sum;<sub>t&sdot;u=s</sub>
+     *   &alpha;<sub>t</sub>&beta;<sub>u</sub>)&middot;&iota;(s)
+     *   = &sum;<sub>s&isin;S</sub> &alpha;<sub>s</sub>&middot;(&sum;<sub>t&isin;S</sub>
+     *   &beta;<sub>t</sub>&middot;&iota;(t))&sdot;&iota;(s)
+     *   = &sum;<sub>s,t&isin;S</sub> (&alpha;<sub>s</sub>&sdot;&beta;<sub>t</sub>)&middot;(&iota;(s)&sdot;&iota;(t))
      * </div>
      */
     Polynomial/*<R,S>*/ multiply(Polynomial/*<R,S>*/ b);

@@ -263,11 +263,7 @@ algebras).</p>
     <th class="defCategory">C</th>
   </tr>
   <tr>
-    <td class="defID">(<b><span lang="DE" style="font-size:12.0pt;font-family:&quot;Times New Roman&quot;;
-mso-fareast-font-family:&quot;Times New Roman&quot;;mso-ansi-language:DE;mso-fareast-language:
-EN-US;mso-bidi-language:AR-SA">„</span>s<span lang="DE" style="font-size:12.0pt;font-family:&quot;Times New Roman&quot;;
-mso-fareast-font-family:&quot;Times New Roman&quot;;mso-ansi-language:DE;mso-fareast-language:
-EN-US;mso-bidi-language:AR-SA">“</span>)</b></td>
+    <td class="defID">(<b>„s“)</b></td>
     <td class="defCond" id="stablea">
       <ul class="or">
         <li>∗:Ω→E<sup>E</sup> is an <dfn>action</dfn> of Ω on E.</li>
@@ -318,9 +314,7 @@ actions.</p>
     <th class="defTerm">Then φ is a</th>
   </tr>
   <tr>
-    <td class="defID">(<b><span lang="DE" style="font-size:12.0pt;font-family:&quot;Times New Roman&quot;;
-mso-fareast-font-family:&quot;Times New Roman&quot;;mso-ansi-language:DE;mso-fareast-language:
-EN-US;mso-bidi-language:AR-SA">„m“</span>)</b></td>
+    <td class="defID">(<b>„m“)</b></td>
     <td class="defCond">∀α∈Ω ∀x∈M φ(x<sup>α</sup>) = φ(x)<sup>α</sup></td>
     <td class="defVerbal">&quot;morph&quot;</td>
     <td class="defTerm"><dfn>homomorphism</dfn> of groups with operators ⊂<br>
@@ -339,7 +333,7 @@ EN-US;mso-bidi-language:AR-SA">„m“</span>)</b></td>
     <th class="defTerm">Then E is a</th>
     <th class="defCategory">C</th>
   </tr>
-  <tr>
+  <tr id="operatorGroup">
     <td class="defID">()</td>
     <td class="defCond">
       <ul class="and">
@@ -357,7 +351,7 @@ EN-US;mso-bidi-language:AR-SA">„m“</span>)</b></td>
     <td class="defTerm"><dfn>left G-set</dfn></td>
     <td class="defCategory">G-<span class="categorie">Ens</span></td>
   </tr>
-  <tr id="operatorGroup">
+  <tr>
     <td class="defID">()</td>
     <td class="defCond">
       <ul class="and">
@@ -393,9 +387,7 @@ even is a map ∗:G→S<sub>E</sub>.</p>
     <th class="defTerm">Then φ is a</th>
   </tr>
   <tr>
-    <td class="defID">(<b><span lang="DE" style="font-size:12.0pt;font-family:&quot;Times New Roman&quot;;
-mso-fareast-font-family:&quot;Times New Roman&quot;;mso-ansi-language:DE;mso-fareast-language:
-EN-US;mso-bidi-language:AR-SA">„m“</span>)</b></td>
+    <td class="defID">(<b>„m“)</b></td>
     <td class="defCond">∀α∈G ∀x∈E φ(α∗x) = α∗φ(x)</td>
     <td class="defVerbal">&quot;morph&quot;</td>
     <td class="defTerm"><dfn>homomorphism</dfn> of G-sets</td>
@@ -407,14 +399,14 @@ EN-US;mso-bidi-language:AR-SA">„m“</span>)</b></td>
     itself by left translation α∗x:=α⋅x). G∗x = Im(_∗x)⊆E is the <dfn id="orbit">orbit</dfn> 
     of x∈E in E and
     <ul>
-      <li>G\E := E/(y∈G∗x) is the quotient set of E.</li>
-      <li>E/G := E/(y∈x∗G) for right actions.</li>
+      <li>G\E := E/(y∈G∗x) = {G∗x ¦ x∈E} quotient of E for left 
+        actions.</li>
+      <li>E/G := E/(y∈x∗G) = {x∗G ¦ x∈E} for right actions.</li>
     </ul>
-    G<sub>x</sub> := {x∈G ¦ g∗x=x}≤G is the <dfn id="fixer">fixgroup</dfn> 
+    G<sub>x</sub> := {g∈G ¦ g∗x=x}≤G is the <dfn id="fixer">fixgroup</dfn> 
     of x∈E under G (in this case of group operations equaling the stabilizer). 
-    Orbits and fixgroups are compatible with quotients: ∀x∈x̅∈G\E 
-    G∗x=G∗x̅,G<sub>x</sub>=G<sub>x̅</sub>. Fixgroups and orbits are 
-    related by |G∗x| = [G:G<sub>x</sub>].</li>
+    Orbits and fixgroups are compatible with quotients: ∀x∈x̅∈G\E G∗x=G∗x̅,G<sub>x</sub>=G<sub>x̅</sub>. 
+    Fixgroups and orbits are related by |G∗x| = [G:G<sub>x</sub>].</li>
 </ol>
 <h3 id="ring">Rings</h3>
 <table width="100%" class="def" id="laws_2_0">
@@ -551,27 +543,19 @@ from (m).</p>
     <td class="defCond">
       <ul>
         <li>(M,+) is an Abelian group</li>
-        <li>∗:R×M→M is a <dfn>law of action</dfn> with operators R.</li>
-        <li><b>(<span lang="DE" style="font-size:12.0pt;font-family:&quot;Times New Roman&quot;;
-mso-fareast-font-family:&quot;Times New Roman&quot;;mso-ansi-language:DE;mso-fareast-language:
-EN-US;mso-bidi-language:AR-SA">„d“</span>)</b> ∗ is distributive over +, 
-          i.e.
+        <li>·:R×M→M is a <dfn>law of action</dfn> with operators R.</li>
+        <li><b>(„d“)</b> · is distributive over +, i.e.
           <ul>
             <li>∀α∈R ∀<span class="vector">x</span>,<span class="vector">y</span>∈M 
-              α∗(<span class="vector">x</span>+<span class="vector">y</span>) 
-              = (α∗<span class="vector">x</span>) + (α∗<span class="vector">y</span>)</li>
+              α·(<span class="vector">x</span>+<span class="vector">y</span>) 
+              = (α·<span class="vector">x</span>) + (α·<span class="vector">y</span>)</li>
             <li>∴ modules are commutative groups with operators.</li>
           </ul>
         </li>
-        <li><b>(<span lang="DE" style="font-size:12.0pt;font-family:&quot;Times New Roman&quot;;
-mso-fareast-font-family:&quot;Times New Roman&quot;;mso-ansi-language:DE;mso-fareast-language:
-EN-US;mso-bidi-language:AR-SA">„d“</span>)</b> ∀α,β∈R ∀<span class="vector">x</span>∈M 
-          (α+β)∗<span class="vector">x</span> = (α∗<span class="vector">x</span>) 
-          + (β∗<span class="vector">x</span>)</li>
-        <li><b>(<span lang="DE" style="font-size:12.0pt;font-family:&quot;Times New Roman&quot;;
-mso-fareast-font-family:&quot;Times New Roman&quot;;mso-ansi-language:DE;mso-fareast-language:
-EN-US;mso-bidi-language:AR-SA">„a“</span>) </b>∀α,β∈A ∀<span class="vector">x</span>∈M 
-          α∗(β∗<span class="vector">x</span>) = (α⋅β)∗<span class="vector">x</span> 
+        <li><b>(„d“)</b> ∀α,β∈R ∀<span class="vector">x</span>∈M (α+β)·<span class="vector">x</span> 
+          = (α·<span class="vector">x</span>) + (β·<span class="vector">x</span>)</li>
+        <li><b>(„a“) </b>∀α,β∈A ∀<span class="vector">x</span>∈M 
+          α·(β·<span class="vector">x</span>) = (α⋅β)·<span class="vector">x</span> 
           (for left R-pseudomodules)</li>
       </ul>
     </td>
@@ -582,13 +566,11 @@ EN-US;mso-bidi-language:AR-SA">„a“</span>) </b>∀α,β∈A ∀<span class="
     <td class="defID">( )</td>
     <td class="defCond">The same as for left R-modules, except that
       <ul>
-        <li><b>(<span lang="DE" style="font-size:12.0pt;font-family:&quot;Times New Roman&quot;;
-mso-fareast-font-family:&quot;Times New Roman&quot;;mso-ansi-language:DE;mso-fareast-language:
-EN-US;mso-bidi-language:AR-SA">„a“</span>) </b>∀α,β∈A ∀<span class="vector">x</span>∈M 
-          α∗(β∗<span class="vector">x</span>) = (β⋅α)∗<span class="vector">x</span> 
+        <li><b>(„a“)</b> ∀α,β∈A ∀<span class="vector">x</span>∈M 
+          α·(β·<span class="vector">x</span>) = (β⋅α)·<span class="vector">x</span> 
           (for right R-pseudomodules)</li>
       </ul>
-      <p>Therefore, the law of action may be written more suggestively as ∗:M×R→M 
+      <p>Therefore, the law of action may be written more suggestively as ·:M×R→M 
       instead.</td>
     <td class="defTerm"><dfn>right R-pseudomodule</dfn></td>
     <td class="defCategory"><span class="categorie"></span></td>
@@ -598,10 +580,8 @@ EN-US;mso-bidi-language:AR-SA">„a“</span>) </b>∀α,β∈A ∀<span class="
     <td class="defCond">
       <ul>
         <li>R is a ring.</li>
-        <li><b>(<span lang="DE" style="font-size:12.0pt;font-family:&quot;Times New Roman&quot;;
-mso-fareast-font-family:&quot;Times New Roman&quot;;mso-ansi-language:DE;mso-fareast-language:
-EN-US;mso-bidi-language:AR-SA">„n“</span>) </b>∀<span class="vector">x</span>∈M 
-          1∗<span class="vector">x</span> = <span class="vector">x</span></li>
+        <li><b>(„n“)</b> ∀<span class="vector">x</span>∈M 1·<span class="vector">x</span> 
+          = <span class="vector">x</span></li>
       </ul>
     </td>
     <td class="defTerm"><dfn>left R-module</dfn> ⊂<br>
@@ -613,10 +593,8 @@ EN-US;mso-bidi-language:AR-SA">„n“</span>) </b>∀<span class="vector">x</sp
     <td class="defCond">
       <ul>
         <li>R is a ring.</li>
-        <li><b>(<span lang="DE" style="font-size:12.0pt;font-family:&quot;Times New Roman&quot;;
-mso-fareast-font-family:&quot;Times New Roman&quot;;mso-ansi-language:DE;mso-fareast-language:
-EN-US;mso-bidi-language:AR-SA">„n“</span>) </b>∀<span class="vector">x</span>∈M 
-          1∗<span class="vector">x</span> = <span class="vector">x</span></li>
+        <li><b>(„n“)</b> ∀<span class="vector">x</span>∈M 1·<span class="vector">x</span> 
+          = <span class="vector">x</span></li>
       </ul>
     </td>
     <td class="defTerm"><dfn>right R-module</dfn> ⊂<br>
@@ -647,7 +625,7 @@ in R and left (R,⋅)-sets that also satisfy the second distributive relation.</
   <caption>Homomorphisms of algebraic structures with a law of composition and a 
     law of action</caption>
   <tr>
-    <td class="defContext" colspan="4">Let (M,+,∗), (M',+,∗) be 
+    <td class="defContext" colspan="4">Let (M,+,·), (M',+,·) be 
       R-modules/R-vector spaces, and φ:M→M' a map.</td>
   </tr>
   <tr>
@@ -661,8 +639,8 @@ in R and left (R,⋅)-sets that also satisfy the second distributive relation.</
     <td class="defCond" id="linear">
       <ul>
         <li>φ:(R,+)→(R',+) is a homomorphism of groups</li>
-        <li>∀α∈R∀<span class="vector">x</span>∈M φ(α∗<span class="vector">x</span>) 
-          = α∗φ(<span class="vector">x</span>)</li>
+        <li>∀α∈R∀<span class="vector">x</span>∈M φ(α·<span class="vector">x</span>) 
+          = α·φ(<span class="vector">x</span>)</li>
       </ul>
     </td>
     <td class="defVerbal">&quot;R-linear&quot;</td>
@@ -713,8 +691,8 @@ in R and left (R,⋅)-sets that also satisfy the second distributive relation.</
               </b>(x+y)⋅z = (x⋅z) + (y⋅z)<br>
               x⋅(y+z) = (x⋅y) + (x⋅z)</li>
             <li><b>(m<sup>2</sup>)</b><br>
-              (α∗x)⋅y = α∗(x⋅y)<br>
-              x⋅(α∗y) = α∗(x⋅y)</li>
+              (α·x)⋅y = α·(x⋅y)<br>
+              x⋅(α·y) = α·(x⋅y)</li>
           </ul>
         </li>
       </ul>
@@ -764,7 +742,7 @@ omitted.</p>
         <li>E is an R-module</li>
         <li>E is a pseudo-ring</li>
         <li><b>(m) </b>R⋅E ⊆ Z(E), i.e.<br>
-          (α∗x)⋅(β∗y) = (αβ)∗(x⋅y)</li>
+          (α·x)⋅(β·y) = (αβ)·(x⋅y)</li>
       </ul>
     </td>
     <td class="defTerm">associative R-algebra</td>
@@ -772,20 +750,20 @@ omitted.</p>
   <tr>
     <td class="defID">(ι)</td>
     <td class="defCond">ι:R→E is a homomorphism of rings.<br>
-      (setting α∗x := ι(α)⋅x, and the R-algebra E inherits unital from ι)</td>
+      (setting α·x := ι(α)⋅x, and the R-algebra E inherits unital from ι)</td>
     <td class="defTerm">associative R-algebra</td>
   </tr>
 </table>
 <h5 class="compact">Note:</h5>
 <p>The converse of the last characterization (ι) is also true for unital and 
-associative algebras, since given such an R-algebra, ι:R→E;α↦α∗1 is a 
+associative algebras, since given such an R-algebra, ι:R→E;α↦α·1 is a 
 unital homomorphism of rings. Homomorphisms of R-algebras are the R-linear 
 homomorphisms of rings:</p>
 <table width="100%" class="def" id="morph_2_1">
   <caption>Homomorphisms of algebraic structures with two laws of composition 
     and a law of action</caption>
   <tr>
-    <td class="defContext" colspan="4">Let (E,+,∗,⋅), (E',+,∗,⋅) be 
+    <td class="defContext" colspan="4">Let (E,+,·,⋅), (E',+,·,⋅) be 
       R-algebras/unital R-algebras, and φ:E→E' a map.</td>
   </tr>
   <tr>
@@ -798,7 +776,7 @@ homomorphisms of rings:</p>
     <td class="defID">(m)</td>
     <td class="defCond">
       <ul>
-        <li>φ:(E,+,∗)→(E',+,∗) is a homomorphism of R-modules</li>
+        <li>φ:(E,+,·)→(E',+,·) is a homomorphism of R-modules</li>
         <li>∀x,y∈E φ(x⋅y) = φ(x)⋅φ(y)</li>
       </ul>
     </td>
@@ -829,8 +807,8 @@ homomorphisms of rings:</p>
     injection ι:S↪R<sup>(S)</sup>. Therefore by <a href="#distributive">(d)</a>, 
     multiplication is the convolution
     <div>
-      (∑<sub>s∈S</sub> α<sub>s</sub>∗ι(s))⋅(∑<sub>s∈S</sub> β<sub>s</sub>∗ι(s)) 
-      = ∑<sub>s∈S</sub> (∑<sub>t⋅u=s</sub> α<sub>t</sub>β<sub>u</sub>)∗ι(s)
+      (∑<sub>s∈S</sub> α<sub>s</sub>·ι(s))⋅(∑<sub>s∈S</sub> β<sub>s</sub>·ι(s)) 
+      = ∑<sub>s∈S</sub> (∑<sub>t⋅u=s</sub> α<sub>t</sub>β<sub>u</sub>)·ι(s)
     </div>
     Especially, there are
     <ul>
@@ -857,7 +835,7 @@ homomorphisms of rings:</p>
         <tr>
           <td class="leftOfMap"><span class="objet">E</span></td>
           <td class="arrowOfMap">↦</td>
-          <td class="rightOfMap">Mor<span class="categorie"><sub>Mag</sub></span>(S,(E,⋅))              
+          <td class="rightOfMap">Mor<span class="categorie"><sub>Mag</sub></span>(S,(E,⋅))                 
             <!-- @todo or Hom as for <b>Z</b>[G]? --> </td>
         </tr>
       </tbody>
@@ -894,9 +872,9 @@ Then the <dfn>quotient</dfn> <center>M/~ := M̄ := {x̄ ¦ x∈M} with<br />
 x̄ := <sup>-1</sup>f({f(x)}) = {y∈M ¦ x~y} for x∈M </center>has the same 
 algebraic structure as M. If M is a magma, semi-group, monoid, group, Abelian 
 group, ring, R-module, or vector space, then M/~ is as well. The laws of 
-composition ⋆ and laws of action ∗ on M/~ are obtained by passing to the 
+composition ⋆ and laws of action · on M/~ are obtained by passing to the 
 quotient: <center>x̄⋆ȳ = <span style="text-decoration: overline;">x⋆y</span></center> 
-<center>α∗x̄ = <span style="text-decoration: overline;">α∗x</span></center>
+<center>α·x̄ = <span style="text-decoration: overline;">α·x</span></center>
 <p>It is true that M/~ is a partition of M <center>∀x̄,ȳ∈M (x̄∩ȳ=∅ 
 xor x̄=ȳ)</center>Although conversely, every partition of M defines an 
 equivalence relation, that relation does not need to be a congruence compatible 
@@ -929,8 +907,8 @@ is called the <dfn>index</dfn> of the subgroup H in G. It satisfies <center>|G|
 <ul>
   <li>For an R-module E, an alternative characterization by linear combinations 
     of X⊆E is<br>
-    〈X〉 = R∗X := 〈{r∗<span class="vector">x</span> ¦ r∈R ∧ <span class="vector">x</span>∈X}〉 
-    = X<sup>(R)</sup> = {∑<sub><span class="vector">x</span>∈X</sub> a<sub><span class="vector">x</span></sub>∗<span class="vector">x</span> 
+    〈X〉 = R·X := 〈{r·<span class="vector">x</span> ¦ r∈R ∧ <span class="vector">x</span>∈X}〉 
+    = X<sup>(R)</sup> = {∑<sub><span class="vector">x</span>∈X</sub> a<sub><span class="vector">x</span></sub>·<span class="vector">x</span> 
     ¦ ∀<span class="vector">x</span>∈X a<sub><span class="vector">x</span></sub>∈R 
     ∧ a<sub><span class="vector">x</span></sub>=0 p.t. <span class="vector">x</span>∈X}</li>
 </ul>

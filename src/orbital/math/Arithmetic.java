@@ -40,7 +40,7 @@ package orbital.math;
  *   <tr>
  *     <td width="5%" rowspan="5"></td>
  *     <td>{@link #multiply(Arithmetic) multiply}</td>
- *     <td>&sdot;:M×M&rarr;M; (a,b)&#8614;a&sdot;b</td>
+ *     <td>&sdot;:M×M&rarr;M; (a,b)&#8614;a&sdot;b=a&#8201;b</td>
  *     <td>law of composition for rings</td>
  *   </tr>
  *   <tr>
@@ -50,17 +50,17 @@ package orbital.math;
  *   </tr>
  *   <tr>
  *     <td>{@link #divide(Arithmetic) divide}</td>
- *     <td>&#8725;:M×M&rarr;M; (a,b)&#8614;a&#8725;b = b<sup>-1</sup>&sdot;a</td>
+ *     <td>&#8725;:M×M&rarr;M; (a,b)&#8614;a&#8725;b = a&sdot;b<sup>-1</sup></td>
  *     <td>for fields</td>
  *   </tr>
  *   <tr>
  *     <td>{@link #scale(Arithmetic) scale}</td>
- *     <td>&lowast;:R×M&rarr;M; (a,x)&#8614;a&lowast;x</td>
+ *     <td>&middot;:R×M&rarr;M; (&alpha;,x)&#8614;&alpha;&middot;x</td>
  *     <td>law of action for R-modules</td>
  *   </tr>
  *   <tr>
  *     <td>{@link Tensor#multiply(Tensor) multiply}</td>
- *     <td>·:M×N&rarr;P; (a,b)&#8614;a·b</td>
+ *     <td>·:M×N&rarr;P; (a,b)&#8614;a&#8729;b=a·b</td>
  *     <td>{@link Tensor#multiply(Tensor) inner product} for tensors</td>
  *   </tr>
  *   <tr>
@@ -70,7 +70,7 @@ package orbital.math;
  *     <td width="5%"></td>
  *     <td>{@link #power(Arithmetic) power}</td>
  *     <td>^:M×M&rarr;M; (a,b)&#8614;a^b = a<sup>b</sup></td>
- *     <td>for rings,<br>requires &#13266; and exp in general case</br></td>
+ *     <td>for rings,<br>requires &#13266; and <b>e</b><sup>a</sup> in general case</br></td>
  *   </tr>
  * </table>
  * <p>
@@ -130,7 +130,7 @@ public interface Arithmetic extends Normed {
     /**
      * 0.
      * <p>
-     * 0 = 0&lowast;x.</p>
+     * 0 = 0&middot;x.</p>
      * @attribute neutral element for Operations.plus
      * @return the neutral element 0 for addition in this algebraic structure (if it is a unital magma or monoid).
      * @throws UnsupportedOperationException if this algebraic structure does not have a 0.
@@ -190,7 +190,7 @@ public interface Arithmetic extends Normed {
     /**
      * Multiplies an arithmetic object to this returning the result.
      * <p>
-     * Note that if type checking permits, this method may implement both, a&sdot;b and a&lowast;b
+     * Note that if type checking permits, this method may implement both, a&sdot;b and a&middot;b
      * depending upon context. However, this is not a requirement, since there are a few
      * pathological cases with differing scalar and ring multiplication on the same set.
      * </p>
@@ -227,11 +227,12 @@ public interface Arithmetic extends Normed {
      */
     Arithmetic divide(Arithmetic b) throws ArithmeticException, UnsupportedOperationException;
 
-    // law of action &lowast;
+    // law of action &middot;
     
     /**
      * Multiplies a scalar with this arithmetic object returning the result.
-     * @return &alpha;&lowast;this
+     * @param alpha the factor &alpha; to scale this arithmetic object with (per law of action of scalar multiplication).
+     * @return &alpha;&middot;this
      * @throws ArithmeticException if an exceptional arithmetic condition has occurred while
      *  performing the operation. This should not happen for R-modules (where R=alpha.getClass()).
      * @throws IllegalArgumentException if the argument type is illegal for this operation.
