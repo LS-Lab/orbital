@@ -913,7 +913,7 @@ public class StandardTypeSystem implements TypeSystem {
 	}
 	
 	public int hashCode() {
-	    return Utility.hashCodeAll(components);
+	    return Utility.hashCodeArray(components);
 	}
 	
 	public String toString() {
