@@ -67,7 +67,7 @@ import orbital.logic.sign.concrete.Notation.NotationSpecification;
  * @version 1.0, 2001/04/07
  * @author  Andr&eacute; Platzer
  * @see Signature
- * @see <a href="doc-files/NamingConvention.html">Naming convention</a>
+ * @see <a href="concrete/doc-files/NamingConvention.html">Naming convention</a>
  * @todo done? respect orbital.logic.trs.Variable
  * @todo is there a difference between symbol (Symbol) and sign (Zeichen) or signifier()? Should we rename this class to Sign, or keep the name Symbol in order to underline that the usual signs in logic are used purely symbolically and not with any necessity (either proper or lawful)
  */
