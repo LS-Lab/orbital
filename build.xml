@@ -41,6 +41,8 @@
         <property name="src.tests" value="${basedir}/test"/>
         <property name="examples" value="${basedir}/examples"/>
 
+        <property name="taglet" value="${lib}/build/taglet"/>
+
         <property name="build.tests" value="${basedir}/test"/>
         <property name="reports.tests" value="${basedir}/report/test"/>
 
@@ -87,6 +89,15 @@
 	</path>
     </target>
 
+    <target name="prepareEnvironment" depends="init"
+            description="prepare system for compiling">
+        <javac srcdir="${taglet}"
+               destdir="${taglet}"
+               debug="on"
+	       source="${javac.source}">
+	</javac>
+    </target>
+
     <target name="all" depends="init, clean, fixCRLF, compile, doc, compile.tests"
             description="clean + fixCRLF + compile.* + doc">
     </target>
@@ -104,6 +115,7 @@
         <javac srcdir="${sources}"
                destdir="${classes}"
                debug="on"
+	       depend="true"
 	       source="${javac.source}"
 	       excludes="orbital/moon/aspects/**,orbital/moon/deprecated/*,orbital/*">
             <classpath refid="project.classpath"/>
@@ -228,7 +240,7 @@
                  includes="**/*.java, **/*.jj"/>
     </target>
 
-    <target name="doc" depends="init"
+    <target name="doc" depends="init, prepareEnvironment"
             description="generate javadoc (=> ./doc/api/)">
         <mkdir dir="${doc}/api"/>
         <delete includeEmptyDirs="true">
@@ -276,6 +288,7 @@
 	    <tag name="todo" scope="all" description="Todo:" enabled="false"/>
 	    <tag name="xxx" scope="all" description="Todo:" enabled="false"/>
 	    <tag name="fixme" scope="all" description="Fixme:" enabled="false"/>
+	    <taglet name="StereotypeTaglet" path="${taglet}"/>
 	    <group title="Core Packages" packages="orbital.logic*:orbital.math:orbital.math*:orbital.util"/>
 	    <group title="Extension Packages" packages="orbital.algorithm*:orbital.awt:orbital.game:orbital.robotic"/>
 	    <group title="Implementation Packages" packages="orbital.awt.virtual:orbital.io:orbital.io.encoding:orbital.net:orbital.net.mail:orbital.moon*"/>
@@ -555,17 +568,17 @@
         description="print out some properties for debugging build.xml">
         <echo>
 
-        basedir      = ${basedir}
-        sources      = ${sources}
-        lib          = ${lib}
-        resources    = ${resources}
-        doc          = ${doc}
-        bin          = ${bin}
-        classes      = ${classes}
-        dist         = ${dist}
-        examples     = ${examples}
-        src.tests    = ${src.tests}
-        build.tests  = ${build.tests}
+        basedir       = ${basedir}
+        sources       = ${sources}
+        lib           = ${lib}
+        resources     = ${resources}
+        doc           = ${doc}
+        bin           = ${bin}
+        classes       = ${classes}
+        dist          = ${dist}
+        examples      = ${examples}
+        src.tests     = ${src.tests}
+        build.tests   = ${build.tests}
         reports.tests = ${reports.tests}
 
         </echo>
