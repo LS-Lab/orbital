@@ -1,5 +1,5 @@
 /**
- * @(#)MathParser.java 1.0 2000/09/02 Andre Platzer
+ * @(#)MathParser.jj 1.0 2000/09/02 Andre Platzer
  *
  * Copyright (c) 2000 Andre Platzer. All Rights Reserved.
  *
@@ -19,16 +19,20 @@ options {
 PARSER_BEGIN(MathParser)
 package orbital.moon.logic;
 
+import orbital.logic.imp.*;
+import orbital.logic.imp.Symbol;
 import orbital.math.*;
 import orbital.math.functional.*;
 import orbital.logic.functor.Functor;
 import orbital.logic.functor.Notation;
+import orbital.logic.functor.Notation.NotationSpecification;
 
 import orbital.logic.trs.Substitutions;
 import java.util.*;
 import java.lang.reflect.*;
 import java.io.StringReader;
 import orbital.io.IOUtilities;
+import java.beans.IntrospectionException;
 
 /**
  * This class implements a parser for mathematical expressions.
@@ -43,6 +47,12 @@ import orbital.io.IOUtilities;
  * @todo introduce a lambda expression that uses the lambda operator implemented by substitution (see ...)
  */
 public class MathParser {
+    /**
+     * Used to tag types that are yet unknown.
+     * @todo get rid of all uses of UNKNOWN by type analysis.
+     */
+    private static final Type UNKNOWN = Types.INDIVIDUAL;
+    
     /**
      * tool-main
      */
@@ -63,38 +73,88 @@ public class MathParser {
 
     private static final Values valueFactory = Values.getDefaultInstance();
 	
-    public static/**/ Object createExpression(String expression) throws orbital.io.ParseException {
+    /**
+     * Delegate to the current Syntax implementation that is used for creating Atoms.
+     */
+    protected static ExpressionBuilder syntax = new MathExpressionSyntax();
+
+    public static/**/ Object createExpression(String expression) throws orbital.logic.imp.ParseException {
 	if (expression == null)
 	    return null;
 	try {
 	    MathParser parser = new MathParser(new StringReader(expression));
 	    return parser.parseExpression();
-	} catch (ParseException x) {
-	    throw new orbital.io.ParseException(x.getMessage(), x.currentToken.next.beginLine, x.currentToken.next.beginColumn);
+	} catch (ParseException ex) {
+	    throw new orbital.logic.imp.ParseException(ex.getMessage(), ex.currentToken.next.beginLine, ex.currentToken.next.beginColumn, ex);
 	} 
     } 
 
     /**
      * unary junctors.
      */
-    protected static Arithmetic combine(Token optok, Arithmetic a) throws ParseException {
+    protected static Expression combine(Token optok, Expression a) throws ParseException {
 	String op = optok.image;
 	if ("+".equals(op))
 	    return a;
-	Functor f = Notation.functorOf(op, new Arithmetic[] {a});
-	if (f != null)
-	    return (Function) Functionals.genericCompose((Function) f, a);
-	throw LogicParser.newParseException("Unary operator '" + op + "/1' not defined", optok);
+	return composeWrapper(optok, op, new Expression[] {a});
     }
     /**
      * binary junctors.
      */
-    protected static MathFunctor combine(Token optok, Object a, Object b) throws ParseException {
-	String op = optok.image;
-	Functor f = Notation.functorOf(op, new Object[] {a,b});
-	if (f != null)
-	    return Functionals.genericCompose((BinaryFunction) f, a, b);
-	throw LogicParser.newParseException("Binary operator '" + op + "/2' not defined", optok);
+    protected static Expression combine(Token optok, Expression a, Expression b) throws ParseException {
+	return composeWrapper(optok, optok.image, new Expression[] {a, b});
+    }
+
+    // support
+    
+    /**
+     * n-ary predicates or functions.
+     * @param result specifies the result type. Object.class for functions, and Boolean.class for predicates.
+     * @see ExpressionBuilder#compose(Expression,Expression[])
+     */
+    protected static Expression apply(Token optok, Expression[] a, Type result) throws ParseException {
+    	final String op = optok.image;
+	return composeWrapper(optok, new SymbolBase(op, Types.map(Types.typeOf(a), result), new NotationSpecification(a.length)), a);
+    }
+
+    /**
+     * Wraps calls to {@link ExpressionBuilder#compose(Expression,Expression[])} in an exception handling block.
+     * @param optok the token that initiated this operation (used in case of ParseExceptions to define the position).
+     */
+    private static Expression composeWrapper(Token optok, Expression op, Expression[] arg) throws ParseException {
+	if (op == null)
+	    throw newParseException("illegal compositor: " + op, optok);
+	try {
+	    return syntax.compose(op, arg);
+    	}
+    	catch (orbital.logic.imp.ParseException ex) {throw newParseException(ex.getMessage(), optok, ex);}
+    }
+    /**
+     * Wraps calls to {@link ExpressionBuilder#compose(Expression,Expression[])} in an exception handling block.
+     * @param optok the token that initiated this operation (used in case of ParseExceptions to define the position).
+     * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience method</a>
+     */
+    private static Expression composeWrapper(Token optok, Symbol op, Expression[] arg) throws ParseException {
+	if (op == null)
+	    throw newParseException("illegal compositor: " + op + " (used for " + optok + ")", optok);
+	return composeWrapper(optok, syntax.createAtomic(op), arg);
+    }
+    /**
+     * Wraps calls to {@link ExpressionBuilder#compose(Expression,Expression[])} in an exception handling block.
+     * @param optok the token that initiated this operation (used in case of ParseExceptions to define the position).
+     * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience method</a>
+     */
+    private static Expression composeWrapper(Token optok, String op, Expression[] arg) throws ParseException {
+	Functor f = Notation.functorOf(op, new Object[arg.length]);
+	try {
+	    Symbol symbol = new SymbolBase(op, Types.declaredTypeOf(f), Notation.getNotation(f));
+	    if (f == null)
+		throw newParseException("unknown compositor: " + op, optok);
+	    return composeWrapper(optok, symbol, arg);
+	}
+	catch (IntrospectionException ex) {
+	    throw newParseException("could not inspect registered compositor", optok, ex);
+	}
     }
 
     /**
@@ -191,6 +251,18 @@ public class MathParser {
 		} 
 	    };
     }
+    /**
+     * Create a good parse exception with the specified message for the given token parsed.
+     */
+    static ParseException newParseException(String message, Token tok, Exception cause) {
+	return (ParseException) newParseException(message, tok).initCause(cause);
+    }
+    static ParseException newParseException(String message, Token tok) {
+	final ParseException x = new ParseException(message);
+	x.currentToken = tok;
+    	return x;
+    }
+
     // identical to @see orbital.math.functional.Function (below)
     /*private static*/ static abstract class AbstractFunction/*<A implements Arithmetic, B implements Arithmetic>*/  extends orbital.moon.math.AbstractFunctor implements Function/*<A,B>*/ {}
 }
@@ -222,10 +294,10 @@ TOKEN :
  * @internal we require <EOF> to be sure we parsed all, and no syntactic garbage lurks around at the end of the input
  */
 Arithmetic parseExpression() :
-{Arithmetic expr;}
+{Expression expr;}
 {
     expr = term() <EOF>
-	{ return expr; }
+	{ return (Arithmetic) MathExpressionSyntax.getValueOf(expr); }
   | <EOF>
 	{ return null; }
 }
@@ -238,8 +310,8 @@ Arithmetic parseExpression() :
 
 // expression parsing methods
 
-Arithmetic term() :
-{Arithmetic f;}
+Expression term() :
+{Expression f;}
 {
 	f = SumExpression()
 {return f;}
@@ -247,22 +319,22 @@ Arithmetic term() :
 
 // junctors
 
-Arithmetic SumExpression() :
-{Token tok;Arithmetic a, b;}
+Expression SumExpression() :
+{Token tok;Expression a, b;}
 {
     a = ProductExpression() ( (tok = "+" | tok = "-") b = ProductExpression() {a = combine(tok, a, b);} )*
 {return a;}
 }
 
-Arithmetic ProductExpression() :
-{Token tok;Arithmetic a, b;}
+Expression ProductExpression() :
+{Token tok;Expression a, b;}
 {
     a = PowerExpression() ( (tok = "*" | tok = "/") b = PowerExpression() {a = combine(tok, a, b);} )*
 {return a;}
 }
 
-Arithmetic PowerExpression() :
-{Token tok;Arithmetic a, b;}
+Expression PowerExpression() :
+{Token tok;Expression a, b;}
 {
     // right associative xfy
      /*
@@ -277,8 +349,8 @@ Arithmetic PowerExpression() :
 
 // unary operators
 
-Arithmetic UnaryExpression() :
-{Token tok;Arithmetic v;}
+Expression UnaryExpression() :
+{Token tok;Expression v;}
 {
     ( tok = "+" | tok = "-" ) v = UnaryExpression() {return combine(tok, v);}
     //TODO: unary x^-1
@@ -287,18 +359,28 @@ Arithmetic UnaryExpression() :
 
 // atomic values
 
-Arithmetic value() :
-{Arithmetic f;}
+Expression value() :
+{Expression f;}
 {
 ( LOOKAHEAD(2)
 	f = functionApplication()
 |
-	f = literal()
+        f = AtomicTerm()
 |	"(" f = term() ")"
 )
 {return f;}
 }
 
+
+/**
+ * Parse an atomic term.
+ */
+Expression AtomicTerm() :
+{Symbol s;}
+{
+    s = literal()
+	{return (Expression) syntax.createAtomic(s);}
+}
 
 /* LITERALS (same as LogicParser) */
 
@@ -381,14 +463,14 @@ TOKEN :
 /**
  * Parse an atomic literal value (atom or number or string).
  */
-Arithmetic literal() :
+Symbol literal() :
 {Token tok;}
 {
     //@todo depending upon number of digits, we could parse optmized <INTEGER_LITERAL>	{return new Integer.Long(Long.parseLong(tok.image));}
-    tok = <INTEGER_LITERAL>     	{return valueFactory.valueOf(tok.image);}
-|   tok = <FLOATING_POINT_LITERAL>	{return valueFactory.valueOf(tok.image);}
-|   tok = <STRING_LITERAL>		{return valueFactory.symbol(/* @todo remove " quotes? */tok.image);}
-|   tok = <IDENTIFIER>			{return valueFactory.symbol(tok.image);}
+    tok = <INTEGER_LITERAL>     	{return new SymbolBase(tok.image, LogicParser.INTEGER_LITERAL_TYPE);}
+|   tok = <FLOATING_POINT_LITERAL>	{return new SymbolBase(tok.image, LogicParser.FLOAT_LITERAL_TYPE);}
+|   tok = <STRING_LITERAL>		{return new SymbolBase(tok.image, LogicParser.STRING_LITERAL_TYPE);}
+|   tok = <IDENTIFIER>			{return new SymbolBase(tok.image, Types.INDIVIDUAL);}
 }
 
 /**
@@ -400,13 +482,13 @@ Arithmetic literal() :
  * @internal we cannot move the lambdaAbstraction() case into function()
  *  because the return types don't fit.
  */
-MathFunctor functionApplication() :
-{Token tok;MathFunctor f;Object[] s;}
+Expression functionApplication() :
+{Token tok;MathFunctor f;Expression[] s;}
 {
     tok = function() s = Arguments()
-	{return apply(findFunction(tok, s), s);}
-|   f = lambdaAbstraction() s = Arguments()
-	{return apply(f, s);}
+	{return apply(tok, s, UNKNOWN);}
+    //|   f = lambdaAbstraction() s = Arguments()
+    //	{return apply(f, s);}
 }
 
 /**
@@ -430,14 +512,14 @@ Token function() :
  * @see orbital.logic.trs.Substitutions#lambda
  */
 Function lambdaAbstraction() :
-{Token x;Arithmetic t;}
+{Token x;Expression t;}
 {
     "(" <LAMBDA> x = <IDENTIFIER> "." t = term() ")"
 {return convert((orbital.logic.functor.Function) Substitutions.lambda.apply(valueFactory.symbol(x.image), t));}
 }
 
-Object[] Arguments() :
-{Object[] s = null;}
+Expression[] Arguments() :
+{Expression[] s = null;}
 {
 (
 /*    "(" [ s = Argument_list() ] ")"
@@ -447,9 +529,9 @@ Object[] Arguments() :
 {return s;}
 }
 
-Object[] Argument_list() :
-{List r = new LinkedList(); Object x;}
+Expression[] Argument_list() :
+{List r = new LinkedList(); Expression x;}
 {
     x = term() {r.add(x);} ( "," x = term() {r.add(x);} )*
-{return r.toArray();}
+{return (Expression[])r.toArray(new Expression[0]);}
 }

@@ -13,12 +13,11 @@
 package orbital.moon.logic;
 
 import orbital.logic.imp.*;
+import orbital.logic.imp.ParseException;
 
 import orbital.logic.functor.Functor;
 import orbital.logic.functor.Functor.Composite; //@todo sure?
 import orbital.logic.functor.*;
-
-import java.text.ParseException;
 
 import java.util.Set;
 
@@ -616,6 +615,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    this.outer = f;
 	    this.left = g;
 	    this.right = h;
+	    //@xxx this is incompatible with Types.isApplicableTo. We use .domain() on the individual arguments.
 	    if (!Types.product(new Type[] {
 		left.getType().domain(),
 		right.getType().domain()

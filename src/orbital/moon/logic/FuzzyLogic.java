@@ -7,6 +7,7 @@
 package orbital.moon.logic;
 
 import orbital.logic.imp.*;
+import orbital.logic.imp.ParseException;
 import orbital.logic.functor.Functor;
 import orbital.logic.functor.Functor.Composite;
 import orbital.logic.functor.Function;
@@ -302,7 +303,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      * facade for convenience.
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade</a>
      */
-    public boolean infer(String expression, String exprDerived) throws java.text.ParseException {
+    public boolean infer(String expression, String exprDerived) throws ParseException {
 	Signature sigma = scanSignature(expression).union(scanSignature(exprDerived));
 	Formula B[] = {
 	    createFormula(expression)
@@ -352,7 +353,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     } 
 
     
-    private Formula createFormula(String expression) throws java.text.ParseException {
+    private Formula createFormula(String expression) throws ParseException {
 	return (Formula) createExpression(expression);
     }
 

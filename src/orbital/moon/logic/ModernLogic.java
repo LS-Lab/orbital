@@ -13,6 +13,7 @@
 package orbital.moon.logic;
 
 import orbital.logic.imp.*;
+import orbital.logic.imp.ParseException;
 
 import orbital.logic.functor.Functor;
 import java.util.Iterator;
@@ -40,8 +41,7 @@ import orbital.math.Values;
  */
 abstract class ModernLogic implements Logic {
     /**
-     * A complex error offset consisting of begin line:column to end line:column that is
-     * not representable by an int for java.text.ParseException.
+     * A complex error offset that is not representable by a locator for ParseException.
      */
     static final int COMPLEX_ERROR_OFFSET = -1;
 
@@ -93,18 +93,18 @@ abstract class ModernLogic implements Logic {
 	return createSymbol(symbol);
     } 
 
-    public Expression compose(Expression compositor, Expression arguments[]) throws java.text.ParseException {
+    public Expression compose(Expression compositor, Expression arguments[]) throws ParseException {
+	if (compositor == null)
+	    throw new NullPointerException("illegal arguments: compositor " + compositor + " composed with " + MathUtilities.format(arguments));
+        if (!Types.isApplicableTo(compositor.getType(), arguments))
+	    throw new ParseException("compositor " + compositor + ":" + compositor.getType() + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments) + ":" + Types.typeOf(arguments), COMPLEX_ERROR_OFFSET);
+
 	Expression RES = composeImpl(compositor, arguments);
 	assert RES != null : "@post RES != null";	     
 	assert RES.getType().equals(compositor.getType().domain()) : "@post " + RES.getType() + "=" + compositor.getType().domain();
 	return RES;
     }
-    private Expression composeImpl(Expression op, Expression arguments[]) throws java.text.ParseException {
-	if (op == null)
-	    throw new NullPointerException("illegal arguments: compositor " + op + " composed with " + MathUtilities.format(arguments));
-        if (!Types.isApplicableTo(op.getType(), arguments))
-	    throw new java.text.ParseException("compositor " + op + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments), ClassicalLogic.COMPLEX_ERROR_OFFSET);
-
+    Expression composeImpl(Expression op, Expression arguments[]) throws ParseException {
 	if (!(op instanceof ModernFormula.FixedAtomicSymbol))
 	    return composeDelayed((Formula) op,
 				  arguments,
@@ -124,7 +124,7 @@ abstract class ModernLogic implements Logic {
 		assert opfix.getSymbol().equals(s2) : "enforce any potential unambiguities of operators";
 		return composeFixed(opfix.getSymbol(), (Functor)ref, arguments);
 	    }
-	    catch (IllegalArgumentException ex) {throw new java.text.ParseException(ex.getMessage(), COMPLEX_ERROR_OFFSET);}
+	    catch (IllegalArgumentException ex) {throw new ParseException(ex.getMessage(), COMPLEX_ERROR_OFFSET);}
 	}
     }
 
@@ -132,14 +132,20 @@ abstract class ModernLogic implements Logic {
      * @deprecated Use {@link #compose(Expression,Expression[])} instead, converting op via {@link ExpressionBuilder#createAtomic(Symbol)}.
      * @todo remove deprecated
      */
-    public Expression compose(Symbol op, Expression arguments[]) throws java.text.ParseException {
+    public Expression compose(Symbol op, Expression arguments[]) throws ParseException {
 	if (true)
 	    return compose(createAtomic(op), arguments);
 	if (op == null)
 	    throw new NullPointerException("illegal arguments: operator " + op + " composed with " + MathUtilities.format(arguments));
         if (!Types.isApplicableTo(op.getType(), arguments))
-	    throw new java.text.ParseException("operator " + op + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments), ClassicalLogic.COMPLEX_ERROR_OFFSET);
-
+	    throw new ParseException("operator " + op + ":" + op.getType() + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments) + ":" + Types.typeOf(arguments), ClassicalLogic.COMPLEX_ERROR_OFFSET);
+	return composeImpl(op, arguments);
+    }
+    /**
+     * @deprecated Use {@link #compose(Expression,Expression[])} instead, converting op via {@link ExpressionBuilder#createAtomic(Symbol)}.
+     * @todo remove deprecated
+     */
+    Expression composeImpl(Symbol op, Expression arguments[]) throws ParseException {
         Functor f;
         try {
 	    f = (Functor) coreInterpretation().get(op);
@@ -158,7 +164,7 @@ abstract class ModernLogic implements Logic {
 	    return composeFixed(op, (Functor)f, arguments);
 	    //return composeDelayed((Formula)createFixedSymbol(op, f, true), arguments, op.getNotation().getNotation());
         }
-        catch (IllegalArgumentException ex) {throw new java.text.ParseException(ex.getMessage(), COMPLEX_ERROR_OFFSET);}
+        catch (IllegalArgumentException ex) {throw new ParseException(ex.getMessage(), COMPLEX_ERROR_OFFSET);}
     }
 
     // delegation helper methods
@@ -211,7 +217,7 @@ abstract class ModernLogic implements Logic {
     // parsing
     
     // this is an additional method related to createExpression(String)
-    public Expression[] createAllExpressions(String expressions) throws java.text.ParseException {
+    public Expression[] createAllExpressions(String expressions) throws ParseException {
 	if (expressions == null)
 	    throw new NullPointerException("null is not an expression");
 	try {
@@ -219,11 +225,11 @@ abstract class ModernLogic implements Logic {
 	    Expression B[] = parser.parseFormulas(this);
 	    assert !Utility.containsIdenticalTo(B, null) : "empty string \"\" is not a formula, but only an empty set of formulas.";
 	    return B;
-	} catch (ParseException ex) {
-	    throw (java.text.ParseException) new java.text.ParseException(ex.currentToken.next.beginLine + ":" + ex.currentToken.next.beginColumn + ": " + ex.getMessage() + "\nin expressions: " + expressions, COMPLEX_ERROR_OFFSET).initCause(ex);
+	} catch (orbital.moon.logic.ParseException ex) {
+	    throw new ParseException(ex.getMessage() + "\nin expressions: " + expressions, ex.currentToken.next.beginLine, ex.currentToken.next.beginColumn, ex);
 	}                                                                                                                                      
     }
-    public Expression createExpression(String expression) throws java.text.ParseException {
+    public Expression createExpression(String expression) throws ParseException {
 	if (expression == null)
 	    throw new NullPointerException("null is not an expression");
 	try {
@@ -231,12 +237,12 @@ abstract class ModernLogic implements Logic {
 	    Expression x = parser.parseFormula(this);
 	    if (x == null) {
 		assert "".equals(expression) : "only the empty formula \"\" can lead to the forbidden case of a null expression";
-		throw new java.text.ParseException("empty string \"\" is not a formula", COMPLEX_ERROR_OFFSET);
+		throw new ParseException("empty string \"\" is not a formula", COMPLEX_ERROR_OFFSET);
 	    } else
 		return x;
-	} catch (ParseException ex) {
+	} catch (orbital.moon.logic.ParseException ex) {
 	    //@todo use a more verbose exception than ParseException. One that knows about beginning and ending lines and columns, cause and id.
-	    throw (java.text.ParseException) new java.text.ParseException(ex.currentToken.next.beginLine + ":" + ex.currentToken.next.beginColumn + ": " + ex.getMessage() + "\nin expression: " + expression, COMPLEX_ERROR_OFFSET).initCause(ex);
+	    throw new ParseException(ex.getMessage() + "\nin expression: " + expression, ex.currentToken.next.beginLine, ex.currentToken.next.beginColumn, ex);
 	} 
     }
     

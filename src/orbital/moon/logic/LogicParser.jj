@@ -1,5 +1,5 @@
 /**
- * @(#)LogicParser.java 1.0 2001/01/16 Andre Platzer
+ * @(#)LogicParser.jj 1.0 2001/01/16 Andre Platzer
  *
  * Copyright (c) 1999-2002 Andre Platzer. All Rights Reserved.
  *
@@ -62,13 +62,14 @@ import java.util.Iterator;
  * Signature, adapt it such that he can find out new symbols like in
  * ~p(X) the predicate p/1 and object variable X)
  * @xxx "disambiguate" and disallow acception of $p(x) as $p (x) and °p(x) as °p (x) and alike
- * @todo get rid of all this exception wrapping and unwrapping by wrapping the final java.text.ParseException inside an unchecked exception once, and unwrap it once
+ * @todo get rid of all this exception wrapping and unwrapping by wrapping the final orbital.logic.imp.ParseException inside an unchecked exception once, and unwrap it once
  * @internal note that all this nested lookahead with a lot of backtracking kills performance.
  */
 public class LogicParser {
-    private static final Type INTEGER_LITERAL_TYPE = Types.type(orbital.math.Integer.class);
-    private static final Type FLOAT_LITERAL_TYPE = Types.type(orbital.math.Real.class);
-    private static final Type STRING_LITERAL_TYPE = Types.type(String.class);
+    static final Type INTEGER_LITERAL_TYPE = Types.type(orbital.math.Integer.class);
+    static final Type FLOAT_LITERAL_TYPE = Types.type(orbital.math.Real.class);
+    static final Type STRING_LITERAL_TYPE = Types.type(String.class);
+    private static final Type BOOLEAN = Types.type(Boolean.class);
 	
     /**
      * Delegate to the current Syntax implementation that is used for creating Atoms.
@@ -184,14 +185,16 @@ public class LogicParser {
 	return composeWrapper(optok, op, arg);
     }
 
+    // support
+    
     /**
      * n-ary predicates or functions.
      * @param result specifies the result type. Object.class for functions, and Boolean.class for predicates.
      * @see ExpressionBuilder#compose(Expression,Expression[])
      */
-    protected Expression apply(Token optok, Expression[] a, Class result) throws ParseException {
+    protected Expression apply(Token optok, Expression[] a, Type result) throws ParseException {
     	final String op = optok.image;
-	return composeWrapper(optok, new SymbolBase(op, Types.map(Types.typeOf(a), Types.type(result)), new NotationSpecification(a.length)), a);
+	return composeWrapper(optok, new SymbolBase(op, Types.map(Types.typeOf(a), result), new NotationSpecification(a.length)), a);
     }
 
     /**
@@ -204,7 +207,7 @@ public class LogicParser {
 	try {
 	    return syntax.compose(op, arg);
     	}
-    	catch (java.text.ParseException ex) {throw newParseException(ex.getMessage(), optok);}
+    	catch (orbital.logic.imp.ParseException ex) {throw newParseException(ex.getMessage(), optok, ex);}
     }
     /**
      * Wraps calls to {@link ExpressionBuilder#compose(Expression,Expression[])} in an exception handling block.
@@ -300,6 +303,9 @@ public class LogicParser {
     /**
      * Create a good parse exception with the specified message for the given token parsed.
      */
+    static ParseException newParseException(String message, Token tok, Exception cause) {
+	return (ParseException) newParseException(message, tok).initCause(cause);
+    }
     static ParseException newParseException(String message, Token tok) {
 	final ParseException x = new ParseException(message);
 	x.currentToken = tok;
@@ -541,7 +547,7 @@ Expression CompoundFormula() :
         {return p;}
 |
     tok = <IDENTIFIER> arg = Arguments()
-	{return apply(tok, arg, Boolean.class);}
+	{return apply(tok, arg, BOOLEAN);}
 |
     p = LambdaAbstractionPredicate() arg = Arguments()
         {
@@ -626,7 +632,7 @@ Expression CompoundTerm() :
 {Token tok; Expression p; Expression[] arg;}
 {
     tok = <IDENTIFIER> arg = Arguments()
-	{return apply(tok, arg, Object.class);}
+	{return apply(tok, arg, Types.INDIVIDUAL);}
 |
     p = LambdaAbstraction() arg = Arguments()
         {
@@ -663,9 +669,9 @@ Expression AtomicTerm() :
 {Symbol s;}
 {
     (
-     s = LiteralValue()
+        s = LiteralValue()
      |	s = ConstantOrVariable()
-     )
+    )
 	{return (Expression) syntax.createAtomic(s);}
 }
 

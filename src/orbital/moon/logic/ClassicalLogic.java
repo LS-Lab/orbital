@@ -13,6 +13,7 @@
 package orbital.moon.logic;
 
 import orbital.logic.imp.*;
+import orbital.logic.imp.ParseException;
 
 import orbital.logic.functor.Functor;
 import orbital.logic.functor.Functor.Composite;
@@ -295,10 +296,10 @@ public class ClassicalLogic extends ModernLogic implements Logic {
      *  could be proven.
      * @return a value depending upon all_true.
      */
-    public static boolean proveAll(Reader rd, ClassicalLogic logic, boolean all_true) throws java.text.ParseException, IOException {
+    public static boolean proveAll(Reader rd, ClassicalLogic logic, boolean all_true) throws ParseException, IOException {
 	return proveAll(rd, logic, all_true, false, false);
     }
-    private static boolean proveAll(Reader rd, ClassicalLogic logic, boolean all_true, boolean normalForm, boolean verbose) throws java.text.ParseException, IOException {
+    private static boolean proveAll(Reader rd, ClassicalLogic logic, boolean all_true, boolean normalForm, boolean verbose) throws ParseException, IOException {
 	DateFormat df = new SimpleDateFormat("H:mm:ss:S");
 	df.setTimeZone(TimeZone.getTimeZone("Greenwich/Meantime"));
 	Date	   loadeta;
@@ -576,7 +577,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		    DNFtrs = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/DNF/transformToDNF.trs")), logic);
 		//@todo simplifying conditional rules: commutative with lexical sort, etc.
 		return (Formula) Functionals.fixedPoint(simplifying ? Substitutions.getInstance(new ArrayList(Setops.union(DNFSimplification, DNFtrs.getReplacements()))) : DNFtrs, f);
-	    } catch (java.text.ParseException ex) {
+	    } catch (ParseException ex) {
 		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
 	    }
 	}
@@ -620,7 +621,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		if (CNFtrs == null)
 		    CNFtrs = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/CNF/transformToCNF.trs")), logic);
 		return (Formula) Functionals.fixedPoint(simplifying ? Substitutions.getInstance(new ArrayList(Setops.union(CNFSimplification, CNFtrs.getReplacements()))) : CNFtrs, f);
-	    } catch (java.text.ParseException ex) {
+	    } catch (ParseException ex) {
 		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
 	    }
 	}
@@ -659,7 +660,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		    new SkolemizingUnifyingMatcher(logic.createExpression("?_X1 _A"), logic.createExpression("_A"), logic.createAtomicLiteralVariable("_X1")),
 		}));
 		return (Formula) Functionals.fixedPoint(SkolemTransform, F);
-	    } catch (java.text.ParseException ex) {
+	    } catch (ParseException ex) {
 		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
 	    }
 	}
@@ -687,7 +688,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		if (NegationNFTransform == null)
 		    NegationNFTransform = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/negationNF.trs")), logic);
 		return (Formula) Functionals.fixedPoint(NegationNFTransform, F);
-	    } catch (java.text.ParseException ex) {
+	    } catch (ParseException ex) {
 		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
 	    }
 	}
@@ -708,7 +709,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		    Substitutions.createSingleSidedMatcher(logic.createExpression("?_X1 _A"), logic.createExpression("_A")),
 		}));
 		return (Formula) Functionals.fixedPoint(QuantifierDropTransform, F);
-	    } catch (java.text.ParseException ex) {
+	    } catch (ParseException ex) {
 		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
 	    }
 	}
@@ -767,7 +768,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		    return Substitutions.getInstance(Arrays.asList(new Object[] {
 			Substitutions.createExactMatcher(x, applied_s)
 		    })).apply(r);
-		} catch (java.text.ParseException ex) {
+		} catch (ParseException ex) {
 		    throw (InternalError) new InternalError("Unexpected syntax in internal term construction").initCause(ex);
 		}
 	    }
@@ -798,14 +799,14 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 			continue;
 		    int rule = l.indexOf(ruleDelim);
 		    if (rule < 0)
-			throw new java.text.ParseException("neither comment nor whitespace nor rule " + rd.getLineNumber() + "" + -1, -1);
+			throw new ParseException("neither comment nor whitespace nor rule", rd.getLineNumber(), ClassicalLogic.COMPLEX_ERROR_OFFSET);
 		    rules.add(Substitutions.createSingleSidedMatcher(
 								     syntax.createExpression(l.substring(0, rule)),
 								     syntax.createExpression(l.substring(rule + ruleDelim.length()))
 								     ));
 		}
 		return Substitutions.getInstance(new ArrayList(rules));
-	    } catch (java.text.ParseException ex) {
+	    } catch (ParseException ex) {
 		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
 	    } catch (IOException ex) {
 		throw (RuntimeException) new RuntimeException("error reading " + reader).initCause(ex);
@@ -838,7 +839,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
      * facade for convenience.
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Method</a>
      */
-    public boolean infer(String expression, String exprDerived) throws java.text.ParseException {
+    public boolean infer(String expression, String exprDerived) throws ParseException {
 	if (expression == null)
 	    throw new NullPointerException("null is not an expression");
 	Formula B[] = (Formula[]) Arrays.asList(createAllExpressions(expression)).toArray(new Formula[0]);
@@ -1047,12 +1048,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	LAMBDA  = _coreSignature.get("\\", new Expression[] {OBJ,OBJ});
 	assert LAMBDA != null : "lambda operator found";
     }
-    public Expression compose(Expression op, Expression arguments[]) throws java.text.ParseException {
-	if (op == null)
-	    throw new NullPointerException("illegal arguments: operator " + op + " composed with " + MathUtilities.format(arguments));
-        if (!Types.isApplicableTo(op.getType(), arguments))
-	    throw new java.text.ParseException("operator " + op + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments), ClassicalLogic.COMPLEX_ERROR_OFFSET);
-
+    Expression composeImpl(Expression op, Expression arguments[]) throws ParseException {
 	// handle special cases of term construction, first
 	if ((op instanceof ModernFormula.FixedAtomicSymbol)
 	    && LAMBDA.equals(((ModernFormula.FixedAtomicSymbol)op).getSymbol())) {
@@ -1063,24 +1059,19 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    assert x.isVariable() : "we only form lambda abstractions with respect to variables";
 	    return createLambdaProp(x, (Formula) arguments[1]);
 	} else
-	    return super.compose(op, arguments);
+	    return super.composeImpl(op, arguments);
     }
     /**
      * @deprecated Use {@link #compose(Expression,Expression[])} instead, converting op via {@link ExpressionBuilder#createAtomic(Symbol)}.
      */
-    public Expression compose(Symbol op, Expression arguments[]) throws java.text.ParseException {
-	if (op == null)
-	    throw new NullPointerException("illegal arguments: operator " + op + " composed with " + MathUtilities.format(arguments));
-        if (!Types.isApplicableTo(op.getType(), arguments))
-	    throw new java.text.ParseException("operator " + op + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments), ClassicalLogic.COMPLEX_ERROR_OFFSET);
-
+    Expression composeImpl(Symbol op, Expression arguments[]) throws ParseException {
 	// handle special cases of term construction, first
 	if (APPLY.equals(op)) {
 	    //@deprecated since compose(Expression,Expression[]) already can do this, directly.
 	    // do we still need such a language operator for something, or can it be removed (no one ever calls) and use the meta-operator instead
 	    Expression rest[] = new Expression[arguments.length - 1];
 	    System.arraycopy(arguments, 1, rest, 0, rest.length);
-	    return compose(arguments[0], rest);
+	    return this.compose(arguments[0], rest);
 	} else if (LAMBDA.equals(op)) {
 	    //@todo if we stick to compose(Expression,Expression[]) then perhaps we could provide &lambda;-abstractions by introducing a core symbol LAMBDA that has as fixed interpretation a binary function that ... But of &lambda;(x.t), x will never get interpreted, so it is a bit different than composeFixed(lambda,{x,t}) would suggest.
 	    assert arguments.length == 2;
@@ -1089,7 +1080,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    assert x.isVariable() : "we only form lambda abstractions with respect to variables";
 	    return createLambdaProp(x, (Formula) arguments[1]);
 	} else
-	    return super.compose(op, arguments);
+	    return super.composeImpl(op, arguments);
     }
     
     /**
@@ -1348,7 +1339,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
      * @deprecated Use <code>(Formula) createExpression(expression)</code> instead.
      * @todo remove
      */
-    public Formula createFormula(String expression) throws java.text.ParseException {
+    public Formula createFormula(String expression) throws ParseException {
 	return (Formula) createExpression(expression);
     } 
    
