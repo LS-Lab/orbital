@@ -16,6 +16,13 @@
 #      A |- B in modal logic K
 # iff  {all s (w(s)->red(F)) | F&isin;A}, Kripke |- all s (w(s)->red(B)) in first-order logic.
 
+#
+# More generally with semi-local consequence:
+#      S |= U -> X
+# :iff
+#      (all s s|=S) => all s (s|=U => s|=X)
+# iff
+#      all s red(S), s:const red(U) |= s:const red(X)
 
 # Kripke consists of the following set of formulas
 # presupposition of existence
