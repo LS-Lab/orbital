@@ -65,9 +65,6 @@ import java.io.*;
  * @see #parseFormulas()
  * @todo should use precedence and associativity information from
  * orbital.logic.imp.Symbol instead of hard wiring parser.
- * @todo (we should be able to use LogicParser to find out the
- * Signature, adapt it such that he can find out new symbols like in
- * ~p(X) the predicate p/1 and object variable X)
  * @xxx "disambiguate" language and disallow acception of $p(x) as $p (x) and °p(x) as °p (x) and alike
  * @todo get rid of all this exception wrapping and unwrapping by wrapping the final orbital.logic.imp.ParseException inside an unchecked exception once, and unwrap it once
  * @internal note that all this nested lookahead with a lot of backtracking kills performance.
@@ -77,7 +74,7 @@ public class LogicParser {
     static final Type INTEGER_LITERAL_TYPE = Types.type(orbital.math.Integer.class);
     static final Type FLOAT_LITERAL_TYPE = Types.type(orbital.math.Real.class);
     static final Type STRING_LITERAL_TYPE = Types.type(String.class);
-    private static final Type BOOLEAN = Types.type(Boolean.class);
+    private static final Type BOOLEAN = Types.TRUTH;
 	
     /**
      * Delegate to the current syntax implementation that is used for building expressions.
@@ -90,10 +87,9 @@ public class LogicParser {
     private transient Signature coreSignature;
 
     /**
-     * The accumulated signature already occured in the current scope of the current
-     * {@link #parseFormulas() parsing process}.
+     * The current scope.
      */
-    protected Signature scopeSymbolMap;
+    protected Scope scope;
 
     /**
      * Set the current syntax for parsing.
@@ -188,6 +184,7 @@ public class LogicParser {
 	    case '\u2265': op = ">="; break;
 	    case '\u2194':
 	    case '\u21d4': op = "<->"; break;
+	    case '\u2283':
 	    case '\u2192':
 	    case '\u21d2': op = "->"; break;
 	    default: /*ignore*/
@@ -240,11 +237,10 @@ public class LogicParser {
 
 	if (!x.isVariable())
 	    throw new AssertionError("parser would only combine quantifiers with variable symbols " + op + " " + x);
-	if (!scopeSymbolMap.contains(x))
+	if (!scope.contains(x))
 	    throw new AssertionError("only symbols in the symbol map of current scope are quantified over");
 	if ("free".equals(op))
-	    // quantifier with pure syntactic function and no semantic aspect at all
-	    return a;
+	    throw new AssertionError("quantifier with pure syntactic function and no semantic aspect at all have already been filtered");
 	return composeWrapper(optok, op, new Expression[] {syntax.createAtomic(x), a});
     }
 
@@ -299,59 +295,79 @@ public class LogicParser {
 	return composeWrapper(optok, coreSignature.get(op, arg), arg);
     }
 
-    // symbol declaration handling
-    //@todo encapsulate into an own (non-public) class
-
-    private void reinitSymbolMap() {
-	if (syntax == null)
-	    throw new IllegalStateException("no syntax has been set, use setSyntax(...)");
-	this.scopeSymbolMap = new SignatureBase();
-    }
-
     /**
-     * declare a new symbol.
+     * symbol declaration handling
      */
-    private void declare(Symbol x) throws ParseException {
-    	if (x == null)
-	    throw new NullPointerException("illegal symbol " + x);
-	else if (!x.isVariable())
-	    throw new java.lang.AssertionError("parser would only combine quantifiers with variable symbols " + x);
-	scopeSymbolMap.add(x);
-    }
+    private static class Scope {
+	/**
+	 * the outer parental scope around this scope.
+	 */
+	private Scope outer;
+	/**
+	 * The accumulated signature already occured in the current scope.
+	 */
+	private Signature symbolMap;
 
-    /**
-     * undeclare a declared symbol at the end of its scope.
-     * @todo should we better call undeclare in a finally block?
-     */
-    private void undeclare(Symbol x) throws ParseException {
-    	if (x == null)
-	    throw new NullPointerException("illegal symbol " + x);
-	else if (!x.isVariable())
-	    throw new java.lang.AssertionError("parser would only combine quantifiers with variable symbols " + x);
-	// we don't do anything because of the problem with nested occurrences (see below)
-	if (false) {
-	    boolean changed = scopeSymbolMap.remove(x);
-	    //assert changed : "removing a symbol from scope changes the scope";
-	    //@xxx (except for nested occurrences like in "all x ((all x p(x)) | q(x))")
+	/**
+	 * Create a new empty scope.
+	 */
+	public Scope() {
+	    this(null);
 	}
-    }
-
-    /**
-     * Get a symbol of the specified signifier and expected type.
-     * Prefers corresponding entries in the coreSignature.
-     * @param expectedType the type expected as derived from the context.
-     */
-    private Symbol getSymbol(String signifier, Type expectedType) {
-	// do we already know it is a variable due to a quantifier within whose scope we are?
-	for (Iterator i = scopeSymbolMap.iterator(); i.hasNext(); ) {
-	    Symbol s = (Symbol) i.next();
-	    if (s.getSignifier().equals(signifier))
-		return s;
+	/**
+	 * Create a new scope within an outer scope.
+	 */
+	public Scope(Scope outer) {
+	    this.outer = outer;
+	    this.symbolMap = new SignatureBase();
 	}
-	// else it is treated "the default way"
-	return getDefaultSymbol(signifier, expectedType);
-    }
 
+	/**
+	 * Leave this scope re-entering the parental outer scope.
+	 * @return the outer scope re-entered.
+	 */
+	public Scope leave() {
+	    return outer;
+	}
+
+	/**
+	 * declare a new symbol.
+	 */
+	public void declare(Symbol x) {
+	    if (x == null)
+		throw new NullPointerException("illegal symbol " + x);
+	    else if (!x.isVariable())
+		throw new java.lang.AssertionError("parser would only combine quantifiers with variable symbols " + x);
+	    symbolMap.add(x);
+	}
+
+	/**
+	 * declare a new symbol.
+	 */
+	public boolean contains(Symbol x) {
+	    return symbolMap.contains(x) || outer.contains(x);
+	}
+	
+	/**
+	 * Get a symbol of the specified signifier and expected type.
+	 * Prefers corresponding entries in the coreSignature.
+	 * @param expectedType the type expected as derived from the context.
+	 */
+	public Symbol getSymbol(String signifier, Type expectedType) {
+	    // do we already know it is a variable due to a quantifier within whose scope we are?
+	    for (Iterator i = symbolMap.iterator(); i.hasNext(); ) {
+		Symbol s = (Symbol) i.next();
+		if (s.getSignifier().equals(signifier))
+		    return s;
+	    }
+	    if (outer != null)
+		// declared in the parent's (outer) scope
+		return outer.getSymbol(signifier, expectedType);
+	    // else it is treated "the default way"
+	    return getDefaultSymbol(signifier, expectedType);
+	}
+
+    }
     //@todo remove this garbage, because we should always let the user decide what's constant and what's variable, (or at least let him choose the capital/lower convention)
     // either the user can call createExpression(String expr, Signature allowed),
     // or he should explicitly mention any free variables, and all other symbols are either explicitly quantified, or treated as constant
@@ -361,8 +377,8 @@ public class LogicParser {
      * @xxx can we somehow get rid of this?
      */
     static Symbol getDefaultSymbol(String signifier, Type expectedType) {
-    	//@xxx currently we (in addition to $) distinguish between variables and constants according to their first character
-    	return signifier.charAt(0) == '_'
+	//@xxx currently we (in addition to $) distinguish between variables and constants according to their first character
+	return signifier.charAt(0) == '_'
 	    ? new SymbolBase(signifier, expectedType, null, true)
 	    : new SymbolBase(signifier, expectedType, null, false);
     }
@@ -404,7 +420,7 @@ TOKEN :
 | <FORALL: "\u2200" | "°" | "all">
 
 | <EQUIV: "\u2194" | "\u21d4" | "<->" | "<=>">
-| <IMPLY: "\u2192" | "\u21d2" | "->" | "=>">
+| <IMPLY: "\u2192" | "\u21d2" | "\u2283" | "->" | "=>">
 | <OR: "\u2228" | "|" | "||">
 	//@todo use a better symbol than ^ for xor. Otherwise 4^5 could mean 4 to the power of 5, or 4 xor 5.
 | <XOR: "\u2228\u0307" | "xor" | "^">
@@ -432,7 +448,7 @@ TOKEN :
  */
 Expression[] parseFormulas() :
 {
-    reinitSymbolMap();
+    scope = new Scope();
     List r = new LinkedList();
     Expression expr;
 }
@@ -451,7 +467,7 @@ Expression[] parseFormulas() :
  */
 Expression parseFormula() :
 {
-    reinitSymbolMap();
+    scope = new Scope();
     Expression expr;
 }
 {
@@ -467,7 +483,7 @@ Expression parseFormula() :
  */
 Expression parseTerm() :
 {
-    reinitSymbolMap();
+    scope = new Scope();
     Expression expr;
 }
 {
@@ -499,32 +515,36 @@ Expression expression() :
  * then we can keep track of the accumulated signature during parse and treat everything constant that's not already declared in the signature (and all three binding quantifier will extend the current signature)
  */
 Expression FreeDeclarationExpression() :
-{Token tok = null;List xs = new LinkedList();Symbol x = null;Expression a;}
 {
-    (tok = <DECLARE_FREE> x = Variable() {declare(x);xs.add(x);})*
+    Token tok = null;Symbol x = null;Expression a;
+    scope = new Scope(scope);
+}
+{
+    (tok = <DECLARE_FREE> x = Variable() {scope.declare(x);})*
     a = QuantifiedExpression()
-	{
-	    for (Iterator i = xs.iterator(); i.hasNext(); ) {
-		undeclare((Symbol) i.next());
-	    }
-	    return a;
-	}
+{
+    scope = scope.leave();
+    return a;
+}
 }
 
 // quantifiers
   
 //@todo reduce the binding domain of the quantifiers to the next expression, only, and require "all x (p&q)" instead. Rearrange precedence, such that "all" and "some" bind stronger than &,|,->,<=>
 Expression QuantifiedExpression() :
-{Token tok = null;List xs = new LinkedList();Symbol x = null;Expression a = null;}
 {
-    ((tok = <FORALL> | tok = <EXISTS>) x = Variable() {declare(x);xs.add(x);})*
+    Token tok = null;List xs = new LinkedList();Symbol x = null;Expression a = null;
+    scope = new Scope(scope);
+}
+{
+    ((tok = <FORALL> | tok = <EXISTS>) x = Variable() {scope.declare(x);xs.add(x);})*
     a = EquivalenceExpression()
 	{
 	    for (Iterator i = xs.iterator(); i.hasNext(); ) {
 		Symbol y = (Symbol) i.next();
 		a = combine(tok, y, a);
-		undeclare(y);
 	    }
+	    scope = scope.leave();
 	    return a;
 	}
 }
@@ -615,7 +635,7 @@ Expression Atom() :
 	{return a;}
     |
 	tok = <IDENTIFIER>
-	{return (Expression) syntax.createAtomic(getSymbol(tok.image, Types.TRUTH));}
+	{return (Expression) syntax.createAtomic(scope.getSymbol(tok.image, Types.TRUTH));}
     |
 	sym = NumberLiteralValue()
 	{return (Expression) syntax.createAtomic(sym);}
@@ -676,11 +696,14 @@ Expression EqualityExpression() :
  * @see orbital.logic.trs.Substitutions#lambda
  */
 Expression LambdaAbstractionPredicate() :
-{Token tok; Symbol x;Expression t;}
 {
-    "(" tok = <LAMBDA> x = VariableDeclaration() "." {declare(x);} t = expression() ")"
+    Token tok; Symbol x;Expression t;
+    scope = new Scope(scope);
+}
 {
-    undeclare(x);
+    "(" tok = <LAMBDA> x = VariableDeclaration() "." {scope.declare(x);} t = expression() ")"
+{
+    scope = scope.leave();
     return composeWrapper(tok, ClassicalLogic.LAMBDA, new Expression[] {syntax.createAtomic(x), t});
 }
 }
@@ -784,11 +807,14 @@ Expression CompoundTerm() :
  * @see orbital.logic.trs.Substitutions#lambda
  */
 Expression LambdaAbstraction() :
-{Token tok; Symbol x; Expression t;}
 {
-    "(" tok = <LAMBDA> x = VariableDeclaration() "." {declare(x);} t = term() ")"
+    Token tok; Symbol x; Expression t;
+    scope = new Scope(scope);
+}
 {
-    undeclare(x);
+    "(" tok = <LAMBDA> x = VariableDeclaration() "." {scope.declare(x);} t = term() ")"
+{
+    scope = scope.leave();
     return composeWrapper(tok, ClassicalLogic.LAMBDA, new Expression[] {syntax.createAtomic(x), t});
 }
 }
@@ -881,7 +907,7 @@ Symbol ConstantOrVariable() :
 	    ( "." tok = <IDENTIFIER>  {signifier += "." + tok.image;} )
 	    )*
     */
-    {return getSymbol(signifier, Types.INDIVIDUAL);}
+    {return scope.getSymbol(signifier, Types.INDIVIDUAL);}
 }
 
 

@@ -13,28 +13,32 @@ import util.Basic;
  * Solves Rubik's Cube with state search.
  * Since Rubik's Cube has a rather large state space, solving an
  * arbitrary cube might still take a while.
- * <p><a name="Theory"></a>
- * For a 2 by 2 cube the state space has a size of at most (2*3)<sup>d</sup>.
+ * <p id="Theory">
+ * For a 2 by 2 cube the (reachable) state space is of size
+ * &le; 3<sup>8/sup>·8!.
+ * An upper bound for the size of the state space reachable by performing at most d actions is:
+ * (2*3)<sup>d</sup>.
  * So for a depth of 14 steps its size limit is 78364164096.
  * The exact size of the state space is somewhat difficult to calculate due to the
  * various interpretations of states and their symmetries.
- * I still do not know the number of moves neccessary to reach every state possible.
+ * I still do not know the number of moves neccessary to reach every possible state.
  * </p>
  * <p>
  * For a 3 by 3 cube the (reachable) state space is of size
  * 2<sup>12</sup>·12!·3<sup>8</sup>·8!/12 &asymp; 4.3*10<sup>19</sup>.
  * An upper bound for the size of the state space reachable by performing at most d actions is:
  * <center>1 + (6*2) + (6*2)*11<sup>1</sup> + (6*2)*11<sup>2</sup> + ... + (6*2)*11<sup>n-1</sup> = 1 + (6*2) * 11<sup>n-1</sup> / (11 - 1)</center>
- * Because<ol>
- * <li>there is the single initial state</li>
- * <li>with the first action you can chose either of the
- * six sides and turn them into one of two directions</li>
- * <li>with the following action you cannot reach another 6*2 new states
- * since there is one action that takes us back to the previous state.
- * So new states are at most 6*2-1 = 11. In fact, for the third step this number drops again.
- * But this calculation still leads to an upper bound.</li>
+ * Because
+ * <ol>
+ *   <li>there is the single initial state</li>
+ *   <li>with the first action you can chose either of the
+ *   six sides and turn them into one of two directions</li>
+ *   <li>with the following action you cannot reach another 6*2 new states
+ *   since there is one action that takes us back to the previous state.
+ *   So new states are at most 6*2-1 = 11. In fact, for the third step this number drops again.
+ *   But this calculation still leads to an upper bound.</li>
  * </ol>
- * If actions like L2 would be allowed as single steps (and not as L1, L1)
+ * If actions like L+2 would be allowed as single steps (and not as L+1, L+1)
  * then the number of reachable states is below
  * <center>1 + (6*3) * 15<sup>n-1</sup> / (15 - 1)</center>
  * </p>
@@ -102,14 +106,15 @@ public class RubiksCube implements GeneralSearchProblem {
 		fis = new InflaterInputStream(fis);
 	    ObjectInputStream is = new ObjectInputStream(fis);
 	    final int	      patternDepth = is.readInt();
-	    Map		      patternDatabase = (Map) is.readObject();
+	    final Map	      patternDatabase = (Map) is.readObject();
 	    is.close();
 	    h = new Function() {
+		    final Real UNDERESTIMATE = Values.getDefaultInstance().valueOf(patternDepth + 1);
 		    public Object apply(Object o) {
-
 			// out of exact pattern heuristic, so we need more than patternDepth steps
 			// XXX: need better heuristics!! Count number of tiles in wrong position, etc.
-			return Values.getDefaultInstance().valueOf(patternDepth + 1);
+			//@fixme also we only measure the distance to one solved state, not to all solved states that result from rotating the whole cube, so our database heuristic as well as our UNDERESTIMATE heuristic may be wrong if reaching the other goal states is ok.
+			return UNDERESTIMATE;
 		    } 
 		};
 	    h = new HeuristicAlgorithm.PatternDatabaseHeuristic(h, patternDatabase);
@@ -135,8 +140,9 @@ public class RubiksCube implements GeneralSearchProblem {
 	// here we decide which exact search algorithm to use
 	// the single difference in using another search algorithm
 	// would only concern the constructor call
-	s = new IterativeDeepeningAStar(h);
-	//s = new IterativeExpansion(h);
+	//s = new IterativeDeepeningAStar(h);
+	//s = new BranchAndBound(h, MAX_STEPS *2);
+	s = new IterativeExpansion(h);
 
 		
 	// really solve our problem
@@ -169,53 +175,36 @@ public class RubiksCube implements GeneralSearchProblem {
     public static final int	   front = 3;
     public static final int	   right = 4;
     public static final int	   down = 5;
-    public static final String names[] = {
+    private static final String    names[] = {
 	"L", "B", "T", "F", "R", "D"
     };
 
-    // colors
+    // different colors for tiles
     public static final int	   orange = 0;
     public static final int	   blue = 1;
     public static final int	   yellow = 2;
     public static final int	   white = 3;
     public static final int	   red = 4;
     public static final int	   green = 5;
-    private static final Color colors[] = {
+    private static final Color     colors[] = {
 	Color.orange.darker(), Color.blue, Color.yellow.brighter(), Color.white, Color.red, Color.green
     };
 
     /**
      * The size of the Rubik's cube.
      */
-    protected static int	   size;
+    protected final int	size;
     /**
-     * The actual problem to solve.
+     * The actual state of the cube to solve.
      */
     private final Cube _initialState;
 
     public RubiksCube(int size) {
-	RubiksCube.size = size;
 	if (size != 2)
 	    throw new InternalError("only implemented for size 2");
+	this.size = size;
 	this._initialState = constructInitialState();
     }
-
-    public MutableFunction getAccumulatedCostFunction() {
-	return _accumulatedCostFunction;
-    }
-    private static final MutableFunction _accumulatedCostFunction = new MutableFunction() {
-	    public Object apply(Object state) {
-		return Values.getDefaultInstance().valueOf(((Cube)state).accumulatedCost);
-	    }
-	    public Object set(Object state, Object accumulatedCost) {
-		Object old = Values.getDefaultInstance().valueOf(((Cube)state).accumulatedCost);
-		((Cube)state).accumulatedCost = ((orbital.math.Real)accumulatedCost).doubleValue();
-		return old;
-	    }
-	    public Object clone() {
-		throw new UnsupportedOperationException();
-	    }
-	};
 
     /**
      * Pose the problem by constructing the initial Rubik's cube state.
@@ -239,23 +228,26 @@ public class RubiksCube implements GeneralSearchProblem {
 	    //c.drehe(1, 1); //c.drehe(2, -1); c.drehe(2, -1); c.drehe(3, -1); c.drehe(2, -1); c.drehe(3, 1); c.drehe(2, -1);
 	    break;
 	case RANDOM:
-	    for (int i = 0; i < MAX_STEPS; i++) {
-		int seite = (int) (left + Math.random() * (down - front + 1));
-		int richtung = -1 + (int) (Math.random() * 2);
-		if (richtung == 0)
-		    richtung = 1;
-		c.drehe(seite, richtung);
-	    } 
+	    {
+		Random random = new Random();
+		for (int i = 0; i < MAX_STEPS; i++) {
+		    int side = left + random.nextInt(down - front + 1);
+		    int direction = -1 + 2 * random.nextInt(2);
+		    c.drehe(side, direction);
+		}
+		System.out.println(c);
+	    }
 	    break;
 	default:
 	    throw new IllegalStateException(SEQUENCE + " is an illegal mode for SEQUENCE");
 	} 
 
+	c.clearActionLog();
 	return c;
     } 
 
     public Object getInitialState() {
-	System.out.println(_initialState + " to be solved\n");
+	System.out.println(_initialState + "\n to be solved.\n");
 	printcubus(_initialState.feld, 2, 2);
 	return _initialState.clone();
     }
@@ -264,7 +256,6 @@ public class RubiksCube implements GeneralSearchProblem {
 	Cube c = (Cube) n;
 	if (c.isGood()) {
 	    System.out.println("Solution: " + n);
-	    //@todo we could also print a protocol of all moves that lead to the solution
 	    return true;
 	} 
 	return false;
@@ -273,17 +264,16 @@ public class RubiksCube implements GeneralSearchProblem {
     public Iterator actions(Object n) {
 	Cube s = (Cube) n;
 	List ex = new LinkedList();
-	for (int seite = front; seite <= down; seite++)
+	for (int side = front; side <= down; side++)
 	    for (int dir = -1; dir <= 1; dir += 2) {
 		Cube t = (Cube) s.clone();
-		t.drehe(seite, dir);
+		t.drehe(side, dir);
 		ex.add(t);
-		// could protocol action per s.getAction() + "," + names[seite] + dir
 	    } 
 	return ex.iterator();
     } 
 
-    public Iterator states(Object action, Object state) {
+    public final Iterator states(Object action, Object state) {
 	return Collections.singleton(action).iterator();
     } 
 
@@ -293,34 +283,57 @@ public class RubiksCube implements GeneralSearchProblem {
     } 
 
 
+    public MutableFunction getAccumulatedCostFunction() {
+	return _accumulatedCostFunction;
+    }
+    private static final MutableFunction _accumulatedCostFunction = new MutableFunction() {
+	    public Object apply(Object state) {
+		return ((Cube)state).accumulatedCost;
+	    }
+	    public Object set(Object state, Object newAccumulatedCost) {
+		Object old = ((Cube)state).accumulatedCost;
+		((Cube)state).accumulatedCost = (Real)newAccumulatedCost;
+		return old;
+	    }
+	    public Object clone() {
+		throw new UnsupportedOperationException();
+	    }
+	};
+
+
     // implementation helpers
 	
     /**
      * The cube state class.
      */
     protected static class Cube {
-	int[] feld;
-	double accumulatedCost;
+	/**
+	 * The internal description of the cube's state.
+	 */
+	private int[] feld;
+	/**
+	 * the accumulated cost of for the actions that lead here.
+	 */
+	private Real accumulatedCost;
+	/**
+	 * the log of actions that lead to this state (from the initial state).
+	 */
+	private StringBuffer actionLog;
 
-	private Cube(int[] field, double accumulatedCost) {
+	private Cube(int[] field, Real accumulatedCost, StringBuffer actionLog) {
+	    if (field.length != 2 * 2 * 6)
+		throw new InternalError("not implemented for size " + Math.sqrt(field.length / 6.0));
 	    this.feld = field;
 	    this.accumulatedCost = accumulatedCost;
-	}
-	private Cube(int[] field) {
-	    this(field, Double.NaN);
+	    clearActionLog();
+	    this.actionLog.append(actionLog);
 	}
 
 	/**
 	 * Create initial cube with all sides good.
 	 */
-	public Cube(int size) {
-	    this(size, Double.NaN);
-	}
-	/**
-	 * Create initial cube with all sides good.
-	 */
-	public Cube(int size, double accumulatedCost) {
-	    this(new int[size * size * 6], accumulatedCost);
+	public Cube(int size, Real accumulatedCost) {
+	    this(new int[size * size * 6], accumulatedCost, new StringBuffer());
 	    if (size != 2)
 		throw new InternalError("not implemented for size " + size);
 	    for (int i = 0; i < 4; i++)
@@ -336,9 +349,12 @@ public class RubiksCube implements GeneralSearchProblem {
 	    for (int i = 20; i < 24; i++)
 		feld[i] = green;
 	}
+	public Cube(int size, double accumulatedCost) {
+	    this(size, Values.getDefaultInstance().valueOf(accumulatedCost));
+	}
 
 	public Object clone() {
-	    return new Cube((int[]) feld.clone(), accumulatedCost);
+	    return new Cube((int[]) feld.clone(), accumulatedCost, actionLog);
 	} 
 
 	public boolean equals(Object o) {
@@ -355,6 +371,7 @@ public class RubiksCube implements GeneralSearchProblem {
 
 	/**
 	 * good hashCode required for pattern database.
+	 * @todo use rotation symmetries (also in equals)
 	 */
 	public int hashCode() {
 	    int hash = 0;
@@ -368,7 +385,7 @@ public class RubiksCube implements GeneralSearchProblem {
 	} 
 
 	public String toString() {
-	    return MathUtilities.format(feld) + "\n for total accumulated cost " + accumulatedCost;
+	    return MathUtilities.format(feld) + "\n for total accumulated cost " + accumulatedCost + "\n\tmoves that lead here: " + actionLog;
 	} 
 
 	public boolean isGood() {
@@ -379,60 +396,69 @@ public class RubiksCube implements GeneralSearchProblem {
 	    return true;
 	} 
 
-	public void drehe(int seite, int richtung) {
-	    switch (seite) {
+	/**
+	 * turn the specified side in the specified direction.
+	 * @param side which side of the cube to turn.
+	 * @param direction in which direction to turn the side.
+	 *  A value of 1 means clockwise, a value of -1 counter-clockwise.
+	 * @pre side&isin;{left,right,top,down,back,front}
+	 *      &and; direction&isin;{1,-1}
+	 */
+	public void drehe(int side, int direction) {
+	    switch (side) {
 	    case left:		// 'left - okay
-		reihentausch(0, 1, 2, 3, richtung);
-		reihentausch(8, 12, 22, 4, richtung);
-		reihentausch(11, 15, 21, 7, richtung);
+		reihentausch(0, 1, 2, 3, direction);
+		reihentausch(8, 12, 22, 4, direction);
+		reihentausch(11, 15, 21, 7, direction);
 		break;
 	    case back:	// 'back
-		reihentausch(4, 5, 6, 7, richtung);
-		reihentausch(1, 21, 17, 9, richtung);
-		reihentausch(0, 20, 16, 8, richtung);
+		reihentausch(4, 5, 6, 7, direction);
+		reihentausch(1, 21, 17, 9, direction);
+		reihentausch(0, 20, 16, 8, direction);
 		break;
 	    case top:		// 'top
-		reihentausch(8, 9, 10, 11, richtung);
-		reihentausch(1, 6, 19, 12, richtung);
-		reihentausch(2, 7, 16, 13, richtung);
+		reihentausch(8, 9, 10, 11, direction);
+		reihentausch(1, 6, 19, 12, direction);
+		reihentausch(2, 7, 16, 13, direction);
 		break;
 	    case front:		// 'front
-		reihentausch(12, 13, 14, 15, richtung);
-		reihentausch(3, 11, 19, 23, richtung);
-		reihentausch(2, 10, 18, 22, richtung);
+		reihentausch(12, 13, 14, 15, direction);
+		reihentausch(3, 11, 19, 23, direction);
+		reihentausch(2, 10, 18, 22, direction);
 		break;
 	    case right:	// 'right
-		reihentausch(16, 17, 18, 19, richtung);
-		reihentausch(9, 5, 23, 13, richtung);
-		reihentausch(10, 6, 20, 14, richtung);
+		reihentausch(16, 17, 18, 19, direction);
+		reihentausch(9, 5, 23, 13, direction);
+		reihentausch(10, 6, 20, 14, direction);
 		break;
 	    case down:		// 'down
-		reihentausch(20, 21, 23, 23, richtung);
-		reihentausch(5, 0, 15, 18, richtung);
-		reihentausch(4, 3, 14, 17, richtung);
+		reihentausch(20, 21, 23, 23, direction);
+		reihentausch(5, 0, 15, 18, direction);
+		reihentausch(4, 3, 14, 17, direction);
 		break;
 	    default:
-		throw new InternalError();
+		throw new InternalError("unknown side " + side);
 	    }
+	    logAction(side, direction);
 	} 
 
-	protected void reihentausch(int a, int b, int c, int d, int richtung) {
+	protected void reihentausch(int a, int b, int c, int d, int direction) {
 	    int temp = feld[a];
-	    switch (richtung) {
-	    case -1:	// gegen den uhrzeigersinn
+	    switch (direction) {
+	    case -1:	// counter-clockwise
 		feld[a] = feld[b];
 		feld[b] = feld[c];
 		feld[c] = feld[d];
 		feld[d] = temp;
 		break;
-	    case 1:
+	    case 1:    // clockwise
 		feld[a] = feld[d];
 		feld[d] = feld[c];
 		feld[c] = feld[b];
 		feld[b] = temp;
 		break;
 	    default:
-		throw new InternalError();
+		throw new InternalError("unknown direction " + direction);
 	    }
 	} 
 
@@ -465,6 +491,23 @@ public class RubiksCube implements GeneralSearchProblem {
           return 0;
 	  }*/
 
+	/**
+	 * Remember an action in the log of action sequence.
+	 * This sequence can then be printed for the solution.
+	 */
+	private void logAction(int side, int direction) {
+	    actionLog.append(',');
+	    actionLog.append(names[side]);
+	    if (direction >= 0)
+		actionLog.append('+');
+	    actionLog.append(direction);
+	}
+	/**
+	 * Clears the log of action sequence.
+	 */
+	public void clearActionLog() {
+	    actionLog =  new StringBuffer();
+	}
     }
 
 

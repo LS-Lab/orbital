@@ -53,7 +53,7 @@ public class ClassConsistencyCheck implements Runnable {
 	boolean isSerializable = Serializable.class.isAssignableFrom(subject);
 	boolean hasSerialVersionUID = hasDeclaredField("serialVersionUID") != null;
 	if (isSerializable != hasSerialVersionUID)
-	    logger.log(Level.SEVERE, "static consistency{0} has only of implements Serializable and declares serialVersionUID", subject);
+	    logger.log(Level.SEVERE, "static consistency {0} has only of implements Serializable and declares serialVersionUID", subject);
 	Field uniform = conformsUniformReferent();
 	if (uniform != null)
 	    logger.log(Level.WARNING, "uniform referent {0} possibly does not conform the concept of uniform referents it has declared a method and an attribute of the same name: {1}", new Object[] {subject, uniform});

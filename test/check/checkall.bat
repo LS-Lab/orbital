@@ -1,12 +1,13 @@
 @ECHO Off
 rem perform class consistency checks
-call mklib
+REM call mklib
 echo Run consistency checks on all classes
 setlocal
+set CLASSPATH=%CLASSPATH%;..\test
 pushd ..\..\classes
 echo @echo off > %temp%\t.bak
 for /R %%U in (*.class) do call :Use %%~dnpU
-sed -x -e s/D:\\Sprachen\\java\\jre\\classes\\// -e s/\\/\//g < %temp%\t.bak > %temp%\t.bat
+sed -x -e s-C:\\Personal\\Java\\Orbital\\classes\\--g -e s/\\/\//g < %temp%\t.bak > %temp%\t.bat
 del %temp%\t.bak
 call %temp%\t.bat
 @echo off

@@ -972,7 +972,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		//@todo also templatize with t somehow? //@xxx verify type
 		private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.INDIVIDUAL, Types.TRUTH}), Types.TRUTH);
     		public Object apply(Object x, Object a) {
-		    throw new LogicException("quantified formulas only have a semantic value with respect to a possibly infinite domain. They are available for inference, but cannot be interpreted.");
+		    throw new LogicException("quantified formulas only have a semantic value with respect to a possibly infinite domain. They are available for inference, but cannot be interpreted with finite means.");
     		}
 		public String toString() { return "°"; }
 	    };
@@ -980,7 +980,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
     	public static final BinaryFunction exists = new BinaryFunction() {
 		private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.INDIVIDUAL, Types.TRUTH}), Types.TRUTH);
     		public Object apply(Object x, Object a) {
-		    throw new LogicException("quantified formulas only have a semantic value with respect to a possibly infinite domain. They are available for inference, but cannot be interpreted.");
+		    throw new LogicException("quantified formulas only have a semantic value with respect to a possibly infinite domain. They are available for inference, but cannot be interpreted with finite means.");
     		}
 		public String toString() { return "?"; }
 	    };

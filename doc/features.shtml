@@ -25,77 +25,67 @@ Packages</i>).
 counter part with numerical and symbolic mathematics, as well as functional
 evaluation and several algorithmic templates including search and planning.</p>
 <h3>These packages include:</h3>
-<ol>
-  <li>mathematical, algebraic, numerical, and statistical utilities, and conceptual
-    interfaces for mathematics.</li>
-  <li>Enhanced numerical mathematics, and even symbolic mathematical
-    calculations are possible.</li>
-  <li><i>Arithmetic objects</i> with uniform mathematical operations like +, -,
-    *, /, ^. This enables us to use a uniform calculation with various
-    arithmetic implementation objects. Those implementations include tensors, matrices, vectors,
-    and scalar types like integers, rationals, real and complex numbers,
-    (multivariate) polynomials, quotients, and fractions. Even full symbolic
-    calculations, also combined with modulo calculations are possible.
-    For example, quotients of multivariate polynomials rely on Groebner bases.
-  </li>
-  <li>Mathematical functions are generalized to fit the requirements of
-    functional operations and allow symbolic derivation and sometimes
-    integration. They extend the basic logical functors to maximize
-    compatibility. Additionally, mathematical functions can be handled like
-    arithmetic objects whenever this more general view is of advantage.
-    For example, you can simple subtract functions from one another.
-  </li>
-  <li>Several algorithmic templates are provided that are extremely helpful for
-    rapid prototyping. Those algorithmic templates also include several (about 10)
-    important (blind and heuristic) state space search algorithms. Even some
-    implementations of planning algorithms are provided.</li>
-  <li>a generic framework for logical systems. It includes implementations
-    for classical logic and fuzzy logic. The classical logic part also supports
-    resolution. Note that this is a framework in the sense of logic,
-    but not in the sense of software architecture. Therefore it provides you
-    with all logical operations without restricting the architecture of your
-    application.</li>
-  <li>Term rewrite sytem facility achieved with fixed point operations of term
-    unification and substitution.</li>
-  <li>algorithmic template frameworks including (about 5) implementations of 
-    evolutionary and genetic algorithms.</li>
-  <li>A parser for logical and mathematical expressions including &#955;-operator
-    notation of &#955;-calculus.</li>
-  <li>functional evaluation with functor interfaces and function notation
-    classes.</li>
-  <li>a generic board game abstraction framework.</li>
-  <li>graphical user interface (GUI) utilities and Java Beans.</li>
-  <li>lightweight 3D worlds vector graphics engine.</li>
-  <li>I/O-Extensions.</li>
-  <li>Scanner&amp;Parser base classes for simple parsing jobs.</li>
-  <li>some document encoding and formatting classes.</li>
-  <li>concurrent synchronous and asynchronous connectors that supports a
-    programming style with coroutines.</li>
-  <li>And some more...</li>
-</ol>
-
-<!-- <p>
-Additionally, the orbital library contains interfaces for several <i>distributed
-object model</i> environments: the <i>orbital library services</i>. Environments
-that are supported to be inter connectable with the Orbital library include:</p>
 <ul>
-  <li>CORBA with internet inter ORB protocol (IIOP).</li>
-  <li>RMI with Java Remote Method Protocol (JRMP).</li>
-  <li>Port Servers with socket based internet text protocol.</li>
-  <li>jini fluid objects via <a href="../../../info/jini_env.html">jini</a>
-    distributed objects model architecture.</li>
+  <li>Logic
+    <ol>
+      <li>a generic framework for logical systems. It includes implementations
+        for classical logic and fuzzy logic. The classical logic part also
+        supports resolution. Note that this is a framework in the sense of
+        logic, but not in the sense of software architecture. Therefore it
+        provides you with all logical operations without restricting the
+        architecture of your application.</li>
+      <li>Term rewrite sytem facility achieved with fixed point operations of
+        term unification and substitution.</li>
+      <li>A parser for logical and mathematical expressions including &#955;-operator
+        notation of &#955;-calculus.</li>
+    </ol>
+  </li>
+  <li>Mathematics
+    <ol>
+      <li>functional evaluation with functor interfaces and function notation
+        classes.</li>
+      <li>mathematical, algebraic, numerical, and statistical utilities, and
+        conceptual interfaces for mathematics.</li>
+      <li><i>Arithmetic objects</i> with uniform mathematical operations like +,
+        -, *, /, ^. This enables us to use a uniform calculation with various
+        arithmetic implementation objects. Those implementations include
+        tensors, matrices, vectors, and scalar types like integers, rationals,
+        real and complex numbers, (multivariate) polynomials, quotients, and
+        fractions. Even full symbolic calculations, also combined with modulo
+        calculations are possible. For example, quotients of multivariate
+        polynomials rely on Groebner bases.</li>
+      <li>Mathematical functions are generalized to fit the requirements of
+        functional operations and allow symbolic derivation and sometimes
+        integration. They extend the basic logical functors to maximize
+        compatibility. Additionally, mathematical functions can be handled like
+        arithmetic objects whenever this more general view is of advantage. For
+        example, you can simple subtract functions from one another.</li>
+    </ol>
+  </li>
+  <li>Algorithms
+    <ol>
+      <li>Several algorithmic templates are provided that are extremely helpful
+        for rapid prototyping. Those algorithmic templates also include several
+        (about 15) important (blind and heuristic) state space search
+        algorithms. Even some implementations of planning algorithms are
+        provided.</li>
+      <li>algorithmic template frameworks including (about 5) implementations of
+        evolutionary and genetic algorithms.</li>
+    </ol>
+  </li>
+  <li>Utilities
+    <ol>
+      <li>a generic board game abstraction framework.</li>
+      <li>graphical user interface (GUI) utilities and Java Beans.</li>
+      <li>lightweight 3D worlds vector graphics engine.</li>
+      <li>I/O-Extensions.</li>
+      <li>Scanner&amp;Parser base classes for simple parsing jobs.</li>
+      <li>some document encoding and formatting classes.</li>
+      <li>concurrent synchronous and asynchronous connectors that supports a
+        programming style with coroutines.</li>
+    </ol>
+  </li>
 </ul>
-<ul type="CIRCLE">
-  <li>More information is contained in the documentation.</li>
-  <li>Orbital services for Servlets will soon be added.</li>
-</ul>
-</p>
--->
-
-<p>Release 0.9.5+ of Orbital library is capable of JAR indexing which is a new
-feature that will result in less consumption of network bandwidth for applets.
-See documentation of JDK 1.3+ for more details on how to use it.</p>
-
 <!--#include virtual="../bottom.shtml"-->
 
 

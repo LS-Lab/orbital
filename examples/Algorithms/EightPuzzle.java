@@ -89,23 +89,6 @@ public class EightPuzzle implements GeneralSearchProblem {
 	this.goal = goalState(size);
     }
 
-    public MutableFunction getAccumulatedCostFunction() {
-	return _accumulatedCostFunction;
-    }
-    private static final MutableFunction _accumulatedCostFunction = new MutableFunction() {
-	    public Object apply(Object state) {
-		return Values.getDefaultInstance().valueOf(((State)state).accumulatedCost);
-	    }
-	    public Object set(Object state, Object accumulatedCost) {
-		Object old = Values.getDefaultInstance().valueOf(((State)state).accumulatedCost);
-		((State)state).accumulatedCost = ((orbital.math.Real)accumulatedCost).doubleValue();
-		return old;
-	    }
-	    public Object clone() {
-		throw new UnsupportedOperationException();
-	    }
-	};
-
     public Object getInitialState() {
 	State r = new State(shuffle(goalState(size)), null, 0.0);
 	System.out.println(r + " to be solved\n");
@@ -152,6 +135,23 @@ public class EightPuzzle implements GeneralSearchProblem {
 	// uniform cost 1
 	return new Transition(action, 1);
     } 
+
+    public MutableFunction getAccumulatedCostFunction() {
+	return _accumulatedCostFunction;
+    }
+    private static final MutableFunction _accumulatedCostFunction = new MutableFunction() {
+	    public Object apply(Object state) {
+		return ((State)state).accumulatedCost;
+	    }
+	    public Object set(Object state, Object newAccumulatedCost) {
+		Object old = ((State)state).accumulatedCost;
+		((State)state).accumulatedCost = (Real)newAccumulatedCost;
+		return old;
+	    }
+	    public Object clone() {
+		throw new UnsupportedOperationException();
+	    }
+	};
 
 
     // implementation helpers
@@ -252,24 +252,27 @@ public class EightPuzzle implements GeneralSearchProblem {
 
     static class State {
 	int[][] slides;
-	double accumulatedCost;
+	Real accumulatedCost;
 	/**
 	 * just jor easying the work of our heuristic.
 	 */
 	int[] tileMoved;
 	public State(int[][] slides, int[] tileMoved) {
-	    this(slides, tileMoved, Double.NaN);
+	    this(slides, tileMoved, Values.NaN);
 	}
-	public State(int[][] slides, double accumulatedCost) {
+	public State(int[][] slides, Real accumulatedCost) {
 	    this(slides, null, accumulatedCost);
 	}
-	private State(int[][] slides, int[] tileMoved, double accumulatedCost) {
+	private State(int[][] slides, int[] tileMoved, Real accumulatedCost) {
 	    this.slides = slides;
 	    this.tileMoved = tileMoved;
 	    this.accumulatedCost = accumulatedCost;
 	}
+	private State(int[][] slides, int[] tileMoved, double accumulatedCost) {
+	    this(slides, tileMoved, Values.getDefaultInstance().valueOf(0));
+	}
 
-	double getAccumulatedCost() {
+	Real getAccumulatedCost() {
 	    return accumulatedCost;
 	}
 

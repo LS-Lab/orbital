@@ -37,12 +37,13 @@ public class RubiksCubeCreatePattern extends RubiksCube {
 	final Function accumulatedCostFunction = problem.getAccumulatedCostFunction();
 	GeneralSearch s = new BranchAndBound(new Function() {
 
-		// creates the pattern database in passing
+		// creates the pattern database in passing the state space
 		public Object apply(Object n) {
 		    Scalar old = (Scalar) patternDatabase.get(n);
 		    Real v = (Real) accumulatedCostFunction.apply(n);
+		    assert v.compareTo(Values.ZERO) >= 0;
 
-		    // store better value
+		    // store better value, since we underestimate
 		    if (old == null || v.compareTo(old) < 0)
 			patternDatabase.put(n, v);
 
@@ -64,6 +65,8 @@ public class RubiksCubeCreatePattern extends RubiksCube {
 	os.writeInt(MAX_STEPS);
 	os.writeObject(patternDatabase);
 	os.close();
+	System.out.println("Writing pattern database ...");
+	System.out.println("up to depth " + MAX_STEPS + " with " + patternDatabase.size() + " heurisitc value entries.");
     } 
 
     public RubiksCubeCreatePattern(int size) {
@@ -110,8 +113,8 @@ class HashOnlyMap extends DelegateMap implements Externalizable {
 	out.writeInt(size());
 	for (Iterator i = entrySet().iterator(); i.hasNext(); ) {
 	    Map.Entry e = (Map.Entry) i.next();
-	    out.writeInt(((Number) e.getKey()).intValue());
-	    out.writeFloat(((Number) e.getValue()).floatValue());
+	    out.writeInt(((java.lang.Integer) e.getKey()).intValue());
+	    out.writeFloat(((Real) e.getValue()).floatValue());
 	} 
     } 
 
@@ -119,7 +122,8 @@ class HashOnlyMap extends DelegateMap implements Externalizable {
 	int size = in.readInt();
 	setDelegatee(new HashMap(size));
 	for (int i = 0; i < size; i++) {
-	    put(new java.lang.Integer(in.readInt()), Values.getDefaultInstance().valueOf(in.readFloat()));
+	    put(new java.lang.Integer(in.readInt()),
+		Values.getDefaultInstance().valueOf(in.readFloat()));
 	} 
     } 
 }
