@@ -207,7 +207,7 @@
 		javacchome="${env.javacchome}"/>
     </target>
 
-    <target name="clean" depends="init"
+    <target name="clean.nodoc" depends="init"
             description="remove all *.class">
         <delete includeEmptyDirs="true" failonerror="false">
             <fileset dir="${sources}/">
@@ -217,10 +217,11 @@
             <fileset dir="${build.tests}/">
                 <include name="**/*.class"/>
             </fileset>
-            <fileset dir="${reports.tests}"/>
-            <fileset dir="${doc.api.dest}"/>
-            <fileset dir="${doc.dest}"/>
-            <fileset dir="${dist}"/>
+<!--            <fileset dir="${dist}">
+	        <exclude name="${doc.api.dest}"/>
+	        <exclude name="${doc.dest}"/>
+            </fileset>
+-->
             <fileset dir="${examples}">
 	        <include name="**/*.class"/>
 		<exclude name="Algorithms/MapView.class"/>
@@ -228,6 +229,16 @@
 	    </fileset>
 	    <fileset dir="${sources}/orbital/moon/logic"
 	        includes="SimpleCharStream.java, Token.java, TokenManager.java, TokenMgrError.java, ParseException.java, LogicParser.java, LogicParserTokenManager.java, LogicParserConstants.java"/>
+        </delete>
+    </target>
+
+    <target name="clean" depends="init, clean.nodoc"
+            description="remove all generated files">
+        <delete includeEmptyDirs="true" failonerror="false">
+            <fileset dir="${dist}"/>
+            <fileset dir="${doc.api.dest}"/>
+            <fileset dir="${doc.dest}"/>
+            <fileset dir="${reports.tests}"/>
         </delete>
     </target>
 
@@ -410,7 +421,7 @@
     </target>
 
 
-    <target name="jar" depends="init, clean, compile"
+    <target name="jar" depends="init, clean.nodoc, compile"
             description="build all dist/*.jar">
         <mkdir dir="${dist}"/>
         <mkdir dir="${dist}/lib"/>
@@ -607,11 +618,11 @@
 
 
 
-    <target name="dist" depends="init, fixCRLF, jar, run.tests, dist.notests"
+    <target name="dist" depends="init, clean, run.tests, dist.notests"
             description="create all distributions (=> ./dist/*.zip)">
     </target>
 
-    <target name="dist.notests" depends="init, fixCRLF, jar, compile.examples"
+    <target name="dist.notests" depends="init"
             description="create all distributions (=> ./dist/*.zip), but do not run tests">
         <antcall target="doc">
             <param name="javadoc.link.jdk" value="http://java.sun.com/products/jdk/1.4/docs/api/"/>
@@ -623,8 +634,8 @@
 
     <target name="dist.nodoc.notests" depends="init, fixCRLF, jar, compile.examples"
             description="create all distributions (=> ./dist/*.zip), but do not run tests">
-        <mkdir dir="${doc.dest}"/>
-        <mkdir dir="${doc.api.dest}"/>
+        <!-- <mkdir dir="${doc.dest}"/>
+        <mkdir dir="${doc.api.dest}"/> -->
 
         <mkdir dir="${dist}"/>
         <delete file="${dist}/ap_orbital_rt${version_brief}.zip"/>
