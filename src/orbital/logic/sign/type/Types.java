@@ -5,6 +5,7 @@
  */
 
 package orbital.logic.imp;
+import orbital.logic.imp.Type.Composite;
 
 import java.util.Comparator;
 import orbital.util.IncomparableException;
@@ -298,18 +299,6 @@ public final class Types {
     // base classes
     
     /**
-     * For composite types.
-     * Type constructs consisting of a type constructor and argument types implement this interface.
-     * 
-     * @structure is {@link orbital.logic.functor.Functor.Composite}&cap;{@link Type}
-     * @structure extends Functor.Composite
-     * @structure extends Type
-     * @version 1.1, 2002-11-24
-     * @author  Andr&eacute; Platzer
-     */
-    private static interface Composite extends Functor.Composite, Type {}
-
-    /**
      * The root object for type implementations.
      * @author Andr&eacute; Platzer
      * @version 1.1, 2002-09-11
@@ -424,7 +413,7 @@ public final class Types {
      * @author Andr&eacute; Platzer
      * @version 1.1, 2002-11-24
      */
-    private static abstract class AbstractCompositeType extends NonMapType implements Composite {
+    private static abstract class AbstractCompositeType extends NonMapType implements Type.Composite {
 	//private static final long serialVersionUID = 0;
 	// identical copy under @see orbital.logic.functor.Functor.Composite.Abstract
 	/**
@@ -447,10 +436,10 @@ public final class Types {
 		return c;
 	    }
 	    catch (InstantiationException ass) {
-		throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite newInstance(Functor.Composite,Object)").initCause(ass);
+		throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite construct(Object,Object)").initCause(ass);
 	    }
 	    catch (IllegalAccessException ass) {
-		throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite newInstance(Functor.Composite,Object)").initCause(ass);
+		throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite construct(Object,Object)").initCause(ass);
 	    }
 	}
 

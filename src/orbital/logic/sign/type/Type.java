@@ -114,4 +114,18 @@ public interface Type extends Comparable, Predicate {
      * @todod could perhaps also introduce Set extension(); if we really have a need for it.
      */
     boolean apply(Object x);
+
+    /**
+     * For composite types.
+     * Type constructs consisting of a type constructor and argument types implement this interface.
+     * 
+     * @structure is {@link orbital.logic.functor.Functor.Composite}&cap;{@link Type}
+     * @structure extends Functor.Composite
+     * @structure extends Type
+     * @version 1.1, 2002-11-24
+     * @author  Andr&eacute; Platzer
+     * @xxx change base class to orbital.logic.Composite
+     */
+    static interface Composite extends orbital.logic.functor.Functor.Composite, Type {}
+
 }// Type
