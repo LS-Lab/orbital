@@ -47,11 +47,12 @@ import orbital.logic.functor.Functor;
  *       <li><span class="set">D</span><sub class="type">(&sigma;)</sub> = <span class="set">D</span><sub class="type">&sigma;&rarr;&omicron;</sub> &cong; &weierp;(<span class="set">D</span><sub class="type">&sigma;</sub>)
  *         because the predicate type <span class="type">(&sigma;)</span> abbreviates the function type <span class="type">&sigma;&rarr;&omicron;</span>,
  *         and we can identify predicates &rho;&isin;&weierp;(<span class="set">D</span><sub class="type">&sigma;</sub>)
- *         with their <a href="Types.html#extension">extension</a> &delta;&rho; and those sets
+ *         with their <a href="../sign/type/Types.html#extension">extension</a> &delta;&rho; and those sets
  *         with their characterisitic functions &chi;<sub>&delta;&rho;</sub>&isin;Map(<span class="set">D</span><sub class="type">&sigma;</sub>,{True,False}).</li>
  *     </ul>
  *     Also we can identify (<span class="set">D</span><sup>0</sup>&rarr;<span class="set">D</span>)&cong;<span class="set">D</span>, as well as &weierp;(<span class="set">D</span><sup>0</sup>)={&empty;,{()}}&cong;{True,False}.
  *     <!-- @todo is this a good idea in conjunction with the strong type system of Java? -->
+ *     Interpretations are homomorphisms.
  *   </dd>
  *   <dt>homomorphism</dt>
  *   <dd>
@@ -67,10 +68,10 @@ import orbital.logic.functor.Functor;
  *         <td width="6%" rowspan="4">&nbsp;</td>
  *       </tr>
  *       <tr>
- *         <td>&phi;(<var class="meta">&upsilon;</var>(t))</td>
- *         <td>= &phi;(<var class="meta">&upsilon;</var>)<big>(</big>&phi;(t)<big>)</big></td>
- *         <td>for <var class="meta">&upsilon;</var>&isin;&Sigma;<sub class="type">&sigma;&rarr;&tau;</sub>, t&isin;<span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&le;&sigma;</sub></td>
- * <!-- @todo or <var class="meta">&upsilon;</var>&isin;<span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&sigma;&rarr;&tau;</sub>? -->
+ *         <td>&phi;(<var class="meta.disabled">&upsilon;</var>(t))</td>
+ *         <td>= &phi;(<var class="meta.disabled">&upsilon;</var>)<big>(</big>&phi;(t)<big>)</big></td>
+ *         <td>for <var class="meta.disabled">&upsilon;</var>&isin;&Sigma;<sub class="type">&sigma;&rarr;&tau;</sub>, t&isin;<span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&le;&sigma;</sub></td>
+ * <!-- @todo or <var class="meta.disabled">&upsilon;</var>&isin;<span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&sigma;&rarr;&tau;</sub>? -->
  *       </tr>
  *       <tr>
  *         <td colspan="3">Especially</td>
@@ -83,7 +84,7 @@ import orbital.logic.functor.Functor;
  *     </table>
  *   </dd>
  *   <dt>truth-functional</dt>
- *   <dd>
+ *   <dd class="UniversalMappingProperty">
  *     If for every interpretation I:&Sigma;&rarr;<span class="set">D</span> there is a unique continuation
  *     &phi;:<span class="UniversalAlgebra">T</span>(&Sigma;)&rarr;<span class="set">D</span>
  *     that is a homomorphism of &Sigma;-algebras, i.e.
@@ -91,6 +92,9 @@ import orbital.logic.functor.Functor;
  *     Then the logic is called truth-functional,
  *     and that unique homomorphism &phi; is called the (expression) evaluation or truth-function,
  *     which is again denoted by I.
+ *     <blockquote>
+ *     "Evaluations are the homomorphic continuation of symbol interpretations."
+ *     </blockquote>
  *     Note that the homomorphism conditions for &phi; include
  *     <div>
  *     &phi;(&not;P) = &not;&phi;(P),

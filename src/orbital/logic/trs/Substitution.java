@@ -85,11 +85,14 @@ import java.util.Collection;
  *   <tr>
  *     <td colspan="4" class="UniversalMappingProperty">
  *       <p>can be extended uniquely (UP) to a variable substitution &sigma;:Term(&Sigma;)&rarr;Term(&Sigma;)
- *       such that &sigma;|<sub>V</sub> = &sigma;<sub>0</sub>
+ *       such that &sigma;|<sub>V</sub> = &sigma;<sub>0</sub>.
  *       </p>
  *     </td>
  *   </tr>
  * </table>
+ *     <blockquote>
+ *     "Substitutions are the homomorphic continuation of variable substitutions."
+ *     </blockquote>
  * <dl class="def">
  * Let &sigma; be a substitution.
  *   <dt>variable renaming</dt>
