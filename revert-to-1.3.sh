@@ -5,15 +5,18 @@
 #  (c) 2002 Ute Platzer
 #
 
+# directories to be processed
+
+setenv DIRS src examples test
+
 if ($#argv == 0) then 
 echo ""
 echo ""
 echo " This script can revert orbital sources for java 1.4 to java 1.3 version."
 echo " To work, the following requirements must be fulfilled:"
 echo ""
-echo " 1. orbital sources must be in a subdirectory of the current directory" 
-echo "    calles j4-src/ (if j4-src does not exist, we assume that the sources"
-echo "	  are still in src/ and therefore the script moves src/ to j4-src/)"
+echo " 1. orbital sources must be in subdirectories of the current directory" 
+echo "    called $DIRS"
 echo "" 
 echo " 2. special modified java.util.logging sources must be in a directory"
 echo "	   called resources/java/util/logging"
@@ -36,23 +39,33 @@ echo ""
 exit(-1)
 endif
 
+
+
+foreach SOURCE ($DIRS)
+# $SOURCE is "where are the files to be converted"
+
+# where to put the "old" files during conversion
+# (the old files are moved, and the new, converted files are put
+#  into the tempdir)
+setenv $TEMPDIR j4-$SOURCE
+
 # remove old versions: 
-if ( -e j4-src ) then
+if ( -e $TEMPDIR ) then
   echo removing old src directory...
-  rm -rf src/
+  rm -rf $SOURCE
 else
-  echo moving sources to j4-src/
-  mv src/ j4-src
+  echo moving sources to $TEMPDIR
+  mv $SOURCE $TEMPIR
 endif
 
 # create the directory tree structure: 
 echo creating new src directory...
-mkdir src
+mkdir $SOURCE
 
-#of the orbital library
+# of the orbital library
 echo creating directory structure for orbital library...
-cd j4-src
-find -type d -exec mkdir ../src/\{\} \;
+cd $TEMPDIR
+find -type d -exec mkdir ../{$SOURCE}/\{\} \;
 
 
 # determine names of java files ot be modified and 
@@ -60,21 +73,22 @@ find -type d -exec mkdir ../src/\{\} \;
 # to make the modification and copying: 
 echo preparing to sed orbital source files...
 rm -f t
-find -name "*.java" -exec echo sed -f ../revert-to-1.3.sed \{\} \> ../src/\{\} >> t \;
+find -name "*.java" -exec echo sed -f ../revert-to-1.3.sed \{\} \> ../{$SOURCE}/\{\} >> t \;
 # execute the file: 
 echo making replacements... 
  source t
 
 #do the same for jdk1.4 files:
 
-#directory structure for necessary java source files
 cd ..
-mkdir src/orbital/util/logging
+if ($SOURCE == src) then 
+#directory structure for necessary java source files
+mkdir {$SOURCE}/orbital/util/logging
 
 echo preparing replacements for jkd1.4 sources...
 cd resources/java/util/logging
 rm -f t
-find -name "*.java" -exec echo sed -f ../../../../revert-to-1.3.sed \{\} \> ../../../../src/orbital/util/logging/\{\} >> t \;
+find -name "*.java" -exec echo sed -f ../../../../revert-to-1.3.sed \{\} \> ../../../../{$SOURCE}/orbital/util/logging/\{\} >> t \;
 # execute the file: 
 echo making replacements... 
 source t
@@ -85,23 +99,26 @@ cd ../../../../
 # remove aspects, which cannot be compiled:
 # (they are not needed)
 echo removing aspects...
-rm -rf src/orbital/moon/aspects/*
+rm -rf {$SOURCE}/orbital/moon/aspects/*
 # remove deprecated files:
 #first rescue used files
 echo rescuing deprecated-used...
-mv src/orbital/moon/deprecated/used/* src/orbital/
+mv {$SOURCE}/orbital/moon/deprecated/used/* {$SOURCE}/orbital/
 echo removing  deprecated...
-rm -rf src/orbital/moon/deprecated/*
+rm -rf {$SOURCE}/orbital/moon/deprecated/*
 
 # remove unwanted constructor call in InnerCheckedException: 
-sed -e 's/super(message, cause)/super(message)/' src/orbital/util/InnerCheckedException.java > t
-mv -f t src/orbital/util/InnerCheckedException.java
+sed -e 's/super(message, cause)/super(message)/' {$SOURCE}/orbital/util/InnerCheckedException.java > t
+mv -f t {$SOURCE}/orbital/util/InnerCheckedException.java
 
 # remove unwanted instantiation of InternalError: 
-sed -e 's/throw new InternalError(asserted)/throw new InternalError(asserted.toString())/' src/orbital/algorithm/evolutionary/Gene.java > t
-mv -f t src/orbital/algorithm/evolutionary/Gene.java
+sed -e 's/throw new InternalError(asserted)/throw new InternalError(asserted.toString())/' {$SOURCE}/orbital/algorithm/evolutionary/Gene.java > t
+mv -f t {$SOURCE}/orbital/algorithm/evolutionary/Gene.java
 
 # copy LogicParser.jj
-cp j4-src/orbital/moon/logic/LogicParser.jj src/orbital/moon/logic/
+cp {$TEMPDIR}/orbital/moon/logic/LogicParser.jj {$SOURCE}/orbital/moon/logic/
 
+endif
+
+end
 #
