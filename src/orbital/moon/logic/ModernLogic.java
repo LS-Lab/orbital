@@ -185,7 +185,10 @@ abstract class ModernLogic implements Logic {
 	    assert !Utility.containsIdenticalTo(B, null) : "empty string \"\" is not a formula, but only an empty set of formulas.";
 	    return B;
 	} catch (orbital.moon.logic.ParseException ex) {
-	    throw new ParseException(ex.getMessage() + "\nin expressions: " + expressions, ex.currentToken.next.beginLine, ex.currentToken.next.beginColumn, ex);
+	    throw new ParseException(ex.getMessage() + "\nIn expressions: " + expressions,
+				     ex.currentToken == null ? COMPLEX_ERROR_OFFSET : ex.currentToken.next.beginLine,
+				     ex.currentToken == null ? COMPLEX_ERROR_OFFSET : ex.currentToken.next.beginColumn,
+				     ex);
 	}                                                                                                                                      
     }
     public Expression createExpression(String expression) throws ParseException {
@@ -201,8 +204,10 @@ abstract class ModernLogic implements Logic {
 	    } else
 		return x;
 	} catch (orbital.moon.logic.ParseException ex) {
-	    //@todo use a more verbose exception than ParseException. One that knows about beginning and ending lines and columns, cause and id.
-	    throw new ParseException(ex.getMessage() + "\nin expression: " + expression, ex.currentToken == null ? COMPLEX_ERROR_OFFSET : ex.currentToken.next.beginLine, ex.currentToken == null ? COMPLEX_ERROR_OFFSET : ex.currentToken.next.beginColumn, ex);
+	    throw new ParseException(ex.getMessage() + "\nIn expression: " + expression,
+				     ex.currentToken == null ? COMPLEX_ERROR_OFFSET : ex.currentToken.next.beginLine,
+				     ex.currentToken == null ? COMPLEX_ERROR_OFFSET : ex.currentToken.next.beginColumn,
+				     ex);
 	} 
     }
     
