@@ -32,6 +32,11 @@ import orbital.algorithm.Combinatorical;
  * i.e. multivariate polynomials in the proper sense.
  * @version 1.1, 2002/08/21
  * @author  Andr&eacute; Platzer
+ * @todo introduce an instance the encodes monomials more efficiently
+ * as bit-encoded in a long integer: perhaps 10 bit for each variable,
+ * resulting in up to X^1024, and up to 64/10~=6 variables.  The
+ * coefficients can then be stored in a HashSet. Perhaps, also sparse
+ * tensors could be stored like that.
  */
 abstract class AbstractMultivariatePolynomial/*<R implements Arithmetic>*/ extends AbstractPolynomial/*<R,Vector<Integer>>*/ {
     private static final long serialVersionUID = -2237060189065872837L;
