@@ -98,9 +98,10 @@ public interface ExpressionBuilder {
      *  Either due to a lexical or grammatical error (also due to wrong type of arguments).
      * @throws TypeException if the arguments have the wrong type for
      * composition, i.e.
-     * &not;Types.isApplicableTo(compositor.getType(), arg).  Note
-     * that type errors are still a kind of syntactic errors, but can be
-     * separated from pure parse exceptions in order to simplify distinctions.
+     * &not;Types.isApplicableTo(compositor.getType(), arg). Note that
+     * type errors are still a kind of syntactic errors, but should be
+     * separated from pure parse exceptions in order to simplify
+     * distinction for exception handlers.
      * @internal this is a meta-operator. We could also choose a simpler compositor part orbital.logic.imp.Symbol but would then need an undefined language primitive "apply" for compose("apply",{f,a}) = f(a). So this formal trick soon looses its simplicity and thus is inferior to the approach of compositors in Term(&Sigma;) instead of just &Sigma;.
      * @internal understanding semiotic composition as functional apply is somewhat superior to understanding it as mathematical composition, since composition can in conjunction with lambda abstraction easily be expressed with application (also for higher arities whose composition is less canonical). Whereas mathematical composition would still need handling of the identification of void->t with t.
      * @internal understanding it as a combination of application and composition is always possible from a type theory point of view (apart from composing fg from g:X->{g} which is a kind of Russel paradoxon). However we chose to separate those (related but) distinct concepts.
