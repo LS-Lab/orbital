@@ -16,7 +16,7 @@ import orbital.logic.functor.Notation;
  * @author <a href="mailto:">Andr&eacute; Platzer</a>
  * @version 1.1, 2002-11-28
  */
-public class ExpressionSequence implements Expression.Composite {
+class ExpressionSequence implements Expression.Composite {
     //@xxx improve this dummy compositor
     private static final Object SEQUENCE = new Object();
     private final Expression expressions[];

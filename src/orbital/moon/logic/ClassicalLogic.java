@@ -1752,18 +1752,21 @@ public class ClassicalLogic extends ModernLogic {
     // convenience methods
     /**
      * speed up for internal parsing in TRS
+     * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience method</a>
      */
     private final Expression createAtomicIndividualVariable(String signifier) {
 	return createAtomic(new SymbolBase(signifier, Types.INDIVIDUAL, null, true));
     }
     /**
      * speed up for internal parsing in TRS
+     * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience method</a>
      */
     private final Expression createAtomicLiteralVariable(String signifier) {
 	return createAtomic(new SymbolBase(signifier, Types.TRUTH, null, true));
     }
     /**
      * speed up for internal parsing in TRS
+     * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience method</a>
      */
     private final Expression createAtomicLiteral(String signifier) {
 	return createAtomic(new SymbolBase(signifier, Types.TRUTH, null, false));
@@ -1784,6 +1787,7 @@ public class ClassicalLogic extends ModernLogic {
     /**
      * Convenience method.
      * @deprecated Use <code>(Formula) createExpression(expression)</code> instead.
+     * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience method</a>
      * @todo remove
      */
     public Formula createFormula(String expression) throws ParseException {
