@@ -305,9 +305,14 @@ public class GameView extends Applet {
     }
 
     /**
-     * Called when setting a new field
+     * Called when setting a new field.
+     * Notifies our gameboard about the new field that we want to be displayed.
+     * <p>
+     * You may hook to this method for re-registering any listeners, especially
+     * for cases at load time or when starting a new game.
+     * </p>
      */
-    private void setField(Field field) {
+    protected void setField(Field field) {
 	//System.out.println("GameView.setField(" + System.identityHashCode(field) + ")");
 	board.setField(field);
 	field.addFieldChangeListener(new FieldChangeAdapter() {
