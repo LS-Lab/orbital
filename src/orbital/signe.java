@@ -125,7 +125,7 @@ public final class signe extends Applet implements Runnable {
      * Contains the version information in Dewey Decimal syntax.
      * Thus it consists of positive decimal integers separated by periods ".".
      */
-    private static String		version = "1.0.6";
+    private static String		version = "@VERSION@";
 
     /**
      * Contains the default name for the <em>Orbital library service</em>.

@@ -1,3 +1,19 @@
+<!-- This file is an ANT build script. ANT is a Java based build tool.     -->
+<!-- It is availale from http://jakarta.apache.org/ant/                    -->
+
+
+<!--
+    Build file for building Orbital library.
+
+    This script should be started with the following command line :
+
+        ant [target]
+
+    Run "ant -projecthelp" or "ant targets" to get a list of available
+    targets. The default target is "compile".
+-->
+
+
 <!-- $Id$ -->
 <project name="Orbital" default="compile">
 
@@ -12,11 +28,14 @@
     targets. The default target is "compile".
     </description>
 
+    <property name="build.compiler" value="modern"/>
     <property name="build.sysclasspath" value="ignore"/>
 
     <target name="init">
         <tstamp>
-            <format property="timestamp" pattern="d MMM yyyy HH:mm"/>
+            <format property="timestamp" pattern="dd MMM yyyy HH:mm"/>
+            <format property="VERSION_DATE" pattern="MMMMM d'th,' yyyy"/>
+            <format property="TODAY" pattern="MM/dd/yyyy"/>
         </tstamp>
 
         <!-- basedir will be set to parent directory of this file -->
@@ -28,6 +47,26 @@
         <property name="dist" value="${basedir}/dist"/>
         <property name="bin" value="${basedir}/bin"/>
         <property name="resources" value="${basedir}/resources"/>
+        <property name="examples" value="${basedir}/examples"/>
+
+        <property name="tmp" value="${basedir}/tmp"/>
+
+        <property name="version" value="1.0.7"/>
+        <property name="version_brief" value="1.0"/>
+
+
+        <available property="checkstyle.present" resource="checkstyletask.properties"/>
+
+        <!-- allow user to override the following attributes without editing this
+             file, by creating a file 'build.properties' -->
+        <property file="build.properties"/>
+
+        <!-- default value, may be overwritten by 'build.properties',
+             has to be relative to basedir! -->
+        <property name="checkstyle.dir" value="src"/>
+	<!-- default value, may be overwritten by 'build.properties' -->
+	<property name="javadoc.link.jdk" value="http://java.sun.com/products/jdk/1.3/docs/api/"/>
+
 
         <path id="project.classpath">
             <pathelement location="${classes}"/>
@@ -35,50 +74,53 @@
                 <include name="**/*.jar"/>
                 <include name="**/*.zip"/>
             </fileset>
+            <pathelement location="${resources}"/>
         </path>
+
+        <mkdir dir="${tmp}"/>
     </target>
 
-    <target name="targets" description="print out target list">
-        <echo>
- 
-        Build file for building Orbital Project.
- 
-        This script should be started with the following command line :
- 
-            ant [target]
- 
-        These are the targets supported by this ANT build script,
-        the default target is "compile":
- 
-        targets   - print out this target list
-        all       - clean + fixCRLF + compile
-        compile   - compile *.java (=> ./classes)
-	parser    - compile *.jj
-        clean     - remove all *.class
-        clean.bak - remove all backup files *.bak, *~, .#*
-        fixCRLF   - fix DOS linefeeds (CRLF)
-        doc       - generate javadoc (=> ./doc/api/)
-	jjdoc	  - generate jjdoc (=> ./doc/api)
-        jar       - build dist/*.jar
-        env       - print out some properties for debugging build.xml
- 
-        </echo>
-    </target>
- 
     <target name="all" depends="init, clean, fixCRLF, compile, doc"
-            description="clean + fixCRLF + compile">
+            description="clean + fixCRLF + compile + doc">
     </target>
  
     <target name="compile" depends="init, parser"
             description="compile *.java (=> ./classes)">
         <mkdir dir="${classes}"/>
+        <mkdir dir="${sources}/t"/>
+
+        <!-- introduce version information -->
+        <copy file="${sources}/orbital/signe.java" todir="${sources}/t"/>
+        <replace file="${sources}/t/signe.java" token="@VERSION@" value="${version}"/>
  
         <javac srcdir="${sources}"
                destdir="${classes}"
                debug="on"
 	       source="1.4"
-	       excludes="orbital/moon/aspects/**,orbital/moon/deprecated/*">
+	       excludes="orbital/moon/aspects/**,orbital/moon/deprecated/*,orbital/*">
             <classpath refid="project.classpath"/>
+        </javac>
+
+        <!-- cleanup temporary files -->
+        <delete dir="${sources}/t"/>
+    </target>
+
+    <target name="compile.examples" depends="init"
+            description="compile examples/*.java (=> ./classes)">
+        <javac srcdir="${examples}"
+               debug="on"
+	       source="1.4">
+            <classpath>
+	        <pathelement location="${examples}/Algorithms"/>
+
+	        <!-- refid="project.classpath" -->
+                <pathelement location="${classes}"/>
+		<fileset dir="${lib}">
+                    <include name="**/*.jar"/>
+		    <include name="**/*.zip"/>
+                </fileset>
+		<pathelement location="${resources}"/>
+	    </classpath>
         </javac>
     </target>
 
@@ -98,6 +140,13 @@
                 <include name="**/*.class"/>
             </fileset>
             <fileset dir="${classes}"/>
+            <fileset dir="${examples}">
+	        <include name="**/*.class"/>
+		<exclude name="Algorithms/MapView.class"/>
+		<exclude name="Algorithms/util/*"/>
+	    </fileset>
+	    <fileset dir="${sources}/orbital/moon/logic"
+	        includes="SimpleCharStream.java, Token.java, TokenManager.java, TokenMgrError.java, ParseException.java, MathParser.java, MathParserTokenManager.java, MathParserConstants.java, LogicParser.java, LogicParserTokenManager.java, LogicParserConstants.java"/>
         </delete>
     </target>
 
@@ -105,6 +154,11 @@
             description="remove all backup files *.bak, *~, .#*">
         <delete>
             <fileset dir="${sources}/" defaultexcludes="no">
+                <include name="**/*.bak"/>
+                <include name="**/*~"/>
+                <include name="**/.#*"/>
+            </fileset>
+            <fileset dir="${examples}/" defaultexcludes="no">
                 <include name="**/*.bak"/>
                 <include name="**/*~"/>
                 <include name="**/.#*"/>
@@ -145,10 +199,10 @@
 		 overview="${doc}/overview.html"
                  packagenames="orbital.*"
 		 excludepackagenames="orbital,orbital.robotic.strategy,orbital.util.graph,orbital.moon.aspects,orbital.moon.deprecated"
-                 Protected="true">
+                 Private="${doc.internal}">
             <bottom><![CDATA[<span style='font-size: smaller; font-style: italic;'>Copyright &copy; 1996-2002 Andr&eacute; Platzer<br />All Rights Reserved.</span>]]></bottom>
 	    <link href="file:///D:/Sprachen/java/docs/api"/>
-            <!-- todo for dist. link href="http://java.sun.com/products/jdk/1.3/docs/api/"/ -->
+            <!-- @todo for dist. link href="${javadoc.link.jdk}"/ -->
 	    <group title="Core Packages" packages="orbital.logic*:orbital.math:orbital.math*:orbital.util"/>
 	    <group title="Extension Packages" packages="orbital.algorithm*:orbital.awt*:orbital.game:orbital.io:orbital.robotic"/>
 	    <group title="Implementation Packages" packages="orbital.io.encoding:orbital.io.parsing:orbital.text:orbital.net:orbital.net.mail:orbital.moon*"/>
@@ -186,31 +240,225 @@
 	</exec>
     </target>
 
-
-    <target name="jar" depends="init, clean, compile"
-            description="build dist/*.jar">
-        <mkdir dir="${dist}"/>
-        <delete includeEmptyDirs="true">
-            <fileset dir="${dist}/"/>
-        </delete>
-        <mkdir dir="${dist}"/>
- 
-        <jar jarfile="${dist}/orbital.jar">
-            <fileset dir="${classes}"
-                includes="**/*.class"/>
-        </jar>
+    <target name="doc.internal" depends="init"
+            description="generate internal javadoc with all classes and members, incl. private (=> ./doc/api/)">
+        <antcall target="doc">
+            <param name="doc.internal" value="true"/>
+        </antcall>
     </target>
 
-    <target name="env" depends="init"> <!-- for debugging -->
+    <target name="checkstyle.available" depends="init"
+            unless="checkstyle.present">
+        <echo message="Checkstyle http://checkstyle.sourceforge.net/ not (correctly) installed!"/>
+    </target>
+
+    <target name="checkstyle" depends="init, checkstyle.available"
+            if="checkstyle.present"
+            description="generate Checkstyle (http://checkstyle.sourceforge.net/) report (=> ./checkstyle_errors.txt, ./checkstyle_errors.xml)" >
+        <taskdef resource="checkstyletask.properties"/>
+
+        <!-- by default checkstyle supports the Sun coding standard. -->
+        <checkstyle lcurlyMethod="nlow"
+                    lcurlyOther="nlow"
+                    lcurlyType="nlow"
+                    allowProtected="true"
+                    allowPackage="true"
+                    checkUnusedThrows="true"
+                    maxMethodLen="500"
+                    maxConstructorLen="500">
+            <fileset dir="${basedir}/${checkstyle.dir}" includes="**/*.java"/>
+            <formatter type="plain"/>
+            <formatter type="plain" toFile="${basedir}/checkstyle_errors.txt"/>
+            <formatter type="xml" toFile="${basedir}/checkstyle_errors.xml"/>
+        </checkstyle>
+    </target>
+
+
+    <target name="jar" depends="init, clean, compile"
+            description="build all dist/*.jar">
+        <mkdir dir="${dist}"/>
+        <mkdir dir="${dist}/lib"/>
+        <delete file="${dist}/lib/orbital-core.jar"/>
+        <delete file="${dist}/lib/orbital-ext.jar"/>
+
+	<manifest file="${tmp}/MANIFEST-core.MF">
+            <attribute name="Built-By" value="${user.name}"/>
+	    <attribute name="Extension-Name" value="orbital-core"/>
+            <attribute name="Specification-Title" value="Orbital library draft" />
+            <attribute name="Specification-Vendor" value="Andre Platzer" />
+            <attribute name="Specification-Version" value="${version}" />
+            <attribute name="Implementation-Title" value="The Orbital library core" />
+            <attribute name="Implementation-Vendor" value="Andre Platzer" />
+            <attribute name="Implementation-Vendor-Id" value="orbital.moon.ap" />
+            <attribute name="Implementation-Version" value="${version} ${TODAY}" /> 
+            <attribute name="Package-Title" value="orbital-core" />
+            <attribute name="Package-Vendor" value="Andre Platzer" />
+            <attribute name="Package-Version" value="${version} ${TODAY}" /> 
+            <attribute name="Sealed" value="true"/>
+        </manifest>
+
+        <jar destfile="${dist}/lib/orbital-core.jar"
+	     manifest="${tmp}/Manifest-core.mf">
+            <fileset dir="${classes}">
+                <include name="orbital/logic/**/*.class"/>
+                <include name="orbital/math/**/*.class"/>
+                <include name="orbital/util/**/*.class"/>
+                <include name="orbital/*.class"/>
+            </fileset>
+        </jar>
+
+	<manifest file="${tmp}/MANIFEST-ext.MF">
+            <attribute name="Built-By" value="${user.name}"/>
+	    <attribute name="Extension-Name" value="orbital-ext"/>
+            <attribute name="Specification-Title" value="Orbital library draft" />
+            <attribute name="Specification-Vendor" value="Andre Platzer" />
+            <attribute name="Specification-Version" value="${version}" />
+            <attribute name="Implementation-Title" value="The Orbital library extension" />
+            <attribute name="Implementation-Vendor" value="Andre Platzer" />
+            <attribute name="Implementation-Vendor-Id" value="orbital.moon.ap" />
+            <attribute name="Implementation-Version" value="${version} ${TODAY}" /> 
+            <attribute name="Package-Title" value="orbital-ext" />
+            <attribute name="Package-Vendor" value="Andre Platzer" />
+            <attribute name="Package-Version" value="${version} ${TODAY}" /> 
+	    <attribute name="Class-Path" value="orbital-core.jar" />
+            <attribute name="Sealed" value="true"/>
+	    <attribute name="Main-Class" value="orbital.moon.setup"/>
+	    <attribute name="Main-Icon" value="orbital/resources/orbital.gif"/>
+
+	    <section name="orbital/awt/ChartModel.class">
+	        <attribute name="Java-Bean" value="True"/>
+	    </section>
+	    <section name="orbital/awt/NumberInput.class">
+	        <attribute name="Java-Bean" value="True"/>
+	    </section>
+	    <section name="orbital/awt/Plot2D.class">
+	        <attribute name="Java-Bean" value="True"/>
+	    </section>
+	    <section name="orbital/awt/virtual/v_Canvas.class">
+	        <attribute name="Java-Bean" value="True"/>
+	    </section>
+	    <section name="orbital/awt/virtual/v_View.class">
+	        <attribute name="Java-Bean" value="True"/>
+	    </section>
+	    <section name="orbital/algorithm/evolutionary/GeneticAlgorithm.class">
+	        <attribute name="Java-Bean" value="True"/>
+	    </section>
+	    <section name="orbital/algorithm/evolutionary/Population.class">
+	        <attribute name="Java-Bean" value="True"/>
+	    </section>
+	    <!-- section name="orbital/algorithm/evolutionary/Chromosome.class">
+	        <attribute name="Java-Bean" value="True"/>
+	    </section -->
+        </manifest>
+
+        <jar destfile="${dist}/lib/orbital-ext.jar"
+	     manifest="${tmp}/Manifest-ext.mf">
+            <fileset dir="${classes}">
+                <include name="orbital/algorithm/**/*.class"/>
+                <include name="orbital/awt/**/*.class"/>
+                <include name="orbital/game/**/*.class"/>
+                <include name="orbital/io/**/*.class"/>
+                <include name="orbital/robotic/*.class"/>
+                <include name="orbital/moon/**/*.class"/>
+                <include name="orbital/text/**/*.class"/>
+            </fileset>
+            <fileset dir="${sources}">
+                <include name="orbital/awt/*.gif"/>
+            </fileset>
+            <fileset dir="${resources}">
+            </fileset>
+            <fileset dir="${sources}/orbital/meta-inf/services">
+            </fileset>
+        </jar>
+
+	<input message="Enter Passphrase for keystore: "
+	    addproperty="pass"/>
+	<signjar jar="${dist}/lib/orbital-core.jar" alias="Andre" storepass="${pass}"/>
+	<signjar jar="${dist}/lib/orbital-ext.jar" alias="Andre" storepass="${pass}"/>
+
+	<touch datetime="${TODAY} 1:00 am">
+	    <fileset dir="${dist}/lib">
+	        <include name="*.jar"/>
+	    </fileset>
+	</touch>
+
+	<delete file="${tmp}/Manifest-core.mf"/>
+	<delete file="${tmp}/Manifest-ext.mf"/>
+    </target>
+
+
+
+    <target name="dist" depends="init, jar, compile.examples"
+            description="create all distributions (=> ./dist/*.zip)">
+        <mkdir dir="${dist}"/>
+        <delete file="${dist}/ap_orbital_rt${version_brief}.zip"/>
+        <delete file="${dist}/ap_orbital_doc${version_brief}.zip"/>
+
+        <!-- generate version date into readme -->
+        <copy file="${doc}/readme.html" todir="${dist}"/>
+        <replace file="${dist}/readme.html" token="@VERSION_DATE@" value="${VERSION_DATE}"/>
+
+        <!-- make zip-file -->
+        <zip destfile="${dist}/ap_orbital_rt${version_brief}.zip">
+            <zipfileset dir="${basedir}" includes="COPYRIGHT.*" prefix="Orbital"/>
+            <zipfileset dir="${doc}" prefix="Orbital">
+	        <include name="license.txt"/>
+	        <include name="orbital.gif"/>
+	        <include name="overview.html"/>
+	    </zipfileset>
+            <zipfileset dir="${dist}" prefix="Orbital">
+	        <include name="readme.html"/>
+	    </zipfileset>
+            <zipfileset dir="${lib}" prefix="Orbital/lib">
+                <include name="**/*.jar"/>
+                <include name="**/*.zip"/>
+            </zipfileset>
+            <zipfileset dir="${dist}" includes="lib/*.jar" prefix="Orbital"/>
+            <zipfileset dir="${bin}" prefix="Orbital/bin">
+	        <include name="**/*.bat"/>
+	        <include name="**/*.sh"/>
+	        <include name="**/*.html"/>
+	        <include name="policy.all"/>
+	    </zipfileset>
+        </zip>
+
+        <zip destfile="${dist}/ap_orbital_doc${version_brief}.zip">
+            <zipfileset dir="${basedir}" includes="COPYRIGHT.*" prefix="Orbital"/>
+            <zipfileset dir="${doc}" prefix="Orbital">
+	        <include name="license.txt"/>
+	        <include name="changes.txt"/>
+	        <include name="orbital.gif"/>
+	        <include name="orbital.ico"/>
+	        <include name="recommendations.html"/>
+	    </zipfileset>
+            <zipfileset dir="${dist}" prefix="Orbital">
+	        <include name="readme.html"/>
+	    </zipfileset>
+            <zipfileset dir="${doc}/api" prefix="Orbital/api"/>
+            <zipfileset dir="${examples}" prefix="Orbital/examples">
+	        <exclude name="**/CVS/*"/>
+		<exclude name="Algorithms/RubicsCube.patterndb"/>
+		<exclude name="ReCompileAll.bat"/>
+	    </zipfileset>
+        </zip>
+
+        <!-- cleanup temporary files -->
+        <delete file="${dist}/readme.html"/>
+    </target>
+
+
+    <target name="env" depends="init"
+        description="print out some properties for debugging build.xml">
         <echo>
 
-        basedir=${basedir}
-        sources=${sources}
-        classes=${classes}
-        lib=${lib}
-        doc=${doc}
-        dist=${dist}
-        resources=${resources}
+        basedir   = ${basedir}
+        sources   = ${sources}
+        lib       = ${lib}
+        resources = ${resources}
+        doc       = ${doc}
+        examples  = ${examples}
+        classes   = ${classes}
+        dist      = ${dist}
 
         </echo>
     </target>
