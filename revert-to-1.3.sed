@@ -7,6 +7,8 @@ s-throw new java.lang.AssertionError-throw new InternalError-g
 s-throws AssertionError- -g
 #s-new FileHandler[^;]*;-new StreamHandler();-g
 s-IdentityHashMap-HashMap-g
+s-LinkedHashMap-HashMap-g
+s-LinkedHashSet-HashSet-g
 s-java.util.logging-orbital.util.logging-g
 # replacements required by jikes (cannot handle unicode):
 s-×-x-g
