@@ -25,12 +25,12 @@ public interface ClausalSet extends Set/*_<Clause>_*/ {
     /**
      * The contradictory <em>singleton</em> set of clauses {&#9633;}.
      */
-    static final ClausalSet CONTRADICTION_SINGLETON_SET = new ClausalSetImpl(Collections.singleton(Clause.CONTRADICTION));
+    static final ClausalSet CONTRADICTION_SINGLETON_SET = ResolutionBase.getClausalFactory().createClausalSet(Collections.singleton(Clause.CONTRADICTION));
 
     /**
      * The tautological <em>singleton</em> set of clauses {}.
      */
-    static final ClausalSet TAUTOLOGY_SINGLETON_SET = new ClausalSetImpl(Collections.EMPTY_SET);
+    static final ClausalSet TAUTOLOGY_SINGLETON_SET = ResolutionBase.getClausalFactory().createClausalSet(Collections.EMPTY_SET);
 
     //@todo introduce method for fast indexed lookup of complementary top-level(c'est assez) symbols
 
@@ -42,7 +42,7 @@ public interface ClausalSet extends Set/*_<Clause>_*/ {
      */
     public boolean removeAllSubsumedBy(ClausalSet T);
 
-    // lookuo methods
+    // lookup methods
 
     /**
      * Get (an iterator over) all clauses contained in this set that
@@ -52,6 +52,8 @@ public interface ClausalSet extends Set/*_<Clause>_*/ {
      * may use indexing to estimate the clauses to return very
      * quickly.</p>
      * @postconditions RES&sube;this
+     *  &and; RES &supe; {D&isin;this &brvbar; &exist;L&isin;C &exist;K&isin;D &exist;mgU{L,~K}}
+     * @todo 14 rename to getProbableUnifiables(Clause C) and leave negation to our caller (more systematic)?
      */
     Iterator/*_<Clause>_*/ getProbableComplementsOf(Clause C);
 
