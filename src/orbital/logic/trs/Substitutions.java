@@ -1,7 +1,7 @@
 /**
  * @(#)Substitutions.java 0.9 2001/06/20 Andre Platzer
  *
- * Copyright (c) 2001 Andre Platzer. All Rights Reserved.
+ * Copyright (c) 2001-2004 Andre Platzer. All Rights Reserved.
  */
 
 package orbital.logic.trs;
@@ -110,7 +110,7 @@ public class Substitutions {
      * The absurd substitution for nonunifiable objects.
      */
     private static final Substitution NONUNIFIABLE = null;
-    
+
 
     // facade factory
 	
@@ -655,10 +655,13 @@ public class Substitutions {
 	
     /**
      * Checks whether x is a variable.
+     * @postconditions RES = x instanceof Variable && ((Variable)x).isVariable()
+     * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience method</a>
+     * @see Variable#isVariable()
      * @xxx find a far better definition? ClassicalLogic atomics can be variables, as well!
      *  Whilst 'true' and 'false' are not.
      */
-    private static final boolean isVariable(Object x) {
+    public static final boolean isVariable(Object x) {
 	return (x instanceof Variable) && ((Variable) x).isVariable();
     }
 
