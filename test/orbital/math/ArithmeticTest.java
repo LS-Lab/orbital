@@ -147,10 +147,40 @@ public class ArithmeticTest extends check.TestCase {
 	assertOp(x, y, Operations.power, xpowery);
     }
     private final void assertOp(Arithmetic x, Arithmetic y, BinaryFunction op, Arithmetic expected) {
-	assertTrue("("+ x + ") " + op + " (" + y + ") = " + op.apply(x, y) + " = " + expected, ((Arithmetic)op.apply(x,y)).equals(expected, tolerance));
+	Arithmetic found = (Arithmetic)op.apply(x,y);
+	assertTrue("("+ x + ") " + op + " (" + y + ") = " + found + " = " + expected, found.equals(expected, tolerance));
+	if (op == Operations.plus) {
+	    found = x.add(y);
+	} else if (op == Operations.plus) {
+	    found = x.add(y);
+	} else if (op == Operations.subtract) {
+	    found = x.subtract(y);
+	} else if (op == Operations.times) {
+	    found = x.times(y);
+	} else if (op == Operations.divide) {
+	    found = x.divide(y);
+	} else if (op == Operations.power) {
+	    found = x.power(y);
+	} else if (op == Operations.divide) {
+	    found = x.divide(y);
+	} else {
+	    // skip secondary test below
+	    return;
+	}
+	assertTrue("("+ x + ") " + op + " (" + y + ") = " + found + " = " + expected, found.equals(expected, tolerance));
     }
     private final void assertOp(Arithmetic x, Function op, Arithmetic expected) {
-	assertTrue(op + "("+ x + ") " + " = " + op.apply(x) + " = " + expected, ((Arithmetic)op.apply(x)).equals(expected, tolerance));
+	Arithmetic found = (Arithmetic)op.apply(x);
+	assertTrue(op + "("+ x + ") " + " = " + found + " = " + expected, found.equals(expected, tolerance));
+	if (op == Operations.inverse) {
+	    found = x.inverse();
+	} else if (op == Operations.minus) {
+	    found = x.minus();
+	} else {
+	    // skip secondary test below
+	    return;
+	}
+	assertTrue(op + "("+ x + ") " + " = " + found + " = " + expected, found.equals(expected, tolerance));
     }
     /**
      * Test usual laws with two arithmetic objects.
