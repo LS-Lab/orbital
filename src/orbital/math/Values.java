@@ -25,13 +25,13 @@ import orbital.logic.functor.Function;
  *     <th>Property Value</th>
  *   </tr>
  *   <tr>
- *     <td><tt>orbital.math.ValueFactory.implementation</tt></td>
- *     <td>class name of the ValueFactory implementation used for creating values and thus returned by {@link Values#getInstance()}.</td>
+ *     <td><tt>orbital.math.Values.implementation</tt></td>
+ *     <td>class name of the ValuesFactory implementation used for creating values and thus returned by {@link Values#getInstance()}.</td>
  *   </tr>
  *   <tr>
- *     <td><tt>orbital.math.ValueFactory.default</tt></td>
+ *     <td><tt>orbital.math.Values.default</tt></td>
  *     <td>class name of the initial default ValueFactory instance returned by {@link Values#getDefault()}.
- *       If not set defaults to value of <tt>orbital.math.ValueFactory.implementation</tt>.
+ *       If not set defaults to value of <tt>orbital.math.Values.implementation</tt>.
  *     </td>
  *   </tr>
  * </table>
