@@ -1,0 +1,39 @@
+#
+# a modal Hilbert calculus on modal logic (based on =>,~ which is a complete operator system)
+# @attribute sound
+# @attribute complete
+# @attribute positive
+# @attribute deductive
+#
+# Inference Rules
+#
+|- A=>(B=>A)				# Ax1 weakening
+##|- (A=>(B=>C)) => ((A=>B)=>(A=>C))	# Ax2 distributive
+##|- (~A=>B)=>(B=>A)			# Ax3 contra positive
+|- [](A->B)->([]A->[]B)
+##|- []A->A					# in System T
+|- []A->[][]A				# in System S4
+|- <>A->[]<>A				# in System S5
+A, A=>B |- B				# Mp modus (ponendo) ponens
+A |- []A					# necessitation "Gödelregel" due to definition of |= A
+
+
+# additional
+[]A == ~<>~A
+<>A == ~[]~A
+|= ([]A|[]B) -> [](A|B)
+|= <>(A&B) -> (<>A&<>B)
+# "<->" [](A&B) <-> ([]A&[]B)
+#   "->"
+|= [](A&B) -> ([]A&[]B)
+#   "<-"
+|= ([]A&[]B) -> [](A&B)
+# "<->" <>(A|B) <-> (<>A|<>B)
+#   "->"
+|= <>(A|B) <- (<>A|<>B)
+#   "<-"
+|= (<>A|<>B) -> <>(A|B)
+
+# combined results already proven above, individually as "->" and "<-"
+|= [](A&B) <-> ([]A&[]B)
+|= <>(A|B) <-> (<>A|<>B)

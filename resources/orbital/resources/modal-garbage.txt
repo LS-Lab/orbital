@@ -1,0 +1,2 @@
+|= [](A|B) -> ([]A|[]B)		# not even S5
+|= (<>A&<>B) -> (<>A&<>B)	# not even S5
