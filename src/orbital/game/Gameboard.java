@@ -111,6 +111,7 @@ public class Gameboard extends Canvas implements ImageObserver, Serializable {
     } 
 
     /**
+     * @internal we only need this for backward compatibility issues.
      * @serial
      */
     private final PropertyChangeSupport propertyChangeListeners = new PropertyChangeSupport(this);
