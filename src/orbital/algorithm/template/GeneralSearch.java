@@ -385,7 +385,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
 		    Object/*>S<*/ sp = t.next();
 		    assert !t.hasNext() : "@post states(...) has length 1";
 		    g.set(sp,
-			  accumulatedCost.add(Values.getDefaultInstance().valueOf(((Transition)problem.transition(a,state,sp)).getCost())));
+			  accumulatedCost.add(((Transition)problem.transition(a,state,sp)).getCost()));
 		    return sp;
 		}
 		public void remove() {

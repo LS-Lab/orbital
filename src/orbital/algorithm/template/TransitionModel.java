@@ -7,6 +7,7 @@
 package orbital.algorithm.template;
 
 import java.util.Iterator;
+import orbital.math.Scalar;
 
 /**
  * Represents a transition model.
@@ -59,6 +60,7 @@ import java.util.Iterator;
  *        Stochastic transitions provide the most general case of these types of transitions.
  *        <div>&tau;(a)(s,s&#697;) := <b>P</b>(s&#697;|s,a)</div>
  *      </li>
+ *      <!ll @todo what about complex transitions with "Wahrscheinlichkeitsamplitude" z&isin;<b>C</b> and probability |z|^2 -->
  *    </ul>
  *    As a notation for a transition from s&isin;S to s&#697;&isin;S under the
  *    action a&isin;A(s) with transition probability p&isin;[0,1] we sometimes use
@@ -82,7 +84,7 @@ import java.util.Iterator;
  * <p>
  * Note that you can as well use this interface in its raw version (i.e. without instantiating
  * template parameters) for mere non-deterministic transitions without stochastic information
- * by ignoring the type-restriction of {@link TransitionModel.ProbabilisticTransition} to {@link #transition(Object,Object,Object)}.
+ * by ignoring the type-restriction of {@link TransitionModel.Transition} to {@link #transition(Object,Object,Object)}.
  * </p>
  *
  * @version 1.0, 2002/05/30
@@ -93,7 +95,7 @@ import java.util.Iterator;
  * @xxx didn't we model the case of a non-deterministic transition function with type O, and the special case of O=Option being the combined function of stochastic transtition probabilities?
  * @todo improve and generalize TransitionModel (which might also be applicable in the implementation of SimulatedAnnealing)
  */
-public interface TransitionModel/*<A,S, M extends ProbabilisticTransition>*/ {
+public interface TransitionModel/*<A,S, M extends Transition>*/ {
     /**
      * Checks two transition models for equality (optional).
      * <p>
@@ -199,22 +201,22 @@ public interface TransitionModel/*<A,S, M extends ProbabilisticTransition>*/ {
      * <div style="text-align: center"> <img src="doc-files/transition_notation.png" /> </div>
      * </p>
      * <p>
-     * In the usual case, implementations can assume that action stems from {@link #actions(Object)},
+     * In usual cases, implementations can assume that action stems from some call to {@link #actions(Object)},
      * and statep is obtained from {@link #states(Object,Object)}.
      * </p>
      * @param action the action a&isin;A(s) that must be applicable in state s&isin;S.
-     * @param state the state s&isin;S.
-     * @param statep the state s&#697;&isin;S.
+     * @param state the source state s&isin;S prior to the transition.
+     * @param statep the resulting state s&#697;&isin;S after the transition took place.
      * @pre s,s&#697;&isin;S &and; a&isin;A(s)
      * @return &tau;(a)(s,s&#697;) which is the probability <b>P</b>(s&#697;|s,a)
      *  of reaching state s&#697;&isin;S when performing action a&isin;A(s) in the state s&isin;S.
-     *  Usually represented as a {@link TransitionModel.ProbabilisticTransition transition}
+     *  Usually represented as a {@link TransitionModel.Transition transition}
      *  which may contain additional information.
      * @post RES=&tau;(a)(s,s&#697;)&isin;[0,1] (more precisely RES.getProbability()=&tau;(a)(s,s&#697;)) &and; &sum;<sub>s&#697;&isin;S</sub> &tau;(a)(s,s&#697;) = 1
      * @throws InapplicableActionException if a&notin;A(s) is not applicable in state s.
      * @internal alternative we could also extend Function<A,BinaryFunction<S,S>> if the corresponding apply(a) method did not have to create new BinaryFunctions for every call or loose the property of being stateless when caching.
      */
-    ProbabilisticTransition/*>M<*/ transition(Object/*>A<*/ action, Object/*>S<*/ state, Object/*>S<*/ statep);
+    Transition/*>M<*/ transition(Object/*>A<*/ action, Object/*>S<*/ state, Object/*>S<*/ statep);
 
     /**
      * Represents (information about) a transition option during a transition model.
@@ -225,11 +227,12 @@ public interface TransitionModel/*<A,S, M extends ProbabilisticTransition>*/ {
      * However, it may contain any additional information about the transition.
      * </p>
      * @stereotype &laquo;Structure&raquo;
-     * @todo should we always bookkeep the state and action that took us to s´ as well as s´? No.
+     * @internal should we always bookkeep the state and action that took us to s´ as well as s´? No.
      * @version 1.0, 2002/05/30
      * @author  Andr&eacute; Platzer
+     * @todo rename to Transition?
      */
-    static interface ProbabilisticTransition extends Comparable {
+    static interface Transition extends Comparable {
 	/**
 	 * Checks for equality.
 	 * <!-- Implementations will at least check for equal states, but ignore
@@ -248,7 +251,7 @@ public interface TransitionModel/*<A,S, M extends ProbabilisticTransition>*/ {
 	 * probabilities.  Deterministic cases, however, may prefer
 	 * comparisons involving cost or accumulated cost. Those
 	 * comparisons can also be combined. In any case,
-	 * implementations are not required to use a specific order.
+	 * implementations are not required to use any specific order.
 	 */
 	int compareTo(Object o);
 
@@ -256,6 +259,6 @@ public interface TransitionModel/*<A,S, M extends ProbabilisticTransition>*/ {
 	 * Get the transition probability.
 	 * @return the transition probability p&isin;[0,1] of taking this transition.
 	 */
-	double getProbability();
+	Scalar getProbability();
     }
 }

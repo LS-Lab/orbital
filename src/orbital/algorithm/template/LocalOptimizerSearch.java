@@ -318,7 +318,7 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
 	    final Object/*>A<*/ a = actions.get(algorithm.getRandom().nextInt(actions.size()));
 	    final Object/*>S<*/ sp = problem.states(a, state).next();
 
-	    final Real spAccumulatedCost = accumulatedCost.add(Values.getDefaultInstance().valueOf(((Transition)problem.transition(a,state,sp)).getCost()));
+	    final Real spAccumulatedCost = accumulatedCost.add(((Transition)problem.transition(a,state,sp)).getCost());
 	    g.set(sp, spAccumulatedCost);
 
 	    if (accept(state, sp)) {

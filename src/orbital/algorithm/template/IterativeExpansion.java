@@ -64,6 +64,7 @@ public class IterativeExpansion extends GeneralSearch implements EvaluativeAlgor
      */
     public IterativeExpansion(Function heuristic) {
     	setHeuristic(heuristic);
+	System.err.println(">>> @FIXME this implementation of " + getClass() + " still has errors");
     }
 
     public Function getHeuristic() {
@@ -121,7 +122,7 @@ public class IterativeExpansion extends GeneralSearch implements EvaluativeAlgor
     }
 
     /**
-     * @return a Pair of solution state and new cost of node.
+     * @return a Pair&lt;S,Real&gt; of solution state and new cost of node.
      * @internal we do not need to set the f-cost, but only tell our caller the new f-cost for updating successors.
      * @todo optimizable by far, also modularize to an OptionIterator?
      * @todo optimize (the performance is embarrassing)
@@ -129,9 +130,9 @@ public class IterativeExpansion extends GeneralSearch implements EvaluativeAlgor
     private final Pair/*<S,Real>*/ solveByIterativeExpand(Object/*>S<*/ node, Real bound) {
 	assert bound.compareTo(Values.ZERO) >= 0 && !bound.isNaN() : "bound " + bound + " >= 0";
 	Real cost = (Real) getEvaluation().apply(node);
-	//System.err.println(node + ",\t" + cost + "/" + bound);
+	System.err.println(node + ",\t" + cost + "/" + bound);
 	if (cost.compareTo(bound) > 0)
-	    {//System.err.println("cut");
+	    {System.err.println("cut");
 	    return new Pair(null, cost);}
 	else if (getProblem().isSolution(node))
 	    return new Pair(node, cost);
@@ -139,9 +140,9 @@ public class IterativeExpansion extends GeneralSearch implements EvaluativeAlgor
 	// here, we currently use a (sorted) list of KeyValuePairs with the key that is used for ordering being the f-cost
 	List/*_<KeyValuePair>_*/ successors = new LinkedList();
 	{
-	    Function f = getEvaluation();
+	    final Function f = getEvaluation();
 	    for (Iterator i = GeneralSearch.expand(getProblem(), node); i.hasNext(); ) {
-		Object o = i.next();
+		final Object o = i.next();
 		successors.add(new KeyValuePair(f.apply(o), o));
 	    }
 	}
@@ -155,19 +156,19 @@ public class IterativeExpansion extends GeneralSearch implements EvaluativeAlgor
 	    final Object/*>S<*/ best = bestPair.getValue();
 	    assert !Setops.some(successors, new orbital.logic.functor.Predicate() { public boolean apply(Object o) {return ((Comparable)((KeyValuePair)o).getKey()).compareTo(bestPair.getKey()) < 0;} }) : "best has lowest f-cost";
 	    final Real newbound = (Real) Operations.min.apply(bound, (Real)((KeyValuePair)successors.get(1)).getKey());
-	    //System.err.println(node + ",\t" + cost + "/" + bound + "\t expanding to " + best + ",\t" + bestPair.getKey() + "/" + newbound + "\n\t\talternative " + ((KeyValuePair)successors.get(1)).getValue() + ", " + ((KeyValuePair)successors.get(1)).getKey());
+	    System.err.println(node + ",\t" + cost + "/" + bound + "\t expanding to " + best + ",\t" + bestPair.getKey() + "/" + newbound + "\n\t\talternative " + ((KeyValuePair)successors.get(1)).getValue() + ", " + ((KeyValuePair)successors.get(1)).getKey());
 	    final Pair solutionAndCostUpdate = solveByIterativeExpand(best, newbound);
 	    final Object/*>S<*/ solution = solutionAndCostUpdate.A;
 	    if (solution != null)
 		return new Pair(solution, cost);
 	    // circumscription of getEvaluation().set(best, its new cost (from recursive call));
-	    //System.err.println(best + ",\t" + solutionAndCostUpdate.B + "/" + newbound + "\treally updated cost to " + solutionAndCostUpdate.B);
+	    System.err.println(best + ",\t" + solutionAndCostUpdate.B + "/" + newbound + "\treally updated cost to " + solutionAndCostUpdate.B);
 	    successors.remove(0);
 	    Setops.insert(successors, new KeyValuePair(solutionAndCostUpdate.B, best));
 	    assert orbital.util.Utility.sorted(successors, null) : "@post Setops.insert";
-	    //System.err.print(node + ",\t" + cost + "/" + bound);
+	    System.err.print(node + ",\t" + cost + "/" + bound);
 	    cost = (Real) ((KeyValuePair)successors.get(0)).getKey();
-	    //System.err.println("\tupdated cost to " + cost + " (due to " + ((KeyValuePair)successors.get(0)).getValue() + ")");
+	    System.err.println("\tupdated cost to " + cost + " (due to " + ((KeyValuePair)successors.get(0)).getValue() + ")");
 	}
 
 	// circumscription of getEvaluation().set(node, cost);

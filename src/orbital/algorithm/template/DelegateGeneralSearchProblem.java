@@ -104,7 +104,7 @@ public abstract class DelegateGeneralSearchProblem implements GeneralSearchProbl
      * @return <description>
      * @see orbital.algorithm.template.GeneralSearchProblem#transition(Object, Object, Object)
      */
-    public TransitionModel.ProbabilisticTransition transition(Object param1, Object param2, Object param3)
+    public TransitionModel.Transition transition(Object param1, Object param2, Object param3)
     {
 	return problem.transition(param1, param2, param3);
     }

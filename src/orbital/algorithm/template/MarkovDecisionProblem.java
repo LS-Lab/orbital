@@ -8,6 +8,7 @@ package orbital.algorithm.template;
 
 import java.util.Iterator;
 import java.io.Serializable;
+import orbital.math.*;
 
 import orbital.util.Utility;
 
@@ -133,7 +134,7 @@ public interface MarkovDecisionProblem extends TransitionModel/*<A,S,O extends T
      * @version 1.0, 2002/05/30
      * @author  Andr&eacute; Platzer
      */
-    static interface Transition extends TransitionModel.ProbabilisticTransition {
+    static interface Transition extends TransitionModel.Transition {
 	/**
 	 * Get the cost of taking the action leading to this transition.
 	 * <p>
@@ -146,7 +147,7 @@ public interface MarkovDecisionProblem extends TransitionModel/*<A,S,O extends T
 	 *  from state s&isin;S.
 	 * @post RES>0 &or; RES&isin;[0,&infin;)
 	 */
-	double getCost();
+	Real getCost();
     }
 
     /**
@@ -162,37 +163,43 @@ public interface MarkovDecisionProblem extends TransitionModel/*<A,S,O extends T
 	 * the probability of reaching a state (in the corresponding context).
 	 * @serial
 	 */
-	private double probability;
+	private Scalar probability;
 	/**
 	 * the immediate action cost c=c(s,a) of the action performed to reach the state.
 	 * @serial
 	 */
-	private double cost;
+	private Real cost;
 
 	/**
 	 * Create a new option &lang;p,c&rang;.
 	 * @param probability the probability of reaching a state s&#697;.
 	 * @param cost the immediate cost of taking the action which took us to that state s&#697;.
 	 */
-	public DefaultTransition(double probability, double cost) {
+	public DefaultTransition(Scalar probability, Real cost) {
 	    this.probability = probability;
 	    this.cost = cost;
 	}
+	/**
+	 * @deprecated convenience constructor, prefer to use {@link Values#valueOf(double)}..
+	 */
+	public DefaultTransition(double probability, double cost) {
+	    this(Values.getDefaultInstance().valueOf(probability),
+		 Values.getDefaultInstance().valueOf(cost));
+	}
 
 	public int compareTo(Object o) {
-	    //@see Double#compare(double,double)
-	    return new Double(getProbability()).compareTo(new Double(((Transition)o).getProbability()));
+	    return ((Comparable)getProbability()).compareTo(((Transition)o).getProbability());
 	}
 		
 	public String toString() {
 	    return getClass().getName() + "[" + getProbability() + "," + getCost() + "]";
 	}
 		
-	public double getProbability() {
+	public Scalar getProbability() {
 	    return probability;
 	}
 
-	public double getCost() {
+	public Real getCost() {
 	    return cost;
 	}
     }

@@ -10,7 +10,9 @@ import orbital.logic.functor.MutableFunction;
 import java.util.Iterator;
 import java.io.Serializable;
 
+import orbital.math.Scalar;
 import orbital.math.Real;
+import orbital.math.Values;
 import orbital.util.Utility;
 import orbital.math.MathUtilities;
 
@@ -221,7 +223,7 @@ public interface GeneralSearchProblem/*<A,S>*/ extends MarkovDecisionProblem/*<A
      * @see orbital.math.functional.Functions#diracDelta
      * @internal covariant return-types or generics would allow returning M=Transition.
      */
-    ProbabilisticTransition/*>Transition<*/ transition(Object/*>A<*/ action, Object/*>S<*/ state, Object/*>S<*/ statep);
+    TransitionModel.Transition/*>Transition<*/ transition(Object/*>A<*/ action, Object/*>S<*/ state, Object/*>S<*/ statep);
 
     /**
      * Represents an option node during a search problem.
@@ -243,15 +245,21 @@ public interface GeneralSearchProblem/*<A,S>*/ extends MarkovDecisionProblem/*<A
 	 * the immediate action cost c=c(s,a) of the action performed to reach the state s&#697;.
 	 * @serial
 	 */
-	private double cost;
+	private Real cost;
 	/**
 	 * Create a new option &lang;a,c&rang;.
 	 * @param action the applicable action a&isin;A to reach the state s&#697;.
 	 * @param cost the immediate action cost c(s,a) of the action performed to reach the state s&#697;.
 	 */
-	public Transition(Object/*>A<*/ action, double cost) {
+	public Transition(Object/*>A<*/ action, Real cost) {
 	    this.action = action;
 	    this.cost = cost;
+	}
+	/**
+	 * @deprecated convenience constructor, prefer to use {@link Values#valueOf(double)}..
+	 */
+	public Transition(Object/*>A<*/ action, double cost) {
+	    this(action, Values.getDefaultInstance().valueOf(cost));
 	}
 
 	/**
@@ -266,15 +274,15 @@ public interface GeneralSearchProblem/*<A,S>*/ extends MarkovDecisionProblem/*<A
 	    this.action = action;
 	}
 
-	public double getCost() {
+	public Real getCost() {
 	    return cost;
 	}
 
 	/**
 	 * 1 since deterministic transition.
 	 */
-	public final double getProbability() {
-	    return 1;
+	public final Scalar getProbability() {
+	    return Values.ONE;
 	}
 		
 	/**

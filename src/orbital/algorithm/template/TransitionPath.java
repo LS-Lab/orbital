@@ -93,7 +93,7 @@ public class TransitionPath implements Iterator, ProbabilisticAlgorithm, Seriali
 	double r_sum = 0;
 	for (Iterator t = transition.states(action, state); t.hasNext(); ) {
 	    Object sp = t.next();
-	    r_sum += transition.transition(action, state, sp).getProbability();
+	    r_sum += ((orbital.math.Real/*@xxx constrained*/)transition.transition(action, state, sp).getProbability()).doubleValue();
 	    assert 0 <= r_sum && r_sum <= 1+0.0001 : "probability distribution";
 	    if (r >= r_sum)
 		return state = sp;

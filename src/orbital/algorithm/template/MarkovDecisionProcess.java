@@ -11,6 +11,7 @@ import orbital.logic.functor.Function;
 import orbital.logic.functor.BinaryFunction;
 import orbital.logic.functor.MutableFunction;
 import java.io.Serializable;
+import orbital.math.*;
 
 import orbital.logic.functor.Functionals;
 
@@ -96,6 +97,7 @@ import java.util.logging.Level;
 public abstract class MarkovDecisionProcess /*extends Planning*/ implements AlgorithmicTemplate/*<MarkovDecisionProblem,Function>*/, Serializable {
     private static final long serialVersionUID = 2351017747303613618L;
     private static final Logger logger = Logger.getLogger(MarkovDecisionProcess.class.getName());
+    private static final Values valueFactory = Values.getDefaultInstance();
     public Object solve(AlgorithmicProblem p) {
     	return solve((MarkovDecisionProblem) p);
     }
@@ -155,7 +157,7 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
     	 * the current discount factor &gamma;.
     	 * @serial
     	 */
-    	private double	 discount;
+    	private Real	 discount;
     	/**
     	 * the heuristic function h, used for unknown states.
     	 * @serial
@@ -169,10 +171,16 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
          * @see #setHeuristic(Function)
          * @see #setDiscount(double)
          */
-    	public DynamicProgramming(Function heuristic, double gamma) {
+    	public DynamicProgramming(Function heuristic, Real gamma) {
 	    this.heuristic = heuristic;
 	    this.discount = gamma;
     	}
+	/**
+	 * @deprecated convenience constructor, prefer to use {@link Values#valueOf(double)}..
+	 */
+    	public DynamicProgramming(Function heuristic, double gamma) {
+	    this(heuristic, Values.getDefaultInstance().valueOf(gamma));
+	}
         
     	public DynamicProgramming(Function heuristic) {
 	    this(heuristic, 1);
@@ -190,8 +198,8 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
          * @pre gamma&isin;[0,1]
          * @todo move to super class?
          */
-        public void setDiscount(double gamma) {
-	    if (!(0 <= gamma && gamma <= 1))
+        public void setDiscount(Real gamma) {
+	    if (!MathUtilities.isin(gamma, Values.ZERO, Values.ONE))
 		throw new IllegalArgumentException("assert that discount " + gamma + " isin [0,1]");
 	    this.discount = gamma;
         }
@@ -199,7 +207,7 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
          * Get the discount factor &gamma;.
          * @post RES&isin;[0,1]
          */
-        public double getDiscount() {
+        public Real getDiscount() {
 	    return discount;
         }
     	
@@ -266,23 +274,23 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
 	    return new BinaryFunction() {
 		    public Object apply(Object state, Object action) {
             		// cost = Q<sub>U</sub>(s,a)
-            		double cost = 0;
-			double originalCost = Double.NaN;
+            		Scalar cost = valueFactory.ZERO;
+			Scalar originalCost = valueFactory.NaN;
             		if (logger.isLoggable(Level.FINEST)) logger.log(Level.FINEST, "DPMDP.Q", "\tc(" + action + "," + state + ") ...");
 			final MarkovDecisionProblem problem = getProblem();
-			Iterator r = problem.states(action, state);
+			final Iterator r = problem.states(action, state);
 			assert r.hasNext() : "@post";
             		while (r.hasNext()) {
 			    final Object sp = r.next();
 			    final Transition t = (Transition) problem.transition(action, state, sp);
 			    if (logger.isLoggable(Level.FINEST)) logger.log(Level.FINEST, "DPMDP.Q", "\t    + " + t.getProbability() + " * " + U.apply(sp) + " for " + sp);
-			    cost += t.getProbability() * ((Number) U.apply(sp)).doubleValue();
-			    final double c = t.getCost();
-			    assert !(originalCost != c) : "@post(getCost()): cost of transitions with the same action from the same state should be equal";
+			    cost = (Scalar) cost.add(t.getProbability().multiply((Arithmetic)U.apply(sp)));
+			    final Real c = t.getCost();
+			    assert !originalCost.equals(c) : "@post(getCost()): cost of transitions with the same action from the same state should be equal";
 			    originalCost = c;
             		}
             		if (logger.isLoggable(Level.FINER)) logger.log(Level.FINER, "DPMDP.Q", "\tc(" + action + "," + state + ")\t= " + originalCost + " + " + getDiscount() + " * " +  cost);
-            		return new Double(originalCost + getDiscount() * cost);
+            		return originalCost.add(getDiscount().multiply(cost));
 		    }
     		};
     	}

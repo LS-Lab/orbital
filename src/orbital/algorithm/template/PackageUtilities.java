@@ -174,4 +174,20 @@ final class PackageUtilities {
 		}
 	    };
     }
+
+    /**
+     * Decorator restricting transitions of a GSP to the best local transitions.
+     * This filters A(s) to the subset of its best n elements. If there are more than n,
+     * make a random choice.
+     * Also called beam-search.
+     * @param maximumBranchingFactor the (maximum) number n of local transitions allowed.
+     * @param problem the problem to decorate.
+     * @param evaluationFunction the function S&rarr;<b>R</b> used to evalute the state s&#697;=t(s,a)&isin;S
+     *  resulting from each action a&isin;A(s). Used for selecting the best f-values.
+     * @return the decorated problem.
+     * @see PackageUtilities#min
+     */
+    public static final GeneralSearchProblem restrictTop(final int maximumBranchingFactor, GeneralSearchProblem problem, final Function evaluationFunction) {
+	throw new UnsupportedOperationException("not yet implemented");
+    }
 }

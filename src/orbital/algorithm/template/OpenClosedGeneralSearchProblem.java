@@ -96,7 +96,7 @@ public class OpenClosedGeneralSearchProblem/*<A,S>*/ implements GeneralSearchPro
 	return problem.states(a, s);
     }
 
-    public ProbabilisticTransition transition(Object/*>A<*/ a, Object/*>S<*/ s, Object/*>S<*/ sp) {
+    public TransitionModel.Transition transition(Object/*>A<*/ a, Object/*>S<*/ s, Object/*>S<*/ sp) {
 	//@internal we do not again check like actions already did, but assume the usual case that a and sp result from actions(s) and states(a,s)
 	return problem.transition(a, s, sp);
     }
