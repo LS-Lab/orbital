@@ -56,8 +56,13 @@ public class PropositionalInference implements Inference {
 
 	//@todo could we remove tautologies from query?
 	logger.log(Level.FINE, "negated goal = {0} = {1}", new Object[] {query, queryClauses});
+
 	//@internal if we don't copy the set, then formatting would need copies of the (mutable) sets.
-	return refute(Setops.union(S, queryClauses));
+	Set Sp = Setops.union(S, queryClauses);
+	if (Sp.contains(Utilities.CONTRADICTION))
+	    // "premises are inconsistent since they already contain a contradiction, so ex falso quodlibet"
+	    return true;
+	return refute(Sp);
     }
     public boolean isSound() {
 	return true;
