@@ -7,6 +7,7 @@
 package orbital.moon.logic;
 
 import orbital.logic.imp.*;
+import orbital.math.*;
 import junit.framework.*;
 import java.util.*;
 
@@ -15,6 +16,7 @@ import java.util.*;
  * @version 1.1, 2002-09-14
  */
 public class FuzzyLogicTest extends check.TestCase {
+    private final Real tolerance = Values.getDefaultInstance().valueOf(1e-2);
     private FuzzyLogic logic;
     public static void main(String[] args) {
 	junit.textui.TestRunner.run(suite());
@@ -63,11 +65,11 @@ public class FuzzyLogicTest extends check.TestCase {
 	    Formula f = (Formula) logic.createExpression(formula1);
 	    Formula f2 = (Formula) logic.createExpression(formula2);
 	    Interpretation I = new InterpretationBase(f.getSignature().union(f2.getSignature()), Collections.EMPTY_MAP);
-	    assertTrue(f.apply(I).equals(f2.apply(I)) , formula1 + " == " + formula2 + " interpreted to " + f.apply(I) + " == " + f2.apply(I) + " of " + f.apply(I).getClass() + " resp. " + f2.apply(I).getClass());
+	    assertTrue(((Real) f.apply(I)).equals(f2.apply(I), tolerance) , formula1 + " == " + formula2 + "\n\t(in " + logic + " interpreted to " + f.apply(I) + " == " + f2.apply(I) + " of " + f.apply(I).getClass() + " resp. " + f2.apply(I).getClass() + ")");
 	}
 	catch (Throwable ex) {
 	    ex.printStackTrace();
-	    fail(ex.getMessage() + " in " + formula1 + " == " + formula2) /*.initCause(ex)*/;
+	    fail((ex.getMessage() != null ? ex.getMessage() + " in " : "") + formula1 + " == " + formula2) /*.initCause(ex)*/;
 	}
     }
     protected void assertSat(String formula, boolean satisfied) {
@@ -79,7 +81,7 @@ public class FuzzyLogicTest extends check.TestCase {
 	}
 	catch (Throwable ex) {
 	    ex.printStackTrace();
-	    fail(ex.getMessage() + " in " + formula + satDesc) /*.initCause(ex)*/;
+	    fail((ex.getMessage() != null ? ex.getMessage() + " in " : "") + formula + satDesc) /*.initCause(ex)*/;
 	}
     }
     public void testGoedel() {
@@ -182,12 +184,12 @@ public class FuzzyLogicTest extends check.TestCase {
 	test("~0.005|0.995", false);
 	test("0.9995|1", true);
 
-	//@xxx note that indeterminate 0^0 occurs, here. But Java does not worry about it.
-	logic = new FuzzyLogic(FuzzyLogic.YAGER(Double.POSITIVE_INFINITY));
-	test("0.5&~0.2", false);
-	//test("0.5&~(0.2|0.1)|0.4", false);
-	//test("0.5|0.5", false);
-	test("~0.005|0.995", true);
-	test("0.9995|1", true);
+// 	//@xxx note that indeterminate 0|0 and 1&1 occurs, here. But Java does not worry about it.
+// 	logic = new FuzzyLogic(FuzzyLogic.YAGER(Double.POSITIVE_INFINITY));
+// 	test("0.5&~0.2", false);
+// 	//test("0.5&~(0.2|0.1)|0.4", false);
+// 	//test("0.5|0.5", false);
+// 	test("~0.005|0.995", true);
+// 	test("0.9995|1", true);
     }
 }
