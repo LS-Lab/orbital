@@ -34,6 +34,8 @@ import java.util.logging.Level;
  * 
  * @version 1.0, 11/07/98
  * @author  Andr&eacute; Platzer
+ * @events FieldChangeEvent.SET_FIGURE(p) on {@link #setFigure(Position,Figure) setFigure(p,f)}.
+ * @events FieldChangeEvent.MOVE on {@link #move(Position,Move)}.
  * @structure composite bidirectional field: Figure[][]
  * @invariants sub classes support nullary constructor && isRectangular(field).
  * @see orbital.robotic.Table
@@ -52,6 +54,11 @@ public class Field implements Serializable {
      * @serial
      */
     private int turn;
+
+    /**
+     * @serial
+     */
+    private FieldChangeSupport changeSupport = new FieldChangeSupport();
 
     public Field(int width, int height) {
 	this.field = new Figure[height][width];
@@ -90,7 +97,8 @@ public class Field implements Serializable {
 			// figure might be changed
 			figure.setField(f);
 		    }
-		} 
+		}
+	    f.turn = turn;
 	    return f;
     	}
     	catch (InstantiationException ass) {
@@ -145,8 +153,8 @@ public class Field implements Serializable {
 	if (!inRange(p))
 	    throw new ArrayIndexOutOfBoundsException("position " + p + " exceeds bounds " + getDimension());
 	Figure f = field[p.y][p.x];
-	assert !(f instanceof FigureImpl) || ((FigureImpl)f).getField() == this : "figures know on which field they are";
-	assert f == null || (f.x == p.x && f.y == p.y) : "figures know their position " + f + " at " + p;
+	assert !(f instanceof FigureImpl) || ((FigureImpl)f).getField() == this : "figures know on which field they are: " + f + " on field " + this + " thinks it is on field " + ((FigureImpl)f).getField();
+	assert f == null || (f.x == p.x && f.y == p.y) : "figures know their position: " + f + " knows it is at " + p;
 	return f;
     } 
 
@@ -157,6 +165,11 @@ public class Field implements Serializable {
      * @internal see #clone()
      */
     public void setFigure(Position p, Figure f) {
+	Figure old = getFigure(p);
+	internalSetFigure(p, f);
+	changeSupport.componentChanged(new FieldChangeEvent(this, FieldChangeEvent.SET_FIGURE, /*p, old, f*/ p));
+    } 
+    private void internalSetFigure(Position p, Figure f) {
 	field[p.y][p.x] = f;
 	if (f != null) {
 	    // f might be changed
@@ -215,6 +228,41 @@ public class Field implements Serializable {
 	return new Dimension(fields.width * maxwidth, fields.height * maxheight);
     }
 
+    // event management
+
+    /**
+     * Add a FieldChangeListener to the listener list.
+     * The listener is registered for all properties.
+     *
+     * @param listener  The FieldChangeListener to be added
+     */
+    public void addFieldChangeListener(FieldChangeListener listener) {
+	changeSupport.addFieldChangeListener(listener);
+    }
+
+    /**
+     * Remove a FieldChangeListener from the listener list.
+     * This removes a FieldChangeListener that was registered
+     * for all properties.
+     *
+     * @param listener  The FieldChangeListener to be removed
+     */
+    public void removeFieldChangeListener(FieldChangeListener listener) {
+	changeSupport.removeFieldChangeListener(listener);
+    }
+
+    /**
+     * Get the event multicaster for field change events.
+     * Events channelled to this multicaster will be broadcast to all
+     * registered listeners of this field.
+     */
+    protected final FieldChangeListener getFieldChangeMulticaster() {
+	return changeSupport;
+    }
+
+
+    //
+    
     /**
      * Check whether a Point <code>(x|y)</code> is within the range.
      * @see orbital.robotic.Table#inRange(Point)
@@ -306,9 +354,11 @@ public class Field implements Serializable {
      * @see Figure#moveFigure(Move)
      */
     public synchronized boolean move(Position source, Move move) {
-	Position destination = getFigure(source).moveFigure(move);
+	Figure sourceFigure = getFigure(source);
+	Position destination = sourceFigure.moveFigure(move);
 	if (destination == null)
 	    return false;
+	changeSupport.movePerformed(new FieldChangeEvent(this, FieldChangeEvent.MOVE, new Option(this, destination, sourceFigure, move)));
 	swap(source, destination);
 	return true;
     } 
@@ -318,19 +368,21 @@ public class Field implements Serializable {
      * This can be used to move Figures.
      * @postconditions EFFECT(swap(a, b)) == EFFECT(swap(b, a))
      */
-    public/*@xxx protected*/ void swap(Position a, Position b) {
+    protected void swap(Position a, Position b) {
 	if (a.equals(b))
 	    return;
 	Figure fa = getFigure(a);
 	if (fa == a)
-	    throw new IllegalArgumentException("do not  specify positions with those figures on the field that will get swapped. Otherwise, their position information will get lost. But a==getFigure(a)");
-	if (fa == b)
-	    throw new IllegalArgumentException("do not  specify positions with those figures on the field that will get swapped. Otherwise, their position information will get lost. But b==getFigure(a)");
+	    throw new IllegalArgumentException("do not specify positions with those figures on the field that will get swapped. Otherwise, their position information will get lost. But a==getFigure(a)");
+	else if (fa == b)
+	    throw new IllegalArgumentException("do not specify positions with those figures on the field that will get swapped. Otherwise, their position information will get lost. But b==getFigure(a)");
 	Figure fb = getFigure(b);
 	if (fb == a)
-	    throw new IllegalArgumentException("do not  specify positions with those figures on the field that will get swapped. Otherwise, their position information will get lost. But a==getFigure(b)");
-	if (fb == b)
-	    throw new IllegalArgumentException("do not  specify positions with those figures on the field that will get swapped. Otherwise, their position information will get lost. But b==getFigure(b)");
+	    throw new IllegalArgumentException("do not specify positions with those figures on the field that will get swapped. Otherwise, their position information will get lost. But a==getFigure(b)");
+	else if (fb == b)
+	    throw new IllegalArgumentException("do not specify positions with those figures on the field that will get swapped. Otherwise, their position information will get lost. But b==getFigure(b)");
+	//@internal if we don't set this[b]=null here, this[b]=fa below will complain that this[a]=fb already moved the internal position of fb==this[b] to a. Therefore we first clear this[b] to null.
+	internalSetFigure(b, null);
 	setFigure(a, fb);
 	setFigure(b, fa);
     } 
@@ -392,7 +444,8 @@ public class Field implements Serializable {
      * @see #isEmpty(Position)
      */
     public final int isBeating(Move move, Position destination) {
-	if (!move.isBeating(move.length() - 1) || isEmpty(destination))	   // no beat or no target
+	if (!move.isBeating(move.length() - 1) || isEmpty(destination))
+	    // no beat or no target
 	    return Figure.NOONE;
 	return getFigure(destination).getLeague();
     } 
