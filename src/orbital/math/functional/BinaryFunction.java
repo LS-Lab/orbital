@@ -53,9 +53,6 @@ public interface BinaryFunction/*<A1 implements Arithmetic, A2 implements Arithm
      * an outer BinaryFunction and two inner BinaryFunctions concatenated with the outer binary one.
      * In other words, results o<big>(</big>l(x,y),r(x,y)<big>)</big>.
      * </p>
-     * <p>
-     * This class is the infimum (greatest common subtype) {@link orbital.logic.functor.Functor.Composite}&cap;{@link BinaryFunction}.
-     * </p>
      * 
      * @structure is {@link orbital.logic.functor.Functor.Composite}&cap;{@link BinaryFunction}
      * @structure extends BinaryFunction<A1,A2, B>

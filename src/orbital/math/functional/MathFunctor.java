@@ -132,9 +132,6 @@ public abstract interface MathFunctor extends Functor, Arithmetic {
      * <p>
      * Functions could be composed of an outer Function and an inner Function concatenated with each other.
      * </p>
-     * <p>
-     * This class is the infimum (greatest common subtype) {@link orbital.logic.functor.Functor.Composite}&cap;{@link MathFunctor}.
-     * </p>
      * 
      * @structure is {@link orbital.logic.functor.Functor.Composite}&cap;{@link MathFunctor}
      * @structure extends MathFunctor
