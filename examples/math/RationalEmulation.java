@@ -16,10 +16,11 @@ public class RationalEmulation {
      * Application-start entry point.
      */
     public static void main(String arg[]) {
-	simpleCalculation();
 	emulationCalculation();
+	simpleCalculation();
     }
     private static void simpleCalculation() {
+	System.out.println("perform some calculations in Q[X] = Quot(Q[X]) = Quot(Z[X])");
 	// create elements in Q(X) = Quot(Q[X]) = Quot(Z[X])
 	Fraction/*<Polynomial<Rational>,Polynomial<Rational>>*/ f =
 	    Values.fraction(Values.polynomial(new Rational[] {Values.ONE, Values.valueOf(2)}),
@@ -41,6 +42,7 @@ public class RationalEmulation {
      * Rational emulation.
      */
     private static void emulationCalculation() {
+	System.out.println("emulate rational numbers with fractions of integers");
 	// create elements in Q alias Quot(Z)
 	Fraction/*<Integer,Integer>*/ a =
 	    Values.fraction(Values.valueOf(3), Values.valueOf(7));
@@ -50,6 +52,7 @@ public class RationalEmulation {
 	Rational bc = rationalForm(b);
 
 	// perform calculations in both fields
+	System.out.println("perform calculations in both fields and compare results");
 	System.out.println("(" + a + ") + (" + b + ") = " + a.add(b));
 	compare(a.add(b), ac.add(bc));
 	System.out.println("(" + a + ") - (" + b + ") = " + a.subtract(b));

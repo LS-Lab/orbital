@@ -1,4 +1,5 @@
 import orbital.math.*;
+import java.util.*;
 
 /**
  * Some operations with multivariate polynomials,
@@ -20,25 +21,27 @@ public class Groebner {
 		{0, 1},
 		{1, 0}
 	    });
-	Multinomial/*<Rational>*/ G[] = {
-	    g
-	};
+	Set/*_<Multinomial<Rational>>_*/ G = new HashSet();
+	G.add(g);
 
 	Multinomial/*<Rational>*/ f = g.multiply(g);
 
 	printArithmetic(g, f);
 
-	System.out.println("reducing (" + f + ") with respect to " + MathUtilities.format(G));
-	System.out.println("reduce (" + f + ") with respect to " + MathUtilities.format(G) + ", = "
+	System.out.println("reducing (" + f + ") with respect to " + G);
+	System.out.println("reduce (" + f + ") with respect to " + G + ", = "
 			   + AlgebraicAlgorithms.reduce(f, G, AlgebraicAlgorithms.LEXICOGRAPHIC));
-	System.out.println("Groebner basis of " + MathUtilities.format(G) + ", = "
-			   + MathUtilities.format(AlgebraicAlgorithms.groebnerBasis(G, AlgebraicAlgorithms.LEXICOGRAPHIC)));
+	System.out.println("Groebner basis of " + G + ", = "
+			   + AlgebraicAlgorithms.groebnerBasis(G, AlgebraicAlgorithms.LEXICOGRAPHIC));
 
+	G.add(f);
+	System.out.println("Groebner basis of " + G + ", = "
+			   + AlgebraicAlgorithms.groebnerBasis(G, AlgebraicAlgorithms.LEXICOGRAPHIC));
     }
 
     private static void test_more() {
 	// some polynomials in <b>Q</b>[X,Y]
-	Multinomial/*<Rational>*/ G[] = {
+	Multinomial/*<Rational>*/ Garray[] = {
 	    Values.multinomial(new int[][] {
 		{0, 0, 4},
 		{3, 0, 2}
@@ -47,7 +50,9 @@ public class Groebner {
 		{-2, -2, 1}
 	    })
 	};
-	printArithmetic(G[0], G[1]);
+	Set/*_<Multinomial<Rational>>_*/ G = new HashSet(Arrays.asList(Garray));
+	
+	printArithmetic(Garray[0], Garray[1]);
 
 	Multinomial/*<Rational>*/ f = Values.multinomial(new int[][] {
 	    {0, 0, 2, 0},
@@ -55,11 +60,11 @@ public class Groebner {
 	    {0, 0, 0, 0},
 	    {0, 0, 0, 1}
 	});
-	System.out.println("reducing (" + f + ") with respect to " + MathUtilities.format(G));
-	System.out.println("reduce (" + f + ") with respect to " + MathUtilities.format(G) + ", = "
+	System.out.println("reducing (" + f + ") with respect to " + G);
+	System.out.println("reduce (" + f + ") with respect to " + G + ", = "
 			   + AlgebraicAlgorithms.reduce(f, G, AlgebraicAlgorithms.LEXICOGRAPHIC));
-	System.out.println("Groebner basis of " + MathUtilities.format(G) + ", = "
-			   + MathUtilities.format(AlgebraicAlgorithms.groebnerBasis(G, AlgebraicAlgorithms.LEXICOGRAPHIC)));
+	System.out.println("Groebner basis of " + G + ", = "
+			   + AlgebraicAlgorithms.groebnerBasis(G, AlgebraicAlgorithms.LEXICOGRAPHIC));
     }
 
     private static void printArithmetic(Multinomial f, Multinomial g) {

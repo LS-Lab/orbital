@@ -20,6 +20,7 @@ public class ComplexEmulation {
 	emulationCalculation();
     }
     private static void emulationCalculation() {
+	System.out.println("emulate complex numbers with quotients of polynomials");
 	// create elements in C alias R[X]/(X^2+1)
 	final Polynomial/*<Real>*/ m =
 	    Values.asPolynomial(Values.valueOf(new double[] {1,0,1}));
@@ -34,6 +35,7 @@ public class ComplexEmulation {
 							   Values.asPolynomial(Values.valueOf(new double[] {0,1})),
 							   m);
 	// perform calculations in both fields
+	System.out.println("perform calculations in both fields and compare results");
 	System.out.println("(" + a + ") + (" + b + ") = " + a.add(b));
 	compare(a.add(b), ac.add(bc));
 	System.out.println("(" + a + ") - (" + b + ") = " + a.subtract(b));
