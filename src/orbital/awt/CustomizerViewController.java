@@ -21,6 +21,8 @@ import java.awt.event.MouseEvent;
 
 import orbital.moon.awt.DefaultCustomizer;
 import javax.swing.JOptionPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JPanel;
 import orbital.util.InnerCheckedException;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -101,10 +103,15 @@ public class CustomizerViewController extends MouseAdapter implements MouseListe
      * in its BeanInfo.
      * Otherwise, will use a {@link #setDefaultCustomizerFactory(Function) default customizer}.
      * </p>
+     * @param bean the bean to show a customizer for. Can also be a (short) array of beans.
      * @see #showCustomizer(Component, String)
      * @see #customizerFor(Class)
      */
     public void showCustomizer(Object bean) {
+	if (bean instanceof Object[]) {
+	    showCustomizer((Object[])bean);
+	    return;
+	}
 	try {
 	    Class      beanClass = bean.getClass();
 	    Customizer custom = customizerFor(beanClass);
@@ -117,6 +124,31 @@ public class CustomizerViewController extends MouseAdapter implements MouseListe
 	} catch (ClassCastException e) {
 	    throw new ClassCastException("Customizer for bean " + bean.getClass() + " is invalid: " + e.getMessage());
 	} 
+    }
+    /**
+     * Array version
+     */
+    private void showCustomizer(Object[] bean) {
+	JTabbedPane tab = new JTabbedPane();
+	for (int i = 0; i < bean.length; i++) {
+	    if (bean[i] == null)
+		tab.addTab("<Unknown>", new JPanel());
+	    else
+		try {
+		    Class      beanClass = bean[i].getClass();
+		    Customizer custom = customizerFor(beanClass);
+		    custom.setObject(bean[i]);
+		    BeanInfo info = Introspector.getBeanInfo(beanClass, Introspector.USE_ALL_BEANINFO);
+		    BeanDescriptor desc = info.getBeanDescriptor();
+		    tab.addTab(desc == null ? null : desc.getDisplayName(), (Component) custom);
+		} catch (IntrospectionException e) {
+		    throw new InnerCheckedException("Introspection for Customizer failed: " + e.getMessage(), e);
+		} catch (ClassCastException e) {
+		    throw new ClassCastException("Customizer for bean " + bean.getClass() + " is invalid: " + e.getMessage());
+		} 
+	}
+	tab.setSelectedIndex(0);
+	showCustomizer((Component) tab, null);
     } 
 
     /**
