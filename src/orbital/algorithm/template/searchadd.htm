@@ -1,0 +1,249 @@
+<title> Some Search Algorithms </title>
+
+
+<h1>Some Search Algorithms<a href=#9>[References]</a></h1><p>
+<hr>
+
+<ul>
+<li><a href=#1>General Search Algorithm</a>
+<li><a href=#2>IDA*: Iterative Deepening A*</a>
+<li><a href=#3>SMA*: Simplified Memory Bounded A*</a>
+<li><a href=#4>Simulated Annealing</a>
+<li><a href=#5>And-Or  Graphs</a>
+</ul>
+
+<a name=1><h2>General Search Algorithm</h2></a>
+
+Russell and Norvig have an elegant definition of a general algorithm for 
+solving search problems. This algorithm can be "instantiated" to
+express specific search strategies.<p>
+
+A problem is represented as a structure with as components INITIAL-STATE,
+OPERATORS, GOAL-TEST, and PATH-COST-FUNCTION.<br>
+The search graph will use nodes with components STATE, 
+PARENT-NODE, OPERATOR, DEPTH, and PATH-COST.<br>
+The representation of a state will be problem and search strategy dependent.
+<pre><h3>
+   function General-Search (problem, QUEUING-FN) returns a solution, 
+               or a failure
+   { nodes <-- MAKE-QUEUE(MAKE-NODE(INITIAL-STATE[problem]))
+     loop {
+        if nodes is empty then return failure
+        node <-- REMOVE-FRONT(nodes)
+        if GOAL-TEST[problem] applied to STATE(node) succeeds then
+           return node
+        nodes <-- QUEUING-FN(nodes, EXPAND(node, OPERATORS[problem]))}}
+</h3></pre>
+Clearly this general definition for search algorithms fails to adequately 
+express all the possible variations in search algorithms. For example, it 
+does not deal with the case where nodes are not expanded until doing so becomes
+necessary [instead only one additional successor of a node is considered at a 
+time]. But it gives a good picture of the general strategy for searching.
+<p>
+
+<a name=2><h2>IDA*: Iterative Deepening A*</h2></a>
+Iterative Deepening is used in Depth-First Search to limit storage 
+requirements. Here the idea is applied to the A* algorithm (from Russell-Norvig):
+
+<pre><h3>
+	function IDA*(problem) returns a solution sequence
+	   f-limit, the current f-Cost limit
+	   root, a node
+	         ;;f-limit and root are static local variables
+	{  root <-- Make-Node(INITIAL-STATE[problem])
+	   f-limit <-- f-Cost(root)
+	   loop {
+	      solution,f-limit <-- DFS-CONTOUR(root,f-limit)
+	      if solution is non-null then return solution
+	      if f-limit is INFINITE then return failure}}
+
+	function DFS-CONTOUR(node,f-limit)
+		returns a solution sequence and a new f-Cost limit
+	   next-f, the f-Cost limit for the next contour, initially INFINITE
+	        ;;next-f is a statically allocated local variable
+	{  if f-Cost[node]>f-limit then return null, f-Cost[node]
+	   if GOAL-TEST[problem](STATE[node]) then return node,f-limit
+	   for each node s in SUCCESSOR(node) do
+	     {solution,new-f <-- DFS-CONTOUR(s,f-limit)
+	      if solution is non-null then return solution,f-limit
+	      next-f <-- MIN(next-f,new-f)}
+	   return null, next-f}
+</h3></pre>
+IDA* is, in the same sense as A*, complete and optimal.
+<p>
+
+<a name=3><h2>SMA*: Simplified Memory Bounded A*</h2></a>
+
+Contrary to IDA*, SMA* remembers after each iteration, not just the f-cost 
+limit, but as many nodes as the available memory affords. We restrict the 
+search to consider only the nodes that can be reached from the root
+along a path whose nodes fit in memory. And it returns the best path among
+those that are restricted to these nodes.
+Again from Russell-Norvig we have:
+
+<pre><h3>
+	function SMA*(problem) returns a solution sequence
+	   Queue, a queue of nodes ordered by f-cost
+	       {Queue is a static local variable}
+	{  Queue <-- MAKE-QUEUE(MAKE-NODE(INITIAL-STATE[problem]))
+	   loop {
+	      if Queue is empty then return failure
+	      n <-- deepest least f-cost node in Queue
+	      if GOAL-TEST(n) then return success
+	      s <-- NEXT-SUCCESSOR(n)
+	      if s is not a goal and is at maximum depth then 
+	         f(s) <-- INFINITY
+	      else
+	         f(s) <-- MIN(f(n),g(s)+h(s))
+	      if all of n's successors have been generated then
+	         update n's f-cost and those of its ancestors if necessary
+	      if SUCCESSORS(n) all in memory then remove n from Queue
+	      if memory is full then
+	        {delete shallowest, highest f-cost node in Queue
+	         remove it from its parent's successor list
+	         insert its parent on Queue if necessary}
+	      insert s in Queue}}
+</h3></pre>
+
+
+<p>
+
+<a name=4><h2>Simulated Annealing</h2></a>
+
+Simulated Annealing search is an improvement upon Ascent and Steepest Ascent
+searches.<p>
+
+"Annealing" is defined as cooling a metal so that it reaches crystalline state,
+which is with minimal energy, and not a local energy minimum which leaves 
+a metal in an amorphous state.<br>
+It appears that as the metal cools, instead of following a "Hill-Climbing"
+(or descending) algorithm towards a minimum state, at times it jumps around
+among energy levels going from low to high. This "nonsensical" move is
+characterised by the Delta between energy levels. As the metal cools, this 
+Delta tends to become smaller. The <strong>Annealing Schedule</strong> 
+is the ordered sequence (in time) of the temperatures used during cooling.<p>
+Mathematically, the Boltzman Distribution specifies the probability of being 
+at energy level E when at temperature T:
+<pre><h3>
+	       -E/T
+	      e
+	P = ------,  where Z is a normalization constant to make sure that
+	       Z           P is a probability (non-negative, with sum 1)
+</h3></pre>
+At a temperature the probability of states with low energy is higher than
+for states with high energy.
+If DE is the change in energy
+from a low energy state to a high energy state, 
+the probability of such transition is
+
+<pre><h3>
+	 -DE/T
+	e
+</h3></pre>
+Clearly, as T decreases, the probability of such energy jumps decreases.
+<p>
+The Simulated Annealing Search algorithm adheres to these ideas:
+
+<pre><h3>
+	SIMULATED-ANNEALING(AnnealingSchedule, Parameters, 
+		EndCondition, EquilibriumCondition)
+                 ;;Here Parameters play the role of state
+	{  Previous_Energy <-- Energy(Parameters)
+	   loop for next T in AnnealingSchedule and not EndCondition)
+	     {loop until EquilibriumCondition
+	       {loop for each parameter of optimization problem
+	         {Trial-Parameters <-- Parameter + random variation
+		  DEnergy <-- Energy(Parameters) - PreviousEnergy
+	          if DEnergy <= 0 or
+	             Uniform-Rand(0,1) <= exp(-DEnergy/T) then
+	             {Previous-Energy <-- Energy(Parameters)
+	              Parameter <-- Trial-Parameter}}}}
+	   return Parameter (it is the current state) }
+</h3></pre>
+<p>
+
+<a name=5><h2>And-Or Graphs</h2></a>
+
+The search algorithms we have been using use graphs called Or-graphs
+since from a node we can select any successor. There are cases where a problem
+can be decomposed into two or more subproblems that can be solved 
+independently and, as a whole, solve the original problem. In this case,
+instead of nodes having arcs that go to single nodes, we have hyper-arcs or
+connectors (k-connectors, if with k end points),
+that is arcs that have one source and a number of end points, each representing
+a part of the solution.
+<p>
+<dl>
+<dt><strong>Solution Base</strong> G' of an and-or graph G.
+<dd>It is a subgraph G' of G such that:
+<ol>
+<li>G' contains the start node s of G
+<li>if n is in G' then n is reacheable from s within G'
+<li>no node in G' is labeled UNSOLVABLE [This notion is discussed below]
+<li>if a node is in G' then it has at most one outgoing connector in G'
+</ol>
+
+<dt><strong> Solution Graph</strong> G' of an and-or graph G:
+<dd>It is a solution 
+base G' of G whose leaf nodes are all goal nodes. When performing search in 
+and-or graph we try to expand solution bases to solution graphs.<p>
+
+<dt><strong>Graph Evaluation function</strong> f1:
+<dd>It is used to compare solution bases. It is usually just 
+the cost of s, where s is the start node.
+
+<dt><strong>Node Evaluation Function</strong> f2:
+<dd>It is used to compare nodes within a single solution base (for example, 
+if I have a connector to both n1 and n2, should I expand first n1 or n2?). 
+It is usually the sum of the cost of n plus the cost of the path from s to n.
+
+<dt><strong>Heuristic Function</strong> h(n):
+<dd>An estimate of the cost of an optimal solution 
+graph with root n. The true optimum is h*(n).
+
+<dt><strong>Cost of a node</strong> n, c(n):
+<dd>It is h(n) if n is a leaf, otherwise, if n1, n2, .., nk are the endpoints
+of the outgoing connector of n, it is c(n1)+c(n2)+...c(nk) + cost of connector
+(usually assumed to be k).
+
+</dl>
+
+
+<h3>GBF Algorithm (J.Pearl)</h3>
+<ol>
+<li>Put the start symbol s on OPEN, set CLOSED to empty, and set G' to s.
+<li>From the current search graph G' compute the most promising 
+solution-base G0 using f1 and h.
+<li>Using f2, select a node n that is both in OPEN and G', 
+remove it from OPEN and place it in CLOSED
+<li>Expand n and add its successors to OPEN and to G' with back pointers to n. 
+For each successor n' of n provide heuristic information that characterizes 
+the set of solution graphs rooted at n'.
+<li>If a successor n' is terminal, then
+<ul>
+<li>Label n' SOLVED if it is a goal and UNSOLVABLE if it is not.
+<li>Propagate this label as follows:
+<ul>
+<li>Label a connector SOLVED if all its endpoints are SOLVED, UNSOLVABLE if 
+any of its endpoints is UNSOLVABLE.
+<li> Label a node UNSOLVABLE if all its outgoing connectors are UNSOLVABLE,
+SOLVABLE if any of these connectors is SOLVABLE.
+</ul>
+<li>If the start node s is SOLVED, exit with G0 as solution graph.
+<li>If the start node s is UNSOLVABLE, exit with failure.
+<li>Remove from G' any node whose label can no longer influence the label of s.
+</ul>
+<li>Go to Step 2.
+</ol>
+<hr>
+
+<a name=#9><h2>References</h2><a>
+
+<li>Russell,A.,Norvig,P.: Artificial Intelligence: A Modern Approach<br>
+Prentice-Hall 1995
+<li>Pearl,J.: Heuristics: Intelligent search strategies for computer
+problem solving<br>
+Addison-Wesley, 1984
+<hr>
+<p>
+<i>ingargiola@cis.temple.edu</i>
