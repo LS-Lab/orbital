@@ -4,10 +4,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Language" content="en-gb">
 <meta name="author" content="Andre Platzer">
-<meta name="copyright" content="© 2000-2002 André Platzer">
+<meta name="copyright" content="© 2000-2003 André Platzer">
 <meta name="classification" content="Science/Logic/Basics">
-<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
-<meta name="ProgId" content="FrontPage.Editor.Document">
 <title>Relations</title>
 <link rel="stylesheet" href="../../../../../www/stylist.css" type="text/css" charset="utf-8" title="layout">
 </head>
@@ -168,19 +166,22 @@ Let ρ ⊆ A × B be a relation. Then
   Let ρ ⊆ M×M be a relation. Then the following relations exist and are 
   unique:
   <dt>reflexive closure</dt>
-  <dd>⋂<sub>ρ⊆R ∧ R reflexive</sub> R = ρ ∪ Δ</dd>
+  <dd>⋂<sub>R⊇ρ ∧ R reflexive</sub> R = ρ ∪ Δ</dd>
   <dt>transitive closure</dt>
-  <dd>ρ<sup>+</sup> := ⋂<sub>ρ⊆R ∧ R transitive</sub> R = <big>{</big>(a,b)∈M×M 
+  <dd>ρ<sup>+</sup> := ⋂<sub>R⊇ρ</sub><sub> ∧ R transitive</sub> R = <big>{</big>(a,b)∈M×M 
     ¦ ∃n∈<b>N</b>∖{0} ∃{a=a<sub>1</sub>,a<sub>2</sub>,...,a<sub>n-1</sub>,a<sub>n</sub>=b}⊆M 
-    ∀i∈{1,...,n} (a<sub>i</sub>,a<sub>i+1</sub>)∈ρ<big>}</big></dd>
+    ∀i∈{1,...,n} (a<sub>i</sub>,a<sub>i+1</sub>)∈ρ<big>}</big>
+    <p>Non-characterisable in first-order logic.</p>
+  </dd>
   <dt>reflexive, transitive closure</dt>
-  <dd>ρ<sup>*</sup> := ⋂<sub>ρ⊆R ∧ R reflexive and transitive</sub> R = 
-    ρ<sup>+</sup> ∪ Δ</dd>
+  <dd>ρ<sup>*</sup> := ⋂<sub>R⊇ρ</sub><sub> ∧ R reflexive and transitive</sub> 
+    R = ρ<sup>+</sup> ∪ Δ</dd>
   <dt>symmetric closure</dt>
-  <dd>ρ<sup>s</sup> := ⋂<sub>ρ⊆R ∧ R symmetric</sub> R = ρ ∪ ρ<a href="../Functionals.html#swap(orbital.logic.functor.BinaryPredicate)" class="inflow"><sup>-1</sup></a></dd>
+  <dd>ρ<sup>s</sup> := ⋂<sub>R⊇ρ</sub><sub> ∧ R symmetric</sub> R = ρ 
+    ∪ ρ<a href="../Functionals.html#swap(orbital.logic.functor.BinaryPredicate)" class="inflow"><sup>-1</sup></a></dd>
   <dt>equivalence closure</dt>
-  <dd>ρ<sup>...</sup> := ⋂<sub>ρ⊆R ∧ R reflexive, symmetric, and 
-    transitive</sub> R</dd>
+  <dd>ρ<sup>....</sup> := ⋂<sub>R⊇ρ</sub><sub> ∧ R reflexive, symmetric, 
+    and transitive</sub> R</dd>
 </dl>
 Of course, the reflexive closure is reflexive, the transitive closure 
 transitive, the symmetric closure symmetric, etc.
@@ -202,9 +203,9 @@ These functions of Map(A,B) have the form:
     ∃!y∈B f(x)=y</center> f is then called a function. Sometimes being 
     right-unique is also called consistent or determinant.</dd>
   <dt>injective</dt>
-  <dd>if <span class="Formula">∀x,y∈A (f(x)=f(y) ⇒ x=y)</span>. ⇔ ∃g:f(A)→A 
-    g∘f=id<sub>A</sub>, i.e. f has a left-inverse. A function is injective if 
-    and only if the corresponding relation is left-unique.<br />
+  <dd>if <span class="Formula">∀x,y∈A (f(x)=f(y) ⇒ x=y)</span>. ⇔ 
+    ∃g:f(A)→A g∘f=id<sub>A</sub>, i.e. f has a left-inverse. A function is 
+    injective if and only if the corresponding relation is left-unique.<br />
     We denote injective functions from A to B as f:A↪B</dd>
   <dt>surjective</dt>
   <dd>if f(A) := {f(a)∈B ¦ a∈A} = B. ⇔ ∃g:B→A f∘g=id<sub>B</sub>, 
