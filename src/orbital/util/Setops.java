@@ -100,6 +100,16 @@ public final class Setops {
     } 
 
     /**
+     * Return any element of a collection that satisfies the specified predicate.
+     * This method can be used to express don't care nondeterminisms in algorithms.
+     * @return any object in the collection that satisfies the specified predicate, or <code>null</code> if no such object exists.
+     * @see #any(Collection)
+     */
+    public static /*<A>*/ Object/*>A<*/ epsilon(Collection/*_<A>_*/ coll, Predicate/*<A>*/ found) {
+	return find(coll.iterator(), found);
+    }
+
+    /**
      * Counts the number of objects in a collection that satisfy the specified predicate.
      */
     public static /*<A>*/ int count(Collection/*_<A>_*/ coll, Predicate/*<A>*/ cond) {
@@ -425,6 +435,7 @@ public final class Setops {
      * <span class="comment">// expresses don't care nondeterminism</span>
      * <span class="Class">Object</span> o <span class="operator">=</span> <span class="Orbital">Setops</span>.any(someCollection);
      * </pre>
+     * @see #epsilon(Collection,Predicate)
      */
     public static /*<A>*/ Object/*>A<*/ any(Collection/*_<A>_*/ coll) {
 	Iterator/*_<A>_*/ it = coll.iterator();
