@@ -10,26 +10,27 @@ import java.util.Iterator;
 import java.io.Serializable;
 
 import orbital.util.Utility;
+import orbital.math.MathUtilities;
 
 /**
  * Hook class for GeneralSearch algorithm. Objects implementing this interface represent
  * a state model.
  * <p>
- * A <dfn>state model</dfn> is a mathematical model for making sense of classes of problems.
+ * A <dfn>state model</dfn> is a mathematical model for making sense of some classes of problems.
  * Apart from action costs, it is essentially a deterministic (finite) automaton to control.
  * A state model is characterized by
  * <ul>
  *   <li>a finite and discrete state space S.</li>
  *   <li>a finite set of actions A.</li>
- *   <li>an initial state s<sub>0</sub>&isin;S.</li>
- *   <li>a set G&sube;S of goal states. In fact, the explicit goal states are usually hidden in a mere "blackbox" predicate goal query G&sube;&weierp;(S).</li>
- *   <li>actions A(s)&sube;A applicable in each state s&isin;S.</li>
+ *   <li>sets of actions A(s)&sube;A applicable in each state s&isin;S.</li>
  *   <li>a transition function t:S&times;A(s)&rarr;S; (s,a)&#8614;t(s,a) mapping current states and chosen action to the next state.</li>
  *   <li>action costs c:S&times;A(s)&rarr;<b>R</b>;(s,a)&#8614;c(s,a)&gt;0
  *     for taking the action a&isin;A(s) in the state s&isin;S. 
  *     Also note that there is no strict requirement for c(s,a)&gt;0. Instead there are some
  *     criterions that ensure convergence even for c(s,a)&isin;[0,&infin;).
  *   </li>
+ *   <li>an initial state s<sub>0</sub>&isin;S.</li>
+ *   <li>a set G&sube;S of goal states. In fact, the explicit goal states are usually hidden in a mere "blackbox" predicate goal query G&sube;&weierp;(S).</li>
  * </ul>
  * The applicable actions A(s) then form the search space as a graph G=&lang;S, E&rang; with E={&lang;s,t(s,a)&rang; &brvbar; s&isin;S, a&isin;A(s)}.
  * Its solution is a sequence of applicable actions that leads from an initial state to a goal state.
@@ -55,13 +56,14 @@ import orbital.util.Utility;
  * </p>
  * <p>
  * For defining a state model, several representation models may be of use,
- * including {@link orbital.algorithm.evolutionary.Gene genetic data models}.
+ * even including {@link orbital.algorithm.evolutionary.Gene genetic data models}.
  * </p>
  *
  * @version 1.0, 2000/09/17
  * @author  Andr&eacute; Platzer
  * @see GeneralSearch
  * @see BacktrackingProblem
+ * @see MarkovDecisionProblem
  * @todo introduce dynamic backtracking on search graphs
  */
 public interface GeneralSearchProblem/*<S,A>*/ extends AlgorithmicProblem {
@@ -117,12 +119,18 @@ public interface GeneralSearchProblem/*<S,A>*/ extends AlgorithmicProblem {
      * Also note that if an implementation of expand() wants to optimize memory performance
      * for the cost of limiting it to search algorithms based on depth-first search,
      * then it can apply the do/undo technique.
+     * Alternatively, if applicable actions can be determined quickly but constructing the
+     * resulting states is expensive, the (simpler) technique of lazy state construction can be
+     * applied. In order to achieve this, {@link GeneralSearchProblem.Option#getState() getState()}
+     * must be overwritten to perform lazy construction of resulting states. However, this
+     * technique is not that powerful as do/undo, and is less useful if the calculation of costs
+     * depends on the specific resulting states anyway.
      * </p>
      * @param n the option n=&lang;s,a,c&rang; that specifies the state s&isin;S chosen to expand.
      * @pre s&isin;S &and; a&isin;A(s)
      * @post &lang;s',a',c'&rang; &isin; RES &hArr; &exist;a'&isin;A(s) (s' = t(s,a') &and; c' = c+c(s,a'))
      * @return {&lang;t(s,a'),a',c+c(s,a')&rang; &isin; S&times;A(s)&times;<b>R</b> &brvbar; a'&isin;A(s)}.
-     *  An iterator over the options of states that can be reached from s by applicable actions.
+     *  An iterator over the {@link GeneralSearchProblem.Option options} of states that can be reached from s by applicable actions.
      *  The options returned should have set the action a' that lead there, and the real
      *  accumulated cost c+c(s,a') needed to get there.
      * @see GreedyProblem#nextCandidates(List)
@@ -159,6 +167,7 @@ public interface GeneralSearchProblem/*<S,A>*/ extends AlgorithmicProblem {
      * An option node is a triple &lang;s,a,c&rang;&isin;S&times;A&times;<b>R</b>
      * of a state, the action, and the accumulated cost to reach it.</p>
      * @stereotype &laquo;Structure&raquo;
+     * @invariant getAction()&isin;A(getState())
      */
     public static class Option implements Comparable, Serializable {
 	/**
@@ -213,7 +222,7 @@ public interface GeneralSearchProblem/*<S,A>*/ extends AlgorithmicProblem {
 		
 	/**
 	 * Get the state.
-	 * @return the state s of this node.
+	 * @return the state s&isin;S of this option node.
 	 */
 	public Object/*>S<*/ getState() {
 	    return state;
@@ -251,17 +260,14 @@ public interface GeneralSearchProblem/*<S,A>*/ extends AlgorithmicProblem {
 	    if (!(o instanceof Option))
 		return false;
 	    Option b = (Option) o;
-	    return cost == b.cost
+	    return MathUtilities.equals(cost, b.cost, MathUtilities.getDefaultTolerance())
 		&& Utility.equals(getState(), b.getState())
 		&& Utility.equals(getAction(), b.getAction());
 	}
 		
 	public int hashCode() {
-	    //@see Double#hashCode()
-	    long bits = Double.doubleToLongBits(cost);
 	    return Utility.hashCode(getState())
-		^ Utility.hashCode(getAction())
-		^ (int) (bits ^ (bits >>> 32));
+		^ Utility.hashCode(getAction());
 	}
 		
 	/**

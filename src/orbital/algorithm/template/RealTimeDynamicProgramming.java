@@ -70,45 +70,44 @@ import java.util.logging.Level;
  * @todo introduce sub class Adaptive Real-Time Dynamic Programming that handles unknown models as well.
  * @todo could we plot the resulting evaluation function with a Plot3D in some examples to visualize what's happening?
  */
-public
-class RealTimeDynamicProgramming extends MarkovDecisionProcess.DynamicProgramming implements HeuristicAlgorithm {
+public class RealTimeDynamicProgramming extends MarkovDecisionProcess.DynamicProgramming implements HeuristicAlgorithm {
     private static final Logger logger = Logger.getLogger(RealTimeDynamicProgramming.class.getName());
-	public RealTimeDynamicProgramming(Function heuristic) {
-		super(heuristic);
-	}
+    public RealTimeDynamicProgramming(Function heuristic) {
+	super(heuristic);
+    }
     
     protected Function plan() {
-		/**
-		 * estimates U of optimal value function h<sup>*</sup>:S&rarr;<b>R</b>.
-		 * If h is admissible U will converge (monotonically) up to h<sup>*</sup>.
-		 * Updated via DP on current states, instead of value iteration on each state until convergence.
-		 */
-		final MutableFunction U = createMap();
-		final BinaryFunction Q = getActionValue(U);
-		// explicitly initialize U(s) = h(s)
-		/*for (Iterator i = problem.getStates().iterator(); i.hasNext(); ) {
-			Object state = i.next();
-			putCost(v, state, getEvaluation().apply(state));
-		}*/
+	/**
+	 * estimates U of optimal value function h<sup>*</sup>:S&rarr;<b>R</b>.
+	 * If h is admissible U will converge (monotonically) up to h<sup>*</sup>.
+	 * Updated via DP on current states, instead of value iteration on each state until convergence.
+	 */
+	final MutableFunction U = createMap();
+	final BinaryFunction Q = getActionValue(U);
+	// explicitly initialize U(s) = h(s)
+	/*for (Iterator i = problem.getStates().iterator(); i.hasNext(); ) {
+	  Object state = i.next();
+	  putCost(v, state, getEvaluation().apply(state));
+	  }*/
     	return new Function() {
     		public Object apply(Object state) {
-    			Pair/*<Object, Number>*/ p = maximumExpectedUtility(Q, state);
+		    Pair/*<Object, Number>*/ p = maximumExpectedUtility(Q, state);
 
-				// update U(s) (alias backup)
-    			U.set(state, p.B);
-    			logger.log(Level.FINER, "RTDP", "  U(" + state + ")\t:= " + p.B);
+		    // update U(s) (alias backup)
+		    U.set(state, p.B);
+		    logger.log(Level.FINER, "RTDP", "  U(" + state + ")\t:= " + p.B);
 
-    			// return the action chosen to take
-    			return p.A;
-            }
-    	};
+		    // return the action chosen to take
+		    return p.A;
+		}
+	    };
     }
 
-	public orbital.math.functional.Function complexity() {
-		return orbital.math.functional.Functions.constant(orbital.math.Values.POSITIVE_INFINITY);
-	}
+    public orbital.math.functional.Function complexity() {
+	return orbital.math.functional.Functions.constant(orbital.math.Values.POSITIVE_INFINITY);
+    }
 
-	public orbital.math.functional.Function spaceComplexity() {
-		throw new UnsupportedOperationException("not yet implemented");
-	}
+    public orbital.math.functional.Function spaceComplexity() {
+	throw new UnsupportedOperationException("not yet implemented");
+    }
 }

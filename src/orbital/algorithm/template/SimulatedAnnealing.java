@@ -35,16 +35,59 @@ import java.util.logging.Level;
  * avoiding local optima and actually reaching a global optimum.
  * In applications, it usually scores much better than random-restart hill-climbing.</p>
  * <p>
- * Simulated annealing problems will often omit checking for solutions and simply wait until
+ * Simulated annealing problems can omit checking for solutions and simply wait until
  * the temperature drops to zero.</p>
  * <p>
  * Another possibility of using simulated annealing is to develop to a good balance of f at
- * a high temperature, first, and then decrease the temperature.</p>
+ * a high temperature, first, and then decrease the temperature. Also performing
+ * some optimization at temperature 0 still (equalling ordinary hill-climbing then),
+ * ensures that the solution is a at least at a local optimum.
+ * </p>
  * <p>
  * The Boltzman distribution specifies the probability of being at enery level E given
  * the current temperature T
  * <center><b>P</b>(E) = 1/z * <b>e</b><sup>-E/T</sup></center>
  * Where z is a normalization constant ensuring <b>P</b> sums up to 1.
+ * </p>
+ * <dl id="Properties">
+ * <dt>theorem of convergence</dt>
+ * <dd>
+ *   If T(n) &ge; (&Oslash;+1)&Delta; / &#13266;(n+2) and T(n)&rarr;0 (n&rarr;&infin;)
+ *   <br />Then <b>P</b>("at a global optimum on the n-th move") &rarr; 1 (n&rarr;&infin;)
+ *   <div>
+ *     Where
+ *     <ul>
+ *       <li>T:<b>N</b>&rarr;<b>R</b> is the "temperature" scheduling function.</li>
+ *       <li>&Oslash; := maximum distance of two solutions (number of moves in between).</li>
+ *       <li>&Delta; := max {|f(s)-f(s')| &brvbar; s,s'&isin;S &and; <b>P</b>(s'|s)&gt;0}.
+ *         Note that like in {@link MarkovDecisionProblem} <b>P</b>(s'|s) is the
+ *         probability of reaching s' from s with one move.
+ *       </li>
+ *   </div>
+ * </dd>
+ * <dt>(behaviour at fixed temperature T)</dt>
+ * <dd>
+ *   If &exist;lim<sub>n&rarr;&infin;</sub> <b>P</b>(s<sub>n</sub>=s)
+ *   and |&#8899;<sub>a&isin;A(s)</sub>t(s,a)|&le;b is bounded,
+ *   and the selection of next states occurs uniformly (each with probability 1/b)
+ *   and <b>P</b>(s&rarr;s') / <b>P</b>(s'&rarr;s) = <b>e</b><sup>-f(s')</sup> / <b>e</b><sup>-f(s)</sup>
+ *   <br />Then <b>P</b>(s<sub>n</sub>=s) &rarr; <b>e</b><sup>-f(s)</sup> / &sum;<sub>s'&isin;S</sub> (<b>e</b><sup>-f(s')</sup>) (n&rarr;&infin;)
+ *   which does <em>only</em> depend on f(s).
+ *   <div>
+ *     Where
+ *     <ul>
+ *       <li><b>P</b>(s<sub>n</sub>=s) is the probability of being in state s at time n.</li>
+ *       <li>&#8899;<sub>a&isin;A(s)</sub>t(s,a) is the set of states reachable from s (with any one action).</li>
+ *       <li><b>P</b>(s&rarr;s') is the probability that the search algorithm accepts a move from s&isin;S to s'&isin;S.</li>
+ *   </div>
+ * </dd>
+ * lim<sub>n&rarr;&infin;</sub> <b>P</b>(s<sub>n</sub>=s) converges with any
+ * initial state s<sub>0</sub> if the Markov system underlying the state transition
+ * is ergodic (i.e. from any s&isin;S to any t&isin;S the is a path from s to t
+ * with non-zero transition probability). It also converges if the Markov system
+ * is homogenous (i.e. transition probabilities independent from time) and aperiodic.
+ * Also, for example, the condition with the acceptance probability is satisfied
+ * by simulated annealing, and metropolis search.
  * </p>
  *
  * @version 0.9, 2001/05/11
@@ -59,8 +102,8 @@ public class SimulatedAnnealing extends GeneralSearch implements HeuristicAlgori
      */
     private Function/*<GeneralSearchProblem.Option, Arithmetic>*/ heuristic;
     /**
-     * A mapping from time to "temperature" controlling the cooling, and thus
-     * the probability of downward steps.
+     * A mapping <b>N</b>&rarr;<b>R</b> from time to "temperature"
+     * controlling the cooling, and thus the probability of downward steps.
      * @serial
      */
     private Function/*<Integer, Double>*/ schedule;
@@ -72,9 +115,10 @@ public class SimulatedAnnealing extends GeneralSearch implements HeuristicAlgori
     /**
      * Create a new instance of hill climbing search.
      * @param heuristic the heuristic cost function h:S&rarr;<b>R</b> to be used as evaluation function f(n) = h(n).
-     * @param schedule a mapping from time to "temperature" controlling the cooling, and thus
+     * @param a mapping <b>N</b>&rarr;<b>R</b>
+     *  from time to "temperature" controlling the cooling, and thus
      *  the probability of downward steps.
-     *  Algorithm stops if the temperature drops to 0 (or isSolution is true,
+     *  Algorithm stops if the temperature drops to <span class="Number">0</span> (or isSolution is <span class="keyword">true</span>,
      *  or it fails due to a lack of alternative expansion nodes).
      */
     public SimulatedAnnealing(Function heuristic, Function schedule) {
@@ -93,9 +137,10 @@ public class SimulatedAnnealing extends GeneralSearch implements HeuristicAlgori
 
     /**
      * Get the scheduling function.
-     * @return a mapping from time to "temperature" controlling the cooling, and thus
+     * @return a mapping <b>N</b>&rarr;<b>R</b>
+     *  from time to "temperature" controlling the cooling, and thus
      *  the probability of downward steps.
-     *  Algorithm stops if the temperature drops to 0 (or isSolution is true,
+     *  Algorithm stops if the temperature drops to <span class="Number">0</span> (or isSolution is <span class="keyword">true</span>,
      *  or it fails due to a lack of alternative expansion nodes).
      */
     public Function getSchedule() {

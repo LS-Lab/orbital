@@ -86,39 +86,39 @@ import java.util.logging.Level;
  * @see <a href="http://www.ldc.usb.ve/~hector">Hector Geffner. Modelling and Problem Solving</a>
  * @see "A. Barto, S. Bradtke, and S. Singh. Learning to act using real-time dynamic programming. <i>Artificial Intelligence</i>, 72:81-138, 1995."
  * @todo @see "H. Geffner and B. Bonet. Solving Large POMDPs using Real Time Dynamic Programming."
+ * @TODO extend more general base class or interface Planning
  */
-public	//TODO: extend more general base class or interface Planning
-abstract class MarkovDecisionProcess /*extends Planning*/ implements AlgorithmicTemplate/*<MarkovDecisionProblem,Function>*/ {
+public abstract class MarkovDecisionProcess /*extends Planning*/ implements AlgorithmicTemplate/*<MarkovDecisionProblem,Function>*/ {
     private static final Logger logger = Logger.getLogger(MarkovDecisionProcess.class.getName());
     public Object solve(AlgorithmicProblem p) {
     	return solve((MarkovDecisionProblem) p);
     }
     
-	/**
-	 * The MDP problem to solve.
-	 * @serial
-	 */
-	private MarkovDecisionProblem problem;
+    /**
+     * The MDP problem to solve.
+     * @serial
+     */
+    private MarkovDecisionProblem problem;
 	
-	/**
-	 * Get the current problem.
-	 * @return the problem specified in the last call to solve.
-	 */
-	protected final MarkovDecisionProblem getProblem() {
-		return problem;
-	}
-	/**
-	 * Set the current problem.
-	 * @param newproblem the problem specified in the last call to solve.
-	 */
-	private final void setProblem(MarkovDecisionProblem newproblem) {
-		this.problem = newproblem;
-	}
+    /**
+     * Get the current problem.
+     * @return the problem specified in the last call to solve.
+     */
+    protected final MarkovDecisionProblem getProblem() {
+	return problem;
+    }
+    /**
+     * Set the current problem.
+     * @param newproblem the problem specified in the last call to solve.
+     */
+    private final void setProblem(MarkovDecisionProblem newproblem) {
+	this.problem = newproblem;
+    }
     
     /**
      * Solves an MDP problem.
      * @return the solution policy function S&rarr;A found, or null.
-	 */
+     */
     public Function solve(MarkovDecisionProblem p) {
     	setProblem(p);
     	return plan();
@@ -126,10 +126,10 @@ abstract class MarkovDecisionProcess /*extends Planning*/ implements Algorithmic
     
     // central virtual methods
     
-	/**
-	 * Run the planning.
+    /**
+     * Run the planning.
      * @return the solution policy function S&rarr;A found, or null.
-	 */
+     */
     protected abstract Function plan();
 
     /**
@@ -163,12 +163,12 @@ abstract class MarkovDecisionProcess /*extends Planning*/ implements Algorithmic
          * @see #setDiscount(double)
          */
     	public DynamicProgramming(Function heuristic, double gamma) {
-    		this.heuristic = heuristic;
-    		this.discount = gamma;
+	    this.heuristic = heuristic;
+	    this.discount = gamma;
     	}
         
     	public DynamicProgramming(Function heuristic) {
-    		this(heuristic, 1);
+	    this(heuristic, 1);
     	}
 
         /**
@@ -184,20 +184,20 @@ abstract class MarkovDecisionProcess /*extends Planning*/ implements Algorithmic
          * @todo move to super class?
          */
         public void setDiscount(double gamma) {
-        	if (!(0 <= gamma && gamma <= 1))
-        		throw new IllegalArgumentException("assert that discount " + gamma + " isin [0,1]");
-        	this.discount = gamma;
+	    if (!(0 <= gamma && gamma <= 1))
+		throw new IllegalArgumentException("assert that discount " + gamma + " isin [0,1]");
+	    this.discount = gamma;
         }
         /**
          * Get the discount factor &gamma;.
          * @post RES&isin;[0,1]
          */
         public double getDiscount() {
-        	return discount;
+	    return discount;
         }
     	
     	public Function getHeuristic() {
-    		return heuristic;
+	    return heuristic;
     	}
     
     	/**
@@ -210,7 +210,7 @@ abstract class MarkovDecisionProcess /*extends Planning*/ implements Algorithmic
     	 * before a call to {@link #plan()}.</p>
     	 */
     	public void setHeuristic(Function heuristic) {
-    		this.heuristic = heuristic;
+	    this.heuristic = heuristic;
     	}
     
     	/**
@@ -220,17 +220,17 @@ abstract class MarkovDecisionProcess /*extends Planning*/ implements Algorithmic
     	 * However, beware of implicit function approximization and generalization techniques for
     	 * U, that might disturb the convergence of RTDP.</p>
     	 * @return an arbitrary table-like implementation ready to keep values for arguments.
-		 * @see <a href="{@docRoot}/DesignPatterns/FactoryMethod.html">Factory Method</a>
+	 * @see <a href="{@docRoot}/DesignPatterns/FactoryMethod.html">Factory Method</a>
     	 */
     	protected MutableFunction createMap() {
-    		return new MutableFunction.TableFunction(getEvaluation());
+	    return new MutableFunction.TableFunction(getEvaluation());
     	}
 
     	/**
     	 * f(s) = h(s).
     	 */
         public Function getEvaluation() {
-        	return getHeuristic();
+	    return getHeuristic();
         }
     
         /**
@@ -244,25 +244,25 @@ abstract class MarkovDecisionProcess /*extends Planning*/ implements Algorithmic
          *  &and; Q = min<sub>a'&isin;A(s)</sub> Q(s,a').
          */
         protected orbital.util.Pair/*<Object, Number>*/ maximumExpectedUtility(BinaryFunction Q, Object state) {
-			Collection actions = getProblem().nextActions(state);
+	    Collection actions = getProblem().nextActions(state);
 
-			// search minimal expected cost applicable action
-			// best (minimum) action
-			Object action = null;
-			// expected cost of best action (minimal)
-			Double expectedCost = new Double(Double.POSITIVE_INFINITY);
-			Iterator i = actions.iterator();
-			do {
-				Object a = i.next();
-				Double cost = (Double) Q.apply(state, a);
-				if (cost.compareTo(expectedCost) < 0) {
-					expectedCost = cost;
-					action = a;
-				}
-			} while(i.hasNext());
+	    // search minimal expected cost applicable action
+	    // best (minimum) action
+	    Object action = null;
+	    // expected cost of best action (minimal)
+	    Double expectedCost = new Double(Double.POSITIVE_INFINITY);
+	    Iterator i = actions.iterator();
+	    do {
+		Object a = i.next();
+		Double cost = (Double) Q.apply(state, a);
+		if (cost.compareTo(expectedCost) < 0) {
+		    expectedCost = cost;
+		    action = a;
+		}
+	    } while(i.hasNext());
 
-			// return the maximum expected utility action along with its expected cost
-			return new Pair/*<Object, Double>*/(action, expectedCost);
+	    // return the maximum expected utility action along with its expected cost
+	    return new Pair/*<Object, Double>*/(action, expectedCost);
         }
 
     	/**
@@ -273,19 +273,19 @@ abstract class MarkovDecisionProcess /*extends Planning*/ implements Algorithmic
     	 * @see "C. J. C. H. Watkins. Learning from Delayed Rewards. PhD thesis, Cambridge University, Cambridge, England, 1989."
     	 */
     	protected BinaryFunction getActionValue(final Function U) {
-    		return new BinaryFunction() {
-    			public Object apply(Object state, Object action) {
+	    return new BinaryFunction() {
+		    public Object apply(Object state, Object action) {
             		// cost = Q<sub>U</sub>(s,a)
             		double cost = 0;
             		if (logger.isLoggable(Level.FINEST)) logger.log(Level.FINEST, "DPMDP.Q", "\tc(" + action + "," + state + ")\t= " + getProblem().getCost(state, action));
             		for (Iterator r = getProblem().nextStates(state, action).iterator(); r.hasNext(); ) {
-            			Object sp = r.next();
-            			if (logger.isLoggable(Level.FINEST)) logger.log(Level.FINEST, "DPMDP.Q", "\t    + " + getProblem().transitionProbability(sp, state, action) + " * " + U.apply(sp) + " for " + sp);
-            			cost += getProblem().transitionProbability(sp, state, action) * ((Number) U.apply(sp)).doubleValue();
+			    Object sp = r.next();
+			    if (logger.isLoggable(Level.FINEST)) logger.log(Level.FINEST, "DPMDP.Q", "\t    + " + getProblem().transitionProbability(sp, state, action) + " * " + U.apply(sp) + " for " + sp);
+			    cost += getProblem().transitionProbability(sp, state, action) * ((Number) U.apply(sp)).doubleValue();
             		}
             		if (logger.isLoggable(Level.FINER)) logger.log(Level.FINER, "DPMDP.Q", "\tc(" + action + "," + state + ")\t= " + getProblem().getCost(state, action) + " + " + getDiscount() + " * " +  cost);
             		return new Double(getProblem().getCost(state, action) + getDiscount() * cost);
-    			}
+		    }
     		};
     	}
     
@@ -298,15 +298,15 @@ abstract class MarkovDecisionProcess /*extends Planning*/ implements Algorithmic
          * @interal see #maximumExpectedUtility(Object)
          */
         protected Function getGreedyPolicy(final BinaryFunction Q) {
-        	return new Function() {
-        		public Object apply(Object state) {
-					if (logger.isLoggable(Level.FINER)) {
-						logger.log(Level.FINER, "DPMDP.policy", "CHOOSING " + state);
-						logger.log(Level.FINER, "DPMDP.policy", "CHOSE " + state + " do " + maximumExpectedUtility(Q, state));
-					}
-        			// return the action chosen to take
-        			return maximumExpectedUtility(Q, state).A;
-                }
+	    return new Function() {
+		    public Object apply(Object state) {
+			if (logger.isLoggable(Level.FINER)) {
+			    logger.log(Level.FINER, "DPMDP.policy", "CHOOSING " + state);
+			    logger.log(Level.FINER, "DPMDP.policy", "CHOSE " + state + " do " + maximumExpectedUtility(Q, state));
+			}
+			// return the action chosen to take
+			return maximumExpectedUtility(Q, state).A;
+		    }
         	};
         }
     }

@@ -48,64 +48,63 @@ import java.util.logging.Level;
  * @see DynamicProgramming
  * @see "A. Barto, S. Bradtke, and S. Singh. Learning to act using real-time dynamic programming. <i>Artificial Intelligence</i>, 72:81-138, 1995."
  */
-public
-class GaussSeidelDynamicProgramming extends MarkovDecisionProcess.DynamicProgramming implements HeuristicAlgorithm {
+public class GaussSeidelDynamicProgramming extends MarkovDecisionProcess.DynamicProgramming implements HeuristicAlgorithm {
     private static final Logger logger = Logger.getLogger(GaussSeidelDynamicProgramming.class.getName());
-	private double tolerance;
-	private Collection states;
-	/**
-	 * @param states the full set S of all states of the problem.
-	 * @param tolerance the tolerance value below which the evaluation function is considered
-	 *  to have converged.
-	 */
-	public GaussSeidelDynamicProgramming(Function heuristic, Collection states, double tolerance) {
-		super(heuristic);
-		this.states = states;
-		this.tolerance = tolerance;
-	}
+    private double tolerance;
+    private Collection states;
+    /**
+     * @param states the full set S of <em>all</em> states of the problem.
+     * @param tolerance the tolerance value below which the evaluation function is considered
+     *  to have converged.
+     */
+    public GaussSeidelDynamicProgramming(Function heuristic, Collection states, double tolerance) {
+	super(heuristic);
+	this.states = states;
+	this.tolerance = tolerance;
+    }
     
     protected Function plan() {
-		/**
-		 * estimates U of optimal value function h<sup>*</sup>:S&rarr;<b>R</b>.
-		 * If h is admissible U will converge (monotonically) up to h<sup>*</sup>.
-		 * Updated via DP on current states, instead of value iteration on each state until convergence.
-		 */
-		final MutableFunction U = createMap();
-		final BinaryFunction Q = getActionValue(U);
-		// explicitly initialize U(s) = h(s)
-		/*for (Iterator i = problem.getStates().iterator(); i.hasNext(); ) {
-			Object state = i.next();
-			putCost(v, state, getEvaluation().apply(state));
-		}*/
-		// maximum change during iteration sweep
-		double delta;
-		// value iteration
-		do {
-			delta = 0;
-			for (Iterator i = states.iterator(); i.hasNext(); ) {
-				Object state = i.next();
+	/**
+	 * estimates U of optimal value function h<sup>*</sup>:S&rarr;<b>R</b>.
+	 * If h is admissible U will converge (monotonically) up to h<sup>*</sup>.
+	 * Updated via DP on current states, instead of value iteration on each state until convergence.
+	 */
+	final MutableFunction U = createMap();
+	final BinaryFunction Q = getActionValue(U);
+	// explicitly initialize U(s) = h(s)
+	/*for (Iterator i = problem.getStates().iterator(); i.hasNext(); ) {
+	  Object state = i.next();
+	  putCost(v, state, getEvaluation().apply(state));
+	  }*/
+	// maximum change during iteration sweep
+	double delta;
+	// value iteration
+	do {
+	    delta = 0;
+	    for (Iterator i = states.iterator(); i.hasNext(); ) {
+		Object state = i.next();
                 double old = ((Number) U.apply(state)).doubleValue();
                 
-    			// search minimal expected cost applicable action
-    			Pair/*<Object, Number>*/ p = maximumExpectedUtility(Q, state);
+		// search minimal expected cost applicable action
+		Pair/*<Object, Number>*/ p = maximumExpectedUtility(Q, state);
 
-				// update U(s) (alias backup)
-    			U.set(state, p.B);
-    			logger.log(Level.FINER, "GSDP", "  U(" + state + ")\t:= " + p.B);
+		// update U(s) (alias backup)
+		U.set(state, p.B);
+		logger.log(Level.FINER, "GSDP", "  U(" + state + ")\t:= " + p.B);
     			
-    			delta = Math.max(delta, Math.abs(old - ((Number) p.B).doubleValue()));
-    		}
+		delta = Math.max(delta, Math.abs(old - ((Number) p.B).doubleValue()));
+	    }
     	} while (!(delta < tolerance));
 
     	// return &pi;<sub>f</sub> = &lambda;s: arg min<sub>a&isin;A(s)</sub> Q<sub>f</sub>(s,a)
     	return getGreedyPolicy(Q);
     }
 
-	public orbital.math.functional.Function complexity() {
-		return orbital.math.functional.Functions.constant(orbital.math.Values.POSITIVE_INFINITY);
-	}
+    public orbital.math.functional.Function complexity() {
+	return orbital.math.functional.Functions.constant(orbital.math.Values.POSITIVE_INFINITY);
+    }
 
-	public orbital.math.functional.Function spaceComplexity() {
-		throw new UnsupportedOperationException("not yet implemented");
-	}
+    public orbital.math.functional.Function spaceComplexity() {
+	throw new UnsupportedOperationException("not yet implemented");
+    }
 }

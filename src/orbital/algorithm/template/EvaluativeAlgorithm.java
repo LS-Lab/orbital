@@ -30,9 +30,10 @@ public interface EvaluativeAlgorithm extends AlgorithmicTemplate {
      * <p>
      * Also called objective function.
      * </p>
-     * @return the <dfn>evaluation function</dfn> f:S&rarr;<b>R</b> to use.
+     * @return the <dfn>evaluation function</dfn> f:S&rarr;<b>R</b> used to
+     *  evaluate (either utility or cost) value of states.
      */
-    Function getEvaluation();
+    Function/*<GeneralSearchProblem.Option???,Real>*/ getEvaluation();
 
     /**
      * The natural comparator induced by the evaluation function f(n).
