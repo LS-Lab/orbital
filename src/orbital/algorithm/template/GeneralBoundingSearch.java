@@ -94,6 +94,7 @@ public abstract class GeneralBoundingSearch extends GeneralSearch implements Eva
      * @param node the node describing the solution.
      * @return the solution after processing it.
      * @preconditions getProblem().isSolution(node)
+     * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
      */
     protected Object/*>S<*/ processSolution(Object/*>S<*/ node) {
 	return node;
