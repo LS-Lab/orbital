@@ -761,7 +761,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 			freeVariableExpressions[i] = logic.createAtomic((Symbol)it.next());
 		    assert !it.hasNext();
 		    // expression form of s(FV(t))
-		    Expression applied_s = logic.compose(skolemFunctionSymbol,
+		    Expression applied_s = logic.compose(logic.createAtomic(skolemFunctionSymbol),
 							 freeVariableExpressions);
 
 		    // really substitute "[x->s(FV(t))]"
@@ -842,8 +842,6 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	     * @invariant sorted, i.e. precedenceOf[i] < precedenceOf[i+1]
 	     * @todo if Resolution would not need them, we could also directly embed LogicFunctions, here
 	     */
-	    {LogicFunctions.apply,       // "@"
-	     new NotationSpecification(500, "xfx", Notation.INFIX)},
 	    //@fixme debug why the thing ~(a->a) is displayed as ~a->a etc.  Use BESTFIX!
 	    {Predicates.equal,            // "="
 	     new NotationSpecification(700, "xfx", Notation.INFIX)},
@@ -995,26 +993,13 @@ public class ClassicalLogic extends ModernLogic implements Logic {
     		}
 		public String toString() { return "\\"; }
 	    };
-    	public static final BinaryFunction apply = new BinaryFunction() {
-		//@internal (almost) identical to @see orbital.logic.functor.Functionals#apply but additionally asserting that no one every really calls apply.
-		private /*static*/ final Specification callTypeDeclaration = new Specification(new Class[] {
-		    Function/*_<A,B>_*/.class, Object/*_>A<_*/.class
-		}, Object/*_>B<_*/.class);
-    		public Object apply(Object f, Object g) {
-		    throw new AssertionError("this method never gets called since compose cannot be interpreted truth-functionally, but already receives a structural modification in compose(...)");
-    		}
-		public String toString() { return "@"; }
-	    };
     }
 
     //@xxx get rid of these shared static variables
-    private static final Symbol APPLY;
     static final Symbol LAMBDA;
     static {
 	//@internal we need some valid non-null arguments.
 	Expression OBJ = Utilities.logic.createAtomic(new SymbolBase("OBJ", SymbolBase.UNIVERSAL_ATOM));
-	APPLY = _coreSignature.get("@", new Expression[] {OBJ,OBJ});
-	assert APPLY != null : "apply operator found";
 	LAMBDA  = _coreSignature.get("\\", new Expression[] {OBJ,OBJ});
 	assert LAMBDA != null : "lambda operator found";
     }
@@ -1023,27 +1008,6 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	if ((op instanceof ModernFormula.FixedAtomicSymbol)
 	    && LAMBDA.equals(((ModernFormula.FixedAtomicSymbol)op).getSymbol())) {
 	    //@todo if we stick to compose(Expression,Expression[]) then perhaps we could provide &lambda;-abstractions by introducing a core symbol LAMBDA that has as fixed interpretation a binary function that ... But of &lambda;(x.t), x will never get interpreted, so it is a bit different than composeFixed(lambda,{x,t}) would suggest. &lambda;-abstraction are not truth-functional!
-	    assert arguments.length == 2;
-	    assert arguments[0] instanceof ModernFormula.AtomicSymbol : "Symbols when converted to formulas become AtomicSymbols";
-	    Symbol x = (Symbol) ((Formula)arguments[0]).getSignature().iterator().next();
-	    assert x.isVariable() : "we only form lambda abstractions with respect to variables";
-	    return createLambdaProp(x, (Formula) arguments[1]);
-	} else
-	    return super.composeImpl(op, arguments);
-    }
-    /**
-     * @deprecated Use {@link #compose(Expression,Expression[])} instead, converting op via {@link ExpressionBuilder#createAtomic(Symbol)}.
-     */
-    Expression composeImpl(Symbol op, Expression arguments[]) throws ParseException {
-	// handle special cases of term construction, first
-	if (APPLY.equals(op)) {
-	    //@deprecated since compose(Expression,Expression[]) already can do this, directly.
-	    // do we still need such a language operator for something, or can it be removed (no one ever calls) and use the meta-operator instead
-	    Expression rest[] = new Expression[arguments.length - 1];
-	    System.arraycopy(arguments, 1, rest, 0, rest.length);
-	    return this.compose(arguments[0], rest);
-	} else if (LAMBDA.equals(op)) {
-	    //@todo if we stick to compose(Expression,Expression[]) then perhaps we could provide &lambda;-abstractions by introducing a core symbol LAMBDA that has as fixed interpretation a binary function that ... But of &lambda;(x.t), x will never get interpreted, so it is a bit different than composeFixed(lambda,{x,t}) would suggest.
 	    assert arguments.length == 2;
 	    assert arguments[0] instanceof ModernFormula.AtomicSymbol : "Symbols when converted to formulas become AtomicSymbols";
 	    Symbol x = (Symbol) ((Formula)arguments[0]).getSignature().iterator().next();
@@ -1265,7 +1229,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    if (type.equals(Types.TRUTH))
 		// ordinary propositional logic
 		;
-	    else if (!s.isVariable() && type.subtypeOf(Types.type(orbital.math.Scalar.class)))
+	    else if (!s.isVariable() && type.subtypeOf(Types.objectType(orbital.math.Scalar.class)))
 	    	// forget about interpreting _fixed_ constants @xxx generalize concept
 	    	it.remove();
 	    else

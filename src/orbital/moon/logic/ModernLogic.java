@@ -72,8 +72,8 @@ abstract class ModernLogic implements Logic {
 
 	// test for syntactically legal <INTEGER_LITERAL> | <FLOATING_POINT_LITERAL>
 	//@todo could also move to an infinite coreInterpretation()
-	if (symbol.getType().subtypeOf(Types.type(Arithmetic.class))
-	    || symbol.getType().subtypeOf(Types.type(Number.class)))
+	if (symbol.getType().subtypeOf(Types.objectType(Arithmetic.class))
+	    || symbol.getType().subtypeOf(Types.objectType(Number.class)))
 	    try {
 		return createFixedSymbol(symbol, Values.getDefaultInstance().valueOf(signifier), false);
 	    }
@@ -124,44 +124,6 @@ abstract class ModernLogic implements Logic {
 	}
     }
 
-    /**
-     * @deprecated Use {@link #compose(Expression,Expression[])} instead, converting op via {@link ExpressionBuilder#createAtomic(Symbol)}.
-     * @todo remove deprecated
-     */
-    public Expression compose(Symbol op, Expression arguments[]) throws ParseException {
-	if (true)
-	    return compose(createAtomic(op), arguments);
-	if (op == null)
-	    throw new NullPointerException("illegal arguments: operator " + op + " composed with " + MathUtilities.format(arguments));
-        if (!Types.isApplicableTo(op.getType(), arguments))
-	    throw new ParseException("operator " + op + ":" + op.getType() + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments) + ":" + Types.typeOf(arguments), ClassicalLogic.COMPLEX_ERROR_OFFSET);
-	return composeImpl(op, arguments);
-    }
-    /**
-     * @deprecated Use {@link #compose(Expression,Expression[])} instead, converting op via {@link ExpressionBuilder#createAtomic(Symbol)}.
-     * @todo remove deprecated
-     */
-    Expression composeImpl(Symbol op, Expression arguments[]) throws ParseException {
-        Functor f;
-        try {
-	    f = (Functor) coreInterpretation().get(op);
-        }
-        catch (NoSuchElementException nocore) {
-	    // non-core symbols
-	    return composeDelayed((Formula) createSymbol(op), arguments, op.getNotation().getNotation());
-        }
-        assert f.toString().equals(op) : "get returns the right functor for the string representation";
-        try {
-	    // core-symbols
-	    // fixed interpretation of core signature
-	    Symbol op2 = null;
-	    assert (op2 = coreSignature().get(f.toString(), arguments)) != null : "composition functors occur in the signature";
-	    assert op.equals(op2) : "enforce any potential unambiguities of operators";
-	    return composeFixed(op, (Functor)f, arguments);
-	    //return composeDelayed((Formula)createFixedSymbol(op, f, true), arguments, op.getNotation().getNotation());
-        }
-        catch (IllegalArgumentException ex) {throw new ParseException(ex.getMessage(), COMPLEX_ERROR_OFFSET);}
-    }
 
     // delegation helper methods
     

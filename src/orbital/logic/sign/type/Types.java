@@ -130,7 +130,7 @@ public final class Types {
     /**
      * The type <span class="type">&iota;</span> of individuals ({@link java.lang.Object objects}).
      */
-    public static final Type INDIVIDUAL = type(Object.class);
+    public static final Type INDIVIDUAL = objectType(Object.class);
     /**
      * The type <span class="type">&omicron;</span> = <span class="type">()</span> of truth-values.
      * @xxx for multi-valued logics this is not limited to boolean.
@@ -319,14 +319,16 @@ public final class Types {
     }
 
     /**
-     * Get the fundamental type described by a class.
+     * Get the object type described by a class.
      * Converts a native Java class object to a type.
+     * These types are called object types since they directly are types of objects,
+     * described by their classes.
      * @param type the type <span class="type">&tau;</span> represented as a class object.
      * @return <span class="type">&tau;</span> = <span class="type">void&rarr;&tau;</span>.
      * @todo assure canonical identity?
      * @todo rename
      */
-    public static final Type type(Class type) {
+    public static final Type objectType(Class type) {
 	return type.equals(Boolean.class) || type.equals(Boolean.TYPE)
 	    ? TRUTH
 	    : type.equals(Void.TYPE)
@@ -1010,7 +1012,7 @@ public final class Types {
 	 * @internal collection types and product types are different, but they compare in the same way
 	 */
 	private Type comparisonInternalRepresentation() {
-	    return new ProductType(new Type[] {Types.type(collection), component});
+	    return new ProductType(new Type[] {Types.objectType(collection), component});
 	}
     }
 
@@ -1061,7 +1063,7 @@ public final class Types {
      * @xxx we cannot know that ClassicalLogic & Co implement AND as a BinaryFunction, not as a BinaryPredicate<Boolean,Boolean>
      */
     private static final Type declaredTypeOf(Functor.Specification spec) {
-	return map(typeOf(spec.getParameterTypes()), type(spec.getReturnType()));
+	return map(typeOf(spec.getParameterTypes()), objectType(spec.getReturnType()));
     }
 
     /**
@@ -1091,7 +1093,7 @@ public final class Types {
 	    return NOTYPE;
 	final Type argumentTypes[] = new Type[args.length];
 	for (int i = 0; i < argumentTypes.length; i++)
-	    argumentTypes[i] = type(args[i]);
+	    argumentTypes[i] = objectType(args[i]);
 	return product(argumentTypes);
     }
 

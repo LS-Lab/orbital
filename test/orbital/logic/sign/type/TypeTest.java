@@ -36,9 +36,9 @@ public class TypeTest extends check.TestCase {
 	testTypeConstructorsWith(new Type[] {Types.UNIVERSAL, Types.UNIVERSAL});
 	testTypeConstructorsWith(new Type[] {Types.UNIVERSAL, Types.INDIVIDUAL});
 	testTypeConstructorsWith(new Type[] {Types.INDIVIDUAL, Types.INDIVIDUAL});
-	testTypeConstructorsWith(new Type[] {Types.type(Double.class), Types.type(Integer.class)});
-	testTypeConstructorsWith(new Type[] {Types.type(Double.class), Types.type(Integer.class), Types.type(Float.class)});
-	testTypeConstructorsWith(new Type[] {Types.type(Double.class), Types.type(Integer.class), Types.type(Number.class)});
+	testTypeConstructorsWith(new Type[] {Types.objectType(Double.class), Types.objectType(Integer.class)});
+	testTypeConstructorsWith(new Type[] {Types.objectType(Double.class), Types.objectType(Integer.class), Types.objectType(Float.class)});
+	testTypeConstructorsWith(new Type[] {Types.objectType(Double.class), Types.objectType(Integer.class), Types.objectType(Number.class)});
     }
 
     private  void testTypeConstructorsWith(Type a[]) {
@@ -86,77 +86,77 @@ public class TypeTest extends check.TestCase {
 	s = Types.predicate(Types.UNIVERSAL);
 	t = Types.predicate(Types.INDIVIDUAL);
 	assertTrue( compare(s,t) <= 0 , s + " =< " + t);
-	s = Types.map(Types.type(String.class), Types.INDIVIDUAL);
+	s = Types.map(Types.objectType(String.class), Types.INDIVIDUAL);
 	t = Types.map(Types.INDIVIDUAL, Types.INDIVIDUAL);
 	assertTrue( compare(s,t) >= 0 , s + " >= " + t);
 	
-	s = Types.product(new Type[] {Types.TRUTH, Types.type(String.class)});
+	s = Types.product(new Type[] {Types.TRUTH, Types.objectType(String.class)});
 	t = Types.product(new Type[] {Types.TRUTH, Types.INDIVIDUAL});
 	assertTrue( compare(s,t) <= 0 , s + " =< " + t);
 
-	s = Types.inf(new Type[] {Types.predicate(Types.INDIVIDUAL), Types.type(String.class), Types.INDIVIDUAL});
-	t = Types.inf(new Type[] {Types.predicate(Types.INDIVIDUAL), Types.type(String.class)});
+	s = Types.inf(new Type[] {Types.predicate(Types.INDIVIDUAL), Types.objectType(String.class), Types.INDIVIDUAL});
+	t = Types.inf(new Type[] {Types.predicate(Types.INDIVIDUAL), Types.objectType(String.class)});
 	assertTrue( s.equals(t) , s + " = " + t);
-	s = Types.sup(new Type[] {Types.predicate(Types.INDIVIDUAL), Types.type(String.class), Types.INDIVIDUAL});
+	s = Types.sup(new Type[] {Types.predicate(Types.INDIVIDUAL), Types.objectType(String.class), Types.INDIVIDUAL});
 	t = Types.sup(new Type[] {Types.predicate(Types.INDIVIDUAL), Types.INDIVIDUAL});
 	assertTrue( s.equals(t) , s + " = " + t);
-	s = Types.sup(new Type[] {Types.set(Types.INDIVIDUAL), Types.type(String.class)});
+	s = Types.sup(new Type[] {Types.set(Types.INDIVIDUAL), Types.objectType(String.class)});
 	t = Types.sup(new Type[] {Types.set(Types.INDIVIDUAL), Types.INDIVIDUAL});
 	//assertTrue( compare(s,t) <= 0 , s + " =< " + t);
-	s = Types.inf(new Type[] {Types.predicate(Types.INDIVIDUAL), Types.type(String.class)});
+	s = Types.inf(new Type[] {Types.predicate(Types.INDIVIDUAL), Types.objectType(String.class)});
 	t = Types.inf(new Type[] {Types.predicate(Types.INDIVIDUAL), Types.INDIVIDUAL});
 	//assertTrue( compare(s,t) <= 0 , s + " =< " + t);
-	s = Types.sup(new Type[] {Types.predicate(Types.INDIVIDUAL), Types.type(String.class)});
+	s = Types.sup(new Type[] {Types.predicate(Types.INDIVIDUAL), Types.objectType(String.class)});
 	t = Types.sup(new Type[] {Types.predicate(Types.INDIVIDUAL), Types.INDIVIDUAL});
 	//assertTrue( compare(s,t) <= 0 , s + " =< " + t);
 
 	
-	s = Types.set(Types.type(String.class));
-	t = Types.collection(Types.type(Comparable.class));
+	s = Types.set(Types.objectType(String.class));
+	t = Types.collection(Types.objectType(Comparable.class));
 	assertTrue( compare(s,t) <= 0 , s + " =< " + t);
-	s = Types.set(Types.type(String.class));
-	t = Types.set(Types.type(Comparable.class));
+	s = Types.set(Types.objectType(String.class));
+	t = Types.set(Types.objectType(Comparable.class));
 	assertTrue( compare(s,t) <= 0 , s + " =< " + t);
     }
 
     public void testSupInfSubtype() {
 	Type s, t;
 	Type a[];
-	a = new Type[] {Types.predicate(Types.INDIVIDUAL), Types.type(String.class)};
+	a = new Type[] {Types.predicate(Types.INDIVIDUAL), Types.objectType(String.class)};
 	s = a[1];
 	t = Types.sup(a);
 	assertTrue( compare(s,t) <= 0 , s + " =< " + t);
-	a = new Type[] {Types.predicate(Types.INDIVIDUAL), Types.type(String.class)};
+	a = new Type[] {Types.predicate(Types.INDIVIDUAL), Types.objectType(String.class)};
 	s = a[1];
 	t = Types.inf(a);
 	assertTrue( compare(s,t) >= 0 , s + " >= " + t);
 
 	// mixed
-	s = Types.inf(new Type[] {Types.set(Types.INDIVIDUAL), Types.type(String.class)});
+	s = Types.inf(new Type[] {Types.set(Types.INDIVIDUAL), Types.objectType(String.class)});
 	t = Types.sup(new Type[] {Types.set(Types.INDIVIDUAL), Types.INDIVIDUAL});
 	assertTrue( compare(s,t) <= 0 , s + " =< " + t);
-	s = Types.inf(new Type[] {Types.set(Types.INDIVIDUAL), Types.type(String.class)});
-	t = Types.sup(new Type[] {Types.set(Types.INDIVIDUAL), Types.type(String.class)});
+	s = Types.inf(new Type[] {Types.set(Types.INDIVIDUAL), Types.objectType(String.class)});
+	t = Types.sup(new Type[] {Types.set(Types.INDIVIDUAL), Types.objectType(String.class)});
 	assertTrue( compare(s,t) <= 0 , s + " =< " + t);
     }
 
     public void testSupInfNeutral() {
 	Type s, t;
-	s = Types.inf(new Type[] {Types.set(Types.INDIVIDUAL), Types.type(String.class)});
-	t = Types.inf(new Type[] {Types.set(Types.INDIVIDUAL), Types.type(String.class), Types.UNIVERSAL});
+	s = Types.inf(new Type[] {Types.set(Types.INDIVIDUAL), Types.objectType(String.class)});
+	t = Types.inf(new Type[] {Types.set(Types.INDIVIDUAL), Types.objectType(String.class), Types.UNIVERSAL});
 	assertTrue( s.equals(t) , s + " = " + t);
-	s = Types.sup(new Type[] {Types.set(Types.INDIVIDUAL), Types.type(String.class)});
-	t = Types.sup(new Type[] {Types.set(Types.INDIVIDUAL), Types.type(String.class), Types.ABSURD});
+	s = Types.sup(new Type[] {Types.set(Types.INDIVIDUAL), Types.objectType(String.class)});
+	t = Types.sup(new Type[] {Types.set(Types.INDIVIDUAL), Types.objectType(String.class), Types.ABSURD});
 	assertTrue( s.equals(t) , s + " = " + t);
     }
 
     public void testSupInfAssociative() {
 	Type s, t;
-	s = Types.inf(new Type[] {Types.set(Types.INDIVIDUAL), Types.type(String.class), Types.inf(new Type[] {Types.type(Number.class), Types.type(RuntimeException.class)})});
-	t = Types.inf(new Type[] {Types.set(Types.INDIVIDUAL), Types.type(String.class), Types.type(Number.class), Types.type(RuntimeException.class)});
+	s = Types.inf(new Type[] {Types.set(Types.INDIVIDUAL), Types.objectType(String.class), Types.inf(new Type[] {Types.objectType(Number.class), Types.objectType(RuntimeException.class)})});
+	t = Types.inf(new Type[] {Types.set(Types.INDIVIDUAL), Types.objectType(String.class), Types.objectType(Number.class), Types.objectType(RuntimeException.class)});
 	assertTrue( s.equals(t) , s + " = " + t);
-	s = Types.sup(new Type[] {Types.set(Types.INDIVIDUAL), Types.type(String.class), Types.sup(new Type[] {Types.type(Number.class), Types.type(RuntimeException.class)})});
-	t = Types.sup(new Type[] {Types.set(Types.INDIVIDUAL), Types.type(String.class), Types.type(Number.class), Types.type(RuntimeException.class)});
+	s = Types.sup(new Type[] {Types.set(Types.INDIVIDUAL), Types.objectType(String.class), Types.sup(new Type[] {Types.objectType(Number.class), Types.objectType(RuntimeException.class)})});
+	t = Types.sup(new Type[] {Types.set(Types.INDIVIDUAL), Types.objectType(String.class), Types.objectType(Number.class), Types.objectType(RuntimeException.class)});
 	assertTrue( s.equals(t) , s + " = " + t);
     }
 
@@ -223,14 +223,14 @@ public class TypeTest extends check.TestCase {
 	t = Types.map(Types.INDIVIDUAL, Types.TRUTH);
 	assertTrue( !comparable(s,t) , s + " incomparable " + t);
 	s = Types.INDIVIDUAL;
-	t = Types.map(Types.INDIVIDUAL, Types.type(String.class));
+	t = Types.map(Types.INDIVIDUAL, Types.objectType(String.class));
 	assertTrue( !comparable(s,t) , s + " incomparable " + t);
 
-	s = Types.product(new Type[] {Types.INDIVIDUAL, Types.type(String.class)});
-	t = Types.inf(new Type[] {Types.INDIVIDUAL, Types.type(String.class)});
+	s = Types.product(new Type[] {Types.INDIVIDUAL, Types.objectType(String.class)});
+	t = Types.inf(new Type[] {Types.INDIVIDUAL, Types.objectType(String.class)});
 	assertTrue( !comparable(s,t) , s + " incomparable " + t);
-	s = Types.product(new Type[] {Types.INDIVIDUAL, Types.type(String.class)});
-	t = Types.sup(new Type[] {Types.INDIVIDUAL, Types.type(String.class)});
+	s = Types.product(new Type[] {Types.INDIVIDUAL, Types.objectType(String.class)});
+	t = Types.sup(new Type[] {Types.INDIVIDUAL, Types.objectType(String.class)});
 	assertTrue( !comparable(s,t) , s + " incomparable " + t);
     }
 

@@ -71,9 +71,9 @@ import java.io.*;
  * @todo join symbiose of MathParser and LogicParser by letting expression() accept term(), directly as well? Instead of just providing two distinct start productions.
  */
 public class LogicParser {
-    static final Type INTEGER_LITERAL_TYPE = Types.type(orbital.math.Integer.class);
-    static final Type FLOAT_LITERAL_TYPE = Types.type(orbital.math.Real.class);
-    static final Type STRING_LITERAL_TYPE = Types.type(String.class);
+    static final Type INTEGER_LITERAL_TYPE = Types.objectType(orbital.math.Integer.class);
+    static final Type FLOAT_LITERAL_TYPE = Types.objectType(orbital.math.Real.class);
+    static final Type STRING_LITERAL_TYPE = Types.objectType(String.class);
     private static final Type BOOLEAN = Types.TRUTH;
 	
     /**
