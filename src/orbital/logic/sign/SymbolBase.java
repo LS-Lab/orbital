@@ -188,7 +188,7 @@ public class SymbolBase implements Symbol, Serializable {
     public String toString() {
 	if (Logger.global.isLoggable(Level.FINEST)
 	    || getType().equals(Types.TYPE))
-	    return toFullString();
+	    return toFullString() + (Logger.global.isLoggable(Level.ALL) && isVariable() ? "[var]" : "");
 	if (true)
 	    return toExpressionString();
 	return toShortString();
