@@ -16,6 +16,13 @@ import orbital.logic.functor.BinaryFunction;
 import orbital.logic.functor.Functor;
 import orbital.logic.functor.Predicate;
 
+// for typed unification
+import orbital.logic.imp.Type;
+import orbital.logic.imp.Typed;
+// for type-safe substitutions
+import orbital.logic.imp.TypeException;
+
+
 import java.util.List;
 
 import java.util.Iterator;
@@ -72,6 +79,7 @@ import orbital.util.Utility;
  * @author  Andr&eacute; Platzer
  * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
  * @see #lambda
+ * @todo (optionally) check types for replacements
  */
 public class Substitutions {
 
@@ -101,16 +109,47 @@ public class Substitutions {
 	
     /**
      * Create a new substitution.
+     * @see #getInstance(Collection,boolean)
+     * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+     */
+    public static final Substitution getInstance(Collection/*_<Matcher>_*/ replacements) {
+        return getInstance(replacements, true);
+    }
+    /**
+     * Create a new substitution.
      * <p>
      * Note that you should not try to instantiate a "substitution" with multiple replacements
      * specified for a single pattern. Those are not even endomorphisms anyway.
      * </p>
      * @param replacements the set of elementary replacements.
+     * @param typeSafe whether to instantiate a type-safe substitution, i.e. one for which
+     *  [x:<span class="type">&sigma;</span>&rarr;t:<span class="type">&tau;</span>]
+     *  is only defined, when <span class="type">&tau;</span> &le; <span class="type">&sigma;</span>.
      * @preconditions replacements[i] instanceof {@link Substitution.Matcher} &and; &forall;i&ne;j replacements[i].pattern()&ne;replacements[j].pattern()
      * @return &sigma; = [replacements].
+     * @throws TypeException when <code>typeSafe=<span class="boolean">true</span></code>, but
+     *  a type error occurs within the replacements.
      * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+     * @todo add parameter "boolean alphaConversion" which says whether or not to rename bound variables automatically, in case they would otherwise lead to a clash/collision.
      */
-    public static final Substitution getInstance(Collection/*_<Matcher>_*/ replacements) {
+    public static final Substitution getInstance(Collection/*_<Matcher>_*/ replacements, boolean typeSafe) {
+	if (typeSafe)
+	    for (Iterator i = replacements.iterator(); i.hasNext(); ) {
+		Matcher m = (Matcher) i.next();
+		if (m instanceof SubstitutionImpl.MatcherImpl) {
+		    Object p = m.pattern();
+		    Object s = ((SubstitutionImpl.MatcherImpl)m).substitute();
+		    if (p instanceof Typed && s instanceof Typed) {
+			Type pType = ((Typed)p).getType();
+			Type sType = ((Typed)s).getType();
+			if (!sType.subtypeOf(pType))
+			    throw new TypeException("substitution " + replacements + " with matcher " + m + " not type-safe", pType, sType);
+		    }
+		} else
+		    // cannot check
+		    ;
+	    }
+			
     	assert validateDistinctPatterns(replacements) : "multiple elementary replacements with the same pattern do not form a true substitution: " + replacements;
         return new SubstitutionImpl(replacements);
     }
@@ -434,7 +473,7 @@ public class Substitutions {
      *       &sigma;’ &#8728; &mu;}</p>
      *     </td>
      *     <td>
-     *       <p>&mu; is a <dfn>most general unifier</dfn> of T&sube;Term(&Sigma;).
+     *       <p>&mu; is a <dfn>most general unifier</dfn> of T&sube;Term(&Sigma;).<br />
      *       In fact, &mu; is a maximal element with respect to "&sigma;|&tau; :&hArr; &exist;&sigma;' &tau; = &sigma;' &#8728; &sigma;"</p>
      *     </td>
      *   </tr>
@@ -468,7 +507,13 @@ public class Substitutions {
      * @return mgU(T), the most-general unifier of T,
      *  or <code>null</code> if the terms in T are not unifiable.
      * @postconditions unifiable(T) &hArr; RES&ne;null &hArr; &forall;t1,t2&isin;T RES.apply(t1).equals(RES.apply(t2))
-     * @internal implementation is Robinson-Unification
+     * @internal implementation is Robinson-Unification with types.
+     * @internal type-extension modifies the case of x being a variable to:
+     *  mgU(x:&sigma;, t:&tau;) = [x:&sigma;&rarr;t:&tau;] if &tau;&le;&sigma; iff &sigma;&cap;&tau;=&tau;.
+     *  mgU(x:&sigma;, t:&tau;) = [x:&sigma;&rarr;t:&sigma;&cap;&tau;,t:&tau;&rarr;&sigma;t:&cap;&tau;] if &not;(&tau;&le;&sigma;) &and; t is a variable
+     *  mgU(x:&sigma;, t:&tau;) = null if &not;(&tau;&le;&sigma;) &and; t is not a variable
+     *  Where &not;(&tau;&le;&sigma;) iff &sigma;&cap;&tau;&ne;&tau; iff (&tau;&gt;&sigma; &or; &sigma;,&tau; are incomarable).
+     *  All mere term cases only require type-checks which are implicitly performed by equals(Object).
      * @todo reformat table to the form U(T) := {&mu; &brvbar; &mu; is unifier, i.e. |&mu;(T)| = 1}
      */
     public static final Substitution unify(Collection T) {
@@ -493,16 +538,38 @@ public class Substitutions {
 	Object t;
 	if (t1 == null || t2 == null)
 	    throw new NullPointerException("cannot unify (" + t1 + "," + t2 +") because null does not unify anything.");
-	// if one of the two terms is a variable x, call the other term t
+	// (*) if one of the two terms is a variable x, call the other term t
        	if ((isVariable(x = t1) && other(t = t2))
 	    || (isVariable(x = t2) && other(t = t1))) {
 	    if (x.equals(t))
 		return id;
 	    else if (occur(x, t)) // checks whether x occurs in t
 		return null;
-	    else
+	    else {
+		if (x instanceof Typed && t instanceof Typed) {
+		    final Type taux = ((Typed)x).getType();
+		    final Type taut = ((Typed)t).getType();
+		    if (taut.subtypeOf(taux)) {
+			assert taux.typeSystem().inf(new Type[] {taux, taut}).equals(taut) : "inf@postconditions: " + taut + "=<" + taux + " iff " + taux.typeSystem().inf(new Type[] {taux, taut}) + " = " + taux + " inf " + taut + " = " + taut;
+			// ordinary unifiable subtype case: fall-through
+		    } else {
+			assert !taux.typeSystem().inf(new Type[] {taux, taut}).equals(taut) : "inf@postconditions: not(" + taut + "=<" + taux + ") iff " + taux.typeSystem().inf(new Type[] {taux, taut}) + " = " + taux + " inf " + taut + " != " + taut;
+			if (isVariable(t)) {
+			    final Type both = taux.typeSystem().inf(new Type[] {taux, taut});
+			    if (both == both.typeSystem().ABSURD())
+				// variables x and t have incompatible types, cannot unify
+				return null;
+			    // in (*) we could also have called x and t precisely the other way around
+			    // return [x:taux->t:both , t:taut->t:both]
+			    throw new UnsupportedOperationException("modification cloning does not yet generally allow changing the type of a Typed object");
+			} else
+			    // cannot unify because the term t does not deliver a subtype of the type that x must be bound to.
+			    return null;
+		    }
+		}
 		// return [x->t]
 		return getInstance(Collections.singletonList(createExactMatcher(x, t)));
+	    }
         } else {
 	    // let t1=:f(x1,...xm), t2=:g(y1,...yn)
 	    if (!((t1 instanceof Composite) && (t2 instanceof Composite))) {
