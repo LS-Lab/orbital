@@ -559,7 +559,6 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 			public Object apply(Object wa, Object wb) {
 			    final double a = getTruth(wa);
 			    final double b = getTruth(wb);
-			    //@xxx does this compile to illegal code for a, b := NaN?
 			    return getInt(a == 1.0 || b == 1.0 ? Math.min(a, b) : 0);
 			}
 			public String toString() { return "&"; }
