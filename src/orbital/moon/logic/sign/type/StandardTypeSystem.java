@@ -639,6 +639,82 @@ public class StandardTypeSystem implements TypeSystem {
 	}
     }
 
+    // special type factories
+
+    /**
+     * Creates a new special type. Special types <span
+     * class="type">&tau;</span> are distinguished by their signifier.
+     * Their only type hierarchy relations are 
+     * <span class="type">&perp;</span>&le;<span class="type">&tau;</span>&le;<span class="type">&#8868;</span>.
+     * @postconditions forall s ((RES.equals(s) &hArr; s=specialType(signifier))
+     *   &and; (RES.compareTo(s) < 0 &hArr; s=UNIVERSAL())
+     *   &and; (RES.compareTo(s) > 0 &hArr; s=ABSURD()))
+     */
+    public Type specialType(String signifier) {
+	return new SpecialType(signifier);
+    }
+
+    /**
+     * Implementation of special types.
+     * @author Andr&eacute; Platzer
+     * @version 1.2, 2003-12-16
+     */
+    private static class SpecialType extends TypeObject {
+	//private static final long serialVersionUID = 0;
+	private final String signifier;
+	public SpecialType(String signifier) {
+	    if (signifier == null)
+		throw new NullPointerException("illegal type name " + signifier);
+	    this.signifier = signifier;
+	}
+	public String toString() {
+	    return "`" + signifier + "´";
+	}
+	public boolean equals(Object o) {
+	    return (o instanceof SpecialType)
+		&& signifier.equals(((SpecialType)o).signifier);
+	}
+
+	public int hashCode() {
+	    return signifier.hashCode();
+	}
+	
+
+
+	protected int comparisonPriority() {
+	    return 10070;
+	}
+	public int compareToSemiImpl(Type b) {
+	    if (this.equals(b)) {
+		return 0;
+	    } else {
+		throw new IncomparableException(this + " is incomparable with " + b);
+	    }
+	}
+
+	public boolean apply(Object x) {
+	    throw new UnsupportedOperationException("special types do not support membership checks");
+	}
+
+	public Type on(Type sigma) {
+	    if (sigma == typeSystem().NOTYPE()) {
+		// since NOTYPE->t = t by uniform referent, we can be applied to empty objects of void type.
+		return this;
+	    } else {
+		throw new TypeException("special types cannot be applied to anything, not even arguments of type " + sigma, typeSystem().NOTYPE(), sigma);
+	    }
+	}
+
+	//@internal identical to @see NonMapCompositeType
+	public Type domain() {
+	    return typeSystem.NOTYPE();
+	}
+	public Type codomain() {
+	    return this;
+	}
+    }
+
+    
     // type constructors
     
     public Type map(Type domain, Type codomain) {
