@@ -56,6 +56,7 @@ import java.util.LinkedList;
  * @see orbital.math.functional.Functionals
  * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
  * @see orbital.logic.trs.Substitutions#lambda
+ * @see orbital.util.Setops
  * @todo improve names of conversion methods: onVoid, asFunction, onThisAndThat, asSuchAndSuch ...
  * @todo would we benefit from turning functional methods into true functionals, i.e. BinaryFunction<Function<A,B1>, Function<A,B2>, BinaryFunction<A,B1,B2>>? How do we document them without using Pizzadoc, then?
  * @todo introduce Zylomorphism and "GCatamorphism"?

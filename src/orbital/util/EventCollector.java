@@ -17,8 +17,8 @@ import orbital.util.SuspiciousError;
 
 /**
  * EventCollector is a class capable of redirecting incoming EventObjects
- * to its set of EventObjectListener. All events which the EventCollector
- * is registered to will be multiplexed according to the event_mask.
+ * to a set of EventObjectListeners. All events to which the EventCollector
+ * is registered will be multiplexed according to the event_mask.
  * 
  * @version 0.9, 03/12/98
  * @author  Andr&eacute; Platzer

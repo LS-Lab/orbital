@@ -47,6 +47,7 @@ import java.util.NoSuchElementException;
  * @see orbital.util.Utility
  * @see orbital.algorithm.evolutionary.Selectors
  * @see java.util.Collections
+ * @see orbital.logic.functor.Functionals
  * @see <a href="http://www.sql.org">Structured Query Language (SQL)</a>
  */
 public final class Setops {
