@@ -113,7 +113,7 @@ public class IterativeDeepeningAStar extends DepthFirstBoundingSearch implements
      */
     protected boolean isOutOfBounds(Object/*>S<*/ node) {
 	Real v = (Real) getEvaluation().apply(node);
-	if (v.compareTo(Values.getDefaultInstance().valueOf(getBound())) <= 0)
+	if (v.compareTo(getBound()) <= 0)
 	    return false;
 	// OutOfBounds -> nextBound is cheapest node pruned (minimum)
 	if (nextBound == null || v.compareTo(nextBound) < 0)
@@ -130,7 +130,7 @@ public class IterativeDeepeningAStar extends DepthFirstBoundingSearch implements
 	nextBound = (Real) getEvaluation().apply(n0);
 	Object/*>S<*/ solution;
 	do {
-	    setBound(nextBound.doubleValue());
+	    setBound(nextBound);
 	    nextBound = null;
 	    solution = super.search(createTraversal(problem));
 	} while (solution == null && nextBound != null);
@@ -152,7 +152,7 @@ public class IterativeDeepeningAStar extends DepthFirstBoundingSearch implements
     //		nextBound = (Scalar) getEvaluation().apply(n0);
     //		GeneralSearchProblem.Option solution;
     //		do {
-    //			setBound(nextBound.doubleValue());
+    //			setBound(nextBound);
     //			nextBound = null;
     //			Collection n = createCollection();
     //			n.addAll(nodes);

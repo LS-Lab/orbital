@@ -12,7 +12,7 @@ import orbital.logic.functor.Function;
  * Quotient represents an (algebraic) equivalence class a&#772;=a&#771;=[a]&isin;M/~.
  * The quotient M/~ has the same algebraic structure as M.
  * <p>
- * Let &pi;:M&#8608;M/~;a&#8614;a&#772; be the canonical projection to the equivalence classes.
+ * Let &pi;:M&#8608;M/~; a&#8614;a&#772; be the canonical projection to the equivalence classes.
  * When <strong>choosing</strong> one <em>right</em>-inverse (section) &pi;<sup>-1</sup>, we have a
  * canonical representative a=&pi;<sup>-1</sup>(a&#772;) of a&#772;.
  * However be aware that usually &pi;<sup>-1</sup> &#8728; &pi; &ne; id
@@ -34,7 +34,7 @@ import orbital.logic.functor.Function;
  * of the quotient.
  * </p>
  * <p>
- * For R-modules M it is
+ * For R-modules M it is true that
  * <center>&forall;I&#8884;R M/I&sdot;M &cong; M &otimes;<sub>R</sub> R/I</center>
  * </p>
  *

@@ -25,6 +25,7 @@ import java.io.Serializable;
  * @see java.util.Collections#reverseOrder()
  */
 public class ReverseComparator implements Comparator, Serializable {
+    private static final long serialVersionUID = -9160553140712258086L;
 
     /**
      * Contains the Comparator to be inverted, or <code>null</code>

@@ -39,7 +39,7 @@ public class BranchAndBound extends DepthFirstBoundingSearch implements Heuristi
      * A sufficiently high upper bound for a solution beyond which search will not continue.
      * @serial
      */
-    private double maxBound;
+    private Real maxBound;
     
     /**
      * Create a new instance of Branch and Bound search.
@@ -48,16 +48,22 @@ public class BranchAndBound extends DepthFirstBoundingSearch implements Heuristi
      *  If there is no solution below this bound, the search will fail.
      * @see #getEvaluation()
      */
-    public BranchAndBound(Function heuristic, double maximumUpperBound) {
+    public BranchAndBound(Function heuristic, Real maximumUpperBound) {
     	setHeuristic(heuristic);
     	setContinuedWhenFound(true);
     	setMaxBound(maximumUpperBound);
+    }
+    /**
+     * @deprecated Since Orbital1.1 use {@link #BranchAndBound(Function,Real)} instead.
+     */
+    public BranchAndBound(Function heuristic, double maximumUpperBound) {
+	this(heuristic, Values.getDefaultInstance().valueOf(maximumUpperBound));
     }
     
     /**
      * Get the maximum upper bound for a solution.
      */
-    public double getMaxBound() {
+    public Real getMaxBound() {
     	return maxBound;
     }
 
@@ -66,9 +72,15 @@ public class BranchAndBound extends DepthFirstBoundingSearch implements Heuristi
      * @param bound is a sufficiently high upper bound for a solution.
      *  If there is no solution below this bound, the search will fail.
      */
-    public void setMaxBound(double maximumUpperBound) {
+    public void setMaxBound(Real maximumUpperBound) {
     	this.maxBound = maximumUpperBound;
 	// firePropertyChange
+    }
+    /**
+     * @deprecated Since Orbital1.1 use {@link #setMaxBound(Real)} instead.
+     */
+    public void setMaxBound(double maximumUpperBound) {
+	setMaxBound(Values.getDefaultInstance().valueOf(maximumUpperBound));
     }
 	
     public Function getHeuristic() {
@@ -123,7 +135,7 @@ public class BranchAndBound extends DepthFirstBoundingSearch implements Heuristi
      * Since better solutions can only be found below this bound.
      */
     protected Object/*>S<*/ processSolution(Object/*>S<*/ node) {
-	setBound(((Real/*__*/) getProblem().getAccumulatedCostFunction().apply(node)).doubleValue());
+	setBound((Real/*__*/) getProblem().getAccumulatedCostFunction().apply(node));
 	return node;
     }
 	

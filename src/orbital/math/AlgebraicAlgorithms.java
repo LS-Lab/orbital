@@ -186,6 +186,9 @@ public final class AlgebraicAlgorithms {
 	    return (o instanceof InducedPolynomialComparator)
 		&& monomialOrder.equals(((InducedPolynomialComparator)o).monomialOrder);
 	}
+	public int hashCode() {
+	    return monomialOrder.hashCode();
+	}
 	public int compare(Object p1, Object p2) {
 	    final SortedSet amon = new TreeSet(new ReverseComparator(monomialOrder));
 	    amon.addAll(occurringMonomials((Polynomial)p1));

@@ -602,7 +602,7 @@ public final class Setops {
 	    }
 	}
 	i.add(c);
-	assert Utility.sorted(l, null) && l.indexOf(object) >= 0: "@post";
+	assert Utility.sorted(l, null) && l.contains(object) : "@post";
     }
 
     /**

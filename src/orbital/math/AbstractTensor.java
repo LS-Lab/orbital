@@ -51,7 +51,11 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractProdu
      */
     public boolean equals(Object o) {
 	return (o instanceof Tensor) && super.equals(o);
-    } 
+    }
+    
+    public int hashCode() {
+	return super.hashCode();
+    }
 
     public Object clone() {
 	try {

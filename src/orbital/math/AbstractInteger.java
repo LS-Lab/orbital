@@ -105,82 +105,6 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
 
 
     /**
-     * Represents an integer number in <b>Z</b> as a long value.
-     * 
-     * @version 1.0, 2000/08/03
-     * @author  Andr&eacute; Platzer
-     * @see java.lang.Long
-     * @internal note we do not provide a faster hashCode() implementation via longValue(), since new Real(0) and new Integer(0) will have different hashes then, although they are equal.
-     */
-    static class Long extends AbstractInteger {
-    	private static final long serialVersionUID = 6559525715511278001L;
-    	/**
-    	 * the value
-    	 * @serial
-    	 */
-    	private long value;
-    	public Long(long v) {
-	    value = v;
-    	}
-    	public Long(Number v) {
-	    value = v.longValue();
-    	}
-        
-    	public Object clone() {
-	    return new Long(longValue());
-    	} 
-
-    	public long longValue() {
-	    return value;
-    	} 
-    	public double doubleValue() {
-	    return longValue();
-    	} 
-    
-	public Real norm() {
-	    return Values.getDefaultInstance().valueOf(Math.abs(longValue()));
-	} 
-
-    	// Arithmetic implementation synonyms
-    	public Integer add(Integer b) {
-	    return new Long(longValue() + b.longValue());
-    	}
-    	public Integer subtract(Integer b) {
-	    return new Long(longValue() - b.longValue());
-    	}
-    	public Arithmetic minus() {
-	    return new Long(-value);
-    	} 
-    	public Integer multiply(Integer b) {
-	    return new Long(longValue() * b.longValue());
-    	}
-    	public Integer power(Integer b) {
-	    return new Long((long) Math.pow(longValue(), b.longValue()));
-    	}
-    	
-    	// Euclidean implementation
-    	public Integer quotient(Integer b) {
-	    return new Long(longValue() / b.longValue());
-    	}
-    	public Euclidean quotient(Euclidean b) {
-	    return quotient((Integer)b);
-    	}
-    	public Integer modulo(Integer b) {
-	    long m = b.longValue();
-	    long v = longValue() % m;
-	    //@internal assure mathematical nonnegative modulus
-	    if (v < 0)
-		v += m;
-	    assert (v - (longValue() % m)) % m == 0 : "change of canonical representative, only";
-	    assert v >= 0 : "nonnegative representative chosen";
-	    return new Long(v);
-    	}
-    	public Euclidean modulo(Euclidean b) {
-	    return modulo((Integer)b);
-    	}
-    }
-
-    /**
      * Represents an integer number in <b>Z</b> as an int value.
      * 
      * @version 1.0, 2000/08/03
@@ -266,6 +190,82 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
 	    assert (v - (intValue() % m)) % m == 0 : "change of canonical representative, only";
 	    assert v >= 0 : "nonnegative representative chosen";
 	    return new Int(v);
+    	}
+    	public Euclidean modulo(Euclidean b) {
+	    return modulo((Integer)b);
+    	}
+    }
+
+    /**
+     * Represents an integer number in <b>Z</b> as a long value.
+     * 
+     * @version 1.0, 2000/08/03
+     * @author  Andr&eacute; Platzer
+     * @see java.lang.Long
+     * @internal note we do not provide a faster hashCode() implementation via longValue(), since new Real(0) and new Integer(0) will have different hashes then, although they are equal.
+     */
+    static class Long extends AbstractInteger {
+    	private static final long serialVersionUID = 6559525715511278001L;
+    	/**
+    	 * the value
+    	 * @serial
+    	 */
+    	private long value;
+    	public Long(long v) {
+	    value = v;
+    	}
+    	public Long(Number v) {
+	    value = v.longValue();
+    	}
+        
+    	public Object clone() {
+	    return new Long(longValue());
+    	} 
+
+    	public long longValue() {
+	    return value;
+    	} 
+    	public double doubleValue() {
+	    return longValue();
+    	} 
+    
+	public Real norm() {
+	    return Values.getDefaultInstance().valueOf(Math.abs(longValue()));
+	} 
+
+    	// Arithmetic implementation synonyms
+    	public Integer add(Integer b) {
+	    return new Long(longValue() + b.longValue());
+    	}
+    	public Integer subtract(Integer b) {
+	    return new Long(longValue() - b.longValue());
+    	}
+    	public Arithmetic minus() {
+	    return new Long(-value);
+    	} 
+    	public Integer multiply(Integer b) {
+	    return new Long(longValue() * b.longValue());
+    	}
+    	public Integer power(Integer b) {
+	    return new Long((long) Math.pow(longValue(), b.longValue()));
+    	}
+    	
+    	// Euclidean implementation
+    	public Integer quotient(Integer b) {
+	    return new Long(longValue() / b.longValue());
+    	}
+    	public Euclidean quotient(Euclidean b) {
+	    return quotient((Integer)b);
+    	}
+    	public Integer modulo(Integer b) {
+	    long m = b.longValue();
+	    long v = longValue() % m;
+	    //@internal assure mathematical nonnegative modulus
+	    if (v < 0)
+		v += m;
+	    assert (v - (longValue() % m)) % m == 0 : "change of canonical representative, only";
+	    assert v >= 0 : "nonnegative representative chosen";
+	    return new Long(v);
     	}
     	public Euclidean modulo(Euclidean b) {
 	    return modulo((Integer)b);

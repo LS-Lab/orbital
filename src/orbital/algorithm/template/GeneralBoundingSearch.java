@@ -35,9 +35,8 @@ public abstract class GeneralBoundingSearch extends GeneralSearch implements Eva
     /**
      * The current bound beyond which search will not continue.
      * @serial
-     * @todo optimize internal representation to Scalar.
      */
-    private double bound;
+    private Real bound;
     
     /**
      * Get the current bound.
@@ -46,16 +45,22 @@ public abstract class GeneralBoundingSearch extends GeneralSearch implements Eva
      * @return the current bound beyond which search will not continue.
      * @see #isOutOfBounds(Object)
      */
-    protected double getBound() {
+    protected Real getBound() {
 	return bound;
     }
 
     /**
      * Set the current bound.
      */
-    protected void setBound(double bound) {
+    protected void setBound(Real bound) {
 	this.bound = bound;
 	//TODO: make "bound" a bound property?
+    }
+    /**
+     * @deprecated Since Orbital1.1 use {@link setBound(Real)} instead.
+     */
+    protected void setBound(double bound) {
+	setBound(Values.getDefaultInstance().valueOf(bound));
     }
 
     /**
@@ -108,7 +113,7 @@ public abstract class GeneralBoundingSearch extends GeneralSearch implements Eva
      * @todo would we profit from transforming bound into a Real?
      */
     protected boolean isOutOfBounds(Object/*>S<*/ node) {
-	return Values.getDefaultInstance().valueOf(getBound()).compareTo(getEvaluation().apply(node)) < 0;
+	return getBound().compareTo(getEvaluation().apply(node)) < 0;
     }
 	
     //	protected Option search(Collection nodes) {

@@ -27,6 +27,7 @@ import java.io.Serializable;
  * @structure delegates problem:GeneralSearchProblem
  */
 public abstract class DelegateGeneralSearchProblem implements GeneralSearchProblem, Serializable {
+    private static final long serialVersionUID = 759071020836279592L;
     /**
      * @serialize
      */

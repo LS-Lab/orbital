@@ -16,15 +16,14 @@ abstract class AbstractReal extends AbstractComplex implements Real {
 
     public boolean equals(Object o) {
     	if (Real.isa.apply(o)) {
-	    Real b = (Real) o;
-	    //@see Double#compare(double,double)
-	    return java.lang.Double.doubleToLongBits(doubleValue()) == java.lang.Double.doubleToLongBits(b.doubleValue());
+	    //@internal identical to @see Double#equals(Object)
+	    return java.lang.Double.doubleToLongBits(doubleValue()) == java.lang.Double.doubleToLongBits(((Real) o).doubleValue());
 	} else
 	    return super.equals(o);
     }
 
     public int hashCode() {
-	//@see Double#hashCode()
+	//@internal identical to @see Double#hashCode()
 	long bits = java.lang.Double.doubleToLongBits(doubleValue());
 	return (int)(bits ^ (bits >>> 32));
     }
@@ -38,10 +37,22 @@ abstract class AbstractReal extends AbstractComplex implements Real {
 	return compareToImpl(o);
     }
     final int compareToImpl(Object o) {
-	//@xxx avoid senseless constructor calls and copy implementation from java.lang.Double.compareTo(Double)
-	//@see Double#compare(double,double)
-	return new java.lang.Double(doubleValue()).compareTo(new java.lang.Double(((Real) o).doubleValue()));
+	return compare(doubleValue(), ((Real) o).doubleValue());
     } 
+    //@internal identical to @see Double#compare(double,double)
+    private static int compare(double d1, double d2) {
+        if (d1 < d2)
+            return -1;		 // Neither val is NaN, thisVal is smaller
+        if (d1 > d2)
+            return 1;		 // Neither val is NaN, thisVal is larger
+
+        long thisBits = java.lang.Double.doubleToLongBits(d1);
+        long anotherBits = java.lang.Double.doubleToLongBits(d2);
+
+        return (thisBits == anotherBits ?  0 : // Values are equal
+                (thisBits < anotherBits ? -1 : // (-0.0, 0.0) or (!NaN, NaN)
+                 1));                          // (0.0, -0.0) or (NaN, !NaN)
+    }
 
     //TODO: optimize using direct + for all Scalars except Complex
     public Arithmetic add(Arithmetic b) {
@@ -110,85 +121,6 @@ abstract class AbstractReal extends AbstractComplex implements Real {
 
     //@xxx improve all implementations of add(*), subtract(*), etc. to work reliably with new type hierarchy and auto conversion
     
-    /**
-     * Represents a real number in <b>R</b> as a double value.
-     * 
-     * @version 1.0, 1999/08/16
-     * @author  Andr&eacute; Platzer
-     */
-    static class Double extends AbstractReal {
-    	private static final long serialVersionUID = 2011638443547790678L;
-    
-    	/**
-    	 * the real value (with machine-sized double-precision, only, of course).
-    	 * @serial
-    	 */
-    	private double			 value;
-    	public Double(double v) {
-	    value = v;
-    	}
-    	public Double(Number v) {
-	    value = v.doubleValue();
-    	}
-    
-    	public Object clone() {
-	    return new Double(doubleValue());
-    	} 
-
-    	public double doubleValue() {
-	    return value;
-    	} 
-    
-    	public Real add(Real b) {
-	    //@todo check whether b is a big arbitrary precision real
-	    return new Double(doubleValue() + b.doubleValue());
-    	}
-    	public Real subtract(Real b) {
-	    return new Double(doubleValue() - b.doubleValue());
-    	}
-    	public Arithmetic minus() {
-	    return new Double(-doubleValue());
-    	} 
-    	public Real multiply(Real b) {
-	    return new Double(doubleValue() * b.doubleValue());
-    	}
-    	public Real divide(Real b) {
-	    return new Double(doubleValue() / b.doubleValue());
-    	}
-    	public Real power(Real b) {
-	    return new Double(Math.pow(doubleValue(), b.doubleValue()));
-    	}
-    	public Arithmetic inverse() {
-	    return new Double(1 / doubleValue());
-    	} 
-
-    	public Arithmetic add(Arithmetic b) {
-	    if (b instanceof Real)
-		return add((Real) b);
-	    return super.add(b);
-    	} 
-    	public Arithmetic subtract(Arithmetic b) {
-	    if (b instanceof Real)
-		return subtract((Real) b);
-	    return super.subtract(b);
-    	} 
-    	public Arithmetic multiply(Arithmetic b) {
-	    if (b instanceof Real)
-		return multiply((Real) b);
-	    return super.multiply(b);
-    	} 
-    	public Arithmetic divide(Arithmetic b) {
-	    if (b instanceof Real)
-		return divide((Real) b);
-	    return super.divide(b);
-    	} 
-    	public Arithmetic power(Arithmetic b) {
-	    if (b instanceof Real)
-		return power((Real) b);
-	    return super.power(b);
-    	} 
-    }
-
     /**
      * Represents a real number in <b>R</b> as a float value.
      * 
@@ -269,6 +201,85 @@ abstract class AbstractReal extends AbstractComplex implements Real {
     	}
     	public Arithmetic inverse() {
 	    return new Float(1 / floatValue());
+    	} 
+    }
+
+    /**
+     * Represents a real number in <b>R</b> as a double value.
+     * 
+     * @version 1.0, 1999/08/16
+     * @author  Andr&eacute; Platzer
+     */
+    static class Double extends AbstractReal {
+    	private static final long serialVersionUID = 2011638443547790678L;
+    
+    	/**
+    	 * the real value (with machine-sized double-precision, only, of course).
+    	 * @serial
+    	 */
+    	private double			 value;
+    	public Double(double v) {
+	    value = v;
+    	}
+    	public Double(Number v) {
+	    value = v.doubleValue();
+    	}
+    
+    	public Object clone() {
+	    return new Double(doubleValue());
+    	} 
+
+    	public double doubleValue() {
+	    return value;
+    	} 
+    
+    	public Real add(Real b) {
+	    //@todo check whether b is a big arbitrary precision real
+	    return new Double(doubleValue() + b.doubleValue());
+    	}
+    	public Real subtract(Real b) {
+	    return new Double(doubleValue() - b.doubleValue());
+    	}
+    	public Arithmetic minus() {
+	    return new Double(-doubleValue());
+    	} 
+    	public Real multiply(Real b) {
+	    return new Double(doubleValue() * b.doubleValue());
+    	}
+    	public Real divide(Real b) {
+	    return new Double(doubleValue() / b.doubleValue());
+    	}
+    	public Real power(Real b) {
+	    return new Double(Math.pow(doubleValue(), b.doubleValue()));
+    	}
+    	public Arithmetic inverse() {
+	    return new Double(1 / doubleValue());
+    	} 
+
+    	public Arithmetic add(Arithmetic b) {
+	    if (b instanceof Real)
+		return add((Real) b);
+	    return super.add(b);
+    	} 
+    	public Arithmetic subtract(Arithmetic b) {
+	    if (b instanceof Real)
+		return subtract((Real) b);
+	    return super.subtract(b);
+    	} 
+    	public Arithmetic multiply(Arithmetic b) {
+	    if (b instanceof Real)
+		return multiply((Real) b);
+	    return super.multiply(b);
+    	} 
+    	public Arithmetic divide(Arithmetic b) {
+	    if (b instanceof Real)
+		return divide((Real) b);
+	    return super.divide(b);
+    	} 
+    	public Arithmetic power(Arithmetic b) {
+	    if (b instanceof Real)
+		return power((Real) b);
+	    return super.power(b);
     	} 
     }
 }

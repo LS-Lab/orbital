@@ -322,6 +322,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
     	 * Will expand the last element returned, and select a state option to visit.</p>
     	 * @pre hasNext()
     	 * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
+	 * @todo optimize
     	 */
     	public Object/*_>S<_*/ next() {
 	    if (lastRet != null)
@@ -381,9 +382,9 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
 		public Object next() {
 		    Object/*>A<*/ a = actions.next();
 		    Iterator t = problem.states(a, state);
-		    assert t.hasNext() : "@post states(...) non-empty";
+		    assert t.hasNext() : "@post GeneralSearchProblem.states(...) non-empty";
 		    Object/*>S<*/ sp = t.next();
-		    assert !t.hasNext() : "@post states(...) has length 1";
+		    assert !t.hasNext() : "@post GeneralSearchProblem.states(...) has length 1";
 		    g.set(sp,
 			  accumulatedCost.add(((Transition)problem.transition(a,state,sp)).getCost()));
 		    return sp;

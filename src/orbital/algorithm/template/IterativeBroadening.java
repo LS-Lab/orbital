@@ -99,7 +99,7 @@ public class IterativeBroadening extends DepthFirstBoundingSearch {
 		     */
 		    private int expansionCount = 0;
 		    private boolean isOutOfBounds() {
-			return !(expansionCount < getBound());
+			return !(expansionCount < getBound().doubleValue());
 		    }
 		    public boolean hasNext() {
 			if (isOutOfBounds()) {

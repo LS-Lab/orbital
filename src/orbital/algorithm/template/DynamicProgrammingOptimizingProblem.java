@@ -20,6 +20,7 @@ import orbital.util.Pair;
  * @author  Andr&eacute; Platzer
  */
 public abstract class DynamicProgrammingOptimizingProblem implements DynamicProgrammingProblem, Serializable {
+    private static final long serialVersionUID = 3764567935798828319L;
 
     /**
      * memorize weights analogue to partialSolutions

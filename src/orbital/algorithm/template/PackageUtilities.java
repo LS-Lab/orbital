@@ -97,6 +97,7 @@ final class PackageUtilities {
      */
     public static final GeneralSearchProblem restrictRandomly(GeneralSearchProblem problem, final int numberOfChoices, final ProbabilisticAlgorithm algorithm) {
 	return new DelegateGeneralSearchProblem(problem) {
+		//private static final long serialVersionUID = 0;
 		public Iterator actions(Object state) {
 		    final List actions = Setops.asList(getDelegatee().actions(state));
 		    final Random random = algorithm.getRandom();
@@ -124,6 +125,7 @@ final class PackageUtilities {
      */
     public static final GeneralSearchProblem restrictBest(GeneralSearchProblem problem, final Function evaluationFunction) {
 	return new DelegateGeneralSearchProblem(problem) {
+		//private static final long serialVersionUID = 0;
 		public Iterator actions(Object state) {
 		    final GeneralSearchProblem problem = getDelegatee();
 		    // just a short name for evalutionFunction

@@ -57,6 +57,10 @@ class AbstractFraction/*<M extends Arithmetic,S extends Arithmetic>*/ extends Ab
 	    return false;
     }
 
+    public int hashCode() {
+	throw new UnsupportedOperationException("not yet implemented");
+    }
+
     public int compareTo(Object o) {
 	//@todo instead of implementing Comparable statically, use java.lang.reflect.Proxy in Values.fraction(...) to dynamically extend it, if the underlying object is an instance of Comparable.
 	Fraction b = (Fraction) o;

@@ -169,9 +169,9 @@ public class Values {
 	// If -MAX_CONSTANT < val < MAX_CONSTANT, return stashed constant
 	if (val == 0)
 	    return ZERO;
-	if (val > 0 && val <= MAX_CONSTANT)
+	else if (0 < val && val <= MAX_CONSTANT)
 	    return posConst[val];
-	else if (val < 0 && val >= -MAX_CONSTANT)
+	else if (-MAX_CONSTANT <= val && val < 0)
 	    return negConst[-val];
 	else
 	    return new AbstractInteger.Int(val);
@@ -782,6 +782,7 @@ public class Values {
 	// but then some tensors would no longer be AbstractTensors.
 	//@todo so perhaps just identify multiple delegations to Tensor, or to Polynomial etc.
 	return /*refine/delegate Tensor*/ new AbstractTensor/*<R>*/() {
+		//private static final long serialVersionUID = 0;
 		protected Tensor/*<R>*/ newInstance(int[] dim) {
 		    assert false : "this method should never get called in this context of constant(...)";
 		    //@todo there are still some methods missing for the above assertion to prove true. transpose, Tensor add(Tensor);
@@ -1569,10 +1570,12 @@ public class Values {
      * the common superclass of the classes of a and b.
      * @see #getEqualizer()
      * @post RES[0].getClass() == RES[1].getClass() == a.getClass()&cup;b.getClass()
+     * @todo optimize hotspot
      */
     public Scalar[] minimumEqualized(Number a, Number b) {
 	//@xxx adapt better to new Complex>Real>Rational>Integer type hierarchy and conform to a new OBDD (ordered binary decision diagram)
 	//@todo partial order with Arithmetic>Scalar>Complex>Real>Rational>Integer and greatest common super type of A,B being A&cup;B = sup {A,B}
+	//@todo implement sup along with conversion routines. Perhaps introduce "int AbstractScalar.typeLevel()" and "int AbstractScalar.precisionLevel()" such that we can compute the maximum level of both with just two method calls. And introduce "Object AbstractScalar.convertTo(int typeLevel, int precisionLevel)" for conversion.
 	if (Complex.hasType.apply(a) || Complex.hasType.apply(b))
 	    return new Complex[] {
 		Complex.hasType.apply(a) ? (Complex) a : new AbstractComplex.ComplexImpl(a), Complex.hasType.apply(b) ? (Complex) b : new AbstractComplex.ComplexImpl(b)
@@ -1661,26 +1664,24 @@ public class Values {
 	this.equalizer = equalizer;
     } 
 
+    /*
+     * @todo optimize hotspot
+     */
     private final Arithmetic[] minimumEqualized(Arithmetic[] a) {
 	assert a.length == 2 : "currently for binary operations, only";
 	//@todo!
-	if (a[0] == null || a[1] == null)
-	    throw new NullPointerException("null is no true arithmetic object");
-	if (/*(a[0] == null || a[1] == null)
-	      ||*/ a[0].getClass() == a[1].getClass())
+	if (a[0].getClass() == a[1].getClass())
 	    return a;
 	else if (a[0] instanceof Number && a[1] instanceof Number)
 	    return minimumEqualized((Number) a[0], (Number) a[1]);
-	else if ((a[0] instanceof Matrix || a[1] instanceof Matrix)
-		 || (a[0] instanceof Vector || a[1] instanceof Vector))
+	else if (a[0] instanceof Tensor || a[1] instanceof Tensor)
 	    return a;
-	else if ((a[0] instanceof MathFunctor || a[0] instanceof Symbol) || (a[1] instanceof MathFunctor || a[1] instanceof Symbol))
-	    if (a[0] instanceof MathFunctor || a[0] instanceof Symbol)
+	else if (a[0] instanceof MathFunctor || a[0] instanceof Symbol)
 		return a;
-	    else
-		return new Arithmetic[] {
-		    makeSymbolAware(a[0]), a[1]
-		};	//XXX: how exactly?
+	else if (a[1] instanceof MathFunctor || a[1] instanceof Symbol)
+	    return new Arithmetic[] {
+		makeSymbolAware(a[0]), a[1]
+	    };	//XXX: how exactly?
 	throw new AssertionError("the types of the arguments could not be equalized: " + (a == null ? "null" : a[0].getClass() + "") + " and " + (a[1] == null ? "null" : a[1].getClass() + ""));
     } 
 

@@ -50,7 +50,10 @@ abstract class AbstractMultivariatePolynomial/*<R implements Arithmetic>*/ exten
 	    return Setops.all(iterator(d), b.iterator(d), Predicates.equal);
 	} 
 	return false;
-    } 
+    }
+    public int hashCode() {
+	throw new UnsupportedOperationException();
+    }
 
     protected Object productIndexSet(Arithmetic/*>T<*/ productObject) {
 	//@xxx note that this ruins compatibility with instances of superclass, only

@@ -49,6 +49,7 @@ import java.math.BigInteger;
  * @deprecated Since Orbital1.1 use quotient instead (see below).
  */
 public class BigModulus extends AbstractScalar implements Quotient {
+    private static final long serialVersionUID = -878764623952760011L;
 
     /**
      * The modulus value that this BigModulus is calculated in.

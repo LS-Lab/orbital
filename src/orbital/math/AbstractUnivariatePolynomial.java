@@ -45,6 +45,10 @@ abstract class AbstractUnivariatePolynomial/*<R implements Arithmetic>*/ extends
     	return (o instanceof UnivariatePolynomial) && super.equals(o);
     }
 
+    public int hashCode() {
+	return super.hashCode();
+    }
+
 
     /**
      * Sets a value for the coefficient specified by index.

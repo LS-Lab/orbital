@@ -29,6 +29,10 @@ abstract class AbstractRational extends AbstractReal implements Rational {
 	} else
 	    return super.equals(o);
     }
+
+    public int hashCode() {
+	return super.hashCode();
+    }
     
     // order
     public int compareTo(Object o) {

@@ -125,7 +125,7 @@ public class IterativeExpansion extends GeneralSearch implements EvaluativeAlgor
 
     /**
      * @return the solution state (if any).
-     * @post node.getCost() might have changed
+     * @post node.getFCost() might have changed
      * @todo optimizable, also modularize to an OptionIterator?
      * @internal for bound comparisons we locally define not(POSITIVE_INFINITY=<POSITIVE_INFINITY)
      *  in order to ensure termination on unsolvable cases, where successors.isEmpty() has already been true.
@@ -134,7 +134,7 @@ public class IterativeExpansion extends GeneralSearch implements EvaluativeAlgor
     private final Object/*>S<*/ solveByIterativeExpand(final NodeInfo node, final Real bound) {
 	assert bound.compareTo(Values.ZERO) >= 0 && !bound.isNaN() : "bound " + bound + " >= 0";
 	//System.err.println(node + "/" + bound);
-	if (boundCompare(node.getCost(), bound) > 0)
+	if (boundCompare(node.getFCost(), bound) > 0)
 	    {//System.err.println("cut ");
 	    return null;}
 	else if (getProblem().isSolution(node.getNode()))
@@ -147,7 +147,7 @@ public class IterativeExpansion extends GeneralSearch implements EvaluativeAlgor
 	    for (final Iterator i = GeneralSearch.expand(getProblem(), node.getNode()); i.hasNext(); ) {
 		final Object o = i.next();
 		// pathmax
-		final Real fo = (Real) Operations.max.apply(node.getCost(), f.apply(o));
+		final Real fo = (Real) Operations.max.apply(node.getFCost(), f.apply(o));
 		successors.add(new NodeInfo(o, fo));
 	    }
 	}
@@ -159,12 +159,12 @@ public class IterativeExpansion extends GeneralSearch implements EvaluativeAlgor
 	// sort successors in order to have fast access to min and second-best min
 	Collections.sort(successors);
 	assert orbital.util.Utility.sorted(successors, null) : "Collections.sort@post";
-	while (boundCompare(node.getCost(), bound) <= 0) {
+	while (boundCompare(node.getFCost(), bound) <= 0) {
 	    {
 		final NodeInfo best = (NodeInfo)successors.get(0);
 		assert !Setops.some(successors, new orbital.logic.functor.Predicate() { public boolean apply(Object o) {return ((NodeInfo)o).compareTo(best) < 0;} }) : "best has lowest f-cost";
 		final NodeInfo secondBest = (NodeInfo)successors.get(1);
-		final Real newbound = (Real) Operations.min.apply(bound, secondBest.getCost());
+		final Real newbound = (Real) Operations.min.apply(bound, secondBest.getFCost());
 		assert !Setops.some(successors.subList(1, successors.size()), new orbital.logic.functor.Predicate() { public boolean apply(Object o) {return ((NodeInfo)o).compareTo(secondBest) < 0;} }) : "second best has second lowest f-cost";
 		//System.err.println(node + "/" + bound + "\t expanding to " + best + "/" + newbound + "\n\t\talternative " + secondBest);
 		
@@ -178,8 +178,8 @@ public class IterativeExpansion extends GeneralSearch implements EvaluativeAlgor
 		Setops.insert(successors, best);
 		assert orbital.util.Utility.sorted(successors, null) : "@post Setops.insert";
 	    }
-	    // circumscription of getEvaluation().set(node.getNode(), node.getCost());
-	    node.setCost((Real) ((NodeInfo)successors.get(0)).getCost());
+	    // circumscription of getEvaluation().set(node.getNode(), node.getFCost());
+	    node.setCost((Real) ((NodeInfo)successors.get(0)).getFCost());
 	    //System.err.println("\tupdated cost to " + node + " (due to " + (NodeInfo)successors.get(0) + ")");
 	}
 
@@ -218,32 +218,25 @@ public class IterativeExpansion extends GeneralSearch implements EvaluativeAlgor
 	    this.node = node;
 	    this.cost = cost;
 	}
-	public boolean equals(Object o) {
-	    if (o instanceof NodeInfo) {
-		NodeInfo b = (NodeInfo)o;
-		if (getNode().equals(b.getNode())) {
-		    assert getCost().equals(b.getCost()) : "same node, same nodeinfo";
-		    return true;
-		}
-	    }
-	    return false;
-	}
-		
+
+	/**
+	 * @attribute coarser than equals.
+	 */
 	public int compareTo(Object o) {
 	    NodeInfo b = (NodeInfo)o;
-	    return getCost().compareTo(b.getCost());
+	    return getFCost().compareTo(b.getFCost());
 	}
 	public Object/*>S<*/ getNode() {
 	    return node;
 	}
-	public Real getCost() {
+	public Real getFCost() {
 	    return cost;
 	}
 	public void setCost(Real newcost) {
 	    this.cost = newcost;
 	}
 	public String toString() {
-	    return getNode() + "\t" + getCost();
+	    return getNode() + "\t" + getFCost();
 	}
     }
 

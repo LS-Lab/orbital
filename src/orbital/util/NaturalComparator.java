@@ -22,9 +22,12 @@ final class NaturalComparator implements Comparator  {
      * @param param1 <description>
      * @return <description>
      */
-    public boolean equals(Object param1)
+    public final boolean equals(Object param1)
     {
 	return param1 instanceof NaturalComparator;
+    }
+    public final int hashCode() {
+	return 0;
     }
 
     /**

@@ -24,6 +24,7 @@ import java.util.logging.Level;
  *
  * @version 0.8, 2001/07/01
  * @author  Andr&eacute; Platzer
+ * @internal min-max trees with compact values in [0,1] are and-or trees with fuzzy logic operators.
  * @todo generalize? implement a general interface?
  * @todo could optimize calculation to spend some memory for reuse of the last move's search tree
  */
