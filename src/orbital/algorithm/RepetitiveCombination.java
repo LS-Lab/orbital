@@ -14,6 +14,7 @@ import orbital.math.MathUtilities;
 /**
  * Com[n,r](true)
  * @version 0.9, 2000/11/29
+ * @fixme fixed? orbital.algorithm.RepetitiveCombination of 3 elements out of 1 Combinatorical.count()=1 matches Combinatorical.hasNext()=0
  */
 class RepetitiveCombination extends Combinatorical {
     private static final long serialVersionUID = -7887257459549546388L;
@@ -30,11 +31,16 @@ class RepetitiveCombination extends Combinatorical {
     }
 
     public boolean hasNext() {
-	return combination[0] + 1 < n;
+	// search for the (for example rightmost) element that is below its maximum
+	for (int i = combination.length - 1; i >= 0; i--) {
+	    if (combination[i] + 1 < n)
+		return true;
+	}
+	return false;
     } 
 
     public int[] next() {
-	// search the rightmost element that is below its maximum
+	// search for the rightmost element that is below its maximum
 	for (int i = combination.length - 1; i >= 0; i--) {
 	    if (combination[i] + 1 < n) {
 		combination[i]++;
