@@ -165,6 +165,8 @@ public class DefaultCustomizer extends JPanel implements Customizer {
 	
     /**
      * write-through to enable or disable all content property editor components.
+     * @note lightweight components used as property editor components
+     *  usually won't support enabling or disabling.
      *@todo test all enabling/disabling cases
      */
     public void setEnabled(boolean enabled) {

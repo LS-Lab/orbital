@@ -601,6 +601,7 @@ public final class MathUtilities {
      * <p>
      * Does special handling for numbers, arithmetic objects, functors, for arrays, for two-dimensional arrays, etc.</p>
      * @see ArithmeticFormat
+     * @fixme MatrixKlammerung shows that MathUtilities.format does not work for Double[][]
      */
     public static String format(Object o) {
 	if (o == null)
