@@ -82,16 +82,14 @@ public final class MathUtilities {
     static {
 	String property = MathUtilities.class.getName() + ".defaultPrecisionDigits";
 	try {
-	    String desc = (String) java.security.AccessController.doPrivileged(
-                            new GetPropertyAction(property, DefaultPrecisionDigits + ""));
+	    String desc = GetPropertyAction.getProperty(property, DefaultPrecisionDigits + "");
 	    try {
 		DefaultPrecisionDigits = java.lang.Integer.parseInt(desc);
 	    } catch (NumberFormatException nonumber) {
 		logger.log(Level.SEVERE, "invalid property setting {0}={1}" , new Object[] {property, desc});
 	    } 
 	    property = MathUtilities.class.getName() + ".defaultTolerance";
-	    desc = (String) java.security.AccessController.doPrivileged(
-                            new GetPropertyAction(property, DefaultTolerance + ""));
+	    desc = GetPropertyAction.getProperty(property, DefaultTolerance + "");
 	    try {
 		DefaultTolerance = java.lang.Double.parseDouble(desc);
 	    } catch (NumberFormatException nonumber) {

@@ -69,8 +69,9 @@ public abstract class Values implements ValueFactory {
      *  whether Real... automatically narrows doens its results.
      */
     public static Values getInstance() {
-	return instantiate((String) java.security.AccessController.doPrivileged(
-                            new GetPropertyAction(Values.class.getName() + ".implementation", "orbital.moon.math.ValuesImpl")));
+	//@internal notice the explicit mention of the ValuesImpl class (outside a string) to ease the job of packagers and deployment wizards.
+	return instantiate(GetPropertyAction.getProperty(Values.class.getName() + ".implementation",
+							 orbital.moon.math.ValuesImpl.class.getName()));
     }
 
     private static final Values instantiate(String className) {
@@ -90,9 +91,8 @@ public abstract class Values implements ValueFactory {
      */
     private static Values defaultValueFactory;
     static {
-	String defaultValueFactoryClass
-	    = (String) java.security.AccessController.doPrivileged(
-                            new GetPropertyAction(Values.class.getName() + ".default", null));
+	String defaultValueFactoryClass =
+	    GetPropertyAction.getProperty(Values.class.getName() + ".default", null);
 	defaultValueFactory = defaultValueFactoryClass != null
 	    ? instantiate(defaultValueFactoryClass)
 	    : getInstance();
