@@ -57,7 +57,8 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
     } 
     public Arithmetic power(Arithmetic b) {
 	if (b instanceof Integer)
-	    return power((Integer) b);
+	    //@xxx due to newly compiler error (bug?): call Rational Rational.power(Integer) or Rational Integer.power(Rational)? or Rational Integer.power(Integer)?
+	    return ((Integer)this).power((Integer) b);
 	return (Arithmetic) Operations.power.apply(this, b);
     } 
 
