@@ -9,15 +9,14 @@ package orbital.math;
 import orbital.logic.functor.Predicate;
 
 /**
- * Represents an algebraic symbol.
+ * Represents an algebraic or transcendental symbol.
  * 
- * Algebraic symbols behave like arithmetic objects, with the
- * exception that the result of an operation may not have a numeric
- * value but require a symbolic representation again.
+ * Algebraic or transcendental symbols behave like arithmetic objects,
+ * with the exception that the result of an operation may not have a
+ * numeric value but require a symbolic representation again.
  * 
- * <p>
- * Variables and constants are symbols, for example.
- * </p>
+ * <p> Variables and constants are symbols, for example. Roots of
+ * radicals can sometimes be represented as symbols. </p>
  * 
  * @version 1.0, 2000/08/11
  * @author  Andr&eacute; Platzer
