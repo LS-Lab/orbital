@@ -7,6 +7,8 @@
 package orbital.moon.logic;
 
 import orbital.logic.imp.*;
+import orbital.logic.sign.*;
+import orbital.logic.sign.type.*;
 import orbital.logic.functor.Functor;
 import orbital.logic.functor.Notation.NotationSpecification;
 

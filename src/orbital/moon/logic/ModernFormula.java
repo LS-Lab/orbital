@@ -13,7 +13,9 @@
 package orbital.moon.logic;
 
 import orbital.logic.imp.*;
-import orbital.logic.imp.ParseException;
+import orbital.logic.sign.*;
+import orbital.logic.sign.type.*;
+import orbital.logic.sign.ParseException;
 
 import orbital.logic.functor.Functor;
 import orbital.logic.functor.Functor.Composite; //@todo sure? or better Expression.Composite
@@ -358,8 +360,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @param fsymbol the symbol with with the fixed interpretation f.
      */
     public static Formula composeFixed(Logic underlyingLogic, Symbol fsymbol, Functor f, Expression arguments[]) {
-        //@xxx was notat = notation; but either we disable DEFAULT=BESTFIX formatting, or we ignore the signature's notation choice
-        Notation notat = Notation.DEFAULT;
+        //@xxx was notat = fsymbol.getNotation().getNotation(); but either we disable DEFAULT=BESTFIX formatting, or we ignore the signature's notation choice
+        Notation notat = fsymbol.getNotation().getNotation(); //Notation.DEFAULT;
 	switch(arguments.length) {
 	case 0:
 	    if (f instanceof VoidPredicate && !(f instanceof VoidFunction))

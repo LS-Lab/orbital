@@ -20,6 +20,8 @@ PARSER_BEGIN(LogicParser)
 package orbital.moon.logic;
 
 import orbital.logic.imp.*;
+import orbital.logic.sign.*;
+import orbital.logic.sign.type.*;
 import orbital.logic.functor.Notation.NotationSpecification;
 
 import orbital.logic.functor.Function;
@@ -74,9 +76,9 @@ import java.util.logging.Level;
  * @todo should use precedence and associativity information from
  * orbital.logic.imp.Symbol instead of hard wiring parser.
  * @xxx "disambiguate" language and disallow acception of $p(x) as $p (x) and °p(x) as °p (x) and alike
- * @todo get rid of all this (sometimes) triple exception wrapping and unwrapping by wrapping the final orbital.logic.imp.ParseException inside an unchecked exception once, and unwrap it once
+ * @todo get rid of all this (sometimes) triple exception wrapping and unwrapping by wrapping the final orbital.logic.sign.ParseException inside an unchecked exception once, and unwrap it once
  * @todo join symbiose of MathParser and LogicParser by letting expression() accept term(), directly as well? Instead of just providing two distinct start productions.
- * @todo get rid of all this exception wrapping and unwrapping by wrapping the final orbital.logic.imp.ParseException inside an unchecked exception once, and unwrap it once again? Necessary? There's not that much wrapping.
+ * @todo get rid of all this exception wrapping and unwrapping by wrapping the final orbital.logic.sign.ParseException inside an unchecked exception once, and unwrap it once again? Necessary? There's not that much wrapping.
  */
 public class LogicParser {
     private static final Logger logger = Logger.getLogger(LogicParser.class.getName());
@@ -293,8 +295,8 @@ public class LogicParser {
 	try {
 	    return syntax.compose(op, arg);
     	}
-    	catch (orbital.logic.imp.ParseException ex) {throw newParseException(ex.getMessage(), optok, ex);}
-    	catch (orbital.logic.imp.TypeException ex) {throw newParseException(ex.getMessage(), optok, ex);}
+    	catch (orbital.logic.sign.ParseException ex) {throw newParseException(ex.getMessage(), optok, ex);}
+    	catch (orbital.logic.sign.type.TypeException ex) {throw newParseException(ex.getMessage(), optok, ex);}
     }
     /**
      * Wraps calls to {@link ExpressionBuilder#compose(Expression,Expression[])} in an exception handling block.
@@ -510,11 +512,11 @@ public class LogicParser {
      *  the expressions parsed (<code>&lt;matchingSide&gt;</code> and <code>&lt;replacementSide&gt;</code>)
      *  prior to constructing the substitution.
      * @throws IOException when an error occurs while reading from the reader.
-     * @throws orbital.logic.imp.ParseException when a syntax error occurs in the source.
+     * @throws orbital.logic.sign.ParseException when a syntax error occurs in the source.
      * @see ModernLogic#proveAll(Reader,boolean)
      */
     public static final Substitution readTRS(final Reader reader, final ExpressionSyntax syntax, final Function expressionTransformation)
-	throws IOException, orbital.logic.imp.ParseException {
+	throws IOException, orbital.logic.sign.ParseException {
 	final String ruleDelim = "|-";
 	final LineNumberReader rd = new LineNumberReader(reader);
 	final List rules = new LinkedList();
@@ -529,7 +531,7 @@ public class LogicParser {
 		continue;
 	    int rule = l.indexOf(ruleDelim);
 	    if (rule < 0)
-		throw new orbital.logic.imp.ParseException("neither comment nor whitespace nor rule", rd.getLineNumber(), 1);
+		throw new orbital.logic.sign.ParseException("neither comment nor whitespace nor rule", rd.getLineNumber(), 1);
 	    rules.add(
 		      Substitutions.createSingleSidedMatcher(
 							     expressionTransformation.apply(syntax.createExpression(l.substring(0, rule))),
@@ -545,7 +547,7 @@ public class LogicParser {
      * @see #readTRS(Reader,ExpressionSyntax,Function)
      */
     public static final Substitution readTRS(final Reader reader, final ExpressionSyntax syntax)
-	throws IOException, orbital.logic.imp.ParseException {
+	throws IOException, orbital.logic.sign.ParseException {
 	return readTRS(reader, syntax, Functions.id);
     }
 

@@ -17,10 +17,10 @@ import orbital.logic.functor.Functor;
 import orbital.logic.functor.Predicate;
 
 // for typed unification
-import orbital.logic.imp.Type;
-import orbital.logic.imp.Typed;
+import orbital.logic.sign.type.Type;
+import orbital.logic.sign.type.Typed;
 // for type-safe substitutions
-import orbital.logic.imp.TypeException;
+import orbital.logic.sign.type.TypeException;
 
 
 import java.util.List;

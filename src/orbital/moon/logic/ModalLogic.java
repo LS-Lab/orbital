@@ -7,9 +7,11 @@
 package orbital.moon.logic;
 
 import orbital.logic.imp.*;
-import orbital.logic.imp.ParseException;
+import orbital.logic.sign.*;
+import orbital.logic.sign.type.*;
+import orbital.logic.sign.ParseException;
 import orbital.logic.functor.Functor;
-import orbital.logic.imp.Expression.Composite;
+import orbital.logic.sign.Expression.Composite;
 import orbital.logic.functor.Function;
 import orbital.logic.functor.BinaryFunction;
 import orbital.logic.trs.*;
@@ -150,12 +152,12 @@ public class ModalLogic extends ClassicalLogic {
 		Formula[] Bred = new Formula[B.length];
 		System.err.print("  ");
 		for (int i = 0; i < B.length; i++) {
-		    Bred[i] = ClassicalLogic.Utilities.constantClosure(Utilities.modalReduce(B[i]));
+		    Bred[i] = ClassicalLogic.Utilities.existentialClosure(Utilities.modalReduce(B[i]));
 		    if (i > 0 )
 			System.err.print(" , ");
 		    System.err.print(Bred[i]);
 		}
-		Formula Dred = ClassicalLogic.Utilities.constantClosure(Utilities.modalReduce(D));
+		Formula Dred = ClassicalLogic.Utilities.existentialClosure(Utilities.modalReduce(D));
 		System.err.println("  |-<red> " + Dred);
 		return classicalInference.infer(Bred, Dred);
 	    }

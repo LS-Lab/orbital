@@ -8,7 +8,7 @@ package orbital.moon.logic;
 
 import orbital.logic.imp.Interpretation;
 import orbital.logic.imp.InterpretationBase;
-import orbital.logic.imp.Signature;
+import orbital.logic.sign.Signature;
 import java.util.Map;
 import java.util.Set;
 import java.util.Collection;

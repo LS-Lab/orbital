@@ -8,7 +8,9 @@ package orbital.moon.logic;
 import orbital.moon.logic.ClassicalLogic.Utilities;
 
 import orbital.logic.imp.*;
-import orbital.logic.imp.Expression.Composite;
+import orbital.logic.sign.*;
+import orbital.logic.sign.type.Types;
+import orbital.logic.sign.Expression.Composite;
 
 import orbital.algorithm.template.GeneralSearchProblem;
 import orbital.algorithm.template.*;
