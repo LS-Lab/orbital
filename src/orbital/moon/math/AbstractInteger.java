@@ -9,6 +9,7 @@ import orbital.math.*;
 import orbital.math.Integer;
 
 
+import java.math.BigInteger;
 import orbital.math.functional.Operations;
 
 // @todo non-associative precisions: note that Long+Int and Int+Long etc. may differ due to brutal casting per b.intValue() or even b.longValue().
@@ -18,6 +19,7 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
     
     // order
     public int compareTo(Object o) {
+	//@xxx this implementation does not work for Integer.Bigs
     	if (Integer.isa.apply(o)) {
 	    // faster compare
 	    long thisVal = this.longValue();
@@ -279,6 +281,104 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
 	    assert (v - (longValue() % m)) % m == 0 : "change of canonical representative, only";
 	    assert v >= 0 : "nonnegative representative chosen";
 	    return new Long(v);
+    	}
+    	public Euclidean modulo(Euclidean b) {
+	    return modulo((Integer)b);
+    	}
+    }
+
+    /**
+     * Represents an integer number in <b>Z</b> as an arbitrary-precision value.
+     * 
+     * @version 1.2, 2003-12-12
+     * @author  Andr&eacute; Platzer
+     * @see java.math.BigInteger
+     * @internal note we do not provide a faster hashCode() implementation via longValue(), since new Real(0) and new Integer(0) will have different hashes then, although they are equal.
+     */
+    static class Big extends AbstractInteger {
+    	private static final long serialVersionUID = -5189252512503918277L;
+    	/**
+    	 * the value
+    	 * @serial
+    	 */
+    	private BigInteger value;
+    	public Big(int v) {
+	    this(BigInteger.valueOf(v));
+    	}
+    	public Big(BigInteger v) {
+	    value = v;
+    	}
+
+	//@todo add equals
+	
+    	public Object clone() {
+	    return new Big(value);
+    	} 
+
+    	public int intValue() {
+	    return value.intValue();
+    	} 
+    	public double doubleValue() {
+	    return value.doubleValue();
+    	} 
+    
+	public Real norm() {
+	    return Values.getDefaultInstance().valueOf(value.abs());
+	} 
+
+    	// Arithmetic implementation synonyms
+    	public Integer add(Integer b) {
+	    if (b instanceof Big)
+		return new Big(value.add(((Big)b).value));
+	    else if (b instanceof Int || b instanceof Long)
+		return new Big(value.add(BigInteger.valueOf(b.longValue())));
+	    return (Integer) Operations.plus.apply(this, b);
+    	} 
+    	public Integer subtract(Integer b) {
+	    if (b instanceof Big)
+		return new Big(value.subtract(((Big)b).value));
+	    else if (b instanceof Int || b instanceof Long)
+		return new Big(value.subtract(BigInteger.valueOf(b.longValue())));
+	    return (Integer) Operations.subtract.apply(this, b);
+    	} 
+    	public Arithmetic minus() {
+	    return new Big(value.negate());
+    	} 
+    	public Integer multiply(Integer b) {
+	    if (b instanceof Big)
+		return new Big(value.multiply(((Big)b).value));
+	    else if (b instanceof Int || b instanceof Long)
+		return new Big(value.multiply(BigInteger.valueOf(b.longValue())));
+	    return (Integer) Operations.times.apply(this, b);
+    	} 
+    	public Rational power(Integer b) {
+	    if (b instanceof Big || b instanceof Long)
+		throw new ArithmeticException("exponentation is possibly too big");
+	    else if (b instanceof Int) {
+		return b.compareTo(zero()) >= 0
+		    ? new Big(value.pow(b.intValue()))
+		    : Values.getDefault().rational((Integer/*__*/)one(), Values.getDefault().valueOf(value.pow(-b.intValue())));
+	    }
+	    return (Integer) Operations.power.apply(this, b);
+    	} 
+
+    	// Euclidean implementation
+    	public Integer quotient(Integer b) {
+	    if (b instanceof Big)
+		return new Big(value.divide(((Big)b).value));
+	    else if (b instanceof Int || b instanceof Long)
+		return new Big(value.divide(BigInteger.valueOf(b.longValue())));
+	    throw new UnsupportedOperationException("opertion cannot be applied on " + this + " and " + b);
+    	}
+    	public Euclidean quotient(Euclidean b) {
+	    return quotient((Integer)b);
+    	}
+    	public Integer modulo(Integer b) {
+	    if (b instanceof Big)
+		return new Big(value.mod(((Big)b).value));
+	    else if (b instanceof Int || b instanceof Long)
+		return new Big(value.mod(BigInteger.valueOf(b.longValue())));
+	    throw new UnsupportedOperationException("opertion cannot be applied on " + this + " and " + b);
     	}
     	public Euclidean modulo(Euclidean b) {
 	    return modulo((Integer)b);
