@@ -27,8 +27,8 @@ import orbital.logic.sign.Symbol;
  *   <li>(&or;, &not;, &forall;)</li>
  *   <li>(&rarr;, false, &forall;)</li>
  *   <li>(&rarr;, &not;, &forall;) the Frege logic</li>
- *   <li>(<span style="text-decoration: overline">&and;</span>, &forall;) with a <span style="text-decoration: overline">&and;</span> b = <span style="text-decoration: overline">a &and; b</span> = &not;(a &and; b) denoting nand-operator.</li>
- *   <li>(<span style="text-decoration: overline">&or;</span>, &forall;) with a <span style="text-decoration: overline">&or;</span> b = <span style="text-decoration: overline">a &or; b</span> = &not;(a &or; b) denoting nor-operator.</li>
+ *   <li>(<span style="text-decoration: overline">&and;</span>, &forall;) with nand-operator a <span style="text-decoration: overline">&and;</span> b = <span style="text-decoration: overline">a &and; b</span> = &not;(a &and; b).</li>
+ *   <li>(<span style="text-decoration: overline">&or;</span>, &forall;) with nor-operator a <span style="text-decoration: overline">&or;</span> b = <span style="text-decoration: overline">a &or; b</span> = &not;(a &or; b).</li>
  * </ul>
  * </p>
  * 
