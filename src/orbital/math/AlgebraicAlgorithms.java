@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 
 import java.util.TreeSet;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -687,7 +687,7 @@ public final class AlgebraicAlgorithms {
      * Get the reduced Groebner basis of g (Implementation).
      */
     private static final Set/*_<Polynomial<R,S>>_*/ reducedGroebnerBasis(Collection/*_<Polynomial<R,S>>_*/ g, final Comparator monomialOrder) {
-	return new HashSet(reduceGroebnerBasis(new ArrayList(groebnerBasisImpl(g, monomialOrder)), monomialOrder));
+	return new LinkedHashSet(reduceGroebnerBasis(new ArrayList(groebnerBasisImpl(g, monomialOrder)), monomialOrder));
     }
     /**
      * Get the non-reduced Groebner basis of g (Implementation).
@@ -729,7 +729,7 @@ public final class AlgebraicAlgorithms {
 	    }
 	    break ergaenzeGroebnerBasis;
 	}
-	return new HashSet(g);
+	return new LinkedHashSet(g);
     }
 
     /**
