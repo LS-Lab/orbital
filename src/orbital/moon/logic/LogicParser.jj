@@ -414,7 +414,7 @@ public class LogicParser {
 	    }
 
 	    //@internal first look if there is a symbol of parametric type matching ours
-	    //@fixme note that this does not only find those of parametric types but may hit the first with non-parametric type
+	    //@xxx note that this does not only find those of parametric types, but may get stuck at the first with non-parametric type as well. However this does not incubate problems if only symbols of parameteric types are not overloaded (i.e. their signifier is unique).
 	    s = tryGetSymbol(signifier, Types.UNIVERSAL);
 	    if (s != null && s.getType() instanceof ClassicalLogic.PiAbstractionType)
 		return s;

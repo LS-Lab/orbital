@@ -444,7 +444,6 @@ public class ClassicalLogic extends ModernLogic {
 	    {Types.objectType(String.class, "string"),
 	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
 
-
 	    {Types.list,
 	     new NotationSpecification(500, "fx", Notation.PREFIX)},
 	    {Types.set,
@@ -1110,6 +1109,12 @@ public class ClassicalLogic extends ModernLogic {
     // enum of inference mechanisms @internal this must be below initialization of coreSignature since Resolution needs it.
     /**
      * Semantic inference with truth-tables.
+     * <p>
+     * This inference mechanism is usually slow, but has the advantage of involving no calculus
+     * but directly following the semantics of formulas. Inspite of its bad average performance,
+     * it may be superior to other propositional inference mechanisms in pathological cases or
+     * cases with a very small number of different propositional atoms and large formulas.
+     * </p>
      */
     public static final InferenceMechanism SEMANTIC_INFERENCE = new InferenceMechanism("SEMANTIC_INFERENCE") {
 	    /**
@@ -1173,7 +1178,7 @@ public class ClassicalLogic extends ModernLogic {
 	};
     /**
      * Propositional inference.
-     * Inference mechanism specialized for propositional inference.
+     * Inference mechanism specialized for fast propositional inference.
      */
     public static final InferenceMechanism PROPOSITIONAL_INFERENCE = new InferenceMechanism("PROPOSITIONAL") {
 	    private final Inference _propositional = new PropositionalInference();

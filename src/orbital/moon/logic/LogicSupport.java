@@ -49,6 +49,7 @@ final class LogicSupport {
     public static final Interpretation arrayToInterpretation(Object[][] functors, boolean skipNull, boolean useRegisteredNotationsOnNull, boolean appendTrueFalse) {
 	Map assoc = new TreeMap();
 	if (appendTrueFalse) {
+	    //@todo explicitly let our callers include that
 	    assoc.put(new SymbolBase("true", Types.TRUTH), Boolean.TRUE);
 	    assoc.put(new SymbolBase("false", Types.TRUTH), Boolean.FALSE);
 	}
@@ -70,7 +71,8 @@ final class LogicSupport {
 					 Types.declaredTypeOf(f),
 					 notation),
 			  f);
-		Notation.setNotation(f, notation);
+		if (notation != null)
+		    Notation.setNotation(f, notation);
 	    }
 	    catch (IntrospectionException ex) {throw new InnerCheckedException("could not detect specification", ex);}
 	}

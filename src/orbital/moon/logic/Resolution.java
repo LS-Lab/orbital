@@ -76,7 +76,11 @@ import java.util.logging.Level;
  *  Oder wähle alternativen (einfacheren?) TRS-Algorithmus Ü 7.95
  * @todo use do/undo instead of copying the whole set of derived formulas every time.
  * @todo use optimizations of "Deduktions- und Inferenzsysteme"
- * @internal proving A->B and B->A separately often is far more performant than proving A<->B.
+ * @internal proving F |= A->B and F |= B->A separately often is far more performant than proving F |= A<->B.
+ * @todo sometime. Could perhaps optimize by
+ *  A premise p<->q could be used to substitute p by q throughout.
+ *  A premise p<->F&G... could be used to substitute p by F&G... throughout.
+ *  But a premise p|q<->a|b cannot, generally.
  * @todo optimize by using a non-branching search, somewhat like local optimizers, since we do not want to optimize but only to reach the goal. If we have derived a formula once, we should never switch to another branch and forget it again.
  */
 class Resolution implements Inference {
