@@ -24,7 +24,7 @@ import orbital.logic.functor.Functor.Composite;
 import orbital.logic.functor.*;
 import orbital.logic.functor.Predicates;
 
-import java.text.ParseException;
+import java.io.StringReader;
 
 import java.util.Set;
 
@@ -166,4 +166,37 @@ abstract class ModernLogic implements Logic {
     public Formula composeFixed(Functor f, Symbol op, Expression arguments[]) {
 	return ModernFormula.composeFixed(this, f, op, arguments);
     }
+
+    // parsing
+    
+    // this is an additional method related to createExpression(String)
+    public Expression[] createAllExpressions(String expressions) throws java.text.ParseException {
+	if (expressions == null)
+	    throw new NullPointerException("null is not an expression");
+	try {
+	    LogicParser parser = new LogicParser(new StringReader(expressions));
+	    Expression B[] = parser.parseFormulas(this);
+	    assert !Utility.containsIdenticalTo(B, null), "empty string \"\" is not a formula, but only an empty set of formulas.";
+	    return B;
+	} catch (ParseException ex) {
+	    throw (java.text.ParseException) new java.text.ParseException(ex.currentToken.next.beginLine + ":" + ex.currentToken.next.beginColumn + ": " + ex.getMessage() + "\nexpressions: " + expressions, COMPLEX_ERROR_OFFSET).initCause(ex);
+	}                                                                                                                                      
+    }
+    public Expression createExpression(String expression) throws java.text.ParseException {
+	if (expression == null)
+	    throw new NullPointerException("null is not an expression");
+	try {
+	    LogicParser parser = new LogicParser(new StringReader(expression));
+	    Expression x = parser.parseFormula(this);
+	    if (x == null) {
+		assert "".equals(expression) : "only the empty formula \"\" can lead to the forbidden case of a null expression";
+		throw new java.text.ParseException("empty string \"\" is not a formula", COMPLEX_ERROR_OFFSET);
+	    } else
+		return x;
+	} catch (ParseException ex) {
+	    //@todo use a more verbose exception than ParseException. One that knows about beginning and ending lines and columns, cause and id.
+	    throw (java.text.ParseException) new java.text.ParseException(ex.currentToken.next.beginLine + ":" + ex.currentToken.next.beginColumn + ": " + ex.getMessage() + "\nexpression: " + expression, COMPLEX_ERROR_OFFSET).initCause(ex);
+	} 
+    }
+    
 }

@@ -707,6 +707,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	 *
 	 * @version 0.9, 2001/07/14
 	 * @author  Andr&eacute; Platzer
+	 * @todo could also skolemize second-order quantified predicates
 	 */
 	private static class SkolemizingUnifyingMatcher extends UnifyingMatcher {
 	    private Object skolemizedVariable;
@@ -1024,43 +1025,6 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 
 
 
-    // this is an additional method related to createExpression(String)
-    public Expression[] createAllExpressions(String expressions) throws java.text.ParseException {
-	if (expressions == null)
-	    throw new NullPointerException("null is not an expression");
-	try {
-	    LogicParser parser = new LogicParser(new StringReader(expressions));
-	    Expression B[] = parser.parseFormulas(this);
-	    for (int i = 0; i < B.length; i++)
-		if (B[i] == null) {
-		    //@todo throw new java.text.ParseException("empty string \"\" is not a formula", ClassicalLogic.COMPLEX_ERROR_OFFSET); since empty formulas are not defined anyway, but only the empty set of formulas
-		    logger.log(Level.WARNING, "createAllExpressions({0}) empty formula \"\" should not be used", expressions);
-		    return B;
-		}
-	    return B;
-	} catch (ParseException x) {
-	    throw (java.text.ParseException) new java.text.ParseException(x.currentToken.next.beginLine + ":" + x.currentToken.next.beginColumn + ": " + x.getMessage() + "\nexpressions: " + expressions, COMPLEX_ERROR_OFFSET).initCause(x);
-	}                                                                                                                                      
-    }
-    public Expression createExpression(String expression) throws java.text.ParseException {
-	if (expression == null)
-	    throw new NullPointerException("null is not an expression");
-	try {
-	    LogicParser parser = new LogicParser(new StringReader(expression));
-	    Expression x = parser.parseFormula(this);
-	    if (x != null)
-		return x;
-	    else {
-		//@todo throw new java.text.ParseException("empty string \"\" is not a formula", ClassicalLogic.COMPLEX_ERROR_OFFSET); since empty formulas are not defined anyway, but only the empty set of formulas
-		logger.log(Level.WARNING, "createExpression({0}) empty formula \"\" should not be used", expression);
-		assert "".equals(expression) : "only the empty formula \"\" can lead to the forbidden case of a null expression";
-		return EMPTY;
-	    }
-	} catch (ParseException x) {
-	    //@todo use a more verbose exception than ParseException. One that knows about beginning and ending lines and columns, cause and id.
-	    throw (java.text.ParseException) new java.text.ParseException(x.currentToken.next.beginLine + ":" + x.currentToken.next.beginColumn + ": " + x.getMessage() + "\nexpression: " + expression, COMPLEX_ERROR_OFFSET).initCause(x);
-	} 
-    }
     /**
      * Convenience method.
      * @deprecated Use <code>(Formula) createExpression(expression)</code> instead.
