@@ -118,6 +118,14 @@ public final class Setops {
 		return false;
 	return true;
     } 
+    /**
+     * Checks whether all corresponding pairs of objects in two collection satisfy the specified predicate.
+     * @return true if all objects satisfy the predicate, false if one does not.
+     *  Returns an optimized version of <code>Functionals.map(and, Functionals.map(Functionals.asFunction(found), i), j)</code>.
+     * @see <a href="{@docRoot}/Patterns/Design/InternalIterator.html">Internal Iterator</a>
+     * @see orbital.logic.functor.Functionals
+     * @todo document banana application @see Operations.andAll
+     */
     public static /*<A1, A2>*/ boolean all(Collection/*_<A1>_*/ a, Collection/*_<A2>_*/ b, BinaryPredicate/*<A1, A2>*/ found) {
 	return a.size() == b.size()
 	    && all(a.iterator(), b.iterator(), found);
@@ -301,7 +309,7 @@ public final class Setops {
 
     /**
      * Returns the symmetric difference of two collections.<br />
-     * a &Delta; b = (a&&#8726;b) &cup; (b&#8726;a)
+     * a &Delta; b := (a&#8726;b) &cup; (b&#8726;a)
      * @return a collection of all elements which are unique to either of the collections.
      * @postconditions RES has same type as a
      */
@@ -337,13 +345,15 @@ public final class Setops {
 
     /**
      * Returns the n-ary cross product (or cartesian product) of n collections.<br />
-     * &times;<sub>i=1,...,n</sub> a<sub>i</sub> = {(x<sub>i</sub>)<sub>i=1,...,n</sub> &brvbar; &forall;i=1,...,n x<sub>i</sub>&isin;a<sub>i</sub>}
+     * &times;<sub>i=1,...,n</sub> a<sub>i</sub> = &prod;<sub>i=1,...,n</sub> a<sub>i</sub> = {(x<sub>i</sub>)<sub>i=1,...,n</sub> &brvbar; &forall;i=1,...,n x<sub>i</sub>&isin;a<sub>i</sub>}
      * <p>
      * Implemented as an iterative unrolling of a recursion.</p>
+     * @param a the list &lang;a<sub>1</sub>,...,a<sub>n</sub>&rang; of collections a<sub>i</sub> to choose from.
      * @return a collection of all n-tupels in &times;<sub>i=1,...,n</sub> a<sub>i</sub> as {@link java.util.List} objects.
      * @see #outer(BinaryFunction, Collection, Collection)
+     * @see "Axiom of Choice (for infinite case)"
      */
-    public static Collection cross(List/*_<Collection<A>>_*/ a) {
+    public static Collection/*_<List<A>>_*/ cross(List/*_<Collection<A>>_*/ a) {
     	// n-ary cross product of the elements in optionLists
     	List r = new LinkedList();
     	r.add(Collections.EMPTY_LIST);
