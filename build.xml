@@ -249,10 +249,19 @@
 		 overview="${doc}/overview.html"
                  Private="${doc.internal}">
             <bottom><![CDATA[<span style='font-size: smaller; font-style: italic;'>Copyright &copy; 1996-2002 Andr&eacute; Platzer<br />All Rights Reserved.</span>]]></bottom>
-	    <packageset dir="${sources}" defaultexcludes="no"
-	         excludes="orbital,orbital/robotic/strategy,orbital/util/graph,orbital/moon,orbital/moon/aspects,orbital/moon/deprecated,orbital/moon/math,orbital/moon/logic/bridge,orbital/moon/awt/virtual">
-	        <include name="orbital/**"/>
-	    </packageset>
+ 	    <packageset dir="${sources}" defaultexcludes="no"
+ 	         excludes="orbital,orbital/robotic/strategy,orbital/util/graph,orbital/moon,orbital/moon/aspects,orbital/moon/deprecated,orbital/moon/math,orbital/moon/logic/bridge,orbital/moon/awt/virtual">
+ 	        <include name="orbital/**"/>
+ 	    </packageset>
+<!--
+	    <fileset dir="${sources}" defaultexcludes="no"
+	         excludes="orbital/*.java,orbital/robotic/strategy/*.java,orbital/util/graph/*.java,orbital/moon/*.java,orbital/moon/aspects/*.java,orbital/moon/deprecated/*.java,orbital/moon/math/*.java,orbital/moon/logic/bridge/*.java,orbital/moon/awt/virtual/*.java">
+	        <include name="orbital/**/*.java"/>
+		<exclude name="**/*BeanInfo.java"/>
+	    </fileset>
+-->
+	    <!-- @xxx the following line unfortunately does not fix the problem that filesets won't link themselves -->
+	    <link href="${doc}/api"/>
 
 	    <!-- -tag param -tag pre:mc:&quot;Preconditions:&quot; -tag post:mc:&quot;Postconditions:&quot; -tag return -tag throws -tag stereotype:a:&quot;Stereotype:&quot; -tag structure:t:&quot;Structure:&quot; -tag invariant:t:&quot;Invariants:&quot; -tag attribute:a:&quot;Attributes:&quot; -tag version -tag author -tag see -->
 	    <tag name="pre" scope="methods,constructors" description="Preconditions:"/>
