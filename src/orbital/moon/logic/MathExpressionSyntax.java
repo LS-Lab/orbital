@@ -77,10 +77,13 @@ public class MathExpressionSyntax implements ExpressionSyntax {
     }
     /**
      * Parses an expression and queries its arithmetic object.
+     * @post RES = getValueOf(createExpression(expression))
+     * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience Method</a>
      * @see #createExpression(String)
+     * @see #getValueOf(Expression)
      */
     public Arithmetic createMathExpression(String expression) throws ParseException {
-	return (Arithmetic) getValueOf(createExpression(expression));
+	return getValueOf(createExpression(expression));
     }
 
     public Signature coreSignature() {
@@ -141,11 +144,7 @@ public class MathExpressionSyntax implements ExpressionSyntax {
 	    Object o = i.next();
 	    assert o instanceof Symbol : "signature isa Set<" + Symbol.class.getName() + '>';
 	    Symbol s = (Symbol) o;
-	    if (s.getSignifier().equals(signifier)) {
-		// check for compatible types so as to detect misunderstandings during parse
-		if (!symbol.getType().subtypeOf(s.getType()))
-		    continue;
-		
+	    if (s.getSignifier().equals(signifier) && s.getType().equals(symbol.getType())) {
 		// fixed interpretation of core signature
 		final Object ref = _coreInterpretation.get(s);
 		return new MathExpression(ref, s.getType());
@@ -158,7 +157,7 @@ public class MathExpressionSyntax implements ExpressionSyntax {
 	    else if (doc.subtypeOf(Types.type(Arithmetic.class)))
 		return new MathExpression(valueFactory.valueOf(symbol.getSignifier()), symbol.getType());
 	    else
-		throw new IllegalArgumentException("strange type " + symbol.getType() + " of " + symbol);
+		throw new IllegalArgumentException("strange (unknown) type " + symbol.getType() + " of " + symbol);
 	else {
 	    return new MathExpression(findFunction(symbol.getSignifier()), symbol.getType());
 	}
@@ -185,8 +184,12 @@ public class MathExpressionSyntax implements ExpressionSyntax {
 	return new MathExpression(apply(f, arg), op.getType().domain());
     }
 
-    static final Object getValueOf(Expression x) {
-	return ((MathExpression)x).getValue();
+    /**
+     * Get the arithmetic object represented by an expression.
+     * @pre x = this.compose(...) &or; x = this.createAtomic(...)
+     */
+    public Arithmetic getValueOf(Expression x) {
+	return (Arithmetic) ((MathExpression)x).getValue();
     }
 
     /**

@@ -22,6 +22,9 @@ package orbital.moon.logic;
 import orbital.logic.imp.*;
 import orbital.logic.functor.Notation.NotationSpecification;
 
+import orbital.logic.functor.Function;
+import orbital.logic.functor.Functions;
+
 import orbital.logic.trs.Substitution;
 import orbital.logic.trs.Substitutions;
 
@@ -59,7 +62,7 @@ import java.io.*;
  * @see ExpressionSyntax#createExpression(String)
  * @see #parseFormula()
  * @see #parseFormulas()
- * @todo use a UTF-8 input stream and support the true Unicode
+ * @todo done? use a UTF-8 input stream and support the true Unicode
  * characters for forall, exist, and, or, not, ...
  * @todo should use precedence and associativity information from
  * orbital.logic.imp.Symbol instead of hard wiring parser.
@@ -104,16 +107,25 @@ public class LogicParser {
 
     /**
      * Reads a term-rewrite system from a stream.
-     * The syntax is
+     * The concrete syntax of the TRS specification source is
      * <pre>
      * &lt;matchingSide&gt; |- &lt;replacementSide&gt;    # &lt;comment&gt; &lt;EOL&gt;
      * ...
      * </pre>
+     * where <code>&lt;matchingSide&gt;</code> and <code>&lt;replacementSide&gt;</code>
+     * are well-formed expressions of the {@link ExpressionSyntax#createExpression(String) (concrete) syntax}
+     * defined by <code>syntax</code>.
+     * @param reader the source for the TRS specification.
+     * @param syntax the syntax for parsing expressions.
+     * @param expressionTransformation the function {@link Expression}&rarr;T used for transforming
+     *  the expressions parsed (<code>&lt;matchingSide&gt;</code> and <code>&lt;replacementSide&gt;</code>)
+     *  prior to constructing the substitution.
      * @throws IOException when an error occurs while reading from the reader.
      * @throws orbital.logic.imp.ParseException when a syntax error occurs in the source.
-     * @todo Simplify cannot yet use this, since it wants syntax.createMathExpression instead.
+     * @todo done? Simplify cannot yet use this, since it wants syntax.createMathExpression instead.
+     *  So perhaps introduce a transformation Function<Expression,T> transforming the result of syntax.createExpression?
      */
-    public static final Substitution readTRS(final Reader reader, final ExpressionSyntax syntax)
+    public static final Substitution readTRS(final Reader reader, final ExpressionSyntax syntax, final Function expressionTransformation)
 	throws IOException, orbital.logic.imp.ParseException {
 	final String ruleDelim = "|-";
 	final LineNumberReader rd = new LineNumberReader(reader);
@@ -132,12 +144,16 @@ public class LogicParser {
 		throw new orbital.logic.imp.ParseException("neither comment nor whitespace nor rule", rd.getLineNumber(), 1);
 	    rules.add(
 		      Substitutions.createSingleSidedMatcher(
-							     syntax.createExpression(l.substring(0, rule)),
-							     syntax.createExpression(l.substring(rule + ruleDelim.length()))
+							     expressionTransformation.apply(syntax.createExpression(l.substring(0, rule))),
+							     expressionTransformation.apply(syntax.createExpression(l.substring(rule + ruleDelim.length())))
 							     )
 		      );
 	}
 	return Substitutions.getInstance(new ArrayList(rules));
+    }
+    public static final Substitution readTRS(final Reader reader, final ExpressionSyntax syntax)
+	throws IOException, orbital.logic.imp.ParseException {
+	return readTRS(reader, syntax, Functions.id);
     }
 
     /**
@@ -239,7 +255,7 @@ public class LogicParser {
      */
     protected Expression apply(Token optok, Expression[] a, Type result) throws ParseException {
     	final String op = optok.image;
-	return composeWrapper(optok, new SymbolBase(op, Types.map(Types.typeOf(a), result), new NotationSpecification(a.length)), a);
+	return composeWrapper(optok, new SymbolBase(op, Types.map(Types.typeOf(a), result)), a);
     }
 
     /**

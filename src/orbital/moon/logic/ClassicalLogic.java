@@ -818,6 +818,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
     /**
      * facade for convenience.
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience Method</a>
      */
     public boolean infer(String expression, String exprDerived) throws ParseException {
 	if (expression == null)

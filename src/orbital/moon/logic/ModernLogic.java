@@ -26,6 +26,7 @@ import orbital.logic.functor.*;
 import java.io.StringReader;
 import orbital.util.Utility;
 import orbital.math.MathUtilities;
+import orbital.math.Arithmetic;
 import orbital.math.Values;
 
 /**
@@ -65,11 +66,8 @@ abstract class ModernLogic implements Logic {
 	    Object o = i.next();
 	    assert o instanceof Symbol : "signature isa Set<" + Symbol.class.getName() + '>';
 	    Symbol s = (Symbol) o;
-	    if (s.getSignifier().equals(signifier)) {
-		// check for compatible types so as to detect misunderstandings during parse
-		if (!symbol.getType().subtypeOf(s.getType()))
-		    continue;
-		
+	    //@xxx use s.equals(symbol) instead, also checking notation?
+	    if (s.getSignifier().equals(signifier) && s.getType().equals(symbol.getType())) {
 		// fixed interpretation of core signature
 		final Object ref = coreInterpretation().get(s);
 		return createFixedSymbol(s, ref, true);
@@ -80,10 +78,12 @@ abstract class ModernLogic implements Logic {
 
 	// test for syntactically legal <INTEGER_LITERAL> | <FLOATING_POINT_LITERAL>
 	//@todo could also move to an infinite coreInterpretation()
-	try {
-	    return createFixedSymbol(symbol, Values.getDefaultInstance().valueOf(signifier), false);
-	}
-	catch (NumberFormatException trial) {}
+	if (symbol.getType().subtypeOf(Types.type(Arithmetic.class))
+	    || symbol.getType().subtypeOf(Types.type(Number.class)))
+	    try {
+		return createFixedSymbol(symbol, Values.getDefaultInstance().valueOf(signifier), false);
+	    }
+	    catch (NumberFormatException trial) {}
 
 	// test for syntactically legal <IDENTIFIER> @todo can't we use new LogicParserTokenManager(signifier).getNextToken()?
 	for (int i = 0; i < signifier.length(); i++) {
