@@ -904,7 +904,9 @@ public class ClassicalLogic extends ModernLogic {
 		//System.out.println("\t\t applied Pi abstraction type leads to " + piabst.apply(parameterApType));
 		logger.log(Level.FINEST, "\t applied Pi abstraction type leads to {0}", piabst.apply(parameterApType));
 		return super.compose(
-				     typeConv = super.compose(new PiApplicationExpression(piabst,
+				     typeConv = super.compose(new PiApplicationExpression(
+									   ((ModernFormula)compositor).getUnderlyingLogic(),
+									   piabst,
 									   piabst.apply(parameterApType)
 									   ),
 					       new Expression[] {compositor}
@@ -932,12 +934,12 @@ public class ClassicalLogic extends ModernLogic {
 	    assert x.isVariable() : "we only form lambda abstractions with respect to variables";
 	    return createLambdaProp(x, (Formula) arguments[1]);
 	} else if ((compositor instanceof ModernFormula.FixedAtomicSymbol)
-	    && PI.equals(((ModernFormula.FixedAtomicSymbol)compositor).getSymbol())) {
+		   && PI.equals(((ModernFormula.FixedAtomicSymbol)compositor).getSymbol())) {
 	    assert arguments.length == 2;
 	    assert arguments[0] instanceof ModernFormula.AtomicSymbol : "Symbols when converted to formulas become AtomicSymbols";
 	    Symbol x = (Symbol) ((Formula)arguments[0]).getSignature().iterator().next();
-	    assert x.isVariable() : "we only form lambda abstractions with respect to variables";
-	    return new PiAbstractionExpression(x, (Formula) arguments[1]);
+	    assert x.isVariable() : "we only form pi abstractions with respect to variables";
+	    return new PiAbstractionExpression(((ModernFormula)arguments[1]).getUnderlyingLogic(), x, (Formula) arguments[1]);
 	} else
 	    return super.composeImpl(compositor, arguments);
     }
@@ -973,7 +975,7 @@ public class ClassicalLogic extends ModernLogic {
 	private Symbol x;
 	private Formula term;
 	private LambdaAbstractionFormula() {
-	    super(null);
+	    super();
 	}
 	public LambdaAbstractionFormula(Logic logic, Symbol x, Formula term) {
 	    super(logic);
@@ -1015,7 +1017,8 @@ public class ClassicalLogic extends ModernLogic {
 	    return Notation.DEFAULT;
 	}
 	public void setNotation(Notation notation) {
-	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
+	    if (notation != getNotation())
+		throw new UnsupportedOperationException("different notations not yet implemented for " + getClass());
 	}
 	    
 	// implementation of orbital.logic.imp.Expression interface
@@ -1081,10 +1084,10 @@ public class ClassicalLogic extends ModernLogic {
 	private Symbol x;
 	private Formula term;
 	private PiAbstractionExpression() {
-	    super(null);
+	    super();
 	}
-	public PiAbstractionExpression(Symbol x, Formula term) {
-	    super(null);//@xxx
+	public PiAbstractionExpression(Logic underlyingLogic, Symbol x, Formula term) {
+	    super(underlyingLogic);
 	    this.x = x;
 	    this.term = term;
 	    if (!orbital.moon.logic.sign.type.StandardTypeSystem.kind.apply(term.getType()))
@@ -1120,12 +1123,14 @@ public class ClassicalLogic extends ModernLogic {
 		throw new IllegalArgumentException(Object.class + "[2] expected");
 	    this.x = (Symbol)a[0];
 	    this.term = (Formula)a[1];
+	    setUnderlyingLogicLikeIn(term);
 	}
 	public Notation getNotation() {
 	    return Notation.DEFAULT;
 	}
 	public void setNotation(Notation notation) {
-	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
+	    if (notation != getNotation())
+		throw new UnsupportedOperationException("different notations not yet implemented for " + getClass());
 	}
 	    
 	// implementation of orbital.logic.imp.Expression interface
@@ -1356,10 +1361,11 @@ public class ClassicalLogic extends ModernLogic {
 	 */
 	private Type applied;
 	private PiApplicationExpression() {
-	    super(null);
+	    super();
 	}
-	public PiApplicationExpression(PiAbstractionType abstraction, Type applied) {
-	    super(null);//@xxx
+	public PiApplicationExpression(Logic underlyingLogic, PiAbstractionType abstraction, Type applied) {
+	    //@xxx what about promoting underlyingLogic to construct() derivatives of this?
+	    super(underlyingLogic);
 	    this.abstraction = abstraction;
 	    this.applied = applied;
 	}
