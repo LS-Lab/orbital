@@ -138,9 +138,11 @@ class Resolution implements Inference {
         for (Iterator i = skolemizedB.iterator(); i.hasNext(); ) {
 	    knowledgebase.addAll(Utilities.clausalForm((Formula) i.next(), SIMPLIFYING));
 	}
+        logger.log(Level.FINER, "clausal W == {0}", knowledgebase);
 
 	// factorize
-        knowledgebase = (Set/*_<Set<Formula>>_*/) Functionals.map(factorize, knowledgebase);
+        knowledgebase.addAll((Set/*_<Set<Formula>>_*/) Functionals.map(factorize, knowledgebase));
+        logger.log(Level.FINER, "factorized W == {0}", knowledgebase);
 
 	// remove tautologies and handle contradictions
     	// for all clauses F&isin;knowledgebase
@@ -164,14 +166,15 @@ class Resolution implements Inference {
 	// skolemize (negated) query
 	//@todo could we optimize by already transforming query to CNF, somewhat earlier? At least avoid transforming ~(a<->b) to ~(cnf(a<->b))
 	final Formula skolemizedQuery = Utilities.dropQuantifiers(Utilities.skolemForm(query));
-	logger.log(Level.FINER, "in S skolemForm( {0} ) == {1}", new Object[] {query, skolemizedQuery});
+	logger.log(Level.FINER, "in S skolemForm( {0} )\n == {1}", new Object[] {query, skolemizedQuery});
 
         // convert (negated) query to clausalForm S, forming the initial set of support
 	Set/*_<Set<Formula>>_*/ S = Utilities.clausalForm(skolemizedQuery, SIMPLIFYING);
-	logger.log(Level.FINER, "in S clausalForm( {0} ) == {1}", new Object[] {skolemizedQuery, new HashSet(S)});
+	logger.log(Level.FINER, "in S clausalForm( {0} )\n == {1}", new Object[] {skolemizedQuery, new HashSet(S)});
 
 	// factorize
-        S = (Set/*_<Set<Formula>>_*/) Functionals.map(factorize, S);
+        S.addAll((Set/*_<Set<Formula>>_*/) Functionals.map(factorize, S));
+	logger.log(Level.FINER, "in S factorized ( {0} )\n == {1}", new Object[] {skolemizedQuery, new HashSet(S)});
 
 	// remove tautologies and handle contradictions
     	// for all clauses F&isin;S
@@ -184,7 +187,7 @@ class Resolution implements Inference {
 		// if F is obviously valid, forget about it for resolving a contradiction
 		i.remove();
 	}    		
-	logger.log(Level.FINER, "in S factorized to {0}", S);
+	logger.log(Level.FINER, "in S factorized to\n {0}", S);
 
         if (logger.isLoggable(Level.FINEST))
 	    logger.log(Level.FINEST, "negated goal S == {0}\n == {1}\n (== {2} original in CNF)", new Object[] {skolemizedQuery, S, Utilities.conjunctiveForm(query, SIMPLIFYING)});
@@ -508,6 +511,7 @@ class Resolution implements Inference {
      * </p>
      * @return the factorized clause, or the reference <code>F</code>
      * if no factorization had been possible.
+     * @poscondition F=OLD(F)
      */
     private static final Set/*_<Formula>_*/ factorize(Set/*_<Formula>_*/ F) {
 	// we need a list view of the set for traversing distinct literals, but we will only need to modify the set F
@@ -523,9 +527,13 @@ class Resolution implements Inference {
                     final String logPrevious = logger.isLoggable(Level.FINEST) ? F + "" : "";
 		    // optimized removing Fj from the set, since mu(Fj) = mu(Fk) anyway (notice the set representation)
 		    //@todo couldn't we somehow know the index from our list iterator j?
-		    F.remove(Fj);
+		    //@internal was wrong: F.remove(Fj);
+		    {
+			F = new HashSet(F);
+			F.remove(Fj);
+		    }
                     F = (Set) Functionals.map(mu, F);
-                    logger.log(Level.FINEST, "factorized {1} from {0} by unifying {3} and {4} with {2}", new Object[] {logPrevious, F, mu, Fi, Fj});
+                    logger.log(Level.FINEST, "factorized\n {1}\nfrom\n{0}\nby unifying\n  {3} and\n  {4}\n with {2}", new Object[] {logPrevious, F, mu, Fi, Fj});
 		    return factorize(F);
 		}
 	    }
