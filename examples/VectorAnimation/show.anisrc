@@ -1,0 +1,14 @@
+"animation" [
+	"move" (0|0|99)
+	"rotate" (20|20|20)
+	"exec" 1
+	"start"
+]
+{
+	"rotate" (8.25|0|0)
+	"exec" 50
+	"rotate" (0|8.25|0)
+	"exec" 50
+	"rotate" (0|0|8.25)
+	"exec" 50
+}

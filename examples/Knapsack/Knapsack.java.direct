@@ -1,0 +1,99 @@
+import orbital.Adjoint;
+import orbital.algorithm.evolutionary.*;
+import orbital.robotic.strategy.Weighting;
+
+/**
+ * Knapsack problem solved with a genetic algorithm.
+ * Knapsack is NP-complete.
+ *
+ * @author Andr&eacute; Platzer
+ * @version %I%, %G%
+ */
+public class Knapsack extends orbital.moon.awt.Demonstratos implements Runnable {
+static final int MAXWEIGHT = 17;
+static final int ItemDesc[][] = {   // Array of {Weight, Value}
+  {3,4}, {3,4}, {3,4}, {3,4}, {3,4},
+  {4,5}, {4,5}, {4,5},
+  {7,10},{7,10},{8,11},{8,11},{9,13}};
+
+    public static void main(String arg[]) {
+    	new Knapsack().run();
+    }
+
+
+    protected GeneticAlgorithm ga;
+
+    public Knapsack() {
+    }
+
+    public void init() {
+		super.init();
+		Adjoint.print("init()","initializing");
+	}
+    public void start() {
+    	super.start();
+		Adjoint.print("start()","start thread");
+    	new Thread(this).start();
+    }
+
+    public void run() {
+    	Adjoint.print("run()","creating population");
+        double maxCrossover = 0.1;
+        double maxMutation = 0.2;
+        int populationSize  = 20;
+        ga = new GeneticAlgorithm(ItemDesc.length, populationSize, 5,5, maxCrossover, maxMutation);
+    	ga.setWeighting(new KnapsackWeighting(this));
+        ga.setSelection(Selectors.rouletteWheel());
+    	Adjoint.print("run()","breeding population");
+        while(!foundSolution()) {
+          out.println(ga+"\n");
+          ga.evolve();
+        }
+    	Adjoint.print("run()","found solution");
+        out.println(ga);
+    }
+
+    int weight;
+    int value;
+    void calcVW(Chromosome c) {
+        weight = 0;
+        value  = 0;
+        for(int iBit = 0; iBit<c.length(); iBit++)
+          if (c.get(iBit)) {
+            weight += ItemDesc[iBit][0];
+            value  += ItemDesc[iBit][1];
+          }
+    }
+
+    boolean foundSolution() {
+        final int ANSWER = 24;
+        for(int iChrom = 0; iChrom<ga.getPopulation().size(); iChrom++) {
+            calcVW(ga.getPopulation().get(iChrom));
+            if (weight<=MAXWEIGHT && value==ANSWER)
+            return true;
+        }
+        return false;
+    }
+}
+
+class KnapsackWeighting implements Function {
+	public KnapsackWeighting(Knapsack t) {
+	ks = t;
+	}
+	private Knapsack ks;
+
+    final double PENALTY = 3.0;
+    public Object apply(Object chrom) {
+        try {
+            Chromosome c = (Chromosome)chrom;
+        
+            ks.calcVW(c);
+            if (ks.weight > ks.MAXWEIGHT)
+                return new Double(ks.value - PENALTY * (ks.weight - ks.MAXWEIGHT));
+            else 
+                return new Double(ks.value);
+        } catch(ClassCastException err) {
+            throw new Error("panic");
+        }
+    }
+}

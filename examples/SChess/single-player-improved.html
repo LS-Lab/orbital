@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>Simple Chess: single player version</title>
+</head>
+<body>
+Improved version using UtilityComputer.class instead of Computer.class
+and therby allowing a higher search depth.
+<applet code="Game.class" width="250" height="250">
+  <param name="gameName" value="Simple Chess">
+  <param name="gameRules" value="ChessRules">
+  <param name="aIntelligence-count" value="1">
+  <param name="aIntelligence-0" value="utility">
+</applet>
+<p>
+To run this applet, either use the appletviewer, or a
+very modern Browser with Java Plug-in,
+or run it as an application by calling
+<pre>
+java Game gameRules=ChessRules aIntelligence-count=1 aIntelligence-0=utility
+</pre>
+</p>
+</body>
+</html>
+

@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Specification-Title: Genetic Algorithms
+Specification-Vendor: Andre Platzer
+Created-By: 1.2 (Andre Platzer)
+Main-Class: KnappSack

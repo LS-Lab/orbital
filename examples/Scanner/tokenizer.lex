@@ -1,0 +1,13 @@
+ZIFFER|1|=|
+ZIFFER|2|=|
+ZIFFER|3|=|
+ZIFFER|4|=|
+ZIFFER|5|=|
+ZIFFER|6|=|
+ZIFFER|7|=|
+ZIFFER|8|=|
+ZIFFER|9|=|
+ZEHN|x|=|
+ZIG|z|=|
+HUNDERT|h|=|
+UND|u|=|

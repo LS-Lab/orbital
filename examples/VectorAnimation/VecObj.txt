@@ -1,0 +1,9 @@
+#
+# file format for VectorAnimation
+# Assembled by VectorAssembler in examples\VectorAnimation
+#
+
+#
+# @see ../../api/orbital/awt/virtual/doc-files/VecObj.txt
+# for a description of the file format
+#
