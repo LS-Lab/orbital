@@ -663,6 +663,7 @@ public abstract class Notation implements Serializable, Comparable {
      * In the same order as {@link #initialFunctorNotation}
      * @todo couldn't we switch to storing this in MathExpressionSyntax.coreSignature()
      * @invariant sorted, i.e. precedenceOf[i] < precedenceOf[i+1]
+     * @xxx shouldn't we let Operations register itself instead of this package dependendy?
      */
     //TODO: use List(new KeyValuePair()) instead of functorList<->functorNotation synchronization
     private static final Functor[]		initialFunctorList       = {
