@@ -350,7 +350,7 @@
 	    </fileset>
 -->
 	    <!-- @xxx the following line unfortunately does not fix the problem that filesets won't link themselves -->
-	    <link href="${doc.api.dest}"/>
+	    <!-- <link href="${doc.api.dest}"/> -->
 
 	    <!-- -tag param -tag pre:mc:&quot;Preconditions:&quot; -tag post:mc:&quot;Postconditions:&quot; -tag return -tag throws -tag stereotype:a:&quot;Stereotype:&quot; -tag structure:t:&quot;Structure:&quot; -tag invariant:t:&quot;Invariants:&quot; -tag attribute:a:&quot;Attributes:&quot; -tag version -tag author -tag see -->
 	    <tag name="preconditions" scope="methods,constructors" description="Preconditions:"/>
@@ -372,7 +372,7 @@
 	    <group title="Core Packages" packages="orbital.logic*:orbital.math:orbital.math*:orbital.util"/>
 	    <group title="Extension Packages" packages="orbital.algorithm*:orbital.awt:orbital.game:orbital.robotic"/>
 	    <group title="Implementation Packages" packages="orbital.awt.virtual:orbital.io:orbital.io.encoding:orbital.net:orbital.net.mail:orbital.moon*"/>
-	    <link href="${javadoc.link.jdk}" offline="${javadoc.link.jdk.offline}" packagelistLoc="${javadoc.link.jdk.loc}"/>
+	    <link href="${javadoc.link.jdk}" offline="${javadoc.link.jdk.offline}" packagelistLoc="${javadoc.link.jdk}"/>
         </javadoc>
 
 	<copy todir="${doc.api.dest}/Patterns">
@@ -417,13 +417,16 @@
          -->
         <mkdir dir="${doc.api.dest}/orbital/moon/logic/doc-files"/>
 	<exec dir="${doc.api.dest}/orbital/moon/logic" executable="cmd.exe" os="Windows 2000">
-	    <arg line="/c jjdoc -OUTPUT_FILE:doc-files/LogicParser_grammar.html ${sources}/orbital/moon/logic/LogicParser.jj"/>
+	    <arg line="/c ${env.javacchome}/bin/jjdoc -OUTPUT_FILE:doc-files/LogicParser_grammar.html ${sources}/orbital/moon/logic/LogicParser.jj"/>
 	</exec>
-	<exec dir="${doc.api.dest}/orbital/moon/logic" executable="jjdoc" os="Linux">
+	<exec dir="${doc.api.dest}/orbital/moon/logic" executable="${env.javacchome}/bin/jjdoc" os="Linux">
 	    <arg line="-OUTPUT_FILE:doc-files/LogicParser_grammar.html ${sources}/orbital/moon/logic/LogicParser.jj"/>
 	</exec>
 	<exec dir="${doc.api.dest}/orbital/moon/logic" executable="cmd.exe" os="Windows 2000">
 	    <arg line="/c &quot;copy /A doc-files\LogicParser_grammar.html + ${basedir}\src\orbital\moon\logic\doc-files\LogicParser_lexical.html doc-files\LogicParser_grammar.html&quot;"/>
+	</exec>
+	<exec dir="${doc.api.dest}/orbital/moon/logic" executable="/bin/sh" os="Linux">
+	    <arg line="/c &quot;cat doc-files/LogicParser_grammar.html ${basedir}/src/orbital/moon/logic/doc-files/LogicParser_lexical.html &gt; doc-files/LogicParser_grammar.html2&quot;"/>
 	</exec>
 	<!-- @todo cat input1 input2 > output for linux, but input1!=output -->
     </target>
