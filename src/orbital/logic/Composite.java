@@ -15,7 +15,7 @@ package orbital.logic;
  * @version 1.1, 2002-11-27
  * @author  Andr&eacute; Platzer
  * @see <a href="{@docRoot}/Patterns/Design/Composite.html">(unidirectional and multiple) Composite Pattern</a>
- * @todo move to another package? Perhaps orbital.logic.sign, but this would be together with syntax part of orbital.logic.imp.
+ * @todo really move to another package? Perhaps orbital.logic.sign, but this would be together with syntax part of orbital.logic.imp. ? Perhaps orbital.logic.Composite is not too bad for logically composite things.
  */
 public interface Composite /*<Compositor,Component>*/ {
     /**
