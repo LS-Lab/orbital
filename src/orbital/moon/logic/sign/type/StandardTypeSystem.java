@@ -19,6 +19,8 @@ import orbital.logic.functor.BinaryPredicate;
 import orbital.logic.functor.Function;
 import orbital.logic.functor.BinaryFunction;
 import orbital.logic.functor.Functionals;
+import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.Collection;
 import java.util.Set;
 import java.util.List;
@@ -652,6 +654,7 @@ public class StandardTypeSystem implements TypeSystem {
 	return myproduct(components);
     }
     private static Type myproduct(Type components[]) {
+	//@internal also assures strict
 	for (int i = 0; i < components.length; i++) {
 	    Type ti = components[i];
 	    if (ti == null)
@@ -667,9 +670,12 @@ public class StandardTypeSystem implements TypeSystem {
 	}
     }
     private static final Function/*<Type[],Type>*/ _product = new Function/*<Type[],Type>*/() {
-	    private final Type logicalTypeDeclaration = null;
+	    private final Type logicalTypeDeclaration = mymap(typeSystem.list(_TYPE), _TYPE);
 	    public Object apply(Object t) {
-		return typeSystem.product((Type[])t);
+		return typeSystem.product(t instanceof Type[]
+					  ? (Type[]) t
+					  : (Type[]) Setops.asList(Utility.asIterator(t)).toArray(new Type[0])
+					  );
 	    }
 	    public String toString() {
 		return "*";
@@ -776,22 +782,25 @@ public class StandardTypeSystem implements TypeSystem {
 
 
     public Type inf(Type components[]) {
+	return infImpl(Arrays.asList(components));
+    }
+    private Type infImpl(List/*_<Type>_*/ components) {
 	//@internal although we still work on components, t keeps the simplified version of components.
-	List/*<Type>*/ t = new LinkedList(Arrays.asList(components));
+	List/*<Type>*/ t = new LinkedList(components);
 	//@internal this canonical simplification also assures strict
-	for (int i = 0; i < components.length; i++) {
-	    Type ti = components[i];
+	for (ListIterator i = components.listIterator(); i.hasNext(); ) {
+	    Type ti = (Type) i.next();
 	    if (ti == null)
 		throw new NullPointerException("illegal arguments containing " + ti);
 	    if (ti instanceof InfimumType) {
 		// associative
 		t.remove(ti);
 		t.addAll(Arrays.asList(((InfimumType)ti).components));
-		return inf((Type[])t.toArray(new Type[0]));
+		return infImpl(t);
 	    }
 		
-	    for (int j = i + 1; j < components.length; j++) {
-		Type tj = components[j];
+	    for (Iterator j = components.listIterator(i.previousIndex() + 1); j.hasNext(); ) {
+		Type tj = (Type) j.next();
 		try {
 		    int cmp = ti.compareTo(tj);
 		    // remove redundant supertypes of comparable types in t
@@ -802,18 +811,18 @@ public class StandardTypeSystem implements TypeSystem {
 		} catch (IncomparableException test) {}
 	    }
 	}
-	components = (Type[])t.toArray(new Type[0]);
-	switch (components.length) {
+	Type components2[] = (Type[])t.toArray(new Type[0]);
+	switch (components2.length) {
 	case 0: return typeSystem.UNIVERSAL();
-	case 1: return components[0];
-	default: return new InfimumType(components);
+	case 1: return components2[0];
+	default: return new InfimumType(components2);
 	}
     }
 
     private static final Function/*<Type[],Type>*/ _inf = new Function/*<Type[],Type>*/() {
-	    private final Type logicalTypeDeclaration = null; //@xxx
+	    private final Type logicalTypeDeclaration = mymap(typeSystem.set(_TYPE), _TYPE);
 	    public Object apply(Object t) {
-		return typeSystem.inf((Type[])t);
+		return typeSystem.infImpl(Setops.asList(Utility.asIterator(t)));
 	    }
 	    public String toString() {
 		return "&";
@@ -908,21 +917,24 @@ public class StandardTypeSystem implements TypeSystem {
     }
 
     public Type sup(Type components[]) {
+	return supImpl(Arrays.asList(components));
+    }
+    private Type supImpl(List/*_<Type>_*/ components) {
 	//@internal although we still work on components, t keeps the simplified version of components.
-	List/*<Type>*/ t = new LinkedList(Arrays.asList(components));
+	List/*<Type>*/ t = new LinkedList(components);
 	//@internal this canonical simplification also assures strict
-	for (int i = 0; i < components.length; i++) {
-	    Type ti = components[i];
+	for (ListIterator i = components.listIterator(); i.hasNext(); ) {
+	    Type ti = (Type) i.next();
 	    if (ti == null)
 		throw new NullPointerException("illegal arguments containing " + ti);
 	    if (ti instanceof SupremumType) {
 		// associative
 		t.remove(ti);
 		t.addAll(Arrays.asList(((SupremumType)ti).components));
-		return sup((Type[])t.toArray(new Type[0]));
+		return supImpl(t);
 	    }
-	    for (int j = i + 1; j < components.length; j++) {
-		Type tj = components[j];
+	    for (Iterator j = components.listIterator(i.previousIndex() + 1); j.hasNext(); ) {
+		Type tj = (Type) j.next();
 		try {
 		    int cmp = ti.compareTo(tj);
 		    // remove redundant subtypes of comparable types in t
@@ -933,18 +945,18 @@ public class StandardTypeSystem implements TypeSystem {
 		} catch (IncomparableException test) {}
 	    }
 	}
-	components = (Type[])t.toArray(new Type[0]);
-	switch (components.length) {
+	Type components2[] = (Type[])t.toArray(new Type[0]);
+	switch (components2.length) {
 	case 0: return typeSystem.ABSURD();
-	case 1: return components[0];
-	default: return new SupremumType(components);
+	case 1: return components2[0];
+	default: return new SupremumType(components2);
 	}
     }
 
     private static final Function/*<Type[],Type>*/ _sup = new Function/*<Type[],Type>*/() {
-	    private final Type logicalTypeDeclaration = null;
+	    private final Type logicalTypeDeclaration = mymap(typeSystem.set(_TYPE), _TYPE);
 	    public Object apply(Object t) {
-		return typeSystem.sup((Type[])t);
+		return typeSystem.supImpl(Setops.asList(Utility.asIterator(t)));
 	    }
 	    public String toString() {
 		return "|";
