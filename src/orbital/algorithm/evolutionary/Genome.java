@@ -12,7 +12,7 @@ import java.io.Serializable;
 import orbital.logic.functor.Function;
 
 /**
- * The Genome data in a population.
+ * The Genome data in a population represents a state.
  * For bio informatics, genomes and chromosomes are treated as synonyms.
  * <p>
  * A Genome provides the following operators and functions:
@@ -232,7 +232,7 @@ public class Genome extends Gene.List {
     /**
      * Evaluates the fitness of the Genomes, if necessary.
      * <p>
-     * Default implementation will consider {@link GeneticAlgorithm#fitnessWeighting}.</p>
+     * Default implementation will consider {@link GeneticAlgorithm#getWeighting()}.</p>
      * @param redo force whole evaluation again, even for cached fitness values.
      *  Should usually be <code>false</code> for efficiency reasons.
      * @param population the population containing this genome.

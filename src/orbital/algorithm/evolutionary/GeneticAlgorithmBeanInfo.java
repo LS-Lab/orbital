@@ -11,6 +11,7 @@ import java.beans.*;
 
 /**
  * @exclude
+ * @todo could use Selectors.* with a TaggedPropertyEditorSupport as customizer for selection.
  */
 public class GeneticAlgorithmBeanInfo extends SimpleBeanInfo {
     Class  beanClass = GeneticAlgorithm.class;
@@ -30,14 +31,16 @@ public class GeneticAlgorithmBeanInfo extends SimpleBeanInfo {
 	    PropertyDescriptor _maximumMutation = new PropertyDescriptor("maximumMutation", beanClass, "getMaximumMutation", "setMaximumMutation");
 	    _maximumMutation.setShortDescription("maximum probability rating of mutation level for reproducation");
 	    PropertyDescriptor _parentCount = new PropertyDescriptor("parentCount", beanClass, "getParentCount", "setParentCount");
-	    _parentCount.setShortDescription("number of abstract parents virtually required to produce children");
+	    _parentCount.setShortDescription("number of abstract parents required to produce children");
 	    PropertyDescriptor _population = new PropertyDescriptor("population", beanClass, "getPopulation", "setPopulation");
 	    _population.setShortDescription("population for this genetic algorithm");
 	    _population.setPropertyEditorClass(PopulationBeanInfo.PopulationEditor.class);
 	    PropertyDescriptor _selection = new PropertyDescriptor("selection", beanClass, "getSelection", "setSelection");
 	    _selection.setShortDescription("the selection scheme to apply for evolving");
+	    PropertyDescriptor _populationGrowth = new PropertyDescriptor("populationGrowth", beanClass, "getPopulationGrowth", "setPopulationGrowth");
+	    _populationGrowth.setShortDescription("the factor by which the population size increases with each generation (or decreases if < 1)");
 	    PropertyDescriptor[] pds = new PropertyDescriptor[] {
-		_childrenCount, _maximumRecombination, _maximumMutation, _parentCount, _population, _selection, 
+		_childrenCount, _maximumRecombination, _maximumMutation, _parentCount, _population, _selection, _populationGrowth
 	    };
 	    return pds;
 	} catch (IntrospectionException ex) {

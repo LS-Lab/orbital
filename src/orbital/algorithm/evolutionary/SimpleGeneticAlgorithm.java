@@ -56,8 +56,6 @@ public class SimpleGeneticAlgorithm extends GeneticAlgorithm {
      * @see GeneticAlgorithm#reproduce()
      */
     public void evolve() {
-	if (getSelection() == null)
-	    throw new IllegalStateException("no selection object has been set");
 	Population population = getPopulation();
 	DataCopy copy = null;
 	assert (copy = new DataCopy(population)) != null;
@@ -74,6 +72,7 @@ public class SimpleGeneticAlgorithm extends GeneticAlgorithm {
 	    assert copy.validateReferentialIntegrity();
 	}
 	newPopulation.setGeneration(population.getGeneration() + 1);
+	//@xxx setPopulation does not work with the BreederControl
 	//@todo caution: Population#evaluate(boolean) is called without neccessity
 	setPopulation(newPopulation);
     } 

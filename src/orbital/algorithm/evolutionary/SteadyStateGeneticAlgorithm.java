@@ -87,8 +87,6 @@ public class SteadyStateGeneticAlgorithm extends GeneticAlgorithm {
      * @see GeneticAlgorithm#reproduce()
      */
     public void evolve() {
-	if (getSelection() == null)
-	    throw new IllegalStateException("no selection object has been set");
 	Population population = getPopulation();
 	for (int j = 0; j < numberOfReplacements; j += getParentCount()) {
 	    Genome children[] = reproduce();

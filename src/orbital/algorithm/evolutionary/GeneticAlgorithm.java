@@ -34,21 +34,13 @@ import orbital.moon.evolutionary.SelectionStatistics;
 /**
  * A base class for genetic algorithms.
  * Genetic algorithms can be used as an evolutionary search algorithm
- * exploring (large population) or exploiting (small population)
+ * exploring (with a large population) or exploiting (with a small population)
  * an almost arbitrary search space.
  * <p>
  * A genetic algorithm provides the following operators:<ul>
  *   <li><strong>evolve</strong> that will simulate the evolutionary search. (Decoupled into sub class)</li>
  *   <li><strong>select</strong> one of the Genomes. (Decoupled into selection function.)</li>
  * </ul></p>
- * <p>
- * Prior to using a genetic algorithm to solve a problem you need to decide:<ol>
- *   <li>Which genetic representation to use for the members in state space?</li>
- *   <li>What fitness-weighting to use as an objective function to maximize?</li>
- *   <li>Perhaps define customized reproduction operators for the {@link Gene} representation,
- *    in order to support convergence with domain knowledge.</li>
- *   <li>Decide which selection function to apply.</li>
- * </ol></p>
  * <p>
  * After implementing the {@link GeneticAlgorithmProblem} interface use the evolutionary genetic algorithm
  * like:
@@ -57,7 +49,7 @@ import orbital.moon.evolutionary.SelectionStatistics;
  * ga.setSelection(<span class="Orbital">Selectors</span>.rouletteWheel());
  * <span class="Class">Object</span> solution <span class="operator">=</span> ga.solve(<var>geneticAlgorithmProblem</var>);
  * </pre>
- * Or, if you need additional control of the single steps, use:
+ * Or, if you need any additional control of the single steps, use:
  * <pre>
  * ga = <span class="keyword">new</span> <span class="Orbital">IncrementalGeneticAlgorithm</span>(<span class="Number">2</span>,<span class="Number">2</span>, maximumRecombination, maximumMutation);
  * ga.setSelection(<span class="Orbital">Selectors</span>.rouletteWheel());
@@ -104,7 +96,7 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
     static GeneticAlgorithm geneticAlgorithm = null;
 
     /**
-     * The number of abstract parents virtually required to produce children.
+     * The number of abstract parents required to produce children.
      * @serial
      */
     private int			  parentCount = Integer.MIN_VALUE;
@@ -148,7 +140,7 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
 
     /**
      * Construct a new GeneticAlgorithm.
-     * @param parentCount The number of abstract parents virtually required to produce children.
+     * @param parentCount The number of abstract parents required to produce children.
      * @param childrenCount The number of children produced with one reproduction involving parentCount parents.
      * @param maximumRecombination Maximum recombination rating.
      *  Maximum probability rating of recombining parental genomes per production.
@@ -255,13 +247,13 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
     // get/set methods
 	
     /**
-     * Get the number of abstract parents virtually required to produce children.
+     * Get the number of abstract parents required to produce children.
      */
     public int getParentCount() {
 	return parentCount;
     } 
     /**
-     * Set the number of abstract parents virtually required to produce children.
+     * Set the number of abstract parents required to produce children.
      * @pre n > 0
      */
     public void setParentCount(int n) {
@@ -448,25 +440,26 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
 
     /**
      * Helper method that performs one reproduction.
-     * Parents are selected and will recombine and mutate to produce child genomes
-     * who will be returned.
+     * Selects parents and will recombine and mutate to produce children genomes.
      * @return the children produced.
      * @see #evolve()
-     * @see #selection
+     * @see #getSelection()
      * @see Genome#recombine(Gene[],int,double)
-     * @see #maximumRecombination
-     * @see #maximumMutation
+     * @see #getMaximumRecombination()
+     * @see Genome#mutate(double)
+     * @see #getMaximumMutation()
      * @pre selection != null
      * @post this.equals(OLD)
-     * @todo already move to data part Population?
+     * @todo already move to data part Population? It would currently know GeneticAlgorithm for getMaximumRecombination() anyway. However, we could also decide to move this information to Population as well, which would include almost all of the properties. @xxx decide soon
      */
     /*protected*/ Genome[] reproduce() {
+	final Function selection = getSelection();
 	if (selection == null)
 	    throw new IllegalStateException("no selection object has been set");
 	DataCopy copy = null;
 	assert (copy = new DataCopy(population)) != null;
 		
-	Genome parents[] = new Genome[parentCount];
+	final Genome parents[] = new Genome[getParentCount()];
 
 	// select parents
 	for (int i = 0; i < parents.length; i++)
@@ -474,20 +467,20 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
 	SelectionStatistics.selectionStatistics.setSelected(population, parents);
 
 	// overall parental similarity
-	double similarity = 1 - Population.overallDistance(parents);
+	final double similarity = 1 - Population.overallDistance(parents);
 	logger.log(Level.FINEST, "evolve", "OVERALL parental distance " + (1 - similarity));
 	logger.log(Level.FINEST, "evolve", "OVERALL population distance " + population.getOverallDistance());
 
 	// recombine children
 	//@todo consider whether similarity * maximumRecombination would really be better?
-	Genome children[] = (Genome[]) parents[0].recombine(parents, childrenCount, maximumRecombination);
-	assert children.length == childrenCount : "childrenCount(" + childrenCount + ") children expected";
+	Genome children[] = (Genome[]) parents[0].recombine(parents, getChildrenCount(), getMaximumRecombination());
+	assert children.length == getChildrenCount() : "childrenCount(" + getChildrenCount() + ") children expected";
 
 	assert copy.validateReferentialIntegrity();
 
-	// mutate inherited Genome data
+	// mutate inherited genome data
 	for (int i = 0; i < children.length; i++)
-	    children[i] = (Genome) children[i].mutate(similarity * maximumMutation);
+	    children[i] = (Genome) children[i].mutate(similarity * getMaximumMutation());
 
 	assert copy.validateReferentialIntegrity();
 		

@@ -30,12 +30,13 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 
 /**
- * This class represents a Population of Genomes. Some of these Genomes
- * will reproduce with {@link Genome#recombine(Gene[],int,double) Genome.recombine} to generate
- * the members of the next generation.
+ * This class represents a population of genomes as a data structure.
+ * Some of these Genomes will reproduce with {@link Genome#recombine(Gene[],int,double) Genome.recombine}
+ * to generate the members of the next generation.
  * <p>
- * A population provides the following operators and functions:<ul>
- * <li><strong>create</strong> an initial set of genomes</li>
+ * A population provides the following operators and functions:
+ * <ul>
+ *   <li><strong>create</strong> an initial set of genomes.</li>
  * </ul>
  * </p>
  *
@@ -63,14 +64,14 @@ public class Population implements Serializable /*//TODO: extends DelegateList<G
      * The current generation count.
      * @serial
      */
-    private int			  generation;
+    private int		      generation;
 
     /**
      * The Genomes that are members of this population.
      * This sorted list is kept sorted according to the {@link Genome#getFitness() fitness weight}.
      * @serial
      */
-    private List			  members;
+    private List	      members;
 
     public Population() {
 	init();
@@ -93,7 +94,7 @@ public class Population implements Serializable /*//TODO: extends DelegateList<G
     Population newInstance(int capacity) {
 	try {
 	    Population l = (Population) getClass().newInstance();
-	    //XXX: members instantiated twice for Population type, now, could optimize
+	    //@XXX: members instantiated twice for Population type, now, could optimize
 	    l.members = new ArrayList(capacity);
 	    return l;
     	}

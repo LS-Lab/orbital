@@ -34,8 +34,12 @@ import orbital.util.InnerCheckedException;
  * <p>
  * A gene provides the following operators and functions:
  * <ul>
- *   <li><strong>mutate</strong> that defines how its mutation is done, depending on a probability.</li>
- *   <li><strong>recombine</strong> for recombining genetic information of the parents to generate genes of the children (reproduction).</li>
+ *   <li id="reproduce">reproduction operators consisting of
+ *     <ul>
+ *       <li><strong>mutate</strong> that defines how its mutation is done, depending on a probability.</li>
+ *       <li><strong>recombine</strong> for recombining genetic information of the parents to generate genes of the children (reproduction).</li>
+ *     </ul>
+ *   </li>
  *   <li>and a distance measure on genes.</li>
  * </ul>
  * </p>
@@ -48,7 +52,7 @@ import orbital.util.InnerCheckedException;
 public interface Gene {
     /**
      * Returns a clone of this gene.
-     * @post RES.equals(this)
+     * @post RES.equals(this) &and; RES&ne;OLD(RES)
      */
     Object clone();
 
