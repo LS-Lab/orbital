@@ -44,13 +44,17 @@ public class SetOfSupportResolution extends ResolutionBase {
 
     /**
      * Delete superfluous clauses.
-     * Apply any deletion strategies to the specified sets of clauses.
+     * Apply any deletion strategies to the specified sets of clauses U and S.
      * @param newResolvents the new resolvents just resolved most recently.
      * @param usable the set of usable clauses in the knowledgebase which are not in the set of support.
      * @param setOfSupport the current set of support prior to adding newResolvents.
+     * @internal run-time is heavily dependent on the precise order of operations (by factors of 4).
      */
-    protected void deletion(Collection newResolvents, ClausalSet usable, ClausalSet setOfSupport) {
-	if (true)
+    protected void deletion(ClausalSet newResolvents, ClausalSet usable, ClausalSet setOfSupport) {
+	//@internal first letting setOfSupport subsume newResolvents seems better, perhaps because setOfSupport already survived a longer time so it is more likely for them to be more general in the subsumption hierarchy.
+	newResolvents.removeAllSubsumedBy(setOfSupport);
+	setOfSupport.removeAllSubsumedBy(newResolvents);
+	if (false)
 	    return;
 	// remove tautologies and handle contradictions
     	// for all clauses F&isin;newResolvents
@@ -82,7 +86,7 @@ public class SetOfSupportResolution extends ResolutionBase {
 	    usable.add(C);
 
 	    // the set of resolvents obtained from resolution of C with any D that are new to us
-	    Collection/*_<Clause>_*/ newResolvents = new LinkedList();
+	    ClausalSet newResolvents = new ClausalSetImpl();
 	    // whether C has been resolved with any D
 	    boolean resolvable = false;
 	    // choose any clause D&isin;U&cup;S
