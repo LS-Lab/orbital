@@ -104,12 +104,13 @@ public class CustomizerViewController extends MouseAdapter implements MouseListe
      * Otherwise, will use a {@link #setDefaultCustomizerFactory(Function) default customizer}.
      * </p>
      * @param bean the bean to show a customizer for. Can also be a (short) array of beans.
+     * @param displayName the name to display for the bean, or <code>null</code> for autodetect.
      * @see #showCustomizer(Component, String)
      * @see #customizerFor(Class)
      */
-    public void showCustomizer(Object bean) {
+    public void showCustomizer(Object bean, String displayName) {
 	if (bean instanceof Object[]) {
-	    showCustomizer((Object[])bean);
+	    showCustomizer((Object[])bean, displayName);
 	    return;
 	}
 	try {
@@ -118,17 +119,21 @@ public class CustomizerViewController extends MouseAdapter implements MouseListe
 	    custom.setObject(bean);
 	    BeanInfo info = Introspector.getBeanInfo(beanClass, Introspector.USE_ALL_BEANINFO);
 	    BeanDescriptor desc = info.getBeanDescriptor();
-	    showCustomizer((Component) custom, desc == null ? null : desc.getDisplayName());
+	    showCustomizer((Component) custom, displayName != null ? displayName
+			   : (desc == null ? null : desc.getDisplayName()));
 	} catch (IntrospectionException e) {
 	    throw new InnerCheckedException("Introspection for Customizer failed: " + e.getMessage(), e);
 	} catch (ClassCastException e) {
 	    throw new ClassCastException("Customizer for bean " + bean.getClass() + " is invalid: " + e.getMessage());
 	} 
     }
+    public void showCustomizer(Object bean) {
+	showCustomizer(bean, null);
+    }
     /**
      * Array version
      */
-    private void showCustomizer(Object[] bean) {
+    private void showCustomizer(Object[] bean, String displayName) {
 	JTabbedPane tab = new JTabbedPane();
 	for (int i = 0; i < bean.length; i++) {
 	    if (bean[i] == null)
@@ -148,7 +153,7 @@ public class CustomizerViewController extends MouseAdapter implements MouseListe
 		} 
 	}
 	tab.setSelectedIndex(0);
-	showCustomizer((Component) tab, null);
+	showCustomizer((Component) tab, displayName);
     } 
 
     /**
