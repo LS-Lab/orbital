@@ -129,15 +129,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     // Formula implementation
 
     public Set getVariables() {
-    	//@todo optimize away that odd formatting just to parse again
-	try {
-	    return new HashSet(Setops.select(null, logic.scanSignature(toString()), new Predicate() {
-		    public boolean apply(Object o) {
-			return ((Symbol) o).isVariable();
-		    }
-		}));
-	}
-	catch (ParseException ex) {throw (InternalError) new InternalError("formatting and parsing are incompatible").initCause(ex);}
+	return Setops.union(getFreeVariables(), getBoundVariables());
     }
 
     public Set getFreeVariables() {

@@ -89,6 +89,9 @@ public class MathExpressionSyntax implements ExpressionSyntax {
     public Signature coreSignature() {
 	return _coreSignature;
     }
+    private final Interpretation coreInterpretation() {
+	return _coreInterpretation;
+    }
     private static final Interpretation _coreInterpretation =
 	arrayToInterpretation(new Object[] {
 	    Operations.plus,
@@ -138,17 +141,11 @@ public class MathExpressionSyntax implements ExpressionSyntax {
 	if (LAMBDA.equals(symbol))
 	    return new MathExpression(LAMBDA, LAMBDA.getType());
 
-	// check if it's already predefined in the coreSignature() but perhaps in a different notation and a more general type than parsed
-	for (Iterator i = coreSignature().iterator(); i.hasNext(); ) {
-	    // almost identical to @see ModernLogic#createAtomic
-	    Object o = i.next();
-	    assert o instanceof Symbol : "signature isa Set<" + Symbol.class.getName() + '>';
-	    Symbol s = (Symbol) o;
-	    if (s.getSignifier().equals(signifier) && s.getType().equals(symbol.getType())) {
-		// fixed interpretation of core signature
-		final Object ref = _coreInterpretation.get(s);
-		return new MathExpression(ref, s.getType());
-	    }
+	// check if it's already predefined in the coreSignature()
+	if (coreSignature().contains(symbol)) {
+	    // fixed interpretation of core signature
+	    final Object ref = coreInterpretation().get(symbol);
+	    return new MathExpression(ref, symbol.getType());
 	}
 
 	if (cod.equals(Types.NOTYPE))
@@ -280,6 +277,8 @@ public class MathExpressionSyntax implements ExpressionSyntax {
 	private Object referee;
 	private Type type;
 	public MathExpression(Object referee, Type type) {
+	    if (!type.apply(referee))
+		throw new IllegalArgumentException("interpretation " + referee + " is not of type " + type);
 	    this.referee = referee;
 	    this.type = type;
 	}

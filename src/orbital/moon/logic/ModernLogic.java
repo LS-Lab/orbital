@@ -61,17 +61,11 @@ abstract class ModernLogic implements Logic {
 	final String signifier = symbol.getSignifier();
 	assert signifier != null;
 
-	// check if it's already predefined in the coreSignature() but perhaps in a different notation and a more general type than parsed
-	for (Iterator i = coreSignature().iterator(); i.hasNext(); ) {
-	    Object o = i.next();
-	    assert o instanceof Symbol : "signature isa Set<" + Symbol.class.getName() + '>';
-	    Symbol s = (Symbol) o;
-	    //@xxx use s.equals(symbol) instead, also checking notation?
-	    if (s.getSignifier().equals(signifier) && s.getType().equals(symbol.getType())) {
-		// fixed interpretation of core signature
-		final Object ref = coreInterpretation().get(s);
-		return createFixedSymbol(s, ref, true);
-	    }
+	// check if it's already predefined in the coreSignature()
+	if (coreSignature().contains(symbol)) {
+	    // fixed interpretation of core signature
+	    final Object ref = coreInterpretation().get(symbol);
+	    return createFixedSymbol(symbol, ref, true);
 	}
 	// ordinary (new) symbols
 	assert !("true".equals(signifier) || "false".equals(signifier)) : "true and false are in core signature and no ordinary symbols";
