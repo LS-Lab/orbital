@@ -5,6 +5,7 @@
  */
 
 package orbital.game;
+import orbital.game.AdversarySearch.Option;
 
 import orbital.robotic.*;
 import java.awt.Canvas;
@@ -27,13 +28,14 @@ import orbital.util.Pair;
 import java.util.Iterator;
 
 /**
- * Gameboard class is an AWT-view of a Field which can be
+ * Gameboard class is the view of a field which can be
  * modified by mouse-dragging.
  * 
- * @actions "turnDone" to parent when move/beat has been processed.
+ * @events FieldChangeEvent.USER_ACTION | FieldChangeEvent.MOVE when user move has been performed.
  * @stereotype UI
  * @version 0.9, 14/07/98
  * @author  Andr&eacute; Platzer
+ * @see Field
  */
 public class Gameboard extends Canvas implements ImageObserver, Serializable {
     private static final long serialVersionUID = 6205399044524716717L;
@@ -56,19 +58,30 @@ public class Gameboard extends Canvas implements ImageObserver, Serializable {
 
     public Gameboard() {}
     public Gameboard(Field f) {
-	field = f;
+	setField(f);
     }
 
     public Field getField() {
 	return field;
     } 
 
+    /**
+     * Set the model for this view.
+     */
     public void setField(Field f) {
 	Field old = field;
 	field = f;
 	propertyChangeListeners.firePropertyChange("field", old, field);
 	invalidate();
 	repaint();
+	field.addFieldChangeListener(new FieldChangeAdapter() {
+		public void componentChanged(FieldChangeEvent e) {
+		    assert e.getField() == getField() : "we have only registered ourselves at our field";
+		    assert e.getType() == FieldChangeEvent.SET_FIGURE : "SET_FIGURE assumed";
+		    assert e.getChangeInfo() instanceof Position : "assuming position of change is changeInfo";
+		    repaint((Position)e.getChangeInfo());
+		}
+	    });
     } 
 
     public Figure getFigure(Position p) {
@@ -179,13 +192,18 @@ public class Gameboard extends Canvas implements ImageObserver, Serializable {
 	//@xxx only allow an operation for real players!
 
 	Move moveToDst = findValidPath(field.getFigure(src), dst);
-	boolean validOperation =
-	    moveToDst != null && field.move(src, moveToDst);	   // is this a correct move/beat?
+	// would this be a correct move?
+	boolean validOperation = moveToDst != null;
+	try {
+	    if (moveToDst != null)
+		validOperation &= ((Field)field.clone()).move(src, moveToDst);
+	}
+	catch (CloneNotSupportedException cannotMoveHypothetically) {
+	    // cannot precheck user move
+	}
 
-	repaint(src);
-	repaint(dst);
 	if (validOperation)
-	    getParent().postEvent(new Event(this, Event.ACTION_EVENT, "turnDone"));
+	    field.getFieldChangeMulticaster().movePerformed(new FieldChangeEvent(field, FieldChangeEvent.USER_ACTION | FieldChangeEvent.MOVE, new Option(field, dst, field.getFigure(src), moveToDst)));
 	else {	// nope, hmm, one of the users wasn't making too much sense of his move
 	    logger.log(Level.WARNING, "Wrong move", src + "-->" + dst);
 	}
