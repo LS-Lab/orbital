@@ -51,6 +51,23 @@ public interface MutableFunction/*<A, B>*/ extends Function/*<A, B>*/ {
     	private final Map/* <A, B> */ map;
     	private Function/*<A, B>*/ initialization;
     	/**
+    	 * Create a preinitialized table-based mutable function.
+	 * @param map The tabular map in which values are stored.
+    	 * @param initialization The function h to use for implicit lazy initialization f(x) = h(x)
+    	 *  for yet unknown arguments x.
+    	 *  Use <code>null</code> to disable lazy initialization,
+    	 *  leading to <code>null</code> being the value for yet unknown arguments.
+    	 * @param cache whether values lazy initialized via <code>initialization</code> should
+    	 *  be cached in the hash map.
+    	 *  Caching is important when no memory constraints are posed and the initialization
+    	 *  function performs expensive calculation.
+    	 */
+    	public TableFunction(Map/*_<A, B>_*/ map, Function/*<A, B>*/ initialization, boolean cache) {
+	    this.map = map;
+	    this.initialization = initialization;
+	    this.cache = cache;
+    	}
+    	/**
     	 * Create a table-based mutable function.
     	 * @param initialization The function h to use for implicit lazy initialization f(x) = h(x)
     	 *  for yet unknown arguments x.
@@ -62,9 +79,7 @@ public interface MutableFunction/*<A, B>*/ extends Function/*<A, B>*/ {
     	 *  function performs expensive calculation.
     	 */
     	public TableFunction(Function/*<A, B>*/ initialization, boolean cache) {
-	    this.map = new HashMap/* <A, B> */();
-	    this.initialization = initialization;
-	    this.cache = cache;
+	    this(new HashMap/*_<A, B>_*/(), initialization, cache);
     	}
     	public TableFunction(Function/*<A, B>*/ initialization) {
 	    this(initialization, true);
