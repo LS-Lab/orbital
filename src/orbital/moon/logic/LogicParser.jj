@@ -63,6 +63,7 @@ import java.io.*;
  * @see ExpressionSyntax#createExpression(String)
  * @see #parseFormula()
  * @see #parseFormulas()
+ * @see #setSyntax(ExpressionSyntax)
  * @todo should use precedence and associativity information from
  * orbital.logic.imp.Symbol instead of hard wiring parser.
  * @xxx "disambiguate" language and disallow acception of $p(x) as $p (x) and °p(x) as °p (x) and alike

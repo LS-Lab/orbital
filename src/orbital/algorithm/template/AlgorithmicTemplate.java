@@ -184,10 +184,10 @@ public interface AlgorithmicTemplate/*<Problem extends AlgorithmicProblem, Solut
 		final Class beanClass = algorithm;
 		BeanInfo info = Introspector.getBeanInfo(beanClass, Introspector.USE_ALL_BEANINFO);
 		if (info == null)
-		    throw new NullPointerException("no BeanInfo for class: " + beanClass);
+		    throw new IntrospectionException("no BeanInfo for class: " + beanClass);
 		PropertyDescriptor[] beanProperties = info.getPropertyDescriptors();
 		if (beanProperties == null)
-		    throw new NullPointerException("no PropertyDescriptors for class: " + beanClass);
+		    throw new IntrospectionException("no PropertyDescriptors for class: " + beanClass);
 
 		this.beanProperties = new HashMap();
 		for (int i = 0; i < beanProperties.length; i++)

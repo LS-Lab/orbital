@@ -77,7 +77,7 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
      */
     public static final int	 defaultParents = 2;
     public static final int	 defaultChildren = 2;
-    public static final double	 defaultMaxCrossover = 0.6;
+    public static final double	 defaultMaxRecombination = 0.6;
     public static final double	 defaultMaxMutation = 0.1;
 
     /**
@@ -110,20 +110,20 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
     private static class DemoGeneticAlgorithmProblem implements GeneticAlgorithmProblem {
 	private static BreederControl control;
     	public Population getPopulation() {
-	    return Population.create(/*new ParallelEvaluationPopulation(), */control.createGenome(), control.getInitialPopulationSize());
+	    return PopulationImpl.create(/*new ParallelEvaluationPopulation(), */control.createGenome(), control.getInitialPopulationSize());
 	}
         
         public boolean isSolution(Population pop) {
 	    return false;
         }
 		
-	public Function getWeighting() {
+	public Function getEvaluation() {
 	    return new DemoWeightingFunction();
 	}
 	private static class DemoWeightingFunction implements Function, Serializable {
 	    private static final long serialVersionUID = 4988957966615705107L;
-	    private static final long BUSY = 10000L;
-	    private static final int DELAY = 300;
+	    private static final long BUSY = 1000L;
+	    private static final int DELAY = 100;
 	    private java.util.Random r = new java.util.Random();
 	    private double			 sum;
 	    private double[]		 values = null;
@@ -137,6 +137,7 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
 		try {Thread.sleep(DELAY);} catch(InterruptedException irq) {}
 		for (long l = 0; l < BUSY; l++)
 		    doNothing();
+
 		double w = 0;
 		for (int i = 0; i < c.length(); i++)
 		    w += c.get(i) ? values[i] : 0.;
@@ -327,16 +328,21 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
 	try {
 	    Class algorithmClass = Class.forName(type);
 	    if (type.equals(SteadyStateGeneticAlgorithm.class.getName()))
-		ga = new SteadyStateGeneticAlgorithm(defaultParents, defaultChildren, defaultMaxCrossover, defaultMaxMutation, getReplacements());
+		ga = new SteadyStateGeneticAlgorithm(/*defaultParents, defaultChildren, defaultMaxRecombination, defaultMaxMutation,*/ getReplacements());
 	    else
-		ga = (GeneticAlgorithm) algorithmClass.getConstructor(new Class[] {Integer.TYPE, Integer.TYPE, Double.TYPE, Double.TYPE}).newInstance(new Object[] {new Integer(defaultParents), new Integer(defaultChildren), new Double(defaultMaxCrossover), new Double(defaultMaxMutation)});
+		ga = (GeneticAlgorithm) algorithmClass.getConstructor(new Class[] {/*Integer.TYPE, Integer.TYPE, Double.TYPE, Double.TYPE*/}).newInstance(new Object[] {/*new Integer(defaultParents), new Integer(defaultChildren), new Double(defaultMaxRecombination), new Double(defaultMaxMutation)*/});
 	}
 	catch (ClassNotFoundException x) {throw new InstantiationException(x.toString());}
 	catch (NoSuchMethodException x) {throw new InstantiationException(x.toString());}
 	catch (IllegalAccessException x) {throw new InstantiationException(x.toString());}
 	catch (InvocationTargetException x) {throw new InstantiationException(x.toString() + ": " + x.getTargetException());}
-	ga.setWeighting(problem.getWeighting());
+	ga.setEvaluation(problem.getEvaluation());
 	ga.setPopulation(problem.getPopulation());
+	PopulationImpl pop = (PopulationImpl) ga.getPopulation();
+	pop.setParentCount(defaultParents);
+	pop.setChildrenCount(defaultChildren);
+	pop.setMaximumRecombination(defaultMaxRecombination);
+	pop.setMaximumMutation(defaultMaxMutation);
 	protocol(resources.getString("protocol.population.create") + ga + "\r\n" + ga.getPopulation());
 	return ga;
     }
@@ -1149,7 +1155,7 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
     }
 
     void jMenuGenomeNew_actionPerformed(ActionEvent e) {
-	Object genome = createGenome().mutate(ga.getMaximumMutation());
+	Object genome = createGenome().mutate(((PopulationImpl) ga.getPopulation()).getMaximumMutation());
 	ga.getPopulation().add(genome);
 	protocol(resources.getString("protocol.genome.new") + genome);
 	data.fireTableDataChanged();
