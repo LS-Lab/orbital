@@ -335,6 +335,8 @@ public class Field implements Serializable, Cloneable {
 	    final List l  = new LinkedList();
 	    for (Iterator i = iterateNonEmpty(); i.hasNext(); ) {
 		final Figure figure = (Figure) i.next();
+		Figure org_figure = null;
+		assert (org_figure = (Figure) figure.clone()) != figure : "prepare";
 		for (Iterator j = figure.possibleMoves(); j.hasNext(); ) {
 		    Option o = (Option) j.next();
 		    if (o.getState() != null)
@@ -344,11 +346,15 @@ public class Field implements Serializable, Cloneable {
 			// we construct the resulting field
 			Move     move = o.getMove();
 			Position destination = o.getDestination();
+			Position org_destination = null;
+			assert (org_destination = (Position) destination.clone()) != figure : "prepare";
 			Field    field = (Field) clone();
 			//@todo optimize since most part is unnecessary. We already know it is a legal move, that it reaches its destination by a valid path, etc. Only, if most methods were final, we still need to check for "field.getFigure(((Position) figure).moving(move, destination);" and then perform "field.swap(figure, destination);"
 			if (field.move((Position) figure, move))
 			    l.add(new Option(field, destination, figure, move));
+			assert destination.equals(org_destination) : "moving on a cloned field does not change our control parameter destination";
 		    }
+		    assert figure.equals(org_figure) : "moving on a cloned field does not change our control parameter figure";
 		}
 	    }
 	    return Setops.unmodifiableIterator(l.iterator());
@@ -366,10 +372,15 @@ public class Field implements Serializable, Cloneable {
      */
     public boolean move(Position source, Move move) {
 	Figure sourceFigure = getFigure(source);
+	if (sourceFigure == source)
+	    throw new IllegalArgumentException("do not specify positions with those figures on the field that will get moved. Otherwise, their position information will get lost. But source==getFigure(source)");
 	Position destination = sourceFigure.moveFigure(move);
+	assert destination != source : "do not specify positions with those figures on the field that will get moved. Otherwise, their position information will get lost. But after move, source==destination";
 	if (destination == null)
 	    return false;
-	changeSupport.movePerformed(new FieldChangeEvent(this, FieldChangeEvent.MOVE, new Option(this, destination, sourceFigure, move)));
+	//@xxx the arguments are not entirely correct: now, this still is the wrong nextField  for Option, but sourceFigure still is the right source.
+	changeSupport.movePerformed(new FieldChangeEvent(this, FieldChangeEvent.MOVE,
+							 new Option(this, destination, sourceFigure, move)));
 	swap(source, destination);
 	return true;
     } 
