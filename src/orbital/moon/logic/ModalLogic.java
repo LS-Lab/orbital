@@ -51,7 +51,7 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 
 /**
- * A ModalLogic class that represents modal logic.
+ * Implementation of modal logic with local or global consequence.
  * 
  * @version 1.1, 2002-11-23
  * @author  Andr&eacute; Platzer
