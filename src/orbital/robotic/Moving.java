@@ -22,7 +22,7 @@ public class Moving extends Position {
      * The current direction of this Moving Object.
      * @serial
      */
-    public Direction direction;
+    private Direction direction;
 
     public Moving(int x, int y, Direction dir) {
 	super(x, y);
@@ -43,12 +43,19 @@ public class Moving extends Position {
     public Moving(Position p) {
 	this(p.x, p.y);
     }
+    /**
+     * Copy constructor.
+     */
     public Moving(Moving p) {
 	this(p.x, p.y, new Direction(p.getDirection()));
     }
 
     public Direction getDirection() {
 	return direction;
+    }
+
+    public void setDirection(Direction newDirection) {
+	this.direction = newDirection;
     }
 
     /**
@@ -61,7 +68,7 @@ public class Moving extends Position {
     public Object clone() {
 	//return new Moving(x, y, (Direction) direction.clone());
 	Moving c = (Moving) super.clone();
-	c.direction = (Direction) direction.clone();
+	c.setDirection((Direction) getDirection().clone());
 	return c;
     } 
 
@@ -83,6 +90,7 @@ public class Moving extends Position {
      * the current Direction is kept.
      * @see Direction#getDirectionVector()
      * @todo optimize hotspot by table lookup of (&Delta;x,&Delta;y) with index (dir/45)?
+     * @xxx should we better call setLocation(...)
      */
     public void slideDirection(final int dir) {
 	// faster version of: translate(new Direction(dir).getDirectionVector());
@@ -142,6 +150,7 @@ public class Moving extends Position {
      * Basic central method interpreting Moves.
      * @see Move
      * @todo optimize since hotspot
+     * @xxx should we better call setDirection(...)
      */
     public void move(final char mv) {
 	switch (mv) {
