@@ -1,4 +1,5 @@
 SimpleCharStream.java
+Token.java
 TokenManager.java
 TokenMgrError.java
 ParseException.java
