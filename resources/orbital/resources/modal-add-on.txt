@@ -1,0 +1,17 @@
+|=~( all x <>p(x) -> <>all x p(x) )	# in constant domain Fitting1998,4.6.11
+|= <>all x p(x) -> all x <>p(x)	# in constant domain Fitting1998,4.6.12
+## Fitting1998, Ex4.6.1
+|= <>some x P(x) -> some x <>P(x)	# Barcan characterizes anti-monotonic  (P being anything)
+|= all x [] P(x) -> []all x P(x)	# Barcan characterizes anti-monotonic
+|= some x <>P(x)	 -> <>some x P(x)	# Converse Barcan characterizes monotonic
+|= []all x p(x) -> all x [] p(x)	# Converse Barcan characterizes monotonic
+|=~( <>some x p(x) -> some x <>p(x) )	# Barcan in varying domain
+## Fitting1998, Ex4.9.4
+
+|= (<>some x []A(x) & []all x<>B(x)) -> <>some x <> (A(x)&B(x))	# in varying domain Fitting1998,5.2.3
+
+## Fitting1998, Ex6.1.1
+## Fitting1998, Ex6.2.2
+## Fitting1998, Ex6.3.1
+
+#|= all x all y (x=y -> []x=y) ## Fitting1998, p149 and Ex7.4.2
