@@ -65,6 +65,9 @@ all a r(a,a) , all a all b all c (r(a,c)&r(b,c)=>r(a,b)) |= all a r(a,a)
 #   "=>" (2) r reflexive and Euclidean => r symmetric
 all a r(a,a) , all a all b all c (r(a,c)&r(b,c)=>r(a,b)) |= all a all b (r(a,b) => r(b,a))
 #   "=>" (3) r reflexive and Euclidean => r transitive
+#   "=>" (3a)r reflexive and Euclidean => r transitive Using (2) as a lemma
+all a r(a,a) , all a all b all c (r(a,c)&r(b,c)=>r(a,b)) , all a all b (r(a,b) => r(b,a)) |= all a all b all c (r(a,b)&r(b,c)=>r(a,c))
+#   "=>" (3) r reflexive and Euclidean => r transitive
 all a r(a,a) , all a all b all c (r(a,c)&r(b,c)=>r(a,b)) |= all a all b all c (r(a,b)&r(b,c)=>r(a,c))
 #   "=>" (1+2+3) r reflexive and Euclidean => r equivalence
 ###@xxx out-of-time all a r(a,a) , all a all b all c (r(a,c)&r(b,c)=>r(a,b)) |= (all a r(a,a)) & (all a all b (r(a,b) => r(b,a))) & (all a all b all c (r(a,b)&r(b,c)=>r(a,c)))
