@@ -6,3 +6,4 @@ Sequent calculus of Gentzen.
 
 And two classical calculi of "Logik II"
 And some calculi for modal logic from "Philosophische Logik"
+And some from "Nichtklassische Logik"

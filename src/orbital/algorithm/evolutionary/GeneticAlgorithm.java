@@ -447,6 +447,7 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Serial
      * @see #maximumMutation
      * @pre selection != null
      * @post this.equals(OLD)
+     * @todo already move to data part Population?
      */
     /*protected*/ Genome[] reproduce() {
 	if (selection == null)
