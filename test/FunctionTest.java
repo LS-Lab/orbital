@@ -20,15 +20,15 @@ public class FunctionTest {
     private static final Real tolerance = Values.valueOf(1e-10);
 	
     // test type bit mask constants
-    public static final int	  TYPE_INTEGER = 1;
-    public static final int	  TYPE_REAL = 2;
-    public static final int	  TYPE_COMPLEX = 4;
-    public static final int	  TYPE_SCALAR = TYPE_INTEGER | TYPE_REAL | TYPE_COMPLEX;
-    public static final int	  TYPE_VECTOR = 32;
-    public static final int	  TYPE_MATRIX = 64;
-    public static final int	  TYPE_MV = TYPE_MATRIX | TYPE_VECTOR;
-    public static final int	  TYPE_ALL = TYPE_SCALAR | TYPE_MV;
-    public static final int	  TYPE_DEFAULT = TYPE_SCALAR;
+    public static final int   TYPE_INTEGER = 1;
+    public static final int   TYPE_REAL = 2;
+    public static final int   TYPE_COMPLEX = 4;
+    public static final int   TYPE_SCALAR = TYPE_INTEGER | TYPE_REAL | TYPE_COMPLEX;
+    public static final int   TYPE_VECTOR = 32;
+    public static final int   TYPE_MATRIX = 64;
+    public static final int   TYPE_TENSOR = 128 | TYPE_MATRIX | TYPE_VECTOR;
+    public static final int   TYPE_ALL = TYPE_SCALAR | TYPE_TENSOR;
+    public static final int   TYPE_DEFAULT = TYPE_SCALAR;
 
     public static void main(String[] argv) {
 	new FunctionTest().run();
@@ -81,14 +81,17 @@ public class FunctionTest {
 	    final double SMAX = +10;
 			
 	    //delta, logistic, reciprocal, sign
-	    testFunction("(#1)&",		Functions.id, MIN, MAX);
-	    testFunction("(1)&",		Functions.one, MIN, MAX);
-	    testFunction("(0)&",		Functions.zero, MIN, MAX);
+	    //@todo id, zero with tensor once Functions.zero has been adapted
+	    testFunction("(#1)&",	Functions.id, MIN, MAX);
+	    testFunction("(1)&",	Functions.one, MIN, MAX);
+	    testFunction("(0)&",	Functions.zero, MIN, MAX);
 	    testFunction("Plus",	Operations.plus, MIN, MAX, TYPE_ALL, TYPE_SCALAR);
-	    testFunction("Plus",	Operations.plus, MIN, MAX, TYPE_MV, TYPE_REAL);
+	    testFunction("Plus",	Operations.plus, MIN, MAX, TYPE_TENSOR, TYPE_SCALAR);
+	    testFunction("Plus",	Operations.plus, MIN, MAX, TYPE_TENSOR, TYPE_REAL);
 	    testFunction("Subtract",	Operations.subtract, MIN, MAX, TYPE_ALL, TYPE_SCALAR);
-	    testFunction("Subtract",	Operations.subtract, MIN, MAX, TYPE_MV, TYPE_REAL);
+	    testFunction("Subtract",	Operations.subtract, MIN, MAX, TYPE_TENSOR, TYPE_REAL);
 	    testFunction("Times",	Operations.times, MIN, MAX, TYPE_SCALAR, TYPE_SCALAR);
+	    //@todo Operations.times with TYPE_TENSOR
 	    testFunction("Dot",	Operations.times, MIN, MAX, TYPE_MATRIX, TYPE_SCALAR);
 	    testFunction("Dot",	Operations.times, MIN, MAX, TYPE_MATRIX, TYPE_REAL);
 	    //testFunction("Divide",	Operations.divide, MIN, MAX, TYPE_REAL | TYPE_COMPLEX);
@@ -96,8 +99,8 @@ public class FunctionTest {
 	    testFunction("Minus",	Operations.minus, MIN, MAX);
 	    //testFunction("Inverse",	Operations.inverse, MIN, MAX, TYPE_MATRIX);
 	    try {
-		testFunction("Exp",		Functions.exp, -30, 30);
-		testFunction("Log",		Functions.log, EPS, MAX);
+		testFunction("Exp",	Functions.exp, -30, 30);
+		testFunction("Log",	Functions.log, EPS, MAX);
 	    }
 	    catch (AssertionError ignore) {
 		ignore.printStackTrace();
@@ -410,7 +413,7 @@ public class FunctionTest {
 	Dimension dim = new Dimension(2, 2);
 	Matrix x = Values.getInstance(dim);
 	if (testType == TYPE_REAL && Utility.flip(random, 0.5))
-	    // possibly switch to RMatrix
+	    // randomly switch to RMatrix
 	    x = Values.valueOf(new double[dim.height][dim.width]);
 	for (int i = 0; i < dim.height; i++)
 	    for (int j = 0; j < dim.width; j++)
@@ -421,7 +424,7 @@ public class FunctionTest {
 	int dim = 2;
 	Vector x = Values.getInstance(dim);
 	if (testType == TYPE_REAL && Utility.flip(random, 0.5))
-	    // possibly switch to RMatrix
+	    // randomly switch to RVector
 	    x = Values.valueOf(new double[dim]);
 	for (int i = 0; i < dim; i++)
 	    x.set(i, randomArgument(min, max, testType));
