@@ -86,10 +86,11 @@ public interface Rational extends Real {
      * divides two rationals returning a third as a result
      */
     Rational divide(Rational b);
-    //@todo reintroduce once covariant return-types are allowed for Integer. public abstract Rational power(Integer b);
-    /*Rational power_(Integer b) {
-      return (Rational) Operations.power.apply(this, b);
-      }*/
+    /**
+     * Return a<sup>b</sup>.
+     * @postconditions (b != 0 &rarr; RES instanceof Rational)
+     */
+    Rational power(Integer b);
 
 
     /**
