@@ -104,6 +104,10 @@ public class ClauseIndex {
      */
     public ClauseIndex() {}
 
+    public String toString() {
+	return getClass().getName() + "[" + index + "]";
+    }
+
     /**
      * Get an iterator of all (clause,literal) pairs which could possibly unify with L.
      * @postconditions RES = {(C,K)&isin;this &brvbar; K&isin;C &and; possibly &exist;mgU{L,K}}
@@ -138,6 +142,20 @@ public class ClauseIndex {
     }
 
     /**
+     * Get an iterator of all literals which could possibly unify with L.
+     */
+    public Iterator/*_<Formula>_*/ getProbableUnifiableLiterals(Formula L) {
+	return projectLiteral(getProbableUnifiables(L));
+    }
+
+    /**
+     * Get an iterator of all literals which could possibly unify with ~L.
+     */
+    public Iterator/*_<Clause>_*/ getProbableComplementLiterals(Formula L) {
+	return projectLiteral(getProbableComplements(L));
+    }
+
+    /**
      * Project an iterator over (clause,literal) pairs to the clauses
      * occurring, but in set notation, i.e. do not mention the same
      * clause twice just because it occurs as (clause,literal1) and
@@ -149,6 +167,18 @@ public class ClauseIndex {
 		    return ((Pair)o).A;
 		}
 	    }, i)).iterator();
+    }
+
+    /**
+     * Project an iterator over (clause,literal) pairs to the literals
+     * occurring.
+     */
+    private final Iterator/*_<Formula>_*/ projectLiteral(Iterator/*_<Pair<Clause,Formula>>_*/ i) {
+	return Functionals.map(new Function() {
+		public Object apply(Object o) {
+		    return ((Pair)o).B;
+		}
+	    }, i);
     }
     
     /**
@@ -179,6 +209,13 @@ public class ClauseIndex {
 	}
     }
 
+    /**
+     * Check whether this index is empty.
+     */
+    public boolean isEmpty() {
+	return index.isEmpty();
+    }
+
     // index modification methods
     
     /**
@@ -202,6 +239,7 @@ public class ClauseIndex {
 	boolean changed = false;
 	for (Iterator i = C.iterator(); i.hasNext(); ) {
 	    Formula L = (Formula)i.next();
+	    //@todo furthermore remove getIndex(L) from index if it is empty anyway
 	    changed |= getIndex(L).remove(new Pair(C,L));
 	}
 	return changed;
