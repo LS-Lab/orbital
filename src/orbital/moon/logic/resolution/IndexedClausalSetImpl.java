@@ -45,14 +45,19 @@ public class IndexedClausalSetImpl extends ClausalSetImpl {
     public IndexedClausalSetImpl() {}
 
     public Iterator/*_<Clause>_*/ getProbableComplementsOf(final Clause C) {
-	return new SequenceIterator(Functionals.map(
+	//@internal convert to set and back again to iterator, in order to remove duplicates from distinct iterator parts of the SequenceIterator
+	Set res = Setops.asSet(new SequenceIterator(Functionals.map(
 		new Function() {
 		    public Object apply(Object o) {
 			return index.getProbableComplementClauses((Formula)o);
 		    }
 		},
 		new LinkedList(C))
-				    );
+						    ));
+	assert this.containsAll(res) : "ClausalIndex.getProbableComplementClauses only returns clauses of this set ";
+	assert Setops.asSet(super.getProbableComplementsOf(C)).containsAll(res) : "ClausalIndex.getProbableComplementClauses returns less clauses than " + ClausalSetImpl.class.getName() + ".getProbableComplementsOf(Clause)";
+	assert !Setops.hasDuplicates(res.iterator()) : res + " contains no duplicates but stems from a set";
+	return res.iterator();
     }
 
     /**
