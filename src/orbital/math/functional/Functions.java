@@ -7,6 +7,7 @@
 package orbital.math.functional;
 
 import orbital.logic.functor.Functor;
+import orbital.math.Polynomial;
 
 import orbital.math.Arithmetic;
 import orbital.math.Normed;
@@ -1029,11 +1030,11 @@ public final class Functions {
     // extended functions
 
     /**
-     * Bernstein-Polynom i of grade n for the range [a,b].
+     * Bernstein-Polynom i of degree n for the range [a,b].
      */
 
     /*
-     * public static final Function bernstein(final int i, final int n, final double a, final double b) {
+     * public static final Polynomial bernstein(final int i, final int n, final double a, final double b) {
      * return new Function() {
      * public Object apply(Object x) { return MathUtilities.nCr(n,i) * Math.pow(x-a, i) * Math.pow(b-x, n-i) / Math.pow(b-a, n); }
      * public Function derive() {throw new UnsupportedOperationException(this + "'");}
@@ -1043,17 +1044,16 @@ public final class Functions {
      */
 
     /**
-     * polynom: A&rarr;A; X&#8614;<big>&sum;</big><span class="doubleIndex"><sub>i=1</sub><sup>d</sup></span> X<sup>i</sup>.
+     * polynom: R'&rarr;R'; X&#8614;<big>&sum;</big><span class="doubleIndex"><sub>i=0</sub><sup>d</sup></span> X<sup>i</sup>.
      * <p>
-     * This method will return the polynom in <b>F</b>[X]<sub>d</sub> of the given degree that corresponds to
-     * the Vandermonde Matrix so all coefficients are 1. dim <b>F</b>[X]<sub>d</sub> = d+1.</p>
+     * This method will return the polynom in R[X]<sub>d</sub> of the given degree that corresponds to
+     * the Vandermonde Matrix so all coefficients are 1. dim R[X]<sub>d</sub> = d+1.
+     * The ring R' is "compatible" with R.</p>
      * @see #polynom(Vector)
      * @see orbital.math.Polynomial
-     * @xxx use Polynomial
-     * @todo change return-type to Polynomial
      */
-    public static final Function polynom(final int degree) {
-	throw new UnsupportedOperationException("currently not yet supported. Support temporarily disabled");
+    public static final Polynomial polynom(final int degree) {
+	return polynom(Values.IDENTITY(degree, degree).getDiagonal());
 	// 	    Function p[] = new Function[degree];
 	// 	    for (int i = 0; i < degree; i++)
 	// 		p[i] = Functions.pow(Values.valueOf(i));
@@ -1065,19 +1065,18 @@ public final class Functions {
     } 
 
     /**
-     * polynom: A&rarr;A; X&#8614;<big>&sum;</big><span class="doubleIndex"><sub>i=1</sub><sup>d</sup></span> a<sub>i</sub>X<sup>i</sup>.
+     * polynom: R'&rarr;R'; X&#8614;<big>&sum;</big><span class="doubleIndex"><sub>i=0</sub><sup>d</sup></span> a<sub>i</sub>X<sup>i</sup>.
      * <p>
-     * This method will return the polynom in <b>F</b>[X] with the specified coefficients vector.
-     * Although dim <b>F</b>[X] = &infin; this method will return a polynomial
-     * in <b>F</b>[X]<sub>d</sub> of degree &le;d:=coeff.dimension().</p>
+     * This method will return the polynom in R[X] with the specified coefficients vector in R<sup>d</sup>.
+     * Although dim R[X] = &infin; this method will return a polynomial
+     * in R[X]<sub>d</sub> of degree &le;d:=coeff.dimension().
+     * The ring R' is "compatible" with R.</p>
      * @see #polynom(int)
      * @see orbital.math.Values#asPolynomial(Vector)
      * @see orbital.math.Polynomial
      * @internal see #polynom(int)
-     * @todo polynom usually has norm POSITIVE_INFINITY except for coeff == 0
-     * @todo change return-type to Polynomial
      */
-    public static final Function polynom(Vector coeff) {
+    public static final Polynomial polynom(Vector coeff) {
 	return Values.asPolynomial(coeff);
 	// @xxx ClassCastException due to ArithmeticVector
 	// return (Function) Operations.times.apply(coeff, polynom(coeff.dimension()));

@@ -133,6 +133,9 @@ public interface Operations /* implements ArithmeticOperations */ {
      * <p>
      * derive sum' = (1)<sub>n&isin;<b>N</b></sub><br />
      * integrate: ?</p>
+     * <p>
+     * Treats its argument as a list like {@link orbital.logic.functor.Functionals.Catamorphism}.
+     * </p>
      * @see orbital.logic.functor.Functionals.Catamorphism
      * @see Values#ZERO
      * @see #plus
@@ -265,6 +268,9 @@ public interface Operations /* implements ArithmeticOperations */ {
      * <p>
      * derive product' = ?<br />
      * integrate: ?</p>
+     * <p>
+     * Treats its argument as a list like {@link orbital.logic.functor.Functionals.Catamorphism}.
+     * </p>
      * @see orbital.logic.functor.Functionals.Catamorphism
      * @see Values#ONE
      * @see #times
@@ -427,6 +433,9 @@ public interface Operations /* implements ArithmeticOperations */ {
      *   <dd>inf M = s&isin;A is the infimum of M&sube;A :&hArr; s is a lower bound of M &and; &forall;b&isin;A (b lower bound of M &rArr; b&le;s)</dd>
      * </dl>
      * </p>
+     * <p>
+     * Treats its argument as a list like {@link orbital.logic.functor.Functionals.Catamorphism}.
+     * </p>
      * @see orbital.logic.functor.Functionals.Catamorphism
      * @see #min
      * @todo
@@ -488,6 +497,9 @@ public interface Operations /* implements ArithmeticOperations */ {
      *   <dt>supremum</dt>
      *   <dd>sup M = s&isin;A is the supremum of M&sube;A :&hArr; s is an upper bound of M &and; &forall;b&isin;A (b upper bound of M &rArr; s&le;b)</dd>
      * </dl>
+     * </p>
+     * <p>
+     * Treats its argument as a list like {@link orbital.logic.functor.Functionals.Catamorphism}.
      * </p>
      * @see orbital.logic.functor.Functionals.Catamorphism
      * @see #max
