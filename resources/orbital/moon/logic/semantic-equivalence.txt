@@ -126,6 +126,8 @@ p<->~q == ~p<->q
 p->q |= (p|r)->(q|r)
 p->r, q->r |= (p|q)->r
 |= (f->g) | (g->f)	# material implication has strange causal relations
+c&a | ~c&b == c&a | ~c&b | a&b	# consensus rule <= (absorbtion,n,tertium non datur,d)
+(c|a) & (~c|b) == (c|a) & (~c|b) & (a|b)	# consensus rule <= (absorbtion,n,tertium non datur,d)
 #
 # <-> (or better yet <=>) is a congruence
 #
