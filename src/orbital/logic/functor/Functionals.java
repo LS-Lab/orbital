@@ -511,7 +511,7 @@ public class Functionals {
      * In the latter case, composition is done using a {@link Functions#constant(Object) constant function}.
      * </p>
      * <p>
-     * For example, the following call creates a <a href="{@docRoot}/DesignPatters/Command.html">macro command function</a>
+     * For example, the following call creates a <a href="{@docRoot}/Patterns/Design/Command.html">macro command function</a>
      * <pre>
      * <span class="Class">List</span> fs <span class="assignement">=</span> <span class="Class">Arrays</span>.asList(<span class="operator">new</span> <span class="Orbital">Function</span><span class="operator">[]</span> <span class="operator">{</span>f1, f2, ..., fn<span class="operator">}</span>);
      * <span class="comment">// f = <span class="bananaBracket">(|</span>id,&#8728;<span class="bananaBracket">|)</span> fs</span>

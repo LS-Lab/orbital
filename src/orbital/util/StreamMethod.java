@@ -54,7 +54,7 @@ import java.util.logging.Level;
  * @author  Andr&eacute; Platzer
  * @see <a href="doc-files/StreamMethod.png">concurrent implementation</a>
  * @see <a href="">UML</a>
- * @see <a href="{@docRoot}/Patterns/ConsumerProducer.html">Consumer Producer</a>
+ * @see <a href="{@docRoot}/Patterns/Design/ConsumerProducer.html">Consumer Producer</a>
  * @internal This is a very tricky concurrent implementation!
  * @todo note that StreamMethod is deadlock prone if the buffer is not restricted in size.
  * @todo volatilize the entry list as in  [4 - Monitors.pdf]
