@@ -52,7 +52,7 @@ public interface Polynomial/*<R implements Arithmetic, S implements Arithmetic>*
      * n variables, it may simply be the integer n.
      * </p>
      * @return an (memento) description of the index set S which is even a magma.
-     * @post RES.supports(#equals(Object)) || RES.getClass().isArray()
+     * @postconditions RES.supports(#equals(Object)) || RES.getClass().isArray()
      */
     Object indexSet();
 
@@ -65,7 +65,7 @@ public interface Polynomial/*<R implements Arithmetic, S implements Arithmetic>*
      * </p>
      * @return an iterator over a finite set of indices in S
      *  at least containing all indices of coefficients &ne;0.
-     * @post &forall;i&isin;S&#8726;RES get(i)=0
+     * @postconditions &forall;i&isin;S&#8726;RES get(i)=0
      */
     Iterator/*_<S>_*/ indices();
 
@@ -75,7 +75,7 @@ public interface Polynomial/*<R implements Arithmetic, S implements Arithmetic>*
      * For example, if S=<b>N</b><sup>n</sup> that is the coefficient of the monomial
      * X<sub>0</sub><sup>i<sub>0</sub></sup>&sdot;X<sub>1</sub><sup>i<sub>1</sub></sup>&sdot;...&sdot;X<sub>n-1</sub><sup>i<sub>n-1</sub></sup>,
      * which is <code>0</code> if |i|&gt;deg(this).
-     * @pre i&isin;{@link #indexSet() S}
+     * @preconditions i&isin;{@link #indexSet() S}
      * @return &alpha;<sub>i</sub>.
      */
     Arithmetic/*>R<*/ get(Arithmetic/*>S<*/ i);

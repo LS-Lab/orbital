@@ -74,7 +74,7 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractProdu
      * @param dim the dimensions desired for the tensor.
      * @return a tensor of the same type as this, dimensions as specified.
      * The elements need not be initialized since they will soon be by the calling method.
-     * @post RES != RES
+     * @postconditions RES != RES
      * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      * @see #clone()
      */
@@ -494,8 +494,8 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractProdu
 
     /**
      * Validate i indices within dimension.
-     * @pre 0 <= i < dimension().height && 0 <= j < dimension().width
-     * @post true
+     * @preconditions 0 <= i < dimension().height && 0 <= j < dimension().width
+     * @postconditions true
      * @throws ArrayIndexOutOfBoundsException if the index (i|j) is out of bounds for columns or rows.
      * @todo turn into an aspect, only.
      */

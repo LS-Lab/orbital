@@ -40,7 +40,7 @@ public final class Stat {
      * Sensitive to errorneous data.
      * @return 1/n * &sum;<span class="doubleIndex"><sub>i=0</sub><sup>n-1</sup></span> x<sub>i</sub> where n is the length of x.
      * @param x the array of double values representing the set of statistical data.
-     * @pre x.length>0
+     * @preconditions x.length>0
      */
     public static double arithmeticMean(double x[]) {
 	return Evaluations.sum(x) / x.length;
@@ -122,7 +122,7 @@ public final class Stat {
     /**
      * Returns the median of a set of n values sorted in ascending numerical order.
      * @param x the <b>sorted</b> array of double values representing the set of statistical data.
-     * @pre sorted(x)
+     * @preconditions sorted(x)
      * @return <code>x<sub>(n-1)/2</sub></code> if n is odd, and <code>(x<sub>n/2-1</sub> + x<sub>n/2</sub>) / 2</code> if n is even.
      * @see java.util.Arrays#sort(double[])
      * @see java.lang.System#arraycopy
@@ -143,7 +143,7 @@ public final class Stat {
      * It is median(x)==quantile(x,0.5).
      * @param x the <b>sorted</b> array of double values representing the set of statistical data.
      * @param a a number within the open range ]0,1[ that defines the quantile of which part of the data is desired.
-     * @pre a &isin; (0,1) && sorted(x)
+     * @preconditions a &isin; (0,1) && sorted(x)
      * @return <code>x<sub>k</sub></code> if n*a is no natural number (but fractional), and <code>(x<sub>k-1</sub> + x<sub>k</sub>) / 2</code> if n*a is a natural number, with <tt>k:=[n*a]</tt> (gaussian brackets).
      * @see java.util.Arrays#sort(double[])
      * @see java.lang.System#arraycopy
@@ -163,7 +163,7 @@ public final class Stat {
      * with a fraction a of entries at each end dropped.
      * @param x the <b>sorted</b> array of double values representing the set of statistical data.
      * @param a a number within the semi-open range of [0,0.5[.
-     * @pre a &isin; [0, 0.5) && sorted(x)
+     * @preconditions a &isin; [0, 0.5) && sorted(x)
      * @return <code>1/(n-2k)*(x<sub>k</sub> + ... + x<sub>n-k-1</sub>)</code>, with <tt>k:=[n*a]</tt> (gaussian brackets).
      * @see java.util.Arrays#sort(double[])
      * @see java.lang.System#arraycopy
@@ -205,7 +205,7 @@ public final class Stat {
      * Returns the (2D) coefficient of correlation of a set of n pairs (x<sub>i</sub>,y<sub>i</sub>).
      * @param x the array of double values representing the x part of the set of statistical data (with same length and in same order as y).
      * @param y the array of double values representing the y part of the set of statistical data (with same length and in same order as x).
-     * @pre x.length == y.length
+     * @preconditions x.length == y.length
      * @return 1/(n-1)*Sum<big>(</big>(x<sub>i</sub>-mean(x))*(x<sub>i</sub>-mean(y))<big>)</big> / (standardDeviation(x)*standardDeviation(y)).
      */
     public static double coefficientOfCorrelation(double x[], double y[]) {
@@ -256,7 +256,7 @@ public final class Stat {
      * real functions f<sub>i</sub> on the different parameters x<sub>i</sub>.
      * </p>
      * 
-     * @pre experiment.dimension().width - 1 == funcs.length
+     * @preconditions experiment.dimension().width - 1 == funcs.length
      * @return an estimate <var>a&#771;</var> for the true coefficients vector <var>&acirc;</var>.
      * @see #regression(Vector, Matrix, Matrix)
      */
@@ -325,7 +325,7 @@ public final class Stat {
      * @param Cu the n&times;n covariance Matrix of u.
      * The diagonal vector contains the variance during experimental determination of each variable,
      * the other components contain the covariance, with other values.
-     * @pre u.dimension() == A.dimension().height
+     * @preconditions u.dimension() == A.dimension().height
      * @return <var>a&#771;</var> an estimate for the true coefficients vector <var>&acirc;</var>.
      *  With regard to the statistical deviation, this vector <var>a</var> can be used to calculate
      *  the estimated scalar <var>u</var> for other parameter-vectors <var>p</var> as

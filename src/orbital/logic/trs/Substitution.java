@@ -164,7 +164,7 @@ public interface Substitution extends Function/*<Object, Object>*/ {
      * only the first applicable replacement will be applied on subterms.
      * </p>
      * @return &sigma;(term)
-     * @pre the {@link orbital.logic.Composite}s occuring in term support {@link orbital.logic.Composite#construct(Object,Object)}
+     * @preconditions the {@link orbital.logic.Composite}s occuring in term support {@link orbital.logic.Composite#construct(Object,Object)}
      *  in order to allow being substituted by an object of equal class
      * @throws ArrayStoreException if this method tried to store a part of the result in an array,
      *  but the substitution list produced a replacement of an illegal type.
@@ -214,7 +214,7 @@ public interface Substitution extends Function/*<Object, Object>*/ {
         /**
          * Get the substitute to replace a match with.
          * @return the substitute, or <code>null</code> if this matcher does not perform substitutions.
-         * @post RES == null &hArr; &not;isSubstituting()
+         * @postconditions RES == null &hArr; &not;isSubstituting()
          */
         //@todo ? Object substitute();
 
@@ -228,7 +228,7 @@ public interface Substitution extends Function/*<Object, Object>*/ {
     	 * Replace a matched term.
     	 * @param t the term matched per {@link #matches(Object)}.
     	 * @return the substitute for t. Simply returns t if no replacement should occur at all.
-    	 * @pre matches(t) &and; &quot;matches(t) was the last call to matches(Object)&quot;
+    	 * @preconditions matches(t) &and; &quot;matches(t) was the last call to matches(Object)&quot;
     	 */
     	Object replace(Object t);
         

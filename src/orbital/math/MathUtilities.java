@@ -72,7 +72,7 @@ public final class MathUtilities {
      * The default tolerance for two numbers to be treated equal.
      * (experimental)
      * @see #setDefaultTolerance(double)
-     * @invariant DefaultTolerance &ge; 0
+     * @invariants DefaultTolerance &ge; 0
      */
     private static double DefaultTolerance = .00000000001;
 
@@ -122,7 +122,7 @@ public final class MathUtilities {
     /**
      * Set the default tolerance for two numbers to be treated equal.
      * (experimental)
-     * @pre defaultTolerance &ge; 0
+     * @preconditions defaultTolerance &ge; 0
      */
     public static void setDefaultTolerance(double defaultTolerance) {
 	MathUtilities.DefaultTolerance = defaultTolerance;
@@ -130,7 +130,7 @@ public final class MathUtilities {
     /**
      * Get the default tolerance for two numbers to be treated equal.
      * (experimental)
-     * @post RES &ge; 0
+     * @postconditions RES &ge; 0
      */
     public static double getDefaultTolerance() {
 	return MathUtilities.DefaultTolerance;

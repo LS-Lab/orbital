@@ -151,8 +151,8 @@ public final class Setops {
      * @param choices the available choices M.
      * @param f the evaluation function f:M&rarr;<b>R</b>.
      * @return argmin<sub>a&isin;M</sub> f(a) with minimum f-value in choices.
-     * @pre choices.hasNext()
-     * @post RES = argmin<sub>a'&isin;M</sub> f(a'), i.e. &forall;a'&isin;M f(RES)&le;f(a')
+     * @preconditions choices.hasNext()
+     * @postconditions RES = argmin<sub>a'&isin;M</sub> f(a'), i.e. &forall;a'&isin;M f(RES)&le;f(a')
      * @throws NoSuchElementException if !choices.hasNext()
      * @see orbital.math.functional.Operations#inf
      * @see java.util.Collections#min(Collection,Comparator)
@@ -184,8 +184,8 @@ public final class Setops {
      * @param choices the available choices M.
      * @param f the evaluation function f:M&rarr;<b>R</b>.
      * @return argmax<sub>a&isin;M</sub> f(a) with maximum f-value in choices.
-     * @pre choices.hasNext()
-     * @post RES = argmax<sub>a'&isin;M</sub> f(a'), i.e. &forall;a'&isin;M f(RES)&ge;f(a')
+     * @preconditions choices.hasNext()
+     * @postconditions RES = argmax<sub>a'&isin;M</sub> f(a'), i.e. &forall;a'&isin;M f(RES)&ge;f(a')
      * @throws NoSuchElementException if !choices.hasNext()
      * @see orbital.math.functional.Operations#sup
      * @see java.util.Collections#max(Collection,Comparator)
@@ -218,7 +218,7 @@ public final class Setops {
     /**
      * Returns the union of two collections.
      * @return a &cup; b.
-     * @post RES has same type as a
+     * @postconditions RES has same type as a
      */
     public static /*_<A>_*/ Collection/*_<A>_*/ union(Collection/*_<A>_*/ a, Collection/*_<A>_*/ b) {
 	Collection/*_<A>_*/ c = newCollectionLike(a);
@@ -236,7 +236,7 @@ public final class Setops {
     /**
      * Returns the intersection of two collections.
      * @return a &cap; b.
-     * @post RES has same type as a
+     * @postconditions RES has same type as a
      */
     public static /*_<A>_*/ Collection/*_<A>_*/ intersection(Collection/*_<A>_*/ a, Collection/*_<A>_*/ b) {
 	Collection/*_<A>_*/ c = newCollectionLike(a);
@@ -255,7 +255,7 @@ public final class Setops {
      * Returns the complement of a collection in a universal set.
      * Is the same as the difference universal &#8726; a.
      * @return a<sup>&#8705;</sup>, a collection of all elements that are in universal, but not in a.
-     * @post RES has same type as universal
+     * @postconditions RES has same type as universal
      */
     public static /*_<A>_*/ Collection/*_<A>_*/ complement(Collection/*_<A>_*/ universal, Collection/*_<A>_*/ a) {
 	Collection/*_<A>_*/ c = newCollectionLike(universal);
@@ -273,7 +273,7 @@ public final class Setops {
     /**
      * Returns the difference of one collection to another.
      * @return a &#8726; b = complement(a,b) = b<sup>&#8705;</sup> relative to a.
-     * @post RES has same type as a
+     * @postconditions RES has same type as a
      */
     public final static /*_<A>_*/ Collection/*_<A>_*/ difference(Collection/*_<A>_*/ a, Collection/*_<A>_*/ b) {
 	return complement(a, b);
@@ -289,7 +289,7 @@ public final class Setops {
      * Returns the symmetric difference of two collections.<br />
      * a &Delta; b = (a&&#8726;b) &cup; (b&#8726;a)
      * @return a collection of all elements which are unique to either of the collections.
-     * @post RES has same type as a
+     * @postconditions RES has same type as a
      */
     public static /*_<A>_*/ Collection/*_<A>_*/ symmetricDifference(Collection/*_<A>_*/ a, Collection/*_<A>_*/ b) {
 	return union(complement(a, b), complement(b, a));
@@ -529,8 +529,8 @@ public final class Setops {
 
     /**
      * Merge two collections according to the order induced by a comparator.
-     * @pre isSorted(x) && isSorted(y)
-     * @post isSorted(RES) && RES = a &cup; b
+     * @preconditions isSorted(x) && isSorted(y)
+     * @postconditions isSorted(RES) && RES = a &cup; b
      * @todo see #mergeSort(Collection, Comparator)
      */
     public static List/*_<A>_*/ merge(List/*_<A>_*/ x, List/*_<A>_*/ y, Comparator/*_<A>_*/ comp) {
@@ -538,15 +538,15 @@ public final class Setops {
     }
     /**
      * Merge two iterator-views according to the order induced by a comparator.
-     * @pre isSorted(x) && isSorted(y)
-     * @post isSorted(RES) && RES = a &cup; b
+     * @preconditions isSorted(x) && isSorted(y)
+     * @postconditions isSorted(RES) && RES = a &cup; b
      */
     public static List/*_<A>_*/ merge(Iterator/*_<A>_*/ x, Iterator/*_<A>_*/ y, Comparator/*_<A>_*/ comp) {
 	return merge(x, y, comp, new LinkedList());
     }
     /**
-     * @pre isSorted(x) && isSorted(y)
-     * @post isSorted(RES) && RES = a &cup; b
+     * @preconditions isSorted(x) && isSorted(y)
+     * @postconditions isSorted(RES) && RES = a &cup; b
      */
     private static List/*_<A>_*/ merge(Iterator/*_<A>_*/ x, Iterator/*_<A>_*/ y, Comparator/*_<A>_*/ comp, List/*_<A>_*/ r) {
 	if (x.hasNext() && y.hasNext()) {
@@ -585,11 +585,11 @@ public final class Setops {
     /**
      * insert object into l such that l is still sorted.
      * Special case of merge.
-     * @pre sorted(l)
-     * @post sorted(l) &and; object&isin;l
+     * @preconditions sorted(l)
+     * @postconditions sorted(l) &and; object&isin;l
      */
     public static final void insert(List l, Object object) {
-	assert Utility.sorted(l, null) : "@pre";
+	assert Utility.sorted(l, null) : "@preconditions";
 	final Comparable c = (Comparable)object;
 	final ListIterator i = l.listIterator();
 	while (i.hasNext()) {
@@ -600,7 +600,7 @@ public final class Setops {
 	    }
 	}
 	i.add(c);
-	assert Utility.sorted(l, null) && l.contains(object) : "@post";
+	assert Utility.sorted(l, null) && l.contains(object) : "@postconditions";
     }
 
     /**

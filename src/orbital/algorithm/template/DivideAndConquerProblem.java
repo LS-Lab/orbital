@@ -24,7 +24,7 @@ public interface DivideAndConquerProblem extends AlgorithmicProblem {
 
     /**
      * Solve the base case.
-     * @pre smallEnough()
+     * @preconditions smallEnough()
      * @return the solution for this base case.
      * @see #smallEnough
      */
@@ -34,7 +34,7 @@ public interface DivideAndConquerProblem extends AlgorithmicProblem {
      * Divide this problem into several problem parts which can be solved independently.
      * Solving will then continue with these parts in ascending order, before
      * they will be merged.
-     * @pre &not;smallEnough()
+     * @preconditions &not;smallEnough()
      * @return an array of (smaller) sub problems.
      */
     DivideAndConquerProblem[] divide();
@@ -44,7 +44,7 @@ public interface DivideAndConquerProblem extends AlgorithmicProblem {
      * <p>
      * For single-sided divide and conquer, simply returns this as the answer.</p>
      * @param partialSolutions partial solutions
-     * @pre &not;smallEnough()
+     * @preconditions &not;smallEnough()
      * @return the complete solution consisting of the partial solutions.
      */
     Object merge(Object[] partialSolutions);

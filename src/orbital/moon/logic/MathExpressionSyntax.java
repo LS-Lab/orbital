@@ -79,7 +79,7 @@ public class MathExpressionSyntax implements ExpressionSyntax {
     }
     /**
      * Parses an expression and queries its arithmetic object.
-     * @post RES = getValueOf(createExpression(expression))
+     * @postconditions RES = getValueOf(createExpression(expression))
      * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience Method</a>
      * @see #createExpression(String)
      * @see #getValueOf(Expression)
@@ -194,7 +194,7 @@ public class MathExpressionSyntax implements ExpressionSyntax {
 
     /**
      * Get the arithmetic object represented by an expression.
-     * @pre x = this.compose(...) &or; x = this.createAtomic(...)
+     * @preconditions x = this.compose(...) &or; x = this.createAtomic(...)
      */
     public Arithmetic getValueOf(Expression x) {
 	return (Arithmetic) ((MathExpression)x).getValue();

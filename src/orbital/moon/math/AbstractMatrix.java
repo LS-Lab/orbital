@@ -49,7 +49,7 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extend
      * @param dim the dimension desired for the matrix.
      * @return a matrix of the same type as this, dimension as specified.
      * The elements need not be initialized since they will soon be by the calling method.
-     * @post RES != RES
+     * @postconditions RES != RES
      * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      * @see #clone()
      */
@@ -58,7 +58,7 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extend
     /**
      * Instantiates a new matrix with dimension dim of the same type like this.
      * <p>This method is a replacement for a constructor in the implementation of Matrix.</p>
-     * @post RES != RES
+     * @postconditions RES != RES
      * @see #newInstance(Dimension)
      */
     protected final Matrix/*<R>*/ newInstance(int height, int width) {
@@ -511,8 +511,8 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extend
      * @param v the components the matrix should have from now on.
      *  The dimensions must not necessarily match the current ones.
      *  The first index in this array specifies the row, the second is for the column.
-     * @pre v is rectangular, i.e. v[i].length == v[i-1].length
-     * @post dimension().height == v.length && dimension().width == v[0].length && RES[i][j] == get(i, j)
+     * @preconditions v is rectangular, i.e. v[i].length == v[i-1].length
+     * @postconditions dimension().height == v.length && dimension().width == v[0].length && RES[i][j] == get(i, j)
      * @see #toArray()
      * @see #modCount
      * @see #set(int,int,Arithmetic)
@@ -851,8 +851,8 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extend
      * </p>
      * @return if this matrix is regular return its inverse.
      * @throws ArithmeticException if this matrix is singular and cannot be inverted.
-     * @pre isInvertible()
-     * @post multiply(RES).equals(IDENTITIY(dimension()) && RES.multiply(this).equals(IDENTITY(dimension()) && RES.dimension().equals(dimension())
+     * @preconditions isInvertible()
+     * @postconditions multiply(RES).equals(IDENTITIY(dimension()) && RES.multiply(this).equals(IDENTITY(dimension()) && RES.dimension().equals(dimension())
      * @note it has been proven that matrix inversion can be performed exactly as fast as matrix multiplication.
      * @todo optimize (also consider Willi Schönhauer)
      * @todo join both matrices and transform together up to half width
@@ -1044,8 +1044,8 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extend
 
     /**
      * Validate (i|j) indices within dimension.
-     * @pre 0 <= i < dimension().height && 0 <= j < dimension().width
-     * @post true
+     * @preconditions 0 <= i < dimension().height && 0 <= j < dimension().width
+     * @postconditions true
      * @throws ArrayIndexOutOfBoundsException if the index (i|j) is out of bounds for columns or rows.
      * @todo turn into an aspect, only.
      */

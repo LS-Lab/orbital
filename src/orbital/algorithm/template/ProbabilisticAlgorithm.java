@@ -37,8 +37,8 @@ public interface ProbabilisticAlgorithm {
      *  nature of this algorithm.
      *  Monte Carlo algorithms are <em>not</em> correct,
      *  while Las Vegas algorithms usually are.
-     * @pre true
-     * @post RES == OLD(RES)
+     * @preconditions true
+     * @postconditions RES == OLD(RES)
      */
     boolean isCorrect();
 	

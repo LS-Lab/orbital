@@ -68,7 +68,7 @@ public interface UnivariatePolynomial/*<R implements Arithmetic>*/ extends Eucli
      * However {@link ListIterator#hasNext()} will nevertheless return <code>false</code> after passing
      * the leading coefficient determining the degree.
      * -->
-     * @post always (RES.succeedes(#next()))
+     * @postconditions always (RES.succeedes(#next()))
      */
     ListIterator iterator();
 	
@@ -94,7 +94,7 @@ public interface UnivariatePolynomial/*<R implements Arithmetic>*/ extends Eucli
     /**
      * Returns an array containing all the coefficients of this polynomial.
      * @return a new array containing all our coefficients.
-     * @post RES[i]==get(i) &and; RES.length==degree()+1 &and; RES!=RES
+     * @postconditions RES[i]==get(i) &and; RES.length==degree()+1 &and; RES!=RES
      * @see Object#clone()
      */
     public Arithmetic/*>R<*/[] getCoefficients();

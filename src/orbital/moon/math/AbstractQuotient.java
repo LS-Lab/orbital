@@ -17,7 +17,7 @@ class AbstractQuotient/*<M implements Arithmetic>*/ implements Quotient/*<M>*/, 
     private static final long serialVersionUID = 5546024068517708793L;
     /**
      * The quotient operator applied for each calculation.
-     * @invariant All operations (add, subtract, pow,...) will return an AbstractQuotient with the same modulus.
+     * @invariants All operations (add, subtract, pow,...) will return an AbstractQuotient with the same modulus.
      * @serial
      */
     protected final Function/*<M,M>*/ quotientOperator;

@@ -34,7 +34,7 @@ import orbital.util.Utility;
  * @version 1.0, 2000/08/25
  * @author  Andr&eacute; Platzer
  * @internal typesafe enumeration pattern class to specify functor notation
- * @invariant a.equals(b) &hArr; a==b
+ * @invariants a.equals(b) &hArr; a==b
  * @todo invariant 	&& sorted(functorNotation)
  */
 public abstract class Notation implements Serializable, Comparable {
@@ -92,7 +92,7 @@ public abstract class Notation implements Serializable, Comparable {
 
     /**
      * Order imposed by ordinals according to the order of creation.
-     * @post consistent with equals
+     * @postconditions consistent with equals
      */
     public int compareTo(Object o) {
 	return ordinal - ((Notation) o).ordinal;
@@ -100,7 +100,7 @@ public abstract class Notation implements Serializable, Comparable {
 
     /**
      * Maintains the guarantee that all equal objects of the enumerated type are also identical.
-     * @post a.equals(b) &hArr; if a==b.
+     * @postconditions a.equals(b) &hArr; if a==b.
      */
     public final boolean equals(Object that) {
 	return super.equals(that);
@@ -133,8 +133,8 @@ public abstract class Notation implements Serializable, Comparable {
      * @param notation which notation to use for the case of {@link #DEFAULT} notation.
      * @throws IllegalArgumentException if notation==DEFAULT
      *  since this would result in an infinte recursion at runtime.
-     * @pre notation != DEFAULT
-     * @post getDefault() == notation
+     * @preconditions notation != DEFAULT
+     * @postconditions getDefault() == notation
      */
     public static final void setDefault(Notation notation) {
 	if (notation == DEFAULT)
@@ -513,7 +513,7 @@ public abstract class Notation implements Serializable, Comparable {
     
     /**
      * Contains the specification of the default notation for a functor.
-     * @invariant precedence > 0 && associativity and notation match
+     * @invariants precedence > 0 && associativity and notation match
      * @version 1.0, 2000/08/25
      * @author  Andr&eacute; Platzer
      */
@@ -631,7 +631,7 @@ public abstract class Notation implements Serializable, Comparable {
 	 * @return a negative value if this binds stronger than o (this&lt;o),
 	 *  zero if binding precedence is identical,
 	 *  a positive value if this binds weaker than a (this&gt;o).
-	 * @post only <em>semi</em>-consistent with equals
+	 * @postconditions only <em>semi</em>-consistent with equals
 	 */
 	public int compareTo(Object o) {
 	    return precedence - ((NotationSpecification) o).precedence;
@@ -662,7 +662,7 @@ public abstract class Notation implements Serializable, Comparable {
      * Contains initial functors who have a default notation set, in precedence order.
      * In the same order as {@link #initialFunctorNotation}
      * @todo couldn't we switch to storing this in MathExpressionSyntax.coreSignature()
-     * @invariant sorted, i.e. precedenceOf[i] < precedenceOf[i+1]
+     * @invariants sorted, i.e. precedenceOf[i] < precedenceOf[i+1]
      * @xxx shouldn't we let Operations register itself instead of this package dependendy?
      */
     //TODO: use List(new KeyValuePair()) instead of functorList<->functorNotation synchronization
@@ -684,7 +684,7 @@ public abstract class Notation implements Serializable, Comparable {
     /**
      * Contains notation specifications of the initial registered functors.
      * In the same order as {@link #initialFunctorList}.
-     * @invariant in the same order as initialFunctorList
+     * @invariants in the same order as initialFunctorList
      * @TODO: + and * could have yfy as well? Would avoid 1+(2+3)
      */
     private static final NotationSpecification[] initialFunctorNotation = {

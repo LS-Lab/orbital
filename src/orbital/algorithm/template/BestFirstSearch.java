@@ -39,7 +39,7 @@ public abstract class BestFirstSearch extends GeneralSearch implements Evaluativ
     /**
      * An iterator over a state space in best-first order.
      * Expands nodes with better f-costs, first.
-     * @invariant isSorted(nodes)
+     * @invariants isSorted(nodes)
      * @version 1.0, 2001/08/01
      * @author  Andr&eacute; Platzer
      */
@@ -77,15 +77,15 @@ public abstract class BestFirstSearch extends GeneralSearch implements Evaluativ
         /**
          * Select the node with min f(n).
          * Due to the sorted list that is the first object.
-         * @pre sorted(nodes)
+         * @preconditions sorted(nodes)
          */
         protected Object/*>S<*/ select() {
 	    return nodes.remove(0);
         }
        	/**
        	 * merge old and new lists.
-         * @pre sorted(nodes)
-         * @post sorted(nodes)
+         * @preconditions sorted(nodes)
+         * @postconditions sorted(nodes)
     	 * @see orbital.util.Setops#merge(List, List, Comparator)
     	 */
         protected boolean add(Iterator newNodes) {
@@ -111,7 +111,7 @@ public abstract class BestFirstSearch extends GeneralSearch implements Evaluativ
     //    /**
     //     * Select the node with min f(n).
     //     * Due to the sorted list this is the first object.
-    //     * @pre sorted(nodes)
+    //     * @preconditions sorted(nodes)
     //     */
     //    protected GeneralSearchProblem.Option select(Collection nodes) {
     //    	Iterator i = nodes.iterator();
@@ -122,8 +122,8 @@ public abstract class BestFirstSearch extends GeneralSearch implements Evaluativ
     //
     //   	/**
     //   	 * merge old and new lists.
-    //     * @pre sorted(oldNodes)
-    //     * @post sorted(RES)
+    //     * @preconditions sorted(oldNodes)
+    //     * @postconditions sorted(RES)
     //	 * @see orbital.util.Setops#merge(List, List, Comparator)
     //	 */
     //    protected Collection add(Collection newNodes, Collection oldNodes) {

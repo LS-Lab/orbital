@@ -44,7 +44,7 @@ public class ThresholdAccepting extends ScheduledLocalOptimizerSearch {
      *  Algorithm stops if the temperature drops to <span class="Number">0</span>
      *  (or isSolution is <span class="keyword">true</span>,
      *  or it fails due to a lack of alternative expansion nodes).
-     * @pre lim<sub>t&rarr;&infin;</sub>schedule(t) = 0 &and; schedule decreases monotonically
+     * @preconditions lim<sub>t&rarr;&infin;</sub>schedule(t) = 0 &and; schedule decreases monotonically
      */
     public ThresholdAccepting(Function/*<GeneralSearchProblem.Option, Arithmetic>*/ heuristic, Function/*<Integer, Real>*/ schedule) {
     	super(heuristic, schedule, FIRST_LOCAL_SELECTION);

@@ -300,7 +300,7 @@ public final class AlgebraicAlgorithms {
      *   <li>Also see {@link Euclidean}</li>
      * </ul>
      * </p>
-     * @pre &not;(a==0 &and; b==0)
+     * @preconditions &not;(a==0 &and; b==0)
      * @return gcd(a,b) := inf(a,b) with divides (&#8739;) as a partial order on R.
      * @note the father of all algorithms is Euclid.
      * @note the mother of all data structures are Euclidean rings.
@@ -344,7 +344,7 @@ public final class AlgebraicAlgorithms {
      * Euclid-Lagrange-Berlekamp Algorithm (ELBA).
      * </p>
      * @param elements an array {a<sub>0</sub>,&#8230;,a<sub>n-1</sub>} &sube; R whose gcd to determine.
-     * @pre &not;&forall;i elements[i]=0
+     * @preconditions &not;&forall;i elements[i]=0
      * @return an array {s<sub>0</sub>,&#8230;,s<sub>n-1</sub>, d} &sube; R where
      *  d = gcd({a<sub>0</sub>,&#8230;,a<sub>n-1</sub>}) = &sum;<sub>i=0,&#8230;,n-1</sub> s<sub>i</sub>*a<sub>i</sub>.
      * @internal gcd({a<sub>0</sub>,&#8230;,a<sub>n-1</sub>}) = gcd(gcd({a<sub>0</sub>,&#8230;,a<sub>n-2</sub>}),a<sub>n-2</sub>)
@@ -377,7 +377,7 @@ public final class AlgebraicAlgorithms {
 	Euclidean r0 = ONE, r1 = ZERO;
 	Euclidean s0 = ZERO, s1 = ONE;
 	while (!a1.norm().equals(Values.ZERO)) {
-	    // @invariant gcd(OLD(a), OLD(b)) == gcd(a0, a1)
+	    // @invariants gcd(OLD(a), OLD(b)) == gcd(a0, a1)
 	    //   &and; a0 == r0*a + s0*b
 	    //   &and; a1 == r1*a + s1*b
 			
@@ -413,7 +413,7 @@ public final class AlgebraicAlgorithms {
 
     /**
      * Returns greatest common divisor (gcd) of two integers.
-     * @pre &not;(a==0 &and; b==0)
+     * @preconditions &not;(a==0 &and; b==0)
      * @todo optimize, or simply call {@link #gcd(Euclidean,Euclidean)}
      */
     static int gcd(int a, int b) {
@@ -432,7 +432,7 @@ public final class AlgebraicAlgorithms {
 	} 
 	assert a >= 0 && b > 0 : "a>=0 && b>0 for gcd, now";
 	while (a != 0) {
-	    // @invariant gcd(OLD(a), OLD(b)) == gcd(a, b)
+	    // @invariants gcd(OLD(a), OLD(b)) == gcd(a, b)
 	    //@todo we really should perform (a, b) := (b, a mod b); instead?
 	    if (b > a) {
 		int t = a;
@@ -491,7 +491,7 @@ public final class AlgebraicAlgorithms {
      * </p>
      * @param x the array of congruence values x<sub>1</sub>,&#8230;,x<sub>n</sub>.
      * @param m the array of corresponding moduli m<sub>1</sub>,&#8230;,m<sub>n</sub>.
-     * @pre &forall;i&ne;j (m[i])+(m[j])=(1), i.e. gcd(m[i],m[j])=1.
+     * @preconditions &forall;i&ne;j (m[i])+(m[j])=(1), i.e. gcd(m[i],m[j])=1.
      * @return the unique solution x (modulo m<sub>1</sub>*&#8230;*m<sub>n</sub>).
      * @note Newton interpolation and especially Lagrange interpolation are just special cases of
      * incremental Chinese Remainder Theorem.
@@ -570,7 +570,7 @@ public final class AlgebraicAlgorithms {
 			for (Iterator index = occurring.iterator(); index.hasNext(); ) {
 			    final Arithmetic/*>S<*/ nu = (Arithmetic) index.next();
 			    final Arithmetic/*>R<*/ cnu = f.get(nu);
-			    assert !cnu.norm().equals(Values.ZERO) : "@post of occurringMonomials(...)";
+			    assert !cnu.norm().equals(Values.ZERO) : "@postconditions of occurringMonomials(...)";
 			    reductionPolynomials:
 			    for (int j = 0; j < basis.length; j++) {
 				final Polynomial gj = (Polynomial)basis[j].A;

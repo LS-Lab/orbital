@@ -138,7 +138,7 @@ public class PopulationImpl extends Population {
     } 
     /**
      * Set the number of abstract parents required to produce children.
-     * @pre n > 0
+     * @preconditions n > 0
      */
     public void setParentCount(int n) {
 	if (!(n > 0))
@@ -153,7 +153,7 @@ public class PopulationImpl extends Population {
     } 
     /**
      * Set the number of children produced with one reproduction involving parentCount parents.
-     * @pre n >= 0
+     * @preconditions n >= 0
      */
     public void setChildrenCount(int n) {
 	if (!(n >= 0))
@@ -169,7 +169,7 @@ public class PopulationImpl extends Population {
     } 
     /**
      * Set the maximum probability rating of recombining parental genomes per production.
-     * @pre recombination&isin;[0,1] is a probability
+     * @preconditions recombination&isin;[0,1] is a probability
      */
     public void setMaximumRecombination(double recombination) {
 	if (!MathUtilities.isProbability(recombination))
@@ -184,7 +184,7 @@ public class PopulationImpl extends Population {
     } 
     /**
      * Set the maximum probability rating of mutation level for reproduction.
-     * @pre mutation&isin;[0,1] is a probability
+     * @preconditions mutation&isin;[0,1] is a probability
      */
     public void setMaximumMutation(double mutation) {
 	if (!MathUtilities.isProbability(mutation))
@@ -203,8 +203,8 @@ public class PopulationImpl extends Population {
      * @see #getMaximumRecombination()
      * @see Genome#mutate(double)
      * @see #getMaximumMutation()
-     * @pre getSelection() != null
-     * @post this.equals(OLD)
+     * @preconditions getSelection() != null
+     * @postconditions this.equals(OLD)
      * @todo already move to data part Population? It would currently know GeneticAlgorithm for getMaximumRecombination() anyway. However, we could also decide to move this information to Population as well, which would include almost all of the properties. @xxx decide soon
      */
     /*protected*/ Genome[] reproduce() {

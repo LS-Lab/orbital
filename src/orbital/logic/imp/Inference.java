@@ -159,7 +159,7 @@ import orbital.logic.Relation;
  * 
  * @version 1.0, 1999/02/09
  * @author  Andr&eacute; Platzer
- * @invariant true
+ * @invariants true
  * @see Formula
  * @see Signature
  * @see Logic#inference()
@@ -180,8 +180,8 @@ public interface Inference extends Relation {
      * @param d the conclusion claimed, i.e. the formula to deduce from w, if possible.
      * @return whether w <span class="inference">|~</span> d, that is whether d can be inferred from the facts in w, or not.
      * @throws LogicException if an exception related to the logic syntax or semantics or the calculus execution occurs.
-     * @pre true
-     * @post ( (RES==true && isSound()) => w <span class="satisfaction">|&asymp;</span> d )
+     * @preconditions true
+     * @postconditions ( (RES==true && isSound()) => w <span class="satisfaction">|&asymp;</span> d )
      *  && ( (w <span class="satisfaction">|&asymp;</span> d && isComplete()) => RES==true )
      * @see <a href="{@docRoot}/Patterns/Design/Strategy.html">Strategy Pattern</a>
      * @todo should we change the return-value to Object for probabilistic logic to return a Double? Or is it still a boolean, then?
@@ -194,8 +194,8 @@ public interface Inference extends Relation {
      * The calculus <i>K</i> is
      *   <dt>sound</dt> <dd>if <span class="inference">|~</span> &sube; <span class="satisfaction">|&asymp;</span>, i.e. if <span class="Formula"><span class="set">W</span> <span class="inference">|~</span> F</span> implies <span class="Formula"><span class="set">W</span> <span class="satisfaction">|&asymp;</span> F</span>.</dd>
      * </dl>
-     * @pre true
-     * @post RES == OLD(RES)
+     * @preconditions true
+     * @postconditions RES == OLD(RES)
      */
     boolean isSound();
 
@@ -205,8 +205,8 @@ public interface Inference extends Relation {
      * The calculus <i>K</i> is
      *   <dt>complete</dt> <dd>if <span class="satisfaction">|&asymp;</span> &sube; <span class="inference">|~</span>, i.e. if <span class="Formula"><span class="set">W</span> <span class="satisfaction">|&asymp;</span> F</span> implies <span class="Formula"><span class="set">W</span> <span class="inference">|~</span> F</span>.</dd>
      * </dl>
-     * @pre true
-     * @post RES == OLD(RES)
+     * @preconditions true
+     * @postconditions RES == OLD(RES)
      */
     boolean isComplete();
 }

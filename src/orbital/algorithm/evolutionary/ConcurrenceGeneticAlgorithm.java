@@ -29,7 +29,7 @@ import orbital.util.Utility;
  * 
  * @version 0.9, 2000/03/09
  * @author  Andr&eacute; Platzer
- * @invariant getPopulation() instanceof ComparingPopulation
+ * @invariants getPopulation() instanceof ComparingPopulation
  */
 public class ConcurrenceGeneticAlgorithm extends IncrementalGeneticAlgorithm {
     /**

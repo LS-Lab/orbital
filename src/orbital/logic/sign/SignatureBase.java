@@ -36,7 +36,7 @@ import orbital.logic.imp.Symbol;
 /**
  * A basic signature implementation.
  * 
- * @invariant sub classes support nullary constructor (for virtual new instance)
+ * @invariants sub classes support nullary constructor (for virtual new instance)
  * @structure implements java.util.SortedSet
  * @structure delegates super:java.util.SortedSet
  * @structure inherits orbital.util.DelegateSortedSet
@@ -58,7 +58,7 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
      * The argument is a collection as per general contract of the interface java.util.Set,
      * but will be transformed into this signature set with the call to this constructor.</p>
      * @param symbols the set of symbols in the signature.
-     * @pre &forall;s&isin;symbols: s instanceof orbital.logic.imp.Symbol
+     * @preconditions &forall;s&isin;symbols: s instanceof orbital.logic.imp.Symbol
      */
     public SignatureBase(Collection/*<Symbol>*/ symbols) {
 	this(new TreeSet/*<Symbol>*/(symbols));
@@ -96,7 +96,7 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
     /**
      * Set the set of symbols in this signature.
      * @param symbols the new set of symbols in this signature.
-     * @pre &forall;s&isin;symbols: s instanceof orbital.logic.imp.Symbol
+     * @preconditions &forall;s&isin;symbols: s instanceof orbital.logic.imp.Symbol
      */
     public void setSymbols(SortedSet/*<Symbol>*/ symbols) {
 	setDelegatee(symbols);

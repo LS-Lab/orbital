@@ -146,7 +146,7 @@ public interface Expression {
 
     /**
      * Get the type of this expression.
-     * @pre true
+     * @preconditions true
      * @return the type <span class="type">&tau;</span> of this expression in <span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&tau;</sub>.
      * @see Symbol#getType()
      */

@@ -115,7 +115,6 @@
         <javac srcdir="${sources}"
                destdir="${classes}"
                debug="on"
-	       depend="true"
 	       source="${javac.source}"
 	       excludes="orbital/moon/aspects/**,orbital/moon/deprecated/*,orbital/*">
             <classpath refid="project.classpath"/>
@@ -148,7 +147,7 @@
     <target name="run.tests" depends="init, compile.tests"
             description="run test/*Test*.java">
         <mkdir dir="${reports.tests}"/>
-        <junit printsummary="yes" haltonfailure="yes" fork="yes">
+        <junit printsummary="yes" haltonfailure="yes" fork="yes" showoutput="false">
           <classpath refid="tests.classpath"/>
 	  <jvmarg value="-ea"/>
         
@@ -277,14 +276,16 @@
 	    <link href="${doc}/api"/>
 
 	    <!-- -tag param -tag pre:mc:&quot;Preconditions:&quot; -tag post:mc:&quot;Postconditions:&quot; -tag return -tag throws -tag stereotype:a:&quot;Stereotype:&quot; -tag structure:t:&quot;Structure:&quot; -tag invariant:t:&quot;Invariants:&quot; -tag attribute:a:&quot;Attributes:&quot; -tag version -tag author -tag see -->
-	    <tag name="pre" scope="methods,constructors" description="Preconditions:"/>
-	    <tag name="post" scope="methods,constructors" description="Postconditions:"/>
-	    <tag name="invariant" scope="types,fields" description="Invariants:"/>
+	    <tag name="preconditions" scope="methods,constructors" description="Preconditions:"/>
+	    <tag name="postconditions" scope="methods,constructors" description="Postconditions:"/>
+	    <tag name="invariants" scope="types,fields" description="Invariants:"/>
 	    <tag name="structure" scope="types,methods" description="Structure:"/>
 	    <tag name="stereotype" scope="all" description="Stereotype:"/>
 	    <tag name="attribute" scope="all" description="Attributes:"/>
+
 	    <tag name="note" scope="all" description="Note:" enabled="true"/>
 	    <tag name="internal" scope="all" description="Internal:" enabled="false"/>
+
 	    <tag name="todo" scope="all" description="Todo:" enabled="false"/>
 	    <tag name="xxx" scope="all" description="Todo:" enabled="false"/>
 	    <tag name="fixme" scope="all" description="Fixme:" enabled="false"/>

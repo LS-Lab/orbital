@@ -112,7 +112,7 @@ public interface Quotient/*<M implements Arithmetic>*/ extends Arithmetic {
      * to support checking for equal types of equivalence classes.
      * </p>
      * @return the quotient operator &pi;<sup>-1</sup>&#8728;&pi;:M&rarr;M of this quotient M/~.
-     * @post ... RES == OLD(RES) &and; RES is functional
+     * @postconditions ... RES == OLD(RES) &and; RES is functional
      * @todo rename
      */
     Function/*<M,M>*/ getQuotientOperator();
@@ -121,7 +121,7 @@ public interface Quotient/*<M implements Arithmetic>*/ extends Arithmetic {
      * Get the "canonical" representative of this equivalence class.
      * @return a "canonical" element
      *  &pi;<sup>-1</sup>(a&#772;)&isin;R such that &pi;(a) = a&#772; = this.
-     * @post RES == getQuotientOperator().apply(this) &and; getQuotientOperator().apply(RES).equals(RES)
+     * @postconditions RES == getQuotientOperator().apply(this) &and; getQuotientOperator().apply(RES).equals(RES)
      *  &and; new Modulus(RES, getQuotientOperator()).equals(this)
      *  &and; &forall;a,b&isin;M/~ (a.equals(b) &rArr; a.representative().equals(b.representative()))
      * @internal Von a&#772M kennt man nicht a persönlich, sondern man hätte auch sein Äquivalent erwischen können.
@@ -149,14 +149,14 @@ public interface Quotient/*<M implements Arithmetic>*/ extends Arithmetic {
     Quotient/*<M>*/ power(Quotient/*<M>*/ b) throws ArithmeticException, UnsupportedOperationException;
     /**
      * {@inheritDoc}
-     * @post RES instanceof Quotient<M>
+     * @postconditions RES instanceof Quotient<M>
      * @todo when covariant return-types change return-type to Quotient<M>.
      */
     //Arithmetic scale(Arithmetic alpha);
     /**
      * R/I is an R-algebra, if R is a ring.
      * {@inheritDoc}
-     * @post RES instanceof Quotient<M>
+     * @postconditions RES instanceof Quotient<M>
      * @todo when covariant return-types change return-type to Quotient<M>.
      * @throws UnsupportedOperationException if this class does not support this operation, principially,
      *  regardless of the argument. This would only be the case if M did not support it.

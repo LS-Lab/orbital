@@ -23,7 +23,7 @@ import java.util.NoSuchElementException;
  * whilst arithmetic methods will leave a tensor unchanged but return a modified version.
  * Refer to the documentation of the individual methods for details.</p>
  * 
- * @invariant succeedes(#clone()) &and; (overwrites(#clone()) &or; this implements Cloneable)
+ * @invariants succeedes(#clone()) &and; (overwrites(#clone()) &or; this implements Cloneable)
  * @structure extends Arithmetic
  * @structure extends Iteratable
  * @version 1.1, 2002/06/09
@@ -37,7 +37,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
     // object-methods
 
     /**
-     * @post RES&ne;RES &and; RES&ne;this &and; RES.equals(this)
+     * @postconditions RES&ne;RES &and; RES&ne;this &and; RES.equals(this)
      */
     Object clone();
 
@@ -47,7 +47,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      * Get the rank of the tensor.
      * The rank is the number of dimensions needed as indices for the components of this tensor.
      * It is the grade for the tensor algebra T(M) over the underlying module M.
-     * @post RES&ge;0
+     * @postconditions RES&ge;0
      * @see Matrix#linearRank()
      */
     int rank();
@@ -61,7 +61,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      * &forall;k i<sub>k</sub>&isin;{0,&#8230;,n<sub>k</sub>-1}.
      * </p>
      * @return an array d containing the dimensions of this tensor.
-     * @post RES.length == rank()
+     * @postconditions RES.length == rank()
      */
     int[] dimensions();
 
@@ -71,7 +71,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      * Of course, this method only has a meaning for tensors of free modules like vector spaces.
      * </p>
      * @param i the index i of the component value to get.
-     * @pre valid(i) := (i.length == rank() &and; &forall;k 0&le;i[k]&le;dimensions()[k]-1)
+     * @preconditions valid(i) := (i.length == rank() &and; &forall;k 0&le;i[k]&le;dimensions()[k]-1)
      * @return t<sub>i[0].i[1],&#8230;i[i.length-1]</sub> &isin; R.
      * @internal see orbital.util.Utility#get(Object[],int[])
      */
@@ -103,7 +103,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      * </p>
      * @param i the index i of the component value to set.
      * @param vi the value to set for the component v<sub>i</sub> at position i.
-     * @pre valid(i)
+     * @preconditions valid(i)
      * @throws UnsupportedOperationException if this tensor is constant and does not allow modifications.
      * @see #modCount
      */
@@ -150,7 +150,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      * result in an {@link java.util.UnsupportedOperationException}.
      * However, setting single components will "write through" to the this object.
      * </p>
-     * @pre i1.length==rank() &and; i2.length==rank() &and; &forall;k i1[k]&le;i2[k] &and; valid(i1) &and; valid(i2)
+     * @preconditions i1.length==rank() &and; i2.length==rank() &and; &forall;k i1[k]&le;i2[k] &and; valid(i1) &and; valid(i2)
      * @return a tensor view of the specified part of this tensor.
      * <table>
      *   <tr><td>t<sub>(i1:i2)</sub> = <big>(</big>m<sub>l</sub><big>)</big><sub>l&isin;<big>{</big>l&isin;<b>N</b><sup>r</sup> &brvbar; &forall;k i1[k]&le;l[k]&le;i2[k]<big>}</big></sub></td> </tr>
@@ -165,7 +165,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      * @param level the level l of indices to fix for this view.
      * @param index the index c<sub>l</sub> of the tensor part view at the level-th index.
      * @return a tensor view of the specified part t<sub>i<sub>0</sub>&times;i<sub>1</sub>&times;&#8230;c<sub>l</sub>&#8230;&times;i<sub>r-1</sub></sub> in this tensor.
-     * @post RES.rank() = rank() - 1 &and; ....
+     * @postconditions RES.rank() = rank() - 1 &and; ....
      * @see #setSubTensor(int,int,Tensor)
      * @see orbital.logic.functor.Functionals#bindFirst(orbital.logic.functor.BinaryFunction, Object)
      * @see orbital.logic.functor.Functionals#bindSecond(orbital.logic.functor.BinaryFunction, Object)
@@ -173,7 +173,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
     Tensor/*<R>*/ subTensor(int level, int index);
     /**
      * Sets a part of lesser rank in this tensor.
-     * @pre part.rank()==rank()-1 &and; Utilities.equalsAll(part.dimensions(), subTensor(level,index).dimensions())
+     * @preconditions part.rank()==rank()-1 &and; Utilities.equalsAll(part.dimensions(), subTensor(level,index).dimensions())
      * @see #subTensor(int,int)
      * @see #modCount
      * @todo remove since this is a simple derived operation? Or even introduce setSubTensor(int[],int[],Tensor), but Matrix does not have this, either.
@@ -188,8 +188,8 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      *  mapping i&#8614;permutation[i] for permuting the indices.
      * @return a tensor view of the transposed tensor t<sub>i<sub>&sigma;(0)</sub>&times;i<sub>&sigma;(1)</sub>&times;&#8230;&times;i<sub>&sigma;(r-1)</sub></sub>
      *  with permuted indices.
-     * @pre permutation&isin;S<sub>rank()</sub>
-     * @post RES.rank() = rank() &and; RES.get(i) = get(permutation(i))
+     * @preconditions permutation&isin;S<sub>rank()</sub>
+     * @postconditions RES.rank() = rank() &and; RES.get(i) = get(permutation(i))
      * @xxx rename, what's a good convention for names of views?
      */
     Tensor/*<R>*/ subTensorTransposed(int[] permutation);
@@ -201,7 +201,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      * <p>This method implements p-norms, where<br>
      * <span class="Formula">||x||<sub>p</sub> = (|x<sub>1</sub>|<sup>p</sup> + ... + |x<sub>n</sub>|<sup>p</sup>)<sup>1/p</sup></span>.<br>
      * <span class="Formula">||x||<sub>&infin;</sub> = max {|x<sub>1</sub>|,...,|x<sub>n</sub>|}</span>.</p>
-     * @pre p>=1
+     * @preconditions p>=1
      */
     //@todo ? public Real norm(double p);
 
@@ -209,9 +209,9 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
 
     /**
      * Adds two tensors returning a tensor.
-     * @pre Arrays.equals(dimensions(), b.dimension())
+     * @preconditions Arrays.equals(dimensions(), b.dimension())
      *  otherwise there can only be a purely symbolic result in tensor algebra.
-     * @post Arrays.equals(RES.dimensions(), dimensions())
+     * @postconditions Arrays.equals(RES.dimensions(), dimensions())
      *  	&& RES.get(i) == get(i) + b.get(i)
      * @attribute associative
      * @attribute neutral (0)
@@ -222,9 +222,9 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
 
     /**
      * Subtracts two tensors returning a tensor.
-     * @pre Arrays.equals(dimensions(), b.dimension())
+     * @preconditions Arrays.equals(dimensions(), b.dimension())
      *  otherwise there can only be a purely symbolic result in tensor algebra.
-     * @post Arrays.equals(RES.dimensions(), dimensions())
+     * @postconditions Arrays.equals(RES.dimensions(), dimensions())
      *  	&& RES.get(i) == get(i) - b.get(i)
      * @attribute associative
      */
@@ -232,8 +232,8 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
 
     /**
      * Multiplies a scalar with a tensor returning a tensor.
-     * @pre true
-     * @post Arrays.equals(RES.dimensions(), dimensions())
+     * @preconditions true
+     * @postconditions Arrays.equals(RES.dimensions(), dimensions())
      *  	&& RES.get(i) == s&sdot;get(i)
      * @attribute associative
      * @attribute left-neutral (1)
@@ -257,9 +257,9 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      *     <td class="rightOfMap">(&sum;<span class="doubleIndex"><sub>&nu;=0</sub><sup>h-1</sup></span> a<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub>,&nu;</sub></sub>&sdot;b<sub>&nu;,j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub>)<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub>,j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub></td>
      *   </tr>
      * </table>
-     * @pre dimensions()[rank()-1] == b.dimensions()[0]
+     * @preconditions dimensions()[rank()-1] == b.dimensions()[0]
      * @return the inner product a·b.
-     * @post RES.dimensions() = {dimensions()[0],&#8230;dimensions()[rank()-2]}&cup;{b.dimensions()[1],&#8230;b.dimensions()[b.rank()-1]}
+     * @postconditions RES.dimensions() = {dimensions()[0],&#8230;dimensions()[rank()-2]}&cup;{b.dimensions()[1],&#8230;b.dimensions()[b.rank()-1]}
      * @note inner product is only one (partial) multiplication on graded tensor algebra
      */
     Tensor/*<R>*/ multiply(Tensor/*<R>*/ b);
@@ -286,7 +286,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      * if a was a vector of a left-R<sup>m<sub>0</sub>&times;&#8230;&times;m<sub>s-1</sub></sup>-modules.
      * @todo so why don't we unify tensor and scale? Because there may as well be distinct definitions?
      * @return the tensor product (or outer product) a&otimes;b.
-     * @post RES.dimensions() = dimensions()&cup;b.dimensions()
+     * @postconditions RES.dimensions() = dimensions()&cup;b.dimensions()
      * @note tensor product is only one multiplication on graded tensor algebra T(M).
      *  Although it is always defined, a more "natural" multiplication on tensors of rank 2, for
      *  example, is the {@link #multiply(Tensor) inner product} which therefore plays the role of
@@ -306,18 +306,18 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
 
 //     /**
 //      * Insert a value into this tensor at the specified index.
-//      * @pre 0<=index && index<=dimension()
+//      * @preconditions 0<=index && index<=dimension()
 //      * @return this.
-//      * @post RES == this
+//      * @postconditions RES == this
 //      *  	&& RES.dimension() == OLD(dimension()) + 1
 //      */
 //     Tensor/*<R>*/ insert(int index, Arithmetic/*>R<*/ v);
  
 //     /**
 //      * Insert all components of a tensor into this tensor at the specified index.
-//      * @pre 0<=index && index<=dimension()
+//      * @preconditions 0<=index && index<=dimension()
 //      * @return this.
-//      * @post RES == this
+//      * @postconditions RES == this
 //      *  	&& RES.dimension() == OLD(dimension()) + v.dimension()
 //      */
 //     Tensor/*<R>*/ insertAll(int index, Tensor/*<R>*/ v);
@@ -325,7 +325,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
 //     /**
 //      * Append a value to this tensor.
 //      * @return this.
-//      * @post RES == this
+//      * @postconditions RES == this
 //      *  	&& RES.dimension() == OLD(dimension()) + 1
 //      */
 //     Tensor/*<R>*/ insert(Arithmetic/*>R<*/ v);
@@ -333,7 +333,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
 //     /**
 //      * Append all components of a tensor to this tensor.
 //      * @return this.
-//      * @post RES == this
+//      * @postconditions RES == this
 //      *  	&& RES.dimension() == OLD(dimension()) + v.dimension()
 //      */
 //     Tensor/*<R>*/ insertAll(Tensor/*<R>*/ v);
@@ -341,7 +341,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
 //     /**
 //      * Remove the component at an index from this tensor.
 //      * @return this.
-//      * @post RES == this
+//      * @postconditions RES == this
 //      *  	&& RES.dimension() == OLD(dimension()) - 1
 //      */
 //     Tensor/*<R>*/ remove(int index);

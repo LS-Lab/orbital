@@ -42,7 +42,7 @@ import java.util.logging.Level;
  *
  * @structure extend List<Genome> sorted on descending {@link Genome#getFitness()}
  * @structure aggregate members:List<Genome>
- * @invariant sub classes must support nullary constructor (for cloning)
+ * @invariants sub classes must support nullary constructor (for cloning)
  * @version 1.0, 2000/03/28
  * @author  Andr&eacute; Platzer
  */
@@ -267,7 +267,7 @@ public abstract class Population implements Serializable /*//TODO: extends Deleg
     /**
      * Merges a genome into this population according to its fitness.
      * Will evaluate fitness if necessary, i.e, if it is <code>Double.NaN</code>.
-     * @pre all current members already have a fitness that is not Double.NaN
+     * @preconditions all current members already have a fitness that is not Double.NaN
      * @see #evaluate(boolean)
      * @see orbital.util.Setops#merge(List, List, Comparator)
      */

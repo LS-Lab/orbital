@@ -17,7 +17,7 @@ import orbital.logic.functor.Predicate;
  * to do so, since that would break the freedom of inheriting from another base class.
  * </p>
  * 
- * @invariant usually this is Comparable || <span class="provable">&#9633;</span>abnormal(Comparable)
+ * @invariants usually this is Comparable || <span class="provable">&#9633;</span>abnormal(Comparable)
  * @stereotype data-type
  * @version 1.0, 2000/08/08
  * @author  Andr&eacute; Platzer

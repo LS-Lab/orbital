@@ -16,10 +16,10 @@ abstract class AbstractScalar extends Number implements Scalar, Serializable {
 
     /**
      * Compares this object with the specified object for order.
-     * @pre this and o have comparable types
+     * @preconditions this and o have comparable types
      * @return a negative integer, zero, or a positive integer as this object is
      *  less than, equal to, or greater than the specified object.
-     * @post &forall;e1,e2&isin;class (e1.compareTo((Object)e2)==0) &hArr; (e1.equals((Object)e2), i.e. compareTo is consistent with equals.
+     * @postconditions &forall;e1,e2&isin;class (e1.compareTo((Object)e2)==0) &hArr; (e1.equals((Object)e2), i.e. compareTo is consistent with equals.
      * @throws ClassCastException if the specified object's type prevents it from being compared to this Object.
      * @throws UnsupportedOperationException if this type of scalars is indeed unordered and !this.equals(o).
      * @see Comparable#compareTo(Object)

@@ -33,7 +33,7 @@ public class Backtracking/**<int numberOfVars>**/ implements AlgorithmicTemplate
     } 
 
     /**
-     * @invariant currentChoices is an non­empty fixed-size list of partial solution values
+     * @invariants currentChoices is an non­empty fixed-size list of partial solution values
      */
     private List	        currentChoices;
     private BacktrackingProblem solution;
@@ -64,8 +64,8 @@ public class Backtracking/**<int numberOfVars>**/ implements AlgorithmicTemplate
     }
 
     /**
-     * @pre i is level upto which current choices are valid
-     * @post RES is indicator whether extension worked
+     * @preconditions i is level upto which current choices are valid
+     * @postconditions RES is indicator whether extension worked
      */
     private final boolean solveByBacktracking(int depth) {
 

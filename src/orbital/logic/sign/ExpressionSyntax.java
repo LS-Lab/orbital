@@ -27,7 +27,7 @@ package orbital.logic.imp;
  * i.e. we generally assume that <code class="keyword">null</code>&notin;<i>L</i>(&Sigma;)&cup;&Sigma;.
  * </p>
  * 
- * @invariant true
+ * @invariants true
  * @version 1.0, 2000/02/23
  * @author  Andr&eacute; Platzer
  */
@@ -50,7 +50,7 @@ public interface ExpressionSyntax extends ExpressionBuilder {
      * </p>
      * @return the core signature that is valid for every expression following this syntax.
      *  Elements in the core signature all have a fixed interpretation.
-     * @post RES == OLD(RES) &and; RES unmodifiable
+     * @postconditions RES == OLD(RES) &and; RES unmodifiable
      * @see Logic#coreInterpretation()
      * @xxx incorporate Types into this. Either by introduce "Types typeSystem();", or by introduce type symbols and constructors somehow into coreSignature(). see pure-type system?
      */
@@ -66,9 +66,9 @@ public interface ExpressionSyntax extends ExpressionBuilder {
      * it is generally recommended to construct the relevant signature entries explicitly.
      * </p>
      * @param expression the expression that should be scanned for symbol names.
-     * @pre expression&isin;<i>L</i>
+     * @preconditions expression&isin;<i>L</i>
      * @return Signature of the syntactic symbols in expression except those of the core signature.
-     * @post createExpression(expression) instanceof Formula &rArr; createExpression(expression).getSignature().equals(scanSignature(expression))
+     * @postconditions createExpression(expression) instanceof Formula &rArr; createExpression(expression).getSignature().equals(scanSignature(expression))
      * @throws ParseException (optional) when the expression is syntactically malformed.
      *  Either due to a lexical or grammatical error.
      *  (optional behaviour for performance reasons).
@@ -90,7 +90,7 @@ public interface ExpressionSyntax extends ExpressionBuilder {
      *  However note that the empty expression may not be accepted in some term algebras.
      *  Those parsers rejecting the empty expression are then inclined to throw a ParseException,
      *  instead.
-     * @pre expression&isin;<i>L</i>(scanSignature(expression))
+     * @preconditions expression&isin;<i>L</i>(scanSignature(expression))
      * @return an instance of Expression that represents the given expression string in this language.
      * @throws ParseException when the expression is syntactically malformed.
      *  Either due to a lexical or grammatical error.

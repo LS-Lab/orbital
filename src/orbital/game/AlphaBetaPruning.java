@@ -64,7 +64,7 @@ public class AlphaBetaPruning extends AdversarySearch {
      * Search for the best option to take.
      * @param state in which state to choose an action.
      * @return the best move option (according to h).
-     * @pre this implementation assumes a two player game
+     * @preconditions this implementation assumes a two player game
      * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
      */
     public Option solve(Field state) {

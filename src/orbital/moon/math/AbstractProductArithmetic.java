@@ -42,7 +42,7 @@ abstract class AbstractProductArithmetic/*<R implements Arithmetic, T implements
      * @param productObject the object (a<sub>i</sub>)<sub>i&isin;I</sub> &isin; &prod;<sub>i&isin;I</sub> A<sub>i</sub>
      *  whose components to iterate over.
      * @return an (memento) description of the index set I.
-     * @post RES.supports(#equals(Object)) || RES.getClass().isArray()
+     * @postconditions RES.supports(#equals(Object)) || RES.getClass().isArray()
      * @throws ClassCastException if productObject is of type other than T that does not fit this product arithmetic.
      * @throws IllegalArgumentException if productObject does not conform to the requirements of this product arithmetic.
      */
@@ -54,7 +54,7 @@ abstract class AbstractProductArithmetic/*<R implements Arithmetic, T implements
      * @param productObject the object (a<sub>i</sub>)<sub>i&isin;I</sub> &isin; &prod;<sub>i&isin;I</sub> A<sub>i</sub>
      *  whose components to iterate over.
      * @return an iterator that iterates over (a<sub>i</sub>)<sub>i&isin;I</sub>.
-     * @post &forall;a,b (productIndexSet(a).equals(productIndexSet(b)) &rarr; iterator(a) has same order as iterator(b))
+     * @postconditions &forall;a,b (productIndexSet(a).equals(productIndexSet(b)) &rarr; iterator(a) has same order as iterator(b))
      * @throws ClassCastException if productObject is of type other than T that does not fit this product arithmetic.
      * @throws IllegalArgumentException if productObject does not conform to the requirements of this product arithmetic.
      */
@@ -69,7 +69,7 @@ abstract class AbstractProductArithmetic/*<R implements Arithmetic, T implements
      * @param productIndexSet the index set I for the product, as in {@link #productIndexSet(Arithmetic)}.
      * @return a tensor of the same type as this, dimensions as specified.
      * The elements need not be initialized since they will soon be by the calling method.
-     * @post RES&ne;RES
+     * @postconditions RES&ne;RES
      * @throws ClassCastException if productIndexSet has an illegal type for index set specifiers.
      * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      * @see #clone()

@@ -220,7 +220,7 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	 * Create an exact specification with all properties declared.
 	 * @param parameterTypes an array of all parameter-types in order of calling. Its length is called arity.
 	 * @param returnType the type of a resulting value.
-	 * @pre parameterTypes&ne;null &and; returnType&ne;null
+	 * @preconditions parameterTypes&ne;null &and; returnType&ne;null
 	 */
 	public Specification(Class[] parameterTypes, Class returnType) {
 	    if (parameterTypes == null)
@@ -235,7 +235,7 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	 * The types given are represented themselves as specifications.
 	 * @param parameterTypes an array of all parameter-types in order of calling. Its length is called arity.
 	 * @param returnType the type of a resulting value.
-	 * @pre parameterTypes&ne;null &and; returnType&ne;null
+	 * @preconditions parameterTypes&ne;null &and; returnType&ne;null
 	 */
 	public Specification(Specification[] parameterTypes, Specification returnType) {
 	    // for n=1 would need Specification(Function<parameterTypes[0].getParameterTypes(),parameterTypes[0].getReturnType()>, Function<returnType.getParameterTypes(),returnType.getReturnType()>);
@@ -253,7 +253,7 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	 * The return-type will be {@link Boolean#TYPE} for representing predicates.
 	 * </p>
 	 * @param parameterTypes an array of all parameter-types in order of calling. Its length is called arity.
-	 * @pre parameterTypes&ne;null
+	 * @preconditions parameterTypes&ne;null
 	 */
 	public Specification(Class[] parameterTypes) {
 	    this(parameterTypes, Boolean.TYPE);
@@ -264,7 +264,7 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	 * The other properties will be set generically to the type <code>java.lang.Object</code>.
 	 * @param arity the arity specified. The arity is the number of arguments needed in a call to apply.
 	 * @param returnType the type of a resulting value.
-	 * @pre arity&ge;0 &and; returnType&ne;null
+	 * @preconditions arity&ge;0 &and; returnType&ne;null
 	 */
 	public Specification(int arity, Class returnType) {
 	    this(new Class[arity], returnType);
@@ -289,8 +289,8 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	 * @param arity the arity specified. The arity is the number of arguments needed in a call to apply.
 	 * @param parameterTypes an array of all parameter-types in order of calling. Must have the length arity.
 	 * @param returnType the type of a resulting value.
-	 * @pre parameterTypes&ne;null &and; returnType&ne;null &and; method&ne;null
-	 * @post <span class="consistent">&#9671;</span>abnormal(name of applyMethod)
+	 * @preconditions parameterTypes&ne;null &and; returnType&ne;null &and; method&ne;null
+	 * @postconditions <span class="consistent">&#9671;</span>abnormal(name of applyMethod)
 	 */
 	public Specification(String method, Class[] parameterTypes, Class returnType) {
 	    this(parameterTypes, returnType);
@@ -305,7 +305,7 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 
 	/**
 	 * Clones this specification.
-	 * @post RES != RES && RES != this && RES.equals(this)
+	 * @postconditions RES != RES && RES != this && RES.equals(this)
 	 */
 	public Object clone() {
 	    return new Specification(spec_parameterTypes, spec_returnType);
@@ -355,7 +355,7 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	 * Specifies the arity <code>n</code>.
 	 * The arity is the number of arguments needed in a call to apply.
 	 * @return the arity <code>n</code> of the specified Functor <code>f/n</code>.
-	 * @post RES == getParameterTypes().length
+	 * @postconditions RES == getParameterTypes().length
 	 */
 	public int arity() {
 	    return spec_parameterTypes.length;
@@ -421,7 +421,7 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 
 	/**
 	 * Checks whether the type specification is compatible with the given list of arguments.
-	 * @pre true
+	 * @preconditions true
 	 * @param args the arguments to check for compatibility with this symbol.
 	 *  <code>null</code>, or an array of length <span class="number">0</span> can be used for zero arguments.
 	 * @return whether the arguments are assignable to the required parameter types of this symbol.
@@ -469,7 +469,7 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	 * @param cls the class whose apply method to get.
 	 *  Which apply method of cls is chosen depends on this specification.
 	 * @return the apply(...) method within the given class, according to this specification.
-	 * @pre (&forall;o:cls) this.isConform(o)
+	 * @preconditions (&forall;o:cls) this.isConform(o)
 	 * @throws NoSuchMethodException if the given class does not conform to this specification.
 	 *  This may be the case because cls does not provide the right apply method.
 	 * @throws SecurityException if access to the information is denied, see {@link Class#getMethod(String, Class[])}.
@@ -526,7 +526,7 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	 * 
 	 * @param f the functor object to be analyzed.
 	 * @return a signature specification object describing the target functor.
-	 * @post RES.isConform(f)
+	 * @postconditions RES.isConform(f)
 	 * @throws IntrospectionException if an exception occurs during introspection.
 	 * @internal see #getDynamicSpecification(Functor)
 	 * @internal see #getStaticSpecification(Class)

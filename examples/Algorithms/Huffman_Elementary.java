@@ -155,7 +155,7 @@ public class Huffman_Elementary {
     } 
 
     /**
-     * @pre c must be a new and empty BitSet
+     * @preconditions c must be a new and empty BitSet
      */
     private int code(char b, BitSet c) {
 	int	 clen = 0;

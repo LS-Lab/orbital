@@ -37,7 +37,7 @@ public class OccurrenceAnalyzer implements DataAnalyzer {
     /**
      * Get an array of doubles containing the relative frequencies of occurrence
      * of all chars at the corresponding index.
-     * @post RES[c] = (number of occurrences of c) / length = the relative frequency with that the character c occurred.
+     * @postconditions RES[c] = (number of occurrences of c) / length = the relative frequency with that the character c occurred.
      */
     public double[] getOccurrences() {
 	double[] r = new double[count.length];

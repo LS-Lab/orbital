@@ -126,7 +126,7 @@ public class IterativeExpansion extends GeneralSearch implements HeuristicAlgori
 
     /**
      * @return the solution state (if any).
-     * @post node.getFCost() might have changed
+     * @postconditions node.getFCost() might have changed
      * @todo optimizable, also modularize to an OptionIterator?
      * @internal for bound comparisons we locally define not(POSITIVE_INFINITY=<POSITIVE_INFINITY)
      *  in order to ensure termination on unsolvable cases, where successors.isEmpty() has already been true.
@@ -180,7 +180,7 @@ public class IterativeExpansion extends GeneralSearch implements HeuristicAlgori
 		// remove and reinsert best (which may have updated cost)
 		successors.remove(0);
 		Setops.insert(successors, best);
-		assert orbital.util.Utility.sorted(successors, null) : "@post Setops.insert";
+		assert orbital.util.Utility.sorted(successors, null) : "@postconditions Setops.insert";
 	    }
 	    // circumscription of getEvaluation().set(node.getNode(), node.getFCost());
 	    node.setCost((Real) ((NodeInfo)successors.get(0)).getFCost());

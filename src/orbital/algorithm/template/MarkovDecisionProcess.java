@@ -143,7 +143,7 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
     /**
      * Abstract base class for Markov decision processes solved per dynamic programming.
      *
-     * @invariant getDiscount()&isin;[0,1]
+     * @invariants getDiscount()&isin;[0,1]
      * @version 0.8, 2001/06/10
      * @author  Andr&eacute; Platzer
      * @see orbital.algorithm.template.DynamicProgramming
@@ -195,7 +195,7 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
          *  For &gamma;=0, immediate costs are considered, only.
          *  For &gamma;=1, the undiscounted case, additional assumptions are required to produce
          *  a well-defined decision problem and ensure convergence.
-         * @pre gamma&isin;[0,1]
+         * @preconditions gamma&isin;[0,1]
          * @todo move to super class?
          */
         public void setDiscount(Real gamma) {
@@ -205,7 +205,7 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
         }
         /**
          * Get the discount factor &gamma;.
-         * @post RES&isin;[0,1]
+         * @postconditions RES&isin;[0,1]
          */
         public Real getDiscount() {
 	    return discount;
@@ -255,7 +255,7 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
          * @param state the state s&isin;S in which to take an action.
          * @return the Pair (a, Q)&isin;A(s)&times;<b>R</b> with maximum expected utility,
          *  which means minimum expected cost sum in this case.
-         * @post RES = (a,Q) &and; a = argmin<sub>a'&isin;A(s)</sub> Q(s,a')
+         * @postconditions RES = (a,Q) &and; a = argmin<sub>a'&isin;A(s)</sub> Q(s,a')
          *  &and; Q = min<sub>a'&isin;A(s)</sub> Q(s,a').
          */
         protected orbital.util.Pair/*<Object, Number>*/ maximumExpectedUtility(BinaryFunction Q, Object state) {
@@ -279,14 +279,14 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
             		if (logger.isLoggable(Level.FINEST)) logger.log(Level.FINEST, "DPMDP.Q", "\tc(" + action + "," + state + ") ...");
 			final MarkovDecisionProblem problem = getProblem();
 			final Iterator r = problem.states(action, state);
-			assert r.hasNext() : "@post";
+			assert r.hasNext() : "@postconditions";
             		while (r.hasNext()) {
 			    final Object sp = r.next();
 			    final Transition t = (Transition) problem.transition(action, state, sp);
 			    if (logger.isLoggable(Level.FINEST)) logger.log(Level.FINEST, "DPMDP.Q", "\t    + " + t.getProbability() + " * " + U.apply(sp) + " for " + sp);
 			    cost = (Scalar) cost.add(t.getProbability().multiply((Arithmetic)U.apply(sp)));
 			    final Real c = t.getCost();
-			    assert !originalCost.equals(c) : "@post(getCost()): cost of transitions with the same action from the same state should be equal";
+			    assert !originalCost.equals(c) : "@postconditions(getCost()): cost of transitions with the same action from the same state should be equal";
 			    originalCost = c;
             		}
             		if (logger.isLoggable(Level.FINER)) logger.log(Level.FINER, "DPMDP.Q", "\tc(" + action + "," + state + ")\t= " + originalCost + " + " + getDiscount() + " * " +  cost);

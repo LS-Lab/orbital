@@ -21,7 +21,7 @@ import java.util.Arrays;
  *
  * @version 0.9, 2001/06/14
  * @author  Andr&eacute; Platzer
- * @invariant current &isin; iterators && (!hasNext() xor next() &isin; RES(current))
+ * @invariants current &isin; iterators && (!hasNext() xor next() &isin; RES(current))
  * @see java.io.SequenceInputStream
  * @todo could we extend this like QueuedIterator in order to allow adding new iterators at run-time? Then we could use it for orbital.algorithm.template.DepthFirstSearch.NodeIterator
  */

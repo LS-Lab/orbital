@@ -77,7 +77,7 @@ import orbital.logic.functor.Function;
  * 
  * @version 1.0, 2000/03/28
  * @author  Andr&eacute; Platzer
- * @invariant sub classes must support nullary constructor (for cloning)
+ * @invariants sub classes must support nullary constructor (for cloning)
  * @structure delegate population:Population
  * @structure delegate selection:Function
  * @see GeneticAlgorithmProblem
@@ -308,7 +308,7 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
     /**
      * Solve a genetic algorithm problem.
      * Assuming that the {@link #setSelection(Function) selector} has already been set.
-     * @pre getSelection() != null
+     * @preconditions getSelection() != null
      * @return the population with the solution that was accepted by {@link GeneticAlgorithmProblem#isSolution(Population) isSolution}.
      * @see #setEvaluation(Function)
      * @see GeneticAlgorithmProblem#getEvaluation()
@@ -428,7 +428,7 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
 	} 
 	/**
 	 * Set the number of abstract parents required to produce children.
-	 * @pre n > 0
+	 * @preconditions n > 0
 	 */
 	public void setParentCount(int n) {
 	    if (!(n > 0))
@@ -443,7 +443,7 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
 	} 
 	/**
 	 * Set the number of children produced with one reproduction involving parentCount parents.
-	 * @pre n >= 0
+	 * @preconditions n >= 0
 	 */
 	public void setChildrenCount(int n) {
 	    if (!(n >= 0))
@@ -459,7 +459,7 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
 	} 
 	/**
 	 * Set the maximum probability rating of recombining parental genomes per production.
-	 * @pre recombination&isin;[0,1] is a probability
+	 * @preconditions recombination&isin;[0,1] is a probability
 	 */
 	public void setMaximumRecombination(double recombination) {
 	    if (!MathUtilities.isProbability(recombination))
@@ -474,7 +474,7 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
 	} 
 	/**
 	 * Set the maximum probability rating of mutation level for reproduction.
-	 * @pre mutation&isin;[0,1] is a probability
+	 * @preconditions mutation&isin;[0,1] is a probability
 	 */
 	public void setMaximumMutation(double mutation) {
 	    if (!MathUtilities.isProbability(mutation))

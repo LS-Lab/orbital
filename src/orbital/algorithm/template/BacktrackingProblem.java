@@ -25,14 +25,14 @@ public interface BacktrackingProblem/**<int numberOfVars, int numberOfVariants>*
 
     /**
      * Get the number of solution variables to find with Backtracking.
-     * @pre true
+     * @preconditions true
      */
     int getNumberOfVars();
 
     /**
      * Query on the number of solution variants for a single variable.
      * @return the number of variants for choosing the solution variable at the specified depth.
-     * @pre depth >= 0
+     * @preconditions depth >= 0
      */
     int getNumberOfVariants(int depth);
 
@@ -41,8 +41,8 @@ public interface BacktrackingProblem/**<int numberOfVars, int numberOfVariants>*
      * @param choices a fixed-length list ({@link #getNumberOfVars()}) of partial solution values.
      * @param depth is the depth level upto which current choices should be proved valid.
      * @return whether the choices at the depth still represent a valid partial solution.
-     * @pre depth >= 0 is the depth level upto which current choices should be proved valid
-     * @post RES indicates whether valid partial solution
+     * @preconditions depth >= 0 is the depth level upto which current choices should be proved valid
+     * @postconditions RES indicates whether valid partial solution
      */
     boolean isConsistent(List choices, int depth);
 
@@ -50,8 +50,8 @@ public interface BacktrackingProblem/**<int numberOfVars, int numberOfVariants>*
      * Get the next choice variant at a depth.
      * @param depth is the depth level which should yield a new solution variant.
      * @return a new solution value for the variable at depth.
-     * @pre depth >= 0
-     * @post RES is new solution value
+     * @preconditions depth >= 0
+     * @postconditions RES is new solution value
      */
     Object chooseNext(int depth);
 }

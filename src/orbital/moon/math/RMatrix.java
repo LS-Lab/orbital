@@ -112,7 +112,7 @@ class RMatrix extends AbstractMatrix {
     /**
      * creates a new Matrix backed by a two-dimensional array of doubles.
      * The rows are first index, the columns second index.
-     * @pre values is rectangular, i.e. values[i].length==values[i-1].length
+     * @preconditions values is rectangular, i.e. values[i].length==values[i-1].length
      */
     public RMatrix(double values[][]) {
 	set(values);
@@ -121,7 +121,7 @@ class RMatrix extends AbstractMatrix {
     /**
      * creates a new Matrix from a two-dimensional array of arithmetic values.
      * The rows are first index, the columns second index.
-     * @pre v is rectangular, i.e. v[i].length==v[i-1].length
+     * @preconditions v is rectangular, i.e. v[i].length==v[i-1].length
      */
     public RMatrix(Arithmetic v[][]) {
 	for (int i = 1; i < v.length; i++)
@@ -180,7 +180,7 @@ class RMatrix extends AbstractMatrix {
 
     /**
      * set all elements of this matrix.
-     * @pre v is rectangular, i.e. v[i].length==v[i-1].length
+     * @preconditions v is rectangular, i.e. v[i].length==v[i-1].length
      * @todo could we forget about cloning v?
      */
     protected void set(double[][] v) {

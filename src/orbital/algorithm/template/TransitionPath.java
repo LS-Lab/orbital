@@ -98,11 +98,11 @@ public class TransitionPath implements Iterator, ProbabilisticAlgorithm, Seriali
 	    if (r >= r_sum)
 		return state = sp;
 	}
-	throw new AssertionError("@post TransitionModel.transition(A,S,_): probabilities sum up to 1.0");
+	throw new AssertionError("@postconditions TransitionModel.transition(A,S,_): probabilities sum up to 1.0");
     }
 
     /**
-     * @post RES == actions.hasNext()
+     * @postconditions RES == actions.hasNext()
      */
     public boolean hasNext() {
 	return actions.hasNext();

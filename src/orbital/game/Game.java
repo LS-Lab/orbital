@@ -59,7 +59,7 @@ import orbital.util.InnerCheckedException;
  * @version 1.0, 2000/02/26
  * @author Andr&eacute; Platzer
  * @see <a href="doc-files/Game.html">Game applet parameter example</a>
- * @invariant 0 <= realPlayersActions && realPlayersActions <= realPlayers
+ * @invariants 0 <= realPlayersActions && realPlayersActions <= realPlayers
  * @xxx turnDone should be called "performedMove" and perhaps we can get rid of this old way of using events. Also we need a more customizable way of deciding when to end a turn (f.ex. some games may allow a player to perform multiple moves before ending his turn)
  */
 public class Game extends Applet implements Runnable {
@@ -285,7 +285,7 @@ public class Game extends Applet implements Runnable {
 
     /**
      * Set program resources.
-     * @pre resources&ne;null
+     * @preconditions resources&ne;null
      */
     private void setResources(ResourceBundle resources) {
 	if (resources == null)
@@ -300,9 +300,9 @@ public class Game extends Applet implements Runnable {
      * This method is called once during {@link #init() initialization}
      * to lookup the resources to use from that moment on.
      * </p>
-     * @pre has not been called before
+     * @preconditions has not been called before
      * @return the program resource bundle to use from now.
-     * @post RES&ne;null
+     * @postconditions RES&ne;null
      */
     protected ResourceBundle lookupResources() {
 	// try to get the resource bundle of our real sub classes, first. However, this won't work for the default package

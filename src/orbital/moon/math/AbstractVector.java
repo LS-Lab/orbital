@@ -34,7 +34,7 @@ abstract class AbstractVector/*<R implements Arithmetic>*/ extends AbstractTenso
      * @param dim the dimension desired for the vector.
      * @return a vector of the same type as this, dimension as specified
      * The elements need not be initialized since they will soon be by the calling method.
-     * @post RES != RES
+     * @postconditions RES != RES
      * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      * @see #clone()
      */
@@ -63,7 +63,7 @@ abstract class AbstractVector/*<R implements Arithmetic>*/ extends AbstractTenso
      * Set all components of this vector.
      * @param v the components the matrix should have from now on.
      *  The dimensions must not necessarily match the current ones.
-     * @post dimension() == v.length && get(i) == v[i]
+     * @postconditions dimension() == v.length && get(i) == v[i]
      * @see #toArray()
      * @see #modCount
      */
@@ -476,8 +476,8 @@ abstract class AbstractVector/*<R implements Arithmetic>*/ extends AbstractTenso
 
     /**
      * Validate index within dimension.
-     * @pre 0 <= i < dimension()
-     * @post true
+     * @preconditions 0 <= i < dimension()
+     * @postconditions true
      * @throws ArrayIndexOutOfBoundsException if the index i is out of bounds.
      * @todo turn into an aspect, only.
      */

@@ -37,7 +37,7 @@ public interface BinaryFunction/*<A1 implements Arithmetic, A2 implements Arithm
      * @return the indefinite integral Function &int; f <i>d</i>x<sub>i</sub>.
      * @throws ArithmeticException if this function is not integrable.
      * @throws UnsupportedOperationException if this function does not implement integration but could principally be integrated.
-     * @pre 0<=i && i<=1
+     * @preconditions 0<=i && i<=1
      */
     BinaryFunction integrate(int i);
 

@@ -28,7 +28,7 @@ import java.util.SortedSet;
  * and arity dependency.
  * </p>
  * 
- * @invariant &forall;s&isin;this: s instanceof {@link orbital.logic.imp.Symbol}
+ * @invariants &forall;s&isin;this: s instanceof {@link orbital.logic.imp.Symbol}
  *  &and; sorted according to {@link orbital.logic.functor.Notation.NotationSpecification#getPrecedence() precedence}
  * @structure extends java.util.SortedSet<Symbol>
  * @version 1.0, 1999/01/12
@@ -73,7 +73,7 @@ public interface Signature extends SortedSet/*<Symbol>*/ {
      *  <code>null</code>, or an array of length <span class="number">0</span> can be used for zero arguments.
      * @return the symbol that has the specified signifier and is applicable to <tt>arg</tt>, if exists.
      *  Returns <code>null</code> otherwise.
-     * @post (RES = &iota;[s&isin;this (s.getSignifier().equals(signifier) &and; s.getType().isApplicableTo(arg))] &or; RES=null) &and; this.equals(OLD)
+     * @postconditions (RES = &iota;[s&isin;this (s.getSignifier().equals(signifier) &and; s.getType().isApplicableTo(arg))] &or; RES=null) &and; this.equals(OLD)
      * @see #get(String,Type)
      */
     //@todo perhaps we should ignore notation of Symbols (especially precedence etc.), since some callers may not know the exact precedence.
@@ -93,7 +93,7 @@ public interface Signature extends SortedSet/*<Symbol>*/ {
      * @param maxType the maximum type that the symbol can have.
      * @return the symbol that has the specified signifier and type &le; maxType, if exists.
      *  Returns <code>null</code> otherwise.
-     * @post (RES = &iota;[s&isin;this (s.getSignifier().equals(signifier) &and; s.getType().subtypeOf(maxType))] &or; RES=null) &and; this.equals(OLD)
+     * @postconditions (RES = &iota;[s&isin;this (s.getSignifier().equals(signifier) &and; s.getType().subtypeOf(maxType))] &or; RES=null) &and; this.equals(OLD)
      * @see #get(String,Object[])
      */
     Symbol get(String signifier, Type maxType);
@@ -104,7 +104,7 @@ public interface Signature extends SortedSet/*<Symbol>*/ {
      * Returns the union of two signatures.
      * @see orbital.util.Setops#union(java.util.Collection,java.util.Collection)
      * @return sigma &cup; sigma2.
-     * @post RES == this &cup; sigma2 && RES.getClass() == getClass() && this.equals(OLD)
+     * @postconditions RES == this &cup; sigma2 && RES.getClass() == getClass() && this.equals(OLD)
      */
     Signature union(Signature sigma2);
 
@@ -112,7 +112,7 @@ public interface Signature extends SortedSet/*<Symbol>*/ {
      * Returns the intersection of two signatures.
      * @see orbital.util.Setops#intersection(java.util.Collection,java.util.Collection)
      * @return sigma &cap; sigma2.
-     * @post RES == this &cap; sigma2 && RES.getClass() == getClass() && this.equals(OLD)
+     * @postconditions RES == this &cap; sigma2 && RES.getClass() == getClass() && this.equals(OLD)
      */
     Signature intersection(Signature sigma2);
 
@@ -120,7 +120,7 @@ public interface Signature extends SortedSet/*<Symbol>*/ {
      * Returns the difference to another signature.
      * @see orbital.util.Setops#difference(java.util.Collection,java.util.Collection)
      * @return sigma &#8726; sigma2.
-     * @post RES == this &#8726; sigma2 && RES.getClass() == getClass() && this.equals(OLD)
+     * @postconditions RES == this &#8726; sigma2 && RES.getClass() == getClass() && this.equals(OLD)
      */
     Signature difference(Signature sigma2);
 
@@ -128,7 +128,7 @@ public interface Signature extends SortedSet/*<Symbol>*/ {
      * Returns the difference to another signature.
      * @see orbital.util.Setops#symmetricDifference(java.util.Collection,java.util.Collection)
      * @return sigma &Delta; sigma2.
-     * @post RES == this &Delta; sigma2 && RES.getClass() == getClass() && this.equals(OLD)
+     * @postconditions RES == this &Delta; sigma2 && RES.getClass() == getClass() && this.equals(OLD)
      */
     Signature symmetricDifference(Signature sigma2);
 }

@@ -56,7 +56,7 @@ import java.util.logging.Level;
  * RTDP is the stochastic generalization of Learning Real Time Search (LRTA<sup>*</sup>). For deterministic actions and discounting &gamma;=1
  * RTDP collapses to LRTA<sup>*</sup>.</p>
  *
- * @invariant getDiscount()&isin;[0,1]
+ * @invariants getDiscount()&isin;[0,1]
  * @version 1.0, 2000/10/11
  * @author  Andr&eacute; Platzer
  * @see Greedy

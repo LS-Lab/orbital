@@ -32,7 +32,7 @@ public class Selectors {
     /**
      * Better genomes will more likely be selected.
      * Weighted roulette wheel selector.
-     * @pre requires either strictly negative or strictly positive fitness values.
+     * @preconditions requires either strictly negative or strictly positive fitness values.
      * @see #likelyBetter()
      */
     public static final Function/*<Chromosome, Population>*/ rouletteWheel() {
@@ -48,7 +48,7 @@ public class Selectors {
 	private transient double partialSum[];
         /**
          * weighted roulette wheel.  Likliehood of selection is proportionate to the fitness.
-	 * @pre p is sorted
+	 * @preconditions p is sorted
 	 */
 	public Object apply(Object p) {
             Population population = (Population) p;
@@ -60,7 +60,7 @@ public class Selectors {
          * weighted roulette wheel.  Likliehood of selection is proportionate to the fitness.
          * Binary search method (using cached partial sums).
 	 * @see "Goldberg, D. E. Genetic Algorithms in Search, Optimization and Machine Learning. 1989."
-	 * @pre p is sorted && partialSum updated
+	 * @preconditions p is sorted && partialSum updated
 	 */
         private Object selectImpl(Population population) {
             double cutoff = population.getGeneticAlgorithm().getRandom().nextDouble();

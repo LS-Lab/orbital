@@ -48,7 +48,7 @@ public abstract class AdversarySearch {
      * <p>
      * An option node is a triple &lang;&lang;s,d&rang;,&lang;f,m&rang;,u&rang;
      * of a field state, the destination, the figure, its move, and the utility of the state.</p>
-     * @invariant figure.moveFigure(move).equals(destination)
+     * @invariants figure.moveFigure(move).equals(destination)
      * @stereotype Structure
      */
     public static class Option implements Comparable, Serializable {

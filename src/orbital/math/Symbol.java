@@ -26,7 +26,7 @@ import orbital.logic.functor.Predicate;
 public interface Symbol extends Arithmetic, orbital.logic.trs.Variable {
     /**
      * Get the signifier representing this symbol (the symbol's name).
-     * @pre true
+     * @preconditions true
      * @see orbital.logic.imp.Symbol#getSignifier()
      */
     String getSignifier();

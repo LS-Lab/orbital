@@ -62,8 +62,8 @@ public abstract class DynamicProgrammingOptimizingProblem implements DynamicProg
      * If the weighting never changes for this problem, consider using a single weighting instance
      * instead of creating a new one on each call. This will increase efficiency.</p>
      * @param choices the current situation of choices.
-     * @pre choices is a valid partial solution.
-     * @post RES the objective weighting function for the current situation of choices
+     * @preconditions choices is a valid partial solution.
+     * @postconditions RES the objective weighting function for the current situation of choices
      * which will only be used upto the next call of this function.
      * @return the objective weighting function.
      * It will only be used upto the next call of this function.

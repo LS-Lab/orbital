@@ -67,7 +67,7 @@ public final class UIUtilities {
      * Center a component on the screen.
      * @param comp the component to be centered relative to the screen.
      *  It must already have its final size set.
-     * @pre comp.getSize() as on screen.
+     * @preconditions comp.getSize() as on screen.
      */
     public static void setCenter(Component comp) {
 	Dimension screenSize = comp.getToolkit().getScreenSize();

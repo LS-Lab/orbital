@@ -16,7 +16,7 @@ import orbital.logic.functor.*;
  * Note that the signifier IDs are used for printing, and for comparison
  * of Symbols with UniqueSymbols, but for comparisons
  * of UniqueSymbols with Symbols (then that's achieved by reference comparison).
- * @invariant (this.equals(b) &hArr; this == b) &and; this.hashCode() == System.identityHashCode(this)
+ * @invariants (this.equals(b) &hArr; this == b) &and; this.hashCode() == System.identityHashCode(this)
  */
 final class UniqueSymbol extends SymbolBase {
     private static final long serialVersionUID = 6846367078565847459L;

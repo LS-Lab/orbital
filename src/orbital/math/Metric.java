@@ -34,7 +34,7 @@ public interface Metric/*<A>*/ {
     /**
      * Returns the distance of two objects.
      * @return the distance of the objects a and b, or <code>Double.NaN</code> if it is symbolic and has no numeric distance.
-     * @post RES >= 0 && RES==0 <=> x==y
+     * @postconditions RES >= 0 && RES==0 <=> x==y
      *   && distance(x,y) == distance(y,x)
      *   && distance(x,y) <= distance(x,z) + distance(z,y)
      *   && RES&ne;null

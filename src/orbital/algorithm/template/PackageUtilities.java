@@ -30,8 +30,8 @@ final class PackageUtilities {
      * @param choices the available choices in M.
      * @param f the evaluation function f:M&rarr;<b>R</b>.
      * @return the Pair (a, f(a))&isin;M&times;<b>R</b> with minimum f(a).
-     * @pre choices.hasNext()
-     * @post RES = (a,v) &and; a = argmin<sub>a'&isin;M</sub> f(a')
+     * @preconditions choices.hasNext()
+     * @postconditions RES = (a,v) &and; a = argmin<sub>a'&isin;M</sub> f(a')
      *  &and; v = min<sub>a'&isin;M</sub> f(a').
      * @throws NoSuchElementException if !choices.hasNext()
      * @see orbital.util.Setops#argmin(Iterator,Function)

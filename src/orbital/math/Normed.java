@@ -42,8 +42,8 @@ public interface Normed {
      * @return the norm of this object,
      *  or perhaps <code>Double.NaN</code> if it is symbolic and really does not have a numeric norm
      *  or a useful symbolic norm.
-     * @pre true
-     * @post RES &ge 0 &and; (RES=0 &hArr; this=0)
+     * @preconditions true
+     * @postconditions RES &ge 0 &and; (RES=0 &hArr; this=0)
      *   &and; a.add(b).norm(x,y) &le; a.norm() + b.norm()
      *   &and; a.multiply(&lambda;).norm() == Math.abs(&lambda;) * a.norm()
      *   &and; RES&ne;null

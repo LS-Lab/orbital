@@ -191,7 +191,7 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
 	/**
 	 * o<big>(</big>l(x),r(x)<big>)</big>' = o'<big>(</big>l(x),r(x)<big>)</big> &middot; <big>(</big>l'(x),r'(x)<big>)</big>
 	 * = <i>d</i>o/<i>d</i>x (l(x),r(x))*l'(x) + <i>d</i>o/<i>d</i>y (l(x),r(x))*r'(x).
-	 * @pre 0<=i && i<=1
+	 * @preconditions 0<=i && i<=1
 	 */
 	public Function derive() {
 	    //XXX: think about: ensure that (A*B)' = A'*B + A*B' instead of B*A' + A*B' which is important for non-commutative matrices
@@ -448,7 +448,7 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
     } 
 
     /**
-     * @pre 0==i || i==1
+     * @preconditions 0==i || i==1
      */
     static BinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/ on(int i, final Function/*<Arithmetic,Arithmetic>*/ f) {
 	Utility.pre(0==i || i==1, "binary function");
@@ -552,8 +552,8 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
 	return (float[]) mapImpl(f, a);
     }
     /**
-     * @pre a is an array of a primitive type or its compound wrapper class.
-     * @post RES.getClass() == a.getClass()
+     * @preconditions a is an array of a primitive type or its compound wrapper class.
+     * @postconditions RES.getClass() == a.getClass()
      * @see #map(orbital.logic.functor.Function, double[])
      * @see orbital.logic.functor.Functionals#map(orbital.logic.functor.Function, Object[])
      * @see java.lang.Number
@@ -591,8 +591,8 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
 	return (float[]) mapImpl(f, x, y);
     }
     /**
-     * @pre x.length == y.length && x and y are arrays of a primitive type or its compound wrapper class.
-     * @post RES.getClass() == x.getClass()
+     * @preconditions x.length == y.length && x and y are arrays of a primitive type or its compound wrapper class.
+     * @postconditions RES.getClass() == x.getClass()
      * @see #map(orbital.logic.functor.BinaryFunction, double[], double[])
      * @see orbital.logic.functor.Functionals#map(orbital.logic.functor.BinaryFunction, Object[], Object[])
      * @see java.lang.Number
@@ -617,7 +617,7 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
      * nest(f,n).apply(A) gives an expression with f applied n times to A.</p>
      * @param f the function to be nested.
      * @param n the number of times the f should be composed.
-     * @pre n>=0
+     * @preconditions n>=0
      */
     public static Function nest(Function f, int n) {
 	Utility.pre(n >= 0, "non negative nesting expected");

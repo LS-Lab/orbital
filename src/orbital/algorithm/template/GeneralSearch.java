@@ -50,7 +50,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
 	
     /**
      * Get the current problem.
-     * @pre true
+     * @preconditions true
      * @return the problem specified in the last call to solve,
      *  or <code>null</code> if there is no current problem (since solve has not yet been called etc.).
      */
@@ -74,8 +74,8 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * However, those solutions found still provide an upper bound to the optimal solution.
      * </p>
      * @return whether this search algorithm is optimal, i.e. whether solutions found are guaranteed to be optimal.
-     * @pre true
-     * @post RES == OLD(RES) && OLD(this) == this
+     * @preconditions true
+     * @postconditions RES == OLD(RES) && OLD(this) == this
      */
     public abstract boolean isOptimal();
 
@@ -93,7 +93,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
     
     /**
      * Solves a general search problem.
-     * @pre p instanceof GeneralSearchProblem.
+     * @preconditions p instanceof GeneralSearchProblem.
      * @throws ClassCastException if p is not an instance of GeneralSearchProblem.
      * @see #solve(GeneralSearchProblem)
      */
@@ -108,8 +108,8 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * Overwrite {@link #solveImpl(GeneralSearchProblem)}, instead.</p>
      * @return the solution found (represented as an option with solution state, final action and accumulated cost),
      *  or <code>null</code> if no solution was found at all.
-     * @pre true
-     * @post solution == null &or; p.isSolution(solution)
+     * @preconditions true
+     * @postconditions solution == null &or; p.isSolution(solution)
      * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
      * @see #solveImpl(GeneralSearchProblem)
      */
@@ -147,8 +147,8 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * They may do so by by overwriting this method.
      * </p>
      * @return the solution found by {@link #search(Iterator)}.
-     * @pre problem == getProblem()
-     * @post solution == null &or; p.isSolution(solution)
+     * @preconditions problem == getProblem()
+     * @postconditions solution == null &or; p.isSolution(solution)
      * @see #search(Iterator)
      * @xxx what <em>exactly</em> is the conceptual difference between solveImpl(GeneralSearchProblem) and search(Iterator). Perhaps we could get rid of this method?
      */
@@ -187,7 +187,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * @param nodes is the iterator over the nodes to visit (sometimes called open set)
      *  which determines the traversal order.
      * @return the solution found searching the state space via <var>nodes</var>.
-     * @post solution == null &or; p.isSolution(solution)
+     * @postconditions solution == null &or; p.isSolution(solution)
      * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
      * @internal
      *  Implemented as an iterative unrolling of a right-linear tail-recursion.
@@ -225,7 +225,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * </p>
      *
      * @attribute secret traversal order
-     * @invariant sub classes maintain a collection of nodes to select from
+     * @invariants sub classes maintain a collection of nodes to select from
      * @version 0.8, 2001/08/01
      * @author  Andr&eacute; Platzer
      * @see <a href="{@docRoot}/Patterns/Design/Strategy.html">Strategy</a>
@@ -258,7 +258,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
 	 * to their internal collection of nodes, such that it will be the (single) element
 	 * expanded first.</p>
 	 * @param problem the problem whose options to iterate in an iterator specific order.
-	 * @post must still add problem.getInitialState() to nodes, such that !isEmpty()
+	 * @postconditions must still add problem.getInitialState() to nodes, such that !isEmpty()
 	 */
 	protected OptionIterator(GeneralSearchProblem/*<A,S>*/ problem) {
 	    this.problem = problem;
@@ -266,7 +266,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
 		
     	/**
     	 * Get the current problem.
-    	 * @pre true
+    	 * @preconditions true
     	 * @return the problem specified in the last call to solve.
     	 */
     	protected final GeneralSearchProblem/*<A,S>*/ getProblem() {
@@ -278,15 +278,15 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
         /**
          * Returns <code>true</code> if this iterator's collection of nodes currently does not contain any elements.
          * @return <code>true</code> if this collection contains no elements.
-         * @post RES == nodes.isEmpty()
+         * @postconditions RES == nodes.isEmpty()
          */
         protected abstract boolean isEmpty();
 
         /**
          * Selects an option to visit from nodes.
          * @return the selected option after <em>removing</em> it from nodes.
-         * @pre !isEmpty()
-         * @post OLD(nodes).contains(RES) && nodes == OLD(nodes) \ {RES}
+         * @preconditions !isEmpty()
+         * @postconditions OLD(nodes).contains(RES) && nodes == OLD(nodes) \ {RES}
          */
         protected abstract Object/*>S<*/ select();
 
@@ -295,7 +295,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
          * Concatenates by some algorithm-dependant means.
          * @param newNodes the new nodes we apparently became aware of. (Might be modified by this method).
          * @return true if nodes changed as a result of the call.
-         * @post nodes &sube; OLD(nodes) &cup; newNodes && RES = nodes&ne;OLD(nodes)
+         * @postconditions nodes &sube; OLD(nodes) &cup; newNodes && RES = nodes&ne;OLD(nodes)
          */
         protected abstract boolean add(Iterator/*<S>*/ newNodes);
 
@@ -303,7 +303,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
         
     	/**
     	 * {@inheritDoc}
-    	 * @pre true
+    	 * @preconditions true
     	 * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
     	 */
     	public boolean hasNext() {
@@ -322,7 +322,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
     	 * {@inheritDoc}
     	 * <p>
     	 * Will expand the last element returned, and select a state option to visit.</p>
-    	 * @pre hasNext()
+    	 * @preconditions hasNext()
     	 * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
 	 * @todo optimize
     	 */
@@ -340,7 +340,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
     	 * <p>
     	 * Will only expand lastRet, if it has not already been expanded.
     	 * Particularly, if lastRet has already been expanded, this method will only return <code>false</code>.</p>
-    	 * @pre lastRet != null
+    	 * @preconditions lastRet != null
     	 * @return whether new nodes were added by this call to expand.
     	 */
     	private boolean expand() {
@@ -384,9 +384,9 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
 		public Object next() {
 		    Object/*>A<*/ a = actions.next();
 		    Iterator t = problem.states(a, state);
-		    assert t.hasNext() : "@post GeneralSearchProblem.states(...) non-empty";
+		    assert t.hasNext() : "@postconditions GeneralSearchProblem.states(...) non-empty";
 		    Object/*>S<*/ sp = t.next();
-		    assert !t.hasNext() : "@post GeneralSearchProblem.states(...) has length 1";
+		    assert !t.hasNext() : "@postconditions GeneralSearchProblem.states(...) has length 1";
 		    g.set(sp,
 			  accumulatedCost.add(((Transition)problem.transition(a,state,sp)).getCost()));
 		    return sp;
@@ -413,8 +413,8 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
     //    /**
     //     * Selects an option to visit from nodes.
     //     * @return the selected option after <em>removing</em> it from nodes.
-    //     * @pre !nodes.isEmpty()
-    //     * @post OLD(nodes).contains(RES) && nodes == OLD(nodes) \ {RES}
+    //     * @preconditions !nodes.isEmpty()
+    //     * @postconditions OLD(nodes).contains(RES) && nodes == OLD(nodes) \ {RES}
     //	 * @todo remove
     //     */
     //    protected abstract Option select(Collection/*<Option>*/ nodes);
@@ -425,7 +425,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
     //     * @param newNodes the new nodes we apparently became aware of. (May be modified by this method).
     //     * @param oldNodes the old nodes we already knew of. (May be modified by this method).
     //     * @return a list of nodes to explore that contains oldNodes and newNodes.
-    //     * @post RES &sube; oldNodes &cup; newNodes
+    //     * @postconditions RES &sube; oldNodes &cup; newNodes
     //	 * @todo remove
     //     */
     //    protected abstract Collection/*<Option>*/ add(Collection/*<Option>*/ newNodes, Collection/*<Option>*/ oldNodes);
@@ -460,7 +460,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
 //@internal Obsolete stuff, can be removed
 //    /**
 //     * Get the accumulated cost of the solution.
-//	 * @pre {@link #solve(GeneralSearchProblem)} has finished successfully
+//	 * @preconditions {@link #solve(GeneralSearchProblem)} has finished successfully
 //     * @return the accumulated cost that lead to the solution last returned by solve.
 //     * @see #solve(GeneralSearchProblem)
 //     */

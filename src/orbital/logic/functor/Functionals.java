@@ -518,7 +518,7 @@ public class Functionals {
      * </pre>
      * </p>
      * @return x&#8614;f &#8728; g (x) = f<big>(</big>g(x)<big>)</big>.
-     * @pre f and g are "composable"
+     * @preconditions f and g are "composable"
      * @see #genericCompose(Function,Object)
      */
     public static final BinaryFunction compose = new BinaryFunction() {
@@ -548,7 +548,7 @@ public class Functionals {
 
     /**
      * generic compose calls the compose function appropriate for the type of g.
-     * @pre g is "composable"
+     * @preconditions g is "composable"
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      * @see #compose
      * @deprecated Use {@link #compose} instead.
@@ -570,7 +570,7 @@ public class Functionals {
      * Valid types for g and h are {@link orbital.logic.functor.VoidFunction}, {@link orbital.logic.functor.Function}, {@link orbital.logic.functor.BinaryFunction}
      * and non-functor {@link java.lang.Object}.
      * In the latter case, composition is done using a {@link Functions#constant(Object) constant function}.
-     * @pre g and h are "compatible"
+     * @preconditions g and h are "compatible"
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      */
     public static Functor.Composite genericCompose(BinaryFunction f, Object g, Object h) {
@@ -602,7 +602,7 @@ public class Functionals {
 
     /**
      * generic compose calls the compose function appropriate for the type of g and h.
-     * @pre g and h are "compatible"
+     * @preconditions g and h are "compatible"
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      */
     public static Functor.Composite genericCompose(BinaryPredicate P, Object g, Object h) {
@@ -1624,7 +1624,7 @@ public class Functionals {
      * As long as the target iterator has a next element, that will be overwritten via {@link ListIterator#set(Object)}.
      * But as soon as the target iterator reaches its end, new elements will be added via {@link ListIterator#add(Object)}.
      * </p>
-     * @pre ALWAYS(a.hasNext() &rArr; ((t.hasNext() &rArr; SUCCEEDES(t.set(Object))) &and; (&not;t.hasNext() &rArr; SUCCEEDES(t.add(Object)))))
+     * @preconditions ALWAYS(a.hasNext() &rArr; ((t.hasNext() &rArr; SUCCEEDES(t.set(Object))) &and; (&not;t.hasNext() &rArr; SUCCEEDES(t.add(Object)))))
      */
     protected static final /*<A, B>*/ void mapInto(Function/*<A, B>*/ f, Iterator/*_<A>_*/ a, ListIterator/*_<B>_*/ r) {
 	while (a.hasNext()) {
@@ -1663,7 +1663,7 @@ public class Functionals {
      * <center>map = <span class="lenseBracket">|(</span>g, (as&#8614;as=&empty;) <span class="lenseBracket">)|</span> <br />
      *   where g([a|as]) = (f(a), as)
      * </center>
-     * @post RES.getClass()=a.getClass() or at least compatible
+     * @postconditions RES.getClass()=a.getClass() or at least compatible
      * @see #listable(Function)
      */
     public static /*<A, B>*/ Collection/*_<B>_*/ map(Function/*<A, B>*/ f, Collection/*_<A>_*/ a) {
@@ -1794,7 +1794,7 @@ public class Functionals {
      * As long as the target iterator has a next element, that will be overwritten via {@link ListIterator#set(Object)}.
      * But as soon as the target iterator reaches its end, new elements will be added via {@link ListIterator#add(Object)}.
      * </p>
-     * @pre ALWAYS(x.hasNext()&hArr;y.hasNext()) &and; ALWAYS(x.hasNext() &rArr; ((t.hasNext() &rArr; SUCCEEDES(t.set(Object))) &and; (&not;t.hasNext() &rArr; SUCCEEDES(t.add(Object)))))
+     * @preconditions ALWAYS(x.hasNext()&hArr;y.hasNext()) &and; ALWAYS(x.hasNext() &rArr; ((t.hasNext() &rArr; SUCCEEDES(t.set(Object))) &and; (&not;t.hasNext() &rArr; SUCCEEDES(t.add(Object)))))
      */
     protected static /*<A1, A2, B>*/ void mapInto(BinaryFunction/*<A1, A2, B>*/ f, Iterator/*_<A1>_*/ x, Iterator/*_<A2>_*/ y, ListIterator/*_<B>_*/ t) {
 	while (x.hasNext() && y.hasNext()) {
@@ -1813,8 +1813,8 @@ public class Functionals {
      * Maps two lists of arguments with a BinaryFunction.
      * <p>
      * map: ((x<sub>i</sub>)<sub>i&isin;I</sub>,(y<sub>i</sub>)<sub>i&isin;I</sub>) &#8614; f((x<sub>i</sub>)<sub>i&isin;I</sub>,(y<sub>i</sub>)<sub>i&isin;I</sub>) := (f(x<sub>i</sub>,y<sub>i</sub>))<sub>i&isin;I</sub>.</p>
-     * @pre x.size() == y.size()
-     * @post RES.getClass()=x.getClass() or at least compatible
+     * @preconditions x.size() == y.size()
+     * @postconditions RES.getClass()=x.getClass() or at least compatible
      * @see #listable(BinaryFunction)
      */
     public static /*<A1, A2, B>*/ Collection/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, Collection/*_<A1>_*/ x, Collection/*_<A2>_*/ y) {
@@ -1842,7 +1842,7 @@ public class Functionals {
      * Maps two lists of arguments with a BinaryFunction.
      * <p>
      * map: ((x<sub>i</sub>)<sub>i&isin;I</sub>,(y<sub>i</sub>)<sub>i&isin;I</sub>) &#8614; f((x<sub>i</sub>)<sub>i&isin;I</sub>,(y<sub>i</sub>)<sub>i&isin;I</sub>) := (f(x<sub>i</sub>,y<sub>i</sub>))<sub>i&isin;I</sub>.</p>
-     * @pre x.length == y.length
+     * @preconditions x.length == y.length
      */
     public static /*<A1, A2, B>*/ Object/*>B<*/[] map(BinaryFunction/*<A1, A2, B>*/ f, Object/*>A1<*/[] x, Object/*>A2<*/[] y) {
 	if (x.length != y.length)
@@ -2394,7 +2394,7 @@ public class Functionals {
      * @param f the function to be nested.
      * @param n the number of times the f should be composed.
      * @return f<sup>n</sup>
-     * @pre n>=0
+     * @preconditions n>=0
      */
     public static /*<A>*/ Function/*<A, A>*/ nest(Function/*<A, A>*/ f, int n) {
 	Utility.pre(n >= 0, "non negative nesting expected");

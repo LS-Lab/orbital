@@ -49,8 +49,8 @@ public class DynamicProgramming implements AlgorithmicTemplate {
 
     /**
      * solves by dynamic programming.
-     * @invariant partialSolutions is a (possibly multidimensional) array of partial solutions.
-     * @post solution is a merge of partial solutions.
+     * @invariants partialSolutions is a (possibly multidimensional) array of partial solutions.
+     * @postconditions solution is a merge of partial solutions.
      * @return the solution object as merged from the partial problems.
      */
     public Object solve(DynamicProgrammingProblem p) {
@@ -87,7 +87,7 @@ public class DynamicProgramming implements AlgorithmicTemplate {
 	
     /**
      * Get the element in the (possibly multi-dimensional) array partialSolutions specified by the part specification.
-     * @pre partSpecification.length is not lower than the number of dimensions for partialSolutions.
+     * @preconditions partSpecification.length is not lower than the number of dimensions for partialSolutions.
      * @return partialSolutions[partSpecification[0]][partSpecification[1]]...[partSpecification[partSpecification.length-1]] .
      * @see Utility#getPart(Object[],int[])
      */

@@ -24,7 +24,7 @@ class NonrepetitivePermutation extends Combinatorical {
      */
     private boolean first = true;
     /**
-     * @pre r <= n
+     * @preconditions r <= n
      */
     public NonrepetitivePermutation(int r, int n) {
     	if (!(r <= n))

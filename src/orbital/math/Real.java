@@ -17,7 +17,7 @@ import orbital.logic.functor.Predicate;
  * irrational numbers could possibly exist as well.
  * But for we are patient humans, we wisely nod and satisfy ourselfes with decimal numbers.</p>
  * 
- * @invariant (this is Comparable &and; <span class="consistent">&#9671;</span>abnormal(&not;Comparable)) &or; <span class="provable">&#9633;</span>abnormal(Comparable)
+ * @invariants (this is Comparable &and; <span class="consistent">&#9671;</span>abnormal(&not;Comparable)) &or; <span class="provable">&#9633;</span>abnormal(Comparable)
  * @stereotype data-type
  * @version 1.0, 1999/08/16
  * @author  Andr&eacute; Platzer
@@ -31,10 +31,10 @@ import orbital.logic.functor.Predicate;
 public interface Real extends Complex, Comparable {
     /**
      * Compares this object with the specified object for order.
-     * @pre this and o have comparable types
+     * @preconditions this and o have comparable types
      * @return a negative integer, zero, or a positive integer as this object is
      *  less than, equal to, or greater than the specified object.
-     * @post &forall;e1,e2&isin;class (e1.compareTo((Object)e2)==0) &hArr; (e1.equals((Object)e2), i.e. compareTo is consistent with equals.
+     * @postconditions &forall;e1,e2&isin;class (e1.compareTo((Object)e2)==0) &hArr; (e1.equals((Object)e2), i.e. compareTo is consistent with equals.
      * @throws ClassCastException if the specified object's type prevents it from being compared to this Object.
      * @see Comparable#compareTo(Object)
      */

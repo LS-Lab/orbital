@@ -75,8 +75,8 @@ public final class Utility {
      *  If it evaluates to <code>false</code>, the assertion fails.
      * @param description specifies additional information for the assertion that will appear in an exception.
      * @throws IllegalArgumentException if test evaluates to <code>false</code>.
-     * @pre test
-     * @post test
+     * @preconditions test
+     * @postconditions test
      */
     public static void pre(boolean test, String description) {
 	if (!test)
@@ -98,10 +98,10 @@ public final class Utility {
      * Check whether two objects are equal.
      * <p>
      * This method is just a shortcut to simplify assertion statements.</p>
-     * @pre a == b &rarr; a.equals(b)
+     * @preconditions a == b &rarr; a.equals(b)
      * @return an optimized version of a <span class="operator">==</span> <span class="keyword">null</span> <span class="operator">?</span> b <span class="operator">==</span> <span class="keyword">null</span> <span class="operator">:</span> a.equals(b).
      *  Namely a <span class="operator">==</span> b <span class="operator">||</span> (a <span class="operator">!=</span> <span class="keyword">null</span> <span class="operator">&&</span> a.equals(b)).
-     * @post a == b || (a != null && a.equals(b))
+     * @postconditions a == b || (a != null && a.equals(b))
      * @see #hashCode(Object)
      */
     public static final boolean equals(Object a, Object b) {
@@ -110,11 +110,11 @@ public final class Utility {
 
     /**
      * Check whether two objects are equal (and their array components, as well).
-     * @pre a == b &rarr; a.equals(b)
+     * @preconditions a == b &rarr; a.equals(b)
      * @return whether a and b are equal.
      *  Or if a and b are both arrays, whether they are equal element-wise,
      *  i.e. all their elements are equal.
-     * @post ?
+     * @postconditions ?
      * @see #hashCodeAll(Object)
      */
     public static final boolean equalsAll(Object a, Object b) {
@@ -273,7 +273,7 @@ public final class Utility {
     }
     /**
      * Get the number of indices required to reach the component type.
-     * @post RES == dimensions(a).length
+     * @postconditions RES == dimensions(a).length
      * @note does not check rectangularity of a
      */
     public static final int rank(Object a) {
@@ -337,7 +337,7 @@ public final class Utility {
      * Get the element in the (possibly multi-dimensional) array <code>a</code> specified by the part specification.
      * Contrary to {@link #getPart(Object[],int[])}, also accepts primitive type arrays.
      * @param partSpecification the part specification <code>p</code> (multi-index into the multi-dimensional array <code>a</code>).
-     * @pre partSpecification.length is not lower than the number of dimensions for partialSolutions.
+     * @preconditions partSpecification.length is not lower than the number of dimensions for partialSolutions.
      * @return a[p[0]][p[1]]...[p[p.length-1]]
      */
     public static Object getPart(Object a, int[] partSpecification) {
@@ -361,7 +361,7 @@ public final class Utility {
      * Contrary to {@link #setPart(Object[],int[],Object)}, also accepts primitive type arrays.
      * Sets a[p[0]][p[1]]...[p[p.length-1]] := value.
      * @param partSpecification the part specification <code>p</code> (multi-index into the multi-dimensional array <code>a</code>).
-     * @pre partSpecification.length is not lower than the number of dimensions for partialSolutions.
+     * @preconditions partSpecification.length is not lower than the number of dimensions for partialSolutions.
      */
     public static void setPart(Object a, int[] partSpecification, Object value) {
 	Object o = a;
@@ -376,7 +376,7 @@ public final class Utility {
      * Flips to true with a given probability.
      * Works like flipping coins.
      * @param probability the probabilty ranging from 0 to 1 with that flip returns <code>true</code>.
-     * @pre probability is a probability
+     * @preconditions probability is a probability
      * @return <code>true</code> with a given probability (nondeterministic).
      * @see Random#nextDouble()
      */
@@ -457,7 +457,7 @@ public final class Utility {
      * @return a list of the elements of o, if o is an array,
      *  o, if o is a collection, 
      *  a list containing o, otherwise.
-     * @post RES == null <=> o == null
+     * @postconditions RES == null <=> o == null
      * @private
      * @todo perhaps move to another location?
      * @see #asIterator(Object)
@@ -507,7 +507,7 @@ public final class Utility {
 
     /**
      * Get an iterator view of a generalized iteratable object, if possible.
-     * @post RES == null <=> o == null
+     * @postconditions RES == null <=> o == null
      * @return an iterator or list iterator view of a, whenever possible.
      * @throws ClassCastException if a is not generalized iteratable.
      * @see #isIteratable(Object)
@@ -535,7 +535,7 @@ public final class Utility {
 
     /**
      * Get a new instance of generalized iteratable object of the same type as the one specified.
-     * @post RES == null <=> a == null
+     * @postconditions RES == null <=> a == null
      * @throws ClassCastException if a is not generalized iteratable.
      * @see #isIteratable(Object)
      * @see Setops#newCollectionLike(Collection)

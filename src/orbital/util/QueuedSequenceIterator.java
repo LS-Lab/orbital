@@ -26,7 +26,7 @@ import java.util.LinkedList;
  *
  * @version 0.9, 2001/08/01
  * @author  Andr&eacute; Platzer
- * @invariant current &isin; iterators && (!hasNext() xor next() &isin; RES(current))
+ * @invariants current &isin; iterators && (!hasNext() xor next() &isin; RES(current))
  * @see SequenceIterator
  * @see QueuedIterator
  * @todo could we reunite this with SequenceIterator and QueuedIterator?

@@ -40,7 +40,7 @@ public class WAStar extends AStar {
      * Which is a best first search using the evaluation function f(n) = g(n) + W*h(n).
      * @param W the weighting argument W for the evaluation function.
      * @param heuristic the heuristic cost function h:S&rarr;<b>R</b> embedded in the evaluation function f.
-     * @pre W >= 1.
+     * @preconditions W >= 1.
      * @see #getEvaluation()
      */
     public WAStar(Real W, Function heuristic) {

@@ -29,7 +29,7 @@ import orbital.logic.functor.Predicate;
  * Complex numbers are not like real numbers. They are not ordered.
  * </p>
  * 
- * @invariant (&not;super &and; &not;(this is Comparable)) &or; <span class="provable">&#9633;</span>abnormal(&not; Comparable)
+ * @invariants (&not;super &and; &not;(this is Comparable)) &or; <span class="provable">&#9633;</span>abnormal(&not; Comparable)
  * @stereotype data-type
  * @version 1.0, 1996/02/03
  * @author  Andr&eacute; Platzer
@@ -48,15 +48,15 @@ public interface Complex extends Scalar {
      * re z = re z' &and; im z = im z'.
      * This is a component-wise equality.
      * </p>
-     * @pre true
-     * @post RES &hArr; Complex.isa(o) &and; re() = o.re() &and; im() = o.im()
+     * @preconditions true
+     * @postconditions RES &hArr; Complex.isa(o) &and; re() = o.re() &and; im() = o.im()
      */
     boolean equals(Object o);
 
     /**
      * Returns a hash code value for the object.
-     * @pre true
-     * @post RES == re().hashCode() ^ im().hashCode()
+     * @preconditions true
+     * @postconditions RES == re().hashCode() ^ im().hashCode()
      */
     int hashCode();
 	

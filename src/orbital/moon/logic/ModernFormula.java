@@ -111,7 +111,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 
     /**
      * Set our underlying logic like the underlying logic of the given formula.
-     * @pre getUnderlyingLogic()&ne;null &and; formula.getUnderlyingLogic()&ne;null &rArr;
+     * @preconditions getUnderlyingLogic()&ne;null &and; formula.getUnderlyingLogic()&ne;null &rArr;
      *  isCompatibleUnderlyingLogic(formula)
      */
     void setUnderlyingLogicLikeIn(Formula formula) {

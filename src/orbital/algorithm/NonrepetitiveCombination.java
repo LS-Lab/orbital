@@ -20,7 +20,7 @@ class NonrepetitiveCombination extends Combinatorical {
     private int     n;
     private int[]   combination;
     /**
-     * @pre r <= n
+     * @preconditions r <= n
      */
     public NonrepetitiveCombination(int r, int n) {
     	if (!(r <= n))

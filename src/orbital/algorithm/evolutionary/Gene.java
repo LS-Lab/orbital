@@ -55,7 +55,7 @@ import orbital.util.InnerCheckedException;
 public interface Gene {
     /**
      * Returns a clone of this gene.
-     * @post RES.equals(this) &and; RES&ne;OLD(RES)
+     * @postconditions RES.equals(this) &and; RES&ne;OLD(RES)
      */
     Object clone();
 
@@ -117,9 +117,9 @@ public interface Gene {
      *  is recombined.
      *  This does not necessarily imply an exchange of data, Genes might as well
      *  realign or repair at random. But it makes a data recombination possible.
-     * @pre &exist;i parents[i] == this, and parents are allels
+     * @preconditions &exist;i parents[i] == this, and parents are allels
      * @return the new <code>childrenCount</code> children produced.
-     * @post RES.length == childrenCount
+     * @postconditions RES.length == childrenCount
      * @todo enhance funny documentation
      */
     Gene[] recombine(final Gene[] parents, int childrenCount, double recombinationProbability);
@@ -154,7 +154,7 @@ public interface Gene {
      *
      * @structure extends DelegateList<Gene>
      * @structure aggregates members:List<Gene>
-     * @invariant sub classes support nullary constructor (for virtual new instance).
+     * @invariants sub classes support nullary constructor (for virtual new instance).
      * @version 1.0, 2001/03/17
      * @author  Andr&eacute; Platzer
      */
@@ -823,7 +823,7 @@ public interface Gene {
      * 
      * @version 1.0, 2001/03/27
      * @author  Andr&eacute; Platzer
-     * @invariant data &isin; [min, max]
+     * @invariants data &isin; [min, max]
      */
     public static class BoundedInteger extends Integer {
     
@@ -1038,7 +1038,7 @@ public interface Gene {
      * 
      * @version 1.0, 2001/03/27
      * @author  Andr&eacute; Platzer
-     * @invariant data &isin; [min, max]
+     * @invariants data &isin; [min, max]
      */
     public static class BoundedFloat extends Float {
     

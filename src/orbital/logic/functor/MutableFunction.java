@@ -30,13 +30,13 @@ public interface MutableFunction/*<A, B>*/ extends Function/*<A, B>*/ {
      * @param arg the argument for which to change the function.
      * @param value the new value this function should have for argument arg, from now on.
      * @return the old value f(arg) prior to updating the function.
-     * @post RES == OLD(apply(arg)) && apply(arg) == value
+     * @postconditions RES == OLD(apply(arg)) && apply(arg) == value
      */
     Object/*>B<*/ set(Object/*>A<*/ arg, Object/*>B<*/ value);
 	
     /**
      * @throws CloneNotSupportedException if this function does not support cloning.
-     * @post RES != RES
+     * @postconditions RES != RES
      */
     Object clone() throws CloneNotSupportedException;
     

@@ -278,14 +278,14 @@ public final class Types {
     /**
      * Checks whether the type specification is compatible with the given list of arguments.
      * Convenience method.
-     * @pre true
+     * @preconditions true
      * @param compositorType the type of the compositor to apply to the arguments.
      * @param args the arguments to check for compatibility with this symbol.
      *  <code>null</code>, or an array of length <span class="number">0</span> can be used for zero arguments.
      * @return whether a compositor of type compositorType is <a href="Expression.html#freeAlgebraOfTerms">applicable</a> to the given arguments.
      *  Which means that the arguments are assignable to the required parameter types of this symbol.
      *  This especially includes whether the number of arguments matches the arity of the compositorTypes' domain.
-     * @post RES == (typeOf(args) &le; compositorType.domain()) == (compositorType &le; typeOf(args)<span class="type">&rarr;&#8868;</span>)
+     * @postconditions RES == (typeOf(args) &le; compositorType.domain()) == (compositorType &le; typeOf(args)<span class="type">&rarr;&#8868;</span>)
      * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience method</a>
      * @see Type#subtypeOf(Type)
      * @see orbital.logic.functor.Functor.Specification#isApplicableTo(Object[])
@@ -313,7 +313,7 @@ public final class Types {
 	 * Higher values are for higher priorities.
 	 * This method induces a total order on the individual comparison rules and decides
 	 * which rule is applied.
-	 * @post RES==OLD(RES) && RES>=0
+	 * @postconditions RES==OLD(RES) && RES>=0
 	 */
 	protected abstract int comparisonPriority();
 	/**
@@ -1420,7 +1420,7 @@ public final class Types {
     /**
      * Returns the type of a list of arguments.
      * Convenience method.
-     * @pre true
+     * @preconditions true
      * @param args the arguments whose (combined) type to return.
      *  <code>null</code>, or an array of length <span class="number">0</span> can be used for zero arguments.
      * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience method</a>
@@ -1462,7 +1462,7 @@ public final class Types {
     /**
      * Returns the type of a list of classes.
      * Legacy conversion.
-     * @pre true
+     * @preconditions true
      * @param args the arguments whose (combined) type to return.
      *  <code>null</code>, or an array of length <span class="number">0</span> can be used for zero arguments.
      * @see Types#product(Type[])

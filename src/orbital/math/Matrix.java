@@ -51,7 +51,7 @@ import java.util.NoSuchElementException;
  * Refer to the documentation of the individual methods for details.
  * </p>
  * 
- * @invariant super &and; rank()==2
+ * @invariants super &and; rank()==2
  * @structure extends Tensor
  * @version 1.0, 2000/08/08
  * @author  Andr&eacute; Platzer
@@ -127,7 +127,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
 
     /**
      * Sets the column vector at a column.
-     * @pre col.dimension() == dimension().height
+     * @preconditions col.dimension() == dimension().height
      * @see #modCount
      */
     void setColumn(int c, Vector/*<R>*/ col) throws UnsupportedOperationException;
@@ -146,7 +146,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
 
     /**
      * Sets the row vector at a row.
-     * @pre row.dimension() == dimension().width
+     * @preconditions row.dimension() == dimension().width
      * @see #modCount
      */
     void setRow(int r, Vector/*<R>*/ row) throws UnsupportedOperationException;
@@ -156,7 +156,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * That is Moeler notation.
      * <p>
      * The returned matrix is a structurally unmodifiable <a href="Tensor.html#view">view</a>.</p>
-     * @pre i1&le;i2 && j1&le;j2 && valid(i1, j1) && valid(i2, j2)
+     * @preconditions i1&le;i2 && j1&le;j2 && valid(i1, j1) && valid(i2, j2)
      * @param i1 the top-most row index of the sub matrix view to get.
      * @param i2 the bottom-most row index of the sub matrix view to get.
      * @param j1 the left-most column index of the sub matrix view to get.
@@ -176,15 +176,15 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     /**
      * Returns the main-diagonal-vector of this square matrix.
      * The vector that consists of m<sub>i,i</sub>.
-     * @pre isSquare()
+     * @preconditions isSquare()
      * @todo should we turn this into a view as well?
      */
     Vector/*<R>*/ getDiagonal();
 
     /**
      * Checks whether this matrix is a square matrix of size n&times;n.
-     * @pre true
-     * @post RES == (dimension().width == dimension().height)
+     * @preconditions true
+     * @postconditions RES == (dimension().width == dimension().height)
      */
     boolean isSquare();
 
@@ -195,8 +195,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * <p>
      * In <b>R</b><sup>n&times;m</sup>, symmetric is the same as self-adjoint.
      * </p>
-     * @pre isSquare()
-     * @post RES.equals(transpose().equals(this))
+     * @preconditions isSquare()
+     * @postconditions RES.equals(transpose().equals(this))
      * @throws ArithmeticException if this is not a square matrix since only square matrices can be symmetric.
      */
     boolean isSymmetric() throws ArithmeticException;
@@ -206,8 +206,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * Invertible matrices are also called regular,
      * which are those with invertible determinant.
      * @return <code>true</code> if this matrix is invertible and <code>false</code> if it is singular (linear rank&lt;n).
-     * @pre isSquare()
-     * @post RES &hArr; det()&isin;R<sup>&times;</sup>
+     * @preconditions isSquare()
+     * @postconditions RES &hArr; det()&isin;R<sup>&times;</sup>
      * @throws ArithmeticException if this is not a square matrix since only square matrices can be regular.
      */
     boolean isInvertible() throws ArithmeticException;
@@ -228,7 +228,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * <p>
      * C.f. Sylvester-normal form of quadratic forms.
      * </p>
-     * @pre isSquare() &and; <span class="@todo">isSymmetric()?</span>
+     * @preconditions isSquare() &and; <span class="@todo">isSymmetric()?</span>
      * @return
      *  <ul>
      *    <li>d&gt;0 if this matrix is positive definite, i.e. &forall;<span class="vector">x</span>&isin;V&#8726;{0} &lang;<span class="vector">x</span>,<span class="matrix">A</span>&#8729;<span class="vector">x</span>&rang; &gt; 0.</li>
@@ -276,7 +276,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * </ul>
      * </p>
      * @todo document again, the norms implemented by AbstractMatrix.
-     * @pre p>=1
+     * @preconditions p>=1
      */
     Real norm(double p);
 
@@ -297,7 +297,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * The trace is invariant to conjugation (similar matrices):
      * Tr (<span class="matrix">T</span><sup>-1</sup>&#8729;<span class="matrix">A</span>&#8729;<span class="matrix">T</span>) = Tr <span class="matrix">A</span>.
      * @return sum of the main-diagonal-vectors components.
-     * @pre isSquare()
+     * @preconditions isSquare()
      * @throws ArithmeticException if this is not a square matrix, since only square matrix have a trace.
      */
     Arithmetic/*>R<*/ trace() throws ArithmeticException;
@@ -498,8 +498,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * where a<sub>i</sub> = (a<sub>0,i</sub>,&#8230;,a<sub>n-1,i</sub>)<sup>t</sup> is the i-th column of <span class="matrix">A</span>.
      * </p>
      * @return det <span class="matrix">A</span> = |<span class="matrix">A</span>|
-     * @pre isSquare()
-     * @post det() multilinear
+     * @preconditions isSquare()
+     * @postconditions det() multilinear
      *  	&& (rank() &lt; dimension().width &hArr; det() = 0)
      *  	&& IDENTITY(n).det() = 1
      * @todo document determinant properties and uniqueness
@@ -512,8 +512,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
 	
     /**
      * Adds two matrices returning a matrix.
-     * @pre dimension().equals(B.dimension())
-     * @post RES.dimension().equals(dimension())
+     * @preconditions dimension().equals(B.dimension())
+     * @postconditions RES.dimension().equals(dimension())
      *  	&& RES.get(i, j) == get(i,j) + B.get(i,j)
      * @attribute associative
      * @attribute neutral (<span class="matrix">O</span>)
@@ -524,8 +524,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
 
     /**
      * Subtracts two matrices returning a matrix.
-     * @pre dimension().equals(B.dimension())
-     * @post RES.dimension().equals(dimension())
+     * @preconditions dimension().equals(B.dimension())
+     * @postconditions RES.dimension().equals(dimension())
      *  	&& RES.get(i, j) == get(i,j) - B.get(i,j)
      * @attribute associative
      */
@@ -538,8 +538,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * This is the ring multiplication of matrices,
      * and an inner product.
      * @return the n&times;l matrix <span class="matrix">A</span>&#8729;<span class="matrix">B</span>.
-     * @pre dimension().width == B.dimension().height
-     * @post RES.dimension().height == dimension().height && RES.dimension().width == B.dimension().width
+     * @preconditions dimension().width == B.dimension().height
+     * @postconditions RES.dimension().height == dimension().height && RES.dimension().width == B.dimension().width
      *  	&& RES.get(i, j) == getRow(i) &sdot; B.getColumn(j)
      * @attribute associative
      * @attribute neutral (I)
@@ -549,8 +549,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     /**
      * Multiplies a matrix with a scalar returning a matrix.
      * This is the scalar multiplication.
-     * @pre true
-     * @post RES.dimension().equals(dimension())
+     * @preconditions true
+     * @postconditions RES.dimension().equals(dimension())
      *  	&& RES.get(i, j) == s &sdot; get(i,j)
      * @return s&middot;<span class="matrix">A</span>
      * @todo multiply(Arithmetic) would need to determine type of s deep, in case it is not a scalar, but a matrix, or anything in R. Except if we separated ring and scalar (and perhaps tensor) multiplication by name.
@@ -571,8 +571,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * This is an inner product.
      * @todo is this a tensor product, or a faltung?
      * @return the n-dimensional column vector <span class="matrix">A</span>&#8729;v.
-     * @pre dimension().width == B.dimension()
-     * @post RES.dimension() == dimension().height
+     * @preconditions dimension().width == B.dimension()
+     * @postconditions RES.dimension() == dimension().height
      *  	&& RES.get(i) == getRow(i) &sdot; B
      */
     Vector/*<R>*/ multiply(Vector/*<R>*/ B);
@@ -592,7 +592,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * &forall;<span class="matrix">A</span>,<span class="matrix">B</span>&isin;R<sup>n&times;m</sup>,<span class="matrix">C</span>&isin;R<sup>m&times;l</sup> &forall;&lambda;&isin;R
      * </p>
      * @return the m&times;n matrix <sup>t</sup><span class="matrix">M</span>=(t<sub>i,j</sub>) with elements t<sub>i,j</sub> = m<sub>j,i</sub>.
-     * @post RES.get(j,i) == get(i,j) && RES.dimension().width == dimension().height && RES.dimension().height == dimension().width
+     * @postconditions RES.get(j,i) == get(i,j) && RES.dimension().width == dimension().height && RES.dimension().height == dimension().width
      * @see #conjugate()
      */
     Matrix/*<R>*/ transpose();
@@ -614,7 +614,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * Relative to a finite orthonormal basis .<sup>&#8889;</sup> is the adjoint operator.
      * </p>
      * @return the m&times;n matrix <span class="matrix">M</span><sup>&#8889;</sup>=<sup>t</sup><span class="Matrix" style="text-decoration: overline">M</span>.
-     * @post RES.get(j,i) == get(i,j).conjugate() RES.dimension().width == dimension().height && RES.dimension().height == dimension().width
+     * @postconditions RES.get(j,i) == get(i,j).conjugate() RES.dimension().width == dimension().height && RES.dimension().height == dimension().width
      * @see Complex#conjugate()
      * @see #transpose()
      */
@@ -652,8 +652,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * <center>(&hArr; <span class="matrix">A</span>&sdot;<span class="matrix">A</span><sup>+</sup> - I is minimal)</center>
      * </p>
      * @return the pseudo inverse <span class="matrix">A</span><sup>+</sup>&isin;<b>R</b><sup>m&times;n</sup> of this matrix <span class="matrix">A</span>&isin;<b>R</b><sup>n&times;m</sup>.
-     * @pre true
-     * @post RES.dimension().equals(transpose().dimension())
+     * @preconditions true
+     * @postconditions RES.dimension().equals(transpose().dimension())
      *  	&& RES.multiply(this).transpose().equals(RES.multiply(this))
      *  	&& this.multiply(RES).transpose().equals(this.multiply(RES))
      *  	&& RES.multiply(this).multiply(RES).equals(RES)
@@ -668,8 +668,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * Insert columns into this matrix.
      * @param cols a n&times;l matrix containing l columns to be added at the end.
      * @return this.
-     * @pre dimension().height == cols.dimension().height
-     * @post RES == this
+     * @preconditions dimension().height == cols.dimension().height
+     * @postconditions RES == this
      *  	&& RES.dimension().height == OLD(dimension().height)
      *  	&& RES.dimension().width == OLD(dimension().width) + cols.dimension().width
      */
@@ -678,9 +678,9 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     /**
      * Insert rows into this matrix.
      * @param rows a x&times;m matrix containing x rows to be added at the end.
-     * @pre dimension().width == rows.dimension().width
+     * @preconditions dimension().width == rows.dimension().width
      * @return this.
-     * @post RES == this
+     * @postconditions RES == this
      *  	&& RES.dimension().width == OLD(dimension().width)
      *  	&& RES.dimension().height == OLD(dimension().height) + rows.dimension().height
      */
@@ -690,8 +690,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * Append columns to this matrix.
      * @param cols a n&times;x matrix containing x columns to be added at the end.
      * @return this.
-     * @pre dimension().height == cols.dimension().height
-     * @post RES == this
+     * @preconditions dimension().height == cols.dimension().height
+     * @postconditions RES == this
      *  	&& RES.dimension().height == OLD(dimension().height)
      *  	&& RES.dimension().width == OLD(dimension().width) + cols.dimension().width
      */
@@ -700,9 +700,9 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     /**
      * Append rows to this matrix.
      * @param rows a x&times;m matrix containing x rows to be added at the end.
-     * @pre dimension().width == rows.dimension().width
+     * @preconditions dimension().width == rows.dimension().width
      * @return this.
-     * @post RES == this
+     * @postconditions RES == this
      *  	&& RES.dimension().width == OLD(dimension().width)
      *  	&& RES.dimension().height == OLD(dimension().height) + rows.dimension().height
      */
@@ -711,8 +711,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     /**
      * Remove a column from this matrix.
      * @return this.
-     * @pre c&isin;[0, dimension().width)
-     * @post RES == this
+     * @preconditions c&isin;[0, dimension().width)
+     * @postconditions RES == this
      *  	&& RES.dimension().height == OLD(dimension().height)
      *  	&& RES.dimension().width == OLD(dimension().width) - 1
      */
@@ -721,8 +721,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     /**
      * Remove a row from this matrix.
      * @return this.
-     * @pre r&isin;[0, dimension().height)
-     * @post RES == this
+     * @preconditions r&isin;[0, dimension().height)
+     * @postconditions RES == this
      *  	&& RES.dimension().width == OLD(dimension().width)
      *  	&& RES.dimension().height == OLD(dimension().height) - 1
      */
@@ -731,7 +731,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     /**
      * Returns an array containing all the elements in this matrix.
      * The first index in this array specifies the row, the second is for column.
-     * @post RES[i][j] == get(i, j) && RES != RES
+     * @postconditions RES[i][j] == get(i, j) && RES != RES
      * @see #set(Arithmetic[][])
      * @see Object#clone()
      */

@@ -64,7 +64,7 @@ abstract class AbstractPolynomial/*<R implements Arithmetic, S implements Arithm
 
     /**
      * Sets a value for the coefficient specified by index.
-     * @pre i&isin;S
+     * @preconditions i&isin;S
      * @throws UnsupportedOperationException if this polynomial is constant and does not allow modifications.
      * @todo move to Polynomial?
      */

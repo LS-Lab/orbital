@@ -298,7 +298,7 @@ public class Figure extends Moving {
      * the elements sequentially.
      * Checks validity of a path to move per {@link #movePath(Move)}.
      * @see #iterateValid()
-     * @post &forall;i&isin;RES moveFigure(i.A).equals(i.B)
+     * @postconditions &forall;i&isin;RES moveFigure(i.A).equals(i.B)
      * @todo introduce iteratePossiblePairs() returns an iterator over all pairs of (Moves|destinations) valid and <dfn>possible</dfn> for this Figure, i.e. if our league is allowed to move at all.
      */
     public final Iterator/*_<Move,Position>_*/ iterateValidPairs() {
@@ -374,7 +374,7 @@ public class Figure extends Moving {
      * it.
      * @param move a valid Move, <em>really reaching</em> the given destination.
      * @param destination the destination reached by the move.
-     * @pre &exist;i move.equals(getLegalMoves()[i]) &and; movePath(move).equals(destination)
+     * @preconditions &exist;i move.equals(getLegalMoves()[i]) &and; movePath(move).equals(destination)
      * @return whether the move sticks to the rules,
      *  provided that the move itself is a legal move and reaches the given position on the board.
      */
@@ -390,7 +390,7 @@ public class Figure extends Moving {
      * <p>works like: <code>?- movePath(X)==destination.</code>
      * @return the first legal Move-Path which reaches the destination Position.
      *  <code>null</code> if destination Field cannot be reached at all, or is not empty but cannot be beaten.
-     * @post (&exist;i RES.equals(getLegalMoves()[i]) &and; movePath(RES).equals(destination)) xor RES == null
+     * @postconditions (&exist;i RES.equals(getLegalMoves()[i]) &and; movePath(RES).equals(destination)) xor RES == null
      * @see #movePath(Move)
      */
     protected Move findValidPath(final Position destination) {
@@ -439,7 +439,7 @@ public class Figure extends Moving {
      * This method will not check for opposing leagues since moves for covering-checks
      * will also be returned as valid.
      * @param move the movement to try.
-     * @pre {@link #field} contains the current field considered whether the path is empty
+     * @preconditions {@link #field} contains the current field considered whether the path is empty
      * @return the destination position if the given move is passable
      *  or <code>null</code> if the movement path is invalid.
      * @see #isEmpty()

@@ -315,7 +315,7 @@ public class ClassicalLogic extends ModernLogic {
      * @author  Andr&eacute; Platzer
      * @see <a href="{@docRoot}/Patterns/Design/enum.html">typesafe enum pattern</a>
      * @internal typesafe enumeration pattern class to specify fuzzy logic operators
-     * @invariant a.equals(b) &hArr; a==b
+     * @invariants a.equals(b) &hArr; a==b
      * @todo improve name
      */
     public static abstract class InferenceMechanism implements Serializable, Comparable {
@@ -349,7 +349,7 @@ public class ClassicalLogic extends ModernLogic {
 
 	/**
 	 * Order imposed by ordinals according to the order of creation.
-	 * @post consistent with equals
+	 * @postconditions consistent with equals
 	 */
 	public int compareTo(Object o) {
 	    return ordinal - ((InferenceMechanism) o).ordinal;
@@ -357,7 +357,7 @@ public class ClassicalLogic extends ModernLogic {
 
 	/**
 	 * Maintains the guarantee that all equal objects of the enumerated type are also identical.
-	 * @post a.equals(b) &hArr; if a==b.
+	 * @postconditions a.equals(b) &hArr; if a==b.
 	 */
 	public final boolean equals(Object that) {
 	    return super.equals(that);
@@ -381,7 +381,7 @@ public class ClassicalLogic extends ModernLogic {
 
 	/**
 	 * Defines the inference mechanism used.
-	 * @post RES==OLD(RES)
+	 * @postconditions RES==OLD(RES)
 	 */
 	abstract Inference inference();
 
@@ -428,7 +428,7 @@ public class ClassicalLogic extends ModernLogic {
 	     * Contains ordered map (in precedence order) of initial functors
 	     * and their notation specifications.
 	     * Stored internally as an array of length-2 arrays.
-	     * @invariant sorted, i.e. precedenceOf[i] < precedenceOf[i+1]
+	     * @invariants sorted, i.e. precedenceOf[i] < precedenceOf[i+1]
 	     */
 	    //@fixme debug why the thing ~(a->a) is displayed as ~a->a etc.  Use BESTFIX! (@see Notation#hasCompactBrackets)
 	    {Types.UNIVERSAL,
@@ -1193,7 +1193,7 @@ public class ClassicalLogic extends ModernLogic {
      * the symbols in &Sigma; with elements of the world.
      * Interpretations are conceptually irrelevant for syntactic calculi of inference relations
      * but may optionally be used to implement a naive calculus.
-     * @pre propositionalSigma&sube;sigma &and; propositionalSigma is only a signature of propositional logic
+     * @preconditions propositionalSigma&sube;sigma &and; propositionalSigma is only a signature of propositional logic
      * @param sigma the full declared signature of the interpretations to create.
      * @param propositionalSigma the part of the signature for which to create all interpretations.
      * @return all &Sigma;-Interpretations in this Logic (i.e. that can be formed with Signature &Sigma;).
@@ -1298,8 +1298,8 @@ public class ClassicalLogic extends ModernLogic {
 	 * @see "Rolf Socher-Ambrosius. Boolean algebra admits no convergent term rewriting system, Springer Lecture Notes in Computer Science 488, RTA '91."
 	 * @internal see mathematische Berechnungstheorie vermittelt, daß es nicht immer möglich ist, mit einer endlichen Folge von Transformationen je zwei beliebig gewählte Ausdrücke in ihre Normalform zu überführen.
 	 * @todo Sollten DNF/KNF von "innen nach außen" erstellt werden?
-	 * @pre true
-	 * @post RES &equiv; f
+	 * @preconditions true
+	 * @postconditions RES &equiv; f
 	 */
 	public static Formula disjunctiveForm(Formula f) {
 	    return disjunctiveForm(f, false);
@@ -1340,8 +1340,8 @@ public class ClassicalLogic extends ModernLogic {
 	 * <p>
 	 * This TRS terminates but is not confluent.</p>
 	 * @todo verify
-	 * @pre true
-	 * @post RES &equiv; f
+	 * @preconditions true
+	 * @postconditions RES &equiv; f
 	 * @todo ~(a|a) == ~a&~a instead of == ~a somehow because of pattern matching
 	 */
 	public static Formula conjunctiveForm(Formula f) {
@@ -1446,7 +1446,7 @@ public class ClassicalLogic extends ModernLogic {
 	}
 	/**
 	 * Convert a formula (that is in CNF) to a set of clauses.
-	 * @pre term=conjunctiveForm(term)
+	 * @preconditions term=conjunctiveForm(term)
 	 */
 	private static final Set/*_<Set<Formula>>_*/ clausalFormClauses(Formula term) {
 	    //@todo assert assume right-associative nesting of &
@@ -1662,7 +1662,7 @@ public class ClassicalLogic extends ModernLogic {
 	 * @param F the formula having free variables FV(F)=:{<var>x<sub>1</sub></var>,...,<var>x<sub>n</sub></var>}.
 	 * @return the universal closure
 	 *  Cl<sub>&forall;</sub>F = &forall;<var>x<sub>1</sub></var>...&forall;<var>x<sub>n</sub></var> F
-	 * @post RES.getFreeVariables()=&empty; &and; RES=F.getFreeVariables()->iterate(x;G=F;G=G.forall(x))
+	 * @postconditions RES.getFreeVariables()=&empty; &and; RES=F.getFreeVariables()->iterate(x;G=F;G=G.forall(x))
 	 * @see #existentialClosure(Formula)
 	 * @see #constantClosure(Formula)
 	 */
@@ -1680,7 +1680,7 @@ public class ClassicalLogic extends ModernLogic {
 	 * @param F the formula having free variables FV(F)=:{<var>x<sub>1</sub></var>,...,<var>x<sub>n</sub></var>}.
 	 * @return the existential closure
 	 *  Cl<sub>&exist;</sub>F = &exist;<var>x<sub>1</sub></var>...&exist;<var>x<sub>n</sub></var> F
-	 * @post RES.getFreeVariables()=&empty; &and; RES=F.getFreeVariables()->iterate(x;G=F;G=G.exist(x))
+	 * @postconditions RES.getFreeVariables()=&empty; &and; RES=F.getFreeVariables()->iterate(x;G=F;G=G.exist(x))
 	 * @see #universalClosure(Formula)
 	 * @see #constantClosure(Formula)
 	 */
@@ -1704,7 +1704,7 @@ public class ClassicalLogic extends ModernLogic {
 	 * @param F the formula having free variables FV(F)=:{<var>x<sub>1</sub></var>,...,<var>x<sub>n</sub></var>}.
 	 * @return the constant closure
 	 *  Cl<sub>const</sub>F = F[<var>x<sub>1</sub></var>&rarr;x<sub>1</sub>,...,<var>x<sub>n</sub></var>&rarr;x<sub>n</sub>]
-	 * @post RES.getFreeVariables()=&empty; &and; RES=...
+	 * @postconditions RES.getFreeVariables()=&empty; &and; RES=...
 	 * @see #existentialClosure(Formula)
 	 * @see #universalClosure(Formula)
 	 */

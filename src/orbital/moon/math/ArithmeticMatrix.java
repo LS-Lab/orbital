@@ -48,7 +48,7 @@ class ArithmeticMatrix/*<R implements Arithmetic>*/ extends AbstractMatrix/*<R>*
     /**
      * creates a new Matrix backed by a two-dimensional array of arithmetic objects.
      * The rows are first index, the columns second index.
-     * @pre values is rectangular, i.e. v[i].length==v[i-1].length
+     * @preconditions values is rectangular, i.e. v[i].length==v[i-1].length
      */
     public ArithmeticMatrix(Arithmetic/*>R<*/ values[][]) {
 	for (int i = 1; i < values.length; i++)
@@ -88,7 +88,7 @@ class ArithmeticMatrix/*<R implements Arithmetic>*/ extends AbstractMatrix/*<R>*
     } 
 
     /**
-     * @pre values is rectangular, i.e. v[i].length==v[i-1].length
+     * @preconditions values is rectangular, i.e. v[i].length==v[i-1].length
      * @todo could we forget about cloning v?
      */
     protected void set(Arithmetic/*>R<*/[][] v) {

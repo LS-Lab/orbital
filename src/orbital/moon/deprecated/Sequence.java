@@ -22,7 +22,7 @@ import java.util.NoSuchElementException;
  * @see java.util.Iterator
  * @see java.util.ListIterator
  * @see <a href="{@docRoot}/Patterns/Design/iterator.html">Iterator Pattern</a>
- * @invariant hasNext() <=> SUCCEEDS(next())
+ * @invariants hasNext() <=> SUCCEEDS(next())
  * && hasPrevious() <=> SUCCEEDS(previous())
  */
 public interface Sequence extends ListIterator {
@@ -36,15 +36,15 @@ public interface Sequence extends ListIterator {
 
 	/**
 	 * Tests if this Sequence has more Elements.
-	 * @pre true
-	 * @post RES == (count()!=0)
+	 * @preconditions true
+	 * @postconditions RES == (count()!=0)
 	 */
 	boolean hasNext();
 
 	/**
 	 * Tests if this Sequence has a previous element.
-	 * @pre true
-	 * @post RES == (cursor>0)
+	 * @preconditions true
+	 * @postconditions RES == (cursor>0)
 	 */
 	boolean hasPrevious();
 
@@ -52,8 +52,8 @@ public interface Sequence extends ListIterator {
 	 * Returns the next Element in the Sequence not yet returned by
 	 * element(i) or next().
 	 * @throws java.util.NoSuchElementException   if prerequisite hasNext() is not satisifed.
-	 * @pre hasNext()
-	 * @post count()==OLD(count())-1
+	 * @preconditions hasNext()
+	 * @postconditions count()==OLD(count())-1
 	 */
 	Object next() throws NoSuchElementException;
 
@@ -61,8 +61,8 @@ public interface Sequence extends ListIterator {
 	 * Returns the previous element in the sequence already returned by
 	 * next().
 	 * @throws java.util.NoSuchElementException   if prerequisite hasPrevious() is not satisifed.
-	 * @pre hasPrevious()
-	 * @post count()==OLD(count())+1
+	 * @preconditions hasPrevious()
+	 * @postconditions count()==OLD(count())+1
 	 */
 	Object previous() throws NoSuchElementException;
 
@@ -82,14 +82,14 @@ public interface Sequence extends ListIterator {
 	 * prevents it from being added to this Set.
 	 * @throws IllegalArgumentException if some aspect of this element
 	 * prevents it from being added to this Collection.
-	 * @post count()==OLD(count())+1
+	 * @postconditions count()==OLD(count())+1
 	 */
 	void add(Object o);
 
 	/**
 	 * Remove the Element from the Sequence that was last returned by next() or previous() or element(int).
-	 * @pre hasNext() || hasPrevious()
-	 * @post count()==OLD(count())-1
+	 * @preconditions hasNext() || hasPrevious()
+	 * @postconditions count()==OLD(count())-1
 	 * @return the object that has been removed.
 	 */
 	void remove();

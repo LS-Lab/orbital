@@ -24,8 +24,8 @@ public interface DynamicProgrammingProblem extends AlgorithmicProblem {
 
     /**
      * Check whether the given partial solutions are a valid solution to the problem.
-     * @pre partialSolutions resulted in repeated calls of solve after a single call to getInitialPartialSolutions.
-     * @post RES indicates whether we found a solution to the problem
+     * @preconditions partialSolutions resulted in repeated calls of solve after a single call to getInitialPartialSolutions.
+     * @postconditions RES indicates whether we found a solution to the problem
      */
     boolean isSolution(Object[] partialSolutions);
 
@@ -33,14 +33,14 @@ public interface DynamicProgrammingProblem extends AlgorithmicProblem {
      * Divide this problem into several (dependant) problem parts and return the index description for the next part to solve.
      * Solving will then continue with this part.
      * @return an array specifying the indices in the partialSolutions to solve next.
-     * @post RES.length is not lower than the number of dimensions for partialSolutions
+     * @postconditions RES.length is not lower than the number of dimensions for partialSolutions
      * && partialSolutions[RES[0]][RES[1]]...[RES[RES.length-1]] does not raise an exception.
      */
     int[] nextPart();
 
     /**
      * Solve the problem part using the partial solutions we already now.
-     * @pre nextPart() returned part && partialSolutions is constructed by getInitialPartialSolution and solve
+     * @preconditions nextPart() returned part && partialSolutions is constructed by getInitialPartialSolution and solve
      * @return the solution for this case.
      * @see #nextPart()
      */

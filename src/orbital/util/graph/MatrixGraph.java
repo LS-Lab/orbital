@@ -26,7 +26,7 @@ import java.util.NoSuchElementException;
  * @version 0.7, 2000/07/15
  * @author  Andr&eacute; Platzer
  * @TODO: implement a little better
- * @invariant isSquare(edges) && size <= edges.length
+ * @invariants isSquare(edges) && size <= edges.length
  */
 public class MatrixGraph implements Graph {
     /**

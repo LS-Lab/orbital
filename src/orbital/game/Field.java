@@ -34,7 +34,7 @@ import java.util.logging.Level;
  * @version 1.0, 11/07/98
  * @author  Andr&eacute; Platzer
  * @structure composite bidirectional field: Figure[][]
- * @invariant sub classes support nullary constructor && isRectangular(field).
+ * @invariants sub classes support nullary constructor && isRectangular(field).
  * @see orbital.robotic.Table
  */
 public class Field implements Serializable {
@@ -64,7 +64,7 @@ public class Field implements Serializable {
     /**
      * Creates a deep copy clone of the object.
      * @return		a clone of this Object with the same type, and a deep clone field.
-     * @post RES.getClass() == getClass() && "RES.field.equals(this.field)" && RES.field != field
+     * @postconditions RES.getClass() == getClass() && "RES.field.equals(this.field)" && RES.field != field
      * @throws	CloneNotSupportedException Object explicitly does not
      * want to be cloned, or does not support a nullary constructor.
      */
@@ -300,7 +300,7 @@ public class Field implements Serializable {
     /**
      * Swaps two Figures at the given Positions in a Field.
      * This can be used to move Figures.
-     * @post EFFECT(swap(a, b)) == EFFECT(swap(b, a))
+     * @postconditions EFFECT(swap(a, b)) == EFFECT(swap(b, a))
      */
     protected void swap(Position a, Position b) {
 	Figure t = getFigure(a);
@@ -360,7 +360,7 @@ public class Field implements Serializable {
      * @param destination the destination reached by the move.
      * @return the league of the figure the move beats at the given destination.
      * <code>NOONE</code> if the move does not allow a beat or there is only an empty target.
-     * @post OLD(this) == this
+     * @postconditions OLD(this) == this
      * @see Move#isBeating(int)
      * @see #isEmpty(Position)
      */

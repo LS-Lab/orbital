@@ -31,7 +31,7 @@ public class TaggedPropertyEditorSupport extends PropertyEditorSupport implement
      * Must be in same order as tags.
      * @param javaInitilizers a list of java initialization strings that represent the values for the property.
      * Must be in same order as tags.
-     * @pre tags.length == values.length && (javaInitializers == null || javaInitializers.length == values.length)
+     * @preconditions tags.length == values.length && (javaInitializers == null || javaInitializers.length == values.length)
      * @throws IllegalArgumentException if the arrays have incompatible dimensions
      */
     protected TaggedPropertyEditorSupport(String[] tags, Object[] values, String[] javaInitializers) {

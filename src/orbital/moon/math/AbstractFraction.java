@@ -24,7 +24,7 @@ class AbstractFraction/*<M extends Arithmetic,S extends Arithmetic>*/ extends Ab
     /**
      * The denominator of the fraction.
      * @serial
-     * @invariant denominator&isin;S
+     * @invariants denominator&isin;S
      */
     private Arithmetic/*>S<*/ denominator;
     

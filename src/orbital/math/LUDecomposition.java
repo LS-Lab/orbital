@@ -26,7 +26,7 @@ import orbital.logic.functor.Predicates;
  * @author  Andr&eacute; Platzer
  * @stereotype Structure
  * @stereotype Wrapper
- * @invariant !isInvertible() || getP().multiply(A).equals(getL().multiply(getU()))
+ * @invariants !isInvertible() || getP().multiply(A).equals(getL().multiply(getU()))
  * @see #decompose(Matrix)
  * @see NumericalAlgorithms
  * @note this class is more or less just a workaround for returning multiple values.
@@ -53,7 +53,7 @@ public final class LUDecomposition/*<R implements Arithmetic>*/ implements Seria
     /**
      * Gaussian LU-decomposition implementation.
      * Such that <span class="matrix">P</span>.<span class="matrix">A</span> = <span class="matrix">L</span>.<span class="matrix">U</span>
-     * @pre <span class="matrix">A</span>.isSquare()
+     * @preconditions <span class="matrix">A</span>.isSquare()
      */
     protected LUDecomposition(Matrix/*<R>*/ A, Matrix/*<R>*/ P, boolean sign) {
 	this.A = A;
@@ -64,7 +64,7 @@ public final class LUDecomposition/*<R implements Arithmetic>*/ implements Seria
      * Gaussian LU-decomposition implementation.
      * Such that <span class="matrix">P</span>.<span class="matrix">A</span> = <span class="matrix">L</span>.<span class="matrix">U</span>
      * <p>Number of multiplications is 1/3*(n<sup>3</sup>-n)</p>
-     * @pre M.isSquare()
+     * @preconditions M.isSquare()
      * @todo optimize
      */
     private LUDecomposition(Matrix/*<R>*/ M) {
@@ -141,7 +141,7 @@ public final class LUDecomposition/*<R implements Arithmetic>*/ implements Seria
      * Get the Gaussian LU-decomposition of a matrix.
      * Such that <span class="matrix">P</span>&#8729;<span class="matrix">A</span> = <span class="matrix">L</span>&#8729;<span class="matrix">U</span>
      * <p>Number of multiplications is 1/3*(n<sup>3</sup>-n)</p>
-     * @pre M.isSquare()
+     * @preconditions M.isSquare()
      */
     public static /*<R implements Arithmetic>*/ LUDecomposition/*<R>*/ decompose(Matrix/*<R>*/ M) {
 	return new LUDecomposition/*<R>*/(M);

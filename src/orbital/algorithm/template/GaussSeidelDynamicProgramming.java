@@ -45,7 +45,7 @@ import java.util.logging.Level;
  * </center>
  * </p>
  *
- * @invariant getDiscount()&isin;[0,1]
+ * @invariants getDiscount()&isin;[0,1]
  * @version 1.0, 2001/06/10
  * @author  Andr&eacute; Platzer
  * @see DynamicProgramming

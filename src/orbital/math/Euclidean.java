@@ -48,7 +48,7 @@ public interface Euclidean extends Arithmetic {
      * Get the Euclidean degree.
      * In case R is a discrete valuation ring, this also is the valuation of Quot(R).
      * @return the Euclidean degree &delta;(this) of this value.
-     * @post RES=&delta;(this)
+     * @postconditions RES=&delta;(this)
      */
     Integer degree();
 	
@@ -65,7 +65,7 @@ public interface Euclidean extends Arithmetic {
     /**
      * Get the Euclidean remainder, modulo g.
      * @return this mod g &isin; R.
-     * @post RES.degree() < g.degree() &or; RES==0
+     * @postconditions RES.degree() < g.degree() &or; RES==0
      * @throws IllegalArgumentException if the argument type is illegal for this operation.
      *  Note: for single type handling it is also allowed to throw a ClassCastException, instead.
      * @todo rename to remainder(Euclidean)?

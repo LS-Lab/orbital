@@ -79,7 +79,7 @@ public interface Type extends Comparable, Predicate {
     /**
      * Compares two types for subtype inclusions.
      * Note that this is only a partial order, but it is still consistent with equals.
-     * @pre tau instanceof Type
+     * @preconditions tau instanceof Type
      * @param tau the type <span class="type">&tau;</span> to check for being a supertype, subtype of us, or equals.
      * @return Returns an x &lt; 0 if this &lt; <span class="type">&tau;</span> (this is a proper subtype of <span class="type">&tau;</span>).<br />
      *  Returns an x &gt; 0 if this &gt; <span class="type">&tau;</span> (this is a proper supertype of <span class="type">&tau;</span>).<br />

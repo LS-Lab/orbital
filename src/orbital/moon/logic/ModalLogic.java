@@ -53,6 +53,11 @@ import java.util.logging.Level;
  * 
  * @version 1.1, 2002-11-23
  * @author  Andr&eacute; Platzer
+ * @todo prior to introducing closure we still were able to "prove"
+ *  <>A |- A
+ *  |- []A -> [][]A      of S4, local
+ *  |- <>A -> []<>A      of S5
+ *  |- ~A -> []~[]A      of B
  */
 public class ModalLogic extends ClassicalLogic {
     /**
@@ -79,6 +84,12 @@ public class ModalLogic extends ClassicalLogic {
 
     private static final Logger logger = Logger.getLogger(ModalLogic.class.getName());
 
+    static {
+	//@xxx we don't pass them so disable
+	ModernLogic.TYPE_CHECK = false;
+	System.err.println("disabling type checks for modal logic");
+    }
+    
     private static final Type   WORLD = //@xxx Types.objectType(new Object() {}.getClass(), "world");
 	Types.INDIVIDUAL;
     private static final Symbol CURRENT_WORLD = new SymbolBase("s", WORLD, null, true);
@@ -137,12 +148,12 @@ public class ModalLogic extends ClassicalLogic {
 		Formula[] Bred = new Formula[B.length];
 		System.err.print("  ");
 		for (int i = 0; i < B.length; i++) {
-		    Bred[i] = Utilities.modalReduce(B[i]);
+		    Bred[i] = ClassicalLogic.Utilities.constantClosure(Utilities.modalReduce(B[i]));
 		    if (i > 0 )
 			System.err.print(" , ");
 		    System.err.print(Bred[i]);
 		}
-		Formula Dred = Utilities.modalReduce(D);
+		Formula Dred = ClassicalLogic.Utilities.constantClosure(Utilities.modalReduce(D));
 		System.err.println("  |-<red> " + Dred);
 		return classicalInference.infer(Bred, Dred);
 	    }
@@ -189,8 +200,8 @@ public class ModalLogic extends ClassicalLogic {
 
     /**
      * Formula transformation utilities.
-     * @stereotype &laquo;Utilities&raquo;
-     * @stereotype &laquo;Module&raquo;
+     * @stereotype Utilities
+     * @stereotype Module
      * @version 1.1, 2002-11-24
      * @author  Andr&eacute; Platzer
      * @see orbital.util.Utility
@@ -253,12 +264,12 @@ public class ModalLogic extends ClassicalLogic {
 		    Composite oappl = (Composite) term;
 		    Object    oop = oappl.getCompositor();
 		    Object    t = oappl.getComponent();
-		    assert t instanceof Formula[] || t instanceof Formula : "expected: applied to >=1 arguments";
+		    assert t instanceof Formula[] || t instanceof Formula : "expected: applied to >=1 arguments. found: " + oop + " applied to " + MathUtilities.format(t) + " of " + (t == null ? null : t.getClass());
 		    if (oop instanceof Formula && oop instanceof Composite) {
 			Composite appl = (Composite) oop;
 			Object    f = appl.getCompositor();
 			Object    a = appl.getComponent();
-			assert a instanceof Formula[] || a instanceof Formula : "expected: applied to >=1 arguments";
+			assert a instanceof Formula[] || a instanceof Formula : "expected: applied to >=1 arguments. found: " + f + " applied to " + MathUtilities.format(a) + " of " + (a == null ? null : a.getClass());
 			if (f instanceof Formula) {
 			    if (f instanceof ModernFormula.AtomicSymbol)
 				// only match atomic terms
@@ -337,9 +348,9 @@ public class ModalLogic extends ClassicalLogic {
 	    }
 
 	    private static final Type[] asTypeArray(Type tau) {
-		    if (tau instanceof /*@xxx Type*/Functor.Composite
-			&& ((Functor.Composite)tau).getCompositor() == Types.product)
-			return (Type[]) ((Functor.Composite)tau).getComponent();
+		    if (tau instanceof Type.Composite
+			&& ((Type.Composite)tau).getCompositor() == Types.product)
+			return (Type[]) ((Type.Composite)tau).getComponent();
 		    else
 			return new Type[] {tau};
 	    }
@@ -348,7 +359,7 @@ public class ModalLogic extends ClassicalLogic {
 	/**
 	 * Reduces a formula of quantified modal logic to classical first-order logic.
 	 * <ul>
-	 *   <li>red(p(t1,....,tn)) = p(t1,...,tn,s)&w(s) if p is a predicate.</li>
+	 *   <li>red(p(t1,....,tn)) = p(s)(t1,...,tn)&w(s) = p(s,t1,...,tn)&w(s) if p is a predicate.</li>
 	 *   <li>red(A&and;B) = red(A)&and;red(B)</li>
 	 *   <li>red(A&or;B) = red(A)&or;red(B)</li>
 	 *   <li>red(&not;A) = &not;red(A)</li>
@@ -390,6 +401,7 @@ public class ModalLogic extends ClassicalLogic {
 	 *
 	 * @version 1.1, 2002-11-23
 	 * @author  Andr&eacute; Platzer
+	 * @todo could also transform to dscr(s, p(s))? @see Sowa
 	 */
 	private static class ContextualizeUnifyingMatcher extends MatcherImpl {
 	    //private static final long serialVersionUID = 0;

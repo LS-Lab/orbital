@@ -431,7 +431,7 @@ class Resolution implements Inference {
     /**
      * Get the negation of F without introducing duplex negatios.
      * @return G if F=&not;G, and &not;F otherwise.
-     * @post RES==ClassicalLogic.conjunctiveForm(F.not())
+     * @postconditions RES==ClassicalLogic.conjunctiveForm(F.not())
      * @todo to ClassicalLogic.Utilities?
      */
     static final Formula negation(Formula F) {
@@ -464,7 +464,7 @@ class Resolution implements Inference {
      * @param F a clause
      * @param G a clause
      * @todo or even when there is a single-sided matcher of p and q in p&or;&not;q?
-     * @pre (&not;isElementaryValid(F) &and; &not;isElementaryValid(G)) &or; F=G
+     * @preconditions (&not;isElementaryValid(F) &and; &not;isElementaryValid(G)) &or; F=G
      * @todo look for true&isin;F?
      */
     private static boolean isElementaryValid(Set/*_<Formula>_*/ F, Set/*_<Formula>_*/ G) {

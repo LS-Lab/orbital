@@ -73,8 +73,8 @@ public final class NumericalAlgorithms {
      * Checks whether a matrix is diagonally dominant.
      * @return whether &forall;i&isin;{0,...,n-1} &sum;<sub>k&isin;{0,...,n-1}\{i}</sub> |a<sub>k,i</sub>| &le; |a<sub>i,i</sub>|.
      *  Or perhaps passing to absolutes |.| instead.
-     * @pre A.isSquare()
-     * @post RES == &forall;i&isin;{0,...,A.dimension().width-1} &sum;<sub>k&isin;{0,...,A.dimension().height-1}\{i}</sub> Math.abs(a<sub>k,i</sub>) &le; Math.abs(a<sub>i,i</sub>)
+     * @preconditions A.isSquare()
+     * @postconditions RES == &forall;i&isin;{0,...,A.dimension().width-1} &sum;<sub>k&isin;{0,...,A.dimension().height-1}\{i}</sub> Math.abs(a<sub>k,i</sub>) &le; Math.abs(a<sub>i,i</sub>)
      */
     //@todo introduce boolean isDiagonallyDominant(Matrix A)
 
@@ -88,8 +88,8 @@ public final class NumericalAlgorithms {
      * <p>
      * The implementation is numerically stable.
      * </p>
-     * @pre A.isPositiveDefinite()
-     * @post L*L^T == A
+     * @preconditions A.isPositiveDefinite()
+     * @postconditions L*L^T == A
      * @todo test
      * @todo optimize
      */
@@ -122,8 +122,8 @@ public final class NumericalAlgorithms {
     /**
      * cg-algorithm for solving A&#8729;x=b iteratively starting with x0.
      * Conjugate gradients algorithm.
-     * @pre A.isPositiveDefinite() && b.dimension()==A.dimension().width && x0.dimension() == A.dimension().width
-     * @post A.multiply(x) == b
+     * @preconditions A.isPositiveDefinite() && b.dimension()==A.dimension().width && x0.dimension() == A.dimension().width
+     * @postconditions A.multiply(x) == b
      * @return the solution vector x solving Ax=b.
      * @todo test sometime
      */
@@ -163,7 +163,7 @@ public final class NumericalAlgorithms {
      * </p>
      * @param A the matrix with supporting nodes.
      *  These are row vectors (x,y) of width 2.
-     * @pre A.dimension().width == 2
+     * @preconditions A.dimension().width == 2
      * @see UnivariatePolynomial
      */
     public static Function polynomialInterpolation(Matrix A) {
@@ -234,7 +234,7 @@ public final class NumericalAlgorithms {
      *  <li>{@link #NATURAL_SPLINE_INTERPOLATION} - natural spline interpolation</li>
      *  <li>{@link #PERIODICAL_SPLINE_INTERPOLATION} - periodical spline interpolation</li>
      * </ul>
-     * @pre A is ordered by ascending x-values. &forall;i A.get(i, 0) < A.get(i+1, 0)
+     * @preconditions A is ordered by ascending x-values. &forall;i A.get(i, 0) < A.get(i+1, 0)
      * @return the interpolating spline s of grade k-1 that is minimally crooked (&kappa; globally minimized).
      *  &kappa;(t) = s''(t) / <big>(</big>1 + s'(t)<sup>2</sup><big>)</big><sup>3/2</sup>.
      * @see #NATURAL_SPLINE_INTERPOLATION
@@ -263,7 +263,7 @@ public final class NumericalAlgorithms {
      * </ul>
      * @param fp_a the value f'(a) of the derivative of f at a.
      * @param fp_b the value f'(b) of the derivative of f at b.
-     * @pre A is ordered by ascending x-values. &forall;i A.get(i, 0) < A.get(i+1, 0)
+     * @preconditions A is ordered by ascending x-values. &forall;i A.get(i, 0) < A.get(i+1, 0)
      * @return the interpolating spline s of grade k-1 that is minimally crooked (&kappa; globally minimized).
      *  &kappa;(t) = s''(t) / <big>(</big>1 + s'(t)<sup>2</sup><big>)</big><sup>3/2</sup>.
      * @see #COMPLETE_SPLINE_INTERPOLATION
@@ -391,7 +391,7 @@ public final class NumericalAlgorithms {
 	    double r = 0;
 	    double partialExp = 1;
 	    for (int i = 0; i < coefficients[j].length; i++) {
-		/* @invariant partialExp = (x - t[j])^i && r = &sum<sub>k=0,..i</sub>(coefficients[j][k] * (x - t[j])^k) */
+		/* @invariants partialExp = (x - t[j])^i && r = &sum<sub>k=0,..i</sub>(coefficients[j][k] * (x - t[j])^k) */
 		r += coefficients[j][i] * partialExp;
 		partialExp *=  x - t[j];
 	    }

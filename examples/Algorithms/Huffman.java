@@ -23,7 +23,7 @@ import java.util.logging.Level;
  * such that some trailing bits at the end of the file may be "decoded" as well.
  * </p>
  *
- * @invariant treeView(trieOpt).equals(trieExpl)
+ * @invariants treeView(trieOpt).equals(trieExpl)
  * @version 0.9, 2000/08/07
  * @author  Andr&eacute; Platzer
  * @see Huffman_Elementary
@@ -71,14 +71,14 @@ public class Huffman implements GreedyProblem {
      * <p>
      * Could be used for an optimized algorithm.
      * </p>
-     * @invariant The tree view of this list equals trieExpl.
+     * @invariants The tree view of this list equals trieExpl.
      * @see #trieExpl
      */
     private List			   trieOpt;
 
     /**
      * Explicit binary decision trie containing huffman code.
-     * @invariant This tree equals the tree view of trieOpt.
+     * @invariants This tree equals the tree view of trieOpt.
      * @see #trieOpt
      */
     private ListTree		   trieExpl;
@@ -118,8 +118,8 @@ public class Huffman implements GreedyProblem {
 
     /**
      * Extends the choices with a new_choice if that is feasible, otherwise nothing is changed.
-     * @pre choices is a valid partial solution, new_choice has maximum local weight.
-     * @post RES new solution value that includes new_choice if feasible.
+     * @preconditions choices is a valid partial solution, new_choice has maximum local weight.
+     * @postconditions RES new solution value that includes new_choice if feasible.
      */
     public List nextPartialSolution(List choices, Object new_choice) {
 
@@ -252,7 +252,7 @@ public class Huffman implements GreedyProblem {
 
     	/**
     	 * @param c must be a new and empty BitSet. Will contain the return value afterwards.
-    	 * @pre c must be a new and empty BitSet to get the return value
+    	 * @preconditions c must be a new and empty BitSet to get the return value
     	 */
     	private int encode(char b, BitSet c) {
 	    if (trieExpl == null)

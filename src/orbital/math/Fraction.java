@@ -102,14 +102,14 @@ public interface Fraction/*<M extends Arithmetic,S extends M>*/ extends Arithmet
     Fraction/*<M,S>*/ multiply(Fraction/*<M,S>*/ bt);
     /**
      * Divides two fractions returning a third as a result.
-     * @pre b&isin;S &or; b invertible anyway
+     * @preconditions b&isin;S &or; b invertible anyway
      * @return a&#8260;s &#8725; b&#8260;t := (a&sdot;t)&#8260;(s&sdot;b).
      * @throws ArithmeticException if b&notin;S and b is not invertible.
      */
     Fraction/*<M,S>*/ divide(Fraction/*<M,S>*/ bt);
     /**
      * {@inheritDoc}
-     * @post RES instanceof Fraction<M,S>
+     * @postconditions RES instanceof Fraction<M,S>
      * @todo when covariant return-types change return-type to Fraction<M,S>.
      */
     Arithmetic scale(Arithmetic alpha);

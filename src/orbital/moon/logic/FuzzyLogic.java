@@ -374,7 +374,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      * @author  Andr&eacute; Platzer
      * @see <a href="{@docRoot}/Patterns/Design/enum.html">typesafe enum pattern</a>
      * @internal typesafe enumeration pattern class to specify fuzzy logic operators
-     * @invariant a.equals(b) &hArr; a==b
+     * @invariants a.equals(b) &hArr; a==b
      * @todo improve name
      */
     public static abstract class OperatorSet implements Serializable, Comparable {
@@ -408,7 +408,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 
 	/**
 	 * Order imposed by ordinals according to the order of creation.
-	 * @post consistent with equals
+	 * @postconditions consistent with equals
 	 */
 	public int compareTo(Object o) {
 	    return ordinal - ((OperatorSet) o).ordinal;
@@ -416,7 +416,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 
 	/**
 	 * Maintains the guarantee that all equal objects of the enumerated type are also identical.
-	 * @post a.equals(b) &hArr; if a==b.
+	 * @postconditions a.equals(b) &hArr; if a==b.
 	 */
 	public final boolean equals(Object that) {
 	    return super.equals(that);
@@ -440,7 +440,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 
 	/**
 	 * Defines the not operator to use in the fuzzy logic.
-	 * @post RES==OLD(RES)
+	 * @postconditions RES==OLD(RES)
 	 */
 	abstract Function not();
 
@@ -563,7 +563,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      * <div class="Formula">a &#8911; b = a&sdot;b / <big>(</big>&gamma;+(1-&gamma;)(a+b-a&sdot;b)<big>)</big></div>
      * <div class="Formula">a &#8910; b = <big>(</big>a+b-(2-&gamma;)a&sdot;b<big>)</big> / <big>(</big>1-(1-&gamma;)a&sdot;b<big>)</big></div>
      * @param gamma the parameter &gamma;.
-     * @pre gamma&ge;0
+     * @preconditions gamma&ge;0
      */
     public static OperatorSet HAMACHER(final double gamma) {
 	if (!(gamma >= 0))
@@ -647,7 +647,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      * <div class="Formula">a &#8911; b = 1 - min<big>{</big>1,<big>(</big>(1-a)<sup>p</sup>+(1-b)<sup>p</sup>)<big>)</big><sup>1/p</sup><big>}</big></div>
      * <div class="Formula">a &#8910; b = min<big>{</big>1,<big>(</big>a<sup>p</sup>+b<sup>p</sup>)<big>)</big><sup>1/p</sup><big>}</big></div>
      * For p&rarr;&infin; these operators approximate those of {@link #GOEDEL}.
-     * @pre p&gt;0
+     * @preconditions p&gt;0
      */
     public static OperatorSet YAGER(final double p) {
 	if (!(p > 0))

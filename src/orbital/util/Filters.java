@@ -103,7 +103,7 @@ public class Filters {
      * Filter for the first number percent elements.
      * @param percent true to filter for the first number percent elements.
      *  false to filter for the first number elements {@link #top(int)}.
-     * @pre number &isin; [0,100]
+     * @preconditions number &isin; [0,100]
      */
     public static Function/*<Collection, Collection>*/ top(final double number, final boolean percent) {
 	if (!percent)

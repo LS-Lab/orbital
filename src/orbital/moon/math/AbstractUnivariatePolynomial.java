@@ -37,7 +37,7 @@ abstract class AbstractUnivariatePolynomial/*<R implements Arithmetic>*/ extends
 	
     /**
      * The 0&isin;R of the underlying ring of coefficients.
-     * @invariant subclasses must set this value to get(0).zero()
+     * @invariants subclasses must set this value to get(0).zero()
      */
     transient Arithmetic/*>R<*/  R_ZERO;
     public AbstractUnivariatePolynomial() {
@@ -55,7 +55,7 @@ abstract class AbstractUnivariatePolynomial/*<R implements Arithmetic>*/ extends
     /**
      * Sets a value for the coefficient specified by index.
      * Convenience method for {@link #set(Arithmetic,Arithmetic)}.
-     * @pre i&isin;<b>N</b>
+     * @preconditions i&isin;<b>N</b>
      * @throws UnsupportedOperationException if this polynomial is constant and does not allow modifications.
      */
     protected abstract void set(int i, Arithmetic vi);
@@ -68,7 +68,7 @@ abstract class AbstractUnivariatePolynomial/*<R implements Arithmetic>*/ extends
      * @param dim the dimension desired for the vector.
      * @return a vector of the same type as this, dimension as specified
      * The elements need not be initialized since they will soon be by the calling method.
-     * @post RES != RES
+     * @postconditions RES != RES
      * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      * @see #clone()
      */
@@ -377,7 +377,7 @@ abstract class AbstractUnivariatePolynomial/*<R implements Arithmetic>*/ extends
     }
     /**
      * Split a polynomial at the index s in two pieces.
-     * @post p == RES[1]*X<sup>s</sup> + RES[0] &and; RES[0].degreeValue()&lt;division
+     * @postconditions p == RES[1]*X<sup>s</sup> + RES[0] &and; RES[0].degreeValue()&lt;division
      */
     private /*static*/ final UnivariatePolynomial/*<R>*/[] split(UnivariatePolynomial/*<R>*/ p, int s) {
 	UnivariatePolynomial/*<R>*/ split[] = new AbstractUnivariatePolynomial/*<R>*/[2];

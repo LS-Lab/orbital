@@ -107,7 +107,7 @@ public class SymbolBase implements Symbol, Serializable {
      *  This includes precedence and associativity information, as well.
      *  May be <code>null</code> for symbols with arity 0,
      *  which will be converted to the {@link Notation.NotationSpecification#Notation.NotationSpecification(int) default notation specification}, then.
-     * @post &not;isVariable()
+     * @postconditions &not;isVariable()
      */
     public SymbolBase(String signifier, Type type, NotationSpecification notation) {
         this(signifier, type, notation, false);
@@ -118,7 +118,7 @@ public class SymbolBase implements Symbol, Serializable {
      * The notation is chosen to be the {@link Notation.NotationSpecification#Notation.NotationSpecification(int) default notation specification}.
      * @param signifier the string representation of this symbol.
      * @param type the type specification of this symbol.
-     * @post &not;isVariable()
+     * @postconditions &not;isVariable()
      */
     public SymbolBase(String signifier, Type type) {
         this(signifier, type, null);
@@ -143,7 +143,7 @@ public class SymbolBase implements Symbol, Serializable {
      * <p>
      * This implementation compares for notation (precedence) in favor of type (lexicographical) in favor of symbol name.
      * </p>
-     * @post only <em>semi</em>-consistent with equals (since Notation is)
+     * @postconditions only <em>semi</em>-consistent with equals (since Notation is)
      */
     public int compareTo(Object o) {
 	Symbol b = (Symbol) o;

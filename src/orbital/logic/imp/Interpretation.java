@@ -205,7 +205,7 @@ import orbital.logic.functor.Functor;
  * </p>
  *
  * @structure extends java.util.Map<Symbol,Object>
- * @invariant (&Sigma; == null &or; keySet() &sube; &Sigma;)
+ * @invariants (&Sigma; == null &or; keySet() &sube; &Sigma;)
  *  		&and; &forall;(s,v)&isin;this s.getType().apply(v)
  * @version 1.0, 2001/01/12
  * @author  Andr&eacute; Platzer
@@ -238,7 +238,7 @@ public interface Interpretation extends Map/*<Symbol, Object>*/ {
 
     /**
      * Set the signature interpreted.
-     * @pre sigma == null || keySet() &sube; sigma
+     * @preconditions sigma == null || keySet() &sube; sigma
      * @throws IllegalArgumentException if sigma does not contain a symbol which is interpreted in the current assocation map.
      *  This is not checked if sigma is <code>null</code>.
      */
@@ -253,21 +253,21 @@ public interface Interpretation extends Map/*<Symbol, Object>*/ {
      * Overwrite along with other map operations like {@link java.util.Set#contains(Object)} to implement
      * a different source for symbol associations.
      * </p>
-     * @post symbol.getType().apply(RES)
+     * @postconditions symbol.getType().apply(RES)
      * @throws java.util.NoSuchElementException if the symbol is not in the current signature &Sigma;.
      */
     Object get(Object/*>Symbol<*/ symbol);
 
     /**
      * Set the object value associated with the given symbol in this interpretation.
-     * @pre symbol.getType().apply(value)
+     * @preconditions symbol.getType().apply(value)
      * @throws java.util.NoSuchElementException if the symbol is not in the current signature &Sigma;.
      */
     Object put(Object/*>Symbol<*/ symbol, Object value);
 
     /**
      * Copies all of the associations from the specified map to this interpretation.
-     * @pre (&Sigma; == null &or; keySet() &sube; &Sigma;) &and; &forall;(s,v)&isin;associations {@pre #put(Symbol, Object) put(s,v)}
+     * @preconditions (&Sigma; == null &or; keySet() &sube; &Sigma;) &and; &forall;(s,v)&isin;associations {@preconditions #put(Symbol, Object) put(s,v)}
      * @throws IllegalArgumentException if associations does contain a symbol which is not contained in the signature.
      *  This is not checked if &Sigma; is <code>null</code>.
      * @throws NullPointerException if associations is <code>null</code>.
@@ -289,7 +289,7 @@ public interface Interpretation extends Map/*<Symbol, Object>*/ {
      *  (If a symbol is contained in both interpretations, the value of i2 will precede over
      *  the value of this.)
      * @return i &cup; i2.
-     * @post RES.getClass() == getClass() && this.equals(OLD)
+     * @postconditions RES.getClass() == getClass() && this.equals(OLD)
      */
     Interpretation union(Interpretation i2);
 

@@ -1210,7 +1210,7 @@ public final class Functions {
      * @param cond the condition predicates c<sub>i</sub>.
      * @param value the functions of whom the first one is applied whose associated predicate
      *  yields true.
-     * @pre cond.length == value.length
+     * @preconditions cond.length == value.length
      * @throws IllegalArgumentException if no condition predicate matches for an argument x.
      * @see #step
      */

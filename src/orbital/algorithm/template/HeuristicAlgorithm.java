@@ -49,7 +49,7 @@ public interface HeuristicAlgorithm extends EvaluativeAlgorithm {
      * </p>
      * @param heuristic the heuristic cost function h:S&rarr;<b>R</b> estimating h<sup>*</sup>.
      *  h will be embedded in the evaluation function {@link #getEvaluation() f}.
-     * @pre heuristic is functional, i.e. x.equals(y) &rArr; heuristic.apply(x).equals(heuristic.apply(y))
+     * @preconditions heuristic is functional, i.e. x.equals(y) &rArr; heuristic.apply(x).equals(heuristic.apply(y))
      * @see "Pearl, J. Heuristics: Intelligent Search Strategies for Computer Problem Solving. Addison-Wesley, Reading, Massachusetts. 1984."
      */
     void setHeuristic(Function heuristic);

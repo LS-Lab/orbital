@@ -26,7 +26,7 @@ import java.util.Collections;
 /**
  * A basic interpretation implementation.
  * 
- * @invariant sub classes support nullary constructor (for virtual new instance).
+ * @invariants sub classes support nullary constructor (for virtual new instance).
  * @version 1.0, 2001/06/12
  * @author  Andr&eacute; Platzer
  * @see Logic#satisfy
@@ -112,7 +112,7 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
 
     /**
      * Set the signature interpreted.
-     * @pre sigma == null || map == null || map.keySet() &sube; sigma
+     * @preconditions sigma == null || map == null || map.keySet() &sube; sigma
      * @throws IllegalArgumentException if sigma does not contain a symbol which is interpreted in the current assocation map.
      *  This is not checked if sigma is <code>null</code>.
      */
@@ -201,7 +201,7 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
 
     /**
      * Validate symbol as an element in the signature.
-     * @pre symbol &isin; sigma
+     * @preconditions symbol &isin; sigma
      * @throws NoSuchElementException if the symbol is not in the current signature sigma.
      */
     private final void validate(Object symbol) {

@@ -410,7 +410,7 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      * &forall; is not (compositional or) truth-functional.
      * </p>
      * @param x is a symbol <var>x</var> for all elements of the world.
-     * @pre <var>x</var>.isVariable()
+     * @preconditions <var>x</var>.isVariable()
      * @throws UnsupportedOperationException if this quantifier is not supported by the representation.
      */
     Formula forall(Symbol x);
@@ -424,7 +424,7 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      * &forall; is not (compositional or) truth-functional.
      * </p>
      * @param x is a symbol <var>x</var> for an element of the world.
-     * @pre <var>x</var>.isVariable()
+     * @preconditions <var>x</var>.isVariable()
      * @throws UnsupportedOperationException if this quantifier is not supported by the representation.
      */
     Formula exists(Symbol x);

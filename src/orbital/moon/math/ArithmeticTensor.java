@@ -46,7 +46,7 @@ class ArithmeticTensor/*<R implements Arithmetic>*/ extends AbstractTensor/*<R>*
     /**
      * creates a new Tensor backed by a multi-dimensional array of arithmetic objects.
      * The rows are first index, the columns second index, etc.
-     * @pre values is rectangular, i.e. values[i<sub>1</sub>]...[i<sub>k-1</sub>][i<sub>k</sub>].length==values[i<sub>1</sub>]...[i<sub>k-1</sub>][i<sub>k</sub>-1].length etc.
+     * @preconditions values is rectangular, i.e. values[i<sub>1</sub>]...[i<sub>k-1</sub>][i<sub>k</sub>].length==values[i<sub>1</sub>]...[i<sub>k-1</sub>][i<sub>k</sub>-1].length etc.
      */
     public ArithmeticTensor(Object values[]) {
 	this((Object)values);
@@ -55,7 +55,7 @@ class ArithmeticTensor/*<R implements Arithmetic>*/ extends AbstractTensor/*<R>*
      * creates a new Tensor backed by a multi-dimensional array of arithmetic objects.
      * Also accepts primitive type arrays.
      * The rows are first index, the columns second index, etc.
-     * @pre values is rectangular, i.e. values[i<sub>1</sub>]...[i<sub>k-1</sub>][i<sub>k</sub>].length==values[i<sub>1</sub>]...[i<sub>k-1</sub>][i<sub>k</sub>-1].length etc.
+     * @preconditions values is rectangular, i.e. values[i<sub>1</sub>]...[i<sub>k-1</sub>][i<sub>k</sub>].length==values[i<sub>1</sub>]...[i<sub>k-1</sub>][i<sub>k</sub>-1].length etc.
      */
     public ArithmeticTensor(Object values) {
 	if (values == null)

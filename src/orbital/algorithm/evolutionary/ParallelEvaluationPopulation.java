@@ -28,7 +28,7 @@ import java.util.logging.Level;
  * 
  * @version 0.7, 2001/03/30
  * @author  Andr&eacute; Platzer
- * @invariant evaluators != null is final-like (either due to constructor call, or after a call to readObject).
+ * @invariants evaluators != null is final-like (either due to constructor call, or after a call to readObject).
  * @todo test
  * @see #ParallelEvaluationPopulation(Population)
  */

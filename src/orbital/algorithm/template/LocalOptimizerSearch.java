@@ -92,7 +92,7 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
      * it is a solution, or not.
      * This behaviour is especially useful if the isSolution test is omitted by categorically
      * returning <span class="keyword">true</span> there.
-     * @post &not;super
+     * @postconditions &not;super
      */
     protected Object/*>S<*/ search(Iterator/*<S>*/ nodes) {
 	Object/*>S<*/ node = null;
@@ -114,7 +114,7 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
      * @author  Andr&eacute; Platzer
      * @see <a href="{@docRoot}/Patterns/Design/enum.html">typesafe enum pattern</a>
      * @internal typesafe enumeration pattern class currently specifies whole OptionIterator
-     * @invariant a.equals(b) &hArr; a==b
+     * @invariants a.equals(b) &hArr; a==b
      * @todo turn into a Decorator of GeneralSearchProblem instead
      * @todo check naming since this class does not fully determine local selection, but only local restriction (so without fixing the acception rule which is different in diverse subclasses).
      * @see LocalOptimizerSearch#BEST_LOCAL_SELECTION
@@ -150,7 +150,7 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
 	}
 	/**
 	 * Maintains the guarantee that all equal objects of the enumerated type are also identical.
-	 * @post a.equals(b) &hArr; if a==b.
+	 * @postconditions a.equals(b) &hArr; if a==b.
 	 */
 	public final boolean equals(Object that) {
 	    return super.equals(that);
@@ -249,7 +249,7 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
     	private final GeneralSearchProblem/*<A,S>*/ problem;
     	/**
     	 * Caching the accumulated cost function of problem.
-	 * @invariant g == problem.getAccumulatedCostFunction()
+	 * @invariants g == problem.getAccumulatedCostFunction()
 	 * @see #problem
     	 * @serial
 	 * @todo transientize?
@@ -278,12 +278,12 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
 	    //@todo super(problem); extend GeneralSearch.OptionIterator and use its select()?
 	    this.state = getProblem().getInitialState();
 	    this.accumulatedCost = (Real/*__*/) g.apply(state);
-	    assert accumulatedCost.doubleValue() == 0 : "@post getInitialState(): accumulatedCost==0";
+	    assert accumulatedCost.doubleValue() == 0 : "@postconditions getInitialState(): accumulatedCost==0";
 	}
 
     	/**
     	 * Get the current problem.
-    	 * @pre true
+    	 * @preconditions true
     	 * @return the problem specified in the last call to solve.
     	 */
     	protected final GeneralSearchProblem/*<A,S>*/ getProblem() {

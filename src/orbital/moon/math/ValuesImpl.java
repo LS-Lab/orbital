@@ -449,7 +449,7 @@ public class ValuesImpl extends AbstractValues {
      * But it will always be true that both elements returned have exactly the same type:
      * the common superclass of the classes of a and b.
      * @see #getEqualizer()
-     * @post RES[0].getClass() == RES[1].getClass() == a.getClass()&cup;b.getClass()
+     * @postconditions RES[0].getClass() == RES[1].getClass() == a.getClass()&cup;b.getClass()
      * @todo privatize
      * @todo optimize hotspot
      */
@@ -523,7 +523,7 @@ public class ValuesImpl extends AbstractValues {
 
     /**
      * Initialize static constant array when class is loaded.
-     * @invariant 0 < MAX_CONSTANT < Integer.MAX_VALUE
+     * @invariants 0 < MAX_CONSTANT < Integer.MAX_VALUE
      * @xxx note that we should think about the order of static initialization.
      */
     private static final int	 MAX_CONSTANT = 10;

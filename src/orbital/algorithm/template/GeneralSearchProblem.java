@@ -88,7 +88,7 @@ public interface GeneralSearchProblem/*<A,S>*/ extends MarkovDecisionProblem/*<A
      * invocations, since some iterative search algorithms may rely on this feature.
      * </p>
      * @return s<sub>0</sub> &isin; S.
-     * @post getAccumulatedCostFunction().apply(RES) = 0 &and; (RES==OLD(RES) or problem changed)
+     * @postconditions getAccumulatedCostFunction().apply(RES) = 0 &and; (RES==OLD(RES) or problem changed)
      */
     Object/*>S<*/ getInitialState();
 
@@ -118,7 +118,7 @@ public interface GeneralSearchProblem/*<A,S>*/ extends MarkovDecisionProblem/*<A
      * @return the accumulated cost function g:S&rarr;<b>R</b>, mapping states s to their
      *  accumulated cost g(s).
      *  That function must map S to accumulated cost values g(s) represented as {@link Real}s.
-     * @post RES == OLD(RES)
+     * @postconditions RES == OLD(RES)
      * @attribute secret storage of accumulated cost values of states
      * @internal alternative would be to return a ModifiableFunction and let SearchAlgorithms use it to accumulate cost according to g(newState) := g(lastState)+transition(a,lastState,newState).getCost(); Could also be used to associate other search information with states.
      * @internal alternative would be to restrict S to have a method S.getCost() by requiring S to implement a specific interface. That's neither flexible nor beautiful.
@@ -162,8 +162,8 @@ public interface GeneralSearchProblem/*<A,S>*/ extends MarkovDecisionProblem/*<A
      * depends on the specific resulting states anyway.
      * </p>
      * @param n the option n=&lang;s,a,c&rang; that specifies the state s&isin;S chosen to expand.
-     * @pre s&isin;S &and; a&isin;A(s)
-     * @post &lang;s',a',c'&rang; &isin; RES &hArr; &exist;a'&isin;A(s) (s' = t(s,a') &and; c' = c+c(s,a'))
+     * @preconditions s&isin;S &and; a&isin;A(s)
+     * @postconditions &lang;s',a',c'&rang; &isin; RES &hArr; &exist;a'&isin;A(s) (s' = t(s,a') &and; c' = c+c(s,a'))
      * @return {&lang;t(s,a'),a',c+c(s,a')&rang; &isin; S&times;A(s)&times;<b>R</b> &brvbar; a'&isin;A(s)}.
      *  An iterator over the {@link GeneralSearchProblem.Option options} of states that can be reached from s by applicable actions.
      *  The options returned should have set the action a' that lead there, and the real
@@ -213,7 +213,7 @@ public interface GeneralSearchProblem/*<A,S>*/ extends MarkovDecisionProblem/*<A
     /**
      * {@inheritDoc}
      * Deterministic case (will only return one single transition per action).
-     * @post super &and; &not;(RES.hasNext() after RES.next())
+     * @postconditions super &and; &not;(RES.hasNext() after RES.next())
      */
     Iterator/*<S>*/ states(Object/*>A<*/ action, Object/*>S<*/ state);
 
@@ -224,7 +224,7 @@ public interface GeneralSearchProblem/*<A,S>*/ extends MarkovDecisionProblem/*<A
      * So the only true information obtained is the {@link GeneralSearchProblem.Transition#getCost() immediate action cost}
      * of the transition,
      * plus any (optional) problem-specific additional information.
-     * @post RES.getProbability()&isin;{0,1} &and; RES instanceof {@link GeneralSearchProblem.Transition}
+     * @postconditions RES.getProbability()&isin;{0,1} &and; RES instanceof {@link GeneralSearchProblem.Transition}
      * @see orbital.math.functional.Functions#diracDelta
      * @internal covariant return-types or generics would allow returning M=Transition.
      */
@@ -236,7 +236,7 @@ public interface GeneralSearchProblem/*<A,S>*/ extends MarkovDecisionProblem/*<A
      * An option node is a tuple &lang;a,c&rang;&isin;A&times;<b>R</b>
      * of an action performed to reach a state s&#697; from a state s, and the immediate action cost.</p>
      * @stereotype Structure
-     * @invariant getAction()&isin;A(s)
+     * @invariants getAction()&isin;A(s)
      */
     public static class Transition implements MarkovDecisionProblem.Transition, Serializable {
 	private static final long serialVersionUID = 257664629450534598L;

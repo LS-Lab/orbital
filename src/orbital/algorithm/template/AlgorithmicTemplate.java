@@ -56,8 +56,8 @@ public interface AlgorithmicTemplate/*<Problem extends AlgorithmicProblem, Solut
      * Measure for the asymptotic time complexity of the central solution operation in O-notation.
      * @return the function f for which the solve() method of this algorithm runs in O<big>(</big>f(n)<big>)</big>
      *  assuming the algorithmic problem hook to run in O(1).
-     * @pre true
-     * @post RES == OLD(RES) && OLD(this) == this
+     * @preconditions true
+     * @postconditions RES == OLD(RES) && OLD(this) == this
      * @see #solve(AlgorithmicProblem)
      */
     Function complexity();
@@ -66,8 +66,8 @@ public interface AlgorithmicTemplate/*<Problem extends AlgorithmicProblem, Solut
      * Measure for the asymptotic space complexity of the central solution operation in O-notation.
      * @return the function f for which the solve() method of this algorithm consumes memory with an amount in O<big>(</big>f(n)<big>)</big>
      *  assuming the algorithmic problem hook uses space in O(1).
-     * @pre true
-     * @post RES == OLD(RES) && OLD(this) == this
+     * @preconditions true
+     * @postconditions RES == OLD(RES) && OLD(this) == this
      * @see #solve(AlgorithmicProblem)
      */
     Function spaceComplexity();

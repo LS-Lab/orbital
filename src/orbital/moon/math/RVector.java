@@ -183,7 +183,7 @@ class RVector extends AbstractVector implements Cloneable {
     } 
 
     /**
-     * @pre dimension() == 3 && dimension() == b.dimension()
+     * @preconditions dimension() == 3 && dimension() == b.dimension()
      */
     public Vector cross(Vector b) {
 	if (!(b instanceof RVector))

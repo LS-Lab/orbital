@@ -77,7 +77,7 @@ import java.util.NoSuchElementException;
  * whilst arithmetic methods will leave a vector unchanged but return a modified version.
  * Refer to the documentation of the individual methods for details.</p>
  * 
- * @invariant super &and; rank()==1
+ * @invariants super &and; rank()==1
  * @structure extends Tensor
  * @version 1.0, 2000/08/08
  * @author  Andr&eacute; Platzer
@@ -117,7 +117,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     /**
      * Returns an iterator over all components.
      * @return an iterator that iterates over v<sub>0</sub>,&#8230;,v<sub>n-1</sub>.
-     * @post RES.supports(#nextIndex()} &and; RES.supports(#previousIndex()}
+     * @postconditions RES.supports(#nextIndex()} &and; RES.supports(#previousIndex()}
      *  &and; RES.supports(#add(Object)} &and; RES.supports(#remove()}
      */
     ListIterator/*_<R>_*/ iterator();
@@ -128,7 +128,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * Get a sub-vector view ranging (i1:i2) inclusive.
      * <p>
      * The returned vector is a structurally unmodifiable <a href="Tensor.html#view">view</a>.</p>
-     * @pre i1<=i2 && valid(i1) && valid(i2)
+     * @preconditions i1<=i2 && valid(i1) && valid(i2)
      * @return a matrix view of the specified part of this matrix.
      */
     Vector/*<R>*/ subVector(int i1, int i2);
@@ -140,7 +140,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * <p>This method implements p-norms, where<br>
      * <span class="Formula">||<span class="vector">x</span>||<sub>p</sub> = (|x<sub>1</sub>|<sup>p</sup> + &#8230; + |x<sub>n</sub>|<sup>p</sup>)<sup>1/p</sup></span>.<br>
      * <span class="Formula">||<span class="vector">x</span>||<sub>&infin;</sub> = max {|x<sub>1</sub>|,&#8230;,|x<sub>n</sub>|}</span>.</p>
-     * @pre p>=1
+     * @preconditions p>=1
      */
     public Real norm(double p);
 
@@ -148,8 +148,8 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
 
     /**
      * Adds two vectors returning a vector.
-     * @pre dimension() == b.dimension()
-     * @post RES.dimension() == dimension()
+     * @preconditions dimension() == b.dimension()
+     * @postconditions RES.dimension() == dimension()
      *  	&& RES.get(i) == get(i) + b.get(i)
      * @attribute associative
      * @attribute neutral (0)
@@ -160,8 +160,8 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
 
     /**
      * Subtracts two vectors returning a vector.
-     * @pre dimension() == b.dimension()
-     * @post RES.dimension() == dimension()
+     * @preconditions dimension() == b.dimension()
+     * @postconditions RES.dimension() == dimension()
      *  	&& RES.get(i) == get(i) - b.get(i)
      * @attribute associative
      */
@@ -213,8 +213,8 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * (<span class="vector">x</span>,<span class="vector">y</span>) &#8614; &lang;<span class="vector">x</span>,<span class="vector">y</span>&rang; = <span class="vector">x</span><sup>T</sup>·<span class="vector">y</span> = <big>&sum;</big><span class="doubleIndex"><sub>i=0</sub><sup>n-1</sup></span> x<sub>i</sub>&sdot;y<sub>i</sub>.
      * It belongs to the euclidian 2-norm and is the inner product of vectors.
      * </p>
-     * @pre dimension() == b.dimension()
-     * @post RES.dimension() == dimension()
+     * @preconditions dimension() == b.dimension()
+     * @postconditions RES.dimension() == dimension()
      *  	&& RES == &lang;this, b&rang;
      * @see Normed
      */
@@ -222,8 +222,8 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
 
     /**
      * Multiplies a vector with a scalar returning a vector.
-     * @pre true
-     * @post RES.dimension().equals(dimension())
+     * @preconditions true
+     * @postconditions RES.dimension().equals(dimension())
      *  	&& RES.get(i) == s&sdot;get(i)
      * @attribute associative
      * @attribute neutral
@@ -243,7 +243,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * the matrix <code class="matrix">A</code> is sized <code>n&times;m</code>,
      * the resulting row-vector <code><span class="vector">v</span>&#8729;<span class="matrix">A</span></code> is sized <code>m</code>.
      * This is an inner product.
-     * @pre dimension() == <span class="matrix">B</span>.dimension().height
+     * @preconditions dimension() == <span class="matrix">B</span>.dimension().height
      */
     Vector/*<R>*/ multiply(Matrix/*<R>*/ B);
 
@@ -252,11 +252,11 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * &times;:<b><b>R</b></b><sup>3</sup>&times;<b><b>R</b></b><sup>3</sup>&rarr;<b><b>R</b></b><sup>3</sup>; (<span class="vector">x</span>,<span class="vector">y</span>) &#8614; <span class="vector">x</span>&times;<span class="vector">y</span> = (x<sub>1</sub>y<sub>2</sub>-x<sub>2</sub>y<sub>1</sub>, x<sub>2</sub>y<sub>0</sub>-x<sub>0</sub>y<sub>2</sub>, x<sub>0</sub>y<sub>1</sub>-x<sub>1</sub>y<sub>0</sub>)
      * <p>
      * cross is antisymmetric: <span class="vector">y</span>&times;<span class="vector">x</span> = -(<span class="vector">x</span>&times;<span class="vector">y</span>)</p>
-     * @pre dimension() == 3 && dimension() == b.dimension()
-     * @post RES.multiply(this) == 0 && RES.multiply(b) == 0.
+     * @preconditions dimension() == 3 && dimension() == b.dimension()
+     * @postconditions RES.multiply(this) == 0 && RES.multiply(b) == 0.
      * @return the cross-product vector which will be orthogonal on this and b.
      *  <span class="vector">x</span>&times;<span class="vector">y</span> &perp; <span class="vector">x</span> &and; <span class="vector">x</span>&times;<span class="vector">y</span> &perp; <span class="vector">y</span>.
-     * @pre (dimension() == 3 || dimension() == 2) && dimension() == b.dimension()
+     * @preconditions (dimension() == 3 || dimension() == 2) && dimension() == b.dimension()
      * @attribute antisymmetric
      */
     Vector/*<R>*/ cross(Vector/*<R>*/ b);
@@ -275,18 +275,18 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
 
     /**
      * Insert a value into this vector at the specified index.
-     * @pre 0<=index && index<=dimension()
+     * @preconditions 0<=index && index<=dimension()
      * @return this.
-     * @post RES == this
+     * @postconditions RES == this
      *  	&& RES.dimension() == OLD(dimension()) + 1
      */
     Vector/*<R>*/ insert(int index, Arithmetic/*>R<*/ v);
  
     /**
      * Insert all components of a vector into this vector at the specified index.
-     * @pre 0<=index && index<=dimension()
+     * @preconditions 0<=index && index<=dimension()
      * @return this.
-     * @post RES == this
+     * @postconditions RES == this
      *  	&& RES.dimension() == OLD(dimension()) + <span class="vector">v</span>.dimension()
      */
     Vector/*<R>*/ insertAll(int index, Vector/*<R>*/ v);
@@ -294,7 +294,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     /**
      * Append a value to this vector.
      * @return this.
-     * @post RES == this
+     * @postconditions RES == this
      *  	&& RES.dimension() == OLD(dimension()) + 1
      */
     Vector/*<R>*/ insert(Arithmetic/*>R<*/ v);
@@ -302,7 +302,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     /**
      * Append all components of a vector to this vector.
      * @return this.
-     * @post RES == this
+     * @postconditions RES == this
      *  	&& RES.dimension() == OLD(dimension()) + <span class="vector">v</span>.dimension()
      */
     Vector/*<R>*/ insertAll(Vector/*<R>*/ v);
@@ -310,14 +310,14 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     /**
      * Remove the component at an index from this vector.
      * @return this.
-     * @post RES == this
+     * @postconditions RES == this
      *  	&& RES.dimension() == OLD(dimension()) - 1
      */
     Vector/*<R>*/ remove(int index);
 
     /**
      * Returns an array containing all the elements in this vector.
-     * @post RES[i] == get(i) && RES != RES
+     * @postconditions RES[i] == get(i) && RES != RES
      * @see #set(Arithmetic[])
      * @see Object#clone()
      */

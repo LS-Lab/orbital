@@ -106,7 +106,7 @@ public class Substitutions {
      * specified for a single pattern. Those are not even endomorphisms anyway.
      * </p>
      * @param replacements the set of elementary replacements.
-     * @pre replacements[i] instanceof {@link Substitution.Matcher} &and; &forall;i&ne;j replacements[i].pattern()&ne;replacements[j].pattern()
+     * @preconditions replacements[i] instanceof {@link Substitution.Matcher} &and; &forall;i&ne;j replacements[i].pattern()&ne;replacements[j].pattern()
      * @return &sigma; = [replacements].
      * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      */
@@ -348,9 +348,9 @@ public class Substitutions {
      * @param x the variable from whose exact name to abstract the term f.
      *  This means that the resulting &lambda;-abstraction is a function in the variable x.
      * @param f the term from which to build a &lambda;-abstraction.
-     * @pre true (and usually x instanceof Variable &and; f instanceof Expression)
+     * @preconditions true (and usually x instanceof Variable &and; f instanceof Expression)
      * @return the &lambda;-abstraction &lambda;x.f
-     * @post RES.apply(a) = f[x->a]
+     * @postconditions RES.apply(a) = f[x->a]
      * @todo publizice somewhere once finished
      * @xxx solve the "problem with reverting from constant functions back to normal" perhaps by changing orbital.math.functional.Functionals#genericCompose and orbital.logic.functor.Functionals#genericCompose
      * @todo how do we "schlucken" those parts of substitutions running through our term structure that replace x, since we have bound x. How do we allow substitutions to pass through to the term t, at all?
@@ -375,9 +375,9 @@ public class Substitutions {
      * @param x the variable from whose exact name to abstract the term f.
      *  This means that the resulting &lambda;-abstraction is a function in the variable x.
      * @param f the term from which to build a &lambda;-abstraction.
-     * @pre true (and usually x instanceof Variable, f instanceof Expression)
+     * @preconditions true (and usually x instanceof Variable, f instanceof Expression)
      * @return the &lambda;-abstraction &lambda;x.f
-     * @post RES.apply(a) = f[x->a]
+     * @postconditions RES.apply(a) = f[x->a]
      * @see #lambda
      * @todo publizice somewhere once finished
      */
@@ -467,7 +467,7 @@ public class Substitutions {
      * @param T a collection of terms to try to unify.
      * @return mgU(T), the most-general unifier of T,
      *  or <code>null</code> if the terms in T are not unifiable.
-     * @post unifiable(T) &hArr; RES&ne;null &hArr; &forall;t1,t2&isin;T RES.apply(t1).equals(RES.apply(t2))
+     * @postconditions unifiable(T) &hArr; RES&ne;null &hArr; &forall;t1,t2&isin;T RES.apply(t1).equals(RES.apply(t2))
      * @internal implementation is Robinson-Unification
      * @todo reformat table to the form U(T) := {&mu; &brvbar; &mu; is unifier, i.e. |&mu;(T)| = 1}
      */

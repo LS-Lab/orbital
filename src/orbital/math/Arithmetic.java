@@ -117,8 +117,8 @@ public interface Arithmetic extends Normed {
     /**
      * Compares two arithmetic objects for tolerant equality.
      * @param tolerance specifies how much the arithmetic objects may differ to be treated as equal.
-     * @pre true
-     * @post RES &hArr; Metric.INDUCED.distance(this, o).compareTo(tolerance) < 0
+     * @preconditions true
+     * @postconditions RES &hArr; Metric.INDUCED.distance(this, o).compareTo(tolerance) < 0
      * @return Whether this &asymp; o. More precisely whether d(this,o) := |this-o| &lt; tolerance.
      * @attribute derived
      * @todo @xxx sure that we should already move this to Scalar, or even to Arithmetic?
@@ -139,7 +139,7 @@ public interface Arithmetic extends Normed {
      *  or "Arithmetic ZERO", "Arithmetic ONE", or functions "T zero()" and "T one()" with postcondition RES==OLD(RES)? What about matrices with different ZEROs?
      * @internal perhaps the best model would demand from a parametric type to have a field ZERO and a field ONE. This would even hold for the type Matrix<Rational,4,5>.ZERO etc. However this is neither possible with Java Generics, nor (as far as I know) with compile-time templates of C++.
      * @todo if this is a good thing, then use x.zero() etc throughout
-     * @post RES == OLD(RES) &and; this.getClass().isInstance(RES)
+     * @postconditions RES == OLD(RES) &and; this.getClass().isInstance(RES)
      */
     Arithmetic zero() throws UnsupportedOperationException;
     /**
@@ -151,7 +151,7 @@ public interface Arithmetic extends Normed {
      * (if it is a true ring with 1, or ...).
      * @throws UnsupportedOperationException if this algebraic structure does not have a 1.
      *  This should not happen for monoids of &sdot;.
-     * @post RES == OLD(RES) &and; this.getClass().isInstance(RES)
+     * @postconditions RES == OLD(RES) &and; this.getClass().isInstance(RES)
      */
     Arithmetic one() throws UnsupportedOperationException;
 

@@ -51,7 +51,7 @@ public class Moving extends Position {
      * Creates a clone of the object. A new instance is allocated and a
      * copied clone of the current object is placed in the new object.
      * @return		a clone of this Object.
-     * @post RES.getClass() == getClass()
+     * @postconditions RES.getClass() == getClass()
      * @throws	OutOfMemoryError If there is not enough memory.
      */
     public Object clone() {

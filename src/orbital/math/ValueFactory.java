@@ -50,7 +50,7 @@ public interface ValueFactory {
 
     /**
      * Returns a scalar whose value is equal to that of the specified primitive type.
-     * @post RES.intValue() == val
+     * @postconditions RES.intValue() == val
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      * @see java.math.BigInteger#valueOf(long)
      */
@@ -58,7 +58,7 @@ public interface ValueFactory {
     public abstract Integer valueOf(java.lang.Integer val);
     /**
      * Returns a scalar whose value is equal to that of the specified primitive type.
-     * @post RES.longValue() == val
+     * @postconditions RES.longValue() == val
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      * @see java.math.BigInteger#valueOf(long)
      */
@@ -79,7 +79,7 @@ public interface ValueFactory {
 
     /**
      * Returns a scalar whose value is equal to that of the specified primitive type.
-     * @post RES.doubleValue() == val
+     * @postconditions RES.doubleValue() == val
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      * @see java.math.BigInteger#valueOf(long)
      */
@@ -87,7 +87,7 @@ public interface ValueFactory {
     public abstract Real valueOf(java.lang.Double val);
     /**
      * Returns a scalar whose value is equal to that of the specified primitive type.
-     * @post RES.floatValue() == val
+     * @postconditions RES.floatValue() == val
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      * @see java.math.BigInteger#valueOf(long)
      */
@@ -165,7 +165,7 @@ public interface ValueFactory {
      * Creates a new complex from polar coordinates with r*<b>e</b><sup><b>i</b>&phi;</sup>.
      * @param r = |z| is the length.
      * @param phi = &phi; is the angle &ang; in radians.
-     * @pre r&ge;0
+     * @preconditions r&ge;0
      * @return r*<b>e</b><sup><b>i</b>&phi;</sup> = r * (cos &phi; + <b>i</b> sin &phi;).
      * @see #cartesian(Real, Real)
      */
@@ -193,7 +193,7 @@ public interface ValueFactory {
      * Creates a new instance of vector with the specified dimension.
      * @param dimensions the dimension of the vector.
      * @return a vector of the specified dimension, with undefined components.
-     * @post RES.dimension() == dimension()
+     * @postconditions RES.dimension() == dimension()
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      */
     public abstract /*<R implements Arithmetic>*/ Vector/*<R>*/ newInstance(int dim);
@@ -250,7 +250,7 @@ public interface ValueFactory {
      * Creates a new instance of matrix with the specified dimension.
      * @param dimension the dimension of the matrix.
      * @return a matrix of the specified dimensions, with undefined components.
-     * @post RES.dimension().equals(dimension)
+     * @postconditions RES.dimension().equals(dimension)
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      */
     public abstract /*<R implements Arithmetic>*/ Matrix/*<R>*/ newInstance(Dimension dimension);
@@ -264,12 +264,12 @@ public interface ValueFactory {
 
     /**
      * Gets the identity Matrix, with all elements set to 0, except the leading diagonal m<sub>i,i</sub> set to 1.
-     * @pre dim.width == dim.height
+     * @preconditions dim.width == dim.height
      */
     public abstract /*<R implements Arithmetic>*/ Matrix/*<R>*/ IDENTITY(Dimension dim);
     /**
      * Gets the identity Matrix, with all elements set to 0, except the leading diagonal m<sub>i,i</sub> set to 1.
-     * @pre width == height
+     * @preconditions width == height
      * @see orbital.math.functional.Functions#delta
      * @see #IDENTITY(Dimension)
      */
@@ -329,7 +329,7 @@ public interface ValueFactory {
      * </p>
      * @param values the element values of the tensor to create.
      *  The tensor may be backed by this exact array per reference.
-     * @pre values is a rectangular multi-dimensional array of {@link Arithmetic arithmetic objects}
+     * @preconditions values is a rectangular multi-dimensional array of {@link Arithmetic arithmetic objects}
      *  or of primitive types
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      */
@@ -343,7 +343,7 @@ public interface ValueFactory {
      * @param dimensions the dimensions n<sub>1</sub>&times;n<sub>2</sub>&times;&#8230;&times;n<sub>r</sub>
      *  of the tensor.
      * @return a tensor of the specified dimensions, with undefined components.
-     * @post Utilities.equalsAll(RES.dimensions(), dimensions)
+     * @postconditions Utilities.equalsAll(RES.dimensions(), dimensions)
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      */
     public abstract Tensor newInstance(int[] dimensions);
@@ -384,7 +384,7 @@ public interface ValueFactory {
      * </p>
      * @param coefficients a multi-dimensional array <var>a</var> containing the
      *  coefficients of the polynomial.
-     * @pre coefficients is a rectangular multi-dimensional array of {@link Arithmetic arithmetic objects}
+     * @preconditions coefficients is a rectangular multi-dimensional array of {@link Arithmetic arithmetic objects}
      *  or of primitive types
      * @return the polynomial <var>a</var><sub>0,...,0</sub> + <var>a</var><sub>1,0,...,0</sub>X<sub>1</sub> + <var>a</var><sub>1,1,0,....,0</sub>X<sub>1</sub>X<sub>2</sub> + ... + <var>a</var><sub>2,1,0,....,0</sub>X<sub>1</sub><sup>2</sup>X<sub>2</sub> + ... + <var>a</var><sub>d<sub>1</sub>,...,d<sub>n</sub></sub>X<sub>1</sub><sup>d<sub>1</sub></sup>...&X<sub>n</sub><sup>d<sub>n</sub></sup>.
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
@@ -551,8 +551,8 @@ public interface ValueFactory {
      * @param m the {@link AlgebraicAlgorithms#groebnerBasis(Set,Comparator) Groebner basis}
      *  modulo whose generated ideal (m) to form the quotients.
      * @param monomialOrder the monomial order applied for reducing polynomials.
-     * @pre m = AlgebraicAlgorithms.groebnerBasis(m,monomialOrder)
-     * @post RES = quotient(a, AlgebraicAlgorithms.reduce(m, monomialOrder))
+     * @preconditions m = AlgebraicAlgorithms.groebnerBasis(m,monomialOrder)
+     * @postconditions RES = quotient(a, AlgebraicAlgorithms.reduce(m, monomialOrder))
      */
     public abstract /*<R implements Arithmetic>*/ Quotient/*<Polynomial<R,S>>*/ quotient(Polynomial/*<R,S>*/ a, java.util.Set/*_<Polynomial<R,S>>_*/ m, java.util.Comparator/*_<S>_*/ monomialOrder);
 
@@ -683,7 +683,7 @@ public interface ValueFactory {
      * @return an instance of scalar that is most restrictive.
      * This means that an integer will be returned instead of a real whenever possible
      * and so on.
-     * @post RES.equals(val)
+     * @postconditions RES.equals(val)
      * @todo optimize by avoiding to create intermediate objects, f.ex. convert complex(2+i*0) -> real(2) -> rational(2) -> integer(2) also use OBDD
      */
     public abstract Scalar narrow(Scalar val);
@@ -719,8 +719,8 @@ public interface ValueFactory {
      * a real instead of a complex and so on.
      * But it will always be true that both elements returned have exactly the same
      * or a very compatible type.
-     * @pre 0<=args.length && args.length<=2 (currently)
-     * @post RES.length==args.length
+     * @preconditions 0<=args.length && args.length<=2 (currently)
+     * @postconditions RES.length==args.length
      *   && (RES[0].getClass() "compatible to" RES[1].getClass() || RES[0].getClass() == RES[1].getClass())
      * @see orbital.math.functional.Operations
      * @see #setEqualizer(orbital.logic.functor.Function)

@@ -58,8 +58,8 @@ public class IncrementalGeneticAlgorithm extends GeneticAlgorithm {
      * which makes sure that no Genome is removed immediately after insertion.</p>
      * @see #selectRemove()
      * @see Population#add(Object)
-     * @pre n.length <= population.size()
-     * @post n.length Genomes in population selected by selectRemove() are removed, and 
+     * @preconditions n.length <= population.size()
+     * @postconditions n.length Genomes in population selected by selectRemove() are removed, and 
      *  those in n are added instead
      */
     protected void replaceGenomes(Genome[] n) {

@@ -43,7 +43,7 @@ public interface AlgorithmicConfiguration/*<Problem extends AlgorithmicProblem, 
     /**
      * Gets the algorithm used for solving the problem.
      * @return the algorithm, with our additional parameters already adjusted.
-     * @post RES&ne;OLD(RES) &or; RES is stateless
+     * @postconditions RES&ne;OLD(RES) &or; RES is stateless
      */
     AlgorithmicTemplate getAlgorithm();
 
@@ -52,7 +52,7 @@ public interface AlgorithmicConfiguration/*<Problem extends AlgorithmicProblem, 
      * managed by this algorithmic configuration.
      * @return the solution to the problem {@link #getProblem()} by using the algorithm
      *  {@link #getAlgorithm()} after adjusting our additional parameters.
-     * @post usually RES = getAlgorithm().solve(getProblem())
+     * @postconditions usually RES = getAlgorithm().solve(getProblem())
      * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience method</a>
      * @todo remove and say our clients can do getAlgorithm().solve(getProblem()) himself?
      */

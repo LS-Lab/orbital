@@ -12,7 +12,7 @@ import orbital.math.Values;
 
 /**
  * Graphical range holder.
- * @invariant min.dimension() == max.dimension()
+ * @invariants min.dimension() == max.dimension()
  */
 public class Range {
     public Vector min;

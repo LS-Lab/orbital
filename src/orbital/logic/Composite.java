@@ -40,7 +40,7 @@ public interface Composite /*<Compositor,Component>*/ {
      *  Multi-dimensional component arrays and alike are permitted, as well.
      * @return a composite object of the same type as this,
      *  with compositor and component as specified.
-     * @post RES != RES &and; RES.getClass()==getClass() &and; RES.getCompositor()==f &and; RES.getComponent()==g
+     * @postconditions RES != RES &and; RES.getClass()==getClass() &and; RES.getCompositor()==f &and; RES.getComponent()==g
      * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      * @throws IllegalArgumentException if f is an illegal compositor
      *  or g is an illegal component for this kind of composite object.

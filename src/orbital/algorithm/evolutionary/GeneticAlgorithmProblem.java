@@ -53,8 +53,8 @@ public interface GeneticAlgorithmProblem extends AlgorithmicProblem {
 
     /**
      * Check whether the given population of choices is a valid solution to the problem.
-     * @pre partialSolutions resulted in repeated calls of solve after a single call to getInitialPartialSolutions.
-     * @post RES indicates whether we found a solution to the problem
+     * @preconditions partialSolutions resulted in repeated calls of solve after a single call to getInitialPartialSolutions.
+     * @postconditions RES indicates whether we found a solution to the problem
      * @return whether we found a solution to the problem.
      *  Often implemented with a convergence criterion.
      */

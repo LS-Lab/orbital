@@ -38,7 +38,7 @@ abstract class AbstractMultivariatePolynomial/*<R implements Arithmetic>*/ exten
     
     /**
      * The index (0,...,0) of the constant term.
-     * @invariant subclasses must set this value to {0,...,0}&isin;<b>N</b><sup>indexSet()</sup>
+     * @invariants subclasses must set this value to {0,...,0}&isin;<b>N</b><sup>indexSet()</sup>
      */
     transient int[] CONSTANT_TERM;
   
@@ -80,7 +80,7 @@ abstract class AbstractMultivariatePolynomial/*<R implements Arithmetic>*/ exten
     protected abstract Arithmetic get(int[] i);
     /**
      * Sets a value for the coefficient specified by index.
-     * @pre i&isin;<b>N</b><sup>n</sup>
+     * @preconditions i&isin;<b>N</b><sup>n</sup>
      * @throws UnsupportedOperationException if this polynomial is constant and does not allow modifications.
      */
     protected abstract void set(int[] i, Arithmetic vi);
@@ -92,7 +92,7 @@ abstract class AbstractMultivariatePolynomial/*<R implements Arithmetic>*/ exten
      * @param dim the dimension desired for the vector.
      * @return a vector of the same type as this, dimension as specified
      * The elements need not be initialized since they will soon be by the calling method.
-     * @post RES != RES
+     * @postconditions RES != RES
      * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      * @see #clone()
      */
@@ -188,7 +188,7 @@ abstract class AbstractMultivariatePolynomial/*<R implements Arithmetic>*/ exten
 
     /**
      * Provides an iterator over the coefficients of the specified dimensions.
-     * @pre &forall;k dim[k]&ge;dimensions()[k]
+     * @preconditions &forall;k dim[k]&ge;dimensions()[k]
      * @todo wouldn't Polynomial need to have this?
      * @internal almost identical to @see AbstractTensor.iterator()
      */

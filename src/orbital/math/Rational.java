@@ -57,7 +57,7 @@ public interface Rational extends Real {
      * Get the "canonical" representative (cancelled out and normalized)
      * of the equivalence class of rationals equal to this.
      * @return a cancelled and normalized rational.
-     * @post RES.equals(this) && MathUtilities.gcd(RES.numerator(), RES.denominator()) == 1 && RES.denominator() > 0.
+     * @postconditions RES.equals(this) && MathUtilities.gcd(RES.numerator(), RES.denominator()) == 1 && RES.denominator() > 0.
      * @note S' = <b>Z</b>&#8726;{0} is the set of allowed denominators.
      */
     Rational representative();

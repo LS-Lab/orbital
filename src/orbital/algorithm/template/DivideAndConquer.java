@@ -27,7 +27,7 @@ public class DivideAndConquer implements AlgorithmicTemplate {
 
     /**
      * solves by divide and conquer.
-     * @post solution is a merge of partial solutions.
+     * @postconditions solution is a merge of partial solutions.
      * @return the solution object as merged from the partial problems.
      */
     public Object solve(DivideAndConquerProblem p) {
@@ -83,8 +83,8 @@ public class DivideAndConquer implements AlgorithmicTemplate {
     } 
 
     /**
-     * @invariant parts is an non­empty array of partial solutions
-     * @post solution is a merge of partial solutions.
+     * @invariants parts is an non­empty array of partial solutions
+     * @postconditions solution is a merge of partial solutions.
      */
     private final Object solveByDivideAndConquer(DivideAndConquerProblem p) {
 	if (p.smallEnough()) {	  // base case

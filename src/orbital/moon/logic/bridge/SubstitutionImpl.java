@@ -41,7 +41,7 @@ public class SubstitutionImpl implements Substitution, Serializable {
     /**
      * Create a new substitution.
      * @param replacements the set of elementary replacements.
-     * @pre s[i] instanceof {@link Substitution.Matcher}.
+     * @preconditions s[i] instanceof {@link Substitution.Matcher}.
      */
     public SubstitutionImpl(Collection/*_<Matcher>_*/ replacements) {
         this.replacements = replacements;
@@ -178,7 +178,7 @@ public class SubstitutionImpl implements Substitution, Serializable {
     	 * Create a new matcher that performs substitution.
     	 * @param pattern The object against which to match with {@link Object#equals(Object)}.
     	 * @substitute The substitute substituting terms that matched.
-    	 * @post substituting == true
+    	 * @postconditions substituting == true
     	 */
         public MatcherImpl(Object pattern, Object substitute) {
             this(pattern, true, substitute);
@@ -187,7 +187,7 @@ public class SubstitutionImpl implements Substitution, Serializable {
     	/**
     	 * Create a new matcher that does not perform substitution.
     	 * @param pattern The object against which to match with {@link Object#equals(Object)}.
-    	 * @post substituting == false
+    	 * @postconditions substituting == false
     	 */
         public MatcherImpl(Object pattern) {
             this(pattern, false, null);
@@ -219,7 +219,7 @@ public class SubstitutionImpl implements Substitution, Serializable {
         /**
          * Get the substitute to replace a match with.
          * @return the substitute, or <code>null</code> if this matcher does not perform substitutions.
-         * @post RES == null &hArr; &not;isSubstituting()
+         * @postconditions RES == null &hArr; &not;isSubstituting()
          */
         public Object substitute() {
 	    return substitute;
@@ -275,7 +275,7 @@ public class SubstitutionImpl implements Substitution, Serializable {
     	 * @param pattern The object against which to (single side) match with {@link Substitutions#unify(Collection)}.
     	 * @substitute The substitute substituting terms that matched, after transforming substitute
     	 *  with the unifier that performed the matching.
-    	 * @post substituting == true
+    	 * @postconditions substituting == true
     	 */
         public UnifyingMatcher(Object pattern, Object substitute) {
             super(pattern, substitute);
@@ -284,7 +284,7 @@ public class SubstitutionImpl implements Substitution, Serializable {
     	/**
     	 * Create a new matcher that does not perform substitution.
     	 * @param pattern The object against which to (single side) match with {@link Substitutions#unify(Collection)}.
-    	 * @post substituting == false
+    	 * @postconditions substituting == false
     	 */
         public UnifyingMatcher(Object pattern) {
             super(pattern);

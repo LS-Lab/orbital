@@ -117,7 +117,7 @@ public interface MarkovDecisionProblem extends TransitionModel/*<A,S,O extends T
      * should result in an empty list at some time to ensure
      * termination, then.
      * </p>
-     * @pre s&isin;S
+     * @preconditions s&isin;S
      * @param state the state s&isin;S to check for being a goal state.
      * @return G(s), resp. whether s&isin;G.
      */
@@ -145,7 +145,7 @@ public interface MarkovDecisionProblem extends TransitionModel/*<A,S,O extends T
 	 * </p>
 	 * @return c(s,a) the cost of taking the action a&isin;A(s) that took us here
 	 *  from state s&isin;S.
-	 * @post RES>0 &or; RES&isin;[0,&infin;)
+	 * @postconditions RES>0 &or; RES&isin;[0,&infin;)
 	 */
 	Real getCost();
     }

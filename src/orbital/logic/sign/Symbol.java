@@ -57,7 +57,7 @@ import orbital.logic.functor.Notation.NotationSpecification;
  * have the same semantics).
  * </p>
  *
- * @invariant true
+ * @invariants true
  * @stereotype Structure
  * @structure is String&times;Type&times;Notation.NotationSpecification
  * @structure extends orbital.logic.trs.Variable
@@ -77,15 +77,15 @@ public interface Symbol extends Variable, Comparable/*<Symbol>*/{
      * Two symbols are equal if they have the same signifier, type specification and notation.
      * Then it should be asserted that they are either both variable, or both constant,
      * because the sets of variable symbols and constant symbols are usually assumed disjunct.
-     * @post o instanceof Symbol &rarr; (RES &hArr; (getSignifier().equals(o.getSignifier()) &and; getType().equals(o.getType()) &and; getNotation().equals(o.getNotation())))
+     * @postconditions o instanceof Symbol &rarr; (RES &hArr; (getSignifier().equals(o.getSignifier()) &and; getType().equals(o.getType()) &and; getNotation().equals(o.getNotation())))
      */
     /*final*/ boolean equals(Object o);
     /**
      * Returns the hash code value for this symbol.
      * The hash code of a symbol is defined to be the bitwise exclusive or of its components:
      * signifier, type specification, and notation.
-     * @pre true
-     * @post getSignifier() xor getType() xor getNotation()
+     * @preconditions true
+     * @postconditions getSignifier() xor getType() xor getNotation()
      */
     /*final*/ int hashCode();
 
@@ -115,18 +115,18 @@ public interface Symbol extends Variable, Comparable/*<Symbol>*/{
      *   </li>
      * </ul>
      * </p>
-     * @pre true
+     * @preconditions true
      */
     String getSignifier();
     /**
      * Set the signifier representing this symbol.
-     * @pre signifier&ne;null
+     * @preconditions signifier&ne;null
      */
     void setSignifier(String signifier);
 
     /**
      * Get the type specification of this symbol.
-     * @pre true
+     * @preconditions true
      * @return the type specification <span class="type">&tau;</span> of this symbol.
      * @see Expression#getType()
      */
@@ -134,7 +134,7 @@ public interface Symbol extends Variable, Comparable/*<Symbol>*/{
     /**
      * Set the type specification of this symbol.
      * @param type the type specification <span class="type">&tau;</span> of this symbol.
-     * @pre type&ne;null
+     * @preconditions type&ne;null
      * @todo wouldn't we prefer <span class="keyword">null</span> for the bottom type, or the undefined type, or perhaps the errorneous type Types.ERROR?
      */
     void setType(Type type);
@@ -145,7 +145,7 @@ public interface Symbol extends Variable, Comparable/*<Symbol>*/{
      * The notation is not truely part of the abstract syntax of a formal language,
      * but still useful for formatting and parsing. For this reason, the notation is
      * included as a non-obligate recommendation.
-     * @pre true
+     * @preconditions true
      * @return the notation used when this symbol occurs.
      */
     NotationSpecification getNotation();
@@ -153,7 +153,7 @@ public interface Symbol extends Variable, Comparable/*<Symbol>*/{
      * Set the notation used when this symbol occurs.
      * This includes precedence and associativity information, as well.
      * @param notation the notation used when this symbol occurs.
-     * @pre notation&ne;null
+     * @preconditions notation&ne;null
      */
     void setNotation(NotationSpecification notation);
     
@@ -170,8 +170,8 @@ public interface Symbol extends Variable, Comparable/*<Symbol>*/{
      * Then there truly is the terminologically confusing special case of variable symbols for
      * constant functions (i.e. functions of arity 0).
      * </p>
-     * @pre true
-     * @post RES==OLD(RES)
+     * @preconditions true
+     * @postconditions RES==OLD(RES)
      * @return <code>true</code> if this symbol is a variable symbol,
      *  and <code>false</code> if this symbol is a constant symbol.
      * @see orbital.logic.trs.Variable

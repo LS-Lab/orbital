@@ -29,10 +29,10 @@ public abstract interface Variable {
      * This notion usually refers to the variability in the context of
      * Term Rewrite Systems and Reasoning.
      * </p>
-     * @pre true
+     * @preconditions true
      * @return <code>true</code> if this object is variable,
      *  and <code>false</code> if this object is constant.
-     * @post usually RES==OLD(RES)
+     * @postconditions usually RES==OLD(RES)
      */
     boolean isVariable();
 }

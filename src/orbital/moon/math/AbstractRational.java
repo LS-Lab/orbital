@@ -130,7 +130,7 @@ abstract class AbstractRational extends AbstractReal implements Rational {
     	/**
     	 * The denominator of the Rational.
     	 * @serial
-    	 * @invariant denominator>0
+    	 * @invariants denominator>0
     	 */
     	private int denominator;
     
@@ -138,7 +138,7 @@ abstract class AbstractRational extends AbstractReal implements Rational {
     	 * creates a new rational number p/q.
     	 * @param p the numerator of p/q.
     	 * @param q the denominator p/q.
-    	 * @post this == normalize(this)
+    	 * @postconditions this == normalize(this)
     	 * @see #representative()
     	 */
     	public RationalImpl(int p, int q) {
@@ -161,7 +161,7 @@ abstract class AbstractRational extends AbstractReal implements Rational {
     
     	/**
     	 * creates a new rational number with numerator part, only.
-    	 * @pre MathUtilities.isInteger(p.doubleValue()) && p.intValue() == p.longValue()
+    	 * @preconditions MathUtilities.isInteger(p.doubleValue()) && p.intValue() == p.longValue()
     	 */
     	public RationalImpl(Number p) {
 	    this(p.intValue(), 1);
@@ -172,7 +172,7 @@ abstract class AbstractRational extends AbstractReal implements Rational {
     	 * creates a new rational number p/q.
     	 * @param p the numerator of p/q.
     	 * @param q the denominator p/q.
-    	 * @pre MathUtilities.isInteger(p.doubleValue()) && p.intValue() == p.longValue() && MathUtilities.isInteger(q.doubleValue()) && q.intValue() == q.longValue()
+    	 * @preconditions MathUtilities.isInteger(p.doubleValue()) && p.intValue() == p.longValue() && MathUtilities.isInteger(q.doubleValue()) && q.intValue() == q.longValue()
     	 */
     	public RationalImpl(Number p, Number q) {
 	    this(p.intValue(), q.intValue());

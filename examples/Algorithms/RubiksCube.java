@@ -435,7 +435,7 @@ public class RubiksCube implements GeneralSearchProblem {
 	 * @param side which side of the cube to turn.
 	 * @param direction in which direction to turn the side.
 	 *  A value of 1 means clockwise, a value of -1 counter-clockwise.
-	 * @pre side&isin;{left,right,top,down,back,front}
+	 * @preconditions side&isin;{left,right,top,down,back,front}
 	 *      &and; direction&isin;{1,-1}
 	 */
 	public void drehe(int side, int direction) {

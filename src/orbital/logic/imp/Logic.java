@@ -107,7 +107,7 @@ package orbital.logic.imp;
  * </p>
  * 
  * @structure extends ExpressionSyntax
- * @invariant true
+ * @invariants true
  * @version 1.0, 2001/01/14
  * @author  Andr&eacute; Platzer
  * @see Signature
@@ -125,10 +125,10 @@ public interface Logic extends ExpressionSyntax {
      * <p>
      * This will usually contain the interpretation functors of logical operators like &not;, &and;, &or;, &rarr;, &hArr;, &forall; and &exist;.
      * </p>
-     * @pre true
+     * @preconditions true
      * @return the core interpretation that is valid for every expression, for fixed interpretation semantics.
      *  Elements in the core signature all have a fixed interpretation.
-     * @post RES == OLD(RES) &and; RES unmodifiable &and; RES.getSignature() == coreSignature()
+     * @postconditions RES == OLD(RES) &and; RES unmodifiable &and; RES.getSignature() == coreSignature()
      * @see ExpressionSyntax#coreSignature()
      */
     //TODO: document that we get a list of handlers (for fixed interpretation semantics) of the core signature?
@@ -158,7 +158,7 @@ public interface Logic extends ExpressionSyntax {
      * </p>
      * @param I the interpretation within which to evaluate F.
      * @param F the formula to check whether it is satisfied in I.
-     * @pre F&isin;<i>L</i>(F.getSignature()) &quot;F is a formula in this logic&quot;
+     * @preconditions F&isin;<i>L</i>(F.getSignature()) &quot;F is a formula in this logic&quot;
      * @return whether I &#8871; F, i.e. whether I satisfies F.
      * @throws IncompleteCalculusException  if calculus for this logic is not complete.
      * @throws LogicException  if an exception related to logic occurs.
@@ -180,22 +180,22 @@ public interface Logic extends ExpressionSyntax {
 
     /**
      * {@inheritDoc}
-     * @post RES instanceof Formula
+     * @postconditions RES instanceof Formula
      * @todo use covariant return-types?
      */
     Expression createAtomic(Symbol symbol) throws IllegalArgumentException;
 
     /**
      * {@inheritDoc}
-     * @post RES instanceof Formula
+     * @postconditions RES instanceof Formula
      * @todo use covariant return-types?
      */
     Expression compose(Expression compositor, Expression[] arg) throws ParseException;
 
     /**
      * {@inheritDoc}
-     * @pre expression&ne;<span class="String">""</span>
-     * @post RES instanceof Formula
+     * @preconditions expression&ne;<span class="String">""</span>
+     * @postconditions RES instanceof Formula
      * @todo use covariant return-types?
      */
     Expression createExpression(String expression) throws ParseException, IllegalArgumentException;

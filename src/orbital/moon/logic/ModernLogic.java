@@ -225,8 +225,8 @@ abstract class ModernLogic implements Logic {
 
     public Expression createAtomic(Symbol symbol) {
 	Expression RES = createAtomicImpl(symbol);
-	assert RES != null : "@post RES != null";	     
-	assert !TYPE_CHECK || RES.getType().equals(symbol.getType()) && (((RES instanceof Variable) && ((Variable)RES).isVariable()) == symbol.isVariable()) : "@post " + RES.getType() + "=" + symbol.getType() + " & (" + ((RES instanceof Variable) && ((Variable)RES).isVariable()) + "<->" + symbol.isVariable() + ") for " + symbol + " = " + RES;
+	assert RES != null : "@postconditions RES != null";	     
+	assert !TYPE_CHECK || RES.getType().equals(symbol.getType()) && (((RES instanceof Variable) && ((Variable)RES).isVariable()) == symbol.isVariable()) : "@postconditions " + RES.getType() + "=" + symbol.getType() + " & (" + ((RES instanceof Variable) && ((Variable)RES).isVariable()) + "<->" + symbol.isVariable() + ") for " + symbol + " = " + RES;
 	return RES;
     }
 
@@ -267,8 +267,8 @@ abstract class ModernLogic implements Logic {
 	    throw new ParseException("compositor " + compositor + " : " + compositor.getType() + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments) + " : " + Types.typeOf(arguments), COMPLEX_ERROR_OFFSET);
 
 	Expression RES = composeImpl(compositor, arguments);
-	assert RES != null : "@post RES != null";	     
-	assert !TYPE_CHECK || RES.getType().equals(compositor.getType().codomain()) : "@post " + RES.getType() + "=" + compositor.getType().codomain() + "\n\tfor " + RES + " = compose(" + compositor + " , " + MathUtilities.format(arguments) + ")";
+	assert RES != null : "@postconditions RES != null";	     
+	assert !TYPE_CHECK || RES.getType().equals(compositor.getType().codomain()) : "@postconditions " + RES.getType() + "=" + compositor.getType().codomain() + "\n\tfor " + RES + " = compose(" + compositor + " , " + MathUtilities.format(arguments) + ")";
 	return RES;
     }
     Expression composeImpl(Expression op, Expression arguments[]) throws ParseException {
@@ -408,7 +408,7 @@ abstract class ModernLogic implements Logic {
      * @param expressions the comma separated list of expressions to parse.
      * @throws UnsupportedOperationException if no syntax notation for sequences of formulas
      *  has been defined.
-     * @post RES instanceof Formula[] covariant return-type
+     * @postconditions RES instanceof Formula[] covariant return-type
      * @todo deprecated
      * @note This method is superfluous since its sole function is to unwrap the result of
      *  {@link #createExpression(String)} for sequences of expressions. So you are advised to

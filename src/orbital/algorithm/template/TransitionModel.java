@@ -150,11 +150,11 @@ public interface TransitionModel/*<A,S, M extends Transition>*/ {
      * should generally be limited to very specific and well documented cases.
      * </p>
      * @param state the state s&isin;S whose applicable actions to determine.
-     * @pre s&isin;S
+     * @preconditions s&isin;S
      * @return A(s)&sube;A, a list of alternative actions applicable in the state s&isin;S.
      *  The order of the list can be decisive because for actions with equal costs
      *  the first will be preferred.
-     * @post RES=A(s)&sube;A
+     * @postconditions RES=A(s)&sube;A
      * @see GreedyProblem#nextCandidates(List)
      */
     Iterator/*<A>*/ actions(Object/*>S<*/ state);
@@ -181,10 +181,10 @@ public interface TransitionModel/*<A,S, M extends Transition>*/ {
      * </p>
      * @param action the action a&isin;A(s) that must be applicable in state s&isin;S.
      * @param state the state s&isin;S.
-     * @pre s&isin;S &and; a&isin;A(s)
+     * @preconditions s&isin;S &and; a&isin;A(s)
      * @return a list of states s&#697;&isin;S that could be reached
      *  when performing the action a in the state s.
-     * @post RES &supe; {s}&#8728;&tau;(a) &and; RES.hasNext()
+     * @postconditions RES &supe; {s}&#8728;&tau;(a) &and; RES.hasNext()
      * @throws InapplicableActionException if a&notin;A(s) is not applicable in state s.
      * @todo rename perhaps to states, but not to nextStates, reachableStates
      */
@@ -207,12 +207,12 @@ public interface TransitionModel/*<A,S, M extends Transition>*/ {
      * @param action the action a&isin;A(s) that must be applicable in state s&isin;S.
      * @param state the source state s&isin;S prior to the transition.
      * @param statep the resulting state s&#697;&isin;S after the transition took place.
-     * @pre s,s&#697;&isin;S &and; a&isin;A(s)
+     * @preconditions s,s&#697;&isin;S &and; a&isin;A(s)
      * @return &tau;(a)(s,s&#697;) which is the probability <b>P</b>(s&#697;|s,a)
      *  of reaching state s&#697;&isin;S when performing action a&isin;A(s) in the state s&isin;S.
      *  Usually represented as a {@link TransitionModel.Transition transition}
      *  which may contain additional information.
-     * @post RES=&tau;(a)(s,s&#697;)&isin;[0,1] (more precisely RES.getProbability()=&tau;(a)(s,s&#697;)) &and; &sum;<sub>s&#697;&isin;S</sub> &tau;(a)(s,s&#697;) = 1
+     * @postconditions RES=&tau;(a)(s,s&#697;)&isin;[0,1] (more precisely RES.getProbability()=&tau;(a)(s,s&#697;)) &and; &sum;<sub>s&#697;&isin;S</sub> &tau;(a)(s,s&#697;) = 1
      * @throws InapplicableActionException if a&notin;A(s) is not applicable in state s.
      * @internal alternative we could also extend Function<A,BinaryFunction<S,S>> if the corresponding apply(a) method did not have to create new BinaryFunctions for every call or loose the property of being stateless when caching.
      */
