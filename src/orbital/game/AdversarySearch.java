@@ -19,6 +19,7 @@ import orbital.util.Utility;
  *
  * @version 0.8, 2001/07/01
  * @author  Andr&eacute; Platzer
+ * @see orbital.algorithm.template.GeneralSearch
  * @todo generalize even more? implement a general interface?
  */
 public abstract class AdversarySearch {
