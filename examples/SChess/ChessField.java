@@ -68,9 +68,9 @@ public class ChessField extends Field {
 		// we only move our figures, forget about moving opponents
 		continue;
 	    for (Iterator j = figure.possibleMoves(); j.hasNext(); ) {
-		Pair 	  pair = (Pair) j.next();
-		Move	  move = (Move) pair.A;
-		Position  destination = (Position) pair.B;
+		Option	  opt = (Option) j.next();
+		Move	  move = opt.getMove();
+		Position  destination = opt.getDestination();
                 int targetLeague = isBeating(move, destination);
                 if (targetLeague == figure.getLeague())
 		    // disallow, only beat foreigners not allies
