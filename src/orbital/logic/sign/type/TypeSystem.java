@@ -21,6 +21,18 @@ import orbital.logic.functor.BinaryFunction;
  */
 public interface TypeSystem {
 
+    /**
+     * Checks whether two type-systems are equal.
+     * Two type-systems are equal if they produce completely compatible types on all
+     * operations.
+     * <p>
+     * Type-system equality will often only depend on the implementation's classes.
+     * </p>
+     */
+    boolean equals(Object o);
+
+    int hashCode();
+
     // atomic types
 
     /**

@@ -9,7 +9,7 @@ package orbital.logic.imp;
 import orbital.logic.functor.Predicate;
 
 /**
- * Representation of types.
+ * Representation of a type.
  * <p id="type">
  * The types form a <a href="Expression.html#freeAlgebraOfTerms">free algebra of terms</a>
  * &Tau; over {<span class="type">&iota;</span>,<span class="type">&rarr;</span>,<span class="type">()</span>}
@@ -78,6 +78,12 @@ public interface Type extends Comparable, Predicate {
     Type codomain();
 
     /**
+     * Get the type-system that this type stems from.
+     * @return the type-system that created this type.
+     */
+    TypeSystem typeSystem();
+
+    /**
      * Compares two types for subtype inclusions.
      * Note that this is only a partial order, but it is still consistent with equals.
      * @preconditions tau instanceof Type
@@ -117,7 +123,7 @@ public interface Type extends Comparable, Predicate {
     boolean apply(Object x);
 
     /**
-     * For composite types.
+     * The base interface for all composite types that are composed of other types.
      * Type constructs consisting of a type constructor and argument types implement this interface.
      * 
      * @structure is {@link orbital.logic.Composite}&cap;{@link Type}
