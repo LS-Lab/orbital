@@ -168,6 +168,14 @@ public abstract class AbstractGameRules implements GameRules, Serializable {
     }
 
     /**
+     * @deprecated Since Orbital1.1 {@link Field#addFieldChangeListener(FieldChangeListener) register}
+     * to the fields you started, instead.
+     */
+    protected final int turnDone(Field field) {
+	throw new UnsupportedOperationException("deprecated");
+    }
+
+    /**
      * Call to load all Images needed for the Figures.
      * @param component for which component (usually an applet) to load all images.
      * Used for the media tracker except when <code>null</code>.
