@@ -56,16 +56,20 @@ public class SetOfSupportResolution extends ResolutionBase {
 	    // fairly choose any clause C&isin;S
 	    final Clause C = selectClause(setOfSupport);
 	    assert !C.equals(Clause.CONTRADICTION) : "already checked for contradiction";
+	    //@internal moving C from S to U will prevent repetitive resolution of D (except with new clauses appearing in S all by themselves and thus resolving with our C by their own)
 	    usable.add(C);
 
 	    // the set of resolvents obtained from resolution of C with any D that are new to us
 	    Collection/*_<Clause>_*/ newResolvents = new LinkedList();
+	    // whether C has been resolved with any D
+	    boolean resolvable = false;
 	    // choose any clause D&isin;U&cup;S
 	    for (Iterator i2 = new SequenceIterator(new Iterator[] {usable.iterator(), setOfSupport.iterator()});
 		 i2.hasNext(); ) {
 		final Clause D = (Clause) i2.next();
 		// try to resolve C with D
 		for (Iterator resolvents = C.resolveWithVariant(D); resolvents.hasNext(); ) {
+		    resolvable = true;
 		    final Clause R = (Clause)resolvents.next();
 		    if (usable.contains(R) || setOfSupport.contains(R)) {
 			continue;
@@ -77,7 +81,11 @@ public class SetOfSupportResolution extends ResolutionBase {
 		    }
 		}
 	    }
-	    //@todo if C had not been resolvable (and we have no links, so that this has not been detected), remove C also from U?
+	    if (!resolvable) {
+		//@internal if C had not been resolvable (and we have no links, so that this has not been detected), remove C also from U. This will be performed generally once we implement links (and sublinks etc.).
+		// remove link-less C also from U
+		usable.remove(C);
+	    }
 
 	    //@todo deletion(newResolvents, usable, setOfSupport);
 	    setOfSupport.addAll(newResolvents);
