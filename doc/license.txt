@@ -11,15 +11,15 @@ files and documents might or might not have. The licenser shall never
 be liable for any damage suffered by licensee or any third party as
 a result of using these files or derivatives.
 
-You are allowed to use these files and documents for NON-COMMERCIAL 
-purposes, only. (For distribution in the context of commercial purposes
-there is another license agreement).
+You are not to modify, adapt, translate, reverse engineer, decompile,
+disassemble, or reverse-engeneer the product or attempt to discover
+its source code.  You agree to notify your employees and agents who
+may have access to the software of the restrictions contained in this
+Agreement and to insure their compliance with these restrictions.
 
 Distribution of these files is prohibited, except if you make sure that:
   (o) this License Agreement and the Copyright notice are contained
   (o) the files are not modified
-  (o) the distribution is for NON-COMMERCIAL purposes, only
-  (o) you have contacted me to tell me for what they are used
 
 Copyright (c) 1996-2002 Andre Platzer.
 All Rights Reserved.
