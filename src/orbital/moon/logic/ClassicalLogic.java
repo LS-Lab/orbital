@@ -204,9 +204,18 @@ public class ClassicalLogic extends ModernLogic {
 			logic.setInferenceMechanism(mechanism);
 			System.out.println("Using " + mechanism);
 		    }
-		    catch (NoSuchFieldException ex) {System.err.println("illegal inference mechanism " + mechanismDescription);throw ex;}
-		    catch (SecurityException ex) {System.err.println("could not access inference mechanism " + mechanismDescription);throw ex;}
-		    catch (IllegalAccessException ex) {System.err.println("inaccessible inference mechanism " + mechanismDescription);throw ex;}
+		    catch (NoSuchFieldException ex) {
+			System.err.println("illegal inference mechanism " + mechanismDescription);
+			throw ex;
+		    }
+		    catch (SecurityException ex) {
+			System.err.println("could not access inference mechanism " + mechanismDescription);
+			throw ex;
+		    }
+		    catch (IllegalAccessException ex) {
+			System.err.println("inaccessible inference mechanism " + mechanismDescription);
+			throw ex;
+		    }
 		} else if ("table".equalsIgnoreCase(arg[option])) {
 		    System.out.print("Type expression: ");
 		    System.out.flush();
@@ -249,7 +258,7 @@ public class ClassicalLogic extends ModernLogic {
 				resName = "resolution-fol.txt";
 				expected = true;
 			    } else
-				throw new InternalError("none of the cases of which one occurs is true");
+				throw new AssertionError("none of the cases of which one occurs is true");
 			    rd = new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/" + resName), DEFAULT_CHARSET);
 			    if (expected != proveAll(rd, logic, expected, normalForm, closure, verbose))
 				throw new LogicException("instantiated " + logic + " which does " + (expected ? "not support all conjectures" : "a contradictory conjecture") + " of " + resName + ". Either the logic is non-classical, or the resource file is corrupt.");
@@ -803,8 +812,8 @@ public class ClassicalLogic extends ModernLogic {
 	    super(null);//@xxx
 	    this.x = x;
 	    this.term = term;
-	    if (term.getType() != typeSystem.TYPE())
-		throw new IllegalArgumentException("would not expect type " + term.getType() + " for type expressions @xxx except for other kinds like *->*");
+	    if (term.getType() != term.getType().typeSystem().TYPE())
+		throw new TypeException("would not expect type " + term.getType() + " for type expressions @xxx except for other kinds like *->*", term.getType().typeSystem().TYPE(), term.getType());
 	}
 
 	// identical to @see orbital.logic.functor.Functionals.BinaryCompositeFunction
@@ -890,8 +899,12 @@ public class ClassicalLogic extends ModernLogic {
 	    this.x = x;
 	    this.term = term;
 	    this.I = I;
-	    if (term.getType() != typeSystem.TYPE())
-		throw new IllegalArgumentException("would not expect type " + term.getType() + " for type expressions @xxx except for other kinds like *->*");
+	    if (term.getType() != term.getType().typeSystem().TYPE())
+		throw new TypeException("would not expect type " + term.getType() + " for type expressions @xxx except for other kinds like *->*", term.getType().typeSystem().TYPE(), term.getType());
+	}
+
+	public TypeSystem typeSystem() {
+	    return term.getType().typeSystem();
 	}
 
 	// identical to @see orbital.logic.functor.Functionals.BinaryCompositeFunction
@@ -972,9 +985,9 @@ public class ClassicalLogic extends ModernLogic {
 	    //@xxx
 	    if (equals(tau))
 		return 0;
-	    else if (tau == typeSystem.UNIVERSAL())
+	    else if (tau == typeSystem().UNIVERSAL())
 		return -1;
-	    else if (tau == typeSystem.ABSURD())
+	    else if (tau == typeSystem().ABSURD())
 		return 1;
 	    else
 		throw new IncomparableException(this + " compared to " + tau);
@@ -983,9 +996,9 @@ public class ClassicalLogic extends ModernLogic {
 	    //@xxx
 	    if (equals(tau))
 		return true;
-	    else if (tau == typeSystem.UNIVERSAL())
+	    else if (tau == typeSystem().UNIVERSAL())
 		return true;
-	    else if (tau == typeSystem.ABSURD())
+	    else if (tau == typeSystem().ABSURD())
 		return false;
 	    else
 		//@xxx throw new UnsupportedOperationException(this + " =< " + tau);
@@ -1218,8 +1231,10 @@ public class ClassicalLogic extends ModernLogic {
 	    else if (!s.isVariable() && type.subtypeOf(typeSystem.objectType(orbital.math.Scalar.class)))
 	    	// forget about interpreting _fixed_ constants @xxx generalize concept
 	    	it.remove();
-	    else
-		throw new IllegalArgumentException("a signature of propositional logic should not contain " + s + " of type " + type);
+	    else {
+		TypeSystem typeSystem = type.typeSystem();
+		throw new TypeException("a signature of propositional logic should not contain " + s + " of type " + type, typeSystem.sup(new Type[] {Types.TRUTH, typeSystem.objectType(orbital.math.Scalar.class)}), type);
+	    }
 	}
 
 	// interpret sigmaComb in all possible ways
@@ -1283,8 +1298,10 @@ public class ClassicalLogic extends ModernLogic {
 		else if (!s.isVariable() && type.subtypeOf(typeSystem.objectType(orbital.math.Scalar.class)))
 		    // forget about interpreting _fixed_ constants @xxx generalize concept
 		    ;
-		else
-		    throw new IllegalArgumentException("a signature of propositional logic should not contain " + s + " of type " + type);
+		else {
+		    TypeSystem typeSystem = type.typeSystem();
+		    throw new TypeException("a signature of propositional logic should not contain " + s + " of type " + type, typeSystem.sup(new Type[] {Types.TRUTH, typeSystem.objectType(orbital.math.Scalar.class)}), type);
+		}
 	    }
 	}
 
