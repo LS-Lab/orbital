@@ -63,7 +63,7 @@ class ArithmeticTensor/*<R implements Arithmetic>*/ extends AbstractTensor/*<R>*
 	    throw new UnsupportedOperationException("tensors of rank 0 should not get wrapped into tensors of non array type");
 	final int[] dim = Utility.dimensions(values);
 	// check rectangular and that base type is instanceof Arithmetic or primitive
-	Utility.pre(checkRectangular(dim, 0, values), "multi-dimensional array of " + Arithmetic.class + " expected");
+	Utility.pre(checkRectangular(dim, 0, values), "multi-dimensional array of " + Arithmetic.class + " expected. found " + values);
 	final Combinatorical index = Combinatorical.getPermutations(dim);
 	// whether the array has primitive types
 	final boolean primitive = Values.isPrimitiveWrapper(Utility.getPart(values, index.next()).getClass());

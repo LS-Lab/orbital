@@ -19,11 +19,16 @@ import java.io.StreamTokenizer;
  * once a standard exception with enough features, like line and column number locator
  * are available.</i> In the meantime however, it is safe to use it and smoothly migrate to the
  * new exception once it is available from a standard organization.</p>
+ * <p>
+ * Unlike {@link orbital.logic.imp.ParseException}, this class will be removed once a standard
+ * parse exception is available.
+ * </p>
  * @version 0.9, 1998/05/11
  * @author  Andr&eacute; Platzer
  * @see java.text.ParseException
  * @see org.xml.sax.SAXParseException
- * @see <a href="http://www.metamata.com/JavaCC">JavaCC's ParseException</a>
+ * @see orbital.logic.imp.ParseException
+ * @see <a href="http://www.webgain.com/products/java_cc/">JavaCC's ParseException</a>
  * @xxx remove this ParseException and substitute it by a more general parse exception class. Neither java.text.ParseException nor org.xml.sax.SAXParseException will do. However, how do we reuse all them nice constructors, then?
  */
 public class ParseException extends Exception {

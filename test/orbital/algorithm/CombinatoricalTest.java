@@ -53,6 +53,6 @@ public class CombinatoricalTest extends check.TestCase {
 	    count++;
 	} 
 	System.out.println("generated " + count + " which is " +(count == c.count() ? "correct" : "NOT correct"));
-	assertTrue(count == c.count() , c + ".count() matches .hasNext()");
+	assertTrue(count == c.count() , c + " Combinatorical.count()=" + c.count() + " matches Combinatorical.hasNext()=" + count);
     } 
 }

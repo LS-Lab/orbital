@@ -456,8 +456,12 @@
 
 
 
-    <target name="dist" depends="init, jar, compile.examples"
+    <target name="dist" depends="init, jar, run.tests, dist.notests"
             description="create all distributions (=> ./dist/*.zip)">
+    </target>
+
+    <target name="dist.notests" depends="init, jar, compile.examples"
+            description="create all distributions (=> ./dist/*.zip), but do not run tests">
         <antcall target="doc">
             <param name="javadoc.link.jdk" value="http://java.sun.com/products/jdk/1.4/docs/api/"/>
             <param name="javadoc.link.jdk.offline" value="true"/>

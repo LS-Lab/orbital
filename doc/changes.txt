@@ -5,6 +5,8 @@ The following sections describe changes to classes between releases of Orbital l
 CHANGES since Orbital library 1.0
 ------------------------------------------
 
+orbital.logic.imp.ExpressionBuilder an descendants throw their own orbital.logic.imp.ParseException instead of java.text.ParseException, again. Since no standard parse exception has yet been defined (JDK 1.4.1) we have defined our own parse exception for the purpose of parsing algebras of terms like in logical system parsing and mathematical expression parsing. The earlier java.text.ParseException was considered to be too weak for sophisticated parsing. However, orbital.math.Values.valueOf(String) and orbital.math.ArithmeticFormat.parseObject(String) still throw java.text.ParseException due to the requirement of the super class java.text.Format.
+
 orbital.algorithm.template.HillClimbing renamed BEST_LOCAL_IMPROVEMENT to BEST_LOCAL_SELECTION in order to reflect that it does not say a thing about acception. Moved LocalSelection class up the hierarchy to LocalOptimizerSearch.
 
 orbital.math.Matrix.rank() has undergone an incompatible change. Since Matrix extends Tensor, rank() will now return the tensor rank, as expected. Contrary to earlier versions, where Matrix.rank() returned the linear rank. The latter is now accessible via Matrix.linearRank(). This incompatible change has been undergone, since - in the context of tensors - the rank is a very important information about a tensor and should be accessible in a simple way.

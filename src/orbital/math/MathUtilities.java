@@ -586,7 +586,13 @@ public final class MathUtilities {
 		return format(((Number) o).doubleValue());
 	else if (o.getClass().isArray())
 	    if (Array.getLength(o) != 0)
-		return Values.getDefaultInstance().tensor(o).toString();
+		try {
+		    return Values.getDefaultInstance().tensor(o).toString();
+		}
+		catch (IllegalArgumentException nonArithmetic) {
+		    //@todo improve by using Arrays.get
+		    return o.toString();
+		}
 	    else
 		return "{}";
 	else
