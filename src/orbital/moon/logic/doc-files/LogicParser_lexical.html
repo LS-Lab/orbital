@@ -97,6 +97,26 @@
     <td>&quot;&#8805;&quot; | &quot;&gt;=&quot;</td>
   </tr>
   <tr>
+    <td align="right">&lt;PLUS&gt;</td>
+    <td>::=</td>
+    <td>&quot;+&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;MINUS&gt;</td>
+    <td>::=</td>
+    <td>&quot;-&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;TIMES&gt;</td>
+    <td>::=</td>
+    <td>&quot;&#8901;&quot; | &quot;*&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;DIVIDE&gt;</td>
+    <td>::=</td>
+    <td>&quot;&#8725;&quot; | &quot;/&quot;</td>
+  </tr>
+  <tr>
     <td align="right">&lt;LAMBDA&gt;</td>
     <td>::=</td>
     <td>&quot;&#955;&quot; | &quot;\&quot;</td>
@@ -104,9 +124,34 @@
   <tr>
     <td align="right">&lt;PI&gt;</td>
     <td>::=</td>
-    <td>&quot;&Pi;&quot; | &quot;\\&quot;</td>
+    <td>&quot;&#928;&quot; | &quot;\\&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;IDENTIFIER&gt;</td>
+    <td>::=</td>
+    <td>[&quot;A&quot;-&quot;Z&quot;,&quot;_&quot;] [&quot;A&quot;-&quot;Z&quot;,&quot;_&quot;,&quot;0&quot;-&quot;9&quot;]*</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;INTEGER_LITERAL&gt;</td>
+    <td>::=</td>
+    <td>[&quot;0&quot;-&quot;9&quot;]+</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;FLOATING_POINT_LITERAL&gt;</td>
+    <td>::=</td>
+    <td>[&quot;0&quot;-&quot;9&quot;]+ &quot;.&quot; [&quot;0&quot;-&quot;9&quot;]+
+      ([&quot;e&quot;,&quot;E&quot;] [&quot;+&quot;,&quot;-&quot;]?
+      [&quot;0&quot;-&quot;9&quot;]+)?</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;STRING_LITERAL&gt;</td>
+    <td>::=</td>
+    <td>&quot;\&quot;&quot; ~[&quot;\&quot;&quot;,&quot;\n&quot;,...]*
+      &quot;\&quot;&quot;</td>
   </tr>
 </table>
+<p>Quantifiers and modal operators bind strong. The precedence order is thus
+&#8596;,&#8835;,&#8744;,&#8744;&#775;,&#8743;,¬,&#8707;,&#8704;,&#9633;,&#9671;,=,&#8800;,&lt;,&#8804;,&gt;,&#8805;.</p>
 
 </body>
 
