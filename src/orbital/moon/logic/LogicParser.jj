@@ -373,7 +373,8 @@ Expression expression() :
 	{return f;}
 }
 
-//@todo jota x.t (by Bertrand Russell)  or epsilon x.t operators
+//@todo introduce &jota; x.f operator (by Bertrand Russell)
+//@todo introduce Hilbert's &epsilon; x.f operator. If f is true for some value of x, then &epsilon; x.f denotes some such value, otherwise it has an arbitrary value of the same type as x. (embodies the strong Axiom of Choice). @see "Paulson, L.C. The Foundation of a Generic Theorem Prover."
 
 /**
  * free scope "quantifier"

@@ -54,7 +54,7 @@ abstract class ModernLogic implements Logic {
 	    assert o instanceof Symbol : "signature isa Set<" + Symbol.class.getName() + '>';
 	    Symbol s = (Symbol) o;
 	    if (s.getSignifier().equals(signifier))
-		//@todo should we check for compatibility of symbol and s so as to detect misunderstandings during parse?
+		//@xxx should we check for compatibility of symbol and s so as to detect misunderstandings during parse?
 		// fixed interpretation of core signature
 		return createFixedSymbol(s, coreInterpretation().get(s), true);
 	}

@@ -267,16 +267,17 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    else if (desc instanceof Number)
 		return desc;
 	    else if (desc instanceof Functor) {
-		if (symbol.getSpecification().isConform((Functor) desc))
+		if (symbol.getType().isConform((Functor) desc))
 		    return desc;
 		else
-		    throw new IllegalArgumentException("incompatible interpretation type " + desc + " for " + symbol.getSpecification());
+		    throw new IllegalArgumentException("incompatible interpretation type " + desc + " for " + symbol.getType());
 	    } else
 		throw new IllegalArgumentException("not a truth-value '" + desc + "' of " + desc.getClass());
     	}
 
 	public String toString() { return symbol + ""; }
-    } 
+    }
+    //@todo should we also implement VoidFunction?
     private static class FixedAtomicSymbol extends AtomicSymbol {
 	private Object referent;
 	private boolean core;

@@ -946,11 +946,12 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		public String toString() { return "\\"; }
 	    };
     	public static final BinaryFunction apply = new BinaryFunction() {
-		/*private static*/ final Specification specification = new Specification(new Class[] {
+		//@internal (almost) identical to @see orbital.logic.functor.Functionals#apply but additionally asserting that no one every really calls apply.
+		private /*static*/ final Specification specification = new Specification(new Class[] {
 		    Function/*_<A,B>_*/.class, Object/*_>A<_*/.class
 		}, Object/*_>B<_*/.class);
     		public Object apply(Object f, Object g) {
-		    throw new AssertionError("this method never gets called since compose cannot be interpreted truthh-functionally, but already receives a structural modification in compose(...)");
+		    throw new AssertionError("this method never gets called since compose cannot be interpreted truth-functionally, but already receives a structural modification in compose(...)");
     		}
 		public String toString() { return "@"; }
 	    };
@@ -1162,7 +1163,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	Signature sigmaComb = new SignatureBase(sigma);
 	for (Iterator it = sigmaComb.iterator(); it.hasNext(); ) {
 	    final Symbol s = (Symbol)it.next();
-	    final Specification spec = s.getSpecification();
+	    final Specification spec = s.getType();
 	    if (spec.arity() == 0 && spec.getReturnType() == Boolean.class)
 		// ordinary propositional logic
 		;
