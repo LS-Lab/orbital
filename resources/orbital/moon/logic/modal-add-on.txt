@@ -1,3 +1,6 @@
+all x []p(x) == []all x p(x)		# in constant domain?
+some x <>p(x) == <>some x p(x)	# in constant domain?
+
 |=~( all x <>p(x) -> <>all x p(x) )	# in constant domain Fitting1998,4.6.11
 |= <>all x p(x) -> all x <>p(x)	# in constant domain Fitting1998,4.6.12
 ## Fitting1998, Ex4.6.1
