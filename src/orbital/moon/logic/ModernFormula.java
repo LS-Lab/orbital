@@ -44,8 +44,12 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     /**
      * The underlying logic of this formula (used for composition).
      * @note an alternative implementation would make this class an inner instance class of a Logic implementation basis, saving this instance variable.
+     * @xxx then, however, default constructor newInstance() can no longer set the right underlying logic. And that logic cannot even be set directly by setComponent, setCompositor
      */
-    private static/**/ Logic logic = new ClassicalLogic();
+    private Logic logic = new ClassicalLogic();
+    protected ModernFormula(Logic underlyingLogic) {
+	this.logic = underlyingLogic;
+    }
     /**
      * The set of all binding expressions (i.e. instances of BindingExpression).
      * Represented as an IdentityHashSet = IdentityHashMap.keySet().
@@ -87,6 +91,36 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      */
     Logic getUnderlyingLogic() {
 	return logic;
+    }
+
+    /**
+     * Set the underlying logic of this formula.
+     */
+    private void setUnderlyingLogic(Logic underlyingLogic) {
+	this.logic = underlyingLogic;
+    }
+
+    /**
+     * Checks whether the underlying logics of this formula and the given one are compatible.
+     * An undefined underlying logic of <code>null</code> is compatible with any logic.
+     */
+    boolean isCompatibleUnderlyingLogic(Formula formula) {
+	Logic myUnderlying = getUnderlyingLogic();
+	Logic itsUnderlying = ((ModernFormula)formula).getUnderlyingLogic();
+	return myUnderlying == null || itsUnderlying == null
+	    || myUnderlying.getClass().equals(itsUnderlying.getClass());
+    }
+
+    /**
+     * Set our underlying logic like the underlying logic of the given formula.
+     * @pre getUnderlyingLogic()&ne;null &and; formula.getUnderlyingLogic()&ne;null &rArr;
+     *  isCompatibleUnderlyingLogic(formula)
+     */
+    void setUnderlyingLogicLikeIn(Formula formula) {
+	Logic myUnderlying = getUnderlyingLogic();
+	Logic itsUnderlying = ((ModernFormula)formula).getUnderlyingLogic();
+	assert isCompatibleUnderlyingLogic(formula) : "expected compatible underlying logics";
+	setUnderlyingLogic(itsUnderlying);
     }
 
     
@@ -156,8 +190,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @param symbol the symbol for which to create a formula representation
      * @see Logic#createAtomic(Symbol)
      */
-    public static Formula createSymbol(Symbol symbol) {
-	return new AtomicSymbol(symbol);
+    public static Formula createSymbol(Logic underlyingLogic, Symbol symbol) {
+	return new AtomicSymbol(underlyingLogic, symbol);
     }
     /**
      * Construct (a formula view of) an atomic symbol with a fixed interpretation.
@@ -166,8 +200,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @param core whether symbol is in the core such that it does not belong to the proper signature.
      * @see Logic#createAtomic(Symbol)
      */
-    public static Formula createFixedSymbol(Symbol symbol, Object referent, boolean core) {
-	return new FixedAtomicSymbol(symbol, referent, core);
+    public static Formula createFixedSymbol(Logic underlyingLogic, Symbol symbol, Object referent, boolean core) {
+	return new FixedAtomicSymbol(underlyingLogic, symbol, referent, core);
     }
     /**
      * This atomic expression formula is variable iff its symbols is.
@@ -180,7 +214,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	 * Construct (a formula view of) an atomic symbol.
 	 * @param symbol the symbol for which to create a formula representation
 	 */
-	public AtomicSymbol(Symbol symbol) {
+	public AtomicSymbol(Logic underlyingLogic, Symbol symbol) {
+	    super(underlyingLogic);
 	    this.symbol = symbol;
 	}
 		
@@ -256,8 +291,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	 * @param referent the fixed interpretation of this symbol
 	 * @param core whether symbol is in the core such that it does not belong to the proper signature.
 	 */
-	public FixedAtomicSymbol(Symbol symbol, Object referent, boolean core) {
-	    super(symbol);
+	public FixedAtomicSymbol(Logic underlyingLogic, Symbol symbol, Object referent, boolean core) {
+	    super(underlyingLogic, symbol);
 	    if (symbol.isVariable())
 		throw new IllegalArgumentException("do not use fixed referents for variable symbols");
 	    this.referent= referent;
@@ -286,16 +321,16 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @param op the (outer part of the) composing symbol.
      * @param arguments the arguments to the composition by op.
      */
-    public static Formula composeDelayed(Formula f, Symbol op, Expression arguments[]) {
+    public static Formula composeDelayed(Logic underlyingLogic, Formula f, Symbol op, Expression arguments[]) {
         //@fixme was notation = op.getNotation().getNotation(); but either we disable DEFAULT=BESTFIX formatting, or we ignore the signature's notation choice
         Notation notation = Notation.DEFAULT;
 	switch(arguments.length) {
 	case 0:
-	    return new ModernFormula.VoidCompositeVariableFormula(f, op.getNotation().getNotation());
+	    return new ModernFormula.VoidCompositeVariableFormula(underlyingLogic, f, op.getNotation().getNotation());
 	case 1:
-	    return new ModernFormula.CompositeVariableFormula(f, (Formula) arguments[0], notation);
+	    return new ModernFormula.CompositeVariableFormula(underlyingLogic, f, (Formula) arguments[0], notation);
 	case 2:
-	    return new ModernFormula.BinaryCompositeVariableFormula(f, (Formula) arguments[0], (Formula) arguments[1], notation);
+	    return new ModernFormula.BinaryCompositeVariableFormula(underlyingLogic, f, (Formula) arguments[0], (Formula) arguments[1], notation);
 	default:
 	    // could simply compose f(arguments), here, if f understands arrays
 	    //@todo which Locator to provide, here?
@@ -310,22 +345,22 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @param op the (outer part of the) composing symbol.
      * @param arguments the arguments to the composition by op.
      */
-    public static Formula composeFixed(Functor f, Symbol op, Expression arguments[]) {
+    public static Formula composeFixed(Logic underlyingLogic, Functor f, Symbol op, Expression arguments[]) {
         //@fixme was notation = op.getNotation().getNotation(); but either we disable DEFAULT=BESTFIX formatting, or we ignore the signature's notation choice
         Notation notation = Notation.DEFAULT;
 	switch(arguments.length) {
 	case 0:
 	    if (f instanceof VoidPredicate && !(f instanceof VoidFunction))
 		f = Functionals.asFunction((VoidPredicate) f);
-	    return new ModernFormula.CompositeFormula(Functionals.onVoid((VoidFunction) f), (Formula) arguments[0], op.getNotation().getNotation());
+	    return new ModernFormula.CompositeFormula(underlyingLogic, Functionals.onVoid((VoidFunction) f), (Formula) arguments[0], op.getNotation().getNotation());
 	case 1:
 	    if (f instanceof Predicate && !(f instanceof Function))
 		f = Functionals.asFunction((Predicate) f);
-	    return new ModernFormula.CompositeFormula((Function) f, (Formula) arguments[0], notation);
+	    return new ModernFormula.CompositeFormula(underlyingLogic, (Function) f, (Formula) arguments[0], notation);
 	case 2:
 	    if (f instanceof BinaryPredicate && !(f instanceof BinaryFunction))
 		f = Functionals.asFunction((BinaryPredicate) f);
-	    return new ModernFormula.BinaryCompositeFormula((BinaryFunction) f, (Formula) arguments[0], (Formula) arguments[1], notation);
+	    return new ModernFormula.BinaryCompositeFormula(underlyingLogic, (BinaryFunction) f, (Formula) arguments[0], (Formula) arguments[1], notation);
 	default:
 	    // could simply compose f(arguments), here, if f understands arrays
 	    //@todo which Locator to provide, here?
@@ -348,16 +383,17 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     static class CompositeFormula extends ModernFormula implements Function.Composite {
 	protected Function outer;
 	protected Formula inner;
-	public CompositeFormula(Function f, Formula g, Notation notation) {
+	public CompositeFormula(Logic underlyingLogic, Function f, Formula g, Notation notation) {
+	    super(underlyingLogic);
 	    setNotation(notation);
 	    this.outer = f;
 	    this.inner = g;
 	}
-	public CompositeFormula(Function f, Formula g) {
-	    this(f, g, null);
+	public CompositeFormula(Logic underlyingLogic, Function f, Formula g) {
+	    this(underlyingLogic, f, g, null);
 	}
 		
-	private CompositeFormula() {setNotation(null);}
+	private CompositeFormula() {super(null);setNotation(null);}
 		
         public Signature getSignature() {
 	    //@todo shouldn't we unify with getCompositor().getSignature() in case of formulas representing predicate or function?
@@ -388,6 +424,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    this.outer = (Function) f;
 	}
 	public void setComponent(Object g) throws ClassCastException {
+	    setUnderlyingLogicLikeIn((Formula) g);
 	    this.inner = (Formula) g;
 	}
 
@@ -447,17 +484,18 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	protected BinaryFunction outer;
 	protected Formula left;
 	protected Formula right;
-	public BinaryCompositeFormula(BinaryFunction f, Formula g, Formula h, Notation notation) {
+	public BinaryCompositeFormula(Logic underlyingLogic, BinaryFunction f, Formula g, Formula h, Notation notation) {
+	    super(underlyingLogic);
 	    setNotation(notation);
 	    this.outer = f;
 	    this.left = g;
 	    this.right = h;
 	}
-	public BinaryCompositeFormula(BinaryFunction f, Formula g, Formula h) {
-	    this(f, g, h, null);
+	public BinaryCompositeFormula(Logic underlyingLogic, BinaryFunction f, Formula g, Formula h) {
+	    this(underlyingLogic, f, g, h, null);
 	}
 		
-	private BinaryCompositeFormula() {setNotation(null);}
+	private BinaryCompositeFormula() {super(null);setNotation(null);}
 
         public Signature getSignature() {
 	    //@todo could cache signature as well, provided left and right don't change
@@ -507,6 +545,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    Formula[] a = (Formula[]) g;
 	    if (a.length != 2)
 		throw new IllegalArgumentException(Formula.class + "[2] expected");
+	    assert ((ModernFormula)a[0]).isCompatibleUnderlyingLogic(a[1]) : "only compose formulas of compatible logics";
+	    setUnderlyingLogicLikeIn(a[0]);
 	    this.left = a[0];
 	    this.right = a[1];
 	}
@@ -554,6 +594,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    return getNotation().format(getCompositor(), getComponent());
 	}
     }
+
     
     // alternative implementation 2 (delayed: variable outer functions defined by formulas)
 	
@@ -570,16 +611,17 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     static class CompositeVariableFormula extends ModernFormula implements Function.Composite {
 	protected Formula outer;
 	protected Formula inner;
-	public CompositeVariableFormula(Formula f, Formula g, Notation notation) {
+	public CompositeVariableFormula(Logic underlyingLogic, Formula f, Formula g, Notation notation) {
+	    super(underlyingLogic);
 	    setNotation(notation);
 	    this.outer = f;
 	    this.inner = g;
 	}
-	public CompositeVariableFormula(Formula f, Formula g) {
-	    this(f, g, null);
+	public CompositeVariableFormula(Logic underlyingLogic, Formula f, Formula g) {
+	    this(underlyingLogic, f, g, null);
 	}
 		
-	private CompositeVariableFormula() {setNotation(null);}
+	private CompositeVariableFormula() {super(null);setNotation(null);}
 		
         public Signature getSignature() {
 	    return inner.getSignature().union(outer.getSignature());
@@ -619,9 +661,11 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	} 
 
 	public void setCompositor(Functor f) throws ClassCastException {
+	    setUnderlyingLogicLikeIn((Formula) f);
 	    this.outer = (Formula) f;
 	}
 	public void setComponent(Object g) throws ClassCastException {
+	    assert isCompatibleUnderlyingLogic((Formula)g) : "only compose formulas of compatible logics";
 	    this.inner = (Formula) g;
 	}
 
@@ -677,15 +721,16 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      */
     static class VoidCompositeVariableFormula extends ModernFormula implements Function.Composite {
 	protected Formula outer;
-	public VoidCompositeVariableFormula(Formula f, Notation notation) {
+	public VoidCompositeVariableFormula(Logic underlyingLogic, Formula f, Notation notation) {
+	    super(underlyingLogic);
 	    setNotation(notation);
 	    this.outer = f;
 	}
-	public VoidCompositeVariableFormula(Formula f) {
-	    this(f, null);
+	public VoidCompositeVariableFormula(Logic underlyingLogic, Formula f) {
+	    this(underlyingLogic, f, null);
 	}
 		
-	private VoidCompositeVariableFormula() {setNotation(null);}
+	private VoidCompositeVariableFormula() {super(null);setNotation(null);}
 		
         public Signature getSignature() {
 	    return outer.getSignature();
@@ -723,6 +768,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	} 
 
 	public void setCompositor(Functor f) throws ClassCastException {
+	    setUnderlyingLogicLikeIn((Formula) f);
 	    this.outer = (Formula) f;
 	}
 	public void setComponent(Object g) throws ClassCastException {
@@ -786,17 +832,18 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	protected Formula outer;
 	protected Formula left;
 	protected Formula right;
-	public BinaryCompositeVariableFormula(Formula f, Formula g, Formula h, Notation notation) {
+	public BinaryCompositeVariableFormula(Logic underlyingLogic, Formula f, Formula g, Formula h, Notation notation) {
+	    super(underlyingLogic);
 	    setNotation(notation);
 	    this.outer = f;
 	    this.left = g;
 	    this.right = h;
 	}
-	public BinaryCompositeVariableFormula(Formula f, Formula g, Formula h) {
-	    this(f, g, h, null);
+	public BinaryCompositeVariableFormula(Logic underlyingLogic, Formula f, Formula g, Formula h) {
+	    this(underlyingLogic, f, g, h, null);
 	}
 		
-	private BinaryCompositeVariableFormula() {setNotation(null);}
+	private BinaryCompositeVariableFormula() {super(null);setNotation(null);}
 
         public Signature getSignature() {
 	    //@todo could cache signature as well, provided left and right don't change
@@ -843,12 +890,14 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	} 
 
 	public void setCompositor(Functor f) throws ClassCastException {
+	    setUnderlyingLogicLikeIn((Formula) f);
 	    this.outer = (Formula) f;
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
 	    Formula[] a = (Formula[]) g;
 	    if (a.length != 2)
 		throw new IllegalArgumentException(Formula.class + "[2] expected");
+	    assert isCompatibleUnderlyingLogic(a[0]) && isCompatibleUnderlyingLogic(a[1]) : "only compose formulas of compatible logics";
 	    this.left = a[0];
 	    this.right = a[1];
 	}
