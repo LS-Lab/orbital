@@ -168,6 +168,14 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	if (orbital.signe.isHelpRequest(arg)) {
 	    System.out.println(usage);
 	    System.out.println("Core logical junctors and operators:\n\t" + new ClassicalLogic().coreSignature());
+	    if ("-verbose".equalsIgnoreCase(arg[0])) {
+		System.out.println(" = {");
+		for (Iterator i = new ClassicalLogic().coreSignature().iterator(); i.hasNext(); ) {
+		    Symbol s = (Symbol)i.next();
+		    System.out.println("\t" + s + "\t: " + s.getType());
+		}
+		System.out.println(" }");
+	    }
 	    return;
 	} 
 	try {
@@ -981,46 +989,51 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 
 	//@todo we could implement a semantic apply() if only Interpretations would tell us a collection of entities in the universe
 	//@todo somehow turn forall into type (&sigma;&rarr;t)&rarr;t alias Function<Function<S,boolean>,boolean> and use &forall;(&lambda;x.t)
-    	public static final BinaryFunction forall = new BinaryFunction() {
-		//@todo also templatize with t somehow?
-		private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.INDIVIDUAL, Types.TRUTH}), Types.TRUTH);
-    		public Object apply(Object x, Object a) {
-		    throw new LogicException("quantified formulas only have a semantic value with respect to a possibly infinite domain. They are available for inference, but cannot be interpreted with finite means.");
-    		}
-		public String toString() { return "°"; }
-	    };
+    	public static final Function forall = new ForallPlaceholder();
+	private static final class ForallPlaceholder implements Function {
+	    //@todo also templatize with t somehow? should be (t->TRUTH)->truth
+	    //private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.INDIVIDUAL, Types.TRUTH}), Types.TRUTH);
+	    private final Type logicalTypeDeclaration = Types.map(Types.map(Types.INDIVIDUAL, Types.TRUTH), Types.TRUTH);
+	    public Object apply(Object f) {
+		throw new LogicException("quantified formulas only have a semantic value with respect to a possibly infinite domain. They are available for inference, but cannot be interpreted with finite means.");
+	    }
+	    public String toString() { return "°"; }
+	};
 
-    	public static final BinaryFunction exists = new BinaryFunction() {
-		//@todo also templatize with t somehow?
-		private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.INDIVIDUAL, Types.TRUTH}), Types.TRUTH);
-    		public Object apply(Object x, Object a) {
-		    throw new LogicException("quantified formulas only have a semantic value with respect to a possibly infinite domain. They are available for inference, but cannot be interpreted with finite means.");
-    		}
-		public String toString() { return "?"; }
-	    };
+    	public static final Function exists = new ExistsPlaceholder();
+	private static final class ExistsPlaceholder implements Function {
+	    //@todo also templatize with t somehow? should be (t->TRUTH)->truth
+	    private final Type logicalTypeDeclaration = Types.map(Types.map(Types.INDIVIDUAL, Types.TRUTH), Types.TRUTH);
+	    public Object apply(Object f) {
+		throw new LogicException("quantified formulas only have a semantic value with respect to a possibly infinite domain. They are available for inference, but cannot be interpreted with finite means.");
+	    }
+	    public String toString() { return "?"; }
+	};
 
 	//@xxx trick for functions that never get called
-    	public static final BinaryFunction lambda = new BinaryFunction() {
-		/*private static*/ final Specification callTypeDeclaration = new Specification(new Class[] {
-		    Object.class, Object.class
-		}, Function.class);
-		//@todo also templatize with t somehow? //@xxx verify type
-		private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.UNIVERSAL, Types.UNIVERSAL}), Types.map(Types.UNIVERSAL, Types.UNIVERSAL));
-		//private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.INDIVIDUAL, Types.INDIVIDUAL}), Types.map(Types.INDIVIDUAL, Types.INDIVIDUAL));
-		//private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.INDIVIDUAL, Types.TRUTH}), Types.map(Types.INDIVIDUAL, Types.TRUTH));
-    		public Object apply(Object x, Object t) {
-		    throw new AssertionError("this method never gets called since lambda cannot be interpreted truthh-functionally, but already receives a structural modification in compose(...)");
-    		}
-		public String toString() { return "\\"; }
-	    };
+    	public static final BinaryFunction lambda = new LambdaPlaceholder();
+	private static final class LambdaPlaceholder implements BinaryFunction {
+	    /*private static*/ final Specification callTypeDeclaration = new Specification(new Class[] {
+		Object.class, Object.class
+	    }, Function.class);
+	    //@todo also templatize with t somehow? //@xxx type should be s*t->(s->t)
+	    //private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.UNIVERSAL, Types.UNIVERSAL}), Types.map(Types.UNIVERSAL, Types.UNIVERSAL));
+	    //private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.INDIVIDUAL, Types.INDIVIDUAL}), Types.map(Types.INDIVIDUAL, Types.INDIVIDUAL));
+	    private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.INDIVIDUAL, Types.TRUTH}), Types.map(Types.INDIVIDUAL, Types.TRUTH));
+	    public Object apply(Object x, Object t) {
+		throw new AssertionError("this method never gets called since lambda cannot be interpreted truthh-functionally, but already receives a structural modification in compose(...)");
+	    }
+	    public String toString() { return "\\"; }
+	};
     }
 
     //@xxx get rid of these shared static variables
+    // perhaps, LAMBDA is that important, that we should even publicize it to orbital.logic.imp.*? Or let them query it from the coreSignature() by "\\"?
     static final Symbol LAMBDA;
     static {
-	//@internal we need some valid non-null arguments.
-	Expression OBJ = Utilities.logic.createAtomic(new SymbolBase("OBJ", SymbolBase.UNIVERSAL_ATOM));
-	LAMBDA  = _coreSignature.get("\\", new Expression[] {OBJ,OBJ});
+	//@internal we need some valid non-null arguments. We use one that can be converted to any type lambda might need
+	Expression BOTTOM = Utilities.logic.createAtomic(new SymbolBase("BOTTOM", Types.ABSURD));
+	LAMBDA = _coreSignature.get("\\", new Expression[] {BOTTOM,BOTTOM});
 	assert LAMBDA != null : "lambda operator found";
     }
     Expression composeImpl(Expression op, Expression arguments[]) throws ParseException {
@@ -1058,27 +1071,42 @@ public class ClassicalLogic extends ModernLogic implements Logic {
      * @author Andr&eacute; Platzer
      * @version 2002/07/15
      * @see orbital.logic.trs.Substitutions#lambda
+     * @internal note that regarding &forall;x a as &forall(&lambda;x.a) may consume a little more time since one additional composition must be considered for unifications. However, the more systematic concept and simplified (since localized) handling of bindings is worth it.
      */
     private static class LambdaAbstractionFormula extends ModernFormula implements Function.Composite {
-	private final Symbol x;
-	private final Formula term;
+	private Symbol x;
+	private Formula term;
+	private LambdaAbstractionFormula() {
+	    super(null);
+	}
 	public LambdaAbstractionFormula(Logic logic, Symbol x, Formula term) {
 	    super(logic);
 	    this.x = x;
 	    this.term = term;
 	}
 
+	// identical to @see orbital.logic.functor.Functionals.BinaryCompositeFunction
 	public Functor getCompositor() {
-	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
-	}
+	    //@internal this trick will allow LambdaAbstractionFormulas to unify. null does not unify anything.
+	    return LogicFunctions.lambda;
+	} 
 	public Object getComponent() {
-	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
+	    return new /*@xxx which type? Formula*/Object[] {
+		x, term
+	    };
+	} 
+
+	public void setCompositor(Functor f) throws ClassCastException {
+	    if (f != LogicFunctions.lambda)
+		throw new IllegalArgumentException("special compositor of &lambda;-abstractions expected");
 	}
-	public void setCompositor(Functor f) {
-	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
-	}
-	public void setComponent(Object g) {
-	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
+	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
+	    Object[] a = (/*@xxx which type? Formula*/Object[]) g;
+	    if (a.length != 2)
+		throw new IllegalArgumentException(Formula.class + "[2] expected");
+	    setUnderlyingLogicLikeIn((Formula)a[1]);
+	    this.x = (Symbol)a[0];
+	    this.term = (Formula)a[1];
 	}
 	public Notation getNotation() {
 	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
@@ -1087,6 +1115,23 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
 	}
 	    
+	/**
+	 * Checks for equality.
+	 * Two CompositeFunctors are equal iff their classes,
+	 * their compositors and their components are equal.
+	 */
+	public boolean equals(Object o) {
+	    if (o == null || getClass() != o.getClass())
+		return false;
+	    // note that it does not matter to which .Composite we cast since we have already checked for class equality
+	    Composite b = (Composite) o;
+	    return Utility.equals(getCompositor(), b.getCompositor())
+		&& Utility.equalsAll(getComponent(), b.getComponent());
+	}
+
+	public int hashCode() {
+	    return Utility.hashCode(getCompositor()) ^ Utility.hashCodeAll(getComponent());
+	}
 	
 	// implementation of orbital.logic.imp.Expression interface
 	public Type getType() {
@@ -1103,7 +1148,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	}
 
 	public Set getBoundVariables() {
-	    return Setops.union(term.getFreeVariables(), Collections.singleton(x));
+	    return Setops.union(term.getBoundVariables(), Collections.singleton(x));
 	}
 
 	public Set getVariables() {
@@ -1128,7 +1173,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		};
 	}
 	public String toString() {
-	    //@todo use notation like all others do
+	    //@todo use notation like all others do. Should we also pretty-print &forall;(&lambda;x.p) as &forall;x p or something?
 	    return "(\\" + x + "." + term + ")";
 	}
     }

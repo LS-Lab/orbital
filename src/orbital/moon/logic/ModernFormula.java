@@ -25,9 +25,6 @@ import java.util.Map;
 import java.util.Collection;
 import java.util.Iterator;
 
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-
 import java.util.Collections;
 import orbital.util.Setops;
 import orbital.util.Utility;
@@ -50,20 +47,6 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     }
 
     /**
-     * The set of all binding expressions (i.e. instances of BindingExpression).
-     * Represented as an IdentityHashSet = IdentityHashMap.keySet().
-     * @xxx improve concept of binding
-     */
-    private static final Set bindingExpressions;
-    static {
-	final Map helper = new IdentityHashMap();
-	//@xxx we have a cycle in the dependencies of static initialization when we start FuzzyLogic.main. So we force ClassicalLogic to initialize. Really improve concept of bindings!
-	new ClassicalLogic();
-	helper.put(ClassicalLogic.LogicFunctions.forall, null);
-	helper.put(ClassicalLogic.LogicFunctions.exists, null);
-	bindingExpressions = helper.keySet();
-    }
-    /**
      * The symbols of the logical junctors.
      */
     private static final Symbol NOT, AND, OR, XOR, IMPL, EQUIV, FORALL, EXISTS;
@@ -77,17 +60,26 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	final Formula OBJ = (Formula) logic.createAtomic(new SymbolBase("OBJ", SymbolBase.UNIVERSAL_ATOM));
 	Formula[] arguments = {B};
 	NOT = core.get("~", arguments);
+	assert NOT != null : "operators in core signature";
 
 	arguments = new Formula[] {B, B};
 	AND = core.get("&", arguments);
+	assert AND != null : "operators in core signature";
 	OR = core.get("|", arguments);
+	assert OR != null : "operators in core signature";
 	XOR = core.get("^", arguments);
+	assert XOR != null : "operators in core signature";
 	IMPL = core.get("->", arguments);
+	assert IMPL != null : "operators in core signature";
 	EQUIV = core.get("<->", arguments);
+	assert EQUIV != null : "operators in core signature";
 
-	arguments = new Formula[] {OBJ, B};
+	final Formula f = (Formula) logic.createAtomic(new SymbolBase("f", Types.map(Types.INDIVIDUAL,Types.TRUTH)));
+	arguments = new Formula[] {f};
 	FORALL = core.get("°", arguments);
+	assert FORALL != null : "operators in core signature";
 	EXISTS = core.get("?", arguments);
+	assert EXISTS != null : "operators in core signature";
     }
 
     /**
@@ -354,6 +346,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	case 1:
 	    if (f instanceof Predicate && !(f instanceof Function))
 		f = Functionals.asFunction((Predicate) f);
+	    assert f instanceof Function : f + " of " + f.getClass() + " instanceof " + Function.class;
+	    assert arguments[0] instanceof Formula : arguments[0] + " of " + arguments[0].getClass() + " instanceof " + Formula.class;
 	    return new ModernFormula.AppliedFormula(underlyingLogic, fsymbol, (Function) f, (Formula) arguments[0], notat);
 	case 2:
 	    if (f instanceof BinaryPredicate && !(f instanceof BinaryFunction))
@@ -748,7 +742,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    return outerSymbol.getType().domain();
         }
         public Signature getSignature() {
-	    //@todo shouldn't we unify with getCompositor().getSignature() in case of formulas representing predicate or function?
+	    //@xxx shouldn't we unify with getCompositor().getSignature() in case of formulas representing predicate or function?
 	    return ((Formula) getComponent()).getSignature();
         }
 
@@ -856,23 +850,11 @@ abstract class ModernFormula extends LogicBasis implements Formula {
         }
 
 	public Set getFreeVariables() {
-	    if (bindingExpressions.contains(outer)) {
-		Set M = new HashSet(right.getFreeVariables());
-		assert left instanceof AtomicSymbol && left.getFreeVariables().size() == 1 : "quantifiers bind an atomic symbol formula";
-		M.removeAll(left.getFreeVariables());
-		return M;
-	    }
 	    return Setops.union(left.getFreeVariables(),
 				right.getFreeVariables());
 	}
 
 	public Set getBoundVariables() {
-	    if (bindingExpressions.contains(outer)) {
-		Set M = new HashSet(right.getBoundVariables());
-		assert left instanceof AtomicSymbol && left.getFreeVariables().size() == 1 : "quantifiers bind an atomic symbol formula";
-		M.addAll(left.getFreeVariables());
-		return M;
-	    }
 	    return Setops.union(left.getBoundVariables(),
 				right.getBoundVariables());
 	}
@@ -950,6 +932,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 
 // /**
 //  * Tags expressions (and functions) that introduces bindings.
+//  * @see ClassicalLogic.LambdaAbstraction already solve this, n'est-ce pas?
 //  */
 // interface BindingExpression {
 //     /**

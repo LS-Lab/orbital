@@ -75,6 +75,7 @@ public class LogicParser {
     static final Type FLOAT_LITERAL_TYPE = Types.objectType(orbital.math.Real.class);
     static final Type STRING_LITERAL_TYPE = Types.objectType(String.class);
     private Type TRUTH;
+    private Type INDIVIDUAL;
 	
     /**
      * Delegate to the current syntax implementation that is used for building expressions.
@@ -101,10 +102,16 @@ public class LogicParser {
 	this.syntax = syntax;
 	Signature coreSignature = syntax.coreSignature();
 	this.root = new RootScope(coreSignature);
-	this.TRUTH =
+	this.TRUTH = queryType(syntax, "truth");
+	this.INDIVIDUAL = queryType(syntax, "individual");
+	//@todo should we ask the syntax?
+	//this.FLOAT_LITERAL_TYPE = "real"
+    }
+    private static Type queryType(ExpressionSyntax syntax, String signifier) {
+	return
 	    (Type) (
 		    syntax instanceof Logic
-		    ? ((Logic)syntax).coreInterpretation().get(coreSignature.get("truth", new Expression[0]))
+		    ? ((Logic)syntax).coreInterpretation().get(coreSignature.get(signifier, new Expression[0]))
 		    : null
 		    );
     }
@@ -196,7 +203,9 @@ public class LogicParser {
 	    throw new AssertionError("only symbols in the symbol map of current scope are quantified over");
 	if ("free".equals(op))
 	    throw new AssertionError("quantifier with pure syntactic function and no semantic aspect at all have already been filtered");
-	return composeWrapper(optok, op, new Expression[] {syntax.createAtomic(x), a});
+	return composeWrapper(optok, op, new Expression[] {
+	    composeWrapper(optok, ClassicalLogic.LAMBDA, new Expression[] {syntax.createAtomic(x), a})
+	});
     }
 
     // support
@@ -828,7 +837,7 @@ Expression CompoundTerm() :
 {Token tok; Expression f; Expression[] arg;}
 {
     tok = <IDENTIFIER> arg = Arguments()
-	{return apply(tok, arg, Types.INDIVIDUAL);}
+	{return apply(tok, arg, INDIVIDUAL);}
 |
 	//@todo also allow non-applied LambdaAbstractions like in f((\x.x+2))
     f = LambdaAbstraction() arg = Arguments()
@@ -950,7 +959,7 @@ Symbol ConstantOrVariable() :
 	    ( "." tok = <IDENTIFIER>  {signifier += "." + tok.image;} )
 	    )*
     */
-    {return scope.getSymbol(signifier, Types.INDIVIDUAL, true);}
+    {return scope.getSymbol(signifier, INDIVIDUAL, true);}
 }
 
 
@@ -966,13 +975,13 @@ Symbol Variable() :
 	    ( "." tok = <IDENTIFIER>  {signifier += "." + tok.image;} )
 	    )*
     */
-    {return scope.getSymbol(signifier, Types.INDIVIDUAL, true);}
+    {return scope.getSymbol(signifier, INDIVIDUAL, true);}
 }
 /**
  * an atomic variable term with a type declaration.
  */
 Symbol VariableDeclaration() :
-{String signifier;Token tok;Type type = Types.INDIVIDUAL;}
+{String signifier;Token tok;Type type = INDIVIDUAL;}
 {
     tok = <IDENTIFIER> {signifier = tok.image;}
     (":" type = typeUse())?
