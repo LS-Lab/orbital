@@ -4,11 +4,13 @@ import orbital.math.functional.Functions;
 import orbital.math.Scalar;
 import orbital.math.Values;
 import orbital.awt.*;
-import orbital.Adjoint;
 import java.lang.reflect.*;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.*;
+
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /**
  * Displays a table of all known AlgorithmicTemplate implementations
@@ -19,6 +21,7 @@ import javax.swing.table.*;
  * @fixme might need new construction method, for BranchAndBound(null)
  */
 public class AlgorithmicTable {
+    private static final Logger logger = Logger.global;
     public static final String defaultAlgo[] = {
 	"DepthFirstSearch", "BreadthFirstSearch", "IterativeDeepening", "IterativeBroadening", "AStar", "IterativeDeepeningAStar", "IterativeExpansion", "BranchAndBound", "ParallelBranchAndBound",
 	"HillClimbing", "SimulatedAnnealing", "ThresholdAccepting",
@@ -46,7 +49,7 @@ public class AlgorithmicTable {
 		try {
 		    algo[i] = instantiate(prefixes[j] + names[i]);
 		}
-		catch (ClassNotFoundException trial) {Adjoint.print(Adjoint.DEBUG, "search class", trial);}
+		catch (ClassNotFoundException trial) {logger.log(Level.FINER, "search class", trial);}
 		catch (InstantiationException trial) {System.out.println(trial);}
 		catch (IllegalAccessException trial) {System.out.println(trial);}
 	    if (algo[i] == null)
@@ -76,18 +79,18 @@ public class AlgorithmicTable {
 					       // FIXME: norm is infinite for all polynoms, what else!
 					       &&!(algo[i].complexity().equals(Functions.constant(Values.valueOf(Double.POSITIVE_INFINITY)))));
 		}
-		catch(UnsupportedOperationException x) {Adjoint.print(Adjoint.INFO, "unsupported", x);}
+		catch(UnsupportedOperationException x) {logger.log(Level.INFO, "unsupported", x);}
 		try {
 		    data[i][j++] = new Boolean(algo[i] instanceof ProbabilisticAlgorithm ? ((ProbabilisticAlgorithm) algo[i]).isCorrect() : true);
 		}
-		catch(UnsupportedOperationException x) {Adjoint.print(Adjoint.INFO, "unsupported", x);}
+		catch(UnsupportedOperationException x) {logger.log(Level.INFO, "unsupported", x);}
 		data[i][j++] = algo[i] instanceof GeneralSearch ? new Boolean(((GeneralSearch) algo[i]).isOptimal()) : null;
 		data[i][j++] = new Boolean(algo[i] instanceof HeuristicAlgorithm);
 		data[i][j++] = new Boolean(algo[i] instanceof ProbabilisticAlgorithm);
 		data[i][j++] = "O(" + (algo[i].complexity() != Functions.nondet ? algo[i].complexity().apply(Values.symbol("n")) : algo[i].complexity()) + ")";
 		data[i][j++] = "O(" + (algo[i].spaceComplexity() != Functions.nondet ? algo[i].spaceComplexity().apply(Values.symbol("n")) : algo[i].spaceComplexity()) + ")";
 	    } catch (Exception ignore) {
-		Adjoint.print(Adjoint.DEBUG, "introspection", ignore);
+		logger.log(Level.FINER, "introspection", ignore);
 	    } 
 	JFrame f = new JFrame("Comparison of Algorithms");
 	new Closer(f, true, true);
@@ -106,8 +109,8 @@ public class AlgorithmicTable {
 	try {
 	    return (AlgorithmicTemplate) clazz.newInstance();
 	}
-	catch (InstantiationException trial) {Adjoint.print(Adjoint.DEBUG, "instantiation trial", trial);}
-	catch (IllegalAccessException trial) {Adjoint.print(Adjoint.DEBUG, "instantiation trial", trial);}
+	catch (InstantiationException trial) {logger.log(Level.FINER, "instantiation trial", trial);}
+	catch (IllegalAccessException trial) {logger.log(Level.FINER, "instantiation trial", trial);}
 	Constructor constructor[] = clazz.getDeclaredConstructors();
 	for (int i = 0; i < constructor.length; i++)
 	    try {
@@ -125,7 +128,7 @@ public class AlgorithmicTable {
 	    }
 	    catch (IllegalArgumentException trial) {System.out.println(trial + " in " + constructor[i]);}
 	    catch (InvocationTargetException trial) {System.out.println(trial + ": " + trial.getTargetException() + " in " + constructor[i]);}
-	    catch (IllegalAccessException trial) {Adjoint.print(Adjoint.DEBUG, "constructor trial", trial);}
+	    catch (IllegalAccessException trial) {logger.log(Level.FINER, "constructor trial", trial);}
 
 	// if nothing works, then we fail with an ordinary exception
 	return (AlgorithmicTemplate) clazz.newInstance();

@@ -7,7 +7,9 @@ import orbital.util.graph.*;
 import orbital.util.graph.ListTree.TreeNode;
 import java.util.*;
 import java.io.*;
-import orbital.Adjoint;
+
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /**
  * Huffman compression.
@@ -27,8 +29,9 @@ import orbital.Adjoint;
  * @see Huffman_Elementary
  */
 public class Huffman implements GreedyProblem {
+    private static final Logger logger = Logger.global;
     public static void main(String arg[]) throws Exception {
-	Adjoint.setLogLevel(Adjoint.ALL);
+	logger.setLevel(Level.FINEST);
 	// analyze occurrences
 	File		     file = new File(arg.length > 0 ? arg[0] : "t.txt");
 	OccurrenceAnalyzer   occurrences = new OccurrenceAnalyzer();
@@ -171,8 +174,8 @@ public class Huffman implements GreedyProblem {
 	// a bdd trie describing the huffman code solution
 	trieExpl = new ListTree(last_new_choice);
 
-	Adjoint.print(Adjoint.DEBUG, "isSolution()=true", "list-version=" + trieOpt);
-	Adjoint.print(Adjoint.DEBUG, "isSolution()=true", "bdd-version=" + trieExpl);
+	logger.log(Level.FINER, "isSolution()=true, list-version={0}", trieOpt);
+	logger.log(Level.FINER, "isSolution()=true, bdd-version={0}", trieExpl);
 	return true;
     }
 
@@ -187,7 +190,7 @@ public class Huffman implements GreedyProblem {
     	private int	   dlen = 0;
 	public HuffmanOutputStream(OutputStream out) {
 	    super(out);
-	    Adjoint.print(Adjoint.DEBUG, "encode", trieExpl);
+	    logger.log(Level.FINER, "encode {0}", trieExpl);
 	}
 
 	public void flush() throws IOException {
@@ -218,7 +221,7 @@ public class Huffman implements GreedyProblem {
 		int	   clen = encode((char) b[off + i], c = new BitSet());
 		dlen = append(data, dlen, c, clen);
 	    }
-	    Adjoint.print(Adjoint.DEBUG, "writing", Huffman.toString(data, dlen));
+	    logger.log(Level.FINER, "writing {0}", Huffman.toString(data, dlen));
 
 	    writeBuffer(8*(dlen/8));	// ==8*(int)Math.floor(dlen/8.0) sic(!)
     	}
@@ -312,7 +315,7 @@ public class Huffman implements GreedyProblem {
     	private boolean	reachedEOF = false;
 	public HuffmanInputStream(InputStream in) {
 	    super(in);
-	    Adjoint.print(Adjoint.DEBUG, "decode", trieExpl);
+	    logger.log(Level.FINER, "decode {0}", trieExpl);
 	}
         
     	/**
@@ -367,7 +370,7 @@ public class Huffman implements GreedyProblem {
 			else
 			    data.set(dlen++);
 		}
-		Adjoint.print(Adjoint.DEBUG, "current bit chunk", Huffman.toString(data, dlen));
+		logger.log(Level.FINER, "current bit chunk {0}", Huffman.toString(data, dlen));
 	    }
 
 	    // decode bit sequence (only up to len resulting bytes)

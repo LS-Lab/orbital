@@ -1,6 +1,3 @@
-
-
-import orbital.Adjoint;
 import orbital.algorithm.evolutionary.*;
 import orbital.logic.functor.Function;
 
@@ -15,7 +12,6 @@ import orbital.logic.functor.Function;
  */
 public class GATest implements Runnable, GeneticAlgorithmProblem {
     public static void main(String arg[]) {
-	Adjoint.setLogLevel(Adjoint.DEBUG);
 	//@fixme should call this application with -Djava.util.logging.config.file=....
 	//java.util.logging.Logger.getLogger(GeneticAlgorithm.class.getPackage().getName()).setLevel(java.util.logging.Level.FINEST);
 	new GATest().run();
@@ -42,14 +38,14 @@ public class GATest implements Runnable, GeneticAlgorithmProblem {
     } 
 
     public void run() {
-	Adjoint.print("run()", "creating population");
+	System.out.println("run(): creating population");
 	double maxCrossover = 0.1;
 	double maxMutation = 0.3;
 	ga = new IncrementalGeneticAlgorithm(2, 2, maxCrossover, maxMutation);
 	ga.setSelection(Selectors.likelyBetter());
-	Adjoint.print("run()", "breeding population");
+	System.out.println("run(): breeding population");
 	ga.solve(this);
-	Adjoint.print("run()", "found solution");
+	System.out.println("run(): found solution");
 	System.out.println(ga);
     } 
 

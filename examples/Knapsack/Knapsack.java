@@ -1,6 +1,3 @@
-
-
-import orbital.Adjoint;
 import orbital.algorithm.evolutionary.*;
 import orbital.logic.functor.Function;
 
@@ -40,23 +37,23 @@ public class Knapsack extends orbital.moon.awt.Demonstratos implements Runnable,
 
     public void init() {
 	super.init();
-	Adjoint.print("init()", "initializing");
+	out.println("init() initializing");
     } 
     public void start() {
 	super.start();
-	Adjoint.print("start()", "start thread");
+	out.println("start() start thread");
 	new Thread(this).start();
     } 
 
     public void run() {
-	Adjoint.print("run()", "creating population");
+	out.println("run() creating population");
 	double maxCrossover = 0.1;
 	double maxMutation = 0.2;
 	ga = new IncrementalGeneticAlgorithm(2, 2, maxCrossover, maxMutation);
 	ga.setSelection(Selectors.likelyBetter());
-	Adjoint.print("run()", "breeding population");
+	out.println("run() breeding population");
 	ga.solve(this);
-	Adjoint.print("run()", "found solution");
+	out.println("run() found solution");
 	out.println(ga.getPopulation());
     } 
 

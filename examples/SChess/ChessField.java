@@ -5,7 +5,6 @@ import orbital.robotic.*;
 import java.util.*;
 import orbital.util.Pair;
 
-import orbital.SP;
 import orbital.math.MathUtilities;
 import orbital.util.OutOfCheeseError;
 

@@ -1,6 +1,3 @@
-
-
-import orbital.Adjoint;
 import orbital.awt.*;
 import java.awt.*;
 import java.beans.*;
@@ -10,7 +7,6 @@ import java.beans.*;
  */
 public class AutoCustomizer {
     public static void main(String arg[]) throws Exception {
-	orbital.Adjoint.setLogLevel(Adjoint.BRIEF);
 	java.awt.Frame f = new java.awt.Frame();
 	f.setLayout(new java.awt.BorderLayout());
 	Component p = (Component) java.beans.Beans.instantiate(AutoCustomizer.class.getClassLoader(), orbital.awt.NumberInput.class.getName());

@@ -5,7 +5,9 @@ import orbital.util.graph.*;
 import orbital.util.graph.ListTree.TreeNode;
 import java.util.*;
 import java.io.*;
-import orbital.Adjoint;
+
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /**
  * (Elementary version of greedy) Huffman compression.
@@ -24,6 +26,7 @@ import orbital.Adjoint;
  * @see Huffman
  */
 public class Huffman_Elementary {
+    private static final Logger logger = Logger.global;
     public static void main(String arg[]) throws Exception {
 	File		     file = new File(arg.length > 0 ? arg[0] : "t.txt");
 	OccurrenceAnalyzer   occurrences = new OccurrenceAnalyzer();
@@ -103,7 +106,7 @@ public class Huffman_Elementary {
 	    int	   clen = code((char) b, c = new BitSet());
 	    dlen = append(data, dlen, c, clen);
 	} 
-	Adjoint.print(Adjoint.DEBUG, "writing", toString(data, dlen));
+	logger.log(Level.FINER, "writing", toString(data, dlen));
 
 	// byte-wise writing
 	for (int i = 0; i < dlen; ) {
@@ -125,7 +128,7 @@ public class Huffman_Elementary {
 		else
 		    data.set(dlen++);
 	} 
-	Adjoint.print(Adjoint.DEBUG, "reading", toString(data, dlen));
+	logger.log(Level.FINER, "reading", toString(data, dlen));
 	System.out.println(trie);
 	TreeNode n = (TreeNode) trie.getRoot();
 	for (int i = 0; i < dlen; ) {

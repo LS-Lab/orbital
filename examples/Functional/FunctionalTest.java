@@ -5,7 +5,6 @@ import orbital.math.*;
 
 public class FunctionalTest {
     public static void main(String arg[]) throws Exception {
-	orbital.Adjoint.print("Debug");
 	System.out.println("3+6=" + Operations.plus.apply(Values.valueOf(3), Values.valueOf(6)));
 	System.out.println("3.14+6/15=" + Operations.plus.apply(Values.valueOf(3.14), Operations.divide.apply(Values.valueOf(6), Values.valueOf(15))));
 	Function h = (Function) Operations.plus.apply(Functions.square, Functions.linear(Values.valueOf(2)));

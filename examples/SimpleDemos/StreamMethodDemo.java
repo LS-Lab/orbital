@@ -1,6 +1,8 @@
-import orbital.Adjoint;
 import orbital.util.StreamMethod;
 import java.util.Iterator;
+
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /**
  * Demonstrates stream methods and their performance in synchronous and asynchronous mode.
@@ -12,6 +14,7 @@ import java.util.Iterator;
  * @author  Andr&eacute; Platzer
  */
 public class StreamMethodDemo {
+    private static final Logger logger = Logger.getLogger(StreamMethod.class.getName());
 
     /**
      * simulate extensive processing.
@@ -29,19 +32,19 @@ public class StreamMethodDemo {
 
     public static void main(String arg[]) throws Exception {
 	// all sychronous connectors
-	Adjoint.print("Show", "synchronous connectors");
+	logger.log(Level.INFO, "Show {0}", "synchronous connectors");
 	test_synchronous();
 	Thread.sleep(INTERMEDIATE_DELAY);
-	Adjoint.print("Show", "asynchronous connectors");
+	logger.log(Level.INFO, "Show {0}", "asynchronous connectors");
 	Thread.sleep(INTERMEDIATE_DELAY);
 	test_asynchronous();
 	Thread.sleep(INTERMEDIATE_DELAY);
-	Adjoint.print("Show", "synchronous connectors (half used)");
+	logger.log(Level.INFO, "Show {0}", "synchronous connectors (half used)");
 	test_synchronousHalf();
     } 
 
     private static void test_synchronous() throws InterruptedException {
-	Adjoint.print("synchronous connector", "IDIU - instant delivery instant use");
+	logger.log(Level.INFO, "synchronous connector {0}", "IDIU - instant delivery instant use");
 	StreamMethod m = new StreamMethod(true) {
 		public void runStream() {
 		    resumedReturn("1");
@@ -54,7 +57,7 @@ public class StreamMethodDemo {
 	    System.out.println(i.next());
 
 	Thread.sleep(INTERMEDIATE_DELAY);
-	Adjoint.print("synchronous connector", "IDDU - instant delivery delayed use");
+	logger.log(Level.INFO, "synchronous connector {0}", "IDDU - instant delivery delayed use");
 	m = new StreamMethod(true) {
 		public void runStream() {
 		    resumedReturn("1");
@@ -68,7 +71,7 @@ public class StreamMethodDemo {
 	    System.out.println(i.next());
 
 	Thread.sleep(INTERMEDIATE_DELAY);
-	Adjoint.print("synchronous connector", "DDIU - delayed delivery instant use");
+	logger.log(Level.INFO, "synchronous connector {0}", "DDIU - delayed delivery instant use");
 	m = new StreamMethod(true) {
 		public void runStream() {
 		    try {
@@ -93,7 +96,7 @@ public class StreamMethodDemo {
 	    System.out.println(i.next());
 
 	Thread.sleep(INTERMEDIATE_DELAY);
-	Adjoint.print("synchronous connector", "DDDU - delayed delivery delayed use");
+	logger.log(Level.INFO, "synchronous connector {0}", "DDDU - delayed delivery delayed use");
 	m = new StreamMethod(true) {
 		public void runStream() {
 		    try {
@@ -122,7 +125,7 @@ public class StreamMethodDemo {
     private static void test_asynchronous() throws InterruptedException {
 
 	// all asychronous connectors
-	Adjoint.print("asynchronous connector", "IDIU - instant delivery instant use");
+	logger.log(Level.INFO, "asynchronous connector {0}", "IDIU - instant delivery instant use");
 	StreamMethod m = new StreamMethod(false) {
 		public void runStream() {
 		    resumedReturn("1");
@@ -135,7 +138,7 @@ public class StreamMethodDemo {
 	    System.out.println(i.next());
 
 	Thread.sleep(INTERMEDIATE_DELAY);
-	Adjoint.print("asynchronous connector", "IDDU - instant delivery delayed use");
+	logger.log(Level.INFO, "asynchronous connector {0}", "IDDU - instant delivery delayed use");
 	m = new StreamMethod(false) {
 		public void runStream() {
 		    resumedReturn("1");
@@ -149,7 +152,7 @@ public class StreamMethodDemo {
 	    System.out.println(i.next());
 
 	Thread.sleep(INTERMEDIATE_DELAY);
-	Adjoint.print("asynchronous connector", "DDIU - delayed delivery instant use");
+	logger.log(Level.INFO, "asynchronous connector {0}", "DDIU - delayed delivery instant use");
 	m = new StreamMethod(false) {
 		public void runStream() {
 		    try {
@@ -174,7 +177,7 @@ public class StreamMethodDemo {
 	    System.out.println(i.next());
 
 	Thread.sleep(INTERMEDIATE_DELAY);
-	Adjoint.print("asynchronous connector", "DDDU - delayed delivery delayed use");
+	logger.log(Level.INFO, "asynchronous connector {0}", "DDDU - delayed delivery delayed use");
 	m = new StreamMethod(false) {
 		public void runStream() {
 		    try {
@@ -202,7 +205,7 @@ public class StreamMethodDemo {
 
     private static void test_synchronousHalf() throws InterruptedException {
 	final int useLength = 2;
-	Adjoint.print("synchronous connector", "IDIU - instant delivery instant use");
+	logger.log(Level.INFO, "synchronous connector {0}", "IDIU - instant delivery instant use");
 	StreamMethod m = new StreamMethod(true) {
 		public void runStream() {
 		    resumedReturn("1");
@@ -215,7 +218,7 @@ public class StreamMethodDemo {
 	    System.out.println(i.next());
 
 	Thread.sleep(INTERMEDIATE_DELAY);
-	Adjoint.print("synchronous connector", "IDDU - instant delivery delayed use");
+	logger.log(Level.INFO, "synchronous connector {0}", "IDDU - instant delivery delayed use");
 	m = new StreamMethod(true) {
 		public void runStream() {
 		    resumedReturn("1");
@@ -229,7 +232,7 @@ public class StreamMethodDemo {
 	    System.out.println(i.next());
 
 	Thread.sleep(INTERMEDIATE_DELAY);
-	Adjoint.print("synchronous connector", "DDIU - delayed delivery instant use");
+	logger.log(Level.INFO, "synchronous connector {0}", "DDIU - delayed delivery instant use");
 	m = new StreamMethod(true) {
 		public void runStream() {
 		    try {
@@ -254,7 +257,7 @@ public class StreamMethodDemo {
 	    System.out.println(i.next());
 
 	Thread.sleep(INTERMEDIATE_DELAY);
-	Adjoint.print("synchronous connector", "DDDU - delayed delivery delayed use");
+	logger.log(Level.INFO, "synchronous connector {0}", "DDDU - delayed delivery delayed use");
 	m = new StreamMethod(true) {
 		public void runStream() {
 		    try {

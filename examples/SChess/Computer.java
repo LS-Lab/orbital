@@ -3,10 +3,11 @@ import orbital.robotic.strategy.*;
 import orbital.robotic.*;
 import orbital.logic.functor.Function;
 import orbital.util.*;
-import orbital.Adjoint;
-import orbital.SP;
 import java.util.*;
 import java.io.Serializable;
+
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 class ChessAspects implements Serializable {
     public double offensiveFigure = 0.1;			// offensive kind of figure
@@ -25,6 +26,7 @@ class ChessAspects implements Serializable {
  * @todo use new AlphaBetaPruning capabilities
  */
 public class Computer implements Function {
+    static final Logger logger = Logger.global;
     ChessAspects aspects;
     public Computer(ChessAspects aspects) {
 	this.aspects = aspects;
@@ -39,9 +41,9 @@ public class Computer implements Function {
     public Object apply(Object arg) {
 	ChessField field = (ChessField) arg;
         field.rules.setOurLeague(field.rules.getTurn());
-	Adjoint.print(Adjoint.DEBUG, "AI", "AI " + field.rules + " action {");
+	Computer.logger.log(Level.FINER, "AI {0} action {", field.rules);
 	MoveWeighting.Argument move = determineNextMove(field);
-	Adjoint.print(Adjoint.DEBUG, "AI", "} AI " + field.rules + " will perform: " + move);
+	Computer.logger.log(Level.FINER, "} AI {0} will perform: {1}", new Object[] {field.rules, move});
 	return move;
     } 
 
@@ -79,7 +81,7 @@ final class ChessFigureWeighting extends FigureWeighting implements Function /* 
     }
     public Object apply(Object arg) {
 	Argument i = (Argument) arg;
-	Adjoint.print(Adjoint.DEBUG, "AI", " SF:weighting ... " + "( " + i + " -->");
+	Computer.logger.log(Level.FINER, " SF:weighting ... " + "( " + i + " -->");
 
 	// we only move our figures, forget about moving opponents
 	if (i.figure.league != ((ChessField) i.field).getTurn())
@@ -89,7 +91,7 @@ final class ChessFigureWeighting extends FigureWeighting implements Function /* 
 	if (i.figure.type != ChessRules.KING)
 	    val += computer.aspects.offensiveFigure;
 
-	Adjoint.print(Adjoint.DEBUG, "AI", " SF:  ) is weighted to " + val);
+	Computer.logger.log(Level.FINER, " SF:  ) is weighted to " + val);
 	return new Double(val);
     } 
 }
@@ -108,7 +110,7 @@ final class ChessMoveWeighting extends MoveWeighting implements Function /* <Obj
 	    double		val = ((Number) super.apply(arg)).doubleValue();
 	    ChessFigure f = (ChessFigure) i.figure;
 
-	    Adjoint.print(Adjoint.DEBUG, "AI", "    SM: --> " + i.destination + "...");
+	    Computer.logger.log(Level.FINER, "    SM: --> " + i.destination + "...");
 
 	    int targetLeague = i.field.isBeating(i.move, i.destination);
 	    if (targetLeague == i.figure.league)
@@ -124,7 +126,7 @@ final class ChessMoveWeighting extends MoveWeighting implements Function /* <Obj
 
 	    // bottom storm around run aspect
 	    val += i.destination.y * computer.aspects.topStorm;
-	    Adjoint.print(Adjoint.DEBUG, "AI", "    SM:  " + i.destination.x + "|" + i.destination.y + ": w=" + val);
+	    Computer.logger.log(Level.FINER, "    SM:  " + i.destination.x + "|" + i.destination.y + ": w=" + val);
 	    return new Double(val);
 	} catch (ClassCastException err) {
 	    throw new InternalError("panic");

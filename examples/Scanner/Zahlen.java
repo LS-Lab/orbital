@@ -1,15 +1,17 @@
-
-
-import orbital.Adjoint;
 import orbital.io.*;
 import orbital.io.parsing.*;
 import orbital.logic.State;
 import java.io.*;
 
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
 /**
  * Parser for (german) natural language numbers.
  */
 public class Zahlen {
+    static final Logger logger = Logger.global;
+    
     public static void main(String arg[]) throws Exception {
 	System.out.println("(German)");
 	System.out.println("Liest eine als Wort formulierte, maximal dreistellige Zahl aus der Datei 'zahl'.");
@@ -32,7 +34,7 @@ class ZahlParser extends Parser {
 	try {
 	    return (Symbol) new ParseZahl().processAutomata(state, tokens);
 	} catch (ClassCastException x) {
-	    Adjoint.print(x);
+	    Zahlen.logger.log(Level.WARNING, "parse", x);
 	    return null;
 	} 
     } 
@@ -54,11 +56,11 @@ class ZahlParser extends Parser {
 	    if (!tokens.hasNext())
 		return null;
 	    Token tok = (Token) tokens.next();
-	    Adjoint.log.println(tok);
+	    Zahlen.logger.log(Level.FINE, "token {0}", tok);
 
 	    if (tok.isType("ZIFFER")) {
 		Token tok2 = (Token) tokens.next();
-		Adjoint.print("ziffer", tok2);
+		Zahlen.logger.log(Level.FINE, "ziffer {0}", tok2);
 		if (tok2.isType("ZEHN"))
 		    return setResult(new Symbol("1" + tok.token));
 		else if (tok2.isType("ZIG"))
@@ -99,7 +101,7 @@ class ZahlParser extends Parser {
 	    if (!tokens.hasNext())
 		return null;
 	    Token tok = (Token) tokens.next();
-	    Adjoint.log.println(tok);
+	    Zahlen.logger.log(Level.FINE, "parse {0}", tok);
 
 	    if (tok.isType("ZIFFER")) {
 		Token tok2 = (Token) tokens.next();

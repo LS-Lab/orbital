@@ -7,8 +7,6 @@ import orbital.math.*;
 import java.util.*;
 import java.util.List;
 import java.io.*;
-import orbital.Adjoint;
-import orbital.SP;
 
 /**
  * New simple Chess Computer that employs &alpha;-&beta;-pruning and explicit utility functions.

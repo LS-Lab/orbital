@@ -4,14 +4,13 @@ import orbital.math.Values;
 
 public class DeriveAndIntegrate {
     public static void main(String arg[]) throws Exception {
-	orbital.Adjoint.print("Debug");
 	test_unary();
 	test_operations();
 
 	// test_binary();
     } 
     private static void test_unary() throws Exception {
-	orbital.Adjoint.print("Derivatives", "elemental unary functions");
+	System.out.println("Derivatives elemental unary functions");
 	Function f = Functions.constant(Values.valueOf(7));
 	System.out.println(f + " ' = " + f.derive() + "\n  integral " + f + " = " + f.integrate());
 	f = Functions.id;
@@ -29,7 +28,7 @@ public class DeriveAndIntegrate {
     } 
 
     private static void test_operations() throws Exception {
-	orbital.Adjoint.print("Derivatives", "elemental operation functions");
+	System.out.println("Derivatives elemental operation functions");
 	Function a = Functions.symbolic("f"), b = Functions.symbolic("g");
 	Function f = Functionals.compose(Operations.plus, a, b);
 	System.out.println("(" + f + ") ' = " + f.derive());
