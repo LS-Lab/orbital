@@ -1437,6 +1437,7 @@ public class ClassicalLogic extends ModernLogic {
     /**
      * Propositional inference.
      * Inference mechanism specialized for fast propositional inference.
+     * Currently uses Davis-Putnam-Loveland algorithm.
      * @attribute time complexity CoNP-complete
      */
     public static final InferenceMechanism PROPOSITIONAL_INFERENCE = new InferenceMechanism("PROPOSITIONAL") {
