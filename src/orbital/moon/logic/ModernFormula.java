@@ -429,10 +429,10 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 		return c;
 	    }
 	    catch (InstantiationException ass) {
-		throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite newInstance(Functor.Composite,Object)").initCause(ass);
+		throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite construct(Object,Object)").initCause(ass);
 	    }
 	    catch (IllegalAccessException ass) {
-		throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite newInstance(Functor.Composite,Object)").initCause(ass);
+		throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite construct(Object,Object)").initCause(ass);
 	    }
 	}
 
