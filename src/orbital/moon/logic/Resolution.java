@@ -109,7 +109,7 @@ public class Resolution implements Inference {
     }
 
     public boolean infer(Formula[] B, Formula D) {
-	if (D == ModernFormula.EMPTY)
+	if (D == ClassicalLogic.EMPTY)
 	    // avoid funny case that results from the fact, that we cannot identify EMPTY with true, here
 	    return true;
 

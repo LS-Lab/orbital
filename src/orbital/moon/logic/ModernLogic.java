@@ -71,7 +71,7 @@ abstract class ModernLogic implements Logic {
 	    if (s.getSignifier().equals(signifier))
 		//@todo should we check for compatibility of symbol and s so as to detect misunderstandings during parse?
 		// fixed interpretation of core signature
-		return ModernFormula.createFixedSymbol(s, coreInterpretation().get(s), true);
+		return createFixedSymbol(s, coreInterpretation().get(s), true);
 	}
 	// ordinary (new) symbols
 	assert !("true".equals(signifier) || "false".equals(signifier)) : "true and false are in core signature and no ordinary symbols";
@@ -79,7 +79,7 @@ abstract class ModernLogic implements Logic {
 	// test for syntactically legal <INTEGER_LITERAL> | <FLOATING_POINT_LITERAL>
 	//@todo could also move to an infinite coreInterpretation()
 	try {
-	    return ModernFormula.createFixedSymbol(symbol, Double.valueOf(signifier), false);
+	    return createFixedSymbol(symbol, Double.valueOf(signifier), false);
 	}
 	catch (NumberFormatException trial) {}
 
@@ -90,7 +90,7 @@ abstract class ModernLogic implements Logic {
 		|| (i == 0 && !(ch == '_' || Character.isLetter(ch))))
 		throw new IllegalArgumentException("illegal character `" + ch + "\' for symbol " + symbol);
 	}
-	return ModernFormula.createSymbol(symbol);
+	return createSymbol(symbol);
     } 
 
     public Expression compose(Symbol op, Expression arguments[]) throws java.text.ParseException {
@@ -105,7 +105,7 @@ abstract class ModernLogic implements Logic {
         }
         catch (NoSuchElementException nocore) {
 	    // non-core symbols
-	    return ModernFormula.composeDelayed((Formula) ModernFormula.createSymbol(op), op, arguments);
+	    return composeDelayed((Formula) createSymbol(op), op, arguments);
         }
         assert f.toString().equals(op) : "get returns the right functor for the string representation";
         try {
@@ -114,10 +114,56 @@ abstract class ModernLogic implements Logic {
 	    Symbol op2;
 	    assert (op2 = coreSignature().get(f.toString(), arguments)) != null : "composition functors occur in the signature";
 	    assert op.equals(op2) : "enforce any potential unambiguities of operators";
-	    return ModernFormula.composeFixed((Functor)f, op, arguments);
+	    return composeFixed((Functor)f, op, arguments);
 	    //return composeDelayed((Formula)createFixedSymbol(op, f, true), op, arguments);
         }
         catch (IllegalArgumentException ex) {throw new java.text.ParseException(ex.getMessage(), COMPLEX_ERROR_OFFSET);}
     }
-   
+
+    // delegation helper methods
+    
+    // base case atomic symbols
+
+    /**
+     * Construct (a formula view of) an atomic symbol.
+     * @param symbol the symbol for which to create a formula representation
+     * @see Logic#createAtomic(Symbol)
+     */
+    public Formula createSymbol(Symbol symbol) {
+	return ModernFormula.createSymbol(this, symbol);
+    }
+    /**
+     * Construct (a formula view of) an atomic symbol with a fixed interpretation.
+     * @param symbol the symbol for which to create a formula representation
+     * @param referent the fixed interpretation of this symbol
+     * @param core whether symbol is in the core such that it does not belong to the proper signature.
+     * @see Logic#createAtomic(Symbol)
+     */
+    public Formula createFixedSymbol(Symbol symbol, Object referent, boolean core) {
+	return ModernFormula.createFixedSymbol(this, symbol, referent, core);
+    }
+
+    // composition
+    
+    /**
+     * Delayed composition of a symbol with some arguments.
+     * Usually for user-defined predicates etc. or predicates subject to interpretation.
+     * @param f the formula really performing the (outer part of the) composition by op.
+     * @param op the (outer part of the) composing symbol.
+     * @param arguments the arguments to the composition by op.
+     */
+    public Formula composeDelayed(Formula f, Symbol op, Expression arguments[]) {
+	return ModernFormula.composeDelayed(this, f, op, arguments);
+    }
+
+    /**
+     * Instant composition of functors with a fixed core interperation
+     * Usually for predicates etc. subject to fixed core interpretation.
+     * @param f the functor really performing the (outer part of the) composition by op.
+     * @param op the (outer part of the) composing symbol.
+     * @param arguments the arguments to the composition by op.
+     */
+    public Formula composeFixed(Functor f, Symbol op, Expression arguments[]) {
+	return ModernFormula.composeFixed(this, f, op, arguments);
+    }
 }

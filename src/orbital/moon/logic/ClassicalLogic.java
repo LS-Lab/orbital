@@ -1065,7 +1065,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
     /**
      * @deprecated empty formulas are not defined
      */
-    private static Formula EMPTY = new ModernFormula() {
+    static Formula EMPTY = new ModernFormula(new ClassicalLogic()) {
 	    public Signature getSignature() {
 		return SignatureBase.EMPTY;
 	    }
