@@ -68,6 +68,7 @@ import java.util.logging.Level;
  *
  * @version 0.7, 2001/07/30
  * @author  Andr&eacute; Platzer
+ * @todo introduce "class Clause extends Set<Formula>" adding more type-safety for clauses and sets of clauses which are both sets.
  * @todo Skolem-Normalfrom mit KNF-Matrix (mit Erweiterung der Signatur)
  * @todo schlaues pränex-Normalform Bilden, um einfacher skolemisieren zu können. Minimiere die Anzahl der Allquantoren vor den Existenzquantoren.
  *  etwa &exist;x&forall;y P &and; &exist;z&forall;w Q  == &exist;x&exist;z &forall;y&forall;w P&and;Q statt == &exist;x&forall;y&exist;z&forall;w P&and;Q denn im ersteren Fall skolemisiert x zu a und z zu b, im zweiteren aber x zu a und z zu f(y).
@@ -104,11 +105,17 @@ class Resolution implements Inference {
      */
     private final GeneralSearch search;
     public Resolution() {
-        //@xxx IterativeDeepending does not want to stop sometimes (f.ex. for (a|a)<=>~a which is false) even for (a&b)<=>(b&a) which is true?
-	// nowadays, it fails too early even for solvable problems
+	//@internal we do search for cheapest solutions but for first solution
         //this.search = new IterativeDeepening();
         //@xxx BreadthFirstSearch will lead us to producing a lot of dangling threads if ASYNCHRONOUS_EXPAND=true
-        this.search = new BreadthFirstSearch();
+	//        this.search = new BreadthFirstSearch();
+        //this.search = new IterativeDeepening();
+
+	//@todo use IDA* with a non-admissible heuristic h(s):=5 or anything such that we always deepen the bound by more than 1?
+	//@xxx IE(h=5) is incomplete for "|=  ((a|b)&c ) <=> ( (a&c)|(b&c) )"
+	//this.search = new IterativeExpansion(orbital.math.functional.Functions.constant(Values.getDefaultInstance().valueOf(5)));
+	//this.search = new IterativeDeepeningAStar(orbital.math.functional.Functions.constant(Values.getDefaultInstance().valueOf(5)));
+	this.search = new IterativeDeepeningAStar(orbital.math.functional.Functions.constant(Values.getDefaultInstance().valueOf(2)));
     }
 
     public boolean infer(Formula[] B, Formula D) {
@@ -204,12 +211,14 @@ class Resolution implements Inference {
     	 */
     	private final Set/*_<Set<Formula>>_*/ setOfSupport;
     	public ResolutionProblem(Set/*_<Set<Formula>>_*/ knowledgebase, Set/*_<Set<Formula>>_*/ setOfSupport) {
-	    this.knowledgebase = knowledgebase;
-	    this.setOfSupport = setOfSupport;
+	    //@internal unmodifiable final is optional
+	    this.knowledgebase = Collections.unmodifiableSet(knowledgebase);
+	    this.setOfSupport = Collections.unmodifiableSet(setOfSupport);
     	}
 
         public Object getInitialState() {
-	    return new Proof(setOfSupport, Values.ZERO);
+	    //@internal since the proof states may modify setOfSupport, use a copy so that we can reuse the initial state
+	    return new Proof(new HashSet(setOfSupport), Values.ZERO);
     	}
 	public MutableFunction getAccumulatedCostFunction() {
 	    return _accumulatedCostFunction;
@@ -218,9 +227,10 @@ class Resolution implements Inference {
 		public Object apply(Object s) {
 		    return ((Proof) s).accumulatedCost;
 		}
-		public Object set(Object s, Object accumulatedCost) {
-		    Object old = ((Proof) s).accumulatedCost;
-		    ((Proof) s).accumulatedCost = accumulatedCost;
+		public Object set(Object s, Object newAccumulatedCost) {
+		    Proof p = (Proof)s;
+		    Object old = p.accumulatedCost;
+		    p.accumulatedCost = newAccumulatedCost;
 		    return old;
 		}
 		public Object clone() {
@@ -239,7 +249,7 @@ class Resolution implements Inference {
 	    return new StreamMethod(ASYNCHRONOUS_EXPAND) {
 		    public void runStream() {
                 	final Set/*_<Set<Formula>>_*/ S = ((Proof) n).setOfSupport;
-			// we use a list view of the set for optimized resolving (after having resolved G with F, we won't resolve F with G again), but we will only need to modify the set F
+			// we use a list view of the set S for optimized resolving (after having resolved G with F, we won't resolve F with G again). But we only modify the set F&isin;S=listS, and thus - indirectly - S and listS.
 			final List		      listS = Collections.unmodifiableList(new LinkedList(S));
                 	Collection		      r = new LinkedList();
                 	// choose any clause G&isin;S
@@ -247,7 +257,7 @@ class Resolution implements Inference {
 			    final Set/*_<Formula>_*/ G = (Set) i.next();
 			    final Signature	     GVariables = clausalFreeVariables(G);
 			    boolean		     resolvable = false;
-			    assert !G.equals(CONTRADICTION) : "already checked for goal in isSolution() although this is somewhat less performant";
+			    assert !G.equals(CONTRADICTION) : "already checked for goal in isSolution() although this is somewhat less performant. So we do not need to check again in actions()";
     
 			    // if we already tried to resolve F with G, we don't need to resolve G with F, again, so
 			    // choose any clause F&isin;W&cup;S (that does not occur before G in S)
@@ -258,60 +268,34 @@ class Resolution implements Inference {
 				final Signature	   overlappingVariables = GVariables.intersection(FVariables);
 				if (!overlappingVariables.isEmpty()) {
 				    // make a variant of F such that the variables of F and G are disjunct
+				    //@todo optimize would it be quicker if we always build variants, regardless of disjunctness or not?
 				    F = variantOf(F, overlappingVariables);
 				}
+
 				// try to resolve G with F (to L)
-				// choose any literal Fj&isin;F
-                        	for (Iterator j = F.iterator(); j.hasNext(); ) {
-				    final Formula Fj = (Formula) j.next();
-				    final Formula notFj = negation(Fj);
-				    // choose any literal Gk&isin;G
-				    for (Iterator k = G.iterator(); k.hasNext(); ) {
-                            		final Formula      Gk = (Formula) k.next();
-                            		// generalized resolution
-					final Substitution mu = Substitutions.unify(Arrays.asList(new Object[] {Gk, notFj}));
-					logger.log(Level.FINEST, "resolving literals {0} with {1} leads to {2}", new Object[] {Gk, notFj, mu});
-					if (mu != null) {
-					    resolvable = true;
-					    // resolve F and G into a new clause L
-					    Set Gp = new HashSet(G);
-					    Gp.remove(Gk);
-					    Set Fp = new HashSet(F);
-					    Fp.remove(Fj);
-					    Gp = (Set) Functionals.map(mu, Gp);
-					    Fp = (Set) Functionals.map(mu, Fp);
-                        				
-					    if (isElementaryValid(Fp, Gp))
-						// cut that possibility since resolving with tautologies will never lead to false (the contradiction)
-						continue;
-                        				
-					    Set R = Gp;
-					    R.addAll(Fp);
-					    logger.log(Level.FINER, "resolved {0} from {1} and {2}", new Object[] {R, F, G});
-					    final Set factorizedR = factorize(R);
-					    if (factorizedR != null)
-						R = factorizedR;
-					    final Set/*_<Set<Formula>>_*/ resultingClauseSet = new HashSet(S);
-					    resultingClauseSet.add(R);
-					    logger.log(Level.FINEST, "RESRET {0} @todo what's this?", R);
-
-					    // goal lookahead
-					    if (R.equals(CONTRADICTION)) {
-						logger.log(Level.FINE, "resolved contradiction {0} from {1} and {2}",  new Object[] {R, F, G});
-						// construct a special clause, that only contains the contradiction (in order to simplify isSolution)
-						resumedReturn(new Proof(Collections.singleton(CONTRADICTION)));
-						// cut the search tree after resuming with {CONTRADICTION} as clauses
-						return;
-					    }
-
-					    resumedReturn(new Proof(resultingClauseSet));
-					}
+                        	for (Iterator resolvents = resolve(F, G); resolvents.hasNext(); ) {
+				    resolvable = true;
+				    Set/*_<Formula>_*/ R = (Set)resolvents.next();
+				    // goal lookahead
+				    if (R.equals(CONTRADICTION)) {
+					logger.log(Level.FINE, "resolved contradiction {0} from {1} and {2}",  new Object[] {R, F, G});
+					// construct a special clause, that only contains the contradiction (in order to simplify isSolution)
+					resumedReturn(new Proof(Collections.singleton(CONTRADICTION)));
+					// cut the search tree after resuming with {CONTRADICTION} as clauses
+					return;
 				    }
+				    
+				    final Set/*_<Set<Formula>>_*/ resultingClauseSet = new HashSet(S);
+				    resultingClauseSet.add(R);
+				    logger.log(Level.FINEST, "RESRET {0} @todo what's this?", R);
+				    
+				    resumedReturn(new Proof(resultingClauseSet));
 				}
 			    }
     
 			    if (!resolvable)
-				//@todo couldn't we somehow know the index from our list iterator i for removing G by i.remove()?
+				//@todo optimize couldn't we somehow know the index from our list iterator i for removing G by i.remove()?
+				//@internal note that our successors currently have a (modified) copy of S, anyway, so perhaps we could simplify much?
 				S.remove(G);
                 	}
 		    }
@@ -327,10 +311,60 @@ class Resolution implements Inference {
 	    return new Transition(action, 1);
 	}
 
+	/**
+	 * Get all resolvents of F and G, if any. (Resolution rule)
+	 * Implementation already incorporates some cuts.
+	 * @return an iterator over the set of all resolvent clauses.
+	 * @internal could also use a StreamMethod for implementation.
+	 */
+	private Iterator/*_<Set<Formula>>_*/ resolve(Set/*_<Formula>_*/ F, Set/*_<Formula>_*/ G) {
+	    Set/*_Set<<Formula>>_*/ resolvents = new HashSet();
+	    // try to resolve G with F (to L)
+	    // choose any literal Fj&isin;F
+	    for (Iterator j = F.iterator(); j.hasNext(); ) {
+		final Formula Fj = (Formula) j.next();
+		final Formula notFj = negation(Fj);
+		// choose any literal Gk&isin;G
+		for (Iterator k = G.iterator(); k.hasNext(); ) {
+		    final Formula      Gk = (Formula) k.next();
+		    // generalized resolution
+		    final Substitution mu = Substitutions.unify(Arrays.asList(new Object[] {Gk, notFj}));
+		    logger.log(Level.FINEST, "resolving literals {0} with {1} is {2}", new Object[] {Gk, notFj, mu});
+		    if (mu != null) {
+			// resolve F and G into a new clause L
+			Set Gp = new HashSet(G);
+			Gp.remove(Gk);
+			Set Fp = new HashSet(F);
+			Fp.remove(Fj);
+			Gp = (Set) Functionals.map(mu, Gp);
+			Fp = (Set) Functionals.map(mu, Fp);
+                        				
+			if (isElementaryValid(Fp, Gp))
+			    // cut that possibility since resolving with tautologies will never lead to false (the contradiction)
+			    //@xxx 100% sure that for completeness, we can also remove G from setOfSupport, if it only resolves to isElementaryValid clauses. Or must we keep it, even though we don't have to keep the (elementary true) resolvent
+			    continue;
+                        				
+			Set R = Gp;
+			R.addAll(Fp);
+			logger.log(Level.FINER, "resolved {0} from {1} and {2}", new Object[] {R, F, G});
+			final Set factorizedR = factorize(R);
+			if (factorizedR != null)
+			    R = factorizedR;
+
+			// @internal for perfect performance (and catastrophal structure) could already perform a goal lookahead by R.equals(CONTRADICTION)
+
+			resolvents.add(R);
+		    }
+		}
+	    }
+	    return resolvents.iterator();
+	}
     }
+
     /**
      * The state during a proof (i.e. a set of formulas forming the current set of support).
      * @stereotype &laquo;Structure&raquo;
+     * @author Andr&eacute; Platzer
      */
     private static class Proof {
 	/**
@@ -349,6 +383,7 @@ class Resolution implements Inference {
 	    this.accumulatedCost = accumulatedCost;
 	}
     }	    
+
     
     // clause and clause set handling
 	
@@ -490,6 +525,7 @@ class Resolution implements Inference {
 	return F.not();
     }
 
+    
     // proof utilities
 	
     /**
