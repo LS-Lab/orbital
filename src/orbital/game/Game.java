@@ -60,6 +60,7 @@ import orbital.util.InnerCheckedException;
  * @author Andr&eacute; Platzer
  * @see <a href="doc-files/Game.html">Game applet parameter example</a>
  * @invariants 0 <= realPlayersActions && realPlayersActions <= realPlayers
+ * @attribute resources = menubar and popup menu
  * @xxx turnDone should be called "performedMove" and perhaps we can get rid of this old way of using events. Also we need a more customizable way of deciding when to end a turn (f.ex. some games may allow a player to perform multiple moves before ending his turn)
  */
 public class Game extends Applet implements Runnable {
@@ -585,11 +586,12 @@ public class Game extends Applet implements Runnable {
 
     /**
      * Load a saved game from a stream. Fetch new images for the figures.
-     * <p>
-     * <b>Note:</b> Remember that class names are relative to this package for serialization.
-     * If you desire your own package to be default, simply overwrite this method with the body<pre>
+     * @note Remember that class names are relative to this package for serialization.
+     * If you desire your own package to be default, simply overwrite this method with the body
+     * <pre>
      * super.load(is);
-     * </pre>to circumvent confusion with different default packages.</p>
+     * </pre>
+     * to circumvent confusion with different default packages.
      * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      * @see GameRules#getImage(Figure)
      * @see #createGameRules(java.lang.String)
