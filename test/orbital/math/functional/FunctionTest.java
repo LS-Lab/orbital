@@ -49,6 +49,7 @@ public class FunctionTest extends check.TestCase {
 	junit.textui.TestRunner.run(suite());
     }
     public static Test suite() {
+	//@internal could perhaps use external RepeatedTest
 	return new TestSuite(FunctionTest.class);
     }
 
