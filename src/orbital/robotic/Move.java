@@ -9,12 +9,13 @@ package orbital.robotic;
 import java.io.Serializable;
 
 /**
- * A Move consists of a movement which is a sequence of single
- * step Moves. It is represented as a String.
+ * A move consists of a sequence of single-step moves.
+ * It is represented as a String.
  * <p>
- * Move class is including constants to name possible Moves.</p>
+ * Move class is including constants to name possible single-step moves.</p>
  * 
- * @version 0.9, 09/07/98
+ * @stereotype data-type
+ * @version 0.9, 1998-07-09
  * @author  Andr&eacute; Platzer
  */
 public class Move implements Serializable {
@@ -89,7 +90,7 @@ public class Move implements Serializable {
      * Contains the sequence of Moves. Called movement or path.
      * @serial
      */
-    public String			 movement;
+    private String movement;
 
     public Move(char mv) {
 	movement = "" + mv;
