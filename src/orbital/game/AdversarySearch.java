@@ -50,9 +50,10 @@ public abstract class AdversarySearch {
      * </p>
      * @return whether the active league that performs the next move is of our league,
      *  or belongs to the opponents.
+     * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
      * @todo improve name to isOurLeague'sTurn, or ourLeagueMoves, ...
      */
-    protected abstract boolean isOurLeague(Field state);
+    protected abstract boolean isOurLeaguesTurn(Field state);
     
     
 
