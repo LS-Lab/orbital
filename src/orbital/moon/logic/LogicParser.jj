@@ -695,6 +695,7 @@ Expression QuantifiedExpression() :
 	{
 	    for (Iterator i = xs.iterator(); i.hasNext(); ) {
 		Symbol y = (Symbol) i.next();
+		//@internal note that the tok is not quite true for multiple quantifiers
 		a = combine(tok, y, a);
 	    }
 	    scope = scope.leave();

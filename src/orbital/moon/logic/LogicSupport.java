@@ -49,8 +49,8 @@ final class LogicSupport {
     public static final Interpretation arrayToInterpretation(Object[][] functors, boolean skipNull, boolean useRegisteredNotationsOnNull, boolean appendTrueFalse) {
 	Map assoc = new TreeMap();
 	if (appendTrueFalse) {
-	    assoc.put(new SymbolBase("true", SymbolBase.BOOLEAN_ATOM), Boolean.TRUE);
-	    assoc.put(new SymbolBase("false", SymbolBase.BOOLEAN_ATOM), Boolean.FALSE);
+	    assoc.put(new SymbolBase("true", Types.TRUTH), Boolean.TRUE);
+	    assoc.put(new SymbolBase("false", Types.TRUTH), Boolean.FALSE);
 	}
 	for (int i = 0; i < functors.length; i++) {
 	    final Functor f = (Functor)functors[i][0];
