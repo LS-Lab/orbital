@@ -1410,7 +1410,7 @@ public class Functionals {
     public static VoidFunction/*<Boolean>*/ asFunction(VoidPredicate p) {
 	return new VoidPredicateFunction(p);
     }
-    private static class VoidPredicateFunction extends AbstractCompositeFunctor implements VoidFunction/*<Boolean>*/ {
+    private static class VoidPredicateFunction implements VoidFunction/*<Boolean>*/ {
 	private static final long serialVersionUID = -578056603334602720L;
 	/**
 	 * @serial
@@ -1420,6 +1420,16 @@ public class Functionals {
 	    this.p = p;
 	}
 	private VoidPredicateFunction() {}
+
+	public boolean equals(Object o) {
+	    return o instanceof VoidPredicateFunction && Utility.equals(p, ((VoidPredicateFunction)o).p);
+	}
+	public int hashCode() {
+	    return Utility.hashCode(p);
+	}
+	public String toString() {
+	    return p.toString();
+	}
 
 	public Object/*>Boolean<*/ apply() {
 	    return new Boolean(p.apply());
@@ -1455,7 +1465,7 @@ public class Functionals {
     public static /*<A>*/ Function/*<A, Boolean>*/ asFunction(Predicate/*<A>*/ p) {
 	return new PredicateFunction/*<A>*/(p);
     }
-    private static class PredicateFunction/*<A>*/ extends AbstractCompositeFunctor implements Function/*<A, Boolean>*/ {
+    private static class PredicateFunction/*<A>*/ implements Function/*<A, Boolean>*/ {
 	private static final long serialVersionUID = 5923239404848442075L;
 	/**
 	 * @serial
@@ -1465,6 +1475,16 @@ public class Functionals {
 	    this.p = p;
 	}
 	private PredicateFunction() {}
+
+	public boolean equals(Object o) {
+	    return o instanceof PredicateFunction && Utility.equals(p, ((PredicateFunction)o).p);
+	}
+	public int hashCode() {
+	    return Utility.hashCode(p);
+	}
+	public String toString() {
+	    return p.toString();
+	}
 
 	public Object/*>Boolean<*/ apply(Object/*>A<*/ x) {
 	    return new Boolean(p.apply(x));
@@ -1502,7 +1522,10 @@ public class Functionals {
     public static /*<A1, A2>*/ BinaryFunction/*<A1, A2, Boolean>*/ asFunction(BinaryPredicate/*<A1, A2>*/ p) {
 	return new BinaryPredicateFunction/*<A1, A2>*/(p);
     }
-    private static class BinaryPredicateFunction/*<A1, A2>*/ extends AbstractCompositeFunctor implements BinaryFunction/*<A1, A2, Boolean>*/ {
+    /**
+     * @internal we should not extend composite, cause otherwise, Notation would format us like "7( @ >=) 3" instead of "7 >= 3".
+     */
+    private static class BinaryPredicateFunction/*<A1, A2>*/ implements BinaryFunction/*<A1, A2, Boolean>*/ {
 	private static final long serialVersionUID = -6039054390567866829L;
 	/**
 	 * @serial
@@ -1512,6 +1535,16 @@ public class Functionals {
 	    this.p = p;
 	}
 	private BinaryPredicateFunction() {}
+
+	public boolean equals(Object o) {
+	    return o instanceof BinaryPredicateFunction && Utility.equals(p, ((BinaryPredicateFunction)o).p);
+	}
+	public int hashCode() {
+	    return Utility.hashCode(p);
+	}
+	public String toString() {
+	    return p.toString();
+	}
 
 	public Object/*>Boolean<*/ apply(Object/*>A1<*/ x, Object/*>A2<*/ y) {
 	    return new Boolean(p.apply(x, y));
