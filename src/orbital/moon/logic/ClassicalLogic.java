@@ -168,7 +168,7 @@ public class ClassicalLogic extends ModernLogic {
 		System.out.println(" = {");
 		for (Iterator i = new ClassicalLogic().coreSignature().iterator(); i.hasNext(); ) {
 		    Symbol s = (Symbol)i.next();
-		    System.out.println("\t" + s + "\t: " + s.getType());
+		    System.out.println("\t" + Types.toTypedString(s));
 		}
 		System.out.println(" }");
 	    }

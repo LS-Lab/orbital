@@ -174,7 +174,7 @@ public class MathExpressionSyntax implements ExpressionSyntax {
     public Expression compose(Expression compositor, Expression arguments[]) throws ParseException {
 	MathExpression op = (MathExpression)compositor;
 	if (!Types.isApplicableTo(compositor.getType(), arguments))
-	    throw new ParseException("compositor " + compositor + ":" + compositor.getType() + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments) + ":" + Types.typeOf(arguments), ModernLogic.COMPLEX_ERROR_OFFSET);
+	    throw new ParseException("compositor " + Types.toTypedString(compositor) + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments) + ':' + Types.typeOf(arguments), ModernLogic.COMPLEX_ERROR_OFFSET);
 
 	// handle special cases of term construction, first
 	if (LAMBDA.equals(op.referee)) {

@@ -264,7 +264,7 @@ abstract class ModernLogic implements Logic {
 	if (compositor == null)
 	    throw new NullPointerException("illegal arguments: compositor " + compositor + " composed with " + MathUtilities.format(arguments));
         if (TYPE_CHECK && !Types.isApplicableTo(compositor.getType(), arguments))
-	    throw new ParseException("compositor " + compositor + " : " + compositor.getType() + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments) + " : " + Types.typeOf(arguments), COMPLEX_ERROR_OFFSET);
+	    throw new ParseException("compositor " + Types.toTypedString(compositor) + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments) + ':' + Types.typeOf(arguments), COMPLEX_ERROR_OFFSET);
 
 	Expression RES = composeImpl(compositor, arguments);
 	assert RES != null : "@postconditions RES != null";	     

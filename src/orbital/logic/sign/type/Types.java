@@ -10,6 +10,7 @@ import orbital.logic.imp.Type.Composite;
 import java.util.Comparator;
 import orbital.util.IncomparableException;
 
+import orbital.logic.trs.Variable;
 import java.io.Serializable;
 import orbital.logic.functor.Functor;
 import orbital.logic.functor.Predicate;
@@ -33,6 +34,9 @@ import java.util.HashSet;
 import java.beans.IntrospectionException;
 import orbital.util.InnerCheckedException;
 import java.lang.reflect.*;
+
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /**
  * Provides type constructors, implementations, and factories for types
@@ -1515,6 +1519,19 @@ public final class Types {
 	}
 	catch (NoSuchFieldException trial) {}
 	return c.getDeclaredField(name);
+    }
+
+    /**
+     * Get a string describing a typed object and its type.
+     * @return <span class="String">s:<span class="type">&tau;</span></span> if s has type <span class="type">&tau;</span>.
+     * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience Method</a>
+     * @see Object#toString()
+     * @see Typed#getType()
+     */
+    public static final String toTypedString(Typed s) {
+	return s == null
+	    ? "<null>"
+	    : s.toString() + ':' + s.getType() + (Logger.global.isLoggable(Level.ALL) && s instanceof Variable && ((Variable)s).isVariable() ? "[var]" : "");
     }
 
     /**

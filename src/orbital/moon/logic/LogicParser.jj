@@ -301,7 +301,7 @@ public class LogicParser {
 	    System.err.println(">> in signature ");
 	    for (Iterator i = syntax.coreSignature().iterator(); i.hasNext(); ) {
 		Symbol sym = (Symbol)i.next();
-		System.err.println(sym + " of type " + sym.getType());
+		System.err.println(Types.toTypedString(sym));
 	    }
 	    System.err.println(">> " + op + " applied to " + MathUtilities.format(arg) + " of type " + Types.typeOf(arg) + " not found");
 	}
@@ -678,7 +678,7 @@ Expression FreeDeclarationExpression() :
     (tok = <DECLARE_FREE> x = VariableDeclaration()
 	{
 	    scope.declare(x);
-	    logger.log(Level.FINER, "declared {0}:{1}", new Object[] {x, x.getType()});
+	    logger.log(Level.FINER, "declared {0}", Types.toTypedString(x));
 	}
      )*
 

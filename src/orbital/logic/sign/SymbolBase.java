@@ -188,23 +188,18 @@ public class SymbolBase implements Symbol, Serializable {
     public String toString() {
 	if (Logger.global.isLoggable(Level.FINEST)
 	    || getType().equals(Types.TYPE))
-	    return toFullString() + (Logger.global.isLoggable(Level.ALL) && isVariable() ? "[var]" : "");
+	    return Types.toTypedString(this);
+	//@todo now depend on System property
 	if (true)
-	    return toExpressionString();
+	    return getSignifier();
 	return toShortString();
     }
 
-    private String toFullString() {
-	return getSignifier() + ':' + getType();
-    }
     private String toShortString() {
 	Type type = getType();
     	// short representation
     	return type.equals(Types.TRUTH)
 	    ? getSignifier()
 	    : (getSignifier() + '/' + Types.arityOf(type.domain()));
-    }
-    private String toExpressionString() {
-    	return getSignifier();
     }
 }
