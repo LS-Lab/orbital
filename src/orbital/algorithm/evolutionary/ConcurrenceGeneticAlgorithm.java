@@ -22,7 +22,7 @@ import orbital.util.Utility;
 /**
  * This class is a genetic algorithm that weights its members in comparison to the others.
  * <p>
- * Weighting will be called with {@link orbital.util.Pair}s to weight.
+ * Evaluation will be called with {@link orbital.util.Pair}s to weight.
  * Either it returns a Pair of Numbers then, or it is called with both
  * elements again to get their associated weight.</p>
  * <p><em>Experimental</em></p>
@@ -212,13 +212,14 @@ abstract class ComparingPopulation extends ParallelEvaluationPopulation {
     /**
      * Weight the list of chromosomes.
      * <p>
-     * will call <code>fitnessWeighting.weight()</code> with a Pair to determine weight
+     * will call {@link GeneticAlgorithm#getEvaluation()}.{@link Function#apply(Object)}</code>
+     * with a {@link Pair Pair&lt;Genome,Genome&gt;} to determine weight
      * and then with each chromosome to get weight.
      * @return the list of weights belonging to the corresponding chromosomes (in the same order).
      */
     protected double[] weight(Genome[] cs) {
-	final Function weighting = getGeneticAlgorithm().getWeighting();
-	Object   o = weighting.apply(new Pair(cs[0], cs[1]));
+	final Function evaluation = getGeneticAlgorithm().getEvaluation();
+	Object   o = evaluation.apply(new Pair(cs[0], cs[1]));
 	if (o instanceof Pair) {
 	    Pair p = (Pair) o;
 	    return new double[] {((Number) p.A).doubleValue(), ((Number) p.B).doubleValue()};
@@ -226,8 +227,8 @@ abstract class ComparingPopulation extends ParallelEvaluationPopulation {
 	    Number   w = (Number) o;
 	    double[] r = new double[2];
 	    for (int i = 0; i < r.length; i++)
-		r[i] = ((Number) weighting.apply(cs[i])).doubleValue();
-	    assert new Double(r[0]).equals(w) : "binary comparison weighting return the same for Pair(a,b) and a";
+		r[i] = ((Number) evaluation.apply(cs[i])).doubleValue();
+	    assert new Double(r[0]).equals(w) : "binary comparison evaluation returns the same for Pair(a,b) and a";
 	    return r;
     	}
     } 

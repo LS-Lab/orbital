@@ -15,7 +15,7 @@ public class ConcurrenceGeneticAlgorithmBeanInfo extends /*GeneticAlgorithmBeanI
     public BeanDescriptor getBeanDescriptor() {
 	BeanDescriptor bd = new BeanDescriptor(beanClass/*, orbital.moon.evolutionary.GeneticAlgorithmCustomizer.class*/);
 	bd.setName("ConcurrenceGeneticAlgorithm");
-	bd.setShortDescription("GA who will compare chromosomes for weighting");
+	bd.setShortDescription("GA who will compare several chromosomes for evaluation");
 	return bd;
     } 
 

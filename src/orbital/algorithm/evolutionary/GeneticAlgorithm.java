@@ -53,7 +53,7 @@ import orbital.moon.evolutionary.SelectionStatistics;
  * <pre>
  * ga = <span class="keyword">new</span> <span class="Orbital">IncrementalGeneticAlgorithm</span>(<span class="Number">2</span>,<span class="Number">2</span>, maximumRecombination, maximumMutation);
  * ga.setSelection(<span class="Orbital">Selectors</span>.rouletteWheel());
- * ga.setWeighting(<var>fitnessWeighting</var>);
+ * ga.setEvaluation(<var>fitnessEvaluation</var>);
  * ga.setPopulation(initialPopulation);
  * <span class="comment">// while stop condition is not true</span>
  * <span class="keyword">while</span> (<span class="operator">!</span><var>isSolution</var>()) {
@@ -76,7 +76,7 @@ import orbital.moon.evolutionary.SelectionStatistics;
  * @see "Friedberg, R.M. A learning machine: Part I. IBM Journal, 2:2-13, 1958."
  * @see "Holland, J. H. Adaption in Natural and Artificial Systems. University of Michigan Press. 1975."
  * @todo improve algorithmic template implementation removing setXYZ things and constructor arguments?
- * @todo introduce sub classes ParallelGeneticAlgorithm (resembling ConcurrenceGeneticAlgorithm with parallel evaluation, but without Pair weighting)
+ * @todo introduce sub classes ParallelGeneticAlgorithm (resembling ConcurrenceGeneticAlgorithm with parallel evaluation, but without Pair evaluation)
  *  DemeGeneticAlgorithm, ParallelDemeGeneticAlgorithm (with parallel population processed in parallel)
  * @todo introduce getConvergence() and getPopulationConvergence()
  */
@@ -132,11 +132,11 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
     private Population	  population = null;
 
     /**
-     * Specifies the algorithm for weighting of a Genome's fitness.
+     * Specifies the algorithm for evaluation of a Genome's fitness.
      * It must be set before use and is concrete problem-specific.
      * @serial
      */
-    private Function/*<Object, Number>*/ fitnessWeighting = null;
+    private Function/*<Object, Number>*/ fitnessEvaluation = null;
 
     /**
      * Construct a new GeneticAlgorithm.
@@ -200,14 +200,15 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
 	maximumMutation = fields.get("maximumMutation", Double.NaN);
 	selection = (Function) fields.get("selection", null);
 	population = (Population) fields.get("population", null);
-	fitnessWeighting = (Function) fields.get("fitnessWeighting", null);
+	fitnessEvaluation = (Function) fields.get("fitnessEvaluation", null);
 	random = (Random) fields.get("random", null);
 	    
 	// read the alternate persistent fields
 	// also read maximumCrossover, if no maximumRecombination was available
-	if (fields.defaulted("maximumRecombination")) {
+	if (fields.defaulted("maximumRecombination"))
 	    maximumRecombination = fields.get("maximumCrossover", Double.NaN);
-	}
+	if (fields.defaulted("fitnessEvaluation"))
+	    fitnessEvaluation = (Function) fields.get("fitnessWeighting", null);
     }
 
     /**
@@ -346,20 +347,20 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
 	this.population.evaluate(false);
     } 
     /**
-     * Get the weighting function.
-     * @return the weighting function that specifies the algorithm for weighting of a Genome's fitness.
+     * Get the evaluation function.
+     * @return the evaluation function that specifies the algorithm for evaluation of a Genome's fitness.
      *  It is concrete problem-specific.
      */
-    public Function/*<Object, Number>*/ getWeighting() {
-	return fitnessWeighting;
+    public Function/*<Object, Number>*/ getEvaluation() {
+	return fitnessEvaluation;
     } 
     /**
-     * Set the weighting function.
-     * @param fitnessWeighting the weighting function that specifies the algorithm for weighting of a Genome's fitness.
+     * Set the evaluation function.
+     * @param fitnessEvaluation the evaluation function that specifies the algorithm for evaluation of a Genome's fitness.
      *  It must be set before use and is concrete problem-specific.
      */
-    public void setWeighting(Function/*<Object, Number>*/ fitnessWeighting) {
-	this.fitnessWeighting = fitnessWeighting;
+    public void setEvaluation(Function/*<Object, Number>*/ fitnessEvaluation) {
+	this.fitnessEvaluation = fitnessEvaluation;
     } 
 
     /**
@@ -400,8 +401,8 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
      * Assuming that the {@link #setSelection(Function) selector} has already been set.
      * @pre getSelection() != null
      * @return the population with the solution that was accepted by {@link GeneticAlgorithmProblem#isSolution(Population) isSolution}.
-     * @see #setWeighting(Function)
-     * @see GeneticAlgorithmProblem#getWeighting()
+     * @see #setEvaluation(Function)
+     * @see GeneticAlgorithmProblem#getEvaluation()
      * @see #setPopulation(Population)
      * @see GeneticAlgorithmProblem#getPopulation()
      * @see #evolve()
@@ -409,7 +410,7 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
     public Population solve(GeneticAlgorithmProblem problem) {
 	if (getSelection() == null)
 	    throw new IllegalStateException("no selection function is set");
-	this.setWeighting(problem.getWeighting());
+	this.setEvaluation(problem.getEvaluation());
 	this.setPopulation(problem.getPopulation());
 	logger.log(Level.FINER, "created", this + System.getProperty("line.separator") + getPopulation());
 	// while stop condition is not true

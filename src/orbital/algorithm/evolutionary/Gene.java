@@ -65,7 +65,7 @@ public interface Gene {
     /**
      * Get the gene interpretation value.
      * <p>
-     * Useful for interpreting a gene for fitness weighting and interpretation of solutions.</p>
+     * Useful for interpreting a gene for fitness evaluation and interpretation of solutions.</p>
      * @return the Object represented by this gene.
      *  Interprets gene by decoding its data.
      */

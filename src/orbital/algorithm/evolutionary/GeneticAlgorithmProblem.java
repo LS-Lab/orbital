@@ -15,7 +15,7 @@ import orbital.logic.functor.Function;
  * Prior to using a genetic algorithm to solve a problem you need to decide:
  * <ol>
  *   <li>Which {@link Gene genetic <strong>representation</strong>} to use for the members in state space.</li>
- *   <li>What {@link #getWeighting() fitness-<strong>evaluation</strong>} to use as an objective function to maximize
+ *   <li>What {@link #getEvaluation() fitness-<strong>evaluation</strong>} to use as an objective function to maximize
  *    <em>and</em> guide search.</li>
  *   <li>Perhaps, define customized <code><a href="Gene.html#reproduce"><strong>reproduction</strong></a></code>
  *     operators for the gene representation, in order to support convergence with domain knowledge.</li>
@@ -39,9 +39,8 @@ public interface GeneticAlgorithmProblem extends AlgorithmicProblem {
      * <p>
      * A genetic algorithm will maximize this objective function.</p>
      * @see orbital.algorithm.template.EvaluativeAlgorithm#getEvaluation()
-     * @todo rename, perhaps to getEvaluation()
      */
-    Function/*<Object, Number>*/ getWeighting();
+    Function/*<Object, Number>*/ getEvaluation();
 
     /**
      * Generate (<strong>create</strong>) the initial population of genomes.

@@ -68,7 +68,7 @@ public class Population implements Serializable /*//TODO: extends DelegateList<G
 
     /**
      * The Genomes that are members of this population.
-     * This sorted list is kept sorted according to the {@link Genome#getFitness() fitness weight}.
+     * This sorted list is kept sorted according to the {@link Genome#getFitness() fitness}.
      * @serial
      */
     private List	      members;

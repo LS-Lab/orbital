@@ -232,7 +232,7 @@ public class Genome extends Gene.List {
     /**
      * Evaluates the fitness of the Genomes, if necessary.
      * <p>
-     * Default implementation will consider {@link GeneticAlgorithm#getWeighting()}.</p>
+     * Default implementation will consider {@link GeneticAlgorithm#getEvaluation()}.</p>
      * @param redo force whole evaluation again, even for cached fitness values.
      *  Should usually be <code>false</code> for efficiency reasons.
      * @param population the population containing this genome.
@@ -249,9 +249,9 @@ public class Genome extends Gene.List {
 	final GeneticAlgorithm algorithm = population.getGeneticAlgorithm();
 	if (algorithm == null)
 	    throw new IllegalStateException("Population is not part of a GeneticAlgorithm, cannot evaluate genome");
-	final Function weighting = algorithm.getWeighting();
-	if (weighting == null)
-	    throw new IllegalStateException("use GeneticAlgorithm.setWeighting to set a Weighting-Instance, first, cannot evaluate genome");
-	setFitness((java.lang.Number) weighting.apply(this));
+	final Function evaluation = algorithm.getEvaluation();
+	if (evaluation == null)
+	    throw new IllegalStateException("use GeneticAlgorithm.setEvaluation to set an evaluation instance, first, cannot evaluate genome");
+	setFitness((java.lang.Number) evaluation.apply(this));
     } 
 }
