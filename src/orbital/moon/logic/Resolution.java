@@ -76,6 +76,7 @@ import java.util.logging.Level;
  * @todo use do/undo instead of copying the whole set of derived formulas every time.
  * @todo use optimizations of "Deduktions- und Inferenzsysteme"
  * @internal proving A->B and B->A separately often is far more performant than proving A<->B.
+ * @todo optimize by using a non-branching search, somewhat like local optimizers, since we do not want to optimize but only to reach the goal. If we have derived a formula once, we should never switch to another branch and forget it again.
  */
 class Resolution implements Inference {
     private static final boolean UNDER_CONSTRUCTION = false;
@@ -115,8 +116,10 @@ class Resolution implements Inference {
 	//@todo use IDA* with a non-admissible heuristic h(s):=5 or anything such that we always deepen the bound by more than 1?
 	//@xxx IE(h=5) is incomplete for "|=  ((a|b)&c ) <=> ( (a&c)|(b&c) )"
 	//this.search = new IterativeExpansion(orbital.math.functional.Functions.constant(Values.getDefaultInstance().valueOf(5)));
-	//this.search = new IterativeDeepeningAStar(orbital.math.functional.Functions.constant(Values.getDefaultInstance().valueOf(5)));
-	this.search = new IterativeDeepeningAStar(orbital.math.functional.Functions.constant(Values.getDefaultInstance().valueOf(0)));
+	//this.search = new IterativeDeepeningAStar(orbital.math.functional.Functions.constant(Values.getDefaultInstance().valueOf(2)));
+	//this.search = new IterativeDeepeningAStar(orbital.math.functional.Functions.constant(Values.getDefaultInstance().valueOf(0)));
+
+        this.search = new IterativeDeepeningAStar(heuristic);
     }
 
     public boolean infer(Formula[] B, Formula D) {
@@ -223,7 +226,7 @@ class Resolution implements Inference {
 
         public Object getInitialState() {
 	    //@internal since the proof states may modify setOfSupport, use a copy so that we can reuse the initial state
-	    return new Proof(new HashSet(setOfSupport), Values.ZERO);
+	    return new Proof(new HashSet(setOfSupport), null, Values.ZERO);
     	}
 	public MutableFunction getAccumulatedCostFunction() {
 	    return _accumulatedCostFunction;
@@ -285,15 +288,18 @@ class Resolution implements Inference {
 				    if (R.equals(CONTRADICTION)) {
 					logger.log(Level.FINE, "resolved contradiction {0} from {1} and {2}",  new Object[] {R, F, G});
 					// construct a special clause, that only contains the contradiction (in order to simplify isSolution)
-					resumedReturn(new Proof(Collections.singleton(CONTRADICTION)));
+					resumedReturn(new Proof(Collections.singleton(CONTRADICTION), R));
 					// cut the search tree after resuming with {CONTRADICTION} as clauses
 					return;
 				    }
 				    
 				    final Set/*_<Set<Formula>>_*/ resultingClauseSet = new HashSet(S);
 				    resultingClauseSet.add(R);
+
+				    if (!S.contains(R))
+					logger.log(Level.FINE, "took resolved {0} from {1} and {2}. Lengths {3} from {4} and {5} .", new Object[] {R, F, G, new Integer(R.size()), new Integer(F.size()), new Integer(G.size())});
 				    
-				    resumedReturn(new Proof(resultingClauseSet));
+				    resumedReturn(new Proof(resultingClauseSet, R));
 				}
 			    }
     
@@ -343,6 +349,8 @@ class Resolution implements Inference {
 			Gp = (Set) Functionals.map(mu, Gp);
 			Fp = (Set) Functionals.map(mu, Fp);
                         				
+			logger.log(Level.FINER, "resolvin {0} res {1} from {2} and {3}. not yet factorized. Lengths {4} from {5} and {6} .", new Object[] {Fp,Gp, F, G, new Integer(Fp.size()), new Integer(F.size()), new Integer(G.size())});
+
 			if (isElementaryValid(Fp, Gp))
 			    // cut that possibility since resolving with tautologies will never lead to false (the contradiction)
 			    //@xxx 100% sure that for completeness, we can also remove G from setOfSupport, if it only resolves to isElementaryValid clauses. Or must we keep it, even though we don't have to keep the (elementary true) resolvent
@@ -351,7 +359,7 @@ class Resolution implements Inference {
 			Set R = Gp;
 			R.addAll(Fp);
 			final Set factorizedR = factorize(R);
-			logger.log(Level.FINER, "resolved {0} from {1} and {2}. Factorized to {3}", new Object[] {R, F, G, factorizedR});
+			logger.log(Level.FINER, "resolved {0} from {1} and {2}. Factorized to {3}. Lengths {4} from {5} and {6} .", new Object[] {R, F, G, factorizedR, new Integer(R.size()), new Integer(F.size()), new Integer(G.size())});
 			if (factorizedR != null)
 			    R = factorizedR;
 
@@ -365,6 +373,18 @@ class Resolution implements Inference {
 	}
     }
 
+
+    /**
+     * A heuristic that prefers smaller length of clauses for resolving.
+     */
+    private final Function heuristic = new Function() {
+	    private final Values valueFactory = Values.getDefaultInstance();
+	    public Object apply(Object o) {
+		Set R = ((Proof)o).resolvent;
+		return valueFactory.valueOf(R == null ? 0 : R.size());
+	    }
+	};
+
     /**
      * The state during a proof (i.e. a set of formulas forming the current set of support).
      * @stereotype &laquo;Structure&raquo;
@@ -377,13 +397,20 @@ class Resolution implements Inference {
 	 */
 	Set/*_<Set<Formula>>_*/ setOfSupport;
 
+	/**
+	 * the current set of support.
+	 * (containing all formulas already deduced, or in initial set of support)
+	 */
+	Set/*_<Formula>_*/ resolvent;
+
 	Object accumulatedCost;
 
-	public Proof(Set/*_<Set<Formula>>_*/ setOfSupport) {
+	public Proof(Set/*_<Set<Formula>>_*/ setOfSupport, Set/*_<Formula>_*/ resolvent) {
 	    this.setOfSupport = setOfSupport;
+	    this.resolvent = resolvent;
 	}
-	public Proof(Set/*_<Set<Formula>>_*/ setOfSupport, Object accumulatedCost) {
-	    this.setOfSupport = setOfSupport;
+	public Proof(Set/*_<Set<Formula>>_*/ setOfSupport, Set/*_<Formula>_*/ resolvent, Object accumulatedCost) {
+	    this(setOfSupport, resolvent);
 	    this.accumulatedCost = accumulatedCost;
 	}
     }	    
@@ -414,6 +441,7 @@ class Resolution implements Inference {
 	if (term instanceof Functor.Composite) {
             Functor.Composite f = (Functor.Composite) term;
 	    Functor           op = (Functor) f.getCompositor();
+	    //@todo could also query ClassicalLogic.LogicFunctions.and etc. from logic.coreInterpretation once
 	    if (op == ClassicalLogic.LogicFunctions.and) {
 		Formula[] components = (Formula[]) f.getComponent();
 		assert components.length == 2 : "binary " + op + "/" + components.length + " expected";
