@@ -12,7 +12,7 @@ import java.util.*;
  * Good expressions to type are
  *		
  *
- * @fixme x*(y*x)^-1 produces strange errors
+ * @fixme x*(y*x)^-1 produces strange errors because _X8 does not match y^-1.
  */
 public class GroupTRS {
     public static void main(String arg[]) throws Exception {
@@ -48,20 +48,20 @@ public class GroupTRS {
 	    // right inverse
 	    Substitutions.createSingleSidedMatcher(parse("_X*_X^-1"), parse("1")),
 	    //
-	    Substitutions.createSingleSidedMatcher(parse("_X1*((_X1^-1)*_X2)"), parse("_X2")),
+	    Substitutions.createSingleSidedMatcher(parse("_X1*((_X1^-1)*_X8)"), parse("_X8")),
 	    // inverse of a product
 	    Substitutions.createSingleSidedMatcher(parse("(_X1*_X2)^-1"), parse("_X2^-1*_X1^-1")),
 	}));
 		
 	System.out.println("applying " + sigma);
-	System.out.println(sigma.apply(A));
-	System.out.println(sigma.apply(sigma.apply(A)));
-	System.out.println(sigma.apply(sigma.apply(sigma.apply(A))));
+	System.out.println("sigma(A) = " + sigma.apply(A));
+	System.out.println("sigma^2(A) = " + sigma.apply(sigma.apply(A)));
+	System.out.println("sigma^3(A) = " + sigma.apply(sigma.apply(sigma.apply(A))));
 	Object A_ = Functionals.fixedPoint(sigma, A);
 	Object B_ = Functionals.fixedPoint(sigma, B);
 	System.out.println("TRS:\t\t\tA->" + A_);
 	System.out.println("TRS:\t\t\tB->" + B_);
-	System.out.println(A.equals(B) ? "A==B" : "A!=B");
+	System.out.println(A.equals(B) ? "A=B" : "A!=B");
     } 
 	
     private static final Object parse(String expression) throws ParseException {
