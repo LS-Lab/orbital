@@ -16,9 +16,14 @@ import orbital.logic.functor.BinaryFunction;
  *
  * @author <a href="mailto:">Andr&eacute; Platzer</a>
  * @version 1.1, 2003-01-18
+ * @note Type constructors with list or set parameters usually also accept them as
+ * {@link orbital.util.Utility#isIteratable(Object) generalized iteratable}
+ * objects, including but not limited to {@link java.util.List}, {@link java.util.Set}.
  * @see Types#getDefault()
  * @see Type#typeSystem()
  * @see Type
+ * @internal &lambda;* with *:* is inconsistent: since every term is inhabited (Girard's paradox).
+ * @todo @see "H.P. Barendregt. Lambda Calculi with Types. in: Handbook of"
  */
 public interface TypeSystem {
 
@@ -149,7 +154,7 @@ public interface TypeSystem {
      * </div>
      * </p>
      * @param domain the {@link Type#domain() domain} <span class="type">&sigma;</span>.
-     * @param codomain the {@link Type#codomain() codomain} <span class="type">&tau;</span>.
+     * @param codomain the {@link Type#codomain() co-domain} <span class="type">&tau;</span>.
      * @todo assure canonical identity?
      * @xxx really strict? This contradicts the usual case, since ABSURD->t >= s->t' iff t' >= t. Although ABSURD =< s->t'.
      *  By the ususal formal rule (see above) it is
@@ -178,7 +183,7 @@ public interface TypeSystem {
      * <span style="float: left; font-size: 200%">&#9761;</span>
      * Note that this type depends on the specific truth values.
      * </p>
-     * @param domain the {@link Type#domain() codomain} <span class="type">&sigma;</span>.
+     * @param domain the {@link Type#domain() co-domain} <span class="type">&sigma;</span>.
      * @see #map(Type,Type)
      * @todo assure canonical identity?
      */

@@ -72,8 +72,8 @@ public interface Type extends Comparable, Predicate {
     Type domain();
 
     /**
-     * Get the codomain <span class="type">&tau;</span> of a type <span class="type">&sigma;&rarr;&tau;</span>.
-     * @return the type of the result value codomain.
+     * Get the co-domain <span class="type">&tau;</span> of a type <span class="type">&sigma;&rarr;&tau;</span>.
+     * @return the type of the result value co-domain.
      */
     Type codomain();
 
