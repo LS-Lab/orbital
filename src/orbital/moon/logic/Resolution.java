@@ -428,8 +428,9 @@ class Resolution implements Inference {
      * Get the negation of F without introducing duplex negatios.
      * @return G if F=&not;G, and &not;F otherwise.
      * @post RES==ClassicalLogic.conjunctiveForm(F.not())
+     * @todo to ClassicalLogic.Utilities?
      */
-    private static final Formula negation(Formula F) {
+    static final Formula negation(Formula F) {
 	// used duplex negatio est affirmatio (optimizable)
 	if ((F instanceof Composite)) {
 	    Composite f = (Composite) F;
