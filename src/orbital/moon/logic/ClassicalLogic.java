@@ -23,6 +23,7 @@ import orbital.logic.functor.*;
 import orbital.logic.functor.Predicates;
 import orbital.logic.trs.*;
 import orbital.moon.logic.bridge.SubstitutionImpl.UnifyingMatcher;
+import orbital.math.functional.Operations;
 
 import java.util.Set;
 
@@ -391,7 +392,7 @@ public class ClassicalLogic extends ModernLogic {
 	 * Maintains the guarantee that there is only a single object representing each enum constant.
 	 * @serialData canonicalized deserialization
 	 */
-	private Object readResolve() throws ObjectStreamException {
+	Object readResolve() throws ObjectStreamException {
 	    // canonicalize
 	    return values[ordinal];
 	} 
@@ -506,7 +507,13 @@ public class ClassicalLogic extends ModernLogic {
 	    {typeSystem.map(),
 	     new NotationSpecification(500, "xfx", Notation.INFIX)},
 
-	    {orbital.math.functional.Operations.plus, null},
+	    {Operations.plus, null},
+	    {Operations.minus, null},
+	    {Operations.subtract, null},
+	    {Operations.times, null},
+	    {Operations.inverse, null},
+	    {Operations.divide, null},
+	    //	    {Operations.power, null},  //@xxx confuses xor
 
 	    {Predicates.equal,            // "="
 	     new NotationSpecification(700, "xfx", Notation.INFIX)},
@@ -694,42 +701,42 @@ public class ClassicalLogic extends ModernLogic {
 	assert LAMBDA != null : "lambda operator found";
 	PI = _coreSignature.get("\\\\", new Expression[] {BOTTOM,BOTTOM}); //@todo
     }
-    public Expression compose(Expression op, Expression arguments[]) throws ParseException {
+    public Expression.Composite compose(Expression compositor, Expression arguments[]) throws ParseException {
 	// handle special cases of term construction, first and before type checking occurs since the type &Pi;-abstractions need more flexibility
-	if (op.getType() instanceof PiAbstractionType) {
-	    PiAbstractionType piabst = (PiAbstractionType) op.getType();
+	if (compositor.getType() instanceof PiAbstractionType) {
+	    PiAbstractionType piabst = (PiAbstractionType) compositor.getType();
 	    //@xxx to be honest, we somehow need to unify? For example, if &forall; : (\\s:*.(s&rarr;o)&rarr;o) and if f:i&rarr;o then &forall;(f) : o.
 	    Type apType = Types.typeOf(arguments);
-	    logger.log(Level.FINEST, "compositor {0} : {1} applied to the {2} arguments {3} : {4}. Result has type {5}", new Object[] {op, op.getType(), new java.lang.Integer(arguments.length), MathUtilities.format(arguments), Types.typeOf(arguments), piabst.apply(Types.typeOf(arguments))});
-	    //@todo could we exchange op by a formula that only differs in type, and thus avoid conversion formula?
+	    logger.log(Level.FINEST, "compositor {0} : {1} applied to the {2} arguments {3} : {4}. Result has type {5}", new Object[] {compositor, compositor.getType(), new java.lang.Integer(arguments.length), MathUtilities.format(arguments), Types.typeOf(arguments), piabst.apply(Types.typeOf(arguments))});
+	    //@todo could we exchange compositor by a formula that only differs in type, and thus avoid conversion formula?
 	    return super.compose(super.compose(new PiApplicationExpression(piabst,
 									   piabst.apply(apType)
 									   ),
-					       new Expression[] {op}
+					       new Expression[] {compositor}
 					       ),
 				 arguments);
 	}
-	return super.compose(op, arguments);
+	return super.compose(compositor, arguments);
     }
-    Expression composeImpl(Expression op, Expression arguments[]) throws ParseException {
+    Expression.Composite composeImpl(Expression compositor, Expression arguments[]) throws ParseException {
 	// handle special cases of term construction, first
-	if ((op instanceof ModernFormula.FixedAtomicSymbol)
-	    && LAMBDA.equals(((ModernFormula.FixedAtomicSymbol)op).getSymbol())) {
+	if ((compositor instanceof ModernFormula.FixedAtomicSymbol)
+	    && LAMBDA.equals(((ModernFormula.FixedAtomicSymbol)compositor).getSymbol())) {
 	    //@todo we provide &lambda;-abstractions by introducing a core symbol LAMBDA that has as fixed interpretation a binary function that ... But of &lambda;(x.t), x will never get interpreted, so it is a bit different than composeFixed(lambda,{x,t}) would suggest. &lambda;-abstraction are not truth-functional!
 	    assert arguments.length == 2;
 	    assert arguments[0] instanceof ModernFormula.AtomicSymbol : "Symbols when converted to formulas become AtomicSymbols";
 	    Symbol x = (Symbol) ((Formula)arguments[0]).getSignature().iterator().next();
 	    assert x.isVariable() : "we only form lambda abstractions with respect to variables";
 	    return createLambdaProp(x, (Formula) arguments[1]);
-	} else if ((op instanceof ModernFormula.FixedAtomicSymbol)
-	    && PI.equals(((ModernFormula.FixedAtomicSymbol)op).getSymbol())) {
+	} else if ((compositor instanceof ModernFormula.FixedAtomicSymbol)
+	    && PI.equals(((ModernFormula.FixedAtomicSymbol)compositor).getSymbol())) {
 	    assert arguments.length == 2;
 	    assert arguments[0] instanceof ModernFormula.AtomicSymbol : "Symbols when converted to formulas become AtomicSymbols";
 	    Symbol x = (Symbol) ((Formula)arguments[0]).getSignature().iterator().next();
 	    assert x.isVariable() : "we only form lambda abstractions with respect to variables";
 	    return new PiAbstractionExpression(x, (Formula) arguments[1]);
 	} else
-	    return super.composeImpl(op, arguments);
+	    return super.composeImpl(compositor, arguments);
     }
     
     /**
@@ -738,7 +745,7 @@ public class ClassicalLogic extends ModernLogic {
      * information about t prior to evaluating that.
      * @see orbital.logic.trs.Substitutions#lambda
      */
-    private final Formula createLambdaProp(Symbol x, Formula t) {
+    private final Formula.Composite createLambdaProp(Symbol x, Formula t) {
 	return new LambdaAbstractionFormula(this, x, (Formula)t);
     }
 
@@ -746,10 +753,10 @@ public class ClassicalLogic extends ModernLogic {
      * Formulas of the form &lambda;x.t, for functions constructed per &lambda;-abstraction.
      * <p>
      * This class ensures the non-truth-functional interpretation
-     * I(&lambda;x.t) := (a&#8614;I&lt;x/a&gt;(t)) = (a&#8614;I(t[x&#8614;a]).
-     * It usually uses the first form of semantic modification, instead of the
-     * second variant of syntactic substitution (which would require that a is syntactically well-formed).
-     * </p>
+     * <div>I(&lambda;x.t) := (a&#8614;I&lt;x/a&gt;(t)) = (a&#8614;I(t[x&#8614;a])</div>
+     * It uses the first form of semantic modification, instead of the
+     * second variant of syntactic substitution (which would require
+     * that a is syntactically well-formed).  </p>
      * @author Andr&eacute; Platzer
      * @version 2002/07/15
      * @see orbital.logic.trs.Substitutions#lambda
@@ -944,8 +951,7 @@ public class ClassicalLogic extends ModernLogic {
 	private Symbol x;
 	private Formula term;
 	private Interpretation I;
-	private PiAbstractionType() {
-	}
+	private PiAbstractionType() {}
 	public PiAbstractionType(Symbol x, Formula term, Interpretation I) {
 	    this.x = x;
 	    this.term = term;
