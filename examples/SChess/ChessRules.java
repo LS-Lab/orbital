@@ -79,7 +79,9 @@ public class ChessRules extends AbstractGameRules implements Cloneable {
 
     // GameRules implementation
     public Function startAIntelligence(String arg) {
-	return "utility".equalsIgnoreCase(arg) ? new UtilityComputer() : new Computer();
+	return "old".equalsIgnoreCase(arg)
+	    ? (Computer) new WeightingComputer()
+	    : (Computer) new UtilityComputer();
     } 
     public Field startField(Component comp) {
 	Field	  field = new ChessField(this, 8, 8);
