@@ -1246,6 +1246,12 @@ public class ClassicalLogic extends ModernLogic {
 		return false;
 	}
 
+	public Type on(Type a) {
+	    // @return (&Pi;x:*. s->t)(a:*) = t mu
+	    // with mu=mgU(s,a)
+	    //@xxx is this correct? And what about the implementation?
+	    return apply(a);
+	}
 	/**
 	 * @return (&Pi;x:*.t)(a:*) = t[x&rarr;a]
 	 * @see LambdaAbstractionFormula#apply(Object)
