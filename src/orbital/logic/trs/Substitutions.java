@@ -65,6 +65,8 @@ import orbital.util.Utility;
  * &sigma; <span class="operator">=</span> <span class="Orbital">Substitutions</span>.getInstance(<span class="Class">Arrays</span>.asList(<span class="keyword">new</span> <span class="Class">Object</span><span class="operator">[]</span> {
  *	<span class="Orbital">Substitutions</span>.createExactMatcher(syntax.createMathExpression(<span class="String">"x*e"</span>), <span class="Orbital">Functions</span>.constant(<span class="Orbital">Values</span>.symbol(<span class="String">"x"</span>)))
  * }));
+ * <span class="comment">// run the Term Rewrite System with <var>argument</var> as input, upon termination</span>
+ * <span class="Class">Object</span> result <span class="operator">=</span> <span class="Orbital">Functionals</span>.fixedPoint(&sigma;, <var>argument</var>);
  * </pre>
  * </p>
  * <p>
@@ -629,10 +631,14 @@ public class Substitutions {
      * @internal non optimized occur-check
      */
     private static boolean occur(final Object x, Object t) {
-	if (t instanceof Composite)
-	    return occur(x, ((Composite) t).getComponent());
-	else if (t.getClass().isArray())
-	    if (t instanceof Object[])
+	if (x.equals(t)) {
+	    return true;
+	} else if (t instanceof Composite) {
+	    return
+		occur(x, ((Composite) t).getCompositor())
+		|| occur(x, ((Composite) t).getComponent());
+	} else if (t.getClass().isArray()) {
+	    if (t instanceof Object[]) {
 		// return &exist;i occur(x, t[i])
 		// version for mere non-primitive type Object arrays
 		return Setops.some(Arrays.asList((Object[]) t), new Predicate/*<Object>*/() {
@@ -640,9 +646,11 @@ public class Substitutions {
 			    return occur(x, ti);
 			}
 		    });
-	    else
+	    } else {
 		// could additionally(!) occur check in primitive type arrays with java.lang.reflect.Array
 		throw new IllegalArgumentException("illegal argument type " + t.getClass() + " is not yet supported");
+	    }
+	}
 	return false;
     }
 
