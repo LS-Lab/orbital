@@ -22,6 +22,7 @@ import orbital.math.functional.Operations;
 import orbital.algorithm.Combinatorical;
 
 /**
+ * Implementation of polynomials in R[N<sup>n</sup>] with a dense tensor of coefficients.
  * @version 1.1, 2002/08/21
  * @author  Andr&eacute; Platzer
  */
