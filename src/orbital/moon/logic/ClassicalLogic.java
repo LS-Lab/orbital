@@ -556,68 +556,33 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	public static Formula disjunctiveForm(Formula f, boolean simplifying) {
 	    try {
 		// eliminate derived junctors not in the basis (&forall;,&and;,&or;&not;)
-		if (DNFeliminate == null) DNFeliminate = Substitutions.getInstance(Arrays.asList(new Object[] {
-		    // eliminate implications
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X1->_X2"), logic.createExpression("~_X1|_X2")),
-		    // eliminate equivalences
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X1<->_X2"), logic.createExpression("(_X1&_X2) | (~_X1&~_X2)")),
-		    // eliminate antivalences
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X1^_X2"), logic.createExpression("(_X1&~_X2) | (~_X1&_X2)")),
-		}));
+		if (DNFeliminate == null)
+		    DNFeliminate = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/DNF/eliminate.trs")));
 		f = (Formula) Functionals.fixedPoint(DNFeliminate, f);
 		// simplification part (necessary and does not disturb local confluency?)
-		if (simplifying && DNFSimplification == null) DNFSimplification = Arrays.asList(new Object[] {
-		    // seems necessary, does not disturb local confluency? evaluate constants
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("~false"), logic.createAtomicLiteral("true")),
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("~true"), logic.createAtomicLiteral("false")),
-    				
-		    // necessary and does not disturb local confluency? absorbtion
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X1&(_X1|_X2)"), logic.createAtomicLiteralVariable("_X1")),
-		    // necessary and does not disturb local confluency? idempotent
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X&_X"), logic.createAtomicLiteralVariable("_X")),
-		    //@xxx for DNF either this rule (s.b.) or substitution has an error (infinite recursion)
-		    //Substitutions.createSingleSidedMatcher(logic.createExpression("_X|_X"), logic.createAtomicLiteralVariable("_X")),
-		    // necessary and does not disturb local confluency? neutral element
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X&true"), logic.createAtomicLiteralVariable("_X")),
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X|false"), logic.createAtomicLiteralVariable("_X")),
-		    // necessary and does not disturb local confluency? duplicate to dual to neutral element (until conditional commutative is supplied)
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("true&_X"), logic.createAtomicLiteralVariable("_X")),
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("false|_X"), logic.createAtomicLiteralVariable("_X")),
-		    // necessary and does not disturb local confluency? dual to neutral element
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X&false"), logic.createAtomicLiteral("false")),
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X|true"), logic.createAtomicLiteral("true")),
-		    // necessary and does not disturb local confluency? duplicate to dual to neutral element (until conditional commutative is supplied)
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("false&_X"), logic.createAtomicLiteral("false")),
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("true|_X"), logic.createAtomicLiteral("true")),
-		    // necessary and does not disturb local confluency? complement
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X&~_X"), logic.createAtomicLiteral("false")),
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X|~_X"), logic.createAtomicLiteral("true")),
-		    // necessary and does not disturb local confluency? conditional commutative (according to lexical order)
-		    new LexicalConditionalUnifyingMatcher(logic.createExpression("_X2&_X1"), logic.createExpression("_X1&_X2"), logic.createAtomicLiteralVariable("_X1"), logic.createAtomicLiteralVariable("_X2")),
-		    // necessary and does not disturb local confluency? conditional associative (according to lexical order)
-		    //@todo
-		});
+		if (simplifying && DNFSimplification == null)
+		    DNFSimplification =
+			Setops.union(
+				     readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/DNF/simplify.trs"))).getReplacements(),
+				     Arrays.asList(new Object[] {
+					 // necessary and does not disturb local confluency? conditional commutative (according to lexical order)
+					 new LexicalConditionalUnifyingMatcher(logic.createExpression("_X2&_X1"), logic.createExpression("_X1&_X2"), logic.createAtomicLiteralVariable("_X1"), logic.createAtomicLiteralVariable("_X2")),
+					 // necessary and does not disturb local confluency? conditional associative (according to lexical order)
+					 //@todo
+				     }));
 		// transform to DNF part
-		if (DNFtrs == null) DNFtrs = Arrays.asList(new Object[] {
-		    // involution duplex negatio est affirmatio
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("~~_X"), logic.createAtomicLiteralVariable("_X")),
-		    // deMorgan
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("~(_X1|_X2)"), logic.createExpression("~_X1&~_X2")),
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("~(_X1&_X2)"), logic.createExpression("~_X1|~_X2")),
-		    // distribute | over &
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X1&(_X2|_X3)"), logic.createExpression("(_X1&_X2)|(_X1&_X3)")),
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("(_X2|_X3)&_X1"), logic.createExpression("(_X2&_X1)|(_X3&_X1)"))
-		});
+		if (DNFtrs == null)
+		    DNFtrs = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/DNF/transformToDNF.trs")));
 		//@todo simplifying conditional rules: commutative with lexical sort, etc.
-		return (Formula) Functionals.fixedPoint(Substitutions.getInstance(simplifying ? new ArrayList(Setops.union(DNFSimplification, DNFtrs)) : DNFtrs), f);
+		return (Formula) Functionals.fixedPoint(simplifying ? Substitutions.getInstance(new ArrayList(Setops.union(DNFSimplification, DNFtrs.getReplacements()))) : DNFtrs, f);
 	    } catch (java.text.ParseException ex) {
 		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
 	    }
 	}
 	// lazy initialized cache for TRS rules
 	private static Substitution DNFeliminate;
-	private static List DNFtrs;
-	private static List DNFSimplification;
+	private static Substitution DNFtrs;
+	private static Collection DNFSimplification;
 
 	/**
 	 * Transforms into conjunctive normal form (CNF).
@@ -634,68 +599,34 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	public static Formula conjunctiveForm(Formula f, boolean simplifying) {
 	    try {
 		// eliminate derived junctors not in the basis (&forall;,&and;,&or;&not;)
-		if (CNFeliminate == null) CNFeliminate = Substitutions.getInstance(Arrays.asList(new Object[] {
-		    // eliminate implications
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X1->_X2"), logic.createExpression("~_X1|_X2")),
-		    // eliminate equivalences
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X1<->_X2"), logic.createExpression("(_X1|~_X2) & (~_X1|_X2)")),
-		    // eliminate antivalences
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X1^_X2"), logic.createExpression("(_X1|_X2) & (~_X1|~_X2)")),
-		}));
+		if (CNFeliminate == null)
+		    CNFeliminate = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/CNF/eliminate.trs")));
 		f = (Formula) Functionals.fixedPoint(CNFeliminate, f);
 		// simplification part (necessary and does not disturb local confluency?)
-		if (simplifying && CNFSimplification == null) CNFSimplification = Arrays.asList(new Object[] {
-		    // seems necessary, does not disturb local confluency? evaluate constants
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("~false"), logic.createAtomicLiteral("true")),
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("~true"), logic.createAtomicLiteral("false")),
-		    // necessary and does not disturb local confluency? absorbtion
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X1&(_X1|_X2)"), logic.createAtomicLiteralVariable("_X1")),
-		    // necessary and does not disturb local confluency? idempotent
-		    //@xxx for CNF either this rule (s.b.) or substitution has an error. infinite recursion for (a&b)<->(b&a)
-		    //Substitutions.createSingleSidedMatcher(logic.createExpression("_X&_X"), logic.createAtomicLiteralVariable("_X")),
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X|_X"), logic.createAtomicLiteralVariable("_X")),
-		    // necessary and does not disturb local confluency? neutral element
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X&true"), logic.createAtomicLiteralVariable("_X")),
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X|false"), logic.createAtomicLiteralVariable("_X")),
-		    // necessary and does not disturb local confluency? duplicate to dual to neutral element (until conditional commutative is supplied)
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("true&_X"), logic.createAtomicLiteralVariable("_X")),
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("false|_X"), logic.createAtomicLiteralVariable("_X")),
-		    // necessary and does not disturb local confluency? dual to neutral element
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X&false"), logic.createAtomicLiteral("false")),
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X|true"), logic.createAtomicLiteral("true")),
-		    // necessary and does not disturb local confluency? duplicate to dual to neutral element (until conditional commutative is supplied)
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("false&_X"), logic.createAtomicLiteral("false")),
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("true|_X"), logic.createAtomicLiteral("true")),
-		    // necessary and does not disturb local confluency? complement
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X&~_X"), logic.createAtomicLiteral("false")),
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X|~_X"), logic.createAtomicLiteral("true")),
+		if (simplifying && CNFSimplification == null)
+		    CNFSimplification =
+			Setops.union(
+				     readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/CNF/simplify.trs"))).getReplacements(), 
+				     Arrays.asList(new Object[] {
 		    // necessary and does not disturb local confluency? conditional commutative (according to lexical order)
 		    new LexicalConditionalUnifyingMatcher(logic.createExpression("_X2&_X1"), logic.createExpression("_X1&_X2"), logic.createAtomicLiteralVariable("_X1"), logic.createAtomicLiteralVariable("_X2")),
 
 		    // necessary and does not disturb local confluency? right associative
 		    //@xxx for CNF infinite recursion for (a&b)<->(b&a) and a<->b<->c. this is because conditional commutative and right-associative oscillate, then
 		    //Substitutions.createSingleSidedMatcher(logic.createExpression("(_X1&_X2)&_X3"), logic.createExpression("_X1&(_X2&_X3)")),
-		});
+				     }));
 		// transform to CNF part
-		if (CNFtrs == null) CNFtrs = Arrays.asList(new Object[] {
-		    // involution duplex negatio est affirmatio
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("~~_X"), logic.createAtomicLiteralVariable("_X")),
-		    // deMorgan
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("~(_X1|_X2)"), logic.createExpression("~_X1&~_X2")),
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("~(_X1&_X2)"), logic.createExpression("~_X1|~_X2")),
-		    // distribute & over |
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X1|(_X2&_X3)"), logic.createExpression("(_X1|_X2)&(_X1|_X3)")),
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("(_X2&_X3)|_X1"), logic.createExpression("(_X2|_X1)&(_X3|_X1)"))
-		});
-		return (Formula) Functionals.fixedPoint(Substitutions.getInstance(simplifying ? new ArrayList(Setops.union(CNFSimplification, CNFtrs)) : CNFtrs), f);
+		if (CNFtrs == null)
+		    CNFtrs = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/CNF/transformToCNF.trs")));
+		return (Formula) Functionals.fixedPoint(simplifying ? Substitutions.getInstance(new ArrayList(Setops.union(CNFSimplification, CNFtrs.getReplacements()))) : CNFtrs, f);
 	    } catch (java.text.ParseException ex) {
 		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
 	    }
 	}
 	// lazy initialized cache for TRS rules
 	private static Substitution CNFeliminate;
-	private static List CNFtrs;
-	private static List CNFSimplification;
+	private static Substitution CNFtrs;
+	private static Collection CNFSimplification;
 	
 	/**
 	 * Transforms into implicative normal form (INF)
@@ -749,25 +680,11 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	public static final Formula negationForm(Formula F) {
 	    try {
 		// eliminate derived junctors not in the basis (&forall;,&exist;,&and;,&or;&not;)
-		if (CNFeliminate == null) conjunctiveForm(new ClassicalLogic().createFormula("true"));
+		if (CNFeliminate == null) conjunctiveForm(logic.createFormula("true"));
 		F = (Formula) Functionals.fixedPoint(CNFeliminate, F);
 		// negation normal form transform TRS
-		if (NegationNFTransform == null) NegationNFTransform = Substitutions.getInstance(Arrays.asList(new Object[] {
-		    //@xxx note that the  _Xi should be metavariables for formulas
-		    // involution duplex negatio est affirmatio
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("~~_X"), logic.createAtomicLiteralVariable("_X")),
-		    // deMorgan
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("~(_X1|_X2)"), logic.createExpression("~_X1&~_X2")),
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("~(_X1&_X2)"), logic.createExpression("~_X1|~_X2")),
-		    // negated implication
-		    // s.a. Substitutions.createSingleSidedMatcher(logic.createExpression("~(_X1->_X2)"), logic.createExpression("_X1&~_X2")),
-		    // negated equivalence
-		    // s.a. Substitutions.createSingleSidedMatcher(logic.createExpression("~(_X1<->_X2)"), logic.createExpression("(~_X1)<->_X2")),
-		    // negated all-quantifier
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("~(°_V _X)"), logic.createExpression("?_V ~_X")),
-		    // negated exists-quantifier
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("~(?_V _X)"), logic.createExpression("°_V ~_X")),
-		}));
+		if (NegationNFTransform == null)
+		    NegationNFTransform = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/negationNF")));
 		return (Formula) Functionals.fixedPoint(NegationNFTransform, F);
 	    } catch (java.text.ParseException ex) {
 		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
@@ -855,6 +772,43 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    }
 	}
 
+	/**
+	 * Reads a term-rewrite system from a stream.
+	 * The syntax is
+	 * <pre>
+	 * &lt;matchingSide&gt; |- &lt;replacementSide&gt; # &lt;comment&gt; &lt;EOL&gt;
+	 * ...
+	 * </pre>
+	 */
+	private static final Substitution readTRS(Reader reader) {
+	    final String ruleDelim = "|-";
+	    LineNumberReader rd = new LineNumberReader(reader);
+	    List rules = new LinkedList();
+	    try {
+		String l;
+		while ((l=rd.readLine()) != null) {
+		    final String original = l;
+		    if (l.indexOf('#') >= 0)
+			// strip comment
+			l = l.substring(0, l.indexOf('#'));
+		    l = l.trim();
+		    if (l.length() == 0)
+			continue;
+		    int rule = l.indexOf(ruleDelim);
+		    if (rule < 0)
+			throw new java.text.ParseException("neither comment nor whitespace nor rule " + rd.getLineNumber() + "" + -1, -1);
+		    rules.add(Substitutions.createSingleSidedMatcher(
+								     logic.createExpression(l.substring(0, rule)),
+								     logic.createExpression(l.substring(rule + ruleDelim.length()))
+								     ));
+		}
+		return Substitutions.getInstance(new ArrayList(rules));
+	    } catch (java.text.ParseException ex) {
+		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
+	    } catch (IOException ex) {
+		throw (RuntimeException) new RuntimeException("error reading " + reader).initCause(ex);
+	    }
+	}
     }
 
 

@@ -1,0 +1,6 @@
+# eliminate implications
+_X1->_X2 |- ~_X1|_X2
+# eliminate equivalences
+_X1<->_X2 |- (_X1&_X2) | (~_X1&~_X2)
+# eliminate antivalences
+_X1^_X2 |- (_X1&~_X2) | (~_X1&_X2)

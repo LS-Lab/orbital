@@ -1,0 +1,8 @@
+# involution duplex negatio est affirmatio
+~~_X |- _X
+# deMorgan
+~(_X1|_X2) |- ~_X1&~_X2
+~(_X1&_X2) |- ~_X1|~_X2
+# distribute | over &
+_X1&(_X2|_X3) |- (_X1&_X2)|(_X1&_X3)
+(_X2|_X3)&_X1 |- (_X2&_X1)|(_X3&_X1)

@@ -1,0 +1,25 @@
+# seems necessary, does not disturb local confluency? evaluate constants
+~false |- true
+~true |- false
+		
+# necessary and does not disturb local confluency? absorbtion
+_X1&(_X1|_X2) |- _X1
+# necessary and does not disturb local confluency? idempotent
+_X&_X |- _X
+#@xxx for DNF either this rule (s.b.) or substitution has an error (infinite recursion)
+#_X|_X |- _X
+# necessary and does not disturb local confluency? neutral element
+_X&true |- _X
+_X|false |- _X
+# necessary and does not disturb local confluency? duplicate to dual to neutral element (until conditional commutative is supplied)
+true&_X |- _X
+false|_X |- _X
+# necessary and does not disturb local confluency? dual to neutral element
+_X&false |- false
+_X|true |- true
+# necessary and does not disturb local confluency? duplicate to dual to neutral element (until conditional commutative is supplied)
+false&_X |- false
+true|_X |- true
+# necessary and does not disturb local confluency? complement
+_X&~_X |- false
+_X|~_X |- true
