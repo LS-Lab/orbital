@@ -1471,6 +1471,12 @@ public class ClassicalLogic extends ModernLogic {
 		return _resolution;
 	    }
 	};
+    public static final InferenceMechanism RESOLUTION3_INFERENCE = new InferenceMechanism("RESOLUTION3") {
+	    private final Inference _resolution = new orbital.moon.logic.resolution.SaturationResolution();
+	    Inference inference() {
+		return _resolution;
+	    }
+	};
     /**
      * Propositional inference.
      * Inference mechanism specialized for fast propositional inference.
