@@ -1,0 +1,43 @@
+<pre>
+<em>Operator</em>  Design Pattern <b>State</b>
+   <em>Objective</em>    Allow an object to alter its behavior when its
+                         internal state changes
+   <em>Parameters</em>   Objects: STATE;
+   <em>Subtasks</em>   
+         1 - Create Object: -> ConcreteSTATEs
+         2 - Define Behavior: ConcreteSTATEs -> ConcreteSTATEs
+         3 - Create Object: -> CONTEXT
+         4 - Compose Objects: CONTEXT, STATE -> CONTEXT
+         5 - Associate Behaviors With Object States: ConcreteSTATEs, CONTEXT -> CONTEXT
+   <em>Consequences</em>   
+         CONTEXT will have a different behavior for each of its state.
+         Such behaviors are specified by instances of interface object STATE
+   <em>Product Text</em>
+         <em>ADO</em> ConcreteSTATEs
+            <em>Declarations</em>
+               ...
+               <em>Nested ADOs</em>
+                  <em>Inherit</em> STATE;
+            ...
+         <em>End</em> ConcreteSTATEs
+
+         <em>ADO</em> CONTEXT
+            <em>Declarations</em>
+               ...
+               <em>Attributes</em>
+                  BehaviorSpec: <u>ADO STATE</u>;
+               <em>Nested ADOs</em>
+                  <em>Compose</em> BehaviorSpec;
+            <em>Dynamic Properties</em>
+               ...
+               <em>Valuation</em>
+                  ToStateA -> O BehaviorSpec = ConcreteSTATEa;
+                  ToStateB -> O BehaviorSpec = ConcreteSTATEb;
+               <em>Behavior</em>
+                  StateA & ToStateB -> StateB;
+                  StateB & ToStateA -> StateA;
+         <em>End</em> CONTEXT
+<em>End Operator</em>
+</pre>
+
+<li><a href="http://csg.uwaterloo.ca/~luisnova/patterns/state.tex">Tex version</a>

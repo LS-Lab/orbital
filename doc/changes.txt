@@ -5,6 +5,8 @@ The following sections describe changes to classes between releases of Orbital l
 CHANGES since Orbital library 1.0
 ------------------------------------------
 
+orbital.algorithm.template.HillClimbing renamed BEST_LOCAL_IMPROVEMENT to BEST_LOCAL_SELECTION in order to reflect that it does not say a thing about acception. Moved LocalSelection class up the hierarchy to LocalOptimizerSearch.
+
 orbital.math.Matrix.rank() has undergone an incompatible change. Since Matrix extends Tensor, rank() will now return the tensor rank, as expected. Contrary to earlier versions, where Matrix.rank() returned the linear rank. The latter is now accessible via Matrix.linearRank(). This incompatible change has been undergone, since - in the context of tensors - the rank is a very important information about a tensor and should be accessible in a simple way.
 
 orbital.logic.imp.Symbol turned into an interface in order to reflect a higher flexibility of representation in parsers and logic. The (good) old implementation of Symbol is available as a class SymbolBase and should be used for instantiation, only.

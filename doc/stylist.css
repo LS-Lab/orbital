@@ -1,0 +1,305 @@
+/**
+ * @(#)stylist.css 0.9 2000/10/23 Andre Platzer
+ *
+ * Copyright (c) 2000 Andre Platzer. All Rights Reserved.
+ */
+
+	/**
+	 * Headings appearing inside the next paragraph on the first line.
+	 */
+	*.inner {
+		display: run-in;
+		text-weight: bold;
+	}
+
+	/**
+	 * Brief headings of a paragraph that are in fact displayed in compact mode.
+	 */
+	h5.compact {
+		display: inline;
+	}
+	h5.compact:after {
+		content: ":";
+	}
+    
+    /**
+     * Mark the terms defined. Definition Terms
+     * //TODO: still needed?
+     */
+    dl dt {		/* definition term */
+    	/*display: compact;*/
+    	/*float: left;*/
+    }
+    dl.def dt {		/* definition term */
+    	/*display: compact;*/
+    	float: left;
+    	font-style: italic;
+    }
+    dl.def dd {		/* definition */
+    	margin-left: 4em;
+    }
+    
+    /**
+     * align equations along "=".
+     */
+    td.equation {
+    	text-align: "=";
+    }
+    
+  /* additional style classes */
+    
+    /* type style classes */
+
+    /**
+     * XML for signifiers of semiotics.
+     */
+    *.signifier {
+    	font-family: monotype;
+    }
+    *.signifier:before {content: "/";}
+    *.signifier:after {content: "/";}
+
+    /**
+     * XML for signifieds of semiotics.
+     */
+    *.signified {
+    	font-family: italic;
+    }
+    *.signified:before {content: "&raquo;";}
+    *.signified:after {content: "&laquo;";}
+    
+    /**
+     * identifies vector symbols.
+     */
+    *.vector {
+    	font-weight: bold;
+    }
+
+    /**
+     * identifies matrix symbols.
+     */
+    *.matrix {
+    	font-weight: bold;
+	text-transform: capitalize;
+    }
+    
+    /**
+     * identifies set symbols.
+     */
+    *.set {
+    	font-style: italic;
+    	font-family: cursive, italic;
+    }
+
+    /**
+     * identifies family (f.ex. family of sets) symbols.
+     */
+    *.family {
+    	font-style: italic;
+    	font-family: "Vivienne", "Arioso", cursive, italic;
+    }
+
+    /**
+     * identifies category symbols.
+     */
+    *.category    {
+	font-family: "Arioso", cursive, italic;
+	text-decoration: underline;
+    }
+
+    /* operators */
+
+    /**
+     * Operator denoting the construction of a series (a_n)_n in N.
+     */
+    span.seriesOperator {
+	font-size: 140%;
+    }
+
+    /**
+     * closed hull operator.
+     */
+    span.closed {
+    	text-decoration: overline;
+    }
+
+    /**
+     * complex-conjugate operator.
+     */
+    *.conjugate {
+    	text-decoration: overline;
+    }
+
+
+    /**
+     * XML For double index terms like <span class="doubleIndex"><sup>n</sup><sub>k</sub></span>.
+     */
+    *.doubleIndex {
+    	letter-spacing: -.4em
+    }
+    /**
+     * XML For double index of big operator terms like <big>&#931;</big><span class="doubleIndex"><sup>n</sup><sub>k</sub></span>.
+     */
+    big + *.doubleIndex {
+    	letter-spacing: 0
+    }
+    
+    /**
+     * xml:lang="la" according to iso639a marked as a foreign language.
+     * Or matches anything that has the "lang" attribute set.
+     */
+    :lang(fr), :lang(la), [lang] {
+    	font-style: italic;
+    }
+
+    /**
+     * Style for embedded formulas.
+     */
+    *.Formula {
+    }
+
+  /* composed operator styles */
+
+    /**
+     * For inference relation |~ or satisfaction relation |=
+     */
+    *.inference, *.satisfaction {
+    	letter-spacing: -1px;
+    }
+    
+    /**
+     * For inference operation C
+     */
+    *.inferenceOperation {
+    	font-style: italic;
+    }
+    
+    /**
+     * For term evaluation function [[_]]
+     */
+    *.evaluation {
+    	vertical-align: middle;
+    	letter-spacing: -3px;
+    	font-family: serif;
+    }
+    
+    /**
+     * For functional catamorphism banana brackets (|x,y|)
+     */
+    *.bananaBracket {
+    	letter-spacing: -1px;
+    	font-family: serif;
+    }
+    /**
+     * For functional anamorphism lense brackets |(x,y)|
+     */
+    *.lenseBracket {
+    	letter-spacing: -1px;
+    	font-family: serif;
+    }
+    /**
+     * For functional hylomorphism envelope brackets |[x,y]| or [[x,y]]
+     */
+    *.envelopeBracket {
+    	letter-spacing: -3px;
+    	font-family: serif;
+    }
+    /**
+     * For functional paramorphism barbed wire brackets {|x,y|}
+     */
+    *.barbedwireBracket {
+    	letter-spacing: -3px;
+    	font-family: serif;
+    }
+
+
+
+  /* syntax highlighting */
+
+    /**
+     * For language keywords.
+     */
+    *.keyword {
+    	/*font-family: monospace;*/
+    	font-weight: bold;
+    	color: #0000A5;
+    }
+    /**
+     * For predefined primitive types.
+     */
+    *.primitiveType {
+    	font-weight: bold;
+    	color: #0000A5;
+    }
+    /**
+     * For operators.
+     */
+    *.operator {
+    	color: #008200;
+    }
+    /**
+     * For assignment operation.
+     */
+    *.assigment {
+    	color: #008200;
+    }
+
+    /**
+     * For comments.
+     */
+    *.comment {
+    	font-style: italic;
+    	color: #008284;
+    }
+    
+    /* identifiers */
+    
+    /**
+     * For variable identifiers.
+     */
+    var {
+    }
+    
+    /**
+     * For meta-variable identifiers.
+     */
+    var.meta {
+    	font-family: "Arioso", italic;
+    }
+
+    /* literals */
+    
+    /**
+     * For String terminals.
+     */
+    *.String {
+    	color: #848284;
+    }
+    /* Specify pairs of quotes for two levels in two languages */
+    /* *.String:lang(en) { quotes: '"' '"' "'" "'" } */ 
+    
+    /* Insert quotes before and after *.String element content */
+    /* *.String:before { content: open-quote; }
+    *.String:after  { content: close-quote; } */
+
+    /**
+     * For number terminals.
+     */
+    *.Number {
+    	color: red;
+    }
+    
+    /* known classes */
+    
+    /**
+     * For java core classes.
+     */
+    *.Class {
+    	color: blue;
+    }
+    /**
+     * For classes in the Orbital library.
+     */
+    *.Orbital {
+    	color: blue;
+    }

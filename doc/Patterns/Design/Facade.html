@@ -1,0 +1,20 @@
+<pre>
+<em>Operator</em>  Design Pattern <b>Facade</b>
+   <em>Objective</em>    Provide a unified interface to a set of
+                interfaces in a subsystem
+   <em>Parameters</em>   Objects: SubSys1, $dots$, SubSysN;
+   <em>Subtasks</em>   
+         1 - Create Object: -> FACADE
+         2 - Compose Objects: SubSys1, $dots$, SubSys, FACADE -> FACADE
+   <em>Consequences</em>   
+         FACADE is a higher-level interface object shielding many other
+         subsystem interfaces
+   <em>Product Text</em>
+         <em>ADV/ADO</em> FACADE
+            <em>Declarations</em>
+               ...
+               <em>Nested ADVs/ADOs</em>
+                  <em>Compose</em> SubSys1, $dots$, SubSysN;
+            ...
+         <em>End</em> FACADE
+<em>End Operator</em>

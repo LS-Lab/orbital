@@ -1,0 +1,30 @@
+<pre>
+<em>Operator</em>  Design Pattern <b>Adapter</b>
+   <em>Objective</em>    Modify the interface of an object
+   <em>Parameters</em>   Objects: ADAPTEE, TARGET;
+   <em>Subtasks</em>   
+         1 - Specify Adaptation Object: ADAPTEE, TARGET -> ADAPTER
+           1.1 - Create Object: -> ADAPTER
+           1.2 - Compose/Inherit Objects: ADAPTEE, ADAPTER -> ADAPTER
+           1.3 - Inherit Objects: TARGET, ADAPTER -> ADAPTER
+           1.4 - Specify Links: ADAPTEE, ADAPTER -> ADAPTER
+   <em>Consequences</em>   
+         ADAPTER will contain most of ADAPTEE functionality
+         available through the TARGET object interface
+   <em>Product Text</em>
+         <em>ADV/ADO</em> ADAPTER
+            <em>Declarations</em>
+               ...
+               <em>Nested ADVs/ADOs</em>
+                  <em>Compose</em> ADAPTEE;
+                  <em>Inherit</em> TARGET;
+            ...
+            <em>Dynamic Properties</em>
+               <em>Interconnection</em>
+                  <em>With ADV/ADO</em> ADAPTEE
+                     <i>TargetActions</i> --> <i>AdapteeActions</i>;
+         <em>End</em> ADAPTER
+<em>End Operator</em>
+</pre>
+
+<li><a href="http://csg.uwaterloo.ca/~luisnova/patterns/adapter.tex">Tex version</a>

@@ -1,0 +1,216 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>Design Pattern Catalog</title>
+<style>
+<!--
+dl.briefOverview dt { font-weight: bold }
+-->
+</style>
+</head>
+
+<body>
+
+<h1>A brief Pattern Catalog</h1>
+<p>Patterns include Design Patterns, Analysis Patterns, and Architectural
+Patterns. Additionally, these patterns can be classified according to their
+intentional area of application.</p>
+<h2>Design Pattern Catalog</h2>
+<h3>(Class) Creational Patterns</h3>
+<dl class="briefOverview">
+  <dt>Factory Method</dt>
+  <dd>Define an interface for creating an object, but let subclasses decide
+    which class to instantiate. Factory Method lets a class defer instantiation
+    to subclasses.<br>
+    Varying: subclass of object that is instantiated.</dd>
+  <h3>(Object) Creational Patterns</h3>
+  <dt>Abstract Factory</dt>
+  <dd>Provide an interface for creating families of related or dependent objects
+    without specifying their concrete classes.<br>
+    Varying: families of product objects.</dd>
+  <dt>Builder</dt>
+  <dd>Separate the construction of a complex object from its representation so
+    that the same construction process can create different representations.<br>
+    Varying: how a composite object gets created.</dd>
+  <dt>Prototype</dt>
+  <dd>Specify the kinds of objects to create using a prototypical instance, and
+    create new objects by copying this prototype.<br>
+    Varying: class of object that is instantiated.</dd>
+  <dt>Singleton</dt>
+  <dd>Ensure a class only has one instance, and provide a global point of access
+    to it.<br>
+    Varying: the sole instance of a class.</dd>
+  <h3>(Class) Structural Patterns</h3>
+  <dt>Adapter (class)</dt>
+  <dd>Convert the interface of a class into another interface clients expect.
+    Adapter lets classes work together that couldnt otherwise because of
+    incompatible interfaces.<br>
+    Varying: interface to an object.</dd>
+  <h3>(Object) Structural Patterns</h3>
+  <dt>Adapter (object)</dt>
+  <dd>Convert the interface of a class into another interface clients expect.
+    Adapter lets classes work together that couldnt otherwise because of
+    incompatible interfaces.<br>
+    Varying: interface to an object.</dd>
+  <dt>Bridge</dt>
+  <dd>Decouple an abstraction from its implementation so that the two can vary
+    independently.<br>
+    Varying: implementation of an object.</dd>
+  <dt>Composite</dt>
+  <dd>Compose objects into tree structures to represent part-whole hierarchies.
+    Composite lets clients treat individual objects and compositions of objects
+    uniformly.<br>
+    Varying: structure and composition of an object.</dd>
+  <dt>Decorator</dt>
+  <dd>Attach additional responsibilities to an object dynamically. Decorators
+    provide a flexible alternative to subclassing for extending functionality.<br>
+    Varying: responsibilities of an object without subclassing.</dd>
+  <dt>Facade</dt>
+  <dd>Provide a unified interface to a set of interfaces in a subsystem. Façade
+    defines a higher-level interface that makes the subsystem easier to user.<br>
+    Varying: interface to a subsytem.</dd>
+  <dt>Flyweight</dt>
+  <dd>Use sharing to support large numbers of fine-grained objects efficiently.<br>
+    Varying: storage costs of objects.</dd>
+  <dt>Proxy</dt>
+  <dd>Provide a surrogate or placeholder for another object to control access to
+    it.<br>
+    Varying: how an object is accessed; its location.</dd>
+  <h3>(Class) Behavioral Patterns</h3>
+  <dt>Interpreter</dt>
+  <dd>Given a language, define a representation for its grammar along with an
+    interpreter that uses the representation to interpret sentences in the
+    language.<br>
+    Varying: grammar and interpretation of a language.</dd>
+  <dt>Template Method</dt>
+  <dd>Define the skeleton of an algorithm in an operation, deferring some steps
+    to subclasses. Template Method lets subclasses redefine certain steps of an
+    algorithm without changing the algorithms structure.<br>
+    Varying: steps of an algorithm.</dd>
+  <h3>(Object) Behavioral Patterns</h3>
+  <dt>Chain of Responsibility</dt>
+  <dd>Avoid coupling the sender of a request to its receiver by giving more than
+    one object a chance to handle the request. Chain the receiving objects and
+    pass the request along the chain until an object handles it.<br>
+    Varying: object that can fulfill a request.</dd>
+  <dt>Command</dt>
+  <dd>Encapsulate a request as an object, thereby letting you parameterize
+    clients with different requests, queue or log requests, and support undoable
+    operations.<br>
+    Varying: when and how a request is fulfilled.</dd>
+  <dt>Iterator</dt>
+  <dd>Provide a way to access the elements of an aggregate object sequentially
+    without exposing its underlying representation<br>
+    Varying: how an aggregate's elements are accessed, traversed.</dd>
+  <dt>Mediator</dt>
+  <dd>Define an object that encapsulates how a set of objects interact. Mediator
+    promotes loose coupling by keeping objects from referring to each other
+    explicitly, and it lets you vary their interaction independently.<br>
+    Varying: how and which objects interact with each other.</dd>
+  <dt>Memento</dt>
+  <dd>Without violating encapsulation, capture and externalize an objects
+    internal state so that the object can be restored to this state later.<br>
+    Varying: what private information is stored outside an object, and when.</dd>
+  <dt>Observer</dt>
+  <dd>Define a one-to-many dependency between objects so that when one object
+    changes state, all its dependents are notified and updated automatically.<br>
+    Varying: number of objects that depend on another object; how the dependent
+    objects stay up to date.</dd>
+  <dt>State</dt>
+  <dd>Allow an object to alter its behavior when its internal state changes. The
+    object will appear to change its class.<br>
+    Varying: states of an object.</dd>
+  <dt>Strategy</dt>
+  <dd>Define a family of algorithms, encapsulate each one, and make them
+    interchangeable. Strategy lets the algorithm vary independently from clients
+    that use it.<br>
+    Varying: an algorithm.</dd>
+  <dt>Visitor</dt>
+  <dd>Represent an operation to be performed on the elements of an object
+    structure. Visitor lets you define a new operation without changing the
+    classes of the elements on which it operate.<br>
+    Varying: operations that can be applied to object(s) without changing their
+    class(es).</dd>
+</dl>
+<h3>Additional Design Patterns (not yet classified)</h3>
+<p>Layer Architecture, Repository, Pipes and Filters, Event Channel, ADT,
+Module, Framework, Superclass, Blackboard, Master/Slave, Process-Control,
+Rule-Based Interpreter.</p>
+<h2>Analysis Pattern Catalog</h2>
+<dl class="briefOverview">
+  <dt>List</dt>
+  <dd>A consits of a lot of B.</dd>
+  <dt>&quot;Exemplartyp&quot;</dt>
+  <dd>Multiple occurrences B of a type A.</dd>
+  <dt>&quot;Baugruppe&quot;</dt>
+  <dd>A physically consits of A1, and A2.</dd>
+  <dt>&quot;Stückliste&quot;</dt>
+  <dd>A may consist of multiple As.</dd>
+  <dt>Coordinator</dt>
+  <dd>A coordinator is a resolved n-ary association class.</dd>
+  <dt>Roles</dt>
+  <dd>A plays multiple roles with respect to B.</dd>
+  <dt>Changing Roles</dt>
+  <dd>A plays different roles with respect to B at different times.</dd>
+  <dt>History</dt>
+  <dd>Document multiple facts that were true of A at different times.</dd>
+  <dt>Group</dt>
+  <dd>Multiple A constitute a single group at the same time.</dd>
+  <dt>History of a Group</dt>
+  <dd>Multiple A constitute different groups at different times.</dd>
+</dl>
+<h2>Design Pattern Categories</h2>
+<ol>
+  <li>&nbsp;
+    <ul>
+      <li>Object pattern</li>
+      <li>Class pattern</li>
+    </ul>
+  </li>
+  <li>&nbsp;
+    <ul>
+      <li>Creational</li>
+      <li>Structural</li>
+      <li>Behavioral</li>
+    </ul>
+  </li>
+  <li>&nbsp;
+    <ul>
+      <li>Decoupling</li>
+      <li>Variants</li>
+      <li>State-handling</li>
+      <li>Control</li>
+      <li>Virtual Machine</li>
+      <li>Convenience</li>
+    </ul>
+  </li>
+</ol>
+<h3>References</h3>
+<ul>
+  <li><a href="http://hillside.net/patterns/">Patterns Home Page</a></li>
+  <li>Gamma, E., R. Helm, R. Johnson, and J. Vlissides. Design Patterns:
+    Elements of Reusable Object-Oriented Software. Reading, MA: Addison-Wesley,
+    1995</li>
+  <li>Buschmann, F., R. Meunier, H. Rohnert, P. Sommerlad, M. Stal.
+    Pattern-Oriented Software Architecture: A System Of Patterns. West Sussex,
+    England: John Wiley &amp; Sons Ltd., 1996</li>
+  <li>Fowler M. Analysis Patterns - Reusable Object Models. Menlo Park:
+    Addison-Wesley, 1997.</li>
+  <li>Coad, P. Object-Oriented Patterns, in: Communications of the ACM,
+    September 1992, p. 152-159.</li>
+  <li>Coad, P., North, D., Mayfield, M. Object Models, Strategies, Patterns, and
+    Applications. Englewood Cliffs: Yourdan Press, Prentice Hall, 1995.</li>
+  <li>Balzert, Heide. Lehrbuch der Objektmodellierung - Analyse und Entwurf.
+    Heidelberg: Spektrum Akademischer Verlag, 1999.</li>
+  <li>Coad P. The Coad Letter. Rösch Consulting, April 1992.</li>
+  <li>Walter F. Tichy. ...</li>
+  <li>a <a href="http://www.vico.org/pages/PatronsDisseny/Patrones.html">Pattern
+    Catalog</a> with descriptions.</li>
+</ul>
+
+</body>
+
+</html>

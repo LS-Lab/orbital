@@ -1,0 +1,49 @@
+<pre>
+<em>Operator</em>  Design Pattern <b>Decorator</b>
+   <em>Objective</em>    Attach additional responsibilities to an object dynamically
+   <em>Parameters</em>   Objects: COMPONENT;
+   <em>Subtasks</em>   
+         1 - Instantiate Concrete Object: COMPONENT -> ConcreteCOMPONENT
+         2 - Create Interface Object: COMPONENT -> DECORATOR
+         3 - Instantiate Concrete Object: DECORATOR -> ConcreteDECORATOR
+   <em>Consequences</em>   
+         You can attach dynamically ConcreteCOMPONENT functionality
+         to ConcreteDECORATOR objects
+   <em>Product Text</em>
+         <em>ADV/ADO</em> DECORATOR
+            <em>Declarations</em>
+               ...
+               <em>Attributes</em>
+                  ComponentType: <u>ADO COMPONENT</u>
+               <em>Nested ADVs/ADOs</em>
+                  <em>Compose</em> ComponentType;
+                  <em>Inherit</em> Component;
+             ...
+         <em>End</em> DECORATOR
+
+         <em>ADV/ADO</em> ConcreteCOMPONENT
+            <em>Declarations</em>
+               ...
+               <em>Nested ADVs/ADOs</em>
+                  <em>Inherit</em> Component;
+            ...
+         <em>End</em> ConcreteCOMPONENT
+
+         <em>ADV/ADO</em> ConcreteDECORATOR
+            <em>Declarations</em>
+               ...
+               <em>Effectual Actions</em>
+                  AttachComponent: <u>ADO COMPONENT</u>
+               <em>Nested ADVs/ADOs</em>
+                  <em>Inherit</em> Decorator;
+            <em>Dynamic Properties</em>
+               ...
+               <em>Valuation</em>
+                  AttachComponent(ComponentType) ->
+                         O ComponentType = ProvideInstance(COMPONENT);
+            ...
+         <em>End</em> ConcreteDECORATOR
+<em>End Operator</em>
+</pre>
+
+<li><a href="http://csg.uwaterloo.ca/~luisnova/patterns/decorator.tex">Tex version</a>

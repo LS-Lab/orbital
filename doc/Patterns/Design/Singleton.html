@@ -1,0 +1,38 @@
+<pre>
+<em>Operator</em>  Design Pattern <b>Singleton</b>
+   <em>Objective</em>    Ensures that there will be only one instance
+                         of a certain object specification
+   <em>Parameters</em>   Objects: SINGLETON;
+   <em>Subtasks</em>   
+         1 - Create Class of an Object: SINGLETON -> Class of SINGLETON
+   <em>Consequences</em>   
+         Class of SINGLETON will describe the instantiation process for
+         the objects specified by SINGLETON
+   <em>Product Text</em>
+         <em>Class of ADV/ADO</em> SINGLETON
+            <em>Declarations</em>
+               <em>Attributes</em>
+                  NumberOfMembers: <u>nat</u>;
+               <em>Actions</em>
+                  <em>Creation</em> CreateClass;
+                  <em>Destruction</em> DestroyClass;
+                  AddObject: <u>nat</u>;
+                  RemoveObject: <u>nat</u>;
+               <em>Nested ADVs/ADOs</em>
+                  <em>Sequence</em> Object <em>of</em> SINGLETON;
+            <em>Static Properties</em>
+               <em>Constraints</em> 
+                  [] NumberOfMembers <= 1;                                
+            <em>Dynamic Properties</em>
+               <em>Valuation</em>
+                  CreateClass -> O NumberOfMembers = 0;
+                  AddObject(N) -> O NumberOfMembers = NumberOfMembers + 1;
+                  RemoveObject(N) -> O NumberOfMembers = NumberOfMembers - 1;
+               <em>Interconnection</em>
+                  AddObject(N) --> Object(N).<i>Creation_Actions</i>;
+                  RemoveObject(N) --> Object(N).<i>Destruction_Actions</i>;
+         <em>EndClass</em> SINGLETON
+<em>End Operator</em>
+</pre>
+
+<li><a href="http://csg.uwaterloo.ca/~luisnova/patterns/adapter.tex">Tex version</a>

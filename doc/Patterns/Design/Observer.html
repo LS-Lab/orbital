@@ -1,0 +1,35 @@
+<pre>
+<em>Operator</em>  Design Pattern <b>Observer</b>
+   <em>Objective</em>    Define dependency between objects
+   <em>Parameters</em>   Objects: SUBJECT;
+   <em>Subtasks</em>   
+         1 - Specify Observers to Objects: SUBJECT -> OBSERVERs
+           1.1 - Create Object: -> OBSERVERs
+           1.2 - Map Objects: SUBJECT, OBSERVERs -> OBSERVERs
+           1.3 - Specify Links: OBSERVERs -> OBSERVERs
+   <em>Consequences</em>   
+         OBSERVERs monitor changes in the state of SUBJECT to
+         update its own state
+   <em>Product Text</em>
+         <em>ADV</em> OBSERVER <em>ForADO</em> SUBJECT
+            <em>Declarations</em>
+               ...
+               <em>Attributes</em>
+                  <i>ObserverAttributes</i>;
+               <em>Actions</em>
+                  <i>ObserverQueryActions</i>;
+                  <i>ObserverChangeActions</i>;
+            ...
+            <em>Dynamic Properties</em>
+                <em>Interconnection</em>
+                  <em>With ADO</em> SUBJECT
+                     <i>SubjectAttributes</i> --> <i>ObserversAttributes</i>;
+                     <i>SubjectQueryActions</i> --> <i>ObserversQueryActions</i>;
+                     <i>SubjectChangeActions</i> --> <i>ObserversChangeActions</i>;
+            ...
+         <em>End</em> OBSERVERs
+<em>End Operator</em>
+</pre>
+
+<li><a href="http://csg.uwaterloo.ca/~luisnova/patterns/observer.tex">Tex version</a>
+

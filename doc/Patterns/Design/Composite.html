@@ -1,0 +1,39 @@
+<pre>
+<em>Operator</em>  Design Pattern <b>Composite</b>
+   <em>Objective</em>    Compose objects into tree structures to
+                         represent part-whole hierarchies
+   <em>Parameters</em>   Objects: COMPONENT;
+   <em>Subtasks</em>   
+         1 - Create a Tree Structure.
+           1.1 - Instantiate Concrete Object: COMPONENT -> COMPOSITE
+           1.2 - Instantiate Concrete Object: COMPONENT -> LEAFs
+           1.3 - Compose Objects: LEAFs, COMPOSITE -> COMPOSITE
+           1.4 - If Subtree is needed:
+             1.4.1 - Recursively Create SubTrees (Step 1)
+             1.4.2 - Compose Objects: SubCOMPOSITE, COMPOSITE -> COMPOSITE
+   <em>Consequences</em>   
+         A tree structure composed of LEAF objects and COMPOSITE objects is
+         created, where the last ones represent the internal nodes of the tree
+   <em>Product Text</em>
+         <em>ADV/ADO</em> COMPOSITE
+            <em>Declarations</em>
+               ...
+               <em>Attributes</em>
+                  ComponentType: <u>ADO COMPONENT</u>;
+               <em>Nested ADVs/ADOs</em>
+                  <em>Set</em> CompSet <em>of</em> ComponentType;
+                  <em>Inherit</em> Component;
+            ...
+         <em>End<em> COMPOSITE
+
+         <em>ADV/ADO</em> LEAF
+            <em>Declarations</em>
+               ...
+               <em>Nested ADVs/ADOs</em>
+               <em>Inherit</em> Component;
+            ...
+         <em>End</em> LEAF
+<em>End Operator</em>
+</pre>
+
+<li><a href="http://csg.uwaterloo.ca/~luisnova/patterns/composite.tex">Tex version</a>

@@ -33,6 +33,7 @@ public class SearchTest implements Runnable {
 	};
     public static final AlgorithmicTemplate[] defaultAlgo = {
 	/*"DepthFirstSearch", */ new BreadthFirstSearch(), new IterativeDeepening(), /*"IterativeBroadening", */new AStar(h), new HillClimbing(h), new IterativeDeepeningAStar(h), new BranchAndBound(h, 0), new ParallelBranchAndBound(h, 0),
+	new IterativeExpansion(h),
 	new SimulatedAnnealing(h, schedule), new ThresholdAccepting(h, schedule),
 	new WAStar(2, h)
     };
@@ -67,8 +68,7 @@ public class SearchTest implements Runnable {
 		boolean optimal;
 		try {
 		    complete = (algo[i].complexity() != Functions.nondet 
-
-				// FIXME: norm is infinite for all polynoms, what else!
+				//@FIXME: norm is infinite for all polynoms, what else!
 				&& !(algo[i].complexity().equals(Functions.constant(Values.valueOf(Double.POSITIVE_INFINITY)))));
 		}
 		catch(UnsupportedOperationException x) {Adjoint.print(Adjoint.INFO, "unsupported", x);}
