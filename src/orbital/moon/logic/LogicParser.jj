@@ -74,7 +74,7 @@ public class LogicParser {
     static final Type INTEGER_LITERAL_TYPE = Types.objectType(orbital.math.Integer.class);
     static final Type FLOAT_LITERAL_TYPE = Types.objectType(orbital.math.Real.class);
     static final Type STRING_LITERAL_TYPE = Types.objectType(String.class);
-    private static final Type BOOLEAN = Types.TRUTH;
+    private Type TRUTH;
 	
     /**
      * Delegate to the current syntax implementation that is used for building expressions.
@@ -82,9 +82,11 @@ public class LogicParser {
     protected ExpressionSyntax syntax;
 
     /**
-     * Caches the core signature of {@link #syntax}.
+     * The root scope, containing only the core signature.
+     * @internal never use this scope directly, but always nest it inside another scope.
+     * This ensures that root.symbolMap won't be modified.
      */
-    private transient Signature coreSignature;
+    protected Scope root;
 
     /**
      * The current scope.
@@ -97,7 +99,14 @@ public class LogicParser {
      */
     public void setSyntax(ExpressionSyntax syntax) {
 	this.syntax = syntax;
-	this.coreSignature = syntax.coreSignature();
+	Signature coreSignature = syntax.coreSignature();
+	this.root = new RootScope(coreSignature);
+	this.TRUTH =
+	    (Type) (
+		    syntax instanceof Logic
+		    ? ((Logic)syntax).coreInterpretation().get(coreSignature.get("truth", new Expression[0]))
+		    : null
+		    );
     }
 
     /**
@@ -252,8 +261,9 @@ public class LogicParser {
      * @see ExpressionBuilder#compose(Expression,Expression[])
      */
     protected Expression apply(Token optok, Expression[] a, Type result) throws ParseException {
-    	final String op = optok.image;
-	return composeWrapper(optok, new SymbolBase(op, Types.map(Types.typeOf(a), result)), a);
+    	String op = optok.image;
+	Symbol s = scope.getSymbol(op, Types.map(Types.typeOf(a), result), true);
+	return composeWrapper(optok, s, a);
     }
 
     /**
@@ -284,19 +294,23 @@ public class LogicParser {
      * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience method</a>
      */
     private Expression composeWrapper(Token optok, String op, Expression[] arg) throws ParseException {
-	if (coreSignature.get(op, arg) == null) {
+	Symbol s = scope.getSymbol(op, Types.map(Types.typeOf(arg), Types.UNIVERSAL), false);
+	if (s == null) {
+	    //@xxx an error is to come up, so already print some information about it
 	    System.err.println(">> in signature ");
-	    for (Iterator i = coreSignature.iterator(); i.hasNext(); ) {
-		Symbol s = (Symbol)i.next();
-		System.err.println(s + " " + s.getType());
+	    for (Iterator i = syntax.coreSignature().iterator(); i.hasNext(); ) {
+		Symbol sym = (Symbol)i.next();
+		System.err.println(sym + " of type " + sym.getType());
 	    }
 	    System.err.println(">> " + op + " applied to " + MathUtilities.format(arg) + " of type " + Types.typeOf(arg) + " not found");
 	}
-	return composeWrapper(optok, coreSignature.get(op, arg), arg);
+	return composeWrapper(optok, s, arg);
     }
 
     /**
-     * symbol declaration handling
+     * Symbol declaration handling
+     * @author Andr&eacute; Platzer
+     * @verions 1.1, 2002-11-01
      */
     private static class Scope {
 	/**
@@ -312,7 +326,14 @@ public class LogicParser {
 	 * Create a new empty scope.
 	 */
 	public Scope() {
-	    this(null);
+	    this((Scope)null);
+	}
+	/**
+	 * Create a new scope with predefined symbols.
+	 */
+	protected Scope(Signature predefinedSymbols) {
+	    this();
+	    this.symbolMap = predefinedSymbols;
 	}
 	/**
 	 * Create a new scope within an outer scope.
@@ -350,23 +371,36 @@ public class LogicParser {
 	
 	/**
 	 * Get a symbol of the specified signifier and expected type.
-	 * Prefers corresponding entries in the coreSignature.
-	 * @param expectedType the type expected as derived from the context.
+	 * Will lookup current scope and outer scope.
+	 * @param maxType the maximum type expected as derived from the context.
+	 * @param variable whether the symbol is expected to be a variable.
+	 * @param autoDeclare whether to declare a new symbol if it is unknown,
+	 *  instead of returning <code>null</code>.
 	 */
-	public Symbol getSymbol(String signifier, Type expectedType) {
-	    // do we already know it is a variable due to a quantifier within whose scope we are?
-	    for (Iterator i = symbolMap.iterator(); i.hasNext(); ) {
-		Symbol s = (Symbol) i.next();
-		if (s.getSignifier().equals(signifier))
+	public Symbol getSymbol(String signifier, Type maxType, boolean variable, boolean autoDeclare) {
+	    Symbol s = symbolMap.get(signifier, maxType);
+	    if (s != null) {
+		// we already know it due to a quantifier within whose scope we are
+		//@todo use Types.map(Types.product(arityOf(maxType.codomain()), UNIVERSAL), UNIVERSAL) instead to catch even more similarities?
+		Symbol s2 = symbolMap.get(signifier, Types.map(maxType.codomain(), Types.UNIVERSAL));
+		if (!s.equals(s2))
+		    throw new IllegalArgumentException("nonunique names\n\t" + signifier + ":" + maxType + " ressembles\n\t" + s + " of type " + s.getType() +"\n\tand " + s2 + " of type " + s2.getType() + " too much.");
+		else
 		    return s;
 	    }
 	    if (outer != null)
 		// declared in the parent's (outer) scope
-		return outer.getSymbol(signifier, expectedType);
-	    // else it is treated "the default way"
-	    return getDefaultSymbol(signifier, expectedType);
+		return outer.getSymbol(signifier, maxType, autoDeclare);
+	    // treated "the default way"
+	    return autoDeclare
+		? variable
+		  ? new SymbolBase(signifier, maxType, null, variable)
+		  : getDefaultSymbol(signifier, maxType)
+		: null;
 	}
-
+	public Symbol getSymbol(String signifier, Type maxType, boolean autoDeclare) {
+	    return getSymbol(signifier, maxType, false, autoDeclare);
+	}
     }
     //@todo remove this garbage, because we should always let the user decide what's constant and what's variable, (or at least let him choose the capital/lower convention)
     // either the user can call createExpression(String expr, Signature allowed),
@@ -381,6 +415,22 @@ public class LogicParser {
 	return signifier.charAt(0) == '_'
 	    ? new SymbolBase(signifier, expectedType, null, true)
 	    : new SymbolBase(signifier, expectedType, null, false);
+    }
+    /**
+     * Symbol handling for the root scope.
+     * @author Andr&eacute; Platzer
+     * @verions 1.1, 2002-11-05
+     */
+    private static class RootScope extends Scope {
+	/**
+	 * Create a new scope with predefined symbols.
+	 */
+	protected RootScope(Signature predefinedSymbols) {
+	    super(predefinedSymbols);
+	}
+	public void declare(Symbol x) {
+	    throw new InternalError("modifying the root scope is not allowed");
+	}
     }
 
     /**
@@ -448,7 +498,7 @@ TOKEN :
  */
 Expression[] parseFormulas() :
 {
-    scope = new Scope();
+    scope = new Scope(root);
     List r = new LinkedList();
     Expression expr;
 }
@@ -467,7 +517,7 @@ Expression[] parseFormulas() :
  */
 Expression parseFormula() :
 {
-    scope = new Scope();
+    scope = new Scope(root);
     Expression expr;
 }
 {
@@ -483,7 +533,7 @@ Expression parseFormula() :
  */
 Expression parseTerm() :
 {
-    scope = new Scope();
+    scope = new Scope(root);
     Expression expr;
 }
 {
@@ -520,7 +570,7 @@ Expression FreeDeclarationExpression() :
     scope = new Scope(scope);
 }
 {
-    (tok = <DECLARE_FREE> x = Variable() {scope.declare(x);})*
+    (tok = <DECLARE_FREE> x = VariableDeclaration() {scope.declare(x);})*
     a = QuantifiedExpression()
 {
     scope = scope.leave();
@@ -537,7 +587,7 @@ Expression QuantifiedExpression() :
     scope = new Scope(scope);
 }
 {
-    ((tok = <FORALL> | tok = <EXISTS>) x = Variable() {scope.declare(x);xs.add(x);})*
+    ((tok = <FORALL> | tok = <EXISTS>) x = VariableDeclaration() {scope.declare(x);xs.add(x);})*
     a = EquivalenceExpression()
 	{
 	    for (Iterator i = xs.iterator(); i.hasNext(); ) {
@@ -635,7 +685,7 @@ Expression Atom() :
 	{return a;}
     |
 	tok = <IDENTIFIER>
-	{return (Expression) syntax.createAtomic(scope.getSymbol(tok.image, Types.TRUTH));}
+	{return (Expression) syntax.createAtomic(scope.getSymbol(tok.image, TRUTH, true));}
     |
 	sym = NumberLiteralValue()
 	{return (Expression) syntax.createAtomic(sym);}
@@ -652,7 +702,7 @@ Expression CompoundFormula() :
         {return p;}
 |
     tok = <IDENTIFIER> arg = Arguments()
-	{return apply(tok, arg, BOOLEAN);}
+	{return apply(tok, arg, TRUTH);}
 |
     p = LambdaAbstractionPredicate() arg = Arguments()
         {
@@ -743,16 +793,8 @@ Expression PowerTerm() :
 {Token tok;Expression a, b;}
 {
     // right associative xfy
-    //@todo alternative? PowerTerm() = UnaryTerm() ("^" PowerTerm())?
     //@xxx XOR != "^" != "**"
     a = UnaryTerm() (tok = <XOR> b = PowerTerm() {a = combine(tok, a, b);} )?
-     /*
-      * According to JavaCC documentation:
-      * right associtivity is expressed using a right-recursive grammar
-      * specification. A LOOKAHEAD(XOR) specification tells JavaCC to look ahead
-      * for a "^" token, otherwise the correct match won't be taken. 
-      * @todo or tok = "**"
-      */
 {return a;}
 }
 
@@ -788,6 +830,7 @@ Expression CompoundTerm() :
     tok = <IDENTIFIER> arg = Arguments()
 	{return apply(tok, arg, Types.INDIVIDUAL);}
 |
+	//@todo also allow non-applied LambdaAbstractions like in f((\x.x+2))
     f = LambdaAbstraction() arg = Arguments()
         {
 	    if (arg.length != 1)
@@ -897,7 +940,7 @@ Symbol NumberLiteralValue() :
  * Parses a constant or a variable atomic term,
  * depending upon known symbols in context.
  * @see #Variable()
- * @todo reject boolean types, since this production only gets called from term(), not expression().
+ * @todo reject boolean types, since this production only gets called from term(), not expression().?
  */
 Symbol ConstantOrVariable() :
 {String signifier;Token tok;String s = "";}
@@ -907,7 +950,7 @@ Symbol ConstantOrVariable() :
 	    ( "." tok = <IDENTIFIER>  {signifier += "." + tok.image;} )
 	    )*
     */
-    {return scope.getSymbol(signifier, Types.INDIVIDUAL);}
+    {return scope.getSymbol(signifier, Types.INDIVIDUAL, true);}
 }
 
 
@@ -923,7 +966,7 @@ Symbol Variable() :
 	    ( "." tok = <IDENTIFIER>  {signifier += "." + tok.image;} )
 	    )*
     */
-    {return new SymbolBase(signifier, Types.INDIVIDUAL, null, true);}
+    {return scope.getSymbol(signifier, Types.INDIVIDUAL, true);}
 }
 /**
  * an atomic variable term with a type declaration.
@@ -932,17 +975,64 @@ Symbol VariableDeclaration() :
 {String signifier;Token tok;Type type = Types.INDIVIDUAL;}
 {
     tok = <IDENTIFIER> {signifier = tok.image;}
-    (":" type = TypeConstruct())?
+    (":" type = typeUse())?
+    //@todo could use scope.getSymbol() but with variable:=true, but we are used for declarations anyway so it is unimportant.
     {return new SymbolBase(signifier, type, null, true);}
 }
 
+// type parsing
+
 /**
- * A type construct.
+ * A type use.
  */
-Type TypeConstruct() :
-{Token tok;}
+Type typeUse() :
+{Expression a;}
 {
-    tok = <IDENTIFIER> {throw new UnsupportedOperationException("specifying types is not yet supported");}
+    a = type()
+    {
+	return (Type) ((Formula) a).apply(new InterpretationBase(syntax.coreSignature(), java.util.Collections.EMPTY_MAP));
+    }
+}
+
+/**
+ * Central type parsing production.
+ * Parse a type expression for the current logic.
+ */
+Expression type() :
+{Expression a;}
+{
+    a = MapType()
+    {return a;}
+}
+
+Expression MapType() :
+{Token tok;Expression a,b;}
+{
+    a = PrimaryType() ( tok = <IMPLY> b = PrimaryType() {a = combine(tok, a,b);} )*
+	{return a;}
+}
+
+/**
+ * A primary type.
+ */
+Expression PrimaryType() :
+{Token tok;Expression a;}
+{
+    LOOKAHEAD(2)
+    tok = <IDENTIFIER>
+	{return syntax.createAtomic(scope.getSymbol(tok.image, Types.TYPE, true));}
+    |   "[" a = CompoundType() "]"
+	{return a;}
+}
+
+/**
+ * A compound type.
+ */
+Expression CompoundType() :
+{Token tok; Expression[] arg;}
+{
+    tok = <IDENTIFIER> arg = Types()
+	{return apply(tok, arg, Types.TYPE);}
 }
 
 // Parsing Helpers
@@ -958,5 +1048,19 @@ Expression[] Argument_list() :
 {List r = new LinkedList();Expression x;}
 {
     x = term() {r.add(x);} ( "," x = term() {r.add(x);} )*
+	{return (Expression[]) r.toArray(new Expression[0]);}
+}
+
+Expression[] Types() :
+{Expression[] s = null;}
+{
+    "(" [ s = Type_list() ] ")"
+	{return s;}
+}
+
+Expression[] Type_list() :
+{List r = new LinkedList();Expression x;}
+{
+    x = type() {r.add(x);} ( "," x = type() {r.add(x);} )*
 	{return (Expression[]) r.toArray(new Expression[0]);}
 }

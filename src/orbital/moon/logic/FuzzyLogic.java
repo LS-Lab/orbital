@@ -273,6 +273,11 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	final OperatorSet op = fuzzyLogicOperators;
 	this._coreInterpretation =
 	LogicSupport.arrayToInterpretation(new Object[][] {
+	    {Types.objectType(java.lang.Number.class, "truth"),
+	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+	    {Types.objectType(java.lang.Number.class, "real"),
+	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+
 	    {op.not(),          // "~"
 	     new NotationSpecification(900, "fy", Notation.PREFIX)},
 	    {op.and(),          // "&"
@@ -291,7 +296,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	     new NotationSpecification(950, "fxx", Notation.PREFIX)},
 	    {LogicFunctions.exists,       // "?"
 	     new NotationSpecification(950, "fxx", Notation.PREFIX)}
-	}, true);
+	}, true, false, true);
 	this._coreSignature = _coreInterpretation.getSignature();
     }
 

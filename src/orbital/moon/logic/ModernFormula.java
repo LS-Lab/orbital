@@ -52,11 +52,13 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     /**
      * The set of all binding expressions (i.e. instances of BindingExpression).
      * Represented as an IdentityHashSet = IdentityHashMap.keySet().
-     * @xxx improve concept
+     * @xxx improve concept of binding
      */
     private static final Set bindingExpressions;
     static {
-	Map helper = new IdentityHashMap();
+	final Map helper = new IdentityHashMap();
+	//@xxx we have a cycle in the dependencies of static initialization when we start FuzzyLogic.main. So we force ClassicalLogic to initialize. Really improve concept of bindings!
+	new ClassicalLogic();
 	helper.put(ClassicalLogic.LogicFunctions.forall, null);
 	helper.put(ClassicalLogic.LogicFunctions.exists, null);
 	bindingExpressions = helper.keySet();
@@ -240,7 +242,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	public Object apply(Object i) {
 	    Interpretation I = (Interpretation)i;
 	    if (I == null)
-		throw new IllegalStateException("cannot get the truth-value of a symbol without an interpretation");
+		throw new IllegalStateException("cannot get the truth-value of a symbol with interpretation " + I);
             
 	    // symbols
 	    try {

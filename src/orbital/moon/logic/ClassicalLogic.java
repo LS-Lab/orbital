@@ -840,9 +840,24 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	     * and their notation specifications.
 	     * Stored internally as an array of length-2 arrays.
 	     * @invariant sorted, i.e. precedenceOf[i] < precedenceOf[i+1]
-	     * @todo if Resolution would not need them, we could also directly embed LogicFunctions, here
 	     */
-	    //@fixme debug why the thing ~(a->a) is displayed as ~a->a etc.  Use BESTFIX!
+	    //@fixme debug why the thing ~(a->a) is displayed as ~a->a etc.  Use BESTFIX! (@see Notation#hasCompactBrackets)
+	    {Types.UNIVERSAL,
+	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+	    {Types.objectType(java.lang.Boolean.class, "truth"),
+	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+	    {Types.objectType(java.lang.Object.class, "individual"),
+	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+
+	    {Types.list,
+	     new NotationSpecification(500, "fx", Notation.PREFIX)},
+	    {Types.set,
+	     new NotationSpecification(500, "fx", Notation.PREFIX)},
+	    {Types.map,
+	     new NotationSpecification(500, "xfx", Notation.INFIX)},
+
+	    {orbital.math.functional.Operations.plus, null},
+
 	    {Predicates.equal,            // "="
 	     new NotationSpecification(700, "xfx", Notation.INFIX)},
 	    //@xxx debug !=
@@ -876,7 +891,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	     new NotationSpecification(950, "fxx", Notation.PREFIX)},
 	    {LogicFunctions.lambda,       // "\\"
 	     new NotationSpecification(1100, "fxx", Notation.PREFIX)}
-	}, false);
+	}, false, true, true);
     private static final Signature _coreSignature = _coreInterpretation.getSignature();
 
     // Helper utilities.
@@ -967,7 +982,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	//@todo we could implement a semantic apply() if only Interpretations would tell us a collection of entities in the universe
 	//@todo could we turn forall into type (&sigma;&rarr;t)&rarr;t alias Function<Function<S,boolean>,boolean> and use &forall;(&lambda;x.t)
     	public static final BinaryFunction forall = new BinaryFunction() {
-		//@todo also templatize with t somehow? //@xxx verify type
+		//@todo also templatize with t somehow?
 		private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.INDIVIDUAL, Types.TRUTH}), Types.TRUTH);
     		public Object apply(Object x, Object a) {
 		    throw new LogicException("quantified formulas only have a semantic value with respect to a possibly infinite domain. They are available for inference, but cannot be interpreted with finite means.");
@@ -976,6 +991,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    };
 
     	public static final BinaryFunction exists = new BinaryFunction() {
+		//@todo also templatize with t somehow?
 		private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.INDIVIDUAL, Types.TRUTH}), Types.TRUTH);
     		public Object apply(Object x, Object a) {
 		    throw new LogicException("quantified formulas only have a semantic value with respect to a possibly infinite domain. They are available for inference, but cannot be interpreted with finite means.");
@@ -988,6 +1004,10 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		/*private static*/ final Specification callTypeDeclaration = new Specification(new Class[] {
 		    Object.class, Object.class
 		}, Function.class);
+		//@todo also templatize with t somehow? //@xxx verify type
+		private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.UNIVERSAL, Types.UNIVERSAL}), Types.map(Types.UNIVERSAL, Types.UNIVERSAL));
+		//private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.INDIVIDUAL, Types.INDIVIDUAL}), Types.map(Types.INDIVIDUAL, Types.INDIVIDUAL));
+		//private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.INDIVIDUAL, Types.TRUTH}), Types.map(Types.INDIVIDUAL, Types.TRUTH));
     		public Object apply(Object x, Object t) {
 		    throw new AssertionError("this method never gets called since lambda cannot be interpreted truthh-functionally, but already receives a structural modification in compose(...)");
     		}

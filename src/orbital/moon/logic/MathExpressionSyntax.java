@@ -93,37 +93,37 @@ public class MathExpressionSyntax implements ExpressionSyntax {
 	return _coreInterpretation;
     }
     private static final Interpretation _coreInterpretation =
-	arrayToInterpretation(new Object[] {
-	    Operations.plus,
-	    Operations.minus,
-	    Operations.subtract,
-	    Operations.times,
-	    Operations.inverse,
-	    Operations.divide,
-	    Operations.power
-	}, false);
+	LogicSupport.arrayToInterpretation(new Object[][] {
+	    {new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
+		    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x) {
+			return x;
+		    } 
+		    public Function derive() {
+			//@todo filter by compose
+			throw new UnsupportedOperationException("filtered by compose anyway");
+		    } 
+		    public Function integrate() {
+			throw new UnsupportedOperationException("filtered by compose anyway");
+		    } 
+		    public Real norm() {
+			throw new UnsupportedOperationException("filtered by compose anyway");
+		    }
+		    public String toString() {
+			//@internal the only difference to Functions.id
+			return "+";
+		    }
+		}, null},
+	    {Operations.plus, null},
+	    {Operations.minus, null},
+	    {Operations.subtract, null},
+	    {Operations.times, null},
+	    {Operations.inverse, null},
+	    {Operations.divide, null},
+	    {Operations.power, null}
+	}, false, true, false);
+    
     private static final Signature _coreSignature = _coreInterpretation.getSignature();
     
-    private static final Interpretation arrayToInterpretation(Object[] functors, boolean skipNull) {
-	Map assoc = new TreeMap();
-	for (int i = 0; i < functors.length; i++) {
-	    final Functor f = (Functor)functors[i];
-	    if (f == null)
-		if (skipNull)
-		    continue;
-		else
-		    throw new NullPointerException("illegal functor " + f);
-	    try {
-		assoc.put(new SymbolBase(f.toString(),
-					 Types.declaredTypeOf(f),
-					 Notation.getNotation(f)),
-			  f);
-	    }
-	    catch (IntrospectionException ex) {throw new InnerCheckedException("could not detect specification", ex);}
-	}
-	Signature signature = new SignatureBase(assoc.keySet());
-	return new InterpretationBase(signature, assoc);
-    }
     public Signature scanSignature(String expression) throws ParseException {
 	throw new UnsupportedOperationException("not yet implemented");
     }
@@ -300,3 +300,4 @@ public class MathExpressionSyntax implements ExpressionSyntax {
 	}
     }
 }
+

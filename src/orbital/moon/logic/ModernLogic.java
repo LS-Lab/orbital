@@ -93,11 +93,11 @@ abstract class ModernLogic implements Logic {
 	if (compositor == null)
 	    throw new NullPointerException("illegal arguments: compositor " + compositor + " composed with " + MathUtilities.format(arguments));
         if (!Types.isApplicableTo(compositor.getType(), arguments))
-	    throw new ParseException("compositor " + compositor + ":" + compositor.getType() + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments) + ":" + Types.typeOf(arguments), COMPLEX_ERROR_OFFSET);
+	    throw new ParseException("compositor " + compositor + " : " + compositor.getType() + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments) + " : " + Types.typeOf(arguments), COMPLEX_ERROR_OFFSET);
 
 	Expression RES = composeImpl(compositor, arguments);
 	assert RES != null : "@post RES != null";	     
-	assert RES.getType().equals(compositor.getType().domain()) : "@post " + RES.getType() + "=" + compositor.getType().domain();
+	assert RES.getType().equals(compositor.getType().domain()) : "@post " + RES.getType() + "=" + compositor.getType().domain() + "\n\tfor " + RES + " = compose(" + compositor + " , " + MathUtilities.format(arguments) + ")";
 	return RES;
     }
     Expression composeImpl(Expression op, Expression arguments[]) throws ParseException {
@@ -202,7 +202,7 @@ abstract class ModernLogic implements Logic {
 		return x;
 	} catch (orbital.moon.logic.ParseException ex) {
 	    //@todo use a more verbose exception than ParseException. One that knows about beginning and ending lines and columns, cause and id.
-	    throw new ParseException(ex.getMessage() + "\nin expression: " + expression, ex.currentToken.next.beginLine, ex.currentToken.next.beginColumn, ex);
+	    throw new ParseException(ex.getMessage() + "\nin expression: " + expression, ex.currentToken == null ? COMPLEX_ERROR_OFFSET : ex.currentToken.next.beginLine, ex.currentToken == null ? COMPLEX_ERROR_OFFSET : ex.currentToken.next.beginColumn, ex);
 	} 
     }
     
