@@ -110,19 +110,18 @@ p->r, q->r |= (p|q)->r
 # quantifiers
 #
 
-$x p(x) |= p(a)
-$x p(x) |= $y p(y)
-$x p(x) |= $x p(x)
-
-# skolemized form (original form see semantic-pl.txt)
+all x p(x) |= some x p(x)	# presupposition of existence 
+all x p(x) |= p(a)
+all x p(x) |= all y p(y)
+all x p(x) |= all x p(x)
 
 # rules for quantifiers
 # @todo denote metavariables correctly.
 #
-$ x p(x) |= p(a)	#  universal specialization
-##@xxx p(a) |= p(s)	# existential generalization  #@xxx doesn't work since when?
-~($x p(x)) |= ~p(xp)	# ~all~ conversion (even |=|)
-~some x p(x) |= $x ~p(x)	# ~some~ conversion (even |=|)
-$x (p(x)->q(x)) |= ($x p(x)) -> ($x q(x))
+all x p(x) |= p(a)	# universal specialization
+## some x p(x) |= p(s)	# existential generalization # @todo does not work because we cannot declare s as constant.
+~(all x p(x)) |= some x ~p(x)	# ~all~ conversion (even |=|)
+~some x p(x) |= all x~p(x)	# ~some~ conversion (even |=|)
+all x (p(x)->q(x)) |= (all x p(x)) -> (all x q(x))
 # some rules
 (p(x) & q(x)) |= (p(x)) & (q(x))
