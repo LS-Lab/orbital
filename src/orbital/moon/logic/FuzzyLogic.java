@@ -276,7 +276,9 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	LogicSupport.arrayToInterpretation(new Object[][] {
 	    {TRUTH,
 	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
-	    //@fixme
+	    {Types.objectType(orbital.math.Integer.class, "integer"),
+	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+	    //@internal type-alias for truth is necessary, since LogicParser will treat 0.5:real.
 	    {Types.objectType(orbital.math.Real.class, "real"),
 	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
 
