@@ -21,3 +21,4 @@ a|~a == b->~b
 (a=>b)=>c == a=>(b=>c)				# non-associative
 a=>(b=>c) == a=>b && b=>c
 a=>(b=>c) == a=>b || b=>c
+a->b == b->a					# direction matters
