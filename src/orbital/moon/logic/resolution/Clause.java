@@ -84,7 +84,7 @@ public interface Clause extends Set/*<Formula>*/ {
     Iterator/*_<Clause>_*/ resolveWithFactors(Clause G);
 
     /**
-     * Factorize a clause as much as possible.
+     * Get all factors of F. (factorization rule).
      * <p>
      * Will implement the factorization rule necessary for binary resolution:
      * <div>{L1,...,Ln} |- {s(L1),...,s(Lk)} with s=mgU({Lk,...,Ln})</div>
@@ -94,10 +94,9 @@ public interface Clause extends Set/*<Formula>*/ {
      * <div>{L1,...,Ln} |- {s(L1),...,s(Ln)} with s=mgU({Li,Lj})</div>
      * because of set notation. The latter is the way we (currently) implement things.
      * </p>
-     * @return the factorized clause, or <code>this</code> if no factorization was possible.
-     * @xxx remove this crap, since there should be multiple possible factors, not just one.
+     * @return all (proper) factor clauses of this, or <code>&empty;</code> if no factorization was possible.
      */
-    Clause factorize();
+    Iterator/*_<Clause>_*/ factorize();
 
     /**
      * Returns true when this clause subsumes D.

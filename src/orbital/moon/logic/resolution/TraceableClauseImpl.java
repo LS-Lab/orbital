@@ -117,6 +117,7 @@ public class TraceableClauseImpl extends ClauseImpl {
 	return r.iterator();
     }
 
+    /*@todo factorization
     public Clause factorize() {
 	final GraphFactory graphFactory = proofGraph.getGraphFactory();
 	final TraceableClauseImpl factor = (TraceableClauseImpl) super.factorize();
@@ -126,7 +127,7 @@ public class TraceableClauseImpl extends ClauseImpl {
 	    proofGraph.add(graphFactory.createEdge(this.corresponding, factor.corresponding, new Integer(-(inferenceCount++))));
 	}
 	return factor;
-    }
+	}*/
 
     // preserve traces
 

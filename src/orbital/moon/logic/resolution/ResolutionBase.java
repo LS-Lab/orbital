@@ -125,7 +125,7 @@ public abstract class ResolutionBase implements Inference {
 
     /**
      * Transforms a set of formulas to a set of Skolemized clauses.
-     * Skolemizes, drops quantifiers, converts to clauses, factorizes,
+     * Skolemizes, drops quantifiers, converts to clauses,
      * removes tautologies, and handles contradictions.
      * @param B the set of formulas to transform to clauses.
      * @param logPrefix the string to prepend to all logging information.
@@ -149,10 +149,6 @@ public abstract class ResolutionBase implements Inference {
 	    clausebase.addAll(clausalForm((Formula) i.next(), SIMPLIFYING));
 	}
         logger.log(Level.FINER, "{0} as clausal {1}", new Object[] {logPrefix, clausebase});
-
-	// factorize
-        clausebase.addAll((ClausalSet) Functionals.map(factorize, clausebase));
-        logger.log(Level.FINER, "{0} factorized to {1}", new Object[] {logPrefix, clausebase});
 
 	// remove tautologies and handle contradictions
     	// for all clauses F&isin;clausebase
@@ -195,14 +191,4 @@ public abstract class ResolutionBase implements Inference {
 		 }, ClassicalLogic.Utilities.clausalForm(f, simplifying))
 	     );
     }
-
-    /**
-     * Factorize a clause as much as possible.
-     * @see Clause#factorize()
-     */
-    private static final Function/*<Clause,Clause>*/ factorize = new Function() {
-	    public Object apply(Object C) {
-		return ((Clause)C).factorize();
-	    }
-	};
 }

@@ -102,17 +102,10 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 		// resolution
 		final Clause  R = resolventWith(G, L, K);
 		if (R != null) {
-		    final Clause factorizedR = R.factorize();
-		    logger.log(Level.FINER, "resolved {0} from {1} and {2}. Factorized to {3}. Lengths {4} from {5} and {6}.", new Object[] {R, F, G, factorizedR, new Integer(R.size()), new Integer(F.size()), new Integer(G.size())});
-
+		    logger.log(Level.FINER, "resolved {0} from {1} and {2}.", new Object[] {R, F, G});
+		    //@todo also add factors of R
 		    // @internal for perfect performance (and catastrophal structure) could already perform a goal lookahead by R.equals(Utilities.CONTRADICTION)
-
-		    //@xxx add factorized and original, or only one, or? Or better yet factorize elsewhere?
 		    resolvents.add(R);
-		    if (!factorizedR.equals(R)) {
-			logger.log(Level.FINER, "Adding factorized {3} of resolvent {0} from {1} and {2}.", new Object[] {R, F, G, factorizedR, new Integer(R.size()), new Integer(F.size()), new Integer(G.size())});
-		    }
-		    resolvents.add(factorizedR);
 		}
 	    }
 	}
@@ -180,8 +173,8 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 			    final Clause factorR = factorF.resolventWith(factorG, factorL, factorK);
 			    if (factorR != null) {
 				logger.log(Level.FINER, "Adding factor-resolvent {4} of factors {0} from {1} and {2} from {3}.", new Object[] {factorF, F, factorG, G, factorR});
+				resolvents.add(factorR);
 			    }
-			    resolvents.add(factorR);
 			}
 		    }
 		}
@@ -305,65 +298,9 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 	//@todo if we had lists, we could implement a slightly quicker version of return isElementaryValidUnion(this); which uses j>k
 	return isElementaryValidUnion(this);
     }
-	
-    public Clause factorize() {
-	// we need a list version("view") of the set for traversing distinct literals, then we will also only modify listF not this
-	final List listF = new LinkedList(this);
-	assert this.equals(new HashSet(listF)) : "factorizing initial list version of this";
-	final List listFfactorized = factorizeImpl(listF);
-	if (listFfactorized != listF) {
-	    Clause factor = construct(new HashSet(listFfactorized));
-	    assert factor.size() < size() : "factorization leads to shorter clauses if applicable";
-	    return factor;
-	} else {
-	    return this;
-	}
-    }
-    /**
-     * Implementation of {@link #factorize()}.
-     * @param listF list of literals.
-     * @return a new list if factorization was possible, and listF if no factorization was possible.
-     * @xxx do we need all factorizations, i.e. all possible variants of factorization, or just a single greedy factorization?
-     */
-    private List factorizeImpl(List listF) {
-	Clause previous = null;
-	assert (previous = construct(this)) != null;
-	try {
-	    // for all literals Fi&isin;F
-	    for (ListIterator i = listF.listIterator(); i.hasNext(); ) {
-		final Formula Fi = (Formula) i.next();
-		// for all literals Fj&isin;F with j>i
-		for (ListIterator j = listF.listIterator(i.nextIndex()); j.hasNext(); ) {
-		    final Formula Fj = (Formula) j.next();
-		    final Substitution mu = Substitutions.unify(Arrays.asList(new Object[] {
-			Fi,
-			Fj
-		    }));
-		    assert this.equals(previous) : "modifications during factorization work on copies, and leave the original clause unmodified";
-		    if (mu != null) {
-			// factorize
-			final String logPrevious = logger.isLoggable(Level.FINEST) ? construct(new HashSet(listF)) + "" : "";
-			// optimized removing Fi from the set, since mu(Fi) = mu(Fj) anyway (notice the set representation). But there no optimization here, isn't it?
-			assert mu.apply(Fi).equals(mu.apply(Fj));
-			j.remove();
-			// apply unification and remove duplicates, but convert to list again.
-			listF = new LinkedList(new HashSet(Functionals.map(mu, listF)));
-			assert this.equals(previous) : "modifications during factorization work on copies, and leave the original clause unmodified";
-			if (logger.isLoggable(Level.FINEST)) {
-			    logger.log(Level.FINEST, "factorized {1} from {0} by unifying {3} and {4} with {2}", new Object[] {logPrevious, construct(new HashSet(listF)), mu, Fi, Fj});
-			}
-			// factorize again
-			//@todo could optimize away recursive call
-			return factorizeImpl(listF);
-		    }
-		}
-	    }
-	    // no factorization possible
-	    return listF;
-	}
-	finally {
-	    assert this.equals(previous) : "modifications during factorization work on copies, and leave the original clause unmodified";
-	}
+    
+    public Iterator factorize() {
+	throw new UnsupportedOperationException("not yet implemented, use Clause.resolveWithFactors(Clause) instead, which also has improved performance.");
     }
 
     /**
