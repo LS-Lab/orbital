@@ -1,4 +1,5 @@
 import orbital.logic.imp.*;
+import orbital.logic.sign.*;
 import orbital.moon.logic.ClassicalLogic;
 import javax.swing.*;
 import javax.swing.text.*;
