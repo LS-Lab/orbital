@@ -397,7 +397,7 @@ public class DefaultCustomizer extends JPanel implements Customizer {
      *  <code>null</code> will clear all values displayed.
      */
     public void setObject(Object bean) {
-	if (!Beans.isInstanceOf(bean, beanClass) && bean != null)
+	if (bean != null && !Beans.isInstanceOf(bean, beanClass))
 	    throw new IllegalArgumentException("instance initialized for another type: " + beanClass + ". Could not accept argument of type " + (bean != null ? bean.getClass().toString() : "null"));
 	try {
 	    this.bean = null;
