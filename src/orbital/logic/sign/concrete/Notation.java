@@ -8,6 +8,8 @@ package orbital.logic.functor;
 
 import java.io.Serializable;
 
+import orbital.logic.Composite;
+
 import java.io.ObjectStreamException;
 
 import java.util.Collection;
@@ -29,14 +31,14 @@ import orbital.math.functional.Operations;
 import orbital.util.Utility;
 
 /**
- * Represents notational variants of functor applications.
+ * Represents notational variants of compositor applications.
  * Defines the concrete syntax.
  * @see <a href="{@docRoot}/Patterns/Design/enum.html">typesafe enum pattern</a>
  * @version 1.0, 2000/08/25
  * @author  Andr&eacute; Platzer
- * @internal typesafe enumeration pattern class to specify functor notation
  * @invariants a.equals(b) &hArr; a==b
- * @todo invariant 	&& sorted(functorNotation)
+ * @todo invariants 	&& sorted(compositorNotation)
+ * @internal design name is now different: orbital.logic.sign.concrete.Notation
  */
 public abstract class Notation implements Serializable, Comparable {
     private static final long serialVersionUID = -3071672372655194662L;
@@ -79,13 +81,13 @@ public abstract class Notation implements Serializable, Comparable {
     }
 
     /**
-     * Format functor with arguments in this notation.
-     * @param functor the functor to apply, or the object describing the functor to apply.
-     * @param arg the argument or array of arguments to apply the functor on, or the array of
+     * Format compositor with arguments in this notation.
+     * @param compositor the compositor to apply, or the object describing the compositor to apply.
+     * @param arg the argument or array of arguments to apply the compositor on, or the array of
      *  objects describing the corresponding arguments.
-     * @return a good format of the functor applied on the specified arguments.
+     * @return a good format of the compositor applied on the specified arguments.
      */
-    public abstract String format(Object functor, Object arg);
+    public abstract String format(Object compositor, Object arg);
 
     public String toString() {
 	return this.name;
@@ -143,26 +145,26 @@ public abstract class Notation implements Serializable, Comparable {
 	defaultNotation = notation != null ? notation : PREFIX;
     } 
 
-    // enumeration of functor notations
+    // enumeration of compositor notations
 
     /**
      * Specifies to use system default notation.
      * <p>
-     * Functors with DEFAULT notation will use the current system default notation.</p>
+     * Compositors with DEFAULT notation will use the current system default notation.</p>
      * @see #setDefault(Notation)
      */
     public static final Notation DEFAULT = new Notation("default") {
 	    private static final long serialVersionUID = 5644030897053785928L;
-	    public String format(Object functor, Object arg) {
-		return getDefault().format(functor, arg);
+	    public String format(Object compositor, Object arg) {
+		return getDefault().format(compositor, arg);
 	    } 
 	};
 
     /**
-     * Specifies automatical functor-dependant notation as registered.
+     * Specifies automatical compositor-dependant notation as registered.
      * <p>
      * Delegates to the registered notation.
-     * Functors with registered default notation like +, -, *, /, ^ have a notation set.
+     * Compositors with registered default notation like +, -, *, /, ^ have a notation set.
      * All unknown symbols are treated as prefix.
      * </p>
      * @see #PREFIX
@@ -171,12 +173,12 @@ public abstract class Notation implements Serializable, Comparable {
      */
     public static final Notation AUTO = new Notation("auto") {
 	    private static final long serialVersionUID = -5725522528292770323L;
-	    public String format(Object functor, Object arg) {
-		NotationSpecification spec = getNotation(functor);
+	    public String format(Object compositor, Object arg) {
+		NotationSpecification spec = getNotation(compositor);
 		if (spec != null)
-		    return spec.notation.format(functor, arg);
+		    return spec.notation.format(compositor, arg);
 		else
-		    return PREFIX.format(functor, arg);
+		    return PREFIX.format(compositor, arg);
 	    } 
 	};
 	
@@ -185,23 +187,23 @@ public abstract class Notation implements Serializable, Comparable {
      */
     public static final Notation PREFIX = new Notation("prefix") {
 	    private static final long serialVersionUID = -5933847939038152414L;
-	    public String format(Object functor, Object arg) {
+	    public String format(Object compositor, Object arg) {
 		StringBuffer sb = new StringBuffer();
-		if (functor != null) {
-		    if (functor instanceof Functor.Composite)
-			// descend composite functors with brackets
-			sb.append("(" + format("", functor) + ")");
+		if (compositor != null) {
+		    if (compositor instanceof Composite)
+			// descend into composite compositors with brackets
+			sb.append("(" + format("", compositor) + ")");
 		    else
-			sb.append(functor + "");
+			sb.append(compositor + "");
 		}
 		if (arg == null)
-		    arg = getPureParameters(functor);
+		    arg = getPureParameters(compositor);
 		if (arg != null) {
-		    if (!hasCompactBrackets(functor))
+		    if (!hasCompactBrackets(compositor))
 			sb.append('(');
 		    for (Iterator i = Utility.asCollection(arg).iterator(); i.hasNext(); )
 			sb.append(i.next() + (i.hasNext() ? "," : ""));
-		    if (!hasCompactBrackets(functor))
+		    if (!hasCompactBrackets(compositor))
 			sb.append(')');
 		} 
 		return sb.toString();
@@ -219,32 +221,34 @@ public abstract class Notation implements Serializable, Comparable {
      */
     public static final Notation INFIX = new Notation("infix") {
 	    private static final long serialVersionUID = 585674879470556509L;
-	    public String format(Object functor, Object arg_) {
+	    public String format(Object compositor, Object arg_) {
 		if (arg_ == null)
-		    arg_ = getPureParameters(functor);
+		    arg_ = getPureParameters(compositor);
 		Collection arg = Utility.asCollection(arg_);
 		if (arg == null || arg.size() == 0)
-		    return functor + "";
+		    return compositor + "";
 		StringBuffer sb = new StringBuffer();
-		int			 precedence = precedenceOf(functor);
+		int			 precedence = precedenceOf(compositor);
 
 		// special handling for unary infix formatting
-		if (arg.size() == 1)
-		    if (functor instanceof Functor.Composite)
-			// descend composite functors with brackets
-			sb.append("(" + format("", functor) + ") °");
+		if (arg.size() == 1) {
+		    System.err.println(">> " + compositor + " on " + arg_ + " is compact and " + (compositor instanceof Composite ? "composite" : "atomic"));
+		    if (compositor instanceof Composite)
+			// descend into composite compositors with brackets
+			sb.append("(" + format("", compositor) + ") o");
 		    else
-			sb.append(functor + " ° ");
+			sb.append(compositor + " o ");
+		}
 		for (Iterator i = arg.iterator(); i.hasNext(); ) {
 		    sb.append(i.next());
 		    if (i.hasNext()) {
 			if (!isHigh(precedence))
 			    sb.append(' ');
-			if (functor instanceof Functor.Composite)
-			    // descend composite functors with brackets
-			    sb.append("(" + format("", functor) + ")");
+			if (compositor instanceof Composite)
+			    // descend into composite compositors with brackets
+			    sb.append("(" + format("", compositor) + ")");
 			else
-			    sb.append(functor);
+			    sb.append(compositor);
 			if (!isHigh(precedence))
 			    sb.append(' ');
 		    }
@@ -256,33 +260,33 @@ public abstract class Notation implements Serializable, Comparable {
     /**
      * Specifies best notation <code>"a*(b+f(c)) + d"</code> inserting brackets whenever necessary.
      * <p>
-     * Decomposes functors into its components whenever possible
+     * Decomposes compositors into its components whenever possible
      * building a function tree to optimize formatting.  This more
      * sophisticated notation is aware of the registered default
      * notation and will only insert brackets when necessary.
      * </p>
      * @see #AUTO
-     * @xxx if the functor is itself composite then descend formatting it (with accurate brackets) as well.
+     * @xxx if the compositor is itself composite then descend formatting it (with accurate brackets) as well.
      */
     public static final Notation BESTFIX = new Notation("bestfix") {
 	    private static final long serialVersionUID = 2361099498303659521L;
-	    public String format(Object functor, Object arg_) {
-		if (!(functor instanceof Functor))
-		    return PREFIX.format(functor, arg_);
-		//@todo explicitly work on graph-structure induced by Functor.Composite without importing orbital.util.graph for this sole reason
-		// however, how to briefly append arguments to the functor object (just for formatting), then?
+	    public String format(Object compositor, Object arg_) {
+		if (!(compositor instanceof Functor))
+		    return PREFIX.format(compositor, arg_);
+		//@todo explicitly work on graph-structure induced by Composite without importing orbital.util.graph for this sole reason
+		// however, how to briefly append arguments to the compositor object (just for formatting), then?
 		Node root;
 		if (arg_ == null)
-		    arg_ = getPureParameters(functor);
+		    arg_ = getPureParameters(compositor);
 		// convert to function tree
 		Collection arg = Utility.asCollection(arg_);
 		if (arg == null || arg.size() == 0)
-		    root = functionTree(functor);
+		    root = compositeTree(compositor);
 		else {
-		    root = new ListTree.TreeNode(functor, functor.toString());
-		    // root.addAll(Functionals.map(functionTree, arg));
+		    root = new ListTree.TreeNode(compositor, compositor.toString());
+		    // root.addAll(Functionals.map(compositeTree, arg));
 		    for (Iterator i = arg.iterator(); i.hasNext(); )
-			root.add(functionTree(i.next()));
+			root.add(compositeTree(i.next()));
 		} 
 		// traverse and format
 		return new Function/*<Node, String>*/() {
@@ -301,7 +305,7 @@ public abstract class Notation implements Serializable, Comparable {
 			    int	   i = 0;
 			    for (Iterator it = node.edges(); it.hasNext(); i++) {
 
-				// ignore functor position in association format specifier
+				// ignore compositor position in association format specifier
 				if (spec != null && spec.associativity.charAt(apos) == 'f')
 				    apos++;
 				Node                  n = (Node) it.next();
@@ -348,23 +352,23 @@ public abstract class Notation implements Serializable, Comparable {
      */
     public static final Notation POSTFIX = new Notation("postfix") {
 	    private static final long serialVersionUID = -7892084161142935847L;
-	    public String format(Object functor, Object arg) {
+	    public String format(Object compositor, Object arg) {
 		StringBuffer sb = new StringBuffer();
 		if (arg == null)
-		    arg = getPureParameters(functor);
+		    arg = getPureParameters(compositor);
 		if (arg != null) {
-		    if (!hasCompactBrackets(functor))
+		    if (!hasCompactBrackets(compositor))
 			sb.append('(');
 		    for (Iterator i = Utility.asCollection(arg).iterator(); i.hasNext(); )
 			sb.append(i.next() + (i.hasNext() ? "," : ""));
-		    if (!hasCompactBrackets(functor))
+		    if (!hasCompactBrackets(compositor))
 			sb.append(')');
 		} 
-		if (functor instanceof Functor.Composite)
-		    // descend composite functors with brackets
-		    sb.append("(" + format("", functor) + ")");
+		if (compositor instanceof Composite)
+		    // descend into composite compositors with brackets
+		    sb.append("(" + format("", compositor) + ")");
 		else
-		    sb.append(functor + "");
+		    sb.append(compositor + "");
 		return sb.toString();
 	    } 
 	};
@@ -373,122 +377,96 @@ public abstract class Notation implements Serializable, Comparable {
     // Utilities
 
     /**
-     * Get the pure formal parameters of a functor.
-     * @return an argument array filled with the pure arguments #0, #1, #2, ... #n upto the arity n of functor.
+     * Get the pure formal parameters of a compositor.
+     * @return an argument array filled with the pure arguments #0, #1, #2, ... #n upto the arity n of compositor.
      * @todo how to achieve pure functions like "*" without any explicit parameters being printed as #0*#1 instead of * or x*y?
      */
-    private static Object[] getPureParameters(Object functor) {
-	if (functor instanceof Functor) {
-	    if (functor instanceof VoidFunction)
+    private static Object[] getPureParameters(Object compositor) {
+	if (compositor instanceof Functor) {
+	    if (compositor instanceof VoidFunction || compositor instanceof VoidPredicate)
 		return null;
-	    else if (functor instanceof Function)
+	    else if (compositor instanceof Function || compositor instanceof Predicate)
 		return new String[] {"#0"};
-	    else if (functor instanceof BinaryFunction)
+	    else if (compositor instanceof BinaryFunction || compositor instanceof BinaryPredicate)
 		return new String[] {"#0", "#1"};
-	    else try {
-		// use arity of functor specification
-		Functor.Specification spec = Functor.Specification.getSpecification((Functor) functor);
-		String[] pure = new String[spec.arity()];
-		for (int i = 0; i < pure.length; i++)
-		    pure[i] = "#" + i;
-		return pure;
-	    }
-	    catch (IntrospectionException trying) {return null;}
+	    else
+		try {
+		    // use arity of functor specification
+		    Functor.Specification spec = Functor.Specification.getSpecification((Functor) compositor);
+		    String[] pure = new String[spec.arity()];
+		    for (int i = 0; i < pure.length; i++)
+			pure[i] = "#" + i;
+		    return pure;
+		}
+		catch (IntrospectionException trying) {
+		    return null;
+		}
 	} else
 	    return null;
     }
 
     /**
-     * Returns the functor belonging to a specified notation and arguments, if registered (experimental).
-     * <p>
-     * The most usual use of the arguments array is to check for its length to distinguish
-     * unary minus '-' from binary subtraction '-'. But in principle, type checking could be
-     * required as well.</p>
-     * @param notation the notation string of the functor.
-     * @param arg the arguments the functor belonging to the notation is called with.
-     * @return the functor belonging to the notation if registered, or <tt>null</tt>.
-     * @see #getNotation(Object)
-     * @todo change arguments to (String, Object) as well?
+     * Get the default notation specification of a compositor.
+     * @return the default notation specification of the compositor, or <code>null</code> if not set.
      */
-    public static Functor functorOf(String notation, Object[] arg) {
-	assert arg.length <= 2 : "functor notations are currently used for at most 2 arguments";
-	for (Iterator/*_<Functor>_*/ i = functorNotation.keySet().iterator(); i.hasNext(); ) {
-	    Functor functor = (Functor/*__*/) i.next();
-	    try {
-		if (arg.length != Functor.Specification.getSpecification(functor).arity())
-		    continue;
-	    } catch (IntrospectionException ex) {
-		throw new orbital.util.InnerCheckedException(ex);
-	    }
-	    if (notation.equals(functor.toString()))
-		return functor;
-	}
-	return null;
-    }
-
-    /**
-     * Get the default notation specification of a functor.
-     * @return the default notation specification of the functor, or <code>null</code> if not set.
-     * @see #functorOf(String, Object[])
-     */
-    public static NotationSpecification getNotation(Object functor) {
-	return (NotationSpecification/*__*/) functorNotation.get(functor);
+    public static NotationSpecification getNotation(Object compositor) {
+	return (NotationSpecification/*__*/) compositorNotation.get(compositor);
     } 
 
     /**
-     * Get the precedence of a functor (with 1 being the highest precedence).
-     * @return the precedence of the functor, or 0 if not set.
+     * Get the precedence of a compositor (with 1 being the highest precedence).
+     * @return the precedence of the compositor, or 0 if not set.
      * @see #getNotation(Object)
      */
-    protected static int precedenceOf(Object functor) {
-	NotationSpecification spec = getNotation(functor);
+    protected static int precedenceOf(Object compositor) {
+	NotationSpecification spec = getNotation(compositor);
 	return spec != null ? spec.precedence : 0;
     } 
 
     /**
-     * Sets the default notation specification for a functor.
-     * @param f the functor whose notation specification to set.
-     * @param spec the notation specification to set as default for the functor f.
-     * @return <code>true</code> if the default notation specification for the functor f
+     * Sets the default notation specification for a compositor.
+     * @param f the compositor whose notation specification to set.
+     * @param spec the notation specification to set as default for the compositor f.
+     * @return <code>true</code> if the default notation specification for the compositor f
      *  changed as a result of the call.
      */
-    public static boolean setNotation(Functor f, NotationSpecification spec) {
+    public static boolean setNotation(Object f, NotationSpecification spec) {
 	SecurityManager security = System.getSecurityManager();
 	if (security != null) {
 	    security.checkPermission(new RuntimePermission("setStatic.notationSpecification"));
 	} 
-	return functorNotation.put(f, spec) != null;
+	return compositorNotation.put(f, spec) != null;
     }
     /**
-     * Remove any default notation specifications for a functor.
-     * @param f the functor whose notation specification to remove.
-     * @return previous value associated with specified functor, or <code>null</code> if there was no mapping for functor.
+     * Remove any default notation specifications for a compositor.
+     * @param f the compositor whose notation specification to remove.
+     * @return previous value associated with specified compositor, or <code>null</code> if there was no mapping for compositor.
      */
-    public static NotationSpecification removeNotation(Functor f) {
+    public static NotationSpecification removeNotation(Object f) {
 	SecurityManager security = System.getSecurityManager();
 	if (security != null) {
 	    security.checkPermission(new RuntimePermission("setStatic.notationSpecification"));
 	} 
-	return (NotationSpecification/*__*/) functorNotation.remove(f);
+	return (NotationSpecification/*__*/) compositorNotation.remove(f);
     }
 	
     /**
      * Sets all notations contained in an array.
-     * @param functorsAndNotations Contains functors and their notation specifications.
+     * @param compositorsAndNotations Contains compositors and their notation specifications.
      *  Stored as an array of length-2 arrays
-     *  with functors[i][0] being the interpretation {@link Functor},
-     *  and functor[i][1] being a {@link Notation.NotationSpecification}.
+     *  with compositors[i][0] being the {@link Object},
+     *  and compositor[i][1] being a {@link Notation.NotationSpecification}.
      * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience Method</a>
-     * @see #setNotation(Functor, Notation.NotationSpecification)
+     * @see #setNotation(Object,Notation.NotationSpecification)
      */
-    public static final void setAllNotations(Object[][] functorsAndNotations) {
-	for (int i = 0; i < functorsAndNotations.length; i++) {
-	    if (functorsAndNotations[i].length != 2)
+    public static final void setAllNotations(Object[][] compositorsAndNotations) {
+	for (int i = 0; i < compositorsAndNotations.length; i++) {
+	    if (compositorsAndNotations[i].length != 2)
 		throw new IllegalArgumentException("array of dimension [][2] expected");
-	    final Functor f = (Functor)functorsAndNotations[i][0];
-	    NotationSpecification notation = (NotationSpecification)functorsAndNotations[i][1];
+	    final Object f = compositorsAndNotations[i][0];
+	    NotationSpecification notation = (NotationSpecification)compositorsAndNotations[i][1];
 	    if (f == null)
-		throw new NullPointerException("illegal functor " + f + " for " + notation);
+		throw new NullPointerException("illegal compositor " + f + " for " + notation);
 	    if (notation == null)
 		throw new NullPointerException("illegal notation " + notation + " for " + f);
 	    Notation.setNotation(f, notation);
@@ -496,17 +474,17 @@ public abstract class Notation implements Serializable, Comparable {
     }
 
     /**
-     * Whether the functor has a default notation defined and is unary,
+     * Whether the compositor has a default notation defined and is unary,
      * thus displayed with compact (i.e. invisible) brackets.
      */
-    private static boolean hasCompactBrackets(Object functor) {
-	// distinguish unary from binary registered functors
-	NotationSpecification spec = getNotation(functor);
+    private static boolean hasCompactBrackets(Object compositor) {
+	// distinguish unary from binary registered compositors
+	NotationSpecification spec = getNotation(compositor);
 	return spec != null ? spec.associativity.length() == 1+1 : false;
     } 
     
     /**
-     * Whether the specified precedence is "high" such that its functor is formated
+     * Whether the specified precedence is "high" such that its compositor is formated
      * without separators.
      */
     static boolean isHigh(int precedence) {
@@ -516,28 +494,28 @@ public abstract class Notation implements Serializable, Comparable {
     // Utility methods
 	
     /**
-     * Creates a function tree view of a functor by decomposing it into its components.
-     * @see Functor.Composite
+     * Creates a function tree view of a composite object by decomposing it into its components.
+     * @see Composite
      */
-    private static Node functionTree(Object f) {
-	if (!(f instanceof Functor.Composite))
+    private static Node compositeTree(Object f) {
+	if (!(f instanceof Composite))
 	    return new ListTree.TreeNode(f, f + "");
-	Functor.Composite c = (Functor.Composite) f;
-	Object		  compositor = c.getCompositor();
-	Collection	  components = Utility.asCollection(c.getComponent());
-	Node		  n = new ListTree.TreeNode(compositor, compositor + "");
+	Composite  c = (Composite) f;
+	Object	   compositor = c.getCompositor();
+	Collection components = Utility.asCollection(c.getComponent());
+	Node	   n = new ListTree.TreeNode(compositor, compositor + "");
 	if (components == null)
 	    throw new NullPointerException(f + " of " + f.getClass() + " has compositor " + compositor + " and components " + components);
-	// n.addAll(Functionals.map(functionTree, components));
+	// n.addAll(Functionals.map(compositeTree, components));
 	for (Iterator i = components.iterator(); i.hasNext(); )
-	    n.add(functionTree(i.next()));
+	    n.add(compositeTree(i.next()));
 	return n;
     } 
 
 
     
     /**
-     * Contains the specification of the default notation for a functor.
+     * Contains the specification of the default notation for a compositor.
      * @invariants precedence > 0 && associativity and notation match
      * @version 1.0, 2000/08/25
      * @author  Andr&eacute; Platzer
@@ -545,20 +523,20 @@ public abstract class Notation implements Serializable, Comparable {
     public static class NotationSpecification implements Comparable, Serializable {
 	private static final long serialVersionUID = -8249931256922519844L;
 	/**
-	 * The precedence of the functor (with 1 being the highest precedence).
+	 * The precedence of the compositor (with 1 being the highest precedence).
 	 * @serial
 	 */
 	protected int precedence;
 	/**
-	 * The associativity specification of the functor.
+	 * The associativity specification of the compositor.
     	 * Associativity is one of
     	 * <pre>
     	 * xf, yf, xfx, xfy, yfx, yfy, fy, fx
     	 * </pre>
-    	 * (and alike for functors of arbitrary arity).
+    	 * (and alike for compositors of arbitrary arity).
     	 * Where
     	 * <ul>
-    	 *   <li>f specifies the position of the functor.</li>
+    	 *   <li>f specifies the position of the compositor.</li>
     	 *   <li>x specifies the position of an argument with precedence of y &lt; the precedence of f.</li>
     	 *   <li>y specifies the position of an argument with precedence of y &le; the precedence of f.</li>
     	 * </ul>
@@ -573,7 +551,7 @@ public abstract class Notation implements Serializable, Comparable {
     	 *   <tr><td>xfy</td> <td>right associative</td></tr>
     	 *   <tr><td>xfx</td> <td>non-associative</td></tr>
     	 * </table>
-    	 * The functor position specification used <em>must</em> match the concept of notation objects.
+    	 * The compositor position specification used <em>must</em> match the concept of notation objects.
     	 * </p>
 	 * @serial
 	 */
@@ -583,10 +561,10 @@ public abstract class Notation implements Serializable, Comparable {
 	 * @serial
 	 */
 	protected Notation notation;
-	//TODO: generalize to specify arity as well, to distinguish -/2 from -/1, from -/7, or rely on Functor.Specification for that?
-	//TODO: do we even need to introduce protected String functor; ?
+	//TODO: generalize to specify arity as well, to distinguish -/2 from -/1, from -/7, or rely on Compositor.Specification for that?
+	//TODO: do we even need to introduce protected String compositor; ?
 	/**
-	 * Create a specification of a functor's notation.
+	 * Create a specification of a compositor's notation.
 	 * @see #associativity
 	 */
 	public NotationSpecification(int precedence, String associativity, Notation notation) {
@@ -595,7 +573,7 @@ public abstract class Notation implements Serializable, Comparable {
 	    this.notation = notation;
 	}
 	/**
-	 * Create a specification of a functor's notation.
+	 * Create a specification of a compositor's notation.
 	 * @see #associativity
 	 */
 	public NotationSpecification(int precedence, String associativity, Notation notation, int arity) {
@@ -606,7 +584,7 @@ public abstract class Notation implements Serializable, Comparable {
 		throw new IllegalArgumentException("associativity description " + associativity + " with " + assocArity + " arguments must match arity " + arity);
 	}
 	/**
-	 * Create a specification of a functor's notation with automatic notation resolution.
+	 * Create a specification of a compositor's notation with automatic notation resolution.
 	 * <p>
 	 * This constructor will determine the notation object to use for formatting
 	 * according to the associativity string which must be correct, then!
@@ -626,7 +604,7 @@ public abstract class Notation implements Serializable, Comparable {
 		throw new IllegalArgumentException("could not guess notation from associativity '" + associativity + "'");
 	}
 	/**
-	 * Create a very basic default notation specification of a functor's notation.
+	 * Create a very basic default notation specification of a compositor's notation.
 	 * <p>
 	 * The default notation specification is
 	 * non-associative system {@link Notation#DEFAULT default notation} of very strong precedence.
@@ -654,7 +632,7 @@ public abstract class Notation implements Serializable, Comparable {
 	}
 	/**
 	 * Compares for precedence.
-	 * Functors that bind stronger have a stronger precedence (the lower value)
+	 * Compositors that bind stronger have a stronger precedence (the lower value)
 	 * and are ordered before weaker ones.
 	 * @return a negative value if this binds stronger than o (this&lt;o),
 	 *  zero if binding precedence is identical,
@@ -680,15 +658,15 @@ public abstract class Notation implements Serializable, Comparable {
     }
 
     /**
-     * Asssociates functors to their default notation (in precedence order).
+     * Asssociates compositors to their default notation (in precedence order).
      * @todo invariant sorted and without duplicates
      * @todo use LinkedHashMap instead to ensure sorting??
-     * @todo couldn't we switch to storing this in MathExpressionSyntax.coreSignature()
+     * @todo couldn't we switch to storing this in a "Signature" or "Interpretation"?
      */
-    private static Map/*_<Functor, NotationSpecification>_*/		functorNotation;
+    private static Map/*_<Object, NotationSpecification>_*/ compositorNotation;
 
     static {
-	functorNotation = new HashMap();
+	compositorNotation = new HashMap();
 	defaultNotation = BESTFIX;
     }
 }
