@@ -44,32 +44,20 @@ public class IndexedClauseImpl extends ClauseImpl {
     public IndexedClauseImpl() {}
 
     public Iterator/*_<Formula>_*/ getProbableUnifiables(Formula L) {
-	return index.getProbableUnifiableLiterals(L);
+	if (true) return index.getProbableUnifiableLiterals(L);
+	Collection i = Setops.asList(index.getProbableUnifiableLiterals(L));
+	System.err.println("  punifiables " + i + " of " + L + "\n    in " + this);
+	return i.iterator();
     }
 
-    public Set/*_<Formula>_*/ getUnifiables(Collection/*_<Formula>_*/ C, Formula L) {
-	//@internal for faster lookup with contains
-	C = new HashSet(C);
-	Set/*_<Formula>_*/ r = new LinkedHashSet();
-	for (Iterator i = getProbableUnifiables(L); i.hasNext(); ) {
-	    Formula F = (Formula)i.next();
-	    if (!C.contains(F))
-		continue;
-	    //@todo optimizable, we could remember the unifier instead of recalculating it lateron (f.ex. during factorization)
-	    if (Substitutions.unify(Arrays.asList(new Formula[] {L,F})) != null) {
-		r.add(F);
-	    }
-	}
-	return r;
-    }
 
     // manage index in sync with the current data
 
     public boolean add(Object o) {
 	//@todo optimize implementation. We do not need to remove from index and add again, but only add (this,o) to the index
 	//@todo perhaps only activate indexing once this clause gets inserted into a clausalset. Up to this point behave like super does
-	index.remove(this);
-	assert true || index.isEmpty() : "index " + index + " is empty after removing its single clause " + this;
+	//assert that after index.remove(this); index.isEmpty() : "index " + index + " is empty after removing its single clause " + this;
+	index.clear();
 	boolean changed = super.add(o);
 	index.add(this);
 	return changed;
@@ -81,8 +69,8 @@ public class IndexedClauseImpl extends ClauseImpl {
     }
 
     public boolean remove(Object o) {
-	index.remove(this);
-	assert true || index.isEmpty() : "index " + index + " is empty after removing its single clause " + this;
+	//assert that after index.remove(this); index.isEmpty() : "index " + index + " is empty after removing its single clause " + this;
+	index.clear();
 	boolean changed = super.remove(o);
 	index.add(this);
 	return changed;
