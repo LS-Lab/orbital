@@ -37,25 +37,36 @@ import orbital.logic.functor.Function;
  * exploring (with a large population) or exploiting (with a small population)
  * an almost arbitrary search space.
  * <p>
- * A genetic algorithm provides the following operators:<ul>
+ * A genetic algorithm provides the following operators:
+ * <ul>
  *   <li><strong>evolve</strong> that will simulate the evolutionary search. (Decoupled into sub class)</li>
  *   <li><strong>select</strong> one of the Genomes. (Decoupled into selection function.)</li>
- * </ul></p>
+ * </ul>
+ * </p>
  * <p>
- * After implementing the {@link GeneticAlgorithmProblem} interface use the evolutionary genetic algorithm
- * like:
+ * After implementing the {@link GeneticAlgorithmProblem} interface use the
+ * evolutionary genetic algorithm like:
  * <pre>
- * ga = <span class="keyword">new</span> <span class="Orbital">IncrementalGeneticAlgorithm</span>(<span class="Number">2</span>,<span class="Number">2</span>, maximumRecombination, maximumMutation);
- * ga.setSelection(<span class="Orbital">Selectors</span>.rouletteWheel());
- * <span class="Class">Object</span> solution <span class="operator">=</span> ga.solve(<var>geneticAlgorithmProblem</var>);
+ * <span class="Orbital">Configuration</span> config <span class="assignment">=</span>
+ *     <span class="keyword">new</span> <span class="Orbital">GeneticAlgorithm</span>.<span class="Orbital">Configuration</span>(<var>geneticAlgorithmProblem</var>,
+ *         <span class="Orbital">Selectors</span>.rouletteWheel(),
+ *         maximumRecombination,
+ *         maximumMutation,
+ *         IncrementalGeneticAlgorithm.class);
+ * <span class="Class">Object</span> solution <span class="assignment">=</span> config.solve();
  * </pre>
- * Or, if you need any additional control of the single steps, use:
+ * Or, if you need any additional control of the single steps, use something like:
  * <pre>
- * ga = <span class="keyword">new</span> <span class="Orbital">IncrementalGeneticAlgorithm</span>(<span class="Number">2</span>,<span class="Number">2</span>, maximumRecombination, maximumMutation);
- * ga.setSelection(<span class="Orbital">Selectors</span>.rouletteWheel());
+ * ga = <span class="keyword">new</span> <span class="Orbital">IncrementalGeneticAlgorithm</span>();
  * ga.setEvaluation(<var>fitnessEvaluation</var>);
- * ga.setPopulation(initialPopulation);
- * <span class="comment">// while stop condition is not true</span>
+ * ga.setSelection(<span class="Orbital">Selectors</span>.rouletteWheel());
+ * ga.setPopulation(<var>initialPopulation</var>);
+ * <span class="Orbital">PopulationImpl</span> pop = (<span class="Orbital">PopulationImpl</span>) ga.getPopulation();
+ * pop.setParentCount(<span class="Number">2</span>);
+ * pop.setChildrenCount(<span class="Number">2</span>);
+ * pop.setMaximumRecombination(maximumRecombination);
+ * pop.setMaximumMutation(maximumMutation);
+ * <span class="comment">// evolve until stop condition</span>
  * <span class="keyword">while</span> (<span class="operator">!</span><var>isSolution</var>()) {
  *     ga.evolve();
  *     <span class="Class">System</span>.out.println(ga.getPopulation());
