@@ -54,8 +54,8 @@
     	font-family: italic;
 	quotes: "«" "»"
     }
-    *.signified:before {content: close-quote;}
-    *.signified:after {content: open-quote;}
+    *.signified:before {content: "»";}
+    *.signified:after {content: "«";}
     
     /**
      * XML for objects (referents) of semiotics.
@@ -408,3 +408,10 @@
     	margin-left: 4em;
     }
     
+/**
+ * Use this class to tell the browser to use a unicode font for displaying.
+ * Most browsers are not smart enough to pick a unicode font for unicode characters.
+ */
+*.unicode {
+	font-family: "Arial Unicode MS";
+}
