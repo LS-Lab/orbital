@@ -32,7 +32,7 @@
     <!-- <property name="build.sysclasspath" value="ignore"/> -->
 
     <target name="init">
-        <property name="version" value="1.0.7"/>
+        <property name="version" value="1.0.8"/>
         <property name="version_brief" value="1.0"/>
 
         <tstamp>
@@ -70,6 +70,7 @@
 	<property name="javadoc.link.jdk" value="http://java.sun.com/products/jdk/1.4/docs/api/"/>
 	<property name="javadoc.link.jdk.offline" value="false"/>
 	<property name="env.javacchome" value="unknown"/>
+	<property name="javac.source" value="1.4"/>
 
 
         <path id="project.classpath">
@@ -113,7 +114,7 @@
         <javac srcdir="${sources}"
                destdir="${classes}"
                debug="on"
-	       source="1.4"
+	       source="${javac.source}"
 	       excludes="orbital/moon/aspects/**,orbital/moon/deprecated/*,orbital/*">
             <classpath refid="project.classpath"/>
         </javac>
@@ -127,7 +128,7 @@
         <javac srcdir="${src.tests}"
                destdir="${build.tests}"
                debug="on"
-	       source="1.4">
+	       source="${javac.source}">
             <classpath refid="tests.classpath"/>
         </javac>
     </target>
@@ -136,7 +137,7 @@
             description="compile examples/*.java (=> ./classes)">
         <javac srcdir="${examples}"
                debug="on"
-	       source="1.4"
+	       source="${javac.source}"
 	       excludes="SimpleDemos/SpecDemo.java">
             <classpath refid="tests.classpath"/>
         </javac>
@@ -252,9 +253,9 @@
 	    <!-- -tag param -tag pre:mc:&quot;Preconditions:&quot; -tag post:mc:&quot;Postconditions:&quot; -tag return -tag throws -tag stereotype:a:&quot;Stereotype:&quot; -tag structure:t:&quot;Structure:&quot; -tag invariant:t:&quot;Invariants:&quot; -tag attribute:a:&quot;Attributes:&quot; -tag version -tag author -tag see -->
 	    <tag name="pre" scope="methods,constructors" description="Preconditions:"/>
 	    <tag name="post" scope="methods,constructors" description="Postconditions:"/>
-	    <tag name="stereotype" scope="all" description="Stereotype:"/>
-	    <tag name="structure" scope="types,methods" description="Structure:"/>
 	    <tag name="invariant" scope="types,fields" description="Invariants:"/>
+	    <tag name="structure" scope="types,methods" description="Structure:"/>
+	    <tag name="stereotype" scope="all" description="Stereotype:"/>
 	    <tag name="attribute" scope="all" description="Attributes:"/>
 	    <tag name="note" scope="all" description="Note:" enabled="true"/>
 	    <tag name="internal" scope="all" description="Internal:" enabled="false"/>
