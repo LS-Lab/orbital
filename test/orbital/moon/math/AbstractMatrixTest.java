@@ -37,7 +37,7 @@ public class AbstractMatrixTest extends check.TestCase {
 	vf = Values.getDefaultInstance();
 	random = new Random();
 	tolerance = vf.valueOf(1e-6);
-	//@xxx class Debug produces an error with gjc error: type parameter orbital.math.Arithmetic[] is not within its bound orbital.math.Arithmetic
+	//@xxx produces an error with gjc error: type parameter orbital.math.Arithmetic[] is not within its bound orbital.math.Arithmetic
 	// this is because he confuses vf.valueOf(R[]) with vf.valueOf(R[][]) although R is bound to be orbital.math.Arithmetic
 	M1 = vf.valueOf(new Scalar[][] {
 	    {vf.valueOf(2), vf.rational(3, 4), vf.rational(-1, 2)},

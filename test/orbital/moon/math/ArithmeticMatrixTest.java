@@ -38,7 +38,7 @@ public class ArithmeticMatrixTest extends check.TestCase {
 	    {vf.complex(-2, 1), vf.valueOf(-5), vf.valueOf(0), vf.rational(2,3)},
 	    {vf.rational(1,3), vf.rational(-2,6), vf.valueOf(4), vf.rational(1,4)}
 	});
-	//@xxx class Debug produces an error with gjc error: type parameter double[] is not within its bound orbital.math.Arithmetic
+	//@xxx produces an error with gjc error: type parameter double[] is not within its bound orbital.math.Arithmetic
 	v = new ArithmeticVector(vf.valueOf(new double[] {
 	    1, 2, 1, 2
 	}).toArray());
