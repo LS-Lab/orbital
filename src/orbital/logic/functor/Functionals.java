@@ -58,7 +58,7 @@ import java.util.LinkedList;
  * @todo improve names of conversion methods: onVoid, asFunction, onThisAndThat, asSuchAndSuch ...
  * @todo would we benefit from turning functional methods into true functionals, i.e. BinaryFunction<Function<A,B1>, Function<A,B2>, BinaryFunction<A,B1,B2>>? How do we document them without using Pizzadoc, then?
  * @todo introduce Zylomorphism and "GCatamorphism"?
- * @todo introduce operations union and section of predicates and BinaryPredicates and VoidPredicates?
+ * @todo introduce operations union and section of predicates, BinaryPredicates and VoidPredicates?
  * @todo turn this class and its subclasses into Singletons?
  */
 public class Functionals {
@@ -91,8 +91,8 @@ public class Functionals {
      * Another notation for the function cross-product is f &times; g = f &#8855; g = f || g.</p>
      * @return x&#8614;f &times; g (x) = <big>(</big>f(x), g(x)<big>)</big> as a {@link orbital.util.Pair}.
      */
-    //XXX: //TODO: introduce Function cross(Function[]); as a cross product f1&times;f2&times;f3...&times;fn perhaps in subclass orbital.math.functional.Functionals?
-    //XXX: how should resulting Pairs ever be an argument to a BinaryFunction?
+    //@XXX: //@TODO: introduce Function cross(Function[]); as a cross product f1&times;f2&times;f3...&times;fn perhaps in subclass orbital.math.functional.Functionals?
+    //@XXX: how should resulting Pairs ever be an argument to a BinaryFunction?
     public static /*<A, B1, B2>*/ Function/*<A, Pair>*/ cross(final Function/*<A, B1>*/ f, final Function/*<A, B2>*/ g) {
 	return new Function/*<A, Pair>*/() {
 		public Object/*>Pair<*/ apply(Object/*>A<*/ x) {
@@ -109,8 +109,9 @@ public class Functionals {
 
     /**
      * compose: Map(B,C)&times;Map(A,B)&rarr;Map(A,C); (f,g) &#8614; f &#8728; g := f(g).
-     * @return x&#8614;f &#8728; g (x) = f<big>(</big>g(x)<big>)</big>.
+     * @return x &#8614; (f&#8728;g)(x) = f<big>(</big>g(x)<big>)</big>.
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+     * @see #compose
      */
     public static /*<A, B, C>*/ Function/*<A, C>*/.Composite compose(Function/*<B, C>*/ f, Function/*<A, B>*/ g) {
 	return new Compositions.CompositeFunction/*<A, B, C>*/(f, g);
@@ -118,7 +119,7 @@ public class Functionals {
 	
     /**
      * compose: Map(B<sub>1</sub>&times;B<sub>2</sub>,C)&times;(Map(A<sub>1</sub>&times;A<sub>2</sub>,B<sub>1</sub>)&times;Map(A<sub>1</sub>&times;A<sub>2</sub>,B<sub>2</sub>))&rarr;Map(A<sub>1</sub>&times;A<sub>2</sub>,C); (f,g,h) &#8614; f &#8728; (g &times; h) := f(g,h) .
-     * @return (x,y)&#8614;f<big>(</big>g(x,y),h(x,y)<big>)</big>.
+     * @return (x,y) &#8614; f<big>(</big>g(x,y),h(x,y)<big>)</big>.
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
      */
     public static /*<A1, A2, B1, B2, C>*/ BinaryFunction/*<A1, A2, C>*/.Composite compose(BinaryFunction/*<B1, B2, C>*/ f, BinaryFunction/*<A1, A2, B1>*/ g, BinaryFunction/*<A1, A2, B2>*/ h) {
@@ -127,7 +128,7 @@ public class Functionals {
 
     /**
      * compose: Map(B<sub>1</sub>&times;B<sub>2</sub>,C)&times;(Map(A,B<sub>1</sub>)&times;Map(A,B<sub>2</sub>))&rarr;Map(A,C); (f,g,h) &#8614; f &#8728; (g &times; h) := f(g,h) .
-     * @return x&#8614;f<big>(</big>g(x),h(x)<big>)</big>.
+     * @return x &#8614; f<big>(</big>g(x),h(x)<big>)</big>.
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
      * @internal see Functionals.BinaryCompositeFunction
      */
@@ -212,7 +213,7 @@ public class Functionals {
 
     /**
      * compose: Map(B,C)&times;Map({()},B)&rarr;Map({()},C); (f,g) &#8614; f &#8728; g := f(g).
-     * @return ()&#8614;f &#8728; g () = f<big>(</big>g()<big>)</big>.
+     * @return () &#8614; (f &#8728; g) () = f<big>(</big>g()<big>)</big>.
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
      */
     public static /*<B, C>*/ VoidFunction/*<C>*/.Composite compose(Function/*<B,C>*/ f, VoidFunction/*<B>*/ g) {
@@ -221,7 +222,7 @@ public class Functionals {
 
     /**
      * compose: Map(B<sub>1</sub>&times;B<sub>2</sub>,C)&times;(Map({()},B<sub>1</sub>)&times;Map({()},B<sub>2</sub>))&rarr;Map({()},C); (f,g,h) &#8614; f &#8728; (g &times; h) := f(g,h) .
-     * @return ()&#8614;f<big>(</big>g(),h()<big>)</big>.
+     * @return () &#8614; f<big>(</big>g(),h()<big>)</big>.
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
      * @internal see Functionals.BinaryCompositeVoidFunction
      */
@@ -306,7 +307,7 @@ public class Functionals {
 
     /**
      * compose: &weierp;(B)&times;Map(A,B)&rarr;&weierp;(A); (P,g) &#8614; P &#8728; g := P(g).
-     * @return P &#8728; g = <!-- @todo use this(?) &lambda;-abstraction notation without reference to the interpretation with extensional semantics-->&lambda;x P<big>(</big>g(x)<big>)</big> = {x&isin;A &brvbar; P<big>(</big>g(x)<big>)</big>}.
+     * @return P &#8728; g = &lambda;x. P<big>(</big>g(x)<big>)</big> = {x&isin;A &brvbar; P<big>(</big>g(x)<big>)</big>}.
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
      */
     public static /*<A, B>*/ Predicate/*<A>*/.Composite compose(Predicate/*<B>*/ P, Function/*<A, B>*/ g) {
@@ -315,7 +316,7 @@ public class Functionals {
 
     /**
      * compose: &weierp;(B<sub>1</sub>&times;B<sub>2</sub>)&times;(Map(A<sub>1</sub>&times;A<sub>2</sub>,B<sub>1</sub>)&times;Map(A<sub>1</sub>&times;A<sub>2</sub>,B<sub>2</sub>))&rarr;&weierp;(A<sub>1</sub>&times;A<sub>2</sub>); (P,g,h) &#8614; P &#8728; (g &times; h) := P(g,h) .
-     * @return P &#8728; (g &times; h) = {(x,y)&isin;A<sub>1</sub>&times;A<sub>2</sub> &brvbar; P<big>(</big>g(x,y),h(x,y)<big>)</big>}.
+     * @return P &#8728; (g &times; h) = &lambda;x,y. P<big>(</big>g(x,y),h(x,y)<big>)</big> = {(x,y)&isin;A<sub>1</sub>&times;A<sub>2</sub> &brvbar; P<big>(</big>g(x,y),h(x,y)<big>)</big>}.
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
      */
     public static /*<A1, A2, B1, B2>*/ BinaryPredicate/*<A1, A2>*/.Composite compose(BinaryPredicate/*<B1, B2>*/ P, BinaryFunction/*<A1, A2, B1>*/ g, BinaryFunction/*<A1, A2, B2>*/ h) {
@@ -324,7 +325,7 @@ public class Functionals {
 
     /**
      * compose: &weierp;(B<sub>1</sub>&times;B<sub>2</sub>)&times;(Map(A,B<sub>1</sub>)&times;Map(A,B<sub>2</sub>))&rarr;&weierp;(A); (P,g,h) &#8614; P &#8728; (g &times; h) := P(g,h) .
-     * @return P &#8728; (g &times; h) = {x&isin;A &brvbar; P<big>(</big>g(x),h(x)<big>)</big>}.
+     * @return P &#8728; (g &times; h) = &lambda;x. P<big>(</big>g(x),h(x)<big>)</big> = {x&isin;A &brvbar; P<big>(</big>g(x),h(x)<big>)</big>}.
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
      * @see Functionals.BinaryCompositePredicate
      */
@@ -408,7 +409,7 @@ public class Functionals {
 
     /**
      * compose: &weierp;(B)&times;Map({()},B)&rarr;&weierp;({()}); (P,g) &#8614; P &#8728; g := P(g).
-     * @return ()&#8614;P &#8728; g () = P<big>(</big>g()<big>)</big>.
+     * @return &lambda;(). P<big>(</big>g()<big>)</big>.
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
      */
     public static /*<B>*/ VoidPredicate.Composite compose(Predicate P, VoidFunction g) {
@@ -417,7 +418,7 @@ public class Functionals {
 
     /**
      * compose: &weierp;(B<sub>1</sub>&times;B<sub>2</sub>)&times;(Map({()},B<sub>1</sub>)&times;Map({()},B<sub>2</sub>))&rarr;&weierp;({()}); (P,g,h) &#8614; P &#8728; (g &times; h) := P(g,h) .
-     * @return ()&#8614;P<big>(</big>g(),h()<big>)</big>.
+     * @return &lambda;(). P<big>(</big>g(),h()<big>)</big>.
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
      * @see Functionals.BinaryCompositeVoidPredicate
      */
@@ -500,10 +501,10 @@ public class Functionals {
     }
 
     /**
-     * compose &#8728;: Map(B,C)&times;Map(A,B)&rarr;Map(A,C); (f,g) &#8614; f &#8728; g := f(g) = <big>(</big>x&#8614;f(g(x))<big>)</big>.
+     * compose &#8728;: Map(B,C)&times;Map(A,B)&rarr;Map(A,C); (f,g) &#8614; f &#8728; g := <big>(</big>x&#8614;f(g(x))<big>)</big>.
      * <p>
      * compose functional &#8728; calls the compose function appropriate for the type of g.
-     * Valid types for g and h are {@link orbital.logic.functor.Function}, {@link orbital.logic.functor.VoidFunction}
+     * Valid types for g are {@link orbital.logic.functor.Function}, {@link orbital.logic.functor.VoidFunction}
      * and non-functor {@link java.lang.Object}.
      * In the latter case, composition is done using a {@link Functions#constant(Object) constant function}.
      * </p>
@@ -518,7 +519,6 @@ public class Functionals {
      * @return x&#8614;f &#8728; g (x) = f<big>(</big>g(x)<big>)</big>.
      * @pre f and g are "composable"
      * @see #genericCompose(Function,Object)
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
      */
     public static final BinaryFunction compose = new BinaryFunction() {
 	    public Object apply(Object f, Object g) {
@@ -543,11 +543,10 @@ public class Functionals {
 
     /**
      * generic compose calls the compose function appropriate for the type of g.
-     * Valid types for g and h are {@link orbital.logic.functor.Function}, {@link orbital.logic.functor.VoidFunction}
-     * and non-functor {@link java.lang.Object}.
-     * In the latter case, composition is done using a {@link Functions#constant(Object) constant function}.
      * @pre g is "composable"
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+     * @see #compose
+     * @deprecated Use {@link #compose} instead.
      */
     public static Functor.Composite genericCompose(Function f, Object g) {
 	if (g instanceof Functor) {
@@ -581,7 +580,7 @@ public class Functionals {
 	} else if (g instanceof Functor || h instanceof Functor) {
 	    assert g instanceof Functor ^ h instanceof Functor : "!(a&b)&(a|b) -> (a^b)";
 	    // compose for well-defined mixed types as well
-	    //XXX: see MathUtilities.makeSymbolAware(Arithmetic) calls to constant(...)
+	    //@XXX: see MathUtilities.makeSymbolAware(Arithmetic) calls to constant(...)
 	    if (g instanceof Function)
 		return Functionals.compose(f, (Function) g, Functions.constant(h));
 	    else if (h instanceof Function)
@@ -674,7 +673,7 @@ public class Functionals {
      * <p>
      * bindFirst: &weierp;(A<sub>1</sub>&times;A<sub>2</sub>)&rarr;&weierp;(A<sub>2</sub>); P&#8614;P(x,&middot;).
      * The unary left-adjoint got from P by "currying".</p>
-     * @return P(x,&middot;) := {y&isin;A<sub>2</sub> &brvbar; P(x, y)}
+     * @return P(x,&middot;) := &lambda;y. P(x,y) = {y&isin;A<sub>2</sub> &brvbar; P(x, y)}
      */
     public static /*<A1, A2>*/ Predicate/*<A2>*/ bindFirst(BinaryPredicate/*<A1, A2>*/ P, Object/*>A1<*/ x) {
 	return new BindFirstPredicate/*<A1, A2>*/(P, x);
@@ -771,7 +770,7 @@ public class Functionals {
      * <p>
      * bindSecond: &weierp;(A<sub>1</sub>&times;A<sub>2</sub>)&rarr;&weierp;(A<sub>1</sub>); P&#8614;P(&middot;,y).
      * The unary right-adjoint got from P by "currying".</p>
-     * @return P(&middot;,y) := {x&isin;A<sub>1</sub> &brvbar; P(x, y)}
+     * @return P(&middot;,y) := &lambda;x.P(x,y) = {x&isin;A<sub>1</sub> &brvbar; P(x, y)}
      */
     public static /*<A1, A2>*/ Predicate/*<A1>*/ bindSecond(BinaryPredicate/*<A1, A2>*/ P, Object/*>A2<*/ y) {
 	return new BindSecondPredicate/*<A1, A2>*/(P, y);
@@ -820,7 +819,7 @@ public class Functionals {
      * bind: Map(A,B)&rarr;Map({()},B); f&#8614;f(a).
      * The void adjoint got from f by "currying"
      * Every evaluation of a function can be seen as a sequence of binds ending with a void bind.</p>
-     * @return f(a):{()}&rarr;B; () &#8614; f := f(a)
+     * @return f(a):{()}&rarr;B; () &#8614; f(a)
      */
     public static /*<A, B>*/ VoidFunction/*<B>*/ bind(Function/*<A, B>*/ f, Object/*>A<*/ a) {
 	return new BindFunction/*<A, B>*/(f, a);
@@ -958,7 +957,7 @@ public class Functionals {
      * bind: &weierp;(A&times;A)&rarr;&weierp;(A); P&#8614;Q.
      * The unitary adjoint predicate (not by "currying").
      * </p>
-     * @return Q := {x&isin;A &brvbar; P(x, x)}
+     * @return Q := &lambda;x.P(x,x) = {x&isin;A &brvbar; P(x, x)}
      */
     public static /*<A>*/ Predicate/*<A>*/ bind(BinaryPredicate/*<A, A>*/ P) {
 	return new BindTogetherPredicate/*<A>*/(P);
@@ -1007,20 +1006,31 @@ public class Functionals {
      * @see <a href="{@docRoot}/DesignPatterns/Adapter.html">Adapter Pattern</a>
      * @todo is this "uncurrying"? Also, the documentation arraws etc. are garbage. See bind*
      */
-    public static /*<A1, B>*/ BinaryFunction/*<A1, Object, B>*/ onFirst(final Function/*<A1, B>*/ f) {
-	return new BinaryFunction/*<A1, Object, B>*/() {
-		public Object/*>B<*/ apply(Object/*>A1<*/ first, Object second) {
-		    return f.apply(first);
-		} 
+    public static /*<A1, B>*/ BinaryFunction/*<A1,Object, B>*/ onFirst(final Function/*<A1, B>*/ f) {
+	return new BinaryFunctionOnFirst/*<A1,Object, B>*/(f);
+    } 
+    private static class BinaryFunctionOnFirst/*<A1, B>*/ implements BinaryFunction/*<A1,Object, B>*/ {
+	private final Function/*<A1, B>*/ f;
+	public BinaryFunctionOnFirst(Function/*<A1, B>*/ f) {
+	    this.f = f;
+	}
+	public boolean equals(Object o) {
+	    return (o instanceof BinaryFunctionOnFirst) && f.equals(((BinaryFunctionOnFirst)o).f);
+	}
+	public int hashCode() {
+	    return f.hashCode();
+	}
+	public Object/*>B<*/ apply(Object/*>A1<*/ first, Object second) {
+	    return f.apply(first);
+	} 
 
-		//TODO: implement equals(Object)
-		// not quite beautyful for all functors
-		public String toString() {
-		    return Notation.DEFAULT.format(f, new String[] {
-			"#0"	//XXX: was "x", "_"
-		    });
-		} 
-	    };
+	//TODO: implement equals(Object)
+	// not quite beautiful for all functors
+	public String toString() {
+	    return Notation.DEFAULT.format(f, new String[] {
+		"#0"	//@XXX: was "x", "_"
+	    });
+	} 
     } 
 
     /**
@@ -1032,19 +1042,30 @@ public class Functionals {
      * @see <a href="{@docRoot}/DesignPatterns/Adapter.html">Adapter Pattern</a>
      */
     public static /*<A1>*/ BinaryPredicate/*<A1, Object>*/ onFirst(final Predicate/*<A1>*/ p) {
-	return new BinaryPredicate/*<A1, Object>*/() {
-		public boolean apply(Object/*>A1<*/ first, Object second) {
-		    return p.apply(first);
-		} 
+	return new BinaryPredicateOnFirst/*<A1,Object>*/(p);
+    } 
+    private static class BinaryPredicateOnFirst/*<A1>*/ implements BinaryPredicate/*<A1,Object>*/ {
+	private final Predicate/*<A1>*/ f;
+	public BinaryPredicateOnFirst(Predicate/*<A1>*/ f) {
+	    this.f = f;
+	}
+	public boolean equals(Object o) {
+	    return (o instanceof BinaryPredicateOnFirst) && f.equals(((BinaryPredicateOnFirst)o).f);
+	}
+	public int hashCode() {
+	    return f.hashCode();
+	}
+	public boolean apply(Object/*>A1<*/ first, Object second) {
+	    return f.apply(first);
+	} 
 
-		//TODO: implement equals(Object)
-		// not quite beautyful for all functors
-		public String toString() {
-		    return Notation.DEFAULT.format(p, new String[] {
-			"#0"	//XXX: was "x", "_"
-		    });
-		} 
-	    };
+	//TODO: implement equals(Object)
+	// not quite beautiful for all functors
+	public String toString() {
+	    return Notation.DEFAULT.format(f, new String[] {
+		"#0"	//@XXX: was "x", "_"
+	    });
+	} 
     } 
 
     /**
@@ -1056,18 +1077,29 @@ public class Functionals {
      * @see <a href="{@docRoot}/DesignPatterns/Adapter.html">Adapter Pattern</a>
      */
     public static /*<A2, B>*/ BinaryFunction/*<Object, A2, B>*/ onSecond(final Function/*<A2, B>*/ f) {
-	return new BinaryFunction/*<Object, A2, B>*/() {
-		public Object/*>B<*/ apply(Object first, Object/*>A2<*/ second) {
-		    return f.apply(second);
-		} 
+	return new BinaryFunctionOnSecond/*<A2, B>*/(f);
+    }
+    private static class BinaryFunctionOnSecond/*<A2, B>*/ implements BinaryFunction/*<Object,A2, B>*/ {
+	private final Function/*<A2, B>*/ f;
+	public BinaryFunctionOnSecond(Function/*<A2, B>*/ f) {
+	    this.f = f;
+	}
+	public boolean equals(Object o) {
+	    return (o instanceof BinaryFunctionOnSecond) && f.equals(((BinaryFunctionOnSecond)o).f);
+	}
+	public int hashCode() {
+	    return f.hashCode();
+	}
+	public Object/*>B<*/ apply(Object first, Object/*>A2<*/ second) {
+	    return f.apply(second);
+	} 
 
-		//XXX: not quite beautyful for all functors
-		public String toString() {
-		    return Notation.DEFAULT.format(f, new String[] {
-			"#1"
-		    });
-		} 
-	    };
+	//@XXX: not quite beautiful for all functors
+	public String toString() {
+	    return Notation.DEFAULT.format(f, new String[] {
+		"#1"
+	    });
+	} 
     } 
 
     /**
@@ -1079,18 +1111,29 @@ public class Functionals {
      * @see <a href="{@docRoot}/DesignPatterns/Adapter.html">Adapter Pattern</a>
      */
     public static /*<A2>*/ BinaryPredicate/*<Object, A2>*/ onSecond(final Predicate/*<A2>*/ p) {
-	return new BinaryPredicate/*<Object, A2>*/() {
-		public boolean apply(Object first, Object/*>A2<*/ second) {
-		    return p.apply(second);
-		} 
+	return new BinaryPredicateOnSecond/*<A2>*/(p);
+    } 
+    private static class BinaryPredicateOnSecond/*<A2>*/ implements BinaryPredicate/*<Object,A2>*/ {
+	private final Predicate/*<A2>*/ f;
+	public BinaryPredicateOnSecond(Predicate/*<A2>*/ f) {
+	    this.f = f;
+	}
+	public boolean equals(Object o) {
+	    return (o instanceof BinaryPredicateOnSecond) && f.equals(((BinaryPredicateOnSecond)o).f);
+	}
+	public int hashCode() {
+	    return f.hashCode();
+	}
+	public boolean apply(Object first, Object/*>A2<*/ second) {
+	    return f.apply(second);
+	} 
 
-		//XXX: not quite beautyful for all functors
-		public String toString() {
-		    return Notation.DEFAULT.format(p, new String[] {
-			"#1"
-		    });
-		} 
-	    };
+	//@XXX: not quite beautiful for all functors
+	public String toString() {
+	    return Notation.DEFAULT.format(f, new String[] {
+		"#1"
+	    });
+	} 
     } 
 
     /**
@@ -1102,17 +1145,27 @@ public class Functionals {
      * @see <a href="{@docRoot}/DesignPatterns/Adapter.html">Adapter Pattern</a>
      */
     public static /*<A, B>*/ Function/*<A, B>*/ onVoid(final VoidFunction/*<B>*/ f) {
-	return new Function/*<A, B>*/() {
-		public Object/*>B<*/ apply(Object/*>A<*/ arg) {
-		    return f.apply();
-		} 
+	return new FunctionOnVoid/*<A, B>*/(f);
+    }
+    private static class FunctionOnVoid/*<A, B>*/ implements Function {
+	private final VoidFunction/*<B>*/ f;
+	public FunctionOnVoid(VoidFunction/*<B>*/ f) {
+	    this.f = f;
+	}
+	public boolean equals(Object o) {
+	    return (o instanceof FunctionOnVoid) && f.equals(((FunctionOnVoid)o).f);
+	}
+	public int hashCode() {
+	    return f.hashCode();
+	}
+	public Object/*>B<*/ apply(Object/*>A<*/ arg) {
+	    return f.apply();
+	} 
 
-		//@xxx: implement equals(Object), hashCode
-		// not quite beautyful for all functors
-		public String toString() {
-		    return Notation.DEFAULT.format(f, new String[] {});
-		} 
-	    };
+	// not quite beautiful for all functors
+	public String toString() {
+	    return Notation.DEFAULT.format(f, new String[] {});
+	} 
     } 
 
     /**
@@ -1124,17 +1177,27 @@ public class Functionals {
      * @see <a href="{@docRoot}/DesignPatterns/Adapter.html">Adapter Pattern</a>
      */
     public static /*<A>*/ Predicate/*<A>*/ onVoid(final VoidPredicate p) {
-	return new Predicate/*<A>*/() {
-		public boolean apply(Object/*>A<*/ arg) {
-		    return p.apply();
-		} 
+	return new PredicateOnVoid(p);
+    }
+    private static class PredicateOnVoid implements Predicate {
+	private final VoidPredicate p;
+	public PredicateOnVoid(VoidPredicate p) {
+	    this.p = p;
+	}
+	public boolean equals(Object o) {
+	    return (o instanceof PredicateOnVoid) && p.equals(((PredicateOnVoid)o).p);
+	}
+	public int hashCode() {
+	    return p.hashCode();
+	}
+	public boolean apply(Object/*>A<*/ arg) {
+	    return p.apply();
+	} 
 
-		//@xxx: implement equals(Object), hashCode
-		// not quite beautyful for all functors
-		public String toString() {
-		    return Notation.DEFAULT.format(p, new String[] {});
-		} 
-	    };
+	// not quite beautiful for all functors
+	public String toString() {
+	    return Notation.DEFAULT.format(p, new String[] {});
+	} 
     } 
 
     // argument swapping
@@ -1383,7 +1446,7 @@ public class Functionals {
     // functional-style bulk operations
 
     /**
-     * Get a listable function applicable to lists.
+     * Get a listable function autmatically mapping itself over lists.
      * <p>
      * listable: Map(A,B)&rarr;Map(A&cup;A<sup>*</sup>,C&cup;C<sup>*</sup>); f &#8614; f<sup>*</sup>.
      * </p>
@@ -1423,21 +1486,21 @@ public class Functionals {
 	    // (almost) return map(function, asIterator(x), ...); but with optimized third argument and optimized adequate return-type
 	    if (x instanceof Collection/*_<A>_*/) {
 		if (x instanceof List/*_<A>_*/)
-		    return map(function, (List/*_<A>_*/) x);
+		    return map(this, (List/*_<A>_*/) x);
 		else if (x instanceof SortedSet/*_<A>_*/)
-		    return map(function, (SortedSet/*_<A>_*/) x);
+		    return map(this, (SortedSet/*_<A>_*/) x);
 		else if (x instanceof Set/*_<A>_*/)
-		    return map(function, (Set/*_<A>_*/) x);
+		    return map(this, (Set/*_<A>_*/) x);
 		else
-		    return map(function, (Collection/*_<A>_*/) x);
+		    return map(this, (Collection/*_<A>_*/) x);
 	    } else if (x instanceof Iterator/*_<A>_*/) {
 		//@internal could just as well rely on the next case of isIteratable, here
 		if (x instanceof ListIterator/*_<A>_*/)
-		    return map(function, (ListIterator/*_<A>_*/) x);
+		    return map(this, (ListIterator/*_<A>_*/) x);
 		else
-		    return map(function, (Iterator/*_<A>_*/) x);
+		    return map(this, (Iterator/*_<A>_*/) x);
 	    } else if (Utility.isIteratable(x))
-		return map(function, (Object) x);
+		return map(this, (Object) x);
 	    else
 		return function.apply((Object/*>A<*/) x);
 	} 
@@ -1557,7 +1620,7 @@ public class Functionals {
     }
 
     /**
-     * Get a listable function applicable to lists.
+     * Get a listable function autmatically mapping itself over lists.
      * <p>
      * listable: Map(A,B)&rarr;Map(A&cup;A<sup>*</sup>,C&cup;C<sup>*</sup>); f &#8614; f<sup>*</sup>.</p>
      * <p>
@@ -1594,20 +1657,20 @@ public class Functionals {
 	    // almost identical to @see Utility#asIterator, also @see ListableFunction
 	    if ((x instanceof Collection/*_<A1>_*/) && (y instanceof Collection/*_<A2>_*/)) {
 		if ((x instanceof List/*_<A1>_*/) && (y instanceof List/*_<A2>_*/))
-		    return map(function, (List/*_<A1>_*/) x, (List/*_<A2>_*/) y);
+		    return map(this, (List/*_<A1>_*/) x, (List/*_<A2>_*/) y);
 		else if ((x instanceof SortedSet/*_<A1>_*/) && (y instanceof SortedSet/*_<A2>_*/))
-		    return map(function, (SortedSet/*_<A1>_*/) x, (SortedSet/*_<A2>_*/) y);
+		    return map(this, (SortedSet/*_<A1>_*/) x, (SortedSet/*_<A2>_*/) y);
 		else if ((x instanceof Set/*_<A1>_*/) && (y instanceof Set/*_<A2>_*/))
-		    return map(function, (Set/*_<A1>_*/) x, (Set/*_<A2>_*/) y);
+		    return map(this, (Set/*_<A1>_*/) x, (Set/*_<A2>_*/) y);
 		else
-		    return map(function, (Collection/*_<A1>_*/) x, (Collection/*_<A2>_*/) y);
+		    return map(this, (Collection/*_<A1>_*/) x, (Collection/*_<A2>_*/) y);
 	    } else if ((x instanceof Iterator/*_<A1>_*/) && (y instanceof Iterator/*_<A2>_*/)) {
 		if ((x instanceof ListIterator/*_<A1>_*/) && (y instanceof ListIterator/*_<A2>_*/))
-		    return map(function, (ListIterator/*_<A1>_*/) x, (ListIterator/*_<A2>_*/) y);
+		    return map(this, (ListIterator/*_<A1>_*/) x, (ListIterator/*_<A2>_*/) y);
 		else
-		    return map(function, (Iterator/*_<A1>_*/) x, (Iterator/*_<A2>_*/) y);
+		    return map(this, (Iterator/*_<A1>_*/) x, (Iterator/*_<A2>_*/) y);
 	    } else if (Utility.isIteratable(x) && Utility.isIteratable(y))
-		return map(function, (Object) x, (Object) y);
+		return map(this, (Object) x, (Object) y);
 	    else
 		return function.apply((Object/*>A1<*/) x, (Object/*>A2<*/) y);
 	} 

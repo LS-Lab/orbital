@@ -94,7 +94,7 @@ public interface Operations /* implements ArithmeticOperations */ {
     // junctors of a general group (A,+)
 
     /**
-     * plus +: A&times;A&rarr;A; (x,y) &#8614; x + y.
+     * plus +: A&times;A&rarr;A; (x,y) &#8614; x+y.
      * <p>
      * derive plus' = (1, 1)<br />
      * integrate: &int;x<sub>0</sub>+x<sub>1</sub> <i>d</i>x<sub>i</sub> = x<span class="doubleIndex"><sub>i</sub><sup>2</sup></span>/2 + x<sub>0</sub>*x<sub>1</sub></p>
@@ -187,7 +187,7 @@ public interface Operations /* implements ArithmeticOperations */ {
 	};
 
     /**
-     * subtract -: A&times;A&rarr;A; (x,y) &#8614; x - y.
+     * subtract -: A&times;A&rarr;A; (x,y) &#8614; x-y.
      * <p>
      * derive subtract' = (1, -1)<br />
      * integrate: &int;x<sub>0</sub>-x<sub>1</sub> <i>d</i>x<sub>0</sub> = x<span class="doubleIndex"><sub>0</sub><sup>2</sup></span>/2 - x<sub>0</sub>*x<sub>1</sub><br />
@@ -223,11 +223,11 @@ public interface Operations /* implements ArithmeticOperations */ {
     // junctors of a general group (A,&sdot;)
 
     /**
-     * times &middot;: A&times;A&rarr;A; (x,y) &#8614; x &middot; y = x &sdot; y.
+     * times &sdot;: A&times;A&rarr;A; (x,y) &#8614; x&sdot;y.
      * <p>
      * derive times' = (y, x)<br />
-     * integrate: &int;x<sub>0</sub>&middot;x<sub>1</sub> <i>d</i>x<sub>0</sub> = x<span class="doubleIndex"><sub>0</sub><sup>2</sup></span>&middot;x<sub>1</sub> / 2<br />
-     * integrate: &int;x<sub>0</sub>&middot;x<sub>1</sub> <i>d</i>x<sub>1</sub> = x<sub>0</sub>&middot;x<span class="doubleIndex"><sub>1</sub><sup>2</sup></span> / 2</p>
+     * integrate: &int;x<sub>0</sub>&sdot;x<sub>1</sub> <i>d</i>x<sub>0</sub> = x<span class="doubleIndex"><sub>0</sub><sup>2</sup></span>&sdot;x<sub>1</sub> / 2<br />
+     * integrate: &int;x<sub>0</sub>&sdot;x<sub>1</sub> <i>d</i>x<sub>1</sub> = x<sub>0</sub>&sdot;x<span class="doubleIndex"><sub>1</sub><sup>2</sup></span> / 2</p>
      * @attribute associative
      * @attribute neutral
      * @attribute commutative
@@ -319,7 +319,7 @@ public interface Operations /* implements ArithmeticOperations */ {
 	};
 
     /**
-     * divide &#8725;: A&times;A&rarr;A; (x,y) &#8614; x &#8725; y.
+     * divide &#8725;: A&times;A&rarr;A; (x,y) &#8614; x&#8725;y.
      * <p>
      * derive divide' = (1&#8725;y, -x&#8725;y<sup>2</sup>)<br />
      * integrate: &int;x<sub>0</sub>&#8725;x<sub>1</sub> <i>d</i>x<sub>0</sub> = x<span class="doubleIndex"><sub>0</sub><sup>2</sup></span>&#8725;(2*x<sub>1</sub>)<br />
@@ -397,6 +397,8 @@ public interface Operations /* implements ArithmeticOperations */ {
      * @attribute commutative
      * @attribute idempotent
      * @attribute distributive #max
+     * @internal computable in a simple way since Comparable is for total orders.
+     * @todo can we get deribale by presuming min{x,y} = 1/2*(x+y-||x-y||) ?
      * @see java.lang.Comparable#compareTo(Object)
      * @todo AbstractBinaryFunction<Comparable,Comparable,Comparable> would be enough
      */

@@ -865,8 +865,9 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		}
 		public String toString() { return "~"; }
 	    }; 
-    
-    	public static final BinaryFunction/*<Expression, Expression, Expression>*/ and = new BinaryFunction() {
+
+	//@todo move implementation to a superclass orbital.logic.functor.Operations of orbital.math.functional.Operations? But then it would probably be a BinaryPredicate<Boolean,Boolean> or something.
+    	public static final BinaryFunction/*<Boolean,Boolean, Boolean>*/ and = new BinaryFunction() {
     		public Object apply(Object a, Object b) {
 		    return getInt(getTruth(a) && getTruth(b));
     		}

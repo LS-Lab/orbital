@@ -11,7 +11,8 @@ import orbital.logic.functor.Predicate;
 /**
  * Representation of an integer number <span class="Formula">k&isin;<b>Z</b></span>.
  * <p>
- * Integer numbers are a sub group of <b>Q</b> for '+', it is embedded in <b>Q</b> for the field operation '*'.</p>
+ * Integer numbers are a sub group of <b>Q</b> for '+', it is embedded in <b>Q</b> for the field operation '*'.
+ * Integers are the group of differences of <b>N</b>.</p>
  * <p>
  * <small>
  * On the importance of <code><span class="Orbital">Quotient</span>&lt;<span class="Orbital">Integer</span>&gt;</code>
@@ -28,7 +29,7 @@ import orbital.logic.functor.Predicate;
  * @see Values#valueOf(short)
  * @see Values#valueOf(byte)
  * @see Values#valueOf(java.math.BigInteger)
- * @todo introduce subclass Natural for <b>N</b>?
+ * @todo introduce subclass Natural for <b>N</b> that only supports add and zero?
  */
 public interface Integer extends Rational, Euclidean {
     /**

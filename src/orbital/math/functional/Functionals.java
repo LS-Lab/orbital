@@ -628,13 +628,14 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
     // some toolkit functionals
     
     /**
-     * A Function that performs an operation pointwise.
+     * A function that performs an operation pointwise.
      * <p>
      * For Arithmetic objects this will be the elemental function applied on x.
      * For Function objects this will be a composition of this pointwise operation
      * with x.
      * </p>
-     * @param elemental the elemental function to perform on Arithmetic x.
+     * @param elemental the elemental function f to perform on Arithmetic x.
+     * @return x &#8614; if x instanceof Arithmetic but not of MathFunctor then f(x) else f &#8728; x fi.
      * @todo document pointwise better
      */
     public static Function pointwise(Function elemental) {
@@ -649,6 +650,7 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
      * with x and y.
      * </p>
      * @param elemental the elemental function to perform on Arithmetic x.
+     * @return (x,y) &#8614; if x and y instanceof Arithmetic but not of MathFunctor then f(x,y) else f &#8728; (x,y) fi.
      */
     public static BinaryFunction pointwise(BinaryFunction elemental) {
 	return new Functions.PointwiseBinaryFunction(elemental);

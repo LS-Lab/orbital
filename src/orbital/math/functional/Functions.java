@@ -1255,13 +1255,10 @@ public final class Functions {
 
     /**
      * A Function that performs an operation pointwise.
-     * <p>
-     * For Arithmetic objects this will be the elemental function applied on x.
-     * For Function objects this will be a composition of this pointwise operation
-     * with x.</p>
      * 
      * @version 1.0, 2000/08/10
      * @author  Andr&eacute; Platzer
+     * @see Functionals#pointwise(Function)
      */
     static class PointwiseFunction extends AbstractFunctor implements Function {
 	private final Function elemental;
@@ -1288,7 +1285,7 @@ public final class Functions {
 	 * Performs this operation pointwise on x and y.
 	 * For Arithmetic objects this will be the elemental function applied on x
 	 * as <code>elemental(x)</code>.
-	 * For Function objects this will be a composition of this pointwise operation
+	 * For Function objects etc. this will be a composition of this pointwise operation
 	 * with x.
 	 * @param x argument to this pointwise operation which must be Arithmetic or a Function.
 	 * @see #elemental
@@ -1298,7 +1295,7 @@ public final class Functions {
 	public Object apply(Object x) {
 	    if (x instanceof Arithmetic && !(x instanceof MathFunctor))
 		return elemental.apply(x);
-	    return Functionals.compose(this, (Function) x);
+	    return Functionals.genericCompose(this, x);
 	} 
 
 	/**
@@ -1493,13 +1490,10 @@ public final class Functions {
 
     /**
      * A BinaryFunction that performs an operation pointwise.
-     * <p>
-     * For Arithmetic objects this will be the elemental function applied on x and y.
-     * For functor objects this will be a composition of this pointwise operation
-     * with x and y</p>
      * 
      * @version 1.0, 2000/08/10
      * @author  Andr&eacute; Platzer
+     * @see Functionals#pointwise(BinaryFunction)
      */
     static class PointwiseBinaryFunction extends AbstractFunctor implements BinaryFunction {
 	private final BinaryFunction elemental;
@@ -1540,10 +1534,6 @@ public final class Functions {
 	    return Functionals.genericCompose(this, x, y);
 	} 
 
-	/**
-	 * <i>d</i>/<i>d</i>x<sub>i</sub> f = <i>d</i>/<i>d</i>x<sub>i</sub> elemental.
-	 * @pre 0<=i && i<=1
-	 */
 	public BinaryFunction derive() {
 	    return elemental.derive();
 	} 

@@ -6,7 +6,6 @@
 
 package orbital.math;
 
-import orbital.math.functional.Function;
 import java.util.Iterator;
 import java.util.ListIterator;
 
@@ -35,7 +34,8 @@ import java.util.ListIterator;
  * @see "N. Bourbaki, Algebra III.2.7: Free algebras."
  * @todo implements Function<T,T> instead with T any "compatible" type (see Algebra I) and evaluation of Horner-Scheme
  */
-public interface Polynomial/*<R implements Arithmetic, S implements Arithmetic>*/ extends Arithmetic, Function/*<....,R>*/ {
+public interface Polynomial/*<R implements Arithmetic, S implements Arithmetic>*/
+    extends Arithmetic, orbital.math.functional.Function/*<orbital.logic.functor.Function<S,E>,E>*/ {
     // Get/Set properties
     /**
      * Describes the index magma S of our polynomial ring R[S].
@@ -113,13 +113,15 @@ public interface Polynomial/*<R implements Arithmetic, S implements Arithmetic>*
     
     /**
      * Evaluate this polynomial at <var>a</var>.
-     * Using the <span xml:lang="de">"Einsetzungshomomorphismus"</span>.
-     * @param a the argument a&isin;R<sup>n</sup> as a {@link Vector Vector<R>} of dimension n.
-     * @return f(a) = f((X<sub>k</sub>)<sub>k</sub>)|<sub>(X<sub>k</sub>)<sub>k</sub>=a</sub> = f(X<sub>0</sub>,...,X<sub>n-1</sub>)|<sub>X<sub>0</sub>=a<sub>0</sub>,X<sub>1</sub>=a<sub>1</sub>,...,X<sub>n-1</sub>=a<sub>n-1</sub></sub>.
-     * @todo we could just as well generalize the argument and return type of R
+     * Using the <span xml:lang="de">"Einsetzungshomomorphismus"</span> from the universal mapping property.
+     * @param a the index embedding <code>a</code>:S&rarr;(E,&sdot;), encoded as a {@link orbital.logic.functor.Function Function&lt;S,E&gt;},
+     *  that determines to which element <code>a</code>(s) to map the index s&isin;S.<br />
+     *  With S=<b>N</b><sup>n</sup> <code>a</code> can also be encoded as a {@link Vector Vector&lt;E&gt;}
+     *  <code>a</code>&isin;E<sup>n</sup>&cong;E<sup><b>N</b><sup>n</sup></sup>.
+     * @return f(a) = f((X<sub>k</sub>)<sub>k</sub>)|<sub>(X<sub>k</sub>)<sub>k</sub>=a</sub>.
      * @xxx adapt document
      */
-    Object/*>R<*/ apply(Object/*>....<*/ a);
+    Object/*>E<*/ apply(Object/*>orbital.logic.functor.Function<S,E><*/ a);
 
     // Arithmetic
     
@@ -127,13 +129,14 @@ public interface Polynomial/*<R implements Arithmetic, S implements Arithmetic>*
     Polynomial/*<R,S>*/ subtract(Polynomial/*<R,S>*/ b);
     /**
      * Multiplies two polynomials.
+     * @return
      * <div>
      *   (&sum;<sub>s&isin;S</sub> &alpha;<sub>s</sub>&middot;&iota;(s))&sdot;(&sum;<sub>s&isin;S</sub>
      *   &beta;<sub>s</sub>&middot;&iota;(s)) = &sum;<sub>s&isin;S</sub> (&sum;<sub>t&sdot;u=s</sub>
-     *   &alpha;<sub>t</sub>&beta;<sub>u</sub>)&middot;&iota;(s)
+     *   &alpha;<sub>t</sub>&#8202;&beta;<sub>u</sub>)&middot;&iota;(s)
      *   = &sum;<sub>s&isin;S</sub> &alpha;<sub>s</sub>&middot;(&sum;<sub>t&isin;S</sub>
      *   &beta;<sub>t</sub>&middot;&iota;(t))&sdot;&iota;(s)
-     *   = &sum;<sub>s,t&isin;S</sub> (&alpha;<sub>s</sub>&sdot;&beta;<sub>t</sub>)&middot;(&iota;(s)&sdot;&iota;(t))
+     *   = &sum;<sub>s,t&isin;S</sub> (&alpha;<sub>s</sub>&#8202;&beta;<sub>t</sub>)&middot;(&iota;(s)&sdot;&iota;(t))
      * </div>
      */
     Polynomial/*<R,S>*/ multiply(Polynomial/*<R,S>*/ b);

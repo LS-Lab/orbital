@@ -132,12 +132,24 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
 
     /**
      * Get a sub-tensor view ranging (i1:i2) inclusive.
-     * The returned tensor is backed by this tensor, so changes in the returned tensor are reflected in this tensor, and vice-versa.
      * <p>
-     * The semantics of the tensor returned by this method become undefined if the backing tensor
+     * The resulting tensor is a (sub-)<dfn id="view">view</dfn> of this tensor.
+     * Therefore, the returned tensor is backed by this tensor, so changes in the returned tensor are reflected in this tensor, and vice-versa.
+     * </p>
+     * <p>
+     * The semantics of the tensor returned by this method becomes undefined if the backing tensor
      * (i.e., this object) is <em>structurally modified</em> in any way other than via the returned tensor.
      * (Structural modifications are those that change the dimensions, or otherwise perturb it in
-     * such a fashion that iterations in progress may yield incorrect results.)</p>
+     * such a fashion that iterations in progress may yield incorrect results.)
+     * </p>
+     * <p>
+     * The resulting tensor is <dfn id="structurallyUnmodifiable">structurally unmodifiable</dfn>
+     * in order to prevent it from inducing undefined behaviour on its backing tensor.
+     * Query operations on the returned tensor "read through" to this object,
+     * and attempts to structurally modify the returned vector, whether direct or via its iterator,
+     * result in an {@link java.util.UnsupportedOperationException}.
+     * However, setting single components will "write through" to the this object.
+     * </p>
      * @pre i1.length==rank() &and; i2.length==rank() &and; &forall;k i1[k]&le;i2[k] &and; valid(i1) &and; valid(i2)
      * @return a tensor view of the specified part of this tensor.
      * <table>
@@ -147,8 +159,9 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
     Tensor/*<R>*/ subTensor(int[] i1, int[] i2);
 
     /**
-     * Returns a view on a part of the tensor of a lesser rank.
-     * The returned tensor is backed by this tensor, so changes in the returned tensor are reflected in this tensor, and vice-versa.
+     * Get a view on a part of the tensor of a lesser rank.
+     * <p>
+     * The returned tensor is a structurally unmodifiable <a href="Tensor.html#view">view</a>.</p>
      * @param level the level l of indices to fix for this view.
      * @param index the index c<sub>l</sub> of the tensor part view at the level-th index.
      * @return a tensor view of the specified part t<sub>i<sub>0</sub>&times;i<sub>1</sub>&times;&#8230;c<sub>l</sub>&#8230;&times;i<sub>r-1</sub></sub> in this tensor.
@@ -169,7 +182,8 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
 
     /**
      * Returns a view on this tensor transposed.
-     * The returned tensor is backed by this tensor, so changes in the returned tensor are reflected in this tensor, and vice-versa.
+     * <p>
+     * The returned tensor is a <a href="Tensor.html#view">view</a>.</p>
      * @param permutation the mapping table of a permutation &sigma;&isin;S<sub>rank()</sub>
      *  mapping i&#8614;permutation[i] for permuting the indices.
      * @return a tensor view of the transposed tensor t<sub>i<sub>&sigma;(0)</sub>&times;i<sub>&sigma;(1)</sub>&times;&#8230;&times;i<sub>&sigma;(r-1)</sub></sub>

@@ -126,12 +126,8 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
 
     /**
      * Get a sub-vector view ranging (i1:i2) inclusive.
-     * The returned vector is backed by this vector, so changes in the returned vector are reflected in this vector, and vice-versa.
      * <p>
-     * The semantics of the vector returned by this method become undefined if the backing vector
-     * (i.e., this object) is <em>structurally modified</em> in any way other than via the returned vector.
-     * (Structural modifications are those that change the dimension, or otherwise perturb it in
-     * such a fashion that iterations in progress may yield incorrect results.)</p>
+     * The returned vector is a structurally unmodifiable <a href="Tensor.html#view">view</a>.</p>
      * @pre i1<=i2 && valid(i1) && valid(i2)
      * @return a matrix view of the specified part of this matrix.
      */

@@ -40,7 +40,7 @@ package orbital.math;
  *   <tr>
  *     <td width="5%" rowspan="5"></td>
  *     <td>{@link #multiply(Arithmetic) multiply}</td>
- *     <td>&sdot;:M×M&rarr;M; (a,b)&#8614;a&sdot;b=a&#8201;b</td>
+ *     <td>&sdot;:M×M&rarr;M; (a,b)&#8614;a&sdot;b=a&#8202;b</td>
  *     <td>law of composition for rings</td>
  *   </tr>
  *   <tr>

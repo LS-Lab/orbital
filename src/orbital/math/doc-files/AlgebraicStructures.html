@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Language" content="en-gb">
 <meta name="author" content="Andre Platzer">
-<meta name="copyright" content="© 1996-2001 André Platzer">
+<meta name="copyright" content="© 1996-2002 André Platzer">
 <meta name="classification" content="Science/Mathematics/Algebra/Structures">
 <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
 <meta name="ProgId" content="FrontPage.Editor.Document">
@@ -266,9 +266,9 @@ algebras).</p>
     <td class="defID">(<b>„s“)</b></td>
     <td class="defCond" id="stablea">
       <ul class="or">
-        <li>∗:Ω→E<sup>E</sup> is an <dfn>action</dfn> of Ω on E.</li>
-        <li>∗:Ω×E→E is a <dfn>law of left action</dfn> with operators Ω.</li>
-        <li>∗:E×Ω→E is a <dfn>law of right action</dfn> with operators Ω.</li>
+        <li>·:Ω→E<sup>E</sup> is an <dfn>action</dfn> of Ω on E.</li>
+        <li>·:Ω×E→E is a <dfn>law of left action</dfn> with operators Ω.</li>
+        <li>·:E×Ω→E is a <dfn>law of right action</dfn> with operators Ω.</li>
       </ul>
     </td>
     <td class="defVerbal">&quot;action&quot;</td>
@@ -304,8 +304,8 @@ actions.</p>
   <caption>Homomorphisms of algebraic structures with one law of composition and 
     a law of action</caption>
   <tr>
-    <td class="defContext" colspan="4">Let (M,⋅), (N,∗) be groups with 
-      operators in Ω, and φ:M→N a map.</td>
+    <td class="defContext" colspan="4">Let M,N be groups with operators in Ω, 
+      and φ:M→N a map.</td>
   </tr>
   <tr>
     <th class="defID"></th>
@@ -338,11 +338,11 @@ actions.</p>
     <td class="defCond">
       <ul class="and">
         <li>(G,⋅) is a group</li>
-        <li>∗:G→E<sup>E</sup> is a homomorphism of monoids (<dfn>left 
+        <li>·:G→E<sup>E</sup> is a homomorphism of monoids (<dfn>left 
           operation</dfn>), i.e.
           <ul class="and">
-            <li>∀α,β∈G ∀x∈E α∗(β∗x) = (α⋅β)∗x.</li>
-            <li>∀x∈E 1∗x = x.</li>
+            <li>∀α,β∈G ∀x∈E α·(β·x) = (α⋅β)·x.</li>
+            <li>∀x∈E 1·x = x.</li>
           </ul>
         </li>
       </ul>
@@ -356,11 +356,11 @@ actions.</p>
     <td class="defCond">
       <ul class="and">
         <li>(G,⋅) is a group</li>
-        <li>∗:G→E<sup>E</sup> is a homomorphism of monoids into the opposite 
+        <li>·:G→E<sup>E</sup> is a homomorphism of monoids into the opposite 
           monoid of E<sup>E</sup> (<dfn>right operation</dfn>), i.e.
           <ul class="and">
-            <li>∀α,β∈G ∀x∈E (x∗α)∗β = x∗(α⋅β).</li>
-            <li>∀x∈E x∗1 = x.</li>
+            <li>∀α,β∈G ∀x∈E (x·α)·β = x·(α⋅β).</li>
+            <li>∀x∈E x·1 = x.</li>
           </ul>
         </li>
       </ul>
@@ -373,12 +373,11 @@ actions.</p>
 <h5 class="compact">Note:</h5>
 <p class="preciseClarification">Also compare with <a href="#morph_1_0">homomorphisms 
 of groups</a> to see that for <em>groups </em>operating on a set, the action 
-even is a map ∗:G→S<sub>E</sub>.</p>
+even is a map ·:G→S<sub>E</sub>.</p>
 <table width="100%" class="def">
   <caption>Homomorphisms of groups operating on a set</caption>
   <tr>
-    <td class="defContext" colspan="4">Let (E,⋅), (E',∗) be G-sets, and φ:E→E' 
-      a map.</td>
+    <td class="defContext" colspan="4">Let E,E' be G-sets, and φ:E→E' a map.</td>
   </tr>
   <tr>
     <th class="defID"></th>
@@ -388,25 +387,24 @@ even is a map ∗:G→S<sub>E</sub>.</p>
   </tr>
   <tr>
     <td class="defID">(<b>„m“)</b></td>
-    <td class="defCond">∀α∈G ∀x∈E φ(α∗x) = α∗φ(x)</td>
+    <td class="defCond">∀α∈G ∀x∈E φ(α·x) = α·φ(x)</td>
     <td class="defVerbal">&quot;morph&quot;</td>
     <td class="defTerm"><dfn>homomorphism</dfn> of G-sets</td>
   </tr>
 </table>
 <h4 class="inner">Examples</h4>
 <ol>
-  <li>_∗x is a homomorphism of G-sets (or G-morphism) of G (operating on 
-    itself by left translation α∗x:=α⋅x). G∗x = Im(_∗x)⊆E is the <dfn id="orbit">orbit</dfn> 
+  <li>_·x is a homomorphism of G-sets (or G-morphism) of G (operating on itself 
+    by left translation α·x:=α⋅x). G·x = Im(_·x)⊆E is the <dfn id="orbit">orbit</dfn> 
     of x∈E in E and
     <ul>
-      <li>G\E := E/(y∈G∗x) = {G∗x ¦ x∈E} quotient of E for left 
-        actions.</li>
-      <li>E/G := E/(y∈x∗G) = {x∗G ¦ x∈E} for right actions.</li>
+      <li>G\E := E/(y∈G·x) = {G·x ¦ x∈E} quotient of E for left actions.</li>
+      <li>E/G := E/(y∈x·G) = {x·G ¦ x∈E} for right actions.</li>
     </ul>
-    G<sub>x</sub> := {g∈G ¦ g∗x=x}≤G is the <dfn id="fixer">fixgroup</dfn> 
+    G<sub>x</sub> := {g∈G ¦ g·x=x}≤G is the <dfn id="fixer">fixgroup</dfn> 
     of x∈E under G (in this case of group operations equaling the stabilizer). 
-    Orbits and fixgroups are compatible with quotients: ∀x∈x̅∈G\E G∗x=G∗x̅,G<sub>x</sub>=G<sub>x̅</sub>. 
-    Fixgroups and orbits are related by |G∗x| = [G:G<sub>x</sub>].</li>
+    Orbits and fixgroups are compatible with quotients: ∀x∈x̅∈G\E G·x=G·x̅,G<sub>x</sub>=G<sub>x̅</sub>. 
+    Fixgroups and orbits are related by |G·x| = [G:G<sub>x</sub>].</li>
 </ol>
 <h3 id="ring">Rings</h3>
 <table width="100%" class="def" id="laws_2_0">
@@ -663,8 +661,12 @@ in R and left (R,⋅)-sets that also satisfy the second distributive relation.</
     the dual base B<sup>*</sup>:={<span class="vector">b</span><sup>*</sup>:B→R; 
     <span class="vector">b'</span>↦δ<sub><span class="vector">b</span><span class="vector">b'</span></sub> 
     ¦ <span class="vector">b</span>∈B}.</li>
-  <li>R<sup>(X)</sup> := <big>⊕</big><sub>x∈X</sub> R is the <dfn>free 
-    R-module</dfn> with basis X (X is a set, also <a href="#algebraOfMagma">see</a>).<br>
+  <li>R<sup>(X)</sup> = <big>⊕</big><sub>x∈X</sub> R = {∑<sub><span class="vector">x</span>∈X</sub> 
+    a<sub><span class="vector">x</span></sub>·<span class="vector">x</span> ¦ 
+    ∀<span class="vector">x</span>∈X a<sub><span class="vector">x</span></sub>∈R 
+    ∧ a<sub><span class="vector">x</span></sub>=0 p.t. <span class="vector">x</span>∈X} 
+    is the <dfn>free R-module</dfn> with basis X (in contrast to <a href="#algebraOfMagma">algebras 
+    of a magma</a>, X is only a set).<br>
     ⇔ X is R-linear independent and generates the module (i.e. =〈X〉).</li>
 </ol>
 <h3>Algebras</h3>
@@ -742,7 +744,7 @@ omitted.</p>
         <li>E is an R-module</li>
         <li>E is a pseudo-ring</li>
         <li><b>(m) </b>R⋅E ⊆ Z(E), i.e.<br>
-          (α·x)⋅(β·y) = (αβ)·(x⋅y)</li>
+          (α·x)⋅(β·y) = (α β)·(x⋅y)</li>
       </ul>
     </td>
     <td class="defTerm">associative R-algebra</td>
@@ -801,14 +803,16 @@ homomorphisms of rings:</p>
   <li><b>Z</b>-<span class="categorie">Algas</span>≅<span class="categorie">PseudoRing</span>, 
     <b>Z</b>-<span class="categorie">Algasu</span>≅<span class="categorie">Rng1</span>, 
     <b>Z</b>-<span class="categorie">Algascu</span>≅<span class="categorie">cRng1</span>.</li>
-  <li>R<sup>(S)</sup> := <big>⊕</big><sub>s∈S</sub> R is the R-<dfn id="algebraOfMagma">algebra 
+  <li>R[S] := R<sup>(S)</sup> = <big>⊕</big><sub>s∈S</sub> R = {∑<span class="vector"><sub>s</sub></span><sub>∈S</sub> 
+    a<span class="vector"><sub>s</sub></span>·ι(s) ¦ ∀s∈S a<span class="vector"><sub>s</sub></span>∈R 
+    ∧ a<span class="vector"><sub>s</sub></span>=0 p.t. s∈S} is the R-<dfn id="algebraOfMagma">algebra 
     of the magma</dfn> S over R (being associative, unital, or commutative if 
     and only if S is), by ι(s)⋅ι(t) := ι(s⋅t) from the canonical 
     injection ι:S↪R<sup>(S)</sup>. Therefore by <a href="#distributive">(d)</a>, 
     multiplication is the convolution
     <div>
       (∑<sub>s∈S</sub> α<sub>s</sub>·ι(s))⋅(∑<sub>s∈S</sub> β<sub>s</sub>·ι(s)) 
-      = ∑<sub>s∈S</sub> (∑<sub>t⋅u=s</sub> α<sub>t</sub>β<sub>u</sub>)·ι(s)
+      = ∑<sub>s∈S</sub> (∑<sub>t⋅u=s</sub> α<sub>t</sub> β<sub>u</sub>)·ι(s)
     </div>
     Especially, there are
     <ul>
@@ -816,12 +820,12 @@ homomorphisms of rings:</p>
       <li>the <dfn>free associative R-algebra</dfn> Libas<sub>R</sub>(I) := R<sup>(Mo(I)) 
         </sup>≅ <span style="font size: larger; font-weight: 600;">T</span>(R<sup>(I)</sup>) 
         being isomorph to the tensor algebra of a free R-module with a basis (of 
-        indexing set) I.</li>
+        indexing set) I. (<small>It also is a quotient of Lib<sub>R</sub>(I)</small>).</li>
       <li>the <dfn>free commutative and associative R-algebra</dfn> Libasc<sub>R</sub>(I) 
-        := R<sup>(<b>N</b><sup>(I)</sup>)</sup> = R[(X<sub>i</sub>)<sub>i∈I</sub>] 
+        := R<sup>(<b>N</b><sup>(I)</sup>)</sup> =: R[(X<sub>i</sub>)<sub>i∈I</sub>] 
         ≅ <span style="font size: larger; font-weight: 600;">S</span>(R<sup>(I)</sup>) 
         being isomorph to the symmetric algebra of a free R-module with a basis 
-        (of indexing set) I.</li>
+        (of indexing set) I. (<small>It also is a quotient of Lib<sub>R</sub>(I)</small>).</li>
     </ul>
     The algebra R<sup>(S)</sup> of a magma S over R is the presenting object of 
     the presentable functor
@@ -835,7 +839,7 @@ homomorphisms of rings:</p>
         <tr>
           <td class="leftOfMap"><span class="objet">E</span></td>
           <td class="arrowOfMap">↦</td>
-          <td class="rightOfMap">Mor<span class="categorie"><sub>Mag</sub></span>(S,(E,⋅))                 
+          <td class="rightOfMap">Mor<span class="categorie"><sub>Mag</sub></span>(S,(E,⋅))                        
             <!-- @todo or Hom as for <b>Z</b>[G]? --> </td>
         </tr>
       </tbody>
@@ -843,10 +847,10 @@ homomorphisms of rings:</p>
     Therefore it enjoys the following universal mapping property
     <div class="UniversalMappingProperty">
       ∀φ:S→(E,⋅) homomorphism of magmas/monoids into an R-algebra E<br />
-      ∃!Φ:R<sup>(S)</sup>→E R-algebra homomorphism with Φ|<sub>S</sub>=φ
+      ∃!Φ:R<sup>(S)</sup>→E R-algebra homomorphism with Φ|<sub>S</sub>=φ <!-- @todo Φ is the Einsetzungshomomorphismus -->    
     </div>
   </li>
-  <li>R<sup>X</sup> := ∏<sub>x</sub><sub>∈X</sub> R is a commutative 
+  <li>R<sup>X</sup> = ∏<sub>x</sub><sub>∈X</sub> R is a commutative 
     associative R-algebra (for a commutative ring R and a set X), but is 
     distinct from the total algebra.</li>
   <li>The tensor product E⊗<sub>R</sub>E' is a coproduct in the category of 
@@ -886,7 +890,7 @@ sub-R-modules) in rings, submodules in R-modules, ideals (i.e. sub-R-modules <em
 ideals of the ring structure) in R-algebras (which in R-<span class="categorie">Algasu</span> 
 are identical with the ideals of the ring structure). For example, if G is a 
 group with a normal subgroup N⊴G, then there is a homomorphism φ with N=Ker(φ) 
-inducing an equivalence relation ~, and <center>G/N := G/~ = <big>{</big>g⋅N:={g⋅n 
+inducing a congruence relation ~, and <center>G/N := G/~ = <big>{</big>g⋅N:={g⋅n 
 ¦ n∈N} ¦ g∈G<big>}</big> = <big>{</big>N⋅g:={n⋅g ¦ n∈N} ¦ g∈G<big>}</big></center>equals 
 the set of left <dfn>cosets</dfn> or the set of right cosets. Although the left 
 and right cosets are also defined for ordinary subgroups H≤G instead of N, 
@@ -905,28 +909,28 @@ is called the <dfn>index</dfn> of the subgroup H in G. It satisfies <center>|G|
     X. It is called the sub-<span class="signifier">T</span> generated by X.</dd>
 </dl>
 <ul>
-  <li>For an R-module E, an alternative characterization by linear combinations 
-    of X⊆E is<br>
+  <li>For R-modules E, an alternative characterization by linear combinations of 
+    X⊆E is<br>
     〈X〉 = R·X := 〈{r·<span class="vector">x</span> ¦ r∈R ∧ <span class="vector">x</span>∈X}〉 
-    = X<sup>(R)</sup> = {∑<sub><span class="vector">x</span>∈X</sub> a<sub><span class="vector">x</span></sub>·<span class="vector">x</span> 
-    ¦ ∀<span class="vector">x</span>∈X a<sub><span class="vector">x</span></sub>∈R 
-    ∧ a<sub><span class="vector">x</span></sub>=0 p.t. <span class="vector">x</span>∈X}</li>
-</ul>
-<ul>
+    = R<sup>(X)</sup> (<small>= {∑<sub><span class="vector">x</span>∈X</sub> 
+    a<sub><span class="vector">x</span></sub>·<span class="vector">x</span> ¦ 
+    ∀<span class="vector">x</span>∈X a<sub><span class="vector">x</span></sub>∈R 
+    ∧ a<sub><span class="vector">x</span></sub>=0 p.t. <span class="vector">x</span>∈X}</small>)</li>
   <li>For ideals I⊴R (which are defined as sub-R-modules of R), the usual 
     notation is (X) instead of 〈X〉, and we have the same alternative 
     characterizations<br>
-    (X) := ⋂<sub>X⊆S</sub><sub>⊴</sub><sub>E</sub> S = X⋅R = X<sup>(R)</sup> 
-    = {∑<sub>x∈X</sub> a<sub>x</sub>⋅x ¦ ∀x∈X a<sub>x</sub>∈R ∧ a<sub>x</sub>=0 
-    p.t. x∈X}</li>
+    (X) := ⋂<sub>X⊆S</sub><sub>⊴</sub><sub>E</sub> S = X⋅R = R<sup>(X)</sup> 
+    (<small>= {∑<sub>x∈X</sub> a<sub>x</sub>⋅x ¦ ∀x∈X a<sub>x</sub>∈R 
+    ∧ a<sub>x</sub>=0 p.t. x∈X}</small>)</li>
   <li>For ring extensions S/R (resp. commutative, unital associative R-algebras 
-    S), and a subset A⊆S we have an alternative notation and characterization<br>
-    R[A] := 〈R∪A〉 = ⋃<sub>E⊆A fin</sub> R[E] = {f(α<sub>1</sub>,…,α<sub>n</sub>) 
-    ¦ f∈R[X<sub>1</sub>,…,X<sub>n</sub>] ∧ ∀i α<sub>i</sub>∈A}</li>
+    S), and a subset A⊆S we have an alternative characterization<br>
+    R[A] (:= R[〈A〉<sub class="categorie">Mag</sub>]) = 〈R∪A〉 = ⋃<sub>E⊆A 
+    fin</sub> R[E] = {f(α<sub>1</sub>,…,α<sub>n</sub>) ¦ n∈<b>N</b> ∧ 
+    f∈R[X<sub>1</sub>,…,X<sub>n</sub>] ∧ ∀i α<sub>i</sub>∈A}</li>
   <li>For field extensions L/K, and a subset A⊆L we have an alternative 
-    notation and characterization<br>
-    K(A) := 〈K∪A〉 = ⋃<sub>E⊆A fin</sub> K(E) = Quot(K[A]) = {f(α<sub>1</sub>,…,α<sub>n</sub>) 
-    / g(α<sub>1</sub>,…,α<sub>n</sub>) ¦ f,g∈K[X<sub>1</sub>,…,X<sub>n</sub>] 
+    characterization<br>
+    K(A) := Quot(K[A]) = 〈K∪A〉 = ⋃<sub>E⊆A fin</sub> K(E) = {f(α<sub>1</sub>,…,α<sub>n</sub>) 
+    / g(α<sub>1</sub>,…,α<sub>n</sub>) ¦ n∈<b>N</b> ∧ f,g∈K[X<sub>1</sub>,…,X<sub>n</sub>] 
     ∧ ∀i α<sub>i</sub>∈A ∧ g(α<sub>1</sub>,…,α<sub>n</sub>)≠0}</li>
 </ul>
 

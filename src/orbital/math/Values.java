@@ -432,14 +432,7 @@ public final class Values {
 
     /**
      * Returns an unmodifiable view of the specified vector.
-     * This method allows modules to provide users with "read-only" access to constant vectors.
-     * <p>
-     * Query operations on the returned vector "read through" to the specified vector,
-     * and attempts to modify the returned vector, whether direct or via its iterator,
-     * result in an UnsupportedOperationException.
-     * <p>
-     * Note that cloning a constant vector will not return a constant matrix, but a clone of the
-     * specified vector.</p>
+     * The result is a <a href="Values.html#readOnlyView">read only view</a>.
      */
     public static /*<R implements Arithmetic>*/ Vector/*<R>*/ constant(final Vector/*<R>*/ v) {
 	return /*refine/delegate Vector*/ new AbstractVector/*<R>*/() {
@@ -592,14 +585,7 @@ public final class Values {
 
     /**
      * Returns an unmodifiable view of the specified matrix.
-     * This method allows modules to provide users with "read-only" access to constant matrices.
-     * <p>
-     * Query operations on the returned matrix "read through" to the specified matrix,
-     * and attempts to modify the returned matrix, whether direct or via its iterator,
-     * result in an UnsupportedOperationException.</p>
-     * <p>
-     * Note that cloning a constant matrix will not return a constant matrix, but a clone of the
-     * specified matrix m.</p>
+     * The result is a <a href="Values.html#readOnlyView">read only view</a>.
      */
     public static /*<R implements Arithmetic>*/ Matrix/*<R>*/ constant(final Matrix/*<R>*/ m) {
 	return /*refine/delegate Matrix*/ new AbstractMatrix/*<R>*/() {
@@ -765,11 +751,13 @@ public final class Values {
 
     /**
      * Returns an unmodifiable view of the specified tensor.
-     * This method allows modules to provide users with "read-only" access to constant tensors.
+     * <p>
+     * The resulting tensor is a <dfn id="readOnlyView">read-only view</dfn> of this tensor.
+     * So, this method allows modules to provide users with "read-only" access to constant tensors.
      * <p>
      * Query operations on the returned tensor "read through" to the specified tensor,
      * and attempts to modify the returned tensor, whether direct or via its iterator,
-     * result in an UnsupportedOperationException.</p>
+     * result in an {@link java.util.UnsupportedOperationException}.</p>
      * <p>
      * Note that cloning a constant tensor will not return a constant tensor, but a clone of the
      * specified tensor t.</p>
@@ -1067,67 +1055,6 @@ public final class Values {
     // polynomial constructors and utilities
 
     /**
-     * Returns a (univariate) polynomial with the specified coefficients.
-     * <p>
-     * Note that the resulting polynomial may or may not be backed by the
-     * specified array.
-     * </p>
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
-     * @param coefficients an array <var>a</var> containing the
-     * coefficients of the polynomial.
-     * @return the polynomial <var>a</var><sub>0</sub> + <var>a</var><sub>1</sub>X + <var>a</var><sub>2</sub>X<sup>2</sup> + ... + <var>a</var><sub>n</sub>X<sup>n</sup> for n=coefficients.length-1.
-     * @see #asPolynomial(Vector)
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
-     */
-    public static /*<R implements Arithmetic>*/ UnivariatePolynomial/*<R>*/ polynomial(Arithmetic/*>R<*/[] coefficients) {
-    	return new ArithmeticUnivariatePolynomial/*<R>*/(coefficients);
-    }
-
-    /**
-     * Returns a polynomial view of a vector.
-     * Interprets the components of the vector as the coefficients
-     * of a polynomial.
-     * @return the polynomial <var>a</var><sub>0</sub> + <var>a</var><sub>1</sub>X + <var>a</var><sub>2</sub>X<sup>2</sup> + ... + <var>a</var><sub>n</sub>X<sup>n</sup> for n:=a.dimension()-1.
-     * @see #polynomial(Arithmetic[])
-     * @see #asVector(UnivariatePolynomial)
-     * @todo implement a true view flexible for changes (but only if Polynomial.set(...) has been introduced)
-     */
-    public static /*<R implements Arithmetic>*/ UnivariatePolynomial/*<R>*/ asPolynomial(Vector/*<R>*/ a) {
-    	return polynomial((Arithmetic/*>R<*/[])a.toArray());
-    }
-
-    /**
-     * Returns a vector view of the coefficients of a polynomial.
-     * Interprets the coefficients of the polynomial as the components
-     * of a vector.
-     * @return the vector (<var>a</var><sub>0</sub>,<var>a</var><sub>1</sub>,<var>a</var><sub>2</sub>,...,<var>a</var><sub>n</sub>) of the polynomial <var>a</var><sub>0</sub> + <var>a</var><sub>1</sub>X + <var>a</var><sub>2</sub>X<sup>2</sup> + ... + <var>a</var><sub>n</sub>X<sup>n</sup> for n=a.degree().
-     * @see UnivariatePolynomial#getCoefficients()
-     * @see #asPolynomial(Vector)
-     */
-    public static /*<R implements Arithmetic>*/ Vector/*<R>*/ asVector(UnivariatePolynomial/*<R>*/ p) {
-    	return (Vector) asTensor(p);
-    }
-
-    /**
-     * Returns an unmodifiable view of the specified polynomial.
-     * This method allows modules to provide users with "read-only" access to constant polynomials.
-     * <p>
-     * Query operations on the returned polynomial "read through" to the specified polynomial,
-     * and attempts to modify the returned polynomial, whether direct or via its iterator,
-     * result in an UnsupportedOperationException.
-     * <p>
-     * Note that cloning a constant polynomial will not return a constant matrix, but a clone of the
-     * specified polynomial.</p>
-     */
-    public static /*<R implements Arithmetic>*/ UnivariatePolynomial/*<R>*/ constant(UnivariatePolynomial/*<R>*/ p) {
-	// Polynomials are currently unmodifiable anyhow.
-	//@xxx except via iterator()
-	return p;
-    }
-
-    // multivariate polynomial constructors and utilities
-
-    /**
      * Returns a polynomial with the specified coefficients.
      * The number of variables equals the rank (i.e. number of dimensions)
      * of the array of coefficients.
@@ -1152,8 +1079,10 @@ public final class Values {
 
     /**
      * Returns a polynomial view of a tensor.
-     * Interprets the components of the tensor as the coefficients
-     * of a polynomial.
+     * <p>
+     * The returned polynomial is a <!-- @todo? structurally unmodifiable--> <a href="Tensor.html#view">view</a> of the tensor.
+     * It interprets the components of the tensor as the coefficients
+     * of a polynomial.</p>
      * @param coefficients a tensor <var>a</var> containing the
      *  coefficients of the polynomial.
      * @return the polynomial <var>a</var><sub>0,...,0</sub> + <var>a</var><sub>1,0,...,0</sub>X<sub>1</sub> + <var>a</var><sub>1,1,0,....,0</sub>X<sub>1</sub>X<sub>2</sub> + ... + <var>a</var><sub>2,1,0,....,0</sub>X<sub>1</sub><sup>2</sup>X<sub>2</sub> + ... + <var>a</var><sub>d<sub>1</sub>,...,d<sub>n</sub></sub>X<sub>1</sub><sup>d<sub>1</sub></sup>...&X<sub>n</sub><sup>d<sub>n</sub></sup>.
@@ -1173,8 +1102,10 @@ public final class Values {
 
     /**
      * Returns a vector view of the coefficients of a polynomial.
-     * Interprets the coefficients of the polynomial as the components
-     * of a vector.
+     * <p>
+     * The returned tensor is a <!-- @todo? structurally unmodifiable--> <a href="Tensor.html#view">view</a> of the polynomial.
+     * It interprets the coefficients of the polynomial as the components
+     * of a tensor.</p>
      * @return the tensor (<var>a</var><sub>0,...,0</sub>,...,<var>a</var><sub>d<sub>1</sub>,...,d<sub>n</sub></sub>).
      * @see #asPolynomial(Tensor)
      */
@@ -1184,14 +1115,7 @@ public final class Values {
 
     /**
      * Returns an unmodifiable view of the specified polynomial.
-     * This method allows modules to provide users with "read-only" access to constant polynomials.
-     * <p>
-     * Query operations on the returned polynomial "read through" to the specified polynomial,
-     * and attempts to modify the returned polynomial, whether direct or via its iterator,
-     * result in an UnsupportedOperationException.
-     * <p>
-     * Note that cloning a constant polynomial will not return a constant matrix, but a clone of the
-     * specified polynomial.</p>
+     * The result is a <a href="Values.html#readOnlyView">read only view</a>.
      */
     public static /*<R implements Arithmetic>*/ Polynomial/*<R>*/ constant(Polynomial/*<R>*/ p) {
 	// Polynomials are currently unmodifiable anyhow.
@@ -1243,7 +1167,65 @@ public final class Values {
     public static final Polynomial/*<R implements Scalar>*/ MONOMIAL(int[] exponents) {
 	return MONOMIAL(ONE, exponents);
     }
-    
+
+    // univariate polynomial constructors and utilities
+
+    /**
+     * Returns a (univariate) polynomial with the specified coefficients.
+     * <p>
+     * Note that the resulting polynomial may or may not be backed by the
+     * specified array.
+     * </p>
+     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     * @param coefficients an array <var>a</var> containing the
+     * coefficients of the polynomial.
+     * @return the polynomial <var>a</var><sub>0</sub> + <var>a</var><sub>1</sub>X + <var>a</var><sub>2</sub>X<sup>2</sup> + ... + <var>a</var><sub>n</sub>X<sup>n</sup> for n=coefficients.length-1.
+     * @see #asPolynomial(Vector)
+     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     */
+    public static /*<R implements Arithmetic>*/ UnivariatePolynomial/*<R>*/ polynomial(Arithmetic/*>R<*/[] coefficients) {
+    	return new ArithmeticUnivariatePolynomial/*<R>*/(coefficients);
+    }
+
+    /**
+     * Returns a polynomial view of a vector.
+     * <p>
+     * The returned polynomial is a <!-- @todo? structurally unmodifiable--> <a href="Tensor.html#view">view</a> of the vector.
+     * It interprets the components of the vector as the coefficients
+     * of a polynomial.</p>
+     * @return the polynomial <var>a</var><sub>0</sub> + <var>a</var><sub>1</sub>X + <var>a</var><sub>2</sub>X<sup>2</sup> + ... + <var>a</var><sub>n</sub>X<sup>n</sup> for n:=a.dimension()-1.
+     * @see #polynomial(Arithmetic[])
+     * @see #asVector(UnivariatePolynomial)
+     * @todo implement a true view flexible for changes (but only if Polynomial.set(...) has been introduced)
+     */
+    public static /*<R implements Arithmetic>*/ UnivariatePolynomial/*<R>*/ asPolynomial(Vector/*<R>*/ a) {
+    	return polynomial((Arithmetic/*>R<*/[])a.toArray());
+    }
+
+    /**
+     * Returns a vector view of the coefficients of a polynomial.
+     * <p>
+     * The returned vector is a <!-- @todo? structurally unmodifiable--> <a href="Tensor.html#view">view</a> of the polynomial.
+     * It interprets the coefficients of the polynomial as the components
+     * of a vector.</p>
+     * @return the vector (<var>a</var><sub>0</sub>,<var>a</var><sub>1</sub>,<var>a</var><sub>2</sub>,...,<var>a</var><sub>n</sub>) of the polynomial <var>a</var><sub>0</sub> + <var>a</var><sub>1</sub>X + <var>a</var><sub>2</sub>X<sup>2</sup> + ... + <var>a</var><sub>n</sub>X<sup>n</sup> for n=a.degree().
+     * @see UnivariatePolynomial#getCoefficients()
+     * @see #asPolynomial(Vector)
+     */
+    public static /*<R implements Arithmetic>*/ Vector/*<R>*/ asVector(UnivariatePolynomial/*<R>*/ p) {
+    	return (Vector) asTensor(p);
+    }
+
+    /**
+     * Returns an unmodifiable view of the specified polynomial.
+     * The result is a <a href="Values.html#readOnlyView">read only view</a>.
+     */
+    public static /*<R implements Arithmetic>*/ UnivariatePolynomial/*<R>*/ constant(UnivariatePolynomial/*<R>*/ p) {
+	// Polynomials are currently unmodifiable anyhow.
+	//@xxx except via iterator()
+	return p;
+    }
+
 
     // quotient constructors
 
@@ -1413,6 +1395,7 @@ public final class Values {
 
     /**
      * Returns a vector view of the specified matrix.
+     * The result is a structurally unmodifiable <a href="Tensor.html#view">view</a>.
      * @see #asVector(Tensor)
      */
     public static /*<R implements ListIterator,  Arithmetic>*/ Vector/*<R>*/ asVector(final Matrix/*<R>*/ m) {
@@ -1444,21 +1427,16 @@ public final class Values {
 		protected void set(Arithmetic/*>R<*/ v[]) { throw new UnsupportedOperationException("not currently supported"); }
 		public ListIterator iterator() { return m.iterator(); }
 		public Object clone() { throw new UnsupportedOperationException("@xxx dunno"); }
-		public Vector/*<R>*/ insert(int i, Arithmetic/*>R<*/ b) { throw new UnsupportedOperationException(); }
-		public Vector/*<R>*/ insert(int i, Vector/*<R>*/ b) { throw new UnsupportedOperationException(); }
-		public Vector/*<R>*/ append(Arithmetic/*>R<*/ b) { throw new UnsupportedOperationException(); }
-		public Vector/*<R>*/ append(Vector/*<R>*/ b) { throw new UnsupportedOperationException(); }
-		public Vector/*<R>*/ remove(int i) { throw new UnsupportedOperationException(); }
+		public Vector/*<R>*/ insert(int i, Arithmetic/*>R<*/ b) { throw new UnsupportedOperationException("structurally unmodifiable view"); }
+		public Vector/*<R>*/ insert(int i, Vector/*<R>*/ b) { throw new UnsupportedOperationException("structurally unmodifiable view"); }
+		public Vector/*<R>*/ append(Arithmetic/*>R<*/ b) { throw new UnsupportedOperationException("structurally unmodifiable view"); }
+		public Vector/*<R>*/ append(Vector/*<R>*/ b) { throw new UnsupportedOperationException("structurally unmodifiable view"); }
+		public Vector/*<R>*/ remove(int i) { throw new UnsupportedOperationException("structurally unmodifiable view"); }
 	    };
     }
     /**
      * Returns a vector view of the specified tensor.
-     * <p>
-     * Query operations on the returned vector "read through" to the specified tensor,
-     * and attempts to structurally modify the returned vector, whether direct or via its iterator,
-     * result in an UnsupportedOperationException.
-     * However setting single components will "write through" to the specified tensor.
-     * </p>
+     * The result is a structurally unmodifiable <a href="Tensor.html#view">view</a>.
      * <p>
      * The tensor is interpreted row-wise as a vector.
      * </p>

@@ -116,7 +116,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
 	
     /**
      * Returns the column vector view of a column.
-     * The returned vector is backed by this matrix, so changes in the returned vector are reflected in this matrix, and vice-versa.
+     * <p>
+     * The returned vector is a structurally unmodifiable <a href="Tensor.html#view">view</a>.</p>
      * <p>
      * For M<sub>i,j</sub>, bindSecond(c).</p>
      * @return a vector view of the specified column <span class="matrix">M</span><sub>(0:n-1,c:c)</sub> in this matrix.
@@ -133,7 +134,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
 
     /**
      * Returns the row vector view of a row.
-     * The returned vector is backed by this matrix, so changes in the returned vector are reflected in this matrix, and vice-versa.
+     * <p>
+     * The returned vector is a structurally unmodifiable <a href="Tensor.html#view">view</a>.</p>
      * <p>
      * For M<sub>i,j</sub> bindFirst(r).</p>
      * @return a vector view of the specified row <span class="matrix">M</span><sub>(r:r,0:m-1)</sub> in this matrix.
@@ -151,14 +153,9 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
 
     /**
      * Get a sub-matrix view ranging (i1:i2,j1:j2) inclusive.
-     * This is Moeler notation.
-     * The returned matrix is backed by this matrix, so changes in the returned matrix are reflected in this matrix, and vice-versa.
+     * That is Moeler notation.
      * <p>
-     * The semantics of the matrix returned by this method become undefined if the backing matrix
-     * (i.e., this object) is <em>structurally modified</em> in any way other than via the returned matrix.
-     * (Structural modifications are those that change the dimension, or otherwise perturb it in
-     * such a fashion that iterations in progress may yield incorrect results.)
-     * </p>
+     * The returned matrix is a structurally unmodifiable <a href="Tensor.html#view">view</a>.</p>
      * @pre i1&le;i2 && j1&le;j2 && valid(i1, j1) && valid(i2, j2)
      * @param i1 the top-most row index of the sub matrix view to get.
      * @param i2 the bottom-most row index of the sub matrix view to get.
