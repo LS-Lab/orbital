@@ -9,7 +9,6 @@ package orbital.moon.logic;
 import orbital.logic.imp.*;
 import orbital.logic.imp.ParseException;
 import orbital.logic.functor.Functor;
-import orbital.logic.functor.Functor.Composite;
 import orbital.logic.functor.Function;
 import orbital.logic.functor.BinaryFunction;
 
