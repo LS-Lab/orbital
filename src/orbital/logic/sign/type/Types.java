@@ -1428,7 +1428,7 @@ public final class Types {
      * @see Expression#getType()
      * @todo package protect but share with orbital.moon.logic.
      */
-    /*private*/public static final Type typeOf(Expression[] args) {
+    /*private*/public static final Type typeOf(Typed[] args) {
 	if (args == null || args.length == 0)
 	    return NOTYPE;
 	final Type argumentTypes[] = new Type[args.length];
