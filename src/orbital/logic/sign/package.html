@@ -16,11 +16,18 @@ interface. That interface handles expression construction and
 signature management, it provides builder methods for expressions and
 methods for expression parsing. The central data structure of this
 package is <a href="Expression.html">Expression</a> which represents a
-term of a free algebra of terms over a signature, as <em>abstract syntax</em>.
+term of a free algebra of terms over a signature, as abstract syntax.
+</p>
+<p>
+The <dfn>abstract syntax</dfn> of a formal language only contains the
+logical content, and - contrary to the concrete syntax - ignores
+specific notation pecularities like commas, brackets for grouping,
+prefix, infix, etc.
 </p>
 <dl>
   <dt><b>See Also:</b></dt>
   <dd><tt><a href="type/package.html">orbital.logic.sign.type</a></tt>,
+    <tt><a href="concrete/package.html">orbital.logic.sign.concrete</a></tt>,
     <tt><a href="../imp/package.html">orbital.logic.imp</a></tt>,
     <tt><a href="../../moon/logic/LogicParser.html">orbital.moon.logic.LogicParser</a></tt></dd>
 </dl>
