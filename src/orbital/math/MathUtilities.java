@@ -591,8 +591,9 @@ public final class MathUtilities {
 	StringBuffer sb = new StringBuffer();
 	NumberFormat nf = NumberFormat.getInstance();
 	nf.setMinimumIntegerDigits(3);
-	for (int i = 0; i < v.length; i++)
+	for (int i = 0; i < v.length; i++) {
 	    sb.append((i > 0 ? ":" : "") + nf.format(/*@internal see IOUtilities.byteToUnsigned*/(v[i])&0xFF));
+	}
 	return sb.toString();
     } 
 
@@ -604,32 +605,44 @@ public final class MathUtilities {
      * @fixme MatrixKlammerung shows that MathUtilities.format does not work for Double[][]
      */
     public static String format(Object o) {
-	if (o == null)
+	if (o == null) {
 	    return "" + null;
-	else if (o instanceof Arithmetic)
+	} else if (o instanceof Arithmetic) {
 	    return ArithmeticFormat.getDefaultInstance().format(o);
-	else if (o instanceof Number)
-	    if ((o instanceof java.lang.Integer) || (o instanceof java.lang.Byte) || (o instanceof java.lang.Short) || (o instanceof java.lang.Long))
+	} else if (o instanceof Number) {
+	    if ((o instanceof java.lang.Integer) || (o instanceof java.lang.Byte) || (o instanceof java.lang.Short) || (o instanceof java.lang.Long)) {
 		return ((Number) o).longValue() + "";
-	    else
+	    } else {
 		return format(((Number) o).doubleValue());
-	else if (o.getClass().isArray())
-	    if (Array.getLength(o) != 0)
-		try {
-		    return Values.getDefaultInstance().tensor(o).toString();
+	    }
+	} else if (o.getClass().isArray()) {
+	    if (!o.getClass().getComponentType().isArray()) {
+		//@internal faster version? Also avoids circular testing dependencies of orbital.algorithm.Combinatorical, orbital.math.Tensor, orbital.math.ValueFactory, orbital.algorithm.Combinatorical.getPermutations(int[]), orbital.math.MathUtilities#format(Object), orbital.util.Utility.asIteratable
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < Array.getLength(o); i++) {
+		    sb.append((i == 0 ? "" : ", ") + Array.get(o, i));
 		}
-		catch (IllegalArgumentException nonArithmetic) {
-		    if (Utility.rank(o) != 1)
-			//@todo improve by using Array.get
-			return o.toString();
-		    StringBuffer sb = new StringBuffer();
-		    for (int i = 0; i < Array.getLength(o); i++)
-			sb.append((i == 0 ? "" : ", ") + Array.get(o, i));
-		    return "(" + sb.toString() + ")";
+		return "(" + sb.toString() + ")";
+	    } else {
+		if (Array.getLength(o) != 0) {
+		    try {
+			return Values.getDefaultInstance().tensor(o).toString();
+		    }
+		    catch (IllegalArgumentException nonArithmetic) {
+			if (Utility.rank(o) != 1)
+			    //@todo improve by using Array.get
+			    return o.toString();
+			StringBuffer sb = new StringBuffer();
+			for (int i = 0; i < Array.getLength(o); i++) {
+			    sb.append((i == 0 ? "" : ", ") + Array.get(o, i));
+			}
+			return "(" + sb.toString() + ")";
+		    }
+		} else {
+		    return "{}";
 		}
-	    else
-		return "{}";
-	else
+	    }
+	} else
 	    return "" + o;
     } 
 
