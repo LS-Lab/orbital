@@ -1,0 +1,98 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="Andre Platzer">
+<meta name="Description" content="Summary of all features of the Orbital library">
+<meta name="Classification" content="documentation/features">
+<meta name="KeyWords" content="Orbital library, orbital library services, Orbital library for Java, mathematical and statistical utilities and interfaces, graphical utilities and AWT-Extension Beans., a generic framework for logical systems, functional evaluation with functor interfaces, IO-Extensions, networking protocols and corresponding document encoding, Scanner&amp;Parser base classes, a generic game abstraction framework, 3D Worlds engine, Evolutionary (genetic) algorithm implementation, CORBA with inter-ORB protocol, RMI with Sun Remote Method Invocation protocol, Port Servers with socket based internet text protocol, jini fluid objects via jini distributed objects model architecture, term rewrite sytem, symbolic derivation, numerical algorithms, Robinson unification, fixed point operators, symbolic mathematics, arithmetic objects">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<link rel="stylesheet" href="../layout.css" type="text/css" title="layout">
+<title>Summary of some important features</title>
+</head>
+
+<body>
+
+<h2>Important Features</h2>
+The Orbital library is a general extension to the java packages in the form of a
+foundation class library. It specifies several central concept classes (<i>Core
+Packages</i>), and whole class networks that contain extended components,
+generic abstractions, and additional services of reusable Java classes (<i>Extension
+Packages</i>).
+<p>Especially promising contents are logical functors and their mathematical
+counter part with numerical and symbolic mathematics, as well as functional
+evaluation and several algorithmic templates including search and planning.</p>
+<h3>These packages include:</h3>
+<ol>
+  <li>mathematical, numerical and statistical utilities, and conceptual
+    interfaces for mathematics.</li>
+  <li>Enhanced numerical mathematics, and even symbolic mathematical
+    calculations are possible.</li>
+  <li><i>Arithmetic objects</i> with uniform mathematical operations like +, -,
+    *, /, ^. This enables us to use a uniform calculation with various
+    arithmetic implementation objects which include matrices, vectors and scalar
+    types like integers, rational, real and complex numbers. Even full symbolic
+    calculations and modulo calculations are now possible.</li>
+  <li>Mathematical functions are generalized to fit the requirements of
+    functional operations and allow symbolic derivation and sometimes
+    integration. They now extend the basic logical functors instead to maximize
+    compatibility. Additionally mathematical functions can be handled like
+    arithmetic objects whenever this general view is of advantage.</li>
+  <li>Several algorithmic templates are provided which is extremely helpful for
+    rapid prototyping. Those algorithmic templates also include the most
+    important (blind and heuristic) state space search algorithms. Even some
+    implementations of Planning algorithms are provided.</li>
+  <li>Term rewrite sytem facility achieved with fixed point operations of term
+    unification and substitution.</li>
+  <li>a generic framework for logical systems using extended logic with
+    classical operators. Note that this is a framework in the sense of logic,
+    but not in the sense of software architecture. Therefore it provides you
+    with all logical operations without restricting the architecture of your
+    application.</li>
+  <li>algorithmic template frameworks including evolutionary (genetic) algorithm
+    implementation</li>
+  <li>A parser for logical and mathematical expressions including &#955;-operator
+    notation of &#955;-calculus.</li>
+  <li>functional evaluation with functor interfaces and function notation
+    classes.</li>
+  <li>a generic board game abstraction framework.</li>
+  <li>graphical user interface (GUI) utilities and AWT-Extension Java Beans.</li>
+  <li>lightweight 3D worlds graphics engine.</li>
+  <li>I/O-Extensions.</li>
+  <li>Scanner&amp;Parser base classes for simple parsing jobs.</li>
+  <li>some document encoding and formatting classes.</li>
+  <li>concurrent synchronous and asynchronous connectors that supports a
+    programming style with coroutines.</li>
+  <li>And some more...</li>
+</ol>
+
+<!-- <p>
+Additionally, the orbital library contains interfaces for several <i>distributed
+object model</i> environments: the <i>orbital library services</i>. Environments
+that are supported to be inter connectable with the Orbital library include:</p>
+<ul>
+  <li>CORBA with internet inter ORB protocol (IIOP).</li>
+  <li>RMI with Java Remote Method Protocol (JRMP).</li>
+  <li>Port Servers with socket based internet text protocol.</li>
+  <li>jini fluid objects via <a href="../../../info/jini_env.html">jini</a>
+    distributed objects model architecture.</li>
+</ul>
+<ul type="CIRCLE">
+  <li>More information is contained in the documentation.</li>
+  <li>Orbital services for Servlets will soon be added.</li>
+</ul>
+</p>
+-->
+
+<p>Release 0.9.5+ of Orbital library is capable of JAR indexing which is a new
+feature that will result in less consumption of network bandwidth for applets.
+See documentation of JDK 1.3+ for more details on how to use it.</p>
+
+<!--#include virtual="../bottom.shtml"-->
+
+
+</body>
+
+</html>
