@@ -41,11 +41,33 @@ public class SetOfSupportResolution extends ResolutionBase {
 	return C;
     }
 
+
+    /**
+     * Delete superfluous clauses.
+     * Apply any deletion strategies to the specified sets of clauses.
+     * @param newResolvents the new resolvents just resolved most recently.
+     * @param usable the set of usable clauses in the knowledgebase which are not in the set of support.
+     * @param setOfSupport the current set of support prior to adding newResolvents.
+     */
+    protected void deletion(Collection newResolvents, ClausalSet usable, ClausalSet setOfSupport) {
+	if (true)
+	    return;
+	// remove tautologies and handle contradictions
+    	// for all clauses F&isin;newResolvents
+    	for (Iterator i = newResolvents.iterator(); i.hasNext(); ) {
+	    final Clause F = (Clause) i.next();
+	    if (F.isElementaryValid())
+		// if F is obviously valid, forget about it for resolving a contradiction
+		i.remove();
+	}
+    }
+
     /**
      * @param knowledge base W assumed consistent.
      * W is kept in clausal normal form, and thus contains sets of literals.
      * @param query the initial set of support.
      * @preconditions knowledgebase is satisfiable
+     * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
      */
     protected boolean prove(final ClausalSet knowledgebase, final ClausalSet query) {
 	assert !knowledgebase.contains(Clause.CONTRADICTION) : "knowledgebase W assumed consistent, so contains no elementary contradiction";
@@ -87,11 +109,12 @@ public class SetOfSupportResolution extends ResolutionBase {
 		usable.remove(C);
 	    }
 
-	    //@todo deletion(newResolvents, usable, setOfSupport);
+	    deletion(newResolvents, usable, setOfSupport);
 	    setOfSupport.addAll(newResolvents);
 	}
 
 	// usable is satisifiable, and only setOfSupport={} is inconsistent, so conjecture was found wrong
 	return false;
     }
+
 }
