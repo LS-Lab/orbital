@@ -1,6 +1,7 @@
 import orbital.logic.functor.*;
 import orbital.moon.logic.MathParser;
 import orbital.logic.trs.*;
+import orbital.logic.imp.ParseException;
 import orbital.io.IOUtilities;
 import java.util.*;
 
@@ -63,7 +64,7 @@ public class GroupTRS {
 	System.out.println(A.equals(B) ? "A==B" : "A!=B");
     } 
 	
-    private static final Object parse(String expression) throws orbital.io.ParseException {
+    private static final Object parse(String expression) throws ParseException {
 	return MathParser.createExpression(expression);
     }
 }

@@ -14,7 +14,7 @@ import orbital.math.Scalar;
 import orbital.math.functional.Functions;
 
 import orbital.moon.logic.MathParser;
-import orbital.io.ParseException;
+import orbital.logic.imp.ParseException;
 import orbital.logic.trs.Substitution;
 import orbital.logic.trs.Substitutions;
 import orbital.math.Symbol;
