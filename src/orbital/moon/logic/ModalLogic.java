@@ -89,7 +89,7 @@ public class ModalLogic extends ClassicalLogic {
 
     static {
 	//@xxx we don't pass them so disable
-	ModernLogic.TYPE_CHECK = false;
+	setEnableTypeChecks(false);
 	logger.log(Level.CONFIG, "disabling type checks for modal logic");
     }
     

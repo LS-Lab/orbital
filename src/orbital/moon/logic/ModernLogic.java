@@ -57,7 +57,14 @@ abstract class ModernLogic implements Logic {
     /**
      * Whether runtime type checks are enabled.
      */
-    /*private*/ static /*final*/ boolean TYPE_CHECK = true;
+    private static /*final*/ boolean TYPE_CHECK = true;
+    /**
+     * Enable or disable runtime type checks.
+     */
+    /*private*/ static void setEnableTypeChecks(boolean enable) {
+	System.out.println((enable ? "enable" : "disable") + " type checks");
+	TYPE_CHECK = enable;
+    }
     /**
      * A complex error offset that is not representable by a locator for ParseException.
      */
