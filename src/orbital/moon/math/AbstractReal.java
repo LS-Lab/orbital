@@ -11,7 +11,6 @@ import orbital.math.*;
 import java.math.BigDecimal;
 import orbital.math.functional.Operations;
 
-//@fixme (no not fixme, but important): intruduce Real.Big and Integer.Big
 abstract class AbstractReal extends AbstractComplex implements Real {
     private static final long serialVersionUID = -4117614439306224843L;
 
