@@ -446,7 +446,7 @@ public class GameView extends Applet {
     protected void about() {
 	final String nl = System.getProperty("line.separator");
 	final ResourceBundle resource = getResources();
-	AboutDialog.showAboutDialog(this, resources.getString("dialog.about.text") + nl + usage + nl + nl + nl + getGameName() + " " + resources.getString("application.version") + " and " + signe.getManifest(), resources.getString("dialog.about.title") + " " + getGameName());
+	AboutDialog.showAboutDialog(this, resources.getString("dialog.about.text") + nl + usage + nl + nl + nl + getGameName() + " " + resources.getString("application.version") + " " + resources.getString("dialog.about.application.text") + " " + signe.getManifest(), resources.getString("dialog.about.title") + " " + getGameName());
     }
 
 
