@@ -71,7 +71,7 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
      * @see #clone()
      * @todo rename or remove
      */
-    protected Clause construct(Set literals) {
+    protected ClauseImpl construct(Set literals) {
 	return new ClauseImpl(literals);
     }
 
@@ -135,6 +135,15 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
     }
 
     public Clause variant(Signature disjointify) {
+	return variant(disjointify, false);
+    }
+    /**
+     * @param constantify whether to make replace with constants. Use
+     * <code>false</code> to replace constants with constants, and
+     * variables with variables. Use <code>true</code> to always
+     * replace with constants.
+     */
+    private Clause variant(Signature disjointify, boolean constantify) {
 	List/*_<Symbol>_*/ renaming = new ArrayList(disjointify.size());
 	for (Iterator i = disjointify.iterator(); i.hasNext(); ) {
 	    Symbol s = (Symbol) i.next();
@@ -142,7 +151,7 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 	    //@internal this is an embedding of symbols into atomic formulas (otherwise x will never occur, since the atomic formula x is not compound of anything, and should not be compound as well)
 	    //renaming.add(Substitutions.createExactMatcher(s, new UniqueSymbol(s.getType(), null, s.isVariable())));
 	    renaming.add(Substitutions.createExactMatcher(logic.createAtomic(s),
-							  logic.createAtomic(new UniqueSymbol(s.getType(), null, s.isVariable()))));
+							  logic.createAtomic(new UniqueSymbol(s.getType(), null, !constantify && s.isVariable()))));
 	}
 	final Clause variant = (Clause) Functionals.map(Substitutions.getInstance(renaming), this);
 	logger.log(Level.FINEST, "variant of {0} with respect to {1} is\n\t {2} via {3}", new Object[] {this, disjointify, variant, Substitutions.getInstance(renaming)});
@@ -194,7 +203,7 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 	assert this.equals(new HashSet(listF)) : "factorizing initial list version of this";
 	final List listFfactorized = factorizeImpl(listF);
 	if (listFfactorized != listF)
-	    return construct(new HashSet(listF));
+	    return construct(new HashSet(listFfactorized));
 	else
 	    return this;
     }
@@ -213,7 +222,10 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 		// for all literals Fj&isin;F with j>i
 		for (ListIterator j = listF.listIterator(i.nextIndex()); j.hasNext(); ) {
 		    final Formula Fj = (Formula) j.next();
-		    final Substitution mu = Substitutions.unify(Arrays.asList(new Object[] {Fi, Fj}));
+		    final Substitution mu = Substitutions.unify(Arrays.asList(new Object[] {
+			Fi,
+			Fj
+		    }));
 		    assert this.equals(previous) : "modifications during factorization work on copies, and leave the original clause unmodified";
 		    if (mu != null) {
 			// factorize
@@ -239,6 +251,52 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 	finally {
 	    assert this.equals(previous) : "modifications during factorization work on copies, and leave the original clause unmodified";
 	}
+    }
+
+    public boolean subsumes(Clause D) {
+	if (size() > D.size())
+	    return false;
+	// negate D and replace all variables with distinct constants (also distinct for each literal)
+	final ClausalSet notDground = new ClausalSetImpl();
+	for (Iterator i = D.iterator(); i.hasNext(); ) {
+	    final ClauseImpl notDi = new ClauseImpl(Collections.singleton(Utilities.negation((Formula)i.next())));
+	    final Clause notDiground = notDi.variant(notDi.getFreeVariables(), true);
+	    assert notDiground.getFreeVariables().isEmpty() : "ground instances have no free variables " + notDiground + " stemming from " + notDi + " has FV=" + notDiground.getFreeVariables();
+	    notDground.add(notDiground);
+	}
+
+	ClausalSet u = new ClausalSetImpl();
+	u.add(new ClauseImpl(this));
+	assert !notDground.contains(Clause.CONTRADICTION) : "contains no elementary contradiction";
+	assert !u.contains(Clause.CONTRADICTION) : "contains no elementary contradiction, otherwise " + this + " is " + Clause.CONTRADICTION;
+	while (!u.isEmpty()) {
+	    // the set of resolvents obtained from resolution of any C1 with any C2
+	    final ClausalSet newResolvents = new ClausalSetImpl();
+
+	    // for each clause C1&isin;U
+	    for (Iterator i = u.iterator(); i.hasNext(); ) {
+		final Clause C1 = (Clause)i.next();
+		assert !C1.equals(Clause.CONTRADICTION) : "already checked for contradiction";
+
+		// choose any clause C2&isin;notDground
+		for (Iterator i2 = notDground.iterator(); i2.hasNext(); ) {
+		    final Clause C2 = (Clause) i2.next();
+		    // try to resolve C1 with C2
+		    for (Iterator resolvents = C1.resolveWithVariant(C2); resolvents.hasNext(); ) {
+			final Clause R = (Clause)resolvents.next();
+			if (R.equals(Clause.CONTRADICTION)) {
+			    logger.log(Level.FINE, "subsumption of {3} =< {4} resolved contradiction {0} from {1} and {2}",  new Object[] {R, C1, C2, this, D});
+			    return true;
+			} else {
+			    newResolvents.add(R);
+			}
+		    }
+		}
+	    }
+	    u = newResolvents;
+	}
+
+	return false;
     }
 
     // Diverse utilities
