@@ -117,11 +117,12 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 
 
     /**
-     * A base interface for all functors that are composed of other functors.
+     * The base interface for all functors that are composed of other functors.
      * <p>
-     * <div>compose: (f,g) &#8641; f &#8728; g := f(g), or</div>
-     * <div>compose: (f,g<sub>1</sub>,...,g<sub>k</sub>) &#8614; f &#8728; (g<sub>1</sub>,...,g<sub>k</sub>) := f<big>(</big>g<sub>1</sub>,...,g<sub>k</sub><big>)</big><sup>T</sup> vectorial, or</div>
-     * <div>compose: (f,g<sub>0,0</sub>,...,g<sub>n-1,m-1</sub>) &#8614; f &#8728; (g<sub>0,0</sub>,...,g<sub>n-1,m-1</sub>) := f<big>(</big>g<sub>0,0</sub>,...,g<sub>n-1,m-1</sub><big>)</big> matrix.</div>
+     * Composition of functors is possible in several variations.
+     * <div>compose: (f,g) &#8614; f &#8728; g := f(g), or</div>
+     * <div>compose: (f,(g<sub>1</sub>,...,g<sub>k</sub>)) &#8614; f &#8728; (g<sub>1</sub>,...,g<sub>k</sub>) := f<big>(</big>g<sub>1</sub>,...,g<sub>k</sub><big>)</big><sup>T</sup> vectorial, or</div>
+     * <div>compose: (f,(g<sub>0,0</sub>,...,g<sub>n-1,m-1</sub>)) &#8614; f &#8728; (g<sub>0,0</sub>,...,g<sub>n-1,m-1</sub>) := f<big>(</big>g<sub>0,0</sub>,...,g<sub>n-1,m-1</sub><big>)</big> matrix.</div>
      * </p>
      * 
      * @structure inherits Functor

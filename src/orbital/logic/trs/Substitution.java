@@ -20,22 +20,22 @@ import java.util.Collection;
  *     </td>
  *   </tr>
  *   <tr>
- *     <td>
- *       <p>(m)</p>
+ *     <td class="defID">
+ *       m
  *     </td>
  *     <td>
- *       <p>&sigma;(f(t<sub>1</sub>,...,t<sub>n</sub>))</p>
+ *       <p>&sigma;(f(t<sub>1</sub>,&#8230;,t<sub>n</sub>))</p>
  *     </td>
  *     <td>
- *       <p>= &sigma;(f)(&sigma;(t<sub>1</sub>),...,&sigma;(t<sub>n</sub>))</p>
+ *       <p>= &sigma;(f)(&sigma;(t<sub>1</sub>),&#8230;,&sigma;(t<sub>n</sub>))</p>
  *     </td>
  *     <td>
- *       <p>&forall;f(t<sub>1</sub>,...,t<sub>n</sub>)&isin;Term(&Sigma;)</p>
+ *       <p>&forall;f(t<sub>1</sub>,&#8230;,t<sub>n</sub>)&isin;Term(&Sigma;)</p>
  *     </td>
  *   </tr>
  *   <tr>
- *     <td>
- *       <p>(fin)</p>
+ *     <td class="defID">
+ *       fin
  *     </td>
  *     <td>
  *       <p>&sigma;|<sub>V</sub></p>
@@ -47,21 +47,21 @@ import java.util.Collection;
  *       <p>(&hArr; supp(&sigma;) := {x&isin;V &brvbar; &sigma;(x)&ne;x} is finite)</p>
  *     </td>
  *   </tr>
- * </table>
- * Note: Substitutions are usually restricted to "proper" <dfn>variable substitutions</dfn> that
- * only substitute variables, i.e. &sigma;(f)=f for functions and predicates.
- * Often, variable substitutions are even restricted to
- * variable substitutions that only substitute free variables,
- * such that it does not lead to collisions. Otherwise the application of a
- * variable substitution would possibly introduce new (illegal) bindings inside the scope of a
- * quantifier.
- * </p>
- * <p>
- * Notice the rough similarity of substitutions, and (the homomorphisms of) interpretations,
- * and Herbrand-interpretations.
- * </p>
- * <p>
- * <table>
+ *   <tr>
+ *     <td>
+ *     </td>
+ *     <td colspan="3">
+ *       <p>
+ *       Note: Substitutions are usually restricted to "proper" <dfn>variable substitutions</dfn> that
+ *       only substitute variables, i.e. &sigma;(f)=f for functions and predicates.
+ *       Often, variable substitutions are even restricted to
+ *       <dfn>admissible</dfn> variable substitutions that only substitute free variables,
+ *       such that it does not lead to collisions. Otherwise the application of a
+ *       variable substitution would possibly introduce new (illegal) bindings inside the scope of a
+ *       quantifier.
+ *       </p>
+ *     </td>
+ *   </tr>
  *   <tr>
  *     <td colspan="4">
  *       <p>A basic substitution, i.e. a mapping &sigma;<sub>0</sub>:V&rarr;Term(&Sigma;)
@@ -69,8 +69,8 @@ import java.util.Collection;
  *     </td>
  *   </tr>
  *   <tr>
- *     <td>
- *       <p>(fin)</p>
+ *     <td class="defID">
+ *       fin
  *     </td>
  *     <td>
  *       <p>&sigma;<sub>0</sub></p>
@@ -90,17 +90,6 @@ import java.util.Collection;
  *     </td>
  *   </tr>
  * </table>
- * </p>
- * <p>
- * We denote a substitution &sigma; of supp(&sigma;)={x<sub>1</sub>,...,x<sub>n</sub>}
- * replacing x<sub>i</sub> with t<sub>i</sub> by
- * <center>
- *   &sigma; = [x<sub>1</sub>&rarr;t<sub>1</sub>,x<sub>2</sub>&rarr;t<sub>2</sub>,...,x<sub>n</sub>&rarr;t<sub>n</sub>]
- *   = [t<sub>1</sub>/x<sub>1</sub>,t<sub>2</sub>/x<sub>2</sub>,...,t<sub>n</sub>/x<sub>n</sub>]
- * </center>
- * &sigma;(t) is called an instance of the term t.
- * </p>
- * <p>
  * <dl class="def">
  * Let &sigma; be a substitution.
  *   <dt>variable renaming</dt>
@@ -121,6 +110,19 @@ import java.util.Collection;
  * For variable substitutions that have a right-inverse variable substitution
  * this is true if their supports are disjunct.
  * </p>
+ * <p>
+ * Notice the rough similarity of substitutions, and (the homomorphisms of) interpretations,
+ * and Herbrand-interpretations.
+ * </p>
+ * <p>
+ * We denote a substitution &sigma; of supp(&sigma;)={x<sub>1</sub>,&#8230;,x<sub>n</sub>}
+ * replacing x<sub>i</sub> with t<sub>i</sub> by
+ * <center>
+ *   &sigma; = [x<sub>1</sub>&rarr;t<sub>1</sub>,x<sub>2</sub>&rarr;t<sub>2</sub>,&#8230;,x<sub>n</sub>&rarr;t<sub>n</sub>]
+ *   = [t<sub>1</sub>/x<sub>1</sub>,t<sub>2</sub>/x<sub>2</sub>,&#8230;,t<sub>n</sub>/x<sub>n</sub>]
+ * </center>
+ * &sigma;(t) is called an instance of the term t.
+ * </p>
  * <blockquote>
  * Substitutions are for computer science what permutations (finite symmetric group) are for mathematics.
  * <!-- especially consider that Cayley proved that every group can be embedded into a permutation group -->
@@ -131,22 +133,19 @@ import java.util.Collection;
  * @author  Andr&eacute; Platzer
  * @see Substitutions
  * @see Substitutions#getInstance(Collection)
- * @todo perhaps introduce a general BoundingOperator (like in &lambda;,&forall;,&exist; which stops us substitutions from descending if we enter its scope.
+ * @todo perhaps introduce a general BoundingOperator (like in &lambda;,&forall;,&exist;)
+ *  which stops us substitutions from descending if we enter its scope.
  *  boolean BoundingOperator.isBounded(Variable x)
- * @todo Especially provide forall as a functional (higher-order function) of &lambda;-operator then
- *  &forall;x F := &forall;(&lambda;x.F)
- *  &exist;x F := &exist;(&lambda;x.F)
- *  With the {@link SubstitutionImpl#lambda &lambda;-operator}, and
- *    &forall;:(Variable&rarr;Formula)&rarr;Formula; (x&#8614;F) &#8614; "alle F"
- *    &forall; has type Function<Function<Variable,Formula>,Formula>
+ *  But especially note that forall:(s&rarr;o)&rarr;o already is a functional (higher-order function) of &lambda;-operator, anyway, so
+ *  considering the &lambda;-operator should suffice.
  */
 public interface Substitution extends Function/*<Object, Object>*/ {
     /**
      * Get the set of elementary replacements.
      * <p>
-     * For a substitution &sigma; = [x<sub>1</sub>&rarr;t<sub>1</sub>,x<sub>2</sub>&rarr;t<sub>2</sub>,...,x<sub>n</sub>&rarr;t<sub>n</sub>]
+     * For a substitution &sigma; = [x<sub>1</sub>&rarr;t<sub>1</sub>,x<sub>2</sub>&rarr;t<sub>2</sub>,&#8230;,x<sub>n</sub>&rarr;t<sub>n</sub>]
      * the set of elementary replacements is
-     * {x<sub>1</sub>&rarr;t<sub>1</sub>,x<sub>2</sub>&rarr;t<sub>2</sub>,...,x<sub>n</sub>&rarr;t<sub>n</sub>}.
+     * {x<sub>1</sub>&rarr;t<sub>1</sub>,x<sub>2</sub>&rarr;t<sub>2</sub>,&#8230;,x<sub>n</sub>&rarr;t<sub>n</sub>}.
      * </p>
      * <p>
      * Note that the return-type is not fixed to sets, but would just as well allow lists
@@ -161,7 +160,7 @@ public interface Substitution extends Function/*<Object, Object>*/ {
      * <p>
      * A (uniform) substitution [x&rarr;t] replaces all occurrences of x with t.
      * Whereas for substitutions with multiple replacement directions
-     * [x<sub>1</sub>&rarr;t<sub>1</sub>,x<sub>2</sub>&rarr;t<sub>2</sub>,... x<sub>n</sub>&rarr;t<sub>n</sub>],
+     * [x<sub>1</sub>&rarr;t<sub>1</sub>,x<sub>2</sub>&rarr;t<sub>2</sub>,&#8230; x<sub>n</sub>&rarr;t<sub>n</sub>],
      * only the first applicable replacement will be applied on subterms.
      * </p>
      * @return &sigma;(term)
@@ -177,7 +176,7 @@ public interface Substitution extends Function/*<Object, Object>*/ {
      * Interface for matching and replacing terms.
      * <p>
      * Matcher is called to check whether a given term matches it, and can then be used
-     * to replace it with another term, if required.</p>
+     * to replace the matched term with another term, if required.</p>
      *
      * @version 0.9, 2001/06/21
      * @author  Andr&eacute; Platzer
@@ -228,7 +227,7 @@ public interface Substitution extends Function/*<Object, Object>*/ {
     	 * Replace a matched term.
     	 * @param t the term matched per {@link #matches(Object)}.
     	 * @return the substitute for t. Simply returns t if no replacement should occur at all.
-    	 * @pre matches(t)
+    	 * @pre matches(t) &and; &quot;matches(t) was the last call to matches(Object)&quot;
     	 */
     	Object replace(Object t);
         
