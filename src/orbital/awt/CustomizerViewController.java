@@ -97,9 +97,9 @@ public class CustomizerViewController extends MouseAdapter implements MouseListe
     /**
      * Call to show a dialog containing the customizer for a specific bean.
      * <p>
-     * Will check to see if bean has a customizer {@link BeanInfo#getCustomizerClass() specified}
+     * Will check to see if bean has a customizer {@link java.beans.BeanDescriptor#getCustomizerClass() specified}
      * in its BeanInfo.
-     * Otherwise, will use a {@link#setDefaultCustomizer(Function) default customizer}.
+     * Otherwise, will use a {@link #setDefaultCustomizerFactory(Function) default customizer}.
      * </p>
      * @see #showCustomizer(Component, String)
      * @see #customizerFor(Class)
@@ -137,9 +137,9 @@ public class CustomizerViewController extends MouseAdapter implements MouseListe
      * <p>
      * Will check to see if bean has a customizer {@link BeanInfo#getCustomizerClass() specified}
      * in its BeanInfo.
-     * Otherwise, will use a {@link#setDefaultCustomizer(Function) default customizer}.
+     * Otherwise, will use a {@link #setDefaultCustomizerFactory(Function) default customizer}.
      * </p>
-     * @see BeanDescriptor#getCustomizerClass()
+     * @see java.beans.BeanDescriptor#getCustomizerClass()
      * @see orbital.moon.awt.DefaultCustomizer
      */
     public static final Customizer customizerFor(Class beanClass) throws IntrospectionException {

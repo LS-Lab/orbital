@@ -10,6 +10,8 @@ import orbital.logic.functor.Notation.NotationSpecification;
 import orbital.logic.functor.Functor.Specification;
 import java.io.Serializable;
 
+import orbital.logic.functor.Notation;
+
 import orbital.util.Utility;
 import orbital.logic.imp.Symbol;
 import orbital.logic.functor.Notation$NotationSpecification;
@@ -96,7 +98,7 @@ public class SymbolBase implements Symbol, Serializable {
      * @param notation The notation used when this symbol occurs.
      *  This includes precedence and associativity information, as well.
      *  May be <code>null</code> for symbols with arity 0,
-     *  which will be converted to the {@link NotationSpecification#NotationSpecification(int) default notation specification}, then.
+     *  which will be converted to the {@link Notation.NotationSpecification#Notation.NotationSpecification(int) default notation specification}, then.
      * @param variable whether this is a variable symbol.
      *  <code>true</code> if this symbol is a variable symbol,
      *  and <code>false</code> if this symbol is a constant symbol.
@@ -120,7 +122,7 @@ public class SymbolBase implements Symbol, Serializable {
      * @param notation The notation used when this symbol occurs.
      *  This includes precedence and associativity information, as well.
      *  May be <code>null</code> for symbols with arity 0,
-     *  which will be converted to the {@link NotationSpecification#NotationSpecification(int) default notation specification}, then.
+     *  which will be converted to the {@link Notation.NotationSpecification#Notation.NotationSpecification(int) default notation specification}, then.
      * @post &not;isVariable()
      */
     public SymbolBase(String signifier, Specification specification, NotationSpecification notation) {
@@ -129,7 +131,7 @@ public class SymbolBase implements Symbol, Serializable {
 
     /**
      * Construct a constant symbol with a signifier, and type specification.
-     * The notation is chosen to be the {@link NotationSpecification#NotationSpecification(int) default notation specification}.
+     * The notation is chosen to be the {@link Notation.NotationSpecification#Notation.NotationSpecification(int) default notation specification}.
      * @param signifier the string representation of this symbol.
      * @param specification the (arity and) type specification of this symbol.
      * @post &not;isVariable()

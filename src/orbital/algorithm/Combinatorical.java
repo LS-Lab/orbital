@@ -16,6 +16,7 @@ import orbital.util.SuspiciousError;
 import orbital.math.functional.Operations;
 import orbital.math.Values;
 import orbital.math.Integer;
+import java.util.ListIterator;
 
 /**
  * Class for combinatorical operations.
@@ -127,12 +128,113 @@ public abstract class Combinatorical /*implements Iterator<int[]> like*/ impleme
     public static Combinatorical getCombinations(int r, int n, boolean repetition) {
 	return repetition ? (Combinatorical) new RepetitiveCombination(r, n) : new NonrepetitiveCombination(r, n);
     }
+
+    /**
+     * Get an iterator view of a combinatorical iterator.
+     */
+    public static final ListIterator asIterator(final Combinatorical c) {
+	return new ListIterator() {
+		// Code for delegation of java.util.Iterator methods to c
+
+		public String toString()
+		{
+		    return c.toString();
+		}
+
+		/**
+		 *
+		 * @return <description>
+		 * @see orbital.algorithm.Combinatorical#next()
+		 */
+		public Object next()
+		{
+		    return c.next();
+		}
+
+		/**
+		 *
+		 * @return <description>
+		 * @see orbital.algorithm.Combinatorical#hasNext()
+		 */
+		public boolean hasNext()
+		{
+		    return c.hasNext();
+		}
+
+		/**
+		 *
+		 * @return <description>
+		 * @see orbital.algorithm.Combinatorical#previous()
+		 */
+		public Object previous()
+		{
+		    return c.previous();
+		}
+
+		/**
+		 *
+		 * @return <description>
+		 * @see orbital.algorithm.Combinatorical#hasPrevious()
+		 */
+		public boolean hasPrevious()
+		{
+		    return c.hasPrevious();
+		}
+
+		// implementation of java.util.ListIterator interface
+
+		/**
+		 *
+		 * @param param1 <description>
+		 */
+		public void add(Object param1)
+		{
+		    throw new UnsupportedOperationException();
+		}
+
+		/**
+		 *
+		 */
+		public void remove()
+		{
+		    throw new UnsupportedOperationException();
+		}
+
+		/**
+		 *
+		 * @param param1 <description>
+		 */
+		public void set(Object param1)
+		{
+		    throw new UnsupportedOperationException();
+		}
+
+		/**
+		 *
+		 * @return <description>
+		 */
+		public int previousIndex()
+		{
+		    throw new UnsupportedOperationException();
+		}
+
+		/**
+		 *
+		 * @return <description>
+		 */
+		public int nextIndex()
+		{
+		    throw new UnsupportedOperationException();
+		}
+	    };
+    }
 }
 
 // Implementations
 
 /**
  * Per[n,r](true)
+ * @todo outroduce and use GeneralizedPermutation({n,....,n}) instead.
  */
 class RepetitivePermutation extends Combinatorical {
     private static final long serialVersionUID = 787550243481366022L;
@@ -172,6 +274,8 @@ class RepetitivePermutation extends Combinatorical {
     } 
 
     public boolean hasPrevious() {
+	if (true)
+	    throw new UnsupportedOperationException("not yet implemented");
 	for (int i = permutation.length - 1; i >= 0; i--)
 	    if (permutation[i] - 1 >= 0)
 		return true;
@@ -182,6 +286,8 @@ class RepetitivePermutation extends Combinatorical {
     } 
 
     public int[] previous() {
+	if (true)
+	    throw new UnsupportedOperationException("not yet implemented");
 	if (!hasPrevious())
 	    throw new NoSuchElementException();
 	for (int i = permutation.length - 1; i >= 0; i--) {
@@ -222,7 +328,7 @@ class RepetitivePermutation extends Combinatorical {
 }
 /**
  * Generalized Per[n] with n&isin;<b>N</b><sup>r</sup>.
- * @see Iterator
+ * @see java.util.Iterator
  * @internal (apart from more flexible bounds, dimensions instead of n, almost) identical to @see RepetitivePermutation
  */
 class GeneralizedPermutation extends Combinatorical {
@@ -236,39 +342,37 @@ class GeneralizedPermutation extends Combinatorical {
 	this.dimensions = dimensions;
 	this.index = new int[dimensions.length];
 	Arrays.fill(index, 0);
-	// prestep for next to return the first tuple
-	if (index.length > 0)
-	    index[index.length - 1]--;
-	//index[0]--;
     }
 
     public boolean hasNext() {
 	for (int k = index.length - 1; k >= 0; k--)
-	    //for (int k = 0; k < index.length; k++)
-	    if (index[k] + 1 < dimensions[k])
-		return true;
-	return false;
+	    if (index[k] >= dimensions[k])
+		return false;
+	return true;
     } 
 
     public int[] next() {
 	if (!hasNext())
 	    throw new NoSuchElementException();
+	int[] r = (int[]) index.clone();
 	for (int k = index.length - 1; k >= 0; k--) {
-	    //for (int k = 0; k < index.length; k++) {
-	    if (++index[k] >= dimensions[k])
+	    if (++index[k] == dimensions[k])
 		index[k] = 0;
-	    else
-		return index;
-	} 
+	    else if (index[k] > dimensions[k]) {
+		assert false : NoSuchElementException.class + " should already have occurred";
+	    } else
+		return r;
+	}
 	if (index.length == 0)
-	    return index;
+	    return r;
 	else
-	    throw new SuspiciousError();
+	    // mark finish
+	    index[0] = dimensions[0] + 1;
+	return r;
     } 
 
     public boolean hasPrevious() {
 	for (int k = index.length - 1; k >= 0; k--)
-	    //for (int k = 0; k < index.length; k++)
 	    if (index[k] - 1 >= 0)
 		return true;
 	return false;
@@ -278,7 +382,6 @@ class GeneralizedPermutation extends Combinatorical {
 	if (!hasPrevious())
 	    throw new NoSuchElementException();
 	for (int k = index.length - 1; k >= 0; k--) {
-	    //for (int k = 0; k < index.length; k++) {
 	    if (--index[k] < 0)
 		index[k] = dimensions[k] - 1;
 	    else

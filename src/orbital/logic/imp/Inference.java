@@ -37,6 +37,7 @@ import orbital.logic.Relation;
  *   <dd>
  *     A set of formulas <span class="set">F</span> is called deductively closed if it is a fixed point of <span class="inferenceOperation">C</span>
  *     <center><span class="Formula"><span class="inferenceOperation">C</span>(<span class="set">F</span>) = <span class="set">F</span></span></center>
+ *     <!-- @todo when do deductively closed sets define a topology on Formula(&Sigma)? -->
  *   </dd>
  * </dl>
  * <p id="Properties">Inference relations of a logic can formally be classified with these properties

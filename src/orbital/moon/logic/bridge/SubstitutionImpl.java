@@ -40,7 +40,7 @@ public class SubstitutionImpl implements Substitution, Serializable {
     /**
      * Create a new substitution.
      * @param replacements the set of elementary replacements.
-     * @pre s[i] instanceof {@link Substitution.Matcher}
+     * @pre s[i] instanceof {@link Substitution.Matcher}.
      */
     public SubstitutionImpl(Collection/*_<Matcher>_*/ replacements) {
         this.replacements = replacements;
@@ -279,7 +279,7 @@ public class SubstitutionImpl implements Substitution, Serializable {
     
     	/**
     	 * Create a new matcher that does not perform substitution.
-    	 * @param pattern The object against which to (single side) match with {@link Substitution#unify(Collection)}.
+    	 * @param pattern The object against which to (single side) match with {@link Substitutions#unify(Collection)}.
     	 * @post substituting == false
     	 */
         public UnifyingMatcher(Object pattern) {

@@ -37,7 +37,7 @@ import orbital.io.IOUtilities;
  * "sin[2 + 4/15]". Nevertheless, normal brackets () will often work as well.</p>
  * @version 0.9, 2000/09/02
  * @author  Andr&eacute; Platzer
- * @dependency orbital.logic.functor.Notation Uses registered notation functors reverse.
+ * @structure depends orbital.logic.functor.Notation Uses registered notation functors reverse.
  * @see <a href="doc-files/MathParser_grammar.html">Grammar</a>
  * @see #parseExpression()
  * @todo introduce a lambda expression that uses the lambda operator implemented by substitution (see ...)

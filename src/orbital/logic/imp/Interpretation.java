@@ -235,7 +235,7 @@ public interface Interpretation extends Map/*<Symbol, Object>*/ {
     /**
      * Get the object value associated with the given symbol in this interpretation.
      * <p>
-     * Overwrite along with other map operations like {@link Set#contains(Object)} to implement
+     * Overwrite along with other map operations like {@link java.util.Set#contains(Object)} to implement
      * a different source for symbol associations.
      * </p>
      * @post symbol.getSpecification().isConform(RES)

@@ -28,7 +28,7 @@ import java.io.Serializable;
  */
 public abstract class DelegateGeneralSearchProblem implements GeneralSearchProblem, Serializable {
     /**
-     * @serializable
+     * @serialize
      */
     private GeneralSearchProblem problem;
     /**

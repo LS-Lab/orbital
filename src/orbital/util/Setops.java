@@ -17,6 +17,9 @@ import orbital.logic.functor.Predicate;
 import orbital.logic.functor.BinaryPredicate;
 import orbital.logic.functor.Function;
 
+import orbital.logic.functor.Functionals;
+import orbital.logic.functor.Predicates;
+
 import orbital.util.ReverseComparator;
 import java.util.HashSet;
 import java.util.ArrayList;
@@ -27,6 +30,7 @@ import java.util.ListIterator;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Contains utility methods for common set operations and more general collection operations.
@@ -381,13 +385,17 @@ public final class Setops {
      */
     public static /*_<A>_*/ Collection/*_<A>_*/ newCollectionLike(Collection/*_<A>_*/ c) {
 	try {
-	    return (Collection/*_<A>_*/) c.getClass().newInstance();
+	    if (c instanceof SortedSet)
+		// skip and let the special handler below take care of the comparator
+		;
+	    else
+		return (Collection/*_<A>_*/) c.getClass().newInstance();
 	}
 	catch (InstantiationException trial) {}
 	catch (IllegalAccessException trial) {} 
 	// find a rather similar collection type
 	if (c instanceof java.util.SortedSet)
-	    return new java.util.TreeSet/*_<A>_*/();
+	    return new java.util.TreeSet/*_<A>_*/(((SortedSet)c).comparator());
 	else if (c instanceof java.util.Set)
 	    return new java.util.HashSet/*_<A>_*/();
 	else if (c instanceof java.util.List)
@@ -450,9 +458,13 @@ public final class Setops {
      */
     public static void copy(ListIterator dest, ListIterator src) {
 	while (src.hasNext()) {
-	    if (!dest.hasNext())
-		throw new IndexOutOfBoundsException();
-	    dest.next();
+	    try {
+		dest.next();
+	    }
+	    catch (NoSuchElementException ex) {
+		//@internal that's better than querying dest.hasNext() in order to let growing ListIterators (like Polynomial.iterator()) have a chance of growing on demand.
+		throw new IndexOutOfBoundsException("destination ListIterator has less storage than source iterator");
+	    }
 	    dest.set(src.next());
 	}
     }
@@ -727,7 +739,17 @@ public final class Setops {
      * <b>ResultSet</b>:  <span class="keyword">SELECT</span> <var>whatFilter</var>
      * <span class="keyword">FROM</span> <var>ObjectCollection</var>
      * <span class="keyword">WHERE</span> <var>Predicate</var>
-     * <span class="keyword">ORDER BY</span> <var>Comparator</var> <span class="keyword">ASC</span>|<span class="keyword">DESC</span>.</p>
+     * <span class="keyword">ORDER BY</span> <var>Comparator</var> <span class="keyword">ASC</span>|<span class="keyword">DESC</span>.
+     * </p>
+     * This is a (minor) generalization of
+     * <center>
+     *   <table class="equation">
+     *     <tr><td>filter p</td> <td>=</td> <td><span class="bananaBracket">(|</span>&empty;,f<span class="bananaBracket">|)</span></td>)</tr>
+     *     <tr><td colspan="4">Where</td></tr>
+     *     <tr><td>f a as</td> <td>=</td> <td>[a|as]</td> <td>&lArr; p(a)</td></tr>
+     *     <tr><td>f a as</td> <td>=</td> <td>as</td> <td>&lArr; &not;p(a)</td></tr>
+     *   </table>
+     * </center>
      * @param what states what data in the collection is requested. All if null. See Also {@link Filters}.
      * @param where states what predicate is checked as condition for selecting data elements. None if null.
      * @param orderBy states how to sort every two data elements. No sorting if null.
@@ -740,9 +762,14 @@ public final class Setops {
     public static final Function/**<Collection &cup; Iterator, Collection>**/ createSelection(final Function/*<Collection, Collection>*/ what,
 											      final Predicate where,
 											      final Comparator orderBy, final boolean asc) {
+	if (what == null)
+	    return createSelection(Filters.all, where, orderBy, asc);
+	else if (where == null)
+	    return createSelection(what, Functionals.onVoid(Predicates.TRUE), orderBy, asc);
 	return new Function/* <Collection, Collection> */() {
 		public Object/* >Collection< */ apply(Object/* >Collection< */ from) {
-		    List sel = new LinkedList();	// selection of Elements with suited predicate
+		    // selection of elements which the predicate was true of
+		    List sel = new LinkedList();
                 
 		    // for each in FROM
 		    for (Iterator i = (from instanceof Iterator) ?
@@ -753,7 +780,7 @@ public final class Setops {
 			Object el = i.next();
         
 			// WHERE Adjective suits
-			if (where == null || where.apply(el))
+			if (where.apply(el))
 			    sel.add(el);
 		    } 
         
@@ -762,13 +789,14 @@ public final class Setops {
 			Collections.sort(sel, asc ? orderBy : new ReverseComparator(orderBy));
         
 		    // RESULTSET
-		    return (what == null ? sel : what.apply(sel));	   // filter the Data Collection of the selected Elements
+		    // filter the data collection of the selected elements
+		    return what.apply(sel);
 		}
 	    };
     } 
 
     /**
-     * Select Operation.
+     * Select filter operation.
      * <p>
      * <b>ResultSet</b>:  <span class="keyword">SELECT</span> <var>whatFilter</var>
      * <span class="keyword">FROM</span> <var>ObjectCollection</var>

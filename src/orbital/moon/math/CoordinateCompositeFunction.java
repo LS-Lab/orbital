@@ -88,7 +88,7 @@ import orbital.util.Utility;
 			if (!(x instanceof Vector) && x instanceof Scalar)
 				x = Values.CONST(dimension(), (Arithmetic)x);
 			Vector xv = (Vector) x;
-			Vector r = Values.getInstance(dimension());
+			Vector r = Values.newInstance(dimension());
 			for (int i = 0; i < r.dimension(); i++)
 				r.set(i, (Arithmetic) componentFunction[i].apply(xv.get(i)));
 			return r;

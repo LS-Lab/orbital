@@ -12,7 +12,7 @@ import orbital.logic.functor.Functor.Specification;
 
 /**
  * Represents a symbol in a signature.
- * A (syntactic) symbol is a triple &lang;signifier, spec, notation&rang;
+ * A (syntactic) symbol is a triple &lang;<var class="signifier">signifier</var>, spec, notation&rang;
  * consisting of a signifier, its (arity and) type specification, and its notation.
  * Each symbol is either a constant symbol or a variable symbol.
  * <p>

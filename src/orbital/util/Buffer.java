@@ -123,7 +123,7 @@ public class Buffer {
      * @param len the number of bytes to be copied.
      * @throws ArrayIndexOutOfBoundsException if the part to be get exceeds the current dimension.
      * @throws IllegalArgumentException if the offset or length are negative, or the length of dst is less than len.
-     * @see java.lang.System#arraycopy(byte[],int,byte[],int,int)
+     * @see java.lang.System#arraycopy(Object,int,Object,int,int)
      */
     public void getBytes(int srcOff, byte[] dst, int dstOff, int len) {
 	if (len < 0)

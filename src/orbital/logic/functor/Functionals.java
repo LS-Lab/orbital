@@ -504,7 +504,7 @@ public class Functionals {
      * <p>
      * compose functional &#8728; calls the compose function appropriate for the type of g.
      * Valid types for g and h are {@link orbital.logic.functor.Function}, {@link orbital.logic.functor.VoidFunction}
-     * and non-functor {@link java.util.Object}.
+     * and non-functor {@link java.lang.Object}.
      * In the latter case, composition is done using a {@link Functions#constant(Object) constant function}.
      * </p>
      * <p>
@@ -544,7 +544,7 @@ public class Functionals {
     /**
      * generic compose calls the compose function appropriate for the type of g.
      * Valid types for g and h are {@link orbital.logic.functor.Function}, {@link orbital.logic.functor.VoidFunction}
-     * and non-functor {@link java.util.Object}.
+     * and non-functor {@link java.lang.Object}.
      * In the latter case, composition is done using a {@link Functions#constant(Object) constant function}.
      * @pre g is "composable"
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
@@ -564,7 +564,7 @@ public class Functionals {
     /**
      * generic compose calls the compose function appropriate for the type of g and h.
      * Valid types for g and h are {@link orbital.logic.functor.VoidFunction}, {@link orbital.logic.functor.Function}, {@link orbital.logic.functor.BinaryFunction}
-     * and non-functor {@link java.util.Object}.
+     * and non-functor {@link java.lang.Object}.
      * In the latter case, composition is done using a {@link Functions#constant(Object) constant function}.
      * @pre g and h are "compatible"
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>

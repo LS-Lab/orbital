@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.ListIterator;
 import java.lang.reflect.Field;
 import orbital.logic.functor.Predicate;
+import orbital.logic.functor.BinaryPredicate;
 import java.util.Random;
 import java.util.BitSet;
 
@@ -177,44 +178,54 @@ public final class Utility {
     }
 
     /**
-     * Get the hashCode of an object (considering its array components, as well).
+     * Get the hashCode of an object (considering its all array components, as well).
      * @param o the object whose hashCode to calculate.
      * @return the hashCode of o, or all its elements if o is a (multi-dimensional) array.
      * @see #equalsAll(Object, Object)
      * @see java.util.Arrays#equals(Object[], Object[])
      * @see orbital.logic.functor.Functionals#foldRight(orbital.logic.functor.BinaryFunction, Object, Object[])
-     * @note this implementation does not need to fit the hashCode defined by {@link java.util.Set}, or {@link java.util.List}.
+     * @note this implementation does not necessarily to fit the hashCode defined by {@link java.util.Set}, or {@link java.util.List}.
      */
     public static final int hashCodeAll(Object o) {
 	//@todo functional?
-	if (!(o instanceof Object[]))
-	    if (o != null && o.getClass().isArray()) {
-		// additionally(!) check for hashCode primitive type arrays with java.lang.reflect.Array
-		int len = Array.getLength(o);
-		int	      hash = 0;
-		for (int i = 0; i < len; i++) {
-		    // recursively hashCodeAll to ensure element-wise hashCodes of (multi-dimensional) arrays, as well?
-		    int h = hashCodeAll(Array.get(o, i));
-		    // hash ^= h rotl i
-		    hash ^= (h << i) | (h >>> (INTEGER_BITS - i));
-		}
-		return hash;
-	    } else
-		return hashCode(o);
-	Object	  a[] = (Object[]) o;
-	int	      hash = 0;
-	for (int i = 0; i < a.length; i++) {
-	    // recursively hashCodeAll to ensure element-wise hashCodes of (multi-dimensional) arrays, as well?
-	    int h = hashCodeAll(a[i]);
-	    // hash ^= h rotl i
-	    hash ^= (h << i) | (h >>> (INTEGER_BITS - i));
-	}
-	return hash;
+	if (o instanceof Object[]) {
+	    final Object a[] = (Object[]) o;
+	    int          hash = 0;
+	    for (int i = 0; i < a.length; i++) {
+		// recursively hashCodeAll to ensure element-wise hashCodes of (multi-dimensional) arrays, as well?
+		final int h = hashCodeAll(a[i]);
+		//@internal hash ^= h rotl i
+		hash ^= (h << i) | (h >>> (INTEGER_BITS - i));
+	    }
+	    return hash;
+	} else if (o != null && o.getClass().isArray()) {
+	    // additionally(!) check for hashCode primitive type arrays with java.lang.reflect.Array
+	    final int len = Array.getLength(o);
+	    int       hash = 0;
+	    for (int i = 0; i < len; i++) {
+		// recursively hashCodeAll to ensure element-wise hashCodes of (multi-dimensional) arrays, as well?
+		final int h = hashCodeAll(Array.get(o, i));
+		//@internal hash ^= h rotl i
+		hash ^= (h << i) | (h >>> (INTEGER_BITS - i));
+	    }
+	    return hash;
+	} else
+	    return hashCode(o);
     }
     /**
      * the number of bits that an integer has
      */
     private static final int INTEGER_BITS = IOUtilities.INTEGER_SIZE << 3;
+
+    /**
+     * Predicate for x instanceof y.
+     * @see Class#isInstance(Object)
+     */
+    public static final BinaryPredicate instanceOf = new BinaryPredicate() {
+	    public boolean apply(Object obj, Object clazz) {
+		return ((Class)clazz).isInstance(obj);
+	    }
+	};
 	
     /**
      * Checks whether an array is sorted.
@@ -263,29 +274,49 @@ public final class Utility {
     // multi-indices
 	
     /**
-     * Get the element in the (possibly multi-dimensional) array <code>a</code> specified by the part specification.
-     * @param partSpecification the part specification <code>p</code> (multi-index into the multi-dimensional array <code>a</code>).
-     * @pre partSpecification.length is not lower than the number of dimensions for partialSolutions.
-     * @return a[p[0]][p[1]]...[p[p.length-1]]
+     * @see #getPart(Object,int[])
      */
     public static Object getPart(Object[] a, int[] partSpecification) {
 	Object o = a;
 	for (int i = 0; i < partSpecification.length; i++)
 	    o = ((Object[]) o)[partSpecification[i]];
 	return o;
-    } 
-
+    }
     /**
-     * Set the element in the (possibly multi-dimensional) array <code>a</code> specified by the part specification.
+     * Get the element in the (possibly multi-dimensional) array <code>a</code> specified by the part specification.
+     * Contrary to {@link #getPart(Object[],int[])}, also accepts primitive type arrays.
      * @param partSpecification the part specification <code>p</code> (multi-index into the multi-dimensional array <code>a</code>).
      * @pre partSpecification.length is not lower than the number of dimensions for partialSolutions.
      * @return a[p[0]][p[1]]...[p[p.length-1]]
+     */
+    public static Object getPart(Object a, int[] partSpecification) {
+	Object o = a;
+	for (int i = 0; i < partSpecification.length; i++)
+	    o = Array.get(o, partSpecification[i]);
+	return o;
+    } 
+
+    /**
+     * @see #setPart(Object[],int[],Object)
      */
     public static void setPart(Object[] a, int[] partSpecification, Object value) {
 	Object[] o = a;
 	for (int i = 0; i < partSpecification.length - 1; i++)
 	    o = (Object[]) o[partSpecification[i]];
 	o[partSpecification[partSpecification.length - 1]] = value;
+    } 
+    /**
+     * Set the element in the (possibly multi-dimensional) array <code>a</code> specified by the part specification.
+     * Contrary to {@link #setPart(Object[],int[],Object)}, also accepts primitive type arrays.
+     * Sets a[p[0]][p[1]]...[p[p.length-1]] := value.
+     * @param partSpecification the part specification <code>p</code> (multi-index into the multi-dimensional array <code>a</code>).
+     * @pre partSpecification.length is not lower than the number of dimensions for partialSolutions.
+     */
+    public static void setPart(Object a, int[] partSpecification, Object value) {
+	Object o = a;
+	for (int i = 0; i < partSpecification.length - 1; i++)
+	    o = Array.get(o, partSpecification[i]);
+	Array.set(o, partSpecification[partSpecification.length - 1], value);
     } 
 
     // diverse

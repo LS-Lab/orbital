@@ -44,7 +44,7 @@ public abstract class GeneralBoundingSearch extends GeneralSearch implements Eva
      * The search will only execute up to the specified bound
      * (which might as well vary during search).
      * @return the current bound beyond which search will not continue.
-     * @see #isOutOfBounds(Option)
+     * @see #isOutOfBounds(Object)
      */
     protected double getBound() {
 	return bound;

@@ -16,7 +16,7 @@ package orbital.logic.imp;
  * @version 1.0, 2000/03/19
  * @author  Andr&eacute; Platzer
  * @see ExpressionSyntax
- * @see ExpressionSyntax#createAtomic(String)
+ * @see ExpressionSyntax#createAtomic(Symbol)
  * @see ExpressionSyntax#createExpression(String)
  */
 public interface Expression {

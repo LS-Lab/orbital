@@ -560,7 +560,7 @@ public class DefaultCustomizer extends JPanel implements Customizer {
     /**
      * The central property updater that will change bean properties on events.
      * Registered to property editors.
-     * @see #registerPropertyChangeUpdater(PropertyDescriptor, PropertyEditor)
+     * @see #registerPropertyChangeUpdater(PropertyDescriptor, PropertyEditor, Component)
      */
     private class PropertyUpdater implements PropertyChangeListener {
 	protected PropertyDescriptor property;

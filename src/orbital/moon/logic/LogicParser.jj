@@ -82,7 +82,7 @@ public class LogicParser {
 
     /**
      * The accumulated signature already occured in the current scope of the current
-     * {@link #parseFormulas(Logic) parsing process}.
+     * {@link #parseFormulas(ExpressionSyntax) parsing process}.
      */
     protected Signature scopeSymbolMap;
 

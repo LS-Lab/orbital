@@ -84,7 +84,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
     /**
      * (Internal) property change notifications.
      * Called when bound properties change.
-     * @see PropertyChangeSupport#firePropertyChange(String,Object,Object)
+     * @see java.beans.PropertyChangeSupport#firePropertyChange(String,Object,Object)
      * @todo protectedize?
      */
     void firePropertyChange(String property, Object oldValue, Object newValue) {}

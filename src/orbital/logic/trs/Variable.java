@@ -20,6 +20,7 @@ package orbital.logic.trs;
  * @version 0.2, 2001/06/24
  * @author  Andr&eacute; Platzer
  * @todo couldn't we get rid of constant/variable distinction if we simply introduced distinguishing bound variables/free variables instead? We would need an interface BoundingExpression or alike
+ * @internal alternative get rid of isVariable() and dynamically implement Variable via java.lang.reflect.Proxy.
  */
 public abstract interface Variable {
     /**

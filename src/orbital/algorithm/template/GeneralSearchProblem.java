@@ -193,11 +193,12 @@ public interface GeneralSearchProblem/*<A,S>*/ extends MarkovDecisionProblem/*<A
      * memory performance for the cost of limiting it to search algorithms based on depth-first search,
      * then it can apply the do/undo technique.
      * Alternatively, if applicable actions can be determined quickly but constructing the
-     * resulting states is expensive, the (simpler) technique of lazy state construction can be
-     * applied. In order to achieve this, <!-- @todo document --> {@link GeneralSearchProblem.Option#getState() getState()}
-     * must be overwritten to perform lazy construction of resulting states. However, this
-     * technique is not that powerful as do/undo, and is less useful if the calculation of costs
-     * depends on the specific resulting states anyway.
+     * resulting states is expensive, the (usual) approach of lazy state construction
+     * can be used. In order to achieve this, let {@link #actions(Object)} return actions,
+     * without constructing any states. Then {@link #states(Object,Object)} performs lazy construction
+     * of resulting states on every call. However, this technique is not that powerful as do/undo,
+     * and it is less useful if the calculation of costs depends on the specific resulting states anyway.
+     * Nevertheless, it is much more simple to implement.
      * </p>
      */
     Iterator/*<A>*/ actions(Object/*>S<*/ state);
@@ -213,7 +214,7 @@ public interface GeneralSearchProblem/*<A,S>*/ extends MarkovDecisionProblem/*<A
      * {@inheritDoc}
      * Deterministic case.
      * Will only return &ne;0 for the unique s&#697; = t(s,a).
-     * So the only true information obtained is the {@link GeneralSearchProblem.Transiton#getCost() immediate action cost}
+     * So the only true information obtained is the {@link GeneralSearchProblem.Transition#getCost() immediate action cost}
      * of the transition,
      * plus any (optional) problem-specific additional information.
      * @post RES.getProbability()&isin;{0,1} &and; RES instanceof {@link GeneralSearchProblem.Transition}

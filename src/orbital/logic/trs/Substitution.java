@@ -165,7 +165,7 @@ public interface Substitution extends Function/*<Object, Object>*/ {
      * only the first applicable replacement will be applied on subterms.
      * </p>
      * @return &sigma;(term)
-     * @pre the {@link Functor.Composite}s occuring in term support a no-arg constructor
+     * @pre the {@link orbital.logic.functor.Functor.Composite}s occuring in term support a no-arg constructor
      *  in order to allow being substituted by an object of equal class
      * @throws ArrayStoreException if this method tried to store a part of the result in an array,
      *  but the substitution list produced a replacement of an illegal type.

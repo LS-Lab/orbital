@@ -152,7 +152,7 @@ public class ChartModel implements Serializable {
      * Set the scale such that at least a specified number of marks is visible on each axis.
      */
     public void setScaleMarks(double marks) {
-	Vector scale = Values.getInstance(range.min.dimension());
+	Vector scale = Values.newInstance(range.min.dimension());
 	for (int i = 0; i < scale.dimension(); i++)
 	    //@todo round to get more regular results. Perhaps n scales at the shortest axis, and the same scales at the longer axes
 	    scale.set(i, Values.valueOf(MathUtilities.ceily((((Number) range.max.get(i)).doubleValue() - ((Number) range.min.get(i)).doubleValue()) / marks, MathUtilities.precisionFor(range.getLength(i), 0.1))));

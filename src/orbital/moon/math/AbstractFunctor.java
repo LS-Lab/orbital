@@ -32,8 +32,8 @@ import orbital.math.Values;
  * @author  Andr&eacute; Platzer
  * @todo privatize?
  * @todo couldn't we transform this into a mere aspect? See orbital.moon.aspects.PointwiseArithmetic
- * @see Functionals#genericCompose(Function, Object)
- * @see Functionals#genericCompose(BinaryFunction, Object, Object)
+ * @see orbital.logic.functor.Functionals#genericCompose(orbital.logic.functor.Function, Object)
+ * @see orbital.logic.functor.Functionals#genericCompose(orbital.logic.functor.BinaryFunction, Object, Object)
  * @todo optimize away multiple calls to Values.valueOf(...)
  */
 public abstract class AbstractFunctor implements MathFunctor {

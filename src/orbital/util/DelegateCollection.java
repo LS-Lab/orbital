@@ -99,7 +99,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
     /**
      * Returns <tt>true</tt> if this collection contains no elements.
      * 
-     * @returns <tt>true</tt> if this collection contains no elements
+     * @return <tt>true</tt> if this collection contains no elements
      */
     public boolean isEmpty() {
 	return getDelegatee().isEmpty();
@@ -125,7 +125,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      * (unless this collection is an instance of some class that provides a
      * guarantee).
      * 
-     * @returns an <tt>Iterator</tt> over the elements in this collection
+     * @return an <tt>Iterator</tt> over the elements in this collection
      */
     public Iterator/*<A>*/ iterator() {
 	return getDelegatee().iterator();

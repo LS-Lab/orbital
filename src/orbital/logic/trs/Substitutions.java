@@ -179,7 +179,7 @@ public class Substitutions {
     }
     /**
      * Create a new single sided matcher with unification that does not perform substitution.
-     * @param pattern The object against which to (single side) match with {@link Substitution#unify(Collection)}.
+     * @param pattern The object against which to (single side) match with {@link Substitutions#unify(Collection)}.
      * @see #createSingleSidedMatcher(Object, Object)
      * @see <a href="{@docRoot}/DesignPatterns/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      */
@@ -245,7 +245,7 @@ public class Substitutions {
     /**
      * The &lambda;-operator of &lambda;-Calculus.
      * <div>&lambda;:&sigma;&times;&tau;&rarr;(&sigma;&rarr;&tau;); (&lambda;x.f) &#8614; (x&#8614;f)</div>
-     * Usually for &sigma;={@link Variable}, &tau;={@link Expression}.
+     * Usually for &sigma;={@link Variable}, &tau;={@link orbital.logic.imp.Expression}.
      * <p>
      * The &lambda;-Calculus of Alonzo Church (1930) has the following inference rules
      * called &alpha;-conversion, &beta;-conversion, and &eta;-conversion.

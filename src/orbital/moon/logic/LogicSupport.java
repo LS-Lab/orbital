@@ -33,7 +33,7 @@ final class LogicSupport {
      * Converts an array to an interpretation (adding true, false).
      * <p>
      * Apart from adding true and false, this method also registers the functor's
-     * notations at {@link Notation#setNotation(Functor,NotationSpecification)}.
+     * notations at {@link Notation#setNotation(Functor,Notation.NotationSpecification)}.
      * </p>
      * @param functors Contains functors and their notation specifications.
      *  Stored as an array of length-2 arrays

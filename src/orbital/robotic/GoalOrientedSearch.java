@@ -19,7 +19,7 @@ import orbital.logic.RecursionStoppedException;
  * @version 0.9, 21/12/98
  * @author  Andr&eacute; Platzer
  * @see orbital.algorithm.template.AStar
- * @deprecated Since Orbital1.1 use a {@link orbital.algorithm.template.HeuristicSearch} implementation instead.
+ * @deprecated Since Orbital1.1 use a {@link orbital.algorithm.template.HeuristicAlgorithm} implementation instead.
  */
 public class GoalOrientedSearch extends Search {
     //TODO: unify with a orbital.algorithm.template.HeuristicSearch implementation
