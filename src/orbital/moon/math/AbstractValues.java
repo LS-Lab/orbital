@@ -667,11 +667,14 @@ abstract class AbstractValues extends Values {
 	return equalizer;
     } 
 
+    protected final void initialSetEqualizer(orbital.logic.functor.Function/*<Object[],Object[]>*/ equalizer) {
+	this.equalizer = equalizer;
+    } 
     public final void setEqualizer(orbital.logic.functor.Function/*<Object[],Object[]>*/ equalizer) throws SecurityException {
 	SecurityManager security = System.getSecurityManager();
 	if (security != null) {
-	    security.checkPermission(new java.util.PropertyPermission("orbital.math.Values.equalizer", "write"));
+	    security.checkPermission(new java.util.PropertyPermission(ValueFactory.class.getName() + ".equalizer", "write"));
 	} 
-	this.equalizer = equalizer;
+	initialSetEqualizer(equalizer);
     } 
 }

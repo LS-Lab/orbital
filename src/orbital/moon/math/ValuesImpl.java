@@ -38,7 +38,8 @@ public class ValuesImpl extends AbstractValues {
     // instantiation
 
     public ValuesImpl() {
-	setEqualizer(new orbital.logic.functor.Function/*<Object[],Object[]>*/() {
+	//@internal with this extra method we circumvent the compile-time initializer problem of the super(...) solution, and the permission problem for applets in the setEqualizer(...) solution-
+	initialSetEqualizer(new orbital.logic.functor.Function/*<Object[],Object[]>*/() {
 	    public Object/*>Object[]<*/ apply(Object/*>Object[]<*/ o) {
 		if (o instanceof Arithmetic[]) {
 		    Arithmetic operands[] = (Arithmetic[]) o;
