@@ -148,10 +148,12 @@
     <target name="run.tests" depends="init, compile.tests"
             description="run test/*Test*.java">
         <mkdir dir="${reports.tests}"/>
-        <junit printsummary="yes" haltonfailure="yes">
+        <junit printsummary="yes" haltonfailure="yes" fork="yes">
           <classpath refid="tests.classpath"/>
+	  <jvmarg value=""/>
         
           <formatter type="plain" />
+          <formatter type="xml" />
         
           <batchtest fork="yes" haltonfailure="no" todir="${reports.tests}">
             <fileset dir="${src.tests}">
@@ -164,6 +166,17 @@
             </fileset>
           </batchtest>
         </junit>
+    </target>
+
+    <target name="report.tests" depends="init, run.tests"
+            description="report test result">
+        <mkdir dir="${reports.tests}"/>
+        <junitreport todir="${reports.tests}">
+            <fileset dir="${reports.tests}">
+	      <include name="TEST-*.xml"/>
+	    </fileset>
+	    <report todir="${reports.tests}"/>
+        </junitreport>
     </target>
 
     <target name="parser" depends="init"
