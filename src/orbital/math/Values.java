@@ -74,13 +74,25 @@ public abstract class Values implements ValueFactory {
 							 orbital.moon.math.ValuesImpl.class.getName()));
     }
 
+    /**
+     * @internal see javax.xml.parser.FactoryFinder#findClassLoader() for a version that - supposedly - runs under every JVM.
+     */
     private static final Values instantiate(String className) {
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        ClassLoader cl = Values.class.getClassLoader();
         if (cl == null)
             cl = ClassLoader.getSystemClassLoader();
 
         try {
             return (Values) Class.forName(className, true, cl).newInstance();
+        } catch (ClassNotFoundException ex) {
+	    try {
+		cl = Thread.currentThread().getContextClassLoader();
+		if (cl == null)
+		    cl = ClassLoader.getSystemClassLoader();
+		return (Values) Class.forName(className, true, cl).newInstance();
+	    } catch (Exception ex_again) {
+		throw new FactoryConfigurationError("can't instantiate Values implementation " + className, ex_again);
+	    }
         } catch (Exception ex) {
 	    throw new FactoryConfigurationError("can't instantiate Values implementation " + className, ex);
         }
