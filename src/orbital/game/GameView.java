@@ -1,7 +1,7 @@
 /**
- * @(#)Game.java    1.0 1998/07/02 Andre Platzer
+ * @(#)GameView.java    1.0 1998-07-02 Andre Platzer
  * 
- * Copyright (c) 1996-2001 Andre Platzer. All Rights Reserved.
+ * Copyright (c) 1996-2002 Andre Platzer. All Rights Reserved.
  */
 
 package orbital.game;
@@ -51,20 +51,21 @@ import java.util.Hashtable;
 import orbital.util.InnerCheckedException;
 
 /**
- * Game Applet is a generic class for games on Gameboards. To apply it
+ * Game applet is a generic class for games on game boards. To apply it
  * on a certain game, you must define the games' rules with any instance
  * implementing the GameRules Interface.
  * This Interface can then start an AI on request via {@link GameRules#startAIntelligence(String)}.
  * 
  * @stereotype UI
- * @version 1.0, 2000/02/26
+ * @version 1.1, 2003-01-03
+ * @version 1.0, 2000-02-26
  * @author Andr&eacute; Platzer
  * @see <a href="doc-files/Game.html">Game applet parameter example</a>
  * @attribute resources = menubar and popup menu
  * @internal note It is possible to add functionality for playing our games by email or via TCP/IP server communication. Serialization of the field (plus perhaps of the move information for authentic tracking) should do the job.
  * @xxx turnDone should be called "performedMove" and perhaps we can get rid of this old way of using events. Also we need a more customizable way of deciding when to end a turn (f.ex. some games may allow a player to perform multiple moves before ending his turn)
  */
-public class Game extends Applet implements Runnable {
+public class GameView extends Applet {
     private static final long serialVersionUID = 1298765184014728813L;
     public static void main(String arg[]) throws Exception {
 	if (arg.length == 0 || orbital.signe.isHelpRequest(arg)) {
@@ -97,23 +98,10 @@ public class Game extends Applet implements Runnable {
     private String      gameName = null;
 
     /**
-     * Instance of the game rules to use.
+     * The gamemaster used for coordinating the game.
      * @serial
      */
-    private GameRules   rules;
-
-    /**
-     * Arguments passed to the AIs in {@link #player}.
-     * @serial
-     */
-    private String	playerArgument[];
-
-    /**
-     * The diverse AI-players.
-     * <code>players[i] == null</code> if and only if <code>i</code> is a human player.
-     * @serial
-     */
-    private Function	players[];
+    private Gamemaster  gamemaster;
 
     // }}
 
@@ -158,7 +146,7 @@ public class Game extends Applet implements Runnable {
     /**
      * Runnable-init entry point.
      */
-    public Game() {
+    public GameView() {
     	// reactions on menu actions
     	this.actions = new Hashtable();
     	actions.put("new", new ActionListener() {
@@ -224,20 +212,36 @@ public class Game extends Applet implements Runnable {
     }
 
     /**
+     * Get the gamemaster working to coordinate the current game.
+     * That's the model for this view.
+     */
+    public Gamemaster getGamemaster() {
+	return gamemaster;
+    }
+    protected void setGamemaster(Gamemaster newMaster) {
+	this.gamemaster = newMaster;
+    }
+
+    /**
      * Get the game rules used.
+     * @deprecated Since Orbital1.1 use {@link #getGamemaster()}.{@link Gamemaster#getGameRules()}. instead.
      */
     public GameRules getGameRules() {
-	return rules;
+	return getGamemaster().getGameRules();
     }
+    /**
+     * @deprecated Since Orbital1.1 use {@link #getGamemaster()}.{@link Gamemaster#setGameRules(GameRules)}. instead.
+     */
     protected void setGameRules(GameRules newRules) {
-	this.rules = newRules;
+	getGamemaster().setGameRules(newRules);
     }
 
     /**
      * Get all players currently playing.
+     * @deprecated Since Orbital1.1 use {@link #getGamemaster()}.{@link Gamemaster#getPlayers()}. instead.
      */
     public Function[] getPlayers() {
-	return players;
+	return getGamemaster().getPlayers();
     } 
     
     /**
@@ -310,14 +314,17 @@ public class Game extends Applet implements Runnable {
 	String gameRules = param == null ? "YourGameRules" : param;
 
 	try {
-	    setGameRules(createGameRules(gameRules));
-	    players = new Function[rules.getLeagues()];
-	    playerArgument = new String[players.length];
-	    for (int i = 0; i < players.length; i++)
-		playerArgument[i] = getParameter("player-" + i);
+	    GameRules rules = createGameRules(gameRules);
+	    String[] playerArguments = new String[rules.getLeagues()];
+	    for (int i = 0; i < playerArguments.length; i++)
+		playerArguments[i] = getParameter("player-" + i);
+	    this.gamemaster = new Gamemaster(this,
+					     rules,
+					     playerArguments);
 	} catch (Exception e) {
 	    log(e);
-	} 
+	}
+
 	// }}
 
 	// {{INIT_CONTROLS
@@ -354,28 +361,9 @@ public class Game extends Applet implements Runnable {
      * Applet-start entry point.
      */
     public void start() {
-	Field field = rules.startField(this);
-	board.setField(field);
-	int realPlayers = 0;
-	for (int i = Figure.NOONE + 1; i < players.length; i++) {
-	    if (playerArgument[i] == null) {
-		players[i] = null;
-		realPlayers++;
-	    } else
-		players[i] = rules.startAIntelligence(playerArgument[i]);
-	}
+	getGamemaster().start();
+	board.setField(getGamemaster().getField());
 	repaint();
-
-	// computer players only
-	if (realPlayers == 0) {
-	    runner = new Thread(this, "AI_Runner");
-	    runner.start();
-	} else {
-	    runner = null;
-	    if (players[board.getField().getTurn()] != null)
-		// if a computer commences, let him act
-		turn();
-	}
 	showStatus(getResources().getString("statusbar.game.start"));
     } 
 
@@ -383,18 +371,7 @@ public class Game extends Applet implements Runnable {
      * Applet-stop exit point.
      */
     public void stop() {
-	Thread moribund = runner;
-	runner = null;	  // runner.stop();
-	if (moribund != null)
-	    moribund.interrupt();
-
-	// alternative implementation
-	/*
-	 * Thread[] ts = new Thread[Thread.currentThread().activeCount()];
-	 * for (int i=Thread.currentThread().enumerate(ts)-1; i>=0; i--)
-	 * if ("AI_Runner".equals(ts[i].getName()))
-	 * ts[i].interrupt();
-	 */
+	getGamemaster().stop();
 	showStatus(getResources().getString("statusbar.game.stop"));
     } 
 
@@ -402,78 +379,15 @@ public class Game extends Applet implements Runnable {
      * Applet-destroy exit point.
      */
     public void destroy() {
+	getGamemaster().destroy();
+	gamemaster = null;
 	removeAll();
 	control = null;
-	rules = null;
-	players = null;
-	playerArgument = null;
 	this.resources = null;
 	//runner.destroy();
 	super.destroy();
     } 
 
-
-    /**
-     * Runnable-start entry point.
-     * @see #action(Event, Object)
-     * @internal see #turn()
-     */
-    public void run() {
-	Thread thisThread = Thread.currentThread();
-	while (runner == thisThread && !Thread.interrupted()) {
-	    //@xxx the above check executes no longer since change of turn to infinite loop.
-	    if (turn() != Figure.NOONE)
-		return;
-	}
-	// clean up: forget about references
-	board = null;
-	for (int i = 0; i < players.length; i++)
-	    players[i] = null;
-    } 
-
-    /**
-     * Called at the end of each user turn.
-     * Once all real players made their turn, it will let all AIs take their actions.
-     * Notifies the current GameRules implementation that a turn is done.
-     * @see GameRules#turnDone(Field)
-     */
-    protected int turn() {
-	// check for any winners
-	int winner = rules.turnDone(board.getField());
-	if (winner != Figure.NOONE) {
-	    displayWinner(winner);
-	    return winner;
-	}
-
-	// do moves while it's an AI's turn
-	for (int turn = board.getField().getTurn();
-	     players[turn] != null;
-	     turn = board.getField().getTurn()) {
-	    // @xxx doesn't this policy (a single player can move several times until it's another player's turn) conflict with AlphaBetaPruning which simply doesn't know about it?
-	    showStatus(getResources().getString("statusbar.ai.thinking"));
-	    Object action = players[turn].apply(board.getField());
-	    showStatus(getResources().getString("statusbar.ai.moving"));
-	    if (action instanceof MoveWeighting.Argument) {
-		MoveWeighting.Argument move = (MoveWeighting.Argument) action;
-		Position source = new Position(move.figure);
-		// if we could rely on our AI, then we could optimize away this expensive moving and simply use the resulting field = move.field
-		//@internal cloning the position information is necessary, otherwise move would detect that it gets lost during swap.
-		if (!board.getField().move(source, move.move))
-		    throw new Error("AI should only take legal moves: " + move);
-		board.repaint(source);
-		board.repaint(move.destination);
-	    } else
-		throw new Error("AI found no move: " + action);
-	    //@xxx rename to moveDone?
-	    winner = rules.turnDone(board.getField());
-	    if (winner != Figure.NOONE) {
-		displayWinner(winner);
-		return winner;
-	    }
-	} 
-
-	return winner;
-    } 
 
     /**
      * Create the control-panel.
@@ -525,7 +439,7 @@ public class Game extends Applet implements Runnable {
     protected void displayWinner(int league) {
 	showStatus(getResources().getString("statusbar.game.end"));
 	ResourceBundle resources = getResources();
-	String	   winner = (players[Math.abs(league)] == null ? resources.getString("text.player") : resources.getString("text.computer")) + " (" + Math.abs(league) + ')';
+	String	   winner = (getPlayers()[Math.abs(league)] == null ? resources.getString("text.player") : resources.getString("text.computer")) + " (" + Math.abs(league) + ')';
 	int selected = JOptionPane.showConfirmDialog(UIUtilities.getParentalFrame(this), winner + ' ' + resources.getString("dialog.game.finish.hasWon") + (league > 0 ? resources.getString("dialog.game.finish.won") : resources.getString("dialog.game.finish.survived")) + resources.getString("dialog.game.finish.tryAgain"), resources.getString("dialog.game.finish.title"), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 	if (selected == JOptionPane.YES_OPTION) {
 	    stop();
@@ -554,7 +468,7 @@ public class Game extends Applet implements Runnable {
 	for (Iterator i = field.iterateNonEmpty(); i.hasNext(); ) {
 	    Figure f = (Figure) i.next();
 	    if (f instanceof FigureImpl)
-		((FigureImpl)f).setImage(rules.getImage(f));
+		((FigureImpl)f).setImage(getGameRules().getImage(f));
 	} 
     } 
 
@@ -600,8 +514,8 @@ public class Game extends Applet implements Runnable {
      */
     public boolean action(Event evt, Object arg) {
 	if ("turnDone".equals(arg)) {
-	    repaint();
-	    turn();
+	    //repaint();
+	    getGamemaster().turn();
 	    return true;
 	} 
 	return super.action(evt, arg);
