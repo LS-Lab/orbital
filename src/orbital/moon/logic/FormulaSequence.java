@@ -24,7 +24,7 @@ import orbital.logic.sign.Expression;
  * @version 1.1, 2003-02-03
  * @version-revision $Revision$, $Date$
  */
-public class FormulaSequence extends ExpressionSequence implements Formula  {
+class FormulaSequence extends ExpressionSequence implements Formula  {
     public FormulaSequence(Expression components[]) {
 	super(components);
     }
