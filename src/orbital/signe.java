@@ -35,6 +35,8 @@ public final class signe extends Applet implements Runnable {
 	new signe().run();
 	if (arg.length > 0 && ("-??".equals(arg[0]) || "--version".equals(arg[0])))
 	    System.out.println(signe.getManifest());
+	else
+	    System.err.println(signe.getHelpAboutHelp());
     } 
 
     /**
