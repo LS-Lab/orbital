@@ -9,7 +9,7 @@ package orbital.logic.imp;
 import java.util.SortedSet;
 
 /**
- * A signature &Sigma; contains the set of the names of all entities in a certain context.
+ * A signature &Sigma; is the set of names of all entities in a certain context.
  * Where a name in a signature is called a syntactic <dfn>{@link Symbol symbol}</dfn>.
  * A signature is the vocabulary or alphabet of logical signs of which to
  * build well-formed formulas. It is assumed to be provided effectively.

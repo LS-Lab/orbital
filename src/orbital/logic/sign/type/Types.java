@@ -38,7 +38,8 @@ public final class Types {
      * @internal everything (besides primitive types) is an instance of or a subclass of our fundamental class.
      * @todo how to distinguish fundamental types UNIVERSAL and INDIVIDUAL on the object level?
      */
-    public static final Type UNIVERSAL = new FundamentalType() {
+    public static final Type UNIVERSAL = new UniversalType();
+    private static final class UniversalType extends FundamentalType {
 	    private static final long serialVersionUID = -7043311457660579287L;
 	    /**
 	     * Maintains the guarantee that there is only a single object representing this type.
@@ -48,12 +49,21 @@ public final class Types {
 		// canonicalize
 		return UNIVERSAL;
 	    } 
+	    public final boolean equals(Object o) {
+		//@internal assume canonical
+		return this == o;
+	    }
+	    public final int hashCode() {
+		return System.identityHashCode(this);
+	    }
+
 	    public Class getFundamental() {
 		return Object.class;
 	    }
 	    public final boolean subtypeOf(Type b) {
 		//@todo verify the converse
-		return false;
+		//@internal assume canonical
+		return this == b;
 	    }
 	    public final boolean apply(Object x) {
 		return true;
@@ -88,7 +98,8 @@ public final class Types {
      * @see #UNIVERSAL
      * @internal nothing (besides that single object whose reference no one knows) is an instance of or a subclass of our fundamental anonymous class.
      */
-    public static final Type ABSURD = new FundamentalType() {
+    public static final Type ABSURD = new AbsurdType();
+    private static final class AbsurdType extends FundamentalType {
 	    private static final long serialVersionUID = 7539731602290983194L;
 	    private transient Class type = new Object() {}.getClass();
 	    /**
@@ -99,6 +110,14 @@ public final class Types {
 		// canonicalize
 		return ABSURD;
 	    } 
+
+	    public final boolean equals(Object o) {
+		//@internal assume canonical
+		return this == o;
+	    }
+	    public final int hashCode() {
+		return System.identityHashCode(this);
+	    }
 
 	    public Class getFundamental() {
 		return type;
@@ -113,11 +132,6 @@ public final class Types {
 		return "absurd";
 	    }
 	};
-    /**
-     * The errorneous (absurd) type <span class="type">&perp;</span>.
-     * @todo is there a difference in ABSURD and ERROR? If not, get rid of ERROR
-     */
-    public static final Type ERROR = ABSURD;
 
     /**
      * prevent instantiation - module class
@@ -138,7 +152,7 @@ public final class Types {
      * @see Type#subtypeOf(Type)
      */
     public static final boolean isApplicableTo(Type type, Expression[] args) {
-	return type.codomain().equals(typeOf(args));
+	return typeOf(args).subtypeOf(type.codomain());
     }
 
     // factories
@@ -206,16 +220,16 @@ public final class Types {
      */
     private static abstract class FundamentalType extends TypeObject {
 	private static final long serialVersionUID = 7364608656416736898L;
-	public boolean equals(Object o) {
-	    return (o instanceof FundamentalType)
-		&& getFundamental().equals(((FundamentalType)o).getFundamental());
-	}
-
 	/**
 	 * Get the class underlying this fundamental type.
 	 */
 	public abstract Class getFundamental();
 	
+	public boolean equals(Object o) {
+	    return (o instanceof FundamentalType)
+		&& getFundamental().equals(((FundamentalType)o).getFundamental());
+	}
+
 	public int hashCode() {
 	    return getFundamental().hashCode();
 	}
@@ -269,6 +283,9 @@ public final class Types {
      * @todo assure canonical identity?
      */
     public static final Type map(Type codomain, Type domain) {
+	if (codomain == ABSURD || domain == ABSURD)
+	    // strict
+	    return ABSURD;
 	return codomain.equals(VOID) ? domain : new MapType(codomain, domain);
     }
 
@@ -279,6 +296,9 @@ public final class Types {
      * @todo check that empty predicate type () equals TRUTH.
      */
     public static final Type predicate(Type codomain) {
+	if (codomain == ABSURD)
+	    // strict
+	    return ABSURD;
 	return codomain.equals(VOID) ? TRUTH : new MapType(codomain, TRUTH);
     }
 
@@ -329,6 +349,14 @@ public final class Types {
      * @param components the components <span class="type">&tau;<sub>i</sub></span> of the product type.
      */
     public static final Type product(Type components[]) {
+	for (int i = 0; i < components.length; i++) {
+	    Type ti = components[i];
+	    if (ti == null)
+		throw new NullPointerException("illegal components containing " + ti);
+	    else if (ti == ABSURD)
+		// strict
+		return ABSURD;
+	}
 	switch (components.length) {
 	case 0: return VOID;
 	case 1: return components[0];
@@ -363,7 +391,7 @@ public final class Types {
 	    sb.append('[');
 	    sb.append(components[0].toString());
 	    for (int i = 1; i < components.length; i++) {
-		sb.append("×");
+		sb.append('*');
 		sb.append(components[i]);
 	    }
 	    sb.append(']');
@@ -419,7 +447,10 @@ public final class Types {
      * @todo rename
      */
     static final int arityOf(Type type) {
-	return type.equals(VOID)
+	return type == ABSURD
+	    // strict
+	    ? Integer.MIN_VALUE
+	    : type.equals(VOID)
 	    ? 0
 	    : type instanceof ProductType
 	    ? ((ProductType)type).components.length

@@ -344,7 +344,7 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      * Conjunction and: <span class="Formula">F</span> &and; <span class="Formula">G</span>.
      * <p>
      * Also denoted as <span class="Formula">F</span> &amp; <span class="Formula">G</span>.
-     * Sometimes even as <span class="Formula">F</span>&#8201;<span class="Formula">G</span>, <span class="Formula">F</span>.<span class="Formula">G</span>, <span xml:lang="po">K</span> <span class="Formula">F</span><span class="Formula">G</span>.
+     * Sometimes even as <span class="Formula">F</span>&#8201;<span class="Formula">G</span>, <span class="Formula">F</span>.<span class="Formula">G</span>, <span xml:lang="pl">K</span> <span class="Formula">F</span><span class="Formula">G</span>.
      * </p>
      * @throws UnsupportedOperationException if this junctor is not supported by the representation.
      */
@@ -353,7 +353,7 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
     /**
      * Disjunction or: <span class="Formula">F</span> &or; <span class="Formula">G</span>.
      * <p>
-     * Sometimes also denoted as <span xml:lang="po">A</span> <span class="Formula">F</span><span class="Formula">G</span>.
+     * Sometimes also denoted as <span xml:lang="pl">A</span> <span class="Formula">F</span><span class="Formula">G</span>.
      * </p>
      * @throws UnsupportedOperationException if this junctor is not supported by the representation.
      */
@@ -375,7 +375,7 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      * This implication is also called subjunction and denoted as <span class="Formula">F</span> <!-- @todo is there a better turned consequence sign for subjunctor than subset -->&#8835;</span> <span class="Formula">G</span>.
      * Sometimes implication is also denoted as <span class="Formula">F</span> &rArr; <span class="Formula">G</span> to underline that it is a
      * material implications.
-     * Sometimes also denoted as <span xml:lang="po">C</span> <span class="Formula">F</span><span class="Formula">G</span>.
+     * Sometimes also denoted as <span xml:lang="pl">C</span> <span class="Formula">F</span><span class="Formula">G</span>.
      * </p>
      * <p>
      * &not;<span class="Formula">G</span>&rarr;&not;<span class="Formula">F</span> is called contra position of <span class="Formula">F</span>&rarr;<span class="Formula">G</span>.
@@ -389,7 +389,7 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      * Equivalence equiv: <span class="Formula">F</span> &harr; <span class="Formula">G</span>.
      * <p>
      * Sometimes this is also called bisubjunction and denoted as <span class="Formula">F</span> &hArr; <span class="Formula">G</span>, or even <span class="Formula">F</span> &#8801; <span class="Formula">G</span>.
-     * Sometimes also denoted as <span xml:lang="po">E</span> <span class="Formula">F</span><span class="Formula">G</span>.
+     * Sometimes also denoted as <span xml:lang="pl">E</span> <span class="Formula">F</span><span class="Formula">G</span>.
      * </p>
      * @throws UnsupportedOperationException if this junctor is not supported by the representation.
      */
