@@ -1,0 +1,7 @@
+#
+# LTL linear time logic equivalences
+#
+C until (A|B) == (C until A) | (C until B)
+C since (A|B) == (C since A) | (C since B)
+(B&C) until A == (B until A) & (C until A)
+(B&C) since A == (B since A) & (C since A)
