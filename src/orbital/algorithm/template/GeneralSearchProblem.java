@@ -67,7 +67,7 @@ import orbital.math.MathUtilities;
  * @todo introduce dynamic backtracking on search graphs
  * @todo we could subclass TransitionModel if we would do without expand(Option) and rather use the pair of methods, actions and transitions with the latter returning a single option, only.
  *  Then, of course, we would somehow move getCost to Option. But GSP.getCost returns immediate cost, whereas GSP.Option.getCost returns accumulated cost.
- *  For use in local optimizer actions does not need to check for applicability, if transitions returns the old state if an action later proofs not applicable, without any harm. However, really following the state space would require applicability checks right ahead.
+ *  For use in local optimizers, actions() does not need to check for applicability, if transitions() returns the old state if an action later proofs not applicable, without any harm. However, really following the state space would require applicability checks right ahead.
  */
 public interface GeneralSearchProblem/*<S,A>*/ extends AlgorithmicProblem {
     /**
@@ -112,7 +112,7 @@ public interface GeneralSearchProblem/*<S,A>*/ extends AlgorithmicProblem {
      * problems with a good expand-on-demand behaviour. Additionally, this enables implementing
      * classes to use do/undo to expand states.
      * Implementations can either
-     * <ul type="circle">
+     * <ul class="or">
      *   <li>conservatively provide an iterator over a list that has been explicitly constructed.</li>
      *   <li>explicitly provide a problem-specific iterator that constructs the successor states
      *   on demand.</li>
