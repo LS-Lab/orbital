@@ -15,7 +15,7 @@ import orbital.logic.functor.*;
 import junit.framework.*;
 
 /**
- * A sample test case, testing Values.
+ * A sample test case, testing a type system.
  * @version 1.1, 2002-09-14
  */
 public class TypeTest extends check.TestCase {
