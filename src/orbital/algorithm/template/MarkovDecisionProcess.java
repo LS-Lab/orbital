@@ -288,7 +288,7 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
 			    if (logger.isLoggable(Level.FINEST)) logger.log(Level.FINEST, "DPMDP.Q", "\t    + " + t.getProbability() + " * " + U.apply(sp) + " for " + sp);
 			    cost = (Scalar) cost.add(t.getProbability().multiply((Arithmetic)U.apply(sp)));
 			    final Real c = t.getCost();
-			    assert !originalCost.equals(c) : "@postconditions(getCost()): cost of transitions with the same action from the same state should be equal";
+			    assert !originalCost.equals(c, Values.getDefault().valueOf(MathUtilities.getDefaultTolerance())) : "@postconditions(getCost()): cost of transitions with the same action from the same state should be equal. Difference " + ((Real)originalCost.subtract(c)).doubleValue() + "=" + originalCost.subtract(c) + "=" + originalCost + "-" + c;
 			    originalCost = c;
             		}
             		if (logger.isLoggable(Level.FINER)) logger.log(Level.FINER, "DPMDP.Q", "\tc(" + action + "," + state + ")\t= " + originalCost + " + " + getDiscount() + " * " +  cost);
