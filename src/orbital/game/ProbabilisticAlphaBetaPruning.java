@@ -9,7 +9,11 @@ package orbital.game;
 import orbital.algorithm.template.ProbabilisticAlgorithm;
 import orbital.logic.functor.Function;
 import java.util.Random;
+import java.util.Iterator;
 
+import java.util.List;
+import java.util.Collections;
+import orbital.util.Setops;
 import orbital.util.Utility;
 import orbital.math.MathUtilities;
 
@@ -26,14 +30,11 @@ import java.util.logging.Level;
  * @author  Andr&eacute; Platzer
  */
 public class ProbabilisticAlphaBetaPruning extends AlphaBetaPruning /*implements ProbabilisticAlgorithm*/ {
-    public ProbabilisticAlphaBetaPruning(int depth, Function/*<Object, Number>*/ utility, float improveProbability) {
-	this(depth, utility, improveProbability, 0, 0);
+    public ProbabilisticAlphaBetaPruning(int depth, Function/*<Object, Number>*/ utility, boolean randomizeSuccessors, float improveProbability, float fluctuateProbability, double fluctuateThreshold) {
+        this(depth, utility, randomizeSuccessors, improveProbability, fluctuateProbability, fluctuateThreshold, new Random());
     }
-    public ProbabilisticAlphaBetaPruning(int depth, Function/*<Object, Number>*/ utility, float improveProbability, float fluctuateProbability, double fluctuateThreshold) {
-        this(depth, utility, improveProbability, fluctuateProbability, fluctuateThreshold, new Random());
-    }
-
     /**
+     * @param randomizeSuccessors whether to locally shuffle the successors state order randomly.
      * @param improveProbability is the probability of accepting a better
      *  alternative, when there is one. Note that - due to the iterative
      * nature of the algorithm - this does not specify the probability
@@ -44,8 +45,9 @@ public class ProbabilisticAlphaBetaPruning extends AlphaBetaPruning /*implements
      * solution may be lower than the current best choice, for still
      * counting as an alike (or slightly worse) alternative.
      */
-    public ProbabilisticAlphaBetaPruning(int depth, Function/*<Object, Number>*/ utility, float improveProbability, float fluctuateProbability, double fluctuateThreshold, Random random) {
+    public ProbabilisticAlphaBetaPruning(int depth, Function/*<Object, Number>*/ utility, boolean randomizeSuccessors, float improveProbability, float fluctuateProbability, double fluctuateThreshold, Random random) {
         super(depth, utility);
+	this.randomizeSuccessors = randomizeSuccessors;
 	Utility.pre(MathUtilities.isProbability(improveProbability), "improveProbability " + improveProbability + " is a probability");
         this.improveProbability = improveProbability;
 	Utility.pre(MathUtilities.isProbability(fluctuateProbability), "fluctuateProbability " + fluctuateProbability + " is a probability");
@@ -55,11 +57,16 @@ public class ProbabilisticAlphaBetaPruning extends AlphaBetaPruning /*implements
         this.random = random;
 	Utility.pre((fluctuateThreshold == 0.0) == (fluctuateProbability == 0.0), "no fluctuation probability (means =0) if and only if no fluctuation threshold (means =0)");
     }
+
+    public ProbabilisticAlphaBetaPruning(int depth, Function/*<Object, Number>*/ utility, float improveProbability) {
+	this(depth, utility, false, improveProbability, 0, 0);
+    }
     public ProbabilisticAlphaBetaPruning(int depth, Function/*<Object, Number>*/ utility, float improveProbability, Random random) {
-	this(depth, utility, improveProbability, 0, 0, random);
+	this(depth, utility, false, improveProbability, 0, 0, random);
     }
 
     private Random random;
+    private boolean randomizeSuccessors;
     private float  improveProbability;
     private float  fluctuateProbability;
     private double fluctuateThreshold;
@@ -75,7 +82,22 @@ public class ProbabilisticAlphaBetaPruning extends AlphaBetaPruning /*implements
     }
 
     /**
+     * Randomized local exploration order.
+     */
+    protected Iterator successors(Field state) {
+        Iterator s = state.expand();
+	if (!randomizeSuccessors)
+	    return s;
+	else {
+	    List s2 = Setops.asList(s);
+	    Collections.shuffle(s2, getRandom());
+	    return s2.iterator();
+	}
+    }
+
+    /**
      * Prefers better moves only with some probability.
+     * Also backs up to slightly worse moves with some probability.
      */
     protected boolean isPreferred(double v, double w) {
 	if (random == null)
