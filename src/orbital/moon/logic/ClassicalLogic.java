@@ -137,6 +137,11 @@ import orbital.algorithm.Combinatorical;
  * @todo refactorize common ideas into a super class
  * @todo introduce &#407;ukasiewicz logic
  * @todo Especially provide forall as a functional (higher-order function) of lambda-operator then (@see note to orbital.logic.functor.Substitition)
+ * @annote Solved: typed quantification still is isolated because
+ *    all x:real p(x) |= all x:integer p(x)
+ * will not hold since - by absence of declaration - it is parsed as
+ *    all x:real p:[real->truth](x) |= all x:integer p:[integer->truth](x)
+ * resulting in two distinct and uncorrelated p/1.
  */
 public class ClassicalLogic extends ModernLogic {
     private static final boolean PI_SYNTACTICAL_SUBSTITUTION = true;
@@ -1775,6 +1780,7 @@ public class ClassicalLogic extends ModernLogic {
 	 */
 	public static final Formula negationForm(Formula F) {
 	    try {
+		//@fixme does not work in multi-sort case "some x:integer p:(univ->truth)(x) |= some x:univ p:(univ->truth)(x)". This is due to the lacking support of generically typed pattern matching TRS rules.
 		// eliminate derived junctors not in the basis (&forall;,&exist;,&and;,&or;&not;)
 		if (CNFeliminate == null) conjunctiveForm(logic.createFormula("true"));
 		F = (Formula) Functionals.fixedPoint(CNFeliminate, F);
@@ -2010,8 +2016,6 @@ public class ClassicalLogic extends ModernLogic {
 	    F = negationForm(F);
 		// skolem transform TRS
 		if (SkolemTransform == null) SkolemTransform = Substitutions.getInstance(Collections.singletonList(
-		    //@xxx note that A should be a metavariable for a formula
-		    //@fixme this does not work for typed quantifiers
 		    new SkolemizingUnifyingMatcher()
 		    ));
 		return (Formula) Functionals.fixedPoint(SkolemTransform, F);
@@ -2041,6 +2045,7 @@ public class ClassicalLogic extends ModernLogic {
 	    public SkolemizingUnifyingMatcher() {
 	    }
 
+	    //@internal note that A should be a metavariable for a formula
 	    //@internal performs ?_X1 _A |= skolemise _A with _X of any generic sort matching
 	    private final Symbol SOME = logic.coreSignature().get("?", typeSystem.UNIVERSAL());
 	    private Object replacement = null;
