@@ -17,10 +17,12 @@ package orbital.math;
  * with denominators in S&le;(R,&sdot;).
  * Where S&le;(R,&sdot;) is a submonoid of the multiplicative group of R. <!-- @todo clearify for modules and rings -->
  * S<sup>-1</sup>M is also called <dfn>localisation of M to S</dfn>.
+ * If p&#8882;R is prime, then R<sub>p</sub> := R<sub>R\p</sub> is called <dfn>localisation of R in p</dfn>
+ * and is a local ring.
  * </p>
  * <p>
- * Especially, for an integrity domain R, Quot(R) := (R&#8726;{0})<sup>-1</sup>R is the field
- * of fractions of R, and for R-modules M, M<sub>R&#8726;{0}</sub> is a Quot(R)-vector space.
+ * Especially, for an integrity domain R, Quot(R) := R<sub>(0)</sub> = (R&#8726;{0})<sup>-1</sup>R is the
+ * <dfn>field of fractions</dfn> of R, and for R-modules M, M<sub>R&#8726;{0}</sub> is a Quot(R)-vector space.
  * </p>
  * <p>
  * A fraction a&#8260;s &isin; S<sup>-1</sup>M
@@ -32,7 +34,7 @@ package orbital.math;
  * </p>
  * <p>
  * There is the canonical embedding homomorphism &iota;<sub>S</sub>:a&#8614;a&#8260;1
- * which is injective if and only if S does not contain zero divisors (especially 0&notin;S).
+ * which is injective if and only if S does not contain zero divisors.
  * The universal mapping property is
  * <div class="UniversalMappingProperty">&forall;&phi;:R&rarr;R' homomorphism of rings with 1 with &phi;(S)&sube;(R')<sup>&times;</sup><br />
  * &exist;!&phi;&#771;:R<sub>S</sub>&rarr;R' homomorphism of rings with 1 where &phi;=&phi;&#771;&#8728;&iota;<sub>S</sub></div>
@@ -52,13 +54,13 @@ package orbital.math;
 public interface Fraction/*<M extends Arithmetic,S extends M>*/ extends Arithmetic {
     /**
      * Returns the numerator component.
-     * @return p of this fraction p&#8260;q.
+     * @return a of this fraction a&#8260;s.
      */
     Arithmetic/*>M<*/ numerator(); 
 
     /**
      * Returns the denominator component.
-     * @return q of this fraction p&#8260;q.
+     * @return s of this fraction a&#8260;s.
      */
     Arithmetic/*>S<*/ denominator();
 

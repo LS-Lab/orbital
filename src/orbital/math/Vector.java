@@ -28,6 +28,7 @@ import java.util.NoSuchElementException;
  * (R<sup>n</sup>,+,&lowast;) form a (free) R-module
  * with the law of composition + and the law of action &lowast;.
  * If R is a field the vectors even form a vector space over R, which justifies the name vector.
+ * If R is an integrity domain, then R<sup>n</sup>&cong;R<sup>m</sup> &hArr; n=m.
  * </p>
  * <hr />
  * A <a href="doc-files/AlgebraicStructures.html#vectorSpace"><dfn>vector space</dfn></a> over a field R is a set V with an algebraic structure of

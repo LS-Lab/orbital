@@ -16,12 +16,20 @@ import java.util.ListIterator;
  * Let R be a commutative ring with 1.
  * The polynomial ring over R in one variable X is
  * <center>R[X] := {&sum;<sub>i&isin;<b>N</b></sub> a<sub>i</sub>X<sup>i</sup> = (a<sub>i</sub>)<sub>i&isin;<b>N</b></sub> &brvbar; a<sub>i</sub>=0 p.t. i&isin;<b>N</b> &and; &forall;i&isin;<b>N</b> a<sub>i</sub>&isin;R}</center>
+ * with the convolution as multiplication.
  * It is an associative, graded R-algebra, and as commutative or unital as R.
  * R[X] inherits the properties of being an integrity domain, factorial (a unique factorization domain), Noetherian from R.
  * Additionally, if R is an integrity domain, then R[X]<sup>&times;</sup> = R<sup>&times;</sup>.
  * </p>
  * <p>
  * The polynomial ring over a field in <em>one</em> variable even is Euclidean.
+ * </p>
+ * <p>
+ * The universal mapping property of the monoid ring for H over R
+ * (which generalizes the polynomial ring for H={X} over R in one variable X) is
+ * <div class="UniversalMappingProperty" id="Einsetzungshomomorphismus">
+ * &forall;&phi;:R&rarr;R' homomorphism of rings with 1 &forall;&sigma;:H&rarr;(R',&sdot;) homomorphism of monoids<br />
+ * &exist;!&Phi;:R[H]&rarr;R' homomorphism of rings with 1 where &Phi;|<sub>R</sub>=&phi; &and; &Phi;|<sub>H</sub>=&sigma;</div>
  * </p>
  *
  * @version 1.1, 2001/12/09
@@ -52,7 +60,7 @@ public interface Polynomial/*<R implements Arithmetic>*/ extends Euclidean, Func
     int degreeValue();
 	
     /**
-     * Get the i-th coefficient.
+     * Get the coefficient of X<sup>i</sup>.
      * @return a<sub>i</sub> if i&le;deg(this), or <code>0</code> if i&gt;deg(this).
      */
     Arithmetic/*>R<*/ get(int i);
@@ -68,7 +76,7 @@ public interface Polynomial/*<R implements Arithmetic>*/ extends Euclidean, Func
 
     /**
      * Evaluate this polynomial at <var>a</var>.
-     * Using the <span xml:lang="de">"Einsetzungshomomorphismus"</span>.
+     * Using the <a href="#Einsetzungshomomorphismus" xml:lang="de">"Einsetzungshomomorphismus"</a>.
      * @return f(a) = f(X)|<sub>X=a</sub> = (f(X) mod (X-a))
      * @todo we could just as well generalize the argument and return type of R
      */
