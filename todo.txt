@@ -1,5 +1,9 @@
 //TODO: *
 
+fix errors
+--------
+orbital.moon.logic.ModalLogic test runs infinitely long (> 3h)
+
 deprecated
 ----------
 orbital.moon.awt.Demonstratos

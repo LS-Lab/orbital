@@ -147,7 +147,7 @@
     <target name="run.tests" depends="init, compile.tests"
             description="run test/*Test*.java">
         <mkdir dir="${reports.tests}"/>
-        <junit printsummary="yes" haltonfailure="yes" fork="yes" showoutput="false">
+        <junit printsummary="yes" haltonfailure="yes" fork="yes" showoutput="true">
           <classpath refid="tests.classpath"/>
 	  <jvmarg value="-ea"/>
         
