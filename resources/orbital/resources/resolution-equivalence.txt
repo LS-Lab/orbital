@@ -7,7 +7,7 @@ a|b == b|a		# commutative (Huntington axiom)
 (a|b)&c == (a&c)|(b&c)	# distributive (Huntington axiom)
 a&true == a		# neutral element (Huntington axiom)
 a|false == a		# neutral element (Huntington axiom)
-#inconsistent a&~a == false		# complement (Huntington axiom) induces Principium contradictionis
+##inconsistent a&~a == false		# complement (Huntington axiom) induces Principium contradictionis
 a|~a == true		# complement (Huntington axiom) induces Tertium non datur, law of excluded middle (Russel/Whitehead. Principia Mathematica. 1910, 101 *2.11)
 #
 # laws derived from huntington axioms
@@ -20,11 +20,11 @@ a&(a|b) == a		# absorbtion
 a|(a&b) == a		# absorbtion
 a|(a&b) == a		# (Verschmelzung...) <=(a),(c),(idem)
 a&(a|b) == a		# (Verschmelzung...)
-#inconsistent ~(~a) == a		# involution "duplex negatio est affirmatio". (induces duality forall a exists b: b = ~a. dualities: a ~a, & |)
+##inconsistent ~(~a) == a		# involution "duplex negatio est affirmatio". (induces duality forall a exists b: b = ~a. dualities: a ~a, & |)
 ~(a&b) == ~a|~b		# deMorgan
 ~(a|b) == ~a&~b		# deMorgan
-#inconsistent a&false == false	# (dual to neutral element)
-# inconsistent a|true == true		# (dual to neutral element)
+##inconsistent a&false == false	# (dual to neutral element)
+##inconsistent a|true == true		# (dual to neutral element)
 #
 # additional equivalences
 #
@@ -33,23 +33,25 @@ a->b == ~a|b		# material implication
 ~(a->b) == a&~b
 a->b == ~(a&~b)
 a<->b == b<->a		# commutative
+## (a<->b)<->c == a<->(b<->c)	# associative
 a<->b == (a->b)&(b->a)	# coimplication (alias '<->' introduction or elimination)
 a<->b == (a&b)|(~a&~b)	# equivalence in DNF
 a<->b == (a|~b)&(~a|b)	# equivalence in CNF
 a^b == ~(a<->b)
 a^b == a&~b | ~a&b	# antivalence in DNF
 a^b == (a|b) & (~a|~b)	# antivalence in CNF
-#inconsistent a^a == false
-# substitutionBug (a^b)^c == a^(b^c)	# associative
+##inconsistent a^a == false
+## @fixme substitutionBug (a^b)^c == a^(b^c)	# associative
+## (a^b)^c == a<->b<->c	#
 (a->b)->c == a->b && b->c
 a&b->c == a->(b->c)	# exportation / importation [Lex exportationis, Lex importationis]
 ~a == a->false		# not in INF
 #
 # some important tautologies from axioms
 #
-# contradiction query |= ~(a&~a)		# Principium contradictionis
-# contradiction query |= a | ~a		# Tertium non datur, law of excluded middle (Russel/Whitehead. Principia Mathematica. 1910, 101 *2.11)
-# contradiction query |= a -> a		# self implication (c reflexive)
+## contradiction query |= ~(a&~a)		# Principium contradictionis
+## contradiction query |= a | ~a		# Tertium non datur, law of excluded middle (Russel/Whitehead. Principia Mathematica. 1910, 101 *2.11)
+## contradiction query |= a -> a		# self implication (c reflexive)
 #
 # implicative properties of |= and thus inference rules
 #
@@ -77,10 +79,10 @@ p->(q->r) |= q->(p->r)	# Law of Permutation, the 'commutative principle' (Russel
 ~p->p |= p		# consequentia mirabilis
 p->r, q->s |= p&q->r&s	# Praeclarum Theorema
 |= p->(q->p)		# principle of simplification (Russel/Whitehead. Principia Mathematica. 1910, 100 *2.03)
-#inconsistent |= p->p			# principle of identity (Russel/Whitehead. Principia Mathematica. 1910, 101 *2.08)
-#inconsistent |= p->~~p		# Affirmatio est duplex negatio, principle of double negation (Russel/Whitehead. Principia Mathematica. 1910, 101 f)
-#inconsistent |= ~~p->p		# Duplex negatio est affirmatio, principle of double negation (Russel/Whitehead. Principia Mathematica. 1910, 101 f)
-#inconsistent false |= a		# 'ex falso quodlibet'
+##inconsistent |= p->p			# principle of identity (Russel/Whitehead. Principia Mathematica. 1910, 101 *2.08)
+##inconsistent |= p->~~p		# Affirmatio est duplex negatio, principle of double negation (Russel/Whitehead. Principia Mathematica. 1910, 101 f)
+##inconsistent |= ~~p->p		# Duplex negatio est affirmatio, principle of double negation (Russel/Whitehead. Principia Mathematica. 1910, 101 f)
+##inconsistent false |= a		# 'ex falso quodlibet'
 #
 # some less important
 #
@@ -118,9 +120,9 @@ $x p(x) |= $x p(x)
 # @todo denote metavariables correctly.
 #
 $ x p(x) |= p(a)	#  universal specialization
-#@fixme p(a) |= p(s)	# existential generalization  #@fixme doesn't work since when?
+##@xxx p(a) |= p(s)	# existential generalization  #@xxx doesn't work since when?
 ~($x p(x)) |= ~p(xp)	# ~all~ conversion (even |=|)
-#~some p(x) |= $x ~p(x)	# ~some~ conversion (even |=|)
+~some x p(x) |= $x ~p(x)	# ~some~ conversion (even |=|)
 $x (p(x)->q(x)) |= ($x p(x)) -> ($x q(x))
 # some rules
 (p(x) & q(x)) |= (p(x)) & (q(x))
