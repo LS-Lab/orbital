@@ -252,6 +252,8 @@ public class Substitutions {
      * @todo test write a test driver that asserts that Substitutions.compose equals Functional.compose
      */
     public static final Substitution compose(Substitution sigma, Substitution tau) {
+	assert sigma != null : "we should never attempt to compose " + sigma + " with " + tau;
+	assert tau != null : "we should never attempt to compose " + sigma + " with " + tau;
 	Collection/*_<Matcher>_*/ r = new ArrayList/*_<Matcher>_*/(tau.getReplacements().size() + sigma.getReplacements().size());
 	// the list of patterns that tau searches for (and could thus must be ignored in sigma)
 	Set/*_<Object>_*/ tauPatterns = new HashSet/*_<Object>_*/(tau.getReplacements().size() << 1);
@@ -546,6 +548,9 @@ public class Substitutions {
 	    while (i.hasNext()) {
 		final Object o_i = i.next();
 		final Substitution mu_i = unify(o_0, mu.apply(o_i));
+		if (mu_i == NONUNIFIABLE) {
+		    return NONUNIFIABLE;
+		}
 		mu = compose(mu_i, mu);
 		// apply (the missing part mu_i of) mu to o_0
 		assert mu_i.apply(o_0).equals(mu.apply(o_0)) : "since our unifications are idempotent, only the part of the unification needs to be applied";
