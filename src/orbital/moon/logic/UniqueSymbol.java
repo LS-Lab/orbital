@@ -37,7 +37,7 @@ final class UniqueSymbol extends SymbolBase {
     }
 
     public final boolean equals(Object o) {
-	assert this == o || !getSignifier().equals(((Symbol)o).getSignifier()) : "all other instances of Symbol are different from this DistinctVariableSymbol, so no other variable should pretend to use our signifier";
+	assert this == o || !(o instanceof Symbol) || !getSignifier().equals(((Symbol)o).getSignifier()) : "all other instances of Symbol are different from this DistinctVariableSymbol, so no other variable should pretend to use our signifier";
 	// we "guarantee" that two different instances of DistinctVariableSymbol are distinct, and that instances of DistinctVariableSymbols and of other Symbols are different anyway
 	return this == o;
     }
