@@ -225,10 +225,10 @@ public class Gameboard extends Canvas implements ImageObserver, Serializable {
      * @return any legal move-path from the source figure which reaches the destination position.
      *  <code>null</code> if destination field cannot be reached at all, or is not empty but cannot be beaten.
      * @postconditions (&exist;i RES.equals(getLegalMoves()[i]) &and; movePath(RES).equals(destination)) xor RES == null
-     * @internal @see Figure#validMoves()
+     * @internal @see Figure#possibleMoves()
      */
     protected Move findValidPath(final Figure source, final Position destination) {
-	for (Iterator i = source.validMoves(); i.hasNext(); ) {
+	for (Iterator i = source.possibleMoves(); i.hasNext(); ) {
 	    Pair     p = (Pair) i.next();
 	    Move     move = (Move) p.A;
 	    Position dst = (Position) p.B;

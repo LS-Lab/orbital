@@ -36,7 +36,7 @@ public class Gamemaster implements Runnable {
 
     /**
      * Arguments passed to the AIs in {@link #players}.
-     * <code>playersArguments[i] == null</code> if and only if <code>i</code> is a human player.
+     * <code>playersArguments[i] == null || playersArguments[i] = "null"</code> if and only if <code>i</code> is a human player.
      * @serial
      */
     private String	playerArguments[];
@@ -56,7 +56,7 @@ public class Gamemaster implements Runnable {
 
     /**
      * The diverse AI-players.
-     * <code>players[i] == null</code> if and only if <code>i</code> is a human player.
+     * <code>players[i] instanceof HumanPlayer</code> if and only if <code>i</code> is a human player.
      * @serial
      */
     private Function	players[];
@@ -83,6 +83,8 @@ public class Gamemaster implements Runnable {
      * @param component for which component to load images etc.
      * @param rules the rules of the game to play.
      * @param playerArguments the arguments to pass to the individual players.
+     *  If you set a component to <code>null</code> or <code class="String">&quot;null&quot;</code>
+     *  a human player will take the part of that league.
      */
     public Gamemaster(Component component, GameRules rules, String playerArguments[]) {
 	if (playerArguments.length != rules.getLeagues())
@@ -131,7 +133,7 @@ public class Gamemaster implements Runnable {
 	getField().addFieldChangeListener(humanPlayer);
 	int realPlayers = 0;
 	for (int i = Figure.NOONE + 1; i < players.length; i++) {
-	    if (playerArguments[i] == null) {
+	    if (playerArguments[i] == null || playerArguments[i].equals("null")) {
 		players[i] = humanPlayer;
 		realPlayers++;
 	    } else
@@ -209,8 +211,7 @@ public class Gamemaster implements Runnable {
 	Thread thisThread = Thread.currentThread();
 	// do moves while it's an AI's turn
 	for (int turn = getField().getTurn();
-	     players[turn] != null
-		 && runner == thisThread && !Thread.interrupted();
+	     runner == thisThread && !Thread.interrupted();
 	     turn = getField().getTurn()) {
 	    // @xxx doesn't this policy (a single player can move several times until it's another player's turn) conflict with AlphaBetaPruning which simply doesn't know about it?
 	    ////showStatus(getResources().getString("statusbar.ai.thinking"));

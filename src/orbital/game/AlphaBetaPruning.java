@@ -18,10 +18,8 @@ import java.util.logging.Level;
  * <p>
  * &alpha;-&beta;-pruning performs exactly the same computation as a normal minimax search, but
  * prunes the search tree at nodes that permit moves even worse than the best one found so far.</p>
- * <p>
- * <i><b>Note:</b> This class is subject to change since a substitute for {@link orbital.game.MoveWeighting.Argument}
- * may be required some day.</i></p>
  *
+ * @internal so to say, the pruning is the bound part of BranchAndBound.
  * @version 0.8, 2001/07/01
  * @author  Andr&eacute; Platzer
  * @internal min-max trees with compact values in [0,1] are and-or trees with fuzzy logic operators.
@@ -35,9 +33,19 @@ public class AlphaBetaPruning extends AdversarySearch {
     private Function/*<Object, Number>*/ utility;
 	
     /**
-     * @param utility the utility function with which to evaluate the utility of a state after cut-off.
+     * Create a new instance of &alph;-&beta;-pruning adversary search.
+     * @param maxDepth the maximum number of (half-) turns to look
+     * into the future during search.  0 would mean no move, but does
+     * not make any sense, since not a single option would then be
+     * inspected.
+     * @param utility the utility function with which to evaluate the
+     * utility of a state beyond cut-off.
      */
     public AlphaBetaPruning(int maxDepth, Function/*<Object, Number>*/ utility) {
+	if (utility == null)
+	    throw new NullPointerException("not a utility function " + utility);
+	if (maxDepth < 0)
+	    throw new IllegalArgumentException("illegal maxDepth " + maxDepth + " < 0");
         this.maxDepth = maxDepth;
         this.currentDepth = 0;
         this.utility = utility;

@@ -67,7 +67,7 @@ public class ChessField extends Field {
 	    if (figure.getLeague() != getTurn())
 		// we only move our figures, forget about moving opponents
 		continue;
-	    for (Iterator j = figure.validMoves(); j.hasNext(); ) {
+	    for (Iterator j = figure.possibleMoves(); j.hasNext(); ) {
 		Pair 	  pair = (Pair) j.next();
 		Move	  move = (Move) pair.A;
 		Position  destination = (Position) pair.B;

@@ -188,7 +188,7 @@ public class FigureImpl extends Figure {
      * Use the Iterator methods on the returned object to fetch
      * the elements sequentially.
      * Checks validity of a path to move per {@link #movePath(Move)}.
-     * @deprecated Since Orbital1.1 use {@link Figure#validMoves()} instead.
+     * @deprecated Since Orbital1.1 use {@link Figure#possibleMoves()} instead.
      */
     public final Iterator/*_<Move>_*/ iterateValid() {
 	final List v = new ArrayList(legalMoves.length);
@@ -212,14 +212,14 @@ public class FigureImpl extends Figure {
      * @deprecated Since Orbital1.1 use {@link Figure#validMoves()} instead.
      */
     public final Iterator/*_<Move,Position>_*/ iterateValidPairs() {
-	return validMoves();
+	return possibleMoves();
     } 
 
 
     /**
      * @internal Checks validity of a path to move per {@link #movePath(Move)}.
      */
-    public final Iterator/*_<Move,Position>_*/ validMoves() {
+    public final Iterator/*_<Move,Position>_*/ possibleMoves() {
 	final List v = new ArrayList(legalMoves.length);
 	for (int i = 0; i < legalMoves.length; i++) {
 	    Move	 move = legalMoves[i];

@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.Arrays;
 import orbital.util.Pair;
 import orbital.util.Utility;
+import orbital.util.Setops;
 
 import orbital.game.AdversarySearch.Option;
 
@@ -279,6 +280,7 @@ public class Field implements Serializable {
     /**
      * Returns an iterator over all Figures. Use the Iterator methods on
      * the returned object to fetch the elements sequentially.
+     * @todo make a true iterator whose set method writes through to this field.
      */
     public final Iterator/*_<Figure>_*/ iterator() {
 	Dimension dim = getDimension();
@@ -288,11 +290,12 @@ public class Field implements Serializable {
 		Position p = new Position(x, y);
 		v.add(getFigure(p));
 	    } 
-	return v.iterator();
+	return Setops.unmodifiableIterator(v.iterator());
     } 
     /**
      * Returns an iterator over all non-empty Figures. Use the Iterator methods on
      * the returned object to fetch the elements sequentially.
+     * @todo make a true iterator whose set method writes through to this field.
      */
     public final Iterator/*_<Figure>_*/ iterateNonEmpty() {
 	Dimension dim = getDimension();
@@ -303,7 +306,7 @@ public class Field implements Serializable {
 		if (!isEmpty(p))
 		    v.add(getFigure(p));
 	    } 
-	return v.iterator();
+	return Setops.unmodifiableIterator(v.iterator());
     } 
 
     /**
@@ -330,7 +333,7 @@ public class Field implements Serializable {
 	    final List l  = new LinkedList();
 	    for (Iterator i = iterateNonEmpty(); i.hasNext(); ) {
 		final Figure figure = (Figure) i.next();
-		for (Iterator j = figure.validMoves(); j.hasNext(); ) {
+		for (Iterator j = figure.possibleMoves(); j.hasNext(); ) {
 		    Pair     p = (Pair) j.next();
 		    Move     move = (Move) p.A;
 		    Position destination = (Position) p.B;
@@ -340,7 +343,7 @@ public class Field implements Serializable {
 			l.add(new Option(field, destination, figure, move));
 		}
 	    }
-	    return l.iterator();
+	    return Setops.unmodifiableIterator(l.iterator());
     	}
     	catch (CloneNotSupportedException ass) {
 	    throw (AssertionError) new AssertionError("invariant: sub classes must support nullary constructor for cloning.").initCause(ass);

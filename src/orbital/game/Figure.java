@@ -27,9 +27,9 @@ import orbital.util.Pair;
  * <p>
  * Figures belong to a league and have a specified type. Besides those
  * elementary properties, a figure encapsulates the ability of being
- * {@link #moveFigure(Move) moved} or queried for all its {@link
- * #validMoves() valid moves}. The implementation of these methods is
- * deferred to subclasses.
+ * {@link #moveFigure(Move) moved} or queried for all its
+ * {@link #possibleMoves() valid moves}. The implementation of these
+ * methods is deferred to subclasses.
  * 
  * @stereotype Structure
  * @version 1.1, 2003-01-01
@@ -164,7 +164,7 @@ public abstract class Figure extends Moving {
      * @postconditions &forall;i&isin;RES moveFigure(i.A).equals(i.B)
      * @todo introduce iteratePossible() returns an iterator over all pairs of (moves|destinations) valid and <dfn>possible</dfn> for this figure, i.e. if our league is allowed to move at all.
      */
-    public abstract Iterator/*_<Move,Position>_*/ validMoves();
+    public abstract Iterator/*_<Move,Position>_*/ possibleMoves();
 
     // methods used to perform moves
 

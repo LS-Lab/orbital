@@ -76,7 +76,7 @@ public interface GameRules {
     int getLeagues();
 
     /**
-     * get the number of different Figure types including {@link Figure#EMPTY}.
+     * Get the number of different Figure types including {@link Figure#EMPTY}.
      * Assumes that the types are numbered consequently in ascending order from 1.
      * @return the number of figure types.
      */

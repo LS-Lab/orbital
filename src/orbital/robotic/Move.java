@@ -50,14 +50,14 @@ public class Move implements Serializable {
     public static final char Beating = '*';
 
     /**
-     * turn relative to current direction.
+     * Turn (right) relative to current direction.
      */
-    public static final char Right = 'r';	   // turn only
+    public static final char Right = 'r';
 
     /**
-     * step sideward relative to current direction
+     * Step (right) sideward relative to current direction
      */
-    public static final char RightW = 'R';	   // side step
+    public static final char RightW = 'R';
     public static final char For = 'f';
     public static final char ForW = 'F';
     public static final char Left = 'l';
