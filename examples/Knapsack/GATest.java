@@ -1,4 +1,5 @@
 import orbital.algorithm.evolutionary.*;
+import orbital.algorithm.evolutionary.GeneticAlgorithm.Configuration;
 import orbital.logic.functor.Function;
 
 /**
@@ -10,19 +11,38 @@ import orbital.logic.functor.Function;
  * Gene.Integers whose mutation uses a procentual deviation, instead of
  * constant 1.
  */
-public class GATest implements Runnable, GeneticAlgorithmProblem {
+public class GATest implements GeneticAlgorithmProblem {
+    /**
+     * An arbitrary value up to which fitness the algorithm should run.
+     */
+    private static final int GOAL_FITNESS = 1000;
     public static void main(String arg[]) {
 	//@xxx should call this application with -Djava.util.logging.config.file=....
 	//java.util.logging.Logger.getLogger(GeneticAlgorithm.class.getPackage().getName()).setLevel(java.util.logging.Level.FINEST);
-	System.out.println("this demonstrates how simple GeneticAlgorithmProblems are written.");
-	System.out.println("The problem is very dull such that the algorithm runs very long.");
-	new GATest().run();
+	System.out.println("This demonstrates how simple GeneticAlgorithmProblems are written.");
+	System.out.println("The problem is very dull, such that the algorithm runs very long.");
+	System.out.println("But it is the most simple application of genetic algorithms.");
+	run();
+    } 
+
+    public static void run() {
+	double maxRecombination = 0.1;
+	double maxMutation = 0.3;
+	Configuration config =
+	    new GeneticAlgorithm.Configuration(new GATest(),
+					       Selectors.likelyBetter(),
+					       maxRecombination,
+					       maxMutation,
+					       IncrementalGeneticAlgorithm.class);
+
+	System.out.println("breeding population");
+	Object solution = config.solve();
+	System.out.println("found solution");
+	System.out.println(solution);
     } 
 
 
-    protected GeneticAlgorithm ga;
-
-    public Function getWeighting() {
+    public Function getEvaluation() {
 	return new Function() {
 		public Object apply(Object o) {
 		    Genome g = (Genome) o;
@@ -33,26 +53,16 @@ public class GATest implements Runnable, GeneticAlgorithmProblem {
     } 
 
     public Population getPopulation() {
-	int	   populationSize = 8;
+	System.out.println("creating population");
+	int    populationSize = 8;
 	Genome g = new Genome();
 	g.add(new Gene.Integer(10));
 	return Population.create(g, populationSize);
     } 
 
-    public void run() {
-	System.out.println("run(): creating population");
-	double maxCrossover = 0.1;
-	double maxMutation = 0.3;
-	ga = new IncrementalGeneticAlgorithm(2, 2, maxCrossover, maxMutation);
-	ga.setSelection(Selectors.likelyBetter());
-	System.out.println("run(): breeding population");
-	ga.solve(this);
-	System.out.println("run(): found solution");
-	System.out.println(ga);
-    } 
-
     public boolean isSolution(Population pop) {
 	System.out.println("isSolution?\n" + pop);
-	return pop.get(0).getFitness() == Integer.MAX_VALUE;
+	return pop.get(0).getFitness() == GOAL_FITNESS;
     } 
+
 }

@@ -1,4 +1,5 @@
 import orbital.algorithm.evolutionary.*;
+import orbital.algorithm.evolutionary.GeneticAlgorithm.Configuration;
 import orbital.logic.functor.Function;
 
 /**
@@ -24,11 +25,12 @@ public class Knapsack extends orbital.moon.awt.Demonstratos implements Runnable,
 
     public Knapsack() {}
 
-    public Function /* <Object, Number> */ getWeighting() {
-	return new KnapsackWeighting(this);
+    public Function /* <Object, Number> */ getEvaluation() {
+	return new KnapsackEvaluation(this);
     } 
 
     public Population getPopulation() {
+	out.println(" creating population");
 	int	   populationSize = 6;
 	Genome g = new Genome();
 	g.add(new Gene.BitSet(ItemDesc.length));
@@ -46,15 +48,18 @@ public class Knapsack extends orbital.moon.awt.Demonstratos implements Runnable,
     } 
 
     public void run() {
-	out.println("run() creating population");
-	double maxCrossover = 0.1;
+	double maxRecombination = 0.1;
 	double maxMutation = 0.2;
-	ga = new IncrementalGeneticAlgorithm(2, 2, maxCrossover, maxMutation);
-	ga.setSelection(Selectors.likelyBetter());
-	out.println("run() breeding population");
-	ga.solve(this);
-	out.println("run() found solution");
-	out.println(ga.getPopulation());
+	Configuration config =
+	    new GeneticAlgorithm.Configuration(new Knapsack(),
+					       Selectors.likelyBetter(),
+					       maxRecombination,
+					       maxMutation,
+					       IncrementalGeneticAlgorithm.class);
+	System.out.println("breeding population");
+	Object solution = config.solve();
+	System.out.println("found solution");
+	System.out.println(solution);
     } 
 
     int weight;
@@ -82,8 +87,8 @@ public class Knapsack extends orbital.moon.awt.Demonstratos implements Runnable,
     } 
 }
 
-class KnapsackWeighting implements Function /* <Object, Number> */ {
-    public KnapsackWeighting(Knapsack t) {
+class KnapsackEvaluation implements Function /* <Object, Number> */ {
+    public KnapsackEvaluation(Knapsack t) {
 	ks = t;
     }
     private Knapsack ks;
