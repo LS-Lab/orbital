@@ -14,7 +14,7 @@ public class ChessFigure extends FigureImpl {
     }
 
     public Object clone() {
-	return new ChessFigure(getField(), x, y, (Direction) direction.clone(), getLeague(), getType(), getImage(), getLegalMoves());
+	return new ChessFigure(getField(), x, y, (Direction) getDirection().clone(), getLeague(), getType(), getImage(), getLegalMoves());
     } 
 
     protected boolean moving(Move move, Position dst) {

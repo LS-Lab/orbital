@@ -284,7 +284,7 @@ public class RobotNavigation implements MarkovDecisionProblem {
         view.setMap(currentPosition, new Character(' '));
         currentPosition = moving;
     	char robot;
-    	switch (moving.direction.getDirection()) {
+    	switch (moving.getDirection().getDirection()) {
 	case Direction.North: robot = '^'; break;
 	case Direction.South: robot = 'v'; break;
 	case Direction.East:  robot = '>'; break;
@@ -335,7 +335,7 @@ public class RobotNavigation implements MarkovDecisionProblem {
      * </pre>
      */
     public static int turnDistance(Moving m, Position p) {
-	Position t = m.direction.getDirectionVector();
+	Position t = m.getDirection().getDirectionVector();
 	// component-wise normalized delta (p-m normalized in d<sub>&infin;</sub>-Norm).
 	Position d = new Position(MathUtilities.sign(p.x - m.x), MathUtilities.sign(p.y - m.y));
 	if (t.equals(d))

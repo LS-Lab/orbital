@@ -84,7 +84,7 @@ public class ChessRules extends AbstractGameRules implements Cloneable {
 		int	   typ = getTyp(w, h);
 		Figure f = newFigure(w, h, leag, typ);
 		if (f.getLeague() == WHITE)
-		    f.direction = new Direction(Direction.West);
+		    f.setDirection(new Direction(Direction.West));
 		field.setFigure(new Position(w, h), f);
 	    } 
 	// commence
@@ -173,7 +173,7 @@ public class ChessRules extends AbstractGameRules implements Cloneable {
 
     Figure newFigure(int x, int y, int leag, int typ) {
 	FigureImpl f = new ChessFigure(x, y, leag, typ);
-	f.direction = new Direction(Direction.East);
+	f.setDirection(new Direction(Direction.East));
 	f.setLegalMoves(legalMoves[typ]);
 	f.setImage(getImage(f));
 	return f;
