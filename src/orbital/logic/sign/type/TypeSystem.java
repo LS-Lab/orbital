@@ -54,7 +54,7 @@ public interface TypeSystem {
      * The meta-type (kind) of types <span class="type">*</span>:&#9633;.
      * The type <span class="type">*</span> and every type containing <span class="type">*</span>
      * is a kind, with the latter being types for type constructors.
-     * <i>Types containing meta-types as well as ordinary types are currently undefined.</i>
+     * <i>Types containing meta-types as well as ordinary types are currently not defined.</i>
      * @postconditions RES == OLD(RES)
      */
     Type TYPE();
@@ -159,13 +159,14 @@ public interface TypeSystem {
      *   <span class="type">&sigma;&rarr;&perp;</span> = <span class="type">&perp;</span>.
      * </div>
      * <div>
-     *   <span class="type">&perp;&rarr;&sigma;</span> = undefined.
+     *   <span class="type">&perp;&rarr;&sigma;</span> = not defined.
      * </div>
      * </p>
      * @param domain the {@link Type#domain() domain} <span class="type">&sigma;</span>.
      * @param codomain the {@link Type#codomain() co-domain} <span class="type">&tau;</span>.
      * @todo assure canonical identity?
-     * @xxx really strict? This contradicts the usual case, since ABSURD->t >= s->t' iff t' >= t. Although ABSURD =< s->t'.
+     * @xxx really strict? @see StandardTypeSystem#mymap
+     *  This contradicts the usual case, since ABSURD->t >= s->t' iff t' >= t. Although ABSURD =< s->t'.
      *  By the ususal formal rule (see above) it is
      *    ABSURD->t' >= s->t iff t' >= t
      *    s->ABSURD =< s'->t' iff s >= s'
