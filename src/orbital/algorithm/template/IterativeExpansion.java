@@ -9,6 +9,7 @@ package orbital.algorithm.template;
 import orbital.logic.functor.Function;
 
 import java.util.Iterator;
+import java.io.Serializable;
 
 import java.util.List;
 import java.util.Collections;
@@ -21,9 +22,6 @@ import orbital.math.Real;
 import orbital.math.Values;
 
 import java.util.LinkedList;
-
-import orbital.util.Pair;
-import orbital.util.KeyValuePair;
 
 /**
  * Iterative Expansion (IE).
@@ -64,7 +62,6 @@ public class IterativeExpansion extends GeneralSearch implements EvaluativeAlgor
      */
     public IterativeExpansion(Function heuristic) {
     	setHeuristic(heuristic);
-	System.err.println(">>> @FIXME this implementation of " + getClass() + " still has errors");
     }
 
     public Function getHeuristic() {
@@ -118,72 +115,132 @@ public class IterativeExpansion extends GeneralSearch implements EvaluativeAlgor
     }
 
     protected Object/*>S<*/ solveImpl(GeneralSearchProblem/*<A,S>*/ problem) {
-	return solveByIterativeExpand(problem.getInitialState(), Values.POSITIVE_INFINITY).A;
+	Object/*>S<*/ initial = problem.getInitialState();
+	return solveByIterativeExpand(new NodeInfo(initial, (Real)getEvaluation().apply(initial)), Values.POSITIVE_INFINITY);
     }
 
     /**
-     * @return a Pair&lt;S,Real&gt; of solution state (if any), and new cost of <code>node</code>.
-     * @internal we do not need to set the f-cost, but only tell our caller the new f-cost for updating successors.
-     * @todo optimizable by far, also modularize to an OptionIterator?
-     * @todo optimize (the performance is embarrassing)
+     * @return the solution state (if any).
+     * @post node.getCost() might have changed
+     * @todo optimizable, also modularize to an OptionIterator?
+     * @internal for bound comparisons we locally define not(POSITIVE_INFINITY=<POSITIVE_INFINITY)
+     *  in order to ensure termination on unsolvable cases, where successors.isEmpty() has already been true.
+     *  This differs from the paper.
      */
-    private final Pair/*<S,Real>*/ solveByIterativeExpand(final Object/*>S<*/ node, final Real bound) {
+    private final Object/*>S<*/ solveByIterativeExpand(final NodeInfo node, final Real bound) {
 	assert bound.compareTo(Values.ZERO) >= 0 && !bound.isNaN() : "bound " + bound + " >= 0";
-	// the f-cost of node: f(node)
-	Real cost = (Real) getEvaluation().apply(node);
-	System.err.println(node + ",\t" + cost + "/" + bound);
-	if (cost.compareTo(bound) > 0)
-	    {System.err.println("cut");
-	    return new Pair(null, cost);}
-	else if (getProblem().isSolution(node))
-	    return new Pair(node, cost);
+	//System.err.println(node + "/" + bound);
+	if (boundCompare(node.getCost(), bound) > 0)
+	    {//System.err.println("cut ");
+	    return null;}
+	else if (getProblem().isSolution(node.getNode()))
+	    return node.getNode();
 	//@internal optimizable by using a (min) heap instead of a list that is kept in sorted order
-	// here, we currently use a (sorted) list of KeyValuePairs with the f-costs as the key that is used for ordering
-	final List/*_<KeyValuePair>_*/ successors = new LinkedList();
+	// here, we currently use a (sorted) list of NodeInfo sorted by the f-costs
+	final List/*_<NodeInfo>_*/ successors = new LinkedList();
 	{
 	    final Function f = getEvaluation();
-	    for (final Iterator i = GeneralSearch.expand(getProblem(), node); i.hasNext(); ) {
+	    for (final Iterator i = GeneralSearch.expand(getProblem(), node.getNode()); i.hasNext(); ) {
 		final Object o = i.next();
 		// pathmax
-		final Object fo = Operations.max.apply(cost, f.apply(o));
-		successors.add(new KeyValuePair(fo, o));
+		final Real fo = (Real) Operations.max.apply(node.getCost(), f.apply(o));
+		successors.add(new NodeInfo(o, fo));
 	    }
 	}
-	if (successors.isEmpty())
-	    return new Pair(null, Values.POSITIVE_INFINITY);
+	if (successors.isEmpty()) {
+	    //System.err.println("\tupdated cost to " + node + " (due to no successors)");
+	    node.setCost(Values.POSITIVE_INFINITY);
+	    return null;
+	}
 	// sort successors in order to have fast access to min and second-best min
 	Collections.sort(successors);
 	assert orbital.util.Utility.sorted(successors, null) : "Collections.sort@post";
-	while (cost.compareTo(bound) <= 0) {
-	    final KeyValuePair bestPair = (KeyValuePair)successors.get(0);
-	    final Object/*>S<*/ best = bestPair.getValue();
-	    assert !Setops.some(successors, new orbital.logic.functor.Predicate() { public boolean apply(Object o) {return ((Comparable)((KeyValuePair)o).getKey()).compareTo(bestPair.getKey()) < 0;} }) : "best has lowest f-cost";
-	    final KeyValuePair secondBestPair = (KeyValuePair)successors.get(1);
-	    final Real newbound = (Real) Operations.min.apply(bound, (Real)secondBestPair.getKey());
-	    assert !Setops.some(successors.subList(1, successors.size()), new orbital.logic.functor.Predicate() { public boolean apply(Object o) {return ((Comparable)((KeyValuePair)o).getKey()).compareTo(secondBestPair.getKey()) < 0;} }) : "second best has second lowest f-cost";
-	    System.err.println(node + ",\t" + cost + "/" + bound + "\t expanding to " + best + ",\t" + bestPair.getKey() + "/" + newbound + "\n\t\talternative " + secondBestPair.getValue() + ", " + secondBestPair.getKey());
-	    final Pair solutionAndCostUpdate = solveByIterativeExpand(best, newbound);
-	    final Object/*>S<*/ solution = solutionAndCostUpdate.A;
-	    if (solution != null)
-		// success
-		return new Pair(solution, null);
-	    // circumscription of getEvaluation().set(best, its new cost (from recursive call));
-	    System.err.println(best + ",\t" + solutionAndCostUpdate.B + "/" + newbound + "\treally updated cost to " + solutionAndCostUpdate.B);
-	    successors.remove(0);
-	    Setops.insert(successors, new KeyValuePair(solutionAndCostUpdate.B, best));
-	    assert orbital.util.Utility.sorted(successors, null) : "@post Setops.insert";
-	    System.err.print(node + ",\t" + cost + "/" + bound);
-	    cost = (Real) ((KeyValuePair)successors.get(0)).getKey();
-	    System.err.println("\tupdated cost to " + cost + " (due to " + ((KeyValuePair)successors.get(0)).getValue() + ")");
+	while (boundCompare(node.getCost(), bound) <= 0) {
+	    {
+		final NodeInfo best = (NodeInfo)successors.get(0);
+		assert !Setops.some(successors, new orbital.logic.functor.Predicate() { public boolean apply(Object o) {return ((NodeInfo)o).compareTo(best) < 0;} }) : "best has lowest f-cost";
+		final NodeInfo secondBest = (NodeInfo)successors.get(1);
+		final Real newbound = (Real) Operations.min.apply(bound, secondBest.getCost());
+		assert !Setops.some(successors.subList(1, successors.size()), new orbital.logic.functor.Predicate() { public boolean apply(Object o) {return ((NodeInfo)o).compareTo(secondBest) < 0;} }) : "second best has second lowest f-cost";
+		//System.err.println(node + "/" + bound + "\t expanding to " + best + "/" + newbound + "\n\t\talternative " + secondBest);
+		
+		final Object/*>S<*/ solution = solveByIterativeExpand(best, newbound);
+		if (solution != null)
+		    // success
+		    return solution;
+
+		// remove and reinsert best (which may have updated cost)
+		successors.remove(0);
+		Setops.insert(successors, best);
+		assert orbital.util.Utility.sorted(successors, null) : "@post Setops.insert";
+	    }
+	    // circumscription of getEvaluation().set(node.getNode(), node.getCost());
+	    node.setCost((Real) ((NodeInfo)successors.get(0)).getCost());
+	    //System.err.println("\tupdated cost to " + node + " (due to " + (NodeInfo)successors.get(0) + ")");
 	}
 
-	// circumscription of getEvaluation().set(node, cost);
-	//@internal we do not need to set the f-cost, but only tell our caller the new f-cost for updating successors
-	// @fixme change the f-cost or the heuristics, not the accumulated cost!
-	//getProblem().getAccumulatedCostFunction().set(node, cost.subtract((Real)getHeuristic().apply(node)));
-	//if (!cost.equals(getEvaluation().apply(node)))
-	//    throw new AssertionError("setting f-cost did not work as expected");
-	return new Pair(null, cost);
+	return null;
+    }
+
+    /**
+     * compares a and b (respecting that &not;(&infin;&le;&infin;) is defined here).
+     * @see Comparator#compare(Object,Object)
+     */
+    private static final int boundCompare(Real a, Real b) {
+	if (a.equals(Values.POSITIVE_INFINITY))
+	    //@internal even for b == Values.POSITIVE_INFINITY (here)
+	    return 1;
+	return a.compareTo(b);
+    }
+	
+
+    /**
+     * Keeps additional information about a node of a search graph.
+     * @author Andr&eacute; Platzer
+     * @version 1.1, 2002-10-26
+     * @see orbital.util.KeyValuePair
+     */
+    private static final class NodeInfo implements Comparable, Serializable {
+	private static final long serialVersionUID = -4179466565509314106L;
+	/**
+	 * The node about which this object contains information.
+	 */
+	public final Object/*>S<*/ node;
+	/**
+	 * the f-cost of node: f(node).
+	 */
+	public Real cost;
+	public NodeInfo(Object/*>S<*/ node, Real cost) {
+	    this.node = node;
+	    this.cost = cost;
+	}
+	public boolean equals(Object o) {
+	    if (o instanceof NodeInfo) {
+		NodeInfo b = (NodeInfo)o;
+		if (getNode().equals(b.getNode())) {
+		    assert getCost().equals(b.getCost()) : "same node, same nodeinfo";
+		    return true;
+		}
+	    }
+	    return false;
+	}
+		
+	public int compareTo(Object o) {
+	    NodeInfo b = (NodeInfo)o;
+	    return getCost().compareTo(b.getCost());
+	}
+	public Object/*>S<*/ getNode() {
+	    return node;
+	}
+	public Real getCost() {
+	    return cost;
+	}
+	public void setCost(Real newcost) {
+	    this.cost = newcost;
+	}
+	public String toString() {
+	    return getNode() + "\t" + getCost();
+	}
     }
 
     protected Iterator createTraversal(GeneralSearchProblem problem) {
