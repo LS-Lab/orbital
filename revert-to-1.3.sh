@@ -122,6 +122,13 @@ foreach SOURCE ($DIRS)
         # remove unwanted instantiation of InternalError: 
         sed -e 's/throw new InternalError(asserted)/throw new InternalError(asserted.toString())/' {$SOURCE}/orbital/algorithm/evolutionary/Gene.java > t
         mv -f t {$SOURCE}/orbital/algorithm/evolutionary/Gene.java
+
+    endif
+
+    if ($SOURCE == test) then 
+        # remove unwanted catch AssertionError:
+        sed -e 's/catch (AssertionError/catch (InternalError/' {$SOURCE}/orbital/math/functional/FunctionTest.java > t
+        mv -f t {$SOURCE}/orbital/math/functional/FunctionTest.java
     endif
 
 end
