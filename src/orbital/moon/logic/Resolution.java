@@ -73,7 +73,7 @@ import java.util.logging.Level;
  * @todo use do/undo instead of copying the whole set of derived formulas every time.
  * @todo delegate GSP into a private inner class
  * @todo use optimizations of "Deduktions- und Inferenzsysteme"
- * @xxx there seems to be a bug in the normalization of the query in "r reflexive and euclidean => r equivalence"
+ * @xxx there seems to be a bug in the normalization of the query in "r reflexive and Euclidean => r equivalence"
  */
 class Resolution implements Inference {
     private static final boolean UNDER_CONSTRUCTION = true;
