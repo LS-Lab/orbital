@@ -32,12 +32,16 @@ import java.lang.reflect.*;
 
 /**
  * Provides type constructors, implementations, and factories for types.
+ * Type constructors create new types depending on some existing types.
+ * For example, there are type constructors for map types.
  *
  * @author <a href="mailto:">Andr&eacute; Platzer</a>
  * @version 1.1, 2002-09-08
  * @see Type
  */
 public final class Types {
+    private static final char GROUPING_BRACKET_OPEN = '[';
+    private static final char GROUPING_BRACKET_CLOSE = ']';
     /**
      * @see Type#compareTo(Object)
      * @see Types.TypeObject#compareToSemiImpl(Type)
@@ -299,6 +303,7 @@ public final class Types {
 	}
 	
 	public int compareToSemiImpl(Type b) {
+	    assert domain() != ABSURD && b.domain() != ABSURD : "s->ABSURD = ABSURD is no map type (and has higher comparisonPriority)";
 	    int coc = codomain().compareTo(b.codomain());
 	    int doc = domain().compareTo(b.domain());
 	    if (coc == 0 && doc == 0)
@@ -407,6 +412,13 @@ public final class Types {
      *   &hArr; <span class="type">&sigma;</span> &ge; <span class="type">&sigma;'</span> &and; <span class="type">&tau;</span> &le; <span class="type">&tau;'</span>.
      * </div>
      * This means that map subtypes have contravariant parameters and covariant return-types.
+     * With the exception of absurd types:
+     * <div>
+     *   <span class="type">&sigma;&rarr;&perp;</span> = <span class="type">&perp;</span>.
+     * </div>
+     * <div>
+     *   <span class="type">&perp;&rarr;&sigma;</span> = undefined.
+     * </div>
      * </p>
      * @param codomain the {@link Type#codomain() codomain} <span class="type">&sigma;</span>.
      * @param domain the {@link Type#domain() domain} <span class="type">&tau;</span>.
@@ -418,11 +430,18 @@ public final class Types {
      * @todo perhaps even
      *    s->ABSURD = ABSURD
      *    ABSURD->s = s      for call by name alias lazy evaluation
+     * These do all form exceptions to the ususal subtype relation for map types.
      *  ?
      */
     public static final Type map(Type codomain, Type domain) {
-	if (codomain == ABSURD || domain == ABSURD)
+	if (domain == ABSURD)
+	    //@internal because from a (OE nonempty) set there is no (left total) _function_ into the empty set.
+	    // for ABSURD->ABSURD an alternative could in principle be, to return a type of a domain with a single element.
+	    // however, in either case, this has an impact on the usual subtype relationship
+	    return ABSURD;
+	if (codomain == ABSURD)
 	    // strict? after change also @see MathExpressionSyntax.createAtomic
+	    // or ABSURD->t = t is true in some type systems, = ABSURD in others.
 	    throw new UnsupportedOperationException(ABSURD + " maps not yet supported");
 	return codomain.equals(NOTYPE) ? domain : new MapType(codomain, domain);
     }
@@ -521,7 +540,7 @@ public final class Types {
 		return ABSURD;
 	}
 	switch (components.length) {
-	case 0: return ABSURD;
+	case 0: return NOTYPE; //@xxx was ABSURD; but we need to result in a nonmap type for 0-arity functions. (resolution-fol)
 	case 1: return components[0];
 	default: return new ProductType(components);
 	}
@@ -551,13 +570,13 @@ public final class Types {
 	
 	public String toString() {
 	    StringBuffer sb = new StringBuffer();
-	    sb.append('[');
+	    sb.append(GROUPING_BRACKET_OPEN);
 	    sb.append(components[0].toString());
 	    for (int i = 1; i < components.length; i++) {
 		sb.append('*');
 		sb.append(components[i]);
 	    }
-	    sb.append(']');
+	    sb.append(GROUPING_BRACKET_CLOSE);
 	    return sb.toString();
 	}
 
@@ -690,13 +709,13 @@ public final class Types {
 	
 	public String toString() {
 	    StringBuffer sb = new StringBuffer();
-	    sb.append('[');
+	    sb.append(GROUPING_BRACKET_OPEN);
 	    sb.append(components[0].toString());
 	    for (int i = 1; i < components.length; i++) {
 		sb.append('&');
 		sb.append(components[i]);
 	    }
-	    sb.append(']');
+	    sb.append(GROUPING_BRACKET_CLOSE);
 	    return sb.toString();
 	}
 
@@ -819,13 +838,13 @@ public final class Types {
 	
 	public String toString() {
 	    StringBuffer sb = new StringBuffer();
-	    sb.append('[');
+	    sb.append(GROUPING_BRACKET_OPEN);
 	    sb.append(components[0].toString());
 	    for (int i = 1; i < components.length; i++) {
 		sb.append('|');
 		sb.append(components[i]);
 	    }
-	    sb.append(']');
+	    sb.append(GROUPING_BRACKET_CLOSE);
 	    return sb.toString();
 	}
 
