@@ -67,7 +67,6 @@ public class IndexedClausalSetImpl extends ClausalSetImpl {
 		    if (g == NOT) {
 			assert F.equals(((Formula)f.getComponent()).not()) : F + " starts with a negation, so removing and adding the negation again does not change anything";
 			// process negations in front of L
-//@fixme .hashCode() is wrong, we need .hashCode() of toplevel symbol p not of p(x) or p(x10) or p(s2) which differ!
 			return -myapply(f.getComponent());
 		    } else {
 			//assert ClassicalLogic.Utilities.negation(F).equals(((Formula)f.getComponent()).not()) : F + " does not start with a negation, so adding the negation leads to the same effect regardless of whether or not duplex negatio is respected";
@@ -96,8 +95,9 @@ public class IndexedClausalSetImpl extends ClausalSetImpl {
      * occurring in clauses of this set to the list of clauses where
      * literals of the same indexHash occur (which thus are possible
      * unifiables).
+     * @todo in principle, we could memorize the clause and literal which could unify, but this would lead to a catastrophic structure.
      */
-    private final Map/*_<Integer,List<Clause>>_*/ index = new LinkedHashMap();
+    private final Map/*_<Integer,Set<Clause>>_*/ index = new LinkedHashMap();
 
     /**
      * Copy constructor.
@@ -116,7 +116,7 @@ public class IndexedClausalSetImpl extends ClausalSetImpl {
 		new Function() {
 		    public Object apply(Object o) {
 			Integer hash = (Integer)indexHashNegation.apply((Formula)o);
-			List probableUnifiables = (List)index.get(hash);
+			Set probableUnifiables = (Set)index.get(hash);
 			//System.err.println("  complement " + probableUnifiables + " of " + C + "\n    in " + IndexedClausalSetImpl.this);
 			return probableUnifiables == null ? null : probableUnifiables.iterator();
 		    }
@@ -135,11 +135,11 @@ public class IndexedClausalSetImpl extends ClausalSetImpl {
     /**
      * Get the list index.get(o) from the index or an empty list if not present.
      */
-    private final List/*_<Clause/Formula>_*/ getIndex(Object o) {
+    private final Set/*_<Clause/Formula>_*/ getIndex(Object o) {
 	assert o instanceof Formula;
 	Integer hash = (Integer)indexHash.apply(o);
-	List l = (List)index.get(hash);
-	return l != null ? l : Collections.EMPTY_LIST;
+	Set l = (Set)index.get(hash);
+	return l != null ? l : Collections.EMPTY_SET;
     }
 
     /**
@@ -147,14 +147,14 @@ public class IndexedClausalSetImpl extends ClausalSetImpl {
      * list if not present.  Contrary to {@link #getIndex(Object)},
      * this method ensures that the list returned occurs in index.
      */
-    private final List/*_<Clause/Formula>_*/ getIndexEnsure(Object o) {
+    private final Set/*_<Clause/Formula>_*/ getIndexEnsure(Object o) {
 	assert o instanceof Formula;
 	Integer hash = (Integer)indexHash.apply(o);
-	List l = (List)index.get(hash);
+	Set l = (Set)index.get(hash);
 	if (l != null) {
 	    return l;
 	} else {
-	    l = new LinkedList();
+	    l = new LinkedHashSet();
 	    index.put(hash, l);
 	    return l;
 	}
@@ -183,10 +183,11 @@ public class IndexedClausalSetImpl extends ClausalSetImpl {
      * Remove clause C from our index. Removes C from all indices of literals in C.
      */
     private void removeIndex(Clause C) {
+	boolean changed = false;
 	for (Iterator i = C.iterator(); i.hasNext(); ) {
-	    if (!getIndex((Formula)i.next()).remove(C))
-		throw new IllegalStateException("removing index should change the index");
+	    changed |= getIndex((Formula)i.next()).remove(C);
 	}
+	assert C.isEmpty() || changed : "removing index should change the index at least once";
     }
 
     public void clear() {
