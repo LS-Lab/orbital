@@ -297,7 +297,7 @@ abstract class ModernLogic implements Logic {
 
 	Expression.Composite RES = composeImpl(compositor, arguments);
 	assert RES != null : "@postconditions RES != null";	     
-	assert !TYPE_CHECK || RES.getType().equals(compositor.getType().codomain()) : "@postconditions " + RES.getType() + "=" + compositor.getType().codomain() + "\n\tfor " + RES + " = compose(" + compositor + " , " + MathUtilities.format(arguments) + ")";
+	assert !TYPE_CHECK || RES.getType().equals(compositor.getType().on(Types.typeOf(arguments))) : "@postconditions " + RES.getType() + " = " + compositor.getType() + "(on)" + Types.typeOf(arguments) + " = " + compositor.getType().on(Types.typeOf(arguments)) + " (right type compose)\n\tfor " + RES + " = compose(" + compositor + " , " + MathUtilities.format(arguments) + ")";
 	return RES;
     }
     Expression.Composite composeImpl(Expression compositor, Expression arguments[]) throws ParseException {

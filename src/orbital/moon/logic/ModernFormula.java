@@ -493,8 +493,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	protected AppliedVariableFormula() {}
 		
         public Type getType() {
-	    //@xxx replace by outer.getType().on(inner.getType())? here and in all similar cases
-	    return outer.getType().codomain();
+	    //@todo could cache the result (in case of non trivial cases more difficult than a simple mapType.codomain())
+	    return outer.getType().on(inner.getType());
         }
         public Signature getSignature() {
 	    return inner.getSignature().union(outer.getSignature());
@@ -563,7 +563,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	protected VoidAppliedVariableFormula() {}
 		
         public Type getType() {
-	    return outer.getType().codomain();
+	    return outer.getType().on(outer.getType().typeSystem().NOTYPE());
         }
         public Signature getSignature() {
 	    return outer.getSignature();
@@ -637,7 +637,10 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	protected BinaryAppliedVariableFormula() {}
 
         public Type getType() {
-	    return outer.getType().codomain();
+	    return outer.getType().on(outer.getType().typeSystem().product(new Type[] {
+		left.getType(),
+		right.getType()
+	    }));
         }
         public Signature getSignature() {
 	    //@todo could cache signature as well, provided left and right don't change
@@ -716,7 +719,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	protected NaryAppliedVariableFormula() {}
 
         public Type getType() {
-	    return outer.getType().codomain();
+	    return outer.getType().on(Types.typeOf(inner));
         }
 
 	//@todo could move to super class of Nary and Binary and formulate in terms of getComponent()
@@ -828,7 +831,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 
         public Type getType() {
 	    assert outerSymbol != null && outerSymbol.getType() != null : outerSymbol + " != null && " + (outerSymbol == null ? null : outerSymbol.getType()) + " != null\ncompositor symbol " + outerSymbol + " for compositor referent " + outer + " applied to " + inner;
-	    return outerSymbol.getType().codomain();
+	    return outerSymbol.getType().on(inner.getType());
         }
         public Signature getSignature() {
 	    //@xxx shouldn't we unite with getCompositor().getSignature() in case of formulas representing predicate or function?
@@ -903,7 +906,10 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 
         public Type getType() {
 	    assert outerSymbol != null && outerSymbol.getType() != null : "outer symbol " + outerSymbol + " != null && its type " + (outerSymbol == null ? null : outerSymbol.getType()) + " != null\ncompositor symbol " + outerSymbol + " for compositor referent " + outer + " applied to " + left + " and " + right;
-	    return outerSymbol.getType().codomain();
+	    return outerSymbol.getType().on(outerSymbol.getType().typeSystem().product(new Type[] {
+		left.getType(),
+		right.getType()
+	    }));
         }
         public Signature getSignature() {
 	    //@todo could cache signature as well, provided left and right don't change
