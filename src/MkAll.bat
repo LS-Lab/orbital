@@ -28,7 +28,7 @@ if "%1"=="-generate" goto Generate
 
 setlocal
     set base=%HOME%\Java\Orbital
-    set src=%base%\src\orbital
+    set src=%base%\src
 
   echo compiling
     echo . > %src%\package-list-new
@@ -39,11 +39,11 @@ setlocal
     if "%1"=="-optimize" for /R /D %%d in (*) do call %src%\_mklib.bat %%d -options -g:lines
     if not "%1"=="-optimize" for /R /D %%d in (*) do call %src%\_mklib.bat %%d
     popd
-    call mklib %src%\math\functional
+    call mklib %src%\orbital\math\functional
   if not "%O2%"=="optNodeprecated" goto Generate
   echo compiling deprecated classes
     echo remember removing exclude files!
-    pushd moon\deprecated
+    pushd orbital\moon\deprecated
     for /R /D %%d in (*) do call %src%\_mklib.bat %%d
     popd
 :Generate
@@ -72,6 +72,7 @@ REM Skip this Section
     if "%O%"=="optJar" call :%O%
     if exist orbital\moon\io\cryptix del orbital\moon\io\cryptix\Steg*.class >NUL
     if exist orbital\moon\io\cryptix del orbital\moon\io\cryptix\provider\HandshakeRand*.class >NUL
+    if not exist %base%\lib md %base%\lib
     jar cfm %base%\lib\orbital-core.jar meta-inf/manifest-core.mf -C . orbital/*.class orbital/logic/*.class orbital/logic/functor/*.class orbital/logic/trs/*.class orbital/logic/imp/*.class orbital/math/*.class orbital/math/functional/*.class orbital/util/*.class orbital/util/graph/*.class
     jar cfm %base%\lib\orbital-ext.jar meta-inf/manifest-ext.mf -C . orbital/awt/*.gif orbital/awt/*.class orbital/game/*.class orbital/algorithm/*.class orbital/algorithm/evolutionary/*.class orbital/algorithm/template/*.class orbital/robotic/*.class orbital/robotic/strategy/*.class orbital/io/*.class meta-inf/services orbital/resources orbital/moon orbital/awt/virtual/*.class orbital/text/*.class orbital/io/*.class orbital/io/encoding/*.class orbital/io/parsing/*.class
     jar cfm %SystemDrive%\pub\ftp\orbital.jar meta-inf/manifest-core.mf -C . orbital/*.class orbital/logic/*.class orbital/logic/functor/*.class orbital/logic/trs/*.class orbital/logic/imp/*.class orbital/math/*.class orbital/math/functional/*.class orbital/util/*.class orbital/util/graph/*.class orbital/awt/*.gif orbital/awt/*.class orbital/game/*.class orbital/algorithm/*.class orbital/algorithm/evolutionary/*.class orbital/algorithm/template/*.class orbital/robotic/*.class orbital/robotic/strategy/*.class orbital/io/*.class meta-inf/services orbital/resources orbital/moon orbital/awt/virtual/*.class orbital/text/*.class orbital/io/*.class orbital/io/encoding/*.class orbital/io/parsing/*.class

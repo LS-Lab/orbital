@@ -8,23 +8,25 @@ echo    -pause     pause after each step
   echo adding resources
     if not exist %JAVA_HOME%\classes\orbital md %JAVA_HOME%\classes\orbital
     if not exist %JAVA_HOME%\classes\orbital\resources md %JAVA_HOME%\classes\orbital\resources
-    copy ..\resources %JAVA_HOME%\classes\orbital\resources
-    copy ..\..\COPYRIGHT.txt %JAVA_HOME%\classes\orbital\resources
-    copy ..\..\license.txt %JAVA_HOME%\classes\orbital\resources
-    copy ..\..\orbital.gif %JAVA_HOME%\classes\orbital\resources
-    copy ..\..\orbital.ico %JAVA_HOME%\classes\orbital\resources
+    copy resources %JAVA_HOME%\classes\orbital\resources
+    copy ..\COPYRIGHT.txt %JAVA_HOME%\classes\orbital\resources
+    copy ..\license.txt %JAVA_HOME%\classes\orbital\resources
+    copy ..\orbital.gif %JAVA_HOME%\classes\orbital\resources
+    copy ..\orbital.ico %JAVA_HOME%\classes\orbital\resources
     if not exist %JAVA_HOME%\classes\orbital\awt md %JAVA_HOME%\classes\orbital\awt
-    copy awt\*.gif %JAVA_HOME%\classes\orbital\awt
+    copy orbital\awt\*.gif %JAVA_HOME%\classes\orbital\awt
   echo adding manifest
     if not exist %JAVA_HOME%\classes\META-INF md %JAVA_HOME%\classes\META-INF
-    xcopy META-INF %JAVA_HOME%\classes\META-INF /S /Y
+    xcopy orbital\META-INF %JAVA_HOME%\classes\META-INF /S /Y
     rd %JAVA_HOME%\classes\META-INF\CVS /S /Q
 if "%1"=="-prepare" goto :Fin
 if "%1"=="-generate" goto Generate
 if "%1"=="-pause" set intermediate=pause
 if "%1"=="-pause" shift
 
-  pushd %home%\Java\Orbital\src
+    set src=%HOME%\Java\Orbital\src
+
+  pushd %src%
   rem Change package grouping in package-grouping, rebuild.bat and mkall.bat
   echo rebuilding core
     javac -d %JAVA_HOME%\classes %1 orbital/*.java orbital/io/*.java orbital/logic/*.java orbital/logic/functor/*.java orbital/logic/trs/*.java orbital/math/*.java orbital/math/functional/*.java orbital/util/*.java orbital/util/graph/*.java
@@ -42,17 +44,17 @@ if "%1"=="-pause" shift
   call :Generate
   if not "%intermediate%"=="" call %intermediate%
   echo rebuilding implementation
-    cd %home%\Java\Orbital\src
+    cd %src%
     call mklib orbital/io/cryptix
     call mklib orbital/math/DOUBLE
     cd orbital\moon
-    for /R /D %%d in (*) do call %home%\Java\orbital\_mklib.bat %%d
+    for /R /D %%d in (*) do call %src%\_mklib.bat %%d
   popd
 goto :Fin
 
 :Generate
   goto :Fin
-  pushd %home%\Java\Orbital\src
+  pushd %src%
   echo generating rmi skeletons and stubs
     pushd orbital\moon\orbiter
     call substitute

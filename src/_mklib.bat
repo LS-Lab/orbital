@@ -1,11 +1,11 @@
 @ECHO Off
 pushd %1
 if exist exclude goto Fin
-if exist *.java dir %1\*.java /B >> %HOME%\java\orbital\class-list-new
+if exist *.java dir %1\*.java /B >> %HOME%\Java\Orbital\src\class-list-new
 if exist substitute.bat goto substitute
 if not exist *.java goto Fin
 
-cd >> %HOME%\java\orbital\package-list-new
+cd >> %HOME%\Java\Orbital\src\package-list-new
 cd
 call mklib %2 %3 %4 %5
 goto Fin
