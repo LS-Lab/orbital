@@ -237,6 +237,30 @@ public final class Utility {
 	return true;
     }
 
+    /**
+     * Checks whether a list is sorted.
+     * @param a the list to be checked.
+     * @param cmp the comparator used (for ascending order).
+     *  If <code>null</code>, natural order is used (by using {@link Comparable}).
+     * @return whether a is sorted.
+     * @see ReverseComparator
+     */
+    public static final boolean sorted(List a, Comparator cmp) {
+	if (cmp == null)
+	    cmp = new NaturalComparator();
+	if (a.isEmpty())
+	    return true;
+	Iterator i = a.iterator();
+	Object last = i.next();
+	while (i.hasNext()) {
+	    Object o = i.next();
+	    if (cmp.compare(last, o) > 0)
+		return false;
+	    last = o;
+	}
+	return true;
+    }
+
     // multi-indices
 	
     /**

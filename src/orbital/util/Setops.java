@@ -523,6 +523,26 @@ public final class Setops {
     }
 
     /**
+     * insert object into l such that l is still sorted.
+     * @pre sorted(l)
+     * @post sorted(l) &and; object&isin;l
+     */
+    public static final void insert(List l, Object object) {
+	assert Utility.sorted(l, null) : "@pre";
+	final Comparable c = (Comparable)object;
+	final ListIterator i = l.listIterator();
+	while (i.hasNext()) {
+	    Object o = i.next();
+	    if (c.compareTo(o) <= 0) {
+		i.previous();
+		break;
+	    }
+	}
+	i.add(c);
+	assert Utility.sorted(l, null) && l.indexOf(object) >= 0: "@post";
+    }
+
+    /**
      * Returns a reverse view of a list.
      * @see <a href="{@docRoot}/DesignPatterns/Decorator.html">Decorator</a>
      */
