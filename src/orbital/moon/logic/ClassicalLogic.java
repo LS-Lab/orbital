@@ -258,7 +258,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    throw ex;
     	}
     } 
-    public static final String usage = "usage: [options] [all|none|properties|<filename>|table]\n\tall\tprove important semantic-equivalence expressions\n\tnone\ttry to prove some semantic-garbage expressions\n\tproperties\tprove some properties of classical logic inference relation\n\t<filename>\ttry to prove all expressions in the given file\n\ttable\tprint a function table of the expression instead\n\t-\tUse no arguments at all to be asked for a base and a\n\t\tsequence expression with logical junctors.\noptions:\n\t-verifyNF\tcheck the conjunctive and disjunctive forms in between\n\t-resolution\tuse resolution instead of semantic inference\n\t-verbose\tbe more verbose (f.ex. print normal forms if -verifyNF)\n\t-charset=<encoding>\tthe character set or encoding to use for reading files\n\nTo check whether A and B are equivalent, enter no base expression but 'A<->B' as the sequence expression.";
+    public static final String usage = "usage: [options] [all|none|properties|<filename>|table]\n\tall\tprove important semantic-equivalence expressions\n\tnone\ttry to prove some semantic-garbage expressions\n\tproperties\tprove some properties of classical logic inference relation\n\t<filename>\ttry to prove all expressions in the given file\n\ttable\tprint a function table of the expression instead\n\t-\tUse no arguments at all to be asked for expressions\n\t\tto prove.\noptions:\n\t-verifyNF\tcheck the conjunctive and disjunctive forms in between\n\t-resolution\tuse resolution instead of semantic inference\n\t-verbose\tbe more verbose (f.ex. print normal forms if -verifyNF)\n\t-charset=<encoding>\tthe character set or encoding to use for reading files\n\nTo check whether A and B are equivalent, enter '|= A<->B'";
 
     /**
      * Prove all conjectures read from a reader.
@@ -677,8 +677,8 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	private static Substitution NegationNFTransform;
 
 	/**
-	 * Drop all quantifiers.
-	 * Will simply remove all quantifiers from F.
+	 * Drop any quantifiers.
+	 * Will simply remove every quantifier from F.
 	 */
 	public static final Formula dropQuantifiers(Formula F) {
 	    try {
@@ -908,6 +908,8 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 
 	// Basic logical operations (elemental quantifiers).
 
+	//@todo we could implement a semantic apply() if only Interpretations would tell us a collection of entities in the universe
+	//@todo could we turn forall into type (&sigma;&rarr;t)&rarr;t alias Function<Function<S,boolean>,boolean> and use &forall;(&lambda;x.t)
     	public static final BinaryFunction forall = new BinaryFunction() {
     		public Object apply(Object x, Object a) {
 		    throw new LogicException("quantified formulas only have a semantic value with respect to a possibly infinite domain. They are available for inference, but cannot be interpreted.");
