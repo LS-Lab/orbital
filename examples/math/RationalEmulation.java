@@ -2,7 +2,7 @@ import orbital.math.*;
 import orbital.math.Integer;
 
 /**
- * Runnable application FractionTest.
+ * Runnable application testing fractions and also emulating rational numbers.
  * Also "emulates" rational numbers by
  * fractions of integers.
  * Will compare results of calculation for rational numbers
@@ -11,7 +11,7 @@ import orbital.math.Integer;
  * @version 0.8, 2002/06/18
  * @author  Andr&eacute; Platzer
  */
-public class FractionTest {
+public class RationalEmulation {
     /**
      * Application-start entry point.
      */
@@ -37,6 +37,9 @@ public class FractionTest {
 	System.out.println("(" + f + ") / (" + g + ") = " + f.divide(g));
     }
 
+    /**
+     * Rational emulation.
+     */
     private static void emulationCalculation() {
 	// create elements in Q alias Quot(Z)
 	Fraction/*<Integer,Integer>*/ a =
