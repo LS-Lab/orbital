@@ -57,7 +57,7 @@ public class MoveWeighting implements Function/*<Object, Number>*/ {
 	}
 
 	public String toString() {
-	    return "[" + figure.x + "|" + figure.y + "--" + move.movement + "-->" + destination.x + "|" + destination.y + "]";
+	    return "[" + figure.x + "|" + figure.y + "--" + move.getMovementString() + "-->" + destination.x + "|" + destination.y + "]";
 	} 
     }
 }
