@@ -31,19 +31,19 @@ public class DefaultClausalFactory implements ClausalFactory {
     
     public Clause newClause() {
 	//@todo indexed clauses don't really help better than memorizing (clause,literal) pairs except in the rare cases of factorization?
-	return new ClauseImpl();
-	//return new IndexedClauseImpl();
+	//return new ClauseImpl();
+	return new IndexedClauseImpl();
     }
 
     public Clause createClause(Set/*_<Formula>_*/ literals) {
 	return isVerbose()
 	    ? (ClauseImpl)new TraceableClauseImpl(literals)
-	    : new ClauseImpl(literals);
-	//: (ClauseImpl)new IndexedClauseImpl(literals);
+	    //      : new ClauseImpl(literals);
+	: (ClauseImpl)new IndexedClauseImpl(literals);
     }
 
     public ClausalSet newClausalSet() {
-	//@todo perhaps only use indexed clausal sets for top-level knowledgebase and setOfSupport, not in every intermediate set
+	//@internal only use indexed clausal sets for top-level knowledgebase and setOfSupport, not in every intermediate set
 	return new ClausalSetImpl();
     }
 
