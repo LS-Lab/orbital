@@ -54,8 +54,8 @@ REM Skip this Section
 :Jini
   echo packing downloadable jini jar file
     pushd %JAVA_HOME%\classes
-    jar cf %base%\lib\remote\orbital-dl.jar -C . orbital\moon\orbiter\jini\Oracle.class orbital\moon\orbiter\jini\OracleJini_Stub.class orbital\moon\orbiter\jini\JiniOrbitalImpl_Stub.class orbital\moon\orbiter\remote\*.class orbital\moon\orbiter\ServiceImpl_Stub.class
-    pushd %base%\lib\remote
+    jar cf %base%\dist\remote\orbital-dl.jar -C . orbital\moon\orbiter\jini\Oracle.class orbital\moon\orbiter\jini\OracleJini_Stub.class orbital\moon\orbiter\jini\JiniOrbitalImpl_Stub.class orbital\moon\orbiter\remote\*.class orbital\moon\orbiter\ServiceImpl_Stub.class
+    pushd %base%\dist\remote
     echo Enter Passphrase for keystore: (confirm with enter and Ctrl-Z)
     copy con %tmp%\xy
     jarsigner orbital-dl.jar Andre < %tmp%\xy
@@ -73,12 +73,12 @@ REM Skip this Section
     if "%O%"=="optJar" call :%O%
     if exist orbital\moon\io\cryptix del orbital\moon\io\cryptix\Steg*.class >NUL
     if exist orbital\moon\io\cryptix del orbital\moon\io\cryptix\provider\HandshakeRand*.class >NUL
-    if not exist %base%\lib md %base%\lib
-    jar cfm %base%\lib\orbital-core.jar meta-inf/manifest-core.mf -C . orbital/*.class orbital/logic/*.class orbital/logic/functor/*.class orbital/logic/trs/*.class orbital/logic/imp/*.class orbital/math/*.class orbital/math/functional/*.class orbital/util/*.class orbital/util/graph/*.class
-    jar cfm %base%\lib\orbital-ext.jar meta-inf/manifest-ext.mf -C . orbital/awt/*.gif orbital/awt/*.class orbital/game/*.class orbital/algorithm/*.class orbital/algorithm/evolutionary/*.class orbital/algorithm/template/*.class orbital/robotic/*.class orbital/robotic/strategy/*.class orbital/io/*.class meta-inf/services orbital/resources orbital/moon orbital/awt/virtual/*.class orbital/text/*.class orbital/io/*.class orbital/io/encoding/*.class orbital/io/parsing/*.class
+    if not exist %base%\dist md %base%\dist
+    jar cfm %base%\dist\orbital-core.jar meta-inf/manifest-core.mf -C . orbital/*.class orbital/logic/*.class orbital/logic/functor/*.class orbital/logic/trs/*.class orbital/logic/imp/*.class orbital/math/*.class orbital/math/functional/*.class orbital/util/*.class orbital/util/graph/*.class
+    jar cfm %base%\dist\orbital-ext.jar meta-inf/manifest-ext.mf -C . orbital/awt/*.gif orbital/awt/*.class orbital/game/*.class orbital/algorithm/*.class orbital/algorithm/evolutionary/*.class orbital/algorithm/template/*.class orbital/robotic/*.class orbital/robotic/strategy/*.class orbital/io/*.class meta-inf/services orbital/resources orbital/moon orbital/awt/virtual/*.class orbital/text/*.class orbital/io/*.class orbital/io/encoding/*.class orbital/io/parsing/*.class
     jar cfm %SystemDrive%\pub\ftp\orbital.jar meta-inf/manifest-core.mf -C . orbital/*.class orbital/logic/*.class orbital/logic/functor/*.class orbital/logic/trs/*.class orbital/logic/imp/*.class orbital/math/*.class orbital/math/functional/*.class orbital/util/*.class orbital/util/graph/*.class orbital/awt/*.gif orbital/awt/*.class orbital/game/*.class orbital/algorithm/*.class orbital/algorithm/evolutionary/*.class orbital/algorithm/template/*.class orbital/robotic/*.class orbital/robotic/strategy/*.class orbital/io/*.class meta-inf/services orbital/resources orbital/moon orbital/awt/virtual/*.class orbital/text/*.class orbital/io/*.class orbital/io/encoding/*.class orbital/io/parsing/*.class
     rem excluded orbital/io/cryptix/*.class orbital/net/secure/*.class
-    pushd %base%\lib\
+    pushd %base%\dist\
     rem ascending order might be important
     rem jar -i orbital-core.jar
     rem jar -i orbital-ext.jar
