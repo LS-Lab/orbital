@@ -20,6 +20,7 @@ import orbital.util.Pair;
  * 
  * @version 0.9, 04/03/96
  * @author  Andr&eacute; Platzer
+ * @deprecated Since Orbital 1.1 use {@link AdversarySearch} instead.
  */
 public class FigureWeighting extends ContainerWeighting {
     public FigureWeighting(Selection sel, Function/*<Object, Number>*/ weighting) {
@@ -48,6 +49,7 @@ public class FigureWeighting extends ContainerWeighting {
     //TODO: find a good name
     /**
      * Argument structure description for FigureWeighting.
+     * @deprecated Since Orbital 1.1 use {@link AdversarySearch.Option} instead.
      */
     public static class Argument {
 	public final Field  field;

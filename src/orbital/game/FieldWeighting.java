@@ -19,6 +19,7 @@ import orbital.util.Pair;
  * 
  * @version 0.9, 04/03/96
  * @author  Andr&eacute; Platzer
+ * @deprecated Since Orbital 1.1 use {@link AdversarySearch} instead.
  */
 public class FieldWeighting extends ContainerWeighting {
     //TODO: conform to GeneralSearchProblem.Option (including descendant classes)

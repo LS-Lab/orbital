@@ -5,6 +5,7 @@
  */
 
 package orbital.robotic.strategy;
+import orbital.robotic.strategy.Selection.Selecting;
 
 import orbital.logic.functor.Function;
 import java.util.List;
@@ -14,7 +15,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Collections;
 import java.util.LinkedList;
-import orbital.robotic.strategy.Selection.Selecting;
 
 /**
  * Evaluates and selects from a set of weighted objects.
@@ -28,6 +28,8 @@ import orbital.robotic.strategy.Selection.Selecting;
  * @structure aggregate selection:Selection
  * @version 0.9, 04/03/96
  * @author  Andr&eacute; Platzer
+ * @deprecated Since Orbital 1.1 use more general algorithms like
+ *  {@link orbital.algorithm.template.HillClimbing} instead.
  */
 public class Evaluation implements Function/*<Object, Number>*/ {
     //TODO: unify with orbital.algorithm.template.DepthFirstSearch, ...?
