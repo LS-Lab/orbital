@@ -18,7 +18,6 @@ import java.awt.Color;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Arrays;
-import orbital.util.Pair;
 import orbital.util.Utility;
 import orbital.util.Setops;
 
@@ -337,13 +336,19 @@ public class Field implements Serializable, Cloneable {
 	    for (Iterator i = iterateNonEmpty(); i.hasNext(); ) {
 		final Figure figure = (Figure) i.next();
 		for (Iterator j = figure.possibleMoves(); j.hasNext(); ) {
-		    Pair     p = (Pair) j.next();
-		    Move     move = (Move) p.A;
-		    Position destination = (Position) p.B;
-		    Field    field = (Field) clone();
-		    //@todo optimize since most part is unnecessary. We already know it is a legal move, that it reaches its destination by a valid path, etc. Only, if most methods were final, we still need to check for "field.getFigure(((Position) figure).moving(move, destination);" and then perform "field.swap(figure, destination);"
-		    if (field.move((Position) figure, move))
-			l.add(new Option(field, destination, figure, move));
+		    Option o = (Option) j.next();
+		    if (o.getState() != null)
+			// someone already computed the resulting field
+			l.add(o);
+		    else {
+			// we construct the resulting field
+			Move     move = o.getMove();
+			Position destination = o.getDestination();
+			Field    field = (Field) clone();
+			//@todo optimize since most part is unnecessary. We already know it is a legal move, that it reaches its destination by a valid path, etc. Only, if most methods were final, we still need to check for "field.getFigure(((Position) figure).moving(move, destination);" and then perform "field.swap(figure, destination);"
+			if (field.move((Position) figure, move))
+			    l.add(new Option(field, destination, figure, move));
+		    }
 		}
 	    }
 	    return Setops.unmodifiableIterator(l.iterator());

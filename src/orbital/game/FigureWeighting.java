@@ -35,7 +35,7 @@ public class FigureWeighting extends ContainerWeighting {
      */
     public Object/*>Number<*/ apply(Object arg) {
 	Argument i = (Argument) arg;
-	for (Iterator e = i.figure.possibleMoves(); e.hasNext(); ) {
+	for (Iterator e = ((FigureImpl)i.figure).iterateValidPairs(); e.hasNext(); ) {
 	    Pair p = (Pair) e.next();
 	    assert p.B != null : "non-null pairs";
 

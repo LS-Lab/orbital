@@ -24,7 +24,6 @@ import java.beans.PropertyChangeSupport;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
-import orbital.util.Pair;
 import java.util.Iterator;
 
 /**
@@ -237,9 +236,10 @@ public class Gameboard extends Canvas implements ImageObserver, Serializable {
      */
     protected Move findValidPath(final Figure source, final Position destination) {
 	for (Iterator i = source.possibleMoves(); i.hasNext(); ) {
-	    Pair     p = (Pair) i.next();
-	    Move     move = (Move) p.A;
-	    Position dst = (Position) p.B;
+	    //@internal we do not need Option.getField() here
+	    Option   o = (Option) i.next();
+	    Move     move = o.getMove();
+	    Position dst = o.getDestination();
 
 	    // if (move.movement.indexOf(Move.Teleport)!=-1)
 	    //      // well Teleport reaches destination
