@@ -234,7 +234,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	public Object apply(Object i) {
 	    Interpretation I = (Interpretation)i;
 	    if (I == null)
-		throw new IllegalStateException("cannot get the truth-value of a symbol with interpretation " + I);
+		throw new IllegalStateException("cannot get the truth-value of a symbol '" + symbol + "' with interpretation " + I);
             
 	    // symbols
 	    try {
