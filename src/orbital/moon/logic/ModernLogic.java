@@ -158,7 +158,7 @@ abstract class ModernLogic implements Logic {
 
 
 	    // infer
-	    final boolean sat = logic.infer(knowledge, formula);
+	    final boolean sat = logic.infer(knowledge, formula, verbose);
 	    System.out.println(knowledge + (sat ? "\t|= " : "\tNOT|= ") + formula);
 
 	    // verify equivalence of its NF
@@ -219,6 +219,17 @@ abstract class ModernLogic implements Logic {
 
     public String toString() {
 	return getClass().getName() + '[' + ']';
+    }
+
+    /**
+     * Checks whether the logics are compatible.
+     * An undefined logic of <code>null</code> is compatible with any logic.
+     */
+    boolean compatible(Logic l) {
+	return l == null
+	    || getClass() == l.getClass()
+	    || getClass().isAssignableFrom(l.getClass())
+	    || l.getClass().isAssignableFrom(getClass());
     }
 
     // heavy implementation
@@ -386,12 +397,17 @@ abstract class ModernLogic implements Logic {
      * @see #infer(Formula[],Formula)
      */
     public boolean infer(String w, String d) throws ParseException {
+	return infer(w, d, false);
+    } 
+    private boolean infer(String w, String d, boolean verbose) throws ParseException {
 	Expression B_parsed[] = createAllExpressions(w);
 	Formula B[] = B_parsed instanceof Formula[]
 	    ? (Formula[]) B_parsed
 	    : (Formula[]) Arrays.asList(B_parsed).toArray(new Formula[0]);
 	Formula D = (Formula) createExpression(d);
 	logger.log(Level.FINE, "Formula {0} has type {1} with sigma={2}", new Object[] {D, D.getType(), D.getSignature()});
+	if (verbose)
+	    System.out.println(MathUtilities.format(B) + "\t|=\t" + D + " ??");
 	return inference().infer(B, D);
     } 
 	
