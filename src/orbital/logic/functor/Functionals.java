@@ -1712,7 +1712,9 @@ public class Functionals {
     public static /*<A, B>*/ SortedSet/*_<B>_*/ map(Function/*<A, B>*/ f, SortedSet/*_<A>_*/ a) {
 	return (SortedSet/*_<B>_*/) map(f, (Collection/*_<B>_*/) a);
     }
+    //@todo 21 introduce Function map(Function) similar to Setops.createSelection?
     public static /*<A, B>*/ Iterator/*_<B>_*/ map(Function/*<A, B>*/ f, Iterator/*_<A>_*/ a) {
+	//@todo 21 mapping could happen inplace, i.e. return a new Iterator() which transforms just-in-time on demand, instead of in advance
 	return mapInto(f, a, new LinkedList/*_<B>_*/()).iterator();
     } 
     public static /*<A, B>*/ ListIterator/*_<B>_*/ map(Function/*<A, B>*/ f, ListIterator/*_<A>_*/ a) {

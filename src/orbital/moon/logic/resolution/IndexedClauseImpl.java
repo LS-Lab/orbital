@@ -67,6 +67,7 @@ public class IndexedClauseImpl extends ClauseImpl {
 
     public boolean add(Object o) {
 	//@todo optimize implementation. We do not need to remove from index and add again, but only add (this,o) to the index
+	//@todo perhaps only activate indexing once this clause gets inserted into a clausalset. Up to this point behave like super does
 	index.remove(this);
 	assert true || index.isEmpty() : "index " + index + " is empty after removing its single clause " + this;
 	boolean changed = super.add(o);

@@ -26,6 +26,10 @@ import java.util.logging.Level;
  * @author  Andr&eacute; Platzer
  */
 public class SetOfSupportResolution extends ResolutionBase {
+    /**
+     * Whether to use indexing for the clausal sets knowledgebase and set of support.
+     */
+    private static final boolean INDEXING = false;
 
     /**
      * Perform a <em>fair</em> selection of one clause out of S.
@@ -76,10 +80,12 @@ public class SetOfSupportResolution extends ResolutionBase {
     protected boolean prove(final ClausalSet knowledgebase, final ClausalSet query) {
 	assert !knowledgebase.contains(Clause.CONTRADICTION) : "knowledgebase W assumed consistent, so contains no elementary contradiction";
 	assert !query.contains(Clause.CONTRADICTION) : "query contains no elementary contradiction any more";
-	//ClausalSet usable = getClausalFactory().createClausalSet(knowledgebase);
-	//ClausalSet setOfSupport = getClausalFactory().createClausalSet(query);
-	ClausalSet usable = new IndexedClausalSetImpl(knowledgebase);
-	ClausalSet setOfSupport = new IndexedClausalSetImpl(query);
+	ClausalSet usable = INDEXING
+	    ? new IndexedClausalSetImpl(knowledgebase)
+	    : getClausalFactory().createClausalSet(knowledgebase);
+	ClausalSet setOfSupport = INDEXING
+	    ? new IndexedClausalSetImpl(query)
+	    : getClausalFactory().createClausalSet(query);
 	setOfSupport.removeAllSubsumedBy(setOfSupport);
 	usable.removeAllSubsumedBy(setOfSupport);
 	usable.removeAllSubsumedBy(usable);

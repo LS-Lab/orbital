@@ -142,7 +142,7 @@ public class SymbolBase implements Symbol, Serializable {
     /**
      * Compares two symbols.
      * <p>
-     * This implementation compares for notation (precedence) in favor of type (lexicographical) in favor of symbol name.
+     * This implementation compares for notation precedence in favor of type (lexicographical) in favor of symbol name.
      * </p>
      * @postconditions only <em>semi</em>-consistent with equals (since Notation is)
      */
