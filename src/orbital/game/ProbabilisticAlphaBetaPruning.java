@@ -10,6 +10,11 @@ import orbital.algorithm.template.ProbabilisticAlgorithm;
 import orbital.logic.functor.Function;
 import java.util.Random;
 
+import orbital.util.Utility;
+import orbital.math.MathUtilities;
+
+import java.util.logging.Level;
+
 /**
  * ProbabilisticAlphaBetaPruning class randomly choosing moves slightly worse than the best.
  * <p>
@@ -21,22 +26,43 @@ import java.util.Random;
  * @author  Andr&eacute; Platzer
  */
 public class ProbabilisticAlphaBetaPruning extends AlphaBetaPruning /*implements ProbabilisticAlgorithm*/ {
-    public ProbabilisticAlphaBetaPruning(int depth, Function/*<Object, Number>*/ utility, float probability) {
-        this(depth, utility, probability, new Random());
+    public ProbabilisticAlphaBetaPruning(int depth, Function/*<Object, Number>*/ utility, float improveProbability) {
+	this(depth, utility, improveProbability, 0, 0);
+    }
+    public ProbabilisticAlphaBetaPruning(int depth, Function/*<Object, Number>*/ utility, float improveProbability, float fluctuateProbability, double fluctuateThreshold) {
+        this(depth, utility, improveProbability, fluctuateProbability, fluctuateThreshold, new Random());
     }
 
     /**
-     * @param probability is the probability of choosing a better alternative, if there is any.
-     *  Note that this does not specify the probability of choosing the best alternative.
+     * @param improveProbability is the probability of accepting a better
+     *  alternative, when there is one. Note that - due to the iterative
+     * nature of the algorithm - this does not specify the probability
+     * of choosing the best alternative.
+     * @param fluctuateProbability is the probability of falling back to an alike
+     *  (or slightly worse) solution, when there is one.
+     * @param fluctuateThreshold gives the maximum amount that a
+     * solution may be lower than the current best choice, for still
+     * counting as an alike (or slightly worse) alternative.
      */
-    public ProbabilisticAlphaBetaPruning(int depth, Function/*<Object, Number>*/ utility, float probability, Random random) {
+    public ProbabilisticAlphaBetaPruning(int depth, Function/*<Object, Number>*/ utility, float improveProbability, float fluctuateProbability, double fluctuateThreshold, Random random) {
         super(depth, utility);
-        this.probability = probability;
+	Utility.pre(MathUtilities.isProbability(improveProbability), "improveProbability " + improveProbability + " is a probability");
+        this.improveProbability = improveProbability;
+	Utility.pre(MathUtilities.isProbability(fluctuateProbability), "fluctuateProbability " + fluctuateProbability + " is a probability");
+        this.fluctuateProbability = fluctuateProbability;
+	Utility.pre(fluctuateThreshold <= 0, "threshold =< 0 expected for fluctuation. The > 0 cases are subject to improveProbability");
+        this.fluctuateThreshold = fluctuateThreshold;
         this.random = random;
+	Utility.pre((fluctuateThreshold == 0.0) == (fluctuateProbability == 0.0), "no fluctuation probability (means =0) if and only if no fluctuation threshold (means =0)");
+    }
+    public ProbabilisticAlphaBetaPruning(int depth, Function/*<Object, Number>*/ utility, float improveProbability, Random random) {
+	this(depth, utility, improveProbability, 0, 0, random);
     }
 
     private Random random;
-    private float  probability;
+    private float  improveProbability;
+    private float  fluctuateProbability;
+    private double fluctuateThreshold;
 
     public boolean isCorrect() {
     	return false;
@@ -54,7 +80,26 @@ public class ProbabilisticAlphaBetaPruning extends AlphaBetaPruning /*implements
     protected boolean isPreferred(double v, double w) {
 	if (random == null)
 	    throw new IllegalStateException("no random generator has been set");
-	// either w is all too bad (since it is the null option) or probably v is better
-	return w == Double.NEGATIVE_INFINITY || (v > w && random.nextFloat() <= probability);
+	// either w is all too bad (since it is the null option),
+	float rnd;
+	if (w == Double.NEGATIVE_INFINITY)
+	    logger.log(Level.FINEST, "isPreferred: {0} preferred to {1} because {1}=-inf", new Object[] {format(v), format(w)});
+	else if(v > w && (rnd = random.nextFloat()) <= improveProbability)
+	    // or v is better and we probably want to improve our choice
+	    logger.log(Level.FINEST, "isPreferred: {0} preferred to {1} because {0}>{1} and improve randomly because of {2}=<{3}", new Object[] {format(v), format(w), format(rnd), format(improveProbability)});
+	else if (MathUtilities.equals(v, w, -fluctuateThreshold) && (rnd =random.nextFloat()) <= fluctuateProbability)
+	    // or v is alike and we probably want to "schwanken" and fall back to another choice
+	    logger.log(Level.FINEST, "isPreferred: {0} preferred to {1} because {0}~=~{1} (by threshold {4})and fluctuate randomly because of {2}=<{3}", new Object[] {format(v), format(w), format(rnd), format(fluctuateProbability), format(fluctuateThreshold)});
+	else
+	    return false;
+	return true;
+
+	//@internal original version without logging
+// 	// either w is all too bad (since it is the null option),
+// 	return w == Double.NEGATIVE_INFINITY
+// 	    // or v is better and we probably want to improve our choice
+// 	    || (v > w && random.nextFloat() <= improveProbability)
+// 	    // or v is alike and we probably want to "schwanken" and fall back to another choice
+// 	    || (MathUtilities.equals(v, w, -fluctuateThreshold) && random.nextFloat() <= fluctuateProbability);
     }
 }
