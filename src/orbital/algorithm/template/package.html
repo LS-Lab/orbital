@@ -1,0 +1,56 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="Andre Platzer">
+</head>
+
+<body>
+
+A framework for general algorithmic evaluation schemes. This package
+contains algorithmic template classes for rapid-prototyping and sophisticated
+search strategies and planning in state spaces.
+<p>
+Algorithmic templates get called along with a problem-specific implementation
+of the corresponding hook class to solve the problem. The hook class interface
+can be implemented in order to apply one of the prefabricated algorithms. Apart
+from the relief from implementing the algorithm itself, using algorithmic
+templates often has the powerful advantage that several different
+implementations can be interchanged freely without the need to change more than
+just a single constructor call to the concrete algorithm. Once a problem has
+been modeled accordingly by implementing its hook class, concrete solution
+algorithms can even be interchanged at runtime.</p>
+<p>
+This freedom of choice concerning the concrete algorithm enables clients to
+find the optimal solution algorithm for the actual problem experimentally.
+Very sophisticated problems may even be tackled by switching algorithms, depending
+on the dynamic behaviour and progress of the solution process. Because of the
+common interface to all algorithms solving a specific problem class, switching
+algorithms is simple.
+</p>
+
+<p>Important classes are:</p>
+<ul>
+  <li><a href="GeneralSearch.html">GeneralSearch</a> and its sub classes provide a multitude of search algorithms
+    applicable to any problem that is specified as an instance of <a href="GeneralSearchProblem.html">
+    GeneralSearchProblem</a> in terms of a state model.</li>
+  <li><a href="MarkovDecisionProcess.html">MarkovDecisionProcess</a> and its descendents implement planning algorithms
+    for solving problems specified as an instance of <a href="MarkovDecisionProblem.html">MarkovDecisionProblem</a>.</li>
+  <li><a href="Greedy.html">Greedy</a> for quick algorithms that can be specified with a greedy property, especially on matroids.</li>
+  <li><a href="DivideAndConquer.html">DivideAndConquer</a> for algorithms following the popular divide and conquer
+    strategy.</li>
+  <li><a href="DynamicProgramming.html">DynamicProgramming</a> for algorithms following an important mathematical
+    evaluation scheme called dynamic programming.</li>
+  <li><a href="Backtracking.html">Backtracking</a> for algorithms following the backtracking scheme.</li>
+</ul>
+<dl>
+  <dt><b>See Also:</b></dt>
+  <dd>
+    <a href="../../../DesignPatterns/Strategy.html">Strategy Pattern</a>,
+    <a href="doc-files/AlgorithmicTable.gif">Table of Algorithms in Comparison</a>.
+  </dd>
+</dl>
+</body>
+
+</html>
