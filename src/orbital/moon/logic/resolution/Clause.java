@@ -34,7 +34,7 @@ public interface Clause extends Set/*<Formula>*/ {
      * Get the free variables of a formula represented as a clause.
      * @return freeVariables(this)
      * @internal note that for clauses FV(C)=V(C) &and; BV(C)=&empty;
-     * @xxx change return-type to Set to reflect Formula.getFreeVariables.
+     * @xxx change return-type to Set to reflect Formula.getFreeVariables. Further using LinkedHashSets could be quicker than using the TreeSets underlying Signatures
      */
     Signature getFreeVariables();
 
