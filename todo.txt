@@ -4,8 +4,6 @@ fix errors
 --------
 orbital.moon.logic.ModalLogic test runs infinitely long (> 4h15min)
 
-reorganize resources such that they are finally stored in orbital.moon.logic.* etc. as far as the JAR file is concerned. But still keep separated in CVS.
-
 deprecated
 ----------
 orbital.moon.awt.Demonstratos
