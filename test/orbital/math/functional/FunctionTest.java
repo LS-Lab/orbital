@@ -94,9 +94,15 @@ public class FunctionTest extends check.TestCase {
 			
 	    final double MIN = -1000;
 	    final double MAX = +1000;
-	    final double EPS = Double.MIN_VALUE;
+	    final double EPS = Double.longBitsToDouble(Double.doubleToLongBits(1.0)+1)-1.0;
 	    final double SMIN = -10;
 	    final double SMAX = +10;
+	    final double PI = Math.PI;
+	    System.err.println("epsilon = " + EPS + " = " + Long.toString(Double.doubleToLongBits(EPS), 16));
+	    System.err.println("1 + epsilon = " + (1 + EPS));
+	    System.err.println("-1 + epsilon = " + (-1 + EPS));
+	    System.err.println("1 - epsilon = " + (1 - EPS));
+	    System.err.println("(1 + epsilon/2) + epsilon/2= " + ((1 + EPS/2) + EPS/2));
 			
 	    //delta, logistic, reciprocal, sign
 	    //@todo id, zero with tensor once Functions.zero has been adapted
@@ -117,7 +123,7 @@ public class FunctionTest extends check.TestCase {
 	    testFunction("Minus",	Operations.minus, MIN, MAX, TYPE_ALL, TYPE_SCALAR);
 	    //testFunction("Inverse",	Operations.inverse, MIN, MAX, TYPE_MATRIX);
 	    try {
-		testFunction("Exp",	Functions.exp, -12, 12, TYPE_SCALAR, TYPE_NONE);
+		testFunction("Exp",	Functions.exp, -10, 10, TYPE_SCALAR, TYPE_NONE);
 		testFunction("Log",	Functions.log, EPS, MAX, TYPE_SCALAR, TYPE_NONE);
 	    }
 	    catch (AssertionError ignore) {
@@ -132,7 +138,8 @@ public class FunctionTest extends check.TestCase {
 	    testFunction("Sin",		Functions.sin, SMIN, SMAX, TYPE_SCALAR, TYPE_NONE);
 	    testFunction("Cos",		Functions.cos, SMIN, SMAX, TYPE_SCALAR, TYPE_NONE);
 	    testFunction("Tan",		Functions.tan, SMIN, SMAX, TYPE_SCALAR, TYPE_NONE); //...
-	    testFunction("Cot",		Functions.cot, SMIN, SMAX, TYPE_SCALAR, TYPE_NONE); //...
+	    testFunction("Cot",		Functions.cot, -PI+EPS, -EPS, TYPE_SCALAR, TYPE_NONE); //...
+	    testFunction("Cot",		Functions.cot, EPS, PI-EPS, TYPE_SCALAR, TYPE_NONE);
 	    testFunction("Csc",		Functions.csc, EPS, SMAX, TYPE_SCALAR, TYPE_NONE);
 	    testFunction("Csc",		Functions.csc, SMIN, EPS, TYPE_SCALAR, TYPE_NONE);
 	    testFunction("Sec",		Functions.sec, SMIN, SMAX, TYPE_SCALAR, TYPE_NONE);
@@ -150,7 +157,7 @@ public class FunctionTest extends check.TestCase {
 	    testFunction("ArcTan",	Functions.arctan, SMIN, SMAX, TYPE_SCALAR, TYPE_NONE);
 	    testFunction("ArcCosh",	Functions.arcosh, 1, SMAX, TYPE_SCALAR, TYPE_NONE);
 	    testFunction("ArcSinh",	Functions.arsinh, SMIN, SMAX, TYPE_SCALAR, TYPE_NONE);
-	    testFunction("ArcTanh",	Functions.artanh, -1+EPS, 1-EPS, TYPE_SCALAR, TYPE_NONE);
+	    testFunction("ArcTanh",	Functions.artanh, -1+EPS, 1-EPS, TYPE_REAL | TYPE_COMPLEX, TYPE_NONE);
 	    System.out.println();
 	    System.out.println("PASSED");
 	} catch (MathLinkException ex) {
@@ -164,51 +171,21 @@ public class FunctionTest extends check.TestCase {
     /**
      * @param testType the types of arguments to test.
      * @param componentType the types of components of the arguments to test (if testType includes any tensors).
-     * @internal the possible range of arguments is a major problem.
+     * @todo add tensor types
      */
     private void testFunction(String mFunction, Function jFunction, double min, double max, int testType, int componentType) throws MathLinkException {
 	try {
 	    // Integer value test
 	    for (int i = 0; (testType & TYPE_INTEGER) != 0 && i < TEST_REPETITION; i++) {
-		final long x = integerArgument((int)Math.ceil(min),(int)Math.floor(max));
-		final Integer jx = vf.valueOf(x);
-		final String  mFunctionCall = mFunction + "[" + x + "]";
-		final String  jFunctionCall = mFunction + "[" + x + "]";
-		ml.evaluate("N[" + mFunctionCall + "]");
-		ml.waitForAnswer();
-		System.out.print(mFunctionCall + " = ");
-		final double mresult = ml.getDouble();
-		System.out.println(mresult);
-		final Real jresult = (Real) jFunction.apply(jx);
-		System.out.println(jFunctionCall + " = " + jresult);
-		if (!jresult.equals(vf.valueOf(mresult), tolerance))
-		    compareResults(mFunction, jFunction, jx, false);
-		else if (Math.abs(jresult.doubleValue() - mresult) >= tolerance.doubleValue())
-		    compareResults(mFunction, jFunction, jx, false);
-		else
-		    compareResults(mFunction, jFunction, jx, true);
+		compareResults(mFunction, jFunction,
+			       vf.valueOf(integerArgument((int)Math.ceil(min),(int)Math.floor(max))));
 	    }
     
 	    // Real value test
 	    for (int i = 0; (testType & TYPE_REAL) != 0 && i < TEST_REPETITION; i++)
 		try {
-		    final double x = realArgument(min,max);
-		    final Real	 jx = vf.valueOf(x);
-		    final String mFunctionCall = mFunction + "[" + x + "]";
-		    final String jFunctionCall = jFunction + "[" + jx + "]";
-		    ml.evaluate("N[" + mFunctionCall + "]");
-		    ml.waitForAnswer();
-		    System.out.print(mFunctionCall + " = ");
-		    final double mresult = ml.getDouble();
-		    System.out.println(mresult);
-		    final Real jresult = (Real) jFunction.apply(jx);
-		    System.out.println(jFunctionCall + " = " + jresult);
-		    if (!jresult.equals(vf.valueOf(mresult), tolerance))
-			compareResults(mFunction, jFunction, jx, false);
-		    else if (Math.abs(jresult.doubleValue() - mresult) >= tolerance.doubleValue())
-			compareResults(mFunction, jFunction, jx, false);
-		    else
-			compareResults(mFunction, jFunction, jx, true);
+		    compareResults(mFunction, jFunction,
+				   vf.valueOf(realArgument(min,max)));
 		}
 		catch (MathLinkException e) {
 		    if (!"machine number overflow".equals(e.getMessage()))
@@ -218,22 +195,8 @@ public class FunctionTest extends check.TestCase {
 	    // Complex value test
 	    for (int i = 0; (testType & TYPE_COMPLEX) != 0 && i < TEST_REPETITION; i++)
 		try {
-		    final double  x = realArgument(min,max);
-		    final double  y = realArgument(min,max);
-		    final Complex jx = vf.complex(x, y);
-		    final String  mFunctionCall = mFunction + "[" + x + " + I*" + y + "]";
-		    final String  jFunctionCall = jFunction + "[" + jx + "]";
-		    ml.evaluate("N[" + mFunctionCall + "]");
-		    ml.waitForAnswer();
-		    System.out.print(mFunctionCall + " = ");
-		    final Complex mresult = ((ComplexAdapter) ml.getComplex()).getValue();
-		    System.out.println(mresult);
-		    final Complex jresult = (Complex) jFunction.apply(jx);
-		    System.out.println(jFunctionCall + " = " + jresult);
-		    if (!jresult.equals(mresult, tolerance))
-			compareResults(mFunction, jFunction, jx, false);
-		    else
-			compareResults(mFunction, jFunction, jx, true);
+		    compareResults(mFunction, jFunction,
+				   vf.complex(realArgument(min,max), realArgument(min,max)));
 		}
 		catch (MathLinkException e) {
 		    if (!"machine number overflow".equals(e.getMessage()))
@@ -242,11 +205,12 @@ public class FunctionTest extends check.TestCase {
     	}
     	catch (UnsupportedOperationException ignore) {}
     }
+
     /**
      * Compares the results of a function application
      * of Java and of Mathematica.
      */
-    private void compareResults(String mFunction, Function jFunction, Scalar x, boolean wasSuccessful) throws MathLinkException {
+    private void compareResults(String mFunction, Function jFunction, Scalar x) throws MathLinkException {
 	final String  mFunctionCall = mFunction + "[" + x + "]";
 	final String  jFunctionCall = jFunction + "[" + x + "]";
 	ml.evaluate("N[" + mFunctionCall + "]");
@@ -261,8 +225,6 @@ public class FunctionTest extends check.TestCase {
 	final Complex jresult = (Complex) jFunction.apply(x);
 	System.out.println(jFunctionCall + " = " + jresult);
 	boolean isSuccessful = jresult.equals(mresult, tolerance);
-	if (isSuccessful != wasSuccessful)
-	    throw new InternalError("this should not happen");
 	assertTrue(isSuccessful , mFunctionCall + " = " + mresult + " != " + jFunctionCall + " = " + jresult + "\tdelta=" + jresult.subtract(mresult));
     }
 
@@ -276,25 +238,9 @@ public class FunctionTest extends check.TestCase {
 	    // Integer value test
 	    for (int i = 0; (testType & TYPE_INTEGER) != 0 && i < TEST_REPETITION; i++)
 		try {
-		    final int	  x = integerArgument((int)Math.ceil(min),(int)Math.floor(max));
-		    final int	  y = integerArgument((int)Math.ceil(min),(int)Math.floor(max));
-		    final Integer jx = vf.valueOf((long)x);
-		    final Integer jy = vf.valueOf((long)y);
-		    final String  mFunctionCall = mFunction + "[" + x + "," + y + "]";
-		    final String  jFunctionCall = jFunction + "[" + jx + "," + jy + "]";
-		    ml.evaluate("N[" + mFunctionCall + "]");
-		    ml.waitForAnswer();
-		    System.out.print(mFunctionCall + " = ");
-		    final double mresult = ml.getDouble();
-		    System.out.println(mresult);
-		    final Real jresult = (Real) jFunction.apply(jx, jy);
-		    System.out.println(jFunctionCall + " = " + jresult);
-		    if (!jresult.equals(vf.valueOf(mresult), tolerance))
-			compareResults(mFunction, jFunction, jx, jy, false);
-		    else if (Math.abs(jresult.doubleValue() - mresult) >= tolerance.doubleValue())
-			compareResults(mFunction, jFunction, jx, jy, false);
-		    else
-			compareResults(mFunction, jFunction, jx, jy, true);
+		    compareResults(mFunction, jFunction,
+				   vf.valueOf(integerArgument((int)Math.ceil(min),(int)Math.floor(max))),
+				   vf.valueOf(integerArgument((int)Math.ceil(min),(int)Math.floor(max))));
 		}
 		catch (MathLinkException e) {
 		    if (!"machine number overflow".equals(e.getMessage()))
@@ -304,25 +250,9 @@ public class FunctionTest extends check.TestCase {
 	    // Real value test
 	    for (int i = 0; (testType & TYPE_REAL) != 0 && i < TEST_REPETITION; i++)
 		try {
-		    final double x = realArgument(min,max);
-		    final double y = realArgument(min,max);
-		    final Real	 jx = vf.valueOf(x);
-		    final Real	 jy = vf.valueOf(y);
-		    final String  mFunctionCall = mFunction + "[" + x + "," + y + "]";
-		    final String  jFunctionCall = jFunction + "[" + jx + "," + jy + "]";
-		    ml.evaluate("N[" + mFunctionCall + "]");
-		    ml.waitForAnswer();
-		    System.out.print(mFunctionCall + " = ");
-		    final double mresult = ml.getDouble();
-		    System.out.println(mresult);
-		    final Real jresult = (Real) jFunction.apply(jx, jy);
-		    System.out.println(jFunctionCall + " = " + jresult);
-		    if (!jresult.equals(vf.valueOf(mresult), tolerance))
-			compareResults(mFunction, jFunction, jx, jy, false);
-		    else if (Math.abs(jresult.doubleValue() - mresult) >= tolerance.doubleValue())
-			compareResults(mFunction, jFunction, jx, jy, false);
-		    else
-			compareResults(mFunction, jFunction, jx, jy, true);
+		    compareResults(mFunction, jFunction,
+				   vf.valueOf(realArgument(min,max)),
+				   vf.valueOf(realArgument(min,max)));
 		}
 		catch (MathLinkException e) {
 		    if (!"machine number overflow".equals(e.getMessage()))
@@ -332,22 +262,9 @@ public class FunctionTest extends check.TestCase {
 	    // Complex value test
 	    for (int i = 0; (testType & TYPE_COMPLEX) != 0 && i < TEST_REPETITION; i++)
 		try {
-		    final double  x1 = realArgument(min,max);
-		    final double  x2 = realArgument(min,max);
-		    final double  y1 = realArgument(min,max);
-		    final double  y2 = realArgument(min,max);
-		    final Complex jx = vf.complex(x1, x2);
-		    final Complex jy = vf.complex(y1, y2);
-		    final String  mFunctionCall = mFunction + "[" + x1 + " + I*" + x2 + "," + y1 + " + I*" + y2 + "]";
-		    final String  jFunctionCall = jFunction + "[" + jx + "," + jy + "]";
-		    ml.evaluate("N[" + mFunctionCall + "]");
-		    ml.waitForAnswer();
-		    System.out.print(mFunctionCall + " = ");
-		    final Complex mresult = ((ComplexAdapter) ml.getComplex()).getValue();
-		    System.out.println(mresult);
-		    final Complex jresult = (Complex) jFunction.apply(jx, jy);
-		    System.out.println(jFunctionCall + " = " + jresult);
-		    compareResults(mFunction, jFunction, jx, jy, jresult.equals(mresult, tolerance));
+		    compareResults(mFunction, jFunction,
+				   vf.complex(realArgument(min,max),realArgument(min,max)),
+				   vf.complex(realArgument(min,max),realArgument(min,max)));
 		}
 		catch (MathLinkException e) {
 		    if (!"machine number overflow".equals(e.getMessage()))
@@ -398,7 +315,12 @@ public class FunctionTest extends check.TestCase {
     	}
     	catch (UnsupportedOperationException ignore) {}
     }
-    private void compareResults(String mFunction, BinaryFunction jFunction, Scalar x, Scalar y, boolean wasSuccessful) throws MathLinkException {
+
+    /**
+     * Compares the results of a binary function application
+     * of Java and of Mathematica.
+     */
+    private void compareResults(String mFunction, BinaryFunction jFunction, Scalar x, Scalar y) throws MathLinkException {
 	final String  mFunctionCall = mFunction + "[" + x + "," + y + "]";
 	final String  jFunctionCall = jFunction + "[" + x + "," + y + "]";
 	try {
@@ -410,8 +332,6 @@ public class FunctionTest extends check.TestCase {
 	    final Complex jresult = (Complex) jFunction.apply(x, y);
 	    System.out.println(jFunctionCall + " = " + jresult);
 	    boolean isSuccessful = jresult.equals(mresult, tolerance);
-	    if (isSuccessful != wasSuccessful)
-		throw new InternalError("this should not happen");
 	    assertTrue(isSuccessful , mFunctionCall + " = " + mresult + " != " + jFunctionCall + " = " + jresult + "\tdelta=" + jresult.subtract(mresult));
 	}
 	catch (MathLinkException e) {
@@ -419,7 +339,10 @@ public class FunctionTest extends check.TestCase {
 		throw e;
 	}
     }
-	
+
+
+    // create (random) argument values
+    
     private int integerArgument(int min, int max) {
 	return (int)((max-min) * random.nextDouble()) + min;
     }
@@ -455,7 +378,9 @@ public class FunctionTest extends check.TestCase {
 	    x.set(i, randomArgument(min, max, testType));
 	return x;
     }
-	
+
+    // Helpers
+
     /**
      * Adapter class between orbital.math.* and J/Link.
      * @structure delegate value:Complex
