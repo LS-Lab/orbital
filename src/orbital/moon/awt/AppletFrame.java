@@ -85,11 +85,12 @@ public class AppletFrame extends Frame {
      * Get information on an applet.
      */
     public static String info(Applet a) {
-	String nl = System.getProperty("line.separator");
+	final String nl = System.getProperty("line.separator");
 	StringBuffer sb = new StringBuffer("applet ");
 	sb.append(a.getClass().getName());
 	sb.append(nl);
 	sb.append("supports the following parameters:");
+	sb.append(nl);
 	String[][] params = a.getParameterInfo();
 	for (int i = 0; i < params.length; i++) {
 	    for (int j = 0; j < params[i].length; j++)
