@@ -27,11 +27,22 @@ import orbital.util.KeyValuePair;
 
 /**
  * Iterative Expansion (IE).
+ * <p>
+ * Iterative Expansion is a memory-bounded search algorithm that combines the space complexity
+ * advantages of IDA<sup>*</sup> with A<sup>*</sup>'s ability of remembering more than just a bound
+ * from the rest of the search tree. IE is inferior to SMA<sup>*</sup> which has a more flexible
+ * tradeoff between reducing memory consumption and remembering parts of the search tree in order to
+ * avoid re-expansion. However, IE has much less memory management overhead and thus has a comparable
+ * performance to that of SMA<sup>*</sup>.
+ * Nevertheless, all current memory-bounded algorithms have difficulties with problems having
+ * too many distinct f-costs (i.e. |f(S)| is large).
+ * </p>
  *
  * @author Andr&eacute; Platzer
  * @version 1.0, 2002-07-24
  * @internal also has a simple recursive formulation.
  * @see "Russel, S. (1992?) Efficient memory-bounded search methods."
+ * @see "Korf, R.E. (1991) Best-first search with limited memory. UCLA Comp. Sci.Ann."
  * @todo derive IterativeExpansion from DepthFirstBoundingSearch, or doesn't that use DFS.OptionIterator, because it expands best local neighbour (also with varying f-costs on return of expansion)?
  * However, it's not BestFS.OptionIterator, either, since we don't consider backing up to some very different location somewhere in state space, but keep our mind focues on the current local neighbours.
  * So perhaps we should adapt BestFS.OptionIterator.add such that we forget about the old choices and simply sort the neighbourhood, and keep a stack of sorted local neighbourhoods. (remembering the second best, only, is perhaps a bad idea, since we may back up to the second (and third...) best multiple times if all neighbours are still below bound.).
@@ -113,10 +124,10 @@ public class IterativeExpansion extends GeneralSearch implements EvaluativeAlgor
      * @return a Pair of solution state and new cost of node.
      * @internal we do not need to set the f-cost, but only tell our caller the new f-cost for updating successors.
      * @todo optimizable by far, also modularize to an OptionIterator?
+     * @todo optimize (the performance is embarrassing)
      */
     private final Pair/*<S,Real>*/ solveByIterativeExpand(Object/*>S<*/ node, Real bound) {
-	if (!(bound.compareTo(Values.ZERO) >= 0 && !bound.isNaN()))
-	    throw new AssertionError("bound " + bound + " is a nonnegative value");
+	assert bound.compareTo(Values.ZERO) >= 0 && !bound.isNaN() : "bound " + bound + " >= 0";
 	Real cost = (Real) getEvaluation().apply(node);
 	//System.err.println(node + ",\t" + cost + "/" + bound);
 	if (cost.compareTo(bound) > 0)
@@ -138,15 +149,11 @@ public class IterativeExpansion extends GeneralSearch implements EvaluativeAlgor
 	    return new Pair(null, cost);
 	// sort successors in order to have fast access to min and second-best min
 	Collections.sort(successors);
+	assert orbital.util.Utility.sorted(successors, null) : "@post Collections.sort";
 	while (cost.compareTo(bound) <= 0) {
 	    final KeyValuePair bestPair = (KeyValuePair)successors.get(0);
 	    final Object/*>S<*/ best = bestPair.getValue();
-	    if (Setops.some(successors, new orbital.logic.functor.Predicate() {
-		    public boolean apply(Object o) {
-			return ((Comparable)((KeyValuePair)o).getKey()).compareTo(bestPair.getKey()) < 0;
-		    }
-		}))
-		throw new AssertionError("best has lowest f-cost");
+	    assert !Setops.some(successors, new orbital.logic.functor.Predicate() { public boolean apply(Object o) {return ((Comparable)((KeyValuePair)o).getKey()).compareTo(bestPair.getKey()) < 0;} }) : "best has lowest f-cost";
 	    final Real newbound = (Real) Operations.min.apply(bound, (Real)((KeyValuePair)successors.get(1)).getKey());
 	    //System.err.println(node + ",\t" + cost + "/" + bound + "\t expanding to " + best + ",\t" + bestPair.getKey() + "/" + newbound + "\n\t\talternative " + ((KeyValuePair)successors.get(1)).getValue() + ", " + ((KeyValuePair)successors.get(1)).getKey());
 	    final Pair solutionAndCostUpdate = solveByIterativeExpand(best, newbound);
@@ -156,9 +163,8 @@ public class IterativeExpansion extends GeneralSearch implements EvaluativeAlgor
 	    // circumscription of getEvaluation().set(best, its new cost (from recursive call));
 	    //System.err.println(best + ",\t" + solutionAndCostUpdate.B + "/" + newbound + "\treally updated cost to " + solutionAndCostUpdate.B);
 	    successors.remove(0);
-	    successors.add(new KeyValuePair(solutionAndCostUpdate.B, best));
-	    //@todo optimizable by far, the only node's f-cost that might have changed is best (successors[0]). Insertion would suffice.
-	    Collections.sort(successors);
+	    Setops.insert(successors, new KeyValuePair(solutionAndCostUpdate.B, best));
+	    assert orbital.util.Utility.sorted(successors, null) : "@post Setops.insert";
 	    //System.err.print(node + ",\t" + cost + "/" + bound);
 	    cost = (Real) ((KeyValuePair)successors.get(0)).getKey();
 	    //System.err.println("\tupdated cost to " + cost + " (due to " + ((KeyValuePair)successors.get(0)).getValue() + ")");
@@ -176,5 +182,5 @@ public class IterativeExpansion extends GeneralSearch implements EvaluativeAlgor
     protected Iterator createTraversal(GeneralSearchProblem problem) {
 	throw new AssertionError("should not get called");
     }
-
+    
 }// IterativeExpansion

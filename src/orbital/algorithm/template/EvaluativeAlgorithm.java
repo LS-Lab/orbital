@@ -36,7 +36,7 @@ public interface EvaluativeAlgorithm extends AlgorithmicTemplate {
     Function/*<GeneralSearchProblem.Option???,Real>*/ getEvaluation();
 
     /**
-     * The natural comparator induced by the evaluation function f(n).
+     * The canonical comparator induced by the evaluation function f(n).
      * <p>
      * For highest performance it might prove useful to cache most recent values
      * of the evaluation function.</p>

@@ -194,7 +194,7 @@ public interface GeneralSearchProblem/*<A,S>*/ extends MarkovDecisionProblem/*<A
      * then it can apply the do/undo technique.
      * Alternatively, if applicable actions can be determined quickly but constructing the
      * resulting states is expensive, the (simpler) technique of lazy state construction can be
-     * applied. In order to achieve this, {@link GeneralSearchProblem.Option#getState() getState()}
+     * applied. In order to achieve this, <!-- @todo document --> {@link GeneralSearchProblem.Option#getState() getState()}
      * must be overwritten to perform lazy construction of resulting states. However, this
      * technique is not that powerful as do/undo, and is less useful if the calculation of costs
      * depends on the specific resulting states anyway.

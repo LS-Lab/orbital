@@ -189,7 +189,7 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
      * variant is no good for very high branching factors (or
      * expensive expansions).
      * @see BestFirstSearch
-     * @todo (for hill-climbing only) terminate search on local optimum in case of LOCAL_BEST_SELECTION.
+     * @todo (for hill-climbing only) terminate search on local optimum in case of BEST_LOCAL_SELECTION.
      * terminate search if after an attempted transition s&rarr;s' it is f(s')>f(s) (local minimum convergence criterium), alias (due to acceptStep) if new state == old state.
      * @todo why do some authors think that hill climbing should not forget about other alternatives, but remember them as depth-first search does. Will this really be another / or better algorithm, then?
      */

@@ -26,7 +26,7 @@ import orbital.math.Values;
  * Hill-climbing search.
  * An heuristic search algorithm and local optimizer.
  * <p>
- * ({@link LocalOptimizerSearch#LOCAL_BEST_SELECTION One variant} of hill-climbing)
+ * ({@link LocalOptimizerSearch#BEST_LOCAL_SELECTION One variant} of hill-climbing)
  * Expands best nodes first, i.e. those that have min h(n) and forgets about the alternatives.</p>
  * <p>
  * Hill climbing is neither complete <em>nor</em> optimal,

@@ -31,7 +31,8 @@ import orbital.math.Values;
  *
  * @version 1.0, 2000/09/20
  * @author  Andr&eacute; Platzer
- * @todo why is IDA* with iterators about 11% slower than IDA* with collections?ß
+ * @see "Korf, R.E. (1985) Depth-first iterative deepening. An optimal admissible tree search. AIJ, 27(1), 97-109"
+ * @todo why is IDA* with iterators about 11% slower than IDA* with collections?
  */
 public class IterativeDeepeningAStar extends DepthFirstBoundingSearch implements HeuristicAlgorithm {
     private static final long serialVersionUID = 5814132461076107994L;
