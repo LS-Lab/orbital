@@ -72,9 +72,9 @@ public interface Polynomial/*<R implements Arithmetic>*/ extends Euclidean, Func
      * <p>
      * The resulting iterator will always allow {@link Iterator#next()} without throwing
      * a {@link java.util.NoSuchElementException} in order to allow setting a polynomial's
-     * coefficiens even beyond the degree.
-     * However {@link Iterator#hasNext()} will nevertheless return false when passing
-     * the coefficient of degree.
+     * coefficiens even beyond the current degree.
+     * However {@link Iterator#hasNext()} will nevertheless return <code>false</code> after passing
+     * the leading coefficient determining the degree.
      * </p>
      * @post always (RES.succeedes(#next()))
      */

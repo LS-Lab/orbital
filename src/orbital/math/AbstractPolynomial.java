@@ -20,7 +20,7 @@ import orbital.logic.functor.Predicates;
 
 import java.util.ListIterator;
 
-abstract class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractArithmetic implements Polynomial/*<R>*/, Serializable {
+abstract class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractProductArithmetic implements Polynomial/*<R>*/, Serializable {
     private static final long serialVersionUID = -5253561352164949692L;
     /**
      * Which implementation of the multiplication to use.
@@ -36,16 +36,7 @@ abstract class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractA
     }
   
     public boolean equals(Object o) {
-    	if (o instanceof Polynomial) {
-	    Polynomial/*<R>*/ p = (Polynomial) o;
-	    if (degreeValue() != p.degreeValue())
-		return false;
-	    return Setops.all(iterator(), p.iterator(), Predicates.equal);
-    	}
-    	return false;
-    }
-    public int hashCode() {
-    	throw new UnsupportedOperationException();
+    	return (o instanceof Polynomial) && super.equals(o);
     }
 
     public Integer degree() {
@@ -59,6 +50,31 @@ abstract class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractA
      */
     protected abstract void set(int i, Arithmetic vi);
 	
+    protected final Object productIndexSet(Arithmetic/*>T<*/ productObject) {
+	return degree();
+    }
+
+    protected ListIterator/*_<R>_*/ iterator(Arithmetic/*>T<*/ productObject) {
+	return ((Polynomial)productObject).iterator();
+    }
+    
+    // factory-methods
+    
+    /**
+     * instantiate a new polynomial with storage for a polynomial of degree.
+     * @param dim the dimension desired for the vector.
+     * @return a vector of the same type as this, dimension as specified
+     * The elements need not be initialized since they will soon be by the calling method.
+     * @post RES != RES
+     * @see <a href="{@docRoot}/DesignPatterns/FactoryMethod.html">Factory Method</a>
+     * @see #clone()
+     */
+    protected abstract Polynomial/*<R>*/ newInstance(int degree);
+	
+    protected final Arithmetic/*>T<*/ newInstance(Object productIndexSet) {
+	return newInstance(((Integer)productIndexSet).intValue());
+    }
+
     // iterator-views
 
     /**
@@ -222,6 +238,7 @@ abstract class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractA
 	return addImpl(b);
     }
     //@note this ugly trick is necessary because in #add(Euclidean) we somehow cannot cast and call add((Polynomial/*<R>*/) b);
+    //@internal using return (Polynomial)super.add((Arithmetic)b); does not work since the two iterators may have different hasNext(), though next() would work
     private Polynomial/*<R>*/ addImpl(Polynomial/*<R>*/ b) {
 	// optimized component-wise addition
 	if (degreeValue() < 0)
@@ -233,7 +250,7 @@ abstract class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractA
 	for (int i = 0; i <= mindeg; i++)
 	    r[i] = (Arithmetic/*>R<*/) get(i).add(b.get(i));
 	assert !(degreeValue() > mindeg && b.degreeValue() > mindeg) : "deg(" + this + ")=" + degreeValue() + ", deg(" + b + ")=" + b.degreeValue() + " mindeg=" + mindeg + " cannot be greater than both degrees";
-	// optimized plus saving some empty additions with 0
+	//@internal optimized plus saving some empty additions with 0
 	if (degreeValue() > mindeg)
 	    for (int i = mindeg + 1; i <= degreeValue(); i++)
 		r[i] = get(i);
@@ -243,15 +260,6 @@ abstract class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractA
 	return representative(r);
     }
 	
-    public Arithmetic minus() {
-	Arithmetic/*>R<*/ r[] = new Arithmetic/*>R<*/[degreeValue()];
-	if (r.length == 0)
-	    return this;
-	for (int i = 0; i < r.length; i++)
-	    r[i] = (Arithmetic/*>R<*/) get(i).minus();
-	return Values.polynomial(r);
-    }
-
     public Arithmetic subtract(Arithmetic b) throws ArithmeticException {
 	return subtractImpl((Polynomial)b);
     } 
@@ -263,16 +271,6 @@ abstract class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractA
     }
     private Polynomial/*<R>*/ subtractImpl(Polynomial/*<R>*/ b) {
 	return (Polynomial) add(b.minus());
-    }
-
-    public Arithmetic scale(Arithmetic/*<R>*/ alpha) {
-	if (degreeValue() < 0)
-	    return this;
-	Arithmetic/*>R<*/ r[] = new Arithmetic/*>R<*/[degreeValue() + 1];
-	for (int i = 0; i < r.length; i++) {
-	    r[i] = (Arithmetic/*>R<*/) get(i).scale(alpha);
-	}
-	return representative(r);
     }
 
     public Arithmetic multiply(Arithmetic b) {
@@ -449,6 +447,7 @@ abstract class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractA
 	    if (!a[deg].norm().equals(Values.ZERO))
 		break;
 	if (deg < 0)
+	    //@todo perhaps prefer {R_ZERO}?
 	    return Values.polynomial(new Arithmetic/*>R<*/[0]);
 	//assert(deg == max {i&isin;<b>N</b> : a<sub>i</sub> &ne; 0}
 	assert 0 <= deg && deg < a.length : "degree " + deg + " is in [0,n]";
