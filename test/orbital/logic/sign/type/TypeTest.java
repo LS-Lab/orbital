@@ -10,6 +10,7 @@ import orbital.math.*;
 import java.lang.Integer;
 import orbital.util.*;
 import java.util.*;
+import orbital.logic.functor.*;
 
 import junit.framework.*;
 
@@ -51,36 +52,46 @@ public class TypeTest extends check.TestCase {
     //
 
     public void testTypeConstructors() {
-	testTypeConstructorsWith(new Type[] {typeSystem.UNIVERSAL()});
-	testTypeConstructorsWith(new Type[] {TRUTH});
-	testTypeConstructorsWith(new Type[] {INDIVIDUAL});
-	testTypeConstructorsWith(new Type[] {typeSystem.NOTYPE()});
-	testTypeConstructorsWith(new Type[] {typeSystem.ABSURD()});
-	testTypeConstructorsWith(new Type[] {typeSystem.UNIVERSAL(), TRUTH});
-	testTypeConstructorsWith(new Type[] {typeSystem.UNIVERSAL(), typeSystem.UNIVERSAL()});
-	testTypeConstructorsWith(new Type[] {typeSystem.UNIVERSAL(), INDIVIDUAL});
-	testTypeConstructorsWith(new Type[] {INDIVIDUAL, INDIVIDUAL});
-	testTypeConstructorsWith(new Type[] {typeSystem.objectType(Double.class), typeSystem.objectType(Integer.class)});
-	testTypeConstructorsWith(new Type[] {typeSystem.objectType(Double.class), typeSystem.objectType(Integer.class), typeSystem.objectType(Float.class)});
-	testTypeConstructorsWith(new Type[] {typeSystem.objectType(Double.class), typeSystem.objectType(Integer.class), typeSystem.objectType(Number.class)});
+	testTypeConstructorsWith(new Type[] {typeSystem.UNIVERSAL()}, true);
+	testTypeConstructorsWith(new Type[] {TRUTH}, true);
+	testTypeConstructorsWith(new Type[] {INDIVIDUAL}, true);
+	testTypeConstructorsWith(new Type[] {typeSystem.NOTYPE()}, true);
+	testTypeConstructorsWith(new Type[] {typeSystem.ABSURD()}, true);
+	testTypeConstructorsWith(new Type[] {typeSystem.UNIVERSAL(), TRUTH}, true);
+	testTypeConstructorsWith(new Type[] {typeSystem.UNIVERSAL(), typeSystem.UNIVERSAL()}, true);
+	testTypeConstructorsWith(new Type[] {typeSystem.UNIVERSAL(), INDIVIDUAL}, true);
+	testTypeConstructorsWith(new Type[] {INDIVIDUAL, INDIVIDUAL}, true);
+	testTypeConstructorsWith(new Type[] {typeSystem.objectType(Double.class), typeSystem.objectType(Integer.class)}, false);
+	testTypeConstructorsWith(new Type[] {typeSystem.objectType(Double.class), typeSystem.objectType(Integer.class), typeSystem.objectType(Float.class)}, false);
+	testTypeConstructorsWith(new Type[] {typeSystem.objectType(Double.class), typeSystem.objectType(Integer.class), typeSystem.objectType(Number.class)}, true);
     }
 
-    private void testTypeConstructorsWith(Type a[]) {
+    private void testTypeConstructorsWith(Type a[], boolean specialCase) {
 	for (int i = 0; i < a.length; i++)
 	    constructed(a[i], a[i]);
 	if (a.length > 1) {
-	    constructed(typeSystem.map(a[0], a[1]), typeSystem.map(a[0], a[1]));
-	    constructed(typeSystem.predicate(a[0]), typeSystem.predicate(a[0]));
+	    constructed(typeSystem.map(a[0], a[1]), typeSystem.map(a[0], a[1]),
+			typeSystem.map(), new Type[] {a[0], a[1]}, specialCase);
+	    constructed(typeSystem.predicate(a[0]), typeSystem.predicate(a[0]),
+			typeSystem.map(), new Type[] {a[0], Types.TRUTH}, specialCase);
 	}
-	constructed(typeSystem.product(a), typeSystem.product(a));
+	constructed(typeSystem.product(a), typeSystem.product(a),
+		    typeSystem.product(), a, specialCase || a.length <= 1);
 	if (typeSystem.product(a) != typeSystem.ABSURD())
-	    constructed(typeSystem.predicate(typeSystem.product(a)), typeSystem.predicate(typeSystem.product(a)));
-	constructed(typeSystem.inf(a), typeSystem.inf(a));
-	constructed(typeSystem.sup(a), typeSystem.sup(a));
-	constructed(typeSystem.collection(a[0]), typeSystem.collection(a[0]));
-	constructed(typeSystem.set(a[0]), typeSystem.set(a[0]));
-	constructed(typeSystem.list(a[0]), typeSystem.list(a[0]));
+	    constructed(typeSystem.predicate(typeSystem.product(a)), typeSystem.predicate(typeSystem.product(a)),
+			typeSystem.map(), new Type[] {typeSystem.product(a), Types.TRUTH}, specialCase);
+	constructed(typeSystem.inf(a), typeSystem.inf(a),
+		    typeSystem.inf(), null, specialCase);
+	constructed(typeSystem.sup(a), typeSystem.sup(a),
+		    typeSystem.sup(), null, specialCase);
+	constructed(typeSystem.collection(a[0]), typeSystem.collection(a[0]),
+		    typeSystem.collection(), a[0], specialCase);
+	constructed(typeSystem.set(a[0]), typeSystem.set(a[0]),
+		    typeSystem.set(), a[0], specialCase);
+	constructed(typeSystem.list(a[0]), typeSystem.list(a[0]),
+		    typeSystem.list(), a[0], specialCase);
 	//constructed(typeSystem.bag(a[0]), typeSystem.bag(a[0]));
+	// typeSystem.bag(), a[0]);
 
 	// also test subtypes
 	Type s, t;
@@ -96,12 +107,32 @@ public class TypeTest extends check.TestCase {
     /**
      * Called with two types constructed in essentially the same way
      * (so one is at most a clone, or even the same canonical reference, of the other).
+     * Both typeConstructor and typeComponent <code>null</code> indicates (here) that
+     * s is expected not to be composite.
+     * @param typeConstructor expected type constructor of s, any if null.
+     * @param typeComponent expected type component of s, any if null.
      */
+    private void constructed(Type s, Type equalingS,
+			     Functor/*<Type,Type>*/ typeConstructor, Object typeComponent,
+			     boolean specialCase) {
+	constructed(s, equalingS);
+	if (typeConstructor == null && typeComponent == null)
+	    assertTrue( !(s instanceof Type.Composite) , s + " not composite");
+	else if (!specialCase) {
+	    assertTrue( s instanceof Type.Composite , s + " composite");
+	    Type.Composite c = (Type.Composite) s;
+	    assertTrue (typeConstructor == null || Utility.equals(typeConstructor, c.getCompositor()) , s + " has compositor " + c.getCompositor() + " equalling " + typeConstructor);
+	    assertTrue (typeComponent == null || Utility.equalsAll(typeComponent, c.getComponent()) , s + " has component " + c.getComponent() + " equalling " + typeComponent);
+	}
+	if (typeConstructor instanceof Function && typeComponent != null)
+	    assertEquals( ((Function)typeConstructor).apply(typeComponent), s);
+    }
     private void constructed(Type s, Type equalingS) {
 	assertTrue( s.equals(s) , "x=x");
 	assertTrue( s.compareTo(s) == 0, "x cmp x == 0");
 	assertTrue( s.equals(equalingS) , "x=x'");
 	assertTrue( s.compareTo(equalingS) == 0 , "x cmp x' == 0");
+	assertEquals( s, equalingS);
 	testTypeAdditionally(s);
     }
 
@@ -298,7 +329,8 @@ public class TypeTest extends check.TestCase {
     public void testMetaTypes() {
 	Type s, t;
 	s = typeSystem.TYPE();
-	constructed(s, s);
+	constructed(s, s,
+		    null, null, false);
 	t = TRUTH;
 	assertComparable(s,t, false);
 	s = typeSystem.TYPE();
