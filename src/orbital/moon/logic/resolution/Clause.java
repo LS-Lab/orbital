@@ -7,6 +7,7 @@
 package orbital.moon.logic.resolution;
 
 import orbital.logic.sign.Signature;
+import orbital.logic.imp.Formula;
 import java.util.Set;
 import java.util.Iterator;
 
@@ -75,12 +76,12 @@ public interface Clause extends Set/*<Formula>*/ {
      * resolvent, this method also returns all resolvents resulting
      * from a factorization of F (involving L) or G (involving K).
      * Other factorizations are not necessary for completeness, since
-     * they can be performed later on resolution over the literals
-     * participating.
+     * they can be performed later during resolution over the
+     * participating literals.
      * @see #factorize()
      * @see #resolveWith(Clause)
      */
-    //@todo introduce Iterator/*_<Clause>_*/ resolveWithFactorized(Clause G);
+    Iterator/*_<Clause>_*/ resolveWithFactors(Clause G);
 
     /**
      * Factorize a clause as much as possible.
@@ -94,6 +95,7 @@ public interface Clause extends Set/*<Formula>*/ {
      * because of set notation. The latter is the way we (currently) implement things.
      * </p>
      * @return the factorized clause, or <code>this</code> if no factorization was possible.
+     * @xxx remove this crap, since there should be multiple possible factors, not just one.
      */
     Clause factorize();
 
@@ -138,4 +140,26 @@ public interface Clause extends Set/*<Formula>*/ {
      * @preconditions (&not;this.isElementaryValid() &and; &not;G.isElementaryValid()) &or; F=G
      */
     public boolean isElementaryValidUnion(Clause G);
+
+    // lookup methods
+
+    /**
+     * Get (an iterator over) all literals contained in this clause
+     * that may possibly unify with L. The formulas returned will more
+     * likely qualify for unification with C, but need not do so with
+     * absolute confidence.  <p>Implementations may use indexing or
+     * links to estimate the clauses to return very quickly.</p>
+     * @postconditions RES&sube;this &and; RES&supe;getUnifiables(L) 
+     * @see #getUnifiables(Formula)
+     */
+    Iterator/*_<Formula>_*/ getProbableUnifiables(Formula L);
+
+    /**
+     * Get all literals contained in this clause that unify with
+     * L. <p>Implementations may use indexing or links to estimate the
+     * clauses to return very quickly.</p>
+     * @postconditions RES = {F&isin;this &exist;mgU{L,F}}
+     * @see #getProbableUnifiables(Formula)
+     */
+    Set/*_<Formula>_*/ getUnifiables(Formula L);
 }
