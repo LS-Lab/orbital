@@ -1,7 +1,7 @@
 /**
  * @(#)ClassicalLogic.java 0.7 1999/01/16 Andre Platzer
  * 
- * Copyright (c) 1999-2002 Andre Platzer. All Rights Reserved.
+ * Copyright (c) 1999-2003 Andre Platzer. All Rights Reserved.
  * 
  * This software is the confidential and proprietary information
  * of Andre Platzer. ("Confidential Information"). You
@@ -125,6 +125,7 @@ import orbital.algorithm.Combinatorical;
  * which is called propositional logic, has a simple sound and complete calculus that makes
  * it decidable.
  * </p>
+ * @version 1.1.2.2, 2003-11-08
  * @version 0.8, 1999/01/16
  * @version 0.7, 1999/01/16
  * @author  Andr&eacute; Platzer
@@ -207,6 +208,9 @@ public class ClassicalLogic extends ModernLogic {
 		    String mechanismDescription = arg[option].substring("-inference=".length()).toUpperCase();
 		    try {
 			InferenceMechanism mechanism = (InferenceMechanism) logic.getClass().getField(mechanismDescription).get(null);
+			if (mechanism.inference() instanceof orbital.moon.logic.resolution.ResolutionBase) {
+			    ((orbital.moon.logic.resolution.ResolutionBase) mechanism.inference()).setVerbose(verbose);
+			}
 			logic.setInferenceMechanism(mechanism);
 			System.out.println("Using " + mechanism);
 		    }
@@ -483,6 +487,7 @@ public class ClassicalLogic extends ModernLogic {
     private static final String typAssoc = "f";  //@xxx should be "fx"?
 
     //@todo unmodifiable view
+    //@internal see far below the last static initializer block still modifies this
     private static final Interpretation _coreInterpretation =
 	LogicSupport.arrayToInterpretation(new Object[][] {
 	    /**
@@ -536,8 +541,8 @@ public class ClassicalLogic extends ModernLogic {
 	    {Predicates.lessEqual,        // "=<"
 	     new NotationSpecification(700, "xfx", Notation.INFIX)},
 
-	    {LogicFunctions.forall,       // "°"
-	     new NotationSpecification(900, "fy", Notation.PREFIX)},
+	    ///////	    {LogicFunctions.forall,       // "°"
+	    ///////	     new NotationSpecification(900, "fy", Notation.PREFIX)},
 	    {LogicFunctions.exists,       // "?"
 	     new NotationSpecification(900, "fy", Notation.PREFIX)},
 	    //@internal &lambda; is the only non-functional operator, both with (single-shot) lazy evaluation and with eager evaluation.
@@ -606,6 +611,7 @@ public class ClassicalLogic extends ModernLogic {
 	    if (mu != null) {
 		// the application type actually passed as parameter to the &Pi;-abstraction.
 		final Type parameterApType = LogicParser.myasType((Expression)mu.apply(createAtomic(piabst.getVariable())), coreSignature());
+		System.err.println(" leads to parameter type " + parameterApType);
 		logger.log(Level.FINEST, "compositor of type {0} applied to the arguments of type{1} (= {2}). Result has 'instantiated' type {3} by parameter {4}.", new Object[] {piabst, argumentType, reqApType, piabst.apply(parameterApType), parameterApType});
 		return parameterApType;
 	    } if (abstractedType instanceof Expression.Composite
@@ -777,19 +783,6 @@ public class ClassicalLogic extends ModernLogic {
 
 	// Basic logical operations (elemental quantifiers).
 
-	//@todo we could implement a semantic apply() if only Interpretations would tell us a collection of entities in the universe
-	//@todo somehow turn forall into type (&sigma;&rarr;t)&rarr;t alias Function<Function<S,boolean>,boolean> and use &forall;(&lambda;x.t)
-    	public static final Function forall = new ForallPlaceholder();
-	private static final class ForallPlaceholder implements Function {
-	    //@todo also templatize with t somehow? should be (t->TRUTH)->truth
-	    //private final Type logicalTypeDeclaration = typeSystem.map(typeSystem.product(new Type[] {Types.INDIVIDUAL, Types.TRUTH}), Types.TRUTH);
-	    private final Type logicalTypeDeclaration = typeSystem.map(typeSystem.map(Types.INDIVIDUAL, Types.TRUTH), Types.TRUTH);
-	    public Object apply(Object f) {
-		throw new LogicException("quantified formulas only have a semantic value with respect to a possibly infinite domain. They are available for inference, but they cannot be interpreted with finite means.");
-	    }
-	    public String toString() { return "°"; }
-	};
-
     	public static final Function exists = new ExistsPlaceholder();
 	private static final class ExistsPlaceholder implements Function {
 	    //@todo also templatize with t somehow? should be (t->TRUTH)->truth
@@ -826,7 +819,49 @@ public class ClassicalLogic extends ModernLogic {
 	};
     }
     
+    static class LogicFunctions2 {
+        LogicFunctions2() {}
+	//@todo we could implement a semantic apply() if only Interpretations would tell us a collection of entities in the universe
+	//@todo somehow turn forall into type (&sigma;&rarr;t)&rarr;t alias Function<Function<S,boolean>,boolean> and use &forall;(&lambda;x.t)
+    	public static final Function forall = new ForallPlaceholder();
+	private static final class ForallPlaceholder implements Function {
+	    //@todo also templatize with t somehow? should be (t->TRUTH)->truth
+	    //private final Type logicalTypeDeclaration = typeSystem.map(typeSystem.product(new Type[] {Types.INDIVIDUAL, Types.TRUTH}), Types.TRUTH);
+	    //private final Type logicalTypeDeclaration = typeSystem.map(typeSystem.map(Types.INDIVIDUAL, Types.TRUTH), Types.TRUTH);
+	    //////private final Type logicalTypeDeclaration = ClassicalLogic.Utilities.logic.parseTypeExpression("(\\\\s. (s->truth)->truth)");
+	    private final Type logicalTypeDeclaration = computeTypeDeclaration();
+	    public Object apply(Object f) {
+		throw new LogicException("quantified formulas only have a semantic value with respect to a possibly infinite domain. They are available for inference, but they cannot be interpreted with finite means.");
+	    }
+	    public String toString() { return "°"; }
 
+	    private final Type computeTypeDeclaration() {
+		//@todo this causes an initialization dependency cycle. First use non-typed quantifier (or none at all), and only add this generically typed quantifier lateron
+		final Logic logic = ClassicalLogic.Utilities.logic;
+		final Symbol MAP = logic.coreSignature().get("->", typeSystem.map(typeSystem.product(new Type[] {typeSystem.TYPE(), typeSystem.TYPE()}), typeSystem.TYPE()));
+		final Symbol truth = logic.coreSignature().get("truth", typeSystem.TYPE());
+		// construction of type parseTypeExpression("(\\\\s . (s->truth)->truth)") without parsing
+		final Symbol s = new SymbolBase("_XT1", Types.getDefault().TYPE(), null, true);
+		final Expression se = logic.createAtomic(s);
+		try {
+		    final Expression helperType = logic.compose(logic.createAtomic(MAP), new Expression[] {
+			logic.compose(logic.createAtomic(MAP), new Expression[] {se, logic.createAtomic(truth)}),
+			logic.createAtomic(truth)
+		    });
+		    final Expression tve = logic.compose(logic.createAtomic(PI), new Expression[] {se, helperType});
+		    final Type tv = LogicParser.myasType(tve, logic.coreSignature());
+		    return tv;
+		}
+		catch (ParseException ex) {
+		    throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
+		}
+	    }
+	    
+	};
+
+    }
+
+    
     //@xxx get rid of these shared static variables
     // perhaps, LAMBDA is that important, that we should even publicize it to orbital.logic.imp.*? Or let them query it from the coreSignature() by "\\"?
     static final Symbol LAMBDA;
@@ -853,6 +888,7 @@ public class ClassicalLogic extends ModernLogic {
 	    //@todo could we exchange compositor by a formula that only differs in type, and thus avoid conversion formula?
 	    Expression typeConv = null;
 	    try {
+		System.err.println(" applied Pi abstraction type leads to " + piabst.apply(parameterApType));
 		return super.compose(
 				     typeConv = super.compose(new PiApplicationExpression(piabst,
 									   piabst.apply(parameterApType)
@@ -938,7 +974,7 @@ public class ClassicalLogic extends ModernLogic {
 	    return c;
 	}
 
-	// identical to @see orbital.logic.functor.Functionals.BinaryCompositeFunction
+	// partially identical to @see orbital.logic.functor.Functionals.BinaryCompositeFunction
 	public Object getCompositor() {
 	    //@internal this trick will allow LambdaAbstractionFormulas to unify. null does not unify anything.
 	    return LogicFunctions.lambda;
@@ -1211,7 +1247,9 @@ public class ClassicalLogic extends ModernLogic {
 	
 
 	public boolean apply(Object o) {
-	    throw new UnsupportedOperationException();
+	    //@internal let's just assume the types are somehow compatible, and not really check this //@xxx
+	    return true;
+	    //throw new UnsupportedOperationException();
 	}
 
 	public Type domain() {
@@ -1715,6 +1753,7 @@ public class ClassicalLogic extends ModernLogic {
 	 */
 	public static final Set/*_<Formula>_*/ CONTRADICTION = Collections.EMPTY_SET;
 
+	//@internal no more? it seems to be of importance to the static initializer order, that these occur not much earlier than here, because they trigger the static initialization of ModernFormula
 	private static final Formula FORMULA_FALSE = (Formula) logic.createAtomic(new SymbolBase("false", Types.TRUTH));
 	private static final Formula FORMULA_TRUE = (Formula) logic.createAtomic(new SymbolBase("true", Types.TRUTH));
 	
@@ -1834,6 +1873,7 @@ public class ClassicalLogic extends ModernLogic {
 		// quantifier drop transform TRS
 		if (QuantifierDropTransform == null) QuantifierDropTransform = Substitutions.getInstance(Arrays.asList(new Object[] {
 		    //@xxx note that A should be a metavariable for a formula
+		    //@fixme this does not work for typed quantifiers
 		    Substitutions.createSingleSidedMatcher(logic.createExpression("°_X1 _A"), logic.createExpression("_A")),
 		    Substitutions.createSingleSidedMatcher(logic.createExpression("?_X1 _A"), logic.createExpression("_A")),
 		}));
@@ -2068,6 +2108,7 @@ public class ClassicalLogic extends ModernLogic {
 		throw (RuntimeException) new RuntimeException("error reading " + reader).initCause(ex);
 	    }
 	}
+
     }
 
 
@@ -2115,4 +2156,26 @@ public class ClassicalLogic extends ModernLogic {
     public Formula createFormula(String expression) throws ParseException {
 	return (Formula) createExpression(expression);
     } 
+
+
+    static {
+	//@internal modifies coreInterpretation and coreSignature
+	//@xxx this is a horrible implementation with various dependencies
+	Interpretation newCore = _coreInterpretation.union(
+	LogicSupport.arrayToInterpretation(new Object[][] {
+	    /**
+	     * Contains (usually ordered) map (in precedence order) of initial functors
+	     * and their notation specifications.
+	     * Stored internally as an array of length-2 arrays.
+	     * @invariants sorted, i.e. precedenceOf[i] < precedenceOf[i+1]
+	     */
+	    {LogicFunctions2.forall,       // "°"
+	     new NotationSpecification(900, "fy", Notation.PREFIX)}
+	}, false, true, true)
+	);
+	_coreInterpretation.setSignature(newCore.getSignature());
+	_coreSignature.addAll(_coreInterpretation.getSignature());
+	_coreInterpretation.putAll(newCore);
+	ModernFormula.clinit2();
+    }
 }
