@@ -217,7 +217,7 @@ public class StandardTypeSystem implements TypeSystem {
 	    if (this == b)
 		return 0;
 	    else
-		throw new IncomparableException();
+		throw new IncomparableException("incomparable types", this, b);
 	}
 	public final int lexicographicCompareToTie(Type b) {
 	    assert b == this : "only one single universal meta-type exists";
@@ -509,7 +509,7 @@ public class StandardTypeSystem implements TypeSystem {
 	    else if (doc <= 0 && coc >= 0)
 		return 1;
 	    else
-		throw new IncomparableException(this + " is incomparable with " + b);
+		throw new IncomparableException("incomparable types", this, b);
 	}
 
 	public int lexicographicCompareToTie(Type b) {
@@ -617,7 +617,7 @@ public class StandardTypeSystem implements TypeSystem {
 		else if (getFundamental().isAssignableFrom(tau.getFundamental()))
 		    return 1;
 	    }
-	    throw new IncomparableException(this + " is incomparable with " + b);
+	    throw new IncomparableException("incomparable types", this, b);
 	}
 	public int lexicographicCompareToTie(Type b) {
 	    // lexicographic compare of names
@@ -730,7 +730,7 @@ public class StandardTypeSystem implements TypeSystem {
 	    if (this.equals(b)) {
 		return 0;
 	    } else {
-		throw new IncomparableException(this + " is incomparable with " + b);
+		throw new IncomparableException("incomparable types", this, b);
 	    }
 	}
 	public final int lexicographicCompareToTie(Type b) {
@@ -951,7 +951,7 @@ public class StandardTypeSystem implements TypeSystem {
 	    if (tau instanceof ProductType) {
 		Type taui[] = ((ProductType)tau).components;
 		if (components.length != taui.length)
-		    throw new IncomparableException(this + " is incomparable with " + tau);
+		    throw new IncomparableException("incomparable types", this, tau);
 		int cmp = 0;
 		for (int i = 0; i < components.length; i++) {
 		    final int cmpi = MathUtilities.sign(components[i].compareTo(taui[i]));
@@ -963,14 +963,14 @@ public class StandardTypeSystem implements TypeSystem {
 		    else if (cmpi > cmp && cmp == 0)
 			cmp = cmpi;
 		    else
-			throw new IncomparableException(this + " is incomparable with " + tau);
+			throw new IncomparableException("incomparable types", this, tau);
 		}
 		return cmp;
 	    } else if (tau.equals(typeSystem.UNIVERSAL()))
 		//@todo still needed?
 		return 0;
 	    else
-		throw new IncomparableException(this + " is incomparable with " + tau);
+		throw new IncomparableException("incomparable types", this, tau);
 	}
 
 	public final int lexicographicCompareToTie(Type b) {
@@ -1113,7 +1113,7 @@ public class StandardTypeSystem implements TypeSystem {
 	    else if (compareSupertypeOf(tau))
 		return 1;
 	    else
-		throw new IncomparableException(this + " is incomparable with " + tau);
+		throw new IncomparableException("incomparable types", this, tau);
 	}
 	private boolean compareSubtypeOf(Type tau) {
 	    return Setops.some(Arrays.asList(components), Functionals.bindSecond(subtypeOf, tau));
@@ -1241,7 +1241,7 @@ public class StandardTypeSystem implements TypeSystem {
 	    else if (compareSupertypeOf(tau))
 		return 1;
 	    else
-		throw new IncomparableException(this + " is incomparable with " + tau);
+		throw new IncomparableException("incomparable types", this, tau);
 	}
 	private boolean compareSubtypeOf(Type tau) {
 	    return Setops.all(Arrays.asList(components), Functionals.bindSecond(subtypeOf, tau));
@@ -1375,7 +1375,7 @@ public class StandardTypeSystem implements TypeSystem {
 // 		assert toStringPrefix.equals(tau.toStringPrefix) && toStringSuffix.equals(tau.toStringSuffix) : "equal collection type constructors imply equal notation"; 
 // 		return element.compareTo(tau.element);
 	    } else
-		throw new IncomparableException(this + " is incomparable with " + b);
+		throw new IncomparableException("incomparable types", this, b);
 	}
 
 	public final int lexicographicCompareToTie(Type b) {
