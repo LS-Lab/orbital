@@ -141,7 +141,7 @@ class Resolution implements Inference {
 	    if (factorizedF != null)
 		F = factorizedF;
 	    if (F.equals(Utilities.CONTRADICTION))
-		throw new IllegalStateException("knowledge base is inconsistent since it already contains a contradiction, so ex falso quodlibet");
+		throw new IllegalStateException("premises are inconsistent since they already contain a contradiction, so ex falso quodlibet");
 	    else if (isElementaryValid(F, F))
 		// if F is obviously valid, forget about it for resolving a contradiction
 		i.remove();
