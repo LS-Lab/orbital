@@ -93,7 +93,7 @@ public class ChessRules extends AbstractGameRules implements Cloneable {
 		int	   leag = getLeag(w, h);
 		int	   typ = getTyp(w, h);
 		Figure f = newFigure(w, h, leag, typ);
-		if (f.league == WHITE)
+		if (f.getLeague() == WHITE)
 		    f.direction = new Direction(Direction.West);
 		field.setFigure(new Position(w, h), f);
 	    } 
@@ -135,7 +135,7 @@ public class ChessRules extends AbstractGameRules implements Cloneable {
 
     private static boolean leagueExists(int league, Field field) {
 	for (Iterator i = field.iterateNonEmpty(); i.hasNext(); ) {
-	    if (((Figure) i.next()).league == league)
+	    if (((Figure) i.next()).getLeague() == league)
 		return true;
 	} 
 	return false;
@@ -144,7 +144,7 @@ public class ChessRules extends AbstractGameRules implements Cloneable {
     private static boolean hasKing(int league, Field field) {
 	for (Iterator i = field.iterateNonEmpty(); i.hasNext(); ) {
 	    Figure f = (Figure) i.next();
-	    if (f.league == league && f.type == KING)
+	    if (f.getLeague() == league && f.getType() == KING)
 		return true;
 	} 
 	return false;
@@ -160,9 +160,10 @@ public class ChessRules extends AbstractGameRules implements Cloneable {
 	    return false;
 	for (Iterator i = field.iterateNonEmpty(); i.hasNext(); ) {
 	    Figure f = (Figure) i.next();
-	    if (f.league != league)
+	    if (f.getLeague() != league)
 		continue;
-	    if ((f.league == BLACK && f.x == field.getDimension().width - 1) || (f.league == WHITE && f.x == 0)) {
+	    if ((f.getLeague() == BLACK && f.x == field.getDimension().width - 1)
+		|| (f.getLeague() == WHITE && f.x == 0)) {
 		return true;	// 2nd turn here already?
 	    } 
 	} 
@@ -172,7 +173,7 @@ public class ChessRules extends AbstractGameRules implements Cloneable {
     // implementation helpers
 
     Figure newFigure(int x, int y, int leag, int typ) {
-	Figure f = new ChessFigure(x, y, leag, typ);
+	FigureImpl f = new ChessFigure(x, y, leag, typ);
 	f.direction = new Direction(Direction.East);
 	f.setLegalMoves(legalMoves[typ]);
 	f.setImage(getImage(f));

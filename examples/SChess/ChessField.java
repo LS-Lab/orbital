@@ -54,21 +54,21 @@ public class ChessField extends Field {
 	List r = new LinkedList();
 	for (Iterator i = iterateNonEmpty(); i.hasNext(); ) {
 	    Figure figure = (Figure) i.next();
-	    if (figure.league != getTurn())
+	    if (figure.getLeague() != getTurn())
 		// we only move our figures, forget about moving opponents
 		continue;
-	    for (Iterator j = figure.iterateValidPairs(); j.hasNext(); ) {
+	    for (Iterator j = figure.validMoves(); j.hasNext(); ) {
 		Pair 	  pair = (Pair) j.next();
 		Move	  move = (Move) pair.A;
 		Position  destination = (Position) pair.B;
                 int targetLeague = isBeating(move, destination);
-                if (targetLeague == figure.league)
+                if (targetLeague == figure.getLeague())
 		    // disallow, only beat foreigners not allies
                     continue;
 		ChessField field = (ChessField) clone();
 		field.rules = (ChessRules) rules.clone();
 		// optimized version could be introduced here as well
-		field.move((Position) figure, destination);
+		field.move((Position) figure, move);
 		field.rules = afterStepRules;
 
 		r.add(new Option(field, destination, figure, move));

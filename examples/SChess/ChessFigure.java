@@ -4,7 +4,7 @@ import orbital.game.*;
 import orbital.robotic.*;
 import java.awt.Image;
 
-public class ChessFigure extends Figure {
+public class ChessFigure extends FigureImpl {
     private ChessFigure(Field fld, int x, int y, Direction dir, int leag, int typ, Image img, Move[] legalMoves) {
 	super(fld, x, y, dir, leag, typ, img, legalMoves);
     }
@@ -14,19 +14,19 @@ public class ChessFigure extends Figure {
     }
 
     public Object clone() {
-	return new ChessFigure(getField(), x, y, (Direction) direction.clone(), league, type, image, getLegalMoves());
+	return new ChessFigure(getField(), x, y, (Direction) direction.clone(), getLeague(), getType(), getImage(), getLegalMoves());
     } 
 
     protected boolean moving(Move move, Position dst) {
 	if (!super.moving(move, dst))
 	    return false;	 // super says valid Move?
         final ChessField field = (ChessField) getField();
-	if (field.getTurn() != league)
+	if (field.getTurn() != getLeague())
 	    return false;	 // it's my turn at all?
 	Figure to = field.getFigure(dst);
 
 	if (!to.isEmpty()) {	 // is it beating?
-	    if (league == to.league)
+	    if (getLeague() == to.getLeague())
 		return false;	 // cannot beat allys
 
 	    // move is valid
@@ -46,9 +46,9 @@ public class ChessFigure extends Figure {
         final ChessField field = (ChessField) getField();
 	if (!field.inRange(this))
 	    throw new IllegalArgumentException("nonsense position to compare with: " + this + " not in range " + field.getDimension());
-	if (league == ChessRules.BLACK)
+	if (getLeague() == ChessRules.BLACK)
 	    return x;
-	if (league == ChessRules.WHITE)
+	if (getLeague() == ChessRules.WHITE)
 	    return field.getDimension().width - 1 - x;
 	throw new IllegalStateException("league must exist");
     } 
@@ -62,9 +62,9 @@ public class ChessFigure extends Figure {
         final ChessField field = (ChessField) getField();
 	if (!field.inRange(pos))
 	    throw new IllegalArgumentException("nonsense position to compare with: " + pos + " not in range " + field.getDimension());
-	if (league == ChessRules.BLACK)
+	if (getLeague() == ChessRules.BLACK)
 	    return pos.x - x;
-	if (league == ChessRules.WHITE)
+	if (getLeague() == ChessRules.WHITE)
 	    return x - pos.x;
 	throw new IllegalStateException("wrong league - does not exist");
     } 

@@ -63,11 +63,11 @@ final class ChessFigureWeighting extends FigureWeighting implements Function /* 
 	Computer.logger.log(Level.FINER, " SF:weighting ... ( {0} -->", i);
 
 	// we only move our figures, forget about moving opponents
-	if (i.figure.league != ((ChessField) i.field).getTurn())
+	if (i.figure.getLeague() != ((ChessField) i.field).getTurn())
 	    return new Double(Double.NaN);
 	double val = ((Number) super.apply(arg)).doubleValue();
 
-	if (i.figure.type != ChessRules.KING)
+	if (i.figure.getType() != ChessRules.KING)
 	    val += computer.aspects.offensiveFigure;
 
 	Computer.logger.log(Level.FINER, " SF:  ) is weighted to {0}", new Double(val));
@@ -92,7 +92,7 @@ final class ChessMoveWeighting extends MoveWeighting implements Function /* <Obj
 	    Computer.logger.log(Level.FINER, "    SM: --> {0}...", i.destination);
 
 	    int targetLeague = i.field.isBeating(i.move, i.destination);
-	    if (targetLeague == i.figure.league)
+	    if (targetLeague == i.figure.getLeague())
 		return new Double(Double.NaN);	  // disallow, only beat foreigners not cover allies
 	    if (targetLeague != Figure.NOONE)	 // beating aspect for current move
 		val += computer.aspects.beatingEnemies;
