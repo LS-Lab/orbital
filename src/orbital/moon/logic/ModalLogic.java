@@ -60,6 +60,7 @@ import java.util.logging.Level;
  *  |- ~A -> []~[]A      of B
  */
 public class ModalLogic extends ClassicalLogic {
+    private static final TypeSystem typeSystem = Types.getDefault();
     /**
      * tool-main
      */
@@ -90,11 +91,11 @@ public class ModalLogic extends ClassicalLogic {
 	System.err.println("disabling type checks for modal logic");
     }
     
-    private static final Type   WORLD = //@xxx Types.objectType(new Object() {}.getClass(), "world");
+    private static final Type   WORLD = //@xxx typeSystem.objectType(new Object() {}.getClass(), "world");
 	Types.INDIVIDUAL;
     private static final Symbol CURRENT_WORLD = new SymbolBase("s", WORLD, null, true);
     private final Formula CURRENT_WORLD_form;
-    private static final Symbol ACCESSIBLE = new SymbolBase("R", Types.predicate(Types.product(new Type[] {WORLD,WORLD})), null, false);
+    private static final Symbol ACCESSIBLE = new SymbolBase("R", typeSystem.predicate(typeSystem.product(new Type[] {WORLD,WORLD})), null, false);
     private final Formula ACCESSIBLE_form;
 
     //@todo remove this bugfix that replaces "xfy" by "yfy" associativity only for *.jj parsers to work without inefficient right-associative lookahead.
@@ -178,8 +179,8 @@ public class ModalLogic extends ClassicalLogic {
     static class LogicFunctions extends ClassicalLogic.LogicFunctions {
         private LogicFunctions() {}
     
-	private static final Type UNARY_LOGICAL_JUNCTOR = Types.map(Types.TRUTH, Types.TRUTH);
-	private static final Type BINARY_LOGICAL_JUNCTOR = Types.map(Types.product(new Type[] {Types.TRUTH, Types.TRUTH}), Types.TRUTH);
+	private static final Type UNARY_LOGICAL_JUNCTOR = typeSystem.map(Types.TRUTH, Types.TRUTH);
+	private static final Type BINARY_LOGICAL_JUNCTOR = typeSystem.map(typeSystem.product(new Type[] {Types.TRUTH, Types.TRUTH}), Types.TRUTH);
 
     	public static final Function box = new Function() {
 		private final Type logicalTypeDeclaration = UNARY_LOGICAL_JUNCTOR;
@@ -316,7 +317,7 @@ public class ModalLogic extends ClassicalLogic {
 		    System.arraycopy(aType, 0, flatType, 0, aType.length);
 		    System.arraycopy(tType, 0, flatType, aType.length, tType.length);
 
-		    Type fmodType = Types.map(Types.product(flatType), f.getType().codomain().codomain());
+		    Type fmodType = typeSystem.map(typeSystem.product(flatType), f.getType().codomain().codomain());
 		    NotationSpecification notat = f.getNotation();
 		    char associativityArguments[] = new char[t.length];
 		    Arrays.fill(associativityArguments, 'y');
@@ -349,7 +350,7 @@ public class ModalLogic extends ClassicalLogic {
 
 	    private static final Type[] asTypeArray(Type tau) {
 		    if (tau instanceof Type.Composite
-			&& ((Type.Composite)tau).getCompositor() == Types.product)
+			&& ((Type.Composite)tau).getCompositor() == typeSystem.product())
 			return (Type[]) ((Type.Composite)tau).getComponent();
 		    else
 			return new Type[] {tau};
@@ -430,7 +431,7 @@ public class ModalLogic extends ClassicalLogic {
 		    NotationSpecification notat = p.getNotation();
 		    Symbol pmod =
 			new SymbolBase(p.getSignifier(),
-				       Types.map(WORLD, p.getType()),
+				       typeSystem.map(WORLD, p.getType()),
 				       new NotationSpecification(notat.getPrecedence(),
 								 notat.getAssociativity() + "x",
 								 notat.getNotation()),

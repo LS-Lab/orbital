@@ -76,7 +76,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	EQUIV = core.get("<->", arguments);
 	assert EQUIV != null : "operators in core signature";
 
-	final Formula f = (Formula) logic.createAtomic(new SymbolBase("f", Types.map(Types.INDIVIDUAL,Types.TRUTH)));
+	final Formula f = (Formula) logic.createAtomic(new SymbolBase("f", Types.getDefault().map(Types.INDIVIDUAL,Types.TRUTH)));
 	arguments = new Formula[] {f};
 	FORALL = core.get("°", arguments);
 	assert FORALL != null : "operators in core signature";

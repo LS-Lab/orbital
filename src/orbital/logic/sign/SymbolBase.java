@@ -151,7 +151,7 @@ public class SymbolBase implements Symbol, Serializable {
 	a = Utility.compare(getNotation(), b.getNotation());
 	if (a != 0)
 	    return a;
-	a = Types.LEXICOGRAPHIC.compare(getType(), b.getType());
+	a = orbital.moon.logic.imp.StandardTypeSystem.LEXICOGRAPHIC.compare(getType(), b.getType());
 	return a != 0 ? a : Utility.compare(getSignifier(), b.getSignifier());
     } 
 
@@ -187,8 +187,9 @@ public class SymbolBase implements Symbol, Serializable {
     
     public String toString() {
 	if (Logger.global.isLoggable(Level.FINEST)
-	    || getType().equals(Types.TYPE))
-	    return Types.toTypedString(this);
+	    || getType().equals(Types.getDefault().TYPE()))
+	    //@internal equivalent to Types.toTypedString(this) but different: else infinite recursion
+	    return getSignifier() + ':' + getType() + (Logger.global.isLoggable(Level.ALL) && isVariable() ? "[var]" : "");
 	//@todo now depend on System property
 	if (true)
 	    return getSignifier();

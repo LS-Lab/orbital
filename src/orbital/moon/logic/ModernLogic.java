@@ -247,8 +247,8 @@ abstract class ModernLogic implements Logic {
 
 	// test for syntactically legal <INTEGER_LITERAL> | <FLOATING_POINT_LITERAL>
 	//@todo could also move to an infinite coreInterpretation()
-	if (symbol.getType().subtypeOf(Types.objectType(Arithmetic.class))
-	    || symbol.getType().subtypeOf(Types.objectType(Number.class)))
+	if (symbol.getType().subtypeOf(Types.getDefault().objectType(Arithmetic.class))
+	    || symbol.getType().subtypeOf(Types.getDefault().objectType(Number.class)))
 	    try {
 		return createFixedSymbol(symbol, Values.getDefaultInstance().valueOf(signifier), false);
 	    }

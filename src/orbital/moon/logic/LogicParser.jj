@@ -86,6 +86,12 @@ public class LogicParser {
      */
     protected ExpressionSyntax syntax;
 
+    /**
+     * The current type system used.
+     * @todo read from syntax.coreSignature().get(...) or from Type.getTypeSystem()?
+     */
+    private static TypeSystem typeSystem = Types.getDefault();
+
     // caches important types
     private transient Type TRUTH;
     private transient Type INDIVIDUAL;
@@ -153,7 +159,7 @@ public class LogicParser {
      */
     protected Type asType(Expression f) {
 	//@xxx
-	if (false && f.getType() != Types.TYPE)
+	if (false && f.getType() != typeSystem.TYPE())
 	    throw new IllegalArgumentException("would not expect type " + f + " for type expressions @xxx except for other kinds like *->*");
 	return (Type) ((Formula) f).apply(InterpretationBase.EMPTY(syntax.coreSignature()));
     }
@@ -262,7 +268,7 @@ public class LogicParser {
      */
     protected Expression apply(Token optok, Expression[] a, Type reqResult) throws ParseException {
     	String op = optok.image;
-	Symbol s = scope.getSymbol(op, Types.map(Types.typeOf(a), reqResult), true);
+	Symbol s = scope.getSymbol(op, typeSystem.map(Types.typeOf(a), reqResult), true);
 	return composeWrapper(optok, s, a);
     }
 
@@ -294,7 +300,7 @@ public class LogicParser {
      * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience method</a>
      */
     private Expression composeWrapper(Token optok, String op, Expression[] arg) throws ParseException {
-	Symbol s = scope.getSymbol(op, Types.map(Types.typeOf(arg), UNIVERSAL), false);
+	Symbol s = scope.getSymbol(op, typeSystem.map(Types.typeOf(arg), UNIVERSAL), false);
 	if (s == null) {
 	    //@todo remove since this does not occur because we don't use tryGetScope any more.
 	    //@xxx an error is to come up, so already print some information about it
@@ -415,7 +421,7 @@ public class LogicParser {
 
 	    //@internal first look if there is a symbol of parametric type matching ours
 	    //@xxx note that this does not only find those of parametric types, but may get stuck at the first with non-parametric type as well. However this does not incubate problems if only symbols of parameteric types are not overloaded (i.e. their signifier is unique).
-	    s = tryGetSymbol(signifier, Types.UNIVERSAL);
+	    s = tryGetSymbol(signifier, typeSystem.UNIVERSAL());
 	    if (s != null && s.getType() instanceof ClassicalLogic.PiAbstractionType)
 		return s;
 
@@ -430,8 +436,8 @@ public class LogicParser {
 	    Symbol s = symbolMap.get(signifier, maxType);
 	    if (s != null) {
 		// we already know it due to a quantifier within whose scope we are
-		//@todo use Types.map(Types.product(arityOf(maxType.domain()), UNIVERSAL), UNIVERSAL) instead to catch even more similarities?
-		Symbol s2 = symbolMap.get(signifier, Types.map(maxType.domain(), Types.UNIVERSAL));
+		//@todo use typeSystem.map(typeSystem.product(arityOf(maxType.domain()), UNIVERSAL), UNIVERSAL) instead to catch even more similarities?
+		Symbol s2 = symbolMap.get(signifier, typeSystem.map(maxType.domain(), typeSystem.UNIVERSAL()));
 		if (!s.equals(s2))
 		    throw new IllegalArgumentException("nonunique names\n\t" + signifier + ":" + maxType + " ressembles\n\t" + s + " of type " + s.getType() +"\n\tand " + s2 + " of type " + s2.getType() + " too much.");
 		else
@@ -1151,7 +1157,7 @@ Expression PiAbstractionType() :
 }
 {
     "(" tok = <PI> xtok = <IDENTIFIER> "."
-	{scope.declare(x = scope.getSymbol(xtok.image, Types.TYPE, true, true));}
+	{scope.declare(x = scope.getSymbol(xtok.image, typeSystem.TYPE(), true, true));}
     t = type() ")"
 {
     scope = scope.leave();
@@ -1167,7 +1173,7 @@ Expression PrimaryType() :
 {
     LOOKAHEAD(2)
     tok = <IDENTIFIER>
-	{return syntax.createAtomic(scope.getSymbol(tok.image, Types.TYPE, true));}
+	{return syntax.createAtomic(scope.getSymbol(tok.image, typeSystem.TYPE(), true));}
     |   "[" a = CompoundType() "]"
 	{return a;}
     | LOOKAHEAD(2)
@@ -1184,7 +1190,7 @@ Expression CompoundType() :
 {Token tok; Expression[] arg;}
 {
     tok = <IDENTIFIER> arg = Types()
-	{return apply(tok, arg, Types.TYPE);}
+	{return apply(tok, arg, typeSystem.TYPE());}
 }
 
 // Parsing Helpers

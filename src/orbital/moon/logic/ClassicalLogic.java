@@ -148,6 +148,8 @@ public class ClassicalLogic extends ModernLogic {
 
     private static final Logger logger = Logger.getLogger(ClassicalLogic.class.getName());
 
+    private static final TypeSystem typeSystem = Types.getDefault();
+
     /**
      * Charset of internal files for tool-main.
      * @internal note reader.read() does not terminate for UTF-16. Seems JDK BugID
@@ -431,24 +433,24 @@ public class ClassicalLogic extends ModernLogic {
 	     * @invariants sorted, i.e. precedenceOf[i] < precedenceOf[i+1]
 	     */
 	    //@fixme debug why the thing ~(a->a) is displayed as ~a->a etc.  Use BESTFIX! (@see Notation#hasCompactBrackets)
-	    {Types.UNIVERSAL,
+	    {typeSystem.UNIVERSAL(),
 	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
-	    {Types.objectType(java.lang.Boolean.class, "truth"),
+	    {typeSystem.objectType(java.lang.Boolean.class, "truth"),
 	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
-	    {Types.objectType(java.lang.Object.class, "individual"),
+	    {typeSystem.objectType(java.lang.Object.class, "individual"),
 	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
-	    {Types.objectType(orbital.math.Integer.class, "integer"),
+	    {typeSystem.objectType(orbital.math.Integer.class, "integer"),
 	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
-	    {Types.objectType(orbital.math.Real.class, "real"),
+	    {typeSystem.objectType(orbital.math.Real.class, "real"),
 	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
-	    {Types.objectType(String.class, "string"),
+	    {typeSystem.objectType(String.class, "string"),
 	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
 
-	    {Types.list,
+	    {typeSystem.list(),
 	     new NotationSpecification(500, "fx", Notation.PREFIX)},
-	    {Types.set,
+	    {typeSystem.set(),
 	     new NotationSpecification(500, "fx", Notation.PREFIX)},
-	    {Types.map,
+	    {typeSystem.map(),
 	     new NotationSpecification(500, "xfx", Notation.INFIX)},
 
 	    {orbital.math.functional.Operations.plus, null},
@@ -498,8 +500,8 @@ public class ClassicalLogic extends ModernLogic {
     static class LogicFunctions {
         LogicFunctions() {}
     
-	private static final Type UNARY_LOGICAL_JUNCTOR = Types.predicate(Types.TRUTH);
-	private static final Type BINARY_LOGICAL_JUNCTOR = Types.predicate(Types.product(new Type[] {Types.TRUTH, Types.TRUTH}));
+	private static final Type UNARY_LOGICAL_JUNCTOR = typeSystem.predicate(Types.TRUTH);
+	private static final Type BINARY_LOGICAL_JUNCTOR = typeSystem.predicate(typeSystem.product(new Type[] {Types.TRUTH, Types.TRUTH}));
 
     	// interpretation for a truth-value
     	private static final Object getInt(boolean b) {
@@ -583,8 +585,8 @@ public class ClassicalLogic extends ModernLogic {
     	public static final Function forall = new ForallPlaceholder();
 	private static final class ForallPlaceholder implements Function {
 	    //@todo also templatize with t somehow? should be (t->TRUTH)->truth
-	    //private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.INDIVIDUAL, Types.TRUTH}), Types.TRUTH);
-	    private final Type logicalTypeDeclaration = Types.map(Types.map(Types.INDIVIDUAL, Types.TRUTH), Types.TRUTH);
+	    //private final Type logicalTypeDeclaration = typeSystem.map(typeSystem.product(new Type[] {Types.INDIVIDUAL, Types.TRUTH}), Types.TRUTH);
+	    private final Type logicalTypeDeclaration = typeSystem.map(typeSystem.map(Types.INDIVIDUAL, Types.TRUTH), Types.TRUTH);
 	    public Object apply(Object f) {
 		throw new LogicException("quantified formulas only have a semantic value with respect to a possibly infinite domain. They are available for inference, but they cannot be interpreted with finite means.");
 	    }
@@ -594,7 +596,7 @@ public class ClassicalLogic extends ModernLogic {
     	public static final Function exists = new ExistsPlaceholder();
 	private static final class ExistsPlaceholder implements Function {
 	    //@todo also templatize with t somehow? should be (t->TRUTH)->truth
-	    private final Type logicalTypeDeclaration = Types.map(Types.map(Types.INDIVIDUAL, Types.TRUTH), Types.TRUTH);
+	    private final Type logicalTypeDeclaration = typeSystem.map(typeSystem.map(Types.INDIVIDUAL, Types.TRUTH), Types.TRUTH);
 	    public Object apply(Object f) {
 		throw new LogicException("quantified formulas only have a semantic value with respect to a possibly infinite domain. They are available for inference, but they cannot be interpreted with finite means.");
 	    }
@@ -608,9 +610,9 @@ public class ClassicalLogic extends ModernLogic {
 		Object.class, Object.class
 	    }, Function.class);
 	    //@todo also templatize with t somehow? //@xxx type should be s*t->(s->t)
-	    //private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.UNIVERSAL, Types.UNIVERSAL}), Types.map(Types.UNIVERSAL, Types.UNIVERSAL));
-	    //private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.INDIVIDUAL, Types.INDIVIDUAL}), Types.map(Types.INDIVIDUAL, Types.INDIVIDUAL));
-	    private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.INDIVIDUAL, Types.TRUTH}), Types.map(Types.INDIVIDUAL, Types.TRUTH));
+	    //private final Type logicalTypeDeclaration = typeSystem.map(typeSystem.product(new Type[] {typeSystem.UNIVERSAL(), typeSystem.UNIVERSAL()}), typeSystem.map(typeSystem.UNIVERSAL(), typeSystem.UNIVERSAL()));
+	    //private final Type logicalTypeDeclaration = typeSystem.map(typeSystem.product(new Type[] {Types.INDIVIDUAL, Types.INDIVIDUAL}), typeSystem.map(Types.INDIVIDUAL, Types.INDIVIDUAL));
+	    private final Type logicalTypeDeclaration = typeSystem.map(typeSystem.product(new Type[] {Types.INDIVIDUAL, Types.TRUTH}), typeSystem.map(Types.INDIVIDUAL, Types.TRUTH));
 	    public Object apply(Object x, Object t) {
 		throw new AssertionError("this method never gets called since lambda cannot be interpreted truth-functionally, but already receives a structural modification in compose(...)");
 	    }
@@ -618,7 +620,7 @@ public class ClassicalLogic extends ModernLogic {
 	};
     	public static final BinaryFunction pi = new PiPlaceholder();
 	private static final class PiPlaceholder implements BinaryFunction {
-	    private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.TYPE, Types.TYPE}), Types.map(Types.TYPE, Types.TYPE));
+	    private final Type logicalTypeDeclaration = typeSystem.map(typeSystem.product(new Type[] {typeSystem.TYPE(), typeSystem.TYPE()}), typeSystem.map(typeSystem.TYPE(), typeSystem.TYPE()));
 	    public Object apply(Object x, Object t) {
 		throw new AssertionError("this method never gets called since pi is an abstract type construction");
 	    }
@@ -632,7 +634,7 @@ public class ClassicalLogic extends ModernLogic {
     static final Symbol PI;
     static {
 	//@internal we need some valid non-null arguments. We use one that can be converted to any type lambda might need
-	Expression BOTTOM = Utilities.logic.createAtomic(new SymbolBase("BOTTOM", Types.ABSURD));
+	Expression BOTTOM = Utilities.logic.createAtomic(new SymbolBase("BOTTOM", typeSystem.ABSURD()));
 	LAMBDA = _coreSignature.get("\\", new Expression[] {BOTTOM,BOTTOM});
 	assert LAMBDA != null : "lambda operator found";
 	PI = _coreSignature.get("\\\\", new Expression[] {BOTTOM,BOTTOM}); //@todo
@@ -743,7 +745,7 @@ public class ClassicalLogic extends ModernLogic {
 	    
 	// implementation of orbital.logic.imp.Expression interface
 	public Type getType() {
-	    return Types.map(x.getType(), term.getType());
+	    return typeSystem.map(x.getType(), term.getType());
 	}
         public Signature getSignature() {
 	    Signature sigma = new SignatureBase(term.getSignature());
@@ -801,7 +803,7 @@ public class ClassicalLogic extends ModernLogic {
 	    super(null);//@xxx
 	    this.x = x;
 	    this.term = term;
-	    if (term.getType() != Types.TYPE)
+	    if (term.getType() != typeSystem.TYPE())
 		throw new IllegalArgumentException("would not expect type " + term.getType() + " for type expressions @xxx except for other kinds like *->*");
 	}
 
@@ -837,7 +839,7 @@ public class ClassicalLogic extends ModernLogic {
 	// implementation of orbital.logic.imp.Expression interface
 	public Type getType() {
 	    //@xxx wrong type? And equals *&rarr;*?
-	    return Types.map(x.getType(), term.getType());
+	    return typeSystem.map(x.getType(), term.getType());
 	}
         public Signature getSignature() {
 	    Signature sigma = new SignatureBase(term.getSignature());
@@ -888,7 +890,7 @@ public class ClassicalLogic extends ModernLogic {
 	    this.x = x;
 	    this.term = term;
 	    this.I = I;
-	    if (term.getType() != Types.TYPE)
+	    if (term.getType() != typeSystem.TYPE())
 		throw new IllegalArgumentException("would not expect type " + term.getType() + " for type expressions @xxx except for other kinds like *->*");
 	}
 
@@ -970,9 +972,9 @@ public class ClassicalLogic extends ModernLogic {
 	    //@xxx
 	    if (equals(tau))
 		return 0;
-	    else if (tau == Types.UNIVERSAL)
+	    else if (tau == typeSystem.UNIVERSAL())
 		return -1;
-	    else if (tau == Types.ABSURD)
+	    else if (tau == typeSystem.ABSURD())
 		return 1;
 	    else
 		throw new IncomparableException(this + " compared to " + tau);
@@ -981,9 +983,9 @@ public class ClassicalLogic extends ModernLogic {
 	    //@xxx
 	    if (equals(tau))
 		return true;
-	    else if (tau == Types.UNIVERSAL)
+	    else if (tau == typeSystem.UNIVERSAL())
 		return true;
-	    else if (tau == Types.ABSURD)
+	    else if (tau == typeSystem.ABSURD())
 		return false;
 	    else
 		//@xxx throw new UnsupportedOperationException(this + " =< " + tau);
@@ -1017,7 +1019,7 @@ public class ClassicalLogic extends ModernLogic {
      * @author Andr&eacute; Platzer
      * @version 1.1, 2002-11-19
      * @internal currently this is only type conversion and has nothing to do with the particular task of &Pi;-application.
-     * @internal note that this is (almost) like ModernFormula.FixedAtomicSymbol(logic, new SymbolBase("<to " + applied + ">",Types.map(abstraction, applied),null,false), Functions.id, false). Apart from getSignature and equals/hashCode.
+     * @internal note that this is (almost) like ModernFormula.FixedAtomicSymbol(logic, new SymbolBase("<to " + applied + ">",typeSystem.map(abstraction, applied),null,false), Functions.id, false). Apart from getSignature and equals/hashCode.
      */
     private static class PiApplicationExpression extends ModernFormula {
 	private PiAbstractionType abstraction;
@@ -1054,7 +1056,7 @@ public class ClassicalLogic extends ModernLogic {
 	
 	// implementation of orbital.logic.imp.Expression interface
 	public Type getType() {
-	    return Types.map(abstraction, applied);
+	    return typeSystem.map(abstraction, applied);
 	}
         public Signature getSignature() {
 	    return SignatureBase.EMPTY;
@@ -1213,7 +1215,7 @@ public class ClassicalLogic extends ModernLogic {
 	    if (type.equals(Types.TRUTH))
 		// ordinary propositional logic
 		;
-	    else if (!s.isVariable() && type.subtypeOf(Types.objectType(orbital.math.Scalar.class)))
+	    else if (!s.isVariable() && type.subtypeOf(typeSystem.objectType(orbital.math.Scalar.class)))
 	    	// forget about interpreting _fixed_ constants @xxx generalize concept
 	    	it.remove();
 	    else
@@ -1278,7 +1280,7 @@ public class ClassicalLogic extends ModernLogic {
 		if (type.equals(Types.TRUTH))
 		    // ordinary propositional logic
 		    ;
-		else if (!s.isVariable() && type.subtypeOf(Types.objectType(orbital.math.Scalar.class)))
+		else if (!s.isVariable() && type.subtypeOf(typeSystem.objectType(orbital.math.Scalar.class)))
 		    // forget about interpreting _fixed_ constants @xxx generalize concept
 		    ;
 		else
@@ -1626,7 +1628,7 @@ public class ClassicalLogic extends ModernLogic {
 		{
 		    Type arguments[] = new Type[freeVariables.size()];
 		    Arrays.fill(arguments, Types.INDIVIDUAL);
-		    skolemType = Types.map(Types.product(arguments), Types.INDIVIDUAL);
+		    skolemType = typeSystem.map(typeSystem.product(arguments), Types.INDIVIDUAL);
 		}
 		final Symbol skolemFunctionSymbol = new UniqueSymbol("s", skolemType, null, false);
 

@@ -17,6 +17,12 @@ import junit.framework.*;
  * @version 1.1, 2002-09-14
  */
 public class TypeTest extends check.TestCase {
+    /**
+     * the type system to test.
+     */
+    private TypeSystem typeSystem;
+    private Type INDIVIDUAL;
+    private Type TRUTH;
     public static void main(String[] args) {
 	junit.textui.TestRunner.run(suite());
     }
@@ -24,46 +30,49 @@ public class TypeTest extends check.TestCase {
 	return new TestSuite(TypeTest.class);
     }
     protected void setUp() {
+	typeSystem = Types.getDefault();
+	INDIVIDUAL = Types.INDIVIDUAL;
+	TRUTH = Types.TRUTH;
     }
 
     public void testTypeConstructors() {
-	testTypeConstructorsWith(new Type[] {Types.UNIVERSAL});
-	testTypeConstructorsWith(new Type[] {Types.TRUTH});
-	testTypeConstructorsWith(new Type[] {Types.INDIVIDUAL});
-	testTypeConstructorsWith(new Type[] {Types.NOTYPE});
-	testTypeConstructorsWith(new Type[] {Types.ABSURD});
-	testTypeConstructorsWith(new Type[] {Types.UNIVERSAL, Types.TRUTH});
-	testTypeConstructorsWith(new Type[] {Types.UNIVERSAL, Types.UNIVERSAL});
-	testTypeConstructorsWith(new Type[] {Types.UNIVERSAL, Types.INDIVIDUAL});
-	testTypeConstructorsWith(new Type[] {Types.INDIVIDUAL, Types.INDIVIDUAL});
-	testTypeConstructorsWith(new Type[] {Types.objectType(Double.class), Types.objectType(Integer.class)});
-	testTypeConstructorsWith(new Type[] {Types.objectType(Double.class), Types.objectType(Integer.class), Types.objectType(Float.class)});
-	testTypeConstructorsWith(new Type[] {Types.objectType(Double.class), Types.objectType(Integer.class), Types.objectType(Number.class)});
+	testTypeConstructorsWith(new Type[] {typeSystem.UNIVERSAL()});
+	testTypeConstructorsWith(new Type[] {TRUTH});
+	testTypeConstructorsWith(new Type[] {INDIVIDUAL});
+	testTypeConstructorsWith(new Type[] {typeSystem.NOTYPE()});
+	testTypeConstructorsWith(new Type[] {typeSystem.ABSURD()});
+	testTypeConstructorsWith(new Type[] {typeSystem.UNIVERSAL(), TRUTH});
+	testTypeConstructorsWith(new Type[] {typeSystem.UNIVERSAL(), typeSystem.UNIVERSAL()});
+	testTypeConstructorsWith(new Type[] {typeSystem.UNIVERSAL(), INDIVIDUAL});
+	testTypeConstructorsWith(new Type[] {INDIVIDUAL, INDIVIDUAL});
+	testTypeConstructorsWith(new Type[] {typeSystem.objectType(Double.class), typeSystem.objectType(Integer.class)});
+	testTypeConstructorsWith(new Type[] {typeSystem.objectType(Double.class), typeSystem.objectType(Integer.class), typeSystem.objectType(Float.class)});
+	testTypeConstructorsWith(new Type[] {typeSystem.objectType(Double.class), typeSystem.objectType(Integer.class), typeSystem.objectType(Number.class)});
     }
 
     private void testTypeConstructorsWith(Type a[]) {
 	for (int i = 0; i < a.length; i++)
 	    constructed(a[i], a[i]);
 	if (a.length > 1) {
-	    constructed(Types.map(a[0], a[1]), Types.map(a[0], a[1]));
-	    constructed(Types.predicate(a[0]), Types.predicate(a[0]));
+	    constructed(typeSystem.map(a[0], a[1]), typeSystem.map(a[0], a[1]));
+	    constructed(typeSystem.predicate(a[0]), typeSystem.predicate(a[0]));
 	}
-	constructed(Types.product(a), Types.product(a));
-	if (Types.product(a) != Types.ABSURD)
-	    constructed(Types.predicate(Types.product(a)), Types.predicate(Types.product(a)));
-	constructed(Types.inf(a), Types.inf(a));
-	constructed(Types.sup(a), Types.sup(a));
-	constructed(Types.collection(a[0]), Types.collection(a[0]));
-	constructed(Types.set(a[0]), Types.set(a[0]));
-	constructed(Types.list(a[0]), Types.list(a[0]));
-	//constructed(Types.bag(a[0]), Types.bag(a[0]));
+	constructed(typeSystem.product(a), typeSystem.product(a));
+	if (typeSystem.product(a) != typeSystem.ABSURD())
+	    constructed(typeSystem.predicate(typeSystem.product(a)), typeSystem.predicate(typeSystem.product(a)));
+	constructed(typeSystem.inf(a), typeSystem.inf(a));
+	constructed(typeSystem.sup(a), typeSystem.sup(a));
+	constructed(typeSystem.collection(a[0]), typeSystem.collection(a[0]));
+	constructed(typeSystem.set(a[0]), typeSystem.set(a[0]));
+	constructed(typeSystem.list(a[0]), typeSystem.list(a[0]));
+	//constructed(typeSystem.bag(a[0]), typeSystem.bag(a[0]));
 
 	// also test subtypes
 	Type s, t;
-	s = Types.set(a[0]);
-	t = Types.collection(a[0]);
+	s = typeSystem.set(a[0]);
+	t = typeSystem.collection(a[0]);
 	assertTrue( compare(s,t) <= 0 , s + " =< " + t);
-	s = Types.list(a[0]);
+	s = typeSystem.list(a[0]);
 	assertTrue( compare(s,t) <= 0 , s + " =< " + t);
     }
 
@@ -80,123 +89,123 @@ public class TypeTest extends check.TestCase {
 
     public void testSameConstructorSubtype() {
 	Type s, t;
-	s = Types.predicate(Types.UNIVERSAL);
-	t = Types.map(Types.INDIVIDUAL, Types.TRUTH);
+	s = typeSystem.predicate(typeSystem.UNIVERSAL());
+	t = typeSystem.map(INDIVIDUAL, TRUTH);
 	assertTrue( compare(s,t) <= 0 , s + " =< " + t);
-	s = Types.predicate(Types.UNIVERSAL);
-	t = Types.predicate(Types.INDIVIDUAL);
+	s = typeSystem.predicate(typeSystem.UNIVERSAL());
+	t = typeSystem.predicate(INDIVIDUAL);
 	assertTrue( compare(s,t) <= 0 , s + " =< " + t);
-	s = Types.map(Types.objectType(String.class), Types.INDIVIDUAL);
-	t = Types.map(Types.INDIVIDUAL, Types.INDIVIDUAL);
+	s = typeSystem.map(typeSystem.objectType(String.class), INDIVIDUAL);
+	t = typeSystem.map(INDIVIDUAL, INDIVIDUAL);
 	assertTrue( compare(s,t) >= 0 , s + " >= " + t);
 	
-	s = Types.product(new Type[] {Types.TRUTH, Types.objectType(String.class)});
-	t = Types.product(new Type[] {Types.TRUTH, Types.INDIVIDUAL});
+	s = typeSystem.product(new Type[] {TRUTH, typeSystem.objectType(String.class)});
+	t = typeSystem.product(new Type[] {TRUTH, INDIVIDUAL});
 	assertTrue( compare(s,t) <= 0 , s + " =< " + t);
 
-	s = Types.inf(new Type[] {Types.predicate(Types.INDIVIDUAL), Types.objectType(String.class), Types.INDIVIDUAL});
-	t = Types.inf(new Type[] {Types.predicate(Types.INDIVIDUAL), Types.objectType(String.class)});
+	s = typeSystem.inf(new Type[] {typeSystem.predicate(INDIVIDUAL), typeSystem.objectType(String.class), INDIVIDUAL});
+	t = typeSystem.inf(new Type[] {typeSystem.predicate(INDIVIDUAL), typeSystem.objectType(String.class)});
 	assertTrue( s.equals(t) , s + " = " + t);
-	s = Types.sup(new Type[] {Types.predicate(Types.INDIVIDUAL), Types.objectType(String.class), Types.INDIVIDUAL});
-	t = Types.sup(new Type[] {Types.predicate(Types.INDIVIDUAL), Types.INDIVIDUAL});
+	s = typeSystem.sup(new Type[] {typeSystem.predicate(INDIVIDUAL), typeSystem.objectType(String.class), INDIVIDUAL});
+	t = typeSystem.sup(new Type[] {typeSystem.predicate(INDIVIDUAL), INDIVIDUAL});
 	assertTrue( s.equals(t) , s + " = " + t);
-	s = Types.sup(new Type[] {Types.set(Types.INDIVIDUAL), Types.objectType(String.class)});
-	t = Types.sup(new Type[] {Types.set(Types.INDIVIDUAL), Types.INDIVIDUAL});
+	s = typeSystem.sup(new Type[] {typeSystem.set(INDIVIDUAL), typeSystem.objectType(String.class)});
+	t = typeSystem.sup(new Type[] {typeSystem.set(INDIVIDUAL), INDIVIDUAL});
 	//assertTrue( compare(s,t) <= 0 , s + " =< " + t);
-	s = Types.inf(new Type[] {Types.predicate(Types.INDIVIDUAL), Types.objectType(String.class)});
-	t = Types.inf(new Type[] {Types.predicate(Types.INDIVIDUAL), Types.INDIVIDUAL});
+	s = typeSystem.inf(new Type[] {typeSystem.predicate(INDIVIDUAL), typeSystem.objectType(String.class)});
+	t = typeSystem.inf(new Type[] {typeSystem.predicate(INDIVIDUAL), INDIVIDUAL});
 	//assertTrue( compare(s,t) <= 0 , s + " =< " + t);
-	s = Types.sup(new Type[] {Types.predicate(Types.INDIVIDUAL), Types.objectType(String.class)});
-	t = Types.sup(new Type[] {Types.predicate(Types.INDIVIDUAL), Types.INDIVIDUAL});
+	s = typeSystem.sup(new Type[] {typeSystem.predicate(INDIVIDUAL), typeSystem.objectType(String.class)});
+	t = typeSystem.sup(new Type[] {typeSystem.predicate(INDIVIDUAL), INDIVIDUAL});
 	//assertTrue( compare(s,t) <= 0 , s + " =< " + t);
 
 	
-	s = Types.set(Types.objectType(String.class));
-	t = Types.collection(Types.objectType(Comparable.class));
+	s = typeSystem.set(typeSystem.objectType(String.class));
+	t = typeSystem.collection(typeSystem.objectType(Comparable.class));
 	assertTrue( compare(s,t) <= 0 , s + " =< " + t);
-	s = Types.set(Types.objectType(String.class));
-	t = Types.set(Types.objectType(Comparable.class));
+	s = typeSystem.set(typeSystem.objectType(String.class));
+	t = typeSystem.set(typeSystem.objectType(Comparable.class));
 	assertTrue( compare(s,t) <= 0 , s + " =< " + t);
     }
 
     public void testSupInfSubtype() {
 	Type s, t;
 	Type a[];
-	a = new Type[] {Types.predicate(Types.INDIVIDUAL), Types.objectType(String.class)};
+	a = new Type[] {typeSystem.predicate(INDIVIDUAL), typeSystem.objectType(String.class)};
 	s = a[1];
-	t = Types.sup(a);
+	t = typeSystem.sup(a);
 	assertTrue( compare(s,t) <= 0 , s + " =< " + t);
-	a = new Type[] {Types.predicate(Types.INDIVIDUAL), Types.objectType(String.class)};
+	a = new Type[] {typeSystem.predicate(INDIVIDUAL), typeSystem.objectType(String.class)};
 	s = a[1];
-	t = Types.inf(a);
+	t = typeSystem.inf(a);
 	assertTrue( compare(s,t) >= 0 , s + " >= " + t);
 
 	// mixed
-	s = Types.inf(new Type[] {Types.set(Types.INDIVIDUAL), Types.objectType(String.class)});
-	t = Types.sup(new Type[] {Types.set(Types.INDIVIDUAL), Types.INDIVIDUAL});
+	s = typeSystem.inf(new Type[] {typeSystem.set(INDIVIDUAL), typeSystem.objectType(String.class)});
+	t = typeSystem.sup(new Type[] {typeSystem.set(INDIVIDUAL), INDIVIDUAL});
 	assertTrue( compare(s,t) <= 0 , s + " =< " + t);
-	s = Types.inf(new Type[] {Types.set(Types.INDIVIDUAL), Types.objectType(String.class)});
-	t = Types.sup(new Type[] {Types.set(Types.INDIVIDUAL), Types.objectType(String.class)});
+	s = typeSystem.inf(new Type[] {typeSystem.set(INDIVIDUAL), typeSystem.objectType(String.class)});
+	t = typeSystem.sup(new Type[] {typeSystem.set(INDIVIDUAL), typeSystem.objectType(String.class)});
 	assertTrue( compare(s,t) <= 0 , s + " =< " + t);
     }
 
     public void testSupInfNeutral() {
 	Type s, t;
-	s = Types.inf(new Type[] {Types.set(Types.INDIVIDUAL), Types.objectType(String.class)});
-	t = Types.inf(new Type[] {Types.set(Types.INDIVIDUAL), Types.objectType(String.class), Types.UNIVERSAL});
+	s = typeSystem.inf(new Type[] {typeSystem.set(INDIVIDUAL), typeSystem.objectType(String.class)});
+	t = typeSystem.inf(new Type[] {typeSystem.set(INDIVIDUAL), typeSystem.objectType(String.class), typeSystem.UNIVERSAL()});
 	assertTrue( s.equals(t) , s + " = " + t);
-	s = Types.sup(new Type[] {Types.set(Types.INDIVIDUAL), Types.objectType(String.class)});
-	t = Types.sup(new Type[] {Types.set(Types.INDIVIDUAL), Types.objectType(String.class), Types.ABSURD});
+	s = typeSystem.sup(new Type[] {typeSystem.set(INDIVIDUAL), typeSystem.objectType(String.class)});
+	t = typeSystem.sup(new Type[] {typeSystem.set(INDIVIDUAL), typeSystem.objectType(String.class), typeSystem.ABSURD()});
 	assertTrue( s.equals(t) , s + " = " + t);
     }
 
     public void testSupInfAssociative() {
 	Type s, t;
-	s = Types.inf(new Type[] {Types.set(Types.INDIVIDUAL), Types.objectType(String.class), Types.inf(new Type[] {Types.objectType(Number.class), Types.objectType(RuntimeException.class)})});
-	t = Types.inf(new Type[] {Types.set(Types.INDIVIDUAL), Types.objectType(String.class), Types.objectType(Number.class), Types.objectType(RuntimeException.class)});
+	s = typeSystem.inf(new Type[] {typeSystem.set(INDIVIDUAL), typeSystem.objectType(String.class), typeSystem.inf(new Type[] {typeSystem.objectType(Number.class), typeSystem.objectType(RuntimeException.class)})});
+	t = typeSystem.inf(new Type[] {typeSystem.set(INDIVIDUAL), typeSystem.objectType(String.class), typeSystem.objectType(Number.class), typeSystem.objectType(RuntimeException.class)});
 	assertTrue( s.equals(t) , s + " = " + t);
-	s = Types.sup(new Type[] {Types.set(Types.INDIVIDUAL), Types.objectType(String.class), Types.sup(new Type[] {Types.objectType(Number.class), Types.objectType(RuntimeException.class)})});
-	t = Types.sup(new Type[] {Types.set(Types.INDIVIDUAL), Types.objectType(String.class), Types.objectType(Number.class), Types.objectType(RuntimeException.class)});
+	s = typeSystem.sup(new Type[] {typeSystem.set(INDIVIDUAL), typeSystem.objectType(String.class), typeSystem.sup(new Type[] {typeSystem.objectType(Number.class), typeSystem.objectType(RuntimeException.class)})});
+	t = typeSystem.sup(new Type[] {typeSystem.set(INDIVIDUAL), typeSystem.objectType(String.class), typeSystem.objectType(Number.class), typeSystem.objectType(RuntimeException.class)});
 	assertTrue( s.equals(t) , s + " = " + t);
     }
 
     public void testSupInfEmptyConstructions() {
 	Type s, t;
-	s = Types.inf(new Type[] {});
-	t = Types.UNIVERSAL;
+	s = typeSystem.inf(new Type[] {});
+	t = typeSystem.UNIVERSAL();
 	assertTrue( s.equals(t) && s == t, s + " = " + t);
-	s = Types.sup(new Type[] {});
-	t = Types.ABSURD;
+	s = typeSystem.sup(new Type[] {});
+	t = typeSystem.ABSURD();
 	assertTrue( s.equals(t) && s == t, s + " = " + t);
-	s = Types.product(new Type[] {});
-	t = Types.ABSURD;
+	s = typeSystem.product(new Type[] {});
+	t = typeSystem.ABSURD();
 	//assertTrue( s.equals(t) && s == t, s + " = " + t); //?
     }
 
     public void testStrict() {
 	Type s;
-	final Type t = Types.ABSURD;
-	s = Types.inf(new Type[] {Types.INDIVIDUAL, t});
+	final Type t = typeSystem.ABSURD();
+	s = typeSystem.inf(new Type[] {INDIVIDUAL, t});
 	assertTrue( s.equals(t) && s == t, s + " = " + t);
-	//s = Types.sup(new Type[] {Types.INDIVIDUAL, t}); //@todo ?
+	//s = typeSystem.sup(new Type[] {INDIVIDUAL, t}); //@todo ?
 	assertTrue( s.equals(t) && s == t, s + " = " + t);
-	s = Types.product(new Type[] {Types.INDIVIDUAL, t});
+	s = typeSystem.product(new Type[] {INDIVIDUAL, t});
 	assertTrue( s.equals(t) && s == t, s + " = " + t);
-	//s = Types.map(Types.INDIVIDUAL, t);
+	//s = typeSystem.map(INDIVIDUAL, t);
 	//assertTrue( s.equals(t) && s == t, s + " = " + t);
-	//s = Types.map(t, Types.INDIVIDUAL);
+	//s = typeSystem.map(t, INDIVIDUAL);
 	//assertTrue( s.equals(t) && s == t, s + " = " + t); //@todo ?
     }
     public void testCollectionsOfAbsurd() {
 	Type s;
-	final Type t = Types.ABSURD;
-	s = Types.collection(t);
+	final Type t = typeSystem.ABSURD();
+	s = typeSystem.collection(t);
 	assertTrue( !s.equals(t), s + " != " + t);
-	s = Types.set(t);
+	s = typeSystem.set(t);
 	assertTrue( !s.equals(t), s + " != " + t);
-	s = Types.list(t);
+	s = typeSystem.list(t);
 	assertTrue( !s.equals(t), s + " != " + t);
-	//s = Types.bag(t);
+	//s = typeSystem.bag(t);
 	//assertTrue( !s.equals(t), s + " != " + t);
     }
 
@@ -205,46 +214,46 @@ public class TypeTest extends check.TestCase {
 
     public void testIncomparableTypes() {
 	Type s, t;
-	s = Types.list(Types.UNIVERSAL);
-	t = Types.map(Types.INDIVIDUAL, Types.TRUTH);
+	s = typeSystem.list(typeSystem.UNIVERSAL());
+	t = typeSystem.map(INDIVIDUAL, TRUTH);
 	assertComparable(s,t, false);
 	// non-extensional but intensional
-	s = Types.set(Types.INDIVIDUAL);
-	t = Types.predicate(Types.INDIVIDUAL);
+	s = typeSystem.set(INDIVIDUAL);
+	t = typeSystem.predicate(INDIVIDUAL);
 	assertComparable(s,t, false);
-	s = Types.set(Types.UNIVERSAL);
-	t = Types.predicate(Types.UNIVERSAL);
-	assertComparable(s,t, false);
-
-	s = Types.list(Types.UNIVERSAL);
-	t = Types.set(Types.UNIVERSAL);
-	assertComparable(s,t, false);
-	s = Types.INDIVIDUAL;
-	t = Types.map(Types.INDIVIDUAL, Types.TRUTH);
-	assertComparable(s,t, false);
-	s = Types.INDIVIDUAL;
-	t = Types.map(Types.INDIVIDUAL, Types.objectType(String.class));
+	s = typeSystem.set(typeSystem.UNIVERSAL());
+	t = typeSystem.predicate(typeSystem.UNIVERSAL());
 	assertComparable(s,t, false);
 
-	s = Types.product(new Type[] {Types.INDIVIDUAL, Types.objectType(String.class)});
-	t = Types.inf(new Type[] {Types.INDIVIDUAL, Types.objectType(String.class)});
+	s = typeSystem.list(typeSystem.UNIVERSAL());
+	t = typeSystem.set(typeSystem.UNIVERSAL());
 	assertComparable(s,t, false);
-	s = Types.product(new Type[] {Types.INDIVIDUAL, Types.objectType(String.class)});
-	t = Types.sup(new Type[] {Types.INDIVIDUAL, Types.objectType(String.class)});
+	s = INDIVIDUAL;
+	t = typeSystem.map(INDIVIDUAL, TRUTH);
+	assertComparable(s,t, false);
+	s = INDIVIDUAL;
+	t = typeSystem.map(INDIVIDUAL, typeSystem.objectType(String.class));
+	assertComparable(s,t, false);
+
+	s = typeSystem.product(new Type[] {INDIVIDUAL, typeSystem.objectType(String.class)});
+	t = typeSystem.inf(new Type[] {INDIVIDUAL, typeSystem.objectType(String.class)});
+	assertComparable(s,t, false);
+	s = typeSystem.product(new Type[] {INDIVIDUAL, typeSystem.objectType(String.class)});
+	t = typeSystem.sup(new Type[] {INDIVIDUAL, typeSystem.objectType(String.class)});
 	assertComparable(s,t, false);
     }
 
     public void testMetaTypes() {
 	Type s, t;
-	s = Types.TYPE;
+	s = typeSystem.TYPE();
 	constructed(s, s);
-	t = Types.TRUTH;
+	t = TRUTH;
 	assertComparable(s,t, false);
-	s = Types.TYPE;
-	t = Types.INDIVIDUAL;
+	s = typeSystem.TYPE();
+	t = INDIVIDUAL;
 	assertComparable(s,t, false);
-	s = Types.TYPE;
-	t = Types.objectType(java.lang.Number.class);
+	s = typeSystem.TYPE();
+	t = typeSystem.objectType(java.lang.Number.class);
 	assertComparable(s,t, false);
     }
     
@@ -260,14 +269,14 @@ public class TypeTest extends check.TestCase {
     }
     
     private int compare(Type s, Type t) {
-	assertTrue( s.compareTo(Types.UNIVERSAL) <= 0, "=<Universal");
-	assertTrue( s.equals(Types.UNIVERSAL) | s.compareTo(Types.UNIVERSAL) < 0, "<Universal or =Universal");
-	assertTrue( Types.UNIVERSAL.compareTo(s) >= 0, "Universal>=");
-	assertTrue( s.equals(Types.UNIVERSAL) | Types.UNIVERSAL.compareTo(s) > 0, "Universal> or Universal=");
-	assertTrue( s.compareTo(Types.ABSURD) >= 0, ">=Absurd");
-	assertTrue( s.equals(Types.ABSURD) | s.compareTo(Types.ABSURD) > 0, ">Absurd or =Absurd");
-	assertTrue( Types.ABSURD.compareTo(s) <= 0, "Absurd=<");
-	assertTrue( s.equals(Types.ABSURD) | Types.ABSURD.compareTo(s) <= 0, "Absurd< or Absurd=");
+	assertTrue( s.compareTo(typeSystem.UNIVERSAL()) <= 0, "=<Universal");
+	assertTrue( s.equals(typeSystem.UNIVERSAL()) | s.compareTo(typeSystem.UNIVERSAL()) < 0, "<Universal or =Universal");
+	assertTrue( typeSystem.UNIVERSAL().compareTo(s) >= 0, "Universal>=");
+	assertTrue( s.equals(typeSystem.UNIVERSAL()) | typeSystem.UNIVERSAL().compareTo(s) > 0, "Universal> or Universal=");
+	assertTrue( s.compareTo(typeSystem.ABSURD()) >= 0, ">=Absurd");
+	assertTrue( s.equals(typeSystem.ABSURD()) | s.compareTo(typeSystem.ABSURD()) > 0, ">Absurd or =Absurd");
+	assertTrue( typeSystem.ABSURD().compareTo(s) <= 0, "Absurd=<");
+	assertTrue( s.equals(typeSystem.ABSURD()) | typeSystem.ABSURD().compareTo(s) <= 0, "Absurd< or Absurd=");
 
 	assertTrue( s.compareTo(s) == 0 , "reflexive");
 	assertTrue( s.equals(s) , "reflexive");

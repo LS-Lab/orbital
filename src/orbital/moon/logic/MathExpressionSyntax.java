@@ -40,6 +40,7 @@ import orbital.util.InnerCheckedException;
  */
 public class MathExpressionSyntax implements ExpressionSyntax {
     private static final Values valueFactory = Values.getDefaultInstance();
+    private static final TypeSystem typeSystem = Types.getDefault();
     static final Symbol LAMBDA = ClassicalLogic.LAMBDA;
 	
     /**
@@ -96,13 +97,13 @@ public class MathExpressionSyntax implements ExpressionSyntax {
     }
     private static final Interpretation _coreInterpretation =
 	LogicSupport.arrayToInterpretation(new Object[][] {
-	    {Types.UNIVERSAL,
+	    {typeSystem.UNIVERSAL(),
 	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
-	    {Types.objectType(java.lang.Object.class, "individual"),
+	    {typeSystem.objectType(java.lang.Object.class, "individual"),
 	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
-	    {Types.objectType(orbital.math.Integer.class, "integer"),
+	    {typeSystem.objectType(orbital.math.Integer.class, "integer"),
 	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
-	    {Types.objectType(orbital.math.Real.class, "real"),
+	    {typeSystem.objectType(orbital.math.Real.class, "real"),
 	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
 	    
 	    {new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
@@ -144,7 +145,7 @@ public class MathExpressionSyntax implements ExpressionSyntax {
 	    throw new NullPointerException("illegal symbol: " + symbol);
 	final Type doc = symbol.getType().domain();
 	final Type cod = symbol.getType().codomain();
-	assert doc != Types.ABSURD : "@xxx currently assume map as strict";
+	assert doc != typeSystem.ABSURD() : "@xxx currently assume map as strict";
 	final String signifier = symbol.getSignifier();
 	assert signifier != null;
 
@@ -159,10 +160,10 @@ public class MathExpressionSyntax implements ExpressionSyntax {
 	    return new MathExpression(ref, symbol.getType());
 	}
 
-	if (doc.equals(Types.NOTYPE))
+	if (doc.equals(typeSystem.NOTYPE()))
 	    if (cod.equals(Types.INDIVIDUAL))
 		return new MathExpression(valueFactory.symbol(symbol.getSignifier()), symbol.getType());
-	    else if (cod.subtypeOf(Types.objectType(Arithmetic.class)))
+	    else if (cod.subtypeOf(typeSystem.objectType(Arithmetic.class)))
 		return new MathExpression(valueFactory.valueOf(symbol.getSignifier()), symbol.getType());
 	    else
 		throw new IllegalArgumentException("strange (unknown) type " + symbol.getType() + " of symbol " + symbol);
@@ -182,7 +183,7 @@ public class MathExpressionSyntax implements ExpressionSyntax {
 	    orbital.math.Symbol x = (orbital.math.Symbol) ((MathExpression)arguments[0]).referee;
 	    Object t = getValueOf(arguments[1]);
 	    return new MathExpression(convert((orbital.logic.functor.Function) Substitutions.lambda.apply(x, t)),
-				      Types.map(arguments[0].getType(), arguments[1].getType()));
+				      typeSystem.map(arguments[0].getType(), arguments[1].getType()));
 	}
 
 	MathFunctor f = (MathFunctor) op.getValue();

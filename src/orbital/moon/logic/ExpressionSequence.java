@@ -25,7 +25,7 @@ public class ExpressionSequence implements Expression.Composite {
     }
 
     public Type getType() {
-	return Types.list(Types.objectType(Expression.class));
+	return Types.getDefault().list(Types.getDefault().objectType(Expression.class));
     }
 
     public Signature getSignature() {

@@ -216,6 +216,8 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      * Maximum number of OperatorSet objects (for typesafe enum).
      */
     private static final int MAX_OPERATORS = 20;
+
+    private static final TypeSystem typeSystem = Types.getDefault();
     /**
      * tool-main
      * @todo parse arguments in order to obtain OperatorSet used
@@ -241,7 +243,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     public static final String usage = "interpret fuzzy logic";
 
 
-    private static final Type TRUTH = Types.objectType(orbital.math.Real.class, "truth");
+    private static final Type TRUTH = typeSystem.objectType(orbital.math.Real.class, "truth");
 
     private static final Values valueFactory = Values.getDefaultInstance();
     /**
@@ -276,14 +278,14 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	final OperatorSet op = fuzzyLogicOperators;
 	this._coreInterpretation =
 	LogicSupport.arrayToInterpretation(new Object[][] {
-	    {Types.UNIVERSAL,
+	    {typeSystem.UNIVERSAL(),
 	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
 	    {TRUTH,//@fixme replace true/false by 1.0,0.0
 	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
-	    {Types.objectType(orbital.math.Integer.class, "integer"),
+	    {typeSystem.objectType(orbital.math.Integer.class, "integer"),
 	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
 	    //@internal type-alias for truth is necessary, since LogicParser will treat 0.5:real.
-	    {Types.objectType(orbital.math.Real.class, "real"),
+	    {typeSystem.objectType(orbital.math.Real.class, "real"),
 	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
 
 	    {LogicFunctions.forall,       // "°"
@@ -731,8 +733,8 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     static class LogicFunctions {
         private LogicFunctions() {}
     
-	private static final Type UNARY_LOGICAL_JUNCTOR = Types.map(TRUTH, TRUTH);
-	private static final Type BINARY_LOGICAL_JUNCTOR = Types.map(Types.product(new Type[] {TRUTH, TRUTH}), TRUTH);
+	private static final Type UNARY_LOGICAL_JUNCTOR = typeSystem.map(TRUTH, TRUTH);
+	private static final Type BINARY_LOGICAL_JUNCTOR = typeSystem.map(typeSystem.product(new Type[] {TRUTH, TRUTH}), TRUTH);
 
 	// Basic logical operations (elemental junctors).
     	public static final Function not = new Function() {
