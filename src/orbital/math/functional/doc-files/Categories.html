@@ -6,10 +6,8 @@
 <meta name="author" content="Andre Platzer">
 <meta name="copyright" content="© 2002 André Platzer">
 <meta name="classification" content="Science/Mathematics/Category/Basics">
-<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
-<meta name="ProgId" content="FrontPage.Editor.Document">
 <title>Category theory</title>
-<link rel="stylesheet" href="../../../../../www/stylist.css" type="text/css" title="layout">
+<link rel="stylesheet" href="../../../../stylist.css" type="text/css" title="layout">
 </head>
 
 <body>
@@ -122,7 +120,7 @@
     The functors <span class="category">C</span>→<span class="category">D</span> 
     form a category with natural transformations being the morphisms.<br>
     Remark?: an isomorphism of functors is just a family of isomorphisms <span class="seriesOperator">(</span>α<sub>C</sub><span class="seriesOperator">)</span><sub>C∈Ob 
-    <span class="category">C</span></sub> with the above property.        
+    <span class="category">C</span></sub> with the above property.          
     <!-- @todo add the commutative diagram -->
   </dd>
 </dl>
@@ -146,11 +144,11 @@ are called <dfn>automorphisms</dfn>.</p>
         <td>∘ is distributive over +, i.e.
           <ul>
             <li>∀A,B,C∈Ob <span class="category">C</span> ∀f∈Hom<span class="category"><sub>C</sub></span>(B,C) 
-              ∀g,h∈Hom<span class="category"><sub>C</sub></span>(A,B) f∘(g+h) 
-              = (f∘g) + (f∘h)</li>
+              ∀g,h∈Hom<span class="category"><sub>C</sub></span>(A,B) 
+              f∘(g+h) = (f∘g) + (f∘h)</li>
             <li>∀A,B,C∈Ob <span class="category">C</span> ∀f,g∈Hom<span class="category"><sub>C</sub></span>(B,C) 
-              ∀h∈Hom<sub><span class="category">C</span></sub>(A,B) (f+g)∘h 
-              = (f∘h) + (g∘h)</li>
+              ∀h∈Hom<sub><span class="category">C</span></sub>(A,B) 
+              (f+g)∘h = (f∘h) + (g∘h)</li>
           </ul>
         </td>
         <td>&quot;distributive&quot;</td>
@@ -275,7 +273,8 @@ presentable covariant functor.
     ∀<span class="seriesOperator">(</span>g<sub>i</sub><sub></sub>∈Mor<sub><span class="category">C</span></sub>(A<sub>i</sub>,C)<span class="seriesOperator">)</span><sub>i∈I</sub><br />
     ∃!g∈Mor<sub><span class="category">C</span></sub>(S,C) ∀i∈I g∘ι<sub>i</sub> 
     = g<sub>i</sub> <big>)</big></center>Write: S = ∐<sub>i∈I</sub>A<sub>i</sub> 
-    = ⊕<sub>i∈I</sub>A<sub>i</sub> = ∑<sub>i∈I</sub>A<sub>i</sub> = ⋃̇<sub>i∈I</sub>A<sub>i</sub><br>
+    = ⊕<sub>i∈I</sub>A<sub>i</sub> = ∑<sub>i∈I</sub>A<sub>i</sub> = 
+    ⋃̇<sub>i∈I</sub>A<sub>i</sub><br>
     &quot;coproduct is universally repelling&quot;, and it is just an initial 
     object in&nbsp; a suitable category. A coproduct in <span class="category">C</span> 
     is just a product in <span class="category">C°</span>.</dd>
