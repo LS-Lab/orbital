@@ -340,9 +340,6 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	return _coreInterpretation;
     }
 
-    public Signature scanSignature(String expression) throws ParseException {
-	return createFormula(expression).getSignature();
-    } 
 
     
     private Formula createFormula(String expression) throws ParseException {
@@ -703,7 +700,6 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 
 	// Derived logical operations.
 
-	//XXX: null will prevent calling .toString() and thus hinder Interpretation.get(...)
 	//TODO: The following functions for derived logical operations could be generalized perhaps (see LogicBasis)
     	public static final BinaryFunction xor = null;
 
