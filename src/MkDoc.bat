@@ -28,7 +28,8 @@ rem once Emacs knows Unicode we could switch Javadoc to -charset "utf-8"
   echo make javadoc
     javadoc %s% -d . -sourcepath %HOME%\Java;%CLASSPATH% -link ../api -overview %src%\overview.html @%src%\options @%src%\package-grouping @%src%\package-list %1 %2 %3 %4 %5 %6 %7 %8 %9 > %temp%\doc
     if errorlevel 1 set wasError=true
-    copy /A stylesheet.css +%HOME%\www\stylist.css
+    copy %HOME%\www\stylist.css stylist.css
+    copy /A stylesheet.css +stylist.css
     echo @media screen { a:link, a:visited {color:blue} } >> stylesheet.css
     if "%wasError%" == "true" goto Errored
     start /B xcopy *.* %HOME%\www\orbital\orbital.doc\docs\api\ /S /Q /Y

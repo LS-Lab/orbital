@@ -111,7 +111,7 @@ abstract class ModernLogic implements Logic {
         try {
 	    // core-symbols
 	    // fixed interpretation of core signature
-	    Symbol op2;
+	    Symbol op2 = null;
 	    assert (op2 = coreSignature().get(f.toString(), arguments)) != null : "composition functors occur in the signature";
 	    assert op.equals(op2) : "enforce any potential unambiguities of operators";
 	    return composeFixed((Functor)f, op, arguments);

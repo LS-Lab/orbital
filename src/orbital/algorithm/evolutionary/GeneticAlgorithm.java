@@ -170,8 +170,8 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
      * Construct a new GeneticAlgorithm.
      * Default number of childrens and parents used for reproduction is 2.
      */
-    protected GeneticAlgorithm(2, 2, double maximumRecombination, double maximumMutation) {
-	this(maximumRecombination, maximumMutation);
+    protected GeneticAlgorithm(double maximumRecombination, double maximumMutation) {
+	this(2, 2, maximumRecombination, maximumMutation);
     }
 
     /**
