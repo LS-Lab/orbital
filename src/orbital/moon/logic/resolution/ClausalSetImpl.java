@@ -9,6 +9,7 @@ package orbital.moon.logic.resolution;
 import java.util.Set;
 import java.util.LinkedHashSet;
 
+import java.util.Iterator;
 import orbital.util.Utility;
 import orbital.util.Setops;
 import orbital.logic.functor.Functionals;
@@ -28,4 +29,28 @@ public class ClausalSetImpl extends LinkedHashSet/*_<Clause>_*/ implements Claus
 	assert Setops.all(clauses, Functionals.bindSecond(Utility.instanceOf, Clause.class)) : "instanceof Set<Formula>";
     }
     public ClausalSetImpl() {}
+
+    public boolean removeAllSubsumedBy(ClausalSet T) {
+	if (T.isEmpty()) {
+	    return false;
+	} else if (this.equals(T)) {
+	    throw new IllegalArgumentException("directly subsuming a set of clauses with itself would illegally result in the empty set (without additional constraints): \n   " + this + "\n = " + T);
+	}
+	boolean changed = false;
+removeSubsumed:
+	for (Iterator i = iterator(); i.hasNext(); ) {
+	    final Clause D = (Clause)i.next();
+	
+	    for (Iterator j = T.iterator(); j.hasNext(); ) {
+		final Clause C = (Clause)j.next();
+
+		if (C.subsumes(D)) {
+		    i.remove();
+		    changed = true;
+		    continue removeSubsumed;
+		}
+	    }
+	}
+	return changed;
+    }
 }

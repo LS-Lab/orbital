@@ -33,4 +33,10 @@ public interface ClausalSet extends Set/*_<Clause>_*/ {
     static final ClausalSet TAUTOLOGY_SINGLETON_SET = new ClausalSetImpl(Collections.EMPTY_SET);
 
     //@todo introduce method for fast indexed lookup of complementary top-level(c'est assez) symbols
+
+    /**
+     * Remove all clauses from this set which are subsumed by any of the clauses of T.
+     * @return whether this set has changed as a result of the deletion by subsumption.
+     */
+    public boolean removeAllSubsumedBy(ClausalSet T);
 }

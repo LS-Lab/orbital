@@ -83,13 +83,28 @@ public interface Clause extends Set/*<Formula>*/ {
     Clause factorize();
 
     /**
+     * Returns true when this clause subsumes D.
+     * That is there is a subsitution &sigma; such that C&sigma; &sube; D
+     * (and |C| &le; |D|).
+     * <p>
+     * We can forget about subsumed clause D for resolving false,
+     * and work on C instead.
+     * </p>
+     * @preconditions true
+     * @note Conservative estimations are possible, i.e. returning
+     * false even for subsumption cases is allowed.
+     * @todo look for true&isin;F?
+     */
+    public boolean subsumes(Clause D);
+
+    /**
      * Returns true when this clause obviously is an elementary tautology.
      * That is a p&or;&not;p &isin; F
      * <p>
      * We can forget about elementary valid clauses for resolving false,
      * because true formulas will only imply true formulas, never false ones.
      * </p>
-     * @todo or even when there is a single-sided matcher of p and q in p&or;&not;q?
+     * @todo or even when there is a single-sided matcher of p and q in p&or;&not;q? No
      * @preconditions true
      * @todo look for true&isin;F?
      * @attribute derived {@link #isElementaryValidUnion(Clause)}
@@ -104,9 +119,7 @@ public interface Clause extends Set/*<Formula>*/ {
      * because true formulas will only imply true formulas, never false ones.
      * </p>
      * @param G a clause
-     * @todo or even when there is a single-sided matcher of p and q in p&or;&not;q?
      * @preconditions (&not;this.isElementaryValid() &and; &not;G.isElementaryValid()) &or; F=G
-     * @todo look for true&isin;F?
      */
     public boolean isElementaryValidUnion(Clause G);
 }
