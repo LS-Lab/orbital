@@ -69,7 +69,8 @@ the class-path.</p>
 <ul class="or">
   <li>Place the <a href="#orbitalStar.Jar">orbital*.jar</a> archive files
     containing the library classes anywhere on your class path that is set in
-    the <tt>CLASSPATH</tt> environment variable.</li>
+    the <tt>CLASSPATH</tt> environment variable.
+    This is the most reliable variant.</li>
   <li>Or specify the <a href="#orbitalStar.Jar">orbital*.jar</a> files as a
     &quot;bundled&quot; extension with a relative path in the manifest attribute
     <tt>Class-Path</tt> of your program's deployment JAR archive for all
@@ -81,10 +82,12 @@ the class-path.</p>
     the installed extensions do not work as expected. So you might prefer
     setting the <tt>CLASSPATH</tt> explicitly.</li>
   <li>Or use the Orbital library setup wizard for configuration. To start the setup
-    wizard, call</li>
+    wizard, call
     <ul>
       <kbd>java -jar orbital-ext.jar</kbd>
     </ul>
+    However, this wizard will only place an &quot;installed&quot; extension, 
+    a variant which is usually inferior to changing the class path.
   </li>
   <li>Or add all <a href="#orbitalStar.Jar">orbital*.jar</a> files as an
     additional library to your preferred Integrated Development Environment
