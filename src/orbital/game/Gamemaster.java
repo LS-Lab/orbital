@@ -248,11 +248,17 @@ public class Gamemaster implements Runnable {
      * @internal this is a kind of event handler.
      */
     private final void playGame() {
-	Thread thisThread = Thread.currentThread();
+	final Thread thisThread = Thread.currentThread();
+	{
+	    final Field field = getField();
+	    field.getFieldChangeMulticaster().stateChanged(new FieldChangeEvent(field, FieldChangeEvent.BEGIN_OF_GAME, null));
+	}
 	// do moves while it's an AI's turn
-	for (int turn = getField().getTurn();
-	     runner == thisThread && !Thread.interrupted();
-	     turn = getField().getTurn()) {
+	while (runner == thisThread && !Thread.interrupted()) {
+	    final Field field = getField();
+	    if (field == null)
+		throw new NullPointerException("illegal field: " + field);
+	    final int turn = field.getTurn();
 	    ////showStatus(getResources().getString("statusbar.ai.thinking"));
 	    System.err.println("statusbar.ai.thinking");
 	    Object action = players[turn].apply(getField());
@@ -263,9 +269,6 @@ public class Gamemaster implements Runnable {
 		// if we could rely on our AI, then we could optimize away this expensive moving and simply use the resulting setField(move.getState());
 		// But unfortunately, all our field's listeners would then vanish, possibly including end of game checks.
 		//@internal cloning the position information is necessary, otherwise move would detect that it gets lost during swap.
-		Field field = getField();
-		if (field == null)
-		    throw new NullPointerException("illegal field: " + field);
 		if (!field.move(source, move.getMove()))
 		    throw new Error("player " + players[turn] + " for league " + turn + " should only take legal moves: " + move);
 	    } else
