@@ -21,6 +21,8 @@ import orbital.util.Utility;
 import orbital.util.Setops;
 import orbital.util.Pair;
 import orbital.logic.functor.Functionals;
+import orbital.logic.functor.BinaryFunction;
+import orbital.moon.logic.ClassicalLogic;
 import java.util.*;
 
 import java.util.logging.Logger;
@@ -39,6 +41,7 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
     private static final Logger logger = Logger.getLogger(ClauseImpl.class.getName());
     //@xxx do not stick to this single logic, here, although resolution is rather limited to classical logic
     private static final Logic logic = new ClassicalLogic();
+    private static final Formula FORMULA_FALSE = (Formula) new ClassicalLogic().createAtomic(new SymbolBase("false", Types.TRUTH));
 
     protected static ClausalFactory getClausalFactory() {
 	return ResolutionBase.getClausalFactory();
@@ -414,6 +417,22 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
 
     public Set/*_<Formula>_*/ getUnifiables(Formula L) {
 	return getUnifiablesOf(getProbableUnifiables(L), L);
+    }
+
+    //
+
+    public Formula toFormula() {
+	Iterator i = iterator();
+	Formula f0;
+	if (!i.hasNext())
+	    return FORMULA_FALSE;
+	return (Formula) Functionals.foldRight(
+	    //@see orbital.moon.logic.functor.Operations.and on Formulas
+	    new BinaryFunction() {
+		public Object apply(Object F, Object G) {
+		    return ((Formula)F).and((Formula)G);
+		}
+	    }, i.next(), i);
     }
 
     // Helpers

@@ -8,11 +8,17 @@ package orbital.moon.logic.resolution;
 
 import java.util.Set;
 import java.util.LinkedHashSet;
+import orbital.logic.imp.Formula;
+
 
 import java.util.Iterator;
 import orbital.util.Utility;
 import orbital.util.Setops;
 import orbital.logic.functor.Functionals;
+import orbital.logic.functor.BinaryFunction;
+import orbital.logic.sign.SymbolBase;
+import orbital.logic.sign.type.Types;
+import orbital.moon.logic.ClassicalLogic;
 
 /**
  * Default implementation of a representation of a set of clauses.
@@ -20,6 +26,8 @@ import orbital.logic.functor.Functionals;
  * @author  Andr&eacute; Platzer
  */
 public class ClausalSetImpl extends LinkedHashSet/*_<Clause>_*/ implements ClausalSet {
+    private static final Formula FORMULA_TRUE = (Formula) new ClassicalLogic().createAtomic(new SymbolBase("true", Types.TRUTH));
+
     /**
      * Copy constructor.
      * @internal transitively public constructors required for Functionals.map to produce Clauses.
@@ -63,5 +71,19 @@ removeSubsumed:
 	    }
 	}
 	return changed;
+    }
+
+    public Formula toFormula() {
+	Iterator i = iterator();
+	Formula f0;
+	if (!i.hasNext())
+	    return FORMULA_TRUE;
+	return (Formula/*__*/) Functionals.foldRight(
+	    //@see orbital.moon.logic.functor.Operations.or on Formulas
+	    new BinaryFunction() {
+		public Object apply(Object F, Object G) {
+		    return ((Formula)F).or((Formula)G);
+		}
+	    }, i.next(), i);
     }
 }

@@ -7,6 +7,7 @@
 package orbital.moon.logic.resolution;
 
 import java.util.Set;
+import orbital.logic.imp.Formula;
 
 import java.util.Iterator;
 
@@ -57,4 +58,15 @@ public interface ClausalSet extends Set/*_<Clause>_*/ {
      */
     Iterator/*_<Clause>_*/ getProbableComplementsOf(Clause C);
 
+    
+    /**
+     * Convert this set of clauses to a formula representation.
+     * @internal this is not a view but a copy, because several
+     * operations would not work reliably, otherwise. Imagine a
+     * traversal to the last literal, when another one is added. Then
+     * the last literal returned by getComponent() should have been an
+     * &and; operator in retrospect.
+     * @internal the result is right associative
+     */
+    Formula toFormula();
 }

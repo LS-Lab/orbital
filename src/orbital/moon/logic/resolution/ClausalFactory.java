@@ -7,11 +7,15 @@
 package orbital.moon.logic.resolution;
 
 import java.util.Set;
+import orbital.logic.imp.Formula;
+
 
 /**
- * Factory for clauses and clausalsets.
+ * Factory for clauses and clausal sets.
  * @version 1.2, 2004-01-07
  * @author  Andr&eacute; Platzer
+ * @see ResolutionBase#getClausalFactory()
+ * @see DefaultClausalFactory
  * @see <a href="{@docRoot}/Patterns/Design/AbstractFactory.html">Abstract Factory</a>
  */
 public interface ClausalFactory {
@@ -52,4 +56,14 @@ public interface ClausalFactory {
      */
     ClausalSet createClausalSet(Set/*_<Clause>_*/ clauses);
 
+    // conversion utilities
+
+    /**
+     * Returns a clausal set representation of the given formula.
+     * <p>
+     * Converts the given formula to CNF in clausal set representation.
+     * </p>
+     * @see ClassicalLogic.Utilities#clausalForm(Formula)
+     */
+    ClausalSet asClausalSet(Formula formula);
 }

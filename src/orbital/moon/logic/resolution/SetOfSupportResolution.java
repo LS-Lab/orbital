@@ -130,9 +130,9 @@ public class SetOfSupportResolution extends ResolutionBase {
 		continue;
 	    }
 
-	    System.out.println("  setOfSupport " + setOfSupport.size() + "\tusable " + usable.size() + "\tresolvents " + newResolvents.size());
+	    logger.log(Level.FINER, "  setOfSupport {0}\tusable {1}\tresolvents {2}", new Object[] {new Integer(setOfSupport.size()), new Integer(usable.size()), new Integer(newResolvents.size())});
 	    deletion(newResolvents, usable, setOfSupport);
-	    System.out.println(" >setOfSupport " + setOfSupport.size() + "\tusable " + usable.size() + "\tresolvents " + newResolvents.size());
+	    logger.log(Level.FINER, " >setOfSupport {0}\tusable {1}\tresolvents {2}", new Object[] {new Integer(setOfSupport.size()), new Integer(usable.size()), new Integer(newResolvents.size())});
 	    setOfSupport.addAll(newResolvents);
 	}
 

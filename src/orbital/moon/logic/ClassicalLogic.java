@@ -1729,6 +1729,7 @@ public class ClassicalLogic extends ModernLogic {
 	 * The contradictory set of clauses is {&empty;}={&#9633;}
 	 * while the tautological set of clauses is {}.
 	 * </p>
+	 * @deprecated Use {@link orbital.moon.logic.resolution.Clause.CONTRADICTION} instead.
 	 */
 	public static final Set/*_<Formula>_*/ CONTRADICTION = Collections.EMPTY_SET;
 
@@ -1742,7 +1743,11 @@ public class ClassicalLogic extends ModernLogic {
 	 * </p>
 	 * @param simplifying Whether or not to use simplified CNF for calculating clausal forms.
 	 * @todo assert
-	 * @todo move to orbital.moon.logic.resolution.?
+	 * @internal cannot currently move to orbital.moon.logic.resolution. because of direct access to LogicFunctions.and
+	 * @see orbital.logic.moon.resolution.ClausalFactory#asClausalSet(Formula)
+	 * @deprecated Prefer to use the more general method
+	 *  {@link orbital.logic.moon.resolution.ClausalFactory#asClausalSet(Formula)}
+	 *  instead.
 	 */
 	public static final Set/*_<Set<Formula>>_*/ clausalForm(Formula f, boolean simplifying) {
 	    try {

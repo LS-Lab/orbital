@@ -63,11 +63,6 @@ import java.util.logging.Level;
  *  Oder wähle alternativen (einfacheren?) TRS-Algorithmus Ü 7.95
  */
 public abstract class ResolutionBase implements Inference {
-    /**
-     * Whether or not to use simplified clausal forms.
-     */
-    private static final boolean SIMPLIFYING = false;
-
     static final Logger logger = Logger.getLogger(ResolutionBase.class.getName());
 
     private static final ClausalFactory clausalFactory = new DefaultClausalFactory();
@@ -150,7 +145,7 @@ public abstract class ResolutionBase implements Inference {
 	// @internal clausebase = Functionals.map(clausalForm, skolemizedB)
         ClausalSet clausebase = getClausalFactory().newClausalSet();
         for (Iterator i = skolemizedB.iterator(); i.hasNext(); ) {
-	    clausebase.addAll(clausalForm((Formula) i.next(), SIMPLIFYING));
+	    clausebase.addAll(getClausalFactory().asClausalSet((Formula) i.next()));
 	}
         logger.log(Level.FINER, "{0} as clausal {1}", new Object[] {logPrefix, clausebase});
 
@@ -168,29 +163,9 @@ public abstract class ResolutionBase implements Inference {
         logger.log(Level.FINE, "{0} finally is {1}", new Object[] {logPrefix, clausebase});
         if (logger.isLoggable(Level.FINEST)) {
 	    for (Iterator i = B.iterator(); i.hasNext(); ) {
-		logger.log(Level.FINEST, "{0} thereby contains transformation of original formula {1}", new Object[] {logPrefix, Utilities.conjunctiveForm((Formula) i.next(), SIMPLIFYING)});
+		logger.log(Level.FINEST, "{0} thereby contains transformation of original formula {1}", new Object[] {logPrefix, Utilities.conjunctiveForm((Formula) i.next(), DefaultClausalFactory.isSIMPLIFYING())});
 	    }
 	}
 	return clausebase;
-    }
-    
-    /**
-     * Transforms into clausal form.
-     * <p>
-     * Defined per structural induction.
-     * </p>
-     * @param simplifying Whether or not to use simplified CNF for calculating clausal forms.
-     * @todo assert
-     * @todo move to orbital.moon.logic.resolution....?
-     */
-    public static final ClausalSet clausalForm(Formula f, boolean simplifying) {
-	return getClausalFactory().createClausalSet
-	    (
-	     Functionals.map(new Function() {
-		     public Object apply(Object C) {
-			 return getClausalFactory().createClause((Set)C);
-		     }
-		 }, ClassicalLogic.Utilities.clausalForm(f, simplifying))
-	     );
     }
 }

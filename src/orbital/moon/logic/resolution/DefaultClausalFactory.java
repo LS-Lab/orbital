@@ -7,6 +7,12 @@
 package orbital.moon.logic.resolution;
 
 import java.util.Set;
+import orbital.logic.imp.Formula;
+
+import orbital.logic.functor.Function;
+import orbital.logic.functor.Functionals;
+import orbital.moon.logic.ClassicalLogic.Utilities;
+
 
 /**
  * Factory for clauses and clausalsets.
@@ -16,6 +22,13 @@ import java.util.Set;
  */
 public class DefaultClausalFactory implements ClausalFactory {
     private static final boolean ORDERED = false;
+    /**
+     * Whether or not to use simplified clausal forms.
+     */
+    private static final boolean SIMPLIFYING = false;
+    static boolean isSIMPLIFYING() {
+	return SIMPLIFYING;
+    }
 
     private static boolean verbose = false;
     /**
@@ -57,4 +70,16 @@ public class DefaultClausalFactory implements ClausalFactory {
 	return new ClausalSetImpl(clauses);
     }
 
+    // utilities
+    public ClausalSet asClausalSet(Formula f) {
+	return createClausalSet
+	    (
+	     Functionals.map(new Function() {
+		     public Object apply(Object C) {
+			 return createClause((Set)C);
+		     }
+		 }, Utilities.clausalForm(f, SIMPLIFYING))
+	     );
+    }
+    
 }

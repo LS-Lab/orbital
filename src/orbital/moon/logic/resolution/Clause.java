@@ -171,4 +171,16 @@ public interface Clause extends Set/*<Formula>*/ {
      * @see #getProbableUnifiables(Formula)
      */
     Set/*_<Formula>_*/ getUnifiables(Formula L);
+
+    
+    /**
+     * Convert this clause to a formula representation.
+     * @internal this is not a view but a copy, because several
+     * operations would not work reliably, otherwise. Imagine a
+     * traversal to the last literal, when another one is added. Then
+     * the last literal returned by getComponent() should have been an
+     * &and; operator in retrospect.
+     * @internal the result is right associative
+     */
+    Formula toFormula();
 }
