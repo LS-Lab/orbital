@@ -33,6 +33,8 @@ import java.util.Arrays;
 import orbital.util.Setops;
 import orbital.util.Utility;
 
+import orbital.math.MathUtilities;
+
 /**
  * The formula implementation of (usually truth-functional) modern logic.
  * @version 0.8, 1999/01/16
@@ -45,12 +47,22 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * The underlying logic of this formula (used for composition).
      * @note an alternative implementation would make this class an inner instance class of a Logic implementation basis, saving this instance variable.
      * @xxx then, however, default constructor newInstance() can no longer set the right underlying logic. And that logic cannot even be set directly by setComponent, setCompositor
+     * @internal refactorised implementation such that underlyingLogic!=null is an invariant and prerequisite to the constructor call.
+     * @todo instead we could implement getUnderlyingLogic() with dynamic chaining to subformulas, and result caching/memoisation for retaining performance
      */
-    private Logic logic = new ClassicalLogic();
+    private Logic underlyingLogic = new ClassicalLogic();
     protected ModernFormula(Logic underlyingLogic) {
-	this.logic = underlyingLogic;
+	if (underlyingLogic == null)
+	    throw new NullPointerException("invalid underlying logic: " + underlyingLogic);
+	this.underlyingLogic = underlyingLogic;
     }
 
+    // for modification cloning, in @see #construct(Object,Object)
+    protected ModernFormula() {
+	//@internal preliminary, has to be set accordingly by @see #construct(Object,Object)
+	this.underlyingLogic = null;
+    }
+    
     /**
      * The symbols of the logical junctors.
      */
@@ -97,14 +109,14 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * Get the underlying logic of this formula.
      */
     Logic getUnderlyingLogic() {
-	return logic;
+	return underlyingLogic;
     }
 
     /**
      * Set the underlying logic of this formula.
      */
-    private void setUnderlyingLogic(Logic underlyingLogic) {
-	this.logic = underlyingLogic;
+    private void setUnderlyingLogic(Logic newUnderlyingLogic) {
+	this.underlyingLogic = newUnderlyingLogic;
     }
 
     /**
@@ -188,7 +200,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     } 
     */
     private Formula compose(Symbol op, Formula[] arguments) {
-	assert getUnderlyingLogic() != null : "underlying logic set";
+	assert getUnderlyingLogic() != null : "underlying logic must already be set for " + this + " to form " + op + " on " + MathUtilities.format(arguments);
 	try {
 	    return (Formula) getUnderlyingLogic().compose(getUnderlyingLogic().createAtomic(op), arguments);
 	}
@@ -235,6 +247,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	 */
 	public AtomicSymbol(Logic underlyingLogic, Symbol symbol) {
 	    super(underlyingLogic);
+	    if (underlyingLogic == null)
+		throw new NullPointerException("invalid underlying logic: " + underlyingLogic);
 	    this.symbol = symbol;
 	}
 		
@@ -414,11 +428,12 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	}
 	protected AbstractCompositeFormula(Logic underlyingLogic) {
 	    super(underlyingLogic);
-	    this.notation = Notation.DEFAULT;
+	    this.setNotation(Notation.DEFAULT);
 	}
 	// for modification cloning
 	protected AbstractCompositeFormula() {
-	    this(null);
+	    super();
+	    this.setNotation(Notation.DEFAULT);
 	}
 
     	// identical to @see orbital.logic.functor.Functor.Composite.Abstract
@@ -441,6 +456,9 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 		orbital.logic.Composite c = (orbital.logic.Composite) getClass().newInstance();
 		c.setCompositor(f);
 		c.setComponent(g);
+		//@internal cannot copy notation. Where from? So keep DEFAULT.
+		assert getUnderlyingLogic() != null : "construct(Object,Object) sets underlying logic for " + c + " of " + c.getClass() + " via setCompositor(Object) or setComponent(Object) from " + f + " of " + f.getClass() + " on " + MathUtilities.format(g) + " of " + g.getClass();
+		//@todo assert compatibility of underlying logics?
 		return c;
 	    }
 	    catch (InstantiationException ass) {
