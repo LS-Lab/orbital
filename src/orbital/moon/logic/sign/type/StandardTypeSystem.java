@@ -293,6 +293,7 @@ public final class StandardTypeSystem implements TypeSystem {
 	 * @todo adapt documentation to actual implementation
 	 */
 	protected abstract int compareToSemiImpl(Type b);
+
 	public final int compareTo(Object b) {
 	    if (!(b instanceof TypeObject))
 		if (b == null)
@@ -303,6 +304,12 @@ public final class StandardTypeSystem implements TypeSystem {
 	    assert !((cmp == 0) ^ this.equals(b)) : "antisymmetry resp. consistent with equals: " + this + ", " + b + "\n" + this + toString(cmp) + b + "\n" + this + (this.equals(b) ? "=" : "!=") + b;
 	    assert subtypeOrder.compare(this, this) == 0 : "reflexive: " + this;
 	    assert MathUtilities.sign(cmp) == -MathUtilities.sign(subtypeOrder.compare((Type)b, this)) : "antisymmetry: " + this + ", " + b;
+
+	    //@internal we cannot assert this, here, since that would result in an infinite recursion of compareTo.
+	    //assert (cmp <= 0) == typeSystem().sup(new Type[] {this, (Type)b}).equals(b) : "TypeSystem.sup@postconditions " + this + "=<" + b + " iff " + typeSystem.sup(new Type[] {this, (Type)b}) + " = " + this + " sup " + b + " = " + b;
+	    //assert (cmp >= 0) == typeSystem().sup(new Type[] {(Type)b, this}).equals(b) : "TypeSystem.sup@postconditions " + b + "=<" + this + " iff " + typeSystem.sup(new Type[] {(Type)b, this}) + " = " + b + " sup " + this + " = " + this;
+	    //assert (cmp <= 0) == typeSystem().inf(new Type[] {this, (Type)b}).equals(b) : "TypeSystem.inf@postconditions " + this + "=<" + b + " iff " + typeSystem.inf(new Type[] {this, (Type)b}) + " = " + this + " inf " + b + " = " + this;
+	    //assert (cmp >= 0) == typeSystem().inf(new Type[] {(Type)b, this}).equals(b) : "TypeSystem.inf@postconditions " + b + "=<" + this + " iff " + typeSystem.inf(new Type[] {(Type)b, this}) + " = " + b + " inf " + this + " = " + b;
 	    return cmp;
 	}
 
@@ -780,7 +787,7 @@ public final class StandardTypeSystem implements TypeSystem {
 		try {
 		    int cmp = ti.compareTo(tj);
 		    // remove redundant supertypes of comparable types in t
-		    if (cmp < 0)
+		    if (cmp <= 0)
 			t.remove(tj);
 		    else if (cmp > 0)
 			t.remove(ti);
@@ -822,11 +829,12 @@ public final class StandardTypeSystem implements TypeSystem {
 	    this.setComponent(components);
 	}
 	public boolean equals(Object o) {
+	    // commutative
 	    return (o instanceof InfimumType) && new HashSet(Arrays.asList(components)).equals(new HashSet(Arrays.asList(((InfimumType)o).components)));
 	}
 	
 	public int hashCode() {
-	    return 1 ^ Utility.hashCodeAll(components);
+	    return 1 ^ Utility.hashCodeAllSet(components);
 	}
 	
 	public String toString() {
@@ -910,7 +918,7 @@ public final class StandardTypeSystem implements TypeSystem {
 		try {
 		    int cmp = ti.compareTo(tj);
 		    // remove redundant subtypes of comparable types in t
-		    if (cmp < 0)
+		    if (cmp <= 0)
 			t.remove(ti);
 		    else if (cmp > 0)
 			t.remove(tj);
@@ -951,11 +959,12 @@ public final class StandardTypeSystem implements TypeSystem {
 	    this.setComponent(components);
 	}
 	public boolean equals(Object o) {
+	    // commutative
 	    return (o instanceof SupremumType) && new HashSet(Arrays.asList(components)).equals(new HashSet(Arrays.asList(((SupremumType)o).components)));
 	}
 	
 	public int hashCode() {
-	    return 7 ^ Utility.hashCodeAll(components);
+	    return 7 ^ Utility.hashCodeAllSet(components);
 	}
 	
 	public String toString() {
