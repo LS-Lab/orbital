@@ -30,7 +30,7 @@ public class IndexedClauseImpl extends ClauseImpl {
      * The clause index mapping literals occurring in clauses of this
      * set to the literals which are possible unifiables.
      */
-    private final ClauseIndex index = new ClauseIndex();
+    private final ClausalIndex index = new ClausalIndex();
 
     /**
      * Copy constructor.

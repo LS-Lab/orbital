@@ -1,5 +1,5 @@
 /**
- * @(#)IndexedClausalSetImpl.java 1.2 2004-01-08 Andre Platzer
+ * @(#)ClausalIndex.java 1.2 2004-01-08 Andre Platzer
  *
  * Copyright (c) 2004 Andre Platzer. All Rights Reserved.
  */
@@ -21,9 +21,8 @@ import orbital.logic.sign.*;
  * Manages a clause index.
  * @version 1.2, 2004-01-08
  * @author  Andr&eacute; Platzer
- * @todo rename to ClausalIndex which is a top name
  */
-public class ClauseIndex {
+public class ClausalIndex {
     /**
      * The symbols of the logical junctors.
      */
@@ -103,7 +102,7 @@ public class ClauseIndex {
     /**
      * Create a new empty index.
      */
-    public ClauseIndex() {}
+    public ClausalIndex() {}
 
     public String toString() {
 	return getClass().getName() + "[" + index + "]";

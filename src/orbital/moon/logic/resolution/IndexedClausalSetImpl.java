@@ -31,7 +31,7 @@ public class IndexedClausalSetImpl extends ClausalSetImpl {
      * set to the set of clauses where literals occur which are
      * possible unifiables.
      */
-    private final ClauseIndex index = new ClauseIndex();
+    private final ClausalIndex index = new ClausalIndex();
 
     /**
      * Copy constructor.
