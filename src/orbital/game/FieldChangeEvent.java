@@ -65,6 +65,10 @@ public class FieldChangeEvent extends EventObject {
 	return this.changeInfo;
     }
 
+    /**
+     * Get the field on which a change occurs.
+     * @todo prior to the change or after the change? Is the usage consistent for all types of events?
+     */
     public Field getField() {
 	return (Field) super.getSource();
     }

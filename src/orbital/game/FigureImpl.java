@@ -270,7 +270,7 @@ public class FigureImpl extends Figure {
      * @postconditions getField() = getField()@pre
      * @see Field#move(Position, Move)
      * @see #movePath(Move)
-     * @see #moving
+     * @see #moving(Move,Position)
      */
     public Position moveFigure(Move move) {
 	if (isEmpty())
@@ -291,17 +291,15 @@ public class FigureImpl extends Figure {
 
     /**
      * Called back when this figure is really moving.
-
+     *
      * This method has the final decision whether this figure could do
      * the move to the given position or if that would break the
-     * rules.
-     * <p>
-     * This implementaion simply returns true. If additional
-     * actions should take place (f.ex. keeping track of whose turn it is)
+     * rules.  <p> The default implementation simply returns true. If
+     * additional actions should take place (f.ex. keeping track of
+     * whose turn it is, or making changes to the current field)
      * derived methods must provide this. If beats are only valid to
      * foreign figures, the methods in the subclasses must check for
-     * it.
-     * </p>
+     * it.  </p>
      * @param move a valid Move, <em>really reaching</em> the given destination.
      * @param destination the destination reached by the move.
      * @preconditions &exist;i move.equals(getLegalMoves()[i]) &and; movePath(move).equals(destination)
