@@ -64,6 +64,10 @@ public interface Real extends Complex, Comparable {
     Real subtract(Real b);
     Real multiply(Real b);
     Real divide(Real b);
+    /**
+     * Return a<sup>b</sup>.
+     * @postconditions (b != 0 &rarr; RES instanceof Real)
+     */
     Real power(Real b);
 
     /**
