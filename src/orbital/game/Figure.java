@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
-import orbital.util.Pair;
 
 /**
  * Representation of a generic figure or piece of a board game.
@@ -157,14 +156,20 @@ public abstract class Figure extends Moving {
     // central Figure interface methods
 
     /**
-     * Returns an iterator over all moves (and destinations) <dfn>valid</dfn> for this figure.
+     * Returns an iterator over all moves options <dfn>possible</dfn> for this figure.
      * Use the Iterator methods on the returned object to fetch
      * the elements sequentially.
-     * @return an iterator over the valid {@link Pair}&lt;{@link Move},{@link Position}&gt;.
-     * @postconditions &forall;i&isin;RES moveFigure(i.A).equals(i.B)
-     * @todo introduce iteratePossible() returns an iterator over all pairs of (moves|destinations) valid and <dfn>possible</dfn> for this figure, i.e. if our league is allowed to move at all.
+     * <p>
+     * This method should restrict moves as much as feasible, but is not strictly required
+     * to only return moves that can really be performed in the current game situation.
+     * </p>
+     * @return an iterator over the possible {@link AdversarySearch.Option}s.
+     *  The field of the return-value is the resulting field after the move,
+     *  or <code>null</code> if the resulting field has not yet been computed.
+     * @postconditions &forall;i&isin;RES (this@pre.moveFigure(i.getMove()).equals(i.getDestination())
+     *   &and; i.getFigure()==this@pre)
      */
-    public abstract Iterator/*_<Move,Position>_*/ possibleMoves();
+    public abstract Iterator/*_<Option>_*/ possibleMoves();
 
     // methods used to perform moves
 

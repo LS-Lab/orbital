@@ -5,6 +5,7 @@
  */
 
 package orbital.game;
+import orbital.game.AdversarySearch.Option;
 
 import orbital.robotic.Moving;
 import orbital.robotic.Move;
@@ -212,7 +213,14 @@ public class FigureImpl extends Figure {
      * @deprecated Since Orbital1.1 use {@link Figure#validMoves()} instead.
      */
     public final Iterator/*_<Move,Position>_*/ iterateValidPairs() {
-	return possibleMoves();
+	final List v = new ArrayList(legalMoves.length);
+	for (int i = 0; i < legalMoves.length; i++) {
+	    Move     move = legalMoves[i];
+	    Position destination = movePath(move);
+	    if (destination != null)					 // reaches legally => move valid
+		v.add(new Pair/*<Move,Position>*/(move, destination));	 //@TODO: Use a Map instead? List(new KeyValuePair())
+	} 
+	return v.iterator();
     } 
 
 
@@ -231,13 +239,13 @@ public class FigureImpl extends Figure {
      * But Figure.move forgot about the destination.
      * @todo explicit constructive iterator?
      */
-    public /*final*/ Iterator/*_<Move,Position>_*/ possibleMoves() {
+    public /*final*/ Iterator/*_<Option>_*/ possibleMoves() {
 	final List v = new ArrayList(legalMoves.length);
 	for (int i = 0; i < legalMoves.length; i++) {
 	    Move     move = legalMoves[i];
 	    Position destination = movePath(move);
 	    if (destination != null)					 // reaches legally => move valid
-		v.add(new Pair/*<Move,Position>*/(move, destination));	 //@TODO: Use a Map instead? List(new KeyValuePair())
+		v.add(new Option(null, this, move, destination));	 //@TODO: Use a Map instead? List(new KeyValuePair())
 	} 
 	return v.iterator();
     } 
