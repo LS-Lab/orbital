@@ -19,8 +19,10 @@ rem once Emacs knows Unicode we could switch Javadoc to -charset "utf-8"
     pushd %src%\orbital\moon\logic
     if not exist doc-files mkdir doc-files
     for %%U in (*.jj) do call jjdoc -OUTPUT_FILE:doc-files\%%~nU_grammar.html %%U
-    popd
     if errorlevel 1 goto Errored
+    copy /A doc-files\LogicParser_grammar.html + doc-files\LogicParser_lexical.html
+    popd
+
 
     if exist orbital\moon\io\cryptix\Stegano*.java ren orbital\moon\io\cryptix\Stegano*.java *.restricted
     pushd %JDK_HOME%\docs\orbitaldoc
