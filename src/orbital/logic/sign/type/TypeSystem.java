@@ -376,7 +376,7 @@ public interface TypeSystem {
      *      <td class="rightOfMap"><span class="set">M</span></td>
      *    </tr>
      *  </table>
-     * Also see <a href="Interpretation.html#interpretation">identification with characteristic function</a>.
+     * Also see <a href="../../imp/Interpretation.html#interpretation">identification with characteristic function</a>.
      * </p>
      * @see #collection(Type)
      * @see java.util.Set
