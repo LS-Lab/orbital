@@ -18,7 +18,7 @@ import orbital.logic.sign.type.Typed;
  * Objects representing compound expressions even implement {@link Expression.Composite}.
  * </p>
  * <p>
- * Given a signature &Sigma; we define a general term algebra and thus the (abstract) syntax of the
+ * Given a {@link Signature signature} &Sigma; we define a general term algebra and thus the (abstract) syntax of the
  * expressions. However, the abstract syntax notation does not say anything about the particular syntax.
  * <dl class="def">
  *   <dt id="freeAlgebraOfTerms">free algebra of terms</dt>
@@ -35,7 +35,7 @@ import orbital.logic.sign.type.Typed;
  *         </td>
  *       </tr>
  *       <tr>
- *         <td colspan="3">The terms (or expressions) of {@link Type type} <span class="type">&tau;</span> are</td>
+ *         <td colspan="3">The terms (or expressions) of {@link orbital.logic.sign.type.Type type} <span class="type">&tau;</span> are</td>
  *       </tr>
  *       <tr>
  *         <td colspan="3">
@@ -101,7 +101,7 @@ import orbital.logic.sign.type.Typed;
  *           <span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&le;&tau;</sub> :=
  *         </td>
  *         <td>
- *           &#8899;&#775;<sub><span class="type">&rho;</span>&le;<span class="type">&tau;</span></sub> <span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&rho;</sub>
+ *           &#8899;<sub><span class="type">&rho;</span>&le;<span class="type">&tau;</span></sub> <span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&rho;</sub>
  *         </td>
  *       </tr>
  *     </table>
