@@ -281,7 +281,7 @@ public class MathExpressionSyntax implements ExpressionSyntax {
     }
 
     // identical to @see orbital.math.functional.Function (below)
-    /*private static*/ static abstract class AbstractFunction/*<A implements Arithmetic, B implements Arithmetic>*/  extends orbital.moon.math.AbstractFunctor implements Function/*<A,B>*/ {}
+    /*private static*/ static abstract class AbstractFunction/*<A implements Arithmetic, B implements Arithmetic>*/  extends orbital.moon.math.functional.AbstractFunctor implements Function/*<A,B>*/ {}
 
 
     private static class MathExpression implements Expression {
