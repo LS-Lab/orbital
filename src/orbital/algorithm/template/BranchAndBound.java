@@ -61,6 +61,7 @@ public class BranchAndBound extends DepthFirstBoundingSearch implements Heuristi
     public BranchAndBound(Function heuristic, double maximumUpperBound) {
 	this(heuristic, Values.getDefaultInstance().valueOf(maximumUpperBound));
     }
+    BranchAndBound() {}
     
     /**
      * Get the maximum upper bound for a solution.

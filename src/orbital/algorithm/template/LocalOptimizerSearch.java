@@ -310,8 +310,8 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
 	    final List actions = Setops.asList(problem.actions(state));
 	    if (actions.isEmpty())
 		//@internal note that hasNext() will not respect this case, since it is considered as an error
-		//@xxx
-		throw new NoSuchElementException("specification hurt? there are no transitions from " + state);
+		//@xxx should random-restart, silently? Or catch a special exception from outside, and decide random-restart there?
+		throw new NoSuchElementException("There are no transitions from " + state + " thus local optimizer cannot continue.");
 	    //@todo rely on decorators of problem (PackageUtilities.restrictRandomly) to do the randomization?
 	    // either by asserting that actions.size() == 1, or by accepting in the order of actions (with descending probabilities of p1, (1-p1)p2, (1-p1)(1-p2)p3, ...).
 

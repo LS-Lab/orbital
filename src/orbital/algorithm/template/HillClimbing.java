@@ -93,6 +93,7 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
     public HillClimbing(Function heuristic) {
     	this(heuristic, BEST_LOCAL_SELECTION);
     }
+    HillClimbing() {}
 
     public Function getHeuristic() {
 	return heuristic;

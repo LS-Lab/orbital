@@ -64,6 +64,7 @@ public class IterativeExpansion extends GeneralSearch implements HeuristicAlgori
     public IterativeExpansion(Function heuristic) {
     	setHeuristic(heuristic);
     }
+    IterativeExpansion() {}
 
     public Function getHeuristic() {
 	return heuristic;
@@ -244,6 +245,7 @@ public class IterativeExpansion extends GeneralSearch implements HeuristicAlgori
     }
 
     protected Iterator createTraversal(GeneralSearchProblem problem) {
+	//@todo could we transform the recursive algorithm into a traversal iterator?
 	throw new AssertionError("should not get called");
     }
     

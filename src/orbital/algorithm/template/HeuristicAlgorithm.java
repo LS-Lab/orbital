@@ -63,6 +63,41 @@ public interface HeuristicAlgorithm extends EvaluativeAlgorithm {
     Function getEvaluation();
 
     /**
+     * Algorithmic configuration objects for heuristic algorithms.
+     * @author <a href="mailto:">Andr&eacute; Platzer</a>
+     * @version 1.1, 2002-11-13
+     * @todo move to HeuristicAlgorithm.Configuration ?
+     */
+    public static class Configuration extends AlgorithmicTemplate.Configuration {
+	private static final long serialVersionUID = 8651734898965188478L;
+
+	/**
+	 * @serial
+	 */
+	private Function heuristic;
+	/**
+	 * @param problem the problem to solve.
+	 * @param heuristic the {@link HeuristicAlgorithm#setHeuristic(Function) heuristic} used for solving.
+	 * @param algorithm the class of the AlgorithmicTemplate to instantiate for solving the problem.
+	 */
+	public Configuration(AlgorithmicProblem/*>Problem<*/ problem, Function heuristic, Class algorithm) {
+	    super(problem, algorithm, HeuristicAlgorithm.class);
+	    this.heuristic = heuristic;
+	}
+
+	public Function getHeuristic() {
+	    return heuristic;
+	}
+	
+	public AlgorithmicTemplate getAlgorithm() {
+	    HeuristicAlgorithm algo = (HeuristicAlgorithm) super.getAlgorithm();
+	    algo.setHeuristic(getHeuristic());
+	    return algo;
+	}
+
+    }
+
+    /**
      * An heuristic function that uses a pattern database.
      * <p>
      * This heuristic function uses a pattern database for better values or speedup.

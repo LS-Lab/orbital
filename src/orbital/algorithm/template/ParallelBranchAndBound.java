@@ -36,6 +36,7 @@ public class ParallelBranchAndBound extends BranchAndBound {
     public ParallelBranchAndBound(Function heuristic, double bound) {
     	super(heuristic, bound);
     }
+    ParallelBranchAndBound() {}
 
     /**
      * O(d) on parallel machines where d the solution depth.
@@ -56,7 +57,8 @@ public class ParallelBranchAndBound extends BranchAndBound {
     }
 	
     protected final Iterator createTraversal(GeneralSearchProblem problem) {
-	throw new UnsupportedOperationException(ParallelBranchAndBound.class + " defines its own search and solveImpl, (currently) without the aid of a traversal iterator");
+	//@todo could we transforme the search algorithm to a traversal iterator or modularize the parallel aspect in another way?
+	throw new AssertionError(ParallelBranchAndBound.class + " defines its own search and solveImpl, (currently) without the aid of a traversal iterator");
     }
 
     protected Object/*>S<*/ search(Iterator nodes) {

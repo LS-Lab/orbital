@@ -63,6 +63,7 @@ public class AStar extends BestFirstSearch implements HeuristicAlgorithm {
     public AStar(Function heuristic) {
     	setHeuristic(heuristic);
     }
+    AStar() {}
 
     public Function getHeuristic() {
 	return heuristic;

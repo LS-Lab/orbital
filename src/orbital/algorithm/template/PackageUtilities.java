@@ -87,7 +87,7 @@ final class PackageUtilities {
 
     /**
      * Decorator restricting transitions of a GSP randomly.
-     * This filters A(s) to a random subset.
+     * This filters A(s) to a random subset of cardinality &le;numberOfChoices.
      * @param problem the problem to decorate.
      * @param numberOfChoices the (maximum) number of random choices for each transition.
      * @param algorithm the probabilistic algorithm using this restriction.
@@ -98,12 +98,12 @@ final class PackageUtilities {
      */
     public static final GeneralSearchProblem restrictRandomly(GeneralSearchProblem problem, final int numberOfChoices, final ProbabilisticAlgorithm algorithm) {
 	return new DelegateGeneralSearchProblem(problem) {
-		//private static final long serialVersionUID = 0;
+		private static final long serialVersionUID = -4007975459550830964L;
 		public Iterator actions(Object state) {
 		    final List actions = Setops.asList(getDelegatee().actions(state));
 		    final Random random = algorithm.getRandom();
 		    final List restrictedActions = new ArrayList(numberOfChoices);
-		    for (int i = 0; i < numberOfChoices; i++) {
+		    for (int i = 0; i < Math.min(numberOfChoices, actions.size()); i++) {
 			int index = random.nextInt(actions.size());
 			restrictedActions.add(actions.get(index));
 			actions.remove(index);
@@ -127,7 +127,7 @@ final class PackageUtilities {
      */
     public static final GeneralSearchProblem restrictBest(GeneralSearchProblem problem, final Function evaluationFunction) {
 	return new DelegateGeneralSearchProblem(problem) {
-		//private static final long serialVersionUID = 0;
+		private static final long serialVersionUID = 549567555212455602L;
 		public Iterator actions(Object state) {
 		    final GeneralSearchProblem problem = getDelegatee();
 		    // just a short name for evalutionFunction

@@ -45,9 +45,7 @@ public class WAStar extends AStar {
      */
     public WAStar(Real W, Function heuristic) {
     	super(heuristic);
-    	if (!(W.compareTo(Values.ONE) >= 0))
-	    throw new IllegalArgumentException("weighting argument must be >= 1 for WA*");
-    	this.W = W;
+    	this.setWeight(W);
     }
     public WAStar(double W, Function heuristic) {
     	this(Values.getDefaultInstance().valueOf(W), heuristic);
@@ -55,12 +53,21 @@ public class WAStar extends AStar {
     public WAStar(Function heuristic) {
 	this(1, heuristic);
     }
+    WAStar() {}
 
     /**
      * Get the weighting argument W for the evaluation function.
      */
     public Real getWeight() {
     	return W;
+    }
+    /**
+     * Get the weighting argument W for the evaluation function.
+     */
+    public void setWeight(Real W) {
+    	if (!(W.compareTo(Values.ONE) >= 0))
+	    throw new IllegalArgumentException("weighting argument W must be >= 1 for WA*");
+    	this.W = W;
     }
 
     /**

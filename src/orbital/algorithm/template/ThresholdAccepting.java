@@ -49,6 +49,9 @@ public class ThresholdAccepting extends ScheduledLocalOptimizerSearch {
     public ThresholdAccepting(Function/*<GeneralSearchProblem.Option, Arithmetic>*/ heuristic, Function/*<Integer, Real>*/ schedule) {
     	super(heuristic, schedule, FIRST_LOCAL_SELECTION);
     }
+    ThresholdAccepting() {
+	this(null,null);
+    }
 
 
     /**

@@ -128,6 +128,9 @@ public class SimulatedAnnealing extends ScheduledLocalOptimizerSearch {
     public SimulatedAnnealing(Function/*<GeneralSearchProblem.Option, Arithmetic>*/ heuristic, Function/*<Integer, Real>*/ schedule) {
     	super(heuristic, schedule, FIRST_LOCAL_SELECTION);
     }
+    SimulatedAnnealing() {
+	this(null,null);
+    }
 
     /**
      * f(n) = h(n).

@@ -60,6 +60,7 @@ public class IterativeDeepeningAStar extends DepthFirstBoundingSearch implements
     	setContinuedWhenFound(false);
     	//@xxx setContinuedWhenFound(?); depends upon whether or not h is admissible?
     }
+    IterativeDeepeningAStar() {}
 
     public Function getHeuristic() {
 	return heuristic;
