@@ -55,7 +55,7 @@ all a all b (r(a,b) => ~r(b,a)) |= all a ~r(a,a)
 # r transitive and irreflexive => r asymmetric
 all a all b all c (r(a,b)&r(b,c)=>r(a,c)) , all a ~r(a,a) |= all a all b (r(a,b)=>~r(b,a))
 # r symmetric => (r Euclidean <=> r transitive)
-## all a all b (r(a,b)=>r(b,a)) |= (all a all b all c (r(a,c)&r(b,c)->r(a,b))) <-> (all a all b all c (r(a,b)&r(b,c)->r(a,c)))
+## all a all b (r(a,b)=>r(b,a)) |= (all a all b all c (r(a,c)&r(b,c)->r(a,b))) <-> (all a all b all c (r(a,b)&r(b,c)->r(a,c))) # @attribute time >10hours
 # r reflexive and Euclidean <=> r equivalence
 #   "<=" r equivalence => r reflexive and Euclidean
 all a r(a,a) , all a all b (r(a,b)=>r(b,a)) , all a all b all c (r(a,b)&r(b,c)=>r(a,c)) |= (all a r(a,a)) & (all a all b all c (r(a,c)&r(b,c)=>r(a,b)))
