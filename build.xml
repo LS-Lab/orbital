@@ -3,10 +3,10 @@
 <!-- It is availale from http://jakarta.apache.org/ant/                    -->
 
 
-<project name="Orbital" default="compile">
+<project name="Orbital" default="compile" basedir=".">
 
     <description>
-    Build file for building Orbital Project.
+    Build file for building Orbital library Project.
 
     This script should be started with the following command line :
 
@@ -47,23 +47,28 @@
         <property name="doc.api.dest" value="${doc.dest}/api"/>
         <property name="build.tests" value="${basedir}/test"/>
         <property name="reports.tests" value="${basedir}/report/test"/>
+        <property name="build.coverage" value="${basedir}/test/coverage"/>
+        <property name="reports.coverage" value="${basedir}/report/coverage"/>
 
 
         <available property="checkstyle.present" resource="checkstyletask.properties"/>
 
         <!-- allow user to override the following attributes without editing this
-             file, by creating a file 'build.properties' -->
+             file, by creating a file 'build.properties'
+	     User cannot override properties above, but only the properties below.
+	 -->
         <property file="build.properties"/>
 
         <!-- default value, may be overwritten by 'build.properties',
              has to be relative to basedir! -->
         <property name="checkstyle.dir" value="src"/>
-	<!-- default value, may be overwritten by 'build.properties' -->
+	<!-- default values, may be overwritten by 'build.properties' -->
 	<property name="javadoc.link.jdk" value="http://java.sun.com/products/jdk/1.4/docs/api/"/>
 	<property name="javadoc.link.jdk.offline" value="false"/>
 	<property name="env.javacchome" value="unknown"/>
 	<property name="javac.source" value="1.4"/>
 	<property name="run.tests.jvmarg" value="-ea"/>
+	<property name="lib.jcoverage" value="${lib}"/>
 
 
         <mkdir dir="${lib}"/>
@@ -100,6 +105,13 @@
 	    </and>
 	</condition>
 
+	<path	id="jcoverage">
+	    <fileset dir="${lib.jcoverage}">
+	        <include name="jcoverage.jar"/>
+	    </fileset>
+        </path>
+
+	<taskdef classpathref="jcoverage" resource="tasks.properties"/>
     </target>
 
     <target name="prepareEnvironment" depends="init"
@@ -171,6 +183,10 @@
 	</echo>
         <mkdir dir="${reports.tests}"/>
         <junit printsummary="yes" haltonfailure="yes" fork="yes" showoutput="true">
+	  <!-- prefer any existing instrumented classes, only for run.coverage -->
+	  <classpath location="${build.coverage}"/>
+	  <classpath refid="jcoverage"/>
+
           <classpath refid="tests.classpath"/>
 	  <jvmarg value="${run.tests.jvmarg}"/>
         
@@ -191,7 +207,7 @@
     </target>
 
     <target name="run.tests" depends="init, run.tests.internal"
-            description="report test result">
+            description="run and report test result">
         <mkdir dir="${reports.tests}"/>
         <junitreport todir="${reports.tests}">
             <fileset dir="${reports.tests}">
@@ -723,6 +739,22 @@
 
         </echo>
     </target>
+
+
+    <target name="compile.coverage" depends="init"
+            description="compile coverage tests">
+	<instrument todir="${build.coverage}">
+	    <fileset dir="${classes}">
+	        <include name="**/*.class"/>
+	    </fileset>
+	</instrument>
+    </target>
+
+    <target name="run.coverage" depends="init, compile.coverage, run.tests"
+            description="run and report coverage tests">
+	<report srcdir="${basedir}" destdir="${reports.coverage}"/>
+    </target>
+
 
     <!--
 	<target name="upload-homepage">
