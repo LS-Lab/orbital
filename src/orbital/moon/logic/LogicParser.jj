@@ -91,7 +91,7 @@ public class LogicParser {
 
     /**
      * The accumulated signature already occured in the current scope of the current
-     * {@link #parseFormulas(ExpressionSyntax) parsing process}.
+     * {@link #parseFormulas() parsing process}.
      */
     protected Signature scopeSymbolMap;
 
@@ -446,7 +446,7 @@ Expression[] parseFormulas() :
 
 /**
  * Start production parsing a logic formula with the current syntax.
- * @see #parseFormulas(ExpressionSyntax)
+ * @see #parseFormulas()
  * @internal we require <EOF> to be sure we parsed all, and no syntactic garbage lurks around at the end of the input
  */
 Expression parseFormula() :
