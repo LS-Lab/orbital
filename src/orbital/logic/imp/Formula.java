@@ -432,4 +432,15 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      * @throws UnsupportedOperationException if this quantifier is not supported by the representation.
      */
     Formula exists(Symbol x);
+
+    /**
+     * Interface fro composite formulas. A compound formula is both, a
+     * (syntactically) compound expression, and compound in the sense
+     * of the interpretation function. Both compositions are, of
+     * course, due to the same compositors and components.
+     * @structure is Expression.Composite&cap;Function.Composite&cap;Formula
+     * @author  Andr&eacute; Platzer
+     * @version 1.1, 2002-11-27
+     */
+    static interface Composite extends Expression.Composite, Function.Composite, Formula {}
 }
