@@ -5,7 +5,6 @@
  */
 
 package orbital.algorithm.template;
-import orbital.algorithm.template.TransitionModel.Option;
 
 import java.util.Iterator;
 import java.util.Random;
@@ -92,14 +91,14 @@ public class TransitionPath implements Iterator, ProbabilisticAlgorithm, Seriali
 	final Object action = actions.next();
 	final double r = random.nextDouble();
 	double r_sum = 0;
-	for (Iterator t = transition.transitions(state, action); t.hasNext(); ) {
-	    Option p = (Option) t.next();
-	    r_sum += p.getProbability();
+	for (Iterator t = transition.transitions(action, state); t.hasNext(); ) {
+	    Object sp = t.next();
+	    r_sum += transition.transition(action, state, sp).getProbability();
 	    assert 0 <= r_sum && r_sum <= 1+0.0001 : "probability distribution";
 	    if (r >= r_sum)
-		return state = p.getState();
+		return state = sp;
 	}
-	throw new AssertionError("@post TransitionModel.transitions(Object,Object): probabilities sum up to 1.0");
+	throw new AssertionError("@post TransitionModel.transition(A,S,_): probabilities sum up to 1.0");
     }
 
     /**

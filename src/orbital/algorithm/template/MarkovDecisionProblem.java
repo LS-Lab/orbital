@@ -29,7 +29,7 @@ import orbital.util.Utility;
  *    state transition functions specifying the <dfn>transition model</dfn>
  *    (which forms a rewrite system, perhaps with additional probability information),
  *    as either
- *    <ul type="circle">
+ *    <ul class="or">
  *      <li>
  *        deterministic transition function t:S&times;A(s)&rarr;S,
  *        with t(s,a) being the next state reached (for sure) when performing action a&isin;A(s) in state s&isin;S.
@@ -102,7 +102,7 @@ import orbital.util.Utility;
  * @see "A. Barto, S. Bradtke, and S. Singh. Learning to act using real-time dynamic programming. <i>Artificial Intelligence</i>, 72:81-138, 1995."
  * @see "Stanis&#322;aw Lem. Doktor Diagoras in: Sterntageb&uuml;cher, suhrkamp p491, 1978. (original edition 1971)"
  */
-public interface MarkovDecisionProblem extends TransitionModel/*<A,S,Option>*/, AlgorithmicProblem {
+public interface MarkovDecisionProblem extends TransitionModel/*<A,S,Transition>*/, AlgorithmicProblem {
     /**
      * Check whether the given state is a goal state (a valid solution to the problem).
      * @pre s&isin;S
@@ -112,21 +112,16 @@ public interface MarkovDecisionProblem extends TransitionModel/*<A,S,Option>*/, 
     boolean isSolution(Object state);
 
     /**
-     * Represents an option during a Markov Decision ProcessP.
+     * Represents an option during a Markov Decision Process.
      * <p>
-     * An option is at least a triple &lang;s&#697;,p,c&rang;&isin;S&times;[0,1]&times;<b>R</b>
-     * of a state, the probability of reaching it (in the corresponding context), and the cost
+     * An option is at least a pair &lang;p,c&rang;&isin;[0,1]&times;<b>R</b>
+     * of a probability of reaching a state (in the corresponding context), and the cost
      * of the action.</p>
      * @stereotype &laquo;Structure&raquo;
      * @version 1.0, 2002/05/30
      * @author  Andr&eacute; Platzer
      */
-    public static class Option implements TransitionModel.Option, Serializable {
-	/**
-	 * the (target) state s&#697;&isin;S of this option node.
-	 * @serial
-	 */
-	private Object/*>S<*/ state;
+    public static class Transition implements TransitionModel.ProbabilisticTransition, Serializable {
 	/**
 	 * the probability of reaching this state.
 	 * @serial
@@ -139,39 +134,22 @@ public interface MarkovDecisionProblem extends TransitionModel/*<A,S,Option>*/, 
 	private double cost;
 
 	/**
-	 * Create a new option &lang;s&#697;,p,c&rang;.
-	 * @param state the state s&#697;&isin;S.
-	 * @param probability the probability of reaching state s&#697;.
-	 * @param cost the cost of taking the action which took us here.
+	 * Create a new option &lang;p,c&rang;.
+	 * @param probability the probability of reaching a state s&#697;.
+	 * @param cost the cost of taking the action which took us to that state s&#697;.
 	 */
-	public Option(Object/*>S<*/ state, double probability, double cost) {
-	    this.state = state;
+	public Transition(double probability, double cost) {
 	    this.probability = probability;
 	    this.cost = cost;
 	}
 
-	public boolean equals(Object o) {
-	    if (!(o instanceof Option))
-		return false;
-	    Option b = (Option) o;
-	    return Utility.equals(getState(), b.getState());
-	}
-		
-	public int hashCode() {
-	    return Utility.hashCode(getState());
-	}
-		
 	public int compareTo(Object o) {
 	    //@see Double#compare(double,double)
-	    return new Double(getProbability()).compareTo(new Double(((Option)o).getProbability()));
+	    return new Double(getProbability()).compareTo(new Double(((Transition)o).getProbability()));
 	}
 		
 	public String toString() {
-	    return getClass().getName() + "[" + state + "," + probability + "]";
-	}
-		
-	public Object/*>S<*/ getState() {
-	    return state;
+	    return getClass().getName() + "[" + getProbability() + "," + getCost() + "]";
 	}
 		
 	public double getProbability() {

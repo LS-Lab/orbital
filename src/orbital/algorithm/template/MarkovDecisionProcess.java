@@ -5,7 +5,7 @@
  */
 
 package orbital.algorithm.template;
-import orbital.algorithm.template.MarkovDecisionProblem.Option;
+import orbital.algorithm.template.MarkovDecisionProblem.Transition;
 
 import orbital.logic.functor.Function;
 import orbital.logic.functor.BinaryFunction;
@@ -279,14 +279,15 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
             		double cost = 0;
 			double originalCost = Double.NaN;
             		if (logger.isLoggable(Level.FINEST)) logger.log(Level.FINEST, "DPMDP.Q", "\tc(" + action + "," + state + ") ...");
-			Iterator r = getProblem().transitions(state, action);
+			final MarkovDecisionProblem problem = getProblem();
+			Iterator r = problem.transitions(action, state);
 			assert r.hasNext() : "@post";
             		while (r.hasNext()) {
-			    final Option p = (Option) r.next();
-			    final Object sp = p.getState();
-			    if (logger.isLoggable(Level.FINEST)) logger.log(Level.FINEST, "DPMDP.Q", "\t    + " + p.getProbability() + " * " + U.apply(sp) + " for " + sp);
-			    cost += p.getProbability() * ((Number) U.apply(sp)).doubleValue();
-			    final double c = p.getCost();
+			    final Object sp = r.next();
+			    final Transition t = (Transition) problem.transition(action, state, sp);
+			    if (logger.isLoggable(Level.FINEST)) logger.log(Level.FINEST, "DPMDP.Q", "\t    + " + t.getProbability() + " * " + U.apply(sp) + " for " + sp);
+			    cost += t.getProbability() * ((Number) U.apply(sp)).doubleValue();
+			    final double c = t.getCost();
 			    assert !(originalCost != c) : "@post(getCost()): cost of transitions with the same action from the same state should be equal";
 			    originalCost = c;
             		}
