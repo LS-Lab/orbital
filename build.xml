@@ -668,6 +668,7 @@
 
     <target name="env" depends="init"
         description="print out some properties for debugging build.xml">
+	<echoproperties />
         <echo>
 
         basedir       = ${basedir}
