@@ -36,7 +36,7 @@ import java.util.ListIterator;
  * @author  Andr&eacute; Platzer
  * @see Multinomial
  * @see Values#polynomial(Arithmetic[])
- * @see Values#polynomial(double[])
+ * @see Values#polynomial(Object)
  * @see Values#asPolynomial(Vector)
  * @see NumericalAlgorithms#polynomialInterpolation(Matrix)
  * @todo implements Function<T,T> instead with T any "compatible" type (see Algebra I) and evaluation of Horner-Scheme
@@ -70,10 +70,10 @@ public interface Polynomial/*<R implements Arithmetic>*/ extends Euclidean, Func
     /**
      * Returns an iterator over all coefficients (up to degree).
      * <p>
-     * The resulting iterator will always allow {@link Iterator#next()} without throwing
+     * The resulting iterator will always allow {@link ListIterator#next()} without throwing
      * a {@link java.util.NoSuchElementException} in order to allow setting a polynomial's
      * coefficiens even beyond the current degree.
-     * However {@link Iterator#hasNext()} will nevertheless return <code>false</code> after passing
+     * However {@link ListIterator#hasNext()} will nevertheless return <code>false</code> after passing
      * the leading coefficient determining the degree.
      * </p>
      * @post always (RES.succeedes(#next()))

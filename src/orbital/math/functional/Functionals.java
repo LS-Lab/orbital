@@ -80,7 +80,7 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
      * compose:  (f,g) &#8614; f &#8728; g := f(g).
      * @return x&#8614;f &#8728; g (x) = f<big>(</big>g(x)<big>)</big>.
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
-     * @see Function.CompositeFunction
+     * @see Function.Composite
      */
     public static Function compose(Function f, Function g) {
 	// optimized composition of constant function
@@ -94,7 +94,7 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
      * compose:  (f,g,h) &#8614; f &#8728; (g &times; h) := f(g,h) .
      * @return (x,y)&#8614;f<big>(</big>g(x,y),h(x,y)<big>)</big>.
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
-     * @see BinaryFunction.CompositeFunction
+     * @see BinaryFunction.Composite
      */
     public static BinaryFunction compose(BinaryFunction f, BinaryFunction g, BinaryFunction h) {
 	// optimized composition of constant function

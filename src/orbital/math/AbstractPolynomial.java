@@ -409,6 +409,10 @@ abstract class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractP
      * @todo optimize, f.ex. use shifting instead of explicit multiplication, and avoid subtract that calls representative
      */
     private Polynomial/*<R>*/ polynomialDivision(final Polynomial/*<R>*/ f, final Polynomial/*<R>*/ g, boolean returnQuotient) {
+	if (f.degreeValue() < g.degreeValue())
+	    return f;
+	else if (g.degreeValue() < 0)
+	    throw new ArithmeticException("/ by " + g);
 	// the highest coefficient of g
 	final Arithmetic/*>R<*/ bm = g.get(g.degreeValue());
 	Arithmetic/*>R<*/ quotient[] = new Arithmetic/*>R<*/[f.degreeValue() - g.degreeValue() + 1];
@@ -470,7 +474,7 @@ abstract class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractP
     } 
 
     public String toString() {
-	assert !get(degreeValue()).norm().equals(Values.ZERO) : "definition of degree implies that the degree-th coefficient is != 0";
+	assert degreeValue() < 0 || !get(degreeValue()).norm().equals(Values.ZERO) : "definition of degree implies that the degree-th (" + degree() + "-th) coefficient (" + get(degreeValue()) + ") is != 0";
 	return ArithmeticFormat.getDefaultInstance().format(this);
     }
 }

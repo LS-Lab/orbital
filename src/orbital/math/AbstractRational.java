@@ -23,7 +23,12 @@ abstract class AbstractRational extends AbstractReal implements Rational {
     abstract int numeratorValue();
     abstract int denominatorValue();
 
-    //@todo introduce faster equals for Rationals?
+    public boolean equals(Object o) {
+    	if (Rational.isa.apply(o)) {
+	    return compareTo(o) == 0;
+	} else
+	    return super.equals(o);
+    }
     
     // order
     public int compareTo(Object o) {
@@ -35,7 +40,7 @@ abstract class AbstractRational extends AbstractReal implements Rational {
 	    if (Rational.isa.apply(o)) {
 		// faster compare
 		Rational b = (Rational) o;
-		return numerator().multiply(b.denominator()).subtract(b.numerator().multiply(denominator())).intValue();
+		return numerator().multiply(b.denominator()).compareTo(b.numerator().multiply(denominator()));
 	    } else
 		return super.compareTo(o);
     } 
@@ -127,8 +132,8 @@ abstract class AbstractRational extends AbstractReal implements Rational {
     	 * creates a new rational number p/q.
     	 * @param p the numerator of p/q.
     	 * @param q the denominator p/q.
-    	 * @post this.equals(normalize(this))
-    	 * @see #normalize(Rational)
+    	 * @post this == normalize(this)
+    	 * @see #representative()
     	 */
     	public RationalImpl(int p, int q) {
 	    // normalize

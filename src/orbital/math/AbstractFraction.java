@@ -47,6 +47,27 @@ class AbstractFraction/*<M extends Arithmetic,S extends Arithmetic>*/ extends Ab
 	this(null, null);
     }
     
+
+    public boolean equals(Object o) {
+    	if (o instanceof Fraction) {
+	    Fraction b = (Fraction) o;
+	    //@internal assuming integrity domain here
+	    return numerator().multiply(b.denominator()).equals(b.numerator().multiply(denominator()));
+	} else
+	    return false;
+    }
+
+    public int compareTo(Object o) {
+	//@todo instead of implementing Comparable statically, use java.lang.reflect.Proxy in Values.fraction(...) to dynamically extend it, if the underlying object is an instance of Comparable.
+	Fraction b = (Fraction) o;
+	//@internal assuming integrity domain here
+	Arithmetic ad = numerator().multiply(b.denominator());
+	if (ad instanceof Comparable)
+	    return ((Comparable) ad).compareTo(b.numerator().multiply(denominator()));
+	else
+	    throw new UnsupportedOperationException("since the underlying integrity domain " + ad.getClass() + " does not support " + Comparable.class);
+    } 
+    
     public Arithmetic/*>M<*/ numerator() {
 	return numerator;
     } 
@@ -54,7 +75,6 @@ class AbstractFraction/*<M extends Arithmetic,S extends Arithmetic>*/ extends Ab
     public Arithmetic/*>S<*/ denominator() {
 	return denominator;
     } 
-    
 
     public Real norm() {
 	return numerator().norm().divide(denominator().norm());

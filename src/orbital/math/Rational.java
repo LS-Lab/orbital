@@ -9,17 +9,17 @@ package orbital.math;
 import orbital.logic.functor.Predicate;
 
 /**
- * Representation of a rational number <span class="Formula">p&#8260;q &isin; <b>Q</b></span>.
+ * Representation of a rational number <span class="Formula">a&#8260;s &isin; <b>Q</b></span>.
  * <p>
- * <b>Q</b> := Quot(<b>Z</b>) := (<b>Z</b>&#8726;{0})<sup>-1</sup><b>Z</b> = {p&#8260;q &brvbar; p,q&isin;<b>Z</b> &and; q&ne;0}
+ * <b>Q</b> := Quot(<b>Z</b>) := (<b>Z</b>&#8726;{0})<sup>-1</sup><b>Z</b> = {a&#8260;s &brvbar; a,s&isin;<b>Z</b> &and; s&ne;0}
  * is the field of {@link Fraction fractions} of the ring <b>Z</b>.
  * </p>
  * <p>
- * A rational number p&#8260;q &isin; <b>Q</b>
- * with numerator p and denominator q is usually written as
+ * A rational number a&#8260;s &isin; <b>Q</b>
+ * with numerator a and denominator s is usually written as
  * <pre>
- *  p
- *  <span style="text-decoration: overline">q</span>
+ *  a
+ *  <span style="text-decoration: overline">s</span>
  * </pre>
  * </p>
  * <p>
@@ -29,6 +29,7 @@ import orbital.logic.functor.Predicate;
  * 
  * @version 1.0, 2000/08/03
  * @author  Andr&eacute; Platzer
+ * @structure synonym for Fraction<Integer>
  * @see Values#rational(Integer, Integer)
  * @see Values#rational(int, int)
  * @see Values#rational(Integer)
@@ -41,13 +42,13 @@ import orbital.logic.functor.Predicate;
 public interface Rational extends Real {
     /**
      * Returns the numerator component.
-     * @return p of this rational number p&#8260;q.
+     * @return a of this rational number a&#8260;s.
      */
     Integer numerator(); 
 
     /**
      * Returns the denominator component.
-     * @return q of this rational number p&#8260;q.
+     * @return s of this rational number a&#8260;s.
      */
     Integer denominator();
 

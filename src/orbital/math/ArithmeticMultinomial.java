@@ -20,7 +20,7 @@ import orbital.math.functional.Operations;
 import orbital.algorithm.Combinatorical;
 
 class ArithmeticMultinomial/*<R implements Arithmetic>*/ extends AbstractMultinomial {
-    //private static final long serialVersionUID = 0;
+    private static final long serialVersionUID = -6317707373482862125L;
     /**
      * The coefficients in R.
      * @serial

@@ -230,7 +230,7 @@ public final class MathUtilities {
 	return AlgebraicAlgorithms.gcd(a,b);
     }
     /**
-     * @deprecated Use {@link AlgebraicAlgorithms#lcm(Euclidean,Euclidean} instead.
+     * @deprecated Use {@link AlgebraicAlgorithms#lcm(Euclidean,Euclidean)} instead.
      */
     public static Euclidean lcm(Euclidean a, Euclidean b) {
 	return AlgebraicAlgorithms.lcm(a,b);
@@ -547,7 +547,7 @@ public final class MathUtilities {
      * @pre 0<=args.length && args.length<=2 (currently)
      * @post RES.length==args.length
      *   && (RES[0].getClass() "compatible to" RES[1].getClass() || RES[0].getClass() == RES[1].getClass())
-     * @see Scalar#minimumEqualized(Number, Number)
+     * @see Values#minimumEqualized(Number, Number)
      * @see orbital.math.functional.Operations
      * @see #setEqualizer(orbital.logic.functor.Function)
      */
@@ -711,7 +711,7 @@ public final class MathUtilities {
      * Converts arabic numbers to roman numbers.
      * @param arabic  the short value (in arabic chiffres) to be converted into roman chiffres.
      * It must be an integer value between 1 (I) and 3999 (MMMCMXCIX).
-     * @flag not-tested
+     * @internal attribute not-tested
      * @todo test
      * @todo &#8576;=1000, &#8577;=5000, &#8578;=10000.
      */

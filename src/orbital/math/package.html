@@ -14,7 +14,7 @@
 Provides <i>arithmetic objects</i> and mathematical utility classes.
 <p>Arithmetic Objects contained in this package are:<br>
 &nbsp;<center>
-<table border="1" width="57%">
+<table border="1" width="66%">
   <caption>Types of Arithmetic Objects provided</caption>
   <tr>
     <th>Group</th>
@@ -28,7 +28,7 @@ Provides <i>arithmetic objects</i> and mathematical utility classes.
   </tr>
   <tr>
     <td>Rational</td>
-    <td>p&#8260;q &isin; <b>Q</b></td>
+    <td>a&#8260;s &isin; <b>Q</b></td>
   </tr>
   <tr>
     <td>Real</td>
@@ -41,24 +41,28 @@ Provides <i>arithmetic objects</i> and mathematical utility classes.
   <tr>
     <td rowspan="4">vector space types</td>
     <td>Vector</td>
-    <td>v &isin; A<sup>n</sup></td>
+    <td><span class="vector">v</span> &isin; A<sup>n</sup></td>
   </tr>
   <tr>
     <td>Matrix</td>
-    <td>M &isin; A<sup>m×n</sup></td>
+    <td><span class="matrix">M</span> &isin; A<sup>m×n</sup></td>
   </tr>
   <tr>
     <td>Matrix3D</td>
-    <td>M &isin; <b>R</b><sup>4×4</sup> (fast 3D transformations)</td>
+    <td><span class="matrix">M</span> &isin; <b>R</b><sup>4×4</sup> (fast 3D affine transformations)</td>
   </tr>
   <tr>
     <td>Tensor</td>
-    <td>t &isin; A<sup>n<sub>1</sub>&times;n<sub>2</sub>&times;&#8230;&times;n<sub>r</sub></sup></td>
+    <td><span class="tensor">t</span> &isin; A<sup>n<sub>1</sub>&times;n<sub>2</sub>&times;&#8230;&times;n<sub>r</sub></sup></td>
   </tr>
   <tr>
-    <td>polynomial types</td>
+    <td rowspan="2">polynomial types</td>
     <td>Polynomial</td>
     <td>p &isin; R[X]</td>
+  </tr>
+  <tr>
+    <td>Multinomial</td>
+    <td>p &isin; R[X<sub>0</sub>,...,X<sub>n-1</sub>]</td>
   </tr>
   <tr>
     <td rowspan="3">special</td>

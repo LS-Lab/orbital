@@ -16,7 +16,7 @@ import java.util.NoSuchElementException;
  * Represents a mathematical vector of any dimension n.
  * <p>
  * <table>
- * <tr><td rowspan="4">v&isin;V=R<sup>n</sup>, v = (v<sub>0</sub>,v<sub>1</sub>,v<sub>2</sub>,&#8230;,v<sub>n-1</sub>)<sup>T</sup> = </td>
+ * <tr><td rowspan="4"><span class="vector">v</span>&isin;V=R<sup>n</sup>, <span class="vector">v</span> = (v<sub>0</sub>,v<sub>1</sub>,v<sub>2</sub>,&#8230;,v<sub>n-1</sub>)<sup>T</sup> = </td>
  *     <td rowspan="4" style="font-size: 600%; font-weight: 200">(</td> <td>v<sub>0</sub></td> <td rowspan="4" style="font-size: 600%; font-weight: 200">)</td></tr>
  * <tr> <td>v<sub>1</sub></td> </tr>
  * <tr> <td>&#8942;</td> </tr>
@@ -34,37 +34,39 @@ import java.util.NoSuchElementException;
  * A <a href="doc-files/AlgebraicStructures.html#vectorSpace"><dfn>vector space</dfn></a> over a field R is a set V with an algebraic structure of
  * <table style="border: none; padding: 3">
  *   <tr>
- *     <td>(1)</td>
- *     <td>(V,+) is a commutative group with the law of composition</td>
- *     <td>+:V×V&rarr;V; (v,w)&#8614;v+w</td>
+ *     <td rowspan="2">(1)</td>
+ *     <td>(V,+) is an Abelian group with the law of composition</td>
+ *   </tr>
+ *   <tr>
+ *     <td>+:V×V&rarr;V; (<span class="vector">v</span>,<span class="vector">w</span>)&#8614;<span class="vector">v</span>+<span class="vector">w</span></td>
  *   </tr>
  *   <tr>
  *     <td>(2)</td>
- *     <td>&lowast; is a law of action (the scalar multiplication &lowast; or sometimes ·)</td>
- *     <td>&lowast;:R×V&rarr;V; (&lambda;,v)&#8614;&lambda;&lowast;v</td>
+ *     <td>&lowast;:R×V&rarr;V; (&lambda;,<span class="vector">v</span>)&#8614;&lambda;&lowast;<span class="vector">v</span>
+ *       is a law of action (the scalar multiplication &lowast; or sometimes ·)</td>
  *   </tr>
  *   <tr>
  *     <td>&nbsp;(&quot;a&quot;)</td>
- *     <td>&lambda;&lowast;(&mu;&lowast;v) = (&lambda;&sdot;&mu;)&lowast;v</td>
+ *     <td>&lambda;&lowast;(&mu;&lowast;<span class="vector">v</span>) = (&lambda;&sdot;&mu;)&lowast;<span class="vector">v</span></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td>&nbsp;(&quot;d&quot;)</td>
- *     <td>(&lambda;+&mu;)&lowast;v = &lambda;&lowast;v + &mu;&lowast;v</td>
+ *     <td>(&lambda;+&mu;)&lowast;<span class="vector">v</span> = &lambda;&lowast;<span class="vector">v</span> + &mu;&lowast;<span class="vector">v</span></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td>&nbsp;(&quot;d&quot;)</td>
- *     <td>&lambda;&lowast;(v+w) = &lambda;&lowast;v + &lambda;&lowast;w</td>
+ *     <td>&lambda;&lowast;(<span class="vector">v</span>+<span class="vector">w</span>) = &lambda;&lowast;<span class="vector">v</span> + &lambda;&lowast;<span class="vector">w</span></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td>&nbsp;(&quot;n&quot;)</td>
- *     <td>1&lowast;v = v</td>
+ *     <td>1&lowast;<span class="vector">v</span> = <span class="vector">v</span></td>
  *     <td></td>
  *   </tr>
  * </table>
- * &forall;&lambda;,&mu;&isin;R, v,w&isin;V.
+ * &forall;&lambda;,&mu;&isin;R, <span class="vector">v</span>,<span class="vector">w</span>&isin;V.
  * <p>
  * If you intend to use <em>mutable</em> arithmetic elements, note the discussion of
  * mutations per reference vs. explicit cloning in {@link Tensor#set(int[],Arithmetic)}
@@ -140,8 +142,8 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     /**
      * Returns the norm || ||<sub>p</sub> of this vector.
      * <p>This method implements p-norms, where<br>
-     * <span class="Formula">||x||<sub>p</sub> = (|x<sub>1</sub>|<sup>p</sup> + &#8230; + |x<sub>n</sub>|<sup>p</sup>)<sup>1/p</sup></span>.<br>
-     * <span class="Formula">||x||<sub>&infin;</sub> = max {|x<sub>1</sub>|,&#8230;,|x<sub>n</sub>|}</span>.</p>
+     * <span class="Formula">||<span class="vector">x</span>||<sub>p</sub> = (|x<sub>1</sub>|<sup>p</sup> + &#8230; + |x<sub>n</sub>|<sup>p</sup>)<sup>1/p</sup></span>.<br>
+     * <span class="Formula">||<span class="vector">x</span>||<sub>&infin;</sub> = max {|x<sub>1</sub>|,&#8230;,|x<sub>n</sub>|}</span>.</p>
      * @pre p>=1
      */
     public Real norm(double p);
@@ -171,48 +173,48 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
 
     /**
      * Scalar-dot-product &lang;&middot;,&middot;&rang;:V&times;V&rarr;F of two vectors.
-     * <p>&lang;&middot;,&middot;&rang;:V&times;V&rarr;<b>R</b> is a real scalar product and V a euclidian vector space, if &forall;x,y&isin;V:
+     * <p>&lang;&middot;,&middot;&rang;:V&times;V&rarr;<b>R</b> is a real scalar product and V a euclidian vector space, if &forall;<span class="vector">x</span>,<span class="vector">y</span>&isin;V:
      * <table>
      *   <tr>
      *     <td>(bl)</td>
-     *     <td>&lang;.,y&rang; and &lang;x,.&rang; are linear</td>
+     *     <td>&lang;.,<span class="vector">y</span>&rang; and &lang;<span class="vector">x</span>,.&rang; are linear</td>
      *     <td>&quot;bilinear&quot;</td>
      *   </tr>
      *   <tr>
      *     <td>(s)</td>
-     *     <td>&lang;x,y&rang; = &lang;y,x&rang;</td>
+     *     <td>&lang;<span class="vector">x</span>,<span class="vector">y</span>&rang; = &lang;<span class="vector">y</span>,<span class="vector">x</span>&rang;</td>
      *     <td>&quot;symmetric&quot; (this method is commutative)</td>
      *   </tr>
      *   <tr>
      *     <td>(pdef)</td>
-     *     <td>&lang;x,x&rang;&ge;0 and &lang;x,x&rang;=0 &hArr; x=0</td>
+     *     <td>&lang;<span class="vector">x</span>,<span class="vector">x</span>&rang;&ge;0 and &lang;<span class="vector">x</span>,<span class="vector">x</span>&rang;=0 &hArr; <span class="vector">x</span>=0</td>
      *     <td>&quot;positive definite&quot;</td>
      *   </tr>
      * </table></p>
-     * <p>&lang;&middot;,&middot;&rang;:V&times;V&rarr;<b>C</b> is a complex scalar product and V a unitarian vector space, if &forall;x,y&isin;V:
+     * <p>&lang;&middot;,&middot;&rang;:V&times;V&rarr;<b>C</b> is a complex scalar product and V a unitarian vector space, if &forall;<span class="vector">x</span>,<span class="vector">y</span>&isin;V:
      * <table>
      *   <tr>
      *     <td>(ll)</td>
-     *     <td>&lang;&middot;,y&rang; is linear</td>
+     *     <td>&lang;&middot;,<span class="vector">y</span>&rang; is linear</td>
      *     <td>&quot;left-linear&quot;</td>
      *   </tr>
      *   <tr>
      *     <td>(h)</td>
-     *     <td>&lang;x,y&rang; = <span style="text-decoration: overline">&lang;y,x&rang;</span></td>
+     *     <td>&lang;<span class="vector">x</span>,<span class="vector">y</span>&rang; = <span style="text-decoration: overline">&lang;<span class="vector">y</span>,<span class="vector">x</span>&rang;</span></td>
      *     <td>&quot;hermite&quot;</td>
      *   </tr>
      *   <tr>
      *     <td>(pdef)</td>
-     *     <td>&lang;x,x&rang;&ge;0 and &lang;x,x&rang;=0 &hArr; x=0</td>
+     *     <td>&lang;<span class="vector">x</span>,<span class="vector">x</span>&rang;&ge;0 and &lang;<span class="vector">x</span>,<span class="vector">x</span>&rang;=0 &hArr; <span class="vector">x</span>=0</td>
      *     <td>&quot;positive definite&quot;</td>
      *   </tr>
      * </table></p>
      * <p>
-     * A scalar product &lang;&middot;,&middot;&rang; induces a norm ||.||:V&rarr;[0,&infin;); x &#8614; ||x|| := &radic;<span style="text-decoration: overline">&lang;x,x&rang;</span>
+     * A scalar product &lang;&middot;,&middot;&rang; induces a norm ||.||:V&rarr;[0,&infin;); <span class="vector">x</span> &#8614; ||<span class="vector">x</span>|| := &radic;<span style="text-decoration: overline">&lang;<span class="vector">x</span>,<span class="vector">x</span>&rang;</span>
      * </p>
      * <p>
      * The standard scalar-product which will often be implemented, is<br />
-     * (x,y) &#8614; &lang;x,y&rang; = x<sup>T</sup>·y = <big>&sum;</big><span class="doubleIndex"><sub>i=0</sub><sup>n-1</sup></span> x<sub>i</sub>&sdot;y<sub>i</sub>.
+     * (<span class="vector">x</span>,<span class="vector">y</span>) &#8614; &lang;<span class="vector">x</span>,<span class="vector">y</span>&rang; = <span class="vector">x</span><sup>T</sup>·<span class="vector">y</span> = <big>&sum;</big><span class="doubleIndex"><sub>i=0</sub><sup>n-1</sup></span> x<sub>i</sub>&sdot;y<sub>i</sub>.
      * It belongs to the euclidian 2-norm and is the inner product of vectors.
      * </p>
      * @pre dimension() == b.dimension()
@@ -229,7 +231,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      *  	&& RES.get(i) == s&sdot;get(i)
      * @attribute associative
      * @attribute neutral
-     * @return s&lowast;v
+     * @return s&lowast;<span class="vector">v</span>
      */
     Vector/*<R>*/ scale(Scalar s);
     /**
@@ -241,23 +243,23 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
 
     /**
      * Multiplies a vector with a matrix returning a vector.
-     * If row-vector <code>v</code> is sized <code>n</code> and
-     * the matrix <code>A</code> is sized <code>n&times;m</code>,
-     * the resulting row-vector <code>v&middot;A</code> is sized <code>m</code>.
+     * If row-vector <code><span class="vector">v</span></code> is sized <code>n</code> and
+     * the matrix <code class="matrix">A</code> is sized <code>n&times;m</code>,
+     * the resulting row-vector <code><span class="vector">v</span>&middot;<span class="matrix">A</span></code> is sized <code>m</code>.
      * This is an inner product.
-     * @pre dimension() == B.dimension().height
+     * @pre dimension() == <span class="matrix">B</span>.dimension().height
      */
     Vector/*<R>*/ multiply(Matrix/*<R>*/ B);
 
     /**
      * Vector-cross-product of two vectors.<br>
-     * &times;:<b><b>R</b></b><sup>3</sup>&times;<b><b>R</b></b><sup>3</sup>&rarr;<b><b>R</b></b><sup>3</sup>; (x,y) &#8614; x&times;y = (x<sub>1</sub>y<sub>2</sub>-x<sub>2</sub>y<sub>1</sub>, x<sub>2</sub>y<sub>0</sub>-x<sub>0</sub>y<sub>2</sub>, x<sub>0</sub>y<sub>1</sub>-x<sub>1</sub>y<sub>0</sub>)
+     * &times;:<b><b>R</b></b><sup>3</sup>&times;<b><b>R</b></b><sup>3</sup>&rarr;<b><b>R</b></b><sup>3</sup>; (<span class="vector">x</span>,<span class="vector">y</span>) &#8614; <span class="vector">x</span>&times;<span class="vector">y</span> = (x<sub>1</sub>y<sub>2</sub>-x<sub>2</sub>y<sub>1</sub>, x<sub>2</sub>y<sub>0</sub>-x<sub>0</sub>y<sub>2</sub>, x<sub>0</sub>y<sub>1</sub>-x<sub>1</sub>y<sub>0</sub>)
      * <p>
-     * cross is antisymmetric: b&times;a = -(a&times;b)</p>
+     * cross is antisymmetric: <span class="vector">y</span>&times;<span class="vector">x</span> = -(<span class="vector">x</span>&times;<span class="vector">y</span>)</p>
      * @pre dimension() == 3 && dimension() == b.dimension()
      * @post RES.multiply(this) == 0 && RES.multiply(b) == 0.
      * @return the cross-product vector which will be orthogonal on this and b.
-     *  x&times;y &perp; x &and; x&times;y &perp; y.
+     *  <span class="vector">x</span>&times;<span class="vector">y</span> &perp; <span class="vector">x</span> &and; <span class="vector">x</span>&times;<span class="vector">y</span> &perp; <span class="vector">y</span>.
      * @pre (dimension() == 3 || dimension() == 2) && dimension() == b.dimension()
      * @attribute antisymmetric
      */
@@ -289,7 +291,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * @pre 0<=index && index<=dimension()
      * @return this.
      * @post RES == this
-     *  	&& RES.dimension() == OLD(dimension()) + v.dimension()
+     *  	&& RES.dimension() == OLD(dimension()) + <span class="vector">v</span>.dimension()
      */
     Vector/*<R>*/ insertAll(int index, Vector/*<R>*/ v);
 
@@ -305,7 +307,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * Append all components of a vector to this vector.
      * @return this.
      * @post RES == this
-     *  	&& RES.dimension() == OLD(dimension()) + v.dimension()
+     *  	&& RES.dimension() == OLD(dimension()) + <span class="vector">v</span>.dimension()
      */
     Vector/*<R>*/ insertAll(Vector/*<R>*/ v);
 

@@ -8,6 +8,7 @@ package orbital.math;
 
 import orbital.logic.functor.Function;
 import java.util.Comparator;
+import java.io.Serializable;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -138,7 +139,7 @@ public class AlgebraicAlgorithms {
     
     /**
      * The (partial) order on polynomials induced by an admissible total order on monomials.
-     * <dl class="def">
+     * <dl class="def" id="monomialOrder">
      * Let &le; &sube; M<sub>n</sub> &times; M<sub>n</sub> be a total order on the monoid of monomials
      * M<sub>n</sub> := {X<sup class="vector">&nu;</sup> := X<sub>1</sub><sup>&nu;<sub>1</sub></sup>&sdot;&#8230;&sdot;X<sub>n</sub><sup>&nu;<sub>n</sub></sup> &brvbar; <span class="vector">&nu;</span>=(&nu;<sub>1</sub>,&#8230;,&nu;<sub>n</sub>) &isin; <b>N</b><sup>n</sup>}.
      *   <dt id="admissible">admissible</dt>
@@ -152,6 +153,10 @@ public class AlgebraicAlgorithms {
      *   </dd>
      * </dl>
      * @param monomialOrder is the underlying admissible total order on the monoid of monomials to use.
+     *  Such monomial orders include {@link #LEXICOGRAPHIC}, {@link #REVERSE_LEXICOGRAPHIC}, {@link #DEGREE_LEXICOGRAPHIC}.
+     * @see #LEXICOGRAPHIC
+     * @see #REVERSE_LEXICOGRAPHIC
+     * @see #DEGREE_LEXICOGRAPHIC
      */
     public static final Comparator INDUCED(final Comparator monomialOrder) {
 	return new InducedPolynomialComparator(monomialOrder);
@@ -196,7 +201,7 @@ public class AlgebraicAlgorithms {
 	    } catch (IndexOutOfBoundsException differentLengthOfMonomials) {
 		Function Xpower = new Function() {
 			public Object apply(Object i) {
-			    return AbstractMultinomial.MONOMIAL(Values.ONE, (int[])i);
+			    return Values.MONOMIAL(Values.ONE, (int[])i);
 			}
 			public String toString() {
 			    return "X0^.*...Xn^.";
@@ -478,77 +483,102 @@ public class AlgebraicAlgorithms {
 	return xStar;
     }
 
-    // Groebner
+    // Groebner basis
 
     /**
      * Reduce f with respect to g.
      * @param g the collection of multinomials for reducing f. 
-     * @param monomialOrder the order of monomials, which is decisive for the time complexity.
+     * @param monomialOrder the <a href="#monomialOrder">order of monomials</a>, which is decisive for the time complexity.
      * @return h if h is a reduced reduction of f with respect to g.
-     * @internal elementaryReduction = "wenn ein Monom verschwindet und der Rest kleiner wird"
-     * @internal reduction = transitiveClosure(elementaryReduction)
+     * @see #reduce(Collection, Comparator)
      */
     public static final Multinomial/*<R>*/ reduce(Multinomial/*<R>*/ f, Collection/*_Multinomial<R>_*/ g, final Comparator monomialOrder) {
 	return (Multinomial) reduce(g, monomialOrder).apply(f);
     }
-    private static final Function/*<Multinomial<R>,Multinomial<R>>*/ reduce(final Collection/*_Multinomial<R>_*/ g, final Comparator monomialOrder) {
-	// enrich g with exponents of leading monomials
-	final Pair/*<Multinomial<R>,int[]>*/[] basis = new Pair[g.size()];
-	{
-	    Iterator it = g.iterator();
-	    for (int i = 0; i < basis.length; i++) {
-		final Multinomial gi = (Multinomial) it.next();
-		final int[] leadingMonomial = leadingMonomial(gi, monomialOrder);
-		basis[i] = new Pair(gi, leadingMonomial);
+    /**
+     * Reduce<sub>g</sub>:K[X<sub>0</sub>,...,X<sub>n-1</sub>]&rarr;K[X<sub>0</sub>,...,X<sub>n-1</sub>]; f &#8614; "f reduced with respect to g".
+     * @param g the collection of multinomials for reducing polynomials.
+     * @param monomialOrder the <a href="#monomialOrder">order of monomials</a>, which is decisive for the time complexity.
+     * @return a function that reduces polynomials with respect to g.
+     * @see Values#quotient(Multinomial,Set,Comparator)
+     * @internal elementaryReduction = "wenn ein Monom verschwindet und der Rest kleiner wird"
+     * @internal reduction = transitiveClosure(elementaryReduction)
+     */
+    public static final Function/*<Multinomial<R>,Multinomial<R>>*/ reduce(Collection/*_Multinomial<R>_*/ g, Comparator monomialOrder) {
+	return new ReductionFunction(g, monomialOrder);
+    }
+    private static final class ReductionFunction implements Function/*<Multinomial<R>,Multinomial<R>>*/, Serializable {
+	private static final long serialVersionUID = -51945340881045435L;
+	private final Collection/*_<Multinomial<R>>_*/ g;
+	private final Comparator monomialOrder;
+	private final Function elementaryReduce;
+	public ReductionFunction(Collection/*_Multinomial<R>_*/ g, Comparator newmonomialOrder) {
+	    Utility.pre(Setops.all(g, Functionals.bindSecond(Utility.instanceOf, Multinomial.class)), "collection<" + Multinomial.class.getName() + "> expected");
+	    this.g = g;
+	    this.monomialOrder = newmonomialOrder;
+	    // enrich g with exponents of leading monomials
+	    final Pair/*<Multinomial<R>,int[]>*/[] basis = new Pair[g.size()];
+	    {
+		Iterator it = g.iterator();
+		for (int i = 0; i < basis.length; i++) {
+		    final Multinomial gi = (Multinomial) it.next();
+		    final int[] leadingMonomial = leadingMonomial(gi, monomialOrder);
+		    basis[i] = new Pair(gi, leadingMonomial);
+		}
 	    }
-	}
-	//@internal would we profit from using orbital.logic.trs, even though polynomials do not currently have an introspectable internal structure per Functor.Composite?
-	final Function elementaryReduce = new Function/*<Multinomial,Multinomial>*/() {
-		public Object apply(Object o) {
-		    // only cast since Multinomial does not yet have dimensions()
-		    final AbstractMultinomial f = (AbstractMultinomial)o;
-		    //@internal we would prefer reverse direction, also starting with leading coefficient
-		    final SortedSet occurring = new TreeSet(new ReverseComparator(monomialOrder));
-		    occurring.addAll(occurringMonomials(f));
-		    for (Iterator index = occurring.iterator(); index.hasNext(); ) {
-			final int[] nu = (int[]) index.next();
-			final Arithmetic/*>R<*/ cnu = f.get(nu);
-			assert !cnu.norm().equals(Values.ZERO) : "@post of occurringMonomials(...)";
-			reductionPolynomials:
-			for (int j = 0; j < basis.length; j++) {
-			    final Multinomial gj = (Multinomial)basis[j].A;
-			    final int[] lgj = (int[])basis[j].B;
-			    // always divisible in fields: coefficient cnu by lc(gj)=gj.get(lgj)
-			    final Arithmetic/*>R<*/ cdiv = cnu.divide(gj.get(lgj));
-			    // test divisibility of monomial X^nu by l(gj)
-			    final int[] xdiv = new int[lgj.length];
-			    for (int k = 0; k < xdiv.length; k++) {
-				xdiv[k] = nu[k] -  lgj[k];
-				if (xdiv[k] < 0)
-				    continue reductionPolynomials;
+	    //@internal would we profit from using orbital.logic.trs, even though polynomials do not currently have an introspectable internal structure per Functor.Composite?
+	    this.elementaryReduce = new Function/*<Multinomial,Multinomial>*/() {
+		    public Object apply(Object o) {
+			final Multinomial f = (Multinomial)o;
+			//@internal we would prefer reverse direction, also starting with leading coefficient
+			final SortedSet occurring = new TreeSet(new ReverseComparator(monomialOrder));
+			occurring.addAll(occurringMonomials(f));
+			for (Iterator index = occurring.iterator(); index.hasNext(); ) {
+			    final int[] nu = (int[]) index.next();
+			    final Arithmetic/*>R<*/ cnu = f.get(nu);
+			    assert !cnu.norm().equals(Values.ZERO) : "@post of occurringMonomials(...)";
+			    reductionPolynomials:
+			    for (int j = 0; j < basis.length; j++) {
+				final Multinomial gj = (Multinomial)basis[j].A;
+				final int[] lgj = (int[])basis[j].B;
+				// always divisible in fields: coefficient cnu by lc(gj)=gj.get(lgj)
+				final Arithmetic/*>R<*/ cdiv = cnu.divide(gj.get(lgj));
+				// test divisibility of monomial X^nu by l(gj)
+				final int[] xdiv = new int[lgj.length];
+				for (int k = 0; k < xdiv.length; k++) {
+				    xdiv[k] = nu[k] -  lgj[k];
+				    if (xdiv[k] < 0)
+					continue reductionPolynomials;
+				}
+				// divisible
+				final Multinomial q = Values.MONOMIAL(cdiv, xdiv);
+				final Multinomial reduction = f.subtract(q.multiply(gj));
+				assert reduction.get(nu).norm().equals(Values.ZERO) : Values.MONOMIAL(Values.ONE, nu) + " does not occur in " + reduction + " anymore";
+				assert INDUCED(monomialOrder).compare(reduction, f) < 0 : reduction + "<" + f;
+				if (!reduction.get(nu).norm().equals(Values.ZERO))
+				    throw new AssertionError(Values.MONOMIAL(Values.ONE, nu) + " does not occur in " + reduction + " anymore");
+				if (!(INDUCED(monomialOrder).compare(reduction, f) < 0))
+				    throw new AssertionError(reduction + "<" + f);
+				logger.log(Level.FINEST, "elementary reduction {0} - {1} * ({2}) == {3}", new Object[] {f, q, gj, reduction});
+				return reduction;
 			    }
-			    // divisible
-			    final Multinomial q = AbstractMultinomial.MONOMIAL(cdiv, xdiv);
-			    final Multinomial reduction = f.subtract(q.multiply(gj));
-			    assert reduction.get(nu).norm().equals(Values.ZERO) : AbstractMultinomial.MONOMIAL(Values.ONE, nu) + " does not occur in " + reduction + " anymore";
-			    assert INDUCED(monomialOrder).compare(reduction, f) < 0 : reduction + "<" + f;
-			    if (!reduction.get(nu).norm().equals(Values.ZERO))
-				throw new AssertionError(AbstractMultinomial.MONOMIAL(Values.ONE, nu) + " does not occur in " + reduction + " anymore");
-			    if (!(INDUCED(monomialOrder).compare(reduction, f) < 0))
-				throw new AssertionError(reduction + "<" + f);
-			    logger.log(Level.FINEST, "elementary reduction {0} - {1} * ({2}) == {3}", new Object[] {f, q, gj, reduction});
-			    return reduction;
 			}
+			return f;
 		    }
-		    return f;
-		}
-	    };
-	return new Function() {
-		public Object apply(Object f) {
-		    logger.log(Level.FINEST, "reducing ({0} with respect to {1} ...", new Object[] {f, g});
-		    return Functionals.fixedPoint(elementaryReduce, f);
-		}
-	    };
+		};
+	}
+	public boolean equals(Object o) {
+	    return (o instanceof ReductionFunction)
+		&& Utility.equals(g, ((ReductionFunction) o).g)
+		&& Utility.equals(monomialOrder, ((ReductionFunction) o).monomialOrder);
+	}
+	public int hashCode() {
+	    return Utility.hashCode(g) ^ Utility.hashCode(monomialOrder);
+	}
+	public Object apply(Object f) {
+	    logger.log(Level.FINEST, "reducing ({0} with respect to {1} ...", new Object[] {f, g});
+	    return Functionals.fixedPoint(elementaryReduce, f);
+	}
     }
 
     /**
@@ -590,7 +620,7 @@ public class AlgebraicAlgorithms {
      * </p>
      * @param g the collection of multinomials that is a generating system of the ideal (g)
      *  for which to construct a Groebner basis.
-     * @param monomialOrder the order of monomials, which is decisive for the time complexity.
+     * @param monomialOrder the <a href="#monomialOrder">order of monomials</a>, which is decisive for the time complexity.
      * @note The Buchberger algorithm used to construct a Groebner basis is equivalent
      *  to {@link #gcd(Euclidean[])} in case of one variable,
      *  and to {@link LUDecomposition} in case of linear polynomials.
@@ -632,16 +662,16 @@ public class AlgebraicAlgorithms {
 		    final int[] d = Functionals.map(Operations.max, lgi, lgj);
 		    final int[] nu = Functionals.map(Operations.subtract, d, lgi);
 		    final int[] mu = Functionals.map(Operations.subtract, d, lgj);
-		    assert Setops.all(Values.valueOf(nu).iterator(), Values.valueOf(mu).iterator(), new orbital.logic.functor.BinaryPredicate() { public boolean apply(Object nui, Object mui) {return nui.equals(Values.ZERO) || mui.equals(Values.ZERO);} }) : "coprime " + AbstractMultinomial.MONOMIAL(Values.ONE, nu) + " and " + AbstractMultinomial.MONOMIAL(Values.ONE, mu);
+		    assert Setops.all(Values.valueOf(nu).iterator(), Values.valueOf(mu).iterator(), new orbital.logic.functor.BinaryPredicate() { public boolean apply(Object nui, Object mui) {return nui.equals(Values.ZERO) || mui.equals(Values.ZERO);} }) : "coprime " + Values.MONOMIAL(Values.ONE, nu) + " and " + Values.MONOMIAL(Values.ONE, mu);
 		    // Xpowernugi = 1/lc(g[i]) * X<sup>nu</sup>*g[i]
-		    final Multinomial Xpowernugi = AbstractMultinomial.MONOMIAL(gi.get(lgi).inverse(), nu).multiply(gi);
+		    final Multinomial Xpowernugi = Values.MONOMIAL(gi.get(lgi).inverse(), nu).multiply(gi);
 		    // Xpowernugi = 1/lc(g[j]) * X<sup>mu</sup>*g[j]
-		    final Multinomial Xpowermugj = AbstractMultinomial.MONOMIAL(gj.get(lgj).inverse(), mu).multiply(gj);
+		    final Multinomial Xpowermugj = Values.MONOMIAL(gj.get(lgj).inverse(), mu).multiply(gj);
 		    assert Utility.equalsAll(leadingMonomial(Xpowernugi, monomialOrder), leadingMonomial(Xpowermugj, monomialOrder)) : "construction should generate equal leading monomials (" + leadingMonomial(Xpowernugi, monomialOrder) + " of " + Xpowernugi + " and " + leadingMonomial(Xpowermugj, monomialOrder) + " of " + Xpowermugj + ") which vanish by subtraction";
 		    final Multinomial Sgigj = Xpowernugi.subtract(Xpowermugj);
 		    assert Sgigj.get(d).norm().equals(Values.ZERO) : "construction should generate equal leading monomials which vanish by subtraction";
 		    final Multinomial r = reduce(Sgigj, g, monomialOrder);
-		    logger.log(Level.FINER, "S({0},{1}) = {2} * ({3})  -  {4} * ({5}) = {6} reduced to {7}", new Object[] {gi, gj, AbstractMultinomial.MONOMIAL(gi.get(lgi).inverse(), nu), gi, AbstractMultinomial.MONOMIAL(gj.get(lgj).inverse(), mu), gj, Sgigj, r});
+		    logger.log(Level.FINER, "S({0},{1}) = {2} * ({3})  -  {4} * ({5}) = {6} reduced to {7}", new Object[] {gi, gj, Values.MONOMIAL(gi.get(lgi).inverse(), nu), gi, Values.MONOMIAL(gj.get(lgj).inverse(), mu), gj, Sgigj, r});
 		    if (isZeroPolynomial.apply(r))
 			logger.log(Level.FINE, "skip reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
 		    else {
@@ -732,9 +762,12 @@ public class AlgebraicAlgorithms {
 	//final Predicate isZero = Functionals.bindSecond(Predicates.equal, zero);
 	final Predicate isZero = isZeroPolynomial;
 	final Predicate inIdeal = Functionals.compose(isZero, reductor);
-	System.err.println("\t>> " + Functionals.map(reductor ,new LinkedList(f)));
-	System.err.println("\t>> " + Functionals.map(Functionals.asFunction(inIdeal),new LinkedList(f)));
-	System.err.println("\t>> " + Setops.all(f, inIdeal));
+	if (logger.isLoggable(Level.FINEST))
+	    logger.log(Level.FINEST, "\t{0}\nisin\t{1}\nall\t{2}", new Object[] {
+		Functionals.map(reductor ,new LinkedList(f)),
+		Functionals.map(Functionals.asFunction(inIdeal),new LinkedList(f)),
+		new Boolean(Setops.all(f, inIdeal))
+		});
 	return Setops.all(f, inIdeal);
     }
     

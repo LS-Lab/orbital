@@ -116,7 +116,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      * <p>
      * <b>Note:</b> the list iterator returned is not required to support
      * {@link ListIterator#nextIndex()} and {@link ListIterator#previousIndex()},
-     * or {@link ListIterator#add()} and {@link ListIterator#remove()},
+     * or {@link ListIterator#add(Object)} and {@link ListIterator#remove()},
      * and won't usually do so. The reason is that one-dimensional indices are meaningless
      * for tensors of rank r&gt;1 and that adding a single component to a tensor is not allowed
      * as it would destroy its rectangular form.

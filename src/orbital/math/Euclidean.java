@@ -40,6 +40,7 @@ package orbital.math;
  *
  * @version 1.1, 2001/12/09
  * @author  Andr&eacute; Platzer
+ * @todo provide super interface for elements of factorial rings that provide a method R[] factorize()
  */
 public interface Euclidean extends Arithmetic {
 	

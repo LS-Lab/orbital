@@ -136,7 +136,7 @@ public abstract interface MathFunctor extends Functor, Arithmetic {
      * This class is the infimum (greatest common subtype) {@link orbital.logic.functor.Functor.Composite}&cap;{@link MathFunctor}.
      * </p>
      * 
-     * @structure is {@link Functor.Composite}&cap;{@link MathFunctor}
+     * @structure is {@link orbital.logic.functor.Functor.Composite}&cap;{@link MathFunctor}
      * @structure extends MathFunctor
      * @structure extends Functor.Composite
      * @version 1.0, 2000/01/23

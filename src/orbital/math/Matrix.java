@@ -15,9 +15,9 @@ import java.util.NoSuchElementException;
 /**
  * Represents a matrix of any dimension n&times;m.
  * <p>
- * R<sup>n&times;m</sup> = { M=<big>(</big>m<sub>i,j</sub><big>)</big> &brvbar; m<sub>i,j</sub>&isin;R} &cong; R<sup>n</sup> &otimes;<sub>R</sub> R<sup>m</sup> where
+ * R<sup>n&times;m</sup> = { <span class="matrix">M</span>=<big>(</big>m<sub>i,j</sub><big>)</big> &brvbar; m<sub>i,j</sub>&isin;R} &cong; R<sup>n</sup> &otimes;<sub>R</sub> R<sup>m</sup> where
  * <table>
- *   <tr><td rowspan="4">M = <big>(</big>m<sub>i,j</sub><big>)</big> = </td>
+ *   <tr><td rowspan="4"><span class="matrix">M</span> = <big>(</big>m<sub>i,j</sub><big>)</big> = </td>
  *       <td rowspan="4" style="font-size: 600%; font-weight: 200">[</td> <td>m<sub>0,0 </sub>,</td> <td>m<sub>0,1 </sub>,</td> <td>m<sub>0,2 </sub>,</td> <td>&#8230;,</td> <td>m<sub>0,m-1 </sub></td> <td rowspan="4" style="font-size: 600%; font-weight: 200">]</td></tr>
  *   <tr> <td>m<sub>1,0 </sub>,</td> <td>m<sub>1,1 </sub>,</td> <td>m<sub>1,2 </sub>,</td> <td>&#8230;,</td> <td>m<sub>1,m-1 </sub></td> </tr>
  *   <tr> <td colspan="4">&#8942;</td> <td>&#8942;</td> </tr>
@@ -86,11 +86,11 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * </p>
      * @param i the row of the value to set.
      * @param j the column of the value to set.
-     * @param vij the value to set for the element m<sub>i,j</sub> at position (i|j)
+     * @param mij the value to set for the element m<sub>i,j</sub> at position (i|j)
      * @throws UnsupportedOperationException if this matrix is constant and does not allow this operation.
      * @see #modCount
      */
-    void set(int i, int j, Arithmetic/*>R<*/ vij) throws UnsupportedOperationException;
+    void set(int i, int j, Arithmetic/*>R<*/ mij) throws UnsupportedOperationException;
 
     // iterator-views
 	
@@ -119,7 +119,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * The returned vector is backed by this matrix, so changes in the returned vector are reflected in this matrix, and vice-versa.
      * <p>
      * For M<sub>i,j</sub>, bindSecond(c).</p>
-     * @return a vector view of the specified column M<sub>(0:n-1,c:c)</sub> in this matrix.
+     * @return a vector view of the specified column <span class="matrix">M</span><sub>(0:n-1,c:c)</sub> in this matrix.
      * @see orbital.logic.functor.Functionals#bindSecond(orbital.logic.functor.BinaryFunction, Object)
      */
     Vector/*<R>*/ getColumn(int c);
@@ -136,7 +136,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * The returned vector is backed by this matrix, so changes in the returned vector are reflected in this matrix, and vice-versa.
      * <p>
      * For M<sub>i,j</sub> bindFirst(r).</p>
-     * @return a vector view of the specified row M<sub>(r:r,0:m-1)</sub> in this matrix.
+     * @return a vector view of the specified row <span class="matrix">M</span><sub>(r:r,0:m-1)</sub> in this matrix.
      * @todo document and specify whether the return-value is a clone or a reference to the row vector, etc.
      * @see orbital.logic.functor.Functionals#bindFirst(orbital.logic.functor.BinaryFunction, Object)
      */
@@ -166,7 +166,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * @param j2 the right-most column index of the sub matrix view to get.
      * @return a matrix view of the specified part of this matrix.
      * <table>
-     *   <tr><td rowspan="3">M<sub>(i1:i2,j1:j2)</sub> = <big>(</big>m<sub>i,j</sub><big>)</big><sub>i&isin;{i1,&#8230;,i2},j&isin;{j1,&#8230;,j2}</sub> = </td>
+     *   <tr><td rowspan="3"><span class="matrix">M</span><sub>(i1:i2,j1:j2)</sub> = <big>(</big>m<sub>i,j</sub><big>)</big><sub>i&isin;{i1,&#8230;,i2},j&isin;{j1,&#8230;,j2}</sub> = </td>
      *       <td rowspan="3" style="font-size: 600%; font-weight: 200">[</td> <td>m<sub>i1,j1</sub>,</td> <td>&#8230;,</td> <td>m<sub>i1,j2</sub></td> <td rowspan="3" style="font-size: 600%; font-weight: 200">]</td></tr>
      *   <tr> <td colspan="2">&#8942;</td> <td>&#8942;</td> </tr>
      *   <tr> <td>m<sub>i2,j1</sub>,</td> <td>&#8230;,</td> <td>m<sub>i2,j2</sub></td> </tr>
@@ -193,7 +193,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
 
     /**
      * Checks whether this square matrix is symmetric.
-     * Symmetric matrices are those that satisfy M<sup>T</sup> = M
+     * Symmetric matrices are those that satisfy <span class="matrix">M</span><sup>T</sup> = <span class="matrix">M</span>
      * alias m<sub>i,j</sub>=m<sub>j,i</sub> &forall;i,j&isin;<b>N</b>.
      * <p>
      * In <b>R</b><sup>n&times;m</sup>, symmetric is the same as self-adjoint.
@@ -219,7 +219,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * Checks how definite this square matrix is.
      * <p>
      * f.ex. a symmetric matrix is positive definite iff every main minor is &gt; 0.
-     * i.e. &forall;i&isin;{0,&#8230;,n-1} det A(0:i,0:i) &gt; 0.
+     * i.e. &forall;i&isin;{0,&#8230;,n-1} det <span class="matrix">A</span>(0:i,0:i) &gt; 0.
      * This means that every square submatrix that includes the element a<sub>0,0</sub>
      * has a strictly positive determinant.
      * </p>
@@ -229,21 +229,21 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * @pre isSquare() &and; <span class="@todo">isSymmetric()?</span>
      * @return
      *  <ul>
-     *    <li>d&gt;0 if this matrix is positive definite, i.e. &forall;x&isin;V&#8726;{0} &lang;x,A&lowast;x&rang; &gt; 0.</li>
-     *    <li>d&ge;0 if this matrix is positive semi-definite, i.e. &forall;x&isin;V &lang;x,A&lowast;x&rang; &ge; 0.</li>
-     *    <li>d=0 if this matrix is indefinite, i.e. &exist;x&isin;V &lang;x,A&lowast;x&rang; &gt;0 &and; &exist;y&isin;V &lang;y,A&lowast;y&rang; &lt;0.</li>
-     *    <li>d&le;0 if this matrix is negative semi-definite, i.e. &forall;x&isin;V &lang;x,A&lowast;x&rang; &le; 0.</li>
-     *    <li>d&lt;0 if this matrix is negative definite, i.e. &forall;x&isin;V&#8726;{0} &lang;x,A&lowast;x&rang; &lt; 0.</li>
+     *    <li>d&gt;0 if this matrix is positive definite, i.e. &forall;<span class="vector">x</span>&isin;V&#8726;{0} &lang;<span class="vector">x</span>,<span class="matrix">A</span>&middot;<span class="vector">x</span>&rang; &gt; 0.</li>
+     *    <li>d&ge;0 if this matrix is positive semi-definite, i.e. &forall;<span class="vector">x</span>&isin;V &lang;<span class="vector">x</span>,<span class="matrix">A</span>&middot;<span class="vector">x</span>&rang; &ge; 0.</li>
+     *    <li>d=0 if this matrix is indefinite, i.e. &exist;<span class="vector">x</span>&isin;V &lang;<span class="vector">x</span>,<span class="matrix">A</span>&middot;<span class="vector">x</span>&rang; &gt;0 &and; &exist;<span class="vector">y</span>&isin;V &lang;<span class="vector">y</span>,<span class="matrix">A</span>&middot;<span class="vector">y</span>&rang; &lt;0.</li>
+     *    <li>d&le;0 if this matrix is negative semi-definite, i.e. &forall;<span class="vector">x</span>&isin;V &lang;<span class="vector">x</span>,<span class="matrix">A</span>&middot;<span class="vector">x</span>&rang; &le; 0.</li>
+     *    <li>d&lt;0 if this matrix is negative definite, i.e. &forall;<span class="vector">x</span>&isin;V&#8726;{0} &lang;<span class="vector">x</span>,<span class="matrix">A</span>&middot;<span class="vector">x</span>&rang; &lt; 0.</li>
      *  </ul>
      * @throws ArithmeticException if this is not a square matrix since only square matrices can be symmetric.
-     * @todo does A need to be symmetric? And improve docu
+     * @todo does <span class="matrix">A</span> need to be symmetric? And improve docu
      */
     int isDefinite() throws ArithmeticException;
 	
     /**
      * Rank of this matrix.
      * i.e. the maximum number of column vectors (or row vectors) that are linear independent.
-     * @return (linear) rank M := dim<sub>K</sub>(im(M)).
+     * @return (linear) rank <span class="matrix">M</span> := dim<sub>K</sub>(im(<span class="matrix">M</span>)).
      * @see Tensor#rank()
      */
     int linearRank();
@@ -254,23 +254,23 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * <p>
      * ||.||:<b>C</b><sup>n&times;m</sup>&rarr;[0,&infin;) is a <dfn>matrix norm</dfn> or consistent if it is a (vector) norm and
      * <ul>
-     *   <li>&forall;x&isin;<b>C</b><sup>n&times;m</sup>,y&isin;<b>C</b><sup>m&times;l</sup> ||x&sdot;y|| &le; ||x||&sdot;||y||	(sub multiplicative)
+     *   <li>&forall;<span class="matrix">x</span>&isin;<b>C</b><sup>n&times;m</sup>,<span class="matrix">y</span>&isin;<b>C</b><sup>m&times;l</sup> ||<span class="matrix">x</span>&sdot;<span class="matrix">y</span>|| &le; ||<span class="matrix">x</span>||&sdot;||<span class="matrix">y</span>||	(sub multiplicative)
      * </ul>
-     * ||.|| is <dfn>compatible</dfn> or conform with the vector norms ||.||<sub>C<sup>n</sup></sub>, ||.||<sub>C<sup>m</sup></sub> if
+     * ||.|| is <dfn>compatible</dfn> or conform with the vector norms ||.||<sub><b>C</b><sup>n</sup></sub>, ||.||<sub><b>C</b><sup>m</sup></sub> if
      * <ul>
-     *   <li>&forall;A&isin;<b>C</b><sup>n&times;m</sup>, x&isin;<b>C</b><sup>m</sup> ||Ax||<sub>C<sup>n</sup></sub> &le; ||A||&sdot;||x||<sub>C<sup>m</sup></sub>
+     *   <li>&forall;<span class="matrix">A</span>&isin;<b>C</b><sup>n&times;m</sup>, <span class="vector">x</span>&isin;<b>C</b><sup>m</sup> ||<span class="matrix">A</span>&middot;<span class="vector">x</span>||<sub><b>C</b><sup>n</sup></sub> &le; ||<span class="matrix">A</span>||&sdot;||<span class="vector">x</span>||<sub><b>C</b><sup>m</sup></sub>
      * </ul>
-     * ||.|| is induced by the vector norms ||.||<sub>C<sup>n</sup></sub>, ||.||<sub>C<sup>m</sup></sub> if
+     * ||.|| is induced by the vector norms ||.||<sub><b>C</b><sup>n</sup></sub>, ||.||<sub><b>C</b><sup>m</sup></sub> if
      * <ul>
-     *   <li>&forall;A&isin;<b>C</b><sup>n&times;m</sup>, x&isin;<b>C</b><sup>m</sup> ||A|| = max {||Ax||<sub>C<sup>n</sup></sub> / ||x||<sub>C<sup>m</sup></sub> &brvbar; x&ne;0} = max {||Ax||<sub>C<sup>n</sup></sub> &brvbar; ||x||<sub>C<sup>m</sup></sub>=1}
+     *   <li>&forall;<span class="matrix">A</span>&isin;<b>C</b><sup>n&times;m</sup>, <span class="vector">x</span>&isin;<b>C</b><sup>m</sup> ||<span class="matrix">A</span>|| = max {||<span class="matrix">A</span>&middot;<span class="vector">x</span>||<sub><b>C</b><sup>n</sup></sub> / ||<span class="vector">x</span>||<sub><b>C</b><sup>m</sup></sub> &brvbar; <span class="vector">x</span>&ne;0} = max {||<span class="matrix">A</span>&middot;<span class="vector">x</span>||<sub><b>C</b><sup>n</sup></sub> &brvbar; ||<span class="vector">x</span>||<sub><b>C</b><sup>m</sup></sub>=1}
      * </ul>
-     * which is a measure for how much A stretches vectors.
+     * which is a measure for how much <span class="matrix">A</span> stretches vectors.
      * </p>
      * <p>This method should implement induced p-norms, where
      * <ul>
-     *   <li>||A||<sub>1</sub> = max {&sum;<span class="doubleIndex"><sub>i=1</sub><sup>n</sup></span>|a<sub>ij</sub>| &brvbar; 1&le;j&le;m} is the norm of column sums.</li>
-     *   <li>||A||<sub>&infin;</sub> = max {&sum;<span class="doubleIndex"><sub>j=1</sub><sup>m</sup></span>|a<sub>ij</sub>| &brvbar; 1&le;i&le;n} is the norm of row sums.</li>
-     *   <li>||A||<sub>2</sub> = sqrt max Eigenvalues(A<sup>*</sup>&middot;A) is the spectral norm. (optional operation)</li>
+     *   <li>||<span class="matrix">A</span>||<sub>1</sub> = max {&sum;<span class="doubleIndex"><sub>i=1</sub><sup>n</sup></span>|a<sub>ij</sub>| &brvbar; 1&le;j&le;m} is the norm of column sums.</li>
+     *   <li>||<span class="matrix">A</span>||<sub>&infin;</sub> = max {&sum;<span class="doubleIndex"><sub>j=1</sub><sup>m</sup></span>|a<sub>ij</sub>| &brvbar; 1&le;i&le;n} is the norm of row sums.</li>
+     *   <li>||<span class="matrix">A</span>||<sub>2</sub> = sqrt max Eigenvalues(<span class="matrix">A</span><sup>*</sup>&middot;<span class="matrix">A</span>) is the spectral norm. (optional operation)</li>
      * </ul>
      * </p>
      * @todo document again, the norms implemented by AbstractMatrix.
@@ -282,7 +282,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * {@inheritDoc}
      * Usually returns the Frobenius norm of this matrix.
      * <p>
-     * <code>||A|| = &radic;<span class="text-decoration: overline">(&sum;<span class="doubleIndex"><sub>i=1</sub><sup>n</sup></span>&sum;<span class="doubleIndex"><sub>j=1</sub><sup>m</sup></span> |a<sub>ij</sub>|<sup>2</sup>)</code> the Frobenius norm.
+     * ||<span class="matrix">A</span>|| = &radic;<span class="text-decoration: overline">(&sum;<span class="doubleIndex"><sub>i=1</sub><sup>n</sup></span>&sum;<span class="doubleIndex"><sub>j=1</sub><sup>m</sup></span> |a<sub>ij</sub>|<sup>2</sup>) the Frobenius norm.
      * </p>
      * <p>
      * Note that the Frobenius norm is not a p-norm.
@@ -292,7 +292,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
 
     /**
      * Returns the trace of the matrix representation.<p>
-     * The trace is invariant for similar matrices: <code>Tr (T<sup>-1</sup>&middot;A&middot;T) = Tr A</code>.
+     * The trace is invariant for similar matrices: Tr (<span class="matrix>T</span><sup>-1</sup>&middot;<span class="matrix">A</span>&middot;<span class="matrix>T</span>) = Tr <span class="matrix">A</span>.
      * @return sum of the main-diagonal-vectors components.
      * @pre isSquare()
      * @throws ArithmeticException if this is not a square matrix, since only square matrix have a trace.
@@ -301,8 +301,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
 
     /**
      * Returns the determinant of the matrix representation. The determinant is useful to determine if the
-     * matrix can be inverted. The determinant is denoted as det M = |M|.
-     * It is the universal alternating mapping R<sup>n&times;</sup>&cong;(R<sup>n</sup>)<sup>n</sup>&rarr;&Lambda;<sup>n</sup>(R<sup>n</sup>)&cong;R
+     * matrix can be inverted. The determinant is denoted as det <span class="matrix">M</span> =: |<span class="matrix">M</span>|.
+     * The determinant is the universal alternating mapping R<sup>n&times;</sup>&cong;(R<sup>n</sup>)<sup>n</sup>&rarr;&Lambda;<sup>n</sup>(R<sup>n</sup>)&cong;R
      * of the exterior product &Lambda;<sup>n</sup>(R<sup>n</sup>).
      * <p>
      * <table>
@@ -353,7 +353,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      *   </tr>
      *   <tr>
      *     <td>( )</td>
-     *     <td>rank M &lt; n &hArr; det(M)=0</td>
+     *     <td>rank <span class="matrix">M</span> &lt; n &hArr; det(<span class="matrix">M</span>)=0</td>
      *     <td>&quot;&asymp;alternating&quot;</td>
      *   </tr>
      *   <tr>
@@ -407,18 +407,18 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      *   </tr>
      *   <tr>
      *     <td>( )</td>
-     *     <td>det(M<sup>T</sup>) = det(M)</td>
+     *     <td>det(<span class="matrix">M</span><sup>T</sup>) = det(<span class="matrix">M</span>)</td>
      *     <td>&quot;invariant to transposition&quot;</td>
      *   </tr>
      *   <tr>
      *     <td>( )</td>
-     *     <td>det(M&middot;N) = det(M)&sdot;det(N)</td>
+     *     <td>det(<span class="matrix">M</span>&middot;<span class="matrix">N</span>) = det(<span class="matrix">M</span>)&sdot;det(<span class="matrix">N</span>)</td>
      *     <td>&nbsp;</td>
      *   </tr>
      *   <tr>
      *     <td>( )</td>
-     *     <td>M&isin;GL(n,R) &hArr; det(M)&isin;R<sup>&times;</sup><br />
-     *     &rArr;det(M<sup>-1</sup>) = det(M)<sup>-1</sup>
+     *     <td><span class="matrix">M</span>&isin;GL(n,R) &hArr; det(<span class="matrix">M</span>)&isin;R<sup>&times;</sup><br />
+     *     &rArr;det(<span class="matrix">M</span><sup>-1</sup>) = det(<span class="matrix">M</span>)<sup>-1</sup>
      *     </td>
      *     <td>&nbsp;</td>
      *   </tr>
@@ -484,14 +484,14 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * </table>
      * </p>
      * <p>
-     * The determinant is invariant for similar matrices: <code>det (T<sup>-1</sup>&middot;A&middot;T) = det A</code>.
+     * The determinant is invariant for similar matrices: det (<span class="matrix>T</span><sup>-1</sup>&middot;<span class="matrix">A</span>&middot;<span class="matrix>T</span>) = det <span class="matrix">A</span>.
      * If the determinant is non-zero, then this matrix is regular and invertible.
      * However, if the determinant is approximately zero then inverse transform operations might not carry enough precision to produce meaningful results.</p>
      * <p>
-     * (det A)' = &sum;<span class="doubleIndex"><sub>i=0</sub><sup>n-1</sup></span> det <big>(</big>a<sub>0</sub>&#8230;a<sub>i</sub>'&#8230;a<sub>n-1</sub><big>)</big>
-     * where a<sub>i</sub> = (a<sub>0,i</sub>,&#8230;,a<sub>n-1,i</sub>)<sup>t</sup> is the i-th column of A.
+     * (det <span class="matrix">A</span>)' = &sum;<span class="doubleIndex"><sub>i=0</sub><sup>n-1</sup></span> det <big>(</big>a<sub>0</sub>&#8230;a<sub>i</sub>'&#8230;a<sub>n-1</sub><big>)</big>
+     * where a<sub>i</sub> = (a<sub>0,i</sub>,&#8230;,a<sub>n-1,i</sub>)<sup>t</sup> is the i-th column of <span class="matrix">A</span>.
      * </p>
-     * @return det A = |A|
+     * @return det <span class="matrix">A</span> = |<span class="matrix">A</span>|
      * @pre isSquare()
      * @post det() multilinear
      *  	&& (rank() &lt; dimension().width &hArr; det() == 0)
@@ -506,12 +506,11 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
 	
     /**
      * Adds two matrices returning a matrix.
-     * Associative, neutral element O, inverse -A, commutative.
      * @pre dimension().equals(B.dimension())
      * @post RES.dimension().equals(dimension())
      *  	&& RES.get(i, j) == get(i,j) + B.get(i,j)
      * @attribute associative
-     * @attribute neutral (0)
+     * @attribute neutral (<span class="matrix">O</span>)
      * @attribute inverse (-A)
      * @attribute commutative
      */
@@ -527,12 +526,12 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     Matrix/*<R>*/ subtract(Matrix/*<R>*/ B);
     /**
      * Multiplies two matrices returning a matrix.
-     * If A&isin;R<sup>n&times;m</sup> and
-     * B&isin;R<sup>m&times;l</sup> the resulting matrix
-     * A&middot;B&isin;R<sup>n&times;l</sup>.
+     * If <span class="matrix">A</span>&isin;R<sup>n&times;m</sup> and
+     * <span class="matrix">B</span>&isin;R<sup>m&times;l</sup> the resulting matrix
+     * <span class="matrix">A</span>&middot;<span class="matrix">B</span>&isin;R<sup>n&times;l</sup>.
      * This is the ring multiplication of matrices,
      * and an inner product.
-     * @return the n&times;l matrix A&middot;B.
+     * @return the n&times;l matrix <span class="matrix">A</span>&middot;<span class="matrix">B</span>.
      * @pre dimension().width == B.dimension().height
      * @post RES.dimension().height == dimension().height && RES.dimension().width == B.dimension().width
      *  	&& RES.get(i, j) == getRow(i) &sdot; B.getColumn(j)
@@ -547,7 +546,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * @pre true
      * @post RES.dimension().equals(dimension())
      *  	&& RES.get(i, j) == s &sdot; get(i,j)
-     * @return s&lowast;A
+     * @return s&lowast;<span class="matrix">A</span>
      * @todo multiply(Arithmetic) would need to determine type of s deep, in case it is not a scalar, but a matrix, or anything in R. Except if we separated ring and scalar (and perhaps tensor) multiplication by name.
      */
     Matrix/*<R>*/ scale(Scalar s);
@@ -560,12 +559,12 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
 
     /**
      * Multiplies a matrix with a vector returning a vector.
-     * If A&isin;R<sup>n&times;m</sup> and
+     * If <span class="matrix">A</span>&isin;R<sup>n&times;m</sup> and
      * v&isin;R<sup>m</sup> is a column vector of dimension m,
-     * the resulting column vector A&middot;v&isin;R<sup>n</sup> has dimension n.
+     * the resulting column vector <span class="matrix">A</span>&middot;v&isin;R<sup>n</sup> has dimension n.
      * This is an inner product.
      * @todo is this a tensor product, or a faltung?
-     * @return the n-dimensional column vector A&middot;v.
+     * @return the n-dimensional column vector <span class="matrix">A</span>&middot;v.
      * @pre dimension().width == B.dimension()
      * @post RES.dimension() == dimension().height
      *  	&& RES.get(i) == getRow(i) &sdot; B
@@ -576,17 +575,17 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
 
     /**
      * Returns this matrix transposed.<br>
-     * .<sup>T</sup>:R<sup>n&times;m</sup>&rarr;R<sup>m&times;n</sup>; M&#8614;M<sup>T</sup>:=(t<sub>i,j</sub>) with t<sub>i,j</sub> = m<sub>j,i</sub>.
+     * .<sup>T</sup>:R<sup>n&times;m</sup>&rarr;R<sup>m&times;n</sup>; <span class="matrix">M</span>&#8614;<span class="matrix">M</span><sup>T</sup>:=(t<sub>i,j</sub>) with t<sub>i,j</sub> = m<sub>j,i</sub>.
      * <p>
      * <ul id="Properties">
-     *   <li>(A+B)<sup>T</sup> = A<sup>T</sup> + B<sup>T</sup></li>
-     *   <li>(&lambda;&middot;A)<sup>T</sup> = &lambda;&middot;A<sup>T</sup></li>
-     *   <li>(A&middot;C)<sup>T</sup> = C<sup>T</sup>&middot;A<sup>T</sup></li>
-     *   <li><big>(</big>A<sup>T</sup><big>)<sup>T</sup></big> = A</li>
+     *   <li>(<span class="matrix">A</span>+<span class="matrix">B</span>)<sup>T</sup> = <span class="matrix">A</span><sup>T</sup> + <span class="matrix">B</span><sup>T</sup></li>
+     *   <li>(&lambda;&lowast;<span class="matrix">A</span>)<sup>T</sup> = &lambda;&lowast;<span class="matrix">A</span><sup>T</sup></li>
+     *   <li>(<span class="matrix">A</span>&middot;<span class="matrix">C</span>)<sup>T</sup> = <span class="matrix">C</span><sup>T</sup>&middot;<span class="matrix">A</span><sup>T</sup></li>
+     *   <li><big>(</big><span class="matrix">A</span><sup>T</sup><big>)<sup>T</sup></big> = <span class="matrix">A</span></li>
      * </ul>
-     * &forall;A,B&isin;R<sup>n&times;m</sup>,C&isin;R<sup>m&times;l</sup> &lambda;&isin;R
+     * &forall;<span class="matrix">A</span>,<span class="matrix">B</span>&isin;R<sup>n&times;m</sup>,<span class="matrix">C</span>&isin;R<sup>m&times;l</sup> &forall;&lambda;&isin;R
      * </p>
-     * @return the m&times;n matrix M<sup>T</sup>=(t<sub>i,j</sub>) with elements t<sub>i,j</sub> = m<sub>j,i</sub>.
+     * @return the m&times;n matrix <span class="matrix">M</span><sup>T</sup>=(t<sub>i,j</sub>) with elements t<sub>i,j</sub> = m<sub>j,i</sub>.
      * @post RES.get(j,i) == get(i,j) && RES.dimension().width == dimension().height && RES.dimension().height == dimension().width
      * @see #conjugate()
      */
@@ -594,21 +593,21 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
 
     /**
      * Returns this matrix conjugate transposed.<br>
-     * .<sup>&#8889;</sup>:R<sup>n&times;m</sup>&rarr;R<sup>m&times;n</sup>; M&#8614;M<sup>&#8889;</sup>:=<span style="text-decoration: overline">M</span><sup>T</sup> = (t<sub>i,j</sub>) with t<sub>i,j</sub> = <span style="text-decoration: overline">m</span><sub>j,i</sub>.
+     * .<sup>&#8889;</sup>:R<sup>n&times;m</sup>&rarr;R<sup>m&times;n</sup>; <span class="matrix">M</span>&#8614;<span class="matrix">M</span><sup>&#8889;</sup>:=<span style="text-decoration: overline"><span class="matrix">M</span></span><sup>T</sup> = (t<sub>i,j</sub>) with t<sub>i,j</sub> = <span style="text-decoration: overline">m</span><sub>j,i</sub>.
      * <p>
      * <ul id="Properties">
-     *   <li>(A+B)<sup>&#8889;</sup> = A<sup>&#8889;</sup> + B<sup>&#8889;</sup></li>
-     *   <li>(&lambda;&middot;A)<sup>&#8889;</sup> = <span style="text-decoration: overline">&lambda;</span>&middot;A<sup>&#8889;</sup> = &lambda;<sup>*</sup>&middot;A<sup>&#8889;</sup></li>
-     *   <li>(A&middot;C)<sup>&#8889;</sup> = C<sup>&#8889;</sup>&middot;A<sup>&#8889;</sup></li>
-     *   <li><big>(</big>A<sup>&#8889;</sup><big>)<sup>&#8889;</sup></big> = A</li>
+     *   <li>(<span class="matrix">A</span>+<span class="matrix">B</span>)<sup>&#8889;</sup> = <span class="matrix">A</span><sup>&#8889;</sup> + <span class="matrix">B</span><sup>&#8889;</sup></li>
+     *   <li>(&lambda;&lowast;<span class="matrix">A</span>)<sup>&#8889;</sup> = <span style="text-decoration: overline">&lambda;</span>&lowast;<span class="matrix">A</span><sup>&#8889;</sup> = &lambda;<sup>*</sup>&middot;<span class="matrix">A</span><sup>&#8889;</sup></li>
+     *   <li>(<span class="matrix">A</span>&middot;<span class="matrix">C</span>)<sup>&#8889;</sup> = <span class="matrix">C</span><sup>&#8889;</sup>&middot;<span class="matrix">A</span><sup>&#8889;</sup></li>
+     *   <li><big>(</big><span class="matrix">A</span><sup>&#8889;</sup><big>)<sup>&#8889;</sup></big> = <span class="matrix">A</span></li>
      *   <li>.<sup>&#8889;</sup> = .<sup>T</sup> on <b>R</b><sup>n&times;m</sup></li>
      * </ul>
-     * &forall;A,B&isin;R<sup>n&times;m</sup>,C&isin;R<sup>m&times;l</sup>, &lambda;&isin;R.
+     * &forall;<span class="matrix">A</span>,<span class="matrix">B</span>&isin;R<sup>n&times;m</sup>,<span class="matrix">C</span>&isin;R<sup>m&times;l</sup> &forall;&lambda;&isin;R.
      * </p>
      * <p>
      * Relative to a finite orthonormal basis .<sup>&#8889;</sup> is the adjoint operator.
      * </p>
-     * @return the m&times;n matrix M<sup>&#8889;</sup>=<span style="text-decoration: overline">M</span><sup>T</sup>.
+     * @return the m&times;n matrix <span class="matrix">M</span><sup>&#8889;</sup>=<span style="text-decoration: overline"><span class="matrix">M</span></span><sup>T</sup>.
      * @post RES.get(j,i) == conjugate(get(i,j)) RES.dimension().width == dimension().height && RES.dimension().height == dimension().width
      * @see Complex#conjugate()
      * @see #transpose()
@@ -621,30 +620,32 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     // diverse decomposition algorithms
 
     /**
-     * Returns the pseudo inverse matrix A<sup>+</sup>.
+     * Returns the pseudo inverse matrix <span class="matrix">A</span><sup>+</sup>.
      * <p>
-     * The pseudo inverse of A&isin;<b>R</b><sup>n&times;m</sup> is the matrix A<sup>+</sup>&isin;<b>R</b><sup>m&times;n</sup>
+     * The pseudo inverse of <span class="matrix">A</span>&isin;<b>R</b><sup>n&times;m</sup> is the matrix <span class="matrix">A</span><sup>+</sup>&isin;<b>R</b><sup>m&times;n</sup>
      * that satisfies
      * <ul>
-     *   <li>&forall;x&isin;<b>R</b><sup>n</sup> A<sup>+</sup>&middot;x&isin;NullSpace(A)<sup>&#9524;</sup></li>
-     *   <li>&forall;x&isin;<b>R</b><sup>n</sup> ||x - A&middot;A<sup>+</sup>&middot;x|| minimal</li>
+     *   <li>&forall;<span class="vector">x</span>&isin;<b>R</b><sup>n</sup> <span class="matrix">A</span><sup>+</sup>&middot;<span class="vector">x</span>&isin;NullSpace(<span class="matrix">A</span>)<sup>&#9524;</sup></li>
+     *   <li>&forall;<span class="vector">x</span>&isin;<b>R</b><sup>n</sup> ||<span class="vector">x</span> - <span class="matrix">A</span>&middot;<span class="matrix">A</span><sup>+</sup>&middot;<span class="vector">x</span>|| minimal</li>
      * </ul>
      * It is uniquely characterized by the Penrose axioms
      * <ol>
-     *   <li>(A<sup>+</sup>&middot;A)<sup>T</sup> = A<sup>+</sup>&middot;A</li>
-     *   <li>(A&middot;A<sup>+</sup>)<sup>T</sup> = A&middot;A<sup>+</sup></li>
-     *   <li>A<sup>+</sup>&middot;A&middot;A<sup>+</sup> = A<sup>+</sup></li>
-     *   <li>A&middot;A<sup>+</sup>&middot;A = A</li>
+     *   <li>(<span class="matrix">A</span><sup>+</sup>&middot;<span class="matrix">A</span>)<sup>T</sup> = <span class="matrix">A</span><sup>+</sup>&middot;<span class="matrix">A</span></li>
+     *   <li>(<span class="matrix">A</span>&middot;<span class="matrix">A</span><sup>+</sup>)<sup>T</sup> = <span class="matrix">A</span>&middot;<span class="matrix">A</span><sup>+</sup></li>
+     *   <li><span class="matrix">A</span><sup>+</sup>&middot;<span class="matrix">A</span>&middot;<span class="matrix">A</span><sup>+</sup> = <span class="matrix">A</span><sup>+</sup></li>
+     *   <li><span class="matrix">A</span>&middot;<span class="matrix">A</span><sup>+</sup>&middot;<span class="matrix">A</span> = <span class="matrix">A</span></li>
      * </ol>
      * </p>
      * <p>
-     * Let A = U<sup>&#8889;</sup>&sdot;D&sdot;V be the singular-value decomposition of A into a
-     * diagonal matrix D of singular values and row orthonormal matrices U,V.
+     * Let <span class="matrix">A</span> = <span class="matrix>U</span><sup>&#8889;</sup>&sdot;<span class="matrix>D</span>&sdot;<span class="matrix>V</span>
+     * be the singular-value decomposition of <span class="matrix">A</span> into a
+     * diagonal matrix <span class="matrix>D</span> of singular values,
+     * and row-orthonormal matrices <span class="matrix>U</span>,<span class="matrix>V</span>.
      * Then
-     * <center>A<sup>+</sup> = V<sup>&#8889;</sup>&sdot;D<sup>-1</sup>&sdot;U</center>
-     * <center>(&hArr; A&sdot;A<sup>+</sup> - I is minimal)</center>
+     * <center><span class="matrix">A</span><sup>+</sup> = <span class="matrix>V</span><sup>&#8889;</sup>&sdot;<span class="matrix>D</span><sup>-1</sup>&sdot;<span class="matrix>U</span></center>
+     * <center>(&hArr; <span class="matrix">A</span>&sdot;<span class="matrix">A</span><sup>+</sup> - I is minimal)</center>
      * </p>
-     * @return the pseudo inverse A<sup>+</sup>&isin;<b>R</b><sup>m&times;n</sup> of this matrix A&isin;<b>R</b><sup>n&times;m</sup>.
+     * @return the pseudo inverse <span class="matrix">A</span><sup>+</sup>&isin;<b>R</b><sup>m&times;n</sup> of this matrix <span class="matrix">A</span>&isin;<b>R</b><sup>n&times;m</sup>.
      * @pre true
      * @post RES.dimension().equals(transpose().dimension())
      *  	&& RES.multiply(this).transpose().equals(RES.multiply(this))

@@ -23,6 +23,8 @@ package orbital.math;
  * <p>
  * Especially, for an integrity domain R, Quot(R) := R<sub>(0)</sub> = (R&#8726;{0})<sup>-1</sup>R is the
  * <dfn>field of fractions</dfn> of R, and for R-modules M, M<sub>R&#8726;{0}</sub> is a Quot(R)-vector space.
+ * If the underlying integrity domain R has an order, its field of fractions supports
+ * a unique order that restricts to the order on R (an extends {@link Comparable}).
  * </p>
  * <p>
  * A fraction a&#8260;s &isin; S<sup>-1</sup>M
@@ -48,6 +50,7 @@ package orbital.math;
  * @author  Andr&eacute; Platzer
  * @see Values#fraction(Arithmetic,Arithmetic)
  * @see "N. Bourbaki, Algebra I.2.4: Monoid of fractions of a commutative monoid."
+ * @see "N. Bourbaki, Algebra VI.2.2: Ordered fields."
  * @todo introduce interface Fraction<M,S> for modules (or R-algebras or monoids) of fractions with denominators in S.
  * @todo introduce (single-sided!) mixed operations Fraction<M,S>&times;M&rarr;Fraction<M,S> with the canonical injection
  */

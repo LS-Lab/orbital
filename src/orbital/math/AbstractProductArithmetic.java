@@ -65,7 +65,7 @@ abstract class AbstractProductArithmetic/*<R implements Arithmetic, T implements
      * Instantiates a new arithmetic object of the product set
      * with the specified index set.
      * <p>This method is a replacement for a constructor in the implementation of Arithmetic.</p>
-     * @param productIndexSet the index set I for the product, as in {@link #productIndexSet()} .
+     * @param productIndexSet the index set I for the product, as in {@link #productIndexSet(Arithmetic)}.
      * @return a tensor of the same type as this, dimensions as specified.
      * The elements need not be initialized since they will soon be by the calling method.
      * @post RES&ne;RES

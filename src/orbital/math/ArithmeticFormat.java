@@ -21,6 +21,10 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.Arrays;
+import orbital.util.Setops;
+
+import orbital.logic.functor.Predicates;
+import orbital.logic.functor.Functionals;
 
 import orbital.algorithm.Combinatorical;
 
@@ -42,7 +46,7 @@ import java.util.logging.Level;
  * <p>
  * You can adjust the output of pure real numbers of an ArithmeticFormat by modifying
  * the corresponding properties of its {@link #getNumberFormat()} instance.
- * However, to adjust the common format on the whole math system, use {@link MathUtilities#DefaultPrecisionDigits}, etc.
+ * However, to adjust the common format on the whole math system, use {@link MathUtilities#getDefaultPrecisionDigits()}, etc.
  * </p>
  *
  * @version 1.0, 2000/09/26
@@ -158,15 +162,25 @@ public class ArithmeticFormat extends Format {
     private String matrixRowSuffix				= "]";
 	
     //@todo improve syntax (and make it more flexible for c1 and c0
-    // <polynomialPrefix> cn <polynomialTimesOperator> <polynomialVariable> <polynomialPowerOperator> n (<polynomialPlusOperator>|<polynomialPlusAlternative>) ... c2 <polynomialTimesOperator> <polynomialVariable> <polynomialPowerOperator> 2 (<polynomialPlusOperator>|<polynomialPlusAlternative>)<polynomialSuffix> c1 <polynomialTimesOperator> <polynomialVariable> (<polynomialPlusOperator>|<polynomialPlusAlternative>)<polynomialSuffix> c0 <polynomialSuffix> 
-    private String polynomialPrefix					= "";
+    // <polynomialPrefix> cn <polynomialTimesOperator> <polynomialVariable> <polynomialPowerOperator> n (<polynomialPlusOperator>|<polynomialPlusAlternative>) ... c2 <polynomialTimesOperator> <polynomialVariable> <polynomialPowerOperator> 2 (<polynomialPlusOperator>|<polynomialPlusAlternative>)<polynomialSuffix> c1 <polynomialTimesOperator> <polynomialVariable> (<polynomialPlusOperator>|<polynomialPlusAlternative>)<polynomialSuffix> c0 <polynomialSuffix>
+    private String polynomialPrefix	= "";
     private String polynomialTimesOperator = "";
     private String polynomialVariable = "X";
     private String polynomialPowerOperator = "^";
     private String polynomialPlusOperator = "+";
     private String polynomialPlusAlternative = "-";
-    private String polynomialSuffix					= "";
+    private String polynomialSuffix	= "";
 
+    //@todo improve syntax (and make it more flexible for c1 and c0
+    private String multinomialPrefix	= "";
+    private String multinomialTimesOperator = "*";
+    private String multinomialVariableTimesOperator = "*";
+    private String multinomialVariables[] = {"X", "Y", "Z"};
+    private String multinomialPowerOperator = "^";
+    private String multinomialPlusOperator = "+";
+    private String multinomialPlusAlternative = "-";
+    private String multinomialSuffix	= "";
+    
     public String getPolynomialVariable() {
 	return polynomialVariable;
     }
@@ -236,6 +250,8 @@ public class ArithmeticFormat extends Format {
 	    return format((Tensor) obj, result, fieldPosition);
 	else if (obj instanceof Polynomial)
 	    return format((Polynomial) obj, result, fieldPosition);
+	else if (obj instanceof Multinomial)
+	    return format((Multinomial) obj, result, fieldPosition);
 	else if (obj instanceof Symbol)
 	    return format((Symbol) obj, result, fieldPosition);
 	else if (obj instanceof Fraction)
@@ -537,6 +553,71 @@ public class ArithmeticFormat extends Format {
 	return result;
     }
 
+    /**
+     * Specialization of format.
+     * @todo provide a parser
+     */
+    public StringBuffer format(Multinomial p, StringBuffer result, java.text.FieldPosition fieldPosition) {
+        fieldPosition.setBeginIndex(0);
+        fieldPosition.setEndIndex(0);
+	final int initialIndex = result.length();
+	// whether we add indices to the variables (X0,X1,X2,X3,... instead of X,Y,Z)
+	final boolean addIndex = p.numberOfVariables() > multinomialVariables.length;
+		
+	// @todo improve format
+	result.append(multinomialPrefix);
+	for (Combinatorical index = Combinatorical.getPermutations(p.dimensions()); index.hasNext(); ) {
+	    final int[] i = index.next();
+	    final Arithmetic ci = p.get(i);
+	    final boolean constantTerm = Setops.all(Values.valueOf(i).iterator(), Functionals.bindSecond(Predicates.equal, Values.ZERO));
+	    // only print nonzero elements (but print the 0-th coefficient if it is the only one)
+	    if (!ci.norm().equals(Values.ZERO)
+		|| (constantTerm && p.degreeValue() <= 0)) {
+		int startIndex = result.length();
+		// whether the coefficient ci has been skipped
+		boolean skipped;
+		if (ci.equals(ci.one()) && !constantTerm)
+		    // skip 1 (except for constant term)
+		    skipped = true;
+		else if (ci.equals(ci.one().minus()) && !constantTerm) {
+		    // shorten -1 to - (except for constant term)
+		    result.append(multinomialPlusAlternative);
+		    skipped = true;
+		} else {
+//		    format(ci, result, fieldPosition);
+		    result.append(ci);
+		    skipped = false;
+		}
+		// separator for all but the first coefficient,
+		// provided that there is not already an alternative separator
+ 		if (startIndex > initialIndex &&
+ 		    !(result.length() > startIndex && result.substring(startIndex).startsWith(multinomialPlusAlternative)))
+		    result.insert(startIndex, multinomialPlusOperator);
+		
+		boolean firstVariableAfterCoefficient = true;
+		for (int k = 0; k < p.numberOfVariables(); k++)
+		    if (i[k] != 0) {
+			if (firstVariableAfterCoefficient)
+			    if (skipped)
+				// only skip times operator if coefficient was skipped
+				;
+			    else
+				result.append(multinomialTimesOperator);
+			else
+			    result.append(multinomialVariableTimesOperator);
+			result.append(addIndex ? multinomialVariables[0] + k : multinomialVariables[k]);
+			if (i[k] > 1)
+			    result.append(multinomialPowerOperator + i[k]);
+			firstVariableAfterCoefficient = false;
+		    }
+	    }
+	}
+	result.append(multinomialSuffix);
+
+	return result;
+    }
+
+    
     /**
      * Specialization of format.
      */

@@ -392,6 +392,15 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractProdu
 	Setops.copy(dst = embed.iterator(), part.iterator());
 	assert !dst.hasNext() : "equal dimensions have iterators of equal length";
     } 
+    public void setSubTensor(int[] i1, int[] i2, Tensor/*<R>*/ sub) {
+	Tensor embed = subTensor(i1, i2);
+	Utility.pre(sub.rank() == rank(), "sub tensor has compatible rank");
+	Utility.pre(Utility.equalsAll(sub.dimensions(), embed.dimensions()), "sub tensor has compatible dimensions");
+	ListIterator dst;
+	Setops.copy(dst = embed.iterator(), sub.iterator());
+	assert !dst.hasNext() : "equal dimensions have iterators of equal length";
+    } 
+
 
     public Real norm() {
 	//@todo verify that this really is a norm

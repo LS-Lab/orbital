@@ -510,12 +510,12 @@ from (m).</p>
         <li>∗:R×M→M is a <dfn>law of action</dfn> with operators R.</li>
         <li><b>(„d‟)</b> ∗ is distributive over +, i.e.
           <ul>
-            <li>∀α∈R ∀x,y∈M α∗(x+y) = (α∗x) + (α∗y)</li>
+            <li>∀α∈R ∀<span class="vector">x</span>,<span class="vector">y</span>∈M α∗(<span class="vector">x</span>+<span class="vector">y</span>) = (α∗<span class="vector">x</span>) + (α∗<span class="vector">y</span>)</li>
             <li>∴ modules are commutative groups with operators.</li>
           </ul>
         </li>
-        <li><b>(„d‟)</b> ∀α,β∈R ∀x∈M (α+β)∗x = (α∗x) + (β∗x)</li>
-        <li><b>(„a‟) </b>∀α,β∈A ∀x∈M α∗(β∗x) = (α⋅β)∗x 
+        <li><b>(„d‟)</b> ∀α,β∈R ∀<span class="vector">x</span>∈M (α+β)∗<span class="vector">x</span> = (α∗<span class="vector">x</span>) + (β∗<span class="vector">x</span>)</li>
+        <li><b>(„a‟) </b>∀α,β∈A ∀<span class="vector">x</span>∈M α∗(β∗<span class="vector">x</span>) = (α⋅β)∗<span class="vector">x</span> 
           (for left R-pseudomodules)</li>
       </ul>
     </td>
@@ -526,7 +526,7 @@ from (m).</p>
     <td class="defID">( )</td>
     <td class="defCond">The same as for left R-modules, except that
       <ul>
-        <li><b>(„a‟) </b>∀α,β∈A ∀x∈M α∗(β∗x) = (β⋅α)∗x 
+        <li><b>(„a‟) </b>∀α,β∈A ∀<span class="vector">x</span>∈M α∗(β∗<span class="vector">x</span>) = (β⋅α)∗<span class="vector">x</span> 
           (for right R-pseudomodules)</li>
       </ul>
       <p>Therefore, the law of action may be written more suggestively as ∗:M×R→M 
@@ -539,7 +539,7 @@ from (m).</p>
     <td class="defCond">
       <ul>
         <li>R is a ring.</li>
-        <li><b>(„n‟) </b>∀x∈M 1∗x = x</li>
+        <li><b>(„n‟) </b>∀<span class="vector">x</span>∈M 1∗<span class="vector">x</span> = <span class="vector">x</span></li>
       </ul>
     </td>
     <td class="defTerm"><dfn>left R-module</dfn> ⊂<br>
@@ -551,7 +551,7 @@ from (m).</p>
     <td class="defCond">
       <ul>
         <li>R is a ring.</li>
-        <li><b>(„n‟) </b>∀x∈M 1∗x = x</li>
+        <li><b>(„n‟) </b>∀<span class="vector">x</span>∈M 1∗<span class="vector">x</span> = <span class="vector">x</span></li>
       </ul>
     </td>
     <td class="defTerm"><dfn>right R-module</dfn> ⊂<br>
@@ -596,7 +596,7 @@ in R and left (R,⋅)-sets that also satisfy the second distributive relation.</
     <td class="defCond" id="linear">
       <ul>
         <li>φ:(R,+)→(R',+) is a homomorphism of groups</li>
-        <li>∀α∈R∀x∈M φ(α∗x) = α∗φ(x)</li>
+        <li>∀α∈R∀<span class="vector">x</span>∈M φ(α∗<span class="vector">x</span>) = α∗φ(<span class="vector">x</span>)</li>
       </ul>
     </td>
     <td class="defVerbal">&quot;R-linear&quot;</td>
@@ -616,8 +616,8 @@ in R and left (R,⋅)-sets that also satisfy the second distributive relation.</
     R-linear} is an R-module with pointwise addition and scalar multiplication.</li>
   <li>M<sup>⌄</sup> := M<sup>*</sup> := Hom<sub>R</sub>(M,R) is called the <dfn>dual 
     module</dfn> to M. If M is free with base B, then M<sup>*</sup> is free with 
-    the dual base B<sup>*</sup>:={b<sup>*</sup>:B→R; b'↦δ<sub>bb'</sub> ¦ 
-    b∈B}.</li>
+    the dual base B<sup>*</sup>:={<span class="vector">b</span><sup>*</sup>:B→R; <span class="vector">b'</span>↦δ<sub><span class="vector">b</span><span class="vector">b'</span></sub> ¦ 
+    <span class="vector">b</span>∈B}.</li>
   <li>R<sup>(X)</sup> := <big>⊕</big><sub>x∈X</sub> R is the <dfn>free 
     R-module</dfn> with basis X (X is a set).<br>
     ⇔ X is R-linear independent and generates the module (i.e. =〈X〉).</li>
@@ -822,9 +822,9 @@ is called the <dfn>index</dfn> of the subgroup H in G. It satisfies <center>|G|
 <ul>
   <li>For an R-module E, an alternative characterization by linear combinations 
     of X⊆E is<br>
-    〈X〉 = R∗X := 〈{r∗x ¦ r∈R ∧ x∈X}〉 = X<sup>(R)</sup> = {∑<sub>x∈X</sub> 
-    a<sub>x</sub>∗x ¦ ∀x∈X a<sub>x</sub>∈R ∧ a<sub>x</sub>=0 p.t. 
-    x∈X}</li>
+    〈X〉 = R∗X := 〈{r∗<span class="vector">x</span> ¦ r∈R ∧ <span class="vector">x</span>∈X}〉 = X<sup>(R)</sup> = {∑<sub><span class="vector">x</span>∈X</sub> 
+    a<sub><span class="vector">x</span></sub>∗<span class="vector">x</span> ¦ ∀<span class="vector">x</span>∈X a<sub><span class="vector">x</span></sub>∈R ∧ a<sub><span class="vector">x</span></sub>=0 p.t. 
+    <span class="vector">x</span>∈X}</li>
 </ul>
 <ul>
   <li>For ideals I⊴R (which are defined as sub-R-modules of R), the usual 

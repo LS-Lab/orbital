@@ -67,7 +67,7 @@ public interface BinaryFunction/*<A1 implements Arithmetic, A2 implements Arithm
      * This class is the infimum (greatest common subtype) {@link orbital.logic.functor.Functor.Composite}&cap;{@link BinaryFunction}.
      * </p>
      * 
-     * @structure is {@link Functor.Composite}&cap;{@link BinaryFunction}
+     * @structure is {@link orbital.logic.functor.Functor.Composite}&cap;{@link BinaryFunction}
      * @structure extends BinaryFunction<A1,A2, B>
      * @structure extends orbital.logic.functor.BinaryFunction<A1,A2, B>.Composite
      * @structure aggregate outer:BinaryFunction

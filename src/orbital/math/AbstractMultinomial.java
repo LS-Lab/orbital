@@ -28,7 +28,7 @@ import orbital.algorithm.Combinatorical;
 import java.util.ListIterator;
 
 abstract class AbstractMultinomial/*<R implements Arithmetic>*/ extends AbstractProductArithmetic implements Multinomial/*<R>*/, Serializable {
-    //private static final long serialVersionUID = 0;
+    private static final long serialVersionUID = 4336092442446250306L;
 	
     /**
      * The index (0,...,0) of the constant term.
@@ -246,12 +246,9 @@ abstract class AbstractMultinomial/*<R implements Arithmetic>*/ extends Abstract
     }
 
     //@todo we should also support adding other functions (like in AbstractFunctor)?
-	
-    public Arithmetic add(Arithmetic b) {
-	return add((Multinomial)b);
-    }
-    public Multinomial/*<R>*/ add(Multinomial/*<R>*/ bb) {
-	// only cast since Multinomial does not yet have dimensions()
+
+    private Arithmetic operatorImpl(BinaryFunction op, Arithmetic bb) {
+	// only cast since Multinomial does not (yet?) have iterator(int[])
 	AbstractMultinomial b = (AbstractMultinomial)bb;
 	if (numberOfVariables() != b.numberOfVariables())
 	    throw new IllegalArgumentException("a+b only defined for equal numberOfVariables()");
@@ -260,16 +257,23 @@ abstract class AbstractMultinomial/*<R implements Arithmetic>*/ extends Abstract
 
 	// component-wise
 	ListIterator dst;
-	Setops.copy(dst = ret.iterator(d), Functionals.map(Operations.plus, iterator(d), b.iterator(d)));
+	Setops.copy(dst = ret.iterator(d), Functionals.map(op, iterator(d), b.iterator(d)));
 	assert !dst.hasNext() : "equal dimensions for iterator view implies equal structure of iterators";
 	return ret;
+    }
+    
+    public Arithmetic add(Arithmetic b) {
+	return add((Multinomial)b);
+    }
+    public Multinomial/*<R>*/ add(Multinomial/*<R>*/ b) {
+	return (Multinomial) operatorImpl(Operations.plus, b);
     }
 	
     public Arithmetic subtract(Arithmetic b) throws ArithmeticException {
 	return subtract((Multinomial)b);
     } 
     public Multinomial/*<R>*/ subtract(Multinomial/*<R>*/ b) {
-	return (Multinomial) add(b.minus());
+	return (Multinomial) operatorImpl(Operations.subtract, b);
     }
 
     public Arithmetic multiply(Arithmetic b) {
@@ -277,9 +281,7 @@ abstract class AbstractMultinomial/*<R implements Arithmetic>*/ extends Abstract
     }
 
     //@todo optimizable by far
-    public Multinomial/*<R>*/ multiply(Multinomial/*<R>*/ bb) {
-	// only cast since Multinomial does not yet have dimensions()
-	AbstractMultinomial b = (AbstractMultinomial)bb;
+    public Multinomial/*<R>*/ multiply(Multinomial/*<R>*/ b) {
 	if (degreeValue() < 0)
 	    return this;
 	else if (b.degreeValue() < 0)
@@ -294,35 +296,21 @@ abstract class AbstractMultinomial/*<R implements Arithmetic>*/ extends Abstract
 	    // si = a<sub>i</sub>X<sub>0</sub><sup>i<sub>0</sub></sup>&sdot;...&sdot;X<sub>n-1</sub><sup>i<sub>n-1</sub></sup> * b
 	    AbstractMultinomial/*<R>*/ si = (AbstractMultinomial)newInstance(Functionals.map(Operations.plus, i, b.dimensions()));
 	    setAllZero(si);
-	    //System.err.println("\t+ " + b.scale(get(i)) + " X^" + MathUtilities.format(i));
 	    final int[] sidim = si.dimensions();
 	    final int[] sidim_1 = new int[sidim.length];
 	    for (int k = 0; k < sidim_1.length; k++)
 		sidim_1[k] = sidim[k] - 1;
-	    setSubTensor(si.tensorViewOfCoefficients(), i, sidim_1,
+	    ((AbstractTensor)si.tensorViewOfCoefficients()).setSubTensor(i, sidim_1,
 			 ((AbstractMultinomial)b.scale(get(i))).tensorViewOfCoefficients());
-	    //System.err.println("\t(+ " + b.scale(get(i)));
 	    ret = ret.add(si);
-	    //System.err.println("\t(= " + ret);
 	}
-	//System.err.println("\t== " + ret);
 	return ret;
     }
-
-    //@internal identical to @see AbstractTensor.setSubTensor(int[],int[],Tensor). Once that exists, get rid of this
-    private void setSubTensor(Tensor t, int[] i1, int[] i2, Tensor/*<R>*/ sub) {
-	Tensor embed = t.subTensor(i1, i2);
-	Utility.pre(sub.rank() == t.rank(), "sub tensor has compatible rank");
-	Utility.pre(Utility.equalsAll(sub.dimensions(), embed.dimensions()), "sub tensor has compatible dimensions");
-	ListIterator dst;
-	Setops.copy(dst = embed.iterator(), sub.iterator());
-	assert !dst.hasNext() : "equal dimensions have iterators of equal length";
-    } 
 
     /**
      * Sets all coefficients of p to 0.
      */
-    private void setAllZero(Multinomial p) {
+    void setAllZero(Multinomial p) {
 	for (ListIterator i = p.iterator(); i.hasNext(); ) {
 	    i.next();
 	    i.set(get(CONSTANT_TERM).zero());
@@ -338,88 +326,6 @@ abstract class AbstractMultinomial/*<R implements Arithmetic>*/ extends Abstract
     } 
 
     public String toString() {
-	return format(this, new StringBuffer(), new java.text.FieldPosition(0)).toString();
-	//return ArithmeticFormat.getDefaultInstance().format(this);
-    }
-
-
-    /**
-     * The monomial coefficient*X<sub>0</sub><sup>exponents[0]</sup>...X<sub>n-1</sub><sup>exponents[n-1]</sup>.
-     * @todo move to Values?
-     * @internal horribly complicate implementation
-     */
-    public static final Multinomial/*<R>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, int[] exponents) {
-	int[] dim = new int[exponents.length];
-	for (int k = 0; k < dim.length; k++)
-	    dim[k] = exponents[k]+1;
-	AbstractMultinomial m = new ArithmeticMultinomial(dim);
-	m.set(m.CONSTANT_TERM, coefficient.zero());
-	m.setAllZero(m);
-	m.set(exponents, coefficient);
-	return m;
-    }
-
-    // <polynomialPrefix> cn <polynomialTimesOperator> <polynomialVariable> <polynomialPowerOperator> n (<polynomialPlusOperator>|<polynomialPlusAlternative>) ... c2 <polynomialTimesOperator> <polynomialVariable> <polynomialPowerOperator> 2 (<polynomialPlusOperator>|<polynomialPlusAlternative>)<polynomialSuffix> c1 <polynomialTimesOperator> <polynomialVariable> (<polynomialPlusOperator>|<polynomialPlusAlternative>)<polynomialSuffix> c0 <polynomialSuffix> 
-    private String polynomialPrefix					= "";
-    private String polynomialTimesOperator = "*";
-    private String polynomialVariable = "X";
-    private String polynomialPowerOperator = "^";
-    private String polynomialPlusOperator = "+";
-    private String polynomialPlusAlternative = "-";
-    private String polynomialSuffix					= "";
-    /**
-     * Specialization of format.
-     * @todo move to ArithmeticFormat
-     * @todo provide a parser
-     */
-    public StringBuffer format(Multinomial p, StringBuffer result, java.text.FieldPosition fieldPosition) {
-        fieldPosition.setBeginIndex(0);
-        fieldPosition.setEndIndex(0);
-	final int initialIndex = result.length();
-		
-	// @todo improve format
-	result.append(polynomialPrefix);
-	for (Combinatorical index = Combinatorical.getPermutations(p.dimensions()); index.hasNext(); ) {
-	    final int[] i = index.next();
-	    final Arithmetic ci = p.get(i);
-	    final boolean constantTerm = Setops.all(Values.valueOf(i).iterator(), Functionals.bindSecond(Predicates.equal, Values.ZERO));
-	    // only print nonzero elements (but print the 0-th coefficient if it is the only one)
-	    if (!ci.norm().equals(Values.ZERO)
-		|| (constantTerm && p.degreeValue() <= 0)) {
-		int startIndex = result.length();
-		// whether the coefficient ci has been skipped
-		boolean skipped;
-		if (ci.equals(ci.one()) && !constantTerm)
-		    // skip 1 (except for constant term)
-		    skipped = true;
-		else if (ci.equals(ci.one().minus()) && !constantTerm) {
-		    // shorten -1 to - (except for constant term)
-		    result.append(polynomialPlusAlternative);
-		    skipped = true;
-		} else {
-//		    format(ci, result, fieldPosition);
-		    result.append(ci);
-		    skipped = false;
-		}
-		// separator for all but the first coefficient,
-		// provided that there is not already an alternative separator
- 		if (startIndex > initialIndex &&
- 		    !(result.length() > startIndex && result.substring(startIndex).startsWith(polynomialPlusAlternative)))
-		    result.insert(startIndex, polynomialPlusOperator);
-		
-		for (int k = 0; k < p.numberOfVariables(); k++)
-		    if (i[k] != 0) {
-			if (skipped)
-			    // only skip times operator once
-			    skipped = false;
-			else
-			    result.append(polynomialTimesOperator);
-			result.append(polynomialVariable + k + (i[k] > 1 ? polynomialPowerOperator + i[k] : ""));
-		    }
-	    }
-	}
-	result.append(polynomialSuffix);
-
-	return result;
+	return ArithmeticFormat.getDefaultInstance().format(this);
     }
 }

@@ -59,8 +59,8 @@ public class Matrix3D extends RMatrix {
 
     /**
      * a sinus/cosinus for degrees
-     * @see java.lang.Math#toRadian(double)
-     * @todo use Math.toRadian(double), instead?
+     * @see java.lang.Math#toRadians(double)
+     * @todo use Math.toRadians(double), instead?
      */
     private double sin(double deg) {
 	return Math.sin(deg * Math.PI / 180);

@@ -1142,6 +1142,34 @@ public final class Values {
 	//@todo rename to polynomial(Object), then?
 	return p;
     }
+
+    /**
+     * The monomial c&lowast;X<sub>0</sub><sup>i[0]</sup>...X<sub>n-1</sub><sup>i[n-1]</sup>.
+     * @param coefficient the coefficient c of the monomial.
+     * @param exponents the exponents i of the monomial.
+     *  The number of variables is <code>n:=exponents.length</code>.
+     * @internal horribly complicate implementation
+     */
+    public static final Multinomial/*<R>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, int[] exponents) {
+	int[] dim = new int[exponents.length];
+	for (int k = 0; k < dim.length; k++)
+	    dim[k] = exponents[k] + 1;
+	AbstractMultinomial m = new ArithmeticMultinomial(dim);
+	m.set(m.CONSTANT_TERM, coefficient.zero());
+	m.setAllZero(m);
+	m.set(exponents, coefficient);
+	return m;
+    }
+    /**
+     * The monomial 1&lowast;X<sub>0</sub><sup>i[0]</sup>...X<sub>n-1</sub><sup>i[n-1]</sup>.
+     * Note that the coefficient is {@link #ONE 1}&isin;<b>Z</b>.
+     * @param exponents the exponents i of the monomial.
+     *  The number of variables is <code>n:=exponents.length</code>.
+     * @see #MONOMIAL(Arithmetic,int[])
+     */
+    public static final Multinomial/*<R implements Scalar>*/ MONOMIAL(int[] exponents) {
+	return MONOMIAL(ONE, exponents);
+    }
     
 
     // quotient constructors
@@ -1185,6 +1213,20 @@ public final class Values {
      */
     public static /*<M implements Euclidean>*/ Quotient/*<M>*/ quotient(Euclidean/*>M<*/ a, Polynomial m) {
 	return quotient(a, (Euclidean)m);
+    }
+    /**
+     * Returns a new quotient a&#772;=[a]&isin;M/(m) of the given
+     * value reduced modulo (m).
+     * <p> Will use special remainder classes modulo (m) for a Groebner
+     * basis m of (multivariate) polynomial rings. These remainder
+     * classes are those induced by the {@link AlgebraicAlgorithms#reduce(java.util.Collection,java.util.Comparator) reduction}
+     * operator.  </p>
+     * @param m the {@link AlgebraicAlgorithms#groebnerBasis(Set,Comparator) Groebner basis}
+     * modulo whose generated ideal (m) to form the quotients.
+     * @param monomialOrder the monomial order applied for reducing polynomials.
+     */
+    public static /*<R implements Arithmetic>*/ Quotient/*<Multinomial<R>>*/ quotient(Multinomial/*<R>*/ a, java.util.Set/*_<Multinomial<R>>_*/ m, java.util.Comparator monomialOrder) {
+	return new AbstractQuotient(a, m, monomialOrder);
     }
     /**
      * (Convenience) Returns a new quotient a&#772;=[a]&isin;M/(m)

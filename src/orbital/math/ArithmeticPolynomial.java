@@ -64,7 +64,7 @@ class ArithmeticPolynomial/*<R implements Arithmetic>*/ extends AbstractPolynomi
 	    //@internal we can allow skipping null here, since set(R[]) and set(int,R)
 	    // check for null. However after new ArithmeticPolynomial(int) there may still be
 	    // some null values, until all have been set
-	    if (coefficients[i] != null && !coefficients[i].equals(R_ZERO))
+	    if (coefficients[i] != null && !coefficients[i].norm().equals(Values.ZERO))
 		return i;
 	return java.lang.Integer.MIN_VALUE;
     }
@@ -75,8 +75,8 @@ class ArithmeticPolynomial/*<R implements Arithmetic>*/ extends AbstractPolynomi
 	if (Setops.some(Arrays.asList(coefficients), Functionals.bindSecond(Predicates.equal, null)))
 	    throw new IllegalArgumentException("illegal coefficients: containing null");
  	this.coefficients = coefficients;
-	this.degree = degreeImpl(coefficients);
 	this.R_ZERO = coefficients.length > 0 ? coefficients[0].zero() : Values.ZERO;
+	this.degree = degreeImpl(coefficients);
     }
 
     public Arithmetic/*>R<*/ get(int i) {

@@ -15,6 +15,11 @@ import java.util.ListIterator;
  * <p>
  * Of course, the multivariate polynomials are the {@link Polynomial polynomials} over polynomial rings:
  * R[X<sub>0</sub>,...,X<sub>n-1</sub>] = R[X<sub>0</sub>][X<sub>1</sub>]...[X<sub>n-1</sub>].
+ * The importance of polynomial rings comes from the fact that they are the
+ * free commutative and associative R-algebras
+ * Libasc<sub>R</sub>(I) := R<sup>(N<sup>(I)</sup>)</sup> = R[(X<sub>i</sub>)<sub>i?I</sub>].
+ * Although, of course, this is restricted to a finite number of variables for computation.
+ * <!-- @todo could we calculate only infinitely generated algebras as well? -->
  * </p>
  *
  * @version 1.1, 2001/12/09
@@ -23,7 +28,6 @@ import java.util.ListIterator;
  * @see Values#multinomial(Object)
  * @todo let Polynomial extend Multinomial just like Vector extending Tensor?
  * @todo implements Function<T,T> instead with T any "compatible" type (see Algebra I) and evaluation of Horner-Scheme
- * @todo generalize to multivariate polynomials (which are no longer Euclidean). Then we would need get(int[]), R[][]...[] getCoefficients(), Iterator iterator(), and implements Function<Vector<R>,R>.
  */
 public interface Multinomial/*<R implements Arithmetic>*/ extends Arithmetic, Function/*<Vector<R>,R>*/ {
     // Get/Set properties

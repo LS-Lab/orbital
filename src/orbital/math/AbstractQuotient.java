@@ -36,7 +36,6 @@ class AbstractQuotient/*<M implements Arithmetic>*/ implements Quotient/*<M>*/, 
     }
     /**
      * Special remainder classes modulo m in Euclidean rings.
-     * @note assuming that M extends Euclidean
      */
     public AbstractQuotient(Euclidean/*>M<*/ val, Euclidean m) {
 	this(val, new EuclideanModulo(m));
@@ -45,7 +44,7 @@ class AbstractQuotient/*<M implements Arithmetic>*/ implements Quotient/*<M>*/, 
 	private static final long serialVersionUID = -8846695670222356251L;
 	private final Euclidean m;
 	public EuclideanModulo(Euclidean m) {
-	    this.m = m;
+	    this.m = m.norm().equals(Values.ZERO) ? null : m;
 	}
 	public boolean equals(Object o) {
 	    return (o instanceof EuclideanModulo) && Utility.equals(m, ((EuclideanModulo) o).m);
@@ -60,8 +59,16 @@ class AbstractQuotient/*<M implements Arithmetic>*/ implements Quotient/*<M>*/, 
 	    return m;
 	}
 	public Object/*>M<*/ apply(Object/*>M<*/ a) {
-	    return (Object/*>M<*/) ((Euclidean) a).modulo(m);
+	    //@internal allow M/(0) &cong; M as well
+	    return m == null ? a : (Object/*>M<*/) ((Euclidean) a).modulo(m);
 	}
+    }
+    /**
+     * Special remainder classes modulo Groebner bases in (multivariate) polynomial ring.
+     */
+    public AbstractQuotient(Multinomial/*<R>*/ val, java.util.Set/*_<Multinomial<R>>_*/ m, java.util.Comparator monomialOrder) {
+	this(val, AlgebraicAlgorithms.reduce(m, monomialOrder));
+	// howto assert that m is a Groebner basis, but with respect to which monomialOrder?
     }
 
     /**
@@ -119,11 +126,11 @@ class AbstractQuotient/*<M implements Arithmetic>*/ implements Quotient/*<M>*/, 
 
     public Arithmetic zero() {
 	//@todo we could just as well get the canonical representative of the equivalence class of representative().zero with getQuotientOperator() but this usually would be wasted brainpower
-	return representative().zero();
+	return equivalenceClass(representative().zero());
     }
 
     public Arithmetic one() {
-	return representative().one();
+	return equivalenceClass(representative().one());
     }
 
     public Quotient/*<M>*/ add(Quotient/*<M>*/ b) throws ArithmeticException {

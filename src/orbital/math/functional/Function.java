@@ -66,7 +66,7 @@ public interface Function/*<A implements Arithmetic, B implements Arithmetic>*/ 
      * This class is the infimum (greatest common subtype) {@link orbital.logic.functor.Functor.Composite}&cap;{@link Function}.
      * </p>
      * 
-     * @structure is {@link Functor.Composite}&cap;{@link Function}
+     * @structure is {@link orbital.logic.functor.Functor.Composite}&cap;{@link Function}
      * @structure extends Function<A,B>
      * @structure extends orbital.logic.functor.Function<A, B>.Composite
      * @structure aggregate outer:Function
