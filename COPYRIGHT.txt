@@ -9,4 +9,4 @@ files and documents might or might not have. The licenser shall never
 be liable for any damage suffered by licensee as a result of
 using these files or derivatives.
 
-Copyright (c) 1996-2002 Andre Platzer. All Rights Reserved.
+Copyright (c) 1996-2003 Andre Platzer. All Rights Reserved.
