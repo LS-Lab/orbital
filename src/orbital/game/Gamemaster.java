@@ -224,15 +224,15 @@ public class Gamemaster implements Runnable {
 		// if we could rely on our AI, then we could optimize away this expensive moving and simply use the resulting field = move.field
 		//@internal cloning the position information is necessary, otherwise move would detect that it gets lost during swap.
 		if (!getField().move(source, move.getMove()))
-		    throw new Error("AI should only take legal moves: " + move);
+		    throw new Error("player " + players[turn] + " for league " + turn + " should only take legal moves: " + move);
 	    } else
-		throw new Error("AI found no move: " + action);
+		throw new Error("player " + players[turn] + " for league " + turn + " found no move: " + action);
 	} 
     } 
 
 
     /**
-     * A human player that waits for user I/O.
+     * A human player that waits for user I/O and delivers the user's decision.
      */
     private class HumanPlayer extends FieldChangeAdapter implements Function {
 	/**

@@ -200,12 +200,13 @@ public class Gameboard extends Canvas implements ImageObserver, Serializable {
 	}
 	catch (CloneNotSupportedException cannotMoveHypothetically) {
 	    // cannot precheck user move
+	    logger.log(Level.FINE, "cannot precheck user move {0}-->{1} because of {2}", new Object[] {src, dst, cannotMoveHypothetically});
 	}
 
 	if (validOperation)
 	    field.getFieldChangeMulticaster().movePerformed(new FieldChangeEvent(field, FieldChangeEvent.USER_ACTION | FieldChangeEvent.MOVE, new Option(field, dst, field.getFigure(src), moveToDst)));
 	else {	// nope, hmm, one of the users wasn't making too much sense of his move
-	    logger.log(Level.WARNING, "Wrong move", src + "-->" + dst);
+	    logger.log(Level.WARNING, "Wrong move {0}-->{1}", new Object[] {src, dst});
 	}
 	return true;
     } 
