@@ -35,10 +35,10 @@ public interface Composite /*<Compositor,Component>*/ {
 	
     /**
      * Construct a new composition with the given parameters, of the same type like this.
-     * @param f the outer compositor f that operates on the results of the inner component.
-     * @param g the inner component object g, or an array of the inner components {g<sub>1</sub>,...g<sub>k</sub>}<sup>T</sup>.
+     * @param compositor the outer compositor f that operates on the results of the inner component.
+     * @param component the inner component object g, or an array of the inner components {g<sub>1</sub>,...g<sub>k</sub>}<sup>T</sup>.
      *  Multi-dimensional component arrays and alike are permitted, as well.
-     * @return a composite object of the same type as this,
+     * @return a composite object <code>f(g)</code> of the same type as this,
      *  with compositor and component as specified.
      * @postconditions RES != RES &and; RES.getClass()==getClass() &and; RES.getCompositor()==f &and; RES.getComponent()==g
      * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
@@ -51,25 +51,25 @@ public interface Composite /*<Compositor,Component>*/ {
      * @throws UnsupportedOperationException if this method does not support modification cloning.
      * @see #clone()
      */
-    Composite construct(Object/*>Compositor<*/ f, Object/*>Component<*/ g) throws IllegalArgumentException, ClassCastException;
+    Composite construct(Object/*>Compositor<*/ compositor, Object/*>Component<*/ component) throws IllegalArgumentException, ClassCastException;
 
     // Set properties
 	
     /**
      * Set the outer compositor.
-     * @param f the outer functor f that operates on the results of the inner component.
-     * @throws IllegalArgumentException if f is an illegal compositor for this composite object.
+     * @param compositor the outer compositor f that operates on the results of the inner component.
+     * @throws IllegalArgumentException if compositor is an illegal compositor for this composite object.
      *  Depending upon context, this method may also throw ClassCastException, instead.
-     * @throws ClassCastException if f has the wrong type for a compositor.
+     * @throws ClassCastException if compositor has the wrong type for a compositor.
      *  Depending upon context, this method may also throw IllegalArgumentException, instead.
      * @throws UnsupportedOperationException if this method is not supported by this object,
      *  or this object is immutable.
      */
-    void setCompositor(Object/*>Compositor<*/ f) throws IllegalArgumentException, ClassCastException;
+    void setCompositor(Object/*>Compositor<*/ compositor) throws IllegalArgumentException, ClassCastException;
 
     /**
      * Set the inner component.
-     * @param g the inner component object g, or an array of the inner components {g<sub>1</sub>,...g<sub>k</sub>}<sup>T</sup>.
+     * @param component the inner component object g, or an array of the inner components {g<sub>1</sub>,...g<sub>k</sub>}<sup>T</sup>.
      *  Multi-dimensional component arrays and alike are permitted, as well.
      * @throws IllegalArgumentException if g is an illegal component for this composite object.
      *  Depending upon context, this method may also throw ClassCastException, instead.
@@ -78,5 +78,5 @@ public interface Composite /*<Compositor,Component>*/ {
      * @throws UnsupportedOperationException if this method is not supported by this object,
      *  or this object is immutable.
      */
-    void setComponent(Object/*>Component<*/ g) throws IllegalArgumentException, ClassCastException;
+    void setComponent(Object/*>Component<*/ component) throws IllegalArgumentException, ClassCastException;
 }
