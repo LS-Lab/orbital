@@ -493,6 +493,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	protected AppliedVariableFormula() {}
 		
         public Type getType() {
+	    //@xxx replace by outer.getType().on(inner.getType())? here and in all similar cases
 	    return outer.getType().codomain();
         }
         public Signature getSignature() {
