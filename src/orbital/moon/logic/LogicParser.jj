@@ -162,12 +162,12 @@ public class LogicParser {
     /**
      * Converts an expression to the type it represents.
      * <table>
-     * <tr>
-     * <td>Expression<sub class="type">*</sub>&rarr;Type</td>
-     * </tr>
-     * <tr>
-     * <td>f &#8614; (Type) I<sub>0</sub>(f)</td>
-     * </tr>
+     *   <tr>
+     *     <td>Expression<sub class="type">*</sub>&rarr;Type</td>
+     *   </tr>
+     *   <tr>
+     *     <td>f &#8614; (Type) I<sub>0</sub>(f)</td>
+     *   </tr>
      * </table>
      */
     protected Type asType(Expression f) {
