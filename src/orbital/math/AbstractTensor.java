@@ -41,7 +41,7 @@ import java.util.HashSet;
  * @version 1.0, 2002-08-07
  * @author  Andr&eacute; Platzer
  */
-abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractArithmetic implements Tensor/*<R>*/, Serializable {
+abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractProductArithmetic implements Tensor/*<R>*/, Serializable {
     private static final long serialVersionUID = 7889937971348824822L;
 
     // object-methods
@@ -50,24 +50,7 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractArith
      * Checks two tensors for equality.
      */
     public boolean equals(Object o) {
-	if (o instanceof Tensor) {
-	    Tensor/*<R>*/ B = (Tensor) o;
-	    if (!Arrays.equals(dimensions(), B.dimensions()))
-		return false;
-	    return Setops.all(iterator(), B.iterator(), Predicates.equal);
-	} 
-	return false;
-    } 
-
-    public int hashCode() {
-	//TODO: can we use Utility.hashCodeAll(Object) as well?
-	int hash = 0;
-	//@todo functional?
-	for (Iterator i = iterator(); i.hasNext(); ) {
-	    Object e = i.next();
-	    hash ^= e == null ? 0 : e.hashCode();
-	} 
-	return hash;
+	return (o instanceof Tensor) && super.equals(o);
     } 
 
     public Object clone() {
@@ -91,6 +74,20 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractArith
      */
     protected abstract Tensor/*<R>*/ newInstance(int[] dim);
 
+    protected final Arithmetic/*<T>*/ newInstance(Object productIndexSet) {
+	return newInstance((int[]) productIndexSet);
+    }
+
+    // product
+
+    protected Object productIndexSet(Arithmetic/*<T>*/ productObject) {
+	return ((Tensor)productObject).dimensions();
+    }
+
+    protected ListIterator/*_<R>_*/ iterator(Arithmetic/*<T>*/ productObject) {
+	return ((Tensor)productObject).iterator();
+    }
+    
     // iterator-views
 	
     /**
@@ -393,7 +390,9 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractArith
 	Tensor embed = subTensor(level, index);
 	Utility.pre(part.rank() == rank()-1, "part has compatible rank");
 	Utility.pre(Utility.equalsAll(part.dimensions(), embed.dimensions()), "part has compatible dimensions");
-	Setops.copy(part.iterator(), embed.iterator());
+	ListIterator dst;
+	Setops.copy(dst = embed.iterator(), part.iterator());
+	assert !dst.hasNext() : "equal dimensions have iterators of equal length";
     } 
 
     public Real norm() {
@@ -410,41 +409,19 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractArith
     }
     
     public Tensor/*<R>*/ add(Tensor/*<R>*/ B) {
-	Utility.pre(Arrays.equals(dimensions(),B.dimensions()), "Tensor A+B only defined for equal dimensions (except purely symbolical)");
-	Tensor/*<R>*/ ret = newInstance(dimensions());
-
-	// component-wise
-	for (Combinatorical index = Combinatorical.getPermutations(dimensions()); index.hasNext(); ) {
-	    int[] i = index.next();
-	    ret.set(i, (Arithmetic/*>R<*/) get(i).add(B.get(i)));
-	}
-	return ret;
-    } 
+	return (Tensor)super.add((Arithmetic)B);
+    }
 
     public Tensor/*<R>*/ subtract(Tensor/*<R>*/ B) {
-	Utility.pre(Arrays.equals(dimensions(), B.dimensions()), "Tensor A-B only defined for equal dimensions (except purely symbolical)");
-	Tensor/*<R>*/ ret = newInstance(dimensions());
-
-	// component-wise
-	for (Combinatorical index = Combinatorical.getPermutations(dimensions()); index.hasNext(); ) {
-	    int[] i = index.next();
-	    ret.set(i, (Arithmetic/*>R<*/) get(i).subtract(B.get(i)));
-	}
-	return ret;
+	return (Tensor)super.subtract((Arithmetic)B);
     } 
 
     public Arithmetic scale(Arithmetic s) {
-	Tensor ret = newInstance(dimensions());
-
-	// component-wise
-	for (Combinatorical index = Combinatorical.getPermutations(dimensions()); index.hasNext(); ) {
-	    int[] i = index.next();
-	    ret.set(i, s.multiply(get(i)));
-	}
-	return ret;
+	return (Tensor)super.scale(s);
     } 
 
     public Tensor/*<R>*/ multiply(Tensor/*<R>*/ b) {
+	//@todo beautify with subTensor(...)
 	final int[] dim = new int[rank() + b.rank() - 2];
 	final int[] d = dimensions();
 	final int[] e = b.dimensions();
@@ -479,13 +456,7 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractArith
     } 
 
     public Tensor/*<R>*/ tensor(Tensor/*<R>*/ b) {
-	Tensor ret = newInstance(dimensions());
-
-	for (Combinatorical index = Combinatorical.getPermutations(dimensions()); index.hasNext(); ) {
-	    int[] i = index.next();
-	    ret.set(i, b.multiply(get(i)));
-	}
-	return ret;
+	return (Tensor)super.scale(b);
     }
 
     // Arithmetic implementation
@@ -495,15 +466,6 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractArith
     } 
     public Arithmetic subtract(Arithmetic b) {
 	return subtract((Tensor) b);
-    } 
-    public Arithmetic minus() {
-	Tensor/*<R>*/ ret = newInstance(dimensions());
-	// component-wise
-	for (Combinatorical index = Combinatorical.getPermutations(dimensions()); index.hasNext(); ) {
-	    int[] i = index.next();
-	    ret.set(i, (Arithmetic/*>R<*/) get(i).minus());
-	}
-	return ret;
     } 
     public Arithmetic multiply(Arithmetic b) {
 	if (b instanceof Scalar)

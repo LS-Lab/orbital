@@ -16,6 +16,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Iterator;
 
+import orbital.util.Setops;
+
 //@TODO: define point-wise functionals which return the same structure (Func, Obj)->Obj
 
 /**
@@ -114,7 +116,7 @@ public final class Evaluations {
      * Returns the vector with the absolutes of all elements in this Vector.
      */
     public static /*<R implements Arithmetic>*/ Vector/*<R>*/ abs(Vector/*<R>*/ v) {
-	return Values.vector((List) Functionals.map(Functions.norm, v.iterator()));
+	return Values.vector(Setops.asList(Functionals.map(Functions.norm, v.iterator())));
     } 
     public static double[] abs(double[] v) {
 	return Functionals.map(Functions.norm, v);

@@ -16,6 +16,8 @@ import orbital.util.Utility;
 
 import orbital.math.functional.Functionals;
 import orbital.math.functional.Operations;
+import orbital.math.functional.Function;
+import orbital.math.functional.BinaryFunction;
 import orbital.logic.functor.Predicates;
 
 /**
@@ -39,8 +41,11 @@ abstract class AbstractProductArithmetic/*<R implements Arithmetic, T implements
      * @param productObject the object (a<sub>i</sub>)<sub>i&isin;I</sub> &isin; &prod;<sub>i&isin;I</sub> A<sub>i</sub>
      *  whose components to iterate over.
      * @return an (memento) description of the index set I.
+     * @post RES.supports(#equals(Object)) || RES.getClass().isArray()
+     * @throws ClassCastException if productObject is of type other than T that does not fit this product arithmetic.
+     * @throws IllegalArgumentException if productObject does not conform to the requirements of this product arithmetic.
      */
-    protected abstract Object productIndexSet(Arithmetic/*<T>*/ productObject);
+    protected abstract Object productIndexSet(Arithmetic/*>T<*/ productObject);
 
     /**
      * Creates an iterator for the components of a product object.
@@ -48,8 +53,11 @@ abstract class AbstractProductArithmetic/*<R implements Arithmetic, T implements
      * @param productObject the object (a<sub>i</sub>)<sub>i&isin;I</sub> &isin; &prod;<sub>i&isin;I</sub> A<sub>i</sub>
      *  whose components to iterate over.
      * @return an iterator that iterates over (a<sub>i</sub>)<sub>i&isin;I</sub>.
+     * @post &forall;a,b (productIndexSet(a).equals(productIndexSet(b)) &rarr; iterator(a) has same order as iterator(b))
+     * @throws ClassCastException if productObject is of type other than T that does not fit this product arithmetic.
+     * @throws IllegalArgumentException if productObject does not conform to the requirements of this product arithmetic.
      */
-    protected abstract ListIterator/*_<R>_*/ iterator(Arithmetic/*<T>*/ productObject);
+    protected abstract ListIterator/*_<R>_*/ iterator(Arithmetic/*>T<*/ productObject);
     
     // factory-methods
     
@@ -60,11 +68,12 @@ abstract class AbstractProductArithmetic/*<R implements Arithmetic, T implements
      * @param productIndexSet the index set I for the product, as in {@link #productIndexSet()} .
      * @return a tensor of the same type as this, dimensions as specified.
      * The elements need not be initialized since they will soon be by the calling method.
-     * @post RES != RES
+     * @post RES&ne;RES
+     * @throws ClassCastException if productIndexSet has an illegal type for index set specifiers.
      * @see <a href="{@docRoot}/DesignPatterns/FactoryMethod.html">Factory Method</a>
      * @see #clone()
      */
-    protected abstract Arithmetic/*<T>*/ newInstance(Object productIndexSet);
+    protected abstract Arithmetic/*>T<*/ newInstance(Object productIndexSet);
 	
     // object-methods
 	
@@ -73,10 +82,9 @@ abstract class AbstractProductArithmetic/*<R implements Arithmetic, T implements
      */
     public boolean equals(Object o) {
 	if (o instanceof Arithmetic) {
-	    Arithmetic/*<T>*/ b = (Arithmetic) o;
-	    if (!Utility.equalsAll(productIndexSet(this), productIndexSet(b)))
-		return false;
-	    return Setops.all(iterator(this), iterator(b), Predicates.equal);
+	    Arithmetic/*>T<*/ b = (Arithmetic) o;
+	    return Utility.equalsAll(productIndexSet(this), productIndexSet(b))
+		&& Setops.all(iterator(this), iterator(b), Predicates.equal);
 	} 
 	return false;
     } 
@@ -94,68 +102,45 @@ abstract class AbstractProductArithmetic/*<R implements Arithmetic, T implements
 
     // arithmetic-operations
 	
-    public Arithmetic/*<T>*/ add(Arithmetic/*<T>*/ b) {
-	Utility.pre(Utility.equalsAll(productIndexSet(this),productIndexSet(b)), "a+b only defined for equal productIndexSet()");
-	Arithmetic/*<T>*/ ret = newInstance(productIndexSet(this));
+    private Arithmetic/*>T<*/ operatorImpl(BinaryFunction op, Arithmetic/*>T<*/ b) {
+	if (!Utility.equalsAll(productIndexSet(this),productIndexSet(b)))
+	    throw new IllegalArgumentException("a" + op + "b only defined for equal productIndexSet()");
+	Arithmetic/*>T<*/ ret = newInstance(productIndexSet(this));
 
-	//@todo implement via orbital.logic.functor.Functionals#map(
 	// component-wise
-	for (ListIterator i = iterator(this), j = iterator(b), it = iterator(ret); i.hasNext() || j.hasNext() || it.hasNext(); ) {
-	    assert i.next() == it.next() && i.next() == j.next() : "equal productIndexSet() implies equal structure of iterators";
-	    it.next();
-	    it.set(((Arithmetic/*>R<*/) i.next()).add((Arithmetic/*>R<*/) j.next()));
-	}
+	ListIterator dst;
+	Setops.copy(dst = iterator(ret), Functionals.map(op, iterator(this), iterator(b)));
+	assert !dst.hasNext() : "equal productIndexSet() implies equal structure of iterators";
+	return ret;
+    } 
+    private Arithmetic/*>T<*/ operatorImpl(Function op) {
+	Arithmetic/*>T<*/ ret = newInstance(productIndexSet(this));
+
+	// component-wise
+	ListIterator dst;
+	Setops.copy(dst = iterator(ret), Functionals.map(op, iterator(this)));
+	assert !dst.hasNext() : "equal productIndexSet() implies equal structure of iterators";
 	return ret;
     } 
 
-    public Arithmetic/*<T>*/ subtract(Arithmetic/*<T>*/ b) {
-	Utility.pre(Utility.equalsAll(productIndexSet(this),productIndexSet(b)), "a-b only defined for equal productIndexSet()");
-	Arithmetic/*<T>*/ ret = newInstance(productIndexSet(this));
-
-	// component-wise
-	for (ListIterator i = iterator(this), j = iterator(b), it = iterator(ret); i.hasNext() || j.hasNext() || it.hasNext(); ) {
-	    assert i.next() == it.next() && i.next() == j.next() : "equal productIndexSet() implies equal structure of iterators";
-	    it.next();
-	    it.set(((Arithmetic/*>R<*/) i.next()).subtract((Arithmetic/*>R<*/) j.next()));
-	}
-	return ret;
+    public Arithmetic/*>T<*/ add(Arithmetic/*>T<*/ b) {
+	return operatorImpl(Operations.plus, b);
     } 
 
-    public Arithmetic/*<T>*/ scale(Arithmetic/*<T>*/ s) {
-	Arithmetic/*<T>*/ ret = newInstance(productIndexSet(this));
-
-	// component-wise
-	for (ListIterator i = iterator(this), it = iterator(ret); i.hasNext() || it.hasNext(); ) {
-	    assert i.next() == it.next() : "equal productIndexSet() implies equal structure of iterators";
-	    it.next();
-	    it.set(s.multiply((Arithmetic/*>R<*/) i.next()));
-	}
-	return ret;
+    public Arithmetic/*>T<*/ subtract(Arithmetic/*>T<*/ b) {
+	return operatorImpl(Operations.subtract, b);
     } 
 
-    public Arithmetic/*<T>*/ multiply(Arithmetic/*<T>*/ b) {
-	Utility.pre(Utility.equalsAll(productIndexSet(this),productIndexSet(b)), "a*b only defined for equal productIndexSet()");
-	Arithmetic/*<T>*/ ret = newInstance(productIndexSet(this));
+    public Arithmetic/*>T<*/ scale(Arithmetic/*>T<*/ s) {
+	return operatorImpl(Functionals.bindFirst(Operations.times, s));
+    } 
 
-	// component-wise
-	for (ListIterator i = iterator(this), j = iterator(b), it = iterator(ret); i.hasNext() || j.hasNext() || it.hasNext(); ) {
-	    assert i.next() == it.next() && i.next() == j.next() : "equal productIndexSet() implies equal structure of iterators";
-	    it.next();
-	    it.set(((Arithmetic/*>R<*/) i.next()).multiply((Arithmetic/*>R<*/) j.next()));
-	}
-	return ret;
+    public Arithmetic/*>T<*/ multiply(Arithmetic/*>T<*/ b) {
+	return operatorImpl(Operations.times, b);
     } 
 
     public Arithmetic minus() {
-	Arithmetic/*<T>*/ ret = newInstance(productIndexSet(this));
-
-	// component-wise
-	for (ListIterator i = iterator(this), it = iterator(ret); i.hasNext() || it.hasNext(); ) {
-	    assert i.next() == it.next() : "equal productIndexSet() implies equal structure of iterators";
-	    it.next();
-	    it.set(((Arithmetic/*>R<*/) i.next()).minus());
-	}
-	return ret;
+	return operatorImpl(Operations.minus);
     } 
 
     public Arithmetic inverse() throws ArithmeticException {

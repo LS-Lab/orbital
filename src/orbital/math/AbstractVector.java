@@ -304,32 +304,11 @@ abstract class AbstractVector/*<R implements Arithmetic>*/ extends AbstractTenso
     public Arithmetic one() {throw new UnsupportedOperationException("vector spaces do not have a 1");}
     
     public Vector/*<R>*/ add(Vector/*<R>*/ b) {
-	Utility.pre(dimension() == b.dimension(), "Vector A+B only defined for same size");
-	Vector/*<R>*/ ret = newInstance(dimension());
-	//@todo rewrite pure functional possible?
-		
-	//@todo could we rewrite these component-wise operations with the following? 
-	/*
-	  for (Iterator i = iterator(), b = B.iterator(), r = ret.iterator(); i.hasNext(); )  {
-	  assert(b.hasNext() && r.hasNext(), "equal dimensions have iterators of equal length");
-	  r.next();
-	  r.set(i.next().add(b.next()));
-	  }
-	  assert(!b.hasNext() && !r.hasNext(), "equal dimensions have iterators of equal length");
-	*/
-	// component-wise
-	for (int i = 0; i < dimension(); i++)
-	    ret.set(i, (Arithmetic/*>R<*/) get(i).add(b.get(i)));
-	return ret;
-    } 
+	return (Vector) super.add((Tensor)b);
+    }
 
     public Vector/*<R>*/ subtract(Vector/*<R>*/ b) {
-	Utility.pre(dimension() == b.dimension(), "Vector A-B only defined for same size");
-	Vector/*<R>*/ ret = newInstance(dimension());
-	// component-wise
-	for (int i = 0; i < dimension(); i++)
-	    ret.set(i, (Arithmetic/*>R<*/) get(i).subtract(b.get(i)));
-	return ret;
+	return (Vector) super.subtract((Tensor)b);
     } 
 
     /**
@@ -348,15 +327,6 @@ abstract class AbstractVector/*<R implements Arithmetic>*/ extends AbstractTenso
     public Vector/*<R>*/ scale(Scalar s) {
 	return (Vector) scale((Arithmetic)s);
     }
-    // will also work for other "scalar-like" objects of type Arithmetic
-    public Arithmetic scale(Arithmetic s) {
-	Vector ret = newInstance(dimension());
-
-	// component-wise
-	for (int i = 0; i < dimension(); i++)
-	    ret.set(i, s.multiply(get(i)));
-	return ret;
-    } 
 
     public Vector/*<R>*/ multiply(Matrix/*<R>*/ B) {
 	Utility.pre(dimension() == B.dimension().height, "column-Vector v.A only defined for column-Vector multiplied with Matrix of same height. " + dimension() + "!=" + B.dimension().height);
@@ -373,13 +343,6 @@ abstract class AbstractVector/*<R implements Arithmetic>*/ extends AbstractTenso
     } 
     public Arithmetic subtract(Arithmetic b) {
 	return subtract((Vector) b);
-    } 
-    public Arithmetic minus() {
-	Vector/*<R>*/ ret = newInstance(dimension());
-	// component-wise
-	for (int i = 0; i < dimension(); i++)
-	    ret.set(i, (Arithmetic/*>R<*/) get(i).minus());
-	return ret;
     } 
     public Arithmetic multiply(Arithmetic b) {
 	if (b instanceof Scalar)

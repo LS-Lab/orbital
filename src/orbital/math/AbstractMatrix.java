@@ -910,30 +910,16 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
     	return Values.IDENTITY(dimension());
     }
     
-    public Matrix/*<R>*/ add(Matrix/*<R>*/ B) {
-	Utility.pre(dimension().equals(B.dimension()), "Matrix A+B only defined for equal dimension");
-	Matrix/*<R>*/ ret = newInstance(dimension());
-
-	//TODO: cache Dimension dim = dimension(); in all these methods
-	// component-wise
-	for (int i = 0; i < dimension().height; i++)
-	    for (int j = 0; j < dimension().width; j++)
-		ret.set(i, j, (Arithmetic/*>R<*/) get(i, j).add(B.get(i, j)));
-	return ret;
-    } 
+     public Matrix/*<R>*/ add(Matrix/*<R>*/ B) {
+	 return (Matrix) super.add((Tensor) B);
+     }
 
     public Matrix/*<R>*/ subtract(Matrix/*<R>*/ B) {
-	Utility.pre(dimension().equals(B.dimension()), "Matrix A-B only defined for equal dimension");
-	Matrix/*<R>*/ ret = newInstance(dimension());
-
-	// component-wise
-	for (int i = 0; i < dimension().height; i++)
-	    for (int j = 0; j < dimension().width; j++)
-		ret.set(i, j, (Arithmetic/*>R<*/) get(i, j).subtract(B.get(i, j)));
-	return ret;
+	 return (Matrix) super.subtract((Tensor) B);
     } 
 
     public Matrix/*<R>*/ multiply(Matrix/*<R>*/ B) {
+	//@internal more beautiful than Tensor.multiply(Tensor) so still keep a while
 	//@todo optimize like in RMatrix
 	Utility.pre(dimension().width == B.dimension().height, "Matrix A.B only defined for dimension n x m multiplied with m x l");
 	Matrix/*<R>*/ ret = newInstance(dimension().height, B.dimension().width);
@@ -949,15 +935,6 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
     } 
     public Matrix/*<R>*/ scale(Scalar s) {
 	return (Matrix) scale((Arithmetic)s);
-    } 
-    public Arithmetic scale(Arithmetic s) {
-	Matrix ret = newInstance(dimension());
-
-	// component-wise
-	for (int i = 0; i < dimension().height; i++)
-	    for (int j = 0; j < dimension().width; j++)
-		ret.set(i, j, s.multiply(get(i, j)));
-	return ret;
     } 
 
     public Vector/*<R>*/ multiply(Vector/*<R>*/ B) {
@@ -975,14 +952,6 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
     } 
     public Arithmetic subtract(Arithmetic b) {
 	return subtract((Matrix) b);
-    } 
-    public Arithmetic minus() {
-	Matrix/*<R>*/ ret = newInstance(dimension());
-	// component-wise
-	for (int i = 0; i < dimension().height; i++)
-	    for (int j = 0; j < dimension().width; j++)
-		ret.set(i, j, (Arithmetic/*>R<*/) get(i, j).minus());
-	return ret;
     } 
     public Arithmetic multiply(Arithmetic b) {
 	if (b instanceof Scalar)

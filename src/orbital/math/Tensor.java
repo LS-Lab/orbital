@@ -31,7 +31,7 @@ import java.util.NoSuchElementException;
  * @see Values#tensor(Arithmetic[])
  * @see Values#tensor(Arithmetic[][])
  * @see Values#tensor(Arithmetic[][][])
- * @see Values#tensor(Object[])
+ * @see Values#tensor(Object)
  */
 public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
     // object-methods
@@ -251,9 +251,14 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      *     (a<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub></sub></sub>&sdot;b<sub>j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub>)<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub>,j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub>
      *     =&#770;
      *     (a<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub></sub></sub>&lowast;(b<sub>j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub>)<sub>j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub>)<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub></sub>
+     *     =&#770;
+     *     ((b<sub>j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub>)<sub>j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub>&lowast;a<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub></sub></sub>)<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub></sub>
      *   </td>
      *   </tr>
      * </table>
+     * At least formally, the last form of the calculation ressembles the scalar multiplication b&lowast;a
+     * of left-R<sup>m<sub>0</sub>&times;&#8230;&times;m<sub>s-1</sub></sup>-modules.
+     * @todo so why don't we unify tensor and scale? Because there may as well be distinct definitions?
      * @return the tensor product (or outer product) a&otimes;b.
      * @post RES.dimensions() = dimensions()&cup;b.dimensions()
      * @note tensor product is only one multiplication on graded tensor algebra T(M).

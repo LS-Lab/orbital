@@ -69,6 +69,14 @@ public interface Polynomial/*<R implements Arithmetic>*/ extends Euclidean, Func
 
     /**
      * Returns an iterator over all coefficients (up to degree).
+     * <p>
+     * The resulting iterator will always allow {@link Iterator#next()} without throwing
+     * a {@link java.util.NoSuchElementException} in order to allow setting a polynomial's
+     * coefficiens even beyond the degree.
+     * However {@link Iterator#hasNext()} will nevertheless return false when passing
+     * the coefficient of degree.
+     * </p>
+     * @post always (RES.succeedes(#next()))
      */
     ListIterator iterator();
 	
