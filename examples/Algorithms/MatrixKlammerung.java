@@ -103,6 +103,7 @@ public class MatrixKlammerung extends DynamicProgrammingOptimizingProblem {
     } 
 
     public Object merge(Object[] partialSolutions) {
+	//@internal cannot format nicely due to occurrences of null in partial weights
 	System.err.println("Solution:\n" + MathUtilities.format(getPartialWeights()));
 	return ((Object[]) partialSolutions[1])[n - 1];
     } 
