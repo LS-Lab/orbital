@@ -296,12 +296,19 @@
 	<exec dir="${doc}/api/orbital/moon/logic" executable="cmd.exe" os="Windows 2000">
 	    <arg line="/c jjdoc -OUTPUT_FILE:doc-files/LogicParser_grammar.html ${sources}/orbital/moon/logic/LogicParser.jj"/>
 	</exec>
+	<exec dir="${doc}/api/orbital/moon/logic" executable="jjdoc" os="Linux">
+	    <arg line="-OUTPUT_FILE:doc-files/LogicParser_grammar.html ${sources}/orbital/moon/logic/LogicParser.jj"/>
+	</exec>
 	<exec dir="${doc}/api/orbital/moon/logic" executable="cmd.exe" os="Windows 2000">
 	    <arg line="/c jjdoc -OUTPUT_FILE:doc-files/MathParser_grammar.html ${sources}/orbital/moon/logic/MathParser.jj"/>
 	</exec>
-	<exec dir="${doc}/api/orbital/moon/logic" executable="cmd.exe" os="Windows 2000">
-	    <arg line=" /c &quot;copy /A doc-files\LogicParser_grammar.html + ${basedir}\src\orbital\moon\logic\doc-files\LogicParser_lexical.html doc-files\LogicParser_grammar.html&quot;"/>
+	<exec dir="${doc}/api/orbital/moon/logic" executable="jjdoc" os="Linux">
+	    <arg line="-OUTPUT_FILE:doc-files/MathParser_grammar.html ${sources}/orbital/moon/logic/MathParser.jj"/>
 	</exec>
+	<exec dir="${doc}/api/orbital/moon/logic" executable="cmd.exe" os="Windows 2000">
+	    <arg line="/c &quot;copy /A doc-files\LogicParser_grammar.html + ${basedir}\src\orbital\moon\logic\doc-files\LogicParser_lexical.html doc-files\LogicParser_grammar.html&quot;"/>
+	</exec>
+	<!-- @todo cat input1 input2 > output for linux, but input1!=output -->
     </target>
 
     <target name="doc.internal" depends="init"
