@@ -126,14 +126,17 @@ public class LogicParser {
 	this.syntax = syntax;
 	Signature coreSignature = syntax.coreSignature();
 	this.root = new RootScope(coreSignature);
+
+	this.typeSystem = null;
 	this.TRUTH = queryType(syntax, "truth");
 	this.INDIVIDUAL = queryType(syntax, "individual");
 	// @todo read from syntax.coreSignature().get(...) or from Type.typeSystem()?
-	this.typeSystem = TRUTH.typeSystem();
+	this.typeSystem = TRUTH != null ? TRUTH.typeSystem() : typeSystem;
 	//@todo should we ask the syntax?
 	this.UNIVERSAL = queryType(syntax, "univ");
 	this.FLOAT_LITERAL_TYPE = queryType(syntax, "real");
 	this.INTEGER_LITERAL_TYPE = queryType(syntax, "integer");
+	this.typeSystem = INTEGER_LITERAL_TYPE != null ? INTEGER_LITERAL_TYPE.typeSystem() : typeSystem;
 	this.STRING_LITERAL_TYPE = queryType(syntax, "string");
     }
     /**
