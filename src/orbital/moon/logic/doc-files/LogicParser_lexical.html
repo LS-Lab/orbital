@@ -1,0 +1,99 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>BNF for LogicParser.jj Part 2</title>
+</head>
+
+<body>
+
+<h2 style="text-align:center">TERMINALS</h2>
+
+<table>
+  <tr>
+    <td align="right">&lt;DECLARE_FREE&gt;</td>
+    <td>::=</td>
+    <td>&quot;$&quot; | &quot;free&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;EXISTS&gt;</td>
+    <td>::=</td>
+    <td>&quot;&#8707;&quot; | &quot;?&quot; | &quot;some&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;FORALL&gt;</td>
+    <td>::=</td>
+    <td>&quot;&#8704;quot; | &quot;°&quot; | &quot;all&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;EQUIV&gt;</td>
+    <td>::=</td>
+    <td>&quot;&#8596;&quot; | &quot;&#8660;&quot; | &quot;&lt;-&gt;&quot; |
+      &quot;&lt;=&gt;&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;IMPLY&gt;</td>
+    <td>::=</td>
+    <td>&quot;&#8594;&quot; | &quot;&#8658;&quot; | &quot;-&gt;&quot; |
+      &quot;=&gt;&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;OR&gt;</td>
+    <td>::=</td>
+    <td>&quot;&#8744;&quot; | &quot;|&quot; | &quot;||&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;XOR&gt;</td>
+    <td>::=</td>
+    <td>&quot;&#8744;&#775;&quot; | &quot;xor&quot; | &quot;^&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;AND&gt;</td>
+    <td>::=</td>
+    <td>&quot;&#8743;&quot; | &quot;&amp;&quot; | &quot;&amp;&amp;&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;NOT&gt;</td>
+    <td>::=</td>
+    <td>&quot;¬&quot; | &quot;~&quot; | &quot;!&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;EQUAL&gt;</td>
+    <td>::=</td>
+    <td>&quot;=&quot; | &quot;==&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;UNEQUAL&gt;</td>
+    <td>::=</td>
+    <td>&quot;&#8800;&quot; | &quot;!=&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;LESS&gt;</td>
+    <td>::=</td>
+    <td>&quot;&lt;&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;GREATER&gt;</td>
+    <td>::=</td>
+    <td>&quot;&gt;&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;LESS_EQUAL&gt;</td>
+    <td>::=</td>
+    <td>&quot;&#8804;&quot; | &quot;=&lt;&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;GREATER_EQUAL&gt;</td>
+    <td>::=</td>
+    <td>&quot;&#8805;&quot; | &quot;&gt;=&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;LAMBDA&gt;</td>
+    <td>::=</td>
+    <td>&quot;&#955;&quot; | &quot;\\&quot;</td>
+  </tr>
+</table>
+
+</body>
+
+</html>

@@ -63,6 +63,8 @@ import java.text.SimpleDateFormat;
 
 import java.util.logging.Logger;
 import java.util.logging.Level;
+import orbital.logic.imp.Signature;
+import orbital.logic.imp.Expression;
 
 /**
  * Implementation of modern but classical predicate logic (first-order logic).
@@ -795,6 +797,8 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	     * @invariant sorted, i.e. precedenceOf[i] < precedenceOf[i+1]
 	     * @todo if Resolution would not need them, we could also directly embed LogicFunctions, here
 	     */
+	    {LogicFunctions.apply,       // "@"
+	     new NotationSpecification(500, "xfx", Notation.INFIX)},
 	    //@fixme debug why the thing ~(a->a) is displayed as ~a->a etc.  Use BESTFIX!
 	    {Predicates.equal,            // "="
 	     new NotationSpecification(700, "xfx", Notation.INFIX)},
@@ -826,7 +830,9 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    {LogicFunctions.forall,       // "°"
 	     new NotationSpecification(950, "fxx", Notation.PREFIX)},
 	    {LogicFunctions.exists,       // "?"
-	     new NotationSpecification(950, "fxx", Notation.PREFIX)}
+	     new NotationSpecification(950, "fxx", Notation.PREFIX)},
+	    {LogicFunctions.lambda,       // "\\"
+	     new NotationSpecification(1100, "fxx", Notation.PREFIX)}
 	}, false);
     private static final Signature _coreSignature = _coreInterpretation.getSignature();
     /**
@@ -923,6 +929,146 @@ public class ClassicalLogic extends ModernLogic implements Logic {
     		}
 		public String toString() { return "?"; }
 	    };
+
+	//@xxx trick for functions that never get called
+    	public static final BinaryFunction lambda = new BinaryFunction() {
+		/*private static*/ final Specification specification = new Specification(new Class[] {
+		    Object.class, Object.class
+		}, Function.class);
+    		public Object apply(Object x, Object t) {
+		    throw new AssertionError("this method never gets called since lambda cannot be interpreted truthh-functionally, but already receives a structural modification in compose(...)");
+    		}
+		public String toString() { return "\\"; }
+	    };
+    	public static final BinaryFunction apply = new BinaryFunction() {
+		/*private static*/ final Specification specification = new Specification(new Class[] {
+		    Function/*_<A,B>_*/.class, Object/*_>A<_*/.class
+		}, Object/*_>B<_*/.class);
+    		public Object apply(Object f, Object g) {
+		    throw new AssertionError("this method never gets called since compose cannot be interpreted truthh-functionally, but already receives a structural modification in compose(...)");
+    		}
+		public String toString() { return "@"; }
+	    };
+    }
+
+    //@xxx get rid of these shared static variables
+    static final Symbol APPLY = _coreSignature.get("@", new Expression[2]);
+    static final Symbol LAMBDA  = _coreSignature.get("\\", new Expression[2]);
+    public Expression compose(Symbol op, Expression arguments[]) throws java.text.ParseException {
+	if (op == null)
+	    throw new NullPointerException("illegal arguments: operator " + op + " composed with " + MathUtilities.format(arguments));
+        if (!op.isCompatible(arguments))
+	    throw new java.text.ParseException("operator " + op + " not applicable to " + arguments.length + " arguments " + MathUtilities.format(arguments), ClassicalLogic.COMPLEX_ERROR_OFFSET);
+
+	// handle special cases of term construction, first
+	if (op.equals(APPLY))
+	    switch (arguments.length - 1) {
+	    case 1:
+		return new ModernFormula.CompositeVariableFormula(this, (Formula)arguments[0], (Formula)arguments[1]);
+	    default:
+		throw new UnsupportedOperationException("only unary application f(x) has been implemented");
+	    }
+	else if (op.equals(LAMBDA)) {
+	    assert arguments.length == 2;
+	    assert arguments[0] instanceof ModernFormula.AtomicSymbol : "Symbols when converted to formulas become AtomicSymbols";
+	    Symbol x = (Symbol) ((Formula)arguments[0]).getSignature().iterator().next();
+	    assert x.isVariable() : "we only form lambda abstractions with respect to variables";
+	    return createLambdaProp(x, (Formula) arguments[1]);
+	} else
+	    return super.compose(op, arguments);
+    }
+    
+    /**
+     * Term constructor &lambda;&#8728; on propositions.
+     * The &lambda;-operator cannot be interpreted truth-functionally but needs structural
+     * information about t prior to evaluating that.
+     * @see orbital.logic.trs.Substitutions#lambda
+     */
+    private final Formula createLambdaProp(Symbol x, Formula t) {
+	return new LambdaAbstractionFormula(this, x, (Formula)t);
+    }
+
+    /**
+     * Formulas of the form &lambda;x.t, for functions constructed per &lambda;-abstraction.
+     * <p>
+     * This class ensures the non-truth-functional interpretation
+     * I(&lambda;x.t) := (a&#8614;I&lt;x/a&gt;(t)) = (a&#8614;I(t[x&#8614;a]).
+     * It usually uses the first form of semantic modification, instead of the
+     * second variant of syntactic substitution (which requires that a is syntactically well-formed).
+     * </p>
+     * @author Andr&eacute; Platzer
+     * @version 2002/07/15
+     * @see orbital.logic.trs.Substitutions#lambda
+     */
+    private static class LambdaAbstractionFormula extends ModernFormula implements Function.Composite {
+	private final Symbol x;
+	private final Formula term;
+	public LambdaAbstractionFormula(Logic logic, Symbol x, Formula term) {
+	    super(logic);
+	    this.x = x;
+	    this.term = term;
+	}
+
+	public Functor getCompositor() {
+	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
+	}
+	public Object getComponent() {
+	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
+	}
+	public void setCompositor(Functor f) {
+	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
+	}
+	public void setComponent(Object g) {
+	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
+	}
+	public Notation getNotation() {
+	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
+	}
+	public void setNotation(Notation notation) {
+	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
+	}
+	    
+	
+	// implementation of orbital.logic.imp.Expression interface
+        public Signature getSignature() {
+	    Signature sigma = new SignatureBase(term.getSignature());
+	    sigma.add((Symbol)x);
+	    return sigma;
+        }
+
+	public Set getFreeVariables() {
+	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
+	}
+
+	public Set getBoundVariables() {
+	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
+	}
+
+	public Set getVariables() {
+	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
+	}
+
+	public Object apply(Object i) {
+	    final Interpretation I = (Interpretation)i;
+	    // return I(&lambda;x.t)
+	    return new Function() {
+		    public Object apply(Object a) {
+			// interpret term in the modification I<x/a> of I.
+			Map modif = new HashMap();
+			modif.put(x, a);
+			Interpretation modification =
+			    new InterpretationBase(new SignatureBase(Collections.singleton(x)), modif);
+			Interpretation modifiedI =
+			    new QuickUnitedInterpretation(modification, I);
+			System.err.println(modifiedI + "\nper modification <" + x + "/" + a + "> in " + term);
+			return term.apply(modifiedI);
+		    }
+		};
+	}
+	public String toString() {
+	    //@todo use notation like all others do
+	    return "\\" + x + "." + term;
+	}
     }
 
 
@@ -1003,21 +1149,30 @@ public class ClassicalLogic extends ModernLogic implements Logic {
      * but may optionally be used to implement a naive calculus.
      * @pre sigma is only a signature of propositional logic
      * @return all &Sigma;-Interpretations that are valid in this Logic (i.e. that can be formed with Signature &Sigma;).
+     * @xxx somehow in a formula like (\x. x>2)(7) the numbers 2, and 7 are also subject to interpretation by true or false.
      */
     private Interpretation[] createAllInterpretations(Signature sigma) {
 	if (sigma == null)
 	    throw new NullPointerException("invalid signature: " + sigma);
-	for (Iterator it = sigma.iterator(); it.hasNext(); ) {
+	Signature sigmaComb = new SignatureBase(sigma);
+	for (Iterator it = sigmaComb.iterator(); it.hasNext(); ) {
 	    final Symbol s = (Symbol)it.next();
 	    final Specification spec = s.getSpecification();
-	    if (spec.arity() > 0 || spec.getReturnType() != Boolean.class)
-		throw new IllegalArgumentException("a signature of propositional logic should not contain " + s);
+	    if (spec.arity() == 0 && spec.getReturnType() == Boolean.class)
+		// ordinary propositional logic
+		;
+	    else if (spec.arity() == 0 && !s.isVariable() && orbital.math.Scalar.class.isAssignableFrom(spec.getReturnType()))
+		// forget about interpreting _fixed_ constants @xxx generalize concept
+		it.remove();
+	    else
+		throw new IllegalArgumentException("a signature of propositional logic should not contain " + s + " with specification " + spec);
 	}
-	Combinatorical   comb = Combinatorical.getPermutations(sigma.size(), 2, true);
+
+	Combinatorical   comb = Combinatorical.getPermutations(sigmaComb.size(), 2, true);
 	Interpretation[] all = new Interpretation[comb.count()];
 	for (int i = 0; i < all.length; i++) {
-	    Interpretation I = new InterpretationBase(sigma, new HashMap());
-	    Iterator	   it = sigma.iterator();
+	    Interpretation I = new InterpretationBase(sigmaComb, new HashMap());
+	    Iterator	   it = sigmaComb.iterator();
 	    int[] c = comb.next();
 	    for (int s = 0; it.hasNext(); s++)
 		I.put(it.next(), c[s] == 0 ? Boolean.FALSE : Boolean.TRUE);
@@ -1044,7 +1199,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    public Signature getSignature() {
 		return SignatureBase.EMPTY;
 	    }
-	    Object interpret(Interpretation I) {return Boolean.TRUE;}
+	    public Object apply(Object I) {return Boolean.TRUE;}
 	    public String toString() {return "";}
 	    public Formula not() {
 		// optimized display, otherwise EMPTY.not().toString() = "~"

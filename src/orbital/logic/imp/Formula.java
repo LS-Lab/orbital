@@ -89,6 +89,7 @@ import java.util.Set;
  * @see ExpressionSyntax#createAtomic
  * @see <a href="{@docRoot}/DesignPatterns/Interpreter.html">Interpreter</a>
  * @see "Daniel Leivant. Higher order logic, Chapter 3.6 Formulas as higher order functions. In: Dov M. Gabbay, editor, Handbook of Logic in Artificial Intelligence and Logic Programming, pages 247-248. Oxford University Press. 1994"
+ * @note boolean formulas (of propositional logic) can also be represented with (reduced) OBDDs, for performance in some applications.
  */
 public interface Formula extends Expression, Function/*<Interpretation, Object>*/ {
 	
@@ -396,6 +397,9 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      * <p>
      * Sometimes, this is also denoted as &#8896;<sub>x</sub> A.
      * </p>
+     * <p>
+     * &forall; is not truth-functional.
+     * </p>
      * @param x is a symbol for all elements of the world.
      * @pre x.isVariable()
      * @throws UnsupportedOperationException if this quantifier is not supported by the representation.
@@ -406,6 +410,9 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      * Existential-quantifier exists: &exist;x A.
      * <p>
      * Sometimes, this is also denoted as &#8897;<sub>x</sub> A.
+     * </p>
+     * <p>
+     * &forall; is not truth-functional.
      * </p>
      * @param x is an element of the world.
      * @pre x.isVariable()

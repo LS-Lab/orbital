@@ -14,35 +14,32 @@ import orbital.logic.functor.Functor;
  * An interpretation associates the symbols in a signature
  * with the entities in the world (for semantics).
  * The arbitrary symbols in the signature are given a meaning with an interpretation, only.
- * An interpretation is a mapping from signs to interpretants (alias referents).
  * <p>
+ * A (denotational) interpretation is a mapping from signs to interpretants (alias referents).
  * More precisely
  * <dl class="def">
  *   <dt id="interpretation">interpretation</dt>
  *   <dd>
- *     an interpretation is a map
- *     I:&Sigma;&rarr;&#8899;<sub>n&isin;<b>N</b></sub>(<span class="set">D</span><sup>n</sup>&rarr;<span class="set">D</span>) &cup; &#8899;<sub>n&isin;<b>N</b></sub>&weierp;(<span class="set">D</span><sup>n</sup>)
- *     mapping
+ *     an interpretation I:&Sigma;&rarr;<span class="set">D</span> is a familiy of maps
+ *     I:&Sigma;<sub>&tau;</sub>&rarr;<span class="set">D</span><sub>&tau;</sub>
+ *     for each type &tau;, with
  *     <ul>
- *       <li>function-symbols to functions f:<span class="set">D</span><sup>n</sup>&rarr;<span class="set">D</span> according to their
- *         arity and type</li>
- *       <li>predicate-symbols to relations &rho;&sube;<span class="set">D</span><sup>n</sup> according to
- *         their arity and type</li>
- *       <li><!-- @todo generalize to PL2 by removing? -->variables to <span class="set">D</span> according to their type</li>
+ *       <li>I maps symbols of type &tau; to elements of <span class="set">D</span><sub>&tau;</sub>.</li>
+ *       <li><span class="set">D</span><sub>t</sub> := <span class="set">Boole</span> := {True,False} for the type t of truth-values.</li>
+ *       <li><span class="set">D</span><sub>e</sub> = <span class="set">D</span> is a set called universe or domain of I for the type e of entities.
+ *         It is non-empty by presupposition of existence.</li>
+ *       <li><span class="set">D</span><sub>&sigma;&rarr;&tau;</sub> := Map(<span class="set">D</span><sub>&sigma;</sub>,<span class="set">D</span><sub>&tau;</sub>) = <span class="set">D</span><sub>&tau;</sub><sup><span class="set">D</span><sub>&sigma;</sub></sup>.</li>
+ *       <li><span class="set">D</span><sub>(&sigma;)</sub> = <span class="set">D</span><sub>&sigma;&rarr;t</sub> &cong; &weierp;(<span class="set">D</span><sub>&sigma;</sub>)
+ *         since the predicate type (&sigma;) abbreviates the function type &sigma;&rarr;t,
+ *         and we can identify subsets &rho;&isin;&weierp;(<span class="set">D</span><sub>&sigma;</sub>)
+ *         with their characterisitic functions &chi;<sub>&rho;</sub>&isin;Map(<span class="set">D</span><sub>&sigma;</sub>,{True,False}).</li>
  *     </ul>
- *     The set <span class="set">D</span> is called the universe or domain of I.
- *     Also we identify (<span class="set">D</span><sup>0</sup>&rarr;<span class="set">D</span>)&cong;<span class="set">D</span>, as well as &weierp;(<span class="set">D</span><sup>0</sup>)={&empty;,{()}}&cong;{True,False}.
+ *     Also we can identify (<span class="set">D</span><sup>0</sup>&rarr;<span class="set">D</span>)&cong;<span class="set">D</span>, as well as &weierp;(<span class="set">D</span><sup>0</sup>)={&empty;,{()}}&cong;{True,False}.
  *     <!-- @todo is this a good idea in conjunction with the strong type system of Java? -->
- *     <br /><h5 class="compact">Note:</h5>
- *     It is convenient to abbreviate the set of all functions and relations on <span class="set">D</span> as
- *     <center><span class="set">D&#8405;</span> := <span class="set">D&#771;</span> := &#8899;<sub>n&isin;<b>N</b></sub>(<span class="set">D</span><sup>n</sup>&rarr;<span class="set">D</span>) &cup; &#8899;<sub>n&isin;<b>N</b></sub>&weierp;(<span class="set">D</span><sup>n</sup>)</center>
- *     For higher-order logic, we could even assume that the universe <span class="set">D</span> already contains all
- *     functions and relations on <span class="set">D</span>, which means that
- *     <center><span class="set">D&#8405;</span> = <span class="set">D&#771;</span> = &#8899;<sub>n&isin;<b>N</b></sub>(<span class="set">D</span><sup>n</sup>&rarr;<span class="set">D</span>) &cup; &#8899;<sub>n&isin;<b>N</b></sub>&weierp;(<span class="set">D</span><sup>n</sup>)</center>
  *   </dd>
  *   <dt>homomorphism</dt>
  *   <dd>
- *     Let I:&Sigma;&rarr;<span class="set">D&#771;</span> be an interpretation.
+ *     Let I:&Sigma;&rarr;<span class="set">D</span> be an interpretation.
  *     <table border="0">
  *       <tr>
  *         <td colspan="4">&nbsp;&phi;:&Sigma;&cup;Term(&Sigma;)&cup;Formula(&Sigma;)&rarr;<span class="set">D</span>&cup;<span class="set">D</span>&cup;Boole
@@ -65,12 +62,12 @@ import orbital.logic.functor.Functor;
  *   </dd>
  *   <dt>truth-functional</dt>
  *   <dd>
- *     If for every interpretation I:&Sigma;&rarr;<span class="set">D&#771;</span> there is a unique continuation
+ *     If for every interpretation I:&Sigma;&rarr;<span class="set">D</span> there is a unique continuation
  *     &phi;:&Sigma;&cup;Term(&Sigma;)&cup;Formula(&Sigma;)&rarr;<span class="set">D</span>&cup;<span class="set">D</span>&cup;Boole
  *     that is a homomorphism of &Sigma;-expressions, i.e.
  *     <center>&phi;|&Sigma; = I and &phi; is homomorph</center>
- *     Then the logic is called truth-functionally,
- *     and this unique homomorphism is called the (expression) evaluation or truth-function
+ *     Then the logic is called truth-functional,
+ *     and that unique homomorphism &phi; is called the (expression) evaluation or truth-function,
  *     which is again denoted by I.
  *     Note that the homomorphism conditions for &phi; include
  *     <div>
@@ -79,8 +76,6 @@ import orbital.logic.functor.Functor;
  *     &phi;(P&or;Q) = &phi;(P)&or;&phi;(Q),
  *     &phi;(P&rarr;Q) = &phi;(P)&rarr;&phi;(Q) etc.
  *     </div>
- *     Here the logical operators on <span class="set">D</span>, like &not;,&and;,&or;,&rarr; etc., denote their
- *     fixed core interpretation.
  *     <p>
  *     If a logic is truth-functional, the semantics of a combined formula
  *     can be defined with the combined semantics of the components and junctors.
@@ -157,14 +152,13 @@ import orbital.logic.functor.Functor;
  * <dl class="def">
  *   <dt>elementar equivalence</dt>
  *   <dd>
- *     Two interpretations I:&Sigma;&rarr;<span class="set">D&#771;</span>, and J:&Sigma;&rarr;<span class="set">E&#8405;</span> are elementary equivalent, iff
+ *     Two interpretations I:&Sigma;&rarr;<span class="set">D</span>, and J:&Sigma;&rarr;<span class="set">E</span> are elementary equivalent, iff
  *     <center>Theory({I}) = Theory({J})</center>
  *     i.e. they satisfy the same formulas.
- *     The 
  *   </dd>
  *   <dt>homomorphism</dt>
  *   <dd>
- *     Let I:&Sigma;&rarr;<span class="set">D&#771;</span>, J:&Sigma;&rarr;<span class="set">E&#8405;</span> be two interpretations.
+ *     Let I:&Sigma;&rarr;<span class="set">D</span>, J:&Sigma;&rarr;<span class="set">E</span> be two interpretations.
  *     <table border="0">
  *       <tr>
  *         <td colspan="4">&nbsp;&phi;:<span class="set">D</span>&rarr;<span class="set">E</span>
@@ -184,7 +178,7 @@ import orbital.logic.functor.Functor;
  *         <td>if p&isin;&Sigma;<sub>n</sub> is a predicate, d<sub>1</sub>,...,d<sub>n</sub>&isin;<span class="set">D</span></td>
  *       </tr>
  *     </table>
- *     The interpretations I:&Sigma;&rarr;<span class="set">D&#771;</span>, and J:&Sigma;&rarr;<span class="set">E&#8405;</span>
+ *     The interpretations I:&Sigma;&rarr;<span class="set">D</span>, and J:&Sigma;&rarr;<span class="set">E</span>
  *     are <dfn>isomorph</dfn> if there is an
  *     isomorphism &phi;:<span class="set">D</span>&rarr;<span class="set">E</span>, i.e. a bijective homomorphism.
  *     Isomorph interpretations are elementary equivalent
@@ -276,9 +270,9 @@ public interface Interpretation extends Map/*<Symbol, Object>*/ {
     /**
      * Returns the union of two interpretations.
      * @see orbital.util.Setops#union(java.util.Collection,java.util.Collection)
-     * @param i2 the interpretation to merge with this one, resulting in aa new interpretation.
-     *  If a symbol is contained in both interpretations, the value of i2 will precede over
-     *  the value of this.
+     * @param i2 the interpretation to merge with this one, resulting in a new interpretation.
+     *  (If a symbol is contained in both interpretations, the value of i2 will precede over
+     *  the value of this.)
      * @return i &cup; i2.
      * @post RES.getClass() == getClass() && this.equals(OLD)
      */

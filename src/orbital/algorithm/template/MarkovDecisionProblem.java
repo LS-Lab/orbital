@@ -18,6 +18,7 @@ import orbital.util.Utility;
  * A <dfn>Markov decision problem</dfn> (MDP) for a Markov decision process is a
  * mathematical model for making sense of some classes of problems.
  * An MDP is a special kind of sequential decision problem.
+ * It is a combinatorical optimization problem as long as the state space is discrete.
  * It is characterized by
  * <ul>
  *  <li>a {@link TransitionModel transition model} with a transition relation.

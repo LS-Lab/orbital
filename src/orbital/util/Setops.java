@@ -621,6 +621,7 @@ public final class Setops {
      *  If false, orderBy comparator will be used reverse.
      * @return a filter that selects the specified data from the source of data it is applied upon.
      * @see <a href="{@docRoot}/DesignPatterns/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+     * @see Filters
      */
     public static final Function/**<Collection &cup; Iterator, Collection>**/ createSelection(final Function/*<Collection, Collection>*/ what,
 											      final Predicate where,
@@ -659,13 +660,14 @@ public final class Setops {
      * <span class="keyword">FROM</span> <var>ObjectCollection</var>
      * <span class="keyword">WHERE</span> <var>Predicate</var>
      * <span class="keyword">ORDER BY</span> <var>Comparator</var> <span class="keyword">ASC</span>|<span class="keyword">DESC</span>.</p>
-     * @param what states what data in the collection is requested. All if null.
+     * @param what states what data in the collection is requested. All if null. See Also {@link Filters}.
      * @param from sets the source of data.
      * @param where states what predicate is checked as condition for selecting data elements. None if null.
      * @param orderBy states how to sort every two data elements. No sorting if null.
      * @param asc whether to use ascending order, or descending.
      *  If false, orderBy comparator will be used reverse.
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+     * @see Filters
      */
     public static final Collection select(Function/*<Collection, Collection>*/ what,
 					  Collection from,

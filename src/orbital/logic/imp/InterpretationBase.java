@@ -125,7 +125,8 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
 
     public Object put(Object symbol, Object value) {
 	validate(symbol);
-	assert validate(symbol, value) : "referent " + value + " must conform to the specification " + ((Symbol) symbol).getSpecification() + " of the symbol " + symbol;
+	if (!validate(symbol, value))
+	    throw new IllegalArgumentException("referent " + value + " must conform to the specification " + ((Symbol) symbol).getSpecification() + " of the symbol " + symbol);
 	return super.put(symbol, value);
     } 
 
@@ -133,7 +134,8 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
 	if (sigma != null)
 	    for (Iterator it = associations.entrySet().iterator(); it.hasNext(); ) {
 		Map.Entry e = (Map.Entry) it.next();
-		assert validate(e.getKey(), e.getValue()) : "referent " + e.getValue() + " must conform to the specification " + ((Symbol) e.getKey()).getSpecification() + " of the symbol " + e.getKey();
+		if (!validate(e.getKey(), e.getValue()))
+		    throw new IllegalArgumentException("referent " + e.getValue() + " must conform to the specification " + ((Symbol) e.getKey()).getSpecification() + " of the symbol " + e.getKey());
 		if (!sigma.contains(e.getKey()))
 		    throw new IllegalArgumentException("symbol " + e.getKey() + " not in signature. Association map is invalid for this signature.");
 	    }
@@ -207,7 +209,7 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
 	if (getDelegatee() == null)
 	    return "I<null>";
 	StringBuffer str = new StringBuffer("I<");
-	Iterator	 it = entrySet().iterator();
+	Iterator     it = entrySet().iterator();
 	while (it.hasNext())
 	    try {
 		Entry e = (Entry) it.next();
@@ -233,12 +235,18 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
 	    throw (ClassCastException) new ClassCastException("exception during validation of '" + symbol + "'").initCause(ex);
 	}
     }
-	
+
+    /**
+     * Validates that a referent has a valid type for the type specification of symbol.
+     * @todo enhance type checks
+     */
     private final boolean validate(Object symbol, Object referent) {
 	Functor.Specification spec = ((Symbol) symbol).getSpecification();
 	return spec.arity() != 0
 	    ? referent instanceof Functor && spec.isConform((Functor) referent)
-	    : !(referent instanceof Functor) || spec.isConform((Functor) referent);
+	    : referent instanceof Functor
+	    ? spec.isConform((Functor) referent)
+	    : spec.getReturnType().isInstance(referent);
     }
 
     /**

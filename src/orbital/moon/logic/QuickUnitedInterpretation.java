@@ -10,8 +10,11 @@ import orbital.logic.imp.Interpretation;
 import orbital.logic.imp.InterpretationBase;
 import orbital.logic.imp.Signature;
 import java.util.Map;
+import java.util.Set;
+import java.util.Collection;
 import java.util.NoSuchElementException;
 
+import java.util.Collections;
 import orbital.logic.functor.Functor;
 
 /**
@@ -31,7 +34,8 @@ class QuickUnitedInterpretation extends InterpretationBase {
     private Interpretation i2;
 
     /**
-     * Construct a new interpretation which is the quick union of two other interpretations.
+     * Construct a new interpretation which is the (quick) union of two other interpretations.
+     * i1 &cup; i2 = i1.union(i2)
      * @param i1 the first (preferred) interpretation to consider.
      * @param i2 the second interpretation to consider if the first does not understand a symbol,
      *  i.e. if the signature of the first does not contain a symbol.
@@ -64,6 +68,10 @@ class QuickUnitedInterpretation extends InterpretationBase {
 	}
     } 
 
+    public void clear() {
+	throw new UnsupportedOperationException();
+    } 
+
     public Object remove(Object symbol) {
 	throw new UnsupportedOperationException();
     } 
@@ -82,12 +90,34 @@ class QuickUnitedInterpretation extends InterpretationBase {
 	}
 	catch (NoSuchElementException trial) {}
 	return i2.containsKey(symbol);
-    } 
+    }
 
-    public boolean contains(Object symbol) {
-	return containsKey(symbol);
-    } 
+    public boolean containsValue(Object v) {
+	throw new UnsupportedOperationException();
+    }
 
+    public boolean isEmpty() {
+	return i1.isEmpty() && i2.isEmpty();
+    }
+
+    public int size() {
+	throw new UnsupportedOperationException();
+    }
+
+    public Set entrySet() {
+	//@internal optimizable
+	return Collections.unmodifiableSet(i2.union(i1).entrySet());
+    }
+
+    public Set keySet() {
+	//@internal optimizable
+	return Collections.unmodifiableSet(i2.union(i1).keySet());
+    }
+
+    public Collection values() {
+	//@internal optimizable
+	return Collections.unmodifiableCollection(i2.union(i1).values());
+    }
 
     // Extended operations.
 

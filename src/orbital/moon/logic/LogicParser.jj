@@ -13,8 +13,6 @@
 options {
     LOOKAHEAD = 1;
     STATIC = false;
-    //@todo should set UNICODE_INPUT instead, but that doesn't understand UTF-8.
-    //    JAVA_UNICODE_ESCAPE = true;
     UNICODE_INPUT = true;
 }
 
@@ -63,7 +61,9 @@ import java.util.Iterator;
  * @todo (we should be able to use LogicParser to find out the
  * Signature, adapt it such that he can find out new symbols like in
  * ~p(X) the predicate p/1 and object variable X)
- * @xxx "disambiguate" and disallow acception of $p(x) as $p (x) and °p(x) as °p (x) and alike 
+ * @xxx "disambiguate" and disallow acception of $p(x) as $p (x) and °p(x) as °p (x) and alike
+ * @todo get rid of all this exception wrapping and unwrapping by wrapping the final java.text.ParseException inside an unchecked exception once, and unwrap it once
+ * @internal note that all this nested lookahead with a lot of backtracking kills performance.
  */
 public class LogicParser {
     private static final Specification INTEGER_LITERAL_TYPE = new Specification(0, orbital.math.Integer.class);
@@ -83,7 +83,6 @@ public class LogicParser {
     /**
      * The accumulated signature already occured in the current scope of the current
      * {@link #parseFormulas(Logic) parsing process}.
-     * @internal note that we do not yet implement a real scope, since the binding quantifiers do not yet remove their variables again after having parsed their main expression A in (forall x A)
      */
     protected Signature scopeSymbolMap;
 
@@ -194,24 +193,25 @@ public class LogicParser {
     }
 
     /**
-     * n-ary predicates.
-     * @see Logic#compose(String,Expression[])
+     * n-ary predicates or functions.
+     * @param type specifies the result type. Object.class for functions, and Boolean.class for predicates.
+     * @see Logic#compose(Symbol,Expression[])
      */
-    protected Expression applyPredicate(Token optok, Expression[] a) throws ParseException {
+    protected Expression apply(Token optok, Expression[] a, Class type) throws ParseException {
     	final String op = optok.image;
 	try {
-	    return syntax.compose(new SymbolBase(op, new Specification(a.length), new NotationSpecification(a.length)), a);
+	    return syntax.compose(new SymbolBase(op, new Specification(a.length, type), new NotationSpecification(a.length)), a);
     	}
     	catch (java.text.ParseException ex) {throw newParseException(ex.getMessage(), optok);}
     }
+
     /**
-     * n-ary functions.
-     * @see Logic#compose(String,Expression[])
+     * Wraps calls to {@link Logic#compose(Symbol,Expression[])} in an exception handling block.
+     * @param optok the token that initiated this operation (used in case of ParseExceptions to define the position).
      */
-    protected Expression applyFunction(Token optok, Expression[] a) throws ParseException {
-    	final String op = optok.image;
+    private Expression composeWrapper(Token optok, Symbol op, Expression[] a) throws ParseException {
 	try {
-	    return syntax.compose(new SymbolBase(op, new Specification(a.length, Object.class), new NotationSpecification(a.length)), a);
+	    return syntax.compose(op, a);
     	}
     	catch (java.text.ParseException ex) {throw newParseException(ex.getMessage(), optok);}
     }
@@ -220,14 +220,30 @@ public class LogicParser {
 
     /**
      * declare a new symbol.
-     * @todo undeclare symbols at the end of the scope.
      */
     private void declare(Symbol x) throws ParseException {
     	if (x == null)
 	    throw new NullPointerException("illegal symbol " + x);
-	if (!x.isVariable())
+	else if (!x.isVariable())
 	    throw new java.lang.AssertionError("parser would only combine quantifiers with variable symbols " + x);
 	scopeSymbolMap.add(x);
+    }
+
+    /**
+     * undeclare a declared symbol at the end of its scope.
+     * @todo should we better call undeclare in a finally block?
+     */
+    private void undeclare(Symbol x) throws ParseException {
+    	if (x == null)
+	    throw new NullPointerException("illegal symbol " + x);
+	else if (!x.isVariable())
+	    throw new java.lang.AssertionError("parser would only combine quantifiers with variable symbols " + x);
+	// we don't do anything because of the problem with nested occurrences (see below)
+	if (false) {
+	    boolean changed = scopeSymbolMap.remove(x);
+	    //assert changed : "removing a symbol from scope changes the scope";
+	    //@xxx (except for nested occurrences like in "all x ((all x p(x)) | q(x))")
+	}
     }
 
     private Symbol symbolFor(String signifier) {
@@ -281,11 +297,6 @@ SPECIAL_TOKEN : /* COMMENTS */
 | <MULTI_LINE_COMMENT: "/*" (~["*"])* "*" ("*" | (~["*","/"] (~["*"])* "*"))* "/">
 }
 
-TOKEN :
-{
-    < EOS: "." >
-}
-
 // operator tokens
 TOKEN :
 {
@@ -309,7 +320,7 @@ TOKEN :
 | <LESS_EQUAL: "\u2264" | "=<">
 | <GREATER_EQUAL: "\u2265" | ">=">
 
-| <LAMBDA : "\\" | "\u03bb">
+| <LAMBDA: "\u03bb" | "\\">
 }
 
 /**
@@ -373,7 +384,12 @@ Expression FreeDeclarationExpression() :
 {
     (tok = <DECLARE_FREE> x = Variable() {declare(x);xs.add(x);})*
     a = QuantifiedExpression()
-    {return a;}
+	{
+	    for (Iterator i = xs.iterator(); i.hasNext(); ) {
+		undeclare((Symbol) i.next());
+	    }
+	    return a;
+	}
 }
 
 // quantifiers
@@ -385,8 +401,11 @@ Expression QuantifiedExpression() :
     ((tok = <FORALL> | tok = <EXISTS>) x = Variable() {declare(x);xs.add(x);})*
     a = EquivalenceExpression()
 	{
-	    for (Iterator i = xs.iterator(); i.hasNext(); )
-		a = combine(tok, (Symbol) i.next(), a);
+	    for (Iterator i = xs.iterator(); i.hasNext(); ) {
+		Symbol y = (Symbol) i.next();
+		a = combine(tok, y, a);
+		undeclare(y);
+	    }
 	    return a;
 	}
 }
@@ -436,33 +455,17 @@ Expression UnaryExpression() :
 {Token tok;Expression f;}
 {
     tok = <NOT> f = UnaryExpression() {return combine(tok, f);}
-    | f = EqualityExpression()
+    | f = PrimaryExpression()
 	{return f;}
 }
 
-// relational operators
-
-Expression EqualityExpression() :
-{Token tok;Expression a,b;}
-{
-    a = RelationalExpression() ( (tok = <EQUAL> | tok = <UNEQUAL>) b = RelationalExpression() {a = combine(tok, a, b);} )*
-	{return a;}
-}
-
-Expression RelationalExpression() :
-{Token tok;Expression a,b;}
-{
-    a = PrimaryExpression() ( ( tok = <LESS> | tok = <GREATER> | tok = <LESS_EQUAL> | tok = <GREATER_EQUAL> ) b = PrimaryExpression() {a = combine(tok, a, b);} )*
-	{return a;}
-}
-
-
-// primary formulas that have truth values
-
+/**
+ * primary formulas that have truth values
+ */
 Expression PrimaryExpression() :
 {Expression a;}
 {
-    (
+    (LOOKAHEAD(Atom())  //@xxx sure?
      a = Atom()
      |	"(" a = expression() ")"
      )
@@ -471,7 +474,7 @@ Expression PrimaryExpression() :
 
 /* IDENTIFIERS */
 
-//@note must be below the keyword tokens like "and", "xor"
+//@note must be below the keyword tokens like "and", "xor" due to (first) longest-possible match
 TOKEN :
 {
     <IDENTIFIER : <LETTER> (<LETTER>|<DIGIT_OR_ALIKE>)* >
@@ -487,7 +490,7 @@ TOKEN :
 Expression Atom() :
 {Expression a;String r;Token tok;String s = "";Symbol sym;}
 {
-    LOOKAHEAD(<IDENTIFIER> "(")
+    LOOKAHEAD(2)
 	a = CompoundFormula()
 	{return a;}
     |
@@ -503,22 +506,66 @@ Expression Atom() :
  * Parse a compound predicate formula for the current logic.
  */
 Expression CompoundFormula() :
-{Token tok; Expression[] arg;}
+{Token tok; Expression p; Expression[] arg;}
 {
+    LOOKAHEAD(2)
+    p = EqualityExpression()
+        {return p;}
+|
     tok = <IDENTIFIER> arg = Arguments()
-	{return applyPredicate(tok, arg);}
+	{return apply(tok, arg, Boolean.class);}
+|
+    p = LambdaAbstractionPredicate() arg = Arguments()
+        {
+	    if (arg.length != 1)
+	        throw new ParseException("only unary application of lambda abstractions is supported");
+	    //@todo which exact optok token?
+	    return composeWrapper(null, ClassicalLogic.APPLY, new Expression[] {p, arg[0]});
+	}
+}
+
+// relational operators (special predicates on terms)
+
+// Expression EqualityExpression() :
+// {Token tok;Expression a,b;}
+// {
+//     a = RelationalExpression() ( (tok = <EQUAL> | tok = <UNEQUAL>) b = RelationalExpression() {a = combine(tok, a, b);} )*
+// 	{return a;}
+// }
+
+// Expression RelationalExpression() :
+// {Token tok;Expression a,b;}
+// {
+//     a = term() ( ( tok = <LESS> | tok = <GREATER> | tok = <LESS_EQUAL> | tok = <GREATER_EQUAL> ) b = term() {a = combine(tok, a, b);} )*
+// 	{return a;}
+// }
+
+//@internal unified EqualityExpression() and RelationalExpression() such that we can replace * by + thereby making it impossible to parse a simple <IDENTIFIER> as such an EqualityExpression()
+//  we ensure that we only take this path if EqualityExpression() does not reduce to <IDENTIFIER>
+Expression EqualityExpression() :
+{Token tok;Expression a,b;}
+{
+    //@xxx these extra brackets have been introduced temporarily in order to enable parsing (\x. 7>=x)(8) which somehow does not work otherwise (due to a LOOKAHEAD problem)
+    "("
+	a = term() ( (tok = <EQUAL> | tok = <UNEQUAL> | tok = <LESS> | tok = <GREATER> | tok = <LESS_EQUAL> | tok = <GREATER_EQUAL> ) b = term() {a = combine(tok, a, b);} )+
+    ")"
+	{return a;}
 }
 
 /**
  * &lambda;-abstraction predicate.
  * @see orbital.logic.trs.Substitutions#lambda
  */
-Predicate LambdaAbstractionPredicate() :
-{Symbol x;Expression t;}
+Expression LambdaAbstractionPredicate() :
+{Token tok; Symbol x;Expression t;}
 {
-    "(" <LAMBDA> x = Variable() "." {declare(x);} t = expression() ")"
-{return (Predicate) Substitutions.lambda.apply(x, t);}
+    "(" tok = <LAMBDA> x = Variable() "." {declare(x);} t = expression() ")"
+{
+    undeclare(x);
+    return composeWrapper(tok, ClassicalLogic.LAMBDA, new Expression[] {syntax.createAtomic(x), t});
 }
+}
+
 
 
 // true (non-formula) functional term parsing
@@ -529,47 +576,56 @@ Predicate LambdaAbstractionPredicate() :
 Expression term() :
 {Expression a;}
 {
-    (	LOOKAHEAD(<IDENTIFIER> "(")
-	a = CompoundTerm()
-	|	a = PrimaryTerm()
-	)
+    a  = PrimaryTerm()
 {return a;}
+}
+
+Expression PrimaryTerm() :
+{Expression a;}
+{
+    (   LOOKAHEAD(2)
+     	a = CompoundTerm()
+     |  a = AtomicTerm()
+     |	"(" a = expression() ")"
+     )
+	{return a;}
 }
 
 /**
  * Parse a compound function term for the current logic.
  */
 Expression CompoundTerm() :
-{Token tok; Expression[] arg;}
+{Token tok; Expression p; Expression[] arg;}
 {
     tok = <IDENTIFIER> arg = Arguments()
-	{return applyFunction(tok, arg);}
+	{return apply(tok, arg, Object.class);}
+|
+    p = LambdaAbstraction() arg = Arguments()
+        {
+	    if (arg.length != 1)
+	        throw new ParseException("only unary application of lambda abstractions is supported");
+	    //@todo which exact optok token?
+	    return composeWrapper(null, ClassicalLogic.APPLY, new Expression[] {p, arg[0]});
+	}
 }
 
 /**
  * &lambda;-abstraction term.
  *@todo let our surroundings (not us) also support variables/constants bound to &lambda;-abstractions.
- * @xxx note that (\x.2*x) can be parsed as expected because .2 is not a real number but only 0.2
- * @todo could we define the semantics by Logic.compose("lambda", new Expression[] {t}) such that the someone can remember the (now fixed) interpretation as a function?
+ * @note that (\x.2*x) can be parsed as expected because .2 is not a real number but only 0.2
+ * @todo could we define the semantics by Logic.compose("lambda", new Expression[] {x, t}) such that someone can remember the (now fixed) interpretation as a function?
  *  However since substitution can be performed here, on a purely syntactical basis,
  *  it would be enough if the logic (or someone else) could somehow remember definitions for its interpretation.
  * @see orbital.logic.trs.Substitutions#lambda
  */
-Function LambdaAbstraction() :
-{Symbol x;Expression t;}
+Expression LambdaAbstraction() :
+{Token tok;Symbol x;Expression t;}
 {
-    "(" <LAMBDA> x = Variable() "." {declare(x);} t = term() ")"
-{return (Function) Substitutions.lambda.apply(x, t);}
+    "(" tok = <LAMBDA> x = Variable() "." {declare(x);} t = term() ")"
+{
+    undeclare(x);
+    return composeWrapper(tok, ClassicalLogic.LAMBDA, new Expression[] {syntax.createAtomic(x), t});
 }
-
-Expression PrimaryTerm() :
-{Expression a;}
-{
-    (
-     a = AtomicTerm()
-     |	"(" a = expression() ")"
-     )
-	{return a;}
 }
 
 /**

@@ -75,27 +75,17 @@
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod13">EqualityExpression</A></TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod13">PrimaryExpression</A></TD>
 </TR>
 <TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod13">EqualityExpression</A></TD>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod13">PrimaryExpression</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod14">RelationalExpression</A> ( ( &lt;EQUAL&gt; | &lt;UNEQUAL&gt; ) <A HREF="#prod14">RelationalExpression</A> )*</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod14">Atom</A> | "(" <A HREF="#prod2">expression</A> ")" )</TD>
 </TR>
 <TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod14">RelationalExpression</A></TD>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod14">Atom</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod15">PrimaryExpression</A> ( ( &lt;LESS&gt; | &lt;GREATER&gt; | &lt;LESS_EQUAL&gt; | &lt;GREATER_EQUAL&gt; ) <A HREF="#prod15">PrimaryExpression</A> )*</TD>
-</TR>
-<TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod15">PrimaryExpression</A></TD>
-<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod16">Atom</A> | "(" <A HREF="#prod2">expression</A> ")" )</TD>
-</TR>
-<TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod16">Atom</A></TD>
-<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod17">CompoundFormula</A></TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod15">CompoundFormula</A></TD>
 </TR>
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE></TD>
@@ -105,47 +95,67 @@
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod18">NumberLiteralValue</A></TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod16">NumberLiteralValue</A></TD>
 </TR>
 <TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod17">CompoundFormula</A></TD>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod15">CompoundFormula</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IDENTIFIER&gt; <A HREF="#prod19">Arguments</A></TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod17">EqualityExpression</A></TD>
 </TR>
 <TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod20">LambdaAbstractionPredicate</A></TD>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IDENTIFIER&gt; <A HREF="#prod18">Arguments</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod19">LambdaAbstractionPredicate</A> <A HREF="#prod18">Arguments</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod17">EqualityExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"(" <A HREF="#prod20">term</A> ( ( &lt;EQUAL&gt; | &lt;UNEQUAL&gt; | &lt;LESS&gt; | &lt;GREATER&gt; | &lt;LESS_EQUAL&gt; | &lt;GREATER_EQUAL&gt; ) <A HREF="#prod20">term</A> )+ ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod19">LambdaAbstractionPredicate</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
 <TD ALIGN=LEFT VALIGN=BASELINE>"(" &lt;LAMBDA&gt; <A HREF="#prod5">Variable</A> "." <A HREF="#prod2">expression</A> ")"</TD>
 </TR>
 <TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod21">term</A></TD>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod20">term</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod22">CompoundTerm</A> | <A HREF="#prod23">PrimaryTerm</A> )</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod21">PrimaryTerm</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod21">PrimaryTerm</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod22">CompoundTerm</A> | <A HREF="#prod23">AtomicTerm</A> | "(" <A HREF="#prod2">expression</A> ")" )</TD>
 </TR>
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod22">CompoundTerm</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IDENTIFIER&gt; <A HREF="#prod19">Arguments</A></TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IDENTIFIER&gt; <A HREF="#prod18">Arguments</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod24">LambdaAbstraction</A> <A HREF="#prod18">Arguments</A></TD>
 </TR>
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod24">LambdaAbstraction</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>"(" &lt;LAMBDA&gt; <A HREF="#prod5">Variable</A> "." <A HREF="#prod21">term</A> ")"</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"(" &lt;LAMBDA&gt; <A HREF="#prod5">Variable</A> "." <A HREF="#prod20">term</A> ")"</TD>
 </TR>
 <TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod23">PrimaryTerm</A></TD>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod23">AtomicTerm</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod25">AtomicTerm</A> | "(" <A HREF="#prod2">expression</A> ")" )</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod25">LiteralValue</A> | <A HREF="#prod26">ConstantOrVariable</A> )</TD>
 </TR>
 <TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod25">AtomicTerm</A></TD>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod25">LiteralValue</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod26">LiteralValue</A> | <A HREF="#prod27">ConstantOrVariable</A> )</TD>
-</TR>
-<TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod26">LiteralValue</A></TD>
-<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod18">NumberLiteralValue</A></TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod16">NumberLiteralValue</A></TD>
 </TR>
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE></TD>
@@ -153,7 +163,7 @@
 <TD ALIGN=LEFT VALIGN=BASELINE>&lt;STRING_LITERAL&gt;</TD>
 </TR>
 <TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod18">NumberLiteralValue</A></TD>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod16">NumberLiteralValue</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
 <TD ALIGN=LEFT VALIGN=BASELINE>&lt;INTEGER_LITERAL&gt;</TD>
 </TR>
@@ -163,7 +173,7 @@
 <TD ALIGN=LEFT VALIGN=BASELINE>&lt;FLOATING_POINT_LITERAL&gt;</TD>
 </TR>
 <TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod27">ConstantOrVariable</A></TD>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod26">ConstantOrVariable</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
 <TD ALIGN=LEFT VALIGN=BASELINE>&lt;IDENTIFIER&gt;</TD>
 </TR>
@@ -173,15 +183,114 @@
 <TD ALIGN=LEFT VALIGN=BASELINE>&lt;IDENTIFIER&gt;</TD>
 </TR>
 <TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod19">Arguments</A></TD>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod18">Arguments</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>"(" ( <A HREF="#prod28">Argument_list</A> )? ")"</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"(" ( <A HREF="#prod27">Argument_list</A> )? ")"</TD>
 </TR>
 <TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod28">Argument_list</A></TD>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod27">Argument_list</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod21">term</A> ( "," <A HREF="#prod21">term</A> )*</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod20">term</A> ( "," <A HREF="#prod20">term</A> )*</TD>
 </TR>
 </TABLE>
 </BODY>
 </HTML>
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>BNF for LogicParser.jj Part 2</title>
+</head>
+
+<body>
+
+<h2 style="text-align:center">TERMINALS</h2>
+
+<table>
+  <tr>
+    <td align="right">&lt;DECLARE_FREE&gt;</td>
+    <td>::=</td>
+    <td>&quot;$&quot; | &quot;free&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;EXISTS&gt;</td>
+    <td>::=</td>
+    <td>&quot;&#8707;&quot; | &quot;?&quot; | &quot;some&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;FORALL&gt;</td>
+    <td>::=</td>
+    <td>&quot;&#8704;quot; | &quot;°&quot; | &quot;all&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;EQUIV&gt;</td>
+    <td>::=</td>
+    <td>&quot;&#8596;&quot; | &quot;&#8660;&quot; | &quot;&lt;-&gt;&quot; |
+      &quot;&lt;=&gt;&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;IMPLY&gt;</td>
+    <td>::=</td>
+    <td>&quot;&#8594;&quot; | &quot;&#8658;&quot; | &quot;-&gt;&quot; |
+      &quot;=&gt;&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;OR&gt;</td>
+    <td>::=</td>
+    <td>&quot;&#8744;&quot; | &quot;|&quot; | &quot;||&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;XOR&gt;</td>
+    <td>::=</td>
+    <td>&quot;&#8744;&#775;&quot; | &quot;xor&quot; | &quot;^&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;AND&gt;</td>
+    <td>::=</td>
+    <td>&quot;&#8743;&quot; | &quot;&amp;&quot; | &quot;&amp;&amp;&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;NOT&gt;</td>
+    <td>::=</td>
+    <td>&quot;¬&quot; | &quot;~&quot; | &quot;!&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;EQUAL&gt;</td>
+    <td>::=</td>
+    <td>&quot;=&quot; | &quot;==&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;UNEQUAL&gt;</td>
+    <td>::=</td>
+    <td>&quot;&#8800;&quot; | &quot;!=&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;LESS&gt;</td>
+    <td>::=</td>
+    <td>&quot;&lt;&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;GREATER&gt;</td>
+    <td>::=</td>
+    <td>&quot;&gt;&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;LESS_EQUAL&gt;</td>
+    <td>::=</td>
+    <td>&quot;&#8804;&quot; | &quot;=&lt;&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;GREATER_EQUAL&gt;</td>
+    <td>::=</td>
+    <td>&quot;&#8805;&quot; | &quot;&gt;=&quot;</td>
+  </tr>
+  <tr>
+    <td align="right">&lt;LAMBDA&gt;</td>
+    <td>::=</td>
+    <td>&quot;&#955;&quot; | &quot;\\&quot;</td>
+  </tr>
+</table>
+
+</body>
+
+</html>

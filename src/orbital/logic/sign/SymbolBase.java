@@ -21,6 +21,9 @@ import orbital.logic.imp.Symbol;
 import orbital.logic.functor.Notation$NotationSpecification;
 import orbital.logic.functor.Functor$Specification;
 
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
 /**
  * Default representation of a syntactic symbol in a signature.
  * A (syntactic) symbol is a triple &lang;name, spec, notation&rang;
@@ -207,9 +210,11 @@ public class SymbolBase implements Symbol, Serializable {
 		return false;
 	return true;
     }
-	
+
     public String toString() {
     	Specification specification = getSpecification();
+	if (Logger.global.isLoggable(Level.FINEST))
+	    return getSignifier() + specification;
     	// short representation for symbols of arity 0
     	return specification.arity() == 0
 	    ? getSignifier()

@@ -77,6 +77,7 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
      * @see <a href="{@docRoot}/DesignPatterns/enum.html">typesafe enum pattern</a>
      * @internal typesafe enumeration pattern class currently specifies whole OptionIterator
      * @invariant a.equals(b) &hArr; a==b
+     * @todo turn into a Decorator of GeneralSearchProblem instead
      */
     public static abstract class LocalSelection {
 	/**
@@ -136,7 +137,7 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
     // enumeration of LocalSelections
     
     /**
-     * accept the best improvement (like this implementation).
+     * accept the best improvement (default).
      * Although we have a local convergence criterion then, that
      * variant is no good for very high branching factors (or
      * expensive expansions).
@@ -269,6 +270,7 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
         }
         /**
          * Select the node with min f(n).
+	 * @see PackageUtilities#min
          */
         protected Object/*>S<*/ select() {
 	    Comparator comparator = new EvaluationComparator(HillClimbing.this);

@@ -39,9 +39,9 @@ Wolfram Research.
 
 (*NotebookFileLineBreakTest
 NotebookFileLineBreakTest*)
-(*NotebookOptionsPosition[    232689,       7124]*)
-(*NotebookOutlinePosition[    233376,       7148]*)
-(*  CellTagsIndexPosition[    233332,       7144]*)
+(*NotebookOptionsPosition[    232852,       7127]*)
+(*NotebookOutlinePosition[    233541,       7151]*)
+(*  CellTagsIndexPosition[    233497,       7147]*)
 (*WindowFrame->Normal*)
 
 
@@ -2912,7 +2912,10 @@ Cell["odd symmetric?", "Text"],
 Cell[CellGroupData[{
 
 Cell[BoxData[{
-    \(squash[x_]\  := \ ArcTan[x]\), "\[IndentingNewLine]", 
+    \( (*\ perhaps\ also\ use\ \(2\/\[Pi]\) 
+            ArcTan[x] : \[DoubleStruckCapitalR] \[Rule] \([\(-1\), 
+            1]\)\ instead\ *) \[IndentingNewLine]squash[x_]\  := \ 
+      ArcTan[x]\), "\[IndentingNewLine]", 
     \(Plot[squash[x], \ {x, \ \(-rng\), \ rng}]\), "\[IndentingNewLine]", 
     \(D[squash[x], \ x]\), "\[IndentingNewLine]", 
     \(Plot[
@@ -3623,7 +3626,7 @@ Cell[BoxData[
     TagBox[\(\[SkeletonIndicator]  Graphics  \[SkeletonIndicator]\),
       False,
       Editable->False]], "Output"]
-}, Open  ]]
+}, Closed]]
 }, Closed]],
 
 Cell[CellGroupData[{
@@ -7123,9 +7126,9 @@ Cell[BoxData[""], "Input"]
 }, Open  ]]
 },
 FrontEndVersion->"4.0 for Microsoft Windows",
-ScreenRectangle->{{0, 800}, {0, 527}},
+ScreenRectangle->{{0, 1280}, {0, 920}},
 ScreenStyleEnvironment->"Working",
-WindowSize->{549, 498},
+WindowSize->{1066, 791},
 WindowMargins->{{0, Automatic}, {Automatic, 0}}
 ]
 
@@ -7149,7 +7152,7 @@ CellTagsIndex->{}
 Notebook[{
 
 Cell[CellGroupData[{
-Cell[1739, 51, 49, 0, 150, "Title"],
+Cell[1739, 51, 49, 0, 105, "Title"],
 Cell[1791, 53, 114, 3, 33, "Text"],
 
 Cell[CellGroupData[{
@@ -7230,87 +7233,87 @@ Cell[95537, 2907, 35, 0, 31, "Subsection"],
 Cell[95575, 2909, 30, 0, 33, "Text"],
 
 Cell[CellGroupData[{
-Cell[95630, 2913, 306, 6, 90, "Input"],
-Cell[95939, 2921, 10313, 320, 70, 3042, 226, "GraphicsData", "PostScript", \
+Cell[95630, 2913, 469, 9, 114, "Input"],
+Cell[96102, 2924, 10313, 320, 186, 3042, 226, "GraphicsData", "PostScript", \
 "Graphics"],
-Cell[106255, 3243, 130, 3, 70, "Output"],
-Cell[106388, 3248, 49, 1, 70, "Output"],
-Cell[106440, 3251, 13337, 368, 70, 3421, 241, "GraphicsData", "PostScript", \
+Cell[106418, 3246, 130, 3, 29, "Output"],
+Cell[106551, 3251, 49, 1, 42, "Output"],
+Cell[106603, 3254, 13337, 368, 186, 3421, 241, "GraphicsData", "PostScript", \
 "Graphics"],
-Cell[119780, 3621, 130, 3, 70, "Output"]
+Cell[119943, 3624, 130, 3, 29, "Output"]
+}, Closed]]
+}, Closed]],
+
+Cell[CellGroupData[{
+Cell[120122, 3633, 35, 0, 31, "Subsection"],
+Cell[120160, 3635, 39, 0, 33, "Text"],
+
+Cell[CellGroupData[{
+Cell[120224, 3639, 303, 6, 90, "Input"],
+Cell[120530, 3647, 16128, 423, 70, 3785, 266, "GraphicsData", "PostScript", \
+"Graphics"],
+Cell[136661, 4072, 130, 3, 70, "Output"],
+Cell[136794, 4077, 40, 1, 70, "Output"],
+Cell[136837, 4080, 15687, 439, 70, 4182, 292, "GraphicsData", "PostScript", \
+"Graphics"],
+Cell[152527, 4521, 130, 3, 70, "Output"]
 }, Open  ]]
 }, Closed]],
 
 Cell[CellGroupData[{
-Cell[119959, 3630, 35, 0, 31, "Subsection"],
-Cell[119997, 3632, 39, 0, 33, "Text"],
+Cell[152706, 4530, 38, 0, 31, "Subsection"],
+Cell[152747, 4532, 25, 0, 33, "Text"],
 
 Cell[CellGroupData[{
-Cell[120061, 3636, 303, 6, 90, "Input"],
-Cell[120367, 3644, 16128, 423, 70, 3785, 266, "GraphicsData", "PostScript", \
+Cell[152797, 4536, 317, 6, 90, "Input"],
+Cell[153117, 4544, 9777, 287, 70, 2748, 196, "GraphicsData", "PostScript", \
 "Graphics"],
-Cell[136498, 4069, 130, 3, 70, "Output"],
-Cell[136631, 4074, 40, 1, 70, "Output"],
-Cell[136674, 4077, 15687, 439, 70, 4182, 292, "GraphicsData", "PostScript", \
+Cell[162897, 4833, 130, 3, 70, "Output"],
+Cell[163030, 4838, 35, 1, 70, "Output"],
+Cell[163068, 4841, 8089, 277, 70, 2871, 208, "GraphicsData", "PostScript", \
 "Graphics"],
-Cell[152364, 4518, 130, 3, 70, "Output"]
+Cell[171160, 5120, 130, 3, 70, "Output"]
 }, Open  ]]
 }, Closed]],
 
 Cell[CellGroupData[{
-Cell[152543, 4527, 38, 0, 31, "Subsection"],
-Cell[152584, 4529, 25, 0, 33, "Text"],
+Cell[171339, 5129, 43, 0, 31, "Subsection"],
+Cell[171385, 5131, 56, 0, 33, "Text"],
 
 Cell[CellGroupData[{
-Cell[152634, 4533, 317, 6, 90, "Input"],
-Cell[152954, 4541, 9777, 287, 70, 2748, 196, "GraphicsData", "PostScript", \
+Cell[171466, 5135, 380, 8, 105, "Input"],
+Cell[171849, 5145, 18307, 611, 186, 6664, 463, "GraphicsData", "PostScript", \
 "Graphics"],
-Cell[162734, 4830, 130, 3, 70, "Output"],
-Cell[162867, 4835, 35, 1, 70, "Output"],
-Cell[162905, 4838, 8089, 277, 70, 2871, 208, "GraphicsData", "PostScript", \
+Cell[190159, 5758, 130, 3, 29, "Output"],
+Cell[190292, 5763, 82, 1, 32, "Output"],
+Cell[190377, 5766, 15425, 524, 186, 5807, 401, "GraphicsData", "PostScript", \
 "Graphics"],
-Cell[170997, 5117, 130, 3, 70, "Output"]
+Cell[205805, 6292, 130, 3, 29, "Output"]
 }, Open  ]]
 }, Closed]],
 
 Cell[CellGroupData[{
-Cell[171176, 5126, 43, 0, 31, "Subsection"],
-Cell[171222, 5128, 56, 0, 33, "Text"],
+Cell[205984, 6301, 38, 0, 31, "Subsection"],
+Cell[206025, 6303, 138, 3, 52, "Text"],
 
 Cell[CellGroupData[{
-Cell[171303, 5132, 380, 8, 105, "Input"],
-Cell[171686, 5142, 18307, 611, 186, 6664, 463, "GraphicsData", "PostScript", \
+Cell[206188, 6310, 543, 11, 150, "Input"],
+Cell[206734, 6323, 35, 1, 70, "Output"],
+Cell[206772, 6326, 13398, 409, 70, 3916, 287, "GraphicsData", "PostScript", \
 "Graphics"],
-Cell[189996, 5755, 130, 3, 29, "Output"],
-Cell[190129, 5760, 82, 1, 32, "Output"],
-Cell[190214, 5763, 15425, 524, 186, 5807, 401, "GraphicsData", "PostScript", \
+Cell[220173, 6737, 130, 3, 70, "Output"],
+Cell[220306, 6742, 132, 3, 70, "Output"],
+Cell[220441, 6747, 11903, 353, 70, 3388, 243, "GraphicsData", "PostScript", \
 "Graphics"],
-Cell[205642, 6289, 130, 3, 29, "Output"]
-}, Open  ]]
-}, Closed]],
-
-Cell[CellGroupData[{
-Cell[205821, 6298, 38, 0, 31, "Subsection"],
-Cell[205862, 6300, 138, 3, 52, "Text"],
-
-Cell[CellGroupData[{
-Cell[206025, 6307, 543, 11, 150, "Input"],
-Cell[206571, 6320, 35, 1, 70, "Output"],
-Cell[206609, 6323, 13398, 409, 70, 3916, 287, "GraphicsData", "PostScript", \
-"Graphics"],
-Cell[220010, 6734, 130, 3, 70, "Output"],
-Cell[220143, 6739, 132, 3, 70, "Output"],
-Cell[220278, 6744, 11903, 353, 70, 3388, 243, "GraphicsData", "PostScript", \
-"Graphics"],
-Cell[232184, 7099, 130, 3, 70, "Output"]
+Cell[232347, 7102, 130, 3, 70, "Output"]
 }, Open  ]],
 
 Cell[CellGroupData[{
-Cell[232351, 7107, 175, 3, 50, "Input"],
-Cell[232529, 7112, 38, 1, 70, "Output"],
-Cell[232570, 7115, 38, 1, 70, "Output"]
+Cell[232514, 7110, 175, 3, 50, "Input"],
+Cell[232692, 7115, 38, 1, 70, "Output"],
+Cell[232733, 7118, 38, 1, 70, "Output"]
 }, Open  ]],
-Cell[232623, 7119, 26, 0, 30, "Input"]
+Cell[232786, 7122, 26, 0, 30, "Input"]
 }, Closed]]
 }, Open  ]]
 }, Open  ]]

@@ -16,7 +16,7 @@ import orbital.util.Pair;
  */
 final class PackageUtilities {
     /**
-     * Get the minimum argument and its f-value.
+     * Get the minimum argument (and its f-value).
      * This method is a combination of min and arg min.
      * @param choices the available choices in M.
      * @param f the evaluation function f:M&rarr;<b>R</b>.

@@ -20,7 +20,7 @@ rem once Emacs knows Unicode we could switch Javadoc to -charset "utf-8"
     if not exist doc-files mkdir doc-files
     for %%U in (*.jj) do call jjdoc -OUTPUT_FILE:doc-files\%%~nU_grammar.html %%U
     if errorlevel 1 goto Errored
-    copy /A doc-files\LogicParser_grammar.html + doc-files\LogicParser_lexical.html
+    copy /A doc-files\LogicParser_grammar.html + doc-files\LogicParser_lexical.html doc-files\LogicParser_grammar.html
     popd
 
 

@@ -49,6 +49,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     protected ModernFormula(Logic underlyingLogic) {
 	this.logic = underlyingLogic;
     }
+
     /**
      * The set of all binding expressions (i.e. instances of BindingExpression).
      * Represented as an IdentityHashSet = IdentityHashMap.keySet().
@@ -123,12 +124,6 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     }
 
     
-    public Object apply(Object/*>Interpretation<*/ I) {
-	return interpret((Interpretation) I);
-    }
-    //@internal convenient helper method
-    abstract Object interpret(Interpretation I);
-
     // Formula implementation
 
     public Set getVariables() {
@@ -242,7 +237,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    return Collections.EMPTY_SET;
         }
 
-	Object interpret(Interpretation I) {
+	public Object apply(Object i) {
+	    Interpretation I = (Interpretation)i;
 	    if (I == null)
 		throw new IllegalStateException("cannot get the truth-value of a symbol without an interpretation");
             
@@ -251,10 +247,10 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 		return interpretationOf(I.get(symbol));
 	    }
 	    catch (NullPointerException ex) {
-		throw (IllegalStateException) new IllegalStateException("truth-value of '" + symbol + "' has an invalid interpretation, due to " + ex + " in " + I).initCause(ex);
+		throw (IllegalStateException) new IllegalStateException("interpretation of '" + symbol + "' is invalid, due to " + ex + " in " + I).initCause(ex);
 	    }
 	    catch (IllegalArgumentException ex) {
-		throw (IllegalStateException) new IllegalStateException("truth-value of '" + symbol + "' has an invalid interpretation, due to " + ex + " in " + I).initCause(ex);
+		throw (IllegalStateException) new IllegalStateException("interpretation of '" + symbol + "' is invalid, due to " + ex + " in " + I).initCause(ex);
 	    }
 	}
 		
@@ -306,7 +302,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
         public Signature getSignature() {
 	    return core ? SignatureBase.EMPTY : super.getSignature();
 	}
-	Object interpret(Interpretation I) {
+	public Object apply(Object I) {
 	    return referent;
 	}
     }
@@ -405,10 +401,6 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 
 	public Set getBoundVariables() {
 	    return inner.getBoundVariables();
-	}
-
-	Object interpret(Interpretation I) {
-	    return apply(I);
 	}
 
 	// identical to @see orbital.logic.functor.Compositions.CompositeFunction
@@ -523,10 +515,6 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 				right.getBoundVariables());
 	}
 
-	Object interpret(Interpretation I) {
-	    return apply(I);
-	}
-
 	// identical to @see orbital.logic.functor.Functionals.BinaryCompositeFunction
 	public Functor getCompositor() {
 	    return outer;
@@ -636,10 +624,6 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 				outer.getBoundVariables());
 	}
 
-	Object interpret(Interpretation I) {
-	    return apply(I);
-	}
-
 	/**
 	 * The functions applied are subject to interpretation.
 	 */
@@ -741,10 +725,6 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 
 	public Set getBoundVariables() {
 	    return outer.getBoundVariables();
-	}
-
-	Object interpret(Interpretation I) {
-	    return apply(I);
 	}
 
 	/**
@@ -861,10 +841,6 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 				Setops.union(left.getBoundVariables(),
 					     right.getBoundVariables()),
 				outer.getBoundVariables());
-	}
-
-	Object interpret(Interpretation I) {
-	    return apply(I);
 	}
 
 	/**

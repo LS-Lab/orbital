@@ -26,7 +26,7 @@ import java.text.ParseException;
  * <h4>1 Syntax</h4>
  * <dl class="def">
  *   <dt id="Signature">Signature:</dt>
- *   <dd>A Signature &Sigma;
+ *   <dd>A signature &Sigma;
  *   is the set of the syntactic symbols applicable for objects.
  *   Those are symbolic names for constants, functions<i>/arity</i>, variables, predicates<i>/arity</i>, objects, properties of objects, relations between objects.
  *   </dd>
@@ -44,14 +44,14 @@ import java.text.ParseException;
  * </dl>
  * <h4>2 Semantics</h4>
  * <dl class="def">
- * <!-- single symbol interpretation is secondness, but full function I is thirdness, I guess. -->
+ * <!-- single symbol interpretation is secondness, although full function I is thirdness, I guess. -->
  *   <dt id="Interpretation">Interpretations:</dt>
- *   <dd>A &Sigma;-Interpretation <span class="Formula">I&isin;Int(&Sigma;)</span> of a Signature &Sigma;
+ *   <dd>A &Sigma;-interpretation <span class="Formula">I&isin;Int(&Sigma;)</span> of a signature &Sigma;
  *   is the association of the syntactic symbols in &Sigma; with the semantic elements in the world.
  *   Such elements are objects of the universe, functions within the model world and relations in it.
  *   Only the interpretation gives a semantic meaning to the arbitrary names of the signature.
  *   </dd>
- * <!-- @todo is this really secondness, still? Apply Peirce's phenomenology (the categorization of concepts and relations into the classes of Phanerons (Firstness,Secondness,Thirdness) -->
+ * <!-- @todo is this really secondness, still? Apply Peirce's phenomenology (the categorization of concepts and relations into the classes of Phanerons (Firstness,Secondness,Thirdness)) -->
  *   <dt id="SatisfactionRelation">Satisfaction Relations:</dt>
  *   <dd>A (semantic) satisfaction relation <span class="Formula">&#8871; &sube; Int(&Sigma;)&times;Formula(&Sigma;)</span> of a signature &Sigma;
  *   is the connection between syntactic representation formulas and their semantic interpretations for the world.

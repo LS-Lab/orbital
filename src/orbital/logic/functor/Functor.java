@@ -41,14 +41,17 @@ import orbital.util.Utility;
  *   <dt>functions</dt> <dd class="@todo">the return-type will be any type and the symbol f/n is interpreted as a function-object.</dd>
  *   <dt>functionals</dt> <dd>(a higher-order function) are special functions where the return-type or any of the argument-types will be a kind of <code>Functor</code>.</dd>
  * </dl>
- * <a id="FunctionalRelationalDuality">Duality between functions and predicates:</a>
+ * <h5 id="FunctionalRelationalDuality">Duality between functions and predicates:</h5>
  * Every function f/n:A&rarr;B induces an implicit predicate with the same extensional semantics
  * <div><sub>f</sub>P/(n+1) := <big>{(</big>a<sub>1</sub>,...,a<sub>n</sub>,f(a<sub>1</sub>,...,a<sub>n</sub>)<big>)</big> &brvbar; (a<sub>1</sub>,a<sub>2</sub>,...,a<sub>n</sub>)&isin;A<big>}</big></div>
  * If a predicate P/n&sube;A is unique with respect to a certain parameter a<sub>k</sub>
  * it induces an implicit function with the same extensional semantics
  * <div><sub>P</sub>f/(n-1) := <big>{</big>f(a<sub>1</sub>,...,a<sub>k-1</sub>,a<sub>k+1</sub>,...a<sub>n</sub>):=a<sub>k</sub> &brvbar; P(a<sub>1</sub>,a<sub>2</sub>,...,a<sub>n</sub>) is true<big>}</big></div>
- * Note however, that functions and predicates can differ intensionally regardless of their
- * extensional equality.
+ * Also, whether the extension of a predicate is specified as a subset &rho;&isin;&weierp;(A),
+ * or with its characterisitic function &chi;<sub>&rho;</sub> with &chi;<sub>&rho;</sub>(x)=1 iff x&isin;&rho;
+ * is a matter purely syntactic variant.
+ * Note however, that inspite of all this duality, functions and predicates can differ intensionally
+ * regardless of their extensional equality.
  * <p>Finally, functions, predicates, relations, and graphs are all "isomorph" anyhow!</p>
  * 
  * @version 1.0, 1997/06/13
@@ -231,9 +234,10 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
      * @see java.lang.Class#getDeclaredMethods()
      * @see java.lang.reflect.Method
      * @see java.beans.Introspector
+     * @todo how to handle Function<Object,Function<Comparable,Number>>, or parametric generics like Function<S,A>?
      */
     static class Specification implements Comparable, Serializable {
-	private static final long	serialVersionUID = 7951104941212844811L;
+	private static final long serialVersionUID = 7951104941212844811L;
 	/**
 	 * specification of the name of the method to apply.
 	 * @todo definalize reinstantiate, to allow functors with other method names than apply.
@@ -243,12 +247,12 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	/**
 	 * specification of return-type.
 	 */
-	private Class				spec_returnType = java.lang.Object.class;
+	private Class   spec_returnType = java.lang.Object.class;
 
 	/**
 	 * specification of all paramter-types.
 	 */
-	private Class[]				spec_parameterTypes = null;
+	private Class[]	spec_parameterTypes = null;
 
 	/**
 	 * Create an exact specification with all properties declared.
@@ -474,12 +478,12 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	public String toString() {
 	    String argumentTypes = typeListSpec(getParameterTypes());
 	    return "/" + arity() + ":" + (
-					  Boolean.TYPE.equals(getReturnType())
-					  // predicate
-					  ? "(" + (argumentTypes != null ? argumentTypes : "") + ")"
-					  // function
-					  : (argumentTypes != null ? argumentTypes : "{()}") + "->" + getReturnType().getName()
-					  );
+		  Boolean.TYPE.equals(getReturnType())
+		  // predicate
+		  ? "(" + (argumentTypes != null ? argumentTypes : "") + ")"
+		  // function
+		  : (argumentTypes != null ? argumentTypes : "{()}") + "->" + getReturnType().getName()
+		  );
 	} 
 
 	private static final String typeListSpec(Class[] v) {
@@ -578,24 +582,24 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	 * @permission Needs access to the functor class and will therefore call {@link java.lang.reflect.AccessibleObject#setAccessible(boolean) setAccessible(true)}.
 	 * @see #getSpecification(Functor)
 	 */
-	private static Specification getDynamicSpecification(Functor f) throws IntrospectionException {
-	    Class cls = f.getClass();
-	    try {
-		Method spec = cls.getMethod("specification", null);
-		if (Specification.class.isAssignableFrom(spec.getReturnType())) {
-		    if (!spec.isAccessible())
-			spec.setAccessible(true);
-		    return (Specification) spec.invoke(f, null);
-		}
-	    }
-	    catch (NoSuchMethodException no_valid_specification_function) {}
-	    catch (IllegalAccessException inner) {
-		throw (IntrospectionException) new IntrospectionException("invalid functor").initCause(inner);
-	    } catch (InvocationTargetException inner) {
-		throw (IntrospectionException) new IntrospectionException("functor threw").initCause(inner);
-	    } catch (ClassCastException no_valid_specification_function) {}
-	    return null;
-	} 
+// 	private static Specification getDynamicSpecification(Functor f) throws IntrospectionException {
+// 	    Class cls = f.getClass();
+// 	    try {
+// 		Method spec = cls.getMethod("specification", null);
+// 		if (Specification.class.isAssignableFrom(spec.getReturnType())) {
+// 		    if (!spec.isAccessible())
+// 			spec.setAccessible(true);
+// 		    return (Specification) spec.invoke(f, null);
+// 		}
+// 	    }
+// 	    catch (NoSuchMethodException no_valid_specification_function) {}
+// 	    catch (IllegalAccessException inner) {
+// 		throw (IntrospectionException) new IntrospectionException("invalid functor").initCause(inner);
+// 	    } catch (InvocationTargetException inner) {
+// 		throw (IntrospectionException) new IntrospectionException("functor threw").initCause(inner);
+// 	    } catch (ClassCastException no_valid_specification_function) {}
+// 	    return null;
+// 	} 
 
 	/**
 	 * Get the fixed static specification specified in the given functor class.
@@ -604,14 +608,17 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	 * <span class="keyword">static</span> <span class="keyword">final</span> <span class="Orbital">Functor.Specification</span> specification;
 	 * </pre>
 	 * or <code>null</code> if no such field exists.
+	 * Implementations may also consider non-static fields of the same name.
 	 * @permission Needs access to the functor class and will therefore call {@link java.lang.reflect.AccessibleObject#setAccessible(boolean) setAccessible(true)}.
 	 * @see #getSpecification(Functor)
 	 */
 	private static Specification getStaticSpecification(Class c) {
 	    try {
 		Field spec = c.getField("specification");
-		int	  expectedModifier = Modifier.STATIC | Modifier.FINAL;
-		if ((spec.getModifiers() & expectedModifier) == expectedModifier
+		int   expectedModifier = Modifier.STATIC | Modifier.FINAL;
+		int   requiredModifier = Modifier.FINAL;
+		if (((spec.getModifiers() & expectedModifier) == expectedModifier
+		     || (spec.getModifiers() & requiredModifier) == requiredModifier)
 		    && Specification.class.isAssignableFrom(spec.getType())) {
 		    if (!spec.isAccessible())
 			spec.setAccessible(true);

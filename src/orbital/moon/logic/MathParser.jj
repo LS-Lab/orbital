@@ -212,7 +212,7 @@ SPECIAL_TOKEN : /* COMMENTS */
 TOKEN :
 {
     < EOS: "." >
-| <LAMBDA : "\\" | "\u03bb">
+| <LAMBDA : "\u03bb" | "\\">
 }
 
 /**
@@ -403,7 +403,7 @@ MathFunctor functionApplication() :
 {
     tok = function() s = Arguments()
 	{return apply(findFunction(tok, s), s);}
-|	f = lambdaAbstraction() s = Arguments()
+|   f = lambdaAbstraction() s = Arguments()
 	{return apply(f, s);}
 }
 

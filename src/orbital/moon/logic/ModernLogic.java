@@ -80,7 +80,7 @@ abstract class ModernLogic implements Logic {
 
     public Expression compose(Symbol op, Expression arguments[]) throws java.text.ParseException {
 	if (op == null)
-	    throw new NullPointerException("illegal arguments " + op + " composed with " + MathUtilities.format(arguments));
+	    throw new NullPointerException("illegal arguments: operator " + op + " composed with " + MathUtilities.format(arguments));
         if (!op.isCompatible(arguments))
 	    throw new java.text.ParseException("operator " + op + " not applicable to " + arguments.length + " arguments " + MathUtilities.format(arguments), ClassicalLogic.COMPLEX_ERROR_OFFSET);
 
@@ -164,7 +164,7 @@ abstract class ModernLogic implements Logic {
 	    assert !Utility.containsIdenticalTo(B, null) : "empty string \"\" is not a formula, but only an empty set of formulas.";
 	    return B;
 	} catch (ParseException ex) {
-	    throw (java.text.ParseException) new java.text.ParseException(ex.currentToken.next.beginLine + ":" + ex.currentToken.next.beginColumn + ": " + ex.getMessage() + "\nexpressions: " + expressions, COMPLEX_ERROR_OFFSET).initCause(ex);
+	    throw (java.text.ParseException) new java.text.ParseException(ex.currentToken.next.beginLine + ":" + ex.currentToken.next.beginColumn + ": " + ex.getMessage() + "\nin expressions: " + expressions, COMPLEX_ERROR_OFFSET).initCause(ex);
 	}                                                                                                                                      
     }
     public Expression createExpression(String expression) throws java.text.ParseException {
@@ -180,7 +180,7 @@ abstract class ModernLogic implements Logic {
 		return x;
 	} catch (ParseException ex) {
 	    //@todo use a more verbose exception than ParseException. One that knows about beginning and ending lines and columns, cause and id.
-	    throw (java.text.ParseException) new java.text.ParseException(ex.currentToken.next.beginLine + ":" + ex.currentToken.next.beginColumn + ": " + ex.getMessage() + "\nexpression: " + expression, COMPLEX_ERROR_OFFSET).initCause(ex);
+	    throw (java.text.ParseException) new java.text.ParseException(ex.currentToken.next.beginLine + ":" + ex.currentToken.next.beginColumn + ": " + ex.getMessage() + "\nin expression: " + expression, COMPLEX_ERROR_OFFSET).initCause(ex);
 	} 
     }
     

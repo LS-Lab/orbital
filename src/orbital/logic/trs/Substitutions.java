@@ -244,7 +244,8 @@ public class Substitutions {
 
     /**
      * The &lambda;-operator of &lambda;-Calculus.
-     * <div>&lambda;:Variable&times;Expression&rarr;(Variable&rarr;Expression); (&lambda;x.f) &#8614; (x&#8614;f)</div>
+     * <div>&lambda;:&sigma;&times;&tau;&rarr;(&sigma;&rarr;&tau;); (&lambda;x.f) &#8614; (x&#8614;f)</div>
+     * Usually for &sigma;=Variable, &tau;=Expression.
      * <p>
      * The &lambda;-Calculus of Alonzo Church (1930) has the following inference rules
      * called &alpha;-conversion, &beta;-conversion, and &eta;-conversion.
@@ -300,6 +301,7 @@ public class Substitutions {
      * Applying the &lambda;-operator to a variable x and an expression f
      * results in the &lambda;-abstraction (&lambda;x.f) which is a unary function.
      * This &lambda;-abstraction could be circumscribed as the "function f with respect to x".
+     * &lambda; is the inverse operator of function application.
      * </p>
      * <p>
      * The &lambda;-operator is of course implemented as the substitution f[x&rarr;#0].
@@ -328,6 +330,7 @@ public class Substitutions {
      * @post RES.apply(a) = f[x->a]
      * @todo publizice somewhere once finished
      * @xxx solve the "problem with reverting from constant functions back to normal" perhaps by changing orbital.math.functional.Functionals#genericCompose and orbital.logic.functor.Functionals#genericCompose
+     * @todo how do we "schlucken" those parts of substitutions running through our term structure that replace x, since we have bound x. How do we allow substitutions to pass through to the term t, at all?
      */
     public static final BinaryFunction/*<Variable,Expression, Function<Variable,Expression>>*/ lambda = new BinaryFunction/*<Variable,Expression, Function<Variable,Expression>>*/() {
 	    public Object apply(Object x, Object f) {
@@ -337,7 +340,6 @@ public class Substitutions {
 		    //@xxx sure that shouldn't at least add Substitutions.createExactMatcher(x, Functions.id)? or remove the constant wrapping alltogether
 		    Substitutions.createExactMatcher(orbital.math.functional.Functions.constant(x), orbital.math.functional.Functions.id),
 		    Substitutions.createExactMatcher(x, orbital.math.functional.Functions.id)
-		    // we could as well substitute to orbital.logic.functor.Functions.id?
 		}));
     		return sigma.apply(f);
 	    }

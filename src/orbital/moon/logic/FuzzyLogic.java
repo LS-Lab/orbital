@@ -304,7 +304,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     public boolean satisfy(Interpretation I, Formula F) {
 	if (F == null)
 	    throw new NullPointerException("null is not a formula");
-	assert F instanceof FuzzyLogicFormula : "F is a formula in this logic";
+	assert F instanceof ModernFormula && getClass().isInstance(((ModernFormula)F).getUnderlyingLogic()) : "F is a formula in this logic";
         // assure core interpretation unless overwritten
         I = new QuickUnitedInterpretation(_coreInterpretation, I);
 	return MathUtilities.equals(((Number) F.apply(I)).doubleValue(), 1, 0.001);

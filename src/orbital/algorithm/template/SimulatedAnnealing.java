@@ -32,10 +32,11 @@ import java.util.logging.Level;
  * Simulated annealing problems can omit checking for solutions and simply wait until
  * the temperature drops to zero.</p>
  * <p>
- * Another possibility of using simulated annealing is to develop to a good balance of f at
- * a high temperature, first, and then decrease the temperature. Also performing
- * some optimization at temperature 0 still (equalling ordinary hill-climbing then),
- * ensures that the solution is a at least at a local optimum.
+ * Another possibility of using simulated annealing is to develop to a good stable balance of f at
+ * a high temperature, first, and then decrease the temperature. Monitoring acceptance probability
+ * ensuring to keep it at a medium rate might improve convergence.
+ * Also performing some optimization at temperature 0 still (equalling ordinary hill-climbing then),
+ * ensures that the solution is at least at a local optimum.
  * </p>
  * <p>
  * The Boltzman distribution specifies the probability of being at enery level E:=f(s) given

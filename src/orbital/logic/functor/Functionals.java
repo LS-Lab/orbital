@@ -1433,7 +1433,9 @@ public class Functionals {
      * <p>Also known as collect.</p>
      */
     public static /*<A, B>*/ Object/*>B<*/[] map(Function/*<A, B>*/ f, Object/*>A<*/[] a) {
-	//Object/*>B<*/[] r = new Object/*>B<*/[a.length]; // is not of correct sub-type
+	//Object/*>B<*/[] r = new Object/*>B<*/[a.length]; // is not yet of correct sub-type
+	//@fixme this does not create an array of type B (but of type A) since we don't actually know that at runtime (also we cannot predict it from f[0] since that may have another type than f[1] has, although they have a common supertype)
+	// so we could first use an Object[], fill it, and meanwhile calculate the supremum class S of all occuring objects, then copy it to an S[].
 	Object/*>B<*/[] r = (Object/*>B<*/[]) Array.newInstance(a.getClass().getComponentType(), a.length);
 	for (int i = 0; i < r.length; i++)
 	    r[i] = f.apply(a[i]);

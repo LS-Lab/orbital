@@ -18,8 +18,8 @@ import orbital.logic.functor.Functor.Specification;
  * <p>
  * Symbols can be names for various kinds of objects in the (logical) universe:
  * <ul>
- *  <li>object variables for objects (or individuals)</li>
- *  <li>function-symbols for functions of a specified arity denoted as function/<var>arity</var>,
+ *  <li>function-symbols for functions of type &sigma;&rarr;&tau;,
+ *    with a specified arity denoted as function/<var>arity</var>,
  *    especially including
  *    <ul>
  *      <li>constant symbols (as functions of arity 0).
@@ -30,7 +30,7 @@ import orbital.logic.functor.Functor.Specification;
  *      </li>
  *    </ul>
  *  </li>
- *  <li>predicate-symbols for relations
+ *  <li>predicate-symbols for relations of type (&sigma;)
  *    <ul>
  *      <li>atomic propositions (as predicates of arity 0).</li>
  *      <li>properties of objects (represented as unary predicates)</li>
@@ -39,12 +39,12 @@ import orbital.logic.functor.Functor.Specification;
  *  </li>
  *  <li>variables of a set V&sube;&Sigma;, where
  *    <ul>
- *      <li>object variables are variable terms</li>
+ *      <li>object variables are variable terms of type t</li>
  *      <li>function-variables are variable "frames" of functions</li>
  *      <li>predicate-variables are variable "frames" of relations</li>
  *    </ul>
  *  </li>
- *  <li>(types and type identifier predicates)</li>
+ *  <li>(perhaps types &tau; and type identifier predicates &tau;)</li>
  * </ul>
  * </p>
  * <p>
@@ -106,7 +106,7 @@ public interface Symbol extends Variable, Comparable/*<Symbol>*/{
     /**
      * Get the (arity and) type specification of this symbol.
      * @pre true
-     * @return the (arity and) type specification of this symbol.
+     * @return the (arity and) type specification &tau; of this symbol.
      */
     Specification getSpecification();
     /**

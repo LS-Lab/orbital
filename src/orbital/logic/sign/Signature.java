@@ -18,10 +18,12 @@ import java.util.SortedSet;
  * according to the arity of its symbols.
  * Then &Sigma;<sub>n</sub>&sube;&Sigma; is the subset of symbols
  * with arity n (i.e. of n arguments).
+ * It can also be partitioned into &Sigma;<sub>&tau;</sub> according to the type &tau; of its symbols.
  * Constant-symbols are defined as functions of arity 0.
  * </p>
  * <p>
- * The elements in a signature are of type {@link Symbol} for type-safety and arity dependency.
+ * The elements in a signature are of type {@link Symbol} in order to ensure type-safety
+ * and arity dependency.
  * </p>
  * 
  * @invariant &forall;s&isin;this: s instanceof {@link orbital.logic.imp.Symbol}

@@ -162,13 +162,11 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
 	}
 
 	public Object next() {
-	    //@internal optimize: this has a horrible performance if constructing states is an expensive operation, and the technique of lazy state construction is not applied. @todo Could perhaps solve by transforming GSP into a TransitionModel with separated actions() and states() with the latter constructing the state.
 	    final List actions = Setops.asList(problem.actions(state));
 	    if (actions.isEmpty())
-		//@internal note that hasNext() will not consider this case, since it is considered as an error
+		//@internal note that hasNext() will not respect this case, since it is considered as an error
 		throw new NoSuchElementException("specification hurt? there are no transitions from " + state);
 
-	    // randomly select @todo s.a. s.a.
 	    final Object/*>A<*/ a = actions.get(algorithm.getRandom().nextInt(actions.size()));
 	    final Object/*>S<*/ sp = problem.states(a, state).next();
 
