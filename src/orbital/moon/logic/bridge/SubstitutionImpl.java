@@ -6,6 +6,7 @@
 
 package orbital.moon.logic.bridge;
 import orbital.logic.trs.*;
+import orbital.logic.Composite;
 
 import orbital.logic.functor.Functor;
 import orbital.logic.functor.Function;
@@ -60,7 +61,7 @@ public class SubstitutionImpl implements Substitution, Serializable {
 	
 	
     //@todo we should not continue substituting bound variables, as in (&forall; x P(x,y))[x->t] = (&forall; x P(x,y)) or (&lambda; x . f(x))[x->t] = &lambda; x . f(x)
-    public Object apply(Object term) {
+    public Object apply(final Object term) {
 	// apply the first substitution that matches and do not descend
 	for (Iterator/*_<Matcher>_*/ i = replacements.iterator(); i.hasNext(); ) {
 	    Matcher s = (Matcher/*__*/) i.next();
@@ -75,39 +76,42 @@ public class SubstitutionImpl implements Substitution, Serializable {
 	// else if none did match
 	if (term == null)
 	    return term;
-	else if (term instanceof Functor.Composite)
+	else if (term instanceof orbital.logic.Composite)
             /*
              * distribute substitution application to all sub terms
              * f(t1,...tn)[x->s] = f[x->s](t1[x->s],...tn[x->s])	if f/n &isin; &Sigma;
              * f(t)[x->s] = f[x->s](t[x->s])	if f/n &isin; &Sigma;, t is a generalized component term
              */
 	    try {
-                Functor.Composite f = (Functor.Composite) term;
-                Functor.Composite g;
+                final orbital.logic.Composite f = (orbital.logic.Composite) term;
+		final Object substCompositor = apply(f.getCompositor());
+		final Object substComponent = apply(f.getComponent());
                 try {
-		    g = (Functor.Composite) f.getClass().newInstance();
+		    return f.construct(substCompositor,
+				       substComponent);
                 }
                 catch (Throwable illegal) {
+		    orbital.logic.Composite g;
 		    // try instantiate in another way
                     try {
-                        Constructor no_arg = f.getClass().getDeclaredConstructor(null);
+                        Constructor nullary = f.getClass().getDeclaredConstructor(null);
     	                //@xxx is there a better solution which does not require accessible tricks? Especially, this trick won't do if we want to use a TRS on maths and functions inside a Browser. See MathPlotter.html stuff
-                        if (!no_arg.isAccessible())
-			    no_arg.setAccessible(true);
-                        g = (Functor.Composite) no_arg.newInstance(null);
+                        if (!nullary.isAccessible())
+			    nullary.setAccessible(true);
+                        g = (orbital.logic.Composite) nullary.newInstance(null);
                     }
-                    catch (InvocationTargetException e) {throw (IllegalArgumentException) new IllegalArgumentException("the argument type nullary constructor threw").initCause(e.getTargetException());}
-                    catch (NoSuchMethodException e) {g = (Functor.Composite) f.getClass().newInstance();}
+                    catch (InvocationTargetException ex) {throw (IllegalArgumentException) new IllegalArgumentException("the argument type nullary constructor threw").initCause(ex.getTargetException());}
                     catch (SecurityException denied) {throw new orbital.util.InnerCheckedException("the argument type nullary constructor is not accessible", denied);}
+                    catch (NoSuchMethodException ex) {throw (RuntimeException) illegal;}
+		    g.setCompositor(substCompositor);
+		    g.setComponent(substComponent);
+		    return g;
 		}
-
-		//@todo type-safe assert g.getClass() == f.getClass() : "g is a new object of the exact same type as f";
-		g.setCompositor((Functor) apply(f.getCompositor()));
-            	g.setComponent(apply(f.getComponent()));
-            	return g;
             }
+	//@todo finally type-safe assert g.getClass() == f.getClass() : "g is a new object of the exact same type as f";
             catch (InstantiationException e) {throw (IllegalArgumentException) new IllegalArgumentException("the argument type of " + term.getClass() + " does not support a nullary constructor which is required for substitution").initCause(e);}
             catch (IllegalAccessException e) {throw (IllegalArgumentException) new IllegalArgumentException("the argument type of " + term.getClass() + " does not support a nullary constructor which is requried for substitution").initCause(e);}
+	
 	// almost identical to @see Utility#asIterator, and @see Functionals.ListableFunction
 	//@todo could we really use Functionals.ListableFunction instead? Would we benefit from that?
 	else if (term instanceof Collection)
