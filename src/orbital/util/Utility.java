@@ -222,8 +222,8 @@ public final class Utility {
 	    final Object a[] = (Object[]) o;
 	    int          hash = 0;
 	    for (int i = 0; i < a.length; i++) {
-		// recursively hashCodeAll to ensure element-wise hashCodes of (multi-dimensional) arrays, as well?
-		final int h = hashCodeAll(a[i]);
+		// recursively hashCodeSet to ensure element-wise hashCodes of (multi-dimensional) arrays, as well?
+		final int h = hashCodeSet(a[i]);
 		hash ^= h;
 	    }
 	    return hash;
@@ -232,8 +232,8 @@ public final class Utility {
 	    final int len = Array.getLength(o);
 	    int       hash = 0;
 	    for (int i = 0; i < len; i++) {
-		// recursively hashCodeAll to ensure element-wise hashCodes of (multi-dimensional) arrays, as well?
-		final int h = hashCodeAll(Array.get(o, i));
+		// recursively hashCodeSet to ensure element-wise hashCodes of (multi-dimensional) arrays, as well?
+		final int h = hashCodeSet(Array.get(o, i));
 		hash ^= h;
 	    }
 	    return hash;
