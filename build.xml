@@ -397,6 +397,15 @@
 
     </target>
 
+    <target name="doc.dist" depends="init"
+            description="generate javadoc (distrribution version)">
+        <antcall target="doc">
+            <param name="javadoc.link.jdk" value="http://java.sun.com/products/jdk/1.4/docs/api/"/>
+            <param name="javadoc.link.jdk.offline" value="true"/>
+        </antcall>
+    </target>
+
+
     <target name="jjdoc" depends="init"
             description="generate jjdoc (=> ./doc/api/)">
         <!-- @todo could also add depends="init, jjdoc.check" unless="jjdoc.uptodate"> -->
@@ -653,12 +662,8 @@
             description="create all distributions (=> ./dist/*.zip)">
     </target>
 
-    <target name="dist.notests" depends="init"
+    <target name="dist.notests" depends="init, doc.dist"
             description="create all distributions (=> ./dist/*.zip), but do not run tests">
-        <antcall target="doc">
-            <param name="javadoc.link.jdk" value="http://java.sun.com/products/jdk/1.4/docs/api/"/>
-            <param name="javadoc.link.jdk.offline" value="true"/>
-        </antcall>
         <antcall target="dist.nodoc.notests">
         </antcall>
     </target>
