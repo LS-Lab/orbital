@@ -15,18 +15,32 @@ import orbital.util.Utility;
 /**
  * Framework (template class) for Dynamic Programming Algorithms.
  * <p>
- * bottom-up technique.
+ * Requires that the problem exhibits <dfn>optimal substructure</dfn>, i.e.
+ * optimal solutions to subproblems somehow generalize to optimal solutions
+ * of the whole problem. Then each optimal solutions carries within it
+ * independent optimal solutions to its subproblems. Further requires that the
+ * <dfn>subproblems overlap</dfn>, i.e. a simple recursive formulation would
+ * revisit the same subproblem over and over again.
+ * </p>
+ * <p>
+ * bottom-up technique:
  * <ul>
- * <li> A table of all sub-instance results is constructed. </li>
- * <li> The entries corresponding to the smallest sub-instances are initiated at the
- * start of the algorithm. </li>
- * <li> The remaining entries are filled in following a precise order (that corresponds
- * to increasing sub-instance size) using only those entries that have already
- * been computed. </li>
- * <li> Each entry is calculated exactly once. </li>
- * <li> The final value computed is the solution to the initial problem instance. </li>
- * <li> Implementation is by iteration (never by recursion, even though the analysis of
- * a problem may naturally suggest a recursive solution). </li>
+ *   <li> A table of all sub-instance results is constructed. </li>
+ *   <li> The entries corresponding to the smallest sub-instances are initiated at the
+ *   start of the algorithm. </li>
+ *   <li> The remaining entries are filled in following a precise order (that corresponds
+ *   to increasing sub-instance size) using only those entries that have already
+ *   been computed. </li>
+ *   <li> Each entry is calculated exactly once. </li>
+ *   <li> The final value computed is the solution to the initial problem instance. </li>
+ *   <li> Implementation is by iteration (never by recursion, even though the analysis of
+ *   a problem may naturally suggest a recursive solution). </li>
+ * </ul>
+ * top-down technique:
+ * <ul>
+ *   <li>Use the natural but inefficient recursive algorithm to solve the problem,
+ *     and memoize results.
+ *   </li>
  * </ul>
  * </p>
  * 
