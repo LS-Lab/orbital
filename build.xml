@@ -703,4 +703,22 @@
         </echo>
     </target>
 
+    <!--
+	<target name="upload-homepage">
+		<mkdir dir="build/web/homepage" />
+		<copy todir="build/web/homepage">
+			<fileset dir="src/web" includes="**/*.html,**/*.css"/> 
+		</copy>
+		<replace dir="build/web/homepage">
+			<replacefilter token="%VERSION%"         value="${version}" />
+			<replacefilter token="%RELEASE_VERSION%" value="${release-version}" />
+		</replace>
+		<exec dir="build/web/homepage" executable="scp" failonerror="true">
+			<arg value="-r" />
+			<arg value="." />
+			<arg value="${sourceforge.www.target}" />
+		</exec>
+	</target>
+    -->
+
 </project>
