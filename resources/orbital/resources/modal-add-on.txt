@@ -15,3 +15,15 @@
 ## Fitting1998, Ex6.3.1
 
 #|= all x all y (x=y -> []x=y) ## Fitting1998, p149 and Ex7.4.2
+
+### int the following, i is short for iota
+
+|= (all x (p(x)&E(z)) -> p(z)		# Fitting1998 Ex8.2.2 in varying domain
+|= (all x <>E(x) & some x []P(x)) -> <>some x P(x)	# Fitting1998Ex8.2.3 in varying domain
+all x []E(x) |=-> []some x <>A(x) -> []<>some x A(x) 	# Fitting1998,8.9.2
+<>E(x) -> E(x) |=-> all x []A(x) -> []all x A(x) 	# Fitting1998,8.9.4
+all x []E(x) |=-> []all x some y <>R(x,y) -> all x []<>some y R(x,y) 	# Fitting1998Ex8.9.1
+|= (\x.~Phi)(t) -> ~(\x.Phi)(t)		# even for non-designating t (Fitting)
+|= D(ix.phi(x)) -> (some x phi(x) -> E(ix.phi(x)))	# Fitting1998Ex12.6.4
+E(ix.p(x)) == (\x.p(x))(ix.E(x)&p(x))	# Fitting1998 Ex12.7.3
+# locally rigid c <=> ... 		# Fitting1998,10.3.4,10.2.5
