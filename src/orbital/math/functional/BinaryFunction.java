@@ -8,16 +8,6 @@ package orbital.math.functional;
 
 import orbital.logic.functor.Functor;
 
-import orbital.logic.functor.Notation;
-
-import orbital.math.Arithmetic;
-import orbital.math.Matrix;
-import orbital.math.Values;
-
-import orbital.moon.math.AbstractFunctor;
-
-import java.awt.Dimension;
-
 /**
  * This interface encapsulates a binary function "r = f(x,y)".
  * <p>
@@ -78,93 +68,4 @@ public interface BinaryFunction/*<A1 implements Arithmetic, A2 implements Arithm
      * @see Functionals#compose(BinaryFunction, BinaryFunction, BinaryFunction)
      */
     static interface Composite extends orbital.logic.functor.BinaryFunction/*<A1,A2,B>*/.Composite, BinaryFunction/*<A1,A2,B>*/, MathFunctor.Composite {}
-}
-
-/*private static*/ abstract class AbstractBinaryFunction/*<A1 implements Arithmetic, A2 implements Arithmetic, B implements Arithmetic>*/ extends AbstractFunctor implements BinaryFunction/*<A1,A2,B>*/ {}
-
-/**
- * A ComponentCompositeFunction is a matrix-valued BinaryFunction defined with a matrix of binary component-functions.
- * 
- * @structure inherit BinaryFunction
- * @structure concretizes MathFunctor.Composite
- * @structure composite componentFunction:BinaryFunction[][] unidirectional
- * @version 0.7, 2001/02/23
- * @author  Andr&eacute; Platzer
- * @see ComponentCompositeFunction
- */
-/*enclosing class orbital.math.functional.BinaryFunction */
-class MatrixComponentCompositeBinaryFunction/*ComponentCompositeFunction<Matrix.class> */ extends MathFunctor_CompositeFunctor implements BinaryFunction {
-    private BinaryFunction componentFunction[][];
-    public MatrixComponentCompositeBinaryFunction(BinaryFunction componentFunction[][]) {
-	this(componentFunction, null);
-    }
-
-    /**
-     * Create (f<sub>i,j</sub>).
-     * @param notation specifies which notation should be used for string representations.
-     */
-    public MatrixComponentCompositeBinaryFunction(BinaryFunction componentFunction[][], Notation notation) {
-	super(notation);
-	this.componentFunction = componentFunction;
-    }
-
-    /**
-     * Get the dimension of the resulting matrix.
-     */
-    public Dimension dimension() {
-	return new Dimension(componentFunction[0].length, componentFunction.length);
-    } 
-    public Functor getCompositor() {
-	return null;
-    } 
-
-    /**
-     * Get the inner component functions applied per element.
-     */
-    public Object getComponent() {
-	return componentFunction;
-    } 
-
-    public void setCompositor(Functor f) throws IllegalArgumentException {
-	if (f != null)
-	    throw new IllegalArgumentException("cannot set compositor");
-    }
-    public void setComponent(Object g) throws ClassCastException {
-	this.componentFunction = (BinaryFunction[][]) g;
-    }
-
-    /**
-     * Called to apply the component composite function.
-     * @return (f<sub>i,j</sub>)(x) = <big>(</big>f<sub>i,j</sub>(x)<big>)</big> as a {@link orbital.math.Matrix}.
-     */
-    public Object apply(Object x, Object y) {
-	Matrix ret = Values.newInstance(dimension());
-	//@todo if we kept componentFunctions in a Matrix, we could perhaps use mapping of iterators().
-	// component-wise
-	for (int i = 0; i < dimension().height; i++)
-	    for (int j = 0; j < dimension().width; j++)
-		ret.set(i, j, (Arithmetic) componentFunction[i][j].apply(x, y));
-	return ret;
-    } 
-
-    public BinaryFunction derive() {
-	throw new UnsupportedOperationException("not yet implemented");
-    } 
-
-    public BinaryFunction integrate(int i) {
-	throw new UnsupportedOperationException("not yet implemented");
-    }
-
-    public String toString() {
-	//XXX: should be provided in superclass
-	String		 nl = System.getProperty("line.separator");
-	StringBuffer sb = new StringBuffer();
-	for (int i = 0; i < dimension().height; i++) {
-	    sb.append((i == 0 ? "" : nl) + '[');
-	    for (int j = 0; j < dimension().width; j++)
-		sb.append((j == 0 ? "" : ",\t") + componentFunction[i][j]);
-	    sb.append(']');
-	} 
-	return sb.toString();
-    }
 }

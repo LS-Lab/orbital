@@ -248,14 +248,14 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
     public/**/ static MathFunctor.Composite genericCompose(Object f) {
 	//TODO: how to access CoordinateComponentCompositeFunction now? Still needed? Efficiency?
 	if (f instanceof Function[])
-	    return new ComponentCompositeFunction((Function[]) f);
+	    return new ComponentCompositions.ComponentCompositeFunction((Function[]) f);
 	else if (f instanceof Function[][])
-	    return new MatrixComponentCompositeFunction((Function[][]) f);
+	    return new ComponentCompositions.MatrixComponentCompositeFunction((Function[][]) f);
 	//TODO: implement or think of a better way unifying all these compositions
 	/*else if (f instanceof BinaryFunction[])
 	  return new ComponentCompositeBinaryFunction((BinaryFunction[]) f);*/
 	else if (f instanceof BinaryFunction[][])
-	    return new MatrixComponentCompositeBinaryFunction((BinaryFunction[][]) f);
+	    return new ComponentCompositions.MatrixComponentCompositeBinaryFunction((BinaryFunction[][]) f);
 	throw new IllegalArgumentException("illegal type to compose " + (f == null ? "null" : f.getClass() + ""));
     }
 
