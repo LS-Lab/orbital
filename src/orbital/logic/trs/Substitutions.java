@@ -251,6 +251,7 @@ public class Substitutions {
      * The &lambda;-operator of &lambda;-Calculus.
      * <div>&lambda;:&sigma;&times;&tau;&rarr;(&sigma;&rarr;&tau;); (&lambda;x.f) &#8614; (x&#8614;f)</div>
      * Usually for &sigma;={@link Variable}, &tau;={@link orbital.logic.imp.Expression}.
+     * Here &lambda; is the formal parameter marker.
      * <p>
      * The &lambda;-Calculus of Alonzo Church (1930) has the following inference rules
      * called &alpha;-conversion, &beta;-conversion, and &eta;-conversion.
