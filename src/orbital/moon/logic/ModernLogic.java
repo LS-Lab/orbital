@@ -394,6 +394,12 @@ abstract class ModernLogic implements Logic {
 				     ex.currentToken == null ? COMPLEX_ERROR_OFFSET : ex.currentToken.next.beginLine,
 				     ex.currentToken == null ? COMPLEX_ERROR_OFFSET : ex.currentToken.next.beginColumn,
 				     ex);
+	} catch (TypeException ex) {
+	    //@internal we could also elongate "\nIn expression: " + expression, to the exception message.
+	    throw ex;
+	} catch (IllegalArgumentException ex) {
+	    //@internal we could also elongate "\nIn expression: " + expression, to the exception message.
+	    throw ex;
 	} 
     }
     
