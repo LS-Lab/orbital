@@ -61,6 +61,7 @@
 	<property name="javadoc.link.jdk.offline" value="false"/>
 	<property name="env.javacchome" value="unknown"/>
 	<property name="javac.source" value="1.4"/>
+	<property name="run.tests.jvmarg" value="-ea"/>
 
 
         <mkdir dir="${lib}"/>
@@ -168,7 +169,7 @@
         <mkdir dir="${reports.tests}"/>
         <junit printsummary="yes" haltonfailure="yes" fork="yes" showoutput="true">
           <classpath refid="tests.classpath"/>
-	  <jvmarg value="-da"/>
+	  <jvmarg value="${run.tests.jvmarg}"/>
         
           <formatter type="plain" />
           <formatter type="xml" />
