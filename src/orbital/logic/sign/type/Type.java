@@ -12,11 +12,12 @@ import orbital.logic.functor.Predicate;
  * Representation of types.
  * <p id="type">
  * The types form a <a href="Expression.html#freeAlgebraOfTerms">free algebra of terms</a>
- * &Tau; over {<span class="type">&iota;</span>,<span class="type">&rarr;</span>,<span class="type">()</span>}.
+ * &Tau; over {<span class="type">&iota;</span>,<span class="type">&rarr;</span>,<span class="type">()</span>}
+ * plus perhaps <big>{</big><span class="type">&times;</span>,<span class="type">&cap;</span>,<span class="type">&cup;</span>,<span class="type">{}</span>,<span class="type">&lt;&gt;</span>,<span class="type">{{}}</span><big>}</big>.
  * Intuitively, {@link Types#INDIVIDUAL <span class="type">&iota;</span>} is the type for individuals,
  * {@link Types#map(Type,Type) <span class="type">&sigma;&rarr;&tau;</span>} the type for maps from <span class="type">&sigma;</span> to <span class="type">&tau;</span>,
- * and {@link Types#predicate(Type) <span class="type">(&sigma;)</span>=<span class="type">&sigma;&rarr;&omicron;</span>} the type for predicates of <span class="type">&sigma;</span>,
- * likewise {@link Types#TRUTH <span class="type">&omicron;</span>=<span class="type">()</span>} is the type of truth-values.
+ * and {@link Types#predicate(Type) <span class="type">(&sigma;)</span> = <span class="type">&sigma;&rarr;&omicron;</span>} the type for predicates of <span class="type">&sigma;</span>,
+ * likewise {@link Types#TRUTH <span class="type">&omicron;</span> = <span class="type">()</span>} is the type of truth-values.
  * But there is also a precise <a href="Interpretation.html#interpretation">semantic</a>.
  * </p>
  * <p>
@@ -41,13 +42,13 @@ import orbital.logic.functor.Predicate;
  * @see java.lang.Class
  * @todo remove type documentation from Symbol, and use Type throughout
  */
-public interface Type extends Comparable {
+public interface Type extends Comparable, Predicate {
     /**
      * Checks two types for equality.
      * By antisymmetry, two types are equal if they are mutual subtypes of each other.
      * <div>
      *   <span class="type">&sigma;&rarr;&tau;</span> equals <span class="type">&sigma;'&rarr;&tau;'</span>
-     *   :&hArr; <span class="type">&sigma;</span>=<span class="type">&sigma;'</span> &and; <span class="type">&tau;</span>=<span class="type">&tau;'</span>.
+     *   :&hArr; <span class="type">&sigma;</span> = <span class="type">&sigma;'</span> &and; <span class="type">&tau;</span> = <span class="type">&tau;'</span>.
      * </div>
      * @todo assure canonical equality?
      */
@@ -95,8 +96,10 @@ public interface Type extends Comparable {
     int compareTo(Object tau);
     /**
      * Checks whether this type is a subtype of tau.
+     * Convenience method.
      * @return whether this &le; <span class="type">&tau;</span>.
      *  Especially returns <span class="boolean">false</span> in case of incomparable types.
+     * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience method</a>
      * @see #compareTo(Object)
      * @see java.lang.Class#isAssignableFrom(java.lang.Class)
      */

@@ -14,10 +14,13 @@ import orbital.logic.functor.Functor;
 import orbital.logic.functor.Predicate;
 import orbital.logic.functor.Function;
 import orbital.logic.functor.Functionals;
+import java.util.Collection;
+import java.util.Set;
 import java.util.List;
-import orbital.util.Utility;
-import orbital.math.MathUtilities;
 
+import orbital.util.Utility;
+import orbital.util.Setops;
+import orbital.math.MathUtilities;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -30,30 +33,24 @@ import java.lang.reflect.*;
  *
  * @author <a href="mailto:">Andr&eacute; Platzer</a>
  * @version 1.1, 2002-09-08
+ * @see Type
  */
 public final class Types {
     /**
      * @see Type#compareTo(Object)
-     * @see Types.TypeObject#compareToSemiImpl(Object)
+     * @see Types.TypeObject#compareToSemiImpl(Type)
      * @todo rename and perhaps even move to Type.
      */
     private static final Comparator subtypeOrder = new Comparator() {
-	    public int compare(Object s, Object t) {
-		if ((t instanceof TypeObject) && (s instanceof TypeObject)) {
-		    TypeObject sigma = (TypeObject) s;
-		    TypeObject tau = (TypeObject) t;
-		    try {
-			return sigma.compareToSemiImpl(tau);
-		    }
-		    catch (IncomparableException notImplementedThisWay) {
-			return -tau.compareToSemiImpl(sigma);
-		    }
-		} else if ((s instanceof TypeObject) && (t instanceof Type))
-		    return ((TypeObject)s).compareToSemiImpl((Type)t);
-		else if ((s instanceof Type) && (t instanceof Type))
-		    return ((Type)s).compareTo(t);
+	    public int compare(Object o1, Object o2) {
+		if (!(o1 instanceof TypeObject && o2 instanceof TypeObject))
+		    return ((Type)o1).compareTo((Type)o2);
+		TypeObject a = (TypeObject)o1;
+		TypeObject b = (TypeObject)o2;
+		if (a.comparisonPriority() >= b.comparisonPriority())
+		    return a.compareToSemiImpl(b);
 		else
-		    throw new ClassCastException(s.getClass() + ", " + t.getClass());
+		    return -b.compareToSemiImpl(a);
 	    }
 	};
     /**
@@ -70,40 +67,43 @@ public final class Types {
      */
     public static final Type UNIVERSAL = new UniversalType();
     private static final class UniversalType extends FundamentalType {
-	    private static final long serialVersionUID = -7043311457660579287L;
-	    /**
-	     * Maintains the guarantee that there is only a single object representing this type.
-	     * @serialData canonicalized deserialization
-	     */
-	    private Object readResolve() throws java.io.ObjectStreamException {
-		// canonicalize
-		return UNIVERSAL;
-	    } 
-	    public final boolean equals(Object o) {
-		//@internal assume canonical
-		return this == o;
-	    }
-	    public final int hashCode() {
-		return System.identityHashCode(this);
-	    }
+	private static final long serialVersionUID = -7043311457660579287L;
+	/**
+	 * Maintains the guarantee that there is only a single object representing this type.
+	 * @serialData canonicalized deserialization
+	 */
+	private Object readResolve() throws java.io.ObjectStreamException {
+	    // canonicalize
+	    return UNIVERSAL;
+	} 
+	public final boolean equals(Object o) {
+	    //@internal assume canonical
+	    return this == o;
+	}
+	public final int hashCode() {
+	    return System.identityHashCode(this);
+	}
 
-	    public Class getFundamental() {
-		return Object.class;
-	    }
-	    public final int compareTo(Object b) {
-		//@todo verify the converse
-		//@internal assume canonical
-		return this == b ? 0 : 1;
-	    }
-	    public final boolean apply(Object x) {
-		return true;
-	    }
-	    public String toString() {
-		return "univ";
-	    }
-	};
+	public Class getFundamental() {
+	    return Object.class;
+	}
+	protected int comparisonPriority() {
+	    return Integer.MAX_VALUE;
+	}
+	public final int compareToSemiImpl(Type b) {
+	    //@todo verify the converse
+	    //@internal assume canonical
+	    return this == b ? 0 : 1;
+	}
+	public final boolean apply(Object x) {
+	    return true;
+	}
+	public String toString() {
+	    return "univ";
+	}
+    };
     /**
-     * The void type <span class="type">&prod;<sub>i&isin;&empty;</sub></span>.
+     * The void type <span class="type">&prod;<sub>&empty;</sub></span> = <span class="type">&prod;<sub>i&isin;&empty;</sub>i</span>.
      * The extension of the type void is void, i.e. it does not have any elements at all.
      */
     public static final Type VOID = new FundamentalTypeImpl(Void.TYPE);
@@ -112,7 +112,7 @@ public final class Types {
      */
     public static final Type INDIVIDUAL = type(Object.class);
     /**
-     * The type <span class="type">&omicron;</span>=<span class="type">()</span> of truth-values.
+     * The type <span class="type">&omicron;</span> = <span class="type">()</span> of truth-values.
      * @xxx for multi-valued logics this is not limited to boolean.
      * @todo what about Boolean.TYPE and Boolean.class?
      */
@@ -130,38 +130,41 @@ public final class Types {
      */
     public static final Type ABSURD = new AbsurdType();
     private static final class AbsurdType extends FundamentalType {
-	    private static final long serialVersionUID = 7539731602290983194L;
-	    private transient Class type = new Object() {}.getClass();
-	    /**
-	     * Maintains the guarantee that there is only a single object representing this type.
-	     * @serialData canonicalized deserialization
-	     */
-	    private Object readResolve() throws java.io.ObjectStreamException {
-		// canonicalize
-		return ABSURD;
-	    } 
+	private static final long serialVersionUID = 7539731602290983194L;
+	private transient Class type = new Object() {}.getClass();
+	/**
+	 * Maintains the guarantee that there is only a single object representing this type.
+	 * @serialData canonicalized deserialization
+	 */
+	private Object readResolve() throws java.io.ObjectStreamException {
+	    // canonicalize
+	    return ABSURD;
+	} 
 
-	    public final boolean equals(Object o) {
-		//@internal assume canonical
-		return this == o;
-	    }
-	    public final int hashCode() {
-		return System.identityHashCode(this);
-	    }
+	public final boolean equals(Object o) {
+	    //@internal assume canonical
+	    return this == o;
+	}
+	public final int hashCode() {
+	    return System.identityHashCode(this);
+	}
 
-	    public Class getFundamental() {
-		return type;
-	    }
-	    public final int compareTo(Object b) {
-		return this == b ? 0 : -1;
-	    }
-	    public final boolean apply(Object x) {
-		return false;
-	    }
-	    public String toString() {
-		return "absurd";
-	    }
-	};
+	public Class getFundamental() {
+	    return type;
+	}
+	protected int comparisonPriority() {
+	    return Integer.MAX_VALUE;
+	}
+	public final int compareToSemiImpl(Type b) {
+	    return this == b ? 0 : -1;
+	}
+	public final boolean apply(Object x) {
+	    return false;
+	}
+	public String toString() {
+	    return "absurd";
+	}
+    };
 
     /**
      * prevent instantiation - module class
@@ -196,6 +199,26 @@ public final class Types {
 	private static final long serialVersionUID = 3881468737970732586L;
 	protected TypeObject() {}
 
+	/**
+	 * The priority of the comparison rule implemented in {@link #compareToImpl(Type)}.
+	 * Higher values are for higher priorities.
+	 * This method induces a total order on the individual comparison rules and decides
+	 * which rule is applied.
+	 * @post RES==OLD(RES) && RES>=0
+	 */
+	protected abstract int comparisonPriority();
+	/**
+	 * Semi-implementation of {@link Type#compareTo(Object)}.
+	 * Called from {@link Types#subtypeOrder} with both orders of arguments.
+	 * by types how do not always know themselves
+	 * whether they are a subtype or supertype of another type unknown to them.
+	 * @todo adapt documentation to actual implementation
+	 */
+	protected abstract int compareToSemiImpl(Type b);
+	public int compareTo(Object b) {
+	    return subtypeOrder.compare(this, (Type)b);
+	}
+
 	public final boolean subtypeOf(Type tau) {
 	    try {
 		return compareTo(tau) <= 0;
@@ -203,16 +226,6 @@ public final class Types {
 	    catch (IncomparableException incomparable) {
 		return false;
 	    }
-	}
-	/**
-	 * Semi-implementation of {@link Type#compareTo(Object)}.
-	 * Called from {@link Types#subtypeOrder} with both orders of arguments.
-	 * by types how do not always know themselves
-	 * whether they are a subtype or supertype of another type unknown to them.
-	 * @todo
-	 */
-	protected int compareToSemiImpl(Object tau) {
-	    return compareTo(tau);
 	}
     }
 
@@ -241,8 +254,7 @@ public final class Types {
 	    return "[" + codomain() + "->" + domain() + "]";
 	}
 	
-	public int compareTo(Object bb) {
-	    Type b = (Type) bb;
+	public int compareToSemiImpl(Type b) {
 	    int coc = codomain().compareTo(b.codomain());
 	    int doc = domain().compareTo(b.domain());
 	    if (coc == 0 && doc == 0)
@@ -261,7 +273,7 @@ public final class Types {
      * Get the fundamental type described by a class.
      * Converts a native Java class object to a type.
      * @param type the type <span class="type">&tau;</span> represented as a class object.
-     * @return <span class="type">&tau;</span>=<span class="type">void&rarr;&tau;</span>.
+     * @return <span class="type">&tau;</span> = <span class="type">void&rarr;&tau;</span>.
      * @todo assure canonical identity?
      * @todo rename
      */
@@ -276,7 +288,7 @@ public final class Types {
      * @author Andr&eacute; Platzer
      * @version 1.1, 2002-09-11
      */
-    private static abstract class FundamentalType extends TypeObject {
+    private static abstract class FundamentalType extends NonMapType {
 	private static final long serialVersionUID = 7364608656416736898L;
 	/**
 	 * Get the class underlying this fundamental type.
@@ -296,15 +308,10 @@ public final class Types {
 	    return getFundamental().getName().toString();
 	}
 
-	public Type codomain() {
-	    return VOID;
+	protected int comparisonPriority() {
+	    return 50;
 	}
-	
-	public Type domain() {
-	    return this;
-	}
-	
-	public int compareTo(Object b) {
+	public int compareToSemiImpl(Type b) {
 	    if (b instanceof FundamentalType) {
 		FundamentalType tau = (FundamentalType)b;
 		if (getFundamental().equals(tau.getFundamental()))
@@ -358,7 +365,7 @@ public final class Types {
     }
 
     /**
-     * Get the predicate type <span class="type">(&sigma;)</span>=<span class="type">&sigma;&rarr;&omicron;</span>.
+     * Get the predicate type <span class="type">(&sigma;)</span> = <span class="type">&sigma;&rarr;&omicron;</span>.
      * @param codomain the {@link Type#codomain() codomain} <span class="type">&sigma;</span>.
      * @todo assure canonical identity?
      * @todo check that empty predicate type () equals TRUTH.
@@ -374,6 +381,7 @@ public final class Types {
      * Implementation of map types.
      * @author Andr&eacute; Platzer
      * @version 1.1, 2002-09-08
+     * @see Types.NonMapType
      */
     private static final class MapType extends TypeBase {
 	private static final long serialVersionUID = 9148024444083534208L;
@@ -390,6 +398,10 @@ public final class Types {
 	
 	public Type domain() {
 	    return dom;
+	}
+
+	protected int comparisonPriority() {
+	    return 400;
 	}
 
 	public boolean apply(Object x) {
@@ -411,7 +423,22 @@ public final class Types {
     }
 
     /**
-     * Get the product type <span class="type">&prod;<sub>i</sub>&tau;<sub>i</sub></span>=<span class="type">&tau;<sub>1</sub>&times;&#8230;&times;&tau;<sub>n</sub></span>.
+     * Base class for non-map types i.e. with void codomain.
+     * @author Andr&eacute; Platzer
+     * @version 1.1, 2002/10/06
+     * @see Types.MapType
+     */
+    private static abstract class NonMapType extends TypeObject {
+	public Type codomain() {
+	    return VOID;
+	}
+	public Type domain() {
+	    return this;
+	}
+    }
+
+    /**
+     * Get the product type <span class="type">&prod;<sub>i</sub>&tau;<sub>i</sub></span> = <span class="type">&tau;<sub>1</sub>&times;&#8230;&times;&tau;<sub>n</sub></span>.
      * <p>
      * </p>
      * @param components the components <span class="type">&tau;<sub>i</sub></span> of the product type.
@@ -438,7 +465,7 @@ public final class Types {
      * @version 1.1, 2002-09-08
      * @internal which interface for product types? The answer may be: nothing particular, since the typical operations should rely on compareTo and equals.
      */
-    private static final class ProductType extends TypeObject {
+    private static final class ProductType extends NonMapType {
 	private static final long serialVersionUID = -6667362786622508551L;
 	private final Type components[];
 	public ProductType(Type components[]) {
@@ -470,15 +497,10 @@ public final class Types {
 	    return components;
 	}
 
-	public Type codomain() {
-	    return VOID;
+	protected int comparisonPriority() {
+	    return 180;
 	}
-	
-	public Type domain() {
-	    return this;
-	}
-	
-	public int compareTo(Object tau) {
+	public int compareToSemiImpl(Type tau) {
 	    if (tau instanceof ProductType) {
 		Type taui[] = ((ProductType)tau).components;
 		if (components.length != taui.length)
@@ -498,6 +520,7 @@ public final class Types {
 		}
 		return cmp;
 	    } else if (tau.equals(UNIVERSAL))
+		//@todo still needed?
 		return 0;
 	    else
 		throw new IncomparableException();
@@ -520,7 +543,8 @@ public final class Types {
 
 
     /**
-     * Get the infimum type <span class="type">&#8898;<sub>i</sub>&tau;<sub>i</sub></span>=<span class="type">&tau;<sub>1</sub>&times;&#8230;&times;&tau;<sub>n</sub></span>.
+     * Get the infimum type <span class="type">&#8898;<sub>i</sub>&tau;<sub>i</sub></span> = <span class="type">&tau;<sub>1</sub>&cap;&#8230;&cap;&tau;<sub>n</sub></span>.
+     * inf is the most general common subtype, also called intersection.
      */
     public static final Type inf(Type components[]) {
 	//@internal although we still work on components, t keeps the simplified version of components.
@@ -549,7 +573,7 @@ public final class Types {
      * @author Andr&eacute; Platzer
      * @version 1.1, 2002-10-04
      */
-    private static final class InfimumType extends TypeObject {
+    private static final class InfimumType extends NonMapType {
 	private static final long serialVersionUID = -6251593765414274805L;
 	private final Type components[];
 	public InfimumType(Type components[]) {
@@ -581,15 +605,10 @@ public final class Types {
 	    return components;
 	}
 
-	public Type codomain() {
-	    return VOID;
+	protected int comparisonPriority() {
+	    return 200;
 	}
-	
-	public Type domain() {
-	    return this;
-	}
-	
-	public int compareTo(Object tau) {
+	public int compareToSemiImpl(Type tau) {
 	    if (equals(tau))
 		return 0;
 	    if (!(tau instanceof SupremumType)) {
@@ -631,7 +650,8 @@ public final class Types {
     }
 
     /**
-     * Get the supremum type <span class="type">&#8899;<sub>i</sub>&tau;<sub>i</sub></span>=<span class="type">&tau;<sub>1</sub>&times;&#8230;&times;&tau;<sub>n</sub></span>.
+     * Get the supremum type <span class="type">&#8899;<sub>i</sub>&tau;<sub>i</sub></span> = <span class="type">&tau;<sub>1</sub>&cup;&#8230;&cup;&tau;<sub>n</sub></span>.
+     * sup is the most special common supertype, also called union.
      * @todo strict or ignore absurd?
      */
     public static final Type sup(Type components[]) {
@@ -661,7 +681,7 @@ public final class Types {
      * @author Andr&eacute; Platzer
      * @version 1.1, 2002-10-04
      */
-    private static final class SupremumType extends TypeObject {
+    private static final class SupremumType extends NonMapType {
 	private static final long serialVersionUID = 2673832577121308931L;
 	private final Type components[];
 	public SupremumType(Type components[]) {
@@ -693,15 +713,10 @@ public final class Types {
 	    return components;
 	}
 
-	public Type codomain() {
-	    return VOID;
+	protected int comparisonPriority() {
+	    return 200;
 	}
-	
-	public Type domain() {
-	    return this;
-	}
-	
-	public int compareTo(Object tau) {
+	public int compareToSemiImpl(Type tau) {
 	    if (equals(tau))
 		return 0;
 	    if (!(tau instanceof SupremumType)) {
@@ -745,18 +760,93 @@ public final class Types {
     // special types
     
     /**
-     * Get the set type <span class="type">set(&tau;)</span>=<span class="type">&sigma;&rarr;&omicron;</span>.
+     * The set type <span class="type">{&tau;}</span>.
+     * Sets are orderless and contain unique elements.
+     * <p id="extension">
+     * Sets and predicates are different, i.e. <span class="type">{&tau;}</span> &ne; <span class="type">(&sigma;)</span>,
+     * because even though extensionally predicates correspond bijectively to sets,
+     * they may differ intensionally.
+     *  <table>
+     *    <tr>
+     *      <td class="nameOfMap" rowspan="3"><span class="function">ext</span></td>
+     *      <td class="leftOfMap"><span class="set">predicate</span></td>
+     *      <td class="arrowOfMap">&rarr;&#771;</td>
+     *      <td class="rightOfMap"><span class="set">set</span></td>
+     *    </tr>
+     *    <tr>
+     *      <td class="leftOfMap"><span class="predicate">&rho;</span></td>
+     *      <td class="arrowOfMap">&#8614;</td>
+     *      <td class="rightOfMap">&delta;<span class="predicate">&rho;</span> = {x &brvbar; <span class="predicate">&rho;</span>(x)}</td>
+     *    </tr>
+     *    <tr>
+     *      <td class="leftOfMap">_&isin;<span class="set">M</span></td>
+     *      <td class="arrowOfMap">&#8612;</td>
+     *      <td class="rightOfMap"><span class="set">M</span></td>
+     *    </tr>
+     *  </table>
+     * Also see <a href="Interpretation.html#interpretation">identification with characteristic function</a>.
+     * </p>
      */
-    // {component}
-    //@todo introduce public static final Type set(Type component); but what's the difference with predicate(component)?
-    // <component>
-    //@todo introduce public static final Type list(Type component);
-    //@todo introduce public static final Type bag(Type component);
+    public static final Type set(Type component) {
+	return new CollectionType(Set.class, component, "{", "}");
+    }
+    /**
+     * The list type <span class="type">&lt;&tau;&gt;</span>.
+     * Lists are ordered (but not sorted) and not limited to containing unique elements.
+     */
+    public static final Type list(Type component) {
+	return new CollectionType(List.class, component, "<", ">");
+    }
+    /**
+     * The bag/multiset type <span class="type">{{&tau;}}</span>.
+     * Bags are orderless and not limited to containing unique elements.
+     * So each element of a bag has a certain multiplicity.
+     */
+    public static final Type bag(Type component) {
+	return new CollectionType(Collection.class, component, "{{", "}}");
+    }
+    /**
+     * Collection types.
+     * @author Andr&eacute; Platzer
+     * @version 1.1, 2002/10/06
+     */
+    private static class CollectionType extends NonMapType {
+	private final Class collection;
+	private final Type component;
+	private final String toStringPrefix;
+	private final String toStringSuffix;
+	public CollectionType(Class collection, Type component, String toStringPrefix, String toStringSuffix) {
+	    this.collection = collection;
+	    this.component = component;
+	    this.toStringPrefix = toStringPrefix;
+	    this.toStringSuffix = toStringSuffix;
+	}
+	public String toString() {
+	    return toStringPrefix + component + toStringSuffix;
+	}
+	protected int comparisonPriority() {
+	    return 60;
+	}
+	public int compareToSemiImpl(Type b) {
+	    if (b instanceof CollectionType) {
+		CollectionType tau = (CollectionType)b;
+		if (!collection.equals(tau.collection))
+		    throw new UnsupportedOperationException("comparing different collection types");
+		assert toStringPrefix.equals(tau.toStringPrefix) && toStringSuffix.equals(tau.toStringSuffix) : "equal collection type constructors imply equal notation"; 
+		return component.compareTo(tau.component);
+	    } else
+		throw new IncomparableException();	    
+	}
+	public boolean apply(Object x) {
+	    return collection.isInstance(x) && Setops.all((Collection)x, component);
+	}
+    }
+
 
     //@xxx decide acccessibility (privatize or package-level protect if possible)
     
     /**
-     * Get the number of components n of a product type <span class="type">&prod;<sub>i</sub>&tau;<sub>i</sub></span>=<span class="type">&tau;<sub>1</sub>&times;&#8230;&times;&tau;<sub>n</sub></span>.
+     * Get the number of components n of a product type <span class="type">&prod;<sub>i</sub>&tau;<sub>i</sub></span> = <span class="type">&tau;<sub>1</sub>&times;&#8230;&times;&tau;<sub>n</sub></span>.
      * @todo rename
      */
     static final int arityOf(Type type) {
@@ -874,6 +964,7 @@ public final class Types {
      * This implementation compares for arity in favor of codomain-type in favor of domain-type.
      * </p>
      * @see orbital.logic.functor.Functor.Specification#compareTo(Object)
+     * @xxx rename, this does not have anything to do with lexicographic
      */
     static final Comparator LEXICOGRAPHIC = new Comparator() {
 	    public int compare(Object a, Object b) {

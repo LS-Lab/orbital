@@ -28,15 +28,19 @@ import orbital.logic.functor.Functor;
  *     I:&Sigma;<sub class="type">&tau;</sub>&rarr;<span class="set">D</span><sub class="type">&tau;</sub>
  *     for each type <span class="type">&tau;</span>, with
  *     <ul>
- *       <li>I maps symbols of {@link Type type} <span class="type">&tau;</span> to elements of <span class="set">D</span><sub class="type">&tau;</sub>.</li>
- *       <li><span class="set">D</span><sub class="type">&omicron;</sub> := <span class="set">Boole</span> := {True,False} for the type <span class="type">&omicron;</span>=<span class="type">()</span> of truth-values (also the type of atomic formulas).</li>
+ *       <li>I maps symbols of {@link Type type} <span class="type">&tau;</span> to elements of the set I(<span class="type">&tau;</span>):=<span class="set">D</span><sub class="type">&tau;</sub> &ne; &empty;.</li>
+ *       <li><span class="set">D</span><sub class="type">&omicron;</sub> is the set of truth-values for the type <span class="type">&omicron;</span> = <span class="type">()</span> of truth-values
+ *         (also the type of atomic formulas).
+ *         For two-valued logics this means <span class="set">D</span><sub class="type">&omicron;</sub> := <span class="set">Boole</span> := {True,False}.
+ *       </li>
  *       <li><span class="set">D</span><sub class="type">&iota;</sub> := <span class="set">D</span> is a set called universe or domain of I for the type <span class="type">&iota;</span> of individuals.
  *         It is non-empty by presupposition of existence.</li>
  *       <li><span class="set">D</span><sub class="type">&sigma;&rarr;&tau;</sub> := Map(<span class="set">D</span><sub class="type">&sigma;</sub>,<span class="set">D</span><sub class="type">&tau;</sub>) = <span class="set">D</span><sub class="type">&tau;</sub><sup><span class="set">D</span><sub class="type">&sigma;</sub></sup>.</li>
  *       <li><span class="set">D</span><sub class="type">(&sigma;)</sub> = <span class="set">D</span><sub class="type">&sigma;&rarr;&omicron;</sub> &cong; &weierp;(<span class="set">D</span><sub class="type">&sigma;</sub>)
- *         since the predicate type <span class="type">(&sigma;)</span> abbreviates the function type <span class="type">&sigma;&rarr;&omicron;</span>,
- *         and we can identify subsets &rho;&isin;&weierp;(<span class="set">D</span><sub class="type">&sigma;</sub>)
- *         with their characterisitic functions &chi;<sub>&rho;</sub>&isin;Map(<span class="set">D</span><sub class="type">&sigma;</sub>,{True,False}).</li>
+ *         because the predicate type <span class="type">(&sigma;)</span> abbreviates the function type <span class="type">&sigma;&rarr;&omicron;</span>,
+ *         and we can identify predicates &rho;&isin;&weierp;(<span class="set">D</span><sub class="type">&sigma;</sub>)
+ *         with their <a href="Types.html#extension">extension</a> &delta;&rho; and those sets
+ *         with their characterisitic functions &chi;<sub>&delta;&rho;</sub>&isin;Map(<span class="set">D</span><sub class="type">&sigma;</sub>,{True,False}).</li>
  *     </ul>
  *     Also we can identify (<span class="set">D</span><sup>0</sup>&rarr;<span class="set">D</span>)&cong;<span class="set">D</span>, as well as &weierp;(<span class="set">D</span><sup>0</sup>)={&empty;,{()}}&cong;{True,False}.
  *     <!-- @todo is this a good idea in conjunction with the strong type system of Java? -->
@@ -65,8 +69,8 @@ import orbital.logic.functor.Functor;
  *       </tr>
  *       <tr>
  *         <td>&phi;(&upsilon;(t<sub>1</sub>,&#8230;,t<sub>n</sub>))</td>
- *         <td>= &phi;(f)<big>(</big>&phi;(t<sub>1</sub>),&#8230;,&phi;(t<sub>n</sub>)<big>)</big></td>
- *         <td>for f&isin;&Sigma;<sub>n</sub> is a function, t<sub>1</sub>,&#8230;,t<sub>n</sub>&isin;<span class="UniversalAlgebra">T</span>(&Sigma;)</td>
+ *         <td>= &phi;(&upsilon;)<big>(</big>&phi;(t<sub>1</sub>),&#8230;,&phi;(t<sub>n</sub>)<big>)</big></td>
+ *         <td>for &upsilon;&isin;&Sigma;<sub>n</sub> is a function, t<sub>1</sub>,&#8230;,t<sub>n</sub>&isin;<span class="UniversalAlgebra">T</span>(&Sigma;)</td>
  *       </tr>
  *     </table>
  *   </dd>
