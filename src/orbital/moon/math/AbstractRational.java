@@ -76,13 +76,12 @@ abstract class AbstractRational extends AbstractReal implements Rational {
 	    return divide((Rational) b);
 	return (Arithmetic) Operations.divide.apply(this, b);
     } 
-    //@todo reintroduce once covariant return-types are allowed for Integer. public abstract Rational power(Integer b);
-    Rational power_(Integer b) {
+    public Rational power(Integer b) {
 	return (Rational) Operations.power.apply(this, b);
     }
     public Arithmetic power(Arithmetic b) {
 	if (b instanceof Integer) {
-	    return power_((Integer) b);
+	    return power((Integer) b);
 	} else if (b instanceof Rational)
 	    return (Arithmetic) Operations.power.apply(this, Values.getDefaultInstance().valueOf(((Number)b).doubleValue()));
 	return (Arithmetic) Operations.power.apply(this, b);
