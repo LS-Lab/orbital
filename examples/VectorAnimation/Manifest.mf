@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Specification-Title: VectorAnimation 2
-Specification-Vendor: Andre Platzer
-Implementation-Vendor: Andre Platzer
-Class-Path: orbital-ext.jar
-Extension-List: orbital
-orbital-Extension-Name: orbital
-orbital-Implementation-URL: orbital-ext.jar
-
