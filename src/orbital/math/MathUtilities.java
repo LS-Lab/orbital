@@ -602,7 +602,6 @@ public final class MathUtilities {
      * <p>
      * Does special handling for numbers, arithmetic objects, functors, for arrays, for two-dimensional arrays, etc.</p>
      * @see ArithmeticFormat
-     * @fixme MatrixKlammerung shows that MathUtilities.format does not work for Double[][]
      */
     public static String format(Object o) {
 	if (o == null) {
@@ -626,11 +625,11 @@ public final class MathUtilities {
 	    } else {
 		if (Array.getLength(o) != 0) {
 		    try {
-			return Values.getDefaultInstance().tensor(o).toString();
+			return "" + Values.getDefaultInstance().tensor(o).toString();
 		    }
 		    catch (IllegalArgumentException nonArithmetic) {
 			if (Utility.rank(o) != 1)
-			    //@todo improve by using Array.get
+			    //@internal does not necessarily yield a nice formatting
 			    return o.toString();
 			StringBuffer sb = new StringBuffer();
 			for (int i = 0; i < Array.getLength(o); i++) {
