@@ -347,7 +347,7 @@ public class FigureImpl extends Figure {
 	final Field  field = getField();
 	boolean      was_jumping = false;	  					// can jump this step
 	final Moving hyp = (Moving) super.clone();				//@todo should we transform this to new Moving(x, y, direction.clone()) such that we don't get a Figure, here?
-	final String movement = move.movement;
+	final String movement = move.getMovementString();
 
 	moves:
 	for (int i = 0; i < movement.length(); i++) {
