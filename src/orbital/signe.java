@@ -128,12 +128,17 @@ public final class signe extends Applet implements Runnable {
      * Contains the version information in Dewey Decimal syntax.
      * Thus it consists of positive decimal integers separated by periods ".".
      */
-    private static String	version = "@VERSION@";
+    private static final String	version = "@VERSION@";
 
     /**
      * Contains the default name for the <em>Orbital library service</em>.
      */
     public static final String	DefaultService = "Orbital";
+
+    /**
+     * Contains additional information.
+     */
+    private static final String note = "http://www.functologic.com/";
 
     /**
      * Get the id information.
@@ -199,10 +204,17 @@ public final class signe extends Applet implements Runnable {
     } 
 
     /**
+     * Get additional information.
+     */
+    public static String getNote() {
+	return note;
+    }
+
+    /**
      * Manifest.
      */
     public static String getManifest() {
-	return getInfo() + ", " + getVersion() + " " + getCreated() + " by " + getCreator();
+	return getInfo() + ", " + getVersion() + " " + getCreated() + " by " + getCreator() + "\n" + getNote();
     } 
 
     /**
