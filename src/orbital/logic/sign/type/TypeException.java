@@ -28,11 +28,12 @@ public class TypeException extends RuntimeException {
     private final Type occurred;
 
     public TypeException() {
-	
+	this.required = null;
+	this.occurred = null;
     }
     
     public TypeException(String message) {
-	super(message);
+	this(message, null, null);
     }
 
     public TypeException(String message, Type required, Type occurred) {
