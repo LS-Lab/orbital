@@ -45,7 +45,7 @@ import java.util.logging.Level;
  *     The Skolem-functions introduced are new and distinct.
  *   </li>
  *   <li>drop the &forall;-quantifiers and write the remaining conjunctions of disjunctions of literals
- *     als sets of clauses.
+ *     as sets of clauses.
  *     The union of these clauses is (again) called E.
  *   </li>
  *   <li>
