@@ -3,18 +3,6 @@
 <!-- It is availale from http://jakarta.apache.org/ant/                    -->
 
 
-<!--
-    Build file for building Orbital library.
-
-    This script should be started with the following command line :
-
-        ant [target]
-
-    Run "ant -projecthelp" or "ant targets" to get a list of available
-    targets. The default target is "compile".
--->
-
-
 <project name="Orbital" default="compile">
 
     <description>
@@ -24,8 +12,8 @@
 
         ant [target]
 
-    Run "ant -projecthelp" or "ant targets" to get a list of available
-    targets. The default target is "compile".
+    Run "ant -projecthelp" to get a list of available targets.
+    The default target is "compile".
     </description>
 
     <property name="build.compiler" value="modern"/>
@@ -99,8 +87,8 @@
 	</path>
     </target>
 
-    <target name="all" depends="init, clean, fixCRLF, compile, doc"
-            description="clean + fixCRLF + compile + doc">
+    <target name="all" depends="init, clean, fixCRLF, compile, doc, compile.tests"
+            description="clean + fixCRLF + compile.* + doc">
     </target>
  
     <target name="compile" depends="init, parser"
@@ -150,7 +138,7 @@
         <mkdir dir="${reports.tests}"/>
         <junit printsummary="yes" haltonfailure="yes" fork="yes">
           <classpath refid="tests.classpath"/>
-	  <jvmarg value=""/>
+	  <jvmarg value="-ea"/>
         
           <formatter type="plain" />
           <formatter type="xml" />
@@ -290,7 +278,7 @@
 	    <tag name="fixme" scope="all" description="Fixme:" enabled="false"/>
 	    <group title="Core Packages" packages="orbital.logic*:orbital.math:orbital.math*:orbital.util"/>
 	    <group title="Extension Packages" packages="orbital.algorithm*:orbital.awt:orbital.game:orbital.robotic"/>
-	    <group title="Implementation Packages" packages="orbital.awt.virtual:orbital.io:orbital.io.encoding:orbital.io.parsing:orbital.text:orbital.net:orbital.net.mail:orbital.moon*"/>
+	    <group title="Implementation Packages" packages="orbital.awt.virtual:orbital.io:orbital.io.encoding:orbital.net:orbital.net.mail:orbital.moon*"/>
 	    <link href="${javadoc.link.jdk}" offline="${javadoc.link.jdk.offline}" packagelistLoc="${javadoc.link.jdk.loc}"/>
         </javadoc>
 
