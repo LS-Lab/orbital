@@ -4,13 +4,12 @@
  * Copyright (c) 2000 Andre Platzer. All Rights Reserved.
  */
 
-package orbital.logic.functor;
+package orbital.logic.sign.concrete;
 
 import java.io.Serializable;
 
 import orbital.logic.Composite;
-
-import java.io.ObjectStreamException;
+import orbital.logic.functor.*;
 
 import java.util.Collection;
 import java.util.Map;
@@ -27,7 +26,6 @@ import java.util.ListIterator;
 import java.util.HashMap;
 
 import java.beans.IntrospectionException;
-import orbital.math.functional.Operations;
 import orbital.util.Utility;
 
 /**
@@ -38,8 +36,6 @@ import orbital.util.Utility;
  * @author  Andr&eacute; Platzer
  * @invariants a.equals(b) &hArr; a==b
  * @todo invariants 	&& sorted(compositorNotation)
- * @internal design name is now different: orbital.logic.sign.concrete.Notation
- * @xxx move there
  */
 public abstract class Notation implements Serializable, Comparable {
     private static final long serialVersionUID = -3071672372655194662L;
