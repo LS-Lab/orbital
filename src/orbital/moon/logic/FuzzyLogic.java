@@ -31,6 +31,8 @@ import java.util.Map;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.io.StringReader;
+import java.io.Serializable;
+import java.io.ObjectStreamException;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -59,20 +61,17 @@ import orbital.util.Utility;
  * <p>
  * <table>
  *   <tr>
- *     <td colspan="3">&#8911; is a <dfn>fuzzy AND operator</dfn>, iff</td>
+ *     <td colspan="3">&#8911;:[0,1]<sup>2</sup>&rarr;[0,1] is a <dfn>fuzzy AND operator</dfn>, or triangular norm, iff</td>
+ *   </tr>
+ *   <tr>
+ *     <td>(n)</td>
+ *     <td>a &#8911; 1 = a</td>
+ *     <td>&quot;neutral&quot;</td>
  *   </tr>
  *   <tr>
  *     <td>(c)</td>
  *     <td>a &#8911; b = b &#8911; a</td>
  *     <td>&quot;commutative&quot;</td>
- *   </tr>
- *   <tr>
- *     <td>(1)</td>
- *     <td>0 &#8911; 0 = 0<br>
- *       1 &#8911; 0 = 0<br>
- *       0 &#8911; 1 = 0<br>
- *       1 &#8911; 1 = 1</td>
- *     <td>&quot;&and; boundary conditions&quot;</td>
  *   </tr>
  *   <tr>
  *     <td>(mon)</td>
@@ -89,26 +88,41 @@ import orbital.util.Utility;
  *     <td>a &#8911; a = a</td>
  *     <td>&quot;idempotent&quot; (optional)</td>
  *   </tr>
+ *   <tr>
+ *     <td>(C)</td>
+ *     <td>&#8911; is continuous</td>
+ *     <td>&quot;continuous&quot; (optional)</td>
+ *   </tr>
+ *   <tr>
+ *     <td>()</td>
+ *     <td>a &#8911; 0 = 0</td>
+ *     <td>(&lArr; (n),(c),(mon)</td>
+ *   </tr>
+ *   <tr>
+ *     <td>()</td>
+ *     <td>0 &#8911; 0 = 0<br>
+ *       1 &#8911; 0 = 0<br>
+ *       0 &#8911; 1 = 0<br>
+ *       1 &#8911; 1 = 1</td>
+ *     <td>&quot;&and; boundary conditions&quot; (&lArr; (n),(c),(mon))</td>
+ *   </tr>
  * </table>
  * The only function that fulfills all axioms is the classical a&#8911;b = max(a,b) [Klir, Folger 1988].
  * </p>
  * <p>
  * <table>
  *   <tr>
- *     <td colspan="3">&#8910; is a <dfn>fuzzy OR operator</dfn>, iff</td>
+ *     <td colspan="3">&#8910;:[0,1]<sup>2</sup>&rarr;[0,1] is a <dfn>fuzzy OR operator</dfn> or co-t-norm, iff</td>
+ *   </tr>
+ *   <tr>
+ *     <td>(n)</td>
+ *     <td>a &#8910; 0 = a</td>
+ *     <td>&quot;neutral&quot;</td>
  *   </tr>
  *   <tr>
  *     <td>(c)</td>
  *     <td>a &#8910; b = b &#8910; a</td>
  *     <td>&quot;commutative&quot;</td>
- *   </tr>
- *   <tr>
- *     <td>(1)</td>
- *     <td>0 &#8910; 0 = 0<br>
- *       1 &#8910; 0 = 1<br>
- *       0 &#8910; 1 = 1<br>
- *       1 &#8910; 1 = 1</td>
- *     <td>&quot;&or; boundary conditions&quot;</td>
  *   </tr>
  *   <tr>
  *     <td>(mon)</td>
@@ -125,6 +139,24 @@ import orbital.util.Utility;
  *     <td>a &#8910; a = a</td>
  *     <td>&quot;idempotent&quot; (optional)</td>
  *   </tr>
+ *   <tr>
+ *     <td>(C)</td>
+ *     <td>&#8910; is continuous</td>
+ *     <td>&quot;continuous&quot; (optional)</td>
+ *   </tr>
+ *   <tr>
+ *     <td>()</td>
+ *     <td>a &#8911; 1 = 1</td>
+ *     <td>(&lArr; (n),(c),(mon)</td>
+ *   </tr>
+ *   <tr>
+ *     <td>()</td>
+ *     <td>0 &#8910; 0 = 0<br>
+ *       1 &#8910; 0 = 1<br>
+ *       0 &#8910; 1 = 1<br>
+ *       1 &#8910; 1 = 1</td>
+ *     <td>&quot;&or; boundary conditions&quot; (&lArr; (n),(c),(mon))</td>
+ *   </tr>
  * </table>
  * The only function that fulfills all axioms is the classical a&#8910;b = min(a,b) [Klir, Folger 1988].
  * <table>
@@ -133,19 +165,24 @@ import orbital.util.Utility;
  *   </tr>
  *   <tr>
  *     <td>(1)</td>
- *     <td>~  1 = 0<br>
- *       ~  0 =1</td>
+ *     <td>~1 = 0<br>
+ *       ~0 =1</td>
  *     <td>&quot;&not; boundary conditions&quot;</td>
  *   </tr>
  *   <tr>
  *     <td>(mon)</td>
- *     <td>anb implies ~  b &le; ~  a</td>
+ *     <td>a&lt;b implies ~a &ge; ~b</td>
  *     <td>&quot;monotonic&quot;</td>
  *   </tr>
  *   <tr>
  *     <td>(inv)</td>
  *     <td>~ ~ a = a</td>
  *     <td>&quot;involutorical&quot; (optional)</td>
+ *   </tr>
+ *   <tr>
+ *     <td>(C)</td>
+ *     <td>~ is continuous</td>
+ *     <td>&quot;continuous&quot; (optional)</td>
  *   </tr>
  * </table>
  * </p>
@@ -154,8 +191,9 @@ import orbital.util.Utility;
  * Let X be a universal set.
  *   <dt>fuzzy set</dt>
  *   <dd>A = {(x,&mu;<sub>A</sub>(x)) &brvbar; x&isin;X} is defined with a membership function &mu;<sub>A</sub>:X&rarr;[0,1].
- *    A fuzzy set A is sometimes described formally as "A=&mu;<sub>A</sub>(a<sub>1</sub>)/a<sub>1</sub> + &mu;<sub>A</sub>(a<sub>2</sub>)/a<sub>2</sub> + ... + &mu;<sub>A</sub>(a<sub>n</sub>)/a<sub>n</sub>"
- *    where + and / are syntactic symbols and do not denote arithmetic operations.
+ *    A finite fuzzy set A of domain {a<sub>1</sub>,&#8230;,a<sub>n</sub>} is sometimes denoted formally as
+ *    <div>"A=&mu;<sub>A</sub>(a<sub>1</sub>)/a<sub>1</sub> + &mu;<sub>A</sub>(a<sub>2</sub>)/a<sub>2</sub> + ... + &mu;<sub>A</sub>(a<sub>n</sub>)/a<sub>n</sub>"</div>
+ *    where + and / are purely syntactic symbols and do not denote arithmetic operations.
  *    Then fuzzy sets and fuzzy logic are related by
  *      <blockquote>
  *      &mu;<sub>A&cup;B</sub> = &mu;<sub>A</sub> &#8910; &mu;<sub>B</sub><br />
@@ -169,6 +207,11 @@ import orbital.util.Utility;
  *   <dd class="Formula">E(A) = |A&cap;A<sup>&#8705;</sup>| / |A&cup;A<sup>&#8705;</sup>|</dd>
  * </dl>
  * </p>
+ * <p>
+ * Also note that for fuzzy sets, idem potence and distributive on the one hand,
+ * and <span xml:lang="la">tertium non datur</span> on the other hand, are mutually exclusive
+ * properties for all operators.
+ * </p>
  * 
  * @version 0.7, 1999/01/11
  * @author  Andr&eacute; Platzer
@@ -176,7 +219,12 @@ import orbital.util.Utility;
  */
 public class FuzzyLogic extends ModernLogic implements Logic {
     /**
+     * Maximum number of FuzzyLogicOperators objects (for typesafe enum).
+     */
+    private static final int MAX_OPERATORS = 20;
+    /**
      * tool-main
+     * @todo parse arguments in order to obtain FuzzyLogicOperators used
      */
     public static void main(String arg[]) throws Exception {
 	if (arg.length > 0 && "-?".equals(arg[0])) {
@@ -198,7 +246,45 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     } 
     public static final String usage = "interpret fuzzy logic";
 
-    public FuzzyLogic() {}
+
+    /**
+     * Remembers the fuzzy logic operators used in coreInterpretation().
+     */
+    private final FuzzyLogicOperators fuzzyLogicOperators;
+    //@todo remove this bugfix that replaces "xfy" by "yfy" associativity only for *.jj parsers to work without inefficient right-associative lookahead.
+    private static final String xfy = "yfy";
+
+    private final Interpretation _coreInterpretation;
+    private final Signature _coreSignature;
+    public FuzzyLogic() {
+	this(GOEDEL);
+    }
+    public FuzzyLogic(FuzzyLogicOperators fuzzyLogicOperators) {
+	this.fuzzyLogicOperators = fuzzyLogicOperators;
+	final FuzzyLogicOperators op = fuzzyLogicOperators;
+	this._coreInterpretation =
+	LogicSupport.arrayToInterpretation(new Object[][] {
+	    {op.not(),          // "~"
+	     new NotationSpecification(900, "fy", Notation.PREFIX)},
+	    {op.and(),          // "&"
+	     new NotationSpecification(910, xfy, Notation.INFIX)},
+	    {LogicFunctions.xor,          // "^"
+	     new NotationSpecification(914, xfy, Notation.INFIX)},
+	    {op.or(),           // "|"
+	     new NotationSpecification(916, xfy, Notation.INFIX)},
+	    {LogicFunctions.impl,         // "->"
+	     new NotationSpecification(920, xfy, Notation.INFIX)},
+	    {LogicFunctions.leftwardImpl, // "<-"
+	     new NotationSpecification(920, xfy, Notation.INFIX)},
+	    {LogicFunctions.equiv,        // "<->"
+	     new NotationSpecification(920, xfy, Notation.INFIX)},
+	    {LogicFunctions.forall,       // "°"
+	     new NotationSpecification(950, "fxx", Notation.PREFIX)},
+	    {LogicFunctions.exists,       // "?"
+	     new NotationSpecification(950, "fxx", Notation.PREFIX)}
+	}, true);
+	this._coreSignature = _coreInterpretation.getSignature();
+    }
 
     /**
      * facade for convenience.
@@ -233,33 +319,6 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      */
     protected static String   operators = "~! |&^-><=(),";
 
-    //@todo remove this bugfix that replaces "xfy" by "yfy" associativity only for *.jj parsers to work without inefficient right-associative lookahead.
-    private static final String xfy = "yfy";
-
-    private static final Interpretation _coreInterpretation =
-	LogicSupport.arrayToInterpretation(new Object[][] {
-	    {LogicFunctions.not,          // "~"
-	     new NotationSpecification(900, "fy", Notation.PREFIX)},
-	    {LogicFunctions.and,          // "&"
-	     new NotationSpecification(910, xfy, Notation.INFIX)},
-	    {LogicFunctions.xor,          // "^"
-	     new NotationSpecification(914, xfy, Notation.INFIX)},
-	    {LogicFunctions.or,           // "|"
-	     new NotationSpecification(916, xfy, Notation.INFIX)},
-	    {LogicFunctions.impl,         // "->"
-	     new NotationSpecification(920, xfy, Notation.INFIX)},
-	    {LogicFunctions.leftwardImpl, // "<-"
-	     new NotationSpecification(920, xfy, Notation.INFIX)},
-	    {LogicFunctions.equiv,        // "<->"
-	     new NotationSpecification(920, xfy, Notation.INFIX)},
-	    {LogicFunctions.forall,       // "°"
-	     new NotationSpecification(950, "fxx", Notation.PREFIX)},
-	    {LogicFunctions.exists,       // "?"
-	     new NotationSpecification(950, "fxx", Notation.PREFIX)}
-	}, true);
-
-    private static final Signature _coreSignature = _coreInterpretation.getSignature();
-
     public Signature coreSignature() {
 	return _coreSignature;
     } 
@@ -289,6 +348,303 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     private Formula createFormula(String expression) throws java.text.ParseException {
 	return (Formula) createExpression(expression);
     }
+
+    /**
+     * Specifies the type of fuzzy logic to use.
+     * Instances will define the fuzzy logic operators applied.
+     * @see <a href="{@docRoot}/DesignPatterns/enum.html">typesafe enum pattern</a>
+     * @version 1.0, 2002/05/29
+     * @author  Andr&eacute; Platzer
+     * @internal typesafe enumeration pattern class to specify fuzzy logic operators
+     * @invariant a.equals(b) &hArr; a==b
+     */
+    public static abstract class FuzzyLogicOperators implements Serializable, Comparable {
+	/**
+	 * the name to display for this enum value
+	 * @serial
+	 */
+	private final String	  name;
+
+	/**
+	 * Ordinal of next enum value to be created
+	 */
+	private static int	  nextOrdinal = 0;
+
+	/**
+	 * Table of all canonical references to enum value classes.
+	 */
+	private static FuzzyLogicOperators[] values = new FuzzyLogicOperators[MAX_OPERATORS];
+
+	/**
+	 * Assign an ordinal to this enum value
+	 * @serial
+	 */
+	private final int		  ordinal = nextOrdinal++;
+
+	FuzzyLogicOperators(String name) {
+	    this.name = name;
+	    values[nextOrdinal - 1] = this;
+	}
+
+    	// interpretation for a truth-value
+    	static final Object getInt(double v) {
+	    return new Double(v);
+    	} 
+    
+    	// truth-value of a Formulas Interpretation
+    	static final double getTruth(Object f) {
+	    return ((Double) f).doubleValue();
+    	} 
+
+	/**
+	 * Defines the not operator to use in the fuzzy logic.
+	 * @post RES==OLD(RES)
+	 */
+	abstract Function not();
+
+    	abstract BinaryFunction and();
+    
+    	abstract BinaryFunction or();
+
+	public String toString() {
+	    return this.name;
+	} 
+
+	/**
+	 * Order imposed by ordinals according to the order of creation.
+	 * @post consistent with equals
+	 */
+	public int compareTo(Object o) {
+	    return ordinal - ((FuzzyLogicOperators) o).ordinal;
+	} 
+
+	/**
+	 * Maintains the guarantee that all equal objects of the enumerated type are also identical.
+	 * @post a.equals(b) &hArr; if a==b.
+	 */
+	public final boolean equals(Object that) {
+	    return super.equals(that);
+	} 
+	public final int hashCode() {
+	    return super.hashCode();
+	} 
+
+	/**
+	 * Maintains the guarantee that there is only a single object representing each enum constant.
+	 * @serialData canonicalized deserialization
+	 */
+	private Object readResolve() throws ObjectStreamException {
+	    // canonicalize
+	    return values[ordinal];
+	} 
+    }
+
+    // enumeration of fuzzy logic operators
+
+    /**
+     * G&ouml;del and Zadeh operators in fuzzy logic (default).
+     * <div>a &#8911; b = min{a,b}</div>
+     * <div>a &#8910; b = max{a,b}</div>
+     */
+    public static FuzzyLogicOperators GOEDEL = new FuzzyLogicOperators("Gödel") {
+	    Function not() {
+		return LogicFunctions.not;
+	    }
+
+	    BinaryFunction and() {
+		return new BinaryFunction() {
+			public Object apply(Object a, Object b) {
+			    return getInt(Math.min(getTruth(a), getTruth(b)));
+			}
+			public String toString() { return "&"; }
+		    };
+	    }
+    
+	    BinaryFunction or() {
+		return new BinaryFunction() {
+			public Object apply(Object a, Object b) {
+			    return getInt(Math.max(getTruth(a), getTruth(b)));
+			}
+			public String toString() { return "|"; }
+		    };
+	    }
+	};
+
+    /**
+     * Product operators in fuzzy logic.
+     * <div>a &#8911; b = a&sdot;b</div>
+     * <div>a &#8910; b = a+b - a&sdot;b</div>
+     */
+    public static FuzzyLogicOperators PRODUCT = new FuzzyLogicOperators("Product") {
+	    Function not() {
+		return LogicFunctions.not;
+	    }
+
+	    BinaryFunction and() {
+		return new BinaryFunction() {
+			public Object apply(Object a, Object b) {
+			    return getInt(getTruth(a) * getTruth(b));
+			}
+			public String toString() { return "&"; }
+		    };
+	    }
+    
+	    BinaryFunction or() {
+		return new BinaryFunction() {
+			public Object apply(Object wa, Object wb) {
+			    final double a = getTruth(wa);
+			    final double b = getTruth(wb);
+			    return getInt(a + b - a * b);
+			}
+			public String toString() { return "|"; }
+		    };
+	    }
+	};
+
+    /**
+     * Bounded or &#407;ukasiewicz operators in fuzzy logic.
+     * <div>a &#8911; b = max{0,a+b-1}</div>
+     * <div>a &#8910; b = min{1,a+b}</div>
+     */
+    public static FuzzyLogicOperators BOUNDED = new FuzzyLogicOperators("Bounded") {
+	    Function not() {
+		return LogicFunctions.not;
+	    }
+
+	    BinaryFunction and() {
+		return new BinaryFunction() {
+			public Object apply(Object a, Object b) {
+			    return getInt(Math.max(0, getTruth(a) + getTruth(b) - 1));
+			}
+			public String toString() { return "&"; }
+		    };
+	    }
+    
+	    BinaryFunction or() {
+		return new BinaryFunction() {
+			public Object apply(Object a, Object b) {
+			    return getInt(Math.min(1, getTruth(a) + getTruth(b)));
+			}
+			public String toString() { return "|"; }
+		    };
+	    }
+	};
+
+    /**
+     * Drastic operators in fuzzy logic.
+     * <div>a &#8911; b = min{a,b} if max{a,b}=1, else 0</div>
+     * <div>a &#8910; b = max{a,b} if min{a,b}=0, else 1</div>
+     * @attribute discontinuous
+     */
+    public static FuzzyLogicOperators DRASTIC = new FuzzyLogicOperators("Drastic") {
+	    Function not() {
+		return LogicFunctions.not;
+	    }
+
+	    BinaryFunction and() {
+		return new BinaryFunction() {
+			public Object apply(Object wa, Object wb) {
+			    final double a = getTruth(wa);
+			    final double b = getTruth(wb);
+			    return getInt(a == 1.0 || b == 1.0 ? Math.min(a, b) : 0);
+			}
+			public String toString() { return "&"; }
+		    };
+	    }
+    
+	    BinaryFunction or() {
+		return new BinaryFunction() {
+			public Object apply(Object wa, Object wb) {
+			    final double a = getTruth(wa);
+			    final double b = getTruth(wb);
+			    return getInt(a == 0.0 || b == 0.0 ? Math.max(a, b) : 1);
+			}
+			public String toString() { return "|"; }
+		    };
+	    }
+	};
+
+    /**
+     * Hamacher operators in fuzzy logic.
+     * <div class="Formula">a &#8911; b = a&sdot;b / <big>(</big>&gamma;+(1-&gamma;)(a+b-a&sdot;b)<big>)</big></div>
+     * <div class="Formula">a &#8910; b = <big>(</big>a+b-(2-&gamm;)a&sdot;b<big>)</big> / <big>(</big>1-(1-&gamma;)a&sdot;b<big>)</big></div>
+     * @param gamma the parameter &gamma;.
+     * @pre gamma&ge;0
+     */
+    public static FuzzyLogicOperators HAMACHER(final double gamma) {
+	if (!(gamma >= 0))
+	    throw new IllegalArgumentException("illegal value for gamma: " + gamma + " < 0");
+	return new FuzzyLogicOperators("Hamacher(" + gamma + ")") {
+		Function not() {
+		    return LogicFunctions.not;
+		}
+
+		BinaryFunction and() {
+		    return new BinaryFunction() {
+			    public Object apply(Object wa, Object wb) {
+				final double a = getTruth(wa);
+				final double b = getTruth(wb);
+				final double ab = a*b;
+				return getInt(ab / (gamma + (1-gamma)*(a+b-ab)));
+			    }
+			    public String toString() { return "&"; }
+			};
+		}
+    
+		BinaryFunction or() {
+		    return new BinaryFunction() {
+			    public Object apply(Object wa, Object wb) {
+				final double a = getTruth(wa);
+				final double b = getTruth(wb);
+				final double ab = a*b;
+				return getInt((a+b-(2-gamma)*ab) / (1 - (1-gamma)*ab));
+			    }
+			    public String toString() { return "|"; }
+			};
+		}
+	    };
+    }
+
+    /**
+     * Yager operators in fuzzy logic.
+     * <div class="Formula">a &#8911; b = 1 - min<big>{</big>1,<big>(</big>(1-a)<sup>p</sup>+(1-b)<sup>p</sup>)<big>)</big><sup>1/p</sup><big>}</big></div>
+     * <div class="Formula">a &#8910; b = min<big>{</big>1,<big>(</big>a<sup>p</sup>+b<sup>p</sup>)<big>)</big><sup>1/p</sup><big>}</big></div>
+     * For p&rarr;&infin; these operators approximate those of {@link GOEDEL}.
+     * @pre p&gt;0
+     */
+    public static FuzzyLogicOperators YAGER(final double p) {
+	if (!(p > 0))
+	    throw new IllegalArgumentException("illegal parameter: " + p + " =< 0");
+	final double inverse_p = 1/p;
+	return new FuzzyLogicOperators("Yager(" + p + ")") {
+		Function not() {
+		    return LogicFunctions.not;
+		}
+
+		BinaryFunction and() {
+		    return new BinaryFunction() {
+			    public Object apply(Object wa, Object wb) {
+				final double a = getTruth(wa);
+				final double b = getTruth(wb);
+				return getInt(1 - Math.min(1,Math.pow(Math.pow(1-a,p)+Math.pow(1-b,p),inverse_p)));
+			    }
+			    public String toString() { return "&"; }
+			};
+		}
+    
+		BinaryFunction or() {
+		    return new BinaryFunction() {
+			    public Object apply(Object wa, Object wb) {
+				final double a = getTruth(wa);
+				final double b = getTruth(wb);
+				return getInt(Math.min(1,Math.pow(Math.pow(a,p)+Math.pow(b,p),inverse_p)));
+			    }
+			    public String toString() { return "|"; }
+			};
+		}
+	    };
+    }
+
 
     static class LogicFunctions {
         private LogicFunctions() {}
