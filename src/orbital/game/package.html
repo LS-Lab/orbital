@@ -12,12 +12,14 @@ strategy for a computer player.
 <p>Basic classes are Figure and Field. Figure represents a chess piece
 to play with and specifies its legal moves. Field contains all Figures
 on a field and allows them to move. A Field is displayed in the AWT-component
-Gameboard which also enables mouse dragging.
-<p>The rules are defined with a game-specific implementation of GameRules.
-<p>Strategic weighting, which is useful for calculating the best computer ("AI")
-moves, is done with derivatives of FieldWeighting, FigureWeighting,
-MoveWeighting. However, there is a much faster implementation with
-AlphaBetaPruning that also tends to be easier to use.
+Gameboard which also enables mouse dragging.</p>
+<p>The rules are defined with a game-specific implementation of GameRules.</p>
+<p>Computer player strategies can be implemented by using
+AlphaBetaPruning. In addition, there still is the old way of
+calculating the best computer ("AI") moves, with derivatives of
+FieldWeighting, FigureWeighting, MoveWeighting. However, the much
+faster implementation with AlphaBetaPruning also is far easier to
+use. A library with standard heuristics can be obtained as well.</p>
 
 <dl>
   <dt><b>See Also:</b></dt>
