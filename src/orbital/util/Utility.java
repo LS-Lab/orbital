@@ -166,7 +166,7 @@ public final class Utility {
 
     /**
      * Get the hashCode of an object (considering its all array components, as well).
-     * Contrary to {@link #hashCodeAllSet(Object)}, the order of elements plays a role.
+     * Contrary to {@link #hashCodeSet(Object)}, the order of elements plays a role.
      * @param o the object whose hashCode to calculate.
      * @return the hashCode of o, or all its elements if o is a (multi-dimensional) array.
      * @see #equalsAll(Object, Object)
@@ -216,7 +216,7 @@ public final class Utility {
      * @see orbital.logic.functor.Functionals#foldRight(orbital.logic.functor.BinaryFunction, Object, Object[])
      * @note this implementation does not necessarily to fit the hashCode defined by {@link java.util.Set}, nor, of cours,e {@link java.util.List}.
      */
-    public static final int hashCodeAllSet(Object o) {
+    public static final int hashCodeSet(Object o) {
 	//@todo functional?
 	if (o instanceof Object[]) {
 	    final Object a[] = (Object[]) o;
