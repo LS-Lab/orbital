@@ -1295,16 +1295,18 @@ public class Values {
      * value reduced modulo (m).
      * <p> Will use special remainder classes modulo (m) for a Groebner
      * basis m of (multivariate) polynomial rings. These remainder
-     * classes are those induced by the {@link AlgebraicAlgorithms#reduce(java.util.Collection,java.util.Comparator) reduction}
-     * operator.  </p>
+     * classes are those induced by the
+     * {@link AlgebraicAlgorithms#reduce(java.util.Collection,java.util.Comparator) reduction}
+     * operator.</p>
      * @param m the {@link AlgebraicAlgorithms#groebnerBasis(Set,Comparator) Groebner basis}
      *  modulo whose generated ideal (m) to form the quotients.
      * @param monomialOrder the monomial order applied for reducing polynomials.
      * @pre m = AlgebraicAlgorithms.groebnerBasis(m,monomialOrder)
+     * @post RES = quotient(a, AlgebraicAlgorithms.reduce(m, monomialOrder))
      */
     public /*<R implements Arithmetic>*/ Quotient/*<Polynomial<R,S>>*/ quotient(Polynomial/*<R,S>*/ a, java.util.Set/*_<Polynomial<R,S>>_*/ m, java.util.Comparator/*_<S>_*/ monomialOrder) {
 	assert m.equals(AlgebraicAlgorithms.groebnerBasis(m,monomialOrder)) : m + " is a Groebner basis with respect to " + monomialOrder;
-	return new AbstractQuotient(a, m, monomialOrder);
+	return quotient(a, AlgebraicAlgorithms.reduce(m, monomialOrder));
     }
 
     // quotient constructor synonyms

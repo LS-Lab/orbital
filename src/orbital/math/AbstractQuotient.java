@@ -64,12 +64,6 @@ class AbstractQuotient/*<M implements Arithmetic>*/ implements Quotient/*<M>*/, 
 	    return m == null ? a : (Object/*>M<*/) ((Euclidean) a).modulo(m);
 	}
     }
-    /**
-     * Special remainder classes modulo Groebner bases in (multivariate) polynomial ring.
-     */
-    public AbstractQuotient(Polynomial/*<R,S>*/ val, java.util.Set/*_<Polynomial<R,S>>_*/ m, java.util.Comparator/*_<S>_*/ monomialOrder) {
-	this(val, AlgebraicAlgorithms.reduce(m, monomialOrder));
-    }
 
     /**
      * Returns true if x is a Quotient whose value and quotientOperator
