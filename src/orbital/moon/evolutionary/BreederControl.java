@@ -179,49 +179,49 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
     // member variables
     protected PopulationTableModel			 data = new PopulationTableModel(null);
     protected final CustomizerViewController custom;
-    protected Closer						 closer;
-    protected Date							 startTime = null;
-    protected Date							 stopTime = null;
-    protected int							 startGeneration;
+    protected Closer	 closer;
+    protected Date	 startTime = null;
+    protected Date	 stopTime = null;
+    protected int	 startGeneration;
 
     // view variables
-    JMenuBar								 menuBar1 = new JMenuBar();
-    JMenu									 menuPopulation = new JMenu();
-    JMenu									 menuGenome = new JMenu();
-    JMenuItem								 menuHelpAbout = new JMenuItem();
-    JLabel									 statusBar = new JLabel();
-    BorderLayout							 borderLayout1 = new BorderLayout();
-    JMenuItem								 jMenuPopulationNew = new JMenuItem();
-    JMenuItem								 jMenuPopulationLoad = new JMenuItem();
-    JMenuItem								 jMenuPopulationSave = new JMenuItem();
-    JMenuItem								 jMenuPopulationSaveAs = new JMenuItem();
-    JMenuItem								 jMenuPopulationCreateAndGo = new JMenuItem();
-    JMenuItem								 jMenuProperties = new JMenuItem();
-    JMenu									 menuHelp = new JMenu();
-    JMenuItem								 jMenuGenomeNew = new JMenuItem();
-    JMenuItem								 jMenuGenomeRemove = new JMenuItem();
-    JMenuItem								 jMenuGenomeImport = new JMenuItem();
-    JMenuItem								 jMenuGenomeExport = new JMenuItem();
-    JMenuItem								 jMenuManipulate = new JMenuItem();
-    JMenuItem								 menuFileExit = new JMenuItem();
-    JMenu									 jMenuBreed = new JMenu();
-    JRadioButtonMenuItem					 jMenuStart = new JRadioButtonMenuItem();
-    JRadioButtonMenuItem					 jMenuStop = new JRadioButtonMenuItem();
-    JMenuItem								 jMenuStatistics = new JMenuItem();
-    JMenuItem								 jMenuBreedReevaluate = new JMenuItem();
-    JScrollPane								 jScrollPane1 = new JScrollPane();
-    JTable									 jPopulationTable = new JTable(data);
-    JPanel									 panel1 = new JPanel();
-    FlowLayout								 flowLayout1 = new FlowLayout(FlowLayout.LEFT);
-    JLabel									 jLabel1 = new JLabel();
-    JTextField								 tGeneration = new JTextField();
-    JMenu									 jMenuOptions = new JMenu();
-    JMenu									 jMenuOptionsSelector = new JMenu();
-    ButtonGroup								 jItemSelectors = new ButtonGroup();
-    JRadioButtonMenuItem					 jRadioButtonMenuItemSelector[];
-    JMenu									 jMenuOptionsAlgorithmType = new JMenu();
-    ButtonGroup								 jItemAlgorithmTypes = new ButtonGroup();
-    JRadioButtonMenuItem					 jRadioButtonMenuItemAlgorithmType[];
+    JMenuBar			 menuBar1 = new JMenuBar();
+    JMenu				 menuPopulation = new JMenu();
+    JMenu				 menuGenome = new JMenu();
+    JMenuItem			 menuHelpAbout = new JMenuItem();
+    JLabel				 statusBar = new JLabel();
+    BorderLayout		 borderLayout1 = new BorderLayout();
+    JMenuItem			 jMenuPopulationNew = new JMenuItem();
+    JMenuItem			 jMenuPopulationLoad = new JMenuItem();
+    JMenuItem			 jMenuPopulationSave = new JMenuItem();
+    JMenuItem			 jMenuPopulationSaveAs = new JMenuItem();
+    JMenuItem			 jMenuPopulationCreateAndGo = new JMenuItem();
+    JMenuItem			 jMenuProperties = new JMenuItem();
+    JMenu				 menuHelp = new JMenu();
+    JMenuItem			 jMenuGenomeNew = new JMenuItem();
+    JMenuItem			 jMenuGenomeRemove = new JMenuItem();
+    JMenuItem			 jMenuGenomeImport = new JMenuItem();
+    JMenuItem			 jMenuGenomeExport = new JMenuItem();
+    JMenuItem			 jMenuManipulate = new JMenuItem();
+    JMenuItem			 menuFileExit = new JMenuItem();
+    JMenu				 jMenuBreed = new JMenu();
+    JRadioButtonMenuItem	 jMenuStart = new JRadioButtonMenuItem();
+    JRadioButtonMenuItem	 jMenuStop = new JRadioButtonMenuItem();
+    JMenuItem				 jMenuStatistics = new JMenuItem();
+    JMenuItem				 jMenuBreedReevaluate = new JMenuItem();
+    JScrollPane				 jScrollPane1 = new JScrollPane();
+    JTable					 jPopulationTable = new JTable(data);
+    JPanel					 panel1 = new JPanel();
+    FlowLayout				 flowLayout1 = new FlowLayout(FlowLayout.LEFT);
+    JLabel					 jLabel1 = new JLabel();
+    JTextField				 tGeneration = new JTextField();
+    JMenu					 jMenuOptions = new JMenu();
+    JMenu					 jMenuOptionsSelector = new JMenu();
+    ButtonGroup				 jItemSelectors = new ButtonGroup();
+    JRadioButtonMenuItem	 jRadioButtonMenuItemSelector[];
+    JMenu					 jMenuOptionsAlgorithmType = new JMenu();
+    ButtonGroup				 jItemAlgorithmTypes = new ButtonGroup();
+    JRadioButtonMenuItem	 jRadioButtonMenuItemAlgorithmType[];
 
 
     // Construct the frame
@@ -298,6 +298,13 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
     protected GeneticAlgorithm				 ga;
 
     /**
+     * Get program resources.
+     */
+    protected ResourceBundle getResources() {
+	return resources;
+    }
+
+    /**
      * Get the current genetic algorithm problem to solve.
      * @see #problem
      */
@@ -323,6 +330,7 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
      * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      */
     protected Genome createGenome() {
+	JOptionPane.showMessageDialog(this, resources.getString("message.genome.newRandom.warning.text"), resources.getString("message.genome.newRandom.warning.title"), JOptionPane.WARNING_MESSAGE);
 	//XXX: where to get the prototype from?
 	return new Genome(new Gene.BitSet(20));
     }
