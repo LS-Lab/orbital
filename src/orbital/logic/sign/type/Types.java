@@ -414,7 +414,7 @@ public final class Types {
      * @version 1.1, 2002-11-24
      */
     private static abstract class AbstractCompositeType extends NonMapType implements Type.Composite {
-	//private static final long serialVersionUID = 0;
+	private static final long serialVersionUID = 5980179612049115956L;
 	// identical copy under @see orbital.logic.functor.Functor.Composite.Abstract
 	/**
 	 * the current notation used for displaying this composite functor.
