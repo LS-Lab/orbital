@@ -1419,7 +1419,6 @@ public class Values {
      * (does not only contain numeric quantities, but also symbols).
      * @todo if this is good, move to Symbol.
      * @internal Functionals.banana(...)
-     * @xxx test with AbstractSymbol$Debug
      */
     static final Predicate symbolic = new Predicate() {
 	    public boolean apply(Object expression) {

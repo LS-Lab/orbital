@@ -31,34 +31,6 @@ import orbital.util.Utility;
  */
 class RMatrix extends AbstractMatrix {
     private static final long serialVersionUID = -5257297603569417580L;
-    private static class Debug {
-	private Debug() {}
-	public static void main(String arg[]) throws Exception {
-	    final Values vf = Values.getDefaultInstance();
-	    Matrix M = new RMatrix(new double[][] {
-		{2, 1, 0, -2},
-		{1, 2, 4, 1},
-		{-2, 1, 2, -2},
-		{-3, 0, 1, -4}
-	    });
-	    Vector v = new RVector(new double[] {
-		1, 2, 1, 2
-	    });
-	    Vector u = new RVector(new double[] {
-		2, 1, 0, -3
-	    });
-	    System.out.println(M + "*" + v + "=" + M.multiply(v));
-	    System.out.println(u + "*" + v + "=" + u.multiply(v));
-	    System.out.println(v + "*" + 2 + "=" + v.multiply(vf.valueOf(2)));
-	    System.out.println("M^-1=" + M.inverse());
-	    System.out.println("fall-back to arithmetic matrix");
-	    v = vf.valueOf(new Arithmetic[] {
-		vf.valueOf(1), vf.complex(3,-4), vf.rational(-1, 3), vf.rational(1, 2)
-	    });
-	    System.out.println(M + "*" + v + "=" + M.multiply(v));
-	} 
-    }	 // Debug
-
     /**
      * Gets zero Matrix, with all elements set to 0.
      */

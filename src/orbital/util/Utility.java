@@ -47,24 +47,6 @@ import orbital.math.Values;
  * @todo could this class be removed with its methods moved to another (better) class?
  */
 public final class Utility {
-    private static class Debug {
-	private Debug() {}
-	public static void main(String arg[]) throws Exception {
-	    Object o = new Object() {
-		    public int	  i = 12;
-		    public float  f = 3.14159f;
-		    public String s = "Just an object";
-		};
-	    forallMembers(o, new Predicate() {
-		    public boolean apply(Object f) {
-			System.out.println(f);
-			return true;
-		    }
-		});
-	}
-    }	 // Debug
-
-
     /**
      * prevent instantiation - final static class
      */

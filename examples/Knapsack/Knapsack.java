@@ -72,6 +72,7 @@ public class Knapsack extends orbital.moon.awt.Demonstratos implements Runnable,
 
     public boolean isSolution(Population pop) {
 	final int ANSWER = 24;
+	out.println("isSolution?\n" + pop);
 	for (int iChrom = 0; iChrom < pop.size(); iChrom++) {
 	    calcVW(pop.get(iChrom));
 	    if (weight <= MAXWEIGHT && value == ANSWER)

@@ -36,7 +36,7 @@
         <property name="version_brief" value="1.0"/>
 
         <tstamp>
-            <format property="timestamp" pattern="dd MMM yyyy HH:mm" locale="en,uk"/>
+            <format property="timestamp" pattern="dd MMM yyyy" locale="en,uk"/>
             <format property="VERSION_DATE" pattern="MMMMM d'th,' yyyy" locale="en,uk"/>
             <format property="TODAY" pattern="MM/dd/yyyy" locale="en,uk"/>
         </tstamp>
@@ -367,6 +367,7 @@
                 <include name="orbital/math/**/*.class"/>
                 <include name="orbital/util/**/*.class"/>
                 <include name="orbital/*.class"/>
+		<exclude name="**/*$Debug.class"/>
             </fileset>
         </jar>
 
@@ -423,6 +424,7 @@
                 <include name="orbital/robotic/*.class"/>
                 <include name="orbital/moon/**/*.class"/>
                 <include name="orbital/text/**/*.class"/>
+		<exclude name="**/*$Debug.class"/>
             </fileset>
             <fileset dir="${sources}">
                 <include name="orbital/awt/*.gif"/>
@@ -443,7 +445,7 @@
 	<signjar jar="${dist}/lib/orbital-core.jar" alias="Andre" storepass="${pass}"/>
 	<signjar jar="${dist}/lib/orbital-ext.jar" alias="Andre" storepass="${pass}"/>
 
-	<touch datetime="${TODAY} 1:00 am">
+	<touch datetime="${TODAY} 1:01 am">
 	    <fileset dir="${dist}/lib">
 	        <include name="*.jar"/>
 	    </fileset>
@@ -517,7 +519,7 @@
 	    </zipfileset>
         </zip>
 
-	<touch datetime="${TODAY} 1:00 am">
+	<touch datetime="${TODAY} 1:01 am">
 	    <fileset dir="${dist}">
 	        <include name="*.zip"/>
 	    </fileset>

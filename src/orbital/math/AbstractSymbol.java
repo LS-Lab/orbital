@@ -25,33 +25,6 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
     // maybe implement with (a stack/tree of) postfix operations
     // and print with infix-traversal
     // or define x+y as a function that has arithmetic behaviour (better do)
-    private static class Debug {
-	private Debug() {}
-	public static void main(String arg[]) throws Exception {
-	    final Values vf = Values.getDefaultInstance();
-	    Matrix M = vf.valueOf(new Arithmetic[][] {
-		{vf.symbol("a"), vf.symbol("b")},
-		{vf.symbol("c"), vf.symbol("d")}
-	    });
-	    Vector v = vf.valueOf(new Arithmetic[] {
-		vf.valueOf(1), vf.valueOf(2)
-	    });
-	    System.out.println(Values.symbolic.apply(M) + "," + Values.symbolic.apply(v) +","+Values.symbolic.apply(vf.IDENTITY(7,7))+Values.symbolic.apply(M.multiply(v)));
-	    System.out.println(M + "*" + v + "=" + M.multiply(v));
-	    System.out.println(M + "^-1 =\n" + M.inverse());
-
-	    M = vf.valueOf(new Arithmetic[][] {
-		{vf.valueOf(2), vf.symbol("a")},
-		{vf.symbol("d"), vf.valueOf(4)}
-	    });
-	    v = vf.valueOf(new Arithmetic[] {
-		vf.valueOf(1), vf.valueOf(2)
-	    });
-	    System.out.println(M + "*" + v + "=" + M.multiply(v));
-	} 
-    }	 // Debug
-    
-    
     private static final long serialVersionUID = -3807941418810639427L;
     
     /**

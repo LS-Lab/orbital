@@ -27,7 +27,7 @@ import java.util.Arrays;
  * More sophisticated mathematical plotting engine with expression parser.
  *
  * a nice example to start with is
- *    1 / cos[1/x*4]
+ *    1 / cos(1/x*4)
  * with x and y ranging from -10 to 10.
  */
 public class MathPlotter extends java.applet.Applet {
@@ -93,7 +93,7 @@ public class MathPlotter extends java.applet.Applet {
             add(control, BorderLayout.SOUTH);
 
 	    param = getParameter("function");
-	    expression.setText((param == null) ? "sin[2*x]" : param);
+	    expression.setText((param == null) ? "sin(2*x)" : param);
 	    set(expression.getText());
         }
         catch (Exception x) {

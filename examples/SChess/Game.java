@@ -21,6 +21,8 @@ public class Game extends orbital.game.Game {
      */
     public static void main(String args[]) throws Exception {
 	System.out.println("usage: java Game gameRules=ChessRules aIntelligence=1\nor\tjava Game gameRules=ChessRules aIntelligence=0");
+	if (args.length == 0)
+	    args = new String[] {"gameRules=ChessRules", "gameName=SimpleChess", "aIntelligence-count=1"};
 	AppletFrame.showApplet(new Game(), "Game Application", args);
     } 
 
