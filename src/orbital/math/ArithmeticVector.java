@@ -54,7 +54,9 @@ class ArithmeticVector/*<R implements Arithmetic>*/ extends AbstractVector/*<R>*
 
     public final int dimension() {
 	return D.length;
-    } 
+    }
+
+    //@todo perhaps iterator() could also return Arrays.asList(D).iterator()
 
     public Arithmetic/*>R<*/ get(int i) {
 	validate(i);

@@ -315,7 +315,7 @@ public class ArithmeticFormat extends Format {
 		    if (numberOfCompleted > 0)
 			result.append("}");
 		    //@internal temporary guess
-		    if (numberOfCompleted > 2)
+		    for (int colAndRowsFinished = 2; colAndRowsFinished < numberOfCompleted; colAndRowsFinished++)
 			result.append("]\n[\t");
 
 		    if (numberOfCompleted >= (int)Math.floor(i.length/2.0)) {
