@@ -1,2 +1,9 @@
-|= [](A|B) -> ([]A|[]B)		# not even S5
-|= (<>A&<>B) -> (<>A&<>B)	# not even S5
+##[]A |= []B
+[]A |= <>B
+<>A |= []A
+##[]A |= A
+<>A |= A			# @fixme true?
+A |= <>A			# ??
+
+##|= [](A|B) -> ([]A|[]B)		# not even in S5
+|= (<>A&<>B) -> (<>A&<>B)	# not even in S5 # @fixme

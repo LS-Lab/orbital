@@ -24,19 +24,19 @@ public class ModalLogicTest extends check.TestCase {
     protected void setUp() {
     }
 
-    protected void test(String name) {
+    protected void test(String name, boolean allTrue) {
 	try {
 	    ModalLogic logic = new ModalLogic();
-	    ModalLogic.proveAll(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/" + name)), logic, true);
+	    ModalLogic.proveAll(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/" + name)), logic, allTrue);
 	}
 	catch (Throwable ex) {
 	    fail(ex.getMessage() + " in file " + name);
 	}
     }
     public void testEquivalences() {
-	test("modal-equivalence.txt");
+	test("modal-equivalence.txt", true);
     }
     public void testGarbage() {
-	test("modal-garbage.txt");
+	test("modal-garbage.txt", false);
     }
 }
