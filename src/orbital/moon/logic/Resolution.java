@@ -124,10 +124,6 @@ class Resolution implements Inference {
     }
 
     public boolean infer(Formula[] B, Formula D) {
-	if (D == ClassicalLogic.EMPTY)
-	    // avoid funny case that results from the fact, that we cannot identify EMPTY with true, here
-	    return true;
-
         // skolemize B and drop quantifiers
         List/*_<Formula>_*/ skolemizedB = new ArrayList(B.length);
         for (int i = 0; i < B.length; i++) {
