@@ -94,7 +94,7 @@ public abstract class ResolutionBase implements Inference {
 
 	logger.log(Level.FINE, "proving that knowledgebase {0} and query {1} are inconsistent", new Object[] {knowledgebase, S});
         final boolean proven = prove(knowledgebase, S);
-	logger.log(Level.FINE, "found proof {0}", Boolean.valueOf(proven));
+	logger.log(Level.FINE, proven ? "found a proof that knowledgebase {0} and query {1} are inconsistent" : "found no proof that {0} and query {1} are inconsistent", new Object[] {knowledgebase, S});
         return proven;
     }
 	
