@@ -21,15 +21,15 @@ public class Groebner extends MathTest {
     }
     private static void test_simple() {
 	// some polynomials in <b>Q</b>[X,Y]
-	Multinomial/*<Rational>*/ g =
-	    Values.multinomial(new int[][] {
+	Polynomial/*<Rational>*/ g =
+	    Values.polynomial(new int[][] {
 		{0, 1},
 		{1, 0}
 	    });
-	Set/*_<Multinomial<Rational>>_*/ G = new HashSet();
+	Set/*_<Polynomial<Rational>>_*/ G = new HashSet();
 	G.add(g);
 
-	Multinomial/*<Rational>*/ f = g.multiply(g);
+	Polynomial/*<Rational>*/ f = g.multiply(g);
 
 	printArithmetic(g, f, false);
 
@@ -46,20 +46,20 @@ public class Groebner extends MathTest {
 
     private static void test_more() {
 	// some polynomials in <b>Q</b>[X,Y]
-	Multinomial/*<Rational>*/ Garray[] = {
-	    Values.multinomial(new int[][] {
+	Polynomial/*<Rational>*/ Garray[] = {
+	    Values.polynomial(new int[][] {
 		{0, 0, 4},
 		{3, 0, 2}
 	    }),
-	    Values.multinomial(new int[][] {
+	    Values.polynomial(new int[][] {
 		{-2, -2, 1}
 	    })
 	};
-	Set/*_<Multinomial<Rational>>_*/ G = new HashSet(Arrays.asList(Garray));
+	Set/*_<Polynomial<Rational>>_*/ G = new HashSet(Arrays.asList(Garray));
 	
 	printArithmetic(Garray[0], Garray[1], false);
 
-	Multinomial/*<Rational>*/ f = Values.multinomial(new int[][] {
+	Polynomial/*<Rational>*/ f = Values.polynomial(new int[][] {
 	    {0, 0, 2, 0},
 	    {0, 0, 0, 0},
 	    {0, 0, 0, 0},
@@ -75,7 +75,7 @@ public class Groebner extends MathTest {
     private static void quotientCalculation() {
 	System.out.println("calculate with quotients of polynomials");
 	// create elements in <b>R</b>[X]/(Y^2-X^3-X^2)
-	final Collection m = Arrays.asList(new Multinomial[] {
+	final Collection m = Arrays.asList(new Polynomial[] {
 	    // alternative form of construction: explicit concatenation
 	    // of monomials. This is more to type, but also more
 	    // simple to construct
@@ -84,13 +84,13 @@ public class Groebner extends MathTest {
 	    });
 	// the Groebner basis of m
 	final Set gm = AlgebraicAlgorithms.groebnerBasis(new HashSet(m), order);
-	Quotient/*<Multinomial<Real>>*/ f =
-	    Values.quotient(Values.multinomial(new double[][] {
+	Quotient/*<Polynomial<Real>>*/ f =
+	    Values.quotient(Values.polynomial(new double[][] {
 		{2,1},
 		{3,0}
 	    }), gm, order);
-	Quotient/*<Multinomial<Real>>*/ g =
-	    Values.quotient(Values.multinomial(new double[][] {
+	Quotient/*<Polynomial<Real>>*/ g =
+	    Values.quotient(Values.polynomial(new double[][] {
 		{-1,1},
 		{1,1}
 	    }), gm, order);
@@ -99,7 +99,7 @@ public class Groebner extends MathTest {
 	System.out.println("perform calculations in a quotient ring modulo " + m);
 	printArithmetic(f, g, false);
 
-	f = Values.quotient(Values.multinomial(new double[][] {
+	f = Values.quotient(Values.polynomial(new double[][] {
 		{2,-1},
 		{3,0},
 		{-1,0}
@@ -111,17 +111,17 @@ public class Groebner extends MathTest {
 	final Arithmetic alpha = Values.valueOf(4);
 	final Arithmetic beta = Values.valueOf(2);
 	System.out.println("calculate in a quadratic algebra of type (" + alpha + "," + beta + ")");
-	final Collection m = Arrays.asList(new Multinomial[] {
-	    Values.multinomial(new int[][] {
+	final Collection m = Arrays.asList(new Polynomial[] {
+	    Values.polynomial(new int[][] {
 		{0},
 		{-1},
 		{1}
 	    }),
-	    Values.multinomial(new int[][] {
+	    Values.polynomial(new int[][] {
 		{0,-1},
 		{0,1}
 	    }),
-	    Values.multinomial(new Arithmetic[][] {
+	    Values.polynomial(new Arithmetic[][] {
 		{Values.ZERO,beta,Values.valueOf(-1)},
 		{alpha,Values.ZERO,Values.ZERO}
 	    })
@@ -129,13 +129,13 @@ public class Groebner extends MathTest {
 	// the Groebner basis of m
 	final Set gm = AlgebraicAlgorithms.groebnerBasis(new HashSet(m), order);
 
-	Quotient/*<Multinomial<Real>>*/ f =
-	    Values.quotient(Values.multinomial(new double[][] {
+	Quotient/*<Polynomial<Real>>*/ f =
+	    Values.quotient(Values.polynomial(new double[][] {
 		{2,1},
 		{3,0}
 	    }), gm, order);
-	Quotient/*<Multinomial<Real>>*/ g =
-	    Values.quotient(Values.multinomial(new double[][] {
+	Quotient/*<Polynomial<Real>>*/ g =
+	    Values.quotient(Values.polynomial(new double[][] {
 		{-1,1},
 		{1,1}
 	    }), gm, order);
@@ -144,7 +144,7 @@ public class Groebner extends MathTest {
 	System.out.println("perform calculations in a quotient ring modulo " + m);
 	printArithmetic(f, g, false);
 
-	f = Values.quotient(Values.multinomial(new double[][] {
+	f = Values.quotient(Values.polynomial(new double[][] {
 		{2,-1},
 		{3,0},
 		{-1,0}

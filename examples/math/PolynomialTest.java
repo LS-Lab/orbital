@@ -8,14 +8,14 @@ class PolynomialTest extends MathTest {
 	    Polynomial/*<Real>*/ g = Values.polynomial(new double[] {3,5,8,-1});
 	    System.out.println("(" + f + ") * (" + g + ") = " + f.multiply(g));
 	}
-	Polynomial/*<Rational>*/ f = Values.polynomial(new Rational[] {Values.ZERO, Values.ZERO, Values.ONE});
-	Polynomial/*<Rational>*/ g = Values.polynomial(new Rational[] {Values.ZERO, Values.ONE});
+	UnivariatePolynomial/*<Rational>*/ f = Values.polynomial(new Rational[] {Values.ZERO, Values.ZERO, Values.ONE});
+	UnivariatePolynomial/*<Rational>*/ g = Values.polynomial(new Rational[] {Values.ZERO, Values.ONE});
 	Rational a = Values.rational(4);
 	printArithmetic(f,g,false);
 	System.out.println("(" + f + ") div (" + g + ") = " + f.quotient(g));
 	System.out.println("(" + f + ") mod (" + g + ") = " + f.modulo(g));
 	System.out.println("(" + f + ")(" + a + ") = " + f.apply(a) + " = " + f.modulo(Values.polynomial(new Rational[] {(Rational) a.minus(), Values.ONE})));
-	Euclidean v[] = MathUtilities.gcd(new Polynomial/*<Rational>*/[] {f, g});
+	Euclidean v[] = AlgebraicAlgorithms.gcd(new Euclidean[] {f, g});
 	System.out.println("gcd(" + f + "," + g + ") = " + v[v.length - 1] + " = (" + v[0] + ")*(" + f + ") + (" + v[1] + ")*(" + g + ")");
 
 	f = Values.polynomial(new Rational[] {Values.ONE, Values.ONE, Values.ONE, Values.ONE, Values.ONE, Values.ONE});
@@ -30,7 +30,7 @@ class PolynomialTest extends MathTest {
 	rem = f.modulo(Values.polynomial(new Rational[] {(Rational) a.minus(), Values.ONE}));
 	System.out.println("(" + f + ")(" + a + ") = " + f.apply(a) + " = " + rem);
 	assert f.apply(a).toString().equals(rem.toString()) : "weak form of constant polynomial / rational equality";
-	v = MathUtilities.gcd(new Polynomial/*<Rational>*/[] {f, g});
+	v = AlgebraicAlgorithms.gcd(new Euclidean[] {f, g});
 	System.out.println("gcd(" + f + "," + g + ") = " + v[v.length - 1] + " = (" + v[0] + ")*(" + f + ") + (" + v[1] + ")*(" + g + ")");
     }
 

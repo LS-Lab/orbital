@@ -22,8 +22,8 @@ public class ComplexEmulation extends MathTest {
     private static void emulationCalculation() {
 	System.out.println("emulate complex numbers with quotients of polynomials");
 	// create elements in C alias R[X]/(X^2+1)
-	final Polynomial/*<Real>*/ m =
-	    Values.asPolynomial(Values.valueOf(new double[] {1,0,1}));
+	final UnivariatePolynomial/*<Real>*/ m =
+	    (UnivariatePolynomial) Values.polynomial(new double[] {1,0,1});
 	Quotient/*<Polynomial<Real>>*/ a =
 	    Values.quotient(Values.polynomial(new double[] {2,4}), m);
 	Complex ac = complexForm(a);
@@ -31,9 +31,8 @@ public class ComplexEmulation extends MathTest {
 	    Values.quotient(Values.polynomial(new double[] {-3,1}), m);
 	Complex bc = complexForm(b);
 	// i in C corresponds to X in R[X]/(X^2+1)
-	Quotient/*<Polynomial<Real>>*/ i = Values.quotient(
-							   Values.asPolynomial(Values.valueOf(new double[] {0,1})),
-							   m);
+	Quotient/*<Polynomial<Real>>*/ i =
+	    Values.quotient(Values.polynomial(new double[] {0,1}), m);
 	// perform calculations in both fields
 	System.out.println("perform calculations in both fields and compare results");
 	System.out.println("(" + a + ") + (" + b + ") = " + a.add(b));
@@ -53,7 +52,7 @@ public class ComplexEmulation extends MathTest {
      * Compares a complex value and a polynomial in R[X]/(X^2+1).
      */
     private static void compare(Quotient pclass, Complex c) {
-	Polynomial p = (Polynomial) pclass.representative();
+	UnivariatePolynomial p = (UnivariatePolynomial) pclass.representative();
 	if (p.degreeValue() > 2)
 	    throw new AssertionError("R[X]/(X^2+1) does not contain polynomials of (reduced) degree " + p.degree());
 	if (c.re().equals(p.get(0)) && c.im().equals(p.get(1)))
@@ -65,7 +64,7 @@ public class ComplexEmulation extends MathTest {
      * Convert a polynomial in R[X]/(X^2+1) to complex form.
      */
     private static Complex complexForm(Quotient/*<Polynomial>*/ pclass) {
-	Polynomial p = (Polynomial) pclass.representative();
+	UnivariatePolynomial p = (UnivariatePolynomial) pclass.representative();
 	if (p.degreeValue() > 2)
 	    throw new AssertionError("R[X]/(X^2+1) does not contain polynomials of (reduced) degree " + p.degree());
 	return Values.complex((Real)p.get(0), (Real)p.get(1));
