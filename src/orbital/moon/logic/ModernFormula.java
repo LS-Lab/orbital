@@ -67,7 +67,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      */
     private static final Symbol NOT, AND, OR, XOR, IMPL, EQUIV, FORALL, EXISTS;
     static {
-	//@note assuming the symbol and notation of ClassicalLogic, here
+	//@note assuming the symbols and notation of ClassicalLogic, here
 	final Logic logic = new ClassicalLogic();
 	final Signature core = logic.coreSignature();
 	// we also avoid creating true formulas, it's (more or less) futile

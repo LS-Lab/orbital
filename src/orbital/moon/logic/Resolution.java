@@ -73,6 +73,7 @@ import java.util.logging.Level;
  * @todo use do/undo instead of copying the whole set of derived formulas every time.
  * @todo delegate GSP into a private inner class
  * @todo use optimizations of "Deduktions- und Inferenzsysteme"
+ * @xxx there seems to be a bug in the normalization of the query in "r reflexive and euclidean => r equivalence"
  */
 public class Resolution implements Inference {
     private static final boolean UNDER_CONSTRUCTION = true;
@@ -113,12 +114,12 @@ public class Resolution implements Inference {
 	    // avoid funny case that results from the fact, that we cannot identify EMPTY with true, here
 	    return true;
 
-        // skolemize B
+        // skolemize B and drop quantifiers
         List/*_<Formula>_*/ skolemizedB = new ArrayList(B.length);
         for (int i = 0; i < B.length; i++)
 	    skolemizedB.add(Utilities.dropQuantifiers(Utilities.skolemForm(B[i])));
 
-        // convert skolemizedB to clausalForm knowledgebase
+        // convert B to clausalForm knowledgebase
         Set/*_<Set<Formula>>_*/ knowledgebase = new HashSet();
         for (Iterator i = skolemizedB.iterator(); i.hasNext(); )
 	    knowledgebase.addAll(clausalForm((Formula) i.next()));
@@ -145,10 +146,10 @@ public class Resolution implements Inference {
         // negate query since we are a negative test calculus
         Formula query = D.not();
 
-	// skolemize query
+	// skolemize (negated) query
 	Formula skolemizedQuery = Utilities.dropQuantifiers(Utilities.skolemForm(query));
 
-        // convert negated query to clausalForm S forming the initial set of support
+        // convert (negated) query to clausalForm S, forming the initial set of support
 	Set S = clausalForm(skolemizedQuery);
 
         if (logger.isLoggable(Level.FINEST))

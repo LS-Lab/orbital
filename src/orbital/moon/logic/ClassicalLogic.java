@@ -614,6 +614,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	 *   <li>sk(&exist;x A) = sk(A[x&rarr;f(x<sub>1</sub>,...,x<sub>n</sub>)]) where FV(&exist;x A) = {x<sub>1</sub>,...,x<sub>n</sub>}</li>
 	 * </ul>
 	 * </p>
+	 * This method will call {@link #negationForm(Formula)}.
 	 */
 	public static final Formula skolemForm(Formula F) {
 	    // transform to negation normal form
@@ -639,25 +640,32 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	 * are due to literals, i.e. negations may only occur directly
 	 * in front of an atom.
 	 * </p>
+	 * <p>
+	 * In order to prevent ill-defined negation normal forms, we will first
+	 * get rid of derived junctors like &rarr;,&harr; etc.
+	 * </p>
 	 */
 	public static final Formula negationForm(Formula F) {
 	    try {
+		// eliminate derived junctors not in the basis (&forall;,&exist;,&and;,&or;&not;)
+		if (CNFeliminate == null) conjunctiveForm(new ClassicalLogic().createFormula("true"));
+		F = (Formula) Functionals.fixedPoint(CNFeliminate, F);
 		// negation normal form transform TRS
 		if (NegationNFTransform == null) NegationNFTransform = Substitutions.getInstance(Arrays.asList(new Object[] {
-		    //@xxx note thatthe  _Xi should be metavariables for formulas
+		    //@xxx note that the  _Xi should be metavariables for formulas
 		    // involution duplex negatio est affirmatio
 		    Substitutions.createSingleSidedMatcher(logic.createExpression("~~_X"), logic.createAtomicVariable("_X")),
 		    // deMorgan
 		    Substitutions.createSingleSidedMatcher(logic.createExpression("~(_X1|_X2)"), logic.createExpression("~_X1&~_X2")),
 		    Substitutions.createSingleSidedMatcher(logic.createExpression("~(_X1&_X2)"), logic.createExpression("~_X1|~_X2")),
 		    // negated implication
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("~(_X1->_X2)"), logic.createExpression("_X1&~_X2")),
+		    // s.a. Substitutions.createSingleSidedMatcher(logic.createExpression("~(_X1->_X2)"), logic.createExpression("_X1&~_X2")),
 		    // negated equivalence
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("~(_X1<->_X2)"), logic.createExpression("(~_X1)<->_X2")),
+		    // s.a. Substitutions.createSingleSidedMatcher(logic.createExpression("~(_X1<->_X2)"), logic.createExpression("(~_X1)<->_X2")),
 		    // negated all-quantifier
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("~(起X1 _X2)"), logic.createExpression("?_X1 ~_X2")),
+		    Substitutions.createSingleSidedMatcher(logic.createExpression("~(起V _X)"), logic.createExpression("?_V ~_X")),
 		    // negated exists-quantifier
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("~(?_X1 _X2)"), logic.createExpression("起X1 ~_X2")),
+		    Substitutions.createSingleSidedMatcher(logic.createExpression("~(?_V _X)"), logic.createExpression("起V ~_X")),
 		}));
 		return (Formula) Functionals.fixedPoint(NegationNFTransform, F);
 	    } catch (java.text.ParseException ex) {
