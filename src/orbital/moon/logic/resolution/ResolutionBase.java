@@ -97,6 +97,7 @@ public abstract class ResolutionBase implements Inference {
 	final ClausalSet S = skolemClauseForm(Collections.singleton(query), "negated goal ");
 	// if IllegalStateException occurs here it means return true due to inconsistent query
 
+	logger.log(Level.FINE, "proving that knowledgebase {0} and query {1} are inconsistent", new Object[] {knowledgebase, S});
         final boolean proven = prove(knowledgebase, S);
 	logger.log(Level.FINE, "found proof {0}", Boolean.valueOf(proven));
         return proven;
