@@ -10,6 +10,9 @@ import orbital.logic.sign.*;
 import orbital.logic.sign.type.*;
 
 import orbital.logic.sign.concrete.Notation;
+import orbital.logic.functor.Functionals;
+import orbital.logic.functor.Function;
+import java.util.Arrays;
 
 /**
  * Encapsulates a whole sequence of expressions into a single compound expression.
@@ -20,14 +23,28 @@ import orbital.logic.sign.concrete.Notation;
  */
 class ExpressionSequence implements Expression.Composite {
     //@xxx improve this dummy compositor
-    private static final Object SEQUENCE = new Object();
+    private static final Object SEQUENCE = new Object() {
+	    public String toString() {
+		return "ExpressionSequence";
+	    }
+	};
     private final Expression expressions[];
     public ExpressionSequence(Expression expressions[]) {
 	this.expressions = expressions;
     }
 
     public Type getType() {
-	return Types.getDefault().list(Types.getDefault().objectType(Expression.class));
+	//@xxx shouldn't we return supremum type of expressions[i].getType()?
+	//return Types.getDefault().list(Types.getDefault().objectType(Expression.class));
+	return Types.getDefault().list((Type)Types.getDefault().sup().apply(
+	    Functionals.listable(
+		new Function() {
+		    public Object apply(Object o) {
+			return ((Typed)o).getType();
+		    }
+		}).apply(Arrays.asList(expressions))
+		//@internal see Functionals#map(Function,Object[]) ArrayStoreException
+		));
     }
 
     public Signature getSignature() {
