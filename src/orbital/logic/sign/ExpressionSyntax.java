@@ -52,6 +52,7 @@ public interface ExpressionSyntax extends ExpressionBuilder {
      *  Elements in the core signature all have a fixed interpretation.
      * @post RES == OLD(RES) &and; RES unmodifiable
      * @see Logic#coreInterpretation()
+     * @xxx incorporate Types into this. Either by introduce "Types typeSystem();", or by introduce type symbols and constructors somehow into coreSignature(). see pure-type system?
      */
     Signature coreSignature();
 

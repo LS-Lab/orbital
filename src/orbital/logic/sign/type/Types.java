@@ -508,6 +508,7 @@ public final class Types {
      * @see Types.MapType
      */
     private static abstract class NonMapType extends TypeObject {
+	private static final long serialVersionUID = -6241523127417780697L;
 	public Type codomain() {
 	    return NOTYPE;
 	}
@@ -963,6 +964,7 @@ public final class Types {
      * @version 1.1, 2002/10/06
      */
     private static class CollectionType extends NonMapType {
+	private static final long serialVersionUID = -1113530540489964295L;
 	private final Class collection;
 	private final Type component;
 	private final String toStringPrefix;
