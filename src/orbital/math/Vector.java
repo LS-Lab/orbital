@@ -16,7 +16,7 @@ import java.util.NoSuchElementException;
  * Represents a mathematical vector of any dimension n.
  * <p>
  * <table>
- * <tr><td rowspan="4">v&isin;V=R<sup>n</sup>, v = (v<sub>0</sub>,v<sub>1</sub>,v<sub>2</sub>,...v<sub>n-1</sub>)<sup>T</sup> = </td>
+ * <tr><td rowspan="4">v&isin;V=R<sup>n</sup>, v = (v<sub>0</sub>,v<sub>1</sub>,v<sub>2</sub>,&#8230;,v<sub>n-1</sub>)<sup>T</sup> = </td>
  *     <td rowspan="4" style="font-size: 600%; font-weight: 200">(</td> <td>v<sub>0</sub></td> <td rowspan="4" style="font-size: 600%; font-weight: 200">)</td></tr>
  * <tr> <td>v<sub>1</sub></td> </tr>
  * <tr> <td>&#8942;</td> </tr>
@@ -74,23 +74,15 @@ import java.util.NoSuchElementException;
  * whilst arithmetic methods will leave a vector unchanged but return a modified version.
  * Refer to the documentation of the individual methods for details.</p>
  * 
- * @invariant succeedes(#clone()) &and; (overwrites(#clone()) &or; this implements Cloneable)
- * @structure extends Arithmetic
- * @structure extends Iteratable
+ * @invariant succeedes(#clone()) &and; (overwrites(#clone()) &or; this implements Cloneable) &and; rank()==1
+ * @structure extends Tensor
  * @version 1.0, 2000/08/08
  * @author  Andr&eacute; Platzer
  * @see Values#valueOf(Arithmetic[])
  * @see Values#valueOf(double[])
  * @todo turn into a template Vector<R implements Arithmetic>
  */
-public interface Vector/*<R implements Arithmetic>*/ extends Arithmetic {
-    // object-methods
-
-    /**
-     * @post RES != RES && RES != this && RES.equals(this)
-     */
-    Object clone();
-
+public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     // get/set-methods
 	
     /**
@@ -114,9 +106,11 @@ public interface Vector/*<R implements Arithmetic>*/ extends Arithmetic {
 
     /**
      * Returns an iterator over all elements.
-     * @return an iterator that iterates over v<sub>0</sub>,...v<sub>n-1</sub>.
+     * @return an iterator that iterates over v<sub>0</sub>,&#8230;,v<sub>n-1</sub>.
+     * @post RES instanceof {@link ListIterator}
+     * @todo covariant return-types.
      */
-    ListIterator/*_<R>_*/ iterator();
+    Iterator/*_<R>_*/ iterator();
     
     // sub-views
 
@@ -138,8 +132,8 @@ public interface Vector/*<R implements Arithmetic>*/ extends Arithmetic {
     /**
      * Returns the norm || ||<sub>p</sub> of this vector.
      * <p>This method implements p-norms, where<br>
-     * <span class="Formula">||x||<sub>p</sub> = (|x<sub>1</sub>|<sup>p</sup> + ... + |x<sub>n</sub>|<sup>p</sup>)<sup>1/p</sup></span>.<br>
-     * <span class="Formula">||x||<sub>&infin;</sub> = max {|x<sub>1</sub>|,...,|x<sub>n</sub>|}</span>.</p>
+     * <span class="Formula">||x||<sub>p</sub> = (|x<sub>1</sub>|<sup>p</sup> + &#8230; + |x<sub>n</sub>|<sup>p</sup>)<sup>1/p</sup></span>.<br>
+     * <span class="Formula">||x||<sub>&infin;</sub> = max {|x<sub>1</sub>|,&#8230;,|x<sub>n</sub>|}</span>.</p>
      * @pre p>=1
      */
     public Real norm(double p);
@@ -211,7 +205,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Arithmetic {
      * <p>
      * The standard scalar-product which will often be implemented, is<br />
      * (x,y) &#8614; &lang;x,y&rang; = = x<sup>T</sup>·y = <big>&sum;</big><span class="doubleIndex"><sub>i=0</sub><sup>n-1</sup></span> x<sub>i</sub>&sdot;y<sub>i</sub>.
-     * It belongs to the euclidian 2-norm.
+     * It belongs to the euclidian 2-norm and is the inner product of vectors.
      * </p>
      * @pre dimension() == b.dimension()
      * @post RES.dimension() == dimension()

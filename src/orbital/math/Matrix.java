@@ -51,23 +51,15 @@ import java.util.NoSuchElementException;
  * Refer to the documentation of the individual methods for details.
  * </p>
  * 
- * @invariant succeedes(#clone()) &and; (overwrites(#clone()) &or; this implements Cloneable)
- * @structure extends Arithmetic
- * @structure extends Iteratable
+ * @invariant succeedes(#clone()) &and; (overwrites(#clone()) &or; this implements Cloneable) &and; rank() == 2
+ * @structure extends Tensor
  * @version 1.0, 2000/08/08
  * @author  Andr&eacute; Platzer
  * @see Values#valueOf(Arithmetic[][])
  * @see Values#valueOf(double[][])
  * @todo turn into a template Matrix<R implements Arithmetic>
  */
-public interface Matrix/*<R implements Arithmetic>*/ extends Arithmetic {
-    // object-methods
-
-    /**
-     * @post RES != RES && RES != this && RES.equals(this)
-     */
-    Object clone();
-
+public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     // get/set-methods
 	
     /**
@@ -249,9 +241,9 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Arithmetic {
     /**
      * Rank of this matrix.
      * i.e. the maximum number of column vectors (or row vectors) that are linear independent.
-     * @return rank M
+     * @return rank M = dim<sub>K</sub>(im(M)).
      */
-    int rank();
+    int linearRank();
 
 
     /**
@@ -271,6 +263,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Arithmetic {
      * </ul>
      * which is a measure for how much A stretches vectors.
      * </p>
+     * @todo document again, the norms implemented by AbstractMatrix.
      * @pre p>=1
      */
     Real norm(double p);
@@ -695,7 +688,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Arithmetic {
      * Returns an array containing all the elements in this matrix.
      * The first index in this array specifies the row, the second is for column.
      * @post RES[i][j] == get(i, j) && RES != RES
-     * @see #set(R[][])
+     * @see #set(Arithmetic[][])
      * @see Object#clone()
      */
     public Arithmetic/*>R<*/[][] toArray();

@@ -205,7 +205,7 @@ abstract class AbstractVector/*<R implements Arithmetic>*/ implements Vector/*<R
      */
     protected transient int modCount = 0;
 
-    public ListIterator iterator() {
+    public Iterator iterator() {
 	return new ListIterator() {
 		private int cursor = 0;
 		private int lastRet = -1;
@@ -508,6 +508,39 @@ abstract class AbstractVector/*<R implements Arithmetic>*/ implements Vector/*<R
 	return this;
     } 
 
+    // tensor version
+    
+    public final int rank() {
+	return 1;
+    }
+
+    public final int[] dimensions() {
+	return new int[] {dimension()};
+    }
+
+    public final Arithmetic/*>R<*/ get(int[] i) {
+	valid(i);
+	return get(i[0]);
+    }
+
+    public final void set(int[] i, Arithmetic/*>R<*/ vi) {
+	valid(i);
+	set(i[0], vi);
+    }
+
+    public final Tensor subTensor(int[] i, int[] j) {
+	valid(i);
+	valid(j);
+	return subVector(i[0], j[0]);
+    }
+
+    public final Tensor add(Tensor b) {
+	return add((Vector)b);
+    }
+    public final Tensor subtract(Tensor b) {
+	return subtract((Vector)b);
+    }
+
     /**
      * Validate index within dimension.
      * @pre 0 <= i < dimension()
@@ -522,6 +555,12 @@ abstract class AbstractVector/*<R implements Arithmetic>*/ implements Vector/*<R
 	    throw new ArrayIndexOutOfBoundsException("index (" + i + ") out of dimension (" + dimension() + ")");
     } 
 
+    final void valid(int[] i) {
+	if (i.length != rank())
+	    throw new ArrayIndexOutOfBoundsException("illegal indices (" + i.length + " indices) for tensor of rank 1");
+	validate(i[0]);
+    } 
+    
     public Arithmetic/*>R<*/[] toArray() {
 	Arithmetic/*>R<*/[] a = new Arithmetic/*>R<*/[dimension()];
 	for (int i = 0; i < dimension(); i++)

@@ -143,6 +143,7 @@ public class LUDecomposition/*<R implements Arithmetic>*/ implements Serializabl
 
     /**
      * A is regular if and only if U is which depends upon whether there is a 0 on the diagonal.
+     * @see Matrix#isRegular()
      */
     public boolean isRegular() throws ArithmeticException {
 	for (int i = 0; i < A.dimension().height; i++)
@@ -154,11 +155,12 @@ public class LUDecomposition/*<R implements Arithmetic>*/ implements Serializabl
     /**
      * Rank of the matrix.
      * i.e. the number of non-zero elements on the diagonal of U.
+     * @see Matrix#linearRank()
      */
-    public int rank() {
+    public int linearRank() {
 	return Setops.count(A.getDiagonal().iterator(), Functionals.compose(Functionals.bindSecond(Predicates.equal, Values.ZERO), Functions.norm) /*new Predicate() {
-																		     public boolean apply(Object o) {return ((Arithmetic)o).norm() != 0;}
-																		     }*/);
+		public boolean apply(Object o) {return ((Arithmetic)o).norm() != 0;}
+	}*/);
     }
 
     /**
@@ -166,6 +168,7 @@ public class LUDecomposition/*<R implements Arithmetic>*/ implements Serializabl
      * <p>
      * det A = (-1)<sup>p</sup>*det U where p = sign P is the number of permutations in P.
      * Since det(P)*det(A) = det(P&middot;A) = det(L&middot;U) = det(L)*det(U) = det(U).</p>
+     * @see Matrix#det()
      */
     public Arithmetic/*>R<*/ det() {
 	Arithmetic/*>R<*/ detU = (Arithmetic/*>R<*/) Functionals.foldRight(Operations.times, Values.valueOf(1), A.getDiagonal().iterator());

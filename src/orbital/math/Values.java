@@ -390,7 +390,7 @@ public final class Values {
 		public Arithmetic/*>R<*/ get(int i) { return v.get(i); }
 		public void set(int i, Arithmetic/*>R<*/ v) { throw new UnsupportedOperationException(); }
 		protected void set(Arithmetic/*>R<*/ v[]) { throw new UnsupportedOperationException(); }
-		public ListIterator iterator() { return Setops.unmodifiableListIterator(v.iterator()); }
+		public Iterator iterator() { return Setops.unmodifiableListIterator((ListIterator)v.iterator()); }
 		public boolean equals(Object b) { return v.equals(b); }
 		public int hashCode() { return v.hashCode(); }
 		public Object clone() { return v.clone(); }
@@ -531,8 +531,8 @@ public final class Values {
 		public Vector/*<R>*/ getRow(int i) { return m.getRow(i); }
 		public void setRow(int i, Vector/*<R>*/ v) { throw new UnsupportedOperationException(); }
 		public void set(Arithmetic/*>R<*/ v[][]) { throw new UnsupportedOperationException(); }
-		public ListIterator getColumns() { return Setops.unmodifiableListIterator(m.getColumns()); }
-		public ListIterator getRows() { return Setops.unmodifiableListIterator(m.getRows()); }
+		public ListIterator getColumns() { return Setops.unmodifiableListIterator((ListIterator)m.getColumns()); }
+		public ListIterator getRows() { return Setops.unmodifiableListIterator((ListIterator)m.getRows()); }
 		public Iterator iterator() { return Setops.unmodifiableIterator(m.iterator()); }
 		public Vector/*<R>*/ getDiagonal() { return m.getDiagonal(); }
 		public boolean isSquare() { return m.isSquare(); }
@@ -761,7 +761,7 @@ public final class Values {
 		public Arithmetic/*>R<*/ get(int i) { return m.get(rowOf(i),columnOf(i)); }
 		public void set(int i, Arithmetic/*>R<*/ v) { throw new UnsupportedOperationException(); }
 		protected void set(Arithmetic/*>R<*/ v[]) { throw new UnsupportedOperationException(); }
-		public ListIterator iterator() { return new ListIterator() {
+		public Iterator iterator() { return new ListIterator() {
 			private final Iterator i = m.iterator();
 			// partly delegation to java.util.ListIterator interface
 

@@ -189,13 +189,19 @@ public interface Arithmetic extends Normed {
 
     /**
      * Multiplies an arithmetic object to this returning the result.
-     * @return this&sdot;b, or this&lowast;b depending upon context.
+     * <p>
+     * Note that if type checking permits, this method may implement both, a&sdot;b and a&lowast;b
+     * depending upon context. However, this is not a requirement, since there are a few
+     * pathological cases with differing scalar and ring multiplication on the same set.
+     * </p>
+     * @return this&sdot;b.
      * @throws ArithmeticException if an exceptional arithmetic condition has occurred while
      * performing the operation.
      * @throws IllegalArgumentException if the argument type is illegal for this operation.
      *  Note: for single type handling it is also allowed to throw a ClassCastException, instead.
      * @throws UnsupportedOperationException if this class does not support this operation, principially,
      *  regardless of the argument.
+     * @see #scale(Arithmetic)
      */
     Arithmetic multiply(Arithmetic b) throws ArithmeticException, UnsupportedOperationException;
 
@@ -220,6 +226,21 @@ public interface Arithmetic extends Normed {
      *  regardless of the argument.
      */
     Arithmetic divide(Arithmetic b) throws ArithmeticException, UnsupportedOperationException;
+
+    // law of action &lowast;
+    
+//     /**
+//      * Multiplies a scalar with this arithmetic object returning the result.
+//      * @return &alpha;&lowast;this
+//      * @throws ArithmeticException if an exceptional arithmetic condition has occurred while
+//      *  performing the operation.
+//      * @throws IllegalArgumentException if the argument type is illegal for this operation.
+//      *  Note: for single type handling it is also allowed to throw a ClassCastException, instead.
+//      * @throws UnsupportedOperationException if this class does not support this operation, principially,
+//      *  regardless of the argument.
+//      * @see #multiply(Arithmetic)
+//      */
+//     Arithmetic scale(Arithmetic alpha) throws ArithmeticException, UnsupportedOperationException;
 
     // extended laws
 

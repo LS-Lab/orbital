@@ -808,8 +808,8 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
 	return !det().norm().equals(Values.ZERO);					// (!) applicable for Double.NaN as well
     } 
 
-    public int rank() {
-	return LUDecomposition.decompose(this).rank();
+    public int linearRank() {
+	return LUDecomposition.decompose(this).linearRank();
     }
 
     void swapColumns(int a, int b) {
@@ -1166,6 +1166,40 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
 	return this;
     } 
 
+    // tensor version
+    
+    public final int rank() {
+	return 2;
+    }
+
+    public final int[] dimensions() {
+	Dimension dim = dimension();
+	return new int[] {dim.height, dim.width};
+    }
+
+    public final Arithmetic/*>R<*/ get(int[] i) {
+	valid(i);
+	return get(i[0], i[1]);
+    }
+
+    public final void set(int[] i, Arithmetic/*>R<*/ vi) {
+	valid(i);
+	set(i[0], i[1], vi);
+    }
+
+    public final Tensor subTensor(int[] i, int[] j) {
+	valid(i);
+	valid(j);
+	return subMatrix(i[0], j[0], i[1], j[1]);
+    }
+
+    public final Tensor add(Tensor b) {
+	return add((Matrix)b);
+    }
+    public final Tensor subtract(Tensor b) {
+	return subtract((Matrix)b);
+    }
+
     /**
      * Validate (i|j) indices within dimension.
      * @pre 0 <= i < dimension().height && 0 <= j < dimension().width
@@ -1182,6 +1216,11 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
 	    throw new ArrayIndexOutOfBoundsException("Row index (" + i + ") out of number of rows (" + dimension().height + ")");
 	if (j >= dimension().width)
 	    throw new ArrayIndexOutOfBoundsException("Column index (" + j + ") out of number of columns (" + dimension().width + ")");
+    }
+    final void valid(int[] i) {
+	if (i.length != rank())
+	    throw new ArrayIndexOutOfBoundsException("illegal indices (" + i.length + " indices) for tensor of rank 2");
+	validate(i[0], i[1]);
     } 
 
     public Arithmetic/*>R<*/ [][] toArray() {
