@@ -10,28 +10,27 @@ import orbital.math.*;
 import orbital.awt.*;
 
 /**
- * Robot navigation.
- * A robot navigates through a labyrinth with either deterministic or
- * non-deterministic actions searching for a goal.
- * Tumbling through the maze he will learn to find better ways after some trials.
+ * Robot navigation. A robot navigates through a labyrinth with either
+ * deterministic or non-deterministic actions searching for a goal.
+ * Tumbling through the maze he will learn to find better ways after
+ * some trials. Essentially, the robot is blind and can only feel its
+ * way through the labyrinth. But it has a little memory, and will
+ * display which ways it thinks about going along. Continuously, it
+ * reaches the optimal path.
  * @internal note that reinforcement learning problems are MDPs with c(s,a) = - E[r<sub>t+1</sub>|s<sub>t</sub>=s,a<sub>t</sub>=a]
  * @todo spawn a new example "Race Track Problem" [Barto et al. 1993]
  * @TODO: introduce turning backwards so that we do not need to turn twice. And what's its reaction?
  * @todo provide exact settings for more labyrinths. Implement field for "LOST" with negative reward.
  */
 public class RobotNavigation implements MarkovDecisionProblem {
-    public static final int	MOVE_DELAY = 400;
-    public static final int	TRIALS = 50;
-    public static final boolean DETERMINISTIC = true;
+    private static int	MOVE_DELAY = 400;
+    private static final int	TRIALS = 5000;
+    private static final boolean DETERMINISTIC = true;
 
     public static void main(String arg[]) throws IOException {
-	RobotNavigation nav = new RobotNavigation();
         InputStream input = new FileInputStream(arg.length > 0 ? arg[0] : "default.lab.txt");
-	nav.view.load(input);
+	RobotNavigation nav = new RobotNavigation(input);
 	input.close();
-	Map map = nav.view.getMap();
-	Moving start = new Moving(searchAny(map, ROBOT), Direction.South);
-    	nav.init((Map) map.clone(), (Moving) start.clone());
 
         MarkovDecisionProcess planner;
         // here we decide which exact MDP planning algorithm to use
@@ -42,26 +41,26 @@ public class RobotNavigation implements MarkovDecisionProblem {
 
 	Frame f = new Frame();
 	new Closer(f, true, true);
-	f.add(nav.view);
+	f.add(nav.getView());
 	f.pack();
 	f.setVisible(true);
 
-        // really obtain a plan
-        Function plan = planner.solve(nav);
+	// really obtain a plan
+	Function plan = planner.solve(nav);
 
-        // multiple trials of following it (for Trial-RTDP to achieve convergence)
-        for (int i = 0; i < TRIALS; i++) {
-            try {Thread.sleep(2 * MOVE_DELAY);} catch(InterruptedException x) {}
-            // follow the plan
-            for (Object state = start; !nav.isSolution(state); state = nav.observe()) {
-                nav.perform(plan.apply(state));
-            }
-            start = new Moving(searchAny(map, ROBOT), Direction.South);
-	    nav.init((Map) map.clone(), (Moving) start.clone());
-        }
+	nav.followPlan(plan, TRIALS);
     }
 
-    
+    /**
+     * Set the delay time between two moves (for visual animation).
+     */
+    protected static void setDelay(int moveDelay) {
+	RobotNavigation.MOVE_DELAY = moveDelay;
+    }
+
+    /**
+     * Declaration of the characters occurring in the labyrinth file.
+     */
     public static final Character GOAL = new Character('G');
     public static final Character WALL = new Character('#');
     public static final Character ROBOT = new Character('R');
@@ -71,7 +70,7 @@ public class RobotNavigation implements MarkovDecisionProblem {
     /**
      * the original problem's map.
      */
-    private Map map;
+    private Map originalMap;
     /**
      * the heuristic goal position on map.
      */
@@ -83,32 +82,71 @@ public class RobotNavigation implements MarkovDecisionProblem {
      */
     private Moving currentPosition;
     /**
-     * the current map view.
-     * view.getMap() may differ from map in that the robot moves on view
-     * but not on the original map.
+     * the current map view.  view.getMap() may differ from originalMap in
+     * that the robot moves on view but not on the original originalMap. So
+     * contrary to originalMap, view.getMap() will change.
      */
     private MapView view;
 	
     public RobotNavigation() {
-	this.map = null;
+	this.originalMap = null;
 	this.goalPosition = null;
 	this.currentPosition = null;
-	this.view = new RobotMapView(map);
+	this.view = new RobotMapView(null);
     }
 
+    /**
+     * Create a new robot navigation problem for the labyrinth read
+     * from a stream.
+     */
+    public RobotNavigation(InputStream labyrinth) throws IOException {
+	this();
+	//@internal reuse the loading ability of our view, even though we really want to set originalMap
+	view.load(labyrinth);
+	Map originalMap = view.getMap();
+	Moving start = new Moving(searchAny(originalMap, ROBOT), Direction.South);
+	//@internal cloning could be unnecessary, here
+    	init((Map) originalMap.clone(), (Moving) start.clone());
+    }
+
+    /**
+     * Re-initialize the map.
+     */
     public void init(Map map, Moving start) {
-	this.map = map;
+	this.originalMap = map;
 	this.currentPosition = start;
-	goalPosition = searchAny(map, GOAL);
+	this.goalPosition = searchAny(getOriginalMap(), GOAL);
 	// view only gets a clone of the original map, since we want the robot to wander on it
-	view.setMap((Map) map.clone());
+	view.setMap((Map) getOriginalMap().clone());
+    }
+
+    /**
+     * the original problem's map.
+     */
+    protected Map getOriginalMap() {
+	return originalMap;
+    }
+    /**
+     * the problem's current map (also on display).
+     */
+    protected Map getMap() {
+	return view.getMap();
+    }
+
+    /**
+     * the current map view.  view.getMap() may differ from originalMap in
+     * that the robot moves on view but not on the original originalMap. So
+     * contrary to originalMap, view.getMap() will change.
+     */
+    public MapView getView() {
+	return view;
     }
 
     public boolean isSolution(Object state) {
 	Position pos = (Position) state;
-	return GOAL.equals(map.get(pos)) || goalPosition.equals(pos)
+	return GOAL.equals(getMap().get(pos)) || goalPosition.equals(pos)
 	    // negative "solution" when we lost the game
-	    || LOST.equals(map.get(pos));
+	    || LOST.equals(getMap().get(pos));
     }
 
     public Iterator actions(Object state) {
@@ -169,7 +207,7 @@ public class RobotNavigation implements MarkovDecisionProblem {
         
         // goal and lost states are terminal states. Then no action leads anywhere else.
         // (note that this is important for the undiscounted case to converge)
-        if (GOAL.equals(map.get(s)) || LOST.equals(map.get(s)))
+        if (GOAL.equals(getMap().get(s)) || LOST.equals(getMap().get(s)))
 	    return sp.equals(s) ? 1 : 0;
 
 	// normal case
@@ -185,10 +223,17 @@ public class RobotNavigation implements MarkovDecisionProblem {
      * Check whether the given action in the given state would lead us into a wall or off board.
      */
     private boolean wouldBounceWall(Moving state, Object action) {
+	String move = ((Transition[]) transitions.get(action))[0].move;
         Moving moving = (Moving) state.clone();
     	// move as intended, i.e. as if the world were deterministic
-    	moving.move(((Transition[]) transitions.get(action))[0].move);
-        return !map.inRange(moving) || WALL.equals(map.get(moving));
+	// move and check single intermediate steps
+	for (int i = 0; i < move.length(); i++) {
+	    moving.move(move.charAt(i));
+	    if (!getMap().inRange(moving) || WALL.equals(getMap().get(moving))) {
+		return true;
+	    }
+	}
+	return false;
     }
     
 	
@@ -196,10 +241,10 @@ public class RobotNavigation implements MarkovDecisionProblem {
         // where the action's target is
         Moving target = ((Moving) state.clone());
         target.move((String)action);
-        if (!map.inRange(target) || WALL.equals(map.get(target)))
+        if (!getMap().inRange(target) || WALL.equals(getMap().get(target)))
 	    // bounced against a wall
 	    return 70;
-        if (LOST.equals(map.get(target)))
+        if (LOST.equals(getMap().get(target)))
 	    // bound to lose when this succeeds
 	    return 200;
         return 2; // or return action.length();
@@ -228,6 +273,8 @@ public class RobotNavigation implements MarkovDecisionProblem {
      */
     protected static Position searchAny(Map map, Object o) {
 	List l = searchAll(map, o);
+	if (l == null || l.isEmpty())
+	    throw new NoSuchElementException("Labyrinth does not contain " + o);
 	return (Position) l.get((int) (Math.random() * l.size()));
     }
 
@@ -235,28 +282,30 @@ public class RobotNavigation implements MarkovDecisionProblem {
      * Get the set S of all states.
      * For academic toy algorithms, only.
      */
-    private Set allStates() {
+    protected Set allStates() {
+	Map map = getOriginalMap();
 	// get all states (even states that can never be reached, at all)
-	/*Set states = new HashSet();
-	  for (int i = 0; i < map.getDimension().width; i++)
-	  for (int j = 0; j < map.getDimension().height; j++) {
-	  Moving s = new Moving(new Position(i, j), Direction.South);
-	  if (WALL.equals(map.get(s)))
-	  continue;
-	  for (int k = 0; k < 4; k++) {
-	  s.move(Move.Left);
-	  states.add(s.clone());
-	  }
-	  }
-	  return states;*/
+	Set states = new HashSet();
+	for (int i = 1; i < map.getDimension().width; i+=2) {
+	    for (int j = 1; j < map.getDimension().height; j+=2) {
+		Moving s = new Moving(new Position(i, j), Direction.South);
+		if (WALL.equals(map.get(s)))
+		    continue;
+		for (int k = 0; k < 4; k++) {
+		    s.move(Move.Left);
+		    states.add(s.clone());
+		}
+	    }
+	}
+	return states;
 	// get all reachable states, only
 	//return MarkovDecisionProblemSearch.getReachableStates(this, currentPosition);
-	return null;
     }
 
-    // navigation methods
+
+    // additional navigation methods
     
-    private void perform(Object action) {
+    protected void perform(Object action) {
         String a = (String) action;
 	// chose a non-deterministic transition
 	double dice = Math.random();
@@ -273,10 +322,10 @@ public class RobotNavigation implements MarkovDecisionProblem {
         Moving moving = (Moving) currentPosition.clone();
     	moving.move(a);
         //System.out.println(" --"+a+"--> "+moving);
-        if (!view.getMap().inRange(moving) || WALL.equals(view.getMap().get(moving)))
+        if (!getMap().inRange(moving) || WALL.equals(getMap().get(moving)))
 	    if (action.equals(a))
 		// intended illegal move
-		throw new InternalError("intended illegal move " + action + " to " + (view.getMap().inRange(moving) ? view.getMap().get(moving) : "OutOfBoundsException") + "@" + moving);
+		throw new InternalError("intended illegal move " + action + " to " + (getMap().inRange(moving) ? getMap().get(moving) : "OutOfBoundsException") + "@" + moving);
 	    else
 		// accidentally hit the wall
 		// then we rebounced to original position
@@ -295,16 +344,58 @@ public class RobotNavigation implements MarkovDecisionProblem {
         try {Thread.sleep(MOVE_DELAY);} catch(InterruptedException x) {}
     }
 
-    private Object observe() {
+    protected Object observe() {
     	return currentPosition;
     }
     
+    /**
+     * follow the plan several times.
+     */
+    protected void followPlan(Function plan, int trials) {
+        // multiple trials of following the plan (for Trial-RTDP to achieve convergence)
+        for (int i = 0; i < trials; i++) {
+            try {Thread.sleep(2 * MOVE_DELAY);} catch(InterruptedException x) {}
+            Moving start = new Moving(searchAny(getOriginalMap(), ROBOT), Direction.South);
+	    init((Map) getOriginalMap().clone(), (Moving) start.clone());
+	    followPlan(plan, (Moving) start.clone());
+        }
+    }
+
+    /**
+     * follow the plan
+     */
+    protected void followPlan(Function plan, Moving start) {
+	for (Object state = start; !isSolution(state); state = observe()) {
+	    perform(plan.apply(state));
+	}
+    }
+    protected void followPlan(Function plan) {
+	followPlan(plan, new Moving(searchAny(getOriginalMap(), ROBOT), Direction.South));
+    }
+    /**
+     * follow the plan and return a trace of the states, visited.
+     */
+    protected List tracePlan(Function plan) {
+	List trace = new LinkedList();
+	Moving start = new Moving(searchAny(getOriginalMap(), ROBOT), Direction.South);
+	init((Map) getOriginalMap().clone(), (Moving) start.clone());
+	Object state = start;
+	trace.add(state);
+	while (!isSolution(state)) {
+	    perform(plan.apply(state));
+	    state = observe();
+	    trace.add(state);
+	}
+	return trace;
+    }
+    
+
     // heuristic function
     
     /**
      * use euclidian distance plus turning cost to the goal as heuristic function.
      */
-    private Function getHeuristic() {
+    protected Function getHeuristic() {
 	return new Function() {
 		final ValueFactory vf = Values.getDefault();
 		public Object apply(Object state) {
