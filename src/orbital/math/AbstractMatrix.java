@@ -232,7 +232,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
 	try {
 	    return super.clone();
 	}
-	catch (CloneNotSupportedException nonconform) {throw new InnerCheckedException("invariant: sub classes of " + Matrix.class + " must support either overwrite clone() or implement " + Cloneable.class, nonconform);}
+	catch (CloneNotSupportedException nonconform) {throw new InnerCheckedException("invariant: sub classes of " + Matrix.class + " must either overwrite clone() or implement " + Cloneable.class, nonconform);}
     }
 
     // factory-methods
@@ -896,6 +896,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
 
     // arithmetic-operations
 	
+    //@todo that's not quite true for strange R
     public Arithmetic zero() {return Values.ZERO(dimension());}
     public Arithmetic one() {
     	if (!isSquare())
@@ -1226,7 +1227,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
     }
     final void valid(int[] i) {
 	if (i.length != rank())
-	    throw new ArrayIndexOutOfBoundsException("illegal indices (" + i.length + " indices) for tensor of rank 2");
+	    throw new ArrayIndexOutOfBoundsException("illegal number of indices (" + i.length + " indices) for tensor of rank " + rank());
 	validate(i[0], i[1]);
     } 
 

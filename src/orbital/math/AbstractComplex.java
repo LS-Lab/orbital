@@ -54,6 +54,11 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
 	if (Complex.isa.apply(o)) {
 	    Complex b = (Complex) o;
 	    return re().equals(b.re()) && im().equals(b.im());
+    	} else if (o != null && Values.isPrimitiveWrapper(o.getClass())) {
+	    if (equals(Values.valueOf((Number)o)))
+		throw new IllegalArgumentException("comparing " + Scalar.class.getName() + "s with primitive wrapper type " + o.getClass() + " is not supported (since then Object.equals(Object) is symmetric)");
+	    else
+		return false;
 	} else
 	    return false;
     } 

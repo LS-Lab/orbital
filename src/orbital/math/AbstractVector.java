@@ -63,7 +63,7 @@ abstract class AbstractVector/*<R implements Arithmetic>*/ implements Vector/*<R
 	try {
 	    return super.clone();
 	}
-	catch (CloneNotSupportedException nonconform) {throw new InnerCheckedException("invariant: sub classes of " + Vector.class + " must support either overwrite clone() or implement " + Cloneable.class, nonconform);}
+	catch (CloneNotSupportedException nonconform) {throw new InnerCheckedException("invariant: sub classes of " + Vector.class + " must either overwrite clone() or implement " + Cloneable.class, nonconform);}
     }
 
     // factory-method
@@ -562,7 +562,7 @@ abstract class AbstractVector/*<R implements Arithmetic>*/ implements Vector/*<R
 
     final void valid(int[] i) {
 	if (i.length != rank())
-	    throw new ArrayIndexOutOfBoundsException("illegal indices (" + i.length + " indices) for tensor of rank 1");
+	    throw new ArrayIndexOutOfBoundsException("illegal number of indices (" + i.length + " indices) for tensor of rank " + rank());
 	validate(i[0]);
     } 
     

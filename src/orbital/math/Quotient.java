@@ -9,11 +9,11 @@ package orbital.math;
 import orbital.logic.functor.Function;
 
 /**
- * Quotient represents an (algebraic) equivalence class a&#772;=&atilde;=[a]&isin;M/~.
+ * Quotient represents an (algebraic) equivalence class a&#772;=a&#771;=[a]&isin;M/~.
  * The quotient M/~ has the same algebraic structure as M.
  * <p>
  * Let &pi;:M&#8608;M/~;a&#8614;a&#772; be the canonical projection to the equivalence classes.
- * When <strong>choosing</strong> one <em>left</em>-inverse &pi;<sup>-1</sup>, we have a
+ * When <strong>choosing</strong> one <em>right</em>-inverse (section) &pi;<sup>-1</sup>, we have a
  * canonical representative a=&pi;<sup>-1</sup>(a&#772;) of a&#772;.
  * However be aware that usually &pi;<sup>-1</sup> &#8728; &pi; &ne; id
  * which means that the canonical representative of the equivalence class a&#772;&isin;M/~
@@ -30,9 +30,13 @@ import orbital.logic.functor.Function;
  * this very carefully because it may affect precision considerations.
  * </p>
  * <p>
+ * The universal mapping property is <a href="functional/doc-files/Homomorphic.html#homomorphicProjection">there</a>.
+ * </p>
+ * <p>
  * For R-modules M it is
  * <center>&forall;I&#8884;R M/I&sdot;M &cong; M &otimes;<sub>R</sub> R/I</center>
  * </p>
+ *
  * <h3>Examples of Usage</h3>
  * <p>
  * For example in order to perform algebraic operations in the ring
@@ -113,7 +117,8 @@ public interface Quotient/*<M implements Arithmetic>*/ extends Arithmetic {
 
     /**
      * Get the "canonical" representative of this equivalence class.
-     * @return a "canonical" element &pi;<sup>-1</sup>(a&#772;)&isin;R such that &pi;(a) = a&#772; = this.
+     * @return a "canonical" element
+     *  &pi;<sup>-1</sup>(a&#772;)&isin;R such that &pi;(a) = a&#772; = this.
      * @post RES == getQuotientOperator().apply(this) &and; getQuotientOperator().apply(RES).equals(RES)
      *  &and; new Modulus(RES, getQuotientOperator()).equals(this)
      *  &and; &forall;a,b&isin;M/~ (a.equals(b) &rArr; a.representative().equals(b.representative()))

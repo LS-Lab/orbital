@@ -12,7 +12,7 @@ import java.util.Iterator;
 import orbital.util.Utility;
 
 /**
- * Represents a general matrix in Asup>n&times;m</sup> of arithmetic values.
+ * Represents a general matrix in A<sup>n&times;m</sup> of arithmetic values.
  * <p>
  * The components m<sub>i,j</sub> in A are Arithmetic objects.</p>
  * 
@@ -185,7 +185,7 @@ class ArithmeticMatrix/*<R implements Arithmetic>*/ extends AbstractMatrix/*<R>*
      * The first index in this array specifies the row, the second is for column.
      */
     public Arithmetic/*>R<*/[][] toArray() {
-	// unlike cloning D, this is safe since it does lead to shallow copy of the first array dimension
+	// unlike cloning D, this is safe since it does not lead to shallow copy of the first array dimension
 	Arithmetic/*>R<*/[][] v = new Arithmetic/*>R<*/[D.length][];
 	for (int i = 0; i < v.length; i++)
 	    // we do not need to clone D[i][j] as well?

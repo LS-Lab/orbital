@@ -19,7 +19,7 @@ abstract class AbstractReal extends AbstractComplex implements Real {
 	    Real b = (Real) o;
 	    //@see Double#compare(double,double)
 	    return java.lang.Double.doubleToLongBits(doubleValue()) == java.lang.Double.doubleToLongBits(b.doubleValue());
-    	} else
+	} else
 	    return super.equals(o);
     }
 

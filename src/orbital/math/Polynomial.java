@@ -11,7 +11,7 @@ import orbital.math.functional.Function;
 import java.util.ListIterator;
 
 /**
- * Polynomial p&isin;R[X].
+ * Univariate polynomial p&isin;R[X].
  * <p>
  * Let R be a commutative ring with 1.
  * The polynomial ring over R in one variable X is
@@ -30,9 +30,8 @@ import java.util.ListIterator;
  * @see Values#polynomial(double[])
  * @see Values#asPolynomial(Vector)
  * @see NumericalAlgorithms#polynomialInterpolation(Matrix)
- * @todo implements Function<T,T> instead with T a "compatible" type (see Algebra I) and evaluation of Horner-Scheme
- * @todo implements orbital.math.functional.Function<T,T> instead of orbital.logic.functor.Function<R,R>
- * @todo generalize to multivariat polynomials (which are no longer Euclidean)
+ * @todo implements Function<T,T> instead with T any "compatible" type (see Algebra I) and evaluation of Horner-Scheme
+ * @todo generalize to multivariat polynomials (which are no longer Euclidean). Then we would need get(int[]), R[][]...[] getCoefficients(), Iterator iterator(), and implements Function<Vector<R>,R>.
  */
 public interface Polynomial/*<R implements Arithmetic>*/ extends Euclidean, Function/*<R,R>*/ {
     // Get/Set properties

@@ -28,7 +28,13 @@ package orbital.math;
  * <ul>
  * <b>&rArr; Properties:</b>
  *   <li>the Euclidean algorithm can compute greatest common divisors in R.</li>
- *   <li>R is a principal ideal ring.</li>
+ *   <li>R is a principal ideal integrity domain, therefore implying that &forall;a,b,d,m&isin;R&#8726;{0}
+ *     <ul>
+ *       <li>(d)=(a)+(b) &hArr; d=gcd(a,b)</li>
+ *       <li>(m)=(a)&cap;(b) &hArr; m=lcm(a,b)</li>
+ *       <li>(m)=(a)&sdot;(b) &hArr; m=a&sdot;b (always)</li>
+ *     </ul>
+ *   </li>
  *   <li>&forall;a,b&isin;R&#8726;{0} &exist;gcd(a,b)&isin;R &and; (gcd(a,b)) = (a,b)</li>
  * </ul>
  *

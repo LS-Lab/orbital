@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 
 /**
- * This class contains basic mathematical utility functions.
+ * This class contains basic mathematical utilities.
  * <p><a id="SystemProperties">Properties</a>:
  * <ul>
  *   <li>Math precision settings:

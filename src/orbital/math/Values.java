@@ -207,6 +207,29 @@ public final class Values {
 	    return narrow(valueOf(val.doubleValue()));
     }
 
+    /**
+     * Determines whether the specified class is an (old JDK1.0) wrapper for a primitive type.
+     * @see Class#isPrimitive()
+     * @see java.lang.Integer
+     * @see java.lang.Long
+     * @see java.lang.Double
+     * @see java.lang.Float
+     * @see java.lang.Byte
+     * @see java.lang.Short
+     */
+    static boolean isPrimitiveWrapper(Class clazz) {
+	if (!Number.class.isAssignableFrom(clazz))
+	    return false;
+	else
+	    //@internal note that those primitive wrapper types are final
+	    return java.lang.Integer.class.equals(clazz)
+		|| java.lang.Long.class.equals(clazz)
+		|| java.lang.Double.class.equals(clazz)
+		|| java.lang.Float.class.equals(clazz)
+		|| java.lang.Byte.class.equals(clazz)
+		|| java.lang.Short.class.equals(clazz);
+    }
+
 	
     // non-standard naming scalar value constructors
 
@@ -610,7 +633,7 @@ public final class Values {
 	return valueOf(values);
     }
     public static /*<R implements Arithmetic>*/ Tensor/*<R>*/ tensor(Arithmetic/*>R<*/[][][] values) {
-	throw new UnsupportedOperationException("not yet implemented");
+	return new ArithmeticTensor(values);
     }
     /**
      * Returns a tensor of rank k containing the specified arithmetic objects.
@@ -624,15 +647,27 @@ public final class Values {
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
      */
     public static Tensor tensor(Object[] values) {
-	if (values.getClass().getComponentType().isArray())
-	    //@todo check for rectangular arrays
-	    return tensor((Object[])values[0]);
-	else if (Arithmetic.class.isAssignableFrom(values.getClass()))
-	    throw new UnsupportedOperationException("not yet supported");
-	else
-	    throw new IllegalArgumentException("multi-dimensional array of " + Arithmetic.class + " expected");
+	Tensor t = new ArithmeticTensor(values);
+	// tensors of rank 1 or rank 2 are converted to vectors or matrices
+	switch (t.rank()) {
+	case 0:
+	    assert false;
+	case 1:
+	    return tensor((Arithmetic[])values);
+	case 2:
+	    return tensor((Arithmetic[][])values);
+	default:
+	    return t;
+	}
     }
     
+    /**
+     * Gets zero tensor, with all elements set to 0.
+     */
+    public static /*<R implements Arithmetic>*/ Tensor/*<R>*/ ZERO(int[] dimensions) {
+	throw new UnsupportedOperationException("not yet implemented");
+    }
+
     // polynomial constructors and utilities
 
     /**

@@ -23,6 +23,8 @@ abstract class AbstractRational extends AbstractReal implements Rational {
     abstract int numeratorValue();
     abstract int denominatorValue();
 
+    //@todo introduce faster equals for Rationals?
+    
     // order
     public int compareTo(Object o) {
 	if (o instanceof AbstractRational) {

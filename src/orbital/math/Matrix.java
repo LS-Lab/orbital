@@ -289,6 +289,18 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     Real norm(double p);
 
     /**
+     * {@inheritDoc}
+     * Usually returns the Frobenius norm of this matrix.
+     * <p>
+     * <code>||A|| = &radic;<span class="text-decoration: overline">(&sum;<span class="doubleIndex"><sub>i=1</sub><sup>n</sup></span>&sum;<span class="doubleIndex"><sub>j=1</sub><sup>m</sup></span> |a<sub>ij</sub>|<sup>2</sup>)</code> the Frobenius norm.
+     * </p>
+     * <p>
+     * Note that the Frobenius norm is not a p-norm.
+     * It is a norm got by identifying matrices with vectors.</p>
+     */
+    Real norm();
+
+    /**
      * Returns the trace of the matrix representation.<p>
      * The trace is invariant for similar matrices: <code>Tr (T<sup>-1</sup>&middot;A&middot;T) = Tr A</code>.
      * @return sum of the main-diagonal-vectors components.

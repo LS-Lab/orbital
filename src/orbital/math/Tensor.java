@@ -46,14 +46,21 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
 
     /**
      * Get the rank of the tensor.
-     * The rank is the number of dimensions needed as indices for its components.
+     * The rank is the number of dimensions needed as indices for the components of this tensor.
+     * @post RES&ge;0
      * @see Matrix#linearRank()
      */
     int rank();
     
     /**
      * Returns the dimensions of the tensor.
-     * @todo document
+     * <p>
+     * If n<sub>1</sub>&times;n<sub>2</sub>&times;&#8230;&times;n<sub>r</sub>
+     * are the dimensions of this tensor of rank r, then all (valid)
+     * indices i&isin;<b>N</b><sup>r</sup> to this tensor satisfy
+     * &forall;k i<sub>k</sub>&isin;{0,&#8230;,n<sub>k</sub>-1}.
+     * </p>
+     * @return an array d containing the dimensions of this tensor.
      * @post RES.length == rank()
      */
     int[] dimensions();
@@ -82,7 +89,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
 
     /**
      * Returns an iterator over all elements.
-     * @return an iterator that iterates over v<sub>0,&#8230;,0</sub>,&#8230;,v<sub>1,&#8230;,0</sub>,&#8230;,v<sub>n<sub>1</sub>-1,&#8230;,n<sub>r</sub>-1</sub>.
+     * @return an iterator that iterates over v<sub>0,&#8230;,0</sub>,&#8230;,v<sub>1,&#8230;,0</sub>,&#8230;&#8230;,v<sub>n<sub>1</sub>-1,&#8230;,n<sub>r</sub>-1</sub>.
      */
     Iterator/*_<R>_*/ iterator();
     
@@ -119,7 +126,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
     /**
      * Adds two tensors returning a tensor.
      * @pre Arrays.equals(dimensions(), b.dimension())
-     *  otherwise there can only be a purely symbolic result
+     *  otherwise there can only be a purely symbolic result in tensor algebra.
      * @post Arrays.equals(RES.dimensions(), dimensions())
      *  	&& RES.get(i) == get(i) + b.get(i)
      * @attribute associative
@@ -132,7 +139,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
     /**
      * Subtracts two tensors returning a tensor.
      * @pre Arrays.equals(dimensions(), b.dimension())
-     *  otherwise there can only be a purely symbolic result
+     *  otherwise there can only be a purely symbolic result in tensor algebra.
      * @post Arrays.equals(RES.dimensions(), dimensions())
      *  	&& RES.get(i) == get(i) - b.get(i)
      * @attribute associative
@@ -149,7 +156,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      * @return s&lowast;this
      * @note once we have covariant return-types.
      */
-    //Tensor/*<R>*/ multiply(Scalar s);
+    //Tensor/*<R>*/ scale(Scalar s);
 
     /**
      * Multiplies a tensor with a matrix returning a tensor.
@@ -158,7 +165,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      * the resulting column-tensor <code>v&middot;A</code> is sized <code>m</code>.
      * @pre dimension() == B.dimension().height
      */
-    //@note tensor product is one multiplication on graded tensor algebra
+    //@note tensor product is only one multiplication on graded tensor algebra
     //@todo Tensor/*<R>*/ multiply(Matrix/*<R>*/ B);
 
     // operations on tensors

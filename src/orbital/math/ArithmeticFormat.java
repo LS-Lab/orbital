@@ -20,6 +20,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.ArrayList;
+import java.util.Arrays;
+
+import orbital.algorithm.Combinatorical;
 
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -229,10 +232,8 @@ public class ArithmeticFormat extends Format {
 	    return new StringBuffer("null");
 	if (obj instanceof Scalar)
 	    return format((Scalar) obj, result, fieldPosition);
-	else if (obj instanceof Vector)
-	    return format((Vector) obj, result, fieldPosition);
-	else if (obj instanceof Matrix)
-	    return format((Matrix) obj, result, fieldPosition);
+	else if (obj instanceof Tensor)
+	    return format((Tensor) obj, result, fieldPosition);
 	else if (obj instanceof Polynomial)
 	    return format((Polynomial) obj, result, fieldPosition);
 	else if (obj instanceof Symbol)
@@ -263,6 +264,48 @@ public class ArithmeticFormat extends Format {
 	    throw new IllegalArgumentException("Cannot format given Object as an arithmetic object");
     }
 	
+    /**
+     * Specialization of format, formatting tensor objects as they please.
+     */
+    public StringBuffer format(Tensor obj, StringBuffer result, FieldPosition fieldPosition) {
+	if (obj == null)
+	    return new StringBuffer("null");
+	if (obj instanceof Vector)
+	    return format((Vector) obj, result, fieldPosition);
+	else if (obj instanceof Matrix)
+	    return format((Matrix) obj, result, fieldPosition);
+	else {
+	    fieldPosition.setBeginIndex(0);
+	    fieldPosition.setEndIndex(0);
+
+	    //@xxx improve formatting tensors (alternating rows and columns for successive dimensions)
+	    result.append(matrixPrefix);
+	    for (Combinatorical index = Combinatorical.getPermutations(obj.dimensions()); index.hasNext(); ) {
+		final int[] i = index.next();
+		final Iterator allFrom1 = Values.valueOf(i).iterator();
+		allFrom1.next();
+		//@todo also introduce {} whenever any dimension completes
+		if (orbital.util.Setops.all(allFrom1, orbital.logic.functor.Functionals.bindSecond(orbital.logic.functor.Predicates.equal, Values.ZERO))) {
+		    // new row started
+		    if (i[0] != 0) {
+			result.append(matrixRowSuffix);
+			// a new row that is not the first row started
+			result.append(matrixRowSeparator);
+		    }
+		    result.append(matrixRowPrefix);
+		} else {
+		    result.append(matrixSeparator);
+		}
+
+		format(obj.get(i), result, fieldPosition);
+	    }
+	    result.append(matrixRowSuffix);
+	    result.append(matrixSuffix);
+
+	    return result;
+	}
+    }
+
     /**
      * Specialization of format.
      */

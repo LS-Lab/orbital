@@ -17,7 +17,7 @@ import orbital.math.functional.Functions;
 import orbital.logic.functor.Predicates;
 
 /**
- * LUDecomposition class, decomposing into P&middot;A = L&middot;U.
+ * LUDecomposition class, decomposing A into P&middot;A = L&middot;U.
  *
  * @version 0.9, 2000/09/09
  * @author  Andr&eacute; Platzer
