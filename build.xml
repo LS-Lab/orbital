@@ -87,6 +87,16 @@
             </fileset>
 	    <pathelement location="${resources}"/>
 	</path>
+
+	<condition property="signe.isUpToDate">
+	    <and>
+	        <uptodate srcfile="${sources}/orbital/signe.java"
+	                  targetfile="${classes}/orbital/signe.class"/>
+	        <uptodate srcfile="build.xml"
+	                  targetfile="${classes}/orbital/signe.class"/>
+	    </and>
+	</condition>
+
     </target>
 
     <target name="prepareEnvironment" depends="init"
@@ -102,15 +112,10 @@
             description="clean + fixCRLF + compile.* + doc">
     </target>
  
-    <target name="compile" depends="init, parser"
+    <target name="compile" depends="init, parser, stamp"
             description="compile *.java (=> ./classes)">
         <mkdir dir="${classes}"/>
-        <mkdir dir="${sources}/t"/>
 
-        <!-- introduce version information -->
-        <copy file="${sources}/orbital/signe.java" todir="${sources}/t"/>
-        <replace file="${sources}/t/signe.java" token="@VERSION@" value="${version}"/>
- 
         <!-- @todo on parameter, use GetRidOfAssert.sed instead of source="1.4" -->
         <javac srcdir="${sources}"
                destdir="${classes}"
@@ -121,8 +126,17 @@
         </javac>
 
         <!-- cleanup temporary files -->
-        <delete dir="${sources}/t"/>
+        <delete dir="${sources}/t" failonerror="false"/>
     </target>
+
+    <target name="stamp" depends="init" unless="signe.isUpToDate"
+            description="prepare files for compile">
+        <mkdir dir="${sources}/t"/>
+        <!-- introduce version information -->
+        <copy file="${sources}/orbital/signe.java" todir="${sources}/t"/>
+        <replace file="${sources}/t/signe.java" token="@VERSION@" value="${version}"/>
+    </target>
+ 
 
     <target name="compile.tests" depends="init, compile.examples"
             description="compile test/*.java (=> ./classes)">
