@@ -47,9 +47,9 @@ public class SimpleLogic implements Runnable {
 
 	    // create our custom interpretation
 	    Map intermap = new HashMap();
-	    intermap.put(new SymbolBase("a", SymbolBase.BOOLEAN_ATOM), Boolean.TRUE);
-	    intermap.put(new SymbolBase("b", SymbolBase.BOOLEAN_ATOM), Boolean.FALSE);
-	    intermap.put(new SymbolBase("c", SymbolBase.BOOLEAN_ATOM), Boolean.TRUE);
+	    intermap.put(new SymbolBase("a", Types.TRUTH), Boolean.TRUE);
+	    intermap.put(new SymbolBase("b", Types.TRUTH), Boolean.FALSE);
+	    intermap.put(new SymbolBase("c", Types.TRUTH), Boolean.TRUE);
 	    Interpretation interpretation = new InterpretationBase(sigma, intermap);
 	    boolean		   satisfied = logic.satisfy(interpretation, formula);
 	    System.out.println(formula + " is " + (satisfied ? "satisfied" : "not satisfied") + " by the given interpretation");
