@@ -37,11 +37,12 @@ import orbital.math.MathUtilities;
 import java.io.*;
 
 /**
- * This class implements a Parser for logic formulas that can be used
- * for every logic after being bound to it. The LogicParser will result in
- * a tree of Expressions (usually Formulas) whose implementation will
- * depend upon the Logic implementation specified.
+ * This class implements a parser for logic and mathematical formulas that can be used
+ * for every logic after being bound to it. This parser calls {@link ExpressionBuilder}
+ * on every connection point (which specify the parser actions).
  * It parses a concrete syntax (usually respecting the {@link Symbol#getNotation() notation of symbols}).
+ * Most ExpressionBuilders will simply construct a tree of Expressions (usually Formulas)
+ * whose implementation depends on the logic.
  * <p>
  * Although this distinction may sometimes sound artificial,
  * we will - for the moment - distinguish three types of syntactic expressions:
@@ -52,10 +53,10 @@ import java.io.*;
  * </ul>
  * </p>
  * <p>
- * This parser can be used by implementations of logic. So there
+ * This parser can be used by implementations of ExpressionSyntax. So there
  * is no need to interface with this parser directly. Instead, it
  * is sufficient to call the {@link ExpressionSyntax#createExpression(String)}
- * implementation of the specific logic.
+ * implementation of the specific logic - which could in turn invoke this parser.
  * </p>
  * @version 1.0, 2001/01/16
  * @author  Andr&eacute; Platzer
@@ -65,11 +66,11 @@ import java.io.*;
  * @see #parseFormulas()
  * @see #setSyntax(ExpressionSyntax)
  * @todo should use precedence and associativity information from
- * orbital.logic.imp.Symbol instead of hard wiring parser.
- * @xxx "disambiguate" language and disallow acception of $p(x) as $p (x) and °p(x) as °p (x) and alike
- * @todo get rid of all this exception wrapping and unwrapping by wrapping the final orbital.logic.imp.ParseException inside an unchecked exception once, and unwrap it once
- * @internal note that all this nested lookahead with a lot of backtracking kills performance.
+ * orbital.logic.imp.Symbol instead of hard wiring parser. Precedence Grammar instead of LL?
  * @todo join symbiose of MathParser and LogicParser by letting expression() accept term(), directly as well? Instead of just providing two distinct start productions.
+ * @xxx "disambiguate" language and disallow acception of $p(x) as $p (x) and °p(x) as °p (x) and alike
+ * @todo get rid of all this exception wrapping and unwrapping by wrapping the final orbital.logic.imp.ParseException inside an unchecked exception once, and unwrap it once again? Necessary? There's not that much wrapping.
+ * @internal note that all this nested lookahead with a lot of backtracking kills performance.
  */
 public class LogicParser {
     /**
@@ -729,7 +730,7 @@ Expression CompoundFormula() :
     p = LambdaAbstractionPredicate() arg = Arguments()
         {
 	    if (arg.length != 1)
-	        throw new ParseException("only unary application of lambda abstractions is supported. Use currying");
+	        throw newParseException("only unary application of lambda abstractions is supported. Use currying", null);
 	    //@todo which exact optok token?
 	    return composeWrapper(null, p, arg);
 	}
@@ -856,7 +857,7 @@ Expression CompoundTerm() :
     f = LambdaAbstraction() arg = Arguments()
         {
 	    if (arg.length != 1)
-	        throw new ParseException("only unary application of lambda abstractions is supported");
+	        throw newParseException("only unary application of lambda abstractions is supported", null);
 	    //@todo which exact optok token?
 	    return composeWrapper(null, f, arg);
 	}
