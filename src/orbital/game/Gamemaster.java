@@ -34,11 +34,12 @@ public class Gamemaster implements Runnable {
     private GameRules   rules;
 
     /**
-     * Arguments passed to the AIs in {@link #players}.
-     * <code>playersArguments[i] == null || playersArguments[i] = "null"</code> if and only if <code>i</code> is a human player.
+     * The diverse AI-players.
+     * <code>players[i] instanceof HumanPlayer</code> if and only if <code>i</code> is a human player.
      * @serial
      */
-    private String	playerArguments[];
+    private Function	players[];
+
 
     /**
      * for which component to load images etc.
@@ -54,11 +55,9 @@ public class Gamemaster implements Runnable {
     private Field       field;
 
     /**
-     * The diverse AI-players.
-     * <code>players[i] instanceof HumanPlayer</code> if and only if <code>i</code> is a human player.
-     * @serial
+     * @todo serial?
      */
-    private Function	players[];
+    private HumanPlayer humanPlayer = null;
 
 
     private FieldChangeListener endOfGameListener = new FieldChangeAdapter() {
@@ -73,40 +72,42 @@ public class Gamemaster implements Runnable {
     /**
      * only for pure AI games without real players.
      * @serial
-     * @todo we cannot store threads, can we?
+     * @xxx we cannot store threads, can we?
      */
     //XXX: concurrent synchronization may be required for this volatile field
     private volatile Thread runner = null;
 
     /**
      * Create a new gamemaster for the game with the given rules.
+     * Already specify a particular initial field for playing the game on.
      * @param component for which component to load images etc.
      * @param rules the rules of the game to play.
-     * @param playerArguments the arguments to pass to the individual players.
-     *  If you set a component to <code>null</code> or <code class="String">&quot;null&quot;</code>
-     *  a human player will take the part of that league.
-     * @param field the field to play the game on.
-     *  When <code>null</code>, a new field will be started from the rules.
+     * @param players the individual players of our game.
+     *  If you set a component to <code>null</code>, a human player will take the part of that league.
+     *  Especially, the value of <code>players[Figure.NOONE]</code> will be ignored.
+     * @param initialField the field to play the game on.
+     *  When <code>null</code>, a new field will be {@link GameRules#startField(Component) started from the rules}.
+     * @pre initialField fits to rules
      */
-    public Gamemaster(Component component, GameRules rules, String playerArguments[], Field initialField) {
-	if (playerArguments.length != rules.getLeagues())
-	    throw new IllegalArgumentException("expected: " + rules.getLeagues() + " player arguments. found: " + playerArguments.length);
+    public Gamemaster(Component component, GameRules rules, Function players[], Field initialField) {
+	if (players.length != rules.getLeagues())
+	    throw new IllegalArgumentException("Illegal number of players, expected: " + rules.getLeagues() + " found: " + players.length);
 	this.component = component;
 	this.setGameRules(rules);
-	this.playerArguments = playerArguments;
 	this.setField(initialField);
+	this.setPlayers(players);
     }
     /**
      * Create a new gamemaster for the game with the given rules.
      * Since no field is specified, a new field will be started from the rules.
      * @param component for which component to load images etc.
      * @param rules the rules of the game to play.
-     * @param playerArguments the arguments to pass to the individual players.
-     *  If you set a component to <code>null</code> or <code class="String">&quot;null&quot;</code>
-     *  a human player will take the part of that league.
+     * @param players the individual players of our game.
+     *  If you set a component to <code>null</code>, a human player will take the part of that league.
+     *  Especially, the value of <code>players[Figure.NOONE]</code> will be ignored.
      */
-    public Gamemaster(Component component, GameRules rules, String playerArguments[]) {
-	this(component, rules, playerArguments, null);
+    public Gamemaster(Component component, GameRules rules, Function players[]) {
+	this(component, rules, players, null);
     }
 
     /**
@@ -124,7 +125,17 @@ public class Gamemaster implements Runnable {
      */
     public Function[] getPlayers() {
 	return players;
-    } 
+    }
+    private void setPlayers(Function newPlayers[]) {
+	assert newPlayers[Figure.NOONE] == null : Figure.NOONE + " needs no player, so you can safely set it to null";
+	this.players = new Function[newPlayers.length];
+	for (int i = Figure.NOONE + 1; i < players.length; i++) {
+	    this.players[i] = newPlayers[i] != null
+		? newPlayers[i]
+		//@xxx horribly complicated formulation
+		: (this.humanPlayer = (this.humanPlayer != null ? this.humanPlayer : new HumanPlayer()));
+	}
+    }	
     
     /**
      * Get the field which the game is played on.
@@ -132,8 +143,16 @@ public class Gamemaster implements Runnable {
     public Field getField() {
 	return field;
     }
-    void setField(Field field) {
+    protected final void setField(Field field) {
 	this.field = field;
+    }
+
+    /**
+     * Get the thread we are currently running on.
+     * @return non-<code>null</code> until we have been stopped.
+     */
+    protected final Thread getRunner() {
+	return runner;
     }
 
     
@@ -144,29 +163,13 @@ public class Gamemaster implements Runnable {
 	if (getField() == null)
 	    setField(rules.startField(component));
 	getField().addFieldChangeListener(endOfGameListener);
-	players = new Function[playerArguments.length];
-	HumanPlayer humanPlayer = new HumanPlayer();
-	getField().addFieldChangeListener(humanPlayer);
-	int realPlayers = 0;
-	for (int i = Figure.NOONE + 1; i < players.length; i++) {
-	    if (playerArguments[i] == null || playerArguments[i].equals("null")) {
-		players[i] = humanPlayer;
-		realPlayers++;
-	    } else
-		players[i] = rules.startAIntelligence(playerArguments[i]);
-	}
-
-	runner = new Thread(this, "AI_Runner");
-	if (realPlayers == 0)
-	    // computer players only
-	    runner.start();
-	else {
-	    if (players[getField().getTurn()] != null)
-		// if a computer commences, let him act
+	if (humanPlayer != null)
+	    getField().addFieldChangeListener(humanPlayer);
+	this.runner = new Thread(this, "Gamemaster");
+	runner.start();
+		// in case human players exist, but computer commences, we should obey the following:
 		//@internal let our clients at least have a chance to finish initialization after start() returns so that they can register listeners.
 		//@xxx However this is not 100% reliable because the following thread could start too early.
-		runner.start();
-	}
     } 
 
     /**
@@ -177,16 +180,12 @@ public class Gamemaster implements Runnable {
 	runner = null;	  // runner.stop();
 	if (moribund != null)
 	    moribund.interrupt();
-	if (field != null)
+	Field field = getField();
+	if (field != null) {
 	    field.removeFieldChangeListener(endOfGameListener);
-
-	// alternative implementation
-	/*
-	 * Thread[] ts = new Thread[Thread.currentThread().activeCount()];
-	 * for (int i=Thread.currentThread().enumerate(ts)-1; i>=0; i--)
-	 * if ("AI_Runner".equals(ts[i].getName()))
-	 * ts[i].interrupt();
-	 */
+	    if (humanPlayer != null)
+		field.removeFieldChangeListener(humanPlayer); //@todo right?
+	}
     } 
 
     /**
@@ -196,7 +195,6 @@ public class Gamemaster implements Runnable {
 	setGameRules(null);
 	setField(null);
 	players = null;
-	playerArguments = null;
 	//runner.destroy();
     } 
 
@@ -212,7 +210,6 @@ public class Gamemaster implements Runnable {
 	}
 	finally {
 	    setField(null);
-	    players = null;
 	}
     } 
 
@@ -223,13 +220,12 @@ public class Gamemaster implements Runnable {
      * @see GameRules#performedMove(Field)
      * @internal this is a kind of event handler.
      */
-    private void playGame() {
+    private final void playGame() {
 	Thread thisThread = Thread.currentThread();
 	// do moves while it's an AI's turn
 	for (int turn = getField().getTurn();
 	     runner == thisThread && !Thread.interrupted();
 	     turn = getField().getTurn()) {
-	    // @xxx doesn't this policy (a single player can move several times until it's another player's turn) conflict with AlphaBetaPruning which simply doesn't know about it?
 	    ////showStatus(getResources().getString("statusbar.ai.thinking"));
 	    System.err.println("statusbar.ai.thinking");
 	    Object action = players[turn].apply(getField());
@@ -237,7 +233,8 @@ public class Gamemaster implements Runnable {
 	    if (action instanceof Option) {
 		Option move = (Option) action;
 		Position source = new Position(move.getFigure());
-		// if we could rely on our AI, then we could optimize away this expensive moving and simply use the resulting field = move.field
+		// if we could rely on our AI, then we could optimize away this expensive moving and simply use the resulting setField(move.getState());
+		// But unfortunately, all our field's listeners would then vanish, possibly including end of game checks.
 		//@internal cloning the position information is necessary, otherwise move would detect that it gets lost during swap.
 		if (!getField().move(source, move.getMove()))
 		    throw new Error("player " + players[turn] + " for league " + turn + " should only take legal moves: " + move);
@@ -249,6 +246,8 @@ public class Gamemaster implements Runnable {
 
     /**
      * A human player that waits for user I/O and delivers the user's decision.
+     * @version 1.1, 2003-01-04
+     * @author Andr&eacute; Platzer
      */
     private class HumanPlayer extends FieldChangeAdapter implements Function {
 	//@internal we are transient
@@ -259,7 +258,7 @@ public class Gamemaster implements Runnable {
 	/**
 	 * The communication lock.
 	 */
-	private Object userAction = new Object();
+	private final Object userAction = new Object();
 	public Object apply(Object field) {
 	    Option user;
 	    try {
@@ -274,7 +273,8 @@ public class Gamemaster implements Runnable {
 	    catch (InterruptedException interrupt) {
 		Thread r = runner;
 		stop();
-		r.interrupt();
+		if (r != null)
+		    r.interrupt();
 		Thread.currentThread().interrupt();
 		throw new InternalError("OutOfCheeseError");
 	    }
