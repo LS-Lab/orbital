@@ -29,6 +29,10 @@
             <format property="TODAY" pattern="MM/dd/yyyy" locale="en,uk"/>
         </tstamp>
 
+        <property name="www.host" value="us9e@rzstud.rz.uni-karlsruhe.de"/>
+        <property name="www.target" value="${www.host}:.public_html/orbital/"/>
+
+
         <!-- basedir will be set to parent directory of this file -->
         <property name="lib" value="${basedir}/lib"/>
         <property name="resources" value="${basedir}/resources"/>
@@ -307,7 +311,7 @@
                  includes="**/*.java, **/*.jj"/>
     </target>
 
-    <target name="doc" depends="init, prepareEnvironment"
+    <target name="doc" depends="init, prepareEnvironment, parser"
             description="generate javadoc (=> ./doc/api/)">
         <mkdir dir="${doc.dest}"/>
         <mkdir dir="${doc.api.dest}"/>
@@ -813,6 +817,18 @@
 	<report srcdir="${sources}" destdir="${reports.coverage}"/>
     </target>
 
+
+    <target name="upload" depends="init, dist.notests"
+            description="upload to web site">
+        <echo>Uploading</echo>
+	<exec executable="scp" failonerror="true">
+                <arg value="-P 24" />
+		<arg value="${dist}/ap_orbital_rt${version_brief}.zip" />
+		<arg value="${dist}/ap_orbital_doc${version_brief}.zip" />
+		<arg value="${www.target}" />
+	</exec>
+        <echo>Success</echo>
+    </target>
 
     <!--
 	<target name="upload-homepage">
