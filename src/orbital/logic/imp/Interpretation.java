@@ -32,7 +32,7 @@ import orbital.logic.functor.Functor;
  *     <ul>
  * <!-- @todo use I(<span class="type">&sigma;</span>) instead of <span class="set">D</span><sub class="type">&tau;</sub> througout? -->
  *       <li>I maps symbols of {@link Type type} <span class="type">&tau;</span> to elements of the class I(<span class="type">&tau;</span>):=<span class="set">D</span><sub class="type">&tau;</sub> &ne; &empty;.
- *          Especially in computer settings, I(<span class="type">&tau;</span>) is often assumed to be a set.
+ *          Especially in computer settings, the class I(<span class="type">&tau;</span>) is often assumed to be a set, even though this is rather irrelevant.
  *          <cite>"Wilfrid Hodges. Elementary Predicate Logic. In: Dov M. Gabbay and F. Guenther. Handbook of philosophical logic Volume 1 2nd edition. paragraph 17 theorem 10"</cite>
  *       </li>
  *       <li>I respects subtypes: for types <span class="type">&sigma;</span>,<span class="type">&sigma;</span>:{@link Types#TYPE <span class="type">*</span>}
@@ -90,8 +90,8 @@ import orbital.logic.functor.Functor;
  *     that is a homomorphism of &Sigma;-algebras, i.e.
  *     <center>&phi;|<sub>&Sigma;</sub> = I and &phi; is homomorph</center>
  *     Then the logic is called truth-functional,
- *     and that unique homomorphism &phi; is called the (expression) evaluation or truth-function,
- *     which is again denoted by I.
+ *     and that unique homomorphism &phi; is called the (expression) valuation
+ *     or truth-function, which is again denoted by I.
  *     <blockquote>
  *     "Evaluations are the homomorphic continuation of symbol interpretations."
  *     </blockquote>

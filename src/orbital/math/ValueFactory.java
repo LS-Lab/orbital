@@ -810,6 +810,20 @@ public interface ValueFactory {
      *   && (RES.RES[0].getClass() "compatible to" RES.RES[1].getClass() || RES.RES[0].getClass() == RES.RES[1].getClass())
      * @see orbital.math.functional.Operations
      * @see #setCoercer(orbital.logic.functor.Function)
+     * @internal dynamic resolution of + like in script languages has two major drawbacks
+     *  double memory expenses (since pairs of <typeid,value> are required, recursively)
+     *  3-5 fold time (since for a+b we need
+     *  <pre>
+     *     if (a typeof C) {
+     *         if (b typeOf C)...
+     *         else if (b typeOf D)...
+     *         else if (b typeOf E)...
+     *         else error
+     *     } else if (a typeof D)....
+     *  </pre>
+     *  )
+     *  Therefore, we need as much of static dispatch preparation at compile-time
+     *  as possible.
      */
     Function/*<Object[],Object[]>*/ getCoercer();
 
