@@ -263,6 +263,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     public FuzzyLogic() {
 	this(GOEDEL);
     }
+    private static final String typAssoc = "f";  //@xxx should be "fx"?
     /**
      * Create a new fuzzy logic implementation with a specific operator set.
      * @param fuzzyLogicOperators the set of fuzzy logic operators to use.
@@ -279,14 +280,14 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	this._coreInterpretation =
 	LogicSupport.arrayToInterpretation(new Object[][] {
 	    {typeSystem.UNIVERSAL(),
-	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+	     new NotationSpecification(500, typAssoc, Notation.POSTFIX)},
 	    {TRUTH,//@fixme replace true/false by 1.0,0.0
-	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+	     new NotationSpecification(500, typAssoc, Notation.POSTFIX)},
 	    {typeSystem.objectType(orbital.math.Integer.class, "integer"),
-	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+	     new NotationSpecification(500, typAssoc, Notation.POSTFIX)},
 	    //@internal type-alias for truth is necessary, since LogicParser will treat 0.5:real.
 	    {typeSystem.objectType(orbital.math.Real.class, "real"),
-	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+	     new NotationSpecification(500, typAssoc, Notation.POSTFIX)},
 
 	    {LogicFunctions.forall,       // "°"
 	     new NotationSpecification(900, "fxx", Notation.PREFIX)},

@@ -95,16 +95,17 @@ public class MathExpressionSyntax implements ExpressionSyntax {
     final Interpretation coreInterpretation() {
 	return _coreInterpretation;
     }
+    private static final String typAssoc = "f";  //@xxx should be "fx"?
     private static final Interpretation _coreInterpretation =
 	LogicSupport.arrayToInterpretation(new Object[][] {
 	    {typeSystem.UNIVERSAL(),
-	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+	     new NotationSpecification(500, typAssoc, Notation.POSTFIX)},
 	    {typeSystem.objectType(java.lang.Object.class, "individual"),
-	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+	     new NotationSpecification(500, typAssoc, Notation.POSTFIX)},
 	    {typeSystem.objectType(orbital.math.Integer.class, "integer"),
-	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+	     new NotationSpecification(500, typAssoc, Notation.POSTFIX)},
 	    {typeSystem.objectType(orbital.math.Real.class, "real"),
-	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+	     new NotationSpecification(500, typAssoc, Notation.POSTFIX)},
 	    
 	    {new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
 		    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x) {
