@@ -25,6 +25,7 @@ import java.io.UnsupportedEncodingException;
  * @author  Andr&eacute; Platzer
  * @see java.nio.charset.CharsetEncoder
  * @see java.io.OutputStreamWriter
+ * @todo deprecate since this is not useful enough
  */
 public abstract class EncodingWriter extends FilterWriter {
     public static void main(String arg[]) throws Exception {

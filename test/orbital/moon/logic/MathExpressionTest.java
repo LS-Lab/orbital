@@ -44,6 +44,7 @@ public class MathExpressionTest extends check.TestCase {
 	}
 	catch (Throwable ex) {
 	    System.out.println();
+	    ex.printStackTrace();
 	    fail(ex.getMessage());
 	    return null;
 	}
@@ -87,6 +88,7 @@ public class MathExpressionTest extends check.TestCase {
 		null,
 		vf.valueOf(-4569.97)
 		);
+	parsable("1-+--3", true);
     }
     public void DISABLEDtestVariables() {
 	compare("1+3*2*(5-x/8)+sin(2*x-4)*3",
@@ -109,7 +111,6 @@ public class MathExpressionTest extends check.TestCase {
 	parsable("(7>5)+1", false);
 	parsable("(7>5)<2", false);
 	parsable(".2", false);
-	parsable("1-+--3", false);
     }
 
     private void compare(String expr, Object parsed, Object evaluated) {

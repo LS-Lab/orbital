@@ -163,10 +163,13 @@ public class IterativeExpansion extends GeneralSearch implements HeuristicAlgori
 	    {
 		final NodeInfo best = (NodeInfo)successors.get(0);
 		assert !Setops.some(successors, new orbital.logic.functor.Predicate() { public boolean apply(Object o) {return ((NodeInfo)o).compareTo(best) < 0;} }) : "best has lowest f-cost";
-		final NodeInfo secondBest = (NodeInfo)successors.get(1);
-		final Real newbound = (Real) Operations.min.apply(bound, secondBest.getFCost());
-		assert !Setops.some(successors.subList(1, successors.size()), new orbital.logic.functor.Predicate() { public boolean apply(Object o) {return ((NodeInfo)o).compareTo(secondBest) < 0;} }) : "second best has second lowest f-cost";
-		//System.err.println(node + "/" + bound + "\t expanding to " + best + "/" + newbound + "\n\t\talternative " + secondBest);
+		Real newbound = bound;
+		if (successors.size() > 1) {
+		    final NodeInfo secondBest = (NodeInfo)successors.get(1);
+		    newbound = (Real) Operations.min.apply(bound, secondBest.getFCost());
+		    assert !Setops.some(successors.subList(1, successors.size()), new orbital.logic.functor.Predicate() { public boolean apply(Object o) {return ((NodeInfo)o).compareTo(secondBest) < 0;} }) : "second best has second lowest f-cost";
+		    //System.err.println(node + "/" + bound + "\t expanding to " + best + "/" + newbound + "\n\t\talternative " + secondBest);
+		}
 		
 		final Object/*>S<*/ solution = solveByIterativeExpand(best, newbound);
 		if (solution != null)

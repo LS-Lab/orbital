@@ -498,6 +498,8 @@ public final class Types {
     
     /**
      * Get the map type <span class="type">&sigma;&rarr;&tau;</span>.
+     * In terms of &Pi;-abstraction, it is
+     * <span class="type">&sigma;&rarr;&tau;</span> := <span class="type">&tau;</span><sup class="type">&sigma;</sup> := &Pi;x:<span class="type">&sigma;</span>.<span class="type">&tau;</span>.
      * <p>
      * The subtype relation of types extends to map types as follows
      * <div>
@@ -569,6 +571,22 @@ public final class Types {
     public static final Type predicate(Type codomain) {
 	return map(codomain, TRUTH);
     }
+    /**
+     * predicate: <span class="type">* &rarr; *</span>; <span class="type">&sigma;</span> &#8614; <span class="type">(&sigma;)</span>.
+     * <p>
+     * The predicate type constructor.
+     * </p>
+     * @see #predicate(Type)
+     */
+    public static final Function/*<Type,Type>*/ predicate = new Function/*<Type,Type>*/() {
+	    private final Type logicalTypeDeclaration = Types.map(Types.TYPE, Types.TYPE);
+	    public Object apply(Object t) {
+		return Types.predicate((Type)t);
+	    }
+	    public String toString() {
+		return "pred";
+	    }
+	};
 
     /**
      * Implementation of map types.
@@ -644,6 +662,8 @@ public final class Types {
      * </div>
      * </p>
      * @param components the components <span class="type">&tau;<sub>i</sub></span> of the product type.
+     * @xxx what's the relationship of the tuple product type and the product type &Pi;x:s.t?
+     * @xxx and to the sum type to infimum type?
      */
     public static final Type product(Type components[]) {
 	for (int i = 0; i < components.length; i++) {

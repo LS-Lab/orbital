@@ -57,8 +57,8 @@ public class IterativeDeepeningAStar extends DepthFirstBoundingSearch implements
     public IterativeDeepeningAStar(Function heuristic) {
     	setHeuristic(heuristic);
     	this.nextBound = null;
-    	setContinuedWhenFound(true);
-    	//@TODO: setContinuedWhenFound(?); depends upon whether or not h is admissible?
+    	setContinuedWhenFound(false);
+    	//@xxx setContinuedWhenFound(?); depends upon whether or not h is admissible?
     }
 
     public Function getHeuristic() {

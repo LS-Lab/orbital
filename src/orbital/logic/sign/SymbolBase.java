@@ -171,7 +171,7 @@ public class SymbolBase implements Symbol, Serializable {
     }
     public void setType(Type type) {
     	if (type == null)
-	    throw new IllegalArgumentException("invalid type specification: " + type);
+	    throw new IllegalArgumentException("invalid type specification: " + type + " for " + getSignifier());
     	this.type = type;
     }
     public NotationSpecification getNotation() {

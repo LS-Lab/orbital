@@ -197,7 +197,9 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
      */
     private final void validate(Object symbol) {
 	try {
-	    if (symbol == null || !sigma.contains(symbol))
+	    if (symbol == null)
+		throw new NoSuchElementException("Symbol <null> not in signature");
+	    else if (!sigma.contains(symbol))
 		throw new NoSuchElementException("Symbol '" + symbol + "' not in signature");
 	}
 	catch (ClassCastException ex) {
