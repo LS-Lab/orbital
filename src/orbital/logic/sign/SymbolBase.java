@@ -146,6 +146,7 @@ public class SymbolBase implements Symbol, Serializable {
      * </p>
      * @postconditions only <em>semi</em>-consistent with equals (since Notation is)
      * @internal this order is quicker than comparison according to compares notation precedence in favor of type (lexicographical) in favor of symbol name.
+     * @todo 29 optimize these hotspots compareTo(Object) and hashCode() during theorem proving. That signatures are based on TreeSets complicates this problem.
      */
     public int compareTo(Object o) {
 	Symbol b = (Symbol) o;

@@ -1,8 +1,9 @@
-//TODO: *
+//@todo *
 
 fix errors
 --------
-orbital.moon.logic.ModalLogic test runs infinitely long (> 4h15min)
+
+orbital.moon.logic.ModalLogic has inadequate type for worlds. (needs typed logic)
 
 deprecated
 ----------
