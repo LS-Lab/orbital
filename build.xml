@@ -165,7 +165,7 @@
             description="run test/*Test*.java">
 	<echo>
           With assertions turned on, this test suite runs about 7 hours. (or 1 hour without ModalLogicTest?)
-	  With assertions turned off, this test suite runs about 10 min
+	  With assertions turned off, this test suite runs about 30 min
            (but only without orbital.moon.logic.ModalLogicTest).
           Assertions are set to "${run.tests.jvmarg}"
 	</echo>
