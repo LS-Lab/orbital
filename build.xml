@@ -189,7 +189,7 @@
                  author="true"
                  version="true"
                  use="true"
-		 additionalparam="-source 1.4"
+		 additionalparam="-source 1.4 -docfilessubdirs"
 
                  windowtitle="Orbital"
                  doctitle="Orbital library&lt;br&gt;API Specification"
