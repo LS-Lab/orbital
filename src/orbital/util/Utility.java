@@ -546,12 +546,12 @@ public final class Utility {
      * Get an iterator view of a generalized iteratable object, if possible.
      * @postconditions RES == null <=> o == null
      * @return an iterator or list iterator view of a, whenever possible.
-     * @throws ClassCastException if a is not generalized iteratable.
+     * @throws NotIteratableException if a is not generalized iteratable.
      * @see #isIteratable(Object)
      * @see #asCollection(Object)
      * @see #newIteratableLike(Object)
      */
-    public static /*_<A>_*/ Iterator/*_<A>_*/ asIterator(Object a) {
+    public static /*_<A>_*/ Iterator/*_<A>_*/ asIterator(Object a) throws NotIteratableException {
 	if (a == null)
 	    return null;
 	else if (a instanceof Iterator/*_<A>_*/)
@@ -567,17 +567,17 @@ public final class Utility {
 	    return Arrays.asList((Object/*_>A<_*/[]) a).listIterator();
 	else if (a.getClass().isArray())
 	    return Values.getDefaultInstance().tensor(a).iterator();
-	throw new ClassCastException(a.getClass().getName() + " expected " + generalizedIteratableTypes);
+	throw new NotIteratableException(a.getClass(), generalizedIteratableTypes);
     }
 
     /**
      * Get a new instance of generalized iteratable object of the same type as the one specified.
      * @postconditions RES == null <=> a == null
-     * @throws ClassCastException if a is not generalized iteratable.
+     * @throws NotIteratableException if a is not generalized iteratable.
      * @see #isIteratable(Object)
      * @see Setops#newCollectionLike(Collection)
      */
-    public static Object newIteratableLike(Object a) {
+    public static Object newIteratableLike(Object a) throws NotIteratableException {
 	if (a == null)
 	    return null;
 	else if (a instanceof Iterator) {
@@ -592,11 +592,34 @@ public final class Utility {
 	    return Values.getDefaultInstance().tensor(((Tensor)a).dimensions());
 	else if (a.getClass().isArray())
 	    return Array.newInstance(getComponentType(a), dimensions(a));
-	throw new ClassCastException(a.getClass().getName() + " expected " + generalizedIteratableTypes);
+	throw new NotIteratableException(a.getClass(), generalizedIteratableTypes);
     }
     
     private static final Set generalizedIteratableTypes = new HashSet(Arrays.asList(new Class[] {
 	Iterator.class, Collection.class, Object[].class, Tensor.class , orbital.math.Vector.class, orbital.math.Matrix.class,
 	Object[][].class, int[].class, double[][].class, double[][].class, Object[][][].class
     }));
+
+
+    // formatting
+
+    /**
+     * Format a {@link #isIteratable(Object) generalized iteratable}
+     * inserting delimiters between the individual elements.
+     * @param delimiter the delimiter string to insert between
+     * successive elements of iteratable.
+     * @return iteratable[0] delimiter iteratable[1] delimiter iteratable[n]
+     * @throws NotIteratableException if a is not generalized iteratable.
+     */
+    public static final String format(String delimiter, Object iteratable) {
+	StringBuffer sb = new StringBuffer();
+	//@internal do not rewrite pure functionally for (garbage collector...) performance reasons
+	for (Iterator i = asIterator(iteratable); i.hasNext(); ) {
+	    sb.append(i.next());
+	    if (i.hasNext()) {
+		sb.append(delimiter);
+	    }
+	}
+	return sb.toString();
+    }
 }
