@@ -1828,6 +1828,8 @@ public class ClassicalLogic extends ModernLogic {
 	 * </ul>
 	 * Skolemization is
 	 * <center class="Formula">&forall;x&exist;y &phi; &cong; &exist;F&forall;x &phi;[y&#8614;F(x)]</center>
+	 * usually with the satisfiability-equivalent transformation "constantify" to
+	 * <center>&forall;x &phi;[y&#8614;f(x)]</center>
 	 * </p>
 	 * This method will call {@link #negationForm(Formula)}.
 	 */
