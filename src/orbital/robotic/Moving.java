@@ -17,6 +17,7 @@ package orbital.robotic;
  * @author  Andr&eacute; Platzer
  */
 public class Moving extends Position {
+    private static final long serialVersionUID = 4953088411018850978L;
     /**
      * The current direction of this Moving Object.
      * @serial
@@ -41,6 +42,9 @@ public class Moving extends Position {
     }
     public Moving(Position p) {
 	this(p.x, p.y);
+    }
+    public Moving(Moving p) {
+	this(p.x, p.y, new Direction(p.getDirection()));
     }
 
     public Direction getDirection() {
@@ -227,6 +231,10 @@ public class Moving extends Position {
 	    move(movement.charAt(i));
 	} 
     } 
+
+    public final void move(final Move movement) {
+	move(movement.getMovementString());
+    }
 
     /**
      * Returns a string representation of the object.
