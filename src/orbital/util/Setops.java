@@ -22,6 +22,7 @@ import orbital.logic.functor.Functionals;
 import orbital.logic.functor.Predicates;
 
 import orbital.util.ReverseComparator;
+import orbital.algorithm.Combinatorical;
 import java.util.HashSet;
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -365,6 +366,31 @@ public final class Setops {
     	return r;
     }
 
+    /**
+     * Returns the powerset of a set, i.e. the set of all subsets.<br />
+     * &weierp;(S) := {E &sube; S}
+     */
+    public static /*<A>*/ Set/*_<Set<A>>_*/ powerset(Set/*_<A>_*/ s) {
+	// list version of the set s (in arbitrary order)
+	final Combinatorical c = Combinatorical.getPermutations(s.size(), 2, true);
+	final Set/*_<Set<A>>_*/ p = new HashSet/*_<Set<A>>_*/(c.count());
+	while (c.hasNext()) {
+	    int[] choose = c.next();
+	    Set/*_<A>_*/ e = (Set)newCollectionLike(s);
+	    int index = 0;
+	    for (Iterator i/*_<A>_*/ = s.iterator(); i.hasNext(); ) {
+		Object/*_>A<_*/ x = i.next();
+		if (choose[index++] == 1) {
+		    e.add(x);
+		}
+	    }
+	    p.add(e);
+	} 
+	return p;
+    } 
+
+    
+    //
 
     /**
      * Get <em>any</em> object of a collection.
@@ -401,25 +427,26 @@ public final class Setops {
      */
     public static /*_<A>_*/ Collection/*_<A>_*/ newCollectionLike(Collection/*_<A>_*/ c) {
 	try {
-	    if (c instanceof SortedSet)
+	    if (c instanceof SortedSet) {
 		// skip and let the special handler below take care of the comparator
-		;
-	    else
+	    } else {
 		return (Collection/*_<A>_*/) c.getClass().newInstance();
+	    }
 	}
 	catch (InstantiationException trial) {}
 	catch (IllegalAccessException trial) {} 
 	// find a rather similar collection type
-	if (c instanceof java.util.SortedSet)
+	if (c instanceof java.util.SortedSet) {
 	    return new java.util.TreeSet/*_<A>_*/(((SortedSet)c).comparator());
-	else if (c instanceof java.util.Set)
+	} else if (c instanceof java.util.Set) {
 	    return new java.util.HashSet/*_<A>_*/();
-	else if (c instanceof java.util.List)
+	} else if (c instanceof java.util.List) {
 	    return randomAccessClass != null && randomAccessClass.isInstance(c)
 		? (List) new java.util.ArrayList/*_<A>_*/(c.size())
 		: (List) new java.util.LinkedList/*_<A>_*/();
-	else
+	} else {
 	    throw new IllegalArgumentException("unknown collection type " + c.getClass() + " could not be instantiated");
+	}
     } 
 
     /**
