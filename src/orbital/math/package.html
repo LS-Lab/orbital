@@ -89,10 +89,10 @@ of the arithmetic objects realize the mathematical inclusion <center><b>Z</b>
 <p>
 Since our general arithmetic objects are modelled as interfaces to provide a
 maximum of flexibility, you need factory methods to create an arithmetic object
-value. The class <tt><a href="Values.html">Values</a></tt> is that central
-factory class which can create arithmetic object values from all kinds of
-primitive types.
-It also provides a "pluggable value factory implementation" that allow other vendor's implementation of arithmetic objects to be used. 
+value. The interface <tt><a href="ValueFactory.html">ValueFactory</a></tt> is that
+central factory class which can create arithmetic object values from all kinds of
+primitive types. And <tt><a href="Values.html">Values</a></tt> is its manager class
+which also provides a "pluggable value factory implementation" that allow other vendor's implementation of arithmetic objects to be used. 
 Especially, this makes it possible to switch to an implementation with different numerical
 properties or differing levels of integration of symbolic mathematics. Even switching to
 implementations with lazy evaluation would be possible.

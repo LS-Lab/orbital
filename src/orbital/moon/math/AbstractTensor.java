@@ -4,7 +4,9 @@
  * Copyright (c) 2002 Andre Platzer. All Rights Reserved.
  */
 
-package orbital.math;
+package orbital.moon.math;
+import orbital.math.*;
+import orbital.math.Integer;
 
 import java.io.Serializable;
 import java.util.Iterator;

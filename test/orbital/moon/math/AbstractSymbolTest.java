@@ -4,7 +4,8 @@
  * Copyright (c) 2002 Andre Platzer. All Rights Reserved.
  */
 
-package orbital.math;
+package orbital.moon.math;
+import orbital.math.*;
 
 import junit.framework.*;
 
@@ -40,10 +41,10 @@ public class AbstractSymbolTest extends check.TestCase {
 	    vf.valueOf(1), vf.valueOf(2)
 	});
 	
-	assertTrue( Values.symbolic.apply(M));
-	assertTrue(!Values.symbolic.apply(v));
-	assertTrue(!Values.symbolic.apply(vf.IDENTITY(7,7)));
-        assertTrue( Values.symbolic.apply(M.multiply(v)));
+	assertTrue( ValuesImpl.symbolic.apply(M));
+	assertTrue(!ValuesImpl.symbolic.apply(v));
+	assertTrue(!ValuesImpl.symbolic.apply(vf.IDENTITY(7,7)));
+        assertTrue( ValuesImpl.symbolic.apply(M.multiply(v)));
 
 	try {
 	    System.out.println(M + "*" + v + "=" + M.multiply(v));

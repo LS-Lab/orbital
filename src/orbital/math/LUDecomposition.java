@@ -6,6 +6,8 @@
 
 package orbital.math;
 
+import orbital.moon.math.AbstractMatrix;
+
 import java.io.Serializable;
 
 import orbital.math.functional.Functionals;
@@ -213,7 +215,7 @@ public final class LUDecomposition/*<R implements Arithmetic>*/ implements Seria
      * permutation matrix.
      */
     public Matrix/*<R>*/ getP() {
-	return Values.constant(P);
+	return Values.getDefaultInstance().constant(P);
     }
 
     /**

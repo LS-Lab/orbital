@@ -4,7 +4,8 @@
  * Copyright (c) 1998 Andre Platzer. All Rights Reserved.
  */
 
-package orbital.math;
+package orbital.moon.math;
+import orbital.math.*;
 
 import orbital.logic.functor.Function;
 import java.io.Serializable;

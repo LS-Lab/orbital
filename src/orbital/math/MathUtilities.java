@@ -692,12 +692,21 @@ public final class MathUtilities {
      * Excerpt a double array from a vector, if possible.
      */
     static final double[] toDoubleArray(Vector v) {
-	return ((AbstractVector)v).toDoubleArray();
+	//@todo could call return ((AbstractVector)v).toDoubleArray();
+	double[] a = new double[v.dimension()];
+	for (int i = 0; i < v.dimension(); i++)
+	    a[i] = ((Real)v.get(i)).doubleValue();
+	return a;
     }
     /**
      * Excerpt a double array from a matrix, if possible.
      */
     static final double[][] toDoubleArray(Matrix m) {
-	return ((AbstractMatrix)m).toDoubleArray();
+	//@todo could call return ((AbstractMatrix)m).toDoubleArray();
+	double[][] a = new double[m.dimension().height][m.dimension().width];
+	for (int i = 0; i < m.dimension().height; i++)
+	    for (int j = 0; j < m.dimension().width; j++)
+		a[i][j] = ((Real)m.get(i, j)).doubleValue();
+	return a;
     }
 }

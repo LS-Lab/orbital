@@ -4,7 +4,8 @@
  * Copyright (c) 1996 Andre Platzer. All Rights Reserved.
  */
 
-package orbital.math;
+package orbital.moon.math;
+import orbital.math.*;
 
 /**
  * This class uses a 4&times;4 Matrix to encapsulate three dimensional
@@ -32,14 +33,14 @@ public class Matrix3D extends RMatrix {
      * The identity Matrix.
      * It has all elements set to <code>0</code>, except the main-diagonal <code>m<sub>i,i</sub></code> set to <code>1</code>.
      */
-    public static final Matrix3D IDENTITY = new Matrix3D(Values.constant(RMatrix.IDENTITY(4)));
+    public static final Matrix3D IDENTITY = new Matrix3D(Values.getDefaultInstance().constant(RMatrix.IDENTITY(4)));
     public Matrix3D() {
 	super(4, 4);
 	set(IDENTITY);
     }
     public Matrix3D(Matrix B) {
 	// we restrict ourselves to AbstractMatrix here, for speed considerations
-	super(MathUtilities.toDoubleArray(B));
+	super(((AbstractMatrix)B).toDoubleArray());
 	if (dimension().width != 4 || dimension().height != 4)
 	    throw new IllegalArgumentException("Matrix3D must be a 4 by 4 Matrix");
     }

@@ -4,7 +4,9 @@
  * Copyright (c) 2002 Andre Platzer. All Rights Reserved.
  */
 
-package orbital.math;
+package orbital.moon.math;
+import orbital.math.*;
+import orbital.math.Integer;
 
 import junit.framework.*;
 import java.util.Random;
@@ -183,8 +185,8 @@ public class AbstractMatrixTest extends check.TestCase {
 	    assertTrue( !v.equals(b) && !M.equals(B2) , "sub-view modifications write through");
 	    System.out.println(M + ", row " + v);
 
-	    M = new RMatrix(MathUtilities.toDoubleArray(B));
-	    v = new RVector(MathUtilities.toDoubleArray(b));
+	    M = new RMatrix(((AbstractMatrix)B).toDoubleArray());
+	    v = new RVector(((AbstractVector)b).toDoubleArray());
 	}
     }
 

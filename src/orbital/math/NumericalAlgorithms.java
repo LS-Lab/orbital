@@ -6,13 +6,15 @@
 
 package orbital.math;
 
+import orbital.moon.math.AbstractMatrix;
+
 import orbital.math.functional.Function;
 import orbital.math.functional.Functionals;
 
 import orbital.math.functional.Operations;
 import orbital.math.functional.Functions;
 
-import orbital.moon.math.AbstractFunctor;
+import orbital.moon.math.functional.AbstractFunctor;
 
 import java.util.Iterator;
 import java.util.logging.Logger;

@@ -12,7 +12,7 @@ import orbital.math.functional.BinaryFunction;
 
 import orbital.math.functional.Operations;
 import orbital.math.functional.Functions;
-import orbital.moon.math.CoordinateCompositeFunction;
+import orbital.moon.math.functional.CoordinateCompositeFunction;
 import orbital.util.Utility;
 
 /**

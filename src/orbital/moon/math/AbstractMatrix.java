@@ -4,7 +4,9 @@
  * Copyright (c) 1996-2002 Andre Platzer. All Rights Reserved.
  */
 
-package orbital.math;
+package orbital.moon.math;
+import orbital.math.*;
+import orbital.math.Integer;
 
 import java.awt.Dimension;
 import java.util.Iterator;
@@ -35,7 +37,7 @@ import java.util.logging.Level;
  * @version 1.0, 2000/08/08
  * @author  Andr&eacute; Platzer
  */
-abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTensor implements Matrix/*<R>*/ {
+public/*@xxx*/ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTensor implements Matrix/*<R>*/ {
     private static final Logger logger = Logger.getLogger(Matrix.class.getName());
     private static final long serialVersionUID = 1360625645424730123L;
 
@@ -675,14 +677,14 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
 	return LUDecomposition.decompose(this).linearRank();
     }
 
-    void swapColumns(int a, int b) {
+    public/*@xxx*/ void swapColumns(int a, int b) {
 	if (a == b)
 	    return;
 	Vector/*<R>*/ v = getColumn(a);
 	setColumn(a, getColumn(b));
 	setColumn(b, v);
     } 
-    void swapRows(int a, int b) {
+    public/*@xxx*/ void swapRows(int a, int b) {
 	if (a == b)
 	    return;
 	Vector/*<R>*/ v = getRow(a);
@@ -900,8 +902,8 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
 	    } 
 	} 
 
-	if (!(MathUtilities.equalsCa(A, Values.getDefaultInstance().IDENTITY(dimension().width, dimension().width))
-	      || Values.symbolic.apply(A))) {
+	if (!(A.equals(Values.getDefaultInstance().IDENTITY(dimension().width, dimension().width), Values.getDefaultInstance().valueOf(MathUtilities.getDefaultTolerance()))
+	      || ValuesImpl.symbolic.apply(A))) {
 	    logger.log(Level.FINEST, "found a supposed inverse:\n{0}\n but failed to transform to identity matrix:\n{1}\t({2})", new Object[] {AI, A, A.getClass()});
 	    assert !isInvertible() : "a matrix is singular <=> determinant=0 <=> it cannot be inverted (apart from numerical uncertainty)";
 	    throw new ArithmeticException("NoninvertibleMatrixException: singular matrix");
