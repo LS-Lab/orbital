@@ -168,11 +168,16 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
 		return new Long(intValue() * b.longValue());
 	    return (Integer) Operations.times.apply(this, b);
     	} 
-    	public Integer power(Integer b) {
-	    if (b instanceof Integer)
-		return new Int((int) Math.pow(intValue(), b.intValue()));
-	    else if (b instanceof Long)
-		return new Long((long) Math.pow(intValue(), b.longValue()));
+    	public Rational power(Integer b) {
+	    if (b instanceof Int) {
+		return b.compareTo(zero()) >= 0
+		    ? new Int((int) Math.pow(intValue(), b.intValue()))
+		    : Values.getDefault().rational(1, (int) Math.pow(intValue(), -b.intValue()));
+	    } else if (b instanceof Long) {
+		return b.compareTo(zero()) >= 0
+		    ? new Long((long) Math.pow(intValue(), b.longValue()))
+		    : Values.getDefault().rational((Integer/*__*/)one(), Values.getDefault().valueOf((long) Math.pow(intValue(), -b.longValue())));
+	    }
 	    return (Integer) Operations.power.apply(this, b);
     	} 
 
@@ -248,8 +253,13 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
     	public Integer multiply(Integer b) {
 	    return new Long(longValue() * b.longValue());
     	}
-    	public Integer power(Integer b) {
-	    return new Long((long) Math.pow(longValue(), b.longValue()));
+    	public Rational power(Integer b) {
+	    if (b instanceof Long || b instanceof Int) {
+		return b.compareTo(zero()) >= 0
+		    ? new Long((long) Math.pow(longValue(), b.longValue()))
+		    : Values.getDefault().rational((Integer/*__*/)one(), Values.getDefault().valueOf((long) Math.pow(longValue(), -b.longValue())));
+	    }
+	    return (Integer) Operations.power.apply(this, b);
     	}
     	
     	// Euclidean implementation
