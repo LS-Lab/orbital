@@ -23,81 +23,13 @@ import orbital.logic.sign.*;
  * @author  Andr&eacute; Platzer
  */
 public class IndexedClausalSetImpl extends ClausalSetImpl {
-    /**
-     * The symbols of the logical junctors.
-     */
-    private static final Function NOT;
-    static {
-	//@note assuming the symbols and notation of ClassicalLogic, here
-	final Logic logic = new ClassicalLogic();
-	final Signature core = logic.coreSignature();
-	// we also avoid creating true formulas, it's (more or less) futile
-	//@xxx we need some valid non-null arguments.
-	final Formula B = (Formula) logic.createAtomic(new SymbolBase("B", SymbolBase.BOOLEAN_ATOM));
-	Formula[] arguments = {B};
-	Symbol NOTs = core.get("~", arguments);
-	assert NOTs != null : "operators in core signature";
-	NOT = (Function) ((Formula)logic.createAtomic(NOTs)).apply(logic.coreInterpretation());
-    }
 
     /**
-     * The hash-function used for mapping a literal to its hash-code
-     * for indexing. The function indexHash approximates the relation
-     * of unifiability. The indexHash of two literals must be equal if
-     * they are unifiable. If they are unifiable, the indexHash still
-     * is allowed to be equal.  Indexing has to respect that
-     * indexHash(f(x))=indexHash(f(a)) since f(x) and f(a) may unify
-     * when x is a variable and a constant.
-     * @note indexHash.apply(o) may well differ from o.hashCode() because it has a different intention.
+     * The clause index mapping literals occurring in clauses of this
+     * set to the set of clauses where literals occur which are
+     * possible unifiables.
      */
-    private static final Function/*<Formula,Integer>*/ indexHash = new Function() {
-	    public Object apply(Object o) {
-		//System.err.print("    hsh\t" + o);
-		//System.err.println(" -->\t" + myapply(o));
-		return new Integer(myapply(o));
-	    }
-	    // index by top symbol, only
-	    private int myapply(Object o) {
-		assert o instanceof Formula : o + " instanceof " + Formula.class;
-		Formula F = (Formula)o;
-		if ((F instanceof Composite)) {
-		    Composite f = (Composite) F;
-		    Object    g = f.getCompositor();
-		    assert !Substitutions.isVariable(g) : "our indexing does not work for variable compositor " + g;
-		    if (g == NOT) {
-			assert F.equals(((Formula)f.getComponent()).not()) : F + " starts with a negation, so removing and adding the negation again does not change anything";
-			// process negations in front of L
-			return -myapply(f.getComponent());
-		    } else {
-			//assert ClassicalLogic.Utilities.negation(F).equals(((Formula)f.getComponent()).not()) : F + " does not start with a negation, so adding the negation leads to the same effect regardless of whether or not duplex negatio is respected";
-			return g.hashCode();
-		    }
-		} else {
-		    assert !Substitutions.isVariable(F) : "our indexing does not work for variable literal " + F;
-		    //@internal assuming F is atomic
-		    return F.hashCode();
-		}		
-	    }
-	};
-    /**
-     * indexHash of negated formula respecting duplex negatio est affirmatio.
-     * @postconditions indexHashNegation.apply(L) == indexHash.apply(ClassicalLogic.Utilities.negation(L))
-     */
-    private static final Function/*<Formula,Integer>*/ indexHashNegation = new Function() {
-	    //@internal this implementation is optimized under the knowledge of a symmetric indexHash, i.e. indexHash(~L) = -indexHash(L)
-	    public Object apply(Object o) {
-		return new Integer(-((Integer)indexHash.apply(o)).intValue());
-	    }
-	};
-
-    /**
-     * The index hash-map mapping the indexHash of the literals
-     * occurring in clauses of this set to the list of clauses where
-     * literals of the same indexHash occur (which thus are possible
-     * unifiables).
-     * @todo in principle, we could memorize the clause and literal which could unify, but this would lead to a catastrophic structure.
-     */
-    private final Map/*_<Integer,Set<Clause>>_*/ index = new LinkedHashMap();
+    private final ClauseIndex index = new ClauseIndex();
 
     /**
      * Copy constructor.
@@ -111,17 +43,13 @@ public class IndexedClausalSetImpl extends ClausalSetImpl {
     public IndexedClausalSetImpl() {}
 
     public Iterator/*_<Clause>_*/ getProbableComplementsOf(final Clause C) {
-	return new SequenceIterator((List)Setops.createSelection(Functionals.bindSecond(Predicates.unequal,null))
-				    .apply(Functionals.map(
+	return new SequenceIterator(Functionals.map(
 		new Function() {
 		    public Object apply(Object o) {
-			Integer hash = (Integer)indexHashNegation.apply((Formula)o);
-			Set probableUnifiables = (Set)index.get(hash);
-			//System.err.println("  complement " + probableUnifiables + " of " + C + "\n    in " + IndexedClausalSetImpl.this);
-			return probableUnifiables == null ? null : probableUnifiables.iterator();
+			return index.getProbableComplementClauses((Formula)o);
 		    }
 		},
-		new LinkedList(C)))
+		new LinkedList(C))
 				    );
     }
 
@@ -129,35 +57,7 @@ public class IndexedClausalSetImpl extends ClausalSetImpl {
      * Get an iterator of all clauses that contain literals which could possibly unify with L.
      */
     public Iterator/*_<Clause>_*/ getProbableUnifiables(Formula L) {
-	return getIndex(L).iterator();
-    }
-    
-    /**
-     * Get the list index.get(o) from the index or an empty list if not present.
-     */
-    private final Set/*_<Clause/Formula>_*/ getIndex(Object o) {
-	assert o instanceof Formula;
-	Integer hash = (Integer)indexHash.apply(o);
-	Set l = (Set)index.get(hash);
-	return l != null ? l : Collections.EMPTY_SET;
-    }
-
-    /**
-     * Get the list index.get(o) from the index or create an empty
-     * list if not present.  Contrary to {@link #getIndex(Object)},
-     * this method ensures that the list returned occurs in index.
-     */
-    private final Set/*_<Clause/Formula>_*/ getIndexEnsure(Object o) {
-	assert o instanceof Formula;
-	Integer hash = (Integer)indexHash.apply(o);
-	Set l = (Set)index.get(hash);
-	if (l != null) {
-	    return l;
-	} else {
-	    l = new LinkedHashSet();
-	    index.put(hash, l);
-	    return l;
-	}
+	return index.getProbableUnifiableClauses(L);
     }
     
     // manage index in sync with the current data
@@ -167,27 +67,8 @@ public class IndexedClausalSetImpl extends ClausalSetImpl {
 	    //@todo assert getIndex(o).contains(o) : o + " already present in " + this + " so no change to index necessary";
 	    return false;
 	}
-	addIndex((Clause)o);
+	index.add((Clause)o);
 	return true;
-    }
-
-    /**
-     * Add clause C to our index. Adds C to all indices of literals in C.
-     */
-    private void addIndex(Clause C) {
-	for (Iterator i = C.iterator(); i.hasNext(); ) {
-	    getIndexEnsure((Formula)i.next()).add(C);
-	}
-    }
-    /**
-     * Remove clause C from our index. Removes C from all indices of literals in C.
-     */
-    private void removeIndex(Clause C) {
-	boolean changed = false;
-	for (Iterator i = C.iterator(); i.hasNext(); ) {
-	    changed |= getIndex((Formula)i.next()).remove(C);
-	}
-	assert C.isEmpty() || changed : "removing index should change the index at least once";
     }
 
     public void clear() {
@@ -200,7 +81,8 @@ public class IndexedClausalSetImpl extends ClausalSetImpl {
 	    //@todo assert !getIndex(o).contains(o) : o + " not present in " + this + " so no change to index necessary";
 	    return false;
 	}
-	removeIndex((Clause)o);
+	if (!index.remove((Clause)o))
+	    throw new IllegalStateException("removing index should change the index at least once");
 	return true;
     }
 
@@ -212,7 +94,8 @@ public class IndexedClausalSetImpl extends ClausalSetImpl {
 		}
 		public void remove() {
 		    super.remove();
-		    removeIndex((Clause)current);
+		    if (!index.remove((Clause)current))
+			throw new IllegalStateException("removing index should change the index at least once");
 		}
 	    };
     }
