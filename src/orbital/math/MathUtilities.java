@@ -46,10 +46,10 @@ import java.util.logging.Level;
  * @author  Andr&eacute; Platzer
  * @see java.lang.Math
  * @see orbital.util.Utility
- * @see Evaluations
- * @see Stat
- * @see NumericalAlgorithms
  * @see AlgebraicAlgorithms
+ * @see NumericalAlgorithms
+ * @see Stat
+ * @see Evaluations
  */
 public final class MathUtilities {
     private static class Debug {
@@ -84,7 +84,7 @@ public final class MathUtilities {
     private static final Logger logger = Logger.getLogger(MathUtilities.class.getName());
 
     /**
-     * prevent instantiation - final static class
+     * prevent instantiation - module class
      */
     private MathUtilities() {}
 
@@ -92,7 +92,7 @@ public final class MathUtilities {
      * The default number of precision digits (for display etc.).
      * @see #setDefaultPrecisionDigits(int)
      */
-    private static int	 DefaultPrecisionDigits = 8;
+    private static int DefaultPrecisionDigits = 8;
     /**
      * The default tolerance for two numbers to be treated equal.
      * (experimental)

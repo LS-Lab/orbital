@@ -40,15 +40,16 @@ import java.util.logging.Level;
 /**
  * Algebraic algorithms.
  *
+ * @stereotype &laquo;Utilities&raquo;
  * @author Andr&eacute; Platzer
  * @version 1.1, 2002-08-21
  * @see MathUtilities
  * @see orbital.util.Utility
  */
-public class AlgebraicAlgorithms {
+public final class AlgebraicAlgorithms {
     private static final Logger logger = Logger.getLogger(AlgebraicAlgorithms.class.getName());
     /**
-     * prevent instantiation - final static class
+     * prevent instantiation - module class
      */
     private AlgebraicAlgorithms() {}
 

@@ -18,7 +18,7 @@ import java.util.ListIterator;
  * The importance of polynomial rings comes from the fact that they are the
  * free commutative and associative R-algebras
  * Libasc<sub>R</sub>(I) := R<sup>(N<sup>(I)</sup>)</sup> = R[(X<sub>i</sub>)<sub>i?I</sub>].
- * Although, of course, this is restricted to a finite number of variables for computation.
+ * Although, of course, this is restricted to a finite number of variables for the purpose of computation.
  * <!-- @todo could we calculate only infinitely generated algebras as well? -->
  * </p>
  *

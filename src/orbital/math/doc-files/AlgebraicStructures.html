@@ -209,9 +209,9 @@ provided that M and N are groups. So the property (1) only must be verified for
 monoids, which is the justification for the suggestive notation in the table 
 above.</p>
 <p>If φ:M→N is a homomorphism (of magmas), it carries much of the algebraic 
-structure of M over to f(M)⊆N. The image (f(M),∗) inherits the properties (s),(a),(n),(i),(c),<a href="#distributive">(d)</a> 
-from (M,⋅). However in general if N is not a group it may be f(1)≠1 (and 
-thus f(x<sup>-1</sup>)≠f(x)<sup>-1</sup>).</p>
+structure of M over to f(M)⊆N. The image (f(M),∗) inherits the properties 
+(s),(a),(n),(i),(c),<a href="#distributive">(d)</a> from (M,⋅). However in 
+general if N is not a group it may be f(1)≠1 (and thus f(x<sup>-1</sup>)≠f(x)<sup>-1</sup>).</p>
 <h4 class="inner">Examples</h4>
 <ol>
   <li>For every set X there is the <dfn>free magma</dfn> M(X).</li>
@@ -227,8 +227,8 @@ thus f(x<sup>-1</sup>)≠f(x)<sup>-1</sup>).</p>
     ¦ a<sub>i</sub>∈A<sub>i</sub>} with component-wise laws is the product in 
     <span class="categorie">Ens</span>,<span class="categorie">Mag</span>,<span class="categorie">Sgp</span>,<span class="categorie">Mon</span>,<span class="categorie">Gr</span>,<span class="categorie">Ab</span>,<span class="categorie">Rng</span>,<span class="categorie">Rng1</span>,<span class="categorie">cRng</span>,R-<span class="categorie">Mod</span>,R-<span class="categorie">Vec</span>,R-<span class="categorie">Alg</span>,...</li>
   <li>The direct sum <big>⊕</big><sub>i∈I</sub> A<sub>i</sub> := {(a<sub>i</sub>)<sub>i∈I</sub> 
-    <sub></sub>∈ ∏<sub>i∈I</sub> A<sub>i</sub> ¦ a<sub>i</sub>=1 p.t. i∈I} 
-    with component-wise laws is the coproduct in <span class="categorie">cMon</span>, 
+    <sub></sub>∈ ∏<sub>i∈I</sub> A<sub>i</sub> ¦ a<sub>i</sub>=1 p.t. 
+    i∈I} with component-wise laws is the coproduct in <span class="categorie">cMon</span>, 
     <span class="categorie">Mon??</span>,<span class="categorie">Ab</span>,R-<span class="categorie">Mod</span>,..., 
     but that is <em>not</em> the coproduct in <span class="categorie">Gr</span></li>
 </ol>
@@ -510,12 +510,16 @@ from (m).</p>
         <li>∗:R×M→M is a <dfn>law of action</dfn> with operators R.</li>
         <li><b>(„d‟)</b> ∗ is distributive over +, i.e.
           <ul>
-            <li>∀α∈R ∀<span class="vector">x</span>,<span class="vector">y</span>∈M α∗(<span class="vector">x</span>+<span class="vector">y</span>) = (α∗<span class="vector">x</span>) + (α∗<span class="vector">y</span>)</li>
+            <li>∀α∈R ∀<span class="vector">x</span>,<span class="vector">y</span>∈M 
+              α∗(<span class="vector">x</span>+<span class="vector">y</span>) 
+              = (α∗<span class="vector">x</span>) + (α∗<span class="vector">y</span>)</li>
             <li>∴ modules are commutative groups with operators.</li>
           </ul>
         </li>
-        <li><b>(„d‟)</b> ∀α,β∈R ∀<span class="vector">x</span>∈M (α+β)∗<span class="vector">x</span> = (α∗<span class="vector">x</span>) + (β∗<span class="vector">x</span>)</li>
-        <li><b>(„a‟) </b>∀α,β∈A ∀<span class="vector">x</span>∈M α∗(β∗<span class="vector">x</span>) = (α⋅β)∗<span class="vector">x</span> 
+        <li><b>(„d‟)</b> ∀α,β∈R ∀<span class="vector">x</span>∈M (α+β)∗<span class="vector">x</span> 
+          = (α∗<span class="vector">x</span>) + (β∗<span class="vector">x</span>)</li>
+        <li><b>(„a‟) </b>∀α,β∈A ∀<span class="vector">x</span>∈M 
+          α∗(β∗<span class="vector">x</span>) = (α⋅β)∗<span class="vector">x</span> 
           (for left R-pseudomodules)</li>
       </ul>
     </td>
@@ -526,7 +530,8 @@ from (m).</p>
     <td class="defID">( )</td>
     <td class="defCond">The same as for left R-modules, except that
       <ul>
-        <li><b>(„a‟) </b>∀α,β∈A ∀<span class="vector">x</span>∈M α∗(β∗<span class="vector">x</span>) = (β⋅α)∗<span class="vector">x</span> 
+        <li><b>(„a‟) </b>∀α,β∈A ∀<span class="vector">x</span>∈M 
+          α∗(β∗<span class="vector">x</span>) = (β⋅α)∗<span class="vector">x</span> 
           (for right R-pseudomodules)</li>
       </ul>
       <p>Therefore, the law of action may be written more suggestively as ∗:M×R→M 
@@ -539,7 +544,8 @@ from (m).</p>
     <td class="defCond">
       <ul>
         <li>R is a ring.</li>
-        <li><b>(„n‟) </b>∀<span class="vector">x</span>∈M 1∗<span class="vector">x</span> = <span class="vector">x</span></li>
+        <li><b>(„n‟) </b>∀<span class="vector">x</span>∈M 1∗<span class="vector">x</span> 
+          = <span class="vector">x</span></li>
       </ul>
     </td>
     <td class="defTerm"><dfn>left R-module</dfn> ⊂<br>
@@ -551,7 +557,8 @@ from (m).</p>
     <td class="defCond">
       <ul>
         <li>R is a ring.</li>
-        <li><b>(„n‟) </b>∀<span class="vector">x</span>∈M 1∗<span class="vector">x</span> = <span class="vector">x</span></li>
+        <li><b>(„n‟) </b>∀<span class="vector">x</span>∈M 1∗<span class="vector">x</span> 
+          = <span class="vector">x</span></li>
       </ul>
     </td>
     <td class="defTerm"><dfn>right R-module</dfn> ⊂<br>
@@ -596,7 +603,8 @@ in R and left (R,⋅)-sets that also satisfy the second distributive relation.</
     <td class="defCond" id="linear">
       <ul>
         <li>φ:(R,+)→(R',+) is a homomorphism of groups</li>
-        <li>∀α∈R∀<span class="vector">x</span>∈M φ(α∗<span class="vector">x</span>) = α∗φ(<span class="vector">x</span>)</li>
+        <li>∀α∈R∀<span class="vector">x</span>∈M φ(α∗<span class="vector">x</span>) 
+          = α∗φ(<span class="vector">x</span>)</li>
       </ul>
     </td>
     <td class="defVerbal">&quot;R-linear&quot;</td>
@@ -616,10 +624,11 @@ in R and left (R,⋅)-sets that also satisfy the second distributive relation.</
     R-linear} is an R-module with pointwise addition and scalar multiplication.</li>
   <li>M<sup>⌄</sup> := M<sup>*</sup> := Hom<sub>R</sub>(M,R) is called the <dfn>dual 
     module</dfn> to M. If M is free with base B, then M<sup>*</sup> is free with 
-    the dual base B<sup>*</sup>:={<span class="vector">b</span><sup>*</sup>:B→R; <span class="vector">b'</span>↦δ<sub><span class="vector">b</span><span class="vector">b'</span></sub> ¦ 
-    <span class="vector">b</span>∈B}.</li>
+    the dual base B<sup>*</sup>:={<span class="vector">b</span><sup>*</sup>:B→R; 
+    <span class="vector">b'</span>↦δ<sub><span class="vector">b</span><span class="vector">b'</span></sub> 
+    ¦ <span class="vector">b</span>∈B}.</li>
   <li>R<sup>(X)</sup> := <big>⊕</big><sub>x∈X</sub> R is the <dfn>free 
-    R-module</dfn> with basis X (X is a set).<br>
+    R-module</dfn> with basis X (X is a set, also <a href="#algebraOfMagma">see</a>).<br>
     ⇔ X is R-linear independent and generates the module (i.e. =〈X〉).</li>
 </ol>
 <h3>Algebras</h3>
@@ -712,7 +721,8 @@ omitted.</p>
 <h5 class="compact">Note:</h5>
 <p>The converse of the last characterization is also true for unital and 
 associative algebras, since given such an R-algebra, ι:R→E;α↦α∗1 is a 
-unital homomorphism of rings.</p>
+unital homomorphism of rings. Homomorphisms of R-algebras are the R-linear 
+homomorphisms of rings:</p>
 <table width="100%" class="def" id="morph_2_1">
   <caption>Homomorphisms of algebraic structures with two laws of composition 
     and a law of action</caption>
@@ -755,13 +765,33 @@ unital homomorphism of rings.</p>
   <li><b>Z</b>-<span class="categorie">Algas</span>≅<span class="categorie">PseudoRing</span>, 
     <b>Z</b>-<span class="categorie">Algasu</span>≅<span class="categorie">Rng1</span>, 
     <b>Z</b>-<span class="categorie">Algascu</span>≅<span class="categorie">cRng1</span>.</li>
-  <li>If S is a magma, then R<sup>(S)</sup> is an R-algebra (also inheriting 
-    associative, unital, or commutative from S), by ι(s)⋅ι(t) := ι(s⋅t) 
-    from the canonical injection ι:S→R<sup>(S)</sup>. Especially, there is 
-    the <dfn>free R-algebra</dfn> Lib<sub>R</sub>(I) := R<sup>(M(I))</sup>, the <dfn>free 
-    associative R-algebra</dfn> Libas<sub>R</sub>(I) := R<sup>(Mo(I))</sup>, and 
-    the <dfn>free commutative and associative R-algebra</dfn> Libasc<sub>R</sub>(I) 
-    := R<sup>(N<sup>(I)</sup>)</sup> = R[(X<sub>i</sub>)<sub>i∈I</sub>].</li>
+  <li>R<sup>(S)</sup> := <big>⊕</big><sub><big>s</big>∈S</sub> R is the R-<dfn id="algebraOfMagma">algebra 
+    of the magma</dfn> S over R (being associative, unital, or commutative if 
+    and only if S is), by ι(s)⋅ι(t) := ι(s⋅t) from the canonical 
+    injection ι:S→R<sup>(S)</sup>. Therefore
+    <div>
+      (∑<sub>s∈S</sub> α<sub>s</sub>∗ι(s))⋅(∑<sub>s∈S</sub> β<sub>s</sub>∗ι(s)) 
+      = ∑<sub>s∈S</sub> (∑<sub>t⋅u=s</sub> α<sub>t</sub>β<sub>u</sub>)∗ι(s)
+    </div>
+    Especially, there are
+    <ul>
+      <li>the <dfn>free R-algebra</dfn> Lib<sub>R</sub>(I) := R<sup>(M(I))</sup>.</li>
+      <li>the <dfn>free associative R-algebra</dfn> Libas<sub>R</sub>(I) := R<sup>(Mo(I)) 
+        </sup>≅ <span style="font size: larger; font-weight: 600;">T</span>(R<sup>(I)</sup>) 
+        being isomorph to the tensor algebra of a free R-module with a basis of 
+        indexing set I.</li>
+      <li>the <dfn>free commutative and associative R-algebra</dfn> Libasc<sub>R</sub>(I) 
+        := R<sup>(N<sup>(I)</sup>)</sup> = R[(X<sub>i</sub>)<sub>i∈I</sub>] 
+        ≅ <span style="font size: larger; font-weight: 600;">S</span>(R<sup>(I)</sup>) 
+        being isomorph to the symmetric algebra of a free R-module with a basis 
+        of indexing set I.</li>
+    </ul>
+    The algebra of a magma S over R has the following universal mapping property
+    <div class="UniversalMappingProperty">
+      ∀f:S→(E,⋅) homomorphism of magmas/monoids into an R-algebra E<br />
+      ∃!Φ:R<sup>(S)</sup>→E R-algebra homomorphism with Φ|<sub>S</sub>=f
+    </div>
+  </li>
   <li>The tensor product E⊗<sub>R</sub>E' is a coproduct in the category of 
     R-algebras (only R-<span class="categorie">Algasu</span>?) per (a<sub>1</sub>⊗b<sub>1</sub>)⋅(a<sub>2</sub>⊗b<sub>2</sub>) 
     :=a<sub>1</sub>a<sub>2</sub>⊗b<sub>1</sub>b<sub>2</sub>. It inherits (c) 
@@ -822,9 +852,10 @@ is called the <dfn>index</dfn> of the subgroup H in G. It satisfies <center>|G|
 <ul>
   <li>For an R-module E, an alternative characterization by linear combinations 
     of X⊆E is<br>
-    〈X〉 = R∗X := 〈{r∗<span class="vector">x</span> ¦ r∈R ∧ <span class="vector">x</span>∈X}〉 = X<sup>(R)</sup> = {∑<sub><span class="vector">x</span>∈X</sub> 
-    a<sub><span class="vector">x</span></sub>∗<span class="vector">x</span> ¦ ∀<span class="vector">x</span>∈X a<sub><span class="vector">x</span></sub>∈R ∧ a<sub><span class="vector">x</span></sub>=0 p.t. 
-    <span class="vector">x</span>∈X}</li>
+    〈X〉 = R∗X := 〈{r∗<span class="vector">x</span> ¦ r∈R ∧ <span class="vector">x</span>∈X}〉 
+    = X<sup>(R)</sup> = {∑<sub><span class="vector">x</span>∈X</sub> a<sub><span class="vector">x</span></sub>∗<span class="vector">x</span> 
+    ¦ ∀<span class="vector">x</span>∈X a<sub><span class="vector">x</span></sub>∈R 
+    ∧ a<sub><span class="vector">x</span></sub>=0 p.t. <span class="vector">x</span>∈X}</li>
 </ul>
 <ul>
   <li>For ideals I⊴R (which are defined as sub-R-modules of R), the usual 

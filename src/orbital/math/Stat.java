@@ -28,7 +28,7 @@ import orbital.util.Utility;
  */
 public final class Stat {
     /**
-     * prevent instantiation - final static class
+     * prevent instantiation - module class
      */
     private Stat() {}
 

@@ -38,10 +38,10 @@ import orbital.util.Utility;
  * @todo introduce a row Pivot with a threshold of &asymp;1.5
  * @todo introduce GaussJordanAlgorithm
  */
-public class NumericalAlgorithms {
+public final class NumericalAlgorithms {
     private static final Logger logger = Logger.getLogger(NumericalAlgorithms.class.getName());
     /**
-     * prevent instantiation - final static class
+     * prevent instantiation - module class
      */
     private NumericalAlgorithms() {}
 

@@ -17,18 +17,18 @@ import orbital.math.functional.Functions;
 import orbital.logic.functor.Predicates;
 
 /**
- * LUDecomposition class, decomposing A into P&middot;A = L&middot;U.
+ * LUDecomposition class, decomposing <span class="matrix">A</span> into <span class="matrix">P</span>&middot;<span class="matrix">A</span> = <span class="matrix">L</span>&middot;<span class="matrix">U</span>.
  *
  * @version 0.9, 2000/09/09
  * @author  Andr&eacute; Platzer
  * @stereotype &laquo;Structure&raquo;
  * @stereotype &laquo;Wrapper&raquo;
- * @invariant !isRegular() || getP().multiply(M).equals(getL().multiply(getU()))
+ * @invariant !isRegular() || getP().multiply(A).equals(getL().multiply(getU()))
  * @see #decompose(Matrix)
  * @see NumericalAlgorithms
  * @note this class is more or less just a workaround for returning multiple values.
  */
-public class LUDecomposition/*<R implements Arithmetic>*/ implements Serializable {
+public final class LUDecomposition/*<R implements Arithmetic>*/ implements Serializable {
     private static final long serialVersionUID = 4112378842817846198L;
     /**
      * decomposition data, contains lower triangular as well as upper triangular.
@@ -41,16 +41,16 @@ public class LUDecomposition/*<R implements Arithmetic>*/ implements Serializabl
      */
     private Matrix/*<R>*/ P;
     /**
-     * the sign of the permutation P.
-     * True if P is an even permutation, false if P is odd.
+     * the sign of the permutation <span class="matrix">P</span>.
+     * True if <span class="matrix">P</span> is an even permutation, false if <span class="matrix">P</span> is odd.
      * The permutation is even if and only if an even number of pivotising swaps was done.
      * @serial
      */
     private boolean sign;
     /**
      * Gaussian LU-decomposition implementation.
-     * Such that P.A = L.U
-     * @pre A.isSquare()
+     * Such that <span class="matrix">P</span>.<span class="matrix">A</span> = <span class="matrix">L</span>.<span class="matrix">U</span>
+     * @pre <span class="matrix">A</span>.isSquare()
      */
     protected LUDecomposition(Matrix/*<R>*/ A, Matrix/*<R>*/ P, boolean sign) {
 	this.A = A;
@@ -59,7 +59,7 @@ public class LUDecomposition/*<R implements Arithmetic>*/ implements Serializabl
     }
     /**
      * Gaussian LU-decomposition implementation.
-     * Such that P.A = L.U
+     * Such that <span class="matrix">P</span>.<span class="matrix">A</span> = <span class="matrix">L</span>.<span class="matrix">U</span>
      * <p>Number of multiplications is 1/3*(n<sup>3</sup>-n)</p>
      * @pre M.isSquare()
      * @todo optimize
@@ -136,7 +136,7 @@ public class LUDecomposition/*<R implements Arithmetic>*/ implements Serializabl
     
     /**
      * Get the Gaussian LU-decomposition of a matrix.
-     * Such that P.A = L.U
+     * Such that <span class="matrix">P</span>.<span class="matrix">A</span> = <span class="matrix">L</span>.<span class="matrix">U</span>
      * <p>Number of multiplications is 1/3*(n<sup>3</sup>-n)</p>
      * @pre M.isSquare()
      */
@@ -145,7 +145,7 @@ public class LUDecomposition/*<R implements Arithmetic>*/ implements Serializabl
     }
 
     /**
-     * A is regular if and only if U is which depends upon whether there is a 0 on the diagonal.
+     * <span class="matrix">A</span> is regular if and only if <span class="matrix">U</span> is which depends upon whether there is a 0 on the diagonal.
      * @see Matrix#isRegular()
      */
     public boolean isRegular() throws ArithmeticException {
@@ -157,7 +157,7 @@ public class LUDecomposition/*<R implements Arithmetic>*/ implements Serializabl
 
     /**
      * Rank of the matrix.
-     * i.e. the number of non-zero elements on the diagonal of U.
+     * i.e. the number of non-zero elements on the diagonal of <span class="matrix">U</span>.
      * @see Matrix#linearRank()
      */
     public int linearRank() {
@@ -167,10 +167,10 @@ public class LUDecomposition/*<R implements Arithmetic>*/ implements Serializabl
     }
 
     /**
-     * The determinant of A.
+     * The determinant of <span class="matrix">A</span>.
      * <p>
-     * det A = (-1)<sup>p</sup>*det U where p = sign P is the number of permutations in P.
-     * Since det(P)*det(A) = det(P&middot;A) = det(L&middot;U) = det(L)*det(U) = det(U).</p>
+     * det <span class="matrix">A</span> = (-1)<sup>p</sup>*det <span class="matrix">U</span> where p = sign <span class="matrix">P</span> is the number of permutations in <span class="matrix">P</span>.
+     * Since det(<span class="matrix">P</span>)*det(<span class="matrix">A</span>) = det(<span class="matrix">P</span>&middot;<span class="matrix">A</span>) = det(<span class="matrix">L</span>&middot;<span class="matrix">U</span>) = det(<span class="matrix">L</span>)*det(<span class="matrix">U</span>) = det(<span class="matrix">U</span>).</p>
      * @see Matrix#det()
      */
     public Arithmetic/*>R<*/ det() {
@@ -178,9 +178,9 @@ public class LUDecomposition/*<R implements Arithmetic>*/ implements Serializabl
 	return sign ? detU : (Arithmetic/*>R<*/) detU.minus();
     }
 
-    // extract triangular matrices from A
+    // extract triangular matrices from <span class="matrix">A</span>
     /**
-     * lower triangular matrix L with diagonal 1s.
+     * lower triangular matrix <span class="matrix">L</span> with diagonal 1s.
      * <p>
      * Because of pivotising for numberical stability, this matrix only contains values
      * with an absolute &le;1.</p>
@@ -194,7 +194,7 @@ public class LUDecomposition/*<R implements Arithmetic>*/ implements Serializabl
     }
 
     /**
-     * upper triangular matrix U.
+     * upper triangular matrix <span class="matrix">U</span>.
      */
     public Matrix/*<R>*/ getU() {
 	Matrix/*<R>*/ U = Values.ZERO(A.dimension());
@@ -212,12 +212,12 @@ public class LUDecomposition/*<R implements Arithmetic>*/ implements Serializabl
     }
 
     /**
-     * Solve LES A&middot;x=b.
+     * Solve LES <span class="matrix">A</span>&middot;x=b.
      * <p>
      * Implementation solves
-     * L.z = P.b per forward-substitution, and then solves
+     * <span class="matrix">L</span>.z = <span class="matrix">P</span>.b per forward-substitution, and then solves
      * R.x = z per backward-substitution.
-     * @return x such that A&middot;x = b.
+     * @return x such that <span class="matrix">A</span>&middot;x = b.
      */
     public Vector/*<R>*/ solve(Vector/*<R>*/ b) {
 	Vector/*<R>*/ c = P.multiply(b);
