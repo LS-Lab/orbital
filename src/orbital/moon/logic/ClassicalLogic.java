@@ -1615,13 +1615,13 @@ public class ClassicalLogic extends ModernLogic {
 	    try {
 		// eliminate derived junctors not in the basis (&forall;,&and;,&or;&not;)
 		if (DNFeliminate == null)
-		    DNFeliminate = readTRS(readResource("trs/DNF/eliminate.trs"), logic);
+		    DNFeliminate = readTRS(readResource("trs/dnf/eliminate.trs"), logic);
 		f = (Formula) Functionals.fixedPoint(DNFeliminate, f);
 		// simplification part (necessary and does not disturb local confluency?)
 		if (simplifying && DNFSimplification == null)
 		    DNFSimplification =
 			Setops.union(
-				     readTRS(readResource("trs/DNF/simplify.trs"), logic).getReplacements(),
+				     readTRS(readResource("trs/dnf/simplify.trs"), logic).getReplacements(),
 				     Arrays.asList(new Object[] {
 					 // necessary and does not disturb local confluency? conditional commutative (according to lexical order)
 					 new LexicalConditionalUnifyingMatcher(logic.createExpression("_X2&_X1"), logic.createExpression("_X1&_X2"), logic.createAtomicLiteralVariable("_X1"), logic.createAtomicLiteralVariable("_X2")),
@@ -1630,7 +1630,7 @@ public class ClassicalLogic extends ModernLogic {
 				     }));
 		// transform to DNF part
 		if (DNFtrs == null)
-		    DNFtrs = readTRS(readResource("trs/DNF/transformToDNF.trs"), logic);
+		    DNFtrs = readTRS(readResource("trs/dnf/transformToDNF.trs"), logic);
 		//@todo simplifying conditional rules: commutative with lexical sort, etc.
 		return (Formula) Functionals.fixedPoint(simplifying ? Substitutions.getInstance(new ArrayList(Setops.union(DNFSimplification, DNFtrs.getReplacements()))) : DNFtrs, f);
 	    } catch (ParseException ex) {
@@ -1658,13 +1658,13 @@ public class ClassicalLogic extends ModernLogic {
 	    try {
 		// eliminate derived junctors not in the basis (&forall;,&and;,&or;&not;)
 		if (CNFeliminate == null)
-		    CNFeliminate = readTRS(readResource("trs/CNF/eliminate.trs"), logic);
+		    CNFeliminate = readTRS(readResource("trs/cnf/eliminate.trs"), logic);
 		f = (Formula) Functionals.fixedPoint(CNFeliminate, f);
 		// simplification part (necessary and does not disturb local confluency?)
 		if (simplifying && CNFSimplification == null)
 		    CNFSimplification =
 			Setops.union(
-				     readTRS(readResource("trs/CNF/simplify.trs"), logic).getReplacements(), 
+				     readTRS(readResource("trs/cnf/simplify.trs"), logic).getReplacements(), 
 				     Arrays.asList(new Object[] {
 					 // necessary and does not disturb local confluency? conditional commutative (according to lexical order)
 					 new LexicalConditionalUnifyingMatcher(logic.createExpression("_X2&_X1"), logic.createExpression("_X1&_X2"), logic.createAtomicLiteralVariable("_X1"), logic.createAtomicLiteralVariable("_X2")),
@@ -1675,7 +1675,7 @@ public class ClassicalLogic extends ModernLogic {
 				     }));
 		// transform to CNF part
 		if (CNFtrs == null)
-		    CNFtrs = readTRS(readResource("trs/CNF/transformToCNF.trs"), logic);
+		    CNFtrs = readTRS(readResource("trs/cnf/transformToCNF.trs"), logic);
 		return (Formula) Functionals.fixedPoint(simplifying ? Substitutions.getInstance(new ArrayList(Setops.union(CNFSimplification, CNFtrs.getReplacements()))) : CNFtrs, f);
 	    } catch (ParseException ex) {
 		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
