@@ -1000,7 +1000,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
      * This class ensures the non-truth-functional interpretation
      * I(&lambda;x.t) := (a&#8614;I&lt;x/a&gt;(t)) = (a&#8614;I(t[x&#8614;a]).
      * It usually uses the first form of semantic modification, instead of the
-     * second variant of syntactic substitution (which requires that a is syntactically well-formed).
+     * second variant of syntactic substitution (which would require that a is syntactically well-formed).
      * </p>
      * @author Andr&eacute; Platzer
      * @version 2002/07/15
@@ -1036,6 +1036,9 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    
 	
 	// implementation of orbital.logic.imp.Expression interface
+	public Specification getType() {
+	    throw new UnsupportedOperationException("@xxx how to represent the type " + x.getType() + "->" + term.getType());
+	}
         public Signature getSignature() {
 	    Signature sigma = new SignatureBase(term.getSignature());
 	    sigma.add((Symbol)x);
@@ -1202,6 +1205,9 @@ public class ClassicalLogic extends ModernLogic implements Logic {
      * @deprecated empty formulas are not defined
      */
     static Formula EMPTY = new ModernFormula(new ClassicalLogic()) {
+	    public Specification getType() {
+		return VoidPredicate.specification;
+	    }
 	    public Signature getSignature() {
 		return SignatureBase.EMPTY;
 	    }

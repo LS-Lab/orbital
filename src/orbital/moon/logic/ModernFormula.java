@@ -220,6 +220,9 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    return Utility.hashCode(symbol);
 	}
 		
+        public Specification getType() {
+	    return symbol.getType();
+        }
 	public boolean isVariable() {return symbol.isVariable();}
 
         public Signature getSignature() {
@@ -391,6 +394,9 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 		
 	private CompositeFormula() {super(null);setNotation(null);}
 		
+        public Specification getType() {
+	    throw new UnsupportedOperationException("not yet implemented");
+        }
         public Signature getSignature() {
 	    //@todo shouldn't we unify with getCompositor().getSignature() in case of formulas representing predicate or function?
 	    return ((Formula) getComponent()).getSignature();
@@ -489,6 +495,9 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 		
 	private BinaryCompositeFormula() {super(null);setNotation(null);}
 
+        public Specification getType() {
+	    throw new UnsupportedOperationException("not yet implemented");
+        }
         public Signature getSignature() {
 	    //@todo could cache signature as well, provided left and right don't change
 	    return left.getSignature().union(right.getSignature());
@@ -611,6 +620,9 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 		
 	private CompositeVariableFormula() {super(null);setNotation(null);}
 		
+        public Specification getType() {
+	    return new Specification(inner.getType().getParameterTypes(), outer.getType().getReturnType());
+        }
         public Signature getSignature() {
 	    return inner.getSignature().union(outer.getSignature());
         }
@@ -716,6 +728,9 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 		
 	private VoidCompositeVariableFormula() {super(null);setNotation(null);}
 		
+        public Specification getType() {
+	    throw new UnsupportedOperationException("not yet implemented");
+        }
         public Signature getSignature() {
 	    return outer.getSignature();
         }
@@ -825,6 +840,11 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 		
 	private BinaryCompositeVariableFormula() {super(null);setNotation(null);}
 
+        public Specification getType() {
+	    if (!Utility.equalsAll(left.getType().getParameterTypes(), right.getType().getParameterTypes()))
+		throw new InternalError("@todo not sure whether composition of inhomogenous types is allowed at all");
+	    return new Specification(left.getType().getParameterTypes(), outer.getType().getReturnType());
+        }
         public Signature getSignature() {
 	    //@todo could cache signature as well, provided left and right don't change
 	    return left.getSignature().union(right.getSignature()).union(outer.getSignature());
