@@ -300,7 +300,8 @@ public class SubstitutionImpl implements Substitution, Serializable {
 
     	//@todo single side match test could be optimized with its own implementation method
     	public boolean matches(Object t) {
-	    return (this.unifier = Substitutions.unify(Arrays.asList(new Object[] {pattern(), t}))) != null
+	    this.unifier = Substitutions.unify(Arrays.asList(new Object[] {pattern(), t}));
+	    return this.unifier != null
 		&& (this.unifier.apply(t).equals(t));
     	}
     

@@ -394,7 +394,6 @@ public class LogicParser {
 	 * @return the symbol or <code>null</code>.
 	 */
 	private Symbol tryGetSymbol(String signifier, Type maxType, boolean variable, boolean autoDeclare) {
-	    if (true && signifier.equals("x")) autoDeclare = false;
 	    Symbol s = tryGetSymbol(signifier, maxType);
 	    if (s != null)
 		return s;
