@@ -21,6 +21,9 @@ import java.util.Random;
  * @version 0.9, 14/11/98
  * @author  Andr&eacute; Platzer
  * @see NullOutputStream
+ * @deprecated This class is not applicable in a broad range.
+ *  So it is considered generally worthless
+ *  and might be removed in future releases.
  */
 public class RandomInputStream extends InputStream {
 

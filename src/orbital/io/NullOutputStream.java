@@ -22,6 +22,9 @@ import java.io.OutputStream;
  * @author  Andr&eacute; Platzer
  * @see RandomInputStream
  * @see <a href="{@docRoot}/DesignPatterns/Null.html">Null object</a>
+ * @deprecated This class is not applicable in a broad range.
+ *  So it is considered generally worthless
+ *  and might be removed in future releases.
  */
 public class NullOutputStream extends OutputStream {
     public NullOutputStream() {}
