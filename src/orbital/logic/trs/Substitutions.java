@@ -245,7 +245,7 @@ public class Substitutions {
     /**
      * The &lambda;-operator of &lambda;-Calculus.
      * <div>&lambda;:&sigma;&times;&tau;&rarr;(&sigma;&rarr;&tau;); (&lambda;x.f) &#8614; (x&#8614;f)</div>
-     * Usually for &sigma;=Variable, &tau;=Expression.
+     * Usually for &sigma;={@link Variable}, &tau;={@link Expression}.
      * <p>
      * The &lambda;-Calculus of Alonzo Church (1930) has the following inference rules
      * called &alpha;-conversion, &beta;-conversion, and &eta;-conversion.
@@ -258,7 +258,7 @@ public class Substitutions {
      *       &lambda;v.t = &lambda;w.t[v&rarr;w]
      *     </td>
      *     <td>
-     *       if [v&rarr;w] admissible
+     *       if [v&rarr;w] is admissible
      *     </td>
      *     <td>
      *       "bound rename"
@@ -272,7 +272,7 @@ public class Substitutions {
      *       (&lambda;v.t) s = t[v&rarr;s]
      *     </td>
      *     <td>
-     *       if [v&rarr;s] admissible
+     *       if [v&rarr;s] is admissible
      *     </td>
      *     <td>
      *       "apply"
@@ -293,7 +293,7 @@ public class Substitutions {
      *     </td>
      *   </tr>
      * </table>
-     * The &eta;-conversion leads to extensional equality.
+     * The &eta;-conversion leads to extensional equality for functions.
      * A substitution t[v&rarr;s] is <dfn>admissible</dfn> if it does not introduce new bindings,
      * i.e. no free variable of s would be bound by a &lambda;-operator in t[v&rarr;s].
      * </p>
@@ -301,7 +301,7 @@ public class Substitutions {
      * Applying the &lambda;-operator to a variable x and an expression f
      * results in the &lambda;-abstraction (&lambda;x.f) which is a unary function.
      * This &lambda;-abstraction could be circumscribed as the "function f with respect to x".
-     * &lambda; is the inverse operator of function application.
+     * &lambda; is the inverse operator of {@link orbital.logic.functor.Functionals#apply function application}.
      * </p>
      * <p>
      * The &lambda;-operator is of course implemented as the substitution f[x&rarr;#0].
@@ -309,6 +309,7 @@ public class Substitutions {
      * and f being an instance of {@link orbital.logic.imp.Expression}. Otherwise it will
      * work fine just as well.
      * </p>
+     * <h5>Implementation notes</h5>
      * <p>
      * <!-- @xxx horrible can't we avoid this by letting constant functions vanish "just at the right moment"? -->
      * If you experience troubles in the context of composite functions, then make sure which way

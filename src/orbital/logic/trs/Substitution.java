@@ -121,6 +121,10 @@ import java.util.Collection;
  * For variable substitutions that have a right-inverse variable substitution
  * this is true if their supports are disjunct.
  * </p>
+ * <blockquote>
+ * Substitutions are for computer science what permutations (finite symmetric group) are for mathematics.
+ * <!-- especially consider that Cayley proved that every group can be embedded into a permutation group -->
+ * </blockquote>
  *
  * @version 1.0, 2002/02/19
  * @version 0.9, 2001/06/20
