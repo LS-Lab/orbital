@@ -96,7 +96,7 @@ import orbital.util.Utility;
  *   <tr>
  *     <td>()</td>
  *     <td>a &#8911; 0 = 0</td>
- *     <td>(&lArr; (n),(c),(mon)</td>
+ *     <td>(&lArr; (n),(c),(mon))</td>
  *   </tr>
  *   <tr>
  *     <td>()</td>
@@ -107,7 +107,7 @@ import orbital.util.Utility;
  *     <td>&quot;&and; boundary conditions&quot; (&lArr; (n),(c),(mon))</td>
  *   </tr>
  * </table>
- * The only function that fulfills all axioms is the classical a&#8911;b = max(a,b) [Klir, Folger 1988].
+ * The only function that fulfills all axioms including the optional ones is a&#8911;b = max(a,b) [Klir, Folger 1988].
  * </p>
  * <p>
  * <table>
@@ -147,7 +147,7 @@ import orbital.util.Utility;
  *   <tr>
  *     <td>()</td>
  *     <td>a &#8911; 1 = 1</td>
- *     <td>(&lArr; (n),(c),(mon)</td>
+ *     <td>(&lArr; (n),(c),(mon))</td>
  *   </tr>
  *   <tr>
  *     <td>()</td>
@@ -158,7 +158,7 @@ import orbital.util.Utility;
  *     <td>&quot;&or; boundary conditions&quot; (&lArr; (n),(c),(mon))</td>
  *   </tr>
  * </table>
- * The only function that fulfills all axioms is the classical a&#8910;b = min(a,b) [Klir, Folger 1988].
+ * The only function that fulfills all axioms including the optional ones is a&#8910;b = min(a,b) [Klir, Folger 1988].
  * <table>
  *   <tr>
  *     <td colspan="3">~ is a <dfn>fuzzy NOT operator</dfn>, iff</td>
@@ -185,6 +185,11 @@ import orbital.util.Utility;
  *     <td>&quot;continuous&quot; (optional)</td>
  *   </tr>
  * </table>
+ * </p>
+ * <p>
+ * G&ouml;del and drastic operator sets bound all operator sets. For any operators (&#8911;,&#8910;)
+ * it is
+ * <div style="text-align: center">max{a,b}&le;a&#8910;b&le;{@link #DRASTIC u<sup>*</sup>}(a,b) &le; {@link #DRASTIC i<sup>*</sup>}(a,b)&le;a&#8911;b&le;min{a,b}</div>
  * </p>
  * <p>
  * <dl class="def">
@@ -248,6 +253,11 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 
 
     /**
+     * list of static elements of signature.
+     */
+    private static final String operators = "~! |&^-><=(),";
+
+    /**
      * Remembers the fuzzy logic operators used in coreInterpretation().
      */
     private final OperatorSet fuzzyLogicOperators;
@@ -259,6 +269,16 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     public FuzzyLogic() {
 	this(GOEDEL);
     }
+    /**
+     * Create a new fuzzy logic implementation with a specific operator set.
+     * @param fuzzyLogicOperators the set of fuzzy logic operators to use.
+     * @see #GOEDEL
+     * @see #BOUNDED
+     * @see #PRODUCT
+     * @see #DRASTIC
+     * @see #HAMACHER(double)
+     * @see #YAGER(double)
+     */
     public FuzzyLogic(OperatorSet fuzzyLogicOperators) {
 	this.fuzzyLogicOperators = fuzzyLogicOperators;
 	final OperatorSet op = fuzzyLogicOperators;
@@ -284,6 +304,10 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	     new NotationSpecification(950, "fxx", Notation.PREFIX)}
 	}, true);
 	this._coreSignature = _coreInterpretation.getSignature();
+    }
+
+    public String toString() {
+	return getClass().getName() + '[' + fuzzyLogicOperators + ']';
     }
 
     /**
@@ -313,11 +337,6 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     public Inference inference() {
 	throw new InternalError("no calculus implemented");
     } 
-
-    /**
-     * static elements of signature
-     */
-    protected static String   operators = "~! |&^-><=(),";
 
     public Signature coreSignature() {
 	return _coreSignature;
@@ -368,7 +387,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     
     /**
      * Specifies the type of fuzzy logic to use.
-     * Instances will define the fuzzy logic operators applied.
+     * Instances will define the set of fuzzy logic operators applied.
      * @version 1.0, 2002/05/29
      * @author  Andr&eacute; Platzer
      * @see <a href="{@docRoot}/DesignPatterns/enum.html">typesafe enum pattern</a>
@@ -454,6 +473,15 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      * G&ouml;del and Zadeh operators in fuzzy logic (default).
      * <div>a &#8911; b = min{a,b}</div>
      * <div>a &#8910; b = max{a,b}</div>
+     * G&ouml;del operators are the "outer" bound of fuzzy logic operators, i.e.
+     * min is the greatest fuzzy AND operator,
+     * and max the smallest fuzzy OR operator.
+     * <p>
+     * <h5><!-- @todo check translation and quote --> principle of minimum specifity</h5>
+     * <blockquote>
+     *   
+     * </blockquote>
+     * &rArr; in the absence of further knowledge, choose G&ouml;del operators.
      */
     public static OperatorSet GOEDEL = new OperatorSet("Gödel") {
 	    private static final long serialVersionUID = 2408339318090056142L;
@@ -543,41 +571,6 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	};
 
     /**
-     * Drastic operators in fuzzy logic.
-     * <div>a &#8911; b = min{a,b} if max{a,b}=1, else 0</div>
-     * <div>a &#8910; b = max{a,b} if min{a,b}=0, else 1</div>
-     * @attribute discontinuous
-     */
-    public static OperatorSet DRASTIC = new OperatorSet("Drastic") {
-	    private static final long serialVersionUID = -2065043465614357255L;
-	    Function not() {
-		return LogicFunctions.not;
-	    }
-
-	    BinaryFunction and() {
-		return new BinaryFunction() {
-			public Object apply(Object wa, Object wb) {
-			    final double a = getTruth(wa);
-			    final double b = getTruth(wb);
-			    return getInt(a == 1.0 || b == 1.0 ? Math.min(a, b) : 0);
-			}
-			public String toString() { return "&"; }
-		    };
-	    }
-    
-	    BinaryFunction or() {
-		return new BinaryFunction() {
-			public Object apply(Object wa, Object wb) {
-			    final double a = getTruth(wa);
-			    final double b = getTruth(wb);
-			    return getInt(a == 0.0 || b == 0.0 ? Math.max(a, b) : 1);
-			}
-			public String toString() { return "|"; }
-		    };
-	    }
-	};
-
-    /**
      * Hamacher operators in fuzzy logic.
      * <div class="Formula">a &#8911; b = a&sdot;b / <big>(</big>&gamma;+(1-&gamma;)(a+b-a&sdot;b)<big>)</big></div>
      * <div class="Formula">a &#8910; b = <big>(</big>a+b-(2-&gamm;)a&sdot;b<big>)</big> / <big>(</big>1-(1-&gamma;)a&sdot;b<big>)</big></div>
@@ -623,7 +616,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      * Yager operators in fuzzy logic.
      * <div class="Formula">a &#8911; b = 1 - min<big>{</big>1,<big>(</big>(1-a)<sup>p</sup>+(1-b)<sup>p</sup>)<big>)</big><sup>1/p</sup><big>}</big></div>
      * <div class="Formula">a &#8910; b = min<big>{</big>1,<big>(</big>a<sup>p</sup>+b<sup>p</sup>)<big>)</big><sup>1/p</sup><big>}</big></div>
-     * For p&rarr;&infin; these operators approximate those of {@link GOEDEL}.
+     * For p&rarr;&infin; these operators approximate those of {@link #GOEDEL}.
      * @pre p&gt;0
      */
     public static OperatorSet YAGER(final double p) {
@@ -633,6 +626,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	return new OperatorSet("Yager(" + p + ")") {
 		private static final long serialVersionUID = 5886310887805210830L;
 		Function not() {
+		    //@internal there also is a Yager complement (1-a<sup>p</sup>)<sup>1/p</sup>, but the ususal complement satisfies the duality. (There are even more fuzzy NOT operators: drastic, continuous fuzzy complement, Sugeno, Yager, and the natural complement)
 		    return LogicFunctions.not;
 		}
 
@@ -659,6 +653,44 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 		}
 	    };
     }
+
+    /**
+     * Drastic operators in fuzzy logic.
+     * <div>a &#8911; b = i<sup>*</sup>(a,b) := min{a,b} if max{a,b}=1, else 0</div>
+     * <div>a &#8910; b = u<sup>*</sup>(a,b) := max{a,b} if min{a,b}=0, else 1</div>
+     * Drastic operators are the "inner" bound of fuzzy logic operators, i.e.
+     * i<sup>*</sup> is the smallest fuzzy AND operator,
+     * and u<sup>*</sup> the greatest fuzzy OR operator.
+     * @attribute discontinuous
+     */
+    public static OperatorSet DRASTIC = new OperatorSet("Drastic") {
+	    private static final long serialVersionUID = -2065043465614357255L;
+	    Function not() {
+		return LogicFunctions.not;
+	    }
+
+	    BinaryFunction and() {
+		return new BinaryFunction() {
+			public Object apply(Object wa, Object wb) {
+			    final double a = getTruth(wa);
+			    final double b = getTruth(wb);
+			    return getInt(a == 1.0 || b == 1.0 ? Math.min(a, b) : 0);
+			}
+			public String toString() { return "&"; }
+		    };
+	    }
+    
+	    BinaryFunction or() {
+		return new BinaryFunction() {
+			public Object apply(Object wa, Object wb) {
+			    final double a = getTruth(wa);
+			    final double b = getTruth(wb);
+			    return getInt(a == 0.0 || b == 0.0 ? Math.max(a, b) : 1);
+			}
+			public String toString() { return "|"; }
+		    };
+	    }
+	};
 
 
     static class LogicFunctions {
