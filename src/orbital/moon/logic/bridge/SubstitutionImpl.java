@@ -17,7 +17,7 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Collection;
 
-import java.util.Collections;
+import orbital.util.Setops;
 import java.util.Arrays;
 
 import java.lang.reflect.Constructor;
@@ -55,7 +55,7 @@ public class SubstitutionImpl implements Substitution, Serializable {
       }*/
 
     public Collection/*_<Matcher>_*/ getReplacements() {
-	return Collections.unmodifiableCollection(replacements);
+	return Setops.unmodifiableCollectionLike(replacements);
     }
 	
 	
