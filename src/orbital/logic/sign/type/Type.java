@@ -44,6 +44,7 @@ import orbital.logic.functor.Predicate;
  * @todo decouple from the type system such that a flexible type system can even be built at runtime. for example with pure type system?
  * @todo would Types.sup fulfill "Type balance(Type a, Type b)", or would we need another method?
  * @todo should we provide "TypeSystem getTypeSystem()"?
+ * @internal note that, logically speaking, types have arity 0 but their corresponding predicative effect of course has arity 1. Both are useful.
  */
 public interface Type extends Comparable, Predicate {
     /**

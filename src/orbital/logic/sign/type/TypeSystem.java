@@ -30,6 +30,7 @@ import orbital.logic.functor.BinaryFunction;
  * @see Types#getDefault()
  * @see Type#typeSystem()
  * @see Type
+ * @see <a href="http://www.omg.org/technology/documents/formal/mof.htm">Meta-Object Facility</a>
  * @internal &lambda;* with *:* is inconsistent: since every term is inhabited (Girard's paradox).
  * @todo @see "H.P. Barendregt. Lambda Calculi with Types. in: Handbook of"
  */
