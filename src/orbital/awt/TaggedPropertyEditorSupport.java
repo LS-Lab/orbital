@@ -18,6 +18,8 @@ import orbital.math.MathUtilities;
  * 
  * @version 0.9, 2000/03/13
  * @author  Andr&eacute; Platzer
+ * @todo could introduce an InternationalizedBeanInfo which reads all SimpleBeanInfo information from a resource bundle.
+ *  Thereby generalize RhythmomachiaRulesBeanInfo, either at compile-time like TaggedPropertyEditorSupport, or dynamically in _Default_Customizer.
  */
 public class TaggedPropertyEditorSupport extends PropertyEditorSupport implements PropertyEditor {
     private String[] tags;
