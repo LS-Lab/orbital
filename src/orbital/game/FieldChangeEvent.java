@@ -35,10 +35,14 @@ public class FieldChangeEvent extends EventObject {
      */
     public static final int END_OF_TURN = 0x10;
     /**
+     * Field change event type for indicating that we begin a new game.
+     */
+    public static final int BEGIN_OF_GAME = 0x20;
+    /**
      * Field change event type for indicating that we have reached the end of the game.
      * The winner then is available in change info encoded as an {@link java.lang.Integer}.
      */
-    public static final int END_OF_GAME = 0x20;
+    public static final int END_OF_GAME = 0x21;
     public FieldChangeEvent(Field source, int type, Object changeInfo) {
 	super(source);
 	this.type = type;
