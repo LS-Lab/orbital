@@ -83,13 +83,8 @@ abstract class ModernLogic implements Logic {
 	    }
 	    catch (NumberFormatException trial) {}
 
-	// test for syntactically legal <IDENTIFIER> @todo can't we use new LogicParserTokenManager(signifier).getNextToken()?
-	for (int i = 0; i < signifier.length(); i++) {
-	    char ch = signifier.charAt(i);
-	    if ((i > 0 && !(ch == '_' || Character.isLetterOrDigit(ch)))
-		|| (i == 0 && !(ch == '_' || Character.isLetter(ch))))
-		throw new IllegalArgumentException("illegal character `" + ch + "\' for symbol " + symbol);
-	}
+	// test for syntactically legal <IDENTIFIER>
+	isIDENTIFIER(symbol);
 	return createSymbol(symbol);
     } 
 
@@ -230,5 +225,23 @@ abstract class ModernLogic implements Logic {
     
     public Signature scanSignature(String expression) throws ParseException {
 	return ((Formula)createExpression(expression)).getSignature();
-    } 
+    }
+
+
+    // Helpers
+
+    /**
+     * test for syntactically legal <IDENTIFIER>
+     * @throws IllegalArgumentException if signifier is not an IDENTIFIER.
+     * @todo can't we use new LogicParserTokenManager(signifier).getNextToken()?
+     */
+    private void isIDENTIFIER(Symbol symbol) {
+	String signifier = symbol.getSignifier();
+	for (int i = 0; i < signifier.length(); i++) {
+	    char ch = signifier.charAt(i);
+	    if ((i > 0 && !(ch == '_' || Character.isLetterOrDigit(ch)))
+		|| (i == 0 && !(ch == '_' || Character.isLetter(ch))))
+		throw new IllegalArgumentException("illegal character `" + ch + "' in symbol '" + symbol + "'");
+	}
+    }
 }
