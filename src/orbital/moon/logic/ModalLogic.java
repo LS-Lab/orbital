@@ -91,7 +91,8 @@ public class ModalLogic extends ClassicalLogic {
 	setEnableTypeChecks(false);
 	logger.log(Level.CONFIG, "disabling type checks for modal logic");
     }
-    
+
+    //@fixme worlds are no individuals, i.e. it should not be the case that WORLD.subtypeOf(individual)
     private static final Type   WORLD = //@xxx typeSystem.objectType(new Object() {}.getClass(), "world");
 	Types.INDIVIDUAL;
     private static final Symbol CURRENT_WORLD = new SymbolBase("s", WORLD, null, true);

@@ -4,6 +4,7 @@
 # @attribute complete
 # @attribute positive
 # @attribute deductive
+# @see modal Hilbert.calculus.txt
 #
 # Inference Rules
 #
