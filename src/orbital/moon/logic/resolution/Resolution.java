@@ -122,7 +122,7 @@ public class Resolution implements Inference {
 
     public boolean infer(final Formula[] B, final Formula D) {
         // skolemize B and drop quantifiers
-        List/*_<Formula>_*/ skolemizedB = new ArrayList(B.length);
+        final List/*_<Formula>_*/ skolemizedB = new ArrayList(B.length);
         for (int i = 0; i < B.length; i++) {
 	    skolemizedB.add(Utilities.dropQuantifiers(Utilities.skolemForm(B[i])));
 	    if (logger.isLoggable(Level.FINEST))
@@ -130,15 +130,19 @@ public class Resolution implements Inference {
 	}
 
         // convert B to clausalForm knowledgebase
+	// @internal knowledgebase = Functionals.map(clausalForm, skolemizedB)
         ClausalSet knowledgebase = new ClausalSetImpl();
         for (Iterator i = skolemizedB.iterator(); i.hasNext(); ) {
 	    knowledgebase.addAll(clausalForm((Formula) i.next(), SIMPLIFYING));
 	}
 
-	// factorize and remove tautologies
+	// factorize
+        knowledgebase = (ClausalSet) Functionals.map(factorize, knowledgebase);
+
+	// remove tautologies and handle contradictions
     	// for all clauses F&isin;knowledgebase
     	for (Iterator i = knowledgebase.iterator(); i.hasNext(); ) {
-	    final Clause F = ((Clause) i.next()).factorize();
+	    final Clause F = (Clause) i.next();
 	    if (F.equals(Utilities.CONTRADICTION))
 		throw new IllegalStateException("premises are inconsistent since they already contain a contradiction, so ex falso quodlibet");
 	    else if (F.isElementaryValid())
@@ -152,19 +156,24 @@ public class Resolution implements Inference {
 		logger.log(Level.FINEST, "W thus contains transformation of original formula {0}", Utilities.conjunctiveForm(B[i], SIMPLIFYING));
 
         // negate query since we are a negative test calculus
-        Formula query = D.not();
+        final Formula query = D.not();
 
 	// skolemize (negated) query
 	//@todo could we optimize by already transforming query to CNF, somewhat earlier? At least avoid transforming ~(a<->b) to ~(cnf(a<->b))
-	Formula skolemizedQuery = Utilities.dropQuantifiers(Utilities.skolemForm(query));
+	final Formula skolemizedQuery = Utilities.dropQuantifiers(Utilities.skolemForm(query));
+	logger.log(Level.FINER, "in S skolemForm( {0} ) == {1}", new Object[] {query, skolemizedQuery});
 
         // convert (negated) query to clausalForm S, forming the initial set of support
 	ClausalSet S = clausalForm(skolemizedQuery, SIMPLIFYING);
+	logger.log(Level.FINER, "in S clausalForm( {0} ) == {1}", new Object[] {skolemizedQuery, new HashSet(S)});
 
-	// factorize and remove tautologies
+	// factorize
+        S = (ClausalSet) Functionals.map(factorize, S);
+
+	// remove tautologies and handle contradictions
     	// for all clauses F&isin;S
     	for (Iterator i = S.iterator(); i.hasNext(); ) {
-	    final Clause F = ((Clause) i.next()).factorize();
+	    final Clause F = (Clause) i.next();
 	    if (F.equals(Utilities.CONTRADICTION))
 		// note that we could just as well check for contradictions prior to factorizing, because factorization does not introduce contradictions
 		throw new IllegalStateException("the query already contains a contradiction: " + D.not() + " = " + S);
@@ -350,6 +359,7 @@ public class Resolution implements Inference {
 	}
     }	    
 
+    // Tools
 
     /**
      * Transforms into clausal form.
@@ -370,4 +380,14 @@ public class Resolution implements Inference {
 		 }, ClassicalLogic.Utilities.clausalForm(f, simplifying))
 	     );
     }
+
+    /**
+     * Factorize a clause as much as possible.
+     * @see Clause#factorize()
+     */
+    private static final Function/*<Clause,Clause>*/ factorize = new Function() {
+	    public Object apply(Object C) {
+		return ((Clause)C).factorize();
+	    }
+	};
 }

@@ -125,7 +125,7 @@ class Resolution implements Inference {
 
     public boolean infer(Formula[] B, Formula D) {
         // skolemize B and drop quantifiers
-        List/*_<Formula>_*/ skolemizedB = new ArrayList(B.length);
+        final List/*_<Formula>_*/ skolemizedB = new ArrayList(B.length);
         for (int i = 0; i < B.length; i++) {
 	    skolemizedB.add(Utilities.dropQuantifiers(Utilities.skolemForm(B[i])));
 	    if (logger.isLoggable(Level.FINEST))
@@ -134,17 +134,18 @@ class Resolution implements Inference {
 
         // convert B to clausalForm knowledgebase
         Set/*_<Set<Formula>>_*/ knowledgebase = new HashSet();
+	// @internal knowledgebase = Functionals.map(clausalForm, skolemizedB)
         for (Iterator i = skolemizedB.iterator(); i.hasNext(); ) {
 	    knowledgebase.addAll(Utilities.clausalForm((Formula) i.next(), SIMPLIFYING));
 	}
 
-	// factorize and remove tautologies
+	// factorize
+        knowledgebase = (Set/*_<Set<Formula>>_*/) Functionals.map(factorize, knowledgebase);
+
+	// remove tautologies and handle contradictions
     	// for all clauses F&isin;knowledgebase
     	for (Iterator i = knowledgebase.iterator(); i.hasNext(); ) {
-	    Set F = (Set) i.next();
-	    final Set factorizedF = factorize(F);
-	    if (factorizedF != null)
-		F = factorizedF;
+	    final Set F = (Set) i.next();
 	    if (F.equals(Utilities.CONTRADICTION))
 		throw new IllegalStateException("premises are inconsistent since they already contain a contradiction, so ex falso quodlibet");
 	    else if (isElementaryValid(F, F))
@@ -158,22 +159,24 @@ class Resolution implements Inference {
 		logger.log(Level.FINEST, "W thus contains transformation of original formula {0}", Utilities.conjunctiveForm(B[i], SIMPLIFYING));
 
         // negate query since we are a negative test calculus
-        Formula query = D.not();
+        final Formula query = D.not();
 
 	// skolemize (negated) query
 	//@todo could we optimize by already transforming query to CNF, somewhat earlier? At least avoid transforming ~(a<->b) to ~(cnf(a<->b))
-	Formula skolemizedQuery = Utilities.dropQuantifiers(Utilities.skolemForm(query));
+	final Formula skolemizedQuery = Utilities.dropQuantifiers(Utilities.skolemForm(query));
+	logger.log(Level.FINER, "in S skolemForm( {0} ) == {1}", new Object[] {query, skolemizedQuery});
 
         // convert (negated) query to clausalForm S, forming the initial set of support
-	Set S = Utilities.clausalForm(skolemizedQuery, SIMPLIFYING);
+	Set/*_<Set<Formula>>_*/ S = Utilities.clausalForm(skolemizedQuery, SIMPLIFYING);
+	logger.log(Level.FINER, "in S clausalForm( {0} ) == {1}", new Object[] {skolemizedQuery, new HashSet(S)});
 
-	// factorize and remove tautologies
+	// factorize
+        S = (Set/*_<Set<Formula>>_*/) Functionals.map(factorize, S);
+
+	// remove tautologies and handle contradictions
     	// for all clauses F&isin;S
     	for (Iterator i = S.iterator(); i.hasNext(); ) {
-	    Set F = (Set) i.next();
-	    final Set factorizedF = factorize(F);
-	    if (factorizedF != null)
-		F = factorizedF;
+	    final Set F = (Set) i.next();
 	    if (F.equals(Utilities.CONTRADICTION))
 		// note that we could just as well check for contradictions prior to factorizing, because factorization does not introduce contradictions
 		throw new IllegalStateException("the query already contains a contradiction");
@@ -181,6 +184,7 @@ class Resolution implements Inference {
 		// if F is obviously valid, forget about it for resolving a contradiction
 		i.remove();
 	}    		
+	logger.log(Level.FINER, "in S factorized to {0}", S);
 
         if (logger.isLoggable(Level.FINEST))
 	    logger.log(Level.FINEST, "negated goal S == {0}\n == {1}\n (== {2} original in CNF)", new Object[] {skolemizedQuery, S, Utilities.conjunctiveForm(query, SIMPLIFYING)});
@@ -267,7 +271,12 @@ class Resolution implements Inference {
 	    return new StreamMethod(ASYNCHRONOUS_EXPAND) {
 		    public void runStream() {
                 	final Set/*_<Set<Formula>>_*/ S = ((Proof) n).setOfSupport;
-			// we use a list view of the set S for optimized resolving (after having resolved G with F, we won't resolve F with G again). But we only modify the set F&isin;S=listS, and thus - indirectly - S and listS.
+			// we use a list view of the set S for
+			// optimized resolving (after having resolved
+			// G with F, we won't resolve F with G
+			// again). But we only modify the set
+			// F&isin;S=listS, and thus - indirectly - S
+			// and listS.
 			final List		      listS = Collections.unmodifiableList(new LinkedList(S));
                 	Collection		      r = new LinkedList();
                 	// choose any clause G&isin;S
@@ -370,8 +379,7 @@ class Resolution implements Inference {
 			R.addAll(Fp);
 			final Set factorizedR = factorize(R);
 			logger.log(Level.FINER, "resolved {0} from {1} and {2}. Factorized to {3}. Lengths {4} from {5} and {6} .", new Object[] {R, F, G, factorizedR, new Integer(R.size()), new Integer(F.size()), new Integer(G.size())});
-			if (factorizedR != null)
-			    R = factorizedR;
+			R = factorizedR;
 
 			// @internal for perfect performance (and catastrophal structure) could already perform a goal lookahead by R.equals(Utilities.CONTRADICTION)
 
@@ -498,7 +506,8 @@ class Resolution implements Inference {
      * <div>{L1,...,Ln} |- {s(L1),...,s(Ln)} with s=mgU({Li,Lj})</div>
      * because of set notation. The latter is the way we (currently) implement things.
      * </p>
-     * @return the factorized clause, or <code>null</code> if no factorization was possible.
+     * @return the factorized clause, or the reference <code>F</code>
+     * if no factorization had been possible.
      */
     private static final Set/*_<Formula>_*/ factorize(Set/*_<Formula>_*/ F) {
 	// we need a list view of the set for traversing distinct literals, but we will only need to modify the set F
@@ -513,15 +522,22 @@ class Resolution implements Inference {
 		if (mu != null) {
                     final String logPrevious = logger.isLoggable(Level.FINEST) ? F + "" : "";
 		    // optimized removing Fj from the set, since mu(Fj) = mu(Fk) anyway (notice the set representation)
-		    //@todo couldn't we somehow now the index from our list iterator j?
+		    //@todo couldn't we somehow know the index from our list iterator j?
 		    F.remove(Fj);
                     F = (Set) Functionals.map(mu, F);
                     logger.log(Level.FINEST, "factorized {1} from {0} by unifying {3} and {4} with {2}", new Object[] {logPrevious, F, mu, Fi, Fj});
-		    Set/*_<Formula>_*/ factorizedAgain = factorize(F);
-		    return factorizedAgain != null ? factorizedAgain : F;
+		    return factorize(F);
 		}
 	    }
         }
         return F;
     }
+    /**
+     * Factorize a clause as much as possible.
+     */
+    private static final Function/*_<Set<Formula>,Set<Formula>>_*/ factorize = new Function() {
+	    public Object apply(Object C) {
+		return factorize((Set/*_<Formula>_*/)C);
+	    }
+	};
 }
