@@ -2005,9 +2005,11 @@ public class Functionals {
 
     /**
      * Catamorphism recursion functional scheme (banana).
-     * <p><a id="Theory"></a>
+     * <p id="Theory">
      * A catamorphism is denoted by bananas and is the same as the iterative foldRight.
      * <center>this := <span class="bananaBracket">(|</span>c,f<span class="bananaBracket">|)</span></center>
+     * </p>
+     * <p id="Properties">
      * <i>Fusion Law</i>:<center>
      * h<big>(</big><span class="bananaBracket">(|</span>c,f<span class="bananaBracket">|)</span><big>)</big> = <big><span class="bananaBracket">(|</span></big>h(c),g<big><span class="bananaBracket">|)</span></big> &lArr;
      * h<big>(</big>f(first,rest)<big>)</big> = g<big>(</big>first, h(rest)<big>)</big>
@@ -2099,11 +2101,15 @@ public class Functionals {
 
     /**
      * Anamorphism recursion functional scheme (lense).
-     * <p><a id="Theory"></a>
+     * <p id="Theory">
      * An anamorphism is denoted by concave lenses.
      * <center>this = <span class="lenseBracket">|(</span>g,p<span class="lenseBracket">)|</span> = &#12310;g,p&#12311;</center>
      * </p>
      * <p>Also known as unfold.</p>
+     * <p id="Properties">
+     * Anamorphism are special hylomorphisms
+     * <center>&#12310;g,p&#12311; = &#12314;(&empty;,cons),(g,p)&#12315;</center>
+     * </p>
      * @version 1.0, 2000/06/14
      * @author  Andr&eacute; Platzer
      * @see Functionals#lense(Function, Predicate, Object)
@@ -2181,15 +2187,16 @@ public class Functionals {
 
     /**
      * Hylomorphism recursion functional scheme (envelope).
-     * <p><a id="Theory"></a>
+     * <p id="Theory">
      * A hylomorphism is denoted by envelopes.
      * <center>this = <span class="envelopeBracket">[[</span>(c,f),(g,p)<span class="envelopeBracket">]]</span> = <span class="envelopeBracket">|[</span>(c,f),(g,p)<span class="envelopeBracket">]|</span> = &#12314;(c,f),(g,p)&#12315;</center>
      * </p>
-     * <p><a id="Properties"></a>
+     * <p id="Properties">
      * A hylomorphism corresponds to the composition of an anamorphism and a catamorphism.<center>
      * <span class="envelopeBracket">[[</span>(c,f),(g,p)<span class="envelopeBracket">]]</span> = <span class="bananaBracket">(|</span>c,f<span class="bananaBracket">|)</span> &#8728; <span class="lenseBracket">|(</span>g,p<span class="lenseBracket">)|</span>
      * </center>
-     * So it is very much like an anamorphism except for basevalue instead of nil, and f instead of cons.</p>
+     * So it is very much like an anamorphism except for basevalue c instead of nil,
+     * and f instead of list construction cons.</p>
      * @version 1.0, 2000/06/14
      * @author  Andr&eacute; Platzer
      * @see Functionals#envelope(Object, BinaryFunction, Function, Predicate, Object)
@@ -2280,7 +2287,7 @@ public class Functionals {
 
     /**
      * Paramorphism recursion functional scheme (barbed wire).
-     * <p><a id="Theory"></a>
+     * <p id="Theory">
      * A paramorphism is denoted by barbed wires.
      * <center>this = <span class="barbedwireBracket">{|</span>b,f<span class="barbedwireBracket">|}</span></center>
      * </p>
