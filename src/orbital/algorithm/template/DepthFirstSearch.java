@@ -37,6 +37,7 @@ import orbital.math.Values;
  * @internal note Can be made complete for finite state space with bookkeeping to avoid loops.
  */
 public class DepthFirstSearch extends GeneralSearch {
+    private static final long serialVersionUID = -9123082892783190173L;
     //TODO: think about unifying! see Backtracking, Evaluation/ContainerWeighting
 
     /**
@@ -70,6 +71,7 @@ public class DepthFirstSearch extends GeneralSearch {
      * @author  Andr&eacute; Platzer
      */
     public static class OptionIterator extends GeneralSearch.OptionIterator {
+	private static final long serialVersionUID = 4198888198183455112L;
 	/**
 	 * effectively, nodes is a stack of iterators.
 	 * @serial

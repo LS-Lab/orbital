@@ -30,6 +30,7 @@ import orbital.util.Setops;
  * @see Greedy
  */
 public abstract class BestFirstSearch extends GeneralSearch implements EvaluativeAlgorithm {
+    private static final long serialVersionUID = -7753264910951203557L;
 
     protected Iterator createTraversal(GeneralSearchProblem problem) {
 	return new OptionIterator(problem, getEvaluation());
@@ -42,6 +43,7 @@ public abstract class BestFirstSearch extends GeneralSearch implements Evaluativ
      * @author  Andr&eacute; Platzer
      */
     public static class OptionIterator extends GeneralSearch.OptionIterator {
+	private static final long serialVersionUID = 1955160705943645903L;
 	/**
 	 * the sorted list of nodes.
 	 * @serial

@@ -24,6 +24,7 @@ import orbital.math.Values;
  * @author  Andr&eacute; Platzer
  */
 public class IterativeDeepening extends DepthFirstBoundingSearch {
+    private static final long serialVersionUID = 2543606559760442885L;
     /**
      * Whether we have pruned a node during the last call to super.search.
      * @serial

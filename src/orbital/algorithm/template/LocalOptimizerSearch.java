@@ -8,6 +8,8 @@ package orbital.algorithm.template;
 import orbital.algorithm.template.GeneralSearchProblem.Option;
 
 import java.util.Iterator;
+import java.io.Serializable;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
@@ -33,6 +35,7 @@ import orbital.util.Setops;
  * @todo let HillClimbing derive this class.
  */
 public abstract class LocalOptimizerSearch extends GeneralSearch implements ProbabilisticAlgorithm {
+    private static final long serialVersionUID = 465553782601369843L;
     /**
      * The random generator source.
      * @serial the random source is serialized to let the seed persist.
@@ -89,7 +92,8 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
      * @internal optimized version of a TransitionPath sandwhiched with a TransitionModel and an action iterator.
      * @todo introduce template method  select(...) for selection strategy?
      */
-    public static abstract class OptionIterator implements Iterator {
+    public static abstract class OptionIterator implements Iterator, Serializable {
+	private static final long serialVersionUID = -658271440377589506L;
     	/**
     	 * The search problem to solve.
     	 * @serial

@@ -45,6 +45,7 @@ import orbital.math.Values;
  * @todo update g(n) to fit minimum cost to reach n?
  */
 public class AStar extends BestFirstSearch implements HeuristicAlgorithm {
+    private static final long serialVersionUID = 4507556265837848039L;
     /**
      * The applied heuristic cost function h:S&rarr;<b>R</b> embedded in the evaluation function f.
      * @serial

@@ -20,7 +20,7 @@ import orbital.util.Utility;
  * An MDP is a special kind of sequential decision problem.
  * It is characterized by
  * <ul>
- *  <li>a {@link TransitionModel transition model} with transition relations
+ *  <li>a {@link TransitionModel transition model} with a transition relation.
  * <!--
  *  <li>a state space S.</li>
  *  <li>a set of actions A.</li>
@@ -53,7 +53,8 @@ import orbital.util.Utility;
  *      </li>
  *    </ul>
  * -->
- *    Which all satisfy the <dfn>Markov property</dfn> for states,
+ *    Where the transition relation satisfies the <dfn id="MarkovProperty">Markov property</dfn
+ *    for states,
  *    <center>
  *        <span class="Formula"><b>P</b>(s<sub>t+1</sub>=s'|s<sub>t</sub>,a<sub>t</sub>,s<sub>t-1</sub>,a<sub>t-1</sub>,...,s<sub>0</sub>,a<sub>0</sub>) = <b>P</b>(s<sub>t+1</sub>=s'|s<sub>t</sub>,a<sub>t</sub>)</span>
  *    </center>
@@ -110,6 +111,16 @@ public interface MarkovDecisionProblem extends TransitionModel/*<A,S,Option>*/, 
      */
     boolean isSolution(Object state);
 
+    /**
+     * Represents an option during a Markov Decision ProcessP.
+     * <p>
+     * An option is at least a triple &lang;s&#697;,p,c&rang;&isin;S&times;[0,1]&times;<b>R</b>
+     * of a state, the probability of reaching it (in the corresponding context), and the cost
+     * of the action.</p>
+     * @stereotype &laquo;Structure&raquo;
+     * @version 1.0, 2002/05/30
+     * @author  Andr&eacute; Platzer
+     */
     public static class Option implements TransitionModel.Option, Serializable {
 	/**
 	 * the (target) state s&#697;&isin;S of this option node.
@@ -150,9 +161,6 @@ public interface MarkovDecisionProblem extends TransitionModel/*<A,S,Option>*/, 
 	    return Utility.hashCode(getState());
 	}
 		
-	/**
-	 * Compares options according to their probabilities.
-	 */
 	public int compareTo(Object o) {
 	    //@see Double#compare(double,double)
 	    return new Double(getProbability()).compareTo(new Double(((Option)o).getProbability()));

@@ -27,6 +27,7 @@ import orbital.math.Values;
  * @see "Pohl, I. (1973). The avoidance of (relative) catastrophe, heuristic competence, genuine dynamic weighting and computational issues in heuristic problem solving. In Proceedings of the Third International Joint Conference on Artificial Intelligence (IJCAI-73), pages 20-23, Stanford, California, IJCAII."
  */
 public class WAStar extends AStar {
+    private static final long serialVersionUID = -3210623238172266780L;
     /**
      * the weighting argument W for the evaluation function.
      * @serial

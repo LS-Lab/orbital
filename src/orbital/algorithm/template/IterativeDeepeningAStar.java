@@ -33,6 +33,7 @@ import orbital.math.Values;
  * @todo why is IDA* with iterators about 11% slower than IDA* with collections?ß
  */
 public class IterativeDeepeningAStar extends DepthFirstBoundingSearch implements HeuristicAlgorithm {
+    private static final long serialVersionUID = 5814132461076107994L;
     /**
      * Cost of cheapest node pruned, or <code>null</code> if we did not prune a node yet.
      * @serial

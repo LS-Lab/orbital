@@ -41,6 +41,7 @@ import java.util.logging.Level;
  * @see HillClimbing
  */
 public class ThresholdAccepting extends LocalOptimizerSearch implements HeuristicAlgorithm, ProbabilisticAlgorithm {
+    private static final long serialVersionUID = -1339322840710154421L;
     private static final Logger logger = Logger.getLogger(ThresholdAccepting.class.getName());
     /**
      * The heuristic cost function h:S&rarr;<b>R</b> to be used as evaluation function f(n) = h(n).
@@ -126,10 +127,12 @@ public class ThresholdAccepting extends LocalOptimizerSearch implements Heuristi
     }
 
     /**
+     * An iterator over a state space in (probabilistic) greedy order for threshold accepting.
      * @version 1.0, 2001/08/01
      * @author  Andr&eacute; Platzer
      */
     private class OptionIterator extends LocalOptimizerSearch.OptionIterator {
+	private static final long serialVersionUID = -3674513421043835094L;
 	public OptionIterator(GeneralSearchProblem problem, ProbabilisticAlgorithm probabilisticAlgorithm) {
 	    super(problem, probabilisticAlgorithm);
 	    this.currentValue = ((Number) getEvaluation().apply(getState())).doubleValue();
@@ -143,6 +146,12 @@ public class ThresholdAccepting extends LocalOptimizerSearch implements Heuristi
 	// current temperature scheduled for successive cooling
 	private double T;
 
+	/**
+	 * {@inheritDoc}.
+	 * <p>
+	 * This implementation will always move to better nodes,
+	 * but only move to worse nodes, if they worsen by at most T.</p>
+	 */
 	public boolean accept(GeneralSearchProblem.Option state, GeneralSearchProblem.Option sp) {
 	    // current temperature scheduled for successive cooling
 	    this.T = ((Number) getSchedule().apply(new Integer(t))).doubleValue();

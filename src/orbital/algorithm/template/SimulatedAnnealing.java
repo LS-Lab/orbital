@@ -95,8 +95,10 @@ import java.util.logging.Level;
  * @version 0.9, 2001/05/11
  * @author  Andr&eacute; Platzer
  * @see HillClimbing
+ * @todo could move some parts into a super class
  */
 public class SimulatedAnnealing extends LocalOptimizerSearch implements HeuristicAlgorithm, ProbabilisticAlgorithm {
+    private static final long serialVersionUID = -1780030298934767181L;
     private static final Logger logger = Logger.getLogger(SimulatedAnnealing.class.getName());
     /**
      * The heuristic cost function h:S&rarr;<b>R</b> to be used as evaluation function f(n) = h(n).
@@ -182,10 +184,12 @@ public class SimulatedAnnealing extends LocalOptimizerSearch implements Heuristi
     }
 
     /**
+     * An iterator over a state space in (probabilistic) greedy order for simulated annealing.
      * @version 1.0, 2001/08/01
      * @author  Andr&eacute; Platzer
      */
     private class OptionIterator extends LocalOptimizerSearch.OptionIterator {
+	private static final long serialVersionUID = -5170488902830279816L;
 	public OptionIterator(GeneralSearchProblem problem, ProbabilisticAlgorithm probabilisticAlgorithm) {
 	    super(problem, probabilisticAlgorithm);
 	    this.currentValue = ((Number) getEvaluation().apply(getState())).doubleValue();
@@ -199,6 +203,13 @@ public class SimulatedAnnealing extends LocalOptimizerSearch implements Heuristi
 	// current temperature scheduled for successive cooling
 	private double T;
 
+	/**
+	 * {@inheritDoc}.
+	 * <p>
+	 * This implementation will always move to better nodes,
+	 * but only move to worse nodes with a probability of <b>e</b><sup>-&Delta;/T</sup>,
+	 * depending upon the decrease &Delta;:=f(s&#697;)-f(s).</p>
+	 */
 	public boolean accept(GeneralSearchProblem.Option state, GeneralSearchProblem.Option sp) {
 	    // current temperature scheduled for successive cooling
 	    this.T = ((Number) getSchedule().apply(new Integer(t))).doubleValue();

@@ -30,8 +30,10 @@ import java.util.LinkedList;
  * @todo introduce BidirectionalSearch and a BidirectionalSearchProblem (either extending GeneralSearchProblem complementing expand and getInitialState with methods working backwards from the goal, or feed BidirectionalSearch with two complementary GeneralSearchProblem objects). They work like Backchaining from the goal instead of "usual" Forward chaining from the initial state.
  * @todo introduce TabuSearch
  * @todo once we have decided once and for all against expand-Collections we can get rid of createCollection(), select(Collection), add(Collection,Collection), and search(Collection) in our subclasses.
+ * @todo should we split this package into orbital.algorithm.template, and orbital.algorithm.search('n'planning) ?
  */
 public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSearchProblem,Object>*/, Serializable {
+    private static final long serialVersionUID = -2839281671298699169L;
     
     /**
      * The search problem to solve.
@@ -200,6 +202,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * @see <a href="{@docRoot}/DesignPatterns/Strategy.html">Strategy</a>
      */
     public static abstract class OptionIterator implements Iterator/*_<Option>_*/, Serializable {
+	private static final long serialVersionUID = 6410799454884265654L;
     	/**
     	 * The search problem to solve.
     	 * @serial

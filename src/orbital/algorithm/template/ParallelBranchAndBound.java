@@ -30,6 +30,7 @@ import orbital.math.Values;
  * @see BreadthFirstSearch
  */
 public class ParallelBranchAndBound extends BranchAndBound {
+    private static final long serialVersionUID = -7665864997088831748L;
     public ParallelBranchAndBound(Function heuristic, double bound) {
     	super(heuristic, bound);
     }

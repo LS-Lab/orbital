@@ -32,6 +32,7 @@ import orbital.math.Values;
  * @author  Andr&eacute; Platzer
  */
 public class BreadthFirstSearch extends GeneralSearch {
+    private static final long serialVersionUID = -3246910930824688923L;
     /**
      * O(b<sup>d</sup>) where b is the branching factor and d the solution depth.
      * DepthFirstSearch might not find a solution for search space graphs with inifinite breadth.
@@ -65,6 +66,7 @@ public class BreadthFirstSearch extends GeneralSearch {
      * @author  Andr&eacute; Platzer
      */
     public static class OptionIterator extends GeneralSearch.OptionIterator {
+	private static final long serialVersionUID = -6989557875498264664L;
 	/**
 	 * effectively, nodes is a queue of iterators.
 	 * @serial

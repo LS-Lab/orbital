@@ -26,6 +26,7 @@ import orbital.math.Values;
  * @todo we could just as well formulate Branch-and-bound as a Decorator of GeneralSearchProblem (may be more useful for chaining and combining search algorithm policies).
  */
 public class BranchAndBound extends DepthFirstBoundingSearch implements HeuristicAlgorithm {
+    private static final long serialVersionUID = -1698181871423830937L;
     //TODO: is Operations Research Branch and Bound more general than this or equivalent? And what is Branch and Cut?
     /**
      * The applied heuristic cost function h:S&rarr;<b>R</b> embedded in the evaluation function f.

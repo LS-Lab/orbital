@@ -90,6 +90,7 @@ import orbital.math.Values;
  * @see Greedy
  */
 public class HillClimbing extends GeneralSearch implements HeuristicAlgorithm, ProbabilisticAlgorithm {
+    private static final long serialVersionUID = -3281919447532950063L;
     /**
      * The applied heuristic cost function h:S&rarr;<b>R</b> embedded in the evaluation function f(n) = h(n).
      * @serial
@@ -157,12 +158,13 @@ public class HillClimbing extends GeneralSearch implements HeuristicAlgorithm, P
     }
 
     /**
-     * An iterator over a state space in (randomized) greedy order for hill climbing.
+     * An iterator over a state space in (randomized) greedy order for hill-climbing.
      * @version 1.0, 2001/08/01
      * @author  Andr&eacute; Platzer
      * @todo really turn this class into a inner static class whose constructor requires an EvaluativeAlgorithm that also is a ProbabilisticAlgorithm?
      */
     public class OptionIterator extends GeneralSearch.OptionIterator {
+	private static final long serialVersionUID = -6802484555661425572L;
 	/**
 	 * the data collection implementation maintained.
 	 * @serial

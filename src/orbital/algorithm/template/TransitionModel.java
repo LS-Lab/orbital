@@ -62,11 +62,19 @@ import java.util.Iterator;
  *  </li>
  * </ul>
  * <p>
- * &tau;(a&sdot;b) = &tau;(a)&#8728;&tau;(b) = <big>(</big>(s,s&#697;) &#8614; <b>P</b>(&#8897;<sub>z&isin;S</sub>(s<sub>t+2</sub>=s&#697;&and;s<sub>t+1</sub>=z) | a<sub>t+1</sub>=b,s<sub>t</sub>=s,a<sub>t</sub>=a)<big>)</big>.
- * <!-- @todo = &sum;<sub>z&isin;S</sub> &tau;(a)(s,z)*&tau;(b)(z,s,s&#697;) if independent, f.ex. if probabilities are static, f.ex. for MDP? -->
- * Then &tau;(a)<sup>n</sup> = &tau;(a<sup>n</sup>) is the (stochastic) transition relation for
- * n transitions of fixed action a&isin;A,
- * and &tau;(a<sup>*</sup>) = &tau;(a)<sup>&infin;</sup> the transitive closure.
+ * &tau;(a&sdot;b) = &tau;(a)&#8728;&tau;(b) = <big>(</big>(s,s&#697;) &#8614; <b>P</b>(&#8897;<sub>z&isin;S</sub>(s<sub>t+2</sub>=s&#697;&and;s<sub>t+1</sub>=z) | a<sub>t+1</sub>=b,s<sub>t</sub>=s,a<sub>t</sub>=a)<big>)</big>
+ * = <big>(</big>(s,s&#697;) &#8614; &sum;<sub>z&isin;S</sub> &tau;(a)(s,z)*&tau;(b)(z,s&#697;)<big>)</big>
+ * The last equation is true if the events are independent, f.ex. for a transition model
+ * satisfying the <a href="MarkovDecisionProblem.html#MarkovProperty">Markov property</a>
+ * for states.
+ * In the same manner, &tau;(a)<sup>n</sup> = &tau;(a<sup>n</sup>) is the
+ * (stochastic) transition relation for n transitions of fixed action a&isin;A.
+ * &tau;(a<sup>*</sup>) = &tau;(a)<sup>&infin;</sup> is the transitive closure with a fixed action.
+ * </p>
+ * <p>
+ * Note that you can as well use this interface in its raw version (i.e. without instantiating
+ * template parameters) for mere non-deterministic transitions without stochastic information
+ * by ignoring the type-restriction of {@link TransitionModel.Option} to {@link #transitions(Object,Object)}.
  * </p>
  *
  * @version 1.0, 2002/05/30
@@ -79,9 +87,9 @@ import java.util.Iterator;
 public interface TransitionModel/*<A,S, O extends Option>*/ {
     /**
      * Get the applicable actions of a state.
-     * @param state the state s&isin;S to expand for applicable actions.
+     * @param state the state s&isin;S whose applicable actions to determine.
      * @pre s&isin;S
-     * @return A(s), a list of alternative actions applicable in the state s&isin;S.
+     * @return A(s)&sube;A, a list of alternative actions applicable in the state s&isin;S.
      *  The order of the list is decisive because for actions with equal costs
      *  the first will be preferred.
      * @post RES=A(s)
@@ -91,7 +99,7 @@ public interface TransitionModel/*<A,S, O extends Option>*/ {
     Iterator/*<A>*/ actions(Object/*>S<*/ state);
 	
     /**
-     * Get all transitions possible at a state with an action.
+     * Get all transitions possible at a state under a given action.
      * <p>
      * For efficiency reasons it is recommended that this method does only return
      * those states s&#697;&isin;S that can be reached (i.e. where <b>P</b>(s&#697;|s,a) &gt; 0).
@@ -122,12 +130,16 @@ public interface TransitionModel/*<A,S, O extends Option>*/ {
      * of a state, and the probability of reaching it (in the corresponding context).</p>
      * @stereotype &laquo;Structure&raquo;
      * @todo should we bookkeep the state and action that took us to s`&#697;?
+     * @version 1.0, 2002/05/30
+     * @author  Andr&eacute; Platzer
      */
     public static interface Option extends Comparable {
 	/**
 	 * Checks for equality.
 	 * Implementations will at least check for equal states, but ignore
-	 * the transition probabilities.
+	 * the transition probabilities leading to the states.
+	 * However, depending upon concrete application, additional conditions may be checked
+	 * for equality.
 	 */
 	boolean equals(Object o);
 		
@@ -140,7 +152,7 @@ public interface TransitionModel/*<A,S, O extends Option>*/ {
 
 	/**
 	 * Get the (target) state.
-	 * @return the state s&#697;&isin;S of this option.
+	 * @return the state s&#697;&isin;S that we would reach by taking this option.
 	 */
 	Object/*>S<*/ getState();
 		
