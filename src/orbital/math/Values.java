@@ -7,6 +7,10 @@
 package orbital.math;
 
 import orbital.logic.functor.Function;
+import java.util.Map;
+
+// not a strict import. @todo could get rid of this, if we introduce somewhere (not directly in ValueFactory) a way of passing the parameters map.
+import orbital.moon.math.AbstractValues;
 
 /**
  * Manager for scalar value and arithmetic object value constructor factories.
@@ -45,33 +49,99 @@ import orbital.logic.functor.Function;
  * @todo somehow dynamically load services like sun.misc.Service does. But that doesn't improve things except if those providers somehow tell what they can do for us. So this is not a very important todo.
  */
 public abstract class Values implements ValueFactory {
-    private orbital.logic.functor.Function/*<Object[],Object[]>*/ equalizer = null;
-
     // instantiation
 
     protected Values() {}
 
     /**
-     * Create a new value factory where the sub class already sets the equalizer.
-     * @see #setEqualizer(orbital.logic.functor.Function)
-     */
-    protected Values(orbital.logic.functor.Function/*<Object[],Object[]>*/ equalizer) {
-	this.equalizer = equalizer;
-    }
-
-    /**
      * Returns a new value factory with default settings.
      * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
-     * @todo provide configurable settings like
-     *  whether polynomials save their coefficients in tensors (like ArithmeticMultivariatePolynomial), or in Maps.
-     *  whether Quotient or Fraction use lazy representatives, i.e. only calculate their representative when representative() (or numerator?) gets called.
-     *  whether Real... automatically fallback to bigger or more general implementations (including Real.Big), instead of sticking to machine-size at the risk of overflows.
-     *  whether Real... automatically narrows doens its results.
+     * @see #getInstance(Map)
      */
-    public static Values getInstance() {
+    public static ValueFactory getInstance() {
 	//@internal notice the explicit mention of the ValuesImpl class (outside a string) to ease the job of packagers and deployment wizards.
 	return instantiate(GetPropertyAction.getProperty(Values.class.getName() + ".implementation",
 							 orbital.moon.math.ValuesImpl.class.getName()));
+    }
+
+    /**
+     * Returns a new value factory with specified settings.
+     * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+     * @param parameters a map containing settings for string
+     * parameters configuring the behaviour of the value factory.
+     * These settings configure the value factory implementation
+     * instantiated. The precise effect of parameters are therefore
+     * implementation-dependent. Some parameters, however, have a
+     * standard semantics.
+     * <table id="ParameterProperties" border="2">
+     *   <caption>Parameters: value factory implementation standard settings</caption>
+     *   <tr>
+     *     <th>Parameter Name</th>
+     *     <th>Parameter Value</th>
+     *   </tr>
+     *   <tr>
+     *     <td><tt>orbital.math.Vector.sparse</tt></td>
+     *     <td>Whether vectors use a sparse (=store only non-zero components with location)
+     *       or dense (=store all components without locations) representation for their components.</td>
+     *   </tr>
+     *   <tr>
+     *     <td><tt>orbital.math.Matrix.sparse</tt></td>
+     *     <td>Whether matrices use a sparse (=store only non-zero components with location)
+     *       or dense (=store all components without locations) representation for their components.</td>
+     *   </tr>
+     *   <tr>
+     *     <td><tt>orbital.math.Tensor.sparse</tt></td>
+     *     <td>Whether tensors use a sparse (=store only non-zero components with location)
+     *       or dense (=store all components without locations) representation for their components.</td>
+     *   </tr>
+     *   <tr>
+     *     <td><tt>orbital.math.Polynomial.sparse</tt></td>
+     *     <td>Whether polynomials use a sparse (=store only non-zero coefficients with exponents)
+     *       or dense (=store all coefficients without exponents) representation for their coefficients.</td>
+     *   </tr>
+     *   <tr>
+     *     <td><tt>orbital.math.Polynomial.recursive</tt></td>
+     *     <td>Whether multivariate polynomials use a recursive
+     *       (f.ex. (y<sup>2</sup>+2y+3)x<sup>2</sup> + (2y<sup>2</sup>-1)x + (-2y+1)1 as R[X<sub>0</sub>][X<sub>1</sub>]...[X<sub>n-1</sub>])
+     *       or distributive
+     *       (f.ex. x<sup>2</sup>y<sup>2</sup>+2x<sup>2</sup>y+2xy<sup>2</sup>+3x<sup>2</sup>-x-2y+1 as R<sup>(N<sup>(I)</sup>)</sup>) representation.</td>
+     *   </tr>
+     *   <tr>
+     *     <td><tt>orbital.math.UnivariatePolynomial.sparse</tt></td>
+     *     <td>Whether univariate polynomials use a sparse (=store only non-zero coefficients with exponents)
+     *       or dense (=store all coefficients without exponents) representation for their coefficients.</td>
+     *   </tr>
+     *   <tr>
+     *     <td><tt>orbital.math.Fraction.normalize</tt></td>
+     *     <td>Use <code>"lazy"</code> for lazy normalization only when representative or query is invoked,
+     *       <code>"eager"</code> for eager normalization after each operation.</td>
+     *   </tr>
+     *   <tr>
+     *     <td><tt>orbital.math.Quotient.normalize</tt></td>
+     *     <td>Use <code>"lazy"</code> for lazy normalization only when representative or query is invoked,
+     *       <code>"eager"</code> for eager normalization after each operation.</td>
+     *   </tr>
+     *   <tr>
+     *     <td><tt>orbital.math.Scalar.narrow</tt></td>
+     *     <td>Use <code>"auto"</code> for automatical narrowing after each operation,
+     *       <code>"none"</code> for {@link ValueFactory#narrow(Scalar) explicit normalization}, only.</td>
+     *   </tr>
+     *   <tr>
+     *     <td><tt>orbital.math.Scalar.fallback</tt></td>
+     *     <td>Use <code>"auto"</code> for automatical fallback to bigger precision when result could otherwise overflow,
+     *       <code>"none"</code> sticks to machine-size at the risk of overflows.</td>
+     *   </tr>
+     * </table>
+     * @todo implement effect of configuration.
+     */
+    public static ValueFactory getInstance(Map parameters) {
+	ValueFactory factory = getInstance();
+	if (factory instanceof AbstractValues) {
+	    ((AbstractValues)factory).setParameters(parameters);
+	} else if (!parameters.isEmpty()) {
+	    throw new UnsupportedOperationException("Passing parameters to general " + ValueFactory.class + " is not yet supported. Use Values.getInstance() for ignoring the parameter settings, or stick to an implementation extending " + AbstractValues.class);
+	}
+	return factory;
     }
 
     /**
@@ -107,7 +177,7 @@ public abstract class Values implements ValueFactory {
 	    GetPropertyAction.getProperty(Values.class.getName() + ".default", null);
 	defaultValueFactory = defaultValueFactoryClass != null
 	    ? instantiate(defaultValueFactoryClass)
-	    : getInstance();
+	    : (Values) getInstance();
     }
 	
     /**
