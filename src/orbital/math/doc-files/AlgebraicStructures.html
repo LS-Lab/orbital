@@ -36,35 +36,35 @@
 homomorphisms form categories. Also all algebraic structures share the following 
 terminology:</p>
 <dl class="def">
-  Let (E,⋅) have any algebraic structure <span class="signifier">T</span>.
+  Let (E,⋅) have any algebraic structure <span class="signifier">T</span>. 
   <dt>sub-<span class="signifier">T</span></dt>
-  <dd>U≤E :⇔ U⊆E ∧ (U,⋅|<sub>U×U</sub>) has itself an algebraic 
-    structure <span class="signifier">T</span>.<br>
-    U is called a sub-<span class="signifier">T</span> then.</dd>
+  <dd>U≤E :⇔ U⊆E ∧ (U,⋅|<sub>U×U</sub>) has itself an algebraic  
+    structure <span class="signifier">T</span>.<br> 
+    U is called a sub-<span class="signifier">T</span> then.</dd> 
   <dt>isomorphism</dt>
   <dd>
     <table width="80%" class="def">
       <tr>
-        <td class="defContext" colspan="4">Let E,F have the algebraic structure <span class="signifier">T</span>, 
-          and φ:E→F be a map.</td>
+        <td class="defContext" colspan="4">Let E,F have the algebraic structure <span class="signifier">T</span>,  
+          and φ:E→F be a map.</td> 
       </tr>
       <tr>
         <th class="defID"></th>
         <th class="defCond">If</th>
         <th class="defVerbal"></th>
-        <th class="defTerm">Then φ is a</th>
+        <th class="defTerm">Then φ is a</th> 
       </tr>
       <tr>
         <td class="defID">iso</td>
-        <td class="defCond">∃ψ:F→E homomorphism with φ∘ψ=id<sub>F</sub> 
-          ∧ ψ∘φ=id<sub>E</sub></td>
+        <td class="defCond">∃ψ:F→E homomorphism with φ∘ψ=id<sub>F</sub>  
+          ∧ ψ∘φ=id<sub>E</sub></td> 
         <td class="defVerbal"></td>
         <td class="defTerm"><dfn>isomorphism</dfn> of <span class="signifier">T</span> 
           ⊂ homomorphism of <span class="signifier">T</span></td>
       </tr>
     </table>
-    This condition for isomorphisms will often be equivalent to φ being a 
-    bijective homomorphism.</dd>
+    This condition for isomorphisms will often be equivalent to φ being a  
+    bijective homomorphism.</dd> 
 </dl>
 <h5 class="compact">Note</h5>
 <p class="preciseClarification">Just like the definition above, several of the 
@@ -89,7 +89,7 @@ a lot of space and is convenient for usual cases.</p>
   </tr>
   <tr id="magma">
     <td class="defID">s</td>
-    <td class="defCond" id="stable">⋅:M×M→M is a <dfn>law of composition</dfn></td>
+    <td class="defCond" id="stable">⋅:M×M→M is a <dfn>law of composition</dfn></td> 
     <td class="defVerbal">stable</td>
     <td class="defTerm"><dfn>magma</dfn></td>
     <td class="defCategory"><span class="categorie">Mag</span></td>
@@ -125,59 +125,59 @@ a lot of space and is convenient for usual cases.</p>
   </tr>
 </table>
 <h5 class="compact">Note</h5>
-<p>There are names for other structures as well, like unital magma for a magma 
-satisfying (n), but they are less common. In case of multiplication the sign ⋅ 
-is often omitted. In fact, it is always true that a set can have at most one 
-neutral element, and at most one (left and right) inverse of any element.&nbsp; 
-M<sup>×</sup> := {x∈M ¦ x has an inverse} is called the <dfn>unit group</dfn> 
-of the monoid M.</p>
+<p>There are names for other structures as well, like unital magma for a magma  
+satisfying (n), but they are less common. In case of multiplication the sign ⋅  
+is often omitted. In fact, it is always true that a set can have at most one  
+neutral element, and at most one (left and right) inverse of any element.&nbsp;  
+M<sup>×</sup> := {x∈M ¦ x has an inverse} is called the <dfn>unit group</dfn>  
+of the monoid M.</p> 
 <table width="100%" class="def" id="morph_1_0">
   <caption>Homomorphisms of algebraic structures with one law of composition</caption>
   <tr>
-    <td class="defContext" colspan="4">Let (M,⋅), (N,∗) be 
-      magmas/semigroups/monoids/groups/Abelian groups, and φ:M→N a map.</td>
+    <td class="defContext" colspan="4">Let (M,⋅), (N,∗) be  
+      magmas/semigroups/monoids/groups/Abelian groups, and φ:M→N a map.</td> 
   </tr>
   <tr>
     <th class="defID"></th>
     <th class="defCond">If</th>
     <th class="defVerbal"></th>
-    <th class="defTerm">Then φ is a</th>
+    <th class="defTerm">Then φ is a</th> 
   </tr>
   <tr>
     <td class="defID">m</td>
-    <td class="defCond">∀x,y∈M φ(x⋅y) = φ(x)∗φ(y)</td>
+    <td class="defCond">∀x,y∈M φ(x⋅y) = φ(x)∗φ(y)</td> 
     <td class="defVerbal">morph</td>
     <td class="defTerm"><dfn>homomorphism</dfn> of ...</td>
   </tr>
   <tr>
     <td class="defID">1</td>
-    <td class="defCond">φ(1) = 1</td>
+    <td class="defCond">φ(1) = 1</td> 
     <td class="defVerbal">unital</td>
     <td class="defTerm"><dfn>homomorphism</dfn> of monoids ⊂<br>
       homomorphism of semigroups</td>
   </tr>
 </table>
 <h5 class="compact">Note</h5>
-<p class="preciseClarification">Remember that the definitions for homomorphisms 
-are meant cumulative. This means that for φ to be a homomorphism of monoids, 
-both (m) and (1) must be true. In fact, although both of these must also be true 
-for homomorphisms of both groups, the property (1) already follows from (m) 
-provided that M and N are groups. So the property (1) only must be verified for 
-monoids, which is the justification for the suggestive notation in the table 
+<p class="preciseClarification">Remember that the definitions for homomorphisms  
+are meant cumulative. This means that for φ to be a homomorphism of monoids,  
+both (m) and (1) must be true. In fact, although both of these must also be true  
+for homomorphisms of both groups, the property (1) already follows from (m)  
+provided that M and N are groups. So the property (1) only must be verified for  
+monoids, which is the justification for the suggestive notation in the table  
 above.</p>
-<p>If φ:M→N is a homomorphism (of magmas), it carries much of the algebraic 
-structure of M over to φ(M)⊆N. The image (φ(M),∗) inherits the properties 
-(s),(a),(n),(i),(c),<a href="#distributive">(d)</a> from (M,⋅). However in 
-general if N is not a group and φ not unital it may be φ(1)≠1 (and thus φ(x<sup>-1</sup>)≠φ(x)<sup>-1</sup>). 
-If φ:M→N is a homomorphism of <span class="signifier">T</span>, then Im(φ):=φ(M)≤N 
-and Ker(φ):=<sup>-1</sup>φ({0})⊴M are sub-<span class="signifier">T</span> 
-(and Ker(φ) even is a normal subgroup resp. an ideal for groups resp. rings or 
-algebras). Also for N'≤N, Ker(φ)⊆<sup>-1</sup>φ(N')≤M is a subgroup/ring 
-(and <!-- <cite>N. Bourbaki, Algebra I.4.6: Subgroups of a quotient group.</cite> -->  
- even a normal subgroup resp. ideal if N' is).<br>
-{H≤G/N}→̃{N⊆H≤G} is bijective (for subgroups/normal subgroups/subrings/ideals).  
+<p>If φ:M→N is a homomorphism (of magmas), it carries much of the algebraic  
+structure of M over to φ(M)⊆N. The image (φ(M),∗) inherits the properties  
+(s),(a),(n),(i),(c),<a href="#distributive">(d)</a> from (M,⋅). However in  
+general if N is not a group and φ not unital it may be φ(1)≠1 (and thus φ(x<sup>-1</sup>)≠φ(x)<sup>-1</sup>).  
+If φ:M→N is a homomorphism of <span class="signifier">T</span>, then Im(φ):=φ(M)≤N  
+and Ker(φ):=<sup>-1</sup>φ({0})⊴M are sub-<span class="signifier">T</span>  
+(and Ker(φ) even is a normal subgroup resp. an ideal for groups resp. rings or  
+algebras). Also for N'≤N, Ker(φ)⊆<sup>-1</sup>φ(N')≤M is a subgroup/ring  
+(and <!-- <cite>N. Bourbaki, Algebra I.4.6: Subgroups of a quotient group.</cite> -->   
+ even a normal subgroup resp. ideal if N' is).<br> 
+{H≤G/N}→̃{N⊆H≤G} is bijective (for subgroups/normal subgroups/subrings/ideals).   
 <!-- <cite>N. Bourbaki, Algebra I.4.6: Subgroups of a quotient group.</cite> -->
-<!-- <cite>N. Bourbaki, Algebra I.8.8: Subrings and ideals of a quotient ring.</cite> -->  
+<!-- <cite>N. Bourbaki, Algebra I.8.8: Subrings and ideals of a quotient ring.</cite> -->   
 </p>
 <h4 class="inner">Examples</h4>
 <ol>
@@ -190,25 +190,25 @@ algebras). Also for N'≤N, Ker(φ)⊆<sup>-1</sup>φ(N')≤M is a subgroup/ring
   <li>For every set X there is the <dfn>free monoid</dfn> (of words) Mo(X) := X<sup>*</sup> 
     := ⋃<sub>n∈<b>N</b></sub> X<sup>n</sup>.</li>
   <li>For every set X there is the <dfn>free commutative monoid</dfn> <b>N</b><sup>(X)</sup>.</li>
-  <li>For every set X there is the <dfn>free group</dfn> F(X) with basis X where<br>
-    ∀y∈F(X) ∃!x<sub>1</sub><sup>ε<sub>1</sub></sup>⋅...⋅x<sub>n</sub><sup>ε<sub>n</sub></sup> 
-    = y with x<sub>i</sub>∈X ∧ ε<sub>i</sub>∈{-1,1} ∧ x<sub>i</sub><sup>ε<sub>i</sub></sup>≠x<sub>i+1</sub><sup>-ε<sub>i+1</sub></sup>.</li>
+  <li>For every set X there is the <dfn>free group</dfn> F(X) with basis X where<br> 
+    ∀y∈F(X) ∃!x<sub>1</sub><sup>ε<sub>1</sub></sup>⋅...⋅x<sub>n</sub><sup>ε<sub>n</sub></sup>  
+    = y with x<sub>i</sub>∈X ∧ ε<sub>i</sub>∈{-1,1} ∧ x<sub>i</sub><sup>ε<sub>i</sub></sup>≠x<sub>i+1</sub><sup>-ε<sub>i+1</sub></sup>.</li> 
   <li><span class="categorie">Ab</span>≅<b>Z</b>-<span class="categorie">Mod.</span></li>
-  <li>The Cartesian product ∏<sub>i∈I</sub> A<sub>i</sub> := {(a<sub>i</sub>)<sub>i∈I</sub> 
-    ¦ a<sub>i</sub>∈A<sub>i</sub>} with component-wise laws (requiring <abbr title="Axiom of Choice">AxCh</abbr>) 
-    is the product in <span class="categorie">Ens</span>,<span class="categorie">Mag</span>,<span class="categorie">Sgp</span>,<span class="categorie">Mon</span>,<span class="categorie">Gr</span>,<span class="categorie">Ab</span>,<span class="categorie">Rng</span>,<span class="categorie">Rng1</span>,<span class="categorie">cRng</span>,R-<span class="categorie">Mod</span>,K-<span class="categorie">Vec</span>,R-<span class="categorie">Alg</span>,R-<span class="categorie">Algas</span>,R-<span class="categorie">Alg1</span>,... 
-    (but <span class="categorie">Fld</span> has no product).<br>
-    Especially A<sup>I</sup> := ∏<sub>i∈I</sub> A.</li>
-  <li>The direct sum <big>⊕</big><sub>i∈I</sub> A<sub>i</sub> := {(a<sub>i</sub>)<sub>i∈I</sub> 
-    <sub></sub>∈ ∏<sub>i∈I</sub> A<sub>i</sub> ¦ a<sub>i</sub>=1 p.t. i∈I} 
-    with component-wise laws is the coproduct in <span class="categorie">cMon</span>, 
-    <span class="categorie">Mon??</span>,<span class="categorie">Ab</span>,R-<span class="categorie">Mod</span>,K-<span class="categorie">Vec</span>,..., 
-    but that is <em>not</em> the coproduct in <span class="categorie">Gr</span> 
-    nor in R-<span class="categorie">Alg</span>.<br>
-    Especially A<sup>(I)</sup> := <big>⊕</big><sub>i∈I</sub> A.</li>
-  <li>(X<sup>X</sup>,∘) is a monoid for any set X, and S<sub>X</sub> := Perm(X) 
-    := (X<sup>X</sup>)<sup>×</sup> ≤ X is the symmetric group. If M is a 
-    magma, then Aut(M)≤S<sub>M</sub>.</li>
+  <li>The Cartesian product ∏<sub>i∈I</sub> A<sub>i</sub> := {(a<sub>i</sub>)<sub>i∈I</sub>  
+    ¦ a<sub>i</sub>∈A<sub>i</sub>} with component-wise laws (requiring <abbr title="Axiom of Choice">AxCh</abbr>)  
+    is the product in <span class="categorie">Ens</span>,<span class="categorie">Mag</span>,<span class="categorie">Sgp</span>,<span class="categorie">Mon</span>,<span class="categorie">Gr</span>,<span class="categorie">Ab</span>,<span class="categorie">Rng</span>,<span class="categorie">Rng1</span>,<span class="categorie">cRng</span>,R-<span class="categorie">Mod</span>,K-<span class="categorie">Vec</span>,R-<span class="categorie">Alg</span>,R-<span class="categorie">Algas</span>,R-<span class="categorie">Alg1</span>,...  
+    (but <span class="categorie">Fld</span> has no product).<br> 
+    Especially A<sup>I</sup> := ∏<sub>i∈I</sub> A.</li> 
+  <li>The direct sum <big>⊕</big><sub>i∈I</sub> A<sub>i</sub> := {(a<sub>i</sub>)<sub>i∈I</sub>  
+    <sub></sub>∈ ∏<sub>i∈I</sub> A<sub>i</sub> ¦ a<sub>i</sub>=1 p.t. i∈I}  
+    with component-wise laws is the coproduct in <span class="categorie">cMon</span>,  
+    <span class="categorie">Mon??</span>,<span class="categorie">Ab</span>,R-<span class="categorie">Mod</span>,K-<span class="categorie">Vec</span>,...,  
+    but that is <em>not</em> the coproduct in <span class="categorie">Gr</span>  
+    nor in R-<span class="categorie">Alg</span>.<br> 
+    Especially A<sup>(I)</sup> := <big>⊕</big><sub>i∈I</sub> A.</li> 
+  <li>(X<sup>X</sup>,∘) is a monoid for any set X, and S<sub>X</sub> := Perm(X)  
+    := (X<sup>X</sup>)<sup>×</sup> ≤ X is the symmetric group. If M is a  
+    magma, then Aut(M)≤S<sub>M</sub>.</li> 
   <li id="commutativeMagmaHom">If M is a magma and C a <dfn>commutative</dfn> <span class="signifier">T</span>, 
     then Hom(M,C)≤C<sup>M</sup> is a commutative sub-<span class="signifier">T</span>. 
     (<span class="signifier">T</span> is one of <span class="categorie">Sgp</span>,<span class="categorie">Mon</span>,<span class="categorie">Gr</span>,<span class="categorie">Ab</span>,R-<span class="categorie">Mod</span>,K-<span class="categorie">Vec</span>, 
@@ -219,7 +219,7 @@ algebras). Also for N'≤N, Ker(φ)⊆<sup>-1</sup>φ(N')≤M is a subgroup/ring
   <caption>Algebraic structures with a law of composition and a law of action 
     (also see below)</caption>
   <tr>
-    <td class="defContext" colspan="5">Let Ω,E be sets.</td>
+    <td class="defContext" colspan="5">Let Ω,E be sets.</td> 
   </tr>
   <tr>
     <th class="defID"></th>
@@ -232,9 +232,9 @@ algebras). Also for N'≤N, Ker(φ)⊆<sup>-1</sup>φ(N')≤M is a subgroup/ring
     <td class="defIDAction">s</td>
     <td class="defCond" id="stablea">
       <ul class="or">
-        <li>·:Ω→E<sup>E</sup> is an <dfn>action</dfn> of Ω on E.</li>
-        <li>·:Ω×E→E is a <dfn>law of left action</dfn> with operators Ω.</li>
-        <li>·:E×Ω→E is a <dfn>law of right action</dfn> with operators Ω.</li>
+        <li>·:Ω→E<sup>E</sup> is an <dfn>action</dfn> of Ω on E.</li> 
+        <li>·:Ω×E→E is a <dfn>law of left action</dfn> with operators Ω.</li> 
+        <li>·:E×Ω→E is a <dfn>law of right action</dfn> with operators Ω.</li> 
       </ul>
     </td>
     <td class="defVerbal">action</td>
@@ -246,12 +246,12 @@ algebras). Also for N'≤N, Ker(φ)⊆<sup>-1</sup>φ(N')≤M is a subgroup/ring
     <td class="defCond">
       <ul class="and">
         <li>(E,⋅) is a group</li>
-        <li>^:Ω→E<sup>E</sup> is an <dfn>action</dfn> of Ω on E.</li>
-        <li><span class="defIDAction">s</span> ^ is distributive over ⋅, i.e.
+        <li>^:Ω→E<sup>E</sup> is an <dfn>action</dfn> of Ω on E.</li> 
+        <li><span class="defIDAction">s</span> ^ is distributive over ⋅, i.e. 
           <ul class="or">
-            <li>∀α∈Ω ∀x,y∈E (x⋅y)<sup>α</sup> = (x<sup>α</sup>) 
-              ⋅ (y<sup>α</sup>).</li>
-            <li>∀α∈Ω ^<sup>α</sup> is an endomorphism of E.</li>
+            <li>∀α∈Ω ∀x,y∈E (x⋅y)<sup>α</sup> = (x<sup>α</sup>)  
+              ⋅ (y<sup>α</sup>).</li> 
+            <li>∀α∈Ω ^<sup>α</sup> is an endomorphism of E.</li> 
           </ul>
         </li>
       </ul>
@@ -270,18 +270,18 @@ actions.</p>
   <caption>Homomorphisms of algebraic structures with one law of composition and 
     a law of action</caption>
   <tr>
-    <td class="defContext" colspan="4">Let M,N be groups with operators in Ω, 
-      and φ:M→N a map.</td>
+    <td class="defContext" colspan="4">Let M,N be groups with operators in Ω,  
+      and φ:M→N a map.</td> 
   </tr>
   <tr>
     <th class="defID"></th>
     <th class="defCond">If</th>
     <th class="defVerbal"></th>
-    <th class="defTerm">Then φ is a</th>
+    <th class="defTerm">Then φ is a</th> 
   </tr>
   <tr>
     <td class="defIDAction">m</td>
-    <td class="defCond">∀α∈Ω ∀x∈M φ(x<sup>α</sup>) = φ(x)<sup>α</sup></td>
+    <td class="defCond">∀α∈Ω ∀x∈M φ(x<sup>α</sup>) = φ(x)<sup>α</sup></td> 
     <td class="defVerbal">morph</td>
     <td class="defTerm"><dfn>homomorphism</dfn> of groups with operators ⊂<br>
       homomorphism of groups</td>
@@ -304,11 +304,11 @@ actions.</p>
     <td class="defCond">
       <ul class="and">
         <li>(G,⋅) is a group</li>
-        <li>·:G→E<sup>E</sup> is a homomorphism of monoids (<dfn>left 
-          operation</dfn>), i.e.
+        <li>·:G→E<sup>E</sup> is a homomorphism of monoids (<dfn>left  
+          operation</dfn>), i.e. 
           <ul class="and">
-            <li>∀α,β∈G ∀x∈E α·(β·x) = (α⋅β)·x.</li>
-            <li>∀x∈E 1·x = x.</li>
+            <li>∀α,β∈G ∀x∈E α·(β·x) = (α⋅β)·x.</li> 
+            <li>∀x∈E 1·x = x.</li> 
           </ul>
         </li>
       </ul>
@@ -322,11 +322,11 @@ actions.</p>
     <td class="defCond">
       <ul class="and">
         <li>(G,⋅) is a group</li>
-        <li>·:G→E<sup>E</sup> is a homomorphism of monoids into the opposite 
-          monoid of E<sup>E</sup> (<dfn>right operation</dfn>), i.e.
+        <li>·:G→E<sup>E</sup> is a homomorphism of monoids into the opposite  
+          monoid of E<sup>E</sup> (<dfn>right operation</dfn>), i.e. 
           <ul class="and">
-            <li>∀α,β∈G ∀x∈E (x·α)·β = x·(α⋅β).</li>
-            <li>∀x∈E x·1 = x.</li>
+            <li>∀α,β∈G ∀x∈E (x·α)·β = x·(α⋅β).</li> 
+            <li>∀x∈E x·1 = x.</li> 
           </ul>
         </li>
       </ul>
@@ -337,40 +337,40 @@ actions.</p>
   </tr>
 </table>
 <h5 class="compact">Note</h5>
-<p class="preciseClarification">G is called transformation group of E. Also 
-compare with <a href="#morph_1_0">homomorphisms of groups</a> to see that for <em>groups 
-</em>operating on a set, the action even is a map ·:G→S<sub>E</sub>.</p>
+<p class="preciseClarification">G is called transformation group of E. Also  
+compare with <a href="#morph_1_0">homomorphisms of groups</a> to see that for <em>groups  
+</em>operating on a set, the action even is a map ·:G→S<sub>E</sub>.</p> 
 <table width="100%" class="def">
   <caption>Homomorphisms of groups operating on a set</caption>
   <tr>
-    <td class="defContext" colspan="4">Let E,E' be G-sets, and φ:E→E' a map.</td>
+    <td class="defContext" colspan="4">Let E,E' be G-sets, and φ:E→E' a map.</td> 
   </tr>
   <tr>
     <th class="defID"></th>
     <th class="defCond">If</th>
     <th class="defVerbal"></th>
-    <th class="defTerm">Then φ is a</th>
+    <th class="defTerm">Then φ is a</th> 
   </tr>
   <tr>
     <td class="defIDAction">m</td>
-    <td class="defCond">∀α∈G ∀x∈E φ(α·x) = α·φ(x)</td>
+    <td class="defCond">∀α∈G ∀x∈E φ(α·x) = α·φ(x)</td> 
     <td class="defVerbal">morph</td>
     <td class="defTerm"><dfn>homomorphism</dfn> of G-sets</td>
   </tr>
 </table>
 <h4 class="inner">Examples</h4>
 <ol>
-  <li>_·x is a homomorphism of G-sets (or G-morphism) of G (operating on itself 
-    by left translation α·x:=α⋅x). G·x = Im(_·x)⊆E is the <dfn id="orbit">orbit</dfn> 
-    of x∈E in E and
+  <li>_·x is a homomorphism of G-sets (or G-morphism) of G (operating on itself  
+    by left translation α·x:=α⋅x). G·x = Im(_·x)⊆E is the <dfn id="orbit">orbit</dfn>  
+    of x∈E in E and 
     <ul>
-      <li>G\E := E/(y∈G·x) = {G·x ¦ x∈E} quotient of E for left actions.</li>
-      <li>E/G := E/(y∈x·G) = {x·G ¦ x∈E} for right actions.</li>
+      <li>G\E := E/(y∈G·x) = {G·x ¦ x∈E} quotient of E for left actions.</li> 
+      <li>E/G := E/(y∈x·G) = {x·G ¦ x∈E} for right actions.</li> 
     </ul>
-    G<sub>x</sub> := {g∈G ¦ g·x=x}≤G is the <dfn id="fixer">fixgroup</dfn> 
-    of x∈E under G (in this case of group operations equaling the stabilizer). 
-    Orbits and fixgroups are compatible with quotients: ∀x∈x̅∈G\E G·x=G·x̅,G<sub>x</sub>=G<sub>x̅</sub>. 
-    Fixgroups and orbits are related by |G·x| = [G:G<sub>x</sub>].</li>
+    G<sub>x</sub> := {g∈G ¦ g·x=x}≤G is the <dfn id="fixer">fixgroup</dfn>  
+    of x∈E under G (in this case of group operations equaling the stabilizer).  
+    Orbits and fixgroups are compatible with quotients: ∀x∈x̅∈G\E G·x=G·x̅,G<sub>x</sub>=G<sub>x̅</sub>.  
+    Fixgroups and orbits are related by |G·x| = [G:G<sub>x</sub>].</li> 
 </ol>
 <h3 id="ring">Rings</h3>
 <table width="100%" class="def" id="laws_2_0">
@@ -415,7 +415,7 @@ compare with <a href="#morph_1_0">homomorphisms of groups</a> to see that for <e
   </tr>
   <tr id="skewField">
     <td class="defID">i</td>
-    <td class="defCond">(R\{0},⋅) is a group, resp. R<sup>×</sup> = R\{0}</td>
+    <td class="defCond">(R\{0},⋅) is a group, resp. R<sup>×</sup> = R\{0}</td> 
     <td class="defTerm"><dfn>skew field</dfn> ⊂ ring with 1</td>
     <td class="defCategory"><span class="categorie"></span></td>
   </tr>
@@ -446,22 +446,22 @@ about true rings with 1.</p>
 <table width="100%" class="def" id="morph_2_0">
   <caption>Homomorphisms of algebraic structures with two laws of composition</caption>
   <tr>
-    <td class="defContext" colspan="4">Let (R,+,⋅), (R',+,⋅) be 
-      pseudo-rings/rings with 1/commutative rings/skew fields/fields, and φ:R→R' 
-      a map.</td>
+    <td class="defContext" colspan="4">Let (R,+,⋅), (R',+,⋅) be  
+      pseudo-rings/rings with 1/commutative rings/skew fields/fields, and φ:R→R'  
+      a map.</td> 
   </tr>
   <tr>
     <th class="defID"></th>
     <th class="defCond">If</th>
     <th class="defVerbal"></th>
-    <th class="defTerm" align="right">Then φ is a</th>
+    <th class="defTerm" align="right">Then φ is a</th> 
   </tr>
   <tr>
     <td class="defID">m</td>
     <td class="defCond">
       <ul>
-        <li>φ:(R,+)→(R',+) is a homomorphism of groups.</li>
-        <li>φ:(R,⋅)→(R',⋅) is a homomorphism of semigroups.</li>
+        <li>φ:(R,+)→(R',+) is a homomorphism of groups.</li> 
+        <li>φ:(R,⋅)→(R',⋅) is a homomorphism of semigroups.</li> 
       </ul>
     </td>
     <td class="defVerbal">morph</td>
@@ -469,21 +469,21 @@ about true rings with 1.</p>
   </tr>
   <tr>
     <td class="defID">1</td>
-    <td class="defCond">φ(1) = 1, i.e. φ:(R,⋅)→(R',⋅) is a homomorphism 
-      of monoids.</td>
+    <td class="defCond">φ(1) = 1, i.e. φ:(R,⋅)→(R',⋅) is a homomorphism  
+      of monoids.</td> 
     <td class="defVerbal">unital</td>
     <td class="defTerm"><dfn>homomorphism</dfn> of ... ⊂<br>
       homomorphism of pseudo-ring</td>
   </tr>
 </table>
 <h5 class="compact">Note</h5>
-<p><span class="categorie">Rng1</span>→<span class="categorie">Grp</span>; 
-(R,+,⋅)↦R<sup>×</sup> is a covariant functor implying that all 
-homomorphisms φ:R→R' of rings with 1 satisfy φ(R<sup>×</sup>)⊆(R')<sup>×</sup>. 
-Therefore, homomorphisms of rings with 1 from a skew-field R are injective. Also 
-compare with <a href="#morph_1_0">homomorphisms of groups</a> to see that if R 
-and R' are skew-fields, then for homomorphisms of rings the property (1) follows 
-from (m).</p>
+<p><span class="categorie">Rng1</span>→<span class="categorie">Grp</span>;  
+(R,+,⋅)↦R<sup>×</sup> is a covariant functor implying that all  
+homomorphisms φ:R→R' of rings with 1 satisfy φ(R<sup>×</sup>)⊆(R')<sup>×</sup>.  
+Therefore, homomorphisms of rings with 1 from a skew-field R are injective. Also  
+compare with <a href="#morph_1_0">homomorphisms of groups</a> to see that if R  
+and R' are skew-fields, then for homomorphisms of rings the property (1) follows  
+from (m).</p> 
 <h4 class="inner">Examples</h4>
 <ol>
   <li><b>Z</b>-<span class="categorie">Algas</span>≅<span class="categorie">PseudoRing</span>, 
@@ -510,21 +510,21 @@ from (m).</p>
     <td class="defCond">
       <ul>
         <li>(M,+) is an Abelian group</li>
-        <li>·:R×M→M is a <dfn>law of action</dfn> with operators R.</li>
-        <li><span class="defIDAction">d</span> · is distributive over +, i.e.
+        <li>·:R×M→M is a <dfn>law of action</dfn> with operators R.</li> 
+        <li><span class="defIDAction">d</span> · is distributive over +, i.e. 
           <ul>
-            <li>∀α∈R ∀<span class="vector">x</span>,<span class="vector">y</span>∈M 
-              α·(<span class="vector">x</span>+<span class="vector">y</span>) 
-              = (α·<span class="vector">x</span>) + (α·<span class="vector">y</span>)</li>
+            <li>∀α∈R ∀<span class="vector">x</span>,<span class="vector">y</span>∈M  
+              α·(<span class="vector">x</span>+<span class="vector">y</span>)  
+              = (α·<span class="vector">x</span>) + (α·<span class="vector">y</span>)</li> 
             <li>∴ modules are commutative groups with operators.</li>
           </ul>
         </li>
-        <li><span class="defIDAction">d</span> ∀α,β∈R ∀<span class="vector">x</span>∈M 
-          (α+β)·<span class="vector">x</span> = (α·<span class="vector">x</span>) 
-          + (β·<span class="vector">x</span>)</li>
-        <li><span class="defIDAction">a</span> ∀α,β∈A ∀<span class="vector">x</span>∈M 
-          α·(β·<span class="vector">x</span>) = (α⋅β)·<span class="vector">x</span> 
-          (for left R-pseudomodules)</li>
+        <li><span class="defIDAction">d</span> ∀α,β∈R ∀<span class="vector">x</span>∈M  
+          (α+β)·<span class="vector">x</span> = (α·<span class="vector">x</span>)  
+          + (β·<span class="vector">x</span>)</li> 
+        <li><span class="defIDAction">a</span> ∀α,β∈A ∀<span class="vector">x</span>∈M  
+          α·(β·<span class="vector">x</span>) = (α⋅β)·<span class="vector">x</span>  
+          (for left R-pseudomodules)</li> 
       </ul>
     </td>
     <td class="defTerm"><dfn>left R-pseudomodule</dfn></td>
@@ -532,13 +532,13 @@ from (m).</p>
   </tr>
   <tr>
     <td class="defID"></td>
-    <td class="defCond">The same as for left R-modules, except that
+    <td class="defCond">The same as for left R-modules, except that 
       <ul>
-        <li><span class="defIDAction">a</span> ∀α,β∈A ∀<span class="vector">x</span>∈M 
-          α·(β·<span class="vector">x</span>) = (β⋅α)·<span class="vector">x</span> 
-          (for right R-pseudomodules)</li>
+        <li><span class="defIDAction">a</span> ∀α,β∈A ∀<span class="vector">x</span>∈M  
+          α·(β·<span class="vector">x</span>) = (β⋅α)·<span class="vector">x</span>  
+          (for right R-pseudomodules)</li> 
       </ul>
-      <p>Therefore, the law of action may be written more suggestively as ·:M×R→M 
+      <p>Therefore, the law of action may be written more suggestively as ·:M×R→M  
       instead.</td>
     <td class="defTerm"><dfn>right R-pseudomodule</dfn></td>
     <td class="defCategory"><span class="categorie"></span></td>
@@ -548,8 +548,8 @@ from (m).</p>
     <td class="defCond">
       <ul>
         <li>R is a ring.</li>
-        <li><span class="defIDAction">n</span> ∀<span class="vector">x</span>∈M 
-          1·<span class="vector">x</span> = <span class="vector">x</span></li>
+        <li><span class="defIDAction">n</span> ∀<span class="vector">x</span>∈M  
+          1·<span class="vector">x</span> = <span class="vector">x</span></li> 
       </ul>
     </td>
     <td class="defTerm"><dfn>left R-module</dfn> ⊂<br>
@@ -561,8 +561,8 @@ from (m).</p>
     <td class="defCond">
       <ul>
         <li>R is a ring.</li>
-        <li><span class="defIDAction">n</span> ∀<span class="vector">x</span>∈M 
-          1·<span class="vector">x</span> = <span class="vector">x</span></li>
+        <li><span class="defIDAction">n</span> ∀<span class="vector">x</span>∈M  
+          1·<span class="vector">x</span> = <span class="vector">x</span></li> 
       </ul>
     </td>
     <td class="defTerm"><dfn>right R-module</dfn> ⊂<br>
@@ -593,22 +593,22 @@ in R and left (R,⋅)-sets that also satisfy the second distributive relation.</
   <caption>Homomorphisms of algebraic structures with a law of composition and a 
     law of action</caption>
   <tr>
-    <td class="defContext" colspan="4">Let (M,+,·), (M',+,·) be 
-      R-modules/R-vector spaces, and φ:M→M' a map.</td>
+    <td class="defContext" colspan="4">Let (M,+,·), (M',+,·) be  
+      R-modules/R-vector spaces, and φ:M→M' a map.</td> 
   </tr>
   <tr>
     <th class="defID"></th>
     <th class="defCond">If</th>
     <th class="defVerbal"></th>
-    <th class="defTerm">Then φ is a</th>
+    <th class="defTerm">Then φ is a</th> 
   </tr>
   <tr>
     <td class="defID">m</td>
     <td class="defCond" id="linear">
       <ul>
-        <li>φ:(R,+)→(R',+) is a homomorphism of groups</li>
-        <li>∀α∈R∀<span class="vector">x</span>∈M φ(α·<span class="vector">x</span>) 
-          = α·φ(<span class="vector">x</span>)</li>
+        <li>φ:(R,+)→(R',+) is a homomorphism of groups</li> 
+        <li>∀α∈R∀<span class="vector">x</span>∈M φ(α·<span class="vector">x</span>)  
+          = α·φ(<span class="vector">x</span>)</li> 
       </ul>
     </td>
     <td class="defVerbal">R-linear</td>
@@ -623,20 +623,20 @@ in R and left (R,⋅)-sets that also satisfy the second distributive relation.</
     Be aware that proper ideals I⊲R (i.e. I⊴R ∧ I≠R) are only sub-<em>pseudo</em>-rings 
     and no unital sub-rings since 1∉I.</li>
   <li><span class="categorie">Ab</span>≅<b>Z</b>-<span class="categorie">Mod.</span></li>
-  <li>If M and M' are R-modules, Hom<sub>R</sub>(M,M') := {φ:M→M' ¦ φ is 
-    R-linear} is an R-module with pointwise addition and scalar multiplication.</li>
-  <li>M<sup>⌄</sup> := M<sup>*</sup> := Hom<sub>R</sub>(M,R) is called the <dfn>dual 
-    module</dfn> to M. If M is free with base B, then M<sup>*</sup> is free with 
-    the dual base B<sup>*</sup>:={<span class="vector">b</span><sup>*</sup>:B→R; 
+  <li>If M and M' are R-modules, Hom<sub>R</sub>(M,M') := {φ:M→M' ¦ φ is  
+    R-linear} is an R-module with pointwise addition and scalar multiplication.</li> 
+  <li>M<sup>⌄</sup> := M<sup>*</sup> := Hom<sub>R</sub>(M,R) is called the <dfn>dual  
+    module</dfn> to M. If M is free with base B, then M<sup>*</sup> is free with  
+    the dual base B<sup>*</sup>:={<span class="vector">b</span><sup>*</sup>:B→R;  
     <span class="vector">b'</span>↦δ<sub><span class="vector">b</span><span class="vector">b'</span></sub> 
-    ¦ <span class="vector">b</span>∈B}.</li>
-  <li>R<sup>(X)</sup> = <big>⊕</big><sub>x∈X</sub> R = {∑<sub><span class="vector">x</span>∈X</sub> 
-    a<sub><span class="vector">x</span></sub>·<span class="vector">x</span> ¦ 
-    ∀<span class="vector">x</span>∈X a<sub><span class="vector">x</span></sub>∈R 
-    ∧ a<sub><span class="vector">x</span></sub>=0 p.t. <span class="vector">x</span>∈X} 
-    is the <dfn>free R-module</dfn> with basis X (in contrast to <a href="#algebraOfMagma">algebras 
-    of a magma</a>, X is only a set).<br>
-    ⇔ X is R-linear independent and generates the module (i.e. =〈X〉).</li>
+    ¦ <span class="vector">b</span>∈B}.</li> 
+  <li>R<sup>(X)</sup> = <big>⊕</big><sub>x∈X</sub> R = {∑<sub><span class="vector">x</span>∈X</sub>  
+    a<sub><span class="vector">x</span></sub>·<span class="vector">x</span> ¦  
+    ∀<span class="vector">x</span>∈X a<sub><span class="vector">x</span></sub>∈R  
+    ∧ a<sub><span class="vector">x</span></sub>=0 p.t. <span class="vector">x</span>∈X}  
+    is the <dfn>free R-module</dfn> with basis X (in contrast to <a href="#algebraOfMagma">algebras  
+    of a magma</a>, X is only a set).<br> 
+    ⇔ X is R-linear independent and generates the module (i.e. =〈X〉).</li> 
 </ol>
 <h3>Algebras</h3>
 <table width="100%" class="def" id="laws_2_1">
@@ -655,7 +655,7 @@ in R and left (R,⋅)-sets that also satisfy the second distributive relation.</
     <td class="defCond">
       <ul>
         <li>E is an R-module</li>
-        <li>⋅:E×E→E is a law of composition that is <dfn>bilinear</dfn>, 
+        <li>⋅:E×E→E is a law of composition that is <dfn>bilinear</dfn>,  
           i.e.
           <ul class="and">
             <li><b>(l<sup>2</sup>)</b>=<b>(d)<br>
@@ -665,8 +665,8 @@ in R and left (R,⋅)-sets that also satisfy the second distributive relation.</
               <div class="defIDAction">
                 m<sup>2</sup>
               </div>
-              (α·x)⋅y = α·(x⋅y)<br>
-              x⋅(α·y) = α·(x⋅y)</li>
+              (α·x)⋅y = α·(x⋅y)<br> 
+              x⋅(α·y) = α·(x⋅y)</li> 
           </ul>
         </li>
       </ul>
@@ -676,21 +676,21 @@ in R and left (R,⋅)-sets that also satisfy the second distributive relation.</
   </tr>
   <tr>
     <td class="defID">a</td>
-    <td class="defCond">⋅:E×E→E is associative</td>
+    <td class="defCond">⋅:E×E→E is associative</td> 
     <td class="defTerm"><dfn>associative</dfn> R-algebra ⊂<br>
       R-algebra</td>
     <td class="defCategory">R-<span class="categorie">Algas</span></td>
   </tr>
   <tr>
     <td class="defID">n</td>
-    <td class="defCond">⋅:E×E→E has a neutral element</td>
+    <td class="defCond">⋅:E×E→E has a neutral element</td> 
     <td class="defTerm"><dfn>unital</dfn> R-algebra ⊂<br>
       R-algebra</td>
     <td class="defCategory">R-<span class="categorie">Algu</span></td>
   </tr>
   <tr>
     <td class="defID">c</td>
-    <td class="defCond">⋅:E×E→E is commutative</td>
+    <td class="defCond">⋅:E×E→E is commutative</td> 
     <td class="defTerm"><dfn>commutative</dfn> R-algebra ⊂<br>
       R-algebra</td>
     <td class="defCategory">R-<span class="categorie">cAlg</span></td>
@@ -715,7 +715,7 @@ omitted.</p>
       <ul>
         <li>E is an R-module</li>
         <li>E is a pseudo-ring</li>
-        <li><b>(m) </b>R⋅E ⊆ Z(E), i.e.<br>
+        <li><b>(m) </b>R⋅E ⊆ Z(E), i.e.<br> 
           (α·x)⋅(β·y) = (α β)·(x⋅y)</li>
       </ul>
     </td>
@@ -723,35 +723,35 @@ omitted.</p>
   </tr>
   <tr>
     <td class="defID">ι</td>
-    <td class="defCond">ι:R→E is a homomorphism of rings.<br>
-      (setting α·x := ι(α)⋅x, and the R-algebra E inherits unital from ι)</td>
+    <td class="defCond">ι:R→E is a homomorphism of rings.<br> 
+      (setting α·x := ι(α)⋅x, and the R-algebra E inherits unital from ι)</td> 
     <td class="defTerm">associative R-algebra</td>
   </tr>
 </table>
 <h5 class="compact">Note</h5>
-<p>The converse of the last characterization (ι) is also true for unital and 
-associative algebras, since given such an R-algebra, ι:R→E;α↦α·1 is a 
-unital homomorphism of rings. Homomorphisms of R-algebras are the R-linear 
-homomorphisms of rings:</p>
+<p>The converse of the last characterization (ι) is also true for unital and  
+associative algebras, since given such an R-algebra, ι:R→E;α↦α·1 is a  
+unital homomorphism of rings. Homomorphisms of R-algebras are the R-linear  
+homomorphisms of rings:</p> 
 <table width="100%" class="def" id="morph_2_1">
   <caption>Homomorphisms of algebraic structures with two laws of composition 
     and a law of action</caption>
   <tr>
-    <td class="defContext" colspan="4">Let (E,+,·,⋅), (E',+,·,⋅) be 
-      R-algebras/unital R-algebras, and φ:E→E' a map.</td>
+    <td class="defContext" colspan="4">Let (E,+,·,⋅), (E',+,·,⋅) be  
+      R-algebras/unital R-algebras, and φ:E→E' a map.</td> 
   </tr>
   <tr>
     <th class="defID"></th>
     <th class="defCond">If</th>
     <th class="defVerbal"></th>
-    <th class="defTerm">Then φ is a</th>
+    <th class="defTerm">Then φ is a</th> 
   </tr>
   <tr>
     <td class="defID">m</td>
     <td class="defCond">
       <ul>
-        <li>φ:(E,+,·)→(E',+,·) is a homomorphism of R-modules</li>
-        <li>∀x,y∈E φ(x⋅y) = φ(x)⋅φ(y)</li>
+        <li>φ:(E,+,·)→(E',+,·) is a homomorphism of R-modules</li> 
+        <li>∀x,y∈E φ(x⋅y) = φ(x)⋅φ(y)</li> 
       </ul>
     </td>
     <td class="defVerbal">morph</td>
@@ -759,7 +759,7 @@ homomorphisms of rings:</p>
   </tr>
   <tr>
     <td class="defID">1</td>
-    <td class="defCond">φ(1) = 1</td>
+    <td class="defCond">φ(1) = 1</td> 
     <td class="defVerbal">unital</td>
     <td class="defTerm"><dfn>unital homomorphism</dfn> ⊂<br>
       homomorphism</td>
@@ -775,17 +775,17 @@ homomorphisms of rings:</p>
   <li><b>Z</b>-<span class="categorie">Algas</span>≅<span class="categorie">PseudoRing</span>, 
     <b>Z</b>-<span class="categorie">Algasu</span>≅<span class="categorie">Rng1</span>, 
     <b>Z</b>-<span class="categorie">Algascu</span>≅<span class="categorie">cRng1</span>.</li>
-  <li>R[S] := R<sup>(S)</sup> = <big>⊕</big><sub>s∈S</sub> R = {∑<sub>s</sub><sub>∈S</sub> 
-    a<sub>s</sub>·ι(s) ¦ ∀s∈S a<sub>s</sub>∈R ∧ a<sub>s</sub>=0 p.t. 
-    s∈S} is the R-<dfn id="algebraOfMagma">algebra of the magma</dfn> S over R 
-    (being associative, unital, or commutative if and only if S is), by ι(s)⋅ι(t) 
-    := ι(s⋅t) from the canonical injection ι:S↪R<sup>(S)</sup>. Therefore 
-    by <a href="#distributive">(d)</a>, the multiplication is the convolution
+  <li>R[S] := R<sup>(S)</sup> = <big>⊕</big><sub>s∈S</sub> R = {∑<sub>s</sub><sub>∈S</sub>  
+    a<sub>s</sub>·ι(s) ¦ ∀s∈S a<sub>s</sub>∈R ∧ a<sub>s</sub>=0 p.t.  
+    s∈S} is the R-<dfn id="algebraOfMagma">algebra of the magma</dfn> S over R  
+    (being associative, unital, or commutative if and only if S is), by ι(s)⋅ι(t)  
+    := ι(s⋅t) from the canonical injection ι:S↪R<sup>(S)</sup>. Therefore  
+    by <a href="#distributive">(d)</a>, the multiplication is the convolution 
     <div>
-      (∑<sub>s∈S</sub> α<sub>s</sub>·ι(s))⋅(∑<sub>s∈S</sub> β<sub>s</sub>·ι(s)) 
+      (∑<sub>s∈S</sub> α<sub>s</sub>·ι(s))⋅(∑<sub>s∈S</sub> β<sub>s</sub>·ι(s))  
       = ∑<sub>s∈S</sub> (∑<sub>t⋅u=s</sub> α<sub>t</sub> β<sub>u</sub>)·ι(s)
     </div>
-    Especially, there are
+    Especially, there are 
     <ul>
       <li>the <dfn>free R-algebra</dfn> Lib<sub>R</sub>(I) := R<sup>(M(I))</sup>.</li>
       <li>the <dfn>free associative R-algebra</dfn> Libas<sub>R</sub>(I) := R<sup>(Mo(I)) 
@@ -798,8 +798,8 @@ homomorphisms of rings:</p>
         being isomorph to the symmetric algebra of a free R-module with a basis 
         (of indexing set) I. (<small>It also is a quotient of Lib<sub>R</sub>(I)</small>).</li>
     </ul>
-    The algebra R<sup>(S)</sup> of a magma S over R is the presenting object of 
-    the presentable functor
+    The algebra R<sup>(S)</sup> of a magma S over R is the presenting object of  
+    the presentable functor 
     <table>
       <tbody>
         <tr>
@@ -815,14 +815,14 @@ homomorphisms of rings:</p>
         </tr>
       </tbody>
     </table>
-    Therefore it enjoys the following universal mapping property
+    Therefore it enjoys the following universal mapping property 
     <div class="UniversalMappingProperty">
-      ∀φ:S→(E,⋅) homomorphism of magmas/monoids into an R-algebra E<br />
-      ∃!Φ:R<sup>(S)</sup>→E R-algebra/unital R-algebra homomorphism with Φ|<sub>S</sub>=φ <!-- @todo Φ is the Einsetzungshomomorphismus -->                            
+      ∀φ:S→(E,⋅) homomorphism of magmas/monoids into an R-algebra E<br /> 
+      ∃!Φ:R<sup>(S)</sup>→E R-algebra/unital R-algebra homomorphism with Φ|<sub>S</sub>=φ <!-- @todo Φ is the Einsetzungshomomorphismus -->                             
     </div>
-    If R is a graded ring with graduation Δ, then a homomorphism deg:S→Δ 
-    defines a graded R-algebra structure on R<sup>(S)</sup> by setting deg(α·ι(s)) 
-    := deg(α)+deg(s).</li>
+    If R is a graded ring with graduation Δ, then a homomorphism deg:S→Δ  
+    defines a graded R-algebra structure on R<sup>(S)</sup> by setting deg(α·ι(s))  
+    := deg(α)+deg(s).</li> 
   <li>R<sup>X</sup> = ∏<sub>x</sub><sub>∈X</sub> R is a commutative 
     associative R-algebra (for a commutative ring R and a set X), but is 
     distinct from the total algebra.</li>
@@ -840,45 +840,45 @@ homomorphisms of rings:</p>
 <h2 id="quotient">Quotient Structures</h2>
 <p>Provided one of the following (equivalent) conditions is satisfied
 <ol class="equiv">
-  <li>Let φ:M→M be a homomorphism on M and x~y :⇔ φ(x)=φ(y) the 
-    equivalence relation φ induces on M.</li>
-  <li>Let ~ ⊆ M×M be a <dfn>congruence relation</dfn> on M, i.e. an 
-    equivalence relation with which all operators ⋆∈Σ of any arity n, 
-    occurring in the Σ-algebra M, are compatible, i.e. <center>∀x<sub>1</sub>,…,x<sub>n</sub>∈M 
+  <li>Let φ:M→M be a homomorphism on M and x~y :⇔ φ(x)=φ(y) the  
+    equivalence relation φ induces on M.</li> 
+  <li>Let ~ ⊆ M×M be a <dfn>congruence relation</dfn> on M, i.e. an  
+    equivalence relation with which all operators ⋆∈Σ of any arity n,  
+    occurring in the Σ-algebra M, are compatible, i.e. <center>∀x<sub>1</sub>,…,x<sub>n</sub>∈M  
     ∀y<sub>1</sub>,…,y<sub>n</sub>∈M <big>(</big>(∀i x<sub>i</sub>~y<sub>i</sub>) 
     ⇒ ⋆(x<sub>1</sub>,…,x<sub>n</sub>) ~ ⋆(y<sub>1</sub>,…,y<sub>n</sub>)<big>)</big></center></li>
 </ol>
-Then the <dfn>quotient</dfn> <center>M/~ := M̄ := {x̄ ¦ x∈M} with<br />
-x̄ := <sup>-1</sup>f({f(x)}) = {y∈M ¦ x~y} for x∈M </center>has the same 
-algebraic structure as M. If M is a magma, semi-group, monoid, group, Abelian 
-group, ring, R-module, or vector space, then M/~ is as well. The laws of 
-composition ⋆ and laws of action · on M/~ are obtained by passing to the 
+Then the <dfn>quotient</dfn> <center>M/~ := M̄ := {x̄ ¦ x∈M} with<br />  
+x̄ := <sup>-1</sup>f({f(x)}) = {y∈M ¦ x~y} for x∈M </center>has the same   
+algebraic structure as M. If M is a magma, semi-group, monoid, group, Abelian   
+group, ring, R-module, or vector space, then M/~ is as well. The laws of   
+composition ⋆ and laws of action · on M/~ are obtained by passing to the   
 quotient:
 <div style="text-align: center">
   x̄⋆ȳ := <span style="text-decoration: overline;">x⋆y</span>
 </div>
 <div style="text-align: center">
-  α·x̄ := <span style="text-decoration: overline;">α·x</span>
+  α·x̄ := <span style="text-decoration: overline;">α·x</span> 
 </div>
 <p>Since ~ is an equivalence on M, M/~ is a partition of M <center>∀x̄,ȳ∈M 
 (x̄∩ȳ=∅ xor x̄=ȳ)</center>Although conversely, every partition of M 
 defines an equivalence relation, that relation does not need to be a congruence 
 compatible with the algebraic structure of M.</p>
-<p>Note that congruence relations ~ on M often correspond bijectively to special 
-substructures of M, and to (left or right) cosets .... . Examples are normal 
-subgroups in groups, subgroups in Abelian groups, ideals (i.e. sub-R-modules) in 
-rings, submodules in R-modules, ideals (i.e. sub-R-modules <em>and</em> ideals 
-of the ring structure) in R-algebras (which in R-<span class="categorie">Algasu</span> 
-are identical with the ideals of the ring structure). For example, if (G,⋅) is 
-a group with a normal subgroup N⊴G, then there is a homomorphism φ with N=Ker(φ) 
-inducing a congruence relation ~, and <center>G/N := G/~ = <big>{</big>g⋅N:={g⋅n 
-¦ n∈N} ¦ g∈G<big>}</big> = <big>{</big>N⋅g:={n⋅g ¦ n∈N} ¦ g∈G<big>}</big></center>equals 
-the set of left <dfn>cosets</dfn> or the set of right cosets. Although the left 
-and right cosets are also defined for ordinary subgroups H≤G instead of N, 
-they do not coincide with any equivalence classes of a quotient group in the 
-general case. In either case, all cosets have the same cardinality and <center>[G:H] 
+<p>Note that congruence relations ~ on M often correspond bijectively to special  
+substructures of M, and to (left or right) cosets .... . Examples are normal  
+subgroups in groups, subgroups in Abelian groups, ideals (i.e. sub-R-modules) in  
+rings, submodules in R-modules, ideals (i.e. sub-R-modules <em>and</em> ideals  
+of the ring structure) in R-algebras (which in R-<span class="categorie">Algasu</span>  
+are identical with the ideals of the ring structure). For example, if (G,⋅) is  
+a group with a normal subgroup N⊴G, then there is a homomorphism φ with N=Ker(φ)  
+inducing a congruence relation ~, and <center>G/N := G/~ = <big>{</big>g⋅N:={g⋅n  
+¦ n∈N} ¦ g∈G<big>}</big> = <big>{</big>N⋅g:={n⋅g ¦ n∈N} ¦ g∈G<big>}</big></center>equals  
+the set of left <dfn>cosets</dfn> or the set of right cosets. Although the left  
+and right cosets are also defined for ordinary subgroups H≤G instead of N,  
+they do not coincide with any equivalence classes of a quotient group in the  
+general case. In either case, all cosets have the same cardinality and <center>[G:H]  
 := number of left cosets = number of right cosets (= |G/H| if H⊴G).</center> 
-is called the <dfn>index</dfn> of the subgroup H≤G. It satisfies <center>|G| = 
+is called the <dfn>index</dfn> of the subgroup H≤G. It satisfies <center>|G| =  
 [G:H]⋅|H|</center></p>
 <h2 id="generated">Generating Systems</h2>
 <dl class="def">
@@ -890,31 +890,37 @@ is called the <dfn>index</dfn> of the subgroup H≤G. It satisfies <center>|G| =
     X. It is called the sub-<span class="signifier">T</span> generated by X.</dd>
 </dl>
 <ul>
-  <li>For R-modules E, an alternative characterization by linear combinations of 
-    X⊆E is<br>
-    〈X〉 = R·X := 〈{r·<span class="vector">x</span> ¦ r∈R ∧ <span class="vector">x</span>∈X}〉 
-    = R<sup>(X)</sup> (<small>= {∑<sub><span class="vector">x</span>∈X</sub> 
-    a<sub><span class="vector">x</span></sub>·<span class="vector">x</span> ¦ 
-    ∀<span class="vector">x</span>∈X a<sub><span class="vector">x</span></sub>∈R 
-    ∧ a<sub><span class="vector">x</span></sub>=0 p.t. <span class="vector">x</span>∈X}</small>)</li>
-  <li>For ideals I⊴R (which are defined as sub-R-modules of R), the usual 
-    notation is (X) instead of 〈X〉, and we have the same alternative 
+  <li>For R-modules E, an alternative characterization by linear combinations of  
+    X⊆E is<br> 
+    〈X〉 = R·X := 〈{r·<span class="vector">x</span> ¦ r∈R ∧ <span class="vector">x</span>∈X}〉  
+    = R<sup>(X)</sup> (<small>= {∑<sub><span class="vector">x</span>∈X</sub>  
+    a<sub><span class="vector">x</span></sub>·<span class="vector">x</span> ¦  
+    ∀<span class="vector">x</span>∈X a<sub><span class="vector">x</span></sub>∈R  
+    ∧ a<sub><span class="vector">x</span></sub>=0 p.t. <span class="vector">x</span>∈X}</small>)</li> 
+  <li>For ideals I⊴R (which are defined as sub-R-modules of R), the usual  
+    notation is (X) instead of 〈X〉, and we have the same alternative  
     characterizations<br>
-    (X) := ⋂<sub>X⊆S</sub><sub>⊴</sub><sub>E</sub> S = X⋅R = R<sup>(X)</sup> 
-    (<small>= {∑<sub>x∈X</sub> a<sub>x</sub>⋅x ¦ ∀x∈X a<sub>x</sub>∈R 
-    ∧ a<sub>x</sub>=0 p.t. x∈X}</small>)</li>
-  <li>For ring extensions S/R (resp. commutative, unital associative R-algebras 
-    S), and a subset A⊆S we have an alternative characterization<br>
-    R[A] (:= R[〈A〉<sub class="categorie">Mag</sub>]) = 〈R∪A〉 = ⋃<sub>E⊆A 
-    fin</sub> R[E] (<small>= {f(α<sub>1</sub>,…,α<sub>n</sub>) ¦ n∈<b>N</b> 
-    ∧ f∈R[X<sub>1</sub>,…,X<sub>n</sub>] ∧ ∀i α<sub>i</sub>∈A}</small>)</li>
-  <li>For field extensions L/K, and a subset A⊆L we have an alternative 
+    (X) := ⋂<sub>X⊆S</sub><sub>⊴</sub><sub>E</sub> S = X⋅R = R<sup>(X)</sup>  
+    (<small>= {∑<sub>x∈X</sub> a<sub>x</sub>⋅x ¦ ∀x∈X a<sub>x</sub>∈R  
+    ∧ a<sub>x</sub>=0 p.t. x∈X}</small>)</li> 
+  <li>For ring extensions S/R (resp. commutative, unital associative R-algebras  
+    S), and a subset A⊆S we have an alternative characterization<br> 
+    R[A] (:= R[〈A〉<sub class="categorie">Mag</sub>]) = 〈R∪A〉 = ⋃<sub>E⊆A  
+    fin</sub> R[E] (<small>= {f(α<sub>1</sub>,…,α<sub>n</sub>) ¦ n∈<b>N</b>  
+    ∧ f∈R[X<sub>1</sub>,…,X<sub>n</sub>] ∧ ∀i α<sub>i</sub>∈A}</small>)</li> 
+  <li>For field extensions L/K, and a subset A⊆L we have an alternative  
     characterization<br>
-    K(A) := Quot(K[A]) = 〈K∪A〉 = ⋃<sub>E⊆A fin</sub> K(E) = (<small>{f(α<sub>1</sub>,…,α<sub>n</sub>) 
+    K(A) := Quot(K[A]) = 〈K∪A〉 = ⋃<sub>E⊆A fin</sub> K(E) = (<small>{f(α<sub>1</sub>,…,α<sub>n</sub>)  
     / g(α<sub>1</sub>,…,α<sub>n</sub>) ¦ n∈<b>N</b> ∧ f,g∈K[X<sub>1</sub>,…,X<sub>n</sub>] 
     ∧ ∀i α<sub>i</sub>∈A ∧ g(α<sub>1</sub>,…,α<sub>n</sub></small>)≠0})<br>
-    (= K[A] if all α∈A are algebraic over K)</li>
+    (= K[A] if all α∈A are algebraic over K)</li> 
 </ul>
+
+<p>The word algebra comes from the book &quot;Kitāb al-ǧabr  
+wa-l-muquābala&quot; by Abū'  
+Abdallah Muhammad ibn Mūsā al-Maǧūsī <i> 
+Al-Hwārizmī</i> al-Choresmi  
+(787-ca.850)</p>
 
 </body>
 
