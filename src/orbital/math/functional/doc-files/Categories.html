@@ -6,6 +6,8 @@
 <meta name="author" content="Andre Platzer">
 <meta name="copyright" content="© 2002 André Platzer">
 <meta name="classification" content="Science/Mathematics/Category/Basics">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
 <title>Category theory</title>
 <link rel="stylesheet" href="../../../../stylist.css" type="text/css" title="layout">
 </head>
@@ -117,12 +119,12 @@
       ∀f∈Mor<sub><span class="category">C</span></sub>(C,C') G(f)∘α<sub>C</sub> 
       = α<sub>C'</sub>∘F(f)
     </div>
+    <!-- @todo add the commutative diagram -->
     The functors <span class="category">C</span>→<span class="category">D</span> 
     form a category with natural transformations being the morphisms.<br>
-    Remark?: an isomorphism of functors is just a family of isomorphisms <span class="seriesOperator">(</span>α<sub>C</sub><span class="seriesOperator">)</span><sub>C∈Ob 
-    <span class="category">C</span></sub> with the above property.          
-    <!-- @todo add the commutative diagram -->
-  </dd>
+    Remark: an isomorphism of functors is just a family of isomorphisms <span class="seriesOperator">(</span>α<sub>C</sub><span class="seriesOperator">)</span><sub>C∈Ob 
+    <span class="category">C</span></sub> with the above property, especially 
+    F(C)≅G(C) ∧ G(f) = α<sub>C'</sub>∘F(f)∘α<sub>C</sub><sup>-1</sup>.</dd>
 </dl>
 <p>The elements of the monoid Mor<span class="category"><sub>C</sub></span>(A,A) 
 are called <dfn>endomorphisms</dfn> of A. The elements of Mor<span class="category"><sub>C</sub></span>(A,B) 
@@ -234,12 +236,16 @@ are called <dfn>automorphisms</dfn>.</p>
     A is called presenting object for F.</dd>
   <dt>universal element</dt>
   <dd>If F:<span class="category">C</span>→<span class="category">Ens</span> 
-    is a presentable covariant functor, and α:m<sub>A</sub>→F a corresponding 
-    isomorphism of functors, then u<sub>F</sub> := α<sub>A</sub>(id<sub>A</sub>) 
+    is a presentable covariant functor with a corresponding isomorphism of 
+    functors α:m<sub>A</sub>→F, then u<sub>F</sub> := α<sub>A</sub>(id<sub>A</sub>) 
     ∈ F(A) is called universal element of F.
     <div>
-      ⇒ ∀B∈Ob <span class="category">C</span> ∀x∈F(B) ∃!f∈Mor<sub class="category">C</sub>(A,B) 
+      ⇒ ∀B∈Ob <span class="category">C</span> ∀x∈F(B) ∃!f∈Mor<sub class="category">C</sub>(A,B)=m<sub>A</sub>(B) 
       x = F(f)(u<sub>F</sub>)
+      <ul>
+        <li><small>(The converse is also true)</small></li>
+        <li>and the mapping (B,x)↦f is bijective.</li>
+      </ul>
     </div>
   </dd>
 </dl>
@@ -262,8 +268,7 @@ presentable covariant functor.
     <span class="category">C</span> :⇔ <center><big>(</big>∀C∈Ob <span class="category">C</span> 
     ∀<span class="seriesOperator">(</span>g<sub>i</sub><sub></sub>∈Mor<sub><span class="category">C</span></sub>(C,A<sub>i</sub>)<span class="seriesOperator">)</span><sub>i∈I</sub><br />
     ∃!g∈Mor<sub><span class="category">C</span></sub>(C,P) ∀i∈I π<sub>i</sub>∘g 
-    = g<sub>i</sub> <big>)</big></center>Write: P = ∏<sub>i∈I</sub>A<sub>i</sub> 
-    = <big>×</big><sub>i∈I</sub>A<sub>i</sub><sub><br>
+    = g<sub>i</sub> <big>)</big></center>Write: P = ∏<sub>i∈I</sub>A<sub>i</sub><sub><br>
     </sub>&quot;product is universally attracting&quot;, and it is just a 
     terminal object in a suitable category.</dd>
   <dt id="coproduct">coproduct</dt>
@@ -273,8 +278,7 @@ presentable covariant functor.
     ∀<span class="seriesOperator">(</span>g<sub>i</sub><sub></sub>∈Mor<sub><span class="category">C</span></sub>(A<sub>i</sub>,C)<span class="seriesOperator">)</span><sub>i∈I</sub><br />
     ∃!g∈Mor<sub><span class="category">C</span></sub>(S,C) ∀i∈I g∘ι<sub>i</sub> 
     = g<sub>i</sub> <big>)</big></center>Write: S = ∐<sub>i∈I</sub>A<sub>i</sub> 
-    = ⊕<sub>i∈I</sub>A<sub>i</sub> = ∑<sub>i∈I</sub>A<sub>i</sub> = 
-    ⋃̇<sub>i∈I</sub>A<sub>i</sub><br>
+    = ⊕<sub>i∈I</sub>A<sub>i</sub> = ∑<sub>i∈I</sub>A<sub>i</sub><br>
     &quot;coproduct is universally repelling&quot;, and it is just an initial 
     object in&nbsp; a suitable category. A coproduct in <span class="category">C</span> 
     is just a product in <span class="category">C°</span>.</dd>

@@ -186,12 +186,29 @@ element, and at most one inverse of any element.&nbsp; M<sup>×</sup> := {x∈M
 <p>Remember that the definitions for homomorphisms are meant cumulative. This 
 means that for φ to be a homomorphism of monoids, both (m) and (1) must be 
 true. In fact, although both of these must also be true for homomorphisms of 
-groups, the property (1) already follows from (m) provided that M is a group. So 
-the property (1) only must be verified for monoids, which is the justification 
-for the suggestive notation in the table above.</p>
+groups, the property (1) already follows from (m) provided that M, N are groups. 
+So the property (1) only must be verified for monoids, which is the 
+justification for the suggestive notation in the table above.</p>
 <p>If φ:M→N is a homomorphism (of magmas), it carries much of the algebraic 
-structure of M over to f(M)⊆N. (f(M),∗) inherits the properties (s),(a),(n),(c) 
+structure of M over to f(M)⊆N. (f(M),∗) inherits the properties (s),(a),(n),(i),(c) 
 from (M,⋅), however in general it may be f(1)≠1.</p>
+<h3 class="inner">Examples</h3>
+<ol>
+  <li>For every set X there is the <dfn>free magma</dfn> M(X) := .</li>
+  <li>For every set X there is the <dfn>free semigroup</dfn> (of words) F<sup>a</sup>(X) 
+    := X<sup>+</sup> := ⋃<sub>n∈<b>N</b>\{0}</sub> X<sup>n</sup>.</li>
+  <li>For every set X there is the <dfn>free monioid</dfn> (of words) Mo(X) := X<sup>*</sup> 
+    := ⋃<sub>n∈<b>N</b></sub> X<sup>n</sup>.</li>
+  <li>For every set X there is the <dfn>free group</dfn> F(X) with basis X with<br>
+    ∀y∈F(X) ∃!x<sub>1</sub><sup>ε<sub>1</sub></sup>⋅...⋅x<sub>n</sub><sup>ε<sub>n</sub></sup> 
+    = y with x<sub>i</sub>∈X ∧ ε<sub>i</sub>∈{-1,1} ∧ x<sub>i</sub><sup>ε<sub>i</sub></sup>≠x<sub>i+1</sub><sup>-ε<sub>i+1</sub></sup>.</li>
+  <li><span class="category">Ab</span>≅<span class="category"><b>Z</b>-Mod.</span></li>
+  <li>The Cartesian product ∏<sub>i∈I</sub> A<sub>i</sub> := {(a<sub>i</sub>)<sub>i∈I</sub> 
+    ¦ a<sub>i</sub>∈A<sub>i</sub>} with component-wise laws is a product in <span class="category">Ens</span>,<span class="category">Magma</span>,<span class="category">Semigroup</span>,<span class="category">Mon</span>,<span class="category">Gr</span>,<span class="category">Ring</span>,<span class="category">Ring1</span>,<span class="category">cRing</span>,<span class="category">R-Mod</span>,<span class="category">R-Alg</span>,...</li>
+  <li>The direct sum <big>⊕</big><sub>i∈I</sub> A<sub>i</sub> := {(a<sub>i</sub>)<sub>i∈I</sub> 
+    <sub></sub>∈ ∏<sub>i∈I</sub> A<sub>i</sub> ¦ a<sub>i</sub>=1 p.t. i∈I} 
+    with component-wise laws is a coproduct in <span class="category">Mon</span>,<span class="category">R-Mod</span>,...</li>
+</ol>
 <h3 id="ring">Rings</h3>
 <table width="100%" class="def" id="laws_2_0">
   <caption>Algebraic structures with two laws of composition</caption>
@@ -231,7 +248,7 @@ from (M,⋅), however in general it may be f(1)≠1.</p>
   </tr>
   <tr id="skewField">
     <td class="defID">( )</td>
-    <td class="defCond">(R\{0},⋅) is a group, resp. the R<sup>×</sup> = R\{0}</td>
+    <td class="defCond">(R\{0},⋅) is a group, resp. R<sup>×</sup> = R\{0}</td>
     <td class="defTerm"><dfn>skew field</dfn> ⊂ ring with 1</td>
   </tr>
   <tr id="field">
@@ -383,13 +400,16 @@ R-vector spaces are simply called R-vector spaces.</p>
     Be aware that proper ideals I⊲R (i.e. I⊴R ∧ I≠R) are only sub-<em>pseudo</em>-rings 
     and no unital sub-rings since 1∉I.</li>
   <li><span class="category">Ab</span>≅<span class="category"><b>Z</b>-Mod.</span></li>
-  <li><span class="category">Ring</span>≅<span class="category"><b>Z</b>-AAlg.</span></li>
+  <li><span class="category">Ring</span>≅<span class="category"><b>Z</b>-Algas.</span></li>
   <li>If M and M' are R-modules, Hom<sub>R</sub>(M,M') := {φ:M→M' ¦ φ is 
     R-linear} is an R-module with pointwise addition and scalar multiplication.</li>
   <li>M<sup>⌄</sup> := M<sup>*</sup> := Hom<sub>R</sub>(M,R) is called the <dfn>dual 
     module</dfn> to M. If M is free with base B, then M<sup>*</sup> is free with 
     the dual base B<sup>*</sup>:={b<sup>*</sup>:B→R; b'↦δ<sub>bb'</sub> ¦ 
     b∈B}.</li>
+  <li>R<sup>(X)</sup> := <big>⊕</big><sub>x∈X</sub> R is the <dfn>free 
+    R-module</dfn> with basis X (X is a set).<br>
+    ⇔ X is R-linear independent and generates the module (i.e. =〈X〉).</li>
 </ol>
 <h3>Algebras</h3>
 <table width="100%" class="def" id="laws_2_1">
@@ -510,16 +530,22 @@ homomorphism of rings.</p>
 </table>
 <h3 class="inner">Examples</h3>
 <ol start="0">
-  <li>A ring R is an R-algebra.</li>
-  <li>A commutative ring R with 1 is a unital and commutative R-algebra.</li>
-  <li>A ring R is a <b>Z</b>-Algebra according to <b>Z</b>→R;1↦1.</li>
+  <li>A ring R is an associative R-algebra, as well as an associative <b>Z</b>-algebra.</li>
+  <li>A commutative ring R with 1 is a unital and commutative associative 
+    R-algebra.</li>
   <li>Let A := 〈x<sub>1</sub>,...,x<sub>n</sub>〉 be a finitely generated 
     R-algebra, then A ≅ R[X<sub>1</sub>,...,X<sub>n</sub>]/I with an I⊴R[X<sub>1</sub>,...,X<sub>n</sub>].</li>
   <li>If R≤R' is a ring extension then R' is an R-algebra.</li>
   <li>If I⊴R is an ideal, R/I is an R-algebra.</li>
+  <li><b>Z</b>-<span class="category">Algas</span>≅<span class="category">PseudoRing</span>, 
+    <b>Z</b>-<span class="category">Algasu</span>≅<span class="category">Ring1</span>.</li>
+  <li>If S is a magma, then R<sup>(S)</sup> is an R-algebra (and associative, 
+    unital, or commutative if S is), by ι(s)⋅ι(t) := ι(s⋅t) from the 
+    canonical injection ι:S→R<sup>(S)</sup>. Especially, there is the free 
+    R-algebra Lib<sub>R</sub>(I) := R<sup>(M(I))</sup>, the free associative 
+    R-algebra Libas<sub>R</sub>(I) := R<sup>(Mo(I))</sup>, and the free 
+    commutative and associative R-algebra Libasc<sub>R</sub>(I) := R<sup>(N<sup>(I)</sup>)</sup>.</li>
   <li>R<sup>F</sup>....</li>
-  <li>The categories of unital and commutative Z-algebras and of rings are 
-    isomorph: <b>Z</b>-<span class="category">UAAlg</span>≅<span class="category">Ring</span>.</li>
 </ol>
 <h2 id="quotient">Quotient Structures</h2>
 <p>Provided one of the following (equivalent) cases is satisfied
@@ -547,14 +573,14 @@ equivalence relation, that relation does not need to be a congruence compatible
 with the algebraic structure of M.</p>
 <p>Note that these congruence relations ~ on M often correspond bijectively to 
 special substructures of M, and to (left or right) cosets .... . Examples are 
-normal subgroups in groups, subgroups in Abelian groups, ideals in rings, 
-submodules in R-modules. For example, if G is a group with a normal subgroup 
-N⊴G, then there is a homomorphism φ with N=Ker(φ) inducing an equivalence 
-relation ~, and <center>G/N := G/~ = <big>{</big>g⋅N:={g⋅n ¦ n∈N} ¦ 
-g∈G<big>}</big> = <big>{</big>N⋅g:={n⋅g ¦ n∈N} ¦ g∈G<big>}</big></center>is 
+normal subgroups in groups, subgroups in Abelian groups, ideals in rings (i.e. 
+sub-R-modules), submodules in R-modules. For example, if G is a group with a 
+normal subgroup N⊴G, then there is a homomorphism φ with N=Ker(φ) inducing 
+an equivalence relation ~, and <center>G/N := G/~ = <big>{</big>g⋅N:={g⋅n ¦ 
+n∈N} ¦ g∈G<big>}</big> = <big>{</big>N⋅g:={n⋅g ¦ n∈N} ¦ g∈G<big>}</big></center>is 
 the set of left <dfn>cosets</dfn> or the set of right cosets. Although the left 
 and right cosets are also defined for ordinary subgroups H≤G instead of N, 
-they do not coincide with the equivalence classes of a quotient group in the 
+they do not coincide with any equivalence classes of a quotient group in the 
 general case. In either case, all cosets have the same cardinality and <center>[G:H] 
 := number of left cosets = number of right cosets (= |G/H| if H⊴G).</center> 
 is called the <dfn>index</dfn> of the subgroup H in G. It satisfies <center>|G| 

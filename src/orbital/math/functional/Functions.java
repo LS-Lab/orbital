@@ -1110,7 +1110,7 @@ public final class Functions {
     /**
      * sign: A&rarr;{-1,0,1}; x &#8614; -1 if x&lt;0, x &#8614; 0 if x=0, x &#8614; 1 if x&gt;0.
      * <p>derive: sign' = diracDelta = 0 on <b>R</b>\{0}.</p>
-     * @see #step(Comparable)
+     * @see #step(Real)
      * @see #logistic
      */
     public static final Function sign = new AbstractFunction/*<Real,Real>*/() {
@@ -1170,7 +1170,8 @@ public final class Functions {
      * diracDelta &delta;: M\{0}&rarr;{0}; x &#8614; 0 if x&ne;0.
      * <p>derive: &delta;' = &delta; ??.<br />
      * integrate: &int;&delta;(x)<i>d</i>x = step<sub>0</sub>(x)</p>
-     * @see #step(Comparable)
+     * @see #delta
+     * @see #step(Real)
      * @see #piecewise(Predicate[], Function[])
      */
     public static final Function diracDelta = new AbstractFunction/*<Arithmetic,Integer>*/() {
@@ -1466,6 +1467,7 @@ public final class Functions {
     /**
      * delta: <b>R</b>&times;<b>R</b>&rarr;<b>R</b>; (x,x) &#8614; 1, (x,y) &#8614; 0 for x&ne;y.
      * Kronecker-delta function.
+     * @see #diracDelta
      */
     public static final BinaryFunction delta = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Integer>*/() {
 	    public Object/*>Integer<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {

@@ -61,7 +61,7 @@ import orbital.logic.Relation;
  *     <div>("&lArr;" if <span class="inference">|~</span> is monotonic)</div>
  *   </dd>
  *   <dt>uniform</dt>
- *   <dd>if
+ *   <dd>if,
  *     provided that G and <span class="set">B</span>&cup;{F} do not have any variables (or (atomic) propositional variables) in common
  *     and G is not inconsistent (i.e. <span class="inferenceOperation">C</span>({G})&ne;Formula(&Sigma;)),
  *     then
