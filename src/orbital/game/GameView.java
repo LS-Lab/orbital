@@ -48,6 +48,7 @@ import java.util.StringTokenizer;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
+import orbital.signe;
 import orbital.util.InnerCheckedException;
 
 /**
@@ -572,7 +573,7 @@ public class GameView extends Applet {
      * Info.
      */
     public String getAppletInfo() {
-	return "generic Applet for Games on a GameBoard. Copyright (c) 1996-2001 by Andre Platzer";
+	return "Generic Java applet displaying strategic board games. Copyright " + signe.getCreated() + " by " + signe.getCreator();
     } 
 
     /**
@@ -580,8 +581,8 @@ public class GameView extends Applet {
      */
     public String[][] getParameterInfo() {
 	String[][] info = {
-	    {"gameName",  "String", "name of the concrete Game"},
-	    {"gameRules", "String", "parameter describing the GameRules. Per default the name of a class that implements GameRules."},
+	    {"gameName",  "String", "name of the specific game"},
+	    {"gameRules", "String", "parameter describing the GameRules. Per default this is the name of a class that implements " + GameRules.class},
 	    {"player-X",  "String", "the argument to pass when starting player number X. If left out, a human player will play X."}
 	};
 	return info;
