@@ -63,13 +63,6 @@ public interface GameRules {
     int getFigureTypes();
 
     /**
-     * Whether it is the next player's turn (due to end of turn).
-     * @return true if the current player has finished all his moves and it is
-     *  the next player's turn.
-     */
-    boolean isNextTurn();
-
-    /**
      * Is called after each turn to check who won.
      * @param field the field the game is being played on to check who won the game.
      * @return a value whose absolute specifies the league that has won, {@link Figure#NOONE} if there is no winner yet.
