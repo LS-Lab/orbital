@@ -119,8 +119,9 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 	return resolvents.iterator();
     }
 
-    public Iterator/*_<Clause>_*/ resolveWithFactors(Clause G) {
-	final Clause F = this;
+    public Iterator/*_<Clause>_*/ resolveWithFactors(Clause _G) {
+	final ClauseImpl F = this;
+	final ClauseImpl G = (ClauseImpl)_G;
 	assert F.getFreeVariables().intersection(G.getFreeVariables()).isEmpty() : "@preconditions disjoint variable variants required for resolution";
 	// list views
 	final List/*_<Formula>_*/ listF = new ArrayList(F);
@@ -140,17 +141,21 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 		if (R != null) {
 		    resolvents.add(R);
 
+		    // also add resolvents of factors of F and G
 		    // form all subsets of literals (that are unifiable with L) to the right of L that really include L
 		    final Set/*_<Set<Formula>>_*/ factorFLiteralCombinations =
-			Setops.powerset(this.getUnifiables(listF.subList(j.nextIndex(), listF.size()), L));
+			Setops.powerset(F.getUnifiables(listF.subList(j.nextIndex(), listF.size()), L));
 		    // form all subsets of literals (that are unifiable with K) to the right of K that really include K
 		    final Set/*_<Set<Formula>>_*/ factorGLiteralCombinations =
-			Setops.powerset(((ClauseImpl)G).getUnifiables(listG.subList(k.nextIndex(), listG.size()), K));
+			Setops.powerset(G.getUnifiables(listG.subList(k.nextIndex(), listG.size()), K));
 		    for (Iterator f = factorFLiteralCombinations.iterator(); f.hasNext(); ) {
 			final Set/*_<Formula>_*/ factorFLiterals = (Set)f.next();
 			factorFLiterals.add(L);
-			final Pair  pF = factorize2(factorFLiterals);
-			assert pF != null : "unifiables can be factorized";
+			final Pair pF = F.factorize2(factorFLiterals);
+			if (pF == null) {
+			    //@internal even though the literals unify individually, this particular combination does not.
+			    continue;
+			}
 			final ClauseImpl factorF = (ClauseImpl)pF.B;
 			// factorL corresponds to L (is one remaining literal after factorization)
 			final Formula factorL = (Formula) ((Substitution)pF.A).apply(L);
@@ -162,8 +167,11 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 				// factoring neither F nor G simply leads to R which we already have calculated above
 				continue;
 			    }
-			    final Pair  pG = factorize2(factorGLiterals);
-			    assert pG != null : "unifiables can be factorized";
+			    final Pair pG = G.factorize2(factorGLiterals);
+			    if (pG == null) {
+				//@internal even though the literals unify individually, this particular combination does not.
+				continue;
+			    }
 			    final Clause factorG = (Clause)pG.B;
 			    // factorK corresponds to K (is one remaining literal after factorization)
 			    final Formula factorK = (Formula) ((Substitution)pG.A).apply(K);
