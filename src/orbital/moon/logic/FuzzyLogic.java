@@ -306,7 +306,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	     new NotationSpecification(916, xfy, Notation.INFIX)},
 	    {LogicFunctions.impl,         // "->"
 	     new NotationSpecification(920, "xfx", Notation.INFIX)},
-	    {LogicFunctions.leftwardImpl, // "<-"
+	    {LogicFunctions.reverseImpl, // "<-"
 	     new NotationSpecification(920, "xfx", Notation.INFIX)},
 	    {LogicFunctions.equiv,        // "<->"
 	     new NotationSpecification(920, xfy, Notation.INFIX)}
@@ -756,7 +756,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     	//@todo how about =< as an implementation of the implication in fuzzy logic?
     	public static final BinaryFunction impl = null;
 
-    	public static final BinaryFunction leftwardImpl = null;
+    	public static final BinaryFunction reverseImpl = null;
 
     	public static final BinaryFunction equiv = null;
 
