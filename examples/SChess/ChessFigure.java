@@ -55,7 +55,7 @@ public class ChessFigure extends Figure {
 
     /**
      * How far we would be storming to the front if we went to the specified position.
-     * @para pos the new position to be checked for forward/backward movement.
+     * @param pos the new position to be checked for forward/backward movement.
      * @return value that is positive if its forward and negative if its backward.
      */
     public int stormFront(Position pos) {
