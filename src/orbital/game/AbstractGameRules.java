@@ -45,6 +45,22 @@ public abstract class AbstractGameRules implements GameRules, Serializable {
      */
     public static final int   EMPTY = Figure.EMPTY;
 
+    /**
+     * Use urls relative to codebase for applets, or as resources otherwise.
+     * If component is an instance of <code>java.applet.Applet</code>, images are loaded
+     * from its document base, otherwise from the resources with a default toolkit.
+     */
+    protected static final int URL_DETECT = 0;
+    /**
+     * Use urls relative to {@link Applet#getDocumentBase() document base}.
+     */
+    protected static final int URL_DOCUMENT_BASE = 1;
+    /**
+     * Use urls relative to {@link Class#getResource(String) resources} (f.ex. in a JAR).
+     */
+    protected static final int URL_RESOURCES = 2;
+
+
     private static final int  FIGURE_IMAGE_ID = 17;
 
     /**
@@ -151,29 +167,44 @@ public abstract class AbstractGameRules implements GameRules, Serializable {
      * Call to load all Images needed for the Figures.
      * @param component for which component (usually an applet) to load all images.
      * Used for the media tracker except when <code>null</code>.
-     * If component is an instance of <code>java.applet.Applet</code>, images are load
-     * from its codebase, otherwise from the default toolkit.
+     * @param relativeTo specify where to load images from.
+     * @see #URL_DETECT
+     * @see #URL_DOCUMENT_BASE
+     * @see #URL_RESOURCES
      * @see java.awt.MediaTracker
      * @see java.applet.Applet#getImage(java.net.URL,java.lang.String)
      * @see java.awt.Toolkit#getImage(java.net.URL)
      */
-    protected void loadAllImages(Component component) {
+    protected void loadAllImages(Component component, int relativeTo) {
 	// two load possibilities, the other is null!
 	Applet  applet = null;
 	Toolkit tk = null;
 
 	// excerpt the applet if possible, or get a toolkit
-	if (component instanceof Applet)
+	switch (relativeTo) {
+	case URL_DOCUMENT_BASE:
 	    applet = (Applet) component;
-	else
+	    break;
+	case URL_RESOURCES:
 	    tk = component.getToolkit();
+	    break;
+	case URL_DETECT:
+	    if (component instanceof Applet)
+		applet = (Applet) component;
+	    else
+		tk = component.getToolkit();
+	    break;
+	default:
+	    throw new IllegalArgumentException("illegal relative url type specifier " + relativeTo);
+	}
 
 	this.images = new Image[getLeagues()][getFigureTypes()];
 	MediaTracker tracker = component == null ? null : new MediaTracker(component);
 	images[NOONE][EMPTY] = null;
 	for (int leag = NOONE + 1; leag < getLeagues(); leag++)
 	    for (int typ = EMPTY + 1; typ < getFigureTypes(); typ++) {
-		Image img = getImage(applet, tk, image_prefix + leag + "_" + typ + image_suffix);
+		Image img = getImage(applet, tk,
+				     image_prefix + leag + "_" + typ + image_suffix);
 		images[leag][typ] = img;
 		if (tracker != null)
 		    tracker.addImage(img, FIGURE_IMAGE_ID);
@@ -187,13 +218,16 @@ public abstract class AbstractGameRules implements GameRules, Serializable {
     } 
 
     private Image getImage(Applet applet, Toolkit tk, String filename) {
-	if (applet != null)
-	    return applet.getImage(applet.getCodeBase(), filename);
-	else if (tk != null)
+	if (tk != null)
 	    return tk.getImage(getClass().getResource(filename));
+	else if (applet != null)
+	    return applet.getImage(applet.getDocumentBase(), filename);
 	else
 	    throw new RuntimeException("neither applet nor toolkit is available to get images");
     } 
+    protected void loadAllImages(Component component) {
+	loadAllImages(component, URL_RESOURCES);
+    }
 
     /**
      * helper to convert from string-array to an array of moves.
