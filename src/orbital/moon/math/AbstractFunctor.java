@@ -77,7 +77,7 @@ public abstract class AbstractFunctor implements MathFunctor {
 	if (b instanceof Scalar) {
 	    if (Values.ONE.equals(b))
 		return this;
-	    else if (Values.getDefaultInstance().valueOf(-1).equals(b))
+	    else if (Values.MINUS_ONE.equals(b))
 		return minus();
 	    else if (Values.ZERO.equals(b))
 		return Values.ZERO;
@@ -92,7 +92,7 @@ public abstract class AbstractFunctor implements MathFunctor {
 	if (b instanceof Scalar) {
 	    if (Values.ONE.equals(b))
 		return this;
-	    else if (Values.getDefaultInstance().valueOf(-1).equals(b))
+	    else if (Values.MINUS_ONE.equals(b))
 		return minus();
 	    else if (Values.ZERO.equals(b))
 		throw new ArithmeticException("division by zero");
@@ -105,7 +105,7 @@ public abstract class AbstractFunctor implements MathFunctor {
 	if (b instanceof Scalar) {
 	    if (Values.ONE.equals(b))
 		return this;
-	    else if (Values.getDefaultInstance().valueOf(-1).equals(b))
+	    else if (Values.MINUS_ONE.equals(b))
 		return inverse();
 	    else if (Values.ZERO.equals(b))
 		return Values.ONE;
