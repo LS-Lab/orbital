@@ -143,11 +143,13 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
      * variant is no good for very high branching factors (or
      * expensive expansions).
      * @see BestFirstSearch
+     * @todo terminate search if after an attempted transition s&rarr;s' it is f(s')>f(s) (local minimum convergence criterium), alias (due to acceptStep) if new state == old state.
      * @todo why do some authors think that hill climbing should not forget about other alternatives, but remember them as depth-first search does. Will this really be another / or better algorithm, then?
      */
     public static final LocalSelection LOCAL_BEST_IMPROVEMENT = new LocalSelection("LocalBest") {
 	    Iterator createTraversal(GeneralSearchProblem problem, HillClimbing algorithm) {
-		return algorithm.new OptionIterator(problem);
+		//return algorithm.new OptionIterator(problem);
+		return acceptStep(PackageUtilities.restrictRandomly(PackageUtilities.restrictBest(problem, algorithm.getEvaluation()),1,algorithm), algorithm);
 	    }
 	};
     /**
@@ -157,7 +159,8 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
      */
     public static final LocalSelection LOCAL_FIRST_IMPROVEMENT = new LocalSelection("LocalFirst") {
 	    Iterator createTraversal(GeneralSearchProblem problem, HillClimbing algorithm) {
-		return new OptionIterator_First(problem, algorithm);
+		//return new OptionIterator_First(problem, algorithm);
+		return acceptStep(PackageUtilities.restrictRandomly(problem,1,algorithm), algorithm);
 	    }
 	};
     /**
@@ -171,7 +174,7 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
      * {@link GeneralSearchProblem#actions(Object)}.
      * </p>
      */
-    static final LocalSelection LOCAL_ORDERED_IMPROVEMENT = null;
+    private static final LocalSelection LOCAL_ORDERED_IMPROVEMENT = null;
     /**
      * The exact type of hill-climbing specifying which exact variant is used.
      * @serial
@@ -249,65 +252,10 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
 	return getType().createTraversal(problem, this);
     }
 
-    /**
-     * An iterator over a state space in (randomized) greedy order for hill-climbing.
-     * @version 1.0, 2001/08/01
-     * @author  Andr&eacute; Platzer
-     * @todo really turn this class into a inner static class whose constructor requires an EvaluativeAlgorithm that also is a ProbabilisticAlgorithm?
-     * @todo replace by acceptStep(restrictRandomly(restrictBest(problem),algorithm,1))
-     */
-    public class OptionIterator extends GeneralSearch.OptionIterator {
-	private static final long serialVersionUID = -6802484555661425572L;
-	/**
-	 * the data collection implementation maintained.
-	 * @serial
-	 */
-	private Iterator nodes;
-	public OptionIterator(GeneralSearchProblem problem) {
-	    super(problem);
-	    nodes = Collections.singletonList(problem.getInitialState()).iterator();
-	}
-        protected boolean isEmpty() {
-	    return !nodes.hasNext();
-        }
-        /**
-         * Select the node with min f(n).
-	 * @see orbital.util.Setops#argmin
-         */
-        protected Object/*>S<*/ select() {
-	    Comparator comparator = new EvaluationComparator(HillClimbing.this);
-	    // aggregate minimum greedy search
-	    Object candidate = nodes.next();
-	    // contains all candidates that are as well as candidate
-	    List candidates = new LinkedList();
-	    candidates.add(candidate);
-	    while (nodes.hasNext()) {
-		Object next = nodes.next();
-		int cmp = comparator.compare(next, candidate);
-		// use better one
-		if (cmp < 0) {
-		    candidate = next;
-		    candidates = new LinkedList();
-		    candidates.add(candidate);
-		} else if (cmp == 0)
-		    // collect all best candidates
-		    candidates.add(candidate);
-		else
-		    // forget about worse candidates
-		    ;
-	    }
-	    // for multiple candidates with optimal evaluation value, select one, randomly
-	    return candidates.get(getRandom().nextInt(candidates.size()));
-        }
-       	/**
-       	 * discard old list, using new.
-    	 */
-        protected boolean add(Iterator newNodes) {
-	    nodes = newNodes;
-	    return newNodes.hasNext();
-        }
-    };
 
+    private static Iterator acceptStep(GeneralSearchProblem problem, LocalOptimizerSearch algorithm) {
+	return new OptionIterator_First(problem, algorithm);
+    }
     /**
      * An iterator over a state space in (probabilistic) greedy order for hill-climbing.
      * @version 1.0, 2001/08/01
@@ -330,7 +278,7 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
 	 * @internal we avoid using the help of EvaluativeComparator here, because we ourselves can cache currentValue
 	 */
 	public boolean accept(Object/*>S<*/ state, Object/*>S<*/ sp) {
-	    final ScheduledLocalOptimizerSearch algorithm = (ScheduledLocalOptimizerSearch) getAlgorithm();
+	    final LocalOptimizerSearch algorithm = getAlgorithm();
 	    final double value = ((Number) algorithm.getEvaluation().apply(sp)).doubleValue();
 	    final double deltaEnergy = value - currentValue;
 
@@ -346,6 +294,66 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
 	    return true;
 	}
     };
+
+//     /**
+//      * An iterator over a state space in (randomized) greedy order for hill-climbing.
+//      * @version 1.0, 2001/08/01
+//      * @author  Andr&eacute; Platzer
+//      * @todo really turn this class into a inner static class whose constructor requires an EvaluativeAlgorithm that also is a ProbabilisticAlgorithm?
+//      * @todo replace by acceptStep(restrictRandomly(restrictBest(problem),algorithm,1))
+//      */
+//     public class OptionIterator extends GeneralSearch.OptionIterator {
+// 	private static final long serialVersionUID = -6802484555661425572L;
+// 	/**
+// 	 * the data collection implementation maintained.
+// 	 * @serial
+// 	 */
+// 	private Iterator nodes;
+// 	public OptionIterator(GeneralSearchProblem problem) {
+// 	    super(problem);
+// 	    nodes = Collections.singletonList(problem.getInitialState()).iterator();
+// 	}
+//         protected boolean isEmpty() {
+// 	    return !nodes.hasNext();
+//         }
+//         /**
+//          * Select the node with min f(n).
+// 	 * @see orbital.util.Setops#argmin
+//          */
+//         protected Object/*>S<*/ select() {
+// 	    Comparator comparator = new EvaluationComparator(HillClimbing.this);
+// 	    // aggregate minimum greedy search
+// 	    Object candidate = nodes.next();
+// 	    // contains all candidates that are as well as candidate
+// 	    List candidates = new LinkedList();
+// 	    candidates.add(candidate);
+// 	    while (nodes.hasNext()) {
+// 		Object next = nodes.next();
+// 		int cmp = comparator.compare(next, candidate);
+// 		// use better one
+// 		if (cmp < 0) {
+// 		    candidate = next;
+// 		    candidates = new LinkedList();
+// 		    candidates.add(candidate);
+// 		} else if (cmp == 0)
+// 		    // collect all best candidates
+// 		    candidates.add(candidate);
+// 		else
+// 		    // forget about worse candidates
+// 		    ;
+// 	    }
+// 	    // for multiple candidates with optimal evaluation value, select one, randomly
+// 	    return candidates.get(getRandom().nextInt(candidates.size()));
+//         }
+//        	/**
+//        	 * discard old list, using new.
+//     	 */
+//         protected boolean add(Iterator newNodes) {
+// 	    nodes = newNodes;
+// 	    return newNodes.hasNext();
+//         }
+//     };
+
 
 
     //	protected Collection createCollection() {

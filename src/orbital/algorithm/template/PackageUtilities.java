@@ -95,7 +95,7 @@ final class PackageUtilities {
      * @todo might also provide a Random generator explicitly, if we would not like changing it during a search, anyway.
      * @return the decorated problem.
      */
-    public GeneralSearchProblem restrictRandomly(GeneralSearchProblem problem, final int numberOfChoices, final ProbabilisticAlgorithm algorithm) {
+    public static final GeneralSearchProblem restrictRandomly(GeneralSearchProblem problem, final int numberOfChoices, final ProbabilisticAlgorithm algorithm) {
 	return new DelegateGeneralSearchProblem(problem) {
 		public Iterator actions(Object state) {
 		    final List actions = Setops.asList(getDelegatee().actions(state));
@@ -122,7 +122,7 @@ final class PackageUtilities {
      * @return the decorated problem.
      * @see PackageUtilities#min
      */
-    public GeneralSearchProblem restrictBest(GeneralSearchProblem problem, final Function evaluationFunction) {
+    public static final GeneralSearchProblem restrictBest(GeneralSearchProblem problem, final Function evaluationFunction) {
 	return new DelegateGeneralSearchProblem(problem) {
 		public Iterator actions(Object state) {
 		    final GeneralSearchProblem problem = getDelegatee();

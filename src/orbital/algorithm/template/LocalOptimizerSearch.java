@@ -69,6 +69,7 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
      * it is a solution, or not.
      * This behaviour is especially useful if the isSolution test is omitted by categorically
      * returning <span class="keyword">true</span> there.
+     * @post &not;super
      */
     protected Object/*>S<*/ search(Iterator/*<S>*/ nodes) {
 	Object/*>S<*/ node = null;
@@ -94,6 +95,7 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
      * @internal optimized version of a TransitionPath sandwhiched with a TransitionModel and an action iterator.
      * @todo introduce template method  select(...) for selection strategy?
      * @todo would we benfit from extending GeneralSearchProblem.OptionIterator?
+     * @internal note that we do not strictly require knowing the algorithm (its constant getEvaluation() would suffice), but we needs its getRandom() and our descendants might need any additional stuff.
      */
     public static abstract class OptionIterator implements Iterator, Serializable {
 	private static final long serialVersionUID = -658271440377589506L;
@@ -168,6 +170,7 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
 		//@internal note that hasNext() will not respect this case, since it is considered as an error
 		//@xxx
 		throw new NoSuchElementException("specification hurt? there are no transitions from " + state);
+	    //@todo rely on decorators of problem (PackageUtilities.restrictRandomly) to do the randomization?
 
 	    final Object/*>A<*/ a = actions.get(algorithm.getRandom().nextInt(actions.size()));
 	    final Object/*>S<*/ sp = problem.states(a, state).next();

@@ -13,6 +13,7 @@ import java.io.Serializable;
 import orbital.logic.functor.MutableFunction;
 import java.util.Iterator;
 
+import orbital.util.Setops;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -87,7 +88,7 @@ public class OpenClosedGeneralSearchProblem/*<A,S>*/ implements GeneralSearchPro
 	    else
 		copy.add(a);
 	}
-	return copy.iterator();
+	return Setops.unmodifiableIterator(copy.iterator());
     }
 
     public Iterator states(Object/*>A<*/ a, Object/*>S<*/ s) {
