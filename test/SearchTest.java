@@ -5,9 +5,11 @@ import orbital.math.Scalar;
 import orbital.math.Values;
 import orbital.math.Symbol;
 import orbital.awt.*;
-import orbital.Adjoint;
 import java.lang.reflect.*;
 import java.util.*;
+
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /**
  * Automatical test-driver checking (descendants of) orbital.algorithm.template.GeneralSearch.
@@ -19,6 +21,7 @@ import java.util.*;
  * @see SimpleGSP
  */
 public class SearchTest implements Runnable {
+    private static final Logger logger = Logger.global;
     private static final int TEST_REPETITION = 2;
     private static final int SIMPLE_GSP_RANGE = 5;
     private static final int UNSOLVABLE_GSP_RANGE = 4;
@@ -71,11 +74,11 @@ public class SearchTest implements Runnable {
 				//@FIXME: norm is infinite for all polynoms, what else!
 				&& !(algo[i].complexity().equals(Functions.constant(Values.valueOf(Double.POSITIVE_INFINITY)))));
 		}
-		catch(UnsupportedOperationException x) {Adjoint.print(Adjoint.INFO, "unsupported", x);}
+		catch(UnsupportedOperationException x) {logger.log(Level.INFO, "unsupported", x);}
 		try {
 		    correct = algo[i] instanceof ProbabilisticAlgorithm ? ((ProbabilisticAlgorithm) algo[i]).isCorrect() : true;
 		}
-		catch(UnsupportedOperationException x) {Adjoint.print(Adjoint.INFO, "unsupported", x);}
+		catch(UnsupportedOperationException x) {logger.log(Level.INFO, "unsupported", x);}
 		optimal = algo[i] instanceof GeneralSearch ? ((GeneralSearch) algo[i]).isOptimal() : false;
 		// special handling
 		if (algo[i] instanceof HeuristicAlgorithm)
@@ -106,7 +109,7 @@ public class SearchTest implements Runnable {
 			throw new AssertionError(algo[i] + " should not \"solve\" a problem that has no solution. " + p + " \"solution\" " + solution);
 		}
 	    } catch (Exception ignore) {
-		Adjoint.print(Adjoint.DEBUG, "introspection", ignore);
+		logger.log(Level.FINER, "introspection", ignore);
 	    } 
     } 
 }
