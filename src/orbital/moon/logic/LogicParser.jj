@@ -624,6 +624,8 @@ TOKEN :
 
 | <LAMBDA: "\u03bb" | "\\">
 | <PI: "\u03a0" | "\\\\">
+
+| <PRODUCT: "\u00d7" | "%">
 }
 
 /**
@@ -1193,7 +1195,14 @@ Expression type() :
 Expression MapType() :
 {Token tok;Expression a,b;}
 {
-    a = PrimaryType() ( tok = <IMPLY> b = PrimaryType() {a = combine(tok, a,b);} )*
+    a = ProductType() ( tok = <IMPLY> b = ProductType() {a = combine(tok, a,b);} )*
+	{return a;}
+}
+
+Expression ProductType() :
+{Token tok;Expression a,b;}
+{
+    a = PrimaryType() ( tok = <PRODUCT> b = PrimaryType() {a = apply(tok, new Expression[] {new FormulaSequence(new Expression[] {a,b})}, typeSystem().TYPE());} )*
 	{return a;}
 }
 

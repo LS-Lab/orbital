@@ -517,7 +517,17 @@ public class ClassicalLogic extends ModernLogic {
 	    {typeSystem.map(),
 	     new NotationSpecification(500, "xfx", Notation.INFIX)},
 	    {typeSystem.product(),
-	     new NotationSpecification(500, "fx", Notation.PREFIX)},
+	      new NotationSpecification(500, "fx", Notation.PREFIX)},
+	    //{new BinaryFunction/*<Type,Type,Type>*/() {
+	    /*  private final Type logicalTypeDeclaration = typeSystem.map(typeSystem.product(new Type[] {typeSystem.TYPE(), typeSystem.TYPE()}), typeSystem.TYPE());
+		public Object apply(Object t1, Object t2) {
+		    return typeSystem.product(new Type[] {(Type)t1, (Type)t2});
+		}
+		public String toString() {
+		    return "\u00d7";
+		}
+	    },
+	    new NotationSpecification(500, "xfx", Notation.INFIX)},*/
 
 	    {Operations.plus, null},
 	    {Operations.minus, null},
@@ -601,6 +611,7 @@ public class ClassicalLogic extends ModernLogic {
 	}
 	while (true) {
 	    // the required application type
+	    System.err.println(" combining " +  argumentType + "\n      " + abstractedType);
 	    final Formula reqApType = (Formula) new TypeToFormula().apply(argumentType);
 	    System.err.println("unify " + reqApType + "\n  and " + abstractedType);
 	    final Substitution mu = Substitutions.unify(Arrays.asList(new Object[] {
@@ -880,7 +891,7 @@ public class ClassicalLogic extends ModernLogic {
      */
     public Expression.Composite compose(Expression compositor, Expression arguments[]) throws ParseException {
 	// handle special cases of term construction, first and before type checking occurs since the type &Pi;-abstractions need more flexibility
-	if (compositor.getType() instanceof PiAbstractionType) {
+	if (false && compositor.getType() instanceof PiAbstractionType) {
 	    final PiAbstractionType piabst = (PiAbstractionType) compositor.getType();
 	    // the application type actually passed as parameter to the &Pi;-abstraction.
 	    final Type parameterApType = calculateParameterTypeForPiAbstraction(piabst, Types.typeOf(arguments));
@@ -1287,7 +1298,11 @@ public class ClassicalLogic extends ModernLogic {
 	    // @return (&Pi;x:*. s->t)(a:*) = t mu
 	    // with mu=mgU(s,a)
 	    //@xxx is this correct? And what about the implementation?
-	    return apply(a);
+
+	    // the application type actually passed as parameter to the &Pi;-abstraction.
+	    final Type parameterApType = Utilities.logic.calculateParameterTypeForPiAbstraction(this, a);
+	    logger.log(Level.FINEST, "type {0} applied on {1} leads to instantiated result type {2} by parameter {3}.", new Object[] {this, a, apply(parameterApType), parameterApType});
+	    return apply(parameterApType);
 	}
 	/**
 	 * @return (&Pi;x:*.t)(a:*) = t[x&rarr;a]

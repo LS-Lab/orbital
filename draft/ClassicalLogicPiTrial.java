@@ -97,8 +97,24 @@ class ClassicalLogicPiTrial extends ClassicalLogic {
 	    System.err.println(Types.toTypedString(compose(createAtomic(ALL2), new Expression[] {
 		createAtomic(new SymbolBase("p6", typeSystem.map(typeSystem.map(typeSystem.map(typeSystem.objectType(String.class, "string"), Types.TRUTH), Types.TRUTH), Types.TRUTH))),
 	    })));
-	    System.err.println("results");
+	    System.err.println("are the results\n");
 	    
+
+	    t = parseTypeExpression("(\\\\_s . (\\\\_t . (_s \u00d7 _t)->(_s->_t)))");
+	    System.err.println(t);
+	    System.err.println("apply binary " + Types.toTypedString(compose(createAtomic(new SymbolBase("w", t)), new Expression[] {
+		new ProductFormula(new Expression[] {
+		    createAtomic(new SymbolBase("x", typeSystem.objectType(String.class, "string"))),
+		    createAtomic(new SymbolBase("y", typeSystem.objectType(orbital.math.Real.class, "real")))
+		})
+	    })));
+	    System.err.println("apply binary " + Types.toTypedString(compose(createAtomic(new SymbolBase("w", t)), new Expression[] {
+		new ProductFormula(new Expression[] {
+		    createAtomic(new SymbolBase("x", typeSystem.objectType(String.class, "string"))),
+		    createAtomic(new SymbolBase("y", typeSystem.objectType(orbital.math.Real.class, "real")))
+		})
+	    })));
+
 
 	    /*t = parseTypeExpression("(\\\\s . s->(s->s))");
 	      System.err.println(t);
@@ -106,9 +122,7 @@ class ClassicalLogicPiTrial extends ClassicalLogic {
 	      System.err.println(t);*/
 	    t = parseTypeExpression("(\\\\_s . (\\\\_t . _s->(_t->(_s->_t))))");
 	    System.err.println(t);
-	    t = parseTypeExpression("(\\\\_s . (\\\\_i . (\\\\_t . _s->(_t->(_s->_t)))))");
-	    System.err.println(t);
-	    //t = parseTypeExpression("(\\\\s . s -> (\\\\t . t->(s->t)))");
+	    //t = parseTypeExpression("(\\\\_s . _s -> (\\\\_t . _t->(_s->_t)))");
 	    //System.err.println(t);
 	    /*
 	      Type pt;

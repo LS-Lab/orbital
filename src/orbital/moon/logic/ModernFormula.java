@@ -377,8 +377,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	case 1:
 	    if (f instanceof Predicate && !(f instanceof Function))
 		f = Functionals.asFunction((Predicate) f);
-	    assert f instanceof Function : f + " of " + f.getClass() + " instanceof " + Function.class;
-	    assert arguments[0] instanceof Formula : arguments[0] + " of " + arguments[0].getClass() + " instanceof " + Formula.class;
+	    assert f instanceof Function : f + " of " + f.getClass() + " instanceof " + Function.class + "\nfor composition of " + fsymbol + " with " + Types.toTypedString(arguments);
+	    assert arguments[0] instanceof Formula : arguments[0] + " of " + arguments[0].getClass() + " instanceof " + Formula.class + "\nfor composition of " + fsymbol + " with " + Types.toTypedString(arguments);
 	    return new ModernFormula.AppliedFormula(underlyingLogic, fsymbol, (Function) f, (Formula) arguments[0], notat);
 	case 2:
 	    if (f instanceof BinaryPredicate && !(f instanceof BinaryFunction))

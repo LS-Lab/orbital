@@ -317,8 +317,8 @@ abstract class ModernLogic implements Logic {
 		// core-symbols
 		// fixed interpretation of core signature
 		Symbol s2 = null;
-		assert (s2 = coreSignature().get(ref.toString(), arguments)) != null : "composition functors occur in the signature";
-		assert opfix.getSymbol().equals(s2) : "enforce any potential unambiguities of operators";
+		assert (s2 = coreSignature().get(ref.toString(), arguments)) != null : "composition functor " + ref + " = " + opfix + " applied to " + Types.toTypedString(arguments) + " occurs in the signature";
+		assert opfix.getSymbol().equals(s2) : "enforce any potential unambiguities of operators, fixed composition operator " + opfix + " is the operator from the core signature " + s2;
 		return composeFixed(opfix.getSymbol(), (Functor)ref, arguments);
 	    }
 	    catch (IllegalArgumentException ex) {throw new ParseException(ex.getMessage(), COMPLEX_ERROR_OFFSET);}

@@ -273,4 +273,32 @@ public final class Types {
 	    : (s instanceof Symbol ? ((Symbol)s).getSignifier() : s.toString())
 	    + ':' + s.getType() + (Logger.global.isLoggable(Level.ALL) && s instanceof Variable && ((Variable)s).isVariable() ? "[var]" : "");
     }
+
+    public static final String toTypedString(Typed s[]) {
+	/* @internal pure functional rewrite would be
+	   MathUtilities.format(Functionals.map(new Function() {
+		    public Object apply(Object s) {
+		    //@internal SymbolBase.toString() sometimes already prints like toTypedString, so we omit duplicate type descriptions, here
+			return (s instanceof Symbol ? ((Symbol)s).getSignifier() : s.toString());
+		    }
+		    }, s)) */
+	if (s == null)
+	    return "<null>";
+	StringBuffer sb = new StringBuffer();
+	sb.append('[');
+	for (int i = 0; i < s.length; i++) {
+	    if (i > 0) {
+		sb.append(", ");
+	    }
+	    Typed si = s[i];
+	    //@internal SymbolBase.toString() sometimes already prints like toTypedString, so we omit duplicate type descriptions, here
+	    sb.append((si instanceof Symbol ? ((Symbol)si).getSignifier() : si.toString()));
+	}
+	sb.append(']');
+	sb.append(' ');
+	sb.append(':');
+	sb.append(' ');
+	sb.append(typeOf(s));
+	return sb.toString();
+    }
 }// Types

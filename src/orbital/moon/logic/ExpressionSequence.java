@@ -13,6 +13,10 @@ import orbital.logic.sign.concrete.Notation;
 import orbital.logic.functor.Functionals;
 import orbital.logic.functor.Function;
 import java.util.Arrays;
+import orbital.math.MathUtilities;
+
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /**
  * Encapsulates a whole sequence of expressions into a single compound expression.
@@ -22,6 +26,8 @@ import java.util.Arrays;
  * @version 1.1, 2002-11-28
  */
 class ExpressionSequence implements Expression.Composite {
+    private static final Logger logger = Logger.getLogger(ExpressionSequence.class.getName());
+
     //@xxx improve this dummy compositor
     private static final Object SEQUENCE = new Object() {
 	    public String toString() {
@@ -36,7 +42,7 @@ class ExpressionSequence implements Expression.Composite {
     public Type getType() {
 	//@xxx shouldn't we return supremum type of expressions[i].getType()?
 	//return Types.getDefault().list(Types.getDefault().objectType(Expression.class));
-	return Types.getDefault().list((Type)Types.getDefault().sup().apply(
+	Type t = Types.getDefault().list((Type)Types.getDefault().sup().apply(
 	    Functionals.listable(
 		new Function() {
 		    public Object apply(Object o) {
@@ -45,6 +51,10 @@ class ExpressionSequence implements Expression.Composite {
 		}).apply(Arrays.asList(expressions))
 		//@internal see Functionals#map(Function,Object[]) ArrayStoreException
 		));
+	if (logger.isLoggable(Level.FINEST)) {
+	    logger.log(Level.FINEST, "expression sequence {0} has type {1}", new Object[] {Types.toTypedString(expressions), t});
+	}
+	return t;
     }
 
     public Signature getSignature() {
@@ -76,5 +86,9 @@ class ExpressionSequence implements Expression.Composite {
     }
     public void setNotation(Notation notation) {
 	throw new UnsupportedOperationException();
+    }
+
+    public String toString() {
+	return "<list " + MathUtilities.format(expressions) + ">";
     }
 }// ExpressionSequence
