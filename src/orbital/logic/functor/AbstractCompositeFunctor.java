@@ -39,6 +39,21 @@ abstract class AbstractCompositeFunctor implements Composite, Serializable {
 	this(null);
     }
     
+    public orbital.logic.Composite construct(Object f, Object g) {
+	try {
+	    orbital.logic.Composite c = (orbital.logic.Composite) getClass().newInstance();
+	    c.setCompositor(f);
+	    c.setComponent(g);
+	    return c;
+    	}
+    	catch (InstantiationException ass) {
+	    throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite newInstance(Functor.Composite,Object)").initCause(ass);
+    	}
+    	catch (IllegalAccessException ass) {
+	    throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite newInstance(Functor.Composite,Object)").initCause(ass);
+    	}
+    }
+
     /**
      * Get the notation used for displaying this composite functor.
      */
@@ -75,6 +90,6 @@ abstract class AbstractCompositeFunctor implements Composite, Serializable {
      * @return <code>{@link Notation#format(Object, Object) notation.format}(getCompositor(), getComponent())</code>.
      */
     public String toString() {
-	return getNotation().format(getCompositor(), getComponent());
+	return getNotation().format((Notation)getCompositor(), getComponent());
     }
 }

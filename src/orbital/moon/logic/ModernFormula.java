@@ -16,7 +16,7 @@ import orbital.logic.imp.*;
 import orbital.logic.imp.ParseException;
 
 import orbital.logic.functor.Functor;
-import orbital.logic.functor.Functor.Composite; //@todo sure?
+import orbital.logic.functor.Functor.Composite; //@todo sure? or better Expression.Composite
 import orbital.logic.functor.*;
 
 import java.util.Set;
@@ -383,18 +383,28 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	}
     }
 
+    
+    /**
+     * Formula.Composite.
+     * @structure is Function.Composite&cap;Expression.Composite
+     * @author  Andr&eacute; Platzer
+     * @version 1.1, 2002-11-27
+     */
+    static interface Composite extends Function.Composite, Expression.Composite {}
+
     /**
      * Encapsulates the common implementation part of composite formulas.
-     * @author Andr&eacute; Platzer
-     * @verion 1.1, 2002-11-10
+     * @author  Andr&eacute; Platzer
+     * @version 1.1, 2002-11-10
      */
-    private static abstract class CompositeFormula extends ModernFormula implements Function.Composite {
-	protected CompositeFormula(Logic underlyingLogic, Notation notation) {
+    static abstract class AbstractCompositeFormula extends ModernFormula implements Composite {
+	protected AbstractCompositeFormula(Logic underlyingLogic, Notation notation) {
 	    super(underlyingLogic);
 	    setNotation(notation);
 	}
-	protected CompositeFormula(Logic underlyingLogic) {
-	    this(underlyingLogic, null);
+	protected AbstractCompositeFormula(Logic underlyingLogic) {
+	    super(underlyingLogic);
+	    this.notation = Notation.DEFAULT;
 	}
 
     	// identical to @see orbital.logic.functor.Functor.Composite.Abstract
@@ -411,6 +421,21 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    this.notation = notation == null ? Notation.DEFAULT : notation;
 	}
 		
+	public orbital.logic.Composite construct(Object f, Object g) {
+	    try {
+		orbital.logic.Composite c = (orbital.logic.Composite) getClass().newInstance();
+		c.setCompositor(f);
+		c.setComponent(g);
+		return c;
+	    }
+	    catch (InstantiationException ass) {
+		throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite newInstance(Functor.Composite,Object)").initCause(ass);
+	    }
+	    catch (IllegalAccessException ass) {
+		throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite newInstance(Functor.Composite,Object)").initCause(ass);
+	    }
+	}
+
 	/**
 	 * Checks for equality.
 	 * Two CompositeFunctors are equal iff their classes,
@@ -420,7 +445,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    if (o == null || getClass() != o.getClass())
 		return false;
 	    // note that it does not matter to which .Composite we cast since we have already checked for class equality
-	    Composite b = (Composite) o;
+	    Expression.Composite b = (Expression.Composite) o;
 	    return Utility.equals(getCompositor(), b.getCompositor())
 		&& Utility.equalsAll(getComponent(), b.getComponent());
 	}
@@ -434,7 +459,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	 * @return <code>{@link Notation#format(Object, Object) notation.format}(getCompositor(), getComponent())</code>.
 	 */
 	public String toString() {
-	    return getNotation().format(getCompositor(), getComponent());
+	    return getNotation().format((Functor)getCompositor(), getComponent());
 	}
     }
 
@@ -453,7 +478,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @see AppliedFormula
      * @internal apply is the S combinator
      */
-    static class AppliedVariableFormula extends CompositeFormula {
+    static class AppliedVariableFormula extends AbstractCompositeFormula {
 	protected Formula outer;
 	protected Formula inner;
 	public AppliedVariableFormula(Logic underlyingLogic, Formula f, Formula g, Notation notation) {
@@ -496,14 +521,14 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 		
 
 	// identical to @see orbital.logic.functor.Compositions.CompositeFunction (apart from Formula instead of Function)
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return outer;
 	} 
 	public Object getComponent() {
 	    return inner;
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    setUnderlyingLogicLikeIn((Formula) f);
 	    this.outer = (Formula) f;
 	}
@@ -523,7 +548,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @todo change type of outer to Formula, and use ConstantFormulas for coreInterpretation instead
      * @see AppliedFormula
      */
-    static class VoidAppliedVariableFormula extends CompositeFormula {
+    static class VoidAppliedVariableFormula extends AbstractCompositeFormula {
 	protected Formula outer;
 	public VoidAppliedVariableFormula(Logic underlyingLogic, Formula f, Notation notation) {
 	    super(underlyingLogic, notation);
@@ -562,14 +587,14 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 		
 
 	// identical? to @see orbital.logic.functor.Compositions.VoidCompositeFunction (apart from Formula instead of Function)
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return outer;
 	} 
 	public Object getComponent() {
 	    return new Formula[0];
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    setUnderlyingLogicLikeIn((Formula) f);
 	    this.outer = (Formula) f;
 	}
@@ -592,7 +617,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @structure inherits Functionals.BinaryCompositeFunction
      * @see BinaryAppliedFormula
      */
-    static class BinaryAppliedVariableFormula extends CompositeFormula {
+    static class BinaryAppliedVariableFormula extends AbstractCompositeFormula {
 	protected Formula outer;
 	protected Formula left;
 	protected Formula right;
@@ -642,7 +667,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 		
 
 	// identical to @see orbital.logic.functor.Functionals.BinaryCompositeFunction
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return outer;
 	} 
 	public Object getComponent() {
@@ -651,7 +676,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    };
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    setUnderlyingLogicLikeIn((Formula) f);
 	    this.outer = (Formula) f;
 	}
@@ -672,7 +697,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @author  Andr&eacute; Platzer
      * @see orbital.math.functional.ComponentCompositions.ComponentCompositeFunction
      */
-    static class NaryAppliedVariableFormula extends CompositeFormula {
+    static class NaryAppliedVariableFormula extends AbstractCompositeFormula {
 	protected Formula outer;
 	protected Formula[] inner;
 	public NaryAppliedVariableFormula(Logic underlyingLogic, Formula f, Formula g[], Notation notation) {
@@ -730,14 +755,14 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 		
 
 	// not quite identical to @see orbital.math.functional.ComponentCompositions.ComponentCompositeFunction
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return outer;
 	} 
 	public Object getComponent() {
 	    return inner;
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    setUnderlyingLogicLikeIn((Formula) f);
 	    this.outer = (Formula) f;
 	}
@@ -769,7 +794,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @structure inherits Compositions.CompositeFunction
      * @todo change type of outer to Formula, and use ConstantFormulas for coreInterpretation instead
      */
-    static class AppliedFormula extends CompositeFormula {
+    static class AppliedFormula extends AbstractCompositeFormula {
 	/**
 	 * The symbol of the fixed interpretation outer.
 	 */
@@ -805,14 +830,14 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	}
 
 	// identical to @see orbital.logic.functor.Compositions.CompositeFunction
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return outer;
 	} 
 	public Object getComponent() {
 	    return inner;
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    this.outer = (Function) f;
 	}
 	public void setComponent(Object g) throws ClassCastException {
@@ -834,7 +859,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @structure inherits ModernFormula
      * @structure inherits Functionals.BinaryCompositeFunction
      */
-    static class BinaryAppliedFormula extends CompositeFormula {
+    static class BinaryAppliedFormula extends AbstractCompositeFormula {
 	protected Symbol outerSymbol;
 	protected BinaryFunction outer;
 	protected Formula left;
@@ -874,7 +899,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	}
 
 	// identical to @see orbital.logic.functor.Functionals.BinaryCompositeFunction
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return outer;
 	} 
 	public Object getComponent() {
@@ -883,7 +908,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    };
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    this.outer = (BinaryFunction) f;
 	    //@xxx what to use as outerSymbol?
 	}

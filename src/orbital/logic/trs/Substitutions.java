@@ -8,6 +8,8 @@ package orbital.logic.trs;
 import orbital.moon.logic.bridge.SubstitutionImpl;
 import orbital.logic.trs.Substitution.Matcher;
 
+import orbital.logic.Composite;
+
 import orbital.logic.functor.Function;
 import orbital.logic.functor.BinaryFunction;
 
@@ -502,7 +504,7 @@ public class Substitutions {
 		return getInstance(Collections.singletonList(createExactMatcher(x, t)));
         } else {
 	    // let t1=:f(x1,...xm), t2=:g(y1,...yn)
-	    if (!((t1 instanceof Functor.Composite) && (t2 instanceof Functor.Composite))) {
+	    if (!((t1 instanceof Composite) && (t2 instanceof Composite))) {
 		// catch case m=0 first, since it's no true decomposition then
             	if (!(t1.getClass() == t2.getClass() && t1.equals(t2)))
 		    return null;
@@ -510,12 +512,12 @@ public class Substitutions {
 		    return id;
 	    }
 	    // true decomposition case
-	    Functor.Composite c1 = (Functor.Composite) t1;
-	    Functor	      f = c1.getCompositor();
-	    Collection	      xs = Utility.asCollection(c1.getComponent());
-	    Functor.Composite c2 = (Functor.Composite) t2;
-	    Functor	      g = c2.getCompositor();
-	    Collection	      ys = Utility.asCollection(c2.getComponent());
+	    Composite  c1 = (Composite) t1;
+	    Object     f = c1.getCompositor();
+	    Collection xs = Utility.asCollection(c1.getComponent());
+	    Composite  c2 = (Composite) t2;
+	    Object     g = c2.getCompositor();
+	    Collection ys = Utility.asCollection(c2.getComponent());
 	    if (!(c1.getClass() == c2.getClass() && Utility.equals(f, g)))
 		return null;
 	    else {
@@ -556,8 +558,8 @@ public class Substitutions {
      * @internal non optimized occur-check
      */
     private static boolean occur(final Object x, Object t) {
-	if (t instanceof Functor.Composite)
-	    return occur(x, ((Functor.Composite) t).getComponent());
+	if (t instanceof Composite)
+	    return occur(x, ((Composite) t).getComponent());
 	else if (t.getClass().isArray())
 	    if (t instanceof Object[])
 		// return &exist;i occur(x, t[i])

@@ -439,6 +439,21 @@ public final class Types {
 	    this(null);
 	}
     
+	public orbital.logic.Composite construct(Object f, Object g) {
+	    try {
+		orbital.logic.Composite c = (orbital.logic.Composite) getClass().newInstance();
+		c.setCompositor(f);
+		c.setComponent(g);
+		return c;
+	    }
+	    catch (InstantiationException ass) {
+		throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite newInstance(Functor.Composite,Object)").initCause(ass);
+	    }
+	    catch (IllegalAccessException ass) {
+		throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite newInstance(Functor.Composite,Object)").initCause(ass);
+	    }
+	}
+
 	/**
 	 * Get the notation used for displaying this composite functor.
 	 */
@@ -475,7 +490,7 @@ public final class Types {
 	 * @return <code>{@link Notation#format(Object, Object) notation.format}(getCompositor(), getComponent())</code>.
 	 */
 	public String toString() {
-	    return getNotation().format(getCompositor(), getComponent());
+	    return getNotation().format((Functor)getCompositor(), getComponent());
 	}
     }
     
@@ -823,13 +838,13 @@ public final class Types {
 	    return sb.toString();
 	}
 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return product;
 	}
 	public Object getComponent() {
 	    return components;
 	}
-	public void setCompositor(Functor compositor) {
+	public void setCompositor(Object compositor) {
 	    if (compositor != getCompositor())
 		throw new IllegalArgumentException("special compositor of " + getClass() + " expected");
 	}
@@ -991,13 +1006,13 @@ public final class Types {
 	    return sb.toString();
 	}
 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return inf;
 	}
 	public Object getComponent() {
 	    return components;
 	}
-	public void setCompositor(Functor compositor) {
+	public void setCompositor(Object compositor) {
 	    if (compositor != getCompositor())
 		throw new IllegalArgumentException("special compositor of " + getClass() + " expected");
 	}
@@ -1148,13 +1163,13 @@ public final class Types {
 	    return sb.toString();
 	}
 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return sup;
 	}
 	public Object getComponent() {
 	    return components;
 	}
-	public void setCompositor(Functor compositor) {
+	public void setCompositor(Object compositor) {
 	    if (compositor != getCompositor())
 		throw new IllegalArgumentException("special compositor of " + getClass() + " expected");
 	}

@@ -1428,7 +1428,7 @@ public class Values {
 		if (expression instanceof Functor.Composite) {
 		    Functor.Composite c = (Functor.Composite)expression;
 		    //@internal see orbital.logic.functor.Notation.asTree(...)
-		    Functor    compositor = c.getCompositor();
+		    Object     compositor = c.getCompositor();
 		    Collection components = Utility.asCollection(c.getComponent());
 		    if (components == null)
 			throw new NullPointerException(c + " of " + c.getClass() + " has compositor " + compositor + " and components " + components);

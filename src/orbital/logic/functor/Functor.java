@@ -133,46 +133,7 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
      * @internal see AbstractFunctorComposite
      * @see <a href="{@docRoot}/Patterns/Design/Composite.html">(unidirectional and multiple) Composite Pattern</a>
      */
-    static interface Composite extends Functor {
-	/**
-	 * Get the outer compositor.
-	 * @return the outer functor f that operates on the results of the inner component.
-	 */
-	Functor getCompositor();
-
-	/**
-	 * Get the inner component.
-	 * @return the inner component object g, or an array of the inner components {g<sub>1</sub>,...g<sub>k</sub>}<sup>T</sup>.
-	 *  Inner components will usually be functors, but are not limited to that.
-	 *  This way, multi-dimensional component arrays and alike are permitted, as well.
-	 * @internal done changed return-type to Object to reflect Functor(! s.a.), Functor[], Functor[][] and alike
-	 */
-	Object getComponent();
-		
-	/**
-	 * Set the outer compositor.
-	 * @param f the outer functor f that operates on the results of the inner component.
-	 * @throws IllegalArgumentException if f is an illegal compositor for this composite functor.
-	 *  Depending upon context, this method may also throw ClassCastException, instead.
-	 * @throws ClassCastException if f has the wrong type for a compositor.
-	 *  Depending upon context, this method may also throw IllegalArgumentException, instead.
-	 * @throws UnsupportedOperationException if this method is not supported by this object, or this object is immutable.
-	 */
-	void setCompositor(Functor f) throws IllegalArgumentException, ClassCastException;
-
-	/**
-	 * Set the inner component.
-	 * @param g the inner component object g, or an array of the inner components {g<sub>1</sub>,...g<sub>k</sub>}<sup>T</sup>.
-	 *  Inner components will usually be functors, but are not limited to that.
-	 *  This way, multi-dimensional component arrays and alike are permitted, as well.
-	 * @throws IllegalArgumentException if g is an illegal component for this composite functor.
-	 *  Depending upon context, this method may also throw ClassCastException, instead.
-	 * @throws ClassCastException if g has the wrong type for a component.
-	 *  Depending upon context, this method may also throw IllegalArgumentException, instead.
-	 * @throws UnsupportedOperationException if this method is not supported by this object, or this object is immutable.
-	 */
-	void setComponent(Object g) throws IllegalArgumentException, ClassCastException;
-		
+    static interface Composite extends orbital.logic.Composite, Functor {
 	/**
 	 * Get the notation used.
 	 * @return the notation used for formatting this composite functor.
@@ -186,7 +147,6 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	 * @throws UnsupportedOperationException if setting the notation is not supported.
 	 */
 	void setNotation(Notation notation);
-		
     }
 
 

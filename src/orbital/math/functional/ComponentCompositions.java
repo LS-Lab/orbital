@@ -67,7 +67,7 @@ class ComponentCompositions {
 	public int dimension() {
 	    return componentFunction.length;
 	} 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return null;
 	} 
 
@@ -78,7 +78,7 @@ class ComponentCompositions {
 	    return componentFunction;
 	} 
 
-	public void setCompositor(Functor f) throws IllegalArgumentException {
+	public void setCompositor(Object f) throws IllegalArgumentException {
 	    if (f != null)
 		throw new IllegalArgumentException("cannot set compositor");
 	}
@@ -165,7 +165,7 @@ class ComponentCompositions {
 	public Dimension dimension() {
 	    return new Dimension(componentFunction[0].length, componentFunction.length);
 	} 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return null;
 	} 
 
@@ -176,7 +176,7 @@ class ComponentCompositions {
 	    return componentFunction;
 	} 
 
-	public void setCompositor(Functor f) throws IllegalArgumentException {
+	public void setCompositor(Object f) throws IllegalArgumentException {
 	    if (f != null)
 		throw new IllegalArgumentException("cannot set compositor");
 	}
@@ -254,7 +254,7 @@ class ComponentCompositions {
 	public Dimension dimension() {
 	    return new Dimension(componentFunction[0].length, componentFunction.length);
 	} 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return null;
 	} 
 
@@ -265,7 +265,7 @@ class ComponentCompositions {
 	    return componentFunction;
 	} 
 
-	public void setCompositor(Functor f) throws IllegalArgumentException {
+	public void setCompositor(Object f) throws IllegalArgumentException {
 	    if (f != null)
 		throw new IllegalArgumentException("cannot set compositor");
 	}

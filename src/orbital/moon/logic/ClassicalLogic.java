@@ -685,7 +685,7 @@ public class ClassicalLogic extends ModernLogic {
      * @see orbital.logic.trs.Substitutions#lambda
      * @internal note that regarding &forall;x a as &forall(&lambda;x.a) may consume a little more time since one additional composition must be considered for unifications. However, the more systematic concept and simplified (since localized) handling of bindings is worth it.
      */
-    private static class LambdaAbstractionFormula extends ModernFormula implements Function.Composite {
+    private static class LambdaAbstractionFormula extends ModernFormula.AbstractCompositeFormula {
 	private Symbol x;
 	private Formula term;
 	private LambdaAbstractionFormula() {
@@ -698,7 +698,7 @@ public class ClassicalLogic extends ModernLogic {
 	}
 
 	// identical to @see orbital.logic.functor.Functionals.BinaryCompositeFunction
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    //@internal this trick will allow LambdaAbstractionFormulas to unify. null does not unify anything.
 	    return LogicFunctions.lambda;
 	} 
@@ -708,7 +708,7 @@ public class ClassicalLogic extends ModernLogic {
 	    };
 	} 
 
-	public void setCompositor(Functor compositor) {
+	public void setCompositor(Object compositor) {
 	    if (compositor != getCompositor())
 		throw new IllegalArgumentException("special compositor of " + getClass() + " expected");
 	}
@@ -727,25 +727,6 @@ public class ClassicalLogic extends ModernLogic {
 	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
 	}
 	    
-	// identical to @see orbital.logic.functor.Function.Composite.Abstract
-	/**
-	 * Checks for equality.
-	 * Two CompositeFunctors are equal iff their classes,
-	 * their compositors and their components are equal.
-	 */
-	public boolean equals(Object o) {
-	    if (o == null || getClass() != o.getClass())
-		return false;
-	    // note that it does not matter to which .Composite we cast since we have already checked for class equality
-	    Composite b = (Composite) o;
-	    return Utility.equals(getCompositor(), b.getCompositor())
-		&& Utility.equalsAll(getComponent(), b.getComponent());
-	}
-
-	public int hashCode() {
-	    return Utility.hashCode(getCompositor()) ^ Utility.hashCodeAll(getComponent());
-	}
-	
 	// implementation of orbital.logic.imp.Expression interface
 	public Type getType() {
 	    return Types.map(x.getType(), term.getType());
@@ -796,7 +777,7 @@ public class ClassicalLogic extends ModernLogic {
      * @version 1.1, 2002-11-10
      * @xxx in fact this is not truely a type :* but a constructor? :*->*
      */
-    private static class PiAbstractionExpression extends ModernFormula implements Function.Composite {
+    private static class PiAbstractionExpression extends ModernFormula.AbstractCompositeFormula {
 	private Symbol x;
 	private Formula term;
 	private PiAbstractionExpression() {
@@ -811,7 +792,7 @@ public class ClassicalLogic extends ModernLogic {
 	}
 
 	// identical to @see orbital.logic.functor.Functionals.BinaryCompositeFunction
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    //@internal this trick will allow formulas to unify. null does not unify anything.
 	    return LogicFunctions.pi;
 	} 
@@ -821,7 +802,7 @@ public class ClassicalLogic extends ModernLogic {
 	    };
 	} 
 
-	public void setCompositor(Functor compositor) {
+	public void setCompositor(Object compositor) {
 	    if (compositor != getCompositor())
 		throw new IllegalArgumentException("special compositor of " + getClass() + " expected");
 	}
@@ -839,25 +820,6 @@ public class ClassicalLogic extends ModernLogic {
 	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
 	}
 	    
-	// identical to @see orbital.logic.functor.Function.Composite.Abstract
-	/**
-	 * Checks for equality.
-	 * Two CompositeFunctors are equal iff their classes,
-	 * their compositors and their components are equal.
-	 */
-	public boolean equals(Object o) {
-	    if (o == null || getClass() != o.getClass())
-		return false;
-	    // note that it does not matter to which .Composite we cast since we have already checked for class equality
-	    Composite b = (Composite) o;
-	    return Utility.equals(getCompositor(), b.getCompositor())
-		&& Utility.equalsAll(getComponent(), b.getComponent());
-	}
-
-	public int hashCode() {
-	    return Utility.hashCode(getCompositor()) ^ Utility.hashCodeAll(getComponent());
-	}
-	
 	// implementation of orbital.logic.imp.Expression interface
 	public Type getType() {
 	    //@xxx wrong type? And equals *&rarr;*?
@@ -900,7 +862,7 @@ public class ClassicalLogic extends ModernLogic {
      * @version 1.1, 2002-11-10
      * @xxx in fact this is not truely a type :* but a constructor? :*->*
      */
-    static class PiAbstractionType implements Type, Functor.Composite {
+    static class PiAbstractionType implements Type, Functor.Composite/**@xxx should be Types.Composite*/ {
 	static final Specification callTypeDeclaration = new Specification(new Class[] {Type.class}, Type.class);
 	
 	private Symbol x;
@@ -917,7 +879,7 @@ public class ClassicalLogic extends ModernLogic {
 	}
 
 	// identical to @see orbital.logic.functor.Functionals.BinaryCompositeFunction
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    //@internal this trick will allow &Pi;-types to unify. null does not unify anything.
 	    return LogicFunctions.pi;
 	} 
@@ -927,7 +889,7 @@ public class ClassicalLogic extends ModernLogic {
 	    };
 	} 
 
-	public void setCompositor(Functor compositor) {
+	public void setCompositor(Object compositor) {
 	    if (compositor != getCompositor())
 		throw new IllegalArgumentException("special compositor of " + getClass() + " expected");
 	}
@@ -937,6 +899,20 @@ public class ClassicalLogic extends ModernLogic {
 		throw new IllegalArgumentException(Object.class + "[2] expected");
 	    this.x = (Symbol)a[0];
 	    this.term = (Formula)a[1];
+	}
+	public orbital.logic.Composite construct(Object f, Object g) {
+	    try {
+		orbital.logic.Composite c = (orbital.logic.Composite) getClass().newInstance();
+		c.setCompositor(f);
+		c.setComponent(g);
+		return c;
+	    }
+	    catch (InstantiationException ass) {
+		throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite newInstance(Functor.Composite,Object)").initCause(ass);
+	    }
+	    catch (IllegalAccessException ass) {
+		throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite newInstance(Functor.Composite,Object)").initCause(ass);
+	    }
 	}
 	public Notation getNotation() {
 	    throw new UnsupportedOperationException("not yet implemented for " + getClass());

@@ -9,7 +9,7 @@ package orbital.moon.logic;
 import orbital.logic.imp.*;
 import orbital.logic.imp.ParseException;
 import orbital.logic.functor.Functor;
-import orbital.logic.functor.Functor.Composite;
+import orbital.logic.imp.Expression.Composite;
 import orbital.logic.functor.Function;
 import orbital.logic.functor.BinaryFunction;
 import orbital.logic.trs.*;
@@ -249,15 +249,15 @@ public class ModalLogic extends ClassicalLogic {
 	     * 
 	     */
 	    public boolean matches(Object term) {
-		if (term instanceof Formula && term instanceof Functor.Composite) {
-		    Functor.Composite oappl = (Functor.Composite) term;
-		    Functor           oop = (Functor) oappl.getCompositor();
-		    Object            t = oappl.getComponent();
+		if (term instanceof Formula && term instanceof Composite) {
+		    Composite oappl = (Composite) term;
+		    Object    oop = oappl.getCompositor();
+		    Object    t = oappl.getComponent();
 		    assert t instanceof Formula[] || t instanceof Formula : "expected: applied to >=1 arguments";
-		    if (oop instanceof Formula && oop instanceof Functor.Composite) {
-			Functor.Composite appl = (Functor.Composite) oop;
-			Functor           f = (Functor) appl.getCompositor();
-			Object            a = appl.getComponent();
+		    if (oop instanceof Formula && oop instanceof Composite) {
+			Composite appl = (Composite) oop;
+			Object    f = appl.getCompositor();
+			Object    a = appl.getComponent();
 			assert a instanceof Formula[] || a instanceof Formula : "expected: applied to >=1 arguments";
 			if (f instanceof Formula) {
 			    if (f instanceof ModernFormula.AtomicSymbol)
@@ -275,13 +275,13 @@ public class ModalLogic extends ClassicalLogic {
 		Expression[] a;
 		Expression[] t;
 		// reconstruct situation of matches(Object)
-		if (term instanceof Formula && term instanceof Functor.Composite) {
-		    Functor.Composite oappl = (Functor.Composite) term;
-		    Functor           oop = (Functor) oappl.getCompositor();
+		if (term instanceof Formula && term instanceof Composite) {
+		    Composite oappl = (Composite) term;
+		    Object    oop = oappl.getCompositor();
 		    t = asExpressionArray(oappl.getComponent());
-		    if (oop instanceof Formula && oop instanceof Functor.Composite) {
-			Functor.Composite appl = (Functor.Composite) oop;
-			f = ((ModernFormula.AtomicSymbol)(Functor) appl.getCompositor()).getSymbol();
+		    if (oop instanceof Formula && oop instanceof Composite) {
+			Composite appl = (Composite) oop;
+			f = ((ModernFormula.AtomicSymbol) appl.getCompositor()).getSymbol();
 			a = asExpressionArray(appl.getComponent());
 		    } else
 			throw new AssertionError("only cause for matches(Object)==true");
@@ -337,7 +337,7 @@ public class ModalLogic extends ClassicalLogic {
 	    }
 
 	    private static final Type[] asTypeArray(Type tau) {
-		    if (tau instanceof /*Type*/Functor.Composite
+		    if (tau instanceof /*@xxx Type*/Functor.Composite
 			&& ((Functor.Composite)tau).getCompositor() == Types.product)
 			return (Type[]) ((Functor.Composite)tau).getComponent();
 		    else

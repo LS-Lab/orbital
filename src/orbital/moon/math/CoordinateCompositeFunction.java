@@ -57,7 +57,7 @@ import orbital.util.Utility;
 		public int dimension() {
 			return componentFunction.length;
 		} 
-		public Functor getCompositor() {
+		public Object getCompositor() {
 			return null;
 		} 
 
@@ -68,7 +68,7 @@ import orbital.util.Utility;
 			return componentFunction;
 		} 
 
-		public void setCompositor(Functor f) throws IllegalArgumentException {
+		public void setCompositor(Object f) throws IllegalArgumentException {
 			if (f != null)
 				throw new IllegalArgumentException("cannot set compositor");
 		}
@@ -111,7 +111,22 @@ import orbital.util.Utility;
     		 */
     		private Notation notation;
     
-    		public Notation getNotation() {
+	    public orbital.logic.Composite construct(Object f, Object g) {
+		try {
+		    Composite c = (Composite) getClass().newInstance();
+		    c.setCompositor(f);
+		    c.setComponent(g);
+		    return c;
+		}
+		catch (InstantiationException ass) {
+		    throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite newInstance(Functor.Composite,Object)").initCause(ass);
+		}
+		catch (IllegalAccessException ass) {
+		    throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite newInstance(Functor.Composite,Object)").initCause(ass);
+		}
+	    }
+
+	        public Notation getNotation() {
     			return notation;
     		}
     		public void setNotation(Notation notation) {
@@ -138,9 +153,9 @@ import orbital.util.Utility;
     
     		/**
     		 * Get a string representation of the composite functor.
-    		 * @return <code>{@link Notation#format(Object, Object) notation.format}(getCompositor(), getComponent())</code>.
+    		 * @return <code>{@link Notation#format(Object, Object) notation.format}((Functor)getCompositor(), getComponent())</code>.
     		 */
     		public String toString() {
-    			return getNotation().format(getCompositor(), getComponent());
+    			return getNotation().format((Functor)getCompositor(), getComponent());
     		}
 	}

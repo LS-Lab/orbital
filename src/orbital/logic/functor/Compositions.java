@@ -65,14 +65,14 @@ class Compositions {
 		
 	protected CompositeFunction() {}
 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return outer;
 	} 
 	public Object getComponent() {
 	    return inner;
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    this.outer = (Function/**<B, C>**/) f;
 	}
 	public void setComponent(Object g) throws ClassCastException {
@@ -135,7 +135,7 @@ class Compositions {
 
 	protected CompositeBinaryFunction() {}
 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return outer;
 	} 
 	public Object getComponent() {
@@ -144,7 +144,7 @@ class Compositions {
 	    };
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    this.outer = (BinaryFunction/**<B1, B2, C>**/) f;
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
@@ -208,14 +208,14 @@ class Compositions {
 
 	protected CompositeVoidFunction() {}
 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return outer;
 	} 
 	public Object getComponent() {
 	    return inner;
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    this.outer = (Function/**<B, C>**/) f;
 	}
 	public void setComponent(Object g) throws ClassCastException {
@@ -266,14 +266,14 @@ class Compositions {
 
 	protected CompositePredicate() {}
 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return outer;
 	} 
 	public Object getComponent() {
 	    return inner;
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    this.outer = (Predicate/**<B>**/) f;
 	}
 	public void setComponent(Object g) throws ClassCastException {
@@ -336,7 +336,7 @@ class Compositions {
 
 	protected CompositeBinaryPredicate() {}
 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return outer;
 	} 
 	public Object getComponent() {
@@ -345,7 +345,7 @@ class Compositions {
 	    };
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    this.outer = (BinaryPredicate) f;
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
@@ -399,14 +399,14 @@ class Compositions {
 
 	protected CompositeVoidPredicate() {}
 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return outer;
 	} 
 	public Object getComponent() {
 	    return inner;
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    this.outer = (Predicate/**<B>**/) f;
 	}
 	public void setComponent(Object g) throws ClassCastException {

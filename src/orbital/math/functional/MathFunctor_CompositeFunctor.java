@@ -38,6 +38,21 @@ import orbital.util.Utility;
     			this(null);
     		}
     
+	    public orbital.logic.Composite construct(Object f, Object g) {
+		try {
+		    orbital.logic.Composite c = (orbital.logic.Composite) getClass().newInstance();
+		    c.setCompositor(f);
+		    c.setComponent(g);
+		    return c;
+		}
+		catch (InstantiationException ass) {
+		    throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite newInstance(Functor.Composite,Object)").initCause(ass);
+		}
+		catch (IllegalAccessException ass) {
+		    throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite newInstance(Functor.Composite,Object)").initCause(ass);
+		}
+	    }
+	    
     		public Notation getNotation() {
     			return notation;
     		}
@@ -65,9 +80,9 @@ import orbital.util.Utility;
     
     		/**
     		 * Get a string representation of the composite functor.
-    		 * @return <code>{@link Notation#format(Object, Object) notation.format}(getCompositor(), getComponent())</code>.
+    		 * @return <code>{@link Notation#format(Object, Object) notation.format}((Functor)getCompositor(), getComponent())</code>.
     		 */
     		public String toString() {
-    			return getNotation().format(getCompositor(), getComponent());
+    			return getNotation().format((Functor)getCompositor(), getComponent());
     		}
 	}

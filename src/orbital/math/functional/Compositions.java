@@ -61,14 +61,14 @@ class Compositions {
 
 	private CompositeFunction() {}
 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return outer;
 	} 
 	public Object getComponent() {
 	    return inner;
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    this.outer = (Function) f;
 	}
 	public void setComponent(Object g) throws ClassCastException {
@@ -133,14 +133,14 @@ class Compositions {
 		
 	private CompositeBinaryFunction() {}
 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return outer;
 	} 
 	public Object getComponent() {
 	    return new BinaryFunction[] {left, right};
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    this.outer = (BinaryFunction/*_<B1, B2, C>_*/) f;
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {

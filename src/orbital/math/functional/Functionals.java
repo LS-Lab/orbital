@@ -161,7 +161,7 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
 
 	private BinaryCompositeFunction() {}
 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return outer;
 	} 
 	public Object getComponent() {
@@ -170,7 +170,7 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
 	    };
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    this.outer = (BinaryFunction) f;
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {

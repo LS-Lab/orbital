@@ -8,6 +8,7 @@ package orbital.moon.logic;
 import orbital.moon.logic.ClassicalLogic.Utilities;
 
 import orbital.logic.imp.*;
+import orbital.logic.imp.Expression.Composite;
 
 import orbital.algorithm.template.GeneralSearchProblem;
 import orbital.algorithm.template.*;
@@ -438,9 +439,9 @@ class Resolution implements Inference {
      */
     private static final Set/*_<Set<Formula>>_*/ clausalFormClauses(Formula term) {
 	//@todo assert assume right-associative nesting of &
-	if (term instanceof Functor.Composite) {
-            Functor.Composite f = (Functor.Composite) term;
-	    Functor           op = (Functor) f.getCompositor();
+	if (term instanceof Composite) {
+            Composite f = (Composite) term;
+	    Object    op = f.getCompositor();
 	    //@todo could also query ClassicalLogic.LogicFunctions.and etc. from logic.coreInterpretation once
 	    if (op == ClassicalLogic.LogicFunctions.and) {
 		Formula[] components = (Formula[]) f.getComponent();
@@ -474,9 +475,9 @@ class Resolution implements Inference {
      * @return the clause, note that the clause can be further collapsed if it contains true.
      */
     private static final Set/*_<Formula>_*/ clausalFormClause(Formula term) {
-	if (term instanceof Functor.Composite) {
-            Functor.Composite f = (Functor.Composite) term;
-	    Functor			  op = (Functor) f.getCompositor();
+	if (term instanceof Composite) {
+            Composite f = (Composite) term;
+	    Object    op = f.getCompositor();
 	    if (op == ClassicalLogic.LogicFunctions.or) {
 		Formula[] components = (Formula[]) f.getComponent();
 		assert components.length == 2 : "binary " + op + "/" + components.length + " expected";
@@ -544,9 +545,9 @@ class Resolution implements Inference {
      */
     private static final Formula negation(Formula F) {
 	// used duplex negatio est affirmatio (optimizable)
-	if ((F instanceof Functor.Composite)) {
-	    Functor.Composite f = (Functor.Composite) F;
-	    Object			  g = f.getCompositor();
+	if ((F instanceof Composite)) {
+	    Composite f = (Composite) F;
+	    Object    g = f.getCompositor();
 	    if (g == ClassicalLogic.LogicFunctions.not)
 		// use duplex negatio est affirmatio to avoid double negations
 		return (Formula) f.getComponent();

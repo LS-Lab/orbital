@@ -184,7 +184,7 @@ public class Functionals {
 		
 	protected BinaryCompositeFunction() {}
 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return outer;
 	} 
 	public Object getComponent() {
@@ -193,7 +193,7 @@ public class Functionals {
 	    };
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    this.outer = (BinaryFunction/**<B1, B2, C>**/) f;
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
@@ -278,7 +278,7 @@ public class Functionals {
 
 	protected BinaryCompositeVoidFunction() {}
 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return outer;
 	} 
 	public Object getComponent() {
@@ -287,7 +287,7 @@ public class Functionals {
 	    };
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    this.outer = (BinaryFunction/**<B1, B2, C>**/) f;
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
@@ -380,7 +380,7 @@ public class Functionals {
 
 	protected BinaryCompositePredicate() {}
 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return outer;
 	} 
 	public Object getComponent() {
@@ -389,7 +389,7 @@ public class Functionals {
 	    };
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    this.outer = (BinaryPredicate/**<B1, B2>**/) f;
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
@@ -473,7 +473,7 @@ public class Functionals {
 
 	protected BinaryCompositeVoidPredicate() {}
 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return outer;
 	} 
 	public Object getComponent() {
@@ -482,7 +482,7 @@ public class Functionals {
 	    };
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    this.outer = (BinaryPredicate/**<B1, B2>**/) f;
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
@@ -649,14 +649,14 @@ public class Functionals {
 	    return bindFirst(f, x);
 	} 
 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return null;
 	}
 	public Object getComponent() {
 	    return new BinaryFunction[] {f};
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    throw new UnsupportedOperationException("how to do");
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
@@ -693,14 +693,14 @@ public class Functionals {
 	    return ((Function)f.apply(x)).apply(y);
 	} 
 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return null;
 	}
 	public Object getComponent() {
 	    return new Function[] {f};
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    throw new UnsupportedOperationException("how to do");
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
@@ -746,7 +746,7 @@ public class Functionals {
 	    return f.apply(x, y);
 	} 
 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return f;
 	}
 	public Object getComponent() {
@@ -755,7 +755,7 @@ public class Functionals {
 	    };
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    throw new UnsupportedOperationException("how to do");
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
@@ -796,7 +796,7 @@ public class Functionals {
 	public boolean apply(Object/*>A2<*/ y) {
 	    return P.apply(x, y);
 	} 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return P;
 	}
 	public Object getComponent() {
@@ -805,7 +805,7 @@ public class Functionals {
 	    };
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    throw new UnsupportedOperationException("how to do");
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
@@ -844,7 +844,7 @@ public class Functionals {
 	public Object/*>B<*/ apply(Object/*>A1<*/ x) {
 	    return f.apply(x, y);
 	} 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return f;
 	}
 	public Object getComponent() {
@@ -853,7 +853,7 @@ public class Functionals {
 	    };
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    throw new UnsupportedOperationException("how to do");
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
@@ -892,7 +892,7 @@ public class Functionals {
 	public boolean apply(Object/*>A1<*/ x) {
 	    return P.apply(x, y);
 	} 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return P;
 	}
 	public Object getComponent() {
@@ -901,7 +901,7 @@ public class Functionals {
 	    };
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    throw new UnsupportedOperationException("how to do");
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
@@ -941,14 +941,14 @@ public class Functionals {
 	public Object/*>B<*/ apply() {
 	    return f.apply(a);
 	} 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return f;
 	}
 	public Object getComponent() {
 	    return null;
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    throw new UnsupportedOperationException("how to do");
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
@@ -988,14 +988,14 @@ public class Functionals {
 	public boolean apply() {
 	    return P.apply(a);
 	} 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return P;
 	}
 	public Object getComponent() {
 	    return null;
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    throw new UnsupportedOperationException("how to do");
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
@@ -1030,7 +1030,7 @@ public class Functionals {
 	public Object/*>B<*/ apply(Object/*>A<*/ x) {
 	    return f.apply(x, x);
 	} 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return f;
 	}
 	public Object getComponent() {
@@ -1039,7 +1039,7 @@ public class Functionals {
 	    };
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    throw new UnsupportedOperationException("how to do");
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
@@ -1074,7 +1074,7 @@ public class Functionals {
 	public boolean apply(Object/*>A<*/ x) {
 	    return P.apply(x, x);
 	} 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return P;
 	}
 	public Object getComponent() {
@@ -1083,7 +1083,7 @@ public class Functionals {
 	    };
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    throw new UnsupportedOperationException("how to do");
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
@@ -1327,7 +1327,7 @@ public class Functionals {
 	public Object/*>B<*/ apply(Object/*>A2<*/ x, Object/*>A1<*/ y) {
 	    return f.apply(y, x);
 	} 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return f;
 	}
 	public Object getComponent() {
@@ -1336,7 +1336,7 @@ public class Functionals {
 	    };
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    throw new UnsupportedOperationException("how to do");
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
@@ -1379,7 +1379,7 @@ public class Functionals {
 	public boolean apply(Object/*>A2<*/ x, Object/*>A1<*/ y) {
 	    return P.apply(y, x);
 	} 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return P;
 	}
 	public Object getComponent() {
@@ -1388,7 +1388,7 @@ public class Functionals {
 	    };
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    throw new UnsupportedOperationException("how to do");
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
@@ -1424,14 +1424,14 @@ public class Functionals {
 	public Object/*>Boolean<*/ apply() {
 	    return new Boolean(p.apply());
 	} 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return p;
 	}
 	public Object getComponent() {
 	    return new Object[] {};
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    this.p = (VoidPredicate) f;
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
@@ -1469,7 +1469,7 @@ public class Functionals {
 	public Object/*>Boolean<*/ apply(Object/*>A<*/ x) {
 	    return new Boolean(p.apply(x));
 	} 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return p;
 	}
 	public Object getComponent() {
@@ -1480,7 +1480,7 @@ public class Functionals {
 	      };*/
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    this.p = (Predicate/**<A>**/) f;
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
@@ -1516,7 +1516,7 @@ public class Functionals {
 	public Object/*>Boolean<*/ apply(Object/*>A1<*/ x, Object/*>A2<*/ y) {
 	    return new Boolean(p.apply(x, y));
 	} 
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return p;
 	}
 	public Object getComponent() {
@@ -1527,7 +1527,7 @@ public class Functionals {
 	      };*/
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
+	public void setCompositor(Object f) throws ClassCastException {
 	    this.p = (BinaryPredicate/**<A2, A2>**/) f;
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
@@ -1573,7 +1573,7 @@ public class Functionals {
 	public ListableFunction(Function/*<A, B>*/ function) {
 	    this.function = function;
 	}
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return function;
 	}
 
@@ -1745,7 +1745,7 @@ public class Functionals {
 	public ListableBinaryFunction(BinaryFunction/*<A1, A2, B>*/ function) {
 	    this.function = function;
 	}
-	public Functor getCompositor() {
+	public Object getCompositor() {
 	    return function;
 	}
 

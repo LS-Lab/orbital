@@ -498,9 +498,9 @@ public abstract class Notation implements Serializable, Comparable {
 	if (!(f instanceof Functor.Composite))
 	    return new ListTree.TreeNode(f, f + "");
 	Functor.Composite c = (Functor.Composite) f;
-	Functor			  compositor = c.getCompositor();
-	Collection		  components = Utility.asCollection(c.getComponent());
-	Node			  n = new ListTree.TreeNode(compositor, compositor + "");
+	Object		  compositor = c.getCompositor();
+	Collection	  components = Utility.asCollection(c.getComponent());
+	Node		  n = new ListTree.TreeNode(compositor, compositor + "");
 	if (components == null)
 	    throw new NullPointerException(f + " of " + f.getClass() + " has compositor " + compositor + " and components " + components);
 	// n.addAll(Functionals.map(functionTree, components));
