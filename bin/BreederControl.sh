@@ -1,3 +1,3 @@
 #!/bin/sh
 #
-java -classpath ..\lib\orbital-ext.jar;${CLASSPATH} orbital.moon.evolutionary.BreederControl $1 $2 $3 $4 $5
+java -classpath ../lib/orbital-ext.jar;${CLASSPATH} orbital.moon.evolutionary.BreederControl $1 $2 $3 $4 $5
