@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.List;
 
+import orbital.logic.functor.Notation;
+
 import orbital.util.Utility;
 import orbital.util.Setops;
 import orbital.math.MathUtilities;
@@ -40,6 +42,14 @@ import java.lang.reflect.*;
  * @author <a href="mailto:">Andr&eacute; Platzer</a>
  * @version 1.1, 2002-09-08
  * @see Type
+ * @internal major decisions
+ * <ol>
+ *   <li><span class="type">&perp;&rarr;&tau;</span> = <span class="type">&tau;</span></li>
+ *   <li><span class="type">&rho;&times;&sigma;&rarr;&tau;</span> sometimes equals <span class="type">&rho;&rarr;(&sigma;&rarr;&tau;)</span> by currying</li>
+ *   <li><span class="type">(&rho;&times;&sigma;)&times;&tau;</span> &ne; <span class="type">&rho;&times;&sigma;&times;&tau;</span>,
+ *     since this additional structure may generally contain information that would get lost in the flat form.
+ *   </li>
+ * </ol>
  */
 public final class Types {
     private static final char GROUPING_BRACKET_OPEN = '[';
@@ -115,7 +125,7 @@ public final class Types {
 	    //return Object.class;
 	}
 	protected int comparisonPriority() {
-	    return Integer.MAX_VALUE;
+	    return Integer.MAX_VALUE - 10;
 	}
 	public final int compareToSemiImpl(Type b) {
 	    //@todo verify the converse
@@ -158,7 +168,7 @@ public final class Types {
 	    return Type.class;
 	}
 	protected int comparisonPriority() {
-	    return Integer.MAX_VALUE - 1;
+	    return Integer.MAX_VALUE - 20;
 	}
 	public final int compareToSemiImpl(Type b) {
 	    //@xxx should we explicitly exclude TYPE from the ordinary type hierarchy?
@@ -230,7 +240,7 @@ public final class Types {
 	    return type;
 	}
 	protected int comparisonPriority() {
-	    return Integer.MAX_VALUE;
+	    return Integer.MAX_VALUE - 10;
 	}
 	public final int compareToSemiImpl(Type b) {
 	    return this == b ? 0 : -1;
@@ -261,6 +271,7 @@ public final class Types {
      */
     private Types() {}
 
+    
     // Utility methods
 
     /**
@@ -284,8 +295,20 @@ public final class Types {
 	return typeOf(args).subtypeOf(compositorType.domain());
     }
 
-    // factories
+    // base classes
     
+    /**
+     * For composite types.
+     * Type constructs consisting of a type constructor and argument types implement this interface.
+     * 
+     * @structure is {@link orbital.logic.functor.Functor.Composite}&cap;{@link Type}
+     * @structure extends Functor.Composite
+     * @structure extends Type
+     * @version 1.1, 2002-11-24
+     * @author  Andr&eacute; Platzer
+     */
+    private static interface Composite extends Functor.Composite, Type {}
+
     /**
      * The root object for type implementations.
      * @author Andr&eacute; Platzer
@@ -375,6 +398,85 @@ public final class Types {
 	}
     }
 
+    /**
+     * Base class for non-map types i.e. with void domain.
+     * @author Andr&eacute; Platzer
+     * @version 1.1, 2002/10/06
+     * @see Types.MapType
+     */
+    private static abstract class NonMapType extends TypeObject {
+	private static final long serialVersionUID = -6241523127417780697L;
+	public Type domain() {
+	    return NOTYPE;
+	}
+	public Type codomain() {
+	    return this;
+	}
+    }
+
+    /**
+     * .
+     * @author Andr&eacute; Platzer
+     * @version 1.1, 2002-11-24
+     */
+    private static abstract class AbstractCompositeType extends NonMapType implements Composite {
+	//private static final long serialVersionUID = 0;
+	// identical copy under @see orbital.logic.functor.Functor.Composite.Abstract
+	/**
+	 * the current notation used for displaying this composite functor.
+	 * @serial
+	 */
+	private Notation notation;
+	protected AbstractCompositeType(Notation notation) {
+	    setNotation(notation);
+	}
+	protected AbstractCompositeType() {
+	    this(null);
+	}
+    
+	/**
+	 * Get the notation used for displaying this composite functor.
+	 */
+	public Notation getNotation() {
+	    return notation;
+	}
+	/**
+	 * Set the notation used for displaying this composite functor.
+	 */
+	public void setNotation(Notation notation) {
+	    this.notation = notation == null ? Notation.DEFAULT : notation;
+	}
+    		
+	/**
+	 * Checks for equality.
+	 * Two CompositeFunctors are equal iff their classes,
+	 * their compositors and their components are equal.
+	 */
+	public boolean equals(Object o) {
+	    if (o == null || getClass() != o.getClass())
+		return false;
+	    // note that it does not matter to which .Composite we cast since we have already checked for class equality
+	    Composite b = (Composite) o;
+	    return Utility.equals(getCompositor(), b.getCompositor())
+		&& Utility.equalsAll(getComponent(), b.getComponent());
+	}
+    
+	public int hashCode() {
+	    return Utility.hashCode(getCompositor()) ^ Utility.hashCodeAll(getComponent());
+	}
+    
+	/**
+	 * Get a string representation of the composite functor.
+	 * @return <code>{@link Notation#format(Object, Object) notation.format}(getCompositor(), getComponent())</code>.
+	 */
+	public String toString() {
+	    return getNotation().format(getCompositor(), getComponent());
+	}
+    }
+    
+
+    // factories
+    
     /**
      * Get the object type described by a class.
      * Converts a native Java class object to a type.
@@ -634,22 +736,6 @@ public final class Types {
     }
 
     /**
-     * Base class for non-map types i.e. with void domain.
-     * @author Andr&eacute; Platzer
-     * @version 1.1, 2002/10/06
-     * @see Types.MapType
-     */
-    private static abstract class NonMapType extends TypeObject {
-	private static final long serialVersionUID = -6241523127417780697L;
-	public Type domain() {
-	    return NOTYPE;
-	}
-	public Type codomain() {
-	    return this;
-	}
-    }
-
-    /**
      * Get the product type <span class="type">&prod;<sub>i</sub>&tau;<sub>i</sub></span> = <span class="type">&tau;<sub>1</sub>&times;&#8230;&times;&tau;<sub>n</sub></span>.
      * <p>
      * Also called tuple type.
@@ -680,6 +766,22 @@ public final class Types {
 	default: return new ProductType(components);
 	}
     }
+    /**
+     * product: <span class="type">*&times;...&times;* &rarr; *</span>; <big>(</big><span class="type">&tau;<sub>i</sub></span><big>)</big> &#8614; <span class="type">&tau;<sub>1</sub>&times;&#8230;&times;&tau;<sub>n</sub></span>.
+     * <p>
+     * The product type constructor.
+     * </p>
+     * @see #product(Type[])
+     */
+    public static final Function/*<Type[],Type>*/ product = new Function/*<Type[],Type>*/() {
+	    private final Type logicalTypeDeclaration = null;
+	    public Object apply(Object t) {
+		return Types.product((Type[])t);
+	    }
+	    public String toString() {
+		return "*";
+	    }
+	};
 
     /**
      * Implementation of product types.
@@ -687,14 +789,15 @@ public final class Types {
      * @version 1.1, 2002-09-08
      * @internal which interface for product types? The answer may be: nothing particular, since the typical operations should rely on compareTo and equals.
      */
-    private static final class ProductType extends NonMapType {
+    private static final class ProductType extends AbstractCompositeType {
 	private static final long serialVersionUID = -6667362786622508551L;
-	private final Type components[];
-	public ProductType(Type components[]) {
-	    if (components.length == 0)
-		throw new IllegalArgumentException();
-	    this.components = components;
+	private Type components[];
+	private ProductType() {
 	}
+	public ProductType(Type components[]) {
+	    this.setComponent(components);
+	}
+	//@internal almost like in AbstractCompositeFunctor
 	public boolean equals(Object o) {
 	    return (o instanceof ProductType) && Utility.equalsAll(components, ((ProductType)o).components);
 	}
@@ -715,8 +818,20 @@ public final class Types {
 	    return sb.toString();
 	}
 
-	public Type[] getComponent() {
+	public Functor getCompositor() {
+	    return product;
+	}
+	public Object getComponent() {
 	    return components;
+	}
+	public void setCompositor(Functor compositor) {
+	    if (compositor != getCompositor())
+		throw new IllegalArgumentException("special compositor of " + getClass() + " expected");
+	}
+	public void setComponent(Object component) {
+	    if (((Object[])component).length == 0)
+		throw new IllegalArgumentException();
+	    this.components = (Type[]) component;
 	}
 
 	protected int comparisonPriority() {
@@ -822,17 +937,34 @@ public final class Types {
     }
 
     /**
+     * inf: <span class="type">*&times;...&times;* &rarr; *</span>; <big>(</big><span class="type">&tau;<sub>i</sub></span><big>)</big> &#8614; <span class="type">&#8898;<sub>i</sub>&tau;<sub>i</sub></span> = <span class="type">&tau;<sub>1</sub>&cap;&#8230;&cap;&tau;<sub>n</sub></span>.
+     * <p>
+     * The infimum type constructor.
+     * </p>
+     * @see #inf(Type[])
+     */
+    public static final Function/*<Type[],Type>*/ inf = new Function/*<Type[],Type>*/() {
+	    private final Type logicalTypeDeclaration = null; //@xxx
+	    public Object apply(Object t) {
+		return Types.inf((Type[])t);
+	    }
+	    public String toString() {
+		return "&";
+	    }
+	};
+
+    /**
      * Implementation of infimum types.
      * @author Andr&eacute; Platzer
      * @version 1.1, 2002-10-04
+     * @todo should we extend AbstractCompositeType?
      */
     private static final class InfimumType extends NonMapType {
 	private static final long serialVersionUID = -6251593765414274805L;
-	private final Type components[];
+	private Type components[];
+	private InfimumType() {}
 	public InfimumType(Type components[]) {
-	    if (components.length == 0)
-		throw new IllegalArgumentException();
-	    this.components = components;
+	    this.setComponent(components);
 	}
 	public boolean equals(Object o) {
 	    return (o instanceof InfimumType) && new HashSet(Arrays.asList(components)).equals(new HashSet(Arrays.asList(((InfimumType)o).components)));
@@ -854,8 +986,20 @@ public final class Types {
 	    return sb.toString();
 	}
 
-	public Type[] getComponent() {
+	public Functor getCompositor() {
+	    return inf;
+	}
+	public Object getComponent() {
 	    return components;
+	}
+	public void setCompositor(Functor compositor) {
+	    if (compositor != getCompositor())
+		throw new IllegalArgumentException("special compositor of " + getClass() + " expected");
+	}
+	public void setComponent(Object component) {
+	    if (((Object[])component).length == 0)
+		throw new IllegalArgumentException();
+	    this.components = (Type[]) component;
 	}
 
 	protected int comparisonPriority() {
@@ -951,17 +1095,33 @@ public final class Types {
     }
 
     /**
+     * sup: <span class="type">*&times;...&times;* &rarr; *</span>; <big>(</big><span class="type">&tau;<sub>i</sub></span><big>)</big> &#8614; <span class="type">&#8899;<sub>i</sub>&tau;<sub>i</sub></span> = <span class="type">&tau;<sub>1</sub>&cup;&#8230;&cup;&tau;<sub>n</sub></span>.
+     * <p>
+     * The supremum type constructor.
+     * </p>
+     * @see #sup(Type[])
+     */
+    public static final Function/*<Type[],Type>*/ sup = new Function/*<Type[],Type>*/() {
+	    private final Type logicalTypeDeclaration = null;
+	    public Object apply(Object t) {
+		return Types.sup((Type[])t);
+	    }
+	    public String toString() {
+		return "|";
+	    }
+	};
+
+    /**
      * Implementation of supremum types.
      * @author Andr&eacute; Platzer
      * @version 1.1, 2002-10-04
      */
     private static final class SupremumType extends NonMapType {
 	private static final long serialVersionUID = 2673832577121308931L;
-	private final Type components[];
+	private Type components[];
+	private SupremumType() {}
 	public SupremumType(Type components[]) {
-	    if (components.length == 0)
-		throw new IllegalArgumentException();
-	    this.components = components;
+	    this.setComponent(components);
 	}
 	public boolean equals(Object o) {
 	    return (o instanceof SupremumType) && new HashSet(Arrays.asList(components)).equals(new HashSet(Arrays.asList(((SupremumType)o).components)));
@@ -983,8 +1143,20 @@ public final class Types {
 	    return sb.toString();
 	}
 
-	public Type[] getComponent() {
+	public Functor getCompositor() {
+	    return sup;
+	}
+	public Object getComponent() {
 	    return components;
+	}
+	public void setCompositor(Functor compositor) {
+	    if (compositor != getCompositor())
+		throw new IllegalArgumentException("special compositor of " + getClass() + " expected");
+	}
+	public void setComponent(Object component) {
+	    if (((Object[])component).length == 0)
+		throw new IllegalArgumentException();
+	    this.components = (Type[]) component;
 	}
 
 	protected int comparisonPriority() {
@@ -1182,7 +1354,7 @@ public final class Types {
 		return false;
 	}
 	public int hashCode() {
-	    return collection.hashCode() ^ component.hashCode();
+	    return 13 ^ collection.hashCode() ^ component.hashCode();
 	}
 	public String toString() {
 	    return toStringPrefix + component + toStringSuffix;
@@ -1231,7 +1403,7 @@ public final class Types {
 	    : type.equals(NOTYPE)
 	    ? 0
 	    : type instanceof ProductType
-	    ? ((ProductType)type).components.length
+	    ? ((Type[]) ((ProductType)type).getComponent() ).length
 	    : 1;
     }
     
@@ -1381,8 +1553,8 @@ public final class Types {
 			// fall-through
 			;
 		    else {
-			Type as[] = ((ProductType)a).getComponent();
-			Type bs[] = ((ProductType)b).getComponent();
+			Type as[] = (Type[]) ((ProductType)a).getComponent();
+			Type bs[] = (Type[]) ((ProductType)b).getComponent();
 			assert as.length == bs.length : "equal arities means equal number of components";
 			for (int i = 0; i < as.length; i++) {
 			    order = compare(as[i], bs[i]);
