@@ -6,6 +6,8 @@
 <meta name="author" content="Andre Platzer">
 <meta name="copyright" content="© 2002 André Platzer">
 <meta name="classification" content="Science/Mathematics/Algebra/Basics">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
 <title>Homomorphisms</title>
 <link rel="stylesheet" href="../../../../stylist.css" type="text/css" title="layout">
 <style>
@@ -19,8 +21,8 @@
 
 <h2>Properties of Homomorphisms</h2>
 <dl>
-  <dt id="category" class="UniversalMappingProperty">&quot;1. Homomorphiesatz, 
-    Projektionssatz&quot; (Universal Mapping Property)</dt>
+  <dt id="homomorphicProjection" class="UniversalMappingProperty">&quot;1. 
+    Homomorphiesatz, Projektionssatz&quot; (Universal Mapping Property)</dt>
   <dd>Let f:A→B be a homomorphism of Σ-Algebras<br>
     ⇒
     <ul>
@@ -28,8 +30,8 @@
       <li>∃!f̅:A/~<sub>f</sub>→B homomorph such that f = f̅∘π</li>
       <li>f̅ is injective</li>
       <li>f surjective ⇒ f̅ surjective</li>
-      <li>A/Ker(f)≅Im(f) at least if it is provided that f is a homomorphism 
-        of groups</li>
+      <li>A/Ker(f)≅Im(f) <small>at least if it is provided that f is a 
+        homomorphism of groups</small></li>
     </ul>
     Alternatively: (Universal Mapping Property of factor groups)<br>
     Let f:G→G' be a homomorphism of groups, with N⊴G and N⊆Ker(f)<br>
@@ -37,17 +39,18 @@
     <ul>
       <li>∃!f̅:G/N→G' homomorph of groups such that f = f̅∘π</li>
     </ul>
-    The same goes true for homomorphisms of rings with ideals N⊴G, and for 
-    R-linear mappings with sub-R-modules N≤G.</dd>
-  <dt>&quot;2. Homomorphiesatz, Einbettungssatz&quot;</dt>
-  <dd>Let B⊆A be Σ-Algebras, ~ ⊆ A×A a congruence, and B̅ := ⋃<sub>b∈B</sub>[b]<sub>~</sub> 
-    the closure with respect to ~.<br>
+    <small>The same goes true for homomorphisms of rings with ideals N⊴G, and 
+    for R-linear mappings with sub-R-modules N≤G, etc.</small></dd>
+  <dt id="homomorphicEmbedding">&quot;2. Homomorphiesatz, Einbettungssatz&quot;</dt>
+  <dd>Let B⊆A be Σ-Algebras, ~ ⊆ A×A a congruence relation, and B̅ := ⋃<sub>b∈B</sub>[b]<sub>~</sub> 
+    the closure (or saturation) with respect to ~.<br>
     ⇒
     <ul>
       <li>B/~∩B×B ≅ B̅/~</li>
     </ul>
   </dd>
-  <dt>&quot;3. Homomorphiesatz, Serial Decomposition, Verfeinerungssatz&quot;</dt>
+  <dt id="homomorphicRefinement">&quot;3. Homomorphiesatz, Serial Decomposition, 
+    Refinement&quot;</dt>
   <dd>Let A be Σ-Algebras, σ⊆τ ⊆ A×A two congruences.</dd>
   <dd>⇒
     <ul>
@@ -56,7 +59,7 @@
       <li>(A/σ)<big>/</big>(τ/σ) ≅ A/τ</li>
     </ul>
   </dd>
-  <dt>&quot;4. Homomorphiesatz, Parallel Decomposition, 
+  <dt id="homomorphicParallel">&quot;4. Homomorphiesatz, Parallel Decomposition, 
     Parallelverarbeitungssatz, ≙Chinese Remainder Theorem?&quot;</dt>
   <dd>Let A be Σ-Algebras, σ ⊆ A×A, τ ⊆ A×A&nbsp; two independent 
     congruences,<br>
@@ -66,16 +69,22 @@
       <li>A/σ × A/τ ≅ A/σ∩τ</li>
     </ul>
   </dd>
-  <dt>Chinese Remainder Theorem</dt>
-  <dd>Let R be a commutative true ring with one, and I<sub>1</sub>,...,I<sub>n</sub>⊴R 
-    be ideals of R that are coprime, i.e. ∀ν≠μ I<sub>ν</sub>+I<sub>μ</sub>=(I<sub>ν</sub>∪I<sub>μ</sub>) 
-    = R.</dd>
-  <br />
-  ⇒
-  <ul>
-    <li>R<big>/</big>⋂<sub>ν=1,...,n</sub> I<sub>ν</sub> ≅ R/I<sub>1</sub> 
-      × ... × R/I<sub>n</sub></li>
-  </ul>
+  <dt id="ChineseRemainderTheorem">Chinese Remainder Theorem</dt>
+  <dd>Let R be a commutative ring with one, and I<sub>1</sub>,…,I<sub>n</sub>⊴R 
+    be ideals. Then the following conditions are equivalent.
+    <ol type="i">
+      <li>I<sub>1</sub>,…,I<sub>n</sub> are coprime, i.e. ∀ν≠μ I<sub>ν</sub>+I<sub>μ</sub>:=(I<sub>ν</sub>∪I<sub>μ</sub>) 
+        = R</li>
+      <li>⇔ R<big>/</big>⋂<sub>ν=1,...,n</sub> I<sub>ν</sub> ≅ R/I<sub>1</sub> 
+        × … × R/I<sub>n</sub> (injective by construction)</li>
+    </ol>
+    ⇒
+    <ul>
+      <li>⋂<sub>ν=1,...,n</sub> I<sub>ν</sub> = I<sub>1</sub>⋅ … ⋅I<sub>n</sub> 
+        (<small>equivalent to (i) and (ii) if R is a principal ideal integrity 
+        domain</small>)</li>
+    </ul>
+  </dd>
 </dl>
 
 </body>

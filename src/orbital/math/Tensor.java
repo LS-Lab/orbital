@@ -159,14 +159,35 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
     //Tensor/*<R>*/ scale(Scalar s);
 
     /**
-     * Multiplies a tensor with a matrix returning a tensor.
-     * If column-tensor <code>v</code> is sized <code>n</code> and transposed and
-     * the matrix <code>A</code> is sized <code>n&times;m</code>,
-     * the resulting column-tensor <code>v&middot;A</code> is sized <code>m</code>.
-     * @pre dimension() == B.dimension().height
+     * Inner product of a tensor with a tensor returning a tensor.
+     * <p>
+     * ·:R<sup>n<sub>1</sub>&times;&#8230;&times;n<sub>r</sub>&times;h</sup>&times;R<sup>h&times;m<sub>1</sub>&times;&#8230;&times;m<sub>s</sub></sup>&rarr;R<sup>n<sub>1</sub>&times;&#8230;&times;n<sub>r</sub>&times;m<sub>1</sub>&times;&#8230;&times;m<sub>s</sub></sup>;
+     * <big>(</big>(a<sub>i<sub>1</sub>,&#8230;,i<sub>r</sub>,i<sub>r+1</sub></sub>)<sub>i<sub>1</sub>,&#8230;,i<sub>r</sub>,i<sub>r+1</sub></sub> , (b<sub>j<sub>0</sub>,j<sub>1</sub>,&#8230;,j<sub>s</sub></sub>)<sub>j<sub>0</sub>,j<sub>1</sub>,&#8230;,j<sub>s</sub></sub><big>)</big> &#8614;
+     * (&sum;<span class="doubleIndex"><sub>&nu;=0</sub><sup>h-1</sup></span> a<sub>i<sub>1</sub>,&#8230;,i<sub>r</sub>,&nu;</sub></sub>&sdot;b<sub>&nu;,j<sub>1</sub>,&#8230;,j<sub>s</sub></sub>)<sub>i<sub>1</sub>,&#8230;,i<sub>r</sub>,j<sub>1</sub>,&#8230;,j<sub>s</sub></sub>
+     * </p>
+     * @pre dimensions()[rank()-1] == b.dimensions()[0]
+     * @return the inner product a·b.
+     * @post RES.dimensions() = {dimensions()[0],&#8230;dimensions()[rank()-2]}&cup;{b.dimensions()[1],&#8230;b.dimensions()[b.rank()-1]}
+     * @note inner product is only one (partial) multiplication on graded tensor algebra
      */
-    //@note tensor product is only one multiplication on graded tensor algebra
-    //@todo Tensor/*<R>*/ multiply(Matrix/*<R>*/ B);
+    //@todo introduce
+    //Tensor/*<R>*/ multiply(Tensor/*<R>*/ b);
+
+    /**
+     * Tensor product of a tensor with a tensor returning a tensor.
+     * <p>
+     * &otimes;:R<sup>n<sub>1</sub>&times;&#8230;&times;n<sub>r</sub></sup>&times;R<sup>m<sub>1</sub>&times;&#8230;&times;m<sub>s</sub></sup>&rarr;R<sup>n<sub>1</sub>&times;&#8230;&times;n<sub>r</sub>&times;m<sub>1</sub>&times;&#8230;&times;m<sub>s</sub></sup>;
+     * <big>(</big>(a<sub>i<sub>1</sub>,&#8230;,i<sub>r</sub></sub>)<sub>i<sub>1</sub>,&#8230;,i<sub>r</sub></sub> , (b<sub>j<sub>1</sub>,&#8230;,j<sub>s</sub></sub>)<sub>j<sub>1</sub>,&#8230;,j<sub>s</sub></sub><big>)</big> &#8614;
+     * (a<sub>i<sub>1</sub>,&#8230;,i<sub>r</sub></sub></sub>&sdot;b<sub>j<sub>1</sub>,&#8230;,j<sub>s</sub></sub>)<sub>i<sub>1</sub>,&#8230;,i<sub>r</sub>,j<sub>1</sub>,&#8230;,j<sub>s</sub></sub>
+     * =&#770;
+     * (a<sub>i<sub>1</sub>,&#8230;,i<sub>r</sub></sub></sub>&lowast;(b<sub>j<sub>1</sub>,&#8230;,j<sub>s</sub></sub>)<sub>j<sub>1</sub>,&#8230;,j<sub>s</sub></sub>)<sub>i<sub>1</sub>,&#8230;,i<sub>r</sub></sub>
+     * </p>
+     * @return the tensor product (or outer product) a&otimes;b.
+     * @post RES.dimensions() = dimensions()&cup;b.dimensions()
+     * @note tensor product is only one multiplication on graded tensor algebra
+     */
+    //@todo introduce Tensor/*<R>*/ tensor(Tensor/*<R>*/ b); which seems better than multiply(Tensor/*<R>*/ b);
+    //Tensor/*<R>*/ tensor(Tensor/*<R>*/ b);
 
     // operations on tensors
 	

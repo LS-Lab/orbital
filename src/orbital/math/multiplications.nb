@@ -39,9 +39,9 @@ Wolfram Research.
 
 (*NotebookFileLineBreakTest
 NotebookFileLineBreakTest*)
-(*NotebookOptionsPosition[     39355,       1183]*)
-(*NotebookOutlinePosition[     40007,       1206]*)
-(*  CellTagsIndexPosition[     39963,       1202]*)
+(*NotebookOptionsPosition[     39495,       1187]*)
+(*NotebookOutlinePosition[     40148,       1210]*)
+(*  CellTagsIndexPosition[     40104,       1206]*)
 (*WindowFrame->Normal*)
 
 
@@ -49,18 +49,22 @@ NotebookFileLineBreakTest*)
 Notebook[{
 Cell[BoxData[{
     \( (*\ scalar\ multiplication\ *) \[IndentingNewLine]scalar[a_, 
-        b_]\  := \ \(\(a\)\(*\)\(b\)\(\[IndentingNewLine]\)\( (*\ 
-          ring\ multiplication\ *) \)\)\), "\[IndentingNewLine]", 
+        b_]\  := \ \(\(a*b\)\(\[IndentingNewLine]\)\( (*\ 
+        ring\ multiplication\ *) \)\)\), "\[IndentingNewLine]", 
     \(ring[a_, b_]\  := \ a\ b\)}], "Input"],
 
 Cell[BoxData[{
-    \(TP[a_, b_]\  := \ Outer[Times, a, b]\), "\[IndentingNewLine]", 
+    \( (*\ tensor\ product\ *) \[IndentingNewLine]TP[a_, b_]\  := \ 
+      Outer[Times, a, b]\[IndentingNewLine] (*\ 
+      inner\ product\ *) \), "\[IndentingNewLine]", 
     \(IP[a_, b_]\  := \ Inner[Times, a, b, Plus]\)}], "Input"],
 
 Cell[BoxData[{
     \( (*\ tests\ whether\ x\ is\ a\ tensor\ *) \[IndentingNewLine]TensorQ[
-        x_]\  := \ VectorQ[Dimensions[x], NumberQ]\  \[And] \ 
-        Head[x] == List\[IndentingNewLine]\), "\[IndentingNewLine]", 
+        x_]\  := \ VectorQ[Dimensions[x], 
+          NumberQ]\  \[And] \ \(\(Head[
+            x]\)\(==\)\(List\)\(\[IndentingNewLine]\)\)\), "\
+\[IndentingNewLine]", 
     \(column[m_, j_]\  := \ 
       m\_\(\(\[LeftDoubleBracket]\)\(All, j\)\(\[RightDoubleBracket]\)\)\  \
 /; \ IntegerQ[j]\), "\[IndentingNewLine]", 
@@ -75,13 +79,13 @@ Cell["Tensor product", "Section"],
 Cell[BoxData[{
     \(tp[a_, b_]\  := \ 
       scalar[a, 
-          b]\[IndentingNewLine] /; \[IndentingNewLine]\(\((\[Not] TensorQ[
+          b]\[IndentingNewLine] /; \[IndentingNewLine]\(\(\((\[Not] TensorQ[
                   a]\  \[Or] \ 
               TensorRank[a] \[Equal] 
-                0)\)\(\ \)\(\[And]\)\(\ \)\((\[Not] TensorQ[b] \[Or] 
-              TensorRank[b] \[Equal] 0)\)\(\[IndentingNewLine]\)\( (*\ 
-            Problem : \ we\ apply\ to\ outermost\ level, \ 
-            Outer\ applies\ to\ lowest\ level\ *) \)\)\), \
+                0)\)\  \[And] \ \((\[Not] TensorQ[b] \[Or] 
+              TensorRank[b] \[Equal] 0)\)\)\(\[IndentingNewLine]\)\( (*\ 
+          Problem : \ we\ apply\ to\ outermost\ level, \ 
+          Outer\ applies\ to\ lowest\ level\ *) \)\)\), \
 "\[IndentingNewLine]", 
     \(tp[a_, b_]\  := \ 
       Table[tp[a\_\(\(\[LeftDoubleBracket]\)\(i\)\(\[RightDoubleBracket]\)\), 
@@ -298,10 +302,10 @@ Cell[BoxData[{
       Sum[ring[a\_\(\(\[LeftDoubleBracket]\)\(i\)\(\[RightDoubleBracket]\)\), 
             b\_\(\(\[LeftDoubleBracket]\)\(i\)\(\[RightDoubleBracket]\)\)], \
 {i, Length[a]}]\[IndentingNewLine] /; 
-        VectorQ[a]\  \[And] VectorQ[b] \[And] 
-          Length[a] \[Equal] 
-            Length[b]\[IndentingNewLine] (*\ \(problem\)\(:\)\ *) \), "\
-\[IndentingNewLine]", 
+        VectorQ[a]\  \[And] 
+          VectorQ[b] \[And] \(\(Length[a]\)\(\[Equal]\)\(Length[
+              b]\)\(\[IndentingNewLine]\)\( (*\ \(problem\)\(:\)\ *) \)\)\), \
+"\[IndentingNewLine]", 
     \(ip[a_, b_]\  := \ 
       Table[ip[row[a, i], 
             column[b, 
@@ -1182,8 +1186,8 @@ Cell[BoxData[
 }, Open  ]]
 },
 FrontEndVersion->"4.0 for Microsoft Windows",
-ScreenRectangle->{{0, 800}, {0, 509}},
-WindowSize->{683, 474},
+ScreenRectangle->{{0, 1280}, {0, 920}},
+WindowSize->{926, 854},
 WindowMargins->{{0, Automatic}, {Automatic, 0}}
 ]
 
@@ -1205,51 +1209,51 @@ CellTagsIndex->{}
 
 (*NotebookFileOutline
 Notebook[{
-Cell[1717, 49, 262, 4, 90, "Input"],
-Cell[1982, 55, 147, 2, 50, "Input"],
-Cell[2132, 59, 509, 9, 110, "Input"],
+Cell[1717, 49, 252, 4, 90, "Input"],
+Cell[1972, 55, 248, 4, 90, "Input"],
+Cell[2223, 61, 544, 11, 110, "Input"],
 
 Cell[CellGroupData[{
-Cell[2666, 72, 33, 0, 53, "Section"],
-Cell[2702, 74, 783, 15, 130, "Input"],
+Cell[2792, 76, 33, 0, 53, "Section"],
+Cell[2828, 78, 773, 15, 130, "Input"],
 
 Cell[CellGroupData[{
-Cell[3510, 93, 1351, 34, 336, "Input"],
-Cell[4864, 129, 38, 1, 29, "Output"],
-Cell[4905, 132, 164, 3, 24, "Message"],
-Cell[5072, 137, 52, 1, 29, "Output"],
-Cell[5127, 140, 42, 1, 29, "Output"],
-Cell[5172, 143, 42, 1, 29, "Output"],
-Cell[5217, 146, 62, 1, 29, "Output"],
-Cell[5282, 149, 62, 1, 29, "Output"],
-Cell[5347, 152, 978, 28, 87, "Output"],
-Cell[6328, 182, 978, 28, 87, "Output"],
-Cell[7309, 212, 1192, 34, 87, "Output"],
-Cell[8504, 248, 1192, 34, 87, "Output"]
+Cell[3626, 97, 1351, 34, 336, "Input"],
+Cell[4980, 133, 38, 1, 29, "Output"],
+Cell[5021, 136, 164, 3, 24, "Message"],
+Cell[5188, 141, 52, 1, 29, "Output"],
+Cell[5243, 144, 42, 1, 29, "Output"],
+Cell[5288, 147, 42, 1, 29, "Output"],
+Cell[5333, 150, 62, 1, 29, "Output"],
+Cell[5398, 153, 62, 1, 29, "Output"],
+Cell[5463, 156, 978, 28, 87, "Output"],
+Cell[6444, 186, 978, 28, 87, "Output"],
+Cell[7425, 216, 1192, 34, 87, "Output"],
+Cell[8620, 252, 1192, 34, 87, "Output"]
 }, Open  ]]
 }, Open  ]],
 
 Cell[CellGroupData[{
-Cell[9745, 288, 32, 0, 53, "Section"],
-Cell[9780, 290, 1088, 21, 171, "Input"],
+Cell[9861, 292, 32, 0, 53, "Section"],
+Cell[9896, 294, 1112, 21, 151, "Input"],
 
 Cell[CellGroupData[{
-Cell[10893, 315, 1540, 37, 396, "Input"],
-Cell[12436, 354, 125, 2, 24, "Message"],
-Cell[12564, 358, 126, 2, 24, "Message"],
-Cell[12693, 362, 42, 1, 29, "Output"],
-Cell[12738, 365, 170, 3, 42, "Message"],
-Cell[12911, 370, 58, 1, 29, "Output"],
-Cell[12972, 373, 38, 1, 29, "Output"],
-Cell[13013, 376, 38, 1, 29, "Output"],
-Cell[13054, 379, 45, 1, 29, "Output"],
-Cell[13102, 382, 45, 1, 29, "Output"],
-Cell[13150, 385, 200, 6, 55, "Output"],
-Cell[13353, 393, 200, 6, 55, "Output"],
-Cell[13556, 401, 231, 6, 55, "Output"],
-Cell[13790, 409, 231, 6, 55, "Output"],
-Cell[14024, 417, 12650, 380, 175, "Output"],
-Cell[26677, 799, 12650, 380, 175, "Output"]
+Cell[11033, 319, 1540, 37, 396, "Input"],
+Cell[12576, 358, 125, 2, 24, "Message"],
+Cell[12704, 362, 126, 2, 24, "Message"],
+Cell[12833, 366, 42, 1, 29, "Output"],
+Cell[12878, 369, 170, 3, 24, "Message"],
+Cell[13051, 374, 58, 1, 29, "Output"],
+Cell[13112, 377, 38, 1, 29, "Output"],
+Cell[13153, 380, 38, 1, 29, "Output"],
+Cell[13194, 383, 45, 1, 29, "Output"],
+Cell[13242, 386, 45, 1, 29, "Output"],
+Cell[13290, 389, 200, 6, 55, "Output"],
+Cell[13493, 397, 200, 6, 55, "Output"],
+Cell[13696, 405, 231, 6, 55, "Output"],
+Cell[13930, 413, 231, 6, 55, "Output"],
+Cell[14164, 421, 12650, 380, 175, "Output"],
+Cell[26817, 803, 12650, 380, 175, "Output"]
 }, Open  ]]
 }, Open  ]]
 }

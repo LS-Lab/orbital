@@ -35,7 +35,7 @@ package orbital.math;
  * which is injective if and only if S does not contain zero divisors (especially 0&notin;S).
  * The universal mapping property is
  * <div class="UniversalMappingProperty">&forall;&phi;:R&rarr;R' homomorphism of rings with 1 with &phi;(S)&sube;(R')<sup>&times;</sup><br />
- * &exist;!&phi;&#771;:R<sub>S</sub>&rarr;R' homomorphism of rings with 1 where &phi;=&phi;&#771;&#;&iota;<sub>S</sub></div>
+ * &exist;!&phi;&#771;:R<sub>S</sub>&rarr;R' homomorphism of rings with 1 where &phi;=&phi;&#771;&#8728;&iota;<sub>S</sub></div>
  * </p>
  * <p>
  * For R-modules M and S&le;(R,&sdot;) it is

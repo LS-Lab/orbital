@@ -942,7 +942,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
 	return (Matrix) scale(s);
     } 
     public Matrix/*<R>*/ scale(Scalar s) {
-	return (Matrix) scale(s);
+	return (Matrix) scale((Arithmetic)s);
     } 
     public Arithmetic scale(Arithmetic s) {
 	Matrix ret = newInstance(dimension());

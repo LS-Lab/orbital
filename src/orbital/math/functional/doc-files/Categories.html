@@ -14,7 +14,13 @@
 
 <body>
 
-<h2>Categories and Functors</h2>
+<h2>Contents</h2>
+<ul>
+  <li><a href="#categoriesAndFunctors">Categories and Functors</a>
+  <li><a href="#universalElements">Universal Elements</a></li>
+  <li><a href="#products">Product and Coproduct</a></li>
+</ul>
+<h2 id="categoriesAndFunctors">Categories and Functors</h2>
 <p>&quot;general abstract nonsense&quot;</p>
 <dl class="def">
   <dt id="category">category</dt>
@@ -108,7 +114,7 @@
     A contravariant functor F:<span class="category">C</span>→<span class="category">D</span> 
     is a covariant functor F:<span class="category">C</span>→<span class="category">D°</span> 
     (or F:<span class="category">C</span><span class="category">°</span>→<span class="category">D</span>).</dd>
-  <dt>natural<br>
+  <dt id="naturalTransformation">natural<br>
     trans-<br>
     formation</dt>
   <dd>A natural transformation (or morphism of functors) α:F<span class="category"></span>→G 
@@ -146,11 +152,11 @@ are called <dfn>automorphisms</dfn>.</p>
         <td>∘ is distributive over +, i.e.
           <ul>
             <li>∀A,B,C∈Ob <span class="category">C</span> ∀f∈Hom<span class="category"><sub>C</sub></span>(B,C) 
-              ∀g,h∈Hom<span class="category"><sub>C</sub></span>(A,B) 
-              f∘(g+h) = (f∘g) + (f∘h)</li>
+              ∀g,h∈Hom<span class="category"><sub>C</sub></span>(A,B) f∘(g+h) 
+              = (f∘g) + (f∘h)</li>
             <li>∀A,B,C∈Ob <span class="category">C</span> ∀f,g∈Hom<span class="category"><sub>C</sub></span>(B,C) 
-              ∀h∈Hom<sub><span class="category">C</span></sub>(A,B) 
-              (f+g)∘h = (f∘h) + (g∘h)</li>
+              ∀h∈Hom<sub><span class="category">C</span></sub>(A,B) (f+g)∘h 
+              = (f∘h) + (g∘h)</li>
           </ul>
         </td>
         <td>&quot;distributive&quot;</td>
@@ -160,7 +166,7 @@ are called <dfn>automorphisms</dfn>.</p>
   <dt>additive</dt>
   <dd>A functor F:<span class="category">C</span>→<span class="category">D</span> 
     between two additive categories <span class="category">C</span> and <span class="category">D</span> 
-    is called additive, if
+    is additive, if
     <div>
       ∀A,B∈Ob <span class="category">C</span> F:Hom<sub><span class="category">C</span></sub>(A,B)<span class="category"></span>→Hom<span class="category"><sub>D</sub></span>(F(A),F(B)) 
       homomorphism of groups
@@ -170,7 +176,7 @@ are called <dfn>automorphisms</dfn>.</p>
 <h3>Important Examples</h3>
 <ol>
   <li id="opposite">
-    <p>For every category <span class="category">C</span>, there is the opposite 
+    <p>For every category <span class="category">C</span>, there is the <dfn>opposite</dfn> 
     (dual) category <span class="category">C°</span> obtained by &quot;turning 
     the arrows around&quot;, per Ob <span class="category">C°</span> := Ob <span class="category">C</span>, 
     and Mor<span class="category"><sub>C°</sub></span>(A,B) := Mor<span class="category"><sub>C</sub></span>(B,A) 
@@ -180,26 +186,26 @@ are called <dfn>automorphisms</dfn>.</p>
     also holds <i>(in <span class="category">C°</span>)</i> with <em>all</em> 
     arrows reversed.</p>
   </li>
-  <li id="hom-functor">
+  <li>
     <p>Categories together with functors form a category.</p>
   </li>
-  <li id="hom-functor">
+  <li>
     <p>Additive categories form a category together with additive functors.</p>
   </li>
-  <li id="hom-functor">
-    <p>Functors of fixed categories together with their natural transformations 
+  <li>
+    <p>Functors of a fixed category together with their natural transformations 
     form a category (s.a.).</p>
   </li>
   <li id="hom-functor">
     <p>Let <span class="category">C</span> be a category. For each X∈Ob <span class="category">C</span> 
     there are two functors</p>
     <ul>
-      <li>covariant functor<br>
+      <li>covariant hom-functor<br>
         m<sub>X</sub>:=Mor<span class="category"><sub>C</sub></span>(X,·):<span class="category">C</span>→<span class="category">Ens</span><br>
         Y ↦ m<sub>X</sub>(Y) := Y<sub>∗</sub>:=Mor<span class="category"><sub>C</sub></span>(X,Y)<br>
         (f∈Mor<span class="category"><sub>C</sub></span>(Y,Z)) ↦ <big>(</big>m<sub>X</sub>(f):Mor<span class="category"><sub>C</sub></span>(X,Y)→Mor<span class="category"><sub>C</sub></span>(X,Z); 
         g↦f∘g<big>)</big></li>
-      <li>contravariant functor<br>
+      <li>contravariant hom-functor<br>
         m<sup>X</sup>:=Mor<span class="category"><sub>C</sub></span>(·,X):<span class="category">C</span>→<span class="category">Ens</span><br>
         Y ↦ m<sup>X</sup>(Y) := Y<sup>∗</sup>:=Mor<span class="category"><sub>C</sub></span>(Y,X)<br>
         (f∈Mor<span class="category"><sub>C</sub></span>(Y,Z)) ↦ <big>(</big>m<sup>X</sup>(f):Mor<span class="category"><sub>C</sub></span>(Z,X)→Mor<span class="category"><sub>C</sub></span>(Y,X); 
@@ -213,7 +219,7 @@ are called <dfn>automorphisms</dfn>.</p>
   </li>
 </ol>
 <!--@todo check names of Y<sub>∗</sub>, and Y<sup>∗</sup> .-->
-<h2>Universal Elements</h2>
+<h2 id="universalElements">Universal Elements</h2>
 <p>Let <span class="category">C</span> be a category.
 <dl class="def">
   <dt id="initial">initial<br>
@@ -229,12 +235,12 @@ are called <dfn>automorphisms</dfn>.</p>
     ⇔ A is an initial object in <span class="category">C°</span>.<br>
     terminal objects are uniquely isomorph, i.e. each two terminal objects A,B 
     have a unique isomorphism A→B.</dd>
-  <dt>presentable</dt>
+  <dt id="presentable">presentable</dt>
   <dd>a covariant (resp. contravariant) functor F:<span class="category">C</span>→<span class="category">Ens</span> 
     is presentable :⇔ ∃A∈Ob <span class="category">C</span> F≅m<sub>A</sub> 
     (resp. F≅m<sup>A</sup>)<br>
     A is called presenting object for F.</dd>
-  <dt>universal element</dt>
+  <dt id="universalElement">universal element</dt>
   <dd>If F:<span class="category">C</span>→<span class="category">Ens</span> 
     is a presentable covariant functor with a corresponding isomorphism of 
     functors α:m<sub>A</sub>→F, then u<sub>F</sub> := α<sub>A</sub>(id<sub>A</sub>) 
@@ -259,7 +265,7 @@ presentable covariant functor.
     its universal element, i.e. ∀x∈F(A) there is at most one α:m<sub>A</sub>→F 
     with α<sub>A</sub>(id<sub>A</sub>)=x.</li>
 </ul>
-<h2>Product and Coproduct</h2>
+<h2 id="products">Product and Coproduct</h2>
 <dl class="def">
   Let <span class="category">C</span> be a category, and I be a set.
   <dt id="product">product</dt>

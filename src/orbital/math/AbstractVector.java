@@ -385,7 +385,7 @@ abstract class AbstractVector/*<R implements Arithmetic>*/ implements Vector/*<R
 	return (Vector) scale(s);
     }
     public Vector/*<R>*/ scale(Scalar s) {
-	return (Vector) scale(s);
+	return (Vector) scale((Arithmetic)s);
     }
     // will also work for other "scalar-like" objects of type Arithmetic
     public Arithmetic scale(Arithmetic s) {

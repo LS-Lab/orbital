@@ -211,7 +211,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * </p>
      * <p>
      * The standard scalar-product which will often be implemented, is<br />
-     * (x,y) &#8614; &lang;x,y&rang; = = x<sup>T</sup>·y = <big>&sum;</big><span class="doubleIndex"><sub>i=0</sub><sup>n-1</sup></span> x<sub>i</sub>&sdot;y<sub>i</sub>.
+     * (x,y) &#8614; &lang;x,y&rang; = x<sup>T</sup>·y = <big>&sum;</big><span class="doubleIndex"><sub>i=0</sub><sup>n-1</sup></span> x<sub>i</sub>&sdot;y<sub>i</sub>.
      * It belongs to the euclidian 2-norm and is the inner product of vectors.
      * </p>
      * @pre dimension() == b.dimension()
@@ -230,14 +230,20 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * @attribute neutral
      * @return s&lowast;v
      */
-    Vector/*<R>*/ multiply(Scalar s);
     Vector/*<R>*/ scale(Scalar s);
+    /**
+     * Multiplies a vector with a scalar returning a vector.
+     * @see #scale(Scalar)
+     * @todo outroduce
+     */
+    Vector/*<R>*/ multiply(Scalar s);
 
     /**
      * Multiplies a vector with a matrix returning a vector.
-     * If column-vector <code>v</code> is sized <code>n</code> and transposed and
+     * If row-vector <code>v</code> is sized <code>n</code> and
      * the matrix <code>A</code> is sized <code>n&times;m</code>,
-     * the resulting column-vector <code>v&middot;A</code> is sized <code>m</code>.
+     * the resulting row-vector <code>v&middot;A</code> is sized <code>m</code>.
+     * This is an inner product.
      * @pre dimension() == B.dimension().height
      */
     Vector/*<R>*/ multiply(Matrix/*<R>*/ B);

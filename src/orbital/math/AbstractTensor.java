@@ -176,6 +176,50 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractArith
 	return ret;
     } 
 
+    public Tensor/*<R>*/ multiply(Tensor/*<R>*/ b) {
+	final int[] dim = new int[rank() + b.rank() - 2];
+	final int[] d = dimensions();
+	final int[] e = b.dimensions();
+	// the index to convolute
+	final int conv = d.length - 1;
+	// the (common) length of the convolution
+	final int len = d[conv];
+	if (d[conv] != e[0])
+	    throw new IllegalArgumentException("inner product a.b only defined for dimension n1 x ... x nr x n multiplied with n x m1 x ... x mr, but not for " + MathUtilities.format(dimensions()) + " with " + MathUtilities.format(b.dimensions()));
+	System.arraycopy(d, 0, dim, 0, conv);
+	System.arraycopy(e, 1, dim, conv, e.length - 1);
+	Tensor ret = newInstance(dim);
+
+	//@internal optimizable by far (cache optimization and everything) and beautifiable as well
+	for (Combinatorical index = Combinatorical.getPermutations(dim); index.hasNext(); ) {
+	    final int[] ij = index.next();
+	    Arithmetic s = Values.ZERO;  //@xxx what's our 0?
+	    for (int nu = 0; nu < len; nu++) {
+		final int[] i = new int[d.length];
+		System.arraycopy(ij, 0, i, 0, conv);
+		i[conv] = nu;
+		
+		final int[] j = new int[e.length];
+		j[0] = nu;
+		System.arraycopy(ij, conv, j, 1, e.length - 1);
+
+		s = s.add(get(i).multiply(b.get(j)));
+	    }
+	    ret.set(ij, s);
+	}
+	return ret;
+    } 
+
+    public Tensor/*<R>*/ tensor(Tensor/*<R>*/ b) {
+	Tensor ret = newInstance(dimensions());
+
+	for (Combinatorical index = Combinatorical.getPermutations(dimensions()); index.hasNext(); ) {
+	    int[] i = index.next();
+	    ret.set(i, b.multiply(get(i)));
+	}
+	return ret;
+    }
+
     // Arithmetic implementation
 
     public Arithmetic add(Arithmetic b) {
@@ -196,6 +240,8 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractArith
     public Arithmetic multiply(Arithmetic b) {
 	if (b instanceof Scalar)
 	    return scale((Scalar) b);
+	else if (b instanceof Tensor)
+	    return multiply((Tensor) b);
 	throw new IllegalArgumentException("wrong type " + b.getClass());
     } 
 

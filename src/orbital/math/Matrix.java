@@ -540,7 +540,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * If A&isin;R<sup>n&times;m</sup> and
      * B&isin;R<sup>m&times;l</sup> the resulting matrix
      * A&middot;B&isin;R<sup>n&times;l</sup>.
-     * This is the ring multiplication.
+     * This is the ring multiplication of matrices,
+     * and an inner product.
      * @return the n&times;l matrix A&middot;B.
      * @pre dimension().width == B.dimension().height
      * @post RES.dimension().height == dimension().height && RES.dimension().width == B.dimension().width
@@ -559,14 +560,20 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * @return s&lowast;A
      * @todo multiply(Arithmetic) would need to determine type of s deep, in case it is not a scalar, but a matrix, or anything in R. Except if we separated ring and scalar (and perhaps tensor) multiplication by name.
      */
-    Matrix/*<R>*/ multiply(Scalar s);
     Matrix/*<R>*/ scale(Scalar s);
+    /**
+     * Multiplies a matrix with a scalar returning a matrix.
+     * @see #scale(Scalar)
+     * @todo outroduce
+     */
+    Matrix/*<R>*/ multiply(Scalar s);
 
     /**
      * Multiplies a matrix with a vector returning a vector.
      * If A&isin;R<sup>n&times;m</sup> and
      * v&isin;R<sup>m</sup> is a column vector of dimension m,
      * the resulting column vector A&middot;v&isin;R<sup>n</sup> has dimension n.
+     * This is an inner product.
      * @todo is this a tensor product, or a faltung?
      * @return the n-dimensional column vector A&middot;v.
      * @pre dimension().width == B.dimension()
