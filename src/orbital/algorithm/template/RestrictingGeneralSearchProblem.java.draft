@@ -1,0 +1,31 @@
+/**
+ * @(#)RestrictingGeneralSearchProblem.java 1.1 2002/07/13 Andre Platzer
+ *
+ * Copyright (c) 2002 Andre Platzer. All Rights Reserved.
+ */
+
+package orbital.algorithm.template;
+
+import java.util.Iterator;
+
+/**
+ * Decorator restricting neighbourhood by preselecting more promising
+ * actions.
+ * Either filter neighbours randomly,
+ * or select best according to an inexpensive evaluation function,
+ * or use a combined approach.
+ *
+ * @author Andr&eacute; Platzer
+ * @version 2002/07/13
+ * @see <a href="{@docRoot}/DesignPatterns/Decorator.html">Decorator</a>
+ */
+class RestrictingGeneralSearchProblem extends DelegateGeneralSearchProblem {
+    public RestrictingGeneralSearchProblem(GeneralSearchProblem problem){
+	super(problem);
+    }
+
+    public Iterator actions(Object state) {
+	//@todo introduce Setops.select(Iterator, Predicate) filtering elements from an iterator on-line, which means will only call next() on a request to next() (or perhaps hasNext()).
+	getDelegatee().actions(state);
+    }
+}// RestrictingGeneralSearchProblem
