@@ -51,6 +51,7 @@ import java.util.Arrays;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.BorderLayout;
 import orbital.awt.UIUtilities;
 import orbital.util.Utility;
 import java.util.logging.Logger;
@@ -813,6 +814,7 @@ public class DefaultCustomizer extends JPanel implements Customizer {
 	 */
 	public PropertyEditorComponent(PropertyEditor peditor) {
 	    this.peditor = peditor;
+	    setLayout(new BorderLayout());
 	}
 
 	public void paintComponent(Graphics g) {
@@ -862,7 +864,7 @@ public class DefaultCustomizer extends JPanel implements Customizer {
 	    super(peditor);
 	    this.customEditor = peditor.supportsCustomEditor() ? peditor.getCustomEditor() : null;
 	    if (customEditor != null)
-		add(customEditor);
+		add(customEditor, BorderLayout.CENTER);
 	    logger.log(Level.FINER, "inline property editor component: create inline property editor component for {0} with visual content {1}", new Object[] {property, customEditor});
 	}
 	
