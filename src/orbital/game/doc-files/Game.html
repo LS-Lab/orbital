@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>Call the Game applet</title>
+</head>
+<body>
+<p>
+Call the Game applet within a html page per
+<div style="white-space: pre">
+&lt;applet code="Game.class" width="<var>250</var>" height="<var>250</var>"&gt;
+  &lt;param name="gameName" value="<var>the Name of the Game</var>"&gt;
+  &lt;param name="gameRules" value="<var>GameRulesImpl</var>"&gt;
+  &lt;param name="aIntelligence" value="1"&gt;
+&lt;/applet&gt;
+</div></p>
+
+<p>
+To run this applet, either use the appletviewer, or a
+very modern Browser with Java Plug-in,
+or run it as an application by calling
+<pre>
+java Game gameRules=<var>GameRulesImpl</var> aIntelligence=1
+</pre>
+</p>
+
+<p>
+To enable two player game, the <tt>aIntelligence</tt> setting must be reduced to zero.
+To enable computer auto play mode, the <tt>aIntelligence</tt> setting is increase to the
+total number of players.</p>
+
+<p>
+In order to extend the basic game applet, you can write a sub class with the
+appropriate features. An example of a running game is kept in the
+<tt>examples\SChess</tt> directory. Its computer is kept all to simple though,
+to provide a very simple introduction of how to use it. Refer to the home page
+for additional examples.</p>
+
+</body>
+</html>
+

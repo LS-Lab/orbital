@@ -1,0 +1,27 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+   <meta name="Author" content="Andre Platzer">
+   <title>game package</title>
+</head>
+<body>
+Provides a generic package to describe a game, its rules and
+strategy for a computer player.
+<p>Basic classes are Figure and Field. Figure represents a chess piece
+to play with and specifies its legal moves. Field contains all Figures
+on a field and allows them to move. A Field is displayed in the AWT-component
+Gameboard which also enables mouse dragging.
+<p>The rules are defined with a game-specific implementation of GameRules.
+<p>Strategic weighting, which is useful for calculating the best computer ("AI")
+moves, is done with derivatives of FieldWeighting, FigureWeighting,
+MoveWeighting. However, there is a much faster implementation with
+AlphaBetaPruning that also tends to be easier to use.
+
+<dl>
+  <dt><b>See Also:</b></dt>
+  <dd><a href="http://external.nj.nec.com/homepages/igord/gsa-ggs.htm">Generic Game Server</a></dd>
+</dl>
+</body>
+</html>

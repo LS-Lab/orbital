@@ -1,0 +1,35 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="Andre Platzer">
+<meta name="todo" content="provide more formal definitions as well. Introduce recursively enumerable">
+
+<title>Computability</title>
+</head>
+
+<body>
+<h3 id="Properties">Computability</h3>
+<dl class="def">
+An arbitrary set M is:
+  <dt id="decidable">decidable</dt>
+  <dd>if an algorithm exists that decides
+  for every x whether <span class="Formula">x&isin;M</span> or <span class="Formula">x&notin;M</span>.
+  In other words, if the property of its consistency or inconsistency is determinable.
+  <center>M is decidable &hArr; &Chi;<sub>M</sub> is computable.</center>
+  Where &Chi;<sub>M</sub>(x) = {1 if x&isin;M, 0 if x&notin;M} is the <dfn>characteristic function</dfn> of M.
+  </dd>
+  <dt id="undecidable">undecidable</dt>
+  <dd>if M is not decidable.</dd>
+  <dt id="semi-decidable">semi-decidable</dt>
+  <dd>if an algorithm exists that decides
+  for every <span class="Formula">x&isin;M</span> that <span class="Formula">x&isin;M</span>.
+  For those <span class="Formula">x&notin;M</span>, the algorithm does not even need to terminate.
+  Another terminus for this property is <dfn>recursively enumerable</dfn>.
+  <center>M is semi-decidable &hArr; &Chi;'<sub>M</sub> is computable.</center>
+  Where &Chi;<sub>M</sub>'(x) = {1 if x&isin;M, &perp; if x&notin;M} is the <dfn>semi-characteristic function</dfn> of M.
+  </dd>
+</dl>
+</body>
+
+</html>
