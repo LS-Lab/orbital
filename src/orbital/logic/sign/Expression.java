@@ -135,6 +135,7 @@ package orbital.logic.imp;
  * @see ExpressionBuilder#compose(Expression,Expression[])
  * @see ExpressionSyntax#createExpression(String)
  * @todo everywhere distinguish "Term(&Sigma;)" of predicate logic from "<span class="UniversalAlgebra">T</span>(&Sigma;)" general expressions of a term algebra.
+ * @todo could saw this package in two parts: the syntax to orbital.logic.sign.* and the logic to orbital.logic.imp.*.
  */
 public interface Expression {
     /**
@@ -150,4 +151,15 @@ public interface Expression {
      * @see Symbol#getType()
      */
     Type getType();
+
+
+    /**
+     * The base interface for all composite expressions that are composed of other expressions.
+     * @structure is {@link orbital.logic.functor.Functor.Composite}&cap;{@link Expression}
+     * @version 1.1, 2002-11-27
+     * @author  Andr&eacute; Platzer
+     * @see <a href="Expression.html#compositeExpression">composites</a>
+     * @todo change base class to orbital.logic.sign.Composite (for all compound objects) which has "Object getCompositor()" and is also extended by Functor.Composite.
+     */
+    static interface Composite extends orbital.logic.functor.Functor.Composite, Expression {}
 }
