@@ -708,9 +708,9 @@ public class ClassicalLogic extends ModernLogic {
 	    };
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
-	    if (f != LogicFunctions.lambda)
-		throw new IllegalArgumentException("special compositor of &lambda;-abstractions expected");
+	public void setCompositor(Functor compositor) {
+	    if (compositor != getCompositor())
+		throw new IllegalArgumentException("special compositor of " + getClass() + " expected");
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
 	    Object[] a = (/*@xxx which type? Formula*/Object[]) g;
@@ -821,9 +821,9 @@ public class ClassicalLogic extends ModernLogic {
 	    };
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
-	    if (f != LogicFunctions.pi)
-		throw new IllegalArgumentException("special compositor of &Pi;-abstractions expected");
+	public void setCompositor(Functor compositor) {
+	    if (compositor != getCompositor())
+		throw new IllegalArgumentException("special compositor of " + getClass() + " expected");
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
 	    Object[] a = (Object[]) g;
@@ -927,9 +927,9 @@ public class ClassicalLogic extends ModernLogic {
 	    };
 	} 
 
-	public void setCompositor(Functor f) throws ClassCastException {
-	    if (f != LogicFunctions.pi)
-		throw new IllegalArgumentException("special compositor of &Pi;-abstractions expected");
+	public void setCompositor(Functor compositor) {
+	    if (compositor != getCompositor())
+		throw new IllegalArgumentException("special compositor of " + getClass() + " expected");
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
 	    Object[] a = (Object[]) g;
@@ -1431,7 +1431,11 @@ public class ClassicalLogic extends ModernLogic {
 		// skolem transform TRS
 		if (SkolemTransform == null) SkolemTransform = Substitutions.getInstance(Arrays.asList(new Object[] {
 		    //@xxx note that A should be a metavariable for a formula
-		    new SkolemizingUnifyingMatcher(logic.createExpression("?_X1 _A"), logic.createExpression("_A"), logic.createAtomicLiteralVariable("_X1")),
+		    new SkolemizingUnifyingMatcher(logic.createExpression("?_X1 _A"),
+						   logic.createExpression("_A"),
+						   //@internal note that _X1 should have the same type as in ?_X1 _A above
+						   new SymbolBase("_X1", Types.INDIVIDUAL, null, true)
+						   )
 		}));
 		return (Formula) Functionals.fixedPoint(SkolemTransform, F);
 	    } catch (ParseException ex) {
@@ -1464,7 +1468,7 @@ public class ClassicalLogic extends ModernLogic {
 		this.skolemizedVariable = skolemizedVariable;
 	    }
 
-	    public Object replace(Object t) {
+	    public Object replace(final Object t) {
 		final Object r = super.replace(t);
 		final Object x = getUnifier().apply(skolemizedVariable);
 		// now substitute "[x->s(FV(t))]"
@@ -1489,9 +1493,14 @@ public class ClassicalLogic extends ModernLogic {
 							 freeVariableExpressions);
 
 		    // really substitute "[x->s(FV(t))]"
-		    return Substitutions.getInstance(Arrays.asList(new Object[] {
-			Substitutions.createExactMatcher(x, applied_s)
-		    })).apply(r);
+		    assert x instanceof Symbol : "assuming that ?_X1 _A has a Symbol as left component (not the corresponding atomic formula)";
+		    Substitution skolemizer = Substitutions.getInstance(Arrays.asList(new Object[] {
+			Substitutions.createExactMatcher(logic.createAtomic((Symbol)x), applied_s)
+		    }));
+
+		    if (logger.isLoggable(Level.FINEST))
+			logger.log(Level.FINEST, "skolemForm( {0} ) = {1} by {2} due to skolem variable={3} and FV={4}. Initially matched expression to skolemize by {5}", new Object[] {t, skolemizer.apply(r), skolemizer, x, freeVariables, getUnifier()});
+		    return skolemizer.apply(r);
 		} catch (ParseException ex) {
 		    throw (InternalError) new InternalError("Unexpected syntax in internal term construction").initCause(ex);
 		}
@@ -1524,19 +1533,19 @@ public class ClassicalLogic extends ModernLogic {
      * speed up for internal parsing in TRS
      */
     private final Expression createAtomicIndividualVariable(String signifier) {
-	return createAtomic(new SymbolBase(signifier, SymbolBase.UNIVERSAL_ATOM, null, true));
+	return createAtomic(new SymbolBase(signifier, Types.INDIVIDUAL, null, true));
     }
     /**
      * speed up for internal parsing in TRS
      */
     private final Expression createAtomicLiteralVariable(String signifier) {
-	return createAtomic(new SymbolBase(signifier, SymbolBase.BOOLEAN_ATOM, null, true));
+	return createAtomic(new SymbolBase(signifier, Types.TRUTH, null, true));
     }
     /**
      * speed up for internal parsing in TRS
      */
     private final Expression createAtomicLiteral(String signifier) {
-	return createAtomic(new SymbolBase(signifier, SymbolBase.BOOLEAN_ATOM, null, false));
+	return createAtomic(new SymbolBase(signifier, Types.TRUTH, null, false));
     }
 
     /**
