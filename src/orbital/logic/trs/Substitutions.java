@@ -563,6 +563,7 @@ public class Substitutions {
     /**
      * @todo generalize on sets and not only two terms t1, t2
      * @todo could possibly implement the almost linear unification algorithm
+     * @todo 21 use a context binding list for t1 and t2 (instead of explicitly applying substitutions in advance) and/or term sharing to improve performance
      */
     static final Substitution unify(Object t1, Object t2) {
 	try {
@@ -617,7 +618,7 @@ public class Substitutions {
 		    }
 		} //@todo explicitly add else{}
 		// true decomposition case
-		final Composite  c1 = (Composite) t1;
+		final Composite c1 = (Composite) t1;
 		final Object    f = c1.getCompositor();
 		final Composite c2 = (Composite) t2;
 		final Object    g = c2.getCompositor();
@@ -629,7 +630,7 @@ public class Substitutions {
 		    // f=g und daher auch m=n
 		    assert xs.size() == ys.size() : "f==g implies m==n for the number of arguments m resp. n";
 		    Substitution s = id;
-		    for (Iterator xi = xs.iterator(), yi = ys.iterator(); xi.hasNext(); ) {
+		    for (Iterator xi = xs.iterator(), yi = ys.iterator(); xi.hasNext() || yi.hasNext(); ) {
 			// (<var>unifiable</var>, &sigma;<sub>1</sub>) := <i>unify</i>(&sigma;(x<sub>i</sub>), &sigma;(y<sub>i</sub>))
 			Substitution s1 = unify(s.apply(xi.next()), s.apply(yi.next()));
 			if (s1 == NONUNIFIABLE) {

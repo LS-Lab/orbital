@@ -374,6 +374,7 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractProdu
 			return (o instanceof Integer) && MathUtilities.isin(((Integer)o).intValue(), 0, m.rank() - 1);
 		    }
 		}), "The mapping table of a permutation in S_n contains the integers {0,...,n-1}.");
+	    //@see Setops.hasDuplicates
 	    Utility.pre(new HashSet(Setops.asList(Values.getDefaultInstance().valueOf(permutation).iterator())).size() == m.rank(), "A permutation is bijective, so its mapping table should not contain duplicates.");
 	    this.permutation = permutation;
     	}

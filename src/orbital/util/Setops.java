@@ -975,5 +975,16 @@ public final class Setops {
 
 	// RESULTSET
 	return (what == null ? sel : (Collection) what.apply(sel));	   // filter the Data Collection of the selected Elements
-    } 
+    }
+
+
+    // diverse
+
+    /**
+     * Check whether the given iterator produces duplicate entries.
+     */
+    public static boolean hasDuplicates(Iterator i) {
+	List l = Setops.asList(i);
+	return new HashSet(l).size() != l.size();
+    }
 }
