@@ -29,16 +29,16 @@ if "%1"=="-pause" shift
   pushd %src%
   rem Change package grouping in package-grouping, rebuild.bat and mkall.bat
   echo rebuilding core
-    javac -d %JAVA_HOME%\classes %1 orbital/*.java orbital/io/*.java orbital/logic/*.java orbital/logic/functor/*.java orbital/logic/trs/*.java orbital/math/*.java orbital/math/functional/*.java orbital/util/*.java orbital/util/graph/*.java
+    call myjavac -d %JAVA_HOME%\classes %1 orbital/*.java orbital/io/*.java orbital/logic/*.java orbital/logic/functor/*.java orbital/logic/trs/*.java orbital/math/*.java orbital/math/functional/*.java orbital/util/*.java orbital/util/graph/*.java
       rem orbital.moon.spec.SP_Impl
   if not "%intermediate%"=="" call %intermediate%
   echo rebuilding extension
-    javac -d %JAVA_HOME%\classes %1 orbital/awt/*.java orbital/io/encoding/*.java orbital/text/*.java orbital/logic/imp/*.java
+    call myjavac -d %JAVA_HOME%\classes %1 orbital/awt/*.java orbital/io/encoding/*.java orbital/text/*.java orbital/logic/imp/*.java
       rem orbital.moon.awt.*
       rem orbital.moon.io.cryptix.spec.*
   if not "%intermediate%"=="" call %intermediate%
   echo rebuilding services
-    javac -d %JAVA_HOME%\classes %1 orbital/awt/virtual/*.java orbital/game/*.java orbital/net/*.java orbital/net/secure/*.java orbital/io/parsing/*.java orbital/algorithm/*.java orbital/algorithm/evolutionary/*.java orbital/algorithm/template/*.java orbital/robotic/*.java orbital/robotic/strategy/*.java
+    call myjavac -d %JAVA_HOME%\classes %1 orbital/awt/virtual/*.java orbital/game/*.java orbital/net/*.java orbital/net/secure/*.java orbital/io/parsing/*.java orbital/algorithm/*.java orbital/algorithm/evolutionary/*.java orbital/algorithm/template/*.java orbital/robotic/*.java orbital/robotic/strategy/*.java
       rem orbital.moon.evolutionary.*
   if not "%intermediate%"=="" call %intermediate%
   call :Generate

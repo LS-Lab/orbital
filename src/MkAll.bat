@@ -40,6 +40,7 @@ setlocal
     if not "%1"=="-optimize" for /R /D %%d in (*) do call %src%\_mklib.bat %%d
     popd
     call mklib %src%\orbital\math\functional
+
   if not "%O2%"=="optNodeprecated" goto Generate
   echo compiling deprecated classes
     echo remember removing exclude files!
