@@ -850,13 +850,17 @@ public class ClassicalLogic extends ModernLogic implements Logic {
     
     	// interpretation for a truth-value
     	private static final Object getInt(boolean b) {
-	    return new Boolean(b);
+	    return b ? Boolean.TRUE : Boolean.FALSE;
     	} 
     
     	// truth-value of a value
     	private  static final boolean getTruth(Object v) {
 	    return ((Boolean) v).booleanValue();
     	} 
+
+	// (still) identical to @see orbital.moon.logic.functor.Operations.not...
+	//@todo move implementation to a superclass orbital.logic.functor.Operations of orbital.math.functional.Operations?
+	// moved, but if we generalize those implementations, we will _here_ only accept _elementary_ operations on _boolean_ truth-values, not on formulas or something.
 
 	// Basic logical operations (elemental junctors).
     	public static final Function not = new Function() {
@@ -866,7 +870,6 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		public String toString() { return "~"; }
 	    }; 
 
-	//@todo move implementation to a superclass orbital.logic.functor.Operations of orbital.math.functional.Operations? But then it would probably be a BinaryPredicate<Boolean,Boolean> or something.
     	public static final BinaryFunction/*<Boolean,Boolean, Boolean>*/ and = new BinaryFunction() {
     		public Object apply(Object a, Object b) {
 		    return getInt(getTruth(a) && getTruth(b));
