@@ -24,7 +24,6 @@ public class BufferTest extends check.TestCase {
     }
 
     public void testAppendingEditing() {
-	System.err.println("Debug");
 	Buffer buf = new Buffer();
 	buf.append("You know now".getBytes());
 	assertEquals(new String(buf.getBytes()), "You know now");
