@@ -770,7 +770,8 @@ public interface ValueFactory {
      */
     Scalar narrow(Scalar val);
 
-    // arithmetic widening equalizer
+
+    // arithmetic widening coercer
 	
     /**
      * Get the transformation function for coercing arithmetic
@@ -803,10 +804,10 @@ public interface ValueFactory {
      * This means that an integer will be returned instead of a real whenever possible,
      * a real instead of a complex and so on.
      * But it will always be true that both elements returned have compatible types, or
-     * a runtime exception will be thrown.
-     * @preconditions 0<=args.length && args.length<=2 (currently)
-     * @postconditions RES.length==args.length
-     *   && (RES[0].getClass() "compatible to" RES[1].getClass() || RES[0].getClass() == RES[1].getClass())
+     * a {@link RuntimeException} will be thrown.
+     * @preconditions 0<=RES.args.length && RES.args.length<=2 (currently)
+     * @postconditions REs.RES.length==RES.args.length
+     *   && (RES.RES[0].getClass() "compatible to" RES.RES[1].getClass() || RES.RES[0].getClass() == RES.RES[1].getClass())
      * @see orbital.math.functional.Operations
      * @see #setCoercer(orbital.logic.functor.Function)
      */
@@ -822,4 +823,37 @@ public interface ValueFactory {
      * @see #getCoercer()
      */
     void setCoercer(Function/*<Object[],Object[]>*/ coerce) throws SecurityException;
+
+    // normalizer
+    
+    /**
+     * Get the transformation function for normalizing arithmetic
+     * objects. This transformation is a function that transforms an
+     * arithmetic object into normalized representation of the same
+     * arithmetic object. Whenever possible and feasible, this
+     * normalization function will even assure canonical
+     * representations.
+     * @todo define normalizer and canonicalizer formally
+     * @return a transformation function that takes arithmetic objects
+     * to arithmetic objects.
+     * @postconditions 
+     *   && (RES.RES.getClass() "compatible to" RES.arg.getClass())
+     * @see #setNormalizer(orbital.logic.functor.Function)
+     * @todo may also want to sharpen return value to an interface extending Function by more
+     * apply(Integer) apply(Rational) methods. However, note that we need dynamic dispatch
+     * in all variables and all methods!
+     */
+    Function/*<Arithmetic,Arithmetic>*/ getNormalizer();
+
+    /**
+     * Set the transformation function for normalizing arithmetic
+     * objects. 
+     * <p>
+     * The transformation function set here must fulfill the same criteria that the default one
+     * does as described in the {@link #getNormalizer()} method. To simply hook an additional
+     * transformation, implement your transformation function on top of the one got from
+     * {@link #getNormalizer()}.</p>
+     * @see #getNormalizer()
+     */
+    void setNormalizer(Function/*<Arithmetic,Arithmetic>*/ normalizer) throws SecurityException;
 }
