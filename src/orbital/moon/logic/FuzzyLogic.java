@@ -1,7 +1,7 @@
 /*
  * @(#)FuzzyLogic.java 0.9 1997/05/01 Andre Platzer
  * 
- * Copyright (c) 1997 Andre Platzer. All Rights Reserved.
+ * Copyright (c) 1997-2003 Andre Platzer. All Rights Reserved.
  */
 
 package orbital.moon.logic;
