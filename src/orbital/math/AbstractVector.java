@@ -1,13 +1,11 @@
 /**
  * @(#)AbstractVector.java 1.0 1999/03/08 Andre Platzer
  * 
- * Copyright (c) 1999-2001 Andre Platzer. All Rights Reserved.
+ * Copyright (c) 1999-2002 Andre Platzer. All Rights Reserved.
  */
 
 package orbital.math;
 
-import java.io.Serializable;
-import java.awt.Point;
 import java.util.Iterator;
 import java.util.ListIterator;
 
@@ -16,55 +14,14 @@ import orbital.math.functional.Operations;
 import orbital.math.functional.Functions;
 
 import java.awt.Dimension;
-import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.ConcurrentModificationException;
-import java.text.ParseException;
 
-import orbital.util.Setops;
 import orbital.util.Utility;
-import orbital.util.InnerCheckedException;
 
 //@todo ensure that multiply((Vector) b) does in fact call multiply(Vector<R>) instead of leading to an infinite recursion. Here and in Matrix stuff
-abstract class AbstractVector/*<R implements Arithmetic>*/ implements Vector/*<R>*/, Serializable {
+abstract class AbstractVector/*<R implements Arithmetic>*/ extends AbstractTensor implements Vector/*<R>*/ {
     private static final long serialVersionUID = 372991453454528414L;
-
-    // object-methods
-	
-    public boolean equals(Object o) {
-	if (o instanceof Vector) {
-	    Vector/*<R>*/ B = (Vector) o;
-	    if (dimension() != B.dimension())
-		return false;
-	    return orbital.util.Setops.all(iterator(), B.iterator(), orbital.logic.functor.Predicates.equal);
-	    /*for (int i = 0; i < dimension(); i++)
-	      if (!get(i).equals(B.get(i)))
-	      return false;
-	      return true;*/
-	} 
-	return false;
-    } 
-
-    public boolean equals(Object o, Real tolerance) {
-	return Metric.INDUCED.distance(this, (Vector)o).compareTo(tolerance) < 0;
-    }
-
-    public int hashCode() {
-	//TODO: can we use Utility.hashCodeAll(Object) as well?
-	int hash = 0;
-	for (Iterator i = iterator(); i.hasNext(); ) {
-	    Object e = i.next();
-	    hash ^= e == null ? 0 : e.hashCode();
-	} 
-	return hash;
-    } 
-
-    public Object clone() {
-	try {
-	    return super.clone();
-	}
-	catch (CloneNotSupportedException nonconform) {throw new InnerCheckedException("invariant: sub classes of " + Vector.class + " must either overwrite clone() or implement " + Cloneable.class, nonconform);}
-    }
 
     // factory-method
 	
@@ -82,6 +39,10 @@ abstract class AbstractVector/*<R implements Arithmetic>*/ implements Vector/*<R
      */
     protected abstract Vector/*<R>*/ newInstance(int dim);
     
+    protected final Tensor/*<R>*/ newInstance(int[] dim) {
+	return dim.length == 1 ? newInstance(dim[0]) : Values.getInstance(dim);
+    }
+
     // get/set-methods
 	
     /**
@@ -151,7 +112,7 @@ abstract class AbstractVector/*<R implements Arithmetic>*/ implements Vector/*<R
     
     	protected Vector/*<R>*/ newInstance(int dim) {
 	    checkForComodification();
-	    return new ArithmeticVector/*<R>*/(dim);
+	    return newInstance(dim);
     	} 
     
     	public final int dimension() {
@@ -206,7 +167,7 @@ abstract class AbstractVector/*<R implements Arithmetic>*/ implements Vector/*<R
      */
     protected transient int modCount = 0;
 
-    public Iterator iterator() {
+    public ListIterator iterator() {
 	return new ListIterator() {
 		private int cursor = 0;
 		private int lastRet = -1;
@@ -423,11 +384,14 @@ abstract class AbstractVector/*<R implements Arithmetic>*/ implements Vector/*<R
     public Arithmetic multiply(Arithmetic b) {
 	if (b instanceof Scalar)
 	    return scale((Scalar) b);
-	if (b instanceof Matrix)
+	else if (b instanceof Matrix)
 	    return multiply((Matrix) b);
-	if (b instanceof Vector)
+	else if (b instanceof Vector)
 	    return multiply((Vector) b);
-	if (b instanceof Symbol || b instanceof orbital.math.functional.MathFunctor)
+	else if (b instanceof Tensor)
+	    /* we explicitly refer to super here because somehow JDK1.4 complains about ambiguity */
+	    return super.multiply((Tensor) b);
+	else if (b instanceof Symbol || b instanceof orbital.math.functional.MathFunctor)
 	    return scale(b);
 	throw new IllegalArgumentException("wrong type: " + b.getClass());
     } 

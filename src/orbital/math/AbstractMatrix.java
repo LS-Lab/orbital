@@ -1,22 +1,18 @@
 /**
  * @(#)AbstractMatrix.java 1.0 1996/03/02 Andre Platzer
  * 
- * Copyright (c) 1996-2001 Andre Platzer. All Rights Reserved.
+ * Copyright (c) 1996-2002 Andre Platzer. All Rights Reserved.
  */
 
 package orbital.math;
 
 import java.awt.Dimension;
-import java.io.Serializable;
 import java.util.Iterator;
 import java.util.ListIterator;
 
 import java.util.NoSuchElementException;
 import java.util.ConcurrentModificationException;
 
-import orbital.util.Setops;
-import java.text.ParseException;
-import orbital.util.InnerCheckedException;
 import orbital.util.Utility;
 
 import orbital.math.functional.Functionals;
@@ -39,7 +35,7 @@ import java.util.logging.Level;
  * @version 1.0, 2000/08/08
  * @author  Andr&eacute; Platzer
  */
-abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArithmetic implements Matrix/*<R>*/, Serializable {
+abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTensor implements Matrix/*<R>*/ {
     private static class Debug {
 	private static final Logger test = Logger.getLogger("orbital.test");
 	private Debug() {}
@@ -136,10 +132,10 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
 		assert !v.equals(b) : "structure change mutates";
 		assert v.insert(Values.valueOf(7)).equals(v) : "return this";
 		System.out.println("appended " + v);
-		assert !v.equals(b) : "structure change mutates";
-		assert v.insert(v).equals(v) : "return this";
-		System.out.println("appended " + v);
-		assert !v.equals(b) : "structure change mutates";
+// 		assert !v.equals(b) : "structure change mutates";
+// 		assert v.insert(v).equals(v) : "return this";
+// 		System.out.println("appended " + v);
+// 		assert !v.equals(b) : "structure change mutates";
     			
 		M = (Matrix) B.clone();
 		v = (Vector) b.clone();
@@ -163,7 +159,8 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
 		M = (Matrix) B.clone();
 		B2 = (Matrix) M.clone();
 		System.out.println("appending columns\n" + M + "\nto\n" + M + " ...");
-		assert M.insertColumns(M).equals(M) : "return this";
+		boolean bok1 = M.insertColumns(M).equals(M);
+		assert bok1 : "return this";
 		System.out.println("... is\n" + M);
 		assert !M.equals(B2) : "structure change mutates";
 
@@ -192,49 +189,6 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
     private static final Logger logger = Logger.getLogger(Matrix.class.getName());
     private static final long serialVersionUID = 1360625645424730123L;
 
-    // object-methods
-	
-    /**
-     * Checks two Matrices for equality.
-     */
-    public boolean equals(Object o) {
-	if (o instanceof Matrix) {
-	    Matrix/*<R>*/ B = (Matrix) o;
-	    if (!dimension().equals(B.dimension()))
-		return false;
-	    assert dimension().width == B.dimension().width && dimension().height == B.dimension().height : "dimension.equals() must equal integer-comparison";
-	    return orbital.util.Setops.all(iterator(), B.iterator(), orbital.logic.functor.Predicates.equal);
-	    /*for (int i = 0; i < dimension().height; i++)
-	      for (int j = 0; j < dimension().width; j++)
-	      if (!get(i, j).equals(B.get(i, j)))
-	      return false;
-	      return true;*/
-	} 
-	return false;
-    } 
-
-    public boolean equals(Object o, Real tolerance) {
-	return Metric.INDUCED.distance(this, (Matrix)o).compareTo(tolerance) < 0;
-    }
-
-    public int hashCode() {
-	//TODO: can we use Utility.hashCodeAll(Object) as well?
-	int hash = 0;
-	//@todo functional?
-	for (Iterator i = iterator(); i.hasNext(); ) {
-	    Object e = i.next();
-	    hash ^= e == null ? 0 : e.hashCode();
-	} 
-	return hash;
-    } 
-
-    public Object clone() {
-	try {
-	    return super.clone();
-	}
-	catch (CloneNotSupportedException nonconform) {throw new InnerCheckedException("invariant: sub classes of " + Matrix.class + " must either overwrite clone() or implement " + Cloneable.class, nonconform);}
-    }
-
     // factory-methods
     
     /**
@@ -258,6 +212,9 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
     protected final Matrix/*<R>*/ newInstance(int height, int width) {
 	return newInstance(new Dimension(width, height));
     } 
+    protected final Tensor/*<R>*/ newInstance(int[] dim) {
+	return dim.length == 2 ? newInstance(dim[0], dim[1]) : Values.getInstance(dim);
+    }
 
     // get/set-methods
 	
@@ -405,7 +362,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
 		    return cursor < dimension().height;
 		} 
         	public boolean hasPrevious() {
-        	    return cursor != 0;
+        	    return cursor > 0;
         	}
 
 		public Object next() {
@@ -492,11 +449,19 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
 	    };
     } 
 
-    public Iterator iterator() {
-	return new Iterator() {
-		//@todo expectedModCount
+    public ListIterator iterator() {
+	return new ListIterator() {
 		private int i = 0;
 		private int j = 0;
+		private int lastRetI = -1;
+		private int lastRetJ = -1;
+        	/**
+        	 * The modCount value that the iterator believes that the backing
+        	 * object should have. If this expectation is violated, the iterator
+        	 * has detected concurrent modification.
+        	 */
+        	private transient int expectedModCount = modCount;
+
 		public boolean hasNext() {
 		    return i < dimension().height && j < dimension().width;
 		} 
@@ -504,15 +469,68 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
 		    if (!hasNext())
 			throw new NoSuchElementException();
 		    Object v = get(i, j);
+		    checkForComodification();
+		    lastRetI = i;
+		    lastRetJ = j;
 		    if (++j >= dimension().width) {
 			j = 0;
 			i++;
 		    } 
 		    return v;
 		} 
+		public boolean hasPrevious() {
+		    return i > 0 || j > 0;
+		} 
+		public Object previous() {
+		    if (!hasPrevious())
+			throw new NoSuchElementException();
+		    if (--j < 0) {
+			j = dimension().width - 1;
+			i--;
+		    } 
+		    Object v = get(i, j);
+		    checkForComodification();
+		    lastRetI = i;
+		    lastRetJ = j;
+		    return v;
+		} 
+
+        	public void set(Object o) {
+        	    if (!(o instanceof Arithmetic))
+        	    	throw new IllegalArgumentException();
+		    assert (lastRetI == -1) == (lastRetJ == -1) : "initialization (or remove, or add) resets both variables";
+        	    if (lastRetI == -1 && lastRetJ == -1)
+            		throw new IllegalStateException();
+		    checkForComodification();
+        
+        	    try {
+            		AbstractMatrix.this.set(lastRetI, lastRetJ, (Arithmetic)o);
+            		expectedModCount = modCount;
+        	    } catch(IndexOutOfBoundsException e) {
+			throw new ConcurrentModificationException();
+        	    }
+        	}
+
+		// UnsupportedOperationException, categorically
+
+		public int nextIndex() {
+		    throw new UnsupportedOperationException("a matrix does not have a one-dimensional index");
+		}
+		public int previousIndex() {
+		    throw new UnsupportedOperationException("a matrix does not have a one-dimensional index");
+		}
+
+		public void add(Object o) {
+		    throw new UnsupportedOperationException("adding a single element to a matrix is impossible");
+		} 
 		public void remove() {
 		    throw new UnsupportedOperationException("removing a single element from a matrix is impossible");
 		} 
+
+        	private final void checkForComodification() {
+        	    if (modCount != expectedModCount)
+			throw new ConcurrentModificationException();
+        	}
 	    };
     } 
 
@@ -520,13 +538,6 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
 	
     public Vector/*<R>*/ getColumn(int c) {
 	return new ColumnVector/*<R>*/(this, c);
-	// alternative implementation per shallow copy
-	/*validate(0, c);
-	  Vector col = Vector.getInstance(dimension().height);
-	  for (int i = 0; i < col.dimension(); i++)
-	  col.set(i, get(i, c));
-	  return col;
-	*/
     } 
     private static class ColumnVector/*<R implements Arithmetic>*/ extends AbstractVector/*<R>*/ {
 	private static final long serialVersionUID = -5595085518698922020L;
@@ -553,7 +564,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
     	}
     
     	protected Vector/*<R>*/ newInstance(int dim) {
-	    return new ArithmeticVector/*<R>*/(dim);
+	    return Values.getInstance(dim);
     	} 
     
     	public final int dimension() {
@@ -587,12 +598,6 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
 
     public Vector/*<R>*/ getRow(int r) {
 	return new RowVector/*<R>*/(this, r);
-	// alternative implementation per shallow copy
-	/*validate(r, 0);
-	  Vector row = Vector.getInstance(dimension().width);
-	  for (int j = 0; j < row.dimension(); j++)
-	  row.set(j, get(r, j));
-	  return row;*/
     } 
     private static class RowVector/*<R implements Arithmetic>*/ extends AbstractVector/*<R>*/ {
 	private static final long serialVersionUID = -4915663894227454973L;
@@ -618,7 +623,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
     	}
     
     	protected Vector/*<R>*/ newInstance(int dim) {
-	    return new ArithmeticVector/*<R>*/(dim);
+	    return Values.getInstance(dim);
     	} 
     
     	public final int dimension() {
@@ -723,7 +728,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
     
     	protected Matrix/*<R>*/ newInstance(Dimension dim) {
 	    checkForComodification();
-	    return new ArithmeticMatrix(dim);
+	    return m.newInstance(dim);
     	} 
     
     	public final Dimension dimension() {
@@ -839,6 +844,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
      * <p>
      * Note that the Frobenius norm is not a p-norm.
      * It is a norm got by identifying matrices with vectors.</p>
+     * @xxx after verifying use {@link AbstractTensor#norm()}.
      */
     public Real norm() {
 	return (Real/*__*/) Functions.sqrt.apply(Operations.sum.apply(Functionals.map(Functions.square, Functionals.map(Functions.norm, iterator()))));
@@ -981,10 +987,13 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
     public Arithmetic multiply(Arithmetic b) {
 	if (b instanceof Scalar)
 	    return scale((Scalar) b);
-	if (b instanceof Vector)
+	else if (b instanceof Vector)
 	    return multiply((Vector) b);
-	if (b instanceof Matrix)
+	else if (b instanceof Matrix)
 	    return multiply((Matrix) b);
+	else if (b instanceof Tensor)
+	    /* we explicitly refer to super here because somehow JDK1.4 complains about ambiguity */
+	    return super.multiply((Tensor) b);
 	throw new IllegalArgumentException("wrong type " + b.getClass());
     } 
 
@@ -1231,8 +1240,8 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
 	validate(i[0], i[1]);
     } 
 
-    public Arithmetic/*>R<*/ [][] toArray() {
-	Arithmetic/*>R<*/ [][] a = new Arithmetic/*>R<*/ [dimension().height][dimension().width];
+    public Arithmetic/*>R<*/[][] toArray() {
+	Arithmetic/*>R<*/[][] a = new Arithmetic/*>R<*/ [dimension().height][dimension().width];
 	for (int i = 0; i < dimension().height; i++)
 	    for (int j = 0; j < dimension().width; j++)
 		a[i][j] = get(i, j);

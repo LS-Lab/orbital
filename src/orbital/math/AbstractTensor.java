@@ -8,6 +8,7 @@ package orbital.math;
 
 import java.io.Serializable;
 import java.util.Iterator;
+import java.util.ListIterator;
 
 import java.util.NoSuchElementException;
 import java.util.ConcurrentModificationException;
@@ -22,6 +23,10 @@ import orbital.algorithm.Combinatorical;
 import orbital.math.functional.Functionals;
 import orbital.math.functional.Operations;
 import orbital.math.functional.Functions;
+import orbital.logic.functor.Predicate;
+import orbital.logic.functor.Predicates;
+
+import java.util.HashSet;
 
 /**
  * @internal All tensor methods iterate row-wise.
@@ -35,7 +40,6 @@ import orbital.math.functional.Functions;
  *  Fortran memory storage conventions are exactly the other way around.
  * @version 1.0, 2002-08-07
  * @author  Andr&eacute; Platzer
- * @todo could AbstractMatrix or AbstractVector profit from extending us?
  */
 abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractArithmetic implements Tensor/*<R>*/, Serializable {
     private static final long serialVersionUID = 7889937971348824822L;
@@ -50,7 +54,7 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractArith
 	    Tensor/*<R>*/ B = (Tensor) o;
 	    if (!Arrays.equals(dimensions(), B.dimensions()))
 		return false;
-	    return orbital.util.Setops.all(iterator(), B.iterator(), orbital.logic.functor.Predicates.equal);
+	    return orbital.util.Setops.all(iterator(), B.iterator(), Predicates.equal);
 	} 
 	return false;
     } 
@@ -105,29 +109,297 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractArith
      */
     protected transient int modCount = 0;
 
-    public Iterator iterator() {
-	return new Iterator() {
-		//@todo expectedModCount
-		private Combinatorical i = Combinatorical.getPermutations(dimensions());
+    public ListIterator iterator() {
+	return new ListIterator() {
+		private Combinatorical cursor = Combinatorical.getPermutations(dimensions());
+		private int[] lastRet = null;
+        	/**
+        	 * The modCount value that the iterator believes that the backing
+        	 * object should have. If this expectation is violated, the iterator
+        	 * has detected concurrent modification.
+        	 */
+        	private transient int expectedModCount = modCount;
 		public boolean hasNext() {
-		    return i.hasNext();
+		    return cursor.hasNext();
 		} 
 		public Object next() {
-		    return get(i.next());
+		    try {
+			Object v = get(lastRet = (int[])cursor.next().clone());
+			checkForComodification();
+			return v;
+		    }
+		    catch(IndexOutOfBoundsException e) {
+			checkForComodification();
+			assert false : "cursor did already throw a NoSuchElementException";
+    	    		throw new NoSuchElementException();
+        	    }
+		} 
+		public boolean hasPrevious() {
+		    return cursor.hasPrevious();
+		} 
+		public Object previous() {
+		    try {
+			Object v = get(lastRet = (int[])cursor.previous().clone());
+			checkForComodification();
+			return v;
+		    }
+		    catch(IndexOutOfBoundsException e) {
+			checkForComodification();
+			assert false : "cursor did already throw a NoSuchElementException";
+    	    		throw new NoSuchElementException();
+        	    }
+		} 
+
+        	public void set(Object o) {
+        	    if (!(o instanceof Arithmetic))
+        	    	throw new IllegalArgumentException();
+        	    if (lastRet == null)
+            		throw new IllegalStateException();
+		    checkForComodification();
+        
+        	    try {
+            		AbstractTensor.this.set(lastRet, (Arithmetic)o);
+            		expectedModCount = modCount;
+        	    } catch(IndexOutOfBoundsException e) {
+			throw new ConcurrentModificationException();
+        	    }
+        	}
+
+		// UnsupportedOperationException, categorically
+
+		public int nextIndex() {
+		    throw new UnsupportedOperationException("a tensor does not have a one-dimensional index");
+		}
+		public int previousIndex() {
+		    throw new UnsupportedOperationException("a tensor does not have a one-dimensional index");
+		}
+
+		public void add(Object o) {
+		    throw new UnsupportedOperationException("adding a single element from a tensor is impossible");
 		} 
 		public void remove() {
 		    throw new UnsupportedOperationException("removing a single element from a tensor is impossible");
 		} 
+
+        	private final void checkForComodification() {
+        	    if (modCount != expectedModCount)
+			throw new ConcurrentModificationException();
+        	}
 	    };
     } 
 
     // sub-views
 	
-    public Tensor/*<R>*/ subTensor(int[] i, int[] j) {
-	validate(i);
-	validate(j);
-	throw new UnsupportedOperationException("not yet implemented");
+    /**
+     * Grants access to a tensor with automatical index transformation.
+     * @author Andr&eacute; Platzer
+     * @version 1.0, 2002-08-11
+     * @structure delegates m:AbstractTensor (minimal part)
+     */
+    static abstract class TransformedAccessTensor/*<R implements Arithmetic>*/ extends AbstractTensor/*<R>*/ {
+	private static final long serialVersionUID = -3609507213928180122L;
+    	/**
+    	 * the Tensor to which we grant (transformed) access.
+    	 * @serial
+    	 */
+    	private final AbstractTensor/*<R>*/ m;
+    
+    	/**
+    	 * The modCount value that the iterator believes the backing
+    	 * object should have. If this expectation is violated, the iterator
+    	 * has detected concurrent modification.
+    	 */
+    	private transient int expectedModCount = 0;
+
+    	protected TransformedAccessTensor(AbstractTensor/*<R>*/ m) {
+	    this.m = m;
+	    this.expectedModCount = m.modCount;
+    	}
+
+	protected final AbstractTensor/*<R>*/ getDelegatee() {
+	    return m;
+	}
+
+
+	/**
+	 * Returns the transformed index.  Used by {@link
+	 * #get(int[])}, and {@link #set(int[],Arithmetic)} for index
+	 * transformation.  However, neither {@link #dimensions()},
+	 * nor {@link #rank()} could guess any changes in dimension
+	 * that the index transformation causes.
+	 */
+	protected abstract int[] transformIndex(int[] index);
+    
+    	protected Tensor/*<R>*/ newInstance(int[] dimensions) {
+	    checkForComodification();
+	    return m.newInstance(dimensions);
+    	}
+
+	public int rank() {
+	    return m.rank();
+	}
+    
+    	public int[] dimensions() {
+	    checkForComodification();
+	    return m.dimensions();
+    	} 
+    
+    	public Arithmetic/*>R<*/ get(int[] i) {
+	    validate(i);
+	    checkForComodification();
+	    return m.get(transformIndex(i));
+    	} 
+    	public void set(int[] i, Arithmetic/*>R<*/ mi) {
+	    validate(i);
+	    checkForComodification();
+	    m.set(transformIndex(i), mi);
+    	} 
+    
+    	public Object clone() {
+	    checkForComodification();
+	    return new ArithmeticTensor/*<R>*/(super.toArray__Tensor());
+    	} 
+
+    	protected final void checkForComodification() {
+    	    if (m.modCount != expectedModCount)
+		throw new ConcurrentModificationException();
+    	}
+    }
+
+    public Tensor/*<R>*/ subTensor(int[] i1, int[] i2) {
+	return new SubTensor(this, i1, i2);
     } 
+    private static class SubTensor/*<R implements Arithmetic>*/ extends TransformedAccessTensor/*<R>*/ {
+	private static final long serialVersionUID = -8431476748988993108L;
+    	/**
+    	 * contains the offsets in m where this sub-view tensor starts.
+    	 * @serial
+    	 */
+    	private final int[]    offset;
+    	/**
+    	 * contains the dimension in m that this sub-view tensor ranges over.
+    	 * @serial
+    	 */
+    	private final int[]    dim;
+
+    	public SubTensor(AbstractTensor/*<R>*/ m, int[] i1, int[] i2) {
+	    super(m);
+	    Utility.pre(i1.length == m.rank() && i2.length == m.rank(), "indices must be of correct rank.");
+	    Utility.pre(Setops.all(Values.valueOf(i1).iterator(), Values.valueOf(i2).iterator(), Predicates.lessEqual), "Ending indices cannot be less than starting indices.");
+	    m.validate(i1);
+	    m.validate(i2);
+	    this.offset = i1;
+	    this.dim = new int[i1.length];
+	    for (int k = 0; k < dim.length; k++)
+		dim[k] =  i2[k] - i1[k] + 1;
+    	}
+    
+    	public final int[] dimensions() {
+	    checkForComodification();
+	    return (int[]) dim.clone();
+    	} 
+
+	protected int[] transformIndex(int[] i) {
+	    int[] itranslated = new int[i.length];
+	    for (int k = 0; k < i.length; k++)
+		itranslated[k] = offset[k] + i[k];
+	    return itranslated;
+	}
+    }
+
+    public Tensor/*<R>*/ subTensor(int level, int index) {
+	return new PartTensor/*<R>*/(this, level, index);
+    } 
+    private static class PartTensor/*<R implements Arithmetic>*/ extends TransformedAccessTensor/*<R>*/ {
+	private static final long serialVersionUID = 4545087879048756777L;
+    	/**
+    	 * the level l of indices to fix for this view.
+    	 * @serial
+    	 */
+    	private final int	 level;
+	
+    	/**
+    	 * the the index c<sub>l</sub> of the tensor part view at the level-th index.
+    	 * @serial
+    	 */
+    	private final int	 index;
+
+    	/**
+    	 * creates a new part tensor of a tensor.
+    	 */
+    	public PartTensor(AbstractTensor/*<R>*/ m, int level, int index) {
+	    super(m);
+	    Utility.pre(0 <= level && level < m.rank(), "level is within the rank");
+	    Utility.pre(0 <= index && index < m.dimensions()[level], "index is within the dimensions");
+	    this.level = level;
+	    this.index = index;
+    	}
+    
+	public int rank() {
+	    return getDelegatee().rank() - 1;
+	}
+    
+    	public final int[] dimensions() {
+	    checkForComodification();
+	    //@internal optimizable cache
+	    int[] dim = getDelegatee().dimensions();
+	    int[] dimTranslated = new int[dim.length - 1];
+	    System.arraycopy(dim, 0, dimTranslated, 0, level);
+	    System.arraycopy(dim, level + 1, dimTranslated, level, dim.length - (level + 1));
+	    return dimTranslated;
+    	} 
+
+	protected final int[] transformIndex(int[] i) {
+	    int[] itranslated = new int[i.length + 1];
+	    System.arraycopy(i, 0, itranslated, 0, level);
+	    itranslated[level] = index;
+	    System.arraycopy(i, level, itranslated, level + 1, i.length - level);
+	    return itranslated;
+	}
+    }
+
+    public Tensor/*<R>*/ subTensorTransposed(int[] permutation) {
+	return new TransposedTensor(this, permutation);
+    } 
+    private static class TransposedTensor/*<R implements Arithmetic>*/ extends TransformedAccessTensor/*<R>*/ {
+	private static final long serialVersionUID = 590361721474800306L;
+    	/**
+    	 * contains the index permutation for this tensor.
+    	 * @serial
+    	 */
+    	private final int[]    permutation;
+
+    	public TransposedTensor(final AbstractTensor/*<R>*/ m, int[] permutation) {
+	    super(m);
+	    Utility.pre(permutation.length == m.rank(), "indices must be of correct rank.");
+	    Utility.pre(Setops.all(Values.valueOf(permutation).iterator(), new Predicate() {
+		    public boolean apply(Object o) {
+			return (o instanceof Integer) && MathUtilities.isin(((Integer)o).intValue(), 0, m.rank() - 1);
+		    }
+		}), "The mapping table of a permutation in S_n contains the integers {0,...,n-1}.");
+	    Utility.pre(new HashSet(Setops.asList(Values.valueOf(permutation).iterator())).size() == m.rank(), "A permutation is bijective, so its mapping table should not contain duplicates.");
+	    this.permutation = permutation;
+    	}
+    
+    	public final int[] dimensions() {
+	    checkForComodification();
+	    return transformIndex(getDelegatee().dimensions());
+    	} 
+
+	protected int[] transformIndex(int[] i) {
+	    int[] itranslated = new int[i.length];
+	    for (int k = 0; k < i.length; k++)
+		itranslated[k] = i[permutation[k]];
+	    return itranslated;
+	}
+    }
+    public void setSubTensor(int level, int index, Tensor/*<R>*/ part) {
+	Tensor embed = subTensor(level, index);
+	Utility.pre(part.rank() == rank()-1, "part has compatible rank");
+	Utility.pre(Utility.equalsAll(part.dimensions(), embed.dimensions()), "part has compatible dimensions");
+	Setops.copy(part.iterator(), embed.iterator());
+    } 
+
     public Real norm() {
 	//@todo verify that this really is a norm
 	return (Real/*__*/) Functions.sqrt.apply(Operations.sum.apply(Functionals.map(Functions.square, Functionals.map(Functions.norm, iterator()))));
@@ -135,13 +407,14 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractArith
 
     // arithmetic-operations
 	
+    //@todo that's not quite true for strange R
     public Arithmetic zero() {return Values.ZERO(dimensions());}
     public Arithmetic one() {
 	throw new UnsupportedOperationException();
     }
     
     public Tensor/*<R>*/ add(Tensor/*<R>*/ B) {
-	Utility.pre(Arrays.equals(dimensions(),B.dimensions()), "Tensor A+B only defined for equal dimensions");
+	Utility.pre(Arrays.equals(dimensions(),B.dimensions()), "Tensor A+B only defined for equal dimensions (except purely symbolical)");
 	Tensor/*<R>*/ ret = newInstance(dimensions());
 
 	//TODO: cache Dimension dim = dimension(); in all these methods
@@ -154,7 +427,7 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractArith
     } 
 
     public Tensor/*<R>*/ subtract(Tensor/*<R>*/ B) {
-	Utility.pre(Arrays.equals(dimensions(), B.dimensions()), "Tensor A-B only defined for equal dimensions");
+	Utility.pre(Arrays.equals(dimensions(), B.dimensions()), "Tensor A-B only defined for equal dimensions (except purely symbolical)");
 	Tensor/*<R>*/ ret = newInstance(dimensions());
 
 	// component-wise
@@ -273,8 +546,9 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractArith
     /**
      * Returns an array containing all the elements in this tensor.
      * The first index in this array specifies the row, the second is for column.
+     * @note once we have covariant return-types, rename to toArray().
      */
-    public Object/*>R<*/[] toArray() {
+    public Object/*>R<*/[] toArray__Tensor() {
  	final int[] dim = dimensions();
  	final Object[] r = (Object[]) Array.newInstance(Arithmetic/*>R<*/.class, dim);
 	for (Combinatorical index = Combinatorical.getPermutations(dimensions()); index.hasNext(); ) {

@@ -51,7 +51,7 @@ import java.util.NoSuchElementException;
  * Refer to the documentation of the individual methods for details.
  * </p>
  * 
- * @invariant succeedes(#clone()) &and; (overwrites(#clone()) &or; this implements Cloneable) &and; rank() == 2
+ * @invariant super &and; rank()==2
  * @structure extends Tensor
  * @version 1.0, 2000/08/08
  * @author  Andr&eacute; Platzer
@@ -115,12 +115,12 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     ListIterator/*_<R>_*/ getRows();
 
     /**
-     * Returns an iterator over all elements, row-wise.
+     * Returns an iterator over all components (row-wise).
      * <p>
-     * If you cannot avoid it, call transpose().iterator() to get an iterator over all elements, column by column.</p>
+     * If you cannot avoid it, call transpose().iterator() to get an iterator over all components, column by column.</p>
      * @return an iterator that iterates over {m<sub>0,0</sub>,&#8230;,m<sub>0,m-1</sub>, m<sub>1,0</sub>,&#8230;,m<sub>1,m-1</sub>,&#8230;, m<sub>n-1,0</sub>,&#8230;,m<sub>n-1,m-1</sub>}.
      */
-    Iterator/*_<R>_*/ iterator();
+    ListIterator/*_<R>_*/ iterator();
 
     // sub-views
 	

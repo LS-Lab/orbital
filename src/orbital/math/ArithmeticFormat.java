@@ -278,27 +278,70 @@ public class ArithmeticFormat extends Format {
 	    fieldPosition.setBeginIndex(0);
 	    fieldPosition.setEndIndex(0);
 
-	    //@xxx improve formatting tensors (alternating rows and columns for successive dimensions)
+	    //@xxx improve formatting tensors (show when them inner matrix brackets end)
+
+	    obj = MathUtilities.flatten(obj);
+	    // transposes the indices such that the elements appear in row-wise order from top-left down-right.
+	    // then we can achieve alternating rows and columns for successive dimensions
+	    {
+		final int[] permutation = new int[obj.rank()];
+		int c = 0;
+		for (int k = 0; k < permutation.length; k+=2)
+		    permutation[k] = c++;
+		for (int k = 1; k < permutation.length; k+=2)
+		    permutation[k] = c++;
+		obj = obj.subTensorTransposed(permutation);
+	    }
+	    
 	    result.append(matrixPrefix);
+	    int[] lasti = null;
 	    for (Combinatorical index = Combinatorical.getPermutations(obj.dimensions()); index.hasNext(); ) {
 		final int[] i = index.next();
-		final Iterator allFrom1 = Values.valueOf(i).iterator();
-		allFrom1.next();
-		//@todo also introduce {} whenever any dimension completes
-		if (orbital.util.Setops.all(allFrom1, orbital.logic.functor.Functionals.bindSecond(orbital.logic.functor.Predicates.equal, Values.ZERO))) {
-		    // new row started
-		    if (i[0] != 0) {
+		if (lasti == null) {
+		    // first row started
+		    result.append(matrixRowPrefix);
+		    result.append("{");
+		} else {
+		    // the number of dimensions that have just completed
+		    // (in a consecutive order starting from the last
+		    // index)
+		    int numberOfCompleted = 0;
+		    for (int k = i.length - 1; k >= 0; k--)
+			if (i[k] == 0 && lasti[k] != 0)
+			    numberOfCompleted++;
+
+		    //@todo also introduce {} whenever any dimension completes (in the non-transposed tensor?)
+		    //@internal temporary trial
+		    if (numberOfCompleted > 0)
+			result.append("}");
+		    //@internal temporary guess
+		    if (numberOfCompleted > 2)
+			result.append("]\n[\t");
+
+		    if (numberOfCompleted >= (int)Math.floor(i.length/2.0)) {
+			// new row started whenever half of the
+			// outer (first) dimensions (rounded up) have just
+			// completed
 			result.append(matrixRowSuffix);
 			// a new row that is not the first row started
 			result.append(matrixRowSeparator);
+			result.append(matrixRowPrefix);
+		    } else {
+			result.append(matrixSeparator);
+
 		    }
-		    result.append(matrixRowPrefix);
-		} else {
-		    result.append(matrixSeparator);
+		    //@internal temporary trial
+		    if (numberOfCompleted > 0)
+			result.append("{");
 		}
 
 		format(obj.get(i), result, fieldPosition);
+
+		lasti = (int[])i.clone();
 	    }
+	    // last row completed
+	    result.append("}");
+	    
 	    result.append(matrixRowSuffix);
 	    result.append(matrixSuffix);
 

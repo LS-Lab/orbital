@@ -74,7 +74,7 @@ import java.util.NoSuchElementException;
  * whilst arithmetic methods will leave a vector unchanged but return a modified version.
  * Refer to the documentation of the individual methods for details.</p>
  * 
- * @invariant succeedes(#clone()) &and; (overwrites(#clone()) &or; this implements Cloneable) &and; rank()==1
+ * @invariant super &and; rank()==1
  * @structure extends Tensor
  * @version 1.0, 2000/08/08
  * @author  Andr&eacute; Platzer
@@ -112,12 +112,13 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     // iterator-views
 
     /**
-     * Returns an iterator over all elements.
+     * Returns an iterator over all components.
      * @return an iterator that iterates over v<sub>0</sub>,&#8230;,v<sub>n-1</sub>.
      * @post RES instanceof {@link ListIterator}
-     * @todo covariant return-types.
+     *  &and; RES.supports(#nextIndex()} &and; RES.supports(#previousIndex()}
+     *  &and; RES.supports(#add(Object)} &and; RES.supports(#remove()}
      */
-    Iterator/*_<R>_*/ iterator();
+    ListIterator/*_<R>_*/ iterator();
     
     // sub-views
 

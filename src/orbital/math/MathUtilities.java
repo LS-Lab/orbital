@@ -18,6 +18,10 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 import java.util.Random;
 
+import orbital.algorithm.Combinatorical;
+import java.util.Iterator;
+import orbital.util.Utility;
+
 import orbital.io.IOUtilities;
 import orbital.util.SuspiciousError;
 
@@ -751,6 +755,49 @@ public final class MathUtilities {
      */
     //public static Function taylorSeries(Function f, Arithmetic x0, int n)
 	
+    /**
+     * Of a rank r tensor with rank s tensor components, make a rank r+s tensor.
+     * This applies recursively until (non-tensor) components of rank 0 have been reached.
+     * Requires that all components are of uniform rank and dimensions.
+     */
+    static final Tensor flatten(Tensor t) {
+	int[] sdim = null;
+	for (Iterator i = t.iterator(); i.hasNext(); ) {
+	    Object ti = i.next();
+	    if (ti instanceof Tensor) {
+		int[] d = ((Tensor)ti).dimensions();
+		if (sdim == null)
+		    sdim = d;
+		else
+		    Utility.pre(Utility.equalsAll(d, sdim), "components have uniform rank and dimensions");
+	    } else {
+		if (sdim == null)
+		    sdim = new int[0];
+		else
+		    Utility.pre(sdim.length == 0, "components have uniform ran and dimensions");
+	    }
+	}
+	if (sdim.length == 0)
+	    return t;
+	else {
+	    final int[] tdim = t.dimensions();
+	    final int[] dim = new int[tdim.length + sdim.length];
+	    System.arraycopy(tdim, 0, dim, 0, tdim.length);
+	    System.arraycopy(sdim, 0, dim, tdim.length, sdim.length);
+	    Tensor r = Values.getInstance(dim);
+	    for (Combinatorical index = Combinatorical.getPermutations(r.dimensions()); index.hasNext(); ) {
+		int[] i = index.next();
+		int[] ai = new int[tdim.length];
+		System.arraycopy(i, 0, ai, 0, tdim.length);
+		int[] bi = new int[sdim.length];
+		System.arraycopy(i, tdim.length, bi, 0, i.length - tdim.length);
+		Tensor tai = (Tensor) t.get(ai);
+		r.set(i, tai.get(bi));
+	    }
+	    return flatten(r);
+	}
+    }
+
     // nice number formatting
 
     /**

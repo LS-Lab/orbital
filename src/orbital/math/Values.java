@@ -17,9 +17,15 @@ import java.util.ListIterator;
 import java.util.Arrays;
 import orbital.util.Setops;
 import orbital.util.Utility;
+import orbital.algorithm.Combinatorical;
 
 import orbital.math.functional.Functions;
 import java.util.ListIterator;
+import orbital.math.Arithmetic;
+import orbital.math.Real;
+import orbital.math.Normed;
+import java.util.Iterator;
+import orbital.math.Tensor;
 
 /**
  * Scalar value and arithmetic object value constructor and utilities class.
@@ -360,6 +366,9 @@ public final class Values {
 
     /**
      * Creates a new instance of vector with the specified dimension.
+     * @param dimensions the dimension of the vector.
+     * @return a vector of the specified dimension, with undefined components.
+     * @post RES.dimension() == dimension()
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
      */
     public static /*<R implements Arithmetic>*/ Vector/*<R>*/ getInstance(int dim) {
@@ -481,10 +490,13 @@ public final class Values {
 
     /**
      * Creates a new instance of matrix with the specified dimension.
+     * @param dimension the dimension of the matrix.
+     * @return a matrix of the specified dimensions, with undefined components.
+     * @post RES.dimension().equals(dimension)
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
      */
-    public static /*<R implements Arithmetic>*/ Matrix/*<R>*/ getInstance(Dimension dim) {
-	return new ArithmeticMatrix/*<R>*/(dim);
+    public static /*<R implements Arithmetic>*/ Matrix/*<R>*/ getInstance(Dimension dimension) {
+	return new ArithmeticMatrix/*<R>*/(dimension);
     } 
     public static /*<R implements Arithmetic>*/ Matrix/*<R>*/ getInstance(int height, int width) {
 	return new ArithmeticMatrix/*<R>*/(height, width);
@@ -662,10 +674,330 @@ public final class Values {
     }
     
     /**
+     * Creates a new instance of tensor with the specified dimensions.
+     * @param dimensions the dimensions n<sub>1</sub>&times;n<sub>2</sub>&times;&#8230;&times;n<sub>r</sub>
+     *  of the tensor.
+     * @return a tensor of the specified dimensions, with undefined components.
+     * @post Utilities.equalsAll(RES.dimensions(), dimensions)
+     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     */
+    public static Tensor getInstance(int[] dimensions) {
+	// tensors of rank 1 or rank 2 are converted to vectors or matrices
+	switch (dimensions.length) {
+	case 0:
+	    assert false;
+	case 1:
+	    return getInstance(dimensions[0]);
+	case 2:
+	    return getInstance(dimensions[0], dimensions[1]);
+	default:
+	    return new ArithmeticTensor(dimensions);
+	}
+    }
+
+    /**
      * Gets zero tensor, with all elements set to 0.
      */
     public static /*<R implements Arithmetic>*/ Tensor/*<R>*/ ZERO(int[] dimensions) {
-	throw new UnsupportedOperationException("not yet implemented");
+	Tensor zero = getInstance(dimensions);
+	for (Combinatorical index = Combinatorical.getPermutations(zero.dimensions()); index.hasNext(); ) {
+	    int[] i = index.next();
+	    zero.set(i, Values.ZERO);
+	}
+	return zero;
+    }
+
+    /**
+     * Returns an unmodifiable view of the specified tensor.
+     * This method allows modules to provide users with "read-only" access to constant tensors.
+     * <p>
+     * Query operations on the returned tensor "read through" to the specified tensor,
+     * and attempts to modify the returned tensor, whether direct or via its iterator,
+     * result in an UnsupportedOperationException.</p>
+     * <p>
+     * Note that cloning a constant tensor will not return a constant tensor, but a clone of the
+     * specified tensor t.</p>
+     */
+    public static /*<R implements Arithmetic>*/ Tensor/*<R>*/ constant(final Tensor/*<R>*/ t) {
+	return /*refine/delegate Tensor*/ new AbstractTensor/*<R>*/() {
+		protected Tensor/*<R>*/ newInstance(int[] dim) {throw new AssertionError("this method should never get called in this context");}
+		// Code for delegation of orbital.math.Normed methods to t
+
+		/**
+		 *
+		 * @return <description>
+		 * @see orbital.math.Normed#norm()
+		 */
+		public Real norm()
+		{
+		    return t.norm();
+		}
+		// Code for delegation of orbital.math.Tensor methods to t
+
+		/**
+		 *
+		 * @return <description>
+		 * @see orbital.math.Tensor#clone()
+		 */
+		public Object clone()
+		{
+		    return t.clone();
+		}
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @return <description>
+		 * @see orbital.math.Tensor#add(Tensor)
+		 */
+		public Tensor add(Tensor param1)
+		{
+		    return t.add(param1);
+		}
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @return <description>
+		 * @see orbital.math.Tensor#get(int[])
+		 */
+		public Arithmetic get(int[] param1)
+		{
+		    return t.get(param1);
+		}
+
+		/**
+		 *
+		 * @return <description>
+		 * @see orbital.math.Tensor#iterator()
+		 */
+		public Iterator iterator()
+		{
+		    return t.iterator();
+		}
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @param param2 <description>
+		 * @exception java.lang.UnsupportedOperationException <description>
+		 * @see orbital.math.Tensor#set(int[], Arithmetic)
+		 */
+		public void set(int[] param1, Arithmetic param2) throws UnsupportedOperationException
+		{
+		    throw new UnsupportedOperationException();
+		}
+
+		/**
+		 *
+		 * @return <description>
+		 * @see orbital.math.Tensor#dimensions()
+		 */
+		public int[] dimensions()
+		{
+		    return t.dimensions();
+		}
+
+		/**
+		 *
+		 * @return <description>
+		 * @see orbital.math.Tensor#rank()
+		 */
+		public int rank()
+		{
+		    return t.rank();
+		}
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @param param2 <description>
+		 * @return <description>
+		 * @see orbital.math.Tensor#subTensor(int[], int[])
+		 */
+		public Tensor subTensor(int[] param1, int[] param2)
+		{
+		    return t.subTensor(param1, param2);
+		}
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @return <description>
+		 * @see orbital.math.Tensor#subtract(Tensor)
+		 */
+		public Tensor subtract(Tensor param1)
+		{
+		    return t.subtract(param1);
+		}
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @return <description>
+		 * @see orbital.math.Tensor#multiply(Tensor)
+		 */
+		public Tensor multiply(Tensor param1)
+		{
+		    return t.multiply(param1);
+		}
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @return <description>
+		 * @see orbital.math.Tensor#tensor(Tensor)
+		 */
+		public Tensor tensor(Tensor param1)
+		{
+		    return t.tensor(param1);
+		}
+		// Code for delegation of orbital.math.Arithmetic methods to t
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @param param2 <description>
+		 * @return <description>
+		 * @see orbital.math.Arithmetic#equals(Object, Real)
+		 */
+		public boolean equals(Object param1, Real param2)
+		{
+		    return t.equals(param1, param2);
+		}
+
+		/**
+		 *
+		 * @return <description>
+		 * @see orbital.math.Arithmetic#toString()
+		 */
+		public String toString()
+		{
+		    return t.toString();
+		}
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @return <description>
+		 * @exception java.lang.ArithmeticException <description>
+		 * @see orbital.math.Arithmetic#add(Arithmetic)
+		 */
+		public Arithmetic add(Arithmetic param1) throws ArithmeticException
+		{
+		    return t.add(param1);
+		}
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @return <description>
+		 * @exception java.lang.ArithmeticException <description>
+		 * @see orbital.math.Arithmetic#subtract(Arithmetic)
+		 */
+		public Arithmetic subtract(Arithmetic param1) throws ArithmeticException
+		{
+		    return t.subtract(param1);
+		}
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @return <description>
+		 * @exception java.lang.ArithmeticException <description>
+		 * @exception java.lang.UnsupportedOperationException <description>
+		 * @see orbital.math.Arithmetic#multiply(Arithmetic)
+		 */
+		public Arithmetic multiply(Arithmetic param1) throws ArithmeticException, UnsupportedOperationException
+		{
+		    return t.multiply(param1);
+		}
+
+		/**
+		 *
+		 * @return <description>
+		 * @exception java.lang.ArithmeticException <description>
+		 * @see orbital.math.Arithmetic#zero()
+		 */
+		public Arithmetic zero() throws ArithmeticException
+		{
+		    return t.zero();
+		}
+
+		/**
+		 *
+		 * @return <description>
+		 * @exception java.lang.UnsupportedOperationException <description>
+		 * @see orbital.math.Arithmetic#one()
+		 */
+		public Arithmetic one() throws UnsupportedOperationException
+		{
+		    return t.one();
+		}
+
+		/**
+		 *
+		 * @return <description>
+		 * @exception java.lang.ArithmeticException <description>
+		 * @see orbital.math.Arithmetic#minus()
+		 */
+		public Arithmetic minus() throws ArithmeticException
+		{
+		    return t.minus();
+		}
+
+		/**
+		 *
+		 * @return <description>
+		 * @exception java.lang.ArithmeticException <description>
+		 * @exception java.lang.UnsupportedOperationException <description>
+		 * @see orbital.math.Arithmetic#inverse()
+		 */
+		public Arithmetic inverse() throws ArithmeticException, UnsupportedOperationException
+		{
+		    return t.inverse();
+		}
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @return <description>
+		 * @exception java.lang.ArithmeticException <description>
+		 * @exception java.lang.UnsupportedOperationException <description>
+		 * @see orbital.math.Arithmetic#divide(Arithmetic)
+		 */
+		public Arithmetic divide(Arithmetic param1) throws ArithmeticException, UnsupportedOperationException
+		{
+		    return t.divide(param1);
+		}
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @return <description>
+		 * @exception java.lang.ArithmeticException <description>
+		 * @exception java.lang.UnsupportedOperationException <description>
+		 * @see orbital.math.Arithmetic#scale(Arithmetic)
+		 */
+		public Arithmetic scale(Arithmetic param1) throws ArithmeticException, UnsupportedOperationException
+		{
+		    return t.scale(param1);
+		}
+
+		/**
+		 *
+		 * @param param1 <description>
+		 * @return <description>
+		 * @exception java.lang.ArithmeticException <description>
+		 * @exception java.lang.UnsupportedOperationException <description>
+		 * @see orbital.math.Arithmetic#power(Arithmetic)
+		 */
+		public Arithmetic power(Arithmetic param1) throws ArithmeticException, UnsupportedOperationException
+		{
+		    return t.power(param1);
+		}
+
+	    };
     }
 
     // polynomial constructors and utilities
@@ -736,7 +1068,7 @@ public final class Values {
      * <p>
      * Note that unlike {@link #quotient(Euclidean,Euclidean) quotients of Euclidean rings}
      * and due to the black-box behaviour of the quotient operator
-     * these quotients do not guarantee an implementation of {@link #inverse()}.
+     * these quotients do not guarantee an implementation of {@link Arithmetic#inverse()}.
      * </p>
      * @param mod is the quotient operator applied (see {@link Quotient#getQuotientOperator()}).
      */
@@ -794,7 +1126,7 @@ public final class Values {
      * Note that this implementation does not check whether denominators are in the
      * submonoid S, but only check for them to have the right type S. Since if S really is a
      * monoid, it would suffice to check this at the instantiation, here.
-     * However, additionally this implementation does not check the prerequisite of {@link #inverse()}
+     * However, additionally this implementation does not check the prerequisite of {@link Arithmetic#inverse()}
      * to have a numerator in the submonoid S, but only check for its type, again.
      * </p>
      * <p>
@@ -827,7 +1159,7 @@ public final class Values {
      * Returns an arithmetic object whose value is equal to that of the
      * representation in the specified string.
      * @param s the string to be parsed.
-     * @return an instance of arithmetic that is equal to the representation in s.
+     * @return an instance of arithmetic that <is equal to the representation in s.
      * @throws NumberFormatException if the string does not contain a parsable arithmetic object.
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
      */
