@@ -7,6 +7,7 @@
 package orbital.algorithm.evolutionary;
 
 import orbital.algorithm.template.ProbabilisticAlgorithm;
+import orbital.algorithm.template.AlgorithmicTemplate;
 import orbital.algorithm.template.AlgorithmicProblem;
 import java.io.Serializable;
 import orbital.logic.functor.Function;
@@ -86,7 +87,7 @@ import orbital.moon.evolutionary.SelectionStatistics;
  *  DemeGeneticAlgorithm, ParallelDemeGeneticAlgorithm (with parallel population processed in parallel)
  * @todo introduce getConvergence() and getPopulationConvergence()
  */
-public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Serializable {
+public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, AlgorithmicTemplate, Serializable {
     private static final Logger logger = Logger.getLogger(GeneticAlgorithm.class.getName());
     /**
      * version of this class for versioning with serialization and deserialization.
