@@ -116,6 +116,7 @@ public abstract class AbstractGameRules implements GameRules, Serializable {
 
     /**
      * get the current league whose turn it is.
+     * @deprecated Since Orbital1.1 use {@link Field#getTurn()} instead.
      */
     public int getTurn() {
 	return turn;
@@ -123,6 +124,7 @@ public abstract class AbstractGameRules implements GameRules, Serializable {
 
     /**
      * set the current league whose turn it is.
+     * @deprecated Since Orbital1.1 use {@link Field#setTurn(int)} instead.
      */
     protected void setTurn(int t) {
 	this.turn = t;
@@ -154,6 +156,7 @@ public abstract class AbstractGameRules implements GameRules, Serializable {
      * {@inheritDoc}.
      * Will check whether the {@link #getTurn() current turn} and the turn on the last call
      * of this method are distinct.
+     * @deprecated Since Orbital1.1.
      */    
     public boolean isNextTurn() {
 	if (getTurn() != oldTurn) {

@@ -47,6 +47,12 @@ public class Field implements Serializable {
      */
     private Figure field[][];
 
+    /**
+     * The league that does the current turn.
+     * @serial
+     */
+    private int turn;
+
     public Field(int width, int height) {
 	this.field = new Figure[height][width];
     }
@@ -164,6 +170,21 @@ public class Field implements Serializable {
 	}
 	assert !(f instanceof FigureImpl) || ((FigureImpl)f).getField() == this : "figures know on which field they are";
 	assert f == null || (f.x == p.x && f.y == p.y) : "figures know their position " + f + " at " + p;
+    } 
+
+    /**
+     * Get the league that does the current turn.
+     * For games which are not based on turns, the value is undefined.
+     */
+    public int getTurn() {
+	return turn;
+    } 
+
+    /**
+     * Set the league that does the current turn.
+     */
+    protected void setTurn(int leagueThatMoves) {
+	this.turn = leagueThatMoves;
     } 
 
     /**
