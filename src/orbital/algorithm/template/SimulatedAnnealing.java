@@ -100,6 +100,9 @@ import java.util.logging.Level;
  * @note The Boltzman-machine is simulated annealing with the Boltzman distribution applied
  *  also to cases of improvements, instead of accepting all improvements.
  * @note could introduce MeanfieldAnnealing (alias Hopfield/Tank neural networks)
+ * @note The central idea of simulated annealing is to deepen the local minima by some
+ *  exponential transformation.
+ * @internal @see "Shor algorithm in quantum computing and  Winkler, Gerhard (1995). Image Analysis, Random Fields and Dynamic Monte Carlo Methods."
  * @internal variants:
  *  - simulated annealing with backtracking I to the (currently) best solution when reaching a limit T.
  *  + simulated annealing with backtracking II to the (currently) best solution at the end of each temperature step.
