@@ -193,6 +193,12 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    return (Formula) getUnderlyingLogic().compose(getUnderlyingLogic().createAtomic(op), arguments);
 	}
 	catch (ParseException ex) {throw (InternalError) new InternalError("errorneous internal composition").initCause(ex);}
+	catch (NullPointerException ex) {
+	    if (getUnderlyingLogic() == null)
+		throw new NullPointerException("No underlying logic set for " + this);
+	    else
+		throw ex;
+	}
     }
 
 
