@@ -639,7 +639,9 @@ public class ArithmeticFormat extends Format {
     public StringBuffer format(Symbol s, StringBuffer result, FieldPosition fieldPosition) {
 	if (fieldPosition.getField() == SYMBOL_FIELD)
 	    fieldPosition.setBeginIndex(result.length());
-	result.append(s.toString());
+	//XXX: if (logger.isLoggable(Level.FINER))
+	// return '"' + s.getSignifier() + '"';
+	result.append(s.getSignifier());
 	if (fieldPosition.getField() == SYMBOL_FIELD)
 	    fieldPosition.setEndIndex(result.length());
 	return result;

@@ -11,31 +11,6 @@ import orbital.math.functional.Operations;
 import orbital.math.functional.Functions;
 
 abstract class AbstractComplex extends AbstractScalar implements Complex {
-    private static class Debug {
-	private Debug() {}
-	public static void main(String arg[]) throws Exception {
-	    Complex a = new ComplexImpl(2, 1);
-	    Complex b = new ComplexImpl(3, -4);
-	    System.out.println(a + "+" + b + " == " + a.add(b));
-	    System.out.println(a + "-(" + b + ") == " + a.subtract(b));
-	    System.out.println("(" + a + ")*(" + b + ") == " + a.multiply(b));
-	    System.out.println("(" + a + ")/(" + b + ") == " + a.divide(b));
-	    System.out.println("-(" + a + ") == " + a.minus());
-	    System.out.println("(" + a + ")^-1 == " + a.inverse());
-	    System.out.println("(" + a + ")^(" + b + ") == " + a.power(b));
-	    System.out.println("(" + a + ")*i =" + a.multiply(Values.i));
-	    System.out.println("e^(" + a + ") == " + Functions.exp.apply(a));
-	    System.out.println("log(" + a + ") == " + Functions.log.apply(a));
-	    System.out.println("sin(" + a + ") == " + Functions.sin.apply(a));
-	    System.out.println("cos(" + a + ") == " + Functions.cos.apply(a));
-	    System.out.println("tan(" + a + ") == " + Functions.tan.apply(a));
-	    System.out.println("sinh(" + a + ") == " + Functions.sinh.apply(a));
-	    System.out.println("cosh(" + a + ") == " + Functions.cosh.apply(a));
-	    System.out.println("tanh(" + a + ") == " + Functions.tanh.apply(a));
-	} 
-    }	 // Debug
-    
-    
     private static final long serialVersionUID = 6174516422770428710L;
 
     protected AbstractComplex() {}

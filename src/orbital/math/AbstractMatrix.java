@@ -898,8 +898,9 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
 	    } 
 	} 
 
-	if (!MathUtilities.equalsCa(A, Values.getDefaultInstance().IDENTITY(dimension().width, dimension().width))) {
-	    logger.log(Level.FINEST, "found a supposed inverse:\n{0} but failed to transform to identity matrix:\n{1} ({2})", new Object[] {AI, A, A.getClass()});
+	if (!(MathUtilities.equalsCa(A, Values.getDefaultInstance().IDENTITY(dimension().width, dimension().width))
+	      || Values.symbolic.apply(A))) {
+	    logger.log(Level.FINEST, "found a supposed inverse:\n{0}\n but failed to transform to identity matrix:\n{1}\t({2})", new Object[] {AI, A, A.getClass()});
 	    assert !isInvertible() : "a matrix is singular <=> determinant=0 <=> it cannot be inverted (apart from numerical uncertainty)";
 	    throw new ArithmeticException("NoninvertibleMatrixException: singular matrix");
 	} 

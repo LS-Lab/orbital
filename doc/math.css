@@ -1,0 +1,54 @@
+/**
+ * @(#)stylist.css 1.0 2000-10-23 Andre Platzer
+ *
+ * Copyright (c) 2000-2002 Andre Platzer. All Rights Reserved.
+ * Content-Encoding: utf-8
+ */
+
+td, th       { vertical-align: text-top; }
+th           { text-align: left; }
+/**
+ * the precondition context of a definition.
+ */
+td.defContext {  }
+/**
+ * the property ID of the condition of a definition.
+ */
+th.defID     { text-align: left; }
+td.defID     { font-weight: bold; white-space: nowrap; quotes: "(" ")"; }
+td.defID:before { content: open-quote; }
+td.defID:after { content: close-quote; }
+*.defIDAction     { font-weight: bold; white-space: nowrap; quotes: "(" ")"; }
+*.defIDAction:before { content: "(„"; }
+*.defIDAction:after { content: "“)"; }
+/**
+ * (the heading for) the condition of a definition (IF-part).
+ */
+th.defCond   { text-align: left; }
+/**
+ * (the heading for) the defined term.
+ */
+th.defTerm   { text-align: right; }
+/**
+ * (the heading for) the category name.
+ */
+th.defCategory { text-align: right; font-family: "Arioso", cursive; }
+/**
+ * the defined term (THEN name).
+ */
+td.defTerm   { text-align: right; }
+/**
+ * the verbal circumscription of the defined term.
+ */
+th.defVerbal {  }
+td.defVerbal { quotes: "\"" "\""; }
+td.defVerbal:before { content: open-quote; }
+td.defVerbal:after { content: close-quote; }
+/**
+ * the category name.
+ */
+td.defCategory { text-align: right; }
+/**
+ *
+ */
+*.preciseClarification { font-size: smaller; }

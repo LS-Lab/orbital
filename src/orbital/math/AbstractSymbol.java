@@ -27,7 +27,6 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
     // or define x+y as a function that has arithmetic behaviour (better do)
     private static class Debug {
 	private Debug() {}
-	//@todo class Debug produces an error with gjc error: type parameter orbital.math.Arithmetic[] is not within its bound orbital.math.Arithmetic
 	public static void main(String arg[]) throws Exception {
 	    final Values vf = Values.getDefaultInstance();
 	    Matrix M = vf.valueOf(new Arithmetic[][] {
@@ -37,8 +36,10 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
 	    Vector v = vf.valueOf(new Arithmetic[] {
 		vf.valueOf(1), vf.valueOf(2)
 	    });
+	    System.out.println(Values.symbolic.apply(M) + "," + Values.symbolic.apply(v) +","+Values.symbolic.apply(vf.IDENTITY(7,7))+Values.symbolic.apply(M.multiply(v)));
 	    System.out.println(M + "*" + v + "=" + M.multiply(v));
 	    System.out.println(M + "^-1 =\n" + M.inverse());
+
 	    M = vf.valueOf(new Arithmetic[][] {
 		{vf.valueOf(2), vf.symbol("a")},
 		{vf.symbol("d"), vf.valueOf(4)}
@@ -156,13 +157,11 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
     }
 
     public Real norm() {
-	//@xxx or should we  return Functions.abs.apply(this)
+	//@xxx or should we  return Functions.abs.apply(this)?
 	return Values.NaN;
     } 
 
     public String toString() {
-	//XXX: if (logger.isLoggable(Level.FINER))
-	// return '"' + signifier + '"';
-	return signifier;
+	return ArithmeticFormat.getDefaultInstance().format(this);
     } 
 }

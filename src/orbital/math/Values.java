@@ -12,6 +12,10 @@ import orbital.logic.functor.Function;
 
 import orbital.math.functional.MathFunctor;
 
+import orbital.logic.functor.Predicate;
+import orbital.logic.functor.Functor;
+import java.util.Collection;
+
 import java.util.List;
 
 import java.util.Iterator;
@@ -1399,12 +1403,39 @@ public class Values {
 
     /**
      * Returns a new algebraic symbol.
-     * @return the algebraic symbol "signifier".
+     * @return the algebraic symbol <var class="signifier">signifier</var>.
      */
     public Symbol symbol(String signifier) {
 	return new AbstractSymbol(signifier);
     }
 
+    /**
+     * Checks whether an expression is symbolic
+     * (does not only contain numeric quantities, but also symbols).
+     * @todo if this is good, move to Symbol.
+     * @internal Functionals.banana(...)
+     * @xxx test with AbstractSymbol$Debug
+     */
+    static final Predicate symbolic = new Predicate() {
+	    public boolean apply(Object expression) {
+		if (expression instanceof Functor.Composite) {
+		    Functor.Composite c = (Functor.Composite)expression;
+		    //@internal see orbital.logic.functor.Notation.asTree(...)
+		    Functor    compositor = c.getCompositor();
+		    Collection components = Utility.asCollection(c.getComponent());
+		    if (components == null)
+			throw new NullPointerException(c + " of " + c.getClass() + " has compositor " + compositor + " and components " + components);
+		    return apply(compositor) || Setops.some(components, this);
+		} else if (expression instanceof orbital.logic.functor.VoidFunction)
+		    //@internal accept also Functions$ConstantFunction
+		    return apply(((orbital.logic.functor.VoidFunction)expression).apply());
+		else
+		    return Utility.isIteratable(expression)
+			? Setops.some(Utility.asIterator(expression), this)
+			: Symbol.isa.apply(expression);
+	    }
+	};
+    
     
     // general static methods for scalar values
 
