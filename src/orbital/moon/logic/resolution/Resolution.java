@@ -118,6 +118,8 @@ public class Resolution implements Inference {
 	//this.search = new IterativeDeepeningAStar(orbital.math.functional.Functions.constant(Values.getDefaultInstance().valueOf(0)));
 
         this.search = new IterativeDeepeningAStar(heuristic);
+	//@todo since resolution proving is proof confluent, we can use a hill-climber and do not need backtracking, once we provide fairness
+        //this.search = new HillClimbing(heuristic);
     }
 
     public boolean infer(final Formula[] B, final Formula D) {
@@ -214,6 +216,7 @@ public class Resolution implements Inference {
 	};
 
     /**
+     * Resolution proving represented as an infinite search problem.
      * @internal we identify S=A here such that we can perform all work in actions().
      */
     private final class ResolutionProblem implements GeneralSearchProblem/*<Proof,Proof>*/ {
@@ -255,7 +258,7 @@ public class Resolution implements Inference {
 	    };
         public boolean isSolution(Object n) {
 	    final ClausalSet S = ((Proof) n).setOfSupport;
-	    // solely rely on goal lookahead (see below)
+	    // solely rely on goal lookahead (@see #actions(Object))
 	    final boolean goal = S.size() == 1 && S.contains(Utilities.CONTRADICTION);
 	    logger.log(Level.FINE, "isSolution=={0} of the clauses {1}", new Object[] {new Boolean(goal), S});
 	    return goal;
@@ -325,7 +328,7 @@ public class Resolution implements Inference {
 	}
 
 	public TransitionModel.Transition transition(Object action, Object state, Object statep) {
-	    return new Transition(action, 1);
+	    return new Transition(action, Values.ONE);
 	}
     }
 
@@ -338,7 +341,7 @@ public class Resolution implements Inference {
     private static class Proof {
 	/**
 	 * the current set of support.
-	 * (containing all formulas already deduced, or in initial set of support)
+	 * (containing all formulas already deduced, or in the initial set of support)
 	 */
 	ClausalSet setOfSupport;
 
