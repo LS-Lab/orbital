@@ -13,9 +13,10 @@ class ClassicalLogicPiTrial extends ClassicalLogic {
     private final void parseTypeExpressionTest() {
 	try {
 	    Type t;
-	    /*Symbol tau = new SymbolBase("tau", typeSystem.TYPE(), null, true);
-	      Symbol MAP = coreSignature().get("->", typeSystem.map(typeSystem.product(new Type[] {typeSystem.TYPE(), typeSystem.TYPE()}), typeSystem.TYPE()));
-	      Symbol truth = coreSignature().get("truth", typeSystem.TYPE());
+	    Symbol tau = new SymbolBase("tau", typeSystem.TYPE(), null, true);
+	    Symbol MAP = coreSignature().get("->", typeSystem.map(typeSystem.product(new Type[] {typeSystem.TYPE(), typeSystem.TYPE()}), typeSystem.TYPE()));
+	    Symbol truth = coreSignature().get("truth", typeSystem.TYPE());
+	      /*
 	      t = new PiAbstractionType(tau,
 	      (Formula) compose(createAtomic(MAP), new Expression[] {createAtomic(tau), createAtomic(truth)}),
 	      InterpretationBase.EMPTY(coreSignature()));
@@ -57,14 +58,58 @@ class ClassicalLogicPiTrial extends ClassicalLogic {
 
 	    System.err.println();
 	    setEnableTypeChecks(false);
+
+	    t = parseTypeExpression("(\\\\s . (s->truth)->truth)");
+	    System.err.println(t);
+
+	    {
+		// construction of type parseTypeExpression("(\\\\s . (s->truth)->truth)") without parsing
+		final Symbol s = new SymbolBase("s", Types.getDefault().TYPE(), null, true);
+		final Expression se = createAtomic(s);
+		final Expression helperType = compose(createAtomic(MAP), new Expression[] {
+		    compose(createAtomic(MAP), new Expression[] {se, createAtomic(truth)}),
+		    createAtomic(truth)
+		});
+		final Expression tve = compose(createAtomic(PI), new Expression[] {se, helperType});
+		System.err.println(tve + " = " + t);
+		final Type tv = LogicParser.myasType(tve, coreSignature());
+		System.err.println(tv + " = " + t);
+		System.err.println(tv.equals(t));
+	    }
+	    
+	    Symbol ALL2 = new SymbolBase("o", t);
+	    System.err.println("New universal quantifier " + createAtomic(ALL2) + " applying");
+	    System.err.println(Types.toTypedString(compose(createAtomic(ALL2), new Expression[] {
+		createAtomic(new SymbolBase("p", typeSystem.map(typeSystem.objectType(String.class, "string"), Types.TRUTH))),
+	    })));
+	    System.err.println(Types.toTypedString(compose(createAtomic(ALL2), new Expression[] {
+		createAtomic(new SymbolBase("p2", typeSystem.map(typeSystem.objectType(orbital.math.Integer.class, "integer"), Types.TRUTH))),
+	    })));
+	    System.err.println(Types.toTypedString(compose(createAtomic(ALL2), new Expression[] {
+		createAtomic(new SymbolBase("p3", typeSystem.map(typeSystem.objectType(orbital.math.Real.class, "real"), Types.TRUTH))),
+	    })));
+	    System.err.println(Types.toTypedString(compose(createAtomic(ALL2), new Expression[] {
+		createAtomic(new SymbolBase("p4", typeSystem.map(Types.TRUTH, Types.TRUTH))),
+	    })));
+	    System.err.println(Types.toTypedString(compose(createAtomic(ALL2), new Expression[] {
+		createAtomic(new SymbolBase("p5", typeSystem.map(typeSystem.map(typeSystem.objectType(String.class, "string"), Types.TRUTH), Types.TRUTH))),
+	    })));
+	    System.err.println(Types.toTypedString(compose(createAtomic(ALL2), new Expression[] {
+		createAtomic(new SymbolBase("p6", typeSystem.map(typeSystem.map(typeSystem.map(typeSystem.objectType(String.class, "string"), Types.TRUTH), Types.TRUTH), Types.TRUTH))),
+	    })));
+	    System.err.println("results");
+	    
+
 	    /*t = parseTypeExpression("(\\\\s . s->(s->s))");
 	      System.err.println(t);
 	      t = parseTypeExpression("(\\\\s . (\\\\t . s))");
 	      System.err.println(t);*/
-	    t = parseTypeExpression("(\\\\s . (\\\\t . s->(t->(s->t))))");
+	    t = parseTypeExpression("(\\\\_s . (\\\\_t . _s->(_t->(_s->_t))))");
 	    System.err.println(t);
-	    t = parseTypeExpression("(\\\\s . s -> (\\\\t . t->(s->t)))");
+	    t = parseTypeExpression("(\\\\_s . (\\\\_i . (\\\\_t . _s->(_t->(_s->_t)))))");
 	    System.err.println(t);
+	    //t = parseTypeExpression("(\\\\s . s -> (\\\\t . t->(s->t)))");
+	    //System.err.println(t);
 	    /*
 	      Type pt;
 	      System.err.println();
@@ -82,7 +127,12 @@ class ClassicalLogicPiTrial extends ClassicalLogic {
 	      System.err.println(" >>> instantiat2= " + ((PiAbstractionType)t2).apply(pt));
 	      System.err.println();
 	    */
-	    System.err.println("apply " + Types.toTypedString(compose(createAtomic(new SymbolBase("w", t)), new Expression[] {
+	    //@fixme w(x) has the wrong type, with t already bound to string without any reasons
+	    System.err.println("apply once " + Types.toTypedString(compose(createAtomic(new SymbolBase("w", t)), new Expression[] {
+		createAtomic(new SymbolBase("x", typeSystem.objectType(orbital.math.Real.class, "real"))),
+	    })));
+	    System.err.println();
+	    System.err.println("apply once " + Types.toTypedString(compose(createAtomic(new SymbolBase("w", t)), new Expression[] {
 		createAtomic(new SymbolBase("x", typeSystem.objectType(String.class, "string"))),
 	    })));
 	    System.err.println();
