@@ -218,6 +218,9 @@
                 <include name="**/*.class"/>
             </fileset>
             <fileset dir="${reports.tests}"/>
+            <fileset dir="${doc.api.dest}"/>
+            <fileset dir="${doc.dest}"/>
+            <fileset dir="${dist}"/>
             <fileset dir="${examples}">
 	        <include name="**/*.class"/>
 		<exclude name="Algorithms/MapView.class"/>
