@@ -54,7 +54,7 @@ abstract class ModernLogic implements Logic {
     /**
      * Whether runtime type checks are enabled.
      */
-    private static final boolean TYPE_CHECK = false;
+    /*private*/ static /*final*/ boolean TYPE_CHECK = true;
     /**
      * A complex error offset that is not representable by a locator for ParseException.
      */
@@ -76,6 +76,7 @@ abstract class ModernLogic implements Logic {
      *  could be proven.
      * @return a value depending upon all_true.
      * @see LogicParser#readTRS(Reader,ExpressionSyntax,Function)
+     * @todo provide a hook method for subclasses (they can thus provide normalForm and closure)
      */
     protected static final boolean proveAll(Reader rd, ModernLogic logic, boolean all_true) throws ParseException, IOException {
 	return proveAll(rd, logic, all_true, false, false, false);
@@ -83,8 +84,9 @@ abstract class ModernLogic implements Logic {
     static final boolean proveAll(Reader rd, ModernLogic logic, boolean all_true, boolean normalForm, boolean closure, boolean verbose) throws ParseException, IOException {
 	DateFormat df = new SimpleDateFormat("H:mm:ss:S");
 	df.setTimeZone(TimeZone.getTimeZone("Greenwich/Meantime"));
-	Date	loadeta;
-	long	start = System.currentTimeMillis();
+	final long start = System.currentTimeMillis();
+	// sums proof duration excluding I/O
+	long    duration = 0;
 
 	boolean some = false;
 	boolean all = true;
@@ -136,6 +138,7 @@ abstract class ModernLogic implements Logic {
 		continue;
 	    }
 
+	    final long proofStart = System.currentTimeMillis();
 
 	    // split formula into knowledge and formula
 	    String knowledge = "";
@@ -201,13 +204,16 @@ abstract class ModernLogic implements Logic {
 		}
 	    }
 
+	    duration += System.currentTimeMillis() - proofStart;
+
 	    // keep records
 	    some |= sat;
 	    all &= sat;
 	} while (!eof);
 
-	Date   eta = new Date(System.currentTimeMillis() - start);
-	logger.log(Level.INFO, "timing is Proof duration {0}", df.format(eta));
+	final Date eta = new Date(System.currentTimeMillis() - start);
+	logger.log(Level.INFO, "timing is: Proof duration {0}\ntiming is: total time including I/O {1}",
+		   new Object[] {df.format(new Date(duration)), df.format(eta)});
 	return all_true ? all : some;
     } 
 
