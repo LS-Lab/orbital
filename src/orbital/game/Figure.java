@@ -271,7 +271,7 @@ public class Figure extends Moving {
      * Use the Iterator methods on the returned object to fetch
      * the elements sequentially.
      */
-    public final Iterator iterator() {
+    public final Iterator/*_<Move>_*/ iterator() {
 	return Arrays.asList(legalMoves).iterator();
     } 
 
@@ -279,10 +279,9 @@ public class Figure extends Moving {
      * Returns an iterator over all Moves <dfn>valid</dfn> for this Figure.
      * Use the Iterator methods on the returned object to fetch
      * the elements sequentially.
-     * Validity of a path to move is checked via {@link #movePath(Move)}.
-     * @see #movePath(Move)
+     * Checks validity of a path to move per {@link #movePath(Move)}.
      */
-    public final Iterator iterateValid() {
+    public final Iterator/*_<Move>_*/ iterateValid() {
 	final List v = new ArrayList(legalMoves.length);
 	for (int i = 0; i < legalMoves.length; i++) {
 	    Position destination = movePath(legalMoves[i]);
@@ -297,19 +296,18 @@ public class Figure extends Moving {
      * Returns an iterator over all pairs of (Moves|destinations) <dfn>valid</dfn> for this Figure.
      * Use the Iterator methods on the returned object to fetch
      * the elements sequentially.
-     * Validity of a path to move is checked via {@link #movePath(Move)}.
+     * Checks validity of a path to move per {@link #movePath(Move)}.
      * @see #iterateValid()
-     * @see #movePath(Move)
      * @post &forall;i&isin;RES moveFigure(i.A).equals(i.B)
      * @todo introduce iteratePossiblePairs() returns an iterator over all pairs of (Moves|destinations) valid and <dfn>possible</dfn> for this Figure, i.e. if our league is allowed to move at all.
      */
-    public final Iterator iterateValidPairs() {
+    public final Iterator/*_<Move,Position>_*/ iterateValidPairs() {
 	final List v = new ArrayList(legalMoves.length);
 	for (int i = 0; i < legalMoves.length; i++) {
 	    Move	 move = legalMoves[i];
 	    Position destination = movePath(move);
 	    if (destination != null)					 // reaches legally => Move valid
-		v.add(new Pair/*_<Move,Position>_*/(move, destination));	 //TODO: Use a Map instead? List(new KeyValuePair())
+		v.add(new Pair/*<Move,Position>*/(move, destination));	 //TODO: Use a Map instead? List(new KeyValuePair())
 	} 
 	return v.iterator();
     } 
@@ -363,19 +361,22 @@ public class Figure extends Moving {
 
 
     /**
-     * Called back when this Figure is moving.
-     * Has the final decision whether this Figure could the Move to the given position
-     * or if that would break the rules.
-     * <p>
-     * This implementaion simply returns true.
-     * If additional action should occur (f.ex. keeping track of whose turn it is)
-     * derived methods must provide this. If beats are only valid to foreign Figures,
-     * the methods in the subclasses must check for it.
+     * Called back when this figure is really moving.
+     * 
+     * This method has the final decision whether this figure could do
+     * the move to the given position or if that would break the
+     * rules.
+     *
+     * <p> This implementaion simply returns true.  If additional
+     * action should occur (f.ex. keeping track of whose turn it is)
+     * derived methods must provide this. If beats are only valid to
+     * foreign Figures, the methods in the subclasses must check for
+     * it.
      * @param move a valid Move, <em>really reaching</em> the given destination.
      * @param destination the destination reached by the move.
      * @pre &exist;i move.equals(getLegalMoves()[i]) &and; movePath(move).equals(destination)
      * @return whether the move sticks to the rules,
-     *  provided that the Move itself is a legal move and reaches the given position on the board.
+     *  provided that the move itself is a legal move and reaches the given position on the board.
      */
     protected boolean moving(Move move, Position destination) {
 	return true;
