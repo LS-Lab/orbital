@@ -1,4 +1,5 @@
-#!/bin/csh -f
+#!/bin/tcsh -f
+# even !/bin/csh -f would suffice
 # 
 #  revert-to-1.3.sh     
 #  (c) 2002 Ute Platzer

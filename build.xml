@@ -292,6 +292,12 @@
 
     <target name="jjdoc" depends="init"
             description="generate jjdoc (=> ./doc/api/)">
+        <!-- @todo could also add depends="init, jjdoc.check" unless="jjdoc.uptodate"> -->
+	<!-- with <uptodate property="jjdoc.uptodate" targetfile="LogicParser_grammar.html">
+                      <srcfile includes="LogicParser.jj"/>
+                  </uptodate>
+             in the target called jjdoc.check
+         -->
         <mkdir dir="${doc}/api/orbital/moon/logic/doc-files"/>
 	<exec dir="${doc}/api/orbital/moon/logic" executable="cmd.exe" os="Windows 2000">
 	    <arg line="/c jjdoc -OUTPUT_FILE:doc-files/LogicParser_grammar.html ${sources}/orbital/moon/logic/LogicParser.jj"/>
