@@ -48,7 +48,8 @@ public class TypeTest extends check.TestCase {
 	    constructed(Types.predicate(a[0]), Types.predicate(a[0]));
 	}
 	constructed(Types.product(a), Types.product(a));
-	constructed(Types.predicate(Types.product(a)), Types.predicate(Types.product(a)));
+	if (Types.product(a) != Types.ABSURD)
+	    constructed(Types.predicate(Types.product(a)), Types.predicate(Types.product(a)));
 	constructed(Types.inf(a), Types.inf(a));
 	constructed(Types.sup(a), Types.sup(a));
 	constructed(Types.collection(a[0]), Types.collection(a[0]));
@@ -121,13 +122,89 @@ public class TypeTest extends check.TestCase {
 	Type s, t;
 	Type a[];
 	a = new Type[] {Types.predicate(Types.INDIVIDUAL), Types.type(String.class)};
-	s = a[0];
+	s = a[1];
 	t = Types.sup(a);
-	//assertTrue( compare(s,t) <= 0 , s + " =< " + t);
+	assertTrue( compare(s,t) <= 0 , s + " =< " + t);
 	a = new Type[] {Types.predicate(Types.INDIVIDUAL), Types.type(String.class)};
-	s = a[0];
+	s = a[1];
 	t = Types.inf(a);
-	//assertTrue( compare(s,t) >= 0 , s + " >= " + t);
+	assertTrue( compare(s,t) >= 0 , s + " >= " + t);
+
+	// mixed
+	s = Types.inf(new Type[] {Types.set(Types.INDIVIDUAL), Types.type(String.class)});
+	t = Types.sup(new Type[] {Types.set(Types.INDIVIDUAL), Types.INDIVIDUAL});
+	assertTrue( compare(s,t) <= 0 , s + " =< " + t);
+	s = Types.inf(new Type[] {Types.set(Types.INDIVIDUAL), Types.type(String.class)});
+	t = Types.sup(new Type[] {Types.set(Types.INDIVIDUAL), Types.type(String.class)});
+	assertTrue( compare(s,t) <= 0 , s + " =< " + t);
+    }
+
+    public void testSupInfNeutral() {
+	Type s, t;
+	s = Types.inf(new Type[] {Types.set(Types.INDIVIDUAL), Types.type(String.class)});
+	t = Types.inf(new Type[] {Types.set(Types.INDIVIDUAL), Types.type(String.class), Types.UNIVERSAL});
+	assertTrue( s.equals(t) , s + " = " + t);
+	s = Types.sup(new Type[] {Types.set(Types.INDIVIDUAL), Types.type(String.class)});
+	t = Types.sup(new Type[] {Types.set(Types.INDIVIDUAL), Types.type(String.class), Types.ABSURD});
+	assertTrue( s.equals(t) , s + " = " + t);
+    }
+
+    public void testSupInfAssociative() {
+	Type s, t;
+	s = Types.inf(new Type[] {Types.set(Types.INDIVIDUAL), Types.type(String.class), Types.inf(new Type[] {Types.type(Number.class), Types.type(RuntimeException.class)})});
+	t = Types.inf(new Type[] {Types.set(Types.INDIVIDUAL), Types.type(String.class), Types.type(Number.class), Types.type(RuntimeException.class)});
+	assertTrue( s.equals(t) , s + " = " + t);
+	s = Types.sup(new Type[] {Types.set(Types.INDIVIDUAL), Types.type(String.class), Types.sup(new Type[] {Types.type(Number.class), Types.type(RuntimeException.class)})});
+	t = Types.sup(new Type[] {Types.set(Types.INDIVIDUAL), Types.type(String.class), Types.type(Number.class), Types.type(RuntimeException.class)});
+	assertTrue( s.equals(t) , s + " = " + t);
+    }
+
+    public void testSupInfEmptyConstructions() {
+	Type s, t;
+	s = Types.inf(new Type[] {});
+	t = Types.UNIVERSAL;
+	assertTrue( s.equals(t) && s == t, s + " = " + t);
+	s = Types.sup(new Type[] {});
+	t = Types.ABSURD;
+	assertTrue( s.equals(t) && s == t, s + " = " + t);
+	s = Types.product(new Type[] {});
+	t = Types.VOID;
+	assertTrue( s.equals(t) && s == t, s + " = " + t);
+    }
+
+    public void testStrict() {
+	Type s;
+	final Type t = Types.ABSURD;
+	s = Types.inf(new Type[] {Types.INDIVIDUAL, t});
+	assertTrue( s.equals(t) && s == t, s + " = " + t);
+	//s = Types.sup(new Type[] {Types.INDIVIDUAL, t}); //@todo ?
+	assertTrue( s.equals(t) && s == t, s + " = " + t);
+	s = Types.product(new Type[] {Types.INDIVIDUAL, t});
+	assertTrue( s.equals(t) && s == t, s + " = " + t);
+	//s = Types.map(Types.INDIVIDUAL, t);
+	//assertTrue( s.equals(t) && s == t, s + " = " + t);
+	//s = Types.map(t, Types.INDIVIDUAL);
+	//assertTrue( s.equals(t) && s == t, s + " = " + t); //@todo ?
+    }
+    public void testCollectionsOfAbsurd() {
+	Type s, t;
+	final Type u = Types.ABSURD;
+	s = Types.collection(u);
+	t = Types.collection(Types.VOID);
+	assertTrue( !s.equals(u), s + " != " + u);
+	assertTrue( s.equals(t), s + " = " + t);
+	s = Types.set(u);
+	t = Types.set(Types.VOID);
+	assertTrue( !s.equals(u), s + " != " + u);
+	assertTrue( s.equals(t), s + " = " + t);
+	s = Types.list(u);
+	t = Types.list(Types.VOID);
+	assertTrue( !s.equals(u), s + " != " + u);
+	assertTrue( s.equals(t), s + " = " + t);
+	//s = Types.bag(u);
+	//t = Types.bag(Types.VOID);
+	//assertTrue( !s.equals(u), s + " != " + u);
+	//assertTrue( s.equals(t), s + " = " + t);
     }
 
     public void testDifferentConstructorSubtype() {
