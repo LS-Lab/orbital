@@ -1,5 +1,34 @@
 #
 # contains false conjectures
+# 
+true == (a&b<=>a) => (a|(b&c)<=>(a|b)&c)	# modular a=<b implies a|(b&c)<=>(a|b)&c
+a|b == a
+a&b == b
+a&b == b|a
+a|b == b&a
+(a&b)&c == a&(b|c)
+a&(a|b) == b
+a|(a&b) == a&b
+~(~a) == ~a
+~(a&b) == ~a&~b
+~(a|b) == ~a|~b
+a |= b
+#a |= ~a
+a->b == ~a->~b
+a->b == ~a&b
+a<=>b == (a->~b)&(~b->a)
+a|~a == b->~b
+(a=>b)=>c == a=>(b=>c)				# non-associative
+a=>(b=>c) == a=>b && b=>c
+a=>(b=>c) == a=>b || b=>c
+a->b == b->a					# direction matters
+
+c->(a^b) == (c->a)<->(c->b)	# distributive -> over ^
+(a<->b)->c == (a->c)^(b->c)	# codistributive -> over <->
+(a<->b)->c == (a->c)<->(b->c)	# distributive -> over <->
+
+#
+# false first-order conjectures
 #
 $x p(x) |= q(a) | ~p(a)
 p(x) |= q(x)
