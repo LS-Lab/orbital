@@ -80,7 +80,12 @@ public interface Integer extends Rational, Euclidean {
     Integer add(Integer b);
     Integer subtract(Integer b);
     Integer multiply(Integer b);
-    Integer power(Integer b);
+    /**
+     * Return a<sup>b</sup>.
+     * @postconditions (b > 0 &rarr; RES instanceof Integer)
+     * &and; (b < 0 &rarr; RES instanceof Rational)
+     */
+    Rational power(Integer b);
 
 
     /**
