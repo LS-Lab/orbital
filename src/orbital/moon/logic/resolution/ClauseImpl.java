@@ -202,15 +202,19 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 	final List listF = new LinkedList(this);
 	assert this.equals(new HashSet(listF)) : "factorizing initial list version of this";
 	final List listFfactorized = factorizeImpl(listF);
-	if (listFfactorized != listF)
-	    return construct(new HashSet(listFfactorized));
-	else
+	if (listFfactorized != listF) {
+	    Clause factor = construct(new HashSet(listFfactorized));
+	    assert factor.size() < size() : "factorization leads to shorter clauses if applicable";
+	    return factor;
+	} else {
 	    return this;
+	}
     }
     /**
      * Implementation of {@link #factorize()}.
      * @param listF list of literals.
      * @return a new list if factorization was possible, and listF if no factorization was possible.
+     * @xxx do we need all factorizations, i.e. all possible variants of factorization, or just a single greedy factorization?
      */
     private List factorizeImpl(List listF) {
 	Clause previous = null;
@@ -267,8 +271,10 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 
 	ClausalSet u = new ClausalSetImpl();
 	u.add(new ClauseImpl(this));
-	assert !notDground.contains(Clause.CONTRADICTION) : "contains no elementary contradiction";
+	final ClausalSet input = notDground;
+	assert !input.contains(Clause.CONTRADICTION) : "contains no elementary contradiction";
 	assert !u.contains(Clause.CONTRADICTION) : "contains no elementary contradiction, otherwise " + this + " is " + Clause.CONTRADICTION;
+	int count = 0;
 	while (!u.isEmpty()) {
 	    // the set of resolvents obtained from resolution of any C1 with any C2
 	    final ClausalSet newResolvents = new ClausalSetImpl();
@@ -278,11 +284,12 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 		final Clause C1 = (Clause)i.next();
 		assert !C1.equals(Clause.CONTRADICTION) : "already checked for contradiction";
 
-		// choose any clause C2&isin;notDground
-		for (Iterator i2 = notDground.iterator(); i2.hasNext(); ) {
+		// choose any clause C2&isin;input
+		for (Iterator i2 = input.iterator(); i2.hasNext(); ) {
 		    final Clause C2 = (Clause) i2.next();
 		    // try to resolve C1 with C2
-		    for (Iterator resolvents = C1.resolveWithVariant(C2); resolvents.hasNext(); ) {
+		    //@internal no variant forming needed since input of unit input resolution is ground
+		    for (Iterator resolvents = C1.resolveWith(C2); resolvents.hasNext(); ) {
 			final Clause R = (Clause)resolvents.next();
 			if (R.equals(Clause.CONTRADICTION)) {
 			    logger.log(Level.FINE, "subsumption of {3} =< {4} resolved contradiction {0} from {1} and {2}",  new Object[] {R, C1, C2, this, D});
@@ -294,6 +301,8 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 		}
 	    }
 	    u = newResolvents;
+	    assert count < input.size() + 3 : "the size of the unit input set is an upper bound to the length of unit input resolution " + count + "<" + input.size() + "\n input=" + input + "\n u=" + u;
+	    count++;
 	}
 
 	return false;
