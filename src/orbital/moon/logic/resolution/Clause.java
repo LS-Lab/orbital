@@ -19,7 +19,7 @@ import java.util.Collections;
  * @version 0.8, 2003-04-23
  * @author  Andr&eacute; Platzer
  */
-interface Clause extends Set/*<Formula>*/ {
+public interface Clause extends Set/*<Formula>*/ {
     /**
      * The contradictory clause &empty; &equiv; &#9633; &equiv;
      * &perp;.  <p> The {@link ClausalSet#CONTRADICTION_SINGLETON_SET
@@ -50,9 +50,17 @@ interface Clause extends Set/*<Formula>*/ {
      * Get all resolvents of F and G, if any. (Resolution rule)
      * Implementation already incorporates some cuts.
      * @return an iterator over the set of all resolvent clauses.
-     * @internal could also use a StreamMethod for implementation.
      */
     Iterator/*_<Clause>_*/ resolveWith(Clause G);
+
+    /**
+     * Get all resolvents of variants of F and G, if any. (Resolution rule)
+     * Combines resolution and the required forming of variants beforehand.
+     * @see #variant(Signature)
+     * @see #resolveWith(Clause)
+     * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience Method</a>
+     */
+    Iterator/*_<Clause>_*/ resolveWithVariant(Clause G);
 
     /**
      * Factorize a clause as much as possible.
