@@ -50,15 +50,18 @@ final class LogicSupport {
 	    final Functor f = (Functor)functors[i][0];
 	    final NotationSpecification notation = (NotationSpecification)functors[i][1];
 	    if (f == null)
-		continue;
+		if (skipNull)
+		    continue;
+		else
+		    throw new NullPointerException("illegal functor " + f);
 	    try {
 		assoc.put(new SymbolBase(f.toString(),
-					 Functor.Specification.getSpecification(f),
+					 Types.declaredTypeOf(f),
 					 notation),
 			  f);
 		Notation.setNotation(f, notation);
 	    }
-	    catch (IntrospectionException e) {throw new InnerCheckedException("could not detect specification", e);}
+	    catch (IntrospectionException ex) {throw new InnerCheckedException("could not detect specification", ex);}
 	}
 	Signature signature = new SignatureBase(assoc.keySet());
 	return new InterpretationBase(signature, assoc);

@@ -97,9 +97,14 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
 	    if (!(o instanceof Symbol))
 		continue;
 	    Symbol s = (Symbol) o;
-	    if (signifier.equals(s.getSignifier()) && s.getType().isApplicableTo(arg))
-		//TODO: check arity of s.notation with arg.length, as well?
-		return s;
+	    if (signifier.equals(s.getSignifier()))
+		if (arg instanceof Expression[]) {
+		    if (Types.isApplicableTo(s.getType(), (Expression[])arg))
+			//TODO: check arity of s.notation with arg.length, as well?
+			return s;
+		} else
+		    //@todo how to check in case of !(arg instanceof Expression[])?
+		    throw new UnsupportedOperationException("type checking requires that the arguments are instances of " + Expression.class);
 	}
 	return null;
     }

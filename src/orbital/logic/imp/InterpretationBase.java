@@ -6,7 +6,6 @@
 
 package orbital.logic.imp;
 
-import java.io.Serializable;
 import java.util.Map;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -15,10 +14,6 @@ import orbital.util.DelegateMap;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-//TODO: check whether still needed:
-import orbital.logic.functor.Functor;
-import orbital.logic.functor.Function;
-import orbital.logic.functor.BinaryFunction;
 import orbital.util.InnerCheckedException;
 import orbital.util.Utility;
 
@@ -135,7 +130,7 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
 	    for (Iterator it = associations.entrySet().iterator(); it.hasNext(); ) {
 		Map.Entry e = (Map.Entry) it.next();
 		if (!validate(e.getKey(), e.getValue()))
-		    throw new IllegalArgumentException("referent " + e.getValue() + " must conform to the specification " + ((Symbol) e.getKey()).getType() + " of the symbol " + e.getKey());
+		    throw new IllegalArgumentException("referent " + e.getValue() + " of " + e.getValue().getClass() + " must conform to the type " + ((Symbol) e.getKey()).getType() + " of the symbol " + e.getKey());
 		if (!sigma.contains(e.getKey()))
 		    throw new IllegalArgumentException("symbol " + e.getKey() + " not in signature. Association map is invalid for this signature.");
 	    }
@@ -154,48 +149,6 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
 
 
     // Extended operations.
-
-    /**
-     * Get the functor interpretation belonging to a specified signifier and arguments (experimental).
-     * @param signifier the signifier of the functor.
-     * @param arg the arguments that the functor belonging to the signifier is called with.
-     * @return the functor belonging to the notation if interpreted, or <tt>null</tt>.
-     * @post RES == null || RES.toString().equals(signifier)
-     * @throws java.util.NoSuchElementException if the symbol is not in the current signature &Sigma;.
-     * @see orbital.logic.functor.Notation#functorOf(String, Object[])
-     * @internal see Signature#contains(String, Object[])
-     * @todo should we change first argument to Symbol? No! simply remove this method again since RES == get(signature.get(signifier,arg))
-     */
-    /*public Functor get(String signifier, Object[] arg) {
-      Symbol symbol = sigma.get(signifier, arg);
-      if (symbol == null)
-      throw new NoSuchElementException("Symbol '" + signifier + "'/" + arg.length + " not in signature");
-      assert arg.length <= 2 : "functor notations are currently used for at most 2 arguments";
-      Object value = super.get(symbol);
-      if (!(value instanceof Functor))
-      throw new IllegalStateException("interpretation of a functor symbol " + symbol + " expected to be an instance of orbital.logic.functor.Functor");
-      assert (value + "").equals(symbol.getSignifier()) : "name matches string representation of the functor";
-      return (Functor) value;
-      //@xxx old implementation with loop but without performance. can it be removed?
-      /*if (!sigma.contains(signifier, arg))
-      throw new NoSuchElementException("Symbol '" + signifier + "'/" + arg.length + " not in Signature");
-      assert arg.length <= 2 : "functor notations are currently used for at most 2 arguments";
-      for (Iterator i = map.entrySet().iterator(); i.hasNext(); ) {
-      Map.Entry e = (Map.Entry) i.next();
-      Object	  value = e.getValue();
-      if (!(value instanceof Functor))
-      continue;
-      String	  representation = value + "";
-      assert representation.equals(((Symbol) e.getKey()).symbol) : "name matches string representation of the functor";
-      if (arg.length == 1 && !(value instanceof Function))
-      continue;
-      if (arg.length == 2 && !(value instanceof BinaryFunction))
-      continue;
-      if (signifier.equals(representation))
-      return (Functor) value;
-      }
-      return null;*/
-    //}
 
     public Interpretation union(Interpretation i2) {
 	InterpretationBase u = newInstance();
@@ -241,12 +194,7 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
      * @todo enhance type checks
      */
     private final boolean validate(Object symbol, Object referent) {
-	Functor.Specification spec = ((Symbol) symbol).getType();
-	return spec.arity() != 0
-	    ? referent instanceof Functor && spec.isConform((Functor) referent)
-	    : referent instanceof Functor
-	    ? spec.isConform((Functor) referent)
-	    : spec.getReturnType().isInstance(referent);
+	return ((Symbol)symbol).getType().apply(referent);
     }
 
     /**

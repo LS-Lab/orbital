@@ -71,17 +71,20 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	final Logic logic = new ClassicalLogic();
 	final Signature core = logic.coreSignature();
 	// we also avoid creating true formulas, it's (more or less) futile
-	Formula[] arguments = {null};
+	//@xxx we need some valid non-null arguments.
+	final Formula B = (Formula) logic.createAtomic(new SymbolBase("B", SymbolBase.BOOLEAN_ATOM));
+	final Formula OBJ = (Formula) logic.createAtomic(new SymbolBase("OBJ", SymbolBase.UNIVERSAL_ATOM));
+	Formula[] arguments = {B};
 	NOT = core.get("~", arguments);
 
-	arguments = new Formula[] {null, null};
+	arguments = new Formula[] {B, B};
 	AND = core.get("&", arguments);
 	OR = core.get("|", arguments);
 	XOR = core.get("^", arguments);
 	IMPL = core.get("->", arguments);
 	EQUIV = core.get("<->", arguments);
 
-	arguments = new Formula[] {null, null};
+	arguments = new Formula[] {OBJ, B};
 	FORALL = core.get("°", arguments);
 	EXISTS = core.get("?", arguments);
     }
@@ -220,7 +223,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    return Utility.hashCode(symbol);
 	}
 		
-        public Specification getType() {
+        public Type getType() {
 	    return symbol.getType();
         }
 	public boolean isVariable() {return symbol.isVariable();}
@@ -267,18 +270,11 @@ abstract class ModernFormula extends LogicBasis implements Formula {
          */ 
     	protected final Object interpretationOf(Object desc) {
 	    if (desc == null)
-		throw new NullPointerException(desc + " is not a valid association for boolean interpretation");
-	    else if (desc instanceof Boolean)
+		throw new NullPointerException(desc + " is not a valid interpretation");
+	    else if (symbol.getType().apply(desc))
 		return desc;
-	    else if (desc instanceof Number)
-		return desc;
-	    else if (desc instanceof Functor) {
-		if (symbol.getType().isConform((Functor) desc))
-		    return desc;
-		else
-		    throw new IllegalArgumentException("incompatible interpretation type " + desc + " for " + symbol.getType());
-	    } else
-		throw new IllegalArgumentException("not a truth-value '" + desc + "' of " + desc.getClass());
+	    else
+		throw new IllegalArgumentException("incompatible interpretation " + desc + " of " + desc.getClass() + " for " + symbol.getType());
     	}
 
 	public String toString() { return symbol + ""; }
@@ -297,6 +293,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    super(underlyingLogic, symbol);
 	    if (symbol.isVariable())
 		throw new IllegalArgumentException("do not use fixed referents for variable symbols");
+	    if (!symbol.getType().apply(referent))
+		throw new IllegalArgumentException("incompatible interpretation " + referent + " of " + referent.getClass() + " for " + symbol.getType());
 	    this.referent= referent;
 	    this.core = core;
 	}
@@ -327,7 +325,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @param notation the notation for the composition (usually determined by the composing symbol).
      */
     public static Formula composeDelayed(Logic underlyingLogic, Formula f, Expression arguments[], Notation notation) {
-        //@fixme was notat = notation; but either we disable DEFAULT=BESTFIX formatting, or we ignore the signature's notation choice
+        //@xxx was notat = notation; but either we disable DEFAULT=BESTFIX formatting, or we ignore the signature's notation choice
         Notation notat = Notation.DEFAULT;
 	switch(arguments.length) {
 	case 0:
@@ -351,7 +349,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @param fsymbol the symbol with with the fixed interpretation f.
      */
     public static Formula composeFixed(Logic underlyingLogic, Symbol fsymbol, Functor f, Expression arguments[]) {
-        //@fixme was notat = notation; but either we disable DEFAULT=BESTFIX formatting, or we ignore the signature's notation choice
+        //@xxx was notat = notation; but either we disable DEFAULT=BESTFIX formatting, or we ignore the signature's notation choice
         Notation notat = Notation.DEFAULT;
 	switch(arguments.length) {
 	case 0:
@@ -394,6 +392,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    setNotation(notation);
 	    this.outer = f;
 	    this.inner = g;
+	    if (!inner.getType().domain().subtypeOf(outer.getType().codomain()))
+		throw new IllegalArgumentException("illegal composition types " + outer + " composed with " + inner);
 	}
 	public CompositeVariableFormula(Logic underlyingLogic, Formula f, Formula g) {
 	    this(underlyingLogic, f, g, null);
@@ -401,8 +401,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 		
 	private CompositeVariableFormula() {super(null);setNotation(null);}
 		
-        public Specification getType() {
-	    return new Specification(inner.getType().getParameterTypes(), outer.getType().getReturnType());
+        public Type getType() {
+	    return Types.map(inner.getType().codomain(), outer.getType().domain());
         }
         public Signature getSignature() {
 	    return inner.getSignature().union(outer.getSignature());
@@ -509,8 +509,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 		
 	private VoidCompositeVariableFormula() {super(null);setNotation(null);}
 		
-        public Specification getType() {
-	    return new Specification(new Class[0], outer.getType().getReturnType());
+        public Type getType() {
+	    return outer.getType().domain();
         }
         public Signature getSignature() {
 	    return outer.getSignature();
@@ -614,6 +614,11 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    this.outer = f;
 	    this.left = g;
 	    this.right = h;
+	    if (!Types.product(new Type[] {
+		left.getType().domain(),
+		right.getType().domain()
+	    }).subtypeOf(outer.getType().codomain()))
+		throw new IllegalArgumentException("illegal composition types " + outer + " composed with " + left + ", " + right);
 	}
 	public BinaryCompositeVariableFormula(Logic underlyingLogic, Formula f, Formula g, Formula h) {
 	    this(underlyingLogic, f, g, h, null);
@@ -621,12 +626,15 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 		
 	private BinaryCompositeVariableFormula() {super(null);setNotation(null);}
 
-        public Specification getType() {
+        public Type getType() {
+	    if (left.getType().codomain().equals(Types.VOID) && right.getType().codomain().equals(Types.VOID))
+		return Types.map(left.getType().codomain(), outer.getType().domain());
+	    else
 	    if (true)
 		throw new UnsupportedOperationException("@xxx is this composition in the sense of Functionals.compose(BinaryFunction,BinaryFunction,BinaryFunction) or of Functionals.compose(BinaryFunction,Function,Function) or of what?");
-	    if (!Utility.equalsAll(left.getType().getParameterTypes(), right.getType().getParameterTypes()))
+	    if (!Utility.equals(left.getType().codomain(), right.getType().codomain()))
 		throw new InternalError("@todo not sure whether composition of inhomogenous types is allowed at all");
-	    return new Specification(left.getType().getParameterTypes(), outer.getType().getReturnType());
+	    return Types.map(left.getType().codomain(), outer.getType().domain());
         }
         public Signature getSignature() {
 	    //@todo could cache signature as well, provided left and right don't change
@@ -746,6 +754,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    this.outerSymbol = fsymbol;
 	    this.outer = f;
 	    this.inner = g;
+	    if (!inner.getType().domain().subtypeOf(fsymbol.getType().codomain()))
+		throw new IllegalArgumentException("illegal composition types " + fsymbol.getType() + " composed with " + inner);
 	}
 	public CompositeFormula(Logic underlyingLogic, Symbol fsymbol, Function f, Formula g) {
 	    this(underlyingLogic, fsymbol, f, g, null);
@@ -753,8 +763,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 		
 	private CompositeFormula() {super(null);setNotation(null);}
 		
-        public Specification getType() {
-	    return new Specification(inner.getType().getParameterTypes(), outerSymbol.getType().getReturnType());
+        public Type getType() {
+	    return Types.map(inner.getType().codomain(), outerSymbol.getType().domain());
         }
         public Signature getSignature() {
 	    //@todo shouldn't we unify with getCompositor().getSignature() in case of formulas representing predicate or function?
@@ -856,7 +866,10 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 		
 	private BinaryCompositeFormula() {super(null);setNotation(null);}
 
-        public Specification getType() {
+        public Type getType() {
+	    if (left.getType().codomain().equals(Types.VOID) && right.getType().codomain().equals(Types.VOID))
+		return Types.map(left.getType().codomain(), outerSymbol.getType().domain());
+	    else
 	    throw new UnsupportedOperationException("not yet implemented");
         }
         public Signature getSignature() {

@@ -66,9 +66,9 @@ import java.util.Iterator;
  * @internal note that all this nested lookahead with a lot of backtracking kills performance.
  */
 public class LogicParser {
-    private static final Specification INTEGER_LITERAL_TYPE = new Specification(0, orbital.math.Integer.class);
-    private static final Specification FLOAT_LITERAL_TYPE = new Specification(0, orbital.math.Real.class);
-    private static final Specification STRING_LITERAL_TYPE = new Specification(0, String.class);
+    private static final Type INTEGER_LITERAL_TYPE = Types.type(orbital.math.Integer.class);
+    private static final Type FLOAT_LITERAL_TYPE = Types.type(orbital.math.Real.class);
+    private static final Type STRING_LITERAL_TYPE = Types.type(String.class);
 	
     /**
      * Delegate to the current Syntax implementation that is used for creating Atoms.
@@ -104,7 +104,7 @@ public class LogicParser {
 	    default: /*ignore*/
 	    }
 	final Expression[] arg = new Expression[] {a};
-	return composeWrapper(optok, coreSignature.get(op, arg), arg);
+	return composeWrapper(optok, op, arg);
     }
 
     /**
@@ -151,7 +151,7 @@ public class LogicParser {
 	default: /*ignore*/
         }
 	final Expression[] arg = new Expression[] {a, b};
-	return composeWrapper(optok, coreSignature.get(op, arg), arg);
+	return composeWrapper(optok, op, arg);
     }
 
     /**
@@ -181,26 +181,28 @@ public class LogicParser {
 	    // quantifier with pure syntactic function and no semantic aspect at all
 	    return a;
 	final Expression[] arg = new Expression[] {syntax.createAtomic(x), a};
-	return composeWrapper(optok, coreSignature.get(op, arg), arg);
+	return composeWrapper(optok, op, arg);
     }
 
     /**
      * n-ary predicates or functions.
-     * @param type specifies the result type. Object.class for functions, and Boolean.class for predicates.
+     * @param result specifies the result type. Object.class for functions, and Boolean.class for predicates.
      * @see ExpressionBuilder#compose(Expression,Expression[])
      */
-    protected Expression apply(Token optok, Expression[] a, Class type) throws ParseException {
+    protected Expression apply(Token optok, Expression[] a, Class result) throws ParseException {
     	final String op = optok.image;
-	return composeWrapper(optok, new SymbolBase(op, new Specification(a.length, type), new NotationSpecification(a.length)), a);
+	return composeWrapper(optok, new SymbolBase(op, Types.map(Types.typeOf(a), Types.type(result)), new NotationSpecification(a.length)), a);
     }
 
     /**
      * Wraps calls to {@link ExpressionBuilder#compose(Expression,Expression[])} in an exception handling block.
      * @param optok the token that initiated this operation (used in case of ParseExceptions to define the position).
      */
-    private Expression composeWrapper(Token optok, Expression op, Expression[] a) throws ParseException {
+    private Expression composeWrapper(Token optok, Expression op, Expression[] arg) throws ParseException {
+	if (op == null)
+	    throw newParseException("illegal compositor: " + op, optok);
 	try {
-	    return syntax.compose(op, a);
+	    return syntax.compose(op, arg);
     	}
     	catch (java.text.ParseException ex) {throw newParseException(ex.getMessage(), optok);}
     }
@@ -209,8 +211,21 @@ public class LogicParser {
      * @param optok the token that initiated this operation (used in case of ParseExceptions to define the position).
      * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience method</a>
      */
-    private Expression composeWrapper(Token optok, Symbol op, Expression[] a) throws ParseException {
-	return composeWrapper(optok, syntax.createAtomic(op), a);
+    private Expression composeWrapper(Token optok, Symbol op, Expression[] arg) throws ParseException {
+	if (op == null)
+	    throw newParseException("illegal compositor: " + op + " (used for " + optok + ")", optok);
+	return composeWrapper(optok, syntax.createAtomic(op), arg);
+    }
+    /**
+     * Wraps calls to {@link ExpressionBuilder#compose(Expression,Expression[])} in an exception handling block.
+     * @param optok the token that initiated this operation (used in case of ParseExceptions to define the position).
+     * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience method</a>
+     */
+    private Expression composeWrapper(Token optok, String op, Expression[] arg) throws ParseException {
+	if (coreSignature.get(op, arg) == null) {
+	    System.err.println(">> " + op + " applied to " + /*@todo once non-arithmetic are available again: MathUtilities.format(*/arg + " of type " + Types.typeOf(arg) + " not found");
+	}
+	return composeWrapper(optok, coreSignature.get(op, arg), arg);
     }
 
     // symbol declaration handling
@@ -243,26 +258,35 @@ public class LogicParser {
 	}
     }
 
-    private Symbol symbolFor(String signifier) {
+    /**
+     * @param expectedType the type expected as derived from the context.
+     */
+    private Symbol symbolFor(String signifier, Type expectedType) {
 	// do we already know it is a variable due to a quantifier within whose scope we are?
 	for (Iterator i = scopeSymbolMap.iterator(); i.hasNext(); ) {
 	    Symbol s = (Symbol) i.next();
 	    if (s.getSignifier().equals(signifier))
 		return s;
 	}
-	// else it is treated as a constant atom
-	return defaultSymbolFor(signifier);
+	// else it is treated "the default way"
+	return defaultSymbolFor(signifier, expectedType);
     }
 
     //@todo remove this garbage, because we should always let the user decide what's constant and what's variable, (or at least let him choose the capital/lower convention)
     // either the user can call createExpression(String expr, Signature allowed),
     // or he should explicitly mention any free variables, and all other symbols are either explicitly quantified, or treated as constant
-    //@todo ! Perhaps we should introduce an explicit "quantifier" for free variables, resolving all conflicts with variable/constant detection
-    // then we can keep track of the accumulated signature during parse and treat everything constant that's not already declared in the signature (and all three binding quantifier will extend the current signature)
+    //@todo rely on FreeDeclarationExpression
+    /**
+     * only lets _ modify whether it is a variable, not its type.
+     */
+    private static Symbol defaultSymbolFor(String signifier, Type expectedType) {
+    	//@xxx currently we (in addition to $) distinguish between variables and constants according to their first character
+    	return signifier.charAt(0) == '_'
+	    ? new SymbolBase(signifier, expectedType, null, true)
+	    : new SymbolBase(signifier, expectedType, null, false);
+    }
     static Symbol defaultSymbolFor(String signifier) {
-    	//@xxx currently we (additionally to $) distinguish between variables and constants according to their first character
-    	//@see LogicParser#Variable()
-    	//return new SymbolBase(signifier, SymbolBase.BOOLEAN_ATOM, null, false);
+    	//@xxx currently we (in addition to $) distinguish between variables and constants according to their first character
     	return signifier.charAt(0) == '_'
 	    ? new SymbolBase(signifier, SymbolBase.UNIVERSAL_ATOM, null, true)
 	    : new SymbolBase(signifier, SymbolBase.BOOLEAN_ATOM, null, false);
@@ -376,6 +400,8 @@ Expression expression() :
 /**
  * free scope "quantifier"
  * A "quantifier" with a purely syntactic function of declaring a variable.
+ * @internal introduced an explicit "quantifier" for free variables, resolving all conflicts with variable/constant detection
+ * then we can keep track of the accumulated signature during parse and treat everything constant that's not already declared in the signature (and all three binding quantifier will extend the current signature)
  */
 Expression FreeDeclarationExpression() :
 {Token tok = null;List xs = new LinkedList();Symbol x = null;Expression a;}
@@ -476,7 +502,7 @@ Expression PrimaryExpression() :
 TOKEN :
 {
     <IDENTIFIER : <LETTER> (<LETTER>|<DIGIT_OR_ALIKE>)* >
-|   <#LETTER : ["A"-"Z", "a"-"z", "„","”","","_"]>
+|   <#LETTER : ["A"-"Z", "a"-"z", "„","”","?","_"]>
 |   <#DIGIT_OR_ALIKE : ["0"-"9"]>
 }
 
@@ -493,8 +519,7 @@ Expression Atom() :
 	{return a;}
     |
 	tok = <IDENTIFIER>
-	//@todo shouldn't we use symbolFor instead of defaultSymbolFor, in order to allow "free X p&X"?
-	{return (Expression) syntax.createAtomic(defaultSymbolFor(tok.image));}
+	{return (Expression) syntax.createAtomic(symbolFor(tok.image, Types.TRUTH));}
     |
 	sym = NumberLiteralValue()
 	{return (Expression) syntax.createAtomic(sym);}
@@ -701,9 +726,10 @@ Symbol NumberLiteralValue() :
 }
 
 /**
- * Parses a constant or a variable atomic variable term,
+ * Parses a constant or a variable atomic term,
  * depending upon known symbols in context.
  * @see #Variable()
+ * @todo reject boolean types, since this production only gets called from term(), not expression().
  */
 Symbol ConstantOrVariable() :
 {String signifier;Token tok;String s = "";}
@@ -713,7 +739,7 @@ Symbol ConstantOrVariable() :
 	    ( "." tok = <IDENTIFIER>  {signifier += "." + tok.image;} )
 	    )*
     */
-    {return symbolFor(signifier);}
+    {return symbolFor(signifier, Types.INDIVIDUAL);}
 }
 
 
@@ -729,7 +755,7 @@ Symbol Variable() :
 	    ( "." tok = <IDENTIFIER>  {signifier += "." + tok.image;} )
 	    )*
     */
-    {return new SymbolBase(signifier, SymbolBase.UNIVERSAL_ATOM, null, true);}
+    {return new SymbolBase(signifier, Types.INDIVIDUAL, null, true);}
 }
 
 // Parsing Helpers

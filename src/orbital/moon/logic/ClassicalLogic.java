@@ -140,7 +140,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
     private static class Debug {
 	private Debug() {}
 	public static void main(String arg[]) throws Exception {
-	    ClassicalLogic.main(new String[] {"-verifyNF", "all", "none", "properties"});
+	    ClassicalLogic.main(new String[] {"-normalForm", "all", "none", "properties"});
 	} 
     }	 // Debug
 
@@ -165,7 +165,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    return;
 	} 
 	try {
-	    boolean verifyNF = false;
+	    boolean normalForm = false;
 	    boolean verbose = false;
 	    String charset = null;
 
@@ -174,8 +174,8 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 
 	    //@todo we should print an error if there already was a file in arg, but the last options are not followed by a file again and are completely vain
 	    for (int option = 0; option < arg.length; option++) {
-		if ("-verifyNF".equals(arg[option]))
-		    verifyNF = true;
+		if ("-normalForm".equals(arg[option]))
+		    normalForm = true;
 		else if ("-verbose".equals(arg[option]))
 		    verbose = true;
 		else if ("-resolution".equals(arg[option]))
@@ -200,21 +200,21 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		    try {
 			if ("all".equalsIgnoreCase(file)) {
 			    rd = new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/semantic-equivalence.txt"), DEFAULT_CHARSET);
-			    if (!proveAll(rd, logic, true, verifyNF, verbose))
+			    if (!proveAll(rd, logic, true, normalForm, verbose))
 				throw new LogicException("instantiated " + logic + " which does not support all conjectures of semantic equivalences. Either the logic is non-classical, or the resource file is corrupt");
 			} else if ("none".equalsIgnoreCase(file)) {
 			    rd = new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/semantic-garbage.txt"), DEFAULT_CHARSET);
-			    if (proveAll(rd, logic, false, verifyNF, verbose))
+			    if (proveAll(rd, logic, false, normalForm, verbose))
 				throw new LogicException("instantiated " + logic + " which does support a contradictory conjecture of semantic garbage. Either the logic is non-classical, or the resource file is corrupt");
 			} else if ("properties".equalsIgnoreCase(file)) {
 			    rd = new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/semantic-properties.txt"), DEFAULT_CHARSET);
-			    if (!proveAll(rd, logic, true, verifyNF, verbose))
+			    if (!proveAll(rd, logic, true, normalForm, verbose))
 				throw new LogicException("instantiated " + logic + " which does not support all conjectures of semantic properties. Either the logic is non-classical, or the resource file is corrupt");
 			} else {
 			    rd = charset == null
 				? new FileReader(file)
 				: new InputStreamReader(new FileInputStream(file), charset);
-			    if (!proveAll(rd, logic, true, verifyNF, verbose))
+			    if (!proveAll(rd, logic, true, normalForm, verbose))
 				System.err.println("could not prove all conjectures");
 			    else
 				System.err.println("all conjectures were proven successfully");
@@ -243,7 +243,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		Reader rd = null;
 		try {
 		    rd = new InputStreamReader(System.in);
-		    proveAll(rd, logic, true, verifyNF, verbose);
+		    proveAll(rd, logic, true, normalForm, verbose);
 		}
 		finally {
 		    if (rd != null)
@@ -260,7 +260,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    throw ex;
     	}
     } 
-    public static final String usage = "usage: [options] [all|none|properties|<filename>|table]\n\tall\tprove important semantic-equivalence expressions\n\tnone\ttry to prove some semantic-garbage expressions\n\tproperties\tprove some properties of classical logic inference relation\n\t<filename>\ttry to prove all expressions in the given file\n\ttable\tprint a function table of the expression instead\n\t-\tUse no arguments at all to be asked for expressions\n\t\tto prove.\noptions:\n\t-verifyNF\tcheck the conjunctive and disjunctive forms in between\n\t-resolution\tuse resolution instead of semantic inference\n\t-verbose\tbe more verbose (f.ex. print normal forms if -verifyNF)\n\t-charset=<encoding>\tthe character set or encoding to use for reading files\n\nTo check whether A and B are equivalent, enter '|= A<->B'";
+    public static final String usage = "usage: [options] [all|none|properties|<filename>|table]\n\tall\tprove important semantic-equivalence expressions\n\tnone\ttry to prove some semantic-garbage expressions\n\tproperties\tprove some properties of classical logic inference relation\n\t<filename>\ttry to prove all expressions in the given file\n\ttable\tprint a function table of the expression instead\n\t-\tUse no arguments at all to be asked for expressions\n\t\tto prove.\noptions:\n\t-normalForm\tcheck the conjunctive and disjunctive forms in between\n\t-resolution\tuse resolution instead of semantic inference\n\t-verbose\tbe more verbose (f.ex. print normal forms if -normalForm)\n\t-charset=<encoding>\tthe character set or encoding to use for reading files\n\nTo check whether A and B are equivalent, enter '|= A<->B'";
 
     /**
      * Prove all conjectures read from a reader.
@@ -275,7 +275,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
     public static boolean proveAll(Reader rd, ClassicalLogic logic, boolean all_true) throws java.text.ParseException, IOException {
 	return proveAll(rd, logic, all_true, false, false);
     }
-    private static boolean proveAll(Reader rd, ClassicalLogic logic, boolean all_true, boolean verifyNF, boolean verbose) throws java.text.ParseException, IOException {
+    private static boolean proveAll(Reader rd, ClassicalLogic logic, boolean all_true, boolean normalForm, boolean verbose) throws java.text.ParseException, IOException {
 	DateFormat df = new SimpleDateFormat("H:mm:ss:S");
 	df.setTimeZone(TimeZone.getTimeZone("Greenwich/Meantime"));
 	Date	   loadeta;
@@ -354,14 +354,18 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    System.out.println(knowledge + (sat ? "\t|= " : "\tNOT|= ") + formula);
 
 	    // verify equivalence of its NF
-	    if (verifyNF) {
+	    if (normalForm) {
+		String normalFormName[] = {
+		    "disjunctive",
+		    "conjunctive"
+		};
 		Formula nf[] = {
 		    Utilities.disjunctiveForm(logic.createFormula(formula), true),
 		    Utilities.conjunctiveForm(logic.createFormula(formula), true)
 		};
 		for (int i = 0; i < nf.length; i++) {
 		    if (verbose)
-			System.out.println("disjunctive normal form: " + nf[i]);
+			System.out.println(normalFormName[i] + " normal form: " + nf[i]);
 		    if (!logic.inference().infer(new Formula[] {logic.createFormula(formula)}, nf[i]))
 			throw new InternalError("wrong NF " + nf[i] + " =| for " + formula);
 		    if (!logic.inference().infer(new Formula[] {nf[i]}, logic.createFormula(formula)))
@@ -395,6 +399,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
     public static final int RESOLUTION_INFERENCE = 1;
     /**
      * The inference mechanism applied for the {@link #inference() inference relation}.
+     * @todo change to typesafe enum
      * @serial
      * @see #inference()
      */
@@ -474,17 +479,17 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		    Substitutions.createSingleSidedMatcher(logic.createExpression("~true"), logic.createAtomicLiteral("false")),
     				
 		    // necessary and does not disturb local confluency? absorbtion
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X1&(_X1|_X2)"), logic.createAtomicVariable("_X1")),
+		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X1&(_X1|_X2)"), logic.createAtomicLiteralVariable("_X1")),
 		    // necessary and does not disturb local confluency? idempotent
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X&_X"), logic.createAtomicVariable("_X")),
+		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X&_X"), logic.createAtomicLiteralVariable("_X")),
 		    //@xxx for DNF either this rule (s.b.) or substitution has an error (infinite recursion)
-		    //Substitutions.createSingleSidedMatcher(logic.createExpression("_X|_X"), logic.createAtomicVariable("_X")),
+		    //Substitutions.createSingleSidedMatcher(logic.createExpression("_X|_X"), logic.createAtomicLiteralVariable("_X")),
 		    // necessary and does not disturb local confluency? neutral element
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X&true"), logic.createAtomicVariable("_X")),
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X|false"), logic.createAtomicVariable("_X")),
+		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X&true"), logic.createAtomicLiteralVariable("_X")),
+		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X|false"), logic.createAtomicLiteralVariable("_X")),
 		    // necessary and does not disturb local confluency? duplicate to dual to neutral element (until conditional commutative is supplied)
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("true&_X"), logic.createAtomicVariable("_X")),
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("false|_X"), logic.createAtomicVariable("_X")),
+		    Substitutions.createSingleSidedMatcher(logic.createExpression("true&_X"), logic.createAtomicLiteralVariable("_X")),
+		    Substitutions.createSingleSidedMatcher(logic.createExpression("false|_X"), logic.createAtomicLiteralVariable("_X")),
 		    // necessary and does not disturb local confluency? dual to neutral element
 		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X&false"), logic.createAtomicLiteral("false")),
 		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X|true"), logic.createAtomicLiteral("true")),
@@ -495,14 +500,14 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X&~_X"), logic.createAtomicLiteral("false")),
 		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X|~_X"), logic.createAtomicLiteral("true")),
 		    // necessary and does not disturb local confluency? conditional commutative (according to lexical order)
-		    new LexicalConditionalUnifyingMatcher(logic.createExpression("_X2&_X1"), logic.createExpression("_X1&_X2"), logic.createAtomicVariable("_X1"), logic.createAtomicVariable("_X2")),
+		    new LexicalConditionalUnifyingMatcher(logic.createExpression("_X2&_X1"), logic.createExpression("_X1&_X2"), logic.createAtomicLiteralVariable("_X1"), logic.createAtomicLiteralVariable("_X2")),
 		    // necessary and does not disturb local confluency? conditional associative (according to lexical order)
 		    //@todo
 		});
 		// transform to DNF part
 		if (DNFtrs == null) DNFtrs = Arrays.asList(new Object[] {
 		    // involution duplex negatio est affirmatio
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("~~_X"), logic.createAtomicVariable("_X")),
+		    Substitutions.createSingleSidedMatcher(logic.createExpression("~~_X"), logic.createAtomicLiteralVariable("_X")),
 		    // deMorgan
 		    Substitutions.createSingleSidedMatcher(logic.createExpression("~(_X1|_X2)"), logic.createExpression("~_X1&~_X2")),
 		    Substitutions.createSingleSidedMatcher(logic.createExpression("~(_X1&_X2)"), logic.createExpression("~_X1|~_X2")),
@@ -551,17 +556,17 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		    Substitutions.createSingleSidedMatcher(logic.createExpression("~false"), logic.createAtomicLiteral("true")),
 		    Substitutions.createSingleSidedMatcher(logic.createExpression("~true"), logic.createAtomicLiteral("false")),
 		    // necessary and does not disturb local confluency? absorbtion
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X1&(_X1|_X2)"), logic.createAtomicVariable("_X1")),
+		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X1&(_X1|_X2)"), logic.createAtomicLiteralVariable("_X1")),
 		    // necessary and does not disturb local confluency? idempotent
 		    //@xxx for CNF either this rule (s.b.) or substitution has an error. infinite recursion for (a&b)<->(b&a)
-		    //Substitutions.createSingleSidedMatcher(logic.createExpression("_X&_X"), logic.createAtomicVariable("_X")),
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X|_X"), logic.createAtomicVariable("_X")),
+		    //Substitutions.createSingleSidedMatcher(logic.createExpression("_X&_X"), logic.createAtomicLiteralVariable("_X")),
+		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X|_X"), logic.createAtomicLiteralVariable("_X")),
 		    // necessary and does not disturb local confluency? neutral element
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X&true"), logic.createAtomicVariable("_X")),
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X|false"), logic.createAtomicVariable("_X")),
+		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X&true"), logic.createAtomicLiteralVariable("_X")),
+		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X|false"), logic.createAtomicLiteralVariable("_X")),
 		    // necessary and does not disturb local confluency? duplicate to dual to neutral element (until conditional commutative is supplied)
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("true&_X"), logic.createAtomicVariable("_X")),
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("false|_X"), logic.createAtomicVariable("_X")),
+		    Substitutions.createSingleSidedMatcher(logic.createExpression("true&_X"), logic.createAtomicLiteralVariable("_X")),
+		    Substitutions.createSingleSidedMatcher(logic.createExpression("false|_X"), logic.createAtomicLiteralVariable("_X")),
 		    // necessary and does not disturb local confluency? dual to neutral element
 		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X&false"), logic.createAtomicLiteral("false")),
 		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X|true"), logic.createAtomicLiteral("true")),
@@ -572,7 +577,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X&~_X"), logic.createAtomicLiteral("false")),
 		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X|~_X"), logic.createAtomicLiteral("true")),
 		    // necessary and does not disturb local confluency? conditional commutative (according to lexical order)
-		    new LexicalConditionalUnifyingMatcher(logic.createExpression("_X2&_X1"), logic.createExpression("_X1&_X2"), logic.createAtomicVariable("_X1"), logic.createAtomicVariable("_X2")),
+		    new LexicalConditionalUnifyingMatcher(logic.createExpression("_X2&_X1"), logic.createExpression("_X1&_X2"), logic.createAtomicLiteralVariable("_X1"), logic.createAtomicLiteralVariable("_X2")),
 
 		    // necessary and does not disturb local confluency? right associative
 		    //@xxx for CNF infinite recursion for (a&b)<->(b&a) and a<->b<->c. this is because conditional commutative and right-associative oscillate, then
@@ -581,7 +586,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		// transform to CNF part
 		if (CNFtrs == null) CNFtrs = Arrays.asList(new Object[] {
 		    // involution duplex negatio est affirmatio
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("~~_X"), logic.createAtomicVariable("_X")),
+		    Substitutions.createSingleSidedMatcher(logic.createExpression("~~_X"), logic.createAtomicLiteralVariable("_X")),
 		    // deMorgan
 		    Substitutions.createSingleSidedMatcher(logic.createExpression("~(_X1|_X2)"), logic.createExpression("~_X1&~_X2")),
 		    Substitutions.createSingleSidedMatcher(logic.createExpression("~(_X1&_X2)"), logic.createExpression("~_X1|~_X2")),
@@ -626,7 +631,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		// skolem transform TRS
 		if (SkolemTransform == null) SkolemTransform = Substitutions.getInstance(Arrays.asList(new Object[] {
 		    //@xxx note that A should be a metavariable for a formula
-		    new SkolemizingUnifyingMatcher(logic.createExpression("?_X1 _A"), logic.createExpression("_A"), logic.createAtomicVariable("_X1")),
+		    new SkolemizingUnifyingMatcher(logic.createExpression("?_X1 _A"), logic.createExpression("_A"), logic.createAtomicLiteralVariable("_X1")),
 		}));
 		return (Formula) Functionals.fixedPoint(SkolemTransform, F);
 	    } catch (java.text.ParseException ex) {
@@ -657,7 +662,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		if (NegationNFTransform == null) NegationNFTransform = Substitutions.getInstance(Arrays.asList(new Object[] {
 		    //@xxx note that the  _Xi should be metavariables for formulas
 		    // involution duplex negatio est affirmatio
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("~~_X"), logic.createAtomicVariable("_X")),
+		    Substitutions.createSingleSidedMatcher(logic.createExpression("~~_X"), logic.createAtomicLiteralVariable("_X")),
 		    // deMorgan
 		    Substitutions.createSingleSidedMatcher(logic.createExpression("~(_X1|_X2)"), logic.createExpression("~_X1&~_X2")),
 		    Substitutions.createSingleSidedMatcher(logic.createExpression("~(_X1&_X2)"), logic.createExpression("~_X1|~_X2")),
@@ -727,8 +732,14 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		final Object r = super.replace(t);
 		final Object x = getUnifier().apply(skolemizedVariable);
 		// now substitute "[x->s(FV(t))]"
-		Set freeVariables = ((Formula)t).getFreeVariables();
-		Symbol skolemFunctionSymbol = new DistinctSymbol("s", new Specification(freeVariables.size()), null, false);
+		final Set freeVariables = ((Formula)t).getFreeVariables();
+		final Type skolemType;
+		{
+		    Type arguments[] = new Type[freeVariables.size()];
+		    Arrays.fill(arguments, Types.INDIVIDUAL);
+		    skolemType = Types.map(Types.product(arguments), Types.INDIVIDUAL);
+		}
+		final Symbol skolemFunctionSymbol = new DistinctSymbol("s", skolemType, null, false);
 
 		// build expression form
 		try {
@@ -758,8 +769,14 @@ public class ClassicalLogic extends ModernLogic implements Logic {
     /**
      * speed up for internal parsing in TRS
      */
-    private final Expression createAtomicVariable(String signifier) {
+    private final Expression createAtomicIndividualVariable(String signifier) {
 	return createAtomic(new SymbolBase(signifier, SymbolBase.UNIVERSAL_ATOM, null, true));
+    }
+    /**
+     * speed up for internal parsing in TRS
+     */
+    private final Expression createAtomicLiteralVariable(String signifier) {
+	return createAtomic(new SymbolBase(signifier, SymbolBase.BOOLEAN_ATOM, null, true));
     }
     /**
      * speed up for internal parsing in TRS
@@ -849,13 +866,16 @@ public class ClassicalLogic extends ModernLogic implements Logic {
     static class LogicFunctions {
         private LogicFunctions() {}
     
+	private static final Type UNARY_LOGICAL_JUNCTOR = Types.predicate(Types.TRUTH);
+	private static final Type BINARY_LOGICAL_JUNCTOR = Types.predicate(Types.product(new Type[] {Types.TRUTH, Types.TRUTH}));
+
     	// interpretation for a truth-value
     	private static final Object getInt(boolean b) {
 	    return b ? Boolean.TRUE : Boolean.FALSE;
     	} 
     
     	// truth-value of a value
-    	private  static final boolean getTruth(Object v) {
+    	private static final boolean getTruth(Object v) {
 	    return ((Boolean) v).booleanValue();
     	} 
 
@@ -865,6 +885,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 
 	// Basic logical operations (elemental junctors).
     	public static final Function not = new Function() {
+		private final Type logicalTypeDeclaration = UNARY_LOGICAL_JUNCTOR;
     		public Object apply(Object a) {
 		    return getInt(!getTruth(a));
 		}
@@ -872,6 +893,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    }; 
 
     	public static final BinaryFunction/*<Boolean,Boolean, Boolean>*/ and = new BinaryFunction() {
+		private final Type logicalTypeDeclaration = BINARY_LOGICAL_JUNCTOR;
     		public Object apply(Object a, Object b) {
 		    return getInt(getTruth(a) && getTruth(b));
     		}
@@ -879,6 +901,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    };
     
     	public static final BinaryFunction or = new BinaryFunction() {
+		private final Type logicalTypeDeclaration = BINARY_LOGICAL_JUNCTOR;
     		public Object apply(Object a, Object b) {
 		    return getInt(getTruth(a) || getTruth(b));
     		}
@@ -889,6 +912,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 
 	//@todo The following functions for derived logical operations could be generalized (see LogicBasis)
     	public static final BinaryFunction xor = new BinaryFunction() {
+		private final Type logicalTypeDeclaration = BINARY_LOGICAL_JUNCTOR;
     		public Object apply(Object a, Object b) {
 		    return getInt(getTruth(a) ^ getTruth(b));
     		}
@@ -896,6 +920,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    };
 
     	public static final BinaryFunction impl = new BinaryFunction() {
+		private final Type logicalTypeDeclaration = BINARY_LOGICAL_JUNCTOR;
     		public Object apply(Object a, Object b) {
 		    return getInt(!getTruth(a) || getTruth(b));
     		}
@@ -904,6 +929,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 
     	//@todo rename
     	public static final BinaryFunction leftwardImpl = new BinaryFunction() {
+		private final Type logicalTypeDeclaration = BINARY_LOGICAL_JUNCTOR;
     		public Object apply(Object a, Object b) {
 		    return getInt(getTruth(a) || !getTruth(b));
     		}
@@ -911,6 +937,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    };
 
     	public static final BinaryFunction equiv = new BinaryFunction() {
+		private final Type logicalTypeDeclaration = BINARY_LOGICAL_JUNCTOR;
     		public Object apply(Object a, Object b) {
 		    return getInt(getTruth(a) == getTruth(b));
     		}
@@ -922,6 +949,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	//@todo we could implement a semantic apply() if only Interpretations would tell us a collection of entities in the universe
 	//@todo could we turn forall into type (&sigma;&rarr;t)&rarr;t alias Function<Function<S,boolean>,boolean> and use &forall;(&lambda;x.t)
     	public static final BinaryFunction forall = new BinaryFunction() {
+		private final Type logicalTypeDeclaration = null;
     		public Object apply(Object x, Object a) {
 		    throw new LogicException("quantified formulas only have a semantic value with respect to a possibly infinite domain. They are available for inference, but cannot be interpreted.");
     		}
@@ -958,17 +986,25 @@ public class ClassicalLogic extends ModernLogic implements Logic {
     }
 
     //@xxx get rid of these shared static variables
-    private static final Symbol APPLY = _coreSignature.get("@", new Expression[2]);
-    static final Symbol LAMBDA  = _coreSignature.get("\\", new Expression[2]);
+    private static final Symbol APPLY;
+    static final Symbol LAMBDA;
+    static {
+	//@internal we need some valid non-null arguments.
+	Expression OBJ = Utilities.logic.createAtomic(new SymbolBase("OBJ", SymbolBase.UNIVERSAL_ATOM));
+	APPLY = _coreSignature.get("@", new Expression[] {OBJ,OBJ});
+	assert APPLY != null : "apply operator found";
+	LAMBDA  = _coreSignature.get("\\", new Expression[] {OBJ,OBJ});
+	assert LAMBDA != null : "lambda operator found";
+    }
     public Expression compose(Expression op, Expression arguments[]) throws java.text.ParseException {
 	if (op == null)
 	    throw new NullPointerException("illegal arguments: operator " + op + " composed with " + MathUtilities.format(arguments));
-        if (!op.getType().isApplicableTo(arguments))
+        if (!Types.isApplicableTo(op.getType(), arguments))
 	    throw new java.text.ParseException("operator " + op + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments), ClassicalLogic.COMPLEX_ERROR_OFFSET);
 
 	// handle special cases of term construction, first
 	if ((op instanceof ModernFormula.FixedAtomicSymbol)
-	    && ((ModernFormula.FixedAtomicSymbol)op).getSymbol().equals(LAMBDA)) {
+	    && LAMBDA.equals(((ModernFormula.FixedAtomicSymbol)op).getSymbol())) {
 	    //@todo if we stick to compose(Expression,Expression[]) then perhaps we could provide &lambda;-abstractions by introducing a core symbol LAMBDA that has as fixed interpretation a binary function that ... But of &lambda;(x.t), x will never get interpreted, so it is a bit different than composeFixed(lambda,{x,t}) would suggest. &lambda;-abstraction are not truth-functional!
 	    assert arguments.length == 2;
 	    assert arguments[0] instanceof ModernFormula.AtomicSymbol : "Symbols when converted to formulas become AtomicSymbols";
@@ -984,17 +1020,17 @@ public class ClassicalLogic extends ModernLogic implements Logic {
     public Expression compose(Symbol op, Expression arguments[]) throws java.text.ParseException {
 	if (op == null)
 	    throw new NullPointerException("illegal arguments: operator " + op + " composed with " + MathUtilities.format(arguments));
-        if (!op.getType().isApplicableTo(arguments))
+        if (!Types.isApplicableTo(op.getType(), arguments))
 	    throw new java.text.ParseException("operator " + op + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments), ClassicalLogic.COMPLEX_ERROR_OFFSET);
 
 	// handle special cases of term construction, first
-	if (op.equals(APPLY)) {
+	if (APPLY.equals(op)) {
 	    //@deprecated since compose(Expression,Expression[]) already can do this, directly.
 	    // do we still need such a language operator for something, or can it be removed (no one ever calls) and use the meta-operator instead
 	    Expression rest[] = new Expression[arguments.length - 1];
 	    System.arraycopy(arguments, 1, rest, 0, rest.length);
 	    return compose(arguments[0], rest);
-	} else if (op.equals(LAMBDA)) {
+	} else if (LAMBDA.equals(op)) {
 	    //@todo if we stick to compose(Expression,Expression[]) then perhaps we could provide &lambda;-abstractions by introducing a core symbol LAMBDA that has as fixed interpretation a binary function that ... But of &lambda;(x.t), x will never get interpreted, so it is a bit different than composeFixed(lambda,{x,t}) would suggest.
 	    assert arguments.length == 2;
 	    assert arguments[0] instanceof ModernFormula.AtomicSymbol : "Symbols when converted to formulas become AtomicSymbols";
@@ -1057,8 +1093,8 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    
 	
 	// implementation of orbital.logic.imp.Expression interface
-	public Specification getType() {
-	    return new Specification(new Specification[] {x.getType()}, term.getType());
+	public Type getType() {
+	    return Types.map(x.getType(), term.getType());
 	}
         public Signature getSignature() {
 	    Signature sigma = new SignatureBase(term.getSignature());
@@ -1187,15 +1223,15 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	Signature sigmaComb = new SignatureBase(sigma);
 	for (Iterator it = sigmaComb.iterator(); it.hasNext(); ) {
 	    final Symbol s = (Symbol)it.next();
-	    final Specification spec = s.getType();
-	    if (spec.arity() == 0 && spec.getReturnType() == Boolean.class)
+	    final Type type = s.getType();
+	    if (type.equals(Types.TRUTH))
 		// ordinary propositional logic
 		;
-	    else if (spec.arity() == 0 && !s.isVariable() && orbital.math.Scalar.class.isAssignableFrom(spec.getReturnType()))
-		// forget about interpreting _fixed_ constants @xxx generalize concept
-		it.remove();
+	    else if (!s.isVariable() && type.subtypeOf(Types.type(orbital.math.Scalar.class)))
+	    	// forget about interpreting _fixed_ constants @xxx generalize concept
+	    	it.remove();
 	    else
-		throw new IllegalArgumentException("a signature of propositional logic should not contain " + s + " with specification " + spec);
+		throw new IllegalArgumentException("a signature of propositional logic should not contain " + s + " of type " + type);
 	}
 
 	Combinatorical   comb = Combinatorical.getPermutations(sigmaComb.size(), 2, true);
@@ -1226,8 +1262,8 @@ public class ClassicalLogic extends ModernLogic implements Logic {
      * @deprecated empty formulas are not defined
      */
     static Formula EMPTY = new ModernFormula(new ClassicalLogic()) {
-	    public Specification getType() {
-		return VoidPredicate.specification;
+	    public Type getType() {
+		return Types.TRUTH;
 	    }
 	    public Signature getSignature() {
 		return SignatureBase.EMPTY;

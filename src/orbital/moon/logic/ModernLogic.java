@@ -18,11 +18,14 @@ import orbital.logic.functor.Functor;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import orbital.logic.trs.Variable;
+
 import orbital.logic.functor.*;
 
 import java.io.StringReader;
 import orbital.util.Utility;
 import orbital.math.MathUtilities;
+import orbital.math.Values;
 
 /**
  * A support class for implementing modern logic.
@@ -45,6 +48,15 @@ abstract class ModernLogic implements Logic {
     // heavy implementation
 
     public Expression createAtomic(Symbol symbol) {
+	Expression RES = createAtomicImpl(symbol);
+	assert RES != null : "@post RES != null";	     
+	assert RES.getType().equals(symbol.getType()) && (((RES instanceof Variable) && ((Variable)RES).isVariable()) == symbol.isVariable()) : "@post " + RES.getType() + "=" + symbol.getType() + " & (" + ((RES instanceof Variable) && ((Variable)RES).isVariable()) + "<->" + symbol.isVariable() + ") for " + symbol + " = " + RES;
+	return RES;
+    }
+
+    private Expression createAtomicImpl(Symbol symbol) {
+	if (symbol == null)
+	    throw new NullPointerException("illegal symbol: " + symbol);
 	final String signifier = symbol.getSignifier();
 	assert signifier != null;
 
@@ -55,8 +67,9 @@ abstract class ModernLogic implements Logic {
 	    Symbol s = (Symbol) o;
 	    if (s.getSignifier().equals(signifier)) {
 		//@xxx should we check for compatibility of symbol and s so as to detect misunderstandings during parse?
+		
 		// fixed interpretation of core signature
-		Object ref = coreInterpretation().get(s);
+		final Object ref = coreInterpretation().get(s);
 		return createFixedSymbol(s, ref, true);
 	    }
 	}
@@ -66,7 +79,7 @@ abstract class ModernLogic implements Logic {
 	// test for syntactically legal <INTEGER_LITERAL> | <FLOATING_POINT_LITERAL>
 	//@todo could also move to an infinite coreInterpretation()
 	try {
-	    return createFixedSymbol(symbol, Double.valueOf(signifier), false);
+	    return createFixedSymbol(symbol, Values.getDefaultInstance().valueOf(signifier), false);
 	}
 	catch (NumberFormatException trial) {}
 
@@ -80,10 +93,16 @@ abstract class ModernLogic implements Logic {
 	return createSymbol(symbol);
     } 
 
-    public Expression compose(Expression op, Expression arguments[]) throws java.text.ParseException {
+    public Expression compose(Expression compositor, Expression arguments[]) throws java.text.ParseException {
+	Expression RES = composeImpl(compositor, arguments);
+	assert RES != null : "@post RES != null";	     
+	assert RES.getType().equals(compositor.getType().domain()) : "@post " + RES.getType() + "=" + compositor.getType().domain();
+	return RES;
+    }
+    private Expression composeImpl(Expression op, Expression arguments[]) throws java.text.ParseException {
 	if (op == null)
 	    throw new NullPointerException("illegal arguments: compositor " + op + " composed with " + MathUtilities.format(arguments));
-        if (!op.getType().isApplicableTo(arguments))
+        if (!Types.isApplicableTo(op.getType(), arguments))
 	    throw new java.text.ParseException("compositor " + op + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments), ClassicalLogic.COMPLEX_ERROR_OFFSET);
 
 	if (!(op instanceof ModernFormula.FixedAtomicSymbol))
@@ -118,7 +137,7 @@ abstract class ModernLogic implements Logic {
 	    return compose(createAtomic(op), arguments);
 	if (op == null)
 	    throw new NullPointerException("illegal arguments: operator " + op + " composed with " + MathUtilities.format(arguments));
-        if (!op.getType().isApplicableTo(arguments))
+        if (!Types.isApplicableTo(op.getType(), arguments))
 	    throw new java.text.ParseException("operator " + op + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments), ClassicalLogic.COMPLEX_ERROR_OFFSET);
 
         Functor f;

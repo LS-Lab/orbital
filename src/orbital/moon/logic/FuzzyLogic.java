@@ -6,23 +6,11 @@
 
 package orbital.moon.logic;
 
-import orbital.logic.imp.Logic;
-import orbital.logic.imp.Inference;
+import orbital.logic.imp.*;
 import orbital.logic.functor.Functor;
 import orbital.logic.functor.Functor.Composite;
 import orbital.logic.functor.Function;
 import orbital.logic.functor.BinaryFunction;
-
-import orbital.logic.imp.Signature;
-import orbital.logic.imp.Symbol;
-import orbital.logic.imp.Formula;
-import orbital.logic.imp.Interpretation;
-import orbital.logic.imp.Expression;
-
-import orbital.logic.imp.SignatureBase;
-import orbital.logic.imp.InterpretationBase;
-import orbital.logic.imp.SymbolBase;
-import orbital.logic.imp.LogicBasis;
 
 import java.util.Collection;
 import java.util.Set;
@@ -491,6 +479,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 
 	    BinaryFunction and() {
 		return new BinaryFunction() {
+			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			public Object apply(Object a, Object b) {
 			    return getInt(Math.min(getTruth(a), getTruth(b)));
 			}
@@ -500,6 +489,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     
 	    BinaryFunction or() {
 		return new BinaryFunction() {
+			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			public Object apply(Object a, Object b) {
 			    return getInt(Math.max(getTruth(a), getTruth(b)));
 			}
@@ -521,6 +511,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 
 	    BinaryFunction and() {
 		return new BinaryFunction() {
+			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			public Object apply(Object a, Object b) {
 			    return getInt(getTruth(a) * getTruth(b));
 			}
@@ -530,6 +521,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     
 	    BinaryFunction or() {
 		return new BinaryFunction() {
+			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			public Object apply(Object wa, Object wb) {
 			    final double a = getTruth(wa);
 			    final double b = getTruth(wb);
@@ -553,6 +545,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 
 	    BinaryFunction and() {
 		return new BinaryFunction() {
+			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			public Object apply(Object a, Object b) {
 			    return getInt(Math.max(0, getTruth(a) + getTruth(b) - 1));
 			}
@@ -562,6 +555,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     
 	    BinaryFunction or() {
 		return new BinaryFunction() {
+			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			public Object apply(Object a, Object b) {
 			    return getInt(Math.min(1, getTruth(a) + getTruth(b)));
 			}
@@ -588,6 +582,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 
 		BinaryFunction and() {
 		    return new BinaryFunction() {
+			    private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			    public Object apply(Object wa, Object wb) {
 				final double a = getTruth(wa);
 				final double b = getTruth(wb);
@@ -600,6 +595,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     
 		BinaryFunction or() {
 		    return new BinaryFunction() {
+			    private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			    public Object apply(Object wa, Object wb) {
 				final double a = getTruth(wa);
 				final double b = getTruth(wb);
@@ -632,6 +628,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 
 		BinaryFunction and() {
 		    return new BinaryFunction() {
+			    private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			    public Object apply(Object wa, Object wb) {
 				final double a = getTruth(wa);
 				final double b = getTruth(wb);
@@ -643,6 +640,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     
 		BinaryFunction or() {
 		    return new BinaryFunction() {
+			    private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			    public Object apply(Object wa, Object wb) {
 				final double a = getTruth(wa);
 				final double b = getTruth(wb);
@@ -671,6 +669,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 
 	    BinaryFunction and() {
 		return new BinaryFunction() {
+			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			public Object apply(Object wa, Object wb) {
 			    final double a = getTruth(wa);
 			    final double b = getTruth(wb);
@@ -682,6 +681,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     
 	    BinaryFunction or() {
 		return new BinaryFunction() {
+			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			public Object apply(Object wa, Object wb) {
 			    final double a = getTruth(wa);
 			    final double b = getTruth(wb);
@@ -696,32 +696,17 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     static class LogicFunctions {
         private LogicFunctions() {}
     
+	private static final Type UNARY_LOGICAL_JUNCTOR = Types.predicate(Types.TRUTH);
+	private static final Type BINARY_LOGICAL_JUNCTOR = Types.predicate(Types.product(new Type[] {Types.TRUTH, Types.TRUTH}));
+
 	// Basic logical operations (elemental junctors).
     	public static final Function not = new Function() {
+		private final Type logicalTypeDeclaration = UNARY_LOGICAL_JUNCTOR;
     		public Object apply(Object a) {
 		    return getInt(1 - getTruth(a));
         	}
 		public String toString() { return "~"; }
 	    }; 
-
-    	public static final BinaryFunction and = new BinaryFunction() {
-    		public Object apply(Object a, Object b) {
-		    // classical fuzzy defintion
-		    return getInt(Math.min(getTruth(a), getTruth(b)));
-		    // return max(0, a+b-1) limited difference
-		    // return ?new FuzzyLogicFormula(a.value * b.value);
-    		}
-		public String toString() { return "&"; }
-	    };
-    
-    	public static final BinaryFunction or = new BinaryFunction() {
-    		public Object apply(Object a, Object b) {
-		    return getInt(Math.max(getTruth(a), getTruth(b)));
-		    // Yager-Union function min(1, (a^p + b^p)^(1/p)) for p>=1.
-		    // return min(1, a+b) limited sum
-    		}
-		public String toString() { return "|"; }
-	    };
 
 	// Derived logical operations.
 

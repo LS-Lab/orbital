@@ -7,21 +7,12 @@
 package orbital.logic.imp;
 
 import orbital.logic.functor.Notation.NotationSpecification;
-import orbital.logic.functor.Functor.Specification;
 import java.io.Serializable;
 
 import orbital.logic.functor.Notation;
 
 import orbital.util.Utility;
 import orbital.logic.imp.Symbol;
-import orbital.logic.functor.Notation$NotationSpecification;
-import orbital.logic.functor.Functor$Specification;
-import orbital.logic.imp.Symbol;
-import orbital.logic.functor.Notation$NotationSpecification;
-import orbital.logic.functor.Functor$Specification;
-import orbital.logic.imp.Symbol;
-import orbital.logic.functor.Notation$NotationSpecification;
-import orbital.logic.functor.Functor$Specification;
 
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -46,24 +37,19 @@ public class SymbolBase implements Symbol, Serializable {
      * <p>
      * convenience constant for constructor calls.
      * </p>
-     * @todo sure?
+     * @deprecated Since Orbital1.1 use {@link Types#TRUTH} instead.
      */
-    public static final Specification BOOLEAN_ATOM = new Specification(0, Boolean.class);
+    public static final Type BOOLEAN_ATOM = Types.TRUTH;
     /**
      * A type specification for logical atomic terms (object variables and object constants) of universal type <span class="Class">Object</span> and arity <span class="number">0</span>.
-     * The universal type &#8868; which has no differentiae satisfies
-     * <ul>
-     *   <li>(&exist;x) &#8868;(x)</li>
-     *   <li>(&forall;x) &#8868;(x)</li>
-     *   <li>(&forall;t:Type) t&le;&#8868;</li>
-     * </ul>
      * However be aware that this is not <em>the</em> universal type, but only the type
-     * of terms of arity <span class="number">0</span> mapping into the universal type.
+     * of terms of arity <span class="number">0</span> mapping into object.
      * <p>
      * convenience constant for constructor calls.
      * </p>
+     * @deprecated Since Orbital1.1 use {@link Types#INDIVIDUAL} instead.
      */
-    public static final Specification UNIVERSAL_ATOM = new Specification(0, Object.class);
+    public static final Type UNIVERSAL_ATOM = Types.INDIVIDUAL;
 
     // properties
 
@@ -71,12 +57,12 @@ public class SymbolBase implements Symbol, Serializable {
      * The String representing this symbol.
      * @serial
      */
-    private String					signifier;
+    private String signifier;
     /**
      * The (arity and) type specification of this symbol.
      * @serial
      */
-    private Specification			type;
+    private Type type;
     /**
      * The notation used when this symbol occurs.
      * This includes precedence and associativity information, as well.
@@ -89,7 +75,7 @@ public class SymbolBase implements Symbol, Serializable {
      * and <code>false</code> if this symbol is a constant symbol.    
      * @serial
      */
-    private final boolean			variable;
+    private final boolean variable;
 
     /**
      * Construct a symbol with a signifier, type specification, and notation.
@@ -104,10 +90,10 @@ public class SymbolBase implements Symbol, Serializable {
      *  and <code>false</code> if this symbol is a constant symbol.
      * @todo could check whether type and notation match in arity
      */
-    public SymbolBase(String signifier, Specification type, NotationSpecification notation, boolean variable) {
+    public SymbolBase(String signifier, Type type, NotationSpecification notation, boolean variable) {
         this.signifier = signifier;
         this.setType(type);
-        this.notation = notation != null ? notation : new NotationSpecification(type.arity());
+        this.notation = notation != null ? notation : new NotationSpecification(Types.arityOf(type.codomain()));
         this.variable = variable;
     }
 
@@ -123,7 +109,7 @@ public class SymbolBase implements Symbol, Serializable {
      *  which will be converted to the {@link Notation.NotationSpecification#Notation.NotationSpecification(int) default notation specification}, then.
      * @post &not;isVariable()
      */
-    public SymbolBase(String signifier, Specification type, NotationSpecification notation) {
+    public SymbolBase(String signifier, Type type, NotationSpecification notation) {
         this(signifier, type, notation, false);
     }
 
@@ -134,7 +120,7 @@ public class SymbolBase implements Symbol, Serializable {
      * @param type the type specification of this symbol.
      * @post &not;isVariable()
      */
-    public SymbolBase(String signifier, Specification type) {
+    public SymbolBase(String signifier, Type type) {
         this(signifier, type, null);
     }
     
@@ -144,7 +130,7 @@ public class SymbolBase implements Symbol, Serializable {
 	    if (Utility.equals(getSignifier(), b.getSignifier())
 		&& Utility.equals(getType(), b.getType())
 		&& Utility.equals(getNotation(), b.getNotation())) {
-		assert isVariable() == b.isVariable() : "same symbols are consistently either both variable or both constant";
+		assert isVariable() == b.isVariable() : "same symbols (" + this + " and " + b + ") are consistently either both variable or both constant (" + isVariable() + " and " + b.isVariable() + ")";
 		return true;
 	    } else
 		return false;
@@ -155,7 +141,7 @@ public class SymbolBase implements Symbol, Serializable {
     /**
      * Compares two symbols.
      * <p>
-     * This implementation compares for notation (precedence) in favor of type in favor of symbol name.
+     * This implementation compares for notation (precedence) in favor of type (lexicographical) in favor of symbol name.
      * </p>
      * @post only <em>semi</em>-consistent with equals (since Notation is)
      */
@@ -165,7 +151,7 @@ public class SymbolBase implements Symbol, Serializable {
 	a = Utility.compare(getNotation(), b.getNotation());
 	if (a != 0)
 	    return a;
-	a = Utility.compare(getType(), b.getType());
+	a = Types.LEXICOGRAPHIC.compare(getType(), b.getType());
 	return a != 0 ? a : Utility.compare(getSignifier(), b.getSignifier());
     } 
 
@@ -180,10 +166,10 @@ public class SymbolBase implements Symbol, Serializable {
     public void setSignifier(String signifier) {
     	this.signifier = signifier;
     }
-    public Specification getType() {
+    public Type getType() {
     	return type;
     }
-    public void setType(Specification type) {
+    public void setType(Type type) {
     	if (type == null)
 	    throw new IllegalArgumentException("invalid type specification: " + type);
     	this.type = type;
@@ -200,12 +186,12 @@ public class SymbolBase implements Symbol, Serializable {
     }
     
     public String toString() {
-    	Specification type = getType();
+    	Type type = getType();
 	if (Logger.global.isLoggable(Level.FINEST))
-	    return getSignifier() + type;
+	    return getSignifier() + '/' + type;
     	// short representation for symbols of arity 0
-    	return type.arity() == 0
+    	return type.codomain().equals(Types.VOID)
 	    ? getSignifier()
-	    : (getSignifier() + '/' + type.arity());
+	    : (getSignifier() + '/' + Types.arityOf(type.codomain()));
     }
 }

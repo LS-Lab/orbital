@@ -8,22 +8,12 @@ package orbital.logic.imp;
 
 import orbital.logic.trs.Variable;
 import orbital.logic.functor.Notation.NotationSpecification;
-import orbital.logic.functor.Functor.Specification;
 
 /**
  * Represents a symbol of a signature.
  * A symbol is a triple &lang;<var class="signifier">signifier</var>, type, notation&rang;
- * consisting of a signifier, its type specification, and its notation.
+ * consisting of a signifier, its {@link Type type} specification, and its notation.
  * Each symbol is either a constant symbol or a variable symbol.
- * <p id="type">
- * The types of a symbol form a <a href="Expression.html#freeAlgebraOfTerms">free algebra of terms</a>
- * over {<span class="type">&iota;</span>,<span class="type">&rarr;</span>,<span class="type">()</span>}.
- * Intuitively, <span class="type">&iota;</span> is the type for individuals,
- * <span class="type">&sigma;&rarr;&tau;</span> the type for maps from <span class="type">&sigma;</span> to <span class="type">&tau;</span>,
- * and <span class="type">(&sigma;)</span>=<span class="type">&sigma;&rarr;&omicron;</span> the type for predicates of <span class="type">&sigma;</span>,
- * likewise <span class="type">&omicron;</span>=<span class="type">()</span> is the type of truth-values.
- * But there is also a precise <a href="Interpretation.html#interpretation">semantic</a>.
- * </p>
  * <p>
  * Symbols can be names for various kinds of objects in the (logical) universe:
  * <ul>
@@ -64,7 +54,7 @@ import orbital.logic.functor.Functor.Specification;
  *
  * @invariant true
  * @stereotype &laquo;Structure&raquo;
- * @structure is String&times;Functor.Specification&times;Notation.NotationSpecification
+ * @structure is String&times;Type&times;Notation.NotationSpecification
  * @structure extends orbital.logic.trs.Variable
  * @structure extends Comparable<Symbol,Symbol>
  * @version 1.0, 2001/04/07
@@ -134,16 +124,15 @@ public interface Symbol extends Variable, Comparable/*<Symbol>*/{
      * @pre true
      * @return the type specification <span class="type">&tau;</span> of this symbol.
      * @see Expression#getType()
-     * @todo do we have to change the return type or Functor.Specification in order to reflect such types as (sigma->rho)->(tau->nu) as in ClassicalLogic.LambdaAbstractionFormula? This cannot precisely be represented by Class[]->Class, since with Class=Function we loose the information that Class=Function<tau,nu>.
      */
-    Specification getType();
+    Type getType();
     /**
      * Set the type specification of this symbol.
      * @param type the type specification <span class="type">&tau;</span> of this symbol.
      * @pre type&ne;null
-     * @todo wouldn't we prefer <span class="keyword">null</span> for the bottom type, or the undefined type, or perhaps the errorneous type?
+     * @todo wouldn't we prefer <span class="keyword">null</span> for the bottom type, or the undefined type, or perhaps the errorneous type Types.ERROR?
      */
-    void setType(Specification type);
+    void setType(Type type);
 
     /**
      * Get the notation used when this symbol occurs.

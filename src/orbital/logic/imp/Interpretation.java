@@ -28,7 +28,7 @@ import orbital.logic.functor.Functor;
  *     I:&Sigma;<sub class="type">&tau;</sub>&rarr;<span class="set">D</span><sub class="type">&tau;</sub>
  *     for each type <span class="type">&tau;</span>, with
  *     <ul>
- *       <li>I maps symbols of <a href="Symbol.html#type">type</a> <span class="type">&tau;</span> to elements of <span class="set">D</span><sub class="type">&tau;</sub>.</li>
+ *       <li>I maps symbols of {@link Type type} <span class="type">&tau;</span> to elements of <span class="set">D</span><sub class="type">&tau;</sub>.</li>
  *       <li><span class="set">D</span><sub class="type">&omicron;</sub> := <span class="set">Boole</span> := {True,False} for the type <span class="type">&omicron;</span>=<span class="type">()</span> of truth-values (also the type of atomic formulas).</li>
  *       <li><span class="set">D</span><sub class="type">&iota;</sub> := <span class="set">D</span> is a set called universe or domain of I for the type <span class="type">&iota;</span> of individuals.
  *         It is non-empty by presupposition of existence.</li>
@@ -199,7 +199,7 @@ import orbital.logic.functor.Functor;
  *
  * @structure extends java.util.Map<Symbol,Object>
  * @invariant (&Sigma; == null &or; keySet() &sube; &Sigma;)
- *  		&and; &forall;(s,v)&isin;this s.getType().isConform(v)
+ *  		&and; &forall;(s,v)&isin;this s.getType().apply(v)
  * @version 1.0, 2001/01/12
  * @author  Andr&eacute; Platzer
  * @see Logic#satisfy
@@ -245,14 +245,14 @@ public interface Interpretation extends Map/*<Symbol, Object>*/ {
      * Overwrite along with other map operations like {@link java.util.Set#contains(Object)} to implement
      * a different source for symbol associations.
      * </p>
-     * @post symbol.getType().isConform(RES)
+     * @post symbol.getType().apply(RES)
      * @throws java.util.NoSuchElementException if the symbol is not in the current signature &Sigma;.
      */
     Object get(Object/*>Symbol<*/ symbol);
 
     /**
      * Set the object value associated with the given symbol in this interpretation.
-     * @pre symbol.getType().isConform(value)
+     * @pre symbol.getType().apply(value)
      * @throws java.util.NoSuchElementException if the symbol is not in the current signature &Sigma;.
      */
     Object put(Object/*>Symbol<*/ symbol, Object value);

@@ -26,11 +26,11 @@ final class DistinctSymbol extends SymbolBase {
      */
     private static /*transient*/ volatile int NEXT_ID = 10;
 	
-    public DistinctSymbol(String signifierPrefix, Functor.Specification spec, Notation.NotationSpecification notation, boolean variable) {
-	super(signifierPrefix + (NEXT_ID++), spec, notation, variable);
+    public DistinctSymbol(String signifierPrefix, Type type, Notation.NotationSpecification notation, boolean variable) {
+	super(signifierPrefix + (NEXT_ID++), type, notation, variable);
     }
-    public DistinctSymbol(Functor.Specification spec, Notation.NotationSpecification notation, boolean variable) {
-	this("_x", spec, notation, variable);
+    public DistinctSymbol(Type type, Notation.NotationSpecification notation, boolean variable) {
+	this("_x", type, notation, variable);
     }
     public final boolean equals(Object o) {
 	assert this == o || !getSignifier().equals(((Symbol)o).getSignifier()) : "all other instances of Symbol are different from this DistinctVariableSymbol, so no other variable should pretend to use our signifier";
