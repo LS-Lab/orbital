@@ -102,6 +102,4 @@ public interface ExpressionSyntax extends ExpressionBuilder {
      * @note could just as well be renamed to parseExpression(String)
      */
     Expression createExpression(String expression) throws ParseException, IllegalArgumentException;
-
-    //@todo somehow let createExpresion return an Expression (not a Formula) decomposable into a set (or list) of expressions. Perhaps via Functor.Composite? Instead of introducing an ugly Expression[] createAllExpressions(String expressions).
 }
