@@ -130,7 +130,7 @@ public class GameView extends Applet {
 	
     /**
      * The ActionListeners reacting on menu events.
-     * This is a mapping from menu keys and menu item keys as defined in the {@link #resources}
+     * This is a mapping from menu keys and menu item keys as defined in the {@link #getResources() resources}
      * to {@link java.awt.event.ActionListener ActionListeners} that will be notified of a menu action.
      */
     private final Dictionary actions;
@@ -296,7 +296,7 @@ public class GameView extends Applet {
 
     /**
      * Get the map of actions.
-     * This is a mapping from menu keys and menu item keys as defined in the {@link #resources}
+     * This is a mapping from menu keys and menu item keys as defined in the {@link #getResources() resources}
      * to {@link java.awt.event.ActionListener ActionListeners} that will be notified of a menu action.
      * @see <a href="">demo/jfc/Notepad/src/Notepad.java for description of menu resource bundle</a> 
      */

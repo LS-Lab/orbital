@@ -43,7 +43,7 @@ final class LogicSupport {
      * @param skipNull whether to skip functors for which the array contains <code>null</code>.
      * @param useRegisteredNotationsOnNull whether to use {@link Notation#getNotation(Functor) regisitered notations}
      *  if the array contains <code>null</code> as notation specification.
-     * @parma appendTrueFalse whether to introduce true false constants.
+     * @param appendTrueFalse whether to introduce true false constants.
      * @throws NullPointerException if skipNull==<code>false</code> but a functor of the array is <code>null</code>.
      */
     public static final Interpretation arrayToInterpretation(Object[][] functors, boolean skipNull, boolean useRegisteredNotationsOnNull, boolean appendTrueFalse) {
@@ -54,6 +54,8 @@ final class LogicSupport {
 	    assoc.put(new SymbolBase("false", Types.TRUTH), Boolean.FALSE);
 	}
 	for (int i = 0; i < functors.length; i++) {
+	    if (functors[i].length != 2)
+		throw new IllegalArgumentException("array of dimension [][2] expected");
 	    final Functor f = (Functor)functors[i][0];
 	    NotationSpecification notation = (NotationSpecification)functors[i][1];
 	    if (f == null)

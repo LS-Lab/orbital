@@ -35,7 +35,9 @@ import java.util.SortedSet;
  * @author  Andr&eacute; Platzer
  * @see ExpressionSyntax#scanSignature(java.lang.String)
  * @see Expression#getSignature()
- * @see java.util.Set
+ * @see java.util.SortedSet
+ * @see SignatureBase#EMPTY
+ * @see SignatureBase#unmodifiableSignature(Signature)
  */
 public interface Signature extends SortedSet/*<Symbol>*/ {
     /**

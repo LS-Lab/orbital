@@ -132,6 +132,10 @@ import orbital.algorithm.Combinatorical;
  * @todo refactorize common ideas into a super class
  * @todo introduce &#407;ukasiewicz logic
  * @todo Especially provide forall as a functional (higher-order function) of lambda-operator then (@see note to orbital.logic.functor.Substitition)
+ * @fixme we prove contradictious things with SEMANTIC_INFERENCE:
+ *  |= (2+3<5)
+ *  NOT|= (2+3<5) | a
+ *  |= (2+3<7) | a
  */
 public class ClassicalLogic extends ModernLogic {
     private static class Debug {
@@ -612,6 +616,7 @@ public class ClassicalLogic extends ModernLogic {
 	    public String toString() { return "?"; }
 	};
 
+	
 	//@xxx trick for functions that never get called
     	public static final BinaryFunction lambda = new LambdaPlaceholder();
 	private static final class LambdaPlaceholder implements BinaryFunction {

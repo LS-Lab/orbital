@@ -212,6 +212,9 @@ import orbital.logic.functor.Functor;
  * @see Logic#satisfy
  * @see Signature
  * @see java.util.Map
+ * @see InterpretationBase#EMPTY(Signature)
+ * @see InterpretationBase#unmodifiableInterpretation(Interpretation)
+ * @note This interface could be strengthened by extending SortedMap instead of just Map.
  * @todo specialize superclass to SortedMap because Signature is sorted?
  */
 public interface Interpretation extends Map/*<Symbol, Object>*/ {
