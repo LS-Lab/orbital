@@ -44,7 +44,7 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
      * @internal transitively public constructors required for Functionals.map to produce Clauses.
      */
     public ClauseImpl(Set/*<Formula>*/ literals) {
-	super(Collections.unmodifiableSet(literals));
+	super(literals);
 	assert Setops.all(literals, Functionals.bindSecond(Utility.instanceOf, Formula.class)) : "instanceof Set<Formula>";
     }
     public ClauseImpl() {}
