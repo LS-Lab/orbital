@@ -272,6 +272,9 @@ public class Gamemaster implements Runnable {
 		return user;
 	    }
 	    catch (InterruptedException interrupt) {
+		Thread r = runner;
+		stop();
+		r.interrupt();
 		Thread.currentThread().interrupt();
 		throw new InternalError("OutOfCheeseError");
 	    }
