@@ -58,7 +58,10 @@ import java.util.logging.Level;
  * @version 1.1, 2003-01-18
  * @see Type
  */
-public final class StandardTypeSystem implements TypeSystem {
+public class StandardTypeSystem implements TypeSystem {
+    /**
+     * The characters used for grouping type expressions.
+     */
     private static final char GROUPING_BRACKET_OPEN = '[';
     private static final char GROUPING_BRACKET_CLOSE = ']';
     //@internal tricky: we have to make sure the static initialization (which uses mymap...) can run before typeSystem is set. Java does not truely care about the static initialization order.
@@ -75,7 +78,7 @@ public final class StandardTypeSystem implements TypeSystem {
 		TypeObject a = (TypeObject)o1;
 		TypeObject b = (TypeObject)o2;
 		if (a.comparisonPriority() >= b.comparisonPriority())
-		    return a.compareToSemiImpl(b);
+		    return +a.compareToSemiImpl(b);
 		else
 		    return -b.compareToSemiImpl(a);
 	    }
@@ -295,11 +298,12 @@ public final class StandardTypeSystem implements TypeSystem {
 	protected abstract int compareToSemiImpl(Type b);
 
 	public final int compareTo(Object b) {
-	    if (!(b instanceof TypeObject))
+	    if (!(b instanceof TypeObject)) {
 		if (b == null)
 		    throw new NullPointerException("illegal type " + b + " to compare " + this + " of " + getClass() + " with");
 		else
-		    throw new InternalError("no rule for comparing " + this + " of " + getClass() + " with " + b + " of " + b.getClass());
+		    throw new InternalError("no rule for comparing\n type " + this + " of " + getClass() + " with " + b + " of " + b.getClass());
+	    }
 	    int cmp = subtypeOrder.compare(this, (Type)b);
 	    assert !((cmp == 0) ^ this.equals(b)) : "antisymmetry resp. consistent with equals: " + this + ", " + b + "\n" + this + toString(cmp) + b + "\n" + this + (this.equals(b) ? "=" : "!=") + b;
 	    assert subtypeOrder.compare(this, this) == 0 : "reflexive: " + this;
