@@ -237,7 +237,7 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
      */
     public static final Interpretation unmodifiableInterpretation(final Interpretation i) {
 	return /*refine/delegate Interpretation*/ new InterpretationBase(i) {
-		//private static final long serialVersionUID = 0;
+		private static final long serialVersionUID = 2999004456165993569L;
 		// Code for delegation of orbital.logic.imp.Interpretation methods to i
 
 		/**

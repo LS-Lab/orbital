@@ -209,7 +209,7 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
      */
     public static final Signature unmodifiableSignature(final Signature s) {
 	return /*refine/delegate Signature*/ new SignatureBase(s) {
-		//private static final long serialVersionUID = 0;
+		private static final long serialVersionUID = -7777832542719541528L;
 		// Code for delegation of java.util.Set methods to s
 
 		/**

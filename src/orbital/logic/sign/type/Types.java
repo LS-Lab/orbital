@@ -137,7 +137,7 @@ public final class Types {
      */
     public static final Type TYPE = new KindType();
     private static final class KindType extends FundamentalType {
-	//private static final long serialVersionUID = 0;
+	private static final long serialVersionUID = -7485537037074013524L;
 	/**
 	 * Maintains the guarantee that there is only a single object representing this type.
 	 * @serialData canonicalized deserialization

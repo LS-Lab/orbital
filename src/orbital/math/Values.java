@@ -782,7 +782,7 @@ public class Values {
 	// but then some tensors would no longer be AbstractTensors.
 	//@todo so perhaps just identify multiple delegations to Tensor, or to Polynomial etc.
 	return /*refine/delegate Tensor*/ new AbstractTensor/*<R>*/() {
-		//private static final long serialVersionUID = 0;
+		private static final long serialVersionUID = 3658988168257832220L;
 		protected Tensor/*<R>*/ newInstance(int[] dim) {
 		    assert false : "this method should never get called in this context of constant(...)";
 		    //@todo there are still some methods missing for the above assertion to prove true. transpose, Tensor add(Tensor);
