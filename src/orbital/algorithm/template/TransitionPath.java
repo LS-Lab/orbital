@@ -25,9 +25,25 @@ import orbital.algorithm.template.ProbabilisticAlgorithm;
 
 public class TransitionPath implements Iterator, ProbabilisticAlgorithm, Serializable {
     private static final long serialVersionUID = 7547930705530088169L;
+    /**
+     * The transition model &tau; through which to create a path.
+     * @serial
+     */
     private final TransitionModel/*<A,S,O>*/ transition;
+    /**
+     * The iterator of the actions to perform.
+     * @serial
+     */
     private final Iterator/*<A>*/ actions;
+    /**
+     * The current state s&isin;S of this transition path.
+     * @serial
+     */
     private Object/*>S<*/ state;
+    /**
+     * The random generator source to use for probabilistic transitions.
+     * @serial the random source is serialized to let the seed persist.
+     */
     private Random random;
     /**
      * Create a new (randomized) path through a transition model.

@@ -137,8 +137,8 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
     /**
      * Define a traversal order by creating an iterator for the problem's state space.
      * @param problem the problem whose state space to create a traversal iterator for.
-     * @return an iterator over the options of the problem's state space thereby encapsulating
-     *  and hiding the traversal order.
+     * @return an iterator over the {@link GeneralSearchProblem.Option options}
+     *  of the problem's state space thereby encapsulating and hiding the traversal order.
      * @attribute secret traversal order
      * @see <a href="{@docRoot}/DesignPatterns/FactoryMethod.html">Factory Method</a>
      * @see GeneralSearch.OptionIterator
