@@ -87,7 +87,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	final Signature core = logic.coreSignature();
 	final Formula f = (Formula) logic.createAtomic(new SymbolBase("f", Types.getDefault().map(Types.INDIVIDUAL,Types.TRUTH)));
 	Formula[] arguments = new Formula[] {f};
-	FORALL = core.get("°", arguments);
+	FORALL = core.get("ï¿½", arguments);
 	assert FORALL != null : "operators in core signature";
 	EXISTS = core.get("?", arguments);
 	assert EXISTS != null : "operators in core signature";
@@ -123,10 +123,11 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      *  isCompatibleUnderlyingLogic(formula)
      */
     void setUnderlyingLogicLikeIn(Formula formula) {
+	assert isCompatibleUnderlyingLogic(formula) : "expected compatible underlying logics";
 	Logic myUnderlying = getUnderlyingLogic();
 	Logic itsUnderlying = ((ModernFormula)formula).getUnderlyingLogic();
-	assert isCompatibleUnderlyingLogic(formula) : "expected compatible underlying logics";
 	setUnderlyingLogic(itsUnderlying);
+	assert isCompatibleUnderlyingLogic(formula) : "reflexive compatible underlying logics";
     }
 
     
@@ -187,8 +188,9 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     } 
     */
     private Formula compose(Symbol op, Formula[] arguments) {
+	assert getUnderlyingLogic() != null : "underlying logic set";
 	try {
-	    return (Formula) logic.compose(logic.createAtomic(op), arguments);
+	    return (Formula) getUnderlyingLogic().compose(getUnderlyingLogic().createAtomic(op), arguments);
 	}
 	catch (ParseException ex) {throw (InternalError) new InternalError("errorneous internal composition").initCause(ex);}
     }

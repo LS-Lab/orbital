@@ -10,6 +10,6 @@
 # negated equivalence
 # s.a. ~(_X1<->_X2) |- (~_X1)<->_X2
 # negated all-quantifier
-~(°_V _X) |- ?_V ~_X
+~(all _V _X) |- some _V ~_X
 # negated exists-quantifier
-~(?_V _X) |- °_V ~_X
+~(some _V _X) |- all _V ~_X

@@ -57,7 +57,7 @@ abstract class ModernLogic implements Logic {
     /**
      * Whether runtime type checks are enabled.
      */
-    private static /*final*/ boolean TYPE_CHECK = true;
+    private static /*final*/ boolean TYPE_CHECK = false;//true;
     /**
      * Enable or disable runtime type checks.
      */
@@ -279,6 +279,7 @@ abstract class ModernLogic implements Logic {
 	}
 	// ordinary (new) symbols
 	assert !("true".equals(signifier) || "false".equals(signifier)) : "true and false are in core signature and no ordinary symbols";
+	assert !("�".equals(signifier) || "?".equals(signifier)) : "all and some are in core signature and no ordinary symbols";
 
 	// test for syntactically legal <INTEGER_LITERAL> | <FLOATING_POINT_LITERAL>
 	//@todo could also move to an infinite coreInterpretation()
