@@ -115,6 +115,12 @@ public abstract class Values implements ValueFactory {
      *     <td><tt>orbital.math.Fraction.normalize</tt></td>
      *     <td>Use <code>"lazy"</code> for lazy normalization only when representative or query is invoked,
      *       <code>"eager"</code> for eager normalization after each operation.</td>
+     *   <!-- @internal lazy normalization prohibits concurrent access, since when
+     *    thread P1 calls p = x.numerator()
+     *    then thread P2 invokes an operation performing transparent normalization and cancelling of x
+     *    and then thread P1 calls q = x.denominator() again,
+     *    then p and q will come from inconsistent states.
+     *   -->
      *   </tr>
      *   <tr>
      *     <td><tt>orbital.math.Quotient.normalize</tt></td>
