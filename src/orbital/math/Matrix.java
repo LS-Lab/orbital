@@ -41,8 +41,8 @@ import java.util.NoSuchElementException;
  * </p>
  * <p>
  * If you intend to use <em>mutable</em> arithmetic elements, note the discussion of
- * mutations per reference vs. explicit cloning in {@link #set(int,int,Arithmetic)}
- * which generally holds for all operations setting elements.
+ * mutations per reference vs. explicit cloning in {@link Tensor#set(int[],Arithmetic)}
+ * which generally holds for all operations that set component values.
  * </p>
  * <p>
  * Also note that some few methods will change its instance and explicitly <code><span class="keyword">return</span> <span class="keyword">this</span></code>
@@ -69,7 +69,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     Dimension dimension();
 
     /**
-     * Returns the value at a position (i|j).
+     * Returns the component value at a position (i|j).
      * <p>
      * Of course, this method only has a meaning for free modules like vector spaces.
      * </p>
@@ -80,27 +80,17 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     Arithmetic/*>R<*/ get(int i, int j);
 
     /**
-     * Sets a value at a position (i|j).
+     * Sets a component value at a position (i|j).
      * <p>
      * Of course, this method only has a meaning for free modules like vector spaces.
      * </p>
      * @param i the row of the value to set.
      * @param j the column of the value to set.
-     * @param m the value to set for the element m<sub>i,j</sub> at position (i|j)
-     *  Depending upon the implementation, the value m might be kept per reference, if possible.
-     *  So if m is <em>mutable</em>, any changes to it could occur at the matrix, rendering it useless.
-     *  Since whether m is kept per reference is a matter of performance and subject to
-     *  free interpretation by the implementation class, you should not rely on such behaviour
-     *  to provoke inner state changes. Instead you should carefully avoid setting a value
-     *  by reference without cloning, if you intend to change its state, afterwards.
-     *  Explicitly cloning m prior to setting it as an element of this matrix is always safe,
-     *  as well as not keeping additional references to it.
-     *  If m is <em>immutable</em> (which should be the usual case), no such sources of
-     *  mistakes exist.
+     * @param vij the value to set for the element m<sub>i,j</sub> at position (i|j)
      * @throws UnsupportedOperationException if this matrix is constant and does not allow this operation.
      * @see #modCount
      */
-    void set(int i, int j, Arithmetic/*>R<*/ m) throws UnsupportedOperationException;
+    void set(int i, int j, Arithmetic/*>R<*/ vij) throws UnsupportedOperationException;
 
     // iterator-views
 	

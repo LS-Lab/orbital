@@ -14,25 +14,23 @@ package orbital.math;
  * </p>
  * <hr />
  * <table style="border: none">
- *   <caption>Operations on arithmetic objects for groups, R-vector spaces, rings, fields, R-algebras, etc.</caption>
+ *   <caption>Operations on arithmetic objects for groups, rings, fields, R-modules, R-algebras, etc.</caption>
  *   <tr>
  *     <td colspan="4">law of composition + (addition)</td>
  *   </tr>
  *   <tr>
- *     <td width="5%"></td>
- *     <td>add</td>
+ *     <td width="5%" rowspan="3"></td>
+ *     <td>{@link #add(Arithmetic) add}</td>
  *     <td>+:M×M&rarr;M; (a,b)&#8614;a+b</td>
  *     <td>for magmas</td>
  *   </tr>
  *   <tr>
- *     <td width="5%"></td>
- *     <td>minus</td>
+ *     <td>{@link #minus() minus}</td>
  *     <td>&minus;:M&rarr;M; a&#8614; &minus;a</td>
  *     <td>for groups</td>
  *   </tr>
  *   <tr>
- *     <td width="5%"></td>
- *     <td>subtract</td>
+ *     <td>{@link #subtract(Arithmetic) subtract}</td>
  *     <td>-:M×M&rarr;M; (a,b)&#8614;a-b = a+(&minus;b)</td>
  *     <td>for groups</td>
  *   </tr>
@@ -40,42 +38,37 @@ package orbital.math;
  *     <td colspan="4">law &sdot; (multiplication)</td>
  *   </tr>
  *   <tr>
- *     <td width="5%"></td>
- *     <td>multiply</td>
+ *     <td width="5%" rowspan="5"></td>
+ *     <td>{@link #multiply(Arithmetic) multiply}</td>
  *     <td>&sdot;:M×M&rarr;M; (a,b)&#8614;a&sdot;b</td>
  *     <td>law of composition for rings</td>
  *   </tr>
  *   <tr>
- *     <td width="5%"></td>
- *     <td>inverse</td>
+ *     <td>{@link #inverse() inverse}</td>
  *     <td><sup>-1</sup>:M&rarr;M; (a,b)&#8614;a<sup>-1</sup></td>
  *     <td>for fields</td>
  *   </tr>
  *   <tr>
- *     <td width="5%"></td>
- *     <td>divide</td>
- *     <td>&#8725;:M×M&rarr;M; (a,b)&#8614;a&#8725;b = a&sdot;b<sup>-1</sup></td>
+ *     <td>{@link #divide(Arithmetic) divide}</td>
+ *     <td>&#8725;:M×M&rarr;M; (a,b)&#8614;a&#8725;b = b<sup>-1</sup>&sdot;a</td>
  *     <td>for fields</td>
  *   </tr>
  *   <tr>
- *     <td width="5%"></td>
- *     <td>multiply</td>
- *     <td>&lowast;:R×M&rarr;M; (a,b)&#8614;a&lowast;b</td>
+ *     <td>{@link #scale(Arithmetic) scale}</td>
+ *     <td>&lowast;:R×M&rarr;M; (a,x)&#8614;a&lowast;x</td>
  *     <td>law of action for R-modules</td>
  *   </tr>
  *   <tr>
- *     <td width="5%"></td>
- *     <td>multiply</td>
- *     <td>·:M×M&rarr;F; (a,b)&#8614;a·b</td>
- *     <td>scalar-product for vector spaces</td>
+ *     <td>{@link Tensor#multiply(Tensor) multiply}</td>
+ *     <td>·:M×N&rarr;P; (a,b)&#8614;a·b</td>
+ *     <td>{@link Tensor#multiply(Tensor) inner product} for tensors</td>
  *   </tr>
  *   <tr>
- *     <td colspan="4">extended law ^ (power) is derived from
- *     multiplication</td>
+ *     <td colspan="4">extended law ^ (power)</td>
  *   </tr>
  *   <tr>
  *     <td width="5%"></td>
- *     <td>power</td>
+ *     <td>{@link #power(Arithmetic) power}</td>
  *     <td>^:M×M&rarr;M; (a,b)&#8614;a^b = a<sup>b</sup></td>
  *     <td>for rings,<br>requires &#13266; and exp in general case</br></td>
  *   </tr>
@@ -89,7 +82,7 @@ package orbital.math;
  * matrix or a vector resulting in different objects.
  * </p>
  * <p>
- * Also see the complete description of <a href="doc-files/AlgebraicStructures.html">Algebraic Structures</a>
+ * Also see the complete description of <a href="doc-files/AlgebraicStructures.html">algebraic structures</a>
  * related to the interface Arithmetic.
  * </p>
  * <hr />
@@ -149,7 +142,8 @@ public interface Arithmetic extends Normed {
     /**
      * 1.
      * @attribute neutral element for Operations.times
-     * @return the neutral element 1 for multiplication in this algebraic structure (if it is a true ring, or ...).
+     * @return the neutral element 1 for multiplication in this algebraic structure
+     * (if it is a true ring with 1, or ...).
      * @throws UnsupportedOperationException if this algebraic structure does not have a 1.
      * @post RES == OLD(RES) &and; this.getClass().isInstance(RES)
      */

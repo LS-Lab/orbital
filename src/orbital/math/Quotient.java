@@ -73,7 +73,7 @@ import orbital.logic.functor.Function;
  * Or get the complex field <b>C</b> as the quotient ring
  * <b>R</b>[X]/(X<sup>2</sup>+1)
  * <pre>
- * <span class="comment">// create elements in <b>C</b> &cong; <b>R</b>[X]/(X<sup>2</sup>+1)</span>
+ * <span class="comment">// create elements in <b>C</b> alias <b>R</b>[X]/(X<sup>2</sup>+1)</span>
  * <span class="keyword">final</span> <span class="Orbital">Polynomial</span>&lt;<span class="Orbital">Real</span>&gt; m =
  *     <span class="Orbital">Values</span>.asPolynomial(<span class="Orbital">Values</span>.valueOf(<span class="operator">new</span> <span class="primitiveType">double</span>[] {<span class="Number">1</span>,<span class="Number">0</span>,<span class="Number">1</span>}));
  * <span class="Orbital">Quotient</span>&lt;<span class="Orbital">Polynomial</span>&lt;<span class="Orbital">Real</span>&gt;&gt; a = <span class="Orbital">Values</span>.quotient(..., m);
@@ -82,7 +82,7 @@ import orbital.logic.functor.Function;
  * <span class="Orbital">Quotient</span>&lt;<span class="Orbital">Polynomial</span>&lt;<span class="Orbital">Real</span>&gt;&gt; i = <span class="Orbital">Values</span>.quotient(
  *     <span class="Orbital">Values</span>.asPolynomial(<span class="Orbital">Values</span>.valueOf(<span class="operator">new</span> <span class="primitiveType">double</span>[] {<span class="Number">0</span>,<span class="Number">1</span>})),
  *     m);
- * <span class="comment">// perform calculations in <b>C</b> &cong; <b>R</b>[X]/(X<sup>2</sup>+1)</span>
+ * <span class="comment">// perform calculations in <b>C</b> alias <b>R</b>[X]/(X<sup>2</sup>+1)</span>
  * <span class="Orbital">Arithmetic</span> c = a.add(b.multiply(a)).multiply(i);
  * </pre>
  * </p>

@@ -423,7 +423,7 @@ public final class Values {
 		public Arithmetic/*>R<*/ get(int i) { return v.get(i); }
 		public void set(int i, Arithmetic/*>R<*/ vi) { throw new UnsupportedOperationException(); }
 		protected void set(Arithmetic/*>R<*/ vs[]) { throw new UnsupportedOperationException(); }
-		public Iterator iterator() { return Setops.unmodifiableListIterator((ListIterator)v.iterator()); }
+		public ListIterator iterator() { return Setops.unmodifiableListIterator((ListIterator)v.iterator()); }
 		public boolean equals(Object b) { return v.equals(b); }
 		public int hashCode() { return v.hashCode(); }
 		public Object clone() { return v.clone(); }
@@ -576,7 +576,7 @@ public final class Values {
 		public void set(Arithmetic/*>R<*/ v[][]) { throw new UnsupportedOperationException(); }
 		public ListIterator getColumns() { return Setops.unmodifiableListIterator((ListIterator)m.getColumns()); }
 		public ListIterator getRows() { return Setops.unmodifiableListIterator((ListIterator)m.getRows()); }
-		public Iterator iterator() { return Setops.unmodifiableIterator(m.iterator()); }
+		public ListIterator iterator() { return Setops.unmodifiableListIterator(m.iterator()); }
 		public Vector/*<R>*/ getDiagonal() { return m.getDiagonal(); }
 		public boolean isSquare() { return m.isSquare(); }
 		public boolean isSymmetric() throws ArithmeticException{ return m.isSymmetric(); }
@@ -771,7 +771,7 @@ public final class Values {
 		 * @return <description>
 		 * @see orbital.math.Tensor#iterator()
 		 */
-		public Iterator iterator()
+		public ListIterator iterator()
 		{
 		    return t.iterator();
 		}
@@ -1220,42 +1220,7 @@ public final class Values {
 		public Arithmetic/*>R<*/ get(int i) { return m.get(rowOf(i),columnOf(i)); }
 		public void set(int i, Arithmetic/*>R<*/ v) { throw new UnsupportedOperationException(); }
 		protected void set(Arithmetic/*>R<*/ v[]) { throw new UnsupportedOperationException(); }
-		public Iterator iterator() { return new ListIterator() {
-			private final Iterator i = m.iterator();
-			// partly delegation to java.util.ListIterator interface
-
-			public void add(Object param1) {
-			    throw new UnsupportedOperationException();
-			}
-			public Object next() {
-			    return i.next();
-			}
-
-			public boolean hasNext() {
-			    return i.hasNext();
-			}
-			public void remove() {
-			    throw new UnsupportedOperationException();
-			}
-			public void set(Object param1) {
-			    throw new UnsupportedOperationException();
-			}
-			public int previousIndex() {
-			    throw new UnsupportedOperationException();
-			}
-			public Object previous() {
-			    throw new UnsupportedOperationException();
-			}
-			public int nextIndex() {
-			    throw new UnsupportedOperationException();
-			}
-
-			public boolean hasPrevious() {
-			    throw new UnsupportedOperationException();
-			}
-
-		    };
-		}
+		public ListIterator iterator() { return m.iterator(); }
 		public Object clone() { throw new UnsupportedOperationException("@xxx dunno"); }
 		public Vector/*<R>*/ insert(int i, Arithmetic/*>R<*/ b) { throw new UnsupportedOperationException(); }
 		public Vector/*<R>*/ insert(int i, Vector/*<R>*/ b) { throw new UnsupportedOperationException(); }

@@ -15,8 +15,8 @@ import java.util.NoSuchElementException;
  * Represents a tensor of any dimensions n<sub>0</sub>&times;n<sub>1</sub>&times;&#8230;&times;n<sub>r-1</sub>.
  * <p>
  * If you intend to use <em>mutable</em> arithmetic elements, note the discussion of
- * mutations per reference vs. explicit cloning in {@link Matrix#set(int,int,Arithmetic)}
- * which generally holds for all operations setting elements.</p>
+ * mutations per reference vs. explicit cloning in {@link #set(int[],Arithmetic)}
+ * which generally holds for all operations that set component values.</p>
  * <p>
  * Also note that some few methods will change its instance and explicitly <code><span class="keyword">return</span> <span class="keyword">this</span></code>
  * to allow chaining of structural changes,
@@ -37,7 +37,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
     // object-methods
 
     /**
-     * @post RES != RES && RES != this && RES.equals(this)
+     * @post RES&ne;RES &and; RES&ne;this &and; RES.equals(this)
      */
     Object clone();
 
@@ -46,6 +46,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
     /**
      * Get the rank of the tensor.
      * The rank is the number of dimensions needed as indices for the components of this tensor.
+     * It is the grade for the tensor algebra T(M) over the underlying module M.
      * @post RES&ge;0
      * @see Matrix#linearRank()
      */
@@ -69,6 +70,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      * <p>
      * Of course, this method only has a meaning for tensors of free modules like vector spaces.
      * </p>
+     * @param i the index i of the component value to get.
      * @pre valid(i) := (i.length == rank() &and; &forall;k 0&le;i[k]&le;dimensions()[k]-1)
      * @return t<sub>i[0].i[1],&#8230;i[i.length-1]</sub> &isin; R.
      * @internal see orbital.util.Utility#get(Object[],int[])
@@ -80,6 +82,27 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      * <p>
      * Of course, this method only has a meaning for tensors of free modules like vector spaces.
      * </p>
+     * <p>
+     * Depending upon the implementation, the value <var>vi</var>
+     * might be kept per reference, if possible. However, whether it
+     * is kept per reference is a matter of performance and subject to
+     * free interpretation by the implementation class. So if
+     * <var>vi</var> is <em>mutable</em>, and a tensor implementation
+     * decides to keep it per reference, any modifications of
+     * <var>vi</var> would also appear in that tensor, rendering it
+     * useless. Since every implementation is allowed to choose the
+     * tensor's internal data representation freely, you should not
+     * rely on such behaviour of mutable arithmetic objects to provoke
+     * inner state changes. Instead you should carefully avoid setting
+     * a value by reference without cloning, if you intend to change
+     * its state, afterwards.  Explicitly cloning <var>vi</var> prior
+     * to setting it as an element of this tensor is always safe
+     * (provided that you do not keep additional references to
+     * it). If, however, <var>vi</var> is <em>immutable</em> (which
+     * should be the usual case), no such sources of mistakes exist.
+     * </p>
+     * @param i the index i of the component value to set.
+     * @param vi the value to set for the component v<sub>i</sub> at position i.
      * @pre valid(i)
      * @throws UnsupportedOperationException if this tensor is constant and does not allow modifications.
      * @see #modCount
@@ -133,7 +156,6 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      * @see #setSubTensor(int,int,Tensor)
      * @see orbital.logic.functor.Functionals#bindFirst(orbital.logic.functor.BinaryFunction, Object)
      * @see orbital.logic.functor.Functionals#bindSecond(orbital.logic.functor.BinaryFunction, Object)
-     * @xxx rename, what's a "sub"-tensor of lesser rank called
      */
     Tensor/*<R>*/ subTensor(int level, int index);
     /**
@@ -199,7 +221,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      * @post Arrays.equals(RES.dimensions(), dimensions())
      *  	&& RES.get(i) == s&sdot;get(i)
      * @attribute associative
-     * @attribute neutral
+     * @attribute left-neutral (1)
      * @return s&lowast;this
      * @note once we have covariant return-types.
      */
@@ -234,7 +256,10 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      * </table>
      * @return the tensor product (or outer product) a&otimes;b.
      * @post RES.dimensions() = dimensions()&cup;b.dimensions()
-     * @note tensor product is only one multiplication on graded tensor algebra
+     * @note tensor product is only one multiplication on graded tensor algebra T(M).
+     *  Although it is always defined, a more "natural" multiplication on tensors of rank 2, for
+     *  example, is the {@link #multiply(Tensor) inner product} which therefore plays the role of
+     *  the default (though partial) ring multiplication.
      */
     Tensor/*<R>*/ tensor(Tensor/*<R>*/ b);
 
@@ -242,10 +267,8 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
 	
     /**
      * Returns this tensor transposed.
-     * Also distinguished via tensor.multiply(matrix) or matrix.multiply(tensor) instead.
-     * @see Matrix#transpose()
      */
-    //@todo ? Matrix/*<R>*/ transpose();
+    //@todo ? Tensor/*<R>*/ transpose();
 
 
     // Structural modifications

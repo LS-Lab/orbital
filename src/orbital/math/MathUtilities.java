@@ -258,7 +258,7 @@ public final class MathUtilities {
     /**
      * n-ary and extended gcd.
      * @param elements an array {a<sub>0</sub>,...,a<sub>n-1</sub>} &sube; R whose gcd to determine.
-     * @pre &not;(a==0 &and; b==0)
+     * @pre &not;&forall;i elements[i]==0
      * @return an array {s<sub>0</sub>,...,s<sub>n-1</sub>, d} &sube; R where
      *  d = gcd({a<sub>0</sub>,...,a<sub>n-1</sub>}) = &sum;<sub>i=0,...,n-1</sub> s<sub>i</sub>*a<sub>i</sub>.
      * @todo use documentation from gcd(Euclidean, Euclidean)
@@ -335,11 +335,10 @@ public final class MathUtilities {
      * This implementation uses the non-extended Euclidian algorithm.
      * </p>
      * @pre &not;(a==0 &and; b==0)
-     * @return gcd(a,b) := inf(a,b) with divides as a partial order (N,|).
+     * @return gcd(a,b) := inf(a,b) with | (divides) as a partial order on <b>N</b>.
      * @note the father of all algorithms: Euclid.
-     * @note the mother of all data structures: ADT Euclidean ring
+     * @note the mother of all data structures: Euclidean rings
      * @internal note see extended Euclidian algorithm ELBA (Euclid-Lagrange-Berlekamp Algorithm) for a decomposition into g=ggT(a,b),r,s in R such that g = r*a + s*b
-     * @todo can we generalize this algorithm such that it works for any Euclidian ring?
      * @todo optimize
      * @has time complexity gcd&isin;O(&#13266;(max{||a||, ||b||}))
      */
@@ -436,7 +435,7 @@ public final class MathUtilities {
      * a certain probability depending on the value certainty.
      * 
      * @param strength - bitlength for keys.
-     * @param certainty - the probability for prime exceeds 1 - 1/2<sup>certainty</sup>.
+     * @param certainty - the probability for being prime exceeds 1 - 1/2<sup>certainty</sup>.
      * @param randSource - the Random-Source necessary to generate primes, should be an instance of SecureRandom.
      * @param strongPrime - true to produce cryptographically strong primes where (p-1)/2 is prime again.
      */
@@ -444,46 +443,46 @@ public final class MathUtilities {
 	BigInteger p;
 	p = new BigInteger(strength, certainty, randSource);
 	if (strongPrime) {
-
-	    // check if (p-1)/2 is prime, too?
+	    // ensure that (p-1)/2 is not prime, as well
 	    while (!p.subtract(BigInteger.valueOf(1)).shiftRight(1).isProbablePrime(certainty))
 		p = new BigInteger(strength, certainty, randSource);
 	    assert isPrime(p) : "strong condition: prime";
 
-	    // check whether p-1 has a big prime factor
-	    // check whether p+1 has a big prime factor
+	    //@todo check whether p-1 has a big prime factor
+	    //@todo check whether p+1 has a big prime factor
 	} 
 	return p;
     } 
 
     /**
      * Really check whether a BigInteger is prime.
-     * A number is prime, if its absolute is not evenly dividibale by any number
-     * other than 1 (and himself of course).
-     * Runtime is long.
+     * A number is prime, if its absolute is not evenly divisible by any number
+     * other than 1 (and itself of course).
+     * Runtime of this brute force implementation is long.
      * <p>
      * If you have all factors d that divide p evenly and are d&le;&radic;(p), then
      * you can get the complements p/d.
      * To test whether p is prime, you check all d that divide p evenly
-     * with d&le;&radic;(p)&le;t&le;p. If you cannot calc sqrts (as with BigNumbers)
-     * one must find a clever t. Since with p having bitlength n, then
+     * with d&le;&radic;(p)&le;t&le;p. If you cannot calculate squarer roots (as with BigNumbers)
+     * you must find a clever t. Since with p having bitlength n, then
      * p&le;2<sup>n+1</sup>, therefore &radic;(p)&le;2<sup>(n+1)/2</sup>=:t.
-     * So all d's you need to check for dividability are those with
+     * So all d's that you need to check for divisibility are those with
      * bitlength&le;(n+1)/2.
      * <p>
      * The d's starting at 3 will be increased by 4, 2, 2, 2, and again
-     * 4, 2, 2, 2 because those numbers dividable by 2 and 5 are already
+     * 4, 2, 2, 2 because those numbers divisible by 2 and 5 are already
      * checked for earlier.
+     * @see BigInteger#isProbablePrime(int)
      */
     public static boolean isPrime(BigInteger val) {
 	BigInteger p = val.abs();
 	if (p.equals(ONE))
 	    return false;
-	if (p.equals(TWO) || p.equals(FIVE))
+	else if (p.equals(TWO) || p.equals(FIVE))
 	    return true;
-	if (!p.testBit(0))	  // /2 ?
+	else if (!p.testBit(0))	  // /2 ?
 	    return false;
-	if (p.remainder(FIVE).equals(ZERO))	   // /5 ?
+	else if (p.remainder(FIVE).equals(ZERO))	   // /5 ?
 	    return false;
 
 	/* BigInteger sqrt = p.pow((double)1/2); */

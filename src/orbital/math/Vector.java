@@ -66,8 +66,8 @@ import java.util.NoSuchElementException;
  * &forall;&lambda;,&mu;&isin;R, v,w&isin;V.
  * <p>
  * If you intend to use <em>mutable</em> arithmetic elements, note the discussion of
- * mutations per reference vs. explicit cloning in {@link Matrix#set(int,int,Arithmetic)}
- * which generally holds for all operations setting elements.</p>
+ * mutations per reference vs. explicit cloning in {@link Tensor#set(int[],Arithmetic)}
+ * which generally holds for all operations that set component values.</p>
  * <p>
  * Also note that some few methods will change its instance and explicitly <code><span class="keyword">return</span> <span class="keyword">this</span></code>
  * to allow chaining of structural changes,

@@ -59,10 +59,6 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractArith
 	return false;
     } 
 
-    public boolean equals(Object o, Real tolerance) {
-	return Metric.INDUCED.distance(this, (Tensor)o).compareTo(tolerance) < 0;
-    }
-
     public int hashCode() {
 	//TODO: can we use Utility.hashCodeAll(Object) as well?
 	int hash = 0;
@@ -417,7 +413,6 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractArith
 	Utility.pre(Arrays.equals(dimensions(),B.dimensions()), "Tensor A+B only defined for equal dimensions (except purely symbolical)");
 	Tensor/*<R>*/ ret = newInstance(dimensions());
 
-	//TODO: cache Dimension dim = dimension(); in all these methods
 	// component-wise
 	for (Combinatorical index = Combinatorical.getPermutations(dimensions()); index.hasNext(); ) {
 	    int[] i = index.next();
