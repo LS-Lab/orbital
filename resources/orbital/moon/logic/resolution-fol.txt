@@ -75,10 +75,10 @@ all a r(a,a) , all a all b all c (r(a,c)&r(b,c)=>r(a,b)) |= all a all b all c (r
 #
 # quantifier Logic Square
 #
-# °x A	 --contrary---	°x ~A==~?x A
+# Â°x A	 --contrary---	Â°x ~A==~?x A
 #   |	     contra	  |
 #   v	     dictory	  v
-# ?x A	-sub contrary-	?x ~A==~°x A
+# ?x A	-sub contrary-	?x ~A==~Â°x A
 
 
 # top left to down left sub alternative

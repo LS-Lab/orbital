@@ -154,7 +154,7 @@ public class ClassicalLogic extends ModernLogic {
      * @internal note reader.read() does not terminate for UTF-16. Seems JDK BugID
      * @internal however our UTF-8 does not start with three strange bytes, as for Notepad.exe.
      */
-    private static final String DEFAULT_CHARSET = "UTF-8";
+    static final String DEFAULT_CHARSET = "UTF-8";
 
     /**
      * The prefix to the resources.
@@ -2211,7 +2211,11 @@ public class ClassicalLogic extends ModernLogic {
 	    InputStream is = logic.getClass().getResourceAsStream(resources + relativeName);
 	    if (is == null)
 		throw new java.util.MissingResourceException("missing file resource: '" + resources + relativeName +"'", resources, relativeName);
-	    return new InputStreamReader(is);
+	    try {
+		return new InputStreamReader(is, "UTF-8");
+	    } catch (UnsupportedEncodingException ex) {
+		throw (RuntimeException) new RuntimeException("unsupported encoding while reading resource " + relativeName).initCause(ex);
+	    }
 	}
     }
 

@@ -14,8 +14,6 @@ import java.io.*;
  * @version 1.1, 2002-11-24
  */
 public class LambdaTest extends check.TestCase {
-    private static final String ENCODING = "utf-8";
-
     public static void main(String[] args) {
 	junit.textui.TestRunner.run(suite());
     }
@@ -29,7 +27,7 @@ public class LambdaTest extends check.TestCase {
 	try {
 	    ClassicalLogic logic = new ClassicalLogic();
 	    ClassicalLogic.proveAll(new InputStreamReader(this.getClass().getResourceAsStream(name),
-							  ENCODING),
+							  ClassicalLogic.DEFAULT_CHARSET),
 				    logic, allTrue);
 	}
 	catch (Throwable ex) {

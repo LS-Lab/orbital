@@ -13,7 +13,7 @@
 |- (~A=>~B)=>(B=>A)			# Ax3 contra positive
 |- [](A->B)->([]A->[]B)
 A, A=>B |- B				# Mp modus (ponendo) ponens
-## A |- []A					# necessitation "Gödelregel" (for global consequence)
+## A |- []A					# necessitation "GÃ¶delregel" (for global consequence)
 
 
 # additional

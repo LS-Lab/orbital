@@ -708,9 +708,11 @@
                 <include name="**/*.jar"/>
                 <include name="**/*.zip"/>
             </zipfileset>
+<!--
             <zipfileset dir="${dist}" includes="lib/*.jar" prefix="Orbital">
                 <exclude name="lib/orbital${version_brief}.jar"/>
             </zipfileset>
+-->
             <zipfileset dir="${bin}" prefix="Orbital/bin">
 	        <include name="**/*.bat"/>
 	        <include name="**/*.sh"/>
