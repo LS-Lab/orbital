@@ -507,6 +507,7 @@ public class ClassicalLogic extends ModernLogic {
 	     new NotationSpecification(500, "fx", Notation.PREFIX)},
 	    {typeSystem.set(),
 	     new NotationSpecification(500, "fx", Notation.PREFIX)},
+	    //@fixme debug why we print (s->truth)->truth as s->truth->truth
 	    {typeSystem.map(),
 	     new NotationSpecification(500, "xfx", Notation.INFIX)},
 	    {typeSystem.product(),
@@ -561,7 +562,7 @@ public class ClassicalLogic extends ModernLogic {
     private static final Signature _coreSignature = _coreInterpretation.getSignature();
 
     private final void parseTypeExpressionTest() {
-	//TYPE_CHECK = false;
+	TYPE_CHECK = false;
 	try {
 	    Symbol tau = new SymbolBase("tau", typeSystem.TYPE(), null, true);
 	    Symbol MAP = coreSignature().get("->", typeSystem.map(typeSystem.product(new Type[] {typeSystem.TYPE(), typeSystem.TYPE()}), typeSystem.TYPE()));
@@ -580,9 +581,9 @@ public class ClassicalLogic extends ModernLogic {
 								  })),
 				      InterpretationBase.EMPTY(coreSignature()));
 	    System.err.println(t);
-	    t = parseTypeExpression("(\\\\s . (s->truth)->truth)");
-	    System.err.println(t);
 	    t = parseTypeExpression("(\\\\s . (s->truth))");
+	    System.err.println(t);
+	    t = parseTypeExpression("(\\\\s . (s->truth)->truth)");
 	    System.err.println(t);
 	    Symbol ALL2 = new SymbolBase("o", t);
 	    System.err.println(createAtomic(ALL2));
@@ -608,6 +609,84 @@ public class ClassicalLogic extends ModernLogic {
 		.initCause(ex);
 	}
     }
+    /**
+     * Determine the type to pass as parameter to a &Pi;-abstraction, for resulting in a type
+     * applicable to the given argument type.
+     * Thereby we try to unify the &Pi;-abstracted type term with the actual argument type,
+     * successively descending into the domains if necessary.
+     * @param argumentType the à priori required application type is
+     * the type of the argument passed to the expression of the given
+     * &Pi;-abstraction type.
+     * @return the application type actually passed as parameter to
+     * the &Pi;-abstraction, for accepting the given argument type.
+     * @internal we need to unify: For example, if &forall; : (\\s:*.(s&rarr;o)&rarr;o) and if f:i&rarr;o then &forall;(f) : o.
+     * @internal try to unify successively with all left prefixes: i.e. first with (s->t)->a then with s->t then with s.
+     */
+    private Type calculateParameterTypeForPiAbstraction(PiAbstractionType piabst, Type argumentType) {
+	Formula abstractedType = (Formula) ((Object[])piabst.getComponent())[1];
+	while (true) {
+
+	    /**
+	     * Converts a type to a formula representing a type.
+	     * @version 1.1, 2003-02-05
+	     * @author Andr&eacute; Platzer
+	     * @see LogicParser#asType(Expression)
+	     */
+	    class TypeToFormula implements Function {
+		public Object apply(Object o) {
+		    if (o instanceof Type.Composite) {
+			try {
+			    Type.Composite c = (Type.Composite)o;
+			    return compose(createAtomic(symbolFor(c.getCompositor(),
+								  Types.declaredTypeOf((Functor)c.getCompositor()))),
+					   (Expression[])
+					   ((Collection)
+					    Functionals.map(this, Utility.asCollection(c.getComponent())))
+					   //@internal first of all Functionals.map has ArrayStoreException. Second, getComponent() does not need to be an array, but can also be a Type.
+					   .toArray(new Expression[0])
+					   );
+			}
+			catch (ParseException ex) {
+			    throw new InnerCheckedException(ex);
+			}
+			catch (IntrospectionException ex) {
+			    throw new InnerCheckedException(ex);
+			}
+		    } else
+			return createAtomic(symbolFor(o, typeSystem.TYPE()));
+		}
+		private final Symbol symbolFor(Object o, Type type) {
+		    Symbol s = coreSignature().get(o.toString(),type);
+		    if (s == null)
+			throw new IllegalArgumentException("no such symbol " + o + " : " + type);
+		    else
+			return s;
+		}
+	    }
+
+	    // the required application type
+	    final Formula reqApType = (Formula) new TypeToFormula().apply(argumentType);
+	    System.err.println("unify " + reqApType + "\n  and " + abstractedType);
+	    final Substitution mu = Substitutions.unify(Arrays.asList(new Object[] {
+		reqApType,
+		abstractedType
+	    }));
+	    System.err.println("  is " + mu);
+	    if (mu != null) {
+		// the application type actually passed as parameter to the &Pi;-abstraction.
+		final Type parameterApType = LogicParser.myasType((Expression)mu.apply(createAtomic(piabst.getVariable())), coreSignature());
+		logger.log(Level.FINEST, "compositor of type {0} applied to the arguments of type{1} (= {2}). Result has 'instantiated' type {3} by parameter {4}.", new Object[] {piabst, argumentType, reqApType, piabst.apply(parameterApType), parameterApType});
+		return parameterApType;
+	    } if (abstractedType instanceof Expression.Composite
+		  && ((Expression.Composite)abstractedType).getCompositor() == typeSystem.map())
+		// move up one domain.
+		//@internal Corresponds to abstractedType = abstractedType.domain();
+		abstractedType = ((Formula[]) ((Expression.Composite)abstractedType).getComponent())[0];
+	    else
+		throw new IllegalArgumentException("could not unify argument type " + argumentType + " for Pi-abstraction type " + piabst);
+	}
+    }	
+
     private final Type parseTypeExpression(String expression) {
 	try {
 	    LogicParser parser = new LogicParser(new StringReader(expression));
@@ -778,54 +857,9 @@ public class ClassicalLogic extends ModernLogic {
 	// handle special cases of term construction, first and before type checking occurs since the type &Pi;-abstractions need more flexibility
 	if (compositor.getType() instanceof PiAbstractionType) {
 	    final PiAbstractionType piabst = (PiAbstractionType) compositor.getType();
-	    //@xxx to be honest, we somehow need to unify? For example, if &forall; : (\\s:*.(s&rarr;o)&rarr;o) and if f:i&rarr;o then &forall;(f) : o.
-	    // but what to apply piabst on? On mu(s), n'est-ce pas?
-
-	    /**
-	     * Converts a type to a formula representing a type.
-	     * @version 1.1, 2003-02-05
-	     * @author Andr&eacute; Platzer
-	     * @see LogicParser#asType(Expression)
-	     */
-	    class TypeToFormula implements Function {
-		public Object apply(Object o) {
-		    if (o instanceof Type.Composite) {
-			try {
-			    Type.Composite c = (Type.Composite)o;
-			    return compose(createAtomic(coreSignature().get(c.getCompositor().toString(),
-									    Types.declaredTypeOf((Functor)c.getCompositor()))),
-					   (Expression[])
-					   ((Collection)
-					    Functionals.map(this, Utility.asCollection(c.getComponent())))
-					   //@internal first of all Functionals.map has ArrayStoreException. Second, getComponent() does not need to be an array, but can also be a Type.
-					   .toArray(new Expression[0])
-					   );
-			}
-			catch (ParseException ex) {
-			    throw new InnerCheckedException(ex);
-			}
-			catch (IntrospectionException ex) {
-			    throw new InnerCheckedException(ex);
-			}
-		    } else
-			return createAtomic(coreSignature().get(o.toString(),
-								typeSystem.TYPE()));
-		}
-	    }
-
-	    // the required application type
-	    final Formula reqApType = (Formula) new TypeToFormula().apply(Types.typeOf(arguments));
-	    System.err.println("unify " + reqApType + "\n  and " + ((Object[])piabst.getComponent())[1]);
-	    final Substitution mu = Substitutions.unify(Arrays.asList(new Object[] {
-		reqApType,
-		((Object[])piabst.getComponent())[1]
-	    }));
-	    System.err.println("  is " + mu);
-	    if (mu == null)
-		throw new Error("could not unify types");
 	    // the application type actually passed as parameter to the &Pi;-abstraction.
-	    final Type parameterApType = LogicParser.myasType((Expression)mu.apply(createAtomic(piabst.getVariable())), coreSignature());
-	    logger.log(Level.FINEST, "compositor {0} : {1} applied to the {2} arguments {3} : {4} (= {5}). Result has 'instantiated' type {6} by parameter {7}.", new Object[] {compositor, compositor.getType(), new java.lang.Integer(arguments.length), MathUtilities.format(arguments), Types.typeOf(arguments), reqApType, piabst.apply(parameterApType), parameterApType});
+	    final Type parameterApType = calculateParameterTypeForPiAbstraction(piabst, Types.typeOf(arguments));
+	    logger.log(Level.FINEST, "compositor {0} : {1} applied to the {2} arguments {3} : {4}. Result has 'instantiated' type {5} by parameter {6}.", new Object[] {compositor, compositor.getType(), new java.lang.Integer(arguments.length), MathUtilities.format(arguments), Types.typeOf(arguments), piabst.apply(parameterApType), parameterApType});
 	    //@todo could we exchange compositor by a formula that only differs in type, and thus avoid conversion formula?
 	    return super.compose(
 				 super.compose(new PiApplicationExpression(piabst,
