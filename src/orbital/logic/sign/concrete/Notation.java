@@ -30,6 +30,7 @@ import orbital.util.Utility;
 
 /**
  * Represents notational variants of functor applications.
+ * Defines the concrete syntax.
  * @see <a href="{@docRoot}/Patterns/Design/enum.html">typesafe enum pattern</a>
  * @version 1.0, 2000/08/25
  * @author  Andr&eacute; Platzer
@@ -161,8 +162,9 @@ public abstract class Notation implements Serializable, Comparable {
      * Specifies automatical functor-dependant notation as registered.
      * <p>
      * Delegates to the registered notation.
-     * Functors with registered default notation like +, -, *, /, ^ have a fixed precedence set.
-     * All others are treated as prefix.</p>
+     * Functors with registered default notation like +, -, *, /, ^ have a notation set.
+     * All unknown symbols are treated as prefix.
+     * </p>
      * @see #PREFIX
      * @see #INFIX
      * @see #POSTFIX
@@ -255,9 +257,10 @@ public abstract class Notation implements Serializable, Comparable {
      * Specifies best notation <code>"a*(b+f(c)) + d"</code> inserting brackets whenever necessary.
      * <p>
      * Decomposes functors into its components whenever possible
-     * building a function tree to optimize formatting.
-     * This more sophisticated notation is aware of the registered default notation
-     * and will only insert brackets for infix functors when necessary.</p>
+     * building a function tree to optimize formatting.  This more
+     * sophisticated notation is aware of the registered default
+     * notation and will only insert brackets when necessary.
+     * </p>
      * @see #AUTO
      * @xxx if the functor is itself composite then descend formatting it (with accurate brackets) as well.
      */
@@ -271,6 +274,7 @@ public abstract class Notation implements Serializable, Comparable {
 		Node root;
 		if (arg_ == null)
 		    arg_ = getPureParameters(functor);
+		// convert to function tree
 		Collection arg = Utility.asCollection(arg_);
 		if (arg == null || arg.size() == 0)
 		    root = functionTree(functor);
@@ -280,6 +284,7 @@ public abstract class Notation implements Serializable, Comparable {
 		    for (Iterator i = arg.iterator(); i.hasNext(); )
 			root.add(functionTree(i.next()));
 		} 
+		// traverse and format
 		return new Function/*<Node, String>*/() {
 			private StringBuffer sb;
 			public Object/*>String<*/ apply(Object/*>Node<*/ root) {
@@ -472,9 +477,6 @@ public abstract class Notation implements Serializable, Comparable {
      * thus displayed with compact (i.e. invisible) brackets.
      */
     private static boolean hasCompactBrackets(Object functor) {
-	if (true)
-	    //@xxx otherwise, this was responsible for the error "//@fixme debug why the thing ~(a->a) is displayed as ~a->a etc.  Use BESTFIX!" in ClassicalLogic
-	    return false;
 	// distinguish unary from binary registered functors
 	NotationSpecification spec = getNotation(functor);
 	return spec != null ? spec.associativity.length() == 1+1 : false;
@@ -575,7 +577,10 @@ public abstract class Notation implements Serializable, Comparable {
 	 */
 	public NotationSpecification(int precedence, String associativity, Notation notation, int arity) {
 	    this(precedence, associativity, notation);
-	    assert arity == associativity.length() : "associativity description must match arity";
+	    int assocArity = associativity.length() - 1;
+	    //@xxx instead of -1 should do -associativity.numberOf('f')
+	    if (arity != assocArity)
+		throw new IllegalArgumentException("associativity description " + associativity + " with " + assocArity + " arguments must match arity " + arity);
 	}
 	/**
 	 * Create a specification of a functor's notation with automatic notation resolution.
