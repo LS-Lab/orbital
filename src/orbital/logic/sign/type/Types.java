@@ -245,6 +245,8 @@ public final class Types {
     public static final String toTypedString(Typed s) {
 	return s == null
 	    ? "<null>"
-	    : s.toString() + ':' + s.getType() + (Logger.global.isLoggable(Level.ALL) && s instanceof Variable && ((Variable)s).isVariable() ? "[var]" : "");
+	    //@internal SymbolBase.toString() sometimes already prints like toTypedString, so we omit duplicate type descriptions, here
+	    : (s instanceof Symbol ? ((Symbol)s).getSignifier() : s.toString())
+	    + ':' + s.getType() + (Logger.global.isLoggable(Level.ALL) && s instanceof Variable && ((Variable)s).isVariable() ? "[var]" : "");
     }
 }// Types
