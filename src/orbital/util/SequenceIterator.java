@@ -12,6 +12,7 @@ import java.io.Serializable;
 
 import java.util.NoSuchElementException;
 import java.util.Arrays;
+import orbital.logic.functor.Functionals;
 
 /**
  * A SequenceIterator represents the logical concatenation of other iterators.
@@ -55,6 +56,7 @@ public class SequenceIterator implements Iterator, Serializable {
      */
     public SequenceIterator(List/*<Iterator>*/ iterators) {
         this(iterators.iterator());
+	assert Setops.all(iterators, Functionals.bindSecond(Utility.instanceOf, Iterator.class)) : iterators + " instanceof List<Iterator>";
     }
     /**
      * Create a new sequence iterator over an array of iterators.

@@ -48,6 +48,8 @@ public class SubstitutionImpl implements Substitution, Serializable {
      * @preconditions s[i] instanceof {@link Substitution.Matcher}.
      */
     public SubstitutionImpl(Collection/*_<Matcher>_*/ replacements) {
+	if (replacements == null)
+	    throw new NullPointerException("set of elementary replacements of a substituion cannot be " + replacements);
         this.replacements = replacements;
     }
     

@@ -40,7 +40,7 @@ public class IterativeDeepeningAStar extends DepthFirstBoundingSearch implements
     /**
      * Cost of cheapest node pruned, or <code>null</code> if we did not prune a node yet.
      * @serial
-     * @see IterativeDeepeningAStar#havePruned
+     * @todo @see IterativeDeepeningAStar#havePruned
      */
     private Real nextBound;
     /**

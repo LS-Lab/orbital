@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.HashMap;
 import java.util.TreeSet;
 import java.util.TreeMap;
@@ -109,7 +110,7 @@ import orbital.algorithm.Combinatorical;
  * Alonzo Church (1936) and Alan Turing (1936) simultaneously showed that &#8872; is <a href="../../algorithm/doc-files/computability.html#undecidable">undecidable</a>.
  * (Since the tautological formulas are <a href="../../algorithm/doc-files/computability.html#undecidable">undecidable</a>,
  *  and therefore satisfiable formulas are not even <a href=""../../algorithm/doc-files/computability.html#semi-decidable">semi-decidable</a>.)
- * <span class="@todo is Schöning sure?">As a corollary, consistency of formulas is also just semi-decidable.</span>
+ * <span class="@todo is Schï¿½ing sure?">As a corollary, consistency of formulas is also just semi-decidable.</span>
  * The first constructive proof for a sound and complete calculus for &#8872; was due to Robinson (1965).
  * </p>
  * <p>
@@ -136,10 +137,6 @@ import orbital.algorithm.Combinatorical;
  * @todo refactorize common ideas into a super class
  * @todo introduce &#407;ukasiewicz logic
  * @todo Especially provide forall as a functional (higher-order function) of lambda-operator then (@see note to orbital.logic.functor.Substitition)
- * @fixme we prove contradictious things with SEMANTIC_INFERENCE:
- *  |= (2+3<5)
- *  NOT|= (2+3<5) | a
- *  |= (2+3<7) | a
  */
 public class ClassicalLogic extends ModernLogic {
     private static final boolean PI_SYNTACTICAL_SUBSTITUTION = true;
@@ -188,6 +185,7 @@ public class ClassicalLogic extends ModernLogic {
 	    boolean normalForm = false;
 	    boolean verbose = false;
 	    boolean closure = false;
+	    boolean problem = false;
 	    String charset = null;
 
 	    ClassicalLogic logic = new ClassicalLogic();
@@ -199,8 +197,14 @@ public class ClassicalLogic extends ModernLogic {
 		    normalForm = true;
 		else if ("-closure".equals(arg[option]))
 		    closure = true;
-		else if ("-verbose".equals(arg[option]))
+		else if ("-verbose".equals(arg[option])) {
 		    verbose = true;
+		    InferenceMechanism mechanism = logic.getInferenceMechanism();
+		    if (mechanism.inference() instanceof orbital.moon.logic.resolution.ResolutionBase) {
+			((orbital.moon.logic.resolution.ResolutionBase) mechanism.inference()).setVerbose(verbose);
+		    }
+		} else if ("-problem".equals(arg[option]))
+		    problem = true;
 		else if (arg[option].startsWith("-charset=")) {
 		    charset = arg[option].substring("-charset=".length());
 		    System.out.println("using charset " + charset);
@@ -270,13 +274,13 @@ public class ClassicalLogic extends ModernLogic {
 			    } else
 				throw new AssertionError("none of the cases of which one occurs is true");
 			    rd = new InputStreamReader(logic.getClass().getResourceAsStream(resources + resName), DEFAULT_CHARSET);
-			    if (expected != proveAll(rd, logic, expected, normalForm, closure, verbose))
+			    if (expected != proveAll(rd, logic, expected, normalForm, closure, verbose, problem))
 				throw new LogicException("instantiated " + logic + " which does " + (expected ? "not support all conjectures" : "a contradictory conjecture") + " of " + resName + ". Either the logic is non-classical, or the resource file is corrupt.");
 			} else {
 			    rd = charset == null
 				? new FileReader(file)
 				: new InputStreamReader(new FileInputStream(file), charset);
-			    if (!proveAll(rd, logic, true, normalForm, closure, verbose))
+			    if (!proveAll(rd, logic, true, normalForm, closure, verbose, problem))
 				System.err.println("could not prove all conjectures");
 			    else
 				System.err.println("all conjectures were proven successfully");
@@ -304,7 +308,7 @@ public class ClassicalLogic extends ModernLogic {
 		Reader rd = null;
 		try {
 		    rd = new InputStreamReader(System.in);
-		    proveAll(rd, logic, true, normalForm, closure, verbose);
+		    proveAll(rd, logic, true, normalForm, closure, verbose, problem);
 		}
 		finally {
 		    if (rd != null)
@@ -324,7 +328,7 @@ public class ClassicalLogic extends ModernLogic {
     /**
      * @todo move content to the ResourceBundle.
      */
-    public static final String usage = "usage: [options] [all|none|properties|fol|<filename>|table]\n\tall\tprove important semantic-equivalence expressions\n\tnone\ttry to prove some semantic-garbage expressions\n\tproperties\tprove some properties of classical logic inference relation\n\tfol\tprove important equivalences of first-order logic\n\n\t<filename>\ttry to prove all expressions in the given file\n\ttable\tprint a function table of the expression instead\n\t-\tUse no arguments at all to be asked for expressions\n\t\tto prove.\noptions:\n\t-normalForm\tcheck the conjunctive and disjunctive forms in between\n\t-closure\tprint the universal/existential closures in between\n\t-inference=<inference_mechanism>\tuse ClassicalLogic.<inference_mechanism> instead of semantic inference\n\t-verbose\tbe more verbose (f.ex. print normal forms if -normalForm)\n\t-charset=<encoding>\tthe character set or encoding to use for reading files\n\nTo check whether A and B are equivalent, enter '|= A<->B'";
+    public static final String usage = "usage: [options] [all|none|properties|fol|<filename>|table]\n\tall\tprove important semantic-equivalence expressions\n\tnone\ttry to prove some semantic-garbage expressions\n\tproperties\tprove some properties of classical logic inference relation\n\tfol\tprove important equivalences of first-order logic\n\n\t<filename>\ttry to prove all expressions in the given file\n\ttable\tprint a function table of the expression instead\n\t-\tUse no arguments at all to be asked for expressions\n\t\tto prove.\noptions:\n\t-normalForm\tcheck the conjunctive and disjunctive forms in between\n\t-closure\tprint the universal/existential closures in between\n\t-inference=<inference_mechanism>\tuse ClassicalLogic.<inference_mechanism> instead of semantic inference\n\t-verbose\tbe more verbose (f.ex. print normal forms if -normalForm)\n\t-charset=<encoding>\tthe character set or encoding to use for reading files\n\t-problem\tparse a problem file, i.e. combine all lines into a single problem, instead of assuming single-line conjectures.\n\nTo check whether A and B are equivalent, enter '|= A<->B' or 'A == B'";
 
 
     
@@ -513,7 +517,6 @@ public class ClassicalLogic extends ModernLogic {
 	     new NotationSpecification(500, "fx", Notation.PREFIX)},
 	    {typeSystem.set(),
 	     new NotationSpecification(500, "fx", Notation.PREFIX)},
-	    //@fixme debug why we print (s->truth)->truth as s->truth->truth
 	    {typeSystem.map(),
 	     new NotationSpecification(500, "xfx", Notation.INFIX)},
 	    {typeSystem.product(),
@@ -551,7 +554,7 @@ public class ClassicalLogic extends ModernLogic {
 	    {Predicates.lessEqual,        // "=<"
 	     new NotationSpecification(700, "xfx", Notation.INFIX)},
 
-	    ///////	    {LogicFunctions.forall,       // "°"
+	    ///////	    {LogicFunctions.forall,       // ""
 	    ///////	     new NotationSpecification(900, "fy", Notation.PREFIX)},
 	    {LogicFunctions.exists,       // "?"
 	     new NotationSpecification(900, "fy", Notation.PREFIX)},
@@ -569,13 +572,12 @@ public class ClassicalLogic extends ModernLogic {
 	     new NotationSpecification(914, xfy, Notation.INFIX)},
 	    {LogicFunctions.or,           // "|"
 	     new NotationSpecification(916, xfy, Notation.INFIX)},
-	    //@fixme (a->b)->c gets formatted as a -> b -> c, just as a->(b->c)
 	    {LogicFunctions.impl,         // "->"
-	     new NotationSpecification(920, "xfx", Notation.INFIX)},
+	     new NotationSpecification(920, "xfy", Notation.INFIX)},
 	    {LogicFunctions.reverseImpl, // "<-"
 	     new NotationSpecification(920, "xfx", Notation.INFIX)},
 	    {LogicFunctions.equiv,        // "<->"
-	     new NotationSpecification(920, xfy, Notation.INFIX)}
+	     new NotationSpecification(921, xfy, Notation.INFIX)}
 	}, false, true, true);
     private static final Signature _coreSignature = _coreInterpretation.getSignature();
 
@@ -584,7 +586,7 @@ public class ClassicalLogic extends ModernLogic {
      * applicable to the given argument type.
      * Thereby we try to unify the &Pi;-abstracted type term with the actual argument type,
      * successively descending into the domains if necessary.
-     * @param argumentType the à priori required application type is
+     * @param argumentType the ï¿½priori required application type is
      * the type of the argument passed to the expression of the given
      * &Pi;-abstraction type.
      * @return the application type actually passed as parameter to
@@ -613,12 +615,12 @@ public class ClassicalLogic extends ModernLogic {
 	    // the required application type
 	    System.err.println(" combining " +  argumentType + "\n      " + abstractedType);
 	    final Formula reqApType = (Formula) new TypeToFormula().apply(argumentType);
-	    System.err.println("unify " + reqApType + "\n  and " + abstractedType);
+	    System.err.println("    unify " + reqApType + "\n      and " + abstractedType);
 	    final Substitution mu = Substitutions.unify(Arrays.asList(new Object[] {
 		reqApType,
 		abstractedType
 	    }));
-	    System.err.println("  is " + mu);
+	    System.err.println("      is " + mu);
 	    if (mu != null) {
 		// the application type actually passed as parameter to the &Pi;-abstraction.
 		final Type parameterApType = LogicParser.myasType((Expression)mu.apply(createAtomic(piabst.getVariable())), coreSignature());
@@ -844,7 +846,7 @@ public class ClassicalLogic extends ModernLogic {
 	    public Object apply(Object f) {
 		throw new LogicException("quantified formulas only have a semantic value with respect to a possibly infinite domain. They are available for inference, but they cannot be interpreted with finite means.");
 	    }
-	    public String toString() { return "°"; }
+	    public String toString() { return ""; }
 
 	    private final Type computeTypeDeclaration() {
 		//@todo this causes an initialization dependency cycle. First use non-typed quantifier (or none at all), and only add this generically typed quantifier lateron
@@ -1479,7 +1481,7 @@ public class ClassicalLogic extends ModernLogic {
 		     * semantic inference, anyway.
 		     */
 		    private Signature relevantSignatureOf(Formula F) {
-			Collection boundOnly = new HashSet(F.getBoundVariables());
+			Collection boundOnly = new LinkedHashSet(F.getBoundVariables());
 			boundOnly.removeAll(F.getFreeVariables());
 			Signature sig = new SignatureBase(F.getSignature());
 			sig.removeAll(boundOnly);
@@ -1509,6 +1511,12 @@ public class ClassicalLogic extends ModernLogic {
 	};
     public static final InferenceMechanism RESOLUTION2_INFERENCE = new InferenceMechanism("RESOLUTION2") {
 	    private final Inference _resolution = new orbital.moon.logic.resolution.SearchResolution();
+	    Inference inference() {
+		return _resolution;
+	    }
+	};
+    public static final InferenceMechanism RESOLUTION3_INFERENCE = new InferenceMechanism("RESOLUTION3") {
+	    private final Inference _resolution = new orbital.moon.logic.resolution.SaturationResolution();
 	    Inference inference() {
 		return _resolution;
 	    }
@@ -1559,7 +1567,9 @@ public class ClassicalLogic extends ModernLogic {
 	}
 
 	// interpret sigmaComb in all possible ways
-	return new Iterator() {
+	return sigmaComb.isEmpty()
+	    ? Collections.singleton(new InterpretationBase(sigma, new HashMap())).iterator()
+	    : new Iterator() {
 		final Combinatorical comb = Combinatorical.getPermutations(sigmaComb.size(), 2, true);
 		public Object next()
 		{
@@ -1638,8 +1648,8 @@ public class ClassicalLogic extends ModernLogic {
 	 * Since every formula has an equivalent in DNF the transformation itself must be NP-complete.
 	 * </p>
 	 * @see "Rolf Socher-Ambrosius. Boolean algebra admits no convergent term rewriting system, Springer Lecture Notes in Computer Science 488, RTA '91."
-	 * @internal see mathematische Berechnungstheorie vermittelt, daß es nicht immer möglich ist, mit einer endlichen Folge von Transformationen je zwei beliebig gewählte Ausdrücke in ihre Normalform zu überführen.
-	 * @todo Sollten DNF/KNF von "innen nach außen" erstellt werden?
+	 * @internal see mathematische Berechnungstheorie vermittelt, daï¿½es nicht immer mï¿½lich ist, mit einer endlichen Folge von Transformationen je zwei beliebig gewï¿½lte Ausdrcke in ihre Normalform zu berfhren.
+	 * @todo Sollten DNF/KNF von "innen nach auï¿½n" erstellt werden?
 	 * @preconditions true
 	 * @postconditions RES &equiv; f
 	 * @attribute time complexity NP-complete
@@ -1651,13 +1661,13 @@ public class ClassicalLogic extends ModernLogic {
 	    try {
 		// eliminate derived junctors not in the basis (&forall;,&and;,&or;&not;)
 		if (DNFeliminate == null)
-		    DNFeliminate = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream(resources + "trs/DNF/eliminate.trs")), logic);
+		    DNFeliminate = readTRS(readResource("trs/dnf/eliminate.trs"), logic);
 		f = (Formula) Functionals.fixedPoint(DNFeliminate, f);
 		// simplification part (necessary and does not disturb local confluency?)
 		if (simplifying && DNFSimplification == null)
 		    DNFSimplification =
 			Setops.union(
-				     readTRS(new InputStreamReader(logic.getClass().getResourceAsStream(resources + "trs/DNF/simplify.trs")), logic).getReplacements(),
+				     readTRS(readResource("trs/dnf/simplify.trs"), logic).getReplacements(),
 				     Arrays.asList(new Object[] {
 					 // necessary and does not disturb local confluency? conditional commutative (according to lexical order)
 					 new LexicalConditionalUnifyingMatcher(logic.createExpression("_X2&_X1"), logic.createExpression("_X1&_X2"), logic.createAtomicLiteralVariable("_X1"), logic.createAtomicLiteralVariable("_X2")),
@@ -1666,7 +1676,7 @@ public class ClassicalLogic extends ModernLogic {
 				     }));
 		// transform to DNF part
 		if (DNFtrs == null)
-		    DNFtrs = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream(resources + "trs/DNF/transformToDNF.trs")), logic);
+		    DNFtrs = readTRS(readResource("trs/dnf/transformToDNF.trs"), logic);
 		//@todo simplifying conditional rules: commutative with lexical sort, etc.
 		return (Formula) Functionals.fixedPoint(simplifying ? Substitutions.getInstance(new ArrayList(Setops.union(DNFSimplification, DNFtrs.getReplacements()))) : DNFtrs, f);
 	    } catch (ParseException ex) {
@@ -1694,13 +1704,13 @@ public class ClassicalLogic extends ModernLogic {
 	    try {
 		// eliminate derived junctors not in the basis (&forall;,&and;,&or;&not;)
 		if (CNFeliminate == null)
-		    CNFeliminate = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream(resources + "trs/CNF/eliminate.trs")), logic);
+		    CNFeliminate = readTRS(readResource("trs/cnf/eliminate.trs"), logic);
 		f = (Formula) Functionals.fixedPoint(CNFeliminate, f);
 		// simplification part (necessary and does not disturb local confluency?)
 		if (simplifying && CNFSimplification == null)
 		    CNFSimplification =
 			Setops.union(
-				     readTRS(new InputStreamReader(logic.getClass().getResourceAsStream(resources + "trs/CNF/simplify.trs")), logic).getReplacements(), 
+				     readTRS(readResource("trs/cnf/simplify.trs"), logic).getReplacements(), 
 				     Arrays.asList(new Object[] {
 					 // necessary and does not disturb local confluency? conditional commutative (according to lexical order)
 					 new LexicalConditionalUnifyingMatcher(logic.createExpression("_X2&_X1"), logic.createExpression("_X1&_X2"), logic.createAtomicLiteralVariable("_X1"), logic.createAtomicLiteralVariable("_X2")),
@@ -1711,7 +1721,7 @@ public class ClassicalLogic extends ModernLogic {
 				     }));
 		// transform to CNF part
 		if (CNFtrs == null)
-		    CNFtrs = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream(resources + "trs/CNF/transformToCNF.trs")), logic);
+		    CNFtrs = readTRS(readResource("trs/cnf/transformToCNF.trs"), logic);
 		return (Formula) Functionals.fixedPoint(simplifying ? Substitutions.getInstance(new ArrayList(Setops.union(CNFSimplification, CNFtrs.getReplacements()))) : CNFtrs, f);
 	    } catch (ParseException ex) {
 		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
@@ -1746,7 +1756,7 @@ public class ClassicalLogic extends ModernLogic {
 		F = (Formula) Functionals.fixedPoint(CNFeliminate, F);
 		// negation normal form transform TRS
 		if (NegationNFTransform == null)
-		    NegationNFTransform = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream(resources + "trs/negationNF.trs")), logic);
+		    NegationNFTransform = readTRS(readResource("trs/negationNF.trs"), logic);
 		return (Formula) Functionals.fixedPoint(NegationNFTransform, F);
 	    } catch (ParseException ex) {
 		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
@@ -1765,6 +1775,7 @@ public class ClassicalLogic extends ModernLogic {
 	 * The contradictory set of clauses is {&empty;}={&#9633;}
 	 * while the tautological set of clauses is {}.
 	 * </p>
+	 * @deprecated Use {@link orbital.moon.logic.resolution.Clause.CONTRADICTION} instead.
 	 */
 	public static final Set/*_<Formula>_*/ CONTRADICTION = Collections.EMPTY_SET;
 
@@ -1779,7 +1790,11 @@ public class ClassicalLogic extends ModernLogic {
 	 * </p>
 	 * @param simplifying Whether or not to use simplified CNF for calculating clausal forms.
 	 * @todo assert
-	 * @todo move to orbital.moon.logic.resolution.?
+	 * @internal cannot currently move to orbital.moon.logic.resolution. because of direct access to LogicFunctions.and
+	 * @see orbital.logic.moon.resolution.ClausalFactory#asClausalSet(Formula)
+	 * @deprecated Prefer to use the more general method
+	 *  {@link orbital.logic.moon.resolution.ClausalFactory#asClausalSet(Formula)}
+	 *  instead.
 	 */
 	public static final Set/*_<Set<Formula>>_*/ clausalForm(Formula f, boolean simplifying) {
 	    try {
@@ -1858,7 +1873,7 @@ public class ClassicalLogic extends ModernLogic {
 	}
 
 	private static final Set singleton(Object o) {
-	    Set r = new HashSet();
+	    Set r = new LinkedHashSet();
 	    r.add(o);
 	    return r;
 	}
@@ -1871,7 +1886,7 @@ public class ClassicalLogic extends ModernLogic {
  	 */
  	static final Signature clausalFreeVariables(Set/*_<Formula>_*/ clause) {
  	    // return banana (|&empty;,&cup;|) (map ((&lambda;x)x.freeVariables()), clause)
- 	    Set freeVariables = new HashSet();
+ 	    Set freeVariables = new LinkedHashSet();
  	    for (Iterator i = clause.iterator(); i.hasNext(); )
  		freeVariables.addAll(((Formula)i.next()).getVariables());
  	    return new SignatureBase(freeVariables);
@@ -1889,7 +1904,7 @@ public class ClassicalLogic extends ModernLogic {
 		if (QuantifierDropTransform == null) QuantifierDropTransform = Substitutions.getInstance(Arrays.asList(new Object[] {
 		    //@xxx note that A should be a metavariable for a formula
 		    //@fixme this does not work for typed quantifiers
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("°_X1 _A"), logic.createExpression("_A")),
+		    Substitutions.createSingleSidedMatcher(logic.createExpression("_X1 _A"), logic.createExpression("_A")),
 		    Substitutions.createSingleSidedMatcher(logic.createExpression("?_X1 _A"), logic.createExpression("_A")),
 		}));
 		return (Formula) Functionals.fixedPoint(QuantifierDropTransform, F);
@@ -2087,7 +2102,7 @@ public class ClassicalLogic extends ModernLogic {
 	 * @todo to ClassicalLogic.Utilities?
 	 */
 	public static final Formula negation(Formula F) {
-	    // used duplex negatio est affirmatio (optimizable)
+	    // check for applicability of duplex negatio est affirmatio (optimizable)
 	    if ((F instanceof Composite)) {
 		Composite f = (Composite) F;
 		Object    g = f.getCompositor();
@@ -2124,6 +2139,13 @@ public class ClassicalLogic extends ModernLogic {
 	    }
 	}
 
+	private static final Reader readResource(String relativeName)
+	    throws java.util.MissingResourceException {
+	    InputStream is = logic.getClass().getResourceAsStream(resources + relativeName);
+	    if (is == null)
+		throw new java.util.MissingResourceException("missing file resource: '" + resources + relativeName +"'", resources, relativeName);
+	    return new InputStreamReader(is);
+	}
     }
 
 
@@ -2184,7 +2206,7 @@ public class ClassicalLogic extends ModernLogic {
 	     * Stored internally as an array of length-2 arrays.
 	     * @invariants sorted, i.e. precedenceOf[i] < precedenceOf[i+1]
 	     */
-	    {LogicFunctions2.forall,       // "°"
+	    {LogicFunctions2.forall,       // ""
 	     new NotationSpecification(900, "fy", Notation.PREFIX)}
 	}, false, true, true)
 	);

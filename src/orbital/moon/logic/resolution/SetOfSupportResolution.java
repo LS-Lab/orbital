@@ -26,6 +26,10 @@ import java.util.logging.Level;
  * @author  Andr&eacute; Platzer
  */
 public class SetOfSupportResolution extends ResolutionBase {
+    /**
+     * Whether to use indexing for the clausal sets knowledgebase and set of support.
+     */
+    static final boolean INDEXING = true;
 
     /**
      * Perform a <em>fair</em> selection of one clause out of S.
@@ -41,17 +45,51 @@ public class SetOfSupportResolution extends ResolutionBase {
 	return C;
     }
 
+
+    /**
+     * Delete superfluous clauses.
+     * Apply any deletion strategies to the specified sets of clauses R, U and S.
+     * @param newResolvents the new resolvents just resolved most recently.
+     * @param usable the set of usable clauses in the knowledgebase which are not in the set of support.
+     * @param setOfSupport the current set of support prior to adding newResolvents.
+     * @internal run-time is heavily dependent on the precise order of operations (by factors of 4).
+     */
+    protected void deletion(ClausalSet newResolvents, ClausalSet usable, ClausalSet setOfSupport) {
+	//@internal first letting setOfSupport subsume newResolvents seems better, perhaps because setOfSupport already survived a longer time so it is more likely for them to be more general in the subsumption hierarchy.
+	newResolvents.removeAllSubsumedBy(setOfSupport);
+	setOfSupport.removeAllSubsumedBy(newResolvents);
+	if (true)
+	    return;
+	// remove tautologies and handle contradictions
+    	// for all clauses F&isin;newResolvents
+    	for (Iterator i = newResolvents.iterator(); i.hasNext(); ) {
+	    final Clause F = (Clause) i.next();
+	    if (F.isElementaryValid())
+		// if F is obviously valid, forget about it for resolving a contradiction
+		i.remove();
+	}
+    }
+
     /**
      * @param knowledge base W assumed consistent.
      * W is kept in clausal normal form, and thus contains sets of literals.
      * @param query the initial set of support.
      * @preconditions knowledgebase is satisfiable
+     * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
      */
     protected boolean prove(final ClausalSet knowledgebase, final ClausalSet query) {
 	assert !knowledgebase.contains(Clause.CONTRADICTION) : "knowledgebase W assumed consistent, so contains no elementary contradiction";
 	assert !query.contains(Clause.CONTRADICTION) : "query contains no elementary contradiction any more";
-	ClausalSet usable = knowledgebase;
-	ClausalSet setOfSupport = query;
+	ClausalSet usable = INDEXING
+	    ? new IndexedClausalSetImpl(knowledgebase)
+	    : getClausalFactory().createClausalSet(knowledgebase);
+	ClausalSet setOfSupport = INDEXING
+	    ? new IndexedClausalSetImpl(query)
+	    : getClausalFactory().createClausalSet(query);
+	setOfSupport.removeAllSubsumedBy(setOfSupport);
+	usable.removeAllSubsumedBy(setOfSupport);
+	usable.removeAllSubsumedBy(usable);
+
 	while (!setOfSupport.isEmpty()) {
 	    // fairly choose any clause C&isin;S
 	    final Clause C = selectClause(setOfSupport);
@@ -60,15 +98,18 @@ public class SetOfSupportResolution extends ResolutionBase {
 	    usable.add(C);
 
 	    // the set of resolvents obtained from resolution of C with any D that are new to us
-	    Collection/*_<Clause>_*/ newResolvents = new LinkedList();
+	    ClausalSet newResolvents = getClausalFactory().newClausalSet();
 	    // whether C has been resolved with any D
 	    boolean resolvable = false;
 	    // choose any clause D&isin;U&cup;S
-	    for (Iterator i2 = new SequenceIterator(new Iterator[] {usable.iterator(), setOfSupport.iterator()});
+	    for (Iterator i2 = new SequenceIterator(new Iterator[] {
+		    usable.getProbableComplementsOf(C),
+		    setOfSupport.getProbableComplementsOf(C)
+	        });
 		 i2.hasNext(); ) {
 		final Clause D = (Clause) i2.next();
 		// try to resolve C with D
-		for (Iterator resolvents = C.resolveWithVariant(D); resolvents.hasNext(); ) {
+		for (Iterator resolvents = ((ClauseImpl)C).resolveWithVariantFactors(D); resolvents.hasNext(); ) {
 		    resolvable = true;
 		    final Clause R = (Clause)resolvents.next();
 		    if (usable.contains(R) || setOfSupport.contains(R)) {
@@ -81,17 +122,22 @@ public class SetOfSupportResolution extends ResolutionBase {
 		    }
 		}
 	    }
+	    //assert !newResolvents.isEmpty() || !resolvable: "there are no resolvents => !resolvable";
 	    if (!resolvable) {
 		//@internal if C had not been resolvable (and we have no links, so that this has not been detected), remove C also from U. This will be performed generally once we implement links (and sublinks etc.).
 		// remove link-less C also from U
 		usable.remove(C);
+		continue;
 	    }
 
-	    //@todo deletion(newResolvents, usable, setOfSupport);
+	    logger.log(Level.FINER, "  setOfSupport {0}\tusable {1}\tresolvents {2}", new Object[] {new Integer(setOfSupport.size()), new Integer(usable.size()), new Integer(newResolvents.size())});
+	    deletion(newResolvents, usable, setOfSupport);
+	    logger.log(Level.FINER, " >setOfSupport {0}\tusable {1}\tresolvents {2}", new Object[] {new Integer(setOfSupport.size()), new Integer(usable.size()), new Integer(newResolvents.size())});
 	    setOfSupport.addAll(newResolvents);
 	}
 
 	// usable is satisifiable, and only setOfSupport={} is inconsistent, so conjecture was found wrong
 	return false;
     }
+
 }

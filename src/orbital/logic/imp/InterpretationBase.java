@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import orbital.util.DelegateMap;
+import java.util.SortedMap;
 
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -38,6 +39,10 @@ import java.util.Collections;
  */
 public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implements Interpretation {
     private static final long serialVersionUID = 1211049244164642015L;
+    /**
+     * Whether to validate symbols and interpretation associations of this interpretation.
+     */
+    private static final boolean VALIDATION = true;
     /**
      * The signature &Sigma; to be interpreted.
      * @serial
@@ -78,6 +83,10 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
      * @param associations the map that associates each symbol in sigma with a value object.
      */
     public InterpretationBase(Signature sigma, Map associations) {
+	this(sigma);
+	putAll(associations);
+    }
+    public InterpretationBase(Signature sigma, SortedMap associations) {
 	this(sigma);
 	putAll(associations);
     }
@@ -209,8 +218,11 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
      * Validate symbol as an element in the signature.
      * @preconditions symbol &isin; sigma
      * @throws NoSuchElementException if the symbol is not in the current signature sigma.
+     * @todo optimize this hotspot during proving
      */
     private final void validate(Object symbol) {
+	if (!VALIDATION)
+	    return;
 	try {
 	    if (symbol == null)
 		throw new NoSuchElementException("Symbol <null> not in signature");
@@ -227,6 +239,8 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
      * @todo enhance type checks
      */
     private final boolean validate(Object symbol, Object referent) {
+	if (!VALIDATION)
+	    return true;
 	return ((Symbol)symbol).getType().apply(referent);
     }
 

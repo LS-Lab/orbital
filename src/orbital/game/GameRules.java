@@ -26,6 +26,7 @@ import java.awt.Image;
  * occurring in AdversarySearch.
  * </p>
  *
+ * @version 1.2, 2003-12-07
  * @version 1.1, 2003-01-04
  * @version 0.9, 2000/02/26
  * @author  Andr&eacute; Platzer
@@ -53,12 +54,13 @@ public interface GameRules {
 
     /**
      * Constructs a new AI Computer-Opponent for the Game.
+     * @param league for which league to start a computer player.
      * @param arg can contain any value used to initialize the AI, including <code>null</code>.
      * @return a function that, when called with a situation state as its argument,
      *  will return the action it wants to take in that state. (encoded as a {@link AdversarySearch.Option}).
      * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      */
-    Function/*<Field,AdversarySearch.Option>*/ startAIntelligence(String arg);
+    Function/*<Field,AdversarySearch.Option>*/ startAIntelligence(int league, String arg);
 
     /**
      * Get the image-object to be used for the given figure.

@@ -267,10 +267,10 @@ public class FigureImpl extends Figure {
      * @return the destination position that was reached after the move
      * or <code>null</code> if the Move was invalid and therefore cancelled.
      * @throws IllegalArgumentException if this move is not in the list of legal moves.
-     * @postconditions getField() = getField()@pre
+     * @postconditions getField() = getField()@pre &and; this = this@pre
      * @see Field#move(Position, Move)
      * @see #movePath(Move)
-     * @see #moving
+     * @see #moving(Move,Position)
      */
     public Position moveFigure(Move move) {
 	if (isEmpty())
@@ -291,17 +291,15 @@ public class FigureImpl extends Figure {
 
     /**
      * Called back when this figure is really moving.
-
+     *
      * This method has the final decision whether this figure could do
      * the move to the given position or if that would break the
-     * rules.
-     * <p>
-     * This implementaion simply returns true. If additional
-     * actions should take place (f.ex. keeping track of whose turn it is)
+     * rules.  <p> The default implementation simply returns true. If
+     * additional actions should take place (f.ex. keeping track of
+     * whose turn it is, or making changes to the current field)
      * derived methods must provide this. If beats are only valid to
      * foreign figures, the methods in the subclasses must check for
-     * it.
-     * </p>
+     * it.  </p>
      * @param move a valid Move, <em>really reaching</em> the given destination.
      * @param destination the destination reached by the move.
      * @preconditions &exist;i move.equals(getLegalMoves()[i]) &and; movePath(move).equals(destination)
@@ -347,6 +345,7 @@ public class FigureImpl extends Figure {
      * will also be returned as valid.
      * @param move the movement to try.
      * @preconditions {@link #field} contains the current field considered whether the path is empty
+     * @postconditions getField() = getField()@pre &and; this = this@pre
      * @return the destination position if the given move is passable
      *  or <code>null</code> if the movement path is invalid.
      * @see #isEmpty()

@@ -168,6 +168,7 @@ public class AppletFrame extends Frame {
     /**
      * needed to allow window to close in Java 1.0 style.
      * @see orbital.awt.Closer
+     * @xxx for Rhythmomachia and Seti, x-ing sometimes does not work.
      */
     public boolean handleEvent(Event e) {
 	// Window Destroy event

@@ -63,6 +63,7 @@ class ClassicalLogicPiTrial extends ClassicalLogic {
 	    System.err.println(t);
 
 	    {
+		System.err.println("construct type without parsing");
 		// construction of type parseTypeExpression("(\\\\s . (s->truth)->truth)") without parsing
 		final Symbol s = new SymbolBase("s", Types.getDefault().TYPE(), null, true);
 		final Expression se = createAtomic(s);
@@ -78,7 +79,7 @@ class ClassicalLogicPiTrial extends ClassicalLogic {
 	    }
 	    
 	    Symbol ALL2 = new SymbolBase("o", t);
-	    System.err.println("New universal quantifier " + createAtomic(ALL2) + " applying");
+	    System.err.println("New universal quantifier " + createAtomic(ALL2) + " of type " + createAtomic(ALL2).getType() + " applying");
 	    System.err.println(Types.toTypedString(compose(createAtomic(ALL2), new Expression[] {
 		createAtomic(new SymbolBase("p", typeSystem.map(typeSystem.objectType(String.class, "string"), Types.TRUTH))),
 	    })));
@@ -99,6 +100,7 @@ class ClassicalLogicPiTrial extends ClassicalLogic {
 	    })));
 	    System.err.println("are the results\n");
 	    
+	    System.err.println("Other approach");
 
 	    t = parseTypeExpression("(\\\\_s . (\\\\_t . (_s \u00d7 _t)->(_s->_t)))");
 	    System.err.println(t);

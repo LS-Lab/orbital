@@ -8,6 +8,7 @@ package orbital.moon.math;
 import orbital.math.*;
 
 
+import java.math.BigDecimal;
 import orbital.math.functional.Operations;
 
 abstract class AbstractReal extends AbstractComplex implements Real {
@@ -16,6 +17,7 @@ abstract class AbstractReal extends AbstractComplex implements Real {
     protected AbstractReal() {}
 
     public boolean equals(Object o) {
+	//@xxx this implementation does not work for Integer.Bigs
     	if (Real.isa.apply(o)) {
 	    //@internal identical to @see Double#equals(Object)
 	    return java.lang.Double.doubleToLongBits(doubleValue()) == java.lang.Double.doubleToLongBits(((Real) o).doubleValue());
@@ -255,6 +257,86 @@ abstract class AbstractReal extends AbstractComplex implements Real {
     	}
     	public Arithmetic inverse() {
 	    return new Double(1 / doubleValue());
+    	} 
+
+    	public Arithmetic add(Arithmetic b) {
+	    if (b instanceof Real)
+		return add((Real) b);
+	    return super.add(b);
+    	} 
+    	public Arithmetic subtract(Arithmetic b) {
+	    if (b instanceof Real)
+		return subtract((Real) b);
+	    return super.subtract(b);
+    	} 
+    	public Arithmetic multiply(Arithmetic b) {
+	    if (b instanceof Real)
+		return multiply((Real) b);
+	    return super.multiply(b);
+    	} 
+    	public Arithmetic divide(Arithmetic b) {
+	    if (b instanceof Real)
+		return divide((Real) b);
+	    return super.divide(b);
+    	} 
+    	public Arithmetic power(Arithmetic b) {
+	    if (b instanceof Real)
+		return power((Real) b);
+	    return super.power(b);
+    	} 
+    }
+
+    /**
+     * Represents a real number in <b>R</b> as an arbitrary-precision value.
+     * 
+     * @version 1.2, 2003-12-12
+     * @author  Andr&eacute; Platzer
+     */
+    static class Big extends AbstractReal {
+    	private static final long serialVersionUID = -5801439569926611104L;
+	private static final int ROUNDING_MODE = BigDecimal.ROUND_HALF_EVEN;
+    
+    	/**
+    	 * the real value (with machine-sized arbitrary-precision, only, of course).
+    	 * @serial
+    	 */
+    	private BigDecimal value;
+    	public Big(double v) {
+	    this(new BigDecimal(v));
+    	}
+    	public Big(BigDecimal v) {
+	    value = v;
+    	}
+    
+    	public Object clone() {
+	    return new Big(new BigDecimal(value.unscaledValue(), value.scale()));
+    	} 
+
+    	public double doubleValue() {
+	    return value.doubleValue();
+    	} 
+    
+    	public Real add(Real b) {
+	    //@todo check whether b is a big arbitrary precision real
+	    return new Big(value.add(((Big)b).value));
+    	}
+    	public Real subtract(Real b) {
+	    return new Big(value.subtract(((Big)b).value));
+    	}
+    	public Arithmetic minus() {
+	    return new Big(value.negate());
+    	} 
+    	public Real multiply(Real b) {
+	    return new Big(value.multiply(((Big)b).value));
+    	}
+    	public Real divide(Real b) {
+	    return new Big(value.divide(((Big)b).value, ROUNDING_MODE));
+    	}
+    	public Real power(Real b) {
+	    throw new InternalError("not yet implemented");
+    	}
+    	public Arithmetic inverse() {
+	    return one().divide(this);
     	} 
 
     	public Arithmetic add(Arithmetic b) {

@@ -43,7 +43,6 @@ a^b == (a|b) & (~a|~b)	# antivalence in CNF
 ##inconsistent a^a == false
 ## @fixme substitutionBug (a^b)^c == a^(b^c)	# associative
 ## (a^b)^c == a<->b<->c	#
-(a->b)->c == a->b && b->c
 a&b->c == a->(b->c)	# exportation / importation [Lex exportationis, Lex importationis]
 ~a == a->false		# not in INF
 #
@@ -64,6 +63,7 @@ p |= p|q		# weakening addition (alias '|' introduction)
 p&q |= p		# weakening subtraction (alias '&' elimination)
 a |= b->a		# weakening conditional
 a->b, b->c |= a->c	# transitivity
+(Gamma&p => a), (Gamma&q->a) |= Gamma&(p|q) => a	# Dilemma rule, lowered from meta statements about |= to statements about implication =>
 #
 # tautological properties of == aka |=| (thus inference rules, as well)
 #

@@ -1,7 +1,7 @@
 /*
  * @(#)FuzzyLogic.java 0.9 1997/05/01 Andre Platzer
  * 
- * Copyright (c) 1997 Andre Platzer. All Rights Reserved.
+ * Copyright (c) 1997-2003 Andre Platzer. All Rights Reserved.
  */
 
 package orbital.moon.logic;
@@ -44,7 +44,7 @@ import orbital.logic.sign.concrete.Notation.NotationSpecification;
 import orbital.util.Utility;
 
 /**
- * A FuzzyLogic class that represents logic values in quantitative fuzzy logic.
+ * Implementation of quantitative fuzzy logics.
  * <p>
  * Fuzzy logic is a numeric approach in which truth-values represent a degree of truth
  * specified as a real number in the range [0,1].
@@ -178,6 +178,11 @@ import orbital.util.Utility;
  * </table>
  * </p>
  * <p>
+ * Derived operators are the fuzzy implication and bisubjunction.
+ * <div>a&rarr;b := sup{c &brvbar; a&#8911;c&le;b}</div>
+ * <div>a&harr;b := (a&rarr;b)&#8911;(b&rarr;a)</div>
+ * </p>
+ * <p>
  * G&ouml;del and drastic operator sets bound all operator sets. For any operators (&#8911;,&#8910;)
  * it is
  * <div style="text-align: center">max{a,b}&le;a&#8910;b&le;{@link #DRASTIC u<sup>*</sup>}(a,b) &le; {@link #DRASTIC i<sup>*</sup>}(a,b)&le;a&#8911;b&le;min{a,b}</div>
@@ -212,6 +217,8 @@ import orbital.util.Utility;
  * @version 0.7, 1999/01/11
  * @author  Andr&eacute; Platzer
  * @see "Klir, G. and Folger, T. (1988), Fuzzy Sets, Uncertainty and Information, Prentice-Hall, Englewood Cliffs."
+ * @see "Gottwald, Siegfried. A Treatise On Many-Valued Logics, volume 9 of Studies in Logic and Computation. Research Studies Press, Baldock, Hertfordshire, England, 2001."
+ * @see "H&aacute;jek, Petr. Metamathematics of Fuzzy Logic, volume 4 of Trends in Logic - Studia Logica Library. Kluwer Academic Publishers, 1998."
  */
 public class FuzzyLogic extends ModernLogic implements Logic {
     /**
@@ -234,7 +241,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	System.out.println("Enter sequence 'A|~C' to verify. Simply leave blank to type 'false' or {} or null.");
 	System.out.print("Type base expression (A): ");
 	System.out.flush();
-	String expr = IOUtilities.readLine(System.in);
+	String expr = "{" + IOUtilities.readLine(System.in) + "}";
 	System.out.print("Type sequence expression (C): ");
 	System.out.flush();
 	String  expr2 = IOUtilities.readLine(System.in);
@@ -296,7 +303,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	    {LogicFunctions.exists,       // "?"
 	     new NotationSpecification(900, "fxx", Notation.PREFIX)},
 
-	     {op.not(),          // "~"
+	    {op.not(),          // "~"
 	     new NotationSpecification(900, "fy", Notation.PREFIX)},
 	    {op.and(),          // "&"
 	     new NotationSpecification(910, xfy, Notation.INFIX)},
@@ -304,7 +311,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	     new NotationSpecification(914, xfy, Notation.INFIX)},
 	    {op.or(),           // "|"
 	     new NotationSpecification(916, xfy, Notation.INFIX)},
-	    {LogicFunctions.impl,         // "->"
+	    {op.impl(),         // "->"
 	     new NotationSpecification(920, "xfx", Notation.INFIX)},
 	    {LogicFunctions.reverseImpl, // "<-"
 	     new NotationSpecification(920, "xfx", Notation.INFIX)},
@@ -340,7 +347,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     } 
 
     public Inference inference() {
-	throw new InternalError("no calculus implemented");
+	throw new InternalError("no calculus implemented. Only use explicit interpretation");
     } 
 
     public Signature coreSignature() {
@@ -405,9 +412,9 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	 * Assign an ordinal to this enum value
 	 * @serial
 	 */
-	private final int		  ordinal = nextOrdinal++;
+	private final int	  ordinal = nextOrdinal++;
 
-	OperatorSet(String name) {
+	protected OperatorSet(String name) {
 	    this.name = name;
 	    values[nextOrdinal - 1] = this;
 	}
@@ -445,14 +452,29 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	} 
 
 	/**
-	 * Defines the not operator to use in the fuzzy logic.
+	 * Defines the NOT operator to use in the fuzzy logic.
 	 * @postconditions RES==OLD(RES)
 	 */
-	abstract Function not();
+	public abstract Function not();
 
-    	abstract BinaryFunction and();
+	/**
+	 * Defines the fuzzy AND operator to use in the fuzzy logic.
+	 * @postconditions RES==OLD(RES)
+	 */
+    	public abstract BinaryFunction and();
     
-    	abstract BinaryFunction or();
+	/**
+	 * Defines the fuzzy OR operator to use in the fuzzy logic.
+	 * @postconditions RES==OLD(RES)
+	 */
+    	public abstract BinaryFunction or();
+
+	/**
+	 * Defines the implication operator to use in the fuzzy logic.
+	 * a&rarr;b := sup{c &brvbar; a&#8911;c&le;b}.
+	 * @postconditions RES==OLD(RES)
+	 */
+    	public abstract BinaryFunction impl();
     }
 
     // enumeration of fuzzy logic operators
@@ -461,11 +483,12 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      * G&ouml;del and Zadeh operators in fuzzy logic (default).
      * <div>a &#8911; b = min{a,b}</div>
      * <div>a &#8910; b = max{a,b}</div>
+     * <div>a &rarr; b = b if a&gt;b, resp. =1 if a&le;b</div>
      * G&ouml;del operators are the "outer" bound of fuzzy logic operators, i.e.
      * min is the greatest fuzzy AND operator,
      * and max the smallest fuzzy OR operator.
      * <p>
-     * <h5><!-- @todo check translation and quote --> principle of minimum specifity</h5>
+     * <h5><!-- @todo quote --> principle of minimum specificity</h5>
      * <blockquote>
      *   
      * </blockquote>
@@ -473,11 +496,11 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      */
     public static OperatorSet GOEDEL = new OperatorSet("Gödel") {
 	    private static final long serialVersionUID = 2408339318090056142L;
-	    Function not() {
+	    public Function not() {
 		return LogicFunctions.not;
 	    }
 
-	    BinaryFunction and() {
+	    public BinaryFunction and() {
 		return new BinaryFunction() {
 			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			public Object apply(Object a, Object b) {
@@ -487,7 +510,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 		    };
 	    }
     
-	    BinaryFunction or() {
+	    public BinaryFunction or() {
 		return new BinaryFunction() {
 			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			public Object apply(Object a, Object b) {
@@ -496,20 +519,34 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 			public String toString() { return "|"; }
 		    };
 	    }
+
+	    public BinaryFunction impl() {
+		return new BinaryFunction() {
+			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
+			public Object apply(Object wa, Object wb) {
+			    final double a = getTruth(wa);
+			    final double b = getTruth(wb);
+			    return getInt(b < a ? b : 1);
+			}
+			public String toString() { return "->"; }
+		    };
+	    }
 	};
 
     /**
      * Product operators in fuzzy logic.
      * <div>a &#8911; b = a&sdot;b</div>
      * <div>a &#8910; b = a+b - a&sdot;b</div>
+     * <div>a &rarr; b = min{b/a,1}, resp. =1 for a=0</div>
      */
     public static OperatorSet PRODUCT = new OperatorSet("Product") {
 	    private static final long serialVersionUID = 1914120346137890612L;
-	    Function not() {
+	    private static final double tolerance = 0.000001;
+	    public Function not() {
 		return LogicFunctions.not;
 	    }
 
-	    BinaryFunction and() {
+	    public BinaryFunction and() {
 		return new BinaryFunction() {
 			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			public Object apply(Object a, Object b) {
@@ -519,7 +556,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 		    };
 	    }
     
-	    BinaryFunction or() {
+	    public BinaryFunction or() {
 		return new BinaryFunction() {
 			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			public Object apply(Object wa, Object wb) {
@@ -530,20 +567,35 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 			public String toString() { return "|"; }
 		    };
 	    }
+
+	    public BinaryFunction impl() {
+		return new BinaryFunction() {
+			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
+			public Object apply(Object wa, Object wb) {
+			    final double a = getTruth(wa);
+			    final double b = getTruth(wb);
+			    return getInt(MathUtilities.equals(a, 0, tolerance) ? 1 : Math.min(b/a,1));
+			}
+			public String toString() { return "->"; }
+		    };
+	    }
 	};
 
     /**
      * Bounded or &#407;ukasiewicz operators in fuzzy logic.
+     * Which come from the implication &rArr; in the &#407;ukasiewicz-logic, by
+     * a&rArr;b &equiv; &not;(a&#8911;&not;b), as well as a&#8910;b &equiv; &not;a&rArr;b.
      * <div>a &#8911; b = max{0,a+b-1}</div>
      * <div>a &#8910; b = min{1,a+b}</div>
+     * <div>a &rarr; b = a &rArr; b = min{1,b-a+1}</div>
      */
     public static OperatorSet BOUNDED = new OperatorSet("Bounded") {
 	    private static final long serialVersionUID = 2512028904916107754L;
-	    Function not() {
+	    public Function not() {
 		return LogicFunctions.not;
 	    }
 
-	    BinaryFunction and() {
+	    public BinaryFunction and() {
 		return new BinaryFunction() {
 			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			public Object apply(Object a, Object b) {
@@ -553,13 +605,23 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 		    };
 	    }
     
-	    BinaryFunction or() {
+	    public BinaryFunction or() {
 		return new BinaryFunction() {
 			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			public Object apply(Object a, Object b) {
 			    return getInt(Math.min(1, getTruth(a) + getTruth(b)));
 			}
 			public String toString() { return "|"; }
+		    };
+	    }
+
+	    public BinaryFunction impl() {
+		return new BinaryFunction() {
+			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
+			public Object apply(Object a, Object b) {
+			    return getInt(Math.min(1, getTruth(b) - getTruth(a) + 1));
+			}
+			public String toString() { return "->"; }
 		    };
 	    }
 	};
@@ -577,13 +639,13 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	return gamma == 0
 	    ? (OperatorSet)
 	    new OperatorSet("Hamacher(0)") {
-		// special case handling "Polstellen" für gamma=0
+		// special case handling polarities for gamma=0
 		private static final double tolerance = 0.000001;
-		Function not() {
+		public Function not() {
 		    return LogicFunctions.not;
 		}
 
-		BinaryFunction and() {
+		public BinaryFunction and() {
 		    return new BinaryFunction() {
 			    private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			    public Object apply(Object wa, Object wb) {
@@ -598,7 +660,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 			};
 		}
     
-		BinaryFunction or() {
+		public BinaryFunction or() {
 		    return new BinaryFunction() {
 			    private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			    public Object apply(Object wa, Object wb) {
@@ -612,15 +674,25 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 			    public String toString() { return "|"; }
 			};
 		}
+
+		public BinaryFunction impl() {
+		    return new BinaryFunction() {
+			    private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
+			    public Object apply(Object a, Object b) {
+				throw new UnsupportedOperationException(this + " not yet implemented for HAMACHER");
+			    }
+			    public String toString() { return "->"; }
+			};
+		}
 	    }
 	    : (OperatorSet)
 	    new OperatorSet("Hamacher(" + gamma + ")") {
 		private static final long serialVersionUID = -8210989001070817280L;
-		Function not() {
+		public Function not() {
 		    return LogicFunctions.not;
 		}
 
-		BinaryFunction and() {
+		public BinaryFunction and() {
 		    return new BinaryFunction() {
 			    private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			    public Object apply(Object wa, Object wb) {
@@ -633,7 +705,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 			};
 		}
     
-		BinaryFunction or() {
+		public BinaryFunction or() {
 		    return new BinaryFunction() {
 			    private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			    public Object apply(Object wa, Object wb) {
@@ -643,6 +715,16 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 				return getInt((a+b-(2-gamma)*ab) / (1 - (1-gamma)*ab));
 			    }
 			    public String toString() { return "|"; }
+			};
+		}
+
+		public BinaryFunction impl() {
+		    return new BinaryFunction() {
+			    private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
+			    public Object apply(Object a, Object b) {
+				throw new UnsupportedOperationException(this + " not yet implemented for HAMACHER");
+			    }
+			    public String toString() { return "->"; }
 			};
 		}
 	    };
@@ -661,12 +743,12 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	final double inverse_p = 1/p;
 	return new OperatorSet("Yager(" + p + ")") {
 		private static final long serialVersionUID = 5886310887805210830L;
-		Function not() {
+		public Function not() {
 		    //@internal there also is a Yager complement (1-a<sup>p</sup>)<sup>1/p</sup>, but the ususal complement satisfies the duality. (There are even more fuzzy NOT operators: drastic, continuous fuzzy complement, Sugeno, Yager, and the natural complement)
 		    return LogicFunctions.not;
 		}
 
-		BinaryFunction and() {
+		public BinaryFunction and() {
 		    return new BinaryFunction() {
 			    private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			    public Object apply(Object wa, Object wb) {
@@ -678,7 +760,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 			};
 		}
     
-		BinaryFunction or() {
+		public BinaryFunction or() {
 		    return new BinaryFunction() {
 			    private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			    public Object apply(Object wa, Object wb) {
@@ -689,6 +771,16 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 			    public String toString() { return "|"; }
 			};
 		}
+
+		public BinaryFunction impl() {
+		    return new BinaryFunction() {
+			    private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
+			    public Object apply(Object a, Object b) {
+				throw new UnsupportedOperationException(this + " not yet implemented for YAGER");
+			    }
+			    public String toString() { return "->"; }
+			};
+		}
 	    };
     }
 
@@ -696,6 +788,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      * Drastic operators in fuzzy logic.
      * <div>a &#8911; b = i<sup>*</sup>(a,b) := min{a,b} if max{a,b}=1, else 0</div>
      * <div>a &#8910; b = u<sup>*</sup>(a,b) := max{a,b} if min{a,b}=0, else 1</div>
+     * <div>a &rarr; b = b if b&lt;a=1, else 1</div>
      * Drastic operators are the "inner" bound of fuzzy logic operators, i.e.
      * i<sup>*</sup> is the smallest fuzzy AND operator,
      * and u<sup>*</sup> the greatest fuzzy OR operator.
@@ -703,11 +796,11 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      */
     public static OperatorSet DRASTIC = new OperatorSet("Drastic") {
 	    private static final long serialVersionUID = -2065043465614357255L;
-	    Function not() {
+	    public Function not() {
 		return LogicFunctions.not;
 	    }
 
-	    BinaryFunction and() {
+	    public BinaryFunction and() {
 		return new BinaryFunction() {
 			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			public Object apply(Object wa, Object wb) {
@@ -719,7 +812,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 		    };
 	    }
     
-	    BinaryFunction or() {
+	    public BinaryFunction or() {
 		return new BinaryFunction() {
 			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
 			public Object apply(Object wa, Object wb) {
@@ -728,6 +821,18 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 			    return getInt(a == 0.0 || b == 0.0 ? Math.max(a, b) : 1);
 			}
 			public String toString() { return "|"; }
+		    };
+	    }
+
+	    public BinaryFunction impl() {
+		return new BinaryFunction() {
+			private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
+			public Object apply(Object wa, Object wb) {
+			    final double a = getTruth(wa);
+			    final double b = getTruth(wb);
+			    return getInt(b < a && a == 1.0 ? b : 1);
+			}
+			public String toString() { return "->"; }
 		    };
 	    }
 	};

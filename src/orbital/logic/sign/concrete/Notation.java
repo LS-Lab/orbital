@@ -161,7 +161,7 @@ public abstract class Notation implements Serializable, Comparable {
     /**
      * Specifies automatic compositor-dependant notation as registered.
      * <p>
-     * Delegates to the registered notation.
+     * Delegates to the {@link Notation#getNotation(Object) registered notation}.
      * Compositors with registered default notation like +, -, *, /, ^ have a notation set.
      * All unknown symbols are treated as prefix.
      * </p>
@@ -255,13 +255,12 @@ public abstract class Notation implements Serializable, Comparable {
 	};
 
     /**
-     * Specifies best notation <code>"a*(b+f(c)) + d"</code> inserting brackets whenever necessary.
-     * <p>
-     * Decomposes compositors into its components whenever possible
-     * building a function tree to optimize formatting.  This more
-     * sophisticated notation is aware of the registered default
-     * notation and will only insert brackets when necessary.
-     * </p>
+     * Specifies best mixed notation <code>"a*(b+f(c)) + d"</code> inserting
+     * brackets whenever necessary.  <p> Decomposes compositors into
+     * its components whenever possible building a function tree to
+     * optimize formatting.  This more sophisticated notation is aware
+     * of the {@link Notation#getNotation(Object) registered default notation}
+     * and will only insert brackets when necessary.  </p>
      * @see #AUTO
      * @xxx if the compositor is itself composite then descend formatting it (with accurate brackets) as well.
      */
@@ -406,8 +405,9 @@ public abstract class Notation implements Serializable, Comparable {
     }
 
     /**
-     * Get the default notation specification of a compositor.
+     * Get the default notation specification registered for a compositor.
      * @return the default notation specification of the compositor, or <code>null</code> if not set.
+     * @see #setNotation(Object, NotationSpecification)
      */
     public static NotationSpecification getNotation(Object compositor) {
 	return (NotationSpecification/*__*/) compositorNotation.get(compositor);
@@ -418,13 +418,13 @@ public abstract class Notation implements Serializable, Comparable {
      * @return the precedence of the compositor, or 0 if not set.
      * @see #getNotation(Object)
      */
-    protected static int precedenceOf(Object compositor) {
+    private static int precedenceOf(Object compositor) {
 	NotationSpecification spec = getNotation(compositor);
 	return spec != null ? spec.precedence : 0;
     } 
 
     /**
-     * Sets the default notation specification for a compositor.
+     * Sets/registers the default notation specification for a compositor.
      * @param f the compositor whose notation specification to set.
      * @param spec the notation specification to set as default for the compositor f.
      * @return <code>true</code> if the default notation specification for the compositor f
@@ -451,7 +451,7 @@ public abstract class Notation implements Serializable, Comparable {
     }
 	
     /**
-     * Sets all notations contained in an array.
+     * Sets/registers all notations contained in an array.
      * @param compositorsAndNotations Contains compositors and their notation specifications.
      *  Stored as an array of length-2 arrays
      *  with compositors[i][0] being the {@link Object},

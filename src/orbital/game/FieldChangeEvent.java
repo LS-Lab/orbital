@@ -29,7 +29,7 @@ public class FieldChangeEvent extends EventObject {
     /**
      * Field change event type (true type as additional flag) for indicating that a user action caused this event.
      */
-    static final int USER_ACTION = 0x1000;
+    public static final int USER_ACTION = 0x1000;
     /**
      * Field change event type for indicating that we have reached the end of turn.
      */
@@ -65,6 +65,10 @@ public class FieldChangeEvent extends EventObject {
 	return this.changeInfo;
     }
 
+    /**
+     * Get the field on which a change occurs.
+     * @todo prior to the change or after the change? Is the usage consistent for all types of events?
+     */
     public Field getField() {
 	return (Field) super.getSource();
     }

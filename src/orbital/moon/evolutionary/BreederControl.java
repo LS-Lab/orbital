@@ -179,49 +179,50 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
     // member variables
     protected PopulationTableModel			 data = new PopulationTableModel(null);
     protected final CustomizerViewController custom;
-    protected Closer						 closer;
-    protected Date							 startTime = null;
-    protected Date							 stopTime = null;
-    protected int							 startGeneration;
+    protected Closer	 closer;
+    protected Date	 startTime = null;
+    protected Date	 stopTime = null;
+    protected int	 startGeneration;
 
     // view variables
-    JMenuBar								 menuBar1 = new JMenuBar();
-    JMenu									 menuPopulation = new JMenu();
-    JMenu									 menuGenome = new JMenu();
-    JMenuItem								 menuHelpAbout = new JMenuItem();
-    JLabel									 statusBar = new JLabel();
-    BorderLayout							 borderLayout1 = new BorderLayout();
-    JMenuItem								 jMenuPopulationNew = new JMenuItem();
-    JMenuItem								 jMenuPopulationLoad = new JMenuItem();
-    JMenuItem								 jMenuPopulationSave = new JMenuItem();
-    JMenuItem								 jMenuPopulationSaveAs = new JMenuItem();
-    JMenuItem								 jMenuPopulationCreateAndGo = new JMenuItem();
-    JMenuItem								 jMenuProperties = new JMenuItem();
-    JMenu									 menuHelp = new JMenu();
-    JMenuItem								 jMenuGenomeNew = new JMenuItem();
-    JMenuItem								 jMenuGenomeRemove = new JMenuItem();
-    JMenuItem								 jMenuGenomeImport = new JMenuItem();
-    JMenuItem								 jMenuGenomeExport = new JMenuItem();
-    JMenuItem								 jMenuManipulate = new JMenuItem();
-    JMenuItem								 menuFileExit = new JMenuItem();
-    JMenu									 jMenuBreed = new JMenu();
-    JRadioButtonMenuItem					 jMenuStart = new JRadioButtonMenuItem();
-    JRadioButtonMenuItem					 jMenuStop = new JRadioButtonMenuItem();
-    JMenuItem								 jMenuStatistics = new JMenuItem();
-    JMenuItem								 jMenuBreedReevaluate = new JMenuItem();
-    JScrollPane								 jScrollPane1 = new JScrollPane();
-    JTable									 jPopulationTable = new JTable(data);
-    JPanel									 panel1 = new JPanel();
-    FlowLayout								 flowLayout1 = new FlowLayout(FlowLayout.LEFT);
-    JLabel									 jLabel1 = new JLabel();
-    JTextField								 tGeneration = new JTextField();
-    JMenu									 jMenuOptions = new JMenu();
-    JMenu									 jMenuOptionsSelector = new JMenu();
-    ButtonGroup								 jItemSelectors = new ButtonGroup();
-    JRadioButtonMenuItem					 jRadioButtonMenuItemSelector[];
-    JMenu									 jMenuOptionsAlgorithmType = new JMenu();
-    ButtonGroup								 jItemAlgorithmTypes = new ButtonGroup();
-    JRadioButtonMenuItem					 jRadioButtonMenuItemAlgorithmType[];
+    JMenuBar			 menuBar1 = new JMenuBar();
+    JMenu				 menuPopulation = new JMenu();
+    JMenu				 menuGenome = new JMenu();
+    JMenuItem			 menuHelpAbout = new JMenuItem();
+    JLabel				 statusBar = new JLabel();
+    BorderLayout		 borderLayout1 = new BorderLayout();
+    JMenuItem			 jMenuPopulationNew = new JMenuItem();
+    JMenuItem			 jMenuPopulationLoad = new JMenuItem();
+    JMenuItem			 jMenuPopulationSave = new JMenuItem();
+    JMenuItem			 jMenuPopulationSaveAs = new JMenuItem();
+    JMenuItem			 jMenuPopulationCreateAndGo = new JMenuItem();
+    JMenuItem			 jMenuPopulationSwitchGAP = new JMenuItem();
+    JMenuItem			 jMenuProperties = new JMenuItem();
+    JMenu				 menuHelp = new JMenu();
+    JMenuItem			 jMenuGenomeNew = new JMenuItem();
+    JMenuItem			 jMenuGenomeRemove = new JMenuItem();
+    JMenuItem			 jMenuGenomeImport = new JMenuItem();
+    JMenuItem			 jMenuGenomeExport = new JMenuItem();
+    JMenuItem			 jMenuManipulate = new JMenuItem();
+    JMenuItem			 menuFileExit = new JMenuItem();
+    JMenu				 jMenuBreed = new JMenu();
+    JRadioButtonMenuItem	 jMenuStart = new JRadioButtonMenuItem();
+    JRadioButtonMenuItem	 jMenuStop = new JRadioButtonMenuItem();
+    JMenuItem				 jMenuStatistics = new JMenuItem();
+    JMenuItem				 jMenuBreedReevaluate = new JMenuItem();
+    JScrollPane				 jScrollPane1 = new JScrollPane();
+    JTable					 jPopulationTable = new JTable(data);
+    JPanel					 panel1 = new JPanel();
+    FlowLayout				 flowLayout1 = new FlowLayout(FlowLayout.LEFT);
+    JLabel					 jLabel1 = new JLabel();
+    JTextField				 tGeneration = new JTextField();
+    JMenu					 jMenuOptions = new JMenu();
+    JMenu					 jMenuOptionsSelector = new JMenu();
+    ButtonGroup				 jItemSelectors = new ButtonGroup();
+    JRadioButtonMenuItem	 jRadioButtonMenuItemSelector[];
+    JMenu					 jMenuOptionsAlgorithmType = new JMenu();
+    ButtonGroup				 jItemAlgorithmTypes = new ButtonGroup();
+    JRadioButtonMenuItem	 jRadioButtonMenuItemAlgorithmType[];
 
 
     // Construct the frame
@@ -298,6 +299,13 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
     protected GeneticAlgorithm				 ga;
 
     /**
+     * Get program resources.
+     */
+    protected ResourceBundle getResources() {
+	return resources;
+    }
+
+    /**
      * Get the current genetic algorithm problem to solve.
      * @see #problem
      */
@@ -323,8 +331,10 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
      * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      */
     protected Genome createGenome() {
-	//XXX: where to get the prototype from?
-	return new Genome(new Gene.BitSet(20));
+	JOptionPane.showMessageDialog(this, resources.getString("message.genome.newRandom.warning.text"), resources.getString("message.genome.newRandom.warning.title"), JOptionPane.WARNING_MESSAGE);
+	//@internal almost identical to return (Genome) Selectors.uniform().apply(getGeneticAlgorithmProblem().getPopulation());
+	Population temppop = getGeneticAlgorithmProblem().getPopulation();
+	return temppop.get(getGeneticAlgorithm().getRandom().nextInt(temppop.size()));
     }
 
     protected GeneticAlgorithm create() throws InstantiationException {
@@ -801,6 +811,17 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
 			}).start();
 		}
 	    });
+	jMenuPopulationSwitchGAP.setText("Switch Problem...");
+	jMenuPopulationSwitchGAP.addActionListener(new java.awt.event.ActionListener() {
+
+		public void actionPerformed(final ActionEvent e) {
+		    new Thread(new Runnable() {
+			    public void run() {
+				jMenuPopulationSwitchGAP_actionPerformed(e);
+			    }
+			}).start();
+		}
+	    });
 	menuHelp.setMnemonic('?');
 	menuHelp.setText("?");
 	jMenuGenomeNew.setText("New random");
@@ -948,6 +969,7 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
 	menuPopulation.add(jMenuPopulationSave);
 	menuPopulation.add(jMenuPopulationSaveAs);
 	menuPopulation.addSeparator();
+	menuPopulation.add(jMenuPopulationSwitchGAP);
 	menuPopulation.add(jMenuPopulationCreateAndGo);
 	menuPopulation.addSeparator();
 	menuPopulation.add(jMenuProperties);
@@ -1021,6 +1043,32 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
 	setGeneticAlgorithm(ga);
 	history();
 	ready();
+    }
+
+    void jMenuPopulationSwitchGAP_actionPerformed(ActionEvent e) {
+	String problem
+	    = JOptionPane.showInputDialog(this, resources.getString("dialog.problem.switch.text"), resources.getString("dialog.problem.switch.title"), JOptionPane.PLAIN_MESSAGE);
+	if (problem == null)
+	    return;
+	try {
+	    setGeneticAlgorithmProblem((GeneticAlgorithmProblem) Class.forName(problem).newInstance());
+	    JOptionPane.showMessageDialog(this, resources.getString("dialog.problem.switch.success.text"), resources.getString("dialog.problem.switch.success.title"), JOptionPane.INFORMATION_MESSAGE);
+	}
+	catch (ClassNotFoundException x) {
+	    logger.log(Level.WARNING, "message.problem.switch.error.ClassNotFoundException.title", x);
+	    JOptionPane.showMessageDialog(this, resources.getString("message.problem.switch.error.ClassNotFoundException.text") + x, resources.getString("message.problem.switch.error.ClassNotFoundException.title"), JOptionPane.ERROR_MESSAGE);
+	    return;
+	}
+	catch (InstantiationException x) {
+	    logger.log(Level.WARNING, "message.problem.switch.error.InstantiationException.title", x);
+	    JOptionPane.showMessageDialog(this, resources.getString("message.problem.switch.error.InstantiationException.text") + x, resources.getString("message.problem.switch.error.InstantiationException.title"), JOptionPane.ERROR_MESSAGE);
+	    return;
+	}
+	catch (IllegalAccessException x) {
+	    logger.log(Level.WARNING, "message.problem.switch.error.IllegalAccessException.title", x);
+	    JOptionPane.showMessageDialog(this, resources.getString("message.problem.switch.error.IllegalAccessException.text") + x, resources.getString("message.problem.switch.error.IllegalAccessException.title"), JOptionPane.ERROR_MESSAGE);
+	    return;
+	}
     }
 
     /**
@@ -1242,7 +1290,7 @@ class PopulationTableModel extends AbstractTableModel implements TableModel {
 	case 1:
 	    return row < population.size() ? new Double(population.get(row).getFitness()) : null;
 	case 2:
-	    return "<data>";	// population.get(row).get();
+	    return population.get(row).get().toString();
 	default:
 	    throw new IllegalArgumentException("invalid column");
 	}

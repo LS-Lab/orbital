@@ -21,5 +21,5 @@ Distribution of these files is prohibited, except if you make sure that:
   (o) this License Agreement and the Copyright notice are contained
   (o) the files are not modified
 
-Copyright (c) 1996-2003 Andre Platzer.
+Copyright (c) 1996-2004 Andre Platzer.
 All Rights Reserved.

@@ -18,6 +18,8 @@ import orbital.logic.trs.*;
 import orbital.moon.logic.bridge.SubstitutionImpl.MatcherImpl;
 import orbital.moon.logic.bridge.SubstitutionImpl.UnifyingMatcher;
 
+import orbital.moon.logic.sign.type.StandardTypeSystem;
+
 import java.util.Collection;
 import java.util.Set;
 import java.util.List;
@@ -51,7 +53,7 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 
 /**
- * A ModalLogic class that represents modal logic.
+ * Implementation of modal logic with local or global consequence.
  * 
  * @version 1.1, 2002-11-23
  * @author  Andr&eacute; Platzer
@@ -91,8 +93,10 @@ public class ModalLogic extends ClassicalLogic {
 	setEnableTypeChecks(false);
 	logger.log(Level.CONFIG, "disabling type checks for modal logic");
     }
-    
-    private static final Type   WORLD = //@xxx typeSystem.objectType(new Object() {}.getClass(), "world");
+
+    //@fixme worlds are no individuals, i.e. it should not be the case that WORLD.subtypeOf(individual)
+    // this is only possible when lambda has generic type
+    private static final Type   WORLD = //((StandardTypeSystem)typeSystem).specialType("world");
 	Types.INDIVIDUAL;
     private static final Symbol CURRENT_WORLD = new SymbolBase("s", WORLD, null, true);
     private final Formula CURRENT_WORLD_form;
@@ -120,6 +124,25 @@ public class ModalLogic extends ClassicalLogic {
 	this.ACCESSIBLE_form = (Formula) createAtomic(ACCESSIBLE);
     }
 
+    private boolean localConsequence = true;
+    
+    /**
+     * Whether local or global consequence is used.
+     */
+    public boolean isLocalConsequence() {
+	return localConsequence;
+    }
+    
+    /**
+     * Whether to use local or global consequence.
+     * @param v <code>true</code> for local consequence,
+     * <code>false</code> for global consequence,.
+     */
+    public void setLocalConsequence(boolean  v) {
+	this.localConsequence = v;
+    }
+    
+    
     /**
      * facade for convenience.
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade</a>
@@ -150,9 +173,13 @@ public class ModalLogic extends ClassicalLogic {
 		//@todo should add sorted type-safety information Kripke etc.
 		Formula[] Bred = new Formula[B.length];
 		for (int i = 0; i < B.length; i++) {
-		    Bred[i] = ClassicalLogic.Utilities.constantClosure(Utilities.modalReduce(B[i]));
+		    Bred[i] = isLocalConsequence()
+			? ClassicalLogic.Utilities.constantClosure(Utilities.modalReduce(B[i]))
+			: ClassicalLogic.Utilities.universalClosure(Utilities.modalReduce(B[i]));
 		}
-		Formula Dred = ClassicalLogic.Utilities.constantClosure(Utilities.modalReduce(D));
+		Formula Dred = isLocalConsequence()
+		    ? ClassicalLogic.Utilities.constantClosure(Utilities.modalReduce(D))
+		    : ClassicalLogic.Utilities.universalClosure(Utilities.modalReduce(D));
 		if (logger.isLoggable(Level.FINER)) {
 		    logger.log(Level.FINER, "{0}  |-<red> {1}", new Object[] {
 			Utility.format(" , ", Bred),

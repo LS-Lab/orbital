@@ -56,6 +56,7 @@ import java.util.LinkedList;
  * @see orbital.math.functional.Functionals
  * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
  * @see orbital.logic.trs.Substitutions#lambda
+ * @see orbital.util.Setops
  * @todo improve names of conversion methods: onVoid, asFunction, onThisAndThat, asSuchAndSuch ...
  * @todo would we benefit from turning functional methods into true functionals, i.e. BinaryFunction<Function<A,B1>, Function<A,B2>, BinaryFunction<A,B1,B2>>? How do we document them without using Pizzadoc, then?
  * @todo introduce Zylomorphism and "GCatamorphism"?
@@ -511,7 +512,7 @@ public class Functionals {
      * In the latter case, composition is done using a {@link Functions#constant(Object) constant function}.
      * </p>
      * <p>
-     * For example, the following call creates a <a href="{@docRoot}/DesignPatters/Command.html">macro command function</a>
+     * For example, the following call creates a <a href="{@docRoot}/Patterns/Design/Command.html">macro command function</a>
      * <pre>
      * <span class="Class">List</span> fs <span class="assignement">=</span> <span class="Class">Arrays</span>.asList(<span class="operator">new</span> <span class="Orbital">Function</span><span class="operator">[]</span> <span class="operator">{</span>f1, f2, ..., fn<span class="operator">}</span>);
      * <span class="comment">// f = <span class="bananaBracket">(|</span>id,&#8728;<span class="bananaBracket">|)</span> fs</span>
@@ -1712,7 +1713,9 @@ public class Functionals {
     public static /*<A, B>*/ SortedSet/*_<B>_*/ map(Function/*<A, B>*/ f, SortedSet/*_<A>_*/ a) {
 	return (SortedSet/*_<B>_*/) map(f, (Collection/*_<B>_*/) a);
     }
+    //@todo 21 introduce Function map(Function) similar to Setops.createSelection?
     public static /*<A, B>*/ Iterator/*_<B>_*/ map(Function/*<A, B>*/ f, Iterator/*_<A>_*/ a) {
+	//@todo 21 mapping could happen inplace, i.e. return a new Iterator() which transforms just-in-time on demand, instead of in advance
 	return mapInto(f, a, new LinkedList/*_<B>_*/()).iterator();
     } 
     public static /*<A, B>*/ ListIterator/*_<B>_*/ map(Function/*<A, B>*/ f, ListIterator/*_<A>_*/ a) {

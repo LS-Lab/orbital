@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 
 import java.util.TreeSet;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -533,6 +533,7 @@ public final class AlgebraicAlgorithms {
     }
     /**
      * Reduce<sub>g</sub>:K[X<sub>0</sub>,...,X<sub>n-1</sub>]&rarr;K[X<sub>0</sub>,...,X<sub>n-1</sub>]; f &#8614; "f reduced with respect to g".
+     * Performs a division by multiple polynomials.
      * @param g the collection of multinomials for reducing polynomials.
      * @param monomialOrder the <a href="#monomialOrder">order of monomials</a>, which is decisive for the time complexity.
      * @return a function that reduces polynomials with respect to g.
@@ -642,7 +643,7 @@ public final class AlgebraicAlgorithms {
      *       <li><big>(</big>f&isin;I &hArr; &exist;q<sub>g</sub>&isin;K[X<sub>1</sub>,&#8230;,X<sub>n</sub>] f = &sum;<sub>g&isin;G</sub> q<sub>g</sub>g &and; l(f) = max{l(q<sub>g</sub>g) &brvbar; g&isin;G}<big>)</big></li>
      *       <li>each f&isin;K[X<sub>1</sub>,&#8230;,X<sub>n</sub>] has a unique (reduced) reduction with respect to G</li>
      *       <li>the G-reduced polynomials form a system of representatives of K[X<sub>1</sub>,&#8230;,X<sub>n</sub>]/I</li>
-     *       <li>&forall;f&ne;g&isin;G 0 is a reduction of
+     *       <li>&forall;f&ne;g&isin;G 0 is a reduction of the
      *         S(f,g) := 1&#8725;l<sub>c</sub>(f)*X<sup class="vector">&nu;</sup>&sdot;f - 1&#8725;l<sub>c</sub>(g)*X<sup class="vector">&mu;</sup>&sdot;g <br />
      *         where X<sup class="vector">&nu;</sup>,X<sup class="vector">&mu;</sup> are coprime and such that
      *         l(X<sup class="vector">&nu;</sup>&sdot;f)=l(X<sup class="vector">&mu;</sup>&sdot;g)
@@ -671,6 +672,9 @@ public final class AlgebraicAlgorithms {
      * @internal whenever an elementary reduction is possible, use the reduced polynomial instead of the original polynomial.
      * @internal GroebnerBasis = "if the term rewrite system for reduce is confluent"
      * @todo scale to get rid of denominators, and of non-primitive polynomials (divide by gcd of coefficients)
+     * @see "Buchberger, Bruno. <i>Ein Algorithmus zum Auffinden der Basiselemente des Restklassenrings nach einem nulldimensionalen Polynomideal</i>. PhD thesis, Universit&auml;t Innsbruck, 1965."
+     * @see "Buchberger, Bruno. Gr&oouml;bner bases: An algorithmic method in polynomial ideal theory. In Bose, N.K., editor, <i>Recent Trends in Multidimensional Systems Theory</i>. Reidel Publ.Co., 1985."
+     * @see "Knuth, Donald E. and Bendix, P.B. Simple word problems in universal algebras. In Leech, J., editor, <i>Computational Problems in Abstract Algebras</i>. p263-297. Pergamon Press, Oxford, 1970."
      */
     public static final Set/*_<Polynomial<R,S>>_*/ groebnerBasis(Set/*_<Polynomial<R,S>>_*/ g, final Comparator/*_<S>_*/ monomialOrder) {
 	Set/*_<Polynomial<R,S>>_*/ rgb = reducedGroebnerBasis(g, monomialOrder);
@@ -686,7 +690,7 @@ public final class AlgebraicAlgorithms {
      * Get the reduced Groebner basis of g (Implementation).
      */
     private static final Set/*_<Polynomial<R,S>>_*/ reducedGroebnerBasis(Collection/*_<Polynomial<R,S>>_*/ g, final Comparator monomialOrder) {
-	return new HashSet(reduceGroebnerBasis(new ArrayList(groebnerBasisImpl(g, monomialOrder)), monomialOrder));
+	return new LinkedHashSet(reduceGroebnerBasis(new ArrayList(groebnerBasisImpl(g, monomialOrder)), monomialOrder));
     }
     /**
      * Get the non-reduced Groebner basis of g (Implementation).
@@ -728,7 +732,7 @@ public final class AlgebraicAlgorithms {
 	    }
 	    break ergaenzeGroebnerBasis;
 	}
-	return new HashSet(g);
+	return new LinkedHashSet(g);
     }
 
     /**

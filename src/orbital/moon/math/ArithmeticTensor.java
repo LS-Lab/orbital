@@ -77,6 +77,7 @@ class ArithmeticTensor/*<R implements Arithmetic>*/ extends AbstractTensor/*<R>*
 	while (index.hasNext()) {
 	    final int[] i = index.next();
 	    final Object ai = Utility.getPart(values, i);
+	    Utility.pre(ai != null, "multi-dimensional array does not contain " + ai);
 	    Utility.pre(primitive == Values.isPrimitiveWrapper(ai.getClass()), "multi-dimensional array either consistently has " + Arithmetic.class + " or consistently contains primitive types");
 	    if (primitive) {
 		assert ai instanceof Number : "primitive type get wrapped into instances of " + Number.class;
@@ -106,8 +107,9 @@ class ArithmeticTensor/*<R implements Arithmetic>*/ extends AbstractTensor/*<R>*
 	    } else {
 		// check that base type is instanceof Arithmetic
 		assert !oj.getClass().isArray() : "by definition of rank";
-		if (!(o.getClass().getComponentType().isPrimitive() ||
-		      Arithmetic.class.isInstance(oj)))
+		if (!(o.getClass().getComponentType().isPrimitive()
+		      || Values.isPrimitiveWrapper(o.getClass().getComponentType())
+		      || Arithmetic.class.isInstance(oj)))
 		    return false;
 	    }
 	}

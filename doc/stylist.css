@@ -399,7 +399,7 @@
 	 */
 	*.inner {
 		display: run-in;
-		text-weight: bold;
+		font-weight: bold;
 	}
 
 	/**

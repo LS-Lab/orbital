@@ -543,12 +543,40 @@ public class LogicParser {
 		throw new orbital.logic.sign.ParseException("neither comment nor whitespace nor rule", rd.getLineNumber(), 1);
 	    rules.add(
 		      Substitutions.createSingleSidedMatcher(
-							     expressionTransformation.apply(syntax.createExpression(l.substring(0, rule))),
-							     expressionTransformation.apply(syntax.createExpression(l.substring(rule + ruleDelim.length())))
+							     expressionTransformation.apply(readTRStrace(l.substring(0, rule), syntax, rd.getLineNumber())),
+							     expressionTransformation.apply(readTRStrace(l.substring(rule + ruleDelim.length()), syntax, rd.getLineNumber()))
 							     )
 		      );
 	}
 	return Substitutions.getInstance(new ArrayList(rules));
+    }
+    /**
+     * Add more verbosity to exceptions
+     */
+    private static final Expression readTRStrace(final String expression, final ExpressionSyntax syntax, int line)
+	throws orbital.logic.sign.ParseException {
+	try {
+	    return syntax.createExpression(expression);
+	}
+	catch (orbital.logic.sign.ParseException ex) {
+	    //@internal add information to exception message
+	    throw new orbital.logic.sign.ParseException(line + ": " + ex + "\nin expression " + expression + " on line " + line,
+							ex.getErrorOffset(),
+							ex.getLineNumber(),
+							ex.getColumnNumber(),
+							ex);
+	}
+	catch (TypeException ex) {
+	    //@internal add information to exception message
+	    throw (TypeException)
+		new TypeException(line + ": " + ex + "\nin expression " + expression + " on line " + line,
+				  ex.getRequired(), ex.getOccurred()).initCause(ex);
+	}
+	catch (IllegalArgumentException ex) {
+	    //@internal add information to exception message
+	    throw (IllegalArgumentException)
+		new IllegalArgumentException(line + ": " + ex + "\nin expression " + expression + " on line " + line).initCause(ex);
+	}
     }
     /**
      * Reads a term-rewrite system from a stream.
@@ -754,7 +782,7 @@ Expression EquivalenceExpression() :
 Expression ImplicationExpression() :
 {Token tok;Expression a,b;}
 {
-    a = InclusiveOrExpression() ( tok = <IMPLY> b = InclusiveOrExpression() {a = combine(tok, a,b);} )*
+    a = InclusiveOrExpression() ( tok = <IMPLY> b = ImplicationExpression() {a = combine(tok, a,b);} )?
 	{return a;}
 }
 
@@ -803,17 +831,41 @@ Expression QuantifiedExpression() :
 }
 {
     //@internal this lookahead specifies that we prefer not to have quantifiers in the following UnaryExpression
-    (LOOKAHEAD(<FORALL>|<EXISTS>) (tok = <FORALL> | tok = <EXISTS>) x = VariableDeclaration() {scope.declare(x);xs.add(x);})+
+    (LOOKAHEAD(<FORALL>) tok = <FORALL>
+     (
+          x = VariableDeclaration() {scope.declare(x);xs.add(x);}
+      |   //@internal an optional lambda case is required to reparse the notation all \x. p
+          <LAMBDA> x = VariableDeclaration() "." {scope.declare(x);xs.add(x);}
+      )
+    )+
     a = UnaryExpression()
 	{
 	    for (Iterator i = xs.iterator(); i.hasNext(); ) {
 		Symbol y = (Symbol) i.next();
-		//@internal note that the tok is not quite true for multiple quantifiers
+		//@internal note that the tok location is not quite true for multiple quantifiers
 		a = combine(tok, y, a);
 	    }
 	    scope = scope.leave();
 	    return a;
 	}
+|
+    (LOOKAHEAD(<EXISTS>) tok = <EXISTS>
+     (
+          x = VariableDeclaration() {scope.declare(x);xs.add(x);}
+      |   //@internal an optional lambda case is required to reparse the notation all \x. p
+          <LAMBDA> x = VariableDeclaration() "." {scope.declare(x);xs.add(x);}
+      )
+    )+
+    a = UnaryExpression()
+	{
+	    for (Iterator i = xs.iterator(); i.hasNext(); ) {
+		Symbol y = (Symbol) i.next();
+		//@internal note that the tok location is not quite true for multiple quantifiers
+		a = combine(tok, y, a);
+	    }
+	    scope = scope.leave();
+	    return a;
+	}	
 }
 
 Expression ModalExpression() :

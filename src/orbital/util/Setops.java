@@ -22,7 +22,9 @@ import orbital.logic.functor.Functionals;
 import orbital.logic.functor.Predicates;
 
 import orbital.util.ReverseComparator;
+import orbital.algorithm.Combinatorical;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -33,11 +35,15 @@ import java.util.NoSuchElementException;
 /**
  * Contains utility methods for common set operations and more general collection operations.
  * 
- * <p>
- * The selection methods ({@link #select(Function, Collection, Predicate, Comparator, boolean)}) encapsulate a generalization of queries over Collections.
- * These queries are build just like data queries over tables with SQL.
- * In a selection query, a Collection is filtered to obtain the desired subset of data
- * which matches the criteria, with the order being induced by a Comparator.</p>
+ * <p> The selection methods ({@link #select(Function, Collection,
+ * Predicate, Comparator, boolean)}) encapsulate a generalization of
+ * queries over Collections.  These queries are build just like data
+ * queries over tables with SQL.  In a selection query, a Collection
+ * is filtered to obtain the desired subset of data which matches the
+ * criteria, with the order being induced by a Comparator.</p> <p>
+ * With its highly flexible bulk-style data-processing operations,
+ * {@link orbital.logic.functor.Functionals} is a worthwhile and
+ * extremely powerful supplement to {@link Setops}.</p>
  *
  * @stereotype Utilities
  * @version 1.0, 2000/08/15
@@ -45,6 +51,7 @@ import java.util.NoSuchElementException;
  * @see orbital.util.Utility
  * @see orbital.algorithm.evolutionary.Selectors
  * @see java.util.Collections
+ * @see orbital.logic.functor.Functionals
  * @see <a href="http://www.sql.org">Structured Query Language (SQL)</a>
  */
 public final class Setops {
@@ -58,14 +65,28 @@ public final class Setops {
      * Points to java.util.RandomAccess in case that class is available at runtime.
      */
     private static final Class randomAccessClass = possiblyClassForName("java.util.RandomAccess");
+    /**
+     * Points to java.util.LinkedHashSet in case that class is available at runtime.
+     */
+    private static final Class linkedHashSetClass = possiblyClassForName("java.util.LinkedHashSet");
     private static Class possiblyClassForName(String name) {
 	try {
-	    return Class.forName("java.util.RandomAccess");
+	    return Class.forName(name);
 	}
 	catch (ClassNotFoundException priorToJDK1_4) {
 	    return null;
 	}
     }
+
+    /**
+     * An iterator over the empty collection.
+     */
+    public static final Iterator EMPTY_ITERATOR = Collections.EMPTY_LIST.iterator();
+
+    /**
+     * A list iterator over the empty list.
+     */
+    public static final Iterator EMPTY_LIST_ITERATOR = Collections.EMPTY_LIST.listIterator();
 
     /**
      * Return the first object in a collection that satisfies the specified predicate.
@@ -82,6 +103,16 @@ public final class Setops {
 	} 
 	return null;
     } 
+
+    /**
+     * Return any element of a collection that satisfies the specified predicate.
+     * This method can be used to express don't care nondeterminisms in algorithms.
+     * @return any object in the collection that satisfies the specified predicate, or <code>null</code> if no such object exists.
+     * @see #any(Collection)
+     */
+    public static /*<A>*/ Object/*>A<*/ epsilon(Collection/*_<A>_*/ coll, Predicate/*<A>*/ found) {
+	return find(coll.iterator(), found);
+    }
 
     /**
      * Counts the number of objects in a collection that satisfy the specified predicate.
@@ -103,7 +134,7 @@ public final class Setops {
      * Checks whether all objects in a collection satisfy the specified predicate.
      * @return true if all objects satisfy the predicate, false if one does not.
      *  Returns an optimized version of <code>Functionals.map(and, Functionals.map(Functionals.asFunction(found), i))</code>.
-     * @see <a href="{@docRoot}/Patterns/Design/InternalIterator.html">Internal Iterator</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Iterator.html">Internal Iterator</a>
      * @see orbital.logic.functor.Functionals
      * @todo document banana application @see Operations.andAll
      */
@@ -117,6 +148,14 @@ public final class Setops {
 		return false;
 	return true;
     } 
+    /**
+     * Checks whether all corresponding pairs of objects in two collection satisfy the specified predicate.
+     * @return true if all objects satisfy the predicate, false if one does not.
+     *  Returns an optimized version of <code>Functionals.map(and, Functionals.map(Functionals.asFunction(found), i), j)</code>.
+     * @see <a href="{@docRoot}/Patterns/Design/Iterator.html">Internal Iterator</a>
+     * @see orbital.logic.functor.Functionals
+     * @todo document banana application @see Operations.andAll
+     */
     public static /*<A1, A2>*/ boolean all(Collection/*_<A1>_*/ a, Collection/*_<A2>_*/ b, BinaryPredicate/*<A1, A2>*/ found) {
 	return a.size() == b.size()
 	    && all(a.iterator(), b.iterator(), found);
@@ -132,7 +171,7 @@ public final class Setops {
      * Checks whether some objects (at least one) in a collection satisfy the specified predicate.
      * @return true if at least one objects satisfies the predicate, false if none does.
      *  Returns an optimized version of return <code>Functionals.map(or, Functionals.map(Functionals.asFunction(found), i))</code>.
-     * @see <a href="{@docRoot}/Patterns/Design/InternalIterator.html">Internal Iterator</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Iterator.html">Internal Iterator</a>
      * @see orbital.logic.functor.Functionals
      * @todo document banana application @see Operations.orSome
      */
@@ -300,7 +339,7 @@ public final class Setops {
 
     /**
      * Returns the symmetric difference of two collections.<br />
-     * a &Delta; b = (a&&#8726;b) &cup; (b&#8726;a)
+     * a &Delta; b := (a&#8726;b) &cup; (b&#8726;a)
      * @return a collection of all elements which are unique to either of the collections.
      * @postconditions RES has same type as a
      */
@@ -336,13 +375,15 @@ public final class Setops {
 
     /**
      * Returns the n-ary cross product (or cartesian product) of n collections.<br />
-     * &times;<sub>i=1,...,n</sub> a<sub>i</sub> = {(x<sub>i</sub>)<sub>i=1,...,n</sub> &brvbar; &forall;i=1,...,n x<sub>i</sub>&isin;a<sub>i</sub>}
+     * &times;<sub>i=1,...,n</sub> a<sub>i</sub> = &prod;<sub>i=1,...,n</sub> a<sub>i</sub> = {(x<sub>i</sub>)<sub>i=1,...,n</sub> &brvbar; &forall;i=1,...,n x<sub>i</sub>&isin;a<sub>i</sub>}
      * <p>
      * Implemented as an iterative unrolling of a recursion.</p>
+     * @param a the list &lang;a<sub>1</sub>,...,a<sub>n</sub>&rang; of collections a<sub>i</sub> to choose from.
      * @return a collection of all n-tupels in &times;<sub>i=1,...,n</sub> a<sub>i</sub> as {@link java.util.List} objects.
      * @see #outer(BinaryFunction, Collection, Collection)
+     * @see "Axiom of Choice (for infinite case)"
      */
-    public static Collection cross(List/*_<Collection<A>>_*/ a) {
+    public static Collection/*_<List<A>>_*/ cross(List/*_<Collection<A>>_*/ a) {
     	// n-ary cross product of the elements in optionLists
     	List r = new LinkedList();
     	r.add(Collections.EMPTY_LIST);
@@ -365,6 +406,31 @@ public final class Setops {
     	return r;
     }
 
+    /**
+     * Returns the powerset of a set, i.e. the set of all subsets.<br />
+     * &weierp;(S) := {E &sube; S}
+     */
+    public static /*<A>*/ Set/*_<Set<A>>_*/ powerset(Set/*_<A>_*/ s) {
+	// list version of the set s (in arbitrary order)
+	final Combinatorical c = Combinatorical.getPermutations(s.size(), 2, true);
+	final Set/*_<Set<A>>_*/ p = new HashSet/*_<Set<A>>_*/(c.count());
+	while (c.hasNext()) {
+	    int[] choose = c.next();
+	    Set/*_<A>_*/ e = (Set)newCollectionLike(s);
+	    int index = 0;
+	    for (Iterator i/*_<A>_*/ = s.iterator(); i.hasNext(); ) {
+		Object/*_>A<_*/ x = i.next();
+		if (choose[index++] == 1) {
+		    e.add(x);
+		}
+	    }
+	    p.add(e);
+	} 
+	return p;
+    } 
+
+    
+    //
 
     /**
      * Get <em>any</em> object of a collection.
@@ -374,6 +440,7 @@ public final class Setops {
      * <span class="comment">// expresses don't care nondeterminism</span>
      * <span class="Class">Object</span> o <span class="operator">=</span> <span class="Orbital">Setops</span>.any(someCollection);
      * </pre>
+     * @see #epsilon(Collection,Predicate)
      */
     public static /*<A>*/ Object/*>A<*/ any(Collection/*_<A>_*/ coll) {
 	Iterator/*_<A>_*/ it = coll.iterator();
@@ -395,31 +462,48 @@ public final class Setops {
     } 
 
     /**
+     * Returns a set filled with the elements in the iterator.  <p>
+     * Except for set notation, this method works somewhat like
+     * java.util.Arrays.asList(Object[]) but is not backed by the
+     * iterator.</p>
+     * @see java.util.Arrays#asList(Object[])
+     */
+    public static /*_<A>_*/ Set/*_<A>_*/ asSet(Iterator/*_<A>_*/ it) {
+	Set/*_<A>_*/ r = new LinkedHashSet/*_<A>_*/();
+	while (it.hasNext())
+	    r.add(it.next());
+	return r;
+    } 
+
+    /**
      * Get a new instance of an empty collection of the same type as the one specified.
      * <p>
      * If no such collection could be instantiated, a similar collection is used.</p>
      */
     public static /*_<A>_*/ Collection/*_<A>_*/ newCollectionLike(Collection/*_<A>_*/ c) {
 	try {
-	    if (c instanceof SortedSet)
+	    if (c instanceof SortedSet) {
 		// skip and let the special handler below take care of the comparator
-		;
-	    else
+	    } else {
 		return (Collection/*_<A>_*/) c.getClass().newInstance();
+	    }
 	}
 	catch (InstantiationException trial) {}
 	catch (IllegalAccessException trial) {} 
 	// find a rather similar collection type
-	if (c instanceof java.util.SortedSet)
+	if (c instanceof java.util.SortedSet) {
 	    return new java.util.TreeSet/*_<A>_*/(((SortedSet)c).comparator());
-	else if (c instanceof java.util.Set)
-	    return new java.util.HashSet/*_<A>_*/();
-	else if (c instanceof java.util.List)
+	} else if (c instanceof java.util.Set) {
+	    return linkedHashSetClass != null && linkedHashSetClass.isInstance(c)
+		? (Set) new java.util.LinkedHashSet/*_<A>_*/(c.size())
+		: (Set) new java.util.HashSet/*_<A>_*/();
+	} else if (c instanceof java.util.List) {
 	    return randomAccessClass != null && randomAccessClass.isInstance(c)
 		? (List) new java.util.ArrayList/*_<A>_*/(c.size())
 		: (List) new java.util.LinkedList/*_<A>_*/();
-	else
+	} else {
 	    throw new IllegalArgumentException("unknown collection type " + c.getClass() + " could not be instantiated");
+	}
     } 
 
     /**
@@ -816,6 +900,7 @@ public final class Setops {
      * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      * @see Filters
      * @see orbital.logic.functor.Functionals.Catamorphism
+     * @see orbital.logic.functor.Functionals#filter(Predicate,Iterator)
      */
     public static final Function/**<Collection &cup; Iterator, Collection>**/ createSelection(final Function/*<Collection, Collection>*/ what,
 											      final Predicate where,
@@ -906,5 +991,16 @@ public final class Setops {
 
 	// RESULTSET
 	return (what == null ? sel : (Collection) what.apply(sel));	   // filter the Data Collection of the selected Elements
-    } 
+    }
+
+
+    // diverse
+
+    /**
+     * Check whether the given iterator produces duplicate entries.
+     */
+    public static boolean hasDuplicates(Iterator i) {
+	List l = Setops.asList(i);
+	return new HashSet(l).size() != l.size();
+    }
 }

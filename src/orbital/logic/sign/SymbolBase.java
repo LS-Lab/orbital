@@ -142,9 +142,11 @@ public class SymbolBase implements Symbol, Serializable {
     /**
      * Compares two symbols.
      * <p>
-     * This implementation compares for notation (precedence) in favor of type (lexicographical) in favor of symbol name.
+     * This implementation compares for notation precedence in favor of symbol name in favor of type (lexicographical).
      * </p>
      * @postconditions only <em>semi</em>-consistent with equals (since Notation is)
+     * @internal this order is quicker than comparison according to compares notation precedence in favor of type (lexicographical) in favor of symbol name.
+     * @todo 29 optimize these hotspots compareTo(Object) and hashCode() during theorem proving. That signatures are based on TreeSets complicates this problem.
      */
     public int compareTo(Object o) {
 	Symbol b = (Symbol) o;
@@ -152,8 +154,8 @@ public class SymbolBase implements Symbol, Serializable {
 	a = Utility.compare(getNotation(), b.getNotation());
 	if (a != 0)
 	    return a;
-	a = orbital.moon.logic.sign.type.StandardTypeSystem.LEXICOGRAPHIC.compare(getType(), b.getType());
-	return a != 0 ? a : Utility.compare(getSignifier(), b.getSignifier());
+	a = Utility.compare(getSignifier(), b.getSignifier());
+	return a != 0 ? a : orbital.moon.logic.sign.type.StandardTypeSystem.LEXICOGRAPHIC.compare(getType(), b.getType());
     } 
 
     public int hashCode() {
@@ -197,7 +199,7 @@ public class SymbolBase implements Symbol, Serializable {
     }
     
     public String toString() {
-	if (Logger.global.isLoggable(Level.FINEST)
+	if (Logger.global.isLoggable(Level.ALL)
 	    || getType().equals(Types.getDefault().TYPE()))
 	    //@internal equivalent to Types.toTypedString(this) but different: else infinite recursion
 	    return getSignifier() + ':' + getType()

@@ -196,9 +196,9 @@ public class AlphaBetaPruning extends AdversarySearch {
 	    // the best move found so far, always has utility alpha
 	    Option bestOption = new NoOption();
 	    bestOption.setUtility(alpha);
-	    if (cutOff(state))
+	    if (cutOff(state)) {
 		throw new AssertionError("should never cut off the very first node prior to attempting any moves. currentDepth=" + currentDepth + ", maxDepth=" + maxDepth);
-	    else
+	    } else {
 		for (Iterator s = successors(state); s.hasNext(); ) {
 		    Option p = (Option) s.next();
 		    double v = minimax(p.getState(), alpha, beta);
@@ -209,12 +209,13 @@ public class AlphaBetaPruning extends AdversarySearch {
 			alpha = v;
 			bestOption = p;
 		    } else {
-			assert bestOption != null : "always prefer choices to null";
+			assert bestOption != null : "always prefer choices to null, so we should have preferred " + p + " with " + v + " to best " + bestOption + " with " + alpha;
 			logger.log(Level.FINEST, "evaluate utility: {1} for {0} =< {2} for {3}", new Object[] {format(v), p, format(alpha), bestOption});
 		    }
 		    if (alpha >= beta)
 			break;
             	}
+	    }
 	    if (bestOption instanceof NoOption) {
 		assert !successors(state).hasNext() || alpha != Double.NEGATIVE_INFINITY || beta != Double.POSITIVE_INFINITY : "at least with usual arguments there must have been no successors in order to produce no best option";
 		return null;

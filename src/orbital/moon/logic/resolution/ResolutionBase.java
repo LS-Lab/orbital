@@ -63,24 +63,22 @@ import java.util.logging.Level;
  *  Oder wähle alternativen (einfacheren?) TRS-Algorithmus Ü 7.95
  */
 public abstract class ResolutionBase implements Inference {
-    /**
-     * Whether or not to use simplified clausal forms.
-     */
-    private static final boolean SIMPLIFYING = false;
-
     static final Logger logger = Logger.getLogger(ResolutionBase.class.getName());
 
-    private static boolean verbose = false;
+    private static final ClausalFactory clausalFactory = new DefaultClausalFactory();
+    protected static ClausalFactory getClausalFactory() {
+	return clausalFactory;
+    }
+    
     /**
      * Add verbosity, i.e. print out a proof tree.
      */
     public void setVerbose(boolean newVerbose) {
-	this.verbose = newVerbose;
+	if (getClausalFactory() instanceof DefaultClausalFactory) {
+	    ((DefaultClausalFactory)getClausalFactory()).setVerbose(newVerbose);
+	}
     }
-    private static boolean isVerbose() {
-	return verbose;
-    }
-    
+
     /**
      * {@inheritDoc}
      * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
@@ -94,6 +92,7 @@ public abstract class ResolutionBase implements Inference {
 	final ClausalSet S = skolemClauseForm(Collections.singleton(query), "negated goal ");
 	// if IllegalStateException occurs here it means return true due to inconsistent query
 
+	logger.log(Level.FINE, "proving that knowledgebase {0} and query {1} are inconsistent", new Object[] {knowledgebase, S});
         final boolean proven = prove(knowledgebase, S);
 	logger.log(Level.FINE, "found proof {0}", Boolean.valueOf(proven));
         return proven;
@@ -125,7 +124,7 @@ public abstract class ResolutionBase implements Inference {
 
     /**
      * Transforms a set of formulas to a set of Skolemized clauses.
-     * Skolemizes, drops quantifiers, converts to clauses, factorizes,
+     * Skolemizes, drops quantifiers, converts to clauses,
      * removes tautologies, and handles contradictions.
      * @param B the set of formulas to transform to clauses.
      * @param logPrefix the string to prepend to all logging information.
@@ -144,15 +143,11 @@ public abstract class ResolutionBase implements Inference {
 
         // convert B to clausalForm clausebase
 	// @internal clausebase = Functionals.map(clausalForm, skolemizedB)
-        ClausalSet clausebase = new ClausalSetImpl();
+        ClausalSet clausebase = getClausalFactory().newClausalSet();
         for (Iterator i = skolemizedB.iterator(); i.hasNext(); ) {
-	    clausebase.addAll(clausalForm((Formula) i.next(), SIMPLIFYING));
+	    clausebase.addAll(getClausalFactory().asClausalSet((Formula) i.next()));
 	}
         logger.log(Level.FINER, "{0} as clausal {1}", new Object[] {logPrefix, clausebase});
-
-	// factorize
-        clausebase.addAll((ClausalSet) Functionals.map(factorize, clausebase));
-        logger.log(Level.FINER, "{0} factorized to {1}", new Object[] {logPrefix, clausebase});
 
 	// remove tautologies and handle contradictions
     	// for all clauses F&isin;clausebase
@@ -168,41 +163,9 @@ public abstract class ResolutionBase implements Inference {
         logger.log(Level.FINE, "{0} finally is {1}", new Object[] {logPrefix, clausebase});
         if (logger.isLoggable(Level.FINEST)) {
 	    for (Iterator i = B.iterator(); i.hasNext(); ) {
-		logger.log(Level.FINEST, "{0} thereby contains transformation of original formula {1}", new Object[] {logPrefix, Utilities.conjunctiveForm((Formula) i.next(), SIMPLIFYING)});
+		logger.log(Level.FINEST, "{0} thereby contains transformation of original formula {1}", new Object[] {logPrefix, Utilities.conjunctiveForm((Formula) i.next(), DefaultClausalFactory.isSIMPLIFYING())});
 	    }
 	}
 	return clausebase;
     }
-    
-    /**
-     * Transforms into clausal form.
-     * <p>
-     * Defined per structural induction.
-     * </p>
-     * @param simplifying Whether or not to use simplified CNF for calculating clausal forms.
-     * @todo assert
-     * @todo move to orbital.moon.logic.resolution....?
-     */
-    public static final ClausalSet clausalForm(Formula f, boolean simplifying) {
-	return new ClausalSetImpl
-	    (
-	     Functionals.map(new Function() {
-		     public Object apply(Object C) {
-			 return isVerbose()
-			     ? new TraceableClauseImpl((Set)C)
-			     : new ClauseImpl((Set)C);
-		     }
-		 }, ClassicalLogic.Utilities.clausalForm(f, simplifying))
-	     );
-    }
-
-    /**
-     * Factorize a clause as much as possible.
-     * @see Clause#factorize()
-     */
-    private static final Function/*<Clause,Clause>*/ factorize = new Function() {
-	    public Object apply(Object C) {
-		return ((Clause)C).factorize();
-	    }
-	};
 }

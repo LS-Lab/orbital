@@ -144,13 +144,12 @@ public class SearchResolution extends ResolutionBase {
 			// again). But we only modify the set
 			// F&isin;S=listS, and thus - indirectly - S
 			// and listS.
-			final List	 listS = Collections.unmodifiableList(new LinkedList(S));
-                	Collection	 r = new LinkedList();
+			final List listS = Collections.unmodifiableList(new LinkedList(S));
+                	Collection r = new LinkedList();
                 	// choose any clause G&isin;S
                 	for (ListIterator i = listS.listIterator(); i.hasNext(); ) {
-			    final Clause    G = (Clause) i.next();
-			    final Signature GVariables = G.getFreeVariables();
-			    boolean	    resolvable = false;
+			    final Clause G = (Clause) i.next();
+			    boolean	 resolvable = false;
 			    assert !G.equals(Clause.CONTRADICTION) : "already checked for goal in isSolution() although this is somewhat less performant. So we do not need to check again in actions()";
     
 			    // if we already tried to resolve F with G, we don't need to resolve G with F, again, so

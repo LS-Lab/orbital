@@ -55,7 +55,7 @@ public interface HeuristicAlgorithm extends EvaluativeAlgorithm {
     void setHeuristic(Function heuristic);
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      * <p>
      * The evaluation function f may depend upon an {@link #setHeuristic(Function) heuristic cost function} h:S&rarr;<b>R</b>
      * </p>
@@ -105,10 +105,17 @@ public interface HeuristicAlgorithm extends EvaluativeAlgorithm {
      * function is required.
      * The patterns can either be build from the full or from a projected state space.</p>
      * <p>
-     * Within the pattern database this heuristic is optimal (h|<sub>P</sub> = h<sup>*</sup>|<sub>P</sub></p>
+     * Within the pattern database this heuristic is optimal (i.e. h|<sub>P</sub> = h<sup>*</sup>|<sub>P</sub>
      * for the part P of the state space that is handled by the pattern database)
      * and for the full state space it is admissible.
-     * But good a backing heuristic function is still required.</p>
+     * Still a good backing heuristic function is required for maximum performance.</p>
+     * <p>
+     * Dynamically building or increasing a pattern database can be a worthwhile
+     * refinement of the pre-processing approach to pattern database creation,
+     * as it better adapts to the current problem's need. Either way, the basic
+     * idea of using a pattern database, especially in the presence of memoisation
+     * (dynamically improving the database during the search) is {@link DynamicProgramming dynamic programming}.
+     * </p>
      * <p>
      * To massively reduce memory usage the pattern database could store hash codes
      * instead of whole state objects.
@@ -118,6 +125,7 @@ public interface HeuristicAlgorithm extends EvaluativeAlgorithm {
      * @version 1.0, 2000/09/20
      * @author  Andr&eacute; Platzer
      * @see "Memory-Based Heuristics: Pattern Databases. Culbersion & Schaeffer. 1995."
+     * @see "Stefan Edelkamp. Symbolic pattern databases in heuristic search planning. In Ghallab, M. and Hertzberg, J. and Traverso, P., editors. Proceedings of the 7th International Conference on Artificial Intelligence Planning and Scheduling (AIPS-02), Toulouse, France, April, 2002, AAAI Press, Menlo Park. pages 274-283"
      */
     public static class PatternDatabaseHeuristic implements Function, Serializable {
 	private static final long serialVersionUID = -4488685150678833742L;

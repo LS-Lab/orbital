@@ -1,8 +1,18 @@
-//TODO: *
+//@todo *
+
+Most important
+--------
+
+bullet proof license agreement
+
+better positioning of what Orbital library does (not like Lotus Notes).
+
+combine depth and lexicographic order for ordered resolution. Compare for term depths, and, in case of equality on all term depths, compare lexicographically for terms, stopping at the first incomparable position (variable and constant or distinct variables).
 
 fix errors
 --------
-orbital.moon.logic.ModalLogic test runs infinitely long (> 4h15min)
+
+orbital.moon.logic.ModalLogic has inadequate type for worlds. (needs typed logic)
 
 deprecated
 ----------

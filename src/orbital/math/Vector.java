@@ -248,7 +248,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     Vector/*<R>*/ multiply(Matrix/*<R>*/ B);
 
     /**
-     * Vector-cross-product of two vectors.<br>
+     * Vector-cross-product of two vectors. <br />
      * &times;:<b><b>R</b></b><sup>3</sup>&times;<b><b>R</b></b><sup>3</sup>&rarr;<b><b>R</b></b><sup>3</sup>; (<span class="vector">x</span>,<span class="vector">y</span>) &#8614; <span class="vector">x</span>&times;<span class="vector">y</span> = (x<sub>1</sub>y<sub>2</sub>-x<sub>2</sub>y<sub>1</sub>, x<sub>2</sub>y<sub>0</sub>-x<sub>0</sub>y<sub>2</sub>, x<sub>0</sub>y<sub>1</sub>-x<sub>1</sub>y<sub>0</sub>)
      * <p>
      * cross is antisymmetric: <span class="vector">y</span>&times;<span class="vector">x</span> = -(<span class="vector">x</span>&times;<span class="vector">y</span>)</p>

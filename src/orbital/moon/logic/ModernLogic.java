@@ -89,9 +89,12 @@ abstract class ModernLogic implements Logic {
      * @todo provide a hook method for subclasses (they can thus provide normalForm and closure)
      */
     protected static final boolean proveAll(Reader rd, ModernLogic logic, boolean all_true) throws ParseException, IOException {
-	return proveAll(rd, logic, all_true, false, false, false);
+	return proveAll(rd, logic, all_true, false, false, false, false);
     }
-    static final boolean proveAll(Reader rd, ModernLogic logic, boolean all_true, boolean normalForm, boolean closure, boolean verbose) throws ParseException, IOException {
+    /**
+     * @param multiline false to parse each conjecture from a single line, true to parse one single conjecture from multiple lines of the whole reader.
+     */
+    static final boolean proveAll(Reader rd, ModernLogic logic, boolean all_true, boolean normalForm, boolean closure, boolean verbose, boolean multiline) throws ParseException, IOException {
 	DateFormat df = new SimpleDateFormat("H:mm:ss:S");
 	df.setTimeZone(TimeZone.getTimeZone("Greenwich/Meantime"));
 	final long start = System.currentTimeMillis();
@@ -114,9 +117,19 @@ abstract class ModernLogic implements Logic {
 		    break;
 		} else if (ch == '\r')
 		    continue;
-		else if (ch == '\n')
-		    break;
-		else if ((ch == ' ' || ch == '\t')) {
+		else if (ch == '\n') {
+		    if (!multiline) {
+			break;
+		    } else {
+			// leave comment mode
+			comment = null;
+			// add to comment or formula, depending upon whether in comment mode or not
+			if (comment == null)
+			    formula += (char) ch;
+			else
+			    comment += (char) ch;
+		    }
+		} else if ((ch == ' ' || ch == '\t')) {
 		    //@todo why should we want to skip multiple whitespaces, except for trailing comments?
 		    if (comment != null || !wasWhitespace) {
 			wasWhitespace = true;
@@ -140,7 +153,7 @@ abstract class ModernLogic implements Logic {
 			comment += (char) ch;
 		}
 	    }
-			
+
 	    if ("".equals(formula)) {
 		if (comment != null)
 		    System.out.println('#' + comment);
@@ -297,8 +310,8 @@ abstract class ModernLogic implements Logic {
 	    throw new TypeException("compositor " + Types.toTypedString(compositor) + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments) + ':' + Types.typeOf(arguments), compositor.getType().domain(), Types.typeOf(arguments));
 
 	Expression.Composite RES = composeImpl(compositor, arguments);
-	assert RES != null : "@postconditions RES != null";	     
-	assert !TYPE_CHECK || RES.getType().equals(compositor.getType().on(Types.typeOf(arguments))) : "@postconditions " + RES.getType() + " = " + compositor.getType() + "(on)" + Types.typeOf(arguments) + " = " + compositor.getType().on(Types.typeOf(arguments)) + " (right type compose)\n\tfor " + RES + " = compose(" + compositor + " , " + MathUtilities.format(arguments) + ")";
+	assert RES != null : "@postconditions RES != null";
+	assert validateCheckCompositionType(RES, compositor, arguments);
 	return RES;
     }
     Expression.Composite composeImpl(Expression compositor, Expression arguments[]) throws ParseException {
@@ -325,6 +338,39 @@ abstract class ModernLogic implements Logic {
 	}
     }
 
+    /**
+     * Checks for right composition type.
+     */
+    private final boolean validateCheckCompositionType(Expression.Composite RES, Expression compositor, Expression arguments[]) {
+	Type actualType = RES.getType();
+	Type composedType = null;
+	try {
+	    composedType = compositor.getType().on(Types.typeOf(arguments));
+	}
+	catch (TypeException incomposable) {
+	    if (TYPE_CHECK) {
+		assert false : "incomposable types in @postconditions " + RES.getType() + " = " + compositor.getType() + "(on)" + Types.typeOf(arguments) + " = <{" + incomposable + "}> (right type compose)\n\tfor " + RES + " = compose(" + compositor + " , " + MathUtilities.format(arguments) + ")";
+	    } else {
+		logger.log(Level.WARNING, "incomposable types in @postconditions " + RES.getType() + " = " + compositor.getType() + "(on)" + Types.typeOf(arguments) + " = <{" + incomposable + "}> (right type compose)\n\tfor " + RES + " = compose(" + compositor + " , " + MathUtilities.format(arguments) + ")");
+	    }
+	    //@internal assertions either have trapped already, or should not be trapped at all
+	    return true;
+	}
+	{
+	    if (actualType.equals(composedType)) {
+		return true;
+	    } else {
+		if (TYPE_CHECK) {
+		    assert false : "@postconditions " + RES.getType() + " = " + compositor.getType() + "(on)" + Types.typeOf(arguments) + " = " + composedType + " (right type compose)\n\tfor " + RES + " = compose(" + compositor + " , " + MathUtilities.format(arguments) + ")";
+		} else {
+		    logger.log(Level.WARNING, "@postconditions " + RES.getType() + " = " + compositor.getType() + "(on)" + Types.typeOf(arguments) + " = " + composedType + " (right type compose)\n\tfor " + RES + " = compose(" + compositor + " , " + MathUtilities.format(arguments) + ")");
+		}
+		//@internal assertions either have trapped already, or should not be trapped at all
+		return true;
+	    }
+	}
+    }
+    
 
     // delegation helper methods
     
@@ -364,7 +410,7 @@ abstract class ModernLogic implements Logic {
 
     /**
      * Instant composition of functors with a fixed core interperation
-     * Usually for predicates etc. subject to fixed core interpretation.
+     * Usually for predicates etc. subject to fixed core interpretation..
      * @param f the compositing formula.
      * @param arguments the arguments to the composition by f.
      * @param fsymbol the symbol with with the fixed interpretation f.
@@ -430,7 +476,7 @@ abstract class ModernLogic implements Logic {
 	    ? (Formula[]) B_parsed
 	    : (Formula[]) Arrays.asList(B_parsed).toArray(new Formula[0]);
 	Formula D = (Formula) createExpression(d);
-	logger.log(Level.FINE, "Formula {0} has type {1} with sigma={2}", new Object[] {D, D.getType(), D.getSignature()});
+	logger.log(Level.FINEST, "Formula {0} has type {1} with sigma={2}", new Object[] {D, D.getType(), D.getSignature()});
 	if (verbose)
 	    System.out.println(MathUtilities.format(B) + "\t|=\t" + D + " ??");
 	return inference().infer(B, D);

@@ -9,11 +9,11 @@
 
 <body>
 
-Provides <em>arithmetic objects</em> and mathematical algorithms.
+Defines <em>arithmetic objects</em> and provides mathematical algorithms.
 <p>Arithmetic objects contained in this package are:<br>
 &nbsp;<center>
 <table border="1">
-  <caption>Types of arithmetic objects provided</caption>
+  <caption>Types of arithmetic objects (or algebraic objects) provided</caption>
   <tr>
     <th>Group</th>
     <th>Class</th>
@@ -21,62 +21,58 @@ Provides <em>arithmetic objects</em> and mathematical algorithms.
   </tr>
   <tr>
     <td rowspan="4">scalar types</td>
-    <td>Integer</td>
+    <td><a href="Integer.html">Integer</a></td>
     <td>k &isin; <b>Z</b></td>
   </tr>
   <tr>
-    <td>Rational</td>
+    <td><a href="Rational.html">Rational</a></td>
     <td>a&#8260;s &isin; <b>Q</b></td>
   </tr>
   <tr>
-    <td>Real</td>
+    <td><a href="Real.html">Real</a></td>
     <td>a&isin;<b>R</b></td>
   </tr>
   <tr>
-    <td>Complex</td>
+    <td><a href="Complex.html">Complex</a></td>
     <td>a + <b>i</b>*b &isin; <b>C</b></td>
   </tr>
   <tr>
-    <td rowspan="4">vector space types</td>
-    <td>Vector&lt;A&gt;</td>
+    <td rowspan="3">vector space types</td>
+    <td><a href="Vector.html">Vector&lt;A&gt;</a></td>
     <td><span class="vector">v</span> &isin; A<sup>n</sup></td>
   </tr>
   <tr>
-    <td>Matrix&lt;A&gt;</td>
+    <td><a href="Matrix.html">Matrix&lt;A&gt;</a></td>
     <td><span class="matrix">M</span> &isin; A<sup>m×n</sup></td>
   </tr>
   <tr>
-    <td>Matrix3D</td>
-    <td><span class="matrix">M</span> &isin; <b>R</b><sup>4×4</sup> (fast 3D affine transformations)</td>
-  </tr>
-  <tr>
-    <td>Tensor&lt;A&gt;</td>
+    <td><a href="Tensor.html">Tensor&lt;A&gt;</a></td>
     <td><span class="tensor">t</span> &isin; A<sup>n<sub>1</sub>&times;n<sub>2</sub>&times;&#8230;&times;n<sub>r</sub></sup></td>
   </tr>
   <tr>
     <td rowspan="3">polynomial types</td>
-    <td>UnivariatePolynomial&lt;R&gt;</td>
+    <td><a href="UnivariatePolynomial.html">UnivariatePolynomial&lt;R&gt;</a></td>
     <td>p &isin; R[X]</td>
   </tr>
   <tr>
-    <td>Polynomial&lt;R,Vector&lt;Integer&gt;&gt;</td>
+    <td><a href="Polynomial.html">Polynomial&lt;R,Vector&lt;Integer&gt;&gt;</a></td>
     <td>p &isin; R[X<sub>0</sub>,...,X<sub>n-1</sub>]</td>
   </tr>
   <tr>
-    <td>Polynomial&lt;R,S&gt;</td>
+    <td><a href="Polynomial.html">Polynomial&lt;R,S&gt;</a></td>
     <td>p &isin; R[S]</td>
   </tr>
   <tr>
     <td rowspan="3">special</td>
-    <td>Symbol</td>
+    <td><a href="Symbol.html">Symbol</a></td>
     <td>&quot;x&quot;</td>
   </tr>
   <tr>
-    <td>Quotient&lt;A&gt;</td>
+    <td><a href="Quotient.html">Quotient&lt;A&gt;</a></td>
     <td>a&#772; &isin; A/~</td>
   </tr>
   <tr>
-    <td>Fraction&lt;A,S&gt;</td>
+    <td><a href="Fraction.html">Fraction&lt;A,S&gt;</a></td>
     <td>a&#8260;s &isin; S<sup>-1</sup>A</td>
   </tr>
 </table>
@@ -102,8 +98,11 @@ Mathematical function types are provided in a sub package <tt><a href="functiona
 </p>
 <dl>
   <dt><b>See Also:</b></dt>
-  <dd><tt><a href="functional/package-summary.html">orbital.math.functional</a></tt>,
-    <tt><a href="../moon/logic/MathExpressionSyntax.html">orbital.moon.logic.MathExpressionSyntax</a></tt></dd>
+  <dd><tt><a href="ValueFactory.html">ValueFactory</a></tt>,
+    <tt><a href="functional/package-summary.html">orbital.math.functional</a></tt>,
+    <tt><a href="../moon/logic/MathExpressionSyntax.html">orbital.moon.logic.MathExpressionSyntax</a></tt>,
+    <a href="doc-files/AlgebraicStructures.html">Algebraic Structures</a>
+    </dd>
 </dl>
 
 </body>

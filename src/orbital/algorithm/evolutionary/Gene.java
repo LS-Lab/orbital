@@ -246,7 +246,7 @@ public interface Gene {
     	} 
     
     	/**
-	 * {@inheritDoc}
+	 * {@inheritDoc}.
     	 * @see #elementwiseRecombine(Gene[],int,double)
     	 */
     	public Gene[] recombine(final Gene[] parents, int childrenCount, double recombinationProbability) {
@@ -540,7 +540,7 @@ public interface Gene {
     
     
     	/**
-	 * {@inheritDoc}
+	 * {@inheritDoc}.
     	 * <p>Implemented as uniform recombination.</p>
     	 */
     	public Gene[] recombine(final Gene[] parents, int childrenCount, double recombinationProbability) {

@@ -57,6 +57,15 @@ you should still browse the primary documentation.
     extended information, or register new PropertyEditors. An application that
     uses the default customizer to allow the user change its settings is kept in
     the <a href="examples/Propertizer/ProgApplication.java"><samp>Propertizer</samp></a> subdirectory of the examples.</li>
+  <li><a href="api/orbital/logic/functor/Functionals.html">Functionals</a>,
+    and <a href="api/orbital/util/Setops.html">Setops</a>
+    constitute a useful combination of powerful tools for collection data processing.
+    Functionals provides very general functional combinators and possibilities for
+    processing collections of data in bulks in a very simple way. Setops complements
+    this with typical set operations, implicit traversion, filtering, powersets,
+    cross-products. In conjunction, Functionals and Setops provide a very flexible
+    and simple way of using functional-style operations in Java.
+  </li>
   <li><a href="api/orbital/math/Arithmetic.html">Arithmetic objects</a>  are
     accessible through a common unified interface for arithmetic operations like
     +,-,*,/,^. Like with polymorphic operators, the advantage of using the
@@ -69,7 +78,7 @@ you should still browse the primary documentation.
     Some examples with numerical algorithms, statistics and matrices are provided in the <a href="examples/SimpleDemos/"><samp>SimpleDemos</samp></a> directory.
     To see how easy a single function can be applied to a multitude of different
     arithmetic data types, see <a href="examples/Functional/FunctionalTest.java"><samp>FunctionalTest</samp></a>. </li>
-  <li><a href="orbital/math/functional/Function.html">Mathematical functions</a>
+  <li><a href="api/orbital/math/functional/Function.html">Mathematical functions</a>
     have a general interface for functions in mathematics with the abilities of
     (even symbolic) differentiation and integration. Along with several
     compositional functionals that are aware of symbolic derivatives as well,

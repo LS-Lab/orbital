@@ -86,10 +86,7 @@ public class ValuesImpl extends AbstractValues {
 	return valueOf((int) val);
     }
     public Integer valueOf(java.math.BigInteger val) {
-	if (MathUtilities.isin(val.longValue(), (java.lang.Long.MIN_VALUE>>1), (java.lang.Long.MAX_VALUE>>1)))
-	    return valueOf(val.longValue());
-	else
-	    throw new UnsupportedOperationException("conversion from " + val.getClass() + " is not currently supported, first convert it to a primitive type, instead");
+	return new AbstractInteger.Big(val);
     }
 
     // real scalar value constructors - facade factory
@@ -102,7 +99,7 @@ public class ValuesImpl extends AbstractValues {
 	return new AbstractReal.Double(val);
     } 
     public Real valueOf(java.math.BigDecimal val) {
-	throw new UnsupportedOperationException("conversion from " + val.getClass() + " is not currently supported, first convert it to a primitive type, instead");
+	return new AbstractReal.Big(val);
     }
 
     // "named" scalar value constructors

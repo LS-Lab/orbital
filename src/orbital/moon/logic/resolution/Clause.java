@@ -7,6 +7,7 @@
 package orbital.moon.logic.resolution;
 
 import orbital.logic.sign.Signature;
+import orbital.logic.imp.Formula;
 import java.util.Set;
 import java.util.Iterator;
 
@@ -27,13 +28,13 @@ public interface Clause extends Set/*<Formula>*/ {
      * contradictory singleton set of clauses} is {&empty;}={&#9633;}
      * while the tautological set of clauses is {}.  </p>
      */
-    static final Clause CONTRADICTION = new ClauseImpl(Collections.EMPTY_SET);
+    static final Clause CONTRADICTION = ResolutionBase.getClausalFactory().createClause(Collections.EMPTY_SET);
 
     /**
      * Get the free variables of a formula represented as a clause.
      * @return freeVariables(this)
      * @internal note that for clauses FV(C)=V(C) &and; BV(C)=&empty;
-     * @xxx change return-type to Set to reflect Formula.getFreeVariables.
+     * @xxx change return-type to Set to reflect Formula.getFreeVariables. Further using LinkedHashSets could be quicker than using the TreeSets underlying Signatures
      */
     Signature getFreeVariables();
 
@@ -68,7 +69,22 @@ public interface Clause extends Set/*<Formula>*/ {
     Iterator/*_<Clause>_*/ resolveWithVariant(Clause G);
 
     /**
-     * Factorize a clause as much as possible.
+     * Get all resolvents of factors of F and G, if any. (Resolution
+     * rule) Combines resolution and factorization, resulting in a
+     * quicker implementation.  When F can be resolved with G via the
+     * resolution literals L and K, then in addition to the ordinary
+     * resolvent, this method also returns all resolvents resulting
+     * from a factorization of F (involving L) or G (involving K).
+     * Other factorizations are not necessary for completeness, since
+     * they can be performed later during resolution over the
+     * participating literals.
+     * @see #factorize()
+     * @see #resolveWith(Clause)
+     */
+    Iterator/*_<Clause>_*/ resolveWithFactors(Clause G);
+
+    /**
+     * Get all factors of F. (factorization rule).
      * <p>
      * Will implement the factorization rule necessary for binary resolution:
      * <div>{L1,...,Ln} |- {s(L1),...,s(Lk)} with s=mgU({Lk,...,Ln})</div>
@@ -78,9 +94,24 @@ public interface Clause extends Set/*<Formula>*/ {
      * <div>{L1,...,Ln} |- {s(L1),...,s(Ln)} with s=mgU({Li,Lj})</div>
      * because of set notation. The latter is the way we (currently) implement things.
      * </p>
-     * @return the factorized clause, or <code>this</code> if no factorization was possible.
+     * @return all (proper) factor clauses of this, or <code>&empty;</code> if no factorization was possible.
      */
-    Clause factorize();
+    Iterator/*_<Clause>_*/ factorize();
+
+    /**
+     * Returns true when this clause subsumes D.
+     * That is there is a subsitution &sigma; such that C&sigma; &sube; D
+     * (and |C| &le; |D|).
+     * <p>
+     * We can forget about subsumed clause D for resolving false,
+     * and work on C instead.
+     * </p>
+     * @preconditions true
+     * @note Conservative estimations are possible, i.e. returning
+     * false even for subsumption cases is allowed.
+     * @todo look for true&isin;F?
+     */
+    boolean subsumes(Clause D);
 
     /**
      * Returns true when this clause obviously is an elementary tautology.
@@ -89,7 +120,7 @@ public interface Clause extends Set/*<Formula>*/ {
      * We can forget about elementary valid clauses for resolving false,
      * because true formulas will only imply true formulas, never false ones.
      * </p>
-     * @todo or even when there is a single-sided matcher of p and q in p&or;&not;q?
+     * @todo or even when there is a single-sided matcher of p and q in p&or;&not;q? No
      * @preconditions true
      * @todo look for true&isin;F?
      * @attribute derived {@link #isElementaryValidUnion(Clause)}
@@ -101,12 +132,55 @@ public interface Clause extends Set/*<Formula>*/ {
      * That is a p&or;&not;p &isin; F&cup;G
      * <p>
      * We can forget about elementary valid clauses for resolving false,
-     * because true formulas will only imply true formulas, never false ones.
+     * (<em>essentially</em>) because true formulas will only imply true formulas,
+     * never false ones.
      * </p>
      * @param G a clause
-     * @todo or even when there is a single-sided matcher of p and q in p&or;&not;q?
      * @preconditions (&not;this.isElementaryValid() &and; &not;G.isElementaryValid()) &or; F=G
-     * @todo look for true&isin;F?
      */
     public boolean isElementaryValidUnion(Clause G);
+
+    // lookup methods
+
+
+    /**
+     * Select some literals of this clause, which are usable for resolution.
+     * @postconditions RES &sube; this
+     */
+    Iterator/*_<Formula>_*/ getResolvableLiterals();
+
+    /**
+     * Get (an iterator over) all literals contained in this clause
+     * that may possibly unify with L. The formulas returned will more
+     * likely qualify for unification with C, but need not do so with
+     * absolute confidence.  <p>Implementations may use indexing or
+     * links to estimate the clauses to return very
+     * quickly. Furthermore, implementations may apply selection
+     * refinements.</p>
+     * @postconditions RES&sube;this &and; RES&supe;getUnifiables(L) 
+     * @see #getUnifiables(Formula)
+     */
+    Iterator/*_<Formula>_*/ getProbableUnifiables(Formula L);
+
+    /**
+     * Get all literals contained in this clause that unify with
+     * L. <p>Implementations may use indexing or links to estimate the
+     * clauses to return very quickly. Furthermore, implementations
+     * may apply selection refinements.</p>
+     * @postconditions RES = {K&isin;this &exist;mgU{L,K}}
+     * @see #getProbableUnifiables(Formula)
+     */
+    Set/*_<Formula>_*/ getUnifiables(Formula L);
+
+    
+    /**
+     * Convert this clause to a formula representation.
+     * @internal this is not a view but a copy, because several
+     * operations would not work reliably, otherwise. Imagine a
+     * traversal to the last literal, when another one is added. Then
+     * the last literal returned by getComponent() should have been an
+     * &and; operator in retrospect.
+     * @internal the result is right associative
+     */
+    Formula toFormula();
 }

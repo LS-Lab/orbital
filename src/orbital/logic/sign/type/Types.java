@@ -124,6 +124,7 @@ public final class Types {
     /**
      * Get the number of components n of a product type <span class="type">&prod;<sub>i</sub>&tau;<sub>i</sub></span> = <span class="type">&tau;<sub>1</sub>&times;&#8230;&times;&tau;<sub>n</sub></span>.
      * @todo rename
+     * @todo 19 optimize this hotspot during proving
      */
     public static final int arityOf(Type type) {
 	final TypeSystem typeSystem = type.typeSystem();

@@ -59,6 +59,9 @@ public abstract class Combinatorical /*implements ListIterator<int[]> like*/ imp
      * @param r the size of the tuples.
      *  The number of elements to choose out of n.
      * @param combinations whether only combinations are allowed, or every permutation.
+     *  Permutations are the bijective maps from {1,...,M} to {1,...,M}.
+     *  Combinations are those permutations ignoring order and(!) whose elements are always sorted.
+     *  So this is like the difference between a set and a list
      * @param n the number of elements choosable. n = |M|.
      * @param repetition whether elements in a tuple are allowed to repeat.
      * @see #getPermutations(int, int, boolean)
@@ -95,7 +98,7 @@ public abstract class Combinatorical /*implements ListIterator<int[]> like*/ imp
     /**
      * Get all r-combinations of n elements.
      * Combinations are those permutations ignoring order and(!) whose elements are always sorted.
-     * So its like the difference between a set and a list.
+     * So this is like the difference between a set and a list.
      * @param r the size of the tuples to combinate.
      *  The number of elements to choose out of n per tuple.
      * @param n the number of elements choosable. n = |M|.

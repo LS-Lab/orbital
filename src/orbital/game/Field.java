@@ -384,17 +384,22 @@ public class Field implements Serializable, Cloneable {
      * @see Figure#moveFigure(Move)
      */
     public boolean move(Position source, Move move) {
+	Position oldSource = null;
+	assert (oldSource = (Position)source.clone()) != null;
 	Figure sourceFigure = getFigure(source);
 	if (sourceFigure == source)
 	    throw new IllegalArgumentException("do not specify positions with those figures on the field that will get moved. Otherwise, their position information will get lost. But source==getFigure(source)");
 	Position destination = sourceFigure.moveFigure(move);
+	assert oldSource.equals(source) : "moving does not change the source position";
 	assert destination != source : "do not specify positions with those figures on the field that will get moved. Otherwise, their position information will get lost. But after move, source==destination";
 	if (destination == null)
 	    return false;
 	//@xxx the arguments are not entirely correct: now, this still is the wrong nextField  for Option, but sourceFigure still is the right source.
 	changeSupport.movePerformed(new FieldChangeEvent(this, FieldChangeEvent.MOVE,
-							 new Option(this, destination, sourceFigure, move)));
+							 new Option(null, destination, sourceFigure, move)));
+	assert oldSource.equals(source) : "moving does not change the source position";
 	swap(source, destination);
+	assert oldSource.equals(source) : "moving does not change the source position";
 	return true;
     } 
 

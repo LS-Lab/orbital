@@ -17,6 +17,7 @@ import java.io.Serializable;
  * @stereotype data-type
  * @version 0.9, 1998-07-09
  * @author  Andr&eacute; Platzer
+ * @xxx It would have been better to represent /LF as a single atomic move object, instead of a sequence of chars. Then a compound Move would have been an array of move objects, and move inversion would be a simple thing to implement.
  */
 public class Move implements Serializable {
     private static final long serialVersionUID = 6779406874030679132L;
