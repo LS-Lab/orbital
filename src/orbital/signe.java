@@ -40,14 +40,15 @@ public final class signe extends Applet implements Runnable {
     } 
 
     /**
-     * Checks whether the given argument is an command-line request for help.
+     * Checks whether the given argument is a command-line request for help.
      * <p>
      * Such requests may include command-line arguments like <code>-?</code>, or
      * <code>--help</code> etc.
      * </p>
      */
     public static final boolean isHelpRequest(String arg) {
-	return "-?".equals(arg) || "--help".equals(arg) || "-h".equals(arg) || "/?".equals(arg);
+	return "-?".equals(arg) || "--help".equals(arg) || "-h".equals(arg) || "/?".equals(arg)
+	    || "\"-?\"".equals(arg) || "\"/?\"".equals(arg);
     }
     /**
      * Checks whether the given list of arguments contains a command-line request for help.
