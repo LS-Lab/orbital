@@ -38,17 +38,6 @@
         </path>
     </target>
 
-    <target name="compile" depends="init"
-            description="compile *.java (=> ./classes)">
-        <mkdir dir="${classes}"/>
-
-        <javac srcdir="${sources}"
-               destdir="${classes}"
-               debug="on">
-            <classpath refid="project.classpath"/>
-        </javac>
-    </target>
-
     <target name="targets" description="print out target list">
         <echo>
  
