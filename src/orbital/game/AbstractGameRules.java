@@ -33,6 +33,7 @@ import java.util.logging.Level;
  * @author  Andr&eacute; Platzer
  */
 public abstract class AbstractGameRules implements GameRules, Serializable {
+    private static final long serialVersionUID = -6507248102358315804L;
     /**
      * = Figure.NOONE.
      * @see Figure#NOONE

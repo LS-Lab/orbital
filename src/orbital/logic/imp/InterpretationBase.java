@@ -33,7 +33,7 @@ import orbital.util.Utility;
  * @see java.util.Map
  */
 public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implements Interpretation {
-
+    private static final long serialVersionUID = 1211049244164642015L;
     /**
      * The signature &Sigma; to be interpreted.
      * @serial

@@ -38,6 +38,11 @@ public interface Symbol extends Arithmetic, orbital.logic.trs.Variable {
     /*final*/ boolean equals(Object o, Real tolerance);
 
     /**
+     * @todo
+     */
+    /*final*/ boolean equals(Object o);
+
+    /**
      * @return getSignifier().hashCode().
      */
     /*final*/ int hashCode();

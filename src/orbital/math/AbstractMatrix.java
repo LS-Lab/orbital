@@ -529,7 +529,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
 	*/
     } 
     private static class ColumnVector/*<R implements Arithmetic>*/ extends AbstractVector/*<R>*/ {
-    
+	private static final long serialVersionUID = -5595085518698922020L;
     	/**
     	 * contains the matrix whose column vector we are.
     	 * @serial
@@ -595,7 +595,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
 	  return row;*/
     } 
     private static class RowVector/*<R implements Arithmetic>*/ extends AbstractVector/*<R>*/ {
-    
+	private static final long serialVersionUID = -4915663894227454973L;
     	/**
     	 * contains the matrix whose row vector we are.
     	 * @serial
@@ -675,6 +675,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractArith
 	  return S;*/
     } 
     private static class SubMatrix/*<R implements Arithmetic>*/ extends AbstractMatrix/*<R>*/ {
+	private static final long serialVersionUID = -3683869698064404738L;
     	/**
     	 * the Matrix whose sub-matrix we are.
     	 * @serial

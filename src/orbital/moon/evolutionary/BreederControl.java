@@ -70,6 +70,7 @@ import java.util.PropertyResourceBundle;
  * @todo could distribute BreederControl and the Server running the GeneticAlgorithm, remotely.
  */
 public class BreederControl extends JFrame implements Runnable, GUITool {
+    private static final long serialVersionUID = -4085070962882209628L;
     /**
      * default values
      * @todo privatize?
@@ -120,6 +121,7 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
 	    return new DemoWeightingFunction();
 	}
 	private static class DemoWeightingFunction implements Function, Serializable {
+	    private static final long serialVersionUID = 4988957966615705107L;
 	    private static final long BUSY = 10000L;
 	    private static final int DELAY = 300;
 	    private java.util.Random r = new java.util.Random();

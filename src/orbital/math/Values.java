@@ -385,6 +385,7 @@ public final class Values {
      */
     public static /*<R implements Arithmetic>*/ Vector/*<R>*/ constant(final Vector/*<R>*/ v) {
 	return /*refine/delegate Vector*/ new AbstractVector/*<R>*/() {
+		private static final long serialVersionUID = 4473448798599904941L;
 		protected Vector/*<R>*/ newInstance(int d) {throw new AssertionError("this method should never get called in this context");}
 		public int dimension() { return v.dimension(); }
 		public Arithmetic/*>R<*/ get(int i) { return v.get(i); }
@@ -528,6 +529,7 @@ public final class Values {
      */
     public static /*<R implements Arithmetic>*/ Matrix/*<R>*/ constant(final Matrix/*<R>*/ m) {
 	return /*refine/delegate Matrix*/ new AbstractMatrix/*<R>*/() {
+		private static final long serialVersionUID = 482711902153502751L;
 		protected Matrix/*<R>*/ newInstance(Dimension d) {throw new AssertionError("this method should never get called in this context");}
 		public Dimension dimension() { return m.dimension(); }
 		public Arithmetic/*>R<*/ get(int i, int j) { return m.get(i,j); }
@@ -826,6 +828,7 @@ public final class Values {
      */
     public static /*<R implements ListIterator,  Arithmetic>*/ Vector/*<R>*/ asVector(final Matrix/*<R>*/ m) {
 	return /*refine/delegate Vector*/ new AbstractVector/*<R>*/() {
+		private static final long serialVersionUID = 7697252236109892826L;
 		protected Vector/*<R>*/ newInstance(int dim) {
 		    return m instanceof RMatrix
 			? (Vector) new RVector(dim)

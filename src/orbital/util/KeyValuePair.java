@@ -21,79 +21,79 @@ import orbital.util.Utility;
  * @see Pair
  * @see java.util.Map.Entry
  */
-public
-class KeyValuePair implements Comparable/*_<Pair<A, B>>_*/, Serializable {
-	public KeyValuePair() {
-		this(null, null);
-	}
-	/**
-	 * Create a new pair &lang;key, value&rang;.
-	 */
-	public KeyValuePair(Object key, Object value) {
-		this.key = key;
-		this.value = value;
-	}
+public class KeyValuePair implements Comparable/*_<Pair<A, B>>_*/, Serializable {
+    private static final long serialVersionUID = 5966210221949749252L;
+    public KeyValuePair() {
+	this(null, null);
+    }
+    /**
+     * Create a new pair &lang;key, value&rang;.
+     */
+    public KeyValuePair(Object key, Object value) {
+	this.key = key;
+	this.value = value;
+    }
 
-	/**
-	 * The key for this pair.
-	 * @serial
-	 */
-	protected Object key;
-	/**
-	 * The value of this pair.
-	 * @serial
-	 */
-	protected Object value;
+    /**
+     * The key for this pair.
+     * @serial
+     */
+    protected Object key;
+    /**
+     * The value of this pair.
+     * @serial
+     */
+    protected Object value;
 
-	/**
-	 * Get/Set-Methods.
-	 */
-	public Object getKey() {
-		return key;
-	} 
-	public void setKey(Object key) {
-		this.key = key;
-	} 
+    /**
+     * Get/Set-Methods.
+     */
+    public Object getKey() {
+	return key;
+    } 
+    public void setKey(Object key) {
+	this.key = key;
+    } 
 
-	public Object getValue() {
-		return value;
-	} 
-	public void setValue(Object value) {
-		this.value = value;
-	} 
+    public Object getValue() {
+	return value;
+    } 
+    public void setValue(Object value) {
+	this.value = value;
+    } 
 
-	/**
-	 * Compare two KeyValuePair objects according to their keys.
-	 * This will only work for Comparable keys and throw an exception otherwise.
-	 * @param o the (KeyValuePair) object to be compared to.
-	 * @return <code>key.compareTo(o)</code>, when key implements <tt>Comparable</tt>.
-	 * @throws ClassCastException when neither of the keys in the KeyValuePair objects compared implements <tt>Comparable</tt>,
-	 * or o is not even a KeyValuePair.
-	 */
-	public int compareTo(Object o) throws ClassCastException {
-		if (o instanceof KeyValuePair) {
-			KeyValuePair b = (KeyValuePair) o;
-			return ((Comparable) key).compareTo(b.key);
-		} 
-		throw new ClassCastException("keys are not Comparable");
+    /**
+     * Compare two KeyValuePair objects according to their keys.
+     * This will only work for Comparable keys and throw an exception otherwise.
+     * @param o the (KeyValuePair) object to be compared to.
+     * @return <code>key.compareTo(o)</code>, when key implements <tt>Comparable</tt>.
+     * @throws ClassCastException when neither of the keys in the KeyValuePair objects compared implements <tt>Comparable</tt>,
+     * or o is not even a KeyValuePair.
+     */
+    public int compareTo(Object o) throws ClassCastException {
+	if (o instanceof KeyValuePair) {
+	    KeyValuePair b = (KeyValuePair) o;
+	    return ((Comparable) key).compareTo(b.key);
 	} 
+	throw new ClassCastException("keys are not Comparable");
+    } 
 
-	/**
-	 * Checks two KeyValuePair objects for equal keys.
-	 */
-	public boolean equals(Object o) {
-		return (o instanceof KeyValuePair) && Utility.equals(key, ((KeyValuePair) o).key);
-	} 
+    /**
+     * Checks two KeyValuePair objects for equal keys.
+     */
+    public boolean equals(Object o) {
+	return (o instanceof KeyValuePair) && Utility.equals(key, ((KeyValuePair) o).key);
+    } 
 
-	public int hashCode() {
-		return Utility.hashCode(getKey());
-	} 
+    public int hashCode() {
+	return Utility.hashCode(getKey());
+    } 
 
-	public String toString() {
-		return "<" + (
-					java.util.logging.Logger.global.isLoggable(java.util.logging.Level.FINEST)
-					? getKey().getClass().getName() + "@" + getKey()
-					: getKey()
-				) + "|" + getValue() + ">";
-	} 
+    public String toString() {
+	return "<" + (
+		      java.util.logging.Logger.global.isLoggable(java.util.logging.Level.FINEST)
+		      ? getKey().getClass().getName() + "@" + getKey()
+		      : getKey()
+		      ) + "|" + getValue() + ">";
+    } 
 }

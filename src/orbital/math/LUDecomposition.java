@@ -29,6 +29,7 @@ import orbital.logic.functor.Predicates;
  * @note this class is more or less just a workaround for returning multiple values.
  */
 public class LUDecomposition/*<R implements Arithmetic>*/ implements Serializable {
+    private static final long serialVersionUID = 4112378842817846198L;
     /**
      * decomposition data, contains lower triangular as well as upper triangular.
      * @serial

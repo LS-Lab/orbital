@@ -29,6 +29,7 @@ import orbital.util.InnerCheckedException;
  * @see ExpressionSyntax#scanSignature(java.lang.String)
  */
 public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Signature {
+    private static final long serialVersionUID = -2651634605539964276L;
     /**
      * Empty signature &empty;.
      * @attribute immutable

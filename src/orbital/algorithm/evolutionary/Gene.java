@@ -47,11 +47,6 @@ import orbital.util.InnerCheckedException;
  */
 public interface Gene {
     /**
-     * version of this class for versioning with serialization and deserialization.
-     */
-    public static final long	   serialVersionUID = -4693618321305463615L;
-
-    /**
      * Returns a clone of this gene.
      * @post RES.equals(this)
      */
@@ -1165,6 +1160,7 @@ public interface Gene {
      * @see Gene.Number
      */
     public static class Fixed extends Gene.BitSet {
+	private static final long serialVersionUID = 7829878649179715782L;
     	/**
     	 * The number of bits for the integer part.
     	 * @serial

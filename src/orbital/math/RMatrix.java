@@ -30,6 +30,7 @@ import orbital.util.Utility;
  * @todo sub-views momentarily will not clone and newInstance() to RMatrix or RVectors, but be handled by super class.
  */
 class RMatrix extends AbstractMatrix {
+    private static final long serialVersionUID = -5257297603569417580L;
     private static class Debug {
 	private Debug() {}
 	public static void main(String arg[]) throws Exception {

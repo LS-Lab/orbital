@@ -711,6 +711,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	 * @todo could also skolemize second-order quantified predicates
 	 */
 	private static class SkolemizingUnifyingMatcher extends UnifyingMatcher {
+	    private static final long serialVersionUID = 5595771241916973901L;
 	    private Object skolemizedVariable;
 	    /**
 	     * Unifying matcher that skolemizes.

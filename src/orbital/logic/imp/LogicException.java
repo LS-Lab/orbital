@@ -12,10 +12,10 @@ package orbital.logic.imp;
  * @version 1.0, 1999/03/04
  * @author  Andr&eacute; Platzer
  */
-public
-class LogicException extends RuntimeException {
-	public LogicException(String message) {
-		super(message);
-	}
-	public LogicException() {}
+public class LogicException extends RuntimeException {
+    private static final long serialVersionUID = -32994655636436874L;
+    public LogicException(String message) {
+	super(message);
+    }
+    public LogicException() {}
 }

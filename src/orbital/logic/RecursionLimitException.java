@@ -12,18 +12,17 @@ package orbital.logic;
  * @version 0.9, 2000/06/17
  * @author  Andr&eacute; Platzer
  */
-public
-class RecursionLimitException extends LimitException {
+public class RecursionLimitException extends LimitException {
+    private static final long serialVersionUID = 634853460730351591L;
+    /**
+     * The limit for the maximum number of recursions for mathematical operations
+     * such as fixed point recursions.
+     */
+    public static int MaxRecursions = 4096;
 
-	/**
-	 * The limit for the maximum number of recursions for mathematical operations
-	 * such as fixed point recursions.
-	 */
-	public static int MaxRecursions = 4096;
+    public RecursionLimitException() {}
 
-	public RecursionLimitException() {}
-
-	public RecursionLimitException(String spec) {
-		super(spec);
-	}
+    public RecursionLimitException(String spec) {
+	super(spec);
+    }
 }

@@ -38,6 +38,7 @@ import java.util.logging.Level;
  * @see orbital.robotic.Table
  */
 public class Field implements Serializable {
+    private static final long serialVersionUID = -5715424141700986103L;
     private static final Logger logger = Logger.getLogger(Field.class.getPackage().getName());
     /**
      * All Figures contained in the field. And null for empty fields.

@@ -27,7 +27,7 @@ import orbital.util.Utility;
  * @internal RVector is not a Vector<Real> because of its fall-back behaviour to Vector<Arithmetic>
  */
 class RVector extends AbstractVector implements Cloneable {
-
+    private static final long serialVersionUID = -4024410371344073971L;
     /**
      * Gets zero Vector, with all elements set to <code>0</code>.
      */

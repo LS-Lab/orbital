@@ -16,44 +16,44 @@ import java.io.IOException;
 /**
  * a v_Container containing v_Objects.
  */
-public
-class v_World extends v_Container {
+public class v_World extends v_Container {
+    private static final long serialVersionUID = -478945021041389057L;
 
-	/**
-	 * constructs a new empty world.
-	 */
-	public v_World() {}
+    /**
+     * constructs a new empty world.
+     */
+    public v_World() {}
 
-	/**
-	 * constructs a new world spaced for n v_Objects.
-	 */
-	public v_World(int n) {
-		super(n);
-	}
+    /**
+     * constructs a new world spaced for n v_Objects.
+     */
+    public v_World(int n) {
+	super(n);
+    }
 
-	/**
-	 * Gets the nth Object.
-	 */
-	public v_Object getObject(int n) {
-		return (v_Object) getComponent(n);
-	} 
+    /**
+     * Gets the nth Object.
+     */
+    public v_Object getObject(int n) {
+	return (v_Object) getComponent(n);
+    } 
 
-	/**
-	 * Sets the nth Object.
-	 */
-	public void setObject(v_Object c, int n) {
-		setComponent(c, n);
-	} 
+    /**
+     * Sets the nth Object.
+     */
+    public void setObject(v_Object c, int n) {
+	setComponent(c, n);
+    } 
 
-	public synchronized void readExternal(ObjectInput is) throws ClassNotFoundException, IOException {
-		setComponentCount(is.readShort());
-		for (int c = 0; c < getComponentCount(); c++)
-			setComponent(new v_Object(), c);
-		super.readExternal(is);
-	} 
+    public synchronized void readExternal(ObjectInput is) throws ClassNotFoundException, IOException {
+	setComponentCount(is.readShort());
+	for (int c = 0; c < getComponentCount(); c++)
+	    setComponent(new v_Object(), c);
+	super.readExternal(is);
+    } 
 
-	public synchronized void writeExternal(ObjectOutput os) throws IOException {
-		os.writeShort(getComponentCount());
-		super.writeExternal(os);
-	} 
+    public synchronized void writeExternal(ObjectOutput os) throws IOException {
+	os.writeShort(getComponentCount());
+	super.writeExternal(os);
+    } 
 }

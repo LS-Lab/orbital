@@ -1,4 +1,4 @@
-/*
+/**
  * @(#)ParseException.java 0.9 1998/05/11 Andre Platzer
  * 
  * Copyright (c) 1998 Andre Platzer. All Rights Reserved.
@@ -26,84 +26,84 @@ import java.io.StreamTokenizer;
  * @see <a href="http://www.metamata.com/JavaCC">JavaCC's ParseException</a>
  * @xxx remove this ParseException and substitute it by a more general parse exception class. Neither java.text.ParseException nor org.xml.sax.SAXParseException will do. However, how do we reuse all them nice constructors, then?
  */
-public
-class ParseException extends Exception {
-	/**
-	 * @serial
-	 */
-	private int columnNumber = -1;
-	/**
-	 * @serial
-	 */
-	private int lineNumber = -1;
-	public ParseException(String spec, int lineNumber, int columnNumber) {
-		super(spec);
-		this.lineNumber = lineNumber;
-		this.columnNumber = columnNumber;
-	}
-	public ParseException(String spec) {
-		super(spec);
-	}
-	public ParseException(String scanned, String expected) {
-		this(expected + " expected, found: " + scanned);
-	}
-	public ParseException(StreamTokenizer scanned, String expected) {
-		this(scanned + "", expected);
-	}
-	public ParseException(Object scanned, String expected) {
-		this(scanned + "", expected);
-	}
-	public ParseException(Token scanned, String expected, Token[] previous) {
-		this(expected + " expected after " + tokens(previous) + ", found: " + scanned);
-	}
-	public ParseException(Token scanned, String expected, Iterator previous) throws ClassCastException {
-		this(expected + " expected after " + tokens(previous) + ", found: " + scanned);
-	}
-	public ParseException(Token scanned, String expected, Enumeration previous) throws ClassCastException {
-		this(expected + " expected after " + tokens(previous) + ", found: " + scanned);
-	}
-	public ParseException(Token scanned, String expected, Token prev1, Token prev2) {
-		this(expected + " expected after " + prev1.type + " " + prev2.type + ", found: " + scanned);
-	}
+public class ParseException extends Exception {
+    private static final long serialVersionUID = -7066057285484626905L;
+    /**
+     * @serial
+     */
+    private int columnNumber = -1;
+    /**
+     * @serial
+     */
+    private int lineNumber = -1;
+    public ParseException(String spec, int lineNumber, int columnNumber) {
+	super(spec);
+	this.lineNumber = lineNumber;
+	this.columnNumber = columnNumber;
+    }
+    public ParseException(String spec) {
+	super(spec);
+    }
+    public ParseException(String scanned, String expected) {
+	this(expected + " expected, found: " + scanned);
+    }
+    public ParseException(StreamTokenizer scanned, String expected) {
+	this(scanned + "", expected);
+    }
+    public ParseException(Object scanned, String expected) {
+	this(scanned + "", expected);
+    }
+    public ParseException(Token scanned, String expected, Token[] previous) {
+	this(expected + " expected after " + tokens(previous) + ", found: " + scanned);
+    }
+    public ParseException(Token scanned, String expected, Iterator previous) throws ClassCastException {
+	this(expected + " expected after " + tokens(previous) + ", found: " + scanned);
+    }
+    public ParseException(Token scanned, String expected, Enumeration previous) throws ClassCastException {
+	this(expected + " expected after " + tokens(previous) + ", found: " + scanned);
+    }
+    public ParseException(Token scanned, String expected, Token prev1, Token prev2) {
+	this(expected + " expected after " + prev1.type + " " + prev2.type + ", found: " + scanned);
+    }
 	
-	public String getMessage() {
-		return getLineNumber() + ":" + getColumnNumber() + ": " + super.getMessage();
-	}
+    public String getMessage() {
+	return getLineNumber() + ":" + getColumnNumber() + ": " + super.getMessage();
+    }
 	
-	/**
-	 * The line number of the end of the text where the exception occurred. 
-	 * @return An integer representing the line number, or -1 if none is available.
-	 */
-	public int getLineNumber() {
-		return lineNumber;
-	}
+    /**
+     * The line number of the end of the text where the exception occurred. 
+     * @return An integer representing the line number, or -1 if none is available.
+     */
+    public int getLineNumber() {
+	return lineNumber;
+    }
 
-	/**
-	 * The column number of the end of the text where the exception occurred. 
-	 * The first column in a line is position 1.
-	 * @return An integer representing the column number, or -1 if none is available.
-	 */
-	public int getColumnNumber() {
-		return columnNumber;
-	}
+    /**
+     * The column number of the end of the text where the exception occurred. 
+     * The first column in a line is position 1.
+     * @return An integer representing the column number, or -1 if none is available.
+     */
+    public int getColumnNumber() {
+	return columnNumber;
+    }
 
 
-	private static String tokens(Token[] previous) {
-		String r = "";
-		for (int i = 0; i < previous.length; i++)
-			r += previous[i].type + " ";
-		return r;
-	} 
-	private static String tokens(Enumeration previous) throws ClassCastException {
-		String r = "";
-		while (previous.hasMoreElements())
-			r += ((Token) previous.nextElement()).type + " ";
-		return r;
-	} 
-	private static String tokens(Iterator previous) throws ClassCastException {
-		String r = "";
-		while (previous.hasNext())
-			r += ((Token) previous.next()).type + " ";
-		return r;
-	} 
+    private static String tokens(Token[] previous) {
+	String r = "";
+	for (int i = 0; i < previous.length; i++)
+	    r += previous[i].type + " ";
+	return r;
+    } 
+    private static String tokens(Enumeration previous) throws ClassCastException {
+	String r = "";
+	while (previous.hasMoreElements())
+	    r += ((Token) previous.nextElement()).type + " ";
+	return r;
+    } 
+    private static String tokens(Iterator previous) throws ClassCastException {
+	String r = "";
+	while (previous.hasNext())
+	    r += ((Token) previous.next()).type + " ";
+	return r;
+    } 
 }

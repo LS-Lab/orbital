@@ -20,35 +20,34 @@ package orbital.awt.virtual;
  * @version 0.9, 2000/08/30
  * @author  Andr&eacute; Platzer
  */
-public
-class v_CylindricalGraphics extends v_CoordinateTransformationGraphics {
-	/**
-	 * Constructs a new v_Graphics wrapper performing coordinate transformation.
-	 * @param projection the inner projection graphics to wrap around.
-	 */
-	public v_CylindricalGraphics(v_Graphics projection) {
-		super(projection);
-	}
+public class v_CylindricalGraphics extends v_CoordinateTransformationGraphics {
+    /**
+     * Constructs a new v_Graphics wrapper performing coordinate transformation.
+     * @param projection the inner projection graphics to wrap around.
+     */
+    public v_CylindricalGraphics(v_Graphics projection) {
+	super(projection);
+    }
 
     public Object clone() {
     	return new v_CylindricalGraphics((v_Graphics) getProjection().clone());
     }
 	
-	/**
-	 * returns the projected screen coordinates of a 3D Point (r|&theta;|z)
-	 * in cylindrical coordinates.
-	 */
-	protected int xlate(int r, int theta, int z) {
-		return projection.xlate((int)Math.round(r*Math.cos(theta)),
+    /**
+     * returns the projected screen coordinates of a 3D Point (r|&theta;|z)
+     * in cylindrical coordinates.
+     */
+    protected int xlate(int r, int theta, int z) {
+	return projection.xlate((int)Math.round(r*Math.cos(theta)),
 				(int)Math.round(r*Math.sin(theta)),
 				z
 				);
-	} 
-	protected int ylate(int r, int theta, int z) {
-		return projection.ylate((int)Math.round(r*Math.cos(theta)),
+    } 
+    protected int ylate(int r, int theta, int z) {
+	return projection.ylate((int)Math.round(r*Math.cos(theta)),
 				(int)Math.round(r*Math.sin(theta)),
 				z
 				);
-	} 
+    } 
 
 }

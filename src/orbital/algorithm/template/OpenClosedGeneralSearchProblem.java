@@ -35,6 +35,7 @@ import java.util.LinkedList;
  * @todo optimizable for A* since then we can replace a child c which is already in the open set of candidates by c when c can be reached by a shorter path.
  */
 public class OpenClosedGeneralSearchProblem/*<A,S>*/ implements GeneralSearchProblem/*<A,S>*/, Serializable {
+    private static final long serialVersionUID = 7335267055267390660L;
     /**
      * The proper problem to solve which does not yet keep track of closed sets.
      * @serial

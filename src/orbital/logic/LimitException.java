@@ -12,11 +12,11 @@ package orbital.logic;
  * @version 0.9, 2000/06/17
  * @author  Andr&eacute; Platzer
  */
-public
-class LimitException extends RuntimeException {
-	public LimitException() {}
+public class LimitException extends RuntimeException {
+    private static final long serialVersionUID = 5926741249307164807L;
+    public LimitException() {}
 
-	public LimitException(String spec) {
-		super(spec);
-	}
+    public LimitException(String spec) {
+	super(spec);
+    }
 }

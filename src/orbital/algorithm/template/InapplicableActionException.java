@@ -13,6 +13,8 @@ package orbital.algorithm.template;
  * @version 1.0, 2002/06/18
  */
 public class InapplicableActionException extends IllegalArgumentException {
+    private static final long serialVersionUID = 4275365251635332886L;
+    
     public InapplicableActionException() {}
     
     public InapplicableActionException(String s) {

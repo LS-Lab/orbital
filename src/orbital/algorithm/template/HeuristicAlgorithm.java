@@ -82,6 +82,7 @@ public interface HeuristicAlgorithm extends EvaluativeAlgorithm {
      * @see "Memory-Based Heuristics: Pattern Databases. Culbersion & Schaeffer. 1995."
      */
     public static class PatternDatabaseHeuristic implements Function, Serializable {
+	private static final long serialVersionUID = -4488685150678833742L;
 	/**
 	 * the heuristic function used for states not contained in the pattern database.
 	 * @serial

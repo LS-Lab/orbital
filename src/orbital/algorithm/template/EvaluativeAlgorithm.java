@@ -44,6 +44,7 @@ public interface EvaluativeAlgorithm extends AlgorithmicTemplate {
      * @author  Andr&eacute; Platzer
      */
     public static class EvaluationComparator implements Comparator, Serializable {
+	private static final long serialVersionUID = -2014366202163451019L;
 	/**
 	 * the evaluation function used in order to compare two states.
 	 * @serial

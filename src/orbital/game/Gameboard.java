@@ -33,6 +33,7 @@ import java.util.logging.Level;
  * @author  Andr&eacute; Platzer
  */
 public class Gameboard extends Canvas implements ImageObserver, Serializable {
+    private static final long serialVersionUID = 6205399044524716717L;
     private static final Logger logger = Logger.getLogger(Gameboard.class.getName());
     /**
      * The Field displayed.

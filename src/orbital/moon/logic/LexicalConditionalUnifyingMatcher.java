@@ -19,6 +19,7 @@ import orbital.moon.logic.bridge.SubstitutionImpl.UnifyingMatcher;
  * @author  Andr&eacute; Platzer
  */
 class LexicalConditionalUnifyingMatcher extends UnifyingMatcher {
+    private static final long serialVersionUID = 1239472905613684204L;
     /**
      * The first sub term whose string representation after applying the unifier
      * is considered for condition.

@@ -28,6 +28,7 @@ import orbital.math.Values;
  * @todo remove since the DepthFirst behaviour is encapsuled in DepthFirstSearch.OptionIterator.
  */
 abstract class DepthFirstBoundingSearch extends GeneralBoundingSearch {
+    private static final long serialVersionUID = -2607359820984135258L;
 
     //inherit like DepthFirstSearch
 

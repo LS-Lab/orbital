@@ -113,6 +113,7 @@ abstract class AbstractVector/*<R implements Arithmetic>*/ implements Vector/*<R
 	return new SubVector/*<R>*/(this, i1, i2);
     } 
     private static class SubVector/*<R implements Arithmetic>*/ extends AbstractVector/*<R>*/ {
+	private static final long serialVersionUID = 1246257328047975917L;
     	/**
     	 * the Vector whose sub-vector we are.
     	 * @serial

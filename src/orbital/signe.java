@@ -26,7 +26,7 @@ import java.awt.TextArea;
  * @see java.lang.Package
  */
 public final class signe extends Applet implements Runnable {
-
+    private static final long serialVersionUID = 7383629572654119544L;
     /**
      * Application-start entry point.
      */

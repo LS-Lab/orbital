@@ -20,24 +20,24 @@ import java.util.Collection;
  * @version 0.9, 2000/09/05
  * @author  Andr&eacute; Platzer
  */
-public
-class DelegateSet/*<A>*/ extends DelegateCollection/*<A>*/ implements Set/*<A>*/ {
-	/**
-	 * Extend to create a Set delegating to an implementation Set.
-	 * @param delegatee the implementation-Set to that Set operations are delegated.
-	 */
-	protected DelegateSet(Set/*<A>*/ delegatee) {
-		super(delegatee);
-	}
+public class DelegateSet/*<A>*/ extends DelegateCollection/*<A>*/ implements Set/*<A>*/ {
+    private static final long serialVersionUID = -1014157577972565745L;
+    /**
+     * Extend to create a Set delegating to an implementation Set.
+     * @param delegatee the implementation-Set to that Set operations are delegated.
+     */
+    protected DelegateSet(Set/*<A>*/ delegatee) {
+	super(delegatee);
+    }
 
-	protected void setDelegatee(Set/*<A>*/ delegatee) {
-		super.setDelegatee(delegatee);
-	}
+    protected void setDelegatee(Set/*<A>*/ delegatee) {
+	super.setDelegatee(delegatee);
+    }
 
-	protected void setDelegatee(Collection/*<A>*/ delegatee) {
-		if (delegatee instanceof Set/*<A>*/)
-			setDelegatee((Set/*<A>*/) delegatee);
-		else
-			throw new IllegalArgumentException("setDelegatee requires Set instance for DelegateSets");
-	}
+    protected void setDelegatee(Collection/*<A>*/ delegatee) {
+	if (delegatee instanceof Set/*<A>*/)
+	    setDelegatee((Set/*<A>*/) delegatee);
+	else
+	    throw new IllegalArgumentException("setDelegatee requires Set instance for DelegateSets");
+    }
 }

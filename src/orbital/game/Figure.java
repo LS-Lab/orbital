@@ -35,6 +35,7 @@ import orbital.util.Pair;
  * @author  Andr&eacute; Platzer
  */
 public class Figure extends Moving {
+    private static final long serialVersionUID = -3766957702427420203L;
     /**
      * represents the league for empty figures.
      * Empty figures belong to no certain league.

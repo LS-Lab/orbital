@@ -150,6 +150,7 @@ public class Functionals {
      * @see Functionals#compose(BinaryFunction, Function, Function)
      */
     private static class BinaryCompositeFunction/*<A, B1, B2, C>*/ extends AbstractCompositeFunctor implements Function/*<A, C>*/.Composite {
+	private static final long serialVersionUID = -8125852955148387314L;
 	/**
 	 * @serial
 	 */
@@ -243,6 +244,7 @@ public class Functionals {
      * @see Functionals#compose(BinaryFunction, VoidFunction, VoidFunction)
      */
     private static class BinaryCompositeVoidFunction/*<B1, B2, C>*/ extends AbstractCompositeFunctor implements VoidFunction/*<C>*/.Composite {
+	private static final long serialVersionUID = -6605821186125989437L;
 	/**
 	 * @serial
 	 */
@@ -344,6 +346,7 @@ public class Functionals {
      * @see Functionals#compose(BinaryPredicate, Function, Function)
      */
     private static class BinaryCompositePredicate/*<A, B1, B2>*/ extends AbstractCompositeFunctor implements Predicate/*<A>*/.Composite {
+	private  static final long serialVersionUID = 1889190809841496092L;
 	/**
 	 * @serial
 	 */
@@ -436,6 +439,7 @@ public class Functionals {
      * @see Functionals#compose(BinaryPredicate, Function, Function)
      */
     private static class BinaryCompositeVoidPredicate/*<B1, B2>*/ extends AbstractCompositeFunctor implements VoidPredicate.Composite {
+	private static final long serialVersionUID = -7825258835394371722L;
 	/**
 	 * @serial
 	 */
@@ -609,6 +613,7 @@ public class Functionals {
     //TODO: is it of advantage when we derived orbital.math.functional.Functionals.BindFirstFunction from this class?
     // except for the AbstractFunction problem!
     private static class BindFirstFunction/*<A1, A2, B>*/ extends AbstractCompositeFunctor implements Function/*<A2, B>*/ {
+	private static final long serialVersionUID = -5691828471790998657L;
 	/**
 	 * @serial
 	 */
@@ -659,6 +664,7 @@ public class Functionals {
     } 
 
     private static class BindFirstPredicate/*<A1, A2>*/ extends AbstractCompositeFunctor implements Predicate/*<A2>*/ {
+	private static final long serialVersionUID = -2171853542298153121L;
 	/**
 	 * @serial
 	 */
@@ -706,6 +712,7 @@ public class Functionals {
 	return new BindSecondFunction/*<A1, A2, B>*/(f, y);
     } 
     private static class BindSecondFunction/*<A1, A2, B>*/ extends AbstractCompositeFunctor implements Function/*<A1, B>*/ {
+	private static final long serialVersionUID = 3835427826292036797L;
 	/**
 	 * @serial
 	 */
@@ -753,6 +760,7 @@ public class Functionals {
 	return new BindSecondPredicate/*<A1, A2>*/(P, y);
     } 
     private static class BindSecondPredicate/*<A1, A2>*/ extends AbstractCompositeFunctor implements Predicate/*<A1>*/ {
+	private static final long serialVersionUID = 3937101303664977689L;
 	/**
 	 * @serial
 	 */
@@ -801,6 +809,7 @@ public class Functionals {
 	return new BindFunction/*<A, B>*/(f, a);
     } 
     private static class BindFunction/*<A, B>*/ extends AbstractCompositeFunctor implements VoidFunction/*<B>*/ {
+	private static final long serialVersionUID = 5132012636675575358L;
 	/**
 	 * @serial
 	 */
@@ -847,6 +856,7 @@ public class Functionals {
 	return new BindPredicate/*<A>*/(P, a);
     } 
     private static class BindPredicate/*<A>*/ extends AbstractCompositeFunctor implements VoidPredicate {
+	private static final long serialVersionUID = -2451413984225638156L;
 	/**
 	 * @serial
 	 */
@@ -893,6 +903,7 @@ public class Functionals {
 	return new BindTogetherFunction/*<A, B>*/(f);
     } 
     private static class BindTogetherFunction/*<A, B>*/ extends AbstractCompositeFunctor implements Function/*<A, B>*/ {
+	private static final long serialVersionUID = -600090844190215573L;
 	/**
 	 * @serial
 	 */
@@ -936,6 +947,7 @@ public class Functionals {
 	return new BindTogetherPredicate/*<A>*/(P);
     } 
     private static class BindTogetherPredicate/*<A>*/ extends AbstractCompositeFunctor implements Predicate/*<A>*/ {
+	private static final long serialVersionUID = 1637786124930484045L;
 	/**
 	 * @serial
 	 */
@@ -1124,6 +1136,7 @@ public class Functionals {
 	    : new SwapFunction/*<A1, A2, B>*/(f);
     } 
     private static class SwapFunction/*<A1, A2, B>*/ extends AbstractCompositeFunctor implements BinaryFunction/*<A2, A1, B>*/ {
+	private static final long serialVersionUID = -4517373861424750032L;
 	/**
 	 * @serial
 	 */
@@ -1175,6 +1188,7 @@ public class Functionals {
 	    : new SwapPredicate/*<A1, A2>*/(P);
     } 
     private static class SwapPredicate/*<A1, A2>*/ extends AbstractCompositeFunctor implements BinaryPredicate/*<A2, A1>*/ {
+	private static final long serialVersionUID = -6620068267897084655L;
 	/**
 	 * @serial
 	 */
@@ -1221,6 +1235,7 @@ public class Functionals {
 	return new VoidPredicateFunction(p);
     }
     private static class VoidPredicateFunction extends AbstractCompositeFunctor implements VoidFunction/*<Boolean>*/ {
+	private static final long serialVersionUID = -578056603334602720L;
 	/**
 	 * @serial
 	 */
@@ -1263,6 +1278,7 @@ public class Functionals {
 	return new PredicateFunction/*<A>*/(p);
     }
     private static class PredicateFunction/*<A>*/ extends AbstractCompositeFunctor implements Function/*<A, Boolean>*/ {
+	private static final long serialVersionUID = 5923239404848442075L;
 	/**
 	 * @serial
 	 */
@@ -1309,6 +1325,7 @@ public class Functionals {
 	return new BinaryPredicateFunction/*<A1, A2>*/(p);
     }
     private static class BinaryPredicateFunction/*<A1, A2>*/ extends AbstractCompositeFunctor implements BinaryFunction/*<A1, A2, Boolean>*/ {
+	private static final long serialVersionUID = -6039054390567866829L;
 	/**
 	 * @serial
 	 */
@@ -1365,7 +1382,8 @@ public class Functionals {
     public static /*<A, B>*/ Function listable(Function/*<A, B>*/ f) {
 	return f instanceof ListableFunction/* A, B */ ? (Function) f : (Function) new ListableFunction/*<A, B>*/(f);
     }
-    private static class ListableFunction/*<A, B>*/ implements Function {
+    private static class ListableFunction/*<A, B>*/ implements Function, Serializable {
+	private static final long serialVersionUID = 5667915275261829138L;
 	/**
 	 * @serial
 	 */
@@ -1461,7 +1479,8 @@ public class Functionals {
     public static /*<A1, A2, B>*/ BinaryFunction listable(BinaryFunction/*<A1, A2, B>*/ f) {
 	return f instanceof ListableBinaryFunction/* A1, A2, B */ ? (BinaryFunction) f : (BinaryFunction) new ListableBinaryFunction/*<A1, A2, B>*/(f);
     }
-    private static class ListableBinaryFunction/*<A1, A2, B>*/ implements BinaryFunction {
+    private static class ListableBinaryFunction/*<A1, A2, B>*/ implements BinaryFunction, Serializable {
+	private static final long serialVersionUID = -597652995077337878L;
 	/**
 	 * @serial
 	 */
@@ -1650,7 +1669,7 @@ public class Functionals {
      * @see <a href="http://wwwhome.cs.utwente.nl/~fokkinga/index.html#mmf91m">Meijer, E. and Fokkinga, M.M. and Paterson, R., Functional Programming with Bananas, Lenses, Envelopes and Barbed Wire, FPCA91: Functional Programming Languages and Computer Architecture, pp. 124--144, volume 523, Lecture Notes in Computer Science, Springer-Verlag, 1991.</a>
      */
     public static /*abstract template*/ class Catamorphism/* abstract <Object c, BinaryFunction f> abstract */ /*<A, B>*/ implements Function, Serializable {
-
+	private static final long serialVersionUID = -6922299620063576629L;
 	/**
 	 * the right (second) argument basevalue in B to start with.
 	 * The result of the application of f will progressively build the next right (second) argument.
@@ -1734,7 +1753,7 @@ public class Functionals {
      * @todo should we introduce property get methods? But what's a good name for "g" and "p"?
      */
     public static class Anamorphism/*<A, B>*/ implements Function/*<B, List>*//*_<A>_*/, Serializable {
-
+	private static final long serialVersionUID = -1984167910200783901L;
 	/**
 	 * a function g:B&rarr;A&times;B=A||B that returns objects of type {@link orbital.util.Pair}.
 	 * @serial
@@ -1820,7 +1839,7 @@ public class Functionals {
      */
     //TODO: check types for abstract template public static /* abstract template*/ class Hylomorphism/* abstract <C c, T f(C,List), g, boolean p(C)> abstract */ implements Function {
     public static class Hylomorphism/*<A, B, C>*/ implements Function/*<A, C>*/, Serializable {
-
+	private static final long serialVersionUID = 8982420605715979366L;
 	/**
 	 * an element &isin;C that is the basevalue for p(a) = true.
 	 * @serial
@@ -1914,7 +1933,7 @@ public class Functionals {
      * @see <a href="http://wwwhome.cs.utwente.nl/~fokkinga/index.html#mmf91m">Meijer, E. and Fokkinga, M.M. and Paterson, R., Functional Programming with Bananas, Lenses, Envelopes and Barbed Wire, FPCA91: Functional Programming Languages and Computer Architecture, pp. 124--144, volume 523, Lecture Notes in Computer Science, Springer-Verlag, 1991.</a>
      */
     public static class Paramorphism/*<A, B>*/ implements Function, Serializable {
-
+	private static final long serialVersionUID = 6420642534953643932L;
 	/**
 	 * the basevalue b&isin;B to use.
 	 * @serial
@@ -2109,6 +2128,7 @@ public class Functionals {
  * Not thread-safe.
  */
 class ParallelIterator extends orbital.util.QueuedIterator {
+    private static final long serialVersionUID = -7678775639316739430L;
     /**
      * @serial
      */

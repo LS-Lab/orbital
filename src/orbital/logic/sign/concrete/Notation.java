@@ -38,6 +38,7 @@ import orbital.util.Utility;
  * @todo invariant 	&& sorted(functorNotation)
  */
 public abstract class Notation implements Serializable, Comparable {
+    private static final long serialVersionUID = -3071672372655194662L;
     private static final int PRECEDENCE_DEFAULT = 100;
     private static final int PRECEDENCE_HIGH = 499;
 
@@ -150,6 +151,7 @@ public abstract class Notation implements Serializable, Comparable {
      * @see #setDefault(Notation)
      */
     public static final Notation DEFAULT = new Notation("default") {
+	    private static final long serialVersionUID = 5644030897053785928L;
 	    public String format(Object functor, Object arg) {
 		return getDefault().format(functor, arg);
 	    } 
@@ -166,6 +168,7 @@ public abstract class Notation implements Serializable, Comparable {
      * @see #POSTFIX
      */
     public static final Notation AUTO = new Notation("auto") {
+	    private static final long serialVersionUID = -5725522528292770323L;
 	    public String format(Object functor, Object arg) {
 		NotationSpecification spec = notationOf(functor);
 		if (spec != null)
@@ -179,6 +182,7 @@ public abstract class Notation implements Serializable, Comparable {
      * Specifies prefix notation <code>"f(a,b)"</code>.
      */
     public static final Notation PREFIX = new Notation("prefix") {
+	    private static final long serialVersionUID = -5933847939038152414L;
 	    public String format(Object functor, Object arg) {
 		StringBuffer sb = new StringBuffer();
 		if (functor != null) {
@@ -212,6 +216,7 @@ public abstract class Notation implements Serializable, Comparable {
      * @see #BESTFIX
      */
     public static final Notation INFIX = new Notation("infix") {
+	    private static final long serialVersionUID = 585674879470556509L;
 	    public String format(Object functor, Object arg_) {
 		if (arg_ == null)
 		    arg_ = getPureParameters(functor);
@@ -257,6 +262,7 @@ public abstract class Notation implements Serializable, Comparable {
      * @xxx if the functor is itself composite then descend formatting it (with accurate brackets) as well.
      */
     public static final Notation BESTFIX = new Notation("bestfix") {
+	    private static final long serialVersionUID = 2361099498303659521L;
 	    public String format(Object functor, Object arg_) {
 		if (!(functor instanceof Functor))
 		    return PREFIX.format(functor, arg_);
@@ -336,6 +342,7 @@ public abstract class Notation implements Serializable, Comparable {
      * Specifies postfix notation <code>"(a,b) f"</code>.
      */
     public static final Notation POSTFIX = new Notation("postfix") {
+	    private static final long serialVersionUID = -7892084161142935847L;
 	    public String format(Object functor, Object arg) {
 		StringBuffer sb = new StringBuffer();
 		if (arg == null)
@@ -502,7 +509,8 @@ public abstract class Notation implements Serializable, Comparable {
      * @version 1.0, 2000/08/25
      * @author  Andr&eacute; Platzer
      */
-    public static class NotationSpecification implements Comparable {
+    public static class NotationSpecification implements Comparable, Serializable {
+	private static final long serialVersionUID = -8249931256922519844L;
 	/**
 	 * The precedence of the functor (with 1 being the highest precedence).
 	 * @serial

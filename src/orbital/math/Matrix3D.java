@@ -18,7 +18,7 @@ package orbital.math;
  * @todo somehow get rid of this 3D class, but without loosing its affine transformation functionality (perhaps generalized to >=3D)?
  */
 public class Matrix3D extends RMatrix {
-
+    private static final long serialVersionUID = 2766955559623496088L;
     /**
      * The identity Matrix.
      * It has all elements set to <code>0</code>, except the main-diagonal <code>m<sub>i,i</sub></code> set to <code>1</code>.

@@ -19,16 +19,15 @@ import java.io.IOException;
  * @author  Andr&eacute; Platzer
  * @todo can we replace Externalizable by Serializable, as well?
  */
-public
-interface v_Component extends Externalizable {
+public interface v_Component extends Externalizable {
 
-	/**
-	 * transforms the position of this component.
-	 */
-	public abstract /* synchronized */ void transform(Matrix3D mat);
+    /**
+     * transforms the position of this component.
+     */
+    public abstract /* synchronized */ void transform(Matrix3D mat);
 
-	/**
-	 * draws this component at the position.
-	 */
-	public abstract /* synchronized */ void draw(v_Graphics g);
+    /**
+     * draws this component at the position.
+     */
+    public abstract /* synchronized */ void draw(v_Graphics g);
 }

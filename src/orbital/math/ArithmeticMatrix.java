@@ -21,6 +21,7 @@ import orbital.util.Utility;
  * @author  Andr&eacute; Platzer
  */
 class ArithmeticMatrix/*<R implements Arithmetic>*/ extends AbstractMatrix/*<R>*/ {
+    private static final long serialVersionUID = -2994686890096422385L;
     private static class Debug {
 	private Debug() {}
 	public static void main(String arg[]) throws Exception {

@@ -19,10 +19,12 @@ import orbital.logic.functor.*;
  * @invariant (this.equals(b) &hArr; this == b) &and; this.hashCode() == System.identityHashCode(this)
  */
 final class DistinctSymbol extends SymbolBase {
+    private  static final long serialVersionUID = 6846367078565847459L;
     /**
      * the next ID for distinct symbols.
+     * @internal volatile does not ensure that ++ is atomic.
      */
-    private static /*transient*/ int NEXT_ID = 10;
+    private static /*transient*/ volatile int NEXT_ID = 10;
 	
     public DistinctSymbol(String signifierPrefix, Functor.Specification spec, Notation.NotationSpecification notation, boolean variable) {
 	super(signifierPrefix + (NEXT_ID++), spec, notation, variable);

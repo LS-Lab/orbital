@@ -410,7 +410,7 @@ public class ChartModel implements Serializable {
      * @author  Andr&eacute; Platzer
      */
     public class Entry implements Serializable {
-
+	private static final long serialVersionUID = -3709330542731558305L;
 	/**
 	 * @serial
 	 */

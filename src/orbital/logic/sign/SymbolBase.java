@@ -34,6 +34,7 @@ import orbital.logic.functor.Functor$Specification;
  * @internal this is not the most beautiful name, but InterpretationBase and SignatureBase are much more suggestive than DefaultInterpretation and DefaultSignature which were really the wrong names from a logical point of view.
  */
 public class SymbolBase implements Symbol, Serializable {
+    private static final long serialVersionUID = 4003299661212808663L;
     // convenience constants for constructor calls
     /**
      * A type specification for logical atoms of type <span class="keyword">boolean</span> and arity <span class="number">0</span>.

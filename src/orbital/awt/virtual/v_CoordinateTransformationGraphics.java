@@ -14,42 +14,41 @@ package orbital.awt.virtual;
  * @version 0.9, 2000/08/30
  * @author  Andr&eacute; Platzer
  */
-public
-abstract class v_CoordinateTransformationGraphics extends v_Graphics {
-	/**
-	 * The inner v_Graphics projection instance to wrap around.
-	 */
-	protected v_Graphics projection;
+public abstract class v_CoordinateTransformationGraphics extends v_Graphics {
+    /**
+     * The inner v_Graphics projection instance to wrap around.
+     */
+    protected v_Graphics projection;
 
-	/**
-	 * Constructs a new v_Graphics wrapper performing coordinate transformation.
-	 * @param projection the inner projection graphics to wrap around.
-	 */
-	protected v_CoordinateTransformationGraphics(v_Graphics projection) {
-		super(projection.getGraphics(), projection.getOrigin());
-		this.projection = projection;
-	}
+    /**
+     * Constructs a new v_Graphics wrapper performing coordinate transformation.
+     * @param projection the inner projection graphics to wrap around.
+     */
+    protected v_CoordinateTransformationGraphics(v_Graphics projection) {
+	super(projection.getGraphics(), projection.getOrigin());
+	this.projection = projection;
+    }
 
-	/**
-	 * Creates a clone of this v_CoordinateTransformationGraphics object.
-	 * @return a clone of identical class which draws on a copy of the inner v_Graphics context (deep copied).
-	 */
-	public abstract Object clone();
+    /**
+     * Creates a clone of this v_CoordinateTransformationGraphics object.
+     * @return a clone of identical class which draws on a copy of the inner v_Graphics context (deep copied).
+     */
+    public abstract Object clone();
 
-	/**
-	 * Get the inner v_Graphics projection instance to wrap around.
-	 */
-	public v_Graphics getProjection() {
-		return projection;
+    /**
+     * Get the inner v_Graphics projection instance to wrap around.
+     */
+    public v_Graphics getProjection() {
+	return projection;
 		
-	}
+    }
 
-	/**
-	 * Set the inner v_Graphics projection instance to wrap around.
-	 */
-	public void setProjection(v_Graphics projection) {
-		this.projection = projection;
+    /**
+     * Set the inner v_Graphics projection instance to wrap around.
+     */
+    public void setProjection(v_Graphics projection) {
+	this.projection = projection;
 		
-	}
+    }
 
 }

@@ -64,8 +64,9 @@ import orbital.util.InnerCheckedException;
  * @xxx turnDone should be called "performedMove" and perhaps we can get rid of this old way of using events. Also we need a more customizable way of deciding when to end a turn (f.ex. some games may allow a player to perform multiple moves before ending his turn)
  */
 public class Game extends Applet implements Runnable {
+    private static final long serialVersionUID = 1298765184014728813L;
     public static void main(String arg[]) throws Exception {
-	if (arg.length == 0 || "-?".equals(arg[0])) {
+	if (arg.length == 0 || orbital.signe.isHelpRequest(arg)) {
 	    System.out.println(usage);
 	    System.out.println(AppletFrame.info(new Game()));
 	    return;

@@ -377,6 +377,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      * @todo improve name
      */
     public static abstract class OperatorSet implements Serializable, Comparable {
+	private static final long serialVersionUID = -3938437045097544303L;
 	/**
 	 * the name to display for this enum value
 	 * @serial
@@ -455,6 +456,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      * <div>a &#8910; b = max{a,b}</div>
      */
     public static OperatorSet GOEDEL = new OperatorSet("Gödel") {
+	    private static final long serialVersionUID = 2408339318090056142L;
 	    Function not() {
 		return LogicFunctions.not;
 	    }
@@ -484,6 +486,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      * <div>a &#8910; b = a+b - a&sdot;b</div>
      */
     public static OperatorSet PRODUCT = new OperatorSet("Product") {
+	    private static final long serialVersionUID = 1914120346137890612L;
 	    Function not() {
 		return LogicFunctions.not;
 	    }
@@ -515,6 +518,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      * <div>a &#8910; b = min{1,a+b}</div>
      */
     public static OperatorSet BOUNDED = new OperatorSet("Bounded") {
+	    private static final long serialVersionUID = 2512028904916107754L;
 	    Function not() {
 		return LogicFunctions.not;
 	    }
@@ -545,6 +549,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      * @attribute discontinuous
      */
     public static OperatorSet DRASTIC = new OperatorSet("Drastic") {
+	    private static final long serialVersionUID = -2065043465614357255L;
 	    Function not() {
 		return LogicFunctions.not;
 	    }
@@ -554,6 +559,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 			public Object apply(Object wa, Object wb) {
 			    final double a = getTruth(wa);
 			    final double b = getTruth(wb);
+			    //@xxx does this compile to illegal code for a, b := NaN?
 			    return getInt(a == 1.0 || b == 1.0 ? Math.min(a, b) : 0);
 			}
 			public String toString() { return "&"; }
@@ -583,6 +589,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	if (!(gamma >= 0))
 	    throw new IllegalArgumentException("illegal value for gamma: " + gamma + " < 0");
 	return new OperatorSet("Hamacher(" + gamma + ")") {
+		private static final long serialVersionUID = -8210989001070817280L;
 		Function not() {
 		    return LogicFunctions.not;
 		}
@@ -625,6 +632,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	    throw new IllegalArgumentException("illegal parameter: " + p + " =< 0");
 	final double inverse_p = 1/p;
 	return new OperatorSet("Yager(" + p + ")") {
+		private static final long serialVersionUID = 5886310887805210830L;
 		Function not() {
 		    return LogicFunctions.not;
 		}

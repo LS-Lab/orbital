@@ -13,11 +13,11 @@ package orbital.logic;
  * @version 0.9, 20/12/98
  * @author  Andr&eacute; Platzer
  */
-public
-class RecursionStoppedException extends RuntimeException {
-	public RecursionStoppedException() {}
+public class RecursionStoppedException extends RuntimeException {
+    private static final long serialVersionUID = -4005462153245344729L;
+    public RecursionStoppedException() {}
 
-	public RecursionStoppedException(String spec) {
-		super(spec);
-	}
+    public RecursionStoppedException(String spec) {
+	super(spec);
+    }
 }

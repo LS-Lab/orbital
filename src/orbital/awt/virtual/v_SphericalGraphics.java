@@ -20,35 +20,34 @@ package orbital.awt.virtual;
  * @version 0.9, 2000/08/30
  * @author  Andr&eacute; Platzer
  */
-public
-class v_SphericalGraphics extends v_CoordinateTransformationGraphics {
-	/**
-	 * Constructs a new v_Graphics wrapper performing coordinate transformation.
-	 * @param projection the inner projection graphics to wrap around.
-	 */
-	public v_SphericalGraphics(v_Graphics projection) {
-		super(projection);
-	}
+public class v_SphericalGraphics extends v_CoordinateTransformationGraphics {
+    /**
+     * Constructs a new v_Graphics wrapper performing coordinate transformation.
+     * @param projection the inner projection graphics to wrap around.
+     */
+    public v_SphericalGraphics(v_Graphics projection) {
+	super(projection);
+    }
 
     public Object clone() {
     	return new v_SphericalGraphics((v_Graphics) getProjection().clone());
     }
 	
-	/**
-	 * returns the projected screen coordinates of a 3D Point (r|&theta;|&phi;)
-	 * in spherical coordinates.
-	 */
-	protected int xlate(int r, int theta, int phi) {
-		return projection.xlate((int)Math.round(r*Math.sin(theta)*Math.cos(phi)),
+    /**
+     * returns the projected screen coordinates of a 3D Point (r|&theta;|&phi;)
+     * in spherical coordinates.
+     */
+    protected int xlate(int r, int theta, int phi) {
+	return projection.xlate((int)Math.round(r*Math.sin(theta)*Math.cos(phi)),
 				(int)Math.round(r*Math.sin(theta)*Math.sin(phi)),
 				(int)Math.round(r*Math.cos(theta))
 				);
-	} 
-	protected int ylate(int r, int theta, int phi) {
-		return projection.ylate((int)Math.round(r*Math.sin(theta)*Math.cos(phi)),
+    } 
+    protected int ylate(int r, int theta, int phi) {
+	return projection.ylate((int)Math.round(r*Math.sin(theta)*Math.cos(phi)),
 				(int)Math.round(r*Math.sin(theta)*Math.sin(phi)),
 				(int)Math.round(r*Math.cos(theta))
 				);
-	} 
+    } 
 
 }

@@ -25,72 +25,72 @@ import java.util.Arrays;
  * @see java.io.SequenceInputStream
  * @todo could we extend this like QueuedIterator in order to allow adding new iterators at run-time? Then we could use it for orbital.algorithm.template.DepthFirstSearch.NodeIterator
  */
-public
-class SequenceIterator implements Iterator, Serializable {
-	/**
-	 * The iterator over the iterators whose elements we return.
-	 * @serial this class is serializable if and only if all its content iterators are serializable.
-	 */
-	private final Iterator/*<Iterator>*/ iterators;
-	/**
-	 * The current iterator in <code>iterators</code> whose elements we return.
-	 * @serial
-	 */
-	private Iterator	   current;
-	/**
-	 * Create a new sequence iterator over an iterator of iterators.
-	 * @param iterators is an iterator over iterators whose elements this SequenceIterator will provide,
-	 *  one after one.
-	 */
+public class SequenceIterator implements Iterator, Serializable {
+    private static final long serialVersionUID = -5334957890325354979L;
+    /**
+     * The iterator over the iterators whose elements we return.
+     * @serial this class is serializable if and only if all its content iterators are serializable.
+     */
+    private final Iterator/*<Iterator>*/ iterators;
+    /**
+     * The current iterator in <code>iterators</code> whose elements we return.
+     * @serial
+     */
+    private Iterator	   current;
+    /**
+     * Create a new sequence iterator over an iterator of iterators.
+     * @param iterators is an iterator over iterators whose elements this SequenceIterator will provide,
+     *  one after one.
+     */
     public SequenceIterator(Iterator/*<Iterator>*/ iterators) {
         this.iterators = iterators;
     }
-	/**
-	 * Create a new sequence iterator over a list of iterators.
-	 * <p>
-	 * Note that modifying iterators will result in a ConcurrentModificationException at runtime,
-	 * as per general contract of list iterators.</p>
-	 * @param iterators is a list of iterators whose elements this SequenceIterator will provide,
-	 *  one after one.
-	 */
+    /**
+     * Create a new sequence iterator over a list of iterators.
+     * <p>
+     * Note that modifying iterators will result in a ConcurrentModificationException at runtime,
+     * as per general contract of list iterators.</p>
+     * @param iterators is a list of iterators whose elements this SequenceIterator will provide,
+     *  one after one.
+     */
     public SequenceIterator(List/*<Iterator>*/ iterators) {
         this(iterators.iterator());
     }
-	/**
-	 * Create a new sequence iterator over an array of iterators.
-	 * @param iterators is an array of iterators whose elements this SequenceIterator will provide,
-	 *  one after one.
-	 */
+    /**
+     * Create a new sequence iterator over an array of iterators.
+     * @param iterators is an array of iterators whose elements this SequenceIterator will provide,
+     *  one after one.
+     */
     public SequenceIterator(Iterator iterators[]) {
         this(Arrays.asList(iterators));
     }
 
     public boolean hasNext() {
     	while (true) {
-    		if (current != null && current.hasNext())
-    			return true;
-    		if (iterators.hasNext()) {
-    			if ((current = (Iterator) iterators.next()) == null)
-    				throw new NullPointerException("null is not an iterator");
-    		} else
-    			return false;
+	    if (current != null && current.hasNext())
+		return true;
+	    if (iterators.hasNext()) {
+		if ((current = (Iterator) iterators.next()) == null)
+		    throw new NullPointerException("null is not an iterator");
+	    } else
+		return false;
     	}
     }
     public Object next() {
     	while (true) {
-    		if (current != null && current.hasNext())
-    			return current.next();
-    		if (iterators.hasNext()) {
-    			if ((current = (Iterator) iterators.next()) == null)
-    				throw new NullPointerException("null is not an iterator");
-    		} else
-    			throw new NoSuchElementException();
+	    if (current != null && current.hasNext())
+		return current.next();
+	    if (iterators.hasNext()) {
+		if ((current = (Iterator) iterators.next()) == null)
+		    throw new NullPointerException("null is not an iterator");
+	    } else
+		throw new NoSuchElementException();
     	}
     }
     public void remove() {
     	if (current != null)
-    		current.remove();
+	    current.remove();
     	else
-    		throw new IllegalStateException();
+	    throw new IllegalStateException();
     }
 }

@@ -52,6 +52,7 @@ public abstract class AdversarySearch {
      * @stereotype &laquo;Structure&raquo;
      */
     public static class Option implements Comparable, Serializable {
+	private static final long serialVersionUID = -6512650518865382543L;
 	/**
 	 * the field state s&isin;S of this option node.
 	 * @serial

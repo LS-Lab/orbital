@@ -771,6 +771,7 @@ public class ArithmeticFormat extends Format {
 }
 
 class ExpectationHurtParseException extends ParseException {
+    private static final long serialVersionUID = -6851188252624548071L;
     public ExpectationHurtParseException(String s, int errorOffset) {
 	super(s, errorOffset);
     }

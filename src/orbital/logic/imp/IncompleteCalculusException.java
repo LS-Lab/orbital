@@ -14,10 +14,11 @@ package orbital.logic.imp;
  * @version 1.0, 1999/03/04
  * @author  Andr&eacute; Platzer
  */
-public
-class IncompleteCalculusException extends LogicException {
-	public IncompleteCalculusException(String message) {
-		super(message);
-	}
-	public IncompleteCalculusException() {}
+public class IncompleteCalculusException extends LogicException {
+    private static final long serialVersionUID = 548457840486427483L;
+
+    public IncompleteCalculusException(String message) {
+	super(message);
+    }
+    public IncompleteCalculusException() {}
 }

@@ -241,7 +241,11 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
     	public ComplexImpl() {
 	    this(0, 0);
     	}
-    
+
+	public int hashCode() {
+	    return super.hashCode();
+	}
+	
     	public boolean equals(Object o) {
 	    if (o instanceof ComplexImpl) {
 		// optimized version

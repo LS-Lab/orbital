@@ -31,6 +31,7 @@ import java.lang.reflect.InvocationTargetException;
  * @note package-level protected to orbital.logic.trs
  */
 public class SubstitutionImpl implements Substitution, Serializable {
+    private static final long serialVersionUID = 5782834146110405976L;
     /**
      * The set of elementary replacements.
      * @serial
@@ -153,6 +154,7 @@ public class SubstitutionImpl implements Substitution, Serializable {
      * @author  Andr&eacute; Platzer
      */
     public static class MatcherImpl implements Matcher, Serializable {
+	private static final long serialVersionUID = -5676492558169571904L;
     	/**
     	 * The object against which to match with {@link Object#equals(Object)}.
     	 * @serial
@@ -263,6 +265,7 @@ public class SubstitutionImpl implements Substitution, Serializable {
      * @author  Andr&eacute; Platzer
      */
     public static class UnifyingMatcher extends MatcherImpl {
+	private static final long serialVersionUID = 8361601987955616874L;
     	/**
     	 * Create a new matcher that performs substitution.
     	 * @param pattern The object against which to (single side) match with {@link Substitutions#unify(Collection)}.
