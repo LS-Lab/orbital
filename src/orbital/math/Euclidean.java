@@ -46,6 +46,7 @@ public interface Euclidean extends Arithmetic {
 	
     /**
      * Get the Euclidean degree.
+     * In case R is a discrete valuation ring, this also is the valuation of Quot(R).
      * @return the Euclidean degree &delta;(this) of this value.
      * @post RES=&delta;(this)
      */

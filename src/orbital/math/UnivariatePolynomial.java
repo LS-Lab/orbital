@@ -40,10 +40,11 @@ public interface UnivariatePolynomial/*<R implements Arithmetic>*/ extends Eucli
     /**
      * Get the degree of this polynomial.
      * <p>
-     * This degree is the Euclidean degree function &delta;
-     * and also the graded ring function for polynomials.
+     * This is the Euclidean degree function &delta;
+     * and also the graduation function for polynomials.
      * 0 is an element of undefined or all or none degrees.
-     * So for 0 we should return <code>null</code>, or {@link java.lang.Integer#MIN_VALUE}.
+     * So for 0 we should return <code>null</code>
+     * (or {@link java.lang.Integer#MIN_VALUE}, but this is not recommended).
      * </p>
      * @return deg(this) = max {i&isin;<b>N</b> &brvbar; a<sub>i</sub>&ne;0}
      */
