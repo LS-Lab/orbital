@@ -333,12 +333,17 @@ public class GameView extends Applet {
 
 	try {
 	    GameRules rules = createGameRules(gameRules);
-	    String[] playerArguments = new String[rules.getLeagues()];
-	    for (int i = 0; i < playerArguments.length; i++)
-		playerArguments[i] = getParameter("player-" + i);
+	    Function players[] = new Function[rules.getLeagues()];
+	    for (int i = 0; i < players.length; i++) {
+		String arg = getParameter("player-" + i);
+		players[i] = arg == null || arg.equals("null")
+		    ? null
+		    //@todo shouldn't we restart players in start()?
+		    : rules.startAIntelligence(arg);
+	    }
 	    this.setGamemaster(new Gamemaster(this,
 					     rules,
-					     playerArguments)
+					     players)
 			       );
 	} catch (Exception e) {
 	    log(e);
