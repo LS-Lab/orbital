@@ -62,42 +62,6 @@ import java.util.logging.Level;
  */
 //TODO: is extends DecodingReader desired? Remember that InputStreamReader does odd buffering
 public class DataReader extends AnyInputStream implements DataInput {
-    private static class Debug {
-	private Debug() {}
-	public static void main(String[] arg) throws Exception {
-	    DataReader d = getInstance(System.in, "strict");
-	    System.out.print("Type an int: ");
-	    System.out.flush();
-	    int i = d.readInt();
-	    System.out.println("int was: '" + i + "'");
-	    System.out.print("Type a short: ");
-	    System.out.flush();
-	    short s = d.readShort();
-	    System.out.println("short was: '" + s + "'");
-	    System.out.print("Type a boolean: ");
-	    System.out.flush();
-	    boolean b = d.readBoolean();
-	    System.out.println("boolean was: '" + b + "'");
-	    System.out.print("Type a line: ");
-	    System.out.flush();
-	    String l = d.readLine();
-	    System.out.println("line was: '" + l + "'");
-	    System.out.print("Type a char: ");
-	    System.out.flush();
-	    char c = d.readChar();
-	    System.out.println("char was: '" + c + "'");
-	    System.out.print("Type a second line: ");
-	    System.out.flush();
-	    l = d.readLine();
-	    System.out.println("line was: '" + l + "'");
-	    System.out.println("Anything more to say?");
-	    while (d.ready()) {
-		Object o = d.readObject();
-		System.out.println(o.getClass() + ":" + o);
-	    } 
-	} 
-    }	 // Debug
-
     static final Logger logger = Logger.getLogger(DataReader.class.getName());
 
     public static void main(String arg[]) throws Exception {

@@ -15,30 +15,6 @@ package orbital.util;
  * @see java.nio.Buffer
  */
 public class Buffer {
-    private static class Debug {
-	private Debug() {}
-	public static void main(String arg[]) {
-	    System.err.println("Debug");
-	    Buffer buf = new Buffer();
-	    buf.append("You know now".getBytes());
-	    System.out.println(new String(buf.getBytes()));
-	    buf.append("here is it".getBytes());
-	    System.out.println(new String(buf.getBytes()));
-	    buf.append('X', 5);
-	    System.out.println(new String(buf.getBytes()));
-	    buf.setBuffer("Hello".getBytes());
-	    buf.setSize(5);
-	    System.out.println(new String(buf.getBytes()));
-	    buf.append("_World".getBytes());
-	    System.out.println(new String(buf.getBytes()));
-	    buf.remove(5, 2);
-	    System.out.println(new String(buf.getBytes()));
-	    buf.remove(7, 2);
-	    System.out.println(new String(buf.getBytes()));
-	} 
-    }
-
-
     /**
      * The index one greater than the index of the last valid byte in
      * the buffer. It is always true that <code>count<=buf.length</code>.

@@ -38,21 +38,6 @@ import java.io.OutputStreamWriter;
  * @todo is extends EncodingWriter desired?
  */
 public class DataWriter extends FilterWriter implements DataOutput {
-    private static class Debug {
-	private Debug() {}
-	public static void main(String arg[]) throws Exception {
-	    DataWriter d = DataWriter.getInstance(new OutputStreamWriter(System.out), "basic");
-	    d.writeInt(12345);
-	    d.writeShort(217);
-	    d.writeBoolean(true);
-	    d.writeChars("Is it all well");
-	    d.writeChar('X');
-	    d.writeUTF("better does");
-	    d.writeUTF("Now look!");
-	    d.close();
-	} 
-    }	 // Debug
-
     /**
      * Generates an DataWriter object for the specified type of encoding.
      * <p>
