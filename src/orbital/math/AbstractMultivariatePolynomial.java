@@ -52,7 +52,7 @@ abstract class AbstractMultivariatePolynomial/*<R implements Arithmetic>*/ exten
 	return false;
     }
     public int hashCode() {
-	throw new UnsupportedOperationException();
+	return super.hashCode();
     }
 
     protected Object productIndexSet(Arithmetic/*>T<*/ productObject) {
