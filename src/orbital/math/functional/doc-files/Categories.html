@@ -189,7 +189,7 @@ are called <dfn>automorphisms</dfn>.</p>
 </table>
 
 <dl class="def">
-  <dt id="kernel">kernel</dt>
+  <dt id="kernel">kernel &le; equalizer</dt>
   <dd>i:<span class="objet">X</span>&rarr;<span class="objet">A</span> is a kernel of  
      f:<span class="objet">A</span>&rarr;<span class="objet">B</span> :&hArr;   
      f∘i = 0, and &forall;j:<span class="objet">X'</span>&rarr;<span class="objet">A</span> with f∘j=0 
@@ -198,7 +198,7 @@ are called <dfn>automorphisms</dfn>.</p>
      <br />
      Write: i = ker(f) 
    </dd>
-  <dt id="cokernel">cokernel</dt>
+  <dt id="cokernel">cokernel &le; coequalizer</dt>
   <dd>p:<span class="objet">B</span>&rarr;<span class="objet">Y</span> is a kernel of  
      f:<span class="objet">A</span>&rarr;<span class="objet">B</span> :&hArr;   
      p∘f = 0, and &forall;j:<span class="objet">B</span>&rarr;<span class="objet">Y'</span> with j∘f=0 
@@ -599,15 +599,6 @@ categories) <!-- <source>Pareigis, 4.2</source> -->.</p>
 <h2 id="universalElements">Universal Elements</h2>
 <p>Let <span class="categorie">C</span> be a category.
 <dl class="def">
-  <dt id="initial">initial<br>
-    object</dt>
-  <dd><img class="annotatingDiagram" src="diagram/commutative/initial.jpg" width="102" height="89"> 
-    A∈Ob <span class="categorie">C</span> is an initial object :⇔ ∀B∈Ob <span class="categorie">C</span>          
-    ∃!φ∈Mor<sub><span class="categorie">C</span></sub>(A,B)<br>         
-    initial objects are uniquely isomorph, i.e. each two initial objects A,B          
-    have a unique isomorphism A→B.          
-    <!-- free object iff initial object? -->
-  </dd>
   <dt id="terminal">terminal<br>
     object</dt>
   <dd><img class="annotatingDiagram" src="diagram/commutative/terminal.jpg" width="128" height="82"> 
@@ -616,7 +607,17 @@ categories) <!-- <source>Pareigis, 4.2</source> -->.</p>
     initial object in <span class="categorie">C°</span>.<br>         
     terminal objects are uniquely isomorph, i.e. each two terminal objects A,B          
     have a unique isomorphism A→B.<br> 
-    Terminal objects are the limits of the empty category.</dd>        
+    Terminal objects are the limits of the empty category.</dd>
+  <dt id="initial">initial<br>
+    object</dt>
+  <dd><img class="annotatingDiagram" src="diagram/commutative/initial.jpg" width="102" height="89"> 
+    A∈Ob <span class="categorie">C</span> is an initial object :⇔ ∀B∈Ob <span class="categorie">C</span>          
+    ∃!φ∈Mor<sub><span class="categorie">C</span></sub>(A,B)<br>         
+    initial objects are uniquely isomorph, i.e. each two initial objects A,B          
+    have a unique isomorphism A→B.          
+    Initial objects are the colimits of the empty category.
+    <!-- free object iff initial object? -->
+  </dd>
   <dt id="zero">zero<br>
     object</dt>
   <dd>A∈Ob <span class="categorie">C</span> is a zero object :⇔ A is an initial and terminal object.</dd>
@@ -680,7 +681,9 @@ be a presentable covariant functor.
     &quot;product is universally attracting&quot;, and 
     product is the presenting object of the contravariant functor <span class="categorie">C</span>&rarr;<span class="categorie">Ens</span>; C ↦ Mor(C,A<sub>1</sub>)×Mor(C,A<sub>2</sub>) 
     with universal projector maps π<sub>i</sub>. Furthermore, it is just a terminal 
-    object in a suitable category. P is the limit of the trivial functor with F(X)=X and "F(f)=&empty;".</dd> 
+    object in a suitable category. Products are the limits of a functor from a
+    discrete category (i.e. which only has identity morphisms and thus
+    reduces to a family of objects).</dd> 
   <dt id="coproduct">coproduct &le; colimit</dt>
   <dd><img class="annotatingDiagram" src="diagram/commutative/coproduct.jpg" width="176" height="159"> 
     S∈Ob <span class="categorie">C</span>, with the inclusions ι<sub>i</sub>∈Mor(A<sub>i</sub>,S)         
@@ -699,30 +702,14 @@ be a presentable covariant functor.
   <dt id="fibreProduct">fibred-product</dt>
   <dd>X &times;<sub>S</sub> Y is a fibred product of X &isin; Ob <span class="categorie">C</span> and Y&isin;Ob <span class="categorie">C</span>      
     over <span class="object">S</span>&isin;Ob <span class="categorie">C</span> if it is a product of (X,f) and (Y,g) in the category <span class="categorie">C/<span class="object">S</span></span>      
-     of <span class="object">S</span>-objects. Also called pullback:  
-    &quot;parallel translation&quot;.     
+     of <span class="object">S</span>-objects. Also called pullback:
+    &quot;parallel translation&quot;.
+    Pullbacks are the limits of a three-object category with 
+    f:X→S, g:Y→S as non-identity morphisms. They visualize as commutative
+    squares with diagonal.
   </dd>  
 
-<!--
-  <dt id="pullback">pullback</dt>
-  <dd>
-    P∈Ob <span class="categorie">C</span>, with the projectors π<sub>i</sub>∈Mor(P,A<sub>i</sub>)        
-    for i∈I, is a pullback of the objects <span class="seriesOperator">(</span>A<sub>i</sub><span class="seriesOperator">)</span><sub>i∈I</sub>⊆Ob        
-    <span class="categorie">C</span> with maps f<sub>i</sub>∈Mor(A<sub>i</sub>,S) :⇔    
-    <div style="text-align: center">
-      f<sub>i</sub>∘π<sub>i</sub>     
-      = f<sub>j</sub>∘π<sub>j<br>   
-      </sub>&and; <big>(</big>∀C∈Ob <span class="categorie">C</span> ∀<span class="seriesOperator">(</span>g<sub>i</sub>∈Mor<sub><span class="categorie">C</span></sub>(C,A<sub>i</sub>)<span class="seriesOperator">)</span><sub>i∈I</sub>    
-      f<sub>i</sub>∘g<sub>i</sub>       
-      = f<sub>j</sub>∘g<sub>j</sub> &rArr;<br />      
-      ∃!g∈Mor<sub><span class="categorie">C</span></sub>(C,P) ∀i∈I π<sub>i</sub>∘g        
-      = g<sub>i</sub> <big>)</big>       
-    </div>
-    generalizes product as &quot;parallel translation&quot;   
-   </dd>   
- -->
-   
-  <dt id="equalizer">equalizer</dt>
+  <dt id="equalizer">equalizer &le; limit</dt>
   <dd>
     the map e∈Mor(E,X), with E∈Ob <span class="categorie">C</span>, is an    
     equalizer of the maps f,g∈Mor(X,Y) :⇔     
@@ -735,11 +722,12 @@ be a presentable covariant functor.
  ∃!&eta;∈Mor<sub><span class="categorie">C</span></sub>(E',E) e'         
       = e∘&eta; <big>)</big>        
     </div>
-    e is a unique monomorphism (up to isomorphism). f.ex. The kernel of f is the   
-    equalizer of f and 0.    
+    e is a unique monomorphism (up to isomorphism). f.ex. The kernel of f is the
+    equalizer of f and 0. Equalizers are the limits of the identity functor
+    from a two-object category with two parallel morphisms in between.
    </dd>   
    
-  <dt id="coequalizer">coequalizer</dt>
+  <dt id="coequalizer">coequalizer &le; colimit</dt>
   <dd>
     the map c∈Mor(Y,C), with C∈Ob <span class="categorie">C</span>, is a coequalizer of the  
     maps f,g∈Mor(X,Y) :⇔     
@@ -789,7 +777,12 @@ limits and colimits.</p>
     </div>
     Write: L = lim <span class="foncteur">F</span>   
     = lim<sub>←</sub> F "glue together related objects by morphisms". 
-    Limits relativate products to the situation where the morphisms commute over the F(f).</dd>   
+    Limits relativate products to the situation where the morphisms commute
+    over the F(f).
+    Limits are sometimes also known as inverse limit or projective
+    limit. Examples of limits include products, terminal objects, equalizers,
+    kernels, pullbacks.
+    </dd>   
   <dt id="colmit">colimit</dt>
   <!-- generalizes direct limits -->
   <dd><img class="annotatingDiagram" src="diagram/commutative/colimit2.jpg" width="231" height="155"> 
@@ -818,7 +811,11 @@ limits and colimits.</p>
     <div style="text-align: center">
      &rArr; Mor<sub><span class="categorie">C</span></sub>(colim <span class="foncteur">F</span>,<span class="objet">N</span>)
      = lim Mor<sub><span class="categorie">C</span></sub>(<span class="foncteur">F</span>(·),<span class="objet">N</span>)
-     </div>
+    </div>
+    "Colimits are for glueing together mathematical objects."
+    Colimits are sometimes also known as direct limit or inductive limit.
+    Examples of colimits include coproducts, inital objects, coequalizers,
+    cokernels, pushouts.
     </dd> 
 </dl>
 <p> Limits and colimits are uniquely  
