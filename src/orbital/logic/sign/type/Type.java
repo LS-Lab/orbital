@@ -65,7 +65,7 @@ public interface Type extends Comparable, Predicate {
     /**
      * Get the codomain <span class="type">&sigma;</span> of a type <span class="type">&sigma;&rarr;&tau;</span>.
      * @return the type of the parameter domain.
-     *  {@link Types#VOID} if this type does not take parameters.
+     *  {@link Types#NOTYPE} if this type does not take parameters.
      */
     Type codomain();
 

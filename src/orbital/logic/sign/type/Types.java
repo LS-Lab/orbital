@@ -130,16 +130,9 @@ public final class Types {
     /**
      * The type <span class="type">&omicron;</span> = <span class="type">()</span> of truth-values.
      * @xxx for multi-valued logics this is not limited to boolean.
-     * @todo what about Boolean.TYPE and Boolean.class?
+     * @todo what about Boolean.TYPE and Boolean.class? Should TRUTH =< INDIVIDUAL?
      */
     public static final Type TRUTH = new FundamentalTypeImpl(Boolean.class);
-    /**
-     * The void type <span class="type">&prod;<sub>&empty;</sub></span> = <span class="type">&prod;<sub>i&isin;&empty;</sub>i</span>.
-     * The extension of the type void is &empty;, i.e. it does not have any elements at all.
-     * @xxx is VOID=ABSURD? for product,sup,inf,collection and extension they have are equal.
-     *  So at most the condition <li>(&forall;<span class="type">&tau;</span>:Type) <span class="type">&perp;</span>&le;<span class="type">&tau;</span></li> might be different.
-     */
-    public static final Type VOID = new FundamentalTypeImpl(Void.TYPE);
     /**
      * The absurd type
      * <span class="type">&perp;</span> = <span class="type">&#8899;<sub>&empty;</sub></span>.
@@ -150,12 +143,12 @@ public final class Types {
      *   <li>(&forall;<span class="type">&tau;</span>:Type) <span class="type">&perp;</span>&le;<span class="type">&tau;</span></li>
      * </ul>
      * @see #UNIVERSAL
-     * @internal nothing (besides that single object whose reference no one knows) is an instance of or a subclass of our fundamental anonymous class.
+     * @internal nothing (besides that single object whose reference no one knows) is an instance of or a subclass of a fundamental anonymous class. But the same already goes true for Void.TYPE, so let's use that.
      */
     public static final Type ABSURD = new AbsurdType();
     private static final class AbsurdType extends FundamentalType {
 	private static final long serialVersionUID = 7539731602290983194L;
-	private transient Class type = new Object() {}.getClass();
+	private transient final Class type = new Object() {}.getClass();
 	/**
 	 * Maintains the guarantee that there is only a single object representing this type.
 	 * @serialData canonicalized deserialization
@@ -189,6 +182,19 @@ public final class Types {
 	    return "absurd";
 	}
     };
+    /**
+     * Not a type.
+     * The type of expressions that do not have any type at all.
+     * This type has extension &empty;.
+     * @see #ABSURD
+     * @xxx is NOTYPE=ABSURD? for product,sup,inf,collection and extension they have are equal.
+     *  So at most the condition <li>(&forall;<span class="type">&tau;</span>:Type) <span class="type">&perp;</span>&le;<span class="type">&tau;</span></li> might be different.
+     * @internal if we cannot distinguish NOTYPE (as codomain of NonMapType) from ABSURD we would make &iota; and &iota;->string comparable.
+     *  NOTYPE is incomparable with all types except itself (and of course ABSURD, and UNIVERSAL)
+     *  NOTYPE would not be necessary if Type did not prefer half being a MapType and a check predicate for instanceof MapType were available. But this would seem more ugly.
+     * @todo increase comparisonPriority for peformance reasons.
+     */
+    public static final Type NOTYPE = new FundamentalTypeImpl(Void.TYPE);
 
     /**
      * prevent instantiation - module class
@@ -318,6 +324,8 @@ public final class Types {
     public static final Type type(Class type) {
 	return type.equals(Boolean.class) || type.equals(Boolean.TYPE)
 	    ? TRUTH
+	    : type.equals(Void.TYPE)
+	    ? ABSURD
 	    : new FundamentalTypeImpl(type);
     }
     
@@ -416,7 +424,7 @@ public final class Types {
 	if (codomain == ABSURD || domain == ABSURD)
 	    // strict? after change also @see MathExpressionSyntax.createAtomic
 	    throw new UnsupportedOperationException(ABSURD + " maps not yet supported");
-	return codomain.equals(VOID) ? domain : new MapType(codomain, domain);
+	return codomain.equals(NOTYPE) ? domain : new MapType(codomain, domain);
     }
 
     /**
@@ -457,7 +465,7 @@ public final class Types {
 	}
 
 	public boolean apply(Object x) {
-	    assert arityOf(codom) > 0 : "map(Type,Type) canonically filters codomain=VOID. But the codomain of " + this + " of " + getClass() + " has arity " + arityOf(codom);
+	    assert arityOf(codom) > 0 : "map(Type,Type) canonically filters codomain=NOTYPE. But the codomain of " + this + " of " + getClass() + " has arity " + arityOf(codom);
 	    //@xxx originally was  referent instanceof Functor && spec.isConform((Functor) referent)
 	    if (false && arityOf(codom) <= 1)
 		return Functionals.bindSecond(Utility.instanceOf, dom.equals(TRUTH)
@@ -482,7 +490,7 @@ public final class Types {
      */
     private static abstract class NonMapType extends TypeObject {
 	public Type codomain() {
-	    return VOID;
+	    return NOTYPE;
 	}
 	public Type domain() {
 	    return this;
@@ -513,7 +521,7 @@ public final class Types {
 		return ABSURD;
 	}
 	switch (components.length) {
-	case 0: return VOID;
+	case 0: return ABSURD;
 	case 1: return components[0];
 	default: return new ProductType(components);
 	}
@@ -941,9 +949,6 @@ public final class Types {
 	private final String toStringPrefix;
 	private final String toStringSuffix;
 	public CollectionType(Class collection, Type component, String toStringPrefix, String toStringSuffix) {
-	    if (component == ABSURD)
-		// collections of absurd have the extension {&empty;} which equals that of collections of void
-		component = VOID;
 	    this.collection = collection;
 	    this.component = component;
 	    this.toStringPrefix = toStringPrefix;
@@ -1001,7 +1006,7 @@ public final class Types {
 	return type == ABSURD
 	    // strict
 	    ? Integer.MIN_VALUE
-	    : type.equals(VOID)
+	    : type.equals(NOTYPE)
 	    ? 0
 	    : type instanceof ProductType
 	    ? ((ProductType)type).components.length
@@ -1022,7 +1027,7 @@ public final class Types {
      */
     /*private*/public static final Type typeOf(Expression[] args) {
 	if (args == null || args.length == 0)
-	    return VOID;
+	    return NOTYPE;
 	final Type argumentTypes[] = new Type[args.length];
 	for (int i = 0; i < argumentTypes.length; i++)
 	    argumentTypes[i] = args[i].getType();
@@ -1063,7 +1068,7 @@ public final class Types {
      */
     private static final Type typeOf(Class[] args) {
 	if (args == null || args.length == 0)
-	    return VOID;
+	    return NOTYPE;
 	final Type argumentTypes[] = new Type[args.length];
 	for (int i = 0; i < argumentTypes.length; i++)
 	    argumentTypes[i] = type(args[i]);

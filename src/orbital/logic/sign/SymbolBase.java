@@ -190,7 +190,7 @@ public class SymbolBase implements Symbol, Serializable {
 	if (Logger.global.isLoggable(Level.FINEST))
 	    return getSignifier() + '/' + type;
     	// short representation for symbols of arity 0
-    	return type.codomain().equals(Types.VOID)
+    	return type.codomain().equals(Types.NOTYPE)
 	    ? getSignifier()
 	    : (getSignifier() + '/' + Types.arityOf(type.codomain()));
     }
