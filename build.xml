@@ -20,7 +20,7 @@
     <!-- <property name="build.sysclasspath" value="ignore"/> -->
 
     <target name="init">
-        <property name="version" value="1.0.8.4"/>
+        <property name="version" value="1.0.9"/>
         <property name="version_brief" value="1.1"/>
 
         <tstamp>
@@ -146,10 +146,15 @@
 
     <target name="run.tests" depends="init, compile.tests"
             description="run test/*Test*.java">
+	<echo>
+          With assertions turned on, this test suite runs about 7 hours.
+	  With assertions turned off, this test suite runs about 10 min
+           (but only without orbital.moon.logic.ModalLogicTest).
+	</echo>
         <mkdir dir="${reports.tests}"/>
         <junit printsummary="yes" haltonfailure="yes" fork="yes" showoutput="true">
           <classpath refid="tests.classpath"/>
-	  <jvmarg value="-ea"/>
+	  <jvmarg value="-da"/>
         
           <formatter type="plain" />
           <formatter type="xml" />
