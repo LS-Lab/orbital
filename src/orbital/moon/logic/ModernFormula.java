@@ -54,7 +54,8 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     /**
      * The symbols of the logical junctors.
      */
-    private static final Symbol NOT, AND, OR, XOR, IMPL, EQUIV, FORALL, EXISTS;
+    private static final Symbol NOT, AND, OR, XOR, IMPL, EQUIV;
+    private static /*assert final*/ Symbol FORALL, EXISTS;
     static {
 	//@note assuming the symbols and notation of ClassicalLogic, here
 	final Logic logic = new ClassicalLogic();
@@ -78,9 +79,14 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	assert IMPL != null : "operators in core signature";
 	EQUIV = core.get("<->", arguments);
 	assert EQUIV != null : "operators in core signature";
+    }
 
+    static void clinit2() {
+	//@note assuming the symbols and notation of ClassicalLogic, here
+	final Logic logic = new ClassicalLogic();
+	final Signature core = logic.coreSignature();
 	final Formula f = (Formula) logic.createAtomic(new SymbolBase("f", Types.getDefault().map(Types.INDIVIDUAL,Types.TRUTH)));
-	arguments = new Formula[] {f};
+	Formula[] arguments = new Formula[] {f};
 	FORALL = core.get("°", arguments);
 	assert FORALL != null : "operators in core signature";
 	EXISTS = core.get("?", arguments);
