@@ -33,7 +33,7 @@
 
     <target name="init">
         <property name="version" value="1.0.8"/>
-        <property name="version_brief" value="1.0"/>
+        <property name="version_brief" value="1.1"/>
 
         <tstamp>
             <format property="timestamp" pattern="dd MMM yyyy" locale="en,uk"/>
