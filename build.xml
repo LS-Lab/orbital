@@ -283,7 +283,7 @@
                  Private="${doc.internal}">
             <bottom><![CDATA[<span style='font-size: smaller; font-style: italic;'>Copyright &copy; 1996-2002 Andr&eacute; Platzer<br />All Rights Reserved.</span>]]></bottom>
  	    <packageset dir="${sources}" defaultexcludes="no"
- 	         excludes="orbital,orbital/robotic/strategy,orbital/util/graph,orbital/moon,orbital/moon/aspects,orbital/moon/deprecated,orbital/moon/math/**,orbital/moon/logic/bridge,orbital/moon/logic/imp,orbital/moon/awt/virtual">
+ 	         excludes="orbital,orbital/robotic/strategy,orbital/util/graph,orbital/moon,orbital/moon/aspects,orbital/moon/deprecated,orbital/moon/math/**,orbital/moon/logic/bridge,orbital/moon/logic/sign/type,orbital/moon/awt/virtual">
  	        <include name="orbital/**"/>
  	    </packageset>
 <!--
@@ -473,6 +473,84 @@
     	            <attribute name="Java-Bean" value="True"/>
     	        </section -->
             </manifest>
+
+            <fileset dir="${classes}">
+                <include name="orbital/algorithm/**/*.class"/>
+                <include name="orbital/awt/**/*.class"/>
+                <include name="orbital/game/**/*.class"/>
+                <include name="orbital/io/**/*.class"/>
+                <include name="orbital/robotic/*.class"/>
+                <include name="orbital/moon/**/*.class"/>
+                <include name="orbital/text/**/*.class"/>
+		<exclude name="**/*$Debug.class"/>
+            </fileset>
+            <fileset dir="${sources}">
+                <include name="orbital/awt/*.gif"/>
+            </fileset>
+            <fileset dir="${resources}">
+	        <exclude name="java/**"/>
+            </fileset>
+            <zipfileset dir="${doc}" prefix="orbital/resources">
+	        <include name="license.txt"/>
+            </zipfileset>
+            <fileset dir="${sources}/orbital">
+	        <include name="META-INF/services/*"/>
+            </fileset>
+        </jar>
+
+	<!-- all-in-one jar version: union of orbital-core.jar and orbital-ext.jar -->
+        <jar destfile="${dist}/lib/orbital${version.brief}.jar">
+	    <manifest>
+	        <attribute name="Built-By" value="${user.name}"/>
+	        <attribute name="Extension-Name" value="orbital"/>
+	        <attribute name="Specification-Title" value="Orbital library draft" />
+	        <attribute name="Specification-Vendor" value="Andre Platzer" />
+	        <attribute name="Specification-Version" value="${version}" />
+	        <attribute name="Implementation-Title" value="The Orbital library core" />
+	        <attribute name="Implementation-Vendor" value="Andre Platzer" />
+	        <attribute name="Implementation-Vendor-Id" value="orbital.moon.ap" />
+	        <attribute name="Implementation-Version" value="${version} ${TODAY}" /> 
+	        <attribute name="Package-Title" value="orbital" />
+	        <attribute name="Package-Vendor" value="Andre Platzer" />
+	        <attribute name="Package-Version" value="${version} ${TODAY}" /> 
+	        <attribute name="Sealed" value="true"/>
+
+    	        <!-- <attribute name="Main-Class" value="orbital.moon.setup"/> -->
+    	        <attribute name="Main-Icon" value="orbital/resources/orbital.gif"/>
+    	    
+    	        <section name="orbital/awt/ChartModel.class">
+    	            <attribute name="Java-Bean" value="True"/>
+    	        </section>
+    	        <section name="orbital/awt/NumberInput.class">
+    	            <attribute name="Java-Bean" value="True"/>
+    	        </section>
+    	        <section name="orbital/awt/Plot2D.class">
+    	            <attribute name="Java-Bean" value="True"/>
+    	        </section>
+    	        <section name="orbital/awt/virtual/v_Canvas.class">
+    	            <attribute name="Java-Bean" value="True"/>
+    	        </section>
+    	        <section name="orbital/awt/virtual/v_View.class">
+    	            <attribute name="Java-Bean" value="True"/>
+    	        </section>
+    	        <section name="orbital/algorithm/evolutionary/GeneticAlgorithm.class">
+    	            <attribute name="Java-Bean" value="True"/>
+    	        </section>
+    	        <section name="orbital/algorithm/evolutionary/Population.class">
+    	            <attribute name="Java-Bean" value="True"/>
+    	        </section>
+    	        <!-- section name="orbital/algorithm/evolutionary/Chromosome.class">
+    	            <attribute name="Java-Bean" value="True"/>
+    	        </section -->
+	    </manifest>
+
+            <fileset dir="${classes}">
+                <include name="orbital/logic/**/*.class"/>
+                <include name="orbital/math/**/*.class"/>
+                <include name="orbital/util/**/*.class"/>
+                <include name="orbital/*.class"/>
+		<exclude name="**/*$Debug.class"/>
+            </fileset>
 
             <fileset dir="${classes}">
                 <include name="orbital/algorithm/**/*.class"/>
