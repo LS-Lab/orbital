@@ -37,6 +37,7 @@ import java.util.List;
  * In a selection query, a Collection is filtered to obtain the desired subset of data
  * which matches the criteria, with the order being induced by a Comparator.</p>
  *
+ * @stereotype &laquo;Utilities&raquo;
  * @version 1.0, 2000/08/15
  * @author  Andr&eacute; Platzer
  * @see orbital.util.Utility

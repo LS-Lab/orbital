@@ -421,6 +421,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 
     /**
      * Formula transformation utilities.
+     * @stereotype &laquo;Utilities&raquo;
      * @version 1.0, 1999/01/16
      * @author  Andr&eacute; Platzer
      * @see orbital.util.Utility

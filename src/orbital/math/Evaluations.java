@@ -24,6 +24,7 @@ import java.util.Iterator;
  * @deprecated since Orbital1.1 This class is deprecated since its methods are mere facades for convenience.
  * Directly use the functions in {@link orbital.math.functional.Operations}
  * and {@link orbital.logic.functor.Functionals}, instead.
+ * @stereotype &laquo;Utilities&raquo;
  * @version 0.8, 2000/07/24
  * @author  Andr&eacute; Platzer
  * @see orbital.math.MathUtilities

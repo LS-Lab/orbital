@@ -17,11 +17,12 @@ import orbital.math.functional.Functions;
 import orbital.logic.functor.Predicates;
 
 /**
- * LUDecomposition class, decomposing to P&middot;A = L&middot;U.
+ * LUDecomposition class, decomposing into P&middot;A = L&middot;U.
  *
  * @version 0.9, 2000/09/09
  * @author  Andr&eacute; Platzer
  * @stereotype &laquo;Structure&raquo;
+ * @stereotype &laquo;Wrapper&raquo;
  * @invariant !isRegular() || getP().multiply(M).equals(getL().multiply(getU()))
  * @see #decompose(Matrix)
  * @see NumericalAlgorithms

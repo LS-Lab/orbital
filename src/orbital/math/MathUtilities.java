@@ -37,6 +37,7 @@ import java.util.logging.Level;
  * </ul>
  * </p>
  * 
+ * @stereotype &laquo;Utilities&raquo;
  * @version 0.9, 1999/03/15
  * @author  Andr&eacute; Platzer
  * @see java.lang.Math
