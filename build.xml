@@ -172,7 +172,7 @@
             description="fix DOS linefeeds (CRLF)">
         <fixcrlf srcdir="${sources}"
                  eol="lf" eof="remove"
-                 includes="**/*.java"/>
+                 includes="**/*.java, **/*.jj"/>
     </target>
 
     <target name="doc" depends="init"
@@ -213,15 +213,15 @@
 	    <tag name="xxx" scope="all" description="Todo:" enabled="false"/>
 	    <tag name="fixme" scope="all" description="Fixme:" enabled="false"/>
 	    <group title="Core Packages" packages="orbital.logic*:orbital.math:orbital.math*:orbital.util"/>
-	    <group title="Extension Packages" packages="orbital.algorithm*:orbital.awt*:orbital.game:orbital.io:orbital.robotic"/>
-	    <group title="Implementation Packages" packages="orbital.io.encoding:orbital.io.parsing:orbital.text:orbital.net:orbital.net.mail:orbital.moon*"/>
+	    <group title="Extension Packages" packages="orbital.algorithm*:orbital.awt:orbital.game:orbital.robotic"/>
+	    <group title="Implementation Packages" packages="orbital.awt.virtual:orbital.io:orbital.io.encoding:orbital.io.parsing:orbital.text:orbital.net:orbital.net.mail:orbital.moon*"/>
 	    <link href="${javadoc.link.jdk}" offline="${javadoc.link.jdk.offline}" packagelistLoc="${javadoc.link.jdk.loc}"/>
         </javadoc>
 
 	<antcall target="jjdoc"/>
 
-	<copy todir="${doc}/api/DesignPatterns">
-	    <fileset dir="${doc}/DesignPatterns"/>
+	<copy todir="${doc}/api/Patterns">
+	    <fileset dir="${doc}/Patterns"/>
 	</copy>
 
 	<copy todir="${doc}/api">
@@ -377,7 +377,7 @@
             <fileset dir="${sources}">
                 <include name="orbital/awt/*.gif"/>
             </fileset>
-            <zipfileset dir="${resources}" prefix="orbital/resources">
+            <zipfileset dir="${resources}">
             </zipfileset>
             <zipfileset dir="${doc}" prefix="orbital/resources">
 	        <include name="license.txt"/>
