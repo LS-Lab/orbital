@@ -176,7 +176,7 @@ abstract class ModernLogic implements Logic {
 	try {
 	    LogicParser parser = new LogicParser(new StringReader(expressions));
 	    Expression B[] = parser.parseFormulas(this);
-	    assert !Utility.containsIdenticalTo(B, null), "empty string \"\" is not a formula, but only an empty set of formulas.";
+	    assert !Utility.containsIdenticalTo(B, null) : "empty string \"\" is not a formula, but only an empty set of formulas.";
 	    return B;
 	} catch (ParseException ex) {
 	    throw (java.text.ParseException) new java.text.ParseException(ex.currentToken.next.beginLine + ":" + ex.currentToken.next.beginColumn + ": " + ex.getMessage() + "\nexpressions: " + expressions, COMPLEX_ERROR_OFFSET).initCause(ex);

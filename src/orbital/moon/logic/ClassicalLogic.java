@@ -132,7 +132,7 @@ import java.util.logging.Level;
  * @see "Church, Alonzo (1936). A note on the Entscheidungsproblem. Journal of Symbolic Logic, 1:40-41 and 101-102."
  * @see "Turing, Alan M. (1936). On computable numbers, with an application to the Entscheidungsproblem. Proceedings of the London Mathematical Society, 2nd series, 42:230-265. Correction published in Vol. 43, pages 544-546."
  * @todo refactorize common ideas into a super class
- * @todo introduce &#407;ukasiewicz(?) logic
+ * @todo introduce &#407;ukasiewicz logic
  * @todo Especially provide forall as a functional (higher-order function) of lambda-operator then (@see note to orbital.logic.functor.Substitition)
  */
 public class ClassicalLogic extends ModernLogic implements Logic {

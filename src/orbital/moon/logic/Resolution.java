@@ -75,7 +75,7 @@ import java.util.logging.Level;
  * @todo use optimizations of "Deduktions- und Inferenzsysteme"
  * @xxx there seems to be a bug in the normalization of the query in "r reflexive and euclidean => r equivalence"
  */
-public class Resolution implements Inference {
+class Resolution implements Inference {
     private static final boolean UNDER_CONSTRUCTION = true;
     private static final boolean ASYNCHRONOUS_EXPAND = true;
     private static final Logger logger = Logger.getLogger(Resolution.class.getPackage().getName());
