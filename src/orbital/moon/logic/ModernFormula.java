@@ -251,10 +251,10 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 		return interpretationOf(I.get(symbol));
 	    }
 	    catch (NullPointerException ex) {
-		throw (IllegalStateException) new IllegalStateException("truth-value of '" + symbol + "' has an invalid interpretation. " + ex + " in " + I).initCause(ex);
+		throw (IllegalStateException) new IllegalStateException("truth-value of '" + symbol + "' has an invalid interpretation, due to " + ex + " in " + I).initCause(ex);
 	    }
 	    catch (IllegalArgumentException ex) {
-		throw (IllegalStateException) new IllegalStateException("truth-value of '" + symbol + "' has an invalid interpretation. " + ex + " in " + I).initCause(ex);
+		throw (IllegalStateException) new IllegalStateException("truth-value of '" + symbol + "' has an invalid interpretation, due to " + ex + " in " + I).initCause(ex);
 	    }
 	}
 		
@@ -265,7 +265,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
          */ 
     	protected final Object interpretationOf(Object desc) {
 	    if (desc == null)
-		throw new NullPointerException("null is not a valid association for boolean interpretation");
+		throw new NullPointerException(desc + " is not a valid association for boolean interpretation");
 	    else if (desc instanceof Boolean)
 		return desc;
 	    else if (desc instanceof Number)
@@ -274,9 +274,9 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 		if (symbol.getSpecification().isConform((Functor) desc))
 		    return desc;
 		else
-		    throw new IllegalArgumentException("incompatible interpretation " + desc);
+		    throw new IllegalArgumentException("incompatible interpretation type " + desc + " for " + symbol.getSpecification());
 	    } else
-		throw new IllegalArgumentException("truth-value of '" + desc + "' has no valid interpretation.");
+		throw new IllegalArgumentException("not a truth-value '" + desc + "' of " + desc.getClass());
     	}
 
 	public String toString() { return symbol + ""; }
