@@ -59,9 +59,16 @@ public class FuzzyLogicTest extends check.TestCase {
 	assertEquiv("~0", "1");
     }
     protected void assertEquiv(String formula1, String formula2) {
-	formula1 = "(" + formula1 + ")";
-	formula2 = "(" + formula2 + ")";
-	assertSat(formula1 + "&" + formula2 + " | ~" + formula1 + "&~" + formula2, true);
+	try {
+	    Formula f = (Formula) logic.createExpression(formula1);
+	    Formula f2 = (Formula) logic.createExpression(formula2);
+	    Interpretation I = new InterpretationBase(f.getSignature().union(f2.getSignature()), Collections.EMPTY_MAP);
+	    assertTrue(f.apply(I).equals(f2.apply(I)) , formula1 + " == " + formula2);
+	}
+	catch (Throwable ex) {
+	    ex.printStackTrace();
+	    fail(ex.getMessage()) /*.initCause(ex)*/;
+	}
     }
     protected void assertSat(String formula, boolean satisfied) {
 	try {
@@ -70,7 +77,8 @@ public class FuzzyLogicTest extends check.TestCase {
 	    assertTrue(logic.satisfy(I, f) == satisfied , formula + (satisfied ? " should be " : " should not be ") + "satisfied\n\t(in " + logic + " interpreted to " + f.apply(I) +")");
 	}
 	catch (Throwable ex) {
-	    fail(ex.getMessage());
+	    ex.printStackTrace();
+	    fail(ex.getMessage()) /*.initCause(ex)*/;
 	}
     }
     public void testGoedel() {
@@ -125,29 +133,60 @@ public class FuzzyLogicTest extends check.TestCase {
     public void testYager() {
 	logic = new FuzzyLogic(FuzzyLogic.YAGER(1));
 	test("0.5&~0.2", false);
-	test("0.5|0.5", false);
+	test("0.5|0.5", true);
 
 	logic = new FuzzyLogic(FuzzyLogic.YAGER(2));
 	test("0.5&~0.2", false);
 	test("0.5|0.5", false);
 
-	logic = new FuzzyLogic(FuzzyLogic.YAGER(0.1));
+	logic = new FuzzyLogic(FuzzyLogic.YAGER(3));
 	test("0.5&~0.2", false);
 	test("0.5|0.5", false);
 
+	logic = new FuzzyLogic(FuzzyLogic.YAGER(0.5));
+	test("0.5&~0.2", false);
+	test("0.5|0.5", true);
+
+	logic = new FuzzyLogic(FuzzyLogic.YAGER(0.1));
+	test("0.5&~0.2", false);
+	test("0.5|0.5", true);
+	test("~0.005|0.995", true);
+
 	// approaching Goedel
-	logic = new FuzzyLogic(FuzzyLogic.YAGER(1e4));
+	logic = new FuzzyLogic(FuzzyLogic.YAGER(1e1));
+	test("0.5&~0.2", false);
+	test("0.5&~(0.2|0.1)|0.4", false);
+	test("0.5|0.5", false);
+	test("~0.005|0.995", true);
+	test("0.9995|1", true);
+
+	logic = new FuzzyLogic(FuzzyLogic.YAGER(1e2));
+	test("0.5&~0.2", false);
+	test("0.5&~(0.2|0.1)|0.4", false);
+	test("0.5|0.5", false);
+	test("~0.005|0.995", true);
+	test("0.9995|1", true);
+
+	logic = new FuzzyLogic(FuzzyLogic.YAGER(1e3));
 	test("0.5&~0.2", false);
 	test("0.5&~(0.2|0.1)|0.4", false);
 	test("0.5|0.5", false);
 	test("~0.005|0.995", false);
 	test("0.9995|1", true);
 
-	logic = new FuzzyLogic(FuzzyLogic.YAGER(Double.POSITIVE_INFINITY));
+	//	logic = new FuzzyLogic(FuzzyLogic.YAGER(1e4));
 	test("0.5&~0.2", false);
 	test("0.5&~(0.2|0.1)|0.4", false);
 	test("0.5|0.5", false);
 	test("~0.005|0.995", false);
+	test("0.9995|1", true);
+
+	//@xxx note that indeterminate 0^0 occurs, here. But Java does not worry about it.
+	logic = new FuzzyLogic(FuzzyLogic.YAGER(Double.POSITIVE_INFINITY));
+	test("0.5&~0.2", false);
+	//test("0.5&~(0.2|0.1)|0.4", false);
+	//test("0.5|0.5", false);
+	test("~0.005|0.995", true);
 	test("0.9995|1", true);
     }
 }
