@@ -643,7 +643,7 @@ public class Substitutions {
 		}
 	    }
 	}
-	catch (NullPointerException ex) {
+	/*catch (NullPointerException ex) {
 	    //@internal possibly quicker variant to explicit prechecks for null: simply let this exceptional case occur, and then handle it.
 	    if (t1 == null || t2 == null) {
 		throw new NullPointerException("cannot unify (" + t1 + "," + t2 +") because null does not unify anything.");
@@ -651,7 +651,14 @@ public class Substitutions {
 		// another cause for the NullPointerException than null arguments
 		throw ex;
 	    }
+	    }*/
+	finally {
+	    //@internal possibly quicker variant to explicit prechecks for null: simply let this exceptional case occur, and then handle it.
+	    if (t1 == null || t2 == null) {
+		throw new NullPointerException("cannot unify (" + t1 + "," + t2 +") because null does not unify anything.");
+	    }
 	}
+	    
     }
 	
     /**
