@@ -658,11 +658,7 @@ public class ClassicalLogic extends ModernLogic {
 	    return parser.parseType();
 	} catch (orbital.moon.logic.ParseException ex) {
 	    throw (InternalError) new InternalError("Unexpected syntax in internal term construction")
-		.initCause(new ParseException(ex.getMessage() + "\nIn expression: " + expression,
-					      ex.currentToken == null ? COMPLEX_ERROR_OFFSET : ex.currentToken.next.beginLine,
-					      ex.currentToken == null ? COMPLEX_ERROR_OFFSET : ex.currentToken.next.beginColumn,
-					      ex)
-			   );
+		.initCause(new ParseException(ex.getMessage() + "\nIn expression: " + expression, ex.currentToken == null ? COMPLEX_ERROR_OFFSET : ex.currentToken.next.beginLine, ex.currentToken == null ? COMPLEX_ERROR_OFFSET : ex.currentToken.next.beginColumn, ex) );
 	}
     }
     
