@@ -56,9 +56,6 @@ public interface VoidFunction/*<B>*/ extends Functor {
      * A VoidFunction could be composed of
      * a Function and a VoidFunction concatenated with each other.
      * </p>
-     * <p>
-     * This class is the infimum (greatest common subtype) {@link Functor.Composite}&cap;{@link VoidFunction}.
-     * </p>
      * 
      * @structure is {@link Functor.Composite}&cap;{@link VoidFunction}
      * @structure extends VoidFunction<B>

@@ -56,9 +56,6 @@ public interface Predicate/*<A>*/ extends Functor /*abstract template extends Fu
      * A Predicate could be composed of
      * an outer Predicate and an inner Function.
      * </p>
-     * <p>
-     * This class is the infimum (greatest common subtype) {@link Functor.Composite}&cap;{@link Predicate}.
-     * </p>
      * 
      * @structure is {@link Functor.Composite}&cap;{@link Predicate}
      * @structure extends Predicate<A>

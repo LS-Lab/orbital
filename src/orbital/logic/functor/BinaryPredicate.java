@@ -56,9 +56,6 @@ public interface BinaryPredicate/*<A1, A2>*/ extends Functor /*abstract template
      * an outer BinaryPredicate and two inner BinaryFunctions concatenated with the outer binary one.
      * In other words, results <code>P<big>(</big>g(x,y),h(x,y)<big>)</big></code>.
      * </p>
-     * <p>
-     * This class is the infimum (greatest common subtype) {@link Functor.Composite}&cap;{@link BinaryPredicate}.
-     * </p>
      * 
      * @structure is {@link Functor.Composite}&cap;{@link BinaryPredicate}
      * @structure extends BinaryPredicate<A1,A2>

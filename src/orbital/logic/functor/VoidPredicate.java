@@ -52,9 +52,6 @@ public interface VoidPredicate extends Functor /*abstract template extends VoidF
      * A VoidPredicate could be composed of
      * an outer Predicate and an inner VoidFunction.
      * </p>
-     * <p>
-     * This class is the infimum (greatest common subtype) {@link Functor.Composite}&cap;{@link VoidPredicate}.
-     * </p>
      * 
      * @structure is {@link Functor.Composite}&cap;{@link VoidPredicate}
      * @structure extends VoidPredicate

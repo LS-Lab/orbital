@@ -56,9 +56,6 @@ public /*template*/ interface BinaryFunction/*<A1, A2, B>*/ extends Functor {
      * Binary functions could be composed of an outer BinaryFunction and two inner BinaryFunctions concatenated with the outer binary one.
      * In other words, results are f<big>(</big>g(x,y),h(x,y)<big>)</big>.
      * </p>
-     * <p>
-     * This class is the infimum (greatest common subtype) {@link Functor.Composite}&cap;{@link BinaryFunction}.
-     * </p>
      * 
      * @structure is {@link Functor.Composite}&cap;{@link BinaryFunction}
      * @structure extends BinaryFunction<A1,A2,B>

@@ -55,9 +55,6 @@ public /*template*/ interface Function/*<A, B>*/ extends Functor {
      * <p>
      * Functions could be composed of an outer Function and an inner Function concatenated with each other.
      * </p>
-     * <p>
-     * This class is the infimum (greatest common subtype) {@link Functor.Composite}&cap;{@link Function}.
-     * </p>
      * 
      * @structure is {@link Functor.Composite}&cap;{@link Function}
      * @structure extends Function<A,B>
