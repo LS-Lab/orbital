@@ -75,6 +75,7 @@ import java.util.logging.Level;
  *  Oder wähle alternativen (einfacheren?) TRS-Algorithmus Ü 7.95
  * @todo use do/undo instead of copying the whole set of derived formulas every time.
  * @todo use optimizations of "Deduktions- und Inferenzsysteme"
+ * @internal proving A->B and B->A separately often is far more performant than proving A<->B.
  */
 class Resolution implements Inference {
     private static final boolean UNDER_CONSTRUCTION = false;
@@ -85,7 +86,7 @@ class Resolution implements Inference {
     /**
      * Whether or not to use simplified clausal forms.
      */
-    private static final boolean simplifying = false;
+    private static final boolean SIMPLIFYING = false;
 
     /**
      * contradictory clause &empty; &equiv; &#9633; &equiv; &perp;.
@@ -96,8 +97,8 @@ class Resolution implements Inference {
      */
     public static final Set/*_<Formula>_*/ CONTRADICTION = Collections.EMPTY_SET;
 
-    private static final Formula FORMULA_FALSE = (Formula) logic.createAtomic(new SymbolBase("false", SymbolBase.BOOLEAN_ATOM));
-    private static final Formula FORMULA_TRUE = (Formula) logic.createAtomic(new SymbolBase("true", SymbolBase.BOOLEAN_ATOM));
+    private static final Formula FORMULA_FALSE = (Formula) logic.createAtomic(new SymbolBase("false", Types.TRUTH));
+    private static final Formula FORMULA_TRUE = (Formula) logic.createAtomic(new SymbolBase("true", Types.TRUTH));
 	
     /**
      * the search algorithm used.
@@ -125,13 +126,17 @@ class Resolution implements Inference {
 
         // skolemize B and drop quantifiers
         List/*_<Formula>_*/ skolemizedB = new ArrayList(B.length);
-        for (int i = 0; i < B.length; i++)
+        for (int i = 0; i < B.length; i++) {
 	    skolemizedB.add(Utilities.dropQuantifiers(Utilities.skolemForm(B[i])));
+	    if (logger.isLoggable(Level.FINEST))
+		logger.log(Level.FINEST, "in W skolemForm( {0} ) = {1}", new Object[] {B[i], Utilities.skolemForm(B[i])});
+	}
 
         // convert B to clausalForm knowledgebase
         Set/*_<Set<Formula>>_*/ knowledgebase = new HashSet();
-        for (Iterator i = skolemizedB.iterator(); i.hasNext(); )
+        for (Iterator i = skolemizedB.iterator(); i.hasNext(); ) {
 	    knowledgebase.addAll(clausalForm((Formula) i.next()));
+	}
 
 	// factorize and remove tautologies
     	// for all clauses F&isin;knowledgebase
@@ -150,7 +155,7 @@ class Resolution implements Inference {
         logger.log(Level.FINE, "W = {0}", knowledgebase);
         if (logger.isLoggable(Level.FINER))
 	    for (int i = 0; i < B.length; i++)
-		logger.log(Level.FINER, "W contains original {0}", Utilities.conjunctiveForm(B[i], simplifying));
+		logger.log(Level.FINER, "W thus contains transformation of original formula {0}", Utilities.conjunctiveForm(B[i], SIMPLIFYING));
 
         // negate query since we are a negative test calculus
         Formula query = D.not();
@@ -162,9 +167,8 @@ class Resolution implements Inference {
 	Set S = clausalForm(skolemizedQuery);
 
         if (logger.isLoggable(Level.FINEST))
-	    logger.log(Level.FINEST, "negated goal S = {0} = {1} (= {2} original)", new Object[] {skolemizedQuery, S, Utilities.conjunctiveForm(query, simplifying)});
-	else
-	    logger.log(Level.FINER, "negated goal S = {0} = {1}", new Object[] {skolemizedQuery, S});
+	    logger.log(Level.FINEST, "negated goal S = {0} = {1} (= {2} original)", new Object[] {skolemizedQuery, S, Utilities.conjunctiveForm(query, SIMPLIFYING)});
+	logger.log(Level.FINER, "negated goal S = {0} = {1}", new Object[] {skolemizedQuery, S});
 
 	// factorize and remove tautologies
     	// for all clauses F&isin;S
@@ -396,10 +400,10 @@ class Resolution implements Inference {
      */
     public static final Set/*_<Set<Formula>>_*/ clausalForm(Formula f) {
 	try {
-	    return clausalFormClauses(Utilities.conjunctiveForm(f, simplifying));
+	    return clausalFormClauses(Utilities.conjunctiveForm(f, SIMPLIFYING));
 	}
 	catch (IllegalArgumentException ex) {
-	    throw (AssertionError) new AssertionError(ex.getMessage() + " in " + Utilities.conjunctiveForm(f, simplifying) + " of " + f).initCause(ex);
+	    throw (AssertionError) new AssertionError(ex.getMessage() + " in " + Utilities.conjunctiveForm(f, SIMPLIFYING) + " of " + f).initCause(ex);
 	}
     }
     /**
@@ -496,7 +500,9 @@ class Resolution implements Inference {
     private static final Set/*_<Formula>_*/ variantOf(Set/*_<Formula>_*/ F, Signature disjunctify) {
 	List/*_<Symbol>_*/ renaming = new ArrayList(disjunctify.size());
 	for (Iterator i = disjunctify.iterator(); i.hasNext(); ) {
-	    renaming.add(Substitutions.createExactMatcher(i.next(), new UniqueSymbol(SymbolBase.UNIVERSAL_ATOM, null, true)));
+	    Symbol s = (Symbol) i.next();
+	    assert s.isVariable() : "we only form variants by renaming variables";
+	    renaming.add(Substitutions.createExactMatcher(s, new UniqueSymbol(s.getType(), null, s.isVariable())));
 	}
 	return (Set) Functionals.map(Substitutions.getInstance(renaming), F);
     }
