@@ -24,6 +24,9 @@ import java.util.Arrays;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
 /**
  * Term substitution implementation.
  *
@@ -33,6 +36,7 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class SubstitutionImpl implements Substitution, Serializable {
     private static final long serialVersionUID = 5782834146110405976L;
+    private static final Logger logger = Logger.getLogger(SubstitutionImpl.class.getName());
     /**
      * The set of elementary replacements.
      * @serial
@@ -91,21 +95,23 @@ public class SubstitutionImpl implements Substitution, Serializable {
 				       substComponent);
                 }
                 catch (Throwable illegal) {
-		    orbital.logic.Composite g;
+		    orbital.logic.Composite fp;
 		    // try instantiate in another way
                     try {
                         Constructor nullary = f.getClass().getDeclaredConstructor(null);
     	                //@xxx is there a better solution which does not require accessible tricks? Especially, this trick won't do if we want to use a TRS on maths and functions inside a Browser. See MathPlotter.html stuff
                         if (!nullary.isAccessible())
 			    nullary.setAccessible(true);
-                        g = (orbital.logic.Composite) nullary.newInstance(null);
+                        fp = (orbital.logic.Composite) nullary.newInstance(null);
                     }
                     catch (InvocationTargetException ex) {throw (IllegalArgumentException) new IllegalArgumentException("the argument type nullary constructor threw").initCause(ex.getTargetException());}
                     catch (SecurityException denied) {throw new orbital.util.InnerCheckedException("the argument type nullary constructor is not accessible", denied);}
                     catch (NoSuchMethodException ex) {throw (RuntimeException) illegal;}
-		    g.setCompositor(substCompositor);
-		    g.setComponent(substComponent);
-		    return g;
+		    fp.setCompositor(substCompositor);
+		    fp.setComponent(substComponent);
+		    assert f != null : "we could not have handled null that way";
+		    logger.log(Level.WARNING, "composite object {0} of class {1} does not support construct(Object,Object) but only newInstance and set..., due to {2}", new Object[] {f, f.getClass(), illegal});
+		    return fp;
 		}
             }
 	//@todo finally type-safe assert g.getClass() == f.getClass() : "g is a new object of the exact same type as f";
