@@ -131,7 +131,7 @@ public class SymbolBase implements Symbol, Serializable {
 	    if (Utility.equals(getSignifier(), b.getSignifier())
 		&& Utility.equals(getType(), b.getType())
 		&& Utility.equals(getNotation(), b.getNotation())) {
-		assert isVariable() == b.isVariable() : "same symbols (" + this + " (" + (isVariable() ? "variable" : "constant") + ") and " + b  + " (" + (isVariable() ? "variable" : "constant") + ") ) are consistently either both variable or both constant.";
+		assert isVariable() == b.isVariable() : "same symbols " + this + " (" + (isVariable() ? "[var]" : "[const]") + ") and " + b  + " (" + (b.isVariable() ? "[var]" : "[const]") + ") are consistently either both variable or both constant.";
 		return true;
 	    } else
 		return false;
