@@ -306,13 +306,14 @@ public class RobotNavigation implements MarkovDecisionProblem {
      */
     private Function getHeuristic() {
 	return new Function() {
+		final ValueFactory vf = Values.getDefault();
 		public Object apply(Object state) {
 		    Moving s = (Moving) state;
 		    double cost = manhattan(s, goalPosition);//s.subtract(goalPosition).length();
 		    // whether we are on the wrong x/y coordinate.
 		    cost += 2*turnDistance(s, goalPosition);
 		    //System.out.println("\t\th("+s+")\t= " + cost);
-		    return new Double(cost);
+		    return vf.valueOf(cost);
         	}
 	    };
     }
