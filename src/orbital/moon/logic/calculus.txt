@@ -1,0 +1,8 @@
+@todo write down the inference rules of the following calculi
+
+Tableaux
+Sequent calculus of Gentzen.
+
+
+And two classical calculi of "Logik II"
+And some calculi for modal logic from "Philosophische Logik"
