@@ -30,7 +30,15 @@ import java.util.logging.Level;
  * @internal min-max trees with compact values in [0,1] are and-or trees with fuzzy logic operators.
  * @todo generalize? implement a general interface?
  * @todo could optimize calculation to spend some memory for reuse of the last move's search tree
- * @todo flexibilize computation such that not only move sequences Black,White,Black,White,... but also Black,Black,White,Black,White,White according to field.getTurn()
+ * @todo in addition to the worst-case minmax values computed for decision, we could additionally
+ *  compute estimates of the probable values. These can be estimated from the average minmax values
+ *  found in a node's succcessors so far. However, the distribution is not easy, since the "Stichprobe"
+ *  stems from a kind of bounded drawing which is quitted (pruned) once too good?? or too bad options occurred.
+ *  The advantage is that when _max knows several options which have equally bad minmax values, then
+ *  it could prefer the one with higher (estimated) probabile value. So in a sense, when our opponent
+ *  is not perfectly rational (according to our utility), then we can still hope for the better cases.
+ *  Actually, there's also a trade-off when to prefer probably better ones to worst-case better ones.
+ *  But all this must be optional behaviour (so implemented in a subclass).
  */
 public class AlphaBetaPruning extends AdversarySearch {
     private static final Logger logger = Logger.getLogger(AlphaBetaPruning.class.getName());

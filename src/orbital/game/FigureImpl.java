@@ -218,7 +218,17 @@ public class FigureImpl extends Figure {
 
     /**
      * @internal Checks validity of a path to move per {@link #movePath(Move)}.
-     * @todo we could improve performance if we already returned the field that would result from field.move(...) and thereby save one call to movePath.
+     * @todo we could improve performance if we already returned the
+     * field that would result from field.move(...) and thereby save
+     * one call to movePath.  The only difference, here, is the
+     * moving(move,destination) check. The only difference for Field
+     * is that we don't currently call Field.move resulting in a
+     * swap. Also we would have to use getField().clone() for such
+     * experiments.
+     *   Field nextField = getField().clone();
+     *   if (nextField.move(this, move))
+     *      v.add(new Option(nextField, this, move, __destination__));
+     * But Figure.move forgot about the destination.
      * @todo explicit constructive iterator?
      */
     public /*final*/ Iterator/*_<Move,Position>_*/ possibleMoves() {

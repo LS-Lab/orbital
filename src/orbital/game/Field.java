@@ -85,6 +85,7 @@ public class Field implements Serializable, Cloneable {
      * @postconditions RES.getClass() == getClass() && "RES.field.equals(this.field)" && RES.field != field
      * @throws	CloneNotSupportedException Object explicitly does not
      * want to be cloned, or does not support a nullary constructor.
+     * @todo measure whether Cloneable really helps save time or rather costs time. Also for figures.
      */
     public Object clone() throws CloneNotSupportedException {
 	Field	  f = (Field) super.clone();
@@ -297,6 +298,7 @@ public class Field implements Serializable, Cloneable {
      * Returns an iterator over all non-empty Figures. Use the Iterator methods on
      * the returned object to fetch the elements sequentially.
      * @todo make a true explicit iterator (perhaps even whose set method writes through to this field).
+     * @todo cache? Can try this out in a subclass.
      */
     public final Iterator/*_<Figure>_*/ iterateNonEmpty() {
 	Dimension dim = getDimension();
