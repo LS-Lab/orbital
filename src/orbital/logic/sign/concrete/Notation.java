@@ -39,6 +39,7 @@ import orbital.util.Utility;
  * @invariants a.equals(b) &hArr; a==b
  * @todo invariants 	&& sorted(compositorNotation)
  * @internal design name is now different: orbital.logic.sign.concrete.Notation
+ * @xxx move there
  */
 public abstract class Notation implements Serializable, Comparable {
     private static final long serialVersionUID = -3071672372655194662L;
@@ -116,7 +117,7 @@ public abstract class Notation implements Serializable, Comparable {
      * Maintains the guarantee that there is only a single object representing each enum constant.
      * @serialData canonicalized deserialization
      */
-    private Object readResolve() throws ObjectStreamException {
+    private Object readResolve() throws java.io.ObjectStreamException {
 	// canonicalize
 	return values[ordinal];
     } 
@@ -191,8 +192,8 @@ public abstract class Notation implements Serializable, Comparable {
 		StringBuffer sb = new StringBuffer();
 		if (compositor != null) {
 		    if (compositor instanceof Composite)
-			// descend into composite compositors with brackets
-			sb.append("(" + format("", compositor) + ")");
+			// descend into composite compositors. will receive brackets, automatically, since !hasCompactBrackets("")
+			sb.append(format("", compositor));
 		    else
 			sb.append(compositor + "");
 		}
@@ -224,20 +225,19 @@ public abstract class Notation implements Serializable, Comparable {
 	    public String format(Object compositor, Object arg_) {
 		if (arg_ == null)
 		    arg_ = getPureParameters(compositor);
-		Collection arg = Utility.asCollection(arg_);
+		final Collection arg = Utility.asCollection(arg_);
 		if (arg == null || arg.size() == 0)
 		    return compositor + "";
-		StringBuffer sb = new StringBuffer();
-		int			 precedence = precedenceOf(compositor);
+		final StringBuffer sb = new StringBuffer();
+		final int	   precedence = precedenceOf(compositor);
 
 		// special handling for unary infix formatting
 		if (arg.size() == 1) {
-		    System.err.println(">> " + compositor + " on " + arg_ + " is compact and " + (compositor instanceof Composite ? "composite" : "atomic"));
 		    if (compositor instanceof Composite)
 			// descend into composite compositors with brackets
-			sb.append("(" + format("", compositor) + ") o");
+			sb.append("(" + format("", compositor) + ") @");
 		    else
-			sb.append(compositor + " o ");
+			sb.append(compositor + " @ ");
 		}
 		for (Iterator i = arg.iterator(); i.hasNext(); ) {
 		    sb.append(i.next());
@@ -365,8 +365,8 @@ public abstract class Notation implements Serializable, Comparable {
 			sb.append(')');
 		} 
 		if (compositor instanceof Composite)
-		    // descend into composite compositors with brackets
-		    sb.append("(" + format("", compositor) + ")");
+		    // descend into composite compositors. will receive brackets, automatically, since !hasCompactBrackets("")
+		    sb.append(format("", compositor));
 		else
 		    sb.append(compositor + "");
 		return sb.toString();
