@@ -69,7 +69,6 @@ public class StandardTypeSystem implements TypeSystem {
     /**
      * @see Type#compareTo(Object)
      * @see StandardTypeSystem.TypeObject#compareToSemiImpl(Type)
-     * @todo rename and perhaps even move to Type.
      */
     private static final Comparator subtypeOrder = new Comparator() {
 	    public int compare(Object o1, Object o2) {
@@ -301,8 +300,13 @@ public class StandardTypeSystem implements TypeSystem {
 	    if (!(b instanceof TypeObject)) {
 		if (b == null)
 		    throw new NullPointerException("illegal type " + b + " to compare " + this + " of " + getClass() + " with");
-		else
-		    throw new InternalError("no rule for comparing\n type " + this + " of " + getClass() + " with " + b + " of " + b.getClass());
+		else {
+		    if (this instanceof TypeObject)
+			//@internal should always be satisfied, but to make it clear we do not end up in an infinite recursion.
+			return -((Type)b).compareTo(this);
+		    else
+			throw new InternalError("no rule for comparing\n type " + this + " of " + getClass() + "\n with " + b + " of " + b.getClass());
+		}
 	    }
 	    int cmp = subtypeOrder.compare(this, (Type)b);
 	    assert !((cmp == 0) ^ this.equals(b)) : "antisymmetry resp. consistent with equals: " + this + ", " + b + "\n" + this + toString(cmp) + b + "\n" + this + (this.equals(b) ? "=" : "!=") + b;
@@ -1178,9 +1182,13 @@ public class StandardTypeSystem implements TypeSystem {
 		int order = Types.arityOf(a) - Types.arityOf(b);
 		if (order != 0)
 		    return order;
-		if (a == typeSystem.UNIVERSAL() || b == typeSystem.UNIVERSAL())
-		    return a == typeSystem.UNIVERSAL() && b == typeSystem.UNIVERSAL() ? 0 : a == typeSystem.UNIVERSAL() ? 1 : -1;
-		if ((a instanceof FundamentalType) || (b instanceof FundamentalType))
+		else if (a == typeSystem.UNIVERSAL() || b == typeSystem.UNIVERSAL())
+		    // UNIVERSAL type is also lexicographically the largest
+		    return a == typeSystem.UNIVERSAL() && b == typeSystem.UNIVERSAL() ? 0 : a == typeSystem.UNIVERSAL() ? +1 : -1;
+		else if (a == typeSystem.ABSURD() || b == typeSystem.ABSURD())
+		    // ABSURD type is also lexicographically the smallest
+		    return a == typeSystem.ABSURD() && b == typeSystem.ABSURD() ? 0 : a == typeSystem.ABSURD() ? -1 : +1;
+		else if ((a instanceof FundamentalType) || (b instanceof FundamentalType))
 		    return !(a instanceof FundamentalType)
 			// fundamental types are smaller than others
 			? 1
@@ -1229,8 +1237,11 @@ public class StandardTypeSystem implements TypeSystem {
 		    return compare(((CollectionType)a).comparisonInternalRepresentation(),
 				   ((CollectionType)b).comparisonInternalRepresentation());
 		}
-		    
-		throw new IllegalArgumentException("unknown types to compare lexicographically, " + a.getClass() + " and " + b.getClass());
+
+		if (a.equals(b))
+		    return 0;
+		
+		throw new IllegalArgumentException("unknown types to compare lexicographically:\n type " + a + " of " + a.getClass() + "\n and  " + b + " of " + b.getClass());
 	    }
 	};
 }// StandardTypeSystem
