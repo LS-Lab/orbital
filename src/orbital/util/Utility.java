@@ -146,7 +146,18 @@ public final class Utility {
      * @see #equals(Object, Object)
      */
     public static final int hashCode(Object a) {
-	return a == null ? 0 : a.hashCode();
+	try {
+	    return a.hashCode();
+	}
+	catch (NullPointerException ex) {
+	    //@internal possibly quicker variant to explicit prechecks for null: simply let this exceptional case occur, and then handle it.
+	    if (a == null) {
+		return 0;
+	    } else {
+		// another cause for the NullPointerException than null arguments
+		throw ex;
+	    }
+	}
     }
 
     /**
@@ -161,25 +172,39 @@ public final class Utility {
      * @todo document
      */
     public static final int compare(Object a, Object b) {
-	return a == null ? (b == null ? 0 : -1) : (b == null ? 1 : ((Comparable) a).compareTo(b));
+	try {
+	    return ((Comparable)a).compareTo(b);
+	}
+	catch (NullPointerException ex) {
+	    //@internal possibly quicker variant to explicit prechecks for null: simply let this exceptional case occur, and then handle it.
+	    if (a == null) {
+		return b == null ? 0 : -1;
+	    } else if (b == null) {
+		return 1;
+	    } else {
+		// another cause for the NullPointerException than null arguments
+		throw ex;
+	    }
+	}
     }
 
     /**
-     * Get the hashCode of an object (considering its all array components, as well).
+     * Get the hashCode of an object (considering all its array components, as well).
      * Contrary to {@link #hashCodeSet(Object)}, the order of elements plays a role.
      * @param o the object whose hashCode to calculate.
      * @return the hashCode of o, or all its elements if o is a (multi-dimensional) array.
      * @see #equalsAll(Object, Object)
      * @see java.util.Arrays#equals(Object[], Object[])
      * @see orbital.logic.functor.Functionals#foldRight(orbital.logic.functor.BinaryFunction, Object, Object[])
-     * @note this implementation does not necessarily to fit the hashCode defined by {@link java.util.List}, nor,  of course, {@link java.util.Set}.
+     * @note this implementation does not necessarily fit to the hashCode defined by {@link java.util.List}, nor,  of course, {@link java.util.Set}.
      */
     public static final int hashCodeAll(Object o) {
 	//@todo functional?
 	if (o instanceof Object[]) {
 	    final Object a[] = (Object[]) o;
-	    int          hash = 0;
-	    for (int i = 0; i < a.length; i++) {
+	    final int len = a.length;
+	    int       hash = 0;
+	    for (int i = 0; i < len; i++) {
 		// recursively hashCodeAll to ensure element-wise hashCodes of (multi-dimensional) arrays, as well?
 		final int h = hashCodeAll(a[i]);
 		//@internal hash ^= h rotl i
@@ -202,19 +227,35 @@ public final class Utility {
     }
 
     /**
+     * Get the hashCode of a one-dimensional array.
+     * Contrary to {@link #hashCodeAll(Object)}, does not descend recursively.
+     * @param a the object whose hashCode to calculate.
+     * @return the hashCode of all elements of a.
+     */
+    public static final int hashCodeArray(Object[] a) {
+	int hash = 0;
+	for (int i = 0; i < a.length; i++) {
+	    final int h = hashCode(a[i]);
+	    //@internal hash ^= h rotl i
+	    hash ^= (h << i) | (h >>> (INTEGER_BITS - i));
+	}
+	return hash;
+    }
+
+    /**
      * the number of bits that an integer has
      */
     private static final int INTEGER_BITS = IOUtilities.INTEGER_SIZE << 3;
 
     /**
-     * Get the hashCode of an object (considering its all array components, as sets, as well).
+     * Get the hashCode of an object (considering all its array components, as sets, as well).
      * Contrary to {@link #hashCodeAll(Object)}, the order of elements plays no role.
      * @param o the object whose hashCode to calculate.
      * @return the hashCode of o, or all its elements if o is a (multi-dimensional) array.
      * @see #equalsAll(Object, Object)
      * @see java.util.Arrays#equals(Object[], Object[])
      * @see orbital.logic.functor.Functionals#foldRight(orbital.logic.functor.BinaryFunction, Object, Object[])
-     * @note this implementation does not necessarily to fit the hashCode defined by {@link java.util.Set}, nor, of cours,e {@link java.util.List}.
+     * @note this implementation does not necessarily fit to the hashCode defined by {@link java.util.Set}, nor, of cours,e {@link java.util.List}.
      */
     public static final int hashCodeSet(Object o) {
 	//@todo functional?
