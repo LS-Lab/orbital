@@ -76,8 +76,10 @@ public class SetOfSupportResolution extends ResolutionBase {
     protected boolean prove(final ClausalSet knowledgebase, final ClausalSet query) {
 	assert !knowledgebase.contains(Clause.CONTRADICTION) : "knowledgebase W assumed consistent, so contains no elementary contradiction";
 	assert !query.contains(Clause.CONTRADICTION) : "query contains no elementary contradiction any more";
-	ClausalSet usable = knowledgebase;
-	ClausalSet setOfSupport = query;
+	//ClausalSet usable = getClausalFactory().createClausalSet(knowledgebase);
+	//ClausalSet setOfSupport = getClausalFactory().createClausalSet(query);
+	ClausalSet usable = new IndexedClausalSetImpl(knowledgebase);
+	ClausalSet setOfSupport = new IndexedClausalSetImpl(query);
 	setOfSupport.removeAllSubsumedBy(setOfSupport);
 	usable.removeAllSubsumedBy(setOfSupport);
 	usable.removeAllSubsumedBy(usable);
