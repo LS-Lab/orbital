@@ -41,6 +41,7 @@ import java.util.Iterator;
 
 import java.util.ResourceBundle;
 import java.util.MissingResourceException;
+import java.util.Locale;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
 
@@ -77,8 +78,10 @@ public class Game extends Applet implements Runnable {
 
     /**
      * Program resources.
+     * @note It is not required that this variable really contains the ResourceBundle used.
+     * Instead, getResources() may also store them in any other way. Therefor it is strictly
+     * recommended not to access this variable, directly.
      * @see #getResources()
-     * @see #init()
      * @todo seriality?
      */
     private ResourceBundle resources;
@@ -278,51 +281,29 @@ public class Game extends Applet implements Runnable {
      * Apart from providing general resources,
      * this bundle especially defines the menu bar, menus, menu items and the popup menu.
      * @todo document format of menu properties
+     * @postconditions RES!=null
+     * @throws MissingResourceException when resources could not be loaded at run-time.
      * @see #init()
      */
     protected ResourceBundle getResources() {
+	if(resources == null) {
+	    // try to get the resource bundle of our real sub classes, first. However, this won't work for the default package
+	    try {
+		return resources = ResourceBundle.getBundle(getClass().getName(), Locale.getDefault(), getClass().getClassLoader());
+	    } catch (Exception trial) {
+		System.out.println("no resources specified for: " + getClass().getName() + "\nUsing default resources\n" + trial);
+		// else try to get our resource bundle
+		try {
+		    return resources = ResourceBundle.getBundle("orbital.resources.Game");
+		} catch (MissingResourceException missing) {
+		    log("missing resource: An error occured initializing " + Game.class.getName() + ".\nThe package seems corrupt or a resource is missing, aborting\n" + missing);
+		    //JOptionPane.showMessageDialog(null, "An error occured initializing " + Game.class.getName() + ".\nThe package seems corrupt or a resource is missing, aborting\n" + missing, "Error", JOptionPane.ERROR_MESSAGE);
+		    throw (MissingResourceException) new MissingResourceException(trial.getMessage() + " AND " + missing.getMessage(), missing.getClassName(), missing.getKey()).initCause(missing);
+		} 
+	    }
+	}
 	return resources;
     }
-
-    /**
-     * Set program resources.
-     * @preconditions resources&ne;null
-     */
-    private void setResources(ResourceBundle resources) {
-	if (resources == null)
-	    throw new IllegalArgumentException("null is not a ResourceBundle");
-	this.resources = resources;
-    }
-
-	
-    /**
-     * Lookup the program resources.
-     * <p>
-     * This method is called once during {@link #init() initialization}
-     * to lookup the resources to use from that moment on.
-     * </p>
-     * @preconditions has not been called before
-     * @return the program resource bundle to use from now.
-     * @postconditions RES&ne;null
-     */
-    protected ResourceBundle lookupResources() {
-	// try to get the resource bundle of our real sub classes, first. However, this won't work for the default package
-        try {
-	    return ResourceBundle.getBundle(getClass().getName());
-	} catch (Exception trial) {
-	    System.out.println("no resources specified for: " + getClass().getName() + "\nUsing default resources\n" + trial);
-	    // else try to get our resource bundle
-            try {
-		return ResourceBundle.getBundle("orbital.resources.Game");
-	    } catch (MissingResourceException missing) {
-		log("missing resource: An error occured initializing " + Game.class.getName() + ".\nThe package seems corrupt or a resource is missing, aborting\n" + missing);
-		//JOptionPane.showMessageDialog(null, "An error occured initializing " + Game.class.getName() + ".\nThe package seems corrupt or a resource is missing, aborting\n" + missing, "Error", JOptionPane.ERROR_MESSAGE);
-		throw new InnerCheckedException(trial.getMessage() + " AND " + missing.getMessage(), missing);
-	    } 
-	}
-    }
-
-
 
     /**
      * Get the map of actions.
@@ -364,8 +345,6 @@ public class Game extends Applet implements Runnable {
 	    log(e);
 	} 
 	// }}
-
-	setResources(lookupResources());
 
 	// {{INIT_CONTROLS
 	setLayout(new BorderLayout());
@@ -508,7 +487,8 @@ public class Game extends Applet implements Runnable {
 		    MoveWeighting.Argument move = (MoveWeighting.Argument) action;
 		    Position source = new Position(move.figure);
 		    // if we could rely on our AI, then we could optimize away this expensive moving and simply use the resulting field = move.field
-		    if (!board.getField().move(move.figure, move.move))
+		    //@internal cloning the position information is necessary, otherwise move would detect that it gets lost during swap.
+		    if (!board.getField().move(source, move.move))
 			throw new Error("AI should only take legal moves: " + move);
 		    board.repaint(source);
 		    board.repaint(move.destination);
