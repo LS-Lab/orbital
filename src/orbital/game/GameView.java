@@ -38,6 +38,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.File;
 import java.util.Iterator;
+import orbital.moon.awt.AboutDialog;
 
 import java.util.ResourceBundle;
 import java.util.MissingResourceException;
@@ -52,17 +53,26 @@ import orbital.signe;
 import orbital.util.InnerCheckedException;
 
 /**
- * Game applet is a generic class for games on game boards. To apply it
- * on a certain game, you must define the games' rules with any instance
- * implementing the GameRules Interface.
- * This Interface can then start an AI on request via {@link GameRules#startAIntelligence(String)}.
- * 
+ * GameView is an applet and application displaying games on game
+ * boards. Given any GameRules implementation, GameView starts and
+ * displays the board game. A GameRules implementation can either be
+ * specified as an applet parameter or a command-line argument, and
+ * should consist of a fully qualified class name. For sophisticated
+ * problems consider sub classing GameView.
+ * <p>
+ * To use GameView for displaying a specific board game, you
+ * must define the games' rules with any instance implementing the
+ * {@link GameRules} interface. This interface can then start an AI on
+ * request via {@link GameRules#startAIntelligence(String)}.
+ * </p>
+ *
  * @stereotype UI
  * @version 1.1, 2003-01-03
  * @version 1.0, 2000-02-26
  * @author Andr&eacute; Platzer
- * @see <a href="doc-files/Game.html">Game applet parameter example</a>
- * @attribute resources = menubar and popup menu
+ * @see <a href="doc-files/Game.html">GameView applet parameter example</a>
+ * @see "examples/SChess/"
+ * @attribute resources = menubar, popup menu, dialog
  * @internal note It is possible to add functionality for playing our games by email or via TCP/IP server communication. Serialization of the field (plus perhaps of the move information for authentic tracking) should do the job.
  * @xxx turnDone should be called "performedMove" and perhaps we can get rid of this old way of using events. Also we need a more customizable way of deciding when to end a turn (f.ex. some games may allow a player to perform multiple moves before ending his turn)
  */
@@ -198,6 +208,11 @@ public class GameView extends Applet {
     	actions.put("stop", new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
 		    stop();
+		}
+	    });
+    	actions.put("about", new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
+		    about();
 		}
 	    });
     }
@@ -423,6 +438,16 @@ public class GameView extends Applet {
 	this.resources = null;
 	super.destroy();
     } 
+
+
+    /**
+     * Display help about this applet.
+     */
+    protected void about() {
+	final String nl = System.getProperty("line.separator");
+	final ResourceBundle resource = getResources();
+	AboutDialog.showAboutDialog(this, resources.getString("dialog.about.text") + nl + usage + nl + nl + nl + getGameName() + resources.getString("application.version") + " and " + signe.getManifest(), resources.getString("dialog.about.title") + " " + getGameName());
+    }
 
 
     /**
