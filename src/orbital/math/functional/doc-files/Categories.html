@@ -1,0 +1,251 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-gb">
+<meta name="author" content="Andre Platzer">
+<meta name="copyright" content="© 2002 André Platzer">
+<meta name="classification" content="Science/Mathematics/Category/Basics">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>Category theory</title>
+<link rel="stylesheet" href="../../../../../www/stylist.css" type="text/css" title="layout">
+</head>
+
+<body>
+
+<h2>Categories and Functors</h2>
+<p>&quot;general abstract nonsense&quot;</p>
+<dl class="def">
+  <dt id="category">category</dt>
+  <dd>A category <span class="category">C</span> consists of a family Ob <span class="category">C</span> 
+    of <i>objects</i>, and for each A,B∈Ob <span class="category">C</span> a 
+    set Mor<span class="category"><sub>C</sub></span>(A,B) of <i>morphisms</i> 
+    between A and B such that
+    <table>
+      <tr>
+        <th>(r)</th>
+        <td>∀A∈Ob <span class="category">C</span> ∃id<sub>A</sub>∈Mor<sub><span class="category">C</span></sub>(A,A)</td>
+        <td>&quot;reflexive, identity&quot;</td>
+      </tr>
+      <tr>
+        <th>(t)</th>
+        <td>∀A,B,C∈Ob <span class="category">C</span> ∃∘:Mor<span class="category"><sub>C</sub></span>(B,C)×Mor<span class="category"><sub>C</sub></span>(A,B)→Mor<span class="category"><sub>C</sub></span>(A,C) 
+          with</td>
+        <td>&quot;transitive, composition&quot;</td>
+      </tr>
+      <tr>
+        <th rowspan="2">(n)</th>
+        <td>∀A,B∈Ob <span class="category">C</span> ∀g∈Mor<span class="category"><sub>C</sub></span>(A,B) 
+          g∘id<sub>A</sub> = g</td>
+        <td rowspan="2">&quot;neutral&quot;</td>
+      </tr>
+      <tr>
+        <td>∀A,B∈Ob <span class="category">C</span> ∀f∈Mor<span class="category"><sub>C</sub></span>(B,A) 
+          id<sub>A</sub>∘f = f</td>
+      </tr>
+      <tr>
+        <th>(a)</th>
+        <td>∀A,B,C,D∈Ob <span class="category">C</span> ∀f∈Mor<span class="category"><sub>C</sub></span>(A,B)∀g∈Mor<span class="category"><sub>C</sub></span>(B,C)∀h∈Mor<span class="category"><sub>C</sub></span>(C,D) 
+          (h∘g)∘f = h∘(g∘f)</td>
+        <td>&quot;associative&quot;</td>
+      </tr>
+    </table>
+    We usually assume that Mor<span class="category"><sub>C</sub></span>(A,B) 
+    ∩ Mor<span class="category"><sub>C</sub></span>(C,D) = ∅ unless A=C ∧ 
+    B=D.<br>
+    Write: f:A→B for f∈Mor<span class="category"><sub>C</sub></span>(A,B)
+    <p><span style="float: left; font-size: 200%">☡</span> Beware: Unlike Mor<span class="category"><sub>C</sub></span>(A,B), 
+    Ob <span class="category">C</span> does not need to be a set of objects, but 
+    only a class of objects. Nevertheless we formally write ∈,⊆ etc.</p>
+  </dd>
+  <dt id="functor">covariant<br>
+    functor</dt>
+  <dd>A covariant functor F:<span class="category">C</span>→<span class="category">D</span> 
+    between two categories <span class="category">C</span> and <span class="category">D</span> 
+    consists of a map F:Ob <span class="category">C</span>→Ob <span class="category">D</span> 
+    and for each A,B∈Ob <span class="category">C</span> a map F:Mor<span class="category"><sub>C</sub></span>(A,B)→Mor<span class="category"><sub>D</sub></span>(F(A),F(B)) 
+    that satisfies the following conditions
+    <table>
+      <tr>
+        <th>(1)</th>
+        <td>∀A∈Ob <span class="category">C</span> F(id<sub>A</sub>) = id<sub>F(A)</sub></td>
+        <td></td>
+      </tr>
+      <tr>
+        <th>(m)</th>
+        <td>∀f∈Mor<span class="category"><sub>C</sub></span>(A,B)∀g∈Mor<span class="category"><sub>C</sub></span>(B,C) 
+          F(g∘f) = F(g) ∘ F(f)</td>
+        <td>&quot;morph&quot;</td>
+      </tr>
+    </table>
+    <p><span style="float: left; font-size: 200%">☡</span> Beware: F:<span class="category">C</span>→<span class="category">D</span> 
+    is not a map, since <span class="category">C</span>,<span class="category">D</span> 
+    are no sets (they are categories) and even Ob <span class="category">C</span>,Ob 
+    <span class="category">D</span> need not be sets.</p>
+  </dd>
+  <dt>contra-<br>
+    variant<br>
+    functor</dt>
+  <dd>A contravariant functor F:<span class="category">C</span>→<span class="category">D</span> 
+    between two categories <span class="category">C</span> and <span class="category">D</span> 
+    consists of a map F:Ob <span class="category">C</span>→Ob <span class="category">D</span> 
+    and for each A,B∈Ob <span class="category">C</span> a map F:Mor<span class="category"><sub>C</sub></span>(A,B)→Mor<span class="category"><sub>D</sub></span>(F(B),F(A)) 
+    that satisfies the following conditions
+    <table>
+      <tr>
+        <th>(1)</th>
+        <td>∀A∈Ob <span class="category">C</span> F(id<sub>A</sub>) = id<sub>F(A)</sub></td>
+        <td></td>
+      </tr>
+      <tr>
+        <th>(m')</th>
+        <td>∀f∈Mor<span class="category"><sub>C</sub></span>(A,B)∀g∈Mor<span class="category"><sub>C</sub></span>(B,C) 
+          F(g∘f) = F(f) ∘ F(g)</td>
+        <td>&quot;contramorph&quot;</td>
+      </tr>
+    </table>
+    A contravariant functor F:<span class="category">C</span>→<span class="category">D</span> 
+    is a covariant functor F:<span class="category">C</span>→<span class="category">D°</span>.</dd>
+  <dt>natural<br>
+    trans-<br>
+    formation</dt>
+  <dd>A natural transformation (or morphism of functors) α:F<span class="category"></span>→G 
+    between the functors F,G:<span class="category">C</span>→<span class="category">D</span> 
+    is a family <span class="seriesOperator">(</span>α<sub>C</sub>∈Mor<span class="category"><sub>D</sub></span>(F(C),G(C))<span class="seriesOperator">)</span><sub>C∈Ob 
+    <span class="category">C</span></sub> of morphisms such that
+    <div>
+      ∀f∈Mor<sub><span class="category">C</span></sub>(C,C') G(f)∘α<sub>C</sub> 
+      = α<sub>C'</sub>∘F(f)
+    </div>
+    The functors <span class="category">C</span>→<span class="category">D</span> 
+    form a category with natural transformations being the morphisms.<br>
+    Remark??: an isomorphism of functors is just a family of isomorphisms with 
+    the above property.</dd>
+</dl>
+<p>The elements of the monoid Mor<span class="category"><sub>C</sub></span>(A,A) 
+are called <dfn>endomorphisms</dfn> of A. The elements of Mor<span class="category"><sub>C</sub></span>(A,B) 
+that have an inverse in Mor<span class="category"><sub>C</sub></span>(B,A) are 
+called <dfn>isomorphisms</dfn>. The elements of the group of isomorphisms in Mor<span class="category"><sub>C</sub></span>(A,A) 
+are called <dfn>automorphisms</dfn>.</p>
+<dl class="def">
+  <dt id="additive">additive</dt>
+  <dd>A category <span class="category">C</span> is additive, if
+    <table>
+      <tr>
+        <th>()</th>
+        <td>∀A,B∈Ob <span class="category">C</span> Hom<sub><span class="category">C</span></sub>(A,B) 
+          := Mor<sub><span class="category">C</span></sub>(A,B) Abelian group</td>
+        <td></td>
+      </tr>
+      <tr>
+        <th>(d)</th>
+        <td>∘ is distributive over +, i.e.
+          <ul>
+            <li>∀A,B,C∈Ob <span class="category">C</span> ∀f∈Hom<span class="category"><sub>C</sub></span>(B,C) 
+              ∀g,h∈Hom<span class="category"><sub>C</sub></span>(A,B) f∘(g+h) 
+              = (f∘g) + (f∘h)</li>
+            <li>∀A,B,C∈Ob <span class="category">C</span> ∀f,g∈Hom<span class="category"><sub>C</sub></span>(B,C) 
+              ∀h∈Hom<sub><span class="category">C</span></sub>(A,B) (f+g)∘h 
+              = (f∘h) + (g∘h)</li>
+          </ul>
+        </td>
+        <td>&quot;distributive&quot;</td>
+      </tr>
+    </table>
+  </dd>
+  <dt>additive</dt>
+  <dd>A functor F:<span class="category">C</span>→<span class="category">D</span> 
+    between two additive categories <span class="category">C</span> and <span class="category">D</span> 
+    is called additive, if
+    <div>
+      ∀A,B∈Ob <span class="category">C</span> F:Hom<sub><span class="category">C</span></sub>(A,B)<span class="category"></span>→Hom<span class="category"><sub>D</sub></span>(F(A),F(B)) 
+      homomorphism of groups
+    </div>
+  </dd>
+</dl>
+<h3>Important Examples</h3>
+<ol>
+  <li id="opposite">
+    <p>For every category <span class="category">C</span>, there is the opposite 
+    (dual) category <span class="category">C°</span> obtained by &quot;turning 
+    the arrows around&quot;, per Ob <span class="category">C°</span> := Ob <span class="category">C</span>, 
+    and Mor<span class="category"><sub>C°</sub></span>(A,B) := Mor<span class="category"><sub>C</sub></span>(B,A) 
+    whereas the identity morphisms are the same, and the composition is f∘<span class="category"><sub>C°</sub></span>g 
+    := g∘<span class="category"><sub>C</sub></span>f.<br>
+    <b>Duality Principle</b>: Any theorem holding for all categories <span class="category">C</span> 
+    also holds <i>(in <span class="category">C°</span>)</i> with all arrows 
+    reversed.</p>
+  </li>
+  <li id="hom-functor">
+    <p>Let <span class="category">C</span> be a category. For each X∈Ob <span class="category">C</span> 
+    there are two functors</p>
+    <ul>
+      <li>covariant functor<br>
+        m<sub>X</sub>:=Mor<span class="category"><sub>C</sub></span>(X,·):<span class="category">C</span>→<span class="category">Ens</span><br>
+        Y ↦ m<sub>X</sub>(Y) := Y<font size="3"><sub>∗</sub></font>:=Mor<span class="category"><sub>C</sub></span>(X,Y)<br>
+        f ↦ <big>(</big>m<sub>X</sub>(f):Mor<span class="category"><sub>C</sub></span>(X,Y)→Mor<span class="category"><sub>C</sub></span>(X,Z); 
+        g↦f∘g<big>)</big></li>
+      <li>contravariant functor<br>
+        m<sup>X</sup>:=Mor<span class="category"><sub>C</sub></span>(·,X):<span class="category">C</span>→<span class="category">Ens</span><br>
+        Y ↦ m<sup>X</sup>(Y) := Y<font size="3"><sup>∗</sup></font>:=Mor<span class="category"><sub>C</sub></span>(Y,X)<br>
+        f ↦ <big>(</big>m<sup>X</sup>(f):Mor<span class="category"><sub>C</sub></span>(Z,X)→Mor<span class="category"><sub>C</sub></span>(Y,X); 
+        g↦g∘f<big>)</big></li>
+    </ul>
+    <p>The properties of being a functor coincides with the properties of 
+    morphisms (n) and (a), here.<br>
+    If <span class="category">C</span> is additive we write Hom<span class="category"><sub>C</sub></span>(X,·):=h<sub>X</sub>:=m<sub>X</sub>, 
+    and Hom<span class="category"><sub>C</sub></span>(·,X):=h<sup>X</sup>:=m<sup>X</sup> 
+    for the corresponding functors <span class="category">C</span>→<span class="category">Ab</span>.</p>
+  </li>
+</ol>
+<p>@todo check names of Y<font size="3"><sub>∗</sub>, and </font>Y<font size="3"><sup>∗</sup> 
+.</font></p>
+<h2>Universal Elements</h2>
+<p>Let <span class="category">C</span> be a category.
+<dl class="def">
+  <dt id="initial">initial<br>
+    object</dt>
+  <dd>A∈Ob <span class="category">C</span> is an initial object :⇔ ∀B∈Ob 
+    <span class="category">C</span> ∃!φ∈Mor<sub><span class="category">C</span></sub>(A,B)<br>
+    initial objects are uniquely isomorph, i.e. each two initial objects A,B 
+    have a unique isomorphism A→B.</dd>
+  <dt id="terminal">terminal<br>
+    object</dt>
+  <dd>A∈Ob <span class="category">C</span> is a terminal object :⇔ ∀B∈Ob 
+    <span class="category">C</span> ∃!φ∈Mor<sub><span class="category">C</span></sub>(B,A) 
+    ⇔ A is an initial object in <span class="category">C°</span>.<br>
+    terminal objects are uniquely isomorph, i.e. each two terminal objects A,B 
+    have a unique isomorphism A→B.</dd>
+</dl>
+<h2>Product and Coproduct</h2>
+<dl class="def">
+  Let <span class="category">C</span> be a category, and I be a set.
+  <dt id="product">product</dt>
+  <dd>P∈Ob <span class="category">C</span>, with the projectors π<sub>i</sub>∈Mor(P,A<sub>i</sub>) 
+    for i∈I, is a product of the objects <span class="seriesOperator">(</span>A<sub>i</sub><span class="seriesOperator">)</span><sub>i∈I</sub>⊆Ob 
+    <span class="category">C</span> :⇔ <center><big>(</big>∀C∈Ob <span class="category">C</span> 
+    ∀<span class="seriesOperator">(</span>g<sub>i</sub><sub></sub>∈Mor<sub><span class="category">C</span></sub>(C,A<sub>i</sub>)<span class="seriesOperator">)</span><sub>i∈I</sub><br />
+    ∃!g∈Mor<sub><span class="category">C</span></sub>(C,P) ∀i∈I π<sub>i</sub>∘g 
+    = g<sub>i</sub> <big>)</big></center>Write: P = ∏<sub>i∈I</sub>A<sub>i</sub> 
+    = <big>×</big><sub>i∈I</sub>A<sub>i</sub><sub><br>
+    </sub>&quot;product is universally attracting&quot;, and it is just a 
+    terminal object in a suitable category.</dd>
+  <dt id="coproduct">coproduct</dt>
+  <dd>S∈Ob <span class="category">C</span>, with the inclusions ι<sub>i</sub>∈Mor(A<sub>i</sub>,S) 
+    for i∈I, is a coproduct of the objects <span class="seriesOperator">(</span>A<sub>i</sub><span class="seriesOperator">)</span><sub>i∈I</sub>⊆Ob 
+    <span class="category">C</span> :⇔ <center><big>(</big>∀C∈Ob <span class="category">C</span> 
+    ∀<span class="seriesOperator">(</span>g<sub>i</sub><sub></sub>∈Mor<sub><span class="category">C</span></sub>(A<sub>i</sub>,C)<span class="seriesOperator">)</span><sub>i∈I</sub><br />
+    ∃!g∈Mor<sub><span class="category">C</span></sub>(S,C) ∀i∈I g∘ι<sub>i</sub> 
+    = g<sub>i</sub> <big>)</big></center>Write: S = ∐<sub>i∈I</sub>A<sub>i</sub> 
+    = ⊕<sub>i∈I</sub>A<sub>i</sub> = ∑<sub>i∈I</sub>A<sub>i</sub> = ⋃̇<sub>i∈I</sub>A<sub>i</sub><br>
+    &quot;coproduct is universally repelling&quot;, and it is just an initial 
+    object in&nbsp; a suitable category. A coproduct in <span class="category">C</span> 
+    is just a product in <span class="category">C°</span>.</dd>
+</dl>
+<p>As terminal or initial objects, products and coproducts are uniquely 
+determined up to a unique isomorphism.</p>
+
+</body>
+
+</html>
