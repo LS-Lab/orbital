@@ -2043,7 +2043,7 @@ public class ClassicalLogic extends ModernLogic {
 	 * @todo to ClassicalLogic.Utilities?
 	 */
 	public static final Formula negation(Formula F) {
-	    // used duplex negatio est affirmatio (optimizable)
+	    // check for applicability of duplex negatio est affirmatio (optimizable)
 	    if ((F instanceof Composite)) {
 		Composite f = (Composite) F;
 		Object    g = f.getCompositor();
