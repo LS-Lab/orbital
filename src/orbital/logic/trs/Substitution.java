@@ -105,18 +105,18 @@ import java.util.Collection;
  *   <dd>
  *     &sigma; is idempotent :&hArr; &sigma; &#8728; &sigma; = &sigma;
  *     &hArr; supp(&sigma;)&cap;&sigma;(supp(&sigma;))=&empty;
- *     &hArr; &sigma; = &sigma; &cap; &sigma;, i.e. no variable x<sub>i</sub> occurs in a t<sub>j</sub>.
+ *     &hArr; no variable x<sub>i</sub> occurs in a t<sub>j</sub>.
  *   </dd>
  * </dl>
  * If a variable substitution has a left-inverse variable substitution,
  * then it is only a variable renaming.
  * For variable substitutions that have a right-inverse variable substitution
- * this is true if their supports are disjunct.
+ * this is true if their supports are disjoint.
  * </p>
- * <p>
+ * <!--
  * Notice the rough similarity of substitutions, and (the homomorphisms of) interpretations,
- * and Herbrand-interpretations.
- * </p>
+ * and Herbrand-interpretations. (All are homomorphisms)
+ * -->
  * <p>
  * We denote a substitution &sigma; of supp(&sigma;)={x<sub>1</sub>,&#8230;,x<sub>n</sub>}
  * replacing x<sub>i</sub> with t<sub>i</sub> by
