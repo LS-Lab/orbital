@@ -11,8 +11,8 @@ import orbital.logic.functor.BinaryFunction;
 /**
  * Provides type constructors, and factories for types of a
  * type-system. Type constructors create new types depending on some
- * existing types. For example, there are type constructors for map
- * types.
+ * existing types. Factories, instead, create completely new types.
+ * For example, there are type constructors for map types.
  *
  * @author <a href="mailto:">Andr&eacute; Platzer</a>
  * @version 1.1, 2003-01-18
@@ -48,14 +48,15 @@ public interface TypeSystem {
     /**
      * The universal type
      * <span class="type">&#8868;</span> = <span class="type">&#8898;<sub>&empty;</sub></span>.
-     * It is the top element of the lattice &Tau; of types, has no differentiae and satisfies
+     * It is the top element of the lattice &Tau; of types, has no differentiae and is characterized by
      * <ul>
      *   <li>(&exist;x) <span class="type">&#8868;</span>(x)</li>
      *   <li>(&forall;x) <span class="type">&#8868;</span>(x)</li>
      *   <li>(&forall;<span class="type">&tau;</span>:Type) <span class="type">&tau;</span>&le;<span class="type">&#8868;</span></li>
      * </ul>
+     * This would be the only type of uniform type-systems.
      * @postconditions RES == OLD(RES)
-     * @see #ABSURD
+     * @see #ABSURD()
      * @internal everything (besides primitive types) is an instance of or a subclass of our fundamental class.
      * @todo how to distinguish fundamental types UNIVERSAL and INDIVIDUAL on the object level?
      */
@@ -64,13 +65,13 @@ public interface TypeSystem {
      * The absurd type
      * <span class="type">&perp;</span> = <span class="type">&#8899;<sub>&empty;</sub></span>.
      * It is the bottom element of the lattice &Tau; of types,
-     * it cannot be the type of anything that exists, and it satisfies.
+     * it cannot be the type of anything that exists, and it is characterized by
      * <ul>
      *   <li>&not;(&exist;x) <span class="type">&perp;</span>(x)</li>
      *   <li>(&forall;<span class="type">&tau;</span>:Type) <span class="type">&perp;</span>&le;<span class="type">&tau;</span></li>
      * </ul>
      * @postconditions RES == OLD(RES)
-     * @see #UNIVERSAL
+     * @see #UNIVERSAL()
      * @internal nothing (besides that single object whose reference no one knows) is an instance of or a subclass of a fundamental anonymous class. But the same already goes true for Void.TYPE, so let's use that.
      */
     Type ABSURD();
@@ -79,8 +80,8 @@ public interface TypeSystem {
      * The type of expressions that do not have any type at all.
      * This type has extension &empty;.
      * @postconditions RES == OLD(RES)
-     * @see #ABSURD
-     * @xxx is NOTYPE=ABSURD? for product,sup,inf,collection and extension they have are equal.
+     * @see #ABSURD()
+     * @xxx is NOTYPE=ABSURD? For product,sup,inf,collection and extension they have are equal.
      *  So at most the condition <li>(&forall;<span class="type">&tau;</span>:Type) <span class="type">&perp;</span>&le;<span class="type">&tau;</span></li> might be different.
      * @internal if we cannot distinguish NOTYPE (as domain of NonMapType) from ABSURD we would make &iota; and &iota;->string comparable.
      *  NOTYPE is incomparable with all types except itself (and of course ABSURD, and UNIVERSAL)
@@ -223,7 +224,7 @@ public interface TypeSystem {
     
     /**
      * Get the infimum type <span class="type">&#8898;<sub>i</sub>&tau;<sub>i</sub></span> = <span class="type">&tau;<sub>1</sub>&cap;&#8230;&cap;&tau;<sub>n</sub></span>.
-     * inf is the most general common subtype, also called intersection.
+     * inf is the most general common subtype in the type lattice, also called intersection.
      * Especially, it is &forall;i <span class="type">&#8898;<sub>i</sub>&tau;<sub>i</sub></span> &le; <span class="type">&tau;<sub>i</sub></span>.
      * <p>
      * The subtype relation of types extends to infimum types as follows
@@ -262,7 +263,7 @@ public interface TypeSystem {
 
     /**
      * Get the supremum type <span class="type">&#8899;<sub>i</sub>&tau;<sub>i</sub></span> = <span class="type">&tau;<sub>1</sub>&cup;&#8230;&cup;&tau;<sub>n</sub></span>.
-     * sup is the most special common supertype, also called union.
+     * sup is the most special common supertype in the type lattice, also called union.
      * Especially, it is &forall;i <span class="type">&tau;<sub>i</sub></span> &le; <span class="type">&#8899;<sub>i</sub>&tau;<sub>i</sub></span>.
      * <p>
      * The subtype relation of types extends to supremum types as follows
