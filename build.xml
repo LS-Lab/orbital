@@ -29,7 +29,7 @@
     </description>
 
     <property name="build.compiler" value="modern"/>
-    <property name="build.sysclasspath" value="ignore"/>
+    <!-- <property name="build.sysclasspath" value="ignore"/> -->
 
     <target name="init">
         <tstamp>
@@ -47,7 +47,11 @@
         <property name="dist" value="${basedir}/dist"/>
         <property name="bin" value="${basedir}/bin"/>
         <property name="resources" value="${basedir}/resources"/>
+        <property name="src.tests" value="${basedir}/test"/>
         <property name="examples" value="${basedir}/examples"/>
+
+        <property name="build.tests" value="${basedir}/test"/>
+        <property name="reports.tests" value="${basedir}/report/test"/>
 
         <property name="version" value="1.0.7"/>
         <property name="version_brief" value="1.0"/>
@@ -103,6 +107,16 @@
         <delete dir="${sources}/t"/>
     </target>
 
+    <target name="compile.tests" depends="init"
+            description="compile test/*.java (=> ./classes)">
+        <javac srcdir="${src.tests}"
+               destdir="${build.tests}"
+               debug="on"
+	       source="1.4">
+            <classpath refid="project.classpath"/>
+        </javac>
+    </target>
+
     <target name="compile.examples" depends="init"
             description="compile examples/*.java (=> ./classes)">
         <javac srcdir="${examples}"
@@ -123,6 +137,27 @@
         </javac>
     </target>
 
+    <target name="run.tests" depends="init, compile.tests"
+            description="run test/*Test*.java">
+        <mkdir dir="${reports.tests}"/>
+        <junit printsummary="yes" haltonfailure="yes">
+          <classpath>
+            <pathelement location="${build.tests}" />
+            <pathelement path="${java.class.path}" />
+          </classpath>
+        
+          <formatter type="plain" />
+        
+          <batchtest fork="yes" haltonfailure="no" todir="${reports.tests}">
+            <fileset dir="${src.tests}">
+              <include name="**/*Test*.java" />
+              <exclude name="**/AllTests.java" />
+              <exclude name="check/TestCase.java" />
+            </fileset>
+          </batchtest>
+        </junit>
+    </target>
+
     <target name="parser" depends="init"
             description="compile *.jj (=> ./classes)">
         <javacc target="${sources}/orbital/moon/logic/LogicParser.jj" 
@@ -139,6 +174,10 @@
                 <include name="**/*.class"/>
             </fileset>
             <fileset dir="${classes}"/>
+            <fileset dir="${build.tests}/">
+                <include name="**/*.class"/>
+            </fileset>
+            <fileset dir="${resports.tests}"/>
             <fileset dir="${examples}">
 	        <include name="**/*.class"/>
 		<exclude name="Algorithms/MapView.class"/>
@@ -157,20 +196,28 @@
                 <include name="**/*~"/>
                 <include name="**/.#*"/>
             </fileset>
+            <fileset dir="${tests}/" defaultexcludes="no">
+                <include name="**/*.bak"/>
+                <include name="**/*~"/>
+                <include name="**/.#*"/>
+            </fileset>
             <fileset dir="${examples}/" defaultexcludes="no">
                 <include name="**/*.bak"/>
                 <include name="**/*~"/>
                 <include name="**/.#*"/>
             </fileset>
         </delete>
-        <exec dir="${sources}" executable="/bin/bash" os="Linux,linux">
-            <arg line="-c &quot;find . -name '*~' | xargs rm -f&quot;"/>
-        </exec>
     </target>
  
     <target name="fixCRLF" depends="init"
             description="fix DOS linefeeds (CRLF)">
         <fixcrlf srcdir="${sources}"
+                 eol="lf" eof="remove"
+                 includes="**/*.java, **/*.jj"/>
+        <fixcrlf srcdir="${examples}"
+                 eol="lf" eof="remove"
+                 includes="**/*.java, **/*.jj"/>
+        <fixcrlf srcdir="${tests}"
                  eol="lf" eof="remove"
                  includes="**/*.java, **/*.jj"/>
     </target>
