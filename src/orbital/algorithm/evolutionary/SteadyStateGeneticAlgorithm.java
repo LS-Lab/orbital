@@ -43,18 +43,11 @@ public class SteadyStateGeneticAlgorithm extends GeneticAlgorithm {
 	
     /**
      * Construct a new GeneticAlgorithm.
-     * @param parentCount The number of abstract parents virtually required to produce children.
-     * @param childrenCount The number of children produced with one reproduction involving parentCount parents.
-     * @param maximumCrossover Maximum crossover rating.
-     *  Maximum probability rating of mutation level per production.
-     * @param maximumMutation Maximum mutation rating.
-     *  Maximum probability rating of crossover level for reproducation.
      * @param replacement the number of replacements to do at each generation (&le; population.size()).
      *  We will perform as many reproductions such that at least <code>replacement</code> replacements
      *  have occured.
      */
-    public SteadyStateGeneticAlgorithm(int parentCount, int childrenCount, double maximumCrossover, double maximumMutation, int replacements) {
-	super(parentCount, childrenCount, maximumCrossover, maximumMutation);
+    public SteadyStateGeneticAlgorithm(int replacements) {
 	this.numberOfReplacements = replacements;
     }
 
@@ -79,21 +72,14 @@ public class SteadyStateGeneticAlgorithm extends GeneticAlgorithm {
 
     // central virtual methods
 
-    /**
-     * <strong>evolves</strong> to the next generation for this population.
-     * Parents are selected and will crossover and mutate to produce children Genomes
-     * who will replace some Genomes in this population.
-     * This operation is sometimes called breeding.
-     * @see GeneticAlgorithm#reproduce()
-     */
     public void evolve() {
-	Population population = getPopulation();
-	for (int j = 0; j < numberOfReplacements; j += getParentCount()) {
-	    Genome children[] = reproduce();
+	PopulationImpl population = (PopulationImpl) getPopulation();
+	for (int j = 0; j < numberOfReplacements; j += population.getParentCount()) {
+	    Genome children[] = population.reproduce();
 
 	    // merge children into new population
 	    for (int i = 0; i < children.length; i++) {
-		children[i].evaluate(getPopulation(), false);
+		children[i].evaluate(population, false);
 		population.add(children[i]);
 		logger.log(Level.FINER, "evolve child", "with " + children[i].getFitness());
 		// remove worst (rank selector)

@@ -28,48 +28,32 @@ public class SimpleGeneticAlgorithm extends GeneticAlgorithm {
 
     /**
      * Construct a new GeneticAlgorithm.
-     * @param parentCount The number of abstract parents virtually required to produce children.
-     * @param childrenCount The number of children produced with one reproduction involving parentCount parents.
-     * @param maximumCrossover Maximum crossover rating.
-     *  Maximum probability rating of mutation level per production.
-     * @param maximumMutation Maximum mutation rating.
-     *  Maximum probability rating of crossover level for reproducation.
      */
-    public SimpleGeneticAlgorithm(int parentCount, int childrenCount, double maximumCrossover, double maximumMutation) {
-	super(parentCount, childrenCount, maximumCrossover, maximumMutation);
+    public SimpleGeneticAlgorithm() {
     }
 
-    // for serialization only
-    protected SimpleGeneticAlgorithm() {}
-
     public double getPopulationGrowth() {
-	return (double) getChildrenCount() / getParentCount();
+	PopulationImpl population = (PopulationImpl) getPopulation();
+	return (double) population.getChildrenCount() / population.getParentCount();
     } 
 
     // central virtual methods
 
-    /**
-     * <strong>evolves</strong> to the next generation for this population.
-     * Parents are selected and will crossover and mutate to produce children Genomes
-     * who will replace some Genomes in this population.
-     * This operation is sometimes called breeding.
-     * @see GeneticAlgorithm#reproduce()
-     */
     public void evolve() {
-	Population population = getPopulation();
-	DataCopy copy = null;
-	assert (copy = new DataCopy(population)) != null;
+	PopulationImpl population = (PopulationImpl) getPopulation();
+	PopulationImpl.DataCopy copy = null;
+	assert (copy = new PopulationImpl.DataCopy(population)) != null;
 
 	Population newPopulation = population.newInstance((int) Math.ceil(population.size() * getPopulationGrowth()));
 	newPopulation.setGeneticAlgorithm(this);
-	for (int j = 0; j < population.size(); j += getParentCount()) {
-	    Genome children[] = reproduce();
+	for (int j = 0; j < population.size(); j += population.getParentCount()) {
+	    Genome children[] = population.reproduce();
     
 	    // merge children into new population
 	    for (int i = 0; i < children.length; i++)
 		newPopulation.add(children[i]);
 
-	    assert copy.validateReferentialIntegrity();
+	    assert copy.validateReferentialIntegrity(population);
 	}
 	newPopulation.setGeneration(population.getGeneration() + 1);
 	//@xxx setPopulation does not work with the BreederControl

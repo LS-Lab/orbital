@@ -42,11 +42,11 @@ import java.util.logging.Level;
  *
  * @structure extend List<Genome> sorted on descending {@link Genome#getFitness()}
  * @structure aggregate members:List<Genome>
- * @invariant sub classes must support no-arg constructor (for cloning)
+ * @invariant sub classes must support nullary constructor (for cloning)
  * @version 1.0, 2000/03/28
  * @author  Andr&eacute; Platzer
  */
-public class Population implements Serializable /*//TODO: extends DelegateList<Genome> sometime, but this is sorted! */ {
+public abstract class Population implements Serializable /*//TODO: extends DelegateList<Genome> sometime, but this is sorted! */ {
     private static final Logger logger = Logger.getLogger(Population.class.getName());
 
     /**
@@ -73,12 +73,18 @@ public class Population implements Serializable /*//TODO: extends DelegateList<G
      */
     private List	      members;
 
-    public Population() {
+    /**
+     * Create an empty population.
+     */
+    protected Population() {
 	init();
 	this.members = new ArrayList();
     }
 
-    private Population(int capacity) {
+    /**
+     * Create an empty population with the given capacity.
+     */
+    Population(int capacity) {
 	init();
 	this.members = new ArrayList(capacity);
     }
@@ -98,8 +104,8 @@ public class Population implements Serializable /*//TODO: extends DelegateList<G
 	    l.members = new ArrayList(capacity);
 	    return l;
     	}
-    	catch (InstantiationException e) {throw new InnerCheckedException("invariant: sub classes of " + Population.class + " must support no-arg constructor for cloning.", e);}
-    	catch (IllegalAccessException e) {throw new InnerCheckedException("invariant: sub classes of " + Population.class + " must support no-arg constructor for cloning.", e);}
+    	catch (InstantiationException e) {throw new InnerCheckedException("invariant: sub classes of " + Population.class + " must support nullary constructor for cloning.", e);}
+    	catch (IllegalAccessException e) {throw new InnerCheckedException("invariant: sub classes of " + Population.class + " must support nullary constructor for cloning.", e);}
     }
 
     /**
@@ -318,7 +324,7 @@ public class Population implements Serializable /*//TODO: extends DelegateList<G
      */
     public String toString() {
 	StringWriter  buf = new StringWriter();
-	PrintWriter	  wr = new PrintWriter(buf);
+	PrintWriter   wr = new PrintWriter(buf);
 	DecimalFormat form = (DecimalFormat) NumberFormat.getInstance();
 	form.applyPattern("00 ");
 	wr.println("Generation " + getGeneration() + ":");
@@ -336,27 +342,6 @@ public class Population implements Serializable /*//TODO: extends DelegateList<G
 	
     // Utilities
 	
-    /**
-     * Generate (<strong>create</strong>) a new random population of genomes.
-     * <p>
-     * Note that the prototype genome should not contain genes that are immune to mutation
-     * since that is an essential part of creating an initial random population without
-     * problem specific means.</p>
-     * <p>
-     * Also note that a mixed random and problem specific initial population might get
-     * better results. So consider merging them.</p>
-     * @param size the initial size of the new population. i.e. the initial number of Genomes.
-     * @param prototype the genome prototype to clone and mutate to create the population
-     *  The prototype must have the right structure to serve as a problem specific solution,
-     *  but does not necessarily need to have meaningful values.
-     * @return a new random population with genomes according to the prototype.
-     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Method</a>
-     * @see Genome#mutate(double)
-     * @see Genome#inverse()
-     */
-    public static Population create(Genome prototype, int size) {
-	return create(new Population(size), prototype, size);
-    }
     /**
      * Generate (<strong>create</strong>) a new random population of genomes.
      * <p>
@@ -392,6 +377,28 @@ public class Population implements Serializable /*//TODO: extends DelegateList<G
 	if (population.size() < size)
 	    population.members.add(prototype.mutate(1.0));
 	return population;
+    }
+
+    /**
+     * Generate (<strong>create</strong>) a new random population of genomes.
+     * <p>
+     * Note that the prototype genome should not contain genes that are immune to mutation
+     * since that is an essential part of creating an initial random population without
+     * problem specific means.</p>
+     * <p>
+     * Also note that a mixed random and problem specific initial population might get
+     * better results. So consider merging them.</p>
+     * @param size the initial size of the new population. i.e. the initial number of Genomes.
+     * @param prototype the genome prototype to clone and mutate to create the population
+     *  The prototype must have the right structure to serve as a problem specific solution,
+     *  but does not necessarily need to have meaningful values.
+     * @return a new random population with genomes according to the prototype.
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Method</a>
+     * @see Genome#mutate(double)
+     * @see Genome#inverse()
+     */
+    public static Population create(Genome prototype, int size) {
+	return create(new PopulationImpl(size), prototype, size);
     }
 
     /**

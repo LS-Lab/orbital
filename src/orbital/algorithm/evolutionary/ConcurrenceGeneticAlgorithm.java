@@ -62,8 +62,7 @@ public class ConcurrenceGeneticAlgorithm extends IncrementalGeneticAlgorithm {
      */
     private int concurrenceType;
     
-    public ConcurrenceGeneticAlgorithm(int parentCount, int childrenCount, double maximumCrossover, double maximumMutation) {
-	super(parentCount, childrenCount, maximumCrossover, maximumMutation);
+    public ConcurrenceGeneticAlgorithm() {
     }
 	
     public int getConcurrenceType() {

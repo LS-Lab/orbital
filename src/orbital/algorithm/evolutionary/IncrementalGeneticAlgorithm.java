@@ -30,38 +30,21 @@ public class IncrementalGeneticAlgorithm extends GeneticAlgorithm {
 
     /**
      * Construct a new GeneticAlgorithm.
-     * @param parentCount The number of abstract parents virtually required to produce children.
-     * @param childrenCount The number of children produced with one reproduction involving parentCount parents.
-     * @param maximumCrossover Maximum crossover rating.
-     *  Maximum probability rating of mutation level per production.
-     * @param maximumMutation Maximum mutation rating.
-     *  Maximum probability rating of crossover level for reproducation.
      */
-    public IncrementalGeneticAlgorithm(int parentCount, int childrenCount, double maximumCrossover, double maximumMutation) {
-	super(parentCount, childrenCount, maximumCrossover, maximumMutation);
+    public IncrementalGeneticAlgorithm() {
     }
 
-    // for serialization only
-    protected IncrementalGeneticAlgorithm() {}
-
     public double getPopulationGrowth() {
-	if (getPopulation() == null)
+	PopulationImpl population = (PopulationImpl) getPopulation();
+	if (population == null)
 	    return 1;
-	return (double) (getPopulation().size() - getParentCount() + getChildrenCount()) / getPopulation().size();
+	return (double) (population.size() - population.getParentCount() + population.getChildrenCount()) / population.size();
     } 
 
     // central virtual methods
 
-    /**
-     * <strong>evolves</strong> to the next generation for this population.
-     * Parents are selected and will crossover and mutate to produce children Genomes
-     * who will replace some Genomes in this population.
-     * This operation is sometimes called breeding.
-     * @see GeneticAlgorithm#reproduce()
-     * @see #replaceGenomes(Genome[])
-     */
     public void evolve() {
-	Genome children[] = reproduce();
+	Genome children[] = ((PopulationImpl) getPopulation()).reproduce();
 
 	// merge children into population
 	replaceGenomes(children);

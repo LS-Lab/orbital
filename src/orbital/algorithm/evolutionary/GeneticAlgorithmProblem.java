@@ -19,7 +19,7 @@ import orbital.logic.functor.Function;
  *    <em>and</em> guide search.</li>
  *   <li>Perhaps, define customized <code><a href="Gene.html#reproduce"><strong>reproduction</strong></a></code>
  *     operators for the gene representation, in order to support convergence with domain knowledge.</li>
- *   <li>Decide which {@link Selectors <strong>selection</strong>} function to apply.</li>
+ *   <li>Decide which {@link GeneticAlgorithm.Configuration#getSelection() <strong>selection</strong>} function to apply.</li>
  * </ol>
  * These decisions characterizing a problem are encapsulated by an implementation of
  * <code>GeneticAlgorithmProblem</code>.
@@ -59,19 +59,4 @@ public interface GeneticAlgorithmProblem extends AlgorithmicProblem {
      *  Often implemented with a convergence criterion.
      */
     boolean isSolution(Population pop);
-
-
-    /**
-     * Get the selection scheme to apply for evolving.
-     * @see Selectors
-     */
-    // roughly corresponds to an evaluation function that is already minimizing choices
-    //TODO: remove and do not use in GeneticAlgorithm.solve
-    //Function getSelection();
-    // TODO: perhaps: setSelection(Selection) in this _class_ as well?
-
-    /**
-     * Get GeneticAlgorithm constructor data as well?
-     */
-    // TODO: s.a. is no good idea, or what?
 }

@@ -52,14 +52,20 @@ public class PopulationBeanInfo extends SimpleBeanInfo {
 	public Component getCustomEditor() {
 	    try {
 		if (custom == null) {
-		    custom = new orbital.moon.awt.DefaultCustomizer(Population.class);
+		    //@xxx how to determine whether to use Population.class or PopulationImpl.class? Initially getValue()=null
+		    custom = new orbital.moon.awt.DefaultCustomizer(getValue() == null
+								    ? PopulationImpl.class
+								    : getValue().getClass());
 		    custom.setObject(getValue());
 		} 
 		return (Component) custom;
 	    } catch (Exception e) {
 		throw new InnerCheckedException(e);
 	    } 
-	} 
+	}
+	public boolean isInlineCustomEditor() {
+	    return true;
+	}
 	public boolean isPaintable() {
 	    return false;
 	} 

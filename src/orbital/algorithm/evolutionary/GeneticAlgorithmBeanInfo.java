@@ -24,23 +24,15 @@ public class GeneticAlgorithmBeanInfo extends SimpleBeanInfo {
 
     public PropertyDescriptor[] getPropertyDescriptors() {
 	try {
-	    PropertyDescriptor _childrenCount = new PropertyDescriptor("childrenCount", beanClass, "getChildrenCount", "setChildrenCount");
-	    _childrenCount.setShortDescription("number of children produced with one reproduction");
-	    PropertyDescriptor _maximumRecombination = new PropertyDescriptor("maximumRecombination", beanClass, "getMaximumRecombination", "setMaximumRecombination");
-	    _maximumRecombination.setShortDescription("maximum probability rating of recombining parental genomes per production");
-	    PropertyDescriptor _maximumMutation = new PropertyDescriptor("maximumMutation", beanClass, "getMaximumMutation", "setMaximumMutation");
-	    _maximumMutation.setShortDescription("maximum probability rating of mutation level for reproducation");
-	    PropertyDescriptor _parentCount = new PropertyDescriptor("parentCount", beanClass, "getParentCount", "setParentCount");
-	    _parentCount.setShortDescription("number of abstract parents required to produce children");
 	    PropertyDescriptor _population = new PropertyDescriptor("population", beanClass, "getPopulation", "setPopulation");
 	    _population.setShortDescription("population for this genetic algorithm");
 	    _population.setPropertyEditorClass(PopulationBeanInfo.PopulationEditor.class);
 	    PropertyDescriptor _selection = new PropertyDescriptor("selection", beanClass, "getSelection", "setSelection");
 	    _selection.setShortDescription("the selection scheme to apply for evolving");
-	    PropertyDescriptor _populationGrowth = new PropertyDescriptor("populationGrowth", beanClass, "getPopulationGrowth", "setPopulationGrowth");
+	    PropertyDescriptor _populationGrowth = new PropertyDescriptor("populationGrowth", beanClass, "getPopulationGrowth", null);
 	    _populationGrowth.setShortDescription("the factor by which the population size increases with each generation (or decreases if < 1)");
 	    PropertyDescriptor[] pds = new PropertyDescriptor[] {
-		_childrenCount, _maximumRecombination, _maximumMutation, _parentCount, _population, _selection, _populationGrowth
+		_population, _selection, _populationGrowth
 	    };
 	    return pds;
 	} catch (IntrospectionException ex) {

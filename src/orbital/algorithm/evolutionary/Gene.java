@@ -37,7 +37,10 @@ import orbital.util.InnerCheckedException;
  *   <li id="reproduce">reproduction operators consisting of
  *     <ul>
  *       <li><strong>mutate</strong> that defines how its mutation is done, depending on a probability.</li>
- *       <li><strong>recombine</strong> for recombining genetic information of the parents to generate genes of the children (reproduction).</li>
+ *       <li><strong>recombine</strong> for recombining genetic information of the parents
+ *         to generate genes of the children (reproduction).
+ *         This is the essential characteristic and advantage of genetic algorithms.
+ *       </li>
  *     </ul>
  *   </li>
  *   <li>and a distance measure on genes.</li>
