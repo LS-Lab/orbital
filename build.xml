@@ -20,7 +20,7 @@
     <!-- <property name="build.sysclasspath" value="ignore"/> -->
 
     <target name="init">
-        <property name="version" value="1.1.1"/>
+        <property name="version" value="1.1.2"/>
         <property name="version_brief" value="1.1"/>
 
         <tstamp>
@@ -617,6 +617,14 @@
             <param name="javadoc.link.jdk" value="http://java.sun.com/products/jdk/1.4/docs/api/"/>
             <param name="javadoc.link.jdk.offline" value="true"/>
         </antcall>
+        <antcall target="dist.nodoc.notests">
+        </antcall>
+    </target>
+
+    <target name="dist.nodoc.notests" depends="init, fixCRLF, jar, compile.examples"
+            description="create all distributions (=> ./dist/*.zip), but do not run tests">
+        <mkdir dir="${doc.dest}"/>
+        <mkdir dir="${doc.api.dest}"/>
 
         <mkdir dir="${dist}"/>
         <delete file="${dist}/ap_orbital_rt${version_brief}.zip"/>
