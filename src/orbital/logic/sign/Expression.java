@@ -137,8 +137,6 @@ import orbital.logic.sign.type.Typed;
  * @see ExpressionBuilder#compose(Expression,Expression[])
  * @see ExpressionSyntax#createExpression(String)
  * @todo everywhere distinguish "Term(&Sigma;)" of predicate logic from "<span class="UniversalAlgebra">T</span>(&Sigma;)" general expressions of a term algebra.
- * @todo could saw this package in two parts: the syntax (including types?) to orbital.logic.sign.* and the logic to orbital.logic.imp.*.
- *  Or into dependend packages orbital.logic.sign.* for syntax, orbital.logic.type.* for type-system, orbital.logic.imp.* for logic and semantics.
  */
 public interface Expression extends Typed {
     /**
