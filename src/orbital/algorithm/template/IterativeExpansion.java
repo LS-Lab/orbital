@@ -122,13 +122,14 @@ public class IterativeExpansion extends GeneralSearch implements EvaluativeAlgor
     }
 
     /**
-     * @return a Pair&lt;S,Real&gt; of solution state and new cost of node.
+     * @return a Pair&lt;S,Real&gt; of solution state (if any), and new cost of <code>node</code>.
      * @internal we do not need to set the f-cost, but only tell our caller the new f-cost for updating successors.
      * @todo optimizable by far, also modularize to an OptionIterator?
      * @todo optimize (the performance is embarrassing)
      */
-    private final Pair/*<S,Real>*/ solveByIterativeExpand(Object/*>S<*/ node, Real bound) {
+    private final Pair/*<S,Real>*/ solveByIterativeExpand(final Object/*>S<*/ node, final Real bound) {
 	assert bound.compareTo(Values.ZERO) >= 0 && !bound.isNaN() : "bound " + bound + " >= 0";
+	// the f-cost of node: f(node)
 	Real cost = (Real) getEvaluation().apply(node);
 	System.err.println(node + ",\t" + cost + "/" + bound);
 	if (cost.compareTo(bound) > 0)
@@ -137,30 +138,35 @@ public class IterativeExpansion extends GeneralSearch implements EvaluativeAlgor
 	else if (getProblem().isSolution(node))
 	    return new Pair(node, cost);
 	//@internal optimizable by using a (min) heap instead of a list that is kept in sorted order
-	// here, we currently use a (sorted) list of KeyValuePairs with the key that is used for ordering being the f-cost
-	List/*_<KeyValuePair>_*/ successors = new LinkedList();
+	// here, we currently use a (sorted) list of KeyValuePairs with the f-costs as the key that is used for ordering
+	final List/*_<KeyValuePair>_*/ successors = new LinkedList();
 	{
 	    final Function f = getEvaluation();
-	    for (Iterator i = GeneralSearch.expand(getProblem(), node); i.hasNext(); ) {
+	    for (final Iterator i = GeneralSearch.expand(getProblem(), node); i.hasNext(); ) {
 		final Object o = i.next();
-		successors.add(new KeyValuePair(f.apply(o), o));
+		// pathmax
+		final Object fo = Operations.max.apply(cost, f.apply(o));
+		successors.add(new KeyValuePair(fo, o));
 	    }
 	}
 	if (successors.isEmpty())
-	    return new Pair(null, cost);
+	    return new Pair(null, Values.POSITIVE_INFINITY);
 	// sort successors in order to have fast access to min and second-best min
 	Collections.sort(successors);
-	assert orbital.util.Utility.sorted(successors, null) : "@post Collections.sort";
+	assert orbital.util.Utility.sorted(successors, null) : "Collections.sort@post";
 	while (cost.compareTo(bound) <= 0) {
 	    final KeyValuePair bestPair = (KeyValuePair)successors.get(0);
 	    final Object/*>S<*/ best = bestPair.getValue();
 	    assert !Setops.some(successors, new orbital.logic.functor.Predicate() { public boolean apply(Object o) {return ((Comparable)((KeyValuePair)o).getKey()).compareTo(bestPair.getKey()) < 0;} }) : "best has lowest f-cost";
-	    final Real newbound = (Real) Operations.min.apply(bound, (Real)((KeyValuePair)successors.get(1)).getKey());
-	    System.err.println(node + ",\t" + cost + "/" + bound + "\t expanding to " + best + ",\t" + bestPair.getKey() + "/" + newbound + "\n\t\talternative " + ((KeyValuePair)successors.get(1)).getValue() + ", " + ((KeyValuePair)successors.get(1)).getKey());
+	    final KeyValuePair secondBestPair = (KeyValuePair)successors.get(1);
+	    final Real newbound = (Real) Operations.min.apply(bound, (Real)secondBestPair.getKey());
+	    assert !Setops.some(successors.subList(1, successors.size()), new orbital.logic.functor.Predicate() { public boolean apply(Object o) {return ((Comparable)((KeyValuePair)o).getKey()).compareTo(secondBestPair.getKey()) < 0;} }) : "second best has second lowest f-cost";
+	    System.err.println(node + ",\t" + cost + "/" + bound + "\t expanding to " + best + ",\t" + bestPair.getKey() + "/" + newbound + "\n\t\talternative " + secondBestPair.getValue() + ", " + secondBestPair.getKey());
 	    final Pair solutionAndCostUpdate = solveByIterativeExpand(best, newbound);
 	    final Object/*>S<*/ solution = solutionAndCostUpdate.A;
 	    if (solution != null)
-		return new Pair(solution, cost);
+		// success
+		return new Pair(solution, null);
 	    // circumscription of getEvaluation().set(best, its new cost (from recursive call));
 	    System.err.println(best + ",\t" + solutionAndCostUpdate.B + "/" + newbound + "\treally updated cost to " + solutionAndCostUpdate.B);
 	    successors.remove(0);
