@@ -176,7 +176,8 @@ public interface Substitution extends Function/*<Object, Object>*/ {
      * Interface for matching and replacing terms.
      * <p>
      * Matcher is called to check whether a given term matches it, and can then be used
-     * to replace the matched term with another term, if required.</p>
+     * to replace the matched term with another term, if required.
+     * </p>
      *
      * @version 0.9, 2001/06/21
      * @author  Andr&eacute; Platzer
