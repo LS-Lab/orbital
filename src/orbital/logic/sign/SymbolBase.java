@@ -93,7 +93,7 @@ public class SymbolBase implements Symbol, Serializable {
     public SymbolBase(String signifier, Type type, NotationSpecification notation, boolean variable) {
         this.signifier = signifier;
         this.setType(type);
-        this.notation = notation != null ? notation : new NotationSpecification(Types.arityOf(type.codomain()));
+        this.notation = notation != null ? notation : new NotationSpecification(Types.arityOf(type.domain()));
         this.variable = variable;
     }
 
@@ -200,6 +200,6 @@ public class SymbolBase implements Symbol, Serializable {
     	// short representation
     	return type.equals(Types.TRUTH)
 	    ? getSignifier()
-	    : (getSignifier() + '/' + Types.arityOf(type.codomain()));
+	    : (getSignifier() + '/' + Types.arityOf(type.domain()));
     }
 }

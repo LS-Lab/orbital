@@ -1095,11 +1095,11 @@ public class ClassicalLogic extends ModernLogic {
 	    throw new UnsupportedOperationException();
 	}
 
-	public Type codomain() {
+	public Type domain() {
 	    //@xxx sure?
 	    return x.getType();
 	}
-	public Type domain() {
+	public Type codomain() {
 	    return term.getType();
 	}
 	public int compareTo(Object tau) {

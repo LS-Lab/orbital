@@ -421,8 +421,8 @@ public class LogicParser {
 	    Symbol s = symbolMap.get(signifier, maxType);
 	    if (s != null) {
 		// we already know it due to a quantifier within whose scope we are
-		//@todo use Types.map(Types.product(arityOf(maxType.codomain()), UNIVERSAL), UNIVERSAL) instead to catch even more similarities?
-		Symbol s2 = symbolMap.get(signifier, Types.map(maxType.codomain(), Types.UNIVERSAL));
+		//@todo use Types.map(Types.product(arityOf(maxType.domain()), UNIVERSAL), UNIVERSAL) instead to catch even more similarities?
+		Symbol s2 = symbolMap.get(signifier, Types.map(maxType.domain(), Types.UNIVERSAL));
 		if (!s.equals(s2))
 		    throw new IllegalArgumentException("nonunique names\n\t" + signifier + ":" + maxType + " ressembles\n\t" + s + " of type " + s.getType() +"\n\tand " + s2 + " of type " + s2.getType() + " too much.");
 		else

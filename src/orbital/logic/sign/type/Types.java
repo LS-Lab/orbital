@@ -249,7 +249,7 @@ public final class Types {
      * @see #ABSURD
      * @xxx is NOTYPE=ABSURD? for product,sup,inf,collection and extension they have are equal.
      *  So at most the condition <li>(&forall;<span class="type">&tau;</span>:Type) <span class="type">&perp;</span>&le;<span class="type">&tau;</span></li> might be different.
-     * @internal if we cannot distinguish NOTYPE (as codomain of NonMapType) from ABSURD we would make &iota; and &iota;->string comparable.
+     * @internal if we cannot distinguish NOTYPE (as domain of NonMapType) from ABSURD we would make &iota; and &iota;->string comparable.
      *  NOTYPE is incomparable with all types except itself (and of course ABSURD, and UNIVERSAL)
      *  NOTYPE would not be necessary if Type did not prefer half being a MapType and a check predicate for instanceof MapType were available. But this would seem more ugly.
      * @todo increase comparisonPriority for peformance reasons.
@@ -272,16 +272,16 @@ public final class Types {
      *  <code>null</code>, or an array of length <span class="number">0</span> can be used for zero arguments.
      * @return whether a compositor of type compositorType is <a href="Expression.html#freeAlgebraOfTerms">applicable</a> to the given arguments.
      *  Which means that the arguments are assignable to the required parameter types of this symbol.
-     *  This especially includes whether the number of arguments matches the arity of the compositorTypes' codomain.
-     * @post RES == (typeOf(args) &le; compositorType.codomain()) == (compositorType &le; typeOf(args)<span class="type">&rarr;&#8868;</span>)
+     *  This especially includes whether the number of arguments matches the arity of the compositorTypes' domain.
+     * @post RES == (typeOf(args) &le; compositorType.domain()) == (compositorType &le; typeOf(args)<span class="type">&rarr;&#8868;</span>)
      * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience method</a>
      * @see Type#subtypeOf(Type)
      * @see orbital.logic.functor.Functor.Specification#isApplicableTo(Object[])
-     * @todo introduce isComposableWith(Type,Type) or anything that uses argType.domain() =< compositorType.codomain()
+     * @todo introduce isComposableWith(Type,Type) or anything that uses argType.codomain() =< compositorType.domain()
      * @xxx remove convenience?
      */
     public static final boolean isApplicableTo(Type compositorType, Expression[] args) {
-	return typeOf(args).subtypeOf(compositorType.codomain());
+	return typeOf(args).subtypeOf(compositorType.domain());
     }
 
     // factories
@@ -356,19 +356,19 @@ public final class Types {
 	}
 
 	public String toString() {
-	    return "[" + codomain() + "->" + domain() + "]";
+	    return "[" + domain() + "->" + codomain() + "]";
 	}
 	
 	public int compareToSemiImpl(Type b) {
-	    assert domain() != ABSURD && b.domain() != ABSURD : "s->ABSURD = ABSURD is no map type (and has higher comparisonPriority)";
-	    int coc = codomain().compareTo(b.codomain());
+	    assert codomain() != ABSURD && b.codomain() != ABSURD : "s->ABSURD = ABSURD is no map type (and has higher comparisonPriority)";
 	    int doc = domain().compareTo(b.domain());
+	    int coc = codomain().compareTo(b.codomain());
 	    if (coc == 0 && doc == 0)
 		return 0;
-	    else if ((coc >= 0 && doc <= 0)
+	    else if ((doc >= 0 && coc <= 0)
 		     || b.equals(UNIVERSAL)) //@todo still needed?
 		return -1;
-	    else if (coc <= 0 && doc >= 0)
+	    else if (doc <= 0 && coc >= 0)
 		return 1;
 	    else
 		throw new IncomparableException(this + " is incomparable with " + b);
@@ -516,8 +516,8 @@ public final class Types {
      *   <span class="type">&perp;&rarr;&sigma;</span> = undefined.
      * </div>
      * </p>
-     * @param codomain the {@link Type#codomain() codomain} <span class="type">&sigma;</span>.
-     * @param domain the {@link Type#domain() domain} <span class="type">&tau;</span>.
+     * @param domain the {@link Type#domain() domain} <span class="type">&sigma;</span>.
+     * @param codomain the {@link Type#codomain() codomain} <span class="type">&tau;</span>.
      * @todo assure canonical identity?
      * @xxx really strict? This contradicts the usual case, since ABSURD->t >= s->t' iff t' >= t. Although ABSURD =< s->t'.
      *  By the ususal formal rule (see above) it is
@@ -529,17 +529,17 @@ public final class Types {
      * These do all form exceptions to the ususal subtype relation for map types.
      *  ?
      */
-    public static final Type map(Type codomain, Type domain) {
-	if (domain == ABSURD)
+    public static final Type map(Type domain, Type codomain) {
+	if (codomain == ABSURD)
 	    //@internal because from a (OE nonempty) set there is no (left total) _function_ into the empty set.
-	    // for ABSURD->ABSURD an alternative could in principle be, to return a type of a domain with a single element.
+	    // for ABSURD->ABSURD an alternative could in principle be, to return a type of a codomain with a single element.
 	    // however, in either case, this has an impact on the usual subtype relationship
 	    return ABSURD;
-	if (codomain == ABSURD)
+	if (domain == ABSURD)
 	    // strict? after change also @see MathExpressionSyntax.createAtomic
 	    // or ABSURD->t = t is true in some type systems, = ABSURD in others.
 	    throw new UnsupportedOperationException(ABSURD + " maps not yet supported");
-	return codomain.equals(NOTYPE) ? domain : new MapType(codomain, domain);
+	return domain.equals(NOTYPE) ? codomain : new MapType(domain, codomain);
     }
     /**
      * map: <span class="type">*&times;* &rarr; *</span>; (<span class="type">&sigma;</span>,<span class="type">&tau;</span>) &#8614; <span class="type">&sigma;&rarr;&tau;</span>.
@@ -564,12 +564,12 @@ public final class Types {
      * <span style="float: left; font-size: 200%">&#9761;</span>
      * Note that this type depends on the specific truth values.
      * </p>
-     * @param codomain the {@link Type#codomain() codomain} <span class="type">&sigma;</span>.
+     * @param domain the {@link Type#domain() codomain} <span class="type">&sigma;</span>.
      * @see #map(Type,Type)
      * @todo assure canonical identity?
      */
-    public static final Type predicate(Type codomain) {
-	return map(codomain, TRUTH);
+    public static final Type predicate(Type domain) {
+	return map(domain, TRUTH);
     }
     /**
      * predicate: <span class="type">* &rarr; *</span>; <span class="type">&sigma;</span> &#8614; <span class="type">(&sigma;)</span>.
@@ -598,9 +598,9 @@ public final class Types {
 	private static final long serialVersionUID = 9148024444083534208L;
 	private final Type codom;
 	private final Type dom;
-	public MapType(Type codomain, Type domain) {
-	    this.codom = codomain;
+	public MapType(Type domain, Type codomain) {
 	    this.dom = domain;
+	    this.codom = codomain;
 	}
 
 	public Type codomain() {
@@ -616,10 +616,10 @@ public final class Types {
 	}
 
 	public boolean apply(Object x) {
-	    assert arityOf(codom) > 0 : "map(Type,Type) canonically filters codomain=NOTYPE. But the codomain of " + this + " of " + getClass() + " has arity " + arityOf(codom);
+	    assert arityOf(dom) > 0 : "map(Type,Type) canonically filters domain=NOTYPE. But the domain of " + this + " of " + getClass() + " has arity " + arityOf(dom);
 	    //@xxx originally was  referent instanceof Functor && spec.isConform((Functor) referent)
-	    if (false && arityOf(codom) <= 1)
-		return Functionals.bindSecond(Utility.instanceOf, dom.equals(TRUTH)
+	    if (false && arityOf(dom) <= 1)
+		return Functionals.bindSecond(Utility.instanceOf, codom.equals(TRUTH)
 					      ? Predicate.class
 					      : Function.class).apply(x);
 	    else if (x instanceof Functor) {
@@ -634,17 +634,17 @@ public final class Types {
     }
 
     /**
-     * Base class for non-map types i.e. with void codomain.
+     * Base class for non-map types i.e. with void domain.
      * @author Andr&eacute; Platzer
      * @version 1.1, 2002/10/06
      * @see Types.MapType
      */
     private static abstract class NonMapType extends TypeObject {
 	private static final long serialVersionUID = -6241523127417780697L;
-	public Type codomain() {
+	public Type domain() {
 	    return NOTYPE;
 	}
-	public Type domain() {
+	public Type codomain() {
 	    return this;
 	}
     }
@@ -1339,7 +1339,7 @@ public final class Types {
     /**
      * Lexicographic order on types.
      * <p>
-     * This implementation compares for arity in favor of codomain-type in favor of domain-type.
+     * This implementation compares for arity in favor of domain-type in favor of codomain-type.
      * </p>
      * @see orbital.logic.functor.Functor.Specification#compareTo(Object)
      * @xxx rename, this does not have anything to do with lexicographic
@@ -1371,11 +1371,11 @@ public final class Types {
 		    else if (!(b instanceof MapType))
 			// map types are smaller than product types
 			return -1;
-		    order = compare(a.codomain(), b.codomain());
+		    order = compare(a.domain(), b.domain());
 		    if (order != 0)
 			return order;
 		    else
-			return compare(a.domain(), b.domain());
+			return compare(a.codomain(), b.codomain());
 		} else if ((a instanceof ProductType) || (b instanceof ProductType))
 		    if (!(a instanceof ProductType) || !(b instanceof ProductType))
 			// fall-through

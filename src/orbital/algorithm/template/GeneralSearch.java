@@ -122,7 +122,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
 	//    		solution = search(nodes);
 	//    	} else
 	solution = solveImpl(p);
-    	assert solution == null || p.isSolution(solution) : "post";
+    	assert solution == null || p.isSolution(solution) : "post: solution == null || getProblem().isSolution(solution)";
     	return solution;
     }
 

@@ -64,17 +64,17 @@ public interface Type extends Comparable, Predicate {
     String toString();
     
     /**
-     * Get the codomain <span class="type">&sigma;</span> of a type <span class="type">&sigma;&rarr;&tau;</span>.
+     * Get the domain <span class="type">&sigma;</span> of a type <span class="type">&sigma;&rarr;&tau;</span>.
      * @return the type of the parameter domain.
      *  {@link Types#NOTYPE} if this type does not take parameters.
      */
-    Type codomain();
+    Type domain();
 
     /**
-     * Get the domain <span class="type">&tau;</span> of a type <span class="type">&sigma;&rarr;&tau;</span>.
-     * @return the type of the result value domain.
+     * Get the codomain <span class="type">&tau;</span> of a type <span class="type">&sigma;&rarr;&tau;</span>.
+     * @return the type of the result value codomain.
      */
-    Type domain();
+    Type codomain();
 
     /**
      * Compares two types for subtype inclusions.

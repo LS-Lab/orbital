@@ -445,7 +445,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	private AppliedVariableFormula() {super(null);}
 		
         public Type getType() {
-	    return outer.getType().domain();
+	    return outer.getType().codomain();
         }
         public Signature getSignature() {
 	    return inner.getSignature().union(outer.getSignature());
@@ -513,7 +513,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	private VoidAppliedVariableFormula() {super(null);}
 		
         public Type getType() {
-	    return outer.getType().domain();
+	    return outer.getType().codomain();
         }
         public Signature getSignature() {
 	    return outer.getSignature();
@@ -586,7 +586,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	private BinaryAppliedVariableFormula() {super(null);}
 
         public Type getType() {
-	    return outer.getType().domain();
+	    return outer.getType().codomain();
         }
         public Signature getSignature() {
 	    //@todo could cache signature as well, provided left and right don't change
@@ -675,7 +675,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	private AppliedFormula() {super(null);}
 		
         public Type getType() {
-	    return outerSymbol.getType().domain();
+	    return outerSymbol.getType().codomain();
         }
         public Signature getSignature() {
 	    //@xxx shouldn't we unify with getCompositor().getSignature() in case of formulas representing predicate or function?
@@ -739,7 +739,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	private BinaryAppliedFormula() {super(null);}
 
         public Type getType() {
-	    return outerSymbol.getType().domain();
+	    return outerSymbol.getType().codomain();
         }
         public Signature getSignature() {
 	    //@todo could cache signature as well, provided left and right don't change

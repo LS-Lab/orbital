@@ -101,7 +101,7 @@ abstract class ModernLogic implements Logic {
 
 	Expression RES = composeImpl(compositor, arguments);
 	assert RES != null : "@post RES != null";	     
-	assert RES.getType().equals(compositor.getType().domain()) : "@post " + RES.getType() + "=" + compositor.getType().domain() + "\n\tfor " + RES + " = compose(" + compositor + " , " + MathUtilities.format(arguments) + ")";
+	assert RES.getType().equals(compositor.getType().codomain()) : "@post " + RES.getType() + "=" + compositor.getType().codomain() + "\n\tfor " + RES + " = compose(" + compositor + " , " + MathUtilities.format(arguments) + ")";
 	return RES;
     }
     Expression composeImpl(Expression op, Expression arguments[]) throws ParseException {

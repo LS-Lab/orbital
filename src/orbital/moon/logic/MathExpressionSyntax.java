@@ -142,9 +142,9 @@ public class MathExpressionSyntax implements ExpressionSyntax {
     public Expression createAtomic(Symbol symbol) {
 	if (symbol == null)
 	    throw new NullPointerException("illegal symbol: " + symbol);
-	final Type cod = symbol.getType().codomain();
 	final Type doc = symbol.getType().domain();
-	assert cod != Types.ABSURD : "@xxx currently assume map as strict";
+	final Type cod = symbol.getType().codomain();
+	assert doc != Types.ABSURD : "@xxx currently assume map as strict";
 	final String signifier = symbol.getSignifier();
 	assert signifier != null;
 
@@ -159,10 +159,10 @@ public class MathExpressionSyntax implements ExpressionSyntax {
 	    return new MathExpression(ref, symbol.getType());
 	}
 
-	if (cod.equals(Types.NOTYPE))
-	    if (doc.equals(Types.INDIVIDUAL))
+	if (doc.equals(Types.NOTYPE))
+	    if (cod.equals(Types.INDIVIDUAL))
 		return new MathExpression(valueFactory.symbol(symbol.getSignifier()), symbol.getType());
-	    else if (doc.subtypeOf(Types.objectType(Arithmetic.class)))
+	    else if (cod.subtypeOf(Types.objectType(Arithmetic.class)))
 		return new MathExpression(valueFactory.valueOf(symbol.getSignifier()), symbol.getType());
 	    else
 		throw new IllegalArgumentException("strange (unknown) type " + symbol.getType() + " of " + symbol);
@@ -189,7 +189,7 @@ public class MathExpressionSyntax implements ExpressionSyntax {
 	Object[] arg = new Object[arguments.length];
 	for (int i = 0; i < arg.length; i++)
 	    arg[i] = getValueOf(arguments[i]);
-	return new MathExpression(apply(f, arg), op.getType().domain());
+	return new MathExpression(apply(f, arg), op.getType().codomain());
     }
 
     /**
