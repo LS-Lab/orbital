@@ -1257,6 +1257,7 @@ public class ClassicalLogic extends ModernLogic {
 	 */
 	public Type apply(Type a) {
 	    if (PI_SYNTACTICAL_SUBSTITUTION) {
+		//@internal this is an embedding of symbols into atomic formulas @see Substitutions#lambda embedding
 		final Expression ta = (Expression) Substitutions.getInstance(Collections.singletonList(
 									   Substitutions.createExactMatcher(new ClassicalLogic().createAtomic(x) , new ClassicalLogic().new TypeToFormula().apply(a))
 									   ))
@@ -1448,7 +1449,13 @@ public class ClassicalLogic extends ModernLogic {
      * @attribute computability semi-decidable
      */
     public static final InferenceMechanism RESOLUTION_INFERENCE = new InferenceMechanism("RESOLUTION") {
-	    private final Inference _resolution = new orbital.moon.logic.resolution.Resolution();
+	    private final Inference _resolution = new orbital.moon.logic.resolution.SetOfSupportResolution();
+	    Inference inference() {
+		return _resolution;
+	    }
+	};
+    public static final InferenceMechanism RESOLUTION2_INFERENCE = new InferenceMechanism("RESOLUTION2") {
+	    private final Inference _resolution = new orbital.moon.logic.resolution.SearchResolution();
 	    Inference inference() {
 		return _resolution;
 	    }
@@ -1931,6 +1938,7 @@ public class ClassicalLogic extends ModernLogic {
 		    // really substitute "[x->s(FV(t))]"
 		    assert x instanceof Symbol : "assuming that ?_X1 _A has a Symbol as left component (not the corresponding atomic formula)";
 		    Substitution skolemizer = Substitutions.getInstance(Arrays.asList(new Object[] {
+			//@internal this is an embedding of symbols into atomic formulas @see Substitutions#lambda embedding
 			Substitutions.createExactMatcher(logic.createAtomic((Symbol)x), applied_s)
 		    }));
 
@@ -2006,6 +2014,7 @@ public class ClassicalLogic extends ModernLogic {
 						       x.getType(),
 						       x.getNotation(),
 						       false);
+			//@internal this is an embedding of symbols into atomic formulas @see Substitutions#lambda embedding
 			return Substitutions.createExactMatcher(logic.createAtomic(x),
 								logic.createAtomic(xconst));
 		    }
