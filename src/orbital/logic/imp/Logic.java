@@ -175,6 +175,7 @@ public interface Logic extends ExpressionSyntax {
      */
     Inference inference();
 
+    
     // additional preconditions and postconditions, only
 
     /**

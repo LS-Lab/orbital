@@ -170,14 +170,14 @@ public interface Inference extends Relation {
     /**
      * Apply the inference relation <span class="inference">|~</span>
      * according to the implementation calculus K.
-     * @param w the basic knowledege formulas assumed true for the inference.
+     * @param w the premises, i.e. basic knowledge formulas assumed true for the inference.
      *  Use an array of length <code class="number">0</code> or <code class="keyword">null</code> to denote the inference
      *  "&empty; <span class="inference">|~</span> w"
      *  from the empty set of knowledge &empty;. Only axioms are available then, and thus the result
      *  is equal to that of "<code class="keyword">true</code> <span class="inference">|~</span> d".
      *  This inference from the empty set is abbreviated as "<span class="inference">|~</span> w"
      *  because it will only infer tautologies.
-     * @param d the formula to deduce from w, if possible.
+     * @param d the conclusion claimed, i.e. the formula to deduce from w, if possible.
      * @return whether w <span class="inference">|~</span> d, that is whether d can be inferred from the facts in w, or not.
      * @throws LogicException if an exception related to the logic syntax or semantics or the calculus execution occurs.
      * @pre true

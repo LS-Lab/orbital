@@ -189,6 +189,8 @@ public class SymbolBase implements Symbol, Serializable {
 	if (Logger.global.isLoggable(Level.FINEST)
 	    || getType().equals(Types.TYPE))
 	    return toFullString();
+	if (true)
+	    return toExpressionString();
 	return toShortString();
     }
 
@@ -201,5 +203,8 @@ public class SymbolBase implements Symbol, Serializable {
     	return type.equals(Types.TRUTH)
 	    ? getSignifier()
 	    : (getSignifier() + '/' + Types.arityOf(type.domain()));
+    }
+    private String toExpressionString() {
+    	return getSignifier();
     }
 }

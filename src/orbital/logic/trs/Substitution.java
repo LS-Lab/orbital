@@ -184,6 +184,7 @@ public interface Substitution extends Function/*<Object, Object>*/ {
      * @see Substitutions#createExactMatcher(Object)
      * @see Substitutions#createSingleSidedMatcher(Object, Object)
      * @see Substitutions#createSingleSidedMatcher(Object, Object)
+     * @note in effect this is a local variant of substitution.
      * @todo improve design, document, rename, move?
      */
     public static interface Matcher {
