@@ -41,7 +41,7 @@ import orbital.logic.functor.Predicate;
  * @see java.lang.Class
  * @todo remove type documentation from Symbol, and use Type throughout
  */
-public interface Type {
+public interface Type extends Comparable {
     /**
      * Checks two types for equality.
      * By antisymmetry, two types are equal if they are mutual subtypes of each other.
@@ -75,22 +75,29 @@ public interface Type {
 
     /**
      * Compares two types for subtype inclusions.
-     * Note that this is only a partial order.
-     * @throws IncomparableException if the types are not comparable.
-     * @see #subtypeOf(Type)
-     */
-    //@todo introduce? int compareTo(Object o);
-    /**
-     * Checks whether we are a subtype of <span class="type">&tau;</span>.
+     * Note that this is only a partial order, but it is still consistent with equals.
      * <p>
+     * The subtype relation of types extends to map types as follows
      * <div>
      *   <span class="type">&sigma;&rarr;&tau;</span> &le; <span class="type">&sigma;'&rarr;&tau;'</span>
-     *   :&hArr; <span class="type">&sigma;'</span>&le;<span class="type">&sigma;</span> &and; <span class="type">&tau;</span>&le;<span class="type">&tau;'</span>.
+     *   :&hArr; <span class="type">&sigma;'</span>&le;<span class="type">&sigma;</span> &and; <span class="type">&tau;</span>&le;<span class="type">&tau;'</span>
+     *   &hArr; <span class="type">&sigma;</span>&ge;<span class="type">&sigma;'</span> &and; <span class="type">&tau;</span>&le;<span class="type">&tau;'</span>.
      * </div>
      * This means that functor subtypes have contravariant parameters and covariant return-types.
      * </p>
-     * @param tau the type <span class="type">&tau;</span> to check for being a supertype of us.
-     * @return this &le; <span class="type">&tau;</span>
+     * @param tau the type <span class="type">&tau;</span> to check for being a supertype, subtype of us, or equals.
+     * @return Returns an x &lt; 0 if this &lt; <span class="type">&tau;</span> (this is a proper subtype of <span class="type">&tau;</span>).
+     *  Returns an x &gt; 0 if this &gt; <span class="type">&tau;</span> (this is a proper supertype of <span class="type">&tau;</span>).
+     *  Returns 0 if this = <span class="type">&tau;</span> (which is the case if and only if this &le; <span class="type">&tau;</span> and this &ge; <span class="type">&tau;</span>).
+     * @throws IncomparableException if the types are incomparable.
+     * @see #subtypeOf(Type)
+     */
+    int compareTo(Object tau);
+    /**
+     * Checks whether this type is a subtype of tau.
+     * @return whether this &le; <span class="type">&tau;</span>.
+     *  Especially returns <span class="boolean">false</span> in case of incomparable types.
+     * @see #compareTo(Object)
      * @see java.lang.Class#isAssignableFrom(java.lang.Class)
      */
     boolean subtypeOf(Type tau);

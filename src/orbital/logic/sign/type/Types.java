@@ -7,13 +7,19 @@
 package orbital.logic.imp;
 
 import java.util.Comparator;
+import orbital.util.IncomparableException;
 
 import java.io.Serializable;
 import orbital.logic.functor.Functor;
 import orbital.logic.functor.Predicate;
 import orbital.logic.functor.Function;
 import orbital.logic.functor.Functionals;
+import java.util.List;
 import orbital.util.Utility;
+import orbital.math.MathUtilities;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 import java.beans.IntrospectionException;
 import orbital.util.InnerCheckedException;
@@ -26,6 +32,30 @@ import java.lang.reflect.*;
  * @version 1.1, 2002-09-08
  */
 public final class Types {
+    /**
+     * @see Type#compareTo(Object)
+     * @see Types.TypeObject#compareToSemiImpl(Object)
+     * @todo rename and perhaps even move to Type.
+     */
+    private static final Comparator subtypeOrder = new Comparator() {
+	    public int compare(Object s, Object t) {
+		if ((t instanceof TypeObject) && (s instanceof TypeObject)) {
+		    TypeObject sigma = (TypeObject) s;
+		    TypeObject tau = (TypeObject) t;
+		    try {
+			return sigma.compareToSemiImpl(tau);
+		    }
+		    catch (IncomparableException notImplementedThisWay) {
+			return -tau.compareToSemiImpl(sigma);
+		    }
+		} else if ((s instanceof TypeObject) && (t instanceof Type))
+		    return ((TypeObject)s).compareToSemiImpl((Type)t);
+		else if ((s instanceof Type) && (t instanceof Type))
+		    return ((Type)s).compareTo(t);
+		else
+		    throw new ClassCastException(s.getClass() + ", " + t.getClass());
+	    }
+	};
     /**
      * The universal type <span class="type">&#8868;</span>.
      * It is the top element of the lattice &Tau; of types, has no differentiae and satisfies
@@ -60,10 +90,10 @@ public final class Types {
 	    public Class getFundamental() {
 		return Object.class;
 	    }
-	    public final boolean subtypeOf(Type b) {
+	    public final int compareTo(Object b) {
 		//@todo verify the converse
 		//@internal assume canonical
-		return this == b;
+		return this == b ? 0 : 1;
 	    }
 	    public final boolean apply(Object x) {
 		return true;
@@ -122,8 +152,8 @@ public final class Types {
 	    public Class getFundamental() {
 		return type;
 	    }
-	    public final boolean subtypeOf(Type b) {
-		return true;
+	    public final int compareTo(Object b) {
+		return this == b ? 0 : -1;
 	    }
 	    public final boolean apply(Object x) {
 		return false;
@@ -165,6 +195,25 @@ public final class Types {
     private static abstract class TypeObject implements Type, Serializable {
 	private static final long serialVersionUID = 3881468737970732586L;
 	protected TypeObject() {}
+
+	public final boolean subtypeOf(Type tau) {
+	    try {
+		return compareTo(tau) <= 0;
+	    }
+	    catch (IncomparableException incomparable) {
+		return false;
+	    }
+	}
+	/**
+	 * Semi-implementation of {@link Type#compareTo(Object)}.
+	 * Called from {@link Types#subtypeOrder} with both orders of arguments.
+	 * by types how do not always know themselves
+	 * whether they are a subtype or supertype of another type unknown to them.
+	 * @todo
+	 */
+	protected int compareToSemiImpl(Object tau) {
+	    return compareTo(tau);
+	}
     }
 
     /**
@@ -192,10 +241,19 @@ public final class Types {
 	    return "[" + codomain() + "->" + domain() + "]";
 	}
 	
-	public boolean subtypeOf(Type b) {
-	    return (b.codomain().subtypeOf(codomain())
-		&& domain().subtypeOf(b.domain()))
-		|| b.equals(UNIVERSAL);
+	public int compareTo(Object bb) {
+	    Type b = (Type) bb;
+	    int coc = codomain().compareTo(b.codomain());
+	    int doc = domain().compareTo(b.domain());
+	    if (coc == 0 && doc == 0)
+		return 0;
+	    else if ((coc >= 0 && doc <= 0)
+		     || b.equals(UNIVERSAL)) //@todo still needed?
+		return -1;
+	    else if (coc <= 0 && doc >= 0)
+		return 1;
+	    else
+		throw new IncomparableException();
 	}
     }
 
@@ -246,9 +304,17 @@ public final class Types {
 	    return this;
 	}
 	
-	public boolean subtypeOf(Type tau) {
-	    return (tau instanceof FundamentalType)
-		&& ((FundamentalType)tau).getFundamental().isAssignableFrom(getFundamental());
+	public int compareTo(Object b) {
+	    if (b instanceof FundamentalType) {
+		FundamentalType tau = (FundamentalType)b;
+		if (getFundamental().equals(tau.getFundamental()))
+		    return 0;
+		else if (tau.getFundamental().isAssignableFrom(getFundamental()))
+		    return -1;
+		else if (getFundamental().isAssignableFrom(tau.getFundamental()))
+		    return 1;
+	    }
+	    throw new IncomparableException();
 	}
 
 	public boolean apply(Object x) {
@@ -275,6 +341,8 @@ public final class Types {
 	    return type;
 	}
     }
+
+    // type constructors
     
     /**
      * Get the map type <span class="type">&sigma;&rarr;&tau;</span>.
@@ -368,7 +436,7 @@ public final class Types {
      * Implementation of product types.
      * @author Andr&eacute; Platzer
      * @version 1.1, 2002-09-08
-     * @internal which interface for product types? The answer may be: nothing particular, since the typical operations should rely on subtypeOf and equals.
+     * @internal which interface for product types? The answer may be: nothing particular, since the typical operations should rely on compareTo and equals.
      */
     private static final class ProductType extends TypeObject {
 	private static final long serialVersionUID = -6667362786622508551L;
@@ -410,17 +478,29 @@ public final class Types {
 	    return this;
 	}
 	
-	public boolean subtypeOf(Type tau) {
+	public int compareTo(Object tau) {
 	    if (tau instanceof ProductType) {
 		Type taui[] = ((ProductType)tau).components;
 		if (components.length != taui.length)
-		    return false;
-		for (int i = 0; i < components.length; i++)
-		    if (!components[i].subtypeOf(taui[i]))
-			return false;
-		return true;
-	    } else
-		return tau.equals(UNIVERSAL);
+		    throw new IncomparableException();
+		int cmp = 0;
+		for (int i = 0; i < components.length; i++) {
+		    final int cmpi = MathUtilities.sign(components[i].compareTo(taui[i]));
+		    if (cmpi == 0)
+			// always ok
+			;
+		    else if (cmpi < cmp && cmp == 0)
+			cmp = cmpi;
+		    else if (cmpi > cmp && cmp == 0)
+			cmp = cmpi;
+		    else
+			throw new IncomparableException();
+		}
+		return cmp;
+	    } else if (tau.equals(UNIVERSAL))
+		return 0;
+	    else
+		throw new IncomparableException();
 	}
 
 	public boolean apply(Object x) {
@@ -438,7 +518,240 @@ public final class Types {
 	}
     }
 
+
+    /**
+     * Get the infimum type <span class="type">&#8898;<sub>i</sub>&tau;<sub>i</sub></span>=<span class="type">&tau;<sub>1</sub>&times;&#8230;&times;&tau;<sub>n</sub></span>.
+     */
+    public static final Type inf(Type components[]) {
+	//@internal although we still work on components, t keeps the simplified version of components.
+	List/*<Type>*/ t = Arrays.asList(components);
+	//@internal this canonical simplification also assures strict
+	for (int i = 0; i < components.length; i++) {
+	    Type ti = components[i];
+	    if (ti == null)
+		throw new NullPointerException("illegal arguments containing " + ti);
+	    for (int j = i + 1; j < components.length; j++) {
+		Type tj = components[j];
+		if (ti.compareTo(tj) <= 0)
+		    t.remove(tj);
+	    }
+	}
+	components = (Type[])t.toArray(new Type[0]);
+	switch (components.length) {
+	case 0: return UNIVERSAL;
+	case 1: return components[0];
+	default: return new InfimumType(components);
+	}
+    }
+
+    /**
+     * Implementation of infimum types.
+     * @author Andr&eacute; Platzer
+     * @version 1.1, 2002-10-04
+     */
+    private static final class InfimumType extends TypeObject {
+	private static final long serialVersionUID = -6251593765414274805L;
+	private final Type components[];
+	public InfimumType(Type components[]) {
+	    if (components.length == 0)
+		throw new IllegalArgumentException();
+	    this.components = components;
+	}
+	public boolean equals(Object o) {
+	    return (o instanceof InfimumType) && new HashSet(Arrays.asList(components)).equals(new HashSet(Arrays.asList(((InfimumType)o).components)));
+	}
+	
+	public int hashCode() {
+	    return Utility.hashCodeAll(components);
+	}
+	
+	public String toString() {
+	    StringBuffer sb = new StringBuffer();
+	    sb.append('(');
+	    sb.append(components[0].toString());
+	    for (int i = 1; i < components.length; i++) {
+		sb.append('&');
+		sb.append(components[i]);
+	    }
+	    sb.append(')');
+	    return sb.toString();
+	}
+
+	public Type[] getComponent() {
+	    return components;
+	}
+
+	public Type codomain() {
+	    return VOID;
+	}
+	
+	public Type domain() {
+	    return this;
+	}
+	
+	public int compareTo(Object tau) {
+	    if (equals(tau))
+		return 0;
+	    if (!(tau instanceof SupremumType)) {
+		if (tau instanceof InfimumType)
+		    throw new UnsupportedOperationException("this kind of comparison is not yet supported");
+
+		//@todo either improve or rewrite pure functionally
+		if (compareSubtypeOf(tau))
+		    return -1;
+		else if (compareSupertypeOf(tau))
+		    return 1;
+		else
+		    throw new IncomparableException();
+	    } else
+		throw new UnsupportedOperationException("comparing infimum and supremum types is not yet supported");
+	}
+	private boolean compareSupertypeOf(Object tau) {
+	    for (int i = 0; i < components.length; i++) {
+		if (!(components[i].compareTo(tau) >= 0))
+		    return false;
+	    }
+	    return true;
+	}
+	private boolean compareSubtypeOf(Object tau) {
+	    for (int i = 0; i < components.length; i++) {
+		if (components[i].compareTo(tau) <= 0)
+		    return true;
+	    }
+	    return false;
+	}
+
+	public boolean apply(Object x) {
+	    //@todo rewrite pure functional
+	    for (int i = 0; i < components.length; i++)
+		if (!components[i].apply(x))
+		    return false;
+	    return true;
+	}
+    }
+
+    /**
+     * Get the supremum type <span class="type">&#8899;<sub>i</sub>&tau;<sub>i</sub></span>=<span class="type">&tau;<sub>1</sub>&times;&#8230;&times;&tau;<sub>n</sub></span>.
+     * @todo strict or ignore absurd?
+     */
+    public static final Type sup(Type components[]) {
+	//@internal although we still work on components, t keeps the simplified version of components.
+	List/*<Type>*/ t = Arrays.asList(components);
+	//@internal this canonical simplification also assures strict
+	for (int i = 0; i < components.length; i++) {
+	    Type ti = components[i];
+	    if (ti == null)
+		throw new NullPointerException("illegal arguments containing " + ti);
+	    for (int j = i + 1; j < components.length; j++) {
+		Type tj = components[j];
+		if (ti.compareTo(tj) <= 0)
+		    t.remove(ti);
+	    }
+	}
+	components = (Type[])t.toArray(new Type[0]);
+	switch (components.length) {
+	case 0: return ABSURD;
+	case 1: return components[0];
+	default: return new SupremumType(components);
+	}
+    }
+
+    /**
+     * Implementation of supremum types.
+     * @author Andr&eacute; Platzer
+     * @version 1.1, 2002-10-04
+     */
+    private static final class SupremumType extends TypeObject {
+	private static final long serialVersionUID = 2673832577121308931L;
+	private final Type components[];
+	public SupremumType(Type components[]) {
+	    if (components.length == 0)
+		throw new IllegalArgumentException();
+	    this.components = components;
+	}
+	public boolean equals(Object o) {
+	    return (o instanceof SupremumType) && new HashSet(Arrays.asList(components)).equals(new HashSet(Arrays.asList(((SupremumType)o).components)));
+	}
+	
+	public int hashCode() {
+	    return Utility.hashCodeAll(components);
+	}
+	
+	public String toString() {
+	    StringBuffer sb = new StringBuffer();
+	    sb.append('(');
+	    sb.append(components[0].toString());
+	    for (int i = 1; i < components.length; i++) {
+		sb.append('|');
+		sb.append(components[i]);
+	    }
+	    sb.append(')');
+	    return sb.toString();
+	}
+
+	public Type[] getComponent() {
+	    return components;
+	}
+
+	public Type codomain() {
+	    return VOID;
+	}
+	
+	public Type domain() {
+	    return this;
+	}
+	
+	public int compareTo(Object tau) {
+	    if (equals(tau))
+		return 0;
+	    if (!(tau instanceof SupremumType)) {
+		if (tau instanceof InfimumType)
+		    throw new UnsupportedOperationException("this kind of comparison is not yet supported");
+
+		//@todo either improve or rewrite pure functionally
+		if (compareSubtypeOf(tau))
+		    return -1;
+		else if (compareSupertypeOf(tau))
+		    return 1;
+		else
+		    throw new IncomparableException();
+	    } else
+		throw new UnsupportedOperationException("comparing infimum and supremum types is not yet supported");
+	}
+	private boolean compareSupertypeOf(Object tau) {
+	    for (int i = 0; i < components.length; i++) {
+		if (components[i].compareTo(tau) >= 0)
+		    return true;
+	    }
+	    return false;
+	}
+	private boolean compareSubtypeOf(Object tau) {
+	    for (int i = 0; i < components.length; i++) {
+		if (!(components[i].compareTo(tau) <= 0))
+		    return false;
+	    }
+	    return true;
+	}
+
+	public boolean apply(Object x) {
+	    //@todo rewrite pure functional
+	    for (int i = 0; i < components.length; i++)
+		if (components[i].apply(x))
+		    return true;
+	    return false;
+	}
+    }
+
+    // special types
     
+    /**
+     * Get the set type <span class="type">set(&tau;)</span>=<span class="type">&sigma;&rarr;&omicron;</span>.
+     */
+    // {component}
+    //@todo introduce public static final Type set(Type component); but what's the difference with predicate(component)?
+    // <component>
+    //@todo introduce public static final Type list(Type component);
+    //@todo introduce public static final Type bag(Type component);
 
     //@xxx decide acccessibility (privatize or package-level protect if possible)
     
