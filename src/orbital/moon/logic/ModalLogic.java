@@ -18,6 +18,8 @@ import orbital.logic.trs.*;
 import orbital.moon.logic.bridge.SubstitutionImpl.MatcherImpl;
 import orbital.moon.logic.bridge.SubstitutionImpl.UnifyingMatcher;
 
+import orbital.moon.logic.sign.type.StandardTypeSystem;
+
 import java.util.Collection;
 import java.util.Set;
 import java.util.List;
@@ -93,7 +95,8 @@ public class ModalLogic extends ClassicalLogic {
     }
 
     //@fixme worlds are no individuals, i.e. it should not be the case that WORLD.subtypeOf(individual)
-    private static final Type   WORLD = //@xxx typeSystem.objectType(new Object() {}.getClass(), "world");
+    // this is only possible when lambda has generic type
+    private static final Type   WORLD = //((StandardTypeSystem)typeSystem).specialType("world");
 	Types.INDIVIDUAL;
     private static final Symbol CURRENT_WORLD = new SymbolBase("s", WORLD, null, true);
     private final Formula CURRENT_WORLD_form;
