@@ -8,7 +8,7 @@ package orbital.moon.logic;
 
 import orbital.math.*;
 import orbital.math.functional.*;
-import orbital.logic.imp.ParseException;
+import orbital.logic.sign.ParseException;
 import junit.framework.*;
 
 

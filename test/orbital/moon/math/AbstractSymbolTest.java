@@ -10,7 +10,7 @@ import orbital.math.*;
 import junit.framework.*;
 
 import orbital.moon.logic.MathExpressionSyntax;
-import orbital.logic.imp.ParseException;
+import orbital.logic.sign.ParseException;
 
 /**
  * A sample test case, testing Values.
