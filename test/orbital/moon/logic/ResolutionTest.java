@@ -25,7 +25,7 @@ public class ResolutionTest extends ClassicalLogicTest {
 
     protected void test(String name) {
 	try {
-	    ClassicalLogic.main(new String[] {"-resolution", name});
+	    ClassicalLogic.main(new String[] {"-inference=RESOLUTION_INFERENCE", name});
 	}
 	catch (Throwable ex) {
 	    ex.printStackTrace();
