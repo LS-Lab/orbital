@@ -192,11 +192,19 @@ public class ClassicalLogic extends ModernLogic {
 		    closure = true;
 		else if ("-verbose".equals(arg[option]))
 		    verbose = true;
-		else if ("-resolution".equals(arg[option]))
-		    logic.setInferenceMechanism(RESOLUTION_INFERENCE);
 		else if (arg[option].startsWith("-charset=")) {
 		    charset = arg[option].substring("-charset=".length());
 		    System.out.println("using charset " + charset);
+		} else if (arg[option].startsWith("-inference=")) {
+		    String mechanismDescription = arg[option].substring("-inference=".length()).toUpperCase();
+		    try {
+			InferenceMechanism mechanism = (InferenceMechanism) logic.getClass().getField(mechanismDescription).get(null);
+			logic.setInferenceMechanism(mechanism);
+			System.out.println("Using " + mechanism);
+		    }
+		    catch (NoSuchFieldException ex) {System.err.println("illegal inference mechanism " + mechanismDescription);throw ex;}
+		    catch (SecurityException ex) {System.err.println("could not access inference mechanism " + mechanismDescription);throw ex;}
+		    catch (IllegalAccessException ex) {System.err.println("inaccessible inference mechanism " + mechanismDescription);throw ex;}
 		} else if ("table".equalsIgnoreCase(arg[option])) {
 		    System.out.print("Type expression: ");
 		    System.out.flush();
@@ -295,7 +303,7 @@ public class ClassicalLogic extends ModernLogic {
     /**
      * @todo move content to the ResourceBundle.
      */
-    public static final String usage = "usage: [options] [all|none|properties|fol|<filename>|table]\n\tall\tprove important semantic-equivalence expressions\n\tnone\ttry to prove some semantic-garbage expressions\n\tproperties\tprove some properties of classical logic inference relation\n\tfol\tprove important equivalences of first-order logic\n\n\t<filename>\ttry to prove all expressions in the given file\n\ttable\tprint a function table of the expression instead\n\t-\tUse no arguments at all to be asked for expressions\n\t\tto prove.\noptions:\n\t-normalForm\tcheck the conjunctive and disjunctive forms in between\n\t-closure\tprint the all/existence closures in between\n\t-resolution\tuse resolution instead of semantic inference\n\t-verbose\tbe more verbose (f.ex. print normal forms if -normalForm)\n\t-charset=<encoding>\tthe character set or encoding to use for reading files\n\nTo check whether A and B are equivalent, enter '|= A<->B'";
+    public static final String usage = "usage: [options] [all|none|properties|fol|<filename>|table]\n\tall\tprove important semantic-equivalence expressions\n\tnone\ttry to prove some semantic-garbage expressions\n\tproperties\tprove some properties of classical logic inference relation\n\tfol\tprove important equivalences of first-order logic\n\n\t<filename>\ttry to prove all expressions in the given file\n\ttable\tprint a function table of the expression instead\n\t-\tUse no arguments at all to be asked for expressions\n\t\tto prove.\noptions:\n\t-normalForm\tcheck the conjunctive and disjunctive forms in between\n\t-closure\tprint the universal/existential closures in between\n\t-inference=<inference_mechanism>\tuse ClassicalLogic.<inference_mechanism> instead of semantic inference\n\t-verbose\tbe more verbose (f.ex. print normal forms if -normalForm)\n\t-charset=<encoding>\tthe character set or encoding to use for reading files\n\nTo check whether A and B are equivalent, enter '|= A<->B'";
 
 
     
@@ -1163,6 +1171,16 @@ public class ClassicalLogic extends ModernLogic {
 		return _resolution;
 	    }
 	};
+    /**
+     * Propositional inference.
+     * Inference mechanism specialized for propositional inference.
+     */
+    public static final InferenceMechanism PROPOSITIONAL_INFERENCE = new InferenceMechanism("PROPOSITIONAL") {
+	    private final Inference _propositional = new PropositionalInference();
+	    Inference inference() {
+		return _propositional;
+	    }
+	};
 
     /**
      * Get all possible &Sigma;-Interpretations associating
@@ -1181,6 +1199,7 @@ public class ClassicalLogic extends ModernLogic {
 	// determine the non-fixed propositional part of propositionalSigma
 	final Signature sigmaComb = new SignatureBase(propositionalSigma);
 	for (Iterator it = sigmaComb.iterator(); it.hasNext(); ) {
+	    //@see propositionalOnly(Signature)
 	    final Symbol s = (Symbol)it.next();
 	    final Type type = s.getType();
 	    if (type.equals(Types.TRUTH))
@@ -1219,9 +1238,7 @@ public class ClassicalLogic extends ModernLogic {
 	    };
     } 
 
-
-
-
+    
     /**
      * Formula transformation utilities.
      * @stereotype &laquo;Utilities&raquo;
@@ -1232,6 +1249,7 @@ public class ClassicalLogic extends ModernLogic {
      * @todo introduce ringForm(Formula) transforming to ring normal from (RNF) over {&and;,xor}
      *  which is for arity n
      *  <b>F</b><sub>2</sub>[X<sub>1</sub>,...,X<sub>n</sub>]/(X<sub>1</sub><sup>2</sup>-X<sub>1</sub>,...,X<sub>n</sub><sup>2</sup>-X<sub>n</sub>)
+     * @todo introduce Bryant normal form (alias Shannon/OBDD)
      */
     public static final class Utilities {
 	private static final ClassicalLogic logic = new ClassicalLogic();
@@ -1240,6 +1258,26 @@ public class ClassicalLogic extends ModernLogic {
 	 */
 	private Utilities() {}
     
+	/**
+	 * Checks that a signature only contains propositional logic.
+	 * @throws IllegalArgumentException if sigma contains non-propositional first-order logic
+	 * @todo improve interface (return instead of throw)
+	 */
+	static final void propositionalOnly(Signature sigma) {
+	    for (Iterator it = sigma.iterator(); it.hasNext(); ) {
+		final Symbol s = (Symbol)it.next();
+		final Type type = s.getType();
+		if (type.equals(Types.TRUTH))
+		    // ordinary propositional logic
+		    ;
+		else if (!s.isVariable() && type.subtypeOf(Types.objectType(orbital.math.Scalar.class)))
+		    // forget about interpreting _fixed_ constants @xxx generalize concept
+		    ;
+		else
+		    throw new IllegalArgumentException("a signature of propositional logic should not contain " + s + " of type " + type);
+	    }
+	}
+
 	/**
 	 * Transforms into disjunctive normal form (DNF).
 	 * <p>
@@ -1370,6 +1408,8 @@ public class ClassicalLogic extends ModernLogic {
 	private static Substitution NegationNFTransform;
 
 
+	// clause and clause set handling
+	
 	/**
 	 * The contradictory clause &empty; &equiv; &#9633; &equiv; &perp;.
 	 * <p>
@@ -1466,8 +1506,6 @@ public class ClassicalLogic extends ModernLogic {
 		: singleton(term);
 	}
 
-	// clause and clause set handling
-	
 	private static final Set singleton(Object o) {
 	    Set r = new HashSet();
 	    r.add(o);
