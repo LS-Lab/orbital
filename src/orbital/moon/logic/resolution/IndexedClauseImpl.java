@@ -31,7 +31,7 @@ public class IndexedClauseImpl extends ClauseImpl {
      * @attribute lazy-initialization in {@link #getProbableUnifiables(Formula)}, thereafter update in all methods
      * @internal This is a performance advantage, since the index does not need to be established until the first use. This is similar to but simpler than the following idea: perhaps only activate indexing once this clause gets inserted into a clausalset. Up to this point behave like super does
      */
-    private ClausalIndex index;
+    private ClausalIndex index = null;
 
     /**
      * Copy constructor.
