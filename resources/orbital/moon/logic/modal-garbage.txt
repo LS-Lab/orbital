@@ -5,6 +5,7 @@
 #
 # Inference Rules
 #
+A |- []A					# necessitation "Gödelregel" (for global consequence)
 |- []A->A					# in System T
 ##@fixme |- []A->[][]A				# in System S4
 ##@fixme |- <>A->[]<>A				# in System S5
