@@ -67,11 +67,13 @@ import java.util.logging.Level;
  * @see ExpressionSyntax#createExpression(String)
  * @see #parseFormula()
  * @see #parseFormulas()
+ * @internal This is an SLL(1)=LL(1) syntactic parser extended with local LL(k) lookahead
+ *  and a hand-coded LAG(1) attributed grammar for semantic analysis.
+ * @internal note that all this nested lookahead with a lot of backtracking kills performance.
  * @todo should use precedence and associativity information from
  * orbital.logic.imp.Symbol instead of hard wiring parser.
  * @xxx "disambiguate" language and disallow acception of $p(x) as $p (x) and °p(x) as °p (x) and alike
  * @todo get rid of all this (sometimes) triple exception wrapping and unwrapping by wrapping the final orbital.logic.imp.ParseException inside an unchecked exception once, and unwrap it once
- * @internal note that all this nested lookahead with a lot of backtracking kills performance.
  * @todo join symbiose of MathParser and LogicParser by letting expression() accept term(), directly as well? Instead of just providing two distinct start productions.
  * @todo get rid of all this exception wrapping and unwrapping by wrapping the final orbital.logic.imp.ParseException inside an unchecked exception once, and unwrap it once again? Necessary? There's not that much wrapping.
  */

@@ -97,11 +97,11 @@ public interface ExpressionSyntax extends ExpressionBuilder {
      * @throws IllegalArgumentException if the symbol is illegal for some reasons.
      *  This may occur like in {@link ExpressionBuilder#createAtomic(Symbol)}, and due to the same reasons.
      *  However, most of the causes (like f.ex. spaces in the signifier) cannot occur here anyway,
-     *  except when the parser underlying this method's implementation has errors.
+     *  except when the parser underlying this method's implementation had errors.
      * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      * @note could just as well be renamed to parseExpression(String)
      */
     Expression createExpression(String expression) throws ParseException, IllegalArgumentException;
 
-    //@todo somehow let createExpresion return an expression decomposable into a set (or list) of expressions. Perhaps via Functor.Composite? Instead of introducing an ugly Expression[] createAllExpressions(String expressions).
+    //@todo somehow let createExpresion return an Expression (not a Formula) decomposable into a set (or list) of expressions. Perhaps via Functor.Composite? Instead of introducing an ugly Expression[] createAllExpressions(String expressions).
 }

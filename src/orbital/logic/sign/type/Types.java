@@ -1210,8 +1210,8 @@ public final class Types {
      * @see #set(Type)
      * @see #bag(Type)
      */
-    public static final Type collection(Type component) {
-	return new CollectionType(Collection.class, component, "collection(", ")");
+    public static final Type collection(Type element) {
+	return new CollectionType(Collection.class, element, "collection(", ")");
     }
     /**
      * collection: <span class="type">* &rarr; *</span>; <span class="type">&tau;</span> &#8614; <span class="type">collection(&tau;)</span>.
@@ -1259,8 +1259,8 @@ public final class Types {
      * @see #collection(Type)
      * @see java.util.Set
      */
-    public static final Type set(Type component) {
-	return new CollectionType(Set.class, component, "{", "}");
+    public static final Type set(Type element) {
+	return new CollectionType(Set.class, element, "{", "}");
     }
     /**
      * set: <span class="type">* &rarr; *</span>; <span class="type">&tau;</span> &#8614; <span class="type">{&tau;}</span>.
@@ -1284,8 +1284,8 @@ public final class Types {
      * @see #collection(Type)
      * @see java.util.List
      */
-    public static final Type list(Type component) {
-	return new CollectionType(List.class, component, "<", ">");
+    public static final Type list(Type element) {
+	return new CollectionType(List.class, element, "<", ">");
     }
     /**
      * list: <span class="type">* &rarr; *</span>; <span class="type">&tau;</span> &#8614; <span class="type">&lang;&tau;&rang;</span>.
@@ -1309,7 +1309,7 @@ public final class Types {
      * So each element of a bag has a certain multiplicity.
      * @see #collection(Type)
      */
-    public static final Type bag(Type component) {
+    public static final Type bag(Type element) {
 	throw new UnsupportedOperationException("bag interface is not part of Java 1.4");
     }
     /**
@@ -1337,27 +1337,27 @@ public final class Types {
     private static class CollectionType extends NonMapType {
 	private static final long serialVersionUID = -1113530540489964295L;
 	private final Class collection;
-	private final Type component;
+	private final Type element;
 	private final String toStringPrefix;
 	private final String toStringSuffix;
-	public CollectionType(Class collection, Type component, String toStringPrefix, String toStringSuffix) {
+	public CollectionType(Class collection, Type element, String toStringPrefix, String toStringSuffix) {
 	    this.collection = collection;
-	    this.component = component;
+	    this.element = element;
 	    this.toStringPrefix = toStringPrefix;
 	    this.toStringSuffix = toStringSuffix;
 	}
 	public boolean equals(Object b) {
 	    if (b instanceof CollectionType) {
 		CollectionType tau = (CollectionType)b;
-		return collection.equals(tau.collection) && component.equals(tau.component);
+		return collection.equals(tau.collection) && element.equals(tau.element);
 	    } else
 		return false;
 	}
 	public int hashCode() {
-	    return 13 ^ collection.hashCode() ^ component.hashCode();
+	    return 13 ^ collection.hashCode() ^ element.hashCode();
 	}
 	public String toString() {
-	    return toStringPrefix + component + toStringSuffix;
+	    return toStringPrefix + element + toStringSuffix;
 	}
 	protected int comparisonPriority() {
 	    return 60;
@@ -1367,21 +1367,21 @@ public final class Types {
 		CollectionType tau = (CollectionType)b;
 		return comparisonInternalRepresentation().compareTo(tau.comparisonInternalRepresentation());
 // 		if (!collection.equals(tau.collection))
-// 		    //@xxx return -1 if collection < tau.collection and component < tau.component etc.
+// 		    //@xxx return -1 if collection < tau.collection and element < tau.element etc.
 // 		    throw new UnsupportedOperationException("comparing different collection types");
 // 		assert toStringPrefix.equals(tau.toStringPrefix) && toStringSuffix.equals(tau.toStringSuffix) : "equal collection type constructors imply equal notation"; 
-// 		return component.compareTo(tau.component);
+// 		return element.compareTo(tau.element);
 	    } else
 		throw new IncomparableException(this + " is incomparable with " + b);
 	}
 	public boolean apply(Object x) {
-	    return collection.isInstance(x) && Setops.all((Collection)x, component);
+	    return collection.isInstance(x) && Setops.all((Collection)x, element);
 	}
 	/**
 	 * @internal collection types and product types are different, but they compare in the same way
 	 */
 	private Type comparisonInternalRepresentation() {
-	    return new ProductType(new Type[] {Types.objectType(collection), component});
+	    return new ProductType(new Type[] {Types.objectType(collection), element});
 	}
     }
 
