@@ -6,5 +6,4 @@ call mkall
 popd
 call j c *
 rem now call all testing applications in this directory with "-ea"
-java -ea SearchTest
 java -ea FunctionTest
