@@ -140,6 +140,22 @@ public final class Types {
     }
 
     /**
+     * Guesses the type of an object.
+     * The guess may be wrong.
+     * @todo package protect but share with orbital.moon.logic.
+     */
+    /*private*/public static final Type typeOf(Object args) {
+	if (args == null)
+	    return getDefault().NOTYPE();
+	else if (args instanceof Typed)
+	    return ((Typed)args).getType();
+	else if (args instanceof Typed[])
+	    return typeOf((Typed[])args);
+	else
+	    return null;
+    }
+
+    /**
      * Converts a functor specification to a type (guesses it from the declared type information).
      * (experimental)
      * @xxx we cannot know that ClassicalLogic & Co implement AND as a BinaryFunction, not as a BinaryPredicate<Boolean,Boolean>
