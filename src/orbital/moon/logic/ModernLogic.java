@@ -89,9 +89,12 @@ abstract class ModernLogic implements Logic {
      * @todo provide a hook method for subclasses (they can thus provide normalForm and closure)
      */
     protected static final boolean proveAll(Reader rd, ModernLogic logic, boolean all_true) throws ParseException, IOException {
-	return proveAll(rd, logic, all_true, false, false, false);
+	return proveAll(rd, logic, all_true, false, false, false, false);
     }
-    static final boolean proveAll(Reader rd, ModernLogic logic, boolean all_true, boolean normalForm, boolean closure, boolean verbose) throws ParseException, IOException {
+    /**
+     * @param multiline false to parse each conjecture from a single line, true to parse one single conjecture from multiple lines of the whole reader.
+     */
+    static final boolean proveAll(Reader rd, ModernLogic logic, boolean all_true, boolean normalForm, boolean closure, boolean verbose, boolean multiline) throws ParseException, IOException {
 	DateFormat df = new SimpleDateFormat("H:mm:ss:S");
 	df.setTimeZone(TimeZone.getTimeZone("Greenwich/Meantime"));
 	final long start = System.currentTimeMillis();
@@ -114,9 +117,19 @@ abstract class ModernLogic implements Logic {
 		    break;
 		} else if (ch == '\r')
 		    continue;
-		else if (ch == '\n')
-		    break;
-		else if ((ch == ' ' || ch == '\t')) {
+		else if (ch == '\n') {
+		    if (!multiline) {
+			break;
+		    } else {
+			// leave comment mode
+			comment = null;
+			// add to comment or formula, depending upon whether in comment mode or not
+			if (comment == null)
+			    formula += (char) ch;
+			else
+			    comment += (char) ch;
+		    }
+		} else if ((ch == ' ' || ch == '\t')) {
 		    //@todo why should we want to skip multiple whitespaces, except for trailing comments?
 		    if (comment != null || !wasWhitespace) {
 			wasWhitespace = true;
@@ -140,7 +153,7 @@ abstract class ModernLogic implements Logic {
 			comment += (char) ch;
 		}
 	    }
-			
+
 	    if ("".equals(formula)) {
 		if (comment != null)
 		    System.out.println('#' + comment);
