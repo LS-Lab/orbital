@@ -317,18 +317,14 @@ public class LogicParser {
      * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience method</a>
      */
     private Expression composeWrapper(Token optok, String op, Expression[] arg) throws ParseException {
-	Symbol s = scope.getSymbol(op, typeSystem().map(Types.typeOf(arg), UNIVERSAL), false);
-	if (s == null) {
-	    //@todo remove since this does not occur because we don't use tryGetScope any more.
-	    //@xxx an error is to come up, so already print some information about it
-	    System.err.println(">> in signature ");
-	    for (Iterator i = syntax.coreSignature().iterator(); i.hasNext(); ) {
-		Symbol sym = (Symbol)i.next();
-		System.err.println(Types.toTypedString(sym));
-	    }
-	    System.err.println(">> " + op + " applied to " + MathUtilities.format(arg) + " of type " + Types.typeOf(arg) + " not found");
+	try {
+	    Symbol s = scope.getSymbol(op, typeSystem().map(Types.typeOf(arg), UNIVERSAL), false);
+	    return composeWrapper(optok, s, arg);
 	}
-	return composeWrapper(optok, s, arg);
+	catch (IllegalArgumentException illegalOp) {
+	    throw (IllegalArgumentException)
+		new IllegalArgumentException(newParseException(illegalOp.getMessage(), optok).getMessage()).initCause(illegalOp);
+	}
     }
 
     /**
