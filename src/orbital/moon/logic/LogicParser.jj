@@ -310,7 +310,7 @@ public class LogicParser {
     /**
      * Symbol declaration handling
      * @author Andr&eacute; Platzer
-     * @verions 1.1, 2002-11-01
+     * @version 1.1, 2002-11-01
      */
     private static class Scope {
 	/**
@@ -461,7 +461,7 @@ public class LogicParser {
     /**
      * Symbol handling for the root scope.
      * @author Andr&eacute; Platzer
-     * @verions 1.1, 2002-11-05
+     * @version 1.1, 2002-11-05
      */
     private static class RootScope extends Scope {
 	/**
@@ -594,7 +594,6 @@ TOKEN :
  * @return the set of formulas parsed,
  *  or an array of length 0 if only the empty set of formulas was found.
  * @see #parseFormula()
- * @todo should we really introduce this method into orbital.logic.imp.Logic/ExpressionSyntax? What would be the delimiters of the individual formulas of a set?
  * @internal we require <EOF> to be sure we parsed all, and no syntactic garbage lurks around at the end of the input
  */
 Expression[] parseFormulas() :
@@ -603,10 +602,10 @@ Expression[] parseFormulas() :
     List r = new LinkedList();
     Expression expr;
 }
-{
-    expr = expression() {r.add(expr);} ( "," expr = expression() {r.add(expr);} )* <EOF>
+{   LOOKAHEAD(2)
+    "{" expr = expression() {r.add(expr);} ( "," expr = expression() {r.add(expr);} )* "}" <EOF>
 	{return (Expression[]) r.toArray(new Expression[0]);}
-    | <EOF>
+    | "{" "}" <EOF>
 	{ return new Expression[0];}
 }
 

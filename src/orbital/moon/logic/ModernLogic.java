@@ -232,6 +232,7 @@ abstract class ModernLogic implements Logic {
 	return createSymbol(symbol);
     } 
 
+    
     public Expression compose(Expression compositor, Expression arguments[]) throws ParseException {
 	if (compositor == null)
 	    throw new NullPointerException("illegal arguments: compositor " + compositor + " composed with " + MathUtilities.format(arguments));
@@ -338,6 +339,12 @@ abstract class ModernLogic implements Logic {
 	if (expressions == null)
 	    throw new NullPointerException("null is not an expression");
 	try {
+	    String s = expressions.trim();
+	    if (s.length() == 0)
+		return new Formula[0];
+	    if (!(s.charAt(0) == '{' && s.charAt(s.length()-1) == '}'))
+		//@internal adapt from older syntax
+		expressions = "{" + expressions + "}";
 	    LogicParser parser = new LogicParser(new StringReader(expressions));
 	    parser.setSyntax(this);
 	    Expression B[] = parser.parseFormulas();
