@@ -19,6 +19,7 @@ import orbital.logic.trs.Substitutions;
 
 import orbital.util.Utility;
 import orbital.util.Setops;
+import orbital.util.Pair;
 import orbital.logic.functor.Functionals;
 import java.util.*;
 
@@ -110,7 +111,70 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 		    resolvents.add(R);
 		    if (!factorizedR.equals(R)) {
 			logger.log(Level.FINER, "Adding factorized {3} of resolvent {0} from {1} and {2}.", new Object[] {R, F, G, factorizedR, new Integer(R.size()), new Integer(F.size()), new Integer(G.size())});
-			resolvents.add(factorizedR);
+		    }
+		    resolvents.add(factorizedR);
+		}
+	    }
+	}
+	return resolvents.iterator();
+    }
+
+    public Iterator/*_<Clause>_*/ resolveWithFactors(Clause G) {
+	final Clause F = this;
+	assert F.getFreeVariables().intersection(G.getFreeVariables()).isEmpty() : "@preconditions disjoint variable variants required for resolution";
+	// list views
+	final List/*_<Formula>_*/ listF = new ArrayList(F);
+	final List/*_<Formula>_*/ listG = new ArrayList(G);
+
+	// resolvents will contain all resolvents of F and G
+	Set/*_<Clause>_*/ resolvents = new HashSet();
+	// try to resolve G with F
+	// choose any literal L&isin;F
+	for (ListIterator j = listF.listIterator(); j.hasNext(); ) {
+	    final Formula L = (Formula) j.next();
+	    // choose any literal K&isin;G
+	    for (ListIterator k = listG.listIterator(); k.hasNext(); ) {
+		final Formula K = (Formula) k.next();
+		// resolution
+		final Clause  R = resolventWith(G, L, K);
+		if (R != null) {
+		    resolvents.add(R);
+
+		    // form all subsets of literals (that are unifiable with L) to the right of L that really include L
+		    final Set/*_<Set<Formula>>_*/ factorFLiteralCombinations =
+			Setops.powerset(this.getUnifiables(listF.subList(j.nextIndex(), listF.size()), L));
+		    // form all subsets of literals (that are unifiable with K) to the right of K that really include K
+		    final Set/*_<Set<Formula>>_*/ factorGLiteralCombinations =
+			Setops.powerset(((ClauseImpl)G).getUnifiables(listG.subList(k.nextIndex(), listG.size()), K));
+		    for (Iterator f = factorFLiteralCombinations.iterator(); f.hasNext(); ) {
+			final Set/*_<Formula>_*/ factorFLiterals = (Set)f.next();
+			factorFLiterals.add(L);
+			final Pair  pF = factorize2(factorFLiterals);
+			assert pF != null : "unifiables can be factorized";
+			final ClauseImpl factorF = (ClauseImpl)pF.B;
+			// factorL corresponds to L (is one remaining literal after factorization)
+			final Formula factorL = (Formula) ((Substitution)pF.A).apply(L);
+
+			for (Iterator g = factorGLiteralCombinations.iterator(); g.hasNext(); ) {
+			    final Set/*_<Formula>_*/ factorGLiterals = (Set)g.next();
+			    factorGLiterals.add(K);
+			    if (factorFLiterals.size() < 2 && factorGLiterals.size() < 2) {
+				// factoring neither F nor G simply leads to R which we already have calculated above
+				continue;
+			    }
+			    final Pair  pG = factorize2(factorGLiterals);
+			    assert pG != null : "unifiables can be factorized";
+			    final Clause factorG = (Clause)pG.B;
+			    // factorK corresponds to K (is one remaining literal after factorization)
+			    final Formula factorK = (Formula) ((Substitution)pG.A).apply(K);
+
+			    // resolution of factors
+			    final Clause factorR = factorF.resolventWith(factorG, factorL, factorK);
+			    if (factorR != null) {
+				logger.log(Level.FINER, "Adding factor-resolvent {4} of factors {0} from {1} and {2} from {3}.", new Object[] {factorF, F, factorG, G, factorR});
+			    }
+			    resolvents.add(factorR);
+			}
 		    }
 		}
 	    }
@@ -136,8 +200,8 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 	    return null;
 	} else {
 	    // resolve F and G at complementary literals L resp. K
-	    final Clause Gp = construct((Set) Functionals.map(mu, setWithout(G, K)));
-	    final Clause Fp = construct((Set) Functionals.map(mu, setWithout(F, L)));
+	    final Clause Gp = map(mu, clauseWithout(G, K));
+	    final Clause Fp = map(mu, clauseWithout(F, L));
                         				
 	    logger.log(Level.FINER, "resolving {0} with res {1} from {2} and {3}. not yet factorized. Lengths {4} from {5} and {6}.", new Object[] {new ClauseImpl(Fp),new ClauseImpl(Gp), F, G, new Integer(Fp.size()), new Integer(F.size()), new Integer(G.size())});
 
@@ -174,7 +238,7 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 	    renaming.add(Substitutions.createExactMatcher(logic.createAtomic(s),
 							  logic.createAtomic(new UniqueSymbol(s.getType(), null, !constantify && s.isVariable()))));
 	}
-	final Clause variant = (Clause) Functionals.map(Substitutions.getInstance(renaming), this);
+	final Clause variant = map(Substitutions.getInstance(renaming), this);
 	logger.log(Level.FINEST, "variant of {0} with respect to {1} is\n\t {2} via {3}", new Object[] {this, disjointify, variant, Substitutions.getInstance(renaming)});
 	assert variant.getFreeVariables().intersection(disjointify).isEmpty() : "@postconditions RES.getFreeVariables().intersection(disjointify).isEmpty()";
 	return variant;
@@ -196,6 +260,22 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 	return F.resolveWith(G);
     }
 
+    public Iterator/*_<Clause>_*/ resolveWithVariantFactors(Clause G) {
+	Clause          F = this;
+	final Signature FVariables = F.getFreeVariables();
+	final Signature overlappingVariables = G.getFreeVariables().intersection(FVariables);
+	if (!overlappingVariables.isEmpty()) {
+	    // make a variant of F such that the variables of F and G are disjunct
+	    //@todo optimize would it be quicker if we always build variants, regardless of disjointness or not? Also unique variables would alleviate the need for variant building altogether.
+	    final Clause Fprime = F.variant(overlappingVariables);
+	    logger.log(Level.FINEST, "variant for resolution is {0} instead of {1} with {2} because of overlapping variables {3}", new Object[] {Fprime, F, G, overlappingVariables});
+	    F = Fprime;
+	} else {
+	    logger.log(Level.FINEST, "no variant for resolution of {0} with {1} because of overlapping variables {2}", new Object[] {F, G, overlappingVariables});
+	}
+	return F.resolveWithFactors(G);
+    }
+    
     // proof utilities
 	
     public boolean isElementaryValidUnion(Clause G) {
@@ -239,7 +319,7 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
      */
     private List factorizeImpl(List listF) {
 	Clause previous = null;
-	assert (previous = construct(new HashSet(this))) != null;
+	assert (previous = construct(this)) != null;
 	try {
 	    // for all literals Fi&isin;F
 	    for (ListIterator i = listF.listIterator(); i.hasNext(); ) {
@@ -278,6 +358,53 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 	}
     }
 
+    /**
+     * Factorize a clause by the specified literals.
+     * <p>
+     * Will implement the factorization rule necessary for binary resolution:
+     * <div>{L1,...,Ln} |- {s(L1),...,s(Lk)} with s=mgU({Lk,...,Ln})</div>
+     * Which is the same as
+     * <div>{L1,...,Ln} |- {s(L1),...,s(Ln)} with s=mgU({Lk,...,Ln})</div>
+     * because of the set representation.
+     * </p>
+     * @param literals the literals {Lk,...,Ln} to factorize to a single literal.
+     * @return the factorized clause, or <code>null</code> if no factorization was possible.
+     * @preconditions this.containsAll(literals)
+     */
+    protected Clause factorize(Collection/*_<Clause>_*/ literals) {
+	Pair p = factorize2(literals);
+	return p == null ? null : (Clause)p.B;
+    }
+    /**
+     * Workaround for returning 2 arguments.
+     * @return the pair of substitution and resulting factor, respectively <code>null</code>.
+     */
+    protected Pair/*<Substitution,Clause>*/ factorize2(Collection/*_<Clause>_*/ literals) {
+	assert this.containsAll(literals) : "can only factorize literals contained in this clause";
+	if (literals.size() < 2) {
+	    //@internal just a speedup optimization
+	    return new Pair(Substitutions.id, this);
+	}
+	Clause previous = null;
+	assert (previous = construct(this)) != null;
+	final Substitution mu = Substitutions.unify(literals);
+	assert this.equals(previous) : "modifications during factorization work on copies, and leave the original clause unmodified";
+	if (mu == null) {
+	    return null;
+	} else {
+	    // factorize
+	    //@todo optimize by removing all (but one in) literals from clause prior to applying mu
+	    // apply unification and remove duplicates, but convert to list again.
+	    Clause factor = map(mu, this);
+	    assert this.equals(previous) : "modifications during factorization work on copies, and leave the original clause unmodified";
+	    if (logger.isLoggable(Level.FINEST)) {
+		logger.log(Level.FINEST, "factorized {1} from {0} by unifying {2} by {3}", new Object[] {construct(this), construct(factor), mu, literals});
+	    }
+	    return new Pair(mu, factor);
+	}
+    }
+
+    
     public boolean subsumes(Clause D) {
 	if (size() > D.size())
 	    return false;
@@ -330,7 +457,56 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
     }
 
 
+    // lookup methods
+
+    public Iterator/*_<Formula>_*/ getProbableUnifiables(Formula L) {
+	//@todo use indexing for far better implementation
+	return iterator();
+    }
+
+    public Set/*_<Formula>_*/ getUnifiables(Formula L) {
+	return getUnifiables(this, L);
+    }
+    
+    /**
+     * Get all literals contained in C that unify with
+     * L. <p>Implementations may use indexing or links to estimate the
+     * clauses to return very quickly.</p>
+     * @preconditions C&sube;this
+     * @postconditions RES = {F&isin;this &exist;mgU{L,F}}
+     * @see #getProbableUnifiables(Formula)
+     */
+    public Set/*_<Formula>_*/ getUnifiables(Collection/*_<Formula>_*/ C, Formula L) {
+	Set/*_<Formula>_*/ r = new HashSet();
+	for (Iterator i = C.iterator(); i.hasNext(); ) {
+	    Formula F = (Formula)i.next();
+	    //@todo optimizable, we could remember the unifier instead of recalculating it lateron (f.ex. during factorization)
+	    if (Substitutions.unify(Arrays.asList(new Formula[] {L,F})) != null) {
+		r.add(F);
+	    }
+	}
+	return r;
+    }
+    
+
     // Diverse utilities
+
+    /**
+     * @see Functionals#map
+     */
+    private Clause map(Function f, Clause c) {
+	Set fc = (Set) Functionals.map(f, c);
+	return fc instanceof Clause ? (Clause)fc : construct(fc);
+    }
+
+    /**
+     * @return S\{x} as a new clause.
+     */
+    private Clause clauseWithout(Clause S, Object x) {
+	Clause Sp = construct(S);
+	Sp.remove(x);
+	return Sp;
+    }
 
     /**
      * @return S\{x} as a new set.
