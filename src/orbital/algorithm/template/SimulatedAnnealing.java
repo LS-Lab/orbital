@@ -59,13 +59,13 @@ import java.util.logging.Level;
  *        </li>
  *    </div>
  *  </dd>
- *  <dt>(behaviour at fixed temperature T)</dt>
+ *  <dt>(behaviour at fixed temperature T, "equilibrium")</dt>
  *  <dd>
  *    If &exist;lim<sub>n&rarr;&infin;</sub> <b>P</b>(s<sub>n</sub>=s)
  *    and |&#8899;<sub>a&isin;A(s)</sub>t(s,a)|&le;b is bounded,
  *    and the selection of next states occurs uniformly (each with probability 1/b)
  *    and <b>P</b>(s&rarr;s&#697;) / <b>P</b>(s&#697;&rarr;s) = <b>e</b><sup>-f(s&#697;)</sup> / <b>e</b><sup>-f(s)</sup>
- *    <br />Then <b>P</b>(s<sub>n</sub>=s) &rarr; <b>e</b><sup>-f(s)</sup> / &sum;<sub>s&#697;&isin;S</sub> (<b>e</b><sup>-f(s&#697;)</sup>) (n&rarr;&infin;)
+ *    <br />Then <b>P</b>(s<sub>n</sub>=s) &rarr; <b>e</b><sup>-f(s)</sup> / &sum;<sub>s&#697;&isin;S</sub> <b>e</b><sup>-f(s&#697;)</sup> (n&rarr;&infin;)
  *    which does <em>only</em> depend on f(s).
  *    <div>
  *      Where
@@ -77,13 +77,16 @@ import java.util.logging.Level;
  *  </dd>
  * </dl>
  * <p>
- * lim<sub>n&rarr;&infin;</sub> <b>P</b>(s<sub>n</sub>=s) converges with any
+ * lim<sub>n&rarr;&infin;</sub> <b>P</b>(s<sub>n</sub>=s) converges independent from the
  * initial state s<sub>0</sub> if the Markov system underlying the state transition
- * is ergodic (i.e. from any s&isin;S to any t&isin;S the is a path from s to t
- * with non-zero transition probability). It also converges if the Markov system
- * is homogenous (i.e. transition probabilities independent from time) and aperiodic.
+ * is <dfn>ergodic</dfn> (the graph spanned by all transitions with probability &gt;0 is connected
+ * i.e. from any s&isin;S to any t&isin;S the is a path from s to t
+ * with non-zero transition probability). At least, it also converges if the Markov system
+ * is <dfn>homogenous</dfn> (i.e. transition probabilities are independent from time) and
+ * <dfn>aperiodic</dfn> (i.e. &not;&exist;n&isin;<b>N</b> P<sup>n</sup>=I, with P&isin;[0,1]<sup>S&times;S</sup>
+ * being the matrix of transition probabilities).
  * Also, for example, the condition with the acceptance probability is satisfied
- * by simulated annealing, and thus metropolis search
+ * by simulated annealing, and thus metropolis search.
  * (metropolis search is simulated annealing at a <em>fixed</em> temperature T).
  * </p>
  *

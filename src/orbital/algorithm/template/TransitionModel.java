@@ -14,13 +14,13 @@ import java.util.Iterator;
  * consists of a transition model.
  * <p>
  * A <dfn>transition model</dfn> is a mathematical model for (formal) systems with states
- * and state changes.
+ * and action-driven state changes.
  * It forms a rewrite system, perhaps with additional probability information.
  * A transition model is characterized by
  * <ul>
  *  <li>a state space S.</li>
  *  <li>a set of actions A.</li>
- *  <li>sets of actions A(s)&sube;A applicable in each state s&isin;S. Usually A(s) = {s&#697;&isin;S &brvbar; <b>P</b>(s&#697;|s,a)&gt;0}.</li>
+ *  <li>sets of actions A(s)&sube;A applicable in each state s&isin;S. Usually A(s) = {a&isin;A &brvbar; &exist;s&#697;&isin;S\{&perp;} <b>P</b>(s&#697;|s,a)&gt;0}.</li>
  *  <li>
  *    the action-dependent (stochastic) <dfn>transition relation</dfn>
  *    <div style="text-align:center">&tau;:A&rarr;<big>(</big>S&times;S&rarr;[0,1]<big>)</big></div>
@@ -54,9 +54,8 @@ import java.util.Iterator;
  *        <div>&tau;(a)(s,s&#697;) := <b>P</b>(s&#697;|s,a)</div>
  *      </li>
  *    </ul>
- *    As a notation for a transition from s&isin;S to s&#697;&isin;S under the
- *    action a&isin;A(s) with a transition probability p&isin;[0,1] we sometimes
- *    use
+ *    As notation for a transition from s&isin;S to s&#697;&isin;S under the
+ *    action a&isin;A(s) with transition probability p&isin;[0,1] we sometimes use
  *    <div style="text-align: center"> <img src="doc-files/transition_notation.png" /> <!-- s &rarr;<sup>p</<sup><sub>a</sub> s&#697;--> </div>
  *    here.
  *  </li>
@@ -119,21 +118,29 @@ public interface TransitionModel/*<A,S, O extends Option>*/ {
     //int hashCode();
 
     /**
-     * Get the applicable actions of a state.
+     * Get the applicable actions at a state.
+     * <p>
+     * Intuitively, applicable actions are those that result in a valid
+     * transition. So for a state, the applicable actions are the only
+     * actions relevant for leaving that state with any transition
+     * (including transitions that lead back to the state the
+     * transition just started in).
+     * </p>
      * <p>
      * For several reasons (including performance) it is widely recommended that
-     * A(s) = {s&#697;&isin;S &brvbar; <b>P</b>(s&#697;|s,a)&gt;0}.
+     * <div style="text-align: center">A(s) = {a&isin;A &brvbar; &exist;s&#697;&isin;S\{&perp;} <b>P</b>(s&#697;|s,a)&gt;0}
+     * = {a&isin;A &brvbar; &tau;(a)(s,&perp;)&ne;1}</div>
      * In fact, this is not a <em>strict</em> requirement, if the computation would be far too
      * expensive. However, the TransitionModel implementation would then have to deal with
      * cases where an action was chosen that has later been found out to be inapplicable,
      * contrary to the initial guess of {@link #actions(Object)}.
-     * Since this may result in rather messy implementations, reliefing this requirement
+     * Since this may result in rather messy implementations, relieving this requirement
      * should generally be limited to very specific and well documented cases.
      * </p>
      * @param state the state s&isin;S whose applicable actions to determine.
      * @pre s&isin;S
      * @return A(s)&sube;A, a list of alternative actions applicable in the state s&isin;S.
-     *  The order of the list is decisive because for actions with equal costs
+     *  The order of the list can be decisive because for actions with equal costs
      *  the first will be preferred.
      * @post RES=A(s)
      * @see GeneralSearchProblem#expand(GeneralSearchProblem.Option)
@@ -142,15 +149,23 @@ public interface TransitionModel/*<A,S, O extends Option>*/ {
     Iterator/*<A>*/ actions(Object/*>S<*/ state);
 	
     /**
-     * Get all transitions possible at a state under a given action.
+     * Get all transitions possible from a state under a given action.
+     * <p>
+     * Intuitively, those are the only relevant states which can be reached
+     * by any transitions (from the given state under the given action) at all.
+     * </p>
      * <p>
      * For performance reasons it is recommended that this method does only return
-     * those states s&#697;&isin;S that can be reached (i.e. where <b>P</b>(s&#697;|s,a) &gt; 0).
+     * those states s&#697;&isin;S that can be reached
+     * (i.e. where <b>P</b>(s&#697;|s,a) &gt; 0).
      * Although this is not strictly required if it would be too expensive to determine.
      * </p>
      * <p>
-     * Note that the resulting iterator will never be empty since the transition probabilities
-     * sum up 1, even though the next state may not differ from the previous state.
+     * Note that the resulting iterator will never be empty since the
+     * transition probabilities sum up 1 (or integrate up to 1 in the
+     * case of a contininuous transition probability distribution),
+     * even though the next state may not differ from the previous
+     * state.
      * </p>
      * @param state the state s&isin;S.
      * @param action the action a&isin;A(s) that must be applicable in state s&isin;S.
@@ -161,7 +176,7 @@ public interface TransitionModel/*<A,S, O extends Option>*/ {
      *  when performing the action a in the state s;
      *  and probability <b>P</b>(s&#697;|s,a)&gt;0 of reaching state s&#697;
      *  when performing the action a in the state s.
-     * @post RES={&lang;s&#697;,&tau;(a)(s,s&#697;)&rang;&isin;S&times;[0,1] &brvbar; s&#697;&isin;S &and; &tau;(a)(s,s&#697;)&gt;0} &and; &sum;<sub>s&#697;&isin;S</sub> &tau;(a)(s,s&#697;) = 1 &and; RES.hasNext()
+     * @post RES={&lang;s&#697;,&tau;(a)(s,s&#697;)&rang;&isin;S&times;[0,1] &brvbar; &tau;(a)(s,s&#697;)&gt;0} &and; &sum;<sub>s&#697;&isin;S</sub> &tau;(a)(s,s&#697;) = 1 &and; RES.hasNext()
      */
     Iterator/*<O>*/ transitions(Object/*>S<*/ state, Object/*>A<*/ action);
 	
