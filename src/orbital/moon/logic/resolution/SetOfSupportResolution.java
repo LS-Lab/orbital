@@ -29,7 +29,7 @@ public class SetOfSupportResolution extends ResolutionBase {
     /**
      * Whether to use indexing for the clausal sets knowledgebase and set of support.
      */
-    private static final boolean INDEXING = false;
+    static final boolean INDEXING = true;
 
     /**
      * Perform a <em>fair</em> selection of one clause out of S.
