@@ -208,15 +208,19 @@ public interface TypeSystem {
      * @param components the components <span class="type">&tau;<sub>i</sub></span> of the product type.
      * @xxx what's the relationship of the tuple product type and the product type &Pi;x:s.t?
      * @xxx and to the sum type to infimum type?
+     * @see #list(Type)
      */
     public Type product(Type components[]);
     /**
-     * product: <span class="type">*&times;...&times;* &rarr; *</span>; <big>(</big><span class="type">&tau;<sub>i</sub></span><big>)</big> &#8614; <span class="type">&tau;<sub>1</sub>&times;&#8230;&times;&tau;<sub>n</sub></span>.
+     * product: <span class="type">&lang;*&rang; &rarr; *</span>;
+     * <big>(</big><span class="type">&tau;<sub>i</sub></span><big>)</big> &#8614; <span class="type">&prod;<sub>i</sub>&tau;<sub>i</sub></span> = <span class="type">&tau;<sub>1</sub>&times;&#8230;&times;&tau;<sub>n</sub></span>.
      * <p>
      * The product type constructor.
      * </p>
      * @postconditions RES == OLD(RES)
      * @see #product(Type[])
+     * @todo what exactly is the difference/commons of <span class="type">&lang;*&rang;</span> and
+     *  <span class="type">*&times;...&times;*</span>?
      */
     Function/*<Type[],Type>*/ product();
 
@@ -251,7 +255,8 @@ public interface TypeSystem {
      */
     public Type inf(Type components[]);
     /**
-     * inf: <span class="type">*&times;...&times;* &rarr; *</span>; <big>(</big><span class="type">&tau;<sub>i</sub></span><big>)</big> &#8614; <span class="type">&#8898;<sub>i</sub>&tau;<sub>i</sub></span> = <span class="type">&tau;<sub>1</sub>&cap;&#8230;&cap;&tau;<sub>n</sub></span>.
+     * inf: <span class="type">{*} &rarr; *</span>;
+     * <big>(</big><span class="type">&tau;<sub>i</sub></span><big>)</big> &#8614; <span class="type">&#8898;<sub>i</sub>&tau;<sub>i</sub></span> = <span class="type">&tau;<sub>1</sub>&cap;&#8230;&cap;&tau;<sub>n</sub></span>.
      * <p>
      * The infimum type constructor.
      * </p>
@@ -293,7 +298,8 @@ public interface TypeSystem {
     public Type sup(Type components[]);
 
     /**
-     * sup: <span class="type">*&times;...&times;* &rarr; *</span>; <big>(</big><span class="type">&tau;<sub>i</sub></span><big>)</big> &#8614; <span class="type">&#8899;<sub>i</sub>&tau;<sub>i</sub></span> = <span class="type">&tau;<sub>1</sub>&cup;&#8230;&cup;&tau;<sub>n</sub></span>.
+     * sup: <span class="type">{*} &rarr; *</span>;
+     * <big>(</big><span class="type">&tau;<sub>i</sub></span><big>)</big> &#8614; <span class="type">&#8899;<sub>i</sub>&tau;<sub>i</sub></span> = <span class="type">&tau;<sub>1</sub>&cup;&#8230;&cup;&tau;<sub>n</sub></span>.
      * <p>
      * The supremum type constructor.
      * </p>
@@ -375,6 +381,7 @@ public interface TypeSystem {
      * Lists are ordered (but not sorted) and not limited to containing unique elements.
      * @see #collection(Type)
      * @see java.util.List
+     * @see #product(Type[])
      */
     public Type list(Type element);
     /**
