@@ -21,7 +21,8 @@ import util.Basic;
  * I still do not know the number of moves neccessary to reach every state possible.
  * </p>
  * <p>
- * For a 3 by 3 cube the state space is said to be of size 4.3*10^19.
+ * For a 3 by 3 cube the (reachable) state space is of size
+ * 2<sup>12</sup>·12!·3<sup>8</sup>·8!/12 &asymp; 4.3*10<sup>19</sup>.
  * An upper bound for the size of the state space reachable by performing at most d actions is:
  * <center>1 + (6*2) + (6*2)*11<sup>1</sup> + (6*2)*11<sup>2</sup> + ... + (6*2)*11<sup>n-1</sup> = 1 + (6*2) * 11<sup>n-1</sup> / (11 - 1)</center>
  * Because<ol>
