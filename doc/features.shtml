@@ -26,40 +26,46 @@ counter part with numerical and symbolic mathematics, as well as functional
 evaluation and several algorithmic templates including search and planning.</p>
 <h3>These packages include:</h3>
 <ol>
-  <li>mathematical, numerical and statistical utilities, and conceptual
+  <li>mathematical, algebraic, numerical, and statistical utilities, and conceptual
     interfaces for mathematics.</li>
   <li>Enhanced numerical mathematics, and even symbolic mathematical
     calculations are possible.</li>
   <li><i>Arithmetic objects</i> with uniform mathematical operations like +, -,
     *, /, ^. This enables us to use a uniform calculation with various
-    arithmetic implementation objects which include matrices, vectors and scalar
-    types like integers, rational, real and complex numbers. Even full symbolic
-    calculations and modulo calculations are now possible.</li>
+    arithmetic implementation objects. Those implementations include tensors, matrices, vectors,
+    and scalar types like integers, rationals, real and complex numbers,
+    (multivariate) polynomials, quotients, and fractions. Even full symbolic
+    calculations, also combined with modulo calculations are possible.
+    For example, quotients of multivariate polynomials rely on Groebner bases.
+  </li>
   <li>Mathematical functions are generalized to fit the requirements of
     functional operations and allow symbolic derivation and sometimes
-    integration. They now extend the basic logical functors instead to maximize
-    compatibility. Additionally mathematical functions can be handled like
-    arithmetic objects whenever this general view is of advantage.</li>
-  <li>Several algorithmic templates are provided which is extremely helpful for
-    rapid prototyping. Those algorithmic templates also include the most
+    integration. They extend the basic logical functors to maximize
+    compatibility. Additionally, mathematical functions can be handled like
+    arithmetic objects whenever this more general view is of advantage.
+    For example, you can simple subtract functions from one another.
+  </li>
+  <li>Several algorithmic templates are provided that are extremely helpful for
+    rapid prototyping. Those algorithmic templates also include several (about 10)
     important (blind and heuristic) state space search algorithms. Even some
-    implementations of Planning algorithms are provided.</li>
-  <li>Term rewrite sytem facility achieved with fixed point operations of term
-    unification and substitution.</li>
-  <li>a generic framework for logical systems using extended logic with
-    classical operators. Note that this is a framework in the sense of logic,
+    implementations of planning algorithms are provided.</li>
+  <li>a generic framework for logical systems. It includes implementations
+    for classical logic and fuzzy logic. The classical logic part also supports
+    resolution. Note that this is a framework in the sense of logic,
     but not in the sense of software architecture. Therefore it provides you
     with all logical operations without restricting the architecture of your
     application.</li>
-  <li>algorithmic template frameworks including evolutionary (genetic) algorithm
-    implementation</li>
+  <li>Term rewrite sytem facility achieved with fixed point operations of term
+    unification and substitution.</li>
+  <li>algorithmic template frameworks including (about 5) implementations of 
+    evolutionary and genetic algorithms.</li>
   <li>A parser for logical and mathematical expressions including &#955;-operator
     notation of &#955;-calculus.</li>
   <li>functional evaluation with functor interfaces and function notation
     classes.</li>
   <li>a generic board game abstraction framework.</li>
-  <li>graphical user interface (GUI) utilities and AWT-Extension Java Beans.</li>
-  <li>lightweight 3D worlds graphics engine.</li>
+  <li>graphical user interface (GUI) utilities and Java Beans.</li>
+  <li>lightweight 3D worlds vector graphics engine.</li>
   <li>I/O-Extensions.</li>
   <li>Scanner&amp;Parser base classes for simple parsing jobs.</li>
   <li>some document encoding and formatting classes.</li>
