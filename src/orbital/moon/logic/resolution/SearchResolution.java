@@ -10,24 +10,14 @@ import orbital.moon.logic.ClassicalLogic.Utilities;
 
 import orbital.logic.imp.*;
 import orbital.logic.sign.*;
-import orbital.logic.sign.type.Types;
-import orbital.logic.sign.Expression.Composite;
 
 import orbital.algorithm.template.GeneralSearchProblem;
 import orbital.algorithm.template.*;
 import orbital.logic.functor.*;
-import orbital.logic.trs.Substitution;
-import orbital.logic.trs.Substitutions;
-
-import orbital.moon.logic.bridge.SubstitutionImpl.UnifyingMatcher;
 
 import orbital.util.SequenceIterator;
 import orbital.util.StreamMethod;
-import orbital.util.Setops;
 import java.util.*;
-
-import orbital.logic.functor.Functor.Specification;
-import orbital.logic.sign.concrete.Notation.NotationSpecification;
 
 import orbital.math.Values;
 
@@ -39,11 +29,6 @@ import java.util.logging.Level;
  *
  * @version 0.7, 2001/07/30
  * @author  Andr&eacute; Platzer
- * @todo introduce "class Clause extends Set<Formula>" adding more type-safety for clauses and sets of clauses which are both sets.
- * @todo Skolem-Normalfrom mit KNF-Matrix (mit Erweiterung der Signatur)
- * @todo schlaues pränex-Normalform Bilden, um einfacher skolemisieren zu können. Minimiere die Anzahl der Allquantoren vor den Existenzquantoren.
- *  etwa &exist;x&forall;y P &and; &exist;z&forall;w Q  == &exist;x&exist;z &forall;y&forall;w P&and;Q statt == &exist;x&forall;y&exist;z&forall;w P&and;Q denn im ersteren Fall skolemisiert x zu a und z zu b, im zweiteren aber x zu a und z zu f(y).
- *  Oder wähle alternativen (einfacheren?) TRS-Algorithmus Ü 7.95
  * @todo use do/undo instead of copying the whole set of derived formulas every time.
  * @todo use optimizations of "Deduktions- und Inferenzsysteme"
  * @internal proving F |= A->B and F |= B->A separately often is far more performant than proving F |= A<->B.
