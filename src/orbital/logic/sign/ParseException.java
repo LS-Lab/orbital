@@ -4,7 +4,7 @@
  * Copyright (c) 1998-2002 Andre Platzer. All Rights Reserved.
  */
 
-package orbital.logic.imp;
+package orbital.logic.sign;
 
 /**
  * An exception thrown if an expression could not be parsed as desired.

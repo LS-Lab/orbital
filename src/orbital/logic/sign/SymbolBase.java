@@ -4,15 +4,16 @@
  * Copyright (c) 2001-2002 Andre Platzer. All Rights Reserved.
  */
 
-package orbital.logic.imp;
+package orbital.logic.sign;
 
+import orbital.logic.sign.type.Type;
 import orbital.logic.functor.Notation.NotationSpecification;
 import java.io.Serializable;
 
 import orbital.logic.functor.Notation;
 
 import orbital.util.Utility;
-import orbital.logic.imp.Symbol;
+import orbital.logic.sign.type.Types;
 
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -151,7 +152,7 @@ public class SymbolBase implements Symbol, Serializable {
 	a = Utility.compare(getNotation(), b.getNotation());
 	if (a != 0)
 	    return a;
-	a = orbital.moon.logic.imp.StandardTypeSystem.LEXICOGRAPHIC.compare(getType(), b.getType());
+	a = orbital.moon.logic.sign.type.StandardTypeSystem.LEXICOGRAPHIC.compare(getType(), b.getType());
 	return a != 0 ? a : Utility.compare(getSignifier(), b.getSignifier());
     } 
 

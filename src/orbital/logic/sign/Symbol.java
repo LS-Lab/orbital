@@ -4,9 +4,11 @@
  * Copyright (c) 2001-2002 Andre Platzer. All Rights Reserved.
  */
 
-package orbital.logic.imp;
+package orbital.logic.sign;
 
 import orbital.logic.trs.Variable;
+import orbital.logic.sign.type.Typed;
+import orbital.logic.sign.type.Type;
 import orbital.logic.functor.Notation.NotationSpecification;
 
 /**

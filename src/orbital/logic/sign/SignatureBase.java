@@ -4,11 +4,14 @@
  * Copyright (c) 2001 Andre Platzer. All Rights Reserved.
  */
 
-package orbital.logic.imp;
+package orbital.logic.sign;
 
+import orbital.logic.sign.type.Type;
 import java.util.SortedSet;
 import orbital.util.DelegateSortedSet;
 import java.util.Collection;
+
+import orbital.logic.sign.type.Types;
 
 import java.util.Iterator;
 import java.util.TreeSet;
@@ -17,21 +20,10 @@ import java.util.Collections;
 import orbital.util.Setops;
 import orbital.util.InnerCheckedException;
 import java.util.Collection;
-import orbital.logic.imp.Signature;
 import java.util.Set;
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.Comparator;
-import orbital.logic.imp.Type;
-import orbital.logic.imp.Symbol;
-import java.util.Collection;
-import orbital.logic.imp.Signature;
-import java.util.Set;
-import java.util.Iterator;
-import java.util.SortedSet;
-import java.util.Comparator;
-import orbital.logic.imp.Type;
-import orbital.logic.imp.Symbol;
 
 /**
  * A basic signature implementation.

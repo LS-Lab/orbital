@@ -4,8 +4,9 @@
  * Copyright (c) 1999-2001 Andre Platzer. All Rights Reserved.
  */
 
-package orbital.logic.imp;
+package orbital.logic.sign;
 
+import orbital.logic.sign.type.Type;
 import java.util.SortedSet;
 
 /**

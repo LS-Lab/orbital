@@ -4,7 +4,9 @@
  * Copyright (c) 2000-2002 Andre Platzer. All Rights Reserved.
  */
 
-package orbital.logic.imp;
+package orbital.logic.sign;
+
+import orbital.logic.sign.type.TypeException;
 
 /**
  * Defines general methods for constructing and handling expressions of a formal language.
