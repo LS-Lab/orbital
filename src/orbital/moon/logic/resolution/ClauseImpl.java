@@ -118,7 +118,7 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
 	    for (ListIterator k = puinGwithnotL.listIterator(); k.hasNext(); ) {
 		final Formula K = (Formula) k.next();
 		// resolution
-		final Clause  R = resolventWith(G, L, K);
+		final Clause  R = F.resolventWith(G, L, K);
 		if (R != null) {
 		    resolvents.add(R);
 
@@ -192,7 +192,7 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
 	final Clause F = this;
 	final Formula notL = Utilities.negation(L);
 	final Substitution mu = Substitutions.unify(Arrays.asList(new Object[] {K, notL}));
-	logger.log(Level.FINEST, "resolving literals {0} with {1} is {2}", new Object[] {K, notL, mu});
+	logger.log(Level.FINEST, "resolving literals\n   \t{0} (negation of {3})\n with\t{1}\n is\t{2}", new Object[] {notL, K, mu, L});
 	if (mu == null) {
 	    return new Pair(null, null);
 	} else {
@@ -247,12 +247,12 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
 	final Signature overlappingVariables = G.getFreeVariables().intersection(FVariables);
 	if (!overlappingVariables.isEmpty()) {
 	    // make a variant of F such that the variables of F and G are disjunct
-	    //@todo optimize would it be quicker if we always build variants, regardless of disjointness or not? Also unique variables would alleviate the need for variant building altogether.
+	    //@todo optimize would it be quicker if we always build variants, regardless of disjointness or not? Also unique variables would alleviate the need for variant building altogether, except for self-resolution of identical clauses (which can be compared for by ==).
 	    final Clause Fprime = F.variant(overlappingVariables);
 	    logger.log(Level.FINEST, "variant for resolution is {0} instead of {1} with {2} because of overlapping variables {3}", new Object[] {Fprime, F, G, overlappingVariables});
 	    F = Fprime;
 	} else {
-	    logger.log(Level.FINEST, "no variant for resolution of {0} with {1} because of overlapping variables {2}", new Object[] {F, G, overlappingVariables});
+	    logger.log(Level.FINEST, "no variant for resolution of {0} with {1} because of no overlapping variables {2}", new Object[] {F, G, overlappingVariables});
 	}
 	return F.resolveWith(G);
     }
@@ -268,7 +268,7 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
 	    logger.log(Level.FINEST, "variant for resolution is {0} instead of {1} with {2} because of overlapping variables {3}", new Object[] {Fprime, F, G, overlappingVariables});
 	    F = Fprime;
 	} else {
-	    logger.log(Level.FINEST, "no variant for resolution of {0} with {1} because of overlapping variables {2}", new Object[] {F, G, overlappingVariables});
+	    logger.log(Level.FINEST, "no variant for resolution of {0} with {1} because of no overlapping variables {2}", new Object[] {F, G, overlappingVariables});
 	}
 	return F.resolveWithFactors(G);
     }

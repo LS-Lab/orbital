@@ -72,6 +72,7 @@ public class SaturationResolution extends ResolutionBase {
      * @param query the initial set of support.
      * @preconditions knowledgebase is satisfiable
      * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
+     * @todo add unit-preference, i.e. do k unit resolutions then 1 resolution, etc.
      */
     protected boolean prove(final ClausalSet knowledgebase, final ClausalSet query) {
 	assert !knowledgebase.contains(Clause.CONTRADICTION) : "knowledgebase W assumed consistent, so contains no elementary contradiction";
@@ -124,6 +125,7 @@ public class SaturationResolution extends ResolutionBase {
 		if (noResolutionsCounter >= 2*setOfClauses.size()) {
 		    //@xxx factor 2 is just to be sure
 		    // no clause in setOfClauses can resolve anymore
+		    logger.log(Level.FINEST, "saturation stuck with no more clauses appearing {0}", new ClausalSetImpl(setOfClauses));
 		    return false;
 		}
 		//@internal removing and adding C ensures that we consider the other clauses next before resolving C again
@@ -143,7 +145,7 @@ public class SaturationResolution extends ResolutionBase {
 	    setOfClauses.add(C);
 	}
 
-	// usable is satisifiable, and only setOfClauses={} is inconsistent, so conjecture was found wrong
+	logger.log(Level.FINEST, "saturation has no clauses {0}", new ClausalSetImpl(setOfClauses));
 	return false;
     }
 
