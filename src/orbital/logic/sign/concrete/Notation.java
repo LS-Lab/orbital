@@ -369,6 +369,9 @@ public abstract class Notation implements Serializable, Comparable {
 	    } 
 	};
 
+    //@todo introduce     public static final Notation MIXFIX(String prefix, String infix, String suffix) {
+
+    
 
     // Utilities
 
