@@ -5,6 +5,7 @@
  */
 
 package orbital.game;
+import orbital.game.AdversarySearch.Option;
 
 import orbital.logic.functor.Function;
 import java.awt.Component;
@@ -17,7 +18,8 @@ import orbital.robotic.Position;
  * the games' rules with any instance implementing the {@link
  * GameRules} interface.  This interface can then start an AI upon
  * request via {@link GameRules#startAIntelligence(String)}.
- * 
+ *
+ * @events FieldChangeEvent.END_OF_GAME at the end of game.
  * @version 1.1, 2003-01-03
  * @author Andr&eacute; Platzer
  * @xxx performedMove: perhaps we can get rid of this old way of using events. Also we need a more customizable way of deciding when to end a turn (f.ex. some games may allow a player to perform multiple moves before ending his turn)
@@ -58,6 +60,15 @@ public class Gamemaster implements Runnable {
      * @serial
      */
     private Function	players[];
+
+
+    private FieldChangeListener endOfGameListener = new FieldChangeAdapter() {
+		public void stateChanged(FieldChangeEvent evt) {
+		    //@todo assert evt.getField() == getField() : "we have only registered ourselves to our field";
+		    if (evt.getType() == FieldChangeEvent.END_OF_GAME)
+			stop();
+		}
+	};
 
     /**
      * only for pure AI games without real players.
@@ -114,25 +125,29 @@ public class Gamemaster implements Runnable {
      */
     public void start() {
 	setField(rules.startField(component));
+	getField().addFieldChangeListener(endOfGameListener);
 	players = new Function[playerArguments.length];
+	HumanPlayer humanPlayer = new HumanPlayer();
+	getField().addFieldChangeListener(humanPlayer);
 	int realPlayers = 0;
 	for (int i = Figure.NOONE + 1; i < players.length; i++) {
 	    if (playerArguments[i] == null) {
-		players[i] = null;
+		players[i] = humanPlayer;
 		realPlayers++;
 	    } else
 		players[i] = rules.startAIntelligence(playerArguments[i]);
 	}
 
-	// computer players only
-	if (realPlayers == 0) {
-	    runner = new Thread(this, "AI_Runner");
+	runner = new Thread(this, "AI_Runner");
+	if (realPlayers == 0)
+	    // computer players only
 	    runner.start();
-	} else {
-	    runner = null;
+	else {
 	    if (players[getField().getTurn()] != null)
 		// if a computer commences, let him act
-		turn();
+		//@internal let our clients at least have a chance to finish initialization after start() returns so that they can register listeners.
+		//@xxx However this is not 100% reliable because the following thread could start too early.
+		runner.start();
 	}
     } 
 
@@ -144,6 +159,8 @@ public class Gamemaster implements Runnable {
 	runner = null;	  // runner.stop();
 	if (moribund != null)
 	    moribund.interrupt();
+	if (field != null)
+	    field.removeFieldChangeListener(endOfGameListener);
 
 	// alternative implementation
 	/*
@@ -173,19 +190,11 @@ public class Gamemaster implements Runnable {
      */
     public void run() {
 	try {
-	    Thread thisThread = Thread.currentThread();
-	    while (runner == thisThread && !Thread.interrupted()) {
-		//@xxx the above check executes no longer since change of turn to infinite loop.
-		if (turn() != Figure.NOONE)
-		    //@todo generate event
-		    return;
-	    }
+	    playGame();
 	}
 	finally {
-	    // clean up: forget about references
 	    field = null;
 	    players = null;
-	    runner = null;
 	}
     } 
 
@@ -196,37 +205,67 @@ public class Gamemaster implements Runnable {
      * @see GameRules#performedMove(Field)
      * @internal this is a kind of event handler.
      */
-    protected int turn() {
-	// check for any winners
-	int winner = rules.performedMove(getField());
-	if (winner != Figure.NOONE)
-	    return winner;
-
+    private void playGame() {
+	Thread thisThread = Thread.currentThread();
 	// do moves while it's an AI's turn
 	for (int turn = getField().getTurn();
-	     players[turn] != null;
+	     players[turn] != null
+		 && runner == thisThread && !Thread.interrupted();
 	     turn = getField().getTurn()) {
 	    // @xxx doesn't this policy (a single player can move several times until it's another player's turn) conflict with AlphaBetaPruning which simply doesn't know about it?
 	    ////showStatus(getResources().getString("statusbar.ai.thinking"));
+	    System.err.println("statusbar.ai.thinking");
 	    Object action = players[turn].apply(getField());
 	    ////showStatus(getResources().getString("statusbar.ai.moving"));
-	    if (action instanceof MoveWeighting.Argument) {
-		MoveWeighting.Argument move = (MoveWeighting.Argument) action;
-		Position source = new Position(move.figure);
+	    if (action instanceof Option) {
+		Option move = (Option) action;
+		Position source = new Position(move.getFigure());
 		// if we could rely on our AI, then we could optimize away this expensive moving and simply use the resulting field = move.field
 		//@internal cloning the position information is necessary, otherwise move would detect that it gets lost during swap.
-		if (!getField().move(source, move.move))
+		if (!getField().move(source, move.getMove()))
 		    throw new Error("AI should only take legal moves: " + move);
-		////board.repaint(source);
-		////board.repaint(move.destination);
 	    } else
 		throw new Error("AI found no move: " + action);
-	    winner = rules.performedMove(getField());
-	    if (winner != Figure.NOONE)
-		return winner;
 	} 
-
-	return winner;
     } 
 
+
+    /**
+     * A human player that waits for user I/O.
+     */
+    private class HumanPlayer extends FieldChangeAdapter implements Function {
+	/**
+	 * The option that the user has chosen.
+	 */
+	private Option option;
+	/**
+	 * The communication lock.
+	 */
+	private Object userAction = new Object();
+	public Object apply(Object field) {
+	    Option user;
+	    try {
+		synchronized(userAction) {
+		    if (option == null)
+			userAction.wait();
+		    user = this.option;
+		    this.option = null;
+		}
+		return user;
+	    }
+	    catch (InterruptedException interrupt) {
+		Thread.currentThread().interrupt();
+		throw new InternalError("OutOfCheeseError");
+	    }
+	}
+	public void movePerformed(FieldChangeEvent evt) {
+	    assert evt.getField() == getField() : "we have only registered ourselves to our field";
+	    if ((evt.getType() & (FieldChangeEvent.USER_ACTION | FieldChangeEvent.MOVE)) == (FieldChangeEvent.USER_ACTION | FieldChangeEvent.MOVE)) {
+		synchronized(userAction) {
+		    this.option = (Option) evt.getChangeInfo();
+		    userAction.notify();
+		}
+	    }
+	}
+    }
 }
