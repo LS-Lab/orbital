@@ -15,7 +15,7 @@ import java.io.IOException;
  * @version 0.8, 2001/11/23
  * @author  Andr&eacute; Platzer
  */
-public class Game extends orbital.game.Game {
+public class Game extends orbital.game.GameView {
     /**
      * Application-start entry point.
      */

@@ -34,7 +34,7 @@ public class ChessFigure extends FigureImpl {
 	    // clear opposite figure that is beaten
 	    to.setEmpty();
 	} 
-	field.rules.doTurn();
+	field.doTurn();
 	return true;
     } 
 

@@ -43,16 +43,6 @@ public class ChessRules extends AbstractGameRules implements Cloneable {
     	catch (CloneNotSupportedException imp) {throw new Error("Cloneable cannot be cloned?");}
     }
 
-    protected void setTurn(int turn) {
-    	super.setTurn(turn);
-    }
-    /**
-     * Made a move, so turn done.
-     */
-    void doTurn() {
-	setTurn(getTurn() == WHITE ? BLACK : WHITE);
-    }
-    
     /**
      * Get our league that is currently thinking which figure to move.
      * All heuristic evaluations take the perspective of our league.
@@ -84,7 +74,7 @@ public class ChessRules extends AbstractGameRules implements Cloneable {
 	    : (Computer) new UtilityComputer();
     } 
     public Field startField(Component comp) {
-	Field	  field = new ChessField(this, 8, 8);
+	final ChessField	  field = new ChessField(this, 8, 8);
 	Dimension dim = field.getDimension();
 	loadAllImages(comp);
 
@@ -99,6 +89,15 @@ public class ChessRules extends AbstractGameRules implements Cloneable {
 	    } 
 	// commence
 	setTurn(ChessRules.BLACK);
+	field.addFieldChangeListener(new FieldChangeAdapter() {
+		public void stateChanged(FieldChangeEvent evt) {
+		    if (evt.getType() == FieldChangeEvent.END_OF_TURN) {
+			int winner = checkWinner(field);
+			if (winner != Figure.NOONE)
+			    field.mygetFieldChangeMulticaster().stateChanged(new FieldChangeEvent(field, FieldChangeEvent.END_OF_GAME, new Integer(winner)));
+		    }
+		}
+	    });
 	return field;
     } 
     public int getLeagues() {
@@ -108,7 +107,7 @@ public class ChessRules extends AbstractGameRules implements Cloneable {
 	return FIGURES;
     } 
 
-    public int turnDone(Field field) {
+    public int checkWinner(Field field) {
     	final int done = turnDoneImpl(field);
     	if (done != NOONE) {
 	    System.out.println((done == BLACK ? "BLACK" : "WHITE") + " has won");

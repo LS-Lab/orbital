@@ -38,9 +38,20 @@ public class ChessField extends Field {
     	this.end = end;
     }
     
-    // convenience methods
-    public int getTurn() {
-    	return rules.getTurn();
+    public void setTurn(int turn) {
+    	super.setTurn(turn);
+    }
+    /**
+     * Made a move, so current turn done.
+     */
+    void doTurn() {
+	int old_turn = getTurn();
+	setTurn(old_turn == ChessRules.WHITE ? ChessRules.BLACK : ChessRules.WHITE);
+	getFieldChangeMulticaster().stateChanged(new FieldChangeEvent(this, FieldChangeEvent.END_OF_TURN, new Integer(old_turn)));
+    }
+
+    FieldChangeListener mygetFieldChangeMulticaster() {
+    	return super.getFieldChangeMulticaster();
     }
 
     
@@ -48,9 +59,8 @@ public class ChessField extends Field {
     public Iterator expand() { 
 	if (isEnd())
 	    return Collections.EMPTY_LIST.iterator();
-	// the single rules for all children after one turn
+	// the single rules for all children after one turn //@xxx why can't we use = rules?
 	ChessRules afterStepRules = (ChessRules) rules.clone();
-	afterStepRules.doTurn();
 	List r = new LinkedList();
 	for (Iterator i = iterateNonEmpty(); i.hasNext(); ) {
 	    Figure figure = (Figure) i.next();
