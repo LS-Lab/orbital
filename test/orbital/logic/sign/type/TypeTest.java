@@ -9,6 +9,7 @@ package orbital.logic.imp;
 import orbital.math.*;
 import java.lang.Integer;
 import orbital.util.*;
+import java.util.*;
 
 import junit.framework.*;
 
@@ -34,6 +35,20 @@ public class TypeTest extends check.TestCase {
 	INDIVIDUAL = Types.INDIVIDUAL;
 	TRUTH = Types.TRUTH;
     }
+
+    // hook into these methods all additional tests on all types occuring anywhere in this test
+    
+    protected void testTypesAdditionally(Type[] types) {
+	testSupInfNeutral(types);
+	for (int i = 0; i + 1 < types.length; i++)
+	    testSupInfSubtypeCaseCorrelation(types[i], types[i+1]);
+    }
+
+    protected void testTypeAdditionally(Type type) {
+	testSupInfIdempotent(type);
+    }
+
+    //
 
     public void testTypeConstructors() {
 	testTypeConstructorsWith(new Type[] {typeSystem.UNIVERSAL()});
@@ -74,6 +89,8 @@ public class TypeTest extends check.TestCase {
 	assertTrue( compare(s,t) <= 0 , s + " =< " + t);
 	s = typeSystem.list(a[0]);
 	assertTrue( compare(s,t) <= 0 , s + " =< " + t);
+
+	testTypesAdditionally(a);
     }
 
     /**
@@ -85,6 +102,7 @@ public class TypeTest extends check.TestCase {
 	assertTrue( s.compareTo(s) == 0, "x cmp x == 0");
 	assertTrue( s.equals(equalingS) , "x=x'");
 	assertTrue( s.compareTo(equalingS) == 0 , "x cmp x' == 0");
+	testTypeAdditionally(s);
     }
 
     public void testSameConstructorSubtype() {
@@ -149,6 +167,16 @@ public class TypeTest extends check.TestCase {
 	assertTrue( compare(s,t) <= 0 , s + " =< " + t);
     }
 
+    private void testSupInfNeutral(Type[] types) {
+	Type s, t;
+	s = typeSystem.inf(types);
+	t = typeSystem.inf((Type[]) Setops.union(Arrays.asList(types), Collections.singletonList(typeSystem.UNIVERSAL())).toArray(new Type[0]));
+	assertTrue( s.equals(t) , s + " = " + t);
+	s = typeSystem.sup(types);
+	t = typeSystem.sup((Type[]) Setops.union(Arrays.asList(types), Collections.singletonList(typeSystem.ABSURD())).toArray(new Type[0]));
+	assertTrue( s.equals(t) , s + " = " + t);
+    }
+
     public void testSupInfNeutral() {
 	Type s, t;
 	s = typeSystem.inf(new Type[] {typeSystem.set(INDIVIDUAL), typeSystem.objectType(String.class)});
@@ -158,7 +186,7 @@ public class TypeTest extends check.TestCase {
 	t = typeSystem.sup(new Type[] {typeSystem.set(INDIVIDUAL), typeSystem.objectType(String.class), typeSystem.ABSURD()});
 	assertTrue( s.equals(t) , s + " = " + t);
     }
-
+    
     public void testSupInfAssociative() {
 	Type s, t;
 	s = typeSystem.inf(new Type[] {typeSystem.set(INDIVIDUAL), typeSystem.objectType(String.class), typeSystem.inf(new Type[] {typeSystem.objectType(Number.class), typeSystem.objectType(RuntimeException.class)})});
@@ -167,6 +195,30 @@ public class TypeTest extends check.TestCase {
 	s = typeSystem.sup(new Type[] {typeSystem.set(INDIVIDUAL), typeSystem.objectType(String.class), typeSystem.sup(new Type[] {typeSystem.objectType(Number.class), typeSystem.objectType(RuntimeException.class)})});
 	t = typeSystem.sup(new Type[] {typeSystem.set(INDIVIDUAL), typeSystem.objectType(String.class), typeSystem.objectType(Number.class), typeSystem.objectType(RuntimeException.class)});
 	assertTrue( s.equals(t) , s + " = " + t);
+    }
+
+    //@todo introduce public void testSupInfDistributive()
+
+    private void testSupInfIdempotent(Type tau) {
+	Type s, t;
+	s = typeSystem.inf(new Type[] {tau, tau});
+	t = tau;
+	assertTrue( s.equals(t) , s + " = " + t);
+	s = typeSystem.sup(new Type[] {tau, tau});
+	t = tau;
+	assertTrue( s.equals(t) , s + " = " + t);
+    }
+
+    private void testSupInfSubtypeCaseCorrelation(Type sigma, Type tau) {
+	assertTrue( sigma.subtypeOf(tau) == typeSystem.sup(new Type[] {sigma, tau}).equals(tau) , "TypeSystem.sup@postconditions " + sigma + "=<" + tau + " iff " + typeSystem.sup(new Type[] {sigma, tau}) + " = " + sigma + " sup " + tau + " = " + tau);
+	assertTrue( sigma.subtypeOf(tau) == typeSystem.inf(new Type[] {sigma, tau}).equals(sigma) , "TypeSystem.sup@postconditions " + sigma + "=<" + tau + " iff " + typeSystem.sup(new Type[] {sigma, tau}) + " = " + sigma + " sup " + tau + " = " + sigma);
+	// swap types
+	Type t = sigma;
+	sigma = tau;
+	tau = t;
+	// and check the other way around
+	assertTrue( sigma.subtypeOf(tau) == typeSystem.sup(new Type[] {sigma, tau}).equals(tau) , "TypeSystem.sup@postconditions " + sigma + "=<" + tau + " iff " + typeSystem.sup(new Type[] {sigma, tau}) + " = " + sigma + " sup " + tau + " = " + tau);
+	assertTrue( sigma.subtypeOf(tau) == typeSystem.inf(new Type[] {sigma, tau}).equals(sigma) , "TypeSystem.sup@postconditions " + sigma + "=<" + tau + " iff " + typeSystem.sup(new Type[] {sigma, tau}) + " = " + sigma + " sup " + tau + " = " + sigma);
     }
 
     public void testSupInfEmptyConstructions() {
@@ -283,6 +335,9 @@ public class TypeTest extends check.TestCase {
 
 	// may throw IncomparableException
 	assertTrue( MathUtilities.sign(s.compareTo(t)) == -MathUtilities.sign(t.compareTo(s)) , "antisymmetric");
+	testTypeAdditionally(s);
+	testTypesAdditionally(new Type[] {s, t});
+	testSupInfSubtypeCaseCorrelation(s, t);
 	return s.compareTo(t);
     }
 
