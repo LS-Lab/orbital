@@ -14,6 +14,7 @@ import orbital.logic.functor.Functor;
 import orbital.logic.functor.Predicate;
 import orbital.logic.functor.BinaryPredicate;
 import orbital.logic.functor.Function;
+import orbital.logic.functor.BinaryFunction;
 import orbital.logic.functor.Functionals;
 import java.util.Collection;
 import java.util.Set;
@@ -31,7 +32,8 @@ import orbital.util.InnerCheckedException;
 import java.lang.reflect.*;
 
 /**
- * Provides type constructors, implementations, and factories for types.
+ * Provides type constructors, implementations, and factories for types
+ * of the "standard" type-system.
  * Type constructors create new types depending on some existing types.
  * For example, there are type constructors for map types.
  *
@@ -128,15 +130,69 @@ public final class Types {
 	}
     };
     /**
-     * The type <span class="type">&iota;</span> of individuals ({@link java.lang.Object objects}).
+     * The meta-type (kind) of types <span class="type">*</span>:&#9633;.
+     * The type <span class="type">*</span> and every type containing <span class="type">*</span>
+     * is a kind, with the latter being types for type constructors.
+     * <i>Types containing meta-types as well as ordinary types are currently undefined.</i>
      */
-    public static final Type INDIVIDUAL = objectType(Object.class);
+    public static final Type TYPE = new KindType();
+    private static final class KindType extends FundamentalType {
+	//private static final long serialVersionUID = 0;
+	/**
+	 * Maintains the guarantee that there is only a single object representing this type.
+	 * @serialData canonicalized deserialization
+	 */
+	private Object readResolve() throws java.io.ObjectStreamException {
+	    // canonicalize
+	    return TYPE;
+	} 
+	public final boolean equals(Object o) {
+	    //@internal assume canonical
+	    return this == o;
+	}
+	public final int hashCode() {
+	    return System.identityHashCode(this);
+	}
+
+	public Class getFundamental() {
+	    return Type.class;
+	}
+	protected int comparisonPriority() {
+	    return Integer.MAX_VALUE - 1;
+	}
+	public final int compareToSemiImpl(Type b) {
+	    //@xxx should we explicitly exclude TYPE from the ordinary type hierarchy?
+	    if (this == b)
+		return 0;
+	    else
+		throw new IncomparableException();
+	}
+	public final boolean apply(Object x) {
+	    //@internal interpretations of types are sets
+	    // (or in implementation terms: their orbital.logic.functor.Predicate, c.f. &delta;extension)
+	    return x instanceof Predicate || x instanceof Type;
+	}
+	public String toString() {
+	    return "*";
+	}
+    };
+    /**
+     * The type <span class="type">&iota;</span> of individuals ({@link java.lang.Object objects}).
+     * @xxx remove?
+     */
+    public static final Type INDIVIDUAL = new FundamentalTypeImpl(Object.class) {
+	    public String toString() {return "individual";}
+	};
     /**
      * The type <span class="type">&omicron;</span> = <span class="type">()</span> of truth-values.
      * @xxx for multi-valued logics this is not limited to boolean.
      * @todo what about Boolean.TYPE and Boolean.class? Should TRUTH =< INDIVIDUAL?
+     * @xxx remove?
      */
-    public static final Type TRUTH = new FundamentalTypeImpl(Boolean.class);
+    public static final Type TRUTH = new FundamentalTypeImpl(Boolean.class) {
+	    //@xxx generalize and make accessible from outside (f.ex. from ClassicalLogic)
+	    public String toString() {return "truth";}
+	};
     /**
      * The absurd type
      * <span class="type">&perp;</span> = <span class="type">&#8899;<sub>&empty;</sub></span>.
@@ -217,7 +273,7 @@ public final class Types {
      * @return whether a compositor of type compositorType is <a href="Expression.html#freeAlgebraOfTerms">applicable</a> to the given arguments.
      *  Which means that the arguments are assignable to the required parameter types of this symbol.
      *  This especially includes whether the number of arguments matches the arity of the compositorTypes' codomain.
-     * @post RES == (typeOf(args) &le; compositorType.codomain())
+     * @post RES == (typeOf(args) &le; compositorType.codomain()) == (compositorType &le; typeOf(args)<span class="type">&rarr;&#8868;</span>)
      * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience method</a>
      * @see Type#subtypeOf(Type)
      * @see orbital.logic.functor.Functor.Specification#isApplicableTo(Object[])
@@ -237,6 +293,7 @@ public final class Types {
      */
     private static abstract class TypeObject implements Type, Serializable {
 	private static final long serialVersionUID = 3881468737970732586L;
+	private static final Type logicalTypeDeclaration = Types.TYPE;
 	protected TypeObject() {}
 
 	/**
@@ -326,14 +383,41 @@ public final class Types {
      * @param type the type <span class="type">&tau;</span> represented as a class object.
      * @return <span class="type">&tau;</span> = <span class="type">void&rarr;&tau;</span>.
      * @todo assure canonical identity?
-     * @todo rename
+     * @todo rename?
      */
     public static final Type objectType(Class type) {
 	return type.equals(Boolean.class) || type.equals(Boolean.TYPE)
 	    ? TRUTH
 	    : type.equals(Void.TYPE)
 	    ? ABSURD
+	    : type.equals(Object.class)
+	    ? INDIVIDUAL
 	    : new FundamentalTypeImpl(type);
+    }
+    /**
+     * Get the object type described by a class.
+     * Converts a native Java class object to a type.
+     * These types are called object types since they directly are types of objects,
+     * described by their classes.
+     * <p>
+     * <!-- @xxx is this a good idea that fuzzy-truth = number? -->
+     * <h3>Still unspecified: type alias'</h3>
+     * This method allows specifying unusual signifiers for types.
+     * <span style="float: left; font-size: 200%">&#9761;</span>
+     * But be aware that this only changes the displayed name of the type, not the type itself.
+     * So it is
+     * <pre>
+     * objectType(<span class="Class">java.lang.Number</span>,<span class="string">"number"</span>).equals(objectType(<span class="Class">java.lang.Number</span>,<span class="string">"numericQuantity"</span>)
+     * </pre>
+     * </p>
+     * @param type the type <span class="type">&tau;</span> represented as a class object.
+     * @param signifier the representing the type.
+     * @return <span class="type">&tau;</span> = <span class="type">void&rarr;&tau;</span>.
+     * @todo assure canonical identity?
+     * @see #objectType(Class)
+     */
+    public static final Type objectType(Class type, String signifier) {
+	return new FundamentalTypeImpl(type, signifier);
     }
     
     /**
@@ -392,13 +476,21 @@ public final class Types {
     private static class FundamentalTypeImpl extends FundamentalType {
 	private static final long serialVersionUID = -5129887328859119221L;
 	private final Class type;
+	private final String signifier;
 	public FundamentalTypeImpl(Class type) {
+	    this(type, type.toString());
+	}
+	public FundamentalTypeImpl(Class type, String signifier) {
 	    if (type == null)
 		throw new NullPointerException("illegal class " + type);
 	    this.type = type;
+	    this.signifier = signifier;
 	}
 	public Class getFundamental() {
 	    return type;
+	}
+	public String toString() {
+	    return signifier;
 	}
     }
 
@@ -447,9 +539,29 @@ public final class Types {
 	    throw new UnsupportedOperationException(ABSURD + " maps not yet supported");
 	return codomain.equals(NOTYPE) ? domain : new MapType(codomain, domain);
     }
+    /**
+     * map: <span class="type">*&times;* &rarr; *</span>; (<span class="type">&sigma;</span>,<span class="type">&tau;</span>) &#8614; <span class="type">&sigma;&rarr;&tau;</span>.
+     * <p>
+     * The map type constructor.
+     * </p>
+     * @see #map(Type,Type)
+     */
+    public static final BinaryFunction/*<Type,Type,Type>*/ map = new BinaryFunction/*<Type,Type,Type>*/() {
+	    private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.TYPE,Types.TYPE}), Types.TYPE);
+	    public Object apply(Object s, Object t) {
+		return Types.map((Type)s, (Type)t);
+	    }
+	    public String toString() {
+		return "->";
+	    }
+	};
 
     /**
      * Get the predicate type <span class="type">(&sigma;)</span> = <span class="type">&sigma;&rarr;&omicron;</span>.
+     * <p>
+     * <span style="float: left; font-size: 200%">&#9761;</span>
+     * Note that this type depends on the specific truth values.
+     * </p>
      * @param codomain the {@link Type#codomain() codomain} <span class="type">&sigma;</span>.
      * @see #map(Type,Type)
      * @todo assure canonical identity?
@@ -910,6 +1022,22 @@ public final class Types {
 	return new CollectionType(Collection.class, component, "collection(", ")");
     }
     /**
+     * collection: <span class="type">* &rarr; *</span>; <span class="type">&tau;</span> &#8614; <span class="type">collection(&tau;)</span>.
+     * <p>
+     * The collection type constructor.
+     * </p>
+     * @see #collection(Type)
+     */
+    public static final Function/*<Type,Type>*/ collection = new Function() {
+	    private final Type logicalTypeDeclaration = Types.map(Types.TYPE, Types.TYPE);
+	    public Object apply(Object o) {
+		return Types.collection((Type)o);
+	    }
+	    public String toString() {
+		return "collection";
+	    }
+	};
+    /**
      * The set type <span class="type">{&tau;}</span>.
      * Sets are orderless and contain unique elements.
      * <p id="extension">
@@ -943,6 +1071,22 @@ public final class Types {
 	return new CollectionType(Set.class, component, "{", "}");
     }
     /**
+     * set: <span class="type">* &rarr; *</span>; <span class="type">&tau;</span> &#8614; <span class="type">{&tau;}</span>.
+     * <p>
+     * The set type constructor.
+     * </p>
+     * @see #set(Type)
+     */
+    public static final Function/*<Type,Type>*/ set = new Function() {
+	    private final Type logicalTypeDeclaration = Types.map(Types.TYPE, Types.TYPE);
+	    public Object apply(Object o) {
+		return Types.set((Type)o);
+	    }
+	    public String toString() {
+		return "set";
+	    }
+	};
+    /**
      * The list type <span class="type">&lang;&tau;&rang;</span>.
      * Lists are ordered (but not sorted) and not limited to containing unique elements.
      * @see #collection(Type)
@@ -952,6 +1096,22 @@ public final class Types {
 	return new CollectionType(List.class, component, "<", ">");
     }
     /**
+     * list: <span class="type">* &rarr; *</span>; <span class="type">&tau;</span> &#8614; <span class="type">&lang;&tau;&rang;</span>.
+     * <p>
+     * The list type constructor.
+     * </p>
+     * @see #list(Type)
+     */
+    public static final Function/*<Type,Type>*/ list = new Function() {
+	    private final Type logicalTypeDeclaration = Types.map(Types.TYPE, Types.TYPE);
+	    public Object apply(Object o) {
+		return Types.list((Type)o);
+	    }
+	    public String toString() {
+		return "list";
+	    }
+	};
+    /**
      * The bag/multiset type <span class="type">&#12308;&tau;&#12309;</span>.
      * Bags are orderless and not limited to containing unique elements.
      * So each element of a bag has a certain multiplicity.
@@ -960,6 +1120,23 @@ public final class Types {
     public static final Type bag(Type component) {
 	throw new UnsupportedOperationException("bag interface is not part of Java 1.4");
     }
+    /**
+     * bag: <span class="type">* &rarr; *</span>; <span class="type">&tau;</span> &#8614; <span class="type">&#12308;&tau;&#12309;</span>.
+     * <p>
+     * The bag type constructor.
+     * </p>
+     * @see #bag(Type)
+     */
+    public static final Function/*<Type,Type>*/ bag = new Function() {
+	    private final Type logicalTypeDeclaration = Types.map(Types.TYPE, Types.TYPE);
+	    public Object apply(Object o) {
+		return Types.bag((Type)o);
+	    }
+	    public String toString() {
+		return "bag";
+	    }
+	};
+
     /**
      * Collection types.
      * @author Andr&eacute; Platzer
@@ -1016,6 +1193,8 @@ public final class Types {
 	}
     }
 
+    
+    
     // Stuff
 
     //@xxx decide acccessibility (privatize or package-level protect if possible)
@@ -1107,6 +1286,8 @@ public final class Types {
      * @permission Needs access to the object's class and will therefore call {@link java.lang.reflect.AccessibleObject#setAccessible(boolean) setAccessible(true)}.
      */
     private static Type getTypeDeclaration(Object f) {
+	if (f instanceof Type)
+	    return Types.TYPE;
 	Class c = f.getClass();
 	try {
 	    Field spec = getFieldOrInherited(c, "logicalTypeDeclaration");
@@ -1151,6 +1332,8 @@ public final class Types {
 		int order = arityOf(a) - arityOf(b);
 		if (order != 0)
 		    return order;
+		if (a == UNIVERSAL || b == UNIVERSAL)
+		    return a == UNIVERSAL && b == UNIVERSAL ? 0 : a == UNIVERSAL ? 1 : -1;
 		if ((a instanceof FundamentalType) || (b instanceof FundamentalType))
 		    return !(a instanceof FundamentalType)
 			// fundamental types are smaller than others
@@ -1189,7 +1372,19 @@ public final class Types {
 			return 0;
 		    }
 
-		throw new IllegalArgumentException("unknown types to compare " + a.getClass() + " " + b.getClass());
+		if (a instanceof TypeObject && b instanceof TypeObject) {
+		    //@internal abuse the comparisonPriority for lexicographical comparison. Much simpler
+		    order = ((TypeObject)a).comparisonPriority() - ((TypeObject)b).comparisonPriority();
+		    if (order != 0)
+			return order;
+		    // fall-through
+		}
+		if ((a instanceof CollectionType) && (b instanceof CollectionType)) {
+		    return compare(((CollectionType)a).comparisonInternalRepresentation(),
+				   ((CollectionType)b).comparisonInternalRepresentation());
+		}
+		    
+		throw new IllegalArgumentException("unknown types to compare lexicographically, " + a.getClass() + " and " + b.getClass());
 	    }
 	};
 }// Types
