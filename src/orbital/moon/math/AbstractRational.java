@@ -228,7 +228,7 @@ abstract class AbstractRational extends AbstractReal implements Rational {
     	public Arithmetic inverse() {
 	    return new RationalImpl(denominatorValue(), numeratorValue());
     	} 
-    	public Rational power_(Integer b) {
+    	public Rational power(Integer b) {
 	    long k = b.longValue();
 	    return new RationalImpl((int) Math.pow(numeratorValue(), k), (int) Math.pow(denominatorValue(), k)).representative();
     	}
