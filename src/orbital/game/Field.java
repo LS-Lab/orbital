@@ -357,7 +357,7 @@ public class Field implements Serializable, Cloneable {
      * @return whether source figure was able to move.
      * @see Figure#moveFigure(Move)
      */
-    public synchronized boolean move(Position source, Move move) {
+    public boolean move(Position source, Move move) {
 	Figure sourceFigure = getFigure(source);
 	Position destination = sourceFigure.moveFigure(move);
 	if (destination == null)
