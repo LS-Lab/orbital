@@ -58,6 +58,12 @@ public class SubstitutionImpl implements Substitution, Serializable {
       public int hashCode() {
       return getReplacements().hashCode();
       }*/
+    public boolean equals(Object o) {
+	return (o instanceof Substitution) && getReplacements().equals(((Substitution) o).getReplacements());
+    }
+    public int hashCode() {
+	return replacements.hashCode();
+    }
 
     public Collection/*_<Matcher>_*/ getReplacements() {
 	return Setops.unmodifiableCollectionLike(replacements);
