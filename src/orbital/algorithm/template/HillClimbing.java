@@ -150,7 +150,7 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
 	private static final long serialVersionUID = -3674513421043835094L;
 	public OptionIterator_First(GeneralSearchProblem problem, LocalOptimizerSearch algorithm) {
 	    super(problem, algorithm);
-	    this.currentValue = ((Number) algorithm.getEvaluation().apply(getState())).doubleValue();
+	    this.currentValue = castedApply(algorithm.getEvaluation(), getState()).doubleValue();
 	}
 
 	private double currentValue;
@@ -163,7 +163,7 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
 	 */
 	public boolean accept(Object/*>S<*/ state, Object/*>S<*/ sp) {
 	    final LocalOptimizerSearch algorithm = getAlgorithm();
-	    final double value = ((Number) algorithm.getEvaluation().apply(sp)).doubleValue();
+	    final double value = castedApply(algorithm.getEvaluation(), sp).doubleValue();
 	    final double deltaEnergy = value - currentValue;
 
 	    if (deltaEnergy <= 0) {

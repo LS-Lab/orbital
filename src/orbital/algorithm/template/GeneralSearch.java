@@ -15,6 +15,7 @@ import java.util.NoSuchElementException;
 import java.util.List;
 import java.util.LinkedList;
 
+import orbital.logic.functor.Function;
 import orbital.logic.functor.MutableFunction;
 import orbital.math.Real;
 import orbital.math.Values;
@@ -377,7 +378,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
 	return new Iterator() {
 		final Iterator/*<A>*/ actions = problem.actions(state);
 		final MutableFunction g = problem.getAccumulatedCostFunction();
-		final Real accumulatedCost = (Real/*__*/) g.apply(state);
+		final Real accumulatedCost = castedApply(g, state);
 		public boolean hasNext() {
 		    return actions.hasNext();
 		}
@@ -398,6 +399,18 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
     }
     
 
+    /**
+     * Applies f on argument with runtime type-safe casting
+     * and user-friendly exception messages.
+     */
+    static final Real castedApply(Function/*<S,Real>*/ f, Object/*>S<*/ argument) {
+	final Object o = f.apply(argument);
+	if (o instanceof Real)
+	    return (Real/*__*/)o;
+	else
+	    throw new ClassCastException("the function " + f + " should return objects of " + Real.class + "\nfound: " + o + " of " + (o == null ? "<null>" : o.getClass().toString()));
+    }
+    
     //    /**
     //     * Get a new instance of the implementation data structure.
     //     * <p>

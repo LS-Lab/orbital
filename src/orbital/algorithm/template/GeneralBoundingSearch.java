@@ -114,7 +114,7 @@ public abstract class GeneralBoundingSearch extends GeneralSearch implements Eva
      * @todo would we profit from transforming bound into a Real?
      */
     protected boolean isOutOfBounds(Object/*>S<*/ node) {
-	return getBound().compareTo(getEvaluation().apply(node)) < 0;
+	return getBound().compareTo(castedApply(getEvaluation(), node)) < 0;
     }
 	
     //	protected Option search(Collection nodes) {
@@ -165,7 +165,7 @@ public abstract class GeneralBoundingSearch extends GeneralSearch implements Eva
     		
 	    if (getProblem().isSolution(node)) {
 		Object/*>S<*/ solution = processSolution(node);
-		Real accumulatedCost = (Real/*__*/) g.apply(solution);
+		Real accumulatedCost = castedApply(g, solution);
 		// @link orbital.util.Setops#argmin
 		if (bestSolution == null || accumulatedCost.compareTo(bestAccumulatedCost) < 0) {
 		    bestSolution = solution;

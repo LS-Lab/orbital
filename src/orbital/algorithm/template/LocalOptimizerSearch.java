@@ -277,7 +277,7 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
 	    this.g = problem.getAccumulatedCostFunction();
 	    //@todo super(problem); extend GeneralSearch.OptionIterator and use its select()?
 	    this.state = getProblem().getInitialState();
-	    this.accumulatedCost = (Real/*__*/) g.apply(state);
+	    this.accumulatedCost = castedApply(g, state);
 	    assert accumulatedCost.doubleValue() == 0 : "@postconditions getInitialState(): accumulatedCost==0";
 	}
 

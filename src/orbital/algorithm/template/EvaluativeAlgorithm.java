@@ -24,7 +24,7 @@ import java.io.Serializable;
  * @version 1.0, 2001/07/30
  * @author  Andr&eacute; Platzer
  */
-public interface EvaluativeAlgorithm extends AlgorithmicTemplate {
+public interface EvaluativeAlgorithm/*<S>*/ extends AlgorithmicTemplate {
     /**
      * Get the evaluation function used while processing.
      * <p>
@@ -33,7 +33,7 @@ public interface EvaluativeAlgorithm extends AlgorithmicTemplate {
      * @return the <dfn>evaluation function</dfn> f:S&rarr;<b>R</b> used to
      *  evaluate (either utility or cost) value of states.
      */
-    Function/*<GeneralSearchProblem.Option???,Real>*/ getEvaluation();
+    Function/*<S,Real>*/ getEvaluation();
 
     /**
      * The canonical comparator induced by the evaluation function f(n).

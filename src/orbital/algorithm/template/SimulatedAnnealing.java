@@ -172,7 +172,7 @@ public class SimulatedAnnealing extends ScheduledLocalOptimizerSearch {
 	private static final long serialVersionUID = -5170488902830279816L;
 	public OptionIterator(GeneralSearchProblem problem, ScheduledLocalOptimizerSearch algorithm) {
 	    super(problem, algorithm);
-	    this.currentValue = ((Number) algorithm.getEvaluation().apply(getState())).doubleValue();
+	    this.currentValue = castedApply(algorithm.getEvaluation(), getState()).doubleValue();
 	    this.t = 0;
 	    // initialize to any value !=0 for hasNext() to return true. The real value will be calculated in  in accept(), anyway
 	    this.T = Double.POSITIVE_INFINITY;
@@ -193,10 +193,10 @@ public class SimulatedAnnealing extends ScheduledLocalOptimizerSearch {
 	public boolean accept(Object/*>S<*/ state, Object/*>S<*/ sp) {
 	    final ScheduledLocalOptimizerSearch algorithm = (ScheduledLocalOptimizerSearch) getAlgorithm();
 	    // current temperature scheduled for successive cooling
-	    this.T = ((Number) algorithm.getSchedule().apply(Values.getDefaultInstance().valueOf(t))).doubleValue();
+	    this.T = castedApply(algorithm.getSchedule(), Values.getDefaultInstance().valueOf(t)).doubleValue();
 	    this.t++;
 
-	    final double value = ((Number) algorithm.getEvaluation().apply(sp)).doubleValue();
+	    final double value = castedApply(algorithm.getEvaluation(), sp).doubleValue();
 	    final double deltaEnergy = value - currentValue;
 
 	    // usually solution isSolution test is omitted, anyway, but we'll still call
@@ -258,7 +258,7 @@ public class SimulatedAnnealing extends ScheduledLocalOptimizerSearch {
 // 	double currentValue = Double.POSITIVE_INFINITY;
 // 	for (int t = 0; !nodes.isEmpty(); t++) {
 // 	    // current temperature scheduled for successive cooling
-// 	    final double T = ((Number) getSchedule().apply(Values.getDefaultInstance().valueOf(t))).doubleValue();
+// 	    final double T = castedApply(getSchedule(), Values.getDefaultInstance().valueOf(t)).doubleValue();
 // 	    if (T == 0)
 // 		return current;
 // 	    final GeneralSearchProblem.Option node = select(nodes);
@@ -272,7 +272,7 @@ public class SimulatedAnnealing extends ScheduledLocalOptimizerSearch {
 // 	    if (getProblem().isSolution(node))
 // 		return node;
     		
-// 	    final double value = ((Number) getEvaluation().apply(node)).doubleValue();
+// 	    final double value = castedApply(getEvaluation(), node).doubleValue();
 // 	    final double deltaEnergy = value - currentValue;
 // 	    //@note negated use of deltaEnergy values everywhere since the evaluation evaluates cost and not utility (unlike Russel & Norvig who seem to consider maximizing energy instead of minimizing)
 // 	    // always move to better nodes,

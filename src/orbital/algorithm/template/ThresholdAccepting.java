@@ -94,7 +94,7 @@ public class ThresholdAccepting extends ScheduledLocalOptimizerSearch {
 	private static final long serialVersionUID = -3674513421043835094L;
 	public OptionIterator(GeneralSearchProblem problem, ScheduledLocalOptimizerSearch algorithm) {
 	    super(problem, algorithm);
-	    this.currentValue = ((Number) algorithm.getEvaluation().apply(getState())).doubleValue();
+	    this.currentValue = castedApply(algorithm.getEvaluation(), getState()).doubleValue();
 	    this.t = 0;
 	    // initialize to any value !=0 for hasNext() to return true. The real value will be calculated in  in accept(), anyway
 	    this.T = Double.POSITIVE_INFINITY;
@@ -114,10 +114,10 @@ public class ThresholdAccepting extends ScheduledLocalOptimizerSearch {
 	public boolean accept(Object/*>S<*/ state, Object/*>S<*/ sp) {
 	    final ScheduledLocalOptimizerSearch algorithm = (ScheduledLocalOptimizerSearch) getAlgorithm();
 	    // current temperature scheduled for successive cooling
-	    this.T = ((Number) algorithm.getSchedule().apply(Values.getDefaultInstance().valueOf(t))).doubleValue();
+	    this.T = castedApply(algorithm.getSchedule(), Values.getDefaultInstance().valueOf(t)).doubleValue();
 	    this.t++;
 
-	    final double value = ((Number) algorithm.getEvaluation().apply(sp)).doubleValue();
+	    final double value = castedApply(algorithm.getEvaluation(), sp).doubleValue();
 	    final double deltaEnergy = value - currentValue;
 
 	    // usually solution isSolution test is omitted, anyway, but we'll still call

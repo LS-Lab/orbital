@@ -149,7 +149,7 @@ public class ParallelBranchAndBound extends BranchAndBound {
 		    bestSolution = solution;
 		    }
 		    */
-		    final Real accumulatedCost = (Real/*__*/) g.apply(solution);
+		    final Real accumulatedCost = castedApply(g, solution);
 		    synchronized(bestSolutionLock) {
 			// comparison is not necessary for BranchAndBound(!), but its more safe to
 			// no Double-checked locking due to errors until after new semantics @see #bestSolution
