@@ -40,10 +40,14 @@ public interface Clause extends Set/*<Formula>*/ {
     /**
      * Get a variant of this clause with the given variables renamed.
      * &alpha;-conversion
-     * @param disjunctify the variables to rename (in order to produce a variable disjunct variant of F relative to some formula G).
+     * @param disjointify the variables to rename (in order to produce a variable disjoint variant of F relative to some formula G).
+     * @return a variant (i.e. resulting from a variable renaming) of
+     * this clause containing no variable of the signature
+     * <code>disjointify</code>.
+     * @postconditions RES.getFreeVariables().intersection(disjointify).isEmpty() &and; RES is a variant of this
      * @internal Variantenbildung in disjunkte Variablen erforderlich(!). Dazu entweder die aus V(F)&cap;V(G) etwa in F umbenennen, oder mit Variable.setSymbol(Variable.getSymbol()+neueNummer) alles explizit fortzählen.
      */
-    public Clause variant(Signature disjunctify);
+    public Clause variant(Signature disjointify);
 
     // proof utilities
 	

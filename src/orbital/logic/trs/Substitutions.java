@@ -401,6 +401,7 @@ public class Substitutions {
     		if (!((x instanceof Variable) && ((Variable)x).isVariable()))
 		    throw new IllegalArgumentException("usually x should be a " + Variable.class.getName() + " with x.isVariable()==true, however this is not a strict requirement");
 		Substitution sigma = Substitutions.getInstance(Arrays.asList(new Object[] {
+		    //@internal this is an embedding of numbers into constant functions. All other similar cases will refer to this via @see Substitutions#lambda embedding. (otherwise x may never occur, since the constant function x is not compound of anything)
 		    //@xxx sure that shouldn't at least add Substitutions.createExactMatcher(x, Functions.id)? or remove the constant wrapping alltogether
 		    Substitutions.createExactMatcher(orbital.math.functional.Functions.constant(x), orbital.math.functional.Functions.id),
 		    Substitutions.createExactMatcher(x, orbital.math.functional.Functions.id)
