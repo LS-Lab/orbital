@@ -360,7 +360,8 @@ public class RubiksCube implements GeneralSearchProblem {
 	    this.feld = field;
 	    this.accumulatedCost = accumulatedCost;
 	    clearActionLog();
-	    this.actionLog.append(actionLog);
+	    //@internal calling append((StringBuffer)actionLog); would not be executable under JVM1.3 but only JVM1.4+
+	    this.actionLog.append((Object)actionLog);
 	}
 
 	/**
