@@ -17,6 +17,7 @@ import java.awt.Point;
 import java.awt.Color;
 import java.util.List;
 import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Arrays;
 import orbital.util.Utility;
 import orbital.util.Setops;
@@ -92,20 +93,23 @@ public class Field implements Serializable, Cloneable {
 	f.changeSupport = new FieldChangeSupport();
 	// deep-copy of field
 	f.field = new Figure[field.length][field[0].length];
-	for (int y = 0; y < field.length; y++)
+	for (int y = 0; y < field.length; y++) {
 	    for (int x = 0; x < field[0].length; x++) {
 		// Position p = new Position(x, y);
 		// Figure figure = getFigure(p);
 		// f.setFigure(p, figure == null ? null : (Figure) figure.clone());
 		//@internal optimized version
 		Figure figure = (Figure) field[y][x];
+		assert validateFigureKnowledge(figure, new Position(x, y));
 		Figure cf = figure == null ? null : (Figure) figure.clone();
 		f.field[y][x] = cf;
 		if (cf != null) {
 		    // figure might be changed
 		    cf.setField(f);
 		}
+		assert f.validateFigureKnowledge(cf, new Position(x, y));
 	    }
+	}
 	return f;
     } 
 
@@ -154,10 +158,15 @@ public class Field implements Serializable, Cloneable {
 	if (!inRange(p))
 	    throw new IndexOutOfBoundsException("position " + p + " exceeds bounds " + getDimension());
 	Figure f = field[p.y][p.x];
+	assert validateFigureKnowledge(f, p);
+	return f;
+    }
+    
+    private final boolean validateFigureKnowledge(Figure f, Position p) {
 	assert !(f instanceof FigureImpl) || ((FigureImpl)f).getField() == this : "figures know on which field they are: " + f + " on field " + this + " thinks it is on field " + ((FigureImpl)f).getField();
 	assert f == null || (f.x == p.x && f.y == p.y) : "figures know their position: " + f + " knows it is at " + p;
-	return f;
-    } 
+	return true;
+    }
 
     /**
      * Sets Figure at Position p.
@@ -178,13 +187,13 @@ public class Field implements Serializable, Cloneable {
 	    f.move(p);
 	    if (f instanceof FigureImpl) {
 		FigureImpl f2 = (FigureImpl)f;
-		if (f2.getField() != null && f2.getField() != this)
+		if (f2.getField() != null && f2.getField() != this) {
 		    logger.log(Level.WARNING, "unsafe composite figure {0} was in {1} and is transferred to {2} in an unsafe way", new Object[] {f2, f2.getField(), this});
+		}
 	    }
 	    f.setField(this);
 	}
-	assert !(f instanceof FigureImpl) || ((FigureImpl)f).getField() == this : "figures know on which field they are";
-	assert f == null || (f.x == p.x && f.y == p.y) : "figures know their position " + f + " at " + p;
+	assert validateFigureKnowledge(f, p);
     } 
 
     /**
@@ -287,12 +296,12 @@ public class Field implements Serializable, Cloneable {
      */
     public final Iterator/*_<Figure>_*/ iterator() {
 	Dimension dim = getDimension();
-	List	  v = new LinkedList();
-	for (int y = 0; y < dim.height; y++)
+	List	  v = new ArrayList(dim.height * dim.width);
+	for (int y = 0; y < dim.height; y++) {
 	    for (int x = 0; x < dim.width; x++) {
-		Position p = new Position(x, y);
-		v.add(getFigure(p));
-	    } 
+		v.add(getFigure(new Position(x, y)));
+	    }
+	}
 	return Setops.unmodifiableIterator(v.iterator());
     } 
     /**
@@ -304,12 +313,14 @@ public class Field implements Serializable, Cloneable {
     public final Iterator/*_<Figure>_*/ iterateNonEmpty() {
 	Dimension dim = getDimension();
 	List	  v = new LinkedList();
-	for (int y = 0; y < dim.height; y++)
+	for (int y = 0; y < dim.height; y++) {
 	    for (int x = 0; x < dim.width; x++) {
 		Position p = new Position(x, y);
-		if (!isEmpty(p))
+		if (!isEmpty(p)) {
 		    v.add(getFigure(p));
-	    } 
+		}
+	    }
+	}
 	return Setops.unmodifiableIterator(v.iterator());
     } 
 
@@ -439,18 +450,21 @@ public class Field implements Serializable, Cloneable {
 	int	  hFigure = box.height / dim.height;
 	if (wFigure == 0 || hFigure == 0)
 	    throw new IllegalStateException("zero figure dimension: " + wFigure + "|" + hFigure);
-	for (int y = 0; y < dim.height; y++)
+	for (int y = 0; y < dim.height; y++) {
 	    for (int x = 0; x < dim.width; x++) {
-		Rectangle fr = boundsOf(box, new Position(x, y));
+		Position p = new Position(x, y);
+		Rectangle fr = boundsOf(box, p);
 		Graphics fg = g.create(fr.x, fr.y, fr.width, fr.height);
 		// local to fg
 		fr.setLocation(0, 0);
 		fg.setColor((x & 1 ^ y & 1) == 0 ? Color.white : Color.darkGray);
 		fg.fillRect(fr.x, fr.y, fr.width, fr.height);
-		if (field[y][x] != null)
-		    field[y][x].paint(fg, fr);
+		if (!isEmpty(p)) {
+		    getFigure(p).paint(fg, fr);
+		}
 		fg.dispose();
-	    } 
+	    }
+	}
     } 
 
     /**
@@ -478,16 +492,18 @@ public class Field implements Serializable, Cloneable {
      * Returns a string representation of the object.
      */
     public String toString() {
-	Dimension	 dim = getDimension();
+	Dimension    dim = getDimension();
 	StringBuffer sb = new StringBuffer(20 * dim.width * dim.height);
 	for (int y = 0; y < dim.height; y++) {
 	    for (int x = 0; x < dim.width; x++) {
-		sb.append(field[y][x]);
-		if (x < dim.width - 1)
+		sb.append(getFigure(new Position(x,y)));
+		if (x < dim.width - 1) {
 		    sb.append(',');
+		}
 	    } 
-	    if (y < dim.height - 1)
+	    if (y < dim.height - 1) {
 		sb.append(";\n");
+	    }
 	} 
 	return getClass().getName() + "[" + dim + ":" + sb + "]";
     } 
