@@ -72,7 +72,7 @@ public class SearchTest implements Runnable {
 		try {
 		    complete = (algo[i].complexity() != Functions.nondet 
 				//@FIXME: norm is infinite for all polynoms, what else!
-				&& !(algo[i].complexity().equals(Functions.constant(Values.valueOf(Double.POSITIVE_INFINITY)))));
+				&& !(algo[i].complexity().equals(Functions.constant(Values.getDefaultInstance().valueOf(Double.POSITIVE_INFINITY)))));
 		}
 		catch(UnsupportedOperationException x) {logger.log(Level.INFO, "unsupported", x);}
 		try {
