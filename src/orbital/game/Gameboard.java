@@ -81,10 +81,15 @@ public class Gameboard extends Canvas implements ImageObserver, Serializable {
 		    assert e.getType() == FieldChangeEvent.SET_FIGURE : "SET_FIGURE assumed";
 		    assert e.getChangeInfo() instanceof Position : "assuming position of change is changeInfo";
 		    repaint((Position)e.getChangeInfo());
+		    // tell our listeners
+		    propertyChangeListeners.firePropertyChange("field", null, e.getField());
 		}
 	    });
     } 
 
+    /**
+     * @deprecated Since Orbital1.1 use {@link #getField()}.{@link #getFigure(Position)} instead.
+     */
     public Figure getFigure(Position p) {
 	return field.getFigure(p);
     }
@@ -93,6 +98,7 @@ public class Gameboard extends Canvas implements ImageObserver, Serializable {
      * Set a figure on the field with automatic painting.
      * @see Field#setFigure(Position, Figure)
      * @see #repaint(Position)
+     * @deprecated Since Orbital1.1 use {@link #getField()}.{@link #setFigure(Position,Figure)} instead.
      */
     public void setFigure(Position p, Figure what) {
 	field.setFigure(p, what);
