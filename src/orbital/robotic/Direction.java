@@ -16,6 +16,7 @@ import java.io.Serializable;
  * @author  Andr&eacute; Platzer
  */
 public class Direction implements Cloneable, Serializable {
+    private static final long serialVersionUID = -3508145947359548778L;
     /**
      * enumeration of absolute direction constants in degree.
      */
@@ -48,6 +49,9 @@ public class Direction implements Cloneable, Serializable {
     }
     public Direction() {
 	this(North);
+    }
+    public Direction(Direction dir) {
+	this(dir.direction);
     }
 
 
