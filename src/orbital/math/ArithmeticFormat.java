@@ -250,8 +250,6 @@ public class ArithmeticFormat extends Format {
 	    return format((Tensor) obj, result, fieldPosition);
 	else if (obj instanceof Polynomial)
 	    return format((Polynomial) obj, result, fieldPosition);
-	else if (obj instanceof Multinomial)
-	    return format((Multinomial) obj, result, fieldPosition);
 	else if (obj instanceof Symbol)
 	    return format((Symbol) obj, result, fieldPosition);
 	else if (obj instanceof Fraction)
@@ -508,56 +506,8 @@ public class ArithmeticFormat extends Format {
      * @todo provide a parser
      */
     public StringBuffer format(Polynomial p, StringBuffer result, FieldPosition fieldPosition) {
-        fieldPosition.setBeginIndex(0);
-        fieldPosition.setEndIndex(0);
-	final int initialIndex = result.length();
-		
-	// @todo improve format
-	result.append(polynomialPrefix);
-	// we call the degree of 0 deg(0)=0, here 
-	for (int i = Math.max(p.degreeValue(),0); i >= 0; i--) {
-	    Arithmetic ci = p.get(i);
-	    // only print nonzero elements (but print the 0-th coefficient if it is the only one)
-	    if (!ci.norm().equals(Values.ZERO)
-		|| (i == 0 && result.length() == initialIndex)) {
-		int startIndex = result.length();
-		// whether the coefficient ci has been skipped
-		boolean skipped;
-		if (ci.equals(ci.one()) && i != 0)
-		    // skip 1 (except for constant term)
-		    skipped = true;
-		else if (ci.equals(ci.one().minus()) && i != 0) {
-		    // shorten -1 to - (except for constant term)
-		    result.append(polynomialPlusAlternative);
-		    skipped = true;
-		} else {
-		    format(ci, result, fieldPosition);
-		    skipped = false;
-		}
-		// separator for all but the first coefficient,
-		// provided that there is not already an alternative separator
-		if (i < p.degreeValue() &&
-		    !(result.length() > startIndex && result.substring(startIndex).startsWith(polynomialPlusAlternative)))
-		    result.insert(startIndex, polynomialPlusOperator);
-		if (i != 0) {
-		    if (!skipped)
-			result.append(polynomialTimesOperator);
-		    result.append(polynomialVariable);
-		    if (i > 1)
-			result.append(polynomialPowerOperator + i);
-		}
-	    }
-	}
-	result.append(polynomialSuffix);
-
-	return result;
-    }
-
-    /**
-     * Specialization of format.
-     * @todo provide a parser
-     */
-    public StringBuffer format(Multinomial p, StringBuffer result, java.text.FieldPosition fieldPosition) {
+	if (p instanceof UnivariatePolynomial)
+	    return format((UnivariatePolynomial)p, result, fieldPosition);
         fieldPosition.setBeginIndex(0);
         fieldPosition.setEndIndex(0);
 	final int initialIndex = result.length();
@@ -619,6 +569,57 @@ public class ArithmeticFormat extends Format {
 
 	return result;
     }
+
+    /**
+     * Specialization of format.
+     * @todo provide a parser
+     */
+    public StringBuffer format(UnivariatePolynomial p, StringBuffer result, FieldPosition fieldPosition) {
+        fieldPosition.setBeginIndex(0);
+        fieldPosition.setEndIndex(0);
+	final int initialIndex = result.length();
+		
+	// @todo improve format
+	result.append(polynomialPrefix);
+	// we call the degree of 0 deg(0)=0, here 
+	for (int i = Math.max(p.degreeValue(),0); i >= 0; i--) {
+	    Arithmetic ci = p.get(i);
+	    // only print nonzero elements (but print the 0-th coefficient if it is the only one)
+	    if (!ci.norm().equals(Values.ZERO)
+		|| (i == 0 && result.length() == initialIndex)) {
+		int startIndex = result.length();
+		// whether the coefficient ci has been skipped
+		boolean skipped;
+		if (ci.equals(ci.one()) && i != 0)
+		    // skip 1 (except for constant term)
+		    skipped = true;
+		else if (ci.equals(ci.one().minus()) && i != 0) {
+		    // shorten -1 to - (except for constant term)
+		    result.append(polynomialPlusAlternative);
+		    skipped = true;
+		} else {
+		    format(ci, result, fieldPosition);
+		    skipped = false;
+		}
+		// separator for all but the first coefficient,
+		// provided that there is not already an alternative separator
+		if (i < p.degreeValue() &&
+		    !(result.length() > startIndex && result.substring(startIndex).startsWith(polynomialPlusAlternative)))
+		    result.insert(startIndex, polynomialPlusOperator);
+		if (i != 0) {
+		    if (!skipped)
+			result.append(polynomialTimesOperator);
+		    result.append(polynomialVariable);
+		    if (i > 1)
+			result.append(polynomialPowerOperator + i);
+		}
+	    }
+	}
+	result.append(polynomialSuffix);
+
+	return result;
+    }
+
 
     
     /**

@@ -372,7 +372,7 @@ public final class MathUtilities {
     } 
 
     /**
-     * Multinomial which is a generalized binomial.
+     * Multinomial coefficient which is a generalized binomial coefficient.
      * @see #nCr(int, int)
      */
     public static int multinomial(int[] n) {

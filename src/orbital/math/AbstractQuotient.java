@@ -1,4 +1,4 @@
-/*
+/**
  * @(#)AbstractQuotient.java 0.9 1998/11/27 Andre Platzer
  * 
  * Copyright (c) 1998 Andre Platzer. All Rights Reserved.
@@ -66,7 +66,7 @@ class AbstractQuotient/*<M implements Arithmetic>*/ implements Quotient/*<M>*/, 
     /**
      * Special remainder classes modulo Groebner bases in (multivariate) polynomial ring.
      */
-    public AbstractQuotient(Multinomial/*<R>*/ val, java.util.Set/*_<Multinomial<R>>_*/ m, java.util.Comparator monomialOrder) {
+    public AbstractQuotient(Polynomial/*<R,S>*/ val, java.util.Set/*_<Polynomial<R,S>>_*/ m, java.util.Comparator/*_<S>_*/ monomialOrder) {
 	this(val, AlgebraicAlgorithms.reduce(m, monomialOrder));
 	// howto assert that m is a Groebner basis, but with respect to which monomialOrder?
     }
@@ -188,7 +188,7 @@ class AbstractQuotient/*<M implements Arithmetic>*/ implements Quotient/*<M>*/, 
 
     // Arithmetic implementation
 
-    //@todo would we need this ugly trick of Polynomial et al?
+    //@todo would we need this ugly trick of UnivariatePolynomial et al?
     public Arithmetic add(Arithmetic b) {
 	return add((Quotient) b);
     } 

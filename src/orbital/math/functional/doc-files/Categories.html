@@ -196,7 +196,8 @@ are called <dfn>automorphisms</dfn>.</p>
         <td>∀<span class="objet">A</span>,<span class="objet">B</span>∈Ob <span class="categorie">C</span> 
           Hom<sub><span class="categorie">C</span></sub>(<span class="objet">A</span>,<span class="objet">B</span>) 
           := Mor<sub><span class="categorie">C</span></sub>(<span class="objet">A</span>,<span class="objet">B</span>) 
-          is an Abelian group</td>
+          is an Abelian(<a href="../../doc-files/AlgebraicStructures.html#commutativeMagmaHom">!</a>) 
+          group</td>
         <td></td>
       </tr>
       <tr>
@@ -224,8 +225,8 @@ are called <dfn>automorphisms</dfn>.</p>
       <span class="foncteur">F</span>:Hom<sub><span class="categorie">C</span></sub>(<span class="objet">A</span>,<span class="objet">B</span>)<span class="categorie"></span>→Hom<span class="categorie"><sub>D</sub></span>(<span class="foncteur">F</span>(<span class="objet">A</span>),<span class="foncteur">F</span>(<span class="objet">B</span>)) 
       homomorphism of groups
     </div>
-    ⇒ ∀<span class="foncteur">G</span>≅<span class="foncteur">F</span> G 
-    additive</dd>
+    ⇒ ∀<span class="foncteur">G</span>≅<span class="foncteur">F</span> <span class="foncteur">G</span> 
+    is additive</dd>
 </dl>
 <h3>Important Examples</h3>
 <ol>
@@ -265,13 +266,12 @@ are called <dfn>automorphisms</dfn>.</p>
           <tr>
             <td class="leftOfMap"><span class="objet">Y</span></td>
             <td class="arrowOfMap">↦</td>
-            <td class="rightOfMap"><span class="foncteur">m<sub>X</sub></span>(Y) 
-              := Y<sub>∗</sub>:=Mor<span class="categorie"><sub>C</sub></span>(X,Y)</td>
+            <td class="rightOfMap">Y<sub>∗</sub>:=Mor<span class="categorie"><sub>C</sub></span>(X,Y)</td>
           </tr>
           <tr>
             <td class="leftOfMap">(f∈Mor<span class="categorie"><sub>C</sub></span>(Y,Z))</td>
             <td class="arrowOfMap">↦</td>
-            <td class="rightOfMap"><big>(</big><span class="foncteur">m<sub>X</sub></span>(f):Mor<span class="categorie"><sub>C</sub></span>(X,Y)→Mor<span class="categorie"><sub>C</sub></span>(X,Z); 
+            <td class="rightOfMap"><big>(</big>Mor<span class="categorie"><sub>C</sub></span>(X,Y)→Mor<span class="categorie"><sub>C</sub></span>(X,Z); 
               g↦f∘g<big>)</big></td>
           </tr>
         </table>
@@ -287,13 +287,12 @@ are called <dfn>automorphisms</dfn>.</p>
           <tr>
             <td class="leftOfMap"><span class="objet">Y</span></td>
             <td class="arrowOfMap">↦</td>
-            <td class="rightOfMap"><span class="foncteur">m<sup>X</sup></span>(Y) 
-              := Y<sup>∗</sup>:=Mor<span class="categorie"><sub>C</sub></span>(Y,X)</td>
+            <td class="rightOfMap">Y<sup>∗</sup>:=Mor<span class="categorie"><sub>C</sub></span>(Y,X)</td>
           </tr>
           <tr>
             <td class="leftOfMap">(f∈Mor<span class="categorie"><sub>C</sub></span>(Y,Z))</td>
             <td class="arrowOfMap">↦</td>
-            <td class="rightOfMap"><big>(</big><span class="foncteur">m<sup>X</sup></span>(f):Mor<span class="categorie"><sub>C</sub></span>(Z,X)→Mor<span class="categorie"><sub>C</sub></span>(Y,X); 
+            <td class="rightOfMap"><big>(</big>Mor<span class="categorie"><sub>C</sub></span>(Z,X)→Mor<span class="categorie"><sub>C</sub></span>(Y,X); 
               g↦g∘f<big>)</big></td>
           </tr>
         </table>
@@ -364,9 +363,11 @@ are called <dfn>automorphisms</dfn>.</p>
     (and <span class="foncteur">G</span> right-adjoint to <span class="foncteur">F</span>) 
     :⇔
     <div>
-      m<sub><span class="foncteur">F</span></sub> := Mor<span class="categorie"><sub>C'</sub></span>(<span class="foncteur">F</span>(·),·) 
-      ≅ m<sub><span class="foncteur">F</span></sub> := Mor<span class="categorie"><sub>C</sub></span>(·,<span class="foncteur">G</span>(·)) 
-      =: m<sup><span class="foncteur">G</span></sup> in <span class="categorie">C</span><span class="categorie">°</span>×<span class="categorie">C'</span>→<span class="categorie">Ens</span>
+      <span class="foncteur">m<sub><span class="foncteur">F</span></sub></span> 
+      := Mor<span class="categorie"><sub>C'</sub></span>(<span class="foncteur">F</span>(·),·) 
+      ≅ Mor<span class="categorie"><sub>C</sub></span>(·,<span class="foncteur">G</span>(·)) 
+      =: <span class="foncteur">m<sup><span class="foncteur">G</span></sup></span> 
+      in <span class="categorie">C</span><span class="categorie">°</span>×<span class="categorie">C'</span>→<span class="categorie">Ens</span>
     </div>
   </dd>
   <dt id="equivalentCategories">equivalent<br>
@@ -452,7 +453,7 @@ categories).</p>
         <td><span class="foncteur">F</span>(<span class="categorie">A''</span>)</td>
         <td></td>
         <td></td>
-        <td>is an exact sequence in <span class="categorie">A'</span></td>
+        <td>is an exact sequence in <span class="categorie">A'</span>.</td>
       </tr>
     </table>
   </dd>
@@ -463,8 +464,8 @@ categories).</p>
     <table>
       <tr>
         <td>If</td>
-        <td>0</td>
-        <td>→</td>
+        <td>(0</td>
+        <td>→)</td>
         <td><span class="categorie">A'</span></td>
         <td>→<sup>α</sup></td>
         <td><span class="categorie">A</span></td>
@@ -485,10 +486,12 @@ categories).</p>
         <td><span class="foncteur">F</span>(<span class="categorie">A''</span>)</td>
         <td>→</td>
         <td>0</td>
-        <td>is an exact sequence in <span class="categorie">A'</span></td>
+        <td>is an exact sequence in <span class="categorie">A'</span>.</td>
       </tr>
     </table>
-    So left exact and right exact are dual ....</dd>
+    <span class="foncteur">F</span>:<span class="categorie">A</span>→<span class="categorie">A'</span> 
+    is right exact ⇔ <span class="foncteur">F</span>:<span class="categorie">A°</span>→<span class="categorie">A'°</span> 
+    is left exact.</dd>
 </dl>
 <h2 id="universalElements">Universal Elements</h2>
 <p>Let <span class="categorie">C</span> be a category.
@@ -525,11 +528,14 @@ categories).</p>
       x = <span class="foncteur">F</span>(f)(u<sub><span class="foncteur">F</span></sub>)
       <ul>
         <li><small>(The converse is also true)</small></li>
-        <li>(and this mapping <span class="transformationNaturelle">α</span><sub>B</sub><sup>-1</sup>:x↦f 
-          is bijective)</li>
         <li>&nbsp;if <span class="categorie">C</span> and <span class="categorie">Ens</span> 
-          (<span class="categorie">Ab</span>) are additive, then the <span class="transformationNaturelle">α</span><sub>B</sub> 
-          are isomorphisms of groups</li>
+          (then <span class="categorie">Ab</span>) are additive, then (<span class="foncteur">m<sub>A</sub></span>,<span class="foncteur">F</span> 
+          are and) the <span class="transformationNaturelle">α</span><sub>B</sub> 
+          are isomorphisms of groups.</li>
+        <li>More generally, if the <span class="foncteur">F</span> (on 
+          morphisms) is a homomorphism of a law + that <span class="transformationNaturelle"></span>∘ 
+          is distributive over, then the <span class="transformationNaturelle">α</span><sub>B</sub> 
+          are isomorphisms of +.</li>
       </ul>
     </div>
   </dd>
@@ -539,13 +545,13 @@ be a presentable covariant functor.
 <ul>
   <li>presenting objects for <span class="foncteur">F</span> are uniquely 
     isomorph. Precisely: for all isomorphisms of functors <span class="transformationNaturelle">α</span>:<span class="foncteur">m<sub>A</sub></span>→<span class="foncteur">F</span>, 
-    <span class="transformationNaturelle">α</span>':<span class="foncteur">m<sub>A</sub></span><sub>'</sub>→<span class="foncteur">F</span> 
+    <span class="transformationNaturelle">α'</span>:<span class="foncteur">m<sub>A</sub></span><sub>'</sub>→<span class="foncteur">F</span> 
     ∃!φ:A<sub></sub>→A' isomorphism with <span class="transformationNaturelle">α</span>∘α<sub>φ</sub> 
-    = α'. (See <a href="#Yoneda">Yoneda-Lemma</a>).</li>
+    = <span class="transformationNaturelle">α</span>'. (See <a href="#Yoneda">Yoneda-Lemma</a>).</li>
   <li>an isomorphism of functors <span class="transformationNaturelle">α</span>:<span class="foncteur">m<sub>A</sub></span>→<span class="foncteur">F</span> 
-    is uniquely determined by its universal element, i.e. ∀x∈<span class="foncteur">F</span>(A) 
+    is uniquely determined by its universal element, i.e. ∀u∈<span class="foncteur">F</span>(A) 
     there is at most one <span class="transformationNaturelle">α</span>:<span class="foncteur">m<sub>A</sub></span>→<span class="foncteur">F</span> 
-    with <span class="transformationNaturelle">α</span><sub>A</sub>(id<sub>A</sub>)=x.</li>
+    with <span class="transformationNaturelle">α</span><sub>A</sub>(id<sub>A</sub>)=u.</li>
 </ul>
 <h2 id="products">Product and Coproduct</h2>
 <dl class="def">

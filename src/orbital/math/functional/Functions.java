@@ -7,7 +7,7 @@
 package orbital.math.functional;
 
 import orbital.logic.functor.Functor;
-import orbital.math.Polynomial;
+import orbital.math.UnivariatePolynomial;
 
 import orbital.math.Arithmetic;
 import orbital.math.Normed;
@@ -1036,7 +1036,7 @@ public final class Functions {
      */
 
     /*
-     * public static final Polynomial bernstein(final int i, final int n, final double a, final double b) {
+     * public static final UnivariatePolynomial bernstein(final int i, final int n, final double a, final double b) {
      * return new Function() {
      * public Object apply(Object x) { return MathUtilities.nCr(n,i) * Math.pow(x-a, i) * Math.pow(b-x, n-i) / Math.pow(b-a, n); }
      * public Function derive() {throw new UnsupportedOperationException(this + "'");}
@@ -1052,9 +1052,9 @@ public final class Functions {
      * the Vandermonde Matrix so all coefficients are 1. dim R[X]<sub>d</sub> = d+1.
      * The ring R' is "compatible" with R.</p>
      * @see #polynom(Vector)
-     * @see orbital.math.Polynomial
+     * @see orbital.math.UnivariatePolynomial
      */
-    public static final Polynomial polynom(final int degree) {
+    public static final UnivariatePolynomial polynom(final int degree) {
 	return polynom(Values.IDENTITY(degree, degree).getDiagonal());
 	// 	    Function p[] = new Function[degree];
 	// 	    for (int i = 0; i < degree; i++)
@@ -1075,10 +1075,10 @@ public final class Functions {
      * The ring R' is "compatible" with R.</p>
      * @see #polynom(int)
      * @see orbital.math.Values#asPolynomial(Vector)
-     * @see orbital.math.Polynomial
+     * @see orbital.math.UnivariatePolynomial
      * @internal see #polynom(int)
      */
-    public static final Polynomial polynom(Vector coeff) {
+    public static final UnivariatePolynomial polynom(Vector coeff) {
 	return Values.asPolynomial(coeff);
 	// @xxx ClassCastException due to ArithmeticVector
 	// return (Function) Operations.times.apply(coeff, polynom(coeff.dimension()));

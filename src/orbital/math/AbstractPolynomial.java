@@ -1,42 +1,71 @@
 /**
- * @(#)AbstractPolynomial.java 1.0 2001/12/09 Andre Platzer
+ * @(#)AbstractPolynomial.java 1.1 2002/08/21 Andre Platzer
  *
- * Copyright (c) 2001 Andre Platzer. All Rights Reserved.
+ * Copyright (c) 2002 Andre Platzer. All Rights Reserved.
  */
 
 package orbital.math;
 
 import orbital.math.functional.Function;
 import java.io.Serializable;
+import java.util.ListIterator;
+import java.util.Iterator;
 
 import java.util.NoSuchElementException;
 import java.util.ConcurrentModificationException;
 
-import orbital.logic.functor.Functionals;
+import orbital.math.functional.Functionals;
 import orbital.logic.functor.BinaryFunction;
+
+import orbital.math.functional.Operations;
 
 import orbital.util.Setops;
 import orbital.logic.functor.Predicates;
+import orbital.util.Utility;
+import java.util.Arrays;
+import java.lang.reflect.Array;
 
-import java.util.ListIterator;
+import orbital.algorithm.Combinatorical;
 
-abstract class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractProductArithmetic implements Polynomial/*<R>*/, Serializable {
-    private static final long serialVersionUID = -5253561352164949692L;
-    /**
-     * Which implementation of the multiplication to use.
-     */
-    private static final boolean IMPLEMENTATION_KARATSUBA = false;
+/**
+ * @version 1.1, 2002/08/21
+ * @author  Andr&eacute; Platzer
+ * @todo this implementation could be split in two.
+ *  One part that is general for every S,
+ *  and one part that specially assumes S=<b>N</b><sup>n</sup>.
+ */
+abstract class AbstractPolynomial/*<R implements Arithmetic, S implements Arithmetic>*/ extends AbstractProductArithmetic implements Polynomial/*<R,S>*/, Serializable {
+    private static final long serialVersionUID = 4336092442446250306L;
 	
     /**
-     * The 0&isin;R of the underlying ring of coefficients.
-     * @invariant subclasses must set this value to get(0).zero()
+     * The index (0,...,0) of the constant term.
+     * @invariant subclasses must set this value to {0,...,0}&isin;<b>N</b><sup>indexSet()</sup>
      */
-    transient Arithmetic/*>R<*/  R_ZERO;
+    transient int[] CONSTANT_TERM;
     public AbstractPolynomial() {
     }
   
     public boolean equals(Object o) {
-    	return (o instanceof Polynomial) && super.equals(o);
+	// would need dimensions() to reduce to non-zero part
+    	//return (o instanceof Polynomial) && super.equals(o);
+	if (o instanceof Polynomial) {
+	    AbstractPolynomial/*>T<*/ b = (AbstractPolynomial) o;
+	    final int[] d = Functionals.map(Operations.max, dimensions(), b.dimensions());
+	    return Setops.all(iterator(d), b.iterator(d), Predicates.equal);
+	} 
+	return false;
+    } 
+
+    public int hashCode() {
+	//@xxx throw new UnsupportedOperationException("would require dimensions() to reduce to non-zero part");
+	// the following is ok (though, perhaps, not ver surjective), since 0 has hashCode 0 anyway
+	int hash = 0;
+	//@todo functional?
+	for (java.util.Iterator i = iterator(this); i.hasNext(); ) {
+	    Object e = i.next();
+	    hash += e == null ? 0 : e.hashCode();
+	} 
+	return hash;
     }
 
     public Integer degree() {
@@ -45,13 +74,36 @@ abstract class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractP
 
     /**
      * Sets a value for the coefficient specified by index.
-     * @pre i&isin;<b>N</b>
+     * @pre i&isin;S
      * @throws UnsupportedOperationException if this polynomial is constant and does not allow modifications.
      */
-    protected abstract void set(int i, Arithmetic vi);
+    protected abstract void set(Arithmetic/*>S<*/ i, Arithmetic vi);
+
+    //@xxx we do not ultimately need these following methods, but only have them for performance for S=<b>N</b><sup>n</sup>
+    
+    /**
+     * Get the the (partial) degree of this polynomial with respect to the single variables.
+     * @see #degree()
+     * @todo rename?
+     */
+    protected abstract int[] dimensions();
+
+    /**
+     * Get a tensor view of the coefficients.
+     * @xxx somehow get rid of this trick
+     */
+    abstract Tensor tensorViewOfCoefficients();
+
+    protected abstract Arithmetic get(int[] i);
+    /**
+     * Sets a value for the coefficient specified by index.
+     * @pre i&isin;<b>N</b><sup>n</sup>
+     * @throws UnsupportedOperationException if this polynomial is constant and does not allow modifications.
+     */
+    protected abstract void set(int[] i, Arithmetic vi);
 	
     protected final Object productIndexSet(Arithmetic/*>T<*/ productObject) {
-	return degree();
+	return dimensions();
     }
 
     protected ListIterator/*_<R>_*/ iterator(Arithmetic/*>T<*/ productObject) {
@@ -69,98 +121,175 @@ abstract class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractP
      * @see <a href="{@docRoot}/DesignPatterns/FactoryMethod.html">Factory Method</a>
      * @see #clone()
      */
-    protected abstract Polynomial/*<R>*/ newInstance(int degree);
+    protected abstract Polynomial/*<R>*/ newInstance(int[] dimensions);
 	
     protected final Arithmetic/*>T<*/ newInstance(Object productIndexSet) {
-	return newInstance(((Integer)productIndexSet).intValue());
+	return newInstance((int[])productIndexSet);
     }
 
     // iterator-views
+    
+    public final ListIterator iterator() {
+	return iterator(dimensions());
+    }
 
     /**
-     * The number of times this Polynomial has been structurally modified.
+     * The number of times this object has been structurally modified.
      * Structural modifications are those that change the number of elements in
-     * the Polynomial or otherwise modify its internal structure.
-     * This field is used to make iterators of the Polynomial fail-fast.
+     * the object or otherwise modify its internal structure.
+     * This field is used to make iterators of the object fail-fast.
      * <p>
      * To use this feature, increase modCount whenever an implementation method changes
-     * this polynomial.</p>
+     * this tensor.</p>
      * @see java.util.ConcurrentModificationException
      */
     protected transient int modCount = 0;
 
-    public ListIterator iterator() {
+    public Iterator indices() {
 	return new ListIterator() {
-		private int cursor = 0;
-		private int lastRet = -1;
+		//@structure delegates to cursor wrapping int[] into Vector<Integer>
+		private final Combinatorical cursor = Combinatorical.getPermutations(dimensions());
         	/**
         	 * The modCount value that the iterator believes that the backing
         	 * object should have. If this expectation is violated, the iterator
         	 * has detected concurrent modification.
         	 */
         	private transient int expectedModCount = modCount;
-
 		public boolean hasNext() {
-		    return cursor <= degreeValue();
+		    return cursor.hasNext();
 		} 
-        	public boolean hasPrevious() {
-        	    return cursor != 0;
-        	}
-
 		public Object next() {
 		    try {
-            		Object next = get(cursor);
+			Object v = Values.tensor(cursor.next());
 			checkForComodification();
-            		lastRet = cursor++;
-            		return next;
+			return v;
 		    }
 		    catch(IndexOutOfBoundsException e) {
 			checkForComodification();
-    	    		throw new NoSuchElementException();
+			throw (AssertionError) new AssertionError("cursor should already have thrown a NoSuchElementException").initCause(e);
         	    }
 		} 
-        	public Object previous() {
-        	    try {
-            		Object previous = get(--cursor);
-            		checkForComodification();
-            		lastRet = cursor;
-            		return previous;
-        	    } catch(IndexOutOfBoundsException e) {
-            		checkForComodification();
-            		throw new NoSuchElementException();
+		public boolean hasPrevious() {
+		    return cursor.hasPrevious();
+		} 
+		public Object previous() {
+		    try {
+			Object v = Values.tensor(cursor.previous());
+			checkForComodification();
+			return v;
+		    }
+		    catch(IndexOutOfBoundsException e) {
+			checkForComodification();
+			throw (AssertionError) new AssertionError("cursor should already have thrown a NoSuchElementException").initCause(e);
         	    }
-        	}
-        
-        	public int nextIndex() {
-        	    return cursor;
-        	}
-        
-        	public int previousIndex() {
-        	    return cursor-1;
+		} 
+
+		// UnsupportedOperationException, categorically
+
+        	public void set(Object o) {
+		    throw new UnsupportedOperationException("setting elements in an index set of a polynomial is undefined");
         	}
 
-		public void remove() {
-		    throw new UnsupportedOperationException();
+		public int nextIndex() {
+		    throw new UnsupportedOperationException("a polynomial does not have a one-dimensional index");
+		}
+		public int previousIndex() {
+		    throw new UnsupportedOperationException("a polynomial does not have a one-dimensional index");
+		}
+
+		public void add(Object o) {
+		    throw new UnsupportedOperationException("adding elements to an index set of a polynomial is undefined");
 		} 
+		public void remove() {
+		    throw new UnsupportedOperationException("removing elements from an index set of a polynomial is undefined");
+		} 
+
+        	private final void checkForComodification() {
+        	    if (modCount != expectedModCount)
+			throw new ConcurrentModificationException();
+        	}
+	    };
+    } 
+
+    /**
+     * Provides an iterator over the coefficients of the specified dimensions.
+     * @pre &forall;k dim[k]&ge;dimensions()[k]
+     * @todo wouldn't Polynomial need to have this?
+     * @internal almost identical to @see AbstractTensor.iterator()
+     */
+    ListIterator iterator(final int[] dim) {
+	for (int k = 0; k < dim.length; k++)
+	    Utility.pre(dim[k]>=dimensions()[k], "forall k dim[k]>=dimensions()[k]");
+	return new ListIterator() {
+		private final Combinatorical cursor = Combinatorical.getPermutations(dim);
+		//@internal we could just as well store lastRet as Vector<Integer> but int[] saves a lot of wrapping/unwrapping
+		private int[] lastRet = null;
+        	/**
+        	 * The modCount value that the iterator believes that the backing
+        	 * object should have. If this expectation is violated, the iterator
+        	 * has detected concurrent modification.
+        	 */
+        	private transient int expectedModCount = modCount;
+		public boolean hasNext() {
+		    return cursor.hasNext();
+		} 
+		public Object next() {
+		    try {
+			Object v = get(lastRet = (int[])cursor.next().clone());
+			checkForComodification();
+			return v;
+		    }
+		    catch(IndexOutOfBoundsException e) {
+			checkForComodification();
+			throw (AssertionError) new AssertionError("cursor should already have thrown a NoSuchElementException").initCause(e);
+        	    }
+		} 
+		public boolean hasPrevious() {
+		    return cursor.hasPrevious();
+		} 
+		public Object previous() {
+		    try {
+			Object v = get(lastRet = (int[])cursor.previous().clone());
+			checkForComodification();
+			return v;
+		    }
+		    catch(IndexOutOfBoundsException e) {
+			checkForComodification();
+			throw (AssertionError) new AssertionError("cursor should already have thrown a NoSuchElementException").initCause(e);
+        	    }
+		} 
+
         	public void set(Object o) {
         	    if (!(o instanceof Arithmetic))
         	    	throw new IllegalArgumentException();
-        	    if (lastRet == -1)
+        	    if (lastRet == null)
             		throw new IllegalStateException();
 		    checkForComodification();
         
         	    try {
-            		AbstractPolynomial.this.set(lastRet, (Arithmetic/*>R<*/)o);
+            		AbstractPolynomial.this.set(lastRet, (Arithmetic)o);
             		expectedModCount = modCount;
         	    } catch(IndexOutOfBoundsException e) {
 			throw new ConcurrentModificationException();
         	    }
         	}
-        
-        	public void add(Object o) {
-		    throw new UnsupportedOperationException();
-        	}
-        	
+
+		// UnsupportedOperationException, categorically
+
+		public int nextIndex() {
+		    throw new UnsupportedOperationException("a polynomial does not have a one-dimensional index");
+		}
+		public int previousIndex() {
+		    throw new UnsupportedOperationException("a polynomial does not have a one-dimensional index");
+		}
+
+		public void add(Object o) {
+		    throw new UnsupportedOperationException("adding a single element from a polynomial is impossible");
+		} 
+		public void remove() {
+		    throw new UnsupportedOperationException("removing a single element from a polynomial is impossible");
+		} 
+
         	private final void checkForComodification() {
         	    if (modCount != expectedModCount)
 			throw new ConcurrentModificationException();
@@ -168,58 +297,39 @@ abstract class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractP
 	    };
     } 
 	
-    // @todo copy horner scheme to examples
+    /**
+     * Evaluate this multinomial at <var>a</var>.
+     * Using the "Einsetzungshomomorphismus".
+     * @return f(a) = f(X)|<sub>X=a</sub> = (f(X) mod (X-a))
+     * @todo copy horner scheme to examples
+     * @todo we could just as well generalize the argument and return type of R
+     */
     public Object/*>R<*/ apply(Object/*>R<*/ a) {
-	final Arithmetic/*>R<*/ acast = (Arithmetic/*>R<*/)a;
-	if (acast instanceof Symbol) {
-	    // use ordinary evaluation scheme to improve readability
-	    Arithmetic r = get(0);
-	    for (int i = 1; i <= degreeValue(); i++) {
-		Arithmetic ci = get(i);
-		r = r.add(ci.multiply(acast.power(Values.valueOf(i))));
-	    }
-	    return r;
-	}
-	// horner schema is (|0, &lambda;c,b. c+b*a|) for foldRight like banana
-	return Functionals.banana(R_ZERO, new BinaryFunction/*<R,R,R>*/() {
-		public Object/*>R<*/ apply(Object/*>R<*/ c, Object/*>R<*/ b) {
-		    return (Object/*>R<*/) ((Arithmetic/*>R<*/)c).add(((Arithmetic/*>R<*/)b).multiply(acast));
-		    //return ((Arithmetic/*>R<*/)c).add(((Arithmetic/*>R<*/)b).multiply((Arithmetic/*>R<*/)a));
-		}
-	    }, iterator());
+	throw new UnsupportedOperationException("not yet implemented");
     }	
 
-    /**
-     * <i>d</i>f/<i>d</i>x = (<var>a</var><sub>0</sub> + <var>a</var><sub>1</sub>X + <var>a</var><sub>2</sub>X<sup>2</sup> + ... + <var>a</var><sub>n</sub>X<sup>n</sup>)' = <var>a</var><sub>1</sub> + 2<var>a</var><sub>2</sub>X + 3<var>a</var><sub>3</sub>X<sup>2</sup> + ... + n<var>a</var><sub>n</sub>X<sup>n-1</sup>.
-     */
     public Function derive() {
-	Arithmetic[] ai = new Arithmetic[degreeValue()];
-	if (ai.length == 0)
-	    return this;
-	for (int i = 1; i <= degreeValue(); i++)
-	    ai[i - 1] = get(i).multiply(Values.valueOf(i));
-	return Values.polynomial(ai);
+	throw new UnsupportedOperationException("not yet implemented");
     } 
 
-    /**
-     * &int; (<var>a</var><sub>0</sub> + <var>a</var><sub>1</sub>X + <var>a</var><sub>2</sub>X<sup>2</sup> + ... + <var>a</var><sub>n</sub>X<sup>n</sup>) <i>d</i>x = <var>a</var><sub>0</sub>X + <var>a</var><sub>1</sub>X<sup>2</sup>/2 + ... + <var>a</var><sub>n</sub>X<sup>n+1</sup>/(n+1).
-     */
     public Function integrate() {
-	if (degreeValue() < 0)
-	    return this;
-	Arithmetic[] ai = new Arithmetic[(degreeValue() + 1) + 1];
-	ai[0] = R_ZERO;
-	for (int i = 0; i <= degreeValue(); i++)
-	    ai[i + 1] = get(i).divide(Values.valueOf(i + 1));
-	return Values.polynomial(ai);
+	throw new ArithmeticException();
     }
 
     public Arithmetic zero() {
-	return Values.polynomial(new Arithmetic/*>R<*/[] {get(0).zero()});
+	int[] dim = new int[((Integer)indexSet()).intValue()];
+	Arrays.fill(dim, 1);
+ 	Object r = Array.newInstance(Arithmetic/*>R<*/.class, dim);
+	Utility.setPart(r, CONSTANT_TERM, get(CONSTANT_TERM).zero());
+	return Values.polynomial(r);
     }
 
     public Arithmetic one() {
-	return Values.polynomial(new Arithmetic/*>R<*/[] {get(0).one()});
+	int[] dim = new int[((Integer)indexSet()).intValue()];
+	Arrays.fill(dim, 1);
+ 	Object r = Array.newInstance(Arithmetic/*>R<*/.class, dim);
+	Utility.setPart(r, CONSTANT_TERM, get(CONSTANT_TERM).one());
+	return Values.polynomial(r);
     }
 
     public Real norm() {
@@ -227,254 +337,88 @@ abstract class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractP
     }
 
     //@todo we should also support adding other functions (like in AbstractFunctor)?
-	
-    public Arithmetic add(Arithmetic b) {
-	return addImpl((Polynomial)b);
+
+    private Arithmetic operatorImpl(BinaryFunction op, Arithmetic bb) {
+	// only cast since Polynomial does not (yet?) have iterator(int[])
+	AbstractPolynomial b = (AbstractPolynomial)bb;
+	if (!indexSet().equals(b.indexSet()))
+	    throw new IllegalArgumentException("a+b only defined for equal indexSet()");
+	final int[] d = Functionals.map(Operations.max, dimensions(), b.dimensions());
+	AbstractPolynomial/*>T<*/ ret = (AbstractPolynomial)newInstance(d);
+
+	// component-wise
+	ListIterator dst;
+	Setops.copy(dst = ret.iterator(d), Functionals.map(op, iterator(d), b.iterator(d)));
+	assert !dst.hasNext() : "equal dimensions for iterator view implies equal structure of iterators";
+	return ret;
     }
-    public Euclidean add(Euclidean b) {
-	return addImpl((Polynomial)b);
+    
+    public Arithmetic add(Arithmetic b) {
+	return add((Polynomial)b);
     }
     public Polynomial/*<R>*/ add(Polynomial/*<R>*/ b) {
-	return addImpl(b);
-    }
-    //@note this ugly trick is necessary because in #add(Euclidean) we somehow cannot cast and call add((Polynomial/*<R>*/) b);
-    //@internal using return (Polynomial)super.add((Arithmetic)b); does not work since the two iterators may have different hasNext(), though next() would work
-    private Polynomial/*<R>*/ addImpl(Polynomial/*<R>*/ b) {
-	// optimized component-wise addition
-	if (degreeValue() < 0)
-	    return b;
-	if (b.degreeValue() < 0)
-	    return this;
-	Arithmetic/*>R<*/ r[] = new Arithmetic/*>R<*/[Math.max(degreeValue(), b.degreeValue()) + 1];
-	final int mindeg = Math.min(degreeValue(), b.degreeValue());
-	for (int i = 0; i <= mindeg; i++)
-	    r[i] = (Arithmetic/*>R<*/) get(i).add(b.get(i));
-	assert !(degreeValue() > mindeg && b.degreeValue() > mindeg) : "deg(" + this + ")=" + degreeValue() + ", deg(" + b + ")=" + b.degreeValue() + " mindeg=" + mindeg + " cannot be greater than both degrees";
-	//@internal optimized plus saving some empty additions with 0
-	if (degreeValue() > mindeg)
-	    for (int i = mindeg + 1; i <= degreeValue(); i++)
-		r[i] = get(i);
-	else if (b.degreeValue() > mindeg)
-	    for (int i = mindeg + 1; i <= b.degreeValue(); i++)
-		r[i] = b.get(i);
-	return representative(r);
+	return (Polynomial) operatorImpl(Operations.plus, b);
     }
 	
     public Arithmetic subtract(Arithmetic b) throws ArithmeticException {
-	return subtractImpl((Polynomial)b);
-    } 
-    public Euclidean subtract(Euclidean b) throws ArithmeticException {
-	return subtractImpl((Polynomial)b);
+	return subtract((Polynomial)b);
     } 
     public Polynomial/*<R>*/ subtract(Polynomial/*<R>*/ b) {
-	return subtractImpl(b);
-    }
-    private Polynomial/*<R>*/ subtractImpl(Polynomial/*<R>*/ b) {
-	return (Polynomial) add(b.minus());
+	return (Polynomial) operatorImpl(Operations.subtract, b);
     }
 
     public Arithmetic multiply(Arithmetic b) {
 	return multiply((Polynomial)b);
     }
-    public Euclidean multiply(Euclidean b) {
-	return multiplyImpl((Polynomial)b);
-    }
-    public Polynomial/*<R>*/ multiply(Polynomial/*<R>*/ b) {
-	return multiplyImpl(b);
-    }
-    /**
-     * possible implementations of polynomial multiplication include
-     * <ul>
-     *   <li>na&iuml;ve convolution in O(n<sup>2</sup>)</li>
-     *   <li>Divide and Conquer with Karatsuba's trick in O(n<sup>&#13266;<sub>2</sub>3</sup>).
-     *     The trick is to use the equation
-     *     <center>(aY+b) * (cY+d) = (ac)Y<sup>2</sup> + ((a+b)(c+d)-(ac)-(bd))Y + (bd)</center>
-     *     with Y=X<sup>&lceil;max{deg(f),deg(g)}/2&rceil;</sup>
-     *     recursively saving one multiplication out of four in each recursion.
-     *   </li>
-     *   <li>By using the Fast Fourier-Transform (FFT) in O(n*&#13266;n):
-     *     evaluate by FFT, multiply single nodes, interpolate by FFT<sup>-1</sup>.
-     *     Given a primitive (<var>n</var>*<var>m</var>)-th root of unity <var>&omega;</var>&isin;<b>F</b>
-     *     the FFT is the decomposition of the n-dimensional discrete fourier-transform
-     *     into a product of sparse matrices.
-     *     <center>DFT<sub>n*m</sub>(&omega;) = &Pi;&sdot;(I<sub>m</sub>&otimes;DFT<sub>n</sub>(&omega;<sup>m</sup>))&sdot;T(&omega;)&sdot;(DFT<sub>m</sub>(&omega;<sup>n</sup>)&otimes;I<sub>n</sub>)</center>
-     *     with
-     *     <center>T(&omega;) = &#8720;<sub>k=0,...,m-1</sub>&Delta;<sub>k</sub> = diag(&Delta;<sup>0</sup>,...,&Delta;<sup>m-1</sup>)
-     *     is a block-diagonal matrix, and the diagonal matrix
-     *     &Delta;=diag(1,&omega;,...,&omega;<sup>n-1</sup>)</center>
-     *     The discrete fourier-transform is only a special form of the vandermond matrix for
-     *     polynomial evaluation
-     *     <center>DFT<sub>n</sub>(&omega;) = (&omega;<sup>&nu;&mu;</sup>)<sub>&nu;,&mu;&isin;{0,...,n-1}</sub></center>
-     *     and its inverse for polynomial interpolation
-     *     <center>DFT<sub>n</sub>(&omega;)<sup>-1</sup> = 1/n*DFT<sub>n</sub>(&omega;<sup>-1</sup>)</center>
-     *   </li>
-     * </ul>
-     */
-    private Polynomial/*<R>*/ multiplyImpl(Polynomial/*<R>*/ b) {
-	if (IMPLEMENTATION_KARATSUBA)
-	    return multiplyImplKaratsuba(b);
-	//@todo could we speed this up by FFT or horner schema, or Karatsuba?
+
+    //@todo optimizable by far
+    public Polynomial/*<R>*/ multiply(Polynomial/*<R>*/ bb) {
+	// only cast since Polynomial does not know an equivalent of dimensions()
+	AbstractPolynomial b = (AbstractPolynomial)bb;
 	if (degreeValue() < 0)
 	    return this;
 	else if (b.degreeValue() < 0)
 	    return b;
-	Arithmetic/*>R<*/ r[] = new Arithmetic/*>R<*/[degreeValue() + b.degreeValue() + 1];
-	for (int i = 0; i < r.length; i++) {
-	    //r[i] = &sum;<sub>k=0,...,i</sub> a[k]*b[i-k]
-	    r[i] = (Arithmetic/*>R<*/) get(0).multiply(b.get(i));
-	    for (int k = 1; k <= i; k++)
-		r[i] = (Arithmetic/*>R<*/) r[i].add(get(k).multiply(b.get(i-k)));
+	final int[] d = Functionals.map(Operations.plus, dimensions(), b.dimensions());
+	Polynomial/*<R>*/ ret = newInstance(d);
+	setAllZero(ret);
+	// ret = &sum;<sub>i&isin;dimensions()</sub> a<sub>i</sub>X<sup>i</sup> * b
+	// perform (slow) multiplications on monomial base
+	for (Combinatorical index = Combinatorical.getPermutations(dimensions()); index.hasNext(); ) {
+	    int[] i = index.next();
+	    // si = a<sub>i</sub>X<sup>i</sup> * b
+	    AbstractPolynomial/*<R>*/ si = (AbstractPolynomial)newInstance(Functionals.map(Operations.plus, i, b.dimensions()));
+	    setAllZero(si);
+	    final int[] sidim = si.dimensions();
+	    final int[] sidim_1 = new int[sidim.length];
+	    for (int k = 0; k < sidim_1.length; k++)
+		sidim_1[k] = sidim[k] - 1;
+	    ((AbstractTensor)si.tensorViewOfCoefficients()).setSubTensor(i, sidim_1,
+			 ((AbstractPolynomial)b.scale(get(i))).tensorViewOfCoefficients());
+	    ret = ret.add(si);
 	}
-	return representative(r);
+	return ret;
     }
+
     /**
-     * @todo debug Addendum.main multiplication of X^2*X^1 == 0 is completely wrong
+     * Sets all coefficients of p to 0.
      */
-    private Polynomial/*<R>*/ multiplyImplKaratsuba(Polynomial/*<R>*/ poly2) {
-	//@todo could we speed this up by FFT or horner schema, or Karatsuba?
-	if (degreeValue() < 0)
-	    return this;
-	else if (poly2.degreeValue() < 0)
-	    return poly2;
-	int n = Math.max(degreeValue(), poly2.degreeValue());
-	if (n == 0)					// base case
-	    return representative(new Arithmetic/*>R<*/[] {(Arithmetic/*>R<*/) get(0).multiply(poly2.get(0))});
-	else {						// recursion
-	    int d = (n+1) >> 1;
-	    assert d == (int) Math.ceil(n/2.0) : "bit optimization works " + d + "==" + (n/2.0);
-	    n = d << 1;
-			
-	    final Polynomial/*<R>*/ alpha[] = split(this, d);
-	    final Polynomial/*<R>*/ beta[] = split(poly2, d);
-	    final Polynomial/*<R>*/ ac = alpha[1].multiply(beta[1]);
-	    final Polynomial/*<R>*/ bd = alpha[0].multiply(beta[0]);
-	    final Polynomial/*<R>*/ t = (alpha[1].add(alpha[0])).multiply(beta[1].add(beta[0]));
-	    // return ac*X^n + (t-ac-bd)*X^d + bd
-	    // optimized because addition should affect distinct coefficients
-	    Arithmetic/*>R<*/ r[] = new Arithmetic/*>R<*/[n + Math.max(ac.degreeValue(),0) + 1];
-	    assert bd.degreeValue() < d : "bd.degreeValue() < d required for shift optimized add of distinct coefficients";
-	    for (int i = 0; i < d; i++)
-		r[i] = bd.get(i);
-	    assert t.degreeValue() + d < n : "t.degreeValue() + d < n required for shift optimized add of distinct coefficients " + t.degreeValue() + "+" + d + "<" + n + " with " + alpha[0] + "," + alpha[1] + " and " + beta[0] + "," + beta[1] + " and t="+t;
-	    assert ac.degreeValue() + d < n : "ac.degreeValue() + d < n required for shift optimized add of distinct coefficients";
-	    assert bd.degreeValue() + d < n : "bd.degreeValue() + d < n required for shift optimized add of distinct coefficients";
-	    for (int i = d; i < n; i++) {
-		final int j = i - d;
-		r[i] = (Arithmetic/*>R<*/) t.get(j).subtract(ac.get(j)).subtract(bd.get(j));
-	    }
-	    for (int i = n; i < r.length; i++)
-		r[i] = ac.get(i - n);
-	    return representative(r);
+    void setAllZero(Polynomial p) {
+	for (ListIterator i = p.iterator(); i.hasNext(); ) {
+	    i.next();
+	    i.set(get(CONSTANT_TERM).zero());
 	}
-    }
-    /**
-     * Split a polynomial at the index s in two pieces.
-     * @post p == RES[1]*X<sup>s</sup> + RES[0] &and; RES[0].degreeValue()&lt;division
-     */
-    private /*static*/ final Polynomial/*<R>*/[] split(Polynomial/*<R>*/ p, int s) {
-	Polynomial/*<R>*/ split[] = new AbstractPolynomial/*<R>*/[2];
-	Arithmetic/*>R<*/ r[] = new Arithmetic/*>R<*/[s];
-	for (int i = 0; i < r.length; i++)
-	    r[i] = p.get(i);
-	split[0] = representative(r);
-	r = new Arithmetic/*>R<*/[Math.max(p.degreeValue() + 1 - s, 0)];
-	for (int i = 0; i < r.length; i++)
-	    r[i] = p.get(s + i);
-	split[1] = representative(r);
-	return split;
     }
 
     public Arithmetic divide(Arithmetic b) throws UnsupportedOperationException {
-	throw new UnsupportedOperationException("dividing Euclideans is not generally defined");
+	throw new UnsupportedOperationException("dividing polynomials is not generally defined");
     } 
 
     public Arithmetic inverse() throws UnsupportedOperationException {
-	throw new UnsupportedOperationException("inverse of Euclideans is not generally defined");
-    } 
-
-    public Euclidean quotient(Euclidean g) {
-	return polynomialDivision(this, (Polynomial) g, true);
-    }
-    public Polynomial/*<R>*/ quotient(Polynomial/*<R>*/ g) {
-	return polynomialDivision(this, g, true);
-    }
-    public Euclidean modulo(Euclidean g) {
-	return polynomialDivision(this, (Polynomial) g, false);
-    }
-    public Polynomial/*<R>*/ modulo(Polynomial/*<R>*/ g) {
-	return polynomialDivision(this, g, false);
-    }
-    /**
-     * @param returnQuotient if <code>true</code> will return quotient, if <code>false</code> will return remainder modulo g instead.
-     * @todo optimize, f.ex. use shifting instead of explicit multiplication, and avoid subtract that calls representative
-     */
-    private Polynomial/*<R>*/ polynomialDivision(final Polynomial/*<R>*/ f, final Polynomial/*<R>*/ g, boolean returnQuotient) {
-	if (f.degreeValue() < g.degreeValue())
-	    return f;
-	else if (g.degreeValue() < 0)
-	    throw new ArithmeticException("/ by " + g);
-	// the highest coefficient of g
-	final Arithmetic/*>R<*/ bm = g.get(g.degreeValue());
-	Arithmetic/*>R<*/ quotient[] = new Arithmetic/*>R<*/[f.degreeValue() - g.degreeValue() + 1];
-		
-	Polynomial/*<R>*/ f0 = f;
-	for (int k = quotient.length - 1; k >= 0; k--) {
-	    final Arithmetic/*>R<*/ ai = f0.get(f0.degreeValue());
-	    final Arithmetic/*>R<*/ ck = (Arithmetic/*>R<*/) ai.divide(bm);
-	    quotient[k] = ck;
-	    f0 = f0.subtract(BASE(ck, k).multiply(g));
-	    if (f0.norm().equals(Values.ZERO)) {
-		for (int i = k - 1; i >= 0; i--)
-		    quotient[i] = R_ZERO;
-		break;
-	    }
-	}
-	return returnQuotient
-	    ? representative(quotient)
-	    : f0;
-    }
-
-    private Polynomial/*<R>*/ BASE(Arithmetic/*>R<*/ s, int k) {
-	Arithmetic/*>R<*/ r[] = new Arithmetic/*>R<*/[k + 1];
-	for (int i = 0; i < k; i++)
-	    r[i] = R_ZERO;
-	r[k] = s;
-	return Values.polynomial(r);
-    }
-
-    /**
-     *
-     */
-    private Polynomial/*<R>*/ representative(Arithmetic/*>R<*/ a[]) {
-	int deg;
-	for (deg = a.length - 1; deg >= 0; deg--)
-	    if (!a[deg].norm().equals(Values.ZERO))
-		break;
-	if (deg < 0)
-	    //@todo perhaps prefer {R_ZERO}?
-	    return Values.polynomial(new Arithmetic/*>R<*/[0]);
-	//assert(deg == max {i&isin;<b>N</b> : a<sub>i</sub> &ne; 0}
-	assert 0 <= deg && deg < a.length : "degree " + deg + " is in [0,n]";
-	if (deg == a.length - 1)
-	    // fast shortcut avoiding copy of references in a to r
-	    return Values.polynomial(a);
-	Arithmetic/*>R<*/ r[] = new Arithmetic/*>R<*/[deg + 1];                                                                                    
-	for (int i = 0; i < r.length; i++)
-	    r[i] = a[i];
-	return Values.polynomial(r);
-    }
-	
-    public Arithmetic/*>R<*/[] getCoefficients() {
-	if (degreeValue() < 0)
-	    return new Arithmetic/*>R<*/[0];
-	Arithmetic/*>R<*/[] a = new Arithmetic/*>R<*/[degreeValue() + 1];
-	for (int i = 0; i <= degreeValue(); i++)
-	    a[i] = get(i);
-	return a;
+	throw new UnsupportedOperationException("inverse of polynomials is not generally defined");
     } 
 
     public String toString() {
-	assert degreeValue() < 0 || !get(degreeValue()).norm().equals(Values.ZERO) : "definition of degree implies that the degree-th (" + degree() + "-th) coefficient (" + get(degreeValue()) + ") is != 0";
 	return ArithmeticFormat.getDefaultInstance().format(this);
     }
 }

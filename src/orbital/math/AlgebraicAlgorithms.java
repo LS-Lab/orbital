@@ -176,18 +176,18 @@ public final class AlgebraicAlgorithms {
 	}
 	public int compare(Object p1, Object p2) {
 	    final SortedSet amon = new TreeSet(new ReverseComparator(monomialOrder));
-	    amon.addAll(occurringMonomials((Multinomial)p1));
+	    amon.addAll(occurringMonomials((Polynomial)p1));
 	    final SortedSet bmon = new TreeSet(new ReverseComparator(monomialOrder));
-	    bmon.addAll(occurringMonomials((Multinomial)p2));
+	    bmon.addAll(occurringMonomials((Polynomial)p2));
 	    try {
 		// like Setops.find(Functionals.map("asFunction"(monomialOrder), amon.iterator(), bmon.iterator()), Functionals.bindSecond(Predicates.equal, Values.ZERO));
 		// but with lazy evaluation of Functionals.map such that it stops at the first even if the iterators have inequal lengths
 		for (Iterator i = amon.iterator(), j = bmon.iterator(); i.hasNext() || j.hasNext(); ) {
 		    //@todo which alternative?
 		    if (!i.hasNext() || !j.hasNext())
-			if (((Multinomial)p1).degreeValue() < 0)
+			if (((Polynomial)p1).degreeValue() < 0)
 			    return -1;
-			else if (((Multinomial)p2).degreeValue() < 0)
+			else if (((Polynomial)p2).degreeValue() < 0)
 			    return 1;
 			else
 			    throw new IndexOutOfBoundsException();
@@ -495,44 +495,44 @@ public final class AlgebraicAlgorithms {
      * @return h if h is a reduced reduction of f with respect to g.
      * @see #reduce(Collection, Comparator)
      */
-    public static final Multinomial/*<R>*/ reduce(Multinomial/*<R>*/ f, Collection/*_Multinomial<R>_*/ g, final Comparator monomialOrder) {
-	return (Multinomial) reduce(g, monomialOrder).apply(f);
+    public static final Polynomial/*<R>*/ reduce(Polynomial/*<R>*/ f, Collection/*_Polynomial<R,S>_*/ g, final Comparator/*_<S>_*/ monomialOrder) {
+	return (Polynomial) reduce(g, monomialOrder).apply(f);
     }
     /**
      * Reduce<sub>g</sub>:K[X<sub>0</sub>,...,X<sub>n-1</sub>]&rarr;K[X<sub>0</sub>,...,X<sub>n-1</sub>]; f &#8614; "f reduced with respect to g".
      * @param g the collection of multinomials for reducing polynomials.
      * @param monomialOrder the <a href="#monomialOrder">order of monomials</a>, which is decisive for the time complexity.
      * @return a function that reduces polynomials with respect to g.
-     * @see Values#quotient(Multinomial,Set,Comparator)
+     * @see Values#quotient(Polynomial,Set,Comparator)
      * @internal elementaryReduction = "wenn ein Monom verschwindet (mit Hilfe des Leitmonomos eines der g) und der Rest kleiner wird"
      * @internal reduction = transitiveClosure(elementaryReduction)
      */
-    public static final Function/*<Multinomial<R>,Multinomial<R>>*/ reduce(Collection/*_Multinomial<R>_*/ g, Comparator monomialOrder) {
+    public static final Function/*<Polynomial<R,S>,Polynomial<R,S>>*/ reduce(Collection/*_Polynomial<R,S>_*/ g, Comparator/*_<S>_*/ monomialOrder) {
 	return new ReductionFunction(g, monomialOrder);
     }
-    private static final class ReductionFunction implements Function/*<Multinomial<R>,Multinomial<R>>*/, Serializable {
+    private static final class ReductionFunction implements Function/*<Polynomial<R,S>,Polynomial<R,S>>*/, Serializable {
 	private static final long serialVersionUID = -51945340881045435L;
-	private final Collection/*_<Multinomial<R>>_*/ g;
+	private final Collection/*_<Polynomial<R,S>>_*/ g;
 	private final Comparator monomialOrder;
 	private final Function elementaryReduce;
-	public ReductionFunction(Collection/*_Multinomial<R>_*/ g, Comparator newmonomialOrder) {
-	    Utility.pre(Setops.all(g, Functionals.bindSecond(Utility.instanceOf, Multinomial.class)), "collection<" + Multinomial.class.getName() + "> expected");
+	public ReductionFunction(Collection/*_Polynomial<R,S>_*/ g, Comparator newmonomialOrder) {
+	    Utility.pre(Setops.all(g, Functionals.bindSecond(Utility.instanceOf, Polynomial.class)), "collection<" + Polynomial.class.getName() + "> expected");
 	    this.g = g;
 	    this.monomialOrder = newmonomialOrder;
 	    // enrich g with exponents of leading monomials
-	    final Pair/*<Multinomial<R,S>,S>*/[] basis = new Pair[g.size()];
+	    final Pair/*<Polynomial<R,S>,S>*/[] basis = new Pair[g.size()];
 	    {
 		Iterator it = g.iterator();
 		for (int i = 0; i < basis.length; i++) {
-		    final Multinomial gi = (Multinomial) it.next();
+		    final Polynomial gi = (Polynomial) it.next();
 		    final Arithmetic leadingMonomial = leadingMonomial(gi, monomialOrder);
 		    basis[i] = new Pair(gi, leadingMonomial);
 		}
 	    }
 	    //@internal would we profit from using orbital.logic.trs, even though polynomials do not currently have an introspectable internal structure per Functor.Composite?
-	    this.elementaryReduce = new Function/*<Multinomial,Multinomial>*/() {
+	    this.elementaryReduce = new Function/*<Polynomial,Polynomial>*/() {
 		    public Object apply(Object o) {
-			final Multinomial f = (Multinomial)o;
+			final Polynomial f = (Polynomial)o;
 			//@internal we would prefer reverse direction, also starting with leading coefficient
 			final SortedSet occurring = new TreeSet(new ReverseComparator(monomialOrder));
 			occurring.addAll(occurringMonomials(f));
@@ -542,7 +542,7 @@ public final class AlgebraicAlgorithms {
 			    assert !cnu.norm().equals(Values.ZERO) : "@post of occurringMonomials(...)";
 			    reductionPolynomials:
 			    for (int j = 0; j < basis.length; j++) {
-				final Multinomial gj = (Multinomial)basis[j].A;
+				final Polynomial gj = (Polynomial)basis[j].A;
 				final Arithmetic/*>S<*/ lgj = (Arithmetic)basis[j].B;
 
 				// test divisibility
@@ -561,8 +561,8 @@ public final class AlgebraicAlgorithms {
 				    continue reductionPolynomials;
 				}
 				// divisible, then q := cdiv*X<sup>xdiv</sup>
-				final Multinomial q = Values.MONOMIAL(cdiv, xdiv);
-				final Multinomial reduction = f.subtract(q.multiply(gj));
+				final Polynomial q = Values.MONOMIAL(cdiv, xdiv);
+				final Polynomial reduction = f.subtract(q.multiply(gj));
 				assert reduction.get(nu).norm().equals(Values.ZERO) : Values.MONOMIAL(Values.ONE, nu) + " does not occur in " + reduction + " anymore";
 				assert INDUCED(monomialOrder).compare(reduction, f) < 0 : reduction + "<" + f;
 				if (!reduction.get(nu).norm().equals(Values.ZERO))
@@ -638,8 +638,8 @@ public final class AlgebraicAlgorithms {
      * @internal GroebnerBasis = "if the term rewrite system for reduce is confluent"
      * @todo scale to get rid of denominators, and of non-primitive polynomials (divide by gcd of coefficients)
      */
-    public static final Set/*_<Multinomial<R>>_*/ groebnerBasis(Set/*_<Multinomial<R>>_*/ g, final Comparator monomialOrder) {
-	Set/*_<Multinomial<R>>_*/ rgb = reducedGroebnerBasis(g, monomialOrder);
+    public static final Set/*_<Polynomial<R,S>>_*/ groebnerBasis(Set/*_<Polynomial<R,S>>_*/ g, final Comparator/*_<S>_*/ monomialOrder) {
+	Set/*_<Polynomial<R,S>>_*/ rgb = reducedGroebnerBasis(g, monomialOrder);
 	Set temp, nrgb = null;
 	assert (temp = reducedGroebnerBasis(rgb, monomialOrder)).equals(rgb) : "reduced Groebner basis " + temp + " of a reduced Groebner basis equals the former Groebner basis";
 	assert (temp = groebnerBasisImpl(rgb, monomialOrder)).equals(rgb) : "(non-reduced) Groebner basis " + temp + " of a (reduced) Groebner basis " + rgb + " equals the former Groebner basis";
@@ -651,20 +651,20 @@ public final class AlgebraicAlgorithms {
     /**
      * Get the reduced Groebner basis of g (Implementation).
      */
-    private static final Set/*_<Multinomial<R>>_*/ reducedGroebnerBasis(Collection/*_<Multinomial<R>>_*/ g, final Comparator monomialOrder) {
+    private static final Set/*_<Polynomial<R,S>>_*/ reducedGroebnerBasis(Collection/*_<Polynomial<R,S>>_*/ g, final Comparator monomialOrder) {
 	return new HashSet(reduceGroebnerBasis(new ArrayList(groebnerBasisImpl(g, monomialOrder)), monomialOrder));
     }
     /**
      * Get the non-reduced Groebner basis of g (Implementation).
      */
-    private static final Set/*_<Multinomial<R>>_*/ groebnerBasisImpl(Collection/*_<Multinomial<R>>_*/ gg, final Comparator monomialOrder) {
-	final List/*_<Multinomial<R>>_*/ g = new ArrayList(gg);
+    private static final Set/*_<Polynomial<R,S>>_*/ groebnerBasisImpl(Collection/*_<Polynomial<R,S>>_*/ gg, final Comparator monomialOrder) {
+	final List/*_<Polynomial<R,S>>_*/ g = new ArrayList(gg);
 	ergaenzeGroebnerBasis:
 	while (true) {
 	    for (int i = 0; i < g.size(); i++) {
 		for (int j = i + 1; j < g.size(); j++) {
-		    final Multinomial/*<R>*/ gi = (Multinomial)g.get(i);
-		    final Multinomial/*<R>*/ gj = (Multinomial)g.get(j);
+		    final Polynomial/*<R>*/ gi = (Polynomial)g.get(i);
+		    final Polynomial/*<R>*/ gj = (Polynomial)g.get(j);
 		    // construct Sgigj = S(g[i], g[j])
 		    final Vector/*>S<*/ lgi = (Vector) leadingMonomial(gi, monomialOrder);
 		    final Vector/*>S<*/ lgj = (Vector) leadingMonomial(gj, monomialOrder);
@@ -675,13 +675,13 @@ public final class AlgebraicAlgorithms {
 		    final Vector/*>S<*/ mu = d.subtract(lgj);
 		    assert Setops.all(nu.iterator(), mu.iterator(), new orbital.logic.functor.BinaryPredicate() { public boolean apply(Object nui, Object mui) {return nui.equals(Values.ZERO) || mui.equals(Values.ZERO);} }) : "coprime " + Values.MONOMIAL(Values.ONE, nu) + " and " + Values.MONOMIAL(Values.ONE, mu);
 		    // Xpowernugi = 1/lc(g[i]) * X<sup>nu</sup>*g[i]
-		    final Multinomial Xpowernugi = Values.MONOMIAL(gi.get(lgi).inverse(), nu).multiply(gi);
+		    final Polynomial Xpowernugi = Values.MONOMIAL(gi.get(lgi).inverse(), nu).multiply(gi);
 		    // Xpowernugi = 1/lc(g[j]) * X<sup>mu</sup>*g[j]
-		    final Multinomial Xpowermugj = Values.MONOMIAL(gj.get(lgj).inverse(), mu).multiply(gj);
+		    final Polynomial Xpowermugj = Values.MONOMIAL(gj.get(lgj).inverse(), mu).multiply(gj);
 		    assert leadingMonomial(Xpowernugi, monomialOrder).equals(leadingMonomial(Xpowermugj, monomialOrder)) : "construction should generate equal leading monomials (" + leadingMonomial(Xpowernugi, monomialOrder) + " of " + Xpowernugi + " and " + leadingMonomial(Xpowermugj, monomialOrder) + " of " + Xpowermugj + ") which vanish by subtraction";
-		    final Multinomial Sgigj = Xpowernugi.subtract(Xpowermugj);
+		    final Polynomial Sgigj = Xpowernugi.subtract(Xpowermugj);
 		    assert Sgigj.get(d).norm().equals(Values.ZERO) : "construction should generate equal leading monomials which vanish by subtraction";
-		    final Multinomial r = reduce(Sgigj, g, monomialOrder);
+		    final Polynomial r = reduce(Sgigj, g, monomialOrder);
 		    logger.log(Level.FINER, "S({0},{1}) = {2} * ({3})  -  {4} * ({5}) = {6} reduced to {7}", new Object[] {gi, gj, Values.MONOMIAL(gi.get(lgi).inverse(), nu), gi, Values.MONOMIAL(gj.get(lgj).inverse(), mu), gj, Sgigj, r});
 		    if (isZeroPolynomial.apply(r))
 			logger.log(Level.FINE, "skip reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
@@ -700,16 +700,16 @@ public final class AlgebraicAlgorithms {
     /**
      * Reduce the Groebner basis g.
      */
-    private static final List/*_<Multinomial<R>>_*/ reduceGroebnerBasis(Collection/*_<Multinomial<R>>_*/ g, final Comparator monomialOrder) {
+    private static final List/*_<Polynomial<R,S>>_*/ reduceGroebnerBasis(Collection/*_<Polynomial<R,S>>_*/ g, final Comparator monomialOrder) {
 	final List basis = new ArrayList(g);
 	logger.log(Level.FINE, "reducing Groebner basis {0}", basis);
 	replaceWithReductions:
 	while (true) {
 	    for (int i = 0; i < basis.size(); i++) {
-		final Multinomial gi = (Multinomial) basis.get(i);
+		final Polynomial gi = (Polynomial) basis.get(i);
 		final List others = new LinkedList(basis);
 		others.remove(i);
-		final Multinomial r = reduce(gi, others, monomialOrder);
+		final Polynomial r = reduce(gi, others, monomialOrder);
 		if (!r.equals(gi)) {
 		    // g[i] not reduced with respect to the others, so replace by its reduction
 		    basis.remove(i);
@@ -735,7 +735,7 @@ public final class AlgebraicAlgorithms {
      * Get a collection of those (exponents of) monomials that occur in f
      * (i.e. with coefficient &ne;0).
      */
-    private static Collection/*_<S>_*/ occurringMonomials(final Multinomial/*<S>*/ f) {
+    private static Collection/*_<S>_*/ occurringMonomials(final Polynomial/*<S>*/ f) {
 	return Setops.select(null,
 			     Setops.asList(f.indices()),
 			     new Predicate() {
@@ -747,7 +747,7 @@ public final class AlgebraicAlgorithms {
     /**
      * Get (the exponent of) the leading monomial l(f) of f.
      */
-    private static Arithmetic/*>S<*/ leadingMonomial(Multinomial/*<S>*/ f, Comparator monomialOrder) {
+    private static Arithmetic/*>S<*/ leadingMonomial(Polynomial/*<S>*/ f, Comparator monomialOrder) {
 	return (Arithmetic/*>S<*/) Collections.max(occurringMonomials(f), monomialOrder);
     }
 
@@ -756,7 +756,7 @@ public final class AlgebraicAlgorithms {
      */
     private static final Predicate isZeroPolynomial = new Predicate() {
 	    public boolean apply(Object p) {
-		AbstractMultinomial r = (AbstractMultinomial) p;
+		AbstractPolynomial r = (AbstractPolynomial) p;
 		return r.degreeValue() < 0
 		    || r.tensorViewOfCoefficients().norm().equals(Values.ZERO, Values.valueOf(MathUtilities.getDefaultTolerance()));
 	    }
@@ -765,10 +765,10 @@ public final class AlgebraicAlgorithms {
     /**
      * Whether the ideal spanned by the given Groebner basis contains all elements of f.
      */
-    private static final boolean containsAll(Set/*_<Multinomial<R>>_*/ groebnerBasis, Collection/*_<Multinomial<R>>_*/ f, Comparator monomialOrder) {
+    private static final boolean containsAll(Set/*_<Polynomial<R,S>>_*/ groebnerBasis, Collection/*_<Polynomial<R,S>>_*/ f, Comparator monomialOrder) {
 	// reduces its arguments with respect to groebnerBasis
 	final Function reductor = Functionals.bindFirst(Functionals.apply, reduce(groebnerBasis, monomialOrder));
-	//final Arithmetic zero = ((Multinomial)groebnerBasis.iterator().next()).zero();
+	//final Arithmetic zero = ((Polynomial)groebnerBasis.iterator().next()).zero();
 	// whether argument is in the ideal spanned by groebnerBasis
 	//final Predicate isZero = Functionals.bindSecond(Predicates.equal, zero);
 	final Predicate isZero = isZeroPolynomial;
@@ -785,7 +785,7 @@ public final class AlgebraicAlgorithms {
     /**
      * Whether the two Groebner bases span the same ideal.
      */
-    private static final boolean equalSpan(Set/*_<Multinomial<R>>_*/ groebnerBasis1, Set/*_<Multinomial<R>>_*/ groebnerBasis2, Comparator monomialOrder) {
+    private static final boolean equalSpan(Set/*_<Polynomial<R,S>>_*/ groebnerBasis1, Set/*_<Polynomial<R,S>>_*/ groebnerBasis2, Comparator monomialOrder) {
 	return containsAll(groebnerBasis1, groebnerBasis2, monomialOrder)
 	    && containsAll(groebnerBasis2, groebnerBasis1, monomialOrder);
     }

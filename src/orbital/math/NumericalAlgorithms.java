@@ -158,7 +158,7 @@ public final class NumericalAlgorithms {
      * @param A the matrix with supporting nodes.
      *  These are row vectors (x,y) of width 2.
      * @pre A.dimension().width == 2
-     * @see Polynomial
+     * @see UnivariatePolynomial
      */
     public static Function polynomialInterpolation(Matrix A) {
 	Utility.pre(A.dimension().width == 2, "supporting nodes matrix 2 x m");
@@ -363,7 +363,7 @@ public final class NumericalAlgorithms {
 	}
 	/**
 	 * spline piecewise polynom
-	 * @see Polynomial
+	 * @see UnivariatePolynomial
 	 */
 	public Object apply(Object arg) {
 	    double x = ((Number) arg).doubleValue();

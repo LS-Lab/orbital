@@ -760,6 +760,9 @@ public final class Values {
      * specified tensor t.</p>
      */
     public static /*<R implements Arithmetic>*/ Tensor/*<R>*/ constant(final Tensor/*<R>*/ t) {
+	//@todo would we simplify these by providing a hierarchy of delegation things?
+	// but then some tensors would no longer be AbstractTensors.
+	//@todo so perhaps just identify multiple delegations to Tensor, or to Polynomial etc.
 	return /*refine/delegate Tensor*/ new AbstractTensor/*<R>*/() {
 		protected Tensor/*<R>*/ newInstance(int[] dim) {throw new AssertionError("this method should never get called in this context");}
 		// Code for delegation of orbital.math.Normed methods to t
@@ -1056,50 +1059,107 @@ public final class Values {
      * @see #asPolynomial(Vector)
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
      */
-    public static /*<R implements Arithmetic>*/ Polynomial/*<R>*/ polynomial(Arithmetic/*>R<*/[] coefficients) {
-    	return new ArithmeticPolynomial/*<R>*/(coefficients);
-    }
-    /**
-     * Returns a polynomial with the specified coefficients.
-     * <p>
-     * Note that the resulting polynomial may or may not be backed by the
-     * specified array.
-     * </p>
-     * @param coefficients an array <var>a</var> containing the
-     * coefficients of the polynomial.
-     * @pre coefficients is an array of {@link Arithmetic arithmetic objects}
-     *  or of primitive types
-     * @see #polynomial(Arithmetic[])
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
-     */
-    public static Polynomial polynomial(Object coefficients) {
-    	return polynomial((Arithmetic[]) ((AbstractTensor)tensor(coefficients)).toArray__Tensor());
-    }
-
-    /**
-     * Returns a vector view of a polynomial.
-     * Interprets the coefficients of the polynomial as the components
-     * of a vector.
-     * @return the polynomial <var>a</var><sub>0</sub> + <var>a</var><sub>1</sub>X + <var>a</var><sub>2</sub>X<sup>2</sup> + ... + <var>a</var><sub>n</sub>X<sup>n</sup> for n=a.dimension()-1.
-     * @see #polynomial(Arithmetic[])
-     * @see #asVector(Polynomial)
-     * @todo perhaps implement a true view flexible for changes
-     */
-    public static /*<R implements Arithmetic>*/ Polynomial/*<R>*/ asPolynomial(Vector a) {
-    	return polynomial((Arithmetic/*>R<*/[]) a.toArray());
+    public static /*<R implements Arithmetic>*/ UnivariatePolynomial/*<R>*/ polynomial(Arithmetic/*>R<*/[] coefficients) {
+    	return new ArithmeticUnivariatePolynomial/*<R>*/(coefficients);
     }
 
     /**
      * Returns a polynomial view of a vector.
      * Interprets the components of the vector as the coefficients
      * of a polynomial.
-     * @return the vector (<var>a</var><sub>0</sub>,<var>a</var><sub>1</sub>,<var>a</var><sub>2</sub>,...,<var>a</var><sub>n</sub>) of the polynomial <var>a</var><sub>0</sub> + <var>a</var><sub>1</sub>X + <var>a</var><sub>2</sub>X<sup>2</sup> + ... + <var>a</var><sub>n</sub>X<sup>n</sup> for n=a.degree().
-     * @see Polynomial#getCoefficients()
-     * @see #asPolynomial(Vector)
+     * @return the polynomial <var>a</var><sub>0</sub> + <var>a</var><sub>1</sub>X + <var>a</var><sub>2</sub>X<sup>2</sup> + ... + <var>a</var><sub>n</sub>X<sup>n</sup> for n:=a.dimension()-1.
+     * @see #polynomial(Arithmetic[])
+     * @see #asVector(UnivariatePolynomial)
      * @todo implement a true view flexible for changes (but only if Polynomial.set(...) has been introduced)
      */
-    public static /*<R implements Arithmetic>*/ Vector asVector(Polynomial/*<R>*/ p) {
-    	return Values.valueOf(p.getCoefficients());
+    public static /*<R implements Arithmetic>*/ UnivariatePolynomial/*<R>*/ asPolynomial(Vector/*<R>*/ a) {
+    	return polynomial((Arithmetic/*>R<*/[])a.toArray());
+    }
+
+    /**
+     * Returns a vector view of the coefficients of a polynomial.
+     * Interprets the coefficients of the polynomial as the components
+     * of a vector.
+     * @return the vector (<var>a</var><sub>0</sub>,<var>a</var><sub>1</sub>,<var>a</var><sub>2</sub>,...,<var>a</var><sub>n</sub>) of the polynomial <var>a</var><sub>0</sub> + <var>a</var><sub>1</sub>X + <var>a</var><sub>2</sub>X<sup>2</sup> + ... + <var>a</var><sub>n</sub>X<sup>n</sup> for n=a.degree().
+     * @see UnivariatePolynomial#getCoefficients()
+     * @see #asPolynomial(Vector)
+     */
+    public static /*<R implements Arithmetic>*/ Vector/*<R>*/ asVector(UnivariatePolynomial/*<R>*/ p) {
+    	return (Vector) asTensor(p);
+    }
+
+    /**
+     * Returns an unmodifiable view of the specified polynomial.
+     * This method allows modules to provide users with "read-only" access to constant polynomials.
+     * <p>
+     * Query operations on the returned polynomial "read through" to the specified polynomial,
+     * and attempts to modify the returned polynomial, whether direct or via its iterator,
+     * result in an UnsupportedOperationException.
+     * <p>
+     * Note that cloning a constant polynomial will not return a constant matrix, but a clone of the
+     * specified polynomial.</p>
+     */
+    public static /*<R implements Arithmetic>*/ UnivariatePolynomial/*<R>*/ constant(UnivariatePolynomial/*<R>*/ p) {
+	// Polynomials are currently unmodifiable anyhow.
+	//@xxx except via iterator()
+	return p;
+    }
+
+    // multivariate polynomial constructors and utilities
+
+    /**
+     * Returns a polynomial with the specified coefficients.
+     * The number of variables equals the rank (i.e. number of dimensions)
+     * of the array of coefficients.
+     * <p>
+     * Note that the resulting polynomial may or may not be backed by the
+     * specified array.
+     * </p>
+     * <p>
+     * Polynomials of type {@link UnivariatePolynomial}, are returned for
+     * polynomials in one variable.
+     * </p>
+     * @param coefficients a multi-dimensional array <var>a</var> containing the
+     *  coefficients of the polynomial.
+     * @pre coefficients is a rectangular multi-dimensional array of {@link Arithmetic arithmetic objects}
+     *  or of primitive types
+     * @return the polynomial <var>a</var><sub>0,...,0</sub> + <var>a</var><sub>1,0,...,0</sub>X<sub>1</sub> + <var>a</var><sub>1,1,0,....,0</sub>X<sub>1</sub>X<sub>2</sub> + ... + <var>a</var><sub>2,1,0,....,0</sub>X<sub>1</sub><sup>2</sup>X<sub>2</sub> + ... + <var>a</var><sub>d<sub>1</sub>,...,d<sub>n</sub></sub>X<sub>1</sub><sup>d<sub>1</sub></sup>...&X<sub>n</sub><sup>d<sub>n</sub></sup>.
+     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     */
+    public static /*<R implements Arithmetic>*/ Polynomial/*<R>*/ polynomial(Object coefficients) {
+	return asPolynomial(tensor(coefficients));
+    }
+
+    /**
+     * Returns a polynomial view of a tensor.
+     * Interprets the components of the tensor as the coefficients
+     * of a polynomial.
+     * @param coefficients a tensor <var>a</var> containing the
+     *  coefficients of the polynomial.
+     * @return the polynomial <var>a</var><sub>0,...,0</sub> + <var>a</var><sub>1,0,...,0</sub>X<sub>1</sub> + <var>a</var><sub>1,1,0,....,0</sub>X<sub>1</sub>X<sub>2</sub> + ... + <var>a</var><sub>2,1,0,....,0</sub>X<sub>1</sub><sup>2</sup>X<sub>2</sub> + ... + <var>a</var><sub>d<sub>1</sub>,...,d<sub>n</sub></sub>X<sub>1</sub><sup>d<sub>1</sub></sup>...&X<sub>n</sub><sup>d<sub>n</sub></sup>.
+     * @see #polynomial(Object)
+     * @see #asTensor(Polynomial)
+     */
+    public static /*<R implements Arithmetic>*/ Polynomial/*<R>*/ asPolynomial(Tensor/*<R>*/ coefficients) {
+	// polynomials in 1 variable are converted to UnivariatePolynomials
+	switch (coefficients.rank()) {
+	case 1:
+	    // @todo implement a true view flexible for changes (but only if Polynomial.set(...) has been introduced)
+	    return polynomial((Arithmetic[]) ((AbstractTensor)coefficients).toArray__Tensor());
+	default:
+	    return new ArithmeticPolynomial(coefficients);
+	}
+    }
+
+    /**
+     * Returns a vector view of the coefficients of a polynomial.
+     * Interprets the coefficients of the polynomial as the components
+     * of a vector.
+     * @return the tensor (<var>a</var><sub>0,...,0</sub>,...,<var>a</var><sub>d<sub>1</sub>,...,d<sub>n</sub></sub>).
+     * @see #asPolynomial(Tensor)
+     */
+    public static /*<R implements Arithmetic>*/ Tensor/*<R>*/ asTensor(Polynomial/*<R>*/ p) {
+    	return ((AbstractPolynomial)p).tensorViewOfCoefficients();
     }
 
     /**
@@ -1115,31 +1175,7 @@ public final class Values {
      */
     public static /*<R implements Arithmetic>*/ Polynomial/*<R>*/ constant(Polynomial/*<R>*/ p) {
 	// Polynomials are currently unmodifiable anyhow.
-	return p;
-    }
-
-    // multivariate polynomial constructors and utilities
-
-    /**
-     * Returns a (multivariate) polynomial with the specified coefficients.
-     * The number of variables equals the rank (i.e. number of dimensions)
-     * of the array of coefficients.
-     * <p>
-     * Note that the resulting polynomial may or may not be backed by the
-     * specified array.
-     * </p>
-     * @param coefficients a multi-dimensional array <var>a</var> containing the
-     *  coefficients of the polynomial.
-     * @pre values is a rectangular multi-dimensional array of {@link Arithmetic arithmetic objects}
-     *  or of primitive types
-     * @return the polynomial <var>a</var><sub>0,...,0</sub> + <var>a</var><sub>1,0,...,0</sub>X<sub>1</sub> + <var>a</var><sub>1,1,0,....,0</sub>X<sub>1</sub>X<sub>2</sub> + ... + <var>a</var><sub>2,1,0,....,0</sub>X<sub>1</sub><sup>2</sup>X<sub>2</sub> + ... + <var>a</var><sub>d<sub>1</sub>,...,d<sub>n</sub></sub>X<sub>1</sub><sup>d<sub>1</sub></sup>...&X<sub>n</sub><sup>d<sub>n</sub></sup>.
-     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
-     */
-    public static /*<R implements Arithmetic>*/ Multinomial/*<R>*/ multinomial(Object coefficients) {
-	Multinomial p = new ArithmeticMultinomial(coefficients);
-	//@todo (multivariate) polynomials in 1 variable are converted to (univariate) polynomials
-	// provided that Polynomial extends Multinomial
-	//@todo rename to polynomial(Object), then?
+	//@xxx except via iterator()
 	return p;
     }
 
@@ -1148,8 +1184,8 @@ public final class Values {
      * @param coefficient the coefficient c of the monomial.
      * @param exponent the exponent i of the monomial.
      */
-    public static final Multinomial/*<R,S>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, Arithmetic/*>S<*/ exponent) {
-	return MONOMIAL(coefficient, ArithmeticMultinomial.convertIndex(exponent));
+    public static final Polynomial/*<R,S>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, Arithmetic/*>S<*/ exponent) {
+	return MONOMIAL(coefficient, ArithmeticPolynomial.convertIndex(exponent));
     }
     /**
      * The monomial c&lowast;X<sub>0</sub><sup>i[0]</sup>...X<sub>n-1</sub><sup>i[n-1]</sup>.
@@ -1158,11 +1194,11 @@ public final class Values {
      *  The number of variables is <code>n:=exponents.length</code>.
      * @internal horribly complicate implementation
      */
-    public static final Multinomial/*<R>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, int[] exponents) {
+    public static final Polynomial/*<R>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, int[] exponents) {
 	int[] dim = new int[exponents.length];
 	for (int k = 0; k < dim.length; k++)
 	    dim[k] = exponents[k] + 1;
-	AbstractMultinomial m = new ArithmeticMultinomial(dim);
+	AbstractPolynomial m = new ArithmeticPolynomial(dim);
 	m.set(m.CONSTANT_TERM, coefficient.zero());
 	m.setAllZero(m);
 	m.set(exponents, coefficient);
@@ -1174,8 +1210,8 @@ public final class Values {
      * @param exponent the exponent i of the monomial.
      * @see #MONOMIAL(Arithmetic,Arithmetic)
      */
-    public static final Multinomial/*<R implements Scalar,S>*/ MONOMIAL(Arithmetic/*>S<*/ exponent) {
-	return MONOMIAL(ONE, ArithmeticMultinomial.convertIndex(exponent));
+    public static final Polynomial/*<R implements Scalar,S>*/ MONOMIAL(Arithmetic/*>S<*/ exponent) {
+	return MONOMIAL(ONE, ArithmeticPolynomial.convertIndex(exponent));
     }
     /**
      * The monomial 1&lowast;X<sub>0</sub><sup>i[0]</sup>...X<sub>n-1</sub><sup>i[n-1]</sup>.
@@ -1184,7 +1220,7 @@ public final class Values {
      *  The number of variables is <code>n:=exponents.length</code>.
      * @see #MONOMIAL(Arithmetic,int[])
      */
-    public static final Multinomial/*<R implements Scalar>*/ MONOMIAL(int[] exponents) {
+    public static final Polynomial/*<R implements Scalar>*/ MONOMIAL(int[] exponents) {
 	return MONOMIAL(ONE, exponents);
     }
     
@@ -1224,13 +1260,52 @@ public final class Values {
      * <p>
      * <small>Being identical to {@link #quotient(Euclidean,Euclidean)},
      * this method only helps resolving the argument type ambiguity
-     * for polynomials.</small>
+     * for polynomials. This type ambiguity will not occur at all, if
+     * templates have been enabled.</small>
      * </p>
      * @see #quotient(Euclidean,Euclidean)
      */
-    public static /*<M implements Euclidean>*/ Quotient/*<M>*/ quotient(Euclidean/*>M<*/ a, Polynomial m) {
+    public static /*<M implements Euclidean>*/ Quotient/*<M>*/ quotient(Euclidean/*>M<*/ a, UnivariatePolynomial m) {
 	return quotient(a, (Euclidean)m);
     }
+    /**
+     * Returns a new quotient a&#772;=[a]&isin;M/mod
+     * of the given value reduced with the quotient operator.
+     * <p>
+     * <small>Being identical to {@link #quotient(Arithmetic,Function)},
+     * this method only helps resolving the argument type ambiguity
+     * for polynomials. This type ambiguity will not occur at all, if
+     * templates have been enabled.</small>
+     * </p>
+     * @param m is the quotient operator applied (see {@link Quotient#getQuotientOperator()}).
+     * @see #quotient(Arithmetic,Function)
+     * @internal only for provoking a compile time type ambiguity error for (Euclidean,Polynomial).
+     */
+    public static /*<M implements Euclidean>*/ Quotient/*<M>*/ quotient(Euclidean/*>M<*/ a, Function/*<M,M>*/ mod) {
+	return quotient((Arithmetic)a, mod);
+    }
+    /**
+     * (traps type unification error).
+     * <p>
+     * <small>This method only helps resolving the argument type ambiguity
+     * for polynomials. This type ambiguity will not occur at all, if
+     * templates have been enabled.</small>
+     * Even though Polynomials<R,S> extends Function<....,R>, it does not extend
+     * Function<A,A> if A is the type of <code>a</code>. Therefore it (usually)
+     * is not a quotient operator as expected by {@link #quotient(Arithmetic,Function)}.
+     * However, if you have disabled templates, then your compiler will not be able
+     * to detect the type unification error occurring in the generic arguments.
+     * </p>
+     * @throws ClassCastException if a and m are not both instances of Euclidean.
+     * @see #quotient(Arithmetic,Function)
+     */
+    public static Quotient quotient(Arithmetic a, Polynomial m) {
+	if ((a instanceof Euclidean) && (m instanceof Euclidean))
+	    return quotient((Euclidean)a, (Euclidean)m);
+	else
+	    throw new ClassCastException(m.getClass() + " most probably is no quotient operator.\nConsider using Values.quotient(Polynomial,Set,Comparator) instead.\nIf the instance " + m + " truely is a quotient operator\nand you really know what you are doing, then call Values.quotient(Arithmetic,Function) instead.");
+    }
+
     /**
      * Returns a new quotient a&#772;=[a]&isin;M/(m) of the given
      * value reduced modulo (m).
@@ -1242,7 +1317,7 @@ public final class Values {
      * modulo whose generated ideal (m) to form the quotients.
      * @param monomialOrder the monomial order applied for reducing polynomials.
      */
-    public static /*<R implements Arithmetic>*/ Quotient/*<Multinomial<R>>*/ quotient(Multinomial/*<R>*/ a, java.util.Set/*_<Multinomial<R>>_*/ m, java.util.Comparator monomialOrder) {
+    public static /*<R implements Arithmetic>*/ Quotient/*<Polynomial<R,S>>*/ quotient(Polynomial/*<R,S>*/ a, java.util.Set/*_<Polynomial<R,S>>_*/ m, java.util.Comparator/*_<S>_*/ monomialOrder) {
 	return new AbstractQuotient(a, m, monomialOrder);
     }
     /**
@@ -1302,7 +1377,7 @@ public final class Values {
      * Returns an arithmetic object whose value is equal to that of the
      * representation in the specified string.
      * @param s the string to be parsed.
-     * @return an instance of arithmetic that <is equal to the representation in s.
+     * @return an instance of arithmetic that is equal to the representation in s.
      * @throws NumberFormatException if the string does not contain a parsable arithmetic object.
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
      */
@@ -1314,27 +1389,11 @@ public final class Values {
 	catch(ParseException x) {throw new NumberFormatException(x.toString());}
     }
 
-    // faster version for users that know they really want a non-narrowed real value, only
-    /*public static Real valueOf(String s) {
-      return new Double(java.lang.Double.valueOf(s));
-      }
-      public static Integer valueOf(String s) {
-      return new Long(java.lang.Long.valueOf(s));
-      }*/
-
     // conversion methods
 
     /**
-     * Returns an unmodifiable vector view of the specified matrix.
-     * This method allows modules to provide users with "read-only" access.
-     * <p>
-     * Query operations on the returned vector "read through" to the specified matrix,
-     * and attempts to modify the returned vector, whether direct or via its iterator,
-     * result in an UnsupportedOperationException.
-     * </p>
-     * <p>
-     * The matrix is interpreted row-wise as a vector.
-     * </p>
+     * Returns a vector view of the specified matrix.
+     * @see #asVector(Tensor)
      */
     public static /*<R implements ListIterator,  Arithmetic>*/ Vector/*<R>*/ asVector(final Matrix/*<R>*/ m) {
 	return /*refine/delegate Vector*/ new AbstractVector/*<R>*/() {
@@ -1361,8 +1420,8 @@ public final class Values {
 		    return i % m.dimension().width;
 		}
 		public Arithmetic/*>R<*/ get(int i) { return m.get(rowOf(i),columnOf(i)); }
-		public void set(int i, Arithmetic/*>R<*/ v) { throw new UnsupportedOperationException(); }
-		protected void set(Arithmetic/*>R<*/ v[]) { throw new UnsupportedOperationException(); }
+		public void set(int i, Arithmetic/*>R<*/ v) {m.set(rowOf(i),columnOf(i),v);}
+		protected void set(Arithmetic/*>R<*/ v[]) { throw new UnsupportedOperationException("not currently supported"); }
 		public ListIterator iterator() { return m.iterator(); }
 		public Object clone() { throw new UnsupportedOperationException("@xxx dunno"); }
 		public Vector/*<R>*/ insert(int i, Arithmetic/*>R<*/ b) { throw new UnsupportedOperationException(); }
@@ -1372,10 +1431,25 @@ public final class Values {
 		public Vector/*<R>*/ remove(int i) { throw new UnsupportedOperationException(); }
 	    };
     }
+    /**
+     * Returns a vector view of the specified tensor.
+     * <p>
+     * Query operations on the returned vector "read through" to the specified tensor,
+     * and attempts to structurally modify the returned vector, whether direct or via its iterator,
+     * result in an UnsupportedOperationException.
+     * However setting single components will "write through" to the specified tensor.
+     * </p>
+     * <p>
+     * The tensor is interpreted row-wise as a vector.
+     * </p>
+     */
     public static /*<R implements ListIterator,  Arithmetic>*/ Vector/*<R>*/ asVector(final Tensor/*<R>*/ t) {
-	if (t instanceof Matrix)
-	    asVector((Matrix)t);
-	throw new UnsupportedOperationException("not yet implemented");
+	if (t instanceof Vector)
+	    return (Vector)t;
+	else if (t instanceof Matrix)
+	    return asVector((Matrix)t);
+	else
+	    throw new UnsupportedOperationException("not yet implemented");
     }
 
 
@@ -1480,12 +1554,14 @@ public final class Values {
     } 
 
     /**
-     * 0.
+     * 0&isin;<b>Z</b>.
+     * The neutral element of addition in <b>Z</b>,<b>R</b> etc.
      */
     public static final Integer ZERO = posConst[0];
 
     /**
-     * 1.
+     * 1&isin;<b>Z</b>.
+     * The neutral element of multiplication in <b>Z</b>,<b>R</b> etc.
      */
     public static final Integer ONE = posConst[1];
 
@@ -1505,6 +1581,7 @@ public final class Values {
 
     /**
      * &pi;.
+     * The proportion of the circumference of a circle to its diameter. 
      */
     public static final Real PI = valueOf(Math.PI);
     /**

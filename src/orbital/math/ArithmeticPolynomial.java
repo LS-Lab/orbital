@@ -1,7 +1,7 @@
 /**
- * @(#)ArithmeticPolynomial.java 1.0 2001/12/09 Andre Platzer
+ * @(#)ArithmeticPolynomial.java 1.1 2002/08/21 Andre Platzer
  *
- * Copyright (c) 2001 Andre Platzer. All Rights Reserved.
+ * Copyright (c) 2002 Andre Platzer. All Rights Reserved.
  */
 
 package orbital.math;
@@ -12,30 +12,38 @@ import java.util.ListIterator;
 import java.util.Collections;
 import java.util.Arrays;
 import orbital.util.Setops;
+import orbital.util.Utility;
 
 import orbital.logic.functor.Functionals;
 import orbital.logic.functor.Predicates;
+import orbital.math.functional.Operations;
+import orbital.algorithm.Combinatorical;
 
+/**
+ * @version 1.1, 2002/08/21
+ * @author  Andr&eacute; Platzer
+ * @todo this implementation assumes S=<b>N</b><sup>n</sup>.
+ * @todo could spawn an alternative implementation that does not pose any limitations on S,
+ *  but direclty store the coefficients in a Map<S,R>.
+ */
 class ArithmeticPolynomial/*<R implements Arithmetic>*/ extends AbstractPolynomial {
-    private static final long serialVersionUID = -7008637791438268097L;
+    private static final long serialVersionUID = -6317707373482862125L;
     /**
      * The coefficients in R.
      * @serial
      */
-    private Arithmetic/*>R<*/ coefficients[];
+    private Tensor coefficients;
     /**
      * Caches the degree value.
      * @see #degree()
      */
     private transient int degree;
-    public ArithmeticPolynomial(int degree) {
-        this.coefficients =
-	    degree < 0
-	    ? new Arithmetic/*>R<*/[0]
-	    : new Arithmetic[degree + 1];
-	this.degree = java.lang.Integer.MIN_VALUE;
+    public ArithmeticPolynomial(int[] dimensions) {
+ 	coefficients = Values.newInstance(dimensions);
+	this.CONSTANT_TERM = new int[dimensions.length];
+	Arrays.fill(CONSTANT_TERM, 0);
     }
-    public ArithmeticPolynomial(Arithmetic/*>R<*/ coefficients[]) {
+    public ArithmeticPolynomial(Tensor coefficients) {
         set(coefficients);
     }
   
@@ -48,8 +56,8 @@ class ArithmeticPolynomial/*<R implements Arithmetic>*/ extends AbstractPolynomi
 	set(coefficients);
     }
 
-    protected Polynomial/*<R>*/ newInstance(int degree) {
-	return new ArithmeticPolynomial(degree);
+    protected Polynomial/*<R>*/ newInstance(int[] dimensions) {
+	return new ArithmeticPolynomial(dimensions);
     }
 
     public final int degreeValue() {
@@ -58,48 +66,81 @@ class ArithmeticPolynomial/*<R implements Arithmetic>*/ extends AbstractPolynomi
     /**
      * Implementation calculating the degree of a polynomial,
      * given its coefficients.
+     * @internal optimizable by far, start with big indices, not with 0,...,0
      */
-    private int degreeImpl(Arithmetic/*>R<*/[] coefficients) {
-	for (int i = coefficients.length - 1; i >= 0; i--)
-	    //@internal we can allow skipping null here, since set(R[]) and set(int,R)
-	    // check for null. However after new ArithmeticPolynomial(int) there may still be
-	    // some null values, until all have been set
-	    if (coefficients[i] != null && !coefficients[i].norm().equals(Values.ZERO))
-		return i;
-	return java.lang.Integer.MIN_VALUE;
+    private int degreeImpl(Tensor coefficients) {
+	int d = java.lang.Integer.MIN_VALUE;
+	for (Combinatorical index = Combinatorical.getPermutations(coefficients.dimensions()); index.hasNext(); ) {
+	    final int[] i = index.next();
+	    final Arithmetic vi = coefficients.get(i);
+	    if (vi != null && !vi.norm().equals(Values.ZERO)) {
+		final int sum = ((Integer)Operations.sum.apply(Values.valueOf(i))).intValue();
+		if (sum > d)
+		    d = sum;
+	    }
+	}
+	return d;
     }
 	
-    private void set(Arithmetic/*>R<*/ coefficients[]) {
+    public Object indexSet() {
+	return Values.valueOf(coefficients.rank());
+    }
+
+    public int[] dimensions() {
+	//@todo we should restrict the dimensions to the non-ZERO part.
+	return coefficients.dimensions();
+    }
+    
+    private void set(Object coefficients) {
 	if (coefficients == null)
 	    throw new IllegalArgumentException("illegal coefficients array: " + coefficients);
-	if (Setops.some(Arrays.asList(coefficients), Functionals.bindSecond(Predicates.equal, null)))
+ 	set(Values.tensor(coefficients));
+    }
+    private void set(Tensor coefficients) {
+	if (coefficients == null)
+	    throw new IllegalArgumentException("illegal coefficients array: " + coefficients);
+	if (Setops.some(coefficients.iterator(), Functionals.bindSecond(Predicates.equal, null)))
 	    throw new IllegalArgumentException("illegal coefficients: containing null");
- 	this.coefficients = coefficients;
-	this.R_ZERO = coefficients.length > 0 ? coefficients[0].zero() : Values.ZERO;
+	this.coefficients = coefficients;
 	this.degree = degreeImpl(coefficients);
+	this.CONSTANT_TERM = new int[dimensions().length];
+	Arrays.fill(CONSTANT_TERM, 0);
     }
 
-    public Arithmetic/*>R<*/ get(int i) {
-	if (i <= degreeValue() && i >= coefficients.length)
-	    throw new ArrayIndexOutOfBoundsException(coefficients.length + "=<" + i + "=<" + degreeValue() + "=" + degreeImpl(coefficients));
-	return i <= degreeValue() ? coefficients[i] : R_ZERO;
+    /**
+     * Converts an index (exponent) from Vector<Integer> to int[].
+     */
+    static final int[] convertIndex(Arithmetic indexAsVector) {
+	Vector/*<Integer>*/ index = (Vector) indexAsVector;
+	int[] i = new int[index.dimension()];
+	for (int k = 0; k < i.length; k++)
+	    i[k] = ((Integer)index.get(k)).intValue();
+	return i;
+    }
+    public final Arithmetic/*>R<*/ get(Arithmetic i) {
+	return get(convertIndex(i));
+    }
+    public Arithmetic/*>R<*/ get(int[] i) {
+	Utility.pre(i.length == ((Integer)indexSet()).intValue(), "illegal number of indices (" + i.length + " indices) for a coefficient of a polynomial with " + indexSet() + " variables");
+	for (int k = 0; k < i.length; k++)
+	    if (i[k] >= dimensions()[k])
+		return get(CONSTANT_TERM).zero();
+	return coefficients.get(i);
     }
 	
-    public void set(int i, Arithmetic/*>R<*/ vi) {
+    public void set(int[] i, Arithmetic/*>R<*/ vi) {
 	if (vi == null)
 	    throw new IllegalArgumentException("illegal coefficient value: " + vi);
-	final int oldDegree = degreeValue();
-	if (i >= coefficients.length)
-	    throw new UnsupportedOperationException("setting coefficients beyond the degree not (always) supported");
-	coefficients[i] = vi;
-	this.R_ZERO = coefficients.length > 0 ? coefficients[0].zero() : Values.ZERO;
-	if (i >= oldDegree)
+	final Integer oldDegree = degree();
+	coefficients.set(i, vi);
+	if (oldDegree.compareTo(Operations.sum.apply(Values.valueOf(i))) <= 0)
 	    this.degree = degreeImpl(coefficients);
     }
+    public final void set(Arithmetic i, Arithmetic/*>R<*/ vi) {
+	set(convertIndex(i), vi);
+    }
 
-    public Arithmetic/*>R<*/[] getCoefficients() {
-	if (degreeValue() < 0)
-	    return new Arithmetic/*>R<*/[0];
-	return (Arithmetic/*>R<*/[]) coefficients.clone();
-    } 
+    Tensor tensorViewOfCoefficients() {
+	return coefficients;
+    }
 }

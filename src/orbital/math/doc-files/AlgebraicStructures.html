@@ -35,7 +35,7 @@ th.defTerm   { text-align: right }
 /**
  * (the heading for) the category name.
  */
-th.defCategory { text-align: right }
+th.defCategory { text-align: right; font-family: Arioso, cursive }
 /**
  * the defined term (THEN name).
  */
@@ -128,7 +128,7 @@ a lot of space and is convenient for usual cases.</p>
     <th class="defCond">If</th>
     <th class="defVerbal"></th>
     <th class="defTerm">Then M is a</th>
-    <th class="defCategory">Category</th>
+    <th class="defCategory">C</th>
   </tr>
   <tr id="magma">
     <td class="defID">(s)</td>
@@ -209,9 +209,13 @@ provided that M and N are groups. So the property (1) only must be verified for
 monoids, which is the justification for the suggestive notation in the table 
 above.</p>
 <p>If φ:M→N is a homomorphism (of magmas), it carries much of the algebraic 
-structure of M over to f(M)⊆N. The image (f(M),∗) inherits the properties (s),(a),(n),(i),(c),<a href="#distributive">(d)</a> 
-from (M,⋅). However in general if N is not a group it may be f(1)≠1 (and 
-thus f(x<sup>-1</sup>)≠f(x)<sup>-1</sup>).</p>
+structure of M over to φ(M)⊆N. The image (φ(M),∗) inherits the properties 
+(s),(a),(n),(i),(c),<a href="#distributive">(d)</a> from (M,⋅). However in 
+general if N is not a group and φ not unital it may be φ(1)≠1 (and thus φ(x<sup>-1</sup>)≠φ(x)<sup>-1</sup>). 
+If φ:M→N is a homomorphism of <span class="signifier">T</span>, then Im(φ):=φ(M)≤N 
+and Ker(φ):=φ<span style="letter-spacing: -1pt"><sup>-1</sup></span>({0})⊴M 
+are sub-<span class="signifier">T</span> (and Ker(φ) even is a normal subgroups 
+resp. an ideal for groups resp. rings or algebras).</p>
 <h4 class="inner">Examples</h4>
 <ol>
   <li>For every set X there is the <dfn>free magma</dfn> M(X).</li>
@@ -219,19 +223,27 @@ thus f(x<sup>-1</sup>)≠f(x)<sup>-1</sup>).</p>
     := X<sup>+</sup> := ⋃<sub>n∈<b>N</b>\{0}</sub> X<sup>n</sup>.</li>
   <li>For every set X there is the <dfn>free monoid</dfn> (of words) Mo(X) := X<sup>*</sup> 
     := ⋃<sub>n∈<b>N</b></sub> X<sup>n</sup>.</li>
+  <li>For every set X there is the <dfn>free commutative monoid</dfn> <b>N</b><sup>(X)</sup>.</li>
   <li>For every set X there is the <dfn>free group</dfn> F(X) with basis X where<br>
     ∀y∈F(X) ∃!x<sub>1</sub><sup>ε<sub>1</sub></sup>⋅...⋅x<sub>n</sub><sup>ε<sub>n</sub></sup> 
     = y with x<sub>i</sub>∈X ∧ ε<sub>i</sub>∈{-1,1} ∧ x<sub>i</sub><sup>ε<sub>i</sub></sup>≠x<sub>i+1</sub><sup>-ε<sub>i+1</sub></sup>.</li>
   <li><span class="categorie">Ab</span>≅<b>Z</b>-<span class="categorie">Mod.</span></li>
   <li>The Cartesian product ∏<sub>i∈I</sub> A<sub>i</sub> := {(a<sub>i</sub>)<sub>i∈I</sub> 
     ¦ a<sub>i</sub>∈A<sub>i</sub>} with component-wise laws is the product in 
-    <span class="categorie">Ens</span>,<span class="categorie">Mag</span>,<span class="categorie">Sgp</span>,<span class="categorie">Mon</span>,<span class="categorie">Gr</span>,<span class="categorie">Ab</span>,<span class="categorie">Rng</span>,<span class="categorie">Rng1</span>,<span class="categorie">cRng</span>,R-<span class="categorie">Mod</span>,R-<span class="categorie">Vec</span>,R-<span class="categorie">Alg</span>,...</li>
+    <span class="categorie">Ens</span>,<span class="categorie">Mag</span>,<span class="categorie">Sgp</span>,<span class="categorie">Mon</span>,<span class="categorie">Gr</span>,<span class="categorie">Ab</span>,<span class="categorie">Rng</span>,<span class="categorie">Rng1</span>,<span class="categorie">cRng</span>,R-<span class="categorie">Mod</span>,K-<span class="categorie">Vec</span>,R-<span class="categorie">Alg</span>,...<br>
+    Especially A<sup>I</sup> := ∏<sub>i∈I</sub> A.</li>
   <li>The direct sum <big>⊕</big><sub>i∈I</sub> A<sub>i</sub> := {(a<sub>i</sub>)<sub>i∈I</sub> 
     <sub></sub>∈ ∏<sub>i∈I</sub> A<sub>i</sub> ¦ a<sub>i</sub>=1 p.t. i∈I} 
     with component-wise laws is the coproduct in <span class="categorie">cMon</span>, 
     <span class="categorie">Mon??</span>,<span class="categorie">Ab</span>,R-<span class="categorie">Mod</span>,..., 
     but that is <em>not</em> the coproduct in <span class="categorie">Gr</span> 
-    nor in R-<span class="categorie">Alg</span>.</li>
+    nor in R-<span class="categorie">Alg</span>.<br>
+    Especially A<sup>(I)</sup> := <big>⊕</big><sub>i∈I</sub> A.</li>
+  <li>(X<sup>X</sup>,∘) is a monoid for any set X. S<sub>X</sub> := Perm(X) := 
+    (X<sup>X</sup>)<sup>×</sup> ≤ X is the symmetric group. If M is a magma, 
+    then Aut(M)≤S<sub>M</sub>.</li>
+  <li id="commutativeMagmaHom">If M is a magma and C a <dfn>commutative</dfn> magma, then Hom(M,C)≤C<sup>M</sup> 
+    is a commutative sub-<span class="signifier">T</span>.</li>
 </ol>
 <h3>Groups and actions</h3>
 <table width="100%" class="def" id="laws_1_1a">
@@ -245,7 +257,7 @@ thus f(x<sup>-1</sup>)≠f(x)<sup>-1</sup>).</p>
     <th class="defCond">If</th>
     <th class="defVerbal"></th>
     <th class="defTerm">Then E is a</th>
-    <th class="defCategory">Category</th>
+    <th class="defCategory">C</th>
   </tr>
   <tr>
     <td class="defID">(s)</td>
@@ -282,8 +294,9 @@ thus f(x<sup>-1</sup>)≠f(x)<sup>-1</sup>).</p>
   </tr>
 </table>
 <h5 class="compact">Note:</h5>
-<p>Groups are identified with groups with operators in ∅. By an abuse of 
-language, laws of left actions are simply called laws of actions.</p>
+<p class="preciseClarification">Groups are identified with groups with operators 
+in ∅. By an abuse of language, laws of left actions are simply called laws of 
+actions.</p>
 <table width="100%" class="def" id="morph_1_1a">
   <caption>Homomorphisms of algebraic structures with one law of composition and 
     a law of action</caption>
@@ -315,7 +328,7 @@ language, laws of left actions are simply called laws of actions.</p>
     <th class="defCond">If</th>
     <th class="defVerbal"></th>
     <th class="defTerm">Then E is a</th>
-    <th class="defCategory">Category</th>
+    <th class="defCategory">C</th>
   </tr>
   <tr>
     <td class="defID">()</td>
@@ -383,7 +396,7 @@ language, laws of left actions are simply called laws of actions.</p>
     <th class="defID"></th>
     <th class="defCond">If</th>
     <th class="defTerm">Then R is a</th>
-    <th class="defCategory">Category</th>
+    <th class="defCategory">C</th>
   </tr>
   <tr id="pseudoRing">
     <td class="defID">( )</td>
@@ -501,7 +514,7 @@ from (m).</p>
     <th class="defID"></th>
     <th class="defCond">If</th>
     <th class="defTerm">Then M is a</th>
-    <th class="defCategory">Category</th>
+    <th class="defCategory">C</th>
   </tr>
   <tr id="pseudomodule">
     <td class="defID">( )</td>
@@ -642,7 +655,7 @@ in R and left (R,⋅)-sets that also satisfy the second distributive relation.</
     <th class="defID"></th>
     <th class="defCond">If</th>
     <th class="defTerm">Then E is a</th>
-    <th class="defCategory">Category</th>
+    <th class="defCategory">C</th>
   </tr>
   <tr id="algebra">
     <td class="defID">( )</td>
@@ -720,7 +733,7 @@ omitted.</p>
   </tr>
 </table>
 <h5 class="compact">Note:</h5>
-<p>The converse of the last characterization is also true for unital and 
+<p>The converse of the last characterization (ι) is also true for unital and 
 associative algebras, since given such an R-algebra, ι:R→E;α↦α∗1 is a 
 unital homomorphism of rings. Homomorphisms of R-algebras are the R-linear 
 homomorphisms of rings:</p>
@@ -761,7 +774,7 @@ homomorphisms of rings:</p>
   <li>A commutative pseudo-ring R is a commutative associative R-algebra.</li>
   <li>A commutative ring R with 1 is a unital and commutative associative 
     R-algebra.</li>
-  <li>If R≤R' is a ring extension then R' is an R-algebra.</li>
+  <li>A ring extension R'≥R is an R-algebra.</li>
   <li>If I⊴R is an ideal, R/I is an R-algebra.</li>
   <li><b>Z</b>-<span class="categorie">Algas</span>≅<span class="categorie">PseudoRing</span>, 
     <b>Z</b>-<span class="categorie">Algasu</span>≅<span class="categorie">Rng1</span>, 
@@ -769,7 +782,7 @@ homomorphisms of rings:</p>
   <li>R<sup>(S)</sup> := <big>⊕</big><sub>s∈S</sub> R is the R-<dfn id="algebraOfMagma">algebra 
     of the magma</dfn> S over R (being associative, unital, or commutative if 
     and only if S is), by ι(s)⋅ι(t) := ι(s⋅t) from the canonical 
-    injection ι:S→R<sup>(S)</sup>. Therefore by <a href="#distributive">(d)</a>
+    injection ι:S↪R<sup>(S)</sup>. Therefore by <a href="#distributive">(d)</a>
     <div>
       (∑<sub>s∈S</sub> α<sub>s</sub>∗ι(s))⋅(∑<sub>s∈S</sub> β<sub>s</sub>∗ι(s)) 
       = ∑<sub>s∈S</sub> (∑<sub>t⋅u=s</sub> α<sub>t</sub>β<sub>u</sub>)∗ι(s)
@@ -787,10 +800,26 @@ homomorphisms of rings:</p>
         being isomorph to the symmetric algebra of a free R-module with a basis 
         of indexing set I.</li>
     </ul>
-    The algebra of a magma S over R has the following universal mapping property
+    The algebra R<sup>(S)</sup> of a magma S over R is the presenting object of 
+    the presentable functor
+    <table>
+      <tbody>
+        <tr>
+          <td class="leftOfMap">R-<span class="categorie">Alg</span></td>
+          <td class="arrowOfMap">→</td>
+          <td class="rightOfMap"><span class="categorie">Ens</span></td>
+        </tr>
+        <tr>
+          <td class="leftOfMap"><span class="objet">E</span></td>
+          <td class="arrowOfMap">↦</td>
+          <td class="rightOfMap">Mor<span class="categorie"><sub>Mag</sub></span>(S,(E,⋅))</td>
+        </tr>
+      </tbody>
+    </table>
+    Therefore it enjoys the following universal mapping property
     <div class="UniversalMappingProperty">
-      ∀f:S→(E,⋅) homomorphism of magmas/monoids into an R-algebra E<br />
-      ∃!Φ:R<sup>(S)</sup>→E R-algebra homomorphism with Φ|<sub>S</sub>=f
+      ∀φ:S→(E,⋅) homomorphism of magmas/monoids into an R-algebra E<br />
+      ∃!Φ:R<sup>(S)</sup>→E R-algebra homomorphism with Φ|<sub>S</sub>=φ
     </div>
   </li>
   <li>R<sup>X</sup> := ∏<sub>x</sub><sub>∈X</sub> R is a commutative 
