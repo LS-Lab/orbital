@@ -12,8 +12,10 @@ import orbital.logic.sign.type.Typed;
  * An interface for representations of expressions.
  * <p>
  * This interface is implemented by objects representing syntactic expressions like those created by
- * {@link ExpressionBuilder#createAtomic(Symbol)}, {@link ExpressionBuilder#compose(Expression,Expression[])},
+ * {@link ExpressionBuilder#createAtomic(Symbol)},
+ * {@link ExpressionBuilder#compose(Expression,Expression[])},
  * or {@link ExpressionSyntax#createExpression(String)}.
+ * Objects representing compound expressions even implement {@link Expression.Composite}.
  * </p>
  * <p>
  * Given a signature &Sigma; we define a general term algebra and thus the (abstract) syntax of the
