@@ -23,6 +23,13 @@ import orbital.logic.functor.Predicate;
  * </p>
  * 
  * @stereotype data-type
+ * @structure specializes Rational (needs covariant parameters and covariant results)
+ *  Since integers are a special case of integers, and thus only adding integers to integers
+ *  will make sense - on the first sight - but not adding rationals. In order to achieve
+ *  that integers behave like rationals they additionally have a subtype relation.
+ * @structure subtypeOf Rational (needs contravariant parameters and covariant result)
+ *  In order to realize <b>Z</b>&le;<b>Q</b> we embed <b>Z</b>&#8618;<b>Q</b>,
+ *  implemented with multiple argument dynamic dispatch.
  * @version 1.0, 2000/08/03
  * @author  Andr&eacute; Platzer
  * @see Values#valueOf(int)
