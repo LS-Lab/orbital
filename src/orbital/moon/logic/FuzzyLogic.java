@@ -31,6 +31,7 @@ import java.util.TreeSet;
 import java.util.HashSet;
 import java.util.TreeMap;
 
+import orbital.math.Values;
 import orbital.math.MathUtilities;
 import orbital.io.IOUtilities;
 import orbital.util.InnerCheckedException;
@@ -242,6 +243,8 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 
 
     private static final Type TRUTH = Types.objectType(orbital.math.Real.class, "truth");
+
+    private static final Values valueFactory = Values.getDefaultInstance();
     /**
      * list of static elements of signature.
      */
@@ -274,7 +277,9 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	final OperatorSet op = fuzzyLogicOperators;
 	this._coreInterpretation =
 	LogicSupport.arrayToInterpretation(new Object[][] {
-	    {TRUTH,
+	    {Types.UNIVERSAL,
+	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+	    {TRUTH,//@fixme replace true/false by 1.0,0.0
 	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
 	    {Types.objectType(orbital.math.Integer.class, "integer"),
 	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
@@ -352,7 +357,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      * interpretation for a truth-value
      */
     static final Object getInt(double v) {
-	return (Number) new Double(v);
+	return (Number) valueFactory.valueOf(v);
     } 
     
     /**
@@ -564,7 +569,47 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     public static OperatorSet HAMACHER(final double gamma) {
 	if (!(gamma >= 0))
 	    throw new IllegalArgumentException("illegal value for gamma: " + gamma + " < 0");
-	return new OperatorSet("Hamacher(" + gamma + ")") {
+	return gamma == 0
+	    ? (OperatorSet)
+	    new OperatorSet("Hamacher(0)") {
+		// special case handling "Polstellen" für gamma=0
+		private static final double tolerance = 0.000001;
+		Function not() {
+		    return LogicFunctions.not;
+		}
+
+		BinaryFunction and() {
+		    return new BinaryFunction() {
+			    private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
+			    public Object apply(Object wa, Object wb) {
+				final double a = getTruth(wa);
+				final double b = getTruth(wb);
+				final double ab = a*b;
+				return getInt(MathUtilities.equals(a, 0, tolerance) && MathUtilities.equals(b, 0, tolerance)
+					      ? 0
+					      : ab / (a+b-ab));
+			    }
+			    public String toString() { return "&"; }
+			};
+		}
+    
+		BinaryFunction or() {
+		    return new BinaryFunction() {
+			    private final Type logicalTypeDeclaration = LogicFunctions.BINARY_LOGICAL_JUNCTOR;
+			    public Object apply(Object wa, Object wb) {
+				final double a = getTruth(wa);
+				final double b = getTruth(wb);
+				final double ab = a*b;
+				return getInt(MathUtilities.equals(a, 1, tolerance) && MathUtilities.equals(b, 1, tolerance)
+					      ? 1
+					      : (a+b-2*ab) / (1 - ab));
+			    }
+			    public String toString() { return "|"; }
+			};
+		}
+	    }
+	    : (OperatorSet)
+	    new OperatorSet("Hamacher(" + gamma + ")") {
 		private static final long serialVersionUID = -8210989001070817280L;
 		Function not() {
 		    return LogicFunctions.not;

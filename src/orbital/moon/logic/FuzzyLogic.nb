@@ -39,9 +39,9 @@ Wolfram Research.
 
 (*NotebookFileLineBreakTest
 NotebookFileLineBreakTest*)
-(*NotebookOptionsPosition[      3701,        125]*)
-(*NotebookOutlinePosition[      4358,        148]*)
-(*  CellTagsIndexPosition[      4314,        144]*)
+(*NotebookOptionsPosition[      5508,        184]*)
+(*NotebookOutlinePosition[      6165,        207]*)
+(*  CellTagsIndexPosition[      6121,        203]*)
 (*WindowFrame->Normal*)
 
 
@@ -49,35 +49,49 @@ NotebookFileLineBreakTest*)
 Notebook[{
 
 Cell[CellGroupData[{
+Cell["Define logic", "Section"],
+
 Cell[BoxData[{
-    \(and[
-        YAGER[p_]]\  = \ \((1\  - \ 
-            Min[1, \((\((1 - #1)\)\^p + \((1 - #2)\)\^p)\)^\((1/
-                    p)\)])\) &\), "\[IndentingNewLine]", 
-    \(or[YAGER[
-          p_]]\  = \ \((Min[
-            1, \((#1\^p + #2\^p)\)\^\(1/p\)])\) &\), "\[IndentingNewLine]", 
-    \(not[YAGER[p_]]\  = \ \((1 - #1)\) &\)}], "Input"],
+    \(\(and[
+          YAGER[p_]]\  = \ \((1\  - \ 
+              Min[1, \((\((1 - #1)\)\^p + \((1 - #2)\)\^p)\)^\((1/
+                      p)\)])\) &;\)\), "\[IndentingNewLine]", 
+    \(\(or[
+          YAGER[p_]]\  = \ \((Min[
+              1, \((#1\^p + #2\^p)\)\^\(1/p\)])\) &;\)\), \
+"\[IndentingNewLine]", 
+    \(\(not[YAGER[p_]]\  = \ \((1 - #1)\) &;\)\)}], "Input"],
 
-Cell[BoxData[
-    \(1 - 
-        Min[1, \((\((1 - #1)\)\^p + \((1 - #2)\)\^p)\)\^\(1/p\)] &\)], \
-"Output"],
+Cell[BoxData[{
+    \(\(and[
+          HAMACHER[\[Gamma]_]]\  = \ \((\((#1*#2)\)/\((\[Gamma] + \((1 - \
+\[Gamma])\) \((#1 + #2 - #1*#2)\))\))\) &;\)\), "\[IndentingNewLine]", 
+    \(\(or[
+          HAMACHER[\[Gamma]_]]\  = \ \((\((#1 + #2 - \((2 - \[Gamma])\) \
+#1*#2)\)/\((1 - \((1 - \[Gamma])\) #1*#2)\))\) &;\)\), "\[IndentingNewLine]", \
 
-Cell[BoxData[
-    \(Min[1, \((#1\^p + #2\^p)\)\^\(1/p\)] &\)], "Output"],
+    \(\(not[YAGER[p_]]\  = \ \((1 - #1)\) &;\)\)}], "Input"],
 
-Cell[BoxData[
-    \(1 - #1 &\)], "Output"]
-}, Open  ]],
+Cell[CellGroupData[{
+
+Cell["Examples", "Subsection"],
 
 Cell[CellGroupData[{
 
 Cell[BoxData[{
+    \(l = YAGER[1000]\), "\[IndentingNewLine]", 
+    \(\(and[l]\)[\(or[l]\)[\(not[l]\)[0.005], 0.995], 
+      1]\), "\[IndentingNewLine]", 
     \(l = YAGER[\[Infinity]]\), "\[IndentingNewLine]", 
     \(\(or[l]\)[\(not[l]\)[0.005], 0.995]\), "\[IndentingNewLine]", 
     \(l = YAGER[\[Infinity]]\), "\[IndentingNewLine]", 
     \(\(and[l]\)[0.5, \(not[l]\)[0.2]]\)}], "Input"],
+
+Cell[BoxData[
+    \(YAGER[1000]\)], "Output"],
+
+Cell[BoxData[
+    \(0.995689920525267724293883020436624`18.3182\)], "Output"],
 
 Cell[BoxData[
     RowBox[{"YAGER", "[", 
@@ -108,7 +122,8 @@ Cell[CellGroupData[{
 
 Cell[BoxData[{
     \(l = YAGER[\[Infinity]]\), "\[IndentingNewLine]", 
-    \(\(or[l]\)[0.5, 0.5]\)}], "Input"],
+    \(\(or[l]\)[0.5, 0.5]\), "\[IndentingNewLine]", 
+    \(\(and[l]\)[1, 1]\)}], "Input"],
 
 Cell[BoxData[
     RowBox[{"YAGER", "[", 
@@ -120,7 +135,51 @@ Cell[BoxData[
       "Indeterminate expression \!\(0\^0\) encountered."\)], "Message"],
 
 Cell[BoxData[
+    \(Indeterminate\)], "Output"],
+
+Cell[BoxData[
+    \(Power::"indet" \(\(:\)\(\ \)\) 
+      "Indeterminate expression \!\(0\^0\) encountered."\)], "Message"],
+
+Cell[BoxData[
     \(Indeterminate\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+    \(l = HAMACHER[0]\), "\[IndentingNewLine]", 
+    \(\(and[l]\)[0, 0]\), "\[IndentingNewLine]", 
+    \(\(or[l]\)[1, 1]\)}], "Input"],
+
+Cell[BoxData[
+    \(HAMACHER[0]\)], "Output"],
+
+Cell[BoxData[
+    \(Power::"infy" \(\(:\)\(\ \)\) 
+      "Infinite expression \!\(1\/0\) encountered."\)], "Message"],
+
+Cell[BoxData[
+    RowBox[{\(\[Infinity]::"indet"\), \(\(:\)\(\ \)\), "\<\"Indeterminate \
+expression \\!\\(0\\\\ \\*InterpretationBox[\\\"ComplexInfinity\\\", \
+DirectedInfinity[]]\\) encountered.\"\>"}]], "Message"],
+
+Cell[BoxData[
+    \(Indeterminate\)], "Output"],
+
+Cell[BoxData[
+    \(Power::"infy" \(\(:\)\(\ \)\) 
+      "Infinite expression \!\(1\/0\) encountered."\)], "Message"],
+
+Cell[BoxData[
+    RowBox[{\(\[Infinity]::"indet"\), \(\(:\)\(\ \)\), "\<\"Indeterminate \
+expression \\!\\(0\\\\ \\*InterpretationBox[\\\"ComplexInfinity\\\", \
+DirectedInfinity[]]\\) encountered.\"\>"}]], "Message"],
+
+Cell[BoxData[
+    \(Indeterminate\)], "Output"]
+}, Open  ]]
+}, Open  ]]
 }, Open  ]]
 },
 FrontEndVersion->"4.0 for Microsoft Windows",
@@ -149,27 +208,45 @@ CellTagsIndex->{}
 Notebook[{
 
 Cell[CellGroupData[{
-Cell[1739, 51, 363, 8, 261, "Input"],
-Cell[2105, 61, 107, 3, 124, "Output"],
-Cell[2215, 66, 72, 1, 56, "Output"],
-Cell[2290, 69, 42, 1, 55, "Output"]
+Cell[1739, 51, 31, 0, 103, "Section"],
+Cell[1773, 53, 388, 9, 261, "Input"],
+Cell[2164, 64, 402, 8, 327, "Input"],
+
+Cell[CellGroupData[{
+Cell[2591, 76, 30, 0, 90, "Subsection"],
+
+Cell[CellGroupData[{
+Cell[2646, 80, 388, 7, 327, "Input"],
+Cell[3037, 89, 45, 1, 55, "Output"],
+Cell[3085, 92, 77, 1, 55, "Output"],
+Cell[3165, 95, 128, 3, 55, "Output"],
+Cell[3296, 100, 123, 2, 106, "Message"],
+Cell[3422, 104, 47, 1, 55, "Output"],
+Cell[3472, 107, 128, 3, 55, "Output"],
+Cell[3603, 112, 123, 2, 106, "Message"],
+Cell[3729, 116, 47, 1, 55, "Output"]
 }, Open  ]],
 
 Cell[CellGroupData[{
-Cell[2369, 75, 248, 4, 191, "Input"],
-Cell[2620, 81, 128, 3, 55, "Output"],
-Cell[2751, 86, 123, 2, 106, "Message"],
-Cell[2877, 90, 47, 1, 55, "Output"],
-Cell[2927, 93, 128, 3, 55, "Output"],
-Cell[3058, 98, 123, 2, 106, "Message"],
-Cell[3184, 102, 47, 1, 55, "Output"]
+Cell[3813, 122, 160, 3, 123, "Input"],
+Cell[3976, 127, 128, 3, 55, "Output"],
+Cell[4107, 132, 123, 2, 106, "Message"],
+Cell[4233, 136, 47, 1, 55, "Output"],
+Cell[4283, 139, 123, 2, 106, "Message"],
+Cell[4409, 143, 47, 1, 55, "Output"]
 }, Open  ]],
 
 Cell[CellGroupData[{
-Cell[3268, 108, 110, 2, 89, "Input"],
-Cell[3381, 112, 128, 3, 55, "Output"],
-Cell[3512, 117, 123, 2, 106, "Message"],
-Cell[3638, 121, 47, 1, 55, "Output"]
+Cell[4493, 149, 149, 3, 123, "Input"],
+Cell[4645, 154, 45, 1, 55, "Output"],
+Cell[4693, 157, 117, 2, 126, "Message"],
+Cell[4813, 161, 216, 3, 134, "Message"],
+Cell[5032, 166, 47, 1, 55, "Output"],
+Cell[5082, 169, 117, 2, 126, "Message"],
+Cell[5202, 173, 216, 3, 134, "Message"],
+Cell[5421, 178, 47, 1, 55, "Output"]
+}, Open  ]]
+}, Open  ]]
 }, Open  ]]
 }
 ]
