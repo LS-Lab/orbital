@@ -150,17 +150,11 @@ public interface Expression extends Typed {
 
     /**
      * The base interface for all composite expressions that are composed of other expressions.
-     * @structure is {@link orbital.logic.functor.Functor.Composite}&cap;{@link Expression}
+     * @structure is {@link orbital.logic.Composite}&cap;{@link Expression}
      * @version 1.1, 2002-11-27
      * @author  Andr&eacute; Platzer
      * @see <a href="Expression.html#compositeExpression">composites</a>
      * @todo change base class to orbital.logic.sign.Composite
      */
-    static interface Composite extends orbital.logic.functor.Functor.Composite, Expression {}
+    static interface Composite extends orbital.logic.Composite, Expression {}
 }
-
-
-
-
-
-
