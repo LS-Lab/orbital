@@ -74,6 +74,7 @@ foreach SOURCE ($DIRS)
     # to make the modification and copying: 
     echo preparing to sed orbital source files...
     rm -f t
+    find -name "*.jj" -exec echo sed -f ../revert-to-1.3.sed \{\} \> ../{$SOURCE}/\{\} >> t \;
     find -name "*.java" -exec echo sed -f ../revert-to-1.3.sed \{\} \> ../{$SOURCE}/\{\} >> t \;
     # execute the file: 
     echo making replacements... 
@@ -90,6 +91,7 @@ foreach SOURCE ($DIRS)
         echo preparing replacements for jkd1.4 sources...
         cd resources/java/util/logging
         rm -f t
+        find -name "*.jj" -exec echo sed -f ../../../../revert-to-1.3.sed \{\} \> ../../../../{$SOURCE}/orbital/util/logging/\{\} >> t \;
         find -name "*.java" -exec echo sed -f ../../../../revert-to-1.3.sed \{\} \> ../../../../{$SOURCE}/orbital/util/logging/\{\} >> t \;
         # execute the file: 
         echo making replacements... 
@@ -113,13 +115,13 @@ foreach SOURCE ($DIRS)
         sed -e 's/super(message, cause)/super(message)/' {$SOURCE}/orbital/util/InnerCheckedException.java > t
         mv -f t {$SOURCE}/orbital/util/InnerCheckedException.java
         
+        # remove unwanted constructor call in orbital.logic.sign.ParseException: 
+        sed -e 's/super(message, cause)/super(message)/' {$SOURCE}/orbital/logic/sign/ParseException.java > t
+        mv -f t {$SOURCE}/orbital/logic/sign/ParseException.java
+
         # remove unwanted instantiation of InternalError: 
         sed -e 's/throw new InternalError(asserted)/throw new InternalError(asserted.toString())/' {$SOURCE}/orbital/algorithm/evolutionary/Gene.java > t
         mv -f t {$SOURCE}/orbital/algorithm/evolutionary/Gene.java
-        
-        # copy LogicParser.jj
-        cp {$TEMPDIR}/orbital/moon/logic/LogicParser.jj {$SOURCE}/orbital/moon/logic/
-       
     endif
 
 end
