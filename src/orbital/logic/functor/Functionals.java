@@ -2094,6 +2094,7 @@ public class Functionals {
      * @version 1.0, 2000/06/14
      * @author  Andr&eacute; Platzer
      * @see Functionals#barbedwire(Object, BinaryFunction, Iterator)
+     * @see Functionals#barbedwire(int, BinaryFunction)
      * @see "Lambert Meertens. Paramorphisms. In: Formal Aspects of Computing, 1990."
      * @see <a href="http://wwwhome.cs.utwente.nl/~fokkinga/index.html#mmf91m">Meijer, E. and Fokkinga, M.M. and Paterson, R., Functional Programming with Bananas, Lenses, Envelopes and Barbed Wire, FPCA91: Functional Programming Languages and Computer Architecture, pp. 124--144, volume 523, Lecture Notes in Computer Science, Springer-Verlag, 1991.</a>
      */
@@ -2189,9 +2190,10 @@ public class Functionals {
      * @param a is a starting value.
      * @return <span class="barbedwireBracket">{|</span>b,f<span class="barbedwireBracket">|}</span> a
      * @see "Lambert Meertens. Paramorphisms. In: Formal Aspects of Computing, 1990."
+     * @TODO think about changing from java.lang.Integer to java.lang.Number to support java.lang.Double and orbital.math.Integer as well
+     * @todo publicize
      */
-    //TODO: think about changing from java.lang.Integer to java.lang.Number to support java.lang.Double and orbital.math.Integer as well
-    /*public*/ protected static Function/*<Integer, Integer>*/ paramorphism(final int b, final BinaryFunction/*<Integer, Integer, Integer>*/ f) {
+    protected static Function/*<Integer, Integer>*/ paramorphism(final int b, final BinaryFunction/*<Integer, Integer, Integer>*/ f) {
 	return new Function/*<Integer, Integer>*/() {
 		public Object/*>Integer<*/ apply(Object/*>Integer<*/ ao) {
 		    int a = ((Integer) ao).intValue();
