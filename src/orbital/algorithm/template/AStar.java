@@ -45,6 +45,8 @@ import orbital.math.Values;
  * @author  Andr&eacute; Platzer
  * @see "P. E. Hart, N. J. Nilsson, and B. Raphael. A formal basis for the heuristic determination of minimum cost paths. IEEE Transactions of Systems Science and Cybernetics, 4:100-107, 1968."
  * @attribute specializes {@link WAStar} with W=1.
+ * @internal A search is a search with inadmissible heuristics (but any other differences?).
+ * @internal A<sup>*</sup> ressembles gradient descent (but with memory).
  * @todo update g(n) to fit minimum cost to reach n?
  */
 public class AStar extends BestFirstSearch implements HeuristicAlgorithm {

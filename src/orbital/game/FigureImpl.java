@@ -214,7 +214,6 @@ public class FigureImpl extends Figure {
      * Checks validity of a path to move per {@link #movePath(Move)}.
      * @see #iterateValid()
      * @postconditions &forall;i&isin;RES moveFigure(i.A).equals(i.B)
-     * @todo introduce iteratePossiblePairs() returns an iterator over all pairs of (moves|destinations) valid and <dfn>possible</dfn> for this figure, i.e. if our league is allowed to move at all.
      * @deprecated Since Orbital1.1 use {@link Figure#validMoves()} instead.
      */
     public final Iterator/*_<Move,Position>_*/ iterateValidPairs() {
@@ -246,6 +245,8 @@ public class FigureImpl extends Figure {
      * @todo explicit constructive iterator?
      */
     public /*final*/ Iterator/*_<Option>_*/ possibleMoves() {
+	if (isEmpty())
+	    throw new IllegalStateException("cannot move empty figure " + this);
 	final Move legalMoves[] = getLegalMoves();
 	final List v = new ArrayList(legalMoves.length);
 	for (int i = 0; i < legalMoves.length; i++) {
@@ -272,6 +273,8 @@ public class FigureImpl extends Figure {
      * @see #moving
      */
     public Position moveFigure(Move move) {
+	if (isEmpty())
+	    throw new IllegalStateException("cannot move empty figure " + this);
 	if (move == null)
 	    throw new NullPointerException("illegal move: " + move);
 	final Move legalMoves[] = getLegalMoves();
@@ -359,7 +362,7 @@ public class FigureImpl extends Figure {
 	final Moving hyp = new Moving(this);				//@todo should we transform this to new Moving(x, y, direction.clone()) such that we don't get a Figure, here?, or to (Moving) super.clone()
 	final String movement = move.getMovementString();
 	if (!field.inRange(hyp))
-	    throw new IllegalStateException("illegal position not on field, so we cannot move at all");
+	    throw new IllegalStateException("illegal position " + this + " not on field range, so we cannot move at all");
 
 	moves:
 	for (int i = 0; i < movement.length(); i++) {

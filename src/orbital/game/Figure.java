@@ -183,7 +183,8 @@ public abstract class Figure extends Moving {
      * @return the destination position that was reached after the move
      * or <code>null</code> if the Move was invalid and therefore cancelled.
      * @throws IllegalArgumentException if this move is not in the list of legal moves.
-     * @post getField() = getField()@pre
+     * @preconditions &not;isEmpty()
+     * @postconditions getField() = getField()@pre
      * @see Field#move(Position, Move)
      * @internal do not rename to move(Move) like in super class, because some classes need to treat our ordinary Moving behaviour without additional rule checks.
      */

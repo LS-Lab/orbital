@@ -207,11 +207,11 @@ are called <dfn>automorphisms</dfn>.</p>
         <td class="defCond">∘ is distributive over +, i.e.
           <ul>
             <li>∀A,B,C∈Ob <span class="categorie">C</span> ∀f∈Hom<span class="categorie"><sub>C</sub></span>(B,C) 
-              ∀g,h∈Hom<span class="categorie"><sub>C</sub></span>(A,B) f∘(g+h) 
-              = (f∘g) + (f∘h)</li>
+              ∀g,h∈Hom<span class="categorie"><sub>C</sub></span>(A,B) 
+              f∘(g+h) = (f∘g) + (f∘h)</li>
             <li>∀A,B,C∈Ob <span class="categorie">C</span> ∀f,g∈Hom<span class="categorie"><sub>C</sub></span>(B,C) 
-              ∀h∈Hom<sub><span class="categorie">C</span></sub>(A,B) (f+g)∘h 
-              = (f∘h) + (g∘h)</li>
+              ∀h∈Hom<sub><span class="categorie">C</span></sub>(A,B) 
+              (f+g)∘h = (f∘h) + (g∘h)</li>
           </ul>
         </td>
         <td class="defVerbal">distributive</td>
@@ -505,7 +505,9 @@ categories) <!-- <source>Pareigis, 4.2</source> -->.</p>
     A∈Ob <span class="categorie">C</span> is an initial object :⇔ ∀B∈Ob <span class="categorie">C</span> 
     ∃!φ∈Mor<sub><span class="categorie">C</span></sub>(A,B)<br>
     initial objects are uniquely isomorph, i.e. each two initial objects A,B 
-    have a unique isomorphism A→B.</dd>
+    have a unique isomorphism A→B. 
+    <!-- free object iff initial object? -->
+  </dd>
   <dt id="terminal">terminal<br>
     object</dt>
   <dd><img class="annotatingDiagram" src="diagram/commutative/terminal.jpg" width="128" height="82"> 
