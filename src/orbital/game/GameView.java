@@ -531,13 +531,31 @@ public class GameView extends Applet {
      * @see #load(java.io.ObjectInputStream)
      */
     protected GameRules createGameRules(String gameRules) throws Exception {
-	return (GameRules) Class.forName(gameRules).newInstance();
+	return (GameRules) instantiate(gameRules);
     } 
     /**
      * @deprecated Use {@link #createGameRules(String)} instead.
      */
     protected GameRules getGameRules(String gameRules) throws Exception {
 	return createGameRules(gameRules);
+    }
+    /**
+     * @internal see javax.xml.parser.FactoryFinder#findClassLoader() for a version that - supposedly - runs under every JVM.
+     */
+    private static final Object instantiate(String className) throws Exception {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        if (cl == null)
+            cl = ClassLoader.getSystemClassLoader();
+
+        try {
+            return Class.forName(className, true, cl).newInstance();
+        } catch (ClassNotFoundException ex) {
+	    cl = GameView.class.getClassLoader();
+	    if (cl == null)
+		cl = ClassLoader.getSystemClassLoader();
+	    return Class.forName(className, true, cl).newInstance();
+	}
+	    
     }
 
     public void paint(Graphics g) {
@@ -562,9 +580,9 @@ public class GameView extends Applet {
      */
     public String[][] getParameterInfo() {
 	String[][] info = {
-	    {"gameName", "String", "name of the concrete Game"},
+	    {"gameName",  "String", "name of the concrete Game"},
 	    {"gameRules", "String", "parameter describing the GameRules. Per default the name of a class that implements GameRules."},
-	    {"player-X", "String", "the argument to pass when starting player number X. If left out, a human player will play X."}
+	    {"player-X",  "String", "the argument to pass when starting player number X. If left out, a human player will play X."}
 	};
 	return info;
     } 
