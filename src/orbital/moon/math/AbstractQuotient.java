@@ -170,6 +170,7 @@ class AbstractQuotient/*<M implements Arithmetic>*/ implements Quotient/*<M>*/, 
 		throw new ArithmeticException("not invertible since (" + representative() + ", " + m + ") are not coprime");
 	} else
 	    //@xxx should still implement better (with ELBA-gcd on Euclidean?) if we only get invertible modulo the modulus m. For example 7 has no inverse in Z but in Z<sub>16</sub>.
+	    //@todo are Groebner bases any help for inversion here?
 	    try {
 		return equivalenceClass(representative().inverse());
 	    }

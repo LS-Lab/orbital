@@ -17,7 +17,7 @@ package orbital.logic;
  * @see <a href="{@docRoot}/Patterns/Design/Composite.html">(unidirectional and multiple) Composite Pattern</a>
  * @todo really move to another package? Perhaps orbital.logic.sign, but this would be together with syntax part of orbital.logic.imp. ? Perhaps orbital.logic.Composite is not too bad for logically composite things.
  */
-public interface Composite /*<Compositor,Component>*/ {
+public interface Composite/*<Compositor,Component>*/ {
     /**
      * Get the outer compositor.
      * @return the outer compositor f that operates on the results of the inner component.

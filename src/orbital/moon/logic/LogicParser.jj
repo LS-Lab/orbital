@@ -414,7 +414,7 @@ public class LogicParser {
 		throw new NullPointerException("illegal type " + maxType + " for " + signifier);
 	    Symbol s = tryGetSymbol(signifier, maxType, variable, autoDeclare);
 	    if (s == null)
-		throw new IllegalArgumentException("unknown symbol: `" + signifier + "' : =<" + maxType + "\n in " + this);
+		throw new IllegalArgumentException("unknown symbol: `" + signifier + "' : =< " + maxType + "\n in " + this);
 	    else
 		return s;
 	}

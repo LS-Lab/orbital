@@ -257,6 +257,7 @@ abstract class ModernLogic implements Logic {
 	final String signifier = symbol.getSignifier();
 	assert signifier != null;
 
+	assert coreSignature() != null : "coreSignature() != null expected (which is not provided during class initializer constructions)";
 	// check if it's already predefined in the coreSignature()
 	if (coreSignature().contains(symbol)) {
 	    // fixed interpretation of core signature

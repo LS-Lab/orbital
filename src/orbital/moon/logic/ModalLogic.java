@@ -315,6 +315,7 @@ public class ModalLogic extends ClassicalLogic {
 		    Expression[] flatArguments = new Expression[a.length + t.length];
 		    System.arraycopy(a, 0, flatArguments, 0, a.length);
 		    System.arraycopy(t, 0, flatArguments, a.length, t.length);
+		    //@todo can we generalize to Type.on(Type)
 		    // concat argument types
 		    Type[] aType = asTypeArray(f.getType().domain());
 		    Type[] tType = asTypeArray(f.getType().codomain().domain());
@@ -391,7 +392,7 @@ public class ModalLogic extends ClassicalLogic {
 			new ContextualizeUnifyingMatcher(),
 		    }));
 		final Formula reducedF = functionalReduce((Formula) modalReduceTransform.apply(F));
-		logger.log(Level.FINE, "reduced modal logic formula {0} to typed classical logic formula {1}", new Object[] {F, reducedF});
+		logger.log(Level.FINEST, "reduced modal logic formula {0} to typed classical logic formula {1}", new Object[] {F, reducedF});
 		return reducedF;
 	    } catch (ParseException ex) {
 		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
@@ -425,6 +426,7 @@ public class ModalLogic extends ClassicalLogic {
 	    public boolean matches(Object term) {
 		if (term instanceof Formula) {
 		    // term has type =< ABSURD&rarr;TRUTH
+		    //@todo really use ((Formula)term).getType().subtypeOf(map(ABSURD,TRUTH))
 		    if (((Formula)term).getType().codomain().subtypeOf(Types.TRUTH))
 			if (term instanceof ModernFormula.AtomicSymbol)
 			    // only match predicates

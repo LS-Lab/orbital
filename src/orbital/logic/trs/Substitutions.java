@@ -577,6 +577,7 @@ public class Substitutions {
 		return getInstance(Collections.singletonList(createExactMatcher(x, t)));
 	    }
         } else {
+	    //@todo should we implicitly assume all collections as composed of the collection constructor with the elements? This would safe them all implementing Composite. However, collections which have a different way of composition then would have a little problem with our default treatment.
 	    // let t1=:f(x1,...xm), t2=:g(y1,...yn)
 	    if (!((t1 instanceof Composite) && (t2 instanceof Composite))) {
 		// catch case m=0 first, since it's no true decomposition then
