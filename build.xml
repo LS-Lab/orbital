@@ -43,7 +43,8 @@
 
         <property name="taglet" value="${lib}/build/taglet"/>
 
-        <property name="doc.dest" value="${doc}/api"/>
+        <property name="doc.dest" value="${dist}/doc"/>
+        <property name="doc.api.dest" value="${doc.dest}/api"/>
         <property name="build.tests" value="${basedir}/test"/>
         <property name="reports.tests" value="${basedir}/report/test"/>
 
@@ -264,7 +265,9 @@
     <target name="doc" depends="init, prepareEnvironment"
             description="generate javadoc (=> ./doc/api/)">
         <mkdir dir="${doc.dest}"/>
+        <mkdir dir="${doc.api.dest}"/>
         <delete includeEmptyDirs="true">
+            <fileset dir="${doc.api.dest}"/>
             <fileset dir="${doc.dest}"/>
         </delete>
 
@@ -275,7 +278,7 @@
 
         <javadoc maxmemory="256M"
                  failonerror="true"
-                 destdir="${doc.dest}"
+                 destdir="${doc.api.dest}"
                  author="true"
                  version="true"
                  use="true"
@@ -300,7 +303,7 @@
 	    </fileset>
 -->
 	    <!-- @xxx the following line unfortunately does not fix the problem that filesets won't link themselves -->
-	    <link href="${doc.dest}"/>
+	    <link href="${doc.api.dest}"/>
 
 	    <!-- -tag param -tag pre:mc:&quot;Preconditions:&quot; -tag post:mc:&quot;Postconditions:&quot; -tag return -tag throws -tag stereotype:a:&quot;Stereotype:&quot; -tag structure:t:&quot;Structure:&quot; -tag invariant:t:&quot;Invariants:&quot; -tag attribute:a:&quot;Attributes:&quot; -tag version -tag author -tag see -->
 	    <tag name="preconditions" scope="methods,constructors" description="Preconditions:"/>
@@ -324,21 +327,21 @@
 	    <link href="${javadoc.link.jdk}" offline="${javadoc.link.jdk.offline}" packagelistLoc="${javadoc.link.jdk.loc}"/>
         </javadoc>
 
-	<copy todir="${doc.dest}/Patterns">
+	<copy todir="${doc.api.dest}/Patterns">
 	    <fileset dir="${doc}/Patterns"/>
 	</copy>
 
-	<copy todir="${doc.dest}">
+	<copy todir="${doc.api.dest}">
 	    <fileset dir="${doc}"
 		includes="*.css, recommendations.*html, features.*html, templates.*html"/>
 	</copy>
 
         <delete>
 		<!-- @xxx does not remove CVS subdirs -->
-            <fileset dir="${doc.dest}" includes="**/CVS/*"/>
+            <fileset dir="${doc.api.dest}" includes="**/CVS/*"/>
         </delete>
 
-        <echo file="${doc.dest}/stylesheet.css" append="true">	
+        <echo file="${doc.api.dest}/stylesheet.css" append="true">	
 	@media screen { a:link, a:visited {color:blue} }
 	@import url("stylist.css");
 	</echo>
@@ -355,14 +358,14 @@
                   </uptodate>
              in the target called jjdoc.check
          -->
-        <mkdir dir="${doc.dest}/orbital/moon/logic/doc-files"/>
-	<exec dir="${doc.dest}/orbital/moon/logic" executable="cmd.exe" os="Windows 2000">
+        <mkdir dir="${doc.api.dest}/orbital/moon/logic/doc-files"/>
+	<exec dir="${doc.api.dest}/orbital/moon/logic" executable="cmd.exe" os="Windows 2000">
 	    <arg line="/c jjdoc -OUTPUT_FILE:doc-files/LogicParser_grammar.html ${sources}/orbital/moon/logic/LogicParser.jj"/>
 	</exec>
-	<exec dir="${doc.dest}/orbital/moon/logic" executable="jjdoc" os="Linux">
+	<exec dir="${doc.api.dest}/orbital/moon/logic" executable="jjdoc" os="Linux">
 	    <arg line="-OUTPUT_FILE:doc-files/LogicParser_grammar.html ${sources}/orbital/moon/logic/LogicParser.jj"/>
 	</exec>
-	<exec dir="${doc.dest}/orbital/moon/logic" executable="cmd.exe" os="Windows 2000">
+	<exec dir="${doc.api.dest}/orbital/moon/logic" executable="cmd.exe" os="Windows 2000">
 	    <arg line="/c &quot;copy /A doc-files\LogicParser_grammar.html + ${basedir}\src\orbital\moon\logic\doc-files\LogicParser_lexical.html doc-files\LogicParser_grammar.html&quot;"/>
 	</exec>
 	<!-- @todo cat input1 input2 > output for linux, but input1!=output -->
@@ -650,7 +653,7 @@
 	        <include name="recommendations.html"/>
 	    </zipfileset>
             <zipfileset dir="${dist}" includes="readme.html" prefix="Orbital-doc"/>
-            <zipfileset dir="${doc.dest}" prefix="Orbital-doc/api">
+            <zipfileset dir="${doc.dest}" prefix="Orbital-doc">
 	        <exclude name="**/CVS/*"/>
 	    </zipfileset>
             <zipfileset dir="${examples}" prefix="Orbital-doc/examples">
