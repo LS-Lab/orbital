@@ -201,17 +201,21 @@ public class Gameboard extends Canvas implements ImageObserver, Serializable {
 	Move moveToDst = findValidPath(field.getFigure(src), dst);
 	// would this be a correct move?
 	boolean validOperation = moveToDst != null;
+	Field nextField = null;
 	try {
-	    if (moveToDst != null)
-		validOperation &= ((Field)field.clone()).move(src, moveToDst);
+	    if (moveToDst != null) {
+		nextField = (Field)field.clone();
+		validOperation &= nextField.move(src, moveToDst);
+	    }
 	}
 	catch (CloneNotSupportedException cannotMoveHypothetically) {
-	    // cannot precheck user move
+	    // cannot precheck user move, nor predict result
 	    logger.log(Level.FINE, "cannot precheck user move {0}-->{1} because of {2}", new Object[] {src, dst, cannotMoveHypothetically});
 	}
 
 	if (validOperation)
-	    field.getFieldChangeMulticaster().movePerformed(new FieldChangeEvent(field, FieldChangeEvent.USER_ACTION | FieldChangeEvent.MOVE, new Option(field, dst, field.getFigure(src), moveToDst)));
+	    field.getFieldChangeMulticaster().movePerformed(new FieldChangeEvent(field, FieldChangeEvent.USER_ACTION | FieldChangeEvent.MOVE,
+										 new Option(nextField, dst, field.getFigure(src), moveToDst)));
 	else {	// nope, hmm, one of the users wasn't making too much sense of his move
 	    logger.log(Level.WARNING, "Wrong move {0}-->{1}", new Object[] {src, dst});
 	}
