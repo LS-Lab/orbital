@@ -39,6 +39,8 @@ public class ValuesTest extends check.TestCase {
 	random = new Random();
     }
 
+    //@todo add testInteroperableSizeAdd() and testInteroperableTypeAndSizeAdd()
+    
     public void testInteroperableTypeAdd() {
 	for (int k = 0; k < a.length; k++) {
 	    System.out.println(a[k].getClass() + " arithmetic combined with various types");
