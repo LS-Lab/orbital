@@ -22,11 +22,11 @@ import orbital.util.Utility;
  * @version 1.0, 2000/08/23
  * @author  Andr&eacute; Platzer
  * @note package-level protected to orbital.logic.functor
- * @note the design name of this class is orbital.logic.functor.Functor.Composite.Abstract and is a package-level protected inner class to Functor.Composite. This is not possible with Java, however, so I moved it here.
+ * @note the design name of this class is orbital.logic.functor.Functor.Composite.Abstract and is a package-level protected inner class to Functor.Composite. This is not possible with Java, however, so we moved it here.
  */
 abstract class AbstractCompositeFunctor implements Composite, Serializable {
     private static final long serialVersionUID = 4993561537088832042L;
-    // identical copy under @see orbital.math.functional.MathFunctor_CompositeFunctor and orbital.moon.logic.*Formula.*CompositeFormula and also @see orbital.moon.math.CoordinateCompositeFunction
+    // identical copy under @see orbital.math.functional.MathFunctor_CompositeFunctor and orbital.moon.logic.*Formula.*CompositeFormula and also @see orbital.moon.math.CoordinateCompositeFunction and @see orbital.logic.imp.Types.AbstractCompositeType
     /**
      * the current notation used for displaying this composite functor.
      * @serial
