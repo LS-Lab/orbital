@@ -53,6 +53,7 @@
         targets   - print out this target list
         all       - clean + fixCRLF + compile
         compile   - compile *.java (=> ./classes)
+	compilerCompile - compile *.jj
         clean     - remove all *.class
         clean.bak - remove all backup files *.bak, *~, .#*
         fixCRLF   - fix DOS linefeeds (CRLF)
@@ -67,15 +68,27 @@
             description="clean + fixCRLF + compile">
     </target>
  
-    <target name="compile" depends="init"
+    <target name="compile" depends="init, compilerCompile"
             description="compile *.java (=> ./classes)">
         <mkdir dir="${classes}"/>
  
         <javac srcdir="${sources}"
                destdir="${classes}"
-               debug="on">
+               debug="on"
+	       source="1.4"
+	       excludes="orbital/moon/aspects/**,orbital/moon/deprecated/**">
             <classpath refid="project.classpath"/>
         </javac>
+    </target>
+
+    <target name="compilerCompile" depends="init"
+            description="compile *.jj (=> ./classes)">
+        <mkdir dir="${classes}"/>
+ 
+        <javacc target="${sources}/orbital/moon/logic/LogicParser.jj" 
+		javacchome="d:/Sprachen/java/Utilities/JavaCC"/>
+        <javacc target="${sources}/orbital/moon/logic/MathParser.jj" 
+		javacchome="d:/Sprachen/java/Utilities/JavaCC"/>
     </target>
 
     <target name="clean" depends="init"
