@@ -22,7 +22,7 @@ public class RubiksCubeCreatePattern extends RubiksCube {
     /**
      * Up to which depth to produce entries in the pattern database.
      */
-    public static final int     MAX_STEPS = 8;
+    public static final int     MAX_STEPS = 9;
     /**
      * The database file where the Rubik's cube heuristics are stored.
      */
@@ -30,7 +30,7 @@ public class RubiksCubeCreatePattern extends RubiksCube {
 
     public static void main(String arg[]) throws Exception {
 	final Map patternDatabase = new HashOnlyMap();
-	System.out.println("Note that creating the pattern database file may take a while\ndepending upon the pattern depth (" + MAX_STEPS + ")");
+	System.out.println("Note that creating the pattern database file may take a while,\ndepending upon the pattern depth (" + MAX_STEPS + ")");
 	System.out.println("creating pattern database ...");
 
 	RubiksCubeCreatePattern problem = new RubiksCubeCreatePattern(RubiksCube.SIZE);
