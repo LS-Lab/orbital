@@ -56,7 +56,7 @@ import orbital.util.Utility;
  *    Where the transition relation satisfies the <dfn id="MarkovProperty">Markov property</dfn>
  *    for states,
  *    <center>
- *        <span class="Formula"><b>P</b>(S<sub>t+1</sub>=s'|S<sub>t</sub>,A<sub>t</sub>,S<sub>t-1</sub>,A<sub>t-1</sub>,&#8230;,S<sub>0</sub>,A<sub>0</sub>) = <b>P</b>(S<sub>t+1</sub>=s'|S<sub>t</sub>,A<sub>t</sub>)</span>
+ *        <span class="Formula"><b>P</b>(S<sub>t+1</sub>=s'|S<sub>t</sub>=s,A<sub>t</sub>=a,S<sub>t-1</sub>,A<sub>t-1</sub>,&#8230;,S<sub>0</sub>,A<sub>0</sub>) = <b>P</b>(S<sub>t+1</sub>=s'|S<sub>t</sub>=s,A<sub>t</sub>=a)</span>
  *    </center>
  *    i.e. the transition depends only on the current state s&isin;S and the action a&isin;A(s) taken,
  *    and is independent from the previous history.

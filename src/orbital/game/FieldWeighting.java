@@ -20,26 +20,25 @@ import orbital.util.Pair;
  * @version 0.9, 04/03/96
  * @author  Andr&eacute; Platzer
  */
-public
-class FieldWeighting extends ContainerWeighting {
-	//TODO: conform to GeneralSearchProblem.Option (including descendant classes)
-	public FieldWeighting(Selection sel, Function/*<Object, Number>*/ weighting) {
-		super(sel, weighting);
-	}
-	public FieldWeighting(Function/*<Object, Number>*/ weighting) {
-		super(weighting);
-	}
+public class FieldWeighting extends ContainerWeighting {
+    //TODO: conform to GeneralSearchProblem.Option (including descendant classes)
+    public FieldWeighting(Selection sel, Function/*<Object, Number>*/ weighting) {
+	super(sel, weighting);
+    }
+    public FieldWeighting(Function/*<Object, Number>*/ weighting) {
+	super(weighting);
+    }
 
-	/**
-	 * returns weight value of a Field by sum of its Figures excluding NaN.
-	 */
-	public Object/*>Number<*/ apply(Object arg) {
-		Field field = (Field) arg;
-		for (Iterator i = field.iterateNonEmpty(); i.hasNext(); ) {
-			Figure figure = (Figure) i.next();
-			super.apply(new FigureWeighting.Argument(field, figure));
-		} 
-		evaluate();
-		return selection.getWeight();
+    /**
+     * returns weight value of a Field by sum of its Figures excluding NaN.
+     */
+    public Object/*>Number<*/ apply(Object arg) {
+	Field field = (Field) arg;
+	for (Iterator i = field.iterateNonEmpty(); i.hasNext(); ) {
+	    Figure figure = (Figure) i.next();
+	    super.apply(new FigureWeighting.Argument(field, figure));
 	} 
+	evaluate();
+	return selection.getWeight();
+    } 
 }

@@ -160,6 +160,7 @@ public abstract class GeneralBoundingSearch extends GeneralSearch implements Eva
 	    if (getProblem().isSolution(node)) {
 		Object/*>S<*/ solution = processSolution(node);
 		Real accumulatedCost = (Real/*__*/) g.apply(solution);
+		// @link PackageUtilities#min
 		if (bestSolution == null || accumulatedCost.compareTo(bestAccumulatedCost) < 0) {
 		    bestSolution = solution;
 		    bestAccumulatedCost = accumulatedCost;

@@ -237,6 +237,34 @@ public final class Utility {
 	return true;
     }
 
+    // multi-indices
+	
+    /**
+     * Get the element in the (possibly multi-dimensional) array <code>a</code> specified by the part specification.
+     * @param partSpecification the part specification <code>p</code> (multi-index into the multi-dimensional array <code>a</code>).
+     * @pre partSpecification.length is not lower than the number of dimensions for partialSolutions.
+     * @return a[p[0]][p[1]]...[p[p.length-1]]
+     */
+    public static Object getPart(Object[] a, int[] partSpecification) {
+	Object o = a;
+	for (int i = 0; i < partSpecification.length; i++)
+	    o = ((Object[]) o)[partSpecification[i]];
+	return o;
+    } 
+
+    /**
+     * Set the element in the (possibly multi-dimensional) array <code>a</code> specified by the part specification.
+     * @param partSpecification the part specification <code>p</code> (multi-index into the multi-dimensional array <code>a</code>).
+     * @pre partSpecification.length is not lower than the number of dimensions for partialSolutions.
+     * @return a[p[0]][p[1]]...[p[p.length-1]]
+     */
+    public static void setPart(Object[] a, int[] partSpecification, Object value) {
+	Object[] o = a;
+	for (int i = 0; i < partSpecification.length - 1; i++)
+	    o = (Object[]) o[partSpecification[i]];
+	o[partSpecification[partSpecification.length - 1]] = value;
+    } 
+
     // diverse
 
     /**

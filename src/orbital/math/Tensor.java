@@ -64,6 +64,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      * Of course, this method only has a meaning for tensors of free modules like vector spaces.
      * </p>
      * @pre valid(i) := (i.length == rank() &and; &forall;k 0&le;i[k]&le;dimensions()[k]-1)
+     * @internal see orbital.util.Utility#get(Object[],int[])
      */
     Arithmetic/*>R<*/ get(int[] i);
 

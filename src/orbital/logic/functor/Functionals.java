@@ -1169,7 +1169,7 @@ public class Functionals {
     } 
 
     /**
-     * Swaps the two arguments of a BinaryPredicate.
+     * Swaps the two arguments of a BinaryPredicate (inverse).
      * <p>
      * swap: &weierp;(A<sub>1</sub>&times;A<sub>2</sub>)&rarr;&weierp;(A<sub>2</sub>&times;A<sub>1</sub>); P&#8614;P<sup>&harr;</sup>.
      * </p>

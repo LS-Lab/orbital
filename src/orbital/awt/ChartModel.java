@@ -333,8 +333,9 @@ public class ChartModel implements Serializable {
 			max = max.insert(A.get(0, min.dimension()));
 
 		// adapt minimum and maximum values
+		//@todo rewrite pure functional
 		for (int c = 0; c < A.dimension().width; c++) {
-		    Vector	   col = A.getColumn(c);
+		    Vector     col = A.getColumn(c);
 		    Arithmetic m = (Arithmetic) Operations.inf.apply(col);
 		    if (((Comparable) m).compareTo(min.get(c)) < 0)
 			min.set(c, m);

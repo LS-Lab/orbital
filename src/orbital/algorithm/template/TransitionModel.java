@@ -49,26 +49,25 @@ import java.util.Iterator;
  *        <div>&tau;(a)(s,s&#697;) := 1 &#8260; |{s&#697;&isin;S &brvbar; T(s,a,s&#697;)}| iff T(s,a,s&#697;)</div>
  *      </li>
  *      <li>
- *        stochastic transition probabilities P<sub>a</sub>:S&rarr;[0,1]; s&#697;&#8614;P<sub>a</sub>(s&#697;|s) := <b>P</b>(s&#697;|s,a) := <b>P</b>(s<sub>t+1</sub>=s&#697;|s<sub>t</sub>=s,a<sub>t</sub>=a)
- *        = P<sub>a</sub>(s&#697;|s) = P<sub>a</sub>(s&#697; &cap; s) / P<sub>a</sub>(s)
+ *        stochastic transition probabilities P<sub>a</sub>:S&rarr;[0,1]; s&#697;&#8614;P<sub>a</sub>(s&#697;|s) := <b>P</b>(s&#697;|s,a) := <b>P</b>(S<sub>t+1</sub>=s&#697;|S<sub>t</sub>=s,A<sub>t</sub>=a)
  *        denoting the probability of reaching state s&#697;&isin;S on taking the action a&isin;A(s) in state s&isin;S.
  *        The function P is written this way in order to remind that it has a specific probability distribution.
  *        Another possibility would be to use a combined function
- *        <div>t:S&times;A(s)&rarr;&weierp;(S&times;[0,1]); (s,a)&#8614;<big>{</big>&lang;s&#697;,P<sub>a</sub>(s&#697;|s)&rang; &brvbar; s&#697;&isin;S<big>}</big></div>
+ *        <div>t:S&times;A(s)&rarr;&weierp;(S&times;[0,1]); (s,a)&#8614;<big>{</big>&lang;s&#697;,<b>P</b>(s&#697;|s,a)&rang; &brvbar; s&#697;&isin;S<big>}</big></div>
  *        which is more closely related to implementation issues (and thus used here),
  *        but usually considered inconvenient for the pure purpose of notation.
  *        Stochastic transitions provide the most general case of these types of transitions.
  *        <div>&tau;(a)(s,s&#697;) := <b>P</b>(s&#697;|s,a)</div>
  *      </li>
  *    </ul>
- *    As notation for a transition from s&isin;S to s&#697;&isin;S under the
+ *    As a notation for a transition from s&isin;S to s&#697;&isin;S under the
  *    action a&isin;A(s) with transition probability p&isin;[0,1] we sometimes use
  *    <div style="text-align: center"> <img src="doc-files/transition_notation.png" /> <!-- s &rarr;<sup>p</<sup><sub>a</sub> s&#697;--> </div>
  *    here.
  *  </li>
  * </ul>
  * <p>
- * &tau;(a&sdot;b) = &tau;(a)&#8728;&tau;(b) = <big>(</big>(s,s&#697;) &#8614; <b>P</b>(&#8897;<sub>z&isin;S</sub>(s<sub>t+2</sub>=s&#697;&and;s<sub>t+1</sub>=z) | a<sub>t+1</sub>=b,s<sub>t</sub>=s,a<sub>t</sub>=a)<big>)</big>
+ * &tau;(a&sdot;b) = &tau;(a)&#8728;&tau;(b) = <big>(</big>(s,s&#697;) &#8614; <b>P</b>(&#8897;<sub>z&isin;S</sub>(S<sub>t+2</sub>=s&#697;&and;S<sub>t+1</sub>=z) | A<sub>t+1</sub>=b,S<sub>t</sub>=s,A<sub>t</sub>=a)<big>)</big>
  * = <big>(</big>(s,s&#697;) &#8614; &sum;<sub>z&isin;S</sub> &tau;(a)(s,z)*&tau;(b)(z,s&#697;)<big>)</big>
  * The last equation is true if the events are independent, f.ex. for a transition model
  * satisfying the <a href="MarkovDecisionProblem.html#MarkovProperty">Markov property</a>
@@ -78,7 +77,7 @@ import java.util.Iterator;
  * &tau;(a<sup>*</sup>) = &tau;(a)<sup>&infin;</sup> is the transitive closure with a fixed action.
  * </p>
  * <p>
- * A non-deterministic transition model is a Semi-Thue system with CH3 acception rules
+ * A non-deterministic transition model is a semi-Thue system with CH3 acception rules
  * (more precise: reductions).</p>
  * <p>
  * Note that you can as well use this interface in its raw version (i.e. without instantiating

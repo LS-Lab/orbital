@@ -100,7 +100,7 @@ public interface Complex extends Scalar {
     /**
      * Returns the complex conjugated <span class="conjugate">z</span> = z<sup>*</sup> = z'.
      * <p>
-     * Conjugation is an involutorical field-automorphism that is identical on <b>R</b>.</p>
+     * Conjugation is an involutive field-automorphism that is identical on <b>R</b>.</p>
      * @return the complex number a - <b>i</b>*b.
      */
     Complex conjugate();

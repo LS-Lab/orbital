@@ -177,7 +177,7 @@ import orbital.util.Utility;
  *   <tr>
  *     <td>(inv)</td>
  *     <td>~ ~ a = a</td>
- *     <td>&quot;involutorical&quot; (optional)</td>
+ *     <td>&quot;involutive&quot; (optional)</td>
  *   </tr>
  *   <tr>
  *     <td>(C)</td>

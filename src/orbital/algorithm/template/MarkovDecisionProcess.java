@@ -55,14 +55,15 @@ import java.util.logging.Level;
  *   greedy policy with respect to an evaluation function f:S&rarr;<b>R</b>.
  *   </dd>
  * </dl>
- * A solution &pi;<sup>*</sup> is optimal if it has minimum <em>expected</em> cost,
+ * A solution &pi;<sup>*</sup> is optimal if it has minimum <em>expected</em> cost
+ * (alias maximum expected utility),
  * i.e. f<sub>&pi;<sup>*</sup></sub> = f<sup>*</sup> &and; &pi;<sub>f<sup>*</sup></sub> = &pi;<sup>*</sup>.
  * It is
  * <blockquote>
  *     f<sup>*</sup>:S&rarr;<b>R</b> is the optimal evaluation function &hArr;
  *     <span class="Formula">f<sup>*</sup>(s) = min<sub>a&isin;A(s)</sub> Q<sub>f<sup>*</sup></sub>(s,a)</span>
  * </blockquote>
- * Which is one form of the Bellman Optimality Equation.
+ * Which is one form of the Bellman optimality equation.
  * </p>
  * <p>
  * By the way, a minor generalization is sometimes used that would change a policy to be a
@@ -245,24 +246,8 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
          *  &and; Q = min<sub>a'&isin;A(s)</sub> Q(s,a').
          */
         protected orbital.util.Pair/*<Object, Number>*/ maximumExpectedUtility(BinaryFunction Q, Object state) {
-	    Iterator actions = getProblem().actions(state);
-
-	    // search minimal expected cost applicable action
-	    // best (minimum) action
-	    Object action = null;
-	    // expected cost of best action (minimal)
-	    Double expectedCost = new Double(Double.POSITIVE_INFINITY);
-	    do {
-		final Object a = actions.next();
-		final Double cost = (Double) Q.apply(state, a);
-		if (cost.compareTo(expectedCost) < 0) {
-		    expectedCost = cost;
-		    action = a;
-		}
-	    } while (actions.hasNext());
-
-	    // return the maximum expected utility action along with its expected cost
-	    return new Pair/*<Object, Double>*/(action, expectedCost);
+	    // search for minimal expected cost applicable action
+	    return PackageUtilities.min(Functionals.bindLeft(Q, state), getProblem().actions(state));
         }
 
     	/**
