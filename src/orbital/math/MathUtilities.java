@@ -618,7 +618,7 @@ public final class MathUtilities {
 			return o.toString();
 		    StringBuffer sb = new StringBuffer();
 		    for (int i = 0; i < Array.getLength(o); i++)
-			sb.append((i == 0 ? "" : ",") + Array.get(o, i));
+			sb.append((i == 0 ? "" : ", ") + Array.get(o, i));
 		    return "(" + sb.toString() + ")";
 		}
 	    else
