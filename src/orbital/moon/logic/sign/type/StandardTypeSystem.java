@@ -322,6 +322,7 @@ public class StandardTypeSystem implements TypeSystem {
 	 * Higher values are for higher priorities.
 	 * This method induces a total order on the individual comparison rules and decides
 	 * which rule is applied.
+	 * This way we achieve a prioritized rule-based system for comparison rules.
 	 * @postconditions RES==OLD(RES) && RES>=0
 	 */
 	protected abstract int comparisonPriority();
@@ -330,7 +331,7 @@ public class StandardTypeSystem implements TypeSystem {
 	 * Called from {@link StandardTypeSystem#subtypeOrder} with both orders of arguments.
 	 * by types how do not always know themselves
 	 * whether they are a subtype or supertype of another type unknown to them.
-	 * @todo adapt documentation to actual implementation
+	 * @xxx adapt documentation to actual implementation
 	 */
 	protected abstract int compareToSemiImpl(Type b);
 
