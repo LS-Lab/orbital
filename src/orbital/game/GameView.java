@@ -70,12 +70,12 @@ public class GameView extends Applet {
     public static void main(String arg[]) throws Exception {
 	if (arg.length == 0 || orbital.signe.isHelpRequest(arg)) {
 	    System.out.println(usage);
-	    System.out.println(AppletFrame.info(new Game()));
+	    System.out.println(AppletFrame.info(new GameView()));
 	    return;
 	} 
-    	AppletFrame.showApplet(new Game(), "Game Application", arg);
+    	AppletFrame.showApplet(new GameView(), "Game Application", arg);
     }
-    public static final String usage = "usage: " + Game.class + " (<parameter>=<value>)*" + System.getProperty("line.separator") + "\tThe game applet has access to the values assigned to the parameters.";
+    public static final String usage = "usage: " + GameView.class + " (<parameter>=<value>)*" + System.getProperty("line.separator") + "\tThe game applet has access to the values assigned to the parameters.";
 
     /**
      * Program resources.
@@ -157,7 +157,7 @@ public class GameView extends Applet {
 	    });
     	actions.put("load", new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
-		    FileDialog dlg = new FileDialog(UIUtilities.getParentalFrame(Game.this), getResources().getString("dialog.game.load.title"), FileDialog.LOAD);
+		    FileDialog dlg = new FileDialog(UIUtilities.getParentalFrame(GameView.this), getResources().getString("dialog.game.load.title"), FileDialog.LOAD);
 		    dlg.setVisible(true);
 		    String file = dlg.getFile();
 		    if (file == null)
@@ -178,7 +178,7 @@ public class GameView extends Applet {
 	    });
     	actions.put("save", new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
-		    FileDialog dlg = new FileDialog(UIUtilities.getParentalFrame(Game.this), getResources().getString("dialog.game.save.title"), FileDialog.SAVE);
+		    FileDialog dlg = new FileDialog(UIUtilities.getParentalFrame(GameView.this), getResources().getString("dialog.game.save.title"), FileDialog.SAVE);
 		    dlg.setVisible(true);
 		    String file = dlg.getFile();
 		    if (file == null)
@@ -281,7 +281,7 @@ public class GameView extends Applet {
 		try {
 		    return resources = ResourceBundle.getBundle("orbital.resources.Game");
 		} catch (MissingResourceException missing) {
-		    log("missing resource: An error occured initializing " + Game.class.getName() + ".\nThe package seems corrupt or a resource is missing, aborting\n" + missing);
+		    log("missing resource: An error occured initializing " + GameView.class.getName() + ".\nThe package seems corrupt or a resource is missing, aborting\n" + missing);
 		    //JOptionPane.showMessageDialog(null, "An error occured initializing " + Game.class.getName() + ".\nThe package seems corrupt or a resource is missing, aborting\n" + missing, "Error", JOptionPane.ERROR_MESSAGE);
 		    throw (MissingResourceException) new MissingResourceException(trial.getMessage() + " AND " + missing.getMessage(), missing.getClassName(), missing.getKey()).initCause(missing);
 		} 
@@ -362,7 +362,15 @@ public class GameView extends Applet {
      */
     public void start() {
 	getGamemaster().start();
-	board.setField(getGamemaster().getField());
+	Field field = getGamemaster().getField();
+	board.setField(field);
+	field.addFieldChangeListener(new FieldChangeAdapter() {
+		public void stateChanged(FieldChangeEvent evt) {
+		    //@todo assert evt.getField() == getGamemaster().getField() : "we have only registered ourselves to our field";
+		    if (evt.getType() == FieldChangeEvent.END_OF_GAME)
+			displayWinner(((Integer) evt.getChangeInfo()).intValue());
+		}
+	    });
 	repaint();
 	showStatus(getResources().getString("statusbar.game.start"));
     } 
@@ -504,21 +512,6 @@ public class GameView extends Applet {
 
     public void paint(Graphics g) {
 	paintComponents(g);
-    } 
-
-    /**
-     * Handles Event "turnDone" raised whenever a user finished his turn.
-     * Then all AIs are requested for their actions, if any.
-     * @see #run()
-     * @internal see #turn()
-     */
-    public boolean action(Event evt, Object arg) {
-	if ("turnDone".equals(arg)) {
-	    //repaint();
-	    getGamemaster().turn();
-	    return true;
-	} 
-	return super.action(evt, arg);
     } 
 
     private void log(Object msg) {
