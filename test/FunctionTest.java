@@ -17,7 +17,8 @@ import orbital.util.*;
  */
 public class FunctionTest {
     private static final int  TEST_REPETITION = 20;
-    private static final Real tolerance = Values.valueOf(1e-10);
+    private static final Values vf = Values.getDefaultInstance();
+    private static final Real tolerance = vf.valueOf(1e-10);
 	
     // test type bit mask constants
     public static final int   TYPE_INTEGER = 1;
@@ -151,7 +152,7 @@ public class FunctionTest {
 	    // Integer value test
 	    /*for (int i = 0; i < TEST_REPETITION; i++) {
 	      final int	  x = integerArgument(min,max);
-	      final Integer jx = Values.valueOf(x);
+	      final Integer jx = vf.valueOf(x);
 	      compareResults(mFunction, jFunction, jx);
 	      final String  mFunctionCall = mFunction + "[" + x + "]";
 	      final String  jFunctionCall = mFunction + "[" + x + "]";
@@ -162,7 +163,7 @@ public class FunctionTest {
 	      System.out.println(mresult);
 	      final Real jresult = (Real) jFunction.apply(jx);
 	      System.out.println(jFunctionCall + " = " + jresult);
-	      if (!jresult.equals(Values.valueOf(mresult), tolerance))
+	      if (!jresult.equals(vf.valueOf(mresult), tolerance))
 	      compareResults(mFunction, jFunction, jx, false);
 	      else if (Math.abs(jresult.doubleValue() - mresult) >= tolerance.doubleValue())
 	      compareResults(mFunction, jFunction, jx, false);
@@ -174,7 +175,7 @@ public class FunctionTest {
 	    for (int i = 0; i < TEST_REPETITION; i++)
 		try {
 		    final double x = realArgument(min,max);
-		    final Real	 jx = Values.valueOf(x);
+		    final Real	 jx = vf.valueOf(x);
 		    final String mFunctionCall = mFunction + "[" + x + "]";
 		    final String jFunctionCall = jFunction + "[" + jx + "]";
 		    ml.evaluate(mFunctionCall);
@@ -184,7 +185,7 @@ public class FunctionTest {
 		    System.out.println(mresult);
 		    final Real jresult = (Real) jFunction.apply(jx);
 		    System.out.println(jFunctionCall + " = " + jresult);
-		    if (!jresult.equals(Values.valueOf(mresult), tolerance))
+		    if (!jresult.equals(vf.valueOf(mresult), tolerance))
 			compareResults(mFunction, jFunction, jx, false);
 		    else if (Math.abs(jresult.doubleValue() - mresult) >= tolerance.doubleValue())
 			compareResults(mFunction, jFunction, jx, false);
@@ -201,7 +202,7 @@ public class FunctionTest {
 		try {
 		    final double  x = realArgument(min,max);
 		    final double  y = realArgument(min,max);
-		    final Complex jx = Values.complex(x, y);
+		    final Complex jx = vf.complex(x, y);
 		    final String  mFunctionCall = mFunction + "[" + x + " + I*" + y + "]";
 		    final String  jFunctionCall = jFunction + "[" + jx + "]";
 		    ml.evaluate(mFunctionCall);
@@ -250,8 +251,8 @@ public class FunctionTest {
 		try {
 		    final int	  x = integerArgument((int)min,(int)max);
 		    final int	  y = integerArgument((int)min,(int)max);
-		    final Integer jx = Values.valueOf((long)x);
-		    final Integer jy = Values.valueOf((long)y);
+		    final Integer jx = vf.valueOf((long)x);
+		    final Integer jy = vf.valueOf((long)y);
 		    final String  mFunctionCall = mFunction + "[" + x + "," + y + "]";
 		    final String  jFunctionCall = jFunction + "[" + jx + "," + jy + "]";
 		    ml.evaluate(mFunctionCall);
@@ -261,7 +262,7 @@ public class FunctionTest {
 		    System.out.println(mresult);
 		    final Real jresult = (Real) jFunction.apply(jx, jy);
 		    System.out.println(jFunctionCall + " = " + jresult);
-		    if (!jresult.equals(Values.valueOf(mresult), tolerance))
+		    if (!jresult.equals(vf.valueOf(mresult), tolerance))
 			compareResults(mFunction, jFunction, jx, jy, false);
 		    else if (Math.abs(jresult.doubleValue() - mresult) >= tolerance.doubleValue())
 			compareResults(mFunction, jFunction, jx, jy, false);
@@ -278,8 +279,8 @@ public class FunctionTest {
 		try {
 		    final double x = realArgument(min,max);
 		    final double y = realArgument(min,max);
-		    final Real	 jx = Values.valueOf(x);
-		    final Real	 jy = Values.valueOf(y);
+		    final Real	 jx = vf.valueOf(x);
+		    final Real	 jy = vf.valueOf(y);
 		    final String  mFunctionCall = mFunction + "[" + x + "," + y + "]";
 		    final String  jFunctionCall = jFunction + "[" + jx + "," + jy + "]";
 		    ml.evaluate(mFunctionCall);
@@ -289,7 +290,7 @@ public class FunctionTest {
 		    System.out.println(mresult);
 		    final Real jresult = (Real) jFunction.apply(jx, jy);
 		    System.out.println(jFunctionCall + " = " + jresult);
-		    if (!jresult.equals(Values.valueOf(mresult), tolerance))
+		    if (!jresult.equals(vf.valueOf(mresult), tolerance))
 			compareResults(mFunction, jFunction, jx, jy, false);
 		    else if (Math.abs(jresult.doubleValue() - mresult) >= tolerance.doubleValue())
 			compareResults(mFunction, jFunction, jx, jy, false);
@@ -308,8 +309,8 @@ public class FunctionTest {
 		    final double  x2 = realArgument(min,max);
 		    final double  y1 = realArgument(min,max);
 		    final double  y2 = realArgument(min,max);
-		    final Complex jx = Values.complex(x1, x2);
-		    final Complex jy = Values.complex(y1, y2);
+		    final Complex jx = vf.complex(x1, x2);
+		    final Complex jy = vf.complex(y1, y2);
 		    final String  mFunctionCall = mFunction + "[" + x1 + " + I*" + x2 + "," + y1 + " + I*" + y2 + "]";
 		    final String  jFunctionCall = jFunction + "[" + jx + "," + jy + "]";
 		    ml.evaluate(mFunctionCall);
@@ -336,7 +337,7 @@ public class FunctionTest {
 		    ml.evaluate(mFunctionCall);
 		    ml.waitForAnswer();
 		    System.out.print(mFunctionCall + " = ");
-		    final Vector mresult = Values.valueOf(ComplexAdapter.unconvert((ComplexAdapter[])ml.getComplexArray1()));
+		    final Vector mresult = vf.valueOf(ComplexAdapter.unconvert((ComplexAdapter[])ml.getComplexArray1()));
 		    System.out.println(mresult);
 		    final Vector jresult = (Vector) jFunction.apply(jx, jy);
 		    System.out.println(jFunctionCall + " = " + jresult);
@@ -358,7 +359,7 @@ public class FunctionTest {
 		    ml.evaluate(mFunctionCall);
 		    ml.waitForAnswer();
 		    System.out.print(mFunctionCall + " = ");
-		    final Matrix mresult = Values.valueOf(ComplexAdapter.unconvert((ComplexAdapter[][])ml.getComplexArray2()));
+		    final Matrix mresult = vf.valueOf(ComplexAdapter.unconvert((ComplexAdapter[][])ml.getComplexArray2()));
 		    System.out.println(mresult);
 		    final Matrix jresult = (Matrix) jFunction.apply(jx, jy);
 		    System.out.println(jFunctionCall + " = " + jresult);
@@ -403,18 +404,18 @@ public class FunctionTest {
     }
     private Scalar randomArgument(double min, double max, int testType) {
 	if ((testType & TYPE_INTEGER) != 0 && Utility.flip(random, 0.4))
-	    return Values.valueOf(integerArgument((int)min, (int)max));
+	    return vf.valueOf(integerArgument((int)min, (int)max));
 	else if ((testType & TYPE_COMPLEX) != 0 && Utility.flip(random, 0.4))
-	    return Values.complex(realArgument(min, max), realArgument(min, max));
+	    return vf.complex(realArgument(min, max), realArgument(min, max));
 	else
-	    return Values.valueOf(realArgument(min, max));
+	    return vf.valueOf(realArgument(min, max));
     }
     private Matrix matrixArgument(double min, double max, int testType) {
 	Dimension dim = new Dimension(2, 2);
-	Matrix x = Values.getInstance(dim);
+	Matrix x = vf.newInstance(dim);
 	if (testType == TYPE_REAL && Utility.flip(random, 0.5))
 	    // randomly switch to RMatrix
-	    x = Values.valueOf(new double[dim.height][dim.width]);
+	    x = vf.valueOf(new double[dim.height][dim.width]);
 	for (int i = 0; i < dim.height; i++)
 	    for (int j = 0; j < dim.width; j++)
 		x.set(i,j, randomArgument(min, max, testType));
@@ -422,10 +423,10 @@ public class FunctionTest {
     }
     private Vector vectorArgument(double min, double max, int testType) {
 	int dim = 2;
-	Vector x = Values.getInstance(dim);
+	Vector x = vf.newInstance(dim);
 	if (testType == TYPE_REAL && Utility.flip(random, 0.5))
 	    // randomly switch to RVector
-	    x = Values.valueOf(new double[dim]);
+	    x = vf.valueOf(new double[dim]);
 	for (int i = 0; i < dim; i++)
 	    x.set(i, randomArgument(min, max, testType));
 	return x;
@@ -438,7 +439,7 @@ public class FunctionTest {
     public static class ComplexAdapter {
 	private Complex value;
 	public ComplexAdapter(double re, double im) {
-	    value = Values.complex(re,im);
+	    value = vf.complex(re,im);
 	}
 		
 	public static final Complex[] unconvert(ComplexAdapter[] v) {
