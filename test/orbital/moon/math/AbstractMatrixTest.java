@@ -197,6 +197,7 @@ public class AbstractMatrixTest extends check.TestCase {
     public void testConjugationInvariance() {
 	final double MIN = -40;
 	final double MAX = 40;
+	//@internal could also use RepeatedTest
 	for (int i = 0; i < TEST_REPETITION; i++) {
 	    int dim = integerArgument(1, 6).intValue();
 	    //@todo how to construct other invertible matrices (Basisergänzungssatz?)
