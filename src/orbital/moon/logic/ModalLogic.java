@@ -62,6 +62,7 @@ import java.util.logging.Level;
  *  |- ~A -> []~[]A      of B
  */
 public class ModalLogic extends ClassicalLogic {
+    private static final Logger logger = Logger.getLogger(ModernLogic.class.getName());
     private static final TypeSystem typeSystem = Types.getDefault();
     /**
      * tool-main
@@ -84,8 +85,6 @@ public class ModalLogic extends ClassicalLogic {
 	}
     } 
     public static final String usage = "interpret modal logic";
-
-    private static final Logger logger = Logger.getLogger(ModalLogic.class.getName());
 
     static {
 	//@xxx we don't pass them so disable
@@ -150,15 +149,16 @@ public class ModalLogic extends ClassicalLogic {
 		final Inference classicalInference = classical.inference();
 		//@todo should add sorted type-safety information Kripke etc.
 		Formula[] Bred = new Formula[B.length];
-		System.err.print("  ");
 		for (int i = 0; i < B.length; i++) {
-		    Bred[i] = ClassicalLogic.Utilities.existentialClosure(Utilities.modalReduce(B[i]));
-		    if (i > 0 )
-			System.err.print(" , ");
-		    System.err.print(Bred[i]);
+		    Bred[i] = ClassicalLogic.Utilities.constantClosure(Utilities.modalReduce(B[i]));
 		}
-		Formula Dred = ClassicalLogic.Utilities.existentialClosure(Utilities.modalReduce(D));
-		System.err.println("  |-<red> " + Dred);
+		Formula Dred = ClassicalLogic.Utilities.constantClosure(Utilities.modalReduce(D));
+		if (logger.isLoggable(Level.FINER)) {
+		    logger.log(Level.FINER, "{0}  |-<red> {1}", new Object[] {
+			Utility.format(" , ", Bred),
+			Dred
+		    });
+		}
 		return classicalInference.infer(Bred, Dred);
 	    }
 	    public boolean isSound() {
