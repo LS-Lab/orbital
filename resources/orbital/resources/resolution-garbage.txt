@@ -2,3 +2,9 @@
 # contains false conjectures
 #
 $x p(x) |= q(a) | ~p(a)
+p(x) |= q(x)
+some x p(x) |= all x p(x)
+q(x), p(x)->q(x) |= p(x)
+~(a->b) == ~a&b
+##@xxx no time (some x p(x)) & (some x q(x)) |= some x (p(x)&q(x))
+##@xxx no time all x (p(x) | q(x)) |= (all x p(x)) | (all x q(x))
