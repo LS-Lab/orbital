@@ -70,6 +70,7 @@ import java.util.logging.Level;
  * @see ExpressionSyntax#createExpression(String)
  * @see #parseFormula()
  * @see #parseFormulas()
+ * @see #parseTerm()
  * @internal This is an SLL(1)=LL(1) syntactic parser extended with local LL(k) lookahead
  *  and a hand-coded LAG(1) attributed grammar for semantic analysis.
  * @internal note that all this nested lookahead with a lot of backtracking kills performance.

@@ -106,6 +106,7 @@ public interface ExpressionSyntax extends ExpressionBuilder {
      *  except when the parser underlying this method's implementation had errors.
      * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      * @note could just as well be renamed to parseExpression(String)
+     * @todo should we add an argument Type expectedType such that we can parse terms with createExpression(s,TypeSystem.object), and formulas with createExpression(s,TypeSystem.boolean)?
      */
     Expression createExpression(String expression) throws ParseException, TypeException, IllegalArgumentException;
 }

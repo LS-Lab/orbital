@@ -161,7 +161,7 @@ public class Moving extends Position {
 	    break;
 	case Move.Jumping:
 	    break;
-	case Move.Sloping: /* //TODO next char will not count as a step */
+	case Move.Sloping: /* //@TODO next char will not count as a step */
 	    break;
 	case Move.Beating:
 	    break;

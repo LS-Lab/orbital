@@ -246,6 +246,7 @@ abstract class AbstractRational extends AbstractReal implements Rational {
 	    }
 	    // cancel
 	    int d = MathUtilities.gcd(p, q);
+	    //@todo somehow use cofactors instead of division by d
 	    return d != 1
 		? new RationalImpl(p / d, q / d)
 		: changed
