@@ -25,6 +25,7 @@ import java.util.logging.Level;
  * @internal min-max trees with compact values in [0,1] are and-or trees with fuzzy logic operators.
  * @todo generalize? implement a general interface?
  * @todo could optimize calculation to spend some memory for reuse of the last move's search tree
+ * @todo flexibilize computation such that not only move sequences Black,White,Black,White,... but also Black,Black,White,Black,White,White according to field.getTurn()
  */
 public class AlphaBetaPruning extends AdversarySearch {
     private static final Logger logger = Logger.getLogger(AlphaBetaPruning.class.getName());
