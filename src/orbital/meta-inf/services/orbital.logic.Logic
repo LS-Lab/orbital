@@ -1,2 +1,0 @@
-orbital.moon.logic.ClassicalLogic		# classical logic service provider
-orbital.moon.logic.FuzzyLogic			# fuzzy logic service provider without inference yet

@@ -1,3 +1,0 @@
-Sweep / Scan
-
-Imperative algorithm that uses a Sweep-Status-Structure of objects that are sleeping, active and retired.
