@@ -34,7 +34,7 @@ import java.util.logging.Level;
  * @version 1.0, 11/07/98
  * @author  Andr&eacute; Platzer
  * @structure composite bidirectional field: Figure[][]
- * @invariant sub classes support no-arg constructor && isRectangular(field).
+ * @invariant sub classes support nullary constructor && isRectangular(field).
  * @see orbital.robotic.Table
  */
 public class Field implements Serializable {
@@ -66,7 +66,7 @@ public class Field implements Serializable {
      * @return		a clone of this Object with the same type, and a deep clone field.
      * @post RES.getClass() == getClass() && "RES.field.equals(this.field)" && RES.field != field
      * @throws	CloneNotSupportedException Object explicitly does not
-     * want to be cloned, or does not support a no-arg constructor.
+     * want to be cloned, or does not support a nullary constructor.
      */
     public Object clone() throws CloneNotSupportedException {
 	try {
@@ -87,10 +87,10 @@ public class Field implements Serializable {
 	    return f;
     	}
     	catch (InstantiationException ass) {
-	    throw (CloneNotSupportedException) new CloneNotSupportedException("invariant: sub classes of " + Field.class + " must support no-arg constructor for cloning").initCause(ass);
+	    throw (CloneNotSupportedException) new CloneNotSupportedException("invariant: sub classes of " + Field.class + " must support nullary constructor for cloning").initCause(ass);
     	}
     	catch (IllegalAccessException ass) {
-	    throw (CloneNotSupportedException) new CloneNotSupportedException("invariant: sub classes of " + Field.class + " must support no-arg constructor for cloning").initCause(ass);
+	    throw (CloneNotSupportedException) new CloneNotSupportedException("invariant: sub classes of " + Field.class + " must support nullary constructor for cloning").initCause(ass);
     	}
     } 
 
@@ -265,7 +265,7 @@ public class Field implements Serializable {
 	    return l.iterator();
     	}
     	catch (CloneNotSupportedException ass) {
-	    throw (AssertionError) new AssertionError("invariant: sub classes must support no-arg constructor for cloning.").initCause(ass);
+	    throw (AssertionError) new AssertionError("invariant: sub classes must support nullary constructor for cloning.").initCause(ass);
     	}
     }
 

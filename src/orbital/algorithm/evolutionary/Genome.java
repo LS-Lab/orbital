@@ -88,7 +88,7 @@ public class Genome extends Gene.List {
     public Object clone() {
 	Genome r = (Genome) super.clone();
 	r.setFitness(getFitness());
-	// already done in no-arg constructor, but to make it clear
+	// already done in nullary constructor, but to make it clear
 	r.setPopulation(null);
 	return r;
     } 

@@ -36,7 +36,7 @@ import orbital.logic.imp.Symbol;
 /**
  * A basic signature implementation.
  * 
- * @invariant sub classes support no-arg constructor (for virtual new instance)
+ * @invariant sub classes support nullary constructor (for virtual new instance)
  * @structure implements java.util.SortedSet
  * @structure delegates super:java.util.SortedSet
  * @structure inherits orbital.util.DelegateSortedSet
@@ -187,8 +187,8 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
 	try {
 	    return (SignatureBase) getClass().newInstance();
     	}
-    	catch (InstantiationException nonconform) {throw new InnerCheckedException("invariant: sub classes of " + SignatureBase.class + " must support no-arg constructor for virtual new instance.", nonconform);}
-    	catch (IllegalAccessException nonconform) {throw new InnerCheckedException("invariant: sub classes of " + SignatureBase.class + " must support no-arg constructor for virtual new instance.", nonconform);}
+    	catch (InstantiationException nonconform) {throw new InnerCheckedException("invariant: sub classes of " + SignatureBase.class + " must support nullary constructor for virtual new instance.", nonconform);}
+    	catch (IllegalAccessException nonconform) {throw new InnerCheckedException("invariant: sub classes of " + SignatureBase.class + " must support nullary constructor for virtual new instance.", nonconform);}
     }
 
     // some type-safe checks (ensuring implements SortedSet<Symbol>)

@@ -151,7 +151,7 @@ public interface Gene {
      *
      * @structure extends DelegateList<Gene>
      * @structure aggregates members:List<Gene>
-     * @invariant sub classes support no-arg constructor (for virtual new instance).
+     * @invariant sub classes support nullary constructor (for virtual new instance).
      * @version 1.0, 2001/03/17
      * @author  Andr&eacute; Platzer
      */
@@ -187,8 +187,8 @@ public interface Gene {
 		l.setDelegatee(new ArrayList(capacity));
 		return l;
 	    }
-	    catch (InstantiationException e) {throw new InnerCheckedException("invariant: sub classes of " + Gene.List.class + " must support no-arg constructor for cloning.", e);}
-	    catch (IllegalAccessException e) {throw new InnerCheckedException("invariant: sub classes of " + Gene.List.class + " must support no-arg constructor for cloning.", e);}
+	    catch (InstantiationException e) {throw new InnerCheckedException("invariant: sub classes of " + Gene.List.class + " must support nullary constructor for cloning.", e);}
+	    catch (IllegalAccessException e) {throw new InnerCheckedException("invariant: sub classes of " + Gene.List.class + " must support nullary constructor for cloning.", e);}
     	}
     
     	/**

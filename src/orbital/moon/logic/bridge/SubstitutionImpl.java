@@ -96,9 +96,9 @@ public class SubstitutionImpl implements Substitution, Serializable {
 			    no_arg.setAccessible(true);
                         g = (Functor.Composite) no_arg.newInstance(null);
                     }
-                    catch (InvocationTargetException e) {throw (IllegalArgumentException) new IllegalArgumentException("the argument type no-arg constructor threw").initCause(e.getTargetException());}
+                    catch (InvocationTargetException e) {throw (IllegalArgumentException) new IllegalArgumentException("the argument type nullary constructor threw").initCause(e.getTargetException());}
                     catch (NoSuchMethodException e) {g = (Functor.Composite) f.getClass().newInstance();}
-                    catch (SecurityException denied) {throw new orbital.util.InnerCheckedException("the argument type no-arg constructor is not accessible", denied);}
+                    catch (SecurityException denied) {throw new orbital.util.InnerCheckedException("the argument type nullary constructor is not accessible", denied);}
 		}
 
 		//@todo type-safe assert g.getClass() == f.getClass() : "g is a new object of the exact same type as f";
@@ -106,8 +106,8 @@ public class SubstitutionImpl implements Substitution, Serializable {
             	g.setComponent(apply(f.getComponent()));
             	return g;
             }
-            catch (InstantiationException e) {throw (IllegalArgumentException) new IllegalArgumentException("the argument type of " + term.getClass() + " does not support a no-arg constructor which is required for substitution").initCause(e);}
-            catch (IllegalAccessException e) {throw (IllegalArgumentException) new IllegalArgumentException("the argument type of " + term.getClass() + " does not support a no-arg constructor which is requried for substitution").initCause(e);}
+            catch (InstantiationException e) {throw (IllegalArgumentException) new IllegalArgumentException("the argument type of " + term.getClass() + " does not support a nullary constructor which is required for substitution").initCause(e);}
+            catch (IllegalAccessException e) {throw (IllegalArgumentException) new IllegalArgumentException("the argument type of " + term.getClass() + " does not support a nullary constructor which is requried for substitution").initCause(e);}
 	// almost identical to @see Utility#asIterator, and @see Functionals.ListableFunction
 	//@todo could we really use Functionals.ListableFunction instead? Would we benefit from that?
 	else if (term instanceof Collection)

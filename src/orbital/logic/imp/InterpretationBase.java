@@ -26,7 +26,7 @@ import java.util.Collections;
 /**
  * A basic interpretation implementation.
  * 
- * @invariant sub classes support no-arg constructor (for virtual new instance).
+ * @invariant sub classes support nullary constructor (for virtual new instance).
  * @version 1.0, 2001/06/12
  * @author  Andr&eacute; Platzer
  * @see Logic#satisfy
@@ -224,8 +224,8 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
 	try {
 	    return (InterpretationBase) getClass().newInstance();
     	}
-    	catch (InstantiationException nonconform) {throw new InnerCheckedException("invariant: sub classes of " + InterpretationBase.class + " must support no-arg constructor for virtual new instance.", nonconform);}
-    	catch (IllegalAccessException nonconform) {throw new InnerCheckedException("invariant: sub classes of " + InterpretationBase.class + " must support no-arg constructor for virtual new instance.", nonconform);}
+    	catch (InstantiationException nonconform) {throw new InnerCheckedException("invariant: sub classes of " + InterpretationBase.class + " must support nullary constructor for virtual new instance.", nonconform);}
+    	catch (IllegalAccessException nonconform) {throw new InnerCheckedException("invariant: sub classes of " + InterpretationBase.class + " must support nullary constructor for virtual new instance.", nonconform);}
     }
 
 
