@@ -66,9 +66,9 @@ public abstract class BestFirstSearch extends GeneralSearch implements Evaluativ
          */
 	public OptionIterator(GeneralSearchProblem problem, Function evaluation) {
 	    super(problem);
-	    nodes = new LinkedList();
+	    this.nodes = new LinkedList();
 	    nodes.add(new GeneralSearchProblem.Option(problem.getInitialState()));
-	    comparator = new EvaluationComparator(evaluation);
+	    this.comparator = new EvaluationComparator(evaluation);
 	}
         protected boolean isEmpty() {
 	    return nodes.isEmpty();

@@ -78,10 +78,11 @@ public class AStar extends BestFirstSearch implements HeuristicAlgorithm {
     private transient Function evaluation = createEvaluation();
     private final Function createEvaluation() {
 	//@todo could transform into a package-protected Support class with a constructor argument of HeuristicAlgorithm
+	//@todo could also transform the following function into orbital.logic.functor.Functionals.compose(Operations.plus, accumulatedCost, heuristic);
 	return new Function() {
     		public Object apply(Object a) {
 		    GeneralSearchProblem.Option o = (GeneralSearchProblem.Option)a;
-		    return Operations.plus.apply(Values.valueOf(o.getCost()), heuristic.apply(o/*.getState()*/));
+		    return Operations.plus.apply(Values.valueOf(o.getCost()), heuristic.apply(o));
     		}
 	    };
     }

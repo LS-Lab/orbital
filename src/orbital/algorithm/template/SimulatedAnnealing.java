@@ -61,23 +61,23 @@ import java.util.logging.Level;
  *  </dd>
  *  <dt>(behaviour at fixed temperature T, "equilibrium")</dt>
  *  <dd>
- *    If &exist;lim<sub>n&rarr;&infin;</sub> <b>P</b>(s<sub>n</sub>=s)
+ *    If &exist;lim<sub>n&rarr;&infin;</sub> <b>P</b>(S<sub>n</sub>=s)
  *    and |&#8899;<sub>a&isin;A(s)</sub>t(s,a)|&le;b is bounded,
  *    and the selection of next states occurs uniformly (each with probability 1/b)
  *    and <b>P</b>(s&rarr;s&#697;) / <b>P</b>(s&#697;&rarr;s) = <b>e</b><sup>-f(s&#697;)</sup> / <b>e</b><sup>-f(s)</sup>
- *    <br />Then <b>P</b>(s<sub>n</sub>=s) &rarr; <b>e</b><sup>-f(s)</sup> / &sum;<sub>s&#697;&isin;S</sub> <b>e</b><sup>-f(s&#697;)</sup> (n&rarr;&infin;)
+ *    <br />Then <b>P</b>(S<sub>n</sub>=s) &rarr; <b>e</b><sup>-f(s)</sup> / &sum;<sub>s&#697;&isin;S</sub> <b>e</b><sup>-f(s&#697;)</sup> (n&rarr;&infin;)
  *    which does <em>only</em> depend on f(s).
  *    <div>
  *      Where
  *      <ul>
- *        <li><b>P</b>(s<sub>n</sub>=s) is the probability of being in state s at time n.</li>
+ *        <li><b>P</b>(S<sub>n</sub>=s) is the probability of being in state s at time n.</li>
  *        <li>&#8899;<sub>a&isin;A(s)</sub>t(s,a) is the set of states reachable from s (with any one action).</li>
  *        <li><b>P</b>(s&rarr;s&#697;) is the probability that the search algorithm accepts a move from s&isin;S to s&#697;&isin;S.</li>
  *    </div>
  *  </dd>
  * </dl>
  * <p>
- * lim<sub>n&rarr;&infin;</sub> <b>P</b>(s<sub>n</sub>=s) converges independent from the
+ * lim<sub>n&rarr;&infin;</sub> <b>P</b>(S<sub>n</sub>=s) converges independent from the
  * initial state s<sub>0</sub> if the Markov system underlying the state transition
  * is <dfn>ergodic</dfn> (the graph spanned by all transitions with probability &gt;0 is connected
  * i.e. from any s&isin;S to any t&isin;S the is a path from s to t

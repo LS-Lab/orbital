@@ -72,7 +72,7 @@ public class WAStar extends AStar {
 	return new Function() {
     		public Object apply(Object a) {
 		    GeneralSearchProblem.Option o = (GeneralSearchProblem.Option)a;
-		    return Operations.plus.apply(Values.valueOf(o.getCost()), W.multiply((Arithmetic) getHeuristic().apply(o/*.getState()*/)));
+		    return Operations.plus.apply(Values.valueOf(o.getCost()), W.multiply((Arithmetic) getHeuristic().apply(o)));
     		}
 	    };
     }

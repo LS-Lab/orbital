@@ -89,7 +89,7 @@ public class BranchAndBound extends DepthFirstBoundingSearch implements Heuristi
 	return new Function() {
     		public Object apply(Object a) {
 		    GeneralSearchProblem.Option o = (GeneralSearchProblem.Option)a;
-		    return Operations.plus.apply(Values.valueOf(o.getCost()), heuristic.apply(o/*.getState()*/));
+		    return Operations.plus.apply(Values.valueOf(o.getCost()), heuristic.apply(o));
     		}
 	    };
     }

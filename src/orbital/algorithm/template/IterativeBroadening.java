@@ -22,7 +22,7 @@ import java.util.NoSuchElementException;
  * </p>
  * <p>
  * This algorithm is often inferior to {@link IterativeDeepening iterative deepening}, but
- * may be useful for search graphs that are not locally finite.
+ * may be useful for search graphs that are not <a href="GeneralSearchProblem.html#locallyFinite">locally finite</a>.
  * </p>
  *
  * @version 0.8, 2001/05/09
