@@ -103,7 +103,7 @@ public final class LUDecomposition/*<R implements Arithmetic>*/ implements Seria
 	} 
 	this.A = A;
 	this.P = P;
-	assert P.multiply(M).equals(getL().multiply(getU())) : "P.A = L.U: " + P + "*" + M + "=" + P.multiply(M) + " = " + getL().multiply(getU()) + "=" + getL() + "*" + getU();
+	assert P.multiply(M).equals(getL().multiply(getU()), Values.getDefaultInstance().valueOf(MathUtilities.getDefaultTolerance())) : "P.A = L.U: " + P + "*" + M + "=" + P.multiply(M) + "  =  " + getL().multiply(getU()) + "=" + getL() + "*" + getU();
 
 	/*
 	  Alternative implementation:
