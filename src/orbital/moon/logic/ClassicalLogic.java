@@ -602,12 +602,12 @@ public class ClassicalLogic extends ModernLogic {
 	while (true) {
 	    // the required application type
 	    final Formula reqApType = (Formula) new TypeToFormula().apply(argumentType);
-	    System.err.println("unify " + reqApType + "\n  and " + abstractedType);
+	    System.err.println("    unify " + reqApType + "\n      and " + abstractedType);
 	    final Substitution mu = Substitutions.unify(Arrays.asList(new Object[] {
 		reqApType,
 		abstractedType
 	    }));
-	    System.err.println("  is " + mu);
+	    System.err.println("      is " + mu);
 	    if (mu != null) {
 		// the application type actually passed as parameter to the &Pi;-abstraction.
 		final Type parameterApType = LogicParser.myasType((Expression)mu.apply(createAtomic(piabst.getVariable())), coreSignature());
