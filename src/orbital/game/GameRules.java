@@ -29,6 +29,11 @@ import java.awt.Image;
  * @version 1.1, 2003-01-04
  * @version 0.9, 2000/02/26
  * @author  Andr&eacute; Platzer
+ * @note You are encouraged to implement this interface stateless in
+ * order to simplify writing computer players, massively. Therefore
+ * you should store all game-state relevant information in the central
+ * data structure {@link Field}. This way, the game-state can change
+ * in hypothetical situations for looking into the future.
  * @events FieldChangeEvent.END_OF_TURN(league) at the end of the turn of the specified league.
  * @events FieldChangeEvent.END_OF_GAME(winner) at the end of the game.
  *  Thereby, winner is a value whose absolute specifies the league that has won.
