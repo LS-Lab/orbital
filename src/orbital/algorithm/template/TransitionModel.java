@@ -19,7 +19,7 @@ import orbital.math.Scalar;
  * It forms a rewrite system, perhaps with additional probability information.
  * A transition model is characterized by
  * <ul>
- *  <li>a state space S.</li>
+ *  <li>a state space set S.</li>
  *  <li>a set of actions A.</li>
  *  <li>sets of actions A(s)&sube;A applicable in each state s&isin;S.
  *    <div style="text-align: center">Usually A(s)
@@ -60,7 +60,7 @@ import orbital.math.Scalar;
  *        Stochastic transitions provide the most general case of these types of transitions.
  *        <div>&tau;(a)(s,s&#697;) := <b>P</b>(s&#697;|s,a)</div>
  *      </li>
- *      <!ll @todo what about complex transitions with "Wahrscheinlichkeitsamplitude" z&isin;<b>C</b> and probability |z|^2 -->
+ *      <!-- @todo what about complex transitions with "Wahrscheinlichkeitsamplitude" z&isin;<b>C</b> and probability |z|^2 -->
  *    </ul>
  *    As a notation for a transition from s&isin;S to s&#697;&isin;S under the
  *    action a&isin;A(s) with transition probability p&isin;[0,1] we sometimes use
@@ -69,12 +69,12 @@ import orbital.math.Scalar;
  *  </li>
  * </ul>
  * <p>
- * &tau;(a&sdot;b) = &tau;(a)&#8728;&tau;(b) = <big>(</big>(s,s&#697;) &#8614; <b>P</b>(&#8897;<sub>z&isin;S</sub>(S<sub>t+2</sub>=s&#697;&and;S<sub>t+1</sub>=z) | A<sub>t+1</sub>=b,S<sub>t</sub>=s,A<sub>t</sub>=a)<big>)</big>
- * = <big>(</big>(s,s&#697;) &#8614; &sum;<sub>z&isin;S</sub> &tau;(a)(s,z)*&tau;(b)(z,s&#697;)<big>)</big>
+ * <center class="Formula">&tau;(a&sdot;b) = &tau;(b)&#8728;&tau;(a) = <big>(</big>(s,s&#697;) &#8614; <b>P</b>(&#8897;<sub>z&isin;S</sub>(S<sub>t+2</sub>=s&#697;&and;S<sub>t+1</sub>=z) | A<sub>t+1</sub>=b,S<sub>t</sub>=s,A<sub>t</sub>=a)<big>)</big>
+ * = <big>(</big>(s,s&#697;) &#8614; &sum;<sub>z&isin;S</sub> &tau;(a)(s,z)*&tau;(b)(z,s&#697;)<big>)</big></center>
  * The last equation is true if the events are independent, f.ex. for a transition model
  * satisfying the <a href="MarkovDecisionProblem.html#MarkovProperty">Markov property</a>
  * for states.
- * In the same manner, &tau;(a)<sup>n</sup> = &tau;(a<sup>n</sup>) is the
+ * In the same manner, &tau;(a<sup>n</sup>) = &tau;(a)<sup>n</sup> is the
  * (stochastic) transition relation for n transitions of fixed action a&isin;A.
  * &tau;(a<sup>*</sup>) = &tau;(a)<sup>&infin;</sup> is the transitive closure with a fixed action.
  * </p>
