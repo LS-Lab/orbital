@@ -64,50 +64,93 @@ public class SearchTest extends check.TestCase {
 	test(defaultAlgo);
     }
 
+    // individual tests for timing
+    public void testBreadthFirstSearch() {
+	test(new BreadthFirstSearch());
+    }
+    
+    public void testIterativeDeepening() {
+	test(new IterativeDeepening());
+    }
+    public void testAStar() {
+	test(new AStar(h));
+    }
+    public void testHillClimbing() {
+	test(new HillClimbing(h));
+    }
+    public void testIterativeDeepeningAStar() {
+	test(new IterativeDeepeningAStar(h));
+    }
+    public void testBranchAndBound() {
+	test(new BranchAndBound(h, 0));
+    }
+    public void testParallelBranchAndBound() {
+	test(new ParallelBranchAndBound(h, 0));
+    }
+    public void testIterativeExpansion() {
+	test(new IterativeExpansion(h));
+    }
+    public void testSimulatedAnnealing() {
+	test(new SimulatedAnnealing(h, schedule));
+    }
+    public void testThresholdAccepting() {
+	test(new ThresholdAccepting(h, schedule));
+    }
+    public void testWAStar() {
+	test(new WAStar(2, h));
+    }
+    
+    
     protected void test(AlgorithmicTemplate algo[]) {
 	for (int i = 0; i < algo.length; i++)
+	    test(algo[i]);
+    }
+
+    protected void test(AlgorithmicTemplate algo) {
 	    try {
 		// instantiate
 		boolean complete = false;
 		boolean correct = false;
 		boolean optimal;
 		try {
-		    complete = (algo[i].complexity() != Functions.nondet 
+		    complete = (algo.complexity() != Functions.nondet 
 				//@FIXME: norm is infinite for all polynoms, what else!
-				&& !(algo[i].complexity().equals(Functions.constant(Values.getDefaultInstance().valueOf(Double.POSITIVE_INFINITY)))));
+				&& !(algo.complexity().equals(Functions.constant(Values.getDefaultInstance().valueOf(Double.POSITIVE_INFINITY)))));
 		}
 		catch(UnsupportedOperationException x) {logger.log(Level.INFO, "unsupported", x);}
 		try {
-		    correct = algo[i] instanceof ProbabilisticAlgorithm ? ((ProbabilisticAlgorithm) algo[i]).isCorrect() : true;
+		    correct = algo instanceof ProbabilisticAlgorithm ? ((ProbabilisticAlgorithm) algo).isCorrect() : true;
 		}
 		catch(UnsupportedOperationException x) {logger.log(Level.INFO, "unsupported", x);}
-		optimal = algo[i] instanceof GeneralSearch ? ((GeneralSearch) algo[i]).isOptimal() : false;
+		optimal = algo instanceof GeneralSearch ? ((GeneralSearch) algo).isOptimal() : false;
 		// special handling
-		if (algo[i] instanceof HeuristicAlgorithm)
-		    ((HeuristicAlgorithm)algo[i]).setHeuristic(SimpleGSP.createHeuristic());
-		if (algo[i] instanceof BranchAndBound)
-		    ((BranchAndBound)algo[i]).setMaxBound(2*SIMPLE_GSP_RANGE+SimpleGSP.PAY_FOR_PASSING);
+		if (algo instanceof HeuristicAlgorithm)
+		    ((HeuristicAlgorithm)algo).setHeuristic(SimpleGSP.createHeuristic());
+		if (algo instanceof BranchAndBound)
+		    ((BranchAndBound)algo).setMaxBound(2*SIMPLE_GSP_RANGE+SimpleGSP.PAY_FOR_PASSING);
 				
 
-		System.out.println("Testing " + algo[i]);
-				
+		System.out.println("Testing " + algo);
+
 		// test problems that have a solution
 		for (int rep = 0; rep < TEST_REPETITION; rep++) {
 		    VerifyingSimpleGSP p = new VerifyingSimpleGSP((int)(random.nextFloat()*2*SIMPLE_GSP_RANGE-SIMPLE_GSP_RANGE), (int)(random.nextFloat()*2*SIMPLE_GSP_RANGE-SIMPLE_GSP_RANGE));
-		    Object solution = algo[i].solve(p);
-		    assertTrue( solution != null , algo[i] + " should solve a problem that admits a solution. " + p);
+		    System.out.println("Test solvable problem " + p + " for " + algo);
+		    Object solution = algo.solve(p);
+		    assertTrue( solution != null , algo + " should solve a problem that admits a solution. " + p);
 		    if (!p.isSolution(solution))
-			System.out.println(algo[i] + " did not solve a problem that admits a solution. " + p + " \"solution\" found " + solution);
+			System.out.println(algo + " did not solve a problem that admits a solution. " + p + " \"solution\" found " + solution);
 		    if (optimal)
-			assertTrue(p.isOptimalSolution(solution) , algo[i] + " is optimal but has found only a suboptimal solution " + solution + " to " + p);
+			assertTrue(p.isOptimalSolution(solution) , algo + " is optimal but has found only a suboptimal solution " + solution + " to " + p);
 		}
 				
 		// test problems that do not have a solution (but a finite search space)
 		for (int rep = 0; rep < TEST_REPETITION; rep++) {
 		    UnsolvableSimpleGSP p = new UnsolvableSimpleGSP((int)(random.nextFloat()*UNSOLVABLE_GSP_RANGE));
-		    Object solution = algo[i].solve(p);
+		    System.out.println("Test unsolvable problem " + p + " for " + algo);
+		    Object solution = algo.solve(p);
 		    if (correct)
-			assertTrue(solution == null , algo[i] + " should not \"solve\" a problem that has no solution. " + p + " \"solution\" " + solution);
+			assertTrue(solution == null , algo + " should not \"solve\" a problem that has no solution. " + p + " \"solution\" " + solution);
 		}
 	    } catch (Exception ignore) {
 		logger.log(Level.FINER, "introspection", ignore);
