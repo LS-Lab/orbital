@@ -26,56 +26,55 @@ import java.awt.Component;
  * @version 0.9, 1999/08/01
  * @author  Andr&eacute; Platzer
  */
-public
-class SystemRequestor extends KeyAdapter {
-	public static final int INTERRUPT = 2;
-	public static final int ABORT = 8;
-	protected Predicate		request;
+public class SystemRequestor extends KeyAdapter {
+    public static final int INTERRUPT = 2;
+    public static final int ABORT = 8;
+    protected Predicate		request;
 
-	/**
-	 * Construct a SystemRequestor calling the given predicate on interrupt and abort requests.
-	 * @param requestReactor the predicate called when an interrupt or abort request occured.
-	 * This predicate can perform the corresponding operations to interrupt running thread
-	 * or abort the program.
-	 */
-	public SystemRequestor(Predicate requestReactor) {
-		this.request = requestReactor;
-	}
+    /**
+     * Construct a SystemRequestor calling the given predicate on interrupt and abort requests.
+     * @param requestReactor the predicate called when an interrupt or abort request occured.
+     * This predicate can perform the corresponding operations to interrupt running thread
+     * or abort the program.
+     */
+    public SystemRequestor(Predicate requestReactor) {
+	this.request = requestReactor;
+    }
 
-	/**
-	 * Construct a SystemRequestor calling the given predicate on interrupt and abort requests.
-	 * Automatically registers as a key listener of the component specified.
-	 * @param requestReactor the predicate called when an interrupt or abort request occured.
-	 * This predicate can perform the corresponding operations to interrupt running thread
-	 * or abort the program.
-	 * @param comp the component to register to.
-	 */
-	public SystemRequestor(Predicate requestReactor, Component comp) {
-		this(requestReactor);
-		comp.addKeyListener(this);
-	}
+    /**
+     * Construct a SystemRequestor calling the given predicate on interrupt and abort requests.
+     * Automatically registers as a key listener of the component specified.
+     * @param requestReactor the predicate called when an interrupt or abort request occured.
+     * This predicate can perform the corresponding operations to interrupt running thread
+     * or abort the program.
+     * @param comp the component to register to.
+     */
+    public SystemRequestor(Predicate requestReactor, Component comp) {
+	this(requestReactor);
+	comp.addKeyListener(this);
+    }
 
-	/**
-	 * Check for Abort and Interrupt requests.
-	 */
-	public void keyPressed(KeyEvent e) {
-		if (e.isAltDown()) {
-			switch (e.getKeyCode()) {
-				case KeyEvent.VK_COMMA:					 // Alt-, "Alt-Comma" => Interrupt
-					request.apply(new Integer(INTERRUPT));
-					break;
-				case KeyEvent.VK_PERIOD:				 // Alt-. "Alt-Period" => Abort
-					request.apply(new Integer(ABORT));
-					break;
-				default:
-					return;
-			}
-		} else if (e.isControlDown())
+    /**
+     * Check for Abort and Interrupt requests.
+     */
+    public void keyPressed(KeyEvent e) {
+	if (e.isAltDown()) {
+	    switch (e.getKeyCode()) {
+	    case KeyEvent.VK_COMMA:					 // Alt-, "Alt-Comma" => Interrupt
+		request.apply(new Integer(INTERRUPT));
+		break;
+	    case KeyEvent.VK_PERIOD:				 // Alt-. "Alt-Period" => Abort
+		request.apply(new Integer(ABORT));
+		break;
+	    default:
+		return;
+	    }
+	} else if (e.isControlDown())
 
-			// TODO dont go: Ctrl-Break does never occur
-			if (e.getKeyCode() == KeyEvent.VK_CANCEL)	 // Ctrl-Break
-				request.apply(new Integer(ABORT));
+	    // TODO dont go: Ctrl-Break does never occur
+	    if (e.getKeyCode() == KeyEvent.VK_CANCEL)	 // Ctrl-Break
+		request.apply(new Integer(ABORT));
 
-				// TODO: catch SysReq system request
-	} 
+	// TODO: catch SysReq system request
+    } 
 }

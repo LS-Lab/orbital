@@ -15,13 +15,12 @@ package orbital.util;
  * @see OutOfCheeseError
  * @see GeneralComplexionException
  */
-public
-class Oops extends UnknownError {
-	public Oops(String message) {
-		super(message);
-	}
+public class Oops extends UnknownError {
+    public Oops(String message) {
+	super(message);
+    }
 
-	public Oops() {
-		super("Oops!");
-	}
+    public Oops() {
+	super("Oops!");
+    }
 }

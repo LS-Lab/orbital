@@ -15,13 +15,12 @@ package orbital.util;
  * @author  Andr&eacute; Platzer
  * @see OutOfCheeseError
  */
-public
-class GeneralComplexionException extends UnknownError {
-	public GeneralComplexionException(String message) {
-		super(message);
-	}
+public class GeneralComplexionException extends UnknownError {
+    public GeneralComplexionException(String message) {
+	super(message);
+    }
 
-	public GeneralComplexionException() {
-		super("General Complexion Exception");
-	}
+    public GeneralComplexionException() {
+	super("General Complexion Exception");
+    }
 }

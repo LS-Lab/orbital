@@ -191,8 +191,7 @@ class NavigatePushbackReader extends FilterReader {
 
 }
 
-public
-class BufferedReader extends Reader {
+public class BufferedReader extends Reader {
 
     private Reader in;
 

@@ -25,19 +25,18 @@ rem once Emacs knows Unicode we could switch Javadoc to -charset "utf-8"
 
 
     if exist orbital\moon\io\cryptix\Stegano*.java ren orbital\moon\io\cryptix\Stegano*.java *.restricted
-    pushd %JDK_HOME%\docs\orbitaldoc
+    pushd %base%\dos\api
     copy %base%\doc\recommendations.*html
     copy %base%\doc\features.*html
     copy %base%\doc\recommendations.*html %HOME%\www\orbital\
     copy %base%\doc\features.*html %HOME%\www\orbital\
   echo make javadoc
-    javadoc %s% -d . -sourcepath %src%;%CLASSPATH% -link ../api -overview %base%\overview.html @%src%\options @%src%\package-grouping @%src%\package-list %1 %2 %3 %4 %5 %6 %7 %8 %9 > %temp%\doc
+    javadoc %s% -d . -sourcepath %src%;%CLASSPATH% -link ../api -overview %base%\doc\overview.html @%src%\options @%src%\package-grouping @%src%\package-list %1 %2 %3 %4 %5 %6 %7 %8 %9 > %temp%\doc
     if errorlevel 1 set wasError=true
     copy %HOME%\www\stylist.css stylist.css
     copy /A stylesheet.css +stylist.css
     echo "@media screen { a:link, a:visited {color:blue} }" >> stylesheet.css
     if "%wasError%" == "true" goto Errored
-    start /B xcopy *.* %base%\doc\api\ /S /Q /Y
     copy %src%\orbital\META-INF\Manifest-all.mf %HOME%\www\orbital\compack\*.*
 goto :Fin
 

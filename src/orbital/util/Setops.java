@@ -147,9 +147,9 @@ public final class Setops {
      * Get the minimum argument.
      * @param choices the available choices M.
      * @param f the evaluation function f:M&rarr;<b>R</b>.
-     * @return arg min<sub>a&isin;M</sub> f(a) with minimum f-value in choices.
+     * @return argmin<sub>a&isin;M</sub> f(a) with minimum f-value in choices.
      * @pre choices.hasNext()
-     * @post RES = arg min<sub>a'&isin;M</sub> f(a'), i.e. &forall;a'&isin;M f(RES)&le;f(a')
+     * @post RES = argmin<sub>a'&isin;M</sub> f(a'), i.e. &forall;a'&isin;M f(RES)&le;f(a')
      * @throws NoSuchElementException if !choices.hasNext()
      * @see orbital.math.functional.Operations#inf
      * @see java.util.Collections#min(Collection,Comparator)
@@ -180,9 +180,9 @@ public final class Setops {
      * Get the maximum argument.
      * @param choices the available choices M.
      * @param f the evaluation function f:M&rarr;<b>R</b>.
-     * @return arg max<sub>a&isin;M</sub> f(a) with maximum f-value in choices.
+     * @return argmax<sub>a&isin;M</sub> f(a) with maximum f-value in choices.
      * @pre choices.hasNext()
-     * @post RES = arg max<sub>a'&isin;M</sub> f(a'), i.e. &forall;a'&isin;M f(RES)&ge;f(a')
+     * @post RES = argmax<sub>a'&isin;M</sub> f(a'), i.e. &forall;a'&isin;M f(RES)&ge;f(a')
      * @throws NoSuchElementException if !choices.hasNext()
      * @see orbital.math.functional.Operations#sup
      * @see java.util.Collections#max(Collection,Comparator)

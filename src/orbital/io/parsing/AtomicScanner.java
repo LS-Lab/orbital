@@ -23,61 +23,60 @@ import java.util.Enumeration;
  * @version 0.9, 17/05/98
  * @author  Andr&eacute; Platzer
  */
-public
-class AtomicScanner extends Scanner {
+public class AtomicScanner extends Scanner {
 
-	/**
-	 * Specify whether this scanner should skip whitespaces.
-	 * @param skipWhitespace true to skip whitespaces, false if tokens for whitespaces are desired.
-	 */
-	public AtomicScanner(boolean skipWhitespace) {
-		Token[] atomics = new Token[256];
-		for (char i = 0; i < 256; i++)
-			if (skipWhitespace && Character.isWhitespace(i))
-				atomics[i] = new Token("SKIP", "" + i, "" + i);
-			else
-				atomics[i] = new Token("" + i);
-		symbols = atomics;
-		maxLen = 1;
-	}
+    /**
+     * Specify whether this scanner should skip whitespaces.
+     * @param skipWhitespace true to skip whitespaces, false if tokens for whitespaces are desired.
+     */
+    public AtomicScanner(boolean skipWhitespace) {
+	Token[] atomics = new Token[256];
+	for (char i = 0; i < 256; i++)
+	    if (skipWhitespace && Character.isWhitespace(i))
+		atomics[i] = new Token("SKIP", "" + i, "" + i);
+	    else
+		atomics[i] = new Token("" + i);
+	symbols = atomics;
+	maxLen = 1;
+    }
 
-	/**
-	 * Create an AtomicScanner that does not skip whitespaces.
-	 */
-	public AtomicScanner() {
-		this(false);
-	}
+    /**
+     * Create an AtomicScanner that does not skip whitespaces.
+     */
+    public AtomicScanner() {
+	this(false);
+    }
 
-	/**
-	 * Implementation
-	 */
+    /**
+     * Implementation
+     */
 
-	private char part;	  // current symbolPart trying to match as a Token
+    private char part;	  // current symbolPart trying to match as a Token
 
-	/**
-	 * return the next Token occuring in the Reader.
-	 */
-	public Token readToken() throws ParseException, IOException {
-		if (!ready())
-			throw new EOFException("EOF");
+    /**
+     * return the next Token occuring in the Reader.
+     */
+    public Token readToken() throws ParseException, IOException {
+	if (!ready())
+	    throw new EOFException("EOF");
 
-		int c = lexical.read();
-		if (c == -1)
-			throw new EOFException("EOF");
-		part = (char) c;
-		Token token = matchSymbol("" + part);
+	int c = lexical.read();
+	if (c == -1)
+	    throw new EOFException("EOF");
+	part = (char) c;
+	Token token = matchSymbol("" + part);
 
-		if (token == null)
-			throw new ParseException("lexical exception: No token for symbol: '" + part + "'");
-		if (token.isType("SKIP"))
-			return readToken();	   // repetitive recursion
-		return token;
-	} 
+	if (token == null)
+	    throw new ParseException("lexical exception: No token for symbol: '" + part + "'");
+	if (token.isType("SKIP"))
+	    return readToken();	   // repetitive recursion
+	return token;
+    } 
 
-	/**
-	 * No alternative Token for atomic single chars.
-	 */
-	public Token alternativeToken() throws ParseException, IOException {
-		throw new ParseException("lexical exception: No Token for Symbol. Token is unique.");
-	} 
+    /**
+     * No alternative Token for atomic single chars.
+     */
+    public Token alternativeToken() throws ParseException, IOException {
+	throw new ParseException("lexical exception: No Token for Symbol. Token is unique.");
+    } 
 }

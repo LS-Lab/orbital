@@ -30,24 +30,23 @@ import java.io.PrintWriter;
  * @version 0.9, 2000/03/10
  * @author  Andr&eacute; Platzer
  */
-public
-class AWTMonitor extends Monitor
-	implements ActionListener, AdjustmentListener, AWTEventListener,
-			ComponentListener, ContainerListener, FocusListener,
-			HierarchyBoundsListener, HierarchyListener,
-			InputMethodListener,
-			ItemListener,
-			KeyListener, MouseListener, MouseMotionListener,
-			TextListener, WindowListener {
+public class AWTMonitor extends Monitor
+    implements ActionListener, AdjustmentListener, AWTEventListener,
+	       ComponentListener, ContainerListener, FocusListener,
+	       HierarchyBoundsListener, HierarchyListener,
+	       InputMethodListener,
+	       ItemListener,
+	       KeyListener, MouseListener, MouseMotionListener,
+	       TextListener, WindowListener {
 
-	public AWTMonitor(PrintWriter wr) {
-		super(wr);
-	}
-	public AWTMonitor() {}
+    public AWTMonitor(PrintWriter wr) {
+	super(wr);
+    }
+    public AWTMonitor() {}
 
     // java.awt.event.ActionListener
     public void actionPerformed(java.awt.event.ActionEvent e) {
-		monitor("actionPerformed", e);
+	monitor("actionPerformed", e);
     }
 
     // java.awt.event.AdjustmentListener
@@ -61,38 +60,38 @@ class AWTMonitor extends Monitor
     }
     
     // java.awt.event.ComponentListener
-	public void componentResized(java.awt.event.ComponentEvent e) {
-		monitor("componentResized", e);
-	} 
+    public void componentResized(java.awt.event.ComponentEvent e) {
+	monitor("componentResized", e);
+    } 
 
-	public void componentMoved(java.awt.event.ComponentEvent e) {
-		monitor("componentMoved", e);
-	} 
+    public void componentMoved(java.awt.event.ComponentEvent e) {
+	monitor("componentMoved", e);
+    } 
 
-	public void componentShown(java.awt.event.ComponentEvent e) {
-		monitor("componentShown", e);
-	} 
+    public void componentShown(java.awt.event.ComponentEvent e) {
+	monitor("componentShown", e);
+    } 
 
-	public void componentHidden(java.awt.event.ComponentEvent e) {
-		monitor("componentHidden", e);
-	} 
+    public void componentHidden(java.awt.event.ComponentEvent e) {
+	monitor("componentHidden", e);
+    } 
 
     // java.awt.event.ContainerListener
     public void componentAdded(java.awt.event.ContainerEvent e) {
-		monitor("componentAdded", e);
+	monitor("componentAdded", e);
     }
     public void componentRemoved(java.awt.event.ContainerEvent e) {
-		monitor("componentRemoved", e);
+	monitor("componentRemoved", e);
     }
     
-	// java.awt.event.FocusListener
-	public void focusGained(java.awt.event.FocusEvent e) {
-		monitor("focusGained", e);
-	} 
+    // java.awt.event.FocusListener
+    public void focusGained(java.awt.event.FocusEvent e) {
+	monitor("focusGained", e);
+    } 
 
-	public void focusLost(java.awt.event.FocusEvent e) {
-		monitor("focusLost", e);
-	} 
+    public void focusLost(java.awt.event.FocusEvent e) {
+	monitor("focusLost", e);
+    } 
 	
     // java.awt.event.HierarchyBoundsListener
     public void ancestorMoved(java.awt.event.HierarchyEvent e) {
@@ -161,32 +160,32 @@ class AWTMonitor extends Monitor
         monitor("textValueChanged", e);
     }
 
-	// java.awt.event.WindowListener
-	public void windowOpened(java.awt.event.WindowEvent e) {
-		monitor("windowOpened", e);
-	} 
+    // java.awt.event.WindowListener
+    public void windowOpened(java.awt.event.WindowEvent e) {
+	monitor("windowOpened", e);
+    } 
 
-	public void windowClosing(java.awt.event.WindowEvent e) {
-		monitor("windowClosing", e);
-	} 
+    public void windowClosing(java.awt.event.WindowEvent e) {
+	monitor("windowClosing", e);
+    } 
 
-	public void windowClosed(java.awt.event.WindowEvent e) {
-		monitor("windowClosed", e);
-	} 
+    public void windowClosed(java.awt.event.WindowEvent e) {
+	monitor("windowClosed", e);
+    } 
 
-	public void windowIconified(java.awt.event.WindowEvent e) {
-		monitor("windowIconified", e);
-	} 
+    public void windowIconified(java.awt.event.WindowEvent e) {
+	monitor("windowIconified", e);
+    } 
 
-	public void windowDeiconified(java.awt.event.WindowEvent e) {
-		monitor("windowDeiconified", e);
-	} 
+    public void windowDeiconified(java.awt.event.WindowEvent e) {
+	monitor("windowDeiconified", e);
+    } 
 
-	public void windowActivated(java.awt.event.WindowEvent e) {
-		monitor("windowActivated", e);
-	} 
+    public void windowActivated(java.awt.event.WindowEvent e) {
+	monitor("windowActivated", e);
+    } 
 
-	public void windowDeactivated(java.awt.event.WindowEvent e) {
-		monitor("windowDeactivated", e);
-	} 	
+    public void windowDeactivated(java.awt.event.WindowEvent e) {
+	monitor("windowDeactivated", e);
+    } 	
 }

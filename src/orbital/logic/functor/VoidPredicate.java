@@ -28,43 +28,42 @@ import orbital.logic.functor.Functor.Specification;
  * @author  Andr&eacute; Platzer
  * @see Predicate
  */
-public
-interface VoidPredicate extends Functor /*abstract template extends VoidFunction<boolean> abstract */{
+public interface VoidPredicate extends Functor /*abstract template extends VoidFunction<boolean> abstract */{
 
-	/**
-	 * Called to apply the VoidPredicate. <code>P()</code>.
-	 * 
-	 * @param none void non-argument
-	 * @return which returns a boolean.
-	 */
-	boolean apply();
+    /**
+     * Called to apply the VoidPredicate. <code>P()</code>.
+     * 
+     * @param none void non-argument
+     * @return which returns a boolean.
+     */
+    boolean apply();
 
-	/**
-	 * specification of these functors
-	 */
-	static final Specification specification = new Specification(0, java.lang.Boolean.TYPE);
+    /**
+     * specification of these functors
+     */
+    static final Specification specification = new Specification(0, java.lang.Boolean.TYPE);
 
-	/**
-	 * A composed VoidPredicate.
-	 * <div>
-	 * compose: (P,g) &#8614; P &#8728; g := P(g).
-	 * </div>
-	 * <p>
-	 * A VoidPredicate could be composed of
-	 * an outer Predicate and an inner VoidFunction.
-	 * </p>
-	 * <p>
-	 * This class is the infimum (greatest common subtype) {@link Functor.Composite}&cap;{@link VoidPredicate}.
-	 * </p>
-	 * 
-	 * @structure is {@link Functor.Composite}&cap;{@link VoidPredicate}
-	 * @structure extends VoidPredicate
-	 * @structure extends Functor.Composite
-	 * @structure aggregate outer:Predicate<B>
-	 * @structure aggregate inner:VoidFunction<B>
-	 * @version 1.0, 2000/01/23
-	 * @author  Andr&eacute; Platzer
-	 * @see Functionals#compose(Predicate, VoidFunction)
-	 */
-	static interface Composite extends Functor.Composite, VoidPredicate {}
+    /**
+     * A composed VoidPredicate.
+     * <div>
+     * compose: (P,g) &#8614; P &#8728; g := P(g).
+     * </div>
+     * <p>
+     * A VoidPredicate could be composed of
+     * an outer Predicate and an inner VoidFunction.
+     * </p>
+     * <p>
+     * This class is the infimum (greatest common subtype) {@link Functor.Composite}&cap;{@link VoidPredicate}.
+     * </p>
+     * 
+     * @structure is {@link Functor.Composite}&cap;{@link VoidPredicate}
+     * @structure extends VoidPredicate
+     * @structure extends Functor.Composite
+     * @structure aggregate outer:Predicate<B>
+     * @structure aggregate inner:VoidFunction<B>
+     * @version 1.0, 2000/01/23
+     * @author  Andr&eacute; Platzer
+     * @see Functionals#compose(Predicate, VoidFunction)
+     */
+    static interface Composite extends Functor.Composite, VoidPredicate {}
 }

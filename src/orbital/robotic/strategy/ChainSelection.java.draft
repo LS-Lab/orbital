@@ -16,8 +16,7 @@ import java.util.Enumeration;
  * @author  Andr&eacute; Platzer
  */
 
-public
-class ChainSelection extends SelectionImpl implements Selection {
+public class ChainSelection extends SelectionImpl implements Selection {
     protected Selection A;
     protected Selection B;
     public ChainSelection(Selection A, Selection B) {

@@ -15,13 +15,12 @@ package orbital.util;
  * @author  Andr&eacute; Platzer
  * @see GeneralComplexionException
  */
-public
-class OutOfCheeseError extends UnknownError {
-	public OutOfCheeseError(String message) {
-		super(message);
-	}
+public class OutOfCheeseError extends UnknownError {
+    public OutOfCheeseError(String message) {
+	super(message);
+    }
 
-	public OutOfCheeseError() {
-		super("Don't mention it. ++?????++ Out of Cheese Error. Redo From Start.");
-	}
+    public OutOfCheeseError() {
+	super("Don't mention it. ++?????++ Out of Cheese Error. Redo From Start.");
+    }
 }

@@ -80,223 +80,222 @@ import java.util.LinkedList;
  * @author  Andr&eacute; Platzer
  * @see java.util.regex.Matcher
  */
-public
-class RegExAutomata implements Automata {
-	private static class Debug {
-		private Debug() {}
-		public static void main(String arg[]) throws Exception {
-			Scanner scanner = new AtomicScanner(false);
-			System.out.println("scanner scanning reader");
-			scanner.scan(new java.io.StringReader("42"));
-			System.out.println("regex processing scanner");
-			String m = matchingRegEx("4[0-9]+", new TokenSequence(scanner));
-			System.out.println("regex finally found match " + m);
-		} 
-	}	 // Debug
-
-	/**
-	 * Returns the Match a TokenSequence has according to a given RegularExpression.
-	 */
-	public static String matchingRegEx(String regex, TokenSequence tokens) throws ParseException, IOException, ClassCastException {
-		return (String) new RegExAutomata(regex).processAutomata(new State("START"), tokens);
+public class RegExAutomata implements Automata {
+    private static class Debug {
+	private Debug() {}
+	public static void main(String arg[]) throws Exception {
+	    Scanner scanner = new AtomicScanner(false);
+	    System.out.println("scanner scanning reader");
+	    scanner.scan(new java.io.StringReader("42"));
+	    System.out.println("regex processing scanner");
+	    String m = matchingRegEx("4[0-9]+", new TokenSequence(scanner));
+	    System.out.println("regex finally found match " + m);
 	} 
+    }	 // Debug
 
-	/**
-	 * The RegularExpression scanned for. The current position in it will be keep track of.
-	 */
-	protected String regex;
-	protected int	 pos;
+    /**
+     * Returns the Match a TokenSequence has according to a given RegularExpression.
+     */
+    public static String matchingRegEx(String regex, TokenSequence tokens) throws ParseException, IOException, ClassCastException {
+	return (String) new RegExAutomata(regex).processAutomata(new State("START"), tokens);
+    } 
 
-	/**
-	 * A "Sequence" over regex. Including fin() next() lookahead().
-	 * These represent a simple Sequence an Automata scans over.
-	 */
-	private boolean fin() {
-		return pos >= regex.length();
-	} 
-	private int next() {
-		if (fin())
-			return -1;
-		return regex.charAt(pos++);
-	} 
-	private int lookahead() {
-		if (fin())
-			return -1;
-		return regex.charAt(pos);
-	} 
+    /**
+     * The RegularExpression scanned for. The current position in it will be keep track of.
+     */
+    protected String regex;
+    protected int	 pos;
 
-	/**
-	 * Construct a RegExAutomata matching regex.
-	 */
-	public RegExAutomata(String regex) {
-		this.regex = regex;
-	}
+    /**
+     * A "Sequence" over regex. Including fin() next() lookahead().
+     * These represent a simple Sequence an Automata scans over.
+     */
+    private boolean fin() {
+	return pos >= regex.length();
+    } 
+    private int next() {
+	if (fin())
+	    return -1;
+	return regex.charAt(pos++);
+    } 
+    private int lookahead() {
+	if (fin())
+	    return -1;
+	return regex.charAt(pos);
+    } 
 
-	/**
-	 * process.
-	 */
-	public Object processAutomata(State state, TokenSequence tokens) throws ParseException, IOException, ClassCastException, IllegalArgumentException {
-		pos = 0;
-		String matching = "";
+    /**
+     * Construct a RegExAutomata matching regex.
+     */
+    public RegExAutomata(String regex) {
+	this.regex = regex;
+    }
 
-		// MatchExpressions will subsequently be tried to match the incoming TokenSequence
-		while (!fin()) {
-			TokenMatch match = regExMatch(state);	 // what is desired next in the regular expression?
-			assert match != null : "if not fin, TokenMatch should not be null. OutOfCheeseError";
+    /**
+     * process.
+     */
+    public Object processAutomata(State state, TokenSequence tokens) throws ParseException, IOException, ClassCastException, IllegalArgumentException {
+	pos = 0;
+	String matching = "";
 
-			switch (lookahead()) {
-				case '?':	 // Option: match is optional and also fits empty word
-					next();
-					if (!match.matches(tokens))
-						tokens.unconsume();	   // also fulfills the regex
-					else
-						matching += match.getMatching();
-					break;
-				case '*':					   // Iteration: last match 0..* times
-					next();
-					while (match.matches(tokens))
-						matching += match.getMatching();
-					tokens.unconsume();
-					break;
-				case '+':					   // Iteration: last match 1..* times
-					next();
-					if (!match.matches(tokens))
-						throw new ParseException(match + ". Does not match Regular Expression '" + regex + "' @" + pos + "(" + (fin() ? ' ' : regex.charAt(pos)) + ") in state " + state + ". Though '" + matching + "' has been matched.");
-					matching += match.getMatching();
-					while (match.matches(tokens))
-						matching += match.getMatching();
+	// MatchExpressions will subsequently be tried to match the incoming TokenSequence
+	while (!fin()) {
+	    TokenMatch match = regExMatch(state);	 // what is desired next in the regular expression?
+	    assert match != null : "if not fin, TokenMatch should not be null. OutOfCheeseError";
 
-					// try{System.out.println("\tunconsume: "+tokens.element(tokens.max));}catch(Exception x) {}
-					tokens.unconsume();
-					break;
-				default:					   // Concatenation: character
+	    switch (lookahead()) {
+	    case '?':	 // Option: match is optional and also fits empty word
+		next();
+		if (!match.matches(tokens))
+		    tokens.unconsume();	   // also fulfills the regex
+		else
+		    matching += match.getMatching();
+		break;
+	    case '*':					   // Iteration: last match 0..* times
+		next();
+		while (match.matches(tokens))
+		    matching += match.getMatching();
+		tokens.unconsume();
+		break;
+	    case '+':					   // Iteration: last match 1..* times
+		next();
+		if (!match.matches(tokens))
+		    throw new ParseException(match + ". Does not match Regular Expression '" + regex + "' @" + pos + "(" + (fin() ? ' ' : regex.charAt(pos)) + ") in state " + state + ". Though '" + matching + "' has been matched.");
+		matching += match.getMatching();
+		while (match.matches(tokens))
+		    matching += match.getMatching();
 
-					// Alternative: set of characters
+		// try{System.out.println("\tunconsume: "+tokens.element(tokens.max));}catch(Exception x) {}
+		tokens.unconsume();
+		break;
+	    default:					   // Concatenation: character
 
-					if (!match.matches(tokens))	   // check if it matches, normally
-						throw new ParseException("Tokenseq {.." + match.getCurrentToken() + "..} doesn't match Regular Expression '" + regex + "' @" + pos + "(" + (fin() ? ' ' : regex.charAt(pos)) + ") in state " + state + ". Though '" + matching + "' has been matched.");
-					matching += match.getMatching();
-			}
+		// Alternative: set of characters
 
-			state.setState("MATCH");
-			tokens.consume();
-		}									   // while regexs
+		if (!match.matches(tokens))	   // check if it matches, normally
+		    throw new ParseException("Tokenseq {.." + match.getCurrentToken() + "..} doesn't match Regular Expression '" + regex + "' @" + pos + "(" + (fin() ? ' ' : regex.charAt(pos)) + ") in state " + state + ". Though '" + matching + "' has been matched.");
+		matching += match.getMatching();
+	    }
+
+	    state.setState("MATCH");
+	    tokens.consume();
+	}									   // while regexs
  
-		return matching;
-	} 
+	return matching;
+    } 
 
-	// get the next unit of a matching expression
-	private TokenMatch regExMatch(final State state) /* implements Automata */ throws ParseException, IllegalArgumentException {
-		switch (lookahead()) {
-			case '(':			// Brackets: group blocks
-				int z = Utility.matchingBrace(regex, pos);
-				if (z < 0)
-					throw new IllegalArgumentException("Regular Expression '" + regex + "' has illegal brackets");
-				next();
-				String innerRegEx = regex.substring(pos, z);
-				pos = z + 1;	// skip regex to () end
-				final RegExAutomata inner = new RegExAutomata(innerRegEx);
-				return new TokenMatch("(" + innerRegEx + ")") {
-					public boolean matches(TokenSequence tokens) throws IOException, ClassCastException {
-						try {
-							matching = (String) inner.processAutomata(state, tokens);
-							return true;
-						} catch (ParseException notmatch) {
-							return false;
-						} 
-					} 
-				};
-			case '[':			// Alternative: fits if is one of ...
-				next();
-				state.setState("SET_PART");
-				final List set = new LinkedList();
-				while (lookahead() != ']')
-					if (fin())
-						throw new IllegalArgumentException("Regular Expression '" + regex + "' has illegal set brackets []");
-					else
-						set.add(regExAtom(state));
-				next();
-				state.setState("SET");
-
-				// check for inclusion in the set of possible alternatives
-				return new TokenMatch("(RegEx)") {
-					public boolean matches(TokenSequence tokens) throws ParseException, IOException, ClassCastException {
-						Iterator e = set.iterator();
-						while (e.hasNext()) {
-							TokenMatch o = (TokenMatch) e.next();
-							if (o.matches(tokens)) {
-								matching = o.getMatching();
-								tok = o.getCurrentToken();
-								return true;
-							} else if (e.hasNext())	   // reuse: ever but last time
-								tokens.unconsume();
-						} 
-						return false;
-					} 
-				};
-			default:	// ordinary character
-				return regExAtom(state);
-		}
-	} 
-
-	// get the next atomic character match
-	private TokenMatch regExAtom(State state) /* implements Automata */ throws ParseException, IllegalArgumentException {
-		if (fin())
-			return null;
-		final char a = (char) next();
-		state.setState("SINGLE");
-		if (lookahead() == '-') {
-			next();
-			state.setState("RANGE_ID");
-			final char z = (char) next();
-			;
-			if (z < 0)
-				throw new IllegalArgumentException("Regular Expression '" + regex + "' requires a char after '-'");
-			state.setState("RANGE");
-
-			// check for inclusion in character range
-			return new TokenMatch("(" + a + "-" + z + ")") {
-				public boolean matches(TokenSequence tokens) throws ParseException, IOException, ClassCastException {
-					if (!tokens.hasNext())
-						return false;
-					tok = (Token) tokens.next();
-					if (tok.symbol.length() != 1)
-						throw new ParseException("lexical exception: IllegalArgumentException: " + tok + " is not atomic.");
-					matching = tok.token;
-					return a <= tok.symbol.charAt(0) && tok.symbol.charAt(0) <= z;
-				} 
-			};
-		} 
-
-		// check for ordinary character identity
-		return new TokenMatch("(" + a + ")") {
-			public boolean matches(TokenSequence tokens) throws ParseException, IOException, ClassCastException {
-				if (!tokens.hasNext())
-					return false;
-				tok = (Token) tokens.next();
-				if (tok.symbol.length() != 1)
-					throw new ParseException("lexical exception: IllegalArgumentException: " + tok + " is not atomic.");
-				matching = tok.token;
-				return tok.symbol.charAt(0) == a;
+    // get the next unit of a matching expression
+    private TokenMatch regExMatch(final State state) /* implements Automata */ throws ParseException, IllegalArgumentException {
+	switch (lookahead()) {
+	case '(':			// Brackets: group blocks
+	    int z = Utility.matchingBrace(regex, pos);
+	    if (z < 0)
+		throw new IllegalArgumentException("Regular Expression '" + regex + "' has illegal brackets");
+	    next();
+	    String innerRegEx = regex.substring(pos, z);
+	    pos = z + 1;	// skip regex to () end
+	    final RegExAutomata inner = new RegExAutomata(innerRegEx);
+	    return new TokenMatch("(" + innerRegEx + ")") {
+		    public boolean matches(TokenSequence tokens) throws IOException, ClassCastException {
+			try {
+			    matching = (String) inner.processAutomata(state, tokens);
+			    return true;
+			} catch (ParseException notmatch) {
+			    return false;
 			} 
+		    } 
+		};
+	case '[':			// Alternative: fits if is one of ...
+	    next();
+	    state.setState("SET_PART");
+	    final List set = new LinkedList();
+	    while (lookahead() != ']')
+		if (fin())
+		    throw new IllegalArgumentException("Regular Expression '" + regex + "' has illegal set brackets []");
+		else
+		    set.add(regExAtom(state));
+	    next();
+	    state.setState("SET");
+
+	    // check for inclusion in the set of possible alternatives
+	    return new TokenMatch("(RegEx)") {
+		    public boolean matches(TokenSequence tokens) throws ParseException, IOException, ClassCastException {
+			Iterator e = set.iterator();
+			while (e.hasNext()) {
+			    TokenMatch o = (TokenMatch) e.next();
+			    if (o.matches(tokens)) {
+				matching = o.getMatching();
+				tok = o.getCurrentToken();
+				return true;
+			    } else if (e.hasNext())	   // reuse: ever but last time
+				tokens.unconsume();
+			} 
+			return false;
+		    } 
+		};
+	default:	// ordinary character
+	    return regExAtom(state);
+	}
+    } 
+
+    // get the next atomic character match
+    private TokenMatch regExAtom(State state) /* implements Automata */ throws ParseException, IllegalArgumentException {
+	if (fin())
+	    return null;
+	final char a = (char) next();
+	state.setState("SINGLE");
+	if (lookahead() == '-') {
+	    next();
+	    state.setState("RANGE_ID");
+	    final char z = (char) next();
+	    ;
+	    if (z < 0)
+		throw new IllegalArgumentException("Regular Expression '" + regex + "' requires a char after '-'");
+	    state.setState("RANGE");
+
+	    // check for inclusion in character range
+	    return new TokenMatch("(" + a + "-" + z + ")") {
+		    public boolean matches(TokenSequence tokens) throws ParseException, IOException, ClassCastException {
+			if (!tokens.hasNext())
+			    return false;
+			tok = (Token) tokens.next();
+			if (tok.symbol.length() != 1)
+			    throw new ParseException("lexical exception: IllegalArgumentException: " + tok + " is not atomic.");
+			matching = tok.token;
+			return a <= tok.symbol.charAt(0) && tok.symbol.charAt(0) <= z;
+		    } 
 		};
 	} 
-	private static abstract class TokenMatch extends Token {
-		protected Token  tok = null;
-		protected String matching = null;
-		protected TokenMatch(String spec) {
-			super("regex", spec);
-		}
-		public abstract boolean matches(TokenSequence tokens) throws ParseException, IOException, ClassCastException;
 
-		public String getMatching() {
-			return matching;
+	// check for ordinary character identity
+	return new TokenMatch("(" + a + ")") {
+		public boolean matches(TokenSequence tokens) throws ParseException, IOException, ClassCastException {
+		    if (!tokens.hasNext())
+			return false;
+		    tok = (Token) tokens.next();
+		    if (tok.symbol.length() != 1)
+			throw new ParseException("lexical exception: IllegalArgumentException: " + tok + " is not atomic.");
+		    matching = tok.token;
+		    return tok.symbol.charAt(0) == a;
 		} 
-		public Token getCurrentToken() {
-			return tok;
-		} 
-		public String toString() {
-			return "TokenMatch " + symbol + " in TokenSeq {.." + tok + "..} matched '" + matching + "'.";
-		} 
+	    };
+    } 
+    private static abstract class TokenMatch extends Token {
+	protected Token  tok = null;
+	protected String matching = null;
+	protected TokenMatch(String spec) {
+	    super("regex", spec);
 	}
+	public abstract boolean matches(TokenSequence tokens) throws ParseException, IOException, ClassCastException;
+
+	public String getMatching() {
+	    return matching;
+	} 
+	public Token getCurrentToken() {
+	    return tok;
+	} 
+	public String toString() {
+	    return "TokenMatch " + symbol + " in TokenSeq {.." + tok + "..} matched '" + matching + "'.";
+	} 
+    }
 }

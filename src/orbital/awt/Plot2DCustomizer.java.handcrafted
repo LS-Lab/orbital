@@ -7,8 +7,7 @@ import java.awt.event.ItemEvent;
 
 import orbital.math.Vector;
 
-public
-class Plot2DCustomizer extends Panel implements java.beans.Customizer {
+public class Plot2DCustomizer extends Panel implements java.beans.Customizer {
   	private Plot2D plot = null;
   	private DiagrammModel diagramm = null;
   	protected Checkbox autoScale, fullScale;

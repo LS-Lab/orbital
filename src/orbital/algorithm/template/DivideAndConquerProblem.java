@@ -13,40 +13,39 @@ package orbital.algorithm.template;
  * @author  Andr&eacute; Platzer
  * @see DivideAndConquer
  */
-public
-interface DivideAndConquerProblem extends AlgorithmicProblem {
+public interface DivideAndConquerProblem extends AlgorithmicProblem {
 
-	/**
-	 * Whether this problem is small enough to be solved as the base case
-	 * using {@link #basicSolve()}.
-	 * @see #basicSolve
-	 */
-	boolean smallEnough();
+    /**
+     * Whether this problem is small enough to be solved as the base case
+     * using {@link #basicSolve()}.
+     * @see #basicSolve
+     */
+    boolean smallEnough();
 
-	/**
-	 * Solve the base case.
-	 * @pre smallEnough()
-	 * @return the solution for this base case.
-	 * @see #smallEnough
-	 */
-	Object basicSolve();
+    /**
+     * Solve the base case.
+     * @pre smallEnough()
+     * @return the solution for this base case.
+     * @see #smallEnough
+     */
+    Object basicSolve();
 
-	/**
-	 * Divide this problem into several problem parts which can be solved independently.
-	 * Solving will then continue with these parts in ascending order, before
-	 * they will be merged.
-	 * @pre &not;smallEnough()
-	 * @return an array of (smaller) sub problems.
-	 */
-	DivideAndConquerProblem[] divide();
+    /**
+     * Divide this problem into several problem parts which can be solved independently.
+     * Solving will then continue with these parts in ascending order, before
+     * they will be merged.
+     * @pre &not;smallEnough()
+     * @return an array of (smaller) sub problems.
+     */
+    DivideAndConquerProblem[] divide();
 
-	/**
-	 * Merge several partial solutions to a complete solution.
-	 * <p>
-	 * For single-sided divide and conquer, simply returns this as the answer.</p>
-	 * @param partialSolutions partial solutions
-	 * @pre &not;smallEnough()
-	 * @return the complete solution consisting of the partial solutions.
-	 */
-	Object merge(Object[] partialSolutions);
+    /**
+     * Merge several partial solutions to a complete solution.
+     * <p>
+     * For single-sided divide and conquer, simply returns this as the answer.</p>
+     * @param partialSolutions partial solutions
+     * @pre &not;smallEnough()
+     * @return the complete solution consisting of the partial solutions.
+     */
+    Object merge(Object[] partialSolutions);
 }

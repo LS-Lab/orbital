@@ -47,79 +47,78 @@ package orbital.util;
  * @see java.lang.Throwable
  * @see java.lang.Exception
  */
-public
-abstract class Activation extends Throwable {
+public abstract class Activation extends Throwable {
 
-	/**
-	 * Contains the descendant Activation object that called this activation.
-	 * @serial
-	 */
-	private final Activation caller;
+    /**
+     * Contains the descendant Activation object that called this activation.
+     * @serial
+     */
+    private final Activation caller;
 
-	/**
-	 * Creates a new activation.
-	 * @param caller the activation corresponding to the method that called this.
-	 */
-	protected Activation(Activation caller) {
-		this.caller = caller;
-	}
+    /**
+     * Creates a new activation.
+     * @param caller the activation corresponding to the method that called this.
+     */
+    protected Activation(Activation caller) {
+	this.caller = caller;
+    }
 
-	/**
-	 * Raises this conditional exception with additional information.
-	 * (Conditionally) sends an object up the activation chain.
-	 * <p>
-	 * This method should be overwritten in a concrete class to define reactional behaviour.
-	 * It is called by a descendant to try to send an object back the activation chain.
-	 * This implementation will deliver the conditional exception to the outer caller up the activation chain.</p>
-	 * Conditional exceptions thrown with Activation semantics can be:<ul>
+    /**
+     * Raises this conditional exception with additional information.
+     * (Conditionally) sends an object up the activation chain.
+     * <p>
+     * This method should be overwritten in a concrete class to define reactional behaviour.
+     * It is called by a descendant to try to send an object back the activation chain.
+     * This implementation will deliver the conditional exception to the outer caller up the activation chain.</p>
+     * Conditional exceptions thrown with Activation semantics can be:<ul>
      * <li><i>handled</i> normally in the corresponding <span class="keyword">try</span>..<span class="keyword">catch</span> block where it occured in, with handle(<span class="Class">Object</span>).</li>
      * <li><i>delivered</i> to descendant conditional exception handlers up the activation chain with <span class="keyword">super</span>.raise(<span class="Class">Object</span>).</li>
      * <li><i>returned</i> to the part that caused it with <span class="keyword">return</span> <span class="Class">Object</span>, possibly after prophylaxis and global fixing changes.</li>
-	 * </ul>
-	 * @param information to be sent up the chain.
-	 * @throws Activation to be caught by the creator who should retrieve the object by calling {@link #info()}.
-	 * @throws NullPointerException if this is the first activation in a chain.
-	 * @return the information sent back to descendant.
-	 */
-	public Object raise(Object information) throws Activation {
-		return caller.raise(information);
-	} 
+     * </ul>
+     * @param information to be sent up the chain.
+     * @throws Activation to be caught by the creator who should retrieve the object by calling {@link #info()}.
+     * @throws NullPointerException if this is the first activation in a chain.
+     * @return the information sent back to descendant.
+     */
+    public Object raise(Object information) throws Activation {
+	return caller.raise(information);
+    } 
 
-	/**
-	 * Initiate normal exception handling in the corresponding catch-clause.
-	 * Sends an object back to the creator of this conditional exception in order
-	 * to initiate normal exception handling in the corresponding <span class="keyword">try</span>..<span class="keyword">catch</span> block.
-	 * @param information any informational data the finite catch-handler needs to know about the exception.
-	 * @see #info()
-	 */
-	protected final void handle(Object information) throws Activation {
-		setInformation(information);
-		throw this;
-	} 
+    /**
+     * Initiate normal exception handling in the corresponding catch-clause.
+     * Sends an object back to the creator of this conditional exception in order
+     * to initiate normal exception handling in the corresponding <span class="keyword">try</span>..<span class="keyword">catch</span> block.
+     * @param information any informational data the finite catch-handler needs to know about the exception.
+     * @see #info()
+     */
+    protected final void handle(Object information) throws Activation {
+	setInformation(information);
+	throw this;
+    } 
 
-	/**
-	 * Keeps information data to be handled for retrieval by creator.
-	 * @serial
-	 */
-	private Object information;
+    /**
+     * Keeps information data to be handled for retrieval by creator.
+     * @serial
+     */
+    private Object information;
 
-	/**
-	 * Get this exception's information that is to be handled.
-	 * @return information data to be handled, as stated in the call to {@link #handle(Object)}.
-	 * @see #handle(java.lang.Object)
-	 * @see #information
-	 */
-	public final Object info() {
-		return information;
-	} 
+    /**
+     * Get this exception's information that is to be handled.
+     * @return information data to be handled, as stated in the call to {@link #handle(Object)}.
+     * @see #handle(java.lang.Object)
+     * @see #information
+     */
+    public final Object info() {
+	return information;
+    } 
 
-	/**
-	 * Get this exception's information that is to be handled.
-	 * @return information data to be handled, as stated in the call to {@link #handle(Object)}.
-	 * @see #handle(java.lang.Object)
-	 * @see #information
-	 */
-	private final void setInformation(Object newInformation) {
-		this.information = newInformation;
-	} 
+    /**
+     * Get this exception's information that is to be handled.
+     * @return information data to be handled, as stated in the call to {@link #handle(Object)}.
+     * @see #handle(java.lang.Object)
+     * @see #information
+     */
+    private final void setInformation(Object newInformation) {
+	this.information = newInformation;
+    } 
 }

@@ -32,43 +32,42 @@ import orbital.logic.functor.Functor.Specification;
  * @author  Andr&eacute; Platzer
  * @see Function
  */
-public
-interface VoidFunction/*<B>*/ extends Functor {
+public interface VoidFunction/*<B>*/ extends Functor {
 
-	/**
-	 * Called to apply the VoidFunction. <code>f()</code>.
-	 * 
-	 * @param none void non-argument
-	 * @return returns a generic Object.
-	 */
-	Object/*>B<*/ apply();
+    /**
+     * Called to apply the VoidFunction. <code>f()</code>.
+     * 
+     * @param none void non-argument
+     * @return returns a generic Object.
+     */
+    Object/*>B<*/ apply();
 
-	/**
-	 * specification of a Function
-	 */
-	static final Specification specification = new Specification(0);
+    /**
+     * specification of a Function
+     */
+    static final Specification specification = new Specification(0);
 
-	/**
-	 * A composed VoidFunction.
-	 * <div>
-	 * compose: (f,g) &#8614; f &#8728; g := f(g).
-	 * </div>
-	 * <p>
-	 * A VoidFunction could be composed of
-	 * a Function and a VoidFunction concatenated with each other.
-	 * </p>
-	 * <p>
-	 * This class is the infimum (greatest common subtype) {@link Functor.Composite}&cap;{@link VoidFunction}.
-	 * </p>
-	 * 
-	 * @structure is {@link Functor.Composite}&cap;{@link VoidFunction}
-	 * @structure extends VoidFunction<B>
-	 * @structure extends Functor.Composite
-	 * @structure aggregate outer:Function<D,B>
-	 * @structure aggregate inner:VoidFunction<D>
-	 * @version 1.0, 2000/01/23
-	 * @author  Andr&eacute; Platzer
-	 * @see Functionals#compose(Function, VoidFunction)
-	 */
-	static interface Composite extends Functor.Composite, VoidFunction/*<B>*/ {}
+    /**
+     * A composed VoidFunction.
+     * <div>
+     * compose: (f,g) &#8614; f &#8728; g := f(g).
+     * </div>
+     * <p>
+     * A VoidFunction could be composed of
+     * a Function and a VoidFunction concatenated with each other.
+     * </p>
+     * <p>
+     * This class is the infimum (greatest common subtype) {@link Functor.Composite}&cap;{@link VoidFunction}.
+     * </p>
+     * 
+     * @structure is {@link Functor.Composite}&cap;{@link VoidFunction}
+     * @structure extends VoidFunction<B>
+     * @structure extends Functor.Composite
+     * @structure aggregate outer:Function<D,B>
+     * @structure aggregate inner:VoidFunction<D>
+     * @version 1.0, 2000/01/23
+     * @author  Andr&eacute; Platzer
+     * @see Functionals#compose(Function, VoidFunction)
+     */
+    static interface Composite extends Functor.Composite, VoidFunction/*<B>*/ {}
 }

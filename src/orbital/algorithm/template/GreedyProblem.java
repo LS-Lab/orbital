@@ -68,82 +68,81 @@ import java.util.List;
  * @todo What's the connection of filtered system of sets with topological filters?
  * @internal  Schrittweises Ausschöpfen alias Raffke Algorithmen alias Greedy Algorithmen.
  */
-public
-interface GreedyProblem extends AlgorithmicProblem {
+public interface GreedyProblem extends AlgorithmicProblem {
 
-	/**
-	 * get the initial set of candidates.
-	 * @pre true
-	 * @post RES is the initial alternative candidates for the solution.
-	 * @return the initial set of candidates, usually <span class="set">C</span>.
-	 * @see #nextCandidates(List)
-	 */
-	List getInitialCandidates();
+    /**
+     * get the initial set of candidates.
+     * @pre true
+     * @post RES is the initial alternative candidates for the solution.
+     * @return the initial set of candidates, usually <span class="set">C</span>.
+     * @see #nextCandidates(List)
+     */
+    List getInitialCandidates();
 
-	/**
-	 * Extends the choices with a new_choice if that is feasible, otherwise nothing is changed.
-	 * @param choices the valid partial solution <span class="set">M</span>.
-	 * @param new_choice the new choice <var>x</var> with maximum local weight.
-	 * @pre choices is a valid partial solution, new_choice has maximum local weight.
-	 * @post RES new solution value that includes new_choice if feasible.
-	 *  Usually RES=choices&cup;{new_choice}.
-	 * @return usually <span class="set">M</span>&cup;{x}, the choices extended by the new_choice
-	 * @see #isPartialSolution(List)
-	 */
-	List nextPartialSolution(List choices, Object new_choice);
+    /**
+     * Extends the choices with a new_choice if that is feasible, otherwise nothing is changed.
+     * @param choices the valid partial solution <span class="set">M</span>.
+     * @param new_choice the new choice <var>x</var> with maximum local weight.
+     * @pre choices is a valid partial solution, new_choice has maximum local weight.
+     * @post RES new solution value that includes new_choice if feasible.
+     *  Usually RES=choices&cup;{new_choice}.
+     * @return usually <span class="set">M</span>&cup;{x}, the choices extended by the new_choice
+     * @see #isPartialSolution(List)
+     */
+    List nextPartialSolution(List choices, Object new_choice);
 
-	/**
-	 * Test whether the given list of choices still is a valid (partial) solution.
-	 * @param choices a list <span class="set">M</span> of partial solution values.
-	 * @post RES indicates whether valid partial solution
-	 * @return whether <span class="set">M</span>&isin;<span class="family">U</span>, i.e.
-	 *  whether <span class="set">M</span> is independent and thus an admissible partial solution.
-	 * @see #nextPartialSolution(List,Object)
-	 * @see #isSolution(List)
-	 */
-	boolean isPartialSolution(List choices);
+    /**
+     * Test whether the given list of choices still is a valid (partial) solution.
+     * @param choices a list <span class="set">M</span> of partial solution values.
+     * @post RES indicates whether valid partial solution
+     * @return whether <span class="set">M</span>&isin;<span class="family">U</span>, i.e.
+     *  whether <span class="set">M</span> is independent and thus an admissible partial solution.
+     * @see #nextPartialSolution(List,Object)
+     * @see #isSolution(List)
+     */
+    boolean isPartialSolution(List choices);
 
-	/**
-	 * Get the next set of candidates.
-	 * <p>
-	 * If the list of candidates does not change this method can simply return candidates.</p>
-	 * @param the remaining set of candidates <span class="set">C</span> not yet considered.
-	 * @pre candidates are the current alternative candidates for the solution.
-	 * @post: RES is the next alternative candidates for the solution.
-	 * @return the next alternative candidates for the solution.
-	 *  For strict matroids simply <span class="set">C</span>.
-	 * @see #getInitialCandidates()
-	 */
-	List nextCandidates(List candidates);
+    /**
+     * Get the next set of candidates.
+     * <p>
+     * If the list of candidates does not change this method can simply return candidates.</p>
+     * @param the remaining set of candidates <span class="set">C</span> not yet considered.
+     * @pre candidates are the current alternative candidates for the solution.
+     * @post: RES is the next alternative candidates for the solution.
+     * @return the next alternative candidates for the solution.
+     *  For strict matroids simply <span class="set">C</span>.
+     * @see #getInitialCandidates()
+     */
+    List nextCandidates(List candidates);
 
-	/**
-	 * Check whether the given list of choices is a valid solution to the problem.
-	 * @pre no more alternative candidatess or isPartialSolution is no longer true.
-	 * @post RES indicates whether we found a solution to the problem
-	 * @see #isPartialSolution(List)
-	 */
-	boolean isSolution(List choices);
+    /**
+     * Check whether the given list of choices is a valid solution to the problem.
+     * @pre no more alternative candidatess or isPartialSolution is no longer true.
+     * @post RES indicates whether we found a solution to the problem
+     * @see #isPartialSolution(List)
+     */
+    boolean isSolution(List choices);
 
 
-	/**
-	 * Get an objective function.
-	 * <p>
-	 * This objective function will be maximized which means that
-	 * objects with a higher objective value are strictly preferred.
-	 * </p>
-	 * <p>
-	 * If the weighting function never changes for this problem, consider using a singleton
-	 * instead of creating a new one on each call. This will increase efficiency.
-	 * </p>
-	 * @param choices the current situation of choices.
-	 * @pre choices is a valid partial solution.
-	 * @post RES the objective weighting function for the current situation of choices
-	 *  which will only be referenced until the next call of this function.
-	 *  Usually w&ge;0.
-	 * @return the objective weighting function w:<span class="set">C</span>&rarr;<b>R</b> on the candidates.
-	 * @note if this problem is a matroid, greedy will find a soltuion for any weighting function w.
-	 *  So we could set the weighting function in Greedy, directly, then.
-	 */
-	Function/*<Object, Number>*/ getWeightingFor(List choices);
+    /**
+     * Get an objective function.
+     * <p>
+     * This objective function will be maximized which means that
+     * objects with a higher objective value are strictly preferred.
+     * </p>
+     * <p>
+     * If the weighting function never changes for this problem, consider using a singleton
+     * instead of creating a new one on each call. This will increase efficiency.
+     * </p>
+     * @param choices the current situation of choices.
+     * @pre choices is a valid partial solution.
+     * @post RES the objective weighting function for the current situation of choices
+     *  which will only be referenced until the next call of this function.
+     *  Usually w&ge;0.
+     * @return the objective weighting function w:<span class="set">C</span>&rarr;<b>R</b> on the candidates.
+     * @note if this problem is a matroid, greedy will find a soltuion for any weighting function w.
+     *  So we could set the weighting function in Greedy, directly, then.
+     */
+    Function/*<Object, Number>*/ getWeightingFor(List choices);
 
 }

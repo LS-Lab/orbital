@@ -69,11 +69,11 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
     /**
      * Whether this search algorithm is optimal.
      * <p>
-     * If a search algorithm is not optimal, i.e. it might find solutions that are
-     * sub optimal only, then it can only (perhaps) reliably find solutions, not best solutions.
-     * However, those solutions still provide an upper bound to the optimal solution.
+     * If a search algorithm is not optimal, i.e. it might be content with solutions that are
+     * sub optimal only, then it can at most reliably find solutions, not best solutions.
+     * However, those solutions found still provide an upper bound to the optimal solution.
      * </p>
-     * @return whether this search algorithm is optimal, i.e. whether solutions are guaranteed to be optimal.
+     * @return whether this search algorithm is optimal, i.e. whether solutions found are guaranteed to be optimal.
      * @pre true
      * @post RES == OLD(RES) && OLD(this) == this
      */
@@ -368,6 +368,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
 
     /**
      * Helper method returning all states reachable with any action from state s.
+     * @return S(s) := {t(s,a) &brvbar; a&isin;A(s)}
      */
     static final Iterator expand(final GeneralSearchProblem problem, final Object/*>S<*/ state) {
 	return new Iterator() {

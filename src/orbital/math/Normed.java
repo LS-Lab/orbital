@@ -33,21 +33,20 @@ package orbital.math;
  * @see Metric
  * @see java.lang.Comparable
  */
-public
-interface Normed {
+public interface Normed {
 
-	// norms, metrics and measures
+    // norms, metrics and measures
 
-	/**
-	 * Returns a norm ||.|| of this arithmetic object.
-	 * @return the norm of this object,
-	 *  or perhaps <code>Double.NaN</code> if it is symbolic and really does not have a numeric norm
-	 *  or a useful symbolic norm.
-	 * @pre true
-	 * @post RES &ge 0 &and; (RES=0 &hArr; this=0)
-	 *   &and; a.add(b).norm(x,y) &le; a.norm() + b.norm()
-	 *   &and; a.multiply(&lambda;).norm() == Math.abs(&lambda;) * a.norm()
-	 *   &and; RES&ne;null
-	 */
-	Real norm();
+    /**
+     * Returns a norm ||.|| of this arithmetic object.
+     * @return the norm of this object,
+     *  or perhaps <code>Double.NaN</code> if it is symbolic and really does not have a numeric norm
+     *  or a useful symbolic norm.
+     * @pre true
+     * @post RES &ge 0 &and; (RES=0 &hArr; this=0)
+     *   &and; a.add(b).norm(x,y) &le; a.norm() + b.norm()
+     *   &and; a.multiply(&lambda;).norm() == Math.abs(&lambda;) * a.norm()
+     *   &and; RES&ne;null
+     */
+    Real norm();
 }

@@ -15,25 +15,24 @@ import orbital.logic.functor.Predicate;
  * @version 0.9, 10/01/99
  * @author  Andr&eacute; Platzer
  */
-public
-class DelayedPredicate/*<A>*/ {
-	protected final Predicate/*<A>*/ delayed;
-	protected final long	     delayMillis;
-	public DelayedPredicate(Predicate/*<A>*/ delayed, long delayMillis) {
-		this.delayed = delayed;
-		this.delayMillis = delayMillis;
-	}
+public class DelayedPredicate/*<A>*/ {
+    protected final Predicate/*<A>*/ delayed;
+    protected final long	     delayMillis;
+    public DelayedPredicate(Predicate/*<A>*/ delayed, long delayMillis) {
+	this.delayed = delayed;
+	this.delayMillis = delayMillis;
+    }
 
-	public void apply(final Object/*>A<*/ arg) {
-		new Thread(new Runnable() {
-			public void run() {
-				try {
-					Thread.sleep(delayMillis);
-					delayed.apply(arg);
-				} catch (InterruptedException irq) {
-					Thread.currentThread().interrupt();
-				} 
-			} 
-		}, "DelayedPredicate sleeper").start();
-	} 
+    public void apply(final Object/*>A<*/ arg) {
+	new Thread(new Runnable() {
+		public void run() {
+		    try {
+			Thread.sleep(delayMillis);
+			delayed.apply(arg);
+		    } catch (InterruptedException irq) {
+			Thread.currentThread().interrupt();
+		    } 
+		} 
+	    }, "DelayedPredicate sleeper").start();
+    } 
 }

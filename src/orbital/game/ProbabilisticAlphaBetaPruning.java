@@ -20,8 +20,7 @@ import java.util.Random;
  * @version 1.0, 2001/08/22
  * @author  Andr&eacute; Platzer
  */
-public
-class ProbabilisticAlphaBetaPruning extends AlphaBetaPruning /*implements ProbabilisticAlgorithm*/ {
+public class ProbabilisticAlphaBetaPruning extends AlphaBetaPruning /*implements ProbabilisticAlgorithm*/ {
     public ProbabilisticAlphaBetaPruning(int depth, Function/*<Object, Number>*/ utility, float probability) {
         this(depth, utility, probability, new Random());
     }
@@ -36,8 +35,8 @@ class ProbabilisticAlphaBetaPruning extends AlphaBetaPruning /*implements Probab
         this.random = random;
     }
 
-	private Random random;
-	private float  probability;
+    private Random random;
+    private float  probability;
 
     public boolean isCorrect() {
     	return false;
@@ -49,13 +48,13 @@ class ProbabilisticAlphaBetaPruning extends AlphaBetaPruning /*implements Probab
     	this.random = randomGenerator;
     }
 
-	/**
-	 * Prefers better moves only with some probability.
-	 */
-	protected boolean isPreferred(double v, double w) {
-		if (random == null)
-			throw new IllegalStateException("no random generator has been set");
-		// either w is all too bad (since it is the null option) or probably v is better
-		return w == Double.NEGATIVE_INFINITY || (v > w && random.nextFloat() <= probability);
-	}
+    /**
+     * Prefers better moves only with some probability.
+     */
+    protected boolean isPreferred(double v, double w) {
+	if (random == null)
+	    throw new IllegalStateException("no random generator has been set");
+	// either w is all too bad (since it is the null option) or probably v is better
+	return w == Double.NEGATIVE_INFINITY || (v > w && random.nextFloat() <= probability);
+    }
 }

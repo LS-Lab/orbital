@@ -22,49 +22,48 @@ import orbital.io.ParseException;
  * 
  * @see <a href="package-summary.html#Parser">Parser explanation</a>
  */
-public
-abstract class Parser {
-	//TODO: introduce a subclass parsing SLL(1) specified by BNF. Important: First, Follow sets
+public abstract class Parser {
+    //TODO: introduce a subclass parsing SLL(1) specified by BNF. Important: First, Follow sets
 
-	/**
-	 * The TokenSequence over which the Parser runs.
-	 * 
-	 * @serial
-	 */
-	protected TokenSequence tokens;
+    /**
+     * The TokenSequence over which the Parser runs.
+     * 
+     * @serial
+     */
+    protected TokenSequence tokens;
 
-	/**
-	 * The Parser's current State (for Automata...).
-	 * 
-	 * @serial
-	 */
-	protected State			state;
+    /**
+     * The Parser's current State (for Automata...).
+     * 
+     * @serial
+     */
+    protected State			state;
 
-	/**
-	 * start parsing from a Scanner's TokenSequence.
-	 * Subsequently call nextSymbol();
-	 */
-	public void parse(TokenSequence tokens) throws IOException {
-		this.tokens = tokens;
-		state = new State();
+    /**
+     * start parsing from a Scanner's TokenSequence.
+     * Subsequently call nextSymbol();
+     */
+    public void parse(TokenSequence tokens) throws IOException {
+	this.tokens = tokens;
+	state = new State();
+    } 
+    public void parseAll(TokenSequence tokens) throws ParseException, IOException {
+	parse(tokens);
+	Symbol symbol;
+	while (tokens.hasNext()) {
+	    symbol = nextSymbol();
+	    if (symbol != null)
+		System.out.println("Parsed Symbol: " + symbol);
 	} 
-	public void parseAll(TokenSequence tokens) throws ParseException, IOException {
-		parse(tokens);
-		Symbol symbol;
-		while (tokens.hasNext()) {
-			symbol = nextSymbol();
-			if (symbol != null)
-				System.out.println("Parsed Symbol: " + symbol);
-		} 
-	} 
+    } 
 
 
-	/**
-	 * consecutively scan a Token via nextToken() and return the next Symbol
-	 * parsed for it.
-	 * The TokenSequence will be checked for correct grammar.
-	 * 
-	 * @throws ParseException otherwise, when TokenSequence is grammatically incorrect.
-	 */
-	public abstract Symbol nextSymbol() throws ParseException, IOException;
+    /**
+     * consecutively scan a Token via nextToken() and return the next Symbol
+     * parsed for it.
+     * The TokenSequence will be checked for correct grammar.
+     * 
+     * @throws ParseException otherwise, when TokenSequence is grammatically incorrect.
+     */
+    public abstract Symbol nextSymbol() throws ParseException, IOException;
 }

@@ -25,108 +25,107 @@ import java.io.Serializable;
  * @author  Andr&eacute; Platzer
  * @todo remove this class and all descendants replacing them by orbital.algorithm.template.*Search stuff
  */
-public
-abstract class Table implements Serializable {
+public abstract class Table implements Serializable {
 
-	/**
-	 * The rectangular bounds of the coordinate ranges. <code>minx..|miny..</code> until <code>..minx+width|..miny+height</code>.
-	 * @serial
-	 */
-	private Rectangle bounds;
+    /**
+     * The rectangular bounds of the coordinate ranges. <code>minx..|miny..</code> until <code>..minx+width|..miny+height</code>.
+     * @serial
+     */
+    private Rectangle bounds;
 
-	/**
-	 * Ranging inside given rectangle.
-	 */
-	protected Table(Rectangle bounds) {
-		this.bounds = bounds;
-	}
+    /**
+     * Ranging inside given rectangle.
+     */
+    protected Table(Rectangle bounds) {
+	this.bounds = bounds;
+    }
 
-	/**
-	 * Ranging from <code>min</code> to <code>min + dim</code>.
-	 */
-	protected Table(Point min, Dimension dim) {
-		this(new Rectangle(min.x, min.y, dim.width, dim.height));
-	}
+    /**
+     * Ranging from <code>min</code> to <code>min + dim</code>.
+     */
+    protected Table(Point min, Dimension dim) {
+	this(new Rectangle(min.x, min.y, dim.width, dim.height));
+    }
 
-	/**
-	 * Ranging from <code>x|y</code> to <code>x|y + width-1|height-1</code>.
-	 * The corresponding size of this table is <code>width|height</code>.
-	 */
-	protected Table(int x, int y, int width, int height) {
-		this(new Point(x, y), new Dimension(width, height));
-	}
+    /**
+     * Ranging from <code>x|y</code> to <code>x|y + width-1|height-1</code>.
+     * The corresponding size of this table is <code>width|height</code>.
+     */
+    protected Table(int x, int y, int width, int height) {
+	this(new Point(x, y), new Dimension(width, height));
+    }
 
-	// TODO: property change event
+    // TODO: property change event
 
-	// Get/Set Methods.
+    // Get/Set Methods.
 
-	/**
-	 * get the rectangular bounds.
-	 */
-	public Rectangle getBounds() {
-		return bounds;
-	} 
+    /**
+     * get the rectangular bounds.
+     */
+    public Rectangle getBounds() {
+	return bounds;
+    } 
 
-	/**
-	 * set the rectangular bounds.
-	 */
-	protected void setBounds(Rectangle new_bounds) {
-		this.bounds = new_bounds;
-	} 
+    /**
+     * set the rectangular bounds.
+     */
+    protected void setBounds(Rectangle new_bounds) {
+	this.bounds = new_bounds;
+    } 
 
-	/**
-	 * get the dimension.
-	 */
-	public Dimension getDimension() {
-		return new Dimension(bounds.width, bounds.height);
-	} 
+    /**
+     * get the dimension.
+     */
+    public Dimension getDimension() {
+	return new Dimension(bounds.width, bounds.height);
+    } 
 
-	/**
-	 * set the dimension.
-	 */
-	protected void setDimension(Dimension new_dim) {
-		bounds.width = new_dim.width;
-		bounds.height = new_dim.height;
-	} 
+    /**
+     * set the dimension.
+     */
+    protected void setDimension(Dimension new_dim) {
+	bounds.width = new_dim.width;
+	bounds.height = new_dim.height;
+    } 
 
-	/**
-	 * get the minimum (upper left hand corner).
-	 */
-	public Point getMinimum() {
-		return new Point(bounds.x, bounds.y);
-	} 
+    /**
+     * get the minimum (upper left hand corner).
+     */
+    public Point getMinimum() {
+	return new Point(bounds.x, bounds.y);
+    } 
 
-	/**
-	 * set the minimum (upper left hand corner).
-	 */
-	public void setMinimum(Point min) {
-		bounds.x = min.x;
-		bounds.y = min.y;
-	} 
+    /**
+     * set the minimum (upper left hand corner).
+     */
+    public void setMinimum(Point min) {
+	bounds.x = min.x;
+	bounds.y = min.y;
+    } 
 
 
-	/**
-	 * Check whether a Point <code>(x|y)</code> is within the specified range.
-	 */
-	public boolean inRange(Point p) {
-		if (p.x < bounds.x || p.x >= bounds.x + bounds.width)
-			return false;
-		if (p.y < bounds.y || p.y >= bounds.y + bounds.height)
-			return false;
-		return true;
-	} 
+    /**
+     * Check whether a Point <code>(x|y)</code> is within the specified range.
+     */
+    public boolean inRange(Point p) {
+	if (p.x < bounds.x || p.x >= bounds.x + bounds.width)
+	    return false;
+	if (p.y < bounds.y || p.y >= bounds.y + bounds.height)
+	    return false;
+	return true;
+    } 
 
-	/**
-	 * Get the Object at Point p of the Container.
-	 * @throws IndexOutOfBoundsException if the specified Point is out of bounds.
-	 * @throws UnsupportedOperationException if this Table does not support reading.
-	 */
-	public abstract Object get(Point p) throws IndexOutOfBoundsException, UnsupportedOperationException;
+    /**
+     * Get the Object at Point p of the Container.
+     * @throws IndexOutOfBoundsException if the specified Point is out of bounds.
+     * @throws UnsupportedOperationException if this Table does not support reading.
+     */
+    public abstract Object get(Point p) throws IndexOutOfBoundsException, UnsupportedOperationException;
 
-	/**
-	 * Set the Object at Point p of the Container to the Object specified.
-	 * @throws IndexOutOfBoundsException if the specified Point is out of bounds.
-	 * @throws UnsupportedOperationException if this Table is readonly.
-	 */
-	public abstract void set(Point p, Object what) throws IndexOutOfBoundsException, UnsupportedOperationException;
+    /**
+     * Set the Object at Point p of the Container to the Object specified.
+     * @throws IndexOutOfBoundsException if the specified Point is out of bounds.
+     * @throws UnsupportedOperationException if this Table is readonly.
+     */
+    public abstract void set(Point p, Object what) throws IndexOutOfBoundsException, UnsupportedOperationException;
 }

@@ -30,18 +30,17 @@ import java.io.IOException;
  * @author  Andr&eacute; Platzer
  * @xxx rename to Automaton? Generalize and move to another package?
  */
-public
-interface Automata {
+public interface Automata {
 
-	/**
-	 * With the current State being state, process the automata input tokens
-	 * from the TokenSequence.
-	 * If this automata is finite, set state to new State and consume all Tokens processed.
-	 * The output result is returned.
-	 * @param state the current state, which will be set to the resulting state on return.
-	 * @param tokens the sequence of tokens scanned. On return all tokens used up will be consumed.
-	 * @return the output object.
-	 * @throws java.io.IOException if the underlying input stream throws exceptions.
-	 */
-	public Object processAutomata(State state, TokenSequence tokens) throws ParseException, IOException, ClassCastException, IllegalArgumentException;
+    /**
+     * With the current State being state, process the automata input tokens
+     * from the TokenSequence.
+     * If this automata is finite, set state to new State and consume all Tokens processed.
+     * The output result is returned.
+     * @param state the current state, which will be set to the resulting state on return.
+     * @param tokens the sequence of tokens scanned. On return all tokens used up will be consumed.
+     * @return the output object.
+     * @throws java.io.IOException if the underlying input stream throws exceptions.
+     */
+    public Object processAutomata(State state, TokenSequence tokens) throws ParseException, IOException, ClassCastException, IllegalArgumentException;
 }

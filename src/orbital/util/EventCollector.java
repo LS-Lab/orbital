@@ -25,76 +25,75 @@ import orbital.util.SuspiciousError;
  * @see java.util.EventObject
  * @see orbital.util.EventObjectListener
  */
-public
-class EventCollector implements KeyListener {
+public class EventCollector implements KeyListener {
 
-	/**
-	 * The Collection of EventObjectListeners registered.
-	 * 
-	 * @serial
-	 */
-	protected Collection eventObjectListeners = new ArrayList();
+    /**
+     * The Collection of EventObjectListeners registered.
+     * 
+     * @serial
+     */
+    protected Collection eventObjectListeners = new ArrayList();
 
-	/**
-	 * The global event mask used for total subscription.
-	 * 
-	 * @serial
-	 */
-	protected long		 event_mask;
+    /**
+     * The global event mask used for total subscription.
+     * 
+     * @serial
+     */
+    protected long		 event_mask;
 
-	/**
-	 * Set up a new EventCollector multiplexing the following event_mask
-	 * of subscription.
-	 */
-	public EventCollector(long event_subscription_mask) {
-		event_mask = event_subscription_mask;
-	}
-	public EventCollector() {
-		this(Long.MAX_VALUE);
-	}
+    /**
+     * Set up a new EventCollector multiplexing the following event_mask
+     * of subscription.
+     */
+    public EventCollector(long event_subscription_mask) {
+	event_mask = event_subscription_mask;
+    }
+    public EventCollector() {
+	this(Long.MAX_VALUE);
+    }
 
-	/**
-	 * Add a listener.
-	 */
-	public void addEventObjectListener(EventObjectListener l) {
-		eventObjectListeners.add(l);
-	} 
+    /**
+     * Add a listener.
+     */
+    public void addEventObjectListener(EventObjectListener l) {
+	eventObjectListeners.add(l);
+    } 
 
-	/**
-	 * Remove a listener.
-	 */
-	public void removeEventObjectListener(EventObjectListener l) {
-		eventObjectListeners.remove(l);
-	} 
-
-
-	protected void multiplexEventObject(EventObject ev) {
-		for (Iterator i = eventObjectListeners.iterator(); i.hasNext(); )
-			try {
-				EventObjectListener l = (EventObjectListener) i.next();
-				l.eventObjectOccured(ev);
-			} catch (ClassCastException oops) {
-				throw new SuspiciousError("invalid member: " + oops);
-			} 
-	} 
+    /**
+     * Remove a listener.
+     */
+    public void removeEventObjectListener(EventObjectListener l) {
+	eventObjectListeners.remove(l);
+    } 
 
 
-	/**
-	 * Impl: Implementation of the EventCollector. It will gather any
-	 * EventObjects receptable.
-	 */
-	public void keyPressed(KeyEvent e) {
-		if ((event_mask & AWTEvent.KEY_EVENT_MASK) != 0)
-			multiplexEventObject(e);
-	} 
-	public void keyTyped(KeyEvent e) {
-		if ((event_mask & AWTEvent.KEY_EVENT_MASK) != 0)
-			multiplexEventObject(e);
-	} 
-	public void keyReleased(KeyEvent e) {
-		if ((event_mask & AWTEvent.KEY_EVENT_MASK) != 0)
-			multiplexEventObject(e);
-	} 
+    protected void multiplexEventObject(EventObject ev) {
+	for (Iterator i = eventObjectListeners.iterator(); i.hasNext(); )
+	    try {
+		EventObjectListener l = (EventObjectListener) i.next();
+		l.eventObjectOccured(ev);
+	    } catch (ClassCastException oops) {
+		throw new SuspiciousError("invalid member: " + oops);
+	    } 
+    } 
+
+
+    /**
+     * Impl: Implementation of the EventCollector. It will gather any
+     * EventObjects receptable.
+     */
+    public void keyPressed(KeyEvent e) {
+	if ((event_mask & AWTEvent.KEY_EVENT_MASK) != 0)
+	    multiplexEventObject(e);
+    } 
+    public void keyTyped(KeyEvent e) {
+	if ((event_mask & AWTEvent.KEY_EVENT_MASK) != 0)
+	    multiplexEventObject(e);
+    } 
+    public void keyReleased(KeyEvent e) {
+	if ((event_mask & AWTEvent.KEY_EVENT_MASK) != 0)
+	    multiplexEventObject(e);
+    } 
 }
 
 /*

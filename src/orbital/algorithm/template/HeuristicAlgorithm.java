@@ -44,6 +44,9 @@ public interface HeuristicAlgorithm extends EvaluativeAlgorithm {
      * &hArr; h obeys the <dfn>triangular inequality</dfn>
      *   <center>&forall;s&isin;S,a&isin;A(s) h(s) &le; h(s') + c(s,a) with s' = t(s,a)</center>
      * i.e. the sum of the costs from A to C and from C to B must not be less than the cost from A to B.</p>
+     * <p>
+     * A simple improvement for heuristic functions is using pathmax.
+     * </p>
      * @param heuristic the heuristic cost function h:S&rarr;<b>R</b> estimating h<sup>*</sup>.
      *  h will be embedded in the evaluation function {@link #getEvaluation() f}.
      * @pre heuristic is functional, i.e. x.equals(y) &rArr; heuristic.apply(x).equals(heuristic.apply(y))

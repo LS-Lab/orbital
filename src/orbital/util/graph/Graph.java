@@ -15,14 +15,13 @@ import java.util.Iterator;
  * @author  Andr&eacute; Platzer
  */
 // TODO: enhance a little better
-public
-interface Graph {
-	Iterator getRoots();
+public interface Graph {
+    Iterator getRoots();
 
-	boolean addRoot(Node root);
+    boolean addRoot(Node root);
 
-	boolean removeRoot(Node root);
+    boolean removeRoot(Node root);
 	
-	//@todo introduce createNode(), createEdge(Node a, Node b) factory-methods
-	Node createNode();
+    //@todo introduce createNode(), createEdge(Node a, Node b) factory-methods
+    Node createNode();
 }

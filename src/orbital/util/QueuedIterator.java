@@ -31,64 +31,63 @@ import java.util.NoSuchElementException;
  * @author  Andr&eacute; Platzer
  * @internal see orbital.util.Queue
  */
-public
-class QueuedIterator extends DelegateList implements Iterator, Serializable {
-	/**
-	 * Create a new queued iterator.
-	 * @param synchronizedQueue whether to use {@link java.util.Collections#synchronizedList(java.util.List)} on the buffering queue.
-	 */
-	public QueuedIterator(boolean synchronizedQueue) {
-		super(synchronizedQueue ? Collections.synchronizedList(new LinkedList()) : new LinkedList());
-	}
-	/**
-	 * Create a new non-synchronized queued iterator.
-	 */
-	public QueuedIterator() {
-		this(false);
-	}
+public class QueuedIterator extends DelegateList implements Iterator, Serializable {
+    /**
+     * Create a new queued iterator.
+     * @param synchronizedQueue whether to use {@link java.util.Collections#synchronizedList(java.util.List)} on the buffering queue.
+     */
+    public QueuedIterator(boolean synchronizedQueue) {
+	super(synchronizedQueue ? Collections.synchronizedList(new LinkedList()) : new LinkedList());
+    }
+    /**
+     * Create a new non-synchronized queued iterator.
+     */
+    public QueuedIterator() {
+	this(false);
+    }
 
-	// iterator implementation
+    // iterator implementation
 
-	/**
-	 * Checks whether the queued iterator currently has a next element.
-	 * <p>
-	 * <b>Note:</b> This state might change when someone added data.</p>
-	 * @see #isEmpty()
-	 */
-	public boolean hasNext() {
-		return !isEmpty();
+    /**
+     * Checks whether the queued iterator currently has a next element.
+     * <p>
+     * <b>Note:</b> This state might change when someone added data.</p>
+     * @see #isEmpty()
+     */
+    public boolean hasNext() {
+	return !isEmpty();
+    } 
+
+    /**
+     * Returns the elements added to this queued iterator in FIFO order.
+     * @return the first object added which has not yet been returned.
+     */
+    public Object next() {
+	try {
+	    return remove(0);
+	} catch (IndexOutOfBoundsException x) {
+	    throw new NoSuchElementException();
 	} 
+    } 
 
-	/**
-	 * Returns the elements added to this queued iterator in FIFO order.
-	 * @return the first object added which has not yet been returned.
-	 */
-	public Object next() {
-		try {
-			return remove(0);
-		} catch (IndexOutOfBoundsException x) {
-			throw new NoSuchElementException();
-		} 
-	} 
+    /**
+     * Not supported.
+     * @throws UnsupportedOperationException on every call.
+     */
+    public void remove() {
+	throw new UnsupportedOperationException("senseless, has already been removed from the queue on the call to next");
+    } 
 
-	/**
-	 * Not supported.
-	 * @throws UnsupportedOperationException on every call.
-	 */
-	public void remove() {
-		throw new UnsupportedOperationException("senseless, has already been removed from the queue on the call to next");
-	} 
+    // additional enqueueing methods
 
-	// additional enqueueing methods
-
-	/**
-	 * Add all objects of an iterator to this queued iterator.
-	 * @see orbital.logic.functor.Functionals#foldRight(BinaryFunction, Object, Iterator)
-	 */
-	public boolean addAll(Iterator i) {
-		boolean changed = false;
-		while (i.hasNext())
-			changed |= add(i.next());
-		return changed;
-	} 
+    /**
+     * Add all objects of an iterator to this queued iterator.
+     * @see orbital.logic.functor.Functionals#foldRight(BinaryFunction, Object, Iterator)
+     */
+    public boolean addAll(Iterator i) {
+	boolean changed = false;
+	while (i.hasNext())
+	    changed |= add(i.next());
+	return changed;
+    } 
 }

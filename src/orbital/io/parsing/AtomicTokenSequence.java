@@ -17,24 +17,23 @@ import java.io.IOException;
  * @version 0.9, 11/05/98
  * @author  Andr&eacute; Platzer
  */
-public
-class AtomicTokenSequence extends TokenSequence {
-	protected int   tokenPos;
-	protected Token currentToken;
-	protected Object readToken() throws NoSuchElementException {
-		if (currentToken == null || tokenPos >= currentToken.token.length()) {
-			currentToken = (Token) super.readToken();
-			tokenPos = 0;
-		} 
-		return new Token(currentToken.type, currentToken.symbol, "" + currentToken.token.charAt(tokenPos++));
+public class AtomicTokenSequence extends TokenSequence {
+    protected int   tokenPos;
+    protected Token currentToken;
+    protected Object readToken() throws NoSuchElementException {
+	if (currentToken == null || tokenPos >= currentToken.token.length()) {
+	    currentToken = (Token) super.readToken();
+	    tokenPos = 0;
 	} 
+	return new Token(currentToken.type, currentToken.symbol, "" + currentToken.token.charAt(tokenPos++));
+    } 
 
-	public AtomicTokenSequence(Scanner scanner) {
-		super(scanner);
-		currentToken = null;
-	}
+    public AtomicTokenSequence(Scanner scanner) {
+	super(scanner);
+	currentToken = null;
+    }
 
-	public boolean hasNext() {
-		return (currentToken != null && tokenPos < currentToken.token.length()) || super.hasNext();
-	} 
+    public boolean hasNext() {
+	return (currentToken != null && tokenPos < currentToken.token.length()) || super.hasNext();
+    } 
 }

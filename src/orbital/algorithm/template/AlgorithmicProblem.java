@@ -27,14 +27,13 @@ package orbital.algorithm.template;
  * @see AlgorithmicTemplate
  * @see <a href="{@docRoot}/DesignPatterns/TemplateMethod.html">Template Method</a>
  */
-public
-abstract interface AlgorithmicProblem {
+public abstract interface AlgorithmicProblem {
 
-	/**
-	 * measure for the complexity of the central operations in O-notation.
-	 * @return the function f for which the central methods of this problem run in O<big>(</big>f(n)<big>)</big>.
-	 */
+    /**
+     * measure for the complexity of the central operations in O-notation.
+     * @return the function f for which the central methods of this problem run in O<big>(</big>f(n)<big>)</big>.
+     */
 
-	// TODO: introduce
-	// Function complexity();
+    // TODO: introduce
+    // Function complexity();
 } 

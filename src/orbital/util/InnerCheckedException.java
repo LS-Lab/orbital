@@ -37,40 +37,39 @@ import java.io.PrintStream;
  * @see java.lang.reflect.UndeclaredThrowableException
  * @see java.lang.reflect.InvocationTargetException
  */
-public
-class InnerCheckedException extends RuntimeException {
-	/**
-	 * nested inner exception that is checked and therefore cannot be thrown directly.
-	 * @serial
-	 */
-	protected Throwable nested;
-	public InnerCheckedException(Throwable inner) {
-		this(inner, "unchecked");
-	}
-	public InnerCheckedException(String message, Throwable cause) {
-		super(message, cause);
-		this.nested = cause;
-	}
-	/**
-	 * @deprecated Since JDK1.4 use {@link InnerCheckedException#InnerCheckedException(String, Throwable)} instead.
-	 */
-	public InnerCheckedException(Throwable cause, String message) {
-		this(message, cause);
-	}
+public class InnerCheckedException extends RuntimeException {
+    /**
+     * nested inner exception that is checked and therefore cannot be thrown directly.
+     * @serial
+     */
+    protected Throwable nested;
+    public InnerCheckedException(Throwable inner) {
+	this(inner, "unchecked");
+    }
+    public InnerCheckedException(String message, Throwable cause) {
+	super(message, cause);
+	this.nested = cause;
+    }
+    /**
+     * @deprecated Since JDK1.4 use {@link InnerCheckedException#InnerCheckedException(String, Throwable)} instead.
+     */
+    public InnerCheckedException(Throwable cause, String message) {
+	this(message, cause);
+    }
     
-	/**
-	 * Get the inner nested exception thrown.
-	 * @deprecated Use {@link Throwable#getCause()} instead.
-	 */
-	//TODO: update for Merlin 1.4
-	public Throwable getNextException() {
-		return nested;
-	} 
+    /**
+     * Get the inner nested exception thrown.
+     * @deprecated Use {@link Throwable#getCause()} instead.
+     */
+    //TODO: update for Merlin 1.4
+    public Throwable getNextException() {
+	return nested;
+    } 
 
-	/**
-	 * Prints the stack trace of the thrown nested exception to the specified
-	 * print stream.
-	 */
+    /**
+     * Prints the stack trace of the thrown nested exception to the specified
+     * print stream.
+     */
     public void printStackTrace() { 
     	synchronized (System.err) {
     	    System.err.println(this);
@@ -78,35 +77,35 @@ class InnerCheckedException extends RuntimeException {
     	}
     }
 
-	/**
-	 * Prints the stack trace of the thrown nested exception to the specified
-	 * print stream.
-	 */
-	public void printStackTrace(PrintStream ps) {
-		synchronized (ps) {
-			if (nested != null) {
-				ps.print(this);
-				nested.printStackTrace(ps);
-			} else {
-				super.printStackTrace(ps);
-			} 
-		} 
+    /**
+     * Prints the stack trace of the thrown nested exception to the specified
+     * print stream.
+     */
+    public void printStackTrace(PrintStream ps) {
+	synchronized (ps) {
+	    if (nested != null) {
+		ps.print(this);
+		nested.printStackTrace(ps);
+	    } else {
+		super.printStackTrace(ps);
+	    } 
 	} 
+    } 
 
-	/**
-	 * Prints the stack trace of the thrown nested exception to the
-	 * specified print writer.
-	 */
-	public void printStackTrace(PrintWriter pw) {
-		synchronized (pw) {
-			if (nested != null) {
-				pw.print(this);
-				nested.printStackTrace(pw);
-			} else {
-				super.printStackTrace(pw);
-			} 
-		} 
+    /**
+     * Prints the stack trace of the thrown nested exception to the
+     * specified print writer.
+     */
+    public void printStackTrace(PrintWriter pw) {
+	synchronized (pw) {
+	    if (nested != null) {
+		pw.print(this);
+		nested.printStackTrace(pw);
+	    } else {
+		super.printStackTrace(pw);
+	    } 
 	} 
+    } 
 
     public String toString() {
     	String message = getLocalizedMessage();

@@ -17,14 +17,13 @@ import java.io.IOException;
  * @version 0.9, 2001/07/13
  * @author  Andr&eacute; Platzer
  */
-public
-class ObjectDataInputStream extends DataInputStream implements ObjectInput {
-	public ObjectDataInputStream(InputStream is) {
-		super(is);
-	}
+public class ObjectDataInputStream extends DataInputStream implements ObjectInput {
+    public ObjectDataInputStream(InputStream is) {
+	super(is);
+    }
 	
-	public Object readObject() throws ClassNotFoundException, IOException {
-		throw new UnsupportedOperationException();
-	}
+    public Object readObject() throws ClassNotFoundException, IOException {
+	throw new UnsupportedOperationException();
+    }
 }
 

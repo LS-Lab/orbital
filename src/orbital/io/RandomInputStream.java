@@ -22,45 +22,44 @@ import java.util.Random;
  * @author  Andr&eacute; Platzer
  * @see NullOutputStream
  */
-public
-class RandomInputStream extends InputStream {
+public class RandomInputStream extends InputStream {
 
-	/**
-	 * The Random source used while reading.
-	 * 
-	 * @serial
-	 */
-	protected Random random;
-	public RandomInputStream(Random random) {
-		this.random = random;
-	}
+    /**
+     * The Random source used while reading.
+     * 
+     * @serial
+     */
+    protected Random random;
+    public RandomInputStream(Random random) {
+	this.random = random;
+    }
 
-	/**
-	 * Changes the random generator used while reading data.
-	 */
-	public void setRandom(Random random) {
-		this.random = random;
-	} 
+    /**
+     * Changes the random generator used while reading data.
+     */
+    public void setRandom(Random random) {
+	this.random = random;
+    } 
 
-	/**
-	 * Returns the number of bytes that can be read without blocking.
-	 * Of course, for RandomInputStreams that rather infinitive.
-	 */
-	public int available() {
-		return Integer.MAX_VALUE;
-	} 
+    /**
+     * Returns the number of bytes that can be read without blocking.
+     * Of course, for RandomInputStreams that rather infinitive.
+     */
+    public int available() {
+	return Integer.MAX_VALUE;
+    } 
 
-	public int read() {
-		return random.nextInt(Byte.MAX_VALUE);
-	} 
-	public int read(byte[] b) {
-		random.nextBytes(b);
-		return b.length;
-	} 
-	public int read(byte[] b, int off, int len) {
-		byte[] c = new byte[len];
-		random.nextBytes(c);
-		System.arraycopy(c, 0, b, off, len);
-		return len;
-	} 
+    public int read() {
+	return random.nextInt(Byte.MAX_VALUE);
+    } 
+    public int read(byte[] b) {
+	random.nextBytes(b);
+	return b.length;
+    } 
+    public int read(byte[] b, int off, int len) {
+	byte[] c = new byte[len];
+	random.nextBytes(c);
+	System.arraycopy(c, 0, b, off, len);
+	return len;
+    } 
 }

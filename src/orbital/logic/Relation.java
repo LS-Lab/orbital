@@ -36,5 +36,4 @@ import orbital.util.Callback;
  * @see orbital.logic.functor.Functor
  * @see orbital.util.Callback
  */
-public
-abstract interface Relation extends Callback {}
+public abstract interface Relation extends Callback {}

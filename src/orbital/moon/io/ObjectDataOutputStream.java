@@ -19,16 +19,15 @@ import java.io.Externalizable;
  * @version 0.9, 2001/07/13
  * @author  Andr&eacute; Platzer
  */
-public
-class ObjectDataOutputStream extends DataOutputStream implements ObjectOutput {
-	public ObjectDataOutputStream(OutputStream os) {
-		super(os);
-	}
+public class ObjectDataOutputStream extends DataOutputStream implements ObjectOutput {
+    public ObjectDataOutputStream(OutputStream os) {
+	super(os);
+    }
 
-	public void writeObject(Object o) throws IOException {
-		if (o instanceof Externalizable)
-			((Externalizable) o).writeExternal(this);
-		else
-			throw new UnsupportedOperationException();
-	} 
+    public void writeObject(Object o) throws IOException {
+	if (o instanceof Externalizable)
+	    ((Externalizable) o).writeExternal(this);
+	else
+	    throw new UnsupportedOperationException();
+    } 
 }

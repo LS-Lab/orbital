@@ -14,8 +14,7 @@ import orbital.algorithm.evolutionary.GeneticAlgorithm;
 import orbital.algorithm.evolutionary.Population;
 import java.awt.event.*;
 
-public
-class GeneticAlgorithmCustomizer extends Panel implements Customizer {
+public class GeneticAlgorithmCustomizer extends Panel implements Customizer {
 	private GeneticAlgorithm ga = null;
 	private boolean			 populationSize_changed = false;
 	GridBagLayout			 gridBagLayout1 = new GridBagLayout();

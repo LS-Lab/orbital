@@ -24,8 +24,9 @@ import orbital.math.Values;
  * @version 1.0, 2000/09/20
  * @author  Andr&eacute; Platzer
  * @see DepthFirstSearch
- * @TODO: derive subclass SMBA*  (Simple Memory Bound A*)
- * @todo remove since the DepthFirst behaviour is encapsuled in DepthFirstSearch.OptionIterator.
+ * @internal also has a simple recursive formulation.
+ * @TODO derive subclass SMA*  (Simple Memory-Bound A*)
+ * @todo remove? since the DepthFirst behaviour is encapsuled in DepthFirstSearch.OptionIterator.
  */
 abstract class DepthFirstBoundingSearch extends GeneralBoundingSearch {
     private static final long serialVersionUID = -2607359820984135258L;

@@ -30,46 +30,45 @@ import orbital.logic.functor.Functor.Specification;
  * @see Predicate
  * @see <a href="doc-files/Relations.html#relation">Properties of Relations</a>
  */
-public
-interface BinaryPredicate/*<A1, A2>*/ extends Functor /*abstract template extends BinaryFunction<A1, A2, boolean> abstract */{
+public interface BinaryPredicate/*<A1, A2>*/ extends Functor /*abstract template extends BinaryFunction<A1, A2, boolean> abstract */{
 
-	/**
-	 * Called to apply the BinaryPredicate. <code>P(a,b)</code>.
-	 * 
-	 * @param first     generic Object as first argument
-	 * @param second    generic Object as second argument
-	 * @return which returns a boolean.
-	 */
-	boolean apply(Object/*>A1<*/ first, Object/*>A2<*/ second);
+    /**
+     * Called to apply the BinaryPredicate. <code>P(a,b)</code>.
+     * 
+     * @param first     generic Object as first argument
+     * @param second    generic Object as second argument
+     * @return which returns a boolean.
+     */
+    boolean apply(Object/*>A1<*/ first, Object/*>A2<*/ second);
 
-	/**
-	 * specification of these functors
-	 */
-	static final Specification specification = new Specification(2, java.lang.Boolean.TYPE);
+    /**
+     * specification of these functors
+     */
+    static final Specification specification = new Specification(2, java.lang.Boolean.TYPE);
 
-	/**
-	 * A composed BinaryPredicate.
-	 * <div>
-	 * compose: (P,g,h) &#8614; P o (g,h) := P(g,h).
-	 * </div>
-	 * <p>
-	 * A BinaryPredicate could be composed of
-	 * an outer BinaryPredicate and two inner BinaryFunctions concatenated with the outer binary one.
-	 * In other words, results <code>P<big>(</big>g(x,y),h(x,y)<big>)</big></code>.
-	 * </p>
-	 * <p>
-	 * This class is the infimum (greatest common subtype) {@link Functor.Composite}&cap;{@link BinaryPredicate}.
-	 * </p>
-	 * 
-	 * @structure is {@link Functor.Composite}&cap;{@link BinaryPredicate}
-	 * @structure extends BinaryPredicate<A1,A2>
-	 * @structure extends Functor.Composite
-	 * @structure aggregate outer:BinaryPredicate<B1,B2>
-	 * @structure aggregate left:BinaryFunction<A1,A2,B1>
-	 * @structure aggregate right:BinaryFunction<A1,A2,B2>
-	 * @version 1.0, 2000/01/23
-	 * @author  Andr&eacute; Platzer
-	 * @see Functionals#compose(BinaryPredicate, BinaryFunction, BinaryFunction)
-	 */
-	static interface Composite extends Functor.Composite, BinaryPredicate/*<A1, A2>*/ {}
+    /**
+     * A composed BinaryPredicate.
+     * <div>
+     * compose: (P,g,h) &#8614; P o (g,h) := P(g,h).
+     * </div>
+     * <p>
+     * A BinaryPredicate could be composed of
+     * an outer BinaryPredicate and two inner BinaryFunctions concatenated with the outer binary one.
+     * In other words, results <code>P<big>(</big>g(x,y),h(x,y)<big>)</big></code>.
+     * </p>
+     * <p>
+     * This class is the infimum (greatest common subtype) {@link Functor.Composite}&cap;{@link BinaryPredicate}.
+     * </p>
+     * 
+     * @structure is {@link Functor.Composite}&cap;{@link BinaryPredicate}
+     * @structure extends BinaryPredicate<A1,A2>
+     * @structure extends Functor.Composite
+     * @structure aggregate outer:BinaryPredicate<B1,B2>
+     * @structure aggregate left:BinaryFunction<A1,A2,B1>
+     * @structure aggregate right:BinaryFunction<A1,A2,B2>
+     * @version 1.0, 2000/01/23
+     * @author  Andr&eacute; Platzer
+     * @see Functionals#compose(BinaryPredicate, BinaryFunction, BinaryFunction)
+     */
+    static interface Composite extends Functor.Composite, BinaryPredicate/*<A1, A2>*/ {}
 }

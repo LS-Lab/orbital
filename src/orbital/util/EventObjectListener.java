@@ -16,13 +16,12 @@ import java.util.EventObject;
  * @version 0.9, 13/03/98
  * @author  Andr&eacute; Platzer
  */
-public
-interface EventObjectListener extends EventListener {
+public interface EventObjectListener extends EventListener {
 
-	/**
-	 * called back when EventObjectListener is notified.
-	 * This method should be heavily multithread-safe and not
-	 * synchronized in an implementing subclass.
-	 */
-	public abstract void eventObjectOccured(EventObject e);
+    /**
+     * called back when EventObjectListener is notified.
+     * This method should be heavily multithread-safe and not
+     * synchronized in an implementing subclass.
+     */
+    public abstract void eventObjectOccured(EventObject e);
 }

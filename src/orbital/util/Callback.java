@@ -16,5 +16,4 @@ import orbital.logic.functor.Functor;
  * @author  Andr&eacute; Platzer
  * @see orbital.logic.functor.Functor
  */
-public
-abstract interface Callback {}
+public abstract interface Callback {}

@@ -18,41 +18,40 @@ import java.io.PrintWriter;
  * @version 0.9, 2000/03/10
  * @author  Andr&eacute; Platzer
  */
-public
-class Monitor {
-	protected PrintWriter out;
+public class Monitor {
+    protected PrintWriter out;
 
-	/**
-	 * Construct a monitor specifying where to print monitoring statements.
-	 */
-	public Monitor(PrintWriter wr) {
-		this.out = wr;
-	}
-	public Monitor() {
-		this(new PrintWriter(System.out));
-	}
+    /**
+     * Construct a monitor specifying where to print monitoring statements.
+     */
+    public Monitor(PrintWriter wr) {
+	this.out = wr;
+    }
+    public Monitor() {
+	this(new PrintWriter(System.out));
+    }
 	
-	protected void monitor(String topic, EventObject e) {
-		monitorImpl(topic, e);
-	}
+    protected void monitor(String topic, EventObject e) {
+	monitorImpl(topic, e);
+    }
 
-	// specialized
-	protected void monitor(String topic, AWTEvent e) {
-		monitorImpl(topic, e);
-	}
+    // specialized
+    protected void monitor(String topic, AWTEvent e) {
+	monitorImpl(topic, e);
+    }
 
-	protected void monitor(String topic, BeanContextEvent e) {
-		monitorImpl(topic, e);
-	}
+    protected void monitor(String topic, BeanContextEvent e) {
+	monitorImpl(topic, e);
+    }
 
-	protected void monitor(String topic, PropertyChangeEvent e) {
-		monitorImpl(topic, e);
-	}
+    protected void monitor(String topic, PropertyChangeEvent e) {
+	monitorImpl(topic, e);
+    }
 
-	/**
-	 * monitoring implementation
-	 */
-	protected void monitorImpl(String topic, Object e) {
-		out.println(topic + ' ' + e);
-	}
+    /**
+     * monitoring implementation
+     */
+    protected void monitorImpl(String topic, Object e) {
+	out.println(topic + ' ' + e);
+    }
 }

@@ -33,8 +33,7 @@ import java.text.ParseException;
  * @see java.util.Collection
  * @see <a href="http://www.sql.org">Structured Query Language (SQL)</a>
  */
-public
-class selection {
+public class selection {
     /**
      * Selects or queries a subset of data from a Collection.
      * Such a query can be build like with SQL to filter the desired subset.

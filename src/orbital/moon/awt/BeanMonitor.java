@@ -18,14 +18,13 @@ import java.io.PrintWriter;
  * @author  Andr&eacute; Platzer
  * @todo implements java.beans.beancontext.*Listener as well
  */
-public
-class BeanMonitor extends Monitor
-	implements PropertyChangeListener, VetoableChangeListener {
+public class BeanMonitor extends Monitor
+    implements PropertyChangeListener, VetoableChangeListener {
 
-	public BeanMonitor(PrintWriter wr) {
-		super(wr);
-	}
-	public BeanMonitor() {}
+    public BeanMonitor(PrintWriter wr) {
+	super(wr);
+    }
+    public BeanMonitor() {}
 
     // java.beans.PropertyChangeListener
     public void propertyChange(java.beans.PropertyChangeEvent e) {

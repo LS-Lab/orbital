@@ -1,5 +1,4 @@
-public
-class ArithmeticOperationsBase implements ArithmeticOperations {
+public class ArithmeticOperationsBase implements ArithmeticOperations {
 	protected final int leftDim, rightDim;
 	protected final int resultDim;
 	public ArithmeticOperationsBase(int leftdim, int rightdim, int resultdim) {

@@ -48,11 +48,10 @@ package orbital.util;
  * @author  Andr&eacute; Platzer
  * @see java.lang.InternalError
  */
-public
-class SuspiciousError extends InternalError {
-	public SuspiciousError(String message) {
-		super(message);
-	}
+public class SuspiciousError extends InternalError {
+    public SuspiciousError(String message) {
+	super(message);
+    }
 
-	public SuspiciousError() {}
+    public SuspiciousError() {}
 }

@@ -13,15 +13,14 @@ package orbital.moon.awt;
  * @author  Andr&eacute; Platzer
  * @todo document, enhance design
  */
-public
-interface GUITool {
+public interface GUITool {
 
-	void init();
+    void init();
 
-	void start();
+    void start();
 
-	void stop();
+    void stop();
 
-	void destroy();
+    void destroy();
 }
 

@@ -27,34 +27,33 @@ package orbital.math;
  * @see #INDUCED
  * @see java.util.Comparator
  */
-public
-interface Metric/*<A>*/ {
+public interface Metric/*<A>*/ {
 
-	// norms, metrics and measures
+    // norms, metrics and measures
 
-	/**
-	 * Returns the distance of two objects.
-	 * @return the distance of the objects a and b, or <code>Double.NaN</code> if it is symbolic and has no numeric distance.
-	 * @post RES >= 0 && RES==0 <=> x==y
-	 *   && distance(x,y) == distance(y,x)
-	 *   && distance(x,y) <= distance(x,z) + distance(z,y)
-	 *   && RES&ne;null
-	 */
-	Real distance(Object/*>A<*/ x, Object/*>A<*/ y);
+    /**
+     * Returns the distance of two objects.
+     * @return the distance of the objects a and b, or <code>Double.NaN</code> if it is symbolic and has no numeric distance.
+     * @post RES >= 0 && RES==0 <=> x==y
+     *   && distance(x,y) == distance(y,x)
+     *   && distance(x,y) <= distance(x,z) + distance(z,y)
+     *   && RES&ne;null
+     */
+    Real distance(Object/*>A<*/ x, Object/*>A<*/ y);
 	
-	// induced metric
+    // induced metric
 	
-	/**
-	 * The metric induced by a norm ||.||.
-	 * <p>
-	 * A norm {@link Normed ||.||} on arithmetic objects induces a metric
-	 * d:A&times;A&rarr;<b>R</b>; (a,b)&#8614;d(a,b) := ||a-b||.
-	 * </p>
-	 * @see Normed
-	 */
-	static final Metric/*<Arithmetic>*/ INDUCED = new Metric/*<Arithmetic>*/() {
-		public Real distance(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
-			return ((Arithmetic/*__*/) x).subtract((Arithmetic/*__*/) y).norm();
-		}
+    /**
+     * The metric induced by a norm ||.||.
+     * <p>
+     * A norm {@link Normed ||.||} on arithmetic objects induces a metric
+     * d:A&times;A&rarr;<b>R</b>; (a,b)&#8614;d(a,b) := ||a-b||.
+     * </p>
+     * @see Normed
+     */
+    static final Metric/*<Arithmetic>*/ INDUCED = new Metric/*<Arithmetic>*/() {
+	    public Real distance(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
+		return ((Arithmetic/*__*/) x).subtract((Arithmetic/*__*/) y).norm();
+	    }
 	};
 }

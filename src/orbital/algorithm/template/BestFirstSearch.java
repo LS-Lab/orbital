@@ -38,6 +38,7 @@ public abstract class BestFirstSearch extends GeneralSearch implements Evaluativ
 
     /**
      * An iterator over a state space in best-first order.
+     * Expands nodes with better f-costs, first.
      * @invariant isSorted(nodes)
      * @version 1.0, 2001/08/01
      * @author  Andr&eacute; Platzer
@@ -75,7 +76,7 @@ public abstract class BestFirstSearch extends GeneralSearch implements Evaluativ
         }
         /**
          * Select the node with min f(n).
-         * Due to the sorted list this is the first object.
+         * Due to the sorted list that is the first object.
          * @pre sorted(nodes)
          */
         protected Object/*>S<*/ select() {
@@ -92,7 +93,7 @@ public abstract class BestFirstSearch extends GeneralSearch implements Evaluativ
 		return false;
 	    List l = Setops.asList(newNodes);
 	    // sort newNodes because it most likely is not yet sorted
-	    Collections.sort((List) l, comparator);
+	    Collections.sort(l, comparator);
 	    nodes = Setops.merge(nodes, l, comparator);
 	    return true;
         }

@@ -52,9 +52,8 @@ import orbital.math.Arithmetic;
  * @see MathFunctor.AbstractFunctor
  * @see <a href="doc-files/derive.html">derive()</a>
  */
-public
-abstract interface MathFunctor extends Functor, Arithmetic {
-	/**
+public abstract interface MathFunctor extends Functor, Arithmetic {
+    /**
      * Derives this function and returns the resulting function (<i>d</i>f/<i>d</i>x) f.
      * In fact it applies the differential operator on this function.
      * <p>
@@ -110,41 +109,41 @@ abstract interface MathFunctor extends Functor, Arithmetic {
      * </dl>
      * </p>
      * @return the total derivative function <i>D</i>f.
-	 * @throws ArithmeticException if this function is not derivable.
-	 * @throws UnsupportedOperationException if this function does not implement derivation but could be derived in principle.
-	 */
-	//TODO: introduce MathFunctor derive(); once covariant return-types are allowed.
+     * @throws ArithmeticException if this function is not derivable.
+     * @throws UnsupportedOperationException if this function does not implement derivation but could be derived in principle.
+     */
+    //TODO: introduce MathFunctor derive(); once covariant return-types are allowed.
 	
-	//TODO: or introduce Function<A, Arithmetic> derive()
-	//NO: or introduce either Function<A, Function<R^n,R^m>> derive()
-	//NO: or even Function<A, Matrix<R, n x m>/Arithmetic> derive()
+    //TODO: or introduce Function<A, Arithmetic> derive()
+    //NO: or introduce either Function<A, Function<R^n,R^m>> derive()
+    //NO: or even Function<A, Matrix<R, n x m>/Arithmetic> derive()
 
-	/**
-	 * Integrates this function and returns the resulting indefinite integral &int; f <i>d</i>x.
-	 * @return the indefinite integral function &int; f <i>d</i>x.
-	 * @throws ArithmeticException if this function is not integrable.
-	 * @throws UnsupportedOperationException if this function does not implement integration but could be integrated in principle.
-	 */
-	//TODO: introduce Function integrate();
+    /**
+     * Integrates this function and returns the resulting indefinite integral &int; f <i>d</i>x.
+     * @return the indefinite integral function &int; f <i>d</i>x.
+     * @throws ArithmeticException if this function is not integrable.
+     * @throws UnsupportedOperationException if this function does not implement integration but could be integrated in principle.
+     */
+    //TODO: introduce Function integrate();
 
-	/**
-	 * A composed mathematical functors.
-	 * <div>compose: (f,g) &#8614; f &#8728; g := f(g)</div>
-	 * <p>
-	 * Functions could be composed of an outer Function and an inner Function concatenated with each other.
-	 * </p>
-	 * <p>
-	 * This class is the infimum (greatest common subtype) {@link orbital.logic.functor.Functor.Composite}&cap;{@link MathFunctor}.
-	 * </p>
-	 * 
-	 * @structure is {@link Functor.Composite}&cap;{@link MathFunctor}
-	 * @structure extends MathFunctor
-	 * @structure extends Functor.Composite
-	 * @version 1.0, 2000/01/23
-	 * @author  Andr&eacute; Platzer
-	 * @internal if we only had a section interface of Function and Functor.Composite, then
-	 *  we would not need this interface.
-	 *  The same goes for similar *.Composite* interface here and in math.functional.
-	 */
-	static interface Composite extends orbital.logic.functor.Functor.Composite, MathFunctor {}
+    /**
+     * A composed mathematical functors.
+     * <div>compose: (f,g) &#8614; f &#8728; g := f(g)</div>
+     * <p>
+     * Functions could be composed of an outer Function and an inner Function concatenated with each other.
+     * </p>
+     * <p>
+     * This class is the infimum (greatest common subtype) {@link orbital.logic.functor.Functor.Composite}&cap;{@link MathFunctor}.
+     * </p>
+     * 
+     * @structure is {@link Functor.Composite}&cap;{@link MathFunctor}
+     * @structure extends MathFunctor
+     * @structure extends Functor.Composite
+     * @version 1.0, 2000/01/23
+     * @author  Andr&eacute; Platzer
+     * @internal if we only had a section interface of Function and Functor.Composite, then
+     *  we would not need this interface.
+     *  The same goes for similar *.Composite* interface here and in math.functional.
+     */
+    static interface Composite extends orbital.logic.functor.Functor.Composite, MathFunctor {}
 }

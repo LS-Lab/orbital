@@ -17,19 +17,18 @@ import orbital.algorithm.evolutionary.Population;
  * @version 0.9, 2001/04/08
  * @author  Andr&eacute; Platzer
  */
-public
-class SelectionStatistics {
-	public static final SelectionStatistics selectionStatistics = new SelectionStatistics();
+public class SelectionStatistics {
+    public static final SelectionStatistics selectionStatistics = new SelectionStatistics();
 	
-	protected int selected[];
+    protected int selected[];
 
-	public void setSelected(Population population, Genome selected[]) {
-		this.selected = new int[selected.length];
-		for (int i = 0; i < selected.length; i++)
-			this.selected[i] = population.getMembers().indexOf(selected[i]);
-	}
+    public void setSelected(Population population, Genome selected[]) {
+	this.selected = new int[selected.length];
+	for (int i = 0; i < selected.length; i++)
+	    this.selected[i] = population.getMembers().indexOf(selected[i]);
+    }
 	
-	public int[] getSelected() {
-		return selected;
-	}
+    public int[] getSelected() {
+	return selected;
+    }
 }

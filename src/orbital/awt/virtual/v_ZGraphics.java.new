@@ -21,8 +21,7 @@ import orbital.math.Point3D;
  * @version 0.9, 03/02/96
  * @author  Andr&eacute; Platzer
  */
-public
-class v_ZGraphics extends v_Graphics {
+public class v_ZGraphics extends v_Graphics {
     private short z_buffer[][];
     private void clearZBuffer() {
         for(int j=0;j<z_buffer.length;j++)

@@ -23,16 +23,15 @@ import java.io.OutputStream;
  * @see RandomInputStream
  * @see <a href="{@docRoot}/DesignPatterns/Null.html">Null object</a>
  */
-public
-class NullOutputStream extends OutputStream {
-	public NullOutputStream() {}
+public class NullOutputStream extends OutputStream {
+    public NullOutputStream() {}
 
-	public void write(int b) {}
+    public void write(int b) {}
 
-	public void write(byte[] b, int off, int len) {
-		if (b == null)
-			throw new NullPointerException();
-		else if ((off < 0) || (off > b.length) || (len < 0) || ((off + len) > b.length) || ((off + len) < 0))
-			throw new IndexOutOfBoundsException();
-	} 
+    public void write(byte[] b, int off, int len) {
+	if (b == null)
+	    throw new NullPointerException();
+	else if ((off < 0) || (off > b.length) || (len < 0) || ((off + len) > b.length) || ((off + len) < 0))
+	    throw new IndexOutOfBoundsException();
+    } 
 }

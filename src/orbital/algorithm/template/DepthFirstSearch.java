@@ -34,6 +34,7 @@ import orbital.math.Values;
  * @version 1.0, 2000/09/17
  * @author  Andr&eacute; Platzer
  * @see Backtracking
+ * @internal also has a simple recursive formulation.
  * @internal note Can be made complete for finite state space with bookkeeping to avoid loops.
  */
 public class DepthFirstSearch extends GeneralSearch {

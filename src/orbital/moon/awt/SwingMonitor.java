@@ -37,39 +37,38 @@ import java.io.PrintWriter;
  * @version 0.9, 2000/03/10
  * @author  Andr&eacute; Platzer
  */
-public
-class SwingMonitor extends AWTMonitor
-	implements AncestorListener,
-            CaretListener,
-            CellEditorListener,
-            ChangeListener,
-            DocumentListener,
-            HyperlinkListener,
-            InternalFrameListener,
-            ListDataListener,
-            ListSelectionListener,
-            MenuDragMouseListener,
-            MenuKeyListener,
-            MenuListener,
-            MouseInputListener,
-            PopupMenuListener,
-            TableColumnModelListener,
-            TableModelListener,
-            TreeExpansionListener,
-            TreeModelListener,
-            TreeSelectionListener,
-            TreeWillExpandListener,
-            UndoableEditListener {
+public class SwingMonitor extends AWTMonitor
+    implements AncestorListener,
+	       CaretListener,
+	       CellEditorListener,
+	       ChangeListener,
+	       DocumentListener,
+	       HyperlinkListener,
+	       InternalFrameListener,
+	       ListDataListener,
+	       ListSelectionListener,
+	       MenuDragMouseListener,
+	       MenuKeyListener,
+	       MenuListener,
+	       MouseInputListener,
+	       PopupMenuListener,
+	       TableColumnModelListener,
+	       TableModelListener,
+	       TreeExpansionListener,
+	       TreeModelListener,
+	       TreeSelectionListener,
+	       TreeWillExpandListener,
+	       UndoableEditListener {
 
-	public SwingMonitor(PrintWriter wr) {
-		super(wr);
-	}
-	public SwingMonitor() {}
+    public SwingMonitor(PrintWriter wr) {
+	super(wr);
+    }
+    public SwingMonitor() {}
 
-	// other events
-	protected void monitor(String topic, DocumentEvent e) {
-		monitorImpl(topic, e);
-	}
+    // other events
+    protected void monitor(String topic, DocumentEvent e) {
+	monitorImpl(topic, e);
+    }
 
     // javax.swing.event.MouseInputListener 
 

@@ -22,15 +22,14 @@ import orbital.logic.functor.Predicate;
  * @author  Andr&eacute; Platzer
  * @todo perhaps drop Comparable here?
  */
-public
-interface Scalar extends Arithmetic/*, Comparable*/ {
-	/**
-	 * Checks whether the given arithmetic object is a number.
-	 * return whether v is complex, real, rational or an integer.
-	 */
-	public static final Predicate isa = new Predicate() {
-		public boolean apply(Object v) {
+public interface Scalar extends Arithmetic/*, Comparable*/ {
+    /**
+     * Checks whether the given arithmetic object is a number.
+     * return whether v is complex, real, rational or an integer.
+     */
+    public static final Predicate isa = new Predicate() {
+	    public boolean apply(Object v) {
     		return v instanceof Scalar;
-    	}
+	    }
 	};
 }

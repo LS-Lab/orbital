@@ -25,106 +25,105 @@ import orbital.util.Utility;
  * @version 0.9, 2000/09/24
  * @author  Andr&eacute; Platzer
  */
-public
-class DelegateMap/*<A, B>*/ implements Map/*<A, B>*/, Serializable {
-	private static final long serialVersionUID = -2676126214337402972L;
-	/**
-	 * Extend to create a map delegating nowhere.
-	 * For delegatee will be set to <code>null</code>, this object will throw
-	 * NullPointerExceptions in almost every method.
-	 */
-	private DelegateMap() {
-		delegatee = null;
-	}
+public class DelegateMap/*<A, B>*/ implements Map/*<A, B>*/, Serializable {
+    private static final long serialVersionUID = -2676126214337402972L;
+    /**
+     * Extend to create a map delegating nowhere.
+     * For delegatee will be set to <code>null</code>, this object will throw
+     * NullPointerExceptions in almost every method.
+     */
+    private DelegateMap() {
+	delegatee = null;
+    }
 
-	/**
-	 * Extend to create a map delegating to an implementation map.
-	 * @param delegatee the implementation-map to that map operations are delegated.
-	 */
-	protected DelegateMap(Map/*<A, B>*/ delegatee) {
-		this.delegatee = delegatee;
-	}
+    /**
+     * Extend to create a map delegating to an implementation map.
+     * @param delegatee the implementation-map to that map operations are delegated.
+     */
+    protected DelegateMap(Map/*<A, B>*/ delegatee) {
+	this.delegatee = delegatee;
+    }
 
-	// delegation operations
+    // delegation operations
 
-	/**
-	 * Contains the delegatee map to which operations are be delegated.
-	 * @serial serialization of the map delegated to.
-	 */
-	private Map/*<A, B>*/ delegatee = null;
+    /**
+     * Contains the delegatee map to which operations are be delegated.
+     * @serial serialization of the map delegated to.
+     */
+    private Map/*<A, B>*/ delegatee = null;
 
-	/**
-	 * Get the delegatee map to which operations are delegated.
-	 * @return the implementation-map that map operations are delegated to.
-	 */
-	protected Map/*<A, B>*/ getDelegatee() {
-		return this.delegatee;
-	} 
+    /**
+     * Get the delegatee map to which operations are delegated.
+     * @return the implementation-map that map operations are delegated to.
+     */
+    protected Map/*<A, B>*/ getDelegatee() {
+	return this.delegatee;
+    } 
 
-	/**
-	 * Set the delegatee map to which operations are delegated.
-	 * @param delegatee the implementation-map that map operations are delegated to.
-	 */
-	protected void setDelegatee(Map/*<A, B>*/ delegatee) {
-		this.delegatee = delegatee;
-	} 
+    /**
+     * Set the delegatee map to which operations are delegated.
+     * @param delegatee the implementation-map that map operations are delegated to.
+     */
+    protected void setDelegatee(Map/*<A, B>*/ delegatee) {
+	this.delegatee = delegatee;
+    } 
 
-	 // Delegated operations.
+    // Delegated operations.
 
     public int size() {
-		return getDelegatee().size();
-	}
+	return getDelegatee().size();
+    }
 
     public boolean isEmpty() {
-		return getDelegatee().isEmpty();
-	}
+	return getDelegatee().isEmpty();
+    }
 
     public boolean containsKey(Object/*>A<*/ key) {
-		return getDelegatee().containsKey(key);
-	}
+	return getDelegatee().containsKey(key);
+    }
 
     public boolean containsValue(Object/*>B<*/ v) {
-		return getDelegatee().containsValue(v);
-	}
+	return getDelegatee().containsValue(v);
+    }
 
     public Object/*>B<*/ get(Object/*>A<*/ key) {
-		return getDelegatee().get(key);
-	}
+	return getDelegatee().get(key);
+    }
 
     public Object/*>B<*/ put(Object/*>A<*/ key, Object/*>B<*/ value) {
-		return getDelegatee().put(key, value);
-	}
+	return getDelegatee().put(key, value);
+    }
 
     public Object/*>B<*/ remove(Object/*>A<*/ key) {
-		return getDelegatee().remove(key);
-	}
+	return getDelegatee().remove(key);
+    }
 
     public void putAll(Map/*<A, B>*/ t) {
-		getDelegatee().putAll(t);
-	}
+	getDelegatee().putAll(t);
+    }
 
     public void clear() {
-		getDelegatee().clear();
-	}
+	getDelegatee().clear();
+    }
 
     public Set/*<A>*/ keySet() {
-		return getDelegatee().keySet();
-	}
+	return getDelegatee().keySet();
+    }
 
     public Collection/*<B>*/ values() {
-		return getDelegatee().values();
-	}
+	return getDelegatee().values();
+    }
 
     public Set/*<Entry<A, B>>*/ entrySet() {
-		return getDelegatee().entrySet();
-	}
+	return getDelegatee().entrySet();
+    }
 
     public boolean equals(Object o) {
-		return Utility.equals(getDelegatee(), o);
-	}
+	return Utility.equals(getDelegatee(), o);
+    }
 
     public int hashCode() {
-		return Utility.hashCode(getDelegatee());
-	}
+	return Utility.hashCode(getDelegatee());
+    }
     
 }

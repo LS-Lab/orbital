@@ -18,41 +18,40 @@ import java.io.IOException;
  * @version 0.9, 1999/11/05
  * @author  Andr&eacute; Platzer
  */
-public
-class AnalyzingOutputStream extends FilterOutputStream {
+public class AnalyzingOutputStream extends FilterOutputStream {
 
-	/**
-	 * The DataAnalyzer used while writing.
-	 * @serial
-	 */
-	protected DataAnalyzer analyzer;
+    /**
+     * The DataAnalyzer used while writing.
+     * @serial
+     */
+    protected DataAnalyzer analyzer;
 
-	public AnalyzingOutputStream(OutputStream os, DataAnalyzer analyzer) {
-		super(os);
-		this.analyzer = analyzer;
-	}
+    public AnalyzingOutputStream(OutputStream os, DataAnalyzer analyzer) {
+	super(os);
+	this.analyzer = analyzer;
+    }
 
-	public DataAnalyzer getAnalyzer() {
-		return analyzer;
-	} 
+    public DataAnalyzer getAnalyzer() {
+	return analyzer;
+    } 
 
-	/**
-	 * Changes the DataAnalyzer used while reading data.
-	 */
-	public void setAnalyzer(DataAnalyzer analyzer) {
-		this.analyzer = analyzer;
-	} 
+    /**
+     * Changes the DataAnalyzer used while reading data.
+     */
+    public void setAnalyzer(DataAnalyzer analyzer) {
+	this.analyzer = analyzer;
+    } 
 
-	public void write(int b) throws IOException {
-		super.write(b);
-		analyzer.analyze(b);
-	} 
-	public void write(byte[] b) throws IOException {
-		super.write(b);
-		analyzer.analyze(b, 0, b.length);
-	} 
-	public void write(byte[] b, int off, int len) throws IOException {
-		super.write(b, off, len);
-		analyzer.analyze(b, off, len);
-	} 
+    public void write(int b) throws IOException {
+	super.write(b);
+	analyzer.analyze(b);
+    } 
+    public void write(byte[] b) throws IOException {
+	super.write(b);
+	analyzer.analyze(b, 0, b.length);
+    } 
+    public void write(byte[] b, int off, int len) throws IOException {
+	super.write(b, off, len);
+	analyzer.analyze(b, off, len);
+    } 
 }

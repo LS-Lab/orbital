@@ -17,46 +17,45 @@ import java.awt.event.*;
  * @version 0.9, 04/11/96
  * @author  Andr&eacute; Platzer
  */
-public
-class LabelledComponent extends Panel {
+public class LabelledComponent extends Panel {
 
-	/**
-	 * @serial
-	 */
-	protected Label			  label;
+    /**
+     * @serial
+     */
+    protected Label			  label;
 
-	/**
-	 * @serial
-	 */
-	protected final Component comp;
+    /**
+     * @serial
+     */
+    protected final Component comp;
 
-	public LabelledComponent(String label, Component component) {
-		add(this.label = new LabellingLabel(label));
-		add(this.comp = component);
+    public LabelledComponent(String label, Component component) {
+	add(this.label = new LabellingLabel(label));
+	add(this.comp = component);
 
-		addFocusListener(new FocusAdapter() {
+	addFocusListener(new FocusAdapter() {
 
-			/**
-			 * will pass on focus over to the component.
-			 */
-			public void focusGained(FocusEvent evt) {
-				comp.requestFocus();
-			} 
-		});
-	}
+		/**
+		 * will pass on focus over to the component.
+		 */
+		public void focusGained(FocusEvent evt) {
+		    comp.requestFocus();
+		} 
+	    });
+    }
 }
 
 class LabellingLabel extends Label {
-	public LabellingLabel(String label) {
-		super(label);
-		addMouseListener(new MouseAdapter() {
+    public LabellingLabel(String label) {
+	super(label);
+	addMouseListener(new MouseAdapter() {
 
-			/**
-			 * will pass on focus over to the parent.
-			 */
-			public void mouseClicked(MouseEvent evt) {
-				getParent().requestFocus();
-			} 
-		});
-	}
+		/**
+		 * will pass on focus over to the parent.
+		 */
+		public void mouseClicked(MouseEvent evt) {
+		    getParent().requestFocus();
+		} 
+	    });
+    }
 }

@@ -465,7 +465,7 @@ Expression UnaryExpression() :
 Expression PrimaryExpression() :
 {Expression a;}
 {
-    (LOOKAHEAD(Atom())  //@xxx sure?
+    (LOOKAHEAD(Atom())  //@xxx sure? Also note that this is a dramatic performance bottleneck
      a = Atom()
      |	"(" a = expression() ")"
      )
