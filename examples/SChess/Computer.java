@@ -73,7 +73,7 @@ final class ChessFigureWeighting extends FigureWeighting implements Function /* 
     }
     public Object apply(Object arg) {
 	Argument i = (Argument) arg;
-	Computer.logger.log(Level.FINER, " SF:weighting ... " + "( " + i + " -->");
+	Computer.logger.log(Level.FINER, " SF:weighting ... ( {0} -->", i);
 
 	// we only move our figures, forget about moving opponents
 	if (i.figure.league != ((ChessField) i.field).getTurn())
@@ -83,7 +83,7 @@ final class ChessFigureWeighting extends FigureWeighting implements Function /* 
 	if (i.figure.type != ChessRules.KING)
 	    val += computer.aspects.offensiveFigure;
 
-	Computer.logger.log(Level.FINER, " SF:  ) is weighted to " + val);
+	Computer.logger.log(Level.FINER, " SF:  ) is weighted to {0}", new Double(val));
 	return new Double(val);
     } 
 }
@@ -99,10 +99,10 @@ final class ChessMoveWeighting extends MoveWeighting implements Function /* <Obj
     public Object apply(Object arg) {
 	try {
 	    Argument	i = (Argument) arg;
-	    double		val = ((Number) super.apply(arg)).doubleValue();
+	    double	val = ((Number) super.apply(arg)).doubleValue();
 	    ChessFigure f = (ChessFigure) i.figure;
 
-	    Computer.logger.log(Level.FINER, "    SM: --> " + i.destination + "...");
+	    Computer.logger.log(Level.FINER, "    SM: --> {0}...", i.destination);
 
 	    int targetLeague = i.field.isBeating(i.move, i.destination);
 	    if (targetLeague == i.figure.league)
@@ -118,7 +118,7 @@ final class ChessMoveWeighting extends MoveWeighting implements Function /* <Obj
 
 	    // bottom storm around run aspect
 	    val += i.destination.y * computer.aspects.topStorm;
-	    Computer.logger.log(Level.FINER, "    SM:  " + i.destination.x + "|" + i.destination.y + ": w=" + val);
+	    Computer.logger.log(Level.FINER, "    SM:  {0}|{1}: w={2}", new Object[] {new Integer(i.destination.x), new Integer(i.destination.y), new Double(val)});
 	    return new Double(val);
 	} catch (ClassCastException err) {
 	    throw new InternalError("panic");

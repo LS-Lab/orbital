@@ -168,8 +168,7 @@
 
     <target name="clean" depends="init"
             description="remove all *.class">
-        <mkdir dir="${classes}"/>
-        <delete includeEmptyDirs="true">
+        <delete includeEmptyDirs="true" failonerror="false">
             <fileset dir="${sources}/">
                 <include name="**/*.class"/>
             </fileset>
@@ -177,7 +176,7 @@
             <fileset dir="${build.tests}/">
                 <include name="**/*.class"/>
             </fileset>
-            <fileset dir="${resports.tests}"/>
+            <fileset dir="${reports.tests}"/>
             <fileset dir="${examples}">
 	        <include name="**/*.class"/>
 		<exclude name="Algorithms/MapView.class"/>
@@ -217,7 +216,7 @@
         <fixcrlf srcdir="${examples}"
                  eol="lf" eof="remove"
                  includes="**/*.java, **/*.jj"/>
-        <fixcrlf srcdir="${tests}"
+        <fixcrlf srcdir="${src.tests}"
                  eol="lf" eof="remove"
                  includes="**/*.java, **/*.jj"/>
     </target>

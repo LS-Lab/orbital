@@ -172,8 +172,13 @@ general if N is not a group and φ not unital it may be φ(1)≠1 (and thus φ(x
 If φ:M→N is a homomorphism of <span class="signifier">T</span>, then Im(φ):=φ(M)≤N 
 and Ker(φ):=<sup>-1</sup>φ({0})⊴M are sub-<span class="signifier">T</span> 
 (and Ker(φ) even is a normal subgroup resp. an ideal for groups resp. rings or 
-algebras). Also for N'≤N, <sup>-1</sup>φ(N')≤M is a sub-<span class="signifier">T</span> 
-(and even a normal subgroup resp. ideal if N' is).</p>
+algebras). Also for N'≤N, Ker(φ)⊆<sup>-1</sup>φ(N')≤M is a subgroup/ring 
+(and <!-- <cite>N. Bourbaki, Algebra I.4.6: Subgroups of a quotient group.</cite> -->  
+ even a normal subgroup resp. ideal if N' is).<br>
+{H≤G/N}→̃{N⊆H≤G} is bijective (for subgroups/normal subgroups/subrings/ideals).  
+<!-- <cite>N. Bourbaki, Algebra I.4.6: Subgroups of a quotient group.</cite> -->
+<!-- <cite>N. Bourbaki, Algebra I.8.8: Subrings and ideals of a quotient ring.</cite> -->  
+</p>
 <h4 class="inner">Examples</h4>
 <ol>
   <li>For every set X there is the <dfn>free magma</dfn> M(X) is the free 
@@ -190,8 +195,8 @@ algebras). Also for N'≤N, <sup>-1</sup>φ(N')≤M is a sub-<span class="signif
     = y with x<sub>i</sub>∈X ∧ ε<sub>i</sub>∈{-1,1} ∧ x<sub>i</sub><sup>ε<sub>i</sub></sup>≠x<sub>i+1</sub><sup>-ε<sub>i+1</sub></sup>.</li>
   <li><span class="categorie">Ab</span>≅<b>Z</b>-<span class="categorie">Mod.</span></li>
   <li>The Cartesian product ∏<sub>i∈I</sub> A<sub>i</sub> := {(a<sub>i</sub>)<sub>i∈I</sub> 
-    ¦ a<sub>i</sub>∈A<sub>i</sub>} with component-wise laws is the product in 
-    <span class="categorie">Ens</span>,<span class="categorie">Mag</span>,<span class="categorie">Sgp</span>,<span class="categorie">Mon</span>,<span class="categorie">Gr</span>,<span class="categorie">Ab</span>,<span class="categorie">Rng</span>,<span class="categorie">Rng1</span>,<span class="categorie">cRng</span>,R-<span class="categorie">Mod</span>,K-<span class="categorie">Vec</span>,R-<span class="categorie">Alg</span>,... 
+    ¦ a<sub>i</sub>∈A<sub>i</sub>} with component-wise laws (requiring <abbr title="Axiom of Choice">AxCh</abbr>) 
+    is the product in <span class="categorie">Ens</span>,<span class="categorie">Mag</span>,<span class="categorie">Sgp</span>,<span class="categorie">Mon</span>,<span class="categorie">Gr</span>,<span class="categorie">Ab</span>,<span class="categorie">Rng</span>,<span class="categorie">Rng1</span>,<span class="categorie">cRng</span>,R-<span class="categorie">Mod</span>,K-<span class="categorie">Vec</span>,R-<span class="categorie">Alg</span>,R-<span class="categorie">Algas</span>,R-<span class="categorie">Alg1</span>,... 
     (but <span class="categorie">Fld</span> has no product).<br>
     Especially A<sup>I</sup> := ∏<sub>i∈I</sub> A.</li>
   <li>The direct sum <big>⊕</big><sub>i∈I</sub> A<sub>i</sub> := {(a<sub>i</sub>)<sub>i∈I</sub> 
@@ -204,8 +209,10 @@ algebras). Also for N'≤N, <sup>-1</sup>φ(N')≤M is a sub-<span class="signif
   <li>(X<sup>X</sup>,∘) is a monoid for any set X, and S<sub>X</sub> := Perm(X) 
     := (X<sup>X</sup>)<sup>×</sup> ≤ X is the symmetric group. If M is a 
     magma, then Aut(M)≤S<sub>M</sub>.</li>
-  <li id="commutativeMagmaHom">If M is a magma and C a <dfn>commutative</dfn> 
-    magma, then Hom(M,C)≤C<sup>M</sup> is a commutative sub-<span class="signifier">T</span>.</li>
+  <li id="commutativeMagmaHom">If M is a magma and C a <dfn>commutative</dfn> <span class="signifier">T</span>, 
+    then Hom(M,C)≤C<sup>M</sup> is a commutative sub-<span class="signifier">T</span>. 
+    (<span class="signifier">T</span> is one of <span class="categorie">Sgp</span>,<span class="categorie">Mon</span>,<span class="categorie">Gr</span>,<span class="categorie">Ab</span>,R-<span class="categorie">Mod</span>,K-<span class="categorie">Vec</span>, 
+    R is a commutative? ring <!-- @xxx else Hom is an opposite module? -->).</li>
 </ol>
 <h3>Groups and actions</h3>
 <table width="100%" class="def" id="laws_1_1a">
@@ -768,13 +775,12 @@ homomorphisms of rings:</p>
   <li><b>Z</b>-<span class="categorie">Algas</span>≅<span class="categorie">PseudoRing</span>, 
     <b>Z</b>-<span class="categorie">Algasu</span>≅<span class="categorie">Rng1</span>, 
     <b>Z</b>-<span class="categorie">Algascu</span>≅<span class="categorie">cRng1</span>.</li>
-  <li>R[S] := R<sup>(S)</sup> = <big>⊕</big><sub>s∈S</sub> R = {∑<span class="vector"><sub>s</sub></span><sub>∈S</sub> 
-    a<span class="vector"><sub>s</sub></span>·ι(s) ¦ ∀s∈S a<span class="vector"><sub>s</sub></span>∈R 
-    ∧ a<span class="vector"><sub>s</sub></span>=0 p.t. s∈S} is the R-<dfn id="algebraOfMagma">algebra 
-    of the magma</dfn> S over R (being associative, unital, or commutative if 
-    and only if S is), by ι(s)⋅ι(t) := ι(s⋅t) from the canonical 
-    injection ι:S↪R<sup>(S)</sup>. Therefore by <a href="#distributive">(d)</a>, 
-    multiplication is the convolution
+  <li>R[S] := R<sup>(S)</sup> = <big>⊕</big><sub>s∈S</sub> R = {∑<sub>s</sub><sub>∈S</sub> 
+    a<sub>s</sub>·ι(s) ¦ ∀s∈S a<sub>s</sub>∈R ∧ a<sub>s</sub>=0 p.t. 
+    s∈S} is the R-<dfn id="algebraOfMagma">algebra of the magma</dfn> S over R 
+    (being associative, unital, or commutative if and only if S is), by ι(s)⋅ι(t) 
+    := ι(s⋅t) from the canonical injection ι:S↪R<sup>(S)</sup>. Therefore 
+    by <a href="#distributive">(d)</a>, the multiplication is the convolution
     <div>
       (∑<sub>s∈S</sub> α<sub>s</sub>·ι(s))⋅(∑<sub>s∈S</sub> β<sub>s</sub>·ι(s)) 
       = ∑<sub>s∈S</sub> (∑<sub>t⋅u=s</sub> α<sub>t</sub> β<sub>u</sub>)·ι(s)
@@ -804,7 +810,7 @@ homomorphisms of rings:</p>
         <tr>
           <td class="leftOfMap"><span class="objet">E</span></td>
           <td class="arrowOfMap">↦</td>
-          <td class="rightOfMap">Mor<span class="categorie"><sub>Mag</sub></span>(S,(E,⋅))                                     
+          <td class="rightOfMap">Mor<span class="categorie"><sub>Mag</sub></span>(S,(E,⋅))                                                
             <!-- @todo or Hom as for <b>Z</b>[G]? --> </td>
         </tr>
       </tbody>
@@ -812,9 +818,11 @@ homomorphisms of rings:</p>
     Therefore it enjoys the following universal mapping property
     <div class="UniversalMappingProperty">
       ∀φ:S→(E,⋅) homomorphism of magmas/monoids into an R-algebra E<br />
-      ∃!Φ:R<sup>(S)</sup>→E R-algebra homomorphism with Φ|<sub>S</sub>=φ <!-- @todo Φ is the Einsetzungshomomorphismus -->                 
+      ∃!Φ:R<sup>(S)</sup>→E R-algebra/unital R-algebra homomorphism with Φ|<sub>S</sub>=φ <!-- @todo Φ is the Einsetzungshomomorphismus -->                            
     </div>
-  </li>
+    If R is a graded ring with graduation Δ, then a homomorphism deg:S→Δ 
+    defines a graded R-algebra structure on R<sup>(S)</sup> by setting deg(α·ι(s)) 
+    := deg(α)+deg(s).</li>
   <li>R<sup>X</sup> = ∏<sub>x</sub><sub>∈X</sub> R is a commutative 
     associative R-algebra (for a commutative ring R and a set X), but is 
     distinct from the total algebra.</li>
@@ -826,6 +834,8 @@ homomorphisms of rings:</p>
   <li>By adjoining a unit element, an R-algebra E can be transformed and 
     extended to a unital R-algebra, which is just as associative or commutative 
     as E.</li>
+  <li>(End<sub>A</sub>(M),+,∘) is an associative R-algebra if M is a right 
+    A-module over an associative R-algebra A.</li>
 </ol>
 <h2 id="quotient">Quotient Structures</h2>
 <p>Provided one of the following (equivalent) conditions is satisfied

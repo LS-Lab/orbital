@@ -15,6 +15,7 @@ import java.math.BigInteger;
  * @version 1.1, 2002-09-14
  */
 public class MathUtilitiesTest extends check.TestCase {
+    private Values vf = Values.getDefaultInstance();
     public static void main(String[] args) {
 	junit.textui.TestRunner.run(suite());
     }
@@ -24,13 +25,19 @@ public class MathUtilitiesTest extends check.TestCase {
 
     public void testGcdLcm() {
 	for (int i = 0; i < 20; i++) {
-	    int a = 1 + (int) (Math.random() * 100);
-	    int b = 1 + (int) (Math.random() * 100);
+	    Integer a = vf.valueOf(1 + (int) (Math.random() * 100));
+	    Integer b = vf.valueOf(1 + (int) (Math.random() * 100));
 	    System.out.println(a + " " + b + ": gcd:" + AlgebraicAlgorithms.gcd(a, b) + ", lcm:" + AlgebraicAlgorithms.lcm(a, b));
-	} 
-	assertEquals(AlgebraicAlgorithms.gcd(-8, -4), 4);
-	assertEquals(AlgebraicAlgorithms.gcd(-8, 4), 4);
-	assertEquals(AlgebraicAlgorithms.gcd(8, -4), 4);
+	}
+	//@todo but also accept associated (differing only by a unit 1,-1)
+	assertEquals(AlgebraicAlgorithms.gcd(vf.valueOf(8), vf.valueOf(4)), vf.valueOf(4));
+	assertEquals(AlgebraicAlgorithms.gcd(vf.valueOf(-8), vf.valueOf(-4)), vf.valueOf(4));
+	assertEquals(AlgebraicAlgorithms.gcd(vf.valueOf(-8), vf.valueOf(4)), vf.valueOf(4));
+	assertEquals(AlgebraicAlgorithms.gcd(vf.valueOf(8), vf.valueOf(-4)), vf.valueOf(4));
+	assertEquals(AlgebraicAlgorithms.gcd(vf.valueOf(8), vf.valueOf(6)), vf.valueOf(2));
+	assertEquals(AlgebraicAlgorithms.gcd(vf.valueOf(-8), vf.valueOf(-6)), vf.valueOf(2));
+	assertEquals(AlgebraicAlgorithms.gcd(vf.valueOf(-8), vf.valueOf(6)), vf.valueOf(2));
+	assertEquals(AlgebraicAlgorithms.gcd(vf.valueOf(8), vf.valueOf(-6)), vf.valueOf(2));
     }
     private static String expectedRomans[] = {
 	null,

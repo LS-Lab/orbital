@@ -51,7 +51,7 @@ class RMatrix extends AbstractMatrix {
 	    System.out.println(u + "*" + v + "=" + u.multiply(v));
 	    System.out.println(v + "*" + 2 + "=" + v.multiply(vf.valueOf(2)));
 	    System.out.println("M^-1=" + M.inverse());
-	    System.out.println("fall-back to real matrix");
+	    System.out.println("fall-back to arithmetic matrix");
 	    v = vf.valueOf(new Arithmetic[] {
 		vf.valueOf(1), vf.complex(3,-4), vf.rational(-1, 3), vf.rational(1, 2)
 	    });

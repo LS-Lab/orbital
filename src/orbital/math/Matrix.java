@@ -202,13 +202,18 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     boolean isSymmetric() throws ArithmeticException;
 
     /**
-     * Checks whether this squary matrix is regular.
-     * Regular matrices are those that are invertible,
+     * Checks whether this square matrix is regular.
+     * Invertible matrices are also called regular,
      * which are those with invertible determinant.
-     * @return <code>true</code> if this matrix is regular (thereby invertible) and <code>false</code> if it is singular (linear Rank&lt;n).
+     * @return <code>true</code> if this matrix is invertible and <code>false</code> if it is singular (linear rank&lt;n).
      * @pre isSquare()
      * @post RES &hArr; det()&isin;R<sup>&times;</sup>
      * @throws ArithmeticException if this is not a square matrix since only square matrices can be regular.
+     */
+    boolean isInvertible() throws ArithmeticException;
+
+    /**
+     * @deprecated Since Orbital1.1 use {@link #isInvertible()} instead.
      */
     boolean isRegular() throws ArithmeticException;
 
@@ -238,7 +243,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     int isDefinite() throws ArithmeticException;
 	
     /**
-     * Rank of this matrix.
+     * (linear) rank of this matrix.
      * i.e. the maximum number of column vectors (or row vectors) that are linear independent.
      * @return (linear) rank <span class="matrix">M</span> := dim<sub>K</sub>(im(<span class="matrix">M</span>)).
      * @see Tensor#rank()
@@ -289,7 +294,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
 
     /**
      * Returns the trace of the matrix representation.<p>
-     * The trace is invariant for similar matrices: Tr (<span class="matrix>T</span><sup>-1</sup>&#8729;<span class="matrix">A</span>&#8729;<span class="matrix>T</span>) = Tr <span class="matrix">A</span>.
+     * The trace is invariant to conjugation (similar matrices):
+     * Tr (<span class="matrix">T</span><sup>-1</sup>&#8729;<span class="matrix">A</span>&#8729;<span class="matrix">T</span>) = Tr <span class="matrix">A</span>.
      * @return sum of the main-diagonal-vectors components.
      * @pre isSquare()
      * @throws ArithmeticException if this is not a square matrix, since only square matrix have a trace.
@@ -297,10 +303,12 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     Arithmetic/*>R<*/ trace() throws ArithmeticException;
 
     /**
-     * Returns the determinant of the matrix representation. The determinant is useful to determine if the
-     * matrix can be inverted. The determinant is denoted as det <span class="matrix">M</span> =: |<span class="matrix">M</span>|.
-     * The determinant is the universal alternating mapping R<sup>n&times;</sup>&cong;(R<sup>n</sup>)<sup>n</sup>&rarr;&Lambda;<sup>n</sup>(R<sup>n</sup>)&cong;R
+     * Returns the determinant of the matrix representation. The determinant is useful to determine if a
+     * matrix is {@link #isInvertible() invertible}.
+     * The determinant is the universal alternating map
+     * R<sup>n&times;n</sup>&cong;(R<sup>n</sup>)<sup>n</sup>&rarr;&Lambda;<sup>n</sup>(R<sup>n</sup>)&cong;R
      * of the exterior product &Lambda;<sup>n</sup>(R<sup>n</sup>).
+     * It is denoted as |<span class="matrix">M</span>| := det <span class="matrix">M</span>.
      * <p>
      * <table>
      * <tr><td colspan="3">det:R<sup>n&times;n</sup>&rarr;R exists and is uniquely
@@ -414,8 +422,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      *   </tr>
      *   <tr>
      *     <td>( )</td>
-     *     <td><span class="matrix">M</span>&isin;GL(n,R) &hArr; det(<span class="matrix">M</span>)&isin;R<sup>&times;</sup><br />
-     *     &rArr;det(<span class="matrix">M</span><sup>-1</sup>) = det(<span class="matrix">M</span>)<sup>-1</sup>
+     *     <td><span class="matrix">M</span>&isin;(R<sup>n&times;n</sup>)<sup>&times;</sup> &hArr; det(<span class="matrix">M</span>)&isin;R<sup>&times;</sup><br />
+     *     &rArr; det(<span class="matrix">M</span><sup>-1</sup>) = det(<span class="matrix">M</span>)<sup>-1</sup>
      *     </td>
      *     <td>&nbsp;</td>
      *   </tr>
@@ -481,9 +489,10 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * </table>
      * </p>
      * <p>
-     * The determinant is invariant for similar matrices: det (<span class="matrix>T</span><sup>-1</sup>&#8729;<span class="matrix">A</span>&#8729;<span class="matrix>T</span>) = det <span class="matrix">A</span>.
-     * If the determinant is non-zero, then this matrix is regular and invertible.
-     * However, if the determinant is approximately zero then inverse transform operations might not carry enough precision to produce meaningful results.</p>
+     * The determinant is invariant to conjugation (similar matrices):
+     * det (<span class="matrix">T</span><sup>-1</sup>&#8729;<span class="matrix">A</span>&#8729;<span class="matrix">T</span>) = det <span class="matrix">A</span>.
+     * A matrix is invertible if and only if its determinant is invertible.
+     * However, if the determinant is approximately zero then inverse transform operations might not carry enough numerical precision to produce meaningful results.</p>
      * <p>
      * (det <span class="matrix">A</span>)' = &sum;<span class="doubleIndex"><sub>i=0</sub><sup>n-1</sup></span> det <big>(</big>a<sub>0</sub>&#8230;a<sub>i</sub>'&#8230;a<sub>n-1</sub><big>)</big>
      * where a<sub>i</sub> = (a<sub>0,i</sub>,&#8230;,a<sub>n-1,i</sub>)<sup>t</sup> is the i-th column of <span class="matrix">A</span>.
@@ -491,8 +500,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * @return det <span class="matrix">A</span> = |<span class="matrix">A</span>|
      * @pre isSquare()
      * @post det() multilinear
-     *  	&& (rank() &lt; dimension().width &hArr; det() == 0)
-     *  	&& IDENTITY(n).det() == 1
+     *  	&& (rank() &lt; dimension().width &hArr; det() = 0)
+     *  	&& IDENTITY(n).det() = 1
      * @todo document determinant properties and uniqueness
      * @throws ArithmeticException if this is not a square matrix, since determinant is only defined for square matrices.
      * @todo should R be a commutative ring with one?

@@ -36,157 +36,6 @@ import java.util.logging.Level;
  * @author  Andr&eacute; Platzer
  */
 abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTensor implements Matrix/*<R>*/ {
-    private static class Debug {
-	private static final Logger test = Logger.getLogger("orbital.test");
-	private Debug() {}
-	private static final Values vf = Values.getDefaultInstance();
-	public static void main(String arg[]) throws Exception {
-	    assert_conditions();
-	    test.info("mixed-type matrix");
-	    //@xxx class Debug produces an error with gjc error: type parameter orbital.math.Arithmetic[] is not within its bound orbital.math.Arithmetic
-	    // this is because he confuses vf.valueOf(R[]) with vf.valueOf(R[][]) although R is bound to be orbital.math.Arithmetic
-	    Matrix/*<Scalar>*/ M = vf.valueOf(new Scalar[][] {
-		{vf.valueOf(2), vf.rational(3, 4), vf.rational(-1, 2)},
-		{vf.rational(3, 4), vf.rational(1, 2), vf.valueOf(-1)},
-		{vf.rational(-1, 2), vf.valueOf(0), vf.rational(1)}
-	    });
-	    Vector/*<Rational>*/ v = vf.valueOf(new Rational[] {
-		vf.valueOf(1), vf.rational(-1, 3), vf.rational(1, 2)
-	    });
-	    System.out.println(M + "*" + v + "=" + M.multiply(v));
-	    System.out.println("|M|=" + M.det() + "\t||M||=" + M.norm() + "\tM^-1=\n" + M.inverse());
-	    test.info("complex matrix");
-	    Matrix/*<Complex>*/ M2 = vf.valueOf(new Complex[][] {
-		{vf.complex(1, 2), vf.complex(2, -1)},
-		{vf.complex(1, -2), vf.complex(-1, -1)}
-	    });
-	    v = vf.valueOf(new Scalar[] {
-		vf.valueOf(1), vf.complex(1, 2)
-	    });
-	    System.out.println(M2 + "*" + v + "=" + M2.multiply(v));
-	    System.out.println("|M|=" + M2.det() + "\t||M||=" + M2.norm() + "\tM^-1=\n" + M2.inverse());
-	    test.info("hypermatrix");
-	    /*Matrix M3 = vf.valueOf(new Arithmetic[][] {
-	      {vf.valueOf(2), vf.valueOf(3)},
-	      {vf.valueOf(-3), vf.valueOf(2)}
-	      });
-	      Matrix M4 = vf.valueOf(new Arithmetic[][] {
-	      {vf.rational(1, 3), vf.valueOf(2)},
-	      {vf.rational(-3, 2), vf.rational(-2, 4)}
-	      });
-	      Matrix hypermatrix = vf.valueOf(new Arithmetic[][] {
-	      {M.subMatrix(0,1, 0,1), M2},
-	      {M3, M4}
-	      });
-	      System.out.println(hypermatrix + "^-1 =");
-	      System.out.println("Hypermatrices cannot be inverted, yet");
-	      System.out.println(hypermatrix.inverse());*/
-	} 
-
-	// (partial) assertion condition checks
-	public static void assert_conditions() throws Exception {
-	    Matrix M = vf.valueOf(new Arithmetic[][] {
-		{vf.valueOf(2), vf.rational(3, 4)},
-		{vf.rational(-1, 2), vf.valueOf(0)}
-	    });
-	    Vector v = vf.valueOf(new Arithmetic[] {
-		vf.valueOf(1), vf.rational(-1, 3)
-	    });
-	    for (int i = 0; i < 2; i++) {
-		test.info("reference behaviour part " + i);
-		Scalar s = vf.valueOf(-2);
-		Matrix B = (Matrix) M.clone();
-		Vector b = (Vector) v.clone();
-		assert M != B && M.equals(B) : "clone";
-		assert v != b && v.equals(b) : "clone";
-
-		assert M.toArray() != M.toArray() : "cloned toArray";
-		assert v.toArray() != v.toArray() : "cloned toArray";
-    			
-		test.info("reference behaviour: arithmetic operations");
-		System.out.println(M + "*" + v + "=" + M.multiply(v));
-		assert M.equals(B) : "immutable multiply";
-		System.out.println(M + "*" + s + "=" + M.multiply(s));
-		assert M.equals(B) : "immutable multiply";
-		System.out.println(M + "*" + M + "=" + M.multiply(M));
-		assert M.equals(B) : "immutable multiply";
-
-		test.info("reference behaviour: structure changes");
-		assert M.removeRow(1).equals(M) : "return this";
-		System.out.println("removed row\n" + M);
-		assert !M.equals(B) : "structure change mutates";
-		Matrix B2 = (Matrix) M.clone();
-		assert M.removeColumn(1).equals(M) : "return this";
-		System.out.println("removed column\n" + M);
-		assert !M.equals(B2) : "structure change mutates";
-		System.out.println(M + "*" + M + "=" + M.multiply(M));
-		assert !M.equals(B2) : "structure change mutates";
-		assert M.insertColumns(M).equals(M) : "return this";
-		System.out.println("appended columns\n" + M);
-		assert !M.equals(B2) : "structure change mutates";
-		assert M.insertColumns(M).equals(M) : "return this";
-		System.out.println("appended columns\n" + M);
-		assert !M.equals(B2) : "structure change mutates";
-
-		assert v.remove(0).equals(v) : "return this";
-		System.out.println("removed " + v);
-		assert !v.equals(b) : "structure change mutates";
-		assert v.insert(vf.valueOf(7)).equals(v) : "return this";
-		System.out.println("appended " + v);
-// 		assert !v.equals(b) : "structure change mutates";
-// 		assert v.insert(v).equals(v) : "return this";
-// 		System.out.println("appended " + v);
-// 		assert !v.equals(b) : "structure change mutates";
-    			
-		M = (Matrix) B.clone();
-		v = (Vector) b.clone();
-		assert M != B && M.equals(B) : "clone";
-		assert v != b && v.equals(b) : "clone";
-    			
-		test.info("reference behaviour: sub-view");
-		v = M.getColumn(1);
-		System.out.println(M + ", column " + v);
-		v.set(1, vf.valueOf(42));
-		assert !v.equals(b) && !M.equals(B) : "sub-view modifications write through";
-		System.out.println(M + ", column " + v);
-
-		B2 = (Matrix) M.clone();
-		v = M.getRow(0);
-		System.out.println(M + ", row " + v);
-		v.set(1, vf.valueOf(-42));
-		assert !v.equals(b) && !M.equals(B2) : "sub-view modifications write through";
-		System.out.println(M + ", row " + v);
-    			
-		M = (Matrix) B.clone();
-		B2 = (Matrix) M.clone();
-		System.out.println("appending columns\n" + M + "\nto\n" + M + " ...");
-		boolean bok1 = M.insertColumns(M).equals(M);
-		assert bok1 : "return this";
-		System.out.println("... is\n" + M);
-		assert !M.equals(B2) : "structure change mutates";
-
-		B2 = (Matrix) M.clone();
-		Matrix N = M.subMatrix(0,1, 1,3);
-		assert !N.equals(M) : "sub-view different";
-		System.out.println("Matrix\n" + M + ", sub-view\n" + N);
-		N.set(1, 1, vf.NEGATIVE_INFINITY);
-		System.out.println("Matrix\n" + M + ", sub-view\n" + N);
-		assert !M.equals(B2) : "sub-view modifications write through";
-
-		B2 = (Matrix) M.clone();
-		v = M.getRow(0);
-		System.out.println(M + ", row " + v);
-		v.set(1, vf.valueOf(-444));
-		assert !v.equals(b) && !M.equals(B2) : "sub-view modifications write through";
-		System.out.println(M + ", row " + v);
-
-		M = new RMatrix(MathUtilities.toDoubleArray(B));
-		v = new RVector(MathUtilities.toDoubleArray(b));
-	    }
-	    test.info("passed reference behaviour");
-	} 
-    }	 // Debug
-
     private static final Logger logger = Logger.getLogger(Matrix.class.getName());
     private static final long serialVersionUID = 1360625645424730123L;
 
@@ -813,11 +662,16 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
 	return sign;
     } 
 
-    public boolean isRegular() throws ArithmeticException {
+    public boolean isInvertible() throws ArithmeticException {
 	return !det().norm().equals(Values.ZERO);					// (!) applicable for Double.NaN as well
     } 
+    public boolean isRegular() throws ArithmeticException {
+	return isInvertible();
+    }
 
     public int linearRank() {
+	if (!isSquare())
+	    throw new UnsupportedOperationException("linear rank not yet implemented for non-square matrices. Append 0s");
 	return LUDecomposition.decompose(this).linearRank();
     }
 
@@ -993,7 +847,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
      * </p>
      * @return if this matrix is regular return its inverse.
      * @throws ArithmeticException if this matrix is singular and cannot be inverted.
-     * @pre isRegular()
+     * @pre isInvertible()
      * @post multiply(RES).equals(IDENTITIY(dimension()) && RES.multiply(this).equals(IDENTITY(dimension()) && RES.dimension().equals(dimension())
      * @note it has been proven that matrix inversion can be performed exactly as fast as matrix multiplication.
      * @todo optimize (also consider Willi Schönhauer)
@@ -1046,7 +900,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
 
 	if (!MathUtilities.equalsCa(A, Values.getDefaultInstance().IDENTITY(dimension().width, dimension().width))) {
 	    logger.log(Level.FINEST, "found a supposed inverse:\n{0} but failed to transform to identity matrix:\n{1} ({2})", new Object[] {AI, A, A.getClass()});
-	    assert !isRegular() : "a matrix is singular <=> determinant=0 <=> it cannot be inverted (apart from numerical uncertainty)";
+	    assert !isInvertible() : "a matrix is singular <=> determinant=0 <=> it cannot be inverted (apart from numerical uncertainty)";
 	    throw new ArithmeticException("NoninvertibleMatrixException: singular matrix");
 	} 
 	return AI;
@@ -1060,7 +914,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
 	if (dimension().width <= dimension().height) {
 	    // M = A^T.A
 	    Matrix/*<R>*/ M = transpose().multiply(this);
-	    if (!M.isRegular())
+	    if (!M.isInvertible())
 		throw new UnsupportedOperationException("not yet implemented for matrices with lesser rank (ambiguous)");
 
 	    // (A^T.A)^-1.A^T for Rank A = m <= n
@@ -1068,7 +922,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
 	} else {	// dimension().height < dimension().width
 			// M = A.A^T
 	    Matrix/*<R>*/ M = this.multiply(transpose());
-	    if (!M.isRegular())
+	    if (!M.isInvertible())
 		throw new UnsupportedOperationException("not yet implemented for matrices with lesser rank (ambiguous)");
 
 	    // A^T.(A.A^T)^-1 for Rank A = n < m

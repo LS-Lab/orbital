@@ -22,57 +22,6 @@ import orbital.util.Utility;
  */
 class ArithmeticMatrix/*<R implements Arithmetic>*/ extends AbstractMatrix/*<R>*/ {
     private static final long serialVersionUID = -2994686890096422385L;
-    private static class Debug {
-	private Debug() {}
-	public static void main(String arg[]) throws Exception {
-	    // use new ArithmeticMatrix(Values.valueOf( ... double[][] ... ).toArray() )
-	    // to force usage of an arithmetic matrix for testing purpose
-	    final Values vf = Values.getDefaultInstance();
-	    Matrix M = new ArithmeticMatrix(vf.valueOf(new double[][] {
-		{2, 1, 0, -2},
-		{1, 2, 4, 1},
-		{-2, 1, 2, -2},
-		{-3, 0, 1, -4}
-	    }).toArray());
-	    //@xxx class Debug produces an error with gjc error: type parameter double[] is not within its bound orbital.math.Arithmetic
-	    Vector v = new ArithmeticVector(vf.valueOf(new double[] {
-		1, 2, 1, 2
-	    }).toArray());
-	    Vector u = new ArithmeticVector(vf.valueOf(new double[] {
-		2, 1, 0, -3
-	    }).toArray());
-	    System.out.println(M + "*" + v + "=" + M.multiply(v));
-	    System.out.println(u + "*" + v + "=" + u.multiply(v));
-	    System.out.println(v + "*" + 2 + "=" + v.multiply(vf.valueOf(2)));
-	    System.out.println("norm ||M||\t=" + M.norm());
-	    System.out.println("column sum norm\t=" + M.norm(1));
-	    System.out.println("row sum norm\t=" + M.norm(Double.POSITIVE_INFINITY));
-	    System.out.println("Rank M\t=" + M.linearRank());
-	    System.out.println("det M\t= |M|=" + M.det());
-	    System.out.println("Tr M\t=" + M.trace());
-	    System.out.println("M^-1\t=" + M.inverse());
-	    System.out.println("Type examination Matrix N to multiply M with");
-	    String n = "";
-	    while (true) {
-		int ch = System.in.read();
-		if (ch == -1 || ch == 0x1b)
-		    break;
-		n += (char) ch;
-	    } 
-	    Matrix N = (Matrix) vf.valueOf(n);
-	    System.out.println("norm ||N||\t=" + N.norm());
-	    System.out.println("column sum norm\t=" + N.norm(1));
-	    System.out.println("row sum norm\t=" + N.norm(Double.POSITIVE_INFINITY));
-	    System.out.println("Rank N\t=" + N.linearRank());
-	    System.out.println("det N\t= |N|=" + N.det());
-	    System.out.println("Tr N\t=" + N.trace());
-	    System.out.println("N^-1\t=" + N.inverse());
-	    System.out.print(M + "\n*\n" + N);
-	    System.out.println("=" + M.multiply(N));
-	} 
-    }	 // Debug
-
-
     /**
      * contains the Matrix data m<sub>i,j</sub> as Arithmetic objects.
      * <p>

@@ -354,6 +354,8 @@ public class FunctionTest extends check.TestCase {
 	    return vf.valueOf(integerArgument((int)min, (int)max));
 	else if ((testType & TYPE_COMPLEX) != 0 && Utility.flip(random, 0.4))
 	    return vf.complex(realArgument(min, max), realArgument(min, max));
+// 	else if ((testType & TYPE_RATIONAL) != 0 && Utility.flip(random, 0.4))
+// 	    return vf.rational(integerArgument((int)min, (int)max), integerArgument(1, (int)max));
 	else
 	    return vf.valueOf(realArgument(min, max));
     }

@@ -51,35 +51,6 @@ import java.util.logging.Level;
  * @see Evaluations
  */
 public final class MathUtilities {
-    private static class Debug {
-	public static void main(String arg[]) throws Exception {
-	    System.out.println("gcds/lcms:");
-	    for (int i = 0; i < 20; i++) {
-		int a = 1 + (int) (Math.random() * 100);
-		int b = 1 + (int) (Math.random() * 100);
-		System.out.println(a + " " + b + ": gcd:" + AlgebraicAlgorithms.gcd(a, b) + ", lcm:" + AlgebraicAlgorithms.lcm(a, b));
-	    } 
-	    System.out.println(AlgebraicAlgorithms.gcd(-8, -4));
-	    System.out.println(AlgebraicAlgorithms.gcd(-8, 4));
-	    System.out.println(AlgebraicAlgorithms.gcd(8, -4));
-	    System.out.println("romans:");
-	    for (short d = 1; d < 30; d++)
-		System.out.println(d + "=^=" + toRoman(d));
-	    double v;
-	    v = 1112.345678999999;
-	    System.out.println(v + ":" + format(v));
-	    System.out.println(v + ":" + format(v, 6));
-	    System.out.println(v + ":" + format(v, -2));
-	    System.out.println(v + ":" + format(123.000, 6));
-	    System.out.println("primes:");
-	    for (BigInteger p = BigInteger.valueOf(1); p.compareTo(BigInteger.valueOf(140)) < 0; p = p.add(BigInteger.valueOf(1)))
-		System.out.print((isPrime(p) ? 'ø' : ' ') + "" + p + "\t");
-	    System.out.println();
-	    System.out.println(format(new byte[] {12,4,77,1,-1,0,-0,-5,8,127,-127,-128,80,-80,2,-2,10,-10}));
-	} 
-    }	 // Debug
-
-
     private static final Logger logger = Logger.getLogger(MathUtilities.class.getName());
 
     /**
@@ -305,7 +276,10 @@ public final class MathUtilities {
      */
     public static boolean isPrime(BigInteger val) {
 	BigInteger p = val.abs();
-	if (p.equals(ONE))
+	if (p.equals(ZERO))
+	    //@internal 0 is prime in integrity domains (not containing other zero divisors than 0)
+	    return true;
+	else if (p.equals(ONE))
 	    return false;
 	else if (p.equals(TWO) || p.equals(FIVE))
 	    return true;

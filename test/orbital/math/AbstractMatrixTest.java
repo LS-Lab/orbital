@@ -7,13 +7,18 @@
 package orbital.math;
 
 import junit.framework.*;
+import java.util.Random;
+
+import java.awt.Dimension;
 
 /**
  * A sample test case, testing .
  * @version 1.1, 2002-09-14
  */
 public class AbstractMatrixTest extends check.TestCase {
+    private static final int TEST_REPETITION = 20;
     private Values vf;
+    private Real tolerance;
     private Matrix/*<Scalar>*/ M1;
     private Matrix/*<Complex>*/ M2;
     private Matrix M3;
@@ -28,6 +33,8 @@ public class AbstractMatrixTest extends check.TestCase {
     }
     protected void setUp() {
 	vf = Values.getDefaultInstance();
+	random = new Random();
+	tolerance = vf.valueOf(1e-6);
 	//@xxx class Debug produces an error with gjc error: type parameter orbital.math.Arithmetic[] is not within its bound orbital.math.Arithmetic
 	// this is because he confuses vf.valueOf(R[]) with vf.valueOf(R[][]) although R is bound to be orbital.math.Arithmetic
 	M1 = vf.valueOf(new Scalar[][] {
@@ -179,5 +186,50 @@ public class AbstractMatrixTest extends check.TestCase {
 	    M = new RMatrix(MathUtilities.toDoubleArray(B));
 	    v = new RVector(MathUtilities.toDoubleArray(b));
 	}
-    } 
+    }
+
+    /**
+     * Tests det(), trace() for invariance under conjugation by
+     * T^-1.A.T
+     */
+    public void testConjugationInvariance() {
+	final double MIN = -40;
+	final double MAX = 40;
+	for (int i = 0; i < TEST_REPETITION; i++) {
+	    int dim = integerArgument(1, 6).intValue();
+	    //@todo how to construct other invertible matrices (Basisergänzungssatz?)
+	    Matrix T = vf.DIAGONAL(vectorArgument(dim, MIN, MAX));
+	    assert T.isInvertible() : "T constructed to be invertible";
+	    Matrix A = matrixArgument(dim,dim, MIN, MAX);
+
+	    Matrix conjA = (Matrix) T.inverse().multiply(A).multiply(T);
+	    assertTrue(A.trace().equals(conjA.trace(), tolerance) , "trace is invariant to conjugation");
+	    assertTrue(A.det().equals(conjA.det(), tolerance) , "det is invariant to conjugation");
+	}
+    }
+
+    //@internal almost identical to @see test/orbital.math.functional.FunctionTest, @todo reuse
+    // create (random) argument values
+
+    private Random random;
+    private Integer integerArgument(int min, int max) {
+	return vf.valueOf((int)((max-min) * random.nextDouble()) + min);
+    }
+    private Real realArgument(double min, double max) {
+	return vf.valueOf(((max-min) * random.nextDouble() + min));
+    }
+    private Matrix matrixArgument(int height, int width, double min, double max) {
+	Dimension dim = new Dimension(height, width);
+	Matrix x = vf.newInstance(dim);
+	for (int i = 0; i < dim.height; i++)
+	    for (int j = 0; j < dim.width; j++)
+		x.set(i,j, realArgument(min,max));
+	return x;
+    }
+    private Vector vectorArgument(int dim, double min, double max) {
+	Vector x = vf.newInstance(dim);
+	for (int i = 0; i < dim; i++)
+	    x.set(i, realArgument(min, max));
+	return x;
+    }
 }

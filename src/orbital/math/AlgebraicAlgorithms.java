@@ -393,7 +393,7 @@ public final class AlgebraicAlgorithms {
      * @pre &not;(a==0 &and; b==0)
      * @todo optimize, or simply call {@link #gcd(Euclidean,Euclidean)}
      */
-    public static int gcd(int a, int b) {
+    static int gcd(int a, int b) {
 	if ((a == 0 && b == 0))
 	    throw new ArithmeticException("gcd(0, 0) is undefined");
 	if (b == 0)
@@ -426,7 +426,7 @@ public final class AlgebraicAlgorithms {
      * Returns least common multiple (lcm) of two integers.
      * @see #lcm(Euclidean,Euclidean)
      */
-    public static int lcm(int a, int b) {
+    static int lcm(int a, int b) {
 	return a * b / gcd(a, b);
     } 
 

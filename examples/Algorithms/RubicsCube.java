@@ -420,7 +420,7 @@ public class RubicsCube implements GeneralSearchProblem {
         /*protected int seiteheil (int feld[], int seite) {
           int i = seite * 4 - 3;
           if (feld[i] == feld[i + 1] && feld[i] == feld[i + 2] && feld[i] == feld[i + 3] ) {
-	  //'prfe kanten
+	  //'pr?fe kanten
 	  switch(seite) {
 	  case 1:
 	  if (feld[8] == feld[11] && feld[12] == feld[15] && feld[4] == feld[7] && feld[21] == feld[22]) return 1;

@@ -24,7 +24,7 @@ import orbital.logic.functor.Predicates;
  * @author  Andr&eacute; Platzer
  * @stereotype &laquo;Structure&raquo;
  * @stereotype &laquo;Wrapper&raquo;
- * @invariant !isRegular() || getP().multiply(A).equals(getL().multiply(getU()))
+ * @invariant !isInvertible() || getP().multiply(A).equals(getL().multiply(getU()))
  * @see #decompose(Matrix)
  * @see NumericalAlgorithms
  * @note this class is more or less just a workaround for returning multiple values.
@@ -79,7 +79,7 @@ public final class LUDecomposition/*<R implements Arithmetic>*/ implements Seria
 		// @see orbital.util.Setops#argmax
 		int pivot = k;
 		for (int i = k + 1; i < A.dimension().height; i++)
-		    if (((Real) A.get(i, k)).compareTo(A.get(pivot, k)) > 0)
+		    if ((A.get(i, k).norm()).compareTo(A.get(pivot, k).norm()) > 0)
 			pivot = i;
 		if (pivot != k) {
 		    A.swapRows(k, pivot);
@@ -147,19 +147,26 @@ public final class LUDecomposition/*<R implements Arithmetic>*/ implements Seria
 
     /**
      * <span class="matrix">A</span> is regular if and only if <span class="matrix">U</span> is which depends upon whether there is a 0 on the diagonal.
-     * @see Matrix#isRegular()
+     * @see Matrix#isInvertible()
      */
-    public boolean isRegular() throws ArithmeticException {
+    public boolean isInvertible() throws ArithmeticException {
 	for (int i = 0; i < A.dimension().height; i++)
 	    if (A.get(i, i).norm().equals(Values.ZERO))
 		return false;
 	return true;
+    }
+    /**
+     * @deprecated Since Orbital1.1 use {@link #isInvertible()} instead.
+     */
+    public boolean isRegular() throws ArithmeticException {
+	return isInvertible();
     }
 
     /**
      * Rank of the matrix.
      * i.e. the number of non-zero elements on the diagonal of <span class="matrix">U</span>.
      * @see Matrix#linearRank()
+     * @fixme test failed.
      */
     public int linearRank() {
 	return Setops.count(A.getDiagonal().iterator(), Functionals.compose(Functionals.bindSecond(Predicates.equal, Values.ZERO), Functions.norm) /*new Predicate() {

@@ -203,18 +203,35 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		    Reader rd = null;
 		    System.out.println("proving " + file + " ...");
 		    try {
-			if ("all".equalsIgnoreCase(file)) {
-			    rd = new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/semantic-equivalence.txt"), DEFAULT_CHARSET);
-			    if (!proveAll(rd, logic, true, normalForm, verbose))
-				throw new LogicException("instantiated " + logic + " which does not support all conjectures of semantic equivalences. Either the logic is non-classical, or the resource file is corrupt");
-			} else if ("none".equalsIgnoreCase(file)) {
-			    rd = new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/semantic-garbage.txt"), DEFAULT_CHARSET);
-			    if (proveAll(rd, logic, false, normalForm, verbose))
-				throw new LogicException("instantiated " + logic + " which does support a contradictory conjecture of semantic garbage. Either the logic is non-classical, or the resource file is corrupt");
-			} else if ("properties".equalsIgnoreCase(file)) {
-			    rd = new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/semantic-properties.txt"), DEFAULT_CHARSET);
-			    if (!proveAll(rd, logic, true, normalForm, verbose))
-				throw new LogicException("instantiated " + logic + " which does not support all conjectures of semantic properties. Either the logic is non-classical, or the resource file is corrupt");
+			if ("all".equalsIgnoreCase(file)
+			    || "none".equalsIgnoreCase(file)
+			    || "properties".equalsIgnoreCase(file)
+			    || "fol".equalsIgnoreCase(file)
+			    ) {
+			    //@internal our resolution does not prove things resulting from contradictious facts (after simplification) so avoid those cases by providing a special file for resolution.
+			    final String mech = logic.getInferenceMechanism() == RESOLUTION_INFERENCE
+				? "resolution"
+				: "semantic";
+			    String resName;
+			    boolean expected;
+			    if ("all".equalsIgnoreCase(file)) {
+				resName = mech + "-equivalence.txt";
+				expected = true;
+			    } else if ("none".equalsIgnoreCase(file)) {
+				resName = mech + "-garbage.txt";
+				expected = false;
+			    } else if ("properties".equalsIgnoreCase(file)) {
+				resName = "semantic-properties.txt";
+				expected = true;
+			    } else if ("fol".equalsIgnoreCase(file)) {
+				resName = "resolution-fol.txt";
+				expected = true;
+			    } else
+				throw new InternalError("none of the cases of which one occurs is true");
+			    System.err.println("proving " + resName + " ...");
+			    rd = new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/" + resName), DEFAULT_CHARSET);
+			    if (expected != proveAll(rd, logic, expected, normalForm, verbose))
+				throw new LogicException("instantiated " + logic + " which does " + (expected ? "not support all conjectures" : "a contradictory conjecture") + " of " + resName + ". Either the logic is non-classical, or the resource file is corrupt.");
 			} else {
 			    rd = charset == null
 				? new FileReader(file)
@@ -265,7 +282,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    throw ex;
     	}
     } 
-    public static final String usage = "usage: [options] [all|none|properties|<filename>|table]\n\tall\tprove important semantic-equivalence expressions\n\tnone\ttry to prove some semantic-garbage expressions\n\tproperties\tprove some properties of classical logic inference relation\n\t<filename>\ttry to prove all expressions in the given file\n\ttable\tprint a function table of the expression instead\n\t-\tUse no arguments at all to be asked for expressions\n\t\tto prove.\noptions:\n\t-normalForm\tcheck the conjunctive and disjunctive forms in between\n\t-resolution\tuse resolution instead of semantic inference\n\t-verbose\tbe more verbose (f.ex. print normal forms if -normalForm)\n\t-charset=<encoding>\tthe character set or encoding to use for reading files\n\nTo check whether A and B are equivalent, enter '|= A<->B'";
+    public static final String usage = "usage: [options] [all|none|properties|fol|<filename>|table]\n\tall\tprove important semantic-equivalence expressions\n\tnone\ttry to prove some semantic-garbage expressions\n\tproperties\tprove some properties of classical logic inference relation\n\tfol\tprove important equivalences of first-order logic\n\n\t<filename>\ttry to prove all expressions in the given file\n\ttable\tprint a function table of the expression instead\n\t-\tUse no arguments at all to be asked for expressions\n\t\tto prove.\noptions:\n\t-normalForm\tcheck the conjunctive and disjunctive forms in between\n\t-resolution\tuse resolution instead of semantic inference\n\t-verbose\tbe more verbose (f.ex. print normal forms if -normalForm)\n\t-charset=<encoding>\tthe character set or encoding to use for reading files\n\nTo check whether A and B are equivalent, enter '|= A<->B'";
 
     /**
      * Prove all conjectures read from a reader.
@@ -470,69 +487,6 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 
     }
 
-    // enum of inference mechanisms
-    /**
-     * Semantic inference with truth-tables.
-     */
-    public static final InferenceMechanism SEMANTIC_INFERENCE = new InferenceMechanism("SEMANTIC_INFERENCE") {
-	    /**
-	     * @attribute stateless
-	     */
-	    private final Inference _semanticInference = new Inference() {
-		    public boolean infer(Formula[] B, Formula D) {
-			Signature sigma = D.getSignature();
-			// sigma limited to the (free) part that really affects semantic inference
-			Signature sigmaInt = relevantSignatureOf(D);
-			for (int i = 0; i < B.length; i++) {
-			    sigma = sigma.union(B[i].getSignature());
-			    sigmaInt = sigmaInt.union(relevantSignatureOf(B[i]));
-			}
-			// semantic test whether all interpretations that satisfy all formulas in B, also satisfy D
-			Interpretation[] Int = createAllInterpretations(sigmaInt, sigma);
-			loop:
-			for (int i = 0; i < Int.length; i++) {
-			    Interpretation I = Int[i];
-			    // I |= B is defined as &forall;F&isin;B: I |= F
-			    for (int b = 0; b < B.length; b++)
-				if (!B[b].apply(I).equals(Boolean.TRUE)) //if (!satisfy(I, B[b]))
-				    continue loop;
-			    if (!D.apply(I).equals(Boolean.TRUE)) //if (!satisfy(I, D))
-				return false;
-			}
-			return true;
-		    }
-		    /**
-		     * Limits a signature by removing bound (-only) variables that do not affect
-		     * semantic inference, anyway.
-		     */
-		    private Signature relevantSignatureOf(Formula F) {
-			Collection boundOnly = new HashSet(F.getBoundVariables());
-			boundOnly.removeAll(F.getFreeVariables());
-			Signature sig = F.getSignature();
-			sig.removeAll(boundOnly);
-			return sig;
-		    }
-		    public boolean isSound() {
-			return true;
-		    } 
-		    public boolean isComplete() {
-			return true;
-		    } 
-		};
-	    Inference inference() {
-		return _semanticInference;
-	    }
-	};
-    /**
-     * Resolution inference.
-     * Inference mechanism driven by full resolution.
-     */
-    public static final InferenceMechanism RESOLUTION_INFERENCE = new InferenceMechanism("RESOLUTION") {
-	    private final Inference _resolution = new Resolution();
-	    Inference inference() {
-		return _resolution;
-	    }
-	};
     /**
      * The inference mechanism applied for the {@link #inference() inference relation}.
      * @serial
@@ -545,6 +499,10 @@ public class ClassicalLogic extends ModernLogic implements Logic {
     }
     public ClassicalLogic(InferenceMechanism inferenceMechanism) {
 	setInferenceMechanism(inferenceMechanism);
+    }
+
+    public String toString() {
+	return getClass().getName() + '[' + getInferenceMechanism() + ']';
     }
 
     /**
@@ -1316,6 +1274,70 @@ public class ClassicalLogic extends ModernLogic implements Logic {
     } 
 
 
+
+    // enum of inference mechanisms @internal this must be below initialization of coreSignature since Resolution needs it.
+    /**
+     * Semantic inference with truth-tables.
+     */
+    public static final InferenceMechanism SEMANTIC_INFERENCE = new InferenceMechanism("SEMANTIC_INFERENCE") {
+	    /**
+	     * @attribute stateless
+	     */
+	    private final Inference _semanticInference = new Inference() {
+		    public boolean infer(Formula[] B, Formula D) {
+			Signature sigma = D.getSignature();
+			// sigma limited to the (free) part that really affects semantic inference
+			Signature sigmaInt = relevantSignatureOf(D);
+			for (int i = 0; i < B.length; i++) {
+			    sigma = sigma.union(B[i].getSignature());
+			    sigmaInt = sigmaInt.union(relevantSignatureOf(B[i]));
+			}
+			// semantic test whether all interpretations that satisfy all formulas in B, also satisfy D
+			Interpretation[] Int = createAllInterpretations(sigmaInt, sigma);
+			loop:
+			for (int i = 0; i < Int.length; i++) {
+			    Interpretation I = Int[i];
+			    // I |= B is defined as &forall;F&isin;B: I |= F
+			    for (int b = 0; b < B.length; b++)
+				if (!B[b].apply(I).equals(Boolean.TRUE)) //if (!satisfy(I, B[b]))
+				    continue loop;
+			    if (!D.apply(I).equals(Boolean.TRUE)) //if (!satisfy(I, D))
+				return false;
+			}
+			return true;
+		    }
+		    /**
+		     * Limits a signature by removing bound (-only) variables that do not affect
+		     * semantic inference, anyway.
+		     */
+		    private Signature relevantSignatureOf(Formula F) {
+			Collection boundOnly = new HashSet(F.getBoundVariables());
+			boundOnly.removeAll(F.getFreeVariables());
+			Signature sig = new SignatureBase(F.getSignature());
+			sig.removeAll(boundOnly);
+			return sig;
+		    }
+		    public boolean isSound() {
+			return true;
+		    } 
+		    public boolean isComplete() {
+			return true;
+		    } 
+		};
+	    Inference inference() {
+		return _semanticInference;
+	    }
+	};
+    /**
+     * Resolution inference.
+     * Inference mechanism driven by full resolution.
+     */
+    public static final InferenceMechanism RESOLUTION_INFERENCE = new InferenceMechanism("RESOLUTION") {
+	    private final Inference _resolution = new Resolution();
+	    Inference inference() {
+		return _resolution;
+	    }
+	};
 
     /**
      * Get all possible &Sigma;-Interpretations associating

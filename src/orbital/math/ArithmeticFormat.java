@@ -57,55 +57,6 @@ import java.util.logging.Level;
  * @see NumberFormat
  */
 public class ArithmeticFormat extends Format {
-    private static class Debug {
-	private Debug() {}
-	//@fixme class Debug produces an error with gjc error: type parameter orbital.math.Arithmetic[] is not within its bound orbital.math.Arithmetic
-	public static void main(String arg[]) throws Exception {
-	    final Values vf = Values.getDefaultInstance();
-	    Matrix M = vf.valueOf(new Arithmetic[][] {
-		{vf.valueOf(2), vf.complex(3, 4), vf.rational(-1, 2)},
-		{vf.valueOf(3.12), vf.rational(1, 2), vf.valueOf(-1)},
-		{vf.rational(-1, 2), vf.valueOf(0), vf.rational(1)}
-	    });
-	    Vector v = vf.valueOf(new Arithmetic[] {
-		vf.valueOf(1), vf.rational(-1, 3), vf.rational(1, 2)
-	    });
-	    System.out.println(M + "*" + v + "=" + M.multiply(v));
-	    ArithmeticFormat f = ArithmeticFormat.getDefaultInstance();
-	    System.out.println("Type arithmetic examination object to parse (finish with Esc or Ctrl-Z or '#')");
-	    String n = "";
-	    while (true) {
-		int ch = System.in.read();
-		if (ch == -1 || ch == 0x1b || ch == '#')
-		    break;
-		n += (char) ch;
-	    } 
-	    System.out.println("From '"+n+"'");
-	    Arithmetic s = f.parse(n);
-	    System.out.println("Parsed\n"+s);
-	    System.out.println("Understood?");
-	    assert f.parse(s.toString()).equals(s) : "re-parse of representation of an object should equal that object " + n;
-	    System.out.println("And various cases:");
-	    String test[][] = new String[][] {
-		{"1","-1","i","-i"},
-		{"1+i","i+1","1-i","-i+1","-1+i","i-1","-1-i","-i-1"},
-		{"2+3*i","2+i*3","3*i+2","i*3+2","2+3i","2+i*3","3i+2","i*3+2"},
-		{"2-3*i","2-i*3","-3*i+2","-i*3+2","2-3i","2-i*3","-3i+2","-i*3+2"},
-		{"-2+3*i","-2+i*3","3*i-2","i*3-2","-2+3i","-2+i*3","3i-2","i*3-2"},
-		{"-2-3*i","-2-i*3","-3*i-2","-i*3-2","-2-3i","-2-i*3","-3i-2","-i*3-2"},
-		{"2+-3*i","2+i*-3","-3*i+2","i*-3+2","2+-3i","2+i*-3","-3i+2","i*-3+2"}};
-	    for (int i=0;i<test.length;i++) {
-		for (int j=0;j<test[i].length;j++) {
-		    Arithmetic value = f.parse(test[i][j]);
-		    System.out.println(test[i][j] + "\t== " + value + ",");
-		    assert f.parse(value.toString()).equals(value) : "re-parse of representation of an object should equal that object " + test[i][j];
-		}
-		System.out.println();
-	    }
-	}
-    }	// Debug
-
-
     private static final Logger logger = Logger.getLogger(ArithmeticFormat.class.getPackage().getName());
     private static final long serialVersionUID = 4708045695735837065L;
 	
@@ -159,7 +110,7 @@ public class ArithmeticFormat extends Format {
     private String matrixRowPrefix				= "[";
     private String matrixRowSeparator			= System.getProperty("line.separator");
     // alternatives are accepted for parsing, only, but not used for output formatting //@xxx " " will not allow multiple spaces as separator
-    private String matrixRowSeparatorAlternatives[] = {";", " ", "\t", ""};
+    private String matrixRowSeparatorAlternatives[] = {"\n", "\r\n", ";", " ", "\t", ""};
     private String matrixRowSuffix				= "]";
 	
     //@todo improve syntax (and make it more flexible for c1 and c0
@@ -713,9 +664,10 @@ public class ArithmeticFormat extends Format {
 	final Values vf = Values.getDefaultInstance();
 	try {
 	    do {
-		// Matrix
+		// parse Matrix
 		if (source.startsWith(matrixPrefix, status.getIndex())
 		    && source.startsWith(matrixRowPrefix, status.getIndex() + matrixPrefix.length())) {
+		    //@fixme we cannot parse [2, 4 , 8]
 		    status.setIndex(status.getIndex() + matrixPrefix.length());
 		    /* maximum column width */
 		    int	 colWidth = 0;
@@ -747,7 +699,7 @@ public class ArithmeticFormat extends Format {
 		    return v;
 		}
         
-		// Vector
+		// parse Vector
 		else if (found(vectorPrefix, source, status)) {
 		    List components = new LinkedList();
 		    Arithmetic el;
@@ -763,12 +715,12 @@ public class ArithmeticFormat extends Format {
 		    return v;
 		}
         
-		// single Scalar
+		// parse Scalar
     
 		//TODO: limit preview via upto the next "delimiter" like one of ",\t)" and so on.
 		// Will limit useless lookahead as in (3,4,5,2/9) all will first be parsed as a rational
         		
-		// Complex
+		// parse Complex
 		else if (source.indexOf(complexUnit, status.getIndex()) >= 0) {
 		    int fallbackIndex = status.getIndex();
 		    try {
@@ -855,7 +807,7 @@ public class ArithmeticFormat extends Format {
 		    }
             	}
     
-		// Rational
+		// parse Rational
 		if (source.indexOf(rationalSeparator, status.getIndex()) >= 0) {
 		    int fallbackIndex = status.getIndex();
 		    try {
@@ -876,7 +828,7 @@ public class ArithmeticFormat extends Format {
 		    }
             	}
     
-		// Real or Integer
+		// parse Real or parse Integer
 		Number n = numberFormat.parse(source, status);
 		//@todo parse Real.Big and Integer.Big as well
 		if (n != null)
@@ -889,8 +841,8 @@ public class ArithmeticFormat extends Format {
 		    break;
 	    } while (true);
 
-	    // Symbol identifier [a-zA-Z][a-zA-Z0-9]*
-	    //TODO:
+	    // parse Symbol identifier [a-zA-Z][a-zA-Z0-9]*
+	    //@TODO introduce parse Symbol
 	    return null;
 	}
 	catch(ExpectationHurtParseException invalid) {

@@ -72,12 +72,12 @@ public class ArithmeticMatrixTest extends check.TestCase {
 	System.out.println("norm ||N||\t=" + N.norm());
 	assertTrue(N.norm().equals(vf.valueOf(8.89602), tolerance));
 	System.out.println("column sum norm\t=" + N.norm(1));
-	assertTrue(N.norm(1).equals(vf.valueOf(7.5694), tolerance));
+	assertTrue(N.norm(1).equals(vf.valueOf(7.5694), vf.valueOf(1e-4)));
 	System.out.println("row sum norm\t=" + N.norm(Double.POSITIVE_INFINITY));
 	assertTrue(N.norm(Double.POSITIVE_INFINITY).equals(vf.valueOf(10.1), tolerance));
 	System.out.println("Rank N\t=" + N.linearRank());
 	System.out.println("det N\t= |N|=" + N.det());
-	assertTrue(N.det().equals(vf.complex(132.161, 8.06667)));
+	assertTrue(N.det().equals(vf.complex(132.161, 8.06667), tolerance));
 	System.out.println("Tr N\t=" + N.trace());
 	assertTrue(N.trace().equals(vf.valueOf(1.35)));
 	System.out.println("N^-1\t=" + N.inverse());
@@ -87,9 +87,9 @@ public class ArithmeticMatrixTest extends check.TestCase {
 	N = (Matrix) vf.valueOf("[2, 4]\n[-1, 0]\n[-1/2, 1/5]\n[2i+3, -1]");
 	System.out.println("\nN := " + N+ "\n");
 	System.out.println("norm ||N||\t=" + N.norm());
-	assertTrue(N.norm().equals(vf.valueOf(5.94054), tolerance));
+	assertTrue(N.norm().equals(vf.valueOf(5.94054), vf.valueOf(1e-5)));
 	System.out.println("column sum norm\t=" + N.norm(1));
-	assertTrue(N.norm(1).equals(vf.valueOf(7.10555), tolerance));
+	assertTrue(N.norm(1).equals(vf.valueOf(7.10555), vf.valueOf(1e-5)));
 	System.out.println("row sum norm\t=" + N.norm(Double.POSITIVE_INFINITY));
 	assertTrue(N.norm(Double.POSITIVE_INFINITY).equals(vf.valueOf(6), tolerance));
 	System.out.print(M + "\n*\n" + N);

@@ -20,24 +20,9 @@ import java.util.ListIterator;
  */
 public abstract class Combinatorical /*implements ListIterator<int[]> like*/ implements Serializable {
     private static final long serialVersionUID = 8581671329920186455L;
-    private static class Debug {
-	private Debug() {}
-	public static void main(String arg[]) throws Exception {
-	    Combinatorical c = getCombinations(3, 5, false);
-	    System.out.println("all " + c.count() + " " + c);
-	    int count = 0;
-	    while (c.hasNext()) {
-		System.out.println(orbital.math.MathUtilities.format(c.next()));
-		count++;
-	    } 
-	    System.out.println("generated " + count + " which is " +(count == c.count() ? "correct" : "NOT correct"));
-	} 
-    }	// Debug
-
-    
-	/**
-	 * Returns the number of combinatorical tuples that araise from this sequence.
-	 */
+    /**
+     * Returns the number of combinatorical tuples that araise from this sequence.
+     */
     public abstract int count();
 
     /**

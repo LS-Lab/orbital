@@ -59,31 +59,6 @@ import orbital.math.Tensor;
  * @todo perhaps we should only call true primitive and java.lang.Number type conversion methods valueOf(...). rename the rest of them according to the type they return. 
  */
 public class Values {
-    private static class Debug {
-	private static final java.util.logging.Logger test = java.util.logging.Logger.getLogger("orbital.test");
-	private Debug() {}
-	public static void main(String arg[]) throws Exception {
-	    final Values vf = Values.getDefaultInstance();
-	    Arithmetic a[] = new Arithmetic[] {
-		vf.valueOf(5), vf.rational(1, 4), vf.valueOf(1.23456789), vf.complex(-1, 2)
-	    };
-	    Arithmetic b[] = new Arithmetic[] {
-		vf.valueOf(7), vf.rational(3, 4), vf.valueOf(3.1415926), vf.complex(3, 2)
-	    };
-	    for (int k = 0; k < a.length; k++) {
-		test.info(a[k].getClass() + " arithmetic combined with various types");
-		for (int i = 0; i < b.length; i++)
-		    System.out.println(a[k] + "+" + b[i] + " = " + a[k].add(b[i]) + "\tof " + a[k].add(b[i]).getClass());
-		Object x1, x2;
-		assert (x1 = a[k].add(b[0])).equals(x2 = a[k].add((Integer) b[0])) && (x1.getClass() == x2.getClass()) : "compile-time sub-type result equals run-time sub-type result";
-		assert (x1 = a[k].add(b[1])).equals(x2 = a[k].add((Rational) b[1])) && (x1.getClass() == x2.getClass()) : "compile-time sub-type result equals run-time sub-type result";
-		assert (x1 = a[k].add(b[2])).equals(x2 = a[k].add((Real) b[2])) && (x1.getClass() == x2.getClass()) : "compile-time sub-type result equals run-time sub-type result";
-		assert (x1 = a[k].add(b[3])).equals(x2 = a[k].add((Complex) b[3])) && (x1.getClass() == x2.getClass()) : "compile-time sub-type result equals run-time sub-type result";
-	    } 
-	} 
-    }	 // Debug
-
-    
     private orbital.logic.functor.Function/*<Object[],Object[]>*/ equalizer = new orbital.logic.functor.Function/*<Object[],Object[]>*/() {
 	    public Object/*>Object[]<*/ apply(Object/*>Object[]<*/ o) {
 		if (o instanceof Arithmetic[]) {
@@ -643,7 +618,7 @@ public class Values {
 		public Vector/*<R>*/ getDiagonal() { return m.getDiagonal(); }
 		public boolean isSquare() { return m.isSquare(); }
 		public boolean isSymmetric() throws ArithmeticException{ return m.isSymmetric(); }
-		public boolean isRegular() throws ArithmeticException{ return m.isRegular(); }
+		public boolean isInvertible() throws ArithmeticException{ return m.isInvertible(); }
 		public int isDefinite() throws ArithmeticException{ return m.isDefinite(); }
 		public boolean equals(Object b) { return m.equals(b); }
 		public int hashCode() { return m.hashCode(); }

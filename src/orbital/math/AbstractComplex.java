@@ -14,9 +14,6 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
     private static class Debug {
 	private Debug() {}
 	public static void main(String arg[]) throws Exception {
-	    ArithmeticFormat.getDefaultInstance().getNumberFormat().setMaximumFractionDigits(8);
-	    System.out.println(new ComplexImpl(1,0) + ", " + new ComplexImpl(-1,0) + ", " + new ComplexImpl(0,1) + ", " + new ComplexImpl(0,-1) + ", " + new ComplexImpl(1,1) + ", " + new ComplexImpl(1,-1) + ", " + new ComplexImpl(-1,1) + ", " + new ComplexImpl(-1,-1));
-	    System.out.println(new ComplexImpl(2,0) + ", " + new ComplexImpl(-2,0) + ", " + new ComplexImpl(0,2) + ", " + new ComplexImpl(0,-2) + ", " + new ComplexImpl(2,2) + ", " + new ComplexImpl(2,-2) + ", " + new ComplexImpl(-2,2) + ", " + new ComplexImpl(-2,-2));
 	    Complex a = new ComplexImpl(2, 1);
 	    Complex b = new ComplexImpl(3, -4);
 	    System.out.println(a + "+" + b + " == " + a.add(b));

@@ -16,37 +16,6 @@ import java.io.Serializable;
  * @author  Andr&eacute; Platzer
  */
 public class Direction implements Cloneable, Serializable {
-    private static class Debug {
-	private Debug() {}
-	public static void main(String arg[]) throws Exception {
-	    dir = new Direction(Direction.East);
-	    System.out.println(dir);
-	    rtest(Left, 5);
-	    dir.setDirection(Direction.East);
-	    System.out.println(dir);
-	    rtest(Right, 5);
-	    dir.setDirection(Direction.East);
-	    System.out.println(dir);
-	    rtest(Back, 3);
-	    dir.setDirection(Direction.East);
-	    System.out.println(dir);
-	    rtest(For, 5);
-	    dir.setDirection(Direction.East);
-	    System.out.println(dir);
-	    rtest(HalfLeft, 9);
-	    dir.setDirection(Direction.East);
-	    System.out.println(dir);
-	    rtest(HalfRight, 9);
-	} 
-	private static Direction dir;
-	private static void rtest(int tdir, int count) {
-	    for (int i = 0; i < count; i++) {
-		dir.turn(tdir);
-		System.out.println(nameOfRelative(tdir) + "->" + dir);
-	    } 
-	} 
-    }	 // Debug
-
     /**
      * enumeration of absolute direction constants in degree.
      */
@@ -165,16 +134,16 @@ public class Direction implements Cloneable, Serializable {
     public String toString() {
 	return nameOfAbsolute(direction);
     } 
-    private static final String nameOfAbsolute(int direction) {
+    public static final String nameOfAbsolute(int direction) {
 	return absDirections[(int) (direction / 45)];
     } 
-    private static final String nameOfRelative(int direction) {
+    public static final String nameOfRelative(int direction) {
 	return relDirections[2 + (int) (direction / 45)];
     } 
     private static final String absDirections[] = {
-	"East", "SouthEast", "South", "SoutWest", "West", "NorthWest", "North", "NorthEast"
+	"East", "SouthEast", "South", "SouthWest", "West", "NorthWest", "North", "NorthEast"
     };
     private static final String relDirections[] = {
-	"Left", "HalfLeft", null, "HalfRight", "Right", null, "Back", null, null, null, "For"
+	"Left", "HalfLeft", "For", "HalfRight", "Right", null, "Back", null, null, null, "For"
     };
 }
