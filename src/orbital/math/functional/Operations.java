@@ -139,9 +139,8 @@ public interface Operations /* implements ArithmeticOperations */ {
      * @see orbital.logic.functor.Functionals.Catamorphism
      * @see Values#ZERO
      * @see #plus
-     * @todo
-     * @todo AbstractFunction<Vector<Arithmetic>,Arithmetic>?
-     * @todo AbstractFunction<Matrix<Arithmetic>,Arithmetic>?
+     * @todo implements AbstractFunction<Vector<Arithmetic>,Arithmetic>?
+     * @todo implements AbstractFunction<Matrix<Arithmetic>,Arithmetic>?
      */
     public static final Function sum = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
 	    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ a) {

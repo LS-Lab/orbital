@@ -1388,8 +1388,12 @@ public class Functionals {
      * listable: Map(A,B)&rarr;Map(A&cup;A<sup>*</sup>,C&cup;C<sup>*</sup>); f &#8614; f<sup>*</sup>.
      * </p>
      * <p>
-     * Applies the Function to each element of the list a.
+     * Applies the function to each element of the list a.
      * Also known as collect.
+     * </p>
+     * <p>
+     * The listable function takes values &isin;A<sup>*</sup> represented as a {@link Utility#isIteratable(Object) generalized iteratable},
+     * like f.ex. {@link java.util.Iterator}.
      * </p>
      * @return x&#8614;f<sup>*</sup>(x)
      *  where f<sup>*</sup><big>(</big>{x<sub>0</sub>,...,x<sub>m</sub>}<big>)</big> = <big>{</big>f(x<sub>0</sub>),...,f(x<sub>m</sub>)<big>}</big>
@@ -1427,12 +1431,13 @@ public class Functionals {
 		else
 		    return map(function, (Collection/*_<A>_*/) x);
 	    } else if (x instanceof Iterator/*_<A>_*/) {
+		//@internal could just as well rely on the next case of isIteratable, here
 		if (x instanceof ListIterator/*_<A>_*/)
 		    return map(function, (ListIterator/*_<A>_*/) x);
 		else
 		    return map(function, (Iterator/*_<A>_*/) x);
-	    } else if (x instanceof Object/*>A<*/[])
-		return map(function, (Object/*>A<*/[]) x);
+	    } else if (Utility.isIteratable(x))
+		return map(function, (Object) x);
 	    else
 		return function.apply((Object/*>A<*/) x);
 	} 
@@ -1454,21 +1459,26 @@ public class Functionals {
     } 
 
     /**
-     * Maps a list of arguments with a function.
+     * map implementation writing values into the target iterator t.
      * <p>
-     * map: a &#8614; f(a) := {f(x) &brvbar; x&isin;a}.<br />
-     * Applies the Function to each element of the list a.</p>
+     * Overwrites any existing elements in t and appends if necessary.
+     * As long as the target iterator has a next element, that will be overwritten via {@link ListIterator#set(Object)}.
+     * But as soon as the target iterator reaches its end, new elements will be added via {@link ListIterator#add(Object)}.
+     * </p>
+     * @pre ALWAYS(a.hasNext() &rArr; ((t.hasNext() &rArr; SUCCEEDES(t.set(Object))) &and; (&not;t.hasNext() &rArr; SUCCEEDES(t.add(Object)))))
      */
-    public static /*<A, B>*/ Object/*>B<*/[] map(Function/*<A, B>*/ f, Object/*>A<*/[] a) {
-	//Object/*>B<*/[] r = new Object/*>B<*/[a.length]; // is not yet of correct sub-type
-	//@fixme this does not create an array of type B (but of type A) since we don't actually know that at runtime (also we cannot predict it from f[0] since that may have another type than f[1] has, although they have a common supertype)
-	// so we could first use an Object[], fill it, and meanwhile calculate the supremum class S of all occuring objects, then copy it to an S[].
-	Object/*>B<*/[] r = (Object/*>B<*/[]) Array.newInstance(a.getClass().getComponentType(), a.length);
-	for (int i = 0; i < r.length; i++)
-	    r[i] = f.apply(a[i]);
-	return r;
-    } 
-    private static /*<A, B>*/ Collection/*_<B>_*/ map(Function/*<A, B>*/ f, Iterator/*_<A>_*/ a, Collection/*_<B>_*/ r) {
+    protected static final /*<A, B>*/ void mapInto(Function/*<A, B>*/ f, Iterator/*_<A>_*/ a, ListIterator/*_<B>_*/ r) {
+	while (a.hasNext()) {
+	    Object/*>A<*/ fa = f.apply((/*__*/Object/*>A<*/) a.next());
+	    if (r.hasNext()) {
+		r.next();
+		r.set(fa);
+	    } else {
+		r.add(fa);
+	    }
+	}
+    }
+    private static /*<A, B>*/ Collection/*_<B>_*/ mapInto(Function/*<A, B>*/ f, Iterator/*_<A>_*/ a, Collection/*_<B>_*/ r) {
 	while (a.hasNext())
 	    r.add(f.apply((/*__*/Object/*>A<*/) a.next()));
 	return r;
@@ -1498,7 +1508,7 @@ public class Functionals {
      * @see #listable(Function)
      */
     public static /*<A, B>*/ Collection/*_<B>_*/ map(Function/*<A, B>*/ f, Collection/*_<A>_*/ a) {
-	return map(f, a.iterator(), Setops.newCollectionLike(a));
+	return mapInto(f, a.iterator(), Setops.newCollectionLike(a));
     }
     public static /*<A, B>*/ List/*_<B>_*/ map(Function/*<A, B>*/ f, List/*_<A>_*/ a) {
 	return (List/*_<B>_*/) map(f, (Collection/*_<B>_*/) a);
@@ -1510,11 +1520,41 @@ public class Functionals {
 	return (SortedSet/*_<B>_*/) map(f, (Collection/*_<B>_*/) a);
     }
     public static /*<A, B>*/ Iterator/*_<B>_*/ map(Function/*<A, B>*/ f, Iterator/*_<A>_*/ a) {
-	return map(f, a, new LinkedList/*_<B>_*/()).iterator();
+	return mapInto(f, a, new LinkedList/*_<B>_*/()).iterator();
     } 
     public static /*<A, B>*/ ListIterator/*_<B>_*/ map(Function/*<A, B>*/ f, ListIterator/*_<A>_*/ a) {
-	return ((List) map(f, a, new LinkedList/*_<B>_*/()) ).listIterator();
+	return ((List) mapInto(f, a, new LinkedList/*_<B>_*/()) ).listIterator();
     } 
+    /**
+     * Maps a list of arguments with a function.
+     * <p>
+     * map: a &#8614; f(a) := {f(x) &brvbar; x&isin;a}.<br />
+     * Applies the Function to each element of the list a.</p>
+     * @see #map(Function,Collection)
+     */
+    public static /*<A, B>*/ Object/*>B<*/[] map(Function/*<A, B>*/ f, Object/*>A<*/[] a) {
+	//Object/*>B<*/[] r = new Object/*>B<*/[a.length]; // is not yet of correct sub-type
+	//@fixme this does not create an array of type B (but of type A) since we don't actually know that at runtime (also we cannot predict it from f[0] since that may have another type than f[1] has, although they have a common supertype)
+	// so we could first use an Object[], fill it, and meanwhile calculate the supremum type S of all occuring objects, then copy it to an S[].
+	Object/*>B<*/[] r = (Object/*>B<*/[]) Array.newInstance(a.getClass().getComponentType(), a.length);
+	for (int i = 0; i < r.length; i++)
+	    r[i] = f.apply(a[i]);
+	return r;
+    } 
+    /**
+     * Maps a <em>list-like</em> generalized iteratable list of arguments with a function.
+     * <p>
+     * Takes values &isin;A<sup>*</sup> represented as a {@link Utility#isIteratable(Object) generalized iteratable},
+     * like f.ex. {@link java.util.Iterator}.
+     * </p>
+     * @see #map(Function,Collection)
+     * @internal no good for Collections other then Lists.
+     */
+    protected static final /*<A, B>*/ Object map(Function/*<A, B>*/ f, Object a) {
+	Object r = Utility.newIteratableLike(a);
+	mapInto(f, Utility.asIterator(a), (ListIterator) Utility.asIterator(r));
+	return r;
+    }
 
     /**
      * Get a listable function applicable to lists.
@@ -1522,7 +1562,12 @@ public class Functionals {
      * listable: Map(A,B)&rarr;Map(A&cup;A<sup>*</sup>,C&cup;C<sup>*</sup>); f &#8614; f<sup>*</sup>.</p>
      * <p>
      * listable: a &#8614; f(a) := {f(x) &brvbar; x&isin;a}.<br />
-     * Applies the Function to each element of the list a.</p>
+     * Applies the function to each element of the list a.
+     * </p>
+     * <p>
+     * The listable function takes values &isin;A<sup>*</sup> represented as a {@link Utility#isIteratable(Object) generalized iteratable},
+     * like f.ex. {@link java.util.Iterator}.
+     * </p>
      * @return x&#8614;f<sup>*</sup>(x)
      *  where f<sup>*</sup><big>(</big>{x<sub>0</sub>,...,x<sub>m</sub>}<big>)</big> = <big>{</big>f(x<sub>0</sub>),...,f(x<sub>m</sub>)<big>}</big>
      *  for {@link List}s, {@link Collection}s and {@link Object Object[]},
@@ -1561,8 +1606,8 @@ public class Functionals {
 		    return map(function, (ListIterator/*_<A1>_*/) x, (ListIterator/*_<A2>_*/) y);
 		else
 		    return map(function, (Iterator/*_<A1>_*/) x, (Iterator/*_<A2>_*/) y);
-	    } else if ((x instanceof Object/*>A1<*/[]) && (y instanceof Object/*>A2<*/[]))
-		return map(function, (Object/*>A1<*/[]) x, (Object/*>A2<*/[]) y);
+	    } else if (Utility.isIteratable(x) && Utility.isIteratable(y))
+		return map(function, (Object) x, (Object) y);
 	    else
 		return function.apply((Object/*>A1<*/) x, (Object/*>A2<*/) y);
 	} 
@@ -1584,6 +1629,57 @@ public class Functionals {
     } 
 
     /**
+     * map implementation writing values into the target iterator t.
+     * <p>
+     * Overwrites any existing elements in t and appends if necessary.
+     * As long as the target iterator has a next element, that will be overwritten via {@link ListIterator#set(Object)}.
+     * But as soon as the target iterator reaches its end, new elements will be added via {@link ListIterator#add(Object)}.
+     * </p>
+     * @pre ALWAYS(x.hasNext()&hArr;y.hasNext()) &and; ALWAYS(x.hasNext() &rArr; ((t.hasNext() &rArr; SUCCEEDES(t.set(Object))) &and; (&not;t.hasNext() &rArr; SUCCEEDES(t.add(Object)))))
+     */
+    protected static /*<A1, A2, B>*/ void mapInto(BinaryFunction/*<A1, A2, B>*/ f, Iterator/*_<A1>_*/ x, Iterator/*_<A2>_*/ y, ListIterator/*_<B>_*/ t) {
+	while (x.hasNext() && y.hasNext()) {
+	    final Object/*>B<*/ fxy = f.apply((/*__*/Object/*>A1<*/) x.next(), (/*__*/Object/*>A2<*/) y.next());
+	    if (t.hasNext()) {
+		t.next();
+		t.set(fxy);
+	    } else {
+		t.add(fxy);
+	    }
+	}
+	if (!(!x.hasNext() && !y.hasNext()))
+	    throw new IndexOutOfBoundsException("argument source iterators must have same length");
+    } 
+    /**
+     * Maps two lists of arguments with a BinaryFunction.
+     * <p>
+     * map: ((x<sub>i</sub>)<sub>i&isin;I</sub>,(y<sub>i</sub>)<sub>i&isin;I</sub>) &#8614; f((x<sub>i</sub>)<sub>i&isin;I</sub>,(y<sub>i</sub>)<sub>i&isin;I</sub>) := (f(x<sub>i</sub>,y<sub>i</sub>))<sub>i&isin;I</sub>.</p>
+     * @pre x.size() == y.size()
+     * @post RES.getClass()=x.getClass() or at least compatible
+     * @see #listable(BinaryFunction)
+     */
+    public static /*<A1, A2, B>*/ Collection/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, Collection/*_<A1>_*/ x, Collection/*_<A2>_*/ y) {
+	if (x.size() != y.size())
+	    throw new IndexOutOfBoundsException("argument collections must have same size");
+	return mapInto(f, x.iterator(), y.iterator(), Setops.newCollectionLike(x));
+    } 
+    public static /*<A1, A2, B>*/ List/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, List/*_<A1>_*/ x, List/*_<A2>_*/ y) {
+	return (List) map(f, (Collection)x, (Collection)y);
+    }
+    public static /*<A1, A2, B>*/ Set/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, Set/*_<A1>_*/ x, Set/*_<A2>_*/ y) {
+	return (Set) map(f, (Collection)x, (Collection)y);
+    }
+    public static /*<A1, A2, B>*/ SortedSet/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, SortedSet/*_<A1>_*/ x, SortedSet/*_<A2>_*/ y) {
+	Utility.pre(Utility.equals(x.comparator(), y.comparator()), "need equal comparators for choosing a comparator for the resulting " + SortedSet.class.getName());
+	return (SortedSet) map(f, (Collection)x, (Collection)y);
+    }
+    public static /*<A1, A2, B>*/ Iterator/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, Iterator/*_<A1>_*/ x, Iterator/*_<A2>_*/ y) {
+	return mapInto(f, x, y, new LinkedList/*_<B>_*/()).iterator();
+    } 
+    public static /*<A1, A2, B>*/ ListIterator/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, ListIterator/*_<A1>_*/ x, ListIterator/*_<A2>_*/ y) {
+	return ((List) mapInto(f, x, y, new LinkedList/*_<B>_*/()) ).listIterator();
+    } 
+    /**
      * Maps two lists of arguments with a BinaryFunction.
      * <p>
      * map: ((x<sub>i</sub>)<sub>i&isin;I</sub>,(y<sub>i</sub>)<sub>i&isin;I</sub>) &#8614; f((x<sub>i</sub>)<sub>i&isin;I</sub>,(y<sub>i</sub>)<sub>i&isin;I</sub>) := (f(x<sub>i</sub>,y<sub>i</sub>))<sub>i&isin;I</sub>.</p>
@@ -1598,42 +1694,30 @@ public class Functionals {
 	    a[i] = f.apply(x[i], y[i]);
 	return a;
     } 
-    private static /*<A1, A2, B>*/ Collection/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, Iterator/*_<A1>_*/ x, Iterator/*_<A2>_*/ y, Collection/*_<B>_*/ r) {
+    private static /*<A1, A2, B>*/ Collection/*_<B>_*/ mapInto(BinaryFunction/*<A1, A2, B>*/ f, Iterator/*_<A1>_*/ x, Iterator/*_<A2>_*/ y, Collection/*_<B>_*/ r) {
 	while (x.hasNext() && y.hasNext())
 	    r.add(f.apply((/*__*/Object/*>A1<*/) x.next(), (/*__*/Object/*>A2<*/) y.next()));
 	if (!(!x.hasNext() && !y.hasNext()))
-	    throw new IndexOutOfBoundsException("argument iterators must have same length");
+	    throw new IndexOutOfBoundsException("argument source iterators must have same length");
 	return r;
     } 
     /**
-     * Maps two lists of arguments with a BinaryFunction.
+     * Maps a <em>list-like</em> generalized iteratable list of arguments with a function.
      * <p>
-     * map: ((x<sub>i</sub>)<sub>i&isin;I</sub>,(y<sub>i</sub>)<sub>i&isin;I</sub>) &#8614; f((x<sub>i</sub>)<sub>i&isin;I</sub>,(y<sub>i</sub>)<sub>i&isin;I</sub>) := (f(x<sub>i</sub>,y<sub>i</sub>))<sub>i&isin;I</sub>.</p>
-     * @pre x.size() == y.size()
-     * @post RES.getClass()=x.getClass() or at least compatible
-     * @see #listable(BinaryFunction)
+     * Takes values &isin;A<sup>*</sup> represented as a {@link Utility#isIteratable(Object) generalized iteratable},
+     * like f.ex. {@link java.util.Iterator}.
+     * </p>
+     * @see #map(Function,Collection)
+     * @internal no good for Collections other then Lists.
      */
-    public static /*<A1, A2, B>*/ Collection/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, Collection/*_<A1>_*/ x, Collection/*_<A2>_*/ y) {
-	if (x.size() != y.size())
-	    throw new IndexOutOfBoundsException("argument collections must have same size");
-	return map(f, x.iterator(), y.iterator(), Setops.newCollectionLike(x));
-    } 
-    public static /*<A1, A2, B>*/ List/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, List/*_<A1>_*/ x, List/*_<A2>_*/ y) {
-	return (List) map(f, (Collection)x, (Collection)y);
+    private static final /*<A1, A2, B>*/ Object map(BinaryFunction/*<A1,A2, B>*/ f, Object a, Object b) {
+	Object r = Utility.newIteratableLike(a);
+	if (!r.equals(Utility.newIteratableLike(b)))
+	    //@internal unfortunately we cannot otherwise check for compatible structures
+	    throw new IndexOutOfBoundsException("arguments must have same structure");
+	mapInto(f, Utility.asIterator(a), Utility.asIterator(b), (ListIterator) Utility.asIterator(r));
+	return r;
     }
-    public static /*<A1, A2, B>*/ Set/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, Set/*_<A1>_*/ x, Set/*_<A2>_*/ y) {
-	return (Set) map(f, (Collection)x, (Collection)y);
-    }
-    public static /*<A1, A2, B>*/ SortedSet/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, SortedSet/*_<A1>_*/ x, SortedSet/*_<A2>_*/ y) {
-	Utility.pre(Utility.equals(x.comparator(), y.comparator()), "need equal comparators for choosing a comparator for the resulting " + SortedSet.class.getName());
-	return (SortedSet) map(f, (Collection)x, (Collection)y);
-    }
-    public static /*<A1, A2, B>*/ Iterator/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, Iterator/*_<A1>_*/ x, Iterator/*_<A2>_*/ y) {
-	return map(f, x, y, new LinkedList/*_<B>_*/()).iterator();
-    } 
-    public static /*<A1, A2, B>*/ ListIterator/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, ListIterator/*_<A1>_*/ x, ListIterator/*_<A2>_*/ y) {
-	return ((List) map(f, x, y, new LinkedList/*_<B>_*/()) ).listIterator();
-    } 
 
     //TODO: introduce Function thread(Function f)
     //TODO: introduce Function outer(Function f)
@@ -1740,7 +1824,7 @@ public class Functionals {
      * Implemented as a linear right tail-recurrence.
      * </p>
      * <p>
-     * This function takes values &isin;A<sup>*</sup> represented as a {@link orbital.util.Utility#asIterator(Object) generalized iteratable},
+     * This function takes values &isin;A<sup>*</sup> represented as a {@link Utility#isIteratable(Object) generalized iteratable},
      * like f.ex. {@link java.util.Iterator}.
      * </p>
      * @see Functionals#banana(Object, BinaryFunction, Iterator)
@@ -1794,7 +1878,7 @@ public class Functionals {
 	 *     <tr><td colspan="3"><span class="bananaBracket">(|</span>c,f<span class="bananaBracket">|)</span> := cata</td></tr>
 	 *   </table>
 	 * </center>
-	 * @param a a value &isin;A<sup>*</sup> represented as a {@link orbital.util.Utility#asIterator(Object) generalized iteratable},
+	 * @param a a value &isin;A<sup>*</sup> represented as a {@link Utility#isIteratable(Object) generalized iteratable},
 	 *  like f.ex. {@link java.util.Iterator}.
 	 * @return the value <span class="bananaBracket">(|</span>c,f<span class="bananaBracket">|)</span> a &isin; B.
 	 */
@@ -1804,7 +1888,8 @@ public class Functionals {
 	private final Object/*>B<*/ apply(Iterator/*_<A>_*/ it) {
 	    if (!it.hasNext())
 		return c;
-	    return f.apply((/*__*/Object/*>A<*/) it.next(), apply(it));
+	    else
+		return f.apply((/*__*/Object/*>A<*/) it.next(), apply(it));
 	} 
 	public String toString() {
 	    return "(|" + c + ',' + f + "|)";
@@ -2058,7 +2143,7 @@ public class Functionals {
     	 *   </table>
     	 * </center>
     	 * </p>
-    	 * @param a is a {@link orbital.util.Utility#asIterator(Object) generalized iteratable} over a list of objects.
+    	 * @param a is a {@link Utility#isIteratable(Object) generalized iteratable} over a list of objects.
 	 * @return the value <span class="barbedwireBracket">{|</span>b,f<span class="barbedwireBracket">|}</span> a.
 	 */
 	public final Object/*>B<*/ apply(Object a) {

@@ -7,11 +7,17 @@
 package orbital.math.functional;
 
 import orbital.logic.functor.Functor;
+import orbital.math.Tensor;
+import orbital.math.Vector;
+import orbital.math.Matrix;
 
 import orbital.math.Arithmetic;
 import orbital.logic.functor.Notation;
 import orbital.math.Values;
 import orbital.math.Scalar;
+
+import java.util.Iterator;
+import java.util.ListIterator;
 
 import java.lang.reflect.Array;
 import orbital.util.GeneralComplexionException;
@@ -479,8 +485,40 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
 	    };
     } 
 
+    // functional-style bulk operations
 
-    // migration functions
+    /**
+     * Maps a list of arguments with a function.
+     * @see orbital.logic.functor.Functionals#listable(Function)
+     */
+    public static /*<A, B>*/ Tensor/*<B>*/ map(Function/*<A, B>*/ f, Tensor/*<A>*/ a) {
+	return (Tensor) map(f, (Object) a);
+    }
+    public static /*<A, B>*/ Vector/*<B>*/ map(Function/*<A, B>*/ f, Vector/*<A>*/ a) {
+	return (Vector) map(f, (Tensor)a);
+    }
+    public static /*<A, B>*/ Matrix/*<B>*/ map(Function/*<A, B>*/ f, Matrix/*<A>*/ a) {
+	return (Matrix) map(f, (Tensor)a);
+    }
+    /**
+     * Maps two lists of arguments with a binary function.
+     * @see orbital.logic.functor.Functionals#listable(BinaryFunction)
+     */
+    public static /*<A1, A2, B>*/ Tensor/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, Tensor/*_<A1>_*/ x, Tensor/*_<A2>_*/ y) {
+	Utility.pre(Utility.equalsAll(x.dimensions(), y.dimensions()), "compatible dimensions");
+	Tensor r = Values.newInstance(x.dimensions());
+	mapInto(f, x.iterator(), y.iterator(), r.iterator());
+	return r;
+    }
+    public static /*<A1, A2, B>*/ Vector/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, Vector/*_<A1>_*/ x, Vector/*_<A2>_*/ y) {
+	return (Vector) map(f, (Tensor)x, (Tensor)y);
+    }
+    public static /*<A1, A2, B>*/ Matrix/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, Matrix/*_<A1>_*/ x, Matrix/*_<A2>_*/ y) {
+	return (Matrix) map(f, (Tensor)x, (Tensor)y);
+    }
+
+
+    // legacy conversion and migration functions
     
     /**
      * @see orbital.logic.functor.Functionals#foldRight(orbital.logic.functor.BinaryFunction, Object, Object[])
@@ -491,20 +529,7 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
 	    result = f.apply(Values.valueOf(a[i]), result);
 	return ((Number) result).doubleValue();
     } 
-    /**
-     * @pre a is an array of a primitive type or its compound wrapper class.
-     * @see #foldRight(BinaryFunction, double, double[])
-     * @see orbital.logic.functor.Functionals#foldRight(orbital.logic.functor.BinaryFunction, Object, Object[])
-     * @see java.lang.Number
-     */
-    /*private static double foldRightImpl(orbital.logic.functor.BinaryFunction f, double c, Object a) {
-      Utility.pre(a != null && a.getClass().isArray(), "foldRight(BinaryFunction, double, Object) works on arrays of primitive types or their compound wrapper classes, only");
-      Object result = Values.valueOf(c);
-      for (int i = Array.getLength(a) - 1; i >= 0; i--)
-      result = f.apply(Values.valueOf((Number) Array.get(a, i)), result);
-      return ((Number) result).doubleValue();
-      } */
-
+    
     /**
      * @see orbital.logic.functor.Functionals#map(orbital.logic.functor.Function, Object[])
      */
@@ -541,6 +566,7 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
     }
 
     /**
+     * @internal perhaps somwhat faster implementation than mapImpl(BinaryFunction,Object,Object)
      * @see orbital.logic.functor.Functionals#map(orbital.logic.functor.BinaryFunction, Object[], Object[])
      */
     public static double[] map(orbital.logic.functor.BinaryFunction f, double[] x, double[] y) {
