@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.HashMap;
 import java.util.TreeSet;
 import java.util.TreeMap;
@@ -330,7 +331,7 @@ public class ClassicalLogic extends ModernLogic {
     /**
      * @todo move content to the ResourceBundle.
      */
-    public static final String usage = "usage: [options] [all|none|properties|fol|<filename>|table]\n\tall\tprove important semantic-equivalence expressions\n\tnone\ttry to prove some semantic-garbage expressions\n\tproperties\tprove some properties of classical logic inference relation\n\tfol\tprove important equivalences of first-order logic\n\n\t<filename>\ttry to prove all expressions in the given file\n\ttable\tprint a function table of the expression instead\n\t-\tUse no arguments at all to be asked for expressions\n\t\tto prove.\noptions:\n\t-normalForm\tcheck the conjunctive and disjunctive forms in between\n\t-closure\tprint the universal/existential closures in between\n\t-inference=<inference_mechanism>\tuse ClassicalLogic.<inference_mechanism> instead of semantic inference\n\t-verbose\tbe more verbose (f.ex. print normal forms if -normalForm)\n\t-charset=<encoding>\tthe character set or encoding to use for reading files\n\t-problem\tparse a problem file, i.e. combine all lines into a single problem, instead of assuming single-line conjectures.\n\nTo check whether A and B are equivalent, enter '|= A<->B'";
+    public static final String usage = "usage: [options] [all|none|properties|fol|<filename>|table]\n\tall\tprove important semantic-equivalence expressions\n\tnone\ttry to prove some semantic-garbage expressions\n\tproperties\tprove some properties of classical logic inference relation\n\tfol\tprove important equivalences of first-order logic\n\n\t<filename>\ttry to prove all expressions in the given file\n\ttable\tprint a function table of the expression instead\n\t-\tUse no arguments at all to be asked for expressions\n\t\tto prove.\noptions:\n\t-normalForm\tcheck the conjunctive and disjunctive forms in between\n\t-closure\tprint the universal/existential closures in between\n\t-inference=<inference_mechanism>\tuse ClassicalLogic.<inference_mechanism> instead of semantic inference\n\t-verbose\tbe more verbose (f.ex. print normal forms if -normalForm)\n\t-charset=<encoding>\tthe character set or encoding to use for reading files\n\t-problem\tparse a problem file, i.e. combine all lines into a single problem, instead of assuming single-line conjectures.\n\nTo check whether A and B are equivalent, enter '|= A<->B' or 'A == B'";
 
 
     
@@ -1436,7 +1437,7 @@ public class ClassicalLogic extends ModernLogic {
 		     * semantic inference, anyway.
 		     */
 		    private Signature relevantSignatureOf(Formula F) {
-			Collection boundOnly = new HashSet(F.getBoundVariables());
+			Collection boundOnly = new LinkedHashSet(F.getBoundVariables());
 			boundOnly.removeAll(F.getFreeVariables());
 			Signature sig = new SignatureBase(F.getSignature());
 			sig.removeAll(boundOnly);
@@ -1814,7 +1815,7 @@ public class ClassicalLogic extends ModernLogic {
 	}
 
 	private static final Set singleton(Object o) {
-	    Set r = new HashSet();
+	    Set r = new LinkedHashSet();
 	    r.add(o);
 	    return r;
 	}
@@ -1827,7 +1828,7 @@ public class ClassicalLogic extends ModernLogic {
  	 */
  	static final Signature clausalFreeVariables(Set/*_<Formula>_*/ clause) {
  	    // return banana (|&empty;,&cup;|) (map ((&lambda;x)x.freeVariables()), clause)
- 	    Set freeVariables = new HashSet();
+ 	    Set freeVariables = new LinkedHashSet();
  	    for (Iterator i = clause.iterator(); i.hasNext(); )
  		freeVariables.addAll(((Formula)i.next()).getVariables());
  	    return new SignatureBase(freeVariables);
