@@ -421,7 +421,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
      * @todo improve name
      */
     public static abstract class InferenceMechanism implements Serializable, Comparable {
-	//private static final long serialVersionUID = 0;
+	private static final long serialVersionUID = -3446080535669332735L;
 	/**
 	 * the name to display for this enum value
 	 * @serial

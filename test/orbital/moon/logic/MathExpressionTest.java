@@ -8,6 +8,7 @@ package orbital.moon.logic;
 
 import orbital.math.*;
 import orbital.math.functional.*;
+import orbital.logic.imp.ParseException;
 import junit.framework.*;
 
 
@@ -17,6 +18,7 @@ import junit.framework.*;
  */
 public class MathExpressionTest extends check.TestCase {
     private Values vf;
+    private Real tolerance;
 
     public static void main(String[] args) {
 	junit.textui.TestRunner.run(suite());
@@ -26,21 +28,38 @@ public class MathExpressionTest extends check.TestCase {
     }
     protected void setUp() {
 	vf = Values.getDefaultInstance();
+	tolerance = vf.valueOf(0.01);
     }
 
     protected Arithmetic test(String expr) {
 	try {
 	    System.out.println("Original expression:\t" + expr);
+	    System.out.print("Parsed function:\t"); System.out.flush();
 	    MathExpressionSyntax syntax = new MathExpressionSyntax();
 	    Arithmetic p = new MathExpressionSyntax().createMathExpression(expr);
-	    System.out.println("Parsed function:\t" + p);
-	    System.out.println("Evaluates to:\t" + (p instanceof Function ? ((Function) p).apply(null) : p));	//@XXX: erm why null?
+	    System.out.println(p);
+	    System.out.print("Evaluates to:\t"); System.out.flush();
+	    System.out.println((p instanceof Function ? ((Function) p).apply(null) : p));	//@XXX: erm why null?
 	    return p;
 	}
 	catch (Throwable ex) {
+	    System.out.println();
 	    fail(ex.getMessage());
 	    return null;
 	}
+    }
+    protected void parsable(String expr, boolean expectparsable) {
+	final String desc = expr + " " + (expectparsable ? "is" : "is not") + " parsable";
+	try {
+	    System.out.println("is this a parsable expression:\t" + expr);
+	    MathExpressionSyntax syntax = new MathExpressionSyntax();
+	    Arithmetic p = new MathExpressionSyntax().createMathExpression(expr);
+	    assertTrue(true == expectparsable , desc);
+	    return;
+	}
+	catch (ParseException fallthrough) {}
+	catch (IllegalArgumentException fallthrough) {}
+	assertTrue(false == expectparsable , desc);
     }
 
     public void testSimple() {
@@ -64,12 +83,43 @@ public class MathExpressionTest extends check.TestCase {
 		null,
 		vf.valueOf(11)
 		);
+	compare("(4+1.2)*(3-(1-3)^2^2)^3/(5/(8*1/4))-sin(cos(2/5)*10)",
+		null,
+		vf.valueOf(-4569.97)
+		);
+    }
+    public void DISABLEDtestVariables() {
+	compare("1+3*2*(5-x/8)+sin(2*x-4)*3",
+		null,
+		null
+		);
+	compare("5*1+3*2*(5-x/8)+sin(3+1-2*x-4)*3",
+		null,
+		test("5+6*(5-x/8)+sin(4-2*x-4)*3")
+		);
+    }
+    public void testNonExpressions() {
+	parsable("1+", false);
+	parsable("1+3*/5", false);
+	parsable("1+(2*8-4", false);
+	parsable("1+3*(1-2))", false);
+	parsable("+5*-+3/unknown(x)", false);
+	parsable("unknown(4)", false);
+	parsable("/5", false);
+	parsable("(7>5)+1", false);
+	parsable("(7>5)<2", false);
+	parsable(".2", false);
+	parsable("1-+--3", false);
     }
 
     private void compare(String expr, Object parsed, Object evaluated) {
 	Arithmetic x = test(expr);
 	assertTrue( x != null , expr + " parsable");
 	assertTrue( parsed == null || x.equals(parsed) , x + " = " + parsed);
-	assertTrue( evaluated == null || (x instanceof Function && ((Function)x).apply(null).equals(evaluated)) , x + " evaluates to " + evaluated);
+	Object result = x instanceof Function ? ((Function)x).apply(null) : null;
+	if (result instanceof Arithmetic)
+	    assertTrue( evaluated == null || result != null && ((Arithmetic)result).equals(evaluated, tolerance) , x + " evaluates to " + (x instanceof Function ? result : "<non function>")  + " but should evaluate to " + evaluated);
+	else
+	    assertTrue( evaluated == null || result != null && result.equals(evaluated) , x + " evaluates to " + (x instanceof Function ? result : "<non function>")  + " but should evaluate to " + evaluated);
     }
 }

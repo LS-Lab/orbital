@@ -47,12 +47,14 @@ import orbital.util.Utility;
  * <span class="comment">// run the Term Rewrite System with <var>argument</var> as input, upon termination</span>
  * <span class="Class">Object</span> result <span class="operator">=</span> <span class="Orbital">Functionals</span>.fixedPoint(&sigma;, <var>argument</var>);
  * </pre>
- * However, you might prefer {@link orbital.moon.logic.MathParser#createExpression(String) parsing expressions}
+ * However, you might prefer {@link orbital.moon.logic.MathExpressionSyntax#createExpression(String) parsing expressions}
  * for some elements of the substitution list, like in
  * <pre>
+ * <span class="comment">// instantiate a parser for mathematical notation</span>
+ * <span class="Orbital">MathExpressionSyntax</span> syntax = <span class="keyword">new</span> <span class="Orbital">MathExpressionSyntax</span>();
  * <span class="comment">// for example, use parsed &sigma; = [x*e&rarr;x]</span>
  * &sigma; <span class="operator">=</span> <span class="Orbital">Substitutions</span>.getInstance(<span class="Class">Arrays</span>.asList(<span class="keyword">new</span> <span class="Class">Object</span><span class="operator">[]</span> {
- *	<span class="Orbital">Substitutions</span>.createExactMatcher(<span class="Orbital">MathParser</span>.createExpression(<span class="String">"x*e"</span>), <span class="Orbital">Functions</span>.constant(<span class="Orbital">Values</span>.symbol(<span class="String">"x"</span>)))
+ *	<span class="Orbital">Substitutions</span>.createExactMatcher(syntax.createMathExpression(<span class="String">"x*e"</span>), <span class="Orbital">Functions</span>.constant(<span class="Orbital">Values</span>.symbol(<span class="String">"x"</span>)))
  * }));
  * </pre>
  * </p>

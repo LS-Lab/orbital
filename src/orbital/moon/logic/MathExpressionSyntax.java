@@ -68,7 +68,7 @@ public class MathExpressionSyntax implements ExpressionSyntax {
 	if (expression == null)
 	    throw new NullPointerException("null is not an expression");
 	try {
-	    MathParser parser = new MathParser(new StringReader(expression));
+	    LogicParser parser = new LogicParser(new StringReader(expression));
 	    parser.setSyntax(this);
 	    return parser.parseExpression();
 	} catch (orbital.moon.logic.ParseException ex) {
@@ -123,31 +123,44 @@ public class MathExpressionSyntax implements ExpressionSyntax {
     }
 
     public Expression createAtomic(Symbol symbol) {
-	Type cod = symbol.getType().codomain();
-	Type doc = symbol.getType().domain();
+	if (symbol == null)
+	    throw new NullPointerException("illegal symbol: " + symbol);
+	final Type cod = symbol.getType().codomain();
+	final Type doc = symbol.getType().domain();
 	assert cod != Types.ABSURD : "@xxx currently assume map as strict";
+	final String signifier = symbol.getSignifier();
+	assert signifier != null;
+
 	// handle special cases of term construction, first
 	if (LAMBDA.equals(symbol))
 	    return new MathExpression(LAMBDA, LAMBDA.getType());
 
-	else if (cod.equals(Types.NOTYPE))
+	// check if it's already predefined in the coreSignature() but perhaps in a different notation and a more general type than parsed
+	for (Iterator i = coreSignature().iterator(); i.hasNext(); ) {
+	    // almost identical to @see ModernLogic#createAtomic
+	    Object o = i.next();
+	    assert o instanceof Symbol : "signature isa Set<" + Symbol.class.getName() + '>';
+	    Symbol s = (Symbol) o;
+	    if (s.getSignifier().equals(signifier)) {
+		// check for compatible types so as to detect misunderstandings during parse
+		if (!symbol.getType().subtypeOf(s.getType()))
+		    continue;
+		
+		// fixed interpretation of core signature
+		final Object ref = _coreInterpretation.get(s);
+		return new MathExpression(ref, s.getType());
+	    }
+	}
+
+	if (cod.equals(Types.NOTYPE))
 	    if (doc.equals(Types.INDIVIDUAL))
 		return new MathExpression(valueFactory.symbol(symbol.getSignifier()), symbol.getType());
-	    else
+	    else if (doc.subtypeOf(Types.type(Arithmetic.class)))
 		return new MathExpression(valueFactory.valueOf(symbol.getSignifier()), symbol.getType());
+	    else
+		throw new IllegalArgumentException("strange type " + symbol.getType() + " of " + symbol);
 	else {
-	    Functor referee = null;
-	    if (cod.subtypeOf(Types.product(new Type[] {Types.UNIVERSAL, Types.UNIVERSAL})))
-		// binary 
-		//@internal use any arguments of the right arity (since Notation.functorOf does not check for more)
-		referee = Notation.functorOf(symbol.getSignifier(), new Object[2]);
-	    else if (cod.subtypeOf(Types.product(new Type[] {Types.UNIVERSAL})))
-		//@xxx this test does not really work since cod.subtypeOf(UNIVERSAL) is always true. So it is true for all arities (except binary above).
-		// unary
-		referee = Notation.functorOf(symbol.getSignifier(), new Object[1]);
-	    if (referee == null)
-		referee = findFunction(symbol.getSignifier());
-	    return new MathExpression(referee, symbol.getType());
+	    return new MathExpression(findFunction(symbol.getSignifier()), symbol.getType());
 	}
     }
     

@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.Iterator;
 
+import orbital.math.MathUtilities;
+
 /**
  * This class implements a Parser for logic formulas that can be used
  * for every logic  after bound to it. The LogicParser will result in
@@ -54,16 +56,15 @@ import java.util.Iterator;
  * @see #parseFormulas()
  * @todo use a UTF-8 input stream and support the true Unicode
  * characters for forall, exist, and, or, not, ...
- * @todo unite with MathParser! Especially provide arbitrary functions
- * and fixed predicate "=" here
  * @todo should use precedence and associativity information from
  * orbital.logic.imp.Symbol instead of hard wiring parser.
  * @todo (we should be able to use LogicParser to find out the
  * Signature, adapt it such that he can find out new symbols like in
  * ~p(X) the predicate p/1 and object variable X)
- * @xxx "disambiguate" and disallow acception of $p(x) as $p (x) and °p(x) as °p (x) and alike
+ * @xxx "disambiguate" language and disallow acception of $p(x) as $p (x) and °p(x) as °p (x) and alike
  * @todo get rid of all this exception wrapping and unwrapping by wrapping the final orbital.logic.imp.ParseException inside an unchecked exception once, and unwrap it once
  * @internal note that all this nested lookahead with a lot of backtracking kills performance.
+ * @todo join symbiose of MathParser and LogicParser by letting expression() accept term(), directly as well? Instead of just providing two distinct start productions.
  */
 public class LogicParser {
     static final Type INTEGER_LITERAL_TYPE = Types.type(orbital.math.Integer.class);
@@ -236,7 +237,7 @@ public class LogicParser {
 		Symbol s = (Symbol)i.next();
 		System.err.println(s + " " + s.getType());
 	    }
-	    System.err.println(">> " + op + " applied to " + /*@todo once non-arithmetic are available again use: MathUtilities.format(*/arg + " of type " + Types.typeOf(arg) + " not found");
+	    System.err.println(">> " + op + " applied to " + MathUtilities.format(arg) + " of type " + Types.typeOf(arg) + " not found");
 	}
 	return composeWrapper(optok, coreSignature.get(op, arg), arg);
     }
@@ -361,7 +362,7 @@ TOKEN :
 }
 
 /**
- * Start to parse a set of logic formulas with the current syntax.
+ * Start production parsing a set of logic formulas with the current syntax.
  * @return the set of formulas parsed,
  *  or an array of length 0 if only the empty set of formulas was found.
  * @see #parseFormula()
@@ -383,7 +384,7 @@ Expression[] parseFormulas() :
 
 
 /**
- * Start to parse a logic formula with the current syntax.
+ * Start production parsing a logic formula with the current syntax.
  * @see #parseFormulas(ExpressionSyntax)
  * @internal we require <EOF> to be sure we parsed all, and no syntactic garbage lurks around at the end of the input
  */
@@ -399,8 +400,25 @@ Expression parseFormula() :
 	{ return null;/* must be converted later into a denotation of the empty formula */ }
 }
 
+/**
+ * Start production parsing an arithmetic formula expression.
+ * @internal we require <EOF> to be sure we parsed all, and no syntactic garbage lurks around at the end of the input
+ * @todo rename to parseTerm or parseMathematicalExpression?
+ */
+Expression parseExpression() :
+{Expression expr;}
+{
+    expr = term() <EOF>
+	{ return expr; }
+  | <EOF>
+	{ return null; }
+}
+
 // formula parsing methods
 
+/**
+ * Central expression parsing production.
+ */
 Expression expression() :
 {Expression f;}
 {
@@ -498,6 +516,7 @@ Expression UnaryExpression() :
 }
 
 /**
+ * Final expression parsing production (in addition to {@link #Atom()}).
  * primary formulas that have truth values
  */
 Expression PrimaryExpression() :
@@ -608,22 +627,68 @@ Expression LambdaAbstractionPredicate() :
 // true (non-formula) functional term parsing
 
 /**
+ * Central term parsing production.
  * Parse a (non-formula) functional term for the current logic.
  */
 Expression term() :
 {Expression a;}
 {
-    a  = PrimaryTerm()
+    a  = SumTerm()
 {return a;}
 }
 
+// junctors
+
+Expression SumTerm() :
+{Token tok;Expression a, b;}
+{
+    a = ProductTerm() ( (tok = "+" | tok = "-") b = ProductTerm() {a = combine(tok, a, b);} )*
+{return a;}
+}
+
+Expression ProductTerm() :
+{Token tok;Expression a, b;}
+{
+    a = PowerTerm() ( (tok = "*" | tok = "/") b = PowerTerm() {a = combine(tok, a, b);} )*
+{return a;}
+}
+
+Expression PowerTerm() :
+{Token tok;Expression a, b;}
+{
+    // right associative xfy
+    //@todo alternative? PowerTerm() = UnaryTerm() ("^" PowerTerm())?
+    //@xxx XOR != "^" != "**"
+     /*
+      * right associtivity is expressed using a right-recursive grammar
+      * specification. The LOOKAHEAD specification tells JavaCC to look ahead
+      * for a "^" token, otherwise the correct match won't be taken. 
+      * @todo or tok = "**"
+      */
+    //    a = UnaryTerm() (LOOKAHEAD("^") tok = "^" b = PowerTerm() {a = combine(tok, a, b);} )*
+    a = UnaryTerm() (tok = <XOR> b = PowerTerm() {a = combine(tok, a, b);} )?
+{return a;}
+}
+
+// unary operators
+
+Expression UnaryTerm() :
+{Token tok;Expression v;}
+{
+    ( tok = "+" | tok = "-" ) v = UnaryTerm() {return combine(tok, v);}
+|   v = PrimaryTerm() {return v;}
+}
+
+/**
+ * Final term parsing production (in addition to {@link #AtomicTerm()}).
+ */
 Expression PrimaryTerm() :
 {Expression a;}
 {
     (   LOOKAHEAD(2)
      	a = CompoundTerm()
      |  a = AtomicTerm()
-     |	"(" a = expression() /* @xxx better? = term() */")"
+     |	"(" a = term() ")"
      )
 	{return a;}
 }

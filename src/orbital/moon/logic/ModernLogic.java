@@ -60,13 +60,15 @@ abstract class ModernLogic implements Logic {
 	final String signifier = symbol.getSignifier();
 	assert signifier != null;
 
-	// check if it's already predefined in the coreSignature() but perhaps in a different notation and spec than parsed
+	// check if it's already predefined in the coreSignature() but perhaps in a different notation and a more general type than parsed
 	for (Iterator i = coreSignature().iterator(); i.hasNext(); ) {
 	    Object o = i.next();
 	    assert o instanceof Symbol : "signature isa Set<" + Symbol.class.getName() + '>';
 	    Symbol s = (Symbol) o;
 	    if (s.getSignifier().equals(signifier)) {
-		//@xxx should we check for compatibility of symbol and s so as to detect misunderstandings during parse?
+		// check for compatible types so as to detect misunderstandings during parse
+		if (!symbol.getType().subtypeOf(s.getType()))
+		    continue;
 		
 		// fixed interpretation of core signature
 		final Object ref = coreInterpretation().get(s);
