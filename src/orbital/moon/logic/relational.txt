@@ -1,0 +1,22 @@
+#
+# relational implications
+# @see Relations.html
+
+# r asymmetric => r irreflexive
+all a all b (r(a,b) => ~r(b,a)) |= all a ~r(a,a)
+# r transitive and irreflexive => r asymmetric
+all a all b all c (r(a,b)&r(b,c)=>r(a,c)) , all a ~r(a,a) |= all a all b (r(a,b)=>~r(b,a))
+# r symmetric => (r euclidean <=> r transitive)
+all a all b (r(a,b)=>r(b,a)) |= (all a all b all c (r(a,c)&r(b,c)=>r(a,b))) <-> (all a all b all c (r(a,b)&r(b,c)=>r(a,c)))
+# r reflexive and euclidean <=> r equivalence
+#   "<=" r equivalence => r reflexive and euclidean
+all a r(a,a) , all a all b (r(a,b)=>r(b,a)) , all a all b all c (r(a,b)&r(b,c)=>r(a,c)) |= (all a r(a,a)) & (all a all b all c (r(a,c)&r(b,c)=>r(a,b)))
+#   "=>" r reflexive and euclidean => r equivalence
+#     (1) r reflexive and euclidean => r reflexive
+all a r(a,a) , all a all b all c (r(a,c)&r(b,c)=>r(a,b)) |= all a r(a,a)
+#     (2) r reflexive and euclidean => r symmetric
+all a r(a,a) , all a all b all c (r(a,c)&r(b,c)=>r(a,b)) |= all a all b (r(a,b) => r(b,a))
+#     (3) r reflexive and euclidean => r transitive
+all a r(a,a) , all a all b all c (r(a,c)&r(b,c)=>r(a,b)) |= all a all b all c (r(a,b)&r(b,c)=>r(a,c))
+#   "=>" r reflexive and euclidean => r equivalence (summarizing (1),(2),(3))
+all a r(a,a) , all a all b all c (r(a,c)&r(b,c)=>r(a,b)) |= (all a r(a,a)) & (all a all b (r(a,b) => r(b,a))) & (all a all b all c (r(a,b)&r(b,c)=>r(a,c)))

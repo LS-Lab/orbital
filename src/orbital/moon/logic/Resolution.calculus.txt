@@ -1,0 +1,23 @@
+#
+# Resultion (based on CNF)
+# @attribute sound
+# @attribute &not; complete
+# @attribute refutation-complete
+# @attribute test calculus
+#
+# Inference Rules (propositional logic)
+#
+|- false				# Ax contradiction (false = empty clause "box")
+C&cup;{P}, D&cup;{~P} |- C&cup;D	# propositional Resolution in CNF and set(!) notation
+
+#
+# Inference Rules (first-order logic without equations)
+#
+|- false				# Ax contradiction (false = empty clause "box")
+C&cup;K1, D&cup;K2 |- µ(C&cup;D) with µ=mgU(K1&cup;~K2)	# general Resolution in CNF and set(!) notation where ~K2 should respect douplex negatio
+
+
+# alternative:
+# binary resolution + factorisation
+C&cup;{K1}, D&cup;{K2} |- µ(C&cup;D) with µ=mgU({K1,~K2})	# binary Resolution in CNF and set(!) notation where ~K2 should respect douplex negatio
+{L1,...,Ln} |- {s(L1),...,s(Lk)} with s=mgU({Lk,...,Ln})	# factorisation
