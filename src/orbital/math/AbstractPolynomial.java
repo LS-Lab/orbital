@@ -7,60 +7,40 @@
 package orbital.math;
 
 import orbital.math.functional.Function;
+import java.io.Serializable;
+
+import java.util.NoSuchElementException;
+import java.util.ConcurrentModificationException;
 
 import orbital.logic.functor.Functionals;
 import orbital.logic.functor.BinaryFunction;
 
+import orbital.util.Setops;
+import orbital.logic.functor.Predicates;
+
 import java.util.ListIterator;
 
-import java.util.Collections;
-import java.util.Arrays;
-
-class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractArithmetic implements Polynomial/*<R>*/ {
+abstract class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractArithmetic implements Polynomial/*<R>*/, Serializable {
+    private static final long serialVersionUID = -5253561352164949692L;
     /**
      * Which implementation of the multiplication to use.
      */
     private static final boolean IMPLEMENTATION_KARATSUBA = false;
 	
     /**
-     * The coefficients in R.
-     * @serial
-     */
-    private Arithmetic/*>R<*/ coefficients[];
-    /**
      * The 0&isin;R of the underlying ring of coefficients.
+     * @invariant subclasses must set this value to get(0).zero()
      */
-    private transient Arithmetic/*>R<*/  ZERO;
-    /**
-     * Caches the degree value.
-     * @see #degree()
-     */
-    private transient int degree;
-    public AbstractPolynomial(Arithmetic/*>R<*/ coefficients[]) {
-        set(coefficients);
-	this.ZERO = coefficients.length > 0 ? coefficients[0].zero() : Values.ZERO;
-	this.degree = degree(coefficients);
+    transient Arithmetic/*>R<*/  R_ZERO;
+    public AbstractPolynomial() {
     }
   
-    /**  
-     * Sustain transient variable initialization when deserializing.
-     */
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-	in.defaultReadObject();
-	// Recalculate redundant transient cache fields.
-	this.ZERO = coefficients.length > 0 ? coefficients[0].zero() : Values.ZERO;
-	this.degree = degree(coefficients);
-    }
-
     public boolean equals(Object o) {
     	if (o instanceof Polynomial) {
 	    Polynomial/*<R>*/ p = (Polynomial) o;
 	    if (degreeValue() != p.degreeValue())
 		return false;
-	    for (int i = 0; i <= degreeValue(); i++)
-		if (!get(i).equals(p.get(i)))
-		    return false;
-	    return true;
+	    return Setops.all(iterator(), p.iterator(), Predicates.equal);
     	}
     	return false;
     }
@@ -68,44 +48,111 @@ class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractArithmetic
     	throw new UnsupportedOperationException();
     }
 
-    private void set(Arithmetic/*>R<*/ coefficients[]) {
-	this.coefficients = coefficients;
-    }
     public Integer degree() {
 	return Values.valueOf(degreeValue());
     }
-    public int degreeValue() {
-	return degree;
-    }
+
     /**
-     * Implementation calculating the degree of a polynomial,
-     * given its coefficients.
+     * Sets a value for the coefficient specified by index.
+     * @pre i&isin;<b>N</b>
+     * @throws UnsupportedOperationException if this polynomial is constant and does not allow modifications.
      */
-    private int degree(Arithmetic/*>R<*/[] coefficients) {
-	for (int i = coefficients.length - 1; i >= 0; i--)
-	    if (!coefficients[i].equals(ZERO))
-		return i;
-	return java.lang.Integer.MIN_VALUE;
-    }
+    protected abstract void set(int i, Arithmetic vi);
 	
-    public Arithmetic/*>R<*/ get(int i) {
-	return i <= degreeValue() ? coefficients[i] : ZERO;
-    }
-	
+    // iterator-views
+
     /**
-     * @todo implement an own iterator that is not unmodifiable.
+     * The number of times this Polynomial has been structurally modified.
+     * Structural modifications are those that change the number of elements in
+     * the Polynomial or otherwise modify its internal structure.
+     * This field is used to make iterators of the Polynomial fail-fast.
+     * <p>
+     * To use this feature, increase modCount whenever an implementation method changes
+     * this polynomial.</p>
+     * @see java.util.ConcurrentModificationException
      */
+    protected transient int modCount = 0;
+
     public ListIterator iterator() {
-	return Collections.unmodifiableList(Arrays.asList(coefficients)).listIterator();
-    }
+	return new ListIterator() {
+		private int cursor = 0;
+		private int lastRet = -1;
+        	/**
+        	 * The modCount value that the iterator believes that the backing
+        	 * object should have. If this expectation is violated, the iterator
+        	 * has detected concurrent modification.
+        	 */
+        	private transient int expectedModCount = modCount;
+
+		public boolean hasNext() {
+		    return cursor <= degreeValue();
+		} 
+        	public boolean hasPrevious() {
+        	    return cursor != 0;
+        	}
+
+		public Object next() {
+		    try {
+            		Object next = get(cursor);
+			checkForComodification();
+            		lastRet = cursor++;
+            		return next;
+		    }
+		    catch(IndexOutOfBoundsException e) {
+			checkForComodification();
+    	    		throw new NoSuchElementException();
+        	    }
+		} 
+        	public Object previous() {
+        	    try {
+            		Object previous = get(--cursor);
+            		checkForComodification();
+            		lastRet = cursor;
+            		return previous;
+        	    } catch(IndexOutOfBoundsException e) {
+            		checkForComodification();
+            		throw new NoSuchElementException();
+        	    }
+        	}
+        
+        	public int nextIndex() {
+        	    return cursor;
+        	}
+        
+        	public int previousIndex() {
+        	    return cursor-1;
+        	}
+
+		public void remove() {
+		    throw new UnsupportedOperationException();
+		} 
+        	public void set(Object o) {
+        	    if (!(o instanceof Arithmetic))
+        	    	throw new IllegalArgumentException();
+        	    if (lastRet == -1)
+            		throw new IllegalStateException();
+		    checkForComodification();
+        
+        	    try {
+            		AbstractPolynomial.this.set(lastRet, (Arithmetic/*>R<*/)o);
+            		expectedModCount = modCount;
+        	    } catch(IndexOutOfBoundsException e) {
+			throw new ConcurrentModificationException();
+        	    }
+        	}
+        
+        	public void add(Object o) {
+		    throw new UnsupportedOperationException();
+        	}
+        	
+        	private final void checkForComodification() {
+        	    if (modCount != expectedModCount)
+			throw new ConcurrentModificationException();
+        	}
+	    };
+    } 
 	
-    /**
-     * Evaluate this polynomial at <var>a</var>.
-     * Using the "Einsetzungshomomorphismus".
-     * @return f(a) = f(X)|<sub>X=a</sub> = (f(X) mod (X-a))
-     * @todo copy horner scheme to examples
-     * @todo we could just as well generalize the argument and return type of R
-     */
+    // @todo copy horner scheme to examples
     public Object/*>R<*/ apply(Object/*>R<*/ a) {
 	final Arithmetic/*>R<*/ acast = (Arithmetic/*>R<*/)a;
 	if (acast instanceof Symbol) {
@@ -118,7 +165,7 @@ class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractArithmetic
 	    return r;
 	}
 	// horner schema is (|0, &lambda;c,b. c+b*a|) for foldRight like banana
-	return Functionals.banana(ZERO, new BinaryFunction/*<R,R,R>*/() {
+	return Functionals.banana(R_ZERO, new BinaryFunction/*<R,R,R>*/() {
 		public Object/*>R<*/ apply(Object/*>R<*/ c, Object/*>R<*/ b) {
 		    return (Object/*>R<*/) ((Arithmetic/*>R<*/)c).add(((Arithmetic/*>R<*/)b).multiply(acast));
 		    //return ((Arithmetic/*>R<*/)c).add(((Arithmetic/*>R<*/)b).multiply((Arithmetic/*>R<*/)a));
@@ -131,6 +178,8 @@ class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractArithmetic
      */
     public Function derive() {
 	Arithmetic[] ai = new Arithmetic[degreeValue()];
+	if (ai.length == 0)
+	    return this;
 	for (int i = 1; i <= degreeValue(); i++)
 	    ai[i - 1] = get(i).multiply(Values.valueOf(i));
 	return Values.polynomial(ai);
@@ -140,30 +189,28 @@ class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractArithmetic
      * &int; (<var>a</var><sub>0</sub> + <var>a</var><sub>1</sub>X + <var>a</var><sub>2</sub>X<sup>2</sup> + ... + <var>a</var><sub>n</sub>X<sup>n</sup>) <i>d</i>x = <var>a</var><sub>0</sub>X + <var>a</var><sub>1</sub>X<sup>2</sup>/2 + ... + <var>a</var><sub>n</sub>X<sup>n+1</sup>/(n+1).
      */
     public Function integrate() {
-	Arithmetic[] ai = new Arithmetic[degreeValue() + 1 + 1];
-	ai[0] = ZERO;
+	if (degreeValue() < 0)
+	    return this;
+	Arithmetic[] ai = new Arithmetic[(degreeValue() + 1) + 1];
+	ai[0] = R_ZERO;
 	for (int i = 0; i <= degreeValue(); i++)
 	    ai[i + 1] = get(i).divide(Values.valueOf(i + 1));
 	return Values.polynomial(ai);
     }
 
     public Arithmetic zero() {
-	return new AbstractPolynomial/*<R>*/(new Arithmetic/*>R<*/[] {ZERO});
+	return Values.polynomial(new Arithmetic/*>R<*/[] {get(0).zero()});
     }
 
     public Arithmetic one() {
-	return new AbstractPolynomial/*<R>*/(new Arithmetic/*>R<*/[] {
-	    coefficients.length > 0
-	    ? coefficients[0].one()
-	    : Values.ONE
-	});
+	return Values.polynomial(new Arithmetic/*>R<*/[] {get(0).one()});
     }
 
     public Real norm() {
-    	return coefficients.length == 0 ? Values.ZERO : Values.POSITIVE_INFINITY;
+    	return degreeValue() < 0 ? Values.ZERO : Values.POSITIVE_INFINITY;
     }
 
-    //@todo we should also support adding other functions (like in AbstractFunctor)
+    //@todo we should also support adding other functions (like in AbstractFunctor)?
 	
     public Arithmetic add(Arithmetic b) {
 	return addImpl((Polynomial)b);
@@ -189,7 +236,7 @@ class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractArithmetic
 	// optimized plus saving some empty additions with 0
 	if (degreeValue() > mindeg)
 	    for (int i = mindeg + 1; i <= degreeValue(); i++)
-		r[i] = coefficients[i];
+		r[i] = get(i);
 	else if (b.degreeValue() > mindeg)
 	    for (int i = mindeg + 1; i <= b.degreeValue(); i++)
 		r[i] = b.get(i);
@@ -197,10 +244,12 @@ class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractArithmetic
     }
 	
     public Arithmetic minus() {
-	Arithmetic/*>R<*/ r[] = new Arithmetic/*>R<*/[coefficients.length];
+	Arithmetic/*>R<*/ r[] = new Arithmetic/*>R<*/[degreeValue()];
+	if (r.length == 0)
+	    return this;
 	for (int i = 0; i < r.length; i++)
-	    r[i] = (Arithmetic/*>R<*/) coefficients[i].minus();
-	return new AbstractPolynomial/*<R>*/(r);
+	    r[i] = (Arithmetic/*>R<*/) get(i).minus();
+	return Values.polynomial(r);
     }
 
     public Arithmetic subtract(Arithmetic b) throws ArithmeticException {
@@ -281,7 +330,7 @@ class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractArithmetic
 	return representative(r);
     }
     /**
-     * @todo debug Addendum.main mutiplication of X^2*X^1 == 0 is completely wrong
+     * @todo debug Addendum.main multiplication of X^2*X^1 == 0 is completely wrong
      */
     private Polynomial/*<R>*/ multiplyImplKaratsuba(Polynomial/*<R>*/ poly2) {
 	//@todo could we speed this up by FFT or horner schema, or Karatsuba?
@@ -374,7 +423,7 @@ class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractArithmetic
 	    f0 = f0.subtract(BASE(ck, k).multiply(g));
 	    if (f0.norm().equals(Values.ZERO)) {
 		for (int i = k - 1; i >= 0; i--)
-		    quotient[i] = ZERO;
+		    quotient[i] = R_ZERO;
 		break;
 	    }
 	}
@@ -386,27 +435,30 @@ class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractArithmetic
     private Polynomial/*<R>*/ BASE(Arithmetic/*>R<*/ s, int k) {
 	Arithmetic/*>R<*/ r[] = new Arithmetic/*>R<*/[k + 1];
 	for (int i = 0; i < k; i++)
-	    r[i] = ZERO;
+	    r[i] = R_ZERO;
 	r[k] = s;
-	return new AbstractPolynomial/*<R>*/(r);
+	return Values.polynomial(r);
     }
 
+    /**
+     *
+     */
     private Polynomial/*<R>*/ representative(Arithmetic/*>R<*/ a[]) {
 	int deg;
 	for (deg = a.length - 1; deg >= 0; deg--)
 	    if (!a[deg].norm().equals(Values.ZERO))
 		break;
 	if (deg < 0)
-	    return new AbstractPolynomial/*<R>*/(new Arithmetic/*>R<*/[0]);
+	    return Values.polynomial(new Arithmetic/*>R<*/[0]);
 	//assert(deg == max {i&isin;<b>N</b> : a<sub>i</sub> &ne; 0}
 	assert 0 <= deg && deg < a.length : "degree " + deg + " is in [0,n]";
 	if (deg == a.length - 1)
 	    // fast shortcut avoiding copy of references in a to r
-	    return new AbstractPolynomial/*<R>*/(a);
+	    return Values.polynomial(a);
 	Arithmetic/*>R<*/ r[] = new Arithmetic/*>R<*/[deg + 1];                                                                                    
 	for (int i = 0; i < r.length; i++)
 	    r[i] = a[i];
-	return new AbstractPolynomial/*<R>*/(r);
+	return Values.polynomial(r);
     }
 	
     public Arithmetic/*>R<*/[] getCoefficients() {
@@ -419,7 +471,7 @@ class AbstractPolynomial/*<R implements Arithmetic>*/ extends AbstractArithmetic
     } 
 
     public String toString() {
-	assert !coefficients[degreeValue()].norm().equals(Values.ZERO) : "definition of degree implies that the degree-th coefficient is != 0";
+	assert !get(degreeValue()).norm().equals(Values.ZERO) : "definition of degree implies that the degree-th coefficient is != 0";
 	return ArithmeticFormat.getDefaultInstance().format(this);
     }
 }

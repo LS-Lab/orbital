@@ -75,7 +75,7 @@ class ArithmeticMatrix/*<R implements Arithmetic>*/ extends AbstractMatrix/*<R>*
      * </p>
      * @serial
      */
-    protected Arithmetic/*>R<*/ D[][];
+    Arithmetic/*>R<*/ D[][];
 
     /**
      * Creates a new Matrix with dimension height&times;width.

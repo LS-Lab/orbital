@@ -11,6 +11,8 @@ import java.util.Iterator;
 import java.lang.reflect.Array;
 import orbital.util.Utility;
 
+import orbital.algorithm.Combinatorical;
+
 /**
  * Represents a general tensor in A<sup>n<sub>1</sub>&times;n<sub>2</sub>&times;&#8230;&times;n<sub>r</sub></sup> of arithmetic values.
  * <p>
@@ -31,7 +33,7 @@ class ArithmeticTensor/*<R implements Arithmetic>*/ extends AbstractTensor/*<R>*
      * </p>
      * @serial
      */
-    protected Object D[];
+    private Object D[];
 
     /**
      * Creates a new Tensor with dimension n<sub>1</sub>&times;n<sub>2</sub>&times;&#8230;&times;n<sub>r</sub>.
@@ -44,29 +46,71 @@ class ArithmeticTensor/*<R implements Arithmetic>*/ extends AbstractTensor/*<R>*
      * creates a new Tensor backed by a multi-dimensional array of arithmetic objects.
      * The rows are first index, the columns second index, etc.
      * @pre values is rectangular, i.e. values[i<sub>1</sub>]...[i<sub>k-1</sub>][i<sub>k</sub>].length==values[i<sub>1</sub>]...[i<sub>k-1</sub>][i<sub>k</sub>-1].length etc.
-     * @todo accept double[][]...[]
      */
     public ArithmeticTensor(Object values[]) {
+	this((Object)values);
+    }
+    /**
+     * creates a new Tensor backed by a multi-dimensional array of arithmetic objects.
+     * Also accepts primitive type arrays.
+     * The rows are first index, the columns second index, etc.
+     * @pre values is rectangular, i.e. values[i<sub>1</sub>]...[i<sub>k-1</sub>][i<sub>k</sub>].length==values[i<sub>1</sub>]...[i<sub>k-1</sub>][i<sub>k</sub>-1].length etc.
+     */
+    public ArithmeticTensor(Object values) {
 	if (values == null)
 	    throw new NullPointerException("illegal tensor " + values);
-	D = values;
-	// check rectangular and that base type is instanceof Arithmetic
-	final int[] dim = dimensions();
-	Object[] o = D;
+	else if (!values.getClass().isArray())
+	    throw new UnsupportedOperationException("tensors of rank 0 should not get wrapped into tensors of non array type");
+	final int[] dim = dimensions(values);
+	// check rectangular and that base type is instanceof Arithmetic or primitive
+	Utility.pre(checkRectangular(dim, 0, values), "multi-dimensional array of " + Arithmetic.class + " expected");
+	final Combinatorical index = Combinatorical.getPermutations(dim);
+	// whether the array has primitive types
+	final boolean primitive = Values.isPrimitiveWrapper(Utility.getPart(values, index.next()).getClass());
+	index.previous();
+	assert primitive || values instanceof Object[] : "";
+	// convert to Arithmetic array in case of primitive type arrays
+	this.D = primitive
+	    ? (Object[]) Array.newInstance(Arithmetic.class, dim)
+	    : (Object[]) values;
+	while (index.hasNext()) {
+	    final int[] i = index.next();
+	    final Object ai = Utility.getPart(values, i);
+	    Utility.pre(primitive == Values.isPrimitiveWrapper(ai.getClass()), "multi-dimensional array either consistently has " + Arithmetic.class + " or consistently contains primitive types");
+	    if (primitive) {
+		assert ai instanceof Number : "primitive type get wrapped into instances of " + Number.class;
+		Utility.setPart(D, i, Values.valueOf((Number)ai));
+	    }
+	}
+    }
+
+    /**
+     * Checks that the multi-dimensional array o of dimensions dim is rectangular
+     * starting from the depth-th index.
+     */
+    private boolean checkRectangular(int[] dim, int depth, Object o) {
+	assert (depth < dim.length) == o.getClass().isArray() : "by definition of rank";
+	if (depth >= dim.length)
+	    return true;
+	final int len = Array.getLength(o);
+	if (len != dim[depth])
+	    return false;
 	// check multi-dimensional array for rectangularity
-	for (int i = 0; i < dim.length - 1; i++) {
-	    assert o instanceof Object[][] : "by definition of rank";
-	    final Object[][] a = (Object[][])o;
-	    for (int k = 1; k < dim[i]; k++)
-		Utility.pre(a[k].length == a[k - 1].length, "rectangular multi-dimensional array required");
-	    o = a[0];
+	for (int j = 0; j < len; j++) {
+	    Object oj = Array.get(o, j);
+	    if (depth < dim.length - 1) {
+		assert oj.getClass().isArray() : "by definition of rank";
+		if (!checkRectangular(dim, depth + 1, oj))
+		    return false;
+	    } else {
+		// check that base type is instanceof Arithmetic
+		assert !oj.getClass().isArray() : "by definition of rank";
+		if (!(o.getClass().getComponentType().isPrimitive() ||
+		      Arithmetic.class.isInstance(oj)))
+		    return false;
+	    }
 	}
-	// check that base type is instanceof Arithmetic
-	if (dim.length > 0) {
-	    assert !(o instanceof Object[][]) : "by definition of rank";
-	    for (int k = 0; k < dim[dim.length - 1]; k++)
-		Utility.pre(Arithmetic.class.isInstance(o[k]), "multi-dimensional array of " + Arithmetic.class + " expected");
-	}
+	return true;
     }
 
     protected Tensor/*<R>*/ newInstance(int[] dim) {
@@ -76,6 +120,10 @@ class ArithmeticTensor/*<R implements Arithmetic>*/ extends AbstractTensor/*<R>*
 
     public final int rank() {
 	//@todo optimize cache result
+	return rank(D);
+    }
+    private static final int rank(Object[] D) {
+	//@todo optimize cache result
     	Object[] o = D;
         int r = 1;
 	while (o[0] instanceof Object[]) {
@@ -84,10 +132,22 @@ class ArithmeticTensor/*<R implements Arithmetic>*/ extends AbstractTensor/*<R>*
 	}
 	return r;
     }
+    private static final int rank(Object D) {
+    	Object o = D;
+        int r = 0;
+	while (o.getClass().isArray()) {
+	    o = Array.get(o, 0);
+	    r++;
+	}
+	return r;
+    }
 
     public final int[] dimensions() {
 	//@todo optimize cache result
-	int[] dim = new int[rank()];
+	return dimensions(D);
+    }
+    private static final int[] dimensions(Object[] D) {
+	int[] dim = new int[rank(D)];
     	Object[] o = D;
 	for (int i = 0; i < dim.length - 1; i++) {
 	    dim[i] = o.length;
@@ -95,6 +155,17 @@ class ArithmeticTensor/*<R implements Arithmetic>*/ extends AbstractTensor/*<R>*
 	    o = (Object[])o[0];
 	}
 	dim[dim.length - 1] = o.length;
+	return dim;
+    }
+    private static final int[] dimensions(Object D) {
+	int[] dim = new int[rank(D)];
+    	Object o = D;
+	for (int i = 0; i < dim.length; i++) {
+	    assert o.getClass().isArray() : "by definition of rank";
+	    dim[i] = Array.getLength(o);
+	    o = Array.get(o, 0);
+	}
+	assert !o.getClass().isArray() : "by definition of rank";
 	return dim;
     }
 

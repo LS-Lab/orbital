@@ -24,7 +24,7 @@ class ArithmeticVector/*<R implements Arithmetic>*/ extends AbstractVector/*<R>*
      * contains the vector arithmetic data elements
      * @serial
      */
-    protected Arithmetic/*>R<*/ D[];
+    Arithmetic/*>R<*/ D[];
 
     /**
      * creates a new Vector with dimension length.

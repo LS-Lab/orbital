@@ -656,18 +656,19 @@ public final class Values {
      * @param values the element values of the tensor to create.
      *  The tensor may be backed by this exact array per reference.
      * @pre values is a rectangular multi-dimensional array of {@link Arithmetic arithmetic objects}
+     *  or of primitive types
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
      */
-    public static Tensor tensor(Object[] values) {
-	Tensor t = new ArithmeticTensor(values);
+    public static Tensor tensor(Object values) {
+	AbstractTensor t = new ArithmeticTensor(values);
 	// tensors of rank 1 or rank 2 are converted to vectors or matrices
 	switch (t.rank()) {
 	case 0:
 	    assert false;
 	case 1:
-	    return tensor((Arithmetic[])values);
+	    return tensor((Arithmetic[]) (values instanceof Arithmetic[] ? values : t.toArray__Tensor()));
 	case 2:
-	    return tensor((Arithmetic[][])values);
+	    return tensor((Arithmetic[][]) (values instanceof Arithmetic[][] ? values : t.toArray__Tensor()));
 	default:
 	    return t;
 	}
@@ -1004,17 +1005,35 @@ public final class Values {
 
     /**
      * Returns a polynomial with the specified coefficients.
+     * <p>
+     * Note that the resulting polynomial may or may not be backed by the
+     * specified array.
+     * </p>
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
      * @param coefficients an array <var>a</var> containing the
      * coefficients of the polynomial.
      * @return the polynomial <var>a</var><sub>0</sub> + <var>a</var><sub>1</sub>X + <var>a</var><sub>2</sub>X<sup>2</sup> + ... + <var>a</var><sub>n</sub>X<sup>n</sup> for n=coefficients.length-1.
      * @see #asPolynomial(Vector)
+     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
      */
     public static /*<R implements Arithmetic>*/ Polynomial/*<R>*/ polynomial(Arithmetic/*>R<*/[] coefficients) {
-    	return new AbstractPolynomial/*<R>*/(coefficients);
+    	return new ArithmeticPolynomial/*<R>*/(coefficients);
     }
-    public static Polynomial polynomial(double[] coefficients) {
-    	return new AbstractPolynomial(Values.valueOf(coefficients).toArray());
+    /**
+     * Returns a polynomial with the specified coefficients.
+     * <p>
+     * Note that the resulting polynomial may or may not be backed by the
+     * specified array.
+     * </p>
+     * @param coefficients an array <var>a</var> containing the
+     * coefficients of the polynomial.
+     * @pre coefficients is an array of {@link Arithmetic arithmetic objects}
+     *  or of primitive types
+     * @see #polynomial(Arithmetic[])
+     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     */
+    public static Polynomial polynomial(Object coefficients) {
+    	return polynomial((Arithmetic[]) ((AbstractTensor)tensor(coefficients)).toArray__Tensor());
     }
 
     /**
@@ -1027,7 +1046,7 @@ public final class Values {
      * @todo perhaps implement a true view flexible for changes
      */
     public static /*<R implements Arithmetic>*/ Polynomial/*<R>*/ asPolynomial(Vector a) {
-    	return new AbstractPolynomial/*<R>*/((Arithmetic/*>R<*/[]) a.toArray());
+    	return polynomial((Arithmetic/*>R<*/[]) a.toArray());
     }
 
     /**
@@ -1229,6 +1248,11 @@ public final class Values {
 		public Vector/*<R>*/ remove(int i) { throw new UnsupportedOperationException(); }
 	    };
     }
+    public static /*<R implements ListIterator,  Arithmetic>*/ Vector/*<R>*/ asVector(final Tensor/*<R>*/ t) {
+	if (t instanceof Matrix)
+	    asVector((Matrix)t);
+	throw new UnsupportedOperationException("not yet implemented");
+    }
 
 
     /**
@@ -1365,7 +1389,7 @@ public final class Values {
     public static final Real E = valueOf(Math.E);
 
     /**
-     * not a number &perp;&infin;&isin;<b>R</b>&cup;{&perp;}.
+     * not a number &perp;&isin;<b>R</b>&cup;{&perp;}.
      */
     public static final Real NaN = valueOf(java.lang.Double.NaN);
 

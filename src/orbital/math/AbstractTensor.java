@@ -54,7 +54,7 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractArith
 	    Tensor/*<R>*/ B = (Tensor) o;
 	    if (!Arrays.equals(dimensions(), B.dimensions()))
 		return false;
-	    return orbital.util.Setops.all(iterator(), B.iterator(), Predicates.equal);
+	    return Setops.all(iterator(), B.iterator(), Predicates.equal);
 	} 
 	return false;
     } 

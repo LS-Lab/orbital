@@ -114,8 +114,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     /**
      * Returns an iterator over all components.
      * @return an iterator that iterates over v<sub>0</sub>,&#8230;,v<sub>n-1</sub>.
-     * @post RES instanceof {@link ListIterator}
-     *  &and; RES.supports(#nextIndex()} &and; RES.supports(#previousIndex()}
+     * @post RES.supports(#nextIndex()} &and; RES.supports(#previousIndex()}
      *  &and; RES.supports(#add(Object)} &and; RES.supports(#remove()}
      */
     ListIterator/*_<R>_*/ iterator();

@@ -911,6 +911,7 @@ public final class MathUtilities {
 	    else
 		return format(((Number) o).doubleValue());
 	else if (o.getClass().isArray() && o.getClass().getComponentType().isArray()) {
+	    //@todo simplify to Values.tensor(o).toString();
 	    // 2-dimensional array type
 	    // (or more dimensional array type)
 	    String		 nl = System.getProperty("line.separator");
