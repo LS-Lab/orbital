@@ -89,11 +89,11 @@ public class MathParser {
     /**
      * binary junctors.
      */
-    protected static Arithmetic combine(Token optok, Object a, Object b) throws ParseException {
+    protected static MathFunctor combine(Token optok, Object a, Object b) throws ParseException {
 	String op = optok.image;
 	Functor f = Notation.functorOf(op, new Object[] {a,b});
 	if (f != null)
-	    return /*(BinaryFunction)*/ Functionals.genericCompose((BinaryFunction) f, a, b);
+	    return Functionals.genericCompose((BinaryFunction) f, a, b);
 	throw LogicParser.newParseException("Binary operator '" + op + "/2' not defined", optok);
     }
 
@@ -387,8 +387,8 @@ Arithmetic literal() :
     //@todo depending upon number of digits, we could parse optmized <INTEGER_LITERAL>	{return new Integer.Long(Long.parseLong(tok.image));}
     tok = <INTEGER_LITERAL>     	{return valueFactory.valueOf(tok.image);}
 |   tok = <FLOATING_POINT_LITERAL>	{return valueFactory.valueOf(tok.image);}
-|   tok = <STRING_LITERAL>			{return valueFactory.symbol(/* @todo remove " quotes? */tok.image);}
-|   tok = <IDENTIFIER>				{return valueFactory.symbol(tok.image);}
+|   tok = <STRING_LITERAL>		{return valueFactory.symbol(/* @todo remove " quotes? */tok.image);}
+|   tok = <IDENTIFIER>			{return valueFactory.symbol(tok.image);}
 }
 
 /**

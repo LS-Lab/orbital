@@ -74,8 +74,6 @@ import java.util.logging.Level;
  *  Oder wähle alternativen (einfacheren?) TRS-Algorithmus Ü 7.95
  * @todo use do/undo instead of copying the whole set of derived formulas every time.
  * @todo use optimizations of "Deduktions- und Inferenzsysteme"
- * @xxx there seems to be a bug in the normalization of the query in "r reflexive and Euclidean => r equivalence"
- * @xxx since? we have switched to new GSPs we can no longer prove "r symmetric => (r euclidean <=> r transitive)"
  */
 class Resolution implements Inference {
     private static final boolean UNDER_CONSTRUCTION = true;

@@ -29,6 +29,7 @@ import orbital.logic.functor.Predicate;
  * 
  * @version 1.0, 2000/08/03
  * @author  Andr&eacute; Platzer
+ * @stereotype &laquo;data-type&raquo;
  * @structure synonym for Fraction<Integer>
  * @see Values#rational(Integer, Integer)
  * @see Values#rational(int, int)

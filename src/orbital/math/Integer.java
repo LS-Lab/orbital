@@ -22,6 +22,7 @@ import orbital.logic.functor.Predicate;
  * </small>
  * </p>
  * 
+ * @stereotype &laquo;data-type&raquo;
  * @version 1.0, 2000/08/03
  * @author  Andr&eacute; Platzer
  * @see Values#valueOf(int)

@@ -279,7 +279,10 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    logger.log(Level.SEVERE, "exception occured", ex);
 	    throw ex;
     	}
-    } 
+    }
+    /**
+     * @todo move content to the ResourceBundle.
+     */
     public static final String usage = "usage: [options] [all|none|properties|fol|<filename>|table]\n\tall\tprove important semantic-equivalence expressions\n\tnone\ttry to prove some semantic-garbage expressions\n\tproperties\tprove some properties of classical logic inference relation\n\tfol\tprove important equivalences of first-order logic\n\n\t<filename>\ttry to prove all expressions in the given file\n\ttable\tprint a function table of the expression instead\n\t-\tUse no arguments at all to be asked for expressions\n\t\tto prove.\noptions:\n\t-normalForm\tcheck the conjunctive and disjunctive forms in between\n\t-resolution\tuse resolution instead of semantic inference\n\t-verbose\tbe more verbose (f.ex. print normal forms if -normalForm)\n\t-charset=<encoding>\tthe character set or encoding to use for reading files\n\nTo check whether A and B are equivalent, enter '|= A<->B'";
 
     /**
@@ -555,13 +558,13 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    try {
 		// eliminate derived junctors not in the basis (&forall;,&and;,&or;&not;)
 		if (DNFeliminate == null)
-		    DNFeliminate = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/DNF/eliminate.trs")));
+		    DNFeliminate = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/DNF/eliminate.trs")), logic);
 		f = (Formula) Functionals.fixedPoint(DNFeliminate, f);
 		// simplification part (necessary and does not disturb local confluency?)
 		if (simplifying && DNFSimplification == null)
 		    DNFSimplification =
 			Setops.union(
-				     readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/DNF/simplify.trs"))).getReplacements(),
+				     readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/DNF/simplify.trs")), logic).getReplacements(),
 				     Arrays.asList(new Object[] {
 					 // necessary and does not disturb local confluency? conditional commutative (according to lexical order)
 					 new LexicalConditionalUnifyingMatcher(logic.createExpression("_X2&_X1"), logic.createExpression("_X1&_X2"), logic.createAtomicLiteralVariable("_X1"), logic.createAtomicLiteralVariable("_X2")),
@@ -570,7 +573,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 				     }));
 		// transform to DNF part
 		if (DNFtrs == null)
-		    DNFtrs = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/DNF/transformToDNF.trs")));
+		    DNFtrs = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/DNF/transformToDNF.trs")), logic);
 		//@todo simplifying conditional rules: commutative with lexical sort, etc.
 		return (Formula) Functionals.fixedPoint(simplifying ? Substitutions.getInstance(new ArrayList(Setops.union(DNFSimplification, DNFtrs.getReplacements()))) : DNFtrs, f);
 	    } catch (java.text.ParseException ex) {
@@ -598,13 +601,13 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    try {
 		// eliminate derived junctors not in the basis (&forall;,&and;,&or;&not;)
 		if (CNFeliminate == null)
-		    CNFeliminate = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/CNF/eliminate.trs")));
+		    CNFeliminate = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/CNF/eliminate.trs")), logic);
 		f = (Formula) Functionals.fixedPoint(CNFeliminate, f);
 		// simplification part (necessary and does not disturb local confluency?)
 		if (simplifying && CNFSimplification == null)
 		    CNFSimplification =
 			Setops.union(
-				     readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/CNF/simplify.trs"))).getReplacements(), 
+				     readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/CNF/simplify.trs")), logic).getReplacements(), 
 				     Arrays.asList(new Object[] {
 		    // necessary and does not disturb local confluency? conditional commutative (according to lexical order)
 		    new LexicalConditionalUnifyingMatcher(logic.createExpression("_X2&_X1"), logic.createExpression("_X1&_X2"), logic.createAtomicLiteralVariable("_X1"), logic.createAtomicLiteralVariable("_X2")),
@@ -615,7 +618,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 				     }));
 		// transform to CNF part
 		if (CNFtrs == null)
-		    CNFtrs = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/CNF/transformToCNF.trs")));
+		    CNFtrs = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/CNF/transformToCNF.trs")), logic);
 		return (Formula) Functionals.fixedPoint(simplifying ? Substitutions.getInstance(new ArrayList(Setops.union(CNFSimplification, CNFtrs.getReplacements()))) : CNFtrs, f);
 	    } catch (java.text.ParseException ex) {
 		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
@@ -682,7 +685,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		F = (Formula) Functionals.fixedPoint(CNFeliminate, F);
 		// negation normal form transform TRS
 		if (NegationNFTransform == null)
-		    NegationNFTransform = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/negationNF.trs")));
+		    NegationNFTransform = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/negationNF.trs")), logic);
 		return (Formula) Functionals.fixedPoint(NegationNFTransform, F);
 	    } catch (java.text.ParseException ex) {
 		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
@@ -777,8 +780,9 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	 * &lt;matchingSide&gt; |- &lt;replacementSide&gt; # &lt;comment&gt; &lt;EOL&gt;
 	 * ...
 	 * </pre>
+	 * @todo move somewhere and also let Simplification.java use it.
 	 */
-	private static final Substitution readTRS(Reader reader) {
+	private static final Substitution readTRS(Reader reader, ExpressionSyntax syntax) {
 	    final String ruleDelim = "|-";
 	    LineNumberReader rd = new LineNumberReader(reader);
 	    List rules = new LinkedList();
@@ -796,8 +800,8 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		    if (rule < 0)
 			throw new java.text.ParseException("neither comment nor whitespace nor rule " + rd.getLineNumber() + "" + -1, -1);
 		    rules.add(Substitutions.createSingleSidedMatcher(
-								     logic.createExpression(l.substring(0, rule)),
-								     logic.createExpression(l.substring(rule + ruleDelim.length()))
+								     syntax.createExpression(l.substring(0, rule)),
+								     syntax.createExpression(l.substring(rule + ruleDelim.length()))
 								     ));
 		}
 		return Substitutions.getInstance(new ArrayList(rules));
