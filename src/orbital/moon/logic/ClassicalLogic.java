@@ -13,10 +13,10 @@
 package orbital.moon.logic;
 
 import orbital.logic.imp.*;
+import orbital.logic.imp.Expression.Composite;
 import orbital.logic.imp.ParseException;
 
 import orbital.logic.functor.Functor;
-import orbital.logic.functor.Functor.Composite;
 import orbital.logic.functor.*;
 import orbital.logic.functor.Predicates;
 import orbital.logic.trs.*;
@@ -912,10 +912,10 @@ public class ClassicalLogic extends ModernLogic {
 		return c;
 	    }
 	    catch (InstantiationException ass) {
-		throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite newInstance(Functor.Composite,Object)").initCause(ass);
+		throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite construct(Object,Object)").initCause(ass);
 	    }
 	    catch (IllegalAccessException ass) {
-		throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite newInstance(Functor.Composite,Object)").initCause(ass);
+		throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite construct(Object,Object)").initCause(ass);
 	    }
 	}
 	public Notation getNotation() {
@@ -1229,6 +1229,9 @@ public class ClassicalLogic extends ModernLogic {
      * @version 1.0, 1999/01/16
      * @author  Andr&eacute; Platzer
      * @see orbital.util.Utility
+     * @todo introduce ringForm(Formula) transforming to ring normal from (RNF) over {&and;,xor}
+     *  which is for arity n
+     *  <b>F</b><sub>2</sub>[X<sub>1</sub>,...,X<sub>n</sub>]/(X<sub>1</sub><sup>2</sup>-X<sub>1</sub>,...,X<sub>n</sub><sup>2</sup>-X<sub>n</sub>)
      */
     public static final class Utilities {
 	private static final ClassicalLogic logic = new ClassicalLogic();
@@ -1366,6 +1369,126 @@ public class ClassicalLogic extends ModernLogic {
 	// lazy initialized cache for TRS rules
 	private static Substitution NegationNFTransform;
 
+
+	/**
+	 * The contradictory clause &empty; &equiv; &#9633; &equiv; &perp;.
+	 * <p>
+	 * The contradictory set of clauses is {&empty;}={&#9633;}
+	 * while the tautological set of clauses is {}.
+	 * </p>
+	 */
+	static final Set/*_<Formula>_*/ CONTRADICTION = Collections.EMPTY_SET;
+
+	private static final Formula FORMULA_FALSE = (Formula) logic.createAtomic(new SymbolBase("false", Types.TRUTH));
+	private static final Formula FORMULA_TRUE = (Formula) logic.createAtomic(new SymbolBase("true", Types.TRUTH));
+	
+	/**
+	 * Transforms into clausal form.
+	 * <p>
+	 * Defined per structural induction.
+	 * </p>
+	 * @param simplifying Whether or not to use simplified CNF for calculating clausal forms.
+	 * @todo assert
+	 */
+	public static final Set/*_<Set<Formula>>_*/ clausalForm(Formula f, boolean simplifying) {
+	    try {
+		return clausalFormClauses(Utilities.conjunctiveForm(f, simplifying));
+	    }
+	    catch (IllegalArgumentException ex) {
+		throw (AssertionError) new AssertionError(ex.getMessage() + " in " + Utilities.conjunctiveForm(f, simplifying) + " of " + f).initCause(ex);
+	    }
+	}
+	/**
+	 * Convert a formula (that is in CNF) to a set of clauses.
+	 * @pre term=conjunctiveForm(term)
+	 */
+	private static final Set/*_<Set<Formula>>_*/ clausalFormClauses(Formula term) {
+	    //@todo assert assume right-associative nesting of &
+	    if (term instanceof Composite) {
+		Composite f = (Composite) term;
+		Object    op = f.getCompositor();
+		//@todo could also query ClassicalLogic.LogicFunctions.and etc. from logic.coreInterpretation once
+		if (op == ClassicalLogic.LogicFunctions.and) {
+		    Formula[] components = (Formula[]) f.getComponent();
+		    assert components.length == 2 : "binary " + op + "/" + components.length + " expected";
+		    return Setops.union(clausalFormClauses(components[0]), clausalFormClauses(components[1]));
+		} else if (op == ClassicalLogic.LogicFunctions.or) {
+		    Formula[] components = (Formula[]) f.getComponent();
+		    assert components.length == 2 : "binary " + op + "/" + components.length + " expected";
+		    Set C = Setops.union(clausalFormClause(components[0]), clausalFormClause(components[1]));
+		    return C.contains(FORMULA_TRUE) ? Collections.EMPTY_SET : singleton(C);
+		} else if (op == ClassicalLogic.LogicFunctions.not) {
+		    Object c = f.getComponent();
+		    // evaluate constants
+		    if (FORMULA_FALSE.equals(c))
+			return clausalFormClauses(FORMULA_TRUE);
+		    else if (FORMULA_TRUE.equals(c))
+			return clausalFormClauses(FORMULA_FALSE);
+		    return singleton(singleton(term));
+		} else if (!(op instanceof ModernFormula.AtomicSymbol))
+		    throw new IllegalArgumentException("conjunctive normal form should not contain " + op + " of " + op.getClass());
+	    }
+	    // atomic parts
+	    return term.equals(FORMULA_FALSE)
+		? singleton(CONTRADICTION)
+		: term.equals(FORMULA_TRUE)
+		? Collections.EMPTY_SET
+		: singleton(singleton(term));
+	}
+	/**
+	 * Convert a disjunction of literals to a single clause.
+	 * @return the clause, note that the clause can be further collapsed if it contains true.
+	 */
+	private static final Set/*_<Formula>_*/ clausalFormClause(Formula term) {
+	    if (term instanceof Composite) {
+		Composite f = (Composite) term;
+		Object    op = f.getCompositor();
+		if (op == ClassicalLogic.LogicFunctions.or) {
+		    Formula[] components = (Formula[]) f.getComponent();
+		    assert components.length == 2 : "binary " + op + "/" + components.length + " expected";
+		    return Setops.union(clausalFormClause(components[0]), clausalFormClause(components[1]));
+		} else if (op == ClassicalLogic.LogicFunctions.not) {
+		    Object c = f.getComponent();
+		    // evaluate constants
+		    if (FORMULA_FALSE.equals(c))
+			return clausalFormClause(FORMULA_TRUE);
+		    else if (FORMULA_TRUE.equals(c))
+			return clausalFormClause(FORMULA_FALSE);
+		    return singleton(term);
+		} else if (op == ClassicalLogic.LogicFunctions.and)
+		    throw new IllegalArgumentException("(right-associative) conjunctive normal form should not contain " + op + ". Make sure the formula is right-associative for &");
+		else if (!(op instanceof ModernFormula.AtomicSymbol))
+		    throw new IllegalArgumentException("conjunctive normal form should not contain " + op);
+	    }
+	    // atomic parts
+	    return term.equals(FORMULA_FALSE)
+		? CONTRADICTION
+		: singleton(term);
+	}
+
+	// clause and clause set handling
+	
+	private static final Set singleton(Object o) {
+	    Set r = new HashSet();
+	    r.add(o);
+	    return r;
+	}
+
+	/**
+	 * Get the free variables of a formula represented as a clause.
+	 * @return freeVariables(clause)
+	 * @internal note that for clauses FV(C)=V(C) &and; BV(C)=&empty;
+	 */
+	static final Signature clausalFreeVariables(Set/*_<Formula>_*/ clause) {
+	    // return banana (|&empty;,&cup;|) (map ((&lambda;x)x.freeVariables()), clause)
+	    Set freeVariables = new HashSet();
+	    for (Iterator i = clause.iterator(); i.hasNext(); )
+		freeVariables.addAll(((Formula)i.next()).getVariables());
+	    return new SignatureBase(freeVariables);
+	}
+
+	// first-order
+
 	/**
 	 * Drop any quantifiers.
 	 * Will simply remove every quantifier from F.
@@ -1486,6 +1609,7 @@ public class ClassicalLogic extends ModernLogic {
 		}
 	    }
 	}
+
 
 	// closure operators for free variables
 	
