@@ -120,6 +120,25 @@ public class ModalLogic extends ClassicalLogic {
 	this.ACCESSIBLE_form = (Formula) createAtomic(ACCESSIBLE);
     }
 
+    private boolean localConsequence = true;
+    
+    /**
+     * Whether local or global consequence is used.
+     */
+    public boolean isLocalConsequence() {
+	return localConsequence;
+    }
+    
+    /**
+     * Whether to use local or global consequence.
+     * @param v <code>true</code> for local consequence,
+     * <code>false</code> for global consequence,.
+     */
+    public void setLocalConsequence(boolean  v) {
+	this.localConsequence = v;
+    }
+    
+    
     /**
      * facade for convenience.
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade</a>
@@ -150,9 +169,13 @@ public class ModalLogic extends ClassicalLogic {
 		//@todo should add sorted type-safety information Kripke etc.
 		Formula[] Bred = new Formula[B.length];
 		for (int i = 0; i < B.length; i++) {
-		    Bred[i] = ClassicalLogic.Utilities.constantClosure(Utilities.modalReduce(B[i]));
+		    Bred[i] = isLocalConsequence()
+			? ClassicalLogic.Utilities.constantClosure(Utilities.modalReduce(B[i]))
+			: ClassicalLogic.Utilities.universalClosure(Utilities.modalReduce(B[i]));
 		}
-		Formula Dred = ClassicalLogic.Utilities.constantClosure(Utilities.modalReduce(D));
+		Formula Dred = isLocalConsequence()
+		    ? ClassicalLogic.Utilities.constantClosure(Utilities.modalReduce(D))
+		    : ClassicalLogic.Utilities.universalClosure(Utilities.modalReduce(D));
 		if (logger.isLoggable(Level.FINER)) {
 		    logger.log(Level.FINER, "{0}  |-<red> {1}", new Object[] {
 			Utility.format(" , ", Bred),
