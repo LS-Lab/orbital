@@ -68,6 +68,21 @@ public interface Clause extends Set/*<Formula>*/ {
     Iterator/*_<Clause>_*/ resolveWithVariant(Clause G);
 
     /**
+     * Get all resolvents of factors of F and G, if any. (Resolution
+     * rule) Combines resolution and factorization, resulting in a
+     * quicker implementation.  When F can be resolved with G via the
+     * resolution literals L and K, then in addition to the ordinary
+     * resolvent, this method also returns all resolvents resulting
+     * from a factorization of F (involving L) or G (involving K).
+     * Other factorizations are not necessary for completeness, since
+     * they can be performed later on resolution over the literals
+     * participating.
+     * @see #factorize()
+     * @see #resolveWith(Clause)
+     */
+    //@todo introduce Iterator/*_<Clause>_*/ resolveWithFactorized(Clause G);
+
+    /**
      * Factorize a clause as much as possible.
      * <p>
      * Will implement the factorization rule necessary for binary resolution:
@@ -116,7 +131,8 @@ public interface Clause extends Set/*<Formula>*/ {
      * That is a p&or;&not;p &isin; F&cup;G
      * <p>
      * We can forget about elementary valid clauses for resolving false,
-     * because true formulas will only imply true formulas, never false ones.
+     * (<em>essentially</em>) because true formulas will only imply true formulas,
+     * never false ones.
      * </p>
      * @param G a clause
      * @preconditions (&not;this.isElementaryValid() &and; &not;G.isElementaryValid()) &or; F=G
