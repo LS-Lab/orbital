@@ -409,11 +409,12 @@ public final class Values {
     } 
 
     /**
-     * Gets unit base Vector <code>i</code>, with all elements set to <code>0</code> except element <code>i</code> set to <code>1</code>.
-     * These <code>e<sub>i</sub></code> are the standard base of <code><b>R</b><sup>n</sup></code>:
-     * &forall;x&isin;<b>R</b><sup>n</sup> &exist;! x<sub>k</sub>&isin;<b>R</b>: x = x<sub>1</sub>*e<sub>1</sub> + ... + x<sub>n</sub>*e<sub>n</sub>.
+     * Gets unit base Vector <span class="vector">e<sub>i</sub></span>,
+     * with all elements set to <code>0</code> except element <code>i</code> set to <code>1</code>.
+     * These <span class="vector">e<sub>i</sub></span> are the standard base of <b>R</b><sup>n</sup>:
+     * &forall;<span class="vector">x</span>&isin;<b>R</b><sup>n</sup> &exist;! x<sub>k</sub>&isin;<b>R</b>: <span class="vector">x</span> = x<sub>1</sub>*<span class="vector">e<sub>1</sub></span> + ... + x<sub>n</sub>*<span class="vector">e<sub>n</sub></span>.
      */
-    public static /*<R implements Scalar>*/ Vector/*<R>*/ BASE(int n, int e_i) {
+    public static /*<R implements Scalar>*/ Vector/*<R>*/ BASE(int n, int i) {
 	ArithmeticVector/*<R>*/ base = (ArithmeticVector/*<R>*/) (Vector/*<R>*/) newInstance(n);
 	for (int i = 0; i < base.dimension(); i++)
 	    base.D[i] = (Arithmetic/*>R<*/) Values.valueOf(i == e_i ? 1 : 0);
@@ -1155,6 +1156,7 @@ public final class Values {
      * The monomial 1&middot;X<sup>i</sup>.
      * Note that the coefficient is {@link #ONE 1}&isin;<b>Z</b>.
      * @param exponent the exponent i of the monomial.
+     * @see <a href="{@docRoot}/DesignPatterns/Convenience.html">Convenience Method</a>
      * @see #MONOMIAL(Arithmetic,Arithmetic)
      */
     public static final Polynomial/*<R implements Scalar,S>*/ MONOMIAL(Arithmetic/*>S<*/ exponent) {
@@ -1165,6 +1167,7 @@ public final class Values {
      * Note that the coefficient is {@link #ONE 1}&isin;<b>Z</b>.
      * @param exponents the exponents i of the monomial.
      *  The number of variables is <code>n:=exponents.length</code>.
+     * @see <a href="{@docRoot}/DesignPatterns/Convenience.html">Convenience Method</a>
      * @see #MONOMIAL(Arithmetic,int[])
      */
     public static final Polynomial/*<R implements Scalar>*/ MONOMIAL(int[] exponents) {
@@ -1188,6 +1191,20 @@ public final class Values {
      */
     public static /*<R implements Arithmetic>*/ UnivariatePolynomial/*<R>*/ polynomial(Arithmetic/*>R<*/[] coefficients) {
     	return new ArithmeticUnivariatePolynomial/*<R>*/(coefficients);
+    }
+    /**
+     * @see #polynomial(Arithmetic[])
+     * @see #polynomial(Object)
+     */
+    public static UnivariatePolynomial/*<Real>*/ polynomial(double[] coefficients) {
+	return (UnivariatePolynomial) polynomial((Object)coefficients);
+    }
+    /**
+     * @see #polynomial(Arithmetic[])
+     * @see #polynomial(Object)
+     */
+    public static UnivariatePolynomial/*<Integer>*/ polynomial(int[] coefficients) {
+	return (UnivariatePolynomial) polynomial((Object)coefficients);
     }
 
     /**
@@ -1260,6 +1277,24 @@ public final class Values {
 	return new AbstractQuotient/*<M>*/(a, m);
     }
     /**
+     * Returns a new quotient a&#772;=[a]&isin;M/(m) of the given
+     * value reduced modulo (m).
+     * <p> Will use special remainder classes modulo (m) for a Groebner
+     * basis m of (multivariate) polynomial rings. These remainder
+     * classes are those induced by the {@link AlgebraicAlgorithms#reduce(java.util.Collection,java.util.Comparator) reduction}
+     * operator.  </p>
+     * @param m the {@link AlgebraicAlgorithms#groebnerBasis(Set,Comparator) Groebner basis}
+     * modulo whose generated ideal (m) to form the quotients.
+     * @param monomialOrder the monomial order applied for reducing polynomials.
+     */
+    public static /*<R implements Arithmetic>*/ Quotient/*<Polynomial<R,S>>*/ quotient(Polynomial/*<R,S>*/ a, java.util.Set/*_<Polynomial<R,S>>_*/ m, java.util.Comparator/*_<S>_*/ monomialOrder) {
+	return new AbstractQuotient(a, m, monomialOrder);
+    }
+
+    // quotient constructor synonyms
+
+    /**
+     * (disambiguates type unification).
      * Returns a new quotient a&#772;=[a]&isin;M/(m)
      * of the given value reduced modulo m.
      * <p>
@@ -1274,6 +1309,7 @@ public final class Values {
 	return quotient(a, (Euclidean)m);
     }
     /**
+     * (disambiguates type unification).
      * Returns a new quotient a&#772;=[a]&isin;M/mod
      * of the given value reduced with the quotient operator.
      * <p>
@@ -1311,20 +1347,6 @@ public final class Values {
 	    throw new ClassCastException(m.getClass() + " most probably is no quotient operator.\nConsider using Values.quotient(Polynomial,Set,Comparator) instead.\nIf the instance " + m + " truely is a quotient operator\nand you really know what you are doing, then call Values.quotient(Arithmetic,Function) instead.");
     }
 
-    /**
-     * Returns a new quotient a&#772;=[a]&isin;M/(m) of the given
-     * value reduced modulo (m).
-     * <p> Will use special remainder classes modulo (m) for a Groebner
-     * basis m of (multivariate) polynomial rings. These remainder
-     * classes are those induced by the {@link AlgebraicAlgorithms#reduce(java.util.Collection,java.util.Comparator) reduction}
-     * operator.  </p>
-     * @param m the {@link AlgebraicAlgorithms#groebnerBasis(Set,Comparator) Groebner basis}
-     * modulo whose generated ideal (m) to form the quotients.
-     * @param monomialOrder the monomial order applied for reducing polynomials.
-     */
-    public static /*<R implements Arithmetic>*/ Quotient/*<Polynomial<R,S>>*/ quotient(Polynomial/*<R,S>*/ a, java.util.Set/*_<Polynomial<R,S>>_*/ m, java.util.Comparator/*_<S>_*/ monomialOrder) {
-	return new AbstractQuotient(a, m, monomialOrder);
-    }
     /**
      * (Convenience) Returns a new quotient a&#772;=[a]&isin;M/(m)
      * of the given value reduced modulo m.
@@ -1476,7 +1498,7 @@ public final class Values {
 	    Real r = (Real) val;
 	    try {
 		if (MathUtilities.isInteger(r.doubleValue()))
-		    return new AbstractInteger.Long((long) r.doubleValue());
+		    return valueOf((long) r.doubleValue());
 	    } catch (UnsupportedOperationException nonconform_trial) {
 		// ignore
 	    } 
