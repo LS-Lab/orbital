@@ -95,7 +95,7 @@ public interface Clause extends Set/*<Formula>*/ {
      * false even for subsumption cases is allowed.
      * @todo look for true&isin;F?
      */
-    public boolean subsumes(Clause D);
+    boolean subsumes(Clause D);
 
     /**
      * Returns true when this clause obviously is an elementary tautology.
