@@ -35,7 +35,9 @@ public class PropositionalInference implements Inference {
         // convert B to clausalForm
         Set/*_<Set<Formula>>_*/ S = new LinkedHashSet();
         for (Iterator i = Arrays.asList(B).iterator(); i.hasNext(); ) {
-	    S.addAll(Utilities.clausalForm((Formula) i.next(), SIMPLIFYING));
+	    Formula Bi = (Formula) i.next();
+	    Utilities.propositionalOnly(Bi.getSignature());
+	    S.addAll(Utilities.clausalForm(Bi, SIMPLIFYING));
 	}
 
 	//@todo could we remove tautologies?
@@ -47,6 +49,7 @@ public class PropositionalInference implements Inference {
 
         // negate query since we are a negative test calculus
         Formula query = D.not();
+	Utilities.propositionalOnly(query.getSignature());
 
         // convert (negated) query to clausalForm S
 	Set queryClauses = Utilities.clausalForm(query, SIMPLIFYING);
@@ -70,9 +73,9 @@ public class PropositionalInference implements Inference {
      *  <code>true</code> if S is unsatisfiable (due to refutation).
      */
     private boolean refute(Set/*_<Set<Formula>>_*/ S) {
-        logger.log(Level.FINE, "S = {0}", new LinkedHashSet(S));
+        logger.log(Level.FINE, "S = {0}", S);
 	if (S.isEmpty()) {
-	    logger.log(Level.FINE, "satisfiable S = {0}", new LinkedHashSet(S));
+	    logger.log(Level.FINE, "satisfiable S = {0}", S);
 	    return false;
 	}
 	// search for any unit clause
@@ -84,7 +87,7 @@ public class PropositionalInference implements Inference {
 	    Formula literalC = (Formula) C.iterator().next();
 	    S = reduce(literalC, S);
 	    if (S.contains(ClassicalLogic.Utilities.CONTRADICTION)) {
-		logger.log(Level.FINE, "unsatisfiable S = {0}", new LinkedHashSet(S));
+		logger.log(Level.FINE, "unsatisfiable S = {0}", S);
 		return true;
 	    }
 	    //@internal restarting loop would suffice @todo optimize by i = S.iterator();
@@ -100,25 +103,28 @@ public class PropositionalInference implements Inference {
     }
 
     /**
-     * @param S will be changed
+     * @param S will not be changed
      */
     private Set/*_<Set<Formula>>_*/ reduce(final Formula C, Set/*_<Set<Formula>>_*/ S) {
-        logger.log(Level.FINER, "reduce({0}, {1})", new Object[] {C, new LinkedHashSet(S)});
+        logger.log(Level.FINER, "reduce({0}, {1})", new Object[] {C, S});
+	Set/*_<Set<Formula>>_*/ S2 = new LinkedHashSet(S.size());
 	final Formula notC = Resolution.negation(C);
 	for (Iterator i = S.iterator(); i.hasNext(); ) {
 	    Set/*_<Formula>_*/ clause = (Set)i.next();
 	    if (clause.contains(C)) {
-		logger.log(Level.FINEST, "remove clause {0}", new LinkedHashSet(clause));
-		i.remove();
-	    } else if (clause.remove(notC)) {
-		//@internal modifying clause also has effect in S since S contains clause (by reference)
-		logger.log(Level.FINEST, "remove literal {0} retaining clause {1}", new Object[] {notC, new LinkedHashSet(clause)});
+		logger.log(Level.FINEST, "remove clause {0}", clause);
+	    } else if (clause.contains(notC)) {
+		Set/*_<Formula>_*/ clause2 = new LinkedHashSet(clause);
+		clause2.remove(notC);
+		S2.add(clause2);
+		logger.log(Level.FINEST, "remove literal {0} retaining clause {1}", new Object[] {notC, clause2});
 	    } else {
-		logger.log(Level.FINEST, "leave clause {0}", new LinkedHashSet(clause));
+		S2.add(clause);
+		logger.log(Level.FINEST, "leave clause {0}", clause);
 	    }
 	}
-        logger.log(Level.FINER, "reduce({0}, ...) = {1}", new Object[] {C, new LinkedHashSet(S)});
-	return S;
+        logger.log(Level.FINER, "reduce({0}, {1}) = {2}", new Object[] {C, S, S2});
+	return S2;
     }
 
     //@todo remove
