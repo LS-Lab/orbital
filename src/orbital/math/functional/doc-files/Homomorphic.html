@@ -6,7 +6,9 @@
 <meta name="author" content="Andre Platzer">
 <meta name="copyright" content="© 2002 André Platzer">
 <meta name="classification" content="Science/Mathematics/Algebra/Basics">
-<title>Homomorphisms</title>
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>Quotients and homomorphisms</title>
 <link rel="stylesheet" href="../../../../stylist.css" type="text/css" charset="utf-8" title="layout">
 <style type="text/css">
 <!--
@@ -23,21 +25,24 @@ dt:before    {
 
 <body class="unicode">
 
-<h2>Properties of Homomorphisms</h2>
+<h2>Properties of Quotients</h2>
 <dl>
   <dt id="homomorphicProjection">&quot;1. Homomorphiesatz, Projektionssatz&quot; 
-    (Universal Mapping Property)</dt>
+    (Universal mapping property)      
+    <!-- <source>N. Bourbaki, Algebra I.1.6: Quotient laws. Proposition 6.</source>  -->
+  </dt>
   <dd class="UniversalMappingProperty"><img class="annotatingDiagram" src="diagram/commutative/homomorphicProjection.jpg" width="141" height="120"> 
-    Let f:A→B be a homomorphism of Σ-Algebras<br>
+    Let f:A→B be a homomorphism of Σ-algebras<br>
     ⇒
     <ul>
-      <li>π:A↠A/~<sub>f</sub> is a surjective homomorphism (canonical)</li>
-      <li>∃!f̅:A/~<sub>f</sub>→B homomorph such that f = f̅∘π</li>
-      <li>f̅ is injective</li>
-      <li>f surjective ⇒ f̅ surjective</li>
-      <li>A/Ker(f)≅Im(f)</li>
+      <li>π:A↠A/~<sub>f</sub> is a surjective (canonical) homomorphism.</li>
+      <li>g̅:A/~<sub>f</sub>→B homomorph ⇔ g̅∘π homomorph (and g̅ 
+        surjective ⇔ g̅∘π surjective).</li>
+      <li>∃!f̅:A/~<sub>f</sub>→B homomorph such that f = f̅∘π.</li>
+      <li>f̅ is injective.</li>
+      <li>A/~<sub>f</sub> ≅ Im(f) (≅A/Ker(f) for groups).</li>
     </ul>
-    Alternatively: (Universal Mapping Property of factor groups)<br>
+    Alternatively: (Universal mapping property of factor groups)<br>
     Let f:G→G' be a homomorphism of groups, with N⊴G and N⊆Ker(f)<br>
     ⇒
     <ul>
@@ -49,9 +54,12 @@ dt:before    {
     as presenting object.</small></dd>
   <dt id="homomorphicEmbedding"><img class="annotatingDiagram" src="diagram/commutative/homomorphicEmbedding.jpg" width="201" height="233"> 
     <img class="annotatingDiagramSomewhere" src="visualize/homomorphicEmbedding.jpg" width="137" height="150"> 
-    &quot;2. Homomorphiesatz, Einbettungssatz&quot;</dt>
-  <dd>Let B⊆A be Σ-Algebras, ~ ⊆ A×A a congruence relation, and B̅ := ⋃<sub>b∈B</sub>[b]<sub>~</sub> 
-    the closure (or saturation) with respect to ~.<br>
+    &quot;2. Homomorphiesatz, Einbettungssatz&quot;      
+    <!-- <source>N. Bourbaki, Algebra I.1.6: Quotient laws. Proposition 8.</source>  -->
+  </dt>
+  <dd>Let B⊆A be Σ-algebras, ~ ⊆ A×A a congruence relation, and B̅ := ⋃<sub>b∈B</sub>[b]<sub>~</sub> 
+    = (π<sup>-1</sup>∘π)(B) ⊆ A the closure (or saturation) with respect 
+    to ~.<br>
     ⇒
     <ul>
       <li>B/~∩B×B ≅ B̅/~</li>
@@ -59,10 +67,13 @@ dt:before    {
   </dd>
   <dt id="homomorphicRefinement"><img class="annotatingDiagram" src="diagram/commutative/homomorphicRefinement.jpg" width="197" height="112"> 
     <img class="annotatingDiagramSomewhere" src="visualize/homomorphicRefinement.jpg" width="163" height="146"> 
-    &quot;3. Homomorphiesatz, Serial Decomposition, Refinement&quot;</dt>
-  <dd>Let A be Σ-Algebras, σ⊆τ ⊆ A×A two congruences.<br>
+    &quot;3. Homomorphiesatz, Serial Decomposition, refinement&quot;      
+    <!-- <source>N. Bourbaki, Algebra I.1.6: Quotient laws. Proposition 7.</source>  -->
+  </dt>
+  <dd>Let A be a Σ-algebra, and σ⊆ A×A a congruence.<br>
     ⇒
     <ul>
+      <li>The congruences on A/σ are τ/σ for a congruence τ⊇σ on A.</li>
       <li>∃!f:A/σ↠A/τ epimorphism such that π<sub>τ</sub> = f∘π<sub>σ</sub></li>
       <li>~<sub>f</sub> = τ/σ</li>
       <li>(A/σ)<big>/</big>(τ/σ) ≅ A/τ</li>
@@ -72,7 +83,7 @@ dt:before    {
     <img class="annotatingDiagramSomewhere" src="visualize/homomorphicParallel.jpg" width="130" height="133"> 
     &quot;4. Homomorphiesatz, Parallel Decomposition ≙Chinese Remainder 
     Theorem?&quot;</dt>
-  <dd>Let A be Σ-Algebras, σ ⊆ A×A, τ ⊆ A×A&nbsp; two independent 
+  <dd>Let A be a Σ-algebra, σ ⊆ A×A, τ ⊆ A×A&nbsp; two independent 
     congruences,<br>
     i.e. &lt;σ,τ&gt;<sub>EquivalenceClosure</sub> = 1 <i>= ⊤ =&nbsp; A×A</i>.<br />
     ⇒
@@ -80,7 +91,11 @@ dt:before    {
       <li>A/σ × A/τ ≅ A/σ∩τ</li>
     </ul>
   </dd>
-  <dt id="ChineseRemainderTheorem">Chinese Remainder Theorem</dt>
+  <dt id="ChineseRemainderTheorem">Chinese Remainder Theorem 
+    <!-- <source>N. Bourbaki, Algebra I.8.11: Direct decomposition of a ring. Proposition 9.</source> 
+           <source>N. Bourbaki, Commutative Algebra II.1.2: Relatively prime ideals. Proposition 5.</source> 
+      -->
+  </dt>
   <dd>Let R be a commutative ring with one, and I<sub>1</sub>,…,I<sub>n</sub>⊴R 
     be ideals. Then the following conditions are equivalent.
     <ol type="i">
