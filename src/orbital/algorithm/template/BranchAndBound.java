@@ -9,9 +9,11 @@ package orbital.algorithm.template;
 import orbital.logic.functor.Function;
 import java.util.Collection;
 
+import orbital.logic.functor.Functionals;
 import orbital.math.functional.Functions;
 import orbital.math.functional.Operations;
 import orbital.math.Values;
+import orbital.math.Real;
 
 /**
  * Branch-and-bound (B&B).
@@ -66,6 +68,7 @@ public class BranchAndBound extends DepthFirstBoundingSearch implements Heuristi
      */
     public void setMaxBound(double maximumUpperBound) {
     	this.maxBound = maximumUpperBound;
+	// firePropertyChange
     }
 	
     public Function getHeuristic() {
@@ -75,7 +78,9 @@ public class BranchAndBound extends DepthFirstBoundingSearch implements Heuristi
     public void setHeuristic(Function heuristic) {
     	if (heuristic == null)
 	    throw new NullPointerException("null is not a heuristic");
+	Function old = this.heuristic;
 	this.heuristic = heuristic;
+	firePropertyChange("heuristic", old, this.heuristic);
     }
 
     /**
@@ -84,21 +89,22 @@ public class BranchAndBound extends DepthFirstBoundingSearch implements Heuristi
     public Function getEvaluation() {
 	return evaluation;
     }
-    private transient Function evaluation = createEvaluation();
-    private final Function createEvaluation() {
-	return new Function() {
-    		public Object apply(Object a) {
-		    GeneralSearchProblem.Option o = (GeneralSearchProblem.Option)a;
-		    return Operations.plus.apply(Values.valueOf(o.getCost()), heuristic.apply(o));
-    		}
-	    };
-    }
+    private transient Function evaluation;
+    void firePropertyChange(String property, Object oldValue, Object newValue) {
+	super.firePropertyChange(property, oldValue, newValue);
+	if (!("heuristic".equals(property) || "problem".equals(property)))
+	    return;
+	GeneralSearchProblem problem = getProblem();
+	this.evaluation = problem != null
+	    ? Functionals.compose(Operations.plus, problem.getAccumulatedCostFunction(), getHeuristic())
+	    : null;
+    }	
     /**
      * Sustain transient variable initialization when deserializing.
      */
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
     	in.defaultReadObject();
-    	evaluation = createEvaluation();
+	firePropertyChange("heuristic", null, this.heuristic);
     }
  
 
@@ -116,12 +122,12 @@ public class BranchAndBound extends DepthFirstBoundingSearch implements Heuristi
      * Updates bound to solution cost.
      * Since better solutions can only be found below this bound.
      */
-    protected GeneralSearchProblem.Option processSolution(GeneralSearchProblem.Option node) {
-	setBound(node.getCost());
+    protected Object/*>S<*/ processSolution(Object/*>S<*/ node) {
+	setBound(((Real/*__*/) getProblem().getAccumulatedCostFunction().apply(node)).doubleValue());
 	return node;
     }
 	
-    protected GeneralSearchProblem.Option solveImpl(GeneralSearchProblem problem) {
+    protected Object/*>S<*/ solveImpl(GeneralSearchProblem problem) {
 	setBound(getMaxBound());
 	return super.solveImpl(problem);
     }

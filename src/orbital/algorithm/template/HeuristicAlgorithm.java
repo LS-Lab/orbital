@@ -147,13 +147,13 @@ public interface HeuristicAlgorithm extends EvaluativeAlgorithm {
 	}
 		
 	public Object apply(Object o) {
-	    GeneralSearchProblem.Option n = (GeneralSearchProblem.Option) o;
-	    Object v = patternDatabase.get(n.getState());
+	    Object/*>S<*/ s = o;
+	    Object v = patternDatabase.get(s);
 	    // did not find a corresponding value in pattern database? Use backing heuristic instead
 	    if (v == null) {
-		v = heuristic.apply(n);
+		v = heuristic.apply(s);
 		if (autoUpdatePatternDatabase)
-		    patternDatabase.put(n.getState(), v);
+		    patternDatabase.put(s, v);
 	    }
 	    return v;
 	}

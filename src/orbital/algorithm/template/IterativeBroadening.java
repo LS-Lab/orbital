@@ -53,7 +53,7 @@ public class IterativeBroadening extends DepthFirstBoundingSearch {
     	return false;
     }
 
-    protected final boolean isOutOfBounds(GeneralSearchProblem.Option node) {
+    protected final boolean isOutOfBounds(Object/*>S<*/ node) {
 	// never decided here, but already in IterativeBroadening.OptionIterator#isOutOfBounds()
 	return false;
     }
@@ -61,12 +61,12 @@ public class IterativeBroadening extends DepthFirstBoundingSearch {
     /**
      * Solve with bounds 1, 3, 4, 5, ... until a solution is found.
      */
-    protected GeneralSearchProblem.Option solveImpl(GeneralSearchProblem problem) {
+    protected Object/*>S<*/ solveImpl(GeneralSearchProblem problem) {
 	int i = 1;
 	while (true) {
 	    setBound(i++);
 	    havePruned = false;
-	    GeneralSearchProblem.Option solution = super.search(createTraversal(problem));
+	    Object/*>S<*/ solution = super.search(createTraversal(problem));
 	    if (solution != null)
 		return solution;
 	    //@xxx if (isContinuedWhenFound()) continue broadening to find a better solution? But where's the advantage, then?

@@ -91,7 +91,7 @@ public class TransitionPath implements Iterator, ProbabilisticAlgorithm, Seriali
 	final Object action = actions.next();
 	final double r = random.nextDouble();
 	double r_sum = 0;
-	for (Iterator t = transition.transitions(action, state); t.hasNext(); ) {
+	for (Iterator t = transition.states(action, state); t.hasNext(); ) {
 	    Object sp = t.next();
 	    r_sum += transition.transition(action, state, sp).getProbability();
 	    assert 0 <= r_sum && r_sum <= 1+0.0001 : "probability distribution";

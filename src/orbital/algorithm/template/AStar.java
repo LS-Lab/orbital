@@ -8,6 +8,7 @@ package orbital.algorithm.template;
 
 import orbital.logic.functor.Function;
 
+import orbital.logic.functor.Functionals;
 import orbital.math.functional.Functions;
 import orbital.math.functional.Operations;
 import orbital.math.Values;
@@ -58,7 +59,7 @@ public class AStar extends BestFirstSearch implements HeuristicAlgorithm {
      * @see #getEvaluation()
      */
     public AStar(Function heuristic) {
-    	this.heuristic = heuristic;
+    	setHeuristic(heuristic);
     }
 
     public Function getHeuristic() {
@@ -66,7 +67,9 @@ public class AStar extends BestFirstSearch implements HeuristicAlgorithm {
     }
 
     public void setHeuristic(Function heuristic) {
+	Function old = this.heuristic;
 	this.heuristic = heuristic;
+	firePropertyChange("heuristic", old, this.heuristic);
     }
 
     /**
@@ -75,23 +78,23 @@ public class AStar extends BestFirstSearch implements HeuristicAlgorithm {
     public Function getEvaluation() {
 	return evaluation;
     }
-    private transient Function evaluation = createEvaluation();
-    private final Function createEvaluation() {
+    private transient Function evaluation;
+    void firePropertyChange(String property, Object oldValue, Object newValue) {
+	super.firePropertyChange(property, oldValue, newValue);
+	if (!("heuristic".equals(property) || "problem".equals(property)))
+	    return;
+	GeneralSearchProblem problem = getProblem();
 	//@todo could transform into a package-protected Support class with a constructor argument of HeuristicAlgorithm
-	//@todo could also transform the following function into orbital.logic.functor.Functionals.compose(Operations.plus, accumulatedCost, heuristic);
-	return new Function() {
-    		public Object apply(Object a) {
-		    GeneralSearchProblem.Option o = (GeneralSearchProblem.Option)a;
-		    return Operations.plus.apply(Values.valueOf(o.getCost()), heuristic.apply(o));
-    		}
-	    };
+	this.evaluation = problem != null
+	    ? Functionals.compose(Operations.plus, problem.getAccumulatedCostFunction(), getHeuristic())
+	    : null;
     }
     /**
      * Sustain transient variable initialization when deserializing.
      */
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
     	in.defaultReadObject();
-    	evaluation = createEvaluation();
+	firePropertyChange("heuristic", null, this.heuristic);
     }
 
     /**

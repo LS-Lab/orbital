@@ -5,13 +5,13 @@
  */
 
 package orbital.algorithm.template;
-import orbital.algorithm.template.GeneralSearchProblem.Option;
 
 import orbital.logic.functor.Function;
 import java.util.Collection;
 import java.util.Iterator;
 
 import orbital.math.Values;
+import orbital.math.Real;
 
 /**
  * Abstract general bounding search scheme.
@@ -90,7 +90,7 @@ public abstract class GeneralBoundingSearch extends GeneralSearch implements Eva
      * @return the solution after processing it.
      * @pre getProblem().isSolution(node)
      */
-    protected Option processSolution(Option node) {
+    protected Object/*>S<*/ processSolution(Object/*>S<*/ node) {
 	return node;
     }
 
@@ -107,7 +107,7 @@ public abstract class GeneralBoundingSearch extends GeneralSearch implements Eva
      * @see <a href="{@docRoot}/DesignPatterns/TemplateMethod.html">Template Method</a>
      * @todo would we profit from transforming bound into a Real?
      */
-    protected boolean isOutOfBounds(Option node) {
+    protected boolean isOutOfBounds(Object/*>S<*/ node) {
 	return Values.valueOf(getBound()).compareTo(getEvaluation().apply(node)) < 0;
     }
 	
@@ -142,12 +142,15 @@ public abstract class GeneralBoundingSearch extends GeneralSearch implements Eva
      * @see <a href="{@docRoot}/DesignPatterns/TemplateMethod.html">Template Method</a>
      * @internal Implemented as an iterative unrolling of a right-linear tail-recursion.
      */
-    protected Option search(Iterator nodes) {
+    protected Object/*>S<*/ search(Iterator nodes) {
+	final Function/*<S,Real>*/ g = getProblem().getAccumulatedCostFunction();
 	/* contains current best (minimum) solution */
-	Option bestSolution = null;
+	Object/*>S<*/ bestSolution = null;
+	/* contains the accumulated cost of bestSolution, thus the current best accumulated cost */
+	Real bestAccumulatedCost = Values.NaN;
 
 	while (nodes.hasNext()) {
-	    Option node = (Option) nodes.next();
+	    Object/*>S<*/ node = nodes.next();
             
             if (isOutOfBounds(node)) {
             	nodes.remove();                             // prune node
@@ -155,9 +158,12 @@ public abstract class GeneralBoundingSearch extends GeneralSearch implements Eva
             }
     		
 	    if (getProblem().isSolution(node)) {
-		Option solution = processSolution(node);
-		if (bestSolution == null || solution.compareTo(bestSolution) < 0)
+		Object/*>S<*/ solution = processSolution(node);
+		Real accumulatedCost = (Real/*__*/) g.apply(solution);
+		if (bestSolution == null || accumulatedCost.compareTo(bestAccumulatedCost) < 0) {
 		    bestSolution = solution;
+		    bestAccumulatedCost = accumulatedCost;
+		}
 		// continue to find even better solutions, or is it enough?
 		if (!isContinuedWhenFound())
 		    break;

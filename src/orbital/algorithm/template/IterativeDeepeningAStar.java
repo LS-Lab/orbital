@@ -9,6 +9,7 @@ package orbital.algorithm.template;
 import orbital.logic.functor.Function;
 import java.util.Iterator;
 
+import orbital.logic.functor.Functionals;
 import orbital.math.functional.Functions;
 import orbital.math.functional.Operations;
 import orbital.math.Real;
@@ -52,7 +53,7 @@ public class IterativeDeepeningAStar extends DepthFirstBoundingSearch implements
      * @see #getEvaluation()
      */
     public IterativeDeepeningAStar(Function heuristic) {
-    	this.heuristic = heuristic;
+    	setHeuristic(heuristic);
     	this.nextBound = null;
     	setContinuedWhenFound(true);
     	//@TODO: setContinuedWhenFound(?); depends upon whether or not h is admissible?
@@ -63,7 +64,9 @@ public class IterativeDeepeningAStar extends DepthFirstBoundingSearch implements
     }
 
     public void setHeuristic(Function heuristic) {
+	Function old = this.heuristic;
 	this.heuristic = heuristic;
+	firePropertyChange("heuristic", old, this.heuristic);
     }
 
     /**
@@ -72,21 +75,22 @@ public class IterativeDeepeningAStar extends DepthFirstBoundingSearch implements
     public Function getEvaluation() {
 	return evaluation;
     }
-    private transient Function evaluation = createEvaluation();
-    private final Function createEvaluation() {
-	return new Function() {
-    		public Object apply(Object a) {
-		    GeneralSearchProblem.Option o = (GeneralSearchProblem.Option)a;
-		    return Operations.plus.apply(Values.valueOf(o.getCost()), heuristic.apply(o));
-    		}
-	    };
-    }
+    private transient Function evaluation;
+    void firePropertyChange(String property, Object oldValue, Object newValue) {
+	super.firePropertyChange(property, oldValue, newValue);
+	if (!("heuristic".equals(property) || "problem".equals(property)))
+	    return;
+	GeneralSearchProblem problem = getProblem();
+	this.evaluation = problem != null
+	    ? Functionals.compose(Operations.plus, problem.getAccumulatedCostFunction(), getHeuristic())
+	    : null;
+    }	
     /**
      * Sustain transient variable initialization when deserializing.
      */
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
     	in.defaultReadObject();
-    	evaluation = createEvaluation();
+	firePropertyChange("heuristic", null, this.heuristic);
     }
 
     /**
@@ -106,7 +110,7 @@ public class IterativeDeepeningAStar extends DepthFirstBoundingSearch implements
      * Compare f(n) with bound, normally and in case update cheapest pruned bound.
      * @see #nextBound
      */
-    protected boolean isOutOfBounds(GeneralSearchProblem.Option node) {
+    protected boolean isOutOfBounds(Object/*>S<*/ node) {
 	Real v = (Real) getEvaluation().apply(node);
 	if (v.compareTo(Values.valueOf(getBound())) <= 0)
 	    return false;
@@ -120,10 +124,10 @@ public class IterativeDeepeningAStar extends DepthFirstBoundingSearch implements
      * Solve with bounds f(n<sub>0</sub>), f(n<sub>1</sub>), f(n<sub>2</sub>), ... until a solution is found.
      * Where n<sub>0</sub>=root, and n<sub>i</sub> is the cheapest node pruned in iteration i-1.
      */
-    protected GeneralSearchProblem.Option solveImpl(GeneralSearchProblem problem) {
-	final Object n0 = new GeneralSearchProblem.Option(problem.getInitialState());
+    protected Object/*>S<*/ solveImpl(GeneralSearchProblem problem) {
+	final Object n0 = problem.getInitialState();
 	nextBound = (Real) getEvaluation().apply(n0);
-	GeneralSearchProblem.Option solution;
+	Object/*>S<*/ solution;
 	do {
 	    setBound(nextBound.doubleValue());
 	    nextBound = null;

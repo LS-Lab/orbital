@@ -166,7 +166,7 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
      * (Not implemented).
      * <p>
      * Returning the options in the right order is the responsibility of
-     * {@link GeneralSearchProblem#expand(GeneralSearchProblem.Option)}.
+     * {@link GeneralSearchProblem#actions(Object)}.
      * </p>
      */
     static final LocalSelection LOCAL_ORDERED_IMPROVEMENT = null;
@@ -262,7 +262,7 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
 	private Iterator nodes;
 	public OptionIterator(GeneralSearchProblem problem) {
 	    super(problem);
-	    nodes = Collections.singletonList(new GeneralSearchProblem.Option(problem.getInitialState())).iterator();
+	    nodes = Collections.singletonList(problem.getInitialState()).iterator();
 	}
         protected boolean isEmpty() {
 	    return !nodes.hasNext();
@@ -270,7 +270,7 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
         /**
          * Select the node with min f(n).
          */
-        protected GeneralSearchProblem.Option select() {
+        protected Object/*>S<*/ select() {
 	    Comparator comparator = new EvaluationComparator(HillClimbing.this);
 	    // modified minimum greedy search that keeps track of the index, additionally
 	    Object candidate = nodes.next();
@@ -289,7 +289,7 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
 		    candidates.add(candidate);
 	    }
 	    // for multiple candidates with optimal evaluation value, select one, randomly
-	    return (GeneralSearchProblem.Option) candidates.get(getRandom().nextInt(candidates.size()));
+	    return candidates.get(getRandom().nextInt(candidates.size()));
         }
        	/**
        	 * discard old list, using new.
@@ -320,7 +320,7 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
 	 * This implementation will only move to better nodes, categorically.</p>
 	 * @internal we avoid using the help of EvaluativeComparator here, because we ourselves can cache currentValue
 	 */
-	public boolean accept(GeneralSearchProblem.Option state, GeneralSearchProblem.Option sp) {
+	public boolean accept(Object/*>S<*/ state, Object/*>S<*/ sp) {
 	    final ScheduledLocalOptimizerSearch algorithm = (ScheduledLocalOptimizerSearch) getAlgorithm();
 	    final double value = ((Number) algorithm.getEvaluation().apply(sp)).doubleValue();
 	    final double deltaEnergy = value - currentValue;

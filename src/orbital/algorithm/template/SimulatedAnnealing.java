@@ -185,7 +185,7 @@ public class SimulatedAnnealing extends ScheduledLocalOptimizerSearch {
 	 * but only move to worse nodes with a probability of <b>e</b><sup>-&Delta;/T</sup>,
 	 * depending upon the decrease &Delta;:=f(s&#697;)-f(s).</p>
 	 */
-	public boolean accept(GeneralSearchProblem.Option state, GeneralSearchProblem.Option sp) {
+	public boolean accept(Object/*>S<*/ state, Object/*>S<*/ sp) {
 	    final ScheduledLocalOptimizerSearch algorithm = (ScheduledLocalOptimizerSearch) getAlgorithm();
 	    // current temperature scheduled for successive cooling
 	    this.T = ((Number) algorithm.getSchedule().apply(Values.valueOf(t))).doubleValue();

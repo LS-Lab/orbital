@@ -5,16 +5,20 @@
  */
 
 package orbital.algorithm.template;
-import orbital.algorithm.template.GeneralSearchProblem.Option;
+import orbital.algorithm.template.GeneralSearchProblem.Transition;
 
 import java.util.Iterator;
 import java.io.Serializable;
+
+import orbital.logic.functor.MutableFunction;
 
 import java.util.List;
 import java.util.Random;
 
 import java.util.NoSuchElementException;
 import orbital.util.Setops;
+import orbital.math.Real;
+import orbital.math.Values;
 
 /**
  * General search scheme for local optimizing search.
@@ -65,10 +69,10 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
      * This behaviour is especially useful if the isSolution test is omitted by categorically
      * returning <span class="keyword">true</span> there.
      */
-    protected Option search(Iterator/*<Option<S,A>>*/ nodes) {
-	Option node = null;
+    protected Object/*>S<*/ search(Iterator/*<S>*/ nodes) {
+	Object/*>S<*/ node = null;
 	while (nodes.hasNext()) {
-	    node = (Option) nodes.next();
+	    node = nodes.next();
 
 	    if (getProblem().isSolution(node))
 		return node;
@@ -97,7 +101,15 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
     	 * @serial
 	 * @internal we do not use algorithm.getProblem() for performance and (perhaps) update reasons.
     	 */
-    	private final GeneralSearchProblem/*<S,A>*/ problem;
+    	private final GeneralSearchProblem/*<A,S>*/ problem;
+    	/**
+    	 * Caching the accumulated cost function of problem.
+	 * @invariant g == problem.getAccumulatedCostFunction()
+	 * @see #problem
+    	 * @serial
+	 * @todo transientize?
+    	 */
+	private final MutableFunction g;
 	/**
 	 * The algorithm using this (randomized) iterator.
 	 * @serial
@@ -107,12 +119,21 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
 	 * The current state s&isin;S of this transition path.
 	 * @serial
 	 */
-	private Option state;
+	private Object/*>S<*/ state;
+	/**
+	 * Caching the accumulatedCost g(state).
+	 * @see #state
+	 * @todo transientize
+	 */
+	private Real accumulatedCost;
 	public OptionIterator(GeneralSearchProblem problem, LocalOptimizerSearch algorithm) {
-	    this.problem = problem;
-	    //@todo super(problem); extend GeneralSearch.OptionIterator and use its select()?
-	    this.state = new GeneralSearchProblem.Option(getProblem().getInitialState());
 	    this.algorithm = algorithm;
+	    this.problem = problem;
+	    this.g = problem.getAccumulatedCostFunction();
+	    //@todo super(problem); extend GeneralSearch.OptionIterator and use its select()?
+	    this.state = getProblem().getInitialState();
+	    this.accumulatedCost = (Real/*__*/) g.apply(state);
+	    assert accumulatedCost.doubleValue() == 0 : "@post getInitialState(): accumulatedCost==0";
 	}
 
     	/**
@@ -120,7 +141,7 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
     	 * @pre true
     	 * @return the problem specified in the last call to solve.
     	 */
-    	protected final GeneralSearchProblem/*<S,A>*/ getProblem() {
+    	protected final GeneralSearchProblem/*<A,S>*/ getProblem() {
 	    return problem;
     	}
 
@@ -136,24 +157,28 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
 	 * i.e. the last state returned by {@link #next()}, or the initial state if no transition has
 	 * already occurred.
 	 */
-	protected final Option getState() {
+	protected final Object/*>S<*/ getState() {
 	    return state;
 	}
 
 	public Object next() {
-	    //@internal optimize: this has a horrible performance if constructing states is an expensive operation, and the technique of lazy state construction is not applied. @todo Could perhaps solve by transforming GSP into a TransitionModel with separated actions() and transitions() with the latter constructing the state.
-	    List nodes = Setops.asList(problem.expand(state));
-	    if (nodes.isEmpty())
+	    //@internal optimize: this has a horrible performance if constructing states is an expensive operation, and the technique of lazy state construction is not applied. @todo Could perhaps solve by transforming GSP into a TransitionModel with separated actions() and states() with the latter constructing the state.
+	    final List actions = Setops.asList(problem.actions(state));
+	    if (actions.isEmpty())
 		//@internal note that hasNext() will not consider this case, since it is considered as an error
-		throw new NoSuchElementException("specification hurt: there are no transitions from " + state);
+		throw new NoSuchElementException("specification hurt? there are no transitions from " + state);
 
 	    // randomly select @todo s.a. s.a.
-	    Option sp =  (Option)
-		nodes.get(algorithm.getRandom().nextInt(nodes.size()));
+	    final Object/*>A<*/ a = actions.get(algorithm.getRandom().nextInt(actions.size()));
+	    final Object/*>S<*/ sp = problem.states(a, state).next();
+
+	    final Real spAccumulatedCost = accumulatedCost.add(Values.valueOf(((Transition)problem.transition(a,state,sp)).getCost()));
+	    g.set(sp, spAccumulatedCost);
 
 	    if (accept(state, sp)) {
-		// accept the transition current->sp
-		state = sp;
+		// accept the transition state->sp
+		this.state = sp;
+		this.accumulatedCost = spAccumulatedCost;
 	    }
 
 	    return state;
@@ -164,7 +189,7 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
 	 * <div>s&rarr;<sub>a</sub>s&#697; is accepted (and performed) iff accept(s,s&#697;)</div>
 	 * @internal alternative would be a delegation to a BinaryPredicate accept.
 	 */
-	protected abstract boolean accept(Option state, Option sp);
+	protected abstract boolean accept(Object/*>S<*/ state, Object/*>S<*/ sp);
 
 	/**
 	 * Decides whether to stop further transitions.

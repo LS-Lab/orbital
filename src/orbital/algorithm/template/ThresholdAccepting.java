@@ -108,7 +108,7 @@ public class ThresholdAccepting extends ScheduledLocalOptimizerSearch {
 	 * This implementation will always move to better nodes,
 	 * but only move to worse nodes, if they worsen by at most T.</p>
 	 */
-	public boolean accept(GeneralSearchProblem.Option state, GeneralSearchProblem.Option sp) {
+	public boolean accept(Object/*>S<*/ state, Object/*>S<*/ sp) {
 	    final ScheduledLocalOptimizerSearch algorithm = (ScheduledLocalOptimizerSearch) getAlgorithm();
 	    // current temperature scheduled for successive cooling
 	    this.T = ((Number) algorithm.getSchedule().apply(Values.valueOf(t))).doubleValue();

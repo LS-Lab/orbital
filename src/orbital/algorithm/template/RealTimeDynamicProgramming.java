@@ -10,7 +10,7 @@ import orbital.logic.functor.Function;
 
 import orbital.logic.functor.BinaryFunction;
 
-import orbital.moon.logic.functor.MutableFunction;
+import orbital.logic.functor.MutableFunction;
 
 import java.util.Collection;
 import java.util.Iterator;

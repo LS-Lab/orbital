@@ -67,7 +67,7 @@ public abstract class BestFirstSearch extends GeneralSearch implements Evaluativ
 	public OptionIterator(GeneralSearchProblem problem, Function evaluation) {
 	    super(problem);
 	    this.nodes = new LinkedList();
-	    nodes.add(new GeneralSearchProblem.Option(problem.getInitialState()));
+	    nodes.add(problem.getInitialState());
 	    this.comparator = new EvaluationComparator(evaluation);
 	}
         protected boolean isEmpty() {
@@ -78,8 +78,8 @@ public abstract class BestFirstSearch extends GeneralSearch implements Evaluativ
          * Due to the sorted list this is the first object.
          * @pre sorted(nodes)
          */
-        protected GeneralSearchProblem.Option select() {
-	    return (GeneralSearchProblem.Option) nodes.remove(0);
+        protected Object/*>S<*/ select() {
+	    return nodes.remove(0);
         }
        	/**
        	 * merge old and new lists.

@@ -5,7 +5,6 @@
  */
 
 package orbital.algorithm.template;
-import orbital.algorithm.template.GeneralSearchProblem.Option;
 
 import orbital.logic.functor.Function;
 import java.util.Iterator;
@@ -15,6 +14,7 @@ import java.util.Collections;
 import orbital.math.functional.Operations;
 import orbital.math.functional.Functions;
 import orbital.math.Values;
+import orbital.math.Real;
 
 /**
  * Parallel branch-and-bound algorithm.
@@ -48,16 +48,16 @@ public class ParallelBranchAndBound extends BranchAndBound {
 	return (orbital.math.functional.Function) Operations.power.apply(Values.symbol("b"), Functions.id);
     }
 
-    protected Option solveImpl(GeneralSearchProblem problem) {
+    protected Object/*>S<*/ solveImpl(GeneralSearchProblem problem) {
 	setBound(getMaxBound());
-	return search(Collections.singletonList(new Option(getProblem().getInitialState())).iterator());
+	return search(Collections.singletonList(getProblem().getInitialState()).iterator());
     }
 	
     protected final Iterator createTraversal(GeneralSearchProblem problem) {
 	throw new UnsupportedOperationException(ParallelBranchAndBound.class + " defines its own search and solveImpl, (currently) without the aid of a traversal iterator");
     }
 
-    protected Option search(Iterator nodes) {
+    protected Object/*>S<*/ search(Iterator nodes) {
 	bestSolution = null;
         //@todo should we stop when a thread in tg throws an uncaught exception? Or ignore it?
         final ThreadGroup bnb = new ThreadGroup("BranchAndBound");
@@ -88,12 +88,18 @@ public class ParallelBranchAndBound extends BranchAndBound {
      */
     private transient Object bestSolutionLock = new Object();
     /**
-     * contains current best solution
+     * Contains current best solution.
      * @serial
      * @todo serialization?
      */
     /*volatile for Double-checked locking with new semantics*/
-    private Option bestSolution;
+    private Object/*>S<*/ bestSolution;
+    /**
+     * Contains the accumulated cost of {@link #bestSolution}, thus the current best accumulated cost.
+     * @serial
+     * @todo serialization?
+     */
+    private Real bestAccumulatedCost = Values.NaN;
 
     /**
      * Sustain transient variable initialization when deserializing.
@@ -119,15 +125,16 @@ public class ParallelBranchAndBound extends BranchAndBound {
 	}
 
 	public final void run() {
+	    final Function/*<S,Real>*/ g = getProblem().getAccumulatedCostFunction();
 	    while (nodes.hasNext()) {
 		// this will lead to DepthFirstSearch selection, although we work on the expanded iterator, directly!
-		Option node = (Option) nodes.next();
+		Object/*>S<*/ node = nodes.next();
                 
                 if (isOutOfBounds(node))
 		    continue;									// prune node
         		
 		if (getProblem().isSolution(node)) {
-		    Option solution = processSolution(node);
+		    Object/*>S<*/ solution = processSolution(node);
 		    /*
 		    // non-synchronized unwrapping pre-check reduces synchronization overhead (*) @see #bestSolutionLock
 		    if (bestSolution == null || solution.compareTo(bestSolution) < 0)
@@ -138,14 +145,17 @@ public class ParallelBranchAndBound extends BranchAndBound {
 		    bestSolution = solution;
 		    }
 		    */
+		    final Real accumulatedCost = (Real/*__*/) g.apply(solution);
 		    synchronized(bestSolutionLock) {
 			// comparison is not necessary for BranchAndBound(!), but its more safe to
 			// no Double-checked locking due to errors until after new semantics @see #bestSolution
-			if (bestSolution == null || solution.compareTo(bestSolution) < 0)
+			if (bestSolution == null || accumulatedCost.compareTo(bestAccumulatedCost) < 0) {
 			    bestSolution = solution;
+			    bestAccumulatedCost = accumulatedCost;
+			}
 		    }
 		}
-		Iterator children = getProblem().expand(node);
+		Iterator children = expand(getProblem(), node);
 		// since nodes implementation is a Stack (DepthFirstSearch)
 		// we don't need to add and pass the rest of nodes on the child threads.
 		Runnable child = new ExploreBranch(children);

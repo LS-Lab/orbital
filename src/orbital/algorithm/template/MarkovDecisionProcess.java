@@ -9,7 +9,7 @@ import orbital.algorithm.template.MarkovDecisionProblem.Transition;
 
 import orbital.logic.functor.Function;
 import orbital.logic.functor.BinaryFunction;
-import orbital.moon.logic.functor.MutableFunction;
+import orbital.logic.functor.MutableFunction;
 
 import java.util.Iterator;
 import java.util.Collection;
@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 
 /**
- * Markov Decision Process (MDP). For closed-loop planning.
+ * Markov decision process (MDP). For closed-loop planning.
  * <p>
  * <dl class="def">
  * Let &gamma;&isin;[0,1] be a discount factor and &pi;:S&rarr;A(s) a policy.
@@ -134,7 +134,7 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
     protected abstract Function plan();
 
     /**
-     * Abstract base class for Markov Decision Processes solved per Dynamic Programming.
+     * Abstract base class for Markov decision processes solved per dynamic programming.
      *
      * @invariant getDiscount()&isin;[0,1]
      * @version 0.8, 2001/06/10
@@ -280,7 +280,7 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
 			double originalCost = Double.NaN;
             		if (logger.isLoggable(Level.FINEST)) logger.log(Level.FINEST, "DPMDP.Q", "\tc(" + action + "," + state + ") ...");
 			final MarkovDecisionProblem problem = getProblem();
-			Iterator r = problem.transitions(action, state);
+			Iterator r = problem.states(action, state);
 			assert r.hasNext() : "@post";
             		while (r.hasNext()) {
 			    final Object sp = r.next();

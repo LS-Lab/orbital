@@ -11,7 +11,7 @@ import java.util.Iterator;
 /**
  * Represents a transition model.
  * The central part underlying several other formalizations of systems
- * consists of a transition model.
+ * consists of such a transition model.
  * <p>
  * A <dfn>transition model</dfn> is a mathematical model for (formal) systems with states
  * and action-driven state changes.
@@ -20,7 +20,14 @@ import java.util.Iterator;
  * <ul>
  *  <li>a state space S.</li>
  *  <li>a set of actions A.</li>
- *  <li>sets of actions A(s)&sube;A applicable in each state s&isin;S. Usually A(s) = {a&isin;A &brvbar; &exist;s&#697;&isin;S&#8726;{&perp;} <b>P</b>(s&#697;|s,a)&gt;0}.</li>
+ *  <li>sets of actions A(s)&sube;A applicable in each state s&isin;S.
+ *    <div style="text-align: center">Usually A(s)
+ *    = {a&isin;A &brvbar; &exist;s&#697;&isin;S&#8726;{&perp;} <b>P</b>(s&#697;|s,a)&gt;0}
+ *    = {a&isin;A &brvbar; &tau;(a)(s,&perp;)&ne;1}
+ *    = A&#8726;&tau;<sup>-1</sup>({s}&times;{&perp;})
+ *    = &tau;(a)(s,&middot;)
+ *    = <big>(</big>&tau;(a)(s,&middot;)<big>)</big><sup>-1</sup>((0,1])</div>
+ *  </li>
  *  <li>
  *    the action-dependent (stochastic) <dfn>transition relation</dfn>
  *    <div style="text-align:center">&tau;:A&rarr;<big>(</big>S&times;S&rarr;[0,1]<big>)</big></div>
@@ -87,7 +94,7 @@ import java.util.Iterator;
  * @xxx didn't we model the case of a non-deterministic transition function with type O, and the special case of O=Option being the combined function of stochastic transtition probabilities?
  * @todo improve and generalize TransitionModel (which might also be applicable in the implementation of SimulatedAnnealing)
  */
-public interface TransitionModel/*<A,S, O extends ProbabilisticTransition>*/ {
+public interface TransitionModel/*<A,S, M extends ProbabilisticTransition>*/ {
     /**
      * Checks two transition models for equality (optional).
      * <p>
@@ -131,7 +138,9 @@ public interface TransitionModel/*<A,S, O extends ProbabilisticTransition>*/ {
      * For several reasons (including performance) it is widely recommended that
      * <div style="text-align: center">A(s) = {a&isin;A &brvbar; &exist;s&#697;&isin;S&#8726;{&perp;} <b>P</b>(s&#697;|s,a)&gt;0}
      * = {a&isin;A &brvbar; &tau;(a)(s,&perp;)&ne;1}
-     * = A&#8726;&tau;<sup>-1</sup>({s}&times;{&perp;})</div>
+     * = A&#8726;&tau;<sup>-1</sup>({s}&times;{&perp;})
+     * = &tau;(a)(s,&middot;)
+     * = <big>(</big>&tau;(a)(s,&middot;)<big>)</big><sup>-1</sup>((0,1])</div>
      * In fact, this is not a <em>strict</em> requirement, if the computation would be far too
      * expensive. However, the TransitionModel implementation would then have to deal with
      * cases where an action was chosen that has later been found out to be inapplicable,
@@ -145,7 +154,6 @@ public interface TransitionModel/*<A,S, O extends ProbabilisticTransition>*/ {
      *  The order of the list can be decisive because for actions with equal costs
      *  the first will be preferred.
      * @post RES=A(s)&sube;A
-     * @see GeneralSearchProblem#expand(GeneralSearchProblem.Option)
      * @see GreedyProblem#nextCandidates(List)
      */
     Iterator/*<A>*/ actions(Object/*>S<*/ state);
@@ -159,7 +167,8 @@ public interface TransitionModel/*<A,S, O extends ProbabilisticTransition>*/ {
      * <p>
      * For performance reasons it is recommended that this method does only return
      * those states s&#697;&isin;S that can truely be reached
-     * (i.e. where <b>P</b>(s&#697;|s,a) &gt; 0).
+     * (i.e. where <b>P</b>(s&#697;|s,a) &gt; 0, i.e.
+     * s&#697; &isin; {s}&#8728;&tau;(a) = {s&#697;&isin;S &brvbar; &tau;(a)(s,s&#697;)&gt;0}).
      * Although this is not strictly required if it would be too expensive to determine.
      * </p>
      * <p>
@@ -174,10 +183,11 @@ public interface TransitionModel/*<A,S, O extends ProbabilisticTransition>*/ {
      * @pre s&isin;S &and; a&isin;A(s)
      * @return a list of states s&#697;&isin;S that could be reached
      *  when performing the action a in the state s.
-     * @post RES &supe; {s}&#8728;&tau;(a) = {s&#697;&isin;S &brvbar; &tau;(a)(s,s&#697;)&gt;0} &and; RES.hasNext()
-     * @todo rename but not to nextStates, reachableStates
+     * @post RES &supe; {s}&#8728;&tau;(a) &and; RES.hasNext()
+     * @throws InapplicableActionException if a&notin;A(s) is not applicable in state s.
+     * @todo rename perhaps to states, but not to nextStates, reachableStates
      */
-    Iterator/*<S>*/ transitions(Object/*>A<*/ action, Object/*>S<*/ state);
+    Iterator/*<S>*/ states(Object/*>A<*/ action, Object/*>S<*/ state);
 	
     // central operation
     
@@ -189,6 +199,10 @@ public interface TransitionModel/*<A,S, O extends ProbabilisticTransition>*/ {
      * on S. With transitions specified by &tau;(a)(s,s&#697;)
      * <div style="text-align: center"> <img src="doc-files/transition_notation.png" /> </div>
      * </p>
+     * <p>
+     * In the usual case, implementations can assume that action stems from {@link #actions(Object)},
+     * and statep is obtained from {@link #states(Object,Object)}.
+     * </p>
      * @param action the action a&isin;A(s) that must be applicable in state s&isin;S.
      * @param state the state s&isin;S.
      * @param statep the state s&#697;&isin;S.
@@ -198,23 +212,25 @@ public interface TransitionModel/*<A,S, O extends ProbabilisticTransition>*/ {
      *  Usually represented as a {@link TransitionModel.ProbabilisticTransition transition}
      *  which may contain additional information.
      * @post RES=&tau;(a)(s,s&#697;)&isin;[0,1] (more precisely RES.getProbability()=&tau;(a)(s,s&#697;)) &and; &sum;<sub>s&#697;&isin;S</sub> &tau;(a)(s,s&#697;) = 1
+     * @throws InapplicableActionException if a&notin;A(s) is not applicable in state s.
      * @internal alternative we could also extend Function<A,BinaryFunction<S,S>> if the corresponding apply(a) method did not have to create new BinaryFunctions for every call or loose the property of being stateless when caching.
      */
-    ProbabilisticTransition/*>O<*/ transition(Object/*>A<*/ action, Object/*>S<*/ state, Object/*>S<*/ statep);
+    ProbabilisticTransition/*>M<*/ transition(Object/*>A<*/ action, Object/*>S<*/ state, Object/*>S<*/ statep);
 
     /**
      * Represents (information about) a transition option during a transition model.
      * <p>
      * An option is at least a 1-tuple &lang;p&rang;&isin;[0,1]
-     * of the probability of reaching a state s&#697; (in the corresponding context).
-     * However, it may contain additional information about the transition.
+     * of the probability of reaching a state s&#697;
+     * (in the corresponding context, i.e. from a state s&isin;S with an action a&isin;A(s)).
+     * However, it may contain any additional information about the transition.
      * </p>
      * @stereotype &laquo;Structure&raquo;
-     * @todo should we bookkeep the state and action that took us to s´ as well as s´?
+     * @todo should we always bookkeep the state and action that took us to s´ as well as s´? No.
      * @version 1.0, 2002/05/30
      * @author  Andr&eacute; Platzer
      */
-    public static interface ProbabilisticTransition extends Comparable {
+    static interface ProbabilisticTransition extends Comparable {
 	/**
 	 * Checks for equality.
 	 * <!-- Implementations will at least check for equal states, but ignore
@@ -227,7 +243,13 @@ public interface TransitionModel/*<A,S, O extends ProbabilisticTransition>*/ {
 	int hashCode();
 		
 	/**
-	 * Compares transition options according to their probabilities.
+	 * Compares transition options.
+	 * In nondeterministic cases, implementations will usually
+	 * compare transition options according to their
+	 * probabilities.  Deterministic cases, however, may prefer
+	 * comparisons involving cost or accumulated cost. Those
+	 * comparisons can also be combined. In any case,
+	 * implementations are not required to use a specific order.
 	 */
 	int compareTo(Object o);
 

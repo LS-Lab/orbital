@@ -72,16 +72,16 @@ public class BreadthFirstSearch extends GeneralSearch {
 	 * effectively, nodes is a queue of iterators.
 	 * @serial
 	 */
-	private QueuedSequenceIterator nodes;
+	private QueuedSequenceIterator/*_<S>_*/ nodes;
 	public OptionIterator(GeneralSearchProblem problem) {
 	    super(problem);
-	    nodes = new QueuedSequenceIterator(new Iterator[] {Collections.singletonList(new GeneralSearchProblem.Option(problem.getInitialState())).iterator()});
+	    nodes = new QueuedSequenceIterator(new Iterator[] {Collections.singletonList(problem.getInitialState()).iterator()});
 	}
         protected boolean isEmpty() {
 	    return !nodes.hasNext();
         }
-        protected GeneralSearchProblem.Option select() {
-	    return (GeneralSearchProblem.Option) nodes.next();
+        protected Object/*>S<*/ select() {
+	    return nodes.next();
         }
         protected boolean add(Iterator newNodes) {
 	    nodes.add(newNodes);

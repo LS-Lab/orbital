@@ -5,7 +5,6 @@
  */
 
 package orbital.algorithm.template;
-import orbital.algorithm.template.GeneralSearchProblem.Option;
 
 import orbital.logic.functor.Function;
 import java.util.Iterator;
@@ -35,28 +34,30 @@ public class IterativeDeepening extends DepthFirstBoundingSearch {
 	// better solutions would already have appeared with earlier bounds
 	setContinuedWhenFound(false);
     }
-	
+
     /**
      * f(n) = g(n).
      */
     public Function getEvaluation() {
 	return evaluation;
     }
-    private transient Function evaluation = createEvaluation();
-    private final Function createEvaluation() {
-    	return new Function() {
-    		public Object apply(Object a) {
-		    GeneralSearchProblem.Option o = (GeneralSearchProblem.Option)a;
-		    return Values.valueOf(o.getCost());
-    		}
-	    };
+    private transient Function evaluation;
+    void firePropertyChange(String property, Object oldValue, Object newValue) {
+	super.firePropertyChange(property, oldValue, newValue);
+	if (!"problem".equals(property))
+	    return;
+	GeneralSearchProblem problem = getProblem();
+	this.evaluation = problem != null
+	    ? problem.getAccumulatedCostFunction()
+	    : null;
     }
+    
     /**
      * Sustain transient variable initialization when deserializing.
      */
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
     	in.defaultReadObject();
-    	evaluation = createEvaluation();
+	firePropertyChange("problem", null, getProblem());
     }
 
     /**
@@ -70,7 +71,7 @@ public class IterativeDeepening extends DepthFirstBoundingSearch {
     	return true;
     }
 
-    protected boolean isOutOfBounds(Option node) {
+    protected boolean isOutOfBounds(Object/*>S<*/ node) {
 	if (super.isOutOfBounds(node)) {
 	    havePruned = true;
 	    return true;
@@ -81,12 +82,12 @@ public class IterativeDeepening extends DepthFirstBoundingSearch {
     /**
      * Solve with bounds 0, 1, 2, ... until a solution is found.
      */
-    protected GeneralSearchProblem.Option solveImpl(GeneralSearchProblem problem) {
+    protected Object/*>S<*/ solveImpl(GeneralSearchProblem problem) {
 	int i = 0;
 	while (true) {
 	    setBound(i++);
 	    havePruned = false;
-	    GeneralSearchProblem.Option solution = super.search(createTraversal(problem));
+	    Object/*>S<*/ solution = super.search(createTraversal(problem));
 	    if (solution != null)
 		return solution;
 	    else if (!havePruned)

@@ -5,14 +5,19 @@
  */
 
 package orbital.algorithm.template;
-import orbital.algorithm.template.GeneralSearchProblem.Option;
+import orbital.algorithm.template.GeneralSearchProblem.Transition;
 
 import java.util.Collection;
 import java.io.Serializable;
 import java.util.Iterator;
 
 import java.util.NoSuchElementException;
+import java.util.List;
 import java.util.LinkedList;
+
+import orbital.logic.functor.MutableFunction;
+import orbital.math.Real;
+import orbital.math.Values;
 
 /**
  * Abstract general search algorithm scheme.
@@ -55,8 +60,10 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
     /**
      * Set the current problem.
      */
-    private final void setProblem(GeneralSearchProblem newproblem) {
-	this.problem = newproblem;
+    private final void setProblem(GeneralSearchProblem newProblem) {
+	GeneralSearchProblem old = this.problem;
+	this.problem = newProblem;
+	firePropertyChange("problem", old, problem);
     }
     
     /**
@@ -71,6 +78,16 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * @post RES == OLD(RES) && OLD(this) == this
      */
     public abstract boolean isOptimal();
+
+    // helper methods
+
+    /**
+     * (Internal) property change notifications.
+     * Called when bound properties change.
+     * @see PropertyChangeSupport#firePropertyChange(String,Object,Object)
+     * @todo protectedize?
+     */
+    void firePropertyChange(String property, Object oldValue, Object newValue) {}
     
     // solution operations for search problems
     
@@ -96,9 +113,9 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * @see <a href="{@docRoot}/DesignPatterns/TemplateMethod.html">Template Method</a>
      * @see #solveImpl(GeneralSearchProblem)
      */
-    public final Option solve(GeneralSearchProblem/*<S,A>*/ p) {
+    public final Object/*>S<*/ solve(GeneralSearchProblem/*<A,S>*/ p) {
     	setProblem(p);
-	Option solution;
+	Object/*>S<*/ solution;
 	//    	if (false) {
 	//    		Collection/*<Option>*/ nodes = createCollection();
 	//    		nodes.add(new Option(getProblem().getInitialState()));
@@ -133,7 +150,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * @see #search(Iterator)
      * @xxx what <em>exactly</em> is the conceptual difference between solveImpl(GeneralSearchProblem) and search(Iterator). Perhaps we could get rid of this method?
      */
-    protected Option solveImpl(GeneralSearchProblem/*<S,A>*/ problem) {
+    protected Object/*>S<*/ solveImpl(GeneralSearchProblem/*<A,S>*/ problem) {
 	return search(createTraversal(problem));
     }
 
@@ -149,13 +166,13 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * through the whole state space.
      * </p>
      * @param problem the problem whose state space to create a traversal iterator for.
-     * @return an iterator over the {@link GeneralSearchProblem.Option options}
+     * @return an iterator over the options
      *  of the problem's state space thereby encapsulating and hiding the traversal order.
      * @attribute secret traversal order
      * @see <a href="{@docRoot}/DesignPatterns/FactoryMethod.html">Factory Method</a>
      * @see GeneralSearch.OptionIterator
      */
-    protected abstract Iterator/*<Option<S,A>>*/ createTraversal(GeneralSearchProblem/*<S,A>*/ problem);
+    protected abstract Iterator/*<S>*/ createTraversal(GeneralSearchProblem/*<A,S>*/ problem);
 
     // central virtual methods
 
@@ -176,9 +193,9 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      *  for byvalue semantics of recursion call.
      * @internal see orbital.util.Setops#find(Iterator, Predicate) identical implementation
      */
-    protected Option search(Iterator/*<Option<S,A>>*/ nodes) {
+    protected Object/*>S<*/ search(Iterator/*<S>*/ nodes) {
 	while (nodes.hasNext()) {
-	    Option node = (Option) nodes.next();
+	    Object/*>S<*/ node = nodes.next();
 
 	    if (getProblem().isSolution(node))
 		return node;
@@ -191,7 +208,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
     /**
      * Abstract implementation base class for iterators determining the traversal order.
      * Concrete implementations define the traversal order for the state space by providing
-     * an iterator over the options of a search graph (as induced by a {@link GeneralSearchProblem state-model}).
+     * an iterator over the state options of a search graph (as induced by a {@link GeneralSearchProblem state-model}).
      * <p>
      * Although it is not required that option iterators extend this class, it usually comes as
      * a great relief since sub classes will not have to deal with too much details.
@@ -212,25 +229,25 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * @see <a href="{@docRoot}/DesignPatterns/Strategy.html">Strategy</a>
      * @see GeneralSearch#createTraversal(GeneralSearchProblem)
      */
-    public static abstract class OptionIterator implements Iterator/*_<Option>_*/, Serializable {
+    public static abstract class OptionIterator implements Iterator/*_<S>_*/, Serializable {
 	private static final long serialVersionUID = 6410799454884265654L;
     	/**
     	 * The search problem to solve.
     	 * @serial
     	 */
-    	private final GeneralSearchProblem/*<S,A>*/ problem;
+    	private final GeneralSearchProblem/*<A,S>*/ problem;
     	
 	/**
-	 * The last node selected by next().
+	 * The last node selected by {@link #next()}.
 	 * @serial
 	 */
-	private Option lastRet = null;
+	private Object/*>S<*/ lastRet = null;
 
 	/**
-	 * Whether lastRet has already been expanded by hasNext().
+	 * Whether lastRet has already been expanded by {@link #hasNext()}.
 	 * @serial
 	 */
-	private boolean						hasExpanded = false;
+	private boolean	hasExpanded = false;
 		
 	/**
 	 * Create a traversal iterator over the problem's state options.
@@ -241,7 +258,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
 	 * @param problem the problem whose options to iterate in an iterator specific order.
 	 * @post must still add problem.getInitialState() to nodes, such that !isEmpty()
 	 */
-	protected OptionIterator(GeneralSearchProblem/*<S,A>*/ problem) {
+	protected OptionIterator(GeneralSearchProblem/*<A,S>*/ problem) {
 	    this.problem = problem;
 	}
 		
@@ -250,7 +267,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
     	 * @pre true
     	 * @return the problem specified in the last call to solve.
     	 */
-    	protected final GeneralSearchProblem/*<S,A>*/ getProblem() {
+    	protected final GeneralSearchProblem/*<A,S>*/ getProblem() {
 	    return problem;
     	}
 
@@ -269,7 +286,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
          * @pre !isEmpty()
          * @post OLD(nodes).contains(RES) && nodes == OLD(nodes) \ {RES}
          */
-        protected abstract Option select();
+        protected abstract Object/*>S<*/ select();
 
         /**
          * Concatenate the new nodes and the old nodes.
@@ -278,7 +295,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
          * @return true if nodes changed as a result of the call.
          * @post nodes &sube; OLD(nodes) &cup; newNodes && RES = nodes&ne;OLD(nodes)
          */
-        protected abstract boolean add(Iterator/*<Option>*/ newNodes);
+        protected abstract boolean add(Iterator/*<S>*/ newNodes);
 
         // interface Iterator implementation
         
@@ -302,11 +319,11 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
     	/**
     	 * {@inheritDoc}
     	 * <p>
-    	 * Will expand the last element returned, and select an option to visit.</p>
+    	 * Will expand the last element returned, and select a state option to visit.</p>
     	 * @pre hasNext()
     	 * @see <a href="{@docRoot}/DesignPatterns/TemplateMethod.html">Template Method</a>
     	 */
-    	public Object/*_>Option<_*/ next() {
+    	public Object/*_>S<_*/ next() {
 	    if (lastRet != null)
 		expand();
 	    if (isEmpty())
@@ -328,7 +345,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
 		throw new IllegalStateException("cannot expand without a node returned last!");
 	    if (hasExpanded)
 		return false;
-	    Iterator/*<Option>*/ children = getProblem().expand(lastRet);
+	    Iterator/*<S>*/ children = GeneralSearch.expand(getProblem(), lastRet);
 	    hasExpanded = true;
 	    return add(children);
     	}
@@ -349,6 +366,33 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
     	}
     }
 
+    /**
+     * Helper method returning all states reachable with any action from state s.
+     */
+    static final Iterator expand(final GeneralSearchProblem problem, final Object/*>S<*/ state) {
+	return new Iterator() {
+		final Iterator/*<A>*/ actions = problem.actions(state);
+		final MutableFunction g = problem.getAccumulatedCostFunction();
+		final Real accumulatedCost = (Real/*__*/) g.apply(state);
+		public boolean hasNext() {
+		    return actions.hasNext();
+		}
+		public Object next() {
+		    Object/*>A<*/ a = actions.next();
+		    Iterator t = problem.states(a, state);
+		    assert t.hasNext() : "@post states(...) non-empty";
+		    Object/*>S<*/ sp = t.next();
+		    assert !t.hasNext() : "@post states(...) has length 1";
+		    g.set(sp,
+			  accumulatedCost.add(Values.valueOf(((Transition)problem.transition(a,state,sp)).getCost())));
+		    return sp;
+		}
+		public void remove() {
+		    actions.remove();
+		}
+	    };
+    }
+    
 
     //    /**
     //     * Get a new instance of the implementation data structure.

@@ -8,6 +8,7 @@ package orbital.algorithm.template;
 
 import orbital.logic.functor.Function;
 
+import orbital.logic.functor.Functionals;
 import orbital.math.functional.Functions;
 import orbital.math.functional.Operations;
 import orbital.math.Arithmetic;
@@ -25,6 +26,7 @@ import orbital.math.Values;
  * @version 1.0, 2000/09/18
  * @author  Andr&eacute; Platzer
  * @see "Pohl, I. (1973). The avoidance of (relative) catastrophe, heuristic competence, genuine dynamic weighting and computational issues in heuristic problem solving. In Proceedings of the Third International Joint Conference on Artificial Intelligence (IJCAI-73), pages 20-23, Stanford, California, IJCAII."
+ * @internal Sustain transient variable initialization when deserializing. Done by AStar.readObject() calling firePropertyChange(...).
  */
 public class WAStar extends AStar {
     private static final long serialVersionUID = -3210623238172266780L;
@@ -67,22 +69,15 @@ public class WAStar extends AStar {
     public Function getEvaluation() {
 	return evaluation;
     }
-    private transient Function evaluation = createEvaluation();
-    private final Function createEvaluation() {
-	return new Function() {
-    		public Object apply(Object a) {
-		    GeneralSearchProblem.Option o = (GeneralSearchProblem.Option)a;
-		    return Operations.plus.apply(Values.valueOf(o.getCost()), W.multiply((Arithmetic) getHeuristic().apply(o)));
-    		}
-	    };
-    }
-    /**
-     * Sustain transient variable initialization when deserializing.
-     */
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-    	in.defaultReadObject();
-    	//@internal note would not need to create AStar.evaluation, now
-    	evaluation = createEvaluation();
+    private transient Function evaluation;
+    void firePropertyChange(String property, Object oldValue, Object newValue) {
+	super.firePropertyChange(property, oldValue, newValue);
+	if (!("heuristic".equals(property) || "problem".equals(property) || "weight".equals(property)))
+	    return;
+	GeneralSearchProblem problem = getProblem();
+	this.evaluation = problem != null
+	    ? Functionals.compose(Operations.plus, problem.getAccumulatedCostFunction(), Functionals.compose(Operations.times, Functions.constant(getWeight()), getHeuristic()))
+	    : null;
     }
 
     /**
