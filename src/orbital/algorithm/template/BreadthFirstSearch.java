@@ -30,6 +30,7 @@ import orbital.math.Values;
  *
  * @version 1.0, 2000/09/17
  * @author  Andr&eacute; Platzer
+ * @note is a basic aspect of exploring the search space breadth-first.
  */
 public class BreadthFirstSearch extends GeneralSearch {
     private static final long serialVersionUID = -3246910930824688923L;

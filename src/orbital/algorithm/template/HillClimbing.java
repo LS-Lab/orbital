@@ -64,7 +64,10 @@ import orbital.math.Values;
  *
  * @version 1.0, 2000/09/17
  * @author  Andr&eacute; Platzer
+ * @note is a basic aspect of local optimization, only.
  * @note the father of local optimizers, also the most simple version
+ * @attribute specializes {@link SimulatedAnnealing}
+ * @attribute specializes {@link ThresholdAccepting}
  * @see Greedy
  */
 public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgorithm {

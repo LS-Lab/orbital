@@ -44,6 +44,7 @@ import orbital.math.Values;
  * @version 1.0, 2000/09/18
  * @author  Andr&eacute; Platzer
  * @see "P. E. Hart, N. J. Nilsson, and B. Raphael. A formal basis for the heuristic determination of minimum cost paths. IEEE Transactions of Systems Science and Cybernetics, 4:100-107, 1968."
+ * @attribute specializes {@link WAStar} with W=1.
  * @todo update g(n) to fit minimum cost to reach n?
  */
 public class AStar extends BestFirstSearch implements HeuristicAlgorithm {

@@ -23,6 +23,8 @@ import orbital.math.Real;
  *
  * @version 1.0, 2000/09/22
  * @author  Andr&eacute; Platzer
+ * @note is a basic aspect of bounding the search space by the best known solution.
+ *  This is automatically satisfied by several other search algorithms.
  * @internal Branch-and-bound is a technique from Operations Research.
  * @see "Lawler, E.L. and Wood, D.E. Branch-and-bound methods: A survey. Operations Research. 14(4):699-719. 1966."
  * @todo we could just as well formulate Branch-and-bound as a Decorator of GeneralSearchProblem (may be more useful for chaining and combining search algorithm policies). BUT such a decorator cannot easily tell the searching algorithm to continue even though we found a solution, in order to search for a better one. If however, decorated isSolution() would store the solution but return false in order to implement this, then the searching algorithm won't know the last (best) solution found either, but conclude that there is no solution at all.

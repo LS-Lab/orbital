@@ -95,6 +95,7 @@ import java.util.logging.Level;
  * @author  Andr&eacute; Platzer
  * @see HillClimbing
  * @see ThresholdAccepting
+ * @todo aspect of parametric scheduling the search over time.
  * @todo could move some parts into a super class
  * @note The Boltzman-machine is simulated annealing with the Boltzman distribution applied
  *  also to cases of improvements, instead of accepting all improvements.

@@ -19,15 +19,17 @@ import orbital.math.Real;
 /**
  * Parallel branch-and-bound algorithm.
  * <p>
- * Visits the next nodes parallely and bounds ot the best solution known.
- * Although the implementation uses a stack of nodes, due to the parallel nature
+ * Visits the next nodes in parallel and bound by the best solution known.
+ * Even though the implementation uses a stack of nodes, due to the parallel nature
  * this algorithm behaves much like a {@link BreadthFirstSearch}.
  * However, the scheduling policy of the thread scheduler may introduce a probabilistic
- * behaviour in execution speed.</p>
+ * behaviour in execution speed.
+ * </p>
  *
  * @version 1.0, 2000/09/22
  * @author  Andr&eacute; Platzer
  * @see BreadthFirstSearch
+ * @todo aspect of parallel exploration.
  */
 public class ParallelBranchAndBound extends BranchAndBound {
     private static final long serialVersionUID = -7665864997088831748L;

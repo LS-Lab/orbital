@@ -27,12 +27,13 @@ import orbital.math.Values;
  * <p>
  * The effective time complexity of IDA<sup>*</sup> depends upon the number of different values
  * the heuristic returns. If |h(S)| is small, IDA<sup>*</sup> only has to go through very little
- * iterations. Of course, if the heuristic has too few values, than it does not guide search at all.</p>
+ * iterations. Of course, if the heuristic has too few values, then it does not guide search at all.</p>
  *
  * @version 1.0, 2000/09/20
  * @author  Andr&eacute; Platzer
  * @see "Korf, R.E. (1985) Depth-first iterative deepening. An optimal admissible tree search. AIJ, 27(1), 97-109"
  * @todo why is IDA* with iterators about 11% slower than IDA* with collections?
+ * @todo @attribute usually inferior to {@link IterativeExpansion} with still linear space.
  */
 public class IterativeDeepeningAStar extends DepthFirstBoundingSearch implements HeuristicAlgorithm {
     private static final long serialVersionUID = 5814132461076107994L;
@@ -131,6 +132,7 @@ public class IterativeDeepeningAStar extends DepthFirstBoundingSearch implements
 	Object/*>S<*/ solution;
 	do {
 	    setBound(nextBound);
+	    // no node has been pruned yet
 	    nextBound = null;
 	    solution = super.search(createTraversal(problem));
 	} while (solution == null && nextBound != null);

@@ -27,6 +27,9 @@ import java.util.NoSuchElementException;
  *
  * @version 0.8, 2001/05/09
  * @author  Andr&eacute; Platzer
+ * @see PackageUtilities#top(int,GeneralSearchProblem,Function)
+ * @attribute usually inferior to {@link IterativeDeepening}
+ * @todo aspect of iterative broadening of search space.
  */
 public class IterativeBroadening extends DepthFirstBoundingSearch {
     private static final long serialVersionUID = 7810245539762321618L;

@@ -94,6 +94,7 @@ final class PackageUtilities {
      *  That instance is needed for providing {@link ProbabilisticAlgorithm#getRandom()}.
      * @todo might also provide a Random generator explicitly, if we would not like changing it during a search, anyway.
      * @return the decorated problem.
+     * @note aspect of local randomization.
      */
     public static final GeneralSearchProblem restrictRandomly(GeneralSearchProblem problem, final int numberOfChoices, final ProbabilisticAlgorithm algorithm) {
 	return new DelegateGeneralSearchProblem(problem) {
@@ -122,6 +123,7 @@ final class PackageUtilities {
      *  resulting from each action a&isin;A(s). Used for selecting the best f-values.
      * @return the decorated problem.
      * @see PackageUtilities#min
+     * @todo aspect (I) of locally restricting the search to the most promising actions.
      */
     public static final GeneralSearchProblem restrictBest(GeneralSearchProblem problem, final Function evaluationFunction) {
 	return new DelegateGeneralSearchProblem(problem) {
@@ -188,6 +190,8 @@ final class PackageUtilities {
      *  resulting from each action a&isin;A(s). Used for selecting the best f-values.
      * @return the decorated problem.
      * @see PackageUtilities#min
+     * @see IterativeBroadening
+     * @todo aspect (II) of locally restricting the search to the most promising actions.
      */
     public static final GeneralSearchProblem restrictTop(final int maximumBranchingFactor, GeneralSearchProblem problem, final Function evaluationFunction) {
 	throw new UnsupportedOperationException("not yet implemented");
