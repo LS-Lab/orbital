@@ -521,16 +521,17 @@ public final class MathUtilities {
      * This transformation is a logical function that transforms an array of arithmetic objects
      * into an array of minimum widening equalized arithmetic objects whose values are equal to the original ones.
      * <dl class="def">
-     *   <dt>arithmetic objects are minimum widening equalized</dt>
-     *   <dd>if either <ul>
-     *   <li>they have the same type, and this type is the minimum type (the most restrictive one).
-     *   So whenever possible an integer will be preferred over a rational,
-     *   a rational over a real and that over a complex.
-     *   That is they are instances of the common superclass.
-     *   </li>
-     *   <li>or they have minimum compatible types, such as a matrix and a vector.</li>
-     *   </ul>
-     * </dd>
+     *   <dt>minimum widening equalized</dt>
+     *   <dd>arithmetic objects are minimum widening equalized if either
+     *     <ul class="or">
+     *       <li>they have the same type, and this type is the minimum type (the most restrictive one).
+     *       So whenever possible an integer will be preferred over a rational,
+     *       a rational over a real and that over a complex.
+     *       That is they are instances of the common superclass.
+     *       </li>
+     *       <li>or they have minimum compatible types, such as a matrix and a vector.</li>
+     *     </ul>
+     *   </dd>
      * </dl>
      * <p>
      * This transformation function is often used to implement sly arithmetic operations with

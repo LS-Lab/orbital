@@ -9,7 +9,7 @@
 <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
 <meta name="ProgId" content="FrontPage.Editor.Document">
 <title>Algebraic structures</title>
-<link rel="stylesheet" href="../../../stylist.css" type="text/css" title="layout">
+<link rel="stylesheet" href="../../../stylist.css" type="text/css" charset="utf-8" title="layout">
 <style type="text/css"><!--
 	td, th       { vertical-align: text-top }
 th           { text-align: left }
@@ -57,7 +57,7 @@ td.defCategory { text-align: right }
 --></style>
 </head>
 
-<body>
+<body class="unicode">
 
 <h2>Contents</h2>
 <ul>
@@ -219,9 +219,9 @@ algebras).</p>
 <h4 class="inner">Examples</h4>
 <ol>
   <li>For every set X there is the <dfn>free magma</dfn> M(X) which equals the 
-    set of binary trees with nodes marked with elements of X and composition of 
+    set of binary trees with leafs marked with elements of X and composition of 
     two trees under a new root.</li>
-  <li>For every set X there is the <dfn>free semigroup</dfn> (of words) F<sup>a</sup>(X) 
+  <li>For every set X there is the <dfn>free semigroup</dfn> (of words=lists) F<sup>a</sup>(X) 
     := X<sup>+</sup> := ⋃<sub>n∈<b>N</b>\{0}</sub> X<sup>n</sup>.</li>
   <li>For every set X there is the <dfn>free monoid</dfn> (of words) Mo(X) := X<sup>*</sup> 
     := ⋃<sub>n∈<b>N</b></sub> X<sup>n</sup>.</li>
@@ -839,7 +839,7 @@ homomorphisms of rings:</p>
         <tr>
           <td class="leftOfMap"><span class="objet">E</span></td>
           <td class="arrowOfMap">↦</td>
-          <td class="rightOfMap">Mor<span class="categorie"><sub>Mag</sub></span>(S,(E,⋅))                        
+          <td class="rightOfMap">Mor<span class="categorie"><sub>Mag</sub></span>(S,(E,⋅))                             
             <!-- @todo or Hom as for <b>Z</b>[G]? --> </td>
         </tr>
       </tbody>
@@ -847,7 +847,7 @@ homomorphisms of rings:</p>
     Therefore it enjoys the following universal mapping property
     <div class="UniversalMappingProperty">
       ∀φ:S→(E,⋅) homomorphism of magmas/monoids into an R-algebra E<br />
-      ∃!Φ:R<sup>(S)</sup>→E R-algebra homomorphism with Φ|<sub>S</sub>=φ <!-- @todo Φ is the Einsetzungshomomorphismus -->    
+      ∃!Φ:R<sup>(S)</sup>→E R-algebra homomorphism with Φ|<sub>S</sub>=φ <!-- @todo Φ is the Einsetzungshomomorphismus -->         
     </div>
   </li>
   <li>R<sup>X</sup> = ∏<sub>x</sub><sub>∈X</sub> R is a commutative 
@@ -897,8 +897,8 @@ and right cosets are also defined for ordinary subgroups H≤G instead of N,
 they do not coincide with any equivalence classes of a quotient group in the 
 general case. In either case, all cosets have the same cardinality and <center>[G:H] 
 := number of left cosets = number of right cosets (= |G/H| if H⊴G).</center> 
-is called the <dfn>index</dfn> of the subgroup H in G. It satisfies <center>|G| 
-= |H|*[G:H]</center></p>
+is called the <dfn>index</dfn> of the subgroup H≤G. It satisfies <center>|G| = 
+[G:H]⋅|H|</center></p>
 <h2 id="generated">Generating Systems</h2>
 <dl class="def">
   Let E have the algebraic structure <span class="signifier">T</span>, and X⊆E 
@@ -925,13 +925,14 @@ is called the <dfn>index</dfn> of the subgroup H in G. It satisfies <center>|G|
   <li>For ring extensions S/R (resp. commutative, unital associative R-algebras 
     S), and a subset A⊆S we have an alternative characterization<br>
     R[A] (:= R[〈A〉<sub class="categorie">Mag</sub>]) = 〈R∪A〉 = ⋃<sub>E⊆A 
-    fin</sub> R[E] = {f(α<sub>1</sub>,…,α<sub>n</sub>) ¦ n∈<b>N</b> ∧ 
-    f∈R[X<sub>1</sub>,…,X<sub>n</sub>] ∧ ∀i α<sub>i</sub>∈A}</li>
+    fin</sub> R[E] (<small>= {f(α<sub>1</sub>,…,α<sub>n</sub>) ¦ n∈<b>N</b> 
+    ∧ f∈R[X<sub>1</sub>,…,X<sub>n</sub>] ∧ ∀i α<sub>i</sub>∈A}</small>)</li>
   <li>For field extensions L/K, and a subset A⊆L we have an alternative 
     characterization<br>
-    K(A) := Quot(K[A]) = 〈K∪A〉 = ⋃<sub>E⊆A fin</sub> K(E) = {f(α<sub>1</sub>,…,α<sub>n</sub>) 
+    K(A) := Quot(K[A]) = 〈K∪A〉 = ⋃<sub>E⊆A fin</sub> K(E) = (<small>{f(α<sub>1</sub>,…,α<sub>n</sub>) 
     / g(α<sub>1</sub>,…,α<sub>n</sub>) ¦ n∈<b>N</b> ∧ f,g∈K[X<sub>1</sub>,…,X<sub>n</sub>] 
-    ∧ ∀i α<sub>i</sub>∈A ∧ g(α<sub>1</sub>,…,α<sub>n</sub>)≠0}</li>
+    ∧ ∀i α<sub>i</sub>∈A ∧ g(α<sub>1</sub>,…,α<sub>n</sub></small>)≠0})<br>
+    (= K[A] if all α∈A are algebraic over K)</li>
 </ul>
 
 </body>

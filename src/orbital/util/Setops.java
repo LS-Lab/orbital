@@ -94,7 +94,7 @@ public final class Setops {
      *  Returns an optimized version of <code>Functionals.map(and, Functionals.map(Functionals.asFunction(found), i))</code>.
      * @see <a href="{@docRoot}/DesignPatterns/InternalIterator.html">Internal Iterator</a>
      * @see orbital.logic.functor.Functionals
-     * @todo document banana application
+     * @todo document banana application @see Operations.andAll
      */
     public static /*<A>*/ boolean all(Collection/*_<A>_*/ coll, Predicate/*<A>*/ found) {
 	return all(coll.iterator(), found);
@@ -123,6 +123,7 @@ public final class Setops {
      *  Returns an optimized version of return <code>Functionals.map(or, Functionals.map(Functionals.asFunction(found), i))</code>.
      * @see <a href="{@docRoot}/DesignPatterns/InternalIterator.html">Internal Iterator</a>
      * @see orbital.logic.functor.Functionals
+     * @todo document banana application @see Operations.orSome
      */
     public static /*<A>*/ boolean some(Collection/*_<A>_*/ coll, Predicate/*<A>*/ found) {
 	return some(coll.iterator(), found);
@@ -307,6 +308,7 @@ public final class Setops {
      * a &times; b = {(x,y) &brvbar; x&isin;a &and; y&isin;b}
      * @return a collection of all tupels in a &times; b as {@link orbital.util.Pair} objects.
      * @see #outer(BinaryFunction, Collection, Collection)
+     * @todo rewrite pure functional
      */
     public static /*<A, B>*/ Collection/*_<Pair<A, B>>_*/ cross(Collection/*_<A>_*/ a, Collection/*_<B>_*/ b) {
 	Collection/*_<Pair<A, B>>_*/ r = new ArrayList/*_<Pair<A, B>>_*/(a.size() * b.size());
@@ -317,6 +319,9 @@ public final class Setops {
 	} 
 	return r;
     } 
+    public static /*<A, B>*/ Iterator/*_<Pair<A, B>>_*/ cross(Iterator/*_<A>_*/ a, Iterator/*_<B>_*/ b) {
+	return cross(asList(a), asList(b)).iterator();
+    }
 
     /**
      * Returns the n-ary cross product (or cartesian product) of n collections.<br />
@@ -456,7 +461,7 @@ public final class Setops {
      * @throws UnsupportedOperationException if the destination list-iterator does not support the set operation.
      * @see Collections#copy(List,List)
      */
-    public static void copy(ListIterator dest, ListIterator src) {
+    public static void copy(ListIterator dest, Iterator src) {
 	while (src.hasNext()) {
 	    try {
 		dest.next();

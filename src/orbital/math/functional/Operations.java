@@ -150,7 +150,7 @@ public interface Operations /* implements ArithmeticOperations */ {
 		throw new ArithmeticException(this + " is only partially derivable");
 	    } 
 	    public Function integrate() {
-		throw new ArithmeticException(this + " is only integrable with respect to a single variable");
+		throw new ArithmeticException(this + " is only (undefinitely) integrable with respect to a single variable");
 	    } 
 	    public Real norm() {
 		return Values.POSITIVE_INFINITY;
@@ -283,7 +283,7 @@ public interface Operations /* implements ArithmeticOperations */ {
 		throw new ArithmeticException(this + " is only partially derivable");
 	    } 
 	    public Function integrate() {
-		throw new ArithmeticException(this + " is only integrable with respect to a single variable");
+		throw new ArithmeticException(this + " is only (undefinitely) integrable with respect to a single variable");
 	    } 
 	    public Real norm() {
 		return Values.POSITIVE_INFINITY;
