@@ -12,7 +12,7 @@
 |- (~A=>~B)=>(B=>A)			# Ax3 contra positive
 |- [](A->B)->([]A->[]B)
 A, A=>B |- B				# Mp modus (ponendo) ponens
-A |- []A					# necessitation "Gödelregel" due to global definition of |= A
+## A |- []A					# necessitation "Gödelregel" (for global consequence)
 
 
 # additional
@@ -64,18 +64,18 @@ A |- []A					# necessitation "Gödelregel" due to global definition of |= A
 # <>A	-sub contrary-	<>~A==~[]A
 
 
-# top left to down left sub alternative
-|= []A -> <>A
-# top right to down right sub alternative
-|= ~<>A -> ~[]A
-# top left to top right contrary (not both true)
-|= ~([]A & []~A)
-# down left to down right sub contrary (not both false)
-|= <>A | <>~A
-# top left to down right contradictory
-|= []A <=>~( <>~A )
-# down left to top right contradictory
-|= <>A <=>~( []~A )
+### top left to down left sub alternative
+##|= []A -> <>A
+### top right to down right sub alternative
+##|= ~<>A -> ~[]A
+### top left to top right contrary (not both true)
+##|= ~([]A & []~A)
+### down left to down right sub contrary (not both false)
+##|= <>A | <>~A
+### top left to down right contradictory
+##|= []A <=>~( <>~A )
+### down left to top right contradictory
+##|= <>A <=>~( []~A )
 
 # thereby note
 []~A == ~<>A
