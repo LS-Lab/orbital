@@ -134,7 +134,7 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
 			final Set/*_<Formula>_*/ factorFLiterals = (Set)f.next();
 			factorFLiterals.add(L);
 			final Pair pF = F.factorize2(factorFLiterals);
-			if (pF == null) {
+			if (pF.A == null) {
 			    //@internal even though the literals unify individually, this particular combination does not.
 			    continue;
 			}
@@ -150,7 +150,7 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
 				continue;
 			    }
 			    final Pair pG = G.factorize2(factorGLiterals);
-			    if (pG == null) {
+			    if (pG.A == null) {
 				//@internal even though the literals unify individually, this particular combination does not.
 				continue;
 			    }
@@ -182,12 +182,19 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
      *  mgU{L,&not;K}=&empty;.
      */
     protected Clause resolventWith(Clause G, Formula L, Formula K) {
+	return (Clause) resolventWith2(G, L, K).B;
+    }
+    /**
+     * Workaround for returning 2 arguments.
+     * @return the pair of substitution and resulting clause, respectively <code>(null,null)</code>.
+     */
+    protected Pair/*<Substitution,Clause>*/ resolventWith2(Clause G, Formula L, Formula K) {
 	final Clause F = this;
 	final Formula notL = Utilities.negation(L);
 	final Substitution mu = Substitutions.unify(Arrays.asList(new Object[] {K, notL}));
 	logger.log(Level.FINEST, "resolving literals {0} with {1} is {2}", new Object[] {K, notL, mu});
 	if (mu == null) {
-	    return null;
+	    return new Pair(null, null);
 	} else {
 	    // resolve F and G at complementary literals L resp. K
 	    final Clause Gp = map(mu, clauseWithout(G, K));
@@ -198,13 +205,13 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
 	    if (Fp.isElementaryValidUnion(Gp)) {
 		// cut that resolution possibility since resolving with tautologies will never lead to false (the contradiction)
 		//@xxx 100% sure that for completeness, we can also remove G from setOfSupport, if it only resolves to isElementaryValid clauses. Or must we keep it, even though we don't have to keep the (elementary true) resolvent
-		return null;
+		return new Pair(null, null);
 	    }
 
 	    // the resolvent R of F and G at complementary literals L resp. K
 	    final Clause R = Gp;
 	    R.addAll(Fp);
-	    return R;
+	    return new Pair(mu, R);
 	}
     }
 
@@ -307,12 +314,11 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
      * @preconditions this.containsAll(literals)
      */
     protected Clause factorize(Collection/*_<Clause>_*/ literals) {
-	Pair p = factorize2(literals);
-	return p == null ? null : (Clause)p.B;
+	return (Clause) factorize2(literals).B;
     }
     /**
      * Workaround for returning 2 arguments.
-     * @return the pair of substitution and resulting factor, respectively <code>null</code>.
+     * @return the pair of substitution and resulting factor, respectively <code>(null,null)</code>.
      */
     protected Pair/*<Substitution,Clause>*/ factorize2(Collection/*_<Clause>_*/ literals) {
 	assert this.containsAll(literals) : "can only factorize literals contained in this clause";
@@ -325,7 +331,7 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
 	final Substitution mu = Substitutions.unify(literals);
 	assert this.equals(previous) : "modifications during factorization work on copies, and leave the original clause unmodified";
 	if (mu == null) {
-	    return null;
+	    return new Pair(null, null);
 	} else {
 	    // factorize
 	    //@todo optimize by removing all (but one in) literals from clause prior to applying mu
@@ -341,6 +347,7 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
 
     
     public boolean subsumes(Clause D) {
+if (true) return false;
 	if (size() > D.size())
 	    return false;
 	// negate D and replace all variables with distinct constants (also distinct for each literal)
@@ -349,6 +356,7 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
 	    final ClauseImpl notDi = (ClauseImpl)getClausalFactory().createClause(Collections.singleton(Utilities.negation((Formula)i.next())));
 	    final Clause notDiground = notDi.variant(notDi.getFreeVariables(), true);
 	    assert notDiground.getFreeVariables().isEmpty() : "ground instances have no free variables " + notDiground + " stemming from " + notDi + " has FV=" + notDiground.getFreeVariables();
+	    logger.log(Level.FINEST, "variant for subsumption is constantification {0} instead of {1} because of free variables {2}", new Object[] {notDiground, notDi, notDi.getFreeVariables()});
 	    notDground.add(notDiground);
 	}
 
