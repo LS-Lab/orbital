@@ -4,7 +4,7 @@
  * Copyright (c) 1999 Andre Platzer. All Rights Reserved.
  */
 
-package orbital.moon.math;
+package orbital.moon.math.functional;
 
 import orbital.math.functional.Function;
 import orbital.math.Arithmetic;
