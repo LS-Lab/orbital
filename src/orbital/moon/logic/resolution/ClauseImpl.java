@@ -92,31 +92,15 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 	// resolvents will contain all resolvents of F and G
 	Set/*_<Clause>_*/ resolvents = new HashSet();
 	// try to resolve G with F
-	// choose any literal Fj&isin;F
+	// choose any literal L&isin;F
 	for (Iterator j = iterator(); j.hasNext(); ) {
-	    final Formula Fj = (Formula) j.next();
-	    final Formula notFj = Utilities.negation(Fj);
-	    // choose any literal Gk&isin;G
+	    final Formula L = (Formula) j.next();
+	    // choose any literal K&isin;G
 	    for (Iterator k = G.iterator(); k.hasNext(); ) {
-		final Formula      Gk = (Formula) k.next();
-		// generalized resolution
-		final Substitution mu = Substitutions.unify(Arrays.asList(new Object[] {Gk, notFj}));
-		logger.log(Level.FINEST, "resolving literals {0} with {1} is {2}", new Object[] {Gk, notFj, mu});
-		if (mu != null) {
-		    // resolve F and G at complementary literals Fj resp. Gk
-		    final Clause Gp = construct((Set) Functionals.map(mu, setWithout(G, Gk)));
-		    final Clause Fp = construct((Set) Functionals.map(mu, setWithout(F, Fj)));
-                        				
-		    logger.log(Level.FINER, "resolving {0} with res {1} from {2} and {3}. not yet factorized. Lengths {4} from {5} and {6}.", new Object[] {Fp,Gp, F, G, new Integer(Fp.size()), new Integer(F.size()), new Integer(G.size())});
-
-		    if (Fp.isElementaryValidUnion(Gp))
-			// cut that possibility since resolving with tautologies will never lead to false (the contradiction)
-			//@xxx 100% sure that for completeness, we can also remove G from setOfSupport, if it only resolves to isElementaryValid clauses. Or must we keep it, even though we don't have to keep the (elementary true) resolvent
-			continue;
-
-		    // the resolvent R of F and G at complementary literals Fj resp. Gk
-		    final Clause R = Gp;
-		    R.addAll(Fp);
+		final Formula K = (Formula) k.next();
+		// resolution
+		final Clause  R = resolventWith(G, L, K);
+		if (R != null) {
 		    final Clause factorizedR = R.factorize();
 		    logger.log(Level.FINER, "resolved {0} from {1} and {2}. Factorized to {3}. Lengths {4} from {5} and {6}.", new Object[] {R, F, G, factorizedR, new Integer(R.size()), new Integer(F.size()), new Integer(G.size())});
 
@@ -133,6 +117,43 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 	}
 	return resolvents.iterator();
     }
+
+    /**
+     * Resolve clause F with G by the complementary resolution
+     * literals L&isin;F and K&isin;G.
+     * @preconditions this.contains(L) &and; G.contains(K)
+     * @return the resolvent ((F\{L})&cup;(G\{K}))&mu; when
+     *  &exist;&mu;&isin;mgU{L,&not;K}.  Or <code>null</code> if the
+     *  resolution of F with G by L and K is impossible because of
+     *  mgU{L,&not;K}=&empty;.
+     */
+    protected Clause resolventWith(Clause G, Formula L, Formula K) {
+	final Clause F = this;
+	final Formula notL = Utilities.negation(L);
+	final Substitution mu = Substitutions.unify(Arrays.asList(new Object[] {K, notL}));
+	logger.log(Level.FINEST, "resolving literals {0} with {1} is {2}", new Object[] {K, notL, mu});
+	if (mu == null) {
+	    return null;
+	} else {
+	    // resolve F and G at complementary literals L resp. K
+	    final Clause Gp = construct((Set) Functionals.map(mu, setWithout(G, K)));
+	    final Clause Fp = construct((Set) Functionals.map(mu, setWithout(F, L)));
+                        				
+	    logger.log(Level.FINER, "resolving {0} with res {1} from {2} and {3}. not yet factorized. Lengths {4} from {5} and {6}.", new Object[] {new ClauseImpl(Fp),new ClauseImpl(Gp), F, G, new Integer(Fp.size()), new Integer(F.size()), new Integer(G.size())});
+
+	    if (Fp.isElementaryValidUnion(Gp)) {
+		// cut that resolution possibility since resolving with tautologies will never lead to false (the contradiction)
+		//@xxx 100% sure that for completeness, we can also remove G from setOfSupport, if it only resolves to isElementaryValid clauses. Or must we keep it, even though we don't have to keep the (elementary true) resolvent
+		return null;
+	    }
+
+	    // the resolvent R of F and G at complementary literals L resp. K
+	    final Clause R = Gp;
+	    R.addAll(Fp);
+	    return R;
+	}
+    }
+
 
     public Clause variant(Signature disjointify) {
 	return variant(disjointify, false);
@@ -307,6 +328,7 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 
 	return false;
     }
+
 
     // Diverse utilities
 
