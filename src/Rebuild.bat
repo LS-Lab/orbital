@@ -14,6 +14,7 @@ echo    -pause     pause after each step
   echo adding manifest
     if not exist %JAVA_HOME%\classes\META-INF md %JAVA_HOME%\classes\META-INF
     xcopy META-INF %JAVA_HOME%\classes\META-INF /S /Y
+    rd %JAVA_HOME%\classes\META-INF\CVS /S /Q
 if "%1"=="-prepare" goto :Fin
 if "%1"=="-generate" goto Generate
 if "%1"=="-pause" set intermediate=pause

@@ -1,7 +1,7 @@
 @ECHO Off
 pushd %1
 if exist exclude goto Fin
-dir %1\*.java /B >> %HOME%\java\orbital\class-list-new
+if exist *.java dir %1\*.java /B >> %HOME%\java\orbital\class-list-new
 if exist substitute.bat goto substitute
 if not exist *.java goto Fin
 
