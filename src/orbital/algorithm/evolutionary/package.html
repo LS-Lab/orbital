@@ -21,15 +21,18 @@ recombined to form new genomes that are new members of the abstract
 population. Starting with some random genomes, finally one solution
 will be found - if our basic assumption that the evolution solves our problem
 in an efficient way, is true.</p>
-<p> Genetic algorithms are searching through an <i>arbitrary
-search space</i> both for exploration and exploitation purpose. In fact, genetic
-algorithms perform a parallel hill-climbing search through state space (of
-genomes) maximizing a given fitness function. The search is parallel since
-several members of a population are considered. Under certain assumptions (Goldberg. <i>Genetic
-Algorithms in Search, Optimization and Machine Learning</i>. Addison-Wesley.
-1989), it can be shown that genetic algorithms allocate searching resources in
-an optimal way. By the way, genetic algorithms can even be seen as a form of reinforcement
-learning.</p>
+<p> Genetic algorithms are searching through an <i>arbitrary search
+space</i> both for exploration and exploitation purpose. In fact,
+genetic algorithms perform a parallel hill-climbing search through
+state space (of genomes) maximizing a given fitness function. However,
+these parallel solutions are occasionally combined to build a new
+solution of (hopfully) joint force.  The search is parallel since
+several members of a population are considered. Under certain
+assumptions (Goldberg. <i>Genetic Algorithms in Search, Optimization
+and Machine Learning</i>. Addison-Wesley.  1989), it can be shown that
+genetic algorithms allocate searching resources in an optimal way. By
+the way, genetic algorithms can even be seen as a form of
+reinforcement learning.</p>
 <p>
 Prior to using a genetic algorithm to solve a problem you need to decide:<ol>
   <li>Which genetic representation to use for the members in state space?</li>

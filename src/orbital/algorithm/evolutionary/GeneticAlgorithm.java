@@ -33,8 +33,9 @@ import orbital.moon.evolutionary.SelectionStatistics;
 
 /**
  * A base class for genetic algorithms.
- * Genetic algorithms can be used as an
- * evolutionary search algorithm exploring or exploiting an almost arbitrary search space.
+ * Genetic algorithms can be used as an evolutionary search algorithm
+ * exploring (large population) or exploiting (small population)
+ * an almost arbitrary search space.
  * <p>
  * A genetic algorithm provides the following operators:<ul>
  *   <li><strong>evolve</strong> that will simulate the evolutionary search. (Decoupled into sub class)</li>
@@ -53,13 +54,13 @@ import orbital.moon.evolutionary.SelectionStatistics;
  * like:
  * <pre>
  * ga = <span class="keyword">new</span> <span class="Orbital">IncrementalGeneticAlgorithm</span>(<span class="Number">2</span>,<span class="Number">2</span>, maximumRecombination, maximumMutation);
- * ga.setSelector(<span class="Orbital">Selectors</span>.rouletteWheel());
+ * ga.setSelection(<span class="Orbital">Selectors</span>.rouletteWheel());
  * <span class="Class">Object</span> solution <span class="operator">=</span> ga.solve(<var>geneticAlgorithmProblem</var>);
  * </pre>
  * Or, if you need additional control of the single steps, use:
  * <pre>
  * ga = <span class="keyword">new</span> <span class="Orbital">IncrementalGeneticAlgorithm</span>(<span class="Number">2</span>,<span class="Number">2</span>, maximumRecombination, maximumMutation);
- * ga.setSelector(<span class="Orbital">Selectors</span>.rouletteWheel());
+ * ga.setSelection(<span class="Orbital">Selectors</span>.rouletteWheel());
  * ga.setWeighting(<var>fitnessWeighting</var>);
  * ga.setPopulation(initialPopulation);
  * <span class="comment">// while stop condition is not true</span>
@@ -130,7 +131,7 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
      * The selection scheme to apply while evolving.
      * @serial
      */
-    private Function		  selection = null;
+    private Function/*<Population,Genome>*/ selection = null;
 
     /**
      * The Population for this GeneticAlgorithm.
@@ -164,6 +165,13 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
 	this.childrenCount = childrenCount;
 	this.maximumRecombination = maximumRecombination;
 	this.maximumMutation = maximumMutation;
+    }
+    /**
+     * Construct a new GeneticAlgorithm.
+     * Default number of childrens and parents used for reproduction is 2.
+     */
+    protected GeneticAlgorithm(2, 2, double maximumRecombination, double maximumMutation) {
+	this(maximumRecombination, maximumMutation);
     }
 
     /**
@@ -315,13 +323,15 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
     /**
      * Get the selection scheme to apply while evolving.
      */
-    public Function getSelection() {
+    public Function/*<Population,Genome>*/ getSelection() {
 	return selection;
     } 
     /**
      * Set the selection scheme to apply while evolving.
+     * @param selector the selection function Population&rarr;Genome for selecting parents.
+     * @see Selectors
      */
-    public void setSelection(Function selector) {
+    public void setSelection(Function/*<Population,Genome>*/ selector) {
 	this.selection = selector;
     } 
 
@@ -467,6 +477,7 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
 	double similarity = 1 - Population.overallDistance(parents);
 	logger.log(Level.FINEST, "evolve", "OVERALL parental distance " + (1 - similarity));
 	logger.log(Level.FINEST, "evolve", "OVERALL population distance " + population.getOverallDistance());
+
 	// recombine children
 	//@todo consider whether similarity * maximumRecombination would really be better?
 	Genome children[] = (Genome[]) parents[0].recombine(parents, childrenCount, maximumRecombination);

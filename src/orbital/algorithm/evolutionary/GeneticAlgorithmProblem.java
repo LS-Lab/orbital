@@ -18,14 +18,14 @@ import orbital.logic.functor.Function;
  * @todo can we use a general (derived) interface GeneticAlgorithmSearchProblem implements GeneralSearchProblem
  *  so that we can simply treat a search problem with a genetic algorithm
  */
-public
-interface GeneticAlgorithmProblem extends AlgorithmicProblem {
+public interface GeneticAlgorithmProblem extends AlgorithmicProblem {
 
 	/**
 	 * Get the evaluation objective function.
 	 * Specifies the algorithm for weighting of a Genome's fitness.
 	 * <p>
 	 * A genetic algorithm will maximize this objective function.</p>
+	 * @see orbital.algorithm.template.EvaluativeAlgorithm#getEvaluation()
 	 */
 	Function/*<Object, Number>*/ getWeighting();
 
@@ -33,8 +33,8 @@ interface GeneticAlgorithmProblem extends AlgorithmicProblem {
 	 * Generate (<strong>create</strong>) the initial population of genomes.
 	 * @return the initial population created with an initial set of problem-specific Genomes.
 	 * @see Population#create(Genome, int)
+	 * @internal roughly corresponds to a set of (Genome-encoded) states that is part of the full state space
 	 */
-	// roughly corresponds to a set of (Genome-encoded) states that is part of the full state space
 	Population getPopulation();
 
 	/**

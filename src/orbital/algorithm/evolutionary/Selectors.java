@@ -20,9 +20,9 @@ import orbital.util.Utility;
  * @author  Andr&eacute; Platzer
  * @see orbital.util.Setops
  * @see orbital.util.Callback
+ * @see GeneticAlgorithm#setSelection(Function)
  */
-public
-class Selectors {
+public class Selectors {
 	/**
 	 * module class - prevent instantiation.
 	 */
