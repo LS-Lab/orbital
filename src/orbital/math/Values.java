@@ -1451,7 +1451,7 @@ public final class Values {
      * @xxx note that we should think about the order of static initialization.
      *  If Integer.ZERO uses Values.ZERO, then we must assure class Values is initialized first.
      */
-    private static final int	 MAX_CONSTANT = 4;
+    private static final int	 MAX_CONSTANT = 10;
     private static final Integer posConst[] = new Integer[MAX_CONSTANT + 1];
     private static final Integer negConst[] = new Integer[MAX_CONSTANT + 1];
     static {
@@ -1492,6 +1492,7 @@ public final class Values {
     public static final Real PI = valueOf(Math.PI);
     /**
      * <b>e</b>.
+     * The base of the natural logarithm.
      */
     public static final Real E = valueOf(Math.E);
 
@@ -1501,12 +1502,12 @@ public final class Values {
     public static final Real NaN = valueOf(java.lang.Double.NaN);
 
     /**
-     * A constant for the imaginary unit <b>i</b>&isin;<b>C</b>.
+     * The imaginary unit <b>i</b>&isin;<b>C</b>.
      * @see #i
      */
     public static final Complex I = complex(0, 1);
     /**
-     * A constant for the imaginary unit <b>i</b>&isin;<b>C</b>.
+     * The imaginary unit <b>i</b>&isin;<b>C</b>.
      * @see #I
      */
     public static final Complex i = I;

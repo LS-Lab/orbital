@@ -46,9 +46,10 @@ public interface Polynomial/*<R implements Arithmetic>*/ extends Euclidean, Func
     /**
      * Get the degree of this polynomial.
      * <p>
-     * This degree is the Euclidean degree function &delta; for polynomials.
-     * 0 is an element of all degrees, so we return a negative number,
-     * usually {@link java.lang.Integer#MIN_VALUE}.
+     * This degree is the Euclidean degree function &delta;
+     * and also the graded ring function for polynomials.
+     * 0 is an element of undefined or all or none degrees.
+     * So for 0 we should return <code>null</code>, or {@link java.lang.Integer#MIN_VALUE}.
      * </p>
      * @return deg(this) = max {i&isin;<b>N</b> &brvbar; a<sub>i</sub>&ne;0}
      */
