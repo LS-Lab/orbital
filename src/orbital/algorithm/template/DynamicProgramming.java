@@ -48,6 +48,7 @@ import orbital.util.Utility;
  * @author  Andr&eacute; Platzer
  * @see DynamicProgrammingProblem
  * @see Greedy
+ * @see HeuristicAlgorithm.PatternDatabaseHeuristic
  * @see "R. E. Bellman. Dynamic Programming. Princeton Universit Press, Princeton, NJ, 1957."
  * @todo could introduce an implicit form of DP that uses recursion to a base case with value reuse. However, explicit DP has a dramatic advantage in stack space consumption
  */
