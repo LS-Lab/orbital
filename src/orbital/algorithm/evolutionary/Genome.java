@@ -18,7 +18,7 @@ import orbital.logic.functor.Function;
  * A Genome provides the following operators and functions:
  * <ul>
  *   <li><strong>mutate</strong> that defines how its mutation is done, depending on a probability.</li>
- *   <li><strong>crossover</strong> for reproduction to generate children Genomes.</li>
+ *   <li><strong>recombine</strong> for recombining genetic information of the parents to generate genomes of the children (reproduction).</li>
  *   <li>an evaluation function.</li>
  *   <li>and a difference measure.</li>
  * </ul>
@@ -209,8 +209,8 @@ public class Genome extends Gene.List {
 	return n;
     } 
 
-    public Gene/*Genome*/[] crossover(final Gene[] parents, int childrenCount, double crossoverProbability) {
-	Genome[] children = (Genome[]) super.elementwiseCrossover(parents, childrenCount, crossoverProbability);
+    public Gene/*Genome*/[] recombine(final Gene[] parents, int childrenCount, double recombinationProbability) {
+	Genome[] children = (Genome[]) super.elementwiseRecombine(parents, childrenCount, recombinationProbability);
 	// fitness changed
 	for (int c = 0; c < children.length; c++)
 	    children[c].clearFitness();

@@ -35,15 +35,15 @@ import orbital.util.InnerCheckedException;
  * A gene provides the following operators and functions:
  * <ul>
  *   <li><strong>mutate</strong> that defines how its mutation is done, depending on a probability.</li>
- *   <li><strong>crossover</strong> for reproduction to generate children Genes.</li>
- *   <li>and a distance measure.</li>
+ *   <li><strong>recombine</strong> for recombining genetic information of the parents to generate genes of the children (reproduction).</li>
+ *   <li>and a distance measure on genes.</li>
  * </ul>
  * </p>
  * 
  * @version 1.0, 2001/03/17
  * @author  Andr&eacute; Platzer
  * @todo implement property editors
- * @todo move to package orbital.algorithm.representation or anything
+ * @todo move to package orbital.algorithm.representation or anything, to make the (genetic) data representation independent of the (genetic and evolutionary or standard hill-climbing) algorithms.
  */
 public interface Gene {
     /**
@@ -93,7 +93,7 @@ public interface Gene {
     Gene mutate(double probability);
 
     /**
-     * Genetically <strong>crossover</strong> Gene data from parents to their children
+     * Genetically <strong>recombine</strong> gene data of parents to their children
      * via reproduction.
      * <pre>
      * a       a  = direct ancestors to be used
@@ -111,15 +111,16 @@ public interface Gene {
      * parents are <b>readonly</b>.
      * @param childrenCount the number of Gene children to produce and return.
      *  <code>n</code> is the number of children to be produced.
-     * @param crossoverProbability the probability with that the inherited Gene data is crossed over.
-     * This does not necessarily imply an exchange of data, Genes might as well
-     * realign or repair at random. But it makes a data crossover possible.
-     * @pre &exist;i parents[i] == this
+     * @param recombinationProbability the probability with that parts of the inherited gene data
+     *  is recombined.
+     *  This does not necessarily imply an exchange of data, Genes might as well
+     *  realign or repair at random. But it makes a data recombination possible.
+     * @pre &exist;i parents[i] == this, and parents are allels
      * @return the new <code>childrenCount</code> children produced.
      * @post RES.length == childrenCount
      * @todo enhance funny documentation
      */
-    Gene[] crossover(final Gene[] parents, int childrenCount, double crossoverProbability);
+    Gene[] recombine(final Gene[] parents, int childrenCount, double recombinationProbability);
 
     /**
      * Get an inverted version of this Gene.
@@ -243,20 +244,20 @@ public interface Gene {
     	} 
     
     	/**
-	 * Genetically crossover Gene data from parents to their children.
-    	 * @see #elementwiseCrossover(Gene[],int,double)
+	 * {@inheritDoc}
+    	 * @see #elementwiseRecombine(Gene[],int,double)
     	 */
-    	public Gene[] crossover(final Gene[] parents, int childrenCount, double crossoverProbability) {
-	    return elementwiseCrossover(parents, childrenCount, crossoverProbability);
+    	public Gene[] recombine(final Gene[] parents, int childrenCount, double recombinationProbability) {
+	    return elementwiseRecombine(parents, childrenCount, recombinationProbability);
     	}
 
     	/**
-	 * Genetically crossover Gene data from parents to their children.
-    	 * <p>Implemented as element-wise crossover, each gene does crossover, separately.</p>
+	 * {@inheritDoc}.
+    	 * <p>Implemented as element-wise recombination, each gene does recombine, separately.</p>
     	 */
-    	protected Gene[] elementwiseCrossover(final Gene[] parents, int childrenCount, double crossoverProbability) {
-	    if (!MathUtilities.isProbability(crossoverProbability))
-		throw new IllegalArgumentException("invalid probability " + crossoverProbability);
+    	protected Gene[] elementwiseRecombine(final Gene[] parents, int childrenCount, double recombinationProbability) {
+	    if (!MathUtilities.isProbability(recombinationProbability))
+		throw new IllegalArgumentException("invalid probability " + recombinationProbability);
 	    List[]		  parentsc = (List[]) parents;
 	    List[]		  children = (List[]) Array.newInstance(parents[0].getClass(), childrenCount);
 	    Iterator[]	  iterator = new Iterator[parents.length];
@@ -265,13 +266,13 @@ public interface Gene {
 	    for (int i = 0; i < children.length; i++)
 		children[i] = newInstance(size());
 
-	    // crossover each gene for the children
+	    // recombine each gene for the children
 	    Iterator j = commonIterator(parentsc);
 	    for (int i = 0; j.hasNext(); i++) {
 		Gene[] g = (Gene[]) j.next();
-		Gene[] crossed = g[0].crossover(g, childrenCount, crossoverProbability);
+		Gene[] recombined = g[0].recombine(g, childrenCount, recombinationProbability);
 		for (int c = 0; c < children.length; c++)
-		    children[c].add(i, crossed[c]);
+		    children[c].add(i, recombined[c]);
 	    }
 	    return children;
     	} 
@@ -318,13 +319,13 @@ public interface Gene {
     	}
     
     	/**
-	 * Genetically crossover Gene data from parents to their children.
-    	 * <p>Implemented as uniform crossover, uniformly distributes genes to
+	 * {@inheritDoc}
+    	 * <p>Implemented as uniform recombination, uniformly distributes genes to
     	 * the children.</p>
     	 */
-    	protected Gene[] uniformCrossover(final Gene[] parents, int childrenCount, double crossoverProbability) {
-	    if (!MathUtilities.isProbability(crossoverProbability))
-		throw new IllegalArgumentException("invalid probability " + crossoverProbability);
+    	protected Gene[] uniformRecombine(final Gene[] parents, int childrenCount, double recombinationProbability) {
+	    if (!MathUtilities.isProbability(recombinationProbability))
+		throw new IllegalArgumentException("invalid probability " + recombinationProbability);
 	    List[]		  parentsc = (List[]) parents;
 	    List[]		  children = (List[]) Array.newInstance(parents[0].getClass(), childrenCount);
 	    final int	  a = parentsc.length;	  // a
@@ -339,7 +340,7 @@ public interface Gene {
 	    //XXX: check logic if it's okay for lists
 	    UniqueShuffle par = new UniqueShuffle(parentsc.length);
 	    for (int i = 0; i < parentsc[0].size(); i++) {
-		if (Utility.flip(GeneticAlgorithm.geneticAlgorithm.getRandom(), crossoverProbability))
+		if (Utility.flip(GeneticAlgorithm.geneticAlgorithm.getRandom(), recombinationProbability))
 		    par.reShuffle(GeneticAlgorithm.geneticAlgorithm.getRandom());
 		else
 		    par.unShuffle();
@@ -539,12 +540,12 @@ public interface Gene {
     
     
     	/**
-	 * Genetically crossover Gene data from parents to their children.
-    	 * <p>Implemented as uniform crossover.</p>
+	 * {@inheritDoc}
+    	 * <p>Implemented as uniform recombination.</p>
     	 */
-    	public Gene[] crossover(final Gene[] parents, int childrenCount, double crossoverProbability) {
-	    if (!MathUtilities.isProbability(crossoverProbability))
-		throw new IllegalArgumentException("invalid probability " + crossoverProbability);
+    	public Gene[] recombine(final Gene[] parents, int childrenCount, double recombinationProbability) {
+	    if (!MathUtilities.isProbability(recombinationProbability))
+		throw new IllegalArgumentException("invalid probability " + recombinationProbability);
 	    BitSet[]	  parentsc = (BitSet[]) parents;
 	    BitSet[]	  children = new BitSet[childrenCount];
 	    final int	  a = parentsc.length;	  // a
@@ -559,7 +560,7 @@ public interface Gene {
 	    // uniformly distribute Gene data of all parents over the children
 	    UniqueShuffle par = new UniqueShuffle(a);
 	    for (int i = 0; i < parentsc[0].length(); i++) {
-		if (Utility.flip(GeneticAlgorithm.geneticAlgorithm.getRandom(), crossoverProbability))
+		if (Utility.flip(GeneticAlgorithm.geneticAlgorithm.getRandom(), recombinationProbability))
 		    par.reShuffle(GeneticAlgorithm.geneticAlgorithm.getRandom());
 		else
 		    par.unShuffle();
@@ -615,7 +616,7 @@ public interface Gene {
      * </p>
      * <p>
      * Note however, that all numeric genes could as well be encoded with a mere bit string.
-     * Although default uniform mutations and cross-over would then have a dramatic effect on
+     * Although default uniform mutations and recombination would then have a dramatic effect on
      * these bit string encoded values. This is the reason for introducing explicit genes with
      * numeric interpretations.
      * </p>
@@ -783,9 +784,9 @@ public interface Gene {
     	// central virtual methods
     	// transformation methods
     
-    	public Gene[] crossover(final Gene[] parents, int childrenCount, double crossoverProbability) {
-	    if (!MathUtilities.isProbability(crossoverProbability))
-		throw new IllegalArgumentException("invalid probability " + crossoverProbability);
+    	public Gene[] recombine(final Gene[] parents, int childrenCount, double recombinationProbability) {
+	    if (!MathUtilities.isProbability(recombinationProbability))
+		throw new IllegalArgumentException("invalid probability " + recombinationProbability);
 	    Integer[]	  parentsc = (Integer[]) parents;
 	    Integer[]	  children = new Integer[childrenCount];
 	    final int	  a = parentsc.length;	  // a
@@ -798,9 +799,9 @@ public interface Gene {
 		children[i] = (Integer) clone();
 
 	    // uniformly distribute Gene data of all parents over the children
-	    //TODO: crossover randomly leads to arithmetic mean of parents?
+	    //TODO: recombine randomly leads to intermediary arithmetic mean of parents?
 	    UniqueShuffle par = new UniqueShuffle(a);
-	    if (Utility.flip(GeneticAlgorithm.geneticAlgorithm.getRandom(), crossoverProbability))
+	    if (Utility.flip(GeneticAlgorithm.geneticAlgorithm.getRandom(), recombinationProbability))
 		par.reShuffle(GeneticAlgorithm.geneticAlgorithm.getRandom());
 	    else
 		par.unShuffle();
@@ -920,7 +921,7 @@ public interface Gene {
      * <p>
      * {@link java.lang.Double#NaN}, {@link java.lang.Double#NEGATIVE_INFINITY} and
      * {@link java.lang.Double#POSITIVE_INFINITY} are immune to mutation and
-     * thus fixed points (apart from crossover).
+     * thus fixed points (apart from recombination).
      * </p>
      * 
      * @version 1.0, 2001/03/17
@@ -978,9 +979,9 @@ public interface Gene {
     	// central virtual methods
     	// transformation methods
     
-    	public Gene[] crossover(final Gene[] parents, int childrenCount, double crossoverProbability) {
-	    if (!MathUtilities.isProbability(crossoverProbability))
-		throw new IllegalArgumentException("invalid probability " + crossoverProbability);
+    	public Gene[] recombine(final Gene[] parents, int childrenCount, double recombinationProbability) {
+	    if (!MathUtilities.isProbability(recombinationProbability))
+		throw new IllegalArgumentException("invalid probability " + recombinationProbability);
 	    Float[]	  parentsc = (Float[]) parents;
 	    Float[]	  children = new Float[childrenCount];
 	    final int	  a = parentsc.length;	  // a
@@ -993,9 +994,9 @@ public interface Gene {
 		children[i] = (Float) clone();
 
 	    UniqueShuffle par = new UniqueShuffle(a);
-	    if (Utility.flip(GeneticAlgorithm.geneticAlgorithm.getRandom(), crossoverProbability))
-		if (Utility.flip(GeneticAlgorithm.geneticAlgorithm.getRandom(), crossoverProbability)) {
-		    // crossover randomly leads to arithmetic mean of parents?
+	    if (Utility.flip(GeneticAlgorithm.geneticAlgorithm.getRandom(), recombinationProbability))
+		if (Utility.flip(GeneticAlgorithm.geneticAlgorithm.getRandom(), recombinationProbability)) {
+		    // recombine randomly leads to intermediary arithmetic mean of parents?
 		    double parentalValues[] = new double[a];
 		    for (int i = 0; i < parentalValues.length; i++)
 			parentalValues[i] = parentsc[i].doubleValue();
@@ -1154,7 +1155,7 @@ public interface Gene {
      * Fixed point gene data.
      * <p>This implementation uses a {@link Gene.BitSet} encoded fixed-point numbers as gene data.</p>
      * <p>
-     * Note that default uniform mutations and cross-over have a dramatic effect on
+     * Note that default uniform mutations and recombinations have a dramatic effect on
      * bit string encoded values.
      * </p>
      * 

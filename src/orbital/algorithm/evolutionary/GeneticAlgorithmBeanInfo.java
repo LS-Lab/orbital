@@ -26,8 +26,8 @@ class GeneticAlgorithmBeanInfo extends SimpleBeanInfo {
 		try {
 			PropertyDescriptor _childrenCount = new PropertyDescriptor("childrenCount", beanClass, "getChildrenCount", "setChildrenCount");
 			_childrenCount.setShortDescription("number of children produced with one reproduction");
-			PropertyDescriptor _maximumCrossover = new PropertyDescriptor("maximumCrossover", beanClass, "getMaximumCrossover", "setMaximumCrossover");
-			_maximumCrossover.setShortDescription("maximum probability rating of crossover level for reproducation");
+			PropertyDescriptor _maximumRecombination = new PropertyDescriptor("maximumRecombination", beanClass, "getMaximumRecombination", "setMaximumRecombination");
+			_maximumRecombination.setShortDescription("maximum probability rating of recombining parental genomes per production");
 			PropertyDescriptor _maximumMutation = new PropertyDescriptor("maximumMutation", beanClass, "getMaximumMutation", "setMaximumMutation");
 			_maximumMutation.setShortDescription("maximum probability rating of mutation level for reproducation");
 			PropertyDescriptor _parentCount = new PropertyDescriptor("parentCount", beanClass, "getParentCount", "setParentCount");
@@ -38,7 +38,7 @@ class GeneticAlgorithmBeanInfo extends SimpleBeanInfo {
 			PropertyDescriptor _selection = new PropertyDescriptor("selection", beanClass, "getSelection", "setSelection");
 			_selection.setShortDescription("the selection scheme to apply for evolving");
 			PropertyDescriptor[] pds = new PropertyDescriptor[] {
-				_childrenCount, _maximumCrossover, _maximumMutation, _parentCount, _population, _selection, 
+				_childrenCount, _maximumRecombination, _maximumMutation, _parentCount, _population, _selection, 
 			};
 			return pds;
 		} catch (IntrospectionException ex) {
