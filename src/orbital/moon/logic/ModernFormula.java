@@ -165,7 +165,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 
     // Derived logical operations. (in classical logic)
     //@internal note that we could also rely on LogicBasis, but then formatting would be unintuitive.
-
+    /* @xxx hinders formation of conjunctiveForm in ModalLogicTest
     public Formula xor(Formula B) {
 	return compose(XOR, new Formula[] {this, B});
     } 
@@ -177,7 +177,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     public Formula equiv(Formula B) {
 	return compose(EQUIV, new Formula[] {this, B});
     } 
-
+    */
     private Formula compose(Symbol op, Formula[] arguments) {
 	try {
 	    return (Formula) logic.compose(logic.createAtomic(op), arguments);
@@ -885,6 +885,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 
 	public void setCompositor(Functor f) throws ClassCastException {
 	    this.outer = (BinaryFunction) f;
+	    //@xxx what to use as outerSymbol?
 	}
 	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
 	    Formula[] a = (Formula[]) g;

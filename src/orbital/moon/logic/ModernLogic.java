@@ -319,16 +319,19 @@ abstract class ModernLogic implements Logic {
     
     // this is an additional method related to createExpression(String)
     /**
-     * Create a list of (compound) expressions by parsing a list of expressions.
+     * Create a sequence of (compound) expressions by parsing a list of expressions.
      * This method is the list version of {@link #createExpression(String)}.
      * <p>
-     * For example,
+     * For example, in the context of conjectures when given
      * <pre>
-     *  A&B, A&~C
+     * A&B, A&~C
      * </pre>
-     * will be parsed as two formulas <code>A&B</code> and <code>A&~C</code>.
+     * an implementation could parse it as two formulas <code>A&B</code> and <code>A&~C</code>.
      * </p>
      * @param expressions the comma separated list of expressions to parse.
+     * @throws UnsupportedOperationException if no syntax notation for sequences of formulas
+     *  has been defined.
+     * @post RES instanceof Formula[] covariant return-type
      * @see #createExpression(String)
      */
     public Expression[] createAllExpressions(String expressions) throws ParseException {
@@ -339,7 +342,9 @@ abstract class ModernLogic implements Logic {
 	    parser.setSyntax(this);
 	    Expression B[] = parser.parseFormulas();
 	    assert !Utility.containsIdenticalTo(B, null) : "empty string \"\" is not a formula, but only an empty set of formulas.";
-	    return B;
+	    return B instanceof Formula[]
+		? (Formula[]) B
+		: (Formula[]) Arrays.asList(B).toArray(new Formula[0]);
 	} catch (orbital.moon.logic.ParseException ex) {
 	    throw new ParseException(ex.getMessage() + "\nIn expressions: " + expressions,
 				     ex.currentToken == null ? COMPLEX_ERROR_OFFSET : ex.currentToken.next.beginLine,
@@ -385,7 +390,10 @@ abstract class ModernLogic implements Logic {
      * @see #infer(Formula[],Formula)
      */
     public boolean infer(String w, String d) throws ParseException {
-	Formula B[] = (Formula[]) Arrays.asList(createAllExpressions(w)).toArray(new Formula[0]);
+	Expression B_parsed[] = createAllExpressions(w);
+	Formula B[] = B_parsed instanceof Formula[]
+	    ? (Formula[]) B_parsed
+	    : (Formula[]) Arrays.asList(B_parsed).toArray(new Formula[0]);
 	Formula D = (Formula) createExpression(d);
 	logger.log(Level.FINE, "Formula {0} has type {1} with sigma={2}", new Object[] {D, D.getType(), D.getSignature()});
 	return inference().infer(B, D);
