@@ -45,7 +45,7 @@ public class MathExpressionTest extends check.TestCase {
 	catch (Throwable ex) {
 	    System.out.println();
 	    ex.printStackTrace();
-	    fail(ex.getMessage());
+	    fail(ex.getMessage() + " in expression: " + expr);
 	    return null;
 	}
     }

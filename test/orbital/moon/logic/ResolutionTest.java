@@ -28,7 +28,7 @@ public class ResolutionTest extends ClassicalLogicTest {
 	    ClassicalLogic.main(new String[] {"-resolution", name});
 	}
 	catch (Throwable ex) {
-	    fail(ex.getMessage());
+	    fail(ex.getMessage() + " in file " + name);
 	}
     }
     public void testEquivalences() {

@@ -57,7 +57,7 @@ public class ArithmeticFormatTest extends check.TestCase {
 		    assertTrue( format.parse(value.toString()).equals(value) , "re-parse of representation of an object should equal that object " + test[i][j]);
 		}
 		catch (ParseException ex) {
-		    fail(ex.getMessage());
+		    fail(ex.getMessage() + " in " + test[i][j]);
 		}
 	    System.out.println();
 	}
@@ -82,7 +82,7 @@ public class ArithmeticFormatTest extends check.TestCase {
 	    assert format.parse(s.toString()).equals(s) : "re-parse of representation of an object should equal that object " + n;
 	}
 	catch (ParseException ex) {
-	    fail(ex.getMessage());
+	    fail(ex.getMessage() + " in '" + n + "'");
 	}
     }
 }

@@ -63,22 +63,23 @@ public class FuzzyLogicTest extends check.TestCase {
 	    Formula f = (Formula) logic.createExpression(formula1);
 	    Formula f2 = (Formula) logic.createExpression(formula2);
 	    Interpretation I = new InterpretationBase(f.getSignature().union(f2.getSignature()), Collections.EMPTY_MAP);
-	    assertTrue(f.apply(I).equals(f2.apply(I)) , formula1 + " == " + formula2);
+	    assertTrue(f.apply(I).equals(f2.apply(I)) , formula1 + " == " + formula2 + " interpreted to " + f.apply(I) + " == " + f2.apply(I) + " of " + f.apply(I).getClass() + " resp. " + f2.apply(I).getClass());
 	}
 	catch (Throwable ex) {
 	    ex.printStackTrace();
-	    fail(ex.getMessage()) /*.initCause(ex)*/;
+	    fail(ex.getMessage() + " in " + formula1 + " == " + formula2) /*.initCause(ex)*/;
 	}
     }
     protected void assertSat(String formula, boolean satisfied) {
+	String satDesc = (satisfied ? " should be " : " should not be ") + "satisfied";
 	try {
 	    Formula f = (Formula) logic.createExpression(formula);
 	    Interpretation I = new InterpretationBase(f.getSignature(), Collections.EMPTY_MAP);
-	    assertTrue(logic.satisfy(I, f) == satisfied , formula + (satisfied ? " should be " : " should not be ") + "satisfied\n\t(in " + logic + " interpreted to " + f.apply(I) +")");
+	    assertTrue(logic.satisfy(I, f) == satisfied , formula + satDesc + "\n\t(in " + logic + " interpreted to " + f.apply(I) +")");
 	}
 	catch (Throwable ex) {
 	    ex.printStackTrace();
-	    fail(ex.getMessage()) /*.initCause(ex)*/;
+	    fail(ex.getMessage() + " in " + formula + satDesc) /*.initCause(ex)*/;
 	}
     }
     public void testGoedel() {

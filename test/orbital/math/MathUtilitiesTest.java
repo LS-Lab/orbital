@@ -31,13 +31,15 @@ public class MathUtilitiesTest extends check.TestCase {
 	}
 	//@todo but also accept associated (differing only by a unit 1,-1)
 	assertEquals(AlgebraicAlgorithms.gcd(vf.valueOf(8), vf.valueOf(4)), vf.valueOf(4));
-	assertEquals(AlgebraicAlgorithms.gcd(vf.valueOf(-8), vf.valueOf(-4)), vf.valueOf(4));
+	//assertEquals(AlgebraicAlgorithms.gcd(vf.valueOf(-8), vf.valueOf(-4)), vf.valueOf(4));
 	assertEquals(AlgebraicAlgorithms.gcd(vf.valueOf(-8), vf.valueOf(4)), vf.valueOf(4));
 	assertEquals(AlgebraicAlgorithms.gcd(vf.valueOf(8), vf.valueOf(-4)), vf.valueOf(4));
 	assertEquals(AlgebraicAlgorithms.gcd(vf.valueOf(8), vf.valueOf(6)), vf.valueOf(2));
 	assertEquals(AlgebraicAlgorithms.gcd(vf.valueOf(-8), vf.valueOf(-6)), vf.valueOf(2));
 	assertEquals(AlgebraicAlgorithms.gcd(vf.valueOf(-8), vf.valueOf(6)), vf.valueOf(2));
 	assertEquals(AlgebraicAlgorithms.gcd(vf.valueOf(8), vf.valueOf(-6)), vf.valueOf(2));
+
+	assertEquals(AlgebraicAlgorithms.gcd(vf.valueOf(-8), vf.valueOf(-4)), vf.valueOf(4));
     }
     private static String expectedRomans[] = {
 	null,

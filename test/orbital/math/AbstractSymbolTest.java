@@ -67,8 +67,10 @@ public class AbstractSymbolTest extends check.TestCase {
 		syntax.createMathExpression("d+8")
 	    }));
 	} catch (ParseException ex) {
+	    ex.printStackTrace();
 	    fail(ex.getMessage());
 	} catch (IllegalArgumentException ex) {
+	    ex.printStackTrace();
 	    fail(ex.getMessage());
 	}
     } 

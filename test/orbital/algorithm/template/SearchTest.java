@@ -145,14 +145,23 @@ public class SearchTest extends check.TestCase {
 	    for (int rep = 0; rep < TEST_REPETITION; rep++) {
 		UnsolvableSimpleGSP p = new UnsolvableSimpleGSP((int)(random.nextFloat()*UNSOLVABLE_GSP_RANGE));
 		System.out.println("Test unsolvable problem " + p + " for " + algo);
-		Object solution = algo.solve(p);
-		if (correct)
-		    assertTrue(solution == null , algo + " should not \"solve\" a problem that has no solution. " + p + " \"solution\" " + solution);
+		try {
+		    Object solution = algo.solve(p);
+		    if (correct)
+			assertTrue(solution == null , algo + " should not \"solve\" a problem that has no solution. " + p + " \"solution\" " + solution);
+		} catch (NoSuchElementException ex) {
+		    if (ex.getMessage().indexOf("local optimizer cannot continue") >= 0
+			&& algo instanceof LocalOptimizerSearch)
+			// local optimizers cannot continue when they get trapped at the end of the search space.
+			;
+		    else
+			throw ex;
+		}
 	    }
 	} catch (Exception ignore) {
 	    logger.log(Level.FINER, "introspection", ignore);
 	    ignore.printStackTrace();
-	    fail(ignore.getMessage());
+	    fail(ignore.getMessage() + " in " + config);
 	} 
     } 
 
