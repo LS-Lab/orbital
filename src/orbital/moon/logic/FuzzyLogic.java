@@ -219,12 +219,12 @@ import orbital.util.Utility;
  */
 public class FuzzyLogic extends ModernLogic implements Logic {
     /**
-     * Maximum number of FuzzyLogicOperators objects (for typesafe enum).
+     * Maximum number of OperatorSet objects (for typesafe enum).
      */
     private static final int MAX_OPERATORS = 20;
     /**
      * tool-main
-     * @todo parse arguments in order to obtain FuzzyLogicOperators used
+     * @todo parse arguments in order to obtain OperatorSet used
      */
     public static void main(String arg[]) throws Exception {
 	if (arg.length > 0 && "-?".equals(arg[0])) {
@@ -250,7 +250,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     /**
      * Remembers the fuzzy logic operators used in coreInterpretation().
      */
-    private final FuzzyLogicOperators fuzzyLogicOperators;
+    private final OperatorSet fuzzyLogicOperators;
     //@todo remove this bugfix that replaces "xfy" by "yfy" associativity only for *.jj parsers to work without inefficient right-associative lookahead.
     private static final String xfy = "yfy";
 
@@ -259,9 +259,9 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     public FuzzyLogic() {
 	this(GOEDEL);
     }
-    public FuzzyLogic(FuzzyLogicOperators fuzzyLogicOperators) {
+    public FuzzyLogic(OperatorSet fuzzyLogicOperators) {
 	this.fuzzyLogicOperators = fuzzyLogicOperators;
-	final FuzzyLogicOperators op = fuzzyLogicOperators;
+	final OperatorSet op = fuzzyLogicOperators;
 	this._coreInterpretation =
 	LogicSupport.arrayToInterpretation(new Object[][] {
 	    {op.not(),          // "~"
@@ -352,13 +352,14 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     /**
      * Specifies the type of fuzzy logic to use.
      * Instances will define the fuzzy logic operators applied.
-     * @see <a href="{@docRoot}/DesignPatterns/enum.html">typesafe enum pattern</a>
      * @version 1.0, 2002/05/29
      * @author  Andr&eacute; Platzer
+     * @see <a href="{@docRoot}/DesignPatterns/enum.html">typesafe enum pattern</a>
      * @internal typesafe enumeration pattern class to specify fuzzy logic operators
      * @invariant a.equals(b) &hArr; a==b
+     * @todo improve name
      */
-    public static abstract class FuzzyLogicOperators implements Serializable, Comparable {
+    public static abstract class OperatorSet implements Serializable, Comparable {
 	/**
 	 * the name to display for this enum value
 	 * @serial
@@ -373,7 +374,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	/**
 	 * Table of all canonical references to enum value classes.
 	 */
-	private static FuzzyLogicOperators[] values = new FuzzyLogicOperators[MAX_OPERATORS];
+	private static OperatorSet[] values = new OperatorSet[MAX_OPERATORS];
 
 	/**
 	 * Assign an ordinal to this enum value
@@ -381,10 +382,42 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	 */
 	private final int		  ordinal = nextOrdinal++;
 
-	FuzzyLogicOperators(String name) {
+	OperatorSet(String name) {
 	    this.name = name;
 	    values[nextOrdinal - 1] = this;
 	}
+
+	/**
+	 * Order imposed by ordinals according to the order of creation.
+	 * @post consistent with equals
+	 */
+	public int compareTo(Object o) {
+	    return ordinal - ((OperatorSet) o).ordinal;
+	} 
+
+	/**
+	 * Maintains the guarantee that all equal objects of the enumerated type are also identical.
+	 * @post a.equals(b) &hArr; if a==b.
+	 */
+	public final boolean equals(Object that) {
+	    return super.equals(that);
+	} 
+	public final int hashCode() {
+	    return super.hashCode();
+	} 
+
+	public String toString() {
+	    return this.name;
+	} 
+
+	/**
+	 * Maintains the guarantee that there is only a single object representing each enum constant.
+	 * @serialData canonicalized deserialization
+	 */
+	private Object readResolve() throws ObjectStreamException {
+	    // canonicalize
+	    return values[ordinal];
+	} 
 
     	// interpretation for a truth-value
     	static final Object getInt(double v) {
@@ -405,38 +438,6 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     	abstract BinaryFunction and();
     
     	abstract BinaryFunction or();
-
-	public String toString() {
-	    return this.name;
-	} 
-
-	/**
-	 * Order imposed by ordinals according to the order of creation.
-	 * @post consistent with equals
-	 */
-	public int compareTo(Object o) {
-	    return ordinal - ((FuzzyLogicOperators) o).ordinal;
-	} 
-
-	/**
-	 * Maintains the guarantee that all equal objects of the enumerated type are also identical.
-	 * @post a.equals(b) &hArr; if a==b.
-	 */
-	public final boolean equals(Object that) {
-	    return super.equals(that);
-	} 
-	public final int hashCode() {
-	    return super.hashCode();
-	} 
-
-	/**
-	 * Maintains the guarantee that there is only a single object representing each enum constant.
-	 * @serialData canonicalized deserialization
-	 */
-	private Object readResolve() throws ObjectStreamException {
-	    // canonicalize
-	    return values[ordinal];
-	} 
     }
 
     // enumeration of fuzzy logic operators
@@ -446,7 +447,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      * <div>a &#8911; b = min{a,b}</div>
      * <div>a &#8910; b = max{a,b}</div>
      */
-    public static FuzzyLogicOperators GOEDEL = new FuzzyLogicOperators("Gödel") {
+    public static OperatorSet GOEDEL = new OperatorSet("Gödel") {
 	    Function not() {
 		return LogicFunctions.not;
 	    }
@@ -475,7 +476,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      * <div>a &#8911; b = a&sdot;b</div>
      * <div>a &#8910; b = a+b - a&sdot;b</div>
      */
-    public static FuzzyLogicOperators PRODUCT = new FuzzyLogicOperators("Product") {
+    public static OperatorSet PRODUCT = new OperatorSet("Product") {
 	    Function not() {
 		return LogicFunctions.not;
 	    }
@@ -506,7 +507,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      * <div>a &#8911; b = max{0,a+b-1}</div>
      * <div>a &#8910; b = min{1,a+b}</div>
      */
-    public static FuzzyLogicOperators BOUNDED = new FuzzyLogicOperators("Bounded") {
+    public static OperatorSet BOUNDED = new OperatorSet("Bounded") {
 	    Function not() {
 		return LogicFunctions.not;
 	    }
@@ -536,7 +537,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      * <div>a &#8910; b = max{a,b} if min{a,b}=0, else 1</div>
      * @attribute discontinuous
      */
-    public static FuzzyLogicOperators DRASTIC = new FuzzyLogicOperators("Drastic") {
+    public static OperatorSet DRASTIC = new OperatorSet("Drastic") {
 	    Function not() {
 		return LogicFunctions.not;
 	    }
@@ -571,10 +572,10 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      * @param gamma the parameter &gamma;.
      * @pre gamma&ge;0
      */
-    public static FuzzyLogicOperators HAMACHER(final double gamma) {
+    public static OperatorSet HAMACHER(final double gamma) {
 	if (!(gamma >= 0))
 	    throw new IllegalArgumentException("illegal value for gamma: " + gamma + " < 0");
-	return new FuzzyLogicOperators("Hamacher(" + gamma + ")") {
+	return new OperatorSet("Hamacher(" + gamma + ")") {
 		Function not() {
 		    return LogicFunctions.not;
 		}
@@ -612,11 +613,11 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      * For p&rarr;&infin; these operators approximate those of {@link GOEDEL}.
      * @pre p&gt;0
      */
-    public static FuzzyLogicOperators YAGER(final double p) {
+    public static OperatorSet YAGER(final double p) {
 	if (!(p > 0))
 	    throw new IllegalArgumentException("illegal parameter: " + p + " =< 0");
 	final double inverse_p = 1/p;
-	return new FuzzyLogicOperators("Yager(" + p + ")") {
+	return new OperatorSet("Yager(" + p + ")") {
 		Function not() {
 		    return LogicFunctions.not;
 		}
