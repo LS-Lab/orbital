@@ -25,13 +25,17 @@ final class UniqueSymbol extends SymbolBase {
      * @internal volatile does not ensure that ++ is atomic.
      */
     private static /*transient*/ volatile int NEXT_ID = 10;
-	
+
+    /**
+     * Create a new unique symbol of (display) signifier starting with signifierPrefix.
+     */
     public UniqueSymbol(String signifierPrefix, Type type, Notation.NotationSpecification notation, boolean variable) {
 	super(signifierPrefix + (NEXT_ID++), type, notation, variable);
     }
     public UniqueSymbol(Type type, Notation.NotationSpecification notation, boolean variable) {
-	this("_x", type, notation, variable);
+	this(variable ? "_X" : "_x", type, notation, variable);
     }
+
     public final boolean equals(Object o) {
 	assert this == o || !getSignifier().equals(((Symbol)o).getSignifier()) : "all other instances of Symbol are different from this DistinctVariableSymbol, so no other variable should pretend to use our signifier";
 	// we "guarantee" that two different instances of DistinctVariableSymbol are distinct, and that instances of DistinctVariableSymbols and of other Symbols are different anyway

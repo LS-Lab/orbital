@@ -88,7 +88,7 @@ public class ModalLogic extends ClassicalLogic {
     static {
 	//@xxx we don't pass them so disable
 	ModernLogic.TYPE_CHECK = false;
-	System.err.println("disabling type checks for modal logic");
+	logger.log(Level.CONFIG, "disabling type checks for modal logic");
     }
     
     private static final Type   WORLD = //@xxx typeSystem.objectType(new Object() {}.getClass(), "world");
@@ -141,6 +141,7 @@ public class ModalLogic extends ClassicalLogic {
     }
     /**
      * reduces formulas to classical FOL and the use classical.inference()
+     * @internal constant closure for local consequence, universal closure for global consequence.
      */
     private final Inference _reductionInference = new Inference() {
 	    public boolean infer(Formula[] B, Formula D) {
@@ -213,6 +214,8 @@ public class ModalLogic extends ClassicalLogic {
 	 * prevent instantiation - module class.
 	 */
 	private Utilities() {}
+
+	// a lot of term-rewrite systems
 
 	/**
 	 * Reduces a formula with (higher-order) functionals to first-order logic,
@@ -424,7 +427,7 @@ public class ModalLogic extends ClassicalLogic {
 		return false;
 	    }
 	    public Object replace(Object term) {
-		Symbol       p = ((ModernFormula.AtomicSymbol)term).getSymbol();
+		Symbol p = ((ModernFormula.AtomicSymbol)term).getSymbol();
 
 		try {
 		    NotationSpecification notat = p.getNotation();
@@ -461,7 +464,7 @@ public class ModalLogic extends ClassicalLogic {
 		Formula A_original = (Formula) super.replace(term);
 		Formula A_red = modalReduce(A_original);
 		// make a new variable that does not occur in A
-		final Symbol t = new UniqueSymbol("t", WORLD, null, true);
+		final Symbol t = new UniqueSymbol("T", WORLD, null, true);
 		// formula version of t
 		final Formula t_form = (Formula) logic.createAtomic(t);
 		// A := A_original[s&#8614;t]
@@ -502,7 +505,7 @@ public class ModalLogic extends ClassicalLogic {
 		Formula A_original = (Formula) super.replace(term);
 		Formula A_red = modalReduce(A_original);
 		// make a new variable that does not occur in A
-		final Symbol t = new UniqueSymbol("t", WORLD, null, true);
+		final Symbol t = new UniqueSymbol("T", WORLD, null, true);
 		// formula version of t
 		final Formula t_form = (Formula) logic.createAtomic(t);
 		// A := A_original[s&#8614;t]
