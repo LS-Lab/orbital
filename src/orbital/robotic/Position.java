@@ -69,7 +69,7 @@ public class Position extends Point implements Serializable {
     } 
 
     /**
-     * Checks whether the transformation whould be cross, i. e. horizontal or vertical.
+     * Checks whether the transformation whould be cross, i.e. horizontal or vertical.
      * This method returns <code>true</code> if adding it to a Position would move it in a cross direction.
      */
     public static boolean isCross(Position d) {

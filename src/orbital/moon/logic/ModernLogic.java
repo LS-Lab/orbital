@@ -377,7 +377,7 @@ abstract class ModernLogic implements Logic {
 
     /**
      * Instant composition of functors with a fixed core interperation
-     * Usually for predicates etc. subject to fixed core interpretation.
+     * Usually for predicates etc. subject to fixed core interpretation..
      * @param f the compositing formula.
      * @param arguments the arguments to the composition by f.
      * @param fsymbol the symbol with with the fixed interpretation f.

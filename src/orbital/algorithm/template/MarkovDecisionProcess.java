@@ -171,7 +171,7 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
          * @param gamma The discount factor &gamma; describes, how much immediate results are
          *  preferred over future results.
          * @see #setHeuristic(Function)
-         * @see #setDiscount(double)
+         * @see #setDiscount(Real)
          */
     	public DynamicProgramming(Function heuristic, Real gamma) {
 	    this.heuristic = heuristic;

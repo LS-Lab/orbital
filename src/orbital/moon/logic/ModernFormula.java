@@ -354,7 +354,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     }
 
     /**
-     * Instant composition of functors with a fixed core interperation
+     * Instant composition of functors with a fixed core interperation.
      * Usually for predicates etc. subject to fixed core interpretation.
      * @param f the compositing formula.
      * @param arguments the arguments to the composition by f.
@@ -466,9 +466,10 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     // alternative implementation 1 (delayed: variable outer functions defined by formulas)
 	
     /**
+     * Multiple inheritance workaround.
      * <p>
      * This class is in fact a workaround for multiple inheritance of
-     * {@link ModernFormula}, {@link orbital.logic.functor.Functor.Composite.Abstract}
+     * {@link ModernFormula}, {@link orbital.logic.functor.AbstractCompositeFunctor}
      * and some parts of {@link orbital.logic.functor.Compositions.CompositeFunction}.</p>
      * 
      * @structure inherits ModernFormula

@@ -55,7 +55,7 @@ public interface HeuristicAlgorithm extends EvaluativeAlgorithm {
     void setHeuristic(Function heuristic);
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      * <p>
      * The evaluation function f may depend upon an {@link #setHeuristic(Function) heuristic cost function} h:S&rarr;<b>R</b>
      * </p>

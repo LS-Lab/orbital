@@ -580,7 +580,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     // operations on matrices
 
     /**
-     * Returns this matrix transposed.<br>
+     * Returns this matrix transposed.
+     * <br />
      * <sup>t</sup>&middot;:R<sup>n&times;m</sup>&rarr;R<sup>m&times;n</sup>; <span class="matrix">M</span>&#8614;<sup>t</sup><span class="matrix">M</span>:=<span class="matrix">M</span><sup>T</sup>:=(t<sub>i,j</sub>) with t<sub>i,j</sub> = m<sub>j,i</sub>.
      * <p>
      * <ul id="Properties">

@@ -533,6 +533,7 @@ public final class AlgebraicAlgorithms {
     }
     /**
      * Reduce<sub>g</sub>:K[X<sub>0</sub>,...,X<sub>n-1</sub>]&rarr;K[X<sub>0</sub>,...,X<sub>n-1</sub>]; f &#8614; "f reduced with respect to g".
+     * Performs a division by multiple polynomials.
      * @param g the collection of multinomials for reducing polynomials.
      * @param monomialOrder the <a href="#monomialOrder">order of monomials</a>, which is decisive for the time complexity.
      * @return a function that reduces polynomials with respect to g.
@@ -642,7 +643,7 @@ public final class AlgebraicAlgorithms {
      *       <li><big>(</big>f&isin;I &hArr; &exist;q<sub>g</sub>&isin;K[X<sub>1</sub>,&#8230;,X<sub>n</sub>] f = &sum;<sub>g&isin;G</sub> q<sub>g</sub>g &and; l(f) = max{l(q<sub>g</sub>g) &brvbar; g&isin;G}<big>)</big></li>
      *       <li>each f&isin;K[X<sub>1</sub>,&#8230;,X<sub>n</sub>] has a unique (reduced) reduction with respect to G</li>
      *       <li>the G-reduced polynomials form a system of representatives of K[X<sub>1</sub>,&#8230;,X<sub>n</sub>]/I</li>
-     *       <li>&forall;f&ne;g&isin;G 0 is a reduction of
+     *       <li>&forall;f&ne;g&isin;G 0 is a reduction of the
      *         S(f,g) := 1&#8725;l<sub>c</sub>(f)*X<sup class="vector">&nu;</sup>&sdot;f - 1&#8725;l<sub>c</sub>(g)*X<sup class="vector">&mu;</sup>&sdot;g <br />
      *         where X<sup class="vector">&nu;</sup>,X<sup class="vector">&mu;</sup> are coprime and such that
      *         l(X<sup class="vector">&nu;</sup>&sdot;f)=l(X<sup class="vector">&mu;</sup>&sdot;g)
