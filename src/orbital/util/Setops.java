@@ -379,7 +379,7 @@ public final class Setops {
     } 
 
     /**
-     * Get a new instance of an empty collection the same type as the one specified.
+     * Get a new instance of an empty collection of the same type as the one specified.
      * <p>
      * If no such collection could be instantiated, a similar collection is used.</p>
      */

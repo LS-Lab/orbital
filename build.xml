@@ -189,7 +189,7 @@
                  author="true"
                  version="true"
                  use="true"
-		 additionalparam="-source 1.4 -docfilessubdirs"
+		 additionalparam="-source 1.4 -docfilessubdirs -excludedocfilessubdir CVS:**/CVS"
 
                  windowtitle="Orbital"
                  doctitle="Orbital library&lt;br&gt;API Specification"
@@ -197,7 +197,7 @@
                  footer="&lt;b&gt;Orbital library&lt;/b&gt;&lt;br&gt;${timestamp}"
 		 overview="${doc}/overview.html"
                  packagenames="orbital.*"
-		 excludepackagenames="orbital,orbital.robotic.strategy,orbital.util.graph,orbital.moon.aspects,orbital.moon.deprecated"
+		 excludepackagenames="orbital,orbital.robotic.strategy,orbital.util.graph,orbital.moon.aspects,orbital.moon.deprecated,orbital.moon.math,orbital.moon.logic.bridge,orbital.moon.awt.virtual"
                  Private="${doc.internal}">
             <bottom><![CDATA[<span style='font-size: smaller; font-style: italic;'>Copyright &copy; 1996-2002 Andr&eacute; Platzer<br />All Rights Reserved.</span>]]></bottom>
 	    <!-- -tag param -tag pre:mc:&quot;Preconditions:&quot; -tag post:mc:&quot;Postconditions:&quot; -tag return -tag throws -tag stereotype:a:&quot;Stereotype:&quot; -tag structure:t:&quot;Structure:&quot; -tag invariant:t:&quot;Invariants:&quot; -tag attribute:a:&quot;Attributes:&quot; -tag version -tag author -tag see -->
@@ -228,6 +228,11 @@
 	    <fileset dir="${doc}"
 		includes="stylist.css, recommendations.*html, features.*html, templates.*html"/>
 	</copy>
+
+        <delete>
+		<!-- @xxx does not remove CVS subdirs -->
+            <fileset dir="${doc}/api" includes="**/CVS/*"/>
+        </delete>
 
         <echo file="${doc}/api/stylesheet.css" append="true">	
 	@media screen { a:link, a:visited {color:blue} }
@@ -319,19 +324,19 @@
     	    <manifest>
 	        <attribute name="Built-By" value="${user.name}"/>
     	        <attribute name="Extension-Name" value="orbital-ext"/>
-                    <attribute name="Specification-Title" value="Orbital library draft" />
-                    <attribute name="Specification-Vendor" value="Andre Platzer" />
-                    <attribute name="Specification-Version" value="${version}" />
-                    <attribute name="Implementation-Title" value="The Orbital library extension" />
-                    <attribute name="Implementation-Vendor" value="Andre Platzer" />
-                    <attribute name="Implementation-Vendor-Id" value="orbital.moon.ap" />
-                    <attribute name="Implementation-Version" value="${version} ${TODAY}" /> 
-                    <attribute name="Package-Title" value="orbital-ext" />
-                    <attribute name="Package-Vendor" value="Andre Platzer" />
-                    <attribute name="Package-Version" value="${version} ${TODAY}" /> 
+                <attribute name="Specification-Title" value="Orbital library draft" />
+                <attribute name="Specification-Vendor" value="Andre Platzer" />
+                <attribute name="Specification-Version" value="${version}" />
+                <attribute name="Implementation-Title" value="The Orbital library extension" />
+                <attribute name="Implementation-Vendor" value="Andre Platzer" />
+                <attribute name="Implementation-Vendor-Id" value="orbital.moon.ap" />
+                <attribute name="Implementation-Version" value="${version} ${TODAY}" /> 
+                <attribute name="Package-Title" value="orbital-ext" />
+                <attribute name="Package-Vendor" value="Andre Platzer" />
+                <attribute name="Package-Version" value="${version} ${TODAY}" /> 
     	        <attribute name="Class-Path" value="orbital-core.jar" />
-                    <attribute name="Sealed" value="true"/>
-    	        <attribute name="Main-Class" value="orbital.moon.setup"/>
+                <attribute name="Sealed" value="true"/>
+    	        <!-- <attribute name="Main-Class" value="orbital.moon.setup"/> -->
     	        <attribute name="Main-Icon" value="orbital/resources/orbital.gif"/>
     	    
     	        <section name="orbital/awt/ChartModel.class">
@@ -444,10 +449,10 @@
 	        <include name="orbital.ico"/>
 	        <include name="recommendations.html"/>
 	    </zipfileset>
-            <zipfileset dir="${dist}" prefix="Orbital-doc">
-	        <include name="readme.html"/>
+            <zipfileset dir="${dist}" includes="readme.html" prefix="Orbital-doc"/>
+            <zipfileset dir="${doc}/api" prefix="Orbital-doc/api">
+	        <exclude name="**/CVS/*"/>
 	    </zipfileset>
-            <zipfileset dir="${doc}/api" prefix="Orbital-doc/api"/>
             <zipfileset dir="${examples}" prefix="Orbital-doc/examples">
 	        <exclude name="**/CVS/*"/>
 	        <exclude name="**/*.jpx*"/>

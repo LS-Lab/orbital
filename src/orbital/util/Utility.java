@@ -1,4 +1,4 @@
-/*
+/**
  * @(#)Utility.java 0.8 1998/05/18 Andre Platzer
  *
  * Copyright (c) 1998 Andre Platzer. All Rights Reserved.
@@ -17,7 +17,10 @@ import orbital.logic.functor.BinaryPredicate;
 import java.util.Random;
 import java.util.BitSet;
 
+import java.util.Set;
+import java.util.HashSet;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import orbital.math.MathUtilities;
 import orbital.io.IOUtilities;
 import java.text.NumberFormat;
@@ -27,6 +30,8 @@ import java.util.Arrays;
 
 // only for implicit interface "Iteratable"
 import orbital.math.Tensor;
+
+import orbital.math.Values;
 
 /**
  * A general Utility class containing static methods for common tasks like assertion checking etc.
@@ -272,7 +277,71 @@ public final class Utility {
     }
 
     // multi-indices
-	
+
+    /**
+     * @see #rank(Object)
+     */
+    public static final int rank(Object[] a) {
+        int r = 1;
+	while (a[0] instanceof Object[]) {
+	    a = (Object[])a[0];
+	    r++;
+	}
+	return r;
+    }
+    /**
+     * Get the number of indices required to reach the component type.
+     * @post RES == dimensions(a).length
+     * @note does not check rectangularity of a
+     */
+    public static final int rank(Object a) {
+        int r = 0;
+	while (a.getClass().isArray()) {
+	    a = Array.get(a, 0);
+	    r++;
+	}
+	return r;
+    }
+    /**
+     * Get the (final) component type of a multi-dimensional array.
+     * @note does not check rectangularity of a
+     */
+    private static final Class getComponentType(Object a) {
+	Class component = a.getClass();
+	while (a.getClass().isArray()) {
+	    component = a.getClass().getComponentType();
+	    a = Array.get(a, 0);
+	}
+	return component;
+    }
+    /**
+     * @see #dimensions(Object)
+     */
+    public static final int[] dimensions(Object[] a) {
+	int[] dim = new int[rank(a)];
+	for (int i = 0; i < dim.length - 1; i++) {
+	    dim[i] = a.length;
+	    assert a[0] instanceof Object[] : "by definition of rank";
+	    a = (Object[])a[0];
+	}
+	dim[dim.length - 1] = a.length;
+	return dim;
+    }
+    /**
+     * Get the dimensions of a multi-dimensional array.
+     * @note does not check rectangularity of a
+     */
+    public static final int[] dimensions(Object a) {
+	int[] dim = new int[rank(a)];
+	for (int i = 0; i < dim.length; i++) {
+	    assert a.getClass().isArray() : "by definition of rank";
+	    dim[i] = Array.getLength(a);
+	    a = Array.get(a, 0);
+	}
+	assert !a.getClass().isArray() : "by definition of rank";
+	return dim;
+    }
+
     /**
      * @see #getPart(Object,int[])
      */
@@ -426,21 +495,42 @@ public final class Utility {
     }
 	
     /**
-     * Get an iterator view of a generalized iteratable object, if possible.
+     * Checks whether the given object is <dfn>generalized iteratable</dfn>.
      * <p>
      * Generalized iteratable objects are objects that somehow support iteration of their components,
      * like {@link java.util.Iterator}, {@link java.util.Collection}, {@link java.lang.Object Object[]},
-     * or {@link orbital.math.Tensor} (including{@link orbital.math.Vector}, and {@link orbital.math.Matrix}).
+     * or {@link orbital.math.Tensor} (including {@link orbital.math.Vector}, and {@link orbital.math.Matrix}),
+     * as well as (even multi-dimensional) primitive type arrays.
+     * Multi-dimensional arrays of primitive or structured component type are iterated
+     * over component-wise. Although the order will usually be row-wise, this is not a
+     * strict requirement.
      * </p>
      * <p>
      * Unfortunately, these classes do not implement a common interface "Iteratable", or
      * "Iterable", or "Enumerable" so we must rely on implicit interfaces.
      * Additionally, some iteratable classes may support {@link java.util.ListIterator}s
      * others {@link java.util.Iterator}s, so covariant return-types would be required for
-     * defining such a common interface in a convenient way.
+     * defining such a common interface in a convenient way that avoids casting.
      * </p>
+     * @internal Iteratable would have
+     *  (List)Iterator iterator();
+     *  Object structure(); // supporting equals like AbstractProductArithmetic#productIndexSet(), Multinomial#indexSet()
+     *  Iteratable newInstance(Object structure)
+     */
+    public static boolean isIteratable(Object a) {
+	return (a instanceof Iterator) || (a instanceof Collection)
+		|| (a instanceof Tensor)
+		|| a.getClass().isArray();
+    }
+
+    /**
+     * Get an iterator view of a generalized iteratable object, if possible.
      * @post RES == null <=> o == null
+     * @return an iterator or list iterator view of a, whenever possible.
+     * @throws ClassCastException if a is not generalized iteratable.
+     * @see #isIteratable(Object)
      * @see #asCollection(Object)
+     * @see #newIteratableLike(Object)
      */
     public static /*_<A>_*/ Iterator/*_<A>_*/ asIterator(Object a) {
 	if (a == null)
@@ -448,13 +538,46 @@ public final class Utility {
 	else if (a instanceof Iterator/*_<A>_*/)
 	    return (Iterator/*_<A>_*/) a;
 	else if (a instanceof Collection/*_<A>_*/)
-	    return ((Collection/*_<A>_*/) a).iterator();
+	    if (a instanceof List/*_<A>_*/)
+		return ((List/*_<A>_*/) a).listIterator();
+	    else
+		return ((Collection/*_<A>_*/) a).iterator();
 	else if (a instanceof Tensor/*_<A>_*/)
 	    return ((Tensor/*_<A>_*/) a).iterator();
-	else if (a instanceof Object/*_>A<_*/[])
-	    return Arrays.asList((Object/*_>A<_*/[]) a).iterator();
+	else if ((a instanceof Object/*_>A<_*/[]) && !a.getClass().getComponentType().isArray())
+	    return Arrays.asList((Object/*_>A<_*/[]) a).listIterator();
 	else if (a.getClass().isArray())
-	    throw new UnsupportedOperationException("primitive-type arrays not yet supported");
-	throw new ClassCastException(a.getClass().getName());
+	    return Values.tensor(a).iterator();
+	throw new ClassCastException(a.getClass().getName() + " expected " + generalizedIteratableTypes);
     }
+
+    /**
+     * Get a new instance of generalized iteratable object of the same type as the one specified.
+     * @post RES == null <=> a == null
+     * @throws ClassCastException if a is not generalized iteratable.
+     * @see #isIteratable(Object)
+     * @see Setops#newCollectionLike(Collection)
+     */
+    public static Object newIteratableLike(Object a) {
+	if (a == null)
+	    return null;
+	else if (a instanceof Iterator) {
+	    if (a instanceof ListIterator)
+		return new LinkedList().listIterator();
+	    else
+		return new LinkedList().iterator();
+	} else if (a instanceof Collection)
+	    return Setops.newCollectionLike((Collection) a);
+	else if (a instanceof Tensor)
+	    //@see AbstractTensor#newInstance
+	    return Values.tensor(((Tensor)a).dimensions());
+	else if (a.getClass().isArray())
+	    return Array.newInstance(getComponentType(a), dimensions(a));
+	throw new ClassCastException(a.getClass().getName() + " expected " + generalizedIteratableTypes);
+    }
+    
+    private static final Set generalizedIteratableTypes = new HashSet(Arrays.asList(new Class[] {
+	Iterator.class, Collection.class, Object[].class, Tensor.class , orbital.math.Vector.class, orbital.math.Matrix.class,
+	Object[][].class, int[].class, double[][].class, double[][].class, Object[][][].class
+    }));
 }

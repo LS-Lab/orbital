@@ -209,9 +209,9 @@ provided that M and N are groups. So the property (1) only must be verified for
 monoids, which is the justification for the suggestive notation in the table 
 above.</p>
 <p>If φ:M→N is a homomorphism (of magmas), it carries much of the algebraic 
-structure of M over to f(M)⊆N. The image (f(M),∗) inherits the properties 
-(s),(a),(n),(i),(c),<a href="#distributive">(d)</a> from (M,⋅). However in 
-general if N is not a group it may be f(1)≠1 (and thus f(x<sup>-1</sup>)≠f(x)<sup>-1</sup>).</p>
+structure of M over to f(M)⊆N. The image (f(M),∗) inherits the properties (s),(a),(n),(i),(c),<a href="#distributive">(d)</a> 
+from (M,⋅). However in general if N is not a group it may be f(1)≠1 (and 
+thus f(x<sup>-1</sup>)≠f(x)<sup>-1</sup>).</p>
 <h4 class="inner">Examples</h4>
 <ol>
   <li>For every set X there is the <dfn>free magma</dfn> M(X).</li>
@@ -227,10 +227,11 @@ general if N is not a group it may be f(1)≠1 (and thus f(x<sup>-1</sup>)≠f(x
     ¦ a<sub>i</sub>∈A<sub>i</sub>} with component-wise laws is the product in 
     <span class="categorie">Ens</span>,<span class="categorie">Mag</span>,<span class="categorie">Sgp</span>,<span class="categorie">Mon</span>,<span class="categorie">Gr</span>,<span class="categorie">Ab</span>,<span class="categorie">Rng</span>,<span class="categorie">Rng1</span>,<span class="categorie">cRng</span>,R-<span class="categorie">Mod</span>,R-<span class="categorie">Vec</span>,R-<span class="categorie">Alg</span>,...</li>
   <li>The direct sum <big>⊕</big><sub>i∈I</sub> A<sub>i</sub> := {(a<sub>i</sub>)<sub>i∈I</sub> 
-    <sub></sub>∈ ∏<sub>i∈I</sub> A<sub>i</sub> ¦ a<sub>i</sub>=1 p.t. 
-    i∈I} with component-wise laws is the coproduct in <span class="categorie">cMon</span>, 
+    <sub></sub>∈ ∏<sub>i∈I</sub> A<sub>i</sub> ¦ a<sub>i</sub>=1 p.t. i∈I} 
+    with component-wise laws is the coproduct in <span class="categorie">cMon</span>, 
     <span class="categorie">Mon??</span>,<span class="categorie">Ab</span>,R-<span class="categorie">Mod</span>,..., 
-    but that is <em>not</em> the coproduct in <span class="categorie">Gr</span></li>
+    but that is <em>not</em> the coproduct in <span class="categorie">Gr</span> 
+    nor in R-<span class="categorie">Alg</span>.</li>
 </ol>
 <h3>Groups and actions</h3>
 <table width="100%" class="def" id="laws_1_1a">
@@ -765,10 +766,10 @@ homomorphisms of rings:</p>
   <li><b>Z</b>-<span class="categorie">Algas</span>≅<span class="categorie">PseudoRing</span>, 
     <b>Z</b>-<span class="categorie">Algasu</span>≅<span class="categorie">Rng1</span>, 
     <b>Z</b>-<span class="categorie">Algascu</span>≅<span class="categorie">cRng1</span>.</li>
-  <li>R<sup>(S)</sup> := <big>⊕</big><sub><big>s</big>∈S</sub> R is the R-<dfn id="algebraOfMagma">algebra 
+  <li>R<sup>(S)</sup> := <big>⊕</big><sub>s∈S</sub> R is the R-<dfn id="algebraOfMagma">algebra 
     of the magma</dfn> S over R (being associative, unital, or commutative if 
     and only if S is), by ι(s)⋅ι(t) := ι(s⋅t) from the canonical 
-    injection ι:S→R<sup>(S)</sup>. Therefore
+    injection ι:S→R<sup>(S)</sup>. Therefore by <a href="#distributive">(d)</a>
     <div>
       (∑<sub>s∈S</sub> α<sub>s</sub>∗ι(s))⋅(∑<sub>s∈S</sub> β<sub>s</sub>∗ι(s)) 
       = ∑<sub>s∈S</sub> (∑<sub>t⋅u=s</sub> α<sub>t</sub>β<sub>u</sub>)∗ι(s)
@@ -792,12 +793,13 @@ homomorphisms of rings:</p>
       ∃!Φ:R<sup>(S)</sup>→E R-algebra homomorphism with Φ|<sub>S</sub>=f
     </div>
   </li>
+  <li>R<sup>X</sup> := ∏<sub>x</sub><sub>∈X</sub> R is a commutative 
+    associative R-algebra (for a commutative ring R and a set X), but is 
+    generally distinct from the total algebra.</li>
   <li>The tensor product E⊗<sub>R</sub>E' is a coproduct in the category of 
     R-algebras (only R-<span class="categorie">Algasu</span>?) per (a<sub>1</sub>⊗b<sub>1</sub>)⋅(a<sub>2</sub>⊗b<sub>2</sub>) 
     :=a<sub>1</sub>a<sub>2</sub>⊗b<sub>1</sub>b<sub>2</sub>. It inherits (c) 
     from E and E', whence the tensor product is also a coproduct in R-<span class="categorie">Algascu</span>.</li>
-  <li>R<sup>F</sup> is a commutative associative R-algebra (provided that R is a 
-    commutative Ring and F a set).</li>
   <li>By adjoining a unit element, an R-algebra E can be transformed and 
     extended to a unital R-algebra, which is just as associative or commutative 
     as E.</li>
@@ -832,7 +834,7 @@ ideals of the ring structure) in R-algebras (which in R-<span class="categorie">
 are identical with the ideals of the ring structure). For example, if G is a 
 group with a normal subgroup N⊴G, then there is a homomorphism φ with N=Ker(φ) 
 inducing an equivalence relation ~, and <center>G/N := G/~ = <big>{</big>g⋅N:={g⋅n 
-¦ n∈N} ¦ g∈G<big>}</big> = <big>{</big>N⋅g:={n⋅g ¦ n∈N} ¦ g∈G<big>}</big></center>is 
+¦ n∈N} ¦ g∈G<big>}</big> = <big>{</big>N⋅g:={n⋅g ¦ n∈N} ¦ g∈G<big>}</big></center>equals 
 the set of left <dfn>cosets</dfn> or the set of right cosets. Although the left 
 and right cosets are also defined for ordinary subgroups H≤G instead of N, 
 they do not coincide with any equivalence classes of a quotient group in the 
