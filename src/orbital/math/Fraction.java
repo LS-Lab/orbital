@@ -34,6 +34,10 @@ package orbital.math;
  *  <span style="text-decoration: overline">s</span>
  * </pre>
  * </p>
+ * <p>
+ * For R-modules M and S&le;(R,&sdot;) it is
+ * <center>&forall;I&#8884;R M<sub>S</sub> &cong; M &otimes;<sub>R</sub> R<sub>S</sub></center>
+ * </p>
  * 
  * @version 1.1, 2002/06/18
  * @author  Andr&eacute; Platzer

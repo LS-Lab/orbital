@@ -29,6 +29,10 @@ import orbital.logic.functor.Function;
  * Nevertheless, an implementation that has a more lazy reduction policy should document
  * this very carefully because it may affect precision considerations.
  * </p>
+ * <p>
+ * For R-modules M it is
+ * <center>&forall;I&#8884;R M/I&sdot;M &cong; M &otimes;<sub>R</sub> R/I</center>
+ * </p>
  * <h3>Examples of Usage</h3>
  * <p>
  * For example in order to perform algebraic operations in the ring

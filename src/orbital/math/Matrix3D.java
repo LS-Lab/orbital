@@ -93,7 +93,7 @@ public class Matrix3D extends RMatrix {
 	xmat.set(1, 1, cos(ax));
 	xmat.set(2, 1, sin(ax));
 	xmat.set(1, 2, -sin(ax));
-	xmat.set(2, 2, cos(ax));	// x -?
+	xmat.set(2, 2, cos(ax));	//@xxx x -?
 	set(this.multiply(xmat));
     } 
     /**
@@ -105,7 +105,7 @@ public class Matrix3D extends RMatrix {
 	ymat.set(0, 0, cos(ay));
 	ymat.set(2, 0, -sin(ay));
 	ymat.set(0, 2, sin(ay));
-	ymat.set(2, 2, cos(ay));	// -? x
+	ymat.set(2, 2, cos(ay));	//@xxx -? x
 	set(this.multiply(ymat));
     } 
     /**
