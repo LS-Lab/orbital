@@ -21,6 +21,8 @@ import orbital.logic.sign.type.Type;
 import orbital.logic.sign.type.Typed;
 // for type-safe substitutions
 import orbital.logic.sign.type.TypeException;
+// for nice exception messages
+import orbital.logic.sign.type.Types;
 
 
 import java.util.List;
@@ -150,7 +152,7 @@ public class Substitutions {
 			Type pType = ((Typed)p).getType();
 			Type sType = ((Typed)s).getType();
 			if (!sType.subtypeOf(pType))
-			    throw new TypeException("substitution " + replacements + " with matcher " + m + " not type-safe", pType, sType);
+			    throw new TypeException("substitution " + replacements + " with matcher " + m + " not type-safe, since replacement of " + Types.toTypedString((Typed)p) + " by " + Types.toTypedString((Typed)s) + " produces incompatible types", pType, sType);
 		    }
 		} else
 		    // cannot check
