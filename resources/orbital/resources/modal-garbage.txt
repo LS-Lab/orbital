@@ -1,3 +1,41 @@
+#
+# still right in higher systems
+#
+
+#
+# Inference Rules
+#
+|- []A->A					# in System T
+##@fixme |- []A->[][]A				# in System S4
+##@fixme |- <>A->[]<>A				# in System S5
+
+## are the following true? (see NKL U3.1.3), or only for propositional A
+#
+
+#
+# modal literal relations
+#
+
+|= []A -> A				# in System T
+|= A -> <>A				# in System T
+|= [][]A -> []A				# in System T
+|= []<>A -> <>A				# in System T
+##@fixme |= []A -> <>[]A				# in System T
+|= <>A -> <><>A			# in System T
+
+##@fixme |= [][]A <-> []A				# in System S4
+##@fixme |= <><>A <-> <>A				# in System S4
+
+##@fixme |= <>[]A <-> []A				# in System S5
+|= []<>A <-> <>A				# in System S5
+
+
+
+
+#
+# completely wrong in (most) systems
+#
+
 ##[]A |= []B
 []A |= <>B
 <>A |= []A
