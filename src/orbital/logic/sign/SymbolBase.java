@@ -199,7 +199,7 @@ public class SymbolBase implements Symbol, Serializable {
     }
     
     public String toString() {
-	if (Logger.global.isLoggable(Level.FINEST)
+	if (Logger.global.isLoggable(Level.ALL)
 	    || getType().equals(Types.getDefault().TYPE()))
 	    //@internal equivalent to Types.toTypedString(this) but different: else infinite recursion
 	    return getSignifier() + ':' + getType()
