@@ -6,6 +6,8 @@
 
 package orbital.game;
 
+import java.io.*;
+
 /**
  * Utility class supporting field change event management.
  *
@@ -15,7 +17,8 @@ package orbital.game;
  * @see java.beans.PropertyChangeSupport
  * @see java.awt.AWTEventMulticaster
  */
-class FieldChangeSupport implements FieldChangeListener {
+class FieldChangeSupport implements FieldChangeListener, java.io.Serializable {
+    private static final long serialVersionUID = 5762015723242972218L;
     public FieldChangeSupport() {
 	
     }
@@ -102,10 +105,48 @@ class FieldChangeSupport implements FieldChangeListener {
     }
 
     /**
+     * @serialData Null terminated list of <code>FieldChangeListeners</code>.
+     * <p>
+     * At serialization time we skip non-serializable listeners and
+     * only serialize the serializable listeners.
+     *
+     */
+    private void writeObject(ObjectOutputStream s) throws IOException {
+        s.defaultWriteObject();
+
+	java.util.Vector v = null;
+	synchronized (this) {
+	    if (listeners != null) {
+	        v = (java.util.Vector) listeners.clone();
+            }
+	}
+
+	if (v != null) {
+	    for (int i = 0; i < v.size(); i++) {
+	        FieldChangeListener l = (FieldChangeListener)v.elementAt(i);
+	        if (l instanceof Serializable) {
+	            s.writeObject(l);
+	        }
+            }
+        }
+        s.writeObject(null);
+    }
+
+
+    private void readObject(ObjectInputStream s) throws ClassNotFoundException, IOException {
+        s.defaultReadObject();
+      
+        Object listenerOrNull;
+        while (null != (listenerOrNull = s.readObject())) {
+	  addFieldChangeListener((FieldChangeListener)listenerOrNull);
+        }
+    }
+
+    /**
      * "listeners" lists all the generic listeners.
      *
      *  This is transient - its state is written in the writeObject method.
      */
-    transient private java.util.Vector listeners = null;
+    transient private java.util.Vector/*_<FieldChangeListener>_*/ listeners = null;
 
 }// FieldChangeSupport
