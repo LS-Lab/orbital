@@ -141,13 +141,6 @@ import orbital.algorithm.Combinatorical;
  *  |= (2+3<7) | a
  */
 public class ClassicalLogic extends ModernLogic {
-    private static class Debug {
-	private Debug() {}
-	public static void main(String arg[]) throws Exception {
-	    ClassicalLogic.main(new String[] {"-normalForm", "all", "none", "properties"});
-	} 
-    }	 // Debug
-
     private static final boolean PI_SYNTACTICAL_SUBSTITUTION = true;
     /**
      * Maximum number of InferenceMechanism objects (for typesafe enum).
