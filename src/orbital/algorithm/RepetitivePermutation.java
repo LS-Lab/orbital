@@ -17,7 +17,6 @@ import orbital.util.SuspiciousError;
  * @version 0.9, 2000/11/29
  * @author  Andr&eacute; Platzer
  * @todo outroduce and use GeneralizedPermutation({n,....,n}) instead.
- * @fixme does not work for 1 element out of n
  */
 class RepetitivePermutation extends Combinatorical {
     private static final long serialVersionUID = 787550243481366022L;
