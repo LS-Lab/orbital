@@ -4,41 +4,6 @@
  * Copyright (c) 2000 Andre Platzer. All Rights Reserved.
  */
 
-	/**
-	 * Headings appearing inside the next paragraph on the first line.
-	 */
-	*.inner {
-		display: run-in;
-		text-weight: bold;
-	}
-
-	/**
-	 * Brief headings of a paragraph that are in fact displayed in compact mode.
-	 */
-	h5.compact {
-		display: inline;
-	}
-	h5.compact:after {
-		content: ":";
-	}
-    
-    /**
-     * Mark the terms defined. Definition Terms
-     * //TODO: still needed?
-     */
-    dl dt {		/* definition term */
-    	/*display: compact;*/
-    	/*float: left;*/
-    }
-    dl.def dt {		/* definition term */
-    	/*display: compact;*/
-    	float: left;
-    	font-style: italic;
-    }
-    dl.def dd {		/* definition */
-    	margin-left: 4em;
-    }
-    
     /**
      * align equations along "=".
      */
@@ -53,6 +18,9 @@
     	text-align: left;
 	vertical-align: top;
     }
+    td.nameOfMap:after {
+	content: ":";
+    }
     td.leftOfMap {
     	text-align: right;
 	vertical-align: top;
@@ -66,7 +34,7 @@
 	vertical-align: top;
     }
 
-  /* additional style classes */
+  /* extended style classes (could be transformed into XML tags) */
     
     /* type style classes */
 
@@ -88,6 +56,23 @@
     *.signified:before {content: "&raquo;";}
     *.signified:after {content: "&laquo;";}
     
+    /* identifiers */
+    
+    /**
+     * For variable identifiers.
+     */
+    var {
+    }
+    
+    /**
+     * For meta-variable identifiers.
+     */
+    var.meta {
+    	font-family: "Arioso", italic;
+    }
+
+    /* special identifier types */
+
     /**
      * identifies vector symbols.
      */
@@ -127,6 +112,20 @@
 	text-decoration: underline;
     }
 
+    /**
+     * identifies symbols for functors.
+     */
+    *.functor    {
+    }
+
+    /**
+     * Style for embedded formulas.
+     */
+    *.Formula {
+    }
+
+  /* composed operator styles */
+
     /* operators */
 
     /**
@@ -149,36 +148,6 @@
     *.conjugate {
     	text-decoration: overline;
     }
-
-
-    /**
-     * XML For double index terms like <span class="doubleIndex"><sup>n</sup><sub>k</sub></span>.
-     */
-    *.doubleIndex {
-    	letter-spacing: -.4em
-    }
-    /**
-     * XML For double index of big operator terms like <big>&#931;</big><span class="doubleIndex"><sup>n</sup><sub>k</sub></span>.
-     */
-    big + *.doubleIndex {
-    	letter-spacing: 0
-    }
-    
-    /**
-     * xml:lang="la" according to iso639a marked as a foreign language.
-     * Or matches anything that has the "lang" attribute set.
-     */
-    :lang(fr), :lang(la), [lang] {
-    	font-style: italic;
-    }
-
-    /**
-     * Style for embedded formulas.
-     */
-    *.Formula {
-    }
-
-  /* composed operator styles */
 
     /**
      * For inference relation |~ or satisfaction relation |=
@@ -234,7 +203,33 @@
 
 
 
-  /* syntax highlighting */
+  /* ....  */
+
+    /**
+     * XML For double index terms like <span class="doubleIndex"><sup>n</sup><sub>k</sub></span>.
+     */
+    *.doubleIndex {
+    	letter-spacing: -.4em
+    }
+    /**
+     * XML For double index of big operator terms like <big>&#931;</big><span class="doubleIndex"><sup>n</sup><sub>k</sub></span>.
+     */
+    big + *.doubleIndex {
+    	letter-spacing: 0
+    }
+    
+    /**
+     * xml:lang="la" according to iso639a marked as a foreign language.
+     * Or matches anything that has the "lang" attribute set.
+     */
+    :lang(fr), :lang(la), [lang] {
+    	font-style: italic;
+    }
+
+
+
+
+  /* programming language syntax highlighting */
 
     /**
      * For language keywords.
@@ -272,21 +267,6 @@
     	color: #008284;
     }
     
-    /* identifiers */
-    
-    /**
-     * For variable identifiers.
-     */
-    var {
-    }
-    
-    /**
-     * For meta-variable identifiers.
-     */
-    var.meta {
-    	font-family: "Arioso", italic;
-    }
-
     /* literals */
     
     /**
@@ -323,3 +303,50 @@
     *.Orbital {
     	color: blue;
     }
+
+
+
+/* pure styling output @todo move to an enclosing .css */
+
+	/**
+	 * Headings appearing inside the next paragraph on the first line.
+	 */
+	*.inner {
+		display: run-in;
+		text-weight: bold;
+	}
+
+	/**
+	 * Brief headings of a paragraph that are in fact displayed in compact mode.
+	 */
+	h5.compact {
+		display: inline;
+	}
+	h5.compact:after {
+		content: ":";
+	}
+
+	/**
+	 * style for diagrams that annotate a presented concept on the right sidebar.
+	 */
+	img.annotatingDiagram {
+		float: right;
+	}
+
+    /**
+     * Mark the terms defined. Definition Terms
+     * //TODO: still needed?
+     */
+    dl dt {		/* definition term */
+    	/*display: compact;*/
+    	/*float: left;*/
+    }
+    dl.def dt {		/* definition term */
+    	/*display: compact;*/
+    	float: left;
+    	font-style: italic;
+    }
+    dl.def dd {		/* definition */
+    	margin-left: 4em;
+    }
+    
