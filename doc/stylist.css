@@ -320,7 +320,7 @@
     /**
      * For assignment operation.
      */
-    *.assigment {
+    *.assignment {
     	color: #008200;
     }
 
@@ -337,7 +337,7 @@
     /**
      * For String terminals.
      */
-    *.String {
+    *.string, *.String {
     	color: #848284;
     }
     /* Specify pairs of quotes for two levels in two languages */
@@ -350,7 +350,7 @@
     /**
      * For number terminals.
      */
-    *.Number {
+    *.number, *.float, *.integer, *.Number {
     	color: red;
     }
     

@@ -41,7 +41,7 @@ public class TypeTest extends check.TestCase {
 	testTypeConstructorsWith(new Type[] {Types.objectType(Double.class), Types.objectType(Integer.class), Types.objectType(Number.class)});
     }
 
-    private  void testTypeConstructorsWith(Type a[]) {
+    private void testTypeConstructorsWith(Type a[]) {
 	for (int i = 0; i < a.length; i++)
 	    constructed(a[i], a[i]);
 	if (a.length > 1) {
@@ -75,7 +75,7 @@ public class TypeTest extends check.TestCase {
 	assertTrue( s.equals(s) , "x=x");
 	assertTrue( s.compareTo(s) == 0, "x cmp x == 0");
 	assertTrue( s.equals(equalingS) , "x=x'");
-	assertTrue( s.compareTo(equalingS) == 0, "x cmp x' == 0");
+	assertTrue( s.compareTo(equalingS) == 0 , "x cmp x' == 0");
     }
 
     public void testSameConstructorSubtype() {
@@ -207,51 +207,72 @@ public class TypeTest extends check.TestCase {
 	Type s, t;
 	s = Types.list(Types.UNIVERSAL);
 	t = Types.map(Types.INDIVIDUAL, Types.TRUTH);
-	assertTrue( !comparable(s,t) , s + " incomparable " + t);
+	assertComparable(s,t, false);
 	// non-extensional but intensional
 	s = Types.set(Types.INDIVIDUAL);
 	t = Types.predicate(Types.INDIVIDUAL);
-	assertTrue( !comparable(s,t) , s + " incomparable " + t);
+	assertComparable(s,t, false);
 	s = Types.set(Types.UNIVERSAL);
 	t = Types.predicate(Types.UNIVERSAL);
-	assertTrue( !comparable(s,t) , s + " incomparable " + t);
+	assertComparable(s,t, false);
 
 	s = Types.list(Types.UNIVERSAL);
 	t = Types.set(Types.UNIVERSAL);
-	assertTrue( !comparable(s,t) , s + " incomparable " + t);
+	assertComparable(s,t, false);
 	s = Types.INDIVIDUAL;
 	t = Types.map(Types.INDIVIDUAL, Types.TRUTH);
-	assertTrue( !comparable(s,t) , s + " incomparable " + t);
+	assertComparable(s,t, false);
 	s = Types.INDIVIDUAL;
 	t = Types.map(Types.INDIVIDUAL, Types.objectType(String.class));
-	assertTrue( !comparable(s,t) , s + " incomparable " + t);
+	assertComparable(s,t, false);
 
 	s = Types.product(new Type[] {Types.INDIVIDUAL, Types.objectType(String.class)});
 	t = Types.inf(new Type[] {Types.INDIVIDUAL, Types.objectType(String.class)});
-	assertTrue( !comparable(s,t) , s + " incomparable " + t);
+	assertComparable(s,t, false);
 	s = Types.product(new Type[] {Types.INDIVIDUAL, Types.objectType(String.class)});
 	t = Types.sup(new Type[] {Types.INDIVIDUAL, Types.objectType(String.class)});
-	assertTrue( !comparable(s,t) , s + " incomparable " + t);
+	assertComparable(s,t, false);
     }
 
+    public void testMetaTypes() {
+	Type s, t;
+	s = Types.TYPE;
+	constructed(s, s);
+	t = Types.TRUTH;
+	assertComparable(s,t, false);
+	s = Types.TYPE;
+	t = Types.INDIVIDUAL;
+	assertComparable(s,t, false);
+	s = Types.TYPE;
+	t = Types.objectType(java.lang.Number.class);
+	assertComparable(s,t, false);
+    }
     
-    private boolean comparable(Type s, Type t) {
+    
+    private void assertComparable(Type s, Type t, boolean comparable) {
+	final String desc = comparable ? "comparable" : "incomparable";
 	try {
-	    compare(s, t);
-	    return true;
+	    int cmp = compare(s, t);
+	    assertTrue(comparable , s + " " + desc + " " + t + "\n\tcompared to " + s + " " + (cmp < 0 ? "<" : cmp > 0 ? ">" : "=") + " " + t);
 	} catch (IncomparableException incomparable) {
-	    return false;
+	    assertTrue(!comparable , s + " " + desc + " " + t + "\n\tincomparable");
 	}
     }
     
     private int compare(Type s, Type t) {
 	assertTrue( s.compareTo(Types.UNIVERSAL) <= 0, "=<Universal");
+	assertTrue( s.equals(Types.UNIVERSAL) | s.compareTo(Types.UNIVERSAL) < 0, "<Universal or =Universal");
 	assertTrue( Types.UNIVERSAL.compareTo(s) >= 0, "Universal>=");
+	assertTrue( s.equals(Types.UNIVERSAL) | Types.UNIVERSAL.compareTo(s) > 0, "Universal> or Universal=");
 	assertTrue( s.compareTo(Types.ABSURD) >= 0, ">=Absurd");
+	assertTrue( s.equals(Types.ABSURD) | s.compareTo(Types.ABSURD) > 0, ">Absurd or =Absurd");
 	assertTrue( Types.ABSURD.compareTo(s) <= 0, "Absurd=<");
+	assertTrue( s.equals(Types.ABSURD) | Types.ABSURD.compareTo(s) <= 0, "Absurd< or Absurd=");
 
 	assertTrue( s.compareTo(s) == 0 , "reflexive");
 	assertTrue( s.equals(s) , "reflexive");
+
+	// may throw IncomparableException
 	assertTrue( MathUtilities.sign(s.compareTo(t)) == -MathUtilities.sign(t.compareTo(s)) , "antisymmetric");
 	return s.compareTo(t);
     }

@@ -468,12 +468,16 @@ public abstract class Notation implements Serializable, Comparable {
     }
 	
     /**
-     * Whether the functor has a default notation defined and is unary.
+     * Whether the functor has a default notation defined and is unary,
+     * thus displayed with compact (i.e. invisible) brackets.
      */
     private static boolean hasCompactBrackets(Object functor) {
+	if (true)
+	    //@xxx otherwise, this was responsible for the error "//@fixme debug why the thing ~(a->a) is displayed as ~a->a etc.  Use BESTFIX!" in ClassicalLogic
+	    return false;
 	// distinguish unary from binary registered functors
 	NotationSpecification spec = getNotation(functor);
-	return spec != null ? spec.associativity.length() == 2 : false;
+	return spec != null ? spec.associativity.length() == 1+1 : false;
     } 
     
     /**
