@@ -50,12 +50,12 @@ import orbital.math.Values;
  * Variations of hill-climbing include the following
  * <ul>
  *   <li>
- *     + accept the best improvement (like this implementation).
+ *     accept the best improvement (like this implementation).
  *     Although we have a local convergence criterion then,
- *     that is no good for very high branching factors.
+ *     that is no good for very high branching factors (or expensive expansions).
  *   </li>
  *   <li>
- *     accept the first (randomly chosen) improvement.
+ *     + accept the first (randomly chosen) improvement.
  *     At least for local derivable evaluation functions, the expected
  *     number of random trials until finding an improvement is 2.
  *   </li>

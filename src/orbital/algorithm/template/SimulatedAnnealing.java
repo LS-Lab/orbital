@@ -96,7 +96,7 @@ import java.util.logging.Level;
  * @author  Andr&eacute; Platzer
  * @see HillClimbing
  */
-public class SimulatedAnnealing extends GeneralSearch implements HeuristicAlgorithm, ProbabilisticAlgorithm {
+public class SimulatedAnnealing extends LocalOptimizerSearch implements HeuristicAlgorithm, ProbabilisticAlgorithm {
     private static final Logger logger = Logger.getLogger(SimulatedAnnealing.class.getName());
     /**
      * The heuristic cost function h:S&rarr;<b>R</b> to be used as evaluation function f(n) = h(n).
@@ -110,23 +110,18 @@ public class SimulatedAnnealing extends GeneralSearch implements HeuristicAlgori
      */
     private Function/*<Integer, Double>*/ schedule;
     /**
-     * The random generator source.
-     * @serial the random source is serialized to let the seed persist.
-     */
-    private Random random;
-    /**
-     * Create a new instance of hill climbing search.
+     * Create a new instance of simulated annealing search.
      * @param heuristic the heuristic cost function h:S&rarr;<b>R</b> to be used as evaluation function f(n) = h(n).
      * @param a mapping <b>N</b>&rarr;<b>R</b>
      *  from time to "temperature" controlling the cooling, and thus
      *  the probability of downward steps.
-     *  Algorithm stops if the temperature drops to <span class="Number">0</span> (or isSolution is <span class="keyword">true</span>,
+     *  Algorithm stops if the temperature drops to <span class="Number">0</span>
+     *  (or isSolution is <span class="keyword">true</span>,
      *  or it fails due to a lack of alternative expansion nodes).
      */
     public SimulatedAnnealing(Function heuristic, Function schedule) {
     	this.heuristic = heuristic;
     	this.schedule = schedule;
-    	this.random = new Random();
     }
 
     public Function getHeuristic() {
@@ -142,7 +137,8 @@ public class SimulatedAnnealing extends GeneralSearch implements HeuristicAlgori
      * @return a mapping <b>N</b>&rarr;<b>R</b>
      *  from time to "temperature" controlling the cooling, and thus
      *  the probability of downward steps.
-     *  Algorithm stops if the temperature drops to <span class="Number">0</span> (or isSolution is <span class="keyword">true</span>,
+     *  Algorithm stops if the temperature drops to <span class="Number">0</span>
+     *  (or isSolution is <span class="keyword">true</span>,
      *  or it fails due to a lack of alternative expansion nodes).
      */
     public Function getSchedule() {
@@ -181,45 +177,39 @@ public class SimulatedAnnealing extends GeneralSearch implements HeuristicAlgori
 	return false;
     }
 	
-    public Random getRandom() {
-	return random;
-    }
-
-    public void setRandom(Random randomGenerator) {
-	this.random = randomGenerator;
-    }
-
-    protected GeneralSearchProblem.Option solveImpl(GeneralSearchProblem problem) {
-	//@xxx Implement Iterator version. But the problem is how we can expand current again, all the time, and ignore node if it is too bad (but see below)
-	Collection/*<Option>*/ nodes = createCollection();
-	nodes.add(new GeneralSearchProblem.Option(problem.getInitialState()));
-	return search(nodes);
-    }
-
     protected Iterator createTraversal(final GeneralSearchProblem problem) {
-	if (true)
-	    throw new InternalError("not yet implemented");
-	
-	this.currentValue = ((Number) getEvaluation().apply(getState())).doubleValue();
+	return new OptionIterator(problem, this);
     }
 
     /**
      * @version 1.0, 2001/08/01
      * @author  Andr&eacute; Platzer
      */
-    private static class Coordinator implements BinaryPredicate, Predicate {
+    private class OptionIterator extends LocalOptimizerSearch.OptionIterator {
 	public OptionIterator(GeneralSearchProblem problem, ProbabilisticAlgorithm probabilisticAlgorithm) {
 	    super(problem, probabilisticAlgorithm);
+	    this.currentValue = ((Number) getEvaluation().apply(getState())).doubleValue();
+	    this.t = 0;
+	    // initialize to any value !=0 for hasNext() to return true. The real value will be calculated in  in accept(), anyway
+	    this.T = Double.POSITIVE_INFINITY;
 	}
 
-	private double currentValue = Double.POSITIVE_INFINITY;
-	private int t = 0;
+	private double currentValue;
+	private int t;
 	// current temperature scheduled for successive cooling
 	private double T;
 
-	public boolean apply(Object state, Object sp) {
+	public boolean accept(GeneralSearchProblem.Option state, GeneralSearchProblem.Option sp) {
+	    // current temperature scheduled for successive cooling
+	    this.T = ((Number) getSchedule().apply(new Integer(t))).doubleValue();
+	    this.t++;
+
 	    final double value = ((Number) getEvaluation().apply(sp)).doubleValue();
 	    final double deltaEnergy = value - currentValue;
+
+	    // usually solution isSolution test is omitted, anyway, but we'll still call
+	    // if (getProblem().isSolution(sp))
+	    //     return true;
 
 	    //@note negated use of deltaEnergy values everywhere since the evaluation evaluates cost and not utility (unlike Russel & Norvig who seem to consider maximizing energy instead of minimizing)
 	    // always move to better nodes,
@@ -235,111 +225,80 @@ public class SimulatedAnnealing extends GeneralSearch implements HeuristicAlgori
 		return false;
 	}
 
-	public boolean apply(Object sp) {
-	    // current temperature scheduled for successive cooling
-	    T = ((Number) getSchedule().apply(new Integer(t))).doubleValue();
+	public boolean hasNext() {
 	    return T != 0;
 	}
     };
 
     
-    /**
-     * An iterator over a state space in random order.
-     * @version 1.0, 2001/08/01
-     * @author  Andr&eacute; Platzer
-     */
-    public static class OptionIterator extends GeneralSearch.OptionIterator {
-	/**
-	 * The probabilistic algorithm using this random order iterator.
-	 */
-	private final ProbabilisticAlgorithm probabilisticAlgorithm;
-	/**
-	 * the data collection implementation maintained.
-	 * @serial
-	 */
-	private List nodes;
-	public OptionIterator(GeneralSearchProblem problem, ProbabilisticAlgorithm probabilisticAlgorithm) {
-	    super(problem);
-	    nodes = Collections.singletonList(new GeneralSearchProblem.Option(getProblem().getInitialState()));
-	    this.probabilisticAlgorithm = probabilisticAlgorithm;
-	}
-        protected boolean isEmpty() {
-	    return nodes.isEmpty();
-        }
-        /**
-         * Select a node, randomly.
-         */
-        protected GeneralSearchProblem.Option select() {
-	    return (GeneralSearchProblem.Option) nodes.remove(probabilisticAlgorithm.getRandom().nextInt(nodes.size()));
-        }
-       	/**
-       	 * discard old list, using new.
-    	 */
-        protected boolean add(Iterator newNodes) {
-	    //@todo would it be an optimization if nodes was an ArrayList for the <em>single</em> random access, above?
-	    nodes = Setops.asList(newNodes);
-	    return newNodes.hasNext();
-        }
-    };
+    
+//     protected GeneralSearchProblem.Option solveImpl(GeneralSearchProblem problem) {
+// 	//@xxx Implement Iterator version. But the problem is how we can expand current again, all the time, and ignore node if it is too bad (but see below)
+// 	Collection/*<Option>*/ nodes = createCollection();
+// 	nodes.add(new GeneralSearchProblem.Option(problem.getInitialState()));
+// 	return search(nodes);
+//     }
 
-    protected Collection/*<Option>*/ createCollection() {
-	return new java.util.LinkedList/*<Option>*/();
-    }
+//     protected Collection/*<Option>*/ createCollection() {
+// 	return new java.util.LinkedList/*<Option>*/();
+//     }
 
-    /**
-     * Select a node, randomly.
-     */
-    protected GeneralSearchProblem.Option select(Collection nodes) {
-    	List _nodes = (List) nodes;
-    	// in principle unnecessary since add will discard old list, anyway
-    	return (GeneralSearchProblem.Option) _nodes.remove(getRandom().nextInt(_nodes.size()));
-    }
+//     /**
+//      * Select a node, randomly.
+//      */
+//     protected GeneralSearchProblem.Option select(Collection nodes) {
+//     	List _nodes = (List) nodes;
+//     	// in principle unnecessary since add will discard old list, anyway
+//     	return (GeneralSearchProblem.Option) _nodes.remove(getRandom().nextInt(_nodes.size()));
+//     }
 
-    /**
-     * discard old list, returning new.
-     */
-    protected Collection add(Collection newNodes, Collection oldNodes) {
-    	return newNodes;
-    }
+//     /**
+//      * discard old list, returning new.
+//      */
+//     protected Collection add(Collection newNodes, Collection oldNodes) {
+//     	return newNodes;
+//     }
 
-    //@todo transform since this is a kind of following (or executing) a probabilistic TransitionModel
-    protected GeneralSearchProblem.Option search(Collection nodes) {
-	// current node @xxx should be initial state!
-	GeneralSearchProblem.Option current = null;
-	double currentValue = Double.POSITIVE_INFINITY;
-	for (int t = 0; !nodes.isEmpty(); t++) {
-	    // current temperature scheduled for successive cooling
-	    final double T = ((Number) getSchedule().apply(new Integer(t))).doubleValue();
-	    if (T == 0)
-		return current;
-	    final GeneralSearchProblem.Option node = select(nodes);
+//     //@todo transform since this is a kind of following (or executing) a probabilistic TransitionModel
+//     protected GeneralSearchProblem.Option search(Collection nodes) {
+// 	// current node @xxx should be initial state!
+// 	GeneralSearchProblem.Option current = null;
+// 	double currentValue = Double.POSITIVE_INFINITY;
+// 	for (int t = 0; !nodes.isEmpty(); t++) {
+// 	    // current temperature scheduled for successive cooling
+// 	    final double T = ((Number) getSchedule().apply(new Integer(t))).doubleValue();
+// 	    if (T == 0)
+// 		return current;
+// 	    final GeneralSearchProblem.Option node = select(nodes);
 
-	    if (current == null)	// @xxx current should already be initial state, ensure once!
-		current = node;
+// 	    if (current == null) {	// @xxx current should already be initial state, ensure once!
+// 		current = node;
+// 		// currentValue will be set below, since currentValue == Double.POSITIVE_INFINITY
+// 	    }
 
-	    // usually solution isSolution test is omitted, anyway, but we'll still call
-	    if (getProblem().isSolution(node))
-		return node;
+// 	    // usually solution isSolution test is omitted, anyway, but we'll still call
+// 	    if (getProblem().isSolution(node))
+// 		return node;
     		
-	    final double value = ((Number) getEvaluation().apply(node)).doubleValue();
-	    final double deltaEnergy = value - currentValue;
-	    //@note negated use of deltaEnergy values everywhere since the evaluation evaluates cost and not utility (unlike Russel & Norvig who seem to consider maximizing energy instead of minimizing)
-	    // always move to better nodes,
-	    // but move to worse nodes, only with a certain probability
-	    if (deltaEnergy <= 0
-		|| Utility.flip(getRandom(), Math.exp(-deltaEnergy / T))) {
-		if (logger.isLoggable(Level.FINER))
-		    logger.log(Level.FINER, "simulated annealing update (" + currentValue +") to (" + value + ") delta=" + deltaEnergy + (deltaEnergy > 0 ? "" : " with probability " + Math.exp(-deltaEnergy / T)));
-		// either an improvement, or decreasing by chance
-		current = node;
-		currentValue = value;
-	    }
+// 	    final double value = ((Number) getEvaluation().apply(node)).doubleValue();
+// 	    final double deltaEnergy = value - currentValue;
+// 	    //@note negated use of deltaEnergy values everywhere since the evaluation evaluates cost and not utility (unlike Russel & Norvig who seem to consider maximizing energy instead of minimizing)
+// 	    // always move to better nodes,
+// 	    // but move to worse nodes, only with a certain probability
+// 	    if (deltaEnergy <= 0
+// 		|| Utility.flip(getRandom(), Math.exp(-deltaEnergy / T))) {
+// 		if (logger.isLoggable(Level.FINER))
+// 		    logger.log(Level.FINER, "simulated annealing update (" + currentValue +") to (" + value + ") delta=" + deltaEnergy + (deltaEnergy > 0 ? "" : " with probability " + Math.exp(-deltaEnergy / T)));
+// 		// either an improvement, or decreasing by chance
+// 		current = node;
+// 		currentValue = value;
+// 	    }
 
-	    Collection children = orbital.util.Setops.asList(getProblem().expand(current));
-	    nodes = add(children, nodes);
-    	}
+// 	    Collection children = orbital.util.Setops.asList(getProblem().expand(current));
+// 	    nodes = add(children, nodes);
+//     	}
 
-    	// current choice instead of failing
-    	return current;
-    }
+//     	// current choice instead of failing
+//     	return current;
+//     }
 }
