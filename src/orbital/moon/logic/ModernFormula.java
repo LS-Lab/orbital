@@ -335,7 +335,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @param notation the notation for the composition (usually determined by the composing symbol).
      */
     public static Formula.Composite composeDelayed(Logic underlyingLogic, Formula f, Expression arguments[], Notation notation) {
-        //@xxx was notat = notation; but either we disable DEFAULT=BESTFIX formatting, or we ignore the signature's notation choice
+        //@xxx @fixme was notat = notation; but either we disable DEFAULT=BESTFIX formatting, or we ignore the signature's notation choice
         Notation notat = notation;
 	switch(arguments.length) {
 	case 0:
@@ -361,7 +361,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
      * @param fsymbol the symbol with with the fixed interpretation f.
      */
     public static Formula.Composite composeFixed(Logic underlyingLogic, Symbol fsymbol, Functor f, Expression arguments[]) {
-        //@xxx was notat = fsymbol.getNotation().getNotation(); but either we disable DEFAULT=BESTFIX formatting, or we ignore the signature's notation choice
+        //@xxx @fixme was notat = fsymbol.getNotation().getNotation(); but either we disable DEFAULT=BESTFIX formatting, or we ignore the signature's notation choice
         Notation notat = fsymbol.getNotation().getNotation();
 	switch(arguments.length) {
 	case 0:
