@@ -433,6 +433,31 @@ public final class Setops {
     }
 
     /**
+     * Copies all of the elements from one list-iterator into another.
+     * After the operation, the index of each copied element in the
+     * destination list-iterator will be identical to its index in the
+     * source list-iterator. The destination list-iterator must be at
+     * least as long as the source list-iterator. If it is longer, the
+     * remaining elements in the destination list-iterator are
+     * unaffected.  This method runs in linear time.
+     * <p>
+     * Of course the list-iterators will be at different positions when this method finishes.</p>
+     * @param dest The destination list-iterator.
+     * @param src The source list-iterator. 
+     * @throws IndexOutOfBoundsException if the destination list-iterator is too small to contain the entire source List. 
+     * @throws UnsupportedOperationException if the destination list-iterator does not support the set operation.
+     * @see Collections#copy(List,List)
+     */
+    public static void copy(ListIterator dest, ListIterator src) {
+	while (src.hasNext()) {
+	    if (!dest.hasNext())
+		throw new IndexOutOfBoundsException();
+	    dest.next();
+	    dest.set(src.next());
+	}
+    }
+
+    /**
      * Sort a collection according to the order induced by a comparator, with bubble sort.
      */
     //public static Collection/*_<A>_*/ bubbleSort(Collection/*_<A>_*/ c, Comparator/*_<A>_*/ comp) {

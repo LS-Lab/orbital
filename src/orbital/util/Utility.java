@@ -25,8 +25,7 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 
 // only for implicit interface "Iteratable"
-import orbital.math.Matrix;
-import orbital.math.Vector;
+import orbital.math.Tensor;
 
 /**
  * A general Utility class containing static methods for common tasks like assertion checking etc.
@@ -388,6 +387,8 @@ public final class Utility {
 	    return (Collection) o;
 	else if (o instanceof Object[])
 	    return java.util.Arrays.asList((Object[]) o);
+	/*@todo else if (o.getClass().isArray())
+	  throw new UnsupportedOperationException("primitive-type arrays not yet supported");*/
 	else
 	    //@todo throw exception instead?
 	    return java.util.Collections.singletonList(o);
@@ -398,7 +399,7 @@ public final class Utility {
      * <p>
      * Generalized iteratable objects are objects that somehow support iteration of their components,
      * like {@link java.util.Iterator}, {@link java.util.Collection}, {@link java.lang.Object Object[]},
-     * {@link orbital.math.Vector}, or {@link orbital.math.Matrix}.
+     * or {@link orbital.math.Tensor} (including{@link orbital.math.Vector}, and {@link orbital.math.Matrix}).
      * </p>
      * <p>
      * Unfortunately, these classes do not implement a common interface "Iteratable", or
@@ -417,10 +418,8 @@ public final class Utility {
 	    return (Iterator/*_<A>_*/) a;
 	else if (a instanceof Collection/*_<A>_*/)
 	    return ((Collection/*_<A>_*/) a).iterator();
-	else if (a instanceof Vector/*_<A>_*/)
-	    return ((Vector/*_<A>_*/) a).iterator();
-	else if (a instanceof Matrix/*_<A>_*/)
-	    return ((Matrix/*_<A>_*/) a).iterator();
+	else if (a instanceof Tensor/*_<A>_*/)
+	    return ((Tensor/*_<A>_*/) a).iterator();
 	else if (a instanceof Object/*_>A<_*/[])
 	    return Arrays.asList((Object/*_>A<_*/[]) a).iterator();
 	else if (a.getClass().isArray())
