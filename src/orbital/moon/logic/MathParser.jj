@@ -47,7 +47,7 @@ public class MathParser {
      * tool-main
      */
     public static void main(String arg[]) throws Exception {
-	if (arg.length > 0 && "-?".equals(arg[0])) {
+	if (orbital.signe.isHelpRequest(arg)) {
 	    System.out.println(usage);
 	    return;
 	} 

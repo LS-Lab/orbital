@@ -158,7 +158,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
      * tool-main
      */
     public static void main(String arg[]) throws Exception {
-	if (arg.length > 0 && "-?".equals(arg[0])) {
+	if (orbital.signe.isHelpRequest(arg)) {
 	    System.out.println(usage);
 	    System.out.println("Core logical junctors and operators:\n\t" + new ClassicalLogic().coreSignature());
 	    return;
@@ -221,7 +221,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		    }
 		    catch (FileNotFoundException x) {
 			System.err.println(x);
-			System.err.println("use -? for help");
+			System.err.println(orbital.signe.getHelpAboutHelp());
 			return;
 		    }
 		    finally {

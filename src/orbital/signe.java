@@ -33,9 +33,42 @@ public final class signe extends Applet implements Runnable {
     public static void main(String arg[]) throws Exception {
 	System.err.println("signe");
 	new signe().run();
-	if (arg.length > 0 && "-??".equals(arg[0]))
+	if (arg.length > 0 && ("-??".equals(arg[0]) || "--version".equals(arg[0])))
 	    System.out.println(signe.getManifest());
     } 
+
+    /**
+     * Checks whether the given argument is an command-line request for help.
+     * <p>
+     * Such requests may include command-line arguments like <code>-?</code>, or
+     * <code>--help</code> etc.
+     * </p>
+     */
+    public static final boolean isHelpRequest(String arg) {
+	return "-?".equals(arg) || "--help".equals(arg) || "-h".equals(arg) || "/?".equals(arg);
+    }
+    /**
+     * Checks whether the given list of arguments contains a command-line request for help.
+     * @see #isHelpRequest(String)
+     */
+    public static final boolean isHelpRequest(String arg[]) {
+	for (int i = 0; i < arg.length; i++)
+	    if (isHelpRequest(arg[i]))
+		return true;
+	return false;
+    }
+    /**
+     * Get an argument that works as a command-line request for help.
+     */
+    public static final String getHelpRequest() {
+	return "--help";
+    }
+    /**
+     * Get help about (getting) help.
+     */
+    public static final String getHelpAboutHelp() {
+	return "use " + getHelpRequest() + " for help";
+    }
 
     /**
      * Runnable-init entry point.

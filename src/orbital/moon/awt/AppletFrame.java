@@ -60,11 +60,11 @@ public class AppletFrame extends Frame {
      * <div><kbd>java orbital.AppletFrame <i>className</i> <i>Title</i> (<i>parameter</i>=<i>value</i>)*</kbd></div>
      */
     public static void main(String args[]) throws Exception {
-	if (args.length < 1 || "-?".equals(args[0])) {
+	if (args.length < 1 || orbital.signe.isHelpRequest(args[0])) {
 	    System.out.println(usage);
 	    return;
 	} 
-	if (args.length == 2 && "-?".equals(args[1])) {
+	if (args.length == 2 && orbital.signe.isHelpRequest(args[1])) {
 	    System.out.println(usage);
 	    // fall-through and let showApplet display info
 	} 
@@ -79,7 +79,7 @@ public class AppletFrame extends Frame {
 	System.arraycopy(args, consumedArguments, remainingArgs, 0, remainingArgs.length);
 	AppletFrame.showApplet(className, title, remainingArgs);
     } 
-    public static final String usage = "usage: " + AppletFrame.class + " <className> [<Title> (<parameter>=<value>)* | -?]" + System.getProperty("line.separator") + "\twill display the applet <className> in a new frame called <Title>." + System.getProperty("line.separator") + "\tThe applet has access to the values assigned to the parameters." + System.getProperty("line.separator") + "\t-?\tdisplay available parameter info for applet <className>";
+    public static final String usage = "usage: " + AppletFrame.class + " <className> [<Title> (<parameter>=<value>)* | " + orbital.signe.getHelpRequest() + "]" + System.getProperty("line.separator") + "\twill display the applet <className> in a new frame called <Title>." + System.getProperty("line.separator") + "\tThe applet has access to the values assigned to the parameters." + System.getProperty("line.separator") + "\t" + orbital.signe.getHelpRequest() + "\tdisplay available parameter info for applet <className>";
 
     /**
      * Get information on an applet.
@@ -136,7 +136,7 @@ public class AppletFrame extends Frame {
      *  args is a list of arguments of the form <span class="String">"<i>parameter</i>=<i>value</i>"</span>.
      */
     public static void showApplet(Applet a, String title, String args[]) {
-	if (args.length == 1 && "-?".equals(args[0])) {
+	if (args.length == 1 && orbital.signe.isHelpRequest(args[0])) {
 	    System.out.println(info(a));
 	} 
 

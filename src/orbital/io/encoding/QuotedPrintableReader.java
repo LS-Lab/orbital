@@ -19,31 +19,31 @@ import java.io.IOException;
  * @author  Andr&eacute; Platzer
  */
 class QuotedPrintableReader extends DecodingReader {
-	public static void main(String arg[]) throws Exception {
-		if (arg.length > 0 && "-?".equals(arg[0])) {
-			System.out.println(usage);
-			return;
-		} 
-		Reader rd = new QuotedPrintableReader(new java.io.FileReader(arg.length > 0 ? arg[0] : "t"));
-		while (rd.ready())
-			System.out.print((char) rd.read());
-		rd.close();
+    public static void main(String arg[]) throws Exception {
+	if (orbital.signe.isHelpRequest(arg)) {
+	    System.out.println(usage);
+	    return;
 	} 
-	public static final String usage = "usage: [file]";
+	Reader rd = new QuotedPrintableReader(new java.io.FileReader(arg.length > 0 ? arg[0] : "t"));
+	while (rd.ready())
+	    System.out.print((char) rd.read());
+	rd.close();
+    } 
+    public static final String usage = "usage: [file]";
 
 
-	public QuotedPrintableReader(Reader rd) {
-		super(rd);
-	}
+    public QuotedPrintableReader(Reader rd) {
+	super(rd);
+    }
 
-	public String getFormat() {
-		return "quoted-printable";
-	} 
+    public String getFormat() {
+	return "quoted-printable";
+    } 
 
-	public int read() throws IOException, NumberFormatException {
-		int b = super.read();
-		if (b == '=')
-			b = Integer.parseInt(String.valueOf((char) super.read()) + (char) super.read(), 16);
-		return b;
-	} 
+    public int read() throws IOException, NumberFormatException {
+	int b = super.read();
+	if (b == '=')
+	    b = Integer.parseInt(String.valueOf((char) super.read()) + (char) super.read(), 16);
+	return b;
+    } 
 }
