@@ -13,7 +13,7 @@ import orbital.math.Scalar;
 
 import orbital.math.functional.Functions;
 
-import orbital.moon.logic.MathParser;
+import orbital.moon.logic.MathExpressionSyntax;
 import orbital.logic.imp.ParseException;
 import orbital.logic.trs.Substitution;
 import orbital.logic.trs.Substitutions;
@@ -104,7 +104,7 @@ public class MathPlotter extends java.applet.Applet {
     
     protected void set(String expr) {
 	try {
-	    Object p = MathParser.createExpression(expr);
+	    Object p = new MathExpressionSyntax().createMathExpression(expr);
 	    System.out.println("Parsed function:\t" + p);
 	    if (!(p instanceof orbital.logic.functor.Function))
 		// convert constants like 3 to constant functions if necessary

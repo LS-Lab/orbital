@@ -1,5 +1,5 @@
 import orbital.logic.functor.*;
-import orbital.moon.logic.MathParser;
+import orbital.moon.logic.MathExpressionSyntax;
 import orbital.logic.trs.*;
 import orbital.logic.imp.ParseException;
 import orbital.io.IOUtilities;
@@ -19,13 +19,13 @@ public class GroupTRS {
 	System.out.print("Type first expression (A): ");
 	System.out.flush();
 	String expr = IOUtilities.readLine(System.in);
-	Object A = MathParser.createExpression(expr);
+	Object A = parse(expr);
 	System.out.println("Original expression:\t" + expr);
 	System.out.println("Parsed function:\t" + A);
 	System.out.print("Type second expression (B): ");
 	System.out.flush();
 	expr = IOUtilities.readLine(System.in);
-	Object B = MathParser.createExpression(expr);
+	Object B = parse(expr);
 	System.out.println("Original expression:\t" + expr);
 	System.out.println("Parsed function:\t" + B);
 		
@@ -65,6 +65,6 @@ public class GroupTRS {
     } 
 	
     private static final Object parse(String expression) throws ParseException {
-	return MathParser.createExpression(expression);
+	return new MathExpressionSyntax().createMathExpression(expression);
     }
 }
