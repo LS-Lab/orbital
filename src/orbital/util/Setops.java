@@ -24,6 +24,7 @@ import orbital.logic.functor.Predicates;
 import orbital.util.ReverseComparator;
 import orbital.algorithm.Combinatorical;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -71,6 +72,16 @@ public final class Setops {
 	    return null;
 	}
     }
+
+    /**
+     * An iterator over the empty collection.
+     */
+    public static final Iterator EMPTY_ITERATOR = Collections.EMPTY_LIST.iterator();
+
+    /**
+     * A list iterator over the empty list.
+     */
+    public static final Iterator EMPTY_LIST_ITERATOR = Collections.EMPTY_LIST.listIterator();
 
     /**
      * Return the first object in a collection that satisfies the specified predicate.
@@ -429,6 +440,20 @@ public final class Setops {
      */
     public static /*_<A>_*/ List/*_<A>_*/ asList(Iterator/*_<A>_*/ it) {
 	List/*_<A>_*/ r = new LinkedList/*_<A>_*/();
+	while (it.hasNext())
+	    r.add(it.next());
+	return r;
+    } 
+
+    /**
+     * Returns a set filled with the elements in the iterator.  <p>
+     * Except for set notation, this method works somewhat like
+     * java.util.Arrays.asList(Object[]) but is not backed by the
+     * iterator.</p>
+     * @see java.util.Arrays#asList(Object[])
+     */
+    public static /*_<A>_*/ Set/*_<A>_*/ asSet(Iterator/*_<A>_*/ it) {
+	Set/*_<A>_*/ r = new LinkedHashSet/*_<A>_*/();
 	while (it.hasNext())
 	    r.add(it.next());
 	return r;
@@ -859,6 +884,7 @@ public final class Setops {
      * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      * @see Filters
      * @see orbital.logic.functor.Functionals.Catamorphism
+     * @see orbital.logic.functor.Functionals#filter(Predicate,Iterator)
      */
     public static final Function/**<Collection &cup; Iterator, Collection>**/ createSelection(final Function/*<Collection, Collection>*/ what,
 											      final Predicate where,
