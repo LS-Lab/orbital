@@ -86,6 +86,7 @@ public class LogicParser {
     // caches important types
     private transient Type TRUTH;
     private transient Type INDIVIDUAL;
+    private transient Type UNIVERSAL;
     private transient Type INTEGER_LITERAL_TYPE;
     private transient Type FLOAT_LITERAL_TYPE;
     private transient Type STRING_LITERAL_TYPE;
@@ -113,6 +114,7 @@ public class LogicParser {
 	this.TRUTH = queryType(syntax, "truth");
 	this.INDIVIDUAL = queryType(syntax, "individual");
 	//@todo should we ask the syntax?
+	this.UNIVERSAL = queryType(syntax, "univ");
 	this.FLOAT_LITERAL_TYPE = queryType(syntax, "real");
 	this.INTEGER_LITERAL_TYPE = queryType(syntax, "integer");
 	this.STRING_LITERAL_TYPE = queryType(syntax, "string");
@@ -287,7 +289,7 @@ public class LogicParser {
      * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience method</a>
      */
     private Expression composeWrapper(Token optok, String op, Expression[] arg) throws ParseException {
-	Symbol s = scope.getSymbol(op, Types.map(Types.typeOf(arg), Types.UNIVERSAL), false);
+	Symbol s = scope.getSymbol(op, Types.map(Types.typeOf(arg), UNIVERSAL), false);
 	if (s == null) {
 	    //@todo remove since this does not occur because we don't use tryGetScope any more.
 	    //@xxx an error is to come up, so already print some information about it
@@ -376,7 +378,7 @@ public class LogicParser {
 	public Symbol getSymbol(String signifier, Type maxType, boolean variable, boolean autoDeclare) {
 	    Symbol s = tryGetSymbol(signifier, maxType, variable, autoDeclare);
 	    if (s == null)
-		throw new IllegalArgumentException("illegal symbol: " + signifier);
+		throw new IllegalArgumentException("unknown symbol: " + signifier);
 	    else
 		return s;
 	}
@@ -1045,8 +1047,16 @@ Symbol ConstantOrVariable() :
 	    ( "." tok = <IDENTIFIER>  {signifier += "." + tok.image;} )
 	    )*
     */
-    //@xxx which exact type? univ\truth?
-    {return scope.getSymbol(signifier, Types.UNIVERSAL, true);}
+    {
+	try {
+	    // accept any type
+	    //@xxx which exact type? univ\truth?
+	    return scope.getSymbol(signifier, UNIVERSAL, false);
+	} catch (IllegalArgumentException unknownSymbol) {
+	    // only auto-declare as individual
+	    return scope.getSymbol(signifier, INDIVIDUAL, true);
+	}
+    }
 }
 
 
