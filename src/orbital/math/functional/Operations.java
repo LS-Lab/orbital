@@ -24,8 +24,8 @@ import orbital.math.Matrix;
 import java.util.Arrays;
 import orbital.util.Utility;
 
-import orbital.logic.functor.Notation;
-import orbital.logic.functor.Notation.NotationSpecification;
+import orbital.logic.sign.concrete.Notation;
+import orbital.logic.sign.concrete.Notation.NotationSpecification;
 
 // due to JDK1.3 bug  Bug-ID: 4306909
 // this class can only be compiled with JDK1.4, JDK1.3.1 or JDK 1.2.2, but not with JDK 1.3.0 or JDK 1.3.0_02

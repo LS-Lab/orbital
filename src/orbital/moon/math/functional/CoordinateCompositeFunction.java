@@ -8,7 +8,7 @@ package orbital.moon.math.functional;
 
 import orbital.math.functional.Function;
 import orbital.math.Arithmetic;
-import orbital.logic.functor.Notation;
+import orbital.logic.sign.concrete.Notation;
 
 import orbital.logic.functor.Functor;
 

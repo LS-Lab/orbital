@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.List;
 
-import orbital.logic.functor.Notation;
+import orbital.logic.sign.concrete.Notation;
 
 import orbital.util.Utility;
 import orbital.util.Setops;

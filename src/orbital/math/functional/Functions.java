@@ -11,7 +11,6 @@ import orbital.math.UnivariatePolynomial;
 
 import orbital.math.Arithmetic;
 import orbital.math.Normed;
-import orbital.logic.functor.Notation;
 import orbital.logic.functor.Predicate;
 
 import orbital.moon.math.functional.AbstractFunctor;

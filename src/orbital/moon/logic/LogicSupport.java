@@ -10,9 +10,9 @@ import orbital.logic.imp.*;
 import orbital.logic.sign.*;
 import orbital.logic.sign.type.*;
 import orbital.logic.functor.Functor;
-import orbital.logic.functor.Notation.NotationSpecification;
+import orbital.logic.sign.concrete.Notation.NotationSpecification;
 
-import orbital.logic.functor.Notation;
+import orbital.logic.sign.concrete.Notation;
 
 import java.util.Map;
 import java.util.TreeMap;

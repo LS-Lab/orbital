@@ -8,6 +8,7 @@ package orbital.moon.logic;
 
 import orbital.logic.sign.*;
 import orbital.logic.sign.type.*;
+import orbital.logic.sign.concrete.Notation;
 
 import orbital.logic.functor.*;
 

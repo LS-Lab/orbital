@@ -3,7 +3,7 @@ package orbital.moon.aspects;
 import orbital.math.Arithmetic;
 
 import orbital.math.functional.*;
-import orbital.logic.functor.Notation;
+import orbital.logic.sign.concrete.Notation;
 
 import orbital.math.Scalar;
 

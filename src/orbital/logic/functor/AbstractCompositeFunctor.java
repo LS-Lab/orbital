@@ -7,6 +7,7 @@
 package orbital.logic.functor;
 import orbital.logic.functor.Functor.Composite;
 
+import orbital.logic.sign.concrete.Notation;
 import java.io.Serializable;
 
 import orbital.util.Utility;

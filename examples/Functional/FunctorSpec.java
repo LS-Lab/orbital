@@ -1,5 +1,6 @@
 import orbital.logic.functor.*;
 import orbital.logic.functor.Functor.Specification;
+import orbital.logic.sign.concrete.Notation;
 
 public class FunctorSpec {
     public static void main(String arg[]) throws Exception {

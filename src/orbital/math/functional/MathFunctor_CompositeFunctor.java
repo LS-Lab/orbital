@@ -7,7 +7,7 @@
 package orbital.math.functional;
 
 import orbital.logic.functor.Functor;
-import orbital.logic.functor.Notation;
+import orbital.logic.sign.concrete.Notation;
 
 import orbital.moon.math.functional.AbstractFunctor;
 import orbital.util.Utility;

@@ -20,8 +20,8 @@ import orbital.logic.sign.type.*;
 import orbital.logic.sign.Symbol;
 import orbital.logic.sign.ParseException;
 import orbital.logic.functor.Functor;
-import orbital.logic.functor.Notation;
-import orbital.logic.functor.Notation.NotationSpecification;
+import orbital.logic.sign.concrete.Notation;
+import orbital.logic.sign.concrete.Notation.NotationSpecification;
 
 import orbital.logic.trs.Substitutions;
 import java.lang.reflect.Field;
@@ -38,7 +38,7 @@ import orbital.util.InnerCheckedException;
  * constructing a representation as a composition of functions.
  * @version 1.1, 2002-10-17
  * @author  Andr&eacute; Platzer
- * @structure depends orbital.logic.functor.Notation Uses registered notation functors reverse.
+ * @structure depends orbital.logic.sign.concrete.Notation Uses registered notation functors reverse.
  */
 public class MathExpressionSyntax implements ExpressionSyntax {
     private static final Values valueFactory = Values.getDefaultInstance();

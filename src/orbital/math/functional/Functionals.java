@@ -12,7 +12,7 @@ import orbital.math.Vector;
 import orbital.math.Matrix;
 
 import orbital.math.Arithmetic;
-import orbital.logic.functor.Notation;
+import orbital.logic.sign.concrete.Notation;
 import orbital.math.Values;
 import orbital.math.Scalar;
 

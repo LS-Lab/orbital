@@ -26,7 +26,7 @@ import orbital.util.Setops;
 import java.util.*;
 
 import orbital.logic.functor.Functor.Specification;
-import orbital.logic.functor.Notation.NotationSpecification;
+import orbital.logic.sign.concrete.Notation.NotationSpecification;
 
 import orbital.math.Values;
 

@@ -38,8 +38,8 @@ import orbital.io.IOUtilities;
 import orbital.util.InnerCheckedException;
 import java.beans.IntrospectionException;
 
-import orbital.logic.functor.Notation;
-import orbital.logic.functor.Notation.NotationSpecification;
+import orbital.logic.sign.concrete.Notation;
+import orbital.logic.sign.concrete.Notation.NotationSpecification;
 
 import orbital.util.Utility;
 

@@ -7,6 +7,7 @@
 package orbital.logic.functor;
 
 import java.io.Serializable;
+import orbital.logic.sign.concrete.Notation;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;

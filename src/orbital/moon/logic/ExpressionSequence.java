@@ -9,7 +9,7 @@ import orbital.logic.imp.*;
 import orbital.logic.sign.*;
 import orbital.logic.sign.type.*;
 
-import orbital.logic.functor.Notation;
+import orbital.logic.sign.concrete.Notation;
 
 /**
  * Encapsulates a whole sequence of expressions into a single compound expression.

@@ -22,7 +22,7 @@ package orbital.moon.logic;
 import orbital.logic.imp.*;
 import orbital.logic.sign.*;
 import orbital.logic.sign.type.*;
-import orbital.logic.functor.Notation.NotationSpecification;
+import orbital.logic.sign.concrete.Notation.NotationSpecification;
 
 import orbital.logic.functor.Function;
 import orbital.logic.functor.Functions;

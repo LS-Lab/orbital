@@ -13,6 +13,7 @@ import java.util.SortedSet;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.io.Serializable;
+import orbital.logic.sign.concrete.Notation;
 
 import java.util.Collections;
 import java.util.Arrays;

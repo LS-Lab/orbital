@@ -7,10 +7,10 @@
 package orbital.logic.sign;
 
 import orbital.logic.sign.type.Type;
-import orbital.logic.functor.Notation.NotationSpecification;
+import orbital.logic.sign.concrete.Notation.NotationSpecification;
 import java.io.Serializable;
 
-import orbital.logic.functor.Notation;
+import orbital.logic.sign.concrete.Notation;
 
 import orbital.util.Utility;
 import orbital.logic.sign.type.Types;

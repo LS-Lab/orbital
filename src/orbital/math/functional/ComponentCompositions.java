@@ -10,7 +10,7 @@ import orbital.logic.functor.Functor;
 
 import orbital.math.Arithmetic;
 import orbital.math.Normed;
-import orbital.logic.functor.Notation;
+import orbital.logic.sign.concrete.Notation;
 
 import orbital.math.Matrix;
 import java.awt.Dimension;

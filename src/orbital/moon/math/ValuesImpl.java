@@ -383,7 +383,7 @@ public class ValuesImpl extends AbstractValues {
 	    public boolean apply(Object expression) {
 		if (expression instanceof Functor.Composite) {
 		    Functor.Composite c = (Functor.Composite)expression;
-		    //@internal see orbital.logic.functor.Notation.asTree(...)
+		    //@internal see import orbital.logic.sign.concrete.Notation.compositorTree(...)
 		    Object     compositor = c.getCompositor();
 		    Collection components = Utility.asCollection(c.getComponent());
 		    if (components == null)

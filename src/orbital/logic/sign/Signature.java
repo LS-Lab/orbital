@@ -30,7 +30,7 @@ import java.util.SortedSet;
  * </p>
  * 
  * @invariants &forall;s&isin;this: s instanceof {@link orbital.logic.imp.Symbol}
- *  &and; sorted according to {@link orbital.logic.functor.Notation.NotationSpecification#getPrecedence() precedence}
+ *  &and; sorted according to {@link orbital.logic.sign.concrete.Notation.NotationSpecification#getPrecedence() precedence}
  * @structure extends java.util.SortedSet<Symbol>
  * @version 1.0, 1999/01/12
  * @author  Andr&eacute; Platzer

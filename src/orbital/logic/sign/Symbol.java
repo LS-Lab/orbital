@@ -9,7 +9,7 @@ package orbital.logic.sign;
 import orbital.logic.trs.Variable;
 import orbital.logic.sign.type.Typed;
 import orbital.logic.sign.type.Type;
-import orbital.logic.functor.Notation.NotationSpecification;
+import orbital.logic.sign.concrete.Notation.NotationSpecification;
 
 /**
  * Represents a symbol of a signature.

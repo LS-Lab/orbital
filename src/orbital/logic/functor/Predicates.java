@@ -8,7 +8,8 @@ package orbital.logic.functor;
 
 
 import orbital.util.Utility;
-import orbital.logic.functor.Notation.NotationSpecification;
+import orbital.logic.sign.concrete.Notation;
+import orbital.logic.sign.concrete.Notation.NotationSpecification;
 
 /**
  * Predicate Implementations.

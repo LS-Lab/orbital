@@ -6,6 +6,8 @@
 
 package orbital.logic.functor;
 
+import orbital.logic.sign.concrete.Notation;
+
 /**
  * Contains implementations of composite functors.
  *

@@ -752,7 +752,7 @@ public class ArithmeticFormat extends Format {
     public StringBuffer format(MathFunctor f, StringBuffer result, FieldPosition fieldPosition) {
 	//@TODO: update fieldPosition
 	return result.append("" + f);
-	//@XXX: how about return orbital.logic.functor.Notation.DEFAULT.format(f, null);
+	//@XXX: how about return orbital.logic.sign.concrete.Notation.DEFAULT.format(f, null);
     }
 
 
