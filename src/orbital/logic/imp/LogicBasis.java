@@ -36,7 +36,7 @@ package orbital.logic.imp;
  */
 public abstract class LogicBasis implements Formula {
 
-    // Derived logical operations.
+    // Derived logical operations. (in classical logic)
 
     /**
      * Exclusion xor: <code>A xor B</code> is calced <code>(A&and;&not;B) &or; (&not;A&and;B)</code>
