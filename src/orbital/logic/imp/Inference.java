@@ -17,6 +17,8 @@ import orbital.logic.Relation;
  * An inference relation is a relation between existing knowledge and the knowledge to be derived.
  * Every inference over syntactic symbols of the representation must preserve structure
  * for the elements of the world represented.
+ * Usually, <span class="inference">|~</span> treats non-logical terminology
+ * as implicitly bound free variables.
  * <p>
  * The intuition of an inference <span class="Formula"><span class="set">W</span> <span class="inference">|~</span> F</span>
  * to hold is that
