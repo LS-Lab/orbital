@@ -268,11 +268,13 @@ public class ValuesImpl extends AbstractValues {
 	case 0:
 	    assert false;
 	case 1:
-	    return tensor((Arithmetic[]) (values instanceof Arithmetic[] ? values : t.toArray__Tensor()));
+	    return validate(tensor((Arithmetic[]) (values instanceof Arithmetic[] ? values : t.toArray__Tensor())),
+			    t.dimensions());
 	case 2:
-	    return tensor((Arithmetic[][]) (values instanceof Arithmetic[][] ? values : t.toArray__Tensor()));
+	    return validate(tensor((Arithmetic[][]) (values instanceof Arithmetic[][] ? values : t.toArray__Tensor())),
+			    t.dimensions());
 	default:
-	    return t;
+	    return validate(t, t.dimensions());
 	}
     }
     
@@ -282,12 +284,22 @@ public class ValuesImpl extends AbstractValues {
 	case 0:
 	    assert false;
 	case 1:
-	    return newInstance(dimensions[0]);
+	    return validate(newInstance(dimensions[0]), dimensions);
 	case 2:
-	    return newInstance(dimensions[0], dimensions[1]);
+	    return validate(newInstance(dimensions[0], dimensions[1]), dimensions);
 	default:
-	    return new ArithmeticTensor(dimensions);
+	    return validate(new ArithmeticTensor(dimensions), dimensions);
 	}
+    }
+    /**
+     * Validate the dimensions of a tensor.
+     */
+    private final Tensor validate(final Tensor t, final int[] dimensions) {
+	assert t.rank() == dimensions.length : "correct rank";
+	assert Utility.equalsAll(t.dimensions(), dimensions) : "correct dimensions";
+	assert t.rank() == 1 ? t instanceof Vector : true : "rank 1 is vector";
+	assert t.rank() == 2 ? t instanceof Matrix : true : "rank 2 is matrix";
+	return t;
     }
 
     public /*<R implements Arithmetic>*/ Tensor/*<R>*/ ZERO(int[] dimensions) {
