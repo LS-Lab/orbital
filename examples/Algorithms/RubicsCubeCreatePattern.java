@@ -28,7 +28,7 @@ public class RubicsCubeCreatePattern extends RubicsCube {
 
     public static void main(String arg[]) throws Exception {
 	final Map patternDatabase = new HashOnlyMap();
-	System.err.println("Note that creating the pattern database file may take a while\ndepending upon the pattern depth (" + MAX_STEPS + ")");
+	System.out.println("Note that creating the pattern database file may take a while\ndepending upon the pattern depth (" + MAX_STEPS + ")");
 	System.out.println("creating pattern database ...");
 
 	RubicsCubeCreatePattern problem = new RubicsCubeCreatePattern(RubicsCube.SIZE);
