@@ -90,6 +90,6 @@ abstract class AbstractCompositeFunctor implements Composite, Serializable {
      * @return <code>{@link Notation#format(Object, Object) notation.format}(getCompositor(), getComponent())</code>.
      */
     public String toString() {
-	return getNotation().format((Notation)getCompositor(), getComponent());
+	return getNotation().format(getCompositor(), getComponent());
     }
 }
