@@ -333,7 +333,7 @@
 
 	<copy todir="${doc.api.dest}">
 	    <fileset dir="${doc}"
-		includes="*.css, recommendations.*html, features.*html, templates.*html"/>
+		includes="*.css, *.*html"/>
 	</copy>
 
         <delete>
