@@ -55,6 +55,19 @@ public final class Setops {
     private Setops() {}
 
     /**
+     * Points to java.util.RandomAccess in case that class is available at runtime.
+     */
+    private static final Class randomAccessClass = possiblyClassForName("java.util.RandomAccess");
+    private static Class possiblyClassForName(String name) {
+	try {
+	    return Class.forName("java.util.RandomAccess");
+	}
+	catch (ClassNotFoundException priorToJDK1_4) {
+	    return null;
+	}
+    }
+
+    /**
      * Return the first object in a collection that satisfies the specified predicate.
      * @return the first object in a collection that satisfies the specified predicate, or null if no such object exists.
      */
@@ -402,8 +415,9 @@ public final class Setops {
 	else if (c instanceof java.util.Set)
 	    return new java.util.HashSet/*_<A>_*/();
 	else if (c instanceof java.util.List)
-	    //@todo JDK1.4 if (instanceof java.util.RandomAccess) return new java.util.ArrayList();
-	    return new java.util.LinkedList/*_<A>_*/();
+	    return randomAccessClass != null && randomAccessClass.isInstance(c)
+		? (List) new java.util.ArrayList/*_<A>_*/(c.size())
+		: (List) new java.util.LinkedList/*_<A>_*/();
 	else
 	    throw new IllegalArgumentException("unknown collection type " + c.getClass() + " could not be instantiated");
     } 
