@@ -54,6 +54,7 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 	return new SignatureBase(freeVariables);
     }
     
+    //@internal could also use a StreamMethod for implementation.
     public Iterator/*_<Clause>_*/ resolveWith(Clause G) {
 	final Clause F = this;
 	// resolvents will contain all resolvents of F and G
@@ -89,7 +90,10 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 
 		    // @internal for perfect performance (and catastrophal structure) could already perform a goal lookahead by R.equals(Utilities.CONTRADICTION)
 
-		    resolvents.add(factorizedR);
+		    //@xxx add factorized and original, or only one, or? Or better yet factorize elsewhere?
+		    resolvents.add(R);
+		    if (!factorizedR.equals(R))
+			resolvents.add(factorizedR);
 		}
 	    }
 	}
@@ -104,6 +108,18 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 	    renaming.add(Substitutions.createExactMatcher(s, new UniqueSymbol(s.getType(), null, s.isVariable())));
 	}
 	return (Clause) Functionals.map(Substitutions.getInstance(renaming), this);
+    }
+
+    public Iterator/*_<Clause>_*/ resolveWithVariant(Clause G) {
+	Clause          F = this;
+	final Signature FVariables = F.getFreeVariables();
+	final Signature overlappingVariables = G.getFreeVariables().intersection(FVariables);
+	if (!overlappingVariables.isEmpty()) {
+	    // make a variant of F such that the variables of F and G are disjunct
+	    //@todo optimize would it be quicker if we always build variants, regardless of disjointness or not? Also unique variables would alleviate the need for variant building altogether.
+	    F = F.variant(overlappingVariables);
+	}
+	return F.resolveWith(G);
     }
 
     // proof utilities
