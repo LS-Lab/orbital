@@ -317,7 +317,7 @@ public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
 	} else {
 	    // factorize
 	    //@todo optimize by removing all (but one in) literals from clause prior to applying mu
-	    // apply unification and remove duplicates, but convert to list again.
+	    // apply unification and remove duplicates
 	    Clause factor = map(mu, this);
 	    assert this.equals(previous) : "modifications during factorization work on copies, and leave the original clause unmodified";
 	    if (logger.isLoggable(Level.FINEST)) {
