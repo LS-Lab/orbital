@@ -187,6 +187,7 @@ public class ClassicalLogic extends ModernLogic {
 	    boolean normalForm = false;
 	    boolean verbose = false;
 	    boolean closure = false;
+	    boolean problem = false;
 	    String charset = null;
 
 	    ClassicalLogic logic = new ClassicalLogic();
@@ -198,8 +199,14 @@ public class ClassicalLogic extends ModernLogic {
 		    normalForm = true;
 		else if ("-closure".equals(arg[option]))
 		    closure = true;
-		else if ("-verbose".equals(arg[option]))
+		else if ("-verbose".equals(arg[option])) {
 		    verbose = true;
+		    InferenceMechanism mechanism = logic.getInferenceMechanism();
+		    if (mechanism.inference() instanceof orbital.moon.logic.resolution.ResolutionBase) {
+			((orbital.moon.logic.resolution.ResolutionBase) mechanism.inference()).setVerbose(verbose);
+		    }
+		} else if ("-problem".equals(arg[option]))
+		    problem = true;
 		else if (arg[option].startsWith("-charset=")) {
 		    charset = arg[option].substring("-charset=".length());
 		    System.out.println("using charset " + charset);
@@ -269,13 +276,13 @@ public class ClassicalLogic extends ModernLogic {
 			    } else
 				throw new AssertionError("none of the cases of which one occurs is true");
 			    rd = new InputStreamReader(logic.getClass().getResourceAsStream(resources + resName), DEFAULT_CHARSET);
-			    if (expected != proveAll(rd, logic, expected, normalForm, closure, verbose))
+			    if (expected != proveAll(rd, logic, expected, normalForm, closure, verbose, problem))
 				throw new LogicException("instantiated " + logic + " which does " + (expected ? "not support all conjectures" : "a contradictory conjecture") + " of " + resName + ". Either the logic is non-classical, or the resource file is corrupt.");
 			} else {
 			    rd = charset == null
 				? new FileReader(file)
 				: new InputStreamReader(new FileInputStream(file), charset);
-			    if (!proveAll(rd, logic, true, normalForm, closure, verbose))
+			    if (!proveAll(rd, logic, true, normalForm, closure, verbose, problem))
 				System.err.println("could not prove all conjectures");
 			    else
 				System.err.println("all conjectures were proven successfully");
@@ -303,7 +310,7 @@ public class ClassicalLogic extends ModernLogic {
 		Reader rd = null;
 		try {
 		    rd = new InputStreamReader(System.in);
-		    proveAll(rd, logic, true, normalForm, closure, verbose);
+		    proveAll(rd, logic, true, normalForm, closure, verbose, problem);
 		}
 		finally {
 		    if (rd != null)
@@ -323,7 +330,7 @@ public class ClassicalLogic extends ModernLogic {
     /**
      * @todo move content to the ResourceBundle.
      */
-    public static final String usage = "usage: [options] [all|none|properties|fol|<filename>|table]\n\tall\tprove important semantic-equivalence expressions\n\tnone\ttry to prove some semantic-garbage expressions\n\tproperties\tprove some properties of classical logic inference relation\n\tfol\tprove important equivalences of first-order logic\n\n\t<filename>\ttry to prove all expressions in the given file\n\ttable\tprint a function table of the expression instead\n\t-\tUse no arguments at all to be asked for expressions\n\t\tto prove.\noptions:\n\t-normalForm\tcheck the conjunctive and disjunctive forms in between\n\t-closure\tprint the universal/existential closures in between\n\t-inference=<inference_mechanism>\tuse ClassicalLogic.<inference_mechanism> instead of semantic inference\n\t-verbose\tbe more verbose (f.ex. print normal forms if -normalForm)\n\t-charset=<encoding>\tthe character set or encoding to use for reading files\n\nTo check whether A and B are equivalent, enter '|= A<->B'";
+    public static final String usage = "usage: [options] [all|none|properties|fol|<filename>|table]\n\tall\tprove important semantic-equivalence expressions\n\tnone\ttry to prove some semantic-garbage expressions\n\tproperties\tprove some properties of classical logic inference relation\n\tfol\tprove important equivalences of first-order logic\n\n\t<filename>\ttry to prove all expressions in the given file\n\ttable\tprint a function table of the expression instead\n\t-\tUse no arguments at all to be asked for expressions\n\t\tto prove.\noptions:\n\t-normalForm\tcheck the conjunctive and disjunctive forms in between\n\t-closure\tprint the universal/existential closures in between\n\t-inference=<inference_mechanism>\tuse ClassicalLogic.<inference_mechanism> instead of semantic inference\n\t-verbose\tbe more verbose (f.ex. print normal forms if -normalForm)\n\t-charset=<encoding>\tthe character set or encoding to use for reading files\n\t-problem\tparse a problem file, i.e. combine all lines into a single problem, instead of assuming single-line conjectures.\n\nTo check whether A and B are equivalent, enter '|= A<->B'";
 
 
     
