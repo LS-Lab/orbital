@@ -20,7 +20,7 @@ if "%1"=="-generate" goto Generate
 if "%1"=="-pause" set intermediate=pause
 if "%1"=="-pause" shift
 
-  pushd %home%\Java
+  pushd %home%\Java\Orbital\src
   rem Change package grouping in package-grouping, rebuild.bat and mkall.bat
   echo rebuilding core
     javac -d %JAVA_HOME%\classes %1 orbital/*.java orbital/io/*.java orbital/logic/*.java orbital/logic/functor/*.java orbital/logic/trs/*.java orbital/math/*.java orbital/math/functional/*.java orbital/util/*.java orbital/util/graph/*.java
@@ -38,7 +38,7 @@ if "%1"=="-pause" shift
   call :Generate
   if not "%intermediate%"=="" call %intermediate%
   echo rebuilding implementation
-    cd %home%\Java
+    cd %home%\Java\Orbital\src
     call mklib orbital/io/cryptix
     call mklib orbital/math/DOUBLE
     cd orbital\moon
@@ -48,7 +48,7 @@ goto :Fin
 
 :Generate
   goto :Fin
-  pushd %home%\Java
+  pushd %home%\Java\Orbital\src
   echo generating rmi skeletons and stubs
     pushd orbital\moon\orbiter
     call substitute

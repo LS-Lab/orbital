@@ -6,7 +6,7 @@ echo    -standard     only use the standard Doclet
 rem once Emacs knows Unicode we could switch Javadoc to -charset "utf-8"
 
     setlocal
-    set src=%HOME%\Java\orbital
+    set src=%HOME%\Java\Orbital\src\orbital
     set s=
     if "%1"=="-assertions" set s=-doclet iContract.doclet.Standard -docletpath %jdk_home%\lib\iDoclet.jar 
     if "%1"=="-assertions" shift

@@ -27,20 +27,20 @@ call ReBuild -generate
 if "%1"=="-generate" goto Generate
 
   echo compiling
-    echo . > %HOME%\java\orbital\package-list-new
-    echo . > %HOME%\java\orbital\class-list-new
+    echo . > %HOME%\Java\Orbital\src\orbital\package-list-new
+    echo . > %HOME%\Java\Orbital\src\orbital\class-list-new
     REM call mklib
     REM C:\bin\forEach -v -dir _mklib.bat "%"
     pushd
-    if "%1"=="-optimize" for /R /D %%d in (*) do call %home%\Java\orbital\_mklib.bat %%d -options -g:lines
-    if not "%1"=="-optimize" for /R /D %%d in (*) do call %home%\Java\orbital\_mklib.bat %%d
+    if "%1"=="-optimize" for /R /D %%d in (*) do call %home%\Java\Orbital\src\orbital\_mklib.bat %%d -options -g:lines
+    if not "%1"=="-optimize" for /R /D %%d in (*) do call %home%\Java\Orbital\src\orbital\_mklib.bat %%d
     popd
-    call mklib %HOME%\java\orbital\math\functional
+    call mklib %HOME%\java\Orbital\src\orbital\math\functional
   if not "%O2%"=="optNodeprecated" goto Generate
   echo compiling deprecated classes
     echo remember removing exclude files!
     pushd moon\deprecated
-    for /R /D %%d in (*) do call %home%\Java\orbital\_mklib.bat %%d
+    for /R /D %%d in (*) do call %home%\Java\Orbital\src\orbital\_mklib.bat %%d
     popd
 :Generate
 goto :JAR
