@@ -68,26 +68,25 @@ import java.util.logging.Level;
  * Implementation of modern but classical predicate logic (first-order logic).
  * <p>
  * <dl class="def">
- *  <dt>classical logic</dt> <dd>is any logic that accepts <span xml:lang="la">tertium non datur</span>
- *   (alias the Principle of excluded middle, alias the Principle of bivalence).
- *   In a classical logic <em>all</em> logical statements have exactly one truth-value of either
- *   <code>true</code> (&#8868;), or <code>false</code> (&perp;).
- *   It is a two-valued logic.</dd>
- *  <dt>non-classical logic</dt> <dd>does not assume <span xml:lang="la">tertium non datur</span>.
- *   Especially, &not;&not;&phi; usually is not equivalent to &phi;.
- *   <div>What, for example is the truth-value of the following informal statement?
- *     <blockquote>"nowhere in the decimal representation of &pi; does the digit 7
- *     occur 77 times
- *     (with the occurrences immediately following each other)"
- *     </blockquote>
- *   </div>
- *   Most non-classical logics are multi-valued logics.</dd>
- * </dl>
- * <dl class="def">
- *  <dt>traditional logic</dt> <dd>is the logic prior to Frege</dd>
- *  <dt>modern logic</dt> <dd>is a logic in the spirit of Frege.
- *   It provides <span class="dt">multiple genericity</span>, which means that multiple quantifiers can concern
- *   different individuals. This is possible by using variable symbols.</dd>
+ *   <dt>classical logic</dt> <dd>is any logic that accepts <span xml:lang="la">tertium non datur</span>
+ *    (alias the Principle of excluded middle, alias the Principle of bivalence).
+ *    In a classical logic <em>all</em> logical statements have exactly one truth-value of either
+ *    <code>true</code> (&#8868;), or <code>false</code> (&perp;).
+ *    It is a two-valued logic.</dd>
+ *   <dt>non-classical logic</dt> <dd>does not assume <span xml:lang="la">tertium non datur</span>.
+ *    Especially, &not;&not;&phi; usually is not equivalent to &phi;.
+ *    <div>What, for example is the truth-value of the following informal statements?
+ *      <blockquote>"nowhere in the decimal representation of &pi; does the digit 7
+ *      occur 77 times
+ *      (with the occurrences immediately following each other)"<br />
+ *      "Ancient Greeks worshipped Zeus" (cf. free logic)
+ *      </blockquote>
+ *    </div>
+ *    Most non-classical logics are multi-valued logics.</dd>
+ *   <dt>traditional logic</dt> <dd>is the logic prior to Frege</dd>
+ *   <dt>modern logic</dt> <dd>is a logic in the spirit of Frege.
+ *    It provides <span class="dt">multiple genericity</span>, which means that multiple quantifiers can concern
+ *    different individuals. This is possible by using variable symbols.</dd>
  * </dl>
  * </p>
  * <p>
