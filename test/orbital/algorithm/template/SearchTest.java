@@ -12,6 +12,7 @@ import orbital.logic.functor.Function;
 import orbital.math.functional.Functions;
 import orbital.math.Scalar;
 import orbital.math.Values;
+import orbital.math.ValueFactory;
 import orbital.math.Symbol;
 import orbital.math.Real;
 import orbital.awt.*;
@@ -48,13 +49,14 @@ public class SearchTest extends check.TestCase {
 
     protected void setUp() {
 	this.random = new Random();
-	final Real maxBound = Values.getDefaultInstance().valueOf(2*SIMPLE_GSP_RANGE+SimpleGSP.PAY_FOR_PASSING);
+	final ValueFactory vf = Values.getDefault();
+	final Real maxBound = vf.valueOf(2*SIMPLE_GSP_RANGE+SimpleGSP.PAY_FOR_PASSING);
 	final Function h = SimpleGSP.createHeuristic();
 	final Function schedule = new Function() {
 		public Object apply(Object o) {
 		    int i = ((Number) o).intValue();
 		    double d = 10 - i/175.;
-		    return new Double(Math.max(d, 0));
+		    return vf.valueOf(Math.max(d, 0));
 		}
 	    };
 	try {
