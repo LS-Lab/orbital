@@ -116,7 +116,7 @@ class Resolution implements Inference {
 	//@xxx IE(h=5) is incomplete for "|=  ((a|b)&c ) <=> ( (a&c)|(b&c) )"
 	//this.search = new IterativeExpansion(orbital.math.functional.Functions.constant(Values.getDefaultInstance().valueOf(5)));
 	//this.search = new IterativeDeepeningAStar(orbital.math.functional.Functions.constant(Values.getDefaultInstance().valueOf(5)));
-	this.search = new IterativeDeepeningAStar(orbital.math.functional.Functions.constant(Values.getDefaultInstance().valueOf(2)));
+	this.search = new IterativeDeepeningAStar(orbital.math.functional.Functions.constant(Values.getDefaultInstance().valueOf(0)));
     }
 
     public boolean infer(Formula[] B, Formula D) {
@@ -153,22 +153,19 @@ class Resolution implements Inference {
 	}
 
         logger.log(Level.FINE, "W = {0}", knowledgebase);
-        if (logger.isLoggable(Level.FINER))
+        if (logger.isLoggable(Level.FINEST))
 	    for (int i = 0; i < B.length; i++)
-		logger.log(Level.FINER, "W thus contains transformation of original formula {0}", Utilities.conjunctiveForm(B[i], SIMPLIFYING));
+		logger.log(Level.FINEST, "W thus contains transformation of original formula {0}", Utilities.conjunctiveForm(B[i], SIMPLIFYING));
 
         // negate query since we are a negative test calculus
         Formula query = D.not();
 
 	// skolemize (negated) query
+	//@todo could we optimize by already transforming query to CNF, somewhat earlier? At least avoid transforming ~(a<->b) to ~(cnf(a<->b))
 	Formula skolemizedQuery = Utilities.dropQuantifiers(Utilities.skolemForm(query));
 
         // convert (negated) query to clausalForm S, forming the initial set of support
 	Set S = clausalForm(skolemizedQuery);
-
-        if (logger.isLoggable(Level.FINEST))
-	    logger.log(Level.FINEST, "negated goal S = {0} = {1} (= {2} original)", new Object[] {skolemizedQuery, S, Utilities.conjunctiveForm(query, SIMPLIFYING)});
-	logger.log(Level.FINER, "negated goal S = {0} = {1}", new Object[] {skolemizedQuery, S});
 
 	// factorize and remove tautologies
     	// for all clauses F&isin;S
@@ -184,6 +181,10 @@ class Resolution implements Inference {
 		// if F is obviously valid, forget about it for resolving a contradiction
 		i.remove();
 	}    		
+
+        if (logger.isLoggable(Level.FINEST))
+	    logger.log(Level.FINEST, "negated goal S = {0} = {1} (= {2} original in CNF)", new Object[] {skolemizedQuery, S, Utilities.conjunctiveForm(query, SIMPLIFYING)});
+	logger.log(Level.FINE, "negated goal S = {0} = {1}", new Object[] {skolemizedQuery, S});
 
         final Object solution = search.solve(new ResolutionProblem(knowledgebase, S));
 	logger.log(Level.FINE, "found solution {0}", solution);
@@ -291,7 +292,6 @@ class Resolution implements Inference {
 				    
 				    final Set/*_<Set<Formula>>_*/ resultingClauseSet = new HashSet(S);
 				    resultingClauseSet.add(R);
-				    logger.log(Level.FINEST, "RESRET {0} @todo what's this?", R);
 				    
 				    resumedReturn(new Proof(resultingClauseSet));
 				}
@@ -350,8 +350,8 @@ class Resolution implements Inference {
                         				
 			Set R = Gp;
 			R.addAll(Fp);
-			logger.log(Level.FINER, "resolved {0} from {1} and {2}", new Object[] {R, F, G});
 			final Set factorizedR = factorize(R);
+			logger.log(Level.FINER, "resolved {0} from {1} and {2}. Factorized to {3}", new Object[] {R, F, G, factorizedR});
 			if (factorizedR != null)
 			    R = factorizedR;
 
