@@ -234,7 +234,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	System.out.print("Type sequence expression (C): ");
 	System.out.flush();
 	String  expr2 = IOUtilities.readLine(System.in);
-	System.out.println(logic.satisfy(new InterpretationBase(SignatureBase.EMPTY, Collections.EMPTY_MAP), logic.createFormula(expr2)));
+	System.out.println(logic.satisfy(InterpretationBase.EMPTY(SignatureBase.EMPTY), logic.createFormula(expr2)));
 	boolean sat = logic.infer(expr, expr2);
 	System.out.println(expr + (sat ? " satisfies " : " does not satisfy ") + expr2);
     } 
