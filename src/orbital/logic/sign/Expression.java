@@ -54,7 +54,7 @@ import orbital.logic.sign.type.Typed;
  *       </tr>
  *       <tr id="compositeExpression">
  *         <td>
- *           &cup; {<var class="meta">&upsilon;</var>(t) &brvbar; <var class="meta">&upsilon;</var>&isin;<span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&sigma;&rarr;&tau;</sub> and t&isin;<span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&le;&sigma;</sub>}
+ *           &cup; {<var class="meta.disabled">&upsilon;</var>(t) &brvbar; <var class="meta.disabled">&upsilon;</var>&isin;<span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&sigma;&rarr;&tau;</sub> and t&isin;<span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&le;&sigma;</sub>}
  *         </td>
  *         <td class="defTerm">
  *           {@link ExpressionBuilder#compose(Expression,Expression[]) composites} (<dfn>ascriptors</dfn>)
@@ -113,7 +113,7 @@ import orbital.logic.sign.type.Typed;
  * by formally setting <span class="type">&sigma;</span> := <span class="type">&sigma;<sub>1</sub></span>&times;<span class="type">&sigma;<sub>2</sub></span>&times;&#8230;&times;<span class="type">&sigma;<sub><var class="meta">n</var></sub></span>.
  * This brief notation is justified formally by {@link orbital.logic.functor.Functionals#curry(BinaryFunction) currying}
  * or product construction.
- * Also note that <var class="meta">&upsilon;</var> is not restricted to functions and predicates,
+ * Also note that <var class="meta.disabled">&upsilon;</var> is not restricted to functions and predicates,
  * but is a meta-variable that may stand for any syntactic compositor.
  * </p>
  * <p>
