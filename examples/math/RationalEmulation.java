@@ -11,7 +11,7 @@ import orbital.math.Integer;
  * @version 0.8, 2002/06/18
  * @author  Andr&eacute; Platzer
  */
-public class RationalEmulation {
+public class RationalEmulation extends MathTest {
     /**
      * Application-start entry point.
      */
@@ -30,12 +30,7 @@ public class RationalEmulation {
 			    Values.polynomial(new Rational[] {Values.ONE, Values.valueOf(2), Values.ONE, Values.valueOf(-4)}));
 
 	// perform calculations in Q(X)
-	System.out.println("-(" + f + ") = " + f.minus());
-	System.out.println("(" + f + ") + (" + g + ") = " + f.add(g));
-	System.out.println("(" + f + ") - (" + g + ") = " + f.subtract(g));
-	System.out.println("(" + f + ") * (" + g + ") = " + f.multiply(g));
-	System.out.println("(" + f + ")^-1 = " + f.inverse());
-	System.out.println("(" + f + ") / (" + g + ") = " + f.divide(g));
+	printArithmetic(f,g,true);
     }
 
     /**
@@ -63,6 +58,8 @@ public class RationalEmulation {
 	System.out.println("(" + a + ") * (" + b + ") + (" + a + ")= " + a.multiply(b).add(a));
 	compare(a.multiply(b).add(a),
 		ac.multiply(bc).add(ac));
+
+	printArithmetic(a, b, true);
     }
 
     /**

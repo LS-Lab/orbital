@@ -11,7 +11,7 @@ import orbital.logic.functor.Function;
  * @version 0.8, 2002/04/28
  * @author  Andr&eacute; Platzer
  */
-public class ComplexEmulation {
+public class ComplexEmulation extends MathTest {
     private static final int modulus = 17;
     /**
      * Application-start entry point.
@@ -45,6 +45,8 @@ public class ComplexEmulation {
 	System.out.println("(" + a + ") * (" + b + ") + (" + a + ")*i= " + a.multiply(b).add(a.multiply(i)));
 	compare(a.multiply(b).add(a.multiply(i)),
 		ac.multiply(bc).add(ac.multiply(Values.i)));
+
+	printArithmetic(a, b, false);
     }
 
     /**

@@ -8,7 +8,7 @@ import orbital.logic.functor.Function;
  * @version 0.8, 2002/02/09
  * @author  Andr&eacute; Platzer
  */
-public class ModuloArithmeticTest {
+public class ModuloArithmeticTest extends MathTest {
     private static final int modulus = 17;
     /**
      * Application-start entry point.
@@ -25,9 +25,7 @@ public class ModuloArithmeticTest {
 
 	// perform calculations in Z/mZ
    	System.out.println("Calculating modulo n=" + n + "\tfast normalization to (-n,n)");
-	System.out.println("(" + i + ") + (" + j + ") = " + i.add(j));
-	System.out.println("(" + i + ") - (" + j + ") = " + i.subtract(j));
-	System.out.println("(" + i + ") * (" + j + ") = " + i.multiply(j));
+	printArithmetic(i, j, false);
 	Arithmetic c = i.add(j.multiply(i));
 	System.out.println(c);
     }
@@ -42,9 +40,7 @@ public class ModuloArithmeticTest {
         Quotient/*<Integer>*/ i = Values.quotient(Values.valueOf(3), m);
         Quotient/*<Integer>*/ j = Values.quotient(Values.valueOf(-1), m);
 	// perform calculations in Z / modulus*Z
-	System.out.println("(" + i + ") + (" + j + ") = " + i.add(j));
-	System.out.println("(" + i + ") - (" + j + ") = " + i.subtract(j));
-	System.out.println("(" + i + ") * (" + j + ") = " + i.multiply(j));
+	printArithmetic(i, j, false);
 	//System.out.println("(" + i + ") / (" + j + ") = " + i.divide(j));
     }
 }

@@ -1,6 +1,6 @@
 import orbital.math.*;
 
-class PolynomialTest {
+class PolynomialTest extends MathTest {
     private PolynomialTest() {}
     public static void main(String arg[]) {
 	{
@@ -11,11 +11,7 @@ class PolynomialTest {
 	Polynomial/*<Rational>*/ f = Values.polynomial(new Rational[] {Values.ZERO, Values.ZERO, Values.ONE});
 	Polynomial/*<Rational>*/ g = Values.polynomial(new Rational[] {Values.ZERO, Values.ONE});
 	Rational a = Values.rational(4);
-	System.out.println("(" + f + ") + (" + g + ") = " + f.add(g));
-	System.out.println("-(" + f + ") = " + f.minus());
-	System.out.println("(" + f + ") - (" + g + ") = " + f.subtract(g));
-	System.out.println(a + "*(" + f + ") = " + f.scale(a));
-	System.out.println("(" + f + ") * (" + g + ") = " + f.multiply(g));
+	printArithmetic(f,g,false);
 	System.out.println("(" + f + ") div (" + g + ") = " + f.quotient(g));
 	System.out.println("(" + f + ") mod (" + g + ") = " + f.modulo(g));
 	System.out.println("(" + f + ")(" + a + ") = " + f.apply(a) + " = " + f.modulo(Values.polynomial(new Rational[] {(Rational) a.minus(), Values.ONE})));
@@ -24,11 +20,7 @@ class PolynomialTest {
 
 	f = Values.polynomial(new Rational[] {Values.ONE, Values.ONE, Values.ONE, Values.ONE, Values.ONE, Values.ONE});
 	g = Values.polynomial(new Rational[] {Values.ONE, Values.valueOf(-1), Values.ZERO, Values.valueOf(-1), Values.ONE});
-	System.out.println("(" + f + ") + (" + g + ") = " + f.add(g));
-	System.out.println("-(" + f + ") = " + f.minus());
-	System.out.println("(" + f + ") - (" + g + ") = " + f.subtract(g));
-	System.out.println(a + "*(" + f + ") = " + f.scale(a));
-	System.out.println("(" + f + ") * (" + g + ") = " + f.multiply(g));
+	printArithmetic(f,g,false);
 	System.out.println("(" + f + ") div (" + g + ") = " + f.quotient(g));
 	System.out.println("(" + f + ") mod (" + g + ") = " + f.modulo(g));
 	Euclidean rem = f.modulo(Values.polynomial(new Rational[] {(Rational) a.minus(), Values.ONE}));

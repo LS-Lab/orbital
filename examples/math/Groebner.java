@@ -8,11 +8,13 @@ import java.util.*;
  * @author Andr&eacute; Platzer
  * @version 0.8, 2002-08-21
  */
-public class Groebner {
+public class Groebner extends MathTest {
     public static void main(String arg[]) {
 	test_simple();
 	System.out.println();
 	test_more();
+	System.out.println();
+	quotientCalculation();
     }
     private static void test_simple() {
 	// some polynomials in <b>Q</b>[X,Y]
@@ -26,7 +28,7 @@ public class Groebner {
 
 	Multinomial/*<Rational>*/ f = g.multiply(g);
 
-	printArithmetic(g, f);
+	printArithmetic(g, f, false);
 
 	System.out.println("reducing (" + f + ") with respect to " + G);
 	System.out.println("reduce (" + f + ") with respect to " + G + ", = "
@@ -52,7 +54,7 @@ public class Groebner {
 	};
 	Set/*_<Multinomial<Rational>>_*/ G = new HashSet(Arrays.asList(Garray));
 	
-	printArithmetic(Garray[0], Garray[1]);
+	printArithmetic(Garray[0], Garray[1], false);
 
 	Multinomial/*<Rational>*/ f = Values.multinomial(new int[][] {
 	    {0, 0, 2, 0},
@@ -67,18 +69,39 @@ public class Groebner {
 			   + AlgebraicAlgorithms.groebnerBasis(G, AlgebraicAlgorithms.LEXICOGRAPHIC));
     }
 
-    private static void printArithmetic(Multinomial f, Multinomial g) {
-	Rational a = Values.valueOf(4);
-	System.out.println("(" + f.zero() + ") + (" + f + ") = " + f.zero().add(f));
-	assert f.zero().add(f).equals(f) : "0+x=x";
-	assert f.add(f.zero()).equals(f) : "x+0=x";
-	System.out.println("(" + f + ") + (" + g + ") = " + f.add(g));
-	System.out.println("-(" + f + ") = " + f.minus());
-	System.out.println("(" + f + ") - (" + g + ") = " + f.subtract(g));
-	System.out.println(a + "*(" + f + ") = " + f.scale(a));
-	System.out.println("(" + f.one() + ") * (" + f + ") = " + f.one().multiply(f));
-	assert f.one().multiply(f).equals(f) : "1*x=x";
-	assert f.multiply(f.one()).equals(f) : "x*1=x";
-	System.out.println("(" + f + ") * (" + g + ") = " + f.multiply(g));
+    private static final Comparator order = AlgebraicAlgorithms.LEXICOGRAPHIC;
+    private static void quotientCalculation() {
+	System.out.println("calculate with quotients of polynomials");
+	// create elements in <b>R</b>[X]/(Y^2-X^3-X^2)
+	final Collection m = Arrays.asList(new Multinomial[] {
+	    // alternative form of construction: explicit concatenation
+	    // of monomials. This is more to type, but also more
+	    // simple to construct
+	    Values.MONOMIAL(new int[] {0,2}).subtract(Values.MONOMIAL(new int[] {3,0}))
+	    .subtract(Values.MONOMIAL(new int[] {2,0}))
+	    });
+	// the Groebner basis of m
+	final Set gm = AlgebraicAlgorithms.groebnerBasis(new HashSet(m), order);
+	Quotient/*<Multinomial<Real>>*/ f =
+	    Values.quotient(Values.multinomial(new double[][] {
+		{2,1},
+		{3,0}
+	    }), gm, order);
+	Quotient/*<Multinomial<Real>>*/ g =
+	    Values.quotient(Values.multinomial(new double[][] {
+		{-1,1},
+		{1,1}
+	    }), gm, order);
+
+	// perform calculations in both fields
+	System.out.println("perform calculations in a quotient ring modulo " + m);
+	printArithmetic(f, g, false);
+
+	f = Values.quotient(Values.multinomial(new double[][] {
+		{2,-1},
+		{3,0},
+		{-1,0}
+	    }), gm, order);
+	printArithmetic(f, g, false);
     }
 }// Groebner
