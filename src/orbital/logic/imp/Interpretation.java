@@ -204,6 +204,12 @@ import orbital.logic.functor.Functor;
  *
  * <p> 
  * An interpretation associates each sign in the signature &Sigma; with an object value, its interpretation.
+ * Especially, <em>our</em> interpretations include valuations (variable assignments).
+ * Valuations are a technique introduced by Tarski, for dealing with the semantics of quantifiers.
+ * <!-- The sentence &forall;x p(x) is true if the formula p(x) with the free variable x
+ * is true no matter what value in the domain has been assigned to x by the valuation.
+ * [see Melvin Fitting, and Richard L. Mendelsohn. First-Order Modal Logic. 4.6 Constant Domain Models, p. 97. 1998]
+ * -->
  * </p>
  *
  * @structure extends java.util.Map<Symbol,Object>
