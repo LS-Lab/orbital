@@ -81,7 +81,7 @@ public class AlphaBetaPruning extends AdversarySearch {
     private transient int currentDepth;
 
     /**
-     * Create a new instance of &alph;-&beta;-pruning adversary search.
+     * Create a new instance of &alpha;-&beta;-pruning adversary search.
      * @param maxDepth the maximum number of (half-) turns to look
      * into the future during search.  0 would mean no move, but does
      * not make any sense, since not a single option would then be
@@ -97,7 +97,7 @@ public class AlphaBetaPruning extends AdversarySearch {
         this.currentDepth = 0;
     }
     /**
-     * Create a new instance of &alph;-&beta;-pruning adversary search
+     * Create a new instance of &alpha;-&beta;-pruning adversary search
      * with default preference.
      * <p>
      * Use a preference relation that checks prefers v to w whenever v &gt; w.</p>
