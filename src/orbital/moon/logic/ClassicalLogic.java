@@ -65,6 +65,8 @@ import java.text.SimpleDateFormat;
 
 import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.ListIterator;
+import orbital.algorithm.Combinatorical;
 
 /**
  * Implementation of modern but classical predicate logic (first-order logic).
@@ -136,7 +138,7 @@ import java.util.logging.Level;
  * @todo introduce &#407;ukasiewicz logic
  * @todo Especially provide forall as a functional (higher-order function) of lambda-operator then (@see note to orbital.logic.functor.Substitition)
  */
-public class ClassicalLogic extends ModernLogic implements Logic {
+public class ClassicalLogic extends ModernLogic {
     private static class Debug {
 	private Debug() {}
 	public static void main(String arg[]) throws Exception {
@@ -202,9 +204,12 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		    String expression = IOUtilities.readLine(System.in);
 		    Formula B = (Formula) logic.createExpression(expression);
 		    Signature sigma = B.getSignature();
-		    Interpretation[] Int = logic.createAllInterpretations(sigma, sigma);
-		    for (int i = 0; i < Int.length; i++)
-			System.out.println(Int[i] + ":\t" + logic.satisfy(Int[i], B));
+		    for (Iterator Int = logic.createAllInterpretations(sigma, sigma);
+			 Int.hasNext();
+			 ) {
+			Interpretation I = (Interpretation) Int.next();
+			System.out.println(I + ":\t" + logic.satisfy(I, B));
+		    }
 		    hasBeenProving = true;
 		} else {
 		    String file = arg[option];
@@ -527,316 +532,6 @@ public class ClassicalLogic extends ModernLogic implements Logic {
     	return inferenceMechanism;
     }
 
-    /**
-     * Formula transformation utilities.
-     * @stereotype &laquo;Utilities&raquo;
-     * @stereotype &laquo;Module&raquo;
-     * @version 1.0, 1999/01/16
-     * @author  Andr&eacute; Platzer
-     * @see orbital.util.Utility
-     */
-    public static final class Utilities {
-	private static final ClassicalLogic logic = new ClassicalLogic();
-	/**
-	 * prevent instantiation - module class.
-	 */
-	private Utilities() {}
-    
-	/**
-	 * Transforms into disjunctive normal form (DNF).
-	 * <p>
-	 * This TRS terminates but is not confluent.
-	 * </p>
-	 * <p>
-	 * Note that the transformation into DNF is NP-complete, since the problem
-	 * SAT<sub>DNF</sub> of satisfiability in DNF is linear in the length of the formula,
-	 * whereas general satisfiability SAT = SAT<sub>CNF</sub> is NP-complete.
-	 * Since every formula has an equivalent in DNF the transformation itself must be NP-complete.
-	 * </p>
-	 * @see "Rolf Socher-Ambrosius. Boolean algebra admits no convergent term rewriting system, Springer Lecture Notes in Computer Science 488, RTA '91."
-	 * @internal see mathematische Berechnungstheorie vermittelt, daß es nicht immer möglich ist, mit einer endlichen Folge von Transformationen je zwei beliebig gewählte Ausdrücke in ihre Normalform zu überführen.
-	 * @todo Sollten DNF/KNF von "innen nach außen" erstellt werden?
-	 * @pre true
-	 * @post RES &equiv; f
-	 */
-	public static Formula disjunctiveForm(Formula f) {
-	    return disjunctiveForm(f, false);
-	}
-	public static Formula disjunctiveForm(Formula f, boolean simplifying) {
-	    try {
-		// eliminate derived junctors not in the basis (&forall;,&and;,&or;&not;)
-		if (DNFeliminate == null)
-		    DNFeliminate = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/DNF/eliminate.trs")), logic);
-		f = (Formula) Functionals.fixedPoint(DNFeliminate, f);
-		// simplification part (necessary and does not disturb local confluency?)
-		if (simplifying && DNFSimplification == null)
-		    DNFSimplification =
-			Setops.union(
-				     readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/DNF/simplify.trs")), logic).getReplacements(),
-				     Arrays.asList(new Object[] {
-					 // necessary and does not disturb local confluency? conditional commutative (according to lexical order)
-					 new LexicalConditionalUnifyingMatcher(logic.createExpression("_X2&_X1"), logic.createExpression("_X1&_X2"), logic.createAtomicLiteralVariable("_X1"), logic.createAtomicLiteralVariable("_X2")),
-					 // necessary and does not disturb local confluency? conditional associative (according to lexical order)
-					 //@todo
-				     }));
-		// transform to DNF part
-		if (DNFtrs == null)
-		    DNFtrs = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/DNF/transformToDNF.trs")), logic);
-		//@todo simplifying conditional rules: commutative with lexical sort, etc.
-		return (Formula) Functionals.fixedPoint(simplifying ? Substitutions.getInstance(new ArrayList(Setops.union(DNFSimplification, DNFtrs.getReplacements()))) : DNFtrs, f);
-	    } catch (ParseException ex) {
-		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
-	    }
-	}
-	// lazy initialized cache for TRS rules
-	private static Substitution DNFeliminate;
-	private static Substitution DNFtrs;
-	private static Collection DNFSimplification;
-
-	/**
-	 * Transforms into conjunctive normal form (CNF).
-	 * <p>
-	 * This TRS terminates but is not confluent.</p>
-	 * @todo verify
-	 * @pre true
-	 * @post RES &equiv; f
-	 * @todo ~(a|a) == ~a&~a instead of == ~a somehow because of pattern matching
-	 */
-	public static Formula conjunctiveForm(Formula f) {
-	    return conjunctiveForm(f, false);
-	}
-	public static Formula conjunctiveForm(Formula f, boolean simplifying) {
-	    try {
-		// eliminate derived junctors not in the basis (&forall;,&and;,&or;&not;)
-		if (CNFeliminate == null)
-		    CNFeliminate = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/CNF/eliminate.trs")), logic);
-		f = (Formula) Functionals.fixedPoint(CNFeliminate, f);
-		// simplification part (necessary and does not disturb local confluency?)
-		if (simplifying && CNFSimplification == null)
-		    CNFSimplification =
-			Setops.union(
-				     readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/CNF/simplify.trs")), logic).getReplacements(), 
-				     Arrays.asList(new Object[] {
-					 // necessary and does not disturb local confluency? conditional commutative (according to lexical order)
-					 new LexicalConditionalUnifyingMatcher(logic.createExpression("_X2&_X1"), logic.createExpression("_X1&_X2"), logic.createAtomicLiteralVariable("_X1"), logic.createAtomicLiteralVariable("_X2")),
-
-					 // necessary and does not disturb local confluency? right associative
-					 //@xxx for CNF infinite recursion for (a&b)<->(b&a) and a<->b<->c. this is because conditional commutative and right-associative oscillate, then
-					 //Substitutions.createSingleSidedMatcher(logic.createExpression("(_X1&_X2)&_X3"), logic.createExpression("_X1&(_X2&_X3)")),
-				     }));
-		// transform to CNF part
-		if (CNFtrs == null)
-		    CNFtrs = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/CNF/transformToCNF.trs")), logic);
-		return (Formula) Functionals.fixedPoint(simplifying ? Substitutions.getInstance(new ArrayList(Setops.union(CNFSimplification, CNFtrs.getReplacements()))) : CNFtrs, f);
-	    } catch (ParseException ex) {
-		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
-	    }
-	}
-	// lazy initialized cache for TRS rules
-	private static Substitution CNFeliminate;
-	private static Substitution CNFtrs;
-	private static Collection CNFSimplification;
-	
-	/**
-	 * Transforms into implicative normal form (INF)
-	 * @todo introduce Formula implicativeForm(Formula f) as TRS
-	 */
-
-	/**
-	 * Get the Skolem normal form of a formula.
-	 * <p>
-	 * <em>After</em> transforming F into negation normal form,
-	 * a Skolem normal form can be constructed per
-	 * <ul>
-	 *   <li>sk(A) = A if A is a literal</li>
-	 *   <li>sk(A&and;B) = sk(A)&and;sk(B)</li>
-	 *   <li>sk(A&or;B) = sk(A)&or;sk(B)</li>
-	 *   <li>sk(&forall;x A) = &forall;x sk(A)</li>
-	 *   <li>sk(&exist;x A) = sk(A[x&rarr;f(x<sub>1</sub>,...,x<sub>n</sub>)]) where FV(&exist;x A) = {x<sub>1</sub>,...,x<sub>n</sub>}</li>
-	 *   <!-- @todo how "meta" is the following, or would it simply work? -->
-	 *   <li>sk(&exist;&lambda;x A) = sk((&lambda;x A)(f(x<sub>1</sub>,...,x<sub>n</sub>))) where FV(&exist;x A) = {x<sub>1</sub>,...,x<sub>n</sub>}</li>
-	 * </ul>
-	 * </p>
-	 * This method will call {@link #negationForm(Formula)}.
-	 */
-	public static final Formula skolemForm(Formula F) {
-	    // transform to negation normal form
-	    F = negationForm(F);
-	    try {
-		// skolem transform TRS
-		if (SkolemTransform == null) SkolemTransform = Substitutions.getInstance(Arrays.asList(new Object[] {
-		    //@xxx note that A should be a metavariable for a formula
-		    new SkolemizingUnifyingMatcher(logic.createExpression("?_X1 _A"), logic.createExpression("_A"), logic.createAtomicLiteralVariable("_X1")),
-		}));
-		return (Formula) Functionals.fixedPoint(SkolemTransform, F);
-	    } catch (ParseException ex) {
-		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
-	    }
-	}
-	// lazy initialized cache for TRS rules
-	private static Substitution SkolemTransform;
-
-	/**
-	 * Get the negation normal form of a formula.
-	 * <p>
-	 * A formula is in a negation normal form if the only negations
-	 * are due to literals, i.e. negations may only occur directly
-	 * in front of an atom.
-	 * </p>
-	 * <p>
-	 * In order to prevent ill-defined negation normal forms, we will first
-	 * get rid of derived junctors like &rarr;,&harr; etc.
-	 * </p>
-	 */
-	public static final Formula negationForm(Formula F) {
-	    try {
-		// eliminate derived junctors not in the basis (&forall;,&exist;,&and;,&or;&not;)
-		if (CNFeliminate == null) conjunctiveForm(logic.createFormula("true"));
-		F = (Formula) Functionals.fixedPoint(CNFeliminate, F);
-		// negation normal form transform TRS
-		if (NegationNFTransform == null)
-		    NegationNFTransform = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/negationNF.trs")), logic);
-		return (Formula) Functionals.fixedPoint(NegationNFTransform, F);
-	    } catch (ParseException ex) {
-		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
-	    }
-	}
-
-	// lazy initialized cache for TRS rules
-	private static Substitution NegationNFTransform;
-
-	/**
-	 * Drop any quantifiers.
-	 * Will simply remove every quantifier from F.
-	 */
-	public static final Formula dropQuantifiers(Formula F) {
-	    try {
-		// skolem transform TRS
-		if (QuantifierDropTransform == null) QuantifierDropTransform = Substitutions.getInstance(Arrays.asList(new Object[] {
-		    //@xxx note that A should be a metavariable for a formula
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("°_X1 _A"), logic.createExpression("_A")),
-		    Substitutions.createSingleSidedMatcher(logic.createExpression("?_X1 _A"), logic.createExpression("_A")),
-		}));
-		return (Formula) Functionals.fixedPoint(QuantifierDropTransform, F);
-	    } catch (ParseException ex) {
-		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
-	    }
-	}
-
-	// lazy initialized cache for TRS rules
-	private static Substitution QuantifierDropTransform;
-
-	/**
-	 * Unifying matcher that skolemizes (existentially quantified) variables
-	 * into functions of the free variables.
-	 * <p>
-	 * Will match with unification, and replace (with unifier applied),
-	 * but afterwards skolemize the given variable away.
-	 * </p>
-	 *
-	 * @version 0.9, 2001/07/14
-	 * @author  Andr&eacute; Platzer
-	 * @todo could also skolemize second-order quantified predicates
-	 */
-	private static class SkolemizingUnifyingMatcher extends UnifyingMatcher {
-	    private static final long serialVersionUID = 5595771241916973901L;
-	    private Object skolemizedVariable;
-	    /**
-	     * Unifying matcher that skolemizes.
-	     */
-	    public SkolemizingUnifyingMatcher(Object pattern, Object substitute, Object skolemizedVariable) {
-		super(pattern, substitute);
-		this.skolemizedVariable = skolemizedVariable;
-	    }
-
-	    public Object replace(Object t) {
-		final Object r = super.replace(t);
-		final Object x = getUnifier().apply(skolemizedVariable);
-		// now substitute "[x->s(FV(t))]"
-		final Set freeVariables = ((Formula)t).getFreeVariables();
-		final Type skolemType;
-		{
-		    Type arguments[] = new Type[freeVariables.size()];
-		    Arrays.fill(arguments, Types.INDIVIDUAL);
-		    skolemType = Types.map(Types.product(arguments), Types.INDIVIDUAL);
-		}
-		final Symbol skolemFunctionSymbol = new UniqueSymbol("s", skolemType, null, false);
-
-		// build expression form
-		try {
-		    Expression[] freeVariableExpressions = new Expression[freeVariables.size()];
-		    Iterator it = freeVariables.iterator();
-		    for (int i = 0; i < freeVariables.size(); i++)
-			freeVariableExpressions[i] = logic.createAtomic((Symbol)it.next());
-		    assert !it.hasNext();
-		    // expression form of s(FV(t))
-		    Expression applied_s = logic.compose(logic.createAtomic(skolemFunctionSymbol),
-							 freeVariableExpressions);
-
-		    // really substitute "[x->s(FV(t))]"
-		    return Substitutions.getInstance(Arrays.asList(new Object[] {
-			Substitutions.createExactMatcher(x, applied_s)
-		    })).apply(r);
-		} catch (ParseException ex) {
-		    throw (InternalError) new InternalError("Unexpected syntax in internal term construction").initCause(ex);
-		}
-	    }
-	}
-
-	/**
-	 * Reads a term-rewrite system from a stream.
-	 * The syntax is
-	 * <pre>
-	 * &lt;matchingSide&gt; |- &lt;replacementSide&gt;    # &lt;comment&gt; &lt;EOL&gt;
-	 * ...
-	 * </pre>
-	 * @todo move somewhere and also let Simplification.java use it.
-	 */
-	private static final Substitution readTRS(Reader reader, ExpressionSyntax syntax) {
-	    try {
-		return LogicParser.readTRS(reader, syntax);
-	    } catch (ParseException ex) {
-		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
-	    } catch (IOException ex) {
-		throw (RuntimeException) new RuntimeException("error reading " + reader).initCause(ex);
-	    }
-	}
-    }
-
-
-    // convenience methods
-    /**
-     * speed up for internal parsing in TRS
-     */
-    private final Expression createAtomicIndividualVariable(String signifier) {
-	return createAtomic(new SymbolBase(signifier, SymbolBase.UNIVERSAL_ATOM, null, true));
-    }
-    /**
-     * speed up for internal parsing in TRS
-     */
-    private final Expression createAtomicLiteralVariable(String signifier) {
-	return createAtomic(new SymbolBase(signifier, SymbolBase.BOOLEAN_ATOM, null, true));
-    }
-    /**
-     * speed up for internal parsing in TRS
-     */
-    private final Expression createAtomicLiteral(String signifier) {
-	return createAtomic(new SymbolBase(signifier, SymbolBase.BOOLEAN_ATOM, null, false));
-    }
-
-    /**
-     * facade for convenience.
-     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Method</a>
-     * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience Method</a>
-     */
-    public boolean infer(String expression, String exprDerived) throws ParseException {
-	Formula B[] = (Formula[]) Arrays.asList(createAllExpressions(expression)).toArray(new Formula[0]);
-	Formula D = (Formula) createExpression(exprDerived);
-	logger.log(Level.FINE, "{0} has type {1} with sigma={2}", new Object[] {D, D.getType(), D.getSignature()});
-	return inference().infer(B, D);
-    } 
-	
-
     //@todo remove this bugfix that replaces "xfy" by "yfy" associativity only for *.jj parsers to work without inefficient right-associative lookahead.
     private static final String xfy = "yfy";
 
@@ -914,7 +609,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
     // Helper utilities.
 
     static class LogicFunctions {
-        private LogicFunctions() {}
+        LogicFunctions() {}
     
 	private static final Type UNARY_LOGICAL_JUNCTOR = Types.predicate(Types.TRUTH);
 	private static final Type BINARY_LOGICAL_JUNCTOR = Types.predicate(Types.product(new Type[] {Types.TRUTH, Types.TRUTH}));
@@ -1004,7 +699,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    //private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.INDIVIDUAL, Types.TRUTH}), Types.TRUTH);
 	    private final Type logicalTypeDeclaration = Types.map(Types.map(Types.INDIVIDUAL, Types.TRUTH), Types.TRUTH);
 	    public Object apply(Object f) {
-		throw new LogicException("quantified formulas only have a semantic value with respect to a possibly infinite domain. They are available for inference, but cannot be interpreted with finite means.");
+		throw new LogicException("quantified formulas only have a semantic value with respect to a possibly infinite domain. They are available for inference, but they cannot be interpreted with finite means.");
 	    }
 	    public String toString() { return "°"; }
 	};
@@ -1014,7 +709,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    //@todo also templatize with t somehow? should be (t->TRUTH)->truth
 	    private final Type logicalTypeDeclaration = Types.map(Types.map(Types.INDIVIDUAL, Types.TRUTH), Types.TRUTH);
 	    public Object apply(Object f) {
-		throw new LogicException("quantified formulas only have a semantic value with respect to a possibly infinite domain. They are available for inference, but cannot be interpreted with finite means.");
+		throw new LogicException("quantified formulas only have a semantic value with respect to a possibly infinite domain. They are available for inference, but they cannot be interpreted with finite means.");
 	    }
 	    public String toString() { return "?"; }
 	};
@@ -1059,10 +754,13 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	// handle special cases of term construction, first and before type checking occurs since the type &Pi;-abstractions need more flexibility
 	if (op.getType() instanceof PiAbstractionType) {
 	    PiAbstractionType piabst = (PiAbstractionType) op.getType();
-	    //@todo to be honest, we need to unify? For example, if &forall; : (\\s:*.(s&rarr;o)&rarr;o) and if f:i&rarr;o then &forall;(f) : o.
-	    //@todo would need to exchange op by a formula that only differs in type?
+	    //@xxx to be honest, we somehow need to unify? For example, if &forall; : (\\s:*.(s&rarr;o)&rarr;o) and if f:i&rarr;o then &forall;(f) : o.
+	    Type apType = Types.typeOf(arguments);
 	    logger.log(Level.FINEST, "compositor {0} : {1} applied to the {2} arguments {3} : {4}. Result has type {5}", new Object[] {op, op.getType(), new java.lang.Integer(arguments.length), MathUtilities.format(arguments), Types.typeOf(arguments), piabst.apply(Types.typeOf(arguments))});
-	    return super.compose(super.compose(new PiApplicationExpression(piabst, piabst.apply(Types.typeOf(arguments))),
+	    //@todo could we exchange op by a formula that only differs in type, and thus avoid conversion formula?
+	    return super.compose(super.compose(new PiApplicationExpression(piabst,
+									   piabst.apply(apType)
+									   ),
 					       new Expression[] {op}
 					       ),
 				 arguments);
@@ -1455,6 +1153,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
      * @author Andr&eacute; Platzer
      * @version 1.1, 2002-11-19
      * @internal currently this is only type conversion and has nothing to do with the particular task of &Pi;-application.
+     * @internal note that this is (almost) like ModernFormula.FixedAtomicSymbol(logic, new SymbolBase("<to " + applied + ">",Types.map(abstraction, applied),null,false), Functions.id, false). Apart from getSignature and equals/hashCode.
      */
     private static class PiApplicationExpression extends ModernFormula {
 	private PiAbstractionType abstraction;
@@ -1543,9 +1242,6 @@ public class ClassicalLogic extends ModernLogic implements Logic {
     public Interpretation coreInterpretation() {
 	return _coreInterpretation;
     }
-    public Signature scanSignature(String expression) throws ParseException {
-	return createFormula(expression).getSignature();
-    } 
 
 
 
@@ -1567,10 +1263,11 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 			    sigmaInt = sigmaInt.union(relevantSignatureOf(B[i]));
 			}
 			// semantic test whether all interpretations that satisfy all formulas in B, also satisfy D
-			Interpretation[] Int = createAllInterpretations(sigmaInt, sigma);
 			loop:
-			for (int i = 0; i < Int.length; i++) {
-			    Interpretation I = Int[i];
+			for (Iterator Int = createAllInterpretations(sigmaInt, sigma);
+			     Int.hasNext();
+			     ) {
+			    Interpretation I = (Interpretation) Int.next();
 			    // I |= B is defined as &forall;F&isin;B: I |= F
 			    for (int b = 0; b < B.length; b++)
 				if (!B[b].apply(I).equals(Boolean.TRUE)) //if (!satisfy(I, B[b]))
@@ -1621,10 +1318,10 @@ public class ClassicalLogic extends ModernLogic implements Logic {
      * @pre propositionalSigma&sube;sigma &and; propositionalSigma is only a signature of propositional logic
      * @param sigma the full declared signature of the interpretations to create.
      * @param propositionalSigma the part of the signature for which to create all interpretations.
-     * @return all &Sigma;-Interpretations that are valid in this Logic (i.e. that can be formed with Signature &Sigma;).
+     * @return all &Sigma;-Interpretations in this Logic (i.e. that can be formed with Signature &Sigma;).
      * @xxx somehow in a formula like (\x. x>2)(7) the numbers 2, and 7 are also subject to interpretation by true or false.
      */
-    private static Interpretation[] createAllInterpretations(Signature propositionalSigma, Signature sigma) {
+    private static Iterator/*_<Interpretation>_*/ createAllInterpretations(Signature propositionalSigma, final Signature sigma) {
 	assert sigma != null && propositionalSigma != null : "signatures are !=null: " + propositionalSigma + ", " + sigma;
 	assert sigma.containsAll(propositionalSigma) : propositionalSigma + " subset of " + sigma;
 	// determine the non-fixed propositional part of propositionalSigma
@@ -1643,22 +1340,330 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	}
 
 	// interpret sigmaComb in all possible ways
-	Combinatorical   comb = Combinatorical.getPermutations(sigmaComb.size(), 2, true);
-	Interpretation[] all = new Interpretation[comb.count()];
-	for (int i = 0; i < all.length; i++) {
-	    // although I is a sigma-interpretation, it only interprets sigmaComb
-	    Interpretation I = new InterpretationBase(sigma, new HashMap());
-	    Iterator	   it = sigmaComb.iterator();
-	    assert comb.hasNext() : "Combinatorical.count() fits to Combinatorical.hasNext()";
-	    int[] c = comb.next();
-	    for (int s = 0; it.hasNext(); s++)
-		I.put(it.next(), c[s] == 0 ? Boolean.FALSE : Boolean.TRUE);
-	    all[i] = I;
-	} 
-	return all;
+	return new Iterator() {
+		final Combinatorical comb = Combinatorical.getPermutations(sigmaComb.size(), 2, true);
+		public Object next()
+		{
+		    // although I is a sigma-interpretation, it only interprets sigmaComb
+		    Interpretation I = new InterpretationBase(sigma, new HashMap());
+		    Iterator	   it = sigmaComb.iterator();
+		    int[] c = comb.next();
+		    for (int s = 0; it.hasNext(); s++)
+			I.put(it.next(), c[s] == 0 ? Boolean.FALSE : Boolean.TRUE);
+		    return I;
+		}
+
+		public boolean hasNext()
+		{
+		    return comb.hasNext();
+		}
+
+		public void remove()
+		{
+		    throw new UnsupportedOperationException();
+		}
+	    };
     } 
 
 
+
+
+    /**
+     * Formula transformation utilities.
+     * @stereotype &laquo;Utilities&raquo;
+     * @stereotype &laquo;Module&raquo;
+     * @version 1.0, 1999/01/16
+     * @author  Andr&eacute; Platzer
+     * @see orbital.util.Utility
+     */
+    public static final class Utilities {
+	private static final ClassicalLogic logic = new ClassicalLogic();
+	/**
+	 * prevent instantiation - module class.
+	 */
+	private Utilities() {}
+    
+	/**
+	 * Transforms into disjunctive normal form (DNF).
+	 * <p>
+	 * This TRS terminates but is not confluent.
+	 * </p>
+	 * <p>
+	 * Note that the transformation into DNF is NP-complete, since the problem
+	 * SAT<sub>DNF</sub> of satisfiability in DNF is linear in the length of the formula,
+	 * whereas general satisfiability SAT = SAT<sub>CNF</sub> is NP-complete.
+	 * Since every formula has an equivalent in DNF the transformation itself must be NP-complete.
+	 * </p>
+	 * @see "Rolf Socher-Ambrosius. Boolean algebra admits no convergent term rewriting system, Springer Lecture Notes in Computer Science 488, RTA '91."
+	 * @internal see mathematische Berechnungstheorie vermittelt, daß es nicht immer möglich ist, mit einer endlichen Folge von Transformationen je zwei beliebig gewählte Ausdrücke in ihre Normalform zu überführen.
+	 * @todo Sollten DNF/KNF von "innen nach außen" erstellt werden?
+	 * @pre true
+	 * @post RES &equiv; f
+	 */
+	public static Formula disjunctiveForm(Formula f) {
+	    return disjunctiveForm(f, false);
+	}
+	public static Formula disjunctiveForm(Formula f, boolean simplifying) {
+	    try {
+		// eliminate derived junctors not in the basis (&forall;,&and;,&or;&not;)
+		if (DNFeliminate == null)
+		    DNFeliminate = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/DNF/eliminate.trs")), logic);
+		f = (Formula) Functionals.fixedPoint(DNFeliminate, f);
+		// simplification part (necessary and does not disturb local confluency?)
+		if (simplifying && DNFSimplification == null)
+		    DNFSimplification =
+			Setops.union(
+				     readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/DNF/simplify.trs")), logic).getReplacements(),
+				     Arrays.asList(new Object[] {
+					 // necessary and does not disturb local confluency? conditional commutative (according to lexical order)
+					 new LexicalConditionalUnifyingMatcher(logic.createExpression("_X2&_X1"), logic.createExpression("_X1&_X2"), logic.createAtomicLiteralVariable("_X1"), logic.createAtomicLiteralVariable("_X2")),
+					 // necessary and does not disturb local confluency? conditional associative (according to lexical order)
+					 //@todo
+				     }));
+		// transform to DNF part
+		if (DNFtrs == null)
+		    DNFtrs = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/DNF/transformToDNF.trs")), logic);
+		//@todo simplifying conditional rules: commutative with lexical sort, etc.
+		return (Formula) Functionals.fixedPoint(simplifying ? Substitutions.getInstance(new ArrayList(Setops.union(DNFSimplification, DNFtrs.getReplacements()))) : DNFtrs, f);
+	    } catch (ParseException ex) {
+		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
+	    }
+	}
+	// lazy initialized cache for TRS rules
+	private static Substitution DNFeliminate;
+	private static Substitution DNFtrs;
+	private static Collection DNFSimplification;
+
+	/**
+	 * Transforms into conjunctive normal form (CNF).
+	 * <p>
+	 * This TRS terminates but is not confluent.</p>
+	 * @todo verify
+	 * @pre true
+	 * @post RES &equiv; f
+	 * @todo ~(a|a) == ~a&~a instead of == ~a somehow because of pattern matching
+	 */
+	public static Formula conjunctiveForm(Formula f) {
+	    return conjunctiveForm(f, false);
+	}
+	public static Formula conjunctiveForm(Formula f, boolean simplifying) {
+	    try {
+		// eliminate derived junctors not in the basis (&forall;,&and;,&or;&not;)
+		if (CNFeliminate == null)
+		    CNFeliminate = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/CNF/eliminate.trs")), logic);
+		f = (Formula) Functionals.fixedPoint(CNFeliminate, f);
+		// simplification part (necessary and does not disturb local confluency?)
+		if (simplifying && CNFSimplification == null)
+		    CNFSimplification =
+			Setops.union(
+				     readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/CNF/simplify.trs")), logic).getReplacements(), 
+				     Arrays.asList(new Object[] {
+					 // necessary and does not disturb local confluency? conditional commutative (according to lexical order)
+					 new LexicalConditionalUnifyingMatcher(logic.createExpression("_X2&_X1"), logic.createExpression("_X1&_X2"), logic.createAtomicLiteralVariable("_X1"), logic.createAtomicLiteralVariable("_X2")),
+
+					 // necessary and does not disturb local confluency? right associative
+					 //@xxx for CNF infinite recursion for (a&b)<->(b&a) and a<->b<->c. this is because conditional commutative and right-associative oscillate, then
+					 //Substitutions.createSingleSidedMatcher(logic.createExpression("(_X1&_X2)&_X3"), logic.createExpression("_X1&(_X2&_X3)")),
+				     }));
+		// transform to CNF part
+		if (CNFtrs == null)
+		    CNFtrs = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/CNF/transformToCNF.trs")), logic);
+		return (Formula) Functionals.fixedPoint(simplifying ? Substitutions.getInstance(new ArrayList(Setops.union(CNFSimplification, CNFtrs.getReplacements()))) : CNFtrs, f);
+	    } catch (ParseException ex) {
+		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
+	    }
+	}
+	// lazy initialized cache for TRS rules
+	private static Substitution CNFeliminate;
+	private static Substitution CNFtrs;
+	private static Collection CNFSimplification;
+	
+	/**
+	 * Transforms into implicative normal form (INF)
+	 * @todo introduce Formula implicativeForm(Formula f) as TRS
+	 */
+
+	/**
+	 * Get the negation normal form of a formula.
+	 * <p>
+	 * A formula is in a negation normal form if the only negations
+	 * are due to literals, i.e. negations may only occur directly
+	 * in front of an atom.
+	 * </p>
+	 * <p>
+	 * In order to prevent ill-defined negation normal forms, we will first
+	 * get rid of derived junctors like &rarr;,&harr; etc.
+	 * </p>
+	 */
+	public static final Formula negationForm(Formula F) {
+	    try {
+		// eliminate derived junctors not in the basis (&forall;,&exist;,&and;,&or;&not;)
+		if (CNFeliminate == null) conjunctiveForm(logic.createFormula("true"));
+		F = (Formula) Functionals.fixedPoint(CNFeliminate, F);
+		// negation normal form transform TRS
+		if (NegationNFTransform == null)
+		    NegationNFTransform = readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/negationNF.trs")), logic);
+		return (Formula) Functionals.fixedPoint(NegationNFTransform, F);
+	    } catch (ParseException ex) {
+		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
+	    }
+	}
+
+	// lazy initialized cache for TRS rules
+	private static Substitution NegationNFTransform;
+
+	/**
+	 * Drop any quantifiers.
+	 * Will simply remove every quantifier from F.
+	 */
+	public static final Formula dropQuantifiers(Formula F) {
+	    try {
+		// skolem transform TRS
+		if (QuantifierDropTransform == null) QuantifierDropTransform = Substitutions.getInstance(Arrays.asList(new Object[] {
+		    //@xxx note that A should be a metavariable for a formula
+		    Substitutions.createSingleSidedMatcher(logic.createExpression("°_X1 _A"), logic.createExpression("_A")),
+		    Substitutions.createSingleSidedMatcher(logic.createExpression("?_X1 _A"), logic.createExpression("_A")),
+		}));
+		return (Formula) Functionals.fixedPoint(QuantifierDropTransform, F);
+	    } catch (ParseException ex) {
+		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
+	    }
+	}
+
+	// lazy initialized cache for TRS rules
+	private static Substitution QuantifierDropTransform;
+
+	/**
+	 * Get the Skolem normal form of a formula.
+	 * <p>
+	 * <em>After</em> transforming F into negation normal form,
+	 * a Skolem normal form can be constructed per
+	 * <ul>
+	 *   <li>sk(A) = A if A is a literal</li>
+	 *   <li>sk(A&and;B) = sk(A)&and;sk(B)</li>
+	 *   <li>sk(A&or;B) = sk(A)&or;sk(B)</li>
+	 *   <li>sk(&forall;x A) = &forall;x sk(A)</li>
+	 *   <li>sk(&exist;x A) = sk(A[x&rarr;f(x<sub>1</sub>,...,x<sub>n</sub>)]) where FV(&exist;x A) = {x<sub>1</sub>,...,x<sub>n</sub>}</li>
+	 *   <!-- @todo how "meta" is the following, or would it simply work? -->
+	 *   <li>sk(&exist;&lambda;x A) = sk((&lambda;x A)(f(x<sub>1</sub>,...,x<sub>n</sub>))) where FV(&exist;x A) = {x<sub>1</sub>,...,x<sub>n</sub>}</li>
+	 * </ul>
+	 * </p>
+	 * This method will call {@link #negationForm(Formula)}.
+	 */
+	public static final Formula skolemForm(Formula F) {
+	    // transform to negation normal form
+	    F = negationForm(F);
+	    try {
+		// skolem transform TRS
+		if (SkolemTransform == null) SkolemTransform = Substitutions.getInstance(Arrays.asList(new Object[] {
+		    //@xxx note that A should be a metavariable for a formula
+		    new SkolemizingUnifyingMatcher(logic.createExpression("?_X1 _A"), logic.createExpression("_A"), logic.createAtomicLiteralVariable("_X1")),
+		}));
+		return (Formula) Functionals.fixedPoint(SkolemTransform, F);
+	    } catch (ParseException ex) {
+		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
+	    }
+	}
+	// lazy initialized cache for TRS rules
+	private static Substitution SkolemTransform;
+
+	/**
+	 * Unifying matcher that skolemizes (existentially quantified) variables
+	 * into functions of the free variables.
+	 * <p>
+	 * Will match with unification, and replace (with unifier applied),
+	 * but afterwards skolemize the given variable away.
+	 * </p>
+	 *
+	 * @version 0.9, 2001/07/14
+	 * @author  Andr&eacute; Platzer
+	 * @todo could also skolemize second-order quantified predicates
+	 */
+	private static class SkolemizingUnifyingMatcher extends UnifyingMatcher {
+	    private static final long serialVersionUID = 5595771241916973901L;
+	    private Object skolemizedVariable;
+	    /**
+	     * Unifying matcher that skolemizes.
+	     */
+	    public SkolemizingUnifyingMatcher(Object pattern, Object substitute, Object skolemizedVariable) {
+		super(pattern, substitute);
+		this.skolemizedVariable = skolemizedVariable;
+	    }
+
+	    public Object replace(Object t) {
+		final Object r = super.replace(t);
+		final Object x = getUnifier().apply(skolemizedVariable);
+		// now substitute "[x->s(FV(t))]"
+		final Set freeVariables = ((Formula)t).getFreeVariables();
+		final Type skolemType;
+		{
+		    Type arguments[] = new Type[freeVariables.size()];
+		    Arrays.fill(arguments, Types.INDIVIDUAL);
+		    skolemType = Types.map(Types.product(arguments), Types.INDIVIDUAL);
+		}
+		final Symbol skolemFunctionSymbol = new UniqueSymbol("s", skolemType, null, false);
+
+		// build expression form
+		try {
+		    Expression[] freeVariableExpressions = new Expression[freeVariables.size()];
+		    Iterator it = freeVariables.iterator();
+		    for (int i = 0; i < freeVariables.size(); i++)
+			freeVariableExpressions[i] = logic.createAtomic((Symbol)it.next());
+		    assert !it.hasNext();
+		    // expression form of s(FV(t))
+		    Expression applied_s = logic.compose(logic.createAtomic(skolemFunctionSymbol),
+							 freeVariableExpressions);
+
+		    // really substitute "[x->s(FV(t))]"
+		    return Substitutions.getInstance(Arrays.asList(new Object[] {
+			Substitutions.createExactMatcher(x, applied_s)
+		    })).apply(r);
+		} catch (ParseException ex) {
+		    throw (InternalError) new InternalError("Unexpected syntax in internal term construction").initCause(ex);
+		}
+	    }
+	}
+
+	/**
+	 * Reads a term-rewrite system from a stream.
+	 * The syntax is
+	 * <pre>
+	 * &lt;matchingSide&gt; |- &lt;replacementSide&gt;    # &lt;comment&gt; &lt;EOL&gt;
+	 * ...
+	 * </pre>
+	 * @todo move somewhere and also let Simplification.java use it.
+	 */
+	private static final Substitution readTRS(Reader reader, ExpressionSyntax syntax) {
+	    try {
+		return LogicParser.readTRS(reader, syntax);
+	    } catch (ParseException ex) {
+		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
+	    } catch (IOException ex) {
+		throw (RuntimeException) new RuntimeException("error reading " + reader).initCause(ex);
+	    }
+	}
+    }
+
+
+    // convenience methods
+    /**
+     * speed up for internal parsing in TRS
+     */
+    private final Expression createAtomicIndividualVariable(String signifier) {
+	return createAtomic(new SymbolBase(signifier, SymbolBase.UNIVERSAL_ATOM, null, true));
+    }
+    /**
+     * speed up for internal parsing in TRS
+     */
+    private final Expression createAtomicLiteralVariable(String signifier) {
+	return createAtomic(new SymbolBase(signifier, SymbolBase.BOOLEAN_ATOM, null, true));
+    }
+    /**
+     * speed up for internal parsing in TRS
+     */
+    private final Expression createAtomicLiteral(String signifier) {
+	return createAtomic(new SymbolBase(signifier, SymbolBase.BOOLEAN_ATOM, null, false));
+    }
 
     /**
      * Convenience method.
@@ -1669,6 +1674,20 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	return (Formula) createExpression(expression);
     } 
    
+    /**
+     * facade for convenience.
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience Method</a>
+     * @see #createExpression(String)
+     * @see #infer(Formula[],Formula)
+     */
+    public boolean infer(String expression, String exprDerived) throws ParseException {
+	Formula B[] = (Formula[]) Arrays.asList(createAllExpressions(expression)).toArray(new Formula[0]);
+	Formula D = (Formula) createExpression(exprDerived);
+	logger.log(Level.FINE, "Formula {0} has type {1} with sigma={2}", new Object[] {D, D.getType(), D.getSignature()});
+	return inference().infer(B, D);
+    } 
+	
     /**
      * @deprecated empty formulas are not defined
      */
