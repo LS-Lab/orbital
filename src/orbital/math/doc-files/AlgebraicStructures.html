@@ -31,16 +31,25 @@
   <li><a href="#quotient">Quotient structures</a></li>
   <li><a href="#generated">Generating systems</a></li>
 </ul>
-<h2 id="algebraic">Algebraic Structures</h2>
+<h2 id="algebraic">Overview</h2>
+<p id="algebraic">Three levels of abstraction in algebra are</p>
+<ol>
+  <li>concrete algebra: specific elements of a specific set with precisely 
+    defined operations.</li>
+  <li>abstract algebra / axiomatic algebra: general algebraic structures with 
+    operations satisfying postulates, instead of specific sets.</li>
+  <li>universal algebra: &quot;relief&quot; from specifying postulates.</li>
+</ol>
+<h2 id="algebraic">Algebraic Structures</h2> 
 <p>The following algebraic structures together with their corresponding 
 homomorphisms form categories. Also all algebraic structures share the following 
 terminology:</p>
 <dl class="def">
-  Let (E,⋅) have any algebraic structure <span class="signifier">T</span>. 
+  Let (E,⋅) have any algebraic structure <span class="signifier">T</span>.  
   <dt>sub-<span class="signifier">T</span></dt>
-  <dd>U≤E :⇔ U⊆E ∧ (U,⋅|<sub>U×U</sub>) has itself an algebraic  
-    structure <span class="signifier">T</span>.<br> 
-    U is called a sub-<span class="signifier">T</span> then.</dd> 
+  <dd>U≤E :⇔ U⊆E ∧ (U,⋅|<sub>U×U</sub>) has itself an algebraic   
+    structure <span class="signifier">T</span>.<br>  
+    U is called a sub-<span class="signifier">T</span> then.</dd>  
   <dt>isomorphism</dt>
   <dd>
     <table width="80%" class="def">
@@ -848,11 +857,11 @@ homomorphisms of rings:</p>
     ∀y<sub>1</sub>,…,y<sub>n</sub>∈M <big>(</big>(∀i x<sub>i</sub>~y<sub>i</sub>) 
     ⇒ ⋆(x<sub>1</sub>,…,x<sub>n</sub>) ~ ⋆(y<sub>1</sub>,…,y<sub>n</sub>)<big>)</big></center></li>
 </ol>
-Then the <dfn>quotient</dfn> <center>M/~ := M̄ := {x̄ ¦ x∈M} with<br />  
-x̄ := <sup>-1</sup>f({f(x)}) = {y∈M ¦ x~y} for x∈M </center>has the same   
-algebraic structure as M. If M is a magma, semi-group, monoid, group, Abelian   
-group, ring, R-module, or vector space, then M/~ is as well. The laws of   
-composition ⋆ and laws of action · on M/~ are obtained by passing to the   
+Then the <dfn>quotient</dfn> <center>M/~ := M̄ := {x̄ ¦ x∈M} with<br />   
+x̄ := <sup>-1</sup>f({f(x)}) = {y∈M ¦ x~y} for x∈M </center>has the same    
+algebraic structure as M. If M is a magma, semi-group, monoid, group, Abelian    
+group, ring, R-module, or vector space, then M/~ is as well. The laws of    
+composition ⋆ and laws of action · on M/~ are obtained by passing to the    
 quotient:
 <div style="text-align: center">
   x̄⋆ȳ := <span style="text-decoration: overline;">x⋆y</span>
