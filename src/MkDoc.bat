@@ -6,7 +6,8 @@ echo    -standard     only use the standard Doclet
 rem once Emacs knows Unicode we could switch Javadoc to -charset "utf-8"
 
     setlocal
-    set src=%HOME%\Java\Orbital\src\orbital
+    set base=%HOME%\Java\Orbital
+    set src=%base%\src\orbital
     set s=
     if "%1"=="-assertions" set s=-doclet iContract.doclet.Standard -docletpath %jdk_home%\lib\iDoclet.jar 
     if "%1"=="-assertions" shift
@@ -26,20 +27,13 @@ rem once Emacs knows Unicode we could switch Javadoc to -charset "utf-8"
     copy %HOME%\www\orbital\features.*html
     copy %HOME%\www\orbital\recommendations.*html
   echo make javadoc
-    javadoc %s% -d . -sourcepath %HOME%\Java;%CLASSPATH% -link ../api -overview %src%\overview.html @%src%\options @%src%\package-grouping @%src%\package-list %1 %2 %3 %4 %5 %6 %7 %8 %9 > %temp%\doc
+    javadoc %s% -d . -sourcepath %base%\src;%CLASSPATH% -link ../api -overview %base%\overview.html @%src%\options @%src%\package-grouping @%src%\package-list %1 %2 %3 %4 %5 %6 %7 %8 %9 > %temp%\doc
     if errorlevel 1 set wasError=true
     copy %HOME%\www\stylist.css stylist.css
     copy /A stylesheet.css +stylist.css
     echo @media screen { a:link, a:visited {color:blue} } >> stylesheet.css
     if "%wasError%" == "true" goto Errored
-    start /B xcopy *.* %HOME%\www\orbital\orbital.doc\docs\api\ /S /Q /Y
-    copy %src%\overview.html %HOME%\www\orbital\orbital.rt\orbital
-    copy %src%\resources\COPYRIGHT.txt %HOME%\www\orbital\orbital.doc\docs
-    copy %src%\resources\license.txt %HOME%\www\orbital\orbital.doc\docs
-    copy %src%\resources\orbital.gif %HOME%\www\orbital\orbital.doc\docs
-    copy %src%\resources\orbital.ico %HOME%\www\orbital\orbital.doc\docs
-    copy %src%\resources\COPYRIGHT.txt %HOME%\www\orbital\orbital.rt\orbital
-    copy %src%\resources\license.txt %HOME%\www\orbital\orbital.rt\orbital
+    start /B xcopy *.* %HOME%\Java\Orbital\api /S /Q /Y
     copy %src%\META-INF\Manifest-all.mf %HOME%\www\orbital\compack\*.*
 goto :Fin
 
