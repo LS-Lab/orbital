@@ -166,12 +166,13 @@ public final class Utility {
 
     /**
      * Get the hashCode of an object (considering its all array components, as well).
+     * Contrary to {@link #hashCodeAllSet(Object)}, the order of elements plays a role.
      * @param o the object whose hashCode to calculate.
      * @return the hashCode of o, or all its elements if o is a (multi-dimensional) array.
      * @see #equalsAll(Object, Object)
      * @see java.util.Arrays#equals(Object[], Object[])
      * @see orbital.logic.functor.Functionals#foldRight(orbital.logic.functor.BinaryFunction, Object, Object[])
-     * @note this implementation does not necessarily to fit the hashCode defined by {@link java.util.Set}, or {@link java.util.List}.
+     * @note this implementation does not necessarily to fit the hashCode defined by {@link java.util.List}, nor,  of course, {@link java.util.Set}.
      */
     public static final int hashCodeAll(Object o) {
 	//@todo functional?
@@ -199,10 +200,46 @@ public final class Utility {
 	} else
 	    return hashCode(o);
     }
+
     /**
      * the number of bits that an integer has
      */
     private static final int INTEGER_BITS = IOUtilities.INTEGER_SIZE << 3;
+
+    /**
+     * Get the hashCode of an object (considering its all array components, as sets, as well).
+     * Contrary to {@link #hashCodeAll(Object)}, the order of elements plays no role.
+     * @param o the object whose hashCode to calculate.
+     * @return the hashCode of o, or all its elements if o is a (multi-dimensional) array.
+     * @see #equalsAll(Object, Object)
+     * @see java.util.Arrays#equals(Object[], Object[])
+     * @see orbital.logic.functor.Functionals#foldRight(orbital.logic.functor.BinaryFunction, Object, Object[])
+     * @note this implementation does not necessarily to fit the hashCode defined by {@link java.util.Set}, nor, of cours,e {@link java.util.List}.
+     */
+    public static final int hashCodeAllSet(Object o) {
+	//@todo functional?
+	if (o instanceof Object[]) {
+	    final Object a[] = (Object[]) o;
+	    int          hash = 0;
+	    for (int i = 0; i < a.length; i++) {
+		// recursively hashCodeAll to ensure element-wise hashCodes of (multi-dimensional) arrays, as well?
+		final int h = hashCodeAll(a[i]);
+		hash ^= h;
+	    }
+	    return hash;
+	} else if (o != null && o.getClass().isArray()) {
+	    // additionally(!) check for hashCode primitive type arrays with java.lang.reflect.Array
+	    final int len = Array.getLength(o);
+	    int       hash = 0;
+	    for (int i = 0; i < len; i++) {
+		// recursively hashCodeAll to ensure element-wise hashCodes of (multi-dimensional) arrays, as well?
+		final int h = hashCodeAll(Array.get(o, i));
+		hash ^= h;
+	    }
+	    return hash;
+	} else
+	    return hashCode(o);
+    }
 
     /**
      * Predicate for x instanceof y.
