@@ -47,12 +47,35 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
      * @serial the random source is serialized to let the seed persist.
      */
     private Random random;
+    /**
+     * The local selection variant used.
+     * @serial
+     */
+    private LocalSelection localSelection;
 
-    public LocalOptimizerSearch() {
-	this(new Random());
-    }
-    public LocalOptimizerSearch(Random random) {
+    /**
+     * @param random the random generator source.
+     * @param localSelection the variant of local selection used.
+     * @see #BEST_LOCAL_SELECTION
+     * @see #FIRST_LOCAL_SELECTION
+     */
+    public LocalOptimizerSearch(Random random, LocalSelection localSelection) {
 	this.random = random;
+	this.localSelection = localSelection;
+    }
+    public LocalOptimizerSearch(LocalSelection localSelection) {
+	this(new Random(), localSelection);
+    }
+    //@todo remove
+    LocalOptimizerSearch() {
+	this(new Random(), FIRST_LOCAL_SELECTION);
+    }
+
+    private void setLocalSelection(LocalSelection type) {
+	this.localSelection = type;
+    }
+    LocalSelection getLocalSelection() {
+	return localSelection;
     }
 
     public Random getRandom() {
@@ -83,6 +106,125 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
     	// current choice instead of failing
     	return node;
     }
+
+    /**
+     * The local selection mechanism used to evaluate states.
+     * Determines which transitions may take part in attempts of acception.
+     * @version 1.1, 2002/06/04
+     * @author  Andr&eacute; Platzer
+     * @see <a href="{@docRoot}/DesignPatterns/enum.html">typesafe enum pattern</a>
+     * @internal typesafe enumeration pattern class currently specifies whole OptionIterator
+     * @invariant a.equals(b) &hArr; a==b
+     * @todo turn into a Decorator of GeneralSearchProblem instead
+     * @todo check naming since this class does not fully determine local selection, but only local restriction (so without fixing the acception rule which is different in diverse subclasses).
+     * @see LocalOptimizerSearch#BEST_LOCAL_SELECTION
+     * @see LocalOptimizerSearch#FIRST_LOCAL_SELECTION
+     */
+    public static abstract class LocalSelection implements Serializable {
+	private static final long serialVersionUID = 1471057172168155681L;
+	/**
+	 * the name to display for this enum value
+	 * @serial
+	 */
+	private final String name;
+
+	/**
+	 * Ordinal of next enum value to be created
+	 */
+	private static int nextOrdinal = 0;
+
+	/**
+	 * Table of all canonical references to enum value classes.
+	 */
+	private static LocalSelection[] values = new LocalSelection[3];
+
+	/**
+	 * Assign an ordinal to this enum value
+	 * @serial
+	 */
+	private final int ordinal = nextOrdinal++;
+
+	LocalSelection(String name) {
+	    this.name = name;
+	    values[nextOrdinal - 1] = this;
+	}
+	/**
+	 * Maintains the guarantee that all equal objects of the enumerated type are also identical.
+	 * @post a.equals(b) &hArr; if a==b.
+	 */
+	public final boolean equals(Object that) {
+	    return super.equals(that);
+	} 
+	public final int hashCode() {
+	    return super.hashCode();
+	} 
+
+	/**
+	 * Maintains the guarantee that there is only a single object representing each enum constant.
+	 * @serialData canonicalized deserialization
+	 */
+	private Object readResolve() throws java.io.ObjectStreamException {
+	    // canonicalize
+	    return values[ordinal];
+	}
+
+	public String toString() {
+	    return this.name;
+	}
+
+	
+	/**
+	 * Restrict the problem locally by decorating it.
+	 * @see PackageUtilities#restrictRandomly(GeneralSearchProblem,int,ProbabilisticAlgorithm)
+	 * @see PackageUtilities#restrictBest(GeneralSearchProblem,Function)
+	 */
+	abstract GeneralSearchProblem createLocalRestriction(GeneralSearchProblem problem, LocalOptimizerSearch algorithm);
+    }
+
+    // enumeration of LocalSelections
+    
+    /**
+     * attempt the best local transition (default).
+     * Although we have a local convergence criterion then, that
+     * variant is no good for very high branching factors (or
+     * expensive expansions).
+     * @see BestFirstSearch
+     * @todo (for hill-climbing only) terminate search on local optimum in case of LOCAL_BEST_SELECTION.
+     * terminate search if after an attempted transition s&rarr;s' it is f(s')>f(s) (local minimum convergence criterium), alias (due to acceptStep) if new state == old state.
+     * @todo why do some authors think that hill climbing should not forget about other alternatives, but remember them as depth-first search does. Will this really be another / or better algorithm, then?
+     */
+    public static final LocalSelection BEST_LOCAL_SELECTION = new LocalSelection("LocalBest") {
+	    private static final long serialVersionUID = 1233346780667611822L;
+	    GeneralSearchProblem createLocalRestriction(GeneralSearchProblem problem, LocalOptimizerSearch algorithm) {
+		return PackageUtilities.restrictRandomly(PackageUtilities.restrictBest(problem, algorithm.getEvaluation()),1,algorithm);
+	    }
+	};
+    /**
+     * + attempt a randomly chosen local transition.
+     * In the usual case of accepting only improvements this becomes:
+     * accept the first (randomly chosen) local transition
+     * At least for
+     * local derivable evaluation functions, the expected number of
+     * random trials until finding an improvement is 2, anyway.
+     */
+    public static final LocalSelection FIRST_LOCAL_SELECTION = new LocalSelection("LocalFirst") {
+	    private static final long serialVersionUID = 1622132645733195173L;
+	    GeneralSearchProblem createLocalRestriction(GeneralSearchProblem problem, LocalOptimizerSearch algorithm) {
+		return PackageUtilities.restrictRandomly(problem,1,algorithm);
+	    }
+	};
+    /**
+     * -- accept the first improvement trying nodes according to a given order.
+     * At least for local derivable evaluation functions, the worst
+     * number of random trials until finding an improvement is b/2,
+     * and may lead to the worst possible improvement.
+     * (Not implemented).
+     * <p>
+     * Returning the options in the right order is the responsibility of
+     * {@link GeneralSearchProblem#actions(Object)}.
+     * </p>
+     */
+    private static final LocalSelection ORDERED_LOCAL_SELECTION = null;
 
     /**
      * An iterator over a state space in "choosy" random order.

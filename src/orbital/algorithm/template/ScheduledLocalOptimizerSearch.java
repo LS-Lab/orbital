@@ -67,14 +67,16 @@ abstract class ScheduledLocalOptimizerSearch extends LocalOptimizerSearch implem
      * </table>
      * </p>
      * @param heuristic the heuristic cost function h:S&rarr;<b>R</b> to be used as evaluation function f(n) = h(n).
-     * @param a mapping <b>N</b>&rarr;<b>R</b>
+     * @param schedule a mapping <b>N</b>&rarr;<b>R</b>
      *  from time to "temperature" controlling the cooling, and thus
      *  the probability of downward steps.
      *  Algorithm stops if the temperature drops to <span class="Number">0</span>
      *  (or isSolution is <span class="keyword">true</span>,
      *  or it fails due to a lack of alternative expansion nodes).
+     * @param localSelection the variant of local selection used.
      */
-    public ScheduledLocalOptimizerSearch(Function/*<GeneralSearchProblem.Option, Arithmetic>*/ heuristic, Function/*<Integer, Real>*/ schedule) {
+    public ScheduledLocalOptimizerSearch(Function/*<GeneralSearchProblem.Option, Arithmetic>*/ heuristic, Function/*<Integer, Real>*/ schedule, LocalSelection localSelection) {
+	super(localSelection);
     	this.heuristic = heuristic;
     	this.schedule = schedule;
     }

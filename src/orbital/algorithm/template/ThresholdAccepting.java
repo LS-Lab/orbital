@@ -38,7 +38,7 @@ public class ThresholdAccepting extends ScheduledLocalOptimizerSearch {
     /**
      * Create a new instance of threshold accepting search.
      * @param heuristic the heuristic cost function h:S&rarr;<b>R</b> to be used as evaluation function f(n) = h(n).
-     * @param a mapping <b>N</b>&rarr;<b>R</b>
+     * @param schedule a mapping <b>N</b>&rarr;<b>R</b>
      *  from time to "temperature" controlling the cooling, and thus
      *  the probability of downward steps.
      *  Algorithm stops if the temperature drops to <span class="Number">0</span>
@@ -47,7 +47,7 @@ public class ThresholdAccepting extends ScheduledLocalOptimizerSearch {
      * @pre lim<sub>t&rarr;&infin;</sub>schedule(t) = 0 &and; schedule decreases monotonically
      */
     public ThresholdAccepting(Function/*<GeneralSearchProblem.Option, Arithmetic>*/ heuristic, Function/*<Integer, Real>*/ schedule) {
-    	super(heuristic, schedule);
+    	super(heuristic, schedule, FIRST_LOCAL_SELECTION);
     }
 
 
@@ -79,7 +79,7 @@ public class ThresholdAccepting extends ScheduledLocalOptimizerSearch {
     }
 	
     protected Iterator createTraversal(final GeneralSearchProblem problem) {
-	return new OptionIterator(problem, this);
+	return new OptionIterator(getLocalSelection().createLocalRestriction(problem, this), this);
     }
 
     /**
