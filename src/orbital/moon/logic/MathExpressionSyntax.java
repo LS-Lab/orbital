@@ -19,6 +19,7 @@ import orbital.logic.imp.Symbol;
 import orbital.logic.imp.ParseException;
 import orbital.logic.functor.Functor;
 import orbital.logic.functor.Notation;
+import orbital.logic.functor.Notation.NotationSpecification;
 
 import orbital.logic.trs.Substitutions;
 import java.lang.reflect.Field;
@@ -47,6 +48,7 @@ public class MathExpressionSyntax implements ExpressionSyntax {
     public static void main(String arg[]) throws Exception {
 	if (orbital.signe.isHelpRequest(arg)) {
 	    System.out.println(usage);
+	    System.out.println("Core logical junctors and operators:\n\t" + new MathExpressionSyntax().coreSignature());
 	    return;
 	} 
 	System.out.print("Type expression: ");
@@ -89,11 +91,20 @@ public class MathExpressionSyntax implements ExpressionSyntax {
     public Signature coreSignature() {
 	return _coreSignature;
     }
-    private final Interpretation coreInterpretation() {
+    final Interpretation coreInterpretation() {
 	return _coreInterpretation;
     }
     private static final Interpretation _coreInterpretation =
 	LogicSupport.arrayToInterpretation(new Object[][] {
+	    {Types.UNIVERSAL,
+	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+	    {Types.objectType(java.lang.Object.class, "individual"),
+	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+	    {Types.objectType(orbital.math.Integer.class, "integer"),
+	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+	    {Types.objectType(orbital.math.Real.class, "real"),
+	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+	    
 	    {new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
 		    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x) {
 			return x;

@@ -856,6 +856,13 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
 	    {Types.objectType(java.lang.Object.class, "individual"),
 	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+	    {Types.objectType(orbital.math.Integer.class, "integer"),
+	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+	    {Types.objectType(orbital.math.Real.class, "real"),
+	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+	    {Types.objectType(String.class, "string"),
+	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
+
 
 	    {Types.list,
 	     new NotationSpecification(500, "fx", Notation.PREFIX)},

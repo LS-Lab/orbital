@@ -71,23 +71,24 @@ import java.io.*;
  * @todo join symbiose of MathParser and LogicParser by letting expression() accept term(), directly as well? Instead of just providing two distinct start productions.
  */
 public class LogicParser {
-    static final Type INTEGER_LITERAL_TYPE = Types.objectType(orbital.math.Integer.class);
-    static final Type FLOAT_LITERAL_TYPE = Types.objectType(orbital.math.Real.class);
-    static final Type STRING_LITERAL_TYPE = Types.objectType(String.class);
-    private Type TRUTH;
-    private Type INDIVIDUAL;
-	
     /**
      * Delegate to the current syntax implementation that is used for building expressions.
      */
     protected ExpressionSyntax syntax;
 
+    // caches important types
+    private transient Type TRUTH;
+    private transient Type INDIVIDUAL;
+    private transient Type INTEGER_LITERAL_TYPE;
+    private transient Type FLOAT_LITERAL_TYPE;
+    private transient Type STRING_LITERAL_TYPE;
+	
     /**
      * The root scope, containing only the core signature.
      * @internal never use this scope directly, but always nest it inside another scope.
      * This ensures that root.symbolMap won't be modified.
      */
-    protected Scope root;
+    protected transient Scope root;
 
     /**
      * The current scope.
@@ -105,13 +106,24 @@ public class LogicParser {
 	this.TRUTH = queryType(syntax, "truth");
 	this.INDIVIDUAL = queryType(syntax, "individual");
 	//@todo should we ask the syntax?
-	//this.FLOAT_LITERAL_TYPE = "real"
+	this.FLOAT_LITERAL_TYPE = queryType(syntax, "real");
+	this.INTEGER_LITERAL_TYPE = queryType(syntax, "integer");
+	this.STRING_LITERAL_TYPE = queryType(syntax, "string");
     }
+    /**
+     * Query the type (interpretation) of the type with the specified signifier from syntax.
+     * @return null if no such type.
+     */
     private static Type queryType(ExpressionSyntax syntax, String signifier) {
+	Symbol symbol = syntax.coreSignature().get(signifier, new Expression[0]);
+	if (symbol == null)
+	    return null;
 	return
 	    (Type) (
 		    syntax instanceof Logic
-		    ? ((Logic)syntax).coreInterpretation().get(coreSignature.get(signifier, new Expression[0]))
+		    ? ((Logic)syntax).coreInterpretation().get(symbol)
+		    : syntax instanceof MathExpressionSyntax /*@xxx prevent this special case*/
+		    ? ((MathExpressionSyntax)syntax).coreInterpretation().get(symbol)
 		    : null
 		    );
     }
