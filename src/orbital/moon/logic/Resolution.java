@@ -102,6 +102,7 @@ class Resolution implements Inference {
 	
     /**
      * the search algorithm used.
+     * @xxx maybe for reentrance we should always instantiate a new search algorithm for each infer() ?
      */
     private final GeneralSearch search;
     public Resolution() {

@@ -879,7 +879,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 
 	public Set getFreeVariables() {
 	    if (bindingExpressions.contains(outer)) {
-		Set M = right.getFreeVariables();
+		Set M = new HashSet(right.getFreeVariables());
 		assert left instanceof AtomicSymbol && left.getFreeVariables().size() == 1 : "quantifiers bind an atomic symbol formula";
 		M.removeAll(left.getFreeVariables());
 		return M;
@@ -890,7 +890,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 
 	public Set getBoundVariables() {
 	    if (bindingExpressions.contains(outer)) {
-		Set M = right.getBoundVariables();
+		Set M = new HashSet(right.getBoundVariables());
 		assert left instanceof AtomicSymbol && left.getFreeVariables().size() == 1 : "quantifiers bind an atomic symbol formula";
 		M.addAll(left.getFreeVariables());
 		return M;

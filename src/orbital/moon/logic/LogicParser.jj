@@ -223,7 +223,12 @@ public class LogicParser {
      */
     private Expression composeWrapper(Token optok, String op, Expression[] arg) throws ParseException {
 	if (coreSignature.get(op, arg) == null) {
-	    System.err.println(">> " + op + " applied to " + /*@todo once non-arithmetic are available again: MathUtilities.format(*/arg + " of type " + Types.typeOf(arg) + " not found");
+	    System.err.println(">> in signature ");
+	    for (Iterator i = coreSignature.iterator(); i.hasNext(); ) {
+		Symbol s = (Symbol)i.next();
+		System.err.println(s + " " + s.getType());
+	    }
+	    System.err.println(">> " + op + " applied to " + /*@todo once non-arithmetic are available again use: MathUtilities.format(*/arg + " of type " + Types.typeOf(arg) + " not found");
 	}
 	return composeWrapper(optok, coreSignature.get(op, arg), arg);
     }
@@ -502,7 +507,7 @@ Expression PrimaryExpression() :
 TOKEN :
 {
     <IDENTIFIER : <LETTER> (<LETTER>|<DIGIT_OR_ALIKE>)* >
-|   <#LETTER : ["A"-"Z", "a"-"z", "„","”","?","_"]>
+|   <#LETTER : ["A"-"Z", "a"-"z", "„","”","_"]>
 |   <#DIGIT_OR_ALIKE : ["0"-"9"]>
 }
 

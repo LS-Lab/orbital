@@ -99,7 +99,7 @@ import orbital.logic.imp.Expression;
  * and the implication is called material classical implication and written as &rArr;.</p>
  * <p>
  * The classical logic is truth-functional and it is:
- * <center>I(&not;A) = true if and only if I(A)=false</center>.
+ * <center>I(&not;A) = true if and only if I(A)=false</center>
  * </p>
  * <p>
  * For the ClassicalLogic the inference operation is called the consequence operation <code>Cn</code> over &#8872;.</p>
@@ -143,6 +143,11 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    ClassicalLogic.main(new String[] {"-normalForm", "all", "none", "properties"});
 	} 
     }	 // Debug
+
+    /**
+     * Maximum number of InferenceMechanism objects (for typesafe enum).
+     */
+    private static final int MAX_INFERENCE_MECHANISMS = 10;
 
     private static final Logger logger = Logger.getLogger(ClassicalLogic.class.getName());
 
@@ -188,8 +193,8 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		    System.out.flush();
 		    String expression = IOUtilities.readLine(System.in);
 		    Formula B = (Formula) logic.createExpression(expression);
-		    Signature sigma = logic.scanSignature(expression);
-		    Interpretation[] Int = logic.createAllInterpretations(sigma);
+		    Signature sigma = B.getSignature();
+		    Interpretation[] Int = logic.createAllInterpretations(sigma, sigma);
 		    for (int i = 0; i < Int.length; i++)
 			System.out.println(Int[i] + ":\t" + logic.satisfy(Int[i], B));
 		    hasBeenProving = true;
@@ -387,26 +392,158 @@ public class ClassicalLogic extends ModernLogic implements Logic {
     
     // classical logic
     
+    /**
+     * Specifies the nference mechanism applied for the {@link ClassicalLogic#inference() inference relation}.
+     * @version 1.1, 2002-09-14
+     * @author  Andr&eacute; Platzer
+     * @see <a href="{@docRoot}/Patterns/Design/enum.html">typesafe enum pattern</a>
+     * @internal typesafe enumeration pattern class to specify fuzzy logic operators
+     * @invariant a.equals(b) &hArr; a==b
+     * @todo improve name
+     */
+    public static abstract class InferenceMechanism implements Serializable, Comparable {
+	//private static final long serialVersionUID = 0;
+	/**
+	 * the name to display for this enum value
+	 * @serial
+	 */
+	private final String name;
+
+	/**
+	 * Ordinal of next enum value to be created
+	 */
+	private static int nextOrdinal = 0;
+
+	/**
+	 * Assign an ordinal to this enum value
+	 * @serial
+	 */
+	private final int ordinal = nextOrdinal++;
+
+	/**
+	 * Table of all canonical references to enum value classes.
+	 */
+	private static InferenceMechanism[] values = new InferenceMechanism[MAX_INFERENCE_MECHANISMS];
+
+	InferenceMechanism(String name) {
+	    this.name = name;
+	    values[nextOrdinal - 1] = this;
+	}
+
+	/**
+	 * Order imposed by ordinals according to the order of creation.
+	 * @post consistent with equals
+	 */
+	public int compareTo(Object o) {
+	    return ordinal - ((InferenceMechanism) o).ordinal;
+	} 
+
+	/**
+	 * Maintains the guarantee that all equal objects of the enumerated type are also identical.
+	 * @post a.equals(b) &hArr; if a==b.
+	 */
+	public final boolean equals(Object that) {
+	    return super.equals(that);
+	} 
+	public final int hashCode() {
+	    return super.hashCode();
+	} 
+
+	public String toString() {
+	    return this.name;
+	} 
+
+	/**
+	 * Maintains the guarantee that there is only a single object representing each enum constant.
+	 * @serialData canonicalized deserialization
+	 */
+	private Object readResolve() throws ObjectStreamException {
+	    // canonicalize
+	    return values[ordinal];
+	} 
+
+	/**
+	 * Defines the inference mechanism used.
+	 * @post RES==OLD(RES)
+	 */
+	abstract Inference inference();
+
+    }
+
     // enum of inference mechanisms
     /**
-     * Semantic inference with tables.
+     * Semantic inference with truth-tables.
      */
-    public static final int SEMANTIC_INFERENCE = 0;
+    public static final InferenceMechanism SEMANTIC_INFERENCE = new InferenceMechanism("SEMANTIC_INFERENCE") {
+	    /**
+	     * @attribute stateless
+	     */
+	    private final Inference _semanticInference = new Inference() {
+		    public boolean infer(Formula[] B, Formula D) {
+			Signature sigma = D.getSignature();
+			// sigma limited to the (free) part that really affects semantic inference
+			Signature sigmaInt = relevantSignatureOf(D);
+			for (int i = 0; i < B.length; i++) {
+			    sigma = sigma.union(B[i].getSignature());
+			    sigmaInt = sigmaInt.union(relevantSignatureOf(B[i]));
+			}
+			// semantic test whether all interpretations that satisfy all formulas in B, also satisfy D
+			Interpretation[] Int = createAllInterpretations(sigmaInt, sigma);
+			loop:
+			for (int i = 0; i < Int.length; i++) {
+			    Interpretation I = Int[i];
+			    // I |= B is defined as &forall;F&isin;B: I |= F
+			    for (int b = 0; b < B.length; b++)
+				if (!B[b].apply(I).equals(Boolean.TRUE)) //if (!satisfy(I, B[b]))
+				    continue loop;
+			    if (!D.apply(I).equals(Boolean.TRUE)) //if (!satisfy(I, D))
+				return false;
+			}
+			return true;
+		    }
+		    /**
+		     * Limits a signature by removing bound (-only) variables that do not affect
+		     * semantic inference, anyway.
+		     */
+		    private Signature relevantSignatureOf(Formula F) {
+			Collection boundOnly = new HashSet(F.getBoundVariables());
+			boundOnly.removeAll(F.getFreeVariables());
+			Signature sig = F.getSignature();
+			sig.removeAll(boundOnly);
+			return sig;
+		    }
+		    public boolean isSound() {
+			return true;
+		    } 
+		    public boolean isComplete() {
+			return true;
+		    } 
+		};
+	    Inference inference() {
+		return _semanticInference;
+	    }
+	};
     /**
      * Resolution inference.
      * Inference mechanism driven by full resolution.
      */
-    public static final int RESOLUTION_INFERENCE = 1;
+    public static final InferenceMechanism RESOLUTION_INFERENCE = new InferenceMechanism("RESOLUTION") {
+	    private final Inference _resolution = new Resolution();
+	    Inference inference() {
+		return _resolution;
+	    }
+	};
     /**
      * The inference mechanism applied for the {@link #inference() inference relation}.
-     * @todo change to typesafe enum
      * @serial
      * @see #inference()
      */
-    private int inferenceMechanism = SEMANTIC_INFERENCE;
+    private InferenceMechanism inferenceMechanism;
     
-    public ClassicalLogic() {}
-    public ClassicalLogic(int inferenceMechanism) {
+    public ClassicalLogic() {
+	this(SEMANTIC_INFERENCE);
+    }
+    public ClassicalLogic(InferenceMechanism inferenceMechanism) {
 	setInferenceMechanism(inferenceMechanism);
     }
 
@@ -416,12 +553,10 @@ public class ClassicalLogic extends ModernLogic implements Logic {
      * @see #SEMANTIC_INFERENCE
      * @see #RESOLUTION_INFERENCE
      */
-    public void setInferenceMechanism(int mechanism) {
-    	if (mechanism < SEMANTIC_INFERENCE || RESOLUTION_INFERENCE < mechanism)
-	    throw new IllegalArgumentException("no such inference mechanism: " + mechanism);
+    public void setInferenceMechanism(InferenceMechanism mechanism) {
     	this.inferenceMechanism = mechanism;
     }
-    protected int getInferenceMechanism() {
+    protected InferenceMechanism getInferenceMechanism() {
     	return inferenceMechanism;
     }
 
@@ -801,7 +936,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
     /**
      * character element of core signature.
      */
-    private static final String operators = "~! |&^-><=(,)°?";
+    private static final String operators = "~! |&^-><=(,)°?\\";
 
     //@todo remove this bugfix that replaces "xfy" by "yfy" associativity only for *.jj parsers to work without inefficient right-associative lookahead.
     private static final String xfy = "yfy";
@@ -949,7 +1084,8 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	//@todo we could implement a semantic apply() if only Interpretations would tell us a collection of entities in the universe
 	//@todo could we turn forall into type (&sigma;&rarr;t)&rarr;t alias Function<Function<S,boolean>,boolean> and use &forall;(&lambda;x.t)
     	public static final BinaryFunction forall = new BinaryFunction() {
-		private final Type logicalTypeDeclaration = null;
+		//@todo also templatize with t somehow? //@xxx verify type
+		private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.INDIVIDUAL, Types.TRUTH}), Types.TRUTH);
     		public Object apply(Object x, Object a) {
 		    throw new LogicException("quantified formulas only have a semantic value with respect to a possibly infinite domain. They are available for inference, but cannot be interpreted.");
     		}
@@ -957,6 +1093,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	    };
 
     	public static final BinaryFunction exists = new BinaryFunction() {
+		private final Type logicalTypeDeclaration = Types.map(Types.product(new Type[] {Types.INDIVIDUAL, Types.TRUTH}), Types.TRUTH);
     		public Object apply(Object x, Object a) {
 		    throw new LogicException("quantified formulas only have a semantic value with respect to a possibly infinite domain. They are available for inference, but cannot be interpreted.");
     		}
@@ -1103,15 +1240,15 @@ public class ClassicalLogic extends ModernLogic implements Logic {
         }
 
 	public Set getFreeVariables() {
-	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
+	    return Setops.difference(term.getFreeVariables(), Collections.singleton(x));
 	}
 
 	public Set getBoundVariables() {
-	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
+	    return Setops.union(term.getFreeVariables(), Collections.singleton(x));
 	}
 
 	public Set getVariables() {
-	    throw new UnsupportedOperationException("not yet implemented for " + getClass());
+	    return Setops.union(term.getVariables(), Collections.singleton(x));
 	}
 
 	public Object apply(Object i) {
@@ -1126,14 +1263,14 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 			    new InterpretationBase(new SignatureBase(Collections.singleton(x)), modif);
 			Interpretation modifiedI =
 			    new QuickUnitedInterpretation(modification, I);
-			System.err.println(modifiedI + "\nper modification <" + x + "/" + a + "> in " + term);
+			logger.log(Level.FINER, "{0}\nper modification <{1}/{2}> in {3}", new Object[] {modifiedI, x, a, term});
 			return term.apply(modifiedI);
 		    }
 		};
 	}
 	public String toString() {
 	    //@todo use notation like all others do
-	    return "\\" + x + "." + term;
+	    return "(\\" + x + "." + term + ")";
 	}
     }
 
@@ -1151,36 +1288,8 @@ public class ClassicalLogic extends ModernLogic implements Logic {
     } 
 
     public Inference inference() {
-	return getInferenceMechanism() == SEMANTIC_INFERENCE
-	    ? _semanticInference
-	    : _resolution;
+	return getInferenceMechanism().inference();
     } 
-    private final Inference _resolution = new Resolution();
-    private final Inference _semanticInference = new Inference() {
-	    public boolean infer(Formula[] B, Formula D) {
-    		Signature sigma = D.getSignature();
-    		for (int i = 0; i < B.length; i++)
-		    sigma = sigma.union(B[i].getSignature());
-		// semantic test whether all interpretations that satisfy all formulas in B, also satisfy D
-		Interpretation[] Int = createAllInterpretations(sigma);
-		loop:		for (int i = 0; i < Int.length; i++) {
-		    Interpretation I = Int[i];
-		    // I |= B is defined as &forall;F&isin;B: I |= F
-		    for (int b = 0; b < B.length; b++)
-			if (!B[b].apply(I).equals(Boolean.TRUE)) //if (!satisfy(I, B[b]))
-			    continue loop;
-		    if (!D.apply(I).equals(Boolean.TRUE)) //if (!satisfy(I, D))
-			return false;
-		}
-		return true;
-	    } 
-	    public boolean isSound() {
-		return true;
-	    } 
-	    public boolean isComplete() {
-		return true;
-	    } 
-	};
     
     public Signature coreSignature() {
 	return _coreSignature;
@@ -1213,14 +1322,18 @@ public class ClassicalLogic extends ModernLogic implements Logic {
      * the symbols in &Sigma; with elements of the world.
      * Interpretations are conceptually irrelevant for syntactic calculi of inference relations
      * but may optionally be used to implement a naive calculus.
-     * @pre sigma is only a signature of propositional logic
+     * @pre propositionalSigma&sube;sigma &and; propositionalSigma is only a signature of propositional logic
+     * @param sigma the full declared signature of the interpretations to create.
+     * @param propositionalSigma the part of the signature for which to create all interpretations.
      * @return all &Sigma;-Interpretations that are valid in this Logic (i.e. that can be formed with Signature &Sigma;).
      * @xxx somehow in a formula like (\x. x>2)(7) the numbers 2, and 7 are also subject to interpretation by true or false.
      */
-    private Interpretation[] createAllInterpretations(Signature sigma) {
-	if (sigma == null)
-	    throw new NullPointerException("invalid signature: " + sigma);
-	Signature sigmaComb = new SignatureBase(sigma);
+    private static Interpretation[] createAllInterpretations(Signature propositionalSigma, Signature sigma) {
+	if (sigma == null || propositionalSigma == null)
+	    throw new NullPointerException("invalid signatures: " + propositionalSigma + ", " + sigma);
+	assert sigma.containsAll(propositionalSigma) : propositionalSigma + " subset of " + sigma;
+	// determine the non-fixed propositional part of propositionalSigma
+	final Signature sigmaComb = new SignatureBase(propositionalSigma);
 	for (Iterator it = sigmaComb.iterator(); it.hasNext(); ) {
 	    final Symbol s = (Symbol)it.next();
 	    final Type type = s.getType();
@@ -1234,11 +1347,14 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		throw new IllegalArgumentException("a signature of propositional logic should not contain " + s + " of type " + type);
 	}
 
+	// interpret sigmaComb in all possible ways
 	Combinatorical   comb = Combinatorical.getPermutations(sigmaComb.size(), 2, true);
 	Interpretation[] all = new Interpretation[comb.count()];
 	for (int i = 0; i < all.length; i++) {
-	    Interpretation I = new InterpretationBase(sigmaComb, new HashMap());
+	    // although I is a sigma-interpretation, it only interprets sigmaComb
+	    Interpretation I = new InterpretationBase(sigma, new HashMap());
 	    Iterator	   it = sigmaComb.iterator();
+	    assert comb.hasNext() : "Combinatorical.count() fits to Combinatorical.hasNext()";
 	    int[] c = comb.next();
 	    for (int s = 0; it.hasNext(); s++)
 		I.put(it.next(), c[s] == 0 ? Boolean.FALSE : Boolean.TRUE);

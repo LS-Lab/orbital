@@ -1,5 +1,4 @@
-$ x p(x) |= p(a)
-$x p(x) |= p(b)
+$x p(x) |= p(a)
 $x p(x) |= $y p(y)
 $x p(x) |= $x p(x)
 $x p(x) |= q(a) | ~p(a)	# wrong
@@ -8,8 +7,8 @@ $x p(x) |= q(a) | ~p(a)	# wrong
 # @todo denote metavariables correctly.
 #
 $ x p(x) |= p(a)	#  universal specialization
-p(a) |= p(s)	# existential generalization
-~($x p(x)) |= ~p(x)	# ~all~ conversion (even |=|)
+p(a) |= p(s)	# existential generalization  #@fixme doesn't work since when?
+~($x p(x)) |= ~p(xp)	# ~all~ conversion (even |=|)
 #~some p(x) |= $x ~p(x)	# ~some~ conversion (even |=|)
 $x (p(x)->q(x)) |= ($x p(x)) -> ($x q(x))
 # some rules
@@ -24,7 +23,9 @@ $x (p(x)->q(x)) |= ($x p(x)) -> ($x q(x))
 all x p(x) |= p(a)	# universal specialization
 p(a) |= some x p(x)	# existential generalization
 ~(all x p(x)) |= some x ~p(x)	# ~all~ conversion (even |=|)
+~(all x ~p(x)) == some x p(x)	# ~all~ conversion (even |=|)
 ~(some x p(x)) |= all x ~p(x)	# ~some~ conversion (even |=|)
+~(some x ~p(x)) == all x p(x)	# ~some~ conversion (even |=|)
 all x (p(x)->q(x)) |= (all x p(x)) -> (all x q(x))
 # some rules
 some x (p(x) & q(x)) |= (some x p(x)) & (some x q(x))
