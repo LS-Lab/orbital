@@ -58,8 +58,12 @@ public class MathExpressionTest extends check.TestCase {
 	    assertTrue(true == expectparsable , desc);
 	    return;
 	}
-	catch (ParseException fallthrough) {}
-	catch (IllegalArgumentException fallthrough) {}
+	catch (ParseException fallthrough) {
+	    System.out.println(fallthrough);
+	}
+	catch (IllegalArgumentException fallthrough) {
+	    System.out.println(fallthrough);
+	}
 	assertTrue(false == expectparsable , desc);
     }
 

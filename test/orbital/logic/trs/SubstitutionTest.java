@@ -41,9 +41,10 @@ public class SubstitutionTest extends check.TestCase {
 												 new SymbolBase("b", t)
 												 )
 								));
-	    assertTrue(false, TypeException.class + " expected for nonconform substitution " + sigma);
+	    fail(TypeException.class + " expected for nonconform substitution " + sigma);
 	}
 	catch (TypeException incompatibleType) {
+	    System.out.println(incompatibleType);
 	    assertEquals("required type", incompatibleType.getRequired(), s); 
 	    assertEquals("occurred type", incompatibleType.getOccurred(), t); 
 	}
