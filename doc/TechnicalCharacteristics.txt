@@ -1,0 +1,8 @@
+Title=Orbital library
+Version=1.1
+Author=André Platzer
+Contact=info@functologic.com
+URL=http://www.functologic.com/orbital/
+Description=The Orbital library is a class library providing object-oriented representations and algorithms for logic, mathematics and artificial intelligence. It comprises theorem proving, computer algebra, search and planning, as well as machine learning algorithms.
+License=Freeware
+Language=Java
