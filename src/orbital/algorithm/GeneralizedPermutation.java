@@ -88,6 +88,6 @@ class GeneralizedPermutation extends Combinatorical {
     } 
 
     public String toString() {
-	return getClass().getName() + " of " + MathUtilities.format(dimensions) + " elements";
+	return getClass().getName() + "[of " + MathUtilities.format(dimensions) + " elements]";
     }
 }

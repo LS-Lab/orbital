@@ -154,10 +154,14 @@ public class AlphaBetaPruning extends AdversarySearch {
     /**
      * The current depth during the current search.
      */
-    protected final int getCurrentDepth() {
+    protected int getCurrentDepth() {
 	return currentDepth;
     }
 
+    private void setCurrentDepth(int newDepth) {
+	this.currentDepth = newDepth;
+    }
+    
     /**
      * Search for the best option to take.
      * @param state in which state to choose an action.
@@ -165,12 +169,12 @@ public class AlphaBetaPruning extends AdversarySearch {
      * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
      */
     public Option solve(Field state) {
-    	assert currentDepth == 0 : "search starts at currentDepth 0";
+    	assert getCurrentDepth() == 0 : "search starts at currentDepth 0";
 	try {
 	    return max_(state, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
 	}
 	finally {
-	    assert currentDepth == 0 : "search ends at currentDepth 0";
+	    assert getCurrentDepth() == 0 : "search ends at currentDepth 0";
 	}
     }
     

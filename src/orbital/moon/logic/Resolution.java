@@ -82,6 +82,9 @@ import java.util.logging.Level;
  *  A premise p<->F&G... could be used to substitute p by F&G... throughout.
  *  But a premise p|q<->a|b cannot, generally.
  * @todo optimize by using a non-branching search, somewhat like local optimizers, since we do not want to optimize but only to reach the goal. If we have derived a formula once, we should never switch to another branch and forget it again.
+ * @fixme we seem to have a race condition: trying to prove the wrong "[]A -> <>[]A", we only succeed to say no, when any loggers are active (even when they never log anything).
+ * But we can only prove when that's the first conjecture, when it's hidden in "modal-equivalence.txt" our proof does not terminate either.
+ * It also depends on how many conjectures are in "modal-equivalence.txt"
  */
 class Resolution implements Inference {
     private static final boolean UNDER_CONSTRUCTION = false;
@@ -91,7 +94,7 @@ class Resolution implements Inference {
      */
     private static final boolean SIMPLIFYING = false;
 
-    private static final Logger logger = Logger.getLogger(Resolution.class.getPackage().getName());
+    private static final Logger logger = Logger.getLogger(Resolution.class.getName());
     private static final ClassicalLogic logic = new ClassicalLogic();
 	
     private static final Formula FORMULA_FALSE = (Formula) logic.createAtomic(new SymbolBase("false", Types.TRUTH));
