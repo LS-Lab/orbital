@@ -163,6 +163,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      * @pre part.rank()==rank()-1 &and; Utilities.equalsAll(part.dimensions(), subTensor(level,index).dimensions())
      * @see #subTensor(int,int)
      * @see #modCount
+     * @todo remove since this is a simple derived operation? Or even introduce setSubTensor(int[],int[],Tensor), but Matrix does not have this, either.
      */
     void setSubTensor(int level, int index, Tensor/*<R>*/ part);
 
@@ -230,10 +231,16 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
     /**
      * Inner product of a tensor with a tensor returning a tensor.
      * <table>
-     *   <tr> <td>·:R<sup>n<sub>0</sub>&times;&#8230;&times;n<sub>r-1</sub>&times;h</sup>&times;R<sup>h&times;m<sub>0</sub>&times;&#8230;&times;m<sub>s-1</sub></sup>&rarr;R<sup>n<sub>0</sub>&times;&#8230;&times;n<sub>r-1</sub>&times;m<sub>0</sub>&times;&#8230;&times;m<sub>s-1</sub></sup>;</td> </tr>
-     *   <tr> <td><big>(</big>(a<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub>,i<sub>r</sub></sub>)<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub>,i<sub>r</sub></sub> , (b<sub>j<sub>-1</sub>,j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub>)<sub>j<sub>-1</sub>,j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub><big>)</big> &#8614;
-     *     (&sum;<span class="doubleIndex"><sub>&nu;=0</sub><sup>h-1</sup></span> a<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub>,&nu;</sub></sub>&sdot;b<sub>&nu;,j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub>)<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub>,j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub>
-     *   </td>
+     *   <tr>
+     *     <td class="nameOfMap" rowspan="2">·:</td>
+     *     <td class="leftOfMap">R<sup>n<sub>0</sub>&times;&#8230;&times;n<sub>r-1</sub>&times;h</sup>&times;R<sup>h&times;m<sub>0</sub>&times;&#8230;&times;m<sub>s-1</sub></sup></td>
+     *     <td class="arrowOfMap">&rarr;</td>
+     *     <td class="rightOfMap">R<sup>n<sub>0</sub>&times;&#8230;&times;n<sub>r-1</sub>&times;h</sup>&times;R<sup>h&times;m<sub>0</sub>&times;&#8230;&times;m<sub>s-1</sub></sup></td>
+     *   </tr>
+     *   <tr>
+     *     <td class="leftOfMap"><big>(</big>(a<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub>,i<sub>r</sub></sub>)<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub>,i<sub>r</sub></sub> , (b<sub>j<sub>-1</sub>,j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub>)<sub>j<sub>-1</sub>,j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub><big>)</big></td>
+     *     <td class="arrowOfMap">&#8614;</td>
+     *     <td class="rightOfMap">(&sum;<span class="doubleIndex"><sub>&nu;=0</sub><sup>h-1</sup></span> a<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub>,&nu;</sub></sub>&sdot;b<sub>&nu;,j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub>)<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub>,j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub></td>
      *   </tr>
      * </table>
      * @pre dimensions()[rank()-1] == b.dimensions()[0]
@@ -246,18 +253,23 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
     /**
      * Tensor product of a tensor with a tensor returning a tensor.
      * <table>
-     *   <tr> <td>&otimes;:R<sup>n<sub>0</sub>&times;&#8230;&times;n<sub>r-1</sub></sup>&times;R<sup>m<sub>0</sub>&times;&#8230;&times;m<sub>s-1</sub></sup>&rarr;R<sup>n<sub>0</sub>&times;&#8230;&times;n<sub>r-1</sub>&times;m<sub>0</sub>&times;&#8230;&times;m<sub>s-1</sub></sup>;</td> </tr>
-     *   <tr> <td><big>(</big>(a<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub></sub>)<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub></sub> , (b<sub>j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub>)<sub>j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub><big>)</big> &#8614;
-     *     (a<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub></sub></sub>&sdot;b<sub>j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub>)<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub>,j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub>
+     *   <tr>
+     *     <td class="nameOfMap" rowspan="2">&otimes;:</td>
+     *     <td class="leftOfMap">R<sup>n<sub>0</sub>&times;&#8230;&times;n<sub>r-1</sub></sup>&times;R<sup>m<sub>0</sub>&times;&#8230;&times;m<sub>s-1</sub></sup></td>
+     *     <td class="arrowOfMap">&rarr;</td>
+     *     <td class="rightOfMap">R<sup>n<sub>0</sub>&times;&#8230;&times;n<sub>r-1</sub>&times;m<sub>0</sub>&times;&#8230;&times;m<sub>s-1</sub></sup></td>
+     *   </tr>
+     *   <tr>
+     *     <td class="leftOfMap"><big>(</big>(a<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub></sub>)<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub></sub> , (b<sub>j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub>)<sub>j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub><big>)</big><br />=(a,b)</td>
+     *     <td class="arrowOfMap">&#8614;</td>
+     *     <td class="rightOfMap">(a<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub></sub></sub>&sdot;b<sub>j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub>)<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub>,j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub>
      *     =&#770;
-     *     (a<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub></sub></sub>&lowast;(b<sub>j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub>)<sub>j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub>)<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub></sub>
-     *     =&#770;
-     *     ((b<sub>j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub>)<sub>j<sub>0</sub>,&#8230;,j<sub>s-1</sub></sub>&lowast;a<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub></sub></sub>)<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub></sub>
-     *   </td>
+     *     (a<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub></sub></sub>&lowast;b)<sub>i<sub>0</sub>,&#8230;,i<sub>r-1</sub></sub>
+     *     </td>
      *   </tr>
      * </table>
-     * At least formally, the last form of the calculation ressembles the scalar multiplication b&lowast;a
-     * of left-R<sup>m<sub>0</sub>&times;&#8230;&times;m<sub>s-1</sub></sup>-modules.
+     * At least formally, the last form of the calculation resembles the scalar multiplication b&lowast;a
+     * if a was a vector of a left-R<sup>m<sub>0</sub>&times;&#8230;&times;m<sub>s-1</sub></sup>-modules.
      * @todo so why don't we unify tensor and scale? Because there may as well be distinct definitions?
      * @return the tensor product (or outer product) a&otimes;b.
      * @post RES.dimensions() = dimensions()&cup;b.dimensions()

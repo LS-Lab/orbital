@@ -129,6 +129,8 @@ public interface Arithmetic extends Normed {
 
     /**
      * 0.
+     * <p>
+     * 0 = 0&lowast;x.</p>
      * @attribute neutral element for Operations.plus
      * @return the neutral element 0 for addition in this algebraic structure (if it is a unital magma or monoid).
      * @throws ArithmeticException if this algebraic structure does not have a 0.
@@ -141,6 +143,8 @@ public interface Arithmetic extends Normed {
     Arithmetic zero() throws ArithmeticException;
     /**
      * 1.
+     * <p>
+     * 1 = x<sup>0</sup> at least for x&ne;0.</p>
      * @attribute neutral element for Operations.times
      * @return the neutral element 1 for multiplication in this algebraic structure
      * (if it is a true ring with 1, or ...).

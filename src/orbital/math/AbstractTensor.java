@@ -123,8 +123,7 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractProdu
 		    }
 		    catch(IndexOutOfBoundsException e) {
 			checkForComodification();
-			assert false : "cursor did already throw a NoSuchElementException";
-    	    		throw new NoSuchElementException();
+			throw (AssertionError) new AssertionError("cursor should already have thrown a NoSuchElementException").initCause(e);
         	    }
 		} 
 		public boolean hasPrevious() {
@@ -138,8 +137,7 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractProdu
 		    }
 		    catch(IndexOutOfBoundsException e) {
 			checkForComodification();
-			assert false : "cursor did already throw a NoSuchElementException";
-    	    		throw new NoSuchElementException();
+			throw (AssertionError) new AssertionError("cursor should already have thrown a NoSuchElementException").initCause(e);
         	    }
 		} 
 
@@ -421,7 +419,7 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractProdu
     } 
 
     public Tensor/*<R>*/ multiply(Tensor/*<R>*/ b) {
-	//@todo beautify with subTensor(...)
+	//@todo beautify with subTensor(...), or would that lack performance
 	final int[] dim = new int[rank() + b.rank() - 2];
 	final int[] d = dimensions();
 	final int[] e = b.dimensions();

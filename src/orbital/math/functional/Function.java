@@ -141,7 +141,8 @@ public interface Function/*<A implements Arithmetic, B implements Arithmetic>*/ 
      * @return f<sub>1</sub>&times;...&times;f<sub>n</sub>(x) = <big>(</big>f<sub>1</sub>(x),...f<sub>n</sub>(x)<big>)</big><sup>T</sup> as a {@link orbital.math.Vector}.
      */
     public Object apply(Object x) {
-	Vector r = Values.getInstance(dimension());
+	Vector r = Values.newInstance(dimension());
+	//@todo if we kept componentFunctions in a Matrix, we could perhaps use mapping of iterators().
 	// component-wise
 	for (int i = 0; i < r.dimension(); i++)
 	    r.set(i, (Arithmetic) componentFunction[i].apply(x));
@@ -237,7 +238,8 @@ public interface Function/*<A implements Arithmetic, B implements Arithmetic>*/ 
      * @return (f<sub>i,j</sub>)(x) = <big>(</big>f<sub>i,j</sub>(x)<big>)</big> as a {@link orbital.math.Matrix}.
      */
     public Object apply(Object x) {
-	Matrix ret = Values.getInstance(dimension());
+	Matrix ret = Values.newInstance(dimension());
+	//@todo if we kept componentFunctions in a Matrix, we could perhaps use mapping of iterators().
 	// component-wise
 	for (int i = 0; i < dimension().height; i++)
 	    for (int j = 0; j < dimension().width; j++)
@@ -266,26 +268,3 @@ public interface Function/*<A implements Arithmetic, B implements Arithmetic>*/ 
 	return sb.toString();
     }
 }
-	
-	
-/*
-  public static double gamma(double d)
-  throws IllegalArgumentException
-  {
-  if(d > 170D)
-  return (1.0D / 0.0D);
-  if(d is negative integer)
-  throw new IllegalArgumentException((new MathlibMessages()).getMessage(0, d, "gamma"));
-  if(d < 0.0D)
-  return 3.1415926535897931D / (Math.sin(3.1415926535897931D * d) * gamma(1.0D - d));
-  if(d > 13D)
-  return str(d);
-  int j;
-  d += j = (int)Math.floor(13D - d) + 1;
-  double d1 = str(d);
-  for(int i = j; i >= 1; i--)
-  d1 /= --d;
-
-  return d1;
-  }
-*/

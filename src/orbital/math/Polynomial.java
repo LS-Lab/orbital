@@ -11,7 +11,7 @@ import orbital.math.functional.Function;
 import java.util.ListIterator;
 
 /**
- * Univariate polynomial p&isin;R[X].
+ * (Univariate) polynomial p&isin;R[X].
  * <p>
  * Let R be a commutative ring with 1.
  * The polynomial ring over R in one variable X is

@@ -280,7 +280,7 @@ public class ArithmeticFormat extends Format {
 
 	    //@xxx improve formatting tensors (show when them inner matrix brackets end)
 
-	    obj = MathUtilities.flatten(obj);
+	    obj = AlgebraicAlgorithms.flatten(obj);
 	    // transposes the indices such that the elements appear in row-wise order from top-left down-right.
 	    // then we can achieve alternating rows and columns for successive dimensions
 	    {
@@ -494,6 +494,7 @@ public class ArithmeticFormat extends Format {
     public StringBuffer format(Polynomial p, StringBuffer result, FieldPosition fieldPosition) {
         fieldPosition.setBeginIndex(0);
         fieldPosition.setEndIndex(0);
+	final int initialIndex = result.length();
 		
 	// @todo improve format
 	result.append(polynomialPrefix);
@@ -502,16 +503,33 @@ public class ArithmeticFormat extends Format {
 	    Arithmetic ci = p.get(i);
 	    // only print nonzero elements (but print the 0-th coefficient if it is the only one)
 	    if (!ci.norm().equals(Values.ZERO)
-		|| (i == 0 && result.length() == 0)) {
+		|| (i == 0 && result.length() == initialIndex)) {
 		int startIndex = result.length();
-		format(ci, result, fieldPosition);
+		// whether the coefficient ci has been skipped
+		boolean skipped;
+		if (ci.equals(ci.one()) && i != 0)
+		    // skip 1 (except for constant term)
+		    skipped = true;
+		else if (ci.equals(ci.one().minus()) && i != 0) {
+		    // shorten -1 to - (except for constant term)
+		    result.append(polynomialPlusAlternative);
+		    skipped = true;
+		} else {
+		    format(ci, result, fieldPosition);
+		    skipped = false;
+		}
 		// separator for all but the first coefficient,
 		// provided that there is not already an alternative separator
 		if (i < p.degreeValue() &&
 		    !(result.length() > startIndex && result.substring(startIndex).startsWith(polynomialPlusAlternative)))
 		    result.insert(startIndex, polynomialPlusOperator);
-		if (i != 0)
-		    result.append(polynomialTimesOperator + polynomialVariable + (i > 1 ? polynomialPowerOperator + i : ""));
+		if (i != 0) {
+		    if (!skipped)
+			result.append(polynomialTimesOperator);
+		    result.append(polynomialVariable);
+		    if (i > 1)
+			result.append(polynomialPowerOperator + i);
+		}
 	    }
 	}
 	result.append(polynomialSuffix);
@@ -589,7 +607,7 @@ public class ArithmeticFormat extends Format {
 			    break;
 		    }
 		    consume(matrixSuffix, source, status);
-		    Matrix v = Values.getInstance(rows.size(), colWidth);
+		    Matrix v = Values.newInstance(rows.size(), colWidth);
 		    for (int i = 0; i < v.dimension().height; i++) {
 			col = (List) rows.get(i);
 			for (int j = 0; j < v.dimension().width; j++) {
@@ -609,7 +627,7 @@ public class ArithmeticFormat extends Format {
 			    break;
 		    }
 		    consume(vectorSuffix, source, status);
-		    Vector v = Values.getInstance(components.size());
+		    Vector v = Values.newInstance(components.size());
 		    for (int i = 0; i < v.dimension(); i++)
 			v.set(i, (Arithmetic) components.get(i));
 		    return v;

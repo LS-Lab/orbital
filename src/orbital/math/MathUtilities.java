@@ -49,6 +49,7 @@ import java.util.logging.Level;
  * @see Evaluations
  * @see Stat
  * @see NumericalAlgorithms
+ * @xxx move algebraic utilities into an own class AlgebraicAlgorithms.
  */
 public final class MathUtilities {
     private static class Debug {
@@ -57,11 +58,11 @@ public final class MathUtilities {
 	    for (int i = 0; i < 20; i++) {
 		int a = 1 + (int) (Math.random() * 100);
 		int b = 1 + (int) (Math.random() * 100);
-		System.out.println(a + " " + b + ": gcd:" + gcd(a, b) + ", lcm:" + lcm(a, b));
+		System.out.println(a + " " + b + ": gcd:" + AlgebraicAlgorithms.gcd(a, b) + ", lcm:" + AlgebraicAlgorithms.lcm(a, b));
 	    } 
-	    System.out.println(gcd(-8, -4));
-	    System.out.println(gcd(-8, 4));
-	    System.out.println(gcd(8, -4));
+	    System.out.println(AlgebraicAlgorithms.gcd(-8, -4));
+	    System.out.println(AlgebraicAlgorithms.gcd(-8, 4));
+	    System.out.println(AlgebraicAlgorithms.gcd(8, -4));
 	    System.out.println("romans:");
 	    for (short d = 1; d < 30; d++)
 		System.out.println(d + "=^=" + toRoman(d));
@@ -223,210 +224,39 @@ public final class MathUtilities {
     // divisibility (gcd, lcm) and CRT
 
     /**
-     * Returns greatest common divisor (GCD) of two elements of a ring.
-     * The GCD is the greatest (with respect to dividability) element in the ring which divides both, a and b.
-     * <p>
-     * In an Euclidean ring R it is true that
-     * <ul>
-     *   <li>&forall;a&isin;R\{0} gcd(a, 0) = a</li>
-     *   <li>&forall;a&isin;R,b&isin;R\{0} gcd(a, b) = gcd(b, a mod b)</li>
-     * </ul>
-     * <p>
-     * This implementation uses the extended euclidian algorithm, 
-     * ELBA: Euclid-Lagrange-Berlekamp Algorithm.
-     * </p>
-     * @pre &not;(a==0 &and; b==0)
-     * @return gcd(a,b) := inf(a,b) with divides as a partial order (N,|).
-     * @note the father of all algorithms: Euclid.
-     * @note the mother of all data structures: ADT Euclidean ring
-     * @note There are even principal rings which are not Euclidean but where one can define the equivalent of the Euclidean algorithm.
-     *  The algorithm for rational numbers was given in Book VII of Euclid's Elements, and the algorithm for reals appeared in Book X,
-     *  and is the earliest example of an integer relation algorithm (Ferguson et al. 1999, also see Ferguson-Forcade algorithm in Ferguson et al. 1999). 
-     * @see "Ferguson, H. R. P.; Bailey, D. H.; and Arno, S. "Analysis of PSLQ, An Integer Relation Finding Algorithm." Math. Comput. 68, 351-369, 1999."
-     * @internal note see extended euclidian algorithm ELBA (Euclid-Lagrange-Berlekamp Algorithm) for a decomposition into d=gcd(a,b),r,s in R such that d = r*a + s*b
-     * @todo optimize
-     * @has time complexity gcd&isin;O(log(max{||a||, ||b||}))
-     * @todo we could multiply the resulting gcd, r, s by a constant!=0 (which is a unit if R is a field) to obtain a normalized gcd.
+     * @deprecated Use {@link AlgebraicAlgorithms#gcd(Euclidean,Euclidean)} instead.
      */
     public static Euclidean gcd(Euclidean a, Euclidean b) {
-	Euclidean list[] = {a, b};
-	return gcd(list)[list.length];		//sic(!)
-    }
-    public static Euclidean lcm(Euclidean a, Euclidean b) {
-	return (Euclidean) a.multiply(b).divide(gcd(a,b));
+	return AlgebraicAlgorithms.gcd(a,b);
     }
     /**
-     * n-ary and extended gcd.
-     * @param elements an array {a<sub>0</sub>,...,a<sub>n-1</sub>} &sube; R whose gcd to determine.
-     * @pre &not;&forall;i elements[i]==0
-     * @return an array {s<sub>0</sub>,...,s<sub>n-1</sub>, d} &sube; R where
-     *  d = gcd({a<sub>0</sub>,...,a<sub>n-1</sub>}) = &sum;<sub>i=0,...,n-1</sub> s<sub>i</sub>*a<sub>i</sub>.
-     * @todo use documentation from gcd(Euclidean, Euclidean)
-     * @see #gcd(Euclidean,Euclidean)
+     * @deprecated Use {@link AlgebraicAlgorithms#lcm(Euclidean,Euclidean} instead.
+     */
+    public static Euclidean lcm(Euclidean a, Euclidean b) {
+	return AlgebraicAlgorithms.lcm(a,b);
+    }
+    /**
+     * @deprecated Use {@link AlgebraicAlgorithms#gcd(Euclidean[])} instead.
      */
     public static Euclidean[] gcd(final Euclidean elements[]) {
-	switch (elements.length) {
-	case 0:
-	    throw new IllegalArgumentException("positive array-size expected. gcd not defined for zero elements");
-	case 1:
-	    return new Euclidean[] {(Euclidean) elements[1].one(), elements[0]};
-	case 2:
-	    // see below
-	    break;
-	default:
-	    //@todo fold a with gcd, and somehow combine the overall gcd
-	    throw new UnsupportedOperationException("gcd of more than two elements not yet implemented");
-	}
-	final Euclidean a = elements[0], b = elements[1];
-	final Euclidean ZERO = (Euclidean) a.zero();
-	final Euclidean ONE = (Euclidean) a.one();
-	if (a.norm().equals(Values.ZERO) && b.norm().equals(Values.ZERO))
-	    throw new ArithmeticException("gcd(0, 0) is undefined");
-	if (b.norm().equals(Values.ZERO))
-	    return new Euclidean[] {ONE, a};				//@todo verify that this is correct, especially for a=0 and in conjunction with rationals occuring in ranks < size
-	Euclidean a0 = a, a1 = b;
-	Euclidean r0 = ONE, r1 = ZERO;
-	Euclidean s0 = ZERO, s1 = ONE;
-	while (!a1.norm().equals(Values.ZERO)) {
-	    // @invariant gcd(OLD(a), OLD(b)) == gcd(a0, a1)
-	    //   &and; a0 == r0*a + s0*b
-	    //   &and; a1 == r1*a + s1*b
-			
-	    // calculate the quotient a0 div a1
-	    Euclidean q = a0.quotient(a1);
-	    Euclidean t;
-			
-	    // transform (a0, a1)
-	    t = (Euclidean) a0.subtract(q.multiply(a1));
-	    // t == a0.modulo(a1)
-	    assert a0.modulo(a1).equals(t) : "a mod b == a - (a div b)*b, i.e. " + a0.modulo(a1) + " == " + a0 + " - " + q + "*" + a1 + " == " + a0 + " - " + q.multiply(a1) + " == " + t;
-	    // (a0, a1) := (a1, a0 mod a1);
-	    a0 = a1;
-	    a1 = t;
-			
-	    // transform (r0, r1)
-	    t = (Euclidean) r0.subtract(q.multiply(r1));
-	    r0 = r1;
-	    r1 = t;
-
-	    // transform (s0, s1)
-	    t = (Euclidean) s0.subtract(q.multiply(s1));
-	    s0 = s1;
-	    s1 = t;
-	} 
-	assert !a0.norm().equals(Values.ZERO) : "gcd != 0 && @todo";
-	assert a0.equals(r0.multiply(a).add(s0.multiply(b))) : "a0 == r0*a + s0*b";
-	return new Euclidean[] {
-	    r0, s0,
-	    a0
-	};
+	return AlgebraicAlgorithms.gcd(elements);
     } 
 
     /**
      * Returns greatest common divisor (GCD) of two integers.
-     * The GCD is the greatest integer which divides both numbers.
-     * <p>
-     * In an Euclidean ring R it is true that
-     * <ul>
-     *   <li>&forall;a&isin;R gcd(a, 0) = a</li>
-     *   <li>&forall;a&isin;R,b&isin;R\{0} gcd(a, b) = gcd(b, a mod b)</li>
-     * </ul>
-     * <p>
-     * This implementation uses the non-extended Euclidian algorithm.
-     * </p>
-     * @pre &not;(a==0 &and; b==0)
-     * @return gcd(a,b) := inf(a,b) with | (divides) as a partial order on <b>N</b>.
-     * @note the father of all algorithms: Euclid.
-     * @note the mother of all data structures: Euclidean rings
-     * @internal note see extended Euclidian algorithm ELBA (Euclid-Lagrange-Berlekamp Algorithm) for a decomposition into g=ggT(a,b),r,s in R such that g = r*a + s*b
-     * @todo optimize
-     * @has time complexity gcd&isin;O(&#13266;(max{||a||, ||b||}))
+     * @see AlgebraicAlgorithms#gcd(int,int)
      */
     public static int gcd(int a, int b) {
-	if ((a == 0 && b == 0))
-	    throw new ArithmeticException("gcd(0, 0) is undefined");
-	if (b == 0)
-	    return a;				//@todo verify that this is correct, especially for a=0 and in conjunction with rationals occuring in ranks < size
-	boolean flipsign = false;
-	if (a < 0) {
-	    a *= -1;
-	    flipsign = !flipsign;
-	} 
-	if (b < 0) {
-	    b *= -1;
-	    flipsign = !flipsign;
-	} 
-	assert a >= 0 && b > 0 : "a>=0 && b>0 for gcd, now";
-	while (a != 0) {
-	    // @invariant gcd(OLD(a), OLD(b)) == gcd(a, b)
-	    //@todo we really should perform (a, b) := (b, a mod b); instead?
-	    if (b > a) {
-		int t = a;
-		a = b;
-		b = t;
-	    } 
-	    a %= b;
-	} 
-	assert b != 0 : "gcd != 0 && @todo";
-	return flipsign ? -b : b;
+	return AlgebraicAlgorithms.gcd(a, b);
     } 
 
     /**
      * Returns least common multiple (LCM) of two integers.
-     * The LCM is the smallest integer which is a multiple of both numbers.
-     * <p>
-     * This implementation uses <code>a*b/gcd(a,b)</code>.</p>
-     * @return lcm(a,b) := sup(a,b) with divides as a partial order (N,|).
+     * @see AlgebraicAlgorithms#lcm(int,int)
      */
     public static int lcm(int a, int b) {
-	return a * b / gcd(a, b);
+	return AlgebraicAlgorithms.lcm(a, b);
     } 
-
-    /**
-     * Simulatenously solve independent congruences.
-     * <center>x &equiv; x<sub>i</sub> (mod m<sub>i</sub>) for i=1,...,n</center>
-     * The Chinese Remainder Theorem guarantees a unique solution x
-     * (modulo m<sub>1</sub>*...*m<sub>n</sub>), if the m<sub>i</sub> are coprime,
-     * i.e. (m<sub>i</sub>)+(m<sub>j</sub>)=(1).
-     * <p>
-     *    Remark: the isomorphisms involved are useful for computing with the Chinese remainder algorithm. They are
-     *    <ul>
-     *      <li>x &#8614; <big>(</big>x (mod m<sub>1</sub>),...,x (mod m<sub>n</sub>)<big>)</big></li>
-     *      <li>&sum;<sub>i=1,...,n</sub> x<sub>i</sub><big>(</big>(&prod;<sub>j&ne;i</sub> m<sub>j</sub>)<sup>-1</sup> (mod m<sub>i</sub>)<big>)</big>&prod;<sub>j&ne;i</sub> m<sub>j</sub> &#8612; (x<sub>1</sub>,...,x<sub>n</sub>)</li>
-     *    </ul>
-     * </p>
-     * <p>
-     * The incremental algorithm is
-     * <pre>
-     * x := x<sub>1</sub>
-     * M := 1
-     * <span class="keyword">for</span> i := 2 <span class="keyword">to</span> n <span class="keyword">do</span>
-     *     M := M*m<sub>i-1</sub>
-     *     x := x + <big>(</big>(x<sub>i</sub> - x)*(M<sup>-1</sup> mod m<sub>i</sub>) mod m<sub>i</sub><big>)</big> * M
-     * <span class="keyword">end for</span>
-     * <span class="keyword">return</span> x
-     * </pre>
-     * </p>
-     * @param x the array of congruence values x<sub>1</sub>,...,x<sub>n</sub>.
-     * @param m the array of corresponding moduli m<sub>1</sub>,...,m<sub>n</sub>.
-     * @pre &forall;i&ne;j (x[i])+(x[j])=(1), i.e. gcd(x[i],x[j])=1.
-     * @return the unique solution x (modulo m<sub>1</sub>*...*m<sub>n</sub>).
-     * @internal implements Chinese remainder algorithm which is a direct consequence of the
-     *  Chinese Remainder Theorem.
-     */
-    public static final Arithmetic chineseRemainder(Arithmetic x[], Arithmetic m[]) {
-	if (x.length != m.length)
-	    throw new IllegalArgumentException("must give the same number of congruence values and modulos");
-	Arithmetic xStar = x[0];
-	Arithmetic M = xStar.one();
-	for (int i = 1; i < m.length; i++) {
-	    M = M.multiply(m[i-1]);
-	    final Arithmetic c = Values.quotient((Euclidean) M, (Euclidean) m[i]).inverse()/*.representative()*/;		// the inverse modulo m[i] of m
-	    final Arithmetic s = Values.quotient((Euclidean) (x[i].subtract(xStar)).multiply(c), (Euclidean) m[i]).representative();
-	    xStar = xStar.add(s.multiply(M));
-	}
-	return xStar;
-    }
 
     // primes
     
@@ -803,49 +633,6 @@ public final class MathUtilities {
      */
     //public static Function taylorSeries(Function f, Arithmetic x0, int n)
 	
-    /**
-     * Of a rank r tensor with rank s tensor components, make a rank r+s tensor.
-     * This applies recursively until (non-tensor) components of rank 0 have been reached.
-     * Requires that all components are of uniform rank and dimensions.
-     */
-    static final Tensor flatten(Tensor t) {
-	int[] sdim = null;
-	for (Iterator i = t.iterator(); i.hasNext(); ) {
-	    Object ti = i.next();
-	    if (ti instanceof Tensor) {
-		int[] d = ((Tensor)ti).dimensions();
-		if (sdim == null)
-		    sdim = d;
-		else
-		    Utility.pre(Utility.equalsAll(d, sdim), "components have uniform rank and dimensions");
-	    } else {
-		if (sdim == null)
-		    sdim = new int[0];
-		else
-		    Utility.pre(sdim.length == 0, "components have uniform ran and dimensions");
-	    }
-	}
-	if (sdim.length == 0)
-	    return t;
-	else {
-	    final int[] tdim = t.dimensions();
-	    final int[] dim = new int[tdim.length + sdim.length];
-	    System.arraycopy(tdim, 0, dim, 0, tdim.length);
-	    System.arraycopy(sdim, 0, dim, tdim.length, sdim.length);
-	    Tensor r = Values.getInstance(dim);
-	    for (Combinatorical index = Combinatorical.getPermutations(r.dimensions()); index.hasNext(); ) {
-		int[] i = index.next();
-		int[] ai = new int[tdim.length];
-		System.arraycopy(i, 0, ai, 0, tdim.length);
-		int[] bi = new int[sdim.length];
-		System.arraycopy(i, tdim.length, bi, 0, i.length - tdim.length);
-		Tensor tai = (Tensor) t.get(ai);
-		r.set(i, tai.get(bi));
-	    }
-	    return flatten(r);
-	}
-    }
-
     // nice number formatting
 
     /**
@@ -910,30 +697,12 @@ public final class MathUtilities {
 		return ((Number) o).longValue() + "";
 	    else
 		return format(((Number) o).doubleValue());
-	else if (o.getClass().isArray() && o.getClass().getComponentType().isArray()) {
-	    //@todo simplify to Values.tensor(o).toString();
-	    // 2-dimensional array type
-	    // (or more dimensional array type)
-	    String		 nl = System.getProperty("line.separator");
-	    StringBuffer sb = new StringBuffer();
-	    for (int i = 0; i < Array.getLength(o); i++) {
-		sb.append((i == 0 ? "" : nl) + '[');
-		Object e = Array.get(o, i);
-		for (int j = 0; j < Array.getLength(e); j++)
-		    sb.append((j == 0 ? "" : ",\t") + format(Array.get(e, j)));
-		sb.append(']');
-	    } 
-	    return sb.toString();
-	} else if (o.getClass().isArray()) {
-	    // 1-dimensional array type
-	    StringBuffer sb = new StringBuffer();
-	    for (int i = 0; i < Array.getLength(o); i++) {
-		sb.append(format(Array.get(o, i)));
-		if (i < Array.getLength(o) - 1)
-		    sb.append(",\t");
-	    } 
-	    return sb.toString();
-	} else
+	else if (o.getClass().isArray())
+	    if (Array.getLength(o) != 0)
+		return Values.tensor(o).toString();
+	    else
+		return "{}";
+	else
 	    return "" + o;
     } 
 

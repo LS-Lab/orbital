@@ -138,7 +138,8 @@ class MatrixComponentCompositeBinaryFunction/*ComponentCompositeFunction<Matrix.
      * @return (f<sub>i,j</sub>)(x) = <big>(</big>f<sub>i,j</sub>(x)<big>)</big> as a {@link orbital.math.Matrix}.
      */
     public Object apply(Object x, Object y) {
-	Matrix ret = Values.getInstance(dimension());
+	Matrix ret = Values.newInstance(dimension());
+	//@todo if we kept componentFunctions in a Matrix, we could perhaps use mapping of iterators().
 	// component-wise
 	for (int i = 0; i < dimension().height; i++)
 	    for (int j = 0; j < dimension().width; j++)

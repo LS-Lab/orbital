@@ -40,7 +40,7 @@ abstract class AbstractVector/*<R implements Arithmetic>*/ extends AbstractTenso
     protected abstract Vector/*<R>*/ newInstance(int dim);
     
     protected final Tensor/*<R>*/ newInstance(int[] dim) {
-	return dim.length == 1 ? newInstance(dim[0]) : Values.getInstance(dim);
+	return dim.length == 1 ? newInstance(dim[0]) : Values.newInstance(dim);
     }
 
     // get/set-methods
@@ -383,7 +383,7 @@ abstract class AbstractVector/*<R implements Arithmetic>*/ extends AbstractTenso
     } 
 
     public Matrix/*<R>*/ transpose() {
-	Matrix/*<R>*/ r = Values.getInstance(new Dimension(1, dimension()));
+	Matrix/*<R>*/ r = Values.newInstance(new Dimension(1, dimension()));
 	r.setRow(0, this);
 	return r;
     } 

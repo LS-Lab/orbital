@@ -277,7 +277,7 @@ public final class Stat {
 	    dimensions[v] = funcs[v] instanceof CoordinateCompositeFunction
 		? ((CoordinateCompositeFunction) funcs[v]).dimension()
 		: 1;
-	Matrix A = Values.getInstance(experiment.dimension().height, Evaluations.max(dimensions));
+	Matrix A = Values.newInstance(experiment.dimension().height, Evaluations.max(dimensions));
 	if (A.dimension().width > A.dimension().height)
 	    throw new ArithmeticException("linear coefficients exceed experiment datasets (" + A.dimension().width + ">" + A.dimension().height + ") the statistical solution is ambiguous and (n-m) parametric");
 

@@ -213,7 +213,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
 	return newInstance(new Dimension(width, height));
     } 
     protected final Tensor/*<R>*/ newInstance(int[] dim) {
-	return dim.length == 2 ? newInstance(dim[0], dim[1]) : Values.getInstance(dim);
+	return dim.length == 2 ? newInstance(dim[0], dim[1]) : Values.newInstance(dim);
     }
 
     // get/set-methods
@@ -564,7 +564,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
     	}
     
     	protected Vector/*<R>*/ newInstance(int dim) {
-	    return Values.getInstance(dim);
+	    return Values.newInstance(dim);
     	} 
     
     	public final int dimension() {
@@ -623,7 +623,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
     	}
     
     	protected Vector/*<R>*/ newInstance(int dim) {
-	    return Values.getInstance(dim);
+	    return Values.newInstance(dim);
     	} 
     
     	public final int dimension() {
@@ -773,7 +773,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
 	//@todo could also be seen as a view, in principle
 	if (!isSquare())
 	    throw new ArithmeticException("Only square matrices have a diagonal vector");
-	Vector/*<R>*/ diagon = Values.getInstance(dimension().height);
+	Vector/*<R>*/ diagon = Values.newInstance(dimension().height);
 	for (int i = 0; i < diagon.dimension(); i++)
 	    diagon.set(i, get(i, i));
 	return diagon;
@@ -939,7 +939,7 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
 
     public Vector/*<R>*/ multiply(Vector/*<R>*/ B) {
 	Utility.pre(dimension().width == B.dimension(), "row vector A.v only defined for Matrix multiplied with row vector of dimension width. " + dimension().width + "!=" + B.dimension());
-	Vector/*<R>*/ ret = Values.getInstance(dimension().height);	// column vector
+	Vector/*<R>*/ ret = Values.newInstance(dimension().height);	// column vector
 	for (int i = 0; i < ret.dimension(); i++)
 	    ret.set(i, getRow(i).multiply(B));
 	return ret;

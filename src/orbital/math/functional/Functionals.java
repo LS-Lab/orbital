@@ -11,6 +11,7 @@ import orbital.logic.functor.Functor;
 import orbital.math.Arithmetic;
 import orbital.logic.functor.Notation;
 import orbital.math.Values;
+import orbital.math.Scalar;
 
 import java.lang.reflect.Array;
 import orbital.util.GeneralComplexionException;
@@ -532,8 +533,10 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
     private static Object mapImpl(orbital.logic.functor.Function f, Object a) {
 	Utility.pre(a != null && a.getClass().isArray(), "map(Function, Object) works on arrays of primitive types or their compound wrapper classes, only");
 	Object r = Array.newInstance(a.getClass().getComponentType(), Array.getLength(a));
-	for (int i = 0; i < Array.getLength(r); i++)
-	    Array.set(r, i, f.apply(Values.valueOf((Number) Array.get(a, i))));
+	for (int i = 0; i < Array.getLength(r); i++) {
+	    Object o = f.apply(Values.valueOf((Number) Array.get(a, i)));
+	    Array.set(r, i, Values.isPrimitiveWrapper(o.getClass()) ? o : Values.toPrimitiveWrapper((Scalar)o));
+	}
 	return r;
     }
 
@@ -568,8 +571,10 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
 		    && y != null && y.getClass().isArray(), "map(BinaryFunction, Object, Object) works on arrays of primitive types or their compound wrapper classes, only");
 	Utility.pre(Array.getLength(x) == Array.getLength(y), "argument arrays must have same length");
 	Object r = Array.newInstance(x.getClass().getComponentType(), Array.getLength(x));
-	for (int i = 0; i < Array.getLength(r); i++)
-	    Array.set(r, i, f.apply(Values.valueOf((Number) Array.get(x, i)), Values.valueOf((Number) Array.get(y, i))));
+	for (int i = 0; i < Array.getLength(r); i++) {
+	    Object o = f.apply(Values.valueOf((Number) Array.get(x, i)), Values.valueOf((Number) Array.get(y, i)));
+	    Array.set(r, i, Values.isPrimitiveWrapper(o.getClass()) ? o : Values.toPrimitiveWrapper((Scalar)o));
+	}
 	return r;
     }
 

@@ -17,7 +17,6 @@ import java.util.ListIterator;
 import java.util.Arrays;
 import orbital.util.Setops;
 import orbital.util.Utility;
-import orbital.algorithm.Combinatorical;
 
 import orbital.math.functional.Functions;
 import java.util.ListIterator;
@@ -214,7 +213,27 @@ public final class Values {
     }
 
     /**
+     * Returns a primitive type wrapper for the specified scalar.
+     * Legacy conversion method.
      * Determines whether the specified class is an (old JDK1.0) wrapper for a primitive type.
+     * @see #valueOf(Number)
+     * @see #isPrimitiveWrapper(Class)
+     * @todo when to return java.lang.Float etc.?
+     */
+    public static Number toPrimitiveWrapper(Scalar val) {
+	if (Integer.hasType.apply(val))
+	    return new java.lang.Integer(((Integer)val).intValue());
+	else if (Real.hasType.apply(val))
+	    return new java.lang.Double(((Real)val).doubleValue());
+	else if (Rational.hasType.apply(val))
+	    return new java.lang.Double(((Real)val).doubleValue());
+	else
+	    throw new IllegalArgumentException("cannot be wrapped in a primitive wrapper type " + val.getClass());
+    }
+
+    /**
+     * Determines whether the specified class is an (old JDK1.0) wrapper for a primitive type.
+     * Legacy query method.
      * @see Class#isPrimitive()
      * @see java.lang.Integer
      * @see java.lang.Long
@@ -223,7 +242,7 @@ public final class Values {
      * @see java.lang.Byte
      * @see java.lang.Short
      */
-    static boolean isPrimitiveWrapper(Class clazz) {
+    public static boolean isPrimitiveWrapper(Class clazz) {
 	if (!Number.class.isAssignableFrom(clazz))
 	    return false;
 	else
@@ -349,14 +368,14 @@ public final class Values {
     } 
     public static Vector/*<Integer>*/ valueOf(int[] values) {
 	// kind of map valueOf
-	Vector/*<Integer>*/ v = getInstance(values.length);
+	Vector/*<Integer>*/ v = newInstance(values.length);
 	for (int i = 0; i < values.length; i++)
 	    v.set(i, valueOf(values[i]));
 	return v;
     } 
 
     static /*<R implements Arithmetic>*/ Vector/*<R>*/ vector(List/*_<R>_*/ values) {
-	Vector/*<R>*/   r = Values.getInstance(values.size());
+	Vector/*<R>*/   r = Values.newInstance(values.size());
 	Iterator/*_<R>_*/   it = values.iterator();
 	for (int i = 0; i < values.size(); i++)
 	    r.set(i, (Arithmetic/*>R<*/) it.next());
@@ -371,12 +390,19 @@ public final class Values {
      * @post RES.dimension() == dimension()
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
      */
-    public static /*<R implements Arithmetic>*/ Vector/*<R>*/ getInstance(int dim) {
+    public static /*<R implements Arithmetic>*/ Vector/*<R>*/ newInstance(int dim) {
 	return new ArithmeticVector/*<R>*/(dim);
-    } 
+    }
+    /**
+     * @deprecated Use {@link #newInstance(int)} instead.
+     */
+    public static /*<R implements Arithmetic>*/ Vector/*<R>*/ getInstance(int dim) {
+	return newInstance(dim);
+    }
 
     /**
      * Gets zero Vector, with all elements set to <code>0</code>.
+     * @internal could also call ZERO(int[]), but the CONST implementation may be faster.
      */
     public static Vector ZERO(int n) {
 	return CONST(n, Values.ZERO);
@@ -388,7 +414,7 @@ public final class Values {
      * &forall;x&isin;<b>R</b><sup>n</sup> &exist;! x<sub>k</sub>&isin;<b>R</b>: x = x<sub>1</sub>*e<sub>1</sub> + ... + x<sub>n</sub>*e<sub>n</sub>.
      */
     public static /*<R implements Scalar>*/ Vector/*<R>*/ BASE(int n, int e_i) {
-	ArithmeticVector/*<R>*/ base = (ArithmeticVector/*<R>*/) (Vector/*<R>*/) getInstance(n);
+	ArithmeticVector/*<R>*/ base = (ArithmeticVector/*<R>*/) (Vector/*<R>*/) newInstance(n);
 	for (int i = 0; i < base.dimension(); i++)
 	    base.D[i] = (Arithmetic/*>R<*/) Values.valueOf(i == e_i ? 1 : 0);
 	return base;
@@ -398,7 +424,7 @@ public final class Values {
      * Gets a constant Vector, with all elements set to <code>c</code>.
      */
     public static /*<R implements Arithmetic>*/ Vector/*<R>*/ CONST(int n, Arithmetic/*>R<*/ c) {
-	ArithmeticVector/*<R>*/ constant = (ArithmeticVector/*<R>*/) (Vector/*<R>*/) getInstance(n);
+	ArithmeticVector/*<R>*/ constant = (ArithmeticVector/*<R>*/) (Vector/*<R>*/) newInstance(n);
 	Arrays.fill(constant.D, c);
 	return constant;
     } 
@@ -477,7 +503,7 @@ public final class Values {
 	for (int i = 1; i < values.length; i++)
 	    Utility.pre(values[i].length == values[i - 1].length, "rectangular array required");
 	// kind of map valueOf
-	Matrix/*<Integer>*/ v = getInstance(values.length, values[0].length);
+	Matrix/*<Integer>*/ v = newInstance(values.length, values[0].length);
 	for (int i = 0; i < values.length; i++)
 	    for (int j = 0; j < values[0].length; j++)
 		v.set(i, j, valueOf(values[i][j]));
@@ -495,12 +521,24 @@ public final class Values {
      * @post RES.dimension().equals(dimension)
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
      */
-    public static /*<R implements Arithmetic>*/ Matrix/*<R>*/ getInstance(Dimension dimension) {
+    public static /*<R implements Arithmetic>*/ Matrix/*<R>*/ newInstance(Dimension dimension) {
 	return new ArithmeticMatrix/*<R>*/(dimension);
     } 
-    public static /*<R implements Arithmetic>*/ Matrix/*<R>*/ getInstance(int height, int width) {
+    public static /*<R implements Arithmetic>*/ Matrix/*<R>*/ newInstance(int height, int width) {
 	return new ArithmeticMatrix/*<R>*/(height, width);
     } 
+    /**
+     * @deprecated Use {@link #newInstance(Dimension)} instead.
+     */
+    public static /*<R implements Arithmetic>*/ Matrix/*<R>*/ getInstance(Dimension dimension) {
+	return newInstance(dimension);
+    }
+    /**
+     * @deprecated Use {@link #newInstance(int,int)} instead.
+     */
+    public static /*<R implements Arithmetic>*/ Matrix/*<R>*/ getInstance(int height, int width) {
+	return newInstance(height, width);
+    }
 
     /**
      * Gets zero Matrix, with all elements set to 0.
@@ -509,11 +547,7 @@ public final class Values {
 	return ZERO(dim.height, dim.width);
     } 
     public static /*<R implements Arithmetic>*/ Matrix/*<R>*/ ZERO(int height, int width) {
-	ArithmeticMatrix zero = (ArithmeticMatrix) getInstance(height, width);
-	for (int i = 0; i < zero.dimension().height; i++)
-	    for (int j = 0; j < zero.dimension().width; j++)
-		zero.D[i][j] = Values.ZERO;
-	return zero;
+	return (Matrix) ZERO(new int[] {height, width});
     }
 
     /**
@@ -532,7 +566,7 @@ public final class Values {
     public static /*<R implements Scalar>*/ Matrix/*<R>*/ IDENTITY(int height, int width) {
 	if (!(width == height))
 	    throw new IllegalArgumentException("identity matrix is square");
-	ArithmeticMatrix/*<R>*/ identity = (ArithmeticMatrix/*<R>*/) (Matrix/*<R>*/) getInstance(height, width);
+	ArithmeticMatrix/*<R>*/ identity = (ArithmeticMatrix/*<R>*/) (Matrix/*<R>*/) newInstance(height, width);
 	for (int i = 0; i < identity.dimension().height; i++)
 	    for (int j = 0; j < identity.dimension().width; j++)
 		identity.D[i][j] = (Arithmetic/*>R<*/) Values.valueOf(orbital.math.functional.Functions.delta(i, j));
@@ -544,7 +578,7 @@ public final class Values {
      * @see Functions#delta
      */
     public static /*<R implements Scalar>*/ Matrix/*<R>*/ DIAGONAL(Vector/*<R>*/ diagon) {
-	Matrix/*<R>*/ diagonal = getInstance(new Dimension(diagon.dimension(), diagon.dimension()));
+	Matrix/*<R>*/ diagonal = newInstance(new Dimension(diagon.dimension(), diagon.dimension()));
 	for (int i = 0; i < diagonal.dimension().height; i++)
 	    for (int j = 0; j < diagonal.dimension().width; j++)
 		diagonal.set(i, j, i == j ? diagon.get(i) : (Arithmetic/*>R<*/) Values.valueOf(0));
@@ -653,6 +687,9 @@ public final class Values {
      * Note that the resulting tensor may or may not be backed by the
      * specified array.
      * </p>
+     * <p>
+     * Tensors of type {@link Vector}, and {@link Matrix} are returned for tensors of rank 1 or 2.
+     * </p>
      * @param values the element values of the tensor to create.
      *  The tensor may be backed by this exact array per reference.
      * @pre values is a rectangular multi-dimensional array of {@link Arithmetic arithmetic objects}
@@ -676,21 +713,24 @@ public final class Values {
     
     /**
      * Creates a new instance of tensor with the specified dimensions.
+     * <p>
+     * Tensors of type {@link Vector}, and {@link Matrix} are returned for tensors of rank 1 or 2.
+     * </p>
      * @param dimensions the dimensions n<sub>1</sub>&times;n<sub>2</sub>&times;&#8230;&times;n<sub>r</sub>
      *  of the tensor.
      * @return a tensor of the specified dimensions, with undefined components.
      * @post Utilities.equalsAll(RES.dimensions(), dimensions)
      * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
      */
-    public static Tensor getInstance(int[] dimensions) {
+    public static Tensor newInstance(int[] dimensions) {
 	// tensors of rank 1 or rank 2 are converted to vectors or matrices
 	switch (dimensions.length) {
 	case 0:
 	    assert false;
 	case 1:
-	    return getInstance(dimensions[0]);
+	    return newInstance(dimensions[0]);
 	case 2:
-	    return getInstance(dimensions[0], dimensions[1]);
+	    return newInstance(dimensions[0], dimensions[1]);
 	default:
 	    return new ArithmeticTensor(dimensions);
 	}
@@ -700,10 +740,10 @@ public final class Values {
      * Gets zero tensor, with all elements set to 0.
      */
     public static /*<R implements Arithmetic>*/ Tensor/*<R>*/ ZERO(int[] dimensions) {
-	Tensor zero = getInstance(dimensions);
-	for (Combinatorical index = Combinatorical.getPermutations(zero.dimensions()); index.hasNext(); ) {
-	    int[] i = index.next();
-	    zero.set(i, Values.ZERO);
+	Tensor zero = newInstance(dimensions);
+	for (ListIterator i = zero.iterator(); i.hasNext(); ) {
+	    i.next();
+	    i.set(Values.ZERO);
 	}
 	return zero;
     }
@@ -1004,7 +1044,7 @@ public final class Values {
     // polynomial constructors and utilities
 
     /**
-     * Returns a polynomial with the specified coefficients.
+     * Returns a (univariate) polynomial with the specified coefficients.
      * <p>
      * Note that the resulting polynomial may or may not be backed by the
      * specified array.
@@ -1075,6 +1115,31 @@ public final class Values {
      */
     public static /*<R implements Arithmetic>*/ Polynomial/*<R>*/ constant(Polynomial/*<R>*/ p) {
 	// Polynomials are currently unmodifiable anyhow.
+	return p;
+    }
+
+    // multivariate polynomial constructors and utilities
+
+    /**
+     * Returns a (multivariate) polynomial with the specified coefficients.
+     * The number of variables equals the rank (i.e. number of dimensions)
+     * of the array of coefficients.
+     * <p>
+     * Note that the resulting polynomial may or may not be backed by the
+     * specified array.
+     * </p>
+     * @param coefficients a multi-dimensional array <var>a</var> containing the
+     *  coefficients of the polynomial.
+     * @pre values is a rectangular multi-dimensional array of {@link Arithmetic arithmetic objects}
+     *  or of primitive types
+     * @return the polynomial <var>a</var><sub>0,...,0</sub> + <var>a</var><sub>1,0,...,0</sub>X<sub>1</sub> + <var>a</var><sub>1,1,0,....,0</sub>X<sub>1</sub>X<sub>2</sub> + ... + <var>a</var><sub>2,1,0,....,0</sub>X<sub>1</sub><sup>2</sup>X<sub>2</sub> + ... + <var>a</var><sub>d<sub>1</sub>,...,d<sub>n</sub></sub>X<sub>1</sub><sup>d<sub>1</sub></sup>...&X<sub>n</sub><sup>d<sub>n</sub></sup>.
+     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade (method)</a>
+     */
+    public static /*<R implements Arithmetic>*/ Multinomial/*<R>*/ multinomial(Object coefficients) {
+	Multinomial p = new ArithmeticMultinomial(coefficients);
+	//@todo (multivariate) polynomials in 1 variable are converted to (univariate) polynomials
+	// provided that Polynomial extends Multinomial
+	//@todo rename to polynomial(Object), then?
 	return p;
     }
     

@@ -10,9 +10,10 @@
 <meta name="ProgId" content="FrontPage.Editor.Document">
 <title>Homomorphisms</title>
 <link rel="stylesheet" href="../../../../stylist.css" type="text/css" title="layout">
-<style>
+<style type="text/css">
 <!--
 .Category    { font-family: Arioso }
+*.annotatingDiagramSomewhere { float: right; clear: none }
 -->
   </style>
 </head>
@@ -23,7 +24,7 @@
 <dl>
   <dt id="homomorphicProjection" class="UniversalMappingProperty">&quot;1. 
     Homomorphiesatz, Projektionssatz&quot; (Universal Mapping Property)</dt>
-  <dd><img class="annotatingDiagram" src="diagram/commutative/homomorphicProjection.jpg"> 
+  <dd><img class="annotatingDiagram" src="diagram/commutative/homomorphicProjection.jpg" width="141" height="120"> 
     Let f:A→B be a homomorphism of Σ-Algebras<br>
     ⇒
     <ul>
@@ -42,30 +43,32 @@
     </ul>
     <small>The same goes true for homomorphisms of rings with ideals N⊴G, and 
     for R-linear mappings with sub-R-modules N≤G, etc.</small></dd>
-  <dt id="homomorphicEmbedding">&quot;2. Homomorphiesatz, Einbettungssatz&quot;</dt>
-  <dd><img class="annotatingDiagram" src="diagram/commutative/homomorphicEmbedding.jpg"> 
-    Let B⊆A be Σ-Algebras, ~ ⊆ A×A a congruence relation, and B̅ := ⋃<sub>b∈B</sub>[b]<sub>~</sub> 
+  <dt id="homomorphicEmbedding"><img class="annotatingDiagram" src="diagram/commutative/homomorphicEmbedding.jpg" width="201" height="233"> 
+    <img class="annotatingDiagramSomewhere" src="visualize/homomorphicEmbedding.jpg" width="137" height="150"> 
+    &quot;2. Homomorphiesatz, Einbettungssatz&quot;</dt>
+  <dd>Let B⊆A be Σ-Algebras, ~ ⊆ A×A a congruence relation, and B̅ := ⋃<sub>b∈B</sub>[b]<sub>~</sub> 
     the closure (or saturation) with respect to ~.<br>
     ⇒
     <ul>
       <li>B/~∩B×B ≅ B̅/~</li>
     </ul>
   </dd>
-  <dt id="homomorphicRefinement">&quot;3. Homomorphiesatz, Serial Decomposition, 
-    Refinement&quot;</dt>
-  <dd><img class="annotatingDiagram" src="diagram/commutative/homomorphicRefinement.jpg"> 
-    Let A be Σ-Algebras, σ⊆τ ⊆ A×A two congruences.</dd>
-  <dd>⇒
+  <dt id="homomorphicRefinement"><img class="annotatingDiagram" src="diagram/commutative/homomorphicRefinement.jpg" width="197" height="112"> 
+    <img class="annotatingDiagramSomewhere" src="visualize/homomorphicRefinement.jpg" width="163" height="146"> 
+    &quot;3. Homomorphiesatz, Serial Decomposition, Refinement&quot;</dt>
+  <dd>Let A be Σ-Algebras, σ⊆τ ⊆ A×A two congruences.<br>
+    ⇒
     <ul>
       <li>∃!f:A/σ↠A/τ epimorphism such that π<sub>τ</sub> = f∘π<sub>σ</sub></li>
       <li>~<sub>f</sub> = τ/σ</li>
       <li>(A/σ)<big>/</big>(τ/σ) ≅ A/τ</li>
     </ul>
   </dd>
-  <dt id="homomorphicParallel">&quot;4. Homomorphiesatz, Parallel Decomposition, 
-    Parallelverarbeitungssatz, ≙Chinese Remainder Theorem?&quot;</dt>
-  <dd><img class="annotatingDiagram" src="diagram/commutative/homomorphicParallel.jpg"> 
-    Let A be Σ-Algebras, σ ⊆ A×A, τ ⊆ A×A&nbsp; two independent 
+  <dt id="homomorphicParallel"><img class="annotatingDiagram" src="diagram/commutative/homomorphicParallel.jpg" width="268" height="123"> 
+    <img class="annotatingDiagramSomewhere" src="visualize/homomorphicParallel.jpg" width="130" height="133"> 
+    &quot;4. Homomorphiesatz, Parallel Decomposition ≙Chinese Remainder 
+    Theorem?&quot;</dt>
+  <dd>Let A be Σ-Algebras, σ ⊆ A×A, τ ⊆ A×A&nbsp; two independent 
     congruences,<br>
     i.e. &lt;σ,τ&gt;<sub>EquivalenceClosure</sub> = 1 <i>= ⊤ =&nbsp; A×A</i>.<br />
     ⇒
@@ -79,8 +82,8 @@
     <ol type="i">
       <li>I<sub>1</sub>,…,I<sub>n</sub> are coprime, i.e. ∀ν≠μ I<sub>ν</sub>+I<sub>μ</sub>:=(I<sub>ν</sub>∪I<sub>μ</sub>) 
         = R</li>
-      <li>⇔ R<big>/</big>⋂<sub>ν=1,...,n</sub> I<sub>ν</sub> ≅ R/I<sub>1</sub> 
-        × … × R/I<sub>n</sub> (injective by construction)</li>
+      <li>⇔ R<big>/</big>⋂<sub>ν=1,...,n</sub> I<sub>ν</sub> ≅ ∏<sub>ν=1,...,n</sub> 
+        R/I<sub>ν</sub> (injective by construction)</li>
     </ol>
     ⇒
     <ul>

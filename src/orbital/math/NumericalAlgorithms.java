@@ -294,7 +294,7 @@ public class NumericalAlgorithms {
 	Matrix mom; // = Matrix.getInstance(l + 2, l + 2);
 	// avoid null in the sparse tridiagonal matrix to allow multiplication
 	mom = Values.ZERO(l + 2, l + 2);
-	Vector d = Values.getInstance(l + 2);
+	Vector d = Values.newInstance(l + 2);
 	for (int j = 0; j < mom.dimension().height; j++)
 	    mom.set(j, j, Values.valueOf(2));
 	for (int j = 1; j <= l; j++) {

@@ -221,7 +221,7 @@ public class LUDecomposition/*<R implements Arithmetic>*/ implements Serializabl
      */
     public Vector/*<R>*/ solve(Vector/*<R>*/ b) {
 	Vector/*<R>*/ c = P.multiply(b);
-	Vector/*<R>*/ z = Values.getInstance(A.dimension().width);
+	Vector/*<R>*/ z = Values.newInstance(A.dimension().width);
 	// forward-substitution of L.z = P.b = c
 	for (int i = 0; i < A.dimension().height; i++) {
 	    Arithmetic/*>R<*/ t = c.get(i);
@@ -231,7 +231,7 @@ public class LUDecomposition/*<R implements Arithmetic>*/ implements Serializabl
 	    z.set(i, t);
 	}
 
-	Vector/*<R>*/ x = Values.getInstance(A.dimension().width);
+	Vector/*<R>*/ x = Values.newInstance(A.dimension().width);
 	// backward-substitution of R.x = z
 	for (int i = A.dimension().height - 1; i >= 0; i--) {
 	    Arithmetic/*>R<*/ t = c.get(i);

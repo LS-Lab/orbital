@@ -66,12 +66,14 @@ public final class Functions {
 
     /**
      * zero: R&rarr;R; x &#8614; 0 .
+     * @todo should we return x.zero()
      */
     public static final Function zero = constant(Values.valueOf(0));
     //TODO: transform to anonymous inner class to improve integration (zero or id for below)
 
     /**
      * one: R&rarr;R; x &#8614; 1 .
+     * @todo should we return x.one()
      */
     public static final Function one = constant(Values.valueOf(1));
 
@@ -1586,3 +1588,25 @@ class SynonymFunction/*<A implements Arithmetic, B implements Arithmetic>*/ exte
     } 
 }
 
+
+/*
+  public static double gamma(double d)
+  throws IllegalArgumentException
+  {
+  if(d > 170D)
+  return (1.0D / 0.0D);
+  if(d is negative integer)
+  throw new IllegalArgumentException((new MathlibMessages()).getMessage(0, d, "gamma"));
+  if(d < 0.0D)
+  return 3.1415926535897931D / (Math.sin(3.1415926535897931D * d) * gamma(1.0D - d));
+  if(d > 13D)
+  return str(d);
+  int j;
+  d += j = (int)Math.floor(13D - d) + 1;
+  double d1 = str(d);
+  for(int i = j; i >= 1; i--)
+  d1 /= --d;
+
+  return d1;
+  }
+*/
