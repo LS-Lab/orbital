@@ -162,6 +162,28 @@ public class Gamemaster implements Runnable {
 	assert newPlayers[Figure.NOONE] == null : Figure.NOONE + " needs no player, so you can safely set it to null";
 	this.players = newPlayers;
     }	
+
+    /**
+     * Get the total number of players.
+     * @post RES = getPlayers().length
+     */
+    public int getPlayersCount() {
+	return getPlayersInternal().length;
+    }
+
+    /**
+     * Get the number of human players.
+     * @post RES = number of null occurrences in getPlayers() excluding getPlayers()[Figure.NOONE]
+     */
+    public int getNumberOfHumanPlayers() {
+	Function players[] = getPlayersInternal();
+	int count = 0;
+	for (int i = Figure.NOONE + 1; i < players.length; i++) {
+	    if (players[i] instanceof HumanPlayer)
+		count++;
+	}
+	return count;
+    }
     
     /**
      * Get the field which the game is played on.
