@@ -88,7 +88,7 @@ public class Field implements Serializable, Cloneable {
      */
     public Object clone() throws CloneNotSupportedException {
 	Field	  f = (Field) super.clone();
-	//@internal undo the shallow-copy of change support
+	//@internal undo the shallow-copy of change support since we want different listeners
 	f.changeSupport = new FieldChangeSupport();
 	// deep-copy of field
 	f.field = new Figure[field.length][field[0].length];
