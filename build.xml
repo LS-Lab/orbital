@@ -107,13 +107,23 @@
         <delete dir="${sources}/t"/>
     </target>
 
-    <target name="compile.tests" depends="init"
+    <target name="compile.tests" depends="init, compile.examples"
             description="compile test/*.java (=> ./classes)">
         <javac srcdir="${src.tests}"
                destdir="${build.tests}"
                debug="on"
 	       source="1.4">
-            <classpath refid="project.classpath"/>
+            <classpath>
+	        <pathelement location="${examples}/Algorithms"/>
+
+	        <!-- refid="project.classpath" -->
+                <pathelement location="${classes}"/>
+		<fileset dir="${lib}">
+                    <include name="**/*.jar"/>
+		    <include name="**/*.zip"/>
+                </fileset>
+		<pathelement location="${resources}"/>
+	    </classpath>
         </javac>
     </target>
 
