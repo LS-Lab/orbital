@@ -35,7 +35,7 @@ import java.util.logging.Level;
  * @author  Andr&eacute; Platzer
  * @xxx Should we provide implements Composite for unify to work on whole clauses? do unifiable clauses with a different initial number of literals unify? Not in our implementation, I'm afraid.
  */
-public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
+public class ClauseImpl extends LinkedHashSet/*<Formula>*/ implements Clause {
     private static final Logger logger = Logger.getLogger(ClauseImpl.class.getName());
     //@xxx do not stick to this single logic, here, although resolution is rather limited to classical logic
     private static final Logic logic = new ClassicalLogic();
@@ -80,7 +80,7 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 
     public Signature getFreeVariables() {
 	// return banana (|&empty;,&cup;|) (map ((&lambda;x)x.freeVariables()), this)
-	Set freeVariables = new HashSet();
+	Set freeVariables = new LinkedHashSet();
 	for (Iterator i = iterator(); i.hasNext(); )
 	    freeVariables.addAll(((Formula)i.next()).getVariables());
 	return new SignatureBase(freeVariables);
@@ -91,7 +91,7 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 	final Clause F = this;
 	assert F.getFreeVariables().intersection(G.getFreeVariables()).isEmpty() : "@preconditions disjoint variable variants required for resolution";
 	// resolvents will contain all resolvents of F and G
-	Set/*_<Clause>_*/ resolvents = new HashSet();
+	Set/*_<Clause>_*/ resolvents = new LinkedHashSet();
 	// try to resolve G with F
 	// choose any literal L&isin;F
 	for (Iterator j = iterator(); j.hasNext(); ) {
@@ -121,7 +121,7 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 	final List/*_<Formula>_*/ listG = new ArrayList(G);
 
 	// resolvents will contain all resolvents of F and G
-	Set/*_<Clause>_*/ resolvents = new HashSet();
+	Set/*_<Clause>_*/ resolvents = new LinkedHashSet();
 	// try to resolve G with F
 	// choose any literal L&isin;F
 	for (ListIterator j = listF.listIterator(); j.hasNext(); ) {
@@ -422,7 +422,7 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
      * @see #getProbableUnifiables(Formula)
      */
     public Set/*_<Formula>_*/ getUnifiables(Collection/*_<Formula>_*/ C, Formula L) {
-	Set/*_<Formula>_*/ r = new HashSet();
+	Set/*_<Formula>_*/ r = new LinkedHashSet();
 	for (Iterator i = C.iterator(); i.hasNext(); ) {
 	    Formula F = (Formula)i.next();
 	    //@todo optimizable, we could remember the unifier instead of recalculating it lateron (f.ex. during factorization)
@@ -457,7 +457,7 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
      * @return S\{x} as a new set.
      */
     private static Set setWithout(Set S, Object x) {
-	Set Sp = new HashSet(S);
+	Set Sp = new LinkedHashSet(S);
 	Sp.remove(x);
 	return Sp;
     }
