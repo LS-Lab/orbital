@@ -124,7 +124,7 @@ class Resolution implements Inference {
         for (int i = 0; i < B.length; i++) {
 	    skolemizedB.add(Utilities.dropQuantifiers(Utilities.skolemForm(B[i])));
 	    if (logger.isLoggable(Level.FINEST))
-		logger.log(Level.FINEST, "in W skolemForm( {0} ) = {1}", new Object[] {B[i], Utilities.skolemForm(B[i])});
+		logger.log(Level.FINEST, "in W skolemForm( {0} ) == {1}", new Object[] {B[i], Utilities.skolemForm(B[i])});
 	}
 
         // convert B to clausalForm knowledgebase
@@ -147,7 +147,7 @@ class Resolution implements Inference {
 		i.remove();
 	}
 
-        logger.log(Level.FINE, "W = {0}", knowledgebase);
+        logger.log(Level.FINE, "W == {0}", knowledgebase);
         if (logger.isLoggable(Level.FINEST))
 	    for (int i = 0; i < B.length; i++)
 		logger.log(Level.FINEST, "W thus contains transformation of original formula {0}", Utilities.conjunctiveForm(B[i], SIMPLIFYING));
@@ -178,8 +178,8 @@ class Resolution implements Inference {
 	}    		
 
         if (logger.isLoggable(Level.FINEST))
-	    logger.log(Level.FINEST, "negated goal S = {0} = {1} (= {2} original in CNF)", new Object[] {skolemizedQuery, S, Utilities.conjunctiveForm(query, SIMPLIFYING)});
-	logger.log(Level.FINE, "negated goal S = {0} = {1}", new Object[] {skolemizedQuery, S});
+	    logger.log(Level.FINEST, "negated goal S == {0}\n == {1}\n (== {2} original in CNF)", new Object[] {skolemizedQuery, S, Utilities.conjunctiveForm(query, SIMPLIFYING)});
+	logger.log(Level.FINE, "negated goal S == {0}\n == {1}", new Object[] {skolemizedQuery, S});
 
         final Object solution = search.solve(new ResolutionProblem(knowledgebase, S));
 	logger.log(Level.FINE, "found solution {0}", solution);
@@ -301,10 +301,10 @@ class Resolution implements Inference {
 				    final Set/*_<Set<Formula>>_*/ resultingClauseSet = new HashSet(S);
 				    resultingClauseSet.add(R);
 
-				    if (!S.contains(R))
-					logger.log(Level.FINE, "took resolved {0} from {1} and {2}. Lengths {3} from {4} and {5} .", new Object[] {R, F, G, new Integer(R.size()), new Integer(F.size()), new Integer(G.size())});
-				    
-				    resumedReturn(new Proof(resultingClauseSet, R));
+				    if (!S.contains(R)) {
+					logger.log(Level.FINE, "appended resolvent {0}\n from {1}\nand  {2}\nto   {3}.\nLengths are {4} from {5} and {6} to {7} thereof.", new Object[] {R, F, G, new HashSet(S), new Integer(R.size()), new Integer(F.size()), new Integer(G.size()), new Integer(S.size())});
+					resumedReturn(new Proof(resultingClauseSet, R));
+				    }
 				}
 			    }
     
@@ -354,7 +354,7 @@ class Resolution implements Inference {
 			Gp = (Set) Functionals.map(mu, Gp);
 			Fp = (Set) Functionals.map(mu, Fp);
                         				
-			logger.log(Level.FINER, "resolvin {0} res {1} from {2} and {3}. not yet factorized. Lengths {4} from {5} and {6} .", new Object[] {Fp,Gp, F, G, new Integer(Fp.size()), new Integer(F.size()), new Integer(G.size())});
+			logger.log(Level.FINER, "resolving {0} with res {1} from {2} and {3}. not yet factorized. Lengths {4} from {5} and {6}.", new Object[] {Fp,Gp, F, G, new Integer(Fp.size()), new Integer(F.size()), new Integer(G.size())});
 
 			if (isElementaryValid(Fp, Gp))
 			    // cut that possibility since resolving with tautologies will never lead to false (the contradiction)
