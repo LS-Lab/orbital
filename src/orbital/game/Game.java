@@ -12,8 +12,6 @@ import java.awt.Container;
 
 import orbital.robotic.Position;
 import orbital.moon.awt.AppletFrame;
-import orbital.moon.awt.UserDialog;
-import orbital.moon.awt.QuestionDialog;
 import orbital.awt.UIUtilities;
 import java.awt.BorderLayout;
 import java.awt.MenuBar;
@@ -25,6 +23,7 @@ import java.awt.Event;
 import java.awt.Panel;
 import java.awt.Label;
 import java.awt.FileDialog;
+import javax.swing.JOptionPane;   //@internal version 1.1 but orbital.game.* already use Iterator of 1.2 so what shell's
 import java.awt.Frame;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -576,9 +575,8 @@ public class Game extends Applet implements Runnable {
 	showStatus(getResources().getString("statusbar.game.end"));
 	ResourceBundle resources = getResources();
 	String	   winner = (Math.abs(league) <= realPlayers ? resources.getString("text.player") : resources.getString("text.computer")) + " (" + Math.abs(league) + ')';
-	UserDialog dlg = new QuestionDialog(UIUtilities.getParentalFrame(this), resources.getString("dialog.game.finish.title"), winner + resources.getString("dialog.game.finish.hasWon") + (league > 0 ? resources.getString("dialog.game.finish.won") : resources.getString("dialog.game.finish.survived")) + resources.getString("dialog.game.finish.tryAgain"));
-	dlg.start();
-	if ("Yes".equals(dlg.getResult())) {
+	int selected = JOptionPane.showConfirmDialog(UIUtilities.getParentalFrame(this), winner + resources.getString("dialog.game.finish.hasWon") + (league > 0 ? resources.getString("dialog.game.finish.won") : resources.getString("dialog.game.finish.survived")) + resources.getString("dialog.game.finish.tryAgain"), resources.getString("dialog.game.finish.title"), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+	if (selected == JOptionPane.YES_OPTION) {
 	    stop();
 	    start();
 	} else

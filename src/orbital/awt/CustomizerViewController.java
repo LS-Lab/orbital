@@ -20,7 +20,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import orbital.moon.awt.DefaultCustomizer;
-import orbital.moon.awt.JUserDialog;
+import javax.swing.JOptionPane;
 import orbital.util.InnerCheckedException;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -124,12 +124,9 @@ public class CustomizerViewController extends MouseAdapter implements MouseListe
      * Simply displays a dialog, customizer properties and events must already have been set.
      */
     public void showCustomizer(Component custom, String displayName) {
-	//TODO: replace by a (modal) JOptionPane sometime?
 	// use JFrame.getRootPane().setDefaultButton(JButton);
-	JUserDialog dlg = new JUserDialog(parent, title != null ? title : ("Customize " + displayName), custom);
-	Closer	    closer = new Closer(dlg, true);
-	UIUtilities.setCenter(dlg, parent);
-	dlg.start();
+	JOptionPane.showMessageDialog(parent, custom, title != null ? title : ("Customize " + displayName), JOptionPane.PLAIN_MESSAGE);
+	//@todo UIUtilities.setCenter(dlg, parent); in already _modal_ JOptionPane.
     } 
 
     /**
