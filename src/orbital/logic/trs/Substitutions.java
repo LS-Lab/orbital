@@ -437,7 +437,7 @@ public class Substitutions {
     // Unification
 
     /**
-     * Unifies terms and returns the mgU.
+     * Unifies terms and returns "the" most general unifier mgU.
      * <p>
      * <table>
      *   <tr>
@@ -512,7 +512,7 @@ public class Substitutions {
      * </p>
      * 
      * @param T a collection of terms to try to unify.
-     * @return mgU(T), the most-general unifier of T,
+     * @return mgU(T), the idempotent most-general unifier of T,
      *  or <code>null</code> if the terms in T are not unifiable.
      * @postconditions unifiable(T) &hArr; RES&ne;null &hArr; &forall;t1,t2&isin;T RES.apply(t1).equals(RES.apply(t2))
      * @internal implementation is Robinson-Unification with types.
@@ -537,9 +537,22 @@ public class Substitutions {
 	    assert !i.hasNext() : "Collection.size() is consistent with Collection.iterator()";
 	    return unify(o0, o1);
 	}
-	default:
+	default: {
+	    //@internal perhaps this is a paramorphism?
 	    //@todo at least fold T with unify(Object,Object) provided that mgU is associative
-	    throw new UnsupportedOperationException("unification currently does not support more than two terms. @todo");
+	    Substitution mu = id;
+	    final Iterator i = T.iterator();
+	    Object o_0 = mu.apply(i.next());
+	    while (i.hasNext()) {
+		final Object o_i = i.next();
+		final Substitution mu_i = unify(o_0, mu.apply(o_i));
+		mu = compose(mu_i, mu);
+		// apply (the missing part mu_i of) mu to o_0
+		assert mu_i.apply(o_0).equals(mu.apply(o_0)) : "since our unifications are idempotent, only the part of the unification needs to be applied";
+		o_0 = mu_i.apply(o_0);
+	    }
+	    return mu;
+	}
 	}
     }
     /**
