@@ -247,7 +247,6 @@ public class ClassicalLogic extends ModernLogic {
 			    ) {
 			    //@internal our resolution does not prove things resulting from contradictious facts (after simplification) so avoid those cases by providing a special file for resolution.
 			    final String mech = logic.getInferenceMechanism() == RESOLUTION_INFERENCE
-				|| logic.getInferenceMechanism() == RESOLUTION2_INFERENCE
 				? "resolution"
 				: "semantic";
 			    String resName;
@@ -1449,7 +1448,7 @@ public class ClassicalLogic extends ModernLogic {
      * @attribute computability semi-decidable
      */
     public static final InferenceMechanism RESOLUTION_INFERENCE = new InferenceMechanism("RESOLUTION") {
-	    private final Inference _resolution = new Resolution();
+	    private final Inference _resolution = new orbital.moon.logic.resolution.Resolution();
 	    Inference inference() {
 		return _resolution;
 	    }
@@ -1464,17 +1463,6 @@ public class ClassicalLogic extends ModernLogic {
 	    private final Inference _propositional = new PropositionalInference();
 	    Inference inference() {
 		return _propositional;
-	    }
-	};
-    /**
-     * New Resolution inference.
-     * Inference mechanism driven by full first-order resolution.
-     * @attribute computability semi-decidable
-     */
-    public static final InferenceMechanism RESOLUTION2_INFERENCE = new InferenceMechanism("RESOLUTION2") {
-	    private final Inference _resolution = new orbital.moon.logic.resolution.Resolution();
-	    Inference inference() {
-		return _resolution;
 	    }
 	};
 

@@ -104,7 +104,7 @@ class PropositionalInference implements Inference {
 	Formula literalP = (Formula) ((Set)S.iterator().next()).iterator().next();
         logger.log(Level.FINER, "choose unit clause {0}", literalP);
 	return refute(Setops.union(S, Collections.singleton(Collections.singleton(literalP))))
-	    && refute(Setops.union(S, Collections.singleton(Collections.singleton(Resolution.negation(literalP)))));
+	    && refute(Setops.union(S, Collections.singleton(Collections.singleton(ClassicalLogic.Utilities.negation(literalP)))));
     }
 
     /**
@@ -113,7 +113,7 @@ class PropositionalInference implements Inference {
     private Set/*_<Set<Formula>>_*/ reduce(final Formula C, Set/*_<Set<Formula>>_*/ S) {
         logger.log(Level.FINER, "reduce({0}, {1})", new Object[] {C, S});
 	Set/*_<Set<Formula>>_*/ S2 = new LinkedHashSet(S.size());
-	final Formula notC = Resolution.negation(C);
+	final Formula notC = ClassicalLogic.Utilities.negation(C);
 	for (Iterator i = S.iterator(); i.hasNext(); ) {
 	    Set/*_<Formula>_*/ clause = (Set)i.next();
 	    if (clause.contains(C)) {
