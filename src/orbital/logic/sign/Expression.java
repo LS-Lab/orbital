@@ -137,20 +137,12 @@ package orbital.logic.imp;
  * @todo everywhere distinguish "Term(&Sigma;)" of predicate logic from "<span class="UniversalAlgebra">T</span>(&Sigma;)" general expressions of a term algebra.
  * @todo could saw this package in two parts: the syntax to orbital.logic.sign.* and the logic to orbital.logic.imp.*.
  */
-public interface Expression {
+public interface Expression extends Typed {
     /**
      * Get the subsignature appearing in this expression.
      * @return the subset of &Sigma; consisting of those symbols that occur in this expression.
      */
     Signature getSignature();
-
-    /**
-     * Get the type of this expression.
-     * @preconditions true
-     * @return the type <span class="type">&tau;</span> of this expression in <span class="UniversalAlgebra">T</span>(&Sigma;)<sub class="type">&tau;</sub>.
-     * @see Symbol#getType()
-     */
-    Type getType();
 
 
     /**

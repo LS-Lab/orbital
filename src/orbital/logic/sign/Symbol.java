@@ -69,7 +69,7 @@ import orbital.logic.functor.Notation.NotationSpecification;
  * @todo done? respect orbital.logic.trs.Variable
  * @todo is there a difference between symbol (Symbol) and sign (Zeichen) or signifier()? Should we rename this class to Sign, or keep the name Symbol in order to underline that the usual signs in logic are used purely symbolically and not with any necessity (either proper or lawful)
  */
-public interface Symbol extends Variable, Comparable/*<Symbol>*/{
+public interface Symbol extends Typed, Variable, Comparable/*<Symbol>*/{
     // triple &lang;signifier, type, notation&rang; constraints to equality
     
     /**
@@ -125,17 +125,9 @@ public interface Symbol extends Variable, Comparable/*<Symbol>*/{
     void setSignifier(String signifier);
 
     /**
-     * Get the type specification of this symbol.
-     * @preconditions true
-     * @return the type specification <span class="type">&tau;</span> of this symbol.
-     * @see Expression#getType()
-     */
-    Type getType();
-    /**
      * Set the type specification of this symbol.
      * @param type the type specification <span class="type">&tau;</span> of this symbol.
      * @preconditions type&ne;null
-     * @todo wouldn't we prefer <span class="keyword">null</span> for the bottom type, or the undefined type, or perhaps the errorneous type Types.ERROR?
      */
     void setType(Type type);
 
