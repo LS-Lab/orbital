@@ -104,7 +104,7 @@ public final class Setops {
      * Checks whether all objects in a collection satisfy the specified predicate.
      * @return true if all objects satisfy the predicate, false if one does not.
      *  Returns an optimized version of <code>Functionals.map(and, Functionals.map(Functionals.asFunction(found), i))</code>.
-     * @see <a href="{@docRoot}/Patterns/Design/InternalIterator.html">Internal Iterator</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Iterator.html">Internal Iterator</a>
      * @see orbital.logic.functor.Functionals
      * @todo document banana application @see Operations.andAll
      */
@@ -122,7 +122,7 @@ public final class Setops {
      * Checks whether all corresponding pairs of objects in two collection satisfy the specified predicate.
      * @return true if all objects satisfy the predicate, false if one does not.
      *  Returns an optimized version of <code>Functionals.map(and, Functionals.map(Functionals.asFunction(found), i), j)</code>.
-     * @see <a href="{@docRoot}/Patterns/Design/InternalIterator.html">Internal Iterator</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Iterator.html">Internal Iterator</a>
      * @see orbital.logic.functor.Functionals
      * @todo document banana application @see Operations.andAll
      */
@@ -141,7 +141,7 @@ public final class Setops {
      * Checks whether some objects (at least one) in a collection satisfy the specified predicate.
      * @return true if at least one objects satisfies the predicate, false if none does.
      *  Returns an optimized version of return <code>Functionals.map(or, Functionals.map(Functionals.asFunction(found), i))</code>.
-     * @see <a href="{@docRoot}/Patterns/Design/InternalIterator.html">Internal Iterator</a>
+     * @see <a href="{@docRoot}/Patterns/Design/Iterator.html">Internal Iterator</a>
      * @see orbital.logic.functor.Functionals
      * @todo document banana application @see Operations.orSome
      */
