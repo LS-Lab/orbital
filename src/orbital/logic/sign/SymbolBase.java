@@ -186,10 +186,17 @@ public class SymbolBase implements Symbol, Serializable {
     }
     
     public String toString() {
-    	Type type = getType();
 	if (Logger.global.isLoggable(Level.FINEST)
-	    || type.equals(Types.TYPE))
-	    return getSignifier() + ':' + type;
+	    || getType().equals(Types.TYPE))
+	    return toFullString();
+	return toShortString();
+    }
+
+    private String toFullString() {
+	return getSignifier() + ':' + getType();
+    }
+    private String toShortString() {
+	Type type = getType();
     	// short representation
     	return type.equals(Types.TRUTH)
 	    ? getSignifier()
