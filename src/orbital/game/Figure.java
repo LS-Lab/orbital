@@ -415,21 +415,21 @@ public class Figure extends Moving {
      * Checks whether a movement path is valid on all fields passed on the way.
      * It is valid when each field in between (and including)
      * the current position and the end of the move
-     * <ul type="circle">
+     * <ul class="or">
      *   <li>is
-     *     <ul>
+     *     <ul class="and">
      *       <li>on the field</li>
      *       <li>and fulfills isEmpty()</li>
      *     </ul>
      *   </li>
      *   <li>or
-     *     <ul>
+     *     <ul class="and">
      *       <li>the move beats(<code>*</code>) at that position
      *       <li>and the figure there fulfills !isEmpty()</li>
      *     </ul>
      *   </li>
      *   <li>or
-     *     <ul>
+     *     <ul class="and">
      *       <li>the move allows jumping(<code>_</code>) there.
      *     </ul>
      *   </li>
