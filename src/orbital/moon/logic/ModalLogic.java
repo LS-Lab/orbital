@@ -264,7 +264,7 @@ public class ModalLogic extends ClassicalLogic {
 		    Composite oappl = (Composite) term;
 		    Object    oop = oappl.getCompositor();
 		    Object    t = oappl.getComponent();
-		    assert t instanceof Formula[] || t instanceof Formula : "expected: applied to >=1 arguments. found: " + oop + " applied to " + MathUtilities.format(t) + " of " + (t == null ? null : t.getClass());
+		    assert t instanceof Formula[] || t instanceof Formula || t instanceof Object[] : "expected: applied to >=1 arguments. found: " + oop + " applied to " + MathUtilities.format(t) + " of " + (t == null ? null : t.getClass());
 		    if (oop instanceof Formula && oop instanceof Composite) {
 			Composite appl = (Composite) oop;
 			Object    f = appl.getCompositor();
