@@ -12,6 +12,7 @@ import orbital.util.IncomparableException;
 import java.io.Serializable;
 import orbital.logic.functor.Functor;
 import orbital.logic.functor.Predicate;
+import orbital.logic.functor.BinaryPredicate;
 import orbital.logic.functor.Function;
 import orbital.logic.functor.Functionals;
 import java.util.Collection;
@@ -54,6 +55,21 @@ public final class Types {
 		    return -b.compareToSemiImpl(a);
 	    }
 	};
+    /**
+     * Predicate version of &le;.
+     * @see Type#subtypeOf(Type)
+     */
+    private static final BinaryPredicate/*<Type,Type>*/ subtypeOf = new BinaryPredicate() {
+	    public boolean apply(Object s, Object t) {
+		return ((Type)s).subtypeOf((Type)t);
+	    }
+	};
+    /**
+     * @see #subtypeOf
+     * @see Functionals#swap(BinaryPredicate)
+     */
+    private static final BinaryPredicate supertypeOf/*<Type,Type>*/ = Functionals.swap(subtypeOf);
+
     /**
      * The universal type
      * <span class="type">&#8868;</span> = <span class="type">&#8898;<sub>&empty;</sub></span>.
@@ -119,7 +135,9 @@ public final class Types {
     public static final Type TRUTH = new FundamentalTypeImpl(Boolean.class);
     /**
      * The void type <span class="type">&prod;<sub>&empty;</sub></span> = <span class="type">&prod;<sub>i&isin;&empty;</sub>i</span>.
-     * The extension of the type void is void, i.e. it does not have any elements at all.
+     * The extension of the type void is &empty;, i.e. it does not have any elements at all.
+     * @xxx is VOID=ABSURD? for product,sup,inf,collection and extension they have are equal.
+     *  So at most the condition <li>(&forall;<span class="type">&tau;</span>:Type) <span class="type">&perp;</span>&le;<span class="type">&tau;</span></li> might be different.
      */
     public static final Type VOID = new FundamentalTypeImpl(Void.TYPE);
     /**
@@ -194,6 +212,7 @@ public final class Types {
      * @see Type#subtypeOf(Type)
      * @see orbital.logic.functor.Functor.Specification#isApplicableTo(Object[])
      * @todo introduce isComposableWith(Type,Type) or anything that uses argType.domain() =< compositorType.codomain()
+     * @xxx remove convenience?
      */
     public static final boolean isApplicableTo(Type compositorType, Expression[] args) {
 	return typeOf(args).subtypeOf(compositorType.codomain());
@@ -384,12 +403,19 @@ public final class Types {
      * @param codomain the {@link Type#codomain() codomain} <span class="type">&sigma;</span>.
      * @param domain the {@link Type#domain() domain} <span class="type">&tau;</span>.
      * @todo assure canonical identity?
-     * @xxx really strict? This contradicts the usual case, since ABSURD->t >= s->t because ABSURD =< s. Although ABSURD =< s->t.
+     * @xxx really strict? This contradicts the usual case, since ABSURD->t >= s->t' iff t' >= t. Although ABSURD =< s->t'.
+     *  By the ususal formal rule (see above) it is
+     *    ABSURD->t' >= s->t iff t' >= t
+     *    s->ABSURD =< s'->t' iff s >= s'
+     * @todo perhaps even
+     *    s->ABSURD = ABSURD
+     *    ABSURD->s = s      for call by name alias lazy evaluation
+     *  ?
      */
     public static final Type map(Type codomain, Type domain) {
 	if (codomain == ABSURD || domain == ABSURD)
-	    // strict
-	    return ABSURD;
+	    // strict? after change also @see MathExpressionSyntax.createAtomic
+	    throw new UnsupportedOperationException(ABSURD + " maps not yet supported");
 	return codomain.equals(VOID) ? domain : new MapType(codomain, domain);
     }
 
@@ -400,10 +426,7 @@ public final class Types {
      * @todo assure canonical identity?
      */
     public static final Type predicate(Type codomain) {
-	if (codomain == ABSURD)
-	    // strict
-	    return ABSURD;
-	return codomain.equals(VOID) ? TRUTH : new MapType(codomain, TRUTH);
+	return map(codomain, TRUTH);
     }
 
     /**
@@ -582,14 +605,24 @@ public final class Types {
     /**
      * Get the infimum type <span class="type">&#8898;<sub>i</sub>&tau;<sub>i</sub></span> = <span class="type">&tau;<sub>1</sub>&cap;&#8230;&cap;&tau;<sub>n</sub></span>.
      * inf is the most general common subtype, also called intersection.
-     * <!-- p>
+     * <p>
      * The subtype relation of types extends to infimum types as follows
      * <div>
-     *   <span class="type">&#8898;<sub>i&isin;I</sub>&sigma;<sub>i</sub></span> &le; <span class="type">&#8898;<sub>j&isin;J</sub>&tau;<sub>j</sub></span>
-     *   :&hArr; &forall;i&isin;I <span class="type">&sigma;<sub>i</sub></span>&le;<span class="type">&tau;<sub>i</sub></span>
+     *   <span class="type">&#8898;<sub>i&isin;I</sub>&sigma;<sub>i</sub></span> &le; <span class="type">&tau;</span>
+     *   :&hArr; &exist;i&isin;I <span class="type">&sigma;<sub>i</sub></span> &le; <span class="type">&tau;</span>
      * </div>
-     * </p -->
+     * <div>
+     *   <span class="type">&tau;</span> &le; <span class="type">&#8898;<sub>i&isin;I</sub>&sigma;<sub>i</sub></span>
+     *   :&hArr; &forall;i&isin;I <span class="type">&tau;</span> &le; <span class="type">&sigma;<sub>i</sub></span>
+     * </div>
+     * provided that <span class="type">&tau;</span> is not again an infimum type nor contains one.
+     * </p>
      * @attribute neutral {@link #UNIVERSAL <span class="type">&#8868;</span>}
+     * @attribute associative
+     * @attribute distributive {@link #sup}
+     * @attribute 
+     *   <span class="type">&sigma;</span> &le; <span class="type">&tau;</span>
+     *   &rArr; <span class="type">&sigma;&cap;&tau;</span> = <span class="type">&sigma;</span>
      */
     public static final Type inf(Type components[]) {
 	//@internal although we still work on components, t keeps the simplified version of components.
@@ -599,11 +632,23 @@ public final class Types {
 	    Type ti = components[i];
 	    if (ti == null)
 		throw new NullPointerException("illegal arguments containing " + ti);
+	    if (ti instanceof InfimumType) {
+		// associative
+		t.remove(ti);
+		t.addAll(Arrays.asList(((InfimumType)ti).components));
+		return inf((Type[])t.toArray(new Type[0]));
+	    }
+		
 	    for (int j = i + 1; j < components.length; j++) {
 		Type tj = components[j];
-		// remove redundant supertypes of comparable types in t
-		if (ti.subtypeOf(tj))
-		    t.remove(tj);
+		try {
+		    int cmp = ti.compareTo(tj);
+		    // remove redundant supertypes of comparable types in t
+		    if (cmp < 0)
+			t.remove(tj);
+		    else if (cmp > 0)
+			t.remove(ti);
+		} catch (IncomparableException test) {}
 	    }
 	}
 	components = (Type[])t.toArray(new Type[0]);
@@ -632,18 +677,18 @@ public final class Types {
 	}
 	
 	public int hashCode() {
-	    return Utility.hashCodeAll(components);
+	    return 1 ^ Utility.hashCodeAll(components);
 	}
 	
 	public String toString() {
 	    StringBuffer sb = new StringBuffer();
-	    sb.append('(');
+	    sb.append('[');
 	    sb.append(components[0].toString());
 	    for (int i = 1; i < components.length; i++) {
 		sb.append('&');
 		sb.append(components[i]);
 	    }
-	    sb.append(')');
+	    sb.append(']');
 	    return sb.toString();
 	}
 
@@ -657,33 +702,23 @@ public final class Types {
 	public int compareToSemiImpl(Type tau) {
 	    if (equals(tau))
 		return 0;
-	    if (!(tau instanceof SupremumType)) {
-		if (tau instanceof InfimumType)
-		    throw new UnsupportedOperationException("this kind of comparison is not yet supported");
+	    if (tau instanceof InfimumType)
+		throw new UnsupportedOperationException("comparing infimum types is not yet supported");
+	    else if (tau instanceof SupremumType && Setops.some(Arrays.asList(((SupremumType)tau).components), Functionals.bindSecond(Utility.instanceOf, InfimumType.class)))
+		throw new UnsupportedOperationException("comparing infimum types with supremum types of infimum types not yet supported");
 
-		//@todo either improve or rewrite pure functionally
-		if (compareSubtypeOf(tau))
-		    return -1;
-		else if (compareSupertypeOf(tau))
-		    return 1;
-		else
-		    throw new IncomparableException(this + " is incomparable with " + tau);
-	    } else
-		throw new UnsupportedOperationException("comparing infimum and supremum types is not yet supported");
-	}
-	private boolean compareSupertypeOf(Type tau) {
-	    for (int i = 0; i < components.length; i++) {
-		if (!tau.subtypeOf(components[i]))
-		    return false;
-	    }
-	    return true;
+	    if (compareSubtypeOf(tau))
+		return -1;
+	    else if (compareSupertypeOf(tau))
+		return 1;
+	    else
+		throw new IncomparableException(this + " is incomparable with " + tau);
 	}
 	private boolean compareSubtypeOf(Type tau) {
-	    for (int i = 0; i < components.length; i++) {
-		if (components[i].subtypeOf(tau))
-		    return true;
-	    }
-	    return false;
+	    return Setops.some(Arrays.asList(components), Functionals.bindSecond(subtypeOf, tau));
+	}
+	private boolean compareSupertypeOf(Type tau) {
+	    return Setops.all(Arrays.asList(components), Functionals.bindFirst(subtypeOf, tau));
 	}
 
 	public boolean apply(Object x) {
@@ -698,7 +733,25 @@ public final class Types {
     /**
      * Get the supremum type <span class="type">&#8899;<sub>i</sub>&tau;<sub>i</sub></span> = <span class="type">&tau;<sub>1</sub>&cup;&#8230;&cup;&tau;<sub>n</sub></span>.
      * sup is the most special common supertype, also called union.
+     * <p>
+     * The subtype relation of types extends to supremum types as follows
+     * <div>
+     *   <span class="type">&#8899;<sub>i&isin;I</sub>&sigma;<sub>i</sub></span> &le; <span class="type">&tau;</span>
+     *   :&hArr; &forall;i&isin;I <span class="type">&sigma;<sub>i</sub></span> &le; <span class="type">&tau;</span>
+     * </div>
+     * <div>
+     *   <span class="type">&#8899;<sub>i&isin;I</sub>&sigma;<sub>i</sub></span> &ge; <span class="type">&tau;</span>
+     *   :&hArr; &exist;i&isin;I <span class="type">&sigma;<sub>i</sub></span> &ge; <span class="type">&tau;</span>
+     * </div>
+     * provided that <span class="type">&tau;</span> is not again a supremum type nor contains one.
+     * </p>
      * @attribute neutral {@link #ABSURD <span class="type">&perp;</span>}
+     * @attribute associative
+     * @attribute distributive {@link #inf}
+     * @attribute 
+     *   <span class="type">&sigma;</span> &le; <span class="type">&tau;</span>
+     *   &rArr; <span class="type">&sigma;&cap;&tau;</span> = <span class="type">&tau;</span>
+     * @todo what's this property called? somewhat like absorption?
      * @todo strict or ignore absurd?
      */
     public static final Type sup(Type components[]) {
@@ -709,11 +762,22 @@ public final class Types {
 	    Type ti = components[i];
 	    if (ti == null)
 		throw new NullPointerException("illegal arguments containing " + ti);
+	    if (ti instanceof SupremumType) {
+		// associative
+		t.remove(ti);
+		t.addAll(Arrays.asList(((SupremumType)ti).components));
+		return sup((Type[])t.toArray(new Type[0]));
+	    }
 	    for (int j = i + 1; j < components.length; j++) {
 		Type tj = components[j];
-		// remove redundant subtypes of comparable types
-		if (ti.subtypeOf(tj))
-		    t.remove(ti);
+		try {
+		    int cmp = ti.compareTo(tj);
+		    // remove redundant subtypes of comparable types in t
+		    if (cmp < 0)
+			t.remove(ti);
+		    else if (cmp > 0)
+			t.remove(tj);
+		} catch (IncomparableException test) {}
 	    }
 	}
 	components = (Type[])t.toArray(new Type[0]);
@@ -742,18 +806,18 @@ public final class Types {
 	}
 	
 	public int hashCode() {
-	    return Utility.hashCodeAll(components);
+	    return 7 ^ Utility.hashCodeAll(components);
 	}
 	
 	public String toString() {
 	    StringBuffer sb = new StringBuffer();
-	    sb.append('(');
+	    sb.append('[');
 	    sb.append(components[0].toString());
 	    for (int i = 1; i < components.length; i++) {
 		sb.append('|');
 		sb.append(components[i]);
 	    }
-	    sb.append(')');
+	    sb.append(']');
 	    return sb.toString();
 	}
 
@@ -767,33 +831,23 @@ public final class Types {
 	public int compareToSemiImpl(Type tau) {
 	    if (equals(tau))
 		return 0;
-	    if (!(tau instanceof InfimumType)) {
-		if (tau instanceof SupremumType)
-		    throw new UnsupportedOperationException("this kind of comparison is not yet supported");
+	    if (tau instanceof SupremumType)
+		throw new UnsupportedOperationException("comparing supremum types is not yet supported");
+	    else if (tau instanceof InfimumType && Setops.some(Arrays.asList(((InfimumType)tau).components), Functionals.bindSecond(Utility.instanceOf, SupremumType.class)))
+		throw new UnsupportedOperationException("comparing supremum types with infimum types of supremum types not yet supported");
 
-		//@todo either improve or rewrite pure functionally
-		if (compareSubtypeOf(tau))
-		    return -1;
-		else if (compareSupertypeOf(tau))
-		    return 1;
-		else
-		    throw new IncomparableException(this + " is incomparable with " + tau);
-	    } else
-		throw new UnsupportedOperationException("comparing infimum and supremum types is not yet supported");
-	}
-	private boolean compareSupertypeOf(Type tau) {
-	    for (int i = 0; i < components.length; i++) {
-		if (tau.subtypeOf(components[i]))
-		    return true;
-	    }
-	    return false;
+	    if (compareSubtypeOf(tau))
+		return -1;
+	    else if (compareSupertypeOf(tau))
+		return 1;
+	    else
+		throw new IncomparableException(this + " is incomparable with " + tau);
 	}
 	private boolean compareSubtypeOf(Type tau) {
-	    for (int i = 0; i < components.length; i++) {
-		if (!components[i].subtypeOf(tau))
-		    return false;
-	    }
-	    return true;
+	    return Setops.all(Arrays.asList(components), Functionals.bindSecond(subtypeOf, tau));
+	}
+	private boolean compareSupertypeOf(Type tau) {
+	    return Setops.some(Arrays.asList(components), Functionals.bindFirst(subtypeOf, tau));
 	}
 
 	public boolean apply(Object x) {
@@ -834,7 +888,7 @@ public final class Types {
      * they may differ intensionally.
      *  <table>
      *    <tr>
-     *      <td class="nameOfMap" rowspan="3"><span class="function">ext</span></td>
+     *      <td class="nameOfMap" rowspan="3"><span class="function">&delta;</span></td>
      *      <td class="leftOfMap"><span class="set">predicate</span></td>
      *      <td class="arrowOfMap">&rarr;&#771;</td>
      *      <td class="rightOfMap"><span class="set">set</span></td>
@@ -842,7 +896,7 @@ public final class Types {
      *    <tr>
      *      <td class="leftOfMap"><span class="predicate">&rho;</span></td>
      *      <td class="arrowOfMap">&#8614;</td>
-     *      <td class="rightOfMap">&delta;<span class="predicate">&rho;</span> = {x &brvbar; <span class="predicate">&rho;</span>(x)}</td>
+     *      <td class="rightOfMap">{x &brvbar; <span class="predicate">&rho;</span>(x)}</td>
      *    </tr>
      *    <tr>
      *      <td class="leftOfMap">_&isin;<span class="set">M</span></td>
@@ -887,6 +941,9 @@ public final class Types {
 	private final String toStringPrefix;
 	private final String toStringSuffix;
 	public CollectionType(Class collection, Type component, String toStringPrefix, String toStringSuffix) {
+	    if (component == ABSURD)
+		// collections of absurd have the extension {&empty;} which equals that of collections of void
+		component = VOID;
 	    this.collection = collection;
 	    this.component = component;
 	    this.toStringPrefix = toStringPrefix;
@@ -898,6 +955,9 @@ public final class Types {
 		return collection.equals(tau.collection) && component.equals(tau.component);
 	    } else
 		return false;
+	}
+	public int hashCode() {
+	    return collection.hashCode() ^ component.hashCode();
 	}
 	public String toString() {
 	    return toStringPrefix + component + toStringSuffix;

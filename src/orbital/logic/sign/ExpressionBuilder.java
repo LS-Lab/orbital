@@ -70,7 +70,7 @@ public interface ExpressionBuilder {
      * </p>
      * <p>
      * <span style="float: left; font-size: 200%">&#9761;</span>
-     * Be aware that this method does a composition (in the sense of semiotics) of expressions,
+     * Be aware that this method does a composition (in the sense of semiotics) of signs/expressions,
      * but not usually a composition (in the sense of mathematics) of functions. Mathematically
      * speaking, the composition that this method performs would usually be called application
      * instead of composition. Although composition (in the sense of mathematics) and application
@@ -78,8 +78,9 @@ public interface ExpressionBuilder {
      * <div style="text-align:center;">{@link orbital.logic.functor.Functionals#compose &#8728;}:<span class="type">(&sigma;&rarr;&tau;)&times;(&tau;'&rarr;&sigma;') &rarr; (&tau;&rarr;&tau;')</span>; (g,f) &#8614; g&#8728;f = (x&#8614;g(f(x))), provided that <span class="type">&sigma;'</span> &le; <span class="type">&sigma;</span></div>
      * <div style="text-align:center;">{@link orbital.logic.functor.Functionals#apply _(_)}:<span class="type">(&sigma;&rarr;&tau;)&times;&sigma;' &rarr; &tau;</span>; (f,x) &#8614; f(x) provided that <span class="type">&sigma;'</span> &le; <span class="type">&sigma;</span></div>
      * Yet together with {@link orbital.logic.trs.Substitutions#lambda &lambda;}-abstraction,
-     * composition can be expressed (as in the definition above) in terms of application.
-     * And in conjunction with the identification of type <span class="type">void&rarr;&sigma;'</span> with <span class="type">&sigma;'</span>
+     * composition can be expressed in terms of application (as the definition above shows).
+     * And in conjunction with the (selective) identification of type
+     * <span class="type">void&rarr;&sigma;'</span> with <span class="type">&sigma;'</span>
      * application can also be expressed per composition.
      * </p>
      * @param compositor the expression that is used for composing the arguments.
@@ -89,9 +90,11 @@ public interface ExpressionBuilder {
      * @return an instance of Expression that represents the combined operation with arguments, like in
      *  <div><code>compositor(<var>a</var><span class="operator">[</span><span class="number">0</span><span class="operator">]</span>,...,<var>a</var><span class="operator">[</span><var>a</var>.length<span class="operator">-</span><span class="number">1</span><span class="operator">]</span>)</code></div>
      * @post RES&ne;null &and; RES.getType()=compositor.getType().domain() &and; ....
-     * @throws ParseException when the composition expression is syntactically malformed.
+     * @throws ParseException if the composition expression is syntactically malformed.
      *  Either due to a lexical or grammatical error (also due to wrong type of arguments).
      * @internal this is a meta-operator. We could also choose a simpler compositor part orbital.logic.imp.Symbol but would then need an undefined language primitive "apply" for compose("apply",{f,a}) = f(a). So this formal trick soon looses its simplicity and thus is inferior to the approach of compositors in Term(&Sigma;) instead of just &Sigma;.
+     * @internal understanding semiotic composition as functional apply is somewhat superior to understanding it as mathematical composition, since composition can in conjunction with lambda abstraction easily be expressed with application (also for higher arities whose composition is less canonical). Whereas mathematical composition would still need handling of the identification of void->t with t.
+     * @internal understanding it as a combination of application and composition is always possible from a type theory point of view (apart from composing fg from g:X->{g} which is a kind of Russel paradoxon). However we chose to separate those (related but) distinct concepts.
      * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      */
     Expression compose(Expression compositor, Expression[] arg) throws ParseException;
