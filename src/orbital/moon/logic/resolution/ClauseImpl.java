@@ -32,6 +32,7 @@ import java.util.logging.Level;
  *
  * @version 0.8, 2003-04-23
  * @author  Andr&eacute; Platzer
+ * @xxx Should we provide implements Composite for unify to work on whole clauses? do unifiable clauses with a different initial number of literals unify? Not in our implementation, I'm afraid.
  */
 public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
     private static final Logger logger = Logger.getLogger(ClauseImpl.class.getName());
@@ -43,10 +44,38 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
      * @internal transitively public constructors required for Functionals.map to produce Clauses.
      */
     public ClauseImpl(Set/*<Formula>*/ literals) {
-	super(literals);
+	super(Collections.unmodifiableSet(literals));
 	assert Setops.all(literals, Functionals.bindSecond(Utility.instanceOf, Formula.class)) : "instanceof Set<Formula>";
     }
     public ClauseImpl() {}
+
+    // factory-methods
+    
+    /**
+     * Instantiates a new clause.
+     * @return a new (yet empty) clause of the same type as this.
+     * @postconditions RES&ne;RES
+     * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
+     * @see #clone()
+     */
+    protected Clause newInstance() {
+	return new ClauseImpl();
+    }
+
+    /**
+     * Instantiates a new clause.
+     * @param literals the set of literals for the new clause.
+     * @return a new clause of the same type as this, with the specified literals.
+     * @postconditions RES&ne;RES
+     * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
+     * @see #clone()
+     * @todo rename or remove
+     */
+    protected Clause construct(Set literals) {
+	return new ClauseImpl(literals);
+    }
+
+    //
 
     public Signature getFreeVariables() {
 	// return banana (|&empty;,&cup;|) (map ((&lambda;x)x.freeVariables()), this)
@@ -75,8 +104,8 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 		logger.log(Level.FINEST, "resolving literals {0} with {1} is {2}", new Object[] {Gk, notFj, mu});
 		if (mu != null) {
 		    // resolve F and G at complementary literals Fj resp. Gk
-		    final Clause Gp = new ClauseImpl((Set) Functionals.map(mu, setWithout(G, Gk)));
-		    final Clause Fp = new ClauseImpl((Set) Functionals.map(mu, setWithout(F, Fj)));
+		    final Clause Gp = construct((Set) Functionals.map(mu, setWithout(G, Gk)));
+		    final Clause Fp = construct((Set) Functionals.map(mu, setWithout(F, Fj)));
                         				
 		    logger.log(Level.FINER, "resolving {0} with res {1} from {2} and {3}. not yet factorized. Lengths {4} from {5} and {6}.", new Object[] {Fp,Gp, F, G, new Integer(Fp.size()), new Integer(F.size()), new Integer(G.size())});
 
@@ -89,14 +118,16 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 		    final Clause R = Gp;
 		    R.addAll(Fp);
 		    final Clause factorizedR = R.factorize();
-		    logger.log(Level.FINER, "resolved {0} from {1} and {2}. Factorized to {3}. Lengths {4} from {5} and {6} .", new Object[] {R, F, G, factorizedR, new Integer(R.size()), new Integer(F.size()), new Integer(G.size())});
+		    logger.log(Level.FINER, "resolved {0} from {1} and {2}. Factorized to {3}. Lengths {4} from {5} and {6}.", new Object[] {R, F, G, factorizedR, new Integer(R.size()), new Integer(F.size()), new Integer(G.size())});
 
 		    // @internal for perfect performance (and catastrophal structure) could already perform a goal lookahead by R.equals(Utilities.CONTRADICTION)
 
 		    //@xxx add factorized and original, or only one, or? Or better yet factorize elsewhere?
 		    resolvents.add(R);
-		    if (!factorizedR.equals(R))
-			;//resolvents.add(factorizedR);
+		    if (!factorizedR.equals(R)) {
+			logger.log(Level.FINER, "Adding factorized {3} of resolvent {0} from {1} and {2}.", new Object[] {R, F, G, factorizedR, new Integer(R.size()), new Integer(F.size()), new Integer(G.size())});
+			resolvents.add(factorizedR);
+		    }
 		}
 	    }
 	}
@@ -157,10 +188,11 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
     }
 	
     public Clause factorize() {
-	// we need a list view of the set for traversing distinct literals, then we will also only modify listF not this
+	// we need a list version("view") of the set for traversing distinct literals, then we will also only modify listF not this
 	final List listF = new LinkedList(this);
+	assert this.equals(new HashSet(listF)) : "factorizing initial list version of this";
 	if (factorizeImpl(listF))
-	    return new ClauseImpl(new HashSet(listF));
+	    return construct(new HashSet(listF));
 	else
 	    return this;
     }
@@ -170,31 +202,43 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
      * @return whether factorization was possible, and thus listF has changed.
      */
     private boolean factorizeImpl(List listF) {
-	final Clause F = this;
-	// for all literals Fi&isin;F
-    	for (ListIterator i = listF.listIterator(); i.hasNext(); ) {
-	    final Formula Fi = (Formula) i.next();
-	    // for all literals Fj&isin;F with j>i
-	    for (ListIterator j = listF.listIterator(i.nextIndex()); j.hasNext(); ) {
-		final Formula Fj = (Formula) j.next();
-		final Substitution mu = Substitutions.unify(Arrays.asList(new Object[] {Fi, Fj}));
-		if (mu != null) {
-		    // factorize
-                    final String logPrevious = logger.isLoggable(Level.FINEST) ? F + "" : "";
-		    // optimized removing Fi from the set, since mu(Fi) = mu(Fj) anyway (notice the set representation)
-		    assert mu.apply(Fi).equals(mu.apply(Fj));
-		    j.remove();
-                    listF = Functionals.map(mu, listF);
-                    logger.log(Level.FINEST, "factorized {1} from {0} by unifying {3} and {4} with {2}", new Object[] {logPrevious, F, mu, Fi, Fj});
-		    // factorize again
-		    //@todo could optimize away recursive call
-		    factorizeImpl(listF);
-		    return true;
+	Clause previous = null;
+	assert (previous = construct(new HashSet(this))) != null;
+	try {
+	    // for all literals Fi&isin;F
+	    for (ListIterator i = listF.listIterator(); i.hasNext(); ) {
+		final Formula Fi = (Formula) i.next();
+		// for all literals Fj&isin;F with j>i
+		for (ListIterator j = listF.listIterator(i.nextIndex()); j.hasNext(); ) {
+		    final Formula Fj = (Formula) j.next();
+		    final Substitution mu = Substitutions.unify(Arrays.asList(new Object[] {Fi, Fj}));
+		    assert this.equals(previous) : "modifications during factorization work on copies, and leave the original clause unmodified";
+		    if (mu != null) {
+			// factorize
+			final String logPrevious = logger.isLoggable(Level.FINEST) ? construct(new HashSet(listF)) + "" : "";
+			// optimized removing Fi from the set, since mu(Fi) = mu(Fj) anyway (notice the set representation). But there no optimization here, isn't it?
+			assert mu.apply(Fi).equals(mu.apply(Fj));
+			j.remove();
+			// apply unification and remove duplicates, but convert to list again.
+			final List t = new LinkedList(new HashSet(Functionals.map(mu, listF)));
+			//@internal instead of working on t and returning t to our caller, we make listF look the same. Perhaps this is not the most clear idea.
+			listF.clear();
+			listF.addAll(t);
+			assert this.equals(previous) : "modifications during factorization work on copies, and leave the original clause unmodified";
+			logger.log(Level.FINEST, "factorized {1} from {0} by unifying {3} and {4} with {2}", new Object[] {logPrevious, construct(new HashSet(listF)), mu, Fi, Fj});
+			// factorize again
+			//@todo could optimize away recursive call
+			factorizeImpl(listF);
+			return true;
+		    }
 		}
 	    }
-        }
-	// no factorization possible
-        return false;
+	    // no factorization possible
+	    return false;
+	}
+	finally {
+	    assert this.equals(previous) : "modifications during factorization work on copies, and leave the original clause unmodified";
+	}
     }
 
     // Diverse utilities
