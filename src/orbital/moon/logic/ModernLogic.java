@@ -265,6 +265,14 @@ abstract class ModernLogic implements Logic {
 	    }
 	    catch (NumberFormatException trial) {}
 
+	if (symbol.getType().equals(Types.getDefault().objectType(String.class))) {
+	    try {
+		// test for syntactically legal <STRING_LITERAL>
+		isSTRING_LITERAL(symbol);
+		return createSymbol(symbol);
+	    }
+	    catch (IllegalArgumentException trial) {}
+	}
 	// test for syntactically legal <IDENTIFIER>
 	isIDENTIFIER(symbol);
 	return createSymbol(symbol);
@@ -441,7 +449,7 @@ abstract class ModernLogic implements Logic {
     }
 
     /**
-     * test for syntactically legal <IDENTIFIER>
+     * Test for syntactically legal <IDENTIFIER>
      * @throws IllegalArgumentException if signifier is not an IDENTIFIER.
      * @todo can't we use new LogicParserTokenManager(signifier).getNextToken()?
      */
@@ -452,6 +460,22 @@ abstract class ModernLogic implements Logic {
 	    if ((i > 0 && !(ch == '_' || Character.isLetterOrDigit(ch)))
 		|| (i == 0 && !(ch == '_' || Character.isLetter(ch))))
 		throw new IllegalArgumentException("illegal character `" + ch + "' in symbol '" + symbol + "'");
+	}
+    }
+
+    /**
+     * Test for syntactically legal <STRING_LITERAL>
+     * @throws IllegalArgumentException if signifier is not a STRING_LITERAL.
+     * @todo can't we use new LogicParserTokenManager(signifier).getNextToken()?
+     */
+    private void isSTRING_LITERAL(Symbol symbol) {
+	String signifier = symbol.getSignifier();
+	if (signifier.length() < 2 || signifier.charAt(0) != '\"' || signifier.charAt(signifier.length() - 1) != '\"')
+	    throw new IllegalArgumentException("illegal character in string '" + symbol + "'");
+	for (int i = 1; i < signifier.length() - 1; i++) {
+	    char ch = signifier.charAt(i);
+	    if (ch == '\"' && signifier.charAt(i-1) != '\\')
+		throw new IllegalArgumentException("illegal character `" + ch + "' in string '" + symbol + "'");
 	}
     }
 }
