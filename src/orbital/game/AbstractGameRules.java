@@ -135,8 +135,8 @@ public abstract class AbstractGameRules implements GameRules, Serializable {
      * @see #images
      */
     public Image getImage(Figure f) {
-	int leag = f.league;
-	int typ = f.type;
+	int leag = f.getLeague();
+	int typ = f.getType();
 	if (leag == NOONE || typ == EMPTY) {
 	    leag = NOONE;
 	    typ = EMPTY;

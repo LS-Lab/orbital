@@ -35,11 +35,11 @@ public class FigureWeighting extends ContainerWeighting {
      */
     public Object/*>Number<*/ apply(Object arg) {
 	Argument i = (Argument) arg;
-	for (Iterator e = i.figure.iterateValidPairs(); e.hasNext(); ) {
+	for (Iterator e = i.figure.validMoves(); e.hasNext(); ) {
 	    Pair p = (Pair) e.next();
 	    assert p.B != null : "non-null pairs";
 
-	    assert i.figure.movePath((Move)p.A).equals(p.B) : "consistent movePath expected";
+	    assert !(i.figure instanceof FigureImpl) || ((FigureImpl)i.figure).movePath((Move)p.A).equals(p.B) : "consistent movePath expected";
 	    super.apply(new MoveWeighting.Argument(i, (Move) p.A, (Position) p.B));
 	} 
 	evaluate();

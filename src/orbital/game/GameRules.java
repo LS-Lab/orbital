@@ -42,8 +42,8 @@ public interface GameRules {
      * this will be empty.
      * @param f the figure-template that we seek an image-object to set for.
      * @return an image-object that should be set for f, depending on the league, type, and possibly other information.
-     * This image-object can either gotten from a cache or newly created.
-     * @see Figure#setImage(java.awt.Image)
+     * This image-object can either be looked-up from a cache or newly created.
+     * @see FigureImpl#setImage(java.awt.Image)
      * @see Game#load(java.io.ObjectInputStream)
      */
     Image getImage(Figure f);

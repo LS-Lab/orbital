@@ -136,7 +136,7 @@ public class Field implements Serializable {
      */
     public Figure getFigure(Position p) {
 	if (!inRange(p))
-	    throw new ArrayIndexOutOfBoundsException("position " + p + " exceed bounds " + getDimension());
+	    throw new ArrayIndexOutOfBoundsException("position " + p + " exceeds bounds " + getDimension());
 	return field[p.y][p.x];
     } 
 
@@ -151,8 +151,11 @@ public class Field implements Serializable {
 	if (f != null) {
 	    // f might be changed
 	    f.move(p);
-	    if (f.getField() != null && f.getField() != this)
-		logger.log(Level.FINE, "unsafe composite figure {0} was in {1} and is transferred to {2} in an unsafe way", new Object[] {f, f.getField(), this});
+	    if (f instanceof FigureImpl) {
+		FigureImpl f2 = (FigureImpl)f;
+		if (f2.getField() != null && f2.getField() != this)
+		    logger.log(Level.FINE, "unsafe composite figure {0} was in {1} and is transferred to {2} in an unsafe way", new Object[] {f2, f2.getField(), this});
+	    }
 	    f.setField(this);
 	}
     } 
@@ -249,14 +252,14 @@ public class Field implements Serializable {
      */
     public Iterator expand() {
 	try {
-	    List l  = new LinkedList();
+	    final List l  = new LinkedList();
 	    for (Iterator i = iterateNonEmpty(); i.hasNext(); ) {
-		Figure figure = (Figure) i.next();
-		for (Iterator j = figure.iterateValidPairs(); j.hasNext(); ) {
-		    Pair 	 p = (Pair) j.next();
-		    Move	 move = (Move) p.A;
+		final Figure figure = (Figure) i.next();
+		for (Iterator j = figure.validMoves(); j.hasNext(); ) {
+		    Pair     p = (Pair) j.next();
+		    Move     move = (Move) p.A;
 		    Position destination = (Position) p.B;
-		    Field	 field = (Field) clone();
+		    Field    field = (Field) clone();
 		    //@todo optimize since most part is unnecessary. We already know it is a legal move, that it reaches its destination by a valid path, etc. Only, if most methods were final, we still need to check for "field.getFigure(((Position) figure).moving(move, destination);" and then perform "field.swap(figure, destination);"
 		    if (field.move((Position) figure, move))
 			l.add(new Option(field, destination, figure, move));
@@ -278,20 +281,6 @@ public class Field implements Serializable {
     public synchronized boolean move(Position source, Move move) {
 	Position destination = getFigure(source).moveFigure(move);
 	if (destination == null)
-	    return false;
-	swap(source, destination);
-	return true;
-    } 
-
-    /**
-     * Performs a move of the figure at the specified position to a new position.
-     * And if the move was successful then it swaps with the destination figure.
-     * @return whether source figure was able to move.
-     * @see Figure#moveFigure(Position)
-     */
-    public synchronized boolean move(Position source, Position destination) {
-	boolean ok = getFigure(source).moveFigure(destination);
-	if (!ok)
 	    return false;
 	swap(source, destination);
 	return true;

@@ -575,7 +575,7 @@ public class Game extends Applet implements Runnable {
 	showStatus(getResources().getString("statusbar.game.end"));
 	ResourceBundle resources = getResources();
 	String	   winner = (Math.abs(league) <= realPlayers ? resources.getString("text.player") : resources.getString("text.computer")) + " (" + Math.abs(league) + ')';
-	int selected = JOptionPane.showConfirmDialog(UIUtilities.getParentalFrame(this), winner + resources.getString("dialog.game.finish.hasWon") + (league > 0 ? resources.getString("dialog.game.finish.won") : resources.getString("dialog.game.finish.survived")) + resources.getString("dialog.game.finish.tryAgain"), resources.getString("dialog.game.finish.title"), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+	int selected = JOptionPane.showConfirmDialog(UIUtilities.getParentalFrame(this), winner + ' ' + resources.getString("dialog.game.finish.hasWon") + (league > 0 ? resources.getString("dialog.game.finish.won") : resources.getString("dialog.game.finish.survived")) + resources.getString("dialog.game.finish.tryAgain"), resources.getString("dialog.game.finish.title"), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 	if (selected == JOptionPane.YES_OPTION) {
 	    stop();
 	    start();
@@ -601,7 +601,8 @@ public class Game extends Applet implements Runnable {
 	board.setField(field);
 	for (Iterator i = field.iterateNonEmpty(); i.hasNext(); ) {
 	    Figure f = (Figure) i.next();
-	    f.setImage(rules.getImage(f));
+	    if (f instanceof FigureImpl)
+		((FigureImpl)f).setImage(rules.getImage(f));
 	} 
     } 
 

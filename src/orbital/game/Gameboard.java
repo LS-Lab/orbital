@@ -167,7 +167,9 @@ public class Gameboard extends Canvas implements ImageObserver, Serializable {
 	    // ignore
 	    return super.mouseUp(evt, x, y);
 	//@xxx only allow an operation for real players!
-	boolean validOperation = field.move(src, dst);	   // is this a correct move/beat?
+	Move moveToDst = PackageUtilities.findValidPath(field.getFigure(src), dst);
+	boolean validOperation =
+	    moveToDst != null && field.move(src, moveToDst);	   // is this a correct move/beat?
 	repaint(src);
 	repaint(dst);
 	if (validOperation)
