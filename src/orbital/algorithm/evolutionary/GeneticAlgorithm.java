@@ -53,7 +53,7 @@ import orbital.logic.functor.Function;
  *         maximumRecombination,
  *         maximumMutation,
  *         IncrementalGeneticAlgorithm.class);
- * <span class="Class">Object</span> solution <span class="assignment">=</span> config.solve();
+ * <span class="Class">Population</span> solution <span class="assignment">=</span> (<span class="Class">Population</span>) config.solve();
  * </pre>
  * Or, if you need any additional control of the single steps, use something like:
  * <pre>
@@ -91,7 +91,7 @@ import orbital.logic.functor.Function;
  *  DemeGeneticAlgorithm, ParallelDemeGeneticAlgorithm (with parallel population processed in parallel)
  * @todo introduce getConvergence() and getPopulationConvergence()
  */
-public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, AlgorithmicTemplate, Serializable {
+public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, AlgorithmicTemplate/*<GeneticSearchProblem,Population>*/, Serializable {
     private static final Logger logger = Logger.getLogger(GeneticAlgorithm.class.getName());
     /**
      * version of this class for versioning with serialization and deserialization.
@@ -557,5 +557,11 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
 	    return algo;
 	}
 
+	/**
+	 * @posconditions RES instanceof Population
+	 */
+	public Object/*>Population<*/ solve() {
+	    return super.solve();
+	}
     }
 }
