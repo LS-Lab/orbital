@@ -39,6 +39,8 @@ import java.util.logging.Level;
  *  is not perfectly rational (according to our utility), then we can still hope for the better cases.
  *  Actually, there's also a trade-off when to prefer probably better ones to worst-case better ones.
  *  But all this must be optional behaviour (so implemented in a subclass).
+ * @attribute time complexity O((b<sup>d+1</sup>-1)/(b-1)) in depth d with branching factor b.
+ * @attribute query complexity {@link #getUtility()} O(b<sup>d</sup>) in depth d with branching factor b.
  */
 public class AlphaBetaPruning extends AdversarySearch {
     static final Logger logger = Logger.getLogger(AlphaBetaPruning.class.getName());
