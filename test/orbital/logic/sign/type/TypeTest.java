@@ -8,6 +8,7 @@ package orbital.logic.imp;
 
 import orbital.math.*;
 import java.lang.Integer;
+import orbital.util.*;
 
 import junit.framework.*;
 
@@ -29,7 +30,7 @@ public class TypeTest extends check.TestCase {
 	testTypeConstructorsWith(new Type[] {Types.UNIVERSAL});
 	testTypeConstructorsWith(new Type[] {Types.TRUTH});
 	testTypeConstructorsWith(new Type[] {Types.INDIVIDUAL});
-	testTypeConstructorsWith(new Type[] {Types.VOID});
+	testTypeConstructorsWith(new Type[] {Types.NOTYPE});
 	testTypeConstructorsWith(new Type[] {Types.ABSURD});
 	testTypeConstructorsWith(new Type[] {Types.UNIVERSAL, Types.TRUTH});
 	testTypeConstructorsWith(new Type[] {Types.UNIVERSAL, Types.UNIVERSAL});
@@ -168,7 +169,7 @@ public class TypeTest extends check.TestCase {
 	t = Types.ABSURD;
 	assertTrue( s.equals(t) && s == t, s + " = " + t);
 	s = Types.product(new Type[] {});
-	t = Types.VOID;
+	t = Types.ABSURD;
 	assertTrue( s.equals(t) && s == t, s + " = " + t);
     }
 
@@ -187,24 +188,16 @@ public class TypeTest extends check.TestCase {
 	//assertTrue( s.equals(t) && s == t, s + " = " + t); //@todo ?
     }
     public void testCollectionsOfAbsurd() {
-	Type s, t;
-	final Type u = Types.ABSURD;
-	s = Types.collection(u);
-	t = Types.collection(Types.VOID);
-	assertTrue( !s.equals(u), s + " != " + u);
-	assertTrue( s.equals(t), s + " = " + t);
-	s = Types.set(u);
-	t = Types.set(Types.VOID);
-	assertTrue( !s.equals(u), s + " != " + u);
-	assertTrue( s.equals(t), s + " = " + t);
-	s = Types.list(u);
-	t = Types.list(Types.VOID);
-	assertTrue( !s.equals(u), s + " != " + u);
-	assertTrue( s.equals(t), s + " = " + t);
-	//s = Types.bag(u);
-	//t = Types.bag(Types.VOID);
-	//assertTrue( !s.equals(u), s + " != " + u);
-	//assertTrue( s.equals(t), s + " = " + t);
+	Type s;
+	final Type t = Types.ABSURD;
+	s = Types.collection(t);
+	assertTrue( !s.equals(t), s + " != " + t);
+	s = Types.set(t);
+	assertTrue( !s.equals(t), s + " != " + t);
+	s = Types.list(t);
+	assertTrue( !s.equals(t), s + " != " + t);
+	//s = Types.bag(t);
+	//assertTrue( !s.equals(t), s + " != " + t);
     }
 
     public void testDifferentConstructorSubtype() {
@@ -229,6 +222,9 @@ public class TypeTest extends check.TestCase {
 	s = Types.INDIVIDUAL;
 	t = Types.map(Types.INDIVIDUAL, Types.TRUTH);
 	assertTrue( !comparable(s,t) , s + " incomparable " + t);
+	s = Types.INDIVIDUAL;
+	t = Types.map(Types.INDIVIDUAL, Types.type(String.class));
+	assertTrue( !comparable(s,t) , s + " incomparable " + t);
 
 	s = Types.product(new Type[] {Types.INDIVIDUAL, Types.type(String.class)});
 	t = Types.inf(new Type[] {Types.INDIVIDUAL, Types.type(String.class)});
@@ -243,7 +239,7 @@ public class TypeTest extends check.TestCase {
 	try {
 	    compare(s, t);
 	    return true;
-	} catch (orbital.util.IncomparableException incomparable) {
+	} catch (IncomparableException incomparable) {
 	    return false;
 	}
     }

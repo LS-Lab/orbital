@@ -32,10 +32,13 @@
     <!-- <property name="build.sysclasspath" value="ignore"/> -->
 
     <target name="init">
+        <property name="version" value="1.0.7"/>
+        <property name="version_brief" value="1.0"/>
+
         <tstamp>
-            <format property="timestamp" pattern="dd MMM yyyy HH:mm"/>
-            <format property="VERSION_DATE" pattern="MMMMM d'th,' yyyy"/>
-            <format property="TODAY" pattern="MM/dd/yyyy"/>
+            <format property="timestamp" pattern="dd MMM yyyy HH:mm" locale="en,uk"/>
+            <format property="VERSION_DATE" pattern="MMMMM d'th,' yyyy" locale="en,uk"/>
+            <format property="TODAY" pattern="MM/dd/yyyy" locale="en,uk"/>
         </tstamp>
 
         <!-- basedir will be set to parent directory of this file -->
@@ -52,9 +55,6 @@
 
         <property name="build.tests" value="${basedir}/test"/>
         <property name="reports.tests" value="${basedir}/report/test"/>
-
-        <property name="version" value="1.0.7"/>
-        <property name="version_brief" value="1.0"/>
 
 
         <available property="checkstyle.present" resource="checkstyletask.properties"/>
@@ -536,14 +536,18 @@
         description="print out some properties for debugging build.xml">
         <echo>
 
-        basedir   = ${basedir}
-        sources   = ${sources}
-        lib       = ${lib}
-        resources = ${resources}
-        doc       = ${doc}
-        examples  = ${examples}
-        classes   = ${classes}
-        dist      = ${dist}
+        basedir      = ${basedir}
+        sources      = ${sources}
+        lib          = ${lib}
+        resources    = ${resources}
+        doc          = ${doc}
+        bin          = ${bin}
+        classes      = ${classes}
+        dist         = ${dist}
+        examples     = ${examples}
+        src.tests    = ${src.tests}
+        build.tests  = ${build.tests}
+        report.tests = ${report.tests}
 
         </echo>
     </target>

@@ -79,7 +79,7 @@ public class FunctorSpec {
 	public int apply(float a, double b, int c, Number d, Object e) {
 	    return 0;
 	} 
-	public static final Specification specification = new Specification(new Class[] {Float.TYPE, Double.TYPE, Integer.TYPE, Number.class, Object.class}, Integer.TYPE);
+	public static final Specification callTypeDeclaration = new Specification(new Class[] {Float.TYPE, Double.TYPE, Integer.TYPE, Number.class, Object.class}, Integer.TYPE);
 	public int apply(float a, int b, Object c) {
 	    return 0;
 	} 

@@ -47,9 +47,16 @@ import java.util.Iterator;
  *   <li>unspecific expressions combining both terms and formulas</li>
  * </ul>
  * </p>
+ * <p>
+ * This parser can be used by implementations of logic. So there
+ * is no need to interface with this parser directly. Instead, it
+ * is sufficient to call the {@link ExpressionSyntax#createExpression(String)}
+ * implementation of the specific logic.
+ * </p>
  * @version 1.0, 2001/01/16
  * @author  Andr&eacute; Platzer
  * @see <a href="doc-files/LogicParser_grammar.html">Grammar</a>
+ * @see ExpressionSyntax#createExpression(String)
  * @see #parseFormula()
  * @see #parseFormulas()
  * @todo use a UTF-8 input stream and support the true Unicode
@@ -635,23 +642,23 @@ Expression PrimaryTerm() :
  * Parse a compound function term for the current logic.
  */
 Expression CompoundTerm() :
-{Token tok; Expression p; Expression[] arg;}
+{Token tok; Expression f; Expression[] arg;}
 {
     tok = <IDENTIFIER> arg = Arguments()
 	{return apply(tok, arg, Types.INDIVIDUAL);}
 |
-    p = LambdaAbstraction() arg = Arguments()
+    f = LambdaAbstraction() arg = Arguments()
         {
 	    if (arg.length != 1)
 	        throw new ParseException("only unary application of lambda abstractions is supported");
 	    //@todo which exact optok token?
-	    return composeWrapper(null, p, arg);
+	    return composeWrapper(null, f, arg);
 	}
 }
 
 /**
  * &lambda;-abstraction term.
- *@todo let our surroundings (not us) also support variables/constants bound to &lambda;-abstractions.
+ * @todo let our surroundings (not us) also support variables/constants bound to &lambda;-abstractions.
  * @note that (\x.2*x) can be parsed as expected because .2 is not a real number but only 0.2
  * @todo could we define the semantics by Logic.compose("lambda", new Expression[] {x, t}) such that someone can remember the (now fixed) interpretation as a function?
  *  However since substitution can be performed here, on a purely syntactical basis,
