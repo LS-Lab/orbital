@@ -19,7 +19,7 @@ import orbital.awt.*;
 import dkfz.collections.graph.view.*;
 
 /**
- * TraceableClauseImpl.java
+ * Clauses that trace the proof for obtaining a proof DAG.
  *
  *
  * @author <a href="mailto:NOSPAM@functologic.com">Andr&eacute; Platzer</a>
@@ -90,7 +90,7 @@ public class TraceableClauseImpl extends ClauseImpl {
 	return new TraceableClauseImpl();
     }
 
-    protected Clause construct(Set literals) {
+    protected ClauseImpl construct(Set literals) {
 	return new TraceableClauseImpl(literals);
     }
 
