@@ -67,9 +67,9 @@ the class-path.</p>
 <p>In order to get the Orbital library into your class-path, you should either:
 <ul class="or">
   <li>Place the <a href="#orbitalStar.Jar">orbital*.jar</a> archive files
-    containing the library classes anywhere on your class path that is set in
+    containing the library classes anywhere on your class-path, which is set in
     the <tt>CLASSPATH</tt> environment variable.
-    This is the most reliable variant.</li>
+    We recommend this as the most reliable variant.</li>
   <li>Or specify the <a href="#orbitalStar.Jar">orbital*.jar</a> files as a
     &quot;bundled&quot; extension with a relative path in the manifest attribute
     <tt>Class-Path</tt> of your program's deployment JAR archive for all
@@ -77,8 +77,8 @@ the class-path.</p>
   <li>Or copy the <a href="#orbitalStar.Jar">orbital*.jar</a> files as an
     &quot;installed&quot; extension to the <tt>lib/ext</tt> directory of the
     Java 2 platform runtime environment of your JVM.
-    Be aware, however, that there are some situations (like applets) in which
-    the installed extensions do not work as expected. So you might prefer
+    Be aware, however, that there are some situations (like applets or jikes)
+    in which the installed extensions do not work as expected. So you might prefer
     setting the <tt>CLASSPATH</tt> explicitly.</li>
   <li>Or use the Orbital library setup wizard for configuration. To start the setup
     wizard, call
@@ -86,15 +86,15 @@ the class-path.</p>
       <kbd>java -jar orbital-ext.jar</kbd>
     </ul>
     However, this wizard will only place an &quot;installed&quot; extension, 
-    a variant which is usually inferior to changing the class path.
+    a variant which is usually inferior to changing the class-path.
   </li>
   <li>Or add all <a href="#orbitalStar.Jar">orbital*.jar</a> files as an
     additional library to your preferred Integrated Development Environment
     (IDE). Refer to its documentation for details.</li>
 </ul>
 <p>Most Java Virtual Machines work best when the classes are only kept at one
-single location. So consider simply storing it as an &quot;installed&quot;
-extension. Also make sure that no old release of Orbital library is placed in
+single location. So consider simply storing it at a single location in the class-path.
+Also make sure that no old release of Orbital library is placed in
 the class-path.</p>
 <p>To accelerate loading any Java applets that use the Orbital library from the
 internet, the archive files are split into several parts. JAR indexing then
