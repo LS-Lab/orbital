@@ -66,7 +66,7 @@ public interface ExpressionBuilder {
      * to form a <a href="Expression.html#compositeExpression">complex</a> expression.
      * <p>
      * {@link Signature#get(String,Object[])} may be useful for determining the right functor symbol
-     * for a composition with an {@link #createAtomic(Symbol) atomic} compositor.
+     * for a composition in case of an {@link #createAtomic(Symbol) atomic} compositor.
      * </p>
      * <p>
      * <span style="float: left; font-size: 200%">&#9761;</span>
@@ -85,18 +85,25 @@ public interface ExpressionBuilder {
      * </p>
      * @param compositor the expression that is used for composing the arguments.
      * @param arg the arguments <var>a</var> passed to the combining operation.
-     * @preconditions compositor&ne;null &and; Types.isApplicableTo(compositor.getType(), arg) &and; compositor(arg)&isin;<i>L</i>
+     * @preconditions compositor&ne;null
+     *  &and; Types.isApplicableTo(compositor.getType(), arg)
+     *  &and; compositor(arg)&isin;<i>L</i>
      *  "compositor applied to arg represents a syntactically well-formed expression"
-     * @return an instance of Expression that represents the combined operation with arguments, like in
+     * @return an expression that represents the combined operation with its arguments, like in
      *  <div><code>compositor(<var>a</var><span class="operator">[</span><span class="number">0</span><span class="operator">]</span>,...,<var>a</var><span class="operator">[</span><var>a</var>.length<span class="operator">-</span><span class="number">1</span><span class="operator">]</span>)</code></div>
      * @postconditions RES&ne;null &and; RES.getType()=compositor.getType().codomain() &and; ....
      * @throws ParseException if the composition expression is syntactically malformed.
      *  Either due to a lexical or grammatical error (also due to wrong type of arguments).
+     * @throws TypeException if the arguments have the wrong type for
+     * composition, i.e.
+     * &not;Types.isApplicableTo(compositor.getType(), arg).  Note
+     * that type errors are still a kind of syntactic errors, but can be
+     * separated from pure parse exceptions in order to simplify distinctions.
      * @internal this is a meta-operator. We could also choose a simpler compositor part orbital.logic.imp.Symbol but would then need an undefined language primitive "apply" for compose("apply",{f,a}) = f(a). So this formal trick soon looses its simplicity and thus is inferior to the approach of compositors in Term(&Sigma;) instead of just &Sigma;.
      * @internal understanding semiotic composition as functional apply is somewhat superior to understanding it as mathematical composition, since composition can in conjunction with lambda abstraction easily be expressed with application (also for higher arities whose composition is less canonical). Whereas mathematical composition would still need handling of the identification of void->t with t.
      * @internal understanding it as a combination of application and composition is always possible from a type theory point of view (apart from composing fg from g:X->{g} which is a kind of Russel paradoxon). However we chose to separate those (related but) distinct concepts.
      * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      */
-    Expression compose(Expression compositor, Expression[] arg) throws ParseException;
+    Expression compose(Expression compositor, Expression[] arg) throws ParseException, TypeException;
 
 }

@@ -94,6 +94,9 @@ public interface ExpressionSyntax extends ExpressionBuilder {
      * @return an instance of Expression that represents the given expression string in this language.
      * @throws ParseException when the expression is syntactically malformed.
      *  Either due to a lexical or grammatical error.
+     * @throws TypeException if the expression produces a type error. Note
+     * that type errors are still a kind of syntactic errors, but can be
+     * separated from pure parse exceptions in order to simplify distinctions.
      * @throws IllegalArgumentException if the symbol is illegal for some reasons.
      *  This may occur like in {@link ExpressionBuilder#createAtomic(Symbol)}, and due to the same reasons.
      *  However, most of the causes (like f.ex. spaces in the signifier) cannot occur here anyway,
@@ -101,5 +104,5 @@ public interface ExpressionSyntax extends ExpressionBuilder {
      * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      * @note could just as well be renamed to parseExpression(String)
      */
-    Expression createExpression(String expression) throws ParseException, IllegalArgumentException;
+    Expression createExpression(String expression) throws ParseException, TypeException, IllegalArgumentException;
 }

@@ -248,7 +248,7 @@ public interface Interpretation extends Map/*<Symbol, Object>*/ {
     // Basic Map operations.
 
     /**
-     * Get the object value associated with the given symbol in this interpretation.
+     * Get the referent associated with the given symbol in this interpretation.
      * <p>
      * Overwrite along with other map operations like {@link java.util.Set#contains(Object)} to implement
      * a different source for symbol associations.
@@ -259,17 +259,19 @@ public interface Interpretation extends Map/*<Symbol, Object>*/ {
     Object get(Object/*>Symbol<*/ symbol);
 
     /**
-     * Set the object value associated with the given symbol in this interpretation.
-     * @preconditions symbol.getType().apply(value)
+     * Set the referent associated with the given symbol in this interpretation.
+     * @preconditions symbol.getType().apply(referent)
      * @throws java.util.NoSuchElementException if the symbol is not in the current signature &Sigma;.
+     * @throws TypeException if the referent is not of the type of symbol.
      */
-    Object put(Object/*>Symbol<*/ symbol, Object value);
+    Object put(Object/*>Symbol<*/ symbol, Object referent);
 
     /**
      * Copies all of the associations from the specified map to this interpretation.
      * @preconditions (&Sigma; == null &or; keySet() &sube; &Sigma;) &and; &forall;(s,v)&isin;associations {@preconditions #put(Symbol, Object) put(s,v)}
      * @throws IllegalArgumentException if associations does contain a symbol which is not contained in the signature.
      *  This is not checked if &Sigma; is <code>null</code>.
+     * @throws TypeException if one of the values is not of the type of its symbol.
      * @throws NullPointerException if associations is <code>null</code>.
      */
     void putAll(Map/*<Symbol, Object>*/ associations);

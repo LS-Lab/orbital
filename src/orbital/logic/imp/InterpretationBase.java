@@ -143,11 +143,11 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
 	return super.remove(symbol);
     } 
 
-    public Object put(Object symbol, Object value) {
+    public Object put(Object symbol, Object referent) {
 	validate(symbol);
-	if (!validate(symbol, value))
-	    throw new IllegalArgumentException("referent " + value + " must conform to the specification " + ((Symbol) symbol).getType() + " of the symbol " + symbol);
-	return super.put(symbol, value);
+	if (!validate(symbol, referent))
+	    throw new TypeException("referent " + referent + " must conform to the type specification " + ((Symbol) symbol).getType() + " of the symbol " + symbol, ((Symbol) symbol).getType(), Types.typeOf(referent));
+	return super.put(symbol, referent);
     } 
 
     public void putAll(Map associations) {
@@ -155,8 +155,9 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
 	    for (Iterator it = associations.entrySet().iterator(); it.hasNext(); ) {
 		Map.Entry e = (Map.Entry) it.next();
 		if (!validate(e.getKey(), e.getValue()))
-		    throw new IllegalArgumentException("referent " + e.getValue() + " of " + e.getValue().getClass() + " must conform to the type " + ((Symbol) e.getKey()).getType() + " of the symbol " + e.getKey());
+		    throw new TypeException("referent " + e.getValue() + " of " + e.getValue().getClass() + " must conform to the type " + ((Symbol) e.getKey()).getType() + " of the symbol " + e.getKey(), ((Symbol) e.getKey()).getType(), Types.typeOf(e.getValue()));
 		if (!sigma.contains(e.getKey()))
+		    //@todo replace by throw new SignatureException
 		    throw new IllegalArgumentException("symbol " + e.getKey() + " not in signature. Association map is invalid for this signature.");
 	    }
 
