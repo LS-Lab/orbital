@@ -14,6 +14,7 @@ import orbital.util.Setops;
 import orbital.logic.functor.Functionals;
 
 /**
+ * Default implementation of a representation of a set of clauses.
  * @version 0.8, 2003-04-23
  * @author  Andr&eacute; Platzer
  */

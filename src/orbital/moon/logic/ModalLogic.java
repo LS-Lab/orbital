@@ -390,7 +390,9 @@ public class ModalLogic extends ClassicalLogic {
 			new DiamondUnifyingMatcher(logic.createExpression("<>(_A)"), logic.createExpression("_A")),
 			new ContextualizeUnifyingMatcher(),
 		    }));
-		return functionalReduce((Formula) modalReduceTransform.apply(F));
+		final Formula reducedF = functionalReduce((Formula) modalReduceTransform.apply(F));
+		logger.log(Level.FINE, "reduced modal logic formula {0} to typed classical logic formula {1}", new Object[] {F, reducedF});
+		return reducedF;
 	    } catch (ParseException ex) {
 		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
 	    }
@@ -473,6 +475,7 @@ public class ModalLogic extends ClassicalLogic {
 		final Formula t_form = (Formula) logic.createAtomic(t);
 		// A := A_original[s&#8614;t]
 		Formula A = (Formula) Substitutions.getInstance(Collections.singletonList(
+											  //@internal this is an embedding of symbols into atomic formulas @see Substitutions#lambda embedding
 										  Substitutions.createExactMatcher(logic.CURRENT_WORLD_form, t_form)
 										  )
 							).apply(A_red);

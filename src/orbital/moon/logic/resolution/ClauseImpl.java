@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 
 /**
- * Represents a clause, i.e. a set of literals.  A clause
+ * Default implementation of a representation of a clause, i.e. a set of literals.  A clause
  * {L<sub>1</sub>,...,L<sub>n</sub>} is a different notation for the
  * disjunction L<sub>1</sub>&or;...&or;L<sub>n</sub>.
  *
