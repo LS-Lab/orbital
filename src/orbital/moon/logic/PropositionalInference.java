@@ -21,7 +21,7 @@ import java.util.logging.Level;
  * @author <a href="mailto:">Andr&eacute; Platzer</a>
  * @version 1.1, 2002-11-29
  */
-public class PropositionalInference implements Inference {
+class PropositionalInference implements Inference {
     /**
      * Whether or not to use simplified clausal forms.
      */
