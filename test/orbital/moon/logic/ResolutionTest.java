@@ -11,7 +11,7 @@ import junit.framework.*;
 /**
  * A sample test case, testing Resolution.
  * @version 1.1, 2002-09-14
- * @attribute run-time 15min assuming java -da
+ * @attribute run-time 3min assuming java -da
  * @attribute run-time 50min assuming java -ea
  */
 public class ResolutionTest extends ClassicalLogicTest {
