@@ -856,6 +856,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
     //@todo remove this bugfix that replaces "xfy" by "yfy" associativity only for *.jj parsers to work without inefficient right-associative lookahead.
     private static final String xfy = "yfy";
 
+    //@todo unmodifiable view
     private static final Interpretation _coreInterpretation =
 	LogicSupport.arrayToInterpretation(new Object[][] {
 	    /**

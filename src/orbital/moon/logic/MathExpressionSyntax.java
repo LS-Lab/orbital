@@ -24,6 +24,9 @@ import orbital.logic.trs.Substitutions;
 import java.lang.reflect.Field;
 import orbital.io.IOUtilities;
 import java.io.StringReader;
+import java.util.*;
+import java.beans.IntrospectionException;
+import orbital.util.InnerCheckedException;
 
 /**
  * This class implements an expression syntax for mathematical expressions.
@@ -81,7 +84,39 @@ public class MathExpressionSyntax implements ExpressionSyntax {
     }
 
     public Signature coreSignature() {
-	throw new UnsupportedOperationException("not yet implemented");
+	return _coreSignature;
+    }
+    private static final Interpretation _coreInterpretation =
+	arrayToInterpretation(new Object[] {
+	    Operations.plus,
+	    Operations.minus,
+	    Operations.subtract,
+	    Operations.times,
+	    Operations.inverse,
+	    Operations.divide,
+	    Operations.power
+	}, false);
+    private static final Signature _coreSignature = _coreInterpretation.getSignature();
+    
+    private static final Interpretation arrayToInterpretation(Object[] functors, boolean skipNull) {
+	Map assoc = new TreeMap();
+	for (int i = 0; i < functors.length; i++) {
+	    final Functor f = (Functor)functors[i];
+	    if (f == null)
+		if (skipNull)
+		    continue;
+		else
+		    throw new NullPointerException("illegal functor " + f);
+	    try {
+		assoc.put(new SymbolBase(f.toString(),
+					 Types.declaredTypeOf(f),
+					 Notation.getNotation(f)),
+			  f);
+	    }
+	    catch (IntrospectionException ex) {throw new InnerCheckedException("could not detect specification", ex);}
+	}
+	Signature signature = new SignatureBase(assoc.keySet());
+	return new InterpretationBase(signature, assoc);
     }
     public Signature scanSignature(String expression) throws ParseException {
 	throw new UnsupportedOperationException("not yet implemented");
