@@ -199,6 +199,7 @@ class StandaloneAppletStub implements AppletStub {
     }
     public URL getCodeBase() {
     	try {
+	    //@xxx or applet.getClass().getResource(".");
 	    return new URL("file:///" + System.getProperty("user.dir") + "/");
     	}
     	catch(MalformedURLException e) {throw new InnerCheckedException("no codebase", e);}
