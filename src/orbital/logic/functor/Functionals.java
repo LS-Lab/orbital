@@ -8,10 +8,12 @@ package orbital.logic.functor;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
 import java.util.Iterator;
+import java.util.ListIterator;
 import java.io.Serializable;
 
-import java.util.ListIterator;
 import java.util.Collections;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
@@ -498,7 +500,7 @@ public class Functionals {
     }
 
     /**
-     * compose &#8728;: Map(B,C)&times;Map(A,B)&rarr;Map(A,C); (f,g) &#8614; f &#8728; g := f(g).
+     * compose &#8728;: Map(B,C)&times;Map(A,B)&rarr;Map(A,C); (f,g) &#8614; f &#8728; g := f(g) = <big>(</big>x&#8614;f(g(x))<big>)</big>.
      * <p>
      * compose functional &#8728; calls the compose function appropriate for the type of g.
      * Valid types for g and h are {@link orbital.logic.functor.Function}, {@link orbital.logic.functor.VoidFunction}
@@ -521,6 +523,21 @@ public class Functionals {
     public static final BinaryFunction compose = new BinaryFunction() {
 	    public Object apply(Object f, Object g) {
 		return genericCompose((Function)f, g);
+	    }
+	};
+
+    /**
+     * apply &middot;(&middot;): Map(A,B)&times;A&rarr;B; (f,x) &#8614; f(x).
+     * <p>
+     * apply is the inverse operator of {@link orbital.logic.trs.Substitutions#lambda &lambda;}.
+     * </p>
+     * @return (f,x)&#8614;f(x).
+     * @see <a href="{@docRoot}/DesignPatterns/Facade.html">Facade Pattern</a>
+     * @todo could we somehow generalize this? What about f being a BinaryFunction, or a VoidFunction, or a Predicate?
+     */
+    public static final BinaryFunction apply = new BinaryFunction() {
+	    public Object apply(Object f, Object x) {
+		return ((Function)f).apply(x);
 	    }
 	};
 
@@ -1401,11 +1418,20 @@ public class Functionals {
 	    // almost identical to @see Utility#asIterator
 	    // (almost) return map(function, asIterator(x), ...); but with optimized third argument and optimized adequate return-type
 	    if (x instanceof Collection/*_<A>_*/) {
-		Collection/*_<A>_*/ c = (Collection/*_<A>_*/) x;
-		return map(function, c.iterator(), Setops.newCollectionLike(c));
-	    } else if (x instanceof Iterator/*_<A>_*/)
-		return map(function, (Iterator/*_<A>_*/) x, new LinkedList/*_<B>_*/());
-	    else if (x instanceof Object/*>A<*/[])
+		if (x instanceof List/*_<A>_*/)
+		    return map(function, (List/*_<A>_*/) x);
+		else if (x instanceof SortedSet/*_<A>_*/)
+		    return map(function, (SortedSet/*_<A>_*/) x);
+		else if (x instanceof Set/*_<A>_*/)
+		    return map(function, (Set/*_<A>_*/) x);
+		else
+		    return map(function, (Collection/*_<A>_*/) x);
+	    } else if (x instanceof Iterator/*_<A>_*/) {
+		if (x instanceof ListIterator/*_<A>_*/)
+		    return map(function, (ListIterator/*_<A>_*/) x);
+		else
+		    return map(function, (Iterator/*_<A>_*/) x);
+	    } else if (x instanceof Object/*>A<*/[])
 		return map(function, (Object/*>A<*/[]) x);
 	    else
 		return function.apply((Object/*>A<*/) x);
@@ -1428,11 +1454,10 @@ public class Functionals {
     } 
 
     /**
-     * Maps a list of arguments with a Function.
+     * Maps a list of arguments with a function.
      * <p>
      * map: a &#8614; f(a) := {f(x) &brvbar; x&isin;a}.<br />
      * Applies the Function to each element of the list a.</p>
-     * <p>Also known as collect.</p>
      */
     public static /*<A, B>*/ Object/*>B<*/[] map(Function/*<A, B>*/ f, Object/*>A<*/[] a) {
 	//Object/*>B<*/[] r = new Object/*>B<*/[a.length]; // is not yet of correct sub-type
@@ -1447,16 +1472,28 @@ public class Functionals {
 	while (a.hasNext())
 	    r.add(f.apply((/*__*/Object/*>A<*/) a.next()));
 	return r;
-    } 
-    public static /*<A, B>*/ Collection/*_<B>_*/ map(Function/*<A, B>*/ f, Iterator/*_<A>_*/ a) {
-	return map(f, a, new LinkedList/*_<B>_*/());
-    } 
+    }
+
+    //@todo how about all those map stuff for Predicates, BinaryPredicates? Implementation can use asFunction(Predicate).
     /**
-     * Maps a list of arguments with a Function.
+     * Maps a list of arguments with a function.
      * <p>
      * map: a &#8614; f(a) := {f(x) &brvbar; x&isin;a}.<br />
      * Applies the Function to each element of the list a.</p>
      * <p>Also known as collect.</p>
+     * <p>
+     * The function map can be specified by
+     * <center>
+     *   <table class="equation">
+     *     <tr><td>map f &empty;</td> <td>=</td> <td>f &empty;</td> </tr>
+     *     <tr><td>map f <big>(</big>[first|rest]<big>)</big></td> <td>=</td> <td><big>[</big>f first | map f rest<big>]</big></td></tr>
+     *   </table>
+     * </center>
+     * In terms of catamorphisms or anamorphisms this equals
+     * <center>map = <span class="bananaBracket">(|</span>&empty;, <big>(</big>(a,bs) &#8614; [f a | bs]<big>)</big> <span class="bananaBracket">|)</span></center>
+     * <center>map = <span class="lenseBracket">|(</span>g, (as&#8614;as=&empty;) <span class="lenseBracket">)|</span> <br />
+     *   where g([a|as]) = (f(a), as)
+     * </center>
      * @post RES.getClass()=a.getClass() or at least compatible
      * @see #listable(Function)
      */
@@ -1466,6 +1503,18 @@ public class Functionals {
     public static /*<A, B>*/ List/*_<B>_*/ map(Function/*<A, B>*/ f, List/*_<A>_*/ a) {
 	return (List/*_<B>_*/) map(f, (Collection/*_<B>_*/) a);
     }
+    public static /*<A, B>*/ Set/*_<B>_*/ map(Function/*<A, B>*/ f, Set/*_<A>_*/ a) {
+	return (Set/*_<B>_*/) map(f, (Collection/*_<B>_*/) a);
+    }
+    public static /*<A, B>*/ SortedSet/*_<B>_*/ map(Function/*<A, B>*/ f, SortedSet/*_<A>_*/ a) {
+	return (SortedSet/*_<B>_*/) map(f, (Collection/*_<B>_*/) a);
+    }
+    public static /*<A, B>*/ Iterator/*_<B>_*/ map(Function/*<A, B>*/ f, Iterator/*_<A>_*/ a) {
+	return map(f, a, new LinkedList/*_<B>_*/()).iterator();
+    } 
+    public static /*<A, B>*/ ListIterator/*_<B>_*/ map(Function/*<A, B>*/ f, ListIterator/*_<A>_*/ a) {
+	return ((List) map(f, a, new LinkedList/*_<B>_*/()) ).listIterator();
+    } 
 
     /**
      * Get a listable function applicable to lists.
@@ -1499,13 +1548,20 @@ public class Functionals {
 	public Object apply(Object x, Object y) {
 	    // almost identical to @see Utility#asIterator, also @see ListableFunction
 	    if ((x instanceof Collection/*_<A1>_*/) && (y instanceof Collection/*_<A2>_*/)) {
-		Collection/*_<A1>_*/ c = (Collection/*_<A1>_*/) x;
-		Collection/*_<A2>_*/ d = (Collection/*_<A2>_*/) y;
-		Utility.pre(c.size() == d.size(), "argument collections must have same size");
-		return map(function, c.iterator(), d.iterator(), Setops.newCollectionLike(c));
-	    } else if ((x instanceof Iterator/*_<A1>_*/) && (y instanceof Iterator/*_<A2>_*/))
-		return map(function, (Iterator/*_<A1>_*/) x, (Iterator/*_<A2>_*/) y, new LinkedList/*_<B>_*/());
-	    else if ((x instanceof Object/*>A1<*/[]) && (y instanceof Object/*>A2<*/[]))
+		if ((x instanceof List/*_<A1>_*/) && (y instanceof List/*_<A2>_*/))
+		    return map(function, (List/*_<A1>_*/) x, (List/*_<A2>_*/) y);
+		else if ((x instanceof SortedSet/*_<A1>_*/) && (y instanceof SortedSet/*_<A2>_*/))
+		    return map(function, (SortedSet/*_<A1>_*/) x, (SortedSet/*_<A2>_*/) y);
+		else if ((x instanceof Set/*_<A1>_*/) && (y instanceof Set/*_<A2>_*/))
+		    return map(function, (Set/*_<A1>_*/) x, (Set/*_<A2>_*/) y);
+		else
+		    return map(function, (Collection/*_<A1>_*/) x, (Collection/*_<A2>_*/) y);
+	    } else if ((x instanceof Iterator/*_<A1>_*/) && (y instanceof Iterator/*_<A2>_*/)) {
+		if ((x instanceof ListIterator/*_<A1>_*/) && (y instanceof ListIterator/*_<A2>_*/))
+		    return map(function, (ListIterator/*_<A1>_*/) x, (ListIterator/*_<A2>_*/) y);
+		else
+		    return map(function, (Iterator/*_<A1>_*/) x, (Iterator/*_<A2>_*/) y);
+	    } else if ((x instanceof Object/*>A1<*/[]) && (y instanceof Object/*>A2<*/[]))
 		return map(function, (Object/*>A1<*/[]) x, (Object/*>A2<*/[]) y);
 	    else
 		return function.apply((Object/*>A1<*/) x, (Object/*>A2<*/) y);
@@ -1530,11 +1586,12 @@ public class Functionals {
     /**
      * Maps two lists of arguments with a BinaryFunction.
      * <p>
-     * map:  (X,Y) &#8614; f(X,Y) := {f(x,y) &brvbar; x=X<sub>i</sub>,y=Y<sub>i</sub>} .</p>
-     * @pre X.length == Y.length
+     * map: ((x<sub>i</sub>)<sub>i&isin;I</sub>,(y<sub>i</sub>)<sub>i&isin;I</sub>) &#8614; f((x<sub>i</sub>)<sub>i&isin;I</sub>,(y<sub>i</sub>)<sub>i&isin;I</sub>) := (f(x<sub>i</sub>,y<sub>i</sub>))<sub>i&isin;I</sub>.</p>
+     * @pre x.length == y.length
      */
     public static /*<A1, A2, B>*/ Object/*>B<*/[] map(BinaryFunction/*<A1, A2, B>*/ f, Object/*>A1<*/[] x, Object/*>A2<*/[] y) {
-	Utility.pre(x.length == y.length, "argument arrays must have same length");
+	if (x.length != y.length)
+	    throw new IndexOutOfBoundsException("argument arrays must have same length");
 	//Object/*>B<*/[] a = new Object/*>B<*/[x.length]; // is not of correct sub-type
 	Object/*>B<*/[] a = (Object/*>B<*/[]) Array.newInstance(x.getClass().getComponentType(), x.length);
 	for (int i = 0; i < a.length; i++)
@@ -1544,23 +1601,38 @@ public class Functionals {
     private static /*<A1, A2, B>*/ Collection/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, Iterator/*_<A1>_*/ x, Iterator/*_<A2>_*/ y, Collection/*_<B>_*/ r) {
 	while (x.hasNext() && y.hasNext())
 	    r.add(f.apply((/*__*/Object/*>A1<*/) x.next(), (/*__*/Object/*>A2<*/) y.next()));
-	Utility.pre(!x.hasNext() && !y.hasNext(), "argument iterators must have same length");
+	if (!(!x.hasNext() && !y.hasNext()))
+	    throw new IndexOutOfBoundsException("argument iterators must have same length");
 	return r;
-    } 
-    public static /*<A1, A2, B>*/ Collection/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, Iterator/*_<A1>_*/ x, Iterator/*_<A2>_*/ y) {
-	return map(f, x, y, new LinkedList/*_<B>_*/());
     } 
     /**
      * Maps two lists of arguments with a BinaryFunction.
      * <p>
-     * map: (X,Y) &#8614; f(X,Y) := {a=f(x,y) &brvbar; x=X<sub>i</sub>,y=Y<sub>i</sub>} .</p>
+     * map: ((x<sub>i</sub>)<sub>i&isin;I</sub>,(y<sub>i</sub>)<sub>i&isin;I</sub>) &#8614; f((x<sub>i</sub>)<sub>i&isin;I</sub>,(y<sub>i</sub>)<sub>i&isin;I</sub>) := (f(x<sub>i</sub>,y<sub>i</sub>))<sub>i&isin;I</sub>.</p>
      * @pre x.size() == y.size()
      * @post RES.getClass()=x.getClass() or at least compatible
      * @see #listable(BinaryFunction)
      */
     public static /*<A1, A2, B>*/ Collection/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, Collection/*_<A1>_*/ x, Collection/*_<A2>_*/ y) {
-	Utility.pre(x.size() == y.size(), "argument collections must have same size");
+	if (x.size() != y.size())
+	    throw new IndexOutOfBoundsException("argument collections must have same size");
 	return map(f, x.iterator(), y.iterator(), Setops.newCollectionLike(x));
+    } 
+    public static /*<A1, A2, B>*/ List/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, List/*_<A1>_*/ x, List/*_<A2>_*/ y) {
+	return (List) map(f, (Collection)x, (Collection)y);
+    }
+    public static /*<A1, A2, B>*/ Set/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, Set/*_<A1>_*/ x, Set/*_<A2>_*/ y) {
+	return (Set) map(f, (Collection)x, (Collection)y);
+    }
+    public static /*<A1, A2, B>*/ SortedSet/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, SortedSet/*_<A1>_*/ x, SortedSet/*_<A2>_*/ y) {
+	Utility.pre(Utility.equals(x.comparator(), y.comparator()), "need equal comparators for choosing a comparator for the resulting " + SortedSet.class.getName());
+	return (SortedSet) map(f, (Collection)x, (Collection)y);
+    }
+    public static /*<A1, A2, B>*/ Iterator/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, Iterator/*_<A1>_*/ x, Iterator/*_<A2>_*/ y) {
+	return map(f, x, y, new LinkedList/*_<B>_*/()).iterator();
+    } 
+    public static /*<A1, A2, B>*/ ListIterator/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, ListIterator/*_<A1>_*/ x, ListIterator/*_<A2>_*/ y) {
+	return ((List) map(f, x, y, new LinkedList/*_<B>_*/()) ).listIterator();
     } 
 
     //TODO: introduce Function thread(Function f)
@@ -2098,7 +2170,7 @@ public class Functionals {
      * f is continuous.
      * Then x<sup>*</sup> is a fixed point of f.</p>
      * <p>
-     * The fix point iteration will converge if f is a contraction, i.e.<blockquote>
+     * The fixed point iteration will converge if f is a contraction, i.e.<blockquote>
      * &exist; q&isin;[0,1) with ||f(x)-f(y)|| &le; q*||x-y|| &forall;x,y
      * </blockquote>
      * If q = sup ||f'(z)|| &lt; 1, then f is a contraction with q.
