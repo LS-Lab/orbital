@@ -6,4 +6,4 @@
 ##A |= <>A			# ??
 
 ##|= [](A|B) -> ([]A|[]B)		# not even in S5
-##|= (<>A&<>B) -> (<>A&<>B)	# not even in S5 # @fixme
+##|= (<>A&<>B) -> (<>A&<>B)	# not even in S5
