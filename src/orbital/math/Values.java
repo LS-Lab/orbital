@@ -112,7 +112,7 @@ public abstract class Values implements ValueFactory {
     }
 
     /**
-     * Get the (single) default instance of this factory.
+     * Get the (single) default value factory instance.
      * <p>
      * This is the new name for {@link #getDefaultInstance()}.
      * </p>
@@ -145,7 +145,7 @@ public abstract class Values implements ValueFactory {
     }
 
     /**
-     * Set the (single) default instance of this factory.
+     * Set the (single) default value factory instance.
      * <p>
      * This is the new name for {@link #setDefaultInstance(Values)}.
      * </p>

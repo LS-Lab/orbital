@@ -44,6 +44,7 @@ import orbital.logic.functor.Predicate;
  *  &forall; : (&Delta;&tau;.(&tau;&rarr;&omicron;)&rarr;&omicron;
  * @todo decouple from the type system such that a flexible type system can even be built at runtime. for example with pure type system?
  * @todo would Types.sup fulfill "Type balance(Type a, Type b)", or would we need another method?
+ * @todo should we provide "TypeSystem getTypeSystem()"?
  */
 public interface Type extends Comparable, Predicate {
     /**
