@@ -1518,7 +1518,7 @@ public class ClassicalLogic extends ModernLogic {
 	 */
 	public static final Formula dropQuantifiers(Formula F) {
 	    try {
-		// skolem transform TRS
+		// quantifier drop transform TRS
 		if (QuantifierDropTransform == null) QuantifierDropTransform = Substitutions.getInstance(Arrays.asList(new Object[] {
 		    //@xxx note that A should be a metavariable for a formula
 		    Substitutions.createSingleSidedMatcher(logic.createExpression("°_X1 _A"), logic.createExpression("_A")),
