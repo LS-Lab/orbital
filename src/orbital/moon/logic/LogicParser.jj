@@ -668,6 +668,7 @@ Expression expression() :
  * @internal introduced an explicit "quantifier" for free variables, resolving all conflicts with variable/constant detection
  * then we can keep track of the accumulated signature during parse and treat everything constant that's not already declared in the signature (and all three binding quantifier will extend the current signature)
  */
+//@todo reduce? the binding domain of the free declarations to the next expression, only, and require "all x (p&q)" instead. Rearrange precedence, such that "all" and "some" bind stronger than &,|,->,<=>
 Expression FreeDeclarationExpression() :
 {
     Token tok = null;Symbol x = null;Expression a;
@@ -681,33 +682,11 @@ Expression FreeDeclarationExpression() :
 	}
      )*
 
-    a = QuantifiedExpression()
+    a = EquivalenceExpression()
 {
     scope = scope.leave();
     return a;
 }
-}
-
-// quantifiers
-  
-//@todo reduce the binding domain of the quantifiers to the next expression, only, and require "all x (p&q)" instead. Rearrange precedence, such that "all" and "some" bind stronger than &,|,->,<=>
-Expression QuantifiedExpression() :
-{
-    Token tok = null;List xs = new LinkedList();Symbol x = null;Expression a = null;
-    scope = new Scope(scope);
-}
-{
-    ((tok = <FORALL> | tok = <EXISTS>) x = VariableDeclaration() {scope.declare(x);xs.add(x);})*
-    a = EquivalenceExpression()
-	{
-	    for (Iterator i = xs.iterator(); i.hasNext(); ) {
-		Symbol y = (Symbol) i.next();
-		//@internal note that the tok is not quite true for multiple quantifiers
-		a = combine(tok, y, a);
-	    }
-	    scope = scope.leave();
-	    return a;
-	}
 }
 
 // junctors
@@ -757,8 +736,32 @@ Expression UnaryExpression() :
     tok = <NOT> f = UnaryExpression() {return combine(tok, f);}
     | f = ModalExpression()
 	{return f;}
+    | f = QuantifiedExpression()
+	{return f;}
     | f = PrimaryExpression()
 	{return f;}
+}
+
+// quantifiers
+  
+Expression QuantifiedExpression() :
+{
+    Token tok = null;List xs = new LinkedList();Symbol x = null;Expression a = null;
+    scope = new Scope(scope);
+}
+{
+    //@internal this lookahead specifies that we prefer not to have quantifiers in the following UnaryExpression
+    (LOOKAHEAD(<FORALL>|<EXISTS>) (tok = <FORALL> | tok = <EXISTS>) x = VariableDeclaration() {scope.declare(x);xs.add(x);})+
+    a = UnaryExpression()
+	{
+	    for (Iterator i = xs.iterator(); i.hasNext(); ) {
+		Symbol y = (Symbol) i.next();
+		//@internal note that the tok is not quite true for multiple quantifiers
+		a = combine(tok, y, a);
+	    }
+	    scope = scope.leave();
+	    return a;
+	}
 }
 
 Expression ModalExpression() :

@@ -286,7 +286,12 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	    {Types.objectType(orbital.math.Real.class, "real"),
 	     new NotationSpecification(500, "xf", Notation.POSTFIX)},
 
-	    {op.not(),          // "~"
+	    {LogicFunctions.forall,       // "°"
+	     new NotationSpecification(900, "fxx", Notation.PREFIX)},
+	    {LogicFunctions.exists,       // "?"
+	     new NotationSpecification(900, "fxx", Notation.PREFIX)},
+
+	     {op.not(),          // "~"
 	     new NotationSpecification(900, "fy", Notation.PREFIX)},
 	    {op.and(),          // "&"
 	     new NotationSpecification(910, xfy, Notation.INFIX)},
@@ -299,11 +304,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	    {LogicFunctions.leftwardImpl, // "<-"
 	     new NotationSpecification(920, xfy, Notation.INFIX)},
 	    {LogicFunctions.equiv,        // "<->"
-	     new NotationSpecification(920, xfy, Notation.INFIX)},
-	    {LogicFunctions.forall,       // "°"
-	     new NotationSpecification(950, "fxx", Notation.PREFIX)},
-	    {LogicFunctions.exists,       // "?"
-	     new NotationSpecification(950, "fxx", Notation.PREFIX)}
+	     new NotationSpecification(920, xfy, Notation.INFIX)}
 	}, true, false, true);
 	this._coreSignature = _coreInterpretation.getSignature();
     }

@@ -466,6 +466,16 @@ public class ClassicalLogic extends ModernLogic {
 	     new NotationSpecification(700, "xfx", Notation.INFIX)},
 	    {Predicates.lessEqual,        // "=<"
 	     new NotationSpecification(700, "xfx", Notation.INFIX)},
+
+	    {LogicFunctions.forall,       // "°"
+	     new NotationSpecification(900, "fxx", Notation.PREFIX)},
+	    {LogicFunctions.exists,       // "?"
+	     new NotationSpecification(900, "fxx", Notation.PREFIX)},
+	    {LogicFunctions.lambda,       // "\\"
+	     new NotationSpecification(900, "fxx", Notation.PREFIX)},
+	    {LogicFunctions.pi,           // "\\\\"
+	     new NotationSpecification(900, "fxx", Notation.PREFIX)},
+
 	    {LogicFunctions.not,          // "~"
 	     new NotationSpecification(900, "fy", Notation.PREFIX)},
 	    {LogicFunctions.and,          // "&"
@@ -479,15 +489,7 @@ public class ClassicalLogic extends ModernLogic {
 	    {LogicFunctions.leftwardImpl, // "<-"
 	     new NotationSpecification(920, xfy, Notation.INFIX)},
 	    {LogicFunctions.equiv,        // "<->"
-	     new NotationSpecification(920, xfy, Notation.INFIX)},
-	    {LogicFunctions.forall,       // "°"
-	     new NotationSpecification(950, "fxx", Notation.PREFIX)},
-	    {LogicFunctions.exists,       // "?"
-	     new NotationSpecification(950, "fxx", Notation.PREFIX)},
-	    {LogicFunctions.lambda,       // "\\"
-	     new NotationSpecification(1100, "fxx", Notation.PREFIX)},
-	    {LogicFunctions.pi,           // "\\\\"
-	     new NotationSpecification(1100, "fxx", Notation.PREFIX)}
+	     new NotationSpecification(920, xfy, Notation.INFIX)}
 	}, false, true, true);
     private static final Signature _coreSignature = _coreInterpretation.getSignature();
 
