@@ -102,7 +102,7 @@ public class ProbabilisticAlphaBetaPruning extends AlphaBetaPruning /*implements
      * @see ProbabilisticAlgorithm
      */
     public static class ProbabilisticPreference implements BinaryPredicate, Serializable {
-	//private static final long serialVersionUID = 0;
+	private static final long serialVersionUID = -7441340781248583962L;
 	private float  improveProbability;
 	private float  fluctuateProbability;
 	private double fluctuateThreshold;
