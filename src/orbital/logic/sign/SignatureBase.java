@@ -171,12 +171,12 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
      * Returns a string representation of the object.
      */
     public String toString() {
-	StringBuffer str = new StringBuffer("sigma={");
-	Iterator	 it = iterator();
-	while (it.hasNext())
+	StringBuffer str = new StringBuffer(getClass().getName());
+	str.append('{');
+	for (Iterator it = iterator(); it.hasNext(); )
 	    str.append(it.next() + (it.hasNext() ? "," : ""));
 	str.append('}');
-	return getClass().getName() + "[" + str + "]";
+	return str.toString();
     } 
 
     /**
