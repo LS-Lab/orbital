@@ -143,6 +143,13 @@ public final class MathUtilities {
     public static final boolean isin(double value, double lower, double higher) {
 	return lower <= value && value <= higher;
     } 
+    /**
+     * Whether a value is in a specified range.
+     * @return value &isin; [lower, higher].
+     */
+    public static final boolean isin(Real value, Real lower, Real higher) {
+	return lower.compareTo(value) <= 0 && value.compareTo(higher) <= 0;
+    } 
 
     /**
      * This function is true only when the value is an even number.

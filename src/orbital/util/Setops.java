@@ -586,6 +586,7 @@ public final class Setops {
 
     /**
      * insert object into l such that l is still sorted.
+     * Special case of merge.
      * @pre sorted(l)
      * @post sorted(l) &and; object&isin;l
      */

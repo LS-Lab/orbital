@@ -20,15 +20,8 @@ PARSER_BEGIN(LogicParser)
 package orbital.moon.logic;
 
 import orbital.logic.imp.*;
-import orbital.logic.functor.Functor;
-import orbital.logic.functor.Functor.Specification;
 import orbital.logic.functor.Notation.NotationSpecification;
-import orbital.logic.functor.Function;
-import orbital.logic.functor.BinaryFunction;
-import orbital.logic.functor.Functionals;
-import orbital.logic.functor.*;
 
-import orbital.logic.trs.Substitutions;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Iterator;
@@ -606,7 +599,7 @@ Expression EqualityExpression() :
 Expression LambdaAbstractionPredicate() :
 {Token tok; Symbol x;Expression t;}
 {
-    "(" tok = <LAMBDA> x = Variable() "." {declare(x);} t = expression() ")"
+    "(" tok = <LAMBDA> x = VariableDeclaration() "." {declare(x);} t = expression() ")"
 {
     undeclare(x);
     return composeWrapper(tok, ClassicalLogic.LAMBDA, new Expression[] {syntax.createAtomic(x), t});
@@ -668,7 +661,7 @@ Expression CompoundTerm() :
 Expression LambdaAbstraction() :
 {Token tok;Symbol x;Expression t;}
 {
-    "(" tok = <LAMBDA> x = Variable() "." {declare(x);} t = term() ")"
+    "(" tok = <LAMBDA> x = VariableDeclaration() "." {declare(x);} t = term() ")"
 {
     undeclare(x);
     return composeWrapper(tok, ClassicalLogic.LAMBDA, new Expression[] {syntax.createAtomic(x), t});
@@ -780,6 +773,25 @@ Symbol Variable() :
 	    )*
     */
     {return new SymbolBase(signifier, Types.INDIVIDUAL, null, true);}
+}
+/**
+ * an atomic variable term with a type declaration.
+ */
+Symbol VariableDeclaration() :
+{String signifier;Token tok;String s = "";Type type = Types.INDIVIDUAL;}
+{
+    tok = <IDENTIFIER> {signifier = tok.image;}
+    (":" type = TypeConstruct())?
+    {return new SymbolBase(signifier, type, null, true);}
+}
+
+/**
+ * A type construct.
+ */
+Type TypeConstruct() :
+{Token tok;}
+{
+    tok = <IDENTIFIER> {throw new UnsupportedOperationException("specifying types is not yet supported");}
 }
 
 // Parsing Helpers

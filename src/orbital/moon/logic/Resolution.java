@@ -77,7 +77,7 @@ import java.util.logging.Level;
  */
 class Resolution implements Inference {
     private static final boolean UNDER_CONSTRUCTION = true;
-    private static final boolean ASYNCHRONOUS_EXPAND = true;
+    private static final boolean ASYNCHRONOUS_EXPAND = false;
     private static final Logger logger = Logger.getLogger(Resolution.class.getPackage().getName());
     private static final ClassicalLogic logic = new ClassicalLogic();
 	
@@ -322,7 +322,7 @@ class Resolution implements Inference {
 	    return Collections.singletonList(action).iterator();
 	}
 
-	public ProbabilisticTransition transition(Object action, Object state, Object statep) {
+	public TransitionModel.Transition transition(Object action, Object state, Object statep) {
 	    return new Transition(action, 1);
 	}
 

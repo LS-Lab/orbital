@@ -79,6 +79,20 @@
             </fileset>
             <pathelement location="${resources}"/>
         </path>
+        <path id="tests.classpath">
+	    <pathelement location="${examples}/Algorithms"/>
+
+            <pathelement path="${build.tests}" />
+            <pathelement path="${java.class.path}" />
+
+	    <!-- refid="project.classpath" -->
+            <pathelement location="${classes}"/>
+	    <fileset dir="${lib}">
+                <include name="**/*.jar"/>
+	        <include name="**/*.zip"/>
+            </fileset>
+	    <pathelement location="${resources}"/>
+	</path>
     </target>
 
     <target name="all" depends="init, clean, fixCRLF, compile, doc"
@@ -113,37 +127,17 @@
                destdir="${build.tests}"
                debug="on"
 	       source="1.4">
-            <classpath>
-	        <pathelement location="${examples}/Algorithms"/>
-
-	        <!-- refid="project.classpath" -->
-                <pathelement location="${classes}"/>
-		<fileset dir="${lib}">
-                    <include name="**/*.jar"/>
-		    <include name="**/*.zip"/>
-                </fileset>
-		<pathelement location="${resources}"/>
-	    </classpath>
+            <classpath refid="tests.classpath"/>
         </javac>
     </target>
 
-    <target name="compile.examples" depends="init"
+    <target name="compile.examples" depends="init, compile"
             description="compile examples/*.java (=> ./classes)">
         <javac srcdir="${examples}"
                debug="on"
 	       source="1.4"
 	       excludes="SimpleDemos/SpecDemo.java">
-            <classpath>
-	        <pathelement location="${examples}/Algorithms"/>
-
-	        <!-- refid="project.classpath" -->
-                <pathelement location="${classes}"/>
-		<fileset dir="${lib}">
-                    <include name="**/*.jar"/>
-		    <include name="**/*.zip"/>
-                </fileset>
-		<pathelement location="${resources}"/>
-	    </classpath>
+            <classpath refid="tests.classpath"/>
         </javac>
     </target>
 
@@ -151,10 +145,7 @@
             description="run test/*Test*.java">
         <mkdir dir="${reports.tests}"/>
         <junit printsummary="yes" haltonfailure="yes">
-          <classpath>
-            <pathelement location="${build.tests}" />
-            <pathelement path="${java.class.path}" />
-          </classpath>
+          <classpath refid="tests.classpath"/>
         
           <formatter type="plain" />
         
@@ -163,6 +154,9 @@
               <include name="**/*Test*.java" />
               <exclude name="**/AllTests.java" />
               <exclude name="check/TestCase.java" />
+	      <!-- special handling since SearchTest has no package (because of examples/Algorithms/SimpleGSP does not) -->
+              <include name="SearchTest.class" />
+              <exclude name="orbital/algorithm/template/*" />
             </fileset>
           </batchtest>
         </junit>
@@ -547,7 +541,7 @@
         examples     = ${examples}
         src.tests    = ${src.tests}
         build.tests  = ${build.tests}
-        report.tests = ${report.tests}
+        reports.tests = ${reports.tests}
 
         </echo>
     </target>

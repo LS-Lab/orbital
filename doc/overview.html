@@ -72,9 +72,6 @@ the class-path.</p>
   <ul>
     <kbd>java -jar orbital-ext.jar</kbd>
   </ul>
-  <li>Or copy the <a href="#orbitalStar.Jar">orbital*.jar</a> files as an
-    &quot;installed&quot; extension to the <tt>lib/ext</tt> directory of the
-    Java 2 platform runtime environment of your JVM.</li>
   <li>Or place the <a href="#orbitalStar.Jar">orbital*.jar</a> archive files
     containing the library classes anywhere on your class path that is set in
     the <tt>CLASSPATH</tt> environment variable.</li>
@@ -82,6 +79,12 @@ the class-path.</p>
     &quot;bundled&quot; extension with a relative path in the manifest attribute
     <tt>Class-Path</tt> of your program's deployment JAR archive for all
     applications and applets that use it.</li>
+  <li>Or copy the <a href="#orbitalStar.Jar">orbital*.jar</a> files as an
+    &quot;installed&quot; extension to the <tt>lib/ext</tt> directory of the
+    Java 2 platform runtime environment of your JVM.
+    Be aware, however, that there are some situations (like applets) in which
+    the installed extensions do not work as expected. So you might prefer
+    setting the <tt>CLASSPATH</tt> explicitly.</li>
   <li>Or add all <a href="#orbitalStar.Jar">orbital*.jar</a> files as an
     additional library to your preferred Integrated Development Environment
     (IDE). Refer to its documentation for details.</li>

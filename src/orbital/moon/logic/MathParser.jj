@@ -27,7 +27,6 @@ import orbital.logic.functor.Functor;
 import orbital.logic.functor.Notation;
 import orbital.logic.functor.Notation.NotationSpecification;
 
-import orbital.logic.trs.Substitutions;
 import java.util.*;
 import java.lang.reflect.*;
 import java.beans.IntrospectionException;
@@ -134,71 +133,6 @@ public class MathParser {
     }
 
     /**
-     * Find the function for a function call.
-     * <p>
-     * Will lookup known functions in {@link orbital.math.functional.Functions}
-     * depending upon the arguments.
-     * </p>
-     */
-    protected static MathFunctor findFunction(Token ftok, Object[] arg) throws ParseException {
-	final String f = ftok.image;
-	try {
-	    switch(arg.length) {
-	    case 1: {
-		final Field exists = Functions.class.getField(f);
-		if (!Function.class.isAssignableFrom(exists.getType()))
-		    throw LogicParser.newParseException("Function '" + f + "/" + arg.length + "' not defined as unary", ftok);
-		return (Function) exists.get(null);
-	    }
-	    case 2: {
-		final Field exists = Functions.class.getField(f);
-		if (!BinaryFunction.class.isAssignableFrom(exists.getType()))
-		    throw LogicParser.newParseException("Function '" + f + "/" + arg.length + "' not defined as binary", ftok);
-		return (BinaryFunction) exists.get(null);
-	    }
-	    default:
-		throw new IllegalArgumentException("Calling a function '" + f  + "/" + arg.length + "' is not supported. Only 1 or two arguments can be used, yet");
-	    }
-	} catch(NoSuchFieldException notdefined) {
-	    throw LogicParser.newParseException("Function '" + f + "/" + arg.length + "' not defined", ftok);
-	} catch(IllegalAccessException ex) {
-	    throw (InternalError) new InternalError(ex.getMessage()).initCause(ex);
-	} catch(SecurityException ex) {
-	    throw (InternalError) new InternalError(ex.getMessage()).initCause(ex);
-	}
-    }
-
-    /**
-     * function application.
-     * <p>
-     * Will compose the function with its arguments in order to represent the function
-     * application parsed now.
-     * </p>
-     * @note a functor is returned since the function application is not evaluated, but
-     *  only <em>parsed</em>.
-     *  This method results in a composition of function and arguments instead of
-     *  the value of the function at the specified arguments.
-     * @todo perhaps weaken to Functor for lambda expressions?
-     */
-    protected static MathFunctor apply(MathFunctor f, Object[] arg) throws ParseException {
-	switch(arg.length) {
-	case 1:
-	    if (f instanceof Function)
-		return Functionals.genericCompose((Function) f, arg[0]);
-	    else
-		throw new IllegalStateException("Function '" + f + "/" + arg.length + "' not defined as unary");
-	case 2: {
-	    if (f instanceof BinaryFunction)
-		return Functionals.genericCompose((BinaryFunction) f, arg[0], arg[1]);
-	    else
-		throw new IllegalStateException("Function '" + f + "/" + arg.length + "' not defined as binary");
-	}
-	default:
-	    throw new IllegalArgumentException("Calling a function '" + f  + "/" + arg.length + "' is not supported. Only 1 or two arguments can be used, yet");
-	}
-    }
-    
-    /**
      * Create a good parse exception with the specified message for the given token parsed.
      */
     static ParseException newParseException(String message, Token tok, Exception cause) {
@@ -281,13 +215,15 @@ Expression PowerExpression() :
 {Token tok;Expression a, b;}
 {
     // right associative xfy
+    //@todo alternative? PowerExpression() = UnaryExpression() ("^" PowerExpression())?
      /*
       * right associtivity is expressed using a right-recursive grammar
       * specification. The LOOKAHEAD specification tells JavaCC to look ahead
       * for a "^" token, otherwise the correct match won't be taken. 
       * @todo or tok = "**"
       */
-    a = UnaryExpression() (LOOKAHEAD("^") tok = "^" b = PowerExpression() {a = combine(tok, a, b);} )*
+    //    a = UnaryExpression() (LOOKAHEAD("^") tok = "^" b = PowerExpression() {a = combine(tok, a, b);} )*
+    a = UnaryExpression() (tok = "^" b = PowerExpression() {a = combine(tok, a, b);} )?
 {return a;}
 }
 
