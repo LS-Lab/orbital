@@ -95,9 +95,9 @@ public abstract class AdversarySearch {
 	private double utility;
 	/**
 	 * Create a new option.
-	 * @param state the state s&isin;S.
+	 * @param state the state s&isin;S reached after this move option.
 	 * @param destination the destination that the figure reached.
-	 * @param figure the acting figure moved to reach the state
+	 * @param figure the moving figure to reach the state
 	 * (at the original position on the initial field).
 	 * @param move the applicable move performed by the figure to reach the state.
 	 * @param utility the utility u(s) of the state.
@@ -124,7 +124,7 @@ public abstract class AdversarySearch {
 	}
 
 	/**
-	 * Get the state.
+	 * Get the state reached after this move option.
 	 * @return the state s of this node.
 	 */
 	public Field getState() {
@@ -136,7 +136,7 @@ public abstract class AdversarySearch {
 	}
 		
 	/**
-	 * Get the destination reached.
+	 * Get the destination reached by the figure.
 	 * @return the destination that the figure reached.
 	 */
 	public Position getDestination() {
@@ -184,6 +184,28 @@ public abstract class AdversarySearch {
 	    this.utility = utility;
 	}
 		
+	/**
+	 * Checks whether the given move option represents a "perform no
+	 * move at all" option.
+	 * @todo find a better name.
+	 */
+	boolean isNoMove() {
+	    return getFigure() == null && getMove() == null && getDestination() == null;
+	}
+
+	/**
+	 * Create an option representing the choice to perform no move at all.
+	 * @param field the field reached after performing no move
+	 * (which thus (almost) equals the field on which to perform
+	 * no action).
+	 * @todo find a better name.
+	 */
+	static Option createNoMove(Field field) {
+	    return new Option(field, (Figure)null, (Move)null, (Position)null);
+	}
+	
+
+
 	public boolean equals(Object o) {
 	    if (!(o instanceof Option))
 		return false;
