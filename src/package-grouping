@@ -1,3 +1,3 @@
 -group "Core Packages"		orbital.logic:orbital.logic.functor:orbital.logic.trs:orbital.logic.imp:orbital.math:orbital.math.functional:orbital.util
--group "Extension Packages"	orbital.algorithm:orbital.algorithm.evolutionary:orbital.algorithm.template:orbital.awt:orbital.awt.virtual:orbital.game:orbital.io:orbital.robotic:orbital.robotic.strategy
+-group "Extension Packages"	orbital.algorithm:orbital.algorithm.evolutionary:orbital.algorithm.template:orbital.awt:orbital.awt.virtual:orbital.game:orbital.io:orbital.robotic
 -group "Implementation Packages" orbital.io.cryptix:orbital.io.encoding:orbital.io.parsing:orbital.text:orbital.net:orbital.net.mail:orbital.net.secure:orbital.moon:orbital.moon.awt:orbital.moon.evolutionary:orbital.moon.io:orbital.moon.io.cryptix.provider:orbital.moon.io.cryptix.spec:orbital.moon.logic

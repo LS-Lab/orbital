@@ -8,7 +8,7 @@ echo    -pause     pause after each step
   echo adding resources
     if not exist %JAVA_HOME%\classes\orbital md %JAVA_HOME%\classes\orbital
     if not exist %JAVA_HOME%\classes\orbital\resources md %JAVA_HOME%\classes\orbital\resources
-    copy resources %JAVA_HOME%\classes\orbital\resources
+    copy ..\resources %JAVA_HOME%\classes\orbital\resources
     copy ..\COPYRIGHT.txt %JAVA_HOME%\classes\orbital\resources
     copy ..\license.txt %JAVA_HOME%\classes\orbital\resources
     copy ..\orbital.gif %JAVA_HOME%\classes\orbital\resources
@@ -45,8 +45,6 @@ if "%1"=="-pause" shift
   if not "%intermediate%"=="" call %intermediate%
   echo rebuilding implementation
     cd %src%
-    call mklib orbital/io/cryptix
-    call mklib orbital/math/DOUBLE
     cd orbital\moon
     for /R /D %%d in (*) do call %src%\_mklib.bat %%d
   popd

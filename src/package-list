@@ -15,7 +15,6 @@ orbital.algorithm
 orbital.algorithm.evolutionary
 orbital.algorithm.template
 orbital.robotic
-orbital.robotic.strategy
 orbital.moon.awt
 orbital.moon.evolutionary
 orbital.moon.io
