@@ -15,6 +15,18 @@ package orbital.logic.sign.type;
  * @version-revision $Revision$, $Date$
  */
 public class TypeException extends RuntimeException {
+    /**
+     * The type that would have been required.
+     * @serial
+     */
+    private final Type required;
+
+    /**
+     * The type that was actually found at the type occurrence.
+     * @serial
+     */
+    private final Type occurred;
+
     public TypeException() {
 	
     }
@@ -23,17 +35,23 @@ public class TypeException extends RuntimeException {
 	super(message);
     }
 
-    public TypeException(String message, Type required, Type found) {
+    public TypeException(String message, Type required, Type occurred) {
 	super(message);
+	this.required = required;
+	this.occurred = occurred;
     }
     
     /**
      * Get the type that would have been required.
      */
-    //@todo introduce public Type getRequiredType();
+    public Type getRequired() {
+	return required;
+    }
 
     /**
-     * Get the type that was found.
+     * Get the type that was actually found.
      */
-    //@todo introduce public Type get....Type();
+    public Type getOccurred() {
+	return occurred;
+    }
 }// TypeException
