@@ -118,7 +118,7 @@ public class SubstitutionImpl implements Substitution, Serializable {
 		    fp.setCompositor(substCompositor);
 		    fp.setComponent(substComponent);
 		    assert f != null : "we could not have handled null that way";
-		    logger.log(Level.WARNING, "composite object {0} of class {1} does not support construct(Object,Object) but only newInstance and set..., due to {2}", new Object[] {f, f.getClass(), illegal});
+		    logger.log(Level.WARNING, "composite object {0} of class {1} does not support construct(Object,Object) but has to be emulated with newInstance and setComponent(Object)/setCompositor(Object), due to\n{2}", new Object[] {f, f.getClass(), illegal});
 		    return fp;
 		}
             }
