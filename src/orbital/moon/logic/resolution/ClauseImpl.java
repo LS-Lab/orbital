@@ -35,6 +35,8 @@ import java.util.logging.Level;
  */
 public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
     private static final Logger logger = Logger.getLogger(ClauseImpl.class.getName());
+    //@xxx do not stick to this single logic, here, although resolution is rather limited to classical logic
+    private static final Logic logic = new ClassicalLogic();
 
     /**
      * Copy constructor.
@@ -57,6 +59,7 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
     //@internal could also use a StreamMethod for implementation.
     public Iterator/*_<Clause>_*/ resolveWith(Clause G) {
 	final Clause F = this;
+	assert F.getFreeVariables().intersection(G.getFreeVariables()).isEmpty() : "@preconditions disjoint variable variants required for resolution";
 	// resolvents will contain all resolvents of F and G
 	Set/*_<Clause>_*/ resolvents = new HashSet();
 	// try to resolve G with F
@@ -93,21 +96,27 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 		    //@xxx add factorized and original, or only one, or? Or better yet factorize elsewhere?
 		    resolvents.add(R);
 		    if (!factorizedR.equals(R))
-			resolvents.add(factorizedR);
+			;//resolvents.add(factorizedR);
 		}
 	    }
 	}
 	return resolvents.iterator();
     }
 
-    public Clause variant(Signature disjunctify) {
-	List/*_<Symbol>_*/ renaming = new ArrayList(disjunctify.size());
-	for (Iterator i = disjunctify.iterator(); i.hasNext(); ) {
+    public Clause variant(Signature disjointify) {
+	List/*_<Symbol>_*/ renaming = new ArrayList(disjointify.size());
+	for (Iterator i = disjointify.iterator(); i.hasNext(); ) {
 	    Symbol s = (Symbol) i.next();
 	    assert s.isVariable() : "we only form variants by renaming variables";
-	    renaming.add(Substitutions.createExactMatcher(s, new UniqueSymbol(s.getType(), null, s.isVariable())));
+	    //@internal this is an embedding of symbols into atomic formulas (otherwise x will never occur, since the atomic formula x is not compound of anything, and should not be compound as well)
+	    //renaming.add(Substitutions.createExactMatcher(s, new UniqueSymbol(s.getType(), null, s.isVariable())));
+	    renaming.add(Substitutions.createExactMatcher(logic.createAtomic(s),
+							  logic.createAtomic(new UniqueSymbol(s.getType(), null, s.isVariable()))));
 	}
-	return (Clause) Functionals.map(Substitutions.getInstance(renaming), this);
+	final Clause variant = (Clause) Functionals.map(Substitutions.getInstance(renaming), this);
+	logger.log(Level.FINEST, "variant of {0} with respect to {1} is\n\t {2} via {3}", new Object[] {this, disjointify, variant, Substitutions.getInstance(renaming)});
+	assert variant.getFreeVariables().intersection(disjointify).isEmpty() : "@postconditions RES.getFreeVariables().intersection(disjointify).isEmpty()";
+	return variant;
     }
 
     public Iterator/*_<Clause>_*/ resolveWithVariant(Clause G) {
@@ -117,7 +126,11 @@ public class ClauseImpl extends HashSet/*<Formula>*/ implements Clause {
 	if (!overlappingVariables.isEmpty()) {
 	    // make a variant of F such that the variables of F and G are disjunct
 	    //@todo optimize would it be quicker if we always build variants, regardless of disjointness or not? Also unique variables would alleviate the need for variant building altogether.
-	    F = F.variant(overlappingVariables);
+	    final Clause Fprime = F.variant(overlappingVariables);
+	    logger.log(Level.FINEST, "variant for resolution is {0} instead of {1} with {2} because of overlapping variables {3}", new Object[] {Fprime, F, G, overlappingVariables});
+	    F = Fprime;
+	} else {
+	    logger.log(Level.FINEST, "no variant for resolution of {0} with {1} because of overlapping variables {2}", new Object[] {F, G, overlappingVariables});
 	}
 	return F.resolveWith(G);
     }
