@@ -306,6 +306,13 @@ are called <dfn>automorphisms</dfn>.</p>
     for these (now additive) functors in <span class="categorie">C</span>→<span class="categorie">Ab</span>.   
     The properties of being additive coincides with (d).</p>  
   </li>
+  <li>
+	Let <span class="categorie">C</span> be a category, and <span class="object">S</span>&isin;Ob <span class="categorie">C</span>.  
+	Then <span class="categorie">C/<span class="object">S</span></span> is the category of <dfn><span class="object">S</span>-objects</dfn> in <span class="categorie">C</span>
+	with<br />
+	Ob <span class="categorie">C/<span class="object">S</span></span> := {(X,f) &brvbar; X&isin;Ob <span class="categorie">C</span>, f &isin;Mor<sub class=categorie">C</sub>(X,S)} <br />
+	Mor<sub class="categorie">C/<span class="object">S</span></sub>((X,f),(Y,g)) := {&phi;&isin;Mor<sub class="categorie">C</sub>(X,Y) &brvbar; f = g ∘ &phi;}
+    </li>
 </ol>
 <!--@todo check names of Y<sub>∗</sub>, and Y<sup>∗</sup> .-->
 <h3>Further Terminology</h3>
@@ -587,6 +594,11 @@ be a presentable covariant functor.
     &quot;coproduct is universally repelling&quot;, and it is just an initial   
     object in&nbsp; a suitable category. A coproduct in <span class="categorie">C</span>   
     is just a product in <span class="categorie">C°</span>.</dd>  
+  <dt id="fibreProduct">fibre-product</dt>
+  <dd>X &times;<sub>S</sub> Y is a fibre product of X &isin; Ob <span class="categorie">C</span> and Y&isin;Ob <span class="categorie">C</span>
+    over <span class="object">S</span>&isin;Ob <span class="categorie">C</span> if it is a product of (X,f) and (Y,g) in the category <span class="categorie">C/<span class="object">S</span></span>
+     of <span class="object">S</span>-objects.
+  </dd>  
 </dl>
 <p>As terminal or initial objects, products and coproducts are uniquely  
 determined up to a unique isomorphism. Even more so as they are special cases of 
