@@ -120,12 +120,14 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
      *  This is not checked if sigma is <code>null</code>.
      */
     public void setSignature(Signature sigma) {
-	if (sigma != null)
+	if (sigma != null) {
 	    for (Iterator it = keySet().iterator(); it.hasNext(); ) {
 		Object o = it.next();
-		if (sigma.contains(o))
+		if (!sigma.contains(o)) {
 		    throw new IllegalArgumentException("signature does not contain associated symbol " + o + ". Signature is invalid for this interpretation. You should clear association map first.");
+		}
 	    }
+	}
 
 	this.sigma = sigma;
     } 
@@ -154,7 +156,7 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
     } 
 
     public void putAll(Map associations) {
-	if (sigma != null)
+	if (sigma != null) {
 	    for (Iterator it = associations.entrySet().iterator(); it.hasNext(); ) {
 		Map.Entry e = (Map.Entry) it.next();
 		if (!validate(e.getKey(), e.getValue()))
@@ -163,7 +165,7 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
 		    //@todo replace by throw new SignatureException
 		    throw new IllegalArgumentException("symbol " + e.getKey() + " not in signature. Association map is invalid for this signature.");
 	    }
-
+	}
 	super.putAll(associations);
     } 
 
