@@ -137,7 +137,10 @@ public class Field implements Serializable {
     public Figure getFigure(Position p) {
 	if (!inRange(p))
 	    throw new ArrayIndexOutOfBoundsException("position " + p + " exceeds bounds " + getDimension());
-	return field[p.y][p.x];
+	Figure f = field[p.y][p.x];
+	assert !(f instanceof FigureImpl) || ((FigureImpl)f).getField() == this : "figures know on which field they are";
+	assert f == null || (f.x == p.x && f.y == p.y) : "figures know their position " + f + " at " + p;
+	return f;
     } 
 
     /**
@@ -154,10 +157,12 @@ public class Field implements Serializable {
 	    if (f instanceof FigureImpl) {
 		FigureImpl f2 = (FigureImpl)f;
 		if (f2.getField() != null && f2.getField() != this)
-		    logger.log(Level.FINE, "unsafe composite figure {0} was in {1} and is transferred to {2} in an unsafe way", new Object[] {f2, f2.getField(), this});
+		    logger.log(Level.WARNING, "unsafe composite figure {0} was in {1} and is transferred to {2} in an unsafe way", new Object[] {f2, f2.getField(), this});
 	    }
 	    f.setField(this);
 	}
+	assert !(f instanceof FigureImpl) || ((FigureImpl)f).getField() == this : "figures know on which field they are";
+	assert f == null || (f.x == p.x && f.y == p.y) : "figures know their position " + f + " at " + p;
     } 
 
     /**
@@ -274,7 +279,7 @@ public class Field implements Serializable {
 
     /**
      * Performs a move on the figure at the specified position.
-     * And if the move was successful then it swaps with the destination figure.
+     * And if the move was successful then it swaps the source with the destination figure.
      * @return whether source figure was able to move.
      * @see Figure#moveFigure(Move)
      */
@@ -291,9 +296,16 @@ public class Field implements Serializable {
      * This can be used to move Figures.
      * @postconditions EFFECT(swap(a, b)) == EFFECT(swap(b, a))
      */
-    protected void swap(Position a, Position b) {
+    public/*@xxx protected*/ void swap(Position a, Position b) {
+	if (a.equals(b))
+	    return;
 	Figure t = getFigure(a);
-	setFigure(a, getFigure(b));
+	if (t == a || t == b)
+	    throw new IllegalArgumentException("do not  specify positions with those figures on the field that will get swapped. Otherwise, their position information will get lost.");
+	Figure s = getFigure(b);
+	if (s == a || s == b)
+	    throw new IllegalArgumentException("do not  specify positions with those figures on the field that will get swapped. Otherwise, their position information will get lost.");
+	setFigure(a, s);
 	setFigure(b, t);
     } 
 
@@ -306,8 +318,8 @@ public class Field implements Serializable {
      */
     Rectangle boundsOf(Rectangle box, Position p) {
 	Dimension dim = getDimension();
-	int		  wFigure = box.width / dim.width;
-	int		  hFigure = box.height / dim.height;
+	int	  wFigure = box.width / dim.width;
+	int	  hFigure = box.height / dim.height;
         return new Rectangle(wFigure * p.x, hFigure * p.y, wFigure, hFigure);
     }		
 
@@ -321,8 +333,8 @@ public class Field implements Serializable {
      */
     public void paint(Graphics g, Rectangle box) {
 	Dimension dim = getDimension();
-	int		  wFigure = box.width / dim.width;
-	int		  hFigure = box.height / dim.height;
+	int	  wFigure = box.width / dim.width;
+	int	  hFigure = box.height / dim.height;
 	if (wFigure == 0 || hFigure == 0)
 	    throw new IllegalStateException("zero figure dimension: " + wFigure + "|" + hFigure);
 	for (int y = 0; y < dim.height; y++)
