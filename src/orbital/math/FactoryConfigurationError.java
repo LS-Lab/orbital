@@ -17,7 +17,8 @@ package orbital.math;
  */
 public class FactoryConfigurationError extends Error {
     public FactoryConfigurationError(String message, Throwable cause) {
-	super(message, cause);
+	super(message);
+	initCause(cause);
     }
     
 }// FactoryConfigurationError
