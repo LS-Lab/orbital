@@ -62,7 +62,7 @@ import orbital.util.Utility;
  * Term rewriting systems are often used to define operational semantics.
  * </p>
  * <p>
- * Additionally, there are a incredibly many applications of the {@link #lambda &lambda;-operator}
+ * Additionally, there are incredibly many applications of the {@link #lambda &lambda;-operator}
  * in various kinds of context.
  * </p>
  *

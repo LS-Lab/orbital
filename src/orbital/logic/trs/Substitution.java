@@ -131,7 +131,7 @@ import java.util.Collection;
  * @author  Andr&eacute; Platzer
  * @see Substitutions
  * @see Substitutions#getInstance(Collection)
- * @todo perhaps introduce a general BoundingOperator (like in &forall;,&exist;,&lambda; which stops us substitutions from descending if we enter its scope.
+ * @todo perhaps introduce a general BoundingOperator (like in &lambda;,&forall;,&exist; which stops us substitutions from descending if we enter its scope.
  *  boolean BoundingOperator.isBounded(Variable x)
  * @todo Especially provide forall as a functional (higher-order function) of &lambda;-operator then
  *  &forall;x F := &forall;(&lambda;x.F)
