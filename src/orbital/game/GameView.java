@@ -299,7 +299,19 @@ public class GameView extends Applet {
     protected final Dictionary getActions() {
 	return actions;
     }
-	
+
+    private void setField(Field field) {
+	board.setField(field);
+	field.addFieldChangeListener(new FieldChangeAdapter() {
+		//@internal are transient
+		public void stateChanged(FieldChangeEvent evt) {
+		    //@todo assert evt.getField() == getGamemaster().getField() : "we have only registered ourselves to our field";
+		    if (evt.getType() == FieldChangeEvent.END_OF_GAME)
+			displayWinner(((Integer) evt.getChangeInfo()).intValue());
+		}
+	    });
+    }
+    
     /**
      * Applet-init entry point.
      */
@@ -318,9 +330,10 @@ public class GameView extends Applet {
 	    String[] playerArguments = new String[rules.getLeagues()];
 	    for (int i = 0; i < playerArguments.length; i++)
 		playerArguments[i] = getParameter("player-" + i);
-	    this.gamemaster = new Gamemaster(this,
+	    this.setGamemaster(new Gamemaster(this,
 					     rules,
-					     playerArguments);
+					     playerArguments)
+			       );
 	} catch (Exception e) {
 	    log(e);
 	}
@@ -362,16 +375,7 @@ public class GameView extends Applet {
      */
     public void start() {
 	getGamemaster().start();
-	Field field = getGamemaster().getField();
-	board.setField(field);
-	field.addFieldChangeListener(new FieldChangeAdapter() {
-		public void stateChanged(FieldChangeEvent evt) {
-		    //@todo assert evt.getField() == getGamemaster().getField() : "we have only registered ourselves to our field";
-		    if (evt.getType() == FieldChangeEvent.END_OF_GAME)
-			displayWinner(((Integer) evt.getChangeInfo()).intValue());
-		}
-	    });
-	repaint();
+	setField(getGamemaster().getField());
 	showStatus(getResources().getString("statusbar.game.start"));
     } 
 
@@ -388,11 +392,10 @@ public class GameView extends Applet {
      */
     public void destroy() {
 	getGamemaster().destroy();
-	gamemaster = null;
+	setGamemaster(null);
 	removeAll();
 	control = null;
 	this.resources = null;
-	//runner.destroy();
 	super.destroy();
     } 
 
@@ -472,7 +475,10 @@ public class GameView extends Applet {
 	if (!FILE_IDENTIFIER.equals(is.readUTF()))
 	    throw new IOException("illegal format of stream content");
 	Field field = (Field) is.readObject();
-	board.setField(field);
+	setField(field);
+	//@todo should we start gamemaster on field?
+	getGamemaster().setField(field);
+	getGamemaster().start();
 	for (Iterator i = field.iterateNonEmpty(); i.hasNext(); ) {
 	    Figure f = (Figure) i.next();
 	    if (f instanceof FigureImpl)

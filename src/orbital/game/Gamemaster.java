@@ -14,7 +14,7 @@ import orbital.robotic.Position;
 
 /**
  * Gamemaster manages a game and coordinates the interactions of its
- * players.  To let the gamemaster run a certain game, you must define
+ * players.  To let the gamemaster run a specific game, you must define
  * the games' rules with any instance implementing the {@link
  * GameRules} interface.  This interface can then start an AI upon
  * request via {@link GameRules#startAIntelligence(String)}.
@@ -25,7 +25,6 @@ import orbital.robotic.Position;
  * @xxx performedMove: perhaps we can get rid of this old way of using events. Also we need a more customizable way of deciding when to end a turn (f.ex. some games may allow a player to perform multiple moves before ending his turn)
  */
 public class Gamemaster implements Runnable {
-    //private static final long serialVersionUID = 0;
     // {{DECLARE_PARAMETERS
 
     /**
@@ -63,6 +62,7 @@ public class Gamemaster implements Runnable {
 
 
     private FieldChangeListener endOfGameListener = new FieldChangeAdapter() {
+		//@internal we are transient
 		public void stateChanged(FieldChangeEvent evt) {
 		    //@todo assert evt.getField() == getField() : "we have only registered ourselves to our field";
 		    if (evt.getType() == FieldChangeEvent.END_OF_GAME)
@@ -85,13 +85,28 @@ public class Gamemaster implements Runnable {
      * @param playerArguments the arguments to pass to the individual players.
      *  If you set a component to <code>null</code> or <code class="String">&quot;null&quot;</code>
      *  a human player will take the part of that league.
+     * @param field the field to play the game on.
+     *  When <code>null</code>, a new field will be started from the rules.
      */
-    public Gamemaster(Component component, GameRules rules, String playerArguments[]) {
+    public Gamemaster(Component component, GameRules rules, String playerArguments[], Field initialField) {
 	if (playerArguments.length != rules.getLeagues())
 	    throw new IllegalArgumentException("expected: " + rules.getLeagues() + " player arguments. found: " + playerArguments.length);
 	this.component = component;
 	this.setGameRules(rules);
 	this.playerArguments = playerArguments;
+	this.setField(initialField);
+    }
+    /**
+     * Create a new gamemaster for the game with the given rules.
+     * Since no field is specified, a new field will be started from the rules.
+     * @param component for which component to load images etc.
+     * @param rules the rules of the game to play.
+     * @param playerArguments the arguments to pass to the individual players.
+     *  If you set a component to <code>null</code> or <code class="String">&quot;null&quot;</code>
+     *  a human player will take the part of that league.
+     */
+    public Gamemaster(Component component, GameRules rules, String playerArguments[]) {
+	this(component, rules, playerArguments, null);
     }
 
     /**
@@ -117,7 +132,7 @@ public class Gamemaster implements Runnable {
     public Field getField() {
 	return field;
     }
-    private void setField(Field field) {
+    void setField(Field field) {
 	this.field = field;
     }
 
@@ -126,7 +141,8 @@ public class Gamemaster implements Runnable {
      * (Start entry point) starts a new game.
      */
     public void start() {
-	setField(rules.startField(component));
+	if (getField() == null)
+	    setField(rules.startField(component));
 	getField().addFieldChangeListener(endOfGameListener);
 	players = new Function[playerArguments.length];
 	HumanPlayer humanPlayer = new HumanPlayer();
@@ -177,8 +193,8 @@ public class Gamemaster implements Runnable {
      * (Destroy exit point).
      */
     public void destroy() {
-	rules = null;
-	field = null;
+	setGameRules(null);
+	setField(null);
 	players = null;
 	playerArguments = null;
 	//runner.destroy();
@@ -195,7 +211,7 @@ public class Gamemaster implements Runnable {
 	    playGame();
 	}
 	finally {
-	    field = null;
+	    setField(null);
 	    players = null;
 	}
     } 
@@ -235,6 +251,7 @@ public class Gamemaster implements Runnable {
      * A human player that waits for user I/O and delivers the user's decision.
      */
     private class HumanPlayer extends FieldChangeAdapter implements Function {
+	//@internal we are transient
 	/**
 	 * The option that the user has chosen.
 	 */
