@@ -23,38 +23,6 @@ import orbital.util.Utility;
  * It is characterized by
  * <ul>
  *  <li>a {@link TransitionModel transition model} with a transition relation.
- * <!--
- *  <li>a state space S.</li>
- *  <li>a set of actions A.</li>
- *  <li>sets of actions A(s)&sube;A applicable in each state s&isin;S.</li>
- *  <li>
- *    state transition functions specifying the <dfn>transition model</dfn>
- *    (which forms a rewrite system, perhaps with additional probability information),
- *    as either
- *    <ul class="or">
- *      <li>
- *        deterministic transition function t:S&times;A(s)&rarr;S,
- *        with t(s,a) being the next state reached (for sure) when performing action a&isin;A(s) in state s&isin;S.
- *      </li>
- *      <li>
- *        non-deterministic transition function t:S&times;A(s)&rarr;&weierp;(S), 
- *        such that t(s,a) is the set of next states that could be reached when performing action a&isin;A(s) in state s&isin;S.
- *      </li>
- *      <li>
- *        non-deterministic transition relation T&sube;S&times;A(s)&times;S,
- *        such that &lang;s,a,s'&rang;&isin;T iff s' is a next state that could be reached when performing action a&isin;A(s) in state s&isin;S.
- *      </li>
- *      <li>
- *        stochastic transition probabilities P<sub>a</sub>:S&rarr;[0,1]; s'&#8614;P<sub>a</sub>(s'|s) := <b>P</b>(s'|s,a) := <b>P</b>(S<sub>t+1</sub>=s'|S<sub>t</sub>=s,A<sub>t</sub>=a)
- *        denoting the probability of reaching state s'&isin;S on taking the action a&isin;A(s) in state s&isin;S.
- *        The function P is written this way in order to remind that it has a specific probability distribution.
- *        Another possibility would be to use a combined function
- *        t:S&times;A(s)&rarr;S&times;[0,1]; (s,a)&#8614;&lang;s',P<sub>a</sub>(s'|s)&rang; which is more
- *        closely related to implementation issues, but usually considered an inconvenient notation.
- *        Stochastic transitions provide the most general case of these types of transitions.
- *      </li>
- *    </ul>
- * -->
  *    Where the transition relation satisfies the <dfn id="MarkovProperty">Markov property</dfn>
  *    for states,
  *    <center>
@@ -63,9 +31,12 @@ import orbital.util.Utility;
  *    i.e. the transition depends only on the current state s&isin;S and the action a&isin;A(s) taken,
  *    and is independent from the previous history.
  *    (<small>Note that for infinite state spaces, this is not a true restriction.</small>)
+ *    This transition model defines a stochastic process called Markov process,
+ *    or - in case of a finite state space - Markov chain.
  *  </li>
  *  <li>
- *    immediate action costs c(s,a)&gt;0 for taking the action a&isin;A(s) in the state s&isin;S.
+ *    immediate {@link MarkovDecisionProblem.Transition#getCost() action costs}
+ *    c(s,a)&gt;0 for taking the action a&isin;A(s) in the state s&isin;S.
  *    If the immediate costs are bounded random numbers depending on state and action, then
  *    c(s,a) denotes the <em>expected</em> immediate cost, instead.
  *    Also note that there is no strict requirement for c(s,a)&gt;0. Instead there are several
@@ -73,7 +44,7 @@ import orbital.util.Utility;
  *    However, they have even more restrictive constraints, like finite state sets (see Barto <span xml:lang="la">et al</span>, 1995).
  *    <!-- @todo-->These state and action dependent costs ensure that the utility function is separable.
  *  </li>
- *  <li>a set G&sube;S of goal states. More often this is implied by an accessible description of the goal states.</li>
+ *  <li>a set G&sube;S of {@link #isSolution(Object) goal states}. More often this is implied by an accessible description of the goal states.</li>
  * </ul>
  * Its solution is a policy &pi;:S&rarr;A(s) telling which action to take in each state.
  * A solution &pi; is optimal if it has minimum <em>expected</em> cost.
