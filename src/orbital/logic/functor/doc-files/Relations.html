@@ -128,7 +128,25 @@ each other per
   <dt>well-ordered</dt>
   <dd>(M,≤) is well-ordered if ∀∅≠U⊆M U has a minimum.</dd>
   <dt>lattice</dt>
-  <dd>(M,≤) is a lattice if ∀{a,b}⊆M ∃sup{a,b} ∧ ∃inf{a,b}</dd>
+  <dd>(M,≤) is a lattice if ∀{a,b}⊆M ∃sup{a,b} ∧ ∃inf{a,b} 
+    <!-- "Wenn's kein Verband ist, muss man die Ordnung halt verbinden",
+    d.h. Ordnungen kann man durch hinzufügen künstlicher Suprema und Infima zum Verband machen.
+    und Ordnungen kann man durch hinzufügen eines Elements "Ich bin noch kleiner, Ätsch!" ein Minimum verpassen.
+    And then Noetherian orders are Noetherian complete lattices, already.
+     -->
+  </dd>
+  <dt>complete order</dt>
+  <dd>(M,≤) is completely ordered if M has a minimum and ∀(a<sub>n</sub>)⊆M 
+    monotonic ascending chain, i.e. ∀n a<sub>n</sub>≤a<sub>n+1</sub> ∃sup 
+    (a<sub>n</sub>)∈M.</dd>
+  <dt>Noetherian</dt>
+  <dd>(M,≤) is Noetherian if every ascending chain eventually becomes 
+    stationary, i.e. ∀(a<sub>n</sub>)⊆M (∀n a<sub>n</sub>≤a<sub>n+1</sub>) 
+    ⇒ ∃n∀k≥0 a<sub>n</sub>=a<sub>n+k</sub>.</dd>
+  <dt>Artinian</dt>
+  <dd>(M,≤) is Artinian if every descending chain eventually becomes 
+    stationary, i.e. ∀(a<sub>n</sub>)⊆M (∀n a<sub>n</sub>≥a<sub>n+1</sub>) 
+    ⇒ ∃n∀k≥0 a<sub>n</sub>=a<sub>n+k</sub>.</dd>
 </dl>
 <p>Dual to the notions of lower bound, infimum, minimum, and minimal element 
 concerning ≤ are the notions upper bound, supremum, maximum, maximal element 
@@ -238,10 +256,23 @@ These functions of Map(A,B) have the form:
 <dl class="def">
   <dt>definite</dt>
   <dd>if f(x)=0 <big>⇔</big> x=0.</dd>
-</dl>
-<dl class="def">
   <dt>(homo-)morph for ⋆</dt>
   <dd>if ∀a,b∈M f(a) ⋆ f(b) = f(a ⋆ b).</dd>
+</dl>
+Let ≤ be a (partial) order on A, and ≤ be a (partial) order on B (sharing 
+the same denotation for simplicity).
+<dl class="def">
+  <dt>monontonic</dt>
+  <dd>f:A→B is monotonic if ∀x≤y f(x)≤f(y)</dd>
+  <dt>chain-continuous</dt>
+  <dd>Provided that (≤,A) and (≤,B) are complete partial orders, f:A→B is 
+    chain-continuous if ∀(a<sub>n</sub>)⊆M monotonic ascending chain sup f(a<sub>n</sub>) 
+    = f(sup a<sub>n</sub>)<br />
+    <ul>
+      <li>f chain-continuous ⇒ f monotonic</li>
+      <li>f monotonic ∧ (≤,A) Noetherian order ⇒ f chain-continuous</li>
+    </ul>
+  </dd>
 </dl>
 
 </body>
