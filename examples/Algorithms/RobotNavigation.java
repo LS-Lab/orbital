@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.List;
 import java.io.*;
 import java.awt.*;
-import orbital.math.MathUtilities;
+import orbital.math.*;
 import orbital.awt.*;
 
 /**
