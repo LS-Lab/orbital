@@ -1,5 +1,5 @@
 /**
- * @(#)Resolution.java 0.9 2001/07/30 Andre Platzer
+ * @(#)UniqueSymbol.java 0.9 2001/07/30 Andre Platzer
  *
  * Copyright (c) 2001 Andre Platzer. All Rights Reserved.
  */
@@ -11,25 +11,25 @@ import orbital.logic.imp.*;
 import orbital.logic.functor.*;
 
 /**
- * A symbol that is distinct from all others.
- * DistinctSymbols will only be equal to themselves (compared with ==).
+ * A new unique symbol that is distinct from all others.
+ * UniqueSymbols will only be equal to themselves (compared with ==).
  * Note that the signifier IDs are used for printing, and for comparison
- * of Symbols with DistinctSymbols, but for comparisons
- * of DistinctSymbols with Symbols (then that's achieved by reference comparison).
+ * of Symbols with UniqueSymbols, but for comparisons
+ * of UniqueSymbols with Symbols (then that's achieved by reference comparison).
  * @invariant (this.equals(b) &hArr; this == b) &and; this.hashCode() == System.identityHashCode(this)
  */
-final class DistinctSymbol extends SymbolBase {
-    private  static final long serialVersionUID = 6846367078565847459L;
+final class UniqueSymbol extends SymbolBase {
+    private static final long serialVersionUID = 6846367078565847459L;
     /**
      * the next ID for distinct symbols.
      * @internal volatile does not ensure that ++ is atomic.
      */
     private static /*transient*/ volatile int NEXT_ID = 10;
 	
-    public DistinctSymbol(String signifierPrefix, Type type, Notation.NotationSpecification notation, boolean variable) {
+    public UniqueSymbol(String signifierPrefix, Type type, Notation.NotationSpecification notation, boolean variable) {
 	super(signifierPrefix + (NEXT_ID++), type, notation, variable);
     }
-    public DistinctSymbol(Type type, Notation.NotationSpecification notation, boolean variable) {
+    public UniqueSymbol(Type type, Notation.NotationSpecification notation, boolean variable) {
 	this("_x", type, notation, variable);
     }
     public final boolean equals(Object o) {

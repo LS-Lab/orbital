@@ -832,7 +832,7 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 		    Arrays.fill(arguments, Types.INDIVIDUAL);
 		    skolemType = Types.map(Types.product(arguments), Types.INDIVIDUAL);
 		}
-		final Symbol skolemFunctionSymbol = new DistinctSymbol("s", skolemType, null, false);
+		final Symbol skolemFunctionSymbol = new UniqueSymbol("s", skolemType, null, false);
 
 		// build expression form
 		try {

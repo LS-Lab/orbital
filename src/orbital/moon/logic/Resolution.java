@@ -462,7 +462,7 @@ class Resolution implements Inference {
     private static final Set/*_<Formula>_*/ variantOf(Set/*_<Formula>_*/ F, Signature disjunctify) {
 	List/*_<Symbol>_*/ renaming = new ArrayList(disjunctify.size());
 	for (Iterator i = disjunctify.iterator(); i.hasNext(); ) {
-	    renaming.add(Substitutions.createExactMatcher(i.next(), new DistinctSymbol(SymbolBase.UNIVERSAL_ATOM, null, true)));
+	    renaming.add(Substitutions.createExactMatcher(i.next(), new UniqueSymbol(SymbolBase.UNIVERSAL_ATOM, null, true)));
 	}
 	return (Set) Functionals.map(Substitutions.getInstance(renaming), F);
     }
