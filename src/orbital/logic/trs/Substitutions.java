@@ -596,6 +596,13 @@ public class Substitutions {
 				if (both == both.typeSystem().ABSURD())
 				    // variables x and t have incompatible types, cannot unify
 				    return NONUNIFIABLE;
+				assert !taut.subtypeOf(taux) : "else branch implies subtype condition";
+				if (taux.subtypeOf(taut)) {
+				    // linear type hierachy case, i.e. type chain rather than incomparable
+				    assert isVariable(t);
+				    // return [t->x]  since t is a variable
+				    return getInstance(Collections.singletonList(createExactMatcher(t, x)));
+				}
 				// in (*) we could also have called x and t precisely the other way around
 				// return [x:taux->t:both , t:taut->t:both]
 				throw new UnsupportedOperationException("modification cloning does not yet generally allow changing the type of a Typed object");
