@@ -130,7 +130,8 @@ public class RubicsCube implements GeneralSearchProblem {
 	// here we decide which exact search algorithm to use
 	// the single difference in using another search algorithm
 	// would only concern the constructor call
-	s = new IterativeDeepeningAStar(h);
+	//s = new IterativeDeepeningAStar(h);
+	s = new IterativeExpansion(h);
 
 		
 	// really solve our problem
@@ -452,7 +453,7 @@ public class RubicsCube implements GeneralSearchProblem {
 
     /**
      * Display the cube.
-     * @fixme why does the display shuffle some of the colors at the beginning?
+     * @xxx why does the display sometimes shuffle some of the colors at the beginning?
      * Well it's a nice animation feature, but we don't need it at all.
      */
     protected static void printcubus(int feld[], int y, int x) {

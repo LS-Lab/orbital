@@ -69,7 +69,6 @@ class AbstractQuotient/*<M implements Arithmetic>*/ implements Quotient/*<M>*/, 
      */
     public AbstractQuotient(Polynomial/*<R,S>*/ val, java.util.Set/*_<Polynomial<R,S>>_*/ m, java.util.Comparator/*_<S>_*/ monomialOrder) {
 	this(val, AlgebraicAlgorithms.reduce(m, monomialOrder));
-	// howto assert that m is a Groebner basis, but with respect to which monomialOrder?
     }
 
     /**

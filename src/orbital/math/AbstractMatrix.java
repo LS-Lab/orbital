@@ -774,7 +774,9 @@ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTenso
     public Matrix/*<R>*/ multiply(Matrix/*<R>*/ B) {
 	//@internal more beautiful than Tensor.multiply(Tensor) so still keep a while
 	//@todo optimize like in RMatrix
-	Utility.pre(dimension().width == B.dimension().height, "Matrix A.B only defined for dimension n x m multiplied with m x l");
+	if (dimension().width != B.dimension().height)
+	    throw new IllegalArgumentException("Matrix A.B only defined for dimension n x m multiplied with m x l. But not for\n" + this + " *\n" + B);
+	//Utility.pre(dimension().width == B.dimension().height, "Matrix A.B only defined for dimension n x m multiplied with m x l");
 	Matrix/*<R>*/ ret = newInstance(dimension().height, B.dimension().width);
 	for (int i = 0; i < ret.dimension().height; i++)
 	    for (int j = 0; j < ret.dimension().width; j++)

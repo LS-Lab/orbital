@@ -14,7 +14,6 @@ import orbital.math.MathUtilities;
 /**
  * Com[n,r](true)
  * @version 0.9, 2000/11/29
- * @fixme fixed? orbital.algorithm.RepetitiveCombination of 3 elements out of 1 Combinatorical.count()=1 matches Combinatorical.hasNext()=0
  */
 class RepetitiveCombination extends Combinatorical {
     private static final long serialVersionUID = -7887257459549546388L;

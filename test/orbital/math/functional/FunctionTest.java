@@ -53,8 +53,9 @@ public class FunctionTest extends check.TestCase {
     }
 
     private KernelLink ml;
-    private Random random = new Random();
+    private Random random;
     protected void setUp() {
+	random = new Random();
         /*
 	  (Windows)
 	  java SampleProgram -linkmode launch -linkname 'c:/math40/mathkernel.exe'
@@ -344,7 +345,7 @@ public class FunctionTest extends check.TestCase {
     // create (random) argument values
     
     private int integerArgument(int min, int max) {
-	return (int)((max-min) * random.nextDouble()) + min;
+	return min + random.nextInt(max-min);
     }
     private double realArgument(double min, double max) {
 	return ((max-min) * random.nextDouble() + min);

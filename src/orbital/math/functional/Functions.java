@@ -21,9 +21,10 @@ import java.awt.Dimension;
 import orbital.math.Vector;
 import orbital.math.Scalar;
 import orbital.math.Complex;
-import orbital.math.Values;
 import orbital.math.Real;
 import orbital.math.Integer;
+import orbital.math.Symbol;
+import orbital.math.Values;
 
 import orbital.logic.trs.Variable;
 
@@ -233,7 +234,7 @@ public final class Functions {
 		    return (Function) Operations.times.apply(Operations.divide.apply(a,TWO), square);
 		} 
 		public String toString() {
-		    return a + "*x";
+		    return a + "*#0";
 		} 
 	    };
     } 
@@ -283,7 +284,7 @@ public final class Functions {
 		return Values.POSITIVE_INFINITY;
 	    }
 	    public String toString() {
-		return "x^2";
+		return "#0^2";
 	    } 
 	};
 
@@ -345,14 +346,12 @@ public final class Functions {
 		else if (x instanceof Number)
 		    return valueFactory.valueOf(Math.exp(((Number) x).doubleValue()));
 		else if (x instanceof orbital.math.Matrix)
-		    throw new UnsupportedOperationException("not yet implemented - limit or at least jordan normalization required");
+		    throw new UnsupportedOperationException("not yet implemented - limit or at least jordan normalization required for " + x.getClass());
 		else if (x instanceof orbital.math.Symbol)
 		    return valueFactory.symbol("e").power((Arithmetic) x);
-		else if (x instanceof Arithmetic)
-		    throw new UnsupportedOperationException("not yet implemented - dunno");
+		else
+		    return Functionals.genericCompose(this, x);
 
-		//XXX: return Functionals.genericCompose(exp, x);
-		throw new UnsupportedOperationException("not yet implemented - JDK1.3 bug");
 	    } 
 	    public Function derive() {
 		return this;
@@ -385,17 +384,13 @@ public final class Functions {
 		if (Complex.hasType.apply(x)) {
 		    Complex v = (Complex) x;
 		    return valueFactory.cartesian((Real/*__*/) this.apply(v.norm()), v.arg());
-		} 
-		else if (x instanceof Number) {
+		} else if (x instanceof Number) {
 		    double r = ((Number) x).doubleValue();
 		    return r >= 0 ? valueFactory.valueOf(Math.log(r)) : apply(valueFactory.cartesian(r, 0));
 		} else if (x instanceof orbital.math.Matrix)
-		    throw new UnsupportedOperationException("not yet implemented - something like limit required");
-		else if (x instanceof Arithmetic)
-		    throw new UnsupportedOperationException("not yet implemented - dunno how to logarithm this type");
-
-		// XXX: return Functionals.compose(log, x);
-		throw new UnsupportedOperationException("not yet implemented - JDK1.3 bug");
+		    throw new UnsupportedOperationException("not yet implemented - something like limit required for " + x.getClass());
+		else
+		    return Functionals.genericCompose(this, x);
 	    } 
 	    public Function derive() {
 		return reciprocal;
@@ -953,6 +948,8 @@ public final class Functions {
      */
     public static final Function norm = new AbstractFunction/*<Arithmetic,Real>*/() {
 	    public Object/*>Real<*/ apply(Object/*>Arithmetic<*/ x) {
+		if (x instanceof Symbol)
+		    return Functionals.genericCompose(this, x);
 		return ((Normed) x).norm();
 	    } 
 	    public Function derive() {
@@ -965,7 +962,7 @@ public final class Functions {
 		throw new UnsupportedOperationException("||" + this + "||");
 	    } 
 	    public String toString() {
-		return "||x||";
+		return "||#0||";
 	    } 
 	};
 

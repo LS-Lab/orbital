@@ -1056,8 +1056,7 @@ public final class Types {
     /**
      * Converts a functor specification to a type (guesses it from the declared type information).
      * (experimental)
-     * @todo package protect but share with orbital.moon.logic
-     * @fixme we cannot know that ClassicalLogic & Co implement AND as a BinaryFunction, not as a BinaryPredicate<Boolean,Boolean>
+     * @xxx we cannot know that ClassicalLogic & Co implement AND as a BinaryFunction, not as a BinaryPredicate<Boolean,Boolean>
      */
     private static final Type declaredTypeOf(Functor.Specification spec) {
 	return map(typeOf(spec.getParameterTypes()), type(spec.getReturnType()));

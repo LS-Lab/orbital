@@ -86,10 +86,12 @@ public interface ExpressionSyntax extends ExpressionBuilder {
      * @return an instance of Expression that represents the given expression string in this logic.
      * @throws ParseException when the expression is syntactically malformed.
      *  Either due to a lexical or grammatical error.
+     * @throws IllegalArgumentException if the symbol is illegal for some reasons.
+     *  This may occur like in {@link ExpressionBuilder#createAtomic(Symbol)}, and due to the same reasons.
      * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      * @note could just as well be renamed to parseExpression(String)
      */
-    Expression createExpression(String expression) throws ParseException;
+    Expression createExpression(String expression) throws ParseException, IllegalArgumentException;
 
     //@todo introduce? Expression[] createAllExpressions(String expressions) throws ParseException; No its not very useful in general case.
 

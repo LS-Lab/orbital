@@ -12,8 +12,10 @@ import orbital.logic.functor.Function;
  */
 public class GATest implements Runnable, GeneticAlgorithmProblem {
     public static void main(String arg[]) {
-	//@fixme should call this application with -Djava.util.logging.config.file=....
+	//@xxx should call this application with -Djava.util.logging.config.file=....
 	//java.util.logging.Logger.getLogger(GeneticAlgorithm.class.getPackage().getName()).setLevel(java.util.logging.Level.FINEST);
+	System.out.println("this demonstrates how simple GeneticAlgorithmProblems are written.");
+	System.out.println("The problem is very dull such that the algorithm runs very long.");
 	new GATest().run();
     } 
 
@@ -50,6 +52,7 @@ public class GATest implements Runnable, GeneticAlgorithmProblem {
     } 
 
     public boolean isSolution(Population pop) {
+	System.out.println("isSolution?\n" + pop);
 	return pop.get(0).getFitness() == Integer.MAX_VALUE;
     } 
 }

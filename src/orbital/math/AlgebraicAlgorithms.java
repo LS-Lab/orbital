@@ -82,6 +82,10 @@ public final class AlgebraicAlgorithms {
 		}
 		return 0;
 	    }
+
+	    public String toString() {
+		return AlgebraicAlgorithms.class.getName() + ".LEXICOGRAPHIC";
+	    }
 	};
 
     /**
@@ -109,6 +113,10 @@ public final class AlgebraicAlgorithms {
 		}
 		return 0;
 	    }
+
+	    public String toString() {
+		return AlgebraicAlgorithms.class.getName() + ".REVERSE_LEXICOGRAPHIC";
+	    }
 	};
     
     /**
@@ -126,7 +134,6 @@ public final class AlgebraicAlgorithms {
      */
     public static final Comparator DEGREE_LEXICOGRAPHIC = new Comparator() {
 	    public int compare(Object m1, Object m2) {
-		//@fixme
 		final Vector/*<Integer>*/ nu = (Vector/*<Integer>*/) m1;
 		final Vector/*<Integer>*/ mu = (Vector/*<Integer>*/) m2;
 		if (nu.dimension() != mu.dimension())
@@ -137,6 +144,10 @@ public final class AlgebraicAlgorithms {
 		    return c;
 		else
 		    return LEXICOGRAPHIC.compare(m1, m2);
+	    }
+
+	    public String toString() {
+		return AlgebraicAlgorithms.class.getName() + ".DEGREE_LEXICOGRAPHIC";
 	    }
 	};
 
@@ -305,6 +316,15 @@ public final class AlgebraicAlgorithms {
 	return gcd(list)[list.length];		//sic(!)
     }
     /**
+     * Returns least common multiple (lcm) of two elements of an (Euclidean) ring.
+     * @see #lcm(Euclidean,Euclidean)
+     */
+    public static final BinaryFunction lcm = new BinaryFunction/*<Euclidean,Euclidean,Euclidean>*/() {
+	    public Object apply(Object a, Object b) {
+		return lcm((Euclidean)a, (Euclidean)b);
+	    }
+	};
+    /**
      * Returns least common multiple (lcm) of two ring elements.
      * The lcm is the smallest ring element (with respect to divisibility) which is a multiple of both.
      * <p>
@@ -468,24 +488,29 @@ public final class AlgebraicAlgorithms {
      * </p>
      * @param x the array of congruence values x<sub>1</sub>,&#8230;,x<sub>n</sub>.
      * @param m the array of corresponding moduli m<sub>1</sub>,&#8230;,m<sub>n</sub>.
-     * @pre &forall;i&ne;j (x[i])+(x[j])=(1), i.e. gcd(x[i],x[j])=1.
+     * @pre &forall;i&ne;j (m[i])+(m[j])=(1), i.e. gcd(m[i],m[j])=1.
      * @return the unique solution x (modulo m<sub>1</sub>*&#8230;*m<sub>n</sub>).
+     * @note Newton interpolation and especially Lagrange interpolation are just special cases of
+     * incremental Chinese Remainder Theorem.
      * @internal implements Chinese remainder algorithm which is a direct consequence of the
      *  Chinese Remainder Theorem.
+     * @todo change Arithmetic to Euclidean since the implementation won't work otherwise anyway?
      */
-    public static final Arithmetic chineseRemainder(Arithmetic x[], Arithmetic m[]) {
+    public static final Quotient/*<Arithmetic>*/ chineseRemainder(Arithmetic x[], Arithmetic m[]) {
 	if (x.length != m.length)
 	    throw new IllegalArgumentException("must give the same number of congruence values and modulos");
 	final Values vf = Values.getDefaultInstance();
-	Arithmetic xStar = x[0];
-	Arithmetic M = xStar.one();
+	Euclidean xStar = (Euclidean) x[0];
+	Euclidean M = (Euclidean) xStar.one();
 	for (int i = 1; i < m.length; i++) {
-	    M = M.multiply(m[i-1]);
-	    final Arithmetic c = vf.quotient((Euclidean) M, (Euclidean) m[i]).inverse()/*.representative()*/;		// the inverse modulo m[i] of m
+	    M = (Euclidean) M.multiply(m[i-1]);
+	    final Arithmetic c = vf.quotient(M, (Euclidean) m[i]).inverse()/*.representative()*/;		// the inverse modulo m[i] of m
 	    final Arithmetic s = vf.quotient((Euclidean) (x[i].subtract(xStar)).multiply(c), (Euclidean) m[i]).representative();
-	    xStar = xStar.add(s.multiply(M));
+	    xStar = (Euclidean) xStar.add(s.multiply(M));
 	}
-	return xStar;
+	M = (Euclidean) M.multiply(m[m.length-1]);
+	assert M.equals(Operations.product.apply(vf.valueOf(m))) : "total modulus " + M + " = " + Operations.product.apply(vf.valueOf(m));
+	return vf.quotient(xStar, M);
     }
 
     // Groebner basis
@@ -673,7 +698,6 @@ public final class AlgebraicAlgorithms {
 		    final Vector/*>S<*/ lgi = (Vector) leadingMonomial(gi, monomialOrder);
 		    final Vector/*>S<*/ lgj = (Vector) leadingMonomial(gj, monomialOrder);
 		    // construct X^nu and X^mu coprime such that l(X^nu*g[i])==l(X^mu*g[j]) (also @see #lcm(Euclidean,Euclidean))
-		    //@xxx we could use Functionals.map(Function,Tensor)
 		    final Vector/*>S<*/ d = Functionals.map(Operations.max, lgi, lgj);
 		    final Vector/*>S<*/ nu = d.subtract(lgi);
 		    final Vector/*>S<*/ mu = d.subtract(lgj);

@@ -2,6 +2,8 @@ Other Optimization algorithms
 	gradient descent on derivable objective functions. greedy (siehe Nichtklassische Optimierung)
 	-- Sintflut algorithm (ist eigentlich quatsch)
 	Tabu search
+	Is there a chance for a DivideAndConquerPlanning? That would be a recursive decomposition planning. So we generalize single decompositions like f.ex. temporal decompositions into aggregated time buckets, or aggregate resources (thus relaxing scheduling constraints).
+	decomposition planning can also use unequal but increasing time buckets (since the far future is unsure, anyway)
 
 Heuristic Algorithms
 	A-Search, A*-Search (optimization according to an evaluation function)

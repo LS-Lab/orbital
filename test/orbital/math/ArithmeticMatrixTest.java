@@ -61,7 +61,7 @@ public class ArithmeticMatrixTest extends check.TestCase {
 	System.out.println("row sum norm\t=" + M.norm(Double.POSITIVE_INFINITY));
 	assertTrue(M.norm(Double.POSITIVE_INFINITY).equals(vf.valueOf(8)));
 	System.out.println("Rank M\t=" + M.linearRank());
-	//@fixme assertTrue(M.linearRank() == 4, "maximum rank");
+	assertTrue(M.linearRank() == 4, "maximum rank");
 	System.out.println("det M\t= |M|=" + M.det());
 	assertTrue(M.det().equals(vf.valueOf(30)));
 	System.out.println("Tr M\t=" + M.trace());

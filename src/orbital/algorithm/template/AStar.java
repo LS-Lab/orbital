@@ -20,8 +20,9 @@ import orbital.math.Values;
  * <p>
  * A<sup>*</sup> is complete, optimal if the heuristic function h is admissible.
  * It has a time and space complexity of O(b<sup>d</sup>).
- * A<sup>*</sup> is optimal in another sense: no other algorithm expands less nodes than A<sup>*</sup> 
- * with the same heuristic function. It also expands nodes only once.
+ * A<sup>*</sup> is optimal in another sense (&quot;optimally efficient&quot;):
+ * no other algorithm expands less nodes than A<sup>*</sup>  with the same heuristic function.
+ * It also expands nodes only once.
  * But this does not mean that it is always fastest.
  * A<sup>*</sup> expands less nodes with better heuristic functions
  * (h' is better than h if 0 &lt; h &lt; h' &le; h<sup>*</sup>).</p>

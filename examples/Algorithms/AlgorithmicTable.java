@@ -18,7 +18,6 @@ import java.util.logging.Level;
  * complexity, use of heuristics, completenes, optimality, etc.
  * @version 1.0, 2001/07/30
  * @author  Andr&eacute; Platzer
- * @fixme might need new construction method, for BranchAndBound(null)
  */
 public class AlgorithmicTable {
     private static final Logger logger = Logger.global;
@@ -76,7 +75,7 @@ public class AlgorithmicTable {
 		try {
 		    data[i][j++] = new Boolean(algo[i].complexity() != Functions.nondet 
 
-					       // FIXME: norm is infinite for all polynoms, what else!
+					       //@xxx: norm is infinite for all polynoms, what else!
 					       &&!(algo[i].complexity().equals(Functions.constant(Values.POSITIVE_INFINITY))));
 		}
 		catch(UnsupportedOperationException x) {logger.log(Level.INFO, "unsupported", x);}

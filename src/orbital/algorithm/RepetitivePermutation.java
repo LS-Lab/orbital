@@ -41,8 +41,8 @@ class RepetitivePermutation extends Combinatorical {
     } 
 
     public int[] next() {
-	//@fixme hasNext() does not yet respect this case. it always returns 0 since the prestep wasn't performed
 	if (permutation.length == 0)
+	    //@fixme hasNext() does not yet respect this case. it always returns false since the prestep wasn't performed
 	    return permutation;
 	if (!hasNext())
 	    throw new NoSuchElementException();

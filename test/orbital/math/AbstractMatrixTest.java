@@ -213,7 +213,7 @@ public class AbstractMatrixTest extends check.TestCase {
 
     private Random random;
     private Integer integerArgument(int min, int max) {
-	return vf.valueOf((int)((max-min) * random.nextDouble()) + min);
+	return vf.valueOf(min + random.nextInt(max-min));
     }
     private Real realArgument(double min, double max) {
 	return vf.valueOf(((max-min) * random.nextDouble() + min));

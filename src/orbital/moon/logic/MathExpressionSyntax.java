@@ -70,7 +70,7 @@ public class MathExpressionSyntax implements ExpressionSyntax {
 	try {
 	    LogicParser parser = new LogicParser(new StringReader(expression));
 	    parser.setSyntax(this);
-	    return parser.parseExpression();
+	    return parser.parseTerm();
 	} catch (orbital.moon.logic.ParseException ex) {
 	    throw new ParseException(ex.getMessage(), ex.currentToken.next.beginLine, ex.currentToken.next.beginColumn, ex);
 	} 

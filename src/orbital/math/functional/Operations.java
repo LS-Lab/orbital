@@ -105,6 +105,8 @@ public interface Operations /* implements ArithmeticOperations */ {
      * @see Arithmetic#add(Arithmetic)
      */
     public static final BinaryFunction plus = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
+	    //@xxx either add this everywhere, or remove it here (otherwise it won't work)
+	    //private final orbital.logic.imp.Type logicalTypeDeclaration = orbital.logic.imp.Types.map(orbital.logic.imp.Types.product(new orbital.logic.imp.Type[] {orbital.logic.imp.Types.type(Arithmetic.class), orbital.logic.imp.Types.type(Arithmetic.class)}), orbital.logic.imp.Types.type(Arithmetic.class));
 	    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
 		Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getEqualizer().apply(new Arithmetic[] {
 		    (Arithmetic) x, (Arithmetic) y

@@ -166,12 +166,9 @@ public final class LUDecomposition/*<R implements Arithmetic>*/ implements Seria
      * Rank of the matrix.
      * i.e. the number of non-zero elements on the diagonal of <span class="matrix">U</span>.
      * @see Matrix#linearRank()
-     * @fixme test failed.
      */
     public int linearRank() {
-	return Setops.count(A.getDiagonal().iterator(), Functionals.compose(Functionals.bindSecond(Predicates.equal, Values.ZERO), Functions.norm) /*new Predicate() {
-		public boolean apply(Object o) {return ((Arithmetic)o).norm() != 0;}
-	}*/);
+	return Setops.count(A.getDiagonal().iterator(), Functionals.compose(Functionals.bindSecond(Predicates.unequal, Values.ZERO), Functions.norm));
     }
 
     /**

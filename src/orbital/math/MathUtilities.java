@@ -241,10 +241,12 @@ public final class MathUtilities {
      * Generate a probable prime number. The BigInteger returned is prime with
      * a certain probability depending on the value certainty.
      * 
-     * @param strength - bitlength for keys.
+     * @param strength - bitlength of the result.
      * @param certainty - the probability for being prime exceeds 1 - 1/2<sup>certainty</sup>.
-     * @param randSource - the Random-Source necessary to generate primes, should be an instance of SecureRandom.
+     * @param randSource - the Random-Source necessary to generate primes. For privacy should be an instance of SecureRandom.
      * @param strongPrime - true to produce cryptographically strong primes where (p-1)/2 is prime again.
+     * @attribute Monte Carlo
+     * @see BigInteger#BigInteger(int,int,Random)
      */
     public static BigInteger generatePrime(int strength, int certainty, Random randSource, boolean strongPrime) {
 	BigInteger p;
@@ -258,6 +260,20 @@ public final class MathUtilities {
 	    //@todo check whether p-1 has a big prime factor
 	    //@todo check whether p+1 has a big prime factor
 	} 
+	return p;
+    } 
+    /**
+     * Generate a true prime number.
+     * 
+     * @param strength - bitlength of the result.
+     * @param randSource - the Random-Source necessary to generate primes. For privacy should be an instance of SecureRandom.
+     * @attribute Las Vegas
+     */
+    public static BigInteger generatePrime(int strength, Random randSource) {
+	BigInteger p;
+	do {
+	    p = generatePrime(strength, 100, randSource, false);
+	} while (!isPrime(p));
 	return p;
     } 
 
@@ -597,8 +613,13 @@ public final class MathUtilities {
 		    return Values.getDefaultInstance().tensor(o).toString();
 		}
 		catch (IllegalArgumentException nonArithmetic) {
-		    //@todo improve by using Arrays.get
-		    return o.toString();
+		    if (Utility.rank(o) != 1)
+			//@todo improve by using Array.get
+			return o.toString();
+		    StringBuffer sb = new StringBuffer();
+		    for (int i = 0; i < Array.getLength(o); i++)
+			sb.append((i == 0 ? "" : ",") + Array.get(o, i));
+		    return "(" + sb.toString() + ")";
 		}
 	    else
 		return "{}";

@@ -610,12 +610,12 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 			Setops.union(
 				     readTRS(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/resources/trs/CNF/simplify.trs")), logic).getReplacements(), 
 				     Arrays.asList(new Object[] {
-		    // necessary and does not disturb local confluency? conditional commutative (according to lexical order)
-		    new LexicalConditionalUnifyingMatcher(logic.createExpression("_X2&_X1"), logic.createExpression("_X1&_X2"), logic.createAtomicLiteralVariable("_X1"), logic.createAtomicLiteralVariable("_X2")),
+					 // necessary and does not disturb local confluency? conditional commutative (according to lexical order)
+					 new LexicalConditionalUnifyingMatcher(logic.createExpression("_X2&_X1"), logic.createExpression("_X1&_X2"), logic.createAtomicLiteralVariable("_X1"), logic.createAtomicLiteralVariable("_X2")),
 
-		    // necessary and does not disturb local confluency? right associative
-		    //@xxx for CNF infinite recursion for (a&b)<->(b&a) and a<->b<->c. this is because conditional commutative and right-associative oscillate, then
-		    //Substitutions.createSingleSidedMatcher(logic.createExpression("(_X1&_X2)&_X3"), logic.createExpression("_X1&(_X2&_X3)")),
+					 // necessary and does not disturb local confluency? right associative
+					 //@xxx for CNF infinite recursion for (a&b)<->(b&a) and a<->b<->c. this is because conditional commutative and right-associative oscillate, then
+					 //Substitutions.createSingleSidedMatcher(logic.createExpression("(_X1&_X2)&_X3"), logic.createExpression("_X1&(_X2&_X3)")),
 				     }));
 		// transform to CNF part
 		if (CNFtrs == null)
@@ -778,34 +778,14 @@ public class ClassicalLogic extends ModernLogic implements Logic {
 	 * Reads a term-rewrite system from a stream.
 	 * The syntax is
 	 * <pre>
-	 * &lt;matchingSide&gt; |- &lt;replacementSide&gt; # &lt;comment&gt; &lt;EOL&gt;
+	 * &lt;matchingSide&gt; |- &lt;replacementSide&gt;    # &lt;comment&gt; &lt;EOL&gt;
 	 * ...
 	 * </pre>
 	 * @todo move somewhere and also let Simplification.java use it.
 	 */
 	private static final Substitution readTRS(Reader reader, ExpressionSyntax syntax) {
-	    final String ruleDelim = "|-";
-	    LineNumberReader rd = new LineNumberReader(reader);
-	    List rules = new LinkedList();
 	    try {
-		String l;
-		while ((l=rd.readLine()) != null) {
-		    final String original = l;
-		    if (l.indexOf('#') >= 0)
-			// strip comment
-			l = l.substring(0, l.indexOf('#'));
-		    l = l.trim();
-		    if (l.length() == 0)
-			continue;
-		    int rule = l.indexOf(ruleDelim);
-		    if (rule < 0)
-			throw new ParseException("neither comment nor whitespace nor rule", rd.getLineNumber(), ClassicalLogic.COMPLEX_ERROR_OFFSET);
-		    rules.add(Substitutions.createSingleSidedMatcher(
-								     syntax.createExpression(l.substring(0, rule)),
-								     syntax.createExpression(l.substring(rule + ruleDelim.length()))
-								     ));
-		}
-		return Substitutions.getInstance(new ArrayList(rules));
+		return LogicParser.readTRS(reader, syntax);
 	    } catch (ParseException ex) {
 		throw (InternalError) new InternalError("Unexpected syntax in internal term").initCause(ex);
 	    } catch (IOException ex) {

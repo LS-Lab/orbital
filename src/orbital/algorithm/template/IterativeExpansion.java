@@ -45,6 +45,7 @@ import java.util.LinkedList;
  * However, it's not BestFS.OptionIterator, either, since we don't consider backing up to some very different location somewhere in state space, but keep our mind focues on the current local neighbours.
  * So perhaps we should adapt BestFS.OptionIterator.add such that we forget about the old choices and simply sort the neighbourhood, and keep a stack of sorted local neighbourhoods. (remembering the second best, only, is perhaps a bad idea, since we may back up to the second (and third...) best multiple times if all neighbours are still below bound.).
  * On the current search path, we keep a stack of sorted lists of neighbours, and reinsert the last best element into the sorted list with new f-cost, on "backup".
+ * @note memory-bounded algorithms suffer from transpositions in the search graph.
  * @internal we do not extend GeneralBoundingSearch, since the bounds vary from layer to layer (argument of the recursive call).
  */
 public class IterativeExpansion extends GeneralSearch implements EvaluativeAlgorithm {
@@ -98,8 +99,11 @@ public class IterativeExpansion extends GeneralSearch implements EvaluativeAlgor
 	firePropertyChange("heuristic", null, this.heuristic);
     }
 
+    /**
+     * O(b*d) where b is the branching factor and d the solution depth.
+     */
     public orbital.math.functional.Function spaceComplexity() {
-	throw new UnsupportedOperationException("@todo");
+	return Functions.linear(Values.getDefaultInstance().symbol("b"));
     }
     /**
      * O(b<sup>d</sup>) where b is the branching factor and d the solution depth.

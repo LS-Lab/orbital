@@ -157,7 +157,7 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
     }
 
     public Real norm() {
-	//@xxx or should we  return Functions.abs.apply(this)?
+	//@xxx or should we  return Functions.norm.apply(this)?
 	return Values.NaN;
     } 
 

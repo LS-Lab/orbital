@@ -266,8 +266,6 @@
 	    <link href="${javadoc.link.jdk}" offline="${javadoc.link.jdk.offline}" packagelistLoc="${javadoc.link.jdk.loc}"/>
         </javadoc>
 
-	<antcall target="jjdoc"/>
-
 	<copy todir="${doc}/api/Patterns">
 	    <fileset dir="${doc}/Patterns"/>
 	</copy>
@@ -286,6 +284,9 @@
 	@media screen { a:link, a:visited {color:blue} }
 	@import url("stylist.css");
 	</echo>
+
+	<antcall target="jjdoc"/>
+
     </target>
 
     <target name="jjdoc" depends="init"
@@ -426,12 +427,14 @@
             <fileset dir="${sources}">
                 <include name="orbital/awt/*.gif"/>
             </fileset>
-            <zipfileset dir="${resources}">
-            </zipfileset>
+            <fileset dir="${resources}">
+	        <exclude name="java/**"/>
+            </fileset>
             <zipfileset dir="${doc}" prefix="orbital/resources">
 	        <include name="license.txt"/>
             </zipfileset>
-            <fileset dir="${sources}/orbital/meta-inf/services">
+            <fileset dir="${sources}/orbital">
+	        <include name="meta-inf/services/*"/>
             </fileset>
         </jar>
 

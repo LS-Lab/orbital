@@ -26,7 +26,7 @@ public class CombinatoricalTest extends check.TestCase {
 	random = new Random();
     }
     private int integerArgument(int min, int max) {
-	return (int)((max-min) * random.nextDouble()) + min;
+	return min + random.nextInt(max-min);
     }
     public void testNonrepetitiveCombinationCount() {
 	int n = integerArgument(1, 5);

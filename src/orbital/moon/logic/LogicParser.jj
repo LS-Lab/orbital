@@ -22,11 +22,16 @@ package orbital.moon.logic;
 import orbital.logic.imp.*;
 import orbital.logic.functor.Notation.NotationSpecification;
 
+import orbital.logic.trs.Substitution;
+import orbital.logic.trs.Substitutions;
+
 import java.util.List;
 import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Iterator;
-
 import orbital.math.MathUtilities;
+
+import java.io.*;
 
 /**
  * This class implements a Parser for logic formulas that can be used
@@ -100,6 +105,44 @@ public class LogicParser {
 	if (syntax == null)
 	    throw new IllegalStateException("no syntax has been set, use setSyntax(...)");
 	this.scopeSymbolMap = new SignatureBase();
+    }
+
+    /**
+     * Reads a term-rewrite system from a stream.
+     * The syntax is
+     * <pre>
+     * &lt;matchingSide&gt; |- &lt;replacementSide&gt;    # &lt;comment&gt; &lt;EOL&gt;
+     * ...
+     * </pre>
+     * @throws IOException when an error occurs while reading from the reader.
+     * @throws orbital.logic.imp.ParseException when a syntax error occurs in the source.
+     * @todo Simplify cannot yet use this, since it wants syntax.createMathExpression instead.
+     */
+    public static final Substitution readTRS(final Reader reader, final ExpressionSyntax syntax)
+	throws IOException, orbital.logic.imp.ParseException {
+	final String ruleDelim = "|-";
+	final LineNumberReader rd = new LineNumberReader(reader);
+	final List rules = new LinkedList();
+	String l;
+	while ((l=rd.readLine()) != null) {
+	    final String original = l;
+	    if (l.indexOf('#') >= 0)
+		// strip comment
+		l = l.substring(0, l.indexOf('#'));
+	    l = l.trim();
+	    if (l.length() == 0)
+		continue;
+	    int rule = l.indexOf(ruleDelim);
+	    if (rule < 0)
+		throw new orbital.logic.imp.ParseException("neither comment nor whitespace nor rule", rd.getLineNumber(), 1);
+	    rules.add(
+		      Substitutions.createSingleSidedMatcher(
+							     syntax.createExpression(l.substring(0, rule)),
+							     syntax.createExpression(l.substring(rule + ruleDelim.length()))
+							     )
+		      );
+	}
+	return Substitutions.getInstance(new ArrayList(rules));
     }
 
     /**
@@ -273,6 +316,8 @@ public class LogicParser {
     }
 
     /**
+     * Get a symbol of the specified signifier and expected type.
+     * Prefers corresponding entries in the coreSignature.
      * @param expectedType the type expected as derived from the context.
      */
     private Symbol symbolFor(String signifier, Type expectedType) {
@@ -291,7 +336,7 @@ public class LogicParser {
     // or he should explicitly mention any free variables, and all other symbols are either explicitly quantified, or treated as constant
     //@todo rely on FreeDeclarationExpression
     /**
-     * only lets _ modify whether it is a variable, not its type.
+     * lets _ modify whether it is a variable, not touching its type.
      */
     private static Symbol defaultSymbolFor(String signifier, Type expectedType) {
     	//@xxx currently we (in addition to $) distinguish between variables and constants according to their first character
@@ -299,6 +344,10 @@ public class LogicParser {
 	    ? new SymbolBase(signifier, expectedType, null, true)
 	    : new SymbolBase(signifier, expectedType, null, false);
     }
+    /**
+     * Get the default symbol of a specified string, guessing its type and variable.
+     * @xxx get rid of this quick-hack since scanSignature usually won't work reliably anyway.
+     */
     static Symbol defaultSymbolFor(String signifier) {
     	//@xxx currently we (in addition to $) distinguish between variables and constants according to their first character
     	return signifier.charAt(0) == '_'
@@ -403,10 +452,12 @@ Expression parseFormula() :
 /**
  * Start production parsing an arithmetic formula expression.
  * @internal we require <EOF> to be sure we parsed all, and no syntactic garbage lurks around at the end of the input
- * @todo rename to parseTerm or parseMathematicalExpression?
  */
-Expression parseExpression() :
-{Expression expr;}
+Expression parseTerm() :
+{
+    reinitSymbolMap();
+    Expression expr;
+}
 {
     expr = term() <EOF>
 	{ return expr; }
@@ -659,14 +710,14 @@ Expression PowerTerm() :
     // right associative xfy
     //@todo alternative? PowerTerm() = UnaryTerm() ("^" PowerTerm())?
     //@xxx XOR != "^" != "**"
+    a = UnaryTerm() (tok = <XOR> b = PowerTerm() {a = combine(tok, a, b);} )?
      /*
+      * According to JavaCC documentation:
       * right associtivity is expressed using a right-recursive grammar
-      * specification. The LOOKAHEAD specification tells JavaCC to look ahead
+      * specification. A LOOKAHEAD(XOR) specification tells JavaCC to look ahead
       * for a "^" token, otherwise the correct match won't be taken. 
       * @todo or tok = "**"
       */
-    //    a = UnaryTerm() (LOOKAHEAD("^") tok = "^" b = PowerTerm() {a = combine(tok, a, b);} )*
-    a = UnaryTerm() (tok = <XOR> b = PowerTerm() {a = combine(tok, a, b);} )?
 {return a;}
 }
 

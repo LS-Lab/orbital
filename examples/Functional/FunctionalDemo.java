@@ -1,49 +1,26 @@
-
-
 import orbital.math.*;
 import orbital.math.functional.*;
 
 public class FunctionalDemo {
     public static void main(String arg[]) throws Exception {
-	Function f;
 	Function g = Functions.square;
 	Function h = (Function) Operations.times.apply(Functions.id, Functions.id);
-	f = g;
-	System.out.println(f);
+	print(g);
+	print(h);
+	print(g.derive());
+	print(h.derive());
+	print(h.derive().derive());
+    } 
+
+    private static void print(Function f) {
 	// get us a value factory for creating arithmetic objects
 	final Values vf = Values.getDefaultInstance();
+	final Arithmetic X = vf.symbol("x");
+	System.out.println(f.apply(X));
 	System.out.println("has some values");
 	for (int i = 0; i < 4; i++) {
 	    Scalar x = vf.valueOf(i);
 	    System.out.println("(" + x + "|" + f.apply(x) + ")\t");
-	} 
-	f = h;
-	System.out.println(f);
-	System.out.println("has some values");
-	for (int i = 0; i < 4; i++) {
-	    Scalar x = vf.valueOf(i);
-	    System.out.println("(" + x + "|" + f.apply(x) + ")\t");
-	} 
-	f = g.derive();
-	System.out.println("(" + g + ")' = " + f);
-	System.out.println("has some values");
-	for (int i = 0; i < 4; i++) {
-	    Scalar x = vf.valueOf(i);
-	    System.out.println("(" + x + "|" + f.apply(x) + ")\t");
-	} 
-	f = h.derive();
-	System.out.println("(" + h + ")' = " + f);
-	System.out.println("has some values");
-	for (int i = 0; i < 4; i++) {
-	    Scalar x = vf.valueOf(i);
-	    System.out.println("(" + x + "|" + f.apply(x) + ")\t");
-	} 
-	f = f.derive();
-	System.out.println("(" + f + ")' = " + f);
-	System.out.println("has some values");
-	for (int i = 0; i < 4; i++) {
-	    Scalar x = vf.valueOf(i);
-	    System.out.println("(" + x + "|" + f.apply(x) + ")\t");
-	} 
-    } 
+	}
+    }
 }

@@ -117,7 +117,7 @@ public class CRTApplication{
 	// print nonnegative normalized representation of the solution
 	// (since the number of days is not negative)
 	System.out.println("              (== " +
-			   (((Integer)AlgebraicAlgorithms.chineseRemainder(x,m)).intValue() + umod.intValue()) % umod.intValue() + ")");
+			   (((Integer)AlgebraicAlgorithms.chineseRemainder(x,m).representative()).intValue() + umod.intValue()) % umod.intValue() + ")");
 	System.out.println("is unique modulo: " + umod);
 	System.out.println();
 

@@ -59,7 +59,7 @@ public class SubstitutionImpl implements Substitution, Serializable {
     }
 	
 	
-    //@todo we should not continue substituting bound variables, as in (&forall; x P(x,y))[x->t] = (&forall; x P(x,y))
+    //@todo we should not continue substituting bound variables, as in (&forall; x P(x,y))[x->t] = (&forall; x P(x,y)) or (&lambda; x . f(x))[x->t] = &lambda; x . f(x)
     public Object apply(Object term) {
 	// apply the first substitution that matches and do not descend
 	for (Iterator/*_<Matcher>_*/ i = replacements.iterator(); i.hasNext(); ) {
@@ -129,7 +129,7 @@ public class SubstitutionImpl implements Substitution, Serializable {
 	//@xxx a funny gjc error requires the cast to (Function).
 	//return orbital.math.functional.Functionals.map((Function) this, (Object) term);
 	else if (term instanceof Iterator)
-	    throw new IllegalArgumentException("iterators are not supported, since they should not be required at all");
+	    throw new IllegalArgumentException("iterators are not supported, since they should not be necessary for substitution at all");
 	else
 	    // atomic
             /*

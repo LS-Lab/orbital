@@ -68,11 +68,11 @@ public class FunctorSpec {
 	    };
 	Function.Composite f = Functionals.compose(fo, fl, fr);
 	f.setNotation(Notation.PREFIX);
-	System.out.println("prefix notation" + f);
+	System.out.println("prefix notation :\t" + f);
 	f.setNotation(Notation.INFIX);
-	System.out.println("infix notation" + f);
+	System.out.println("infix notation  :\t" + f);
 	f.setNotation(Notation.POSTFIX);
-	System.out.println("postfix notation " + f);
+	System.out.println("postfix notation:\t" + f);
     } 
 	
     public static class DisambiguatedFunctor implements Functor {

@@ -211,7 +211,10 @@ public class Values {
      * @todo introduce valueOf(BigInteger) and valueOf(BigDecimal) some day. However, care about non-associative precisions.
      */
     public Integer valueOf(java.math.BigInteger val) {
-	throw new UnsupportedOperationException("conversion from " + val.getClass() + " is not currently supported, first convert it to a primitive type, instead");
+	if (MathUtilities.isin(val.longValue(), (java.lang.Long.MIN_VALUE>>1), (java.lang.Long.MAX_VALUE>>1)))
+	    return valueOf(val.longValue());
+	else
+	    throw new UnsupportedOperationException("conversion from " + val.getClass() + " is not currently supported, first convert it to a primitive type, instead");
     }
 
     // real scalar value constructors - facade factory
@@ -1295,10 +1298,12 @@ public class Values {
      * classes are those induced by the {@link AlgebraicAlgorithms#reduce(java.util.Collection,java.util.Comparator) reduction}
      * operator.  </p>
      * @param m the {@link AlgebraicAlgorithms#groebnerBasis(Set,Comparator) Groebner basis}
-     * modulo whose generated ideal (m) to form the quotients.
+     *  modulo whose generated ideal (m) to form the quotients.
      * @param monomialOrder the monomial order applied for reducing polynomials.
+     * @pre m = AlgebraicAlgorithms.groebnerBasis(m,monomialOrder)
      */
     public /*<R implements Arithmetic>*/ Quotient/*<Polynomial<R,S>>*/ quotient(Polynomial/*<R,S>*/ a, java.util.Set/*_<Polynomial<R,S>>_*/ m, java.util.Comparator/*_<S>_*/ monomialOrder) {
+	assert m.equals(AlgebraicAlgorithms.groebnerBasis(m,monomialOrder)) : m + " is a Groebner basis with respect to " + monomialOrder;
 	return new AbstractQuotient(a, m, monomialOrder);
     }
 

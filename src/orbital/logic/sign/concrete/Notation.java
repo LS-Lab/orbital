@@ -657,6 +657,7 @@ public abstract class Notation implements Serializable, Comparable {
     /**
      * Contains initial functors who have a default notation set, in precedence order.
      * In the same order as {@link #initialFunctorNotation}
+     * @todo couldn't we switch to storing this in MathExpressionSyntax.coreSignature()
      * @invariant sorted, i.e. precedenceOf[i] < precedenceOf[i+1]
      */
     //TODO: use List(new KeyValuePair()) instead of functorList<->functorNotation synchronization

@@ -45,7 +45,7 @@ public class ClassConsistencyCheck implements Runnable {
     }
 
     public void run() {
-	//@fixme this somehow does not work, but ignore even Eicar insstead
+	//@fixme this somehow does not work, but ignores even Eicar insstead
 	boolean hasEquals = hasDeclaredMethod("equals", new Class[] {Object.class}) != null;
 	boolean hasHashCode = hasDeclaredMethod("hashCode", new Class[] {}) != null;
 	if (hasEquals != hasHashCode)
