@@ -136,10 +136,6 @@ import orbital.algorithm.Combinatorical;
  * @todo refactorize common ideas into a super class
  * @todo introduce &#407;ukasiewicz logic
  * @todo Especially provide forall as a functional (higher-order function) of lambda-operator then (@see note to orbital.logic.functor.Substitition)
- * @fixme we prove contradictious things with SEMANTIC_INFERENCE:
- *  |= (2+3<5)
- *  NOT|= (2+3<5) | a
- *  |= (2+3<7) | a
  */
 public class ClassicalLogic extends ModernLogic {
     private static final boolean PI_SYNTACTICAL_SUBSTITUTION = true;
@@ -519,7 +515,6 @@ public class ClassicalLogic extends ModernLogic {
 	     new NotationSpecification(500, "fx", Notation.PREFIX)},
 	    {typeSystem.set(),
 	     new NotationSpecification(500, "fx", Notation.PREFIX)},
-	    //@fixme debug why we print (s->truth)->truth as s->truth->truth
 	    {typeSystem.map(),
 	     new NotationSpecification(500, "xfx", Notation.INFIX)},
 	    {typeSystem.product(),
@@ -565,7 +560,6 @@ public class ClassicalLogic extends ModernLogic {
 	     new NotationSpecification(914, xfy, Notation.INFIX)},
 	    {LogicFunctions.or,           // "|"
 	     new NotationSpecification(916, xfy, Notation.INFIX)},
-	    //@fixme (a->b)->c gets formatted as a -> b -> c, just as a->(b->c)
 	    {LogicFunctions.impl,         // "->"
 	     new NotationSpecification(920, "xfy", Notation.INFIX)},
 	    {LogicFunctions.reverseImpl, // "<-"
@@ -1523,7 +1517,9 @@ public class ClassicalLogic extends ModernLogic {
 	}
 
 	// interpret sigmaComb in all possible ways
-	return new Iterator() {
+	return sigmaComb.isEmpty()
+	    ? Collections.singleton(new InterpretationBase(sigma, new HashMap())).iterator()
+	    : new Iterator() {
 		final Combinatorical comb = Combinatorical.getPermutations(sigmaComb.size(), 2, true);
 		public Object next()
 		{
