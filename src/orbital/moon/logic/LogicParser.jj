@@ -925,7 +925,7 @@ Expression Atom() :
  * Parse a compound predicate formula for the current logic.
  */
 Expression CompoundFormula() :
-{Token tok; Expression p; Expression[] arg;}
+{Token tok; Type type; Expression p; Expression[] arg;}
 {
     LOOKAHEAD(2)
     p = EqualityExpression()
@@ -933,6 +933,11 @@ Expression CompoundFormula() :
 |
     tok = <IDENTIFIER> arg = Arguments()
 	{return apply(tok, arg, TRUTH);}
+|   LOOKAHEAD(2)
+    "[" tok = <IDENTIFIER> ":" type = typeUse() "]" arg = Arguments()
+	{return composeWrapper(tok,
+			       scope.getSymbol(tok.image, type, true),
+			       arg);}
 |
     p = LambdaAbstractionPredicate() arg = Arguments()
         {
