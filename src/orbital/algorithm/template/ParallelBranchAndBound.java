@@ -19,11 +19,47 @@ import orbital.math.Real;
 /**
  * Parallel branch-and-bound algorithm.
  * <p>
- * Visits the next nodes in parallel and bound by the best solution known.
- * Even though the implementation uses a stack of nodes, due to the parallel nature
- * this algorithm behaves much like a {@link BreadthFirstSearch}.
- * However, the scheduling policy of the thread scheduler may introduce a probabilistic
- * behaviour in execution speed.
+ * Visits the next nodes in parallel and bound by the best solution
+ * known. Even though the implementation uses a stack of nodes, due
+ * to the parallel nature this algorithm behaves much like {@link
+ * BreadthFirstSearch}. However, the scheduling policy of the thread
+ * scheduler may introduce a probabilistic behaviour in execution
+ * speed.
+ * </p>
+ * <h3 id="theory">Multi-Processors versus Multi-Threading on a Single-Processor</h3>
+ * <p>
+ * Parallel algorithms profit much from multi-processors, but their
+ * benefits are nevertheless not limited to those machines. Even
+ * single-processor systems can experience a speed-up when using a
+ * parallel variant of a simple algorithm.
+ * </p>
+ * <p>
+ * The <dfn>speed-up</dfn> <var>S(n)</var> := T(1)/T(n)
+ * in execution time <var>T(n)</var>
+ * on an <var>n</var> processor system is in general in
+ * 1&le;S(n)&le;I(n)&le;<var>n</var>, with
+ * I(n) := P(n)/T(n) being the <dfn>parallel index</dfn> of mean
+ * parallelization on an <var>n</var> processor system
+ * (P(n) := number of operations on <var>n</var> processors).
+ * </p>
+ * <p>
+ * However, in rare cases super-linear speed-ups of <var>S(n)</var>&gt;<var>n</var>
+ * can be observed due to synergy effects, even though they impossible
+ * from a theoretical perspective. In fact, they result from comparing
+ * slightly different(!) algorithms, or from more memory or larger caches.
+ * Yet, when they occur these advantages should be exploited.
+ * </p>
+ * <p>
+ * ParallelBranchAndBound very often is such a case where super-linear
+ * speed-ups occur, because a parallel depth-first search no longer is
+ * depth-first in the large. In combination with the bounding, the
+ * synergetic effects result from the fact that the one thread's
+ * success may simplify another thread's job. By its sheer
+ * parallelity, the parallel depth-first branch-and-bound more
+ * resembles breadth-first search inspite of its implementation
+ * similarity with depth-first search. And this explains why using
+ * ParallelBranchAndBound can result in a better performance even on
+ * single-processor systems.
  * </p>
  *
  * @version 1.0, 2000/09/22
