@@ -313,7 +313,7 @@ public class StandardTypeSystem implements TypeSystem {
 	private static final Type logicalTypeDeclaration = _TYPE;
 	protected TypeObject() {}
 
-	public TypeSystem typeSystem() {
+	public final TypeSystem typeSystem() {
 	    return typeSystem;
 	}
 	
@@ -1331,12 +1331,15 @@ public class StandardTypeSystem implements TypeSystem {
      * This implementation compares for arity in favor of domain-type in favor of codomain-type.
      * </p>
      * @see orbital.logic.functor.Functor.Specification#compareTo(Object)
+     * @todo 19 optimize this hotspot during proving
      */
     public static final Comparator LEXICOGRAPHIC = new Comparator() {
 	    public int compare(Object a, Object b) {
 		return compare((Type)a, (Type)b);
 	    }
 	    private final int compare(Type a, Type b) {
+		//@todo how about using the comparisonPriority?
+		
 		int order = Types.arityOf(a) - Types.arityOf(b);
 		if (order != 0)
 		    return order;
