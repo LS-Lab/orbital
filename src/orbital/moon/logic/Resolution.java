@@ -82,23 +82,14 @@ import java.util.logging.Level;
 class Resolution implements Inference {
     private static final boolean UNDER_CONSTRUCTION = false;
     private static final boolean ASYNCHRONOUS_EXPAND = false;
-    private static final Logger logger = Logger.getLogger(Resolution.class.getPackage().getName());
-    private static final ClassicalLogic logic = new ClassicalLogic();
-	
     /**
      * Whether or not to use simplified clausal forms.
      */
     private static final boolean SIMPLIFYING = false;
 
-    /**
-     * contradictory clause &empty; &equiv; &#9633; &equiv; &perp;.
-     * <p>
-     * The contradictory set of clauses is {&empty;}={&#9633;}
-     * while the tautological set of clauses is {}.
-     * </p>
-     */
-    public static final Set/*_<Formula>_*/ CONTRADICTION = Collections.EMPTY_SET;
-
+    private static final Logger logger = Logger.getLogger(Resolution.class.getPackage().getName());
+    private static final ClassicalLogic logic = new ClassicalLogic();
+	
     private static final Formula FORMULA_FALSE = (Formula) logic.createAtomic(new SymbolBase("false", Types.TRUTH));
     private static final Formula FORMULA_TRUE = (Formula) logic.createAtomic(new SymbolBase("true", Types.TRUTH));
 	
@@ -135,7 +126,7 @@ class Resolution implements Inference {
         // convert B to clausalForm knowledgebase
         Set/*_<Set<Formula>>_*/ knowledgebase = new HashSet();
         for (Iterator i = skolemizedB.iterator(); i.hasNext(); ) {
-	    knowledgebase.addAll(clausalForm((Formula) i.next()));
+	    knowledgebase.addAll(Utilities.clausalForm((Formula) i.next(), SIMPLIFYING));
 	}
 
 	// factorize and remove tautologies
@@ -145,7 +136,7 @@ class Resolution implements Inference {
 	    final Set factorizedF = factorize(F);
 	    if (factorizedF != null)
 		F = factorizedF;
-	    if (F.equals(CONTRADICTION))
+	    if (F.equals(Utilities.CONTRADICTION))
 		throw new IllegalStateException("knowledge base is inconsistent since it already contains a contradiction, so ex falso quodlibet");
 	    else if (isElementaryValid(F, F))
 		// if F is obviously valid, forget about it for resolving a contradiction
@@ -165,7 +156,7 @@ class Resolution implements Inference {
 	Formula skolemizedQuery = Utilities.dropQuantifiers(Utilities.skolemForm(query));
 
         // convert (negated) query to clausalForm S, forming the initial set of support
-	Set S = clausalForm(skolemizedQuery);
+	Set S = Utilities.clausalForm(skolemizedQuery, SIMPLIFYING);
 
 	// factorize and remove tautologies
     	// for all clauses F&isin;S
@@ -174,7 +165,7 @@ class Resolution implements Inference {
 	    final Set factorizedF = factorize(F);
 	    if (factorizedF != null)
 		F = factorizedF;
-	    if (F.equals(CONTRADICTION))
+	    if (F.equals(Utilities.CONTRADICTION))
 		// note that we could just as well check for contradictions prior to factorizing, because factorization does not introduce contradictions
 		throw new IllegalStateException("the query already contains a contradiction");
 	    if (isElementaryValid(F, F))
@@ -201,6 +192,19 @@ class Resolution implements Inference {
 	// assuming knowledge base W is consistent, we are refutation-complete
 	return true;
     }
+
+    /**
+     * A (non-admissible) heuristic that prefers smaller length of clauses for resolving.
+     * @internal in each resolution step only one literal is resolved so the size decreases by one
+     *  (apart from cases where the same literals occur in both clauses being resolved).
+     */
+    private final Function heuristic = new Function() {
+	    private final Values valueFactory = Values.getDefaultInstance();
+	    public Object apply(Object o) {
+		Set R = ((Proof)o).resolvent;
+		return valueFactory.valueOf(R == null ? 0 : R.size());
+	    }
+	};
 
     /**
      * @internal we identify S=A here such that we can perform all work in actions().
@@ -245,7 +249,7 @@ class Resolution implements Inference {
         public boolean isSolution(Object n) {
 	    final Set/*_<Set<Formula>>_*/ S = ((Proof) n).setOfSupport;
 	    // solely rely on goal lookahead (see below)
-	    final boolean goal = S.size() == 1 && S.contains(CONTRADICTION);
+	    final boolean goal = S.size() == 1 && S.contains(Utilities.CONTRADICTION);
 	    logger.log(Level.FINE, "isSolution=={0} of the clauses {1}", new Object[] {new Boolean(goal), S});
 	    return goal;
     	}
@@ -260,16 +264,16 @@ class Resolution implements Inference {
                 	// choose any clause G&isin;S
                 	for (ListIterator i = listS.listIterator(); i.hasNext(); ) {
 			    final Set/*_<Formula>_*/ G = (Set) i.next();
-			    final Signature	     GVariables = clausalFreeVariables(G);
+			    final Signature	     GVariables = Utilities.clausalFreeVariables(G);
 			    boolean		     resolvable = false;
-			    assert !G.equals(CONTRADICTION) : "already checked for goal in isSolution() although this is somewhat less performant. So we do not need to check again in actions()";
+			    assert !G.equals(Utilities.CONTRADICTION) : "already checked for goal in isSolution() although this is somewhat less performant. So we do not need to check again in actions()";
     
 			    // if we already tried to resolve F with G, we don't need to resolve G with F, again, so
 			    // choose any clause F&isin;W&cup;S (that does not occur before G in S)
 			    for (Iterator i2 = new SequenceIterator(new Iterator[] {knowledgebase.iterator(), listS.listIterator(i.previousIndex())});
 				 i2.hasNext(); ) {
 				Set/*_<Formula>_*/ F = (Set) i2.next();
-				final Signature	   FVariables = clausalFreeVariables(F);
+				final Signature	   FVariables = Utilities.clausalFreeVariables(F);
 				final Signature	   overlappingVariables = GVariables.intersection(FVariables);
 				if (!overlappingVariables.isEmpty()) {
 				    // make a variant of F such that the variables of F and G are disjunct
@@ -282,11 +286,11 @@ class Resolution implements Inference {
 				    resolvable = true;
 				    Set/*_<Formula>_*/ R = (Set)resolvents.next();
 				    // goal lookahead
-				    if (R.equals(CONTRADICTION)) {
+				    if (R.equals(Utilities.CONTRADICTION)) {
 					logger.log(Level.FINE, "resolved contradiction {0} from {1} and {2}",  new Object[] {R, F, G});
 					// construct a special clause, that only contains the contradiction (in order to simplify isSolution)
-					resumedReturn(new Proof(Collections.singleton(CONTRADICTION), R));
-					// cut the search tree after resuming with {CONTRADICTION} as clauses
+					resumedReturn(new Proof(Collections.singleton(Utilities.CONTRADICTION), R));
+					// cut the search tree after resuming with {Utilities.CONTRADICTION} as clauses
 					return;
 				    }
 				    
@@ -360,7 +364,7 @@ class Resolution implements Inference {
 			if (factorizedR != null)
 			    R = factorizedR;
 
-			// @internal for perfect performance (and catastrophal structure) could already perform a goal lookahead by R.equals(CONTRADICTION)
+			// @internal for perfect performance (and catastrophal structure) could already perform a goal lookahead by R.equals(Utilities.CONTRADICTION)
 
 			resolvents.add(R);
 		    }
@@ -370,17 +374,6 @@ class Resolution implements Inference {
 	}
     }
 
-
-    /**
-     * A heuristic that prefers smaller length of clauses for resolving.
-     */
-    private final Function heuristic = new Function() {
-	    private final Values valueFactory = Values.getDefaultInstance();
-	    public Object apply(Object o) {
-		Set R = ((Proof)o).resolvent;
-		return valueFactory.valueOf(R == null ? 0 : R.size());
-	    }
-	};
 
     /**
      * The state during a proof (i.e. a set of formulas forming the current set of support).
@@ -413,109 +406,6 @@ class Resolution implements Inference {
     }	    
 
     
-    // clause and clause set handling
-	
-    /**
-     * Transforms into clausal form.
-     * <p>
-     * Defined per structural induction.
-     * </p>
-     * @todo assert
-     */
-    public static final Set/*_<Set<Formula>>_*/ clausalForm(Formula f) {
-	try {
-	    return clausalFormClauses(Utilities.conjunctiveForm(f, SIMPLIFYING));
-	}
-	catch (IllegalArgumentException ex) {
-	    throw (AssertionError) new AssertionError(ex.getMessage() + " in " + Utilities.conjunctiveForm(f, SIMPLIFYING) + " of " + f).initCause(ex);
-	}
-    }
-    /**
-     * convert a formula (that is in CNF) to a set of clauses.
-     */
-    private static final Set/*_<Set<Formula>>_*/ clausalFormClauses(Formula term) {
-	//@todo assert assume right-associative nesting of &
-	if (term instanceof Composite) {
-            Composite f = (Composite) term;
-	    Object    op = f.getCompositor();
-	    //@todo could also query ClassicalLogic.LogicFunctions.and etc. from logic.coreInterpretation once
-	    if (op == ClassicalLogic.LogicFunctions.and) {
-		Formula[] components = (Formula[]) f.getComponent();
-		assert components.length == 2 : "binary " + op + "/" + components.length + " expected";
-		return Setops.union(clausalFormClauses(components[0]), clausalFormClauses(components[1]));
-	    } else if (op == ClassicalLogic.LogicFunctions.or) {
-		Formula[] components = (Formula[]) f.getComponent();
-		assert components.length == 2 : "binary " + op + "/" + components.length + " expected";
-		Set C = Setops.union(clausalFormClause(components[0]), clausalFormClause(components[1]));
-		return C.contains(FORMULA_TRUE) ? Collections.EMPTY_SET : singleton(C);
-	    } else if (op == ClassicalLogic.LogicFunctions.not) {
-		Object c = f.getComponent();
-		// evaluate constants
-		if (FORMULA_FALSE.equals(c))
-		    return clausalFormClauses(FORMULA_TRUE);
-		else if (FORMULA_TRUE.equals(c))
-		    return clausalFormClauses(FORMULA_FALSE);
-		return singleton(singleton(term));
-	    } else if (!(op instanceof ModernFormula.AtomicSymbol))
-		throw new IllegalArgumentException("conjunctive normal form should not contain " + op + " of " + op.getClass());
-        }
-	// atomic parts
-	return term.toString().equals("false")
-	    ? singleton(CONTRADICTION)
-	    : term.toString().equals("true")
-	    ? Collections.EMPTY_SET
-	    : singleton(singleton(term));
-    }
-    /**
-     * convert a formula (that is a disjunction of literals (from CNF)) to a single clause.
-     * @return the clause, note that the clause can be further collapsed if it contains true.
-     */
-    private static final Set/*_<Formula>_*/ clausalFormClause(Formula term) {
-	if (term instanceof Composite) {
-            Composite f = (Composite) term;
-	    Object    op = f.getCompositor();
-	    if (op == ClassicalLogic.LogicFunctions.or) {
-		Formula[] components = (Formula[]) f.getComponent();
-		assert components.length == 2 : "binary " + op + "/" + components.length + " expected";
-		return Setops.union(clausalFormClause(components[0]), clausalFormClause(components[1]));
-	    } else if (op == ClassicalLogic.LogicFunctions.not) {
-		Object c = f.getComponent();
-		// evaluate constants
-		if (FORMULA_FALSE.equals(c))
-		    return clausalFormClause(FORMULA_TRUE);
-		else if (FORMULA_TRUE.equals(c))
-		    return clausalFormClause(FORMULA_FALSE);
-		return singleton(term);
-	    } else if (op == ClassicalLogic.LogicFunctions.and)
-		throw new IllegalArgumentException("(right-associative) conjunctive normal form should not contain " + op + ". Make sure the formula is right-associative for &");
-	    else if (!(op instanceof ModernFormula.AtomicSymbol))
-		throw new IllegalArgumentException("conjunctive normal form should not contain " + op);
-        }
-	// atomic parts
-	return term.toString().equals("false")
-	    ? CONTRADICTION
-	    : singleton(term);
-    }
-
-    private static final Set singleton(Object o) {
-	Set r = new HashSet();
-	r.add(o);
-	return r;
-    }
-
-    /**
-     * Get the free variables of a formula represented as a clause.
-     * @return freeVariables(clause)
-     * @internal note that for clauses FV(C)=V(C) &and; BV(C)=&empty;
-     */
-    private static final Signature clausalFreeVariables(Set/*_<Formula>_*/ clause) {
-	// return banana (|&empty;,&cup;|) (map ((&lambda;x)x.freeVariables()), clause)
-	Set freeVariables = new HashSet();
-	for (Iterator i = clause.iterator(); i.hasNext(); )
-	    freeVariables.addAll(((Formula)i.next()).getVariables());
-	return new SignatureBase(freeVariables);
-    }
-
     /**
      * Get a variant of the clause F with the given variables renamed.
      * &alpha;-conversion
