@@ -65,7 +65,9 @@ public class FunctionTest extends check.TestCase {
         */
 
 	try {
-	    ml = MathLinkFactory.createKernelLink("-linkmode launch -linkname 'f:/Progra~1/math/MathKernel.exe'");
+	    ml = MathLinkFactory.createKernelLink("-linkmode launch -linkname '"
+						  + System.getProperty("com.wolfram.jlink.kernel")
+						  + "'");
 	    ml.setComplexClass(ComplexAdapter.class);
 
 	    // Get rid of the initial InputNamePacket the kernel will send
