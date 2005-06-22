@@ -22,7 +22,7 @@ import java.util.logging.Level;
  * Encapsulates a whole sequence of expressions into a single compound expression.
  *
  *
- * @author <a href="mailto:">Andr&eacute; Platzer</a>
+ * @author Andr&eacute; Platzer
  * @version 1.1, 2002-11-28
  */
 class ExpressionSequence implements Expression.Composite {

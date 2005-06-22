@@ -35,7 +35,7 @@ import orbital.logic.functor.Predicate;
  * at runtime.
  * </p>
  *
- * @author <a href="mailto:">Andr&eacute; Platzer</a>
+ * @author Andr&eacute; Platzer
  * @version 1.1, 2002-09-08
  * @see TypeSystem
  * @see Typed#getType()

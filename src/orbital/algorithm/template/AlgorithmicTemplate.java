@@ -78,7 +78,7 @@ public interface AlgorithmicTemplate/*<Problem extends AlgorithmicProblem, Solut
      * Does not yet provide any additional parameters which would really justify the use
      * of algorithmic configurations because of their benefits. Instead, this class is used
      * as the base class for such algorithmic configuration implementations.
-     * @author <a href="mailto:">Andr&eacute; Platzer</a>
+     * @author Andr&eacute; Platzer
      * @version 1.1, 2002-11-13
      */
     public static /*abstract*/ class Configuration implements AlgorithmicConfiguration, Serializable {
@@ -153,7 +153,7 @@ public interface AlgorithmicTemplate/*<Problem extends AlgorithmicProblem, Solut
 	 * Flexible implementation of algorithmic configuration objects with properties at runtime.
 	 * This implementation will dynamically set the given bean property values at runtime.
 	 *
-	 * @author <a href="mailto:">Andr&eacute; Platzer</a>
+	 * @author Andr&eacute; Platzer
 	 * @version 1.1, 2002-11-15
 	 */
 	private static class FlexibleConfiguration extends AlgorithmicTemplate.Configuration {

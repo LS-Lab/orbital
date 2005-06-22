@@ -22,7 +22,7 @@ import dkfz.collections.graph.view.*;
  * Clauses that trace the proof for obtaining a proof DAG.
  *
  *
- * @author <a href="mailto:NOSPAM@functologic.com">Andr&eacute; Platzer</a>
+ * @author Andr&eacute; Platzer
  * @version 1.1, 2003-11-10
  * @version-revision $Revision$, $Date$
  */

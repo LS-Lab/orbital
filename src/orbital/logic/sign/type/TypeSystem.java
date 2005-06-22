@@ -22,7 +22,7 @@ import orbital.logic.functor.BinaryFunction;
  * </pre>
  * </p>
  *
- * @author <a href="mailto:">Andr&eacute; Platzer</a>
+ * @author Andr&eacute; Platzer
  * @version 1.1, 2003-01-18
  * @note Type constructors with list or set parameters usually also accept them as
  * {@link orbital.util.Utility#isIteratable(Object) generalized iteratable}

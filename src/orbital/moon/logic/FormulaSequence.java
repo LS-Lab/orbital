@@ -20,7 +20,7 @@ import orbital.logic.sign.Expression;
  * A list of formulas (or even expressions) that also plays the role of a formula.
  * Most method calls do not (yet) make sense on this object.
  *
- * @author <a href="mailto:NOSPAM@functologic.com">Andr&eacute; Platzer</a>
+ * @author Andr&eacute; Platzer
  * @version 1.1, 2003-02-03
  * @version-revision $Revision$, $Date$
  */

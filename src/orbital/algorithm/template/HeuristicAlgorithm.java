@@ -64,7 +64,7 @@ public interface HeuristicAlgorithm extends EvaluativeAlgorithm {
 
     /**
      * Algorithmic configuration objects for heuristic algorithms.
-     * @author <a href="mailto:">Andr&eacute; Platzer</a>
+     * @author Andr&eacute; Platzer
      * @version 1.1, 2002-11-13
      * @todo move to HeuristicAlgorithm.Configuration ?
      */

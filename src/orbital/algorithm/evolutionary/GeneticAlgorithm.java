@@ -347,7 +347,7 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
 
     /**
      * Algorithmic configuration objects for genetic algorithms.
-     * @author <a href="mailto:">Andr&eacute; Platzer</a>
+     * @author Andr&eacute; Platzer
      * @version 1.1, 2002-11-13
      * @todo what about SteadyStateGeneticAlgorithm.setNumberOfReplacements()
      */

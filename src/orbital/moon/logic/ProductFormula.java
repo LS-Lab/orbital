@@ -20,7 +20,7 @@ import orbital.logic.sign.Expression;
  * A product/tuple of formulas (or even expressions) that also plays the role of a formula.
  * Most method calls do not (yet) make sense on this object.
  *
- * @author <a href="mailto:NOSPAM@functologic.com">Andr&eacute; Platzer</a>
+ * @author Andr&eacute; Platzer
  * @version 1.2, 2003-11-15
  * @version-revision $Revision$, $Date$
  */

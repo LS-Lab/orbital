@@ -56,7 +56,7 @@ import java.util.logging.Level;
  * </ol>
  * </p>
  *
- * @author <a href="mailto:">Andr&eacute; Platzer</a>
+ * @author Andr&eacute; Platzer
  * @version 1.1, 2003-01-18
  * @see Type
  */

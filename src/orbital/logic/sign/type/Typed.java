@@ -11,7 +11,7 @@ package orbital.logic.sign.type;
  * (explicitly modelled) {@link Type type} implement this
  * interface. This especially includes expressions and symbols.
  *
- * @author <a href="mailto:NOSPAM@functologic.com">Andr&eacute; Platzer</a>
+ * @author Andr&eacute; Platzer
  * @version 1.1, 2003-01-18
  * @version-revision $Revision$, $Date$
  * @see Type

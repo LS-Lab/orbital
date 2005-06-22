@@ -22,7 +22,7 @@ import java.util.logging.Level;
  * Encapsulates a product/tuple of expressions forming a single compound expression.
  *
  *
- * @author <a href="mailto:">Andr&eacute; Platzer</a>
+ * @author Andr&eacute; Platzer
  * @version 1.2, 2003-11-15
  */
 class ProductExpression implements Expression.Composite {

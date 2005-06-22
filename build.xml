@@ -353,7 +353,7 @@
                  footer="&lt;b&gt;Orbital library&lt;/b&gt;&lt;br /&gt;${version}: ${timestamp}"
 		 overview="${doc}/overview.html"
                  Private="${doc.internal}">
-            <bottom><![CDATA[<span style='font-size: smaller; font-style: italic;'>Copyright &copy; 1996-2003 Andr&eacute; Platzer<br />All Rights Reserved.</span>]]></bottom>
+            <bottom><![CDATA[<span style='font-size: smaller; font-style: italic;'>Copyright &copy; 1996-2005 Andr&eacute; Platzer<br />All Rights Reserved.</span>]]></bottom>
  	    <packageset dir="${sources}" defaultexcludes="no"
  	         excludes="orbital,orbital/robotic/strategy,orbital/util/graph,orbital/moon,orbital/moon/aspects,orbital/moon/deprecated,orbital/moon/math/**,orbital/moon/logic/bridge,orbital/moon/logic/sign/type,orbital/moon/awt/virtual,orbital/util/logging">
  	        <include name="orbital/**"/>

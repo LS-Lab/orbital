@@ -12,7 +12,7 @@ import java.util.EventObject;
  * Field change event indicates that a <code>Field</code> has changed.
  *
  *
- * @author <a href="mailto:NOSPAM@functologic.com">Andr&eacute; Platzer</a>
+ * @author Andr&eacute; Platzer
  * @version 1.1, 2003-01-03
  * @see Field
  */

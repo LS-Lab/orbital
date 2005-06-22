@@ -18,7 +18,7 @@ import java.util.logging.Level;
  * Specialized propositional logic inference.
  * Implemented by Davis-Putnam-Loveland algorithm.
  *
- * @author <a href="mailto:">Andr&eacute; Platzer</a>
+ * @author Andr&eacute; Platzer
  * @version 1.1, 2002-11-29
  */
 class PropositionalInference implements Inference {

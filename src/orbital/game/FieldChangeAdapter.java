@@ -12,7 +12,7 @@ package orbital.game;
  * listener objects.
  *
  *
- * @author <a href="mailto:NOSPAM@functologic.com">Andr&eacute; Platzer</a>
+ * @author Andr&eacute; Platzer
  * @version 1.1, 2003-01-03
  */
 public class FieldChangeAdapter implements FieldChangeListener{

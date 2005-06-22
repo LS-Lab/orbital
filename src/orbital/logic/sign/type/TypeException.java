@@ -10,7 +10,7 @@ package orbital.logic.sign.type;
  * Thrown whenever an exception due to invalid typing occurs.
  *
  *
- * @author <a href="mailto:NOSPAM@functologic.com">Andr&eacute; Platzer</a>
+ * @author Andr&eacute; Platzer
  * @version 1.1, 2003-01-25
  * @version-revision $Revision$, $Date$
  */

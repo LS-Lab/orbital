@@ -12,7 +12,7 @@ import java.io.*;
  * Utility class supporting field change event management.
  *
  *
- * @author <a href="mailto:NOSPAM@functologic.com">Andr&eacute; Platzer</a>
+ * @author Andr&eacute; Platzer
  * @version 1.1, 2003-01-03
  * @see java.beans.PropertyChangeSupport
  * @see java.awt.AWTEventMulticaster

@@ -31,7 +31,7 @@ import java.util.logging.Level;
  * and configure it according to their needs.
  * </p>
  *
- * @author <a href="mailto:">Andr&eacute; Platzer</a>
+ * @author Andr&eacute; Platzer
  * @version 1.1, 2002-09-08
  * @see TypeSystem
  */

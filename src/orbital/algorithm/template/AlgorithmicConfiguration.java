@@ -28,7 +28,7 @@ package orbital.algorithm.template;
  * @structure association class of the relation solving:AlgorithmicTemplate&times;AlgorithmicProblem
  * @structure aggregates algorithm:AlgorithmicTemplate (derived)
  * @structure aggregates problem:AlgorithmicProblem (derived)
- * @author <a href="mailto:">Andr&eacute; Platzer</a>
+ * @author Andr&eacute; Platzer
  * @version 1.1, 2002-11-13
  * @see AlgorithmicProblem
  * @see AlgorithmicTemplate
