@@ -345,7 +345,7 @@
                  author="true"
                  version="false"
                  use="true"
-		 additionalparam="-source 1.4 -docfilessubdirs -excludedocfilessubdir CVS:**/CVS"
+		 additionalparam="-source 1.4 -docfilessubdirs -excludedocfilessubdir CVS:**/CVS -keywords"
 
                  windowtitle="Orbital"
                  doctitle="Orbital library&lt;br&gt;API Specification"
