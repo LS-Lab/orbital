@@ -55,7 +55,7 @@ import orbital.util.Utility;
  * @structure aggregate graphs:java.util.List<ChartModel.Entry> unidirectional
  * @structure aggregate range:Range n-sized unidirectional
  * @structure aggregate scale:Vector n-sized unidirectional
- * @version 0.9, 1999/03/16
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class ChartModel implements Serializable {
@@ -409,7 +409,7 @@ public class ChartModel implements Serializable {
      * @structure aggregate attributes:java.util.Map unidirectional
      * 
      * @stereotype Structure
-     * @version 0.9, 1999/03/23
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      */
     public class Entry implements Serializable {

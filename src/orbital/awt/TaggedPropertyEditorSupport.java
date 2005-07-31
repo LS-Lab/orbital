@@ -16,7 +16,7 @@ import orbital.math.MathUtilities;
  * A PropertyEditor base for tagged properties.
  * Derive to generate a concrete PropertyEditor class.
  * 
- * @version 0.9, 2000/03/13
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @todo could introduce an InternationalizedBeanInfo which reads all SimpleBeanInfo information from a resource bundle.
  *  Thereby generalize RhythmomachiaRulesBeanInfo, either at compile-time like TaggedPropertyEditorSupport, or dynamically in _Default_Customizer.

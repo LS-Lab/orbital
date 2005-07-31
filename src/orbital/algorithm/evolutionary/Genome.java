@@ -26,7 +26,7 @@ import orbital.logic.functor.Function;
  * <p>
  * Genomes provide fitness caching and clearing.</p>
  * 
- * @version 1.0, 2000/03/28
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @todo move to package orbital.algorithm.representation or anything
  */

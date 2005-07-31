@@ -17,7 +17,7 @@ import java.util.ListIterator;
  * and select the "adequate" object from a list of weights.</p>
  * <p>Implementing classes are usually stateless.</p>
  * 
- * @version 0.9, 04/03/96
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see orbital.util.Filters
  */
@@ -137,7 +137,7 @@ public interface Selection {
 /**
  * SelectionImpl class declaring a basic selection algorithm of a weighted Strategy.
  * 
- * @version 0.9, 04/03/96
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 abstract class SelectionImpl implements Selection {

@@ -36,7 +36,7 @@ import orbital.util.InnerCheckedException;
  * and almost declarative algorithmic problem hook.</p>
  * 
  * @structure aggregates problem:AlgorithmicProblem
- * @version 1.0, 2000/07/07
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see AlgorithmicProblem
  * @see <a href="{@docRoot}/Patterns/Design/Strategy.html">&asymp;Strategy</a>
@@ -79,7 +79,7 @@ public interface AlgorithmicTemplate/*<Problem extends AlgorithmicProblem, Solut
      * of algorithmic configurations because of their benefits. Instead, this class is used
      * as the base class for such algorithmic configuration implementations.
      * @author Andr&eacute; Platzer
-     * @version 1.1, 2002-11-13
+     * @version $Id$
      */
     public static /*abstract*/ class Configuration implements AlgorithmicConfiguration, Serializable {
 	private static final long serialVersionUID = -3040364728746853685L;
@@ -154,7 +154,7 @@ public interface AlgorithmicTemplate/*<Problem extends AlgorithmicProblem, Solut
 	 * This implementation will dynamically set the given bean property values at runtime.
 	 *
 	 * @author Andr&eacute; Platzer
-	 * @version 1.1, 2002-11-15
+	 * @version $Id$
 	 */
 	private static class FlexibleConfiguration extends AlgorithmicTemplate.Configuration {
 	    private static final long serialVersionUID = 8767047546408218154L;

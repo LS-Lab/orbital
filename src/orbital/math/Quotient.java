@@ -88,7 +88,7 @@ import orbital.logic.functor.Function;
  * </pre>
  * </p>
  *
- * @version 1.1, 2002/01/12
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see <a href="doc-files/AlgebraicStructures.html#quotient">Quotient Structures</a>
  * @see Values#quotient(Arithmetic,Function)

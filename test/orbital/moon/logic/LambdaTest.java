@@ -11,7 +11,7 @@ import java.io.*;
 
 /**
  * A sample test case, testing ClassicalLogic.
- * @version 1.1, 2002-11-24
+ * @version $Id$
  */
 public class LambdaTest extends check.TestCase {
     public static void main(String[] args) {

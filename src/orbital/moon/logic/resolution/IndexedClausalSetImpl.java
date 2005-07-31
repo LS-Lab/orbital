@@ -19,7 +19,7 @@ import orbital.logic.sign.*;
 
 /**
  * Implementation of a representation of a set of clauses with clause indexing.
- * @version 1.2, 2004-01-07
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see ClauseIndex
  * @internal straightforward combination of ClausalSetImpl and ClauseIndex

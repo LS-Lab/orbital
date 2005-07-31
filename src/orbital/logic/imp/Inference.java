@@ -159,7 +159,7 @@ import orbital.logic.Relation;
  *     i.e all that is a logical consequence is deducable.</dd>
  * </dl>
  * 
- * @version 1.0, 1999/02/09
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @invariants true
  * @see Formula

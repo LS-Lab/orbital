@@ -10,7 +10,7 @@ package orbital.logic;
  * An Exception thrown if a recursive algorithm is explicitly stopped
  * during recursion.
  * 
- * @version 0.9, 20/12/98
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class RecursionStoppedException extends RuntimeException {

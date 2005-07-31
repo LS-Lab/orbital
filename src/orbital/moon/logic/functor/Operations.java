@@ -28,7 +28,7 @@ import orbital.util.Utility;
  * </p>
  * From now on, a set <span class="set">D</span> of designated truth-values is fixed.
  * 
- * @version 1.1, 2002-08-30
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see orbital.math.functional.Functionals#compose(Function, Function)
  * @see orbital.math.functional.Functionals#genericCompose(BinaryFunction, Object, Object)

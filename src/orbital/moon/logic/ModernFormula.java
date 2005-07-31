@@ -37,8 +37,8 @@ import orbital.math.MathUtilities;
 
 /**
  * The formula implementation of (usually truth-functional) modern logic.
- * @version 0.8, 1999/01/16
- * @version 0.7, 1999/01/16
+ * @version $Id$
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @internal in fact, we currently don't rely on LogicBasis anyway.
  */
@@ -387,7 +387,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
     /**
      * Encapsulates the common implementation part of composite formulas.
      * @author  Andr&eacute; Platzer
-     * @version 1.1, 2002-11-10
+     * @version $Id$
      */
     static abstract class AbstractCompositeFormula extends ModernFormula implements Composite {
 	protected AbstractCompositeFormula(Notation notation) {
@@ -746,7 +746,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 
     /**
      * n-ary
-     * @version 1.1, 2002-11-25
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see orbital.math.functional.ComponentCompositions.ComponentCompositeFunction
      */

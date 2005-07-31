@@ -114,7 +114,7 @@ import orbital.logic.sign.type.TypeException;
  * 
  * @structure extends ExpressionSyntax
  * @invariants true
- * @version 1.0, 2001/01/14
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see orbital.logic.sign.Signature
  * @see Formula

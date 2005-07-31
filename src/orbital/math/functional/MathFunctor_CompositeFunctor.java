@@ -21,7 +21,7 @@ import orbital.util.Utility;
 	 * 
 	 * @structure inherits orbital.logic.functor.Functor.Composite.Abstract
 	 * @structure inherits MathFunctor.AbstractFunctor
-	 * @version 1.0, 2000/08/23
+	 * @version $Id$
 	 * @author  Andr&eacute; Platzer
 	 */
 	abstract class MathFunctor_CompositeFunctor extends AbstractFunctor implements MathFunctor.Composite {

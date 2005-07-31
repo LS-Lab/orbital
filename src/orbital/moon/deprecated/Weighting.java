@@ -18,7 +18,7 @@ import orbital.logic.functor.Function;
  * <p>User-Defined Weighting-Algorithms must simply implement this Interface
  * and calc the weight of a situation-Object.</p>
  * 
- * @version 0.9, 04/03/96
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @deprecated Since Orbital1.0 use super class orbital.logic.functor.Function<Object, Number> instead.
  */

@@ -19,7 +19,7 @@ import orbital.logic.sign.*;
 
 /**
  * Manages a clause index.
- * @version 1.2, 2004-01-08
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class ClausalIndex {

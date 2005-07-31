@@ -67,7 +67,7 @@ import orbital.util.Utility;
  * In fact, solving a POMDP can be quite complex.
  * </p>
  *
- * @version 1.0, 2000/10/11
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see MarkovDecisionProcess
  * @see <a href="http://www.ldc.usb.ve/~hector">Hector Geffner. Modelling and Problem Solving</a>
@@ -102,7 +102,7 @@ public interface MarkovDecisionProblem extends TransitionModel/*<A,S,O extends T
      * of the action taken to reach it.
      * </p>
      * @stereotype Structure
-     * @version 1.0, 2002/05/30
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      */
     static interface Transition extends TransitionModel.Transition {
@@ -125,7 +125,7 @@ public interface MarkovDecisionProblem extends TransitionModel/*<A,S,O extends T
      * Default implementation of transition options for Markov decision processes.
      * @stereotype Structure
      * @stereotype Implementation
-     * @version 1.0, 2002/05/30
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      */
     public static class DefaultTransition implements Transition, Serializable {

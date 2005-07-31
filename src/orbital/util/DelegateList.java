@@ -18,7 +18,7 @@ import java.util.Collection;
  * a DelegateCollection can also be used as a delegate for Lists due
  * to the identical interfaces differing only by semantics.</p>
  *
- * @version 0.9, 2000/09/05
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class DelegateList/*<A>*/ extends DelegateCollection/*<A>*/ implements List/*<A>*/ {

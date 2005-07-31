@@ -12,7 +12,7 @@ import orbital.util.Callback;
  * DataAnalyzer encapsulates a callback for byte stream analysis.
  * It works much like an <tt>orbital.logic.functor.Predicate</tt>.
  * 
- * @version 0.9, 1999/11/05
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see orbital.logic.functor.Predicate
  * @see orbital.util.Callback

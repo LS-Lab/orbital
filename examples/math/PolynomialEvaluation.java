@@ -6,7 +6,7 @@ import orbital.logic.functor.*;
  *
  *
  * @author Andr&eacute; Platzer
- * @version 1.0, 2002-08-15
+ * @version $Id$
  */
 
 public class PolynomialEvaluation{

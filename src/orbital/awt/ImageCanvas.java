@@ -20,7 +20,7 @@ import java.io.Serializable;
 /**
  * A Canvas displaying an Image.
  * 
- * @version 0.9, 03/03/98
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class ImageCanvas extends Canvas implements ImageObserver, Serializable {

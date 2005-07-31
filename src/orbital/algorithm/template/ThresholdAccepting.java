@@ -27,7 +27,7 @@ import java.util.logging.Level;
  * At temperature 0 this algorithm equals ordinary hill-climbing.
  * </p>
  *
- * @version 1.0, 2002/06/02
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see SimulatedAnnealing
  * @see HillClimbing
@@ -87,7 +87,7 @@ public class ThresholdAccepting extends ScheduledLocalOptimizerSearch {
 
     /**
      * An iterator over a state space in (probabilistic) greedy order for threshold accepting.
-     * @version 1.0, 2001/08/01
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      */
     private static class OptionIterator extends LocalOptimizerSearch.OptionIterator {

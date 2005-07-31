@@ -40,7 +40,7 @@ import java.util.HashSet;
  *  Due to C/Java memory storage conventions (storing columns consequtively),
  *  this has great effect on performance.
  *  Fortran memory storage conventions are exactly the other way around.
- * @version 1.0, 2002-08-07
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractProductArithmetic implements Tensor/*<R>*/, Serializable {
@@ -190,7 +190,7 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractProdu
     /**
      * Grants access to a tensor with automatic index transformation.
      * @author Andr&eacute; Platzer
-     * @version 1.0, 2002-08-11
+     * @version $Id$
      * @structure delegates m:AbstractTensor (minimal part)
      */
     static abstract class TransformedAccessTensor/*<R implements Arithmetic>*/ extends AbstractTensor/*<R>*/ {

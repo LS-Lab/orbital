@@ -13,7 +13,7 @@ package orbital.robotic;
  * 
  * @structure inherit Position
  * @structure inherit Direction
- * @version 0.9, 04/03/98
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class Moving extends Position {

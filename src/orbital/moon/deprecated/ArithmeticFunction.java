@@ -21,7 +21,7 @@ import orbital.math.Values;
  * <b><i>Evolves</i>:</b> Could as well be unified with orbital.math.functional.Function
  * in this case we would need a class adapter for default arithmetic operations on functions.</p>
  * 
- * @version 0.7, 2000/08/13
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @since Orbital1.0
  * @deprecated Integrated into orbital.math.functional.Function since Orbital1.0.

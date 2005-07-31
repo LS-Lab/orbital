@@ -26,7 +26,7 @@ import java.util.logging.Level;
  * @stereotype Structure
  * @structure implements Symbol
  * @structure implements java.io.Serializable
- * @version 1.0, 2001/04/07
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @internal this is not the most beautiful name, but InterpretationBase and SignatureBase are much more suggestive than DefaultInterpretation and DefaultSignature which were really the wrong names from a logical point of view.
  */

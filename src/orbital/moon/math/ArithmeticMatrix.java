@@ -18,7 +18,7 @@ import orbital.util.Utility;
  * The components m<sub>i,j</sub> in A are Arithmetic objects.</p>
  * 
  * @structure composite D:Arithmetic[][] unidirectional
- * @version 1.0, 2000/08/08
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 class ArithmeticMatrix/*<R implements Arithmetic>*/ extends AbstractMatrix/*<R>*/ {

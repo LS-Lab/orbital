@@ -38,7 +38,7 @@ package orbital.math;
  *   <li>&forall;a,b&isin;R&#8726;{0} &exist;gcd(a,b)&isin;R &and; (gcd(a,b)) = (a,b)</li>
  * </ul>
  *
- * @version 1.1, 2001/12/09
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @todo provide super interface for elements of factorial rings that provide a method R[] factorize()
  */

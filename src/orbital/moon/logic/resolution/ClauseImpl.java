@@ -33,7 +33,7 @@ import java.util.logging.Level;
  * {L<sub>1</sub>,...,L<sub>n</sub>} is a different notation for the
  * disjunction L<sub>1</sub>&or;...&or;L<sub>n</sub>.
  *
- * @version 0.8, 2003-04-23
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @xxx Should we provide implements Composite for unify to work on whole clauses? do unifiable clauses with a different initial number of literals unify? Not in our implementation, I'm afraid.
  */

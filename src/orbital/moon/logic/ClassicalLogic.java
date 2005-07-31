@@ -126,9 +126,9 @@ import orbital.algorithm.Combinatorical;
  * which is called propositional logic, has a simple sound and complete calculus that makes
  * it decidable.
  * </p>
- * @version 1.1.2.2, 2003-11-08
- * @version 0.8, 1999/01/16
- * @version 0.7, 1999/01/16
+ * @version $Id$
+ * @version $Id$
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see "G&ouml;del, Kurt (1930). &Uuml;ber die Vollst&auml;digkeit des Logikkalk&uuml;s. PhD Thesis, University of Vienna."
  * @see "G&ouml;del, Kurt (1931). &Uuml;ber formal unentscheidbare S&auml;tze der Principia mathematica und verwandter Systeme I. Monatshefte f&uuml;r Mathematik und Physik, 38:173-198."
@@ -341,7 +341,7 @@ public class ClassicalLogic extends ModernLogic {
     
     /**
      * Specifies the nference mechanism applied for the {@link ClassicalLogic#inference() inference relation}.
-     * @version 1.1, 2002-09-14
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see <a href="{@docRoot}/Patterns/Design/enum.html">typesafe enum pattern</a>
      * @internal typesafe enumeration pattern class to specify fuzzy logic operators
@@ -642,7 +642,7 @@ public class ClassicalLogic extends ModernLogic {
 
     /**
      * Converts a type to a formula representing a type.
-     * @version 1.1, 2003-02-05
+     * @version $Id$
      * @author Andr&eacute; Platzer
      * @see LogicParser#asType(Expression)
      */
@@ -971,7 +971,7 @@ public class ClassicalLogic extends ModernLogic {
      * that a is syntactically well-formed, c.f. Tarski semantics).
      * </p>
      * @author Andr&eacute; Platzer
-     * @version 2002/07/15
+     * @version $Id$
      * @see orbital.logic.trs.Substitutions#lambda
      * @note &lambda; has no functional interpretation, regardless of whether eager or lazy evaluation is used.
      * @internal note that regarding &forall;x a as &forall(&lambda;x.a) may consume a little more time since one additional composition must be considered for unifications. However, the more systematic concept and simplified (since localized) handling of bindings is worth it. Also quantifiers are functional, then, and only &lambda; is not.
@@ -1090,7 +1090,7 @@ public class ClassicalLogic extends ModernLogic {
      * Do we need meta-language, and then meta-meta-language, or not?
      * (&Pi;x.term) in turn is required to type &lambda;.
      * @author Andr&eacute; Platzer
-     * @version 1.1, 2002-11-10
+     * @version $Id$
      * @fixme This class captures interpretations of s:* in some cases, like nested Pis.
      */
     private static class PiAbstractionExpression extends ModernFormula.AbstractCompositeFormula {
@@ -1196,7 +1196,7 @@ public class ClassicalLogic extends ModernLogic {
      * (&Pi;x.term):*&rarr;* type.
      * @see PiAbstractionExpression
      * @author Andr&eacute; Platzer
-     * @version 1.1, 2002-11-10
+     * @version $Id$
      * @xxx in fact this is not truely a type :* but a constructor? :*->*
      */
     static class PiAbstractionType implements Type.Composite {
@@ -1371,7 +1371,7 @@ public class ClassicalLogic extends ModernLogic {
      * this conversion has the type
      * (&Pi;x:*.t) &rarr; (&Pi;x:*.t)(&alpha;) = t[x&#8614;&alpha;]
      * @author Andr&eacute; Platzer
-     * @version 1.1, 2002-11-19
+     * @version $Id$
      * @internal currently this is only type conversion and has nothing to do with the particular task of &Pi;-application.
      * @internal note that this is (almost) like ModernFormula.FixedAtomicSymbol(logic, new SymbolBase("<to " + applied + ">",typeSystem.map(abstraction, applied),null,false), Functions.id, false). Apart from getSignature and equals/hashCode.
      */
@@ -1628,7 +1628,7 @@ public class ClassicalLogic extends ModernLogic {
      * Formula transformation utilities.
      * @stereotype Utilities
      * @stereotype Module
-     * @version 1.0, 1999/01/16
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see orbital.util.Utility
      * @todo introduce ringForm(Formula) transforming to ring normal from (RNF) over {&and;,xor}
@@ -2031,7 +2031,7 @@ public class ClassicalLogic extends ModernLogic {
 	 * but afterwards skolemize the given variable away.
 	 * </p>
 	 *
-	 * @version 0.9, 2001/07/14
+	 * @version $Id$
 	 * @author  Andr&eacute; Platzer
 	 * @attribute meta
 	 * @todo could also skolemize second-order quantified predicates

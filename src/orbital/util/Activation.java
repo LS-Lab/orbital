@@ -40,7 +40,7 @@ package orbital.util;
  * If their Activation instances are constructed such that they resume or retry the operations.
  * Even ordinary terminal ones can do this, but only when used within their own <span class="keyword">try</span>..<span class="keyword">catch</span> blocks (and loops).
  * 
- * @version 0.9, 1999/10/15
+ * @version $Id$
  * @author  Axel-Tobias Schreiner
  * @author  Bernd K&uuml;hl
  * @author  Andr&eacute; Platzer

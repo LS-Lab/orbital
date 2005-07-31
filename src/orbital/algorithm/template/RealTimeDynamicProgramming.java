@@ -57,7 +57,7 @@ import java.util.logging.Level;
  * RTDP collapses to LRTA<sup>*</sup>.</p>
  *
  * @invariants getDiscount()&isin;[0,1]
- * @version 1.0, 2000/10/11
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Greedy
  * @see DynamicProgramming

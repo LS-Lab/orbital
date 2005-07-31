@@ -131,8 +131,8 @@ import java.util.Collection;
  * <!-- especially consider that Cayley proved that every group can be embedded into a permutation group -->
  * </blockquote>
  *
- * @version 1.0, 2002/02/19
- * @version 0.9, 2001/06/20
+ * @version $Id$
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Substitutions
  * @see Substitutions#getInstance(Collection)
@@ -182,7 +182,7 @@ public interface Substitution extends Function/*<Object, Object>*/ {
      * to replace the matched term with another term, if required.
      * </p>
      *
-     * @version 0.9, 2001/06/21
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see Substitutions#createExactMatcher(Object, Object)
      * @see Substitutions#createExactMatcher(Object)

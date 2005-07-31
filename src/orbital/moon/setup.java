@@ -44,7 +44,7 @@ import orbital.signe;
  * Runnable application setup program.
  * 
  * @stereotype Tool
- * @version 0.8,, 2000/06/24
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class setup extends WizardView implements Runnable, GUITool {

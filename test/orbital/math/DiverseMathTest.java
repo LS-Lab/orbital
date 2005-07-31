@@ -10,7 +10,7 @@ import junit.framework.*;
  * A test case, integrating some assertion-aware programs from
  * examples/math/.  This case simply integrates the assertions of the
  * examples, even though they do not cover all testing issues.
- * @version 1.2, 2003-07-21
+ * @version $Id$
  */
 public class DiverseMathTest extends check.TestCase {
     public static void main(String[] args) {

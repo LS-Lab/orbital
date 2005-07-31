@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
  * may be useful for search graphs that are not <a href="GeneralSearchProblem.html#locallyFinite">locally finite</a>.
  * </p>
  *
- * @version 0.8, 2001/05/09
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see PackageUtilities#restrictTop(int,GeneralSearchProblem,Function)
  * @attribute usually inferior to {@link IterativeDeepening}
@@ -86,7 +86,7 @@ public class IterativeBroadening extends DepthFirstBoundingSearch {
     /**
      * An iterator over a state space in depth-first order
      * respecting the current bounds for the breadth of the search space that is subject to expansion.
-     * @version 1.0, 2001/08/01
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      */
     public class OptionIterator extends DepthFirstSearch.OptionIterator {

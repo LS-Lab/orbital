@@ -20,7 +20,7 @@ import java.util.logging.Level;
  * <p>
  * Assumes that the network is represented as a matrix graph.</p>
  *
- * @version 0.9, 2001/06/14
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @invariant this instanceof MatrixGraph
  */

@@ -30,7 +30,7 @@ import orbital.logic.sign.type.TypeException;
  * </p>
  * 
  * @invariants true
- * @version 1.0, 2000/02/23
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public interface ExpressionSyntax extends ExpressionBuilder {

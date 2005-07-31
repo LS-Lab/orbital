@@ -58,8 +58,8 @@ import orbital.util.InnerCheckedException;
  * This Interface can then start an AI on request via {@link GameRules#startAIntelligence(String)}.
  * 
  * @stereotype UI
- * @version 1.1, 2003-01-03
- * @version 1.0, 2000-02-26
+ * @version $Id$
+ * @version $Id$
  * @author Andr&eacute; Platzer
  * @see <a href="doc-files/Game.html">Game applet parameter example</a>
  * @attribute resources = menubar and popup menu

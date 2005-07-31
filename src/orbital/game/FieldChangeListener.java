@@ -12,7 +12,7 @@ import java.util.EventListener;
  * Interface for listeners on changes occuring on a field.
  *
  * @author Andr&eacute; Platzer
- * @version 1.1, 2003-01-03
+ * @version $Id$
  * @see Field
  */
 public interface FieldChangeListener extends EventListener {

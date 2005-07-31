@@ -21,7 +21,7 @@ import java.io.Serializable;
  * use the evaluation function -f instead of f.
  * </p>
  *
- * @version 1.0, 2001/07/30
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public interface EvaluativeAlgorithm/*<S>*/ extends AlgorithmicTemplate {
@@ -40,7 +40,7 @@ public interface EvaluativeAlgorithm/*<S>*/ extends AlgorithmicTemplate {
      * <p>
      * For highest performance it might prove useful to cache most recent values
      * of the evaluation function.</p>
-     * @version 1.0, 2000/09/20
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      */
     public static class EvaluationComparator implements Comparator, Serializable {

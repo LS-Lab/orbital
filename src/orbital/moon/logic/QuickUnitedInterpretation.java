@@ -23,7 +23,7 @@ import orbital.logic.functor.Functor;
  * This is intended to be used for getting the union of a problem-specific interpretation
  * and the Quick interpretation, quickly.
  * 
- * @version 1.0, 2001/11/17
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @internal note the following construct will only assure core interpretation unless core is overwritten (which he should never be anyway)
  *  I = new QuickUnitedInterpretation(ClassicalLogic._coreInterpretation, I);

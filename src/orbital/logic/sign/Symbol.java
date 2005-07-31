@@ -64,7 +64,7 @@ import orbital.logic.sign.concrete.Notation.NotationSpecification;
  * @structure is String&times;Type&times;Notation.NotationSpecification
  * @structure extends orbital.logic.trs.Variable
  * @structure extends Comparable<Symbol,Symbol>
- * @version 1.0, 2001/04/07
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Signature
  * @see <a href="concrete/doc-files/NamingConvention.html">Naming convention</a>

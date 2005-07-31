@@ -14,7 +14,7 @@ import orbital.math.functional.Functions;
 /**
  * Framework (template class) for Divide and Conquer Algorithms.
  * <p>top-down technique</p>
- * @version 1.0, 2000/06/22
+ * @version $Id$
  * @author Uwe A&szlig;mann
  * @author  Andr&eacute; Platzer
  * @attribute stateless

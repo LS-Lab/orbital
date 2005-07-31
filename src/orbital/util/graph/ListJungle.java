@@ -14,7 +14,7 @@ import java.util.Arrays;
  * Encapsulates a jungle implemented with adjacence lists.
  * A jungle is a directed acyclic graph with exactly one root.
  * 
- * @version 0.9, 2000/07/15
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class ListJungle extends ListGraph {

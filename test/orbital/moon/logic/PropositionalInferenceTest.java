@@ -10,7 +10,7 @@ import junit.framework.*;
 
 /**
  * A sample test case, testing PropositionalInference.
- * @version 1.1, 2002-11-29
+ * @version $Id$
  * @attribute run-time 5min assuming java -da
  * @attribute run-time 6h 10min assuming java -ea
  */

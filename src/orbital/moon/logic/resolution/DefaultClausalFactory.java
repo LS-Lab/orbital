@@ -16,7 +16,7 @@ import orbital.moon.logic.ClassicalLogic.Utilities;
 
 /**
  * Factory for clauses and clausalsets.
- * @version 1.2, 2004-01-07
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see <a href="{@docRoot}/Patterns/Design/AbstractFactory.html">Abstract Factory</a>
  */

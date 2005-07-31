@@ -9,7 +9,7 @@ import java.util.zip.*;
 /**
  * Creates the pattern database for the Rubik's cube heuristic.
  * 
- * @version 0.9, 2000/09/24
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @internal note that our heuristic does not always return zero for (rotation symmetric) goal states! The same goes true for states that can more easily be reached from rotated states.
  */

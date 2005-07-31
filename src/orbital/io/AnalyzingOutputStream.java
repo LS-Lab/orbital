@@ -15,7 +15,7 @@ import java.io.IOException;
  * to all bytes written to the underlying OutputStream.
  * The analyzer will only be notified when no exception occured while writing.
  * 
- * @version 0.9, 1999/11/05
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class AnalyzingOutputStream extends FilterOutputStream {

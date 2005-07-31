@@ -43,7 +43,7 @@ import java.awt.event.InputEvent;
  * to the system.
  * </p>
  * 
- * @version 1.0, 2000/03/31
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @todo enhance documentation
  */

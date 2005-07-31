@@ -30,7 +30,7 @@ import java.io.PrintStream;
  * }
  * </pre>
  * 
- * @version 0.9, 2000/03/11
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Throwable#getCause()
  * @see Throwable#initCause(Throwable)

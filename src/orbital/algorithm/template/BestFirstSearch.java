@@ -25,7 +25,7 @@ import orbital.util.Setops;
  * <p>
  * Implementation data structure is a Heap.</p>
  *
- * @version 1.0, 2000/09/17
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Greedy
  */
@@ -40,7 +40,7 @@ public abstract class BestFirstSearch extends GeneralSearch implements Evaluativ
      * An iterator over a state space in best-first order.
      * Expands nodes with better f-costs, first.
      * @invariants isSorted(nodes)
-     * @version 1.0, 2001/08/01
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      */
     public static class OptionIterator extends GeneralSearch.OptionIterator {

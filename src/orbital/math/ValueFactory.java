@@ -31,7 +31,7 @@ import orbital.logic.functor.Function;
  * and size.
  * </p>
  * 
- * @version 1.1, 2002-12-06
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see <a href="{@docRoot}/Patterns/Design/AbstractFactory.html">Abstract Factory</a>
  * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade</a>

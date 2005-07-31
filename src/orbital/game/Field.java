@@ -33,7 +33,7 @@ import java.util.logging.Level;
  * For performance reasons, it is recommended to overwrite {@link #expand()} with a
  * faster game-specific version that replaces the generic implementation.</p>
  * 
- * @version 1.0, 11/07/98
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @events FieldChangeEvent.SET_FIGURE(p) on {@link #setFigure(Position,Figure) setFigure(p,f)}.
  * @events FieldChangeEvent.MOVE on {@link #move(Position,Move)}.

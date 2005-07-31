@@ -16,7 +16,7 @@ import orbital.logic.functor.Functor;
  * 
  * @structure inherits orbital.logic.functor.BinaryFunction
  * @structure inherits orbital.math.functional.MathFunctor
- * @version 1.0, 2000/08/05
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @since Orbital1.0
  */
@@ -60,7 +60,7 @@ public interface BinaryFunction/*<A1 implements Arithmetic, A2 implements Arithm
      * @structure aggregate outer:BinaryFunction
      * @structure aggregate left:BinaryFunction
      * @structure aggregate right:BinaryFunction
-     * @version 1.0, 1999/03/16
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(BinaryFunction, BinaryFunction, BinaryFunction)
      */

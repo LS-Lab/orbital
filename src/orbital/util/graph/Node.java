@@ -12,7 +12,7 @@ import java.util.Iterator;
  * This interface encapsulates a general node of a graph.
  * It is provided with a reference to its adjacent neighbours.
  * 
- * @version 0.8, 14/11/98
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public interface Node {

@@ -44,7 +44,7 @@ import orbital.util.Utility;
  * </ul>
  * </p>
  * 
- * @version 1.0, 2000/07/31
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see DynamicProgrammingProblem
  * @see Greedy

@@ -21,7 +21,7 @@ import java.io.Serializable;
  * <p>
  * This is a so called <i>CARRY</i> (Container Array).
  * 
- * @version 0.9, 19/12/98
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @todo remove this class and all descendants replacing them by orbital.algorithm.template.*Search stuff
  */

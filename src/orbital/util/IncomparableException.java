@@ -12,7 +12,7 @@ import orbital.math.MathUtilities;
  * Thrown to indicate that two particular elements of a partial order are incomparable.
  *
  * @author Andr&eacute; Platzer
- * @version 1.1, 2002-09-11
+ * @version $Id$
  * @see Comparable
  * @see java.util.Comparator
  */

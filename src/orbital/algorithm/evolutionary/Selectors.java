@@ -17,7 +17,7 @@ import orbital.util.Utility;
  * Selectors <i>select</i> a parent from the genomes.
  * 
  * @stereotype Module
- * @version 1.0, 2000/11/01
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see orbital.util.Setops
  * @see orbital.util.Callback

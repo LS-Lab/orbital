@@ -163,7 +163,7 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
      * Represents a complex number a + <b>i</b>*b&isin;<b>C</b>.
      * The real and imaginary component values are doubles.
      * 
-     * @version 1.0, 1996/02/03
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      */
     static class ComplexImpl extends AbstractComplex {

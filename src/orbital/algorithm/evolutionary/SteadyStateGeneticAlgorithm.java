@@ -21,7 +21,7 @@ import java.util.logging.Level;
  * Note: to make sure this algorithm is compatible with {@link ParallelEvaluationPopulation}
  * each new genome that arises is evaluated prior to updating the populaiton.</p>
  * 
- * @version 1.0, 2001/03/30
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @structure delegate population:Population
  * @structure delegate selection:Function

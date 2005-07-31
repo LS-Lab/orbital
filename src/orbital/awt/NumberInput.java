@@ -25,7 +25,7 @@ import orbital.math.MathUtilities;
 /**
  * An InputField for Numbers which can be adjusted by +- buttons.
  * 
- * @version 0.9, 04/11/96
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see javax.swing.Spinner
  */

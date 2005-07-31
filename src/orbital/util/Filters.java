@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * <p>
  * Implementing classes are usually stateless.</p>
  * 
- * @version 1.0, 17/02/2000
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see orbital.logic.functor.Predicate
  * @see java.util.Collection

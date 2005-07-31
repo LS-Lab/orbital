@@ -75,7 +75,7 @@ import orbital.logic.functor.Function;
  * With a problem-specific implementation of the stop condition <code>isSolution()</code>
  * which could simply consider the number-of-generations, goodness-of-best-solution or convergence-of-population.
  * 
- * @version 1.0, 2000/03/28
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @invariants sub classes must support nullary constructor (for cloning)
  * @structure delegate population:Population
@@ -348,7 +348,7 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
     /**
      * Algorithmic configuration objects for genetic algorithms.
      * @author Andr&eacute; Platzer
-     * @version 1.1, 2002-11-13
+     * @version $Id$
      * @todo what about SteadyStateGeneticAlgorithm.setNumberOfReplacements()
      */
     public static class Configuration extends AlgorithmicTemplate.Configuration {

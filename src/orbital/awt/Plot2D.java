@@ -63,7 +63,7 @@ import java.util.logging.Level;
  * The time t is then in the specified range of the component with index 0.
  * 
  * @see ChartModel
- * @version 0.9, 1999/03/16
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class Plot2D extends Canvas implements Printable, Serializable {

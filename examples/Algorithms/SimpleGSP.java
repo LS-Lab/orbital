@@ -27,7 +27,7 @@ import java.util.*;
  * However, to complicate things a little bit, the agent must pay for each time
  * he passes the goal.
  * </p>
- * @version 1.0, 2001/09/24
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class SimpleGSP implements GeneralSearchProblem {

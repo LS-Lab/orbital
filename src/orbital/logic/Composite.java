@@ -24,7 +24,7 @@ package orbital.logic;
  * 
  * @structure aggregate compositor:Object
  * @structure aggregate component:Object
- * @version 1.1, 2002-11-27
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see <a href="{@docRoot}/Patterns/Design/Composite.html">(unidirectional and multiple) Composite Pattern</a>
  */

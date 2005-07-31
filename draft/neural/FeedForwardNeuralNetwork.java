@@ -24,7 +24,7 @@ import orbital.util.Utility;
 /**
  * A multilayer feed-forward neural network.
  *
- * @version 0.9, 2001/05/25
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @invariant vertices are kept in order of calculation that is in order of their layers.
  *  &and; <"on"-neuron> &cup; getInputLayer() &cup; getHiddenLayer() &cup; getOutputLayer() = getVertices()

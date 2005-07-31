@@ -10,7 +10,7 @@ import junit.framework.*;
 
 /**
  * A sample test case, testing ClassicalLogic.
- * @version 1.1, 2002-09-14
+ * @version $Id$
  */
 public class ClassicalLogicTest extends check.TestCase {
 

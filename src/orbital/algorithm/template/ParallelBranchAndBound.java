@@ -62,7 +62,7 @@ import orbital.math.Real;
  * single-processor systems.
  * </p>
  *
- * @version 1.0, 2000/09/22
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see BreadthFirstSearch
  * @todo aspect of parallel exploration.

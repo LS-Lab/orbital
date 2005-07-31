@@ -30,7 +30,7 @@ import orbital.logic.functor.Predicates;
  * The corresponding methods enabling us to do this are
  * {@link #productIndexSet(Arithmetic)}, {@link #iterator(Arithmetic)}, and {@link #newInstance(Object)}.
  * </p>
- * @version 1.0, 2002-08-12
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 abstract class AbstractProductArithmetic/*<R implements Arithmetic, T implements Arithmetic>*/ extends AbstractArithmetic implements Arithmetic, Serializable {

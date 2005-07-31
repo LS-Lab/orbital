@@ -15,7 +15,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 /**
  * Empty transferable to clear clipboard. Corresponds to <code>null</code>-Object.
  * 
- * @version 0.5, 1999/03/29
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public final class EmptyTransferable implements Transferable {

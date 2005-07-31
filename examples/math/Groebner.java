@@ -6,7 +6,7 @@ import java.util.*;
  * including construction of a Gr&ouml;bner basis.
  *
  * @author Andr&eacute; Platzer
- * @version 0.8, 2002-08-21
+ * @version $Id$
  */
 public class Groebner extends MathTest {
     private static final Comparator order = AlgebraicAlgorithms.DEGREE_REVERSE_LEXICOGRAPHIC;

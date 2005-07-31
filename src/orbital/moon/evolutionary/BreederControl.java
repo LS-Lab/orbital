@@ -65,7 +65,7 @@ import java.util.PropertyResourceBundle;
  *
  * @stereotype UI
  * @stereotype Tool
- * @version 0.9, 2000/03/19
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @todo could distribute BreederControl and the Server running the GeneticAlgorithm, remotely.
  */

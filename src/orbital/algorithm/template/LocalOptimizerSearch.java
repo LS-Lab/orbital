@@ -35,7 +35,7 @@ import orbital.math.Values;
  * to implement the traversal policy. Then they only have to provide the abstract
  * methods to implement the search algorithm.</p>
  *
- * @version 1.1, 2002/06/01
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @todo should we implement HeuristicAlgorithm and provide get/setHeuristic, just because most of our subclasses are?
  * @see Greedy
@@ -110,7 +110,7 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
     /**
      * The local selection mechanism used to evaluate states.
      * Determines which transitions may take part in attempts of acception.
-     * @version 1.1, 2002/06/04
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see <a href="{@docRoot}/Patterns/Design/enum.html">typesafe enum pattern</a>
      * @internal typesafe enumeration pattern class currently specifies whole OptionIterator
@@ -231,7 +231,7 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
      * <p>
      * It will pick a random move, but only accept some transitions.
      * </p>
-     * @version 1.1, 2002/06/01
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see TransitionPath
      * @internal optimized version of a TransitionPath sandwhiched with a TransitionModel and an action iterator.

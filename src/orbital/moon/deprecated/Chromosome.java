@@ -31,7 +31,7 @@ import orbital.util.Utility;
  * </p>
  * <p>This implementation uses a generic set of boolean-data as chromosome data.</p>
  * 
- * @version 1.0, 2000/03/28
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @deprecated since orbital1.0 Use Genome and Gene.BitSet instead.
  */

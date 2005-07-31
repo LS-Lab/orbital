@@ -16,7 +16,7 @@ import orbital.robotic.Position;
  * Sub-classes should return a weight for Pairs (((Field|Figure)|Move) in weight(a)
  * after calling MoveWeighting.weight.
  * 
- * @version 0.9, 04/03/96
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @deprecated Since Orbital 1.1 use {@link AdversarySearch} instead.
  */

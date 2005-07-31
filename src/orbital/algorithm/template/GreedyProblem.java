@@ -62,7 +62,7 @@ import java.util.List;
  * </small>
  * </p>
  *
- * @version 1.0, 2000/06/24
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Greedy
  * @todo What's the connection of filtered system of sets with topological filters?

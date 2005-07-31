@@ -16,7 +16,7 @@ import java.util.Iterator;
  * The components v<sub>i</sub> in A are Arithmetic objects.</p>
  * 
  * @structure composite D:R[] unidirectional
- * @version 1.0, 2000/08/08
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 class ArithmeticVector/*<R implements Arithmetic>*/ extends AbstractVector/*<R>*/ {

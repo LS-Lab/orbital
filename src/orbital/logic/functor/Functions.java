@@ -15,7 +15,7 @@ import orbital.util.Utility;
  * Function Implementations.
  * 
  * @stereotype Module
- * @version 1.0, 2000/08/03
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Functionals
  */
@@ -59,7 +59,7 @@ public final class Functions {
      * <i><b>Note:</b> this class will be made private soon, and checking for constant functions
      * will be made available in another way. So do not rely on the existence of this class.
      * </p>
-     * @version 0.9, 2000/08/01
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see Functionals#bind(Function, Object)
      * @note We allow checking for constant functions via this instanceof VoidFunction and this.apply().

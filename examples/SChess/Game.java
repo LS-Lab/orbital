@@ -12,7 +12,7 @@ import java.io.IOException;
 /**
  * Runnable application Game.
  *
- * @version 0.8, 2001/11/23
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class Game extends orbital.game.GameView {

@@ -12,7 +12,7 @@ import orbital.SP;
  * Enables all calls to assert ...) but wraps them inside a check for skipping
  * to get rid of the performance drawback of assertion checking calls.
  *
- * @version 0.9, 2000/10/15
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 aspect EnableSP extends SPUsage {

@@ -44,7 +44,7 @@ import java.util.LinkedList;
  * the number of type casts required.
  * </p>
  * 
- * @version 1.0, 2000/06/14
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Functor
  * @see Function
@@ -151,7 +151,7 @@ public class Functionals {
      * @structure aggregate outer:BinaryFunction
      * @structure aggregate left:Function
      * @structure aggregate right:Function
-     * @version 1.0, 2000/01/23
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(BinaryFunction, Function, Function)
      */
@@ -245,7 +245,7 @@ public class Functionals {
      * @structure aggregate outer:BinaryFunction
      * @structure aggregate left:Function
      * @structure aggregate right:Function
-     * @version 1.0, 2000/01/23
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(BinaryFunction, VoidFunction, VoidFunction)
      */
@@ -347,7 +347,7 @@ public class Functionals {
      * @structure aggregate outer:BinaryPredicate
      * @structure aggregate left:Function
      * @structure aggregate right:Function
-     * @version 1.0, 1999/03/16
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(BinaryPredicate, Function, Function)
      */
@@ -440,7 +440,7 @@ public class Functionals {
      * @structure aggregate outer:BinaryPredicate
      * @structure aggregate left:Function
      * @structure aggregate right:Function
-     * @version 1.0, 1999/03/16
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(BinaryPredicate, Function, Function)
      */
@@ -2114,7 +2114,7 @@ public class Functionals {
      * Anamorphism are special hylomorphisms
      * <center>&#12310;g,p&#12311; = &#12314;(&empty;,cons),(g,p)&#12315;</center>
      * </p>
-     * @version 1.0, 2000/06/14
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see Functionals#lense(Function, Predicate, Object)
      * @see <a href="http://wwwhome.cs.utwente.nl/~fokkinga/index.html#mmf91m">Meijer, E. and Fokkinga, M.M. and Paterson, R., Functional Programming with Bananas, Lenses, Envelopes and Barbed Wire, FPCA91: Functional Programming Languages and Computer Architecture, pp. 124--144, volume 523, Lecture Notes in Computer Science, Springer-Verlag, 1991.</a>
@@ -2201,7 +2201,7 @@ public class Functionals {
      * </center>
      * So it is very much like an anamorphism except for basevalue c instead of nil,
      * and f instead of list construction cons.</p>
-     * @version 1.0, 2000/06/14
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see Functionals#envelope(Object, BinaryFunction, Function, Predicate, Object)
      * @see <a href="http://wwwhome.cs.utwente.nl/~fokkinga/index.html#mmf91m">Meijer, E. and Fokkinga, M.M. and Paterson, R., Functional Programming with Bananas, Lenses, Envelopes and Barbed Wire, FPCA91: Functional Programming Languages and Computer Architecture, pp. 124--144, volume 523, Lecture Notes in Computer Science, Springer-Verlag, 1991.</a>
@@ -2295,7 +2295,7 @@ public class Functionals {
      * A paramorphism is denoted by barbed wires.
      * <center>this = <span class="barbedwireBracket">{|</span>b,f<span class="barbedwireBracket">|}</span></center>
      * </p>
-     * @version 1.0, 2000/06/14
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see Functionals#barbedwire(Object, BinaryFunction, Iterator)
      * @see Functionals#barbedwire(int, BinaryFunction, int)

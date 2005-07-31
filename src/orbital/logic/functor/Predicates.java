@@ -15,7 +15,7 @@ import orbital.logic.sign.concrete.Notation.NotationSpecification;
  * Predicate Implementations.
  * 
  * @stereotype Module
- * @version 0.7, 2001/05/25
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Functionals
  */
@@ -38,7 +38,7 @@ public final class Predicates {
      * A constant predicate.
      * <p>
      * constant &acirc;: {()}&rarr;Boole; () &#8614; a.</p>
-     * @version 0.9, 2001/07/22
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      */
     private static final class ConstantPredicate implements VoidPredicate {

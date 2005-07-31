@@ -22,7 +22,7 @@ import orbital.util.Utility;
  * 
  * @stereotype Utilities
  * @stereotype Module
- * @version 1.0, 1999/03/08
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see orbital.math.MathUtilities
  * @see orbital.algorithm.Combinatorical

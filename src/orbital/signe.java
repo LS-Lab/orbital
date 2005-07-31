@@ -20,7 +20,7 @@ import java.awt.TextArea;
 /**
  * signe showing Applet and Application or Thread-Runnable.
  * 
- * @version 1.0, 2000/09/29
+ * @version $Id$
  * @author Andr&eacute; Platzer
  * @exclude javadoc
  * @see java.lang.Package

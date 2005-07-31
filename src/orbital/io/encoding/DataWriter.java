@@ -27,7 +27,7 @@ import java.io.OutputStreamWriter;
  * a character cannot be written for any reason,
  * an <code>IOException</code> is thrown.</p>
  * 
- * @version 0.9, 2000/03/27
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see java.io.DataOutput
  * @see DataWriter

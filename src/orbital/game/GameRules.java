@@ -26,9 +26,9 @@ import java.awt.Image;
  * occurring in AdversarySearch.
  * </p>
  *
- * @version 1.2, 2003-12-07
- * @version 1.1, 2003-01-04
- * @version 0.9, 2000/02/26
+ * @version $Id$
+ * @version $Id$
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @note You are encouraged to implement this interface stateless in
  * order to simplify writing computer players, massively. Therefore

@@ -14,7 +14,7 @@ import orbital.math.RVector;
 /**
  * Heuristic that summarizes single feature heuristics with a neural network.
  *
- * @version 0.9, 2001/06/27
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public

@@ -17,7 +17,7 @@ import java.util.Map;
  * @deprecated We feel this predicate's use does not counter weight
  * the intention of a light-weight design.
  * It is seldom used but in case would be easy to implement again.
- * @version 0.9, 07/17/1997
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public

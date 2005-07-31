@@ -33,7 +33,7 @@ import orbital.math.MathUtilities;
  * recursive networks as well. In any case, the semantics have not been proven that well-founded,
  * then.</p>
  *
- * @version 0.9, 2001/05/25
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @invariant vertices are kept in order of calculation that is in order of their layers.
  * @see "Bryson, A. E. and Ho, Y.-C. (1969). Applied Optimal Control. Blaisdell, New York."

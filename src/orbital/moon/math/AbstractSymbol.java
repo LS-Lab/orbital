@@ -17,7 +17,7 @@ import orbital.util.Utility;
 
 /**
  * 
- * @version 1.0, 2000/08/11
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see orbital.math.functional.MathFunctor.AbstractFunctor
  * @XXX: think about constant and doubly definition of pointwise operations

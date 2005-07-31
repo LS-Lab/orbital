@@ -16,8 +16,8 @@ package orbital.logic.trs;
  * <code>o.{@link #isVariable()}</code> is <span class="keyword">true</span>.
  * </p>
  *
- * @version 0.8, 2001/11/09
- * @version 0.2, 2001/06/24
+ * @version $Id$
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @todo couldn't we get rid of constant/variable distinction if we simply introduced distinguishing bound variables/free variables instead? We would need an interface BoundingExpression or alike
  * @internal alternative get rid of isVariable() and dynamically implement Variable via java.lang.reflect.Proxy.

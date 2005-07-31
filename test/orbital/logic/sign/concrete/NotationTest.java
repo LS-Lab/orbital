@@ -15,7 +15,7 @@ import junit.framework.*;
 
 /**
  * A sample test case, testing Notation, formatting and parsing.
- * @version 1.1, 2004-10-02
+ * @version $Id$
  */
 public class NotationTest extends check.TestCase {
     private Logic syntax;

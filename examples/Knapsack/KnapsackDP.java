@@ -8,7 +8,7 @@ import orbital.math.MathUtilities;
  * 
  * @author Uwe A&szlig;mann
  * @author Andr&eacute; Platzer
- * @version %I%, %G%
+ * @version $Id$
  * @TODO: implements DynamicProgrammingProblem
  */
 public class KnapsackDP {

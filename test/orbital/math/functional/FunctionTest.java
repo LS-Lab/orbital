@@ -21,7 +21,7 @@ import orbital.util.*;
 /**
  * Automatic test-driver checking (some parts of) orbital.math.functional.* against Mathematica.
  *
- * @version 1.0, 2002-03-24
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @todo test Rational as well
  */

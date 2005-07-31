@@ -43,7 +43,7 @@ import java.util.logging.Level;
  * @structure extend List<Genome> sorted on descending {@link Genome#getFitness()}
  * @structure aggregate members:List<Genome>
  * @invariants sub classes must support nullary constructor (for cloning)
- * @version 1.0, 2000/03/28
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public abstract class Population implements Serializable /*//TODO: extends DelegateList<Genome> sometime, but this is sorted! */ {

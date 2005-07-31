@@ -18,7 +18,7 @@ import java.io.OutputStream;
  * interface behaviour of output streams exactly.
  * It is especially useful for testing purposes.
  * 
- * @version 0.9, 1999/03/21
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see RandomInputStream
  * @see <a href="{@docRoot}/Patterns/Design/Null.html">Null object</a>

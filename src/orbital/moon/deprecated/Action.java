@@ -11,7 +11,7 @@ package orbital.util;
  * of an action.
  * 
  * @deprecated Use more general orbital.logic.functor.Function instead.
- * @version 0.9, 04/03/96
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see orbital.logic.functor.Function
  */

@@ -23,7 +23,7 @@ import java.util.ArrayList;
  * With an EnablerDisabler, automation of updates can be promoted throughout a
  * GUI when data is opened or closed by the user.
  * 
- * @version 0.9, 1999/03/29
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see java.util.Observable
  */

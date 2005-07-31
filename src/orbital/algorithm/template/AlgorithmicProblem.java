@@ -26,7 +26,7 @@ package orbital.algorithm.template;
  * algorithms can even be interchanged at runtime.</p>
  * 
  * @structure depends AlgorithmicTemplate
- * @version 1.0, 2000/07/07
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see AlgorithmicTemplate
  * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>

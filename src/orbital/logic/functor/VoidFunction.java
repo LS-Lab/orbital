@@ -28,7 +28,7 @@ import orbital.logic.functor.Functor.Specification;
  * there are only |B| different void maps who are all {@link Functions#constant(Object) constant}.
  * </p>
  * 
- * @version 1.0, 1999/01/04
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Function
  */
@@ -62,7 +62,7 @@ public interface VoidFunction/*<B>*/ extends Functor {
      * @structure extends Functor.Composite
      * @structure aggregate outer:Function<D,B>
      * @structure aggregate inner:VoidFunction<D>
-     * @version 1.0, 2000/01/23
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(Function, VoidFunction)
      */

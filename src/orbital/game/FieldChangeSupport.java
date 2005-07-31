@@ -13,7 +13,7 @@ import java.io.*;
  *
  *
  * @author Andr&eacute; Platzer
- * @version 1.1, 2003-01-03
+ * @version $Id$
  * @see java.beans.PropertyChangeSupport
  * @see java.awt.AWTEventMulticaster
  */

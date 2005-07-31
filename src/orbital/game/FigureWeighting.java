@@ -18,7 +18,7 @@ import orbital.util.Pair;
 /**
  * FigureWeighting class base weights a Figure by summing up the weights of all possible valid moves.
  * 
- * @version 0.9, 04/03/96
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @deprecated Since Orbital 1.1 use {@link AdversarySearch} instead.
  */

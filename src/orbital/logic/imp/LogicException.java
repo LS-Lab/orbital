@@ -9,7 +9,7 @@ package orbital.logic.imp;
 /**
  * Thrown whenever an exception related to logic or a calculus occurs.
  * 
- * @version 1.0, 1999/03/04
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class LogicException extends RuntimeException {

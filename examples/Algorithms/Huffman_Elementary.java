@@ -21,7 +21,7 @@ import java.util.logging.Level;
  * such that some trailing bits at the end of the file may be "decoded" as well.
  * </p>
  *
- * @version 0.9, 2000/08/07
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Huffman
  */

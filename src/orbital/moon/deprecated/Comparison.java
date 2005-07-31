@@ -16,7 +16,7 @@ package orbital.logic;
  * 
  * @deprecated Use java.util.Comparator since JDK1.2
  * @see java.util.Comparator
- * @version 0.9, 07/06/97
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public

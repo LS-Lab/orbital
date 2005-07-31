@@ -19,7 +19,7 @@ import java.awt.BorderLayout;
 /**
  * A InputDialog displays a prompt waiting modally for input.
  * 
- * @version 0.9, 02/15/98
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see javax.swing.JOptionPane#showInputDialog(java.awt.Component, Object, String, int)
  */

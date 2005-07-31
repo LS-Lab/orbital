@@ -26,7 +26,7 @@ import java.util.LinkedList;
  * @structure implement Function<Object, Number>
  * @structure aggregate weighting:Function<Object, Number>
  * @structure aggregate selection:Selection
- * @version 0.9, 04/03/96
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @deprecated Since Orbital 1.1 use more general algorithms like
  *  {@link orbital.algorithm.template.HillClimbing} instead.

@@ -11,7 +11,7 @@ import java.io.*;
 
 /**
  * A sample test case, testing data writers.
- * @version 0.9, 1999/11/03
+ * @version $Id$
  * @internal-version may date back to up to 1998-13-11.
  */
 public class DataReaderTest extends check.TestCase {

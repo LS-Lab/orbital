@@ -13,7 +13,7 @@ import java.awt.TextArea;
 /**
  * This class is a TextAreaOutputStream.
  * 
- * @version 1.0, 1997/06/07
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 class TextAreaOutputStream extends OutputStream {

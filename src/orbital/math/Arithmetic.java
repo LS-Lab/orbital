@@ -99,7 +99,7 @@ package orbital.math;
  * dynamic dispatch with regard of the types of all arguments.
  * </p>
  * 
- * @version 1.0, 1999/08/16
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see orbital.math.functional.Operations
  * @see java.lang.Comparable

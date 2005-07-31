@@ -26,7 +26,7 @@ import java.util.logging.Level;
  * <p>
  * Better not try calling add() again while evaluate() is still running, although it should work.</p>
  * 
- * @version 0.7, 2001/03/30
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @invariants evaluators != null is final-like (either due to constructor call, or after a call to readObject).
  * @todo test

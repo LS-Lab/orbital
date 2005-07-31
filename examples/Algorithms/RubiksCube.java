@@ -49,7 +49,7 @@ import util.Basic;
  * Note that this minimum depth required still depends upon the exact
  * moves allowed.</p>
  * 
- * @version 0.9, 2000/09/22
+ * @version $Id$
  * @author  Ute Platzer
  * @author  Andr&eacute; Platzer
  * @see <a href="http://www.npac.syr.edu/projects/java/magic/">Visualization of Rubik's Cube</a>

@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.ListIterator;
 
 /**
- * @version 1.1, 2001/12/09
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @todo would we profit from extending AbstractPolynomial instead?
  */

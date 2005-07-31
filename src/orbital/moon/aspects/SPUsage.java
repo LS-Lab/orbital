@@ -11,7 +11,7 @@ import orbital.SP;
 /**
  * aspect with join points for assertion specification uses to manipulate assertion checking calls.
  *
- * @version 0.9, 2000/10/15
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 abstract aspect SPUsage {

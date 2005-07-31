@@ -10,7 +10,7 @@ package orbital.util;
 /**
  * A similarity measuring function.
  * 
- * @version 0.9, 2000/03/04
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see java.util.Comparator
  * @deprecated Use more general calculation of orbital.math.Metric, instead.

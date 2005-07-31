@@ -65,7 +65,7 @@ import orbital.math.MathUtilities;
  * even including {@link orbital.algorithm.evolutionary.Gene genetic data models}.
  * </p>
  *
- * @version 1.0, 2000/09/17
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see GeneralSearch
  * @see BacktrackingProblem

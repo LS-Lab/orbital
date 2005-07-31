@@ -10,7 +10,7 @@ import junit.framework.*;
 
 /**
  * A sample test case, testing.
- * @version 0.9, 1998-03-04
+ * @version $Id$
  */
 public class DirectionTest extends check.TestCase {
     private Direction dir;

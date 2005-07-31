@@ -16,7 +16,7 @@ import java.util.logging.Level;
  * Displays a table of all known AlgorithmicTemplate implementations
  * especially GeneralSearch descendants along with their properties like
  * complexity, use of heuristics, completenes, optimality, etc.
- * @version 1.0, 2001/07/30
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class AlgorithmicTable {

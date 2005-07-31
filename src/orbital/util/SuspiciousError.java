@@ -44,7 +44,7 @@ package orbital.util;
  * catch(ClassCastException oops) {throw new SuspiciousError("should not happen");}
  * </code></pre>
  * 
- * @version 1.0, 1999/08/07
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see java.lang.InternalError
  */

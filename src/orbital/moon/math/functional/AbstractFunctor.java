@@ -28,7 +28,7 @@ import orbital.math.Values;
  *
  * @structure inherits MathFunctor
  * @structure implements Arithmetic
- * @version 1.0, 2000/11/02
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @todo privatize?
  * @todo couldn't we transform this into a mere aspect? See orbital.moon.aspects.PointwiseArithmetic

@@ -24,7 +24,7 @@ import orbital.logic.Composite;
 
 
 /**
- * @version 0.7, 2002/05/09
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @stereotype Module
  * @todo provide a basis to derive from, such that impl is defined in terms of not and or.

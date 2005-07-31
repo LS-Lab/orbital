@@ -36,7 +36,7 @@ import java.util.Iterator;
  * implementing basic methods. Does not take (many) design decisions.
  * Defers the most implementation issues to abstract methods.
  * 
- * @version 1.1, 2002-12-06
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public abstract class AbstractValues extends Values {

@@ -30,7 +30,7 @@ import orbital.logic.functor.Predicate;
  * @structure subtypeOf Rational (needs contravariant parameters and covariant result)
  *  In order to realize <b>Z</b>&le;<b>Q</b> we embed <b>Z</b>&#8618;<b>Q</b>,
  *  implemented with multiple argument dynamic dispatch.
- * @version 1.0, 2000/08/03
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Values#valueOf(int)
  * @see Values#valueOf(long)

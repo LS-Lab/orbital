@@ -28,7 +28,7 @@ package orbital.math;
  * It is induced by a scalar product &hArr; ||a+b||<sup>2</sup> + ||a-b||<sup>2</sup> = 2||a||<sup>2</sup> + 2||b||<sup>2</sup>. This is the parallelogram identity.
  * </p>
  * 
- * @version 1.0, 2000/08/22
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Metric
  * @see java.lang.Comparable

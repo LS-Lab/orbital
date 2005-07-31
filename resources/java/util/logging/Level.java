@@ -37,7 +37,7 @@ import java.util.ResourceBundle;
  * they maintain the Object uniqueness property across serialization
  * by defining a suitable readResolve method.
  *
- * @version 1.9, 12/03/01
+ * @version $Id$
  * @since 1.4
  */
 

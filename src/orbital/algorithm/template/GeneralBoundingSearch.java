@@ -21,7 +21,7 @@ import orbital.math.Real;
  *
  * @structure refines GeneralSearch
  * @structure extends GeneralSearch
- * @version 1.0, 2000/09/20
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public abstract class GeneralBoundingSearch extends GeneralSearch implements EvaluativeAlgorithm {

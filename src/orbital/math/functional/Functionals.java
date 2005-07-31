@@ -58,7 +58,7 @@ import orbital.util.Utility;
  * with the orbital.logic.functor.Functionals, which is not very likely to happen,
  * since both classes address fairly different levels of composition.</p>
  * 
- * @version 1.0, 2000/08/04
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @since Orbital1.0
  * @see orbital.logic.functor.Functionals
@@ -137,7 +137,7 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
      * @structure aggregate left:Function
      * @structure aggregate right:Function
      * 
-     * @version 1.0, 1999/03/16
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(BinaryFunction, Function, Function)
      */

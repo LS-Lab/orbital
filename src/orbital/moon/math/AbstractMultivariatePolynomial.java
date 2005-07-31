@@ -30,7 +30,7 @@ import orbital.algorithm.Combinatorical;
 /**
  * This implementation specially assumes S=<b>N</b><sup>n</sup>,
  * i.e. multivariate polynomials in the proper sense.
- * @version 1.1, 2002/08/21
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @todo introduce an instance the encodes monomials more efficiently
  * as bit-encoded in a long integer: perhaps 10 bit for each variable,

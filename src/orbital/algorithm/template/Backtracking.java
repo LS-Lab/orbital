@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * <p>
  * Note that Backtracking is also a common mechanism for resolving nondeterministic choices.</p>
  * 
- * @version 0.9, 2000/06/23
+ * @version $Id$
  * @author Uwe A&szlig;mann
  * @author Andr&eacute; Platzer
  * @see BacktrackingProblem

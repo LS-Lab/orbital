@@ -8,7 +8,7 @@ import orbital.math.Integer;
  * Will compare results of calculation for rational numbers
  * and fractions of integers.
  *
- * @version 0.8, 2002/06/18
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class RationalEmulation extends MathTest {

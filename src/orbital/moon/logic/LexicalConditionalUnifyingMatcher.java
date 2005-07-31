@@ -15,7 +15,7 @@ import orbital.moon.logic.bridge.SubstitutionImpl.UnifyingMatcher;
  * Will only match per unification if two sub terms are in lexicographical order.
  * </p>
  *
- * @version 0.9, 2001/07/14
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 class LexicalConditionalUnifyingMatcher extends UnifyingMatcher {

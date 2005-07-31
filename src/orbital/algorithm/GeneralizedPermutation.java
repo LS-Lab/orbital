@@ -19,7 +19,7 @@ import orbital.util.Utility;
 
 /**
  * Generalized Per[n] with n&isin;<b>N</b><sup>r</sup>.
- * @version 0.9, 2002-08-18
+ * @version $Id$
  * @internal (apart from more flexible bounds, dimensions instead of n, almost) identical to @see RepetitivePermutation
  * @todo why do we start changing index.length - 1 instead of 0?
  */

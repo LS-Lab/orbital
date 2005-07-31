@@ -29,7 +29,7 @@ import java.util.logging.Level;
  * <center>&forall;&sigma;&isin;SUB (p&lt;q &imply; p&sigma;&lt;q&sigma;)</center>
  * L-orders are always partial because unifiable literals are incomparable.
  * </p>
- * @version 1.2, 2004-01-21
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class LiteralOrders {

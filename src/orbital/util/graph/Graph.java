@@ -11,7 +11,7 @@ import java.util.Iterator;
 /**
  * An interface for graphs.
  * 
- * @version 0.7, 2000/11/12
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 // TODO: enhance a little better

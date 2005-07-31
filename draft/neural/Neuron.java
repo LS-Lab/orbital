@@ -18,7 +18,7 @@ import orbital.util.Utility;
  * Note that this architecture does not support time-continuous networks but only
  * discrete simulations.</p>
  *
- * @version 0.9, 2001/05/23
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @todo are we only Arithmetic, because we want reside in a matrix and contain an arithmetic object?
  */
@@ -54,7 +54,7 @@ public interface Neuron extends Arithmetic {
     /**
      * Neuron representation for discrete neural networks.
      *
-     * @version 0.9, 2001/05/23
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @todo extend Real??, instead to remove double activity variables
      */
@@ -115,7 +115,7 @@ public interface Neuron extends Arithmetic {
      * neurons in the flow of an evaluation, at all. Instead, setting the activity of an
      * input neuron is used to specify the networks input arguments.</p>
      *
-     * @version 0.9, 2001/05/23
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      */
     public static class ConstantNeuron extends Neuron.Abstract {

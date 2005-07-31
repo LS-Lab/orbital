@@ -13,7 +13,7 @@ import java.util.EventObject;
  *
  *
  * @author Andr&eacute; Platzer
- * @version 1.1, 2003-01-03
+ * @version $Id$
  * @see Field
  */
 public class FieldChangeEvent extends EventObject {

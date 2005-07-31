@@ -8,7 +8,7 @@ import orbital.logic.functor.Function;
  * Will compare results of calculation for complex numbers
  * and quotients of polynomials.
  *
- * @version 0.8, 2002/04/28
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class ComplexEmulation extends MathTest {

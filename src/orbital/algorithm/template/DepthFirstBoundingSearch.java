@@ -21,7 +21,7 @@ import orbital.math.Values;
  *
  * @structure concretize GeneralBoundingSearch
  * @structure inherit DepthFirstSearch
- * @version 1.0, 2000/09/20
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see DepthFirstSearch
  * @internal also has a simple recursive formulation.

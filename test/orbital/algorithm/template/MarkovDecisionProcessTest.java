@@ -19,7 +19,7 @@ import java.util.logging.Level;
  * Automatic test-driver checking (descendants of) orbital.algorithm.template.MarkovDecisionProcess.
  * Tests all known MarkovDecisionProcess implementations
  *
- * @version 0.8, 2003-07-20
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see RobotNavigation
  */

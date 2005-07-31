@@ -12,7 +12,7 @@ import java.math.BigInteger;
 
 /**
  * A sample test case, testing .
- * @version 1.1, 2002-09-14
+ * @version $Id$
  */
 public class MathUtilitiesTest extends check.TestCase {
     private Values vf = Values.getDefaultInstance();

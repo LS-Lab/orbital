@@ -21,7 +21,7 @@ import orbital.math.Values;
  * Contains implementations of composite functors that work by
  * component composition.
  *
- * @version 1.1, 2002-08-25
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @note package-level protected to orbital.math.functional
  * @see Functionals
@@ -42,7 +42,7 @@ class ComponentCompositions {
      * @structure inherit Function
      * @structure concretizes MathFunctor.Composite
      * @structure composite componentFunction:Function[] unidirectional
-     * @version 0.9, 1999/04/18
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see MatrixComponentCompositeFunction
      */
@@ -139,7 +139,7 @@ class ComponentCompositions {
      * @structure inherit Function
      * @structure concretizes MathFunctor.Composite
      * @structure composite componentFunction:Function[][] unidirectional
-     * @version 0.7, 2001/02/23
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see ComponentCompositeFunction
      */
@@ -228,7 +228,7 @@ class ComponentCompositions {
      * @structure inherit BinaryFunction
      * @structure concretizes MathFunctor.Composite
      * @structure composite componentFunction:BinaryFunction[][] unidirectional
-     * @version 0.7, 2001/02/23
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see ComponentCompositeFunction
      */

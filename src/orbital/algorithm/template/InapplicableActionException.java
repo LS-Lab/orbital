@@ -10,7 +10,7 @@ package orbital.algorithm.template;
  * Thrown to indicate that an action was not applicable in the state.
  *
  * @author Andr&eacute; Platzer
- * @version 1.0, 2002/06/18
+ * @version $Id$
  */
 public class InapplicableActionException extends IllegalArgumentException {
     private static final long serialVersionUID = 4275365251635332886L;

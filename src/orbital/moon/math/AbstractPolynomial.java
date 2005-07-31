@@ -20,7 +20,7 @@ import orbital.util.Setops;
 import orbital.util.Pair;
 
 /**
- * @version 1.1, 2002/08/21
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @todo (working on it) this implementation could be split in two.
  *  One part that is general for every S,

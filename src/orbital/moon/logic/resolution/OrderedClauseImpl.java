@@ -28,7 +28,7 @@ import java.util.logging.Level;
  * @todo 25 The literals in the clause will be kept topologically
  * sorted according to the descending order.
  * @todo 11 does ordered resolution necessitate a priori factorization instead of a posteriori factorization after successful resolution (as we do it)
- * @version 1.2, 2004-01-15
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class OrderedClauseImpl extends IndexedClauseImpl {

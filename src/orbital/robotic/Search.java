@@ -19,7 +19,7 @@ import orbital.logic.RecursionStoppedException;
  * abstracted from. This Search-Algorithm does not depend upon an Interface,
  * it only callbacks a predicate with Point-Objects.
  * 
- * @version 0.9, 17/12/98
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see orbital.algorithm.template.GeneralSearchProblem
  * @deprecated Since Orbital1.1 use {@link orbital.algorithm.template.DepthFirstSearch} on OpenClosedGeneralSearchProblems instead.

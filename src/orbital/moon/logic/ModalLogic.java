@@ -55,7 +55,7 @@ import java.util.logging.Level;
 /**
  * Implementation of modal logic with local or global consequence.
  * 
- * @version 1.1, 2002-11-23
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @todo prior to introducing closure we still were able to "prove"
  *  <>A |- A
@@ -235,7 +235,7 @@ public class ModalLogic extends ClassicalLogic {
      * Formula transformation utilities.
      * @stereotype Utilities
      * @stereotype Module
-     * @version 1.1, 2002-11-24
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see orbital.util.Utility
      */
@@ -273,7 +273,7 @@ public class ModalLogic extends ClassicalLogic {
 	 * f(a1,....,am)(t1,....,tn) &#8614; f(a1,...,am,t1,...,tn)
 	 * </p>
 	 *
-	 * @version 1.1, 2002-11-25
+	 * @version $Id$
 	 * @author  Andr&eacute; Platzer
 	 */
 	private static class FlattenFunctionalUnifyingMatcher extends MatcherImpl {
@@ -437,7 +437,7 @@ public class ModalLogic extends ClassicalLogic {
 	 * p(t1,....,tn) &#8614; p(s)(t1,...,tn,s)
 	 * </p>
 	 *
-	 * @version 1.1, 2002-11-23
+	 * @version $Id$
 	 * @author  Andr&eacute; Platzer
 	 * @todo could also transform to dscr(s, p(s))? @see Sowa
 	 */
@@ -486,7 +486,7 @@ public class ModalLogic extends ClassicalLogic {
 	 * <ul>
 	 *   <li>red(&#9633;x A) = &forall;t:world (R(s,t)&rarr;(red(A)[s&#8614;t])) where t is new in A.</li>
 	 * </ul>
-	 * @version 1.1, 2002-11-23
+	 * @version $Id$
 	 * @author  Andr&eacute; Platzer
 	 */
 	private static class BoxUnifyingMatcher extends UnifyingMatcher {
@@ -528,7 +528,7 @@ public class ModalLogic extends ClassicalLogic {
 	 * <ul>
 	 *   <li>red(&#9671;x A) = &exist;t:world (R(s,t)&and;(red(A)[s&#8614;t]) where t is new in A.</li>
 	 * </ul>
-	 * @version 1.1, 2002-11-23
+	 * @version $Id$
 	 * @author  Andr&eacute; Platzer
 	 */
 	private static class DiamondUnifyingMatcher extends UnifyingMatcher {

@@ -23,7 +23,7 @@ import dkfz.collections.graph.view.*;
  *
  *
  * @author Andr&eacute; Platzer
- * @version 1.1, 2003-11-10
+ * @version $Id$
  * @version-revision $Revision$, $Date$
  */
 public class TraceableClauseImpl extends ClauseImpl {

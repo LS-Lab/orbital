@@ -17,7 +17,7 @@ import java.util.logging.Level;
  * ClassConsistencyCheck class.
  * Checks all given classes for consistency (as far as implemented).
  *
- * @version 1.0, 2001/12/08
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class ClassConsistencyCheck implements Runnable {

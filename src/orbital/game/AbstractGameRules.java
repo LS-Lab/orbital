@@ -29,7 +29,7 @@ import java.util.logging.Level;
  * that begins the game, perhaps from the <code>startField()</code> implementation.
  * </p>
  * 
- * @version 0.9, 2000/02/26
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public abstract class AbstractGameRules implements GameRules, Serializable {

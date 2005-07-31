@@ -18,7 +18,7 @@ import java.awt.BorderLayout;
 /**
  * A JMessageDialog displays a Message and waits modal for confirmation.
  * 
- * @version 0.9, 02/15/98
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public

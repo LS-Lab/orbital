@@ -31,7 +31,7 @@ import javax.swing.*;
  * Utilities for User-Interface.
  * 
  * @stereotype Utilities
- * @version 0.9, 2000/03/08
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see orbital.util.Utility
  * @see javax.swing.SwingUtilities

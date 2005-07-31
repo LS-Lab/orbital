@@ -8,7 +8,7 @@ package orbital.algorithm.template;
 
 /**
  * Hook class for problems solved by DivideAndConquer.
- * @version 1.0, 2000/06/24
+ * @version $Id$
  * @author Uwe A&szlig;mann
  * @author  Andr&eacute; Platzer
  * @see DivideAndConquer

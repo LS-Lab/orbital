@@ -8,7 +8,7 @@ import java.security.AccessControlException;;
 /**
  * (almost) identical to
  * @see sun.security.action.GetPropertyAction
- * @version 1.1, 2002-12-06
+ * @version $Id$
  */
 class GetPropertyAction implements PrivilegedAction  {
     public static final String getProperty(String propertyName, String defaultValue) {

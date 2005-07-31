@@ -18,7 +18,7 @@ import orbital.logic.functor.Predicate;
  * <p> Variables and constants are symbols, for example. Roots of
  * radicals can sometimes be represented as symbols. </p>
  * 
- * @version 1.0, 2000/08/11
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Values#symbol(String)
  */

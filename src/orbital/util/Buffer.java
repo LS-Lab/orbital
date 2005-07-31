@@ -10,7 +10,7 @@ package orbital.util;
  * This class encapsulates a Buffer containing bytes.
  * Those bytes in the Buffer are kept as a byte[].
  * 
- * @version 0.9, 13/11/98
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see java.nio.Buffer
  */

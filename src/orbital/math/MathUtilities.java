@@ -46,7 +46,7 @@ import java.util.logging.Level;
  * 
  * @stereotype Utilities
  * @stereotype Module
- * @version 0.9, 1999/03/15
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see java.lang.Math
  * @see orbital.util.Utility

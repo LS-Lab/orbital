@@ -23,7 +23,7 @@ import orbital.util.Utility;
  * </p>
  * 
  * @structure composite D:double[] unidirectional
- * @version 1.0, 2000/08/08
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @internal RVector is not a Vector<Real> because of its fall-back behaviour to Vector<Arithmetic>
  */

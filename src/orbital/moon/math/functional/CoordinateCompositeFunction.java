@@ -36,7 +36,7 @@ import orbital.util.Utility;
 	 * facade method.</p>
 	 * 
 	 * @structure composite componentFunction:Function[] unidirectional
-	 * @version 0.7, 1999/03/16
+	 * @version $Id$
 	 * @author  Andr&eacute; Platzer
 	 * @todo privatize
 	 * @internal was extends ComponentCompositeFunction

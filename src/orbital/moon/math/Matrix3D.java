@@ -22,7 +22,7 @@ import orbital.math.*;
  * <p>
  * <b>Note:</b> the angles in the methods of this class are interpreted as degree instead of radian.</p>
  * 
- * @version 0.9, 1996/03/02
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see "J.D FOLEY A.VAN DAM. Fundamentals of Interactive Computer Graphics. Addison-Wesley ISBN 0-201-14468-9 pp 245-265"
  * @todo somehow get rid of this 3D class, but without loosing its affine transformation functionality (perhaps generalized to >=3D)?

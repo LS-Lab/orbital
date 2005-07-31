@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * Hook class for Backtracking Algorithms
- * @version 0.9, 2000/06/24
+ * @version $Id$
  * @author Uwe A&szlig;mann
  * @author Andr&eacute; Platzer
  * @see Backtracking

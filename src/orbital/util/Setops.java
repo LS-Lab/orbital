@@ -46,7 +46,7 @@ import java.util.NoSuchElementException;
  * extremely powerful supplement to {@link Setops}.</p>
  *
  * @stereotype Utilities
- * @version 1.0, 2000/08/15
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see orbital.util.Utility
  * @see orbital.algorithm.evolutionary.Selectors

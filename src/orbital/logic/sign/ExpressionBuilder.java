@@ -19,7 +19,7 @@ import orbital.logic.sign.type.TypeException;
  * </p>
  * 
  * @invariants true
- * @version 1.1, 2002/04/09
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Expression
  * @see <a href="{@docRoot}/Patterns/Design/Builder.html">Builder</a>

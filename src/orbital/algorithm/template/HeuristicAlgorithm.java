@@ -18,7 +18,7 @@ import java.util.WeakHashMap;
  * <p>
  * Also called informed search algorithms or informed planning algorithms.</p>
  *
- * @version 1.0, 2000/09/20
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public interface HeuristicAlgorithm extends EvaluativeAlgorithm {
@@ -65,7 +65,7 @@ public interface HeuristicAlgorithm extends EvaluativeAlgorithm {
     /**
      * Algorithmic configuration objects for heuristic algorithms.
      * @author Andr&eacute; Platzer
-     * @version 1.1, 2002-11-13
+     * @version $Id$
      * @todo move to HeuristicAlgorithm.Configuration ?
      */
     public static class Configuration extends AlgorithmicTemplate.Configuration {
@@ -122,7 +122,7 @@ public interface HeuristicAlgorithm extends EvaluativeAlgorithm {
      * Then the state objects are assumed to have an appropriate {@link Object#hashCode()} implementation.
      * Although this dramatically reduces memory usage then the heuristic relies on disjunct hash codes
      * or may lose admissibility.</p>
-     * @version 1.0, 2000/09/20
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see "Memory-Based Heuristics: Pattern Databases. Culbersion & Schaeffer. 1995."
      * @see "Stefan Edelkamp. Symbolic pattern databases in heuristic search planning. In Ghallab, M. and Hertzberg, J. and Traverso, P., editors. Proceedings of the 7th International Conference on Artificial Intelligence Planning and Scheduling (AIPS-02), Toulouse, France, April, 2002, AAAI Press, Menlo Park. pages 274-283"

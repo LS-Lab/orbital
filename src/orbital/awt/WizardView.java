@@ -35,7 +35,7 @@ import java.awt.event.WindowEvent;
  * A predicate in the sequence of action steps that is not <span class="keyword">null</span> can return <span class="keyword">false</span>
  * to veto proceeding or resuming to the previous step.</p>
  * 
- * @version 0.9, 2000/06/25
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class WizardView extends Dialog {

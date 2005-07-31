@@ -13,7 +13,7 @@ import java.util.EventObject;
  * EventObjectListener (Notify) callback interface is a description of
  * a listen-mechanism to react on all types of EventObjects at once.
  * 
- * @version 0.9, 13/03/98
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public interface EventObjectListener extends EventListener {

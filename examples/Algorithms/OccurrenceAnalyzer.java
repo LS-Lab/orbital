@@ -14,7 +14,7 @@ import orbital.io.IOUtilities;
  * This class is a OccurrenceAnalyzer that keeps track of the frequency with that
  * each character occurs.
  * 
- * @version 0.9, 1999/11/05
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class OccurrenceAnalyzer implements DataAnalyzer {

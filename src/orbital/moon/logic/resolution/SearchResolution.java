@@ -27,7 +27,7 @@ import java.util.logging.Level;
 /**
  * Set of support resolution based on search.
  *
- * @version 0.7, 2001/07/30
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @todo use do/undo instead of copying the whole set of derived formulas every time.
  * @todo use optimizations of "Deduktions- und Inferenzsysteme"

@@ -16,7 +16,7 @@ import junit.framework.*;
 
 /**
  * A sample test case, testing substitutions.
- * @version 1.1, 2002-09-14
+ * @version $Id$
  */
 public class SubstitutionTest extends check.TestCase {
     private TypeSystem typeSystem;

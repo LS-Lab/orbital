@@ -9,7 +9,7 @@ package orbital.moon.logic.functor;
 
 /**
  *
- * @version 1.1, 2002-08-30
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 final class PackageUtilities {

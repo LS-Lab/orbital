@@ -41,7 +41,7 @@ import orbital.math.Values;
  * from most recently expaned nodes,
  * nevertheless with g=0 it is still incomplete and not optimal.</p>
  *
- * @version 1.0, 2000/09/18
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see "P. E. Hart, N. J. Nilsson, and B. Raphael. A formal basis for the heuristic determination of minimum cost paths. IEEE Transactions of Systems Science and Cybernetics, 4:100-107, 1968."
  * @attribute specializes {@link WAStar} with W=1.

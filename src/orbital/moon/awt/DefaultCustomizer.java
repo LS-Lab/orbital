@@ -84,7 +84,7 @@ import java.awt.TextComponent;
  * behaviour instead.
  * </p>
  * 
- * @version 1.0, 2000/03/30
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @author  Ute Platzer
  * @author  Rolf Lohaus

@@ -11,7 +11,7 @@ import orbital.math.Values;
 
 /**
  *
- * @version 1.1, 2002-09-01
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 final class PackageUtilities {

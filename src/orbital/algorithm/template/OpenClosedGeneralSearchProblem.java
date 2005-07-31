@@ -29,7 +29,7 @@ import java.util.LinkedList;
  * The closed set is the set of closed nodes that have already been expanded.
  * Nodes in the search space that are not closed are called open.</p>
  *
- * @version 0.9, 2001/05/09
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see DynamicBacktracking
  * @see <a href="{@docRoot}/Patterns/Design/Decorator.html">Decorator</a>

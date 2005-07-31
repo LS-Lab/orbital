@@ -32,7 +32,7 @@ import orbital.util.Utility;
  * Represents notational variants of compositor applications.
  * Defines the concrete syntax and thus the linearization of symbols.
  * @see <a href="{@docRoot}/Patterns/Design/enum.html">typesafe enum pattern</a>
- * @version 1.0, 2000/08/25
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @invariants a.equals(b) &hArr; a==b
  * @todo invariants 	&& sorted(compositorNotation)
@@ -517,7 +517,7 @@ public abstract class Notation implements Serializable, Comparable {
     /**
      * Contains the specification of the default notation for a compositor.
      * @invariants precedence > 0 && associativity and notation match
-     * @version 1.0, 2000/08/25
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @stereotype data-type
      */

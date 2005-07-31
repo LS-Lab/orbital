@@ -26,7 +26,7 @@ import orbital.logic.functor.Functor.Specification;
  * </p>
  * 
  * @structure inherit Functor
- * @version 1.0, 1999/07/21
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see BinaryFunction
  * @see VoidFunction
@@ -61,7 +61,7 @@ public /*template*/ interface Function/*<A, B>*/ extends Functor {
      * @structure extends Functor.Composite
      * @structure aggregate outer:Function<D,B>
      * @structure aggregate inner:Function<A,D>
-     * @version 1.0, 2000/01/23
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(Function, Function)
      * @internal if we only had a section interface of Function and Functor.Composite, then

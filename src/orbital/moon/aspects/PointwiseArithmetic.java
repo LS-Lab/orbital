@@ -22,7 +22,7 @@ import orbital.math.Values;
  * <center>&#8902;:Map(A,B)&times;Map(A,B)&rarr;Map(A,B); (f,g) &#8614; f &#8902; g: A&rarr;B; x &#8614; (f &#8902; g)(x) := f(x) &#8902; g(x)</center>
  * </p>
  *
- * @version 0.9, 2001/03/04
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see orbital.math.MathFunctor.AbstractFunctor
  */

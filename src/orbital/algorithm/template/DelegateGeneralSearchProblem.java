@@ -23,7 +23,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Andr&eacute; Platzer
- * @version 2002/07/13
+ * @version $Id$
  * @structure delegates problem:GeneralSearchProblem
  */
 public abstract class DelegateGeneralSearchProblem implements GeneralSearchProblem, Serializable {

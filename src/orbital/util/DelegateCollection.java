@@ -31,7 +31,7 @@ import java.io.Serializable;
  * @structure delegate delegatee:java.util.Collection
  * @structure implements java.util.Collection
  * @structure implements java.io.Serializable
- * @version 0.9, 1999/03/29
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @author  Josh Bloch
  * @see java.util.Collection

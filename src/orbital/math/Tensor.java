@@ -26,7 +26,7 @@ import java.util.NoSuchElementException;
  * @invariants succeedes(#clone()) &and; (overwrites(#clone()) &or; this implements Cloneable)
  * @structure extends Arithmetic
  * @structure extends Iteratable
- * @version 1.1, 2002/06/09
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Values#tensor(Arithmetic[])
  * @see Values#tensor(Arithmetic[][])

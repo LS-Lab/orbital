@@ -10,7 +10,7 @@ import java.util.logging.Level;
  * Extensive processing is simulated by a call to Thread.sleep().
  * One can use it to compare the runtime behaviour of synchronous and asynchronous methods.
  * 
- * @version 0.9, 2000/08/11
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class StreamMethodDemo {

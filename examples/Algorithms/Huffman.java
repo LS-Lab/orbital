@@ -24,7 +24,7 @@ import java.util.logging.Level;
  * </p>
  *
  * @invariants treeView(trieOpt).equals(trieExpl)
- * @version 0.9, 2000/08/07
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Huffman_Elementary
  */

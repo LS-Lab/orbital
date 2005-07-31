@@ -222,7 +222,7 @@ import orbital.logic.functor.Functor;
  * @structure extends java.util.Map<Symbol,Object>
  * @invariants (&Sigma; == null &or; keySet() &sube; &Sigma;)
  *  		&and; &forall;(s,v)&isin;this s.getType().apply(v)
- * @version 1.0, 2001/01/12
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Logic#satisfy
  * @see Signature

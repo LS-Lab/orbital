@@ -11,7 +11,7 @@ import java.util.Comparator;
 /**
  * A natural comparator comparing per {@link Comparable}.
  *
- * @version 1.0, 2002-08-03
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 final class NaturalComparator implements Comparator  {

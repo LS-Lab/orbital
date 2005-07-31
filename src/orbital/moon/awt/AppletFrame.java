@@ -48,8 +48,8 @@ import orbital.util.InnerCheckedException;
  *     <span class="Orbital">AppletFrame</span>.showApplet(<span class="String">"<i>className</i>"</span>, <span class="String">"<i>Application Title</i>"</span>, args);
  * }
  * </pre></p>
- * @version 1.0
- * @version 0.9, 1996/03/01
+ * @version $Id$
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class AppletFrame extends Frame {

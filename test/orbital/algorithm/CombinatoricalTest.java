@@ -17,7 +17,7 @@ import java.util.*;
 
 /**
  * A sample test case, testing .
- * @version 1.1, 2002-09-14
+ * @version $Id$
  */
 public class CombinatoricalTest extends check.TestCase {
     private Random random;

@@ -42,7 +42,7 @@ import java.util.HashSet;
  * An adjacence matrix M=(m<sub>i,j</sub>) contains the edge leading from i to j at m<sub>i,j</sub>,
  * or a value of <code>null</code> indicating that there is no such edge.</p>
  *
- * @version 0.9, 2001/05/23
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @invariant edges.isSquare() && edges.dimension().height >= nodes.size()
  */

@@ -32,7 +32,7 @@ import java.util.Iterator;
  * 
  * @events FieldChangeEvent.USER_ACTION | FieldChangeEvent.MOVE when user move has been performed.
  * @stereotype UI
- * @version 0.9, 14/07/98
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Field
  */

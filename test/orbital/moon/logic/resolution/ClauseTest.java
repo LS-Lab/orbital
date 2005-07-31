@@ -13,7 +13,7 @@ import orbital.moon.logic.ClassicalLogic;
 
 /**
  * A sample test case, testing Clauses and ClausalSets.
- * @version 1.1, 2004-09-16
+ * @version $Id$
  */
 public class ClauseTest extends check.TestCase {
     private Logic logic = null;

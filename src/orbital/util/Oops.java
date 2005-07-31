@@ -10,7 +10,7 @@ package orbital.util;
  * Oops is another funny error that should not be thrown.
  * Except perhaps for very funny error conditions.
  * 
- * @version 0.9, 2000/08/30
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see OutOfCheeseError
  * @see GeneralComplexionException

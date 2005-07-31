@@ -12,7 +12,7 @@ import orbital.logic.imp.Formula;
 
 /**
  * Factory for clauses and clausal sets.
- * @version 1.2, 2004-01-07
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see ResolutionBase#getClausalFactory()
  * @see DefaultClausalFactory

@@ -20,7 +20,7 @@ import orbital.logic.functor.Functionals;
  * whereupon it reads from the second one, and so on, until the end is reached on the last of the
  * contained iterators.
  *
- * @version 0.9, 2001/06/14
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @invariants current &isin; iterators && (!hasNext() xor next() &isin; RES(current))
  * @see java.io.SequenceInputStream

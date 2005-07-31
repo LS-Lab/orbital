@@ -18,7 +18,7 @@ import orbital.util.Callback;
  * <code><i>T operation</i>(<i>T</i>, <i>T</i>) throws ArithmeticException
  * </ul>
  * 
- * @version 0.9, 1999/08/16
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see orbital.util.Callback
  * @deprecated Use orbital.util.Callback instead.

@@ -13,7 +13,7 @@ import java.util.*;
 
 /**
  * Base class for testing some arithmetics.
- * @version 1.1, 2003-08-06
+ * @version $Id$
  * @see  <a href="examples/math/MathTest.java">MathTest example</a>
  */
 public class ArithmeticTest extends check.TestCase {

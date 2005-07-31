@@ -31,7 +31,7 @@ import java.lang.reflect.InvocationTargetException;
  * Add bound properties aspect and serialization.
  *
  * @author Andr&eacute; Platzer
- * @version 2000/11/15
+ * @version $Id$
  **/
 aspect BoundProperties implements Serializable /*of nothing*/ of eachobject(instanceof(Point)) {
 

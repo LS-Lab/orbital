@@ -20,7 +20,7 @@ import java.io.Serializable;
  * <p>
  * This corresponds roughly to a negation of a comparator (except for the case of equality).</p>
  * 
- * @version 0.9, 1999/07/20
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see java.util.Collections#reverseOrder()
  */

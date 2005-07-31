@@ -30,7 +30,7 @@ import orbital.util.Callback;
  * <p>
  * <b><i>Evolves</i>:</b> This interface might be unified with Predicates, most likely BinaryPredicates.</p>
  * 
- * @version 0.9, 1999/03/03
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see orbital.logic.functor.BinaryPredicate
  * @see orbital.logic.functor.Functor

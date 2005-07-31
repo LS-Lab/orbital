@@ -86,7 +86,7 @@ import java.util.logging.Level;
  * }
  * </pre></p>
  *
- * @version 1.0, 2000/10/11
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see MarkovDecisionProblem
  * @see <a href="http://www.ldc.usb.ve/~hector">Hector Geffner. Modelling and Problem Solving</a>
@@ -146,7 +146,7 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
      * Abstract base class for Markov decision processes solved per dynamic programming.
      *
      * @invariants getDiscount()&isin;[0,1]
-     * @version 0.8, 2001/06/10
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see orbital.algorithm.template.DynamicProgramming
      * @see "A. Barto, S. Bradtke, and S. Singh. Learning to act using real-time dynamic programming. <i>Artificial Intelligence</i>, 72:81-138, 1995."

@@ -9,7 +9,7 @@ package orbital.moon.awt;
 /**
  * Tools with a GUI implement this interface.
  * 
- * @version 0.9, 2000/03/25
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @todo document, enhance design
  */

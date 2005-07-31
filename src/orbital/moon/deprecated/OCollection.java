@@ -19,7 +19,7 @@ import java.util.Enumeration;
  * </ul>
  * 
  * @deprecated since JDK1.2
- * @version 0.9, 07/06/97
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @since   Orbital0.7
  * @see java.util.Collection

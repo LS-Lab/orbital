@@ -11,7 +11,7 @@ package orbital.util;
  * which cannot be categorized further.<p>
  * This particular error should raise if the whole logical construction is rolling and tumbling.
  * 
- * @version 0.9, 1999/09/10
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see GeneralComplexionException
  */

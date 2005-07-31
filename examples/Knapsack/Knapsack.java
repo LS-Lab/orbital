@@ -7,7 +7,7 @@ import orbital.logic.functor.Function;
  * Knapsack is NP-complete.
  * 
  * @author Andr&eacute; Platzer
- * @version %I%, %G%
+ * @version $Id$
  */
 public class Knapsack extends orbital.moon.awt.Demonstratos implements Runnable, GeneticAlgorithmProblem {
     static final int MAXWEIGHT = 17;

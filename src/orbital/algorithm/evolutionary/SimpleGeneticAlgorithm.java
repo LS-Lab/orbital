@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * A simple genetic algorithm with non-overlapping populations.
  * At each generation, it creates an entirely new population per reproduction.
  * 
- * @version 1.0, 2001/03/30
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @structure delegate population:Population
  * @structure delegate selection:Function

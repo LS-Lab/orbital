@@ -31,7 +31,7 @@ import orbital.math.functional.Functions;
 /**
  * Default value constructor factory.
  * 
- * @version 1.1, 2002-12-06
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @todo Think about using a two-dimensional dynamic dispatch in two variables for
  * +:RxS->T. with plus[inf{r.typeId(),s.typeId()}][inf{r.precisionId(),s.precisionId()}]

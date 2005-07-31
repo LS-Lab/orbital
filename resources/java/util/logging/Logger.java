@@ -138,7 +138,7 @@ import java.lang.ref.WeakReference;
  * All the other logging methods are implemented as calls on this
  * log(LogRecord) method.
  *
- * @version 1.33, 12/03/01
+ * @version $Id$
  * @since 1.4
  */
 

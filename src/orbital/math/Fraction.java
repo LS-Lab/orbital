@@ -62,7 +62,7 @@ package orbital.math;
  * <center>&forall;I&#8884;R M<sub>S</sub> &cong; M &otimes;<sub>R</sub> R<sub>S</sub></center>
  * </p>
  * 
- * @version 1.1, 2002/06/18
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Values#fraction(Arithmetic,Arithmetic)
  * @see "N. Bourbaki, Algebra I.2.4: Monoid of fractions of a commutative monoid."

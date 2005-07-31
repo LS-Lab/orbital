@@ -12,7 +12,7 @@ import java.util.*;
 
 /**
  * A sample test case, testing Values.
- * @version 1.1, 2002-09-14
+ * @version $Id$
  * @xxx add a test case testing all arithmetic objects, at least like examples/math/MathTest
  */
 public class ValuesTest extends check.TestCase {

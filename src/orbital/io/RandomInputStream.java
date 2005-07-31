@@ -18,7 +18,7 @@ import java.util.Random;
  * It is especially useful for testing purposes where any data, no matter what, is needed.
  * This class behaves like the <code>random</code> device.
  * 
- * @version 0.9, 14/11/98
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see NullOutputStream
  * @deprecated This class is not applicable in a broad range.

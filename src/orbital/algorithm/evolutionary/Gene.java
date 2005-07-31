@@ -47,7 +47,7 @@ import orbital.util.InnerCheckedException;
  * </ul>
  * </p>
  * 
- * @version 1.0, 2001/03/17
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @todo implement property editors
  * @todo move to package orbital.algorithm.representation or anything, to make the (genetic) data representation independent of the (genetic and evolutionary or standard hill-climbing) algorithms.
@@ -155,7 +155,7 @@ public interface Gene {
      * @structure extends DelegateList<Gene>
      * @structure aggregates members:List<Gene>
      * @invariants sub classes support nullary constructor (for virtual new instance).
-     * @version 1.0, 2001/03/17
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      */
     static class List extends DelegateList/*<Gene>*/ implements Gene, Serializable {
@@ -424,7 +424,7 @@ public interface Gene {
      * However, the interpretation of this bit string is, of course, problem specific.
      * </p>
      * 
-     * @version 1.0, 2000/03/28
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      */
     public static class BitSet implements Gene, Serializable {
@@ -621,7 +621,7 @@ public interface Gene {
      * numeric interpretations.
      * </p>
      * 
-     * @version 1.0, 2001/03/17
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      */
     public static abstract class Number extends java.lang.Number implements Gene, Serializable {
@@ -729,7 +729,7 @@ public interface Gene {
      * Integer gene data.
      * <p>This implementation uses an {@link java.lang.Integer} as gene data.</p>
      * 
-     * @version 1.0, 2001/03/17
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      */
     public static class Integer extends Number {
@@ -819,7 +819,7 @@ public interface Gene {
      * Bounded integer gene data.
      * <p>This implementation uses an {@link java.lang.Integer} bounded to a specified range as gene data.</p>
      * 
-     * @version 1.0, 2001/03/27
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @invariants data &isin; [min, max]
      */
@@ -924,7 +924,7 @@ public interface Gene {
      * thus fixed points (apart from recombination).
      * </p>
      * 
-     * @version 1.0, 2001/03/17
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      */
     public static class Float extends Number {
@@ -1034,7 +1034,7 @@ public interface Gene {
      * Bounded floating point gene data.
      * <p>This implementation uses a floating-point {@link java.lang.Double} bounded to a specified range as Gene data.</p>
      * 
-     * @version 1.0, 2001/03/27
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @invariants data &isin; [min, max]
      */
@@ -1159,7 +1159,7 @@ public interface Gene {
      * bit string encoded values.
      * </p>
      * 
-     * @version 0.7, 2000/05/01
+     * @version $Id$
      * @author Andr&eacute; Platzer
      * @author Ute Platzer
      * @see Gene.Number

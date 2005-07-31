@@ -13,7 +13,7 @@ import junit.extensions.*;
 
 /**
  * A test case, testing .
- * @version 1.1, 2002-10-26
+ * @version $Id$
  */
 public class AlgebraicAlgorithmsTest extends check.TestCase {
     private static final int TEST_REPETITIONS = 1000;

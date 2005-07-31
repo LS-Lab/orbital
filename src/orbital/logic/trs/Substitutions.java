@@ -79,7 +79,7 @@ import orbital.util.Utility;
  * in various kinds of context.
  * </p>
  *
- * @version 0.9, 2001/06/20
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
  * @see #lambda

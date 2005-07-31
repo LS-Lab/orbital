@@ -21,7 +21,7 @@ import orbital.logic.sign.Expression;
  * Most method calls do not (yet) make sense on this object.
  *
  * @author Andr&eacute; Platzer
- * @version 1.1, 2003-02-03
+ * @version $Id$
  * @version-revision $Revision$, $Date$
  */
 class FormulaSequence extends ExpressionSequence implements Formula  {

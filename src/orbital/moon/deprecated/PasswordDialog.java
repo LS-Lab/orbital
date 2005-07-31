@@ -28,7 +28,7 @@ import javax.crypto.spec.SecretKeySpec;
 /**
  * A PasswordDialog displays a prompt waiting modally for input.
  * 
- * @version 0.9, 02/15/98
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @dependency orbital.io.cryptix.* Uses orbital service "security provider Orbital".
  * @dependency orbital.io.encoding.* Uses orbital service "encoding".

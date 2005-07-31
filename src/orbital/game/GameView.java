@@ -67,8 +67,8 @@ import orbital.util.InnerCheckedException;
  * </p>
  *
  * @stereotype UI
- * @version 1.1, 2003-01-03
- * @version 1.0, 2000-02-26
+ * @version $Id$
+ * @version $Id$
  * @author Andr&eacute; Platzer
  * @see <a href="doc-files/Game.html">GameView applet parameter example</a>
  * @see "examples/SChess/"
@@ -618,9 +618,9 @@ public class GameView extends Applet {
 /**
  * .
  * @author  Timothy Prinzing
- * @version 1.16 09/23/99
+ * @version $Id$
  * @author  Andr&eacute; Platzer
- * @version 1.0, 2001/11/23
+ * @version $Id$
  * @internal see Notepad for more features
  */
 class AwtResourceDecoder {

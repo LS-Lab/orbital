@@ -25,7 +25,7 @@ import java.util.ListIterator;
  * The polynomial ring over a field in <em>one</em> variable even is Euclidean.
  * </p>
  *
- * @version 1.1, 2001/12/09
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Polynomial
  * @see Values#polynomial(Arithmetic[])

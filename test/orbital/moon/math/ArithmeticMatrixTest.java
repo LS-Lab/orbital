@@ -11,7 +11,7 @@ import junit.framework.*;
 
 /**
  * A sample test case, testing Values.
- * @version 1.1, 2002-09-14
+ * @version $Id$
  */
 public class ArithmeticMatrixTest extends check.TestCase {
     private Values vf;

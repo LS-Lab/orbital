@@ -14,7 +14,7 @@ import java.util.Collection;
 /**
  * A DelegateSortedSet that works as a delegator to sets.
  *
- * @version 0.9, 2000/09/05
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class DelegateSortedSet/*<A>*/ extends DelegateSet/*<A>*/ implements SortedSet/*<A>*/ {

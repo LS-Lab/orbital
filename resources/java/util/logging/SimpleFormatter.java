@@ -16,7 +16,7 @@ import java.util.Date;
  * Print a brief summary of the LogRecord in a human readable
  * format.  The summary will typically be 1 or 2 lines.
  *
- * @version 1.12, 12/03/01
+ * @version $Id$
  * @since 1.4
  */
 

@@ -23,7 +23,7 @@ import java.util.logging.Level;
  *
  *
  * @author Andr&eacute; Platzer
- * @version 1.1, 2002-11-28
+ * @version $Id$
  */
 class ExpressionSequence implements Expression.Composite {
     private static final Logger logger = Logger.getLogger(ExpressionSequence.class.getName());

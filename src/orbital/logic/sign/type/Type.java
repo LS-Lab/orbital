@@ -36,7 +36,7 @@ import orbital.logic.functor.Predicate;
  * </p>
  *
  * @author Andr&eacute; Platzer
- * @version 1.1, 2002-09-08
+ * @version $Id$
  * @see TypeSystem
  * @see Typed#getType()
  * @see java.lang.Class
@@ -163,7 +163,7 @@ public interface Type extends Comparable, Predicate {
      * @structure is {@link orbital.logic.Composite}&cap;{@link Type}
      * @structure extends Composite
      * @structure extends Type
-     * @version 1.1, 2002-11-24
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      */
     static interface Composite extends orbital.logic.Composite, Type {}

@@ -12,7 +12,7 @@ import java.io.Serializable;
  * Direction class is offering <code>turn()</code> support for absolute north/east/south/west Directions
  * and relative left/right/back Direction-manipulation.
  * 
- * @version 0.9, 04/03/98
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class Direction implements Cloneable, Serializable {

@@ -11,7 +11,7 @@ package orbital.util;
  * which cannot be categorized any further.
  * This particular error should raise if the whole thing is getting too complex.
  * 
- * @version 0.9, 1999/12/18
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see OutOfCheeseError
  */

@@ -16,7 +16,7 @@ import orbital.logic.functor.Functor;
  * 
  * @structure inherit orbital.logic.functor.Function
  * @structure inherit orbital.math.functional.MathFunctor
- * @version 1.0, 2000/08/01
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @since Orbital1.0
  * @see orbital.logic.functor.Function
@@ -57,7 +57,7 @@ public interface Function/*<A implements Arithmetic, B implements Arithmetic>*/ 
      * @structure extends orbital.logic.functor.Function<A, B>.Composite
      * @structure aggregate outer:Function
      * @structure aggregate inner:Function
-     * @version 1.0, 1999/03/16
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(Function, Function)
      */

@@ -4,7 +4,7 @@ import orbital.math.*;
  * Base class for testing some arithmetics.
  *
  * @author Andr&eacute; Platzer
- * @version 1.0, 2002-08-23
+ * @version $Id$
  */
 public abstract class MathTest {
     public static final void printArithmetic(Arithmetic x, Arithmetic y, boolean withDivisions) {

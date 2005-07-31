@@ -12,7 +12,7 @@ import java.text.ParseException;
 
 /**
  * A sample test case, testing.
- * @version 0.9, 1998-03-04
+ * @version $Id$
  */
 public class ArithmeticFormatTest extends check.TestCase {
     private Values vf;

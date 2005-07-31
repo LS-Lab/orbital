@@ -12,7 +12,7 @@ import orbital.math.MathUtilities;
 
 /**
  * Per[n,r](false)
- * @version 0.9, 2000/11/29
+ * @version $Id$
  */
 class NonrepetitivePermutation extends Combinatorical {
     private static final long serialVersionUID = 5519106291934622529L;

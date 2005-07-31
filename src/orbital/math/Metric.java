@@ -21,7 +21,7 @@ package orbital.math;
  * </table>
  * </p>
  * 
- * @version 1.0, 2000/08/22
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Normed
  * @see #INDUCED

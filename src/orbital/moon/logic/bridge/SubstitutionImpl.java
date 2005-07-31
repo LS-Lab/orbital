@@ -30,7 +30,7 @@ import java.util.logging.Level;
 /**
  * Term substitution implementation.
  *
- * @version 0.9, 2001/06/20
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @note package-level protected to orbital.logic.trs
  */
@@ -168,7 +168,7 @@ public class SubstitutionImpl implements Substitution, Serializable {
      * This class performs matching with means of {@link Object#equals(Object)}, only.
      * Additionally it will directly replace with the specified object, if substituting is enabled.</p>
      *
-     * @version 0.9, 2001/06/21
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      */
     public static class MatcherImpl implements Matcher, Serializable {
@@ -279,7 +279,7 @@ public class SubstitutionImpl implements Substitution, Serializable {
      * <code>_X1, _X2, _X3, ...</code> or <code>$X1, $X2, $X3, ...</code>
      * which do not occur in regular terms.</p>
      *
-     * @version 0.9, 2001/06/21
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      */
     public static class UnifyingMatcher extends MatcherImpl {

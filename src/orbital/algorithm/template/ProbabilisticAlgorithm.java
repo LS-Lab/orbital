@@ -26,7 +26,7 @@ import java.util.Random;
  * </dl>
  * </p>
  * 
- * @version 1.0, 2001/02/19
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see #isCorrect()
  */

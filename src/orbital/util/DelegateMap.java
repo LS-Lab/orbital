@@ -22,7 +22,7 @@ import orbital.util.Utility;
  * @structure delegate delegatee:java.util.Map
  * @structure implements java.util.Map
  * @structure implements java.io.Serializable
- * @version 0.9, 2000/09/24
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class DelegateMap/*<A, B>*/ implements Map/*<A, B>*/, Serializable {

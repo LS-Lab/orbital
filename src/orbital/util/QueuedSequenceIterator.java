@@ -24,7 +24,7 @@ import java.util.LinkedList;
  * It is introduced separately, since its construction is necessarily less performant than
  * the unmodifiable version, SequenceIterator.</p>
  *
- * @version 0.9, 2001/08/01
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @invariants current &isin; iterators && (!hasNext() xor next() &isin; RES(current))
  * @see SequenceIterator

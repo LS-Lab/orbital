@@ -15,7 +15,7 @@ package orbital.moon.deprecated;
  * if <code>f</code> is a continuous comparison function with maximum deviation (half range of values)
  * of <code>d</code>, then <code>1-Math.abs(f(x,y)/d)</code> is the similarity of x and y.</p>
  * 
- * @version 0.9, 2000/03/04
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see java.util.Comparator
  * @TODO deprecated Use orbital.math.Metric instead

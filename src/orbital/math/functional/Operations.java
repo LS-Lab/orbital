@@ -66,7 +66,7 @@ import orbital.logic.sign.concrete.Notation.NotationSpecification;
  * </p>
  * 
  * @structure depends {@link orbital.math.ValueFactory#getCoercer()}
- * @version 1.0, 2000/08/03
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see orbital.math.Arithmetic
  * @see java.lang.Comparable

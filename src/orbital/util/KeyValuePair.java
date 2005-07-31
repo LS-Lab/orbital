@@ -16,7 +16,7 @@ import orbital.util.Utility;
  * <p>
  * For equality and similar methods, only the key is considered.</p>
  * 
- * @version 1.0, 1999/11/06
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Pair
  * @see java.util.Map.Entry

@@ -9,7 +9,7 @@ package orbital.logic;
 /**
  * Thrown when the limit for the maximum number of iterations is overrun.
  * 
- * @version 0.9, 2000/06/17
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class IterationLimitException extends LimitException {

@@ -12,7 +12,7 @@ import java.io.Serializable;
 /**
  * Position class is a Point in space. It can move absoluteley and translate relatively.
  * 
- * @version 0.9, 04/05/98
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @todo transform to n-dimensional point and provide n-dimensional(?) directions, as well
  */

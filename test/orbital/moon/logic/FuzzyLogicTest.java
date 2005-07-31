@@ -13,7 +13,7 @@ import java.util.*;
 
 /**
  * A sample test case, testing FuzzyLogic.
- * @version 1.1, 2002-09-14
+ * @version $Id$
  */
 public class FuzzyLogicTest extends check.TestCase {
     private final Real tolerance = Values.getDefaultInstance().valueOf(1e-2);

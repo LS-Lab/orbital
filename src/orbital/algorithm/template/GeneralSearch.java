@@ -27,7 +27,7 @@ import orbital.math.Values;
  * <p>
  * Apart from the reference to the problem to solve, GeneralSearch implementations are usually stateless.</p>
  *
- * @version 1.0, 2000/09/17
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see GeneralSearchProblem
  * @see <a href="http://www.ldc.usb.ve/~hector">Hector Geffner. Modelling and Problem Solving</a>
@@ -227,7 +227,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      *
      * @attribute secret traversal order
      * @invariants sub classes maintain a collection of nodes to select from
-     * @version 0.8, 2001/08/01
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see <a href="{@docRoot}/Patterns/Design/Strategy.html">Strategy</a>
      * @see GeneralSearch#createTraversal(GeneralSearchProblem)

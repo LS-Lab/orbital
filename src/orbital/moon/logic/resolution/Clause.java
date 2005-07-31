@@ -18,7 +18,7 @@ import java.util.Collections;
  * literals, i.e. positive or negated atoms are ordinary formulas.
  * This set representation already incorporates associative and commutative.
  *
- * @version 0.8, 2003-04-23
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public interface Clause extends Set/*<Formula>*/ {

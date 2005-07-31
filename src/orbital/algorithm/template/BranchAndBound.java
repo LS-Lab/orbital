@@ -21,7 +21,7 @@ import orbital.math.Real;
  * B&B is complete, optimal, and
  * has a time complexity of O(b<sup>d</sup>) and a space complexity of O(b*d).</p>
  *
- * @version 1.0, 2000/09/22
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @note is a basic aspect of bounding the search space by the best known solution.
  *  This is automatically satisfied by several other search algorithms.

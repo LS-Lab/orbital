@@ -7,7 +7,7 @@ import java.util.*;
 /**
  * A simple example for logic evaluations using classical logic implementation.
  * 
- * @version 1.0,, 2001/09/18
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class SimpleLogic implements Runnable {

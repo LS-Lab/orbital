@@ -16,7 +16,7 @@ import java.awt.BorderLayout;
 /**
  * A LoginDialog displays a prompt for username and password, waiting modally for input.
  * 
- * @version 0.9, 16/01/99
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public

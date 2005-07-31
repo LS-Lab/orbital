@@ -46,7 +46,7 @@ import orbital.util.Utility;
  * whereas a lower plasticity decreases the error of interpolation.
  * So a trade-off between correct learning of samples and a good generalization must be found.</p>
  *
- * @version 0.9, 2001/05/23
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see "Hertz et al. Introduction to the Theory of Neural Computation. Addison-Wesley, Reading, Massachusetts. 1991."
  * @see "Kohonen, T. Self-Organization and Associative Memory. Springer-Verlag, Berlin, third edition. 1989."
@@ -235,7 +235,7 @@ abstract class NeuralNetwork extends MatrixGraph implements orbital.logic.functo
      * and prevents additional bias calculation code, although it results in additional
      * edges that may complicate visual views.</p>
      *
-     * @version 0.9, 2001/05/23
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      */
     protected static final class Bias extends Neuron.ConstantNeuron {
@@ -262,7 +262,7 @@ abstract class NeuralNetwork extends MatrixGraph implements orbital.logic.functo
 	/**
 	 * A link (Edge) that does weight-sharing with other links.
 	 * 
-	 * @version 0.9, 2001/07/02
+	 * @version $Id$
 	 * @author  Andr&eacute; Platzer
 	 * @see #createWeightSharing(Vertex, Vertex)
 	 * @see "Rumelhart et al. 1986"

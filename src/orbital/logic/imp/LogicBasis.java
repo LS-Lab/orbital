@@ -32,7 +32,7 @@ import orbital.logic.sign.Symbol;
  * </ul>
  * </p>
  * 
- * @version 0.9, 1999/01/12
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see orbital.moon.logic.ClassicalLogic
  */

@@ -31,7 +31,7 @@ import java.util.logging.Level;
  * @attribute time complexity O((b<sup>d+1</sup>-1)/(b-1)) in depth d with branching factor b.
  * @attribute query complexity {@link #getUtility()} O(b<sup>d</sup>) in depth d with branching factor b.
  * @see orbital.algorithm.template.BranchAndBound
- * @version 0.8, 2001/07/01
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @internal min-max trees with compact values in [0,1] are and-or trees with fuzzy logic operators.
  * @todo generalize? implement a general interface?
@@ -233,7 +233,7 @@ public class AlphaBetaPruning extends AdversarySearch {
     /**
      * Initial no option place holder.
      * @author Andr&eacute; Platzer
-     * @version 1.1, 2003-01-20
+     * @version $Id$
      */
     private static class NoOption extends Option {
 	public NoOption() {

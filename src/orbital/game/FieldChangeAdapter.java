@@ -13,7 +13,7 @@ package orbital.game;
  *
  *
  * @author Andr&eacute; Platzer
- * @version 1.1, 2003-01-03
+ * @version $Id$
  */
 public class FieldChangeAdapter implements FieldChangeListener{
     public void componentChanged(FieldChangeEvent event) {}

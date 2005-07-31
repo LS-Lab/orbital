@@ -24,7 +24,7 @@ import orbital.logic.functor.Functor.Specification;
  * </blockquote>
  * </p>
  * 
- * @version 1.0, 1997/06/13
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see orbital.logic.Relation
  * @see Predicate
@@ -63,7 +63,7 @@ public interface BinaryPredicate/*<A1, A2>*/ extends Functor /*abstract template
      * @structure aggregate outer:BinaryPredicate<B1,B2>
      * @structure aggregate left:BinaryFunction<A1,A2,B1>
      * @structure aggregate right:BinaryFunction<A1,A2,B2>
-     * @version 1.0, 2000/01/23
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(BinaryPredicate, BinaryFunction, BinaryFunction)
      */

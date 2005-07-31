@@ -18,7 +18,7 @@ import java.io.Serializable;
  * @structure delegate delegatee:java.util.Iterator
  * @structure implements java.util.Iterator
  * @structure implements java.io.Serializable
- * @version 1.2, 2004-01-07
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see java.util.Iterator
  */

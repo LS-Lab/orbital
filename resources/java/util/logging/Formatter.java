@@ -19,7 +19,7 @@ package java.util.logging;
  * and tail strings around a set of formatted records. The getHeader
  * and getTail methods can be used to obtain these strings.
  *
- * @version 1.12, 12/03/01
+ * @version $Id$
  * @since 1.4
  */
 

@@ -8,7 +8,7 @@ package orbital.algorithm.template;
 
 /**
  * Hook class for problems solved by DynamicProgramming.
- * @version 1.0, 2000/07/31
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see DynamicProgramming
  */

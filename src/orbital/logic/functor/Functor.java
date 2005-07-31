@@ -56,7 +56,7 @@ import orbital.util.Utility;
  * regardless of their extensional equality.
  * <p>Finally, functions, predicates, relations, and graphs are all "isomorph" anyhow!</p>
  * 
- * @version 1.0, 1997/06/13
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Functor.Specification
  * @see Functor.Specification#getSpecification(Functor)
@@ -129,7 +129,7 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
      * @structure inherits Functor
      * @structure aggregate compositor:Functor
      * @structure aggregate component:Object (usually Functor, Functor[], or Functor[][])
-     * @version 1.0, 2000/08/23
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @internal see AbstractFunctorComposite
      * @see <a href="{@docRoot}/Patterns/Design/Composite.html">(unidirectional and multiple) Composite Pattern</a>
@@ -188,7 +188,7 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
      * </p>
      * 
      * @structure associated Functor
-     * @version 1.0, 2000/01/23
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see Functor
      * @see java.lang.Class

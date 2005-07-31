@@ -28,7 +28,7 @@ import orbital.util.Setops;
  * and {@link orbital.logic.functor.Functionals}, instead.
  * @stereotype Utilities
  * @stereotype Module
- * @version 0.8, 2000/07/24
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see orbital.math.MathUtilities
  * @see orbital.math.functional.Operations

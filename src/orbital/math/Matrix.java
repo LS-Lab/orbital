@@ -53,7 +53,7 @@ import java.util.NoSuchElementException;
  * 
  * @invariants super &and; rank()==2
  * @structure extends Tensor
- * @version 1.0, 2000/08/08
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Values#tensor(Arithmetic[][])
  * @see Values#valueOf(Arithmetic[][])

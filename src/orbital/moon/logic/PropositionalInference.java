@@ -19,7 +19,7 @@ import java.util.logging.Level;
  * Implemented by Davis-Putnam-Loveland algorithm.
  *
  * @author Andr&eacute; Platzer
- * @version 1.1, 2002-11-29
+ * @version $Id$
  */
 class PropositionalInference implements Inference {
     /**

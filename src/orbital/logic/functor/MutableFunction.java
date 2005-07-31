@@ -19,7 +19,7 @@ import java.util.HashMap;
  * <p>
  * <i><b>Note:</b> this class might be subject to change in a redesign.</i></p>
  *
- * @version 0.9, 2001/06/10
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public interface MutableFunction/*<A, B>*/ extends Function/*<A, B>*/ {
@@ -42,7 +42,7 @@ public interface MutableFunction/*<A, B>*/ extends Function/*<A, B>*/ {
     
     /**
      * A mutable function implemented as a tabular HashMap.
-     * @version 0.9, 2001/06/10
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see java.util.HashMap
      */

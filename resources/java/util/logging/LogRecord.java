@@ -42,7 +42,7 @@ import java.io.*;
  *
  * </ul>
  *
- * @version 1.17, 12/03/01
+ * @version $Id$
  * @since 1.4
  */
 

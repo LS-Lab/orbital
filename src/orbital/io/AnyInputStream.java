@@ -26,7 +26,7 @@ import java.io.BufferedInputStream;
  * 
  * @structure delegate: java.io.Reader
  * @structure delegate: java.io.InputStream
- * @version 0.9, 2000/03/27
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see java.io.InputStreamReader
  * @see java.io.Reader

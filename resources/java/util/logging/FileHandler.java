@@ -97,7 +97,7 @@ import java.security.*;
  * Note that the use of unique ids to avoid conflicts is only guaranteed
  * to work reliably when using a local disk file system.
  *
- * @version 1.25, 12/03/01
+ * @version $Id$
  * @since 1.4
  */
 

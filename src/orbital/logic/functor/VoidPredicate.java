@@ -24,7 +24,7 @@ import orbital.logic.functor.Functor.Specification;
  * constant {@link Predicates#TRUE true} and constant {@link Predicates#FALSE false}.
  * </p>
  * 
- * @version 1.0, 1997/06/13
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Predicate
  */
@@ -58,7 +58,7 @@ public interface VoidPredicate extends Functor /*abstract template extends VoidF
      * @structure extends Functor.Composite
      * @structure aggregate outer:Predicate<B>
      * @structure aggregate inner:VoidFunction<B>
-     * @version 1.0, 2000/01/23
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(Predicate, VoidFunction)
      */

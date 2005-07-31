@@ -12,7 +12,7 @@ import java.util.Vector;
  * This class unifies a Vector with unique Elements.
  * 
  * @deprecated since ORBITAL1.0 use unique collections like sets instead.
- * @version 0.9, 03/02/96
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see java.util.Set
  */

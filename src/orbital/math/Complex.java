@@ -31,7 +31,7 @@ import orbital.logic.functor.Predicate;
  * 
  * @invariants (&not;super &and; &not;(this is Comparable)) &or; <span class="provable">&#9633;</span>abnormal(&not; Comparable)
  * @stereotype data-type
- * @version 1.0, 1996/02/03
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Values#complex(Real, Real)
  * @see Values#complex(double, double)

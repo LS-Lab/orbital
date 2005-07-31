@@ -9,7 +9,7 @@ package orbital.logic;
 /**
  * A Condition interface is a callback for a generic Condition.
  * 
- * @version 0.9, 07/06/97
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @deprecated Use more general orbital.logic.functor.VoidPredicate instead.
  * @see orbital.logic.functor.VoidPredicate

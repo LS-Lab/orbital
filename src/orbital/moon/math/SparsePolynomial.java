@@ -19,7 +19,7 @@ import java.util.HashMap;
 /**
  * Implementation of polynomials in R[S] with a sparse map of coefficients.
  * Arbitrary S.
- * @version 1.1, 2002-09-01
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 class SparsePolynomial/*<R implements Arithmetic, S implements Arithmetic>*/ extends AbstractPolynomial/*<R,S>*/ {

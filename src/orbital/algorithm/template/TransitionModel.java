@@ -87,7 +87,7 @@ import orbital.math.Scalar;
  * by ignoring the type-restriction of {@link TransitionModel.Transition} to {@link #transition(Object,Object,Object)}.
  * </p>
  *
- * @version 1.0, 2002/05/30
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see TransitionPath
  * @see orbital.logic.functor.Function
@@ -228,7 +228,7 @@ public interface TransitionModel/*<A,S, M extends Transition>*/ {
      * </p>
      * @stereotype Structure
      * @internal should we always bookkeep the state and action that took us to s´ as well as s´? No.
-     * @version 1.0, 2002/05/30
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @todo rename to Transition?
      */

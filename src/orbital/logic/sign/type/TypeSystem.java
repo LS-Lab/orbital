@@ -23,7 +23,7 @@ import orbital.logic.functor.BinaryFunction;
  * </p>
  *
  * @author Andr&eacute; Platzer
- * @version 1.1, 2003-01-18
+ * @version $Id$
  * @note Type constructors with list or set parameters usually also accept them as
  * {@link orbital.util.Utility#isIteratable(Object) generalized iteratable}
  * objects, including but not limited to {@link java.util.List}, {@link java.util.Set}.

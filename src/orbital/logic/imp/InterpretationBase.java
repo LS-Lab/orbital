@@ -31,7 +31,7 @@ import java.util.Collections;
  * A basic interpretation implementation.
  * 
  * @invariants sub classes support nullary constructor (for virtual new instance).
- * @version 1.0, 2001/06/12
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Logic#satisfy
  * @see Signature

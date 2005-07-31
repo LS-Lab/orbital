@@ -17,7 +17,7 @@ package orbital.logic.functor;
  * 
  * @deprecated Use orbital.logic.functor.Function instead.
  * @structure inherit orbital.logic.functor.Functor
- * @version 0.9, 13/06/97
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see orbital.logic.functor.Function
  */

@@ -37,7 +37,7 @@ import orbital.moon.evolutionary.SelectionStatistics;
 /**
  * This class implements a population of genomes and provides methods for genetic algorithms.
  *
- * @version 1.1, 2002-11-15
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class PopulationImpl extends Population {

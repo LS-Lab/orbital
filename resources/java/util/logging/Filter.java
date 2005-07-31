@@ -17,7 +17,7 @@ package java.util.logging;
  * if a given LogRecord should be published.  If isLoggable returns
  * false, the LogRecord will be discarded.
  *
- * @version 1.3, 12/03/01
+ * @version $Id$
  * @since 1.4
  */
 

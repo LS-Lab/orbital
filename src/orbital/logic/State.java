@@ -10,7 +10,7 @@ package orbital.logic;
  * This class represents any kind of logic State an entity or object
  * might have.
  * 
- * @version 0.9, 11/05/98
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @deprecated This class is not applicable in a broad range.
  *  So by a careful balance of utility and conceptual weight, it is considered generally worthless

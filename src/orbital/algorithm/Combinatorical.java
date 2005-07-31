@@ -14,7 +14,7 @@ import java.util.ListIterator;
 /**
  * Class for combinatorical operations.
  * 
- * @version 0.9, 2000/11/29
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @internal is an interface
  */

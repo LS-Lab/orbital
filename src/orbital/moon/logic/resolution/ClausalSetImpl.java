@@ -23,7 +23,7 @@ import orbital.moon.logic.ClassicalLogic;
 
 /**
  * Default implementation of a representation of a set of clauses.
- * @version 0.8, 2003-04-23
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class ClausalSetImpl extends LinkedHashSet/*_<Clause>_*/ implements ClausalSet {

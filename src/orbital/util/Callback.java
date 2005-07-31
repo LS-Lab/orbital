@@ -12,7 +12,7 @@ import orbital.logic.functor.Functor;
  * Callback is an interface used to tag objects that can be called back.
  * <b><i>Evolves</i>:</b> Name might be changed or unified with orbital.logic.functor.Functor.
  * 
- * @version 0.2, 2000/01/25
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see orbital.logic.functor.Functor
  */

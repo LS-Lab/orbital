@@ -23,7 +23,7 @@ import orbital.algorithm.Combinatorical;
 
 /**
  * Implementation of polynomials in R[N<sup>n</sup>] with a dense tensor of coefficients.
- * @version 1.1, 2002/08/21
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 class ArithmeticMultivariatePolynomial/*<R implements Arithmetic>*/ extends AbstractMultivariatePolynomial {

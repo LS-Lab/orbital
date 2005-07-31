@@ -27,7 +27,7 @@ import orbital.logic.functor.Predicate;
  * of all fields of characteristic 0.
  * </p>
  * 
- * @version 1.0, 2000/08/03
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @stereotype data-type
  * @structure synonym for Fraction<Integer>

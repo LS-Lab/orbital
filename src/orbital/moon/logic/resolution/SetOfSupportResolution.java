@@ -22,7 +22,7 @@ import java.util.logging.Level;
 /**
  * Direct set of support resolution.
  *
- * @version 1.1, 2003-11-05
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class SetOfSupportResolution extends ResolutionBase {

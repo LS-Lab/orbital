@@ -11,7 +11,7 @@ package orbital.logic;
  * Implementations check a certain property of an Object to see
  * whether it matches this Attribute or Adjective.
  * 
- * @version 0.9, 07/06/97
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @deprecated Use more general orbital.logic.functor.Predicate instead.
  * @see orbital.logic.functor.Predicate

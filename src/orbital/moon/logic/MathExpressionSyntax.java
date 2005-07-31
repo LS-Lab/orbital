@@ -36,7 +36,7 @@ import orbital.util.InnerCheckedException;
  * Those expressions currently get parsed as a composition of functions.
  * An alternative implementation would already evaluate the expression instead of explicitly
  * constructing a representation as a composition of functions.
- * @version 1.1, 2002-10-17
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @structure depends orbital.logic.sign.concrete.Notation Uses registered notation functors reverse.
  */
@@ -298,7 +298,7 @@ public class MathExpressionSyntax implements ExpressionSyntax {
     /**
      * Mathematical expressions with instant evaluation.
      * Thus the composition information is lost.
-     * @version 1.1, 2002-10-17
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      */
     private static class MathExpression implements Expression.Composite {

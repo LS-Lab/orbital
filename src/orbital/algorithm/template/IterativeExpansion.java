@@ -37,7 +37,7 @@ import java.util.LinkedList;
  * </p>
  *
  * @author Andr&eacute; Platzer
- * @version 1.0, 2002-07-24
+ * @version $Id$
  * @internal also has a simple recursive formulation.
  * @see "Russel, S. (1992?) Efficient memory-bounded search methods."
  * @see "Korf, R.E. (1991) Best-first search with limited memory. UCLA Comp. Sci.Ann."
@@ -205,7 +205,7 @@ public class IterativeExpansion extends GeneralSearch implements HeuristicAlgori
     /**
      * Keeps additional information about a node of a search graph.
      * @author Andr&eacute; Platzer
-     * @version 1.1, 2002-10-26
+     * @version $Id$
      * @see orbital.util.KeyValuePair
      */
     private static final class NodeInfo implements Comparable, Serializable {

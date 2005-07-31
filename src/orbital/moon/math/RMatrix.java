@@ -26,7 +26,7 @@ import orbital.util.Utility;
  * </p>
  * 
  * @structure composite D:double[][] unidirectional
- * @version 1.0, 2000/08/08
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @todo sub-views momentarily will not clone and newInstance() to RMatrix or RVectors, but be handled by super class.
  */

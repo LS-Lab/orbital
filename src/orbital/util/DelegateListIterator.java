@@ -18,7 +18,7 @@ import java.util.ListIterator;
  * @structure delegate delegatee:java.util.ListIterator
  * @structure implements java.util.ListIterator
  * @structure implements java.io.Serializable
- * @version 1.2, 2004-01-07
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see java.util.ListIterator
  */

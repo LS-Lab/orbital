@@ -17,7 +17,7 @@ import java.util.Arrays;
  * array of Object-elements (Table). Each Element is identified via its <code>(x,y)</code>-coordinates
  * ranging <code>minx..minx+width</code> and <code>miny..miny+height</code>.
  * 
- * @version 0.9, 04/03/98
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @structure composite map: Object[][] unidirectional
  */

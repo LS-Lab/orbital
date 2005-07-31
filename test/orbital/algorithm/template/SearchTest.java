@@ -28,7 +28,7 @@ import java.util.logging.Level;
  * Automatic test-driver checking (descendants of) orbital.algorithm.template.GeneralSearch.
  * Tests all known GeneralSearch implementations
  *
- * @version 0.8, 2002/04/06
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see AlgorithmicTable
  * @see SimpleGSP

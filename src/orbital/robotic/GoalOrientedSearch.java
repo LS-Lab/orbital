@@ -16,7 +16,7 @@ import orbital.logic.RecursionStoppedException;
  * The Search is goal-oriented in a way that the recursion tends
  * to a certain Point of destination (goal).
  * 
- * @version 0.9, 21/12/98
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see orbital.algorithm.template.AStar
  * @deprecated Since Orbital1.1 use a {@link orbital.algorithm.template.HeuristicAlgorithm} implementation instead.

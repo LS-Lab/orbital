@@ -50,7 +50,7 @@ import java.util.logging.Level;
  * on the monitor of critical system resources within runStream() to prevent deadlocks.
  * </p>
  * 
- * @version 1.0, 2000/08/09
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see <a href="doc-files/StreamMethod.png">concurrent implementation</a>
  * @see <a href="">UML</a>

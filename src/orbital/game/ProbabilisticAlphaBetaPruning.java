@@ -28,7 +28,7 @@ import java.util.logging.Level;
  * of the search space. Although desirable, a more goal-oriented exploration would
  * exhaust extra memory because state visiting statistics would need to be stored.</p>
  *
- * @version 1.0, 2001/08/22
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class ProbabilisticAlphaBetaPruning extends AlphaBetaPruning /*implements ProbabilisticAlgorithm*/ {
@@ -98,7 +98,7 @@ public class ProbabilisticAlphaBetaPruning extends AlphaBetaPruning /*implements
      * implementation achieves this by preferring better moves only
      * with some probability.  Further, it also backs up again to
      * slightly worse moves with some other probability.
-     * @version 1.1, 2003-01-20
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see ProbabilisticAlgorithm
      * @todo could use Boltzmann distribution for acception of fluctuation to worse choices.

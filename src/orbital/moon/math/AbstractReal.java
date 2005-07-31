@@ -127,7 +127,7 @@ abstract class AbstractReal extends AbstractComplex implements Real {
     /**
      * Represents a real number in <b>R</b> as a float value.
      * 
-     * @version 1.0, 1999/08/16
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      */
     static class Float extends AbstractReal {
@@ -210,7 +210,7 @@ abstract class AbstractReal extends AbstractComplex implements Real {
     /**
      * Represents a real number in <b>R</b> as a double value.
      * 
-     * @version 1.0, 1999/08/16
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      */
     static class Double extends AbstractReal {
@@ -289,7 +289,7 @@ abstract class AbstractReal extends AbstractComplex implements Real {
     /**
      * Represents a real number in <b>R</b> as an arbitrary-precision value.
      * 
-     * @version 1.2, 2003-12-12
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      */
     static class Big extends AbstractReal {

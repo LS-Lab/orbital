@@ -99,7 +99,7 @@ import orbital.math.functional.Operations;
  * of when they will first play "Skat".
  * </p>
  * @author Andr&eacute; Platzer
- * @version 1.0, 2002-08-13
+ * @version $Id$
  */
 public class CRTApplication{
     public static void main(String[] args){

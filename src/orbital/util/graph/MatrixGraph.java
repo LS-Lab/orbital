@@ -23,7 +23,7 @@ import java.util.NoSuchElementException;
  * <p>
  * <i><b>Note:</b> due to its prototype state, this class is subject to change</i>.</p>
  * 
- * @version 0.7, 2000/07/15
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @TODO: implement a little better
  * @invariants isSquare(edges) && size <= edges.length

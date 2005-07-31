@@ -48,7 +48,7 @@ import java.text.SimpleDateFormat;
  * This class uses {@link ModernFormula} and may pass its instance <code class="keyword">this</code>
  * as an argument to the constructor methods like {@link ModernFormula#createSymbol(Logic,Symbol)}.
  * </p>
- * @version 0.8, 1999/01/16
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see ModernFormula
  */

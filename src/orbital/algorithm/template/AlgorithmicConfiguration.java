@@ -29,7 +29,7 @@ package orbital.algorithm.template;
  * @structure aggregates algorithm:AlgorithmicTemplate (derived)
  * @structure aggregates problem:AlgorithmicProblem (derived)
  * @author Andr&eacute; Platzer
- * @version 1.1, 2002-11-13
+ * @version $Id$
  * @see AlgorithmicProblem
  * @see AlgorithmicTemplate
  * @todo rename Configuration to ...?

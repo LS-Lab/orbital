@@ -12,7 +12,7 @@ package orbital.logic.sign.type;
  * interface. This especially includes expressions and symbols.
  *
  * @author Andr&eacute; Platzer
- * @version 1.1, 2003-01-18
+ * @version $Id$
  * @version-revision $Revision$, $Date$
  * @see Type
  */

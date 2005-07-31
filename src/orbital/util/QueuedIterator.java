@@ -27,7 +27,7 @@ import java.util.NoSuchElementException;
  * to it are returned in FIFO order.</p>
  * 
  * @structure forwards List to super
- * @version 0.9, 2000/08/09
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @internal see orbital.util.Queue
  */

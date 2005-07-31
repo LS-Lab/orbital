@@ -10,7 +10,7 @@ import orbital.math.*;
  * encoded as arrays or collections).
  * Additionally, you can easily adapt the synchronicity.
  * 
- * @version 0.9, 2001/09/20
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class StreamMethodUsage {

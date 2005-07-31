@@ -55,7 +55,7 @@ import java.util.logging.Level;
  * </ol>
  * </p>
  *
- * @version 0.8, 2003-11-05
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @todo Skolem-Normalfrom mit KNF-Matrix (mit Erweiterung der Signatur)
  * @todo schlaues pränex-Normalform Bilden, um einfacher skolemisieren zu können. Minimiere die Anzahl der Allquantoren vor den Existenzquantoren.

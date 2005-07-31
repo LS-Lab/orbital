@@ -18,7 +18,7 @@ import orbital.util.Utility;
  * <var>Temporal-difference learning requires a Markov Decision Problem, though it does not even
  * use all its methods.</var></p>
  *
- * @version 0.9, 2001/06/18
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @internal too optimized
  */

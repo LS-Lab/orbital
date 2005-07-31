@@ -23,7 +23,7 @@ import java.awt.Component;
  * Note that if you intend to let the predicate abort the application without further user feedback
  * SystemRequestor needs being the <em>first</em> key listener to notify.</p>
  * 
- * @version 0.9, 1999/08/01
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class SystemRequestor extends KeyAdapter {

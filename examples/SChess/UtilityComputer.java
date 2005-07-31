@@ -10,7 +10,7 @@ import java.io.*;
 
 /**
  * New simple Chess Computer that employs &alpha;-&beta;-pruning and explicit utility functions.
- * @version 1.0, 2001/08/20
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class UtilityComputer extends Computer {

@@ -9,7 +9,7 @@ package orbital.math;
 /**
  * An x,y coordinate.
  * 
- * @version 0.9, 03/02/96
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see java.awt.Point
  * @see Vector

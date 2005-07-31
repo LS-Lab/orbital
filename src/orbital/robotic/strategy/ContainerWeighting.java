@@ -13,7 +13,7 @@ import orbital.logic.functor.Function;
  * 
  * TODO:  not yet finished
  * 
- * @version 0.9, 04/03/96
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class ContainerWeighting extends Evaluation {

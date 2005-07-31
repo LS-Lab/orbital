@@ -28,7 +28,7 @@ import orbital.logic.functor.Functor.Specification;
  * </p>
  * 
  * @structure inherit Functor
- * @version 1.0, 1998/11/14
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Function
  * @internal alternative implementation would regard BinaryFunctions as Function<Object[],B> but that would loose even more type safety.
@@ -63,7 +63,7 @@ public /*template*/ interface BinaryFunction/*<A1, A2, B>*/ extends Functor {
      * @structure aggregate outer:BinaryFunction<D1,D2,B>
      * @structure aggregate left:BinaryFunction<A1,A2,D1>
      * @structure aggregate right:BinaryFunction<A1,A2,D2>
-     * @version 1.0, 2000/01/23
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(BinaryFunction, BinaryFunction, BinaryFunction)
      */

@@ -17,7 +17,7 @@ import orbital.util.Pair;
  * FieldWeighting class weights a Field by summing up the weights of all Figures.
  * Makes Pairs (Field|Figure).
  * 
- * @version 0.9, 04/03/96
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @deprecated Since Orbital 1.1 use {@link AdversarySearch} instead.
  */

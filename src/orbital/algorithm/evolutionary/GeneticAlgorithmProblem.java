@@ -24,7 +24,7 @@ import orbital.logic.functor.Function;
  * These decisions characterizing a problem are encapsulated by an implementation of
  * <code>GeneticAlgorithmProblem</code>.
  * </p>
- * @version 1.0, 2000/08/07
+ * @version $Id$
  * @author Andr&eacute; Platzer
  * @see GeneticAlgorithm
  * @see orbital.algorithm.template.GeneralSearchProblem

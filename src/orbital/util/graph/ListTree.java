@@ -24,7 +24,7 @@ import orbital.util.StreamMethod;
  * child1    child2
  * </pre>
  * 
- * @version 0.9, 2000/07/15
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class ListTree extends ListJungle {

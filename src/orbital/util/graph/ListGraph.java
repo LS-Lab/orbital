@@ -21,7 +21,7 @@ import java.util.Collections;
 /**
  * Encapsulates a graph implemented with adjacence lists.
  * 
- * @version 0.7, 2000/07/15
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 

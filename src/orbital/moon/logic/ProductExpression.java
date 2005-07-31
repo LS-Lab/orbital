@@ -23,7 +23,7 @@ import java.util.logging.Level;
  *
  *
  * @author Andr&eacute; Platzer
- * @version 1.2, 2003-11-15
+ * @version $Id$
  */
 class ProductExpression implements Expression.Composite {
     private static final Logger logger = Logger.getLogger(ProductExpression.class.getName());

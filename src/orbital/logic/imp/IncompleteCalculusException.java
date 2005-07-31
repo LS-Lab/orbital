@@ -11,7 +11,7 @@ package orbital.logic.imp;
  * Especially thrown to indicate that an operation has been requested that could not
  * be performed due to the calculus used being incomplete.
  * 
- * @version 1.0, 1999/03/04
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class IncompleteCalculusException extends LogicException {

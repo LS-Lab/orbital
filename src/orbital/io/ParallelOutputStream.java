@@ -26,7 +26,7 @@ import java.io.IOException;
  * }
  * </pre></p>
  * 
- * @version 0.9, 1999/11/03
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class ParallelOutputStream extends FilterOutputStream {

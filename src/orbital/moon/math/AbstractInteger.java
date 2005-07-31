@@ -112,7 +112,7 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
     /**
      * Represents an integer number in <b>Z</b> as an int value.
      * 
-     * @version 1.0, 2000/08/03
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see java.lang.Integer
      * @internal note we do not provide a faster hashCode() implementation via longValue(), since new Real(0) and new Integer(0) will have different hashes then, although they are equal.
@@ -209,7 +209,7 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
     /**
      * Represents an integer number in <b>Z</b> as a long value.
      * 
-     * @version 1.0, 2000/08/03
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see java.lang.Long
      * @internal note we do not provide a faster hashCode() implementation via longValue(), since new Real(0) and new Integer(0) will have different hashes then, although they are equal.
@@ -290,7 +290,7 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
     /**
      * Represents an integer number in <b>Z</b> as an arbitrary-precision value.
      * 
-     * @version 1.2, 2003-12-12
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see java.math.BigInteger
      * @internal note we do not provide a faster hashCode() implementation via longValue(), since new Real(0) and new Integer(0) will have different hashes then, although they are equal.

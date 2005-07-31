@@ -18,7 +18,7 @@ import orbital.SP;
  * <p>
  * Implementing classes are usually stateless.</p>
  * 
- * @version 0.9, 17/02/2000
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see orbital.logic.functor.Predicate
  * @see java.util.Collection

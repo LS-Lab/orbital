@@ -20,7 +20,7 @@ import orbital.util.Utility;
  * 
  * @structure inherit orbital.logic.functor.Functor.Composite
  * @structure implements Serializable
- * @version 1.0, 2000/08/23
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @note package-level protected to orbital.logic.functor
  * @note the design name of this class is orbital.logic.functor.Functor.Composite.Abstract and is a package-level protected inner class to Functor.Composite. This is not possible with Java, however, so we moved it here.

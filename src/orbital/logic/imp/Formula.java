@@ -84,7 +84,7 @@ import java.util.Set;
  * this formula, given an interpretation that is passed as an argument.
  * </p>
  * 
- * @version 1.0, 1999/01/12
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @structure extends Expression
  * @structure extends Function<Interpretation,Object>
@@ -440,7 +440,7 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      * course, due to the same compositors and components.
      * @structure is Expression.Composite&cap;Function.Composite&cap;Formula
      * @author  Andr&eacute; Platzer
-     * @version 1.1, 2002-11-27
+     * @version $Id$
      */
     static interface Composite extends Expression.Composite, Function.Composite, Formula {}
 }

@@ -25,7 +25,7 @@ import java.security.*;
  * the security policy file.
  *
  *
- * @version 1.5, 12/03/01
+ * @version $Id$
  * @since 1.4
  * @see java.security.BasicPermission
  * @see java.security.Permission

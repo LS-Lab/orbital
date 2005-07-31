@@ -11,7 +11,7 @@ package check;
  *
  *
  * @author <a href="mailto:">Andr&eacute; Platzer</a>
- * @version 1.1, 2002-09-14
+ * @version $Id$
  */
 public abstract class TestCase extends junit.framework.TestCase {
     public TestCase() {

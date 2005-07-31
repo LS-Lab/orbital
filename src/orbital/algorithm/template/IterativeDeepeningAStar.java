@@ -29,7 +29,7 @@ import orbital.math.Values;
  * the heuristic returns. If |h(S)| is small, IDA<sup>*</sup> only has to go through very little
  * iterations. Of course, if the heuristic has too few values, then it does not guide search at all.</p>
  *
- * @version 1.0, 2000/09/20
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see "Korf, R.E. (1985) Depth-first iterative deepening. An optimal admissible tree search. AIJ, 27(1), 97-109"
  * @todo why is IDA* with iterators about 11% slower than IDA* with collections?

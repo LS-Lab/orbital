@@ -57,7 +57,7 @@ import java.util.logging.Level;
  * </p>
  *
  * @author Andr&eacute; Platzer
- * @version 1.1, 2003-01-18
+ * @version $Id$
  * @see Type
  */
 public class StandardTypeSystem implements TypeSystem {
@@ -319,7 +319,7 @@ public class StandardTypeSystem implements TypeSystem {
     /**
      * The root class for type implementations.
      * @author Andr&eacute; Platzer
-     * @version 1.1, 2002-09-11
+     * @version $Id$
      */
     private static abstract class TypeObject implements Type, Serializable {
 	private static final long serialVersionUID = 3881468737970732586L;
@@ -400,7 +400,7 @@ public class StandardTypeSystem implements TypeSystem {
     /**
      * Root class for composite types.
      * @author Andr&eacute; Platzer
-     * @version 1.1, 2002-11-24
+     * @version $Id$
      */
     private static abstract class AbstractCompositeType extends TypeObject implements Type.Composite {
 	private static final long serialVersionUID = 5980179612049115956L;
@@ -475,7 +475,7 @@ public class StandardTypeSystem implements TypeSystem {
     /**
      * Basic implementation of map-like Types.
      * @author Andr&eacute; Platzer
-     * @version 1.1, 2002-09-08
+     * @version $Id$
      * @internal this implementation also makes sense for non-composite types, but single inheritance prevents this.
      */
     private static abstract class MapTypeBase extends TypeObject { /////AbstractCompositeType {
@@ -540,7 +540,7 @@ public class StandardTypeSystem implements TypeSystem {
     /**
      * Base class for (composite) non-map types i.e. with void domain.
      * @author Andr&eacute; Platzer
-     * @version 1.1, 2002/10/06
+     * @version $Id$
      * @see StandardTypeSystem.MapType
      */
     private static abstract class NonMapCompositeType extends AbstractCompositeType {
@@ -581,7 +581,7 @@ public class StandardTypeSystem implements TypeSystem {
     /**
      * Base implementation for fundamental types already available at the language level ({@link java.lang.Class}).
      * @author Andr&eacute; Platzer
-     * @version 1.1, 2002-09-11
+     * @version $Id$
      */
     private static abstract class FundamentalType extends TypeObject {
 	private static final long serialVersionUID = 7364608656416736898L;
@@ -651,7 +651,7 @@ public class StandardTypeSystem implements TypeSystem {
     /**
      * Implementation of fundamental types already available at the language level ({@link java.lang.Class}).
      * @author Andr&eacute; Platzer
-     * @version 1.1, 2002-09-08
+     * @version $Id$
      */
     private static class FundamentalTypeImpl extends FundamentalType {
 	private static final long serialVersionUID = -5129887328859119221L;
@@ -696,7 +696,7 @@ public class StandardTypeSystem implements TypeSystem {
     /**
      * Implementation of special types.
      * @author Andr&eacute; Platzer
-     * @version 1.2, 2003-12-16
+     * @version $Id$
      */
     private static class SpecialType extends TypeObject {
 	//private static final long serialVersionUID = 0;
@@ -794,7 +794,7 @@ public class StandardTypeSystem implements TypeSystem {
     /**
      * Implementation of map types.
      * @author Andr&eacute; Platzer
-     * @version 1.1, 2002-09-08
+     * @version $Id$
      * @see StandardTypeSystem.NonMapType
      * @todo extend AbstractCompositeType, or at least Composite
      */
@@ -896,7 +896,7 @@ public class StandardTypeSystem implements TypeSystem {
     /**
      * Implementation of product types.
      * @author Andr&eacute; Platzer
-     * @version 1.1, 2002-09-08
+     * @version $Id$
      * @internal which interface for product types? The answer may be: nothing particular, since the typical operations should rely on compareTo and equals.
      */
     private static final class ProductType extends NonMapCompositeType {
@@ -1049,7 +1049,7 @@ public class StandardTypeSystem implements TypeSystem {
     /**
      * Implementation of infimum types.
      * @author Andr&eacute; Platzer
-     * @version 1.1, 2002-10-04
+     * @version $Id$
      * @todo should we extend AbstractCompositeType?
      * @todo could change internal representation to "LinkedHashSet<Type> components".
      */
@@ -1179,7 +1179,7 @@ public class StandardTypeSystem implements TypeSystem {
     /**
      * Implementation of supremum types.
      * @author Andr&eacute; Platzer
-     * @version 1.1, 2002-10-04
+     * @version $Id$
      */
     private static final class SupremumType extends NonMapCompositeType {
 	private static final long serialVersionUID = 2673832577121308931L;
@@ -1268,7 +1268,7 @@ public class StandardTypeSystem implements TypeSystem {
     /**
      * Internal super class for type constructors of collection types.
      * @author Andr&eacute; Platzer
-     * @version 1.1, 2003-02-04
+     * @version $Id$
      */
     private static abstract class CollectionTypeConstructor implements Function/*<Type,Type>*/ {
 	private final Class collection;
@@ -1314,7 +1314,7 @@ public class StandardTypeSystem implements TypeSystem {
     /**
      * Collection types.
      * @author Andr&eacute; Platzer
-     * @version 1.1, 2002/10/06
+     * @version $Id$
      */
     private static class CollectionType extends NonMapCompositeType {
 	private static final long serialVersionUID = -1113530540489964295L;

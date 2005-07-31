@@ -9,7 +9,7 @@ package orbital.math;
 /**
  * An x,y,z coordinate.
  * 
- * @version 0.9, 03/02/96
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Vector
  * @see Point2D

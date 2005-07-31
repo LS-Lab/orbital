@@ -43,7 +43,7 @@ import orbital.moon.math.AbstractValues;
  * to be "plugged in".
  * </p>
  * 
- * @version 1.0, 2000/08/08
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see ValueFactory
  * @todo somehow dynamically load services like sun.misc.Service does. But that doesn't improve things except if those providers somehow tell what they can do for us. So this is not a very important todo.

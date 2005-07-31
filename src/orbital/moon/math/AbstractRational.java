@@ -114,7 +114,7 @@ abstract class AbstractRational extends AbstractReal implements Rational {
      * The numerator p and denominator q component values are int integer values in <b>Z</b>,
      * and q&ne;0.
      *
-     * @version 1.0, 2000/08/03
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      */
     static class RationalImpl extends AbstractRational {

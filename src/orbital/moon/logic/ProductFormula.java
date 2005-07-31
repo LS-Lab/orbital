@@ -21,7 +21,7 @@ import orbital.logic.sign.Expression;
  * Most method calls do not (yet) make sense on this object.
  *
  * @author Andr&eacute; Platzer
- * @version 1.2, 2003-11-15
+ * @version $Id$
  * @version-revision $Revision$, $Date$
  */
 class ProductFormula extends ProductExpression implements Formula  {

@@ -32,7 +32,7 @@ import java.util.logging.Level;
  * </p>
  *
  * @author Andr&eacute; Platzer
- * @version 1.1, 2002-09-08
+ * @version $Id$
  * @see TypeSystem
  */
 public final class Types {

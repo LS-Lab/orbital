@@ -18,7 +18,7 @@ import orbital.math.Real;
  * for search (usually for controlling transition acceptance probability).
  * That parameter is sometimes called "temperature".
  * </p>
- * @version 1.1, 2002/06/02
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 abstract class ScheduledLocalOptimizerSearch extends LocalOptimizerSearch implements HeuristicAlgorithm {

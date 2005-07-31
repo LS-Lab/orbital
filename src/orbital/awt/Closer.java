@@ -49,7 +49,7 @@ import java.io.NotSerializableException;
  * <p>
  * Never register a closer as an actionListener to itself.
  * 
- * @version 0.9, 02/15/98
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public final class Closer extends WindowAdapter implements ActionListener, Predicate {

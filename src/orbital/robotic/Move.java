@@ -15,7 +15,7 @@ import java.io.Serializable;
  * Move class is including constants to name possible single-step moves.</p>
  * 
  * @stereotype data-type
- * @version 0.9, 1998-07-09
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @xxx It would have been better to represent /LF as a single atomic move object, instead of a sequence of chars. Then a compound Move would have been an array of move objects, and move inversion would be a simple thing to implement.
  */

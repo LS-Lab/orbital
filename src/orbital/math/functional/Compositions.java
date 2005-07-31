@@ -16,7 +16,7 @@ import orbital.util.GeneralComplexionException;
 /**
  * Contains implementations of composite functors.
  *
- * @version 1.0, 2001/11/22
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @note package-level protected to orbital.math.functional
  * @see Functionals
@@ -38,7 +38,7 @@ class Compositions {
      * @structure concretizes MathFunctor.Composite
      * @structure aggregate outer:Function
      * @structure aggregate inner:Function
-     * @version 1.0, 1999/03/16
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(Function, Function)
      */
@@ -108,7 +108,7 @@ class Compositions {
      * @structure aggregate outer:BinaryFunction
      * @structure aggregate left:BinaryFunction
      * @structure aggregate right:BinaryFunction
-     * @version 1.0, 1999/03/16
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(BinaryFunction, BinaryFunction, BinaryFunction)
      */

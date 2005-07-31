@@ -23,7 +23,7 @@ import orbital.math.Values;
  * h(n) by a constant W&gt;1. WA<sup>*</sup> uses evaluation function f(n) = g(n) + W*h(n).
  * However solutions are no longer optimal but at most W times from optimal.</p>
  *
- * @version 1.0, 2000/09/18
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see "Pohl, I. (1973). The avoidance of (relative) catastrophe, heuristic competence, genuine dynamic weighting and computational issues in heuristic problem solving. In Proceedings of the Third International Joint Conference on Artificial Intelligence (IJCAI-73), pages 20-23, Stanford, California, IJCAII."
  * @internal Sustain transient variable initialization when deserializing. Done by AStar.readObject() calling firePropertyChange(...).

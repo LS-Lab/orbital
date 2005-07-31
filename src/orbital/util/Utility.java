@@ -37,7 +37,7 @@ import orbital.math.Values;
  * A general Utility class containing static methods for common tasks like assertion checking etc.
  *
  * @stereotype Utilities
- * @version 0.9, 1998/05/18
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see orbital.math.MathUtilities
  * @see orbital.io.IOUtilities

@@ -11,7 +11,7 @@ import orbital.logic.sign.concrete.Notation;
 /**
  * Contains implementations of composite functors.
  *
- * @version 1.0, 2001/11/22
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see orbital.logic.functor.Functionals
  * @note package-level protected to orbital.logic.functor
@@ -34,7 +34,7 @@ class Compositions {
      * @structure concretizes Functor.Composite.Abstract
      * @structure aggregate outer:Function
      * @structure aggregate inner:Function
-     * @version 1.0, 2000/01/23
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(Function, Function)
      * @internal if we only had a union interface of Function and Functor.Composite, then
@@ -102,7 +102,7 @@ class Compositions {
      * @structure aggregate outer:BinaryFunction
      * @structure aggregate left:BinaryFunction
      * @structure aggregate right:BinaryFunction
-     * @version 1.0, 2000/01/23
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(BinaryFunction, BinaryFunction, BinaryFunction)
      */
@@ -180,7 +180,7 @@ class Compositions {
      * @structure concretizes Functor.Composite.Abstract
      * @structure aggregate outer:Function
      * @structure aggregate inner:VoidFunction
-     * @version 1.0, 2000/01/23
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(Function, Function)
      */
@@ -243,7 +243,7 @@ class Compositions {
      * @structure concretizes Functor.Composite.Abstract
      * @structure aggregate outer:Predicate
      * @structure aggregate inner:Function
-     * @version 1.0, 2000/01/23
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(Predicate, Function)
      */
@@ -303,7 +303,7 @@ class Compositions {
      * @structure aggregate outer:BinaryPredicate
      * @structure aggregate left:BinaryFunction
      * @structure aggregate right:BinaryFunction
-     * @version 1.0, 2000/01/23
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(BinaryPredicate, BinaryFunction, BinaryFunction)
      */
@@ -376,7 +376,7 @@ class Compositions {
      * @structure concretizes Functor.Composite.Abstract
      * @structure aggregate outer:Predicate
      * @structure aggregate inner:Function
-     * @version 1.0, 2000/01/23
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(Predicate, VoidFunction)
      */

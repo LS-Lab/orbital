@@ -29,7 +29,7 @@ import java.util.ArrayList;
 
 /**
  * Implementation of algebraic simplification.
- * @version 0.7, 2002/10/07
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @todo how to recognize variables. Values.symbol(String, boolean variable)
  */

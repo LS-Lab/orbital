@@ -16,7 +16,7 @@ import orbital.util.Pair;
 /**
  * Base hook class for problems solved by DynamicProgramming for optimization.
  * 
- * @version 0.9, 2000/08/01
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public abstract class DynamicProgrammingOptimizingProblem implements DynamicProgrammingProblem, Serializable {

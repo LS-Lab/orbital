@@ -62,7 +62,7 @@ import orbital.math.Values;
  * </blockquote>
  * </p>
  *
- * @version 1.0, 2000/09/17
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @note is a basic aspect of local optimization, only.
  * @note the father of local optimizers, also the most simple version
@@ -142,7 +142,7 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
     }
     /**
      * An iterator over a state space in (probabilistic) greedy order for hill-climbing.
-     * @version 1.0, 2001/08/01
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @todo replace by acceptStep(restrictRandomly(problem,algorithm,1))
      */
@@ -181,7 +181,7 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
 
 //     /**
 //      * An iterator over a state space in (randomized) greedy order for hill-climbing.
-//      * @version 1.0, 2001/08/01
+//      * @version $Id$
 //      * @author  Andr&eacute; Platzer
 //      * @todo really turn this class into a inner static class whose constructor requires an EvaluativeAlgorithm that also is a ProbabilisticAlgorithm?
 //      * @todo replace by acceptStep(restrictRandomly(restrictBest(problem),algorithm,1))

@@ -11,7 +11,7 @@ package orbital.logic.sign.type;
  *
  *
  * @author Andr&eacute; Platzer
- * @version 1.1, 2003-01-25
+ * @version $Id$
  * @version-revision $Revision$, $Date$
  */
 public class TypeException extends RuntimeException {

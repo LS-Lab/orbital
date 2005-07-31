@@ -27,7 +27,7 @@ import orbital.logic.functor.Functor.Specification;
  * </p>
  * 
  * @structure inherit orbital.logic.functor.Functor
- * @version 1.0, 1999/07/21
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see BinaryPredicate
  * @see VoidPredicate
@@ -62,7 +62,7 @@ public interface Predicate/*<A>*/ extends Functor /*abstract template extends Fu
      * @structure extends Functor.Composite
      * @structure aggregate outer:Predicate<B>
      * @structure aggregate inner:Function<A,B>
-     * @version 1.0, 2000/01/23
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(Predicate, Function)
      */

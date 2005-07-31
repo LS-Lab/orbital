@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 /**
  *
- * @version 1.0, 2002/07/06
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 final class PackageUtilities {

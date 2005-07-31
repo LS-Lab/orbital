@@ -23,7 +23,7 @@ import java.util.LinkedList;
  * In a selection query, a Collection is filtered to obtain the desired subset of data
  * which matches the criteria, with the order being induced by a Comparator.
  * 
- * @version 1.0, 2000/11/01
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @stereotype Module
  * @see orbital.util.Utility

@@ -14,7 +14,7 @@ import orbital.util.SuspiciousError;
 
 /**
  * Per[n,r](true)
- * @version 0.9, 2000/11/29
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @todo outroduce and use GeneralizedPermutation({n,....,n}) instead.
  */

@@ -22,7 +22,7 @@ import orbital.logic.functor.Predicates;
  * LUDecomposition class, decomposing <span class="matrix">A</span>
  * into <span class="matrix">P</span>&#8729;<span class="matrix">A</span> = <span class="matrix">L</span>&#8729;<span class="matrix">U</span>.
  *
- * @version 0.9, 2000/09/09
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @stereotype Structure
  * @stereotype Wrapper

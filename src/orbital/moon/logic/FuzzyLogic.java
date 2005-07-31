@@ -214,7 +214,7 @@ import orbital.util.Utility;
  * properties for all operators.
  * </p>
  * 
- * @version 0.7, 1999/01/11
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see "Klir, G. and Folger, T. (1988), Fuzzy Sets, Uncertainty and Information, Prentice-Hall, Englewood Cliffs."
  * @see "Gottwald, Siegfried. A Treatise On Many-Valued Logics, volume 9 of Studies in Logic and Computation. Research Studies Press, Baldock, Hertfordshire, England, 2001."
@@ -383,7 +383,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
     /**
      * Specifies the type of fuzzy logic to use.
      * Instances will define the set of fuzzy logic operators applied.
-     * @version 1.0, 2002/05/29
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see <a href="{@docRoot}/Patterns/Design/enum.html">typesafe enum pattern</a>
      * @internal typesafe enumeration pattern class to specify fuzzy logic operators

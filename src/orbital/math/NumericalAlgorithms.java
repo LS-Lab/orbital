@@ -32,7 +32,7 @@ import orbital.util.Utility;
  * 
  * @stereotype Utilities
  * @stereotype Module
- * @version 1.0, 2000/06/10
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see orbital.math.MathUtilities
  * @see LUDecomposition

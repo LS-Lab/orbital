@@ -15,7 +15,7 @@ import java.io.IOException;
  * to all bytes read from the underlying InputStream.
  * The analyzer will only be notified when no Exception occured while reading.
  * 
- * @version 0.9, 1999/11/05
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class AnalyzingInputStream extends FilterInputStream {

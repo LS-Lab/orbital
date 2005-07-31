@@ -21,7 +21,7 @@ import javax.swing.JScrollPane;
 /**
  * This class is an AboutDialog showing a nice informational dialog.
  * 
- * @version 0.9, 2000/02/01
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class AboutDialog {

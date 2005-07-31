@@ -37,7 +37,7 @@ import java.io.*;
  *	  the default platform encoding).
  * </ul>
  *
- * @version 1.11, 12/03/01
+ * @version $Id$
  * @since 1.4
  */
 

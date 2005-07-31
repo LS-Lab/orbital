@@ -16,7 +16,7 @@ import java.util.NoSuchElementException;
  * So those can easily be extended to be a whole sequence.
  * </p>
  * 
- * @version 0.9, 2000/01/18
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see java.util.List
  * @see java.util.Iterator

@@ -23,7 +23,7 @@ import java.util.logging.Level;
  * Na&iuml;ve saturation. Repeatedly adds all resolvents of the first
  * clause with other clauses to the clausal set.
  *
- * @version 1.2, 2004-01-14
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class SaturationResolution extends ResolutionBase {

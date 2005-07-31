@@ -20,7 +20,7 @@ import orbital.algorithm.Combinatorical;
  * The components m<sub>i<sub>1</sub>&times;i<sub>2</sub>&times;&#8230;&times;i<sub>r</sub></sub> in A are Arithmetic objects.</p>
  * 
  * @structure composite D:Arithmetic[][] unidirectional
- * @version 1.0, 2002-08-07
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 class ArithmeticTensor/*<R implements Arithmetic>*/ extends AbstractTensor/*<R>*/ {

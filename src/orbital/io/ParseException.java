@@ -23,7 +23,7 @@ import java.io.StreamTokenizer;
  * Unlike {@link orbital.logic.imp.ParseException}, this class will be removed once a standard
  * parse exception is available.
  * </p>
- * @version 0.9, 1998/05/11
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see java.text.ParseException
  * @see org.xml.sax.SAXParseException

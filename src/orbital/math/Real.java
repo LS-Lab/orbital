@@ -19,7 +19,7 @@ import orbital.logic.functor.Predicate;
  * 
  * @invariants (this is Comparable &and; <span class="consistent">&#9671;</span>abnormal(&not;Comparable)) &or; <span class="provable">&#9633;</span>abnormal(Comparable)
  * @stereotype data-type
- * @version 1.0, 1999/08/16
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Values#valueOf(double)
  * @see Values#valueOf(float)

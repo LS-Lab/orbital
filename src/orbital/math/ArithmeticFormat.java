@@ -49,7 +49,7 @@ import java.util.logging.Level;
  * However, to adjust the common format on the whole math system, use {@link MathUtilities#getDefaultPrecisionDigits()}, etc.
  * </p>
  *
- * @version 1.0, 2000/09/26
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @todo test
  * @see NumberFormat#INTEGER_FIELD

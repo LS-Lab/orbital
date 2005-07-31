@@ -31,8 +31,8 @@ import java.util.Arrays;
  * methods is deferred to subclasses.
  * 
  * @stereotype Structure
- * @version 1.1, 2003-01-01
- * @version 1.0, 1998-07-13
+ * @version $Id$
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public abstract class Figure extends Moving {

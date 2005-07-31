@@ -28,7 +28,7 @@ import orbital.math.Values;
  * <p>
  * Implementation data structure is a Queue (FIFO).</p>
  *
- * @version 1.0, 2000/09/17
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @note is a basic aspect of exploring the search space breadth-first.
  */
@@ -64,7 +64,7 @@ public class BreadthFirstSearch extends GeneralSearch {
 
     /**
      * An iterator over a state space in breadth-first order.
-     * @version 1.0, 2001/08/01
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      */
     public static class OptionIterator extends GeneralSearch.OptionIterator {

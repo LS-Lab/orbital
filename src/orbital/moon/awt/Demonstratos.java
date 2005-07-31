@@ -27,7 +27,7 @@ import java.awt.BorderLayout;
  * use as an Applet at Runtime simply checks wether start() has been called.
  * When called the output will be redirected as needed.
  * 
- * @version 1.0, 07/06/97
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * 
  * @see orbital.moon.awt.AppletFrame

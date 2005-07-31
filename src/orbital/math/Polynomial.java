@@ -26,7 +26,7 @@ import java.util.ListIterator;
  * <!-- @todo could we calculate only infinitely generated algebras as well? -->
  * </p>
  *
- * @version 1.1, 2002/08/21
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Values#polynomial(Object)
  * @see Values#asPolynomial(Tensor)

@@ -19,7 +19,7 @@ import orbital.util.Setops;
  * Framework (template class) for Greedy Algorithms.
  * The greedy algorithm does only perform local decisions.
  * 
- * @version 1.0, 2000/06/22
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see GreedyProblem
  * @see DynamicProgramming

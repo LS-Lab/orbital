@@ -15,7 +15,7 @@ import java.awt.Dimension;
 
 /**
  * A sample test case, testing .
- * @version 1.1, 2002-09-14
+ * @version $Id$
  */
 public class AbstractMatrixTest extends check.TestCase {
     private static final int TEST_REPETITION = 20;

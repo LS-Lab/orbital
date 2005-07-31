@@ -17,7 +17,7 @@ package orbital.logic.sign;
  * It shields users of the logic package from such a change and allows a smooth migration
  * to the new exception once it is available from a standard organization.
  * </p>
- * @version 1.0, 2002-10-18
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see java.text.ParseException
  * @see org.xml.sax.SAXParseException

@@ -13,7 +13,7 @@ import java.util.LinkedList;
  * This is valid since for matrices it is true that
  * (A1*A2)*A3 = A1*(A2*A3)
  * 
- * @version 0.8,, 2000/07/31
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class MatrixKlammerung extends DynamicProgrammingOptimizingProblem {

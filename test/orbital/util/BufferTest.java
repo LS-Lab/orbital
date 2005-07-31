@@ -10,7 +10,7 @@ import junit.framework.*;
 
 /**
  * A sample test case, testing buffers.
- * @version 0.9, 2003-06-04
+ * @version $Id$
  * @internal-version may date back to up to 1998-13-11.
  */
 public class BufferTest extends check.TestCase {

@@ -17,7 +17,7 @@ import orbital.util.Utility;
  * It contains a Symbolstring which will be represented by the specified
  * Tokenstring. Every Token has a type.
  * 
- * @version 0.9, 1998/05/11
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see <a href="package-summary.html#Token">Token explanation</a>
  */

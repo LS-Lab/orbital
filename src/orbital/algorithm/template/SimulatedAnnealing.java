@@ -91,7 +91,7 @@ import java.util.logging.Level;
  * (metropolis search is simulated annealing at a <em>fixed</em> temperature T).
  * </p>
  *
- * @version 0.9, 2001/05/11
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see HillClimbing
  * @see ThresholdAccepting
@@ -168,7 +168,7 @@ public class SimulatedAnnealing extends ScheduledLocalOptimizerSearch {
 
     /**
      * An iterator over a state space in (probabilistic) greedy order for simulated annealing.
-     * @version 1.0, 2001/08/01
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      */
     private static class OptionIterator extends LocalOptimizerSearch.OptionIterator {

@@ -18,7 +18,7 @@ import orbital.math.Values;
 /**
  * Usual active neuron for neural networks.
  *
- * @version 0.9, 2001/05/23
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public

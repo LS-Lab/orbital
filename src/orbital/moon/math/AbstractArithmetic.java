@@ -15,7 +15,7 @@ import orbital.math.Integer;
  * This class is useful as a base class for Arithmetic objects, but
  * the performance may be lower than a direct implementation of all methods.
  * </p>
- * @version 1.0, 1999/08/16
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 abstract class AbstractArithmetic implements Arithmetic {

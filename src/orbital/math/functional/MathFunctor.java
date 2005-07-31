@@ -46,7 +46,7 @@ import orbital.math.Arithmetic;
  * </p>
  * 
  * @structure inhert:orbital.logic.functor.Functor
- * @version 1.0, 2000/08/05
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @since Orbital1.0
  * @see MathFunctor.AbstractFunctor
@@ -136,7 +136,7 @@ public abstract interface MathFunctor extends Functor, Arithmetic {
      * @structure is {@link orbital.logic.functor.Functor.Composite}&cap;{@link MathFunctor}
      * @structure extends MathFunctor
      * @structure extends Functor.Composite
-     * @version 1.0, 2000/01/23
+     * @version $Id$
      * @author  Andr&eacute; Platzer
      * @internal if we only had a section interface of Function and Functor.Composite, then
      *  we would not need this interface.

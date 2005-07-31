@@ -34,7 +34,7 @@ import java.util.logging.Level;
  *  Due to C/Java memory storage conventions (storing columns consequtively),
  *  this has great effect on performance.
  *  Fortran memory storage conventions are exactly the other way around.
- * @version 1.0, 2000/08/08
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public/*@xxx*/ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTensor implements Matrix/*<R>*/ {

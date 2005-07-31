@@ -14,7 +14,7 @@ import orbital.algorithm.evolutionary.Population;
  * <p>
  * Note: you should handle this class as if it were package-level protected.</p>
  *
- * @version 0.9, 2001/04/08
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class SelectionStatistics {

@@ -14,7 +14,7 @@ import java.util.NoSuchElementException;
  * It generates a random order of n values from 0 to n-1 with presumption
  * to be unique.
  * 
- * @version 0.9, 03/02/96
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see java.util.Collections#shuffle(java.util.List)
  * @todo substitute with Collections.shuffle

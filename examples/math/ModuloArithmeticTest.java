@@ -5,7 +5,7 @@ import orbital.logic.functor.Function;
 /**
  * Runnable application ModuloArithmeticTest.
  *
- * @version 0.8, 2002/02/09
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class ModuloArithmeticTest extends MathTest {

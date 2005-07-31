@@ -39,7 +39,7 @@ import orbital.math.functional.Functions;
  * accept rewards that result from our own heuristics.</p>
  *
  * @invariant net.length == learner.length
- * @version 0.9, 2001/06/27
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public

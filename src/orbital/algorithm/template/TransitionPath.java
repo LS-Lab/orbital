@@ -19,7 +19,7 @@ import orbital.algorithm.template.ProbabilisticAlgorithm;
  * </p>
  *
  * @author Andr&eacute; Platzer
- * @version 0.9, 2002/05/31
+ * @version $Id$
  */
 
 public class TransitionPath implements Iterator, ProbabilisticAlgorithm, Serializable {

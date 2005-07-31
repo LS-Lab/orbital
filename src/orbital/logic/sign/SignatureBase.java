@@ -32,7 +32,7 @@ import java.util.Comparator;
  * @structure implements java.util.SortedSet
  * @structure delegates super:java.util.SortedSet
  * @structure inherits orbital.util.DelegateSortedSet
- * @version 1.0, 2001/06/12
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see ExpressionSyntax#scanSignature(java.lang.String)
  */

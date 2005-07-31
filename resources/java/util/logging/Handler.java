@@ -23,7 +23,7 @@ package java.util.logging;
  * <tt>Handler</tt> class.
  *
  *
- * @version 1.12, 12/03/01
+ * @version $Id$
  * @since 1.4
  */
 

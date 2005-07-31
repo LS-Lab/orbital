@@ -50,7 +50,7 @@ import java.util.logging.Level;
  * </pre>
  * </p>
  * 
- * @version 0.9, 1999/11/03
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see java.io.DataInput
  * @see DataReader

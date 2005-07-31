@@ -11,7 +11,7 @@ package orbital.util;
  * Utility#isIteratable(Object) generalized iteratable} is not.
  *
  * @author Andr&eacute; Platzer
- * @version 1.1, 2003-06-28
+ * @version $Id$
  * @version-revision $Revision$, $Date$
  */
 public class NotIteratableException extends ClassCastException {

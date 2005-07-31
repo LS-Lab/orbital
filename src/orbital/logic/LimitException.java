@@ -9,7 +9,7 @@ package orbital.logic;
 /**
  * Thrown when a limit is exceeded.
  * 
- * @version 0.9, 2000/06/17
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class LimitException extends RuntimeException {

@@ -17,7 +17,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
  * the objects registered in its corresponding list, depending upon
  * Clipboard content.
  * 
- * @version 0.5, 1999/03/29
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class ClipboardObserver extends EnablerDisabler implements ClipboardOwner {

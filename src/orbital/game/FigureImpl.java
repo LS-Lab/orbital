@@ -33,7 +33,7 @@ import java.util.logging.Level;
  * to move and/or beat other figures.
  * 
  * @stereotype Structure
- * @version 1.1, 2003-01-01
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @internal  Which of the legal moves are valid in a certain situation
  * is determined by {@link #movePath(Move)}.

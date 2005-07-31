@@ -15,7 +15,7 @@ import orbital.util.Utility;
  * <p>
  * For equality and similar methods, both objects contained is considered.</p>
  * 
- * @version 1.0, 1996/03/04
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see KeyValuePair
  */

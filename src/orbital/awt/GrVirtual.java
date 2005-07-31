@@ -14,7 +14,7 @@ import java.awt.image.ImageObserver;
  * This class encapsulates a virtual graphics interface that automatically
  * transformes virtual coordinates into real ones.
  * 
- * @version 0.9, 03/02/96
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public abstract class GrVirtual extends Graphics {

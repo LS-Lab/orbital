@@ -107,7 +107,7 @@ import sun.security.action.GetPropertyAction;
  * <p> 
  * All methods on the LogManager object are multi-thread safe.
  *
- * @version 1.20, 12/03/01
+ * @version $Id$
  * @since 1.4
 */
 

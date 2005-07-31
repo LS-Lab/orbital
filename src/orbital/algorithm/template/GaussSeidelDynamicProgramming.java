@@ -46,7 +46,7 @@ import java.util.logging.Level;
  * </p>
  *
  * @invariants getDiscount()&isin;[0,1]
- * @version 1.0, 2001/06/10
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see DynamicProgramming
  * @see "A. Barto, S. Bradtke, and S. Singh. Learning to act using real-time dynamic programming. <i>Artificial Intelligence</i>, 72:81-138, 1995."

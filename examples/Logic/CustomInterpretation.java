@@ -17,7 +17,7 @@ import java.util.*;
  * To ask values from the user, or query values from a database, a class
  * like this could be very useful.
  * 
- * @version 0.8,, 2001/04/07
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  */
 public class CustomInterpretation extends JFrame {

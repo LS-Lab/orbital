@@ -27,7 +27,7 @@ import orbital.util.Utility;
  * elements again to get their associated weight.</p>
  * <p><em>Experimental</em></p>
  * 
- * @version 0.9, 2000/03/09
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @invariants getPopulation() instanceof ComparingPopulation
  */
@@ -172,7 +172,7 @@ public class ConcurrenceGeneticAlgorithm extends IncrementalGeneticAlgorithm {
 /**
  * This class is a Population that weights its members in comparison to the others.
  * 
- * @version 0.9, 2000/03/09
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see ParallelEvaluationPopulation
  */

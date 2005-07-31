@@ -17,7 +17,7 @@ import orbital.util.Utility;
  * An incremental genetic algorithm with overlapping populations and only
  * one reproduction per generation.
  * 
- * @version 1.0, 2000/03/28
+ * @version $Id$
  * @author  Andr&eacute; Platzer
  * @structure delegate population:Population
  * @structure delegate selection:Function

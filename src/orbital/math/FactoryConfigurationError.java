@@ -12,7 +12,7 @@ package orbital.math;
  * in the <a href="Values.html#SystemProperties">system properties</a>
  * cannot be found or instantiated. 
  *
- * @version 1.1, 2002-12-06
+ * @version $Id$
  * @author <a href="">Andr&eacute; Platzer</a>
  */
 public class FactoryConfigurationError extends Error {
