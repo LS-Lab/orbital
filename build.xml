@@ -91,6 +91,7 @@
         <path id="tests.classpath">
 	    <pathelement location="${examples}/Algorithms"/>
 	    <pathelement location="${examples}/math"/>
+	    <pathelement location="${examples}/SChess"/>
 
             <pathelement path="${build.tests}" />
 	    <pathelement location="${com.wolfram.jlink.path}"/>

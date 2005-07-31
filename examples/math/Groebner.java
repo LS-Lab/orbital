@@ -3,13 +3,13 @@ import java.util.*;
 
 /**
  * Some operations with multivariate polynomials,
- * including construction of a Groebner basis.
+ * including construction of a Gr&ouml;bner basis.
  *
  * @author Andr&eacute; Platzer
  * @version 0.8, 2002-08-21
  */
 public class Groebner extends MathTest {
-    private static final Comparator order = AlgebraicAlgorithms.LEXICOGRAPHIC;
+    private static final Comparator order = AlgebraicAlgorithms.DEGREE_REVERSE_LEXICOGRAPHIC;
     // get us a value factory for creating arithmetic objects
     private static final Values vf = Values.getDefaultInstance();
     public static void main(String arg[]) {

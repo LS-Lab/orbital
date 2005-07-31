@@ -38,7 +38,7 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 
 /**
- * Algebraic algorithms.
+ * Algebraic algorithms and computer algebra.
  *
  * @stereotype Utilities
  * @stereotype Module
@@ -67,6 +67,8 @@ public final class AlgebraicAlgorithms {
      *   &or; i<sub>k</sub>&lt;j<sub>k</sub> for k := min{k &brvbar; i<sub>k</sub>&ne;j<sub>k</sub>}
      * </div>
      * Especially X<sub>0</sub><sup>2</sup> &gt; X<sub>0</sub> &gt; X<sub>1</sub><sup>2</sup> &gt; X<sub>1</sub> &gt; &#8230; &gt; X<sub>n-1</sub> &gt; 1.
+     * @note Reduced Gr&ouml;bner bases w.r.t. lexicographic orders have triangular shape.
+     * @see #LEXICOGRAPHIC(int[])
      */
     public static final Comparator LEXICOGRAPHIC = new Comparator() {
 	    public int compare(Object m1, Object m2) {
@@ -99,6 +101,7 @@ public final class AlgebraicAlgorithms {
      *   &or; i<sub>k</sub>&lt;j<sub>k</sub> for k := max{k &brvbar; i<sub>k</sub>&ne;j<sub>k</sub>}
      * </div>
      * Especially 1 &lt; X<sub>0</sub> &lt; X<sub>0</sub><sup>2</sup> &lt; X<sub>1</sub> &lt; X<sub>1</sub><sup>2</sup> &lt; &#8230; &lt; X<sub>n-1</sub>.
+     * @see #LEXICOGRAPHIC(int[])
      */
     public static final Comparator REVERSE_LEXICOGRAPHIC = new Comparator() {
 	    public int compare(Object m1, Object m2) {
@@ -120,19 +123,83 @@ public final class AlgebraicAlgorithms {
 	};
     
     /**
-     * Degree lexicographical order on monoid of monomials.
-     * Thus compares for degree in favor of lexicographical comparison.
+     * (Generalised) lexicographical order on monoid of monomials.
      * This is an admissible total order.
+     * The monomials are expected to be encoded as their exponents in the form of
+     * <code>int[]</code>s.
+     * This 
+     * <div>
+     *   X<sub>0</sub><sup>i<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>i<sub>n-1</sub></sup> &le; X<sub>0</sub><sup>j<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>j<sub>n-1</sub></sup>
+     *   :&hArr; X<sub>0</sub><sup>i<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>i<sub>n-1</sub></sup>=X<sub>0</sub><sup>j<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>j<sub>n-1</sub></sup> <br />
+     *   &or; i<sub>&pi;(k)</sub>&lt;j<sub>&pi;(k)</sub> for k := min{k &brvbar; i<sub>&pi;(k)</sub>&ne;j<sub>&pi;(k)</sub>}
+     * </div>
+     * Elimination orders favouring to eliminate quantified variables over
+     * non-quantifieds can be specified by a permutation.
+     * @todo provide elimination order favouring to eliminate quantified vars over non-quantifieds see Bockmayr&Weispfenning in Handbook of Automated Reasoning.
+     * @param permutation the permutation &pi;&isin;S<sub>n</sub> specifying the order of relevance of the variables as
+     *  X<sub>&pi;(0)</sub> &gt; X<sub>&pi;(1)</sub> &gt; &#8230; &gt; X<sub>&pi;(n-1)</sub>
+     * @preconditions &pi; is a permutation
+     * @note Reduced Gr&ouml;bner bases w.r.t. lexicographic orders have triangular shape modulo permutation.
+     * @see #LEXICOGRAPHIC
+     * @see #REVERSE_LEXICOGRAPHIC
+     */
+    public static final Comparator LEXICOGRAPHIC(final int permutation[]) {
+	checkPermutation(permutation);
+	return new Comparator() {
+	    public int compare(Object m1, Object m2) {
+		final Vector/*<Integer>*/ nu = (Vector/*<Integer>*/) m1;
+		final Vector/*<Integer>*/ mu = (Vector/*<Integer>*/) m2;
+		if (nu.dimension() != mu.dimension())
+		    throw new IllegalArgumentException("incompatible monomial exponents from polynomial rings with a different number of variables");
+		for (int k = nu.dimension() - 1; k >= 0; k--) {
+		    int index = permutation[k];
+		    int c = ((Integer)nu.get(index)).subtract((Integer)mu.get(index)).intValue();
+		    if (c != 0)
+			return c;
+		}
+		return 0;
+	    }
+
+	    public String toString() {
+		return AlgebraicAlgorithms.class.getName() + ".REVERSE_LEXICOGRAPHIC";
+	    }
+	};
+    }
+
+    /**
+     * Checks whether the given int[] is a permutation.
+     */
+    private static final void checkPermutation(int permutation[]) throws IllegalArgumentException {
+	// bucket sort
+	boolean found[] = new boolean[permutation.length];
+	for (int i = 0; i < found.length; i++) {
+	    found[i] = false;
+	}
+	for (int i = 0; i < permutation.length; i++) {
+	    int v = permutation[i];
+	    if (v < 0 || v >= found.length)
+		throw new IllegalArgumentException(MathUtilities.format(permutation) + " is no permutation due to illegal entry " + v);
+	    if (found[i])
+		throw new IllegalArgumentException(MathUtilities.format(permutation) + " is no permutation due to duplicate entry " + v);
+	    found[i] = true;
+	}
+    }
+
+    /**
+     * Generalised degree-lexicographical order on monoid of monomials.
+     * Thus compares for degree in favor of the specified order.
+     * In case of (reverse) lexicographic order as basis, this is an admissible total order.
      * The monomials are expected to be encoded as their exponents in the form of
      * <code>int[]</code>s.
      * <div>
      *   X<sub>0</sub><sup>i<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>i<sub>n-1</sub></sup> &le; X<sub>0</sub><sup>j<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>j<sub>n-1</sub></sup>
      *   :&hArr; deg(X<sub>0</sub><sup>i<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>i<sub>n-1</sub></sup>)&lt;deg(X<sub>0</sub><sup>j<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>j<sub>n-1</sub></sup>) <br />
-     *   &or; <big>(</big>deg(X<sub>0</sub><sup>i<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>i<sub>n-1</sub></sup>)=deg(X<sub>0</sub><sup>j<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>j<sub>n-1</sub></sup>) &and; X<sub>0</sub><sup>i<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>i<sub>n-1</sub></sup> {@link #LEXICOGRAPHIC &lt;<sub>lexico</sub>} X<sub>0</sub><sup>j<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>j<sub>n-1</sub></sup><big>)</big>
+     *   &or; <big>(</big>deg(X<sub>0</sub><sup>i<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>i<sub>n-1</sub></sup>)=deg(X<sub>0</sub><sup>j<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>j<sub>n-1</sub></sup>) &and; X<sub>0</sub><sup>i<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>i<sub>n-1</sub></sup> &lt;<sub><var>base</var></sub> X<sub>0</sub><sup>j<sub>0</sub></sup>&sdot;&#8230;&sdot;X<sub>n-1</sub><sup>j<sub>n-1</sub></sup><big>)</big>
      * </div>
-     * Especially X<sub>0</sub><sup>2</sup> &gt; X<sub>1</sub><sup>2</sup> &gt; X<sub>0</sub> &gt; X<sub>1</sub> &gt; &#8230; &gt; X<sub>n-1</sub> &gt; 1.
+     * @param monomialBaseOrder the order <var>base</var> to use when degree order is equal.
      */
-    public static final Comparator DEGREE_LEXICOGRAPHIC = new Comparator() {
+    public static final Comparator DEGREE(final Comparator monomialBaseOrder) {
+	return new Comparator() {
 	    public int compare(Object m1, Object m2) {
 		final Vector/*<Integer>*/ nu = (Vector/*<Integer>*/) m1;
 		final Vector/*<Integer>*/ mu = (Vector/*<Integer>*/) m2;
@@ -143,13 +210,28 @@ public final class AlgebraicAlgorithms {
 		if (c != 0)
 		    return c;
 		else
-		    return LEXICOGRAPHIC.compare(m1, m2);
+		    return monomialBaseOrder.compare(m1, m2);
 	    }
 
 	    public String toString() {
-		return AlgebraicAlgorithms.class.getName() + ".DEGREE_LEXICOGRAPHIC";
+		return AlgebraicAlgorithms.class.getName() + ".DEGREE(" + monomialBaseOrder + ")";
 	    }
 	};
+    }
+    
+    /**
+     * Degree lexicographical order on monoid of monomials.
+     * @see #DEGREE(Comparator)
+     * @see #LEXICOGRAPHIC
+     */
+    public static final Comparator DEGREE_LEXICOGRAPHIC = DEGREE(LEXICOGRAPHIC);
+
+    /**
+     * Degree reverse-lexicographical order on monoid of monomials.
+     * @see #DEGREE(Comparator)
+     * @see #REVERSE_LEXICOGRAPHIC
+     */
+    public static final Comparator DEGREE_REVERSE_LEXICOGRAPHIC = DEGREE(REVERSE_LEXICOGRAPHIC);
 
     
     /**
@@ -172,6 +254,8 @@ public final class AlgebraicAlgorithms {
      * @see #LEXICOGRAPHIC
      * @see #REVERSE_LEXICOGRAPHIC
      * @see #DEGREE_LEXICOGRAPHIC
+     * @see #DEGREE(Comparator)
+     * @see #LEXICOGRAPHIC(int[])
      */
     public static final Comparator INDUCED(final Comparator monomialOrder) {
 	return new InducedPolynomialComparator(monomialOrder);
@@ -519,7 +603,7 @@ public final class AlgebraicAlgorithms {
 	return vf.quotient(xStar, M);
     }
 
-    // Groebner basis
+    // Gr&ouml;bner basis
 
     /**
      * Reduce f with respect to g.
@@ -534,6 +618,13 @@ public final class AlgebraicAlgorithms {
     /**
      * Reduce<sub>g</sub>:K[X<sub>0</sub>,...,X<sub>n-1</sub>]&rarr;K[X<sub>0</sub>,...,X<sub>n-1</sub>]; f &#8614; "f reduced with respect to g".
      * Performs a division by multiple polynomials.
+     * <p>
+     * Iteratedly performs the Buchberger-reduction
+     * <center>f &rarr;<sub>g</sub> h := f - &lambda;<sub>&nu;</sub>/l<sub>c</sub>(g) * X<sup>&nu;</sup>/l(g) * g</center>
+     * where l(g) is the leading monomial in g with leading coefficient l<sub>c</sub>(g), and
+     * f has the multivariate form &sum;<sub>&nu;</sub> &lambda;<sub>&nu;</sub>*X<sup>&nu;</sup>.
+     * For such a reduction, X<sup>&nu;</sup> no longer occurs in h and h<f or h=0.
+     * </p>
      * @param g the collection of multinomials for reducing polynomials.
      * @param monomialOrder the <a href="#monomialOrder">order of monomials</a>, which is decisive for the time complexity.
      * @return a function that reduces polynomials with respect to g.
@@ -597,11 +688,19 @@ public final class AlgebraicAlgorithms {
 				}
 				// divisible, then q := cdiv*X<sup>xdiv</sup>
 				final Polynomial q = vf.MONOMIAL(cdiv, xdiv);
-				final Polynomial reduction = f.subtract(q.multiply(gj));
-				assert reduction.get(nu).norm().equals(Values.ZERO) : vf.MONOMIAL(Values.ONE, nu) + " does not occur in " + reduction + " anymore";
-				assert INDUCED(monomialOrder).compare(reduction, f) < 0 : reduction + "<" + f;
-				if (!reduction.get(nu).norm().equals(Values.ZERO))
-				    throw new AssertionError(vf.MONOMIAL(Values.ONE, nu) + " does not occur in " + reduction + " anymore");
+				Polynomial reduction = f.subtract(q.multiply(gj));
+				if (!reduction.get(nu).norm().equals(Values.ZERO)) {
+				    if (MathUtilities.equals(reduction.get(nu).norm(),
+							     Values.ZERO,
+							     MathUtilities.getDefaultTolerance()
+							     )) {
+					//@internal trick correct numerical instabilites
+					reduction = reduction.subtract(vf.MONOMIAL(reduction.get(nu), nu));
+				    }
+				    if (!reduction.get(nu).norm().equals(Values.ZERO)) {
+					throw new AssertionError(vf.MONOMIAL(Values.ONE, nu) + " does not occur in " + reduction + " anymore, even after numerical precision correction");
+				    }
+				}
 				if (!(INDUCED(monomialOrder).compare(reduction, f) < 0))
 				    throw new AssertionError(reduction + "<" + f);
 				logger.log(Level.FINEST, "elementary reduction {0} - {1} * ({2}) == {3}", new Object[] {f, q, gj, reduction});
@@ -627,12 +726,12 @@ public final class AlgebraicAlgorithms {
     }
 
     /**
-     * Get the reduced Groebner basis of g.
+     * Get the reduced Gr&ouml;bner basis of g.
      * <p>
      * <dl class="def">
-     *   <dt>Groebner basis</dt>
+     *   <dt>Gr&ouml;bner basis</dt>
      *   <dd>
-     *     A finite generating system G is a Groebner basis of I&#8884;K[X<sub>1</sub>,&#8230;,X<sub>n</sub>]
+     *     A finite generating system G is a Gr&ouml;bner basis of I&#8884;K[X<sub>1</sub>,&#8230;,X<sub>n</sub>]
      *     if one of the following equivalent conditions is satisfied.
      *     <ol class="equiv">
      *       <li>L(I)=L(G)
@@ -652,7 +751,7 @@ public final class AlgebraicAlgorithms {
      *   </dd>
      * </dl>
      * <dl class="def">
-     * A Groebner basis G of I &#8884; K[X<sub>1</sub>,&#8230;,X<sub>n</sub>] is
+     * A Gr&ouml;bner basis G of I &#8884; K[X<sub>1</sub>,&#8230;,X<sub>n</sub>] is
      *   <dt>minimal</dt>
      *   <dd>&forall;g&ne;h&isin;G l(g) &#8740; l(h)</dd>
      *   <dt>reduced</dt>
@@ -660,20 +759,21 @@ public final class AlgebraicAlgorithms {
      *     <div>&rArr; G minimal</div>
      *   </dd>
      * </dl>
-     * Two minimal Groebner bases have the same number of elements and the same leading monomials.
-     * There is a unique reduced Groebner basis.
+     * Two minimal Gr&ouml;bner bases have the same number of elements and the same leading monomials.
+     * There is a unique reduced Gr&ouml;bner basis.
      * </p>
      * @param g the collection of multinomials that is a generating system of the ideal (g)
-     *  for which to construct a Groebner basis.
+     *  for which to construct a Gr&ouml;bner basis.
      * @param monomialOrder the <a href="#monomialOrder">order of monomials</a>, which is decisive for the time complexity.
-     * @note The Buchberger algorithm used to construct a Groebner basis is equivalent
+     * @note The Buchberger algorithm used to construct a Gr&ouml;bner basis is equivalent
      *  to {@link #gcd(Euclidean[])} in case of one variable,
      *  and to {@link LUDecomposition} in case of linear polynomials.
      * @internal whenever an elementary reduction is possible, use the reduced polynomial instead of the original polynomial.
-     * @internal GroebnerBasis = "if the term rewrite system for reduce is confluent"
+     * @internal Gr&ouml;bnerBasis = "if the term rewrite system for reduce is confluent"
+     * @internal generalisations to non-fields are possible, see the much more expensive Ritt-reduction.
      * @todo scale to get rid of denominators, and of non-primitive polynomials (divide by gcd of coefficients)
      * @see "Buchberger, Bruno. <i>Ein Algorithmus zum Auffinden der Basiselemente des Restklassenrings nach einem nulldimensionalen Polynomideal</i>. PhD thesis, Universit&auml;t Innsbruck, 1965."
-     * @see "Buchberger, Bruno. Gr&oouml;bner bases: An algorithmic method in polynomial ideal theory. In Bose, N.K., editor, <i>Recent Trends in Multidimensional Systems Theory</i>. Reidel Publ.Co., 1985."
+     * @see "Buchberger, Bruno. Gr&ouml;bner bases: An algorithmic method in polynomial ideal theory. In Bose, N.K., editor, <i>Recent Trends in Multidimensional Systems Theory</i>. Reidel Publ.Co., 1985."
      * @see "Knuth, Donald E. and Bendix, P.B. Simple word problems in universal algebras. In Leech, J., editor, <i>Computational Problems in Abstract Algebras</i>. p263-297. Pergamon Press, Oxford, 1970."
      */
     public static final Set/*_<Polynomial<R,S>>_*/ groebnerBasis(Set/*_<Polynomial<R,S>>_*/ g, final Comparator/*_<S>_*/ monomialOrder) {
@@ -687,13 +787,13 @@ public final class AlgebraicAlgorithms {
 	return rgb;
     }
     /**
-     * Get the reduced Groebner basis of g (Implementation).
+     * Get the reduced Gr&ouml;bner basis of g (Implementation).
      */
     private static final Set/*_<Polynomial<R,S>>_*/ reducedGroebnerBasis(Collection/*_<Polynomial<R,S>>_*/ g, final Comparator monomialOrder) {
 	return new LinkedHashSet(reduceGroebnerBasis(new ArrayList(groebnerBasisImpl(g, monomialOrder)), monomialOrder));
     }
     /**
-     * Get the non-reduced Groebner basis of g (Implementation).
+     * Get the non-reduced Gr&ouml;bner basis of g (Implementation).
      */
     private static final Set/*_<Polynomial<R,S>>_*/ groebnerBasisImpl(Collection/*_<Polynomial<R,S>>_*/ gg, final Comparator monomialOrder) {
 	final List/*_<Polynomial<R,S>>_*/ g = new ArrayList(gg);
@@ -719,6 +819,7 @@ public final class AlgebraicAlgorithms {
 		    assert leadingMonomial(Xpowernugi, monomialOrder).equals(leadingMonomial(Xpowermugj, monomialOrder)) : "construction should generate equal leading monomials (" + leadingMonomial(Xpowernugi, monomialOrder) + " of " + Xpowernugi + " and " + leadingMonomial(Xpowermugj, monomialOrder) + " of " + Xpowermugj + ") which vanish by subtraction";
 		    final Polynomial Sgigj = Xpowernugi.subtract(Xpowermugj);
 		    assert Sgigj.get(d).norm().equals(Values.ZERO) : "construction should generate equal leading monomials which vanish by subtraction";
+		    // this is the major bottleneck, especially if it turns out that r=0
 		    final Polynomial r = reduce(Sgigj, g, monomialOrder);
 		    logger.log(Level.FINER, "S({0},{1}) = {2} * ({3})  -  {4} * ({5}) = {6} reduced to {7}", new Object[] {gi, gj, vf.MONOMIAL(gi.get(lgi).inverse(), nu), gi, vf.MONOMIAL(gj.get(lgj).inverse(), mu), gj, Sgigj, r});
 		    if (isZeroPolynomial.apply(r))
@@ -736,7 +837,7 @@ public final class AlgebraicAlgorithms {
     }
 
     /**
-     * Reduce the Groebner basis g.
+     * Reduce the Gr&ouml;bner basis g.
      */
     private static final List/*_<Polynomial<R,S>>_*/ reduceGroebnerBasis(Collection/*_<Polynomial<R,S>>_*/ g, final Comparator monomialOrder) {
 	final List basis = new ArrayList(g);
@@ -802,7 +903,7 @@ public final class AlgebraicAlgorithms {
 	};
 
     /**
-     * Whether the ideal spanned by the given Groebner basis contains all elements of f.
+     * Whether the ideal spanned by the given Gr&ouml;bner basis contains all elements of f.
      */
     private static final boolean containsAll(Set/*_<Polynomial<R,S>>_*/ groebnerBasis, Collection/*_<Polynomial<R,S>>_*/ f, Comparator monomialOrder) {
 	// reduces its arguments with respect to groebnerBasis
@@ -822,7 +923,7 @@ public final class AlgebraicAlgorithms {
     }
     
     /**
-     * Whether the two Groebner bases span the same ideal.
+     * Whether the two Gr&ouml;bner bases span the same ideal.
      */
     private static final boolean equalSpan(Set/*_<Polynomial<R,S>>_*/ groebnerBasis1, Set/*_<Polynomial<R,S>>_*/ groebnerBasis2, Comparator monomialOrder) {
 	return containsAll(groebnerBasis1, groebnerBasis2, monomialOrder)

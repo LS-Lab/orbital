@@ -19,7 +19,7 @@ public class AlgebraicAlgorithmsTest extends check.TestCase {
     private static final int TEST_REPETITIONS = 1000;
     private static final int MAX = 1000;
     private static final int PRIMES_BIT_LENGTH = 5;
-    private static final Comparator order = AlgebraicAlgorithms.LEXICOGRAPHIC;
+    private static final Comparator order = AlgebraicAlgorithms.DEGREE_REVERSE_LEXICOGRAPHIC;
 
     private static final Values vf = Values.getDefaultInstance();
     public static void main(String[] args) {
