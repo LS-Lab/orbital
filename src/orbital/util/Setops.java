@@ -16,6 +16,7 @@ import java.util.ListIterator;
 import java.util.Comparator;
 import orbital.logic.functor.Predicate;
 import orbital.logic.functor.BinaryPredicate;
+import orbital.logic.functor.BinaryFunction;
 import orbital.logic.functor.Function;
 
 import orbital.logic.functor.Functionals;
@@ -29,6 +30,7 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Collections;
+import java.util.TreeSet;
 import orbital.util.Pair;
 import java.util.NoSuchElementException;
 
@@ -268,6 +270,27 @@ public final class Setops {
     // set operations
 
     /**
+     * union of two collections.
+     */
+    public static final /*_<A>_*/ BinaryFunction/*_<Collection<A>,Collection<A>,Collection<A>>_*/ union = new BinaryFunction() {
+	    public Object/*_>Collection<A><_*/ apply(Object/*_>Collection<A><_*/ a, Object/*_>Collection<A><_*/ b) {
+		return union((Collection)a,(Collection)b);
+	    }
+	    public String toString() { return "\u222A"; }
+	};
+    /**
+     * n-ary union of a list of collections.
+     * Returns the union of all collections contained in the argument list.
+     */
+    public static final /*_<A>_*/ Function/*_<Collection<Collection<A>>,Collection<A>>_*/ unionFold = new Function() {
+	    private SortedSet/*_<A>_*/ EMPTY_SORTED_SET = Collections.unmodifiableSortedSet(new TreeSet());
+	    public Object/*_>Collection<A><_*/ apply(Object/*_>Collection<Collection<A>><_*/ a) {
+		//@internal using foldRight instead of foldLeft here avoids the dynamic type problem of EMPTY_SORTED_SET in case of incomparable elements
+		return Functionals.foldRight(union, EMPTY_SORTED_SET, Utility.asIterator(a));
+	    }
+	    public String toString() { return "\u22C3"; }
+	};
+    /**
      * Returns the union of two collections.
      * @return a &cup; b.
      * @postconditions RES has same type as a
@@ -285,6 +308,27 @@ public final class Setops {
 	return (SortedSet/*_<A>_*/) union((Collection/*_<A>_*/) a, (Collection/*_<A>_*/) b);
     } 
 
+    
+    /**
+     * intersection of two collections.
+     */
+    public static final /*_<A>_*/ BinaryFunction/*_<Collection<A>,Collection<A>,Collection<A>>_*/ intersection = new BinaryFunction() {
+	    public Object/*_>Collection<A><_*/ apply(Object/*_>Collection<A><_*/ a, Object/*_>Collection<A><_*/ b) {
+		return intersection((Collection)a,(Collection)b);
+	    }
+	    public String toString() { return "\u2229"; }
+	};
+    /**
+     * n-ary intersection of a list of collections.
+     * Returns the intersection of all collections contained in the argument list.
+     */
+    public static final /*_<A>_*/ Function/*_<Collection<Collection<A>>,Collection<A>>_*/ intersectionFold = new Function() {
+	    public Object/*_>Collection<A><_*/ apply(Object/*_>Collection<Collection<A>><_*/ a) {
+		//@internal the trick intersecting with the first collection is less performant but allowed since the empty intersection is the universe and hence undefined in Java
+		return Functionals.foldLeft(intersection, Utility.asIterator(a).next(), Utility.asIterator(a));
+	    }
+	    public String toString() { return "\u22C2"; }
+	};
     /**
      * Returns the intersection of two collections.
      * @return a &cap; b.

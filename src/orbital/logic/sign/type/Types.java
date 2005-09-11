@@ -193,9 +193,14 @@ public final class Types {
      * Converts a functor specification to a type (guesses it from the declared type information).
      * Also looks for additional declarations of logical type.
      * (experimental)
+     * <pre>
+     * <span class="keyword">static</span> <span class="keyword">final</span> <span class="Orbital">Type</span> logicalTypeDeclaration;
+     * </pre>
      * @throws IntrospectionException if an exception occurs during introspection.
+     * @permission Needs access to the object's class and will therefore call {@link java.lang.reflect.AccessibleObject#setAccessible(boolean) setAccessible(true)}.
+     * @see orbital.logic.functor.Functor.Specification#getSpecification(orbital.logic.functor.Functor)
      * @todo package protect but share with orbital.moon.logic
-     * @fixme we cannot know that ClassicalLogic & Co implement AND as a BinaryFunction, not as a BinaryPRedicate<Boolean,Boolean>
+     * @fixme we cannot know that ClassicalLogic & Co implement AND as a BinaryFunction, not as a BinaryPredicate<Boolean,Boolean>
      */
     /*private*/public static final Type declaredTypeOf(Functor f) throws IntrospectionException {
 	Type type = getTypeDeclaration(f);
@@ -228,6 +233,7 @@ public final class Types {
      * or <code>null</code> if no such field exists.
      * Implementations may also consider non-static fields of the same name.
      * @permission Needs access to the object's class and will therefore call {@link java.lang.reflect.AccessibleObject#setAccessible(boolean) setAccessible(true)}.
+     * @see orbital.logic.functor.Functor.Specification#getSpecification(orbital.logic.functor.Functor)
      */
     private static Type getTypeDeclaration(Object f) {
 	if (f instanceof Type)

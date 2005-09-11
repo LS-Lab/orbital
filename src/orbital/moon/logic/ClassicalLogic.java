@@ -127,8 +127,6 @@ import orbital.algorithm.Combinatorical;
  * it decidable.
  * </p>
  * @version $Id$
- * @version $Id$
- * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see "G&ouml;del, Kurt (1930). &Uuml;ber die Vollst&auml;digkeit des Logikkalk&uuml;s. PhD Thesis, University of Vienna."
  * @see "G&ouml;del, Kurt (1931). &Uuml;ber formal unentscheidbare S&auml;tze der Principia mathematica und verwandter Systeme I. Monatshefte f&uuml;r Mathematik und Physik, 38:173-198."
@@ -175,7 +173,7 @@ public class ClassicalLogic extends ModernLogic {
 	if (orbital.signe.isHelpRequest(arg)) {
 	    System.out.println(usage);
 	    System.out.println("Core logical junctors and operators:\n\t" + new ClassicalLogic().coreSignature());
-	    if ("-verbose".equalsIgnoreCase(arg[0])) {
+	    if (Arrays.asList(arg).contains("-verbose")) {
 		System.out.println(" = {");
 		for (Iterator i = new ClassicalLogic().coreSignature().iterator(); i.hasNext(); ) {
 		    Symbol s = (Symbol)i.next();
@@ -333,7 +331,7 @@ public class ClassicalLogic extends ModernLogic {
     /**
      * @todo move content to the ResourceBundle.
      */
-    public static final String usage = "usage: [options] [all|none|properties|fol|<filename>|table]\n\tall\tprove important semantic-equivalence expressions\n\tnone\ttry to prove some semantic-garbage expressions\n\tproperties\tprove some properties of classical logic inference relation\n\tfol\tprove important equivalences of first-order logic\n\n\t<filename>\ttry to prove all expressions in the given file\n\ttable\tprint a function table of the expression instead\n\t-\tUse no arguments at all to be asked for expressions\n\t\tto prove.\noptions:\n\t-normalForm\tcheck the conjunctive and disjunctive forms in between\n\t-closure\tprint the universal/existential closures in between\n\t-inference=<inference_mechanism>\tuse ClassicalLogic.<inference_mechanism> instead of semantic inference\n\t-verbose\tbe more verbose (f.ex. print normal forms if -normalForm)\n\t-charset=<encoding>\tthe character set or encoding to use for reading files\n\t-problem\tparse a problem file, i.e. combine all lines into a single problem, instead of assuming single-line conjectures.\n\nTo check whether A and B are equivalent, enter '|= A<->B' or 'A == B'";
+    public static final String usage = "usage: [options] [all|none|properties|fol|<filename>|table]\n\tall\tprove important semantic-equivalence expressions\n\tnone\ttry to prove some semantic-garbage expressions\n\tproperties\tprove some properties of classical logic inference relation\n\tfol\tprove important equivalences of first-order logic\n\n\t<filename>\ttry to prove all expressions in the given file\n\ttable\tprint a function table of the expression instead\n\t-\tUse no arguments at all to be asked for expressions\n\t\tto prove.\noptions:\n\t-normalForm\tcheck the conjunctive and disjunctive forms in between\n\t-closure\tprint the universal/existential closures in between\n\t-inference=<inference_mechanism>\tuse ClassicalLogic.<inference_mechanism> instead of semantic inference\n\t-verbose\tbe more verbose (f.ex. print normal forms if -normalForm)\n\t-charset=<encoding>\tthe character set or encoding to use for reading files\n\t-problem\tparse a problem file, i.e. combine all lines into a single problem, instead of assuming single-line conjectures.\n\nTo check whether A and B are equivalent, enter '|= A<->B' or 'A == B'.\nUse -verbose --help to get more help.";
 
 
     
@@ -573,10 +571,14 @@ public class ClassicalLogic extends ModernLogic {
 	     new NotationSpecification(900, "fx", Notation.PREFIX)},
 	    {LogicFunctions.and,          // "&"
 	     new NotationSpecification(910, xfy, Notation.INFIX)},
+	    {LogicFunctions.andFold,      // "&"
+	     new NotationSpecification(910, "fy", Notation.PREFIX)},
 	    {LogicFunctions.xor,          // "^"
 	     new NotationSpecification(914, xfy, Notation.INFIX)},
 	    {LogicFunctions.or,           // "|"
 	     new NotationSpecification(916, xfy, Notation.INFIX)},
+	    {LogicFunctions.orFold,       // "|"
+	     new NotationSpecification(916, "fy", Notation.PREFIX)},
 	    {LogicFunctions.impl,         // "->"
 	     new NotationSpecification(920, "xfy", Notation.INFIX)},
 	    {LogicFunctions.reverseImpl, // "<-"
@@ -716,86 +718,12 @@ public class ClassicalLogic extends ModernLogic {
 
     // Helper utilities.
 
-    static class LogicFunctions {
+    static class LogicFunctions implements orbital.moon.logic.functor.Operations {
         LogicFunctions() {}
-    
-	private static final Type UNARY_LOGICAL_JUNCTOR = typeSystem.predicate(Types.TRUTH);
-	private static final Type BINARY_LOGICAL_JUNCTOR = typeSystem.predicate(typeSystem.product(new Type[] {Types.TRUTH, Types.TRUTH}));
 
-    	// interpretation for a truth-value
-    	private static final Object getInt(boolean b) {
-	    return b ? Boolean.TRUE : Boolean.FALSE;
-    	} 
-    
-    	// truth-value of a value
-    	private static final boolean getTruth(Object v) {
-	    return ((Boolean) v).booleanValue();
-    	} 
+	//@internal moved implmementation to orbital.moon.logic.functor.Operations.not...
+	// But if we generalize those implementations, we will _here_ only accept _elementary_ operations on _boolean_ truth-values, not on formulas or something.
 
-	// (still) identical to @see orbital.moon.logic.functor.Operations.not...
-	//@todo move implementation to a superclass orbital.logic.functor.Operations of orbital.math.functional.Operations?
-	// moved, but if we generalize those implementations, we will _here_ only accept _elementary_ operations on _boolean_ truth-values, not on formulas or something.
-
-	// Basic logical operations (elemental junctors).
-    	public static final Function not = new Function() {
-		private final Type logicalTypeDeclaration = UNARY_LOGICAL_JUNCTOR;
-    		public Object apply(Object a) {
-		    return getInt(!getTruth(a));
-		}
-		public String toString() { return "~"; }
-	    }; 
-
-    	public static final BinaryFunction/*<Boolean,Boolean, Boolean>*/ and = new BinaryFunction() {
-		private final Type logicalTypeDeclaration = BINARY_LOGICAL_JUNCTOR;
-    		public Object apply(Object a, Object b) {
-		    return getInt(getTruth(a) && getTruth(b));
-    		}
-		public String toString() { return "&"; }
-	    };
-    
-    	public static final BinaryFunction or = new BinaryFunction() {
-		private final Type logicalTypeDeclaration = BINARY_LOGICAL_JUNCTOR;
-    		public Object apply(Object a, Object b) {
-		    return getInt(getTruth(a) || getTruth(b));
-    		}
-		public String toString() { return "|"; }
-	    };
-
-	// Derived logical operations.
-
-	//@todo The following functions for derived logical operations could be generalized (see LogicBasis)
-    	public static final BinaryFunction xor = new BinaryFunction() {
-		private final Type logicalTypeDeclaration = BINARY_LOGICAL_JUNCTOR;
-    		public Object apply(Object a, Object b) {
-		    return getInt(getTruth(a) ^ getTruth(b));
-    		}
-		public String toString() { return "^"; }
-	    };
-
-    	public static final BinaryFunction impl = new BinaryFunction() {
-		private final Type logicalTypeDeclaration = BINARY_LOGICAL_JUNCTOR;
-    		public Object apply(Object a, Object b) {
-		    return getInt(!getTruth(a) || getTruth(b));
-    		}
-		public String toString() { return "->"; }
-	    };
-
-    	//@todo rename
-    	public static final BinaryFunction reverseImpl = new BinaryFunction() {
-		private final Type logicalTypeDeclaration = BINARY_LOGICAL_JUNCTOR;
-    		public Object apply(Object a, Object b) {
-		    return getInt(getTruth(a) || !getTruth(b));
-    		}
-		public String toString() { return "<-"; }
-	    };
-
-    	public static final BinaryFunction equiv = new BinaryFunction() {
-		private final Type logicalTypeDeclaration = BINARY_LOGICAL_JUNCTOR;
-    		public Object apply(Object a, Object b) {
-		    return getInt(getTruth(a) == getTruth(b));
-    		}
-		public String toString() { return "<->"; }
-	    };
 
 	//@xxx trick for functions that never get called
     	public static final BinaryFunction lambda = new LambdaPlaceholder();
@@ -1820,7 +1748,8 @@ public class ClassicalLogic extends ModernLogic {
 	 * </p>
 	 * @param simplifying Whether or not to use simplified CNF for calculating clausal forms.
 	 * @todo assert
-	 * @internal cannot currently move to orbital.moon.logic.resolution. because of direct access to LogicFunctions.and
+	 * @internal cannot currently move to orbital.moon.logic.resolution. because of direct access to LogicFunctions.and.
+	 * @todo could move now that those are in orbital.moon.logic.functor.Operations
 	 * @see orbital.logic.moon.resolution.ClausalFactory#asClausalSet(Formula)
 	 * @deprecated Prefer to use the more general method
 	 *  {@link orbital.logic.moon.resolution.ClausalFactory#asClausalSet(Formula)}
@@ -1828,7 +1757,7 @@ public class ClassicalLogic extends ModernLogic {
 	 */
 	public static final Set/*_<Set<Formula>>_*/ clausalForm(Formula f, boolean simplifying) {
 	    try {
-		return clausalFormClauses(Utilities.conjunctiveForm(f, simplifying));
+		return (Set)clausalFormClauses.apply(Utilities.conjunctiveForm(f, simplifying));
 	    }
 	    catch (IllegalArgumentException ex) {
 		throw (AssertionError) new AssertionError(ex.getMessage() + " in CNF " + Utilities.conjunctiveForm(f, simplifying) + " of " + f).initCause(ex);
@@ -1838,69 +1767,75 @@ public class ClassicalLogic extends ModernLogic {
 	 * Convert a formula (that is in CNF) to a set of clauses.
 	 * @preconditions term=conjunctiveForm(term)
 	 */
-	private static final Set/*_<Set<Formula>>_*/ clausalFormClauses(Formula term) {
-	    //@todo assert assume right-associative nesting of &
-	    if (term instanceof Composite) {
-		Composite f = (Composite) term;
-		Object    op = f.getCompositor();
-		//@todo could also query ClassicalLogic.LogicFunctions.and etc. from logic.coreInterpretation once
-		if (op == ClassicalLogic.LogicFunctions.and) {
-		    Formula[] components = (Formula[]) f.getComponent();
-		    assert components.length == 2 : "binary " + op + "/" + components.length + " expected";
-		    return Setops.union(clausalFormClauses(components[0]), clausalFormClauses(components[1]));
-		} else if (op == ClassicalLogic.LogicFunctions.or) {
-		    Formula[] components = (Formula[]) f.getComponent();
-		    assert components.length == 2 : "binary " + op + "/" + components.length + " expected";
-		    Set C = Setops.union(clausalFormClause(components[0]), clausalFormClause(components[1]));
-		    return C.contains(FORMULA_TRUE) ? Collections.EMPTY_SET : singleton(C);
-		} else if (op == ClassicalLogic.LogicFunctions.not) {
-		    Object c = f.getComponent();
-		    // evaluate constants
-		    if (FORMULA_FALSE.equals(c))
-			return clausalFormClauses(FORMULA_TRUE);
-		    else if (FORMULA_TRUE.equals(c))
-			return clausalFormClauses(FORMULA_FALSE);
-		    return singleton(singleton(term));
-		} else if (!(op instanceof ModernFormula.AtomicSymbol))
-		    throw new IllegalArgumentException("conjunctive normal form should not contain " + op + " of " + op.getClass());
-	    }
-	    // atomic parts
-	    return term.equals(FORMULA_FALSE)
-		? singleton(CONTRADICTION)
-		: term.equals(FORMULA_TRUE)
-		? Collections.EMPTY_SET
-		: singleton(singleton(term));
-	}
+	private static final Function/*_<Formula,Set<Set<Formula>>>_*/ clausalFormClauses = new Function() {
+		public Object apply(Object term) {
+		    assert term instanceof Formula : term + " instanceof Formula";
+		    //@todo assert assume right-associative nesting of &
+		    if (term instanceof Composite) {
+			Composite f = (Composite) term;
+			Object    op = f.getCompositor();
+			//@todo could also query ClassicalLogic.LogicFunctions.and etc. from logic.coreInterpretation once
+			if (op == ClassicalLogic.LogicFunctions.and
+			    || op == ClassicalLogic.LogicFunctions.andFold) {
+			    Iterator/*_<Formula>_*/ components = Utility.asIterator(f.getComponent());
+			    return Setops.unionFold.apply(Functionals.map(clausalFormClauses, components));
+			} else if (op == ClassicalLogic.LogicFunctions.or
+				   || op == ClassicalLogic.LogicFunctions.orFold) {
+			    Set C = (Set) clausalFormClause.apply(term);
+			    return C.contains(FORMULA_TRUE) ? Collections.EMPTY_SET : singleton(C);
+			} else if (op == ClassicalLogic.LogicFunctions.not) {
+			    Object c = f.getComponent();
+			    // evaluate constant literals
+			    if (FORMULA_FALSE.equals(c))
+				return clausalFormClauses.apply(FORMULA_TRUE);
+			    else if (FORMULA_TRUE.equals(c))
+				return clausalFormClauses.apply(FORMULA_FALSE);
+			    return singleton(singleton(term));
+			} else if (!(op instanceof ModernFormula.AtomicSymbol))
+			    throw new IllegalArgumentException("conjunctive normal form should not contain " + op + " of " + op.getClass());
+		    }
+		    // atomic parts
+		    return term.equals(FORMULA_FALSE)
+			? singleton(CONTRADICTION)
+			: term.equals(FORMULA_TRUE)
+			? Collections.EMPTY_SET
+			: singleton(singleton(term));
+		}
+	    };
 	/**
 	 * Convert a disjunction of literals to a single clause.
 	 * @return the clause, note that the clause can be further collapsed if it contains true.
 	 */
-	private static final Set/*_<Formula>_*/ clausalFormClause(Formula term) {
-	    if (term instanceof Composite) {
-		Composite f = (Composite) term;
-		Object    op = f.getCompositor();
-		if (op == ClassicalLogic.LogicFunctions.or) {
-		    Formula[] components = (Formula[]) f.getComponent();
-		    assert components.length == 2 : "binary " + op + "/" + components.length + " expected";
-		    return Setops.union(clausalFormClause(components[0]), clausalFormClause(components[1]));
-		} else if (op == ClassicalLogic.LogicFunctions.not) {
-		    Object c = f.getComponent();
-		    // evaluate constants
-		    if (FORMULA_FALSE.equals(c))
-			return clausalFormClause(FORMULA_TRUE);
-		    else if (FORMULA_TRUE.equals(c))
-			return clausalFormClause(FORMULA_FALSE);
-		    return singleton(term);
-		} else if (op == ClassicalLogic.LogicFunctions.and)
-		    throw new IllegalArgumentException("(right-associative) conjunctive normal form should not contain " + op + ". Make sure the formula is right-associative for &");
-		else if (!(op instanceof ModernFormula.AtomicSymbol))
-		    throw new IllegalArgumentException("conjunctive normal form should not contain " + op);
-	    }
-	    // atomic parts
-	    return term.equals(FORMULA_FALSE)
-		? CONTRADICTION
-		: singleton(term);
-	}
+	private static final Function/*_<Formula,Set<Formula>>_*/ clausalFormClause = new Function() {
+		public Object apply(Object term) {
+		    assert term instanceof Formula : term + " instanceof Formula";
+		    if (term instanceof Composite) {
+			Composite f = (Composite) term;
+			Object    op = f.getCompositor();
+			if (op == ClassicalLogic.LogicFunctions.or
+			    || op == ClassicalLogic.LogicFunctions.orFold) {
+			    Iterator/*_<Formula>_*/ components = Utility.asIterator(f.getComponent());
+			    return Setops.unionFold.apply(Functionals.map(clausalFormClause, components));
+			} else if (op == ClassicalLogic.LogicFunctions.not) {
+			    Object c = f.getComponent();
+			    // evaluate constants
+			    if (FORMULA_FALSE.equals(c))
+				return clausalFormClause.apply(FORMULA_TRUE);
+			    else if (FORMULA_TRUE.equals(c))
+				return clausalFormClause.apply(FORMULA_FALSE);
+			    return singleton(term);
+			} else if (op == ClassicalLogic.LogicFunctions.and
+				   || op == ClassicalLogic.LogicFunctions.andFold)
+			    throw new IllegalArgumentException("(right-associative) conjunctive normal form should not contain " + op + ". Make sure the formula is right-associative for &");
+			else if (!(op instanceof ModernFormula.AtomicSymbol))
+			    throw new IllegalArgumentException("conjunctive normal form should not contain " + op);
+		    }
+		    // atomic parts
+		    return term.equals(FORMULA_FALSE)
+			? CONTRADICTION
+			: singleton(term);
+		}
+	    };
 
 	private static final Set singleton(Object o) {
 	    Set r = new LinkedHashSet();

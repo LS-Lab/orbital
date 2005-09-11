@@ -520,7 +520,7 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	 * <p>
 	 * If available, the introspection is improved by looking for a field
 	 * <pre>
-	 * <span class="keyword">static</span> <span class="keyword">final</span> <span class="Orbital">Functor.Specification</span> specification;
+	 * <span class="keyword">static</span> <span class="keyword">final</span> <span class="Orbital">Functor.Specification</span> callTypeDeclaration;
 	 * </pre>
 	 * in the corresponding class of the functor object.
 	 * </p>
@@ -533,6 +533,7 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	 * @internal see #getStaticSpecification(Class)
 	 * @internal see #searchMethod(Class)
 	 * @permission Needs access to the functor class and will therefore call {@link java.lang.reflect.AccessibleObject#setAccessible(boolean) setAccessible(true)}.
+	 * @see orbital.logic.sign.type.Types#declaredTypeOf(orbital.logic.functor.Functor)
 	 */
 	public static final Specification getSpecification(Functor f) throws IntrospectionException {
 	    Specification spec;
@@ -627,8 +628,8 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
 	 * Implementations may also consider non-static fields of the same name.
 	 * @permission Needs access to the functor class and will therefore call {@link java.lang.reflect.AccessibleObject#setAccessible(boolean) setAccessible(true)}.
 	 * @see #getSpecification(Functor)
+	 * @see orbital.logic.sign.type.Types#declaredTypeOf(orbital.logic.functor.Functor)
 	 * @xxx getField(...) won't work for non-public fields.
-	 * @todo rename "specification" field to "declaredType/declaredSpecification" or to "methodType"?
 	 */
 	private static Specification getStaticSpecification(Class c) {
 	    try {

@@ -370,6 +370,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 	    if (f instanceof Predicate && !(f instanceof Function))
 		f = Functionals.asFunction((Predicate) f);
 	    assert f instanceof Function : f + " of " + f.getClass() + " instanceof " + Function.class + "\nfor composition of " + fsymbol + " with " + Types.toTypedString(arguments);
+	    assert arguments.length == 1 : "correct number of arguments " + arguments.length + "=1\nfor composition of " + fsymbol + " with " + Types.toTypedString(arguments);
 	    assert arguments[0] instanceof Formula : arguments[0] + " of " + arguments[0].getClass() + " instanceof " + Formula.class + "\nfor composition of " + fsymbol + " with " + Types.toTypedString(arguments);
 	    return new ModernFormula.AppliedFormula(underlyingLogic, fsymbol, (Function) f, (Formula) arguments[0], notat);
 	case 2:
@@ -377,9 +378,10 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 		f = Functionals.asFunction((BinaryPredicate) f);
 	    return new ModernFormula.BinaryAppliedFormula(underlyingLogic, fsymbol, (BinaryFunction) f, (Formula) arguments[0], (Formula) arguments[1], notat);
 	default:
+	    if (f instanceof Predicate && !(f instanceof Function))
+		f = Functionals.asFunction((Predicate) f);
 	    // could simply compose f(arguments), here, if f understands arrays
-	    //@todo which Locator to provide, here?
-	    throw new IllegalArgumentException("illegal number of arguments, " + f + " applied to " + Types.typeOf(arguments) + " is undefined. Or " + arguments.length + ">2");
+	    return new ModernFormula.NaryAppliedFormula(underlyingLogic, fsymbol, (Function) f, (Formula[]) Arrays.asList(arguments).toArray(new Formula[0]), notat);
 	}
     }
 
@@ -995,6 +997,99 @@ abstract class ModernFormula extends LogicBasis implements Formula {
 		
     }
 
+
+    /**
+     * n-ary
+     * @version $Id$
+     * @author  Andr&eacute; Platzer
+     * @see orbital.math.functional.ComponentCompositions.ComponentCompositeFunction
+     */
+    static class NaryAppliedFormula extends AbstractCompositeFormula {
+	/**
+	 * The symbol of the fixed interpretation outer.
+	 */
+	protected Symbol outerSymbol;
+	protected Function outer;
+	protected Formula[] inner;
+	public NaryAppliedFormula(Logic underlyingLogic, Symbol fsymbol, Function f, Formula g[], Notation notation) {
+	    super(notation);
+	    if (fsymbol == null)
+		throw new IllegalArgumentException("illegal compositor symbol " + fsymbol + " for compositor referent " + f + " applied to " + g);
+	    this.outerSymbol = fsymbol;
+	    this.outer = f;
+	    this.inner = g;
+	}
+	public NaryAppliedFormula(Logic underlyingLogic, Symbol fsymbol, Function f, Formula g[]) {
+	    this(underlyingLogic, fsymbol, f, g, null);
+	}
+		
+	// for modification cloning
+	protected NaryAppliedFormula() {}
+
+	public orbital.logic.Composite construct(Object f, Object g) {
+	    NaryAppliedFormula c = (NaryAppliedFormula) super.construct(f, g);
+	    c.outerSymbol = outerSymbol;
+	    return c;
+	}
+
+        public Type getType() {
+	    assert outerSymbol != null && outerSymbol.getType() != null : outerSymbol + " != null && " + (outerSymbol == null ? null : outerSymbol.getType()) + " != null\ncompositor symbol " + outerSymbol + " for compositor referent " + outer + " applied to " + inner;
+	    return outerSymbol.getType().on(Types.typeOf(inner));
+        }
+
+	//@todo could move to super class of Nary and Binary and formulate in terms of getComponent()
+        public Signature getSignature() {
+	    //@todo could cache signature as well, provided left and right don't change
+	    //@internal @see Setops.all
+	    Signature sigma = SignatureBase.EMPTY;
+	    for (int i = 0; i < inner.length; i++)
+		sigma = sigma.union(inner[i].getSignature());
+	    return sigma;
+        }
+
+	public Set getFreeVariables() {
+	    //@internal @see Setops.all
+	    Set s = Collections.EMPTY_SET;
+	    for (int i = 0; i < inner.length; i++)
+		s = Setops.union(s, inner[i].getFreeVariables());
+	    return s;
+	}
+
+	public Set getBoundVariables() {
+	    //@internal @see Setops.all
+	    Set s = Collections.EMPTY_SET;
+	    for (int i = 0; i < inner.length; i++)
+		s = Setops.union(s, inner[i].getBoundVariables());
+	    return s;
+	}
+
+	/**
+	 * The functions applied are subject to interpretation.
+	 */
+	public Object apply(Object/*>Interpretation<*/ arg) {
+	    //@internal @see Setops.all
+	    Object[] x = new Object[inner.length];
+	    for (int i = 0; i < x.length; i++)
+		x[i] = inner[i].apply(arg);
+	    return outer.apply(x);
+	} 
+		
+
+	// not quite identical to @see orbital.math.functional.ComponentCompositions.ComponentCompositeFunction
+	public Object getCompositor() {
+	    return outer;
+	} 
+	public Object getComponent() {
+	    return inner;
+	} 
+
+	public void setCompositor(Object f) throws ClassCastException {
+	    this.outer = (Function) f;
+	}
+	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
+	    this.inner = (Formula[]) g;
+	}
+    }
 }
 
 

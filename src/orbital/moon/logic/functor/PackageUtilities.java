@@ -6,6 +6,7 @@
 
 package orbital.moon.logic.functor;
 
+import orbital.logic.sign.type.*;
 
 /**
  *
@@ -13,11 +14,16 @@ package orbital.moon.logic.functor;
  * @author  Andr&eacute; Platzer
  */
 final class PackageUtilities {
+    /**
+     * interpretation for a truth-value
+     */
     static final Object toTruth(boolean b) {
 	return b ? Boolean.TRUE : Boolean.FALSE;
     } 
     
-    // truth-value of a value
+    /**
+     * truth-value of a value object
+     */
     static final boolean getTruth(Object v) {
 	return ((Boolean) v).booleanValue();
     } 

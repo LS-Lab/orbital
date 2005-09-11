@@ -181,67 +181,64 @@ public class LogicParser {
 	return (Type) ((Formula) f).apply(InterpretationBase.EMPTY(sigma));
     }
 
-    /**
-     * unary junctors.
-     */
-    protected Expression combine(Token optok, Expression a) throws ParseException {
-    	String op = optok.image;
-    	if (op.length() == 1)
-	    switch (op.charAt(0)) {
-	    case '!': /*fall-through*/
-	    case '�': op = "~"; break;
-	    case '\u25a1': op = "[]"; break;
-	    case '\u25c7': op = "<>"; break;
-	    default: /*ignore*/
-	    }
-	return composeWrapper(optok, op, new Expression[] {a});
-    }
-
-    /**
-     * binary junctors and relations.
-     */
-    protected Expression combine(Token optok, Expression a, Expression b) throws ParseException {
+    protected Expression combine(Token optok, Expression[] a) throws ParseException {
     	String op = optok.image;
     	// normalize alternative notation
-    	switch (op.length()) {
+	switch (a.length) {
 	case 1:
-	    switch (op.charAt(0)) {
-	    case '\u2227': op = "&"; break;
-	    case '\u2228': op = "|"; break;
-	    case '\u2260': op = "!="; break;
-	    case '\u2264': op = "=<"; break;
-	    case '\u2265': op = ">="; break;
-	    case '\u2194':
-	    case '\u21d4': op = "<->"; break;
-	    case '\u2283':
-	    case '\u2192':
-	    case '\u21d2': op = "->"; break;
-	    default: /*ignore*/
-	    }
+	    if (op.length() == 1)
+		switch (op.charAt(0)) {
+		case '!': /*fall-through*/
+		case '�': op = "~"; break;
+		case '\u25a1': op = "[]"; break;
+		case '\u25c7': op = "<>"; break;
+		default: /*ignore*/
+		}
 	    break;
 
 	case 2:
-	    if ("&&".equals(op))
-		op = "&";
-	    else if ("||".equals(op))
-		op = "|";
-	    else if ("=>".equals(op))
-		op = "->";
-	    else if ("\u2228\u0307".equals(op))
-		// note that this combining diacritical remark de facto has length 2
-		op = "^";
-	    break;
+	    switch (op.length()) {
+	    case 1:
+		switch (op.charAt(0)) {
+		case '\u2227': op = "&"; break;
+		case '\u2228': op = "|"; break;
+		case '\u2260': op = "!="; break;
+		case '\u2264': op = "=<"; break;
+		case '\u2265': op = ">="; break;
+		case '\u2194':
+		case '\u21d4': op = "<->"; break;
+		case '\u2283':
+		case '\u2192':
+		case '\u21d2': op = "->"; break;
+		default: /*ignore*/
+		}
+		break;
 
-	case 3:
-	    if ("<=>".equals(op))
-		op = "<->";
-	    else if ("xor".equals(op))
-		op = "^";
-	    break;
+	    case 2:
+		if ("&&".equals(op))
+		    op = "&";
+		else if ("||".equals(op))
+		    op = "|";
+		else if ("=>".equals(op))
+		    op = "->";
+		else if ("\u2228\u0307".equals(op))
+		    // note that this combining diacritical remark de facto has length 2
+		    op = "^";
+		break;
 
-	default: /*ignore*/
-        }
-	return composeWrapper(optok, op, new Expression[] {a, b});
+	    case 3:
+		if ("<=>".equals(op))
+		    op = "<->";
+		else if ("xor".equals(op))
+		    op = "^";
+		break;
+
+	    default: /*ignore*/
+	    }
+
+	default: /*ignore other arities*/
+	}
+	return composeWrapper(optok, op, a);
     }
 
     /**
@@ -774,7 +771,7 @@ Expression FreeDeclarationExpression() :
 Expression EquivalenceExpression() :
 {Token tok;Expression a,b;}
 {
-    a = ImplicationExpression() ( tok = <EQUIV> b = ImplicationExpression() {a = combine(tok, a,b);} )*
+    a = ImplicationExpression() ( tok = <EQUIV> b = ImplicationExpression() {a = combine(tok, new Expression[]{a,b});} )*
 	{return a;}
 }
 
@@ -782,28 +779,28 @@ Expression EquivalenceExpression() :
 Expression ImplicationExpression() :
 {Token tok;Expression a,b;}
 {
-    a = InclusiveOrExpression() ( tok = <IMPLY> b = ImplicationExpression() {a = combine(tok, a,b);} )?
+    a = InclusiveOrExpression() ( tok = <IMPLY> b = ImplicationExpression() {a = combine(tok, new Expression[]{a,b});} )?
 	{return a;}
 }
 
 Expression InclusiveOrExpression() :
 {Token tok;Expression a,b;}
 {
-    a = ExclusiveOrExpression() ( tok = <OR> b = ExclusiveOrExpression() {a = combine(tok, a,b);} )*
+    a = ExclusiveOrExpression() ( tok = <OR> b = ExclusiveOrExpression() {a = combine(tok, new Expression[]{a,b});} )*
 	{return a;}
 }
 
 Expression ExclusiveOrExpression() :
 {Token tok;Expression a,b;}
 {
-    a = AndExpression() ( tok = <XOR> b = AndExpression() {a = combine(tok, a,b);} )*
+    a = AndExpression() ( tok = <XOR> b = AndExpression() {a = combine(tok, new Expression[]{a,b});} )*
 	{return a;}
 }
 
 Expression AndExpression() :
 {Token tok;Expression a,b;}
 {
-    a = UnaryExpression() ( tok = <AND> b = UnaryExpression() {a = combine(tok, a,b);} )*
+    a = UnaryExpression() ( tok = <AND> b = UnaryExpression() {a = combine(tok, new Expression[]{a,b});} )*
 	{return a;}
 }
 
@@ -813,7 +810,7 @@ Expression AndExpression() :
 Expression UnaryExpression() :
 {Token tok;Expression f;}
 {
-    tok = <NOT> f = UnaryExpression() {return combine(tok, f);}
+    tok = <NOT> f = UnaryExpression() {return combine(tok, new Expression[]{f});}
     | f = ModalExpression()
 	{return f;}
     | f = QuantifiedExpression()
@@ -872,8 +869,8 @@ Expression QuantifiedExpression() :
 Expression ModalExpression() :
 {Token tok;Expression f;}
 {
-    tok = <BOX> f = UnaryExpression() {return combine(tok, f);}
-|   tok = <DIAMOND> f = UnaryExpression() {return combine(tok, f);}
+    tok = <BOX> f = UnaryExpression() {return combine(tok, new Expression[]{f});}
+|   tok = <DIAMOND> f = UnaryExpression() {return combine(tok, new Expression[]{f});}
 }
 
 /**
@@ -953,14 +950,14 @@ Expression CompoundFormula() :
 // Expression EqualityExpression() :
 // {Token tok;Expression a,b;}
 // {
-//     a = RelationalExpression() ( (tok = <EQUAL> | tok = <UNEQUAL>) b = RelationalExpression() {a = combine(tok, a, b);} )*
+//     a = RelationalExpression() ( (tok = <EQUAL> | tok = <UNEQUAL>) b = RelationalExpression() {a = combine(tok, new Expression[]{a, b});} )*
 // 	{return a;}
 // }
 
 // Expression RelationalExpression() :
 // {Token tok;Expression a,b;}
 // {
-//     a = term() ( ( tok = <LESS> | tok = <GREATER> | tok = <LESS_EQUAL> | tok = <GREATER_EQUAL> ) b = term() {a = combine(tok, a, b);} )*
+//     a = term() ( ( tok = <LESS> | tok = <GREATER> | tok = <LESS_EQUAL> | tok = <GREATER_EQUAL> ) b = term() {a = combine(tok, new Expression[]{a, b});} )*
 // 	{return a;}
 // }
 
@@ -971,7 +968,7 @@ Expression EqualityExpression() :
 {
     //@xxx these extra brackets have been introduced temporarily in order to enable parsing (\x. 7>=x)(8) which somehow does not work otherwise (due to a LOOKAHEAD problem)
     "("
-	a = term() ( (tok = <EQUAL> | tok = <UNEQUAL> | tok = <LESS> | tok = <GREATER> | tok = <LESS_EQUAL> | tok = <GREATER_EQUAL> ) b = term() {a = combine(tok, a, b);} )+
+	a = term() ( (tok = <EQUAL> | tok = <UNEQUAL> | tok = <LESS> | tok = <GREATER> | tok = <LESS_EQUAL> | tok = <GREATER_EQUAL> ) b = term() {a = combine(tok, new Expression[]{a, b});} )+
     ")"
 	{return a;}
 }
@@ -1013,14 +1010,14 @@ Expression term() :
 Expression SumTerm() :
 {Token tok;Expression a, b;}
 {
-    a = ProductTerm() ( (tok = <PLUS> | tok = <MINUS>) b = ProductTerm() {a = combine(tok, a, b);} )*
+    a = ProductTerm() ( (tok = <PLUS> | tok = <MINUS>) b = ProductTerm() {a = combine(tok, new Expression[]{a, b});} )*
 {return a;}
 }
 
 Expression ProductTerm() :
 {Token tok;Expression a, b;}
 {
-    a = PowerTerm() ( (tok = <TIMES> | tok = <DIVIDE>) b = PowerTerm() {a = combine(tok, a, b);} )*
+    a = PowerTerm() ( (tok = <TIMES> | tok = <DIVIDE>) b = PowerTerm() {a = combine(tok, new Expression[]{a, b});} )*
 {return a;}
 }
 
@@ -1029,7 +1026,7 @@ Expression PowerTerm() :
 {
     // right associative xfy
     //@xxx XOR != "^" != "**"
-    a = UnaryTerm() (tok = <XOR> b = PowerTerm() {a = combine(tok, a, b);} )?
+    a = UnaryTerm() (tok = <XOR> b = PowerTerm() {a = combine(tok, new Expression[]{a, b});} )?
 {return a;}
 }
 
@@ -1038,7 +1035,7 @@ Expression PowerTerm() :
 Expression UnaryTerm() :
 {Token tok;Expression v;}
 {
-    ( tok = <PLUS> | tok = <MINUS> ) v = UnaryTerm() {return combine(tok, v);}
+    ( tok = <PLUS> | tok = <MINUS> ) v = UnaryTerm() {return combine(tok, new Expression[]{v});}
 |   v = PrimaryTerm() {return v;}
 }
 
@@ -1253,7 +1250,7 @@ Expression type() :
 Expression MapType() :
 {Token tok;Expression a,b;}
 {
-    a = ProductType() ( tok = <IMPLY> b = ProductType() {a = combine(tok, a,b);} )*
+    a = ProductType() ( tok = <IMPLY> b = ProductType() {a = combine(tok, new Expression[]{a,b});} )*
 	{return a;}
 }
 

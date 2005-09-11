@@ -37,8 +37,8 @@ class Compositions {
      * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(Function, Function)
-     * @internal if we only had a union interface of Function and Functor.Composite, then
-     *  we would not need to have this class public.
+     * @internal we have a union interface of Function and Functor.Composite, then
+     *  we do not need to have this class public.
      *  The same goes for similar .Composite* classes here and in math.functional.
      */
     /*public*/ static class CompositeFunction/*<A, B, C>*/ extends AbstractCompositeFunctor implements Function/*<A, C>*/.Composite {
