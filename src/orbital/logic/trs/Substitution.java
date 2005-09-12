@@ -64,7 +64,7 @@ import java.util.Collection;
  *   </tr>
  *   <tr>
  *     <td colspan="4">
- *       <p>A basic substitution, i.e. a mapping &sigma;<sub>0</sub>:V&rarr;Term(&Sigma;)
+ *       <p>A basic substitution (also see {@link Substitution.Matcher}), i.e. a mapping &sigma;<sub>0</sub>:V&rarr;Term(&Sigma;)
  *       with</p>
  *     </td>
  *   </tr>
@@ -91,7 +91,7 @@ import java.util.Collection;
  *   </tr>
  * </table>
  *     <blockquote>
- *     "Substitutions are the homomorphic continuation of variable substitutions."
+ *     "Substitutions are the homomorphic continuation of variable replacements."
  *     </blockquote>
  * <dl class="def">
  * Let &sigma; be a substitution.
@@ -149,6 +149,8 @@ public interface Substitution extends Function/*<Object, Object>*/ {
      * For a substitution &sigma; = [x<sub>1</sub>&rarr;t<sub>1</sub>,x<sub>2</sub>&rarr;t<sub>2</sub>,&#8230;,x<sub>n</sub>&rarr;t<sub>n</sub>]
      * the set of elementary replacements is
      * {x<sub>1</sub>&rarr;t<sub>1</sub>,x<sub>2</sub>&rarr;t<sub>2</sub>,&#8230;,x<sub>n</sub>&rarr;t<sub>n</sub>}.
+     * Those elementary replacements are each specified by an
+     * implementation of {@link Substitution.Matcher}.
      * </p>
      * <p>
      * Note that the return-type is not fixed to sets, but would just as well allow lists
@@ -176,10 +178,17 @@ public interface Substitution extends Function/*<Object, Object>*/ {
     Object apply(Object term);
 
     /**
-     * Interface for matching and replacing terms.
+     * Interface for matching and replacing elementary terms.
      * <p>
-     * Matcher is called to check whether a given term matches it, and can then be used
+     * Instances of this interface provide the functionality of an
+     * elementary replacement x<sub>2</sub>&rarr;t<sub>2</sub>
+     * of a substitution
+     * &sigma; = [x<sub>1</sub>&rarr;t<sub>1</sub>,x<sub>2</sub>&rarr;t<sub>2</sub>,&#8230;,x<sub>n</sub>&rarr;t<sub>n</sub>].
+     * The matcher is called by the {@link Substitution} to check
+     * whether a given term matches it, and can then be used
      * to replace the matched term with another term, if required.
+     * Hence, the substitution is the inductive homomorphic continuation
+     * of its elementary replacements.
      * </p>
      *
      * @version $Id$

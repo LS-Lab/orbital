@@ -46,7 +46,7 @@ import orbital.util.Utility;
 /**
  * Provides term substitution and unification methods, and the &lambda;-operator.
  * <p>
- * You can easily run a (possibily even infinite) Term Rewrite System (TRS) with substitutions,
+ * You can easily run a (possibly even infinite) Term Rewrite System (TRS) with substitutions,
  * like
  * <pre>
  * <span class="comment">// instantiate a substitution performing elemental term rewrite rules</span>
@@ -130,7 +130,8 @@ public class Substitutions {
      * Note that you should not try to instantiate a "substitution" with multiple replacements
      * specified for a single pattern. Those are not even endomorphisms anyway.
      * </p>
-     * @param replacements the set of elementary replacements.
+     * @param replacements the set of elementary replacements,
+     *  each specified by an implementation of {@link Substitution.Matcher}.
      * @param typeSafe whether to instantiate a type-safe substitution, i.e. one for which
      *  [x:<span class="type">&sigma;</span>&rarr;t:<span class="type">&tau;</span>]
      *  is only defined, when <span class="type">&tau;</span> &le; <span class="type">&sigma;</span>.

@@ -28,7 +28,7 @@ import orbital.util.*;
 public class FunctionTest extends check.TestCase {
     private static final int  TEST_REPETITION = 20;
     private static final Values vf = Values.getDefaultInstance();
-    private static final Real tolerance = vf.valueOf(1e-10);
+    private static final Real tolerance = vf.valueOf(1e-8);
 	
     // test type bit mask constants
     public static final int   TYPE_NONE = 0;
@@ -59,10 +59,10 @@ public class FunctionTest extends check.TestCase {
 	random = new Random();
         /*
 	  (Windows)
-	  java SampleProgram -linkmode launch -linkname 'c:/math40/mathkernel.exe'
+	  -linkmode launch -linkname 'c:/math40/mathkernel.exe'
         
 	  (Unix)
-	  java SampleProgram -linkmode launch -linkname 'math -mathlink'
+	  -linkmode launch -linkname 'math -mathlink'
         */
 
 	try {

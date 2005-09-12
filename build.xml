@@ -14,6 +14,10 @@
 
     Run "ant -projecthelp" to get a list of available targets.
     The default target is "compile".
+
+    Full compilation and testing of this project requires
+    JavaCC from https://javacc.dev.java.net/
+    junit.jar from http://www.junit.org/ 
     </description>
 
     <property name="build.compiler" value="modern"/>
@@ -156,6 +160,12 @@
         <delete dir="${sources}/t" failonerror="false"/>
     </target>
 
+    <target name="parser" depends="init"
+            description="compile *.jj (=> ./classes)">
+        <javacc target="${sources}/orbital/moon/logic/LogicParser.jj" 
+		javacchome="${env.javacchome}"/>
+    </target>
+
     <target name="stamp" depends="init" unless="signe.isUpToDate"
             description="prepare files for compile">
         <mkdir dir="${sources}/t"/>
@@ -244,11 +254,6 @@
             description="run and report test result (synonym)">
     </target>
 
-    <target name="parser" depends="init"
-            description="compile *.jj (=> ./classes)">
-        <javacc target="${sources}/orbital/moon/logic/LogicParser.jj" 
-		javacchome="${env.javacchome}"/>
-    </target>
 
     <target name="clean.nodoc" depends="init"
             description="remove all *.class">

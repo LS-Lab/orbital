@@ -434,7 +434,7 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
     Formula exists(Symbol x);
 
     /**
-     * Interface fro composite formulas. A compound formula is both, a
+     * Interface for composite formulas. A compound formula is both, a
      * (syntactically) compound expression, and compound in the sense
      * of the interpretation function. Both compositions are, of
      * course, due to the same compositors and components.

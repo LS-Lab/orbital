@@ -35,7 +35,7 @@ public class EightPuzzle_asynchronous extends EightPuzzle {
     public Iterator actions(final Object n) {
 	return new StreamMethod(false) {
 		public void runStream() {
-		    State s = (State) n;
+		    EightPuzzle.State s = (EightPuzzle.State) n;
 		    int   empty[] = indexOf(s.slides, EMPTY);
 		    for (int dir = 0; dir <= MAX_MOVE; dir++) {
 			int[] pos = nextOf(empty, dir);

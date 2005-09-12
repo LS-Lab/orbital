@@ -128,7 +128,7 @@ import orbital.algorithm.Combinatorical;
  * </p>
  * @version $Id$
  * @author  Andr&eacute; Platzer
- * @see "G&ouml;del, Kurt (1930). &Uuml;ber die Vollst&auml;digkeit des Logikkalk&uuml;s. PhD Thesis, University of Vienna."
+ * @see "G&ouml;del, Kurt (1930). &Uuml;ber die Vollst&auml;digkeit des Logikkalk&uuml;ls. PhD Thesis, University of Vienna."
  * @see "G&ouml;del, Kurt (1931). &Uuml;ber formal unentscheidbare S&auml;tze der Principia mathematica und verwandter Systeme I. Monatshefte f&uuml;r Mathematik und Physik, 38:173-198."
  * @see "Church, Alonzo (1936). A note on the Entscheidungsproblem. Journal of Symbolic Logic, 1:40-41 and 101-102."
  * @see "Turing, Alan M. (1936). On computable numbers, with an application to the Entscheidungsproblem. Proceedings of the London Mathematical Society, 2nd series, 42:230-265. Correction published in Vol. 43, pages 544-546."
@@ -338,7 +338,7 @@ public class ClassicalLogic extends ModernLogic {
     // classical logic
     
     /**
-     * Specifies the nference mechanism applied for the {@link ClassicalLogic#inference() inference relation}.
+     * Specifies the inference mechanism applied for the {@link ClassicalLogic#inference() inference relation}.
      * @version $Id$
      * @author  Andr&eacute; Platzer
      * @see <a href="{@docRoot}/Patterns/Design/enum.html">typesafe enum pattern</a>
