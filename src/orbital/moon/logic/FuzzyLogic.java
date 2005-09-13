@@ -298,7 +298,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
 	    {typeSystem.objectType(orbital.math.Real.class, "real"),
 	     new NotationSpecification(500, typAssoc, Notation.POSTFIX)},
 
-	    {LogicFunctions.forall,       // "°"
+	    {LogicFunctions.forall,       // "Â°"
 	     new NotationSpecification(900, "fxx", Notation.PREFIX)},
 	    {LogicFunctions.exists,       // "?"
 	     new NotationSpecification(900, "fxx", Notation.PREFIX)},
@@ -494,7 +494,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
      * </blockquote>
      * &rArr; in the absence of further knowledge, choose G&ouml;del operators.
      */
-    public static OperatorSet GOEDEL = new OperatorSet("Gödel") {
+    public static OperatorSet GOEDEL = new OperatorSet("GÃ¶del") {
 	    private static final long serialVersionUID = 2408339318090056142L;
 	    public Function not() {
 		return LogicFunctions.not;

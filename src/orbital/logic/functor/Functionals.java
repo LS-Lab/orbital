@@ -103,7 +103,7 @@ public class Functionals {
 		}
 			
 		public String toString() {
-		    return "(" + f + "×" + g + ")";
+		    return "(" + f + "Ã—" + g + ")";
 		}
 	    };
     }
@@ -1739,7 +1739,7 @@ public class Functionals {
 		r[i] = o;
 	    }
 	    catch (ArrayStoreException e) {
-		throw (ArrayStoreException)new ArrayStoreException("attempted to store " + o + "@" + (o == null ? null : o.getClass()) + " into " + r.getClass()).initCause(e);
+		throw (ArrayStoreException)new ArrayStoreException("attempted to store " + o + "@" + (o == null ? null : o.getClass().getName()) + " into " + r.getClass()).initCause(e);
 	    }
 	}
 	return r;
@@ -1899,7 +1899,7 @@ public class Functionals {
 		a[i] = o;
 	    }
 	    catch (ArrayStoreException e) {
-		throw (ArrayStoreException)new ArrayStoreException("attempted to store " + o + "@" + (o == null ? null : o.getClass()) + " into " + a.getClass()).initCause(e);
+		throw (ArrayStoreException)new ArrayStoreException("attempted to store " + o + "@" + (o == null ? null : o.getClass().getName()) + " into " + a.getClass()).initCause(e);
 	    }
 	}
 	return a;
@@ -2175,7 +2175,7 @@ public class Functionals {
          * <center>
          *   <table style="border: none">
          *     <tr><td>ana b</td> <td>=</td> <td>&empty;</td> <td>&lArr; p(b)</td></tr>
-         *     <tr><td rowspan="2"></td> <td>=</td> <td>[a|ana(b')]</td> <td>&lArr; ¬ p(b)</td></tr>
+         *     <tr><td rowspan="2"></td> <td>=</td> <td>[a|ana(b')]</td> <td>&lArr; Â¬ p(b)</td></tr>
          *     <tr><td></td> <td>where (a, b') = g(b)</td> <td></td></tr>
          *     <tr><td colspan="4"><span class="lenseBracket">|(</span>g,p<span class="lenseBracket">)|</span> := ana</td></tr>
          *   </table>
