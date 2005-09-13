@@ -88,7 +88,7 @@
 	<property name="run.tests.jvmarg" value="-ea"/>
 	<property name="lib.jcoverage" value="${lib}"/>
 	<property name="lib.checkstyle" value="${lib}"/>
-	<property name="lib.jdepend" value="${lib}/jdepend.jar"/>
+	<property name="lib.jdepend" value="${lib}"/>
 
 
         <mkdir dir="${lib}"/>
@@ -471,16 +471,18 @@
             description="generate design quality metrics report (=> ${reports}/jdepend.xml)" >
         <jdepend outputfile="${reports.jdepend}/jdepend.xml" fork="yes" format="xml"
                  classpathref="project.classpath">
+            <exclude name="java.*"/>
+            <exclude name="javax.*"/>
             <classespath>
-                <pathelement location="${sources}"/>
+                <pathelement location="${classes}"/>
             </classespath>
             <classpath>
-                <pathelement location="${lib.jdepend}"/>
+                <pathelement location="${lib.jdepend}/jdepend.jar"/>
             </classpath>
         </jdepend>
 
-        <style destdir="${reports.jdepend}"
-               includes="${reports.jdepend}/jdepend.xml" 
+        <style basedir="${reports.jdepend}" destdir="${reports.jdepend}"
+               includes="jdepend.xml" 
                style="${ant.home}/etc/jdepend.xsl" />
     </target>
 
