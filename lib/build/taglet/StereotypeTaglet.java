@@ -1,3 +1,5 @@
+package taglet;
+
 import com.sun.tools.doclets.Taglet;
 import com.sun.javadoc.*;
 import java.util.Map;
