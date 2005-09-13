@@ -34,30 +34,30 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
      */
     private String signifier;
     public AbstractSymbol(String signifier) {
-	this.signifier = signifier;
+        this.signifier = signifier;
     }
 
     public String getSignifier() {
-	return signifier;
+        return signifier;
     } 
-	
+        
     public boolean isVariable() {
-	//@todo
-	return true;
+        //@todo
+        return true;
     }
 
     public boolean equals(Object o) {
-	if (!isa.apply(o))
-	    return false;
-	return Utility.equals(getSignifier(), ((Symbol) o).getSignifier());
+        if (!isa.apply(o))
+            return false;
+        return Utility.equals(getSignifier(), ((Symbol) o).getSignifier());
     } 
 
     public boolean equals(Object o, Real tolerance) {
-	return tolerance.isInfinite() && tolerance.compareTo(Values.ZERO) > 0 ? true : equals(o);
+        return tolerance.isInfinite() && tolerance.compareTo(Values.ZERO) > 0 ? true : equals(o);
     }
 
     public int hashCode() {
-	return Utility.hashCode(signifier);
+        return Utility.hashCode(signifier);
     } 
 
     // Arithmetic implementation
@@ -67,75 +67,75 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
 
     //XXX: pointwise Arithmetic implementation (identical to @see orbital.math.functional.MathFunctor.AbstractFunctor)
     public Arithmetic add(Arithmetic b) throws ArithmeticException {
-	// simple-case optimization
-	if (b instanceof Scalar)
-	    if (Values.ZERO.equals(b))
-		return this;
-	return Functionals.genericCompose(Operations.plus, this, b);
+        // simple-case optimization
+        if (b instanceof Scalar)
+            if (Values.ZERO.equals(b))
+                return this;
+        return Functionals.genericCompose(Operations.plus, this, b);
     } 
     public Arithmetic minus() throws ArithmeticException {
-	return Functionals.genericCompose(Operations.minus, this);
+        return Functionals.genericCompose(Operations.minus, this);
     } 
     public Arithmetic subtract(Arithmetic b) throws ArithmeticException {
-	// simple-case optimization
-	if (b instanceof Scalar)
-	    if (Values.ZERO.equals(b))
-		return this;
-	return Functionals.genericCompose(Operations.subtract, this, b);
+        // simple-case optimization
+        if (b instanceof Scalar)
+            if (Values.ZERO.equals(b))
+                return this;
+        return Functionals.genericCompose(Operations.subtract, this, b);
     } 
 
     public Arithmetic scale(Arithmetic alpha) throws ArithmeticException {
-	//@xxx not quite right
-	return multiply(alpha);
+        //@xxx not quite right
+        return multiply(alpha);
     }
 
     public Arithmetic multiply(Arithmetic b) throws ArithmeticException {
-	// simple-case optimization
-	if (b instanceof Scalar) {
-	    if (Values.ONE.equals(b))
-		return this;
-	    else if (Values.MINUS_ONE.equals(b))
-		return minus();
-	    else if (Values.ZERO.equals(b))
-		return Values.ZERO;
-	}
-	return Functionals.genericCompose(Operations.times, this, b);
+        // simple-case optimization
+        if (b instanceof Scalar) {
+            if (Values.ONE.equals(b))
+                return this;
+            else if (Values.MINUS_ONE.equals(b))
+                return minus();
+            else if (Values.ZERO.equals(b))
+                return Values.ZERO;
+        }
+        return Functionals.genericCompose(Operations.times, this, b);
     } 
     public Arithmetic inverse() throws ArithmeticException {
-	return Functionals.genericCompose(Operations.inverse, this);
+        return Functionals.genericCompose(Operations.inverse, this);
     } 
     public Arithmetic divide(Arithmetic b) throws ArithmeticException {
-	// simple-case optimization
-	if (b instanceof Scalar) {
-	    if (Values.ONE.equals(b))
-		return this;
-	    else if (Values.MINUS_ONE.equals(b))
-		return minus();
-	    else if (Values.ZERO.equals(b))
-		throw new ArithmeticException("division by zero");
-	}
-	return Functionals.genericCompose(Operations.divide, this, b);
+        // simple-case optimization
+        if (b instanceof Scalar) {
+            if (Values.ONE.equals(b))
+                return this;
+            else if (Values.MINUS_ONE.equals(b))
+                return minus();
+            else if (Values.ZERO.equals(b))
+                throw new ArithmeticException("division by zero");
+        }
+        return Functionals.genericCompose(Operations.divide, this, b);
     } 
 
     public Arithmetic power(Arithmetic b) throws ArithmeticException {
-	// simple-case optimization
-	if (b instanceof Scalar) {
-	    if (Values.ONE.equals(b))
-		return this;
-	    else if (Values.MINUS_ONE.equals(b))
-		return inverse();
-	    else if (Values.ZERO.equals(b))
-		return Values.ONE;
-	}
-	return Functionals.genericCompose(Operations.power, this, b);
+        // simple-case optimization
+        if (b instanceof Scalar) {
+            if (Values.ONE.equals(b))
+                return this;
+            else if (Values.MINUS_ONE.equals(b))
+                return inverse();
+            else if (Values.ZERO.equals(b))
+                return Values.ONE;
+        }
+        return Functionals.genericCompose(Operations.power, this, b);
     }
 
     public Real norm() {
-	//@xxx or should we  return Functions.norm.apply(this)?
-	return Values.NaN;
+        //@xxx or should we  return Functions.norm.apply(this)?
+        return Values.NaN;
     } 
 
     public String toString() {
-	return ArithmeticFormat.getDefaultInstance().format(this);
+        return ArithmeticFormat.getDefaultInstance().format(this);
     } 
 }

@@ -20,22 +20,22 @@ public abstract class Computer implements Function {
     static final Logger logger = Logger.global;
     ChessAspects aspects;
     public Computer(ChessAspects aspects) {
-	this.aspects = aspects;
+        this.aspects = aspects;
     }
     public Computer() {
-	this(new ChessAspects());
+        this(new ChessAspects());
     }
 
     /**
      * Act as an AIntelligence: make a Move for the Computer.
      */
     public Object apply(Object arg) {
-	ChessField field = (ChessField) arg;
+        ChessField field = (ChessField) arg;
         field.rules.setOurLeague(field.rules.getTurn());
-	Computer.logger.log(Level.FINER, "AI {0} action {", field.rules);
-	MoveWeighting.Argument move = determineNextMove(field);
-	Computer.logger.log(Level.FINER, "} AI {0} will perform: {1}", new Object[] {field.rules, move});
-	return move;
+        Computer.logger.log(Level.FINER, "AI {0} action {", field.rules);
+        MoveWeighting.Argument move = determineNextMove(field);
+        Computer.logger.log(Level.FINER, "} AI {0} will perform: {1}", new Object[] {field.rules, move});
+        return move;
     } 
 
     /**

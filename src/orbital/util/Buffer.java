@@ -38,15 +38,15 @@ public class Buffer {
     // protected int pos;
 
     public Buffer() {
-	this(0);
+        this(0);
     }
 
     /**
      * Creates a new Buffer with an initial capacity, but empty (of size 0).
      */
     public Buffer(int initialCapacity) {
-	buf = new byte[initialCapacity];
-	count = 0;
+        buf = new byte[initialCapacity];
+        count = 0;
     }
 
     /**
@@ -56,12 +56,12 @@ public class Buffer {
      * @param len the size of the buffer. len is also the number of bytes that are copied from initialContent.
      */
     public Buffer(byte[] initialContent, int off, int len) {
-	buf = new byte[len];
-	System.arraycopy(initialContent, off, buf, 0, len);
-	count = len;
+        buf = new byte[len];
+        System.arraycopy(initialContent, off, buf, 0, len);
+        count = len;
     }
     public Buffer(byte[] initialContent) {
-	this(initialContent, 0, initialContent.length);
+        this(initialContent, 0, initialContent.length);
     }
 
     /**
@@ -69,7 +69,7 @@ public class Buffer {
      * @return a copy of the whole buffer.
      */
     public byte[] getBytes() {
-	return getBytes(count);
+        return getBytes(count);
     } 
 
     /**
@@ -77,7 +77,7 @@ public class Buffer {
      * @return a copy of the part with length len starting at offset 0.
      */
     public byte[] getBytes(int len) {
-	return getBytes(0, len);
+        return getBytes(0, len);
     } 
 
     /**
@@ -86,9 +86,9 @@ public class Buffer {
      * <code>null</code> for length <code>0</code>.
      */
     public byte[] getBytes(int off, int len) {
-	byte[] buffer = new byte[len];
-	getBytes(off, buffer, 0, len);
-	return buffer;
+        byte[] buffer = new byte[len];
+        getBytes(off, buffer, 0, len);
+        return buffer;
     } 
 
     /**
@@ -102,16 +102,16 @@ public class Buffer {
      * @see java.lang.System#arraycopy(Object,int,Object,int,int)
      */
     public void getBytes(int srcOff, byte[] dst, int dstOff, int len) {
-	if (len < 0)
-	    throw new IllegalArgumentException("length negative");
-	if (len == 0)
-	    return;
-	if (dst.length < len)
-	    throw new IllegalArgumentException("byte-array too small");
-	if (srcOff + len > count)
-	    throw new ArrayIndexOutOfBoundsException("get exceeds size");
+        if (len < 0)
+            throw new IllegalArgumentException("length negative");
+        if (len == 0)
+            return;
+        if (dst.length < len)
+            throw new IllegalArgumentException("byte-array too small");
+        if (srcOff + len > count)
+            throw new ArrayIndexOutOfBoundsException("get exceeds size");
 
-	System.arraycopy(buf, srcOff, dst, dstOff, len);
+        System.arraycopy(buf, srcOff, dst, dstOff, len);
     } 
 
     /**
@@ -126,17 +126,17 @@ public class Buffer {
      * @see java.lang.System#arraycopy(Object,int,Object,int,int)
      */
     public synchronized void setBytes(byte[] part, int srcOff, int dstOff, int len) {
-	if (len < 0)
-	    throw new IllegalArgumentException("length negative");
-	if (len == 0)
-	    return;
-	if (srcOff + len > count)
-	    throw new ArrayIndexOutOfBoundsException("set exceeds size");
+        if (len < 0)
+            throw new IllegalArgumentException("length negative");
+        if (len == 0)
+            return;
+        if (srcOff + len > count)
+            throw new ArrayIndexOutOfBoundsException("set exceeds size");
 
-	System.arraycopy(part, srcOff, buf, dstOff, len);
+        System.arraycopy(part, srcOff, buf, dstOff, len);
     } 
     public void setBytes(byte[] part, int dstOff) {
-	setBytes(part, 0, dstOff, part.length);
+        setBytes(part, 0, dstOff, part.length);
     } 
 
     /**
@@ -145,7 +145,7 @@ public class Buffer {
      * @return  the number of bytes in this buffer.
      */
     public final int size() {
-	return count;
+        return count;
     } 
 
     /**
@@ -157,12 +157,12 @@ public class Buffer {
      * @param   newSize   the new size of this vector.
      */
     public final synchronized void setSize(int newSize) {
-	if (newSize < 0)
-	    throw new IllegalArgumentException("negative size");
-	if (newSize > count) {
-	    ensureCapacity(newSize);
-	} 
-	count = newSize;
+        if (newSize < 0)
+            throw new IllegalArgumentException("negative size");
+        if (newSize > count) {
+            ensureCapacity(newSize);
+        } 
+        count = newSize;
     } 
 
     /**
@@ -171,12 +171,12 @@ public class Buffer {
      * storage of a buffer.
      */
     public final synchronized void trimToSize() {
-	int oldCapacity = buf.length;
-	if (count < oldCapacity) {
-	    byte[] oldData = buf;
-	    buf = new byte[count];
-	    System.arraycopy(oldData, 0, buf, 0, count);
-	} 
+        int oldCapacity = buf.length;
+        if (count < oldCapacity) {
+            byte[] oldData = buf;
+            buf = new byte[count];
+            System.arraycopy(oldData, 0, buf, 0, count);
+        } 
     } 
 
     /**
@@ -187,20 +187,20 @@ public class Buffer {
      * @throws IllegalArgumentException if desired minimum capacity is negative.
      */
     public synchronized void ensureCapacity(int minCapacity) {
-	if (minCapacity < 0)
-	    throw new IllegalArgumentException("negative size");
-	if (buf.length >= minCapacity)
-	    return;
-	byte[] oldData = buf;
-	buf = new byte[minCapacity];
-	System.arraycopy(oldData, 0, buf, 0, count);
+        if (minCapacity < 0)
+            throw new IllegalArgumentException("negative size");
+        if (buf.length >= minCapacity)
+            return;
+        byte[] oldData = buf;
+        buf = new byte[minCapacity];
+        System.arraycopy(oldData, 0, buf, 0, count);
     } 
 
     /**
      * Append a byte[] to the end of this Buffer,
      */
     public void append(byte[] b) {
-	append(b, 0, b.length);
+        append(b, 0, b.length);
     } 
 
     /**
@@ -209,11 +209,11 @@ public class Buffer {
      * increased if its size becomes greater than its capacity.
      */
     public synchronized void append(byte[] b, int off, int len) {
-	if (len < 0)
-	    throw new IllegalArgumentException("length negative");
-	ensureCapacity(count + len);
-	System.arraycopy(b, off, buf, count, len);
-	count += len;
+        if (len < 0)
+            throw new IllegalArgumentException("length negative");
+        ensureCapacity(count + len);
+        System.arraycopy(b, off, buf, count, len);
+        count += len;
     } 
 
     /**
@@ -222,19 +222,19 @@ public class Buffer {
      * increased if its size becomes greater than its capacity.
      */
     public synchronized void append(int val, int len) {
-	if (len < 0)
-	    throw new IllegalArgumentException("length negative");
-	ensureCapacity(count + len);
-	for (int i = 0; i < len; i++)
-	    buf[count + i] = (byte) val;
-	count += len;
+        if (len < 0)
+            throw new IllegalArgumentException("length negative");
+        ensureCapacity(count + len);
+        for (int i = 0; i < len; i++)
+            buf[count + i] = (byte) val;
+        count += len;
     } 
 
     /**
      * Remove len beginning at front (index 0).
      */
     public void remove(int len) {
-	remove(0, len);
+        remove(0, len);
     } 
 
     /**
@@ -242,28 +242,28 @@ public class Buffer {
      * decreasing its size by the len.
      */
     public synchronized void remove(int off, int len) {
-	if (len < 0)
-	    throw new IllegalArgumentException("length negative");
+        if (len < 0)
+            throw new IllegalArgumentException("length negative");
 
-	// buffer empty?
-	if (len == 0) {
-	    buf = new byte[0];
-	    return;
-	} 
-	if (off + len > count)
-	    throw new ArrayIndexOutOfBoundsException("Remove exceeds end of buffer.");
+        // buffer empty?
+        if (len == 0) {
+            buf = new byte[0];
+            return;
+        } 
+        if (off + len > count)
+            throw new ArrayIndexOutOfBoundsException("Remove exceeds end of buffer.");
 
-	if (off + len < count) {	// remove middle of buffer
-	    System.arraycopy(buf, off + len, buf, off, count - off - len);
-	} 
-	count -= len;
+        if (off + len < count) {        // remove middle of buffer
+            System.arraycopy(buf, off + len, buf, off, count - off - len);
+        } 
+        count -= len;
     } 
 
     /**
      * Gets the whole underlying byte-buffer containing the data (size like the whole capacity).
      */
     public final byte[] getBuffer() {
-	return buf;
+        return buf;
     } 
 
     /**
@@ -273,8 +273,8 @@ public class Buffer {
      * @see #setSize
      */
     public synchronized final void setBuffer(byte[] buffer) {
-	ensureCapacity(buffer.length);
-	System.arraycopy(buffer, 0, buf, 0, buffer.length);
+        ensureCapacity(buffer.length);
+        System.arraycopy(buffer, 0, buf, 0, buffer.length);
     } 
 
 }

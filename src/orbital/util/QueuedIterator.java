@@ -37,13 +37,13 @@ public class QueuedIterator extends DelegateList implements Iterator, Serializab
      * @param synchronizedQueue whether to use {@link java.util.Collections#synchronizedList(java.util.List)} on the buffering queue.
      */
     public QueuedIterator(boolean synchronizedQueue) {
-	super(synchronizedQueue ? Collections.synchronizedList(new LinkedList()) : new LinkedList());
+        super(synchronizedQueue ? Collections.synchronizedList(new LinkedList()) : new LinkedList());
     }
     /**
      * Create a new non-synchronized queued iterator.
      */
     public QueuedIterator() {
-	this(false);
+        this(false);
     }
 
     // iterator implementation
@@ -55,7 +55,7 @@ public class QueuedIterator extends DelegateList implements Iterator, Serializab
      * @see #isEmpty()
      */
     public boolean hasNext() {
-	return !isEmpty();
+        return !isEmpty();
     } 
 
     /**
@@ -63,11 +63,11 @@ public class QueuedIterator extends DelegateList implements Iterator, Serializab
      * @return the first object added which has not yet been returned.
      */
     public Object next() {
-	try {
-	    return remove(0);
-	} catch (IndexOutOfBoundsException x) {
-	    throw new NoSuchElementException();
-	} 
+        try {
+            return remove(0);
+        } catch (IndexOutOfBoundsException x) {
+            throw new NoSuchElementException();
+        } 
     } 
 
     /**
@@ -75,7 +75,7 @@ public class QueuedIterator extends DelegateList implements Iterator, Serializab
      * @throws UnsupportedOperationException on every call.
      */
     public void remove() {
-	throw new UnsupportedOperationException("senseless, has already been removed from the queue on the call to next");
+        throw new UnsupportedOperationException("senseless, has already been removed from the queue on the call to next");
     } 
 
     // additional enqueueing methods
@@ -85,9 +85,9 @@ public class QueuedIterator extends DelegateList implements Iterator, Serializab
      * @see orbital.logic.functor.Functionals#foldRight(BinaryFunction, Object, Iterator)
      */
     public boolean addAll(Iterator i) {
-	boolean changed = false;
-	while (i.hasNext())
-	    changed |= add(i.next());
-	return changed;
+        boolean changed = false;
+        while (i.hasNext())
+            changed |= add(i.next());
+        return changed;
     } 
 }

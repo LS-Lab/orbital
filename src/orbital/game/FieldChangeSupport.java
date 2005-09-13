@@ -20,7 +20,7 @@ import java.io.*;
 class FieldChangeSupport implements FieldChangeListener, java.io.Serializable {
     private static final long serialVersionUID = 5762015723242972218L;
     public FieldChangeSupport() {
-	
+        
     }
     
     /**
@@ -30,10 +30,10 @@ class FieldChangeSupport implements FieldChangeListener, java.io.Serializable {
      * @param listener  The FieldChangeListener to be added
      */
     public synchronized void addFieldChangeListener(FieldChangeListener listener) {
-	if (listeners == null) {
-	    listeners = new java.util.Vector();
-	}
-	listeners.addElement(listener);
+        if (listeners == null) {
+            listeners = new java.util.Vector();
+        }
+        listeners.addElement(listener);
     }
 
     /**
@@ -44,10 +44,10 @@ class FieldChangeSupport implements FieldChangeListener, java.io.Serializable {
      * @param listener  The FieldChangeListener to be removed
      */
     public synchronized void removeFieldChangeListener(FieldChangeListener listener) {
-	if (listeners == null) {
-	    return;
-	}
-	listeners.removeElement(listener);
+        if (listeners == null) {
+            return;
+        }
+        listeners.removeElement(listener);
     }
 
     /**
@@ -57,51 +57,51 @@ class FieldChangeSupport implements FieldChangeListener, java.io.Serializable {
      * @param evt  The FieldChangeEvent object.
      */
     public void componentChanged(FieldChangeEvent evt) {
-	java.util.Vector targets = null;
-	synchronized (this) {
-	    if (listeners != null) {
-	        targets = (java.util.Vector) listeners.clone();
-	    }
-	}
+        java.util.Vector targets = null;
+        synchronized (this) {
+            if (listeners != null) {
+                targets = (java.util.Vector) listeners.clone();
+            }
+        }
 
-	if (targets != null) {
-	    for (int i = 0; i < targets.size(); i++) {
-	        FieldChangeListener target = (FieldChangeListener)targets.elementAt(i);
-	        target.componentChanged(evt);
-	    }
-	}
+        if (targets != null) {
+            for (int i = 0; i < targets.size(); i++) {
+                FieldChangeListener target = (FieldChangeListener)targets.elementAt(i);
+                target.componentChanged(evt);
+            }
+        }
     }
 
     public void movePerformed(FieldChangeEvent evt) {
-	java.util.Vector targets = null;
-	synchronized (this) {
-	    if (listeners != null) {
-	        targets = (java.util.Vector) listeners.clone();
-	    }
-	}
+        java.util.Vector targets = null;
+        synchronized (this) {
+            if (listeners != null) {
+                targets = (java.util.Vector) listeners.clone();
+            }
+        }
 
-	if (targets != null) {
-	    for (int i = 0; i < targets.size(); i++) {
-	        FieldChangeListener target = (FieldChangeListener)targets.elementAt(i);
-	        target.movePerformed(evt);
-	    }
-	}
+        if (targets != null) {
+            for (int i = 0; i < targets.size(); i++) {
+                FieldChangeListener target = (FieldChangeListener)targets.elementAt(i);
+                target.movePerformed(evt);
+            }
+        }
     }
 
     public void stateChanged(FieldChangeEvent evt) {
-	java.util.Vector targets = null;
-	synchronized (this) {
-	    if (listeners != null) {
-	        targets = (java.util.Vector) listeners.clone();
-	    }
-	}
+        java.util.Vector targets = null;
+        synchronized (this) {
+            if (listeners != null) {
+                targets = (java.util.Vector) listeners.clone();
+            }
+        }
 
-	if (targets != null) {
-	    for (int i = 0; i < targets.size(); i++) {
-	        FieldChangeListener target = (FieldChangeListener)targets.elementAt(i);
-	        target.stateChanged(evt);
-	    }
-	}
+        if (targets != null) {
+            for (int i = 0; i < targets.size(); i++) {
+                FieldChangeListener target = (FieldChangeListener)targets.elementAt(i);
+                target.stateChanged(evt);
+            }
+        }
     }
 
     /**
@@ -114,19 +114,19 @@ class FieldChangeSupport implements FieldChangeListener, java.io.Serializable {
     private void writeObject(ObjectOutputStream s) throws IOException {
         s.defaultWriteObject();
 
-	java.util.Vector v = null;
-	synchronized (this) {
-	    if (listeners != null) {
-	        v = (java.util.Vector) listeners.clone();
+        java.util.Vector v = null;
+        synchronized (this) {
+            if (listeners != null) {
+                v = (java.util.Vector) listeners.clone();
             }
-	}
+        }
 
-	if (v != null) {
-	    for (int i = 0; i < v.size(); i++) {
-	        FieldChangeListener l = (FieldChangeListener)v.elementAt(i);
-	        if (l instanceof Serializable) {
-	            s.writeObject(l);
-	        }
+        if (v != null) {
+            for (int i = 0; i < v.size(); i++) {
+                FieldChangeListener l = (FieldChangeListener)v.elementAt(i);
+                if (l instanceof Serializable) {
+                    s.writeObject(l);
+                }
             }
         }
         s.writeObject(null);
@@ -138,7 +138,7 @@ class FieldChangeSupport implements FieldChangeListener, java.io.Serializable {
       
         Object listenerOrNull;
         while (null != (listenerOrNull = s.readObject())) {
-	  addFieldChangeListener((FieldChangeListener)listenerOrNull);
+          addFieldChangeListener((FieldChangeListener)listenerOrNull);
         }
     }
 

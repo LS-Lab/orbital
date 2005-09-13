@@ -29,7 +29,7 @@ import java.util.ArrayList;
  */
 public class EnablerDisabler extends DelegateCollection implements Predicate {
     public EnablerDisabler() {
-	super(new ArrayList());
+        super(new ArrayList());
     }
 
     /**
@@ -37,24 +37,24 @@ public class EnablerDisabler extends DelegateCollection implements Predicate {
      * <code>Boolean.FALSE</code> to disable all registered objects via <code>setEnabled(false)</code>
      */
     public boolean apply(Object enable) {
-	Boolean[] b = {
-	    (Boolean) enable
-	};
-	for (Iterator i = iterator(); i.hasNext(); )
-	    try {
-		Object o = i.next();
-		Method m = o.getClass().getMethod("setEnabled", new Class[] {
-		    Boolean.TYPE
-		});
-		m.invoke(o, b);
-	    } catch (NoSuchMethodException x) {
-		throw new IllegalStateException("Illegal object in list, it does not contain a method with a signature like setEnabled(boolean): " + x);
-	    } catch (InvocationTargetException x) {
-		throw new IllegalStateException("Illegal object in list: " + x.getTargetException());
-	    } catch (IllegalAccessException x) {
-		throw new IllegalStateException("IllegalAccess to object in list: " + x);
-	    } 
-	return true;
+        Boolean[] b = {
+            (Boolean) enable
+        };
+        for (Iterator i = iterator(); i.hasNext(); )
+            try {
+                Object o = i.next();
+                Method m = o.getClass().getMethod("setEnabled", new Class[] {
+                    Boolean.TYPE
+                });
+                m.invoke(o, b);
+            } catch (NoSuchMethodException x) {
+                throw new IllegalStateException("Illegal object in list, it does not contain a method with a signature like setEnabled(boolean): " + x);
+            } catch (InvocationTargetException x) {
+                throw new IllegalStateException("Illegal object in list: " + x.getTargetException());
+            } catch (IllegalAccessException x) {
+                throw new IllegalStateException("IllegalAccess to object in list: " + x);
+            } 
+        return true;
     } 
 
 }

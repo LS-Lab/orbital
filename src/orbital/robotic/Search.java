@@ -51,16 +51,16 @@ public class Search extends Table {
      * as well as the underlying implementation of the Table searched through.
      */
     public Search(Rectangle bounds) {
-	super(bounds);
-	history = new boolean[bounds.height][bounds.width];
+        super(bounds);
+        history = new boolean[bounds.height][bounds.width];
     }
     public Search(int x, int y, int width, int height) {
-	super(x, y, width, height);
-	history = new boolean[height][width];
+        super(x, y, width, height);
+        history = new boolean[height][width];
     }
     public Search(Point p, Dimension dim) {
-	super(p, dim);
-	history = new boolean[dim.height][dim.width];
+        super(p, dim);
+        history = new boolean[dim.height][dim.width];
     }
 
     /**
@@ -74,12 +74,12 @@ public class Search extends Table {
      * @see #visit(int,int)
      */
     public void search(Point start, Predicate cont) {
-	// clear history -> was nowhere
-	for (int j = 0; j < history.length; j++)
-	    for (int i = 0; i < history[j].length; i++)
-		history[j][i] = false;
-	this.cont = cont;
-	visit(start.x, start.y);	// visit each field starting with start
+        // clear history -> was nowhere
+        for (int j = 0; j < history.length; j++)
+            for (int i = 0; i < history[j].length; i++)
+                history[j][i] = false;
+        this.cont = cont;
+        visit(start.x, start.y);        // visit each field starting with start
     } 
 
     /**
@@ -99,26 +99,26 @@ public class Search extends Table {
      * @see #getSubsequentExplorations(int,int)
      */
     protected boolean visit(int x, int y) throws RecursionStoppedException {
-	final Rectangle bounds = getBounds();
-	if (!inRange(new Point(x, y)))
-	    return false;
-	// RA: was here already->break
-	if (history[y - bounds.y][x - bounds.x])
-	    return true;
-	history[y - bounds.y][x - bounds.x] = true;
+        final Rectangle bounds = getBounds();
+        if (!inRange(new Point(x, y)))
+            return false;
+        // RA: was here already->break
+        if (history[y - bounds.y][x - bounds.x])
+            return true;
+        history[y - bounds.y][x - bounds.x] = true;
 
-	if (cont != null && !cont.apply(new Point(x, y)))	// !continue->break
-	    return false;
+        if (cont != null && !cont.apply(new Point(x, y)))       // !continue->break
+            return false;
 
-	int[][] ds = getSubsequentExplorations(x, y);
+        int[][] ds = getSubsequentExplorations(x, y);
 
-	// continue recursively in all Directions
-	for (int i = 0; i < ds.length; i++)
-	    // RS: visit subsequent nodes
-	    visit(x + ds[i][0], y + ds[i][1]);
+        // continue recursively in all Directions
+        for (int i = 0; i < ds.length; i++)
+            // RS: visit subsequent nodes
+            visit(x + ds[i][0], y + ds[i][1]);
 
-	// history[y-min.y][x-min.x] = false;                    	// for multiple cycles, RA not defined
-	return true;
+        // history[y-min.y][x-min.x] = false;                           // for multiple cycles, RA not defined
+        return true;
     } 
 
     /**
@@ -131,14 +131,14 @@ public class Search extends Table {
      * has an Element <code>[i][0]</code> for <i>x</i> and an Element <code>[i][1]</code> for <i>y</i>.
      */
     protected int[][] getSubsequentExplorations(int x, int y) {
-	return standard_ds;
+        return standard_ds;
     } 
 
     private static int standard_ds[][] = {
-	{+1,  0},
-	{ 0, +1},
-	{-1,  0},
-	{ 0, -1}
+        {+1,  0},
+        { 0, +1},
+        {-1,  0},
+        { 0, -1}
     };
 
     /**
@@ -146,7 +146,7 @@ public class Search extends Table {
      * @throws UnsupportedOperationException if this Table does not support reading.
      */
     public Object get(Point p) throws UnsupportedOperationException {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     } 
 
     /**
@@ -154,6 +154,6 @@ public class Search extends Table {
      * @throws UnsupportedOperationException if this Table is readonly.
      */
     public void set(Point p, Object what) throws UnsupportedOperationException {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     } 
 }

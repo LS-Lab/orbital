@@ -18,24 +18,24 @@ import java.awt.TextArea;
  */
 class TextAreaOutputStream extends OutputStream {
 
-	/**
-	 * The TextArea where written output is displayed.
-	 * @serial
-	 */
-	protected TextArea textComp;
-	public TextAreaOutputStream(TextArea textComp) {
-		this.textComp = textComp;
-	}
+        /**
+         * The TextArea where written output is displayed.
+         * @serial
+         */
+        protected TextArea textComp;
+        public TextAreaOutputStream(TextArea textComp) {
+                this.textComp = textComp;
+        }
 
-	public void write(int c) {
-		textComp.appendText("" + (char) c);	   // @deprecated
-	} 
-	public void write(byte[] b, int off, int len) {
-		textComp.appendText(new String(b, off, len));
-	} 
+        public void write(int c) {
+                textComp.appendText("" + (char) c);        // @deprecated
+        } 
+        public void write(byte[] b, int off, int len) {
+                textComp.appendText(new String(b, off, len));
+        } 
 
-	public void close() {
-		textComp.setVisible(false);
-		textComp = null;
-	} 
+        public void close() {
+                textComp.setVisible(false);
+                textComp = null;
+        } 
 }

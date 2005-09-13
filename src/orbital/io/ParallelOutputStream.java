@@ -46,8 +46,8 @@ public class ParallelOutputStream extends FilterOutputStream {
      * this class.
      */
     public ParallelOutputStream(OutputStream out, OutputStream parallelOut) {
-	super(out);
-	this.parallel = parallelOut;
+        super(out);
+        this.parallel = parallelOut;
     }
 
     /**
@@ -57,12 +57,12 @@ public class ParallelOutputStream extends FilterOutputStream {
      * @throws  IOException  if an I/O error occurs.
      */
     public void write(int b) throws IOException {
-	try {
-	    super.write(b);
-	} 
-	finally {
-	    parallel.write(b);
-	} 
+        try {
+            super.write(b);
+        } 
+        finally {
+            parallel.write(b);
+        } 
     } 
 
     /**
@@ -72,12 +72,12 @@ public class ParallelOutputStream extends FilterOutputStream {
      * @throws  IOException  if an I/O error occurs.
      */
     public void write(byte b[]) throws IOException {
-	try {
-	    super.write(b);
-	} 
-	finally {
-	    parallel.write(b);
-	} 
+        try {
+            super.write(b);
+        } 
+        finally {
+            parallel.write(b);
+        } 
     } 
 
     /**
@@ -91,12 +91,12 @@ public class ParallelOutputStream extends FilterOutputStream {
      * @throws  IOException  if an I/O error occurs.
      */
     public void write(byte b[], int off, int len) throws IOException {
-	try {
-	    super.write(b, off, len);
-	} 
-	finally {
-	    parallel.write(b, off, len);
-	} 
+        try {
+            super.write(b, off, len);
+        } 
+        finally {
+            parallel.write(b, off, len);
+        } 
     } 
 
     /**
@@ -109,12 +109,12 @@ public class ParallelOutputStream extends FilterOutputStream {
      * @throws  IOException  if an I/O error occurs.
      */
     public void flush() throws IOException {
-	try {
-	    super.flush();
-	} 
-	finally {
-	    parallel.flush();
-	} 
+        try {
+            super.flush();
+        } 
+        finally {
+            parallel.flush();
+        } 
     } 
 
     /**
@@ -124,11 +124,11 @@ public class ParallelOutputStream extends FilterOutputStream {
      * @throws  IOException  if an I/O error occurs.
      */
     public void close() throws IOException {
-	try {
-	    super.close();
-	} 
-	finally {
-	    parallel.close();
-	} 
+        try {
+            super.close();
+        } 
+        finally {
+            parallel.close();
+        } 
     } 
 }

@@ -43,7 +43,7 @@ public final class Stat {
      * @preconditions x.length>0
      */
     public static double arithmeticMean(double x[]) {
-	return Evaluations.sum(x) / x.length;
+        return Evaluations.sum(x) / x.length;
     } 
 
     /**
@@ -55,7 +55,7 @@ public final class Stat {
      * @return <sup><span style="text-decoration: underline">n</span></sup>&radic;<span style="text-decoration: overline"></span>(&prod;<span class="doubleIndex"><sub>i=0</sub><sup>n-1</sup></span> x<sub>i</sub>).
      */
     public static double geometricMean(double x[]) {
-	return Math.pow(Functionals.foldRight(Operations.times, 1, x), 1. / x.length);
+        return Math.pow(Functionals.foldRight(Operations.times, 1, x), 1. / x.length);
     } 
 
     /**
@@ -64,7 +64,7 @@ public final class Stat {
      * @return n / &sum;<span class="doubleIndex"><sub>i=0</sub><sup>n-1</sup></span> (1/x<sub>i</sub>).
      */
     public static double harmonicMean(double x[]) {
-	return x.length / Functionals.foldRight(Operations.plus, 0, Functionals.map(Functions.reciprocal, x));
+        return x.length / Functionals.foldRight(Operations.plus, 0, Functionals.map(Functions.reciprocal, x));
     } 
 
     /**
@@ -73,7 +73,7 @@ public final class Stat {
      * @see #average(double[])
      */
     public static double mean(double x[]) {
-	return arithmeticMean(x);
+        return arithmeticMean(x);
     } 
 
     /**
@@ -82,7 +82,7 @@ public final class Stat {
      * @see #mean(double[])
      */
     public static double average(double x[]) {
-	return arithmeticMean(x);
+        return arithmeticMean(x);
     } 
 
     /**
@@ -92,11 +92,11 @@ public final class Stat {
      * @return 1/(n-1)*Sum<big>(</big>(x<sub>i</sub>-mean)<sup>2</sup><big>)</big>.
      */
     public static double variance(double x[]) {
-	double xm = mean(x);
-	double s = 0;
-	for (int i = 0; i < x.length; i++)
-	    s += (x[i] - xm) * (x[i] - xm);
-	return 1. / (x.length - 1.) * s;
+        double xm = mean(x);
+        double s = 0;
+        for (int i = 0; i < x.length; i++)
+            s += (x[i] - xm) * (x[i] - xm);
+        return 1. / (x.length - 1.) * s;
     } 
 
     /**
@@ -106,7 +106,7 @@ public final class Stat {
      * @return Sqrt(variance).
      */
     public static double standardDeviation(double x[]) {
-	return Math.sqrt(variance(x));
+        return Math.sqrt(variance(x));
     } 
 
     /**
@@ -116,7 +116,7 @@ public final class Stat {
      * @return standardDeviation/mean.
      */
     public static double coefficientOfVariation(double x[]) {
-	return standardDeviation(x) / mean(x);
+        return standardDeviation(x) / mean(x);
     } 
 
     /**
@@ -129,11 +129,11 @@ public final class Stat {
      * @see java.lang.System#arraycopy
      */
     public static double median(double x[]) {
-	Utility.pre(Utility.sorted(x, true), "sorted values");
-	if (MathUtilities.odd(x.length))
-	    return x[(x.length - 1) / 2];
-	else
-	    return (x[x.length / 2 - 1] + x[x.length / 2]) / 2;
+        Utility.pre(Utility.sorted(x, true), "sorted values");
+        if (MathUtilities.odd(x.length))
+            return x[(x.length - 1) / 2];
+        else
+            return (x[x.length / 2 - 1] + x[x.length / 2]) / 2;
     } 
 
     /**
@@ -150,13 +150,13 @@ public final class Stat {
      * @see java.lang.System#arraycopy
      */
     public static double quantile(double x[], double a) {
-	Utility.pre(0 < a && a < 1, "quantile must be in the range of (0,1)");
-	Utility.pre(Utility.sorted(x, true), "sorted values");
-	int k = MathUtilities.gaussian(x.length * a);
-	if (MathUtilities.equalsCa(MathUtilities.fract(x.length * a), 0.0))
-	    return x[k];
-	else
-	    return (x[k - 1] + x[k]) / 2;
+        Utility.pre(0 < a && a < 1, "quantile must be in the range of (0,1)");
+        Utility.pre(Utility.sorted(x, true), "sorted values");
+        int k = MathUtilities.gaussian(x.length * a);
+        if (MathUtilities.equalsCa(MathUtilities.fract(x.length * a), 0.0))
+            return x[k];
+        else
+            return (x[k - 1] + x[k]) / 2;
     } 
 
     /**
@@ -170,13 +170,13 @@ public final class Stat {
      * @see java.lang.System#arraycopy
      */
     public static double trimmedMean(double x[], double a) {
-	Utility.pre(0 <= a && a < 0.5, "quantile must be in range of [0,0.5)");
-	Utility.pre(Utility.sorted(x, true), "sorted values");
-	int	   k = MathUtilities.gaussian(x.length * a);
-	double s = 0;
-	for (int i = k; i < x.length - k; i++)
-	    s += x[i];
-	return 1. / (x.length - 2 * k) * s;
+        Utility.pre(0 <= a && a < 0.5, "quantile must be in range of [0,0.5)");
+        Utility.pre(Utility.sorted(x, true), "sorted values");
+        int        k = MathUtilities.gaussian(x.length * a);
+        double s = 0;
+        for (int i = k; i < x.length - k; i++)
+            s += x[i];
+        return 1. / (x.length - 2 * k) * s;
     } 
 
     /**
@@ -186,18 +186,18 @@ public final class Stat {
      * @return 1/n*Sum<big>(</big>|x<sub>i</sub>-mean|<big>)</big>.
      */
     public static double meanDeviation(double x[]) {
-	double xm = mean(x);
-	double s = 0;
-	for (int i = 0; i < x.length; i++)
-	    s += Math.abs(x[i] - xm);
-	return 1. / x.length * s;
+        double xm = mean(x);
+        double s = 0;
+        for (int i = 0; i < x.length; i++)
+            s += Math.abs(x[i] - xm);
+        return 1. / x.length * s;
     } 
 
     /**
      * Returns a string with the usual descriptive statistics for an array of double values.
      */
     public static String statistics(double x[]) {
-	return "min: " + MathUtilities.format(Evaluations.min(x)) + "\tmax: " + MathUtilities.format(Evaluations.max(x)) + "\tavg: " + MathUtilities.format(Stat.average(x)) + "\tstdDev: " + MathUtilities.format(Stat.standardDeviation(x));
+        return "min: " + MathUtilities.format(Evaluations.min(x)) + "\tmax: " + MathUtilities.format(Evaluations.max(x)) + "\tavg: " + MathUtilities.format(Stat.average(x)) + "\tstdDev: " + MathUtilities.format(Stat.standardDeviation(x));
     } 
 
     // two-dimensional descriptive statistics
@@ -210,13 +210,13 @@ public final class Stat {
      * @return 1/(n-1)*Sum<big>(</big>(x<sub>i</sub>-mean(x))*(x<sub>i</sub>-mean(y))<big>)</big> / (standardDeviation(x)*standardDeviation(y)).
      */
     public static double coefficientOfCorrelation(double x[], double y[]) {
-	Utility.pre(x.length == y.length, "double arrays representing pairs must have the same length");
-	double xm = mean(x);
-	double ym = mean(y);
-	double s = 0;
-	for (int i = 0; i < x.length; i++)
-	    s += (x[i] - xm) * (y[i] - ym);
-	return 1. / (x.length - 1.) * s / standardDeviation(x) / standardDeviation(y);
+        Utility.pre(x.length == y.length, "double arrays representing pairs must have the same length");
+        double xm = mean(x);
+        double ym = mean(y);
+        double s = 0;
+        for (int i = 0; i < x.length; i++)
+            s += (x[i] - xm) * (y[i] - ym);
+        return 1. / (x.length - 1.) * s / standardDeviation(x) / standardDeviation(y);
     } 
 
 
@@ -231,9 +231,9 @@ public final class Stat {
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      */
     public static Function functionalRegression(final Function composedFunc, Matrix experiment) {
-	Function	 theories[] = {composedFunc};
-	final Vector a = regression(theories, experiment);
-	return (Function) Operations.times.apply(composedFunc, a);
+        Function         theories[] = {composedFunc};
+        final Vector a = regression(theories, experiment);
+        return (Function) Operations.times.apply(composedFunc, a);
     } 
 
     /**
@@ -262,39 +262,39 @@ public final class Stat {
      * @see #regression(Vector, Matrix, Matrix)
      */
     public static Vector regression(Function funcs[], Matrix experiment) {
-	Utility.pre(experiment.dimension().width - 1 == funcs.length, "Experiments parametric data and linear combination of functions must fit");
-	if (experiment.dimension().width != 2)
-	    throw new UnsupportedOperationException("Regression with >2 parameters not yet supported by this method. Use regression(Vector,Matrix,Matrix) instead");
-	final Values vf = Values.getDefaultInstance();
-	// find maximum argument dimension required by the funcs
-	int dimensions[] = new int[funcs.length];
-	// foreach Function v in funcs
-	for (int v = 0; v < funcs.length; v++)
-	    dimensions[v] = funcs[v] instanceof CoordinateCompositeFunction
-		? ((CoordinateCompositeFunction) funcs[v]).dimension()
-		: 1;
-	Matrix A = vf.newInstance(experiment.dimension().height, Evaluations.max(dimensions));
-	if (A.dimension().width > A.dimension().height)
-	    throw new ArithmeticException("linear coefficients exceed experiment datasets (" + A.dimension().width + ">" + A.dimension().height + ") the statistical solution is ambiguous and (n-m) parametric");
+        Utility.pre(experiment.dimension().width - 1 == funcs.length, "Experiments parametric data and linear combination of functions must fit");
+        if (experiment.dimension().width != 2)
+            throw new UnsupportedOperationException("Regression with >2 parameters not yet supported by this method. Use regression(Vector,Matrix,Matrix) instead");
+        final Values vf = Values.getDefaultInstance();
+        // find maximum argument dimension required by the funcs
+        int dimensions[] = new int[funcs.length];
+        // foreach Function v in funcs
+        for (int v = 0; v < funcs.length; v++)
+            dimensions[v] = funcs[v] instanceof CoordinateCompositeFunction
+                ? ((CoordinateCompositeFunction) funcs[v]).dimension()
+                : 1;
+        Matrix A = vf.newInstance(experiment.dimension().height, Evaluations.max(dimensions));
+        if (A.dimension().width > A.dimension().height)
+            throw new ArithmeticException("linear coefficients exceed experiment datasets (" + A.dimension().width + ">" + A.dimension().height + ") the statistical solution is ambiguous and (n-m) parametric");
 
-	// convert experiment-parameters to Matrix
-	// foreach Function v
-	for (int v = 0; v < funcs.length; v++)
-	    // foreach Dataset j
-	    for (int j = 0; j < experiment.dimension().height; j++) {
-		Vector arg = experiment.getRow(j);
-		arg = arg.remove(arg.dimension() - 1);					// strip response variable
-		if (arg.dimension() == 1)								// extend single value to whole vector?
-		    if (funcs[v] instanceof CoordinateCompositeFunction)
-			arg = vf.CONST( ((CoordinateCompositeFunction) funcs[v]).argumentDimension(), arg.get(0));
-		    else
-			throw new UnsupportedOperationException("Supports only regression for single or full parameters. Use elementary regression(Vector, Matrix, Matrix) instead");
-		A.setRow(j, (Vector) funcs[v].apply(arg));
-	    } 
-	Vector u = experiment.getColumn(experiment.dimension().width - 1);
+        // convert experiment-parameters to Matrix
+        // foreach Function v
+        for (int v = 0; v < funcs.length; v++)
+            // foreach Dataset j
+            for (int j = 0; j < experiment.dimension().height; j++) {
+                Vector arg = experiment.getRow(j);
+                arg = arg.remove(arg.dimension() - 1);                                  // strip response variable
+                if (arg.dimension() == 1)                                                               // extend single value to whole vector?
+                    if (funcs[v] instanceof CoordinateCompositeFunction)
+                        arg = vf.CONST( ((CoordinateCompositeFunction) funcs[v]).argumentDimension(), arg.get(0));
+                    else
+                        throw new UnsupportedOperationException("Supports only regression for single or full parameters. Use elementary regression(Vector, Matrix, Matrix) instead");
+                A.setRow(j, (Vector) funcs[v].apply(arg));
+            } 
+        Vector u = experiment.getColumn(experiment.dimension().width - 1);
 
-	// println("u="+u+"="+A+"*"+experiment.getColumn(0)+" estimation...");
-	return regression(u, A, vf.IDENTITY(A.dimension().height, A.dimension().height));
+        // println("u="+u+"="+A+"*"+experiment.getColumn(0)+" estimation...");
+        return regression(u, A, vf.IDENTITY(A.dimension().height, A.dimension().height));
     } 
 
     /**
@@ -337,24 +337,24 @@ public final class Stat {
      * @throws ArithmeticException if the solution would be (n-m) parametric since less experiments exist than unknown parameters.
      */
     public static Vector regression(Vector u, Matrix A, Matrix Cu) throws ArithmeticException {
-	Utility.pre(u.dimension() == A.dimension().height, "Result Vector must have smae dimension as the height of the Matrix");
-	if (A.dimension().width > A.dimension().height)
-	    throw new ArithmeticException("linear coefficients exceed experiment datasets (" + A.dimension().width + ">" + A.dimension().height + ") the statistical solution is ambiguous and n-m parametric");
+        Utility.pre(u.dimension() == A.dimension().height, "Result Vector must have smae dimension as the height of the Matrix");
+        if (A.dimension().width > A.dimension().height)
+            throw new ArithmeticException("linear coefficients exceed experiment datasets (" + A.dimension().width + ">" + A.dimension().height + ") the statistical solution is ambiguous and n-m parametric");
 
-	/*
-	 * u = A*a + v  exist it an exact â=E(a) and û=E(u), such that
-	 * û = A*â
-	 * Weighting:  P = Cu^-1
-	 * â can be estimated with Covariance Ca_e of a:  Ca_e = (A^T*P*A)^-1
-	 * Estimation:  a_e= Ca_e*A^T*P*u  because of normal equation: A^T*P*A*a = A^T*P*u
-	 * Where Covariance Cu_e of u is:  Cu_e= A*Ca_e*F^T
-	 */
+        /*
+         * u = A*a + v  exist it an exact Ã¢=E(a) and Ã»=E(u), such that
+         * Ã» = A*Ã¢
+         * Weighting:  P = Cu^-1
+         * Ã¢ can be estimated with Covariance Ca_e of a:  Ca_e = (A^T*P*A)^-1
+         * Estimation:  a_e= Ca_e*A^T*P*u  because of normal equation: A^T*P*A*a = A^T*P*u
+         * Where Covariance Cu_e of u is:  Cu_e= A*Ca_e*F^T
+         */
 
-	// weighting matrix
-	Matrix P = (Matrix) Cu.inverse();
-	Matrix Ca_e = (A.transpose().multiply(P).multiply(A));	  // isSymmetric(), isSquare(), diagonal[i]!=0 forall i
-	assert Ca_e.isSymmetric() : "Matrix to be inverted during calculation is symmetric " + Ca_e;
-	Matrix R = (Matrix) Ca_e.inverse().multiply(A.transpose()).multiply(P);
-	return R.multiply(u);
+        // weighting matrix
+        Matrix P = (Matrix) Cu.inverse();
+        Matrix Ca_e = (A.transpose().multiply(P).multiply(A));    // isSymmetric(), isSquare(), diagonal[i]!=0 forall i
+        assert Ca_e.isSymmetric() : "Matrix to be inverted during calculation is symmetric " + Ca_e;
+        Matrix R = (Matrix) Ca_e.inverse().multiply(A.transpose()).multiply(P);
+        return R.multiply(u);
     } 
 }

@@ -75,77 +75,77 @@ abstract class AbstractProductArithmetic/*<R implements Arithmetic, T implements
      * @see #clone()
      */
     protected abstract Arithmetic/*>T<*/ newInstance(Object productIndexSet);
-	
+        
     // object-methods
-	
+        
     /**
      * Checks two tensors for equality.
      */
     public boolean equals(Object o) {
-	if (o instanceof Arithmetic) {
-	    Arithmetic/*>T<*/ b = (Arithmetic) o;
-	    return Utility.equalsAll(productIndexSet(this), productIndexSet(b))
-		&& Setops.all(iterator(this), iterator(b), Predicates.equal);
-	} 
-	return false;
+        if (o instanceof Arithmetic) {
+            Arithmetic/*>T<*/ b = (Arithmetic) o;
+            return Utility.equalsAll(productIndexSet(this), productIndexSet(b))
+                && Setops.all(iterator(this), iterator(b), Predicates.equal);
+        } 
+        return false;
     } 
 
     public int hashCode() {
-	//@todo can we use Utility.hashCodeAll(Object) as well?
-	int hash = 0;
-	//@todo functional?
-	for (Iterator i = iterator(this); i.hasNext(); ) {
-	    Object e = i.next();
-	    hash ^= e == null ? 0 : e.hashCode();
-	} 
-	return hash;
+        //@todo can we use Utility.hashCodeAll(Object) as well?
+        int hash = 0;
+        //@todo functional?
+        for (Iterator i = iterator(this); i.hasNext(); ) {
+            Object e = i.next();
+            hash ^= e == null ? 0 : e.hashCode();
+        } 
+        return hash;
     } 
 
     // arithmetic-operations
-	
+        
     private Arithmetic/*>T<*/ operatorImpl(BinaryFunction op, Arithmetic/*>T<*/ b) {
-	if (!Utility.equalsAll(productIndexSet(this),productIndexSet(b)))
-	    throw new IllegalArgumentException("a" + op + "b only defined for equal productIndexSet()");
-	Arithmetic/*>T<*/ ret = newInstance(productIndexSet(this));
+        if (!Utility.equalsAll(productIndexSet(this),productIndexSet(b)))
+            throw new IllegalArgumentException("a" + op + "b only defined for equal productIndexSet()");
+        Arithmetic/*>T<*/ ret = newInstance(productIndexSet(this));
 
-	// component-wise
-	ListIterator dst;
-	Setops.copy(dst = iterator(ret), Functionals.map(op, iterator(this), iterator(b)));
-	assert !dst.hasNext() : "equal productIndexSet() implies equal structure of iterators";
-	return ret;
+        // component-wise
+        ListIterator dst;
+        Setops.copy(dst = iterator(ret), Functionals.map(op, iterator(this), iterator(b)));
+        assert !dst.hasNext() : "equal productIndexSet() implies equal structure of iterators";
+        return ret;
     } 
     private Arithmetic/*>T<*/ operatorImpl(Function op) {
-	Arithmetic/*>T<*/ ret = newInstance(productIndexSet(this));
+        Arithmetic/*>T<*/ ret = newInstance(productIndexSet(this));
 
-	// component-wise
-	ListIterator dst;
-	Setops.copy(dst = iterator(ret), Functionals.map(op, iterator(this)));
-	assert !dst.hasNext() : "equal productIndexSet() implies equal structure of iterators";
-	return ret;
+        // component-wise
+        ListIterator dst;
+        Setops.copy(dst = iterator(ret), Functionals.map(op, iterator(this)));
+        assert !dst.hasNext() : "equal productIndexSet() implies equal structure of iterators";
+        return ret;
     } 
 
     public Arithmetic/*>T<*/ add(Arithmetic/*>T<*/ b) {
-	return operatorImpl(Operations.plus, b);
+        return operatorImpl(Operations.plus, b);
     } 
 
     public Arithmetic/*>T<*/ subtract(Arithmetic/*>T<*/ b) {
-	return operatorImpl(Operations.subtract, b);
+        return operatorImpl(Operations.subtract, b);
     } 
 
     public Arithmetic/*>T<*/ scale(Arithmetic/*>T<*/ s) {
-	return operatorImpl(Functionals.bindFirst(Operations.times, s));
+        return operatorImpl(Functionals.bindFirst(Operations.times, s));
     } 
 
     public Arithmetic/*>T<*/ multiply(Arithmetic/*>T<*/ b) {
-	return operatorImpl(Operations.times, b);
+        return operatorImpl(Operations.times, b);
     } 
 
     public Arithmetic minus() {
-	return operatorImpl(Operations.minus);
+        return operatorImpl(Operations.minus);
     } 
 
     public Arithmetic inverse() throws ArithmeticException {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     } 
 
 }

@@ -44,21 +44,21 @@ public abstract class LogicBasis implements Formula {
      * Exclusion xor: <code>A xor B</code> is calced <code>(A&and;&not;B) &or; (&not;A&and;B)</code>
      */
     public Formula xor(Formula B) {
-	return and(B.not()).or(not().and(B));
+        return and(B.not()).or(not().and(B));
     } 
 
     /**
      * Implication impl: <code>A &rarr; B</code> is calced <code>&not;A &or; B</code>
      */
     public Formula impl(Formula B) {
-	return not().or(B);
+        return not().or(B);
     } 
 
     /**
      * Equivalence equiv: <code>A &hArr; B</code> is calced <code>(A&rarr;B) &and; (B&rarr;A)</code>
      */
     public Formula equiv(Formula B) {
-	return impl(B).and(B.impl(this));
+        return impl(B).and(B.impl(this));
     } 
 
 
@@ -70,15 +70,15 @@ public abstract class LogicBasis implements Formula {
      * forall nor exists are supported.</p>
      */
     public synchronized Formula forall(Symbol x) {
-	if (quantifier_called)
-	    throw new UnsupportedOperationException("Neither 'forall' nor 'exists' quantifiers are supported, cannot emulate");
-	try {
-	    quantifier_called = true;
-	    return not().exists(x).not();
-	} 
-	finally {
-	    quantifier_called = false;
-	} 
+        if (quantifier_called)
+            throw new UnsupportedOperationException("Neither 'forall' nor 'exists' quantifiers are supported, cannot emulate");
+        try {
+            quantifier_called = true;
+            return not().exists(x).not();
+        } 
+        finally {
+            quantifier_called = false;
+        } 
     } 
 
     /**
@@ -95,14 +95,14 @@ public abstract class LogicBasis implements Formula {
      * forall nor exists are supported.</p>
      */
     public synchronized Formula exists(Symbol x) {
-	if (quantifier_called)
-	    throw new UnsupportedOperationException("Neither 'forall' nor 'exists' quantifiers are supported, cannot emulate");
-	try {
-	    quantifier_called = true;
-	    return not().forall(x).not();
-	} 
-	finally {
-	    quantifier_called = false;
-	} 
+        if (quantifier_called)
+            throw new UnsupportedOperationException("Neither 'forall' nor 'exists' quantifiers are supported, cannot emulate");
+        try {
+            quantifier_called = true;
+            return not().forall(x).not();
+        } 
+        finally {
+            quantifier_called = false;
+        } 
     } 
 }

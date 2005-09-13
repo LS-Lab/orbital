@@ -46,12 +46,12 @@ public interface Clause extends Set/*<Formula>*/ {
      * this clause containing no variable of the signature
      * <code>disjointify</code>.
      * @postconditions RES.getFreeVariables().intersection(disjointify).isEmpty() &and; RES is a variant of this
-     * @internal Variantenbildung in disjunkte Variablen erforderlich(!). Dazu entweder die aus V(F)&cap;V(G) etwa in F umbenennen, oder mit Variable.setSymbol(Variable.getSymbol()+neueNummer) alles explizit fortz‰hlen.
+     * @internal Variantenbildung in disjunkte Variablen erforderlich(!). Dazu entweder die aus V(F)&cap;V(G) etwa in F umbenennen, oder mit Variable.setSymbol(Variable.getSymbol()+neueNummer) alles explizit fortz√§hlen.
      */
     public Clause variant(Signature disjointify);
 
     // proof utilities
-	
+        
     /**
      * Get all resolvents of F and G, if any. (Resolution rule)
      * Implementation already incorporates some cuts.

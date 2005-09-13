@@ -27,7 +27,7 @@ public class DefaultClausalFactory implements ClausalFactory {
      */
     private static final boolean SIMPLIFYING = false;
     static boolean isSIMPLIFYING() {
-	return SIMPLIFYING;
+        return SIMPLIFYING;
     }
 
     private static boolean verbose = false;
@@ -35,51 +35,51 @@ public class DefaultClausalFactory implements ClausalFactory {
      * Add verbosity, i.e. print out a proof tree.
      */
     public void setVerbose(boolean newVerbose) {
-	this.verbose = newVerbose;
+        this.verbose = newVerbose;
     }
     private static boolean isVerbose() {
-	return verbose;
+        return verbose;
     }
 
     // factory-methods
     
     public Clause newClause() {
-	//@todo 13 I'm not sure whether ordered resolution is complete for subsumption. Since conservative approximations suffice, this is not critical to proof completeness, but still a thing to find out about.
-	//@todo indexed clauses don't really help better than memorizing (clause,literal) pairs except in the rare cases of factorization?
-	//return new ClauseImpl();
-	return ORDERED
-	    ? (Clause) new OrderedClauseImpl()
-	    : (Clause) new IndexedClauseImpl();
+        //@todo 13 I'm not sure whether ordered resolution is complete for subsumption. Since conservative approximations suffice, this is not critical to proof completeness, but still a thing to find out about.
+        //@todo indexed clauses don't really help better than memorizing (clause,literal) pairs except in the rare cases of factorization?
+        //return new ClauseImpl();
+        return ORDERED
+            ? (Clause) new OrderedClauseImpl()
+            : (Clause) new IndexedClauseImpl();
     }
 
     public Clause createClause(Set/*_<Formula>_*/ literals) {
-	return isVerbose()
-	    ? (Clause)new TraceableClauseImpl(literals)
-	    //      : new ClauseImpl(literals);
-	    : ORDERED
-	    ? (Clause)new OrderedClauseImpl(literals)
-	    : (Clause)new IndexedClauseImpl(literals);
+        return isVerbose()
+            ? (Clause)new TraceableClauseImpl(literals)
+            //      : new ClauseImpl(literals);
+            : ORDERED
+            ? (Clause)new OrderedClauseImpl(literals)
+            : (Clause)new IndexedClauseImpl(literals);
     }
 
     public ClausalSet newClausalSet() {
-	//@internal only use indexed clausal sets for top-level knowledgebase and setOfSupport, not in every intermediate set
-	return new ClausalSetImpl();
+        //@internal only use indexed clausal sets for top-level knowledgebase and setOfSupport, not in every intermediate set
+        return new ClausalSetImpl();
     }
 
     public ClausalSet createClausalSet(Set/*_<Clause>_*/ clauses) {
-	return new ClausalSetImpl(clauses);
+        return new ClausalSetImpl(clauses);
     }
 
     // utilities
     public ClausalSet asClausalSet(Formula f) {
-	return createClausalSet
-	    (
-	     Functionals.map(new Function() {
-		     public Object apply(Object C) {
-			 return createClause((Set)C);
-		     }
-		 }, Utilities.clausalForm(f, SIMPLIFYING))
-	     );
+        return createClausalSet
+            (
+             Functionals.map(new Function() {
+                     public Object apply(Object C) {
+                         return createClause((Set)C);
+                     }
+                 }, Utilities.clausalForm(f, SIMPLIFYING))
+             );
     }
     
 }

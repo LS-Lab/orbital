@@ -19,43 +19,43 @@ import java.io.StreamTokenizer;
  */
 class BasicDataWriter extends DataWriter {
     public BasicDataWriter(Writer output) {
-	super(output);
+        super(output);
     }
 
     public String getFormat() {
-	return "basic";
+        return "basic";
     } 
 
     protected void nextToken(int ttype, String value) throws IOException {
-	switch (ttype) {
-	case StreamTokenizer.TT_EOL:
-	    out.write(System.getProperty("line.separator"));
-	    break;
-	case StreamTokenizer.TT_NUMBER:
-	    out.write(value);
-	    out.write(", ");
-	    break;
-	case TT_BOOLEAN:
-	    out.write('#' + value.toUpperCase() + '#');
-	    out.write(", ");
-	    break;
-	case StreamTokenizer.TT_WORD:
-	    if (value == null) {
-		out.write("\"\"");
-		out.write(", ");
-		return;
-	    } else
-		out.write('"' + value + '"');
-	    out.write(", ");
-	    break;
-	default:
-	    if (value == null) {
-		out.write("\"" + (char) ttype + "\"");
-		out.write(", ");
-		return;
-	    } else
-		out.write('"' + value + '"');
-	    out.write(System.getProperty("line.separator"));
-	}
+        switch (ttype) {
+        case StreamTokenizer.TT_EOL:
+            out.write(System.getProperty("line.separator"));
+            break;
+        case StreamTokenizer.TT_NUMBER:
+            out.write(value);
+            out.write(", ");
+            break;
+        case TT_BOOLEAN:
+            out.write('#' + value.toUpperCase() + '#');
+            out.write(", ");
+            break;
+        case StreamTokenizer.TT_WORD:
+            if (value == null) {
+                out.write("\"\"");
+                out.write(", ");
+                return;
+            } else
+                out.write('"' + value + '"');
+            out.write(", ");
+            break;
+        default:
+            if (value == null) {
+                out.write("\"" + (char) ttype + "\"");
+                out.write(", ");
+                return;
+            } else
+                out.write('"' + value + '"');
+            out.write(System.getProperty("line.separator"));
+        }
     } 
 }

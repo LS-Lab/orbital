@@ -19,11 +19,11 @@ public class Plot2DBeanInfo extends SimpleBeanInfo {
     public Plot2DBeanInfo() {}
 
     public BeanDescriptor getBeanDescriptor() {
-	BeanDescriptor bd = new BeanDescriptor(beanClass, Plot2DCustomizer.class);
-	bd.setName("Plot2D");
-	bd.setDisplayName("Chart 2D");
-	bd.setShortDescription("2D Chart that plots functions and sets of points");
-	return bd;
+        BeanDescriptor bd = new BeanDescriptor(beanClass, Plot2DCustomizer.class);
+        bd.setName("Plot2D");
+        bd.setDisplayName("Chart 2D");
+        bd.setShortDescription("2D Chart that plots functions and sets of points");
+        return bd;
     } 
 
     /*
@@ -33,37 +33,37 @@ public class Plot2DBeanInfo extends SimpleBeanInfo {
      */
 
     public PropertyDescriptor[] getPropertyDescriptors() {
-	try {
-	    PropertyDescriptor _autoScaling = new PropertyDescriptor("autoScaling", beanClass, "isAutoScaling", "setAutoScaling");
-	    _autoScaling.setShortDescription("automatically adjust range and scaling");
-	    PropertyDescriptor _chartModel = new PropertyDescriptor("model", beanClass, "getModel", "setModel");
-	    _chartModel.setShortDescription("ChartModel displayed");
-	    PropertyDescriptor _fullScaling = new PropertyDescriptor("fullScaling", beanClass, "isFullScaling", "setFullScaling");
-	    _fullScaling.setShortDescription("show scaling numbers throughout the chart");
-	    PropertyDescriptor[] pds = new PropertyDescriptor[] {
-		_autoScaling, _chartModel, _fullScaling, 
-	    };
-	    return pds;
+        try {
+            PropertyDescriptor _autoScaling = new PropertyDescriptor("autoScaling", beanClass, "isAutoScaling", "setAutoScaling");
+            _autoScaling.setShortDescription("automatically adjust range and scaling");
+            PropertyDescriptor _chartModel = new PropertyDescriptor("model", beanClass, "getModel", "setModel");
+            _chartModel.setShortDescription("ChartModel displayed");
+            PropertyDescriptor _fullScaling = new PropertyDescriptor("fullScaling", beanClass, "isFullScaling", "setFullScaling");
+            _fullScaling.setShortDescription("show scaling numbers throughout the chart");
+            PropertyDescriptor[] pds = new PropertyDescriptor[] {
+                _autoScaling, _chartModel, _fullScaling, 
+            };
+            return pds;
 
 
 
-	} catch (IntrospectionException ex) {
-	    ex.printStackTrace();
-	    return null;
-	} 
+        } catch (IntrospectionException ex) {
+            ex.printStackTrace();
+            return null;
+        } 
     } 
 
     public java.awt.Image getIcon(int iconKind) {
-	switch (iconKind) {
-	case BeanInfo.ICON_COLOR_16x16:
-	    return iconColor16x16Filename != null ? loadImage(iconColor16x16Filename) : null;
-	case BeanInfo.ICON_COLOR_32x32:
-	    return iconColor32x32Filename != null ? loadImage(iconColor32x32Filename) : null;
-	case BeanInfo.ICON_MONO_16x16:
-	    return iconMono16x16Filename != null ? loadImage(iconMono16x16Filename) : null;
-	case BeanInfo.ICON_MONO_32x32:
-	    return iconMono32x32Filename != null ? loadImage(iconMono32x32Filename) : null;
-	}
-	return null;
+        switch (iconKind) {
+        case BeanInfo.ICON_COLOR_16x16:
+            return iconColor16x16Filename != null ? loadImage(iconColor16x16Filename) : null;
+        case BeanInfo.ICON_COLOR_32x32:
+            return iconColor32x32Filename != null ? loadImage(iconColor32x32Filename) : null;
+        case BeanInfo.ICON_MONO_16x16:
+            return iconMono16x16Filename != null ? loadImage(iconMono16x16Filename) : null;
+        case BeanInfo.ICON_MONO_32x32:
+            return iconMono32x32Filename != null ? loadImage(iconMono32x32Filename) : null;
+        }
+        return null;
     } 
 }

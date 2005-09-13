@@ -38,7 +38,7 @@ import orbital.math.Values;
  */
 public abstract class AbstractFunctor implements MathFunctor {
     public boolean equals(Object o, Real tolerance) {
-	return Metric.INDUCED.distance(this, (MathFunctor)o).compareTo(tolerance) < 0;
+        return Metric.INDUCED.distance(this, (MathFunctor)o).compareTo(tolerance) < 0;
     }
 
     //@todo note that we have a problem of arities here. if our subclass is a Function then we should return the Function 0:A->B
@@ -50,72 +50,72 @@ public abstract class AbstractFunctor implements MathFunctor {
     // @see orbital.moon.aspects.PointwiseArithmeticFunction
     // pointwise Arithmetic implementation (identical to @see orbital.math.Symbol)
     public Arithmetic add(Arithmetic b) throws ArithmeticException {
-	// simple-case optimization
-	if (b instanceof Scalar)
-	    if (Values.ZERO.equals(b))
-		return this;
-	return Functionals.genericCompose(Operations.plus, this, b);
+        // simple-case optimization
+        if (b instanceof Scalar)
+            if (Values.ZERO.equals(b))
+                return this;
+        return Functionals.genericCompose(Operations.plus, this, b);
     } 
     public Arithmetic minus() throws ArithmeticException {
-	return Functionals.genericCompose(Operations.minus, this);
+        return Functionals.genericCompose(Operations.minus, this);
     } 
     public Arithmetic subtract(Arithmetic b) throws ArithmeticException {
-	// simple-case optimization
-	if (b instanceof Scalar)
-	    if (Values.ZERO.equals(b))
-		return this;
-	return Functionals.genericCompose(Operations.subtract, this, b);
+        // simple-case optimization
+        if (b instanceof Scalar)
+            if (Values.ZERO.equals(b))
+                return this;
+        return Functionals.genericCompose(Operations.subtract, this, b);
     } 
     
     public Arithmetic scale(Arithmetic alpha) throws ArithmeticException {
-	//@xxx not quite right
-	return multiply(alpha);
+        //@xxx not quite right
+        return multiply(alpha);
     }
 
     public Arithmetic multiply(Arithmetic b) throws ArithmeticException {
-	// simple-case optimization
-	if (b instanceof Scalar) {
-	    if (Values.ONE.equals(b))
-		return this;
-	    else if (Values.MINUS_ONE.equals(b))
-		return minus();
-	    else if (Values.ZERO.equals(b))
-		return Values.ZERO;
-	}
-	return Functionals.genericCompose(Operations.times, this, b);
+        // simple-case optimization
+        if (b instanceof Scalar) {
+            if (Values.ONE.equals(b))
+                return this;
+            else if (Values.MINUS_ONE.equals(b))
+                return minus();
+            else if (Values.ZERO.equals(b))
+                return Values.ZERO;
+        }
+        return Functionals.genericCompose(Operations.times, this, b);
     } 
     public Arithmetic inverse() throws ArithmeticException {
-	return Functionals.genericCompose(Operations.inverse, this);
+        return Functionals.genericCompose(Operations.inverse, this);
     } 
     public Arithmetic divide(Arithmetic b) throws ArithmeticException {
-	// simple-case optimization
-	if (b instanceof Scalar) {
-	    if (Values.ONE.equals(b))
-		return this;
-	    else if (Values.MINUS_ONE.equals(b))
-		return minus();
-	    else if (Values.ZERO.equals(b))
-		throw new ArithmeticException("division by zero");
-	}
-	return Functionals.genericCompose(Operations.divide, this, b);
+        // simple-case optimization
+        if (b instanceof Scalar) {
+            if (Values.ONE.equals(b))
+                return this;
+            else if (Values.MINUS_ONE.equals(b))
+                return minus();
+            else if (Values.ZERO.equals(b))
+                throw new ArithmeticException("division by zero");
+        }
+        return Functionals.genericCompose(Operations.divide, this, b);
     } 
     
     public Arithmetic power(Arithmetic b) throws ArithmeticException {
-	// simple-case optimization
-	if (b instanceof Scalar) {
-	    if (Values.ONE.equals(b))
-		return this;
-	    else if (Values.MINUS_ONE.equals(b))
-		return inverse();
-	    else if (Values.ZERO.equals(b))
-		return Values.ONE;
-	}
-	return Functionals.genericCompose(Operations.power, this, b);
+        // simple-case optimization
+        if (b instanceof Scalar) {
+            if (Values.ONE.equals(b))
+                return this;
+            else if (Values.MINUS_ONE.equals(b))
+                return inverse();
+            else if (Values.ZERO.equals(b))
+                return Values.ONE;
+        }
+        return Functionals.genericCompose(Operations.power, this, b);
     } 
     
     //@todo should we remove this default implementation?
     public Real norm() {
-	return Values.NaN;
+        return Values.NaN;
     } 
 }
-	
+        

@@ -69,12 +69,12 @@ import orbital.util.InnerCheckedException;
 public class GameView2 extends javax.swing.JApplet {
     private static final long serialVersionUID = 1298765184014728813L;
     public static void main(String arg[]) throws Exception {
-	if (arg.length == 0 || orbital.signe.isHelpRequest(arg)) {
-	    System.out.println(usage);
-	    System.out.println(AppletFrame.info(new GameView()));
-	    return;
-	} 
-    	AppletFrame.showApplet(new GameView(), "Game Application", arg);
+        if (arg.length == 0 || orbital.signe.isHelpRequest(arg)) {
+            System.out.println(usage);
+            System.out.println(AppletFrame.info(new GameView()));
+            return;
+        } 
+        AppletFrame.showApplet(new GameView(), "Game Application", arg);
     }
     public static final String usage = "usage: " + GameView.class + " (<parameter>=<value>)*" + System.getProperty("line.separator") + "\tThe game applet has access to the values assigned to the parameters.";
 
@@ -87,7 +87,7 @@ public class GameView2 extends javax.swing.JApplet {
      * @todo seriality?
      */
     private ResourceBundle resources;
-	
+        
     private static final String FILE_IDENTIFIER = "Game";
 
     // {{DECLARE_PARAMETERS
@@ -113,22 +113,22 @@ public class GameView2 extends javax.swing.JApplet {
      * Also handles mouse drags.
      * @serial
      */
-    private Gameboard2	board;
+    private Gameboard2  board;
 
     /**
      * Container for the control panel of the UserDialog.
      * @serial
      */
-    private Container	control = null;
+    private Container   control = null;
 
     /**
      * The heading label.
      * @serial
      */
-    private Label	nameLabel;
+    private Label       nameLabel;
 
     // }}
-	
+        
     /**
      * The ActionListeners reacting on menu events.
      * This is a mapping from menu keys and menu item keys as defined in the {@link #resources}
@@ -148,66 +148,66 @@ public class GameView2 extends javax.swing.JApplet {
      * Runnable-init entry point.
      */
     public GameView2() {
-    	// reactions on menu actions
-    	this.actions = new Hashtable();
-    	actions.put("new", new ActionListener() {
-    		public void actionPerformed(ActionEvent e) {
-		    stop();
-		    start();
-		}
-	    });
-    	actions.put("load", new ActionListener() {
-    		public void actionPerformed(ActionEvent e) {
-		    JFileChooser dlg = new JFileChooser();
-		    if (dlg.showOpenDialog(UIUtilities.getParentalFrame(GameView2.this))
-			!= JFileChooser.APPROVE_OPTION)
-			return;
-		    File f = dlg.getSelectedFile();
-		    if (f.exists())
-			try {
-			    ObjectInputStream is = new ObjectInputStream(new FileInputStream(f));
-			    load(is);
-			    is.close();
-			    showStatus(getResources().getString("statusbar.game.load"));
-			} catch (IOException x) {
-			    log(x);
-			} catch (ClassNotFoundException x) {
-			    log(x);
-			} 
-		}
-	    });
-    	actions.put("save", new ActionListener() {
-    		public void actionPerformed(ActionEvent e) {
-		    JFileChooser dlg = new JFileChooser();
-		    if (dlg.showSaveDialog(UIUtilities.getParentalFrame(GameView2.this))
-			!= JFileChooser.APPROVE_OPTION)
-			return;
-		    File f = dlg.getSelectedFile();
-		    try {
-			ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(f));
-			store(os);
-			os.close();
-			showStatus(getResources().getString("statusbar.game.save"));
-		    } catch (IOException x) {
-			log(x);
-		    } 
-		}
-	    });
-    	actions.put("stop", new ActionListener() {
-    		public void actionPerformed(ActionEvent e) {
-		    stop();
-		}
-	    });
+        // reactions on menu actions
+        this.actions = new Hashtable();
+        actions.put("new", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    stop();
+                    start();
+                }
+            });
+        actions.put("load", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    JFileChooser dlg = new JFileChooser();
+                    if (dlg.showOpenDialog(UIUtilities.getParentalFrame(GameView2.this))
+                        != JFileChooser.APPROVE_OPTION)
+                        return;
+                    File f = dlg.getSelectedFile();
+                    if (f.exists())
+                        try {
+                            ObjectInputStream is = new ObjectInputStream(new FileInputStream(f));
+                            load(is);
+                            is.close();
+                            showStatus(getResources().getString("statusbar.game.load"));
+                        } catch (IOException x) {
+                            log(x);
+                        } catch (ClassNotFoundException x) {
+                            log(x);
+                        } 
+                }
+            });
+        actions.put("save", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    JFileChooser dlg = new JFileChooser();
+                    if (dlg.showSaveDialog(UIUtilities.getParentalFrame(GameView2.this))
+                        != JFileChooser.APPROVE_OPTION)
+                        return;
+                    File f = dlg.getSelectedFile();
+                    try {
+                        ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(f));
+                        store(os);
+                        os.close();
+                        showStatus(getResources().getString("statusbar.game.save"));
+                    } catch (IOException x) {
+                        log(x);
+                    } 
+                }
+            });
+        actions.put("stop", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    stop();
+                }
+            });
     }
 
     /**
      * Get the name of the game.
      */
     public String getGameName() {
-	return gameName;
+        return gameName;
     }
     protected void setGameName(String newName) {
-	this.gameName = newName;
+        this.gameName = newName;
     }
 
     /**
@@ -215,11 +215,11 @@ public class GameView2 extends javax.swing.JApplet {
      * That's the model for this view.
      */
     public Gamemaster getGamemaster() {
-	return gamemaster;
+        return gamemaster;
     }
     protected void setGamemaster(Gamemaster newMaster) {
-	//System.out.println("GameView.setGamemaster");
-	this.gamemaster = newMaster;
+        //System.out.println("GameView.setGamemaster");
+        this.gamemaster = newMaster;
     }
 
     /**
@@ -227,13 +227,13 @@ public class GameView2 extends javax.swing.JApplet {
      * @deprecated Since Orbital1.1 use {@link #getGamemaster()}.{@link Gamemaster#getGameRules()}. instead.
      */
     public GameRules getGameRules() {
-	return getGamemaster().getGameRules();
+        return getGamemaster().getGameRules();
     }
     /**
      * @deprecated Since Orbital1.1 use {@link #getGamemaster()}.{@link Gamemaster#setGameRules(GameRules)}. instead.
      */
     protected void setGameRules(GameRules newRules) {
-	getGamemaster().setGameRules(newRules);
+        getGamemaster().setGameRules(newRules);
     }
 
     /**
@@ -241,7 +241,7 @@ public class GameView2 extends javax.swing.JApplet {
      * @deprecated Since Orbital1.1 use {@link #getGamemaster()}.{@link Gamemaster#getPlayers()}. instead.
      */
     public Function[] getPlayers() {
-	return getGamemaster().getPlayers();
+        return getGamemaster().getPlayers();
     } 
     
     /**
@@ -250,18 +250,18 @@ public class GameView2 extends javax.swing.JApplet {
      * @return a gameboard displaying the field to play on.
      */
     public Gameboard2 getGameboard() {
-	return board;
+        return board;
     }
     private void setGameboard(Gameboard2 newGameboard) {
-	this.board = newGameboard;
+        this.board = newGameboard;
     }
 
     /**
      * Get the container for the control-panel displayed.
      * @serial
      */
-    protected Container	getControl() {
-	return control;
+    protected Container getControl() {
+        return control;
     }
 
     /**
@@ -274,23 +274,23 @@ public class GameView2 extends javax.swing.JApplet {
      * @see #init()
      */
     protected ResourceBundle getResources() {
-	if(resources == null) {
-	    // try to get the resource bundle of our real sub classes, first. However, this won't work for the default package
-	    try {
-		return resources = ResourceBundle.getBundle(getClass().getName(), Locale.getDefault(), getClass().getClassLoader());
-	    } catch (Exception trial) {
-		System.out.println("no resources specified for: " + getClass().getName() + "\nUsing default resources\n" + trial);
-		// else try to get our resource bundle
-		try {
-		    return resources = ResourceBundle.getBundle(GameView.class.getName());
-		} catch (MissingResourceException missing) {
-		    log("missing resource: An error occured initializing " + GameView.class.getName() + ".\nThe package seems corrupt or a resource is missing, aborting\n" + missing);
-		    //JOptionPane.showMessageDialog(null, "An error occured initializing " + Game.class.getName() + ".\nThe package seems corrupt or a resource is missing, aborting\n" + missing, "Error", JOptionPane.ERROR_MESSAGE);
-		    throw (MissingResourceException) new MissingResourceException(trial.getMessage() + " AND " + missing.getMessage(), missing.getClassName(), missing.getKey()).initCause(missing);
-		} 
-	    }
-	}
-	return resources;
+        if(resources == null) {
+            // try to get the resource bundle of our real sub classes, first. However, this won't work for the default package
+            try {
+                return resources = ResourceBundle.getBundle(getClass().getName(), Locale.getDefault(), getClass().getClassLoader());
+            } catch (Exception trial) {
+                System.out.println("no resources specified for: " + getClass().getName() + "\nUsing default resources\n" + trial);
+                // else try to get our resource bundle
+                try {
+                    return resources = ResourceBundle.getBundle(GameView.class.getName());
+                } catch (MissingResourceException missing) {
+                    log("missing resource: An error occured initializing " + GameView.class.getName() + ".\nThe package seems corrupt or a resource is missing, aborting\n" + missing);
+                    //JOptionPane.showMessageDialog(null, "An error occured initializing " + Game.class.getName() + ".\nThe package seems corrupt or a resource is missing, aborting\n" + missing, "Error", JOptionPane.ERROR_MESSAGE);
+                    throw (MissingResourceException) new MissingResourceException(trial.getMessage() + " AND " + missing.getMessage(), missing.getClassName(), missing.getKey()).initCause(missing);
+                } 
+            }
+        }
+        return resources;
     }
 
     /**
@@ -300,7 +300,7 @@ public class GameView2 extends javax.swing.JApplet {
      * @see <a href="">demo/jfc/Notepad/src/Notepad.java for description of menu resource bundle</a> 
      */
     protected final Dictionary getActions() {
-	return actions;
+        return actions;
     }
 
     /**
@@ -312,114 +312,114 @@ public class GameView2 extends javax.swing.JApplet {
      * </p>
      */
     protected void setField(Field field) {
-	//System.out.println("GameView.setField(" + System.identityHashCode(field) + ")");
-	board.setField(field);
-	field.addFieldChangeListener(new FieldChangeAdapter() {
-		//@internal are transient
-		public void stateChanged(FieldChangeEvent evt) {
-		    //@todo assert evt.getField() == getGamemaster().getField() : "we have only registered ourselves to our field " + getGamemaster().getField() + " source=" + evt.getField();
-		    if (evt.getType() == FieldChangeEvent.END_OF_GAME)
-			displayWinner(((Integer) evt.getChangeInfo()).intValue());
-		}
-	    });
+        //System.out.println("GameView.setField(" + System.identityHashCode(field) + ")");
+        board.setField(field);
+        field.addFieldChangeListener(new FieldChangeAdapter() {
+                //@internal are transient
+                public void stateChanged(FieldChangeEvent evt) {
+                    //@todo assert evt.getField() == getGamemaster().getField() : "we have only registered ourselves to our field " + getGamemaster().getField() + " source=" + evt.getField();
+                    if (evt.getType() == FieldChangeEvent.END_OF_GAME)
+                        displayWinner(((Integer) evt.getChangeInfo()).intValue());
+                }
+            });
     }
     
     /**
      * Applet-init entry point.
      */
     public void init() {
-	super.init();
+        super.init();
 
-	// {{GET_PARAMETERS
-	String param = getParameter("gameName");
-	setGameName(param == null ? "Generic Game" : param);
+        // {{GET_PARAMETERS
+        String param = getParameter("gameName");
+        setGameName(param == null ? "Generic Game" : param);
 
-	param = getParameter("gameRules");
-	String gameRules = param == null ? "YourGameRules" : param;
+        param = getParameter("gameRules");
+        String gameRules = param == null ? "YourGameRules" : param;
 
-	try {
-	    GameRules rules = createGameRules(gameRules);
-	    Function players[] = new Function[rules.getLeagues()];
-	    for (int i = 0; i < players.length; i++) {
-		String arg = getParameter("player-" + i);
-		players[i] = arg == null || arg.equals("null")
-		    ? null
-		    //@todo shouldn't we restart players in start()?
-		    : rules.startAIntelligence(i, arg);
-	    }
-	    this.setGamemaster(new Gamemaster(this,
-					     rules,
-					     players)
-			       );
-	} catch (Exception e) {
-	    log(e);
-	}
+        try {
+            GameRules rules = createGameRules(gameRules);
+            Function players[] = new Function[rules.getLeagues()];
+            for (int i = 0; i < players.length; i++) {
+                String arg = getParameter("player-" + i);
+                players[i] = arg == null || arg.equals("null")
+                    ? null
+                    //@todo shouldn't we restart players in start()?
+                    : rules.startAIntelligence(i, arg);
+            }
+            this.setGamemaster(new Gamemaster(this,
+                                             rules,
+                                             players)
+                               );
+        } catch (Exception e) {
+            log(e);
+        }
 
-	// }}
+        // }}
 
-	// {{INIT_CONTROLS
-	final Container pane = getContentPane();
-	pane.setLayout(new BorderLayout());
+        // {{INIT_CONTROLS
+        final Container pane = getContentPane();
+        pane.setLayout(new BorderLayout());
 
-	if (control == null) {
-	    control = createControl();
-	    pane.add(control, BorderLayout.NORTH);
-	    setGameboard(new Gameboard2());
-	    pane.add(board, BorderLayout.CENTER);
-	    final MenuBar ourBar = createMenuBar();
-	    if (ourBar != null)
-		try {
-		    Frame parent = UIUtilities.getParentalFrame(this);
-		    if (parent != null) {
-			MenuBar bar = parent.getMenuBar();
-			if (bar == null) {
-			    bar = new MenuBar();
-			    parent.setMenuBar(bar);
-			}
-			for (int i = 0; i < ourBar.getMenuCount(); i++)
-			    bar.add(ourBar.getMenu(i));
-		    }
-    	        }
-    	        catch (SecurityException ignore) {}
-	} 
+        if (control == null) {
+            control = createControl();
+            pane.add(control, BorderLayout.NORTH);
+            setGameboard(new Gameboard2());
+            pane.add(board, BorderLayout.CENTER);
+            final MenuBar ourBar = createMenuBar();
+            if (ourBar != null)
+                try {
+                    Frame parent = UIUtilities.getParentalFrame(this);
+                    if (parent != null) {
+                        MenuBar bar = parent.getMenuBar();
+                        if (bar == null) {
+                            bar = new MenuBar();
+                            parent.setMenuBar(bar);
+                        }
+                        for (int i = 0; i < ourBar.getMenuCount(); i++)
+                            bar.add(ourBar.getMenu(i));
+                    }
+                }
+                catch (SecurityException ignore) {}
+        } 
 
-	// }}
-		
-	showStatus(getResources().getString("statusbar.game.init"));
+        // }}
+                
+        showStatus(getResources().getString("statusbar.game.init"));
     } 
 
     /**
      * Applet-start entry point.
      */
     public void start() {
-	start(null);
+        start(null);
     }
     private void start(Field initialField) {
-	//@internal that's better in order to not let the last gamemaster finally {setField(null)} at end of run() and our field's lost again after the first move.
-	setGamemaster(new Gamemaster(this, getGamemaster().getGameRules(), getGamemaster().getPlayers(), initialField));
-	getGamemaster().start();
-	setField(getGamemaster().getField());
-	showStatus(getResources().getString("statusbar.game.start"));
+        //@internal that's better in order to not let the last gamemaster finally {setField(null)} at end of run() and our field's lost again after the first move.
+        setGamemaster(new Gamemaster(this, getGamemaster().getGameRules(), getGamemaster().getPlayers(), initialField));
+        getGamemaster().start();
+        setField(getGamemaster().getField());
+        showStatus(getResources().getString("statusbar.game.start"));
     } 
 
     /**
      * Applet-stop exit point.
      */
     public void stop() {
-	getGamemaster().stop();
-	showStatus(getResources().getString("statusbar.game.stop"));
+        getGamemaster().stop();
+        showStatus(getResources().getString("statusbar.game.stop"));
     } 
 
     /**
      * Applet-destroy exit point.
      */
     public void destroy() {
-	getGamemaster().destroy();
-	setGamemaster(null);
-	removeAll();
-	control = null;
-	this.resources = null;
-	super.destroy();
+        getGamemaster().destroy();
+        setGamemaster(null);
+        removeAll();
+        control = null;
+        this.resources = null;
+        super.destroy();
     } 
 
 
@@ -429,25 +429,25 @@ public class GameView2 extends javax.swing.JApplet {
      *  to let the user control the game.
      */
     protected Container createControl() {
-	Container control = new Panel();
-	control.setLayout(new BorderLayout());
-	nameLabel = new Label(gameName, Label.CENTER);
-	control.add(nameLabel, BorderLayout.NORTH);
+        Container control = new Panel();
+        control.setLayout(new BorderLayout());
+        nameLabel = new Label(gameName, Label.CENTER);
+        control.add(nameLabel, BorderLayout.NORTH);
 
-	final PopupMenu pop = createPopupMenu();
-	if (pop != null) {
-	    control.add(pop);
-	    MouseListener popper = new MouseAdapter() {
-		    public void mouseClicked(MouseEvent ms) {
-			//if (ms.isPopupTrigger() || (ms.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK)
-			pop.show(ms.getComponent(), ms.getX(), ms.getY());
-		    } 
-    		};
-	    control.addMouseListener(popper);
-	    nameLabel.add(pop);
-	    nameLabel.addMouseListener(popper);
-	}
-	return control;
+        final PopupMenu pop = createPopupMenu();
+        if (pop != null) {
+            control.add(pop);
+            MouseListener popper = new MouseAdapter() {
+                    public void mouseClicked(MouseEvent ms) {
+                        //if (ms.isPopupTrigger() || (ms.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK)
+                        pop.show(ms.getComponent(), ms.getX(), ms.getY());
+                    } 
+                };
+            control.addMouseListener(popper);
+            nameLabel.add(pop);
+            nameLabel.addMouseListener(popper);
+        }
+        return control;
     } 
 
     /**
@@ -458,28 +458,28 @@ public class GameView2 extends javax.swing.JApplet {
      * @return the menu bar to display (if possible), or <code>null</code> if no menu bar is desired.
      */
     private MenuBar createMenuBar() {
-	return new AwtResourceDecoder(getResources(), actions).createMenuBar();
+        return new AwtResourceDecoder(getResources(), actions).createMenuBar();
     }
     /**
      * Create the popup menu for the applet.
      * @return the popup menu, or <code>null</code> if no popup menu is desired.
      */
     private PopupMenu createPopupMenu() {
-	return new AwtResourceDecoder(getResources(), actions).createPopupMenu();
+        return new AwtResourceDecoder(getResources(), actions).createPopupMenu();
     }
     /**
      * display that a league has won this Game.
      */
     protected void displayWinner(int league) {
-	showStatus(getResources().getString("statusbar.game.end"));
-	ResourceBundle resources = getResources();
-	String	   winner = (getPlayers()[Math.abs(league)] == null ? resources.getString("text.player") : resources.getString("text.computer")) + " (" + Math.abs(league) + ')';
-	int selected = JOptionPane.showConfirmDialog(UIUtilities.getParentalFrame(this), winner + ' ' + resources.getString("dialog.game.finish.hasWon") + (league > 0 ? resources.getString("dialog.game.finish.won") : resources.getString("dialog.game.finish.survived")) + resources.getString("dialog.game.finish.tryAgain"), resources.getString("dialog.game.finish.title"), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-	if (selected == JOptionPane.YES_OPTION) {
-	    stop();
-	    start();
-	} else
-	    repaint();
+        showStatus(getResources().getString("statusbar.game.end"));
+        ResourceBundle resources = getResources();
+        String     winner = (getPlayers()[Math.abs(league)] == null ? resources.getString("text.player") : resources.getString("text.computer")) + " (" + Math.abs(league) + ')';
+        int selected = JOptionPane.showConfirmDialog(UIUtilities.getParentalFrame(this), winner + ' ' + resources.getString("dialog.game.finish.hasWon") + (league > 0 ? resources.getString("dialog.game.finish.won") : resources.getString("dialog.game.finish.survived")) + resources.getString("dialog.game.finish.tryAgain"), resources.getString("dialog.game.finish.title"), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (selected == JOptionPane.YES_OPTION) {
+            stop();
+            start();
+        } else
+            repaint();
     } 
 
     /**
@@ -495,26 +495,26 @@ public class GameView2 extends javax.swing.JApplet {
      * @see #createGameRules(java.lang.String)
      */
     public void load(ObjectInputStream is) throws ClassNotFoundException, IOException {
-	stop();
-	if (!FILE_IDENTIFIER.equals(is.readUTF()))
-	    throw new IOException("illegal format of stream content");
-	Field field = (Field) is.readObject();
-	//System.out.println("GameView.load() field= " + System.identityHashCode(field));
-	start(field);
-	// reload images
-	for (Iterator i = field.iterateNonEmpty(); i.hasNext(); ) {
-	    Figure f = (Figure) i.next();
-	    if (f instanceof FigureImpl)
-		((FigureImpl)f).setImage(getGameRules().getImage(f));
-	} 
+        stop();
+        if (!FILE_IDENTIFIER.equals(is.readUTF()))
+            throw new IOException("illegal format of stream content");
+        Field field = (Field) is.readObject();
+        //System.out.println("GameView.load() field= " + System.identityHashCode(field));
+        start(field);
+        // reload images
+        for (Iterator i = field.iterateNonEmpty(); i.hasNext(); ) {
+            Figure f = (Figure) i.next();
+            if (f instanceof FigureImpl)
+                ((FigureImpl)f).setImage(getGameRules().getImage(f));
+        } 
     } 
 
     /**
      * Save game to a stream.
      */
     public void store(ObjectOutputStream os) throws IOException {
-	os.writeUTF(FILE_IDENTIFIER);
-	os.writeObject(board.getField());
+        os.writeUTF(FILE_IDENTIFIER);
+        os.writeObject(board.getField());
     } 
 
     /**
@@ -530,13 +530,13 @@ public class GameView2 extends javax.swing.JApplet {
      * @see #load(java.io.ObjectInputStream)
      */
     protected GameRules createGameRules(String gameRules) throws Exception {
-	return (GameRules) instantiate(gameRules);
+        return (GameRules) instantiate(gameRules);
     } 
     /**
      * @deprecated Use {@link #createGameRules(String)} instead.
      */
     protected GameRules getGameRules(String gameRules) throws Exception {
-	return createGameRules(gameRules);
+        return createGameRules(gameRules);
     }
     /**
      * @internal see javax.xml.parser.FactoryFinder#findClassLoader() for a version that - supposedly - runs under every JVM.
@@ -549,40 +549,40 @@ public class GameView2 extends javax.swing.JApplet {
         try {
             return Class.forName(className, true, cl).newInstance();
         } catch (ClassNotFoundException ex) {
-	    cl = GameView.class.getClassLoader();
-	    if (cl == null)
-		cl = ClassLoader.getSystemClassLoader();
-	    return Class.forName(className, true, cl).newInstance();
-	}
-	    
+            cl = GameView.class.getClassLoader();
+            if (cl == null)
+                cl = ClassLoader.getSystemClassLoader();
+            return Class.forName(className, true, cl).newInstance();
+        }
+            
     }
 
     public void paint(Graphics g) {
-	paintComponents(g);
+        paintComponents(g);
     } 
 
     private void log(Object msg) {
-	showStatus(msg + "");
-	if (msg instanceof Throwable)
-	    ((Throwable) msg).printStackTrace();
+        showStatus(msg + "");
+        if (msg instanceof Throwable)
+            ((Throwable) msg).printStackTrace();
     }
 
     /**
      * Info.
      */
     public String getAppletInfo() {
-	return "generic Applet for Games on a GameBoard. Copyright (c) 1996-2001 by Andre Platzer";
+        return "generic Applet for Games on a GameBoard. Copyright (c) 1996-2001 by Andre Platzer";
     } 
 
     /**
      * Parameter Info
      */
     public String[][] getParameterInfo() {
-	String[][] info = {
-	    {"gameName",  "String", "name of the concrete Game"},
-	    {"gameRules", "String", "parameter describing the GameRules. Per default the name of a class that implements GameRules."},
-	    {"player-X",  "String", "the argument to pass when starting player number X. If left out, a human player will play X."}
-	};
-	return info;
+        String[][] info = {
+            {"gameName",  "String", "name of the concrete Game"},
+            {"gameRules", "String", "parameter describing the GameRules. Per default the name of a class that implements GameRules."},
+            {"player-X",  "String", "the argument to pass when starting player number X. If left out, a human player will play X."}
+        };
+        return info;
     } 
 }

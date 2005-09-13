@@ -23,6 +23,6 @@ public class RecursionLimitException extends LimitException {
     public RecursionLimitException() {}
 
     public RecursionLimitException(String spec) {
-	super(spec);
+        super(spec);
     }
 }

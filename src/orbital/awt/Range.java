@@ -20,38 +20,38 @@ public class Range {
     public Vector max;
 
     public Range(Vector min, Vector max) {
-	if (min.dimension() != max.dimension())
-	    throw new IllegalArgumentException("Range Vectors must have same dimension");
-	this.min = min;
-	this.max = max;
+        if (min.dimension() != max.dimension())
+            throw new IllegalArgumentException("Range Vectors must have same dimension");
+        this.min = min;
+        this.max = max;
     }
     public Range(double minx, double miny, double maxx, double maxy) {
-	this(Values.getDefaultInstance().valueOf(new double[] {minx, miny}),
-	     Values.getDefaultInstance().valueOf(new double[] {maxx, maxy}));
+        this(Values.getDefaultInstance().valueOf(new double[] {minx, miny}),
+             Values.getDefaultInstance().valueOf(new double[] {maxx, maxy}));
     }
     
     public Object clone() {
-    	return new Range((Vector) min.clone(), (Vector) max.clone());
+        return new Range((Vector) min.clone(), (Vector) max.clone());
     }
     
     public boolean equals(Object o) {
-    	if (o instanceof Range) {
-	    Range b = (Range)o;
-	    return (min == null ? b.min==null : min.equals(b.min))
-		&& (max == null ? b.max==null : max.equals(b.max));
-    	}
-    	return false;
+        if (o instanceof Range) {
+            Range b = (Range)o;
+            return (min == null ? b.min==null : min.equals(b.min))
+                && (max == null ? b.max==null : max.equals(b.max));
+        }
+        return false;
     }
-	
+        
     public int hashCode() {
-	return min.hashCode() ^ max.hashCode();
+        return min.hashCode() ^ max.hashCode();
     }
     
     public double getLength(int dimension) {
-	return max.get(dimension).subtract(min.get(dimension)).norm().doubleValue();
+        return max.get(dimension).subtract(min.get(dimension)).norm().doubleValue();
     } 
     
     public String toString() {
-	return getClass().getName() + "[" + min + ".." + max + "]";
+        return getClass().getName() + "[" + min + ".." + max + "]";
     } 
 }

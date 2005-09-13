@@ -11,7 +11,7 @@ import orbital.math.functional.Operations;
  * regelm&auml;&szlig;ig besuchen. Der erste besuchte sie an einem
  * Montag zum ersten mal, der zweite am darauffolgenden Tag und der
  * Dritte am darauffolgenden Donnerstag. Da sich alle drei in
- * gemeinn&uuml;tzigen Or­ ganisationen einbringen, k&ouml;nnen sie
+ * gemeinn&uuml;tzigen Orï¿½ ganisationen einbringen, k&ouml;nnen sie
  * leider nicht t&auml;glich die Kneipe besuchen. So kann der erste
  * nur jeden dritten, der Zweite nur jeden vierten und der Dritte nur
  * jeden f&uuml;nften Tag. Trotzdem trafen sie sich am 2. Advent
@@ -103,32 +103,32 @@ import orbital.math.functional.Operations;
  */
 public class CRTApplication{
     public static void main(String[] args){
-	// get us a value factory for creating arithmetic objects
-	final Values vf = Values.getDefaultInstance();
-	Integer x[] = {vf.valueOf(0), vf.valueOf(1), vf.valueOf(3)};
-	Integer m[] = {vf.valueOf(3), vf.valueOf(4), vf.valueOf(5)};
-	Integer umod = (Integer) Operations.product.apply(vf.valueOf(m));
+        // get us a value factory for creating arithmetic objects
+        final Values vf = Values.getDefaultInstance();
+        Integer x[] = {vf.valueOf(0), vf.valueOf(1), vf.valueOf(3)};
+        Integer m[] = {vf.valueOf(3), vf.valueOf(4), vf.valueOf(5)};
+        Integer umod = (Integer) Operations.product.apply(vf.valueOf(m));
 
-	System.out.println("computing \"Anzahl Tage vor dem 2.Advent fuer erstes Treffen\"");
-	System.out.println("computing \"number of days before 2.Advent for the first meeting\"");
-	System.out.println("congruent values: " + MathUtilities.format(x));
-	System.out.println("modulo values:    " + MathUtilities.format(m));
-	System.out.println("solution:         " + AlgebraicAlgorithms.chineseRemainder(x,m));
-	// print nonnegative normalized representation of the solution
-	// (since the number of days is not negative)
-	System.out.println("              (== " +
-			   (((Integer)AlgebraicAlgorithms.chineseRemainder(x,m).representative()).intValue() + umod.intValue()) % umod.intValue() + ")");
-	System.out.println("is unique modulo: " + umod);
-	System.out.println();
+        System.out.println("computing \"Anzahl Tage vor dem 2.Advent fuer erstes Treffen\"");
+        System.out.println("computing \"number of days before 2.Advent for the first meeting\"");
+        System.out.println("congruent values: " + MathUtilities.format(x));
+        System.out.println("modulo values:    " + MathUtilities.format(m));
+        System.out.println("solution:         " + AlgebraicAlgorithms.chineseRemainder(x,m));
+        // print nonnegative normalized representation of the solution
+        // (since the number of days is not negative)
+        System.out.println("              (== " +
+                           (((Integer)AlgebraicAlgorithms.chineseRemainder(x,m).representative()).intValue() + umod.intValue()) % umod.intValue() + ")");
+        System.out.println("is unique modulo: " + umod);
+        System.out.println();
 
-	x = new Integer[] {vf.valueOf(0), vf.valueOf(1), vf.valueOf(3), vf.valueOf(6)};
-	m = new Integer[] {vf.valueOf(3), vf.valueOf(4), vf.valueOf(5), vf.valueOf(7)};
+        x = new Integer[] {vf.valueOf(0), vf.valueOf(1), vf.valueOf(3), vf.valueOf(6)};
+        m = new Integer[] {vf.valueOf(3), vf.valueOf(4), vf.valueOf(5), vf.valueOf(7)};
 
-	System.out.println("computing \"Anzahl Tage bis zum ersten Skatspiel\"");
-	System.out.println("computing \"number of day to first game of \"Skat\"\"");
-	System.out.println("congruent values: " + MathUtilities.format(x));
-	System.out.println("modulo values:    " + MathUtilities.format(m));
-	System.out.println("solution:         " + AlgebraicAlgorithms.chineseRemainder(x,m));
-	System.out.println("is unique modulo: " + Operations.product.apply(vf.valueOf(m)));
+        System.out.println("computing \"Anzahl Tage bis zum ersten Skatspiel\"");
+        System.out.println("computing \"number of day to first game of \"Skat\"\"");
+        System.out.println("congruent values: " + MathUtilities.format(x));
+        System.out.println("modulo values:    " + MathUtilities.format(m));
+        System.out.println("solution:         " + AlgebraicAlgorithms.chineseRemainder(x,m));
+        System.out.println("is unique modulo: " + Operations.product.apply(vf.valueOf(m)));
     }
 } // CRTApplication

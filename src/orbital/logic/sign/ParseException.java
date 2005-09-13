@@ -41,39 +41,39 @@ public class ParseException extends Exception {
      */
     private int lineNumber = -1;
     public ParseException(String message, int errorOffset, int lineNumber, int columnNumber, Throwable cause) {
-	super(message, cause);
-	this.errorOffset = errorOffset;
-	this.lineNumber = lineNumber;
-	this.columnNumber = columnNumber;
+        super(message, cause);
+        this.errorOffset = errorOffset;
+        this.lineNumber = lineNumber;
+        this.columnNumber = columnNumber;
     }
     public ParseException(String message, int lineNumber, int columnNumber, Throwable cause) {
-	this(message, -1, lineNumber, columnNumber, cause);
+        this(message, -1, lineNumber, columnNumber, cause);
     }
     public ParseException(String message, int errorOffset, Throwable cause) {
-	this(message, errorOffset, -1, -1, cause);
+        this(message, errorOffset, -1, -1, cause);
     }
     public ParseException(String message, int errorOffset, int lineNumber, int columnNumber) {
-	this(message, errorOffset, lineNumber, columnNumber, null);
+        this(message, errorOffset, lineNumber, columnNumber, null);
     }
     public ParseException(String message, int lineNumber, int columnNumber) {
-	this(message, -1, lineNumber, columnNumber);
+        this(message, -1, lineNumber, columnNumber);
     }
     public ParseException(String message, int errorOffset) {
-	this(message, errorOffset, -1, -1);
+        this(message, errorOffset, -1, -1);
     }
-	
+        
     public String getMessage() {
-	return (getLineNumber() < 0 && getColumnNumber() < 0 ? "" : getLineNumber() + ":" + getColumnNumber())
-	    + (getErrorOffset() < 0 ? "" : "(@" + getErrorOffset() + ")")
-	    + ": " + super.getMessage();
+        return (getLineNumber() < 0 && getColumnNumber() < 0 ? "" : getLineNumber() + ":" + getColumnNumber())
+            + (getErrorOffset() < 0 ? "" : "(@" + getErrorOffset() + ")")
+            + ": " + super.getMessage();
     }
-	
+        
     /**
      * The line number of the end of the text where the exception occurred. 
      * @return An integer representing the line number, or -1 if none is available.
      */
     public int getLineNumber() {
-	return lineNumber;
+        return lineNumber;
     }
 
     /**
@@ -82,13 +82,13 @@ public class ParseException extends Exception {
      * @return An integer representing the column number, or -1 if none is available.
      */
     public int getColumnNumber() {
-	return columnNumber;
+        return columnNumber;
     }
 
     /**
      * Returns the position where the error was found.
      */
     public int getErrorOffset() {
-	return errorOffset;
+        return errorOffset;
     }
 }

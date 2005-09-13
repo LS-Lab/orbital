@@ -94,7 +94,7 @@ public class SymbolBase implements Symbol, Serializable {
     public SymbolBase(String signifier, Type type, NotationSpecification notation, boolean variable) {
         this.signifier = signifier;
         this.setType(type);
-	this.mysetNotation(notation);
+        this.mysetNotation(notation);
         this.variable = variable;
     }
 
@@ -126,17 +126,17 @@ public class SymbolBase implements Symbol, Serializable {
     }
     
     public boolean equals(Object o) {
-    	if (o instanceof Symbol) {
-	    Symbol b = (Symbol) o;
-	    if (Utility.equals(getSignifier(), b.getSignifier())
-		&& Utility.equals(getType(), b.getType())
-		&& Utility.equals(getNotation(), b.getNotation())) {
-		assert isVariable() == b.isVariable() : "same symbols " + this + " (" + (isVariable() ? "[var]" : "[const]") + ") and " + b  + " (" + (b.isVariable() ? "[var]" : "[const]") + ") are consistently either both variable or both constant.";
-		return true;
-	    } else
-		return false;
-    	}
-    	return false;
+        if (o instanceof Symbol) {
+            Symbol b = (Symbol) o;
+            if (Utility.equals(getSignifier(), b.getSignifier())
+                && Utility.equals(getType(), b.getType())
+                && Utility.equals(getNotation(), b.getNotation())) {
+                assert isVariable() == b.isVariable() : "same symbols " + this + " (" + (isVariable() ? "[var]" : "[const]") + ") and " + b  + " (" + (b.isVariable() ? "[var]" : "[const]") + ") are consistently either both variable or both constant.";
+                return true;
+            } else
+                return false;
+        }
+        return false;
     }
     
     /**
@@ -149,45 +149,45 @@ public class SymbolBase implements Symbol, Serializable {
      * @todo 29 optimize these hotspots compareTo(Object) and hashCode() during theorem proving. That signatures are based on TreeSets complicates this problem.
      */
     public int compareTo(Object o) {
-	Symbol b = (Symbol) o;
-	int a;
-	a = Utility.compare(getNotation(), b.getNotation());
-	if (a != 0)
-	    return a;
-	a = Utility.compare(getSignifier(), b.getSignifier());
-	return a != 0 ? a : orbital.moon.logic.sign.type.StandardTypeSystem.LEXICOGRAPHIC.compare(getType(), b.getType());
+        Symbol b = (Symbol) o;
+        int a;
+        a = Utility.compare(getNotation(), b.getNotation());
+        if (a != 0)
+            return a;
+        a = Utility.compare(getSignifier(), b.getSignifier());
+        return a != 0 ? a : orbital.moon.logic.sign.type.StandardTypeSystem.LEXICOGRAPHIC.compare(getType(), b.getType());
     } 
 
     public int hashCode() {
-    	return Utility.hashCode(getSignifier()) ^ Utility.hashCode(getType()) ^ Utility.hashCode(getNotation());
+        return Utility.hashCode(getSignifier()) ^ Utility.hashCode(getType()) ^ Utility.hashCode(getNotation());
     }
     
     // get/set properties
     public String getSignifier() {
-    	return signifier;
+        return signifier;
     }
     public void setSignifier(String signifier) {
-    	this.signifier = signifier;
+        this.signifier = signifier;
     }
     public Type getType() {
-    	return type;
+        return type;
     }
     public void setType(Type type) {
-    	if (type == null)
-	    throw new IllegalArgumentException("invalid type specification: " + type + " for " + getSignifier());
-    	this.type = type;
+        if (type == null)
+            throw new IllegalArgumentException("invalid type specification: " + type + " for " + getSignifier());
+        this.type = type;
     }
     public NotationSpecification getNotation() {
-    	return notation;
+        return notation;
     }
     private void mysetNotation(NotationSpecification notation) {
-	// check arity of notation again
-	try {
-	    assert notation == null || new NotationSpecification(notation.getPrecedence(), notation.getAssociativity(), notation.getNotation(), Types.arityOf(type.domain())).equals(notation);
-	}
-	catch (IllegalArgumentException ex) {
-	    throw (AssertionError) new AssertionError("illegal notation specification " + notation + " for symbol " + this).initCause(ex);
-	}
+        // check arity of notation again
+        try {
+            assert notation == null || new NotationSpecification(notation.getPrecedence(), notation.getAssociativity(), notation.getNotation(), Types.arityOf(type.domain())).equals(notation);
+        }
+        catch (IllegalArgumentException ex) {
+            throw (AssertionError) new AssertionError("illegal notation specification " + notation + " for symbol " + this).initCause(ex);
+        }
         this.notation = notation != null ? notation : new NotationSpecification(Types.arityOf(type.domain()));
     }
     public void setNotation(NotationSpecification notation) {
@@ -195,29 +195,29 @@ public class SymbolBase implements Symbol, Serializable {
     }
     
     public boolean isVariable() {
-	return variable;
+        return variable;
     }
     
     public String toString() {
-	if (Logger.global.isLoggable(Level.ALL)
-	    || getType().equals(Types.getDefault().TYPE()))
-	    //@internal equivalent to Types.toTypedString(this) but different: else infinite recursion
-	    return getSignifier() + ':' + getType()
-		+ (Logger.global.isLoggable(Level.ALL)
-		   ? (isVariable() ? "[var]" : "[const]")
-		   : ""
-		   );
-	//@todo now depend on System property
-	if (true)
-	    return getSignifier();
-	return toShortString();
+        if (Logger.global.isLoggable(Level.ALL)
+            || getType().equals(Types.getDefault().TYPE()))
+            //@internal equivalent to Types.toTypedString(this) but different: else infinite recursion
+            return getSignifier() + ':' + getType()
+                + (Logger.global.isLoggable(Level.ALL)
+                   ? (isVariable() ? "[var]" : "[const]")
+                   : ""
+                   );
+        //@todo now depend on System property
+        if (true)
+            return getSignifier();
+        return toShortString();
     }
 
     private String toShortString() {
-	Type type = getType();
-    	// short representation
-    	return type.equals(Types.TRUTH)
-	    ? getSignifier()
-	    : (getSignifier() + '/' + Types.arityOf(type.domain()));
+        Type type = getType();
+        // short representation
+        return type.equals(Types.TRUTH)
+            ? getSignifier()
+            : (getSignifier() + '/' + Types.arityOf(type.domain()));
     }
 }

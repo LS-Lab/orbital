@@ -38,64 +38,64 @@ public class IndexedClauseImpl extends ClauseImpl {
      * @internal transitively public constructors required for Functionals.map to produce Clauses.
      */
     public IndexedClauseImpl(Set/*_<Formula>_*/ literals) {
-	super(literals);
+        super(literals);
     }
     public IndexedClauseImpl() {}
 
     public Iterator/*_<Formula>_*/ getProbableUnifiables(Formula L) {
-	if (index == null) {
-	    // lazy initialization
-	    index = new ClausalIndex();
-	    index.add(this);
-	}
-	if (true) return index.getProbableUnifiableLiterals(L);
-	Collection i = Setops.asList(index.getProbableUnifiableLiterals(L));
-	System.err.println("  punifiables " + i + " of " + L + "\n    in " + this);
-	return i.iterator();
+        if (index == null) {
+            // lazy initialization
+            index = new ClausalIndex();
+            index.add(this);
+        }
+        if (true) return index.getProbableUnifiableLiterals(L);
+        Collection i = Setops.asList(index.getProbableUnifiableLiterals(L));
+        System.err.println("  punifiables " + i + " of " + L + "\n    in " + this);
+        return i.iterator();
     }
 
 
     // manage index in sync with the current data
 
     public boolean add(Object o) {
-	if (index == null) {
-	    return super.add(o);
-	}
-	//@todo 29 optimize implementation. We do not need to remove from index and add again, but only add (this,o) to the index. However this is noncritical, since due to lazy initialization these changes will usually only occur after the contents of this clause have stabilized.
-	//assert that after index.remove(this); index.isEmpty() : "index " + index + " is empty after removing its single clause " + this;
-	index.clear();
-	boolean changed = super.add(o);
-	index.add(this);
-	return changed;
+        if (index == null) {
+            return super.add(o);
+        }
+        //@todo 29 optimize implementation. We do not need to remove from index and add again, but only add (this,o) to the index. However this is noncritical, since due to lazy initialization these changes will usually only occur after the contents of this clause have stabilized.
+        //assert that after index.remove(this); index.isEmpty() : "index " + index + " is empty after removing its single clause " + this;
+        index.clear();
+        boolean changed = super.add(o);
+        index.add(this);
+        return changed;
     }
 
     public void clear() {
-	super.clear();
-	if (index != null) {
-	    index.clear();
-	}
+        super.clear();
+        if (index != null) {
+            index.clear();
+        }
     }
 
     public boolean remove(Object o) {
-	if (index == null) {
-	    return super.remove(o);
-	}
-	//assert that after index.remove(this); index.isEmpty() : "index " + index + " is empty after removing its single clause " + this;
-	index.clear();
-	boolean changed = super.remove(o);
-	index.add(this);
-	return changed;
+        if (index == null) {
+            return super.remove(o);
+        }
+        //assert that after index.remove(this); index.isEmpty() : "index " + index + " is empty after removing its single clause " + this;
+        index.clear();
+        boolean changed = super.remove(o);
+        index.add(this);
+        return changed;
     }
 
     public Iterator iterator() {
-	return new DelegateIterator(super.iterator()) {
-		private Object current = null;
-		public Object next() {
-		    return this.current = super.next();
-		}
-		public void remove() {
-		    throw new UnsupportedOperationException("operation currently not yet supported");
-		}
-	    };
+        return new DelegateIterator(super.iterator()) {
+                private Object current = null;
+                public Object next() {
+                    return this.current = super.next();
+                }
+                public void remove() {
+                    throw new UnsupportedOperationException("operation currently not yet supported");
+                }
+            };
     }
 }

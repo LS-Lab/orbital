@@ -38,12 +38,12 @@ import java.util.NoSuchElementException;
  *     <td>(V,+) is an Abelian group with the law of composition</td>
  *   </tr>
  *   <tr>
- *     <td>+:V×V&rarr;V; (<span class="vector">v</span>,<span class="vector">w</span>)&#8614;<span class="vector">v</span>+<span class="vector">w</span></td>
+ *     <td>+:VÃ—V&rarr;V; (<span class="vector">v</span>,<span class="vector">w</span>)&#8614;<span class="vector">v</span>+<span class="vector">w</span></td>
  *   </tr>
  *   <tr>
  *     <td>(2)</td>
- *     <td>&middot;:R×V&rarr;V; (&lambda;,<span class="vector">v</span>)&#8614;&lambda;&middot;<span class="vector">v</span>
- *       is a law of action (the scalar multiplication &middot; or sometimes ·)</td>
+ *     <td>&middot;:RÃ—V&rarr;V; (&lambda;,<span class="vector">v</span>)&#8614;&lambda;&middot;<span class="vector">v</span>
+ *       is a law of action (the scalar multiplication &middot; or sometimes Â·)</td>
  *   </tr>
  *   <tr>
  *     <td>&nbsp;(&quot;a&quot;)</td>
@@ -88,7 +88,7 @@ import java.util.NoSuchElementException;
  */
 public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     // get/set-methods
-	
+        
     /**
      * Returns the dimension of the vector.
      * The dimension is the number <code>n</code> of elements contained.
@@ -134,7 +134,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     Vector/*<R>*/ subVector(int i1, int i2);
 
     // norm
-	
+        
     /**
      * Returns the norm || ||<sub>p</sub> of this vector.
      * <p>This method implements p-norms, where<br>
@@ -150,7 +150,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * Adds two vectors returning a vector.
      * @preconditions dimension() == b.dimension()
      * @postconditions RES.dimension() == dimension()
-     *  	&& RES.get(i) == get(i) + b.get(i)
+     *          && RES.get(i) == get(i) + b.get(i)
      * @attribute associative
      * @attribute neutral (0)
      * @attribute inverse (-v)
@@ -162,7 +162,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * Subtracts two vectors returning a vector.
      * @preconditions dimension() == b.dimension()
      * @postconditions RES.dimension() == dimension()
-     *  	&& RES.get(i) == get(i) - b.get(i)
+     *          && RES.get(i) == get(i) - b.get(i)
      * @attribute associative
      */
     Vector/*<R>*/ subtract(Vector/*<R>*/ b);
@@ -210,12 +210,12 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * </p>
      * <p>
      * The standard scalar-product which will often be implemented, is<br />
-     * (<span class="vector">x</span>,<span class="vector">y</span>) &#8614; &lang;<span class="vector">x</span>,<span class="vector">y</span>&rang; = <span class="vector">x</span><sup>T</sup>·<span class="vector">y</span> = <big>&sum;</big><span class="doubleIndex"><sub>i=0</sub><sup>n-1</sup></span> x<sub>i</sub>&sdot;y<sub>i</sub>.
+     * (<span class="vector">x</span>,<span class="vector">y</span>) &#8614; &lang;<span class="vector">x</span>,<span class="vector">y</span>&rang; = <span class="vector">x</span><sup>T</sup>Â·<span class="vector">y</span> = <big>&sum;</big><span class="doubleIndex"><sub>i=0</sub><sup>n-1</sup></span> x<sub>i</sub>&sdot;y<sub>i</sub>.
      * It belongs to the euclidian 2-norm and is the inner product of vectors.
      * </p>
      * @preconditions dimension() == b.dimension()
      * @postconditions RES.dimension() == dimension()
-     *  	&& RES == &lang;this, b&rang;
+     *          && RES == &lang;this, b&rang;
      * @see Normed
      */
     Arithmetic/*>R<*/ multiply(Vector/*<R>*/ b);
@@ -224,7 +224,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * Multiplies a vector with a scalar returning a vector.
      * @preconditions true
      * @postconditions RES.dimension().equals(dimension())
-     *  	&& RES.get(i) == s&sdot;get(i)
+     *          && RES.get(i) == s&sdot;get(i)
      * @attribute associative
      * @attribute neutral
      * @return s&middot;<span class="vector">v</span>
@@ -262,7 +262,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     Vector/*<R>*/ cross(Vector/*<R>*/ b);
 
     // operations on vectors
-	
+        
     /**
      * Returns this vector transposed.
      * Also distinguished via vector.multiply(matrix) or matrix.multiply(vector) instead.
@@ -278,7 +278,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * @preconditions 0<=index && index<=dimension()
      * @return this.
      * @postconditions RES == this
-     *  	&& RES.dimension() == OLD(dimension()) + 1
+     *          && RES.dimension() == OLD(dimension()) + 1
      */
     Vector/*<R>*/ insert(int index, Arithmetic/*>R<*/ v);
  
@@ -287,7 +287,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * @preconditions 0<=index && index<=dimension()
      * @return this.
      * @postconditions RES == this
-     *  	&& RES.dimension() == OLD(dimension()) + <span class="vector">v</span>.dimension()
+     *          && RES.dimension() == OLD(dimension()) + <span class="vector">v</span>.dimension()
      */
     Vector/*<R>*/ insertAll(int index, Vector/*<R>*/ v);
 
@@ -295,7 +295,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * Append a value to this vector.
      * @return this.
      * @postconditions RES == this
-     *  	&& RES.dimension() == OLD(dimension()) + 1
+     *          && RES.dimension() == OLD(dimension()) + 1
      */
     Vector/*<R>*/ insert(Arithmetic/*>R<*/ v);
 
@@ -303,7 +303,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * Append all components of a vector to this vector.
      * @return this.
      * @postconditions RES == this
-     *  	&& RES.dimension() == OLD(dimension()) + <span class="vector">v</span>.dimension()
+     *          && RES.dimension() == OLD(dimension()) + <span class="vector">v</span>.dimension()
      */
     Vector/*<R>*/ insertAll(Vector/*<R>*/ v);
 
@@ -311,7 +311,7 @@ public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * Remove the component at an index from this vector.
      * @return this.
      * @postconditions RES == this
-     *  	&& RES.dimension() == OLD(dimension()) - 1
+     *          && RES.dimension() == OLD(dimension()) - 1
      */
     Vector/*<R>*/ remove(int index);
 

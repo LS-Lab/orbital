@@ -24,11 +24,11 @@ package orbital.logic.functor;
 public
 interface UnaryFunction extends Functor {
 
-	/**
-	 * Called to apply the UnaryFunction. <code>f(a)</code>.
-	 * 
-	 * @param arg generic Object as argument
-	 * @return returns a generic Object.
-	 */
-	Object apply(Object arg);
+        /**
+         * Called to apply the UnaryFunction. <code>f(a)</code>.
+         * 
+         * @param arg generic Object as argument
+         * @return returns a generic Object.
+         */
+        Object apply(Object arg);
 }

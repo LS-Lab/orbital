@@ -31,255 +31,255 @@ public class StreamMethodDemo {
     private static final int INTERMEDIATE_DELAY = 4000;
 
     public static void main(String arg[]) throws Exception {
-	// all sychronous connectors
-	logger.log(Level.INFO, "Show {0}", "synchronous connectors");
-	test_synchronous();
-	Thread.sleep(INTERMEDIATE_DELAY);
-	logger.log(Level.INFO, "Show {0}", "asynchronous connectors");
-	Thread.sleep(INTERMEDIATE_DELAY);
-	test_asynchronous();
-	Thread.sleep(INTERMEDIATE_DELAY);
-	logger.log(Level.INFO, "Show {0}", "synchronous connectors (half used)");
-	test_synchronousHalf();
+        // all sychronous connectors
+        logger.log(Level.INFO, "Show {0}", "synchronous connectors");
+        test_synchronous();
+        Thread.sleep(INTERMEDIATE_DELAY);
+        logger.log(Level.INFO, "Show {0}", "asynchronous connectors");
+        Thread.sleep(INTERMEDIATE_DELAY);
+        test_asynchronous();
+        Thread.sleep(INTERMEDIATE_DELAY);
+        logger.log(Level.INFO, "Show {0}", "synchronous connectors (half used)");
+        test_synchronousHalf();
     } 
 
     private static void test_synchronous() throws InterruptedException {
-	logger.log(Level.INFO, "synchronous connector {0}", "IDIU - instant delivery instant use");
-	StreamMethod m = new StreamMethod(true) {
-		public void runStream() {
-		    resumedReturn("1");
-		    resumedReturn("2");
-		    resumedReturn("3");
-		} 
-	    };
-	Iterator i = m.apply();
-	while (i.hasNext())
-	    System.out.println(i.next());
+        logger.log(Level.INFO, "synchronous connector {0}", "IDIU - instant delivery instant use");
+        StreamMethod m = new StreamMethod(true) {
+                public void runStream() {
+                    resumedReturn("1");
+                    resumedReturn("2");
+                    resumedReturn("3");
+                } 
+            };
+        Iterator i = m.apply();
+        while (i.hasNext())
+            System.out.println(i.next());
 
-	Thread.sleep(INTERMEDIATE_DELAY);
-	logger.log(Level.INFO, "synchronous connector {0}", "IDDU - instant delivery delayed use");
-	m = new StreamMethod(true) {
-		public void runStream() {
-		    resumedReturn("1");
-		    resumedReturn("2");
-		    resumedReturn("3");
-		} 
-	    };
-	i = m.apply();
-	Thread.sleep(USE_DELAY);
-	while (i.hasNext())
-	    System.out.println(i.next());
+        Thread.sleep(INTERMEDIATE_DELAY);
+        logger.log(Level.INFO, "synchronous connector {0}", "IDDU - instant delivery delayed use");
+        m = new StreamMethod(true) {
+                public void runStream() {
+                    resumedReturn("1");
+                    resumedReturn("2");
+                    resumedReturn("3");
+                } 
+            };
+        i = m.apply();
+        Thread.sleep(USE_DELAY);
+        while (i.hasNext())
+            System.out.println(i.next());
 
-	Thread.sleep(INTERMEDIATE_DELAY);
-	logger.log(Level.INFO, "synchronous connector {0}", "DDIU - delayed delivery instant use");
-	m = new StreamMethod(true) {
-		public void runStream() {
-		    try {
-			Thread.sleep(DELIVERY_DELAY);
-		    } catch (InterruptedException x) {}
-		    resumedReturn("1");
-		    try {
-			Thread.sleep(DELIVERY_DELAY);
-		    } catch (InterruptedException x) {}
-		    resumedReturn("2");
-		    try {
-			Thread.sleep(DELIVERY_DELAY);
-		    } catch (InterruptedException x) {}
-		    resumedReturn("3");
-		    try {
-			Thread.sleep(DELIVERY_DELAY);
-		    } catch (InterruptedException x) {}
-		} 
-	    };
-	i = m.apply();
-	while (i.hasNext())
-	    System.out.println(i.next());
+        Thread.sleep(INTERMEDIATE_DELAY);
+        logger.log(Level.INFO, "synchronous connector {0}", "DDIU - delayed delivery instant use");
+        m = new StreamMethod(true) {
+                public void runStream() {
+                    try {
+                        Thread.sleep(DELIVERY_DELAY);
+                    } catch (InterruptedException x) {}
+                    resumedReturn("1");
+                    try {
+                        Thread.sleep(DELIVERY_DELAY);
+                    } catch (InterruptedException x) {}
+                    resumedReturn("2");
+                    try {
+                        Thread.sleep(DELIVERY_DELAY);
+                    } catch (InterruptedException x) {}
+                    resumedReturn("3");
+                    try {
+                        Thread.sleep(DELIVERY_DELAY);
+                    } catch (InterruptedException x) {}
+                } 
+            };
+        i = m.apply();
+        while (i.hasNext())
+            System.out.println(i.next());
 
-	Thread.sleep(INTERMEDIATE_DELAY);
-	logger.log(Level.INFO, "synchronous connector {0}", "DDDU - delayed delivery delayed use");
-	m = new StreamMethod(true) {
-		public void runStream() {
-		    try {
-			Thread.sleep(DELIVERY_DELAY);
-		    } catch (InterruptedException x) {}
-		    resumedReturn("1");
-		    try {
-			Thread.sleep(DELIVERY_DELAY);
-		    } catch (InterruptedException x) {}
-		    resumedReturn("2");
-		    try {
-			Thread.sleep(DELIVERY_DELAY);
-		    } catch (InterruptedException x) {}
-		    resumedReturn("3");
-		    try {
-			Thread.sleep(DELIVERY_DELAY);
-		    } catch (InterruptedException x) {}
-		} 
-	    };
-	i = m.apply();
-	Thread.sleep(USE_DELAY);
-	while (i.hasNext())
-	    System.out.println(i.next());
+        Thread.sleep(INTERMEDIATE_DELAY);
+        logger.log(Level.INFO, "synchronous connector {0}", "DDDU - delayed delivery delayed use");
+        m = new StreamMethod(true) {
+                public void runStream() {
+                    try {
+                        Thread.sleep(DELIVERY_DELAY);
+                    } catch (InterruptedException x) {}
+                    resumedReturn("1");
+                    try {
+                        Thread.sleep(DELIVERY_DELAY);
+                    } catch (InterruptedException x) {}
+                    resumedReturn("2");
+                    try {
+                        Thread.sleep(DELIVERY_DELAY);
+                    } catch (InterruptedException x) {}
+                    resumedReturn("3");
+                    try {
+                        Thread.sleep(DELIVERY_DELAY);
+                    } catch (InterruptedException x) {}
+                } 
+            };
+        i = m.apply();
+        Thread.sleep(USE_DELAY);
+        while (i.hasNext())
+            System.out.println(i.next());
     } 
 
     private static void test_asynchronous() throws InterruptedException {
 
-	// all asychronous connectors
-	logger.log(Level.INFO, "asynchronous connector {0}", "IDIU - instant delivery instant use");
-	StreamMethod m = new StreamMethod(false) {
-		public void runStream() {
-		    resumedReturn("1");
-		    resumedReturn("2");
-		    resumedReturn("3");
-		} 
-	    };
-	Iterator i = m.apply();
-	while (i.hasNext())
-	    System.out.println(i.next());
+        // all asychronous connectors
+        logger.log(Level.INFO, "asynchronous connector {0}", "IDIU - instant delivery instant use");
+        StreamMethod m = new StreamMethod(false) {
+                public void runStream() {
+                    resumedReturn("1");
+                    resumedReturn("2");
+                    resumedReturn("3");
+                } 
+            };
+        Iterator i = m.apply();
+        while (i.hasNext())
+            System.out.println(i.next());
 
-	Thread.sleep(INTERMEDIATE_DELAY);
-	logger.log(Level.INFO, "asynchronous connector {0}", "IDDU - instant delivery delayed use");
-	m = new StreamMethod(false) {
-		public void runStream() {
-		    resumedReturn("1");
-		    resumedReturn("2");
-		    resumedReturn("3");
-		} 
-	    };
-	i = m.apply();
-	Thread.sleep(USE_DELAY);
-	while (i.hasNext())
-	    System.out.println(i.next());
+        Thread.sleep(INTERMEDIATE_DELAY);
+        logger.log(Level.INFO, "asynchronous connector {0}", "IDDU - instant delivery delayed use");
+        m = new StreamMethod(false) {
+                public void runStream() {
+                    resumedReturn("1");
+                    resumedReturn("2");
+                    resumedReturn("3");
+                } 
+            };
+        i = m.apply();
+        Thread.sleep(USE_DELAY);
+        while (i.hasNext())
+            System.out.println(i.next());
 
-	Thread.sleep(INTERMEDIATE_DELAY);
-	logger.log(Level.INFO, "asynchronous connector {0}", "DDIU - delayed delivery instant use");
-	m = new StreamMethod(false) {
-		public void runStream() {
-		    try {
-			Thread.sleep(DELIVERY_DELAY);
-		    } catch (InterruptedException x) {}
-		    resumedReturn("1");
-		    try {
-			Thread.sleep(DELIVERY_DELAY);
-		    } catch (InterruptedException x) {}
-		    resumedReturn("2");
-		    try {
-			Thread.sleep(DELIVERY_DELAY);
-		    } catch (InterruptedException x) {}
-		    resumedReturn("3");
-		    try {
-			Thread.sleep(DELIVERY_DELAY);
-		    } catch (InterruptedException x) {}
-		} 
-	    };
-	i = m.apply();
-	while (i.hasNext())
-	    System.out.println(i.next());
+        Thread.sleep(INTERMEDIATE_DELAY);
+        logger.log(Level.INFO, "asynchronous connector {0}", "DDIU - delayed delivery instant use");
+        m = new StreamMethod(false) {
+                public void runStream() {
+                    try {
+                        Thread.sleep(DELIVERY_DELAY);
+                    } catch (InterruptedException x) {}
+                    resumedReturn("1");
+                    try {
+                        Thread.sleep(DELIVERY_DELAY);
+                    } catch (InterruptedException x) {}
+                    resumedReturn("2");
+                    try {
+                        Thread.sleep(DELIVERY_DELAY);
+                    } catch (InterruptedException x) {}
+                    resumedReturn("3");
+                    try {
+                        Thread.sleep(DELIVERY_DELAY);
+                    } catch (InterruptedException x) {}
+                } 
+            };
+        i = m.apply();
+        while (i.hasNext())
+            System.out.println(i.next());
 
-	Thread.sleep(INTERMEDIATE_DELAY);
-	logger.log(Level.INFO, "asynchronous connector {0}", "DDDU - delayed delivery delayed use");
-	m = new StreamMethod(false) {
-		public void runStream() {
-		    try {
-			Thread.sleep(DELIVERY_DELAY);
-		    } catch (InterruptedException x) {}
-		    resumedReturn("1");
-		    try {
-			Thread.sleep(DELIVERY_DELAY);
-		    } catch (InterruptedException x) {}
-		    resumedReturn("2");
-		    try {
-			Thread.sleep(DELIVERY_DELAY);
-		    } catch (InterruptedException x) {}
-		    resumedReturn("3");
-		    try {
-			Thread.sleep(DELIVERY_DELAY);
-		    } catch (InterruptedException x) {}
-		} 
-	    };
-	i = m.apply();
-	Thread.sleep(USE_DELAY);
-	while (i.hasNext())
-	    System.out.println(i.next());
+        Thread.sleep(INTERMEDIATE_DELAY);
+        logger.log(Level.INFO, "asynchronous connector {0}", "DDDU - delayed delivery delayed use");
+        m = new StreamMethod(false) {
+                public void runStream() {
+                    try {
+                        Thread.sleep(DELIVERY_DELAY);
+                    } catch (InterruptedException x) {}
+                    resumedReturn("1");
+                    try {
+                        Thread.sleep(DELIVERY_DELAY);
+                    } catch (InterruptedException x) {}
+                    resumedReturn("2");
+                    try {
+                        Thread.sleep(DELIVERY_DELAY);
+                    } catch (InterruptedException x) {}
+                    resumedReturn("3");
+                    try {
+                        Thread.sleep(DELIVERY_DELAY);
+                    } catch (InterruptedException x) {}
+                } 
+            };
+        i = m.apply();
+        Thread.sleep(USE_DELAY);
+        while (i.hasNext())
+            System.out.println(i.next());
     } 
 
     private static void test_synchronousHalf() throws InterruptedException {
-	final int useLength = 2;
-	logger.log(Level.INFO, "synchronous connector {0}", "IDIU - instant delivery instant use");
-	StreamMethod m = new StreamMethod(true) {
-		public void runStream() {
-		    resumedReturn("1");
-		    resumedReturn("2");
-		    resumedReturn("3");
-		} 
-	    };
-	Iterator i = m.apply();
-	for (int j = 0; j < useLength && i.hasNext(); j++)
-	    System.out.println(i.next());
+        final int useLength = 2;
+        logger.log(Level.INFO, "synchronous connector {0}", "IDIU - instant delivery instant use");
+        StreamMethod m = new StreamMethod(true) {
+                public void runStream() {
+                    resumedReturn("1");
+                    resumedReturn("2");
+                    resumedReturn("3");
+                } 
+            };
+        Iterator i = m.apply();
+        for (int j = 0; j < useLength && i.hasNext(); j++)
+            System.out.println(i.next());
 
-	Thread.sleep(INTERMEDIATE_DELAY);
-	logger.log(Level.INFO, "synchronous connector {0}", "IDDU - instant delivery delayed use");
-	m = new StreamMethod(true) {
-		public void runStream() {
-		    resumedReturn("1");
-		    resumedReturn("2");
-		    resumedReturn("3");
-		} 
-	    };
-	i = m.apply();
-	Thread.sleep(USE_DELAY);
-	for (int j = 0; j < useLength && i.hasNext(); j++)
-	    System.out.println(i.next());
+        Thread.sleep(INTERMEDIATE_DELAY);
+        logger.log(Level.INFO, "synchronous connector {0}", "IDDU - instant delivery delayed use");
+        m = new StreamMethod(true) {
+                public void runStream() {
+                    resumedReturn("1");
+                    resumedReturn("2");
+                    resumedReturn("3");
+                } 
+            };
+        i = m.apply();
+        Thread.sleep(USE_DELAY);
+        for (int j = 0; j < useLength && i.hasNext(); j++)
+            System.out.println(i.next());
 
-	Thread.sleep(INTERMEDIATE_DELAY);
-	logger.log(Level.INFO, "synchronous connector {0}", "DDIU - delayed delivery instant use");
-	m = new StreamMethod(true) {
-		public void runStream() {
-		    try {
-			Thread.sleep(DELIVERY_DELAY);
-		    } catch (InterruptedException x) {}
-		    resumedReturn("1");
-		    try {
-			Thread.sleep(DELIVERY_DELAY);
-		    } catch (InterruptedException x) {}
-		    resumedReturn("2");
-		    try {
-			Thread.sleep(DELIVERY_DELAY);
-		    } catch (InterruptedException x) {}
-		    resumedReturn("3");
-		    try {
-			Thread.sleep(DELIVERY_DELAY);
-		    } catch (InterruptedException x) {}
-		} 
-	    };
-	i = m.apply();
-	for (int j = 0; j < useLength && i.hasNext(); j++)
-	    System.out.println(i.next());
+        Thread.sleep(INTERMEDIATE_DELAY);
+        logger.log(Level.INFO, "synchronous connector {0}", "DDIU - delayed delivery instant use");
+        m = new StreamMethod(true) {
+                public void runStream() {
+                    try {
+                        Thread.sleep(DELIVERY_DELAY);
+                    } catch (InterruptedException x) {}
+                    resumedReturn("1");
+                    try {
+                        Thread.sleep(DELIVERY_DELAY);
+                    } catch (InterruptedException x) {}
+                    resumedReturn("2");
+                    try {
+                        Thread.sleep(DELIVERY_DELAY);
+                    } catch (InterruptedException x) {}
+                    resumedReturn("3");
+                    try {
+                        Thread.sleep(DELIVERY_DELAY);
+                    } catch (InterruptedException x) {}
+                } 
+            };
+        i = m.apply();
+        for (int j = 0; j < useLength && i.hasNext(); j++)
+            System.out.println(i.next());
 
-	Thread.sleep(INTERMEDIATE_DELAY);
-	logger.log(Level.INFO, "synchronous connector {0}", "DDDU - delayed delivery delayed use");
-	m = new StreamMethod(true) {
-		public void runStream() {
-		    try {
-			Thread.sleep(DELIVERY_DELAY);
-		    } catch (InterruptedException x) {}
-		    resumedReturn("1");
-		    try {
-			Thread.sleep(DELIVERY_DELAY);
-		    } catch (InterruptedException x) {}
-		    resumedReturn("2");
-		    try {
-			Thread.sleep(DELIVERY_DELAY);
-		    } catch (InterruptedException x) {}
-		    resumedReturn("3");
-		    try {
-			Thread.sleep(DELIVERY_DELAY);
-		    } catch (InterruptedException x) {}
-		} 
-	    };
-	i = m.apply();
-	Thread.sleep(USE_DELAY);
-	for (int j = 0; j < useLength && i.hasNext(); j++)
-	    System.out.println(i.next());
+        Thread.sleep(INTERMEDIATE_DELAY);
+        logger.log(Level.INFO, "synchronous connector {0}", "DDDU - delayed delivery delayed use");
+        m = new StreamMethod(true) {
+                public void runStream() {
+                    try {
+                        Thread.sleep(DELIVERY_DELAY);
+                    } catch (InterruptedException x) {}
+                    resumedReturn("1");
+                    try {
+                        Thread.sleep(DELIVERY_DELAY);
+                    } catch (InterruptedException x) {}
+                    resumedReturn("2");
+                    try {
+                        Thread.sleep(DELIVERY_DELAY);
+                    } catch (InterruptedException x) {}
+                    resumedReturn("3");
+                    try {
+                        Thread.sleep(DELIVERY_DELAY);
+                    } catch (InterruptedException x) {}
+                } 
+            };
+        i = m.apply();
+        Thread.sleep(USE_DELAY);
+        for (int j = 0; j < useLength && i.hasNext(); j++)
+            System.out.println(i.next());
     } 
 }

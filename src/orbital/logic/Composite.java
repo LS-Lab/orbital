@@ -41,9 +41,9 @@ public interface Composite/*<Compositor,Component>*/ {
      *  Multi-dimensional component arrays and alike are permitted, as well.
      */
     Object/*>Component<*/ getComponent();
-		
+                
     // factory-methods
-	
+        
     /**
      * Construct a new composition with the given parameters, of the same type like this.
      * @param compositor the outer compositor f that operates on the results of the inner component.
@@ -65,7 +65,7 @@ public interface Composite/*<Compositor,Component>*/ {
     Composite construct(Object/*>Compositor<*/ compositor, Object/*>Component<*/ component) throws IllegalArgumentException, ClassCastException;
 
     // Set properties
-	
+        
     /**
      * Set the outer compositor.
      * @param compositor the outer compositor f that operates on the results of the inner component.

@@ -44,92 +44,92 @@ public interface Selection {
      */
     public static final class Selecting {
 
-	/**
-	 * selects the sum of all weights that are not Double.NaN.
-	 * @todo optimize since hotspot
-	 */
-	public static final Selection sum() {
-	    return new SelectionImpl() {
-		    public int select(List weights) {
-			weight = 0;
-			int	   selected = -1;
-			double bw = Double.NEGATIVE_INFINITY;
-			for (ListIterator i = weights.listIterator(); i.hasNext(); ) {
-			    double w = ((Number) i.next()).doubleValue();
-			    if (Double.isNaN(w))
-				continue;
-			    weight += w;
-			    if (w >= bw) {
-				selected = i.previousIndex();
-				bw = w;
-			    } 
-			} 
-			if (selected < 0)
-			    weight = Double.NaN;
-			return selected;
-		    } 
-		};
-	} 
+        /**
+         * selects the sum of all weights that are not Double.NaN.
+         * @todo optimize since hotspot
+         */
+        public static final Selection sum() {
+            return new SelectionImpl() {
+                    public int select(List weights) {
+                        weight = 0;
+                        int        selected = -1;
+                        double bw = Double.NEGATIVE_INFINITY;
+                        for (ListIterator i = weights.listIterator(); i.hasNext(); ) {
+                            double w = ((Number) i.next()).doubleValue();
+                            if (Double.isNaN(w))
+                                continue;
+                            weight += w;
+                            if (w >= bw) {
+                                selected = i.previousIndex();
+                                bw = w;
+                            } 
+                        } 
+                        if (selected < 0)
+                            weight = Double.NaN;
+                        return selected;
+                    } 
+                };
+        } 
 
-	/**
-	 * selects the minimum of all weights that are not Double.NaN.
-	 * @see orbital.util.Setops#argmin(Iterator,Function)
-	 */
-	public static final Selection min() {
-	    return new SelectionImpl() {
+        /**
+         * selects the minimum of all weights that are not Double.NaN.
+         * @see orbital.util.Setops#argmin(Iterator,Function)
+         */
+        public static final Selection min() {
+            return new SelectionImpl() {
 
-		    /**
-		     * returns index of last selected minimum weight.
-		     */
-		    public int select(List weights) {
-			int selected = -1;
-			weight = Double.POSITIVE_INFINITY;
-			for (ListIterator i = weights.listIterator(); i.hasNext(); ) {
-			    double w = ((Number) i.next()).doubleValue();
-			    if (w <= weight) {
-				selected = i.previousIndex();
-				weight = w;
-			    } 
-			} 
-			if (selected < 0)
-			    weight = Double.NaN;
-			return selected;
-		    } 
-		};
-	} 
+                    /**
+                     * returns index of last selected minimum weight.
+                     */
+                    public int select(List weights) {
+                        int selected = -1;
+                        weight = Double.POSITIVE_INFINITY;
+                        for (ListIterator i = weights.listIterator(); i.hasNext(); ) {
+                            double w = ((Number) i.next()).doubleValue();
+                            if (w <= weight) {
+                                selected = i.previousIndex();
+                                weight = w;
+                            } 
+                        } 
+                        if (selected < 0)
+                            weight = Double.NaN;
+                        return selected;
+                    } 
+                };
+        } 
 
-	/**
-	 * selects the maximum of all weights that are not Double.NaN.
-	 */
-	public static final Selection max() {
-	    return new SelectionImpl() {
+        /**
+         * selects the maximum of all weights that are not Double.NaN.
+         */
+        public static final Selection max() {
+            return new SelectionImpl() {
 
-		    /**
-		     * returns index of last selected maximum weight.
-		     */
-		    public int select(List weights) {
-			int selected = -1;
-			weight = Double.NEGATIVE_INFINITY;
-			for (ListIterator i = weights.listIterator(); i.hasNext(); ) {
-			    double w = ((Number) i.next()).doubleValue();
-			    if (w >= weight) {
-				selected = i.previousIndex();
-				weight = w;
-			    } 
-			} 
-			if (selected < 0)
-			    weight = Double.NaN;
-			return selected;
-		    } 
-		};
-	} 
+                    /**
+                     * returns index of last selected maximum weight.
+                     */
+                    public int select(List weights) {
+                        int selected = -1;
+                        weight = Double.NEGATIVE_INFINITY;
+                        for (ListIterator i = weights.listIterator(); i.hasNext(); ) {
+                            double w = ((Number) i.next()).doubleValue();
+                            if (w >= weight) {
+                                selected = i.previousIndex();
+                                weight = w;
+                            } 
+                        } 
+                        if (selected < 0)
+                            weight = Double.NaN;
+                        return selected;
+                    } 
+                };
+        } 
 
-	/**
-	 * @see #max()
-	 */
-	public static final Selection best() {
-	    return max();
-	} 
+        /**
+         * @see #max()
+         */
+        public static final Selection best() {
+            return max();
+        } 
     }
 }
 
@@ -147,6 +147,6 @@ abstract class SelectionImpl implements Selection {
      * returns selected weight.
      */
     public Object/*>Number<*/ getWeight() {
-	return new Double(weight);
+        return new Double(weight);
     } 
 }

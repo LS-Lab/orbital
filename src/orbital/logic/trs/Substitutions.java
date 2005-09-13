@@ -53,7 +53,7 @@ import orbital.util.Utility;
  * <span class="Orbital">Substitution</span> &sigma; <span class="operator">=</span> ...;
  * <span class="comment">// for example, use explicit &sigma; = [x*e&rarr;x]</span>
  * &sigma; <span class="operator">=</span> <span class="Orbital">Substitutions</span>.getInstance(<span class="Class">Arrays</span>.asList(<span class="keyword">new</span> <span class="Class">Object</span><span class="operator">[]</span> {
- *	<span class="Orbital">Substitutions</span>.createExactMatcher(<span class="Orbital">Operations</span>.times.apply(<span class="Orbital">Values</span>.symbol(<span class="String">"x"</span>), <span class="Orbital">Values</span>.symbol(<span class="String">"e"</span>)), <span class="Orbital">Functions</span>.constant(<span class="Orbital">Values</span>.symbol(<span class="String">"x"</span>)))
+ *      <span class="Orbital">Substitutions</span>.createExactMatcher(<span class="Orbital">Operations</span>.times.apply(<span class="Orbital">Values</span>.symbol(<span class="String">"x"</span>), <span class="Orbital">Values</span>.symbol(<span class="String">"e"</span>)), <span class="Orbital">Functions</span>.constant(<span class="Orbital">Values</span>.symbol(<span class="String">"x"</span>)))
  * }));
  * <span class="comment">// run the Term Rewrite System with <var>argument</var> as input, upon termination</span>
  * <span class="Class">Object</span> result <span class="operator">=</span> <span class="Orbital">Functionals</span>.fixedPoint(&sigma;, <var>argument</var>);
@@ -65,7 +65,7 @@ import orbital.util.Utility;
  * <span class="Orbital">MathExpressionSyntax</span> syntax = <span class="keyword">new</span> <span class="Orbital">MathExpressionSyntax</span>();
  * <span class="comment">// for example, use parsed &sigma; = [x*e&rarr;x]</span>
  * &sigma; <span class="operator">=</span> <span class="Orbital">Substitutions</span>.getInstance(<span class="Class">Arrays</span>.asList(<span class="keyword">new</span> <span class="Class">Object</span><span class="operator">[]</span> {
- *	<span class="Orbital">Substitutions</span>.createExactMatcher(syntax.createMathExpression(<span class="String">"x*e"</span>), <span class="Orbital">Functions</span>.constant(<span class="Orbital">Values</span>.symbol(<span class="String">"x"</span>)))
+ *      <span class="Orbital">Substitutions</span>.createExactMatcher(syntax.createMathExpression(<span class="String">"x*e"</span>), <span class="Orbital">Functions</span>.constant(<span class="Orbital">Values</span>.symbol(<span class="String">"x"</span>)))
  * }));
  * <span class="comment">// run the Term Rewrite System with <var>argument</var> as input, upon termination</span>
  * <span class="Class">Object</span> result <span class="operator">=</span> <span class="Orbital">Functionals</span>.fixedPoint(&sigma;, <var>argument</var>);
@@ -100,13 +100,13 @@ public class Substitutions {
      * </p>
      */
     public static final Substitution id = new Substitution() {
-	    public Collection/*_<Matcher>_*/ getReplacements() {
-		return Collections.EMPTY_SET;
-	    }
-	    public Object apply(Object a) {
-		return a;
-	    }
-	};
+            public Collection/*_<Matcher>_*/ getReplacements() {
+                return Collections.EMPTY_SET;
+            }
+            public Object apply(Object a) {
+                return a;
+            }
+        };
 
     /**
      * The absurd substitution for nonunifiable objects.
@@ -115,7 +115,7 @@ public class Substitutions {
 
 
     // facade factory
-	
+        
     /**
      * Create a new substitution.
      * @see #getInstance(Collection,boolean)
@@ -143,42 +143,42 @@ public class Substitutions {
      * @todo add parameter "boolean alphaConversion" which says whether or not to rename bound variables automatically, in case they would otherwise lead to a clash/collision.
      */
     public static final Substitution getInstance(Collection/*_<Matcher>_*/ replacements, boolean typeSafe) {
-	if (typeSafe)
-	    for (Iterator i = replacements.iterator(); i.hasNext(); ) {
-		Matcher m = (Matcher) i.next();
-		if (m instanceof SubstitutionImpl.MatcherImpl) {
-		    Object p = m.pattern();
-		    Object s = ((SubstitutionImpl.MatcherImpl)m).substitute();
-		    if (p instanceof Typed && s instanceof Typed) {
-			Type pType = ((Typed)p).getType();
-			Type sType = ((Typed)s).getType();
-			if (!sType.subtypeOf(pType))
-			    throw new TypeException("substitution " + replacements + " with matcher " + m + " not type-safe, since replacement of " + Types.toTypedString((Typed)p) + " by " + Types.toTypedString((Typed)s) + " produces incompatible types", pType, sType);
-		    }
-		} else
-		    // cannot check
-		    ;
-	    }
-			
-    	assert validateDistinctPatterns(replacements) : "multiple elementary replacements with the same pattern do not form a true substitution: " + replacements;
+        if (typeSafe)
+            for (Iterator i = replacements.iterator(); i.hasNext(); ) {
+                Matcher m = (Matcher) i.next();
+                if (m instanceof SubstitutionImpl.MatcherImpl) {
+                    Object p = m.pattern();
+                    Object s = ((SubstitutionImpl.MatcherImpl)m).substitute();
+                    if (p instanceof Typed && s instanceof Typed) {
+                        Type pType = ((Typed)p).getType();
+                        Type sType = ((Typed)s).getType();
+                        if (!sType.subtypeOf(pType))
+                            throw new TypeException("substitution " + replacements + " with matcher " + m + " not type-safe, since replacement of " + Types.toTypedString((Typed)p) + " by " + Types.toTypedString((Typed)s) + " produces incompatible types", pType, sType);
+                    }
+                } else
+                    // cannot check
+                    ;
+            }
+                        
+        assert validateDistinctPatterns(replacements) : "multiple elementary replacements with the same pattern do not form a true substitution: " + replacements;
         return new SubstitutionImpl(replacements);
     }
     // assert precondition of Substitutions.newInstance()
     private static final boolean validateDistinctPatterns(Collection/*_<Matcher>_*/ replacements) {
-	final List/*_<Matcher>_*/ r = (replacements instanceof List)
-	    ? (List) replacements
-	    : new LinkedList(replacements);
-	// compare each with all subsequent ones (round-robin)
-	for (ListIterator i = r.listIterator(); i.hasNext(); ) {
-	    final Object pattern = ((Matcher/*__*/) i.next()).pattern();
-	    for (ListIterator j = r.listIterator(i.nextIndex()); j.hasNext(); )
-		// compare any distinct two
-		if (pattern.equals(((Matcher/*__*/) j.next()).pattern()))
-		    return false;
-	}
-	return true;
+        final List/*_<Matcher>_*/ r = (replacements instanceof List)
+            ? (List) replacements
+            : new LinkedList(replacements);
+        // compare each with all subsequent ones (round-robin)
+        for (ListIterator i = r.listIterator(); i.hasNext(); ) {
+            final Object pattern = ((Matcher/*__*/) i.next()).pattern();
+            for (ListIterator j = r.listIterator(i.nextIndex()); j.hasNext(); )
+                // compare any distinct two
+                if (pattern.equals(((Matcher/*__*/) j.next()).pattern()))
+                    return false;
+        }
+        return true;
     }
-	
+        
 
     /**
      * Create a new exact matcher that performs substitution.
@@ -191,7 +191,7 @@ public class Substitutions {
      * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      */
     public static final Matcher createExactMatcher(Object pattern, Object substitute) {
-    	return new SubstitutionImpl.MatcherImpl(pattern, substitute);
+        return new SubstitutionImpl.MatcherImpl(pattern, substitute);
     }
     /**
      * Create a new exact matcher that does not perform substitution.
@@ -202,7 +202,7 @@ public class Substitutions {
      * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      */
     public static final Matcher createExactMatcher(Object pattern) {
-    	return new SubstitutionImpl.MatcherImpl(pattern);
+        return new SubstitutionImpl.MatcherImpl(pattern);
     }
 
     /**
@@ -229,7 +229,7 @@ public class Substitutions {
      * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      */
     public static final Matcher createSingleSidedMatcher(Object pattern, Object substitute) {
-    	return new SubstitutionImpl.UnifyingMatcher(pattern, substitute);
+        return new SubstitutionImpl.UnifyingMatcher(pattern, substitute);
     }
     /**
      * Create a new single sided matcher with unification that does not perform substitution.
@@ -238,11 +238,11 @@ public class Substitutions {
      * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      */
     public static final Matcher createSingleSidedMatcher(Object pattern) {
-    	return new SubstitutionImpl.UnifyingMatcher(pattern);
+        return new SubstitutionImpl.UnifyingMatcher(pattern);
     }
 
     // Substitution operations
-	
+        
     /**
      * compose two substitutions &sigma; &#8728; &tau;.
      * <p>
@@ -255,47 +255,47 @@ public class Substitutions {
      * @todo test write a test driver that asserts that Substitutions.compose equals Functional.compose
      */
     public static final Substitution compose(Substitution sigma, Substitution tau) {
-	assert sigma != null : "we should never attempt to compose " + sigma + " with " + tau;
-	assert tau != null : "we should never attempt to compose " + sigma + " with " + tau;
-	Collection/*_<Matcher>_*/ r = new ArrayList/*_<Matcher>_*/(tau.getReplacements().size() + sigma.getReplacements().size());
-	// the list of patterns that tau searches for (and could thus must be ignored in sigma)
-	Set/*_<Object>_*/ tauPatterns = new HashSet/*_<Object>_*/(tau.getReplacements().size() << 1);
-	// apply sigma to substitutes of tau
-	for (Iterator/*_<Matcher>_*/ i = tau.getReplacements().iterator(); i.hasNext(); ) {
-	    Object o = i.next();
-	    if (o.getClass() != SubstitutionImpl.MatcherImpl.class)
-		throw new UnsupportedOperationException("currently, only exact matchers are supported");
-	    SubstitutionImpl.MatcherImpl s = (SubstitutionImpl.MatcherImpl/*__*/) o;
-	    //@todo is there any generic way, too, not relying on MatcherImpl? Perhaps clone and/or set... but with modified substitue, oh my...
-	    r.add(createExactMatcher(s.pattern(), sigma.apply(s.substitute())));
-	    tauPatterns.add(s.pattern());
-	}
-	// union with those replacements in sigma that do not have a pattern that tau already replaced
-	for (Iterator/*_<Matcher>_*/ i = sigma.getReplacements().iterator(); i.hasNext(); ) {
-	    Matcher s = (Matcher/*__*/) i.next();
-	    if (tauPatterns.contains(s.pattern()))
-		continue;
-	    else
-		r.add(s);
-	}
-	Substitution sigma_tau = getInstance(r);
-	assert null != (sigma_tau = new ResultCheckingSubstition(sigma, tau, r)) : "if we use assertions than also assert the results of the composition returned";
-	return sigma_tau;
+        assert sigma != null : "we should never attempt to compose " + sigma + " with " + tau;
+        assert tau != null : "we should never attempt to compose " + sigma + " with " + tau;
+        Collection/*_<Matcher>_*/ r = new ArrayList/*_<Matcher>_*/(tau.getReplacements().size() + sigma.getReplacements().size());
+        // the list of patterns that tau searches for (and could thus must be ignored in sigma)
+        Set/*_<Object>_*/ tauPatterns = new HashSet/*_<Object>_*/(tau.getReplacements().size() << 1);
+        // apply sigma to substitutes of tau
+        for (Iterator/*_<Matcher>_*/ i = tau.getReplacements().iterator(); i.hasNext(); ) {
+            Object o = i.next();
+            if (o.getClass() != SubstitutionImpl.MatcherImpl.class)
+                throw new UnsupportedOperationException("currently, only exact matchers are supported");
+            SubstitutionImpl.MatcherImpl s = (SubstitutionImpl.MatcherImpl/*__*/) o;
+            //@todo is there any generic way, too, not relying on MatcherImpl? Perhaps clone and/or set... but with modified substitue, oh my...
+            r.add(createExactMatcher(s.pattern(), sigma.apply(s.substitute())));
+            tauPatterns.add(s.pattern());
+        }
+        // union with those replacements in sigma that do not have a pattern that tau already replaced
+        for (Iterator/*_<Matcher>_*/ i = sigma.getReplacements().iterator(); i.hasNext(); ) {
+            Matcher s = (Matcher/*__*/) i.next();
+            if (tauPatterns.contains(s.pattern()))
+                continue;
+            else
+                r.add(s);
+        }
+        Substitution sigma_tau = getInstance(r);
+        assert null != (sigma_tau = new ResultCheckingSubstition(sigma, tau, r)) : "if we use assertions than also assert the results of the composition returned";
+        return sigma_tau;
     }
     private static final class ResultCheckingSubstition extends SubstitutionImpl {
-	private final Function composed;
-	private ResultCheckingSubstition(Substitution sigma, Substitution tau, Collection/*_<Matcher>_*/ r) {
-	    super(r);
-	    this.composed = orbital.logic.functor.Functionals.compose(sigma, tau);
-	}
-	public Object apply(Object o) {
-	    final Object os = super.apply(o);
-	    final Object oc = composed.apply(o);
-	    assert orbital.util.Utility.equalsAll(os, oc) : "Substitution composition and Function composition are extensionally equal. So the results " + os + "=" + oc + " are equal.";
-	    return os;
-	}
+        private final Function composed;
+        private ResultCheckingSubstition(Substitution sigma, Substitution tau, Collection/*_<Matcher>_*/ r) {
+            super(r);
+            this.composed = orbital.logic.functor.Functionals.compose(sigma, tau);
+        }
+        public Object apply(Object o) {
+            final Object os = super.apply(o);
+            final Object oc = composed.apply(o);
+            assert orbital.util.Utility.equalsAll(os, oc) : "Substitution composition and Function composition are extensionally equal. So the results " + os + "=" + oc + " are equal.";
+            return os;
+        }
     }
-	
+        
     // the lambda operator
 
     /**
@@ -407,18 +407,18 @@ public class Substitutions {
      * @todo how do we "schlucken" those parts of substitutions running through our term structure that replace x, since we have bound x. How do we allow substitutions to pass through to the term t, at all?
      */
     public static final BinaryFunction/*<Variable,Expression, Function<Variable,Expression>>*/ lambda = new BinaryFunction/*<Variable,Expression, Function<Variable,Expression>>*/() {
-	    public Object apply(Object x, Object f) {
-    		if (!((x instanceof Variable) && ((Variable)x).isVariable()))
-		    throw new IllegalArgumentException("usually x should be a " + Variable.class.getName() + " with x.isVariable()==true, however this is not a strict requirement");
-		Substitution sigma = Substitutions.getInstance(Arrays.asList(new Object[] {
-		    //@internal this is an embedding of numbers into constant functions. All other similar cases will refer to this via @see Substitutions#lambda embedding. (otherwise x may never occur, since the constant function x is not compound of anything)
-		    //@xxx sure that shouldn't at least add Substitutions.createExactMatcher(x, Functions.id)? or remove the constant wrapping alltogether
-		    Substitutions.createExactMatcher(orbital.math.functional.Functions.constant(x), orbital.math.functional.Functions.id),
-		    Substitutions.createExactMatcher(x, orbital.math.functional.Functions.id)
-		}));
-    		return sigma.apply(f);
-	    }
-	};
+            public Object apply(Object x, Object f) {
+                if (!((x instanceof Variable) && ((Variable)x).isVariable()))
+                    throw new IllegalArgumentException("usually x should be a " + Variable.class.getName() + " with x.isVariable()==true, however this is not a strict requirement");
+                Substitution sigma = Substitutions.getInstance(Arrays.asList(new Object[] {
+                    //@internal this is an embedding of numbers into constant functions. All other similar cases will refer to this via @see Substitutions#lambda embedding. (otherwise x may never occur, since the constant function x is not compound of anything)
+                    //@xxx sure that shouldn't at least add Substitutions.createExactMatcher(x, Functions.id)? or remove the constant wrapping alltogether
+                    Substitutions.createExactMatcher(orbital.math.functional.Functions.constant(x), orbital.math.functional.Functions.id),
+                    Substitutions.createExactMatcher(x, orbital.math.functional.Functions.id)
+                }));
+                return sigma.apply(f);
+            }
+        };
     /**
      * Get the &lambda;-abstraction of f with respect to x.
      * <p>
@@ -433,12 +433,12 @@ public class Substitutions {
      * @see #lambda
      * @todo publizice somewhere once finished
      */
-    //	public static final Function/*<Variable,Object>*/ lambda(Variable x, Expression f) {
+    //  public static final Function/*<Variable,Object>*/ lambda(Variable x, Expression f) {
     public static final Function/*<Variable,Object>*/ lambda(Object x, Object f) {
-	return (Function/*<Variable,Expression>*//*__*/) lambda.apply(x, f);
+        return (Function/*<Variable,Expression>*//*__*/) lambda.apply(x, f);
     }
 
-	
+        
     // Unification
 
     /**
@@ -482,8 +482,8 @@ public class Substitutions {
      *       <p>mgU(T) :=</p>
      *     </td>
      *     <td>
-     *       <p>{&mu; &brvbar; &forall;&sigma;&isin;U(T) &exist;&sigma;’&isin;U(T) &sigma; =
-     *       &sigma;’ &#8728; &mu;}</p>
+     *       <p>{&mu; &brvbar; &forall;&sigma;&isin;U(T) &exist;&sigma;Â’&isin;U(T) &sigma; =
+     *       &sigma;Â’ &#8728; &mu;}</p>
      *     </td>
      *     <td>
      *       <p>&mu; is a <dfn>most general unifier</dfn> of T&sube;Term(&Sigma;).<br />
@@ -510,7 +510,7 @@ public class Substitutions {
      * &mu; is idempotent
      * </p>
      * <p>
-     * &mu;,&mu;‘&isin;mgU(T) &rArr; &exist;&sigma; &sigma; is a variable renaming &and; &mu; = &sigma; &#8728; &mu;‘
+     * &mu;,&mu;Â‘&isin;mgU(T) &rArr; &exist;&sigma; &sigma; is a variable renaming &and; &mu; = &sigma; &#8728; &mu;Â‘
      * </p>
      * <p>
      * Note that unification depends heavily on the identification of {@link Variable variables} vs. constants.
@@ -530,38 +530,38 @@ public class Substitutions {
      * @todo reformat table to the form U(T) := {&mu; &brvbar; &mu; is unifier, i.e. |&mu;(T)| = 1}
      */
     public static final Substitution unify(Collection T) {
-	switch (T.size()) {
-	case 0: /* fall-through */
-	case 1: return id;
-	case 2: {
-	    final Iterator i = T.iterator();
-	    assert i.hasNext() : "Collection.size() is consistent with Collection.iterator()";
-	    final Object o0 = i.next();
-	    assert i.hasNext() : "Collection.size() is consistent with Collection.iterator()";
-	    final Object o1 = i.next();
-	    assert !i.hasNext() : "Collection.size() is consistent with Collection.iterator()";
-	    return unify(o0, o1);
-	}
-	default: {
-	    //@internal perhaps this is a paramorphism?
-	    //@todo at least fold T with unify(Object,Object) provided that mgU is associative
-	    Substitution mu = id;
-	    final Iterator i = T.iterator();
-	    Object o_0 = mu.apply(i.next());
-	    while (i.hasNext()) {
-		final Object o_i = i.next();
-		final Substitution mu_i = unify(o_0, mu.apply(o_i));
-		if (mu_i == NONUNIFIABLE) {
-		    return NONUNIFIABLE;
-		}
-		mu = compose(mu_i, mu);
-		// apply (the missing part mu_i of) mu to o_0
-		assert mu_i.apply(o_0).equals(mu.apply(o_0)) : "since our unifications are idempotent, only the part of the unification needs to be applied";
-		o_0 = mu_i.apply(o_0);
-	    }
-	    return mu;
-	}
-	}
+        switch (T.size()) {
+        case 0: /* fall-through */
+        case 1: return id;
+        case 2: {
+            final Iterator i = T.iterator();
+            assert i.hasNext() : "Collection.size() is consistent with Collection.iterator()";
+            final Object o0 = i.next();
+            assert i.hasNext() : "Collection.size() is consistent with Collection.iterator()";
+            final Object o1 = i.next();
+            assert !i.hasNext() : "Collection.size() is consistent with Collection.iterator()";
+            return unify(o0, o1);
+        }
+        default: {
+            //@internal perhaps this is a paramorphism?
+            //@todo at least fold T with unify(Object,Object) provided that mgU is associative
+            Substitution mu = id;
+            final Iterator i = T.iterator();
+            Object o_0 = mu.apply(i.next());
+            while (i.hasNext()) {
+                final Object o_i = i.next();
+                final Substitution mu_i = unify(o_0, mu.apply(o_i));
+                if (mu_i == NONUNIFIABLE) {
+                    return NONUNIFIABLE;
+                }
+                mu = compose(mu_i, mu);
+                // apply (the missing part mu_i of) mu to o_0
+                assert mu_i.apply(o_0).equals(mu.apply(o_0)) : "since our unifications are idempotent, only the part of the unification needs to be applied";
+                o_0 = mu_i.apply(o_0);
+            }
+            return mu;
+        }
+        }
     }
     /**
      * @todo generalize on sets and not only two terms t1, t2
@@ -569,108 +569,108 @@ public class Substitutions {
      * @todo 21 use a context binding list for t1 and t2 (instead of explicitly applying substitutions in advance) and/or term sharing to improve performance
      */
     static final Substitution unify(Object t1, Object t2) {
-	try {
-	    Object x;
-	    Object t;
-	    // tricky (*) if one of the two terms is a variable x, call the other term t
-	    if ((isVariable(x = t1) && other(t = t2))
-		|| (isVariable(x = t2) && other(t = t1))) {
-		if (x.equals(t)) {
-		    return id;
-		} else if (occur(x, t)) { // checks whether x occurs in t
-		    //@internal Then t is not a variable, so the other
-		    // term could not have been chosen as x as well in (*)
-		    assert !isVariable(t) : t + " is not variable if " + x + "!=" + t + " occurs within";
-		    return NONUNIFIABLE;
-		} else {
-		    //@todo delay these checks to the forming of the substitution below. then return NONUNIFIABLE on Incompatible-TypeException
-		    if (x instanceof Typed && t instanceof Typed) {
-			final Type taux = ((Typed)x).getType();
-			final Type taut = ((Typed)t).getType();
-			if (taut.subtypeOf(taux)) {
-			    assert taux.typeSystem().inf(new Type[] {taux, taut}).equals(taut) : "inf@postconditions: " + taut + "=<" + taux + " iff " + taux.typeSystem().inf(new Type[] {taux, taut}) + " = " + taux + " inf " + taut + " = " + taut;
-			    // ordinary unifiable subtype case: fall-through
-			} else {
-			    assert !taux.typeSystem().inf(new Type[] {taux, taut}).equals(taut) : "inf@postconditions: not(" + taut + "=<" + taux + ") iff " + taux.typeSystem().inf(new Type[] {taux, taut}) + " = " + taux + " inf " + taut + " != " + taut;
-			    if (isVariable(t)) {
-				final Type both = taux.typeSystem().inf(new Type[] {taux, taut});
-				if (both == both.typeSystem().ABSURD())
-				    // variables x and t have incompatible types, cannot unify
-				    return NONUNIFIABLE;
-				assert !taut.subtypeOf(taux) : "else branch implies subtype condition";
-				if (taux.subtypeOf(taut)) {
-				    // linear type hierachy case, i.e. type chain rather than incomparable
-				    assert isVariable(t);
-				    // return [t->x]  since t is a variable
-				    return getInstance(Collections.singletonList(createExactMatcher(t, x)));
-				}
-				// in (*) we could also have called x and t precisely the other way around
-				// return [x:taux->t:both , t:taut->t:both]
-				throw new UnsupportedOperationException("modification cloning does not yet generally allow changing the type of a Typed object");
-			    } else
-				// cannot unify because the term t does not deliver a subtype of the type that x must be bound to.
-				return NONUNIFIABLE;
-			}
-		    }
-		    // return [x->t]
-		    return getInstance(Collections.singletonList(createExactMatcher(x, t)));
-		}
-	    } else {
-		// both terms, t1 and t2, are no variables
-		//@todo should we implicitly assume all collections as composed of the collection constructor with the elements? This would safe them all implementing Composite. However, collections which have a different way of composition then would have a little problem with our default treatment.
-		// let t1=:f(x1,...xm), t2=:g(y1,...yn)
-		if (!((t1 instanceof Composite) && (t2 instanceof Composite))) {
-		    // catch case m=0 first, since it is no true decomposition then
-		    if (!t1.equals(t2)) {
-			return NONUNIFIABLE;
-		    } else {
-			return id;
-		    }
-		} //@todo explicitly add else{}
-		// true decomposition case
-		final Composite c1 = (Composite) t1;
-		final Object    f = c1.getCompositor();
-		final Composite c2 = (Composite) t2;
-		final Object    g = c2.getCompositor();
-		if (!Utility.equals(f, g)) {
-		    return NONUNIFIABLE;
-		} else {
-		    final Collection xs = Utility.asCollection(c1.getComponent());
-		    final Collection ys = Utility.asCollection(c2.getComponent());
-		    // f=g und daher auch m=n
-		    assert xs.size() == ys.size() : "f==g implies m==n for the number of arguments m resp. n";
-		    Substitution s = id;
-		    for (Iterator xi = xs.iterator(), yi = ys.iterator(); xi.hasNext() || yi.hasNext(); ) {
-			// (<var>unifiable</var>, &sigma;<sub>1</sub>) := <i>unify</i>(&sigma;(x<sub>i</sub>), &sigma;(y<sub>i</sub>))
-			Substitution s1 = unify(s.apply(xi.next()), s.apply(yi.next()));
-			if (s1 == NONUNIFIABLE) {
-			    return NONUNIFIABLE;
-			}
-			// s := s1 &#8728; s
-			s = compose(s1, s);
-		    }
-		    return s;
-		}
-	    }
-	}
-	/*catch (NullPointerException ex) {
-	    //@internal possibly quicker variant to explicit prechecks for null: simply let this exceptional case occur, and then handle it.
-	    if (t1 == null || t2 == null) {
-		throw new NullPointerException("cannot unify (" + t1 + "," + t2 +") because null does not unify anything.");
-	    } else {
-		// another cause for the NullPointerException than null arguments
-		throw ex;
-	    }
-	    }*/
-	finally {
-	    //@internal possibly quicker variant to explicit prechecks for null: simply let this exceptional case occur, and then handle it.
-	    if (t1 == null || t2 == null) {
-		throw new NullPointerException("cannot unify (" + t1 + "," + t2 +") because null does not unify anything.");
-	    }
-	}
-	    
+        try {
+            Object x;
+            Object t;
+            // tricky (*) if one of the two terms is a variable x, call the other term t
+            if ((isVariable(x = t1) && other(t = t2))
+                || (isVariable(x = t2) && other(t = t1))) {
+                if (x.equals(t)) {
+                    return id;
+                } else if (occur(x, t)) { // checks whether x occurs in t
+                    //@internal Then t is not a variable, so the other
+                    // term could not have been chosen as x as well in (*)
+                    assert !isVariable(t) : t + " is not variable if " + x + "!=" + t + " occurs within";
+                    return NONUNIFIABLE;
+                } else {
+                    //@todo delay these checks to the forming of the substitution below. then return NONUNIFIABLE on Incompatible-TypeException
+                    if (x instanceof Typed && t instanceof Typed) {
+                        final Type taux = ((Typed)x).getType();
+                        final Type taut = ((Typed)t).getType();
+                        if (taut.subtypeOf(taux)) {
+                            assert taux.typeSystem().inf(new Type[] {taux, taut}).equals(taut) : "inf@postconditions: " + taut + "=<" + taux + " iff " + taux.typeSystem().inf(new Type[] {taux, taut}) + " = " + taux + " inf " + taut + " = " + taut;
+                            // ordinary unifiable subtype case: fall-through
+                        } else {
+                            assert !taux.typeSystem().inf(new Type[] {taux, taut}).equals(taut) : "inf@postconditions: not(" + taut + "=<" + taux + ") iff " + taux.typeSystem().inf(new Type[] {taux, taut}) + " = " + taux + " inf " + taut + " != " + taut;
+                            if (isVariable(t)) {
+                                final Type both = taux.typeSystem().inf(new Type[] {taux, taut});
+                                if (both == both.typeSystem().ABSURD())
+                                    // variables x and t have incompatible types, cannot unify
+                                    return NONUNIFIABLE;
+                                assert !taut.subtypeOf(taux) : "else branch implies subtype condition";
+                                if (taux.subtypeOf(taut)) {
+                                    // linear type hierachy case, i.e. type chain rather than incomparable
+                                    assert isVariable(t);
+                                    // return [t->x]  since t is a variable
+                                    return getInstance(Collections.singletonList(createExactMatcher(t, x)));
+                                }
+                                // in (*) we could also have called x and t precisely the other way around
+                                // return [x:taux->t:both , t:taut->t:both]
+                                throw new UnsupportedOperationException("modification cloning does not yet generally allow changing the type of a Typed object");
+                            } else
+                                // cannot unify because the term t does not deliver a subtype of the type that x must be bound to.
+                                return NONUNIFIABLE;
+                        }
+                    }
+                    // return [x->t]
+                    return getInstance(Collections.singletonList(createExactMatcher(x, t)));
+                }
+            } else {
+                // both terms, t1 and t2, are no variables
+                //@todo should we implicitly assume all collections as composed of the collection constructor with the elements? This would safe them all implementing Composite. However, collections which have a different way of composition then would have a little problem with our default treatment.
+                // let t1=:f(x1,...xm), t2=:g(y1,...yn)
+                if (!((t1 instanceof Composite) && (t2 instanceof Composite))) {
+                    // catch case m=0 first, since it is no true decomposition then
+                    if (!t1.equals(t2)) {
+                        return NONUNIFIABLE;
+                    } else {
+                        return id;
+                    }
+                } //@todo explicitly add else{}
+                // true decomposition case
+                final Composite c1 = (Composite) t1;
+                final Object    f = c1.getCompositor();
+                final Composite c2 = (Composite) t2;
+                final Object    g = c2.getCompositor();
+                if (!Utility.equals(f, g)) {
+                    return NONUNIFIABLE;
+                } else {
+                    final Collection xs = Utility.asCollection(c1.getComponent());
+                    final Collection ys = Utility.asCollection(c2.getComponent());
+                    // f=g und daher auch m=n
+                    assert xs.size() == ys.size() : "f==g implies m==n for the number of arguments m resp. n";
+                    Substitution s = id;
+                    for (Iterator xi = xs.iterator(), yi = ys.iterator(); xi.hasNext() || yi.hasNext(); ) {
+                        // (<var>unifiable</var>, &sigma;<sub>1</sub>) := <i>unify</i>(&sigma;(x<sub>i</sub>), &sigma;(y<sub>i</sub>))
+                        Substitution s1 = unify(s.apply(xi.next()), s.apply(yi.next()));
+                        if (s1 == NONUNIFIABLE) {
+                            return NONUNIFIABLE;
+                        }
+                        // s := s1 &#8728; s
+                        s = compose(s1, s);
+                    }
+                    return s;
+                }
+            }
+        }
+        /*catch (NullPointerException ex) {
+            //@internal possibly quicker variant to explicit prechecks for null: simply let this exceptional case occur, and then handle it.
+            if (t1 == null || t2 == null) {
+                throw new NullPointerException("cannot unify (" + t1 + "," + t2 +") because null does not unify anything.");
+            } else {
+                // another cause for the NullPointerException than null arguments
+                throw ex;
+            }
+            }*/
+        finally {
+            //@internal possibly quicker variant to explicit prechecks for null: simply let this exceptional case occur, and then handle it.
+            if (t1 == null || t2 == null) {
+                throw new NullPointerException("cannot unify (" + t1 + "," + t2 +") because null does not unify anything.");
+            }
+        }
+            
     }
-	
+        
     /**
      * Checks whether x is a variable.
      * @postconditions RES = x instanceof Variable && ((Variable)x).isVariable()
@@ -680,7 +680,7 @@ public class Substitutions {
      *  Whilst 'true' and 'false' are not.
      */
     public static final boolean isVariable(Object x) {
-	return (x instanceof Variable) && ((Variable) x).isVariable();
+        return (x instanceof Variable) && ((Variable) x).isVariable();
     }
 
     /**
@@ -695,32 +695,32 @@ public class Substitutions {
      * @internal non optimized occur-check
      */
     private static boolean occur(final Object x, Object t) {
-	if (x.equals(t)) {
-	    return true;
-	} else if (t instanceof Composite) {
-	    return
-		occur(x, ((Composite) t).getCompositor())
-		|| occur(x, ((Composite) t).getComponent());
-	} else if (t.getClass().isArray()) {
-	    if (t instanceof Object[]) {
-		// return &exist;i occur(x, t[i])
-		// version for mere non-primitive type Object arrays
-		return Setops.some(Arrays.asList((Object[]) t), new Predicate/*<Object>*/() {
-			public boolean apply(Object ti) {
-			    return occur(x, ti);
-			}
-		    });
-	    } else {
-		// could additionally(!) occur check in primitive type arrays with java.lang.reflect.Array
-		throw new IllegalArgumentException("illegal argument type " + t.getClass() + " is not yet supported");
-	    }
-	}
-	return false;
+        if (x.equals(t)) {
+            return true;
+        } else if (t instanceof Composite) {
+            return
+                occur(x, ((Composite) t).getCompositor())
+                || occur(x, ((Composite) t).getComponent());
+        } else if (t.getClass().isArray()) {
+            if (t instanceof Object[]) {
+                // return &exist;i occur(x, t[i])
+                // version for mere non-primitive type Object arrays
+                return Setops.some(Arrays.asList((Object[]) t), new Predicate/*<Object>*/() {
+                        public boolean apply(Object ti) {
+                            return occur(x, ti);
+                        }
+                    });
+            } else {
+                // could additionally(!) occur check in primitive type arrays with java.lang.reflect.Array
+                throw new IllegalArgumentException("illegal argument type " + t.getClass() + " is not yet supported");
+            }
+        }
+        return false;
     }
 
     // helper method
 
     private static final boolean other(Object o) {
-	return true;
+        return true;
     }
 }

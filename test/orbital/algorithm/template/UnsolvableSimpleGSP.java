@@ -10,24 +10,24 @@ import orbital.logic.functor.Function;
 class UnsolvableSimpleGSP extends SimpleGSP {
     private int maxDepth;
     public UnsolvableSimpleGSP(int maxDepth) {
-	super(2, 2+10*maxDepth);
-	this.maxDepth = maxDepth;
-	this.g = getAccumulatedCostFunction();
+        super(2, 2+10*maxDepth);
+        this.maxDepth = maxDepth;
+        this.g = getAccumulatedCostFunction();
     }
     private Function g;
 
     public boolean isSolution(Object s) {
-	// categorically no
-	return false;
+        // categorically no
+        return false;
     } 
     public Iterator actions(Object s) {
-	if (((Real)g.apply(s)).doubleValue() <= maxDepth)
-	    return super.actions(s);
-	else
-	    return Collections.EMPTY_SET.iterator();
+        if (((Real)g.apply(s)).doubleValue() <= maxDepth)
+            return super.actions(s);
+        else
+            return Collections.EMPTY_SET.iterator();
     }
 
     public String toString() {
-    	return super.toString() + " with restriction to maxDepth=" + maxDepth;
+        return super.toString() + " with restriction to maxDepth=" + maxDepth;
     }
 }

@@ -99,7 +99,7 @@ import orbital.logic.functor.Function;
  */
 public interface Quotient/*<M implements Arithmetic>*/ extends Arithmetic {
     // Get/Set Properties
-	
+        
     /**
      * Get the quotient operator &pi;<sup>-1</sup>&#8728;&pi;:M&rarr;M
      * modulo whom we reduce the values to their canonical representative.
@@ -124,7 +124,7 @@ public interface Quotient/*<M implements Arithmetic>*/ extends Arithmetic {
      * @postconditions RES == getQuotientOperator().apply(this) &and; getQuotientOperator().apply(RES).equals(RES)
      *  &and; new Modulus(RES, getQuotientOperator()).equals(this)
      *  &and; &forall;a,b&isin;M/~ (a.equals(b) &rArr; a.representative().equals(b.representative()))
-     * @internal Von a&#772M kennt man nicht a persönlich, sondern man hätte auch sein Äquivalent erwischen können.
+     * @internal Von a&#772M kennt man nicht a persÃ¶nlich, sondern man hÃ¤tte auch sein Ã„quivalent erwischen kÃ¶nnen.
      */
     Arithmetic/*>M<*/ representative();
 

@@ -18,7 +18,7 @@ public class IncompleteCalculusException extends LogicException {
     private static final long serialVersionUID = 548457840486427483L;
 
     public IncompleteCalculusException(String message) {
-	super(message);
+        super(message);
     }
     public IncompleteCalculusException() {}
 }

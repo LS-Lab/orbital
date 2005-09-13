@@ -46,7 +46,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      * NullPointerExceptions in almost every method.
      */
     private DelegateCollection() {
-	delegatee = null;
+        delegatee = null;
     }
 
     /**
@@ -54,7 +54,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      * @param delegatee the implementation-Collection to that Collection operations are delegated.
      */
     protected DelegateCollection(Collection/*<A>*/ delegatee) {
-	this.delegatee = delegatee;
+        this.delegatee = delegatee;
     }
 
     // delegation operations
@@ -70,7 +70,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      * @return the implementation-Collection that Collection operations are delegated to.
      */
     protected Collection/*<A>*/ getDelegatee() {
-	return this.delegatee;
+        return this.delegatee;
     } 
 
     /**
@@ -78,7 +78,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      * @param delegatee the implementation-Collection that Collection operations are delegated to.
      */
     protected void setDelegatee(Collection/*<A>*/ delegatee) {
-	this.delegatee = delegatee;
+        this.delegatee = delegatee;
     } 
 
     // Delegated operations.
@@ -93,7 +93,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      * @return the number of elements in this collection
      */
     public int size() {
-	return getDelegatee().size();
+        return getDelegatee().size();
     } 
 
     /**
@@ -102,7 +102,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      * @return <tt>true</tt> if this collection contains no elements
      */
     public boolean isEmpty() {
-	return getDelegatee().isEmpty();
+        return getDelegatee().isEmpty();
     } 
 
     /**
@@ -116,7 +116,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      * element
      */
     public boolean contains(Object/*>A<*/ o) {
-	return getDelegatee().contains(o);
+        return getDelegatee().contains(o);
     } 
 
     /**
@@ -128,7 +128,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      * @return an <tt>Iterator</tt> over the elements in this collection
      */
     public Iterator/*<A>*/ iterator() {
-	return getDelegatee().iterator();
+        return getDelegatee().iterator();
     } 
 
     /**
@@ -148,7 +148,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      * @return an array containing all of the elements in this collection
      */
     public Object/*>A<*/[] toArray() {
-	return getDelegatee().toArray();
+        return getDelegatee().toArray();
     } 
 
     /**
@@ -196,7 +196,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      */
 
     public Object/*>A<*/[] toArray(Object/*>A<*/ a[]) {
-	return getDelegatee().toArray(a);
+        return getDelegatee().toArray(a);
     } 
 
     // Modification Operations
@@ -232,7 +232,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      * it from being added to this collection.
      */
     public boolean add(Object/*>A<*/ o) {
-	return getDelegatee().add(o);
+        return getDelegatee().add(o);
     } 
 
     /**
@@ -252,7 +252,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      * collection.
      */
     public boolean remove(Object/*>A<*/ o) {
-	return getDelegatee().remove(o);
+        return getDelegatee().remove(o);
     } 
 
 
@@ -268,7 +268,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      * @see #contains(Object)
      */
     public boolean containsAll(Collection/*<A>*/ c) {
-	return getDelegatee().containsAll(c);
+        return getDelegatee().containsAll(c);
     } 
 
     /**
@@ -294,7 +294,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      * @see #add(Object)
      */
     public boolean addAll(Collection/*<A>*/ c) {
-	return getDelegatee().addAll(c);
+        return getDelegatee().addAll(c);
     } 
 
     /**
@@ -315,7 +315,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      * @see #contains(Object)
      */
     public boolean removeAll(Collection/*<A>*/ c) {
-	return getDelegatee().removeAll(c);
+        return getDelegatee().removeAll(c);
     } 
 
     /**
@@ -335,7 +335,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      * @see #contains(Object)
      */
     public boolean retainAll(Collection/*<A>*/ c) {
-	return getDelegatee().retainAll(c);
+        return getDelegatee().retainAll(c);
     } 
 
     /**
@@ -347,7 +347,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      * not supported by this collection.
      */
     public void clear() {
-	getDelegatee().clear();
+        getDelegatee().clear();
     } 
 
 
@@ -387,7 +387,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      * @see java.util.List#equals(Object)
      */
     public boolean equals(Object o) {
-	return getDelegatee().equals(o);
+        return getDelegatee().equals(o);
     } 
 
     /**
@@ -407,6 +407,6 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      * @see Object#equals(Object)
      */
     public int hashCode() {
-	return getDelegatee().hashCode();
+        return getDelegatee().hashCode();
     } 
 }

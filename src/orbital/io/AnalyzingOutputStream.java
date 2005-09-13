@@ -27,31 +27,31 @@ public class AnalyzingOutputStream extends FilterOutputStream {
     protected DataAnalyzer analyzer;
 
     public AnalyzingOutputStream(OutputStream os, DataAnalyzer analyzer) {
-	super(os);
-	this.analyzer = analyzer;
+        super(os);
+        this.analyzer = analyzer;
     }
 
     public DataAnalyzer getAnalyzer() {
-	return analyzer;
+        return analyzer;
     } 
 
     /**
      * Changes the DataAnalyzer used while reading data.
      */
     public void setAnalyzer(DataAnalyzer analyzer) {
-	this.analyzer = analyzer;
+        this.analyzer = analyzer;
     } 
 
     public void write(int b) throws IOException {
-	super.write(b);
-	analyzer.analyze(b);
+        super.write(b);
+        analyzer.analyze(b);
     } 
     public void write(byte[] b) throws IOException {
-	super.write(b);
-	analyzer.analyze(b, 0, b.length);
+        super.write(b);
+        analyzer.analyze(b, 0, b.length);
     } 
     public void write(byte[] b, int off, int len) throws IOException {
-	super.write(b, off, len);
-	analyzer.analyze(b, off, len);
+        super.write(b, off, len);
+        analyzer.analyze(b, off, len);
     } 
 }

@@ -51,27 +51,27 @@ public class TransitionPath implements Iterator, ProbabilisticAlgorithm, Seriali
      * @param initialState the initial state s<sub>0</sub>&isin;S from which to start the path.
      */
     public TransitionPath(TransitionModel/*<A,S,O>*/ transition, Iterator/*<A>*/ actions, Object/*>S<*/ initialState) {
-	this.transition = transition;
-	this.actions = actions;
-	this.state = initialState;
-	this.random = new Random();
+        this.transition = transition;
+        this.actions = actions;
+        this.state = initialState;
+        this.random = new Random();
     }
 
     // implementation of orbital.algorithm.template.ProbabilisticAlgorithm interface
 
     public boolean isCorrect()
     {
-	return true;
+        return true;
     }
 
     public Random getRandom()
     {
-	return random;
+        return random;
     }
 
     public void setRandom(Random randomGenerator)
     {
-	this.random = randomGenerator;
+        this.random = randomGenerator;
     }
 
     
@@ -88,28 +88,28 @@ public class TransitionPath implements Iterator, ProbabilisticAlgorithm, Seriali
      * @return the next state of the path.
      */
     public Object next() {
-	final Object action = actions.next();
-	final double r = random.nextDouble();
-	double r_sum = 0;
-	for (Iterator t = transition.states(action, state); t.hasNext(); ) {
-	    Object sp = t.next();
-	    r_sum += ((orbital.math.Real/*@xxx constrained*/)transition.transition(action, state, sp).getProbability()).doubleValue();
-	    assert 0 <= r_sum && r_sum <= 1+0.0001 : "probability distribution";
-	    if (r >= r_sum)
-		return state = sp;
-	}
-	throw new AssertionError("@postconditions TransitionModel.transition(A,S,_): probabilities sum up to 1.0");
+        final Object action = actions.next();
+        final double r = random.nextDouble();
+        double r_sum = 0;
+        for (Iterator t = transition.states(action, state); t.hasNext(); ) {
+            Object sp = t.next();
+            r_sum += ((orbital.math.Real/*@xxx constrained*/)transition.transition(action, state, sp).getProbability()).doubleValue();
+            assert 0 <= r_sum && r_sum <= 1+0.0001 : "probability distribution";
+            if (r >= r_sum)
+                return state = sp;
+        }
+        throw new AssertionError("@postconditions TransitionModel.transition(A,S,_): probabilities sum up to 1.0");
     }
 
     /**
      * @postconditions RES == actions.hasNext()
      */
     public boolean hasNext() {
-	return actions.hasNext();
+        return actions.hasNext();
     }
 
     public void remove() {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
 }// TransitionModelPath

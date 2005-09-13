@@ -42,7 +42,7 @@ public class WizardView extends Dialog {
     /**
      * @serial
      */
-    protected int		  currentStep;
+    protected int                 currentStep;
     /**
      * @serial
      */
@@ -55,27 +55,27 @@ public class WizardView extends Dialog {
     /**
      * @serial
      */
-    private Component	  centerSlide;
+    private Component     centerSlide;
     /**
      * @serial
      */
-    private Panel		  control;
+    private Panel                 control;
     /**
      * @serial
      */
-    private Button		  cancel;
+    private Button                cancel;
     /**
      * @serial
      */
-    private Button		  back;
+    private Button                back;
     /**
      * @serial
      */
-    private Button		  next;
+    private Button                next;
     /**
      * @serial
      */
-    private Button		  finish;
+    private Button                finish;
 
     /**
      * Create a new WizardView Dialog.
@@ -86,68 +86,68 @@ public class WizardView extends Dialog {
      * Must have the same length as steps.
      */
     public WizardView(Frame parent, String title, Component[] steps, Predicate[] actionSteps) {
-	super(parent, title);
-	this.currentStep = 0;
-	setSteps(steps);
-	setActionSteps(actionSteps);
-	centerSlide = steps[currentStep];
-	add(centerSlide, BorderLayout.CENTER);
-	control = new Panel();
-	control.setLayout(new FlowLayout());
-	control.add(cancel = new Button("Cancel"));
-	cancel.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    // cancel will notify outer listeners that want to do System.exit or anything
-		    WizardView.this.dispatchEvent(new WindowEvent(WizardView.this, WindowEvent.WINDOW_CLOSING));
-		} 
-	    });
-	control.add(back = new Button("<< Back"));
-	back.setEnabled(false);
-	back.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    back();
-		} 
-	    });
-	control.add(next = new Button("Next >>"));
-	next.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    next();
-		} 
-	    });
-	control.add(finish = new Button("Finish"));
-	finish.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    finish();
-		} 
-	    });
-	add(control, BorderLayout.SOUTH);
-	pack();
+        super(parent, title);
+        this.currentStep = 0;
+        setSteps(steps);
+        setActionSteps(actionSteps);
+        centerSlide = steps[currentStep];
+        add(centerSlide, BorderLayout.CENTER);
+        control = new Panel();
+        control.setLayout(new FlowLayout());
+        control.add(cancel = new Button("Cancel"));
+        cancel.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    // cancel will notify outer listeners that want to do System.exit or anything
+                    WizardView.this.dispatchEvent(new WindowEvent(WizardView.this, WindowEvent.WINDOW_CLOSING));
+                } 
+            });
+        control.add(back = new Button("<< Back"));
+        back.setEnabled(false);
+        back.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    back();
+                } 
+            });
+        control.add(next = new Button("Next >>"));
+        next.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    next();
+                } 
+            });
+        control.add(finish = new Button("Finish"));
+        finish.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    finish();
+                } 
+            });
+        add(control, BorderLayout.SOUTH);
+        pack();
     }
 
     // get/set methods
     public Component[] getSteps() {
-	return steps;
+        return steps;
     } 
 
     /**
      * Set the components to show at the single steps.
      */
     public void setSteps(Component[] steps) {
-	if (actionSteps != null && actionSteps.length != steps.length)
-	    throw new IllegalArgumentException("incompatible length of steps");
-	this.steps = steps;
+        if (actionSteps != null && actionSteps.length != steps.length)
+            throw new IllegalArgumentException("incompatible length of steps");
+        this.steps = steps;
     } 
     public Predicate[] getActionSteps() {
-	return actionSteps;
+        return actionSteps;
     } 
 
     /**
      * Set the actions to take after the single steps.
      */
     public void setActionSteps(Predicate[] actionSteps) {
-	if (actionSteps != null && actionSteps.length != steps.length)
-	    throw new IllegalArgumentException("incompatible length of steps");
-	this.actionSteps = actionSteps;
+        if (actionSteps != null && actionSteps.length != steps.length)
+            throw new IllegalArgumentException("incompatible length of steps");
+        this.actionSteps = actionSteps;
     } 
 
     // manipulation methods
@@ -156,39 +156,39 @@ public class WizardView extends Dialog {
      * Move to previous step.
      */
     public void back() {
-	if (currentStep - 1 < 0)
-	    throw new IllegalStateException("back step out of bounds");
-	currentStep--;
-	if (actionSteps != null && actionSteps[currentStep] != null) {
-	    if (!actionSteps[currentStep].apply("back-" + (currentStep)))
-		return;
-	} 
-	remove(centerSlide);
-	centerSlide = steps[currentStep];
-	add(centerSlide, BorderLayout.CENTER);
-	validate();
-	if (currentStep - 1 < 0)
-	    back.setEnabled(false);
-	next.setEnabled(true);
+        if (currentStep - 1 < 0)
+            throw new IllegalStateException("back step out of bounds");
+        currentStep--;
+        if (actionSteps != null && actionSteps[currentStep] != null) {
+            if (!actionSteps[currentStep].apply("back-" + (currentStep)))
+                return;
+        } 
+        remove(centerSlide);
+        centerSlide = steps[currentStep];
+        add(centerSlide, BorderLayout.CENTER);
+        validate();
+        if (currentStep - 1 < 0)
+            back.setEnabled(false);
+        next.setEnabled(true);
     } 
 
     /**
      * Move to next step.
      */
     public void next() {
-	if (currentStep + 1 >= steps.length)
-	    throw new IllegalStateException("next step out of bounds");
-	if (actionSteps != null && actionSteps[currentStep] != null) {
-	    if (!actionSteps[currentStep].apply("next-" + currentStep))
-		return;
-	} 
-	remove(centerSlide);
-	centerSlide = steps[++currentStep];
-	add(centerSlide, BorderLayout.CENTER);
-	validate();
-	if (currentStep + 1 == steps.length)
-	    next.setEnabled(false);
-	back.setEnabled(true);
+        if (currentStep + 1 >= steps.length)
+            throw new IllegalStateException("next step out of bounds");
+        if (actionSteps != null && actionSteps[currentStep] != null) {
+            if (!actionSteps[currentStep].apply("next-" + currentStep))
+                return;
+        } 
+        remove(centerSlide);
+        centerSlide = steps[++currentStep];
+        add(centerSlide, BorderLayout.CENTER);
+        validate();
+        if (currentStep + 1 == steps.length)
+            next.setEnabled(false);
+        back.setEnabled(true);
     } 
 
     /**
@@ -196,19 +196,19 @@ public class WizardView extends Dialog {
      * Will advance as long as possible using {@link #next()}.
      */
     public void finish() {
-	int was = currentStep;
+        int was = currentStep;
 
-	// do all steps
-	int o = currentStep;			// where we started advancing
-	while (currentStep + 1 < steps.length) {
-	    next();
-	    if (o >= currentStep)		// stop finishing if we cannot advance any more
-		return;
-	    o = currentStep;
-	} 
+        // do all steps
+        int o = currentStep;                    // where we started advancing
+        while (currentStep + 1 < steps.length) {
+            next();
+            if (o >= currentStep)               // stop finishing if we cannot advance any more
+                return;
+            o = currentStep;
+        } 
 
-	if (actionSteps != null && actionSteps[currentStep] != null)
-	    actionSteps[currentStep].apply("finish-" + was);
-	setVisible(false);
+        if (actionSteps != null && actionSteps[currentStep] != null)
+            actionSteps[currentStep].apply("finish-" + was);
+        setVisible(false);
     } 
 }

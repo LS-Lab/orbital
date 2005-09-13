@@ -62,8 +62,8 @@ abstract class ModernLogic implements Logic {
      * Enable or disable runtime type checks.
      */
     /*private*/ static void setEnableTypeChecks(boolean enable) {
-	System.out.println((enable ? "enable" : "disable") + " type checks");
-	TYPE_CHECK = enable;
+        System.out.println((enable ? "enable" : "disable") + " type checks");
+        TYPE_CHECK = enable;
     }
     /**
      * A complex error offset that is not representable by a locator for ParseException.
@@ -89,159 +89,159 @@ abstract class ModernLogic implements Logic {
      * @todo provide a hook method for subclasses (they can thus provide normalForm and closure)
      */
     protected static final boolean proveAll(Reader rd, ModernLogic logic, boolean all_true) throws ParseException, IOException {
-	return proveAll(rd, logic, all_true, false, false, false, false);
+        return proveAll(rd, logic, all_true, false, false, false, false);
     }
     /**
      * @param multiline false to parse each conjecture from a single line, true to parse one single conjecture from multiple lines of the whole reader.
      */
     static final boolean proveAll(Reader rd, ModernLogic logic, boolean all_true, boolean normalForm, boolean closure, boolean verbose, boolean multiline) throws ParseException, IOException {
-	DateFormat df = new SimpleDateFormat("H:mm:ss:S");
-	df.setTimeZone(TimeZone.getTimeZone("Greenwich/Meantime"));
-	final long start = System.currentTimeMillis();
-	// sums proof duration excluding I/O
-	long    duration = 0;
+        DateFormat df = new SimpleDateFormat("H:mm:ss:S");
+        df.setTimeZone(TimeZone.getTimeZone("Greenwich/Meantime"));
+        final long start = System.currentTimeMillis();
+        // sums proof duration excluding I/O
+        long    duration = 0;
 
-	boolean some = false;
-	boolean all = true;
+        boolean some = false;
+        boolean all = true;
 
-	boolean eof = false;
-	do {
-	    String formula = "";
-	    String comment = null;					// not in comment mode
+        boolean eof = false;
+        do {
+            String formula = "";
+            String comment = null;                                      // not in comment mode
 
-	    boolean wasWhitespace = false;
-	    while (!eof) {
-		int ch = rd.read();
-		if (ch == -1) {
-		    eof = true;
-		    break;
-		} else if (ch == '\r')
-		    continue;
-		else if (ch == '\n') {
-		    if (!multiline) {
-			break;
-		    } else {
-			// leave comment mode
-			comment = null;
-			// add to comment or formula, depending upon whether in comment mode or not
-			if (comment == null)
-			    formula += (char) ch;
-			else
-			    comment += (char) ch;
-		    }
-		} else if ((ch == ' ' || ch == '\t')) {
-		    //@todo why should we want to skip multiple whitespaces, except for trailing comments?
-		    if (comment != null || !wasWhitespace) {
-			wasWhitespace = true;
-			// add to comment or formula, depending upon whether in comment mode or not
-			if (comment == null)
-			    formula += (char) ch;
-			else
-			    comment += (char) ch;
-		    } else
-			// skip multiple nonbreaking white-spaces unless in comment mode
-			continue;
-		} else if (ch == '#')
-		    // enter comment mode
-		    comment = "";
-		else {
-		    wasWhitespace = false;
-		    // add to comment or formula, depending upon whether in comment mode or not
-		    if (comment == null)
-			formula += (char) ch;
-		    else
-			comment += (char) ch;
-		}
-	    }
+            boolean wasWhitespace = false;
+            while (!eof) {
+                int ch = rd.read();
+                if (ch == -1) {
+                    eof = true;
+                    break;
+                } else if (ch == '\r')
+                    continue;
+                else if (ch == '\n') {
+                    if (!multiline) {
+                        break;
+                    } else {
+                        // leave comment mode
+                        comment = null;
+                        // add to comment or formula, depending upon whether in comment mode or not
+                        if (comment == null)
+                            formula += (char) ch;
+                        else
+                            comment += (char) ch;
+                    }
+                } else if ((ch == ' ' || ch == '\t')) {
+                    //@todo why should we want to skip multiple whitespaces, except for trailing comments?
+                    if (comment != null || !wasWhitespace) {
+                        wasWhitespace = true;
+                        // add to comment or formula, depending upon whether in comment mode or not
+                        if (comment == null)
+                            formula += (char) ch;
+                        else
+                            comment += (char) ch;
+                    } else
+                        // skip multiple nonbreaking white-spaces unless in comment mode
+                        continue;
+                } else if (ch == '#')
+                    // enter comment mode
+                    comment = "";
+                else {
+                    wasWhitespace = false;
+                    // add to comment or formula, depending upon whether in comment mode or not
+                    if (comment == null)
+                        formula += (char) ch;
+                    else
+                        comment += (char) ch;
+                }
+            }
 
-	    if ("".equals(formula)) {
-		if (comment != null)
-		    System.out.println('#' + comment);
-		// skip proving comment-only lines since it's pointless
-		continue;
-	    }
+            if ("".equals(formula)) {
+                if (comment != null)
+                    System.out.println('#' + comment);
+                // skip proving comment-only lines since it's pointless
+                continue;
+            }
 
-	    final long proofStart = System.currentTimeMillis();
+            final long proofStart = System.currentTimeMillis();
 
-	    // split formula into knowledge and formula
-	    String knowledge = "";
-	    // some term substitutions (currently substitutes only once)
-	    final int eq = formula.indexOf("==");
-	    int e = eq;
-	    if (e >= 0)
-		formula = "(" + formula.substring(0, e) + ")" + " <=> " + "(" + formula.substring(e + 2) + ")";
-	    e = Math.max(formula.indexOf("|="), formula.indexOf("|-"));
-	    if (e >= 0) {
-		knowledge = formula.substring(0, e);
-		formula = formula.substring(e + 2);
-	    }
-	    if (eq >= 0)
-		//@xxx better use a Parser for this, f.ex. by turning a==b into a|=b and b|=a otherwise we would do garbage for "p->q,r->s==x" or even "p(x,y) |= p(a,b)"
-		formula = formula.replace(',', '&');
+            // split formula into knowledge and formula
+            String knowledge = "";
+            // some term substitutions (currently substitutes only once)
+            final int eq = formula.indexOf("==");
+            int e = eq;
+            if (e >= 0)
+                formula = "(" + formula.substring(0, e) + ")" + " <=> " + "(" + formula.substring(e + 2) + ")";
+            e = Math.max(formula.indexOf("|="), formula.indexOf("|-"));
+            if (e >= 0) {
+                knowledge = formula.substring(0, e);
+                formula = formula.substring(e + 2);
+            }
+            if (eq >= 0)
+                //@xxx better use a Parser for this, f.ex. by turning a==b into a|=b and b|=a otherwise we would do garbage for "p->q,r->s==x" or even "p(x,y) |= p(a,b)"
+                formula = formula.replace(',', '&');
 
 
-	    // infer
-	    final boolean sat = logic.infer(knowledge, formula, verbose);
-	    System.out.println(knowledge + (sat ? "\t|= " : "\tNOT|= ") + formula);
+            // infer
+            final boolean sat = logic.infer(knowledge, formula, verbose);
+            System.out.println(knowledge + (sat ? "\t|= " : "\tNOT|= ") + formula);
 
-	    // verify equivalence of its NF
-	    if (normalForm) {
-		Formula f = (Formula) logic.createExpression(formula);
-		String formName[] = {
-		    "disjunctive",
-		    "conjunctive"
-		};
-		Formula form[] = {
-		    ClassicalLogic.Utilities.disjunctiveForm(f, true),
-		    ClassicalLogic.Utilities.conjunctiveForm(f, true)
-		};
-		for (int i = 0; i < form.length; i++) {
-		    if (verbose)
-			System.out.println(formName[i] + " normal form: " + form[i]);
-		    if (!logic.inference().infer(new Formula[] {f}, form[i]))
-			throw new InternalError("wrong " + formName[i] + "NF " + form[i] + " =| for " + formula);
-		    if (!logic.inference().infer(new Formula[] {form[i]}, f))
-			throw new InternalError("wrong " + formName[i] + "NF " + form[i] + " |= for " + formula);
-		}
-	    }
+            // verify equivalence of its NF
+            if (normalForm) {
+                Formula f = (Formula) logic.createExpression(formula);
+                String formName[] = {
+                    "disjunctive",
+                    "conjunctive"
+                };
+                Formula form[] = {
+                    ClassicalLogic.Utilities.disjunctiveForm(f, true),
+                    ClassicalLogic.Utilities.conjunctiveForm(f, true)
+                };
+                for (int i = 0; i < form.length; i++) {
+                    if (verbose)
+                        System.out.println(formName[i] + " normal form: " + form[i]);
+                    if (!logic.inference().infer(new Formula[] {f}, form[i]))
+                        throw new InternalError("wrong " + formName[i] + "NF " + form[i] + " =| for " + formula);
+                    if (!logic.inference().infer(new Formula[] {form[i]}, f))
+                        throw new InternalError("wrong " + formName[i] + "NF " + form[i] + " |= for " + formula);
+                }
+            }
 
-	    // 
-	    if (closure) {
-		Formula f = (Formula) logic.createExpression(formula);
-		String formName[] = {
-		    "universal",
-		    "existential",
-		    "constant"
-		};
-		Formula form[] = {
-		    ClassicalLogic.Utilities.universalClosure(f),
-		    ClassicalLogic.Utilities.existentialClosure(f),
-		    ClassicalLogic.Utilities.constantClosure(f)
-		};
-		System.out.println("FV(" + f + ") = " + f.getFreeVariables());
-		System.out.println("BV(" + f + ") = " + f.getBoundVariables());
-		System.out.println(" V(" + f + ") = " + f.getVariables());
-		System.out.println("Sigma(" + f + ") = " + f.getSignature());
-		for (int i = 0; i < form.length; i++) {
-		    System.out.println(formName[i] + " closure: " + form[i]);
-		}
-	    }
+            // 
+            if (closure) {
+                Formula f = (Formula) logic.createExpression(formula);
+                String formName[] = {
+                    "universal",
+                    "existential",
+                    "constant"
+                };
+                Formula form[] = {
+                    ClassicalLogic.Utilities.universalClosure(f),
+                    ClassicalLogic.Utilities.existentialClosure(f),
+                    ClassicalLogic.Utilities.constantClosure(f)
+                };
+                System.out.println("FV(" + f + ") = " + f.getFreeVariables());
+                System.out.println("BV(" + f + ") = " + f.getBoundVariables());
+                System.out.println(" V(" + f + ") = " + f.getVariables());
+                System.out.println("Sigma(" + f + ") = " + f.getSignature());
+                for (int i = 0; i < form.length; i++) {
+                    System.out.println(formName[i] + " closure: " + form[i]);
+                }
+            }
 
-	    duration += System.currentTimeMillis() - proofStart;
+            duration += System.currentTimeMillis() - proofStart;
 
-	    // keep records
-	    some |= sat;
-	    all &= sat;
-	} while (!eof);
+            // keep records
+            some |= sat;
+            all &= sat;
+        } while (!eof);
 
-	final Date eta = new Date(System.currentTimeMillis() - start);
-	logger.log(Level.INFO, "timing is: Proof duration {0}\ntiming is: total time including I/O {1}",
-		   new Object[] {df.format(new Date(duration)), df.format(eta)});
-	return all_true ? all : some;
+        final Date eta = new Date(System.currentTimeMillis() - start);
+        logger.log(Level.INFO, "timing is: Proof duration {0}\ntiming is: total time including I/O {1}",
+                   new Object[] {df.format(new Date(duration)), df.format(eta)});
+        return all_true ? all : some;
     } 
 
     public String toString() {
-	return getClass().getName() + '[' + ']';
+        return getClass().getName() + '[' + ']';
     }
 
     /**
@@ -249,127 +249,127 @@ abstract class ModernLogic implements Logic {
      * An undefined logic of <code>null</code> is compatible with any logic.
      */
     boolean compatible(Logic l) {
-	return l == null
-	    || getClass() == l.getClass()
-	    || getClass().isAssignableFrom(l.getClass())
-	    || l.getClass().isAssignableFrom(getClass());
+        return l == null
+            || getClass() == l.getClass()
+            || getClass().isAssignableFrom(l.getClass())
+            || l.getClass().isAssignableFrom(getClass());
     }
 
     // heavy implementation
 
     public Expression createAtomic(Symbol symbol) {
-	Expression RES = createAtomicImpl(symbol);
-	assert RES != null : "@postconditions RES != null";	     
-	assert !TYPE_CHECK || RES.getType().equals(symbol.getType()) && (((RES instanceof Variable) && ((Variable)RES).isVariable()) == symbol.isVariable()) : "@postconditions " + RES.getType() + "=" + symbol.getType() + " & (" + ((RES instanceof Variable) && ((Variable)RES).isVariable()) + "<->" + symbol.isVariable() + ") for " + symbol + " = " + RES;
-	return RES;
+        Expression RES = createAtomicImpl(symbol);
+        assert RES != null : "@postconditions RES != null";          
+        assert !TYPE_CHECK || RES.getType().equals(symbol.getType()) && (((RES instanceof Variable) && ((Variable)RES).isVariable()) == symbol.isVariable()) : "@postconditions " + RES.getType() + "=" + symbol.getType() + " & (" + ((RES instanceof Variable) && ((Variable)RES).isVariable()) + "<->" + symbol.isVariable() + ") for " + symbol + " = " + RES;
+        return RES;
     }
 
     private Expression createAtomicImpl(Symbol symbol) {
-	if (symbol == null)
-	    throw new NullPointerException("illegal symbol: " + symbol);
-	final String signifier = symbol.getSignifier();
-	assert signifier != null;
+        if (symbol == null)
+            throw new NullPointerException("illegal symbol: " + symbol);
+        final String signifier = symbol.getSignifier();
+        assert signifier != null;
 
-	assert coreSignature() != null : "coreSignature() != null expected (which is not provided during class initializer constructions)";
-	// check if it's already predefined in the coreSignature()
-	if (coreSignature().contains(symbol)) {
-	    // fixed interpretation of core signature
-	    final Object ref = coreInterpretation().get(symbol);
-	    return createFixedSymbol(symbol, ref, true);
-	}
-	// ordinary (new) symbols
-	assert !("true".equals(signifier) || "false".equals(signifier)) : "true and false are in core signature and no ordinary symbols";
-	assert !("�".equals(signifier) || "?".equals(signifier)) : "all and some are in core signature and no ordinary symbols";
+        assert coreSignature() != null : "coreSignature() != null expected (which is not provided during class initializer constructions)";
+        // check if it's already predefined in the coreSignature()
+        if (coreSignature().contains(symbol)) {
+            // fixed interpretation of core signature
+            final Object ref = coreInterpretation().get(symbol);
+            return createFixedSymbol(symbol, ref, true);
+        }
+        // ordinary (new) symbols
+        assert !("true".equals(signifier) || "false".equals(signifier)) : "true and false are in core signature and no ordinary symbols";
+        assert !("�".equals(signifier) || "?".equals(signifier)) : "all and some are in core signature and no ordinary symbols";
 
-	// test for syntactically legal <INTEGER_LITERAL> | <FLOATING_POINT_LITERAL>
-	//@todo could also move to an infinite coreInterpretation()
-	if (symbol.getType().subtypeOf(Types.getDefault().objectType(Arithmetic.class))
-	    || symbol.getType().subtypeOf(Types.getDefault().objectType(Number.class)))
-	    try {
-		return createFixedSymbol(symbol, Values.getDefaultInstance().valueOf(signifier), false);
-	    }
-	    catch (NumberFormatException trial) {}
+        // test for syntactically legal <INTEGER_LITERAL> | <FLOATING_POINT_LITERAL>
+        //@todo could also move to an infinite coreInterpretation()
+        if (symbol.getType().subtypeOf(Types.getDefault().objectType(Arithmetic.class))
+            || symbol.getType().subtypeOf(Types.getDefault().objectType(Number.class)))
+            try {
+                return createFixedSymbol(symbol, Values.getDefaultInstance().valueOf(signifier), false);
+            }
+            catch (NumberFormatException trial) {}
 
-	if (symbol.getType().equals(Types.getDefault().objectType(String.class))) {
-	    try {
-		// test for syntactically legal <STRING_LITERAL>
-		isSTRING_LITERAL(symbol);
-		return createSymbol(symbol);
-	    }
-	    catch (IllegalArgumentException trial) {}
-	}
-	// test for syntactically legal <IDENTIFIER>
-	isIDENTIFIER(symbol);
-	return createSymbol(symbol);
+        if (symbol.getType().equals(Types.getDefault().objectType(String.class))) {
+            try {
+                // test for syntactically legal <STRING_LITERAL>
+                isSTRING_LITERAL(symbol);
+                return createSymbol(symbol);
+            }
+            catch (IllegalArgumentException trial) {}
+        }
+        // test for syntactically legal <IDENTIFIER>
+        isIDENTIFIER(symbol);
+        return createSymbol(symbol);
     } 
 
     
     public Expression.Composite compose(Expression compositor, Expression arguments[]) throws ParseException, TypeException {
-	if (compositor == null)
-	    throw new NullPointerException("illegal arguments: compositor " + compositor + " composed with " + MathUtilities.format(arguments));
+        if (compositor == null)
+            throw new NullPointerException("illegal arguments: compositor " + compositor + " composed with " + MathUtilities.format(arguments));
         if (TYPE_CHECK && !Types.isApplicableTo(compositor.getType(), arguments))
-	    throw new TypeException("compositor " + Types.toTypedString(compositor) + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments) + ':' + Types.typeOf(arguments), compositor.getType().domain(), Types.typeOf(arguments));
+            throw new TypeException("compositor " + Types.toTypedString(compositor) + " not applicable to the " + arguments.length + " arguments " + MathUtilities.format(arguments) + ':' + Types.typeOf(arguments), compositor.getType().domain(), Types.typeOf(arguments));
 
-	Expression.Composite RES = composeImpl(compositor, arguments);
-	assert RES != null : "@postconditions RES != null";
-	assert validateCheckCompositionType(RES, compositor, arguments);
-	return RES;
+        Expression.Composite RES = composeImpl(compositor, arguments);
+        assert RES != null : "@postconditions RES != null";
+        assert validateCheckCompositionType(RES, compositor, arguments);
+        return RES;
     }
     Expression.Composite composeImpl(Expression compositor, Expression arguments[]) throws ParseException {
-	if (!(compositor instanceof ModernFormula.FixedAtomicSymbol))
-	    return composeDelayed((Formula) compositor,
-				  arguments,
-				  compositor instanceof ModernFormula.AtomicSymbol
-				  ? ((ModernFormula.AtomicSymbol)compositor).getSymbol().getNotation().getNotation()
-				  : Notation.DEFAULT);
-	else {
-	    // optimized composition for fixed interpretation compositors
-	    ModernFormula.FixedAtomicSymbol opfix = (ModernFormula.FixedAtomicSymbol) compositor;
-	    Functor ref = (Functor) opfix.getReferent();
-	    assert ref.toString().equals(opfix.getSymbol().getSignifier()) : "interprets with a functor of the same string representation (functor " + ref + " for symbol " + opfix.getSymbol() + ")";
-	    try {
-		// core-symbols
-		// fixed interpretation of core signature
-		Symbol s2 = null;
-		assert (s2 = coreSignature().get(ref.toString(), arguments)) != null : "composition functor " + ref + " = " + opfix + " applied to " + Types.toTypedString(arguments) + " occurs in the signature";
-		assert opfix.getSymbol().equals(s2) : "enforce any potential unambiguities of operators, fixed composition operator " + opfix + " is the operator from the core signature " + s2;
-		return composeFixed(opfix.getSymbol(), (Functor)ref, arguments);
-	    }
-	    catch (IllegalArgumentException ex) {throw new ParseException(ex.getMessage(), COMPLEX_ERROR_OFFSET);}
-	}
+        if (!(compositor instanceof ModernFormula.FixedAtomicSymbol))
+            return composeDelayed((Formula) compositor,
+                                  arguments,
+                                  compositor instanceof ModernFormula.AtomicSymbol
+                                  ? ((ModernFormula.AtomicSymbol)compositor).getSymbol().getNotation().getNotation()
+                                  : Notation.DEFAULT);
+        else {
+            // optimized composition for fixed interpretation compositors
+            ModernFormula.FixedAtomicSymbol opfix = (ModernFormula.FixedAtomicSymbol) compositor;
+            Functor ref = (Functor) opfix.getReferent();
+            assert ref.toString().equals(opfix.getSymbol().getSignifier()) : "interprets with a functor of the same string representation (functor " + ref + " for symbol " + opfix.getSymbol() + ")";
+            try {
+                // core-symbols
+                // fixed interpretation of core signature
+                Symbol s2 = null;
+                assert (s2 = coreSignature().get(ref.toString(), arguments)) != null : "composition functor " + ref + " = " + opfix + " applied to " + Types.toTypedString(arguments) + " occurs in the signature";
+                assert opfix.getSymbol().equals(s2) : "enforce any potential unambiguities of operators, fixed composition operator " + opfix + " is the operator from the core signature " + s2;
+                return composeFixed(opfix.getSymbol(), (Functor)ref, arguments);
+            }
+            catch (IllegalArgumentException ex) {throw new ParseException(ex.getMessage(), COMPLEX_ERROR_OFFSET);}
+        }
     }
 
     /**
      * Checks for right composition type.
      */
     private final boolean validateCheckCompositionType(Expression.Composite RES, Expression compositor, Expression arguments[]) {
-	Type actualType = RES.getType();
-	Type composedType = null;
-	try {
-	    composedType = compositor.getType().on(Types.typeOf(arguments));
-	}
-	catch (TypeException incomposable) {
-	    if (TYPE_CHECK) {
-		assert false : "incomposable types in @postconditions " + RES.getType() + " = " + compositor.getType() + "(on)" + Types.typeOf(arguments) + " = <{" + incomposable + "}> (right type compose)\n\tfor " + RES + " = compose(" + compositor + " , " + MathUtilities.format(arguments) + ")";
-	    } else {
-		logger.log(Level.WARNING, "incomposable types in @postconditions " + RES.getType() + " = " + compositor.getType() + "(on)" + Types.typeOf(arguments) + " = <{" + incomposable + "}> (right type compose)\n\tfor " + RES + " = compose(" + compositor + " , " + MathUtilities.format(arguments) + ")");
-	    }
-	    //@internal assertions either have trapped already, or should not be trapped at all
-	    return true;
-	}
-	{
-	    if (actualType.equals(composedType)) {
-		return true;
-	    } else {
-		if (TYPE_CHECK) {
-		    assert false : "@postconditions " + RES.getType() + " = " + compositor.getType() + "(on)" + Types.typeOf(arguments) + " = " + composedType + " (right type compose)\n\tfor " + RES + " = compose(" + compositor + " , " + MathUtilities.format(arguments) + ")";
-		} else {
-		    logger.log(Level.WARNING, "@postconditions " + RES.getType() + " = " + compositor.getType() + "(on)" + Types.typeOf(arguments) + " = " + composedType + " (right type compose)\n\tfor " + RES + " = compose(" + compositor + " , " + MathUtilities.format(arguments) + ")");
-		}
-		//@internal assertions either have trapped already, or should not be trapped at all
-		return true;
-	    }
-	}
+        Type actualType = RES.getType();
+        Type composedType = null;
+        try {
+            composedType = compositor.getType().on(Types.typeOf(arguments));
+        }
+        catch (TypeException incomposable) {
+            if (TYPE_CHECK) {
+                assert false : "incomposable types in @postconditions " + RES.getType() + " = " + compositor.getType() + "(on)" + Types.typeOf(arguments) + " = <{" + incomposable + "}> (right type compose)\n\tfor " + RES + " = compose(" + compositor + " , " + MathUtilities.format(arguments) + ")";
+            } else {
+                logger.log(Level.WARNING, "incomposable types in @postconditions " + RES.getType() + " = " + compositor.getType() + "(on)" + Types.typeOf(arguments) + " = <{" + incomposable + "}> (right type compose)\n\tfor " + RES + " = compose(" + compositor + " , " + MathUtilities.format(arguments) + ")");
+            }
+            //@internal assertions either have trapped already, or should not be trapped at all
+            return true;
+        }
+        {
+            if (actualType.equals(composedType)) {
+                return true;
+            } else {
+                if (TYPE_CHECK) {
+                    assert false : "@postconditions " + RES.getType() + " = " + compositor.getType() + "(on)" + Types.typeOf(arguments) + " = " + composedType + " (right type compose)\n\tfor " + RES + " = compose(" + compositor + " , " + MathUtilities.format(arguments) + ")";
+                } else {
+                    logger.log(Level.WARNING, "@postconditions " + RES.getType() + " = " + compositor.getType() + "(on)" + Types.typeOf(arguments) + " = " + composedType + " (right type compose)\n\tfor " + RES + " = compose(" + compositor + " , " + MathUtilities.format(arguments) + ")");
+                }
+                //@internal assertions either have trapped already, or should not be trapped at all
+                return true;
+            }
+        }
     }
     
 
@@ -383,7 +383,7 @@ abstract class ModernLogic implements Logic {
      * @see orbital.logic.sign.ExpressionBuilder#createAtomic(Symbol)
      */
     public Formula createSymbol(Symbol symbol) {
-	return ModernFormula.createSymbol(this, symbol);
+        return ModernFormula.createSymbol(this, symbol);
     }
     /**
      * Construct (a formula view of) an atomic symbol with a fixed interpretation.
@@ -393,7 +393,7 @@ abstract class ModernLogic implements Logic {
      * @see orbital.logic.sign.ExpressionBuilder#createAtomic(Symbol)
      */
     public Formula createFixedSymbol(Symbol symbol, Object referent, boolean core) {
-	return ModernFormula.createFixedSymbol(this, symbol, referent, core);
+        return ModernFormula.createFixedSymbol(this, symbol, referent, core);
     }
 
     // composition
@@ -406,7 +406,7 @@ abstract class ModernLogic implements Logic {
      * @param notation the notation for the composition (usually determined by the composing symbol).
      */
     public Formula.Composite composeDelayed(Formula f, Expression arguments[], Notation notation) {
-	return ModernFormula.composeDelayed(this, f, arguments, notation);
+        return ModernFormula.composeDelayed(this, f, arguments, notation);
     }
 
     /**
@@ -417,7 +417,7 @@ abstract class ModernLogic implements Logic {
      * @param fsymbol the symbol with with the fixed interpretation f.
      */
     public Formula.Composite composeFixed(Symbol fsymbol, Functor f, Expression arguments[]) {
-	return ModernFormula.composeFixed(this, fsymbol, f, arguments);
+        return ModernFormula.composeFixed(this, fsymbol, f, arguments);
     }
 
     // parsing
@@ -431,28 +431,28 @@ abstract class ModernLogic implements Logic {
      * from other compound expressions.
      */
     public Expression createExpression(String expression) throws ParseException {
-	if (expression == null)
-	    throw new NullPointerException("null is not an expression");
-	try {
-	    LogicParser parser = new LogicParser(new StringReader(expression));
-	    parser.setSyntax(this);
-	    return parser.parseFormulas();
-	} catch (orbital.moon.logic.ParseException ex) {
-	    throw new ParseException(ex.getMessage() + "\nIn expression: " + expression,
-				     ex.currentToken == null ? COMPLEX_ERROR_OFFSET : ex.currentToken.next.beginLine,
-				     ex.currentToken == null ? COMPLEX_ERROR_OFFSET : ex.currentToken.next.beginColumn,
-				     ex);
-	} catch (TypeException ex) {
-	    //@internal we could also elongate "\nIn expression: " + expression, to the exception message.
-	    throw ex;
-	} catch (IllegalArgumentException ex) {
-	    //@internal we could also elongate "\nIn expression: " + expression, to the exception message.
-	    throw ex;
-	} 
+        if (expression == null)
+            throw new NullPointerException("null is not an expression");
+        try {
+            LogicParser parser = new LogicParser(new StringReader(expression));
+            parser.setSyntax(this);
+            return parser.parseFormulas();
+        } catch (orbital.moon.logic.ParseException ex) {
+            throw new ParseException(ex.getMessage() + "\nIn expression: " + expression,
+                                     ex.currentToken == null ? COMPLEX_ERROR_OFFSET : ex.currentToken.next.beginLine,
+                                     ex.currentToken == null ? COMPLEX_ERROR_OFFSET : ex.currentToken.next.beginColumn,
+                                     ex);
+        } catch (TypeException ex) {
+            //@internal we could also elongate "\nIn expression: " + expression, to the exception message.
+            throw ex;
+        } catch (IllegalArgumentException ex) {
+            //@internal we could also elongate "\nIn expression: " + expression, to the exception message.
+            throw ex;
+        } 
     }
     
     public Signature scanSignature(String expression) throws ParseException {
-	return ((Formula)createExpression(expression)).getSignature();
+        return ((Formula)createExpression(expression)).getSignature();
     }
 
 
@@ -469,20 +469,20 @@ abstract class ModernLogic implements Logic {
      * @see orbital.logic.imp.Inference#infer(Formula[],Formula)
      */
     public boolean infer(String w, String d) throws ParseException {
-	return infer(w, d, false);
+        return infer(w, d, false);
     } 
     private boolean infer(String w, String d, boolean verbose) throws ParseException {
-	Expression B_parsed[] = createAllExpressions(w);
-	Formula B[] = B_parsed instanceof Formula[]
-	    ? (Formula[]) B_parsed
-	    : (Formula[]) Arrays.asList(B_parsed).toArray(new Formula[0]);
-	Formula D = (Formula) createExpression(d);
-	logger.log(Level.FINEST, "Formula {0} has type {1} with sigma={2}", new Object[] {D, D.getType(), D.getSignature()});
-	if (verbose)
-	    System.out.println(MathUtilities.format(B) + "\t|=\t" + D + " ??");
-	return inference().infer(B, D);
+        Expression B_parsed[] = createAllExpressions(w);
+        Formula B[] = B_parsed instanceof Formula[]
+            ? (Formula[]) B_parsed
+            : (Formula[]) Arrays.asList(B_parsed).toArray(new Formula[0]);
+        Formula D = (Formula) createExpression(d);
+        logger.log(Level.FINEST, "Formula {0} has type {1} with sigma={2}", new Object[] {D, D.getType(), D.getSignature()});
+        if (verbose)
+            System.out.println(MathUtilities.format(B) + "\t|=\t" + D + " ??");
+        return inference().infer(B, D);
     } 
-	
+        
     /**
      * Create a sequence of (compound) expressions by parsing a list of expressions.
      * This method is like {@link #createExpression(String)}, but restricted to lists of expressions.
@@ -506,10 +506,10 @@ abstract class ModernLogic implements Logic {
      * @see #createExpression(String)
      */
     public Expression[] createAllExpressions(String expressions) throws ParseException {
-	Expression expr = createExpression(expressions);
-	assert expr instanceof ExpressionSequence : "parsed sequence of expressions";
-	return (Formula[]) Arrays.asList((Expression[]) ((ExpressionSequence)expr).getComponent())
-	    .toArray(new Formula[0]);
+        Expression expr = createExpression(expressions);
+        assert expr instanceof ExpressionSequence : "parsed sequence of expressions";
+        return (Formula[]) Arrays.asList((Expression[]) ((ExpressionSequence)expr).getComponent())
+            .toArray(new Formula[0]);
     }
 
     /**
@@ -518,13 +518,13 @@ abstract class ModernLogic implements Logic {
      * @todo can't we use new LogicParserTokenManager(signifier).getNextToken()?
      */
     private void isIDENTIFIER(Symbol symbol) {
-	String signifier = symbol.getSignifier();
-	for (int i = 0; i < signifier.length(); i++) {
-	    char ch = signifier.charAt(i);
-	    if ((i > 0 && !(ch == '_' || Character.isLetterOrDigit(ch)))
-		|| (i == 0 && !(ch == '_' || Character.isLetter(ch))))
-		throw new IllegalArgumentException("illegal character `" + ch + "' in symbol '" + symbol + "'");
-	}
+        String signifier = symbol.getSignifier();
+        for (int i = 0; i < signifier.length(); i++) {
+            char ch = signifier.charAt(i);
+            if ((i > 0 && !(ch == '_' || Character.isLetterOrDigit(ch)))
+                || (i == 0 && !(ch == '_' || Character.isLetter(ch))))
+                throw new IllegalArgumentException("illegal character `" + ch + "' in symbol '" + symbol + "'");
+        }
     }
 
     /**
@@ -533,13 +533,13 @@ abstract class ModernLogic implements Logic {
      * @todo can't we use new LogicParserTokenManager(signifier).getNextToken()?
      */
     private void isSTRING_LITERAL(Symbol symbol) {
-	String signifier = symbol.getSignifier();
-	if (signifier.length() < 2 || signifier.charAt(0) != '\"' || signifier.charAt(signifier.length() - 1) != '\"')
-	    throw new IllegalArgumentException("illegal character in string '" + symbol + "'");
-	for (int i = 1; i < signifier.length() - 1; i++) {
-	    char ch = signifier.charAt(i);
-	    if (ch == '\"' && signifier.charAt(i-1) != '\\')
-		throw new IllegalArgumentException("illegal character `" + ch + "' in string '" + symbol + "'");
-	}
+        String signifier = symbol.getSignifier();
+        if (signifier.length() < 2 || signifier.charAt(0) != '\"' || signifier.charAt(signifier.length() - 1) != '\"')
+            throw new IllegalArgumentException("illegal character in string '" + symbol + "'");
+        for (int i = 1; i < signifier.length() - 1; i++) {
+            char ch = signifier.charAt(i);
+            if (ch == '\"' && signifier.charAt(i-1) != '\\')
+                throw new IllegalArgumentException("illegal character `" + ch + "' in string '" + symbol + "'");
+        }
     }
 }

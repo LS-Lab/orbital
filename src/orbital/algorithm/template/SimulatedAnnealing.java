@@ -129,41 +129,41 @@ public class SimulatedAnnealing extends ScheduledLocalOptimizerSearch {
      * @preconditions ( lim<sub>t&rarr;&infin;</sub>schedule(t) = 0 &and; schedule decreases monotonically ) || <span class="provable">&#9633;</span>abnormal(schedule)
      */
     public SimulatedAnnealing(Function/*<GeneralSearchProblem.Option, Arithmetic>*/ heuristic, Function/*<Integer, Real>*/ schedule) {
-    	super(heuristic, schedule, FIRST_LOCAL_SELECTION);
+        super(heuristic, schedule, FIRST_LOCAL_SELECTION);
     }
     SimulatedAnnealing() {
-	this(null,null);
+        this(null,null);
     }
 
     /**
      * f(n) = h(n).
      */
     public Function getEvaluation() {
-    	return getHeuristic();
+        return getHeuristic();
     }
 
     /**
      * O(&infin;).
      */
     public orbital.math.functional.Function complexity() {
-	return orbital.math.functional.Functions.constant(Values.POSITIVE_INFINITY);
+        return orbital.math.functional.Functions.constant(Values.POSITIVE_INFINITY);
     }
     /**
      * O(b) where b is the branching factor and d the solution depth.
      */
     public orbital.math.functional.Function spaceComplexity() {
-	return orbital.math.functional.Functions.constant(Values.getDefaultInstance().symbol("b"));
+        return orbital.math.functional.Functions.constant(Values.getDefaultInstance().symbol("b"));
     }
     public boolean isOptimal() {
-    	return false;
+        return false;
     }
 
     public boolean isCorrect() {
-	return false;
+        return false;
     }
-	
+        
     protected Iterator createTraversal(final GeneralSearchProblem problem) {
-	return new OptionIterator(getLocalSelection().createLocalRestriction(problem, this), this);
+        return new OptionIterator(getLocalSelection().createLocalRestriction(problem, this), this);
     }
 
     /**
@@ -172,128 +172,128 @@ public class SimulatedAnnealing extends ScheduledLocalOptimizerSearch {
      * @author  Andr&eacute; Platzer
      */
     private static class OptionIterator extends LocalOptimizerSearch.OptionIterator {
-	private static final long serialVersionUID = -5170488902830279816L;
-	public OptionIterator(GeneralSearchProblem problem, ScheduledLocalOptimizerSearch algorithm) {
-	    super(problem, algorithm);
-	    this.currentValue = castedApply(algorithm.getEvaluation(), getState()).doubleValue();
-	    this.t = 0;
-	    // initialize to any value !=0 for hasNext() to return true. The real value will be calculated in  in accept(), anyway
-	    this.T = Double.POSITIVE_INFINITY;
-	}
+        private static final long serialVersionUID = -5170488902830279816L;
+        public OptionIterator(GeneralSearchProblem problem, ScheduledLocalOptimizerSearch algorithm) {
+            super(problem, algorithm);
+            this.currentValue = castedApply(algorithm.getEvaluation(), getState()).doubleValue();
+            this.t = 0;
+            // initialize to any value !=0 for hasNext() to return true. The real value will be calculated in  in accept(), anyway
+            this.T = Double.POSITIVE_INFINITY;
+        }
 
-	private double currentValue;
-	private int t;
-	// current temperature scheduled for successive cooling
-	private double T;
+        private double currentValue;
+        private int t;
+        // current temperature scheduled for successive cooling
+        private double T;
 
-	/**
-	 * {@inheritDoc}.
-	 * <p>
-	 * This implementation will always move to better nodes,
-	 * but only move to worse nodes with a probability of <b>e</b><sup>-&Delta;/T</sup>,
-	 * depending upon the decrease &Delta;:=f(s&#697;)-f(s).</p>
-	 */
-	public boolean accept(Object/*>S<*/ state, Object/*>S<*/ sp) {
-	    final ScheduledLocalOptimizerSearch algorithm = (ScheduledLocalOptimizerSearch) getAlgorithm();
-	    // current temperature scheduled for successive cooling
-	    this.T = castedApply(algorithm.getSchedule(), Values.getDefaultInstance().valueOf(t)).doubleValue();
-	    this.t++;
+        /**
+         * {@inheritDoc}.
+         * <p>
+         * This implementation will always move to better nodes,
+         * but only move to worse nodes with a probability of <b>e</b><sup>-&Delta;/T</sup>,
+         * depending upon the decrease &Delta;:=f(s&#697;)-f(s).</p>
+         */
+        public boolean accept(Object/*>S<*/ state, Object/*>S<*/ sp) {
+            final ScheduledLocalOptimizerSearch algorithm = (ScheduledLocalOptimizerSearch) getAlgorithm();
+            // current temperature scheduled for successive cooling
+            this.T = castedApply(algorithm.getSchedule(), Values.getDefaultInstance().valueOf(t)).doubleValue();
+            this.t++;
 
-	    final double value = castedApply(algorithm.getEvaluation(), sp).doubleValue();
-	    final double deltaEnergy = value - currentValue;
+            final double value = castedApply(algorithm.getEvaluation(), sp).doubleValue();
+            final double deltaEnergy = value - currentValue;
 
-	    // usually solution isSolution test is omitted, anyway, but we'll still call
-	    // if (getProblem().isSolution(sp))
-	    //     return true;
+            // usually solution isSolution test is omitted, anyway, but we'll still call
+            // if (getProblem().isSolution(sp))
+            //     return true;
 
-	    //@note negated use of deltaEnergy values everywhere since the evaluation evaluates cost and not utility (unlike Russel & Norvig who seem to consider maximizing energy instead of minimizing)
-	    // always move to better nodes,
-	    // but move to worse nodes, only with a certain probability
-	    if (deltaEnergy <= 0
-		|| Utility.flip(algorithm.getRandom(), Math.exp(-deltaEnergy / T))) {
-		if (logger.isLoggable(Level.FINER))
-		    logger.log(Level.FINER, "simulated annealing update (" + currentValue +") to (" + value + ") delta=" + deltaEnergy + (deltaEnergy > 0 ? "" : " with probability " + Math.exp(-deltaEnergy / T)));
-		// either an improvement, or decreasing by chance
-		currentValue = value;
-		return true;
-	    } else
-		return false;
-	}
+            //@note negated use of deltaEnergy values everywhere since the evaluation evaluates cost and not utility (unlike Russel & Norvig who seem to consider maximizing energy instead of minimizing)
+            // always move to better nodes,
+            // but move to worse nodes, only with a certain probability
+            if (deltaEnergy <= 0
+                || Utility.flip(algorithm.getRandom(), Math.exp(-deltaEnergy / T))) {
+                if (logger.isLoggable(Level.FINER))
+                    logger.log(Level.FINER, "simulated annealing update (" + currentValue +") to (" + value + ") delta=" + deltaEnergy + (deltaEnergy > 0 ? "" : " with probability " + Math.exp(-deltaEnergy / T)));
+                // either an improvement, or decreasing by chance
+                currentValue = value;
+                return true;
+            } else
+                return false;
+        }
 
-	public boolean hasNext() {
-	    return T != 0;
-	}
+        public boolean hasNext() {
+            return T != 0;
+        }
     };
 
     
     
 //     protected GeneralSearchProblem.Option solveImpl(GeneralSearchProblem problem) {
-// 	//@xxx Implement Iterator version. But the problem is how we can expand current again, all the time, and ignore node if it is too bad (but see below)
-// 	Collection/*<Option>*/ nodes = createCollection();
-// 	nodes.add(new GeneralSearchProblem.Option(problem.getInitialState()));
-// 	return search(nodes);
+//      //@xxx Implement Iterator version. But the problem is how we can expand current again, all the time, and ignore node if it is too bad (but see below)
+//      Collection/*<Option>*/ nodes = createCollection();
+//      nodes.add(new GeneralSearchProblem.Option(problem.getInitialState()));
+//      return search(nodes);
 //     }
 
 //     protected Collection/*<Option>*/ createCollection() {
-// 	return new java.util.LinkedList/*<Option>*/();
+//      return new java.util.LinkedList/*<Option>*/();
 //     }
 
 //     /**
 //      * Select a node, randomly.
 //      */
 //     protected GeneralSearchProblem.Option select(Collection nodes) {
-//     	List _nodes = (List) nodes;
-//     	// in principle unnecessary since add will discard old list, anyway
-//     	return (GeneralSearchProblem.Option) _nodes.remove(getRandom().nextInt(_nodes.size()));
+//      List _nodes = (List) nodes;
+//      // in principle unnecessary since add will discard old list, anyway
+//      return (GeneralSearchProblem.Option) _nodes.remove(getRandom().nextInt(_nodes.size()));
 //     }
 
 //     /**
 //      * discard old list, returning new.
 //      */
 //     protected Collection add(Collection newNodes, Collection oldNodes) {
-//     	return newNodes;
+//      return newNodes;
 //     }
 
 //     //@todo transform since this is a kind of following (or executing) a probabilistic TransitionModel
 //     protected GeneralSearchProblem.Option search(Collection nodes) {
-// 	// current node @xxx should be initial state!
-// 	GeneralSearchProblem.Option current = null;
-// 	double currentValue = Double.POSITIVE_INFINITY;
-// 	for (int t = 0; !nodes.isEmpty(); t++) {
-// 	    // current temperature scheduled for successive cooling
-// 	    final double T = castedApply(getSchedule(), Values.getDefaultInstance().valueOf(t)).doubleValue();
-// 	    if (T == 0)
-// 		return current;
-// 	    final GeneralSearchProblem.Option node = select(nodes);
+//      // current node @xxx should be initial state!
+//      GeneralSearchProblem.Option current = null;
+//      double currentValue = Double.POSITIVE_INFINITY;
+//      for (int t = 0; !nodes.isEmpty(); t++) {
+//          // current temperature scheduled for successive cooling
+//          final double T = castedApply(getSchedule(), Values.getDefaultInstance().valueOf(t)).doubleValue();
+//          if (T == 0)
+//              return current;
+//          final GeneralSearchProblem.Option node = select(nodes);
 
-// 	    if (current == null) {	// @xxx current should already be initial state, ensure once!
-// 		current = node;
-// 		// currentValue will be set below, since currentValue == Double.POSITIVE_INFINITY
-// 	    }
+//          if (current == null) {      // @xxx current should already be initial state, ensure once!
+//              current = node;
+//              // currentValue will be set below, since currentValue == Double.POSITIVE_INFINITY
+//          }
 
-// 	    // usually solution isSolution test is omitted, anyway, but we'll still call
-// 	    if (getProblem().isSolution(node))
-// 		return node;
-    		
-// 	    final double value = castedApply(getEvaluation(), node).doubleValue();
-// 	    final double deltaEnergy = value - currentValue;
-// 	    //@note negated use of deltaEnergy values everywhere since the evaluation evaluates cost and not utility (unlike Russel & Norvig who seem to consider maximizing energy instead of minimizing)
-// 	    // always move to better nodes,
-// 	    // but move to worse nodes, only with a certain probability
-// 	    if (deltaEnergy <= 0
-// 		|| Utility.flip(getRandom(), Math.exp(-deltaEnergy / T))) {
-// 		if (logger.isLoggable(Level.FINER))
-// 		    logger.log(Level.FINER, "simulated annealing update (" + currentValue +") to (" + value + ") delta=" + deltaEnergy + (deltaEnergy > 0 ? "" : " with probability " + Math.exp(-deltaEnergy / T)));
-// 		// either an improvement, or decreasing by chance
-// 		current = node;
-// 		currentValue = value;
-// 	    }
+//          // usually solution isSolution test is omitted, anyway, but we'll still call
+//          if (getProblem().isSolution(node))
+//              return node;
+                
+//          final double value = castedApply(getEvaluation(), node).doubleValue();
+//          final double deltaEnergy = value - currentValue;
+//          //@note negated use of deltaEnergy values everywhere since the evaluation evaluates cost and not utility (unlike Russel & Norvig who seem to consider maximizing energy instead of minimizing)
+//          // always move to better nodes,
+//          // but move to worse nodes, only with a certain probability
+//          if (deltaEnergy <= 0
+//              || Utility.flip(getRandom(), Math.exp(-deltaEnergy / T))) {
+//              if (logger.isLoggable(Level.FINER))
+//                  logger.log(Level.FINER, "simulated annealing update (" + currentValue +") to (" + value + ") delta=" + deltaEnergy + (deltaEnergy > 0 ? "" : " with probability " + Math.exp(-deltaEnergy / T)));
+//              // either an improvement, or decreasing by chance
+//              current = node;
+//              currentValue = value;
+//          }
 
-// 	    Collection children = orbital.util.Setops.asList(getProblem().expand(current));
-// 	    nodes = add(children, nodes);
-//     	}
+//          Collection children = orbital.util.Setops.asList(getProblem().expand(current));
+//          nodes = add(children, nodes);
+//      }
 
-//     	// current choice instead of failing
-//     	return current;
+//      // current choice instead of failing
+//      return current;
 //     }
 }

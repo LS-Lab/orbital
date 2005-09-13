@@ -50,17 +50,17 @@ public final class UIUtilities {
      * @see #setCenter(Component)
      */
     public static void setCenter(Component comp, Component parent) {
-	if (parent == null) {
-	    setCenter(comp);
-	    return;
-	} 
-	Dimension dlgSize = comp.getPreferredSize();
-	Dimension frmSize = parent.getSize();
-	Point	  loc = parent.getLocation();
-	if (dlgSize.width < frmSize.width && dlgSize.height < frmSize.height)
-	    comp.setLocation((frmSize.width - dlgSize.width) / 2 + loc.x, (frmSize.height - dlgSize.height) / 2 + loc.y);
-	else
-	    setCenter(comp);
+        if (parent == null) {
+            setCenter(comp);
+            return;
+        } 
+        Dimension dlgSize = comp.getPreferredSize();
+        Dimension frmSize = parent.getSize();
+        Point     loc = parent.getLocation();
+        if (dlgSize.width < frmSize.width && dlgSize.height < frmSize.height)
+            comp.setLocation((frmSize.width - dlgSize.width) / 2 + loc.x, (frmSize.height - dlgSize.height) / 2 + loc.y);
+        else
+            setCenter(comp);
     } 
 
     /**
@@ -70,13 +70,13 @@ public final class UIUtilities {
      * @preconditions comp.getSize() as on screen.
      */
     public static void setCenter(Component comp) {
-	Dimension screenSize = comp.getToolkit().getScreenSize();
-	Dimension frameSize = comp.getSize();
-	if (frameSize.height > screenSize.height)
-	    frameSize.height = screenSize.height;
-	if (frameSize.width > screenSize.width)
-	    frameSize.width = screenSize.width;
-	comp.setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
+        Dimension screenSize = comp.getToolkit().getScreenSize();
+        Dimension frameSize = comp.getSize();
+        if (frameSize.height > screenSize.height)
+            frameSize.height = screenSize.height;
+        if (frameSize.width > screenSize.width)
+            frameSize.width = screenSize.width;
+        comp.setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
     } 
 
     /**
@@ -99,9 +99,9 @@ public final class UIUtilities {
      * @see javax.swing.SwingUtilities#getAncestorOfClass(Class, Component)
      */
     public static Window getParentalWindow(Component n) {
-	while (!(n instanceof Window) && n != null)
-	    n = n.getParent();
-	return (Window) n;
+        while (!(n instanceof Window) && n != null)
+            n = n.getParent();
+        return (Window) n;
     } 
 
     /**
@@ -113,13 +113,13 @@ public final class UIUtilities {
      * @see javax.swing.SwingUtilities#getAncestorOfClass(Class, Component)
      */
     public static Frame getParentalFrame(Component n) {
-	while (!(n instanceof Frame) && n != null)
-	    n = n.getParent();
-	return (Frame) n;
+        while (!(n instanceof Frame) && n != null)
+            n = n.getParent();
+        return (Frame) n;
     } 
     
     // PLAF utilities
-	
+        
     /**
      * Adds pluggable look-and-feel menu items to a menu.
      * @param root which root component to set the look and feel for.
@@ -127,29 +127,29 @@ public final class UIUtilities {
      */
     public static void addLookAndFeelMenuItems(Component root, JMenu view) {
 
-	// Look and Feel Radio control
-	ButtonGroup		 group = new ButtonGroup();
-	ToggleUIListener toggleUIListener = new ToggleUIListener(root);
+        // Look and Feel Radio control
+        ButtonGroup              group = new ButtonGroup();
+        ToggleUIListener toggleUIListener = new ToggleUIListener(root);
 
-	metalMenuItem = (JRadioButtonMenuItem) view.add(new JRadioButtonMenuItem("Java Look and Feel"));
-	metalMenuItem.setSelected(UIManager.getLookAndFeel().getName().equals("Metal"));
+        metalMenuItem = (JRadioButtonMenuItem) view.add(new JRadioButtonMenuItem("Java Look and Feel"));
+        metalMenuItem.setSelected(UIManager.getLookAndFeel().getName().equals("Metal"));
 
-	// metalMenuItem.setSelected(true);
-	group.add(metalMenuItem);
-	metalMenuItem.addItemListener(toggleUIListener);
-	metalMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, ActionEvent.ALT_MASK));
+        // metalMenuItem.setSelected(true);
+        group.add(metalMenuItem);
+        metalMenuItem.addItemListener(toggleUIListener);
+        metalMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, ActionEvent.ALT_MASK));
 
-	JRadioButtonMenuItem motifMenuItem = (JRadioButtonMenuItem) view.add(new JRadioButtonMenuItem("Motif Look and Feel"));
-	motifMenuItem.setSelected(UIManager.getLookAndFeel().getName().equals("CDE/Motif"));
-	group.add(motifMenuItem);
-	motifMenuItem.addItemListener(toggleUIListener);
-	motifMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2, ActionEvent.ALT_MASK));
+        JRadioButtonMenuItem motifMenuItem = (JRadioButtonMenuItem) view.add(new JRadioButtonMenuItem("Motif Look and Feel"));
+        motifMenuItem.setSelected(UIManager.getLookAndFeel().getName().equals("CDE/Motif"));
+        group.add(motifMenuItem);
+        motifMenuItem.addItemListener(toggleUIListener);
+        motifMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2, ActionEvent.ALT_MASK));
 
-	JRadioButtonMenuItem windowsMenuItem = (JRadioButtonMenuItem) view.add(new JRadioButtonMenuItem("Windows Style Look and Feel"));
-	windowsMenuItem.setSelected(UIManager.getLookAndFeel().getName().equals("Windows"));
-	group.add(windowsMenuItem);
-	windowsMenuItem.addItemListener(toggleUIListener);
-	windowsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_3, ActionEvent.ALT_MASK));
+        JRadioButtonMenuItem windowsMenuItem = (JRadioButtonMenuItem) view.add(new JRadioButtonMenuItem("Windows Style Look and Feel"));
+        windowsMenuItem.setSelected(UIManager.getLookAndFeel().getName().equals("Windows"));
+        group.add(windowsMenuItem);
+        windowsMenuItem.addItemListener(toggleUIListener);
+        windowsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_3, ActionEvent.ALT_MASK));
     } 
 
     /**
@@ -157,9 +157,9 @@ public final class UIUtilities {
      * @see javax.swing.UIManager
      */
     public static void setDefaultLookAndFeel() {
-	try {
-	    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-	} catch (Exception e) {}
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {}
     } 
 
     private static JRadioButtonMenuItem metalMenuItem;
@@ -168,116 +168,116 @@ public final class UIUtilities {
      * Switch between the Windows, Motif, Mac, and the Java Look and Feel
      */
     static class ToggleUIListener implements ItemListener {
-	protected Component root;
-	public ToggleUIListener(Component root) {
-	    this.root = root;
-	}
-	public void itemStateChanged(ItemEvent e) {
-	    root.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-	    JRadioButtonMenuItem rb = (JRadioButtonMenuItem) e.getSource();
-	    try {
-		if (rb.isSelected() && rb.getText().equals("Windows Style Look and Feel")) {
-		    UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-		    SwingUtilities.updateComponentTreeUI(root);
-		} else if (rb.isSelected() && rb.getText().equals("Macintosh Look and Feel")) {
-		    UIManager.setLookAndFeel("javax.swing.plaf.mac.MacLookAndFeel");
-		    SwingUtilities.updateComponentTreeUI(root);
-		} else if (rb.isSelected() && rb.getText().equals("Motif Look and Feel")) {
-		    UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
-		    SwingUtilities.updateComponentTreeUI(root);
-		} else if (rb.isSelected() && rb.getText().equals("Java Look and Feel")) {
+        protected Component root;
+        public ToggleUIListener(Component root) {
+            this.root = root;
+        }
+        public void itemStateChanged(ItemEvent e) {
+            root.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            JRadioButtonMenuItem rb = (JRadioButtonMenuItem) e.getSource();
+            try {
+                if (rb.isSelected() && rb.getText().equals("Windows Style Look and Feel")) {
+                    UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+                    SwingUtilities.updateComponentTreeUI(root);
+                } else if (rb.isSelected() && rb.getText().equals("Macintosh Look and Feel")) {
+                    UIManager.setLookAndFeel("javax.swing.plaf.mac.MacLookAndFeel");
+                    SwingUtilities.updateComponentTreeUI(root);
+                } else if (rb.isSelected() && rb.getText().equals("Motif Look and Feel")) {
+                    UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+                    SwingUtilities.updateComponentTreeUI(root);
+                } else if (rb.isSelected() && rb.getText().equals("Java Look and Feel")) {
 
-		    // javax.swing.plaf.metal.MetalLookAndFeel.setCurrentTheme(
-		    // new javax.swing.plaf.metal.DefaultMetalTheme());
-		    UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-		    SwingUtilities.updateComponentTreeUI(root);
-		} 
-	    } catch (UnsupportedLookAndFeelException exc) {
-		rb.setEnabled(false);
-		System.err.println("Unsupported LookAndFeel: " + rb.getText());
+                    // javax.swing.plaf.metal.MetalLookAndFeel.setCurrentTheme(
+                    // new javax.swing.plaf.metal.DefaultMetalTheme());
+                    UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+                    SwingUtilities.updateComponentTreeUI(root);
+                } 
+            } catch (UnsupportedLookAndFeelException exc) {
+                rb.setEnabled(false);
+                System.err.println("Unsupported LookAndFeel: " + rb.getText());
 
-		// Set L&F to JLF
-		try {
-		    metalMenuItem.setSelected(true);
-		    UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-		    SwingUtilities.updateComponentTreeUI(root);
-		} catch (Exception exc2) {
-		    exc2.printStackTrace();
-		    System.err.println("Could not load LookAndFeel: " + exc2);
-		    exc2.printStackTrace();
-		} 
-	    } catch (Exception exc) {
-		rb.setEnabled(false);
-		exc.printStackTrace();
-		System.err.println("Could not load LookAndFeel: " + rb.getText());
-		exc.printStackTrace();
-	    } 
+                // Set L&F to JLF
+                try {
+                    metalMenuItem.setSelected(true);
+                    UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+                    SwingUtilities.updateComponentTreeUI(root);
+                } catch (Exception exc2) {
+                    exc2.printStackTrace();
+                    System.err.println("Could not load LookAndFeel: " + exc2);
+                    exc2.printStackTrace();
+                } 
+            } catch (Exception exc) {
+                rb.setEnabled(false);
+                exc.printStackTrace();
+                System.err.println("Could not load LookAndFeel: " + rb.getText());
+                exc.printStackTrace();
+            } 
 
-	    root.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-	} 
+            root.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        } 
 
     }
 
     public static void printBean(Class beanClass) {
-	printBean(beanClass, System.out);
+        printBean(beanClass, System.out);
     } 
 
     /**
      * Print Information on a bean.
      */
     public static void printBean(Class beanClass, PrintStream ps) {
-	try {
-	    BeanInfo info = Introspector.getBeanInfo(beanClass, Introspector.USE_ALL_BEANINFO);
-	    if (info == null)
-		throw new NullPointerException("no BeanInfo for class: " + beanClass);
-	    BeanDescriptor desc = info.getBeanDescriptor();
-	    if (desc == null)
-		throw new NullPointerException("no BeanDescriptor for class: " + beanClass);
-	    ps.println(info(desc) + " " + desc.getBeanClass() + " " + info);
-	    PropertyDescriptor[] beanProperties = info.getPropertyDescriptors();
-	    if (beanProperties == null)
-		throw new NullPointerException("no PropertyDescriptors for class: " + beanClass);
+        try {
+            BeanInfo info = Introspector.getBeanInfo(beanClass, Introspector.USE_ALL_BEANINFO);
+            if (info == null)
+                throw new NullPointerException("no BeanInfo for class: " + beanClass);
+            BeanDescriptor desc = info.getBeanDescriptor();
+            if (desc == null)
+                throw new NullPointerException("no BeanDescriptor for class: " + beanClass);
+            ps.println(info(desc) + " " + desc.getBeanClass() + " " + info);
+            PropertyDescriptor[] beanProperties = info.getPropertyDescriptors();
+            if (beanProperties == null)
+                throw new NullPointerException("no PropertyDescriptors for class: " + beanClass);
 
-	    for (int i = 0; i < beanProperties.length; i++) {
-		if (beanProperties[i].isHidden())
-		    continue;
-		ps.println(info(beanProperties[i]));
-	    } 
-	} catch (IntrospectionException e) {
-	    throw new InnerCheckedException("bean not introspectable", e);
-	} 
+            for (int i = 0; i < beanProperties.length; i++) {
+                if (beanProperties[i].isHidden())
+                    continue;
+                ps.println(info(beanProperties[i]));
+            } 
+        } catch (IntrospectionException e) {
+            throw new InnerCheckedException("bean not introspectable", e);
+        } 
     } 
 
     /**
      * Get Information on a feature descriptor.
      */
     public static String info(FeatureDescriptor desc) {
-	StringBuffer sb = new StringBuffer();
-	sb.append(desc.getName());
-	if (!desc.getName().equals(desc.getDisplayName()))
-	    sb.append(" '" + desc.getDisplayName() + "'");
-	if (!desc.getName().equals(desc.getShortDescription()))
-	    sb.append(System.getProperty("line.separator") + "  \"" + desc.getShortDescription() + '"');
-	return sb.toString();
+        StringBuffer sb = new StringBuffer();
+        sb.append(desc.getName());
+        if (!desc.getName().equals(desc.getDisplayName()))
+            sb.append(" '" + desc.getDisplayName() + "'");
+        if (!desc.getName().equals(desc.getShortDescription()))
+            sb.append(System.getProperty("line.separator") + "  \"" + desc.getShortDescription() + '"');
+        return sb.toString();
     } 
 
     /**
      * Get Information on a property descriptor.
      */
     public static String info(PropertyDescriptor desc) {
-	String		 nl = System.getProperty("line.separator");
-	StringBuffer sb = new StringBuffer(info((FeatureDescriptor) desc) + nl + "  " + desc.getPropertyType() + ", ");
-	if (desc.getReadMethod() != null)		  // we have a reader
-	    if (desc.getWriteMethod() != null)	  // and we have a writer
-		sb.append("readwrite");
-	    else								  // but we have no writer
-		sb.append("readonly");
-	else									  // we have no reader
-	    if (desc.getWriteMethod() != null)		  // but we have a writer
-		sb.append("writeonly");
-	    else									  // and we have no writer
-		sb.append("inaccessible");
-	sb.append(", " + (desc.isBound() ? "bound" : "not bound") + ", " + (desc.isConstrained() ? "constrained" : "not constrained"));
-	return sb.toString();
+        String           nl = System.getProperty("line.separator");
+        StringBuffer sb = new StringBuffer(info((FeatureDescriptor) desc) + nl + "  " + desc.getPropertyType() + ", ");
+        if (desc.getReadMethod() != null)                 // we have a reader
+            if (desc.getWriteMethod() != null)    // and we have a writer
+                sb.append("readwrite");
+            else                                                                  // but we have no writer
+                sb.append("readonly");
+        else                                                                      // we have no reader
+            if (desc.getWriteMethod() != null)            // but we have a writer
+                sb.append("writeonly");
+            else                                                                          // and we have no writer
+                sb.append("inaccessible");
+        sb.append(", " + (desc.isBound() ? "bound" : "not bound") + ", " + (desc.isConstrained() ? "constrained" : "not constrained"));
+        return sb.toString();
     } 
 }

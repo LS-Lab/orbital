@@ -21,14 +21,14 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 public final class EmptyTransferable implements Transferable {
     protected DataFlavor supportedFlavors[] = null;
     public DataFlavor[] getTransferDataFlavors() {
-	return supportedFlavors;
+        return supportedFlavors;
     } 
 
     public boolean isDataFlavorSupported(DataFlavor flavor) {
-	return false;
+        return false;
     } 
 
     public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException {
-	throw new UnsupportedFlavorException(flavor);
+        throw new UnsupportedFlavorException(flavor);
     } 
 }

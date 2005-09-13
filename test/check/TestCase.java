@@ -15,13 +15,13 @@ package check;
  */
 public abstract class TestCase extends junit.framework.TestCase {
     public TestCase() {
-	
+        
     }
     public TestCase(String name) {
-	super(name);
+        super(name);
     }
 
     public static void assertTrue(boolean condition, String message) {
-	junit.framework.TestCase.assertTrue(message, condition);
+        junit.framework.TestCase.assertTrue(message, condition);
     }
 }// TestCase

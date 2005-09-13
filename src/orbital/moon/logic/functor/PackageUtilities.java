@@ -18,13 +18,13 @@ final class PackageUtilities {
      * interpretation for a truth-value
      */
     static final Object toTruth(boolean b) {
-	return b ? Boolean.TRUE : Boolean.FALSE;
+        return b ? Boolean.TRUE : Boolean.FALSE;
     } 
     
     /**
      * truth-value of a value object
      */
     static final boolean getTruth(Object v) {
-	return ((Boolean) v).booleanValue();
+        return ((Boolean) v).booleanValue();
     } 
 }

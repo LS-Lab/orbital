@@ -18,6 +18,6 @@ public class RecursionStoppedException extends RuntimeException {
     public RecursionStoppedException() {}
 
     public RecursionStoppedException(String spec) {
-	super(spec);
+        super(spec);
     }
 }

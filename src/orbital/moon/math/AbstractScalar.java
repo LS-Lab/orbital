@@ -27,17 +27,17 @@ abstract class AbstractScalar extends Number implements Scalar, Serializable {
     public abstract int compareTo(Object o);
 
     public boolean equals(Object o, Real tolerance) {
-	return Metric.INDUCED.distance(this, (Arithmetic)o).compareTo(tolerance) < 0;
+        return Metric.INDUCED.distance(this, (Arithmetic)o).compareTo(tolerance) < 0;
     }
 
     public int intValue() {
-	return (int) longValue();
+        return (int) longValue();
     } 
     public long longValue() {
-	return (long) doubleValue();
+        return (long) doubleValue();
     } 
     public float floatValue() {
-	return (float) doubleValue();
+        return (float) doubleValue();
     } 
 
     /**
@@ -45,11 +45,11 @@ abstract class AbstractScalar extends Number implements Scalar, Serializable {
      * @see ArithmeticFormat#format(Arithmetic)
      */
     public String toString() {
-	return ArithmeticFormat.getDefaultInstance().format(this);
+        return ArithmeticFormat.getDefaultInstance().format(this);
     } 
 
     public Arithmetic scale(Arithmetic alpha) {
-	return multiply(alpha);
+        return multiply(alpha);
     }
 
     /**

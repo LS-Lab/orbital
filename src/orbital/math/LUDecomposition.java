@@ -56,9 +56,9 @@ public final class LUDecomposition/*<R implements Arithmetic>*/ implements Seria
      * @preconditions <span class="matrix">A</span>.isSquare()
      */
     protected LUDecomposition(Matrix/*<R>*/ A, Matrix/*<R>*/ P, boolean sign) {
-	this.A = A;
-	this.P = P;
-	this.sign = sign;
+        this.A = A;
+        this.P = P;
+        this.sign = sign;
     }
     /**
      * Gaussian LU-decomposition implementation.
@@ -68,73 +68,73 @@ public final class LUDecomposition/*<R implements Arithmetic>*/ implements Seria
      * @todo optimize
      */
     private LUDecomposition(Matrix/*<R>*/ M) {
-	if (!M.isSquare())
-	    throw new IllegalArgumentException("only square matrices can be LU-decomposed");
-	// we restrict ourselves to AbstractMatrix because they have these nice swapRows methods which might possibly have an incredible speed
-	AbstractMatrix/*<R>*/ A = (AbstractMatrix) M.clone();
-	AbstractMatrix/*<R>*/ P = (AbstractMatrix/*<R>*/) (Matrix/*<R>*/) Values.getDefaultInstance().IDENTITY(A.dimension());
-	sign = true;
-	for (int k = 0; k < A.dimension().width - 1; k++) {	   /* last column need not be eliminated, so -1 */
+        if (!M.isSquare())
+            throw new IllegalArgumentException("only square matrices can be LU-decomposed");
+        // we restrict ourselves to AbstractMatrix because they have these nice swapRows methods which might possibly have an incredible speed
+        AbstractMatrix/*<R>*/ A = (AbstractMatrix) M.clone();
+        AbstractMatrix/*<R>*/ P = (AbstractMatrix/*<R>*/) (Matrix/*<R>*/) Values.getDefaultInstance().IDENTITY(A.dimension());
+        sign = true;
+        for (int k = 0; k < A.dimension().width - 1; k++) {        /* last column need not be eliminated, so -1 */
 
-	    // column pivotising
-	    {
-		// @see orbital.util.Setops#argmax
-		int pivot = k;
-		for (int i = k + 1; i < A.dimension().height; i++)
-		    if ((A.get(i, k).norm()).compareTo(A.get(pivot, k).norm()) > 0)
-			pivot = i;
-		if (pivot != k) {
-		    A.swapRows(k, pivot);
-		    P.swapRows(k, pivot);
-		    sign = !sign;
-		}
-	    }
+            // column pivotising
+            {
+                // @see orbital.util.Setops#argmax
+                int pivot = k;
+                for (int i = k + 1; i < A.dimension().height; i++)
+                    if ((A.get(i, k).norm()).compareTo(A.get(pivot, k).norm()) > 0)
+                        pivot = i;
+                if (pivot != k) {
+                    A.swapRows(k, pivot);
+                    P.swapRows(k, pivot);
+                    sign = !sign;
+                }
+            }
 
-	    Arithmetic apinv;
-	    try {
-		apinv = A.get(k, k).inverse();
-	    }
-	    catch(ArithmeticException x) {continue;}
-	    for (int i = k + 1; i < A.dimension().height; i++)
-		A.set(i, k, (Arithmetic/*>R<*/) A.get(i, k).multiply(apinv));
+            Arithmetic apinv;
+            try {
+                apinv = A.get(k, k).inverse();
+            }
+            catch(ArithmeticException x) {continue;}
+            for (int i = k + 1; i < A.dimension().height; i++)
+                A.set(i, k, (Arithmetic/*>R<*/) A.get(i, k).multiply(apinv));
 
-	    // partial multiplication (of upper triangular part, only)
-	    for (int i = k + 1; i < A.dimension().height; i++)
-		for (int j = k + 1; j < A.dimension().width; j++)
-		    A.set(i, j, (Arithmetic/*>R<*/) A.get(i, j).subtract(A.get(i, k).multiply(A.get(k, j))));
-	} 
-	this.A = A;
-	this.P = P;
-	assert P.multiply(M).equals(getL().multiply(getU()), Values.getDefaultInstance().valueOf(MathUtilities.getDefaultTolerance())) : "P.A = L.U: " + P + "*" + M + "=" + P.multiply(M) + "  =  " + getL().multiply(getU()) + "=" + getL() + "*" + getU();
+            // partial multiplication (of upper triangular part, only)
+            for (int i = k + 1; i < A.dimension().height; i++)
+                for (int j = k + 1; j < A.dimension().width; j++)
+                    A.set(i, j, (Arithmetic/*>R<*/) A.get(i, j).subtract(A.get(i, k).multiply(A.get(k, j))));
+        } 
+        this.A = A;
+        this.P = P;
+        assert P.multiply(M).equals(getL().multiply(getU()), Values.getDefaultInstance().valueOf(MathUtilities.getDefaultTolerance())) : "P.A = L.U: " + P + "*" + M + "=" + P.multiply(M) + "  =  " + getL().multiply(getU()) + "=" + getL() + "*" + getU();
 
-	/*
-	  Alternative implementation:
-	  Matrix A = new Matrix(this);                    // could also contain lower triangular as well as upper triangular
-	  Matrix L = IDENTITY(dimension().width);         // lower triangular matrix
-	  Matrix U = new Matrix(A); 			            // upper triangular matrix
-	  Matrix P = IDENTITY(dimension().width);			// permutation matrix
-	  for (int k=0; k<dimension().width; k++) {
-	  // column pivotising
-	  int pivot = k;
-	  for (int j = pivot+1; j<dimension().height; j++)
-	  if (A.get(j,k)>A.get(pivot,k))
-	  pivot = j;
-	  A.swapRows(k, pivot);
-	  P.swapRows(k, pivot);
-	  U.swapRows(k, pivot);
-	 
-	  Matrix lk = new Matrix(dimension().height, 1);
-	  for (int j=k+1; j<lk.dimension().height; j++)
-	  lk.set(j, 0, A.get(j,k) / A.get(k,k));
-	  Matrix t = lk.multiply(Vector.BASE(dimension().width, k).transpose());
-	 
-	  Matrix Lk = IDENTITY(dimension().width).subtract(t);
-	  L = L.add(t);
-	  U = Lk.multiply(U);
-	  A = Lk.multiply(A);
-	  }
-	  return new Matrix[] {L,U,P};
-	*/
+        /*
+          Alternative implementation:
+          Matrix A = new Matrix(this);                    // could also contain lower triangular as well as upper triangular
+          Matrix L = IDENTITY(dimension().width);         // lower triangular matrix
+          Matrix U = new Matrix(A);                                 // upper triangular matrix
+          Matrix P = IDENTITY(dimension().width);                       // permutation matrix
+          for (int k=0; k<dimension().width; k++) {
+          // column pivotising
+          int pivot = k;
+          for (int j = pivot+1; j<dimension().height; j++)
+          if (A.get(j,k)>A.get(pivot,k))
+          pivot = j;
+          A.swapRows(k, pivot);
+          P.swapRows(k, pivot);
+          U.swapRows(k, pivot);
+         
+          Matrix lk = new Matrix(dimension().height, 1);
+          for (int j=k+1; j<lk.dimension().height; j++)
+          lk.set(j, 0, A.get(j,k) / A.get(k,k));
+          Matrix t = lk.multiply(Vector.BASE(dimension().width, k).transpose());
+         
+          Matrix Lk = IDENTITY(dimension().width).subtract(t);
+          L = L.add(t);
+          U = Lk.multiply(U);
+          A = Lk.multiply(A);
+          }
+          return new Matrix[] {L,U,P};
+        */
     } 
     
     /**
@@ -144,7 +144,7 @@ public final class LUDecomposition/*<R implements Arithmetic>*/ implements Seria
      * @preconditions M.isSquare()
      */
     public static /*<R implements Arithmetic>*/ LUDecomposition/*<R>*/ decompose(Matrix/*<R>*/ M) {
-	return new LUDecomposition/*<R>*/(M);
+        return new LUDecomposition/*<R>*/(M);
     }
 
     /**
@@ -152,16 +152,16 @@ public final class LUDecomposition/*<R implements Arithmetic>*/ implements Seria
      * @see Matrix#isInvertible()
      */
     public boolean isInvertible() throws ArithmeticException {
-	for (int i = 0; i < A.dimension().height; i++)
-	    if (A.get(i, i).norm().equals(Values.ZERO))
-		return false;
-	return true;
+        for (int i = 0; i < A.dimension().height; i++)
+            if (A.get(i, i).norm().equals(Values.ZERO))
+                return false;
+        return true;
     }
     /**
      * @deprecated Since Orbital1.1 use {@link #isInvertible()} instead.
      */
     public boolean isRegular() throws ArithmeticException {
-	return isInvertible();
+        return isInvertible();
     }
 
     /**
@@ -170,7 +170,7 @@ public final class LUDecomposition/*<R implements Arithmetic>*/ implements Seria
      * @see Matrix#linearRank()
      */
     public int linearRank() {
-	return Setops.count(A.getDiagonal().iterator(), Functionals.compose(Functionals.bindSecond(Predicates.unequal, Values.ZERO), Functions.norm));
+        return Setops.count(A.getDiagonal().iterator(), Functionals.compose(Functionals.bindSecond(Predicates.unequal, Values.ZERO), Functions.norm));
     }
 
     /**
@@ -181,8 +181,8 @@ public final class LUDecomposition/*<R implements Arithmetic>*/ implements Seria
      * @see Matrix#det()
      */
     public Arithmetic/*>R<*/ det() {
-	Arithmetic/*>R<*/ detU = (Arithmetic/*>R<*/) Functionals.foldRight(Operations.times, Values.ONE, A.getDiagonal().iterator());
-	return sign ? detU : (Arithmetic/*>R<*/) detU.minus();
+        Arithmetic/*>R<*/ detU = (Arithmetic/*>R<*/) Functionals.foldRight(Operations.times, Values.ONE, A.getDiagonal().iterator());
+        return sign ? detU : (Arithmetic/*>R<*/) detU.minus();
     }
 
     // extract triangular matrices from <span class="matrix">A</span>
@@ -193,29 +193,29 @@ public final class LUDecomposition/*<R implements Arithmetic>*/ implements Seria
      * with an absolute &le;1.</p>
      */
     public Matrix/*<R>*/ getL() {
-	Matrix/*<R>*/ L = Values.getDefaultInstance().IDENTITY(A.dimension());
-	for (int i = 0; i < A.dimension().height; i++)
-	    for (int j = 0; j < i; j++)
-		L.set(i, j, A.get(i, j));
-	return L;
+        Matrix/*<R>*/ L = Values.getDefaultInstance().IDENTITY(A.dimension());
+        for (int i = 0; i < A.dimension().height; i++)
+            for (int j = 0; j < i; j++)
+                L.set(i, j, A.get(i, j));
+        return L;
     }
 
     /**
      * upper triangular matrix <span class="matrix">U</span>.
      */
     public Matrix/*<R>*/ getU() {
-	Matrix/*<R>*/ U = Values.getDefaultInstance().ZERO(A.dimension());
-	for (int i = 0; i < A.dimension().height; i++)
-	    for (int j = i; j < A.dimension().width; j++)
-		U.set(i, j, A.get(i, j));
-	return U;
+        Matrix/*<R>*/ U = Values.getDefaultInstance().ZERO(A.dimension());
+        for (int i = 0; i < A.dimension().height; i++)
+            for (int j = i; j < A.dimension().width; j++)
+                U.set(i, j, A.get(i, j));
+        return U;
     }
 
     /**
      * permutation matrix.
      */
     public Matrix/*<R>*/ getP() {
-	return Values.getDefaultInstance().constant(P);
+        return Values.getDefaultInstance().constant(P);
     }
 
     /**
@@ -228,25 +228,25 @@ public final class LUDecomposition/*<R implements Arithmetic>*/ implements Seria
      * @return x such that <span class="matrix">A</span>&#8729;<span class="vector">x</span> = <span class="vector">b</span>.
      */
     public Vector/*<R>*/ solve(Vector/*<R>*/ b) {
-	Vector/*<R>*/ c = P.multiply(b);
-	Vector/*<R>*/ z = Values.getDefaultInstance().newInstance(A.dimension().width);
-	// forward-substitution of L.z = P.b = c
-	for (int i = 0; i < A.dimension().height; i++) {
-	    Arithmetic/*>R<*/ t = c.get(i);
-	    for (int j = 0; j < i; j++)
-		t = (Arithmetic/*>R<*/) t.subtract(A.get(i, j).multiply(z.get(j)));
-	    // need not divide by l[i,i]=1
-	    z.set(i, t);
-	}
+        Vector/*<R>*/ c = P.multiply(b);
+        Vector/*<R>*/ z = Values.getDefaultInstance().newInstance(A.dimension().width);
+        // forward-substitution of L.z = P.b = c
+        for (int i = 0; i < A.dimension().height; i++) {
+            Arithmetic/*>R<*/ t = c.get(i);
+            for (int j = 0; j < i; j++)
+                t = (Arithmetic/*>R<*/) t.subtract(A.get(i, j).multiply(z.get(j)));
+            // need not divide by l[i,i]=1
+            z.set(i, t);
+        }
 
-	Vector/*<R>*/ x = Values.getDefaultInstance().newInstance(A.dimension().width);
-	// backward-substitution of R.x = z
-	for (int i = A.dimension().height - 1; i >= 0; i--) {
-	    Arithmetic/*>R<*/ t = c.get(i);
-	    for (int j = i + 1; j < A.dimension().width; j++)
-		t = (Arithmetic/*>R<*/) t.subtract(A.get(i, j).multiply(x.get(j)));
-	    x.set(i, (Arithmetic/*>R<*/) t.divide(A.get(i,i)));
-	}
-	return x;
+        Vector/*<R>*/ x = Values.getDefaultInstance().newInstance(A.dimension().width);
+        // backward-substitution of R.x = z
+        for (int i = A.dimension().height - 1; i >= 0; i--) {
+            Arithmetic/*>R<*/ t = c.get(i);
+            for (int j = i + 1; j < A.dimension().width; j++)
+                t = (Arithmetic/*>R<*/) t.subtract(A.get(i, j).multiply(x.get(j)));
+            x.set(i, (Arithmetic/*>R<*/) t.divide(A.get(i,i)));
+        }
+        return x;
     }
 }

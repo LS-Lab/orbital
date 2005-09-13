@@ -23,18 +23,18 @@ import java.util.Map;
 public
 class Matching implements Predicate {
 
-	/**
-	 * The Map that contains all VoidPredicates associated with the Objects.
-	 * 
-	 * @serial
-	 */
-	protected Map conditions;
-	public Matching(Map conds) {
-		conditions = conds;
-	}
+        /**
+         * The Map that contains all VoidPredicates associated with the Objects.
+         * 
+         * @serial
+         */
+        protected Map conditions;
+        public Matching(Map conds) {
+                conditions = conds;
+        }
 
-	public boolean apply(Object obj) {
-		VoidPredicate pred = (VoidPredicate) conditions.get(obj);
-		return pred.apply();
-	} 
+        public boolean apply(Object obj) {
+                VoidPredicate pred = (VoidPredicate) conditions.get(obj);
+                return pred.apply();
+        } 
 }

@@ -40,7 +40,7 @@ class ArithmeticTensor/*<R implements Arithmetic>*/ extends AbstractTensor/*<R>*
      * Creates a new Tensor with dimension n<sub>1</sub>&times;n<sub>2</sub>&times;&#8230;&times;n<sub>r</sub>.
      */
     public ArithmeticTensor(int[] dimensions) {
- 	D = (Object[]) Array.newInstance(Arithmetic/*>R<*/.class, dimensions);
+        D = (Object[]) Array.newInstance(Arithmetic/*>R<*/.class, dimensions);
     }
 
     /**
@@ -49,7 +49,7 @@ class ArithmeticTensor/*<R implements Arithmetic>*/ extends AbstractTensor/*<R>*
      * @preconditions values is rectangular, i.e. values[i<sub>1</sub>]...[i<sub>k-1</sub>][i<sub>k</sub>].length==values[i<sub>1</sub>]...[i<sub>k-1</sub>][i<sub>k</sub>-1].length etc.
      */
     public ArithmeticTensor(Object values[]) {
-	this((Object)values);
+        this((Object)values);
     }
     /**
      * creates a new Tensor backed by a multi-dimensional array of arithmetic objects.
@@ -58,32 +58,32 @@ class ArithmeticTensor/*<R implements Arithmetic>*/ extends AbstractTensor/*<R>*
      * @preconditions values is rectangular, i.e. values[i<sub>1</sub>]...[i<sub>k-1</sub>][i<sub>k</sub>].length==values[i<sub>1</sub>]...[i<sub>k-1</sub>][i<sub>k</sub>-1].length etc.
      */
     public ArithmeticTensor(Object values) {
-	if (values == null)
-	    throw new NullPointerException("illegal tensor " + values);
-	else if (!values.getClass().isArray())
-	    throw new UnsupportedOperationException("tensors of rank 0 should not get wrapped into tensors of non array type");
-	final int[] dim = Utility.dimensions(values);
-	// check rectangular and that base type is instanceof Arithmetic or primitive
-	Utility.pre(checkRectangular(dim, 0, values), "multi-dimensional array of " + Arithmetic.class + " expected. found " + values);
-	final Combinatorical index = Combinatorical.getPermutations(dim);
-	// whether the array has primitive types
-	final boolean primitive = Values.isPrimitiveWrapper(Utility.getPart(values, index.next()).getClass());
-	index.previous();
-	assert primitive || values instanceof Object[] : "";
-	// convert to Arithmetic array in case of primitive type arrays
-	this.D = primitive
-	    ? (Object[]) Array.newInstance(Arithmetic.class, dim)
-	    : (Object[]) values;
-	while (index.hasNext()) {
-	    final int[] i = index.next();
-	    final Object ai = Utility.getPart(values, i);
-	    Utility.pre(ai != null, "multi-dimensional array does not contain " + ai);
-	    Utility.pre(primitive == Values.isPrimitiveWrapper(ai.getClass()), "multi-dimensional array either consistently has " + Arithmetic.class + " or consistently contains primitive types");
-	    if (primitive) {
-		assert ai instanceof Number : "primitive type get wrapped into instances of " + Number.class;
-		Utility.setPart(D, i, Values.getDefaultInstance().valueOf((Number)ai));
-	    }
-	}
+        if (values == null)
+            throw new NullPointerException("illegal tensor " + values);
+        else if (!values.getClass().isArray())
+            throw new UnsupportedOperationException("tensors of rank 0 should not get wrapped into tensors of non array type");
+        final int[] dim = Utility.dimensions(values);
+        // check rectangular and that base type is instanceof Arithmetic or primitive
+        Utility.pre(checkRectangular(dim, 0, values), "multi-dimensional array of " + Arithmetic.class + " expected. found " + values);
+        final Combinatorical index = Combinatorical.getPermutations(dim);
+        // whether the array has primitive types
+        final boolean primitive = Values.isPrimitiveWrapper(Utility.getPart(values, index.next()).getClass());
+        index.previous();
+        assert primitive || values instanceof Object[] : "";
+        // convert to Arithmetic array in case of primitive type arrays
+        this.D = primitive
+            ? (Object[]) Array.newInstance(Arithmetic.class, dim)
+            : (Object[]) values;
+        while (index.hasNext()) {
+            final int[] i = index.next();
+            final Object ai = Utility.getPart(values, i);
+            Utility.pre(ai != null, "multi-dimensional array does not contain " + ai);
+            Utility.pre(primitive == Values.isPrimitiveWrapper(ai.getClass()), "multi-dimensional array either consistently has " + Arithmetic.class + " or consistently contains primitive types");
+            if (primitive) {
+                assert ai instanceof Number : "primitive type get wrapped into instances of " + Number.class;
+                Utility.setPart(D, i, Values.getDefaultInstance().valueOf((Number)ai));
+            }
+        }
     }
 
     /**
@@ -91,56 +91,56 @@ class ArithmeticTensor/*<R implements Arithmetic>*/ extends AbstractTensor/*<R>*
      * starting from the depth-th index.
      */
     private boolean checkRectangular(int[] dim, int depth, Object o) {
-	assert (depth < dim.length) == o.getClass().isArray() : "by definition of rank";
-	if (depth >= dim.length)
-	    return true;
-	final int len = Array.getLength(o);
-	if (len != dim[depth])
-	    return false;
-	// check multi-dimensional array for rectangularity
-	for (int j = 0; j < len; j++) {
-	    Object oj = Array.get(o, j);
-	    if (depth < dim.length - 1) {
-		assert oj.getClass().isArray() : "by definition of rank";
-		if (!checkRectangular(dim, depth + 1, oj))
-		    return false;
-	    } else {
-		// check that base type is instanceof Arithmetic
-		assert !oj.getClass().isArray() : "by definition of rank";
-		if (!(o.getClass().getComponentType().isPrimitive()
-		      || Values.isPrimitiveWrapper(o.getClass().getComponentType())
-		      || Arithmetic.class.isInstance(oj)))
-		    return false;
-	    }
-	}
-	return true;
+        assert (depth < dim.length) == o.getClass().isArray() : "by definition of rank";
+        if (depth >= dim.length)
+            return true;
+        final int len = Array.getLength(o);
+        if (len != dim[depth])
+            return false;
+        // check multi-dimensional array for rectangularity
+        for (int j = 0; j < len; j++) {
+            Object oj = Array.get(o, j);
+            if (depth < dim.length - 1) {
+                assert oj.getClass().isArray() : "by definition of rank";
+                if (!checkRectangular(dim, depth + 1, oj))
+                    return false;
+            } else {
+                // check that base type is instanceof Arithmetic
+                assert !oj.getClass().isArray() : "by definition of rank";
+                if (!(o.getClass().getComponentType().isPrimitive()
+                      || Values.isPrimitiveWrapper(o.getClass().getComponentType())
+                      || Arithmetic.class.isInstance(oj)))
+                    return false;
+            }
+        }
+        return true;
     }
 
     protected Tensor/*<R>*/ newInstance(int[] dim) {
-	return new ArithmeticTensor/*<R>*/(dim);
+        return new ArithmeticTensor/*<R>*/(dim);
     } 
 
 
     public final int rank() {
-	//@todo optimize cache result
-	return Utility.rank(D);
+        //@todo optimize cache result
+        return Utility.rank(D);
     }
 
     public final int[] dimensions() {
-	//@todo optimize cache result
-	return Utility.dimensions(D);
+        //@todo optimize cache result
+        return Utility.dimensions(D);
     }
 
     public Arithmetic/*>R<*/ get(int[] i) {
-	validate(i);
-	return (Arithmetic/*>R<*/)Utility.getPart(D, i);
+        validate(i);
+        return (Arithmetic/*>R<*/)Utility.getPart(D, i);
     } 
     public void set(int i[], Arithmetic/*>R<*/ m) {
-	validate(i);
-	Utility.setPart(D, i, m);
+        validate(i);
+        Utility.setPart(D, i, m);
     } 
 
     public Object clone() {
-	return new ArithmeticTensor/*<R>*/(toArray__Tensor());
+        return new ArithmeticTensor/*<R>*/(toArray__Tensor());
     } 
 }

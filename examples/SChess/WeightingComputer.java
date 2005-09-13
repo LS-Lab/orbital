@@ -16,10 +16,10 @@ import java.util.logging.Level;
  */
 public class WeightingComputer extends Computer {
     public WeightingComputer(ChessAspects aspects) {
-	super(aspects);
+        super(aspects);
     }
     public WeightingComputer() {
-	this(new ChessAspects());
+        this(new ChessAspects());
     }
 
     /**
@@ -27,24 +27,24 @@ public class WeightingComputer extends Computer {
      * as being the best for a situation like curField.
      */
     protected MoveWeighting.Argument determineNextMove(Field curField) {
-	try {
-	    Field	   field = (Field) curField.clone();	// clone a Field for preEvaluation
-	    Evaluation ev =
-		new Evaluation(Selection.Selecting.best(),
-		    new FieldWeighting(Selection.Selecting.best(),
-			new ChessFigureWeighting(this, Selection.Selecting.best(),
-			    new ChessMoveWeighting(this))));
-	    ev.apply(field);
+        try {
+            Field          field = (Field) curField.clone();    // clone a Field for preEvaluation
+            Evaluation ev =
+                new Evaluation(Selection.Selecting.best(),
+                    new FieldWeighting(Selection.Selecting.best(),
+                        new ChessFigureWeighting(this, Selection.Selecting.best(),
+                            new ChessMoveWeighting(this))));
+            ev.apply(field);
 
-	    Object eva = ev.evaluate();
+            Object eva = ev.evaluate();
 
-	    if (eva == null)
-		return null;
-	    Pair arg = (Pair) Evaluation.getArg(eva);
-	    return (MoveWeighting.Argument) arg.B;
-	} catch (CloneNotSupportedException err) {
-	    throw new InternalError("panic");
-	} 
+            if (eva == null)
+                return null;
+            Pair arg = (Pair) Evaluation.getArg(eva);
+            return (MoveWeighting.Argument) arg.B;
+        } catch (CloneNotSupportedException err) {
+            throw new InternalError("panic");
+        } 
     } 
 }
 
@@ -55,23 +55,23 @@ public class WeightingComputer extends Computer {
 final class ChessFigureWeighting extends FigureWeighting implements Function /* <Object, Number> */ {
     protected Computer computer;
     public ChessFigureWeighting(Computer c, Selection sel, Function /* <Object, Number> */ w) {
-	super(sel, w);
-	this.computer = c;
+        super(sel, w);
+        this.computer = c;
     }
     public Object apply(Object arg) {
-	Argument i = (Argument) arg;
-	Computer.logger.log(Level.FINER, " SF:weighting ... ( {0} -->", i);
+        Argument i = (Argument) arg;
+        Computer.logger.log(Level.FINER, " SF:weighting ... ( {0} -->", i);
 
-	// we only move our figures, forget about moving opponents
-	if (i.figure.getLeague() != ((ChessField) i.field).getTurn())
-	    return new Double(Double.NaN);
-	double val = ((Number) super.apply(arg)).doubleValue();
+        // we only move our figures, forget about moving opponents
+        if (i.figure.getLeague() != ((ChessField) i.field).getTurn())
+            return new Double(Double.NaN);
+        double val = ((Number) super.apply(arg)).doubleValue();
 
-	if (i.figure.getType() != ChessRules.KING)
-	    val += computer.aspects.offensiveFigure;
+        if (i.figure.getType() != ChessRules.KING)
+            val += computer.aspects.offensiveFigure;
 
-	Computer.logger.log(Level.FINER, " SF:  ) is weighted to {0}", new Double(val));
-	return new Double(val);
+        Computer.logger.log(Level.FINER, " SF:  ) is weighted to {0}", new Double(val));
+        return new Double(val);
     } 
 }
 
@@ -81,34 +81,34 @@ final class ChessFigureWeighting extends FigureWeighting implements Function /* 
 final class ChessMoveWeighting extends MoveWeighting implements Function /* <Object, Number> */ {
     protected Computer computer;
     public ChessMoveWeighting(Computer c) {
-	this.computer = c;
+        this.computer = c;
     }
     public Object apply(Object arg) {
-	try {
-	    Argument	i = (Argument) arg;
-	    double	val = ((Number) super.apply(arg)).doubleValue();
-	    ChessFigure f = (ChessFigure) i.figure;
+        try {
+            Argument    i = (Argument) arg;
+            double      val = ((Number) super.apply(arg)).doubleValue();
+            ChessFigure f = (ChessFigure) i.figure;
 
-	    Computer.logger.log(Level.FINER, "    SM: --> {0}...", i.destination);
+            Computer.logger.log(Level.FINER, "    SM: --> {0}...", i.destination);
 
-	    int targetLeague = i.field.isBeating(i.move, i.destination);
-	    if (targetLeague == i.figure.getLeague())
-		return new Double(Double.NaN);	  // disallow, only beat foreigners not cover allies
-	    if (targetLeague != Figure.NOONE)	 // beating aspect for current move
-		val += computer.aspects.beatingEnemies;
+            int targetLeague = i.field.isBeating(i.move, i.destination);
+            if (targetLeague == i.figure.getLeague())
+                return new Double(Double.NaN);    // disallow, only beat foreigners not cover allies
+            if (targetLeague != Figure.NOONE)    // beating aspect for current move
+                val += computer.aspects.beatingEnemies;
 
-	    // here you can evaluate the result further. Omitted for simplicity
+            // here you can evaluate the result further. Omitted for simplicity
 
-	    // storming aspect of marching figures
-	    if (f.stormFront(i.destination) > 0)
-		val += f.stormFront(i.destination) * (f.front() > 4 ? 1 : 0.6) * computer.aspects.stormingOffensive;
+            // storming aspect of marching figures
+            if (f.stormFront(i.destination) > 0)
+                val += f.stormFront(i.destination) * (f.front() > 4 ? 1 : 0.6) * computer.aspects.stormingOffensive;
 
-	    // bottom storm around run aspect
-	    val += i.destination.y * computer.aspects.topStorm;
-	    Computer.logger.log(Level.FINER, "    SM:  {0}|{1}: w={2}", new Object[] {new Integer(i.destination.x), new Integer(i.destination.y), new Double(val)});
-	    return new Double(val);
-	} catch (ClassCastException err) {
-	    throw new InternalError("panic");
-	} 
+            // bottom storm around run aspect
+            val += i.destination.y * computer.aspects.topStorm;
+            Computer.logger.log(Level.FINER, "    SM:  {0}|{1}: w={2}", new Object[] {new Integer(i.destination.x), new Integer(i.destination.y), new Double(val)});
+            return new Double(val);
+        } catch (ClassCastException err) {
+            throw new InternalError("panic");
+        } 
     } 
 }

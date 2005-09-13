@@ -50,7 +50,7 @@ package orbital.util;
  */
 public class SuspiciousError extends InternalError {
     public SuspiciousError(String message) {
-	super(message);
+        super(message);
     }
 
     public SuspiciousError() {}

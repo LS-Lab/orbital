@@ -19,93 +19,93 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
     
     // order
     public int compareTo(Object o) {
-	//@xxx this implementation does not work for Integer.Bigs
-    	if (Integer.isa.apply(o)) {
-	    // faster compare
-	    long thisVal = this.longValue();
-	    long anotherVal = ((Integer) o).longValue();
-	    return (thisVal<anotherVal ? -1 : (thisVal==anotherVal ? 0 : 1));
-	} else
-	    return compareToImpl(o);
+        //@xxx this implementation does not work for Integer.Bigs
+        if (Integer.isa.apply(o)) {
+            // faster compare
+            long thisVal = this.longValue();
+            long anotherVal = ((Integer) o).longValue();
+            return (thisVal<anotherVal ? -1 : (thisVal==anotherVal ? 0 : 1));
+        } else
+            return compareToImpl(o);
     } 
 
     // Arithmetic implementation synonyms
     public Arithmetic add(Arithmetic b) {
-	if (b instanceof Integer)
-	    return add((Integer) b);
-	return (Arithmetic) Operations.plus.apply(this, b);
+        if (b instanceof Integer)
+            return add((Integer) b);
+        return (Arithmetic) Operations.plus.apply(this, b);
     } 
     public Arithmetic subtract(Arithmetic b) {
-	if (b instanceof Integer)
-	    return subtract((Integer) b);
-	return (Arithmetic) Operations.subtract.apply(this, b);
+        if (b instanceof Integer)
+            return subtract((Integer) b);
+        return (Arithmetic) Operations.subtract.apply(this, b);
     } 
     public Arithmetic multiply(Arithmetic b) {
-	if (b instanceof Integer)
-	    return multiply((Integer) b);
-	return (Arithmetic) Operations.times.apply(this, b);
+        if (b instanceof Integer)
+            return multiply((Integer) b);
+        return (Arithmetic) Operations.times.apply(this, b);
     } 
     public Arithmetic divide(Arithmetic b) {
-	if (b instanceof Integer) {
-	    assert java.lang.Integer.MIN_VALUE <= longValue() && longValue() <= java.lang.Integer.MAX_VALUE && java.lang.Integer.MIN_VALUE <= ((Integer) b).longValue() && ((Integer) b).longValue() <= java.lang.Integer.MAX_VALUE : "avoid possible loss of precision";
-	    final Values vf = Values.getDefaultInstance();
-	    return vf.narrow(vf.rational((int) intValue(), ((Integer) b).intValue()));
-	} 
-	return (Arithmetic) Operations.divide.apply(this, b);
+        if (b instanceof Integer) {
+            assert java.lang.Integer.MIN_VALUE <= longValue() && longValue() <= java.lang.Integer.MAX_VALUE && java.lang.Integer.MIN_VALUE <= ((Integer) b).longValue() && ((Integer) b).longValue() <= java.lang.Integer.MAX_VALUE : "avoid possible loss of precision";
+            final Values vf = Values.getDefaultInstance();
+            return vf.narrow(vf.rational((int) intValue(), ((Integer) b).intValue()));
+        } 
+        return (Arithmetic) Operations.divide.apply(this, b);
     } 
     public Arithmetic inverse() {
-	assert java.lang.Integer.MIN_VALUE <= longValue() && longValue() <= java.lang.Integer.MAX_VALUE : "possible loss of precision";
-	return Values.getDefaultInstance().rational(1, intValue());
+        assert java.lang.Integer.MIN_VALUE <= longValue() && longValue() <= java.lang.Integer.MAX_VALUE : "possible loss of precision";
+        return Values.getDefaultInstance().rational(1, intValue());
     } 
     public Arithmetic power(Arithmetic b) {
-	if (b instanceof Integer)
-	    //@xxx due to newly compiler error (bug?): call Rational Rational.power(Integer) or Rational Integer.power(Rational)? or Rational Integer.power(Integer)?
-	    return ((Integer)this).power((Integer) b);
-	return (Arithmetic) Operations.power.apply(this, b);
+        if (b instanceof Integer)
+            //@xxx due to newly compiler error (bug?): call Rational Rational.power(Integer) or Rational Integer.power(Rational)? or Rational Integer.power(Integer)?
+            return ((Integer)this).power((Integer) b);
+        return (Arithmetic) Operations.power.apply(this, b);
     } 
 
     // overwrite rational
     public final Integer numerator() {
-	return this;
+        return this;
     }
     final int numeratorValue() {
-	return intValue();
+        return intValue();
     }
     public final Integer denominator() {
-	return Values.ONE;
+        return Values.ONE;
     }
     final int denominatorValue() {
-	return 1;
+        return 1;
     }
     public final Rational representative() {
-	return this;
+        return this;
     }
     // end of overwrite rational
 
     // Euclidean
     public Integer degree() {
-	return (Integer) norm();
+        return (Integer) norm();
     }
 
     // delegate super class operations
     public Rational add(Rational b) {
-	return (Rational) Operations.plus.apply(this, b);
+        return (Rational) Operations.plus.apply(this, b);
     } 
 
     public Rational subtract(Rational b) {
-	return (Rational) Operations.subtract.apply(this, b);
+        return (Rational) Operations.subtract.apply(this, b);
     } 
 
     public Rational multiply(Rational b) {
-	return (Rational) Operations.times.apply(this, b);
+        return (Rational) Operations.times.apply(this, b);
     } 
 
     public Rational divide(Rational b) {
-	return (Rational) Operations.divide.apply(this, b);
+        return (Rational) Operations.divide.apply(this, b);
     } 
 
     public Rational power(Rational b) {
-	return (Rational) Operations.power.apply(this, b);
+        return (Rational) Operations.power.apply(this, b);
     } 
 
 
@@ -118,92 +118,92 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
      * @internal note we do not provide a faster hashCode() implementation via longValue(), since new Real(0) and new Integer(0) will have different hashes then, although they are equal.
      */
     static class Int extends AbstractInteger {
-    	private static final long serialVersionUID = -6566214738338401035L;
-    	/**
-    	 * the value
-    	 * @serial
-    	 */
-    	private int value;
-    	public Int(int v) {
-	    value = v;
-    	}
-    	public Int(Number v) {
-	    value = v.intValue();
-    	}
+        private static final long serialVersionUID = -6566214738338401035L;
+        /**
+         * the value
+         * @serial
+         */
+        private int value;
+        public Int(int v) {
+            value = v;
+        }
+        public Int(Number v) {
+            value = v.intValue();
+        }
         
-    	public Object clone() {
-	    return new Int(intValue());
-    	} 
+        public Object clone() {
+            return new Int(intValue());
+        } 
 
-    	public int intValue() {
-	    return value;
-    	} 
-    	public double doubleValue() {
-	    return intValue();
-    	} 
+        public int intValue() {
+            return value;
+        } 
+        public double doubleValue() {
+            return intValue();
+        } 
     
-	public Real norm() {
-	    return Values.getDefaultInstance().valueOf(Math.abs(intValue()));
-	} 
+        public Real norm() {
+            return Values.getDefaultInstance().valueOf(Math.abs(intValue()));
+        } 
 
-    	// Arithmetic implementation synonyms
-    	public Integer add(Integer b) {
-	    if (b instanceof Int)
-		return new Int(intValue() + b.intValue());
-	    else if (b instanceof Long)
-		return new Long(intValue() + b.longValue());
-	    return (Integer) Operations.plus.apply(this, b);
-    	} 
-    	public Integer subtract(Integer b) {
-	    if (b instanceof Int)
-		return new Int(intValue() - b.intValue());
-	    else if (b instanceof Long)
-		return new Long(intValue() - b.longValue());
-	    return (Integer) Operations.subtract.apply(this, b);
-    	} 
-    	public Arithmetic minus() {
-	    return new Int(-value);
-    	} 
-    	public Integer multiply(Integer b) {
-	    if (b instanceof Int)
-		return new Int(intValue() * b.intValue());
-	    else if (b instanceof Long)
-		return new Long(intValue() * b.longValue());
-	    return (Integer) Operations.times.apply(this, b);
-    	} 
-    	public Rational power(Integer b) {
-	    if (b instanceof Int) {
-		return b.compareTo(zero()) >= 0
-		    ? new Int((int) Math.pow(intValue(), b.intValue()))
-		    : Values.getDefault().rational(1, (int) Math.pow(intValue(), -b.intValue()));
-	    } else if (b instanceof Long) {
-		return b.compareTo(zero()) >= 0
-		    ? new Long((long) Math.pow(intValue(), b.longValue()))
-		    : Values.getDefault().rational((Integer/*__*/)one(), Values.getDefault().valueOf((long) Math.pow(intValue(), -b.longValue())));
-	    }
-	    return (Integer) Operations.power.apply(this, b);
-    	} 
+        // Arithmetic implementation synonyms
+        public Integer add(Integer b) {
+            if (b instanceof Int)
+                return new Int(intValue() + b.intValue());
+            else if (b instanceof Long)
+                return new Long(intValue() + b.longValue());
+            return (Integer) Operations.plus.apply(this, b);
+        } 
+        public Integer subtract(Integer b) {
+            if (b instanceof Int)
+                return new Int(intValue() - b.intValue());
+            else if (b instanceof Long)
+                return new Long(intValue() - b.longValue());
+            return (Integer) Operations.subtract.apply(this, b);
+        } 
+        public Arithmetic minus() {
+            return new Int(-value);
+        } 
+        public Integer multiply(Integer b) {
+            if (b instanceof Int)
+                return new Int(intValue() * b.intValue());
+            else if (b instanceof Long)
+                return new Long(intValue() * b.longValue());
+            return (Integer) Operations.times.apply(this, b);
+        } 
+        public Rational power(Integer b) {
+            if (b instanceof Int) {
+                return b.compareTo(zero()) >= 0
+                    ? new Int((int) Math.pow(intValue(), b.intValue()))
+                    : Values.getDefault().rational(1, (int) Math.pow(intValue(), -b.intValue()));
+            } else if (b instanceof Long) {
+                return b.compareTo(zero()) >= 0
+                    ? new Long((long) Math.pow(intValue(), b.longValue()))
+                    : Values.getDefault().rational((Integer/*__*/)one(), Values.getDefault().valueOf((long) Math.pow(intValue(), -b.longValue())));
+            }
+            return (Integer) Operations.power.apply(this, b);
+        } 
 
-    	// Euclidean implementation
-    	public Integer quotient(Integer b) {
-	    return new Int(intValue() / b.intValue());
-    	}
-    	public Euclidean quotient(Euclidean b) {
-	    return quotient((Integer)b);
-    	}
-    	public Integer modulo(Integer b) {
-	    int m = b.intValue();
-	    int v = intValue() % m;
-	    //@internal assure mathematical nonnegative modulus
-	    if (v < 0)
-		v += m;
-	    assert (v - (intValue() % m)) % m == 0 : "change of canonical representative, only";
-	    assert v >= 0 : "nonnegative representative chosen";
-	    return new Int(v);
-    	}
-    	public Euclidean modulo(Euclidean b) {
-	    return modulo((Integer)b);
-    	}
+        // Euclidean implementation
+        public Integer quotient(Integer b) {
+            return new Int(intValue() / b.intValue());
+        }
+        public Euclidean quotient(Euclidean b) {
+            return quotient((Integer)b);
+        }
+        public Integer modulo(Integer b) {
+            int m = b.intValue();
+            int v = intValue() % m;
+            //@internal assure mathematical nonnegative modulus
+            if (v < 0)
+                v += m;
+            assert (v - (intValue() % m)) % m == 0 : "change of canonical representative, only";
+            assert v >= 0 : "nonnegative representative chosen";
+            return new Int(v);
+        }
+        public Euclidean modulo(Euclidean b) {
+            return modulo((Integer)b);
+        }
     }
 
     /**
@@ -215,76 +215,76 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
      * @internal note we do not provide a faster hashCode() implementation via longValue(), since new Real(0) and new Integer(0) will have different hashes then, although they are equal.
      */
     static class Long extends AbstractInteger {
-    	private static final long serialVersionUID = 6559525715511278001L;
-    	/**
-    	 * the value
-    	 * @serial
-    	 */
-    	private long value;
-    	public Long(long v) {
-	    value = v;
-    	}
-    	public Long(Number v) {
-	    value = v.longValue();
-    	}
+        private static final long serialVersionUID = 6559525715511278001L;
+        /**
+         * the value
+         * @serial
+         */
+        private long value;
+        public Long(long v) {
+            value = v;
+        }
+        public Long(Number v) {
+            value = v.longValue();
+        }
         
-    	public Object clone() {
-	    return new Long(longValue());
-    	} 
+        public Object clone() {
+            return new Long(longValue());
+        } 
 
-    	public long longValue() {
-	    return value;
-    	} 
-    	public double doubleValue() {
-	    return longValue();
-    	} 
+        public long longValue() {
+            return value;
+        } 
+        public double doubleValue() {
+            return longValue();
+        } 
     
-	public Real norm() {
-	    return Values.getDefaultInstance().valueOf(Math.abs(longValue()));
-	} 
+        public Real norm() {
+            return Values.getDefaultInstance().valueOf(Math.abs(longValue()));
+        } 
 
-    	// Arithmetic implementation synonyms
-    	public Integer add(Integer b) {
-	    return new Long(longValue() + b.longValue());
-    	}
-    	public Integer subtract(Integer b) {
-	    return new Long(longValue() - b.longValue());
-    	}
-    	public Arithmetic minus() {
-	    return new Long(-value);
-    	} 
-    	public Integer multiply(Integer b) {
-	    return new Long(longValue() * b.longValue());
-    	}
-    	public Rational power(Integer b) {
-	    if (b instanceof Long || b instanceof Int) {
-		return b.compareTo(zero()) >= 0
-		    ? new Long((long) Math.pow(longValue(), b.longValue()))
-		    : Values.getDefault().rational((Integer/*__*/)one(), Values.getDefault().valueOf((long) Math.pow(longValue(), -b.longValue())));
-	    }
-	    return (Integer) Operations.power.apply(this, b);
-    	}
-    	
-    	// Euclidean implementation
-    	public Integer quotient(Integer b) {
-	    return new Long(longValue() / b.longValue());
-    	}
-    	public Euclidean quotient(Euclidean b) {
-	    return quotient((Integer)b);
-    	}
-    	public Integer modulo(Integer b) {
-	    long m = b.longValue();
-	    long v = longValue() % m;
-	    //@internal assure mathematical nonnegative modulus
-	    if (v < 0)
-		v += m;
-	    assert (v - (longValue() % m)) % m == 0 : "change of canonical representative, only";
-	    assert v >= 0 : "nonnegative representative chosen";
-	    return new Long(v);
-    	}
-    	public Euclidean modulo(Euclidean b) {
-	    return modulo((Integer)b);
-    	}
+        // Arithmetic implementation synonyms
+        public Integer add(Integer b) {
+            return new Long(longValue() + b.longValue());
+        }
+        public Integer subtract(Integer b) {
+            return new Long(longValue() - b.longValue());
+        }
+        public Arithmetic minus() {
+            return new Long(-value);
+        } 
+        public Integer multiply(Integer b) {
+            return new Long(longValue() * b.longValue());
+        }
+        public Rational power(Integer b) {
+            if (b instanceof Long || b instanceof Int) {
+                return b.compareTo(zero()) >= 0
+                    ? new Long((long) Math.pow(longValue(), b.longValue()))
+                    : Values.getDefault().rational((Integer/*__*/)one(), Values.getDefault().valueOf((long) Math.pow(longValue(), -b.longValue())));
+            }
+            return (Integer) Operations.power.apply(this, b);
+        }
+        
+        // Euclidean implementation
+        public Integer quotient(Integer b) {
+            return new Long(longValue() / b.longValue());
+        }
+        public Euclidean quotient(Euclidean b) {
+            return quotient((Integer)b);
+        }
+        public Integer modulo(Integer b) {
+            long m = b.longValue();
+            long v = longValue() % m;
+            //@internal assure mathematical nonnegative modulus
+            if (v < 0)
+                v += m;
+            assert (v - (longValue() % m)) % m == 0 : "change of canonical representative, only";
+            assert v >= 0 : "nonnegative representative chosen";
+            return new Long(v);
+        }
+        public Euclidean modulo(Euclidean b) {
+            return modulo((Integer)b);
+        }
     }
 
     /**
@@ -296,92 +296,92 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
      * @internal note we do not provide a faster hashCode() implementation via longValue(), since new Real(0) and new Integer(0) will have different hashes then, although they are equal.
      */
     static class Big extends AbstractInteger {
-    	private static final long serialVersionUID = -5189252512503918277L;
-    	/**
-    	 * the value
-    	 * @serial
-    	 */
-    	private BigInteger value;
-    	public Big(int v) {
-	    this(BigInteger.valueOf(v));
-    	}
-    	public Big(BigInteger v) {
-	    value = v;
-    	}
+        private static final long serialVersionUID = -5189252512503918277L;
+        /**
+         * the value
+         * @serial
+         */
+        private BigInteger value;
+        public Big(int v) {
+            this(BigInteger.valueOf(v));
+        }
+        public Big(BigInteger v) {
+            value = v;
+        }
 
-	//@todo add equals
-	
-    	public Object clone() {
-	    return new Big(value);
-    	} 
+        //@todo add equals
+        
+        public Object clone() {
+            return new Big(value);
+        } 
 
-    	public int intValue() {
-	    return value.intValue();
-    	} 
-    	public double doubleValue() {
-	    return value.doubleValue();
-    	} 
+        public int intValue() {
+            return value.intValue();
+        } 
+        public double doubleValue() {
+            return value.doubleValue();
+        } 
     
-	public Real norm() {
-	    return Values.getDefaultInstance().valueOf(value.abs());
-	} 
+        public Real norm() {
+            return Values.getDefaultInstance().valueOf(value.abs());
+        } 
 
-    	// Arithmetic implementation synonyms
-    	public Integer add(Integer b) {
-	    if (b instanceof Big)
-		return new Big(value.add(((Big)b).value));
-	    else if (b instanceof Int || b instanceof Long)
-		return new Big(value.add(BigInteger.valueOf(b.longValue())));
-	    return (Integer) Operations.plus.apply(this, b);
-    	} 
-    	public Integer subtract(Integer b) {
-	    if (b instanceof Big)
-		return new Big(value.subtract(((Big)b).value));
-	    else if (b instanceof Int || b instanceof Long)
-		return new Big(value.subtract(BigInteger.valueOf(b.longValue())));
-	    return (Integer) Operations.subtract.apply(this, b);
-    	} 
-    	public Arithmetic minus() {
-	    return new Big(value.negate());
-    	} 
-    	public Integer multiply(Integer b) {
-	    if (b instanceof Big)
-		return new Big(value.multiply(((Big)b).value));
-	    else if (b instanceof Int || b instanceof Long)
-		return new Big(value.multiply(BigInteger.valueOf(b.longValue())));
-	    return (Integer) Operations.times.apply(this, b);
-    	} 
-    	public Rational power(Integer b) {
-	    if (b instanceof Big || b instanceof Long)
-		throw new ArithmeticException("exponentation is possibly too big");
-	    else if (b instanceof Int) {
-		return b.compareTo(zero()) >= 0
-		    ? new Big(value.pow(b.intValue()))
-		    : Values.getDefault().rational((Integer/*__*/)one(), Values.getDefault().valueOf(value.pow(-b.intValue())));
-	    }
-	    return (Integer) Operations.power.apply(this, b);
-    	} 
+        // Arithmetic implementation synonyms
+        public Integer add(Integer b) {
+            if (b instanceof Big)
+                return new Big(value.add(((Big)b).value));
+            else if (b instanceof Int || b instanceof Long)
+                return new Big(value.add(BigInteger.valueOf(b.longValue())));
+            return (Integer) Operations.plus.apply(this, b);
+        } 
+        public Integer subtract(Integer b) {
+            if (b instanceof Big)
+                return new Big(value.subtract(((Big)b).value));
+            else if (b instanceof Int || b instanceof Long)
+                return new Big(value.subtract(BigInteger.valueOf(b.longValue())));
+            return (Integer) Operations.subtract.apply(this, b);
+        } 
+        public Arithmetic minus() {
+            return new Big(value.negate());
+        } 
+        public Integer multiply(Integer b) {
+            if (b instanceof Big)
+                return new Big(value.multiply(((Big)b).value));
+            else if (b instanceof Int || b instanceof Long)
+                return new Big(value.multiply(BigInteger.valueOf(b.longValue())));
+            return (Integer) Operations.times.apply(this, b);
+        } 
+        public Rational power(Integer b) {
+            if (b instanceof Big || b instanceof Long)
+                throw new ArithmeticException("exponentation is possibly too big");
+            else if (b instanceof Int) {
+                return b.compareTo(zero()) >= 0
+                    ? new Big(value.pow(b.intValue()))
+                    : Values.getDefault().rational((Integer/*__*/)one(), Values.getDefault().valueOf(value.pow(-b.intValue())));
+            }
+            return (Integer) Operations.power.apply(this, b);
+        } 
 
-    	// Euclidean implementation
-    	public Integer quotient(Integer b) {
-	    if (b instanceof Big)
-		return new Big(value.divide(((Big)b).value));
-	    else if (b instanceof Int || b instanceof Long)
-		return new Big(value.divide(BigInteger.valueOf(b.longValue())));
-	    throw new UnsupportedOperationException("opertion cannot be applied on " + this + " and " + b);
-    	}
-    	public Euclidean quotient(Euclidean b) {
-	    return quotient((Integer)b);
-    	}
-    	public Integer modulo(Integer b) {
-	    if (b instanceof Big)
-		return new Big(value.mod(((Big)b).value));
-	    else if (b instanceof Int || b instanceof Long)
-		return new Big(value.mod(BigInteger.valueOf(b.longValue())));
-	    throw new UnsupportedOperationException("opertion cannot be applied on " + this + " and " + b);
-    	}
-    	public Euclidean modulo(Euclidean b) {
-	    return modulo((Integer)b);
-    	}
+        // Euclidean implementation
+        public Integer quotient(Integer b) {
+            if (b instanceof Big)
+                return new Big(value.divide(((Big)b).value));
+            else if (b instanceof Int || b instanceof Long)
+                return new Big(value.divide(BigInteger.valueOf(b.longValue())));
+            throw new UnsupportedOperationException("opertion cannot be applied on " + this + " and " + b);
+        }
+        public Euclidean quotient(Euclidean b) {
+            return quotient((Integer)b);
+        }
+        public Integer modulo(Integer b) {
+            if (b instanceof Big)
+                return new Big(value.mod(((Big)b).value));
+            else if (b instanceof Int || b instanceof Long)
+                return new Big(value.mod(BigInteger.valueOf(b.longValue())));
+            throw new UnsupportedOperationException("opertion cannot be applied on " + this + " and " + b);
+        }
+        public Euclidean modulo(Euclidean b) {
+            return modulo((Integer)b);
+        }
     }
 }

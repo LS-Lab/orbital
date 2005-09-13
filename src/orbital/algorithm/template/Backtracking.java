@@ -29,13 +29,13 @@ import java.util.ArrayList;
 public class Backtracking/**<int numberOfVars>**/ implements AlgorithmicTemplate {
     //TODO: unify with DepthFirstSearch?
     public Object solve(AlgorithmicProblem p) {
-	return solve((BacktrackingProblem) p);
+        return solve((BacktrackingProblem) p);
     } 
 
     /**
-     * @invariants currentChoices is an non­empty fixed-size list of partial solution values
+     * @invariants currentChoices is an nonÂ­empty fixed-size list of partial solution values
      */
-    private List	        currentChoices;
+    private List                currentChoices;
     private BacktrackingProblem solution;
 
     /**
@@ -43,24 +43,24 @@ public class Backtracking/**<int numberOfVars>**/ implements AlgorithmicTemplate
      * @return an array of the solution choices.
      */
     public List solve(BacktrackingProblem problem_solving) {
-	solution = problem_solving;
-	currentChoices = new ArrayList(solution.getNumberOfVars());
-	if (solveByBacktracking(0))
-	    return currentChoices;
-	else
-	    return null;
+        solution = problem_solving;
+        currentChoices = new ArrayList(solution.getNumberOfVars());
+        if (solveByBacktracking(0))
+            return currentChoices;
+        else
+            return null;
     } 
 
     /**
      * O(n<sup>n</sup>) in the worst case.
      */
     public Function complexity() {
-	return Functionals.bind(Operations.power);
+        return Functionals.bind(Operations.power);
     } 
 
     public Function spaceComplexity() {
-	//TODO: assure
-	return Functions.id;
+        //TODO: assure
+        return Functions.id;
     }
 
     /**
@@ -69,27 +69,27 @@ public class Backtracking/**<int numberOfVars>**/ implements AlgorithmicTemplate
      */
     private final boolean solveByBacktracking(int depth) {
 
-	// provide space for this depth
-	currentChoices.add(depth, null);
-	for (int j = 0; j < solution.getNumberOfVariants(depth); j++) {
-	    currentChoices.set(depth, solution.chooseNext(depth));
+        // provide space for this depth
+        currentChoices.add(depth, null);
+        for (int j = 0; j < solution.getNumberOfVariants(depth); j++) {
+            currentChoices.set(depth, solution.chooseNext(depth));
 
-	    if (currentChoices.get(depth) == null)
-		return false;		// there are no more variants, backtrack
+            if (currentChoices.get(depth) == null)
+                return false;           // there are no more variants, backtrack
 
-	    if (solution.isConsistent(currentChoices, depth)) {
+            if (solution.isConsistent(currentChoices, depth)) {
 
-		// consistent, recurse on
-		if (depth + 1 >= solution.getNumberOfVars())
-		    return true;	// we have it!
+                // consistent, recurse on
+                if (depth + 1 >= solution.getNumberOfVars())
+                    return true;        // we have it!
 
-		if (!solveByBacktracking(depth + 1))
-		    continue;		// extension did not work, try again
-	    } 
-	} 
+                if (!solveByBacktracking(depth + 1))
+                    continue;           // extension did not work, try again
+            } 
+        } 
 
-	// if we arrive here, this partial solution cannot be extended further since we have no more variants to choose
-	return false;
+        // if we arrive here, this partial solution cannot be extended further since we have no more variants to choose
+        return false;
     } 
 
 }

@@ -37,94 +37,94 @@ aspect PointwiseArithmetic /*implements Operations*/ of eachJVM() {
   
         implements Arithmetic;
   
-    	// pointwise Arithmetic implementation
-    	public Arithmetic add(Arithmetic b) throws ArithmeticException {
-    		return PointwiseArithmetic.aspectOf().plus(this, b);
-    	} 
-    	public Arithmetic minus() throws ArithmeticException {
-    		return PointwiseArithmetic.aspectOf().minus(this);
-    	} 
-    	public Arithmetic subtract(Arithmetic b) throws ArithmeticException {
-    		return PointwiseArithmetic.aspectOf().subtract(this, b);
-    	} 
+        // pointwise Arithmetic implementation
+        public Arithmetic add(Arithmetic b) throws ArithmeticException {
+                return PointwiseArithmetic.aspectOf().plus(this, b);
+        } 
+        public Arithmetic minus() throws ArithmeticException {
+                return PointwiseArithmetic.aspectOf().minus(this);
+        } 
+        public Arithmetic subtract(Arithmetic b) throws ArithmeticException {
+                return PointwiseArithmetic.aspectOf().subtract(this, b);
+        } 
     
-    	public Arithmetic multiply(Arithmetic b) throws ArithmeticException {
-    		return PointwiseArithmetic.aspectOf().times(this, b);
-    	} 
-    	public Arithmetic inverse() throws ArithmeticException {
-    		return PointwiseArithmetic.aspectOf().inverse(this);
-    	} 
-    	public Arithmetic divide(Arithmetic b) throws ArithmeticException {
-    		return PointwiseArithmetic.aspectOf().divide(this, b);
-    	} 
+        public Arithmetic multiply(Arithmetic b) throws ArithmeticException {
+                return PointwiseArithmetic.aspectOf().times(this, b);
+        } 
+        public Arithmetic inverse() throws ArithmeticException {
+                return PointwiseArithmetic.aspectOf().inverse(this);
+        } 
+        public Arithmetic divide(Arithmetic b) throws ArithmeticException {
+                return PointwiseArithmetic.aspectOf().divide(this, b);
+        } 
     
-    	public Arithmetic power(Arithmetic b) throws ArithmeticException {
-    		return PointwiseArithmetic.aspectOf().power(this, b);
-    	} 
+        public Arithmetic power(Arithmetic b) throws ArithmeticException {
+                return PointwiseArithmetic.aspectOf().power(this, b);
+        } 
     
-    	public double norm() {
-    		// throw new UnsupportedOperationException("maximum norm for functions is not implemented");
-    		return Double.NaN;
-    	} 
+        public double norm() {
+                // throw new UnsupportedOperationException("maximum norm for functions is not implemented");
+                return Double.NaN;
+        } 
   
-	}
+        }
 
-	// pointwise Arithmetic implementation
-	// pointwise Arithmetic implementation (identical to @see orbital.math.functional.MathFunctor.AbstractFunctor, ...)
-	public static Arithmetic plus(Arithmetic a, Arithmetic b) throws ArithmeticException {
-		// simple-case optimization
-		if (b instanceof Scalar)
-			if (Values.valueOf(0).equals(b))
-				return a;
-		return Functionals.genericCompose(Operations.plus, a, b);
-	} 
-	public static Arithmetic minus(Arithmetic a) throws ArithmeticException {
-		return Functionals.genericCompose(Operations.minus, a);
-	} 
-	public static Arithmetic subtract(Arithmetic a, Arithmetic b) throws ArithmeticException {
-		// simple-case optimization
-		if (b instanceof Scalar)
-			if (Values.valueOf(0).equals(b))
-				return a;
-		return Functionals.genericCompose(Operations.subtract, a, b);
-	} 
+        // pointwise Arithmetic implementation
+        // pointwise Arithmetic implementation (identical to @see orbital.math.functional.MathFunctor.AbstractFunctor, ...)
+        public static Arithmetic plus(Arithmetic a, Arithmetic b) throws ArithmeticException {
+                // simple-case optimization
+                if (b instanceof Scalar)
+                        if (Values.valueOf(0).equals(b))
+                                return a;
+                return Functionals.genericCompose(Operations.plus, a, b);
+        } 
+        public static Arithmetic minus(Arithmetic a) throws ArithmeticException {
+                return Functionals.genericCompose(Operations.minus, a);
+        } 
+        public static Arithmetic subtract(Arithmetic a, Arithmetic b) throws ArithmeticException {
+                // simple-case optimization
+                if (b instanceof Scalar)
+                        if (Values.valueOf(0).equals(b))
+                                return a;
+                return Functionals.genericCompose(Operations.subtract, a, b);
+        } 
 
-	public static Arithmetic times(Arithmetic a, Arithmetic b) throws ArithmeticException {
-		// simple-case optimization
-		if (b instanceof Scalar) {
-    		if (Values.valueOf(1).equals(b))
-    			return a;
-    		else if (Values.valueOf(-1).equals(b))
-    			return a.minus();
-    		else if (Values.valueOf(0).equals(b))
-    			return Values.valueOf(0);
-		}
-		return Functionals.genericCompose(Operations.times, a, b);
-	} 
-	public static Arithmetic inverse(Arithmetic a) throws ArithmeticException {
-		return Functionals.genericCompose(Operations.inverse, a);
-	} 
-	public static Arithmetic divide(Arithmetic a, Arithmetic b) throws ArithmeticException {
-		// simple-case optimization
-		if (b instanceof Scalar) {
-    		if (Values.valueOf(1).equals(b))
-    			return a;
-    		else if (Values.valueOf(-1).equals(b))
-    			return a.minus();
-    		else if (Values.valueOf(0).equals(b))
-    			throw new ArithmeticException("division by zero");
-		}
-		return Functionals.genericCompose(Operations.divide, a, b);
-	} 
+        public static Arithmetic times(Arithmetic a, Arithmetic b) throws ArithmeticException {
+                // simple-case optimization
+                if (b instanceof Scalar) {
+                if (Values.valueOf(1).equals(b))
+                        return a;
+                else if (Values.valueOf(-1).equals(b))
+                        return a.minus();
+                else if (Values.valueOf(0).equals(b))
+                        return Values.valueOf(0);
+                }
+                return Functionals.genericCompose(Operations.times, a, b);
+        } 
+        public static Arithmetic inverse(Arithmetic a) throws ArithmeticException {
+                return Functionals.genericCompose(Operations.inverse, a);
+        } 
+        public static Arithmetic divide(Arithmetic a, Arithmetic b) throws ArithmeticException {
+                // simple-case optimization
+                if (b instanceof Scalar) {
+                if (Values.valueOf(1).equals(b))
+                        return a;
+                else if (Values.valueOf(-1).equals(b))
+                        return a.minus();
+                else if (Values.valueOf(0).equals(b))
+                        throw new ArithmeticException("division by zero");
+                }
+                return Functionals.genericCompose(Operations.divide, a, b);
+        } 
 
-	public static Arithmetic power(Arithmetic a, Arithmetic b) throws ArithmeticException {
-		// simple-case optimization
-		if (b instanceof Scalar) {
-    		if (Values.valueOf(1).equals(b))
-    			return a;
-    		else if (Values.valueOf(-1).equals(b))
-    			return a.inverse();
-		}
-		return Functionals.genericCompose(Operations.power, a, b);
-	} 
+        public static Arithmetic power(Arithmetic a, Arithmetic b) throws ArithmeticException {
+                // simple-case optimization
+                if (b instanceof Scalar) {
+                if (Values.valueOf(1).equals(b))
+                        return a;
+                else if (Values.valueOf(-1).equals(b))
+                        return a.inverse();
+                }
+                return Functionals.genericCompose(Operations.power, a, b);
+        } 
 }

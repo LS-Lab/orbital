@@ -41,7 +41,7 @@ public interface ProbabilisticAlgorithm {
      * @postconditions RES == OLD(RES)
      */
     boolean isCorrect();
-	
+        
     /**
      * Get the random-generator used as probabilistic random source.
      * @return the random generator used for producing probabilistic effects.

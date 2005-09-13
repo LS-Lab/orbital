@@ -19,10 +19,10 @@ package orbital.logic;
 public
 interface Adjective {
 
-	/**
-	 * is called to check whether the Adjective fits for an Object.
-	 * 
-	 * @return returns Adjective checked for Object.
-	 */
-	boolean fits(Object obj);
+        /**
+         * is called to check whether the Adjective fits for an Object.
+         * 
+         * @return returns Adjective checked for Object.
+         */
+        boolean fits(Object obj);
 }

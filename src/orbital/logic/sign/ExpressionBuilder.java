@@ -28,7 +28,7 @@ import orbital.logic.sign.type.TypeException;
  * @todo improve documentation above
  */
 public interface ExpressionBuilder {
-	
+        
     // Create an <dfn>atomic</dfn> expression
 
     /**

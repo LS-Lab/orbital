@@ -15,7 +15,7 @@ package orbital.logic.imp;
 public class LogicException extends RuntimeException {
     private static final long serialVersionUID = -32994655636436874L;
     public LogicException(String message) {
-	super(message);
+        super(message);
     }
     public LogicException() {}
 }

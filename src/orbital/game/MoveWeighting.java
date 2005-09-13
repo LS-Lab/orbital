@@ -26,11 +26,11 @@ public class MoveWeighting implements Function/*<Object, Number>*/ {
      * base for a weight value of a Move by providing names and destination checks.
      */
     public Object/*>Number<*/ apply(Object arg) {
-	Argument i = (Argument) arg;	// TODO: is there a better solution?
+        Argument i = (Argument) arg;    // TODO: is there a better solution?
 
-	assert i.destination != null : "targeted a figure that could not be reached though move is valid";
+        assert i.destination != null : "targeted a figure that could not be reached though move is valid";
 
-	return new Double(0);	   // neutral
+        return new Double(0);      // neutral
     } 
 
     // TODO: good name
@@ -39,25 +39,25 @@ public class MoveWeighting implements Function/*<Object, Number>*/ {
      * @deprecated Since Orbital 1.1 use {@link AdversarySearch.Option} instead.
      */
     public static class Argument extends FigureWeighting.Argument {
-	public final Move	  move;
-	public final Position destination;
-	public Argument(Field fld, Figure f, Move mv, Position dst) {
-	    super(fld, f);
-	    this.move = mv;
-	    this.destination = dst;
-	}
-	public Argument(FigureWeighting.Argument i, Move mv, Position dst) {
-	    this(i.field, i.figure, mv, dst);
-	}
-	/**
-	 * @deprecated Since 1.0, this constructor is for convenience of converting old code, only.
-	 */
-	public Argument(AdversarySearch.Option opt) {
-	    this(opt.getState(), opt.getFigure(), opt.getMove(), opt.getDestination());
-	}
+        public final Move         move;
+        public final Position destination;
+        public Argument(Field fld, Figure f, Move mv, Position dst) {
+            super(fld, f);
+            this.move = mv;
+            this.destination = dst;
+        }
+        public Argument(FigureWeighting.Argument i, Move mv, Position dst) {
+            this(i.field, i.figure, mv, dst);
+        }
+        /**
+         * @deprecated Since 1.0, this constructor is for convenience of converting old code, only.
+         */
+        public Argument(AdversarySearch.Option opt) {
+            this(opt.getState(), opt.getFigure(), opt.getMove(), opt.getDestination());
+        }
 
-	public String toString() {
-	    return "[" + figure.x + "|" + figure.y + "--" + move.getMovementString() + "-->" + destination.x + "|" + destination.y + "]";
-	} 
+        public String toString() {
+            return "[" + figure.x + "|" + figure.y + "--" + move.getMovementString() + "-->" + destination.x + "|" + destination.y + "]";
+        } 
     }
 }

@@ -17,24 +17,24 @@ import junit.framework.*;
 public class ResolutionTest extends ClassicalLogicTest {
 
     public static void main(String[] args) {
-	junit.textui.TestRunner.run(suite());
+        junit.textui.TestRunner.run(suite());
     }
     public static Test suite() {
-	return new TestSuite(ResolutionTest.class);
+        return new TestSuite(ResolutionTest.class);
     }
     protected void setUp() {
     }
 
     protected void test(String name) {
-	try {
-	    ClassicalLogic.main(new String[] {"-inference=RESOLUTION_INFERENCE", name});
-	}
-	catch (Throwable ex) {
-	    ex.printStackTrace();
-	    fail(ex.getMessage() + " in file " + name);
-	}
+        try {
+            ClassicalLogic.main(new String[] {"-inference=RESOLUTION_INFERENCE", name});
+        }
+        catch (Throwable ex) {
+            ex.printStackTrace();
+            fail(ex.getMessage() + " in file " + name);
+        }
     }
     public void testFol() {
-	test("fol");
+        test("fol");
     }
 }

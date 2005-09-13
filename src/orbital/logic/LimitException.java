@@ -17,6 +17,6 @@ public class LimitException extends RuntimeException {
     public LimitException() {}
 
     public LimitException(String spec) {
-	super(spec);
+        super(spec);
     }
 }

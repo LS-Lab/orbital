@@ -72,12 +72,12 @@ public final class Setops {
      */
     private static final Class linkedHashSetClass = possiblyClassForName("java.util.LinkedHashSet");
     private static Class possiblyClassForName(String name) {
-	try {
-	    return Class.forName(name);
-	}
-	catch (ClassNotFoundException priorToJDK1_4) {
-	    return null;
-	}
+        try {
+            return Class.forName(name);
+        }
+        catch (ClassNotFoundException priorToJDK1_4) {
+            return null;
+        }
     }
 
     /**
@@ -95,15 +95,15 @@ public final class Setops {
      * @return the first object in a collection that satisfies the specified predicate, or null if no such object exists.
      */
     public static /*<A>*/ Object/*>A<*/ find(Collection/*_<A>_*/ coll, Predicate/*<A>*/ found) {
-	return find(coll.iterator(), found);
+        return find(coll.iterator(), found);
     }
     public static /*<A>*/ Object/*>A<*/ find(Iterator/*_<A>_*/ i, Predicate/*<A>*/ found) {
-	while (i.hasNext()) {
-	    Object/*>A<*/ o = (Object/*>A<*//*__*/) i.next();
-	    if (found.apply(o))
-		return o;
-	} 
-	return null;
+        while (i.hasNext()) {
+            Object/*>A<*/ o = (Object/*>A<*//*__*/) i.next();
+            if (found.apply(o))
+                return o;
+        } 
+        return null;
     } 
 
     /**
@@ -113,23 +113,23 @@ public final class Setops {
      * @see #any(Collection)
      */
     public static /*<A>*/ Object/*>A<*/ epsilon(Collection/*_<A>_*/ coll, Predicate/*<A>*/ found) {
-	return find(coll.iterator(), found);
+        return find(coll.iterator(), found);
     }
 
     /**
      * Counts the number of objects in a collection that satisfy the specified predicate.
      */
     public static /*<A>*/ int count(Collection/*_<A>_*/ coll, Predicate/*<A>*/ cond) {
-	return count(coll.iterator(), cond);
+        return count(coll.iterator(), cond);
     }
     public static /*<A>*/ int count(Iterator/*_<A>_*/ i, Predicate/*<A>*/ cond) {
-	int count = 0;
-	while (i.hasNext()) {
-	    Object/*>A<*/ o = (Object/*>A<*//*__*/) i.next();
-	    if (cond.apply(o))
-		count++;
-	} 
-	return count;
+        int count = 0;
+        while (i.hasNext()) {
+            Object/*>A<*/ o = (Object/*>A<*//*__*/) i.next();
+            if (cond.apply(o))
+                count++;
+        } 
+        return count;
     } 
 
     /**
@@ -141,14 +141,14 @@ public final class Setops {
      * @todo document banana application @see Operations.andAll
      */
     public static /*<A>*/ boolean all(Collection/*_<A>_*/ coll, Predicate/*<A>*/ found) {
-	return all(coll.iterator(), found);
+        return all(coll.iterator(), found);
     }
     public static /*<A>*/ boolean all(Iterator/*_<A>_*/ i, Predicate/*<A>*/ found) {
-	// optimized version of return Functionals.map(and, Functionals.map(Functionals.asFunction(found), i))
-	while (i.hasNext())
-	    if (!found.apply((/*__*/Object/*>A<*/)i.next()))
-		return false;
-	return true;
+        // optimized version of return Functionals.map(and, Functionals.map(Functionals.asFunction(found), i))
+        while (i.hasNext())
+            if (!found.apply((/*__*/Object/*>A<*/)i.next()))
+                return false;
+        return true;
     } 
     /**
      * Checks whether all corresponding pairs of objects in two collection satisfy the specified predicate.
@@ -159,15 +159,15 @@ public final class Setops {
      * @todo document banana application @see Operations.andAll
      */
     public static /*<A1, A2>*/ boolean all(Collection/*_<A1>_*/ a, Collection/*_<A2>_*/ b, BinaryPredicate/*<A1, A2>*/ found) {
-	return a.size() == b.size()
-	    && all(a.iterator(), b.iterator(), found);
+        return a.size() == b.size()
+            && all(a.iterator(), b.iterator(), found);
     }
     public static /*<A1, A2>*/ boolean all(Iterator/*_<A1>_*/ i, Iterator/*_<A2>_*/ j, BinaryPredicate/*<A1, A2>*/ found) {
-	// optimized version of return Functionals.map(and, Functionals.map(Functionals.asFunction(found), i, j))
-	while (i.hasNext() && j.hasNext())
-	    if (!found.apply((/*__*/Object/*>A1<*/) i.next(), (/*__*/Object/*>A2<*/) j.next()))
-		return false;
-	return !(i.hasNext() || j.hasNext());
+        // optimized version of return Functionals.map(and, Functionals.map(Functionals.asFunction(found), i, j))
+        while (i.hasNext() && j.hasNext())
+            if (!found.apply((/*__*/Object/*>A1<*/) i.next(), (/*__*/Object/*>A2<*/) j.next()))
+                return false;
+        return !(i.hasNext() || j.hasNext());
     } 
     /**
      * Checks whether some objects (at least one) in a collection satisfy the specified predicate.
@@ -178,24 +178,24 @@ public final class Setops {
      * @todo document banana application @see Operations.orSome
      */
     public static /*<A>*/ boolean some(Collection/*_<A>_*/ coll, Predicate/*<A>*/ found) {
-	return some(coll.iterator(), found);
+        return some(coll.iterator(), found);
     }
     public static /*<A>*/ boolean some(Iterator/*_<A>_*/ i, Predicate/*<A>*/ found) {
-	// optimized version of return Functionals.map(or, Functionals.map(Functionals.asFunction(found), i))
-	while (i.hasNext())
-	    if (found.apply((/*__*/Object/*>A<*/) i.next()))
-		return true;
-	return false;
+        // optimized version of return Functionals.map(or, Functionals.map(Functionals.asFunction(found), i))
+        while (i.hasNext())
+            if (found.apply((/*__*/Object/*>A<*/) i.next()))
+                return true;
+        return false;
     } 
     public static /*<A1, A2>*/ boolean some(Collection/*_<A1>_*/ a, Collection/*_<A2>_*/ b, BinaryPredicate/*<A1, A2>*/ found) {
-	return some(a.iterator(), b.iterator(), found);
+        return some(a.iterator(), b.iterator(), found);
     }
     public static /*<A1, A2>*/ boolean some(Iterator/*_<A1>_*/ i, Iterator/*_<A2>_*/ j, BinaryPredicate/*<A1, A2>*/ found) {
-	// optimized version of return Functionals.map(or, Functionals.map(Functionals.asFunction(found), i, j))
-	while (i.hasNext() && j.hasNext())
-	    if (found.apply((/*__*/Object/*>A1<*/) i.next(), (/*__*/Object/*>A2<*/) j.next()))
-		return true;
-	return false;
+        // optimized version of return Functionals.map(or, Functionals.map(Functionals.asFunction(found), i, j))
+        while (i.hasNext() && j.hasNext())
+            if (found.apply((/*__*/Object/*>A1<*/) i.next(), (/*__*/Object/*>A2<*/) j.next()))
+                return true;
+        return false;
     } 
 
     // arg min / arg max
@@ -214,23 +214,23 @@ public final class Setops {
      * @see orbital.algorithm.template.EvaluativeAlgorithm.EvaluationComparator
      */
     public static final Object/*_>A<_*/ argmin(Iterator/*_<A>_*/ choices, Function/*<A,Comparable>*/ f) {
-	// search for minimum f in choices
-	// current best choice of choices
-	Object best = choices.next();
-	// f(best)
-	Comparable bestValue = (Comparable) f.apply(best);
-	while (choices.hasNext()) {
-	    final Object o = choices.next();
-	    final Comparable value = (Comparable) f.apply(o);
-	    if (value.compareTo(bestValue) < 0) {
-		bestValue = value;
-		best = o;
-	    }
-	    assert true : "invariant: " + bestValue + "=< f-value of each choice seen so far & " + f.apply(best) + "==" + bestValue;
-	}
+        // search for minimum f in choices
+        // current best choice of choices
+        Object best = choices.next();
+        // f(best)
+        Comparable bestValue = (Comparable) f.apply(best);
+        while (choices.hasNext()) {
+            final Object o = choices.next();
+            final Comparable value = (Comparable) f.apply(o);
+            if (value.compareTo(bestValue) < 0) {
+                bestValue = value;
+                best = o;
+            }
+            assert true : "invariant: " + bestValue + "=< f-value of each choice seen so far & " + f.apply(best) + "==" + bestValue;
+        }
 
-	// return the best choice
-	return best;
+        // return the best choice
+        return best;
     }
 
     /**
@@ -247,23 +247,23 @@ public final class Setops {
      * @see orbital.algorithm.template.EvaluativeAlgorithm.EvaluationComparator
      */
     public static final Object/*_>A<_*/ argmax(Iterator/*_<A>_*/ choices, Function/*<A,Comparable>*/ f) {
-	// search for maximum f in choices
-	// current best choice of choices
-	Object best = choices.next();
-	// f(best)
-	Comparable bestValue = (Comparable) f.apply(best);
-	while (choices.hasNext()) {
-	    final Object o = choices.next();
-	    final Comparable value = (Comparable) f.apply(o);
-	    if (value.compareTo(bestValue) > 0) {
-		bestValue = value;
-		best = o;
-	    }
-	    assert true : "invariant: " + bestValue + ">= f-value of each choice seen so far & " + f.apply(best) + "==" + bestValue;
-	}
+        // search for maximum f in choices
+        // current best choice of choices
+        Object best = choices.next();
+        // f(best)
+        Comparable bestValue = (Comparable) f.apply(best);
+        while (choices.hasNext()) {
+            final Object o = choices.next();
+            final Comparable value = (Comparable) f.apply(o);
+            if (value.compareTo(bestValue) > 0) {
+                bestValue = value;
+                best = o;
+            }
+            assert true : "invariant: " + bestValue + ">= f-value of each choice seen so far & " + f.apply(best) + "==" + bestValue;
+        }
 
-	// return the best choice
-	return best;
+        // return the best choice
+        return best;
     }
 
 
@@ -273,39 +273,39 @@ public final class Setops {
      * union of two collections.
      */
     public static final /*_<A>_*/ BinaryFunction/*_<Collection<A>,Collection<A>,Collection<A>>_*/ union = new BinaryFunction() {
-	    public Object/*_>Collection<A><_*/ apply(Object/*_>Collection<A><_*/ a, Object/*_>Collection<A><_*/ b) {
-		return union((Collection)a,(Collection)b);
-	    }
-	    public String toString() { return "\u222A"; }
-	};
+            public Object/*_>Collection<A><_*/ apply(Object/*_>Collection<A><_*/ a, Object/*_>Collection<A><_*/ b) {
+                return union((Collection)a,(Collection)b);
+            }
+            public String toString() { return "\u222A"; }
+        };
     /**
      * n-ary union of a list of collections.
      * Returns the union of all collections contained in the argument list.
      */
     public static final /*_<A>_*/ Function/*_<Collection<Collection<A>>,Collection<A>>_*/ unionFold = new Function() {
-	    private SortedSet/*_<A>_*/ EMPTY_SORTED_SET = Collections.unmodifiableSortedSet(new TreeSet());
-	    public Object/*_>Collection<A><_*/ apply(Object/*_>Collection<Collection<A>><_*/ a) {
-		//@internal using foldRight instead of foldLeft here avoids the dynamic type problem of EMPTY_SORTED_SET in case of incomparable elements
-		return Functionals.foldRight(union, EMPTY_SORTED_SET, Utility.asIterator(a));
-	    }
-	    public String toString() { return "\u22C3"; }
-	};
+            private SortedSet/*_<A>_*/ EMPTY_SORTED_SET = Collections.unmodifiableSortedSet(new TreeSet());
+            public Object/*_>Collection<A><_*/ apply(Object/*_>Collection<Collection<A>><_*/ a) {
+                //@internal using foldRight instead of foldLeft here avoids the dynamic type problem of EMPTY_SORTED_SET in case of incomparable elements
+                return Functionals.foldRight(union, EMPTY_SORTED_SET, Utility.asIterator(a));
+            }
+            public String toString() { return "\u22C3"; }
+        };
     /**
      * Returns the union of two collections.
      * @return a &cup; b.
      * @postconditions RES has same type as a
      */
     public static /*_<A>_*/ Collection/*_<A>_*/ union(Collection/*_<A>_*/ a, Collection/*_<A>_*/ b) {
-	Collection/*_<A>_*/ c = newCollectionLike(a);
-	c.addAll(a);
-	c.addAll(b);
-	return c;
+        Collection/*_<A>_*/ c = newCollectionLike(a);
+        c.addAll(a);
+        c.addAll(b);
+        return c;
     } 
     public static /*_<A>_*/ Set/*_<A>_*/ union(Set/*_<A>_*/ a, Set/*_<A>_*/ b) {
-	return (Set/*_<A>_*/) union((Collection/*_<A>_*/) a, (Collection/*_<A>_*/) b);
+        return (Set/*_<A>_*/) union((Collection/*_<A>_*/) a, (Collection/*_<A>_*/) b);
     } 
     public static /*_<A>_*/ SortedSet/*_<A>_*/ union(SortedSet/*_<A>_*/ a, SortedSet/*_<A>_*/ b) {
-	return (SortedSet/*_<A>_*/) union((Collection/*_<A>_*/) a, (Collection/*_<A>_*/) b);
+        return (SortedSet/*_<A>_*/) union((Collection/*_<A>_*/) a, (Collection/*_<A>_*/) b);
     } 
 
     
@@ -313,38 +313,38 @@ public final class Setops {
      * intersection of two collections.
      */
     public static final /*_<A>_*/ BinaryFunction/*_<Collection<A>,Collection<A>,Collection<A>>_*/ intersection = new BinaryFunction() {
-	    public Object/*_>Collection<A><_*/ apply(Object/*_>Collection<A><_*/ a, Object/*_>Collection<A><_*/ b) {
-		return intersection((Collection)a,(Collection)b);
-	    }
-	    public String toString() { return "\u2229"; }
-	};
+            public Object/*_>Collection<A><_*/ apply(Object/*_>Collection<A><_*/ a, Object/*_>Collection<A><_*/ b) {
+                return intersection((Collection)a,(Collection)b);
+            }
+            public String toString() { return "\u2229"; }
+        };
     /**
      * n-ary intersection of a list of collections.
      * Returns the intersection of all collections contained in the argument list.
      */
     public static final /*_<A>_*/ Function/*_<Collection<Collection<A>>,Collection<A>>_*/ intersectionFold = new Function() {
-	    public Object/*_>Collection<A><_*/ apply(Object/*_>Collection<Collection<A>><_*/ a) {
-		//@internal the trick intersecting with the first collection is less performant but allowed since the empty intersection is the universe and hence undefined in Java
-		return Functionals.foldLeft(intersection, Utility.asIterator(a).next(), Utility.asIterator(a));
-	    }
-	    public String toString() { return "\u22C2"; }
-	};
+            public Object/*_>Collection<A><_*/ apply(Object/*_>Collection<Collection<A>><_*/ a) {
+                //@internal the trick intersecting with the first collection is less performant but allowed since the empty intersection is the universe and hence undefined in Java
+                return Functionals.foldLeft(intersection, Utility.asIterator(a).next(), Utility.asIterator(a));
+            }
+            public String toString() { return "\u22C2"; }
+        };
     /**
      * Returns the intersection of two collections.
      * @return a &cap; b.
      * @postconditions RES has same type as a
      */
     public static /*_<A>_*/ Collection/*_<A>_*/ intersection(Collection/*_<A>_*/ a, Collection/*_<A>_*/ b) {
-	Collection/*_<A>_*/ c = newCollectionLike(a);
-	c.addAll(a);
-	c.retainAll(b);
-	return c;
+        Collection/*_<A>_*/ c = newCollectionLike(a);
+        c.addAll(a);
+        c.retainAll(b);
+        return c;
     } 
     public static /*_<A>_*/ Set/*_<A>_*/ intersection(Set/*_<A>_*/ a, Set/*_<A>_*/ b) {
-	return (Set/*_<A>_*/) intersection((Collection/*_<A>_*/) a, (Collection/*_<A>_*/) b);
+        return (Set/*_<A>_*/) intersection((Collection/*_<A>_*/) a, (Collection/*_<A>_*/) b);
     } 
     public static /*_<A>_*/ SortedSet/*_<A>_*/ intersection(SortedSet/*_<A>_*/ a, SortedSet/*_<A>_*/ b) {
-	return (SortedSet/*_<A>_*/) intersection((Collection/*_<A>_*/) a, (Collection/*_<A>_*/) b);
+        return (SortedSet/*_<A>_*/) intersection((Collection/*_<A>_*/) a, (Collection/*_<A>_*/) b);
     } 
 
     /**
@@ -354,16 +354,16 @@ public final class Setops {
      * @postconditions RES has same type as universal
      */
     public static /*_<A>_*/ Collection/*_<A>_*/ complement(Collection/*_<A>_*/ universal, Collection/*_<A>_*/ a) {
-	Collection/*_<A>_*/ c = newCollectionLike(universal);
-	c.addAll(universal);
-	c.removeAll(a);
-	return c;
+        Collection/*_<A>_*/ c = newCollectionLike(universal);
+        c.addAll(universal);
+        c.removeAll(a);
+        return c;
     } 
     public static /*_<A>_*/ Set/*_<A>_*/ complement(Set/*_<A>_*/ universal, Set/*_<A>_*/ a) {
-	return (Set/*_<A>_*/) complement((Collection/*_<A>_*/) universal, a);
+        return (Set/*_<A>_*/) complement((Collection/*_<A>_*/) universal, a);
     } 
     public static /*_<A>_*/ SortedSet/*_<A>_*/ complement(SortedSet/*_<A>_*/ universal, SortedSet/*_<A>_*/ a) {
-	return (SortedSet/*_<A>_*/) complement((Collection/*_<A>_*/) universal, a);
+        return (SortedSet/*_<A>_*/) complement((Collection/*_<A>_*/) universal, a);
     } 
 
     /**
@@ -372,13 +372,13 @@ public final class Setops {
      * @postconditions RES has same type as a
      */
     public final static /*_<A>_*/ Collection/*_<A>_*/ difference(Collection/*_<A>_*/ a, Collection/*_<A>_*/ b) {
-	return complement(a, b);
+        return complement(a, b);
     } 
     public final static /*_<A>_*/ Set/*_<A>_*/ difference(Set/*_<A>_*/ a, Set/*_<A>_*/ b) {
-	return complement(a, b);
+        return complement(a, b);
     } 
     public final static /*_<A>_*/ SortedSet/*_<A>_*/ difference(SortedSet/*_<A>_*/ a, SortedSet/*_<A>_*/ b) {
-	return complement(a, b);
+        return complement(a, b);
     } 
 
     /**
@@ -388,13 +388,13 @@ public final class Setops {
      * @postconditions RES has same type as a
      */
     public static /*_<A>_*/ Collection/*_<A>_*/ symmetricDifference(Collection/*_<A>_*/ a, Collection/*_<A>_*/ b) {
-	return union(complement(a, b), complement(b, a));
+        return union(complement(a, b), complement(b, a));
     } 
     public static /*_<A>_*/ Set/*_<A>_*/ symmetricDifference(Set/*_<A>_*/ a, Set/*_<A>_*/ b) {
-	return union(complement(a, b), complement(b, a));
+        return union(complement(a, b), complement(b, a));
     } 
     public static /*_<A>_*/ SortedSet/*_<A>_*/ symmetricDifference(SortedSet/*_<A>_*/ a, SortedSet/*_<A>_*/ b) {
-	return union(complement(a, b), complement(b, a));
+        return union(complement(a, b), complement(b, a));
     } 
 
     /**
@@ -405,16 +405,16 @@ public final class Setops {
      * @todo rewrite pure functional
      */
     public static /*<A, B>*/ Collection/*_<Pair<A, B>>_*/ cross(Collection/*_<A>_*/ a, Collection/*_<B>_*/ b) {
-	Collection/*_<Pair<A, B>>_*/ r = new ArrayList/*_<Pair<A, B>>_*/(a.size() * b.size());
-	for (Iterator/*_<A>_*/ i = a.iterator(); i.hasNext(); ) {
-	    Object/*>A<*/ e = (Object/*>A<*//*__*/) i.next();
-	    for (Iterator j/*_<B>_*/ = b.iterator(); j.hasNext(); )
-		r.add(new Pair/*<A, B>*/(e, (Object/*>B<*//*__*/) j.next()));
-	} 
-	return r;
+        Collection/*_<Pair<A, B>>_*/ r = new ArrayList/*_<Pair<A, B>>_*/(a.size() * b.size());
+        for (Iterator/*_<A>_*/ i = a.iterator(); i.hasNext(); ) {
+            Object/*>A<*/ e = (Object/*>A<*//*__*/) i.next();
+            for (Iterator j/*_<B>_*/ = b.iterator(); j.hasNext(); )
+                r.add(new Pair/*<A, B>*/(e, (Object/*>B<*//*__*/) j.next()));
+        } 
+        return r;
     } 
     public static /*<A, B>*/ Iterator/*_<Pair<A, B>>_*/ cross(Iterator/*_<A>_*/ a, Iterator/*_<B>_*/ b) {
-	return cross(asList(a), asList(b)).iterator();
+        return cross(asList(a), asList(b)).iterator();
     }
 
     /**
@@ -428,26 +428,26 @@ public final class Setops {
      * @see "Axiom of Choice (for infinite case)"
      */
     public static Collection/*_<List<A>>_*/ cross(List/*_<Collection<A>>_*/ a) {
-    	// n-ary cross product of the elements in optionLists
-    	List r = new LinkedList();
-    	r.add(Collections.EMPTY_LIST);
-    	for (Iterator i = a.iterator(); i.hasNext(); ) {
-	    Collection options = (Collection) i.next();
-	    List	   r_ = new ArrayList(r.size() * options.size());
-	    // do only iterate over current content of r, not regarding further adjustments r_
-	    for (Iterator k = r.iterator(); k.hasNext(); ) {
-		List x = (List) k.next();
-		for (Iterator j = options.iterator(); j.hasNext(); ) {
-		    List   x2 = new ArrayList(x.size() + 1);
-		    x2.addAll(x);
-		    x2.add(j.next());
-		    r_.add(x2);
-		}
-	    }
-	    assert r_.size() == r.size() * options.size() : "cross product performs combinatorical increase";
-	    r = r_;
-    	}
-    	return r;
+        // n-ary cross product of the elements in optionLists
+        List r = new LinkedList();
+        r.add(Collections.EMPTY_LIST);
+        for (Iterator i = a.iterator(); i.hasNext(); ) {
+            Collection options = (Collection) i.next();
+            List           r_ = new ArrayList(r.size() * options.size());
+            // do only iterate over current content of r, not regarding further adjustments r_
+            for (Iterator k = r.iterator(); k.hasNext(); ) {
+                List x = (List) k.next();
+                for (Iterator j = options.iterator(); j.hasNext(); ) {
+                    List   x2 = new ArrayList(x.size() + 1);
+                    x2.addAll(x);
+                    x2.add(j.next());
+                    r_.add(x2);
+                }
+            }
+            assert r_.size() == r.size() * options.size() : "cross product performs combinatorical increase";
+            r = r_;
+        }
+        return r;
     }
 
     /**
@@ -455,22 +455,22 @@ public final class Setops {
      * &weierp;(S) := {E &sube; S}
      */
     public static /*<A>*/ Set/*_<Set<A>>_*/ powerset(Set/*_<A>_*/ s) {
-	// list version of the set s (in arbitrary order)
-	final Combinatorical c = Combinatorical.getPermutations(s.size(), 2, true);
-	final Set/*_<Set<A>>_*/ p = new HashSet/*_<Set<A>>_*/(c.count());
-	while (c.hasNext()) {
-	    int[] choose = c.next();
-	    Set/*_<A>_*/ e = (Set)newCollectionLike(s);
-	    int index = 0;
-	    for (Iterator i/*_<A>_*/ = s.iterator(); i.hasNext(); ) {
-		Object/*_>A<_*/ x = i.next();
-		if (choose[index++] == 1) {
-		    e.add(x);
-		}
-	    }
-	    p.add(e);
-	} 
-	return p;
+        // list version of the set s (in arbitrary order)
+        final Combinatorical c = Combinatorical.getPermutations(s.size(), 2, true);
+        final Set/*_<Set<A>>_*/ p = new HashSet/*_<Set<A>>_*/(c.count());
+        while (c.hasNext()) {
+            int[] choose = c.next();
+            Set/*_<A>_*/ e = (Set)newCollectionLike(s);
+            int index = 0;
+            for (Iterator i/*_<A>_*/ = s.iterator(); i.hasNext(); ) {
+                Object/*_>A<_*/ x = i.next();
+                if (choose[index++] == 1) {
+                    e.add(x);
+                }
+            }
+            p.add(e);
+        } 
+        return p;
     } 
 
     
@@ -487,8 +487,8 @@ public final class Setops {
      * @see #epsilon(Collection,Predicate)
      */
     public static /*<A>*/ Object/*>A<*/ any(Collection/*_<A>_*/ coll) {
-	Iterator/*_<A>_*/ it = coll.iterator();
-	return (Object/*>A<*//*__*/) it.next();
+        Iterator/*_<A>_*/ it = coll.iterator();
+        return (Object/*>A<*//*__*/) it.next();
     } 
 
     /**
@@ -499,10 +499,10 @@ public final class Setops {
      * @see java.util.Arrays#asList(Object[])
      */
     public static /*_<A>_*/ List/*_<A>_*/ asList(Iterator/*_<A>_*/ it) {
-	List/*_<A>_*/ r = new LinkedList/*_<A>_*/();
-	while (it.hasNext())
-	    r.add(it.next());
-	return r;
+        List/*_<A>_*/ r = new LinkedList/*_<A>_*/();
+        while (it.hasNext())
+            r.add(it.next());
+        return r;
     } 
 
     /**
@@ -513,10 +513,10 @@ public final class Setops {
      * @see java.util.Arrays#asList(Object[])
      */
     public static /*_<A>_*/ Set/*_<A>_*/ asSet(Iterator/*_<A>_*/ it) {
-	Set/*_<A>_*/ r = new LinkedHashSet/*_<A>_*/();
-	while (it.hasNext())
-	    r.add(it.next());
-	return r;
+        Set/*_<A>_*/ r = new LinkedHashSet/*_<A>_*/();
+        while (it.hasNext())
+            r.add(it.next());
+        return r;
     } 
 
     /**
@@ -525,29 +525,29 @@ public final class Setops {
      * If no such collection could be instantiated, a similar collection is used.</p>
      */
     public static /*_<A>_*/ Collection/*_<A>_*/ newCollectionLike(Collection/*_<A>_*/ c) {
-	try {
-	    if (c instanceof SortedSet) {
-		// skip and let the special handler below take care of the comparator
-	    } else {
-		return (Collection/*_<A>_*/) c.getClass().newInstance();
-	    }
-	}
-	catch (InstantiationException trial) {}
-	catch (IllegalAccessException trial) {} 
-	// find a rather similar collection type
-	if (c instanceof java.util.SortedSet) {
-	    return new java.util.TreeSet/*_<A>_*/(((SortedSet)c).comparator());
-	} else if (c instanceof java.util.Set) {
-	    return linkedHashSetClass != null && linkedHashSetClass.isInstance(c)
-		? (Set) new java.util.LinkedHashSet/*_<A>_*/(c.size())
-		: (Set) new java.util.HashSet/*_<A>_*/();
-	} else if (c instanceof java.util.List) {
-	    return randomAccessClass != null && randomAccessClass.isInstance(c)
-		? (List) new java.util.ArrayList/*_<A>_*/(c.size())
-		: (List) new java.util.LinkedList/*_<A>_*/();
-	} else {
-	    throw new IllegalArgumentException("unknown collection type " + c.getClass() + " could not be instantiated");
-	}
+        try {
+            if (c instanceof SortedSet) {
+                // skip and let the special handler below take care of the comparator
+            } else {
+                return (Collection/*_<A>_*/) c.getClass().newInstance();
+            }
+        }
+        catch (InstantiationException trial) {}
+        catch (IllegalAccessException trial) {} 
+        // find a rather similar collection type
+        if (c instanceof java.util.SortedSet) {
+            return new java.util.TreeSet/*_<A>_*/(((SortedSet)c).comparator());
+        } else if (c instanceof java.util.Set) {
+            return linkedHashSetClass != null && linkedHashSetClass.isInstance(c)
+                ? (Set) new java.util.LinkedHashSet/*_<A>_*/(c.size())
+                : (Set) new java.util.HashSet/*_<A>_*/();
+        } else if (c instanceof java.util.List) {
+            return randomAccessClass != null && randomAccessClass.isInstance(c)
+                ? (List) new java.util.ArrayList/*_<A>_*/(c.size())
+                : (List) new java.util.LinkedList/*_<A>_*/();
+        } else {
+            throw new IllegalArgumentException("unknown collection type " + c.getClass() + " could not be instantiated");
+        }
     } 
 
     /**
@@ -557,32 +557,32 @@ public final class Setops {
      * and attempts to modify the returned iterator result in an UnsupportedOperationException.
      */
     public static Iterator/*_<A>_*/ unmodifiableIterator(final Iterator/*_<A>_*/ i) {
-	return new Iterator/*_<A>_*/() {
-    		public boolean hasNext() {return i.hasNext();}
-    		public Object/*_>A<_*/ next() 	 {return i.next();}
-    		public void remove() {
-    		    throw new UnsupportedOperationException();
-		}
-	    };
+        return new Iterator/*_<A>_*/() {
+                public boolean hasNext() {return i.hasNext();}
+                public Object/*_>A<_*/ next()    {return i.next();}
+                public void remove() {
+                    throw new UnsupportedOperationException();
+                }
+            };
     }
     public static ListIterator/*_<A>_*/ unmodifiableListIterator(final ListIterator/*_<A>_*/ i) {
-	return new ListIterator/*_<A>_*/() {
-    		public boolean hasNext() {return i.hasNext();}
-    		public boolean hasPrevious() {return i.hasPrevious();}
-    		public Object/*_>A<_*/ next() 	 {return i.next();}
-    		public Object/*_>A<_*/ previous() 	 {return i.previous();}
-    		public int nextIndex() 	 {return i.nextIndex();}
-    		public int previousIndex() 	 {return i.previousIndex();}
-    		public void remove() {
-    		    throw new UnsupportedOperationException();
-		}
-    		public void add(Object/*_>A<_*/ o) {
-    		    throw new UnsupportedOperationException();
-		}
-    		public void set(Object/*_>A<_*/ o) {
-    		    throw new UnsupportedOperationException();
-		}
-	    };
+        return new ListIterator/*_<A>_*/() {
+                public boolean hasNext() {return i.hasNext();}
+                public boolean hasPrevious() {return i.hasPrevious();}
+                public Object/*_>A<_*/ next()    {return i.next();}
+                public Object/*_>A<_*/ previous()        {return i.previous();}
+                public int nextIndex()   {return i.nextIndex();}
+                public int previousIndex()       {return i.previousIndex();}
+                public void remove() {
+                    throw new UnsupportedOperationException();
+                }
+                public void add(Object/*_>A<_*/ o) {
+                    throw new UnsupportedOperationException();
+                }
+                public void set(Object/*_>A<_*/ o) {
+                    throw new UnsupportedOperationException();
+                }
+            };
     }
     /**
      * Returns an unmodifiable view of the same type as the collection specified.
@@ -593,15 +593,15 @@ public final class Setops {
      * @see Collections#unmodifiableSortedSet(SortedSet)
      */
     public static Collection/*_<A>_*/ unmodifiableCollectionLike(final Collection/*_<A>_*/ c) {
-	// find a rather similar collection type
-	if (c instanceof java.util.SortedSet)
-	    return Collections.unmodifiableSortedSet((SortedSet)c);
-	else if (c instanceof java.util.Set)
-	    return Collections.unmodifiableSet((Set)c);
-	else if (c instanceof java.util.List)
-	    return Collections.unmodifiableList((List)c);
-	else
-	    return Collections.unmodifiableCollection(c);
+        // find a rather similar collection type
+        if (c instanceof java.util.SortedSet)
+            return Collections.unmodifiableSortedSet((SortedSet)c);
+        else if (c instanceof java.util.Set)
+            return Collections.unmodifiableSet((Set)c);
+        else if (c instanceof java.util.List)
+            return Collections.unmodifiableList((List)c);
+        else
+            return Collections.unmodifiableCollection(c);
     }
 
     /**
@@ -621,53 +621,53 @@ public final class Setops {
      * @see Collections#copy(List,List)
      */
     public static void copy(ListIterator dest, Iterator src) {
-	while (src.hasNext()) {
-	    try {
-		dest.next();
-	    }
-	    catch (NoSuchElementException ex) {
-		//@internal that's better than querying dest.hasNext() in order to let growing ListIterators (like Polynomial.iterator()) have a chance of growing on demand.
-		// but also see Functionals.mapInto
-		throw new IndexOutOfBoundsException("destination ListIterator has less storage than source iterator");
-	    }
-	    dest.set(src.next());
-	}
+        while (src.hasNext()) {
+            try {
+                dest.next();
+            }
+            catch (NoSuchElementException ex) {
+                //@internal that's better than querying dest.hasNext() in order to let growing ListIterators (like Polynomial.iterator()) have a chance of growing on demand.
+                // but also see Functionals.mapInto
+                throw new IndexOutOfBoundsException("destination ListIterator has less storage than source iterator");
+            }
+            dest.set(src.next());
+        }
     }
 
     /**
      * Sort a collection according to the order induced by a comparator, with bubble sort.
      */
     //public static Collection/*_<A>_*/ bubbleSort(Collection/*_<A>_*/ c, Comparator/*_<A>_*/ comp) {
-    /*	boolean		inorder;
-	Collection ord_c;
-	do {
-	inorder = true;
-	ord_c = new ArrayList(c.size());
+    /*  boolean         inorder;
+        Collection ord_c;
+        do {
+        inorder = true;
+        ord_c = new ArrayList(c.size());
 
-	Iterator i = c.iterator();
-	if (!i.hasNext())
-	break;
-	Object o_el;
-	for (o_el = i.next(); i.hasNext(); ) {
-	Object el = i.next();
+        Iterator i = c.iterator();
+        if (!i.hasNext())
+        break;
+        Object o_el;
+        for (o_el = i.next(); i.hasNext(); ) {
+        Object el = i.next();
 
-	if (comp.compare(el, o_el) < 0) {
-	Object t = o_el;		// swap
-	o_el = el;
-	el = t;
-	inorder = false;
-	}
-	ord_c.add(o_el);
+        if (comp.compare(el, o_el) < 0) {
+        Object t = o_el;                // swap
+        o_el = el;
+        el = t;
+        inorder = false;
+        }
+        ord_c.add(o_el);
 
-	o_el = el;
-	}
-	ord_c.add(o_el);
+        o_el = el;
+        }
+        ord_c.add(o_el);
 
-	c = ord_c;
-	} while (!inorder);
+        c = ord_c;
+        } while (!inorder);
 
-	return c;
-	}*/
+        return c;
+        }*/
 
     /**
      * Merge two collections according to the order induced by a comparator.
@@ -676,7 +676,7 @@ public final class Setops {
      * @todo see #mergeSort(Collection, Comparator)
      */
     public static List/*_<A>_*/ merge(List/*_<A>_*/ x, List/*_<A>_*/ y, Comparator/*_<A>_*/ comp) {
-	return merge(x.iterator(), y.iterator(), comp, new ArrayList(x.size() + y.size()));
+        return merge(x.iterator(), y.iterator(), comp, new ArrayList(x.size() + y.size()));
     }
     /**
      * Merge two iterator-views according to the order induced by a comparator.
@@ -684,44 +684,44 @@ public final class Setops {
      * @postconditions isSorted(RES) && RES = a &cup; b
      */
     public static List/*_<A>_*/ merge(Iterator/*_<A>_*/ x, Iterator/*_<A>_*/ y, Comparator/*_<A>_*/ comp) {
-	return merge(x, y, comp, new LinkedList());
+        return merge(x, y, comp, new LinkedList());
     }
     /**
      * @preconditions isSorted(x) && isSorted(y)
      * @postconditions isSorted(RES) && RES = a &cup; b
      */
     private static List/*_<A>_*/ merge(Iterator/*_<A>_*/ x, Iterator/*_<A>_*/ y, Comparator/*_<A>_*/ comp, List/*_<A>_*/ r) {
-	if (x.hasNext() && y.hasNext()) {
-	    Object   ox = x.next();
-	    Object   oy = y.next();
-	    // merge both lists as long as both contain data
-	    while (true) {
-		if (comp.compare(ox, oy) <= 0) {
-		    r.add(ox);
-		    if (x.hasNext())
-			ox = x.next();
-		    else {
-			r.add(oy);
-			break;
-		    }
-		} else {
-		    r.add(oy);
-		    if (y.hasNext())
-			oy = y.next();
-		    else {
-			r.add(ox);
-			break;
-		    }
-		}
-	    }
+        if (x.hasNext() && y.hasNext()) {
+            Object   ox = x.next();
+            Object   oy = y.next();
+            // merge both lists as long as both contain data
+            while (true) {
+                if (comp.compare(ox, oy) <= 0) {
+                    r.add(ox);
+                    if (x.hasNext())
+                        ox = x.next();
+                    else {
+                        r.add(oy);
+                        break;
+                    }
+                } else {
+                    r.add(oy);
+                    if (y.hasNext())
+                        oy = y.next();
+                    else {
+                        r.add(ox);
+                        break;
+                    }
+                }
+            }
         }
-	assert !(x.hasNext() && y.hasNext()) : "at most one iterator has data left";
-    	// append the single array that still does contain data
-    	while (x.hasNext())
-	    r.add(x.next());
-    	while (y.hasNext())
-	    r.add(y.next());
-	return r;
+        assert !(x.hasNext() && y.hasNext()) : "at most one iterator has data left";
+        // append the single array that still does contain data
+        while (x.hasNext())
+            r.add(x.next());
+        while (y.hasNext())
+            r.add(y.next());
+        return r;
     }
 
     /**
@@ -731,18 +731,18 @@ public final class Setops {
      * @postconditions sorted(l) &and; object&isin;l
      */
     public static final void insert(List l, Object object) {
-	assert Utility.sorted(l, null) : "@preconditions";
-	final Comparable c = (Comparable)object;
-	final ListIterator i = l.listIterator();
-	while (i.hasNext()) {
-	    Object o = i.next();
-	    if (c.compareTo(o) <= 0) {
-		i.previous();
-		break;
-	    }
-	}
-	i.add(c);
-	assert Utility.sorted(l, null) && l.contains(object) : "@postconditions";
+        assert Utility.sorted(l, null) : "@preconditions";
+        final Comparable c = (Comparable)object;
+        final ListIterator i = l.listIterator();
+        while (i.hasNext()) {
+            Object o = i.next();
+            if (c.compareTo(o) <= 0) {
+                i.previous();
+                break;
+            }
+        }
+        i.add(c);
+        assert Utility.sorted(l, null) && l.contains(object) : "@postconditions";
     }
 
     /**
@@ -750,150 +750,150 @@ public final class Setops {
      * @see <a href="{@docRoot}/Patterns/Design/Decorator.html">Decorator</a>
      */
 //     public static final List reverse(final List l) {
-// 	return new AbstractSequentialList() {
-// 		// implementation of java.util.List interface
+//      return new AbstractSequentialList() {
+//              // implementation of java.util.List interface
 
-// 		/**
-// 		 * Transforms an index of the reversed list to an index of the original list.
-// 		 */		
-// 		private int trafo(int index) {
-// 		    return size() - 1 - index;
-// 		}
+//              /**
+//               * Transforms an index of the reversed list to an index of the original list.
+//               */             
+//              private int trafo(int index) {
+//                  return size() - 1 - index;
+//              }
 
-// 		/**
-// 		 * Transforms an index of the original list back to an index of the reversed list.
-// 		 */		
-// 		private int reverseTrafo(int index) {
-// 		    return trafo(index);
-// 		}
+//              /**
+//               * Transforms an index of the original list back to an index of the reversed list.
+//               */             
+//              private int reverseTrafo(int index) {
+//                  return trafo(index);
+//              }
 
-// 		public int indexOf(Object param1)
-// 		{
-// 		    return reverseTrafo(l.indexOf(param1));
-// 		}
+//              public int indexOf(Object param1)
+//              {
+//                  return reverseTrafo(l.indexOf(param1));
+//              }
 
-// 		public int lastIndexOf(Object param1)
-// 		{
-// 		    return reverseTrafo(l.lastIndexOf(param1));
-// 		}
+//              public int lastIndexOf(Object param1)
+//              {
+//                  return reverseTrafo(l.lastIndexOf(param1));
+//              }
 
-// 		public boolean addAll(int param1, Collection param2)
-// 		{
-// 		    return l.addAll(trafo(param1), param2);
-// 		}
+//              public boolean addAll(int param1, Collection param2)
+//              {
+//                  return l.addAll(trafo(param1), param2);
+//              }
 
-// 		public boolean addAll(Collection param1)
-// 		{
-// 		    return l.addAll(trafo(0), param2);
-// 		}
-// 		public boolean add(Object param1)
-// 		{
-// 		    // TODO: implement this java.util.List method
-// 		    return false;
-// 		}
-// 		public void add(int param1, Object param2)
-// 		{
-// 		    // TODO: implement this java.util.List method
-// 		}
+//              public boolean addAll(Collection param1)
+//              {
+//                  return l.addAll(trafo(0), param2);
+//              }
+//              public boolean add(Object param1)
+//              {
+//                  // TODO: implement this java.util.List method
+//                  return false;
+//              }
+//              public void add(int param1, Object param2)
+//              {
+//                  // TODO: implement this java.util.List method
+//              }
 
-// 		public Object get(int param1)
-// 		{
-// 		    // TODO: implement this java.util.List method
-// 		    return null;
-// 		}
-// 		public boolean contains(Object param1)
-// 		{
-// 		    // TODO: implement this java.util.List method
-// 		    return false;
-// 		}
+//              public Object get(int param1)
+//              {
+//                  // TODO: implement this java.util.List method
+//                  return null;
+//              }
+//              public boolean contains(Object param1)
+//              {
+//                  // TODO: implement this java.util.List method
+//                  return false;
+//              }
 
-// 		public int size()
-// 		{
-// 		    // TODO: implement this java.util.List method
-// 		    return 0;
-// 		}
+//              public int size()
+//              {
+//                  // TODO: implement this java.util.List method
+//                  return 0;
+//              }
 
-// 		public Object[] toArray()
-// 		{
-// 		    // TODO: implement this java.util.List method
-// 		    return null;
-// 		}
+//              public Object[] toArray()
+//              {
+//                  // TODO: implement this java.util.List method
+//                  return null;
+//              }
 
-// 		public Object[] toArray(Object[] param1)
-// 		{
-// 		    // TODO: implement this java.util.List method
-// 		    return null;
-// 		}
+//              public Object[] toArray(Object[] param1)
+//              {
+//                  // TODO: implement this java.util.List method
+//                  return null;
+//              }
 
-// 		public Iterator iterator()
-// 		{
-// 		    // TODO: implement this java.util.List method
-// 		    return null;
-// 		}
+//              public Iterator iterator()
+//              {
+//                  // TODO: implement this java.util.List method
+//                  return null;
+//              }
 
-// 		public boolean remove(Object param1)
-// 		{
-// 		    return l.remove(param1);
-// 		}
+//              public boolean remove(Object param1)
+//              {
+//                  return l.remove(param1);
+//              }
 
-// 		public Object remove(int param1)
-// 		{
-// 		    // TODO: implement this java.util.List method
-// 		    return null;
-// 		}
-// 		public void clear()
-// 		{
-// 		    l.clear();
-// 		}
+//              public Object remove(int param1)
+//              {
+//                  // TODO: implement this java.util.List method
+//                  return null;
+//              }
+//              public void clear()
+//              {
+//                  l.clear();
+//              }
 
-// 		public boolean isEmpty()
-// 		{
-// 		    return l.isEmpty();
-// 		}
+//              public boolean isEmpty()
+//              {
+//                  return l.isEmpty();
+//              }
 
-// 		public Object set(int param1, Object param2)
-// 		{
-// 		    // TODO: implement this java.util.List method
-// 		    return null;
-// 		}
+//              public Object set(int param1, Object param2)
+//              {
+//                  // TODO: implement this java.util.List method
+//                  return null;
+//              }
 
-// 		public boolean containsAll(Collection param1)
-// 		{
-// 		    // TODO: implement this java.util.List method
-// 		    return false;
-// 		}
+//              public boolean containsAll(Collection param1)
+//              {
+//                  // TODO: implement this java.util.List method
+//                  return false;
+//              }
 
-// 		public boolean removeAll(Collection param1)
-// 		{
-// 		    // TODO: implement this java.util.List method
-// 		    return false;
-// 		}
+//              public boolean removeAll(Collection param1)
+//              {
+//                  // TODO: implement this java.util.List method
+//                  return false;
+//              }
 
-// 		public boolean retainAll(Collection param1)
-// 		{
-// 		    // TODO: implement this java.util.List method
-// 		    return false;
-// 		}
+//              public boolean retainAll(Collection param1)
+//              {
+//                  // TODO: implement this java.util.List method
+//                  return false;
+//              }
 
-// 		public List subList(int param1, int param2)
-// 		{
-// 		    // TODO: implement this java.util.List method
-// 		    return null;
-// 		}
+//              public List subList(int param1, int param2)
+//              {
+//                  // TODO: implement this java.util.List method
+//                  return null;
+//              }
 
-// 		public ListIterator listIterator(int param1)
-// 		{
-// 		    // TODO: implement this java.util.List method
-// 		    return null;
-// 		}
+//              public ListIterator listIterator(int param1)
+//              {
+//                  // TODO: implement this java.util.List method
+//                  return null;
+//              }
 
-// 		public ListIterator listIterator()
-// 		{
-// 		    // TODO: implement this java.util.List method
-// 		    return null;
-// 		}
+//              public ListIterator listIterator()
+//              {
+//                  // TODO: implement this java.util.List method
+//                  return null;
+//              }
 
-// 	    };
+//          };
 //     }
 
     /**
@@ -905,11 +905,11 @@ public final class Setops {
      * @see java.util.Arrays#asList(Object[])
      */
     public static final Map asMap(Object[][] entries) {
-	Map map = new HashMap();
-	for (int i = 0; i < entries.length; i++) {
-	    map.put((String)entries[i][0], entries[i][1]);
-	}
-	return Collections.unmodifiableMap(map);
+        Map map = new HashMap();
+        for (int i = 0; i < entries.length; i++) {
+            map.put((String)entries[i][0], entries[i][1]);
+        }
+        return Collections.unmodifiableMap(map);
     }
 
     // selection methods
@@ -947,42 +947,42 @@ public final class Setops {
      * @see orbital.logic.functor.Functionals#filter(Predicate,Iterator)
      */
     public static final Function/**<Collection &cup; Iterator, Collection>**/ createSelection(final Function/*<Collection, Collection>*/ what,
-											      final Predicate where,
-											      final Comparator orderBy, final boolean asc) {
-	if (what == null)
-	    return createSelection(Filters.all, where, orderBy, asc);
-	else if (where == null)
-	    return createSelection(what, Functionals.onVoid(Predicates.TRUE), orderBy, asc);
-	return new Function/* <Collection, Collection> */() {
-		public Object/* >Collection< */ apply(Object/* >Collection< */ from) {
-		    // selection of elements which the predicate was true of
-		    List sel = new LinkedList();
+                                                                                              final Predicate where,
+                                                                                              final Comparator orderBy, final boolean asc) {
+        if (what == null)
+            return createSelection(Filters.all, where, orderBy, asc);
+        else if (where == null)
+            return createSelection(what, Functionals.onVoid(Predicates.TRUE), orderBy, asc);
+        return new Function/* <Collection, Collection> */() {
+                public Object/* >Collection< */ apply(Object/* >Collection< */ from) {
+                    // selection of elements which the predicate was true of
+                    List sel = new LinkedList();
                 
-		    // for each in FROM
-		    for (Iterator i = (from instanceof Iterator) ?
-			     (Iterator) from : ((Collection) from).iterator();
-			 i.hasNext(); ) {
+                    // for each in FROM
+                    for (Iterator i = (from instanceof Iterator) ?
+                             (Iterator) from : ((Collection) from).iterator();
+                         i.hasNext(); ) {
         
-			// SELECT element
-			Object el = i.next();
+                        // SELECT element
+                        Object el = i.next();
         
-			// WHERE Adjective suits
-			if (where.apply(el))
-			    sel.add(el);
-		    } 
+                        // WHERE Adjective suits
+                        if (where.apply(el))
+                            sel.add(el);
+                    } 
         
-		    // ORDER BY sort ASC|DESC
-		    if (orderBy != null)
-			Collections.sort(sel, asc ? orderBy : new ReverseComparator(orderBy));
+                    // ORDER BY sort ASC|DESC
+                    if (orderBy != null)
+                        Collections.sort(sel, asc ? orderBy : new ReverseComparator(orderBy));
         
-		    // RESULTSET
-		    // filter the data collection of the selected elements
-		    return what.apply(sel);
-		}
-	    };
+                    // RESULTSET
+                    // filter the data collection of the selected elements
+                    return what.apply(sel);
+                }
+            };
     } 
     public static final Function/**<Collection &cup; Iterator, Collection>**/ createSelection(final Predicate where) {
-	return createSelection(null, where, null, true);
+        return createSelection(null, where, null, true);
     }
 
     /**
@@ -1003,38 +1003,38 @@ public final class Setops {
      * @see #createSelection(Function,Predicate,Comparator,boolean)
      */
     public static final Collection select(Function/*<Collection, Collection>*/ what,
-					  Collection from,
-					  Predicate where,
-					  Comparator orderBy, boolean asc) {
-	return (Collection) createSelection(what, where, orderBy, asc).apply(from);
+                                          Collection from,
+                                          Predicate where,
+                                          Comparator orderBy, boolean asc) {
+        return (Collection) createSelection(what, where, orderBy, asc).apply(from);
     } 
 
 
     public static final Collection select(Function/*<Collection, Collection>*/ what, Collection from, Predicate where) {
-	return select(what, from, where, (Comparator) null, true);
+        return select(what, from, where, (Comparator) null, true);
     } 
     public static final Collection select(Function/*<Collection, Collection>*/ what, Collection from) {
-	return select(what, from, (Predicate) null);
+        return select(what, from, (Predicate) null);
     } 
 
     public static final Collection select(Function/*<Collection, Collection>*/ what, Collection from, Collection wherePredicates) {
-	List sel = new LinkedList();	// selection of Elements with suited Adjectives
+        List sel = new LinkedList();    // selection of Elements with suited Adjectives
 
-	// for each in FROM
-	for (Iterator i = from.iterator(), c = wherePredicates.iterator(); i.hasNext(); ) {
+        // for each in FROM
+        for (Iterator i = from.iterator(), c = wherePredicates.iterator(); i.hasNext(); ) {
 
-	    // SELECT element
-	    Object	  el = i.next();
+            // SELECT element
+            Object        el = i.next();
 
-	    Predicate where = (Predicate) c.next();
+            Predicate where = (Predicate) c.next();
 
-	    // WHERE associated Adjective suits
-	    if (where == null || where.apply(el))
-		sel.add(el);
-	} 
+            // WHERE associated Adjective suits
+            if (where == null || where.apply(el))
+                sel.add(el);
+        } 
 
-	// RESULTSET
-	return (what == null ? sel : (Collection) what.apply(sel));	   // filter the Data Collection of the selected Elements
+        // RESULTSET
+        return (what == null ? sel : (Collection) what.apply(sel));        // filter the Data Collection of the selected Elements
     }
 
 
@@ -1044,7 +1044,7 @@ public final class Setops {
      * Check whether the given iterator produces duplicate entries.
      */
     public static boolean hasDuplicates(Iterator i) {
-	List l = Setops.asList(i);
-	return new HashSet(l).size() != l.size();
+        List l = Setops.asList(i);
+        return new HashSet(l).size() != l.size();
     }
 }

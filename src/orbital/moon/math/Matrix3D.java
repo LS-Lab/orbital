@@ -35,27 +35,27 @@ public class Matrix3D extends RMatrix {
      */
     public static final Matrix3D IDENTITY = new Matrix3D(Values.getDefaultInstance().constant(RMatrix.IDENTITY(4)));
     public Matrix3D() {
-	super(4, 4);
-	set(IDENTITY);
+        super(4, 4);
+        set(IDENTITY);
     }
     public Matrix3D(Matrix B) {
-	// we restrict ourselves to AbstractMatrix here, for speed considerations
-	super(((AbstractMatrix)B).toDoubleArray());
-	if (dimension().width != 4 || dimension().height != 4)
-	    throw new IllegalArgumentException("Matrix3D must be a 4 by 4 Matrix");
+        // we restrict ourselves to AbstractMatrix here, for speed considerations
+        super(((AbstractMatrix)B).toDoubleArray());
+        if (dimension().width != 4 || dimension().height != 4)
+            throw new IllegalArgumentException("Matrix3D must be a 4 by 4 Matrix");
     }
     private Matrix3D(double[][] D) {
-	super(D);
-	if (dimension().width != 4 || dimension().height != 4)
-	    throw new IllegalArgumentException("Matrix3D must be a 4 by 4 Matrix");
+        super(D);
+        if (dimension().width != 4 || dimension().height != 4)
+            throw new IllegalArgumentException("Matrix3D must be a 4 by 4 Matrix");
     }
 
     public Object clone() {
-	return new Matrix3D(D);
+        return new Matrix3D(D);
     } 
 
     private void set(Matrix A) {
-	set(((RMatrix) A).D);
+        set(((RMatrix) A).D);
     } 
 
     /**
@@ -64,10 +64,10 @@ public class Matrix3D extends RMatrix {
      * @todo use Math.toRadians(double), instead?
      */
     private double sin(double deg) {
-	return Math.sin(deg * Math.PI / 180);
+        return Math.sin(deg * Math.PI / 180);
     } 
     private double cos(double deg) {
-	return Math.cos(deg * Math.PI / 180);
+        return Math.cos(deg * Math.PI / 180);
     } 
 
     // caution(!) the order of transformations is NOT commutative.
@@ -78,7 +78,7 @@ public class Matrix3D extends RMatrix {
      * This is a linear isometric transformation.
      */
     public void scale(double sxf, double syf, double szf) {
-	set(this.multiply(DIAGONAL(new RVector(new double[] {sxf, syf, szf, 1}))));
+        set(this.multiply(DIAGONAL(new RVector(new double[] {sxf, syf, szf, 1}))));
     } 
 
     /**
@@ -87,11 +87,11 @@ public class Matrix3D extends RMatrix {
      * Especially, it is an affinity (bijective affine mapping).
      */
     public void translate(double xt, double yt, double zt) {
-	Matrix3D t = (Matrix3D) IDENTITY.clone();
-	t.set(0, 3, xt);
-	t.set(1, 3, yt);
-	t.set(2, 3, zt);
-	set(this.multiply(t));
+        Matrix3D t = (Matrix3D) IDENTITY.clone();
+        t.set(0, 3, xt);
+        t.set(1, 3, yt);
+        t.set(2, 3, zt);
+        set(this.multiply(t));
     } 
 
     /**
@@ -99,45 +99,45 @@ public class Matrix3D extends RMatrix {
      * This is a linear isometric transformation.
      */
     public void rotatex(double ax) {
-	Matrix3D xmat = (Matrix3D) IDENTITY.clone();
-	xmat.set(1, 1, cos(ax));
-	xmat.set(2, 1, sin(ax));
-	xmat.set(1, 2, -sin(ax));
-	xmat.set(2, 2, cos(ax));	//@xxx x -?
-	set(this.multiply(xmat));
+        Matrix3D xmat = (Matrix3D) IDENTITY.clone();
+        xmat.set(1, 1, cos(ax));
+        xmat.set(2, 1, sin(ax));
+        xmat.set(1, 2, -sin(ax));
+        xmat.set(2, 2, cos(ax));        //@xxx x -?
+        set(this.multiply(xmat));
     } 
     /**
      * Rotates a Matrix around the y-axis.
      * This is a linear isometric transformation.
      */
     public void rotatey(double ay) {
-	Matrix3D ymat = (Matrix3D) IDENTITY.clone();
-	ymat.set(0, 0, cos(ay));
-	ymat.set(2, 0, -sin(ay));
-	ymat.set(0, 2, sin(ay));
-	ymat.set(2, 2, cos(ay));	//@xxx -? x
-	set(this.multiply(ymat));
+        Matrix3D ymat = (Matrix3D) IDENTITY.clone();
+        ymat.set(0, 0, cos(ay));
+        ymat.set(2, 0, -sin(ay));
+        ymat.set(0, 2, sin(ay));
+        ymat.set(2, 2, cos(ay));        //@xxx -? x
+        set(this.multiply(ymat));
     } 
     /**
      * Rotates a Matrix around the z-axis.
      * This is a linear isometric transformation.
      */
     public void rotatez(double az) {
-	Matrix3D zmat = (Matrix3D) IDENTITY.clone();
-	zmat.set(0, 0, cos(az));
-	zmat.set(1, 0, sin(az));
-	zmat.set(0, 1, -sin(az));
-	zmat.set(1, 1, cos(az));
-	set(this.multiply(zmat));
+        Matrix3D zmat = (Matrix3D) IDENTITY.clone();
+        zmat.set(0, 0, cos(az));
+        zmat.set(1, 0, sin(az));
+        zmat.set(0, 1, -sin(az));
+        zmat.set(1, 1, cos(az));
+        set(this.multiply(zmat));
     } 
     /**
      * Rotates a Matrix around the every axis.
      * This is a linear isometric transformation.
      */
     public void rotate(double ax, double ay, double az) {
-	rotatex(ax);
-	rotatey(ay);
-	rotatez(az);
+        rotatex(ax);
+        rotatey(ay);
+        rotatez(az);
     } 
 }
 
@@ -164,68 +164,68 @@ public class Matrix3D extends RMatrix {
  * 1. translation                                                     *
  * [x, y, z] --> [x + Dx, y + Dy, z + Dz]                     *
  * *
- * Ú          ¿                                   *
- * ³1  0  0  0³                                   *
- * T(Dx, Dy, Dz) = ³0  1  0  0³                                   *
- * ³0  0  1  0³                                   *
- * ³Dx Dy Dz 1³                                   *
- * À          Ù                                   *
+ * ï¿½          ï¿½                                   *
+ * ï¿½1  0  0  0ï¿½                                   *
+ * T(Dx, Dy, Dz) = ï¿½0  1  0  0ï¿½                                   *
+ * ï¿½0  0  1  0ï¿½                                   *
+ * ï¿½Dx Dy Dz 1ï¿½                                   *
+ * ï¿½          ï¿½                                   *
  * 2. scaling                                                         *
  * [x, y, z] --> [Sx * x, Sy * y, Sz * z]                     *
  * *
- * Ú          ¿                                       *
- * ³Sx 0  0  0³                                       *
- * S(Sx, Sy) = ³0  Sy 0  0³                                       *
- * ³0  0  Sz 0³                                       *
- * ³0  0  0  1³                                       *
- * À          Ù                                       *
+ * ï¿½          ï¿½                                       *
+ * ï¿½Sx 0  0  0ï¿½                                       *
+ * S(Sx, Sy) = ï¿½0  Sy 0  0ï¿½                                       *
+ * ï¿½0  0  Sz 0ï¿½                                       *
+ * ï¿½0  0  0  1ï¿½                                       *
+ * ï¿½          ï¿½                                       *
  * *
  * 3. rotation                                                        *
  * *
  * a) Around the Z axis:                                          *
  * *
  * [x, y, z] --> [x*cost - t*sint, x*sint + y*cost, z]        *
- * Ú                  ¿                                   *
- * ³cost  sint   0   0³                                   *
- * Rz(t) = ³-sint cost   0   0³                                   *
- * ³0     0      1   0³                                   *
- * ³0     0      0   1³                                   *
- * À                  Ù                                   *
+ * ï¿½                  ï¿½                                   *
+ * ï¿½cost  sint   0   0ï¿½                                   *
+ * Rz(t) = ï¿½-sint cost   0   0ï¿½                                   *
+ * ï¿½0     0      1   0ï¿½                                   *
+ * ï¿½0     0      0   1ï¿½                                   *
+ * ï¿½                  ï¿½                                   *
  * *
  * b) Around the X axis:                                          *
  * *
  * [x, y, z] --> [x, y*cost - z*sint, y*sint + z*cost]        *
- * Ú                  ¿                                   *
- * ³1     0     0    0³                                   *
- * Rx(t) = ³0     cost  sint 0³                                   *
- * ³0    -sint  cost 0³                                   *
- * ³0     0     0    1³                                   *
- * À                  Ù                                   *
+ * ï¿½                  ï¿½                                   *
+ * ï¿½1     0     0    0ï¿½                                   *
+ * Rx(t) = ï¿½0     cost  sint 0ï¿½                                   *
+ * ï¿½0    -sint  cost 0ï¿½                                   *
+ * ï¿½0     0     0    1ï¿½                                   *
+ * ï¿½                  ï¿½                                   *
  * *
  * c) Around the Y axis:                                          *
  * *
  * [x, y, z] --> [xcost + z*sint, y, z*cost - x*sint]         *
- * Ú                  ¿                                   *
- * ³cost  0   -sint  0³                                   *
- * Ry(t) = ³0     1    0     0³                                   *
- * ³sint  0    cost  0³                                   *
- * ³0     0    0     1³                                   *
- * À                  Ù                                   *
+ * ï¿½                  ï¿½                                   *
+ * ï¿½cost  0   -sint  0ï¿½                                   *
+ * Ry(t) = ï¿½0     1    0     0ï¿½                                   *
+ * ï¿½sint  0    cost  0ï¿½                                   *
+ * ï¿½0     0    0     1ï¿½                                   *
+ * ï¿½                  ï¿½                                   *
  * *
  * transformation of the vector [x,y,z,1] by transformation matrix T is given *
  * by the formula:                                                           *
- * Ú   ¿                               *
- * [x', y', z', 1] = [x,y,z,1]³ T ³                               *
- * À   Ù                               *
+ * ï¿½   ï¿½                               *
+ * [x', y', z', 1] = [x,y,z,1]ï¿½ T ï¿½                               *
+ * ï¿½   ï¿½                               *
  * Optimizations:                                                              *
  * The most general composition of R, S and T operations will produce a matrix*
  * of the form:                                                              *
- * Ú                       ¿                                      *
- * ³r11    r12     r13    0³                                      *
- * ³r21    r22     r23    0³                                      *
- * ³r31    r32     r33    0³                                      *
- * ³tx     ty      tz     1³                                      *
- * À                       Ù                                      *
+ * ï¿½                       ï¿½                                      *
+ * ï¿½r11    r12     r13    0ï¿½                                      *
+ * ï¿½r21    r22     r23    0ï¿½                                      *
+ * ï¿½r31    r32     r33    0ï¿½                                      *
+ * ï¿½tx     ty      tz     1ï¿½                                      *
+ * ï¿½                       ï¿½                                      *
  * The task of matrix multiplication can be simplified by                    *
  * x' = x*r11 + y*r21 + z*r31 + tx                                        *
  * y' = x*r12 + y*r22 + z*r32 + ty                                        *

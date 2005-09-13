@@ -58,12 +58,12 @@ public interface Operations {
      */
     // Basic logical operations (elemental junctors).
     public static final Function not = new Function() {
-	    private final Type logicalTypeDeclaration = UNARY_LOGICAL_JUNCTOR;
-	    public Object apply(Object a) {
-		return PackageUtilities.toTruth(!PackageUtilities.getTruth(a));
-	    }
-	    public String toString() { return "~"; }
-	}; 
+            private final Type logicalTypeDeclaration = UNARY_LOGICAL_JUNCTOR;
+            public Object apply(Object a) {
+                return PackageUtilities.toTruth(!PackageUtilities.getTruth(a));
+            }
+            public String toString() { return "~"; }
+        }; 
 
 
     /**
@@ -71,12 +71,12 @@ public interface Operations {
      * @xxx this implementation only works for Boolean, neither for other truth-values nor even for formulas or functions.
      */
     public static final BinaryFunction/*<Boolean,Boolean, Boolean>*/ and = new BinaryFunction() {
-	    private final Type logicalTypeDeclaration = BINARY_LOGICAL_JUNCTOR;
-	    public Object apply(Object a, Object b) {
-		return PackageUtilities.toTruth(PackageUtilities.getTruth(a) && PackageUtilities.getTruth(b));
-	    }
-	    public String toString() { return "&"; }
-	};
+            private final Type logicalTypeDeclaration = BINARY_LOGICAL_JUNCTOR;
+            public Object apply(Object a, Object b) {
+                return PackageUtilities.toTruth(PackageUtilities.getTruth(a) && PackageUtilities.getTruth(b));
+            }
+            public String toString() { return "&"; }
+        };
 
 
     /**
@@ -91,63 +91,63 @@ public interface Operations {
      * @xxx Caveat: unlike binary, n-ary and is not yet fully supported w.r.t. trs during theorem proving!
      */
     public static final Function/*<List<Boolean>, Boolean>*/ andFold = new Function() {
-	    private final Type logicalTypeDeclaration = FOLD_LOGICAL_JUNCTOR;
-	    public Object apply(Object a) {
-		return Functionals.foldLeft(and, PackageUtilities.toTruth(true), Utility.asIterator(a));
-	    }
-	    public String toString() { return "\u22C0"; }
-	};
-	
+            private final Type logicalTypeDeclaration = FOLD_LOGICAL_JUNCTOR;
+            public Object apply(Object a) {
+                return Functionals.foldLeft(and, PackageUtilities.toTruth(true), Utility.asIterator(a));
+            }
+            public String toString() { return "\u22C0"; }
+        };
+        
     //@todo document
     public static final BinaryFunction or = new BinaryFunction() {
-	    private final Type logicalTypeDeclaration = BINARY_LOGICAL_JUNCTOR;
-	    public Object apply(Object a, Object b) {
-		return PackageUtilities.toTruth(PackageUtilities.getTruth(a) || PackageUtilities.getTruth(b));
-	    }
-	    public String toString() { return "|"; }
-	};
+            private final Type logicalTypeDeclaration = BINARY_LOGICAL_JUNCTOR;
+            public Object apply(Object a, Object b) {
+                return PackageUtilities.toTruth(PackageUtilities.getTruth(a) || PackageUtilities.getTruth(b));
+            }
+            public String toString() { return "|"; }
+        };
 
     public static final Function/*<List<Boolean>, Boolean>*/ orFold = new Function() {
-	    private final Type logicalTypeDeclaration = FOLD_LOGICAL_JUNCTOR;
-	    public Object apply(Object a) {
-		return Functionals.foldLeft(or, PackageUtilities.toTruth(false), Utility.asIterator(a));
-	    }
-	    public String toString() { return "\u22C1"; }
-	};
+            private final Type logicalTypeDeclaration = FOLD_LOGICAL_JUNCTOR;
+            public Object apply(Object a) {
+                return Functionals.foldLeft(or, PackageUtilities.toTruth(false), Utility.asIterator(a));
+            }
+            public String toString() { return "\u22C1"; }
+        };
 
     // Derived logical operations.
 
     //@todo The following functions for derived logical operations could be generalized (see LogicBasis)
     public static final BinaryFunction xor = new BinaryFunction() {
-	    private final Type logicalTypeDeclaration = BINARY_LOGICAL_JUNCTOR;
-	    public Object apply(Object a, Object b) {
-		return PackageUtilities.toTruth(PackageUtilities.getTruth(a) ^ PackageUtilities.getTruth(b));
-	    }
-	    public String toString() { return "^"; }
-	};
+            private final Type logicalTypeDeclaration = BINARY_LOGICAL_JUNCTOR;
+            public Object apply(Object a, Object b) {
+                return PackageUtilities.toTruth(PackageUtilities.getTruth(a) ^ PackageUtilities.getTruth(b));
+            }
+            public String toString() { return "^"; }
+        };
 
     public static final BinaryFunction impl = new BinaryFunction() {
-	    private final Type logicalTypeDeclaration = BINARY_LOGICAL_JUNCTOR;
-	    public Object apply(Object a, Object b) {
-		return PackageUtilities.toTruth(!PackageUtilities.getTruth(a) || PackageUtilities.getTruth(b));
-	    }
-	    public String toString() { return "->"; }
-	};
+            private final Type logicalTypeDeclaration = BINARY_LOGICAL_JUNCTOR;
+            public Object apply(Object a, Object b) {
+                return PackageUtilities.toTruth(!PackageUtilities.getTruth(a) || PackageUtilities.getTruth(b));
+            }
+            public String toString() { return "->"; }
+        };
 
     //@todo rename
     public static final BinaryFunction reverseImpl = new BinaryFunction() {
-	    private final Type logicalTypeDeclaration = BINARY_LOGICAL_JUNCTOR;
-	    public Object apply(Object a, Object b) {
-		return PackageUtilities.toTruth(PackageUtilities.getTruth(a) || !PackageUtilities.getTruth(b));
-	    }
-	    public String toString() { return "<-"; }
-	};
+            private final Type logicalTypeDeclaration = BINARY_LOGICAL_JUNCTOR;
+            public Object apply(Object a, Object b) {
+                return PackageUtilities.toTruth(PackageUtilities.getTruth(a) || !PackageUtilities.getTruth(b));
+            }
+            public String toString() { return "<-"; }
+        };
 
     public static final BinaryFunction equiv = new BinaryFunction() {
-	    private final Type logicalTypeDeclaration = BINARY_LOGICAL_JUNCTOR;
-	    public Object apply(Object a, Object b) {
-		return PackageUtilities.toTruth(PackageUtilities.getTruth(a) == PackageUtilities.getTruth(b));
-	    }
-	    public String toString() { return "<->"; }
-	};
+            private final Type logicalTypeDeclaration = BINARY_LOGICAL_JUNCTOR;
+            public Object apply(Object a, Object b) {
+                return PackageUtilities.toTruth(PackageUtilities.getTruth(a) == PackageUtilities.getTruth(b));
+            }
+            public String toString() { return "<->"; }
+        };
 }

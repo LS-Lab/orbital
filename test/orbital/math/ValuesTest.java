@@ -23,104 +23,104 @@ public class ValuesTest extends check.TestCase {
     private Random random;
 
     public static void main(String[] args) {
-	junit.textui.TestRunner.run(suite());
+        junit.textui.TestRunner.run(suite());
     }
     public static Test suite() {
-	return new RepeatedTest(new TestSuite(ValuesTest.class), TEST_REPETITION);
+        return new RepeatedTest(new TestSuite(ValuesTest.class), TEST_REPETITION);
     }
     protected void setUp() {
-	vf = Values.getDefaultInstance();
-	a = new Arithmetic[] {
-	    vf.valueOf(5), vf.rational(1, 4), vf.valueOf(1.23456789), vf.complex(-1, 2)
-	};
-	b = new Arithmetic[] {
-	    vf.valueOf(7), vf.rational(3, 4), vf.valueOf(3.1415926), vf.complex(3, 2)
-	};
-	random = new Random();
+        vf = Values.getDefaultInstance();
+        a = new Arithmetic[] {
+            vf.valueOf(5), vf.rational(1, 4), vf.valueOf(1.23456789), vf.complex(-1, 2)
+        };
+        b = new Arithmetic[] {
+            vf.valueOf(7), vf.rational(3, 4), vf.valueOf(3.1415926), vf.complex(3, 2)
+        };
+        random = new Random();
     }
 
     //@todo add testInteroperableSizeAdd() and testInteroperableTypeAndSizeAdd()
     
     public void testInteroperableTypeAdd() {
-	for (int k = 0; k < a.length; k++) {
-	    System.out.println(a[k].getClass() + " arithmetic combined with various types");
-	    for (int i = 0; i < b.length; i++)
-		System.out.println(a[k] + "+" + b[i] + " = " + a[k].add(b[i]) + "\tof " + a[k].add(b[i]).getClass());
-	    Object x1, x2;
-	    assertTrue( (x1 = a[k].add(b[0])).equals(x2 = a[k].add((Integer) b[0])) , "compile-time sub-type result equals run-time sub-type result");
-	    assertTrue( x1.getClass() == x2.getClass(), "compile-time sub-type result equals run-time sub-type");
-	    assertTrue( (x1 = a[k].add(b[1])).equals(x2 = a[k].add((Rational) b[1])) , "compile-time sub-type result equals run-time sub-type result");
-	    assertTrue( x1.getClass() == x2.getClass(), "compile-time sub-type result equals run-time sub-type");
-	    assertTrue( (x1 = a[k].add(b[2])).equals(x2 = a[k].add((Real) b[2])) , "compile-time sub-type result equals run-time sub-type result");
-	    assertTrue( x1.getClass() == x2.getClass(), "compile-time sub-type result equals run-time sub-type");
-	    assertTrue( (x1 = a[k].add(b[3])).equals(x2 = a[k].add((Complex) b[3])) , "compile-time sub-type result equals run-time sub-type result");
-	    assertTrue( x1.getClass() == x2.getClass(), "compile-time sub-type result equals run-time sub-type");
-	}
+        for (int k = 0; k < a.length; k++) {
+            System.out.println(a[k].getClass() + " arithmetic combined with various types");
+            for (int i = 0; i < b.length; i++)
+                System.out.println(a[k] + "+" + b[i] + " = " + a[k].add(b[i]) + "\tof " + a[k].add(b[i]).getClass());
+            Object x1, x2;
+            assertTrue( (x1 = a[k].add(b[0])).equals(x2 = a[k].add((Integer) b[0])) , "compile-time sub-type result equals run-time sub-type result");
+            assertTrue( x1.getClass() == x2.getClass(), "compile-time sub-type result equals run-time sub-type");
+            assertTrue( (x1 = a[k].add(b[1])).equals(x2 = a[k].add((Rational) b[1])) , "compile-time sub-type result equals run-time sub-type result");
+            assertTrue( x1.getClass() == x2.getClass(), "compile-time sub-type result equals run-time sub-type");
+            assertTrue( (x1 = a[k].add(b[2])).equals(x2 = a[k].add((Real) b[2])) , "compile-time sub-type result equals run-time sub-type result");
+            assertTrue( x1.getClass() == x2.getClass(), "compile-time sub-type result equals run-time sub-type");
+            assertTrue( (x1 = a[k].add(b[3])).equals(x2 = a[k].add((Complex) b[3])) , "compile-time sub-type result equals run-time sub-type result");
+            assertTrue( x1.getClass() == x2.getClass(), "compile-time sub-type result equals run-time sub-type");
+        }
     }
 
     public void testInteroperableTypeSubtract() {
-	for (int k = 0; k < a.length; k++) {
-	    System.out.println(a[k].getClass() + " arithmetic combined with various types");
-	    for (int i = 0; i < b.length; i++)
-		System.out.println(a[k] + "+" + b[i] + " = " + a[k].subtract(b[i]) + "\tof " + a[k].subtract(b[i]).getClass());
-	    Object x1, x2;
-	    assertTrue( (x1 = a[k].subtract(b[0])).equals(x2 = a[k].subtract((Integer) b[0])) , "compile-time sub-type result equals run-time sub-type result");
-	    assertTrue( x1.getClass() == x2.getClass(), "compile-time sub-type result equals run-time sub-type");
-	    assertTrue( (x1 = a[k].subtract(b[1])).equals(x2 = a[k].subtract((Rational) b[1])) , "compile-time sub-type result equals run-time sub-type result");
-	    assertTrue( x1.getClass() == x2.getClass(), "compile-time sub-type result equals run-time sub-type");
-	    assertTrue( (x1 = a[k].subtract(b[2])).equals(x2 = a[k].subtract((Real) b[2])) , "compile-time sub-type result equals run-time sub-type result");
-	    assertTrue( x1.getClass() == x2.getClass(), "compile-time sub-type result equals run-time sub-type");
-	    assertTrue( (x1 = a[k].subtract(b[3])).equals(x2 = a[k].subtract((Complex) b[3])) , "compile-time sub-type result equals run-time sub-type result");
-	    assertTrue( x1.getClass() == x2.getClass(), "compile-time sub-type result equals run-time sub-type");
-	}
+        for (int k = 0; k < a.length; k++) {
+            System.out.println(a[k].getClass() + " arithmetic combined with various types");
+            for (int i = 0; i < b.length; i++)
+                System.out.println(a[k] + "+" + b[i] + " = " + a[k].subtract(b[i]) + "\tof " + a[k].subtract(b[i]).getClass());
+            Object x1, x2;
+            assertTrue( (x1 = a[k].subtract(b[0])).equals(x2 = a[k].subtract((Integer) b[0])) , "compile-time sub-type result equals run-time sub-type result");
+            assertTrue( x1.getClass() == x2.getClass(), "compile-time sub-type result equals run-time sub-type");
+            assertTrue( (x1 = a[k].subtract(b[1])).equals(x2 = a[k].subtract((Rational) b[1])) , "compile-time sub-type result equals run-time sub-type result");
+            assertTrue( x1.getClass() == x2.getClass(), "compile-time sub-type result equals run-time sub-type");
+            assertTrue( (x1 = a[k].subtract(b[2])).equals(x2 = a[k].subtract((Real) b[2])) , "compile-time sub-type result equals run-time sub-type result");
+            assertTrue( x1.getClass() == x2.getClass(), "compile-time sub-type result equals run-time sub-type");
+            assertTrue( (x1 = a[k].subtract(b[3])).equals(x2 = a[k].subtract((Complex) b[3])) , "compile-time sub-type result equals run-time sub-type result");
+            assertTrue( x1.getClass() == x2.getClass(), "compile-time sub-type result equals run-time sub-type");
+        }
     }
     
     private int integerArgument(int min, int max) {
-	return min + (min == max ? 0 : random.nextInt(max-min));
+        return min + (min == max ? 0 : random.nextInt(max-min));
     }
     public void testTrivialTensors_valueOf_ArithmeticArray() {
-	System.out.println("ValueFactor.valueOf(Arithmetic[])");
-	Integer v = vf.valueOf(integerArgument(-10,10));
-	test1(vf.valueOf(new Arithmetic[] {v}), v);
+        System.out.println("ValueFactor.valueOf(Arithmetic[])");
+        Integer v = vf.valueOf(integerArgument(-10,10));
+        test1(vf.valueOf(new Arithmetic[] {v}), v);
     }
     public void testTrivialTensors_valueOf_intArray() {
-	System.out.println("ValueFactor.valueOf(int[])");
-	Integer v = vf.valueOf(integerArgument(-10,10));
-	test1(vf.valueOf(new int[] {v.intValue()}), v);
+        System.out.println("ValueFactor.valueOf(int[])");
+        Integer v = vf.valueOf(integerArgument(-10,10));
+        test1(vf.valueOf(new int[] {v.intValue()}), v);
     }
     public void testTrivialTensors_tensor_ArithmeticArray() {
-	System.out.println("ValueFactor.tensor(Arithmetic[])");
-	Integer v = vf.valueOf(integerArgument(-10,10));
-	test1(vf.tensor(new Arithmetic[] {v}), v);
+        System.out.println("ValueFactor.tensor(Arithmetic[])");
+        Integer v = vf.valueOf(integerArgument(-10,10));
+        test1(vf.tensor(new Arithmetic[] {v}), v);
     }
     public void testTrivialTensors_tensor_intArray() {
-	System.out.println("ValueFactor.tensor(int[])");
-	Integer v = vf.valueOf(integerArgument(-10,10));
-	test1(vf.tensor(new int[] {v.intValue()}), v);
+        System.out.println("ValueFactor.tensor(int[])");
+        Integer v = vf.valueOf(integerArgument(-10,10));
+        test1(vf.tensor(new int[] {v.intValue()}), v);
     }
 
     /**
      * Test tensor to have expected value as its only component.
      */
     private void test1(Tensor t, Arithmetic expected) {
-	System.out.println(t.getClass() + " " + t + " corresponds to " + expected);
-	assertEquals(t.rank(), 1);
-	assertEquals(t.dimensions().length, 1);
-	assertEquals(t.dimensions()[0], 1);
-	assertEquals(t.get(new int[] {0}), expected);
-	Iterator i = t.iterator();
-	assertTrue(i.hasNext() , "tensor with 1 element has elements in its iterator");
-	assertEquals(i.next(), expected);
-	assertTrue(!i.hasNext() , "tensor with 1 element has no more than 1elements in its iterator");
+        System.out.println(t.getClass() + " " + t + " corresponds to " + expected);
+        assertEquals(t.rank(), 1);
+        assertEquals(t.dimensions().length, 1);
+        assertEquals(t.dimensions()[0], 1);
+        assertEquals(t.get(new int[] {0}), expected);
+        Iterator i = t.iterator();
+        assertTrue(i.hasNext() , "tensor with 1 element has elements in its iterator");
+        assertEquals(i.next(), expected);
+        assertTrue(!i.hasNext() , "tensor with 1 element has no more than 1elements in its iterator");
 
-	assertTrue(t instanceof Vector, "rank 1 tensor collapses to vector");
-	Vector v = (Vector) t;
-	assertEquals(v.dimension(), 1);
-	assertEquals(v.get(0), expected);
-	i = v.iterator();
-	assertTrue(i.hasNext() , "tensor with 1 element has elements in its iterator");
-	assertEquals(i.next(), expected);
-	assertTrue(!i.hasNext() , "tensor with 1 element has no more than 1elements in its iterator");
+        assertTrue(t instanceof Vector, "rank 1 tensor collapses to vector");
+        Vector v = (Vector) t;
+        assertEquals(v.dimension(), 1);
+        assertEquals(v.get(0), expected);
+        i = v.iterator();
+        assertTrue(i.hasNext() , "tensor with 1 element has elements in its iterator");
+        assertEquals(i.next(), expected);
+        assertTrue(!i.hasNext() , "tensor with 1 element has no more than 1elements in its iterator");
     }
 }
 

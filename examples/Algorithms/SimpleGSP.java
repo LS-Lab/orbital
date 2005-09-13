@@ -37,42 +37,42 @@ public class SimpleGSP implements GeneralSearchProblem {
      */
     static final int PAY_FOR_PASSING = 4;
     public static void main(String arg[]) {
-	Function      h = createHeuristic();
-	GeneralSearch s;
+        Function      h = createHeuristic();
+        GeneralSearch s;
 
-	// here we decide which exact search algorithm to use
-	// the single difference in using another search algorithm
-	// would only concern the constructor call
-	s = new IterativeDeepeningAStar(h);
+        // here we decide which exact search algorithm to use
+        // the single difference in using another search algorithm
+        // would only concern the constructor call
+        s = new IterativeDeepeningAStar(h);
 
-	GeneralSearchProblem problem = new SimpleGSP(1, 8);
+        GeneralSearchProblem problem = new SimpleGSP(1, 8);
 
-	// really solve our problem
-	System.out.println("solving " + problem);
-	State solution = (State) s.solve(problem);
+        // really solve our problem
+        System.out.println("solving " + problem);
+        State solution = (State) s.solve(problem);
 
-	System.out.println("Found solution:\n" + solution + " for total accumulated cost " + solution.getAccumulatedCost());
+        System.out.println("Found solution:\n" + solution + " for total accumulated cost " + solution.getAccumulatedCost());
     } 
 
     protected static final Function createHeuristic() {
-	return new Function() {
-		/**
-		 * Estimate distance to goal.
-		 * The closer to the goal, the better the estimate.
-		 */
-		public Object apply(Object n) {
-		    State s = (State) n;
-		    return Values.getDefaultInstance().valueOf(estimate(Math.abs(s.position - goal)));
-		} 
-			
-		/**
-		 * Estimate v.
-		 * The closer to zero, the better the estimate.
-		 */
-		private double estimate(double v) {
-		    return v <= 1 ? v : Math.sqrt(v);
-		}
-	    };
+        return new Function() {
+                /**
+                 * Estimate distance to goal.
+                 * The closer to the goal, the better the estimate.
+                 */
+                public Object apply(Object n) {
+                    State s = (State) n;
+                    return Values.getDefaultInstance().valueOf(estimate(Math.abs(s.position - goal)));
+                } 
+                        
+                /**
+                 * Estimate v.
+                 * The closer to zero, the better the estimate.
+                 */
+                private double estimate(double v) {
+                    return v <= 1 ? v : Math.sqrt(v);
+                }
+            };
     }
 
     /**
@@ -84,114 +84,114 @@ public class SimpleGSP implements GeneralSearchProblem {
      */
     private int start;
     public SimpleGSP(int start, int goal) {
-	this.start = start;
-	this.goal = goal;
+        this.start = start;
+        this.goal = goal;
     }
     int getGoal() {
-	return goal;
+        return goal;
     }
     int getStart() {
-	return start;
+        return start;
     }
 
     public Object getInitialState() {
-	return new State(start, 0.0);
+        return new State(start, 0.0);
     }
 
     public MutableFunction getAccumulatedCostFunction() {
-	return _accumulatedCostFunction;
+        return _accumulatedCostFunction;
     }
     private static final MutableFunction _accumulatedCostFunction = new MutableFunction() {
-	    public Object apply(Object state) {
-		return Values.getDefaultInstance().valueOf(((State)state).accumulatedCost);
-	    }
-	    public Object set(Object state, Object accumulatedCost) {
-		Object old = Values.getDefaultInstance().valueOf(((State)state).accumulatedCost);
-		((State)state).accumulatedCost = ((orbital.math.Real)accumulatedCost).doubleValue();
-		return old;
-	    }
-	    public Object clone() {
-		throw new UnsupportedOperationException();
-	    }
-	};
+            public Object apply(Object state) {
+                return Values.getDefaultInstance().valueOf(((State)state).accumulatedCost);
+            }
+            public Object set(Object state, Object accumulatedCost) {
+                Object old = Values.getDefaultInstance().valueOf(((State)state).accumulatedCost);
+                ((State)state).accumulatedCost = ((orbital.math.Real)accumulatedCost).doubleValue();
+                return old;
+            }
+            public Object clone() {
+                throw new UnsupportedOperationException();
+            }
+        };
 
     public boolean isSolution(Object n) {
-	State s = (State) n;
-	return s.position == goal;
+        State s = (State) n;
+        return s.position == goal;
     } 
 
     private static final List actions = Arrays.asList(new String[] {
-	"-L",
-	"-RR",
-	"-"
+        "-L",
+        "-RR",
+        "-"
     });
     public Iterator actions(Object n) {
-	// the possible actions
-	return actions.iterator();
+        // the possible actions
+        return actions.iterator();
     } 
 
     public Iterator states(Object action, Object n) {
-	String a = (String) action;
-	State s = (State) n;
-	// the result of the action
-	Object r;
-	if ("-L".equals(a))
-	    r = new State(s.position - 1);
-	else if ("-RR".equals(a))
-	    r = new State(s.position + 2);
-	else if ("-".equals(a))
-	    r = new State(s.position);
-	else
-	    throw new InapplicableActionException("" + a);
-	return Collections.singletonList(r).iterator();
+        String a = (String) action;
+        State s = (State) n;
+        // the result of the action
+        Object r;
+        if ("-L".equals(a))
+            r = new State(s.position - 1);
+        else if ("-RR".equals(a))
+            r = new State(s.position + 2);
+        else if ("-".equals(a))
+            r = new State(s.position);
+        else
+            throw new InapplicableActionException("" + a);
+        return Collections.singletonList(r).iterator();
     } 
 
     public TransitionModel.Transition transition(Object action, Object state, Object statep) {
-	String a = (String) action;
-	return new Transition(a, getCost((State)statep, a));
+        String a = (String) action;
+        return new Transition(a, getCost((State)statep, a));
     } 
     
 //     private State accumulateCost(State s, String action) {
-// 	s.accumulatedCost += getCost(s, action);
-// 	return s;
+//      s.accumulatedCost += getCost(s, action);
+//      return s;
 //     }     
 
     private double getCost(State s, String action) {
-	if ((action.endsWith("-L") && s.position == goal)
-	    || (action.endsWith("-RR") && goal <= s.position && s.position <= goal + 1)
-	    || (action.endsWith("-") && s.position == goal))
-	    return 1 + PAY_FOR_PASSING;
-	else
-	    return 1;
+        if ((action.endsWith("-L") && s.position == goal)
+            || (action.endsWith("-RR") && goal <= s.position && s.position <= goal + 1)
+            || (action.endsWith("-") && s.position == goal))
+            return 1 + PAY_FOR_PASSING;
+        else
+            return 1;
     }     
 
     public String toString() {
-	return getClass().getName() + "[start=" + start + " to goal=" + goal + "]";
+        return getClass().getName() + "[start=" + start + " to goal=" + goal + "]";
     }
 
     /**
      * The representation of a state of the agent.
      */
     private static class State {
-	/**
-	 * The position of the agent.
-	 */
-	int position;
-	double accumulatedCost;
-	public State(int position) {
-	    this(position, Double.NaN);
-	}
-	public State(int position, double accumulatedCost) {
-	    this.position = position;
-	    this.accumulatedCost = accumulatedCost;
-	}
+        /**
+         * The position of the agent.
+         */
+        int position;
+        double accumulatedCost;
+        public State(int position) {
+            this(position, Double.NaN);
+        }
+        public State(int position, double accumulatedCost) {
+            this.position = position;
+            this.accumulatedCost = accumulatedCost;
+        }
 
-	double getAccumulatedCost() {
-	    return accumulatedCost;
-	}
+        double getAccumulatedCost() {
+            return accumulatedCost;
+        }
 
-	public String toString() {
-	    return (char) (position-1 + 'A') + "(" + getAccumulatedCost() + ")";
-	}
+        public String toString() {
+            return (char) (position-1 + 'A') + "(" + getAccumulatedCost() + ")";
+        }
     }
 }

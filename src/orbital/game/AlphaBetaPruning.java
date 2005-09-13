@@ -66,7 +66,7 @@ public class AlphaBetaPruning extends AdversarySearch {
      * @serial
      */
     private Function/*<Object, Number>*/ utility;
-	
+        
     /**
      * The preference relation for options.
      * @serial
@@ -93,7 +93,7 @@ public class AlphaBetaPruning extends AdversarySearch {
     public AlphaBetaPruning(int maxDepth, Function/*<Object, Number>*/ utility, BinaryPredicate/*<Option,Option>*/ preference) {
         this.setMaxDepth(maxDepth);
         this.setUtility(utility);
-	this.setPreference(preference);
+        this.setPreference(preference);
         this.currentDepth = 0;
     }
     /**
@@ -103,7 +103,7 @@ public class AlphaBetaPruning extends AdversarySearch {
      * Use a preference relation that checks prefers v to w whenever v &gt; w.</p>
      */
      public AlphaBetaPruning(int maxDepth, Function/*<Object, Number>*/ utility) {
-	this(maxDepth, utility, Predicates.greater);
+        this(maxDepth, utility, Predicates.greater);
      }
     
     /**
@@ -112,13 +112,13 @@ public class AlphaBetaPruning extends AdversarySearch {
      * sense, since not a single option would then be inspected.
      */
     public int getMaxDepth() {
-    	return maxDepth;
+        return maxDepth;
     }
 
     private void setMaxDepth(int argMaxDepth) {
-	if (argMaxDepth < 0)
-	    throw new IllegalArgumentException("illegal maxDepth " + argMaxDepth + " < 0");
-    	this.maxDepth = argMaxDepth;
+        if (argMaxDepth < 0)
+            throw new IllegalArgumentException("illegal maxDepth " + argMaxDepth + " < 0");
+        this.maxDepth = argMaxDepth;
     }
 
     /**
@@ -126,12 +126,12 @@ public class AlphaBetaPruning extends AdversarySearch {
      * utility of a state beyond cut-off.
      */
     public Function/*<Object, Number>*/ getUtility() {
-	return utility;
+        return utility;
     }
     private void setUtility(Function/*<Object, Number>*/ argUtility) {
-	if (argUtility == null)
-	    throw new NullPointerException("not a utility function " + argUtility);
-	this.utility = argUtility;
+        if (argUtility == null)
+            throw new NullPointerException("not a utility function " + argUtility);
+        this.utility = argUtility;
     }
 
     /**
@@ -146,21 +146,21 @@ public class AlphaBetaPruning extends AdversarySearch {
      * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
      */
     protected BinaryPredicate/*<Option,Option>*/ getPreference() {
-	return preference;
+        return preference;
     }
     private void setPreference(BinaryPredicate/*<Option,Option>*/ newPreferenceRelation) {
-	this.preference = newPreferenceRelation;
+        this.preference = newPreferenceRelation;
     }
 
     /**
      * The current depth during the current search.
      */
     protected int getCurrentDepth() {
-	return currentDepth;
+        return currentDepth;
     }
 
     private void setCurrentDepth(int newDepth) {
-	this.currentDepth = newDepth;
+        this.currentDepth = newDepth;
     }
     
     /**
@@ -170,13 +170,13 @@ public class AlphaBetaPruning extends AdversarySearch {
      * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
      */
     public Option solve(Field state) {
-    	assert getCurrentDepth() == 0 : "search starts at currentDepth 0";
-	try {
-	    return max_(state, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
-	}
-	finally {
-	    assert getCurrentDepth() == 0 : "search ends at currentDepth 0";
-	}
+        assert getCurrentDepth() == 0 : "search starts at currentDepth 0";
+        try {
+            return max_(state, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+        }
+        finally {
+            assert getCurrentDepth() == 0 : "search ends at currentDepth 0";
+        }
     }
     
     /**
@@ -189,44 +189,44 @@ public class AlphaBetaPruning extends AdversarySearch {
      * @return the best option (according to its &alpha;-value).
      */
     private Option max_(final Field state, double alpha, final double beta) {
-	assert isOurLeaguesTurn(state) : "otherwise ours would not have an opportunity to move, anyway";
-    	currentDepth++;
-    	try {
-	    final BinaryPredicate preference = getPreference();
-	    final orbital.math.ValueFactory valueFactory = orbital.math.Values.getDefault();
-	    // the best move found so far, always has utility alpha
-	    Option bestOption = new NoOption();
-	    bestOption.setUtility(alpha);
-	    if (cutOff(state)) {
-		throw new AssertionError("should never cut off the very first node prior to attempting any moves. currentDepth=" + currentDepth + ", maxDepth=" + maxDepth);
-	    } else {
-		for (Iterator s = successors(state); s.hasNext(); ) {
-		    Option p = (Option) s.next();
-		    double v = minimax(p.getState(), alpha, beta);
-		    p.setUtility(v);
-		    if (preference.apply(p, bestOption)) {
-			logger.log(Level.FINEST, "evaluate utility: {1} for {0} preferred to {2} of {3}", new Object[] {format(v), p, format(alpha), bestOption});
-			//@internal may also decrease alpha below  "alpha = Math.max(alpha, v);", but if that's our clients preference...
-			alpha = v;
-			bestOption = p;
-		    } else {
-			assert bestOption != null : "always prefer choices to null, so we should have preferred " + p + " with " + v + " to best " + bestOption + " with " + alpha;
-			logger.log(Level.FINEST, "evaluate utility: {1} for {0} =< {2} for {3}", new Object[] {format(v), p, format(alpha), bestOption});
-		    }
-		    if (alpha >= beta)
-			break;
-            	}
-	    }
-	    if (bestOption instanceof NoOption) {
-		assert !successors(state).hasNext() || alpha != Double.NEGATIVE_INFINITY || beta != Double.POSITIVE_INFINITY : "at least with usual arguments there must have been no successors in order to produce no best option";
-		return null;
-	    } else {
-		assert bestOption.getUtility() == alpha : "the best move found so far, has utility alpha";
-		return bestOption;
-	    }
+        assert isOurLeaguesTurn(state) : "otherwise ours would not have an opportunity to move, anyway";
+        currentDepth++;
+        try {
+            final BinaryPredicate preference = getPreference();
+            final orbital.math.ValueFactory valueFactory = orbital.math.Values.getDefault();
+            // the best move found so far, always has utility alpha
+            Option bestOption = new NoOption();
+            bestOption.setUtility(alpha);
+            if (cutOff(state)) {
+                throw new AssertionError("should never cut off the very first node prior to attempting any moves. currentDepth=" + currentDepth + ", maxDepth=" + maxDepth);
+            } else {
+                for (Iterator s = successors(state); s.hasNext(); ) {
+                    Option p = (Option) s.next();
+                    double v = minimax(p.getState(), alpha, beta);
+                    p.setUtility(v);
+                    if (preference.apply(p, bestOption)) {
+                        logger.log(Level.FINEST, "evaluate utility: {1} for {0} preferred to {2} of {3}", new Object[] {format(v), p, format(alpha), bestOption});
+                        //@internal may also decrease alpha below  "alpha = Math.max(alpha, v);", but if that's our clients preference...
+                        alpha = v;
+                        bestOption = p;
+                    } else {
+                        assert bestOption != null : "always prefer choices to null, so we should have preferred " + p + " with " + v + " to best " + bestOption + " with " + alpha;
+                        logger.log(Level.FINEST, "evaluate utility: {1} for {0} =< {2} for {3}", new Object[] {format(v), p, format(alpha), bestOption});
+                    }
+                    if (alpha >= beta)
+                        break;
+                }
+            }
+            if (bestOption instanceof NoOption) {
+                assert !successors(state).hasNext() || alpha != Double.NEGATIVE_INFINITY || beta != Double.POSITIVE_INFINITY : "at least with usual arguments there must have been no successors in order to produce no best option";
+                return null;
+            } else {
+                assert bestOption.getUtility() == alpha : "the best move found so far, has utility alpha";
+                return bestOption;
+            }
         }
         finally {
-	    currentDepth--;
+            currentDepth--;
         }
     }
 
@@ -236,22 +236,22 @@ public class AlphaBetaPruning extends AdversarySearch {
      * @version $Id$
      */
     private static class NoOption extends Option {
-	public NoOption() {
-	    super((Field) null, (Position)null, (Figure)null, (Move)null);
-	}
+        public NoOption() {
+            super((Field) null, (Position)null, (Figure)null, (Move)null);
+        }
 
-	public String toString() {
-	    return getClass().getName();
-	}
+        public String toString() {
+            return getClass().getName();
+        }
     }
 
     /**
      * Just a hook for nice formatting in logger outputs.
      */
     static final Number format(double d) {
-	return new Double(d);
-	/*return Double.isNaN(d) ? "<NaN>" : d == Double.POSITIVE_INFINITY ? "+<inf>"
-	  : d == Double.NEGATIVE_INFINITY ? "-<inf>" : (d + "");*/
+        return new Double(d);
+        /*return Double.isNaN(d) ? "<NaN>" : d == Double.POSITIVE_INFINITY ? "+<inf>"
+          : d == Double.NEGATIVE_INFINITY ? "-<inf>" : (d + "");*/
     }
 
     /**
@@ -264,9 +264,9 @@ public class AlphaBetaPruning extends AdversarySearch {
      * @return the minimax value of state.
      */
     private double minimax(final Field state, double alpha, double beta) {
-	return isOurLeaguesTurn(state)
-	    ? max(state, alpha, beta)
-	    : min(state, alpha, beta);
+        return isOurLeaguesTurn(state)
+            ? max(state, alpha, beta)
+            : min(state, alpha, beta);
     }
     
     /**
@@ -278,21 +278,21 @@ public class AlphaBetaPruning extends AdversarySearch {
      * @return the minimax value of state.
      */
     private double max(final Field state, double alpha, final double beta) {
-    	currentDepth++;
-    	try {
-	    if (cutOff(state))
-		return ((Number) getUtility().apply(state)).doubleValue();
-	    else
-		for (Iterator s = successors(state); s.hasNext(); ) {
-		    final Field nextState = ((Option) s.next()).getState();
-		    alpha = Math.max(alpha, minimax(nextState, alpha, beta));
-		    if (alpha >= beta)
-			return beta;
-		}
-	    return alpha;
+        currentDepth++;
+        try {
+            if (cutOff(state))
+                return ((Number) getUtility().apply(state)).doubleValue();
+            else
+                for (Iterator s = successors(state); s.hasNext(); ) {
+                    final Field nextState = ((Option) s.next()).getState();
+                    alpha = Math.max(alpha, minimax(nextState, alpha, beta));
+                    if (alpha >= beta)
+                        return beta;
+                }
+            return alpha;
         }
         finally {
-	    currentDepth--;
+            currentDepth--;
         }
     }
 
@@ -305,26 +305,26 @@ public class AlphaBetaPruning extends AdversarySearch {
      * @return the minimax value of state.
      */
     private double min(final Field state, final double alpha, double beta) {
-    	currentDepth++;
-    	try {
-	    if (cutOff(state))
-		return ((Number) getUtility().apply(state)).doubleValue();
-	    else
-            	for (Iterator s = successors(state); s.hasNext(); ) {
-		    final Field nextState = ((Option) s.next()).getState();
-		    beta = Math.min(beta, minimax(nextState, alpha, beta));
-		    if (beta <= alpha)
-			return alpha;
-            	}
-	    return beta;
+        currentDepth++;
+        try {
+            if (cutOff(state))
+                return ((Number) getUtility().apply(state)).doubleValue();
+            else
+                for (Iterator s = successors(state); s.hasNext(); ) {
+                    final Field nextState = ((Option) s.next()).getState();
+                    beta = Math.min(beta, minimax(nextState, alpha, beta));
+                    if (beta <= alpha)
+                        return alpha;
+                }
+            return beta;
         }
         finally {
-	    currentDepth--;
+            currentDepth--;
         }
     }
 
     protected boolean isOurLeaguesTurn(Field state) {
-	return getCurrentDepth() % 2 == 0;
+        return getCurrentDepth() % 2 == 0;
     }
 
     /**
@@ -336,6 +336,6 @@ public class AlphaBetaPruning extends AdversarySearch {
      * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
      */
     protected boolean cutOff(Field state) {
-	return currentDepth > maxDepth;
+        return currentDepth > maxDepth;
     }
 }

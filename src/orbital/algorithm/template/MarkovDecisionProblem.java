@@ -106,19 +106,19 @@ public interface MarkovDecisionProblem extends TransitionModel/*<A,S,O extends T
      * @author  Andr&eacute; Platzer
      */
     static interface Transition extends TransitionModel.Transition {
-	/**
-	 * Get the cost of taking the action leading to this transition.
-	 * <p>
-	 * Note: Since c:S&times;A&rarr;<b>R</b> is a function,
-	 * the cost should only depend on the action a taken, and the state s in which
-	 * it was taken, not the actual outcome (which is unknown a priori).
-	 * Otherwise, subset construction would not be applicable, etc.
-	 * </p>
-	 * @return c(s,a) the cost of taking the action a&isin;A(s) that took us here
-	 *  from state s&isin;S.
-	 * @postconditions RES>0 &or; RES&isin;[0,&infin;)
-	 */
-	Real getCost();
+        /**
+         * Get the cost of taking the action leading to this transition.
+         * <p>
+         * Note: Since c:S&times;A&rarr;<b>R</b> is a function,
+         * the cost should only depend on the action a taken, and the state s in which
+         * it was taken, not the actual outcome (which is unknown a priori).
+         * Otherwise, subset construction would not be applicable, etc.
+         * </p>
+         * @return c(s,a) the cost of taking the action a&isin;A(s) that took us here
+         *  from state s&isin;S.
+         * @postconditions RES>0 &or; RES&isin;[0,&infin;)
+         */
+        Real getCost();
     }
 
     /**
@@ -129,49 +129,49 @@ public interface MarkovDecisionProblem extends TransitionModel/*<A,S,O extends T
      * @author  Andr&eacute; Platzer
      */
     public static class DefaultTransition implements Transition, Serializable {
-	private static final long serialVersionUID = -5421585936741224969L;
-	/**
-	 * the probability of reaching a state (in the corresponding context).
-	 * @serial
-	 */
-	private Scalar probability;
-	/**
-	 * the immediate action cost c=c(s,a) of the action performed to reach the state.
-	 * @serial
-	 */
-	private Real cost;
+        private static final long serialVersionUID = -5421585936741224969L;
+        /**
+         * the probability of reaching a state (in the corresponding context).
+         * @serial
+         */
+        private Scalar probability;
+        /**
+         * the immediate action cost c=c(s,a) of the action performed to reach the state.
+         * @serial
+         */
+        private Real cost;
 
-	/**
-	 * Create a new option &lang;p,c&rang;.
-	 * @param probability the probability of reaching a state s&#697;.
-	 * @param cost the immediate cost of taking the action which took us to that state s&#697;.
-	 */
-	public DefaultTransition(Scalar probability, Real cost) {
-	    this.probability = probability;
-	    this.cost = cost;
-	}
-	/**
-	 * @deprecated convenience constructor, prefer to use {@link Values#valueOf(double)}..
-	 */
-	public DefaultTransition(double probability, double cost) {
-	    this(Values.getDefaultInstance().valueOf(probability),
-		 Values.getDefaultInstance().valueOf(cost));
-	}
+        /**
+         * Create a new option &lang;p,c&rang;.
+         * @param probability the probability of reaching a state s&#697;.
+         * @param cost the immediate cost of taking the action which took us to that state s&#697;.
+         */
+        public DefaultTransition(Scalar probability, Real cost) {
+            this.probability = probability;
+            this.cost = cost;
+        }
+        /**
+         * @deprecated convenience constructor, prefer to use {@link Values#valueOf(double)}..
+         */
+        public DefaultTransition(double probability, double cost) {
+            this(Values.getDefaultInstance().valueOf(probability),
+                 Values.getDefaultInstance().valueOf(cost));
+        }
 
-	public int compareTo(Object o) {
-	    return ((Comparable)getProbability()).compareTo(((Transition)o).getProbability());
-	}
-		
-	public String toString() {
-	    return getClass().getName() + "[" + getProbability() + "," + getCost() + "]";
-	}
-		
-	public Scalar getProbability() {
-	    return probability;
-	}
+        public int compareTo(Object o) {
+            return ((Comparable)getProbability()).compareTo(((Transition)o).getProbability());
+        }
+                
+        public String toString() {
+            return getClass().getName() + "[" + getProbability() + "," + getCost() + "]";
+        }
+                
+        public Scalar getProbability() {
+            return probability;
+        }
 
-	public Real getCost() {
-	    return cost;
-	}
+        public Real getCost() {
+            return cost;
+        }
     }
 }

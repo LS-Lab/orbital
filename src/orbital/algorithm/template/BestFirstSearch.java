@@ -33,7 +33,7 @@ public abstract class BestFirstSearch extends GeneralSearch implements Evaluativ
     private static final long serialVersionUID = -7753264910951203557L;
 
     protected Iterator createTraversal(GeneralSearchProblem problem) {
-	return new OptionIterator(problem, getEvaluation());
+        return new OptionIterator(problem, getEvaluation());
     }
 
     /**
@@ -44,35 +44,35 @@ public abstract class BestFirstSearch extends GeneralSearch implements Evaluativ
      * @author  Andr&eacute; Platzer
      */
     public static class OptionIterator extends GeneralSearch.OptionIterator {
-	private static final long serialVersionUID = 1955160705943645903L;
-	/**
-	 * the sorted list of nodes.
-	 * @serial
-	 */
-	// @todo return new Heap();
-	// or return new TreeSet(new HeuristicSearch.EvaluationComparator(getEvaluation())) and optimize add(..)
-	// or even return new PriorityQueue();
+        private static final long serialVersionUID = 1955160705943645903L;
+        /**
+         * the sorted list of nodes.
+         * @serial
+         */
+        // @todo return new Heap();
+        // or return new TreeSet(new HeuristicSearch.EvaluationComparator(getEvaluation())) and optimize add(..)
+        // or even return new PriorityQueue();
 
-	// @todo use a data structure that caches the evaluation values and does not need to reevaluate them over and over again, just because we want to sort it.
-	private List	   nodes;
-	/**
-	 * the comparator used for sorting nodes.
-	 * @serial
-	 */
+        // @todo use a data structure that caches the evaluation values and does not need to reevaluate them over and over again, just because we want to sort it.
+        private List       nodes;
+        /**
+         * the comparator used for sorting nodes.
+         * @serial
+         */
         private Comparator comparator;
         /**
          * {@inheritDoc}
          * @param evaluation the evaluation function to use for sorting the options monotonically.
          *  Usually {@link EvaluativeAlgorithm#getEvaluation()}.
          */
-	public OptionIterator(GeneralSearchProblem problem, Function evaluation) {
-	    super(problem);
-	    this.nodes = new LinkedList();
-	    nodes.add(problem.getInitialState());
-	    this.comparator = new EvaluationComparator(evaluation);
-	}
+        public OptionIterator(GeneralSearchProblem problem, Function evaluation) {
+            super(problem);
+            this.nodes = new LinkedList();
+            nodes.add(problem.getInitialState());
+            this.comparator = new EvaluationComparator(evaluation);
+        }
         protected boolean isEmpty() {
-	    return nodes.isEmpty();
+            return nodes.isEmpty();
         }
         /**
          * Select the node with min f(n).
@@ -80,33 +80,33 @@ public abstract class BestFirstSearch extends GeneralSearch implements Evaluativ
          * @preconditions sorted(nodes)
          */
         protected Object/*>S<*/ select() {
-	    return nodes.remove(0);
+            return nodes.remove(0);
         }
-       	/**
-       	 * merge old and new lists.
+        /**
+         * merge old and new lists.
          * @preconditions sorted(nodes)
          * @postconditions sorted(nodes)
-    	 * @see orbital.util.Setops#merge(List, List, Comparator)
-    	 */
+         * @see orbital.util.Setops#merge(List, List, Comparator)
+         */
         protected boolean add(Iterator newNodes) {
-	    if (!newNodes.hasNext())
-		return false;
-	    List l = Setops.asList(newNodes);
-	    // sort newNodes because it most likely is not yet sorted
-	    Collections.sort(l, comparator);
-	    nodes = Setops.merge(nodes, l, comparator);
-	    return true;
+            if (!newNodes.hasNext())
+                return false;
+            List l = Setops.asList(newNodes);
+            // sort newNodes because it most likely is not yet sorted
+            Collections.sort(l, comparator);
+            nodes = Setops.merge(nodes, l, comparator);
+            return true;
         }
     };
 
-    //	protected Collection createCollection() {
-    //		// @todo return new Heap();
-    //		// or return new TreeSet(new HeuristicSearch.EvaluationComparator(getEvaluation())) and optimize add(..)
-    //		// or even return new PriorityQueue();
+    //  protected Collection createCollection() {
+    //          // @todo return new Heap();
+    //          // or return new TreeSet(new HeuristicSearch.EvaluationComparator(getEvaluation())) and optimize add(..)
+    //          // or even return new PriorityQueue();
     //
-    //		// @todo use a data structure that caches the evaluation values and does not need to reevaluate them over and over again, just because we want to sort it.
-    //		return new LinkedList();
-    //	}
+    //          // @todo use a data structure that caches the evaluation values and does not need to reevaluate them over and over again, just because we want to sort it.
+    //          return new LinkedList();
+    //  }
     //
     //    /**
     //     * Select the node with min f(n).
@@ -114,22 +114,22 @@ public abstract class BestFirstSearch extends GeneralSearch implements Evaluativ
     //     * @preconditions sorted(nodes)
     //     */
     //    protected GeneralSearchProblem.Option select(Collection nodes) {
-    //    	Iterator i = nodes.iterator();
-    //    	GeneralSearchProblem.Option sel = (GeneralSearchProblem.Option) i.next();
-    //    	i.remove();
-    //    	return sel;
+    //          Iterator i = nodes.iterator();
+    //          GeneralSearchProblem.Option sel = (GeneralSearchProblem.Option) i.next();
+    //          i.remove();
+    //          return sel;
     //    }
     //
-    //   	/**
-    //   	 * merge old and new lists.
+    //          /**
+    //           * merge old and new lists.
     //     * @preconditions sorted(oldNodes)
     //     * @postconditions sorted(RES)
-    //	 * @see orbital.util.Setops#merge(List, List, Comparator)
-    //	 */
+    //   * @see orbital.util.Setops#merge(List, List, Comparator)
+    //   */
     //    protected Collection add(Collection newNodes, Collection oldNodes) {
-    //    	Comparator comparator = new EvaluationComparator(this);
-    //    	// sort newNodes because it most likely is not yet sorted
-    //    	Collections.sort((List) newNodes, comparator);
-    //    	return Setops.merge((List) oldNodes, (List) newNodes, comparator);
+    //          Comparator comparator = new EvaluationComparator(this);
+    //          // sort newNodes because it most likely is not yet sorted
+    //          Collections.sort((List) newNodes, comparator);
+    //          return Setops.merge((List) oldNodes, (List) newNodes, comparator);
     //    }
 }

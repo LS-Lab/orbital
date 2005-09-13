@@ -30,65 +30,65 @@ class ExpressionSequence implements Expression.Composite {
 
     //@xxx improve this dummy compositor
     private static final Object SEQUENCE = new Object() {
-	    public String toString() {
-		return "ExpressionSequence";
-	    }
-	};
+            public String toString() {
+                return "ExpressionSequence";
+            }
+        };
     private final Expression expressions[];
     public ExpressionSequence(Expression expressions[]) {
-	this.expressions = expressions;
+        this.expressions = expressions;
     }
 
     public Type getType() {
-	//@xxx shouldn't we return supremum type of expressions[i].getType()?
-	//return Types.getDefault().list(Types.getDefault().objectType(Expression.class));
-	Type t = Types.getDefault().list((Type)Types.getDefault().sup().apply(
-	    Functionals.listable(
-		new Function() {
-		    public Object apply(Object o) {
-			return ((Typed)o).getType();
-		    }
-		}).apply(Arrays.asList(expressions))
-		//@internal see Functionals#map(Function,Object[]) ArrayStoreException
-		));
-	if (logger.isLoggable(Level.FINEST)) {
-	    logger.log(Level.FINEST, "expression sequence {0} has type {1}", new Object[] {Types.toTypedString(expressions), t});
-	}
-	return t;
+        //@xxx shouldn't we return supremum type of expressions[i].getType()?
+        //return Types.getDefault().list(Types.getDefault().objectType(Expression.class));
+        Type t = Types.getDefault().list((Type)Types.getDefault().sup().apply(
+            Functionals.listable(
+                new Function() {
+                    public Object apply(Object o) {
+                        return ((Typed)o).getType();
+                    }
+                }).apply(Arrays.asList(expressions))
+                //@internal see Functionals#map(Function,Object[]) ArrayStoreException
+                ));
+        if (logger.isLoggable(Level.FINEST)) {
+            logger.log(Level.FINEST, "expression sequence {0} has type {1}", new Object[] {Types.toTypedString(expressions), t});
+        }
+        return t;
     }
 
     public Signature getSignature() {
-	Signature sigma = SignatureBase.EMPTY;
-	for (int i = 0; i < expressions.length; i++) {
-	    sigma = sigma.union(expressions[i].getSignature());
-	}
-	return sigma;
+        Signature sigma = SignatureBase.EMPTY;
+        for (int i = 0; i < expressions.length; i++) {
+            sigma = sigma.union(expressions[i].getSignature());
+        }
+        return sigma;
     }
 
     public Object getCompositor() {
-	return SEQUENCE;
+        return SEQUENCE;
     }
     public Object getComponent() {
-	return expressions;
+        return expressions;
     }
     public void setCompositor(Object o) {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
     public void setComponent(Object o) {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
     public orbital.logic.Composite construct(Object f, Object g) {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     public Notation getNotation() {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
     public void setNotation(Notation notation) {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     public String toString() {
-	return "<list " + MathUtilities.format(expressions) + ">";
+        return "<list " + MathUtilities.format(expressions) + ">";
     }
 }// ExpressionSequence

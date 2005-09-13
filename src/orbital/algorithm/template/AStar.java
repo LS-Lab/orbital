@@ -63,63 +63,63 @@ public class AStar extends BestFirstSearch implements HeuristicAlgorithm {
      * @see #getEvaluation()
      */
     public AStar(Function heuristic) {
-    	setHeuristic(heuristic);
+        setHeuristic(heuristic);
     }
     AStar() {}
 
     public Function getHeuristic() {
-	return heuristic;
+        return heuristic;
     }
 
     public void setHeuristic(Function heuristic) {
-	Function old = this.heuristic;
-	this.heuristic = heuristic;
-	firePropertyChange("heuristic", old, this.heuristic);
+        Function old = this.heuristic;
+        this.heuristic = heuristic;
+        firePropertyChange("heuristic", old, this.heuristic);
     }
 
     /**
      * f(n) = g(n) + h(n).
      */
     public Function getEvaluation() {
-	return evaluation;
+        return evaluation;
     }
     private transient Function evaluation;
     void firePropertyChange(String property, Object oldValue, Object newValue) {
-	super.firePropertyChange(property, oldValue, newValue);
-	if (!("heuristic".equals(property) || "problem".equals(property)))
-	    return;
-	GeneralSearchProblem problem = getProblem();
-	//@todo could transform into a package-protected Support class with a constructor argument of HeuristicAlgorithm
-	this.evaluation = problem != null
-	    ? Functionals.compose(Operations.plus, problem.getAccumulatedCostFunction(), getHeuristic())
-	    : null;
+        super.firePropertyChange(property, oldValue, newValue);
+        if (!("heuristic".equals(property) || "problem".equals(property)))
+            return;
+        GeneralSearchProblem problem = getProblem();
+        //@todo could transform into a package-protected Support class with a constructor argument of HeuristicAlgorithm
+        this.evaluation = problem != null
+            ? Functionals.compose(Operations.plus, problem.getAccumulatedCostFunction(), getHeuristic())
+            : null;
     }
     /**
      * Sustain transient variable initialization when deserializing.
      */
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-    	in.defaultReadObject();
-	firePropertyChange("heuristic", null, this.heuristic);
+        in.defaultReadObject();
+        firePropertyChange("heuristic", null, this.heuristic);
     }
 
     /**
      * O(b<sup>d</sup>) where b is the branching factor and d the solution depth.
      */
     public orbital.math.functional.Function complexity() {
-	return (orbital.math.functional.Function) Operations.power.apply(Values.getDefaultInstance().symbol("b"),Functions.id);
+        return (orbital.math.functional.Function) Operations.power.apply(Values.getDefaultInstance().symbol("b"),Functions.id);
     }
-	
+        
     /**
      * O(b<sup>d</sup>) where b is the branching factor and d the solution depth.
      */
     public orbital.math.functional.Function spaceComplexity() {
-	return complexity();
+        return complexity();
     }
-	
+        
     /**
      * Optimal if heuristic is admissible.
      */
     public boolean isOptimal() {
-    	return true;
+        return true;
     }
 }

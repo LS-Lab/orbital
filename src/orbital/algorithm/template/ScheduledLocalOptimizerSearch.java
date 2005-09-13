@@ -76,17 +76,17 @@ abstract class ScheduledLocalOptimizerSearch extends LocalOptimizerSearch implem
      * @param localSelection the variant of local selection used.
      */
     public ScheduledLocalOptimizerSearch(Function/*<GeneralSearchProblem.Option, Arithmetic>*/ heuristic, Function/*<Integer, Real>*/ schedule, LocalSelection localSelection) {
-	super(localSelection);
-    	this.heuristic = heuristic;
-    	this.schedule = schedule;
+        super(localSelection);
+        this.heuristic = heuristic;
+        this.schedule = schedule;
     }
 
     public Function/*<GeneralSearchProblem.Option, Arithmetic>*/ getHeuristic() {
-	return heuristic;
+        return heuristic;
     }
 
     public void setHeuristic(Function/*<GeneralSearchProblem.Option, Arithmetic>*/ heuristic) {
-	this.heuristic = heuristic;
+        this.heuristic = heuristic;
     }
 
     /**
@@ -99,11 +99,11 @@ abstract class ScheduledLocalOptimizerSearch extends LocalOptimizerSearch implem
      *  or it fails due to a lack of alternative expansion nodes).
      */
     public Function/*<Integer, Real>*/ getSchedule() {
-	return schedule;
+        return schedule;
     }
 
     public void setSchedule(Function/*<Integer, Real>*/ schedule) {
-	this.schedule = schedule;
+        this.schedule = schedule;
     }
 
     /**
@@ -112,7 +112,7 @@ abstract class ScheduledLocalOptimizerSearch extends LocalOptimizerSearch implem
      * and thus may be too fast, such that the search has not yet reached an optimum.
      */
     public boolean isCorrect() {
-	return false;
+        return false;
     }
 
     /**
@@ -121,6 +121,6 @@ abstract class ScheduledLocalOptimizerSearch extends LocalOptimizerSearch implem
      * cannot yet have reached the global optimum.
      */
     public boolean isOptimal() {
-	return false;
+        return false;
     }
 }

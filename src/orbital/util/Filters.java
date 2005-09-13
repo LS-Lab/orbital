@@ -28,42 +28,42 @@ public class Filters {
      * Selects all data in the collection.
      */
     public static final Function/*<Collection, Collection>*/ all = new Function/*<Collection, Collection>*/() {
-	    public Object/*>Collection<*/ apply(Object/*>Collection<*/ d) {
-		return d;
-	    } 
-	    public String toString() {
-		return "*";
-	    } 
-	};
+            public Object/*>Collection<*/ apply(Object/*>Collection<*/ d) {
+                return d;
+            } 
+            public String toString() {
+                return "*";
+            } 
+        };
     /**
      * Filter for first element.
      */
     public static final Function/*<Collection, Collection>*/ first = new Function/*<Collection, Collection>*/() {
-	    public Object/*>Collection<*/ apply(Object/*>Collection<*/ d) {
-		Collection f = new ArrayList(1);
-		f.add(((Collection) d).iterator().next());
-		return f;
-	    } 
-	    public String toString() {
-		return "first";
-	    } 
-	};
+            public Object/*>Collection<*/ apply(Object/*>Collection<*/ d) {
+                Collection f = new ArrayList(1);
+                f.add(((Collection) d).iterator().next());
+                return f;
+            } 
+            public String toString() {
+                return "first";
+            } 
+        };
     /**
      * Filter for last element.
      */
     public static final Function/*<Collection, Collection>*/ last = new Function/*<Collection, Collection>*/() {
-	    public Object/*>Collection<*/ apply(Object/*>Collection<*/ d) {
-		Collection f = new ArrayList(1);
-		Object	   l = null;
-		for (Iterator i = ((Collection) d).iterator(); i.hasNext(); )
-		    l = i.next();
-		f.add(l);
-		return f;
-	    } 
-	    public String toString() {
-		return "last";
-	    } 
-	};
+            public Object/*>Collection<*/ apply(Object/*>Collection<*/ d) {
+                Collection f = new ArrayList(1);
+                Object     l = null;
+                for (Iterator i = ((Collection) d).iterator(); i.hasNext(); )
+                    l = i.next();
+                f.add(l);
+                return f;
+            } 
+            public String toString() {
+                return "last";
+            } 
+        };
 
 
     /**
@@ -72,23 +72,23 @@ public class Filters {
      * The first element has index 0.
      */
     public static Function/*<Collection, Collection>*/ ranged(final int min, final int max) {
-	return new Function/*<Collection, Collection>*/() {
-		public Object/*>Collection<*/ apply(Object/*>Collection<*/ d) {
-		    Collection f = new ArrayList(max - min + 1);
-		    int		   count = 0;
-		    for (Iterator i = ((Collection) d).iterator(); i.hasNext(); ) {
-			Object el = i.next();
+        return new Function/*<Collection, Collection>*/() {
+                public Object/*>Collection<*/ apply(Object/*>Collection<*/ d) {
+                    Collection f = new ArrayList(max - min + 1);
+                    int            count = 0;
+                    for (Iterator i = ((Collection) d).iterator(); i.hasNext(); ) {
+                        Object el = i.next();
 
-			if (count >= min && count <= max)
-			    f.add(el);
-			count++;
-		    } 
-		    return f;
-		} 
-		public String toString() {
-		    return "ranged(" + min + "," + max + ")";
-		} 
-	    };
+                        if (count >= min && count <= max)
+                            f.add(el);
+                        count++;
+                    } 
+                    return f;
+                } 
+                public String toString() {
+                    return "ranged(" + min + "," + max + ")";
+                } 
+            };
     } 
 
     /**
@@ -96,7 +96,7 @@ public class Filters {
      * @see #top(double, boolean)
      */
     public static Function/*<Collection, Collection>*/ top(int number) {
-	return ranged(0, number - 1);
+        return ranged(0, number - 1);
     } 
     
     /**
@@ -106,15 +106,15 @@ public class Filters {
      * @preconditions number &isin; [0,100]
      */
     public static Function/*<Collection, Collection>*/ top(final double number, final boolean percent) {
-	if (!percent)
-	    return top((int) number);
-	if (!(0 <= number && number <= 100))
-	    throw new IllegalArgumentException("number must be a valid percentage in [0,100]");
-	return new Function/*<Collection, Collection>*/() {
-		public Object/*>Collection<*/ apply(Object/*>Collection<*/ d) {
-		    return top((int) Math.ceil(number * ((Collection) d).size() / 100)).apply(d);
-		}
-	    };
+        if (!percent)
+            return top((int) number);
+        if (!(0 <= number && number <= 100))
+            throw new IllegalArgumentException("number must be a valid percentage in [0,100]");
+        return new Function/*<Collection, Collection>*/() {
+                public Object/*>Collection<*/ apply(Object/*>Collection<*/ d) {
+                    return top((int) Math.ceil(number * ((Collection) d).size() / 100)).apply(d);
+                }
+            };
     }
     
     //TODO: implement

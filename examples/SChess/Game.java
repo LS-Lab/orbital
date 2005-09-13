@@ -20,10 +20,10 @@ public class Game extends orbital.game.GameView {
      * Application-start entry point.
      */
     public static void main(String args[]) throws Exception {
-	System.out.println("usage: java Game gameRules=ChessRules aIntelligence=1\nor\tjava Game gameRules=ChessRules aIntelligence=0");
-	if (args.length == 0)
-	    args = new String[] {"gameRules=ChessRules", "gameName=SimpleChess", "aIntelligence-count=1"};
-	AppletFrame.showApplet(new Game(), "Game Application", args);
+        System.out.println("usage: java Game gameRules=ChessRules aIntelligence=1\nor\tjava Game gameRules=ChessRules aIntelligence=0");
+        if (args.length == 0)
+            args = new String[] {"gameRules=ChessRules", "gameName=SimpleChess", "aIntelligence-count=1"};
+        AppletFrame.showApplet(new Game(), "Game Application", args);
     } 
 
     /**
@@ -32,10 +32,10 @@ public class Game extends orbital.game.GameView {
     public Game() {}
 
     protected GameRules createGameRules(String gameRules) throws InstantiationException, IllegalAccessException, ClassNotFoundException, ClassCastException {
-	return (GameRules) Class.forName(gameRules).newInstance();
+        return (GameRules) Class.forName(gameRules).newInstance();
     } 
 
     public void load(ObjectInputStream is) throws ClassNotFoundException, IOException {
-	super.load(is);
+        super.load(is);
     } 
 }

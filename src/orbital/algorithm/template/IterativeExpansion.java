@@ -62,66 +62,66 @@ public class IterativeExpansion extends GeneralSearch implements HeuristicAlgori
      * @see #getEvaluation()
      */
     public IterativeExpansion(Function heuristic) {
-    	setHeuristic(heuristic);
+        setHeuristic(heuristic);
     }
     IterativeExpansion() {}
 
     public Function getHeuristic() {
-	return heuristic;
+        return heuristic;
     }
 
     public void setHeuristic(Function heuristic) {
-	Function old = this.heuristic;
-	this.heuristic = heuristic;
-	firePropertyChange("heuristic", old, this.heuristic);
+        Function old = this.heuristic;
+        this.heuristic = heuristic;
+        firePropertyChange("heuristic", old, this.heuristic);
     }
 
     /**
      * f(n) = g(n) + h(n).
      */
     public Function getEvaluation() {
-	return evaluation;
+        return evaluation;
     }
     private transient Function evaluation;
     void firePropertyChange(String property, Object oldValue, Object newValue) {
-	super.firePropertyChange(property, oldValue, newValue);
-	if (!("heuristic".equals(property) || "problem".equals(property)))
-	    return;
-	GeneralSearchProblem problem = getProblem();
-	this.evaluation = problem != null
-	    ? Functionals.compose(Operations.plus, problem.getAccumulatedCostFunction(), getHeuristic())
-	    : null;
-    }	
+        super.firePropertyChange(property, oldValue, newValue);
+        if (!("heuristic".equals(property) || "problem".equals(property)))
+            return;
+        GeneralSearchProblem problem = getProblem();
+        this.evaluation = problem != null
+            ? Functionals.compose(Operations.plus, problem.getAccumulatedCostFunction(), getHeuristic())
+            : null;
+    }   
     /**
      * Sustain transient variable initialization when deserializing.
      */
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-    	in.defaultReadObject();
-	firePropertyChange("heuristic", null, this.heuristic);
+        in.defaultReadObject();
+        firePropertyChange("heuristic", null, this.heuristic);
     }
 
     /**
      * O(b*d) where b is the branching factor and d the solution depth.
      */
     public orbital.math.functional.Function spaceComplexity() {
-	return Functions.linear(Values.getDefaultInstance().symbol("b"));
+        return Functions.linear(Values.getDefaultInstance().symbol("b"));
     }
     /**
      * O(b<sup>d</sup>) where b is the branching factor and d the solution depth.
      */
     public orbital.math.functional.Function complexity() {
-	return (orbital.math.functional.Function) Operations.power.apply(Values.getDefaultInstance().symbol("b"),Functions.id);
+        return (orbital.math.functional.Function) Operations.power.apply(Values.getDefaultInstance().symbol("b"),Functions.id);
     }
     /**
      * Optimal if heuristic is admissible, and initial bound sufficiently large (usually &infin;).
      */
     public boolean isOptimal() {
-    	return true;
+        return true;
     }
 
     protected Object/*>S<*/ solveImpl(GeneralSearchProblem/*<A,S>*/ problem) {
-	Object/*>S<*/ initial = problem.getInitialState();
-	return solveByIterativeExpand(new NodeInfo(initial, (Real)getEvaluation().apply(initial)), Values.POSITIVE_INFINITY);
+        Object/*>S<*/ initial = problem.getInitialState();
+        return solveByIterativeExpand(new NodeInfo(initial, (Real)getEvaluation().apply(initial)), Values.POSITIVE_INFINITY);
     }
 
     /**
@@ -133,61 +133,61 @@ public class IterativeExpansion extends GeneralSearch implements HeuristicAlgori
      *  This differs from the paper.
      */
     private final Object/*>S<*/ solveByIterativeExpand(final NodeInfo node, final Real bound) {
-	assert bound.compareTo(Values.ZERO) >= 0 && !bound.isNaN() : "bound " + bound + " >= 0";
-	//System.err.println(node + "/" + bound);
-	if (boundCompare(node.getFCost(), bound) > 0)
-	    {//System.err.println("cut ");
-	    return null;}
-	else if (getProblem().isSolution(node.getNode()))
-	    return node.getNode();
-	//@internal optimizable by using a (min) heap instead of a list that is kept in sorted order
-	// here, we currently use a (sorted) list of NodeInfo sorted by the f-costs
-	final List/*_<NodeInfo>_*/ successors = new LinkedList();
-	{
-	    final Function f = getEvaluation();
-	    for (final Iterator i = GeneralSearch.expand(getProblem(), node.getNode()); i.hasNext(); ) {
-		final Object o = i.next();
-		// pathmax
-		final Real fo = (Real) Operations.max.apply(node.getFCost(), f.apply(o));
-		successors.add(new NodeInfo(o, fo));
-	    }
-	}
-	if (successors.isEmpty()) {
-	    //System.err.println("\tupdated cost to " + node + " (due to no successors)");
-	    node.setCost(Values.POSITIVE_INFINITY);
-	    return null;
-	}
-	// sort successors in order to have fast access to min and second-best min
-	Collections.sort(successors);
-	assert orbital.util.Utility.sorted(successors, null) : "Collections.sort@post";
-	while (boundCompare(node.getFCost(), bound) <= 0) {
-	    {
-		final NodeInfo best = (NodeInfo)successors.get(0);
-		assert !Setops.some(successors, new orbital.logic.functor.Predicate() { public boolean apply(Object o) {return ((NodeInfo)o).compareTo(best) < 0;} }) : "best has lowest f-cost";
-		Real newbound = bound;
-		if (successors.size() > 1) {
-		    final NodeInfo secondBest = (NodeInfo)successors.get(1);
-		    newbound = (Real) Operations.min.apply(bound, secondBest.getFCost());
-		    assert !Setops.some(successors.subList(1, successors.size()), new orbital.logic.functor.Predicate() { public boolean apply(Object o) {return ((NodeInfo)o).compareTo(secondBest) < 0;} }) : "second best has second lowest f-cost";
-		    //System.err.println(node + "/" + bound + "\t expanding to " + best + "/" + newbound + "\n\t\talternative " + secondBest);
-		}
-		
-		final Object/*>S<*/ solution = solveByIterativeExpand(best, newbound);
-		if (solution != null)
-		    // success
-		    return solution;
+        assert bound.compareTo(Values.ZERO) >= 0 && !bound.isNaN() : "bound " + bound + " >= 0";
+        //System.err.println(node + "/" + bound);
+        if (boundCompare(node.getFCost(), bound) > 0)
+            {//System.err.println("cut ");
+            return null;}
+        else if (getProblem().isSolution(node.getNode()))
+            return node.getNode();
+        //@internal optimizable by using a (min) heap instead of a list that is kept in sorted order
+        // here, we currently use a (sorted) list of NodeInfo sorted by the f-costs
+        final List/*_<NodeInfo>_*/ successors = new LinkedList();
+        {
+            final Function f = getEvaluation();
+            for (final Iterator i = GeneralSearch.expand(getProblem(), node.getNode()); i.hasNext(); ) {
+                final Object o = i.next();
+                // pathmax
+                final Real fo = (Real) Operations.max.apply(node.getFCost(), f.apply(o));
+                successors.add(new NodeInfo(o, fo));
+            }
+        }
+        if (successors.isEmpty()) {
+            //System.err.println("\tupdated cost to " + node + " (due to no successors)");
+            node.setCost(Values.POSITIVE_INFINITY);
+            return null;
+        }
+        // sort successors in order to have fast access to min and second-best min
+        Collections.sort(successors);
+        assert orbital.util.Utility.sorted(successors, null) : "Collections.sort@post";
+        while (boundCompare(node.getFCost(), bound) <= 0) {
+            {
+                final NodeInfo best = (NodeInfo)successors.get(0);
+                assert !Setops.some(successors, new orbital.logic.functor.Predicate() { public boolean apply(Object o) {return ((NodeInfo)o).compareTo(best) < 0;} }) : "best has lowest f-cost";
+                Real newbound = bound;
+                if (successors.size() > 1) {
+                    final NodeInfo secondBest = (NodeInfo)successors.get(1);
+                    newbound = (Real) Operations.min.apply(bound, secondBest.getFCost());
+                    assert !Setops.some(successors.subList(1, successors.size()), new orbital.logic.functor.Predicate() { public boolean apply(Object o) {return ((NodeInfo)o).compareTo(secondBest) < 0;} }) : "second best has second lowest f-cost";
+                    //System.err.println(node + "/" + bound + "\t expanding to " + best + "/" + newbound + "\n\t\talternative " + secondBest);
+                }
+                
+                final Object/*>S<*/ solution = solveByIterativeExpand(best, newbound);
+                if (solution != null)
+                    // success
+                    return solution;
 
-		// remove and reinsert best (which may have updated cost)
-		successors.remove(0);
-		Setops.insert(successors, best);
-		assert orbital.util.Utility.sorted(successors, null) : "@postconditions Setops.insert";
-	    }
-	    // circumscription of getEvaluation().set(node.getNode(), node.getFCost());
-	    node.setCost((Real) ((NodeInfo)successors.get(0)).getFCost());
-	    //System.err.println("\tupdated cost to " + node + " (due to " + (NodeInfo)successors.get(0) + ")");
-	}
+                // remove and reinsert best (which may have updated cost)
+                successors.remove(0);
+                Setops.insert(successors, best);
+                assert orbital.util.Utility.sorted(successors, null) : "@postconditions Setops.insert";
+            }
+            // circumscription of getEvaluation().set(node.getNode(), node.getFCost());
+            node.setCost((Real) ((NodeInfo)successors.get(0)).getFCost());
+            //System.err.println("\tupdated cost to " + node + " (due to " + (NodeInfo)successors.get(0) + ")");
+        }
 
-	return null;
+        return null;
     }
 
     /**
@@ -195,12 +195,12 @@ public class IterativeExpansion extends GeneralSearch implements HeuristicAlgori
      * @see Comparator#compare(Object,Object)
      */
     private static final int boundCompare(Real a, Real b) {
-	if (a.equals(Values.POSITIVE_INFINITY))
-	    //@internal even for b == Values.POSITIVE_INFINITY (here)
-	    return 1;
-	return a.compareTo(b);
+        if (a.equals(Values.POSITIVE_INFINITY))
+            //@internal even for b == Values.POSITIVE_INFINITY (here)
+            return 1;
+        return a.compareTo(b);
     }
-	
+        
 
     /**
      * Keeps additional information about a node of a search graph.
@@ -209,44 +209,44 @@ public class IterativeExpansion extends GeneralSearch implements HeuristicAlgori
      * @see orbital.util.KeyValuePair
      */
     private static final class NodeInfo implements Comparable, Serializable {
-	private static final long serialVersionUID = -4179466565509314106L;
-	/**
-	 * The node about which this object contains information.
-	 */
-	public final Object/*>S<*/ node;
-	/**
-	 * the f-cost of node: f(node).
-	 */
-	public Real cost;
-	public NodeInfo(Object/*>S<*/ node, Real cost) {
-	    this.node = node;
-	    this.cost = cost;
-	}
+        private static final long serialVersionUID = -4179466565509314106L;
+        /**
+         * The node about which this object contains information.
+         */
+        public final Object/*>S<*/ node;
+        /**
+         * the f-cost of node: f(node).
+         */
+        public Real cost;
+        public NodeInfo(Object/*>S<*/ node, Real cost) {
+            this.node = node;
+            this.cost = cost;
+        }
 
-	/**
-	 * @attribute coarser than equals.
-	 */
-	public int compareTo(Object o) {
-	    NodeInfo b = (NodeInfo)o;
-	    return getFCost().compareTo(b.getFCost());
-	}
-	public Object/*>S<*/ getNode() {
-	    return node;
-	}
-	public Real getFCost() {
-	    return cost;
-	}
-	public void setCost(Real newcost) {
-	    this.cost = newcost;
-	}
-	public String toString() {
-	    return getNode() + "\t" + getFCost();
-	}
+        /**
+         * @attribute coarser than equals.
+         */
+        public int compareTo(Object o) {
+            NodeInfo b = (NodeInfo)o;
+            return getFCost().compareTo(b.getFCost());
+        }
+        public Object/*>S<*/ getNode() {
+            return node;
+        }
+        public Real getFCost() {
+            return cost;
+        }
+        public void setCost(Real newcost) {
+            this.cost = newcost;
+        }
+        public String toString() {
+            return getNode() + "\t" + getFCost();
+        }
     }
 
     protected Iterator createTraversal(GeneralSearchProblem problem) {
-	//@todo could we transform the recursive algorithm into a traversal iterator?
-	throw new AssertionError("should not get called");
+        //@todo could we transform the recursive algorithm into a traversal iterator?
+        throw new AssertionError("should not get called");
     }
     
 }// IterativeExpansion

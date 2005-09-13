@@ -17,21 +17,21 @@ import junit.framework.*;
 public class PropositionalInferenceTest extends ClassicalLogicTest {
 
     public static void main(String[] args) {
-	junit.textui.TestRunner.run(suite());
+        junit.textui.TestRunner.run(suite());
     }
     public static Test suite() {
-	return new TestSuite(PropositionalInferenceTest.class);
+        return new TestSuite(PropositionalInferenceTest.class);
     }
     protected void setUp() {
     }
 
     protected void test(String name) {
-	try {
-	    ClassicalLogic.main(new String[] {"-inference=PROPOSITIONAL_INFERENCE", name});
-	}
-	catch (Throwable ex) {
-	    ex.printStackTrace();
-	    fail(ex.getMessage() + " in file " + name);
-	}
+        try {
+            ClassicalLogic.main(new String[] {"-inference=PROPOSITIONAL_INFERENCE", name});
+        }
+        catch (Throwable ex) {
+            ex.printStackTrace();
+            fail(ex.getMessage() + " in file " + name);
+        }
     }
 }

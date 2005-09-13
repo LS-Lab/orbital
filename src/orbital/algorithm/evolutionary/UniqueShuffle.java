@@ -22,11 +22,11 @@ import java.util.NoSuchElementException;
  */
 class UniqueShuffle {
     public UniqueShuffle(int n) {
-	order = new int[n];
-	for (int i = 0; i < n; i++)
-	    order[i] = i;
-	reShuffle();
-	index = 0;
+        order = new int[n];
+        for (int i = 0; i < n; i++)
+            order[i] = i;
+        reShuffle();
+        index = 0;
     }
 
     /**
@@ -40,16 +40,16 @@ class UniqueShuffle {
      * shuffle values with Random-Generator.
      */
     public void reShuffle(Random random) {
-	for (int i = order.length; i>1; i--) {
-	    int r = random.nextInt(i);
-	    int t = order[i-1];	 // swap i-1, r
-	    order[i-1] = order[r];
-	    order[r] = t;		 // don't use twice
-	}
-	index = 0;
+        for (int i = order.length; i>1; i--) {
+            int r = random.nextInt(i);
+            int t = order[i-1];  // swap i-1, r
+            order[i-1] = order[r];
+            order[r] = t;                // don't use twice
+        }
+        index = 0;
     } 
     public void reShuffle() {
-	reShuffle(new Random());
+        reShuffle(new Random());
     } 
 
     /**
@@ -57,17 +57,17 @@ class UniqueShuffle {
      * identical mapping 1 .. n.
      */
     public void unShuffle() {
-	int n = order.length;
-	for (int i = 0; i < order.length; i++)
-	    order[i] = i;
-	index = 0;
+        int n = order.length;
+        for (int i = 0; i < order.length; i++)
+            order[i] = i;
+        index = 0;
     } 
 
     /**
      * return the shuffled i-th value.
      */
     public int shuffle(int i) {
-	return order[i];
+        return order[i];
     } 
 
     /**
@@ -84,9 +84,9 @@ class UniqueShuffle {
      * @throws  NoSuchElementException  if no more elements exist.
      */
     public int next() {
-	if (!hasMoreElements())
-	    throw new NoSuchElementException("UniqueShuffle finished. Must reShuffle()");
-	return shuffle(index++);
+        if (!hasMoreElements())
+            throw new NoSuchElementException("UniqueShuffle finished. Must reShuffle()");
+        return shuffle(index++);
     } 
 
     /**
@@ -96,6 +96,6 @@ class UniqueShuffle {
      * <code>false</code> otherwise.
      */
     public boolean hasMoreElements() {
-	return index < order.length;
+        return index < order.length;
     } 
 }

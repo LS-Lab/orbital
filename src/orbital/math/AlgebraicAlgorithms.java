@@ -71,24 +71,24 @@ public final class AlgebraicAlgorithms {
      * @see #LEXICOGRAPHIC(int[])
      */
     public static final Comparator LEXICOGRAPHIC = new Comparator() {
-	    public int compare(Object m1, Object m2) {
-		final Vector/*<Integer>*/ nu = (Vector/*<Integer>*/) m1;
-		final Vector/*<Integer>*/ mu = (Vector/*<Integer>*/) m2;
-		if (nu.dimension() != mu.dimension())
-		    throw new IllegalArgumentException("incompatible monomial exponents from polynomial rings with a different number of variables");
-		for (Iterator k = nu.iterator(), j = mu.iterator(); k.hasNext() || j.hasNext(); ) {
-		    assert k.hasNext() && j.hasNext() : "equal dimensions have equally structured iterators";
-		    int c = ((Integer)k.next()).subtract((Integer)j.next()).intValue();
-		    if (c != 0)
-			return c;
-		}
-		return 0;
-	    }
+            public int compare(Object m1, Object m2) {
+                final Vector/*<Integer>*/ nu = (Vector/*<Integer>*/) m1;
+                final Vector/*<Integer>*/ mu = (Vector/*<Integer>*/) m2;
+                if (nu.dimension() != mu.dimension())
+                    throw new IllegalArgumentException("incompatible monomial exponents from polynomial rings with a different number of variables");
+                for (Iterator k = nu.iterator(), j = mu.iterator(); k.hasNext() || j.hasNext(); ) {
+                    assert k.hasNext() && j.hasNext() : "equal dimensions have equally structured iterators";
+                    int c = ((Integer)k.next()).subtract((Integer)j.next()).intValue();
+                    if (c != 0)
+                        return c;
+                }
+                return 0;
+            }
 
-	    public String toString() {
-		return AlgebraicAlgorithms.class.getName() + ".LEXICOGRAPHIC";
-	    }
-	};
+            public String toString() {
+                return AlgebraicAlgorithms.class.getName() + ".LEXICOGRAPHIC";
+            }
+        };
 
     /**
      * Reverse lexicographical order on monoid of monomials.
@@ -104,23 +104,23 @@ public final class AlgebraicAlgorithms {
      * @see #LEXICOGRAPHIC(int[])
      */
     public static final Comparator REVERSE_LEXICOGRAPHIC = new Comparator() {
-	    public int compare(Object m1, Object m2) {
-		final Vector/*<Integer>*/ nu = (Vector/*<Integer>*/) m1;
-		final Vector/*<Integer>*/ mu = (Vector/*<Integer>*/) m2;
-		if (nu.dimension() != mu.dimension())
-		    throw new IllegalArgumentException("incompatible monomial exponents from polynomial rings with a different number of variables");
-		for (int k = nu.dimension() - 1; k >= 0; k--) {
-		    int c = ((Integer)nu.get(k)).subtract((Integer)mu.get(k)).intValue();
-		    if (c != 0)
-			return c;
-		}
-		return 0;
-	    }
+            public int compare(Object m1, Object m2) {
+                final Vector/*<Integer>*/ nu = (Vector/*<Integer>*/) m1;
+                final Vector/*<Integer>*/ mu = (Vector/*<Integer>*/) m2;
+                if (nu.dimension() != mu.dimension())
+                    throw new IllegalArgumentException("incompatible monomial exponents from polynomial rings with a different number of variables");
+                for (int k = nu.dimension() - 1; k >= 0; k--) {
+                    int c = ((Integer)nu.get(k)).subtract((Integer)mu.get(k)).intValue();
+                    if (c != 0)
+                        return c;
+                }
+                return 0;
+            }
 
-	    public String toString() {
-		return AlgebraicAlgorithms.class.getName() + ".REVERSE_LEXICOGRAPHIC";
-	    }
-	};
+            public String toString() {
+                return AlgebraicAlgorithms.class.getName() + ".REVERSE_LEXICOGRAPHIC";
+            }
+        };
     
     /**
      * (Generalised) lexicographical order on monoid of monomials.
@@ -144,45 +144,45 @@ public final class AlgebraicAlgorithms {
      * @see #REVERSE_LEXICOGRAPHIC
      */
     public static final Comparator LEXICOGRAPHIC(final int permutation[]) {
-	checkPermutation(permutation);
-	return new Comparator() {
-	    public int compare(Object m1, Object m2) {
-		final Vector/*<Integer>*/ nu = (Vector/*<Integer>*/) m1;
-		final Vector/*<Integer>*/ mu = (Vector/*<Integer>*/) m2;
-		if (nu.dimension() != mu.dimension())
-		    throw new IllegalArgumentException("incompatible monomial exponents from polynomial rings with a different number of variables");
-		for (int k = nu.dimension() - 1; k >= 0; k--) {
-		    int index = permutation[k];
-		    int c = ((Integer)nu.get(index)).subtract((Integer)mu.get(index)).intValue();
-		    if (c != 0)
-			return c;
-		}
-		return 0;
-	    }
+        checkPermutation(permutation);
+        return new Comparator() {
+            public int compare(Object m1, Object m2) {
+                final Vector/*<Integer>*/ nu = (Vector/*<Integer>*/) m1;
+                final Vector/*<Integer>*/ mu = (Vector/*<Integer>*/) m2;
+                if (nu.dimension() != mu.dimension())
+                    throw new IllegalArgumentException("incompatible monomial exponents from polynomial rings with a different number of variables");
+                for (int k = nu.dimension() - 1; k >= 0; k--) {
+                    int index = permutation[k];
+                    int c = ((Integer)nu.get(index)).subtract((Integer)mu.get(index)).intValue();
+                    if (c != 0)
+                        return c;
+                }
+                return 0;
+            }
 
-	    public String toString() {
-		return AlgebraicAlgorithms.class.getName() + ".REVERSE_LEXICOGRAPHIC";
-	    }
-	};
+            public String toString() {
+                return AlgebraicAlgorithms.class.getName() + ".REVERSE_LEXICOGRAPHIC";
+            }
+        };
     }
 
     /**
      * Checks whether the given int[] is a permutation.
      */
     private static final void checkPermutation(int permutation[]) throws IllegalArgumentException {
-	// bucket sort
-	boolean found[] = new boolean[permutation.length];
-	for (int i = 0; i < found.length; i++) {
-	    found[i] = false;
-	}
-	for (int i = 0; i < permutation.length; i++) {
-	    int v = permutation[i];
-	    if (v < 0 || v >= found.length)
-		throw new IllegalArgumentException(MathUtilities.format(permutation) + " is no permutation due to illegal entry " + v);
-	    if (found[i])
-		throw new IllegalArgumentException(MathUtilities.format(permutation) + " is no permutation due to duplicate entry " + v);
-	    found[i] = true;
-	}
+        // bucket sort
+        boolean found[] = new boolean[permutation.length];
+        for (int i = 0; i < found.length; i++) {
+            found[i] = false;
+        }
+        for (int i = 0; i < permutation.length; i++) {
+            int v = permutation[i];
+            if (v < 0 || v >= found.length)
+                throw new IllegalArgumentException(MathUtilities.format(permutation) + " is no permutation due to illegal entry " + v);
+            if (found[i])
+                throw new IllegalArgumentException(MathUtilities.format(permutation) + " is no permutation due to duplicate entry " + v);
+            found[i] = true;
+        }
     }
 
     /**
@@ -199,24 +199,24 @@ public final class AlgebraicAlgorithms {
      * @param monomialBaseOrder the order <var>base</var> to use when degree order is equal.
      */
     public static final Comparator DEGREE(final Comparator monomialBaseOrder) {
-	return new Comparator() {
-	    public int compare(Object m1, Object m2) {
-		final Vector/*<Integer>*/ nu = (Vector/*<Integer>*/) m1;
-		final Vector/*<Integer>*/ mu = (Vector/*<Integer>*/) m2;
-		if (nu.dimension() != mu.dimension())
-		    throw new IllegalArgumentException("incompatible monomial exponents from polynomial rings with a different number of variables");
-		int c = ((Integer)Operations.sum.apply(nu)).intValue()
-		    - ((Integer)Operations.sum.apply(mu)).intValue();
-		if (c != 0)
-		    return c;
-		else
-		    return monomialBaseOrder.compare(m1, m2);
-	    }
+        return new Comparator() {
+            public int compare(Object m1, Object m2) {
+                final Vector/*<Integer>*/ nu = (Vector/*<Integer>*/) m1;
+                final Vector/*<Integer>*/ mu = (Vector/*<Integer>*/) m2;
+                if (nu.dimension() != mu.dimension())
+                    throw new IllegalArgumentException("incompatible monomial exponents from polynomial rings with a different number of variables");
+                int c = ((Integer)Operations.sum.apply(nu)).intValue()
+                    - ((Integer)Operations.sum.apply(mu)).intValue();
+                if (c != 0)
+                    return c;
+                else
+                    return monomialBaseOrder.compare(m1, m2);
+            }
 
-	    public String toString() {
-		return AlgebraicAlgorithms.class.getName() + ".DEGREE(" + monomialBaseOrder + ")";
-	    }
-	};
+            public String toString() {
+                return AlgebraicAlgorithms.class.getName() + ".DEGREE(" + monomialBaseOrder + ")";
+            }
+        };
     }
     
     /**
@@ -258,62 +258,62 @@ public final class AlgebraicAlgorithms {
      * @see #LEXICOGRAPHIC(int[])
      */
     public static final Comparator INDUCED(final Comparator monomialOrder) {
-	return new InducedPolynomialComparator(monomialOrder);
+        return new InducedPolynomialComparator(monomialOrder);
     }
     private static final class InducedPolynomialComparator implements Comparator {
-	private final Comparator monomialOrder;
-	public InducedPolynomialComparator(Comparator monomialOrder) {
-	    this.monomialOrder = monomialOrder;
-	}
+        private final Comparator monomialOrder;
+        public InducedPolynomialComparator(Comparator monomialOrder) {
+            this.monomialOrder = monomialOrder;
+        }
 
-	public boolean equals(Object o) {
-	    return (o instanceof InducedPolynomialComparator)
-		&& monomialOrder.equals(((InducedPolynomialComparator)o).monomialOrder);
-	}
-	public int hashCode() {
-	    return monomialOrder.hashCode();
-	}
-	public int compare(Object p1, Object p2) {
-	    final SortedSet amon = new TreeSet(new ReverseComparator(monomialOrder));
-	    amon.addAll(occurringMonomials((Polynomial)p1));
-	    final SortedSet bmon = new TreeSet(new ReverseComparator(monomialOrder));
-	    bmon.addAll(occurringMonomials((Polynomial)p2));
-	    try {
-		// like Setops.find(Functionals.map("asFunction"(monomialOrder), amon.iterator(), bmon.iterator()), Functionals.bindSecond(Predicates.equal, Values.ZERO));
-		// but with lazy evaluation of Functionals.map such that it stops at the first even if the iterators have inequal lengths
-		for (Iterator i = amon.iterator(), j = bmon.iterator(); i.hasNext() || j.hasNext(); ) {
-		    //@todo which alternative?
-		    if (!i.hasNext() || !j.hasNext())
-			if (((Polynomial)p1).degreeValue() < 0)
-			    return -1;
-			else if (((Polynomial)p2).degreeValue() < 0)
-			    return 1;
-			else
-			    throw new IndexOutOfBoundsException();
-		    // 		    //@todo verify: in case of different number of occurring monomials, the one that has more is greater
-		    // 		    if (!i.hasNext())
-		    // 			return -1;
-		    // 		    else if (!j.hasNext())
-		    // 			return 1;
-		    int cmp = monomialOrder.compare(i.next(), j.next());
-		    if (cmp != 0)
-			return cmp;
-		}
-		return 0;
-	    } catch (IndexOutOfBoundsException differentLengthOfMonomials) {
-		Function Xpower = new Function() {
-			public Object apply(Object i) {
-			    return Values.getDefaultInstance().MONOMIAL((int[])i);
-			}
-			public String toString() {
-			    return "X0^.*...Xn^.";
-			}
-		    };
-		throw (IllegalArgumentException)
-		    new IllegalArgumentException("incomparable arguments " + p1 + " and " + p2
-						 + "\nwith (sorted) monomials " + Functionals.map(Xpower, new LinkedList(amon)) + " and " + Functionals.map(Xpower, new LinkedList(bmon))).initCause(differentLengthOfMonomials);
-	    }
-	}
+        public boolean equals(Object o) {
+            return (o instanceof InducedPolynomialComparator)
+                && monomialOrder.equals(((InducedPolynomialComparator)o).monomialOrder);
+        }
+        public int hashCode() {
+            return monomialOrder.hashCode();
+        }
+        public int compare(Object p1, Object p2) {
+            final SortedSet amon = new TreeSet(new ReverseComparator(monomialOrder));
+            amon.addAll(occurringMonomials((Polynomial)p1));
+            final SortedSet bmon = new TreeSet(new ReverseComparator(monomialOrder));
+            bmon.addAll(occurringMonomials((Polynomial)p2));
+            try {
+                // like Setops.find(Functionals.map("asFunction"(monomialOrder), amon.iterator(), bmon.iterator()), Functionals.bindSecond(Predicates.equal, Values.ZERO));
+                // but with lazy evaluation of Functionals.map such that it stops at the first even if the iterators have inequal lengths
+                for (Iterator i = amon.iterator(), j = bmon.iterator(); i.hasNext() || j.hasNext(); ) {
+                    //@todo which alternative?
+                    if (!i.hasNext() || !j.hasNext())
+                        if (((Polynomial)p1).degreeValue() < 0)
+                            return -1;
+                        else if (((Polynomial)p2).degreeValue() < 0)
+                            return 1;
+                        else
+                            throw new IndexOutOfBoundsException();
+                    //              //@todo verify: in case of different number of occurring monomials, the one that has more is greater
+                    //              if (!i.hasNext())
+                    //                  return -1;
+                    //              else if (!j.hasNext())
+                    //                  return 1;
+                    int cmp = monomialOrder.compare(i.next(), j.next());
+                    if (cmp != 0)
+                        return cmp;
+                }
+                return 0;
+            } catch (IndexOutOfBoundsException differentLengthOfMonomials) {
+                Function Xpower = new Function() {
+                        public Object apply(Object i) {
+                            return Values.getDefaultInstance().MONOMIAL((int[])i);
+                        }
+                        public String toString() {
+                            return "X0^.*...Xn^.";
+                        }
+                    };
+                throw (IllegalArgumentException)
+                    new IllegalArgumentException("incomparable arguments " + p1 + " and " + p2
+                                                 + "\nwith (sorted) monomials " + Functionals.map(Xpower, new LinkedList(amon)) + " and " + Functionals.map(Xpower, new LinkedList(bmon))).initCause(differentLengthOfMonomials);
+            }
+        }
     }
 
     // an isomorphism useful in conjunction with tensor products
@@ -325,41 +325,41 @@ public final class AlgebraicAlgorithms {
      * @todo publicize?
      */
     static final Tensor flatten(Tensor t) {
-	int[] sdim = null;
-	for (Iterator i = t.iterator(); i.hasNext(); ) {
-	    Object ti = i.next();
-	    if (ti instanceof Tensor) {
-		int[] d = ((Tensor)ti).dimensions();
-		if (sdim == null)
-		    sdim = d;
-		else
-		    Utility.pre(Utility.equalsAll(d, sdim), "components have uniform rank and dimensions");
-	    } else {
-		if (sdim == null)
-		    sdim = new int[0];
-		else
-		    Utility.pre(sdim.length == 0, "components have uniform ran and dimensions");
-	    }
-	}
-	if (sdim.length == 0)
-	    return t;
-	else {
-	    final int[] tdim = t.dimensions();
-	    final int[] dim = new int[tdim.length + sdim.length];
-	    System.arraycopy(tdim, 0, dim, 0, tdim.length);
-	    System.arraycopy(sdim, 0, dim, tdim.length, sdim.length);
-	    Tensor r = Values.getDefaultInstance().newInstance(dim);
-	    for (Combinatorical index = Combinatorical.getPermutations(r.dimensions()); index.hasNext(); ) {
-		int[] i = index.next();
-		int[] ai = new int[tdim.length];
-		System.arraycopy(i, 0, ai, 0, tdim.length);
-		int[] bi = new int[sdim.length];
-		System.arraycopy(i, tdim.length, bi, 0, i.length - tdim.length);
-		Tensor tai = (Tensor) t.get(ai);
-		r.set(i, tai.get(bi));
-	    }
-	    return flatten(r);
-	}
+        int[] sdim = null;
+        for (Iterator i = t.iterator(); i.hasNext(); ) {
+            Object ti = i.next();
+            if (ti instanceof Tensor) {
+                int[] d = ((Tensor)ti).dimensions();
+                if (sdim == null)
+                    sdim = d;
+                else
+                    Utility.pre(Utility.equalsAll(d, sdim), "components have uniform rank and dimensions");
+            } else {
+                if (sdim == null)
+                    sdim = new int[0];
+                else
+                    Utility.pre(sdim.length == 0, "components have uniform ran and dimensions");
+            }
+        }
+        if (sdim.length == 0)
+            return t;
+        else {
+            final int[] tdim = t.dimensions();
+            final int[] dim = new int[tdim.length + sdim.length];
+            System.arraycopy(tdim, 0, dim, 0, tdim.length);
+            System.arraycopy(sdim, 0, dim, tdim.length, sdim.length);
+            Tensor r = Values.getDefaultInstance().newInstance(dim);
+            for (Combinatorical index = Combinatorical.getPermutations(r.dimensions()); index.hasNext(); ) {
+                int[] i = index.next();
+                int[] ai = new int[tdim.length];
+                System.arraycopy(i, 0, ai, 0, tdim.length);
+                int[] bi = new int[sdim.length];
+                System.arraycopy(i, tdim.length, bi, 0, i.length - tdim.length);
+                Tensor tai = (Tensor) t.get(ai);
+                r.set(i, tai.get(bi));
+            }
+            return flatten(r);
+        }
     }
 
     // divisibility (gcd, lcm) and CRT
@@ -369,10 +369,10 @@ public final class AlgebraicAlgorithms {
      * @see #gcd(Euclidean,Euclidean)
      */
     public static final BinaryFunction gcd = new BinaryFunction/*<Euclidean,Euclidean,Euclidean>*/() {
-	    public Object apply(Object a, Object b) {
-		return gcd((Euclidean)a, (Euclidean)b);
-	    }
-	};
+            public Object apply(Object a, Object b) {
+                return gcd((Euclidean)a, (Euclidean)b);
+            }
+        };
     /**
      * Returns greatest common divisor (gcd) of two elements of an (Euclidean) ring.
      * The gcd is the greatest element (with respect to divisibility) in the ring which divides both, a and b.
@@ -399,18 +399,18 @@ public final class AlgebraicAlgorithms {
      * @todo we could multiply the resulting gcd, r, s by a constant!=0 (which is a unit if R is a field) to obtain a normalized gcd.
      */
     public static Euclidean gcd(Euclidean a, Euclidean b) {
-	Euclidean list[] = {a, b};
-	return gcd(list)[list.length];		//sic(!)
+        Euclidean list[] = {a, b};
+        return gcd(list)[list.length];          //sic(!)
     }
     /**
      * Returns least common multiple (lcm) of two elements of an (Euclidean) ring.
      * @see #lcm(Euclidean,Euclidean)
      */
     public static final BinaryFunction lcm = new BinaryFunction/*<Euclidean,Euclidean,Euclidean>*/() {
-	    public Object apply(Object a, Object b) {
-		return lcm((Euclidean)a, (Euclidean)b);
-	    }
-	};
+            public Object apply(Object a, Object b) {
+                return lcm((Euclidean)a, (Euclidean)b);
+            }
+        };
     /**
      * Returns least common multiple (lcm) of two ring elements.
      * The lcm is the smallest ring element (with respect to divisibility) which is a multiple of both.
@@ -419,7 +419,7 @@ public final class AlgebraicAlgorithms {
      * @return lcm(a,b) := sup(a,b) with &#8739; "divides" as a partial order on R.
      */
     public static Euclidean lcm(Euclidean a, Euclidean b) {
-	return (Euclidean) a.multiply(b).divide(gcd(a,b));
+        return (Euclidean) a.multiply(b).divide(gcd(a,b));
     }
     /**
      * n-ary and extended gcd.
@@ -439,62 +439,62 @@ public final class AlgebraicAlgorithms {
      * @see #gcd(Euclidean,Euclidean)
      */
     public static Euclidean[] gcd(final Euclidean elements[]) {
-	switch (elements.length) {
-	case 0:
-	    throw new IllegalArgumentException("positive array-size expected. gcd not defined for zero elements");
-	case 1:
-	    return new Euclidean[] {(Euclidean) elements[1].one(), elements[0]};
-	case 2:
-	    // see below
-	    break;
-	default:
-	    //@todo fold a with gcd, and somehow combine the overall gcd, and the s[i]
-	    Euclidean d = (Euclidean) Functionals.foldLeft(gcd, elements[0], elements);
-	    throw new UnsupportedOperationException("gcd of more than two elements not yet implemented");
-	}
-	final Euclidean a = elements[0], b = elements[1];
-	final Euclidean ZERO = (Euclidean) a.zero();
-	final Euclidean ONE = (Euclidean) a.one();
-	if (a.norm().equals(Values.ZERO) && b.norm().equals(Values.ZERO))
-	    throw new ArithmeticException("gcd(0, 0) is undefined");
-	if (b.norm().equals(Values.ZERO))
-	    return new Euclidean[] {ONE, a};				//@todo verify that this is correct, especially for a=0 and in conjunction with rationals occuring in ranks < size
-	Euclidean a0 = a, a1 = b;
-	Euclidean r0 = ONE, r1 = ZERO;
-	Euclidean s0 = ZERO, s1 = ONE;
-	while (!a1.norm().equals(Values.ZERO)) {
-	    // @invariants gcd(OLD(a), OLD(b)) == gcd(a0, a1)
-	    //   &and; a0 == r0*a + s0*b
-	    //   &and; a1 == r1*a + s1*b
-			
-	    // calculate the quotient a0 div a1
-	    Euclidean q = a0.quotient(a1);
-	    Euclidean t;
-			
-	    // transform (a0, a1)
-	    t = (Euclidean) a0.subtract(q.multiply(a1));
-	    // t == a0.modulo(a1)
-	    assert a0.modulo(a1).equals(t) : "a mod b == a - (a div b)*b, i.e. " + a0.modulo(a1) + " == " + a0 + " - " + q + "*" + a1 + " == " + a0 + " - " + q.multiply(a1) + " == " + t;
-	    // (a0, a1) := (a1, a0 mod a1);
-	    a0 = a1;
-	    a1 = t;
-			
-	    // transform (r0, r1)
-	    t = (Euclidean) r0.subtract(q.multiply(r1));
-	    r0 = r1;
-	    r1 = t;
+        switch (elements.length) {
+        case 0:
+            throw new IllegalArgumentException("positive array-size expected. gcd not defined for zero elements");
+        case 1:
+            return new Euclidean[] {(Euclidean) elements[1].one(), elements[0]};
+        case 2:
+            // see below
+            break;
+        default:
+            //@todo fold a with gcd, and somehow combine the overall gcd, and the s[i]
+            Euclidean d = (Euclidean) Functionals.foldLeft(gcd, elements[0], elements);
+            throw new UnsupportedOperationException("gcd of more than two elements not yet implemented");
+        }
+        final Euclidean a = elements[0], b = elements[1];
+        final Euclidean ZERO = (Euclidean) a.zero();
+        final Euclidean ONE = (Euclidean) a.one();
+        if (a.norm().equals(Values.ZERO) && b.norm().equals(Values.ZERO))
+            throw new ArithmeticException("gcd(0, 0) is undefined");
+        if (b.norm().equals(Values.ZERO))
+            return new Euclidean[] {ONE, a};                            //@todo verify that this is correct, especially for a=0 and in conjunction with rationals occuring in ranks < size
+        Euclidean a0 = a, a1 = b;
+        Euclidean r0 = ONE, r1 = ZERO;
+        Euclidean s0 = ZERO, s1 = ONE;
+        while (!a1.norm().equals(Values.ZERO)) {
+            // @invariants gcd(OLD(a), OLD(b)) == gcd(a0, a1)
+            //   &and; a0 == r0*a + s0*b
+            //   &and; a1 == r1*a + s1*b
+                        
+            // calculate the quotient a0 div a1
+            Euclidean q = a0.quotient(a1);
+            Euclidean t;
+                        
+            // transform (a0, a1)
+            t = (Euclidean) a0.subtract(q.multiply(a1));
+            // t == a0.modulo(a1)
+            assert a0.modulo(a1).equals(t) : "a mod b == a - (a div b)*b, i.e. " + a0.modulo(a1) + " == " + a0 + " - " + q + "*" + a1 + " == " + a0 + " - " + q.multiply(a1) + " == " + t;
+            // (a0, a1) := (a1, a0 mod a1);
+            a0 = a1;
+            a1 = t;
+                        
+            // transform (r0, r1)
+            t = (Euclidean) r0.subtract(q.multiply(r1));
+            r0 = r1;
+            r1 = t;
 
-	    // transform (s0, s1)
-	    t = (Euclidean) s0.subtract(q.multiply(s1));
-	    s0 = s1;
-	    s1 = t;
-	} 
-	assert !a0.norm().equals(Values.ZERO) : "gcd != 0 && @todo";
-	assert a0.equals(r0.multiply(a).add(s0.multiply(b))) : "a0 == r0*a + s0*b";
-	return new Euclidean[] {
-	    r0, s0,
-	    a0
-	};
+            // transform (s0, s1)
+            t = (Euclidean) s0.subtract(q.multiply(s1));
+            s0 = s1;
+            s1 = t;
+        } 
+        assert !a0.norm().equals(Values.ZERO) : "gcd != 0 && @todo";
+        assert a0.equals(r0.multiply(a).add(s0.multiply(b))) : "a0 == r0*a + s0*b";
+        return new Euclidean[] {
+            r0, s0,
+            a0
+        };
     } 
 
     /**
@@ -503,32 +503,32 @@ public final class AlgebraicAlgorithms {
      * @todo optimize, or simply call {@link #gcd(Euclidean,Euclidean)}
      */
     static int gcd(int a, int b) {
-	if ((a == 0 && b == 0))
-	    throw new ArithmeticException("gcd(0, 0) is undefined");
-	if (b == 0)
-	    return a;				//@todo verify that this is correct, especially for a=0 and in conjunction with rationals occuring in ranks < size
-	boolean flipsign = false;
-	if (a < 0) {
-	    a *= -1;
-	    flipsign = !flipsign;
-	} 
-	if (b < 0) {
-	    b *= -1;
-	    flipsign = !flipsign;
-	} 
-	assert a >= 0 && b > 0 : "a>=0 && b>0 for gcd, now";
-	while (a != 0) {
-	    // @invariants gcd(OLD(a), OLD(b)) == gcd(a, b)
-	    //@todo we really should perform (a, b) := (b, a mod b); instead?
-	    if (b > a) {
-		int t = a;
-		a = b;
-		b = t;
-	    } 
-	    a %= b;
-	} 
-	assert b != 0 : "gcd != 0 && @todo";
-	return flipsign ? -b : b;
+        if ((a == 0 && b == 0))
+            throw new ArithmeticException("gcd(0, 0) is undefined");
+        if (b == 0)
+            return a;                           //@todo verify that this is correct, especially for a=0 and in conjunction with rationals occuring in ranks < size
+        boolean flipsign = false;
+        if (a < 0) {
+            a *= -1;
+            flipsign = !flipsign;
+        } 
+        if (b < 0) {
+            b *= -1;
+            flipsign = !flipsign;
+        } 
+        assert a >= 0 && b > 0 : "a>=0 && b>0 for gcd, now";
+        while (a != 0) {
+            // @invariants gcd(OLD(a), OLD(b)) == gcd(a, b)
+            //@todo we really should perform (a, b) := (b, a mod b); instead?
+            if (b > a) {
+                int t = a;
+                a = b;
+                b = t;
+            } 
+            a %= b;
+        } 
+        assert b != 0 : "gcd != 0 && @todo";
+        return flipsign ? -b : b;
     } 
 
     /**
@@ -536,7 +536,7 @@ public final class AlgebraicAlgorithms {
      * @see #lcm(Euclidean,Euclidean)
      */
     static int lcm(int a, int b) {
-	return a * b / gcd(a, b);
+        return a * b / gcd(a, b);
     } 
 
     /**
@@ -587,20 +587,20 @@ public final class AlgebraicAlgorithms {
      * @todo change Arithmetic to Euclidean since the implementation won't work otherwise anyway?
      */
     public static final Quotient/*<Arithmetic>*/ chineseRemainder(Arithmetic x[], Arithmetic m[]) {
-	if (x.length != m.length)
-	    throw new IllegalArgumentException("must give the same number of congruence values and modulos");
-	final Values vf = Values.getDefaultInstance();
-	Euclidean xStar = (Euclidean) x[0];
-	Euclidean M = (Euclidean) xStar.one();
-	for (int i = 1; i < m.length; i++) {
-	    M = (Euclidean) M.multiply(m[i-1]);
-	    final Arithmetic c = vf.quotient(M, (Euclidean) m[i]).inverse()/*.representative()*/;		// the inverse modulo m[i] of m
-	    final Arithmetic s = vf.quotient((Euclidean) (x[i].subtract(xStar)).multiply(c), (Euclidean) m[i]).representative();
-	    xStar = (Euclidean) xStar.add(s.multiply(M));
-	}
-	M = (Euclidean) M.multiply(m[m.length-1]);
-	assert M.equals(Operations.product.apply(vf.valueOf(m))) : "total modulus " + M + " = " + Operations.product.apply(vf.valueOf(m));
-	return vf.quotient(xStar, M);
+        if (x.length != m.length)
+            throw new IllegalArgumentException("must give the same number of congruence values and modulos");
+        final Values vf = Values.getDefaultInstance();
+        Euclidean xStar = (Euclidean) x[0];
+        Euclidean M = (Euclidean) xStar.one();
+        for (int i = 1; i < m.length; i++) {
+            M = (Euclidean) M.multiply(m[i-1]);
+            final Arithmetic c = vf.quotient(M, (Euclidean) m[i]).inverse()/*.representative()*/;               // the inverse modulo m[i] of m
+            final Arithmetic s = vf.quotient((Euclidean) (x[i].subtract(xStar)).multiply(c), (Euclidean) m[i]).representative();
+            xStar = (Euclidean) xStar.add(s.multiply(M));
+        }
+        M = (Euclidean) M.multiply(m[m.length-1]);
+        assert M.equals(Operations.product.apply(vf.valueOf(m))) : "total modulus " + M + " = " + Operations.product.apply(vf.valueOf(m));
+        return vf.quotient(xStar, M);
     }
 
     // Gr&ouml;bner basis
@@ -613,7 +613,7 @@ public final class AlgebraicAlgorithms {
      * @see #reduce(Collection, Comparator)
      */
     public static final Polynomial/*<R>*/ reduce(Polynomial/*<R>*/ f, Collection/*_Polynomial<R,S>_*/ g, final Comparator/*_<S>_*/ monomialOrder) {
-	return (Polynomial) reduce(g, monomialOrder).apply(f);
+        return (Polynomial) reduce(g, monomialOrder).apply(f);
     }
     /**
      * Reduce<sub>g</sub>:K[X<sub>0</sub>,...,X<sub>n-1</sub>]&rarr;K[X<sub>0</sub>,...,X<sub>n-1</sub>]; f &#8614; "f reduced with respect to g".
@@ -633,96 +633,96 @@ public final class AlgebraicAlgorithms {
      * @internal reduction = transitiveClosure(elementaryReduction)
      */
     public static final Function/*<Polynomial<R,S>,Polynomial<R,S>>*/ reduce(Collection/*_Polynomial<R,S>_*/ g, Comparator/*_<S>_*/ monomialOrder) {
-	return new ReductionFunction(g, monomialOrder);
+        return new ReductionFunction(g, monomialOrder);
     }
     private static final class ReductionFunction implements Function/*<Polynomial<R,S>,Polynomial<R,S>>*/, Serializable {
-	private static final long serialVersionUID = -51945340881045435L;
-	private final Collection/*_<Polynomial<R,S>>_*/ g;
-	private final Comparator monomialOrder;
-	private final Function elementaryReduce;
-	public ReductionFunction(Collection/*_Polynomial<R,S>_*/ g, Comparator newmonomialOrder) {
-	    Utility.pre(Setops.all(g, Functionals.bindSecond(Utility.instanceOf, Polynomial.class)), "collection<" + Polynomial.class.getName() + "> expected");
-	    this.g = g;
-	    this.monomialOrder = newmonomialOrder;
-	    // enrich g with exponents of leading monomials
-	    final Pair/*<Polynomial<R,S>,S>*/[] basis = new Pair[g.size()];
-	    {
-		Iterator it = g.iterator();
-		for (int i = 0; i < basis.length; i++) {
-		    final Polynomial gi = (Polynomial) it.next();
-		    final Arithmetic leadingMonomial = leadingMonomial(gi, monomialOrder);
-		    basis[i] = new Pair(gi, leadingMonomial);
-		}
-	    }
-	    //@internal would we profit from using orbital.logic.trs, even though polynomials do not currently have an introspectable internal structure per Functor.Composite?
-	    this.elementaryReduce = new Function/*<Polynomial,Polynomial>*/() {
-		    public Object apply(Object o) {
-			final Polynomial f = (Polynomial)o;
-			final Values vf = Values.getDefaultInstance();
-			//@internal we would prefer reverse direction, also starting with leading coefficient
-			final SortedSet occurring = new TreeSet(new ReverseComparator(monomialOrder));
-			occurring.addAll(occurringMonomials(f));
-			for (Iterator index = occurring.iterator(); index.hasNext(); ) {
-			    final Arithmetic/*>S<*/ nu = (Arithmetic) index.next();
-			    final Arithmetic/*>R<*/ cnu = f.get(nu);
-			    assert !cnu.norm().equals(Values.ZERO) : "@postconditions of occurringMonomials(...)";
-			    reductionPolynomials:
-			    for (int j = 0; j < basis.length; j++) {
-				final Polynomial gj = (Polynomial)basis[j].A;
-				final Arithmetic/*>S<*/ lgj = (Arithmetic)basis[j].B;
+        private static final long serialVersionUID = -51945340881045435L;
+        private final Collection/*_<Polynomial<R,S>>_*/ g;
+        private final Comparator monomialOrder;
+        private final Function elementaryReduce;
+        public ReductionFunction(Collection/*_Polynomial<R,S>_*/ g, Comparator newmonomialOrder) {
+            Utility.pre(Setops.all(g, Functionals.bindSecond(Utility.instanceOf, Polynomial.class)), "collection<" + Polynomial.class.getName() + "> expected");
+            this.g = g;
+            this.monomialOrder = newmonomialOrder;
+            // enrich g with exponents of leading monomials
+            final Pair/*<Polynomial<R,S>,S>*/[] basis = new Pair[g.size()];
+            {
+                Iterator it = g.iterator();
+                for (int i = 0; i < basis.length; i++) {
+                    final Polynomial gi = (Polynomial) it.next();
+                    final Arithmetic leadingMonomial = leadingMonomial(gi, monomialOrder);
+                    basis[i] = new Pair(gi, leadingMonomial);
+                }
+            }
+            //@internal would we profit from using orbital.logic.trs, even though polynomials do not currently have an introspectable internal structure per Functor.Composite?
+            this.elementaryReduce = new Function/*<Polynomial,Polynomial>*/() {
+                    public Object apply(Object o) {
+                        final Polynomial f = (Polynomial)o;
+                        final Values vf = Values.getDefaultInstance();
+                        //@internal we would prefer reverse direction, also starting with leading coefficient
+                        final SortedSet occurring = new TreeSet(new ReverseComparator(monomialOrder));
+                        occurring.addAll(occurringMonomials(f));
+                        for (Iterator index = occurring.iterator(); index.hasNext(); ) {
+                            final Arithmetic/*>S<*/ nu = (Arithmetic) index.next();
+                            final Arithmetic/*>R<*/ cnu = f.get(nu);
+                            assert !cnu.norm().equals(Values.ZERO) : "@postconditions of occurringMonomials(...)";
+                            reductionPolynomials:
+                            for (int j = 0; j < basis.length; j++) {
+                                final Polynomial gj = (Polynomial)basis[j].A;
+                                final Arithmetic/*>S<*/ lgj = (Arithmetic)basis[j].B;
 
-				// test divisibility
-				final Arithmetic/*>R<*/ cdiv;
-				final Arithmetic xdiv;
-				try {
-				    // test divisibility of coefficient cnu by lc(gj)=gj.get(lgj)
-				    cdiv = cnu.divide(gj.get(lgj));
-				    // test divisibility of monomial X^nu by l(gj)
-				    xdiv = nu.subtract(lgj);
-				    //@internal the following is a trick for S=<b>N</b><sup>n</sup> represented as <b>Z</b><sup>n</sup> (get rid when introducing Natural extends Integer)
-				    if (Setops.some(((Vector)xdiv).iterator(), Functionals.bindSecond(Predicates.less, Values.ZERO)))
-					continue reductionPolynomials;
-				}
-				catch (ArithmeticException indivisible) {
-				    continue reductionPolynomials;
-				}
-				// divisible, then q := cdiv*X<sup>xdiv</sup>
-				final Polynomial q = vf.MONOMIAL(cdiv, xdiv);
-				Polynomial reduction = f.subtract(q.multiply(gj));
-				if (!reduction.get(nu).norm().equals(Values.ZERO)) {
-				    if (MathUtilities.equals(reduction.get(nu).norm(),
-							     Values.ZERO,
-							     MathUtilities.getDefaultTolerance()
-							     )) {
-					//@internal trick correct numerical instabilites
-					reduction = reduction.subtract(vf.MONOMIAL(reduction.get(nu), nu));
-				    }
-				    if (!reduction.get(nu).norm().equals(Values.ZERO)) {
-					throw new AssertionError(vf.MONOMIAL(Values.ONE, nu) + " does not occur in " + reduction + " anymore, even after numerical precision correction");
-				    }
-				}
-				if (!(INDUCED(monomialOrder).compare(reduction, f) < 0))
-				    throw new AssertionError(reduction + "<" + f);
-				logger.log(Level.FINEST, "elementary reduction {0} - {1} * ({2}) == {3}", new Object[] {f, q, gj, reduction});
-				return reduction;
-			    }
-			}
-			return f;
-		    }
-		};
-	}
-	public boolean equals(Object o) {
-	    return (o instanceof ReductionFunction)
-		&& Utility.equals(g, ((ReductionFunction) o).g)
-		&& Utility.equals(monomialOrder, ((ReductionFunction) o).monomialOrder);
-	}
-	public int hashCode() {
-	    return Utility.hashCode(g) ^ Utility.hashCode(monomialOrder);
-	}
-	public Object apply(Object f) {
-	    logger.log(Level.FINEST, "reducing ({0} with respect to {1} ...", new Object[] {f, g});
-	    return Functionals.fixedPoint(elementaryReduce, f);
-	}
+                                // test divisibility
+                                final Arithmetic/*>R<*/ cdiv;
+                                final Arithmetic xdiv;
+                                try {
+                                    // test divisibility of coefficient cnu by lc(gj)=gj.get(lgj)
+                                    cdiv = cnu.divide(gj.get(lgj));
+                                    // test divisibility of monomial X^nu by l(gj)
+                                    xdiv = nu.subtract(lgj);
+                                    //@internal the following is a trick for S=<b>N</b><sup>n</sup> represented as <b>Z</b><sup>n</sup> (get rid when introducing Natural extends Integer)
+                                    if (Setops.some(((Vector)xdiv).iterator(), Functionals.bindSecond(Predicates.less, Values.ZERO)))
+                                        continue reductionPolynomials;
+                                }
+                                catch (ArithmeticException indivisible) {
+                                    continue reductionPolynomials;
+                                }
+                                // divisible, then q := cdiv*X<sup>xdiv</sup>
+                                final Polynomial q = vf.MONOMIAL(cdiv, xdiv);
+                                Polynomial reduction = f.subtract(q.multiply(gj));
+                                if (!reduction.get(nu).norm().equals(Values.ZERO)) {
+                                    if (MathUtilities.equals(reduction.get(nu).norm(),
+                                                             Values.ZERO,
+                                                             MathUtilities.getDefaultTolerance()
+                                                             )) {
+                                        //@internal trick correct numerical instabilites
+                                        reduction = reduction.subtract(vf.MONOMIAL(reduction.get(nu), nu));
+                                    }
+                                    if (!reduction.get(nu).norm().equals(Values.ZERO)) {
+                                        throw new AssertionError(vf.MONOMIAL(Values.ONE, nu) + " does not occur in " + reduction + " anymore, even after numerical precision correction");
+                                    }
+                                }
+                                if (!(INDUCED(monomialOrder).compare(reduction, f) < 0))
+                                    throw new AssertionError(reduction + "<" + f);
+                                logger.log(Level.FINEST, "elementary reduction {0} - {1} * ({2}) == {3}", new Object[] {f, q, gj, reduction});
+                                return reduction;
+                            }
+                        }
+                        return f;
+                    }
+                };
+        }
+        public boolean equals(Object o) {
+            return (o instanceof ReductionFunction)
+                && Utility.equals(g, ((ReductionFunction) o).g)
+                && Utility.equals(monomialOrder, ((ReductionFunction) o).monomialOrder);
+        }
+        public int hashCode() {
+            return Utility.hashCode(g) ^ Utility.hashCode(monomialOrder);
+        }
+        public Object apply(Object f) {
+            logger.log(Level.FINEST, "reducing ({0} with respect to {1} ...", new Object[] {f, g});
+            return Functionals.fixedPoint(elementaryReduce, f);
+        }
     }
 
     /**
@@ -777,95 +777,95 @@ public final class AlgebraicAlgorithms {
      * @see "Knuth, Donald E. and Bendix, P.B. Simple word problems in universal algebras. In Leech, J., editor, <i>Computational Problems in Abstract Algebras</i>. p263-297. Pergamon Press, Oxford, 1970."
      */
     public static final Set/*_<Polynomial<R,S>>_*/ groebnerBasis(Set/*_<Polynomial<R,S>>_*/ g, final Comparator/*_<S>_*/ monomialOrder) {
-	Set/*_<Polynomial<R,S>>_*/ rgb = reducedGroebnerBasis(g, monomialOrder);
-	Set temp, nrgb = null;
-	assert (temp = reducedGroebnerBasis(rgb, monomialOrder)).equals(rgb) : "reduced Groebner basis " + temp + " of a reduced Groebner basis equals the former Groebner basis";
-	assert (temp = groebnerBasisImpl(rgb, monomialOrder)).equals(rgb) : "(non-reduced) Groebner basis " + temp + " of a (reduced) Groebner basis " + rgb + " equals the former Groebner basis";
-	assert containsAll(nrgb = groebnerBasisImpl(g, monomialOrder), g, monomialOrder) : "the original generating system " + g + " is in the ideal spanned by its (non-reduced) Groebner basis " + nrgb;
-	assert equalSpan(rgb, nrgb, monomialOrder) : "reduced Groebner basis " + rgb + " and (non-reduced) Groebner basis " + nrgb + " of " + g + " have equal span";
-	assert containsAll(rgb, g, monomialOrder) : "the original generating system " + g + " is in the ideal spanned by its (reduced) Groebner basis " + rgb;
-	return rgb;
+        Set/*_<Polynomial<R,S>>_*/ rgb = reducedGroebnerBasis(g, monomialOrder);
+        Set temp, nrgb = null;
+        assert (temp = reducedGroebnerBasis(rgb, monomialOrder)).equals(rgb) : "reduced Groebner basis " + temp + " of a reduced Groebner basis equals the former Groebner basis";
+        assert (temp = groebnerBasisImpl(rgb, monomialOrder)).equals(rgb) : "(non-reduced) Groebner basis " + temp + " of a (reduced) Groebner basis " + rgb + " equals the former Groebner basis";
+        assert containsAll(nrgb = groebnerBasisImpl(g, monomialOrder), g, monomialOrder) : "the original generating system " + g + " is in the ideal spanned by its (non-reduced) Groebner basis " + nrgb;
+        assert equalSpan(rgb, nrgb, monomialOrder) : "reduced Groebner basis " + rgb + " and (non-reduced) Groebner basis " + nrgb + " of " + g + " have equal span";
+        assert containsAll(rgb, g, monomialOrder) : "the original generating system " + g + " is in the ideal spanned by its (reduced) Groebner basis " + rgb;
+        return rgb;
     }
     /**
      * Get the reduced Gr&ouml;bner basis of g (Implementation).
      */
     private static final Set/*_<Polynomial<R,S>>_*/ reducedGroebnerBasis(Collection/*_<Polynomial<R,S>>_*/ g, final Comparator monomialOrder) {
-	return new LinkedHashSet(reduceGroebnerBasis(new ArrayList(groebnerBasisImpl(g, monomialOrder)), monomialOrder));
+        return new LinkedHashSet(reduceGroebnerBasis(new ArrayList(groebnerBasisImpl(g, monomialOrder)), monomialOrder));
     }
     /**
      * Get the non-reduced Gr&ouml;bner basis of g (Implementation).
      */
     private static final Set/*_<Polynomial<R,S>>_*/ groebnerBasisImpl(Collection/*_<Polynomial<R,S>>_*/ gg, final Comparator monomialOrder) {
-	final List/*_<Polynomial<R,S>>_*/ g = new ArrayList(gg);
-	final Values vf = Values.getDefaultInstance();
-	ergaenzeGroebnerBasis:
-	while (true) {
-	    for (int i = 0; i < g.size(); i++) {
-		for (int j = i + 1; j < g.size(); j++) {
-		    final Polynomial/*<R>*/ gi = (Polynomial)g.get(i);
-		    final Polynomial/*<R>*/ gj = (Polynomial)g.get(j);
-		    // construct Sgigj = S(g[i], g[j])
-		    final Vector/*>S<*/ lgi = (Vector) leadingMonomial(gi, monomialOrder);
-		    final Vector/*>S<*/ lgj = (Vector) leadingMonomial(gj, monomialOrder);
-		    // construct X^nu and X^mu coprime such that l(X^nu*g[i])==l(X^mu*g[j]) (also @see #lcm(Euclidean,Euclidean))
-		    final Vector/*>S<*/ d = Functionals.map(Operations.max, lgi, lgj);
-		    final Vector/*>S<*/ nu = d.subtract(lgi);
-		    final Vector/*>S<*/ mu = d.subtract(lgj);
-		    assert Setops.all(nu.iterator(), mu.iterator(), new orbital.logic.functor.BinaryPredicate() { public boolean apply(Object nui, Object mui) {return nui.equals(Values.ZERO) || mui.equals(Values.ZERO);} }) : "coprime " + vf.MONOMIAL( nu) + " and " + vf.MONOMIAL(mu);
-		    // Xpowernugi = 1/lc(g[i]) * X<sup>nu</sup>*g[i]
-		    final Polynomial Xpowernugi = vf.MONOMIAL(gi.get(lgi).inverse(), nu).multiply(gi);
-		    // Xpowernugi = 1/lc(g[j]) * X<sup>mu</sup>*g[j]
-		    final Polynomial Xpowermugj = vf.MONOMIAL(gj.get(lgj).inverse(), mu).multiply(gj);
-		    assert leadingMonomial(Xpowernugi, monomialOrder).equals(leadingMonomial(Xpowermugj, monomialOrder)) : "construction should generate equal leading monomials (" + leadingMonomial(Xpowernugi, monomialOrder) + " of " + Xpowernugi + " and " + leadingMonomial(Xpowermugj, monomialOrder) + " of " + Xpowermugj + ") which vanish by subtraction";
-		    final Polynomial Sgigj = Xpowernugi.subtract(Xpowermugj);
-		    assert Sgigj.get(d).norm().equals(Values.ZERO) : "construction should generate equal leading monomials which vanish by subtraction";
-		    // this is the major bottleneck, especially if it turns out that r=0
-		    final Polynomial r = reduce(Sgigj, g, monomialOrder);
-		    logger.log(Level.FINER, "S({0},{1}) = {2} * ({3})  -  {4} * ({5}) = {6} reduced to {7}", new Object[] {gi, gj, vf.MONOMIAL(gi.get(lgi).inverse(), nu), gi, vf.MONOMIAL(gj.get(lgj).inverse(), mu), gj, Sgigj, r});
-		    if (isZeroPolynomial.apply(r))
-			logger.log(Level.FINE, "skip reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
-		    else {
-			logger.log(Level.FINE, "add reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
-			g.add(r);
-			continue ergaenzeGroebnerBasis;
-		    }
-		}
-	    }
-	    break ergaenzeGroebnerBasis;
-	}
-	return new LinkedHashSet(g);
+        final List/*_<Polynomial<R,S>>_*/ g = new ArrayList(gg);
+        final Values vf = Values.getDefaultInstance();
+        ergaenzeGroebnerBasis:
+        while (true) {
+            for (int i = 0; i < g.size(); i++) {
+                for (int j = i + 1; j < g.size(); j++) {
+                    final Polynomial/*<R>*/ gi = (Polynomial)g.get(i);
+                    final Polynomial/*<R>*/ gj = (Polynomial)g.get(j);
+                    // construct Sgigj = S(g[i], g[j])
+                    final Vector/*>S<*/ lgi = (Vector) leadingMonomial(gi, monomialOrder);
+                    final Vector/*>S<*/ lgj = (Vector) leadingMonomial(gj, monomialOrder);
+                    // construct X^nu and X^mu coprime such that l(X^nu*g[i])==l(X^mu*g[j]) (also @see #lcm(Euclidean,Euclidean))
+                    final Vector/*>S<*/ d = Functionals.map(Operations.max, lgi, lgj);
+                    final Vector/*>S<*/ nu = d.subtract(lgi);
+                    final Vector/*>S<*/ mu = d.subtract(lgj);
+                    assert Setops.all(nu.iterator(), mu.iterator(), new orbital.logic.functor.BinaryPredicate() { public boolean apply(Object nui, Object mui) {return nui.equals(Values.ZERO) || mui.equals(Values.ZERO);} }) : "coprime " + vf.MONOMIAL( nu) + " and " + vf.MONOMIAL(mu);
+                    // Xpowernugi = 1/lc(g[i]) * X<sup>nu</sup>*g[i]
+                    final Polynomial Xpowernugi = vf.MONOMIAL(gi.get(lgi).inverse(), nu).multiply(gi);
+                    // Xpowernugi = 1/lc(g[j]) * X<sup>mu</sup>*g[j]
+                    final Polynomial Xpowermugj = vf.MONOMIAL(gj.get(lgj).inverse(), mu).multiply(gj);
+                    assert leadingMonomial(Xpowernugi, monomialOrder).equals(leadingMonomial(Xpowermugj, monomialOrder)) : "construction should generate equal leading monomials (" + leadingMonomial(Xpowernugi, monomialOrder) + " of " + Xpowernugi + " and " + leadingMonomial(Xpowermugj, monomialOrder) + " of " + Xpowermugj + ") which vanish by subtraction";
+                    final Polynomial Sgigj = Xpowernugi.subtract(Xpowermugj);
+                    assert Sgigj.get(d).norm().equals(Values.ZERO) : "construction should generate equal leading monomials which vanish by subtraction";
+                    // this is the major bottleneck, especially if it turns out that r=0
+                    final Polynomial r = reduce(Sgigj, g, monomialOrder);
+                    logger.log(Level.FINER, "S({0},{1}) = {2} * ({3})  -  {4} * ({5}) = {6} reduced to {7}", new Object[] {gi, gj, vf.MONOMIAL(gi.get(lgi).inverse(), nu), gi, vf.MONOMIAL(gj.get(lgj).inverse(), mu), gj, Sgigj, r});
+                    if (isZeroPolynomial.apply(r))
+                        logger.log(Level.FINE, "skip reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
+                    else {
+                        logger.log(Level.FINE, "add reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
+                        g.add(r);
+                        continue ergaenzeGroebnerBasis;
+                    }
+                }
+            }
+            break ergaenzeGroebnerBasis;
+        }
+        return new LinkedHashSet(g);
     }
 
     /**
      * Reduce the Gr&ouml;bner basis g.
      */
     private static final List/*_<Polynomial<R,S>>_*/ reduceGroebnerBasis(Collection/*_<Polynomial<R,S>>_*/ g, final Comparator monomialOrder) {
-	final List basis = new ArrayList(g);
-	logger.log(Level.FINE, "reducing Groebner basis {0}", basis);
-	replaceWithReductions:
-	while (true) {
-	    for (int i = 0; i < basis.size(); i++) {
-		final Polynomial gi = (Polynomial) basis.get(i);
-		final List others = new LinkedList(basis);
-		others.remove(i);
-		final Polynomial r = reduce(gi, others, monomialOrder);
-		if (!r.equals(gi)) {
-		    // g[i] not reduced with respect to the others, so replace by its reduction
-		    basis.remove(i);
-		    if (isZeroPolynomial.apply(r)) 
-			// skip adding 0
-			logger.log(Level.FINER, "remove {0} and skip adding reduction {1}", new Object[] {gi, r});
-		    else {
-			basis.add(r);
-			logger.log(Level.FINER, "replace {0} by reduction {1}", new Object[] {gi, r});
-		    }
-		    //@internal or go on with this for loop until nothing changes anymore
-		    continue replaceWithReductions;
-		}
-	    }
-	    break replaceWithReductions;
-	}
-	return basis;
+        final List basis = new ArrayList(g);
+        logger.log(Level.FINE, "reducing Groebner basis {0}", basis);
+        replaceWithReductions:
+        while (true) {
+            for (int i = 0; i < basis.size(); i++) {
+                final Polynomial gi = (Polynomial) basis.get(i);
+                final List others = new LinkedList(basis);
+                others.remove(i);
+                final Polynomial r = reduce(gi, others, monomialOrder);
+                if (!r.equals(gi)) {
+                    // g[i] not reduced with respect to the others, so replace by its reduction
+                    basis.remove(i);
+                    if (isZeroPolynomial.apply(r)) 
+                        // skip adding 0
+                        logger.log(Level.FINER, "remove {0} and skip adding reduction {1}", new Object[] {gi, r});
+                    else {
+                        basis.add(r);
+                        logger.log(Level.FINER, "replace {0} by reduction {1}", new Object[] {gi, r});
+                    }
+                    //@internal or go on with this for loop until nothing changes anymore
+                    continue replaceWithReductions;
+                }
+            }
+            break replaceWithReductions;
+        }
+        return basis;
     }
 
     // Implementation helpers
@@ -875,58 +875,58 @@ public final class AlgebraicAlgorithms {
      * (i.e. with coefficient &ne;0).
      */
     private static Collection/*_<S>_*/ occurringMonomials(final Polynomial/*<S>*/ f) {
-	return Setops.select(null,
-			     Setops.asList(f.indices()),
-			     new Predicate() {
-				 public boolean apply(Object i) {
-				     return !f.get((Arithmetic)i).norm().equals(Values.ZERO);
-				 }
-			     });
+        return Setops.select(null,
+                             Setops.asList(f.indices()),
+                             new Predicate() {
+                                 public boolean apply(Object i) {
+                                     return !f.get((Arithmetic)i).norm().equals(Values.ZERO);
+                                 }
+                             });
     }
     /**
      * Get (the exponent of) the leading monomial l(f) of f.
      */
     private static Arithmetic/*>S<*/ leadingMonomial(Polynomial/*<S>*/ f, Comparator monomialOrder) {
-	return (Arithmetic/*>S<*/) Collections.max(occurringMonomials(f), monomialOrder);
+        return (Arithmetic/*>S<*/) Collections.max(occurringMonomials(f), monomialOrder);
     }
 
     /**
      * tolerant equality to 0 (or roughly 0) for polynomials.
      */
     private static final Predicate isZeroPolynomial = new Predicate() {
-	    public boolean apply(Object p) {
-		Polynomial r = (Polynomial) p;
-		final Values vf = Values.getDefaultInstance();
-		return r.degreeValue() < 0
-		    || vf.asTensor(r).norm().equals(Values.ZERO, vf.valueOf(MathUtilities.getDefaultTolerance()));
-	    }
-	};
+            public boolean apply(Object p) {
+                Polynomial r = (Polynomial) p;
+                final Values vf = Values.getDefaultInstance();
+                return r.degreeValue() < 0
+                    || vf.asTensor(r).norm().equals(Values.ZERO, vf.valueOf(MathUtilities.getDefaultTolerance()));
+            }
+        };
 
     /**
      * Whether the ideal spanned by the given Gr&ouml;bner basis contains all elements of f.
      */
     private static final boolean containsAll(Set/*_<Polynomial<R,S>>_*/ groebnerBasis, Collection/*_<Polynomial<R,S>>_*/ f, Comparator monomialOrder) {
-	// reduces its arguments with respect to groebnerBasis
-	final Function reductor = Functionals.bindFirst(Functionals.apply, reduce(groebnerBasis, monomialOrder));
-	//final Arithmetic zero = ((Polynomial)groebnerBasis.iterator().next()).zero();
-	// whether argument is in the ideal spanned by groebnerBasis
-	//final Predicate isZero = Functionals.bindSecond(Predicates.equal, zero);
-	final Predicate isZero = isZeroPolynomial;
-	final Predicate inIdeal = Functionals.compose(isZero, reductor);
-	if (logger.isLoggable(Level.FINEST))
-	    logger.log(Level.FINEST, "\t{0}\nisin\t{1}\nall\t{2}", new Object[] {
-		Functionals.map(reductor ,new LinkedList(f)),
-		Functionals.map(Functionals.asFunction(inIdeal),new LinkedList(f)),
-		new Boolean(Setops.all(f, inIdeal))
-		});
-	return Setops.all(f, inIdeal);
+        // reduces its arguments with respect to groebnerBasis
+        final Function reductor = Functionals.bindFirst(Functionals.apply, reduce(groebnerBasis, monomialOrder));
+        //final Arithmetic zero = ((Polynomial)groebnerBasis.iterator().next()).zero();
+        // whether argument is in the ideal spanned by groebnerBasis
+        //final Predicate isZero = Functionals.bindSecond(Predicates.equal, zero);
+        final Predicate isZero = isZeroPolynomial;
+        final Predicate inIdeal = Functionals.compose(isZero, reductor);
+        if (logger.isLoggable(Level.FINEST))
+            logger.log(Level.FINEST, "\t{0}\nisin\t{1}\nall\t{2}", new Object[] {
+                Functionals.map(reductor ,new LinkedList(f)),
+                Functionals.map(Functionals.asFunction(inIdeal),new LinkedList(f)),
+                new Boolean(Setops.all(f, inIdeal))
+                });
+        return Setops.all(f, inIdeal);
     }
     
     /**
      * Whether the two Gr&ouml;bner bases span the same ideal.
      */
     private static final boolean equalSpan(Set/*_<Polynomial<R,S>>_*/ groebnerBasis1, Set/*_<Polynomial<R,S>>_*/ groebnerBasis2, Comparator monomialOrder) {
-	return containsAll(groebnerBasis1, groebnerBasis2, monomialOrder)
-	    && containsAll(groebnerBasis2, groebnerBasis1, monomialOrder);
+        return containsAll(groebnerBasis1, groebnerBasis2, monomialOrder)
+            && containsAll(groebnerBasis2, groebnerBasis1, monomialOrder);
     }
 }// AlgebraicAlgorithms

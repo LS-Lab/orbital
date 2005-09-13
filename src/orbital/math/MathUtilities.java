@@ -80,42 +80,42 @@ public final class MathUtilities {
      * set default tolerance and default precision digits by property
      */
     static {
-	String property = MathUtilities.class.getName() + ".defaultPrecisionDigits";
-	try {
-	    String desc = GetPropertyAction.getProperty(property, DefaultPrecisionDigits + "");
-	    try {
-		DefaultPrecisionDigits = java.lang.Integer.parseInt(desc);
-	    } catch (NumberFormatException nonumber) {
-		logger.log(Level.SEVERE, "invalid property setting {0}={1}" , new Object[] {property, desc});
-	    } 
-	    property = MathUtilities.class.getName() + ".defaultTolerance";
-	    desc = GetPropertyAction.getProperty(property, DefaultTolerance + "");
-	    try {
-		DefaultTolerance = java.lang.Double.parseDouble(desc);
-	    } catch (NumberFormatException nonumber) {
-		logger.log(Level.SEVERE, "invalid property setting {0}={1}" , new Object[] {property, desc});
-	    } 
-	}
-	catch (SecurityException nevertheless) {
-	    // especially catch SecurityExceptions if we were not allowed to read properties
-	}
-	catch (Exception nevertheless) {
-	    logger.log(Level.WARNING, "use default property setting for {0} due to {1}" , new Object[] {property, nevertheless});
-	} 
-	logger.log(Level.CONFIG, "property setting {0}={1}", new Object[] {property, new Double(DefaultTolerance)});
+        String property = MathUtilities.class.getName() + ".defaultPrecisionDigits";
+        try {
+            String desc = GetPropertyAction.getProperty(property, DefaultPrecisionDigits + "");
+            try {
+                DefaultPrecisionDigits = java.lang.Integer.parseInt(desc);
+            } catch (NumberFormatException nonumber) {
+                logger.log(Level.SEVERE, "invalid property setting {0}={1}" , new Object[] {property, desc});
+            } 
+            property = MathUtilities.class.getName() + ".defaultTolerance";
+            desc = GetPropertyAction.getProperty(property, DefaultTolerance + "");
+            try {
+                DefaultTolerance = java.lang.Double.parseDouble(desc);
+            } catch (NumberFormatException nonumber) {
+                logger.log(Level.SEVERE, "invalid property setting {0}={1}" , new Object[] {property, desc});
+            } 
+        }
+        catch (SecurityException nevertheless) {
+            // especially catch SecurityExceptions if we were not allowed to read properties
+        }
+        catch (Exception nevertheless) {
+            logger.log(Level.WARNING, "use default property setting for {0} due to {1}" , new Object[] {property, nevertheless});
+        } 
+        logger.log(Level.CONFIG, "property setting {0}={1}", new Object[] {property, new Double(DefaultTolerance)});
     } 
 
     /**
      * Set the default number of precision digits (for display etc.).
      */
     public static void setDefaultPrecisionDigits(int defaultPrecisionDigits) {
-	MathUtilities.DefaultPrecisionDigits = defaultPrecisionDigits;
+        MathUtilities.DefaultPrecisionDigits = defaultPrecisionDigits;
     }
     /**
      * Get the default number of precision digits (for display etc.).
      */
     public static int getDefaultPrecisionDigits() {
-	return MathUtilities.DefaultPrecisionDigits;
+        return MathUtilities.DefaultPrecisionDigits;
     }
     /**
      * Set the default tolerance for two numbers to be treated equal.
@@ -123,7 +123,7 @@ public final class MathUtilities {
      * @preconditions defaultTolerance &ge; 0
      */
     public static void setDefaultTolerance(double defaultTolerance) {
-	MathUtilities.DefaultTolerance = defaultTolerance;
+        MathUtilities.DefaultTolerance = defaultTolerance;
     }
     /**
      * Get the default tolerance for two numbers to be treated equal.
@@ -131,7 +131,7 @@ public final class MathUtilities {
      * @postconditions RES &ge; 0
      */
     public static double getDefaultTolerance() {
-	return MathUtilities.DefaultTolerance;
+        return MathUtilities.DefaultTolerance;
     }
 
     /**
@@ -139,21 +139,21 @@ public final class MathUtilities {
      * @return value &isin; [lower, higher].
      */
     public static final boolean isin(int value, int lower, int higher) {
-	return lower <= value && value <= higher;
+        return lower <= value && value <= higher;
     } 
     /**
      * Whether a value is in a specified range.
      * @return value &isin; [lower, higher].
      */
     public static final boolean isin(double value, double lower, double higher) {
-	return lower <= value && value <= higher;
+        return lower <= value && value <= higher;
     } 
     /**
      * Whether a value is in a specified range.
      * @return value &isin; [lower, higher].
      */
     public static final boolean isin(Real value, Real lower, Real higher) {
-	return lower.compareTo(value) <= 0 && value.compareTo(higher) <= 0;
+        return lower.compareTo(value) <= 0 && value.compareTo(higher) <= 0;
     } 
 
     /**
@@ -161,7 +161,7 @@ public final class MathUtilities {
      * @return (value&1)==0.
      */
     public static final boolean even(int value) {
-	return (value & 1) == 0;
+        return (value & 1) == 0;
     } 
 
     /**
@@ -169,7 +169,7 @@ public final class MathUtilities {
      * @return (value&1)!=0.
      */
     public static final boolean odd(int value) {
-	return (value & 1) != 0;
+        return (value & 1) != 0;
     } 
 
     /**
@@ -177,13 +177,13 @@ public final class MathUtilities {
      * @return 1 if value &gt; 0, -1 if value &lt; 0 and 0 if value = 0.
      */
     public static final int sign(double value) {
-	return value > 0 ? 1 : value < 0 ? -1 : value == 0 ? 0 : undefined(value + " does not have a sign");
+        return value > 0 ? 1 : value < 0 ? -1 : value == 0 ? 0 : undefined(value + " does not have a sign");
     } 
     public static final int sign(int value) {
-	return value > 0 ? 1 : value < 0 ? -1 : value == 0 ? 0 : undefined(value + " does not have a sign");
+        return value > 0 ? 1 : value < 0 ? -1 : value == 0 ? 0 : undefined(value + " does not have a sign");
     } 
     private static final int undefined(String msg) {
-	throw new ArithmeticException(msg);
+        throw new ArithmeticException(msg);
     }
 
     /**
@@ -192,7 +192,7 @@ public final class MathUtilities {
      * @return whether value is in range [0,1].
      */
     public static boolean isProbability(double value) {
-	return 0 <= value && value <= 1;
+        return 0 <= value && value <= 1;
     } 
 
     /**
@@ -200,7 +200,7 @@ public final class MathUtilities {
      * Integers have no fractional part.
      */
     public static boolean isInteger(double value) {
-	return fract(value) == 0.0;
+        return fract(value) == 0.0;
     } 
 
     // divisibility (gcd, lcm) and CRT
@@ -209,19 +209,19 @@ public final class MathUtilities {
      * @deprecated Use {@link AlgebraicAlgorithms#gcd(Euclidean,Euclidean)} instead.
      */
     public static Euclidean gcd(Euclidean a, Euclidean b) {
-	return AlgebraicAlgorithms.gcd(a,b);
+        return AlgebraicAlgorithms.gcd(a,b);
     }
     /**
      * @deprecated Use {@link AlgebraicAlgorithms#lcm(Euclidean,Euclidean)} instead.
      */
     public static Euclidean lcm(Euclidean a, Euclidean b) {
-	return AlgebraicAlgorithms.lcm(a,b);
+        return AlgebraicAlgorithms.lcm(a,b);
     }
     /**
      * @deprecated Use {@link AlgebraicAlgorithms#gcd(Euclidean[])} instead.
      */
     public static Euclidean[] gcd(final Euclidean elements[]) {
-	return AlgebraicAlgorithms.gcd(elements);
+        return AlgebraicAlgorithms.gcd(elements);
     } 
 
     /**
@@ -229,7 +229,7 @@ public final class MathUtilities {
      * @see AlgebraicAlgorithms#gcd(int,int)
      */
     public static int gcd(int a, int b) {
-	return AlgebraicAlgorithms.gcd(a, b);
+        return AlgebraicAlgorithms.gcd(a, b);
     } 
 
     /**
@@ -237,7 +237,7 @@ public final class MathUtilities {
      * @see AlgebraicAlgorithms#lcm(int,int)
      */
     public static int lcm(int a, int b) {
-	return AlgebraicAlgorithms.lcm(a, b);
+        return AlgebraicAlgorithms.lcm(a, b);
     } 
 
     // primes
@@ -254,18 +254,18 @@ public final class MathUtilities {
      * @see BigInteger#BigInteger(int,int,Random)
      */
     public static BigInteger generatePrime(int strength, int certainty, Random randSource, boolean strongPrime) {
-	BigInteger p;
-	p = new BigInteger(strength, certainty, randSource);
-	if (strongPrime) {
-	    // ensure that (p-1)/2 is not prime, as well
-	    while (!p.subtract(BigInteger.valueOf(1)).shiftRight(1).isProbablePrime(certainty))
-		p = new BigInteger(strength, certainty, randSource);
-	    assert isPrime(p) : "strong condition: prime";
+        BigInteger p;
+        p = new BigInteger(strength, certainty, randSource);
+        if (strongPrime) {
+            // ensure that (p-1)/2 is not prime, as well
+            while (!p.subtract(BigInteger.valueOf(1)).shiftRight(1).isProbablePrime(certainty))
+                p = new BigInteger(strength, certainty, randSource);
+            assert isPrime(p) : "strong condition: prime";
 
-	    //@todo check whether p-1 has a big prime factor
-	    //@todo check whether p+1 has a big prime factor
-	} 
-	return p;
+            //@todo check whether p-1 has a big prime factor
+            //@todo check whether p+1 has a big prime factor
+        } 
+        return p;
     } 
     /**
      * Generate a true prime number.
@@ -275,11 +275,11 @@ public final class MathUtilities {
      * @attribute Las Vegas
      */
     public static BigInteger generatePrime(int strength, Random randSource) {
-	BigInteger p;
-	do {
-	    p = generatePrime(strength, 100, randSource, false);
-	} while (!isPrime(p));
-	return p;
+        BigInteger p;
+        do {
+            p = generatePrime(strength, 100, randSource, false);
+        } while (!isPrime(p));
+        return p;
     } 
 
     /**
@@ -303,33 +303,33 @@ public final class MathUtilities {
      * @see BigInteger#isProbablePrime(int)
      */
     public static boolean isPrime(BigInteger val) {
-	BigInteger p = val.abs();
-	if (p.equals(ZERO))
-	    //@internal 0 is prime in integrity domains (not containing other zero divisors than 0)
-	    return true;
-	else if (p.equals(ONE))
-	    return false;
-	else if (p.equals(TWO) || p.equals(FIVE))
-	    return true;
-	else if (!p.testBit(0))	  // /2 ?
-	    return false;
-	else if (p.remainder(FIVE).equals(ZERO))	   // /5 ?
-	    return false;
+        BigInteger p = val.abs();
+        if (p.equals(ZERO))
+            //@internal 0 is prime in integrity domains (not containing other zero divisors than 0)
+            return true;
+        else if (p.equals(ONE))
+            return false;
+        else if (p.equals(TWO) || p.equals(FIVE))
+            return true;
+        else if (!p.testBit(0))   // /2 ?
+            return false;
+        else if (p.remainder(FIVE).equals(ZERO))           // /5 ?
+            return false;
 
-	/* BigInteger sqrt = p.pow((double)1/2); */
+        /* BigInteger sqrt = p.pow((double)1/2); */
 
-	// test up to sqrt
-	int s = 0;
-	for (BigInteger i = THREE; i.bitLength() <= (p.bitLength() + 1) / 2 /* i.compareTo(sqrt)<=0 */; ) {
-	    if (p.remainder(i).equals(ZERO))	// /i ?
-		return false;
+        // test up to sqrt
+        int s = 0;
+        for (BigInteger i = THREE; i.bitLength() <= (p.bitLength() + 1) / 2 /* i.compareTo(sqrt)<=0 */; ) {
+            if (p.remainder(i).equals(ZERO))    // /i ?
+                return false;
 
-	    i = i.add(s == 0 ? FOUR : TWO);		// ###1 ###3 ###7 ###9
-	    if (++s >= 4)
-		s = 0;
-	} 
+            i = i.add(s == 0 ? FOUR : TWO);             // ###1 ###3 ###7 ###9
+            if (++s >= 4)
+                s = 0;
+        } 
 
-	return true;
+        return true;
     } 
 
     private static final BigInteger ZERO = BigInteger.valueOf(0);
@@ -348,10 +348,10 @@ public final class MathUtilities {
      * @internal rewrite pure functional?
      */
     public static long factorial(int n) {
-	long r = 1;
-	while (n > 0)
-	    r *= n--;
-	return r;
+        long r = 1;
+        while (n > 0)
+            r *= n--;
+        return r;
     } 
 
     /**
@@ -360,7 +360,7 @@ public final class MathUtilities {
      * @see orbital.algorithm.Combinatorical#getCombinations(int, int, boolean) getCombinations(int, int, false)
      */
     public static int nCr(int n, int r) {
-	return (int) (factorial(n) / (factorial(r) * factorial(n - r)));
+        return (int) (factorial(n) / (factorial(r) * factorial(n - r)));
     } 
 
     /**
@@ -369,7 +369,7 @@ public final class MathUtilities {
      * @see orbital.algorithm.Combinatorical#getPermutations(int, int, boolean) getPermutations(int, int, false)
      */
     public static int nPr(int n, int r) {
-	return (int) (factorial(n) / factorial(n - r));
+        return (int) (factorial(n) / factorial(n - r));
     } 
 
     /**
@@ -377,13 +377,13 @@ public final class MathUtilities {
      * @see #nCr(int, int)
      */
     public static int multinomial(int[] n) {
-	int  sum = 0;
-	long prod = 1;
-	for (int i = 0; i < n.length; i++) {
-	    sum += n[i];
-	    prod *= factorial(n[i]);
-	} 
-	return (int) (factorial(sum) / prod);
+        int  sum = 0;
+        long prod = 1;
+        for (int i = 0; i < n.length; i++) {
+            sum += n[i];
+            prod *= factorial(n[i]);
+        } 
+        return (int) (factorial(sum) / prod);
     } 
 
 
@@ -394,7 +394,7 @@ public final class MathUtilities {
      * <code>double</code> value.
      */
     public static int round(double a, int rounding_style) {
-	throw new UnsupportedOperationException("not yet implemented");
+        throw new UnsupportedOperationException("not yet implemented");
     } 
 
     /**
@@ -405,7 +405,7 @@ public final class MathUtilities {
      * @see java.lang.Math#floor(double)
      */
     public static double fract(double a) {
-	return a - Math.floor(a);
+        return a - Math.floor(a);
     } 
 
     /**
@@ -416,7 +416,7 @@ public final class MathUtilities {
      * @see java.lang.Math#floor(double)
      */
     public static int gaussian(double a) {
-	return (int) Math.floor(a);
+        return (int) Math.floor(a);
     } 
 
     /**
@@ -427,10 +427,10 @@ public final class MathUtilities {
      * @see #floory(double, double)
      */
     public static double ceily(double a, double precision) {
-	return Math.ceil(a / precision) * precision;
+        return Math.ceil(a / precision) * precision;
     } 
     public static double ceily(double a) {
-	return ceily(a, precisionFor(a));
+        return ceily(a, precisionFor(a));
     } 
 
     /**
@@ -445,10 +445,10 @@ public final class MathUtilities {
      * @see #ceily(double, double)
      */
     public static double floory(double a, double precision) {
-	return Math.floor(a / precision) * precision;
+        return Math.floor(a / precision) * precision;
     } 
     public static double floory(double a) {
-	return floory(a, precisionFor(a));
+        return floory(a, precisionFor(a));
     } 
 
     /**
@@ -462,10 +462,10 @@ public final class MathUtilities {
      * @return (<span class="keyword">double</span>) <span class="Class">Math</span>.round(a <span class="operator">/</span> precision) <span class="operator">*</span> precision.
      */
     public static double roundy(double a, double precision) {
-	return (double) Math.round(a / precision) * precision;
+        return (double) Math.round(a / precision) * precision;
     } 
     public static double roundy(double a) {
-	return roundy(a, precisionFor(a));
+        return roundy(a, precisionFor(a));
     } 
 
     /**
@@ -476,13 +476,13 @@ public final class MathUtilities {
      * @return tolerance * 10<sup>&lceil;&#13266;<sub>10</sub> a&rceil;</sup>.
      */
     public static double precisionFor(double a, double tolerance) {
-	return tolerance * Math.pow(10, Math.ceil(Math.log(a) / Math.log(10)));
+        return tolerance * Math.pow(10, Math.ceil(Math.log(a) / Math.log(10)));
     } 
     /**
      * Get the precision for a default tolerance relative to the magnitude of a.
      */
     public static double precisionFor(double a) {
-	return precisionFor(a, DefaultTolerance);
+        return precisionFor(a, DefaultTolerance);
     } 
 
 
@@ -495,10 +495,10 @@ public final class MathUtilities {
      * @see Complex#equals(Object,Real)
      */
     public static boolean equals(double a, double b, double tolerance) {
-	return Math.abs(a - b) < tolerance;
+        return Math.abs(a - b) < tolerance;
     } 
     public static boolean equals(Arithmetic a, Arithmetic b, double tolerance) {
-	return Metric.INDUCED.distance(a, b).doubleValue() < tolerance;
+        return Metric.INDUCED.distance(a, b).doubleValue() < tolerance;
     } 
 
     /**
@@ -508,27 +508,27 @@ public final class MathUtilities {
      * @return a &asymp; b.
      */
     static boolean equalsCa(double a, double b) {
-	return equals(a, b, DefaultTolerance);
+        return equals(a, b, DefaultTolerance);
     } 
     static boolean equalsCa(Arithmetic a, Arithmetic b) {
-	return equals(a, b, DefaultTolerance);
+        return equals(a, b, DefaultTolerance);
     }
 
 
     // arithmetic widening equalizer
-	
+        
     /**
      * @deprecated Since Orbital.1.1 use {@link Values#getDefault()}.{@link ValueFactory#getCoercer()} instead.
      */
     public static final orbital.logic.functor.Function/*<Object[],Object[]>*/ getEqualizer() {
-	return Values.getDefault().getCoercer();
+        return Values.getDefault().getCoercer();
     } 
 
     /**
      * @deprecated Since Orbital.1.1 use {@link Values#getDefault()}.{@link ValueFactory#setCoercer(orbital.logic.functor.Function)} instead.
      */
     public static final void setEqualizer(orbital.logic.functor.Function/*<Object[],Object[]>*/ equalizer) throws SecurityException {
-	Values.getDefault().setCoercer(equalizer);
+        Values.getDefault().setCoercer(equalizer);
     } 
     
     // diverse
@@ -538,8 +538,8 @@ public final class MathUtilities {
      * @see NumericalAlgorithms#integrate(orbital.math.functional.Function, Arithmetic, Arithmetic)
      */
     public static Arithmetic integrate(orbital.math.functional.Function f, Arithmetic a, Arithmetic b) {
-    	orbital.math.functional.Function F = f.integrate();
-    	return ((Arithmetic) F.apply(b)).subtract((Arithmetic) F.apply(a));
+        orbital.math.functional.Function F = f.integrate();
+        return ((Arithmetic) F.apply(b)).subtract((Arithmetic) F.apply(a));
     }
     
     /**
@@ -547,7 +547,7 @@ public final class MathUtilities {
      * @todo introduce
      */
     //public static Function taylorSeries(Function f, Arithmetic x0, int n)
-	
+        
     // nice number formatting
 
     /**
@@ -555,26 +555,26 @@ public final class MathUtilities {
      * a specified number of precision digits.
      */
     public static String format(double v, int precisionDigits) {
-	StringBuffer sb = new StringBuffer();
-	for (int i = precisionDigits; i < 0; i++)
-	    sb.append('0');
-	sb.append('.');
-	for (int i = 0; i < precisionDigits; i++)
-	    sb.append('#');
-	DecimalFormat form = new DecimalFormat(sb.toString(), new DecimalFormatSymbols(Locale.UK));
-	StringBuffer  s = new StringBuffer(form.format(v));
-	while (s.charAt(s.length() - 1) == '0')
-	    s.deleteCharAt(s.length() - 1);
-	if (s.charAt(s.length() - 1) == '.')
-	    s.deleteCharAt(s.length() - 1);
-	if (s.length() == 0 || "-".equals(s.toString()))
-	    return "0";
-	return s.toString();
+        StringBuffer sb = new StringBuffer();
+        for (int i = precisionDigits; i < 0; i++)
+            sb.append('0');
+        sb.append('.');
+        for (int i = 0; i < precisionDigits; i++)
+            sb.append('#');
+        DecimalFormat form = new DecimalFormat(sb.toString(), new DecimalFormatSymbols(Locale.UK));
+        StringBuffer  s = new StringBuffer(form.format(v));
+        while (s.charAt(s.length() - 1) == '0')
+            s.deleteCharAt(s.length() - 1);
+        if (s.charAt(s.length() - 1) == '.')
+            s.deleteCharAt(s.length() - 1);
+        if (s.length() == 0 || "-".equals(s.toString()))
+            return "0";
+        return s.toString();
     } 
     private static String format(Number v, int precisionDigits) {
-	if (v == null)
-	    return "null";
-	return format(v.doubleValue(), precisionDigits);
+        if (v == null)
+            return "null";
+        return format(v.doubleValue(), precisionDigits);
     } 
 
     /**
@@ -582,19 +582,19 @@ public final class MathUtilities {
      * @see #DefaultTolerance
      */
     public static String format(double v) {
-	return format(v, DefaultPrecisionDigits);
+        return format(v, DefaultPrecisionDigits);
     } 
 
     public static String format(byte[] v) {
-	if (v.length == 0)
-	    return null;
-	StringBuffer sb = new StringBuffer();
-	NumberFormat nf = NumberFormat.getInstance();
-	nf.setMinimumIntegerDigits(3);
-	for (int i = 0; i < v.length; i++) {
-	    sb.append((i > 0 ? ":" : "") + nf.format(/*@internal see IOUtilities.byteToUnsigned*/(v[i])&0xFF));
-	}
-	return sb.toString();
+        if (v.length == 0)
+            return null;
+        StringBuffer sb = new StringBuffer();
+        NumberFormat nf = NumberFormat.getInstance();
+        nf.setMinimumIntegerDigits(3);
+        for (int i = 0; i < v.length; i++) {
+            sb.append((i > 0 ? ":" : "") + nf.format(/*@internal see IOUtilities.byteToUnsigned*/(v[i])&0xFF));
+        }
+        return sb.toString();
     } 
 
     /**
@@ -604,45 +604,45 @@ public final class MathUtilities {
      * @see ArithmeticFormat
      */
     public static String format(Object o) {
-	if (o == null) {
-	    return "" + null;
-	} else if (o instanceof Arithmetic) {
-	    return ArithmeticFormat.getDefaultInstance().format(o);
-	} else if (o instanceof Number) {
-	    if ((o instanceof java.lang.Integer) || (o instanceof java.lang.Byte) || (o instanceof java.lang.Short) || (o instanceof java.lang.Long)) {
-		return ((Number) o).longValue() + "";
-	    } else {
-		return format(((Number) o).doubleValue());
-	    }
-	} else if (o.getClass().isArray()) {
-	    if (!o.getClass().getComponentType().isArray()) {
-		//@internal faster version? Also avoids circular testing dependencies of orbital.algorithm.Combinatorical, orbital.math.Tensor, orbital.math.ValueFactory, orbital.algorithm.Combinatorical.getPermutations(int[]), orbital.math.MathUtilities#format(Object), orbital.util.Utility.asIteratable
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < Array.getLength(o); i++) {
-		    sb.append((i == 0 ? "" : ", ") + Array.get(o, i));
-		}
-		return "(" + sb.toString() + ")";
-	    } else {
-		if (Array.getLength(o) != 0) {
-		    try {
-			return "" + Values.getDefaultInstance().tensor(o).toString();
-		    }
-		    catch (IllegalArgumentException nonArithmetic) {
-			if (Utility.rank(o) != 1)
-			    //@internal does not necessarily yield a nice formatting
-			    return o.toString();
-			StringBuffer sb = new StringBuffer();
-			for (int i = 0; i < Array.getLength(o); i++) {
-			    sb.append((i == 0 ? "" : ", ") + Array.get(o, i));
-			}
-			return "(" + sb.toString() + ")";
-		    }
-		} else {
-		    return "{}";
-		}
-	    }
-	} else
-	    return "" + o;
+        if (o == null) {
+            return "" + null;
+        } else if (o instanceof Arithmetic) {
+            return ArithmeticFormat.getDefaultInstance().format(o);
+        } else if (o instanceof Number) {
+            if ((o instanceof java.lang.Integer) || (o instanceof java.lang.Byte) || (o instanceof java.lang.Short) || (o instanceof java.lang.Long)) {
+                return ((Number) o).longValue() + "";
+            } else {
+                return format(((Number) o).doubleValue());
+            }
+        } else if (o.getClass().isArray()) {
+            if (!o.getClass().getComponentType().isArray()) {
+                //@internal faster version? Also avoids circular testing dependencies of orbital.algorithm.Combinatorical, orbital.math.Tensor, orbital.math.ValueFactory, orbital.algorithm.Combinatorical.getPermutations(int[]), orbital.math.MathUtilities#format(Object), orbital.util.Utility.asIteratable
+                StringBuffer sb = new StringBuffer();
+                for (int i = 0; i < Array.getLength(o); i++) {
+                    sb.append((i == 0 ? "" : ", ") + Array.get(o, i));
+                }
+                return "(" + sb.toString() + ")";
+            } else {
+                if (Array.getLength(o) != 0) {
+                    try {
+                        return "" + Values.getDefaultInstance().tensor(o).toString();
+                    }
+                    catch (IllegalArgumentException nonArithmetic) {
+                        if (Utility.rank(o) != 1)
+                            //@internal does not necessarily yield a nice formatting
+                            return o.toString();
+                        StringBuffer sb = new StringBuffer();
+                        for (int i = 0; i < Array.getLength(o); i++) {
+                            sb.append((i == 0 ? "" : ", ") + Array.get(o, i));
+                        }
+                        return "(" + sb.toString() + ")";
+                    }
+                } else {
+                    return "{}";
+                }
+            }
+        } else
+            return "" + o;
     } 
 
 
@@ -655,69 +655,69 @@ public final class MathUtilities {
      * @todo &#8576;=1000, &#8577;=5000, &#8578;=10000.
      */
     public static String toRoman(short arabic) {
-	if (arabic <= 0 || arabic >= 4000)
-	    throw new IllegalArgumentException("number out of bounds");
-	StringBuffer sp = new StringBuffer();
-	int			 r = romans.length - 1;
-	for (short dec = 10000; dec > 1; dec /= 10) {
-	    logger.log(Level.FINEST, "" + dec, "" + fract((double) arabic / dec) + "->" + 10 * fract(roundy((double) arabic / dec, .01)));
-	    short ch = (short) (10 * fract(roundy((double) arabic / dec, .01)));
-	    switch (ch) {
-	    case 0:
-		break;
-	    case 1:
-	    case 2:
-	    case 3:
-		for (int j = 0; j < ch; j++)
-		    sp.append(romans[r]);
-		break;
-	    case 4:
-		sp.append(romans[r]);
-		/* fallthrough */
-	    case 5:
-		sp.append(romans[r + 1]);
-		break;
-	    case 6:
-	    case 7:
-	    case 8:
-		sp.append(romans[r + 1]);
-		for (int j = 0; j < ch - 5; j++)
-		    sp.append(romans[r]);
-		break;
-	    case 9:
-		sp.append(romans[r]);
-		sp.append(romans[r + 2]);
-		break;
-	    default:
-		throw new SuspiciousError("chiffre (" + ch + ") is neither 0 nor 1-9");
-	    }
-	    r -= 2;
-	} 
-	return sp.toString();
+        if (arabic <= 0 || arabic >= 4000)
+            throw new IllegalArgumentException("number out of bounds");
+        StringBuffer sp = new StringBuffer();
+        int                      r = romans.length - 1;
+        for (short dec = 10000; dec > 1; dec /= 10) {
+            logger.log(Level.FINEST, "" + dec, "" + fract((double) arabic / dec) + "->" + 10 * fract(roundy((double) arabic / dec, .01)));
+            short ch = (short) (10 * fract(roundy((double) arabic / dec, .01)));
+            switch (ch) {
+            case 0:
+                break;
+            case 1:
+            case 2:
+            case 3:
+                for (int j = 0; j < ch; j++)
+                    sp.append(romans[r]);
+                break;
+            case 4:
+                sp.append(romans[r]);
+                /* fallthrough */
+            case 5:
+                sp.append(romans[r + 1]);
+                break;
+            case 6:
+            case 7:
+            case 8:
+                sp.append(romans[r + 1]);
+                for (int j = 0; j < ch - 5; j++)
+                    sp.append(romans[r]);
+                break;
+            case 9:
+                sp.append(romans[r]);
+                sp.append(romans[r + 2]);
+                break;
+            default:
+                throw new SuspiciousError("chiffre (" + ch + ") is neither 0 nor 1-9");
+            }
+            r -= 2;
+        } 
+        return sp.toString();
     } 
     private static char romans[] = {
-	'I', 'V', 'X', 'L', 'C', 'D', 'M'
+        'I', 'V', 'X', 'L', 'C', 'D', 'M'
     };
 
     /**
      * Excerpt a double array from a vector, if possible.
      */
     static final double[] toDoubleArray(Vector v) {
-	//@todo could call return ((AbstractVector)v).toDoubleArray();
-	double[] a = new double[v.dimension()];
-	for (int i = 0; i < v.dimension(); i++)
-	    a[i] = ((Real)v.get(i)).doubleValue();
-	return a;
+        //@todo could call return ((AbstractVector)v).toDoubleArray();
+        double[] a = new double[v.dimension()];
+        for (int i = 0; i < v.dimension(); i++)
+            a[i] = ((Real)v.get(i)).doubleValue();
+        return a;
     }
     /**
      * Excerpt a double array from a matrix, if possible.
      */
     static final double[][] toDoubleArray(Matrix m) {
-	//@todo could call return ((AbstractMatrix)m).toDoubleArray();
-	double[][] a = new double[m.dimension().height][m.dimension().width];
-	for (int i = 0; i < m.dimension().height; i++)
-	    for (int j = 0; j < m.dimension().width; j++)
-		a[i][j] = ((Real)m.get(i, j)).doubleValue();
-	return a;
+        //@todo could call return ((AbstractMatrix)m).toDoubleArray();
+        double[][] a = new double[m.dimension().height][m.dimension().width];
+        for (int i = 0; i < m.dimension().height; i++)
+            for (int j = 0; j < m.dimension().width; j++)
+                a[i][j] = ((Real)m.get(i, j)).doubleValue();
+        return a;
     }
 }

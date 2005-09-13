@@ -79,19 +79,19 @@ public final class Utility {
      * @postconditions test
      */
     public static void pre(boolean test, String description) {
-	if (!test)
-	    throw new IllegalArgumentException("prerequisite failed: '" + description + "'");
+        if (!test)
+            throw new IllegalArgumentException("prerequisite failed: '" + description + "'");
     } 
-	
+        
     /**
      * Check whether an array contains an object that is <em>identical</em> to x.
      * @return true iff. &exist;i&isin;{0,..,a.length} a[i] == x.
      */
     public static final boolean containsIdenticalTo(Object[] a, Object x) {
-	for (int i = 0; i < a.length; i++)
-	    if (a[i] == x)
-		return true;
-	return false;
+        for (int i = 0; i < a.length; i++)
+            if (a[i] == x)
+                return true;
+        return false;
     }
 
     /**
@@ -105,7 +105,7 @@ public final class Utility {
      * @see #hashCode(Object)
      */
     public static final boolean equals(Object a, Object b) {
-	return a == b || (a != null && a.equals(b));
+        return a == b || (a != null && a.equals(b));
     }
 
     /**
@@ -118,24 +118,24 @@ public final class Utility {
      * @see #hashCodeAll(Object)
      */
     public static final boolean equalsAll(Object a, Object b) {
-	if (equals(a, b))
-	    return true;
-	if (a == null)
-	    return false;
-	if ((a instanceof Object[]) && (b instanceof Object[]))
-	    //@todo recursively check with equalsAll to ensure element-wise equality of multi-dimensional arrays, as well?
-	    return Arrays.equals((Object[]) a, (Object[]) b);
-	else if (a.getClass().isArray() && b.getClass().isArray()) {
-	    // additionally(!) check for equality of primitive type arrays with java.lang.reflect.Array
-	    int len = Array.getLength(a);
-	    if (Array.getLength(b) != len)
-		return false;
-	    for (int i = 0; i < len; i++)
-		if (!equals(Array.get(a, i), Array.get(b, i)))
-		    return false;
-	    return true;
-	} else
-	    return false;
+        if (equals(a, b))
+            return true;
+        if (a == null)
+            return false;
+        if ((a instanceof Object[]) && (b instanceof Object[]))
+            //@todo recursively check with equalsAll to ensure element-wise equality of multi-dimensional arrays, as well?
+            return Arrays.equals((Object[]) a, (Object[]) b);
+        else if (a.getClass().isArray() && b.getClass().isArray()) {
+            // additionally(!) check for equality of primitive type arrays with java.lang.reflect.Array
+            int len = Array.getLength(a);
+            if (Array.getLength(b) != len)
+                return false;
+            for (int i = 0; i < len; i++)
+                if (!equals(Array.get(a, i), Array.get(b, i)))
+                    return false;
+            return true;
+        } else
+            return false;
     }
 
     /**
@@ -146,18 +146,18 @@ public final class Utility {
      * @see #equals(Object, Object)
      */
     public static final int hashCode(Object a) {
-	try {
-	    return a.hashCode();
-	}
-	catch (NullPointerException ex) {
-	    //@internal possibly quicker variant to explicit prechecks for null: simply let this exceptional case occur, and then handle it.
-	    if (a == null) {
-		return 0;
-	    } else {
-		// another cause for the NullPointerException than null arguments
-		throw ex;
-	    }
-	}
+        try {
+            return a.hashCode();
+        }
+        catch (NullPointerException ex) {
+            //@internal possibly quicker variant to explicit prechecks for null: simply let this exceptional case occur, and then handle it.
+            if (a == null) {
+                return 0;
+            } else {
+                // another cause for the NullPointerException than null arguments
+                throw ex;
+            }
+        }
     }
 
     /**
@@ -172,20 +172,20 @@ public final class Utility {
      * @todo document
      */
     public static final int compare(Object a, Object b) {
-	try {
-	    return ((Comparable)a).compareTo(b);
-	}
-	catch (NullPointerException ex) {
-	    //@internal possibly quicker variant to explicit prechecks for null: simply let this exceptional case occur, and then handle it.
-	    if (a == null) {
-		return b == null ? 0 : -1;
-	    } else if (b == null) {
-		return 1;
-	    } else {
-		// another cause for the NullPointerException than null arguments
-		throw ex;
-	    }
-	}
+        try {
+            return ((Comparable)a).compareTo(b);
+        }
+        catch (NullPointerException ex) {
+            //@internal possibly quicker variant to explicit prechecks for null: simply let this exceptional case occur, and then handle it.
+            if (a == null) {
+                return b == null ? 0 : -1;
+            } else if (b == null) {
+                return 1;
+            } else {
+                // another cause for the NullPointerException than null arguments
+                throw ex;
+            }
+        }
     }
 
     /**
@@ -199,31 +199,31 @@ public final class Utility {
      * @note this implementation does not necessarily fit to the hashCode defined by {@link java.util.List}, nor,  of course, {@link java.util.Set}.
      */
     public static final int hashCodeAll(Object o) {
-	//@todo functional?
-	if (o instanceof Object[]) {
-	    final Object a[] = (Object[]) o;
-	    final int len = a.length;
-	    int       hash = 0;
-	    for (int i = 0; i < len; i++) {
-		// recursively hashCodeAll to ensure element-wise hashCodes of (multi-dimensional) arrays, as well?
-		final int h = hashCodeAll(a[i]);
-		//@internal hash ^= h rotl i
-		hash ^= (h << i) | (h >>> (INTEGER_BITS - i));
-	    }
-	    return hash;
-	} else if (o != null && o.getClass().isArray()) {
-	    // additionally(!) check for hashCode primitive type arrays with java.lang.reflect.Array
-	    final int len = Array.getLength(o);
-	    int       hash = 0;
-	    for (int i = 0; i < len; i++) {
-		// recursively hashCodeAll to ensure element-wise hashCodes of (multi-dimensional) arrays, as well?
-		final int h = hashCodeAll(Array.get(o, i));
-		//@internal hash ^= h rotl i
-		hash ^= (h << i) | (h >>> (INTEGER_BITS - i));
-	    }
-	    return hash;
-	} else
-	    return hashCode(o);
+        //@todo functional?
+        if (o instanceof Object[]) {
+            final Object a[] = (Object[]) o;
+            final int len = a.length;
+            int       hash = 0;
+            for (int i = 0; i < len; i++) {
+                // recursively hashCodeAll to ensure element-wise hashCodes of (multi-dimensional) arrays, as well?
+                final int h = hashCodeAll(a[i]);
+                //@internal hash ^= h rotl i
+                hash ^= (h << i) | (h >>> (INTEGER_BITS - i));
+            }
+            return hash;
+        } else if (o != null && o.getClass().isArray()) {
+            // additionally(!) check for hashCode primitive type arrays with java.lang.reflect.Array
+            final int len = Array.getLength(o);
+            int       hash = 0;
+            for (int i = 0; i < len; i++) {
+                // recursively hashCodeAll to ensure element-wise hashCodes of (multi-dimensional) arrays, as well?
+                final int h = hashCodeAll(Array.get(o, i));
+                //@internal hash ^= h rotl i
+                hash ^= (h << i) | (h >>> (INTEGER_BITS - i));
+            }
+            return hash;
+        } else
+            return hashCode(o);
     }
 
     /**
@@ -233,13 +233,13 @@ public final class Utility {
      * @return the hashCode of all elements of a.
      */
     public static final int hashCodeArray(Object[] a) {
-	int hash = 0;
-	for (int i = 0; i < a.length; i++) {
-	    final int h = hashCode(a[i]);
-	    //@internal hash ^= h rotl i
-	    hash ^= (h << i) | (h >>> (INTEGER_BITS - i));
-	}
-	return hash;
+        int hash = 0;
+        for (int i = 0; i < a.length; i++) {
+            final int h = hashCode(a[i]);
+            //@internal hash ^= h rotl i
+            hash ^= (h << i) | (h >>> (INTEGER_BITS - i));
+        }
+        return hash;
     }
 
     /**
@@ -258,28 +258,28 @@ public final class Utility {
      * @note this implementation does not necessarily fit to the hashCode defined by {@link java.util.Set}, nor, of cours,e {@link java.util.List}.
      */
     public static final int hashCodeSet(Object o) {
-	//@todo functional?
-	if (o instanceof Object[]) {
-	    final Object a[] = (Object[]) o;
-	    int          hash = 0;
-	    for (int i = 0; i < a.length; i++) {
-		// recursively hashCodeSet to ensure element-wise hashCodes of (multi-dimensional) arrays, as well?
-		final int h = hashCodeSet(a[i]);
-		hash ^= h;
-	    }
-	    return hash;
-	} else if (o != null && o.getClass().isArray()) {
-	    // additionally(!) check for hashCode primitive type arrays with java.lang.reflect.Array
-	    final int len = Array.getLength(o);
-	    int       hash = 0;
-	    for (int i = 0; i < len; i++) {
-		// recursively hashCodeSet to ensure element-wise hashCodes of (multi-dimensional) arrays, as well?
-		final int h = hashCodeSet(Array.get(o, i));
-		hash ^= h;
-	    }
-	    return hash;
-	} else
-	    return hashCode(o);
+        //@todo functional?
+        if (o instanceof Object[]) {
+            final Object a[] = (Object[]) o;
+            int          hash = 0;
+            for (int i = 0; i < a.length; i++) {
+                // recursively hashCodeSet to ensure element-wise hashCodes of (multi-dimensional) arrays, as well?
+                final int h = hashCodeSet(a[i]);
+                hash ^= h;
+            }
+            return hash;
+        } else if (o != null && o.getClass().isArray()) {
+            // additionally(!) check for hashCode primitive type arrays with java.lang.reflect.Array
+            final int len = Array.getLength(o);
+            int       hash = 0;
+            for (int i = 0; i < len; i++) {
+                // recursively hashCodeSet to ensure element-wise hashCodes of (multi-dimensional) arrays, as well?
+                final int h = hashCodeSet(Array.get(o, i));
+                hash ^= h;
+            }
+            return hash;
+        } else
+            return hashCode(o);
     }
 
     /**
@@ -287,11 +287,11 @@ public final class Utility {
      * @see Class#isInstance(Object)
      */
     public static final BinaryPredicate instanceOf = new BinaryPredicate() {
-	    public boolean apply(Object obj, Object clazz) {
-		return ((Class)clazz).isInstance(obj);
-	    }
-	};
-	
+            public boolean apply(Object obj, Object clazz) {
+                return ((Class)clazz).isInstance(obj);
+            }
+        };
+        
     /**
      * Checks whether an array is sorted.
      * @param a the array to be checked.
@@ -300,16 +300,16 @@ public final class Utility {
      * @return whether a is sorted.
      */
     public static final boolean sorted(double a[], boolean asc) {
-	if (asc) {	// unrolled for performance
-	    for (int i = 1; i < a.length; i++)
-		if (a[i - 1] > a[i])
-		    return false;
-	} else {
-	    for (int i = 1; i < a.length; i++)
-		if (a[i - 1] < a[i])
-		    return false;
-	}
-	return true;
+        if (asc) {      // unrolled for performance
+            for (int i = 1; i < a.length; i++)
+                if (a[i - 1] > a[i])
+                    return false;
+        } else {
+            for (int i = 1; i < a.length; i++)
+                if (a[i - 1] < a[i])
+                    return false;
+        }
+        return true;
     }
 
     /**
@@ -321,19 +321,19 @@ public final class Utility {
      * @see ReverseComparator
      */
     public static final boolean sorted(List a, Comparator cmp) {
-	if (cmp == null)
-	    cmp = new NaturalComparator();
-	if (a.isEmpty())
-	    return true;
-	Iterator i = a.iterator();
-	Object last = i.next();
-	while (i.hasNext()) {
-	    Object o = i.next();
-	    if (cmp.compare(last, o) > 0)
-		return false;
-	    last = o;
-	}
-	return true;
+        if (cmp == null)
+            cmp = new NaturalComparator();
+        if (a.isEmpty())
+            return true;
+        Iterator i = a.iterator();
+        Object last = i.next();
+        while (i.hasNext()) {
+            Object o = i.next();
+            if (cmp.compare(last, o) > 0)
+                return false;
+            last = o;
+        }
+        return true;
     }
 
     // multi-indices
@@ -343,11 +343,11 @@ public final class Utility {
      */
     public static final int rank(Object[] a) {
         int r = 1;
-	while (a[0] instanceof Object[]) {
-	    a = (Object[])a[0];
-	    r++;
-	}
-	return r;
+        while (a[0] instanceof Object[]) {
+            a = (Object[])a[0];
+            r++;
+        }
+        return r;
     }
     /**
      * Get the number of indices required to reach the component type.
@@ -356,60 +356,60 @@ public final class Utility {
      */
     public static final int rank(Object a) {
         int r = 0;
-	while (a.getClass().isArray()) {
-	    a = Array.get(a, 0);
-	    r++;
-	}
-	return r;
+        while (a.getClass().isArray()) {
+            a = Array.get(a, 0);
+            r++;
+        }
+        return r;
     }
     /**
      * Get the (final) component type of a multi-dimensional array.
      * @note does not check rectangularity of a
      */
     private static final Class getComponentType(Object a) {
-	Class component = a.getClass();
-	while (a.getClass().isArray()) {
-	    component = a.getClass().getComponentType();
-	    a = Array.get(a, 0);
-	}
-	return component;
+        Class component = a.getClass();
+        while (a.getClass().isArray()) {
+            component = a.getClass().getComponentType();
+            a = Array.get(a, 0);
+        }
+        return component;
     }
     /**
      * @see #dimensions(Object)
      */
     public static final int[] dimensions(Object[] a) {
-	int[] dim = new int[rank(a)];
-	for (int i = 0; i < dim.length - 1; i++) {
-	    dim[i] = a.length;
-	    assert a[0] instanceof Object[] : "by definition of rank";
-	    a = (Object[])a[0];
-	}
-	dim[dim.length - 1] = a.length;
-	return dim;
+        int[] dim = new int[rank(a)];
+        for (int i = 0; i < dim.length - 1; i++) {
+            dim[i] = a.length;
+            assert a[0] instanceof Object[] : "by definition of rank";
+            a = (Object[])a[0];
+        }
+        dim[dim.length - 1] = a.length;
+        return dim;
     }
     /**
      * Get the dimensions of a multi-dimensional array.
      * @note does not check rectangularity of a
      */
     public static final int[] dimensions(Object a) {
-	int[] dim = new int[rank(a)];
-	for (int i = 0; i < dim.length; i++) {
-	    assert a.getClass().isArray() : "by definition of rank";
-	    dim[i] = Array.getLength(a);
-	    a = Array.get(a, 0);
-	}
-	assert !a.getClass().isArray() : "by definition of rank";
-	return dim;
+        int[] dim = new int[rank(a)];
+        for (int i = 0; i < dim.length; i++) {
+            assert a.getClass().isArray() : "by definition of rank";
+            dim[i] = Array.getLength(a);
+            a = Array.get(a, 0);
+        }
+        assert !a.getClass().isArray() : "by definition of rank";
+        return dim;
     }
 
     /**
      * @see #getPart(Object,int[])
      */
     public static Object getPart(Object[] a, int[] partSpecification) {
-	Object o = a;
-	for (int i = 0; i < partSpecification.length; i++)
-	    o = ((Object[]) o)[partSpecification[i]];
-	return o;
+        Object o = a;
+        for (int i = 0; i < partSpecification.length; i++)
+            o = ((Object[]) o)[partSpecification[i]];
+        return o;
     }
     /**
      * Get the element in the (possibly multi-dimensional) array <code>a</code> specified by the part specification.
@@ -419,20 +419,20 @@ public final class Utility {
      * @return a[p[0]][p[1]]...[p[p.length-1]]
      */
     public static Object getPart(Object a, int[] partSpecification) {
-	Object o = a;
-	for (int i = 0; i < partSpecification.length; i++)
-	    o = Array.get(o, partSpecification[i]);
-	return o;
+        Object o = a;
+        for (int i = 0; i < partSpecification.length; i++)
+            o = Array.get(o, partSpecification[i]);
+        return o;
     } 
 
     /**
      * @see #setPart(Object[],int[],Object)
      */
     public static void setPart(Object[] a, int[] partSpecification, Object value) {
-	Object[] o = a;
-	for (int i = 0; i < partSpecification.length - 1; i++)
-	    o = (Object[]) o[partSpecification[i]];
-	o[partSpecification[partSpecification.length - 1]] = value;
+        Object[] o = a;
+        for (int i = 0; i < partSpecification.length - 1; i++)
+            o = (Object[]) o[partSpecification[i]];
+        o[partSpecification[partSpecification.length - 1]] = value;
     } 
     /**
      * Set the element in the (possibly multi-dimensional) array <code>a</code> specified by the part specification.
@@ -442,10 +442,10 @@ public final class Utility {
      * @preconditions partSpecification.length is not lower than the number of dimensions for partialSolutions.
      */
     public static void setPart(Object a, int[] partSpecification, Object value) {
-	Object o = a;
-	for (int i = 0; i < partSpecification.length - 1; i++)
-	    o = Array.get(o, partSpecification[i]);
-	Array.set(o, partSpecification[partSpecification.length - 1], value);
+        Object o = a;
+        for (int i = 0; i < partSpecification.length - 1; i++)
+            o = Array.get(o, partSpecification[i]);
+        Array.set(o, partSpecification[partSpecification.length - 1], value);
     } 
 
     // diverse
@@ -459,10 +459,10 @@ public final class Utility {
      * @see Random#nextDouble()
      */
     public static boolean flip(Random r, double probability) {
-	pre(MathUtilities.isProbability(probability), probability + " is a probability");
-	return r.nextDouble() <= probability;
+        pre(MathUtilities.isProbability(probability), probability + " is a probability");
+        return r.nextDouble() <= probability;
     }
-	
+        
 
 
     /**
@@ -470,23 +470,23 @@ public final class Utility {
      * at pos in text. f.ex. <b>(</b>a(b)c<b>)</b>
      */
     public static int matchingBrace(String text, int pos) {
-	int level = 0;
-	for (int i = pos; i < text.length(); i++) {
-	    switch (text.charAt(i)) {
-	    case '(':
-		level++;
-		break;
-	    case ')':
-		level--;
-		break;
-		//TODO: case '[':
-	    default:
-		break;
-	    }
-	    if (level == 0)
-		return i;
-	}
-	return -1;
+        int level = 0;
+        for (int i = pos; i < text.length(); i++) {
+            switch (text.charAt(i)) {
+            case '(':
+                level++;
+                break;
+            case ')':
+                level--;
+                break;
+                //TODO: case '[':
+            default:
+                break;
+            }
+            if (level == 0)
+                return i;
+        }
+        return -1;
     }
 
     /**
@@ -496,14 +496,14 @@ public final class Utility {
      * @return whether the predicate was true for all public member fields.
      */
     public static boolean forallPublicMembers(Object o, Predicate pred) throws IllegalAccessException {
-	Class   cls = o.getClass();
-	Field[] fields = cls.getFields();
-	for (int i = 0; i < fields.length; i++) {
-	    Object value = fields[i].get(o);
-	    if (!pred.apply(value))
-		return false;
-	}
-	return true;
+        Class   cls = o.getClass();
+        Field[] fields = cls.getFields();
+        for (int i = 0; i < fields.length; i++) {
+            Object value = fields[i].get(o);
+            if (!pred.apply(value))
+                return false;
+        }
+        return true;
     }
 
     /**
@@ -516,17 +516,17 @@ public final class Utility {
      * @throws java.lang.SecurityException if the <code>java.lang.reflect.ReflectPermission</code> of <code>suppressAccessChecks</code> is not permitted.
      */
     public static boolean forallMembers(Object o, Predicate pred) throws IllegalAccessException {
-	for (Class cls = o.getClass(); cls != null; cls = cls.getSuperclass()) {
-	    Field[] fields = cls.getDeclaredFields();
-	    for (int i = 0; i < fields.length; i++) {
-		if (!fields[i].isAccessible())
-		    fields[i].setAccessible(true);
-		Object value = fields[i].get(o);
-		if (!pred.apply(value))
-		    return false;
-	    }
-	}
-	return true;
+        for (Class cls = o.getClass(); cls != null; cls = cls.getSuperclass()) {
+            Field[] fields = cls.getDeclaredFields();
+            for (int i = 0; i < fields.length; i++) {
+                if (!fields[i].isAccessible())
+                    fields[i].setAccessible(true);
+                Object value = fields[i].get(o);
+                if (!pred.apply(value))
+                    return false;
+            }
+        }
+        return true;
     }
 
 
@@ -541,19 +541,19 @@ public final class Utility {
      * @see #asIterator(Object)
      */
     public static Collection asCollection(Object o) {
-	if (o == null)
-	    return null;
-	else if (o instanceof Collection)
-	    return (Collection) o;
-	else if (o instanceof Object[])
-	    return java.util.Arrays.asList((Object[]) o);
-	/*@todo else if (o.getClass().isArray())
-	  throw new UnsupportedOperationException("primitive-type arrays not yet supported");*/
-	else
-	    //@todo throw exception instead?
-	    return java.util.Collections.singletonList(o);
+        if (o == null)
+            return null;
+        else if (o instanceof Collection)
+            return (Collection) o;
+        else if (o instanceof Object[])
+            return java.util.Arrays.asList((Object[]) o);
+        /*@todo else if (o.getClass().isArray())
+          throw new UnsupportedOperationException("primitive-type arrays not yet supported");*/
+        else
+            //@todo throw exception instead?
+            return java.util.Collections.singletonList(o);
     }
-	
+        
     /**
      * Checks whether the given object is <dfn>generalized iteratable</dfn>.
      * <p>
@@ -578,9 +578,9 @@ public final class Utility {
      *  Iteratable newInstance(Object structure)
      */
     public static boolean isIteratable(Object a) {
-	return (a instanceof Iterator) || (a instanceof Collection)
-		|| (a instanceof Tensor)
-		|| a.getClass().isArray();
+        return (a instanceof Iterator) || (a instanceof Collection)
+                || (a instanceof Tensor)
+                || a.getClass().isArray();
     }
 
     /**
@@ -593,22 +593,22 @@ public final class Utility {
      * @see #newIteratableLike(Object)
      */
     public static /*_<A>_*/ Iterator/*_<A>_*/ asIterator(Object a) throws NotIteratableException {
-	if (a == null)
-	    return null;
-	else if (a instanceof Iterator/*_<A>_*/)
-	    return (Iterator/*_<A>_*/) a;
-	else if (a instanceof Collection/*_<A>_*/)
-	    if (a instanceof List/*_<A>_*/)
-		return ((List/*_<A>_*/) a).listIterator();
-	    else
-		return ((Collection/*_<A>_*/) a).iterator();
-	else if (a instanceof Tensor/*_<A>_*/)
-	    return ((Tensor/*_<A>_*/) a).iterator();
-	else if ((a instanceof Object/*_>A<_*/[]) && !a.getClass().getComponentType().isArray())
-	    return Arrays.asList((Object/*_>A<_*/[]) a).listIterator();
-	else if (a.getClass().isArray())
-	    return Values.getDefaultInstance().tensor(a).iterator();
-	throw new NotIteratableException(a.getClass(), generalizedIteratableTypes);
+        if (a == null)
+            return null;
+        else if (a instanceof Iterator/*_<A>_*/)
+            return (Iterator/*_<A>_*/) a;
+        else if (a instanceof Collection/*_<A>_*/)
+            if (a instanceof List/*_<A>_*/)
+                return ((List/*_<A>_*/) a).listIterator();
+            else
+                return ((Collection/*_<A>_*/) a).iterator();
+        else if (a instanceof Tensor/*_<A>_*/)
+            return ((Tensor/*_<A>_*/) a).iterator();
+        else if ((a instanceof Object/*_>A<_*/[]) && !a.getClass().getComponentType().isArray())
+            return Arrays.asList((Object/*_>A<_*/[]) a).listIterator();
+        else if (a.getClass().isArray())
+            return Values.getDefaultInstance().tensor(a).iterator();
+        throw new NotIteratableException(a.getClass(), generalizedIteratableTypes);
     }
 
     /**
@@ -619,26 +619,26 @@ public final class Utility {
      * @see Setops#newCollectionLike(Collection)
      */
     public static Object newIteratableLike(Object a) throws NotIteratableException {
-	if (a == null)
-	    return null;
-	else if (a instanceof Iterator) {
-	    if (a instanceof ListIterator)
-		return new LinkedList().listIterator();
-	    else
-		return new LinkedList().iterator();
-	} else if (a instanceof Collection)
-	    return Setops.newCollectionLike((Collection) a);
-	else if (a instanceof Tensor)
-	    //@see AbstractTensor#newInstance
-	    return Values.getDefaultInstance().tensor(((Tensor)a).dimensions());
-	else if (a.getClass().isArray())
-	    return Array.newInstance(getComponentType(a), dimensions(a));
-	throw new NotIteratableException(a.getClass(), generalizedIteratableTypes);
+        if (a == null)
+            return null;
+        else if (a instanceof Iterator) {
+            if (a instanceof ListIterator)
+                return new LinkedList().listIterator();
+            else
+                return new LinkedList().iterator();
+        } else if (a instanceof Collection)
+            return Setops.newCollectionLike((Collection) a);
+        else if (a instanceof Tensor)
+            //@see AbstractTensor#newInstance
+            return Values.getDefaultInstance().tensor(((Tensor)a).dimensions());
+        else if (a.getClass().isArray())
+            return Array.newInstance(getComponentType(a), dimensions(a));
+        throw new NotIteratableException(a.getClass(), generalizedIteratableTypes);
     }
     
     private static final Set generalizedIteratableTypes = new HashSet(Arrays.asList(new Class[] {
-	Iterator.class, Collection.class, Object[].class, Tensor.class , orbital.math.Vector.class, orbital.math.Matrix.class,
-	Object[][].class, int[].class, double[][].class, double[][].class, Object[][][].class
+        Iterator.class, Collection.class, Object[].class, Tensor.class , orbital.math.Vector.class, orbital.math.Matrix.class,
+        Object[][].class, int[].class, double[][].class, double[][].class, Object[][][].class
     }));
 
 
@@ -653,14 +653,14 @@ public final class Utility {
      * @throws NotIteratableException if a is not generalized iteratable.
      */
     public static final String format(String delimiter, Object iteratable) {
-	StringBuffer sb = new StringBuffer();
-	//@internal do not rewrite pure functionally for (garbage collector...) performance reasons
-	for (Iterator i = asIterator(iteratable); i.hasNext(); ) {
-	    sb.append(i.next());
-	    if (i.hasNext()) {
-		sb.append(delimiter);
-	    }
-	}
-	return sb.toString();
+        StringBuffer sb = new StringBuffer();
+        //@internal do not rewrite pure functionally for (garbage collector...) performance reasons
+        for (Iterator i = asIterator(iteratable); i.hasNext(); ) {
+            sb.append(i.next());
+            if (i.hasNext()) {
+                sb.append(delimiter);
+            }
+        }
+        return sb.toString();
     }
 }

@@ -59,21 +59,21 @@ public class ParallelEvaluationPopulation extends Population implements Serializ
     private transient volatile ThreadGroup generationEvaluators;
 
     private static class EvaluatorsGroup extends ThreadGroup {
-	private ParallelEvaluationPopulation population;
-	public EvaluatorsGroup(ParallelEvaluationPopulation population) {
-	    super(population.getClass().getName());
-	    this.population = population;
-	}
-		
-	/**
-	 * Stops the whole evaluation since it is undefined, now.
-	 */
-	public void uncaughtException(Thread t, Throwable e) {
-	    if (!(e instanceof ThreadDeath)) {
-		logger.log(Level.WARNING, "uncaught exception in " + t, e);
-		population.evaluators.stop();
-	    }
-	}
+        private ParallelEvaluationPopulation population;
+        public EvaluatorsGroup(ParallelEvaluationPopulation population) {
+            super(population.getClass().getName());
+            this.population = population;
+        }
+                
+        /**
+         * Stops the whole evaluation since it is undefined, now.
+         */
+        public void uncaughtException(Thread t, Throwable e) {
+            if (!(e instanceof ThreadDeath)) {
+                logger.log(Level.WARNING, "uncaught exception in " + t, e);
+                population.evaluators.stop();
+            }
+        }
     }
 
     public ParallelEvaluationPopulation() {
@@ -86,9 +86,9 @@ public class ParallelEvaluationPopulation extends Population implements Serializ
      * @see Population#create(Population, Genome, int)
      */
     public ParallelEvaluationPopulation(Population original) {
-	this();
-	this.setGeneration(original.getGeneration());
-	this.setMyMembers(original.getMyMembers());
+        this();
+        this.setGeneration(original.getGeneration());
+        this.setMyMembers(original.getMyMembers());
     }
 
     /**
@@ -97,9 +97,9 @@ public class ParallelEvaluationPopulation extends Population implements Serializ
      * @see #getGenerationEvaluators()
      */
     protected final ThreadGroup getEvaluators() {
-	return evaluators;
+        return evaluators;
     }
-	
+        
     /**
      * Get the current thread group for all evaluation threads started
      * during this generation to evaluate some fitness values of the members.
@@ -109,7 +109,7 @@ public class ParallelEvaluationPopulation extends Population implements Serializ
      * @see #waitForEvaluators()
      */
     protected final ThreadGroup getGenerationEvaluators() {
-	return generationEvaluators;
+        return generationEvaluators;
     }
 
 
@@ -120,14 +120,14 @@ public class ParallelEvaluationPopulation extends Population implements Serializ
      * @internal #evaluate(Object, boolean)
      */
     public boolean add(Object o) {
-	Genome g = (Genome) o;
-	if (!getMyMembers().add(g))
-	    return false;
-	else {
-	    evaluate(g, false);
-	    g.setPopulation(this);
-	    return true;
-	}
+        Genome g = (Genome) o;
+        if (!getMyMembers().add(g))
+            return false;
+        else {
+            evaluate(g, false);
+            g.setPopulation(this);
+            return true;
+        }
     } 
 
     /**
@@ -138,18 +138,18 @@ public class ParallelEvaluationPopulation extends Population implements Serializ
      *  If <code>true</code> we will {@link Thread#stop()}(!) all running evaluator threads.
      */
     public void evaluate(boolean redo) {
-	if (redo) {
-	    // stop generationEvaluators and restart all calculation
-	    ThreadGroup oldSnapshot = exchangeEvaluators();
-	    oldSnapshot.stop();
-	    // oldSnapshot is no daemon group so destroy explicitly
-	    oldSnapshot.destroy();
-	    //@todo also stop old evaluators, already exchanged by evaluate(boolean), but still running?
-	    for (Iterator i = iterator(); i.hasNext(); )
-		evaluate((Genome) i.next(), redo);
-	}
-	waitForEvaluators();
-	Collections.sort(getMyMembers(), Genome.comparator);
+        if (redo) {
+            // stop generationEvaluators and restart all calculation
+            ThreadGroup oldSnapshot = exchangeEvaluators();
+            oldSnapshot.stop();
+            // oldSnapshot is no daemon group so destroy explicitly
+            oldSnapshot.destroy();
+            //@todo also stop old evaluators, already exchanged by evaluate(boolean), but still running?
+            for (Iterator i = iterator(); i.hasNext(); )
+                evaluate((Genome) i.next(), redo);
+        }
+        waitForEvaluators();
+        Collections.sort(getMyMembers(), Genome.comparator);
     } 
     
 
@@ -161,41 +161,41 @@ public class ParallelEvaluationPopulation extends Population implements Serializ
      * @see #waitForEvaluators()
      */
     protected void evaluate(Genome g, boolean redo) {
-	Runnable runnable = new Evaluator(g, redo);
-	Thread evaluator;
-	//@todo we don't actually need to synchronize two threads from adding but just
-	// one thread from adding and another one from exchaning evaluators
-	// in fact, we do not need to synchronize here at all, since the evaluator assignement is
-	// atomical
-	/*synchronized(this)*/ {
-	    evaluator = new Thread(generationEvaluators, runnable);
-	}
-	evaluator.setDaemon(true);
-	evaluator.start();
+        Runnable runnable = new Evaluator(g, redo);
+        Thread evaluator;
+        //@todo we don't actually need to synchronize two threads from adding but just
+        // one thread from adding and another one from exchaning evaluators
+        // in fact, we do not need to synchronize here at all, since the evaluator assignement is
+        // atomical
+        /*synchronized(this)*/ {
+            evaluator = new Thread(generationEvaluators, runnable);
+        }
+        evaluator.setDaemon(true);
+        evaluator.start();
     }
     /**
      * Evaluates the fitness of the given Genome.
      * @see ParallelEvaluationPopulation#add(Object)
      */
     private class Evaluator implements Runnable {
-	/**
-	 * The genome to evaluate
-	 * @serial
-	 */
-	private Genome  genome;
-	/**
-	 * argument to pass to genome.evaluate(boolean)
-	 * @serial
-	 */
-	private boolean redo;
-	public Evaluator(Genome genome, boolean redo) {
-	    this.genome = genome;
-	    this.redo = redo;
-	}
-	/*concurrent*/
-	public void run() {
-	    genome.evaluate(ParallelEvaluationPopulation.this, redo);
-	}
+        /**
+         * The genome to evaluate
+         * @serial
+         */
+        private Genome  genome;
+        /**
+         * argument to pass to genome.evaluate(boolean)
+         * @serial
+         */
+        private boolean redo;
+        public Evaluator(Genome genome, boolean redo) {
+            this.genome = genome;
+            this.redo = redo;
+        }
+        /*concurrent*/
+        public void run() {
+            genome.evaluate(ParallelEvaluationPopulation.this, redo);
+        }
     };
 
     /**
@@ -203,21 +203,21 @@ public class ParallelEvaluationPopulation extends Population implements Serializ
      * @internal #exchangeEvaluators()
      */
     protected void waitForEvaluators() {
-	ThreadGroup running = exchangeEvaluators();
+        ThreadGroup running = exchangeEvaluators();
         // loop waiting for all generationEvaluators to stop
         while (running.activeCount() > 0)
-	    try {
-            	Thread t[] = new Thread[1];
-            	if (running.enumerate(t) == 0)
-		    break;
-            	t[0].join();
+            try {
+                Thread t[] = new Thread[1];
+                if (running.enumerate(t) == 0)
+                    break;
+                t[0].join();
             }
             catch (InterruptedException irq) {
-		logger.log(Level.WARNING, "had wait interrupted", irq);
-            	Thread.currentThread().interrupt();
-	    }
-       	// running is no daemon group so destroy explicitly (otherwise it would destroy itself meanwhile)
-       	running.destroy();
+                logger.log(Level.WARNING, "had wait interrupted", irq);
+                Thread.currentThread().interrupt();
+            }
+        // running is no daemon group so destroy explicitly (otherwise it would destroy itself meanwhile)
+        running.destroy();
     }
 
     /**
@@ -225,16 +225,16 @@ public class ParallelEvaluationPopulation extends Population implements Serializ
      * @see #generationEvaluators
      */
     protected final ThreadGroup exchangeEvaluators() {
-	ThreadGroup groupSnapshot;
-	// synchronize such that
-	//  1) no other thread exchanges the generationEvaluators, now
-	//  2) no other thread calls add using generationEvaluators, now (not really necessary)
-	synchronized(this) {
-	    // exchange generationEvaluators. We will not wait for evaluations from future calls to add() any more
-	    groupSnapshot = generationEvaluators;
-	    generationEvaluators = new ThreadGroup(evaluators, evaluators.getName()+ '-' + getGeneration());
-    	}
-    	return groupSnapshot;
+        ThreadGroup groupSnapshot;
+        // synchronize such that
+        //  1) no other thread exchanges the generationEvaluators, now
+        //  2) no other thread calls add using generationEvaluators, now (not really necessary)
+        synchronized(this) {
+            // exchange generationEvaluators. We will not wait for evaluations from future calls to add() any more
+            groupSnapshot = generationEvaluators;
+            generationEvaluators = new ThreadGroup(evaluators, evaluators.getName()+ '-' + getGeneration());
+        }
+        return groupSnapshot;
     }
 
     /**
@@ -242,7 +242,7 @@ public class ParallelEvaluationPopulation extends Population implements Serializ
      *  because neither evaluators, nor generationEvaluators and its threads are serializable.
      */
     private void writeObject(java.io.ObjectOutputStream s) throws java.io.IOException {
-	s.defaultWriteObject();
+        s.defaultWriteObject();
     }
 
     /**
@@ -251,12 +251,12 @@ public class ParallelEvaluationPopulation extends Population implements Serializ
      *  Exchanges evaluators.
      */
     private void readObject(java.io.ObjectInputStream s) throws IOException, ClassNotFoundException {
-	// synchronize such that
-	//  1) no other thread uses evaluators, now
-	synchronized(this) {
-	    evaluators = new EvaluatorsGroup(this);
-	}
+        // synchronize such that
+        //  1) no other thread uses evaluators, now
+        synchronized(this) {
+            evaluators = new EvaluatorsGroup(this);
+        }
         exchangeEvaluators();
-	s.defaultReadObject();
+        s.defaultReadObject();
     }
 }

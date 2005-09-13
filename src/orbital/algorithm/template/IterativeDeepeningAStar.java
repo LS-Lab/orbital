@@ -55,58 +55,58 @@ public class IterativeDeepeningAStar extends DepthFirstBoundingSearch implements
      * @see #getEvaluation()
      */
     public IterativeDeepeningAStar(Function heuristic) {
-    	setHeuristic(heuristic);
-    	this.nextBound = null;
-    	setContinuedWhenFound(false);
-    	//@xxx setContinuedWhenFound(?); depends upon whether or not h is admissible?
+        setHeuristic(heuristic);
+        this.nextBound = null;
+        setContinuedWhenFound(false);
+        //@xxx setContinuedWhenFound(?); depends upon whether or not h is admissible?
     }
     IterativeDeepeningAStar() {}
 
     public Function getHeuristic() {
-	return heuristic;
+        return heuristic;
     }
 
     public void setHeuristic(Function heuristic) {
-	Function old = this.heuristic;
-	this.heuristic = heuristic;
-	firePropertyChange("heuristic", old, this.heuristic);
+        Function old = this.heuristic;
+        this.heuristic = heuristic;
+        firePropertyChange("heuristic", old, this.heuristic);
     }
 
     /**
      * f(n) = g(n) + h(n).
      */
     public Function getEvaluation() {
-	return evaluation;
+        return evaluation;
     }
     private transient Function evaluation;
     void firePropertyChange(String property, Object oldValue, Object newValue) {
-	super.firePropertyChange(property, oldValue, newValue);
-	if (!("heuristic".equals(property) || "problem".equals(property)))
-	    return;
-	GeneralSearchProblem problem = getProblem();
-	this.evaluation = problem != null
-	    ? Functionals.compose(Operations.plus, problem.getAccumulatedCostFunction(), getHeuristic())
-	    : null;
-    }	
+        super.firePropertyChange(property, oldValue, newValue);
+        if (!("heuristic".equals(property) || "problem".equals(property)))
+            return;
+        GeneralSearchProblem problem = getProblem();
+        this.evaluation = problem != null
+            ? Functionals.compose(Operations.plus, problem.getAccumulatedCostFunction(), getHeuristic())
+            : null;
+    }   
     /**
      * Sustain transient variable initialization when deserializing.
      */
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-    	in.defaultReadObject();
-	firePropertyChange("heuristic", null, this.heuristic);
+        in.defaultReadObject();
+        firePropertyChange("heuristic", null, this.heuristic);
     }
 
     /**
      * O(b<sup>d</sup>) where b is the branching factor and d the solution depth.
      */
     public orbital.math.functional.Function complexity() {
-	return (orbital.math.functional.Function) Operations.power.apply(Values.getDefaultInstance().symbol("b"),Functions.id);
+        return (orbital.math.functional.Function) Operations.power.apply(Values.getDefaultInstance().symbol("b"),Functions.id);
     }
     /**
      * Optimal if heuristic is admissible.
      */
     public boolean isOptimal() {
-    	return true;
+        return true;
     }
 
     /**
@@ -114,13 +114,13 @@ public class IterativeDeepeningAStar extends DepthFirstBoundingSearch implements
      * @see #nextBound
      */
     protected boolean isOutOfBounds(Object/*>S<*/ node) {
-	Real v = (Real) getEvaluation().apply(node);
-	if (v.compareTo(getBound()) <= 0)
-	    return false;
-	// OutOfBounds -> nextBound is cheapest node pruned (minimum)
-	if (nextBound == null || v.compareTo(nextBound) < 0)
-	    nextBound = v;
-	return true;
+        Real v = (Real) getEvaluation().apply(node);
+        if (v.compareTo(getBound()) <= 0)
+            return false;
+        // OutOfBounds -> nextBound is cheapest node pruned (minimum)
+        if (nextBound == null || v.compareTo(nextBound) < 0)
+            nextBound = v;
+        return true;
     }
 
     /**
@@ -128,43 +128,43 @@ public class IterativeDeepeningAStar extends DepthFirstBoundingSearch implements
      * Where n<sub>0</sub>=root, and n<sub>i</sub> is the cheapest node pruned in iteration i-1.
      */
     protected Object/*>S<*/ solveImpl(GeneralSearchProblem problem) {
-	final Object n0 = problem.getInitialState();
-	nextBound = (Real) getEvaluation().apply(n0);
-	Object/*>S<*/ solution;
-	do {
-	    setBound(nextBound);
-	    // no node has been pruned yet
-	    nextBound = null;
-	    solution = super.search(createTraversal(problem));
-	} while (solution == null && nextBound != null);
-	// either we have a solution,
-	// or we have no nextBound because no node was pruned, so no further nodes can be found if we extended the bounds.
+        final Object n0 = problem.getInitialState();
+        nextBound = (Real) getEvaluation().apply(n0);
+        Object/*>S<*/ solution;
+        do {
+            setBound(nextBound);
+            // no node has been pruned yet
+            nextBound = null;
+            solution = super.search(createTraversal(problem));
+        } while (solution == null && nextBound != null);
+        // either we have a solution,
+        // or we have no nextBound because no node was pruned, so no further nodes can be found if we extended the bounds.
 
-    	// report solution or fail
-	return solution;
+        // report solution or fail
+        return solution;
     }
 
     protected Iterator createTraversal(GeneralSearchProblem problem) {
-	return new DepthFirstSearch.OptionIterator(problem);
+        return new DepthFirstSearch.OptionIterator(problem);
     }
 
 
 
-    //	protected GeneralSearchProblem.Option search(Collection nodes) {
-    //		final Object n0 = nodes.iterator().next();
-    //		nextBound = (Scalar) getEvaluation().apply(n0);
-    //		GeneralSearchProblem.Option solution;
-    //		do {
-    //			setBound(nextBound);
-    //			nextBound = null;
-    //			Collection n = createCollection();
-    //			n.addAll(nodes);
-    //			solution = super.search(n);
-    //		} while (solution == null && nextBound != null);
-    //		// either we have a solution,
-    //		// or we have no nextBound because no node was pruned, so no further nodes can be found if we extended the bounds.
+    //  protected GeneralSearchProblem.Option search(Collection nodes) {
+    //          final Object n0 = nodes.iterator().next();
+    //          nextBound = (Scalar) getEvaluation().apply(n0);
+    //          GeneralSearchProblem.Option solution;
+    //          do {
+    //                  setBound(nextBound);
+    //                  nextBound = null;
+    //                  Collection n = createCollection();
+    //                  n.addAll(nodes);
+    //                  solution = super.search(n);
+    //          } while (solution == null && nextBound != null);
+    //          // either we have a solution,
+    //          // or we have no nextBound because no node was pruned, so no further nodes can be found if we extended the bounds.
     //
-    //    	// report solution or fail
-    //		return solution;
-    //	}
+    //          // report solution or fail
+    //          return solution;
+    //  }
 }

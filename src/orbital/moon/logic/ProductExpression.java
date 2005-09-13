@@ -30,55 +30,55 @@ class ProductExpression implements Expression.Composite {
 
     //@xxx improve this dummy compositor
     private static final Object PRODUCT = new Object() {
-	    public String toString() {
-		return "ProductExpression";
-	    }
-	};
+            public String toString() {
+                return "ProductExpression";
+            }
+        };
     private final Expression expressions[];
     public ProductExpression(Expression expressions[]) {
-	this.expressions = expressions;
+        this.expressions = expressions;
     }
 
     public Type getType() {
-	Type t = Types.typeOf(expressions);
-	if (logger.isLoggable(Level.FINEST)) {
-	    logger.log(Level.FINEST, "product expression {0} has type {1}", new Object[] {Types.toTypedString(expressions), t});
-	}
-	return t;
+        Type t = Types.typeOf(expressions);
+        if (logger.isLoggable(Level.FINEST)) {
+            logger.log(Level.FINEST, "product expression {0} has type {1}", new Object[] {Types.toTypedString(expressions), t});
+        }
+        return t;
     }
 
     public Signature getSignature() {
-	Signature sigma = SignatureBase.EMPTY;
-	for (int i = 0; i < expressions.length; i++) {
-	    sigma = sigma.union(expressions[i].getSignature());
-	}
-	return sigma;
+        Signature sigma = SignatureBase.EMPTY;
+        for (int i = 0; i < expressions.length; i++) {
+            sigma = sigma.union(expressions[i].getSignature());
+        }
+        return sigma;
     }
 
     public Object getCompositor() {
-	return PRODUCT;
+        return PRODUCT;
     }
     public Object getComponent() {
-	return expressions;
+        return expressions;
     }
     public void setCompositor(Object o) {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
     public void setComponent(Object o) {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
     public orbital.logic.Composite construct(Object f, Object g) {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     public Notation getNotation() {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
     public void setNotation(Notation notation) {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     public String toString() {
-	return "[prod " + MathUtilities.format(expressions) + "]";
+        return "[prod " + MathUtilities.format(expressions) + "]";
     }
 }// ProductExpression

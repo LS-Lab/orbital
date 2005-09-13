@@ -29,8 +29,8 @@ public interface Scalar extends Arithmetic/*, Comparable*/ {
      * return whether v is complex, real, rational or an integer.
      */
     public static final Predicate isa = new Predicate() {
-	    public boolean apply(Object v) {
-    		return v instanceof Scalar;
-	    }
-	};
+            public boolean apply(Object v) {
+                return v instanceof Scalar;
+            }
+        };
 }

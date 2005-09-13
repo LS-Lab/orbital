@@ -53,14 +53,14 @@ public class OpenClosedGeneralSearchProblem/*<A,S>*/ implements GeneralSearchPro
      * @param problem the proper problem to solve which does not yet keep track of closed sets.
      */
     public OpenClosedGeneralSearchProblem(GeneralSearchProblem problem) {
-	this.problem = problem;
+        this.problem = problem;
     }
-	
+        
     /**
      * Get the proper (inner) problem to solve which does not yet keep track of closed sets.
      */
     public GeneralSearchProblem getProblem() {
-	return problem;
+        return problem;
     }
 
     /**
@@ -68,44 +68,44 @@ public class OpenClosedGeneralSearchProblem/*<A,S>*/ implements GeneralSearchPro
      * Clears the closed set.
      */
     public Object getInitialState() {
-	closedSet = new HashSet();
-	return problem.getInitialState();
+        closedSet = new HashSet();
+        return problem.getInitialState();
     }
     
     /**
      * Only returns actions leading to open nodes, and only if s is not closed itself.
      */
     public Iterator actions(Object/*>S<*/ s) {
-	if (closedSet.contains(s))
-	    return Collections.EMPTY_LIST.iterator();
-	// visit s by expanding it, so add s to the closed list
-	closedSet.add(s);
-	LinkedList copy = new LinkedList();
-	for (Iterator i = problem.actions(s); i.hasNext(); ) {
-	    Object a = i.next();
-	    if (closedSet.contains(problem.states(a, s).next()))
-		i.remove();
-	    else
-		copy.add(a);
-	}
-	return Setops.unmodifiableIterator(copy.iterator());
+        if (closedSet.contains(s))
+            return Collections.EMPTY_LIST.iterator();
+        // visit s by expanding it, so add s to the closed list
+        closedSet.add(s);
+        LinkedList copy = new LinkedList();
+        for (Iterator i = problem.actions(s); i.hasNext(); ) {
+            Object a = i.next();
+            if (closedSet.contains(problem.states(a, s).next()))
+                i.remove();
+            else
+                copy.add(a);
+        }
+        return Setops.unmodifiableIterator(copy.iterator());
     }
 
     public Iterator states(Object/*>A<*/ a, Object/*>S<*/ s) {
-	//@internal we do not again check like actions already did, but assume the usual case that a results from actions(s)
-	return problem.states(a, s);
+        //@internal we do not again check like actions already did, but assume the usual case that a results from actions(s)
+        return problem.states(a, s);
     }
 
     public TransitionModel.Transition transition(Object/*>A<*/ a, Object/*>S<*/ s, Object/*>S<*/ sp) {
-	//@internal we do not again check like actions already did, but assume the usual case that a and sp result from actions(s) and states(a,s)
-	return problem.transition(a, s, sp);
+        //@internal we do not again check like actions already did, but assume the usual case that a and sp result from actions(s) and states(a,s)
+        return problem.transition(a, s, sp);
     }
 
     public boolean isSolution(Object/*>S<*/ s) {
-	return problem.isSolution(s);
+        return problem.isSolution(s);
     }
 
     public MutableFunction getAccumulatedCostFunction() {
-	return problem.getAccumulatedCostFunction();
+        return problem.getAccumulatedCostFunction();
     }
 }

@@ -24,6 +24,6 @@ public class IterationLimitException extends LimitException {
     public IterationLimitException() {}
 
     public IterationLimitException(String spec) {
-	super(spec);
+        super(spec);
     }
 }

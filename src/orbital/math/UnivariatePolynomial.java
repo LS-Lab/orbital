@@ -49,7 +49,7 @@ public interface UnivariatePolynomial/*<R implements Arithmetic>*/ extends Eucli
      * @return deg(this) = max {i&isin;<b>N</b> &brvbar; a<sub>i</sub>&ne;0}
      */
     Integer degree();
-	
+        
     /**
      * Get the coefficient of X<sup>i</sup>.
      * Convenience method for {@link Polynomial#get(Arithmetic)}.
@@ -71,7 +71,7 @@ public interface UnivariatePolynomial/*<R implements Arithmetic>*/ extends Eucli
      * @postconditions always (RES.succeedes(#next()))
      */
     ListIterator iterator();
-	
+        
     // function
 
     /**

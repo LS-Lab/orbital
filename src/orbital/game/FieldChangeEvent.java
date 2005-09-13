@@ -44,14 +44,14 @@ public class FieldChangeEvent extends EventObject {
      */
     public static final int END_OF_GAME = 0x21;
     public FieldChangeEvent(Field source, int type, Object changeInfo) {
-	super(source);
-	this.type = type;
-	this.changeInfo = changeInfo;
+        super(source);
+        this.type = type;
+        this.changeInfo = changeInfo;
     }
 
     private int type;
     public int getType() {
-	return type;
+        return type;
     }
 
     private Object changeInfo;
@@ -62,7 +62,7 @@ public class FieldChangeEvent extends EventObject {
      * @return the value of changeInfo
      */
     public Object getChangeInfo() {
-	return this.changeInfo;
+        return this.changeInfo;
     }
 
     /**
@@ -70,11 +70,11 @@ public class FieldChangeEvent extends EventObject {
      * @todo prior to the change or after the change? Is the usage consistent for all types of events?
      */
     public Field getField() {
-	return (Field) super.getSource();
+        return (Field) super.getSource();
     }
 
     public String toString() {
-	return getClass().getName() + "[type=" + getType() + ", changeInfo=" + getChangeInfo() + ", field=" + getField() + ']';
+        return getClass().getName() + "[type=" + getType() + ", changeInfo=" + getChangeInfo() + ", field=" + getField() + ']';
     }
     
 }// FieldChangeEvent

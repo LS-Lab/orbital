@@ -32,7 +32,7 @@ import java.util.Arrays;
  */
 public class MathPlotter extends java.applet.Applet {
     public static void main(String args[]) throws Exception {
-    	orbital.moon.awt.AppletFrame.showApplet(new MathPlotter(), "Mathematical Plotting Engine", args);
+        orbital.moon.awt.AppletFrame.showApplet(new MathPlotter(), "Mathematical Plotting Engine", args);
     }
 
     private static final Values valueFactory = Values.getDefaultInstance();
@@ -47,16 +47,16 @@ public class MathPlotter extends java.applet.Applet {
         setLayout(new BorderLayout());
         
         try {
-	    //model = (ChartModel) Beans.instantiate(getClass().getClassLoader(), ChartModel.class.getName());
-	    model = new ChartModel();
-	    String param = getParameter("rainbow");
-	    model.setRainbow((param == null) ? true : (param.equalsIgnoreCase("yes") || param.equalsIgnoreCase("true")));
-    		
-	    //view = (Plot2D) Beans.instantiate(getClass().getClassLoader(), Plot2D.class.getName());
-	    view = new Plot2D();
-	    view.setModel(model);
-	    view.addMouseListener(new CustomizerViewController(/*cheat a bit*/new Frame()));
-    	
+            //model = (ChartModel) Beans.instantiate(getClass().getClassLoader(), ChartModel.class.getName());
+            model = new ChartModel();
+            String param = getParameter("rainbow");
+            model.setRainbow((param == null) ? true : (param.equalsIgnoreCase("yes") || param.equalsIgnoreCase("true")));
+                
+            //view = (Plot2D) Beans.instantiate(getClass().getClassLoader(), Plot2D.class.getName());
+            view = new Plot2D();
+            view.setModel(model);
+            view.addMouseListener(new CustomizerViewController(/*cheat a bit*/new Frame()));
+        
             Panel graph = new Panel();
             graph.setLayout(new BorderLayout());
             Button c;
@@ -75,84 +75,84 @@ public class MathPlotter extends java.applet.Applet {
             control.add(new Label("Function:"));
             control.add(expression = new TextField(30));
             ActionListener fire = new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-            		set(expression.getText());
-		    }
-		};
+                    public void actionPerformed(ActionEvent e) {
+                        set(expression.getText());
+                    }
+                };
             expression.addActionListener(fire);
             control.add(c = new Button("draw"));
             c.addActionListener(fire);
             control.add(c = new Button("clear"));
             c.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-            		model.removeAll();
-		    }
-		});
+                    public void actionPerformed(ActionEvent e) {
+                        model.removeAll();
+                    }
+                });
             control.add(c = new Button("derive"));
             c.setEnabled(false);
             add(control, BorderLayout.SOUTH);
 
-	    param = getParameter("function");
-	    expression.setText((param == null) ? "sin(2*x)" : param);
-	    set(expression.getText());
+            param = getParameter("function");
+            expression.setText((param == null) ? "sin(2*x)" : param);
+            set(expression.getText());
         }
         catch (Exception x) {
-	    showStatus(x.toString());
-	    x.printStackTrace();
+            showStatus(x.toString());
+            x.printStackTrace();
         }
     }
     
     protected void set(String expr) {
-	try {
-	    Object p = new MathExpressionSyntax().createMathExpression(expr);
-	    System.out.println("Parsed function:\t" + p);
-	    if (!(p instanceof orbital.logic.functor.Function))
-		// convert constants like 3 to constant functions if necessary
-		p = Functions.constant(p);
-	    Object f = Substitutions.lambda(Functions.constant(valueFactory.symbol("x")), p);
-	    System.out.println("Replaced with:\t" + f);
-	    model.add(f);
-	    model.setAutoScaling();
-	    view.setModel(model);
-    	}
-    	catch (ParseException x) {
-	    showStatus(x.toString());
-	    x.printStackTrace();
+        try {
+            Object p = new MathExpressionSyntax().createMathExpression(expr);
+            System.out.println("Parsed function:\t" + p);
+            if (!(p instanceof orbital.logic.functor.Function))
+                // convert constants like 3 to constant functions if necessary
+                p = Functions.constant(p);
+            Object f = Substitutions.lambda(Functions.constant(valueFactory.symbol("x")), p);
+            System.out.println("Replaced with:\t" + f);
+            model.add(f);
+            model.setAutoScaling();
+            view.setModel(model);
+        }
+        catch (ParseException x) {
+            showStatus(x.toString());
+            x.printStackTrace();
         }
     }
 
-	
+        
     private ActionListener createIncreaseAction(final double deltax, final double deltay) {
-	return new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    increase(deltax, deltay);
-		}
-	    };
+        return new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    increase(deltax, deltay);
+                }
+            };
     }
 
     private void increase(double deltax, double deltay) {
-	Vector delta = valueFactory.valueOf(new double[] {deltax, deltay});
-	Range r = (Range) model.getRange().clone();
-	r.min = r.min.subtract(delta);
-	r.max = r.max.add(delta);
-	model.setRange(r);
+        Vector delta = valueFactory.valueOf(new double[] {deltax, deltay});
+        Range r = (Range) model.getRange().clone();
+        r.min = r.min.subtract(delta);
+        r.max = r.max.add(delta);
+        model.setRange(r);
     }
 
     /**
      * Info.
      */
     public String getAppletInfo() {
-	return "Mathematical Plotting Engine by Andre Platzer";
+        return "Mathematical Plotting Engine by Andre Platzer";
     } 
 
     /**
      * Parameter Info
      */
     public String[][] getParameterInfo() {
-    	String[][] info = {
+        String[][] info = {
             {"function",    "string",      "the function expression to display"},
-            {"rainbow",     "boolean",	   "whether to use rainbow colors"},
-    	};
-	return info;
+            {"rainbow",     "boolean",     "whether to use rainbow colors"},
+        };
+        return info;
     } 
 }

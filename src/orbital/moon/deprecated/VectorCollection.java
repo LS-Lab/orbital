@@ -18,7 +18,7 @@ import java.util.Vector;
  */
 public
 class VectorCollection extends Vector implements OCollection {
-	public Vector getVector() {
-		return (Vector) this;
-	} 
+        public Vector getVector() {
+                return (Vector) this;
+        } 
 }

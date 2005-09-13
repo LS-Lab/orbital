@@ -40,7 +40,7 @@ public class SteadyStateGeneticAlgorithm extends GeneticAlgorithm {
      * @serial
      */
     private int numberOfReplacements = 0;
-	
+        
     /**
      * Construct a new GeneticAlgorithm.
      * @param replacement the number of replacements to do at each generation (&le; population.size()).
@@ -48,7 +48,7 @@ public class SteadyStateGeneticAlgorithm extends GeneticAlgorithm {
      *  have occured.
      */
     public SteadyStateGeneticAlgorithm(int replacements) {
-	this.numberOfReplacements = replacements;
+        this.numberOfReplacements = replacements;
     }
 
     // for serialization only
@@ -60,32 +60,32 @@ public class SteadyStateGeneticAlgorithm extends GeneticAlgorithm {
      * have occured.
      */
     public int getNumberOfReplacements() {
-	return numberOfReplacements;
+        return numberOfReplacements;
     }
     public void setNumberOfReplacements(int replacements) {
-	this.numberOfReplacements = replacements;
+        this.numberOfReplacements = replacements;
     }
-	
+        
     public double getPopulationGrowth() {
-	return 1;
+        return 1;
     } 
 
     // central virtual methods
 
     public void evolve() {
-	PopulationImpl population = (PopulationImpl) getPopulation();
-	for (int j = 0; j < numberOfReplacements; j += population.getParentCount()) {
-	    Genome children[] = population.reproduce();
+        PopulationImpl population = (PopulationImpl) getPopulation();
+        for (int j = 0; j < numberOfReplacements; j += population.getParentCount()) {
+            Genome children[] = population.reproduce();
 
-	    // merge children into new population
-	    for (int i = 0; i < children.length; i++) {
-		children[i].evaluate(population, false);
-		population.add(children[i]);
-		logger.log(Level.FINER, "evolve child", "with " + children[i].getFitness());
-		// remove worst (rank selector)
-		population.remove(population.size() - 1);
-	    }
-	}
-	population.setGeneration(population.getGeneration() + 1);
+            // merge children into new population
+            for (int i = 0; i < children.length; i++) {
+                children[i].evaluate(population, false);
+                population.add(children[i]);
+                logger.log(Level.FINER, "evolve child", "with " + children[i].getFitness());
+                // remove worst (rank selector)
+                population.remove(population.size() - 1);
+            }
+        }
+        population.setGeneration(population.getGeneration() + 1);
     } 
 }

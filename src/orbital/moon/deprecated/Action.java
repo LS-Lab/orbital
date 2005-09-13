@@ -18,8 +18,8 @@ package orbital.util;
 public
 interface Action {
 
-	/**
-	 * called back when action is notified.
-	 */
-	public Object action(Object arg);
+        /**
+         * called back when action is notified.
+         */
+        public Object action(Object arg);
 }

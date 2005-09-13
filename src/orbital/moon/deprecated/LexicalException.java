@@ -19,9 +19,9 @@ import java.io.IOException;
  */
 public
 class LexicalException extends IOException {
-	public LexicalException() {}
+        public LexicalException() {}
 
-	public LexicalException(String spec) {
-		super(spec);
-	}
+        public LexicalException(String spec) {
+                super(spec);
+        }
 }

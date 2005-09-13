@@ -38,49 +38,49 @@ final class PackageUtilities {
      * @todo replace by ordinary argmin and reevaluate the result's f-value.
      */
     public static final Pair/*<Object, Comparable>*/ min(Iterator choices, Function f) {
-	// (almost) identical to @see orbital.util.Setops#argmin(Iterator,Function)
+        // (almost) identical to @see orbital.util.Setops#argmin(Iterator,Function)
 
-	// search for minimum f in choices
-	// current best choice of choices
-	Object best = choices.next();
-	// f(best)
-	Comparable bestValue = (Comparable) f.apply(best);
-	while (choices.hasNext()) {
-	    final Object o = choices.next();
-	    final Comparable value = (Comparable) f.apply(o);
-	    if (value.compareTo(bestValue) < 0) {
-		bestValue = value;
-		best = o;
-	    }
-	    assert true : "invariant: bestValue =< f-value of each choice seen so far & f(best)==bestValue";
-	}
+        // search for minimum f in choices
+        // current best choice of choices
+        Object best = choices.next();
+        // f(best)
+        Comparable bestValue = (Comparable) f.apply(best);
+        while (choices.hasNext()) {
+            final Object o = choices.next();
+            final Comparable value = (Comparable) f.apply(o);
+            if (value.compareTo(bestValue) < 0) {
+                bestValue = value;
+                best = o;
+            }
+            assert true : "invariant: bestValue =< f-value of each choice seen so far & f(best)==bestValue";
+        }
 
-	// return the best choice along with its value
-	return new Pair/*<Object, Comparable>*/(best, bestValue);
+        // return the best choice along with its value
+        return new Pair/*<Object, Comparable>*/(best, bestValue);
     }
     /**
      * @see orbital.util.Setops#argmax(Iterator,Function)
      */
     public static final Pair/*<Object, Comparable>*/ max(Iterator choices, Function f) {
-	// (almost) identical to @see orbital.util.Setops#argmin(Iterator,Function)
+        // (almost) identical to @see orbital.util.Setops#argmin(Iterator,Function)
 
-	// search for maximum f in choices
-	// current best choice of choices
-	Object best = choices.next();
-	// f(best)
-	Comparable bestValue = (Comparable) f.apply(best);
-	while (choices.hasNext()) {
-	    final Object o = choices.next();
-	    final Comparable value = (Comparable) f.apply(o);
-	    if (value.compareTo(bestValue) > 0) {
-		bestValue = value;
-		best = o;
-	    }
-	    assert true : "invariant: bestValue >= f-value of each choice seen so far & f(best)==bestValue";
-	}
+        // search for maximum f in choices
+        // current best choice of choices
+        Object best = choices.next();
+        // f(best)
+        Comparable bestValue = (Comparable) f.apply(best);
+        while (choices.hasNext()) {
+            final Object o = choices.next();
+            final Comparable value = (Comparable) f.apply(o);
+            if (value.compareTo(bestValue) > 0) {
+                bestValue = value;
+                best = o;
+            }
+            assert true : "invariant: bestValue >= f-value of each choice seen so far & f(best)==bestValue";
+        }
 
-	// return the best choice along with its value
-	return new Pair/*<Object, Comparable>*/(best, bestValue);
+        // return the best choice along with its value
+        return new Pair/*<Object, Comparable>*/(best, bestValue);
     }
 
     //
@@ -97,22 +97,22 @@ final class PackageUtilities {
      * @note aspect of local randomization.
      */
     public static final GeneralSearchProblem restrictRandomly(GeneralSearchProblem problem, final int numberOfChoices, final ProbabilisticAlgorithm algorithm) {
-	return new DelegateGeneralSearchProblem(problem) {
-		private static final long serialVersionUID = -4007975459550830964L;
-		public Iterator actions(Object state) {
-		    final List actions = Setops.asList(getDelegatee().actions(state));
-		    final Random random = algorithm.getRandom();
-		    final List restrictedActions = new ArrayList(numberOfChoices);
-		    for (int i = 0; i < Math.min(numberOfChoices, actions.size()); i++) {
-			int index = random.nextInt(actions.size());
-			restrictedActions.add(actions.get(index));
-			actions.remove(index);
-			assert true : "invariant: restrictedActions contains a subset of OLD(actions) of the size i, actions does not contain those elements in restrictedActions any more (except for duplicats)";
-		    }
-		    assert true : "restrictedActions&sube;getDelegatee().actions(state)";
-		    return Setops.unmodifiableIterator(restrictedActions.iterator());
-		}
-	    };
+        return new DelegateGeneralSearchProblem(problem) {
+                private static final long serialVersionUID = -4007975459550830964L;
+                public Iterator actions(Object state) {
+                    final List actions = Setops.asList(getDelegatee().actions(state));
+                    final Random random = algorithm.getRandom();
+                    final List restrictedActions = new ArrayList(numberOfChoices);
+                    for (int i = 0; i < Math.min(numberOfChoices, actions.size()); i++) {
+                        int index = random.nextInt(actions.size());
+                        restrictedActions.add(actions.get(index));
+                        actions.remove(index);
+                        assert true : "invariant: restrictedActions contains a subset of OLD(actions) of the size i, actions does not contain those elements in restrictedActions any more (except for duplicats)";
+                    }
+                    assert true : "restrictedActions&sube;getDelegatee().actions(state)";
+                    return Setops.unmodifiableIterator(restrictedActions.iterator());
+                }
+            };
     }
 
     /**
@@ -126,57 +126,57 @@ final class PackageUtilities {
      * @todo aspect (I) of locally restricting the search to the most promising actions.
      */
     public static final GeneralSearchProblem restrictBest(GeneralSearchProblem problem, final Function evaluationFunction) {
-	return new DelegateGeneralSearchProblem(problem) {
-		private static final long serialVersionUID = 549567555212455602L;
-		public Iterator actions(Object state) {
-		    final GeneralSearchProblem problem = getDelegatee();
-		    // just a short name for evalutionFunction
-		    final Function f = evaluationFunction;
-		    
-		    Iterator choices = problem.actions(state);
-		    if (!choices.hasNext())
-			return choices;
+        return new DelegateGeneralSearchProblem(problem) {
+                private static final long serialVersionUID = 549567555212455602L;
+                public Iterator actions(Object state) {
+                    final GeneralSearchProblem problem = getDelegatee();
+                    // just a short name for evalutionFunction
+                    final Function f = evaluationFunction;
+                    
+                    Iterator choices = problem.actions(state);
+                    if (!choices.hasNext())
+                        return choices;
 
-		    // search for all with minimum f in choices
-		    
-		    // contains all choices that are as good as (current) best choice of actions
-		    List elite;
-		    // f(best)
-		    Comparable bestValue;
-		    {
-			// initialize loop invariant
-			assert choices.hasNext() : "hasNext() pure, and has already been queried";
-			final Object/*>A<*/ a =  choices.next();
-			final Object/*>S<*/ sp = problem.states(a, state).next();
-			elite = new LinkedList();
-			elite.add(a);
-			bestValue = (Comparable) f.apply(sp);
-		    }
-		    while (choices.hasNext()) {
-			final Object a = choices.next();
-			final Object/*>S<*/ sp = problem.states(a, state).next();
-			//@internal we may call states(a,state) twice without caching sp. Once here, and once in the application using sp of the final choices
-			final Comparable value = (Comparable) f.apply(sp);
-			final int cmp = value.compareTo(bestValue);
-			// remember the better one
-			if (cmp < 0) {
-			    // a is better, so throw away all that were just as good as best
-			    bestValue = value;
-			    elite.clear();
-			    elite.add(a);
-			} else if (cmp == 0)
-			    // collect all candidates as good as best
-			    elite.add(a);
-			else
-			    // forget about worse candidates
-			    ;
-			assert true : "invariant: f-value of each element in elite is bestValue & bestValue =< f-value of each choice seen so far & elite contains all elements of choices seen so far that has an f-cost of bestValue";
-		    }
+                    // search for all with minimum f in choices
+                    
+                    // contains all choices that are as good as (current) best choice of actions
+                    List elite;
+                    // f(best)
+                    Comparable bestValue;
+                    {
+                        // initialize loop invariant
+                        assert choices.hasNext() : "hasNext() pure, and has already been queried";
+                        final Object/*>A<*/ a =  choices.next();
+                        final Object/*>S<*/ sp = problem.states(a, state).next();
+                        elite = new LinkedList();
+                        elite.add(a);
+                        bestValue = (Comparable) f.apply(sp);
+                    }
+                    while (choices.hasNext()) {
+                        final Object a = choices.next();
+                        final Object/*>S<*/ sp = problem.states(a, state).next();
+                        //@internal we may call states(a,state) twice without caching sp. Once here, and once in the application using sp of the final choices
+                        final Comparable value = (Comparable) f.apply(sp);
+                        final int cmp = value.compareTo(bestValue);
+                        // remember the better one
+                        if (cmp < 0) {
+                            // a is better, so throw away all that were just as good as best
+                            bestValue = value;
+                            elite.clear();
+                            elite.add(a);
+                        } else if (cmp == 0)
+                            // collect all candidates as good as best
+                            elite.add(a);
+                        else
+                            // forget about worse candidates
+                            ;
+                        assert true : "invariant: f-value of each element in elite is bestValue & bestValue =< f-value of each choice seen so far & elite contains all elements of choices seen so far that has an f-cost of bestValue";
+                    }
 
-		    assert true : "elite&sube;getDelegatee().actions(state)";
-		    return Setops.unmodifiableIterator(elite.iterator());
-		}
-	    };
+                    assert true : "elite&sube;getDelegatee().actions(state)";
+                    return Setops.unmodifiableIterator(elite.iterator());
+                }
+            };
     }
 
     /**
@@ -194,6 +194,6 @@ final class PackageUtilities {
      * @todo aspect (II) of locally restricting the search to the most promising actions.
      */
     public static final GeneralSearchProblem restrictTop(final int maximumBranchingFactor, GeneralSearchProblem problem, final Function evaluationFunction) {
-	throw new UnsupportedOperationException("not yet implemented");
+        throw new UnsupportedOperationException("not yet implemented");
     }
 }

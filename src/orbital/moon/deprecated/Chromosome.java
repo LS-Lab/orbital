@@ -40,7 +40,7 @@ public class Chromosome implements Serializable {
     /**
      * version of this class for versioning with serialization and deserialization.
      */
-    private static final long	   serialVersionUID = -8787664851609784302L;
+    private static final long      serialVersionUID = -8787664851609784302L;
 
     /**
      * Compare two chromosomes according to their fitness descending.
@@ -50,18 +50,18 @@ public class Chromosome implements Serializable {
      * @see Genome#comparator
      */
     private static class FitnessComparator implements Comparator, Serializable {
-	public int compare(Object o1, Object o2) {
-	    Chromosome a = (Chromosome) o1;
-	    Chromosome b = (Chromosome) o2;
-	    double	   aw = a.getFitness();
-	    double	   bw = b.getFitness();
-	    if (aw == bw)
-		return 0;
-	    else if (aw < bw)
-		return +1;
-	    else
-		return -1;
-	} 
+        public int compare(Object o1, Object o2) {
+            Chromosome a = (Chromosome) o1;
+            Chromosome b = (Chromosome) o2;
+            double         aw = a.getFitness();
+            double         bw = b.getFitness();
+            if (aw == bw)
+                return 0;
+            else if (aw < bw)
+                return +1;
+            else
+                return -1;
+        } 
     }
     
     /**
@@ -80,21 +80,21 @@ public class Chromosome implements Serializable {
      * @see #evaluate(boolean)
      * @serial
      */
-    protected double	fitness = Double.NaN;
+    protected double    fitness = Double.NaN;
 
     /**
      * Create a Chromosome of a certain length.
      * @param length the number of boolean data flags in this chromosome.
      */
     public Chromosome(int length) {
-	this.fitness = Double.NaN;
-	this.data = new boolean[length];
-	for (int i = 0; i < length; i++)
-	    data[i] = false;
+        this.fitness = Double.NaN;
+        this.data = new boolean[length];
+        for (int i = 0; i < length; i++)
+            data[i] = false;
     }
     private Chromosome(boolean[] data, double fitness) {
-	this.fitness = fitness;
-	this.data = data;
+        this.fitness = fitness;
+        this.data = data;
     }
 
     // get/set methods
@@ -103,24 +103,24 @@ public class Chromosome implements Serializable {
      * Get the length of the boolean data.
      */
     public final int length() {
-	return data.length;
+        return data.length;
     } 
 
     /**
      * Get the fitness calculated the least recently.
      */
     public double getFitness() {
-	return fitness;
+        return fitness;
     } 
 
     /**
      * Set the fitness calculated.
      */
     public void setFitness(double fitness) {
-	this.fitness = fitness;
+        this.fitness = fitness;
     } 
     public void setFitness(Number fitness) {
-	setFitness(fitness.doubleValue());
+        setFitness(fitness.doubleValue());
     } 
 
     /**
@@ -128,9 +128,9 @@ public class Chromosome implements Serializable {
      * @return the boolean data at the bit with index.
      */
     public boolean get(int index) {
-	if (index < 0 || index > length())
-	    throw new ArrayIndexOutOfBoundsException(index + " should be in [0;" + length() + "[");
-	return data[index];
+        if (index < 0 || index > length())
+            throw new ArrayIndexOutOfBoundsException(index + " should be in [0;" + length() + "[");
+        return data[index];
     } 
 
     /**
@@ -140,16 +140,16 @@ public class Chromosome implements Serializable {
      * @param value  the boolean value to be set at index.
      */
     public void set(int index, boolean value) {
-	if (index < 0 || index > length())
-	    throw new ArrayIndexOutOfBoundsException(index + " should be in [0;" + length() + "[");
-	data[index] = value;
+        if (index < 0 || index > length())
+            throw new ArrayIndexOutOfBoundsException(index + " should be in [0;" + length() + "[");
+        data[index] = value;
     } 
 
     /**
      * Get the chromosome data. Use with care!
      */
     public boolean[] getData() {
-	return data;
+        return data;
     } 
 
     /**
@@ -157,31 +157,31 @@ public class Chromosome implements Serializable {
      * Will clear fitness.
      */
     public void setData(boolean[] n) {
-	data = n;
-	setFitness(Double.NaN);	   // fitness changed
+        data = n;
+        setFitness(Double.NaN);    // fitness changed
     } 
 
     /**
      * Returns a copy of this chromosome.
      */
     public Object clone() {
-	return new Chromosome(data, fitness);
+        return new Chromosome(data, fitness);
     } 
 
     /**
      * Checks for equality.
      */
     public boolean equals(Object o) {
-	if (o instanceof Chromosome) {
-	    Chromosome B = (Chromosome) o;
-	    if (length() != B.length())
-		return false;
-	    for (int i = 0; i < length(); i++)
-		if (data[i] != B.data[i])
-		    return false;
-	    return true;
-	} 
-	return false;
+        if (o instanceof Chromosome) {
+            Chromosome B = (Chromosome) o;
+            if (length() != B.length())
+                return false;
+            for (int i = 0; i < length(); i++)
+                if (data[i] != B.data[i])
+                    return false;
+            return true;
+        } 
+        return false;
     } 
 
     // central virtual methods
@@ -193,14 +193,14 @@ public class Chromosome implements Serializable {
      * @param probability the probability with that each bit of the chromosome mutates.
      */
     public Chromosome mutate(double probability) {
-	Chromosome n = (Chromosome) clone();
-	if (!MathUtilities.isProbability(probability))
-	    throw new IllegalArgumentException("invalid probability");
-	for (int i = 0; i < n.length(); i++)
-	    if (Utility.flip(GeneticAlgorithm.geneticAlgorithm.getRandom(), probability))
-		n.data[i] = !n.data[i];
-	setFitness(Double.NaN);	   // fitness changed
-	return n;
+        Chromosome n = (Chromosome) clone();
+        if (!MathUtilities.isProbability(probability))
+            throw new IllegalArgumentException("invalid probability");
+        for (int i = 0; i < n.length(); i++)
+            if (Utility.flip(GeneticAlgorithm.geneticAlgorithm.getRandom(), probability))
+                n.data[i] = !n.data[i];
+        setFitness(Double.NaN);    // fitness changed
+        return n;
     } 
 
 
@@ -227,26 +227,26 @@ public class Chromosome implements Serializable {
      * realign or repair at random. But it makes a data crossover possible.
      */
     public void crossover(Chromosome[] parents, Chromosome[] children, double crossoverProbability) {
-	if (!MathUtilities.isProbability(crossoverProbability))
-	    throw new IllegalArgumentException("invalid probability");
-	int			  a = parents.length;	  // a
-	int			  n = children.length;	  // n
-	double		  p = a;				  // p
+        if (!MathUtilities.isProbability(crossoverProbability))
+            throw new IllegalArgumentException("invalid probability");
+        int                       a = parents.length;     // a
+        int                       n = children.length;    // n
+        double            p = a;                                  // p
 
-	// uniformly distribute chromosome data of all parents over the children
-	UniqueShuffle par = new UniqueShuffle(a);
-	for (int i = 0; i < parents[0].length(); i++) {
-	    if (Utility.flip(GeneticAlgorithm.geneticAlgorithm.getRandom(), crossoverProbability))
-		par.reShuffle(GeneticAlgorithm.geneticAlgorithm.getRandom());
-	    else
-		par.unShuffle();
-	    for (int c = 0; c < n; c++)
-		children[c].data[i] = parents[par.next()].data[i];
-	} 
+        // uniformly distribute chromosome data of all parents over the children
+        UniqueShuffle par = new UniqueShuffle(a);
+        for (int i = 0; i < parents[0].length(); i++) {
+            if (Utility.flip(GeneticAlgorithm.geneticAlgorithm.getRandom(), crossoverProbability))
+                par.reShuffle(GeneticAlgorithm.geneticAlgorithm.getRandom());
+            else
+                par.unShuffle();
+            for (int c = 0; c < n; c++)
+                children[c].data[i] = parents[par.next()].data[i];
+        } 
 
-	// remember fitness change
-	for (int c = 0; c < n; c++)
-	    children[c].setFitness(Double.NaN);
+        // remember fitness change
+        for (int c = 0; c < n; c++)
+            children[c].setFitness(Double.NaN);
     } 
 
     /**
@@ -254,11 +254,11 @@ public class Chromosome implements Serializable {
      * @return inverted chromosome where all data booleans are negated.
      */
     public Chromosome inverse() {
-	Chromosome r = new Chromosome(length());
-	for (int i = 0; i < length(); i++)
-	    r.data[i] = !data[i];
-	r.setFitness(Double.NaN);	 // fitness changed
-	return r;
+        Chromosome r = new Chromosome(length());
+        for (int i = 0; i < length(); i++)
+            r.data[i] = !data[i];
+        r.setFitness(Double.NaN);        // fitness changed
+        return r;
     } 
 
     /**
@@ -268,21 +268,21 @@ public class Chromosome implements Serializable {
      *  Additionally, only positive numbers are returned.
      */
     protected Metric distanceMeasure() {
-	return metric;
+        return metric;
     } 
     private static final Metric metric = new Metric() {
-	    public double distance(Object o1, Object o2) {
-		Chromosome a = (Chromosome) o1;
-		Chromosome b = (Chromosome) o2;
-		if (a.length() != b.length())
-		    return 0;
-		int differences = 0;
-		for (int i = 0; i < a.length(); i++)
-		    if (a.data[i] != b.data[i])
-			differences++;
-		return differences / a.length();
-	    } 
-	};
+            public double distance(Object o1, Object o2) {
+                Chromosome a = (Chromosome) o1;
+                Chromosome b = (Chromosome) o2;
+                if (a.length() != b.length())
+                    return 0;
+                int differences = 0;
+                for (int i = 0; i < a.length(); i++)
+                    if (a.data[i] != b.data[i])
+                        differences++;
+                return differences / a.length();
+            } 
+        };
 
     // fitness evaluation and caching implementation
 
@@ -294,11 +294,11 @@ public class Chromosome implements Serializable {
      * Should usually be <code>false</code> for efficiency reasons.
      */
     public void evaluate(boolean redo) {
-	if (fitness == fitness && !redo)	   // !isNaN and no force to redo
-	    return;						   // since nothing changed
-	if (GeneticAlgorithm.geneticAlgorithm.fitnessWeighting == null)
-	    throw new IllegalStateException("GeneticAlgorithm.fitnessWeighting is not set to a Weighting-Instance");
-	setFitness((Number) GeneticAlgorithm.geneticAlgorithm.fitnessWeighting.apply(this));
+        if (fitness == fitness && !redo)           // !isNaN and no force to redo
+            return;                                                // since nothing changed
+        if (GeneticAlgorithm.geneticAlgorithm.fitnessWeighting == null)
+            throw new IllegalStateException("GeneticAlgorithm.fitnessWeighting is not set to a Weighting-Instance");
+        setFitness((Number) GeneticAlgorithm.geneticAlgorithm.fitnessWeighting.apply(this));
     } 
 
 
@@ -306,10 +306,10 @@ public class Chromosome implements Serializable {
      * Returns a string representation of this object.
      */
     public String toString() {
-	StringBuffer sb = new StringBuffer();
-	for (int i = 0; i < length(); i++)
-	    sb.append(data[i] ? "1" : "0");
-	return sb.toString();
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < length(); i++)
+            sb.append(data[i] ? "1" : "0");
+        return sb.toString();
     } 
 
     /**
@@ -321,18 +321,18 @@ public class Chromosome implements Serializable {
      * @throws NumberFormatException - if the string does not contain a parsable value.
      */
     public static Chromosome valueOf(String s) throws NumberFormatException {
-	Chromosome c = new Chromosome(s.length());
-	for (int i = 0; i < s.length(); i++)
-	    switch (s.charAt(i)) {
-	    case '1':
-		c.data[i] = true;
-		break;
-	    case '0':
-		c.data[i] = false;
-		break;
-	    default:
-		throw new NumberFormatException("Chromosome data contains illegal character '" + s.charAt(i) + "' at index " + i);
-	    }
-	return c;
+        Chromosome c = new Chromosome(s.length());
+        for (int i = 0; i < s.length(); i++)
+            switch (s.charAt(i)) {
+            case '1':
+                c.data[i] = true;
+                break;
+            case '0':
+                c.data[i] = false;
+                break;
+            default:
+                throw new NumberFormatException("Chromosome data contains illegal character '" + s.charAt(i) + "' at index " + i);
+            }
+        return c;
     } 
 }

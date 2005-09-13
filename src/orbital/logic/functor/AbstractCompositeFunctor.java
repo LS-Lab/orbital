@@ -34,25 +34,25 @@ abstract class AbstractCompositeFunctor implements Composite, Serializable {
      */
     private Notation notation;
     protected AbstractCompositeFunctor(Notation notation) {
-	setNotation(notation);
+        setNotation(notation);
     }
     protected AbstractCompositeFunctor() {
-	this(null);
+        this(null);
     }
     
     public orbital.logic.Composite construct(Object f, Object g) {
-	try {
-	    orbital.logic.Composite c = (orbital.logic.Composite) getClass().newInstance();
-	    c.setCompositor(f);
-	    c.setComponent(g);
-	    return c;
-    	}
-    	catch (InstantiationException ass) {
-	    throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite construct(Object,Object)").initCause(ass);
-    	}
-    	catch (IllegalAccessException ass) {
-	    throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite construct(Object,Object)").initCause(ass);
-    	}
+        try {
+            orbital.logic.Composite c = (orbital.logic.Composite) getClass().newInstance();
+            c.setCompositor(f);
+            c.setComponent(g);
+            return c;
+        }
+        catch (InstantiationException ass) {
+            throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite construct(Object,Object)").initCause(ass);
+        }
+        catch (IllegalAccessException ass) {
+            throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite construct(Object,Object)").initCause(ass);
+        }
     }
 
     /**
@@ -61,16 +61,16 @@ abstract class AbstractCompositeFunctor implements Composite, Serializable {
      * their compositors and their components are equal.
      */
     public boolean equals(Object o) {
-	if (o == null || getClass() != o.getClass())
-	    return false;
-	// note that it does not matter to which .Composite we cast since we have already checked for class equality
-	Composite b = (Composite) o;
-	return Utility.equals(getCompositor(), b.getCompositor())
-	    && Utility.equalsAll(getComponent(), b.getComponent());
+        if (o == null || getClass() != o.getClass())
+            return false;
+        // note that it does not matter to which .Composite we cast since we have already checked for class equality
+        Composite b = (Composite) o;
+        return Utility.equals(getCompositor(), b.getCompositor())
+            && Utility.equalsAll(getComponent(), b.getComponent());
     }
     
     public int hashCode() {
-	return Utility.hashCode(getCompositor()) ^ Utility.hashCodeAll(getComponent());
+        return Utility.hashCode(getCompositor()) ^ Utility.hashCodeAll(getComponent());
     }
     
     /**
@@ -78,19 +78,19 @@ abstract class AbstractCompositeFunctor implements Composite, Serializable {
      * @return <code>{@link Notation#format(Object, Object) notation.format}(getCompositor(), getComponent())</code>.
      */
     public String toString() {
-	return getNotation().format(getCompositor(), getComponent());
+        return getNotation().format(getCompositor(), getComponent());
     }
 
     /**
      * Get the notation used for displaying this composite functor.
      */
     public Notation getNotation() {
-	return notation;
+        return notation;
     }
     /**
      * Set the notation used for displaying this composite functor.
      */
     public void setNotation(Notation notation) {
-	this.notation = notation == null ? Notation.DEFAULT : notation;
+        this.notation = notation == null ? Notation.DEFAULT : notation;
     }
 }

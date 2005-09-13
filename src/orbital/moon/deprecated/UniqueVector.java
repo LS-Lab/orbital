@@ -18,17 +18,17 @@ import java.util.Vector;
  */
 public
 class UniqueVector extends Vector {
-	public UniqueVector() {}
+        public UniqueVector() {}
 
-	public final synchronized void addUniqueElement(Object obj) {
-		if (contains(obj))
-			return;
-		addElement(obj);
-	} 
+        public final synchronized void addUniqueElement(Object obj) {
+                if (contains(obj))
+                        return;
+                addElement(obj);
+        } 
 
-	public final synchronized void insertUniqueElementAt(Object obj, int index) {
-		if (contains(obj))
-			return;
-		insertElementAt(obj, index);
-	} 
+        public final synchronized void insertUniqueElementAt(Object obj, int index) {
+                if (contains(obj))
+                        return;
+                insertElementAt(obj, index);
+        } 
 }

@@ -9,12 +9,12 @@ import java.awt.Color;
  * @see ProgSettingsBeanInfo
  */
 public class ProgSettings {
-    private String			title;
-    private int				priority;
-    private boolean			backup;
-    private int				usage;
-    private String			comment;
-    private Color			textColor;
+    private String                      title;
+    private int                         priority;
+    private boolean                     backup;
+    private int                         usage;
+    private String                      comment;
+    private Color                       textColor;
 
     /**
      * possible values for usage
@@ -24,56 +24,56 @@ public class ProgSettings {
     public static final int END_USER = 3;
 
     public ProgSettings() {
-	title = "Application";
-	comment = "simple demonstration of application settings";
-	usage = END_USER;
+        title = "Application";
+        comment = "simple demonstration of application settings";
+        usage = END_USER;
     }
 
     public String getTitle() {
-	return title;
+        return title;
     } 
 
     public void setTitle(String newTitle) {
-	title = newTitle;
+        title = newTitle;
     } 
 
     public void setPriority(int newPriority) {
-	priority = newPriority;
+        priority = newPriority;
     } 
 
     public int getPriority() {
-	return priority;
+        return priority;
     } 
 
     public void setBackup(boolean newBackup) {
-	backup = newBackup;
+        backup = newBackup;
     } 
 
     public boolean isBackup() {
-	return backup;
+        return backup;
     } 
 
     public void setUsage(int newUsage) {
-	usage = newUsage;
+        usage = newUsage;
     } 
 
     public int getUsage() {
-	return usage;
+        return usage;
     } 
 
     public void setComment(String newComment) {
-	comment = newComment;
+        comment = newComment;
     } 
 
     public String getComment() {
-	return comment;
+        return comment;
     } 
 
     public void setTextColor(Color newTextColor) {
-	textColor = newTextColor;
+        textColor = newTextColor;
     } 
 
     public Color getTextColor() {
-	return textColor;
+        return textColor;
     } 
 }

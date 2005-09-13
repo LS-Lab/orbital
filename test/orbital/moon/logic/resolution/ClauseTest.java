@@ -20,36 +20,36 @@ public class ClauseTest extends check.TestCase {
     private ClausalFactory factory = null;
 
     public static void main(String[] args) {
-	junit.textui.TestRunner.run(suite());
+        junit.textui.TestRunner.run(suite());
     }
     public static Test suite() {
-	return new TestSuite(ClauseTest.class);
+        return new TestSuite(ClauseTest.class);
     }
     protected void setUp() {
-	logic = new ClassicalLogic();
-	factory = new DefaultClausalFactory();
+        logic = new ClassicalLogic();
+        factory = new DefaultClausalFactory();
     }
 
     public void testClausalConversionEquivalence() {
-	testFormula("a&b|~c&a");
-	testFormula("a&(a&b&~a)|c&a");
-	testFormula("a&(a&b|~a)|c&a");
-	testFormula("a&(a&b|~d)|c&a");
-	testFormula("a&(a|b|~d)|c&a|e&a");
+        testFormula("a&b|~c&a");
+        testFormula("a&(a&b&~a)|c&a");
+        testFormula("a&(a&b|~a)|c&a");
+        testFormula("a&(a&b|~d)|c&a");
+        testFormula("a&(a|b|~d)|c&a|e&a");
     }
 
     protected void testFormula(String formula) {
-	try {
-	    Formula f = (Formula) logic.createExpression(formula);
-	    ClausalSet s = factory.asClausalSet(f);
-	    Formula g = s.toFormula();
-	    assertTrue(logic.inference().infer(new Formula[] {f}, g),
-		       "formula->clausal->formula conversion remains equivalent for " + formula + "\n  (=>) " + f + "\t|=\t" + g + "\nthe latter is in CNF " + s);
-	    assertTrue(logic.inference().infer(new Formula[] {g}, f),
-		       "formula->clausal->formula conversion remains equivalent for " + formula + "\n  (<=) " + g + "\t|=\t" + f + "\nthe former is in CNF " + s);
-	}
-	catch (ParseException ex) {
-	    fail("failed parsing " + formula + " due to " + ex);
-	}
+        try {
+            Formula f = (Formula) logic.createExpression(formula);
+            ClausalSet s = factory.asClausalSet(f);
+            Formula g = s.toFormula();
+            assertTrue(logic.inference().infer(new Formula[] {f}, g),
+                       "formula->clausal->formula conversion remains equivalent for " + formula + "\n  (=>) " + f + "\t|=\t" + g + "\nthe latter is in CNF " + s);
+            assertTrue(logic.inference().infer(new Formula[] {g}, f),
+                       "formula->clausal->formula conversion remains equivalent for " + formula + "\n  (<=) " + g + "\t|=\t" + f + "\nthe former is in CNF " + s);
+        }
+        catch (ParseException ex) {
+            fail("failed parsing " + formula + " due to " + ex);
+        }
     }
 }

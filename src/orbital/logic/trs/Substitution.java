@@ -159,7 +159,7 @@ public interface Substitution extends Function/*<Object, Object>*/ {
      * @return the substitution list of matchers used for replacement.
      */
     Collection/*_<Matcher>_*/ getReplacements();
-	
+        
     /**
      * Apply this substitution &sigma; to term.
      * <p>
@@ -201,19 +201,19 @@ public interface Substitution extends Function/*<Object, Object>*/ {
      * @todo improve design, document, rename, move?
      */
     public static interface Matcher {
-    	
-    	/**
-    	 * Whether this matcher equals another.
-    	 * Two matchers are equal if they describe the same elementary replacements.
-    	 * <p>
-    	 * Note that it is usually safe to compare for type and pattern only, regardless
-    	 * of the substitute. But carefully avoid using "substitutions" with multiple
-    	 * replacements specified for a single pattern.
-    	 * </p>
-    	 */
-    	boolean equals(Object o);
-    	
-    	int hashCode();
+        
+        /**
+         * Whether this matcher equals another.
+         * Two matchers are equal if they describe the same elementary replacements.
+         * <p>
+         * Note that it is usually safe to compare for type and pattern only, regardless
+         * of the substitute. But carefully avoid using "substitutions" with multiple
+         * replacements specified for a single pattern.
+         * </p>
+         */
+        boolean equals(Object o);
+        
+        int hashCode();
     
         // get/set methods
 
@@ -231,19 +231,19 @@ public interface Substitution extends Function/*<Object, Object>*/ {
          */
         //@todo ? Object substitute();
 
-    	/**
-    	 * Attempts to match t against this.
-    	 * @return whether t matches this Matcher, which is thus applicable, here.
-    	 */
-    	boolean matches(Object t);
-    	
-    	/**
-    	 * Replace a matched term.
-    	 * @param t the term matched per {@link #matches(Object)}.
-    	 * @return the substitute for t. Simply returns t if no replacement should occur at all.
-    	 * @preconditions matches(t) &and; &quot;matches(t) was the last call to matches(Object)&quot;
-    	 */
-    	Object replace(Object t);
+        /**
+         * Attempts to match t against this.
+         * @return whether t matches this Matcher, which is thus applicable, here.
+         */
+        boolean matches(Object t);
+        
+        /**
+         * Replace a matched term.
+         * @param t the term matched per {@link #matches(Object)}.
+         * @return the substitute for t. Simply returns t if no replacement should occur at all.
+         * @preconditions matches(t) &and; &quot;matches(t) was the last call to matches(Object)&quot;
+         */
+        Object replace(Object t);
         
     }
 }

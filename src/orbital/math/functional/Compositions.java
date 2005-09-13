@@ -43,57 +43,57 @@ class Compositions {
      * @see Functionals#compose(Function, Function)
      */
     static class CompositeFunction extends MathFunctor_CompositeFunctor implements Function.Composite {
-	protected Function outer;
-	protected Function inner;
-	public CompositeFunction(Function f, Function g) {
-	    this(f, g, null);
-	}
+        protected Function outer;
+        protected Function inner;
+        public CompositeFunction(Function f, Function g) {
+            this(f, g, null);
+        }
 
-	/**
-	 * Create <code>f(g)</code>.
-	 * @param notation specifies which notation should be used for string representations.
-	 */
-	public CompositeFunction(Function f, Function g, Notation notation) {
-	    super(notation);
-	    this.outer = f;
-	    this.inner = g;
-	}
+        /**
+         * Create <code>f(g)</code>.
+         * @param notation specifies which notation should be used for string representations.
+         */
+        public CompositeFunction(Function f, Function g, Notation notation) {
+            super(notation);
+            this.outer = f;
+            this.inner = g;
+        }
 
-	private CompositeFunction() {}
+        private CompositeFunction() {}
 
-	public Object getCompositor() {
-	    return outer;
-	} 
-	public Object getComponent() {
-	    return inner;
-	} 
+        public Object getCompositor() {
+            return outer;
+        } 
+        public Object getComponent() {
+            return inner;
+        } 
 
-	public void setCompositor(Object f) throws ClassCastException {
-	    this.outer = (Function) f;
-	}
-	public void setComponent(Object g) throws ClassCastException {
-	    this.inner = (Function) g;
-	}
+        public void setCompositor(Object f) throws ClassCastException {
+            this.outer = (Function) f;
+        }
+        public void setComponent(Object g) throws ClassCastException {
+            this.inner = (Function) g;
+        }
 
-	public Object apply(Object x) {
-	    return outer.apply(inner.apply(x));
-	} 
+        public Object apply(Object x) {
+            return outer.apply(inner.apply(x));
+        } 
 
-	/**
-	 * <i>d</i>/<i>d</i>x o(i) = (o' &#8728; i) &middot; i'.
-	 */
-	public Function derive() {
-	    return (Function) Functionals.compose(Operations.times, Functionals.compose(outer.derive(), inner), inner.derive());
-	} 
-		
-	public Function integrate() {
-	    // simple cases
-	    if (outer == Operations.minus)
-		return Functionals.compose(Operations.minus, inner.integrate());
-	    else if (outer == Functions.id)
-		return inner.integrate();
-	    throw new GeneralComplexionException("integrating a composition would require integral substitution");
-	}
+        /**
+         * <i>d</i>/<i>d</i>x o(i) = (o' &#8728; i) &middot; i'.
+         */
+        public Function derive() {
+            return (Function) Functionals.compose(Operations.times, Functionals.compose(outer.derive(), inner), inner.derive());
+        } 
+                
+        public Function integrate() {
+            // simple cases
+            if (outer == Operations.minus)
+                return Functionals.compose(Operations.minus, inner.integrate());
+            else if (outer == Functions.id)
+                return inner.integrate();
+            throw new GeneralComplexionException("integrating a composition would require integral substitution");
+        }
     }
 
     /**
@@ -113,69 +113,69 @@ class Compositions {
      * @see Functionals#compose(BinaryFunction, BinaryFunction, BinaryFunction)
      */
     static class CompositeBinaryFunction extends MathFunctor_CompositeFunctor implements BinaryFunction.Composite {
-	protected BinaryFunction outer;
-	protected BinaryFunction left;
-	protected BinaryFunction right;
-	public CompositeBinaryFunction(BinaryFunction outer, BinaryFunction left, BinaryFunction right) {
-	    this(outer, left, right, null);
-	}
+        protected BinaryFunction outer;
+        protected BinaryFunction left;
+        protected BinaryFunction right;
+        public CompositeBinaryFunction(BinaryFunction outer, BinaryFunction left, BinaryFunction right) {
+            this(outer, left, right, null);
+        }
 
-	/**
-	 * Create <code>f(g,h)</code>.
-	 * @param notation specifies which notation should be used for string representations.
-	 */
-	public CompositeBinaryFunction(BinaryFunction outer, BinaryFunction left, BinaryFunction right, Notation notation) {
-	    super(notation);
-	    this.outer = outer;
-	    this.left = left;
-	    this.right = right;
-	}
-		
-	private CompositeBinaryFunction() {}
+        /**
+         * Create <code>f(g,h)</code>.
+         * @param notation specifies which notation should be used for string representations.
+         */
+        public CompositeBinaryFunction(BinaryFunction outer, BinaryFunction left, BinaryFunction right, Notation notation) {
+            super(notation);
+            this.outer = outer;
+            this.left = left;
+            this.right = right;
+        }
+                
+        private CompositeBinaryFunction() {}
 
-	public Object getCompositor() {
-	    return outer;
-	} 
-	public Object getComponent() {
-	    return new BinaryFunction[] {left, right};
-	} 
+        public Object getCompositor() {
+            return outer;
+        } 
+        public Object getComponent() {
+            return new BinaryFunction[] {left, right};
+        } 
 
-	public void setCompositor(Object f) throws ClassCastException {
-	    this.outer = (BinaryFunction/*_<B1, B2, C>_*/) f;
-	}
-	public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
-	    BinaryFunction[] a = (BinaryFunction[]) g;
-	    if (a.length != 2)
-		throw new IllegalArgumentException(BinaryFunction.class + "[2] expected");
-	    this.left = a[0];
-	    this.right = a[1];
-	}
+        public void setCompositor(Object f) throws ClassCastException {
+            this.outer = (BinaryFunction/*_<B1, B2, C>_*/) f;
+        }
+        public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
+            BinaryFunction[] a = (BinaryFunction[]) g;
+            if (a.length != 2)
+                throw new IllegalArgumentException(BinaryFunction.class + "[2] expected");
+            this.left = a[0];
+            this.right = a[1];
+        }
 
-	/**
-	 * @return outer<big>(</big>left(x,y),right(x,y)<big>)</big>.
-	 */
-	public Object apply(Object x, Object y) {
-	    return outer.apply(left.apply(x, y), right.apply(x, y));
-	} 
+        /**
+         * @return outer<big>(</big>left(x,y),right(x,y)<big>)</big>.
+         */
+        public Object apply(Object x, Object y) {
+            return outer.apply(left.apply(x, y), right.apply(x, y));
+        } 
 
-	/**
-	 * &part;/&part;(x,y) <big>(</big>o &#8728; (l &times; r)<sup>T</sup><big>)</big> = o'<big>(</big>(l,r)<big>)</big> &middot; (l' &times; r')
-	 * = &part;o/&part;x (l,r) &middot; l' + &part;o/&part;y (l,r) &middot; r'.
-	 */
-	//TODO: update documentation here, there, and everywhere
-	public BinaryFunction derive() {
-	    return Functionals.compose(Operations.times, Functionals.compose(outer.derive(), left, right), (BinaryFunction) Functionals.genericCompose(new BinaryFunction[][] {
-		{left.derive(), right.derive()}
-	    }));
-	} 
+        /**
+         * &part;/&part;(x,y) <big>(</big>o &#8728; (l &times; r)<sup>T</sup><big>)</big> = o'<big>(</big>(l,r)<big>)</big> &middot; (l' &times; r')
+         * = &part;o/&part;x (l,r) &middot; l' + &part;o/&part;y (l,r) &middot; r'.
+         */
+        //TODO: update documentation here, there, and everywhere
+        public BinaryFunction derive() {
+            return Functionals.compose(Operations.times, Functionals.compose(outer.derive(), left, right), (BinaryFunction) Functionals.genericCompose(new BinaryFunction[][] {
+                {left.derive(), right.derive()}
+            }));
+        } 
 
-	public BinaryFunction integrate(int i) {
-	    // simple cases
-	    if (outer == Operations.plus)
-		return Functionals.compose(Operations.plus, left.integrate(i), right.integrate(i));
-	    else if (outer == Operations.subtract)
-		return Functionals.compose(Operations.subtract, left.integrate(i), right.integrate(i));
-	    throw new GeneralComplexionException("integrating a composition would require integral substitution");
-	}
+        public BinaryFunction integrate(int i) {
+            // simple cases
+            if (outer == Operations.plus)
+                return Functionals.compose(Operations.plus, left.integrate(i), right.integrate(i));
+            else if (outer == Operations.subtract)
+                return Functionals.compose(Operations.subtract, left.integrate(i), right.integrate(i));
+            throw new GeneralComplexionException("integrating a composition would require integral substitution");
+        }
     }
 }

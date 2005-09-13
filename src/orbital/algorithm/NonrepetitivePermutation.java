@@ -27,48 +27,48 @@ class NonrepetitivePermutation extends Combinatorical {
      * @preconditions r <= n
      */
     public NonrepetitivePermutation(int r, int n) {
-    	if (!(r <= n))
-	    throw new IllegalArgumentException("only r <= n permutations without repetition exist");
-    	this.r = r;
-    	this.n = n;
-    	this.permutation = new int[r];
-	for (int i = 0; i < permutation.length; i++)
-	    permutation[i] = i;
-	if (r < n)
-	    throw new UnsupportedOperationException("r < n not yet implemented");
+        if (!(r <= n))
+            throw new IllegalArgumentException("only r <= n permutations without repetition exist");
+        this.r = r;
+        this.n = n;
+        this.permutation = new int[r];
+        for (int i = 0; i < permutation.length; i++)
+            permutation[i] = i;
+        if (r < n)
+            throw new UnsupportedOperationException("r < n not yet implemented");
     }
     
     /**
      * Returns the number of permutations that araise from this permutation-sequence.
      */
     public int count() {
-	return MathUtilities.nPr(n, r);
+        return MathUtilities.nPr(n, r);
     } 
 
     public boolean hasNext() {
-	int[] copy = (int[]) permutation.clone();
-	return first || permute(copy);
+        int[] copy = (int[]) permutation.clone();
+        return first || permute(copy);
     }
 
     public int[] next() {
-	if (first) {
-	    first = false;
-	    return permutation;
-	}
-	else if (permute(permutation))
-	    return permutation;
-	if (r == n)
-	    throw new NoSuchElementException();
-	assert r < n : "r < n case because r <= n abd r == n is solved";
-	throw new UnsupportedOperationException("r < n not yet implemented");
+        if (first) {
+            first = false;
+            return permutation;
+        }
+        else if (permute(permutation))
+            return permutation;
+        if (r == n)
+            throw new NoSuchElementException();
+        assert r < n : "r < n case because r <= n abd r == n is solved";
+        throw new UnsupportedOperationException("r < n not yet implemented");
     }
 
     public boolean hasPrevious() {
-	throw new UnsupportedOperationException("not yet implemented");
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
     public int[] previous() {
-	throw new UnsupportedOperationException("not yet implemented");
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
     /**
@@ -78,43 +78,43 @@ class NonrepetitivePermutation extends Combinatorical {
      * @return whether the permutation set is a new one or again the first one.
      */
     public static boolean permute(int permutation[]) {
-	int first = 0;
-	int last = permutation.length;
-	if (first == last)
-	    return false;
-	int i = first;
-	++i;
-	if (i == last)
-	    return false;
-	i = last;
-	--i;
+        int first = 0;
+        int last = permutation.length;
+        if (first == last)
+            return false;
+        int i = first;
+        ++i;
+        if (i == last)
+            return false;
+        i = last;
+        --i;
 
-	while (true) {
-	    int ii = i--;
-	    if (permutation[i] < permutation[ii]) {
-		int j = last;
-		while (!(permutation[i] < permutation[--j]));
-		// iter_swap(i, j);
-		int T = permutation[i];
-		permutation[i] = permutation[j];
-		permutation[j] = T;
-		// reverse(ii, last);
-		reverse(permutation, ii, last);
-		return true;
-	    } 
-	    if (i == first) {
-		reverse(permutation, first, last);
-		return false;
-	    } 
-	} 
+        while (true) {
+            int ii = i--;
+            if (permutation[i] < permutation[ii]) {
+                int j = last;
+                while (!(permutation[i] < permutation[--j]));
+                // iter_swap(i, j);
+                int T = permutation[i];
+                permutation[i] = permutation[j];
+                permutation[j] = T;
+                // reverse(ii, last);
+                reverse(permutation, ii, last);
+                return true;
+            } 
+            if (i == first) {
+                reverse(permutation, first, last);
+                return false;
+            } 
+        } 
     } 
     private static void reverse(int permutation[], int first, int last) {
-	while (first < last) {
-	    // iter_swap(first++, --last);
-	    int T = permutation[first];
-	    permutation[first++] = permutation[--last];
-	    permutation[last] = T;
-	} 
+        while (first < last) {
+            // iter_swap(first++, --last);
+            int T = permutation[first];
+            permutation[first++] = permutation[--last];
+            permutation[last] = T;
+        } 
     } 
 
     /**
@@ -163,6 +163,6 @@ class NonrepetitivePermutation extends Combinatorical {
      */
 
     public String toString() {
-	return getClass().getName() + "[of " + r + " elements out of " + n + "]";
+        return getClass().getName() + "[of " + r + " elements out of " + n + "]";
     }
 }

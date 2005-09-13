@@ -39,7 +39,7 @@ public class Gamemaster implements Runnable {
      * <code>players[i] instanceof HumanPlayer</code> if and only if <code>i</code> is a human player.
      * @serial
      */
-    private Function	players[];
+    private Function    players[];
 
 
     /**
@@ -62,13 +62,13 @@ public class Gamemaster implements Runnable {
 
 
     private FieldChangeListener endOfGameListener = new FieldChangeAdapter() {
-		//@internal we are transient
-		public void stateChanged(FieldChangeEvent evt) {
-		    //@todo assert evt.getField() == getField() : "we have only registered ourselves to our field " + getField() + " source=" + evt.getField();
-		    if (evt.getType() == FieldChangeEvent.END_OF_GAME)
-			stop();
-		}
-	};
+                //@internal we are transient
+                public void stateChanged(FieldChangeEvent evt) {
+                    //@todo assert evt.getField() == getField() : "we have only registered ourselves to our field " + getField() + " source=" + evt.getField();
+                    if (evt.getType() == FieldChangeEvent.END_OF_GAME)
+                        stop();
+                }
+        };
 
     /**
      * only for pure AI games without real players.
@@ -91,12 +91,12 @@ public class Gamemaster implements Runnable {
      * @preconditions initialField fits to rules
      */
     public Gamemaster(Component component, GameRules rules, Function players[], Field initialField) {
-	if (players.length != rules.getLeagues())
-	    throw new IllegalArgumentException("Illegal number of players, expected: " + rules.getLeagues() + " found: " + players.length);
-	this.component = component;
-	this.setGameRules(rules);
-	this.setField(initialField);
-	this.setPlayers(players);
+        if (players.length != rules.getLeagues())
+            throw new IllegalArgumentException("Illegal number of players, expected: " + rules.getLeagues() + " found: " + players.length);
+        this.component = component;
+        this.setGameRules(rules);
+        this.setField(initialField);
+        this.setPlayers(players);
     }
     /**
      * Create a new gamemaster for the game with the given rules.
@@ -108,17 +108,17 @@ public class Gamemaster implements Runnable {
      *  Especially, the value of <code>players[Figure.NOONE]</code> will be ignored.
      */
     public Gamemaster(Component component, GameRules rules, Function players[]) {
-	this(component, rules, players, null);
+        this(component, rules, players, null);
     }
 
     /**
      * Get the game rules used.
      */
     public GameRules getGameRules() {
-	return rules;
+        return rules;
     }
     protected void setGameRules(GameRules newRules) {
-	this.rules = newRules;
+        this.rules = newRules;
     }
 
     /**
@@ -128,26 +128,26 @@ public class Gamemaster implements Runnable {
      *  Especially, the value of <code>players[Figure.NOONE]</code> will be ignored.
      */
     public Function[] getPlayers() {
-	Function players[] = getPlayersInternal();
-	Function c[] = new Function[players.length];
-	for (int i = Figure.NOONE + 1; i < players.length; i++) {
-	    c[i] = players[i] instanceof HumanPlayer
-		? null
-		: players[i];
-	}
-	return c;
+        Function players[] = getPlayersInternal();
+        Function c[] = new Function[players.length];
+        for (int i = Figure.NOONE + 1; i < players.length; i++) {
+            c[i] = players[i] instanceof HumanPlayer
+                ? null
+                : players[i];
+        }
+        return c;
     }
     private void setPlayers(Function newPlayers[]) {
-	assert newPlayers[Figure.NOONE] == null : Figure.NOONE + " needs no player, so you can safely set it to null";
-	Function players[] = new Function[newPlayers.length];
-	for (int i = Figure.NOONE + 1; i < players.length; i++) {
-	    players[i] = newPlayers[i] != null
-		? newPlayers[i]
-		//@xxx horribly complicated formulation
-		: (this.humanPlayer = (this.humanPlayer != null ? this.humanPlayer : new HumanPlayer()));
-	}
-	setPlayersInternal(players);
-    }	
+        assert newPlayers[Figure.NOONE] == null : Figure.NOONE + " needs no player, so you can safely set it to null";
+        Function players[] = new Function[newPlayers.length];
+        for (int i = Figure.NOONE + 1; i < players.length; i++) {
+            players[i] = newPlayers[i] != null
+                ? newPlayers[i]
+                //@xxx horribly complicated formulation
+                : (this.humanPlayer = (this.humanPlayer != null ? this.humanPlayer : new HumanPlayer()));
+        }
+        setPlayersInternal(players);
+    }   
     /**
      * Get all players currently playing (internal version).
      * @return the individual players of our game.
@@ -156,19 +156,19 @@ public class Gamemaster implements Runnable {
      * @postconditions null&notin;RES
      */
     protected Function[] getPlayersInternal() {
-	return players;
+        return players;
     }
     private void setPlayersInternal(Function newPlayers[]) {
-	assert newPlayers[Figure.NOONE] == null : Figure.NOONE + " needs no player, so you can safely set it to null";
-	this.players = newPlayers;
-    }	
+        assert newPlayers[Figure.NOONE] == null : Figure.NOONE + " needs no player, so you can safely set it to null";
+        this.players = newPlayers;
+    }   
 
     /**
      * Get the total number of players.
      * @postconditions RES = getPlayers().length
      */
     public int getPlayersCount() {
-	return getPlayersInternal().length;
+        return getPlayersInternal().length;
     }
 
     /**
@@ -176,24 +176,24 @@ public class Gamemaster implements Runnable {
      * @postconditions RES = number of null occurrences in getPlayers() excluding getPlayers()[Figure.NOONE]
      */
     public int getNumberOfHumanPlayers() {
-	Function players[] = getPlayersInternal();
-	int count = 0;
-	for (int i = Figure.NOONE + 1; i < players.length; i++) {
-	    if (players[i] instanceof HumanPlayer)
-		count++;
-	}
-	return count;
+        Function players[] = getPlayersInternal();
+        int count = 0;
+        for (int i = Figure.NOONE + 1; i < players.length; i++) {
+            if (players[i] instanceof HumanPlayer)
+                count++;
+        }
+        return count;
     }
     
     /**
      * Get the field which the game is played on.
      */
     public Field getField() {
-	return field;
+        return field;
     }
     protected final void setField(Field newField) {
-	//System.out.println("Gamemaster.setField(" + System.identityHashCode(newField) + ")");
-	this.field = newField;
+        //System.out.println("Gamemaster.setField(" + System.identityHashCode(newField) + ")");
+        this.field = newField;
     }
 
     /**
@@ -201,7 +201,7 @@ public class Gamemaster implements Runnable {
      * @return non-<code>null</code> until we have been stopped.
      */
     protected final Thread getRunner() {
-	return runner;
+        return runner;
     }
 
 
@@ -212,7 +212,7 @@ public class Gamemaster implements Runnable {
      * state.
      */
     public void showStatus(String msg) {
-	System.out.println(msg);
+        System.out.println(msg);
     }
 
     
@@ -220,43 +220,43 @@ public class Gamemaster implements Runnable {
      * (Start entry point) starts a new game.
      */
     public void start() {
-	//System.out.println("Gamemaster.start()");
-	if (getField() == null)
-	    setField(rules.startField(component));
-	getField().addFieldChangeListener(endOfGameListener);
-	if (humanPlayer != null)
-	    getField().addFieldChangeListener(humanPlayer);
-	this.runner = new Thread(this, "Gamemaster");
-	runner.start();
-		// in case human players exist, but computer commences, we should obey the following:
-		//@internal let our clients at least have a chance to finish initialization after start() returns so that they can register listeners.
-		//@xxx However this is not 100% reliable because the following thread could start too early.
+        //System.out.println("Gamemaster.start()");
+        if (getField() == null)
+            setField(rules.startField(component));
+        getField().addFieldChangeListener(endOfGameListener);
+        if (humanPlayer != null)
+            getField().addFieldChangeListener(humanPlayer);
+        this.runner = new Thread(this, "Gamemaster");
+        runner.start();
+                // in case human players exist, but computer commences, we should obey the following:
+                //@internal let our clients at least have a chance to finish initialization after start() returns so that they can register listeners.
+                //@xxx However this is not 100% reliable because the following thread could start too early.
     } 
 
     /**
      * (Stop exit point) stops the current game.
      */
     public void stop() {
-	Thread moribund = runner;
-	runner = null;	  // runner.stop();
-	if (moribund != null)
-	    moribund.interrupt();
-	Field field = getField();
-	if (field != null) {
-	    field.removeFieldChangeListener(endOfGameListener);
-	    if (humanPlayer != null)
-		field.removeFieldChangeListener(humanPlayer); //@todo right?
-	}
+        Thread moribund = runner;
+        runner = null;    // runner.stop();
+        if (moribund != null)
+            moribund.interrupt();
+        Field field = getField();
+        if (field != null) {
+            field.removeFieldChangeListener(endOfGameListener);
+            if (humanPlayer != null)
+                field.removeFieldChangeListener(humanPlayer); //@todo right?
+        }
     } 
 
     /**
      * (Destroy exit point).
      */
     public void destroy() {
-	setGameRules(null);
-	setField(null);
-	players = null;
-	//runner.destroy();
+        setGameRules(null);
+        setField(null);
+        players = null;
+        //runner.destroy();
     } 
 
 
@@ -265,12 +265,12 @@ public class Gamemaster implements Runnable {
      * @internal see #turn()
      */
     public void run() {
-	try {
-	    playGame();
-	}
-	finally {
-	    setField(null);
-	}
+        try {
+            playGame();
+        }
+        finally {
+            setField(null);
+        }
     } 
 
     /**
@@ -279,44 +279,44 @@ public class Gamemaster implements Runnable {
      * @internal Usually, the gamerules implementation notifies its listeners whenever a turn is done.
      */
     private final void playGame() {
-	final Thread thisThread = Thread.currentThread();
-	{
-	    final Field field = getField();
-	    if (field == null)
-		throw new IllegalStateException("illegal field for starting the game: " + field);
-	    field.getFieldChangeMulticaster().stateChanged(new FieldChangeEvent(field, FieldChangeEvent.BEGIN_OF_GAME, null));
-	}
-	// do moves while it's an AI's turn
-	while (runner == thisThread && !Thread.interrupted()) {
-	    final Field field = getField();
-	    if (field == null)
-		throw new IllegalStateException("illegal field: " + field);
-	    final int turn = field.getTurn();
-	    showStatus("statusbar.ai.thinking " + turn + " " + players[turn]);////showStatus(getResources().getString("statusbar.ai.thinking"));
-	    if (!(players[turn] instanceof HumanPlayer)) {
-		System.err.println("statusbar.ai.thinking");
-	    }
-	    Object action = players[turn].apply(getField());
-	    showStatus("statusbar.ai.decided " + turn + " " + players[turn]);////showStatus(getResources().getString("statusbar.ai.decided"));
-	    if (action instanceof Option) {
-		Option move = (Option) action;
-		if (move.isNoMove()) {
-		    // no move performed, so do nothing
-		    showStatus("statusbar.ai.notmoving " + turn + " " + players[turn]);////showStatus(getResources().getString("statusbar.ai.notmoving"));
-		} else {
-		    showStatus("statusbar.ai.moving " + turn + " " + players[turn]);////showStatus(getResources().getString("statusbar.ai.moving"));
-		    Position source = new Position(move.getFigure());
-		    // if we could rely on our AI, then we could optimize away this expensive moving and simply use the resulting setField(move.getState());
-		    // But unfortunately, all our field's listeners would then vanish, possibly including end of game checks.
-		    //@internal cloning the position information is necessary, otherwise move would detect that it gets lost during swap.
-		    if (!field.move(source, move.getMove())) {
-			throw new Error("player " + players[turn] + " for league " + turn + " should only take legal moves: " + move);
-		    }
-		}
-	    } else {
-		throw new Error("player " + players[turn] + " for league " + turn + " found no move: " + action);
-	    }
-	} 
+        final Thread thisThread = Thread.currentThread();
+        {
+            final Field field = getField();
+            if (field == null)
+                throw new IllegalStateException("illegal field for starting the game: " + field);
+            field.getFieldChangeMulticaster().stateChanged(new FieldChangeEvent(field, FieldChangeEvent.BEGIN_OF_GAME, null));
+        }
+        // do moves while it's an AI's turn
+        while (runner == thisThread && !Thread.interrupted()) {
+            final Field field = getField();
+            if (field == null)
+                throw new IllegalStateException("illegal field: " + field);
+            final int turn = field.getTurn();
+            showStatus("statusbar.ai.thinking " + turn + " " + players[turn]);////showStatus(getResources().getString("statusbar.ai.thinking"));
+            if (!(players[turn] instanceof HumanPlayer)) {
+                System.err.println("statusbar.ai.thinking");
+            }
+            Object action = players[turn].apply(getField());
+            showStatus("statusbar.ai.decided " + turn + " " + players[turn]);////showStatus(getResources().getString("statusbar.ai.decided"));
+            if (action instanceof Option) {
+                Option move = (Option) action;
+                if (move.isNoMove()) {
+                    // no move performed, so do nothing
+                    showStatus("statusbar.ai.notmoving " + turn + " " + players[turn]);////showStatus(getResources().getString("statusbar.ai.notmoving"));
+                } else {
+                    showStatus("statusbar.ai.moving " + turn + " " + players[turn]);////showStatus(getResources().getString("statusbar.ai.moving"));
+                    Position source = new Position(move.getFigure());
+                    // if we could rely on our AI, then we could optimize away this expensive moving and simply use the resulting setField(move.getState());
+                    // But unfortunately, all our field's listeners would then vanish, possibly including end of game checks.
+                    //@internal cloning the position information is necessary, otherwise move would detect that it gets lost during swap.
+                    if (!field.move(source, move.getMove())) {
+                        throw new Error("player " + players[turn] + " for league " + turn + " should only take legal moves: " + move);
+                    }
+                }
+            } else {
+                throw new Error("player " + players[turn] + " for league " + turn + " found no move: " + action);
+            }
+        } 
     } 
 
     
@@ -329,57 +329,57 @@ public class Gamemaster implements Runnable {
      * @xxx the Gameboard will also pass to us moves performed when computer player thinks. They will then result in an error. Reject them.
      */
     private class HumanPlayer extends FieldChangeAdapter implements Function {
-	//@internal we are transient
-	/**
-	 * The option that the user has chosen.
-	 */
-	private volatile Option option;
-	/**
-	 * The communication lock.
-	 */
-	private final Object userAction = new Object() {};
-	public Object apply(Object field) {
-	    Option userOption;
-	    try {
-		synchronized(userAction) {
-		    if (option == null) {
-			userAction.wait();
-		    }
-		    userOption = this.option;
-		    this.option = null;
-		}
-		return userOption;
-	    }
-	    catch (InterruptedException interrupt) {
-		Thread r = runner;
-		stop();
-		if (r != null)
-		    r.interrupt();
-		Thread.currentThread().interrupt();
-		throw new InternalError("OutOfCheeseError");
-	    }
-	}
+        //@internal we are transient
+        /**
+         * The option that the user has chosen.
+         */
+        private volatile Option option;
+        /**
+         * The communication lock.
+         */
+        private final Object userAction = new Object() {};
+        public Object apply(Object field) {
+            Option userOption;
+            try {
+                synchronized(userAction) {
+                    if (option == null) {
+                        userAction.wait();
+                    }
+                    userOption = this.option;
+                    this.option = null;
+                }
+                return userOption;
+            }
+            catch (InterruptedException interrupt) {
+                Thread r = runner;
+                stop();
+                if (r != null)
+                    r.interrupt();
+                Thread.currentThread().interrupt();
+                throw new InternalError("OutOfCheeseError");
+            }
+        }
 
-	// event handler
-	public void movePerformed(FieldChangeEvent evt) {
-	    assert evt.getField() == getField() : "we have only registered ourselves to our field " + getField() + " source=" + evt.getField();
-	    if ((evt.getType() & (FieldChangeEvent.USER_ACTION | FieldChangeEvent.MOVE)) == (FieldChangeEvent.USER_ACTION | FieldChangeEvent.MOVE)) {
-		synchronized(userAction) {
-		    this.option = (Option) evt.getChangeInfo();
-		    userAction.notify();
-		}
-	    }
-	}
-	public void stateChanged(FieldChangeEvent evt) {
-	    assert evt.getField() == getField() : "we have only registered ourselves to our field " + getField() + " source=" + evt.getField();
-	    if ((evt.getType() & (FieldChangeEvent.USER_ACTION | FieldChangeEvent.END_OF_TURN)) == (FieldChangeEvent.USER_ACTION | FieldChangeEvent.END_OF_TURN)) {
-		synchronized(userAction) {
-		    //@internal special NO_MOVE option
-		    this.option = Option.createNoMove(evt.getField());
-		    assert this.option.isNoMove();
-		    userAction.notify();
-		}
-	    }
-	}
+        // event handler
+        public void movePerformed(FieldChangeEvent evt) {
+            assert evt.getField() == getField() : "we have only registered ourselves to our field " + getField() + " source=" + evt.getField();
+            if ((evt.getType() & (FieldChangeEvent.USER_ACTION | FieldChangeEvent.MOVE)) == (FieldChangeEvent.USER_ACTION | FieldChangeEvent.MOVE)) {
+                synchronized(userAction) {
+                    this.option = (Option) evt.getChangeInfo();
+                    userAction.notify();
+                }
+            }
+        }
+        public void stateChanged(FieldChangeEvent evt) {
+            assert evt.getField() == getField() : "we have only registered ourselves to our field " + getField() + " source=" + evt.getField();
+            if ((evt.getType() & (FieldChangeEvent.USER_ACTION | FieldChangeEvent.END_OF_TURN)) == (FieldChangeEvent.USER_ACTION | FieldChangeEvent.END_OF_TURN)) {
+                synchronized(userAction) {
+                    //@internal special NO_MOVE option
+                    this.option = Option.createNoMove(evt.getField());
+                    assert this.option.isNoMove();
+                    userAction.notify();
+                }
+            }
+        }
     }
 }

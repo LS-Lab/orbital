@@ -72,18 +72,18 @@ public abstract class AbstractGameRules implements GameRules, Serializable {
      * the prefix for image names.
      * @serial
      */
-    private String			  image_prefix;
+    private String                        image_prefix;
     /**
      * the suffix for image names.
      * @serial
      */
-    private String			  image_suffix;
+    private String                        image_suffix;
 
     /**
      * indicating current league whom this turn is up to.
      * @serial
      */
-    private int				  turn = NOONE;
+    private int                           turn = NOONE;
 
     /**
      * The league of the last turn (i.e. that was the last league to make a move).
@@ -101,9 +101,9 @@ public abstract class AbstractGameRules implements GameRules, Serializable {
      * @param suffix the suffix for image names.
      */
     protected AbstractGameRules(String prefix, String suffix) {
-	this.image_prefix = prefix;
-	this.image_suffix = suffix;
-	images = null;
+        this.image_prefix = prefix;
+        this.image_suffix = suffix;
+        images = null;
     }
 
     /**
@@ -111,7 +111,7 @@ public abstract class AbstractGameRules implements GameRules, Serializable {
      * images load are named <code>F<var>leagnum</var>_<var>typnum</var>.gif</code> from the codebase.
      */
     protected AbstractGameRules() {
-	this("F", ".gif");
+        this("F", ".gif");
     }
 
     /**
@@ -119,7 +119,7 @@ public abstract class AbstractGameRules implements GameRules, Serializable {
      * @deprecated Since Orbital1.1 use {@link Field#getTurn()} instead.
      */
     public int getTurn() {
-	return turn;
+        return turn;
     } 
 
     /**
@@ -127,7 +127,7 @@ public abstract class AbstractGameRules implements GameRules, Serializable {
      * @deprecated Since Orbital1.1 use {@link Field#setTurn(int)} instead.
      */
     protected void setTurn(int t) {
-	this.turn = t;
+        this.turn = t;
     } 
 
     // partial GameRules implementation
@@ -137,19 +137,19 @@ public abstract class AbstractGameRules implements GameRules, Serializable {
      * @see #images
      */
     public Image getImage(Figure f) {
-	int leag = f.getLeague();
-	int typ = f.getType();
-	if (leag == NOONE || typ == EMPTY) {
-	    leag = NOONE;
-	    typ = EMPTY;
-	}
-	if (images == null)
-	    throw new IllegalStateException("images have not yet been loaded");
-	if (leag<0 || images.length<=leag)
-	    throw new IllegalArgumentException("illegal league: "+leag);
-	if (typ<0 || images[leag].length<=typ)
-	    throw new IllegalArgumentException("illegal type: "+typ);
-	return images[leag][typ];
+        int leag = f.getLeague();
+        int typ = f.getType();
+        if (leag == NOONE || typ == EMPTY) {
+            leag = NOONE;
+            typ = EMPTY;
+        }
+        if (images == null)
+            throw new IllegalStateException("images have not yet been loaded");
+        if (leag<0 || images.length<=leag)
+            throw new IllegalArgumentException("illegal league: "+leag);
+        if (typ<0 || images[leag].length<=typ)
+            throw new IllegalArgumentException("illegal type: "+typ);
+        return images[leag][typ];
     } 
 
     /**
@@ -159,12 +159,12 @@ public abstract class AbstractGameRules implements GameRules, Serializable {
      * @deprecated Since Orbital1.1.
      */    
     public boolean isNextTurn() {
-	if (getTurn() != oldTurn) {
-	    oldTurn = getTurn();
-	    return true;
-	} else {
-	    return false;
-	}
+        if (getTurn() != oldTurn) {
+            oldTurn = getTurn();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -172,7 +172,7 @@ public abstract class AbstractGameRules implements GameRules, Serializable {
      * to the fields you started, instead.
      */
     protected final int turnDone(Field field) {
-	throw new UnsupportedOperationException("deprecated");
+        throw new UnsupportedOperationException("deprecated");
     }
 
     /**
@@ -188,69 +188,69 @@ public abstract class AbstractGameRules implements GameRules, Serializable {
      * @see java.awt.Toolkit#getImage(java.net.URL)
      */
     protected void loadAllImages(Component component, int relativeTo) {
-	// two load possibilities, the other is null!
-	Applet  applet = null;
-	Toolkit tk = null;
+        // two load possibilities, the other is null!
+        Applet  applet = null;
+        Toolkit tk = null;
 
-	// excerpt the applet if possible, or get a toolkit
-	switch (relativeTo) {
-	case URL_DOCUMENT_BASE:
-	    applet = (Applet) component;
-	    break;
-	case URL_RESOURCES:
-	    tk = component.getToolkit();
-	    break;
-	case URL_DETECT:
-	    if (component instanceof Applet)
-		applet = (Applet) component;
-	    else
-		tk = component.getToolkit();
-	    break;
-	default:
-	    throw new IllegalArgumentException("illegal relative url type specifier " + relativeTo);
-	}
+        // excerpt the applet if possible, or get a toolkit
+        switch (relativeTo) {
+        case URL_DOCUMENT_BASE:
+            applet = (Applet) component;
+            break;
+        case URL_RESOURCES:
+            tk = component.getToolkit();
+            break;
+        case URL_DETECT:
+            if (component instanceof Applet)
+                applet = (Applet) component;
+            else
+                tk = component.getToolkit();
+            break;
+        default:
+            throw new IllegalArgumentException("illegal relative url type specifier " + relativeTo);
+        }
 
-	this.images = new Image[getLeagues()][getFigureTypes()];
-	MediaTracker tracker = component == null ? null : new MediaTracker(component);
-	images[NOONE][EMPTY] = null;
-	for (int leag = NOONE + 1; leag < getLeagues(); leag++)
-	    for (int typ = EMPTY + 1; typ < getFigureTypes(); typ++) {
-		Image img = getImage(applet, tk,
-				     image_prefix + leag + "_" + typ + image_suffix);
-		images[leag][typ] = img;
-		if (tracker != null)
-		    tracker.addImage(img, FIGURE_IMAGE_ID);
-	    } 
-	try {
-	    tracker.waitForID(FIGURE_IMAGE_ID);
-	} catch (InterruptedException irq) {
-	    Logger.getLogger(AbstractGameRules.class.getName()).log(Level.WARNING, "initialization had been interrupted", irq);
-	    Thread.currentThread().interrupt();
-	} 
+        this.images = new Image[getLeagues()][getFigureTypes()];
+        MediaTracker tracker = component == null ? null : new MediaTracker(component);
+        images[NOONE][EMPTY] = null;
+        for (int leag = NOONE + 1; leag < getLeagues(); leag++)
+            for (int typ = EMPTY + 1; typ < getFigureTypes(); typ++) {
+                Image img = getImage(applet, tk,
+                                     image_prefix + leag + "_" + typ + image_suffix);
+                images[leag][typ] = img;
+                if (tracker != null)
+                    tracker.addImage(img, FIGURE_IMAGE_ID);
+            } 
+        try {
+            tracker.waitForID(FIGURE_IMAGE_ID);
+        } catch (InterruptedException irq) {
+            Logger.getLogger(AbstractGameRules.class.getName()).log(Level.WARNING, "initialization had been interrupted", irq);
+            Thread.currentThread().interrupt();
+        } 
     } 
 
     private Image getImage(Applet applet, Toolkit tk, String filename) {
-	if (tk != null)
-	    return tk.getImage(getClass().getResource(filename));
-	else if (applet != null)
-	    return applet.getImage(applet.getDocumentBase(), filename);
-	else
-	    throw new RuntimeException("neither applet nor toolkit is available to get images");
+        if (tk != null)
+            return tk.getImage(getClass().getResource(filename));
+        else if (applet != null)
+            return applet.getImage(applet.getDocumentBase(), filename);
+        else
+            throw new RuntimeException("neither applet nor toolkit is available to get images");
     } 
     protected void loadAllImages(Component component) {
-	loadAllImages(component, URL_RESOURCES);
+        loadAllImages(component, URL_RESOURCES);
     }
 
     /**
      * helper to convert from string-array to an array of moves.
      */
     protected static Move[][] stringToMove(String[][] moveStrings) {
-	Move[][] moves = new Move[moveStrings.length][];
-	for (int fig = EMPTY; fig < moves.length; fig++) {
-	    moves[fig] = new Move[moveStrings[fig].length];
-	    for (int i = EMPTY; i < moves[fig].length; i++)
-		moves[fig][i] = new Move(moveStrings[fig][i]);
-	} 
-	return moves;
+        Move[][] moves = new Move[moveStrings.length][];
+        for (int fig = EMPTY; fig < moves.length; fig++) {
+            moves[fig] = new Move[moveStrings[fig].length];
+            for (int i = EMPTY; i < moves[fig].length; i++)
+                moves[fig][i] = new Move(moveStrings[fig][i]);
+        } 
+        return moves;
     } 
 }

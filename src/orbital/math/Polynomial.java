@@ -100,7 +100,7 @@ public interface Polynomial/*<R implements Arithmetic, S implements Arithmetic>*
      * @see #degreeValue()
      */
     int degreeValue();
-	
+        
     // iterator views
 
     /**

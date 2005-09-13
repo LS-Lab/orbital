@@ -37,27 +37,27 @@ abstract class DepthFirstBoundingSearch extends GeneralBoundingSearch {
      * O(b*d) where b is the branching factor and d the solution depth.
      */
     public Function spaceComplexity() {
-	return Functions.linear(Values.getDefaultInstance().symbol("b"));
+        return Functions.linear(Values.getDefaultInstance().symbol("b"));
     }
 
     protected Iterator createTraversal(GeneralSearchProblem problem) {
-	return new DepthFirstSearch.OptionIterator(problem);
+        return new DepthFirstSearch.OptionIterator(problem);
     }
 
-    //	protected Collection createCollection() {
-    //		// new Stack();
-    //		return new LinkedList();
-    //	}
+    //  protected Collection createCollection() {
+    //          // new Stack();
+    //          return new LinkedList();
+    //  }
     //
     //    protected GeneralSearchProblem.Option select(Collection nodes) {
-    //    	Iterator i = nodes.iterator();
-    //    	GeneralSearchProblem.Option sel = (GeneralSearchProblem.Option) i.next();
-    //    	i.remove();
-    //    	return sel;
+    //          Iterator i = nodes.iterator();
+    //          GeneralSearchProblem.Option sel = (GeneralSearchProblem.Option) i.next();
+    //          i.remove();
+    //          return sel;
     //    }
     //
     //    protected Collection add(Collection newNodes, Collection oldNodes) {
-    //    	newNodes.addAll(oldNodes);
-    //    	return newNodes;
+    //          newNodes.addAll(oldNodes);
+    //          return newNodes;
     //    }
 }

@@ -29,47 +29,47 @@ class PropositionalInference implements Inference {
     private static final Logger logger = Logger.getLogger(PropositionalInference.class.getPackage().getName());
 
     public PropositionalInference() {
-	
+        
     }
     public boolean infer(Formula[] B, Formula D) {
         // convert B to clausalForm
         Set/*_<Set<Formula>>_*/ S = new LinkedHashSet();
         for (Iterator i = Arrays.asList(B).iterator(); i.hasNext(); ) {
-	    Formula Bi = (Formula) i.next();
-	    Utilities.propositionalOnly(Bi.getSignature());
-	    S.addAll(Utilities.clausalForm(Bi, SIMPLIFYING));
-	}
+            Formula Bi = (Formula) i.next();
+            Utilities.propositionalOnly(Bi.getSignature());
+            S.addAll(Utilities.clausalForm(Bi, SIMPLIFYING));
+        }
 
-	//@todo could we remove tautologies?
+        //@todo could we remove tautologies?
 
         logger.log(Level.FINE, "W = {0}", S);
         if (logger.isLoggable(Level.FINEST))
-	    for (int i = 0; i < B.length; i++)
-		logger.log(Level.FINEST, "W thus contains transformation of original formula {0}", Utilities.conjunctiveForm(B[i], SIMPLIFYING));
+            for (int i = 0; i < B.length; i++)
+                logger.log(Level.FINEST, "W thus contains transformation of original formula {0}", Utilities.conjunctiveForm(B[i], SIMPLIFYING));
 
         // negate query since we are a negative test calculus
         Formula query = D.not();
-	Utilities.propositionalOnly(query.getSignature());
+        Utilities.propositionalOnly(query.getSignature());
 
         // convert (negated) query to clausalForm S
-	Set queryClauses = Utilities.clausalForm(query, SIMPLIFYING);
+        Set queryClauses = Utilities.clausalForm(query, SIMPLIFYING);
 
-	//@todo could we remove tautologies from query?
-	logger.log(Level.FINE, "negated goal = {0} = {1}", new Object[] {query, queryClauses});
+        //@todo could we remove tautologies from query?
+        logger.log(Level.FINE, "negated goal = {0} = {1}", new Object[] {query, queryClauses});
 
-	//@internal if we don't copy the set, then formatting would need copies of the (mutable) sets.
-	Set Sp = Setops.union(S, queryClauses);
-	if (Sp.contains(Utilities.CONTRADICTION))
-	    // "premises are inconsistent since they already contain a contradiction, so ex falso quodlibet"
-	    return true;
-	return refute(Sp);
+        //@internal if we don't copy the set, then formatting would need copies of the (mutable) sets.
+        Set Sp = Setops.union(S, queryClauses);
+        if (Sp.contains(Utilities.CONTRADICTION))
+            // "premises are inconsistent since they already contain a contradiction, so ex falso quodlibet"
+            return true;
+        return refute(Sp);
     }
     public boolean isSound() {
-	return true;
+        return true;
     } 
     public boolean isComplete() {
-	//@internal for propositional logic
-	return true;
+        //@internal for propositional logic
+        return true;
     }
 
     /**
@@ -79,32 +79,32 @@ class PropositionalInference implements Inference {
      */
     private boolean refute(Set/*_<Set<Formula>>_*/ S) {
         logger.log(Level.FINE, "S = {0}", S);
-	if (S.isEmpty()) {
-	    logger.log(Level.FINE, "satisfiable S = {0}", S);
-	    return false;
-	}
-	// search for any unit clause
-	for (Iterator i = S.iterator(); i.hasNext(); ) {
-	    Set/*_<Formula>_*/ C = (Set)i.next();
-	    assert C.size() > 0 : "contradictions will have been detected earlier";
-	    if (C.size() != 1)
-		continue;
-	    Formula literalC = (Formula) C.iterator().next();
-	    S = reduce(literalC, S);
-	    if (S.contains(ClassicalLogic.Utilities.CONTRADICTION)) {
-		logger.log(Level.FINE, "unsatisfiable S = {0}", S);
-		return true;
-	    }
-	    //@internal restarting loop would suffice @todo optimize by i = S.iterator();
-	    return refute(S);
-	}
+        if (S.isEmpty()) {
+            logger.log(Level.FINE, "satisfiable S = {0}", S);
+            return false;
+        }
+        // search for any unit clause
+        for (Iterator i = S.iterator(); i.hasNext(); ) {
+            Set/*_<Formula>_*/ C = (Set)i.next();
+            assert C.size() > 0 : "contradictions will have been detected earlier";
+            if (C.size() != 1)
+                continue;
+            Formula literalC = (Formula) C.iterator().next();
+            S = reduce(literalC, S);
+            if (S.contains(ClassicalLogic.Utilities.CONTRADICTION)) {
+                logger.log(Level.FINE, "unsatisfiable S = {0}", S);
+                return true;
+            }
+            //@internal restarting loop would suffice @todo optimize by i = S.iterator();
+            return refute(S);
+        }
 
-	// no unit clause, so choose an atom P
-	//@internal we better choose a literal literalP and rely on duplex negation est affirmatio
-	Formula literalP = (Formula) ((Set)S.iterator().next()).iterator().next();
+        // no unit clause, so choose an atom P
+        //@internal we better choose a literal literalP and rely on duplex negation est affirmatio
+        Formula literalP = (Formula) ((Set)S.iterator().next()).iterator().next();
         logger.log(Level.FINER, "choose unit clause {0}", literalP);
-	return refute(Setops.union(S, Collections.singleton(Collections.singleton(literalP))))
-	    && refute(Setops.union(S, Collections.singleton(Collections.singleton(ClassicalLogic.Utilities.negation(literalP)))));
+        return refute(Setops.union(S, Collections.singleton(Collections.singleton(literalP))))
+            && refute(Setops.union(S, Collections.singleton(Collections.singleton(ClassicalLogic.Utilities.negation(literalP)))));
     }
 
     /**
@@ -112,36 +112,36 @@ class PropositionalInference implements Inference {
      */
     private Set/*_<Set<Formula>>_*/ reduce(final Formula C, Set/*_<Set<Formula>>_*/ S) {
         logger.log(Level.FINER, "reduce({0}, {1})", new Object[] {C, S});
-	Set/*_<Set<Formula>>_*/ S2 = new LinkedHashSet(S.size());
-	final Formula notC = ClassicalLogic.Utilities.negation(C);
-	for (Iterator i = S.iterator(); i.hasNext(); ) {
-	    Set/*_<Formula>_*/ clause = (Set)i.next();
-	    if (clause.contains(C)) {
-		logger.log(Level.FINEST, "remove clause {0}", clause);
-	    } else if (clause.contains(notC)) {
-		Set/*_<Formula>_*/ clause2 = new LinkedHashSet(clause);
-		clause2.remove(notC);
-		S2.add(clause2);
-		logger.log(Level.FINEST, "remove literal {0} retaining clause {1}", new Object[] {notC, clause2});
-	    } else {
-		S2.add(clause);
-		logger.log(Level.FINEST, "leave clause {0}", clause);
-	    }
-	}
+        Set/*_<Set<Formula>>_*/ S2 = new LinkedHashSet(S.size());
+        final Formula notC = ClassicalLogic.Utilities.negation(C);
+        for (Iterator i = S.iterator(); i.hasNext(); ) {
+            Set/*_<Formula>_*/ clause = (Set)i.next();
+            if (clause.contains(C)) {
+                logger.log(Level.FINEST, "remove clause {0}", clause);
+            } else if (clause.contains(notC)) {
+                Set/*_<Formula>_*/ clause2 = new LinkedHashSet(clause);
+                clause2.remove(notC);
+                S2.add(clause2);
+                logger.log(Level.FINEST, "remove literal {0} retaining clause {1}", new Object[] {notC, clause2});
+            } else {
+                S2.add(clause);
+                logger.log(Level.FINEST, "leave clause {0}", clause);
+            }
+        }
         logger.log(Level.FINER, "reduce({0}, {1}) = {2}", new Object[] {C, S, S2});
-	return S2;
+        return S2;
     }
 
     //@todo remove
     /*private Formula atomInLiteral(Formula literal) {
-	// used duplex negatio est affirmatio (optimizable)
-	if ((literal instanceof Composite)) {
-	    Composite f = (Composite) literal;
-	    Object    g = f.getCompositor();
-	    if (g == ClassicalLogic.LogicFunctions.not)
-		// use duplex negatio est affirmatio to avoid double negations
-		return (Formula) f.getComponent();
-	}
-	return literal;
-	}*/
+        // used duplex negatio est affirmatio (optimizable)
+        if ((literal instanceof Composite)) {
+            Composite f = (Composite) literal;
+            Object    g = f.getCompositor();
+            if (g == ClassicalLogic.LogicFunctions.not)
+                // use duplex negatio est affirmatio to avoid double negations
+                return (Formula) f.getComponent();
+        }
+        return literal;
+        }*/
 }// PropositionalInference

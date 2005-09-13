@@ -113,7 +113,7 @@ public abstract interface MathFunctor extends Functor, Arithmetic {
      * @throws UnsupportedOperationException if this function does not implement derivation but could be derived in principle.
      */
     //TODO: introduce MathFunctor derive(); once covariant return-types are allowed.
-	
+        
     //TODO: or introduce Function<A, Arithmetic> derive()
     //NO: or introduce either Function<A, Function<R^n,R^m>> derive()
     //NO: or even Function<A, Matrix<R, n x m>/Arithmetic> derive()

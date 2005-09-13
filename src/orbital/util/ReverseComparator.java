@@ -39,7 +39,7 @@ public class ReverseComparator implements Comparator, Serializable {
      * if the objects Comparable implementation should be used, instead.
      */
     public ReverseComparator(Comparator inner) {
-	this.inner = inner;
+        this.inner = inner;
     }
 
     /**
@@ -47,7 +47,7 @@ public class ReverseComparator implements Comparator, Serializable {
      * by the Comparable implementation of the objects compared.
      */
     public ReverseComparator() {
-	this.inner = null;
+        this.inner = null;
     }
 
     /**
@@ -59,20 +59,20 @@ public class ReverseComparator implements Comparator, Serializable {
      * @throws java.lang.ClassCastException if Comparator <code>inner==null</code> and both, o1 and o2 do not implement <tt>Comparable</tt>.
      */
     public int compare(Object o1, Object o2) {
-	if (inner != null)
-	    return inner.compare(o2, o1);
-	if (o1 instanceof Comparable)
-	    return -((Comparable) o1).compareTo(o2);
-	if (o2 instanceof Comparable)
-	    return -((Comparable) o2).compareTo(o1);
-	throw new ClassCastException("no Comparator is specified and none of the objects is Comparable");
+        if (inner != null)
+            return inner.compare(o2, o1);
+        if (o1 instanceof Comparable)
+            return -((Comparable) o1).compareTo(o2);
+        if (o2 instanceof Comparable)
+            return -((Comparable) o2).compareTo(o1);
+        throw new ClassCastException("no Comparator is specified and none of the objects is Comparable");
     } 
 
     public boolean equals(Object obj) {
-	return (obj instanceof ReverseComparator) && inner.equals(((ReverseComparator)obj).inner);
+        return (obj instanceof ReverseComparator) && inner.equals(((ReverseComparator)obj).inner);
     } 
-	
+        
     public int hashCode() {
-	return 27 ^ inner.hashCode();
+        return 27 ^ inner.hashCode();
     }
 }

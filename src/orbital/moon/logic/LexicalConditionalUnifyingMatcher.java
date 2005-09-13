@@ -51,31 +51,31 @@ class LexicalConditionalUnifyingMatcher extends UnifyingMatcher {
     }
 
     public boolean matches(Object t) {
-	if (!super.matches(t))
-	    return false;
-	Substitution mu = getUnifier();
-	return compare(mu.apply(compare1), mu.apply(compare2)) < 0;
+        if (!super.matches(t))
+            return false;
+        Substitution mu = getUnifier();
+        return compare(mu.apply(compare1), mu.apply(compare2)) < 0;
     }
-   	
+        
     /**
      * Compare regardless of negations, first,
      * and then with respect to negations thereafter.
      */
     int compare(Object o1, Object o2) {
-	String s1 = o1 + "";
-	String s2 = o2 + "";
-	int c = smallerReprOf(s1).compareTo(smallerReprOf(s2));
-	if (c != 0)
-	    return c;
-	else
-	    return s1.compareTo(s2);
+        String s1 = o1 + "";
+        String s2 = o2 + "";
+        int c = smallerReprOf(s1).compareTo(smallerReprOf(s2));
+        if (c != 0)
+            return c;
+        else
+            return s1.compareTo(s2);
     }
     
     private String smallerReprOf(String str) {
-    	StringBuffer s = new StringBuffer(str);
-    	for (int i = 0; i < s.length(); i++)
-	    if (s.charAt(i) == '~')
-		s.deleteCharAt(i);
-    	return s.toString();
+        StringBuffer s = new StringBuffer(str);
+        for (int i = 0; i < s.length(); i++)
+            if (s.charAt(i) == '~')
+                s.deleteCharAt(i);
+        return s.toString();
     }
 }

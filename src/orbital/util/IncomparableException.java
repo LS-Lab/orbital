@@ -19,25 +19,25 @@ import orbital.math.MathUtilities;
 public class IncomparableException extends IllegalArgumentException {
     private final Object incomparableObjects[];
     public IncomparableException() {
-	this.incomparableObjects = null;
+        this.incomparableObjects = null;
     }
 
     public IncomparableException(Object incomparableObjects[]) {
-	this.incomparableObjects = (Object[])incomparableObjects.clone();
+        this.incomparableObjects = (Object[])incomparableObjects.clone();
     }
 
     public IncomparableException(String mesg) {
-	super(mesg);
-	this.incomparableObjects = null;
+        super(mesg);
+        this.incomparableObjects = null;
     }
 
     public IncomparableException(String mesg, Object incomparableObjects[]) {
-	super(mesg + ": " + MathUtilities.format(incomparableObjects));
-	this.incomparableObjects = (Object[])incomparableObjects.clone();
+        super(mesg + ": " + MathUtilities.format(incomparableObjects));
+        this.incomparableObjects = (Object[])incomparableObjects.clone();
     }
 
     public IncomparableException(String mesg, Object incomparableObject1, Object incomparableObject2) {
-	this(mesg, new Object[] {incomparableObject1, incomparableObject2});
+        this(mesg, new Object[] {incomparableObject1, incomparableObject2});
     }
     
     /**
@@ -45,8 +45,8 @@ public class IncomparableException extends IllegalArgumentException {
      * to compare.
      */
     public Object[] getIncomparableObjects() {
-	return incomparableObjects != null
-	    ? (Object[])incomparableObjects.clone()
-	    : null;
+        return incomparableObjects != null
+            ? (Object[])incomparableObjects.clone()
+            : null;
     }
 }// IncomparableException

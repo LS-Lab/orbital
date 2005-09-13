@@ -20,7 +20,7 @@ import orbital.math.Integer;
  */
 abstract class AbstractArithmetic implements Arithmetic {
     public boolean equals(Object o, Real tolerance) {
-	return Metric.INDUCED.distance(this, (Arithmetic)o).compareTo(tolerance) < 0;
+        return Metric.INDUCED.distance(this, (Arithmetic)o).compareTo(tolerance) < 0;
     }
 
     /**
@@ -28,7 +28,7 @@ abstract class AbstractArithmetic implements Arithmetic {
      * @return this+(&minus;b).
      */
     public Arithmetic subtract(Arithmetic b) throws ArithmeticException {
-	return add(b.minus());
+        return add(b.minus());
     } 
 
     /**
@@ -37,7 +37,7 @@ abstract class AbstractArithmetic implements Arithmetic {
      * @todo which order in case of non-commutative?
      */
     public Arithmetic divide(Arithmetic b) throws ArithmeticException, UnsupportedOperationException {
-	return multiply(b.inverse());
+        return multiply(b.inverse());
     } 
 
     /**
@@ -52,22 +52,22 @@ abstract class AbstractArithmetic implements Arithmetic {
      * @todo improve performance by "Square and Power"
      */
     public Arithmetic power(Arithmetic b) throws ArithmeticException, UnsupportedOperationException {
-	if (!(b instanceof Scalar))
-	    throw new UnsupportedOperationException("default power only implemented for scalar numbers");
-	Integer s;
-	try {
-	    assert b instanceof Scalar;
-	    s = (Integer) Values.getDefaultInstance().narrow((Scalar) b);
-	}
-	catch (ClassCastException e) {
-	    throw new UnsupportedOperationException("default power only implemented for scalar integer numbers");
-	}
-	Arithmetic r = this;
-	int	   n = Math.abs(s.intValue());
-	for (int i = 0; i < n; i++)
-	    r = r.multiply(this);
-	if (s.intValue() < 0)
-	    r = r.inverse();
-	return r;
+        if (!(b instanceof Scalar))
+            throw new UnsupportedOperationException("default power only implemented for scalar numbers");
+        Integer s;
+        try {
+            assert b instanceof Scalar;
+            s = (Integer) Values.getDefaultInstance().narrow((Scalar) b);
+        }
+        catch (ClassCastException e) {
+            throw new UnsupportedOperationException("default power only implemented for scalar integer numbers");
+        }
+        Arithmetic r = this;
+        int        n = Math.abs(s.intValue());
+        for (int i = 0; i < n; i++)
+            r = r.multiply(this);
+        if (s.intValue() < 0)
+            r = r.inverse();
+        return r;
     } 
 }

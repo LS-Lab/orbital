@@ -37,7 +37,7 @@ public class SequenceIterator implements Iterator, Serializable {
      * The current iterator in <code>iterators</code> whose elements we return.
      * @serial
      */
-    private Iterator	   current;
+    private Iterator       current;
     /**
      * Create a new sequence iterator over an iterator of iterators.
      * @param iterators is an iterator over iterators whose elements this SequenceIterator will provide,
@@ -56,7 +56,7 @@ public class SequenceIterator implements Iterator, Serializable {
      */
     public SequenceIterator(List/*<Iterator>*/ iterators) {
         this(iterators.iterator());
-	assert Setops.all(iterators, Functionals.bindSecond(Utility.instanceOf, Iterator.class)) : iterators + " instanceof List<Iterator>";
+        assert Setops.all(iterators, Functionals.bindSecond(Utility.instanceOf, Iterator.class)) : iterators + " instanceof List<Iterator>";
     }
     /**
      * Create a new sequence iterator over an array of iterators.
@@ -68,31 +68,31 @@ public class SequenceIterator implements Iterator, Serializable {
     }
 
     public boolean hasNext() {
-    	while (true) {
-	    if (current != null && current.hasNext())
-		return true;
-	    if (iterators.hasNext()) {
-		if ((current = (Iterator) iterators.next()) == null)
-		    throw new NullPointerException("null is not an iterator");
-	    } else
-		return false;
-    	}
+        while (true) {
+            if (current != null && current.hasNext())
+                return true;
+            if (iterators.hasNext()) {
+                if ((current = (Iterator) iterators.next()) == null)
+                    throw new NullPointerException("null is not an iterator");
+            } else
+                return false;
+        }
     }
     public Object next() {
-    	while (true) {
-	    if (current != null && current.hasNext())
-		return current.next();
-	    if (iterators.hasNext()) {
-		if ((current = (Iterator) iterators.next()) == null)
-		    throw new NullPointerException("null is not an iterator");
-	    } else
-		throw new NoSuchElementException();
-    	}
+        while (true) {
+            if (current != null && current.hasNext())
+                return current.next();
+            if (iterators.hasNext()) {
+                if ((current = (Iterator) iterators.next()) == null)
+                    throw new NullPointerException("null is not an iterator");
+            } else
+                throw new NoSuchElementException();
+        }
     }
     public void remove() {
-    	if (current != null)
-	    current.remove();
-    	else
-	    throw new IllegalStateException();
+        if (current != null)
+            current.remove();
+        else
+            throw new IllegalStateException();
     }
 }

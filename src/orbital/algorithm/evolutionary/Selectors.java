@@ -28,7 +28,7 @@ public class Selectors {
      * module class - prevent instantiation.
      */
     private Selectors() {}
-	
+        
     /**
      * Better genomes will more likely be selected.
      * Weighted roulette wheel selector.
@@ -36,21 +36,21 @@ public class Selectors {
      * @see #likelyBetter()
      */
     public static final Function/*<Chromosome, Population>*/ rouletteWheel() {
-	return new RouletteWheelSelector();
+        return new RouletteWheelSelector();
     }
     private static class RouletteWheelSelector extends SelectionImpl {
-	private static final long serialVersionUID = -8558724347382003603L;
-	/**
-	 * partial sums.
-	 * partialSum[k] = &sum;<span class="doubleIndex"><sub>i=0</sub><sup>k</sup></span> f<sub>i</sub>
-	 * with the fitness weights f<sub>0</sub>,...,f<sub>n-1</sub>.
-	 */
-	private transient double partialSum[];
+        private static final long serialVersionUID = -8558724347382003603L;
+        /**
+         * partial sums.
+         * partialSum[k] = &sum;<span class="doubleIndex"><sub>i=0</sub><sup>k</sup></span> f<sub>i</sub>
+         * with the fitness weights f<sub>0</sub>,...,f<sub>n-1</sub>.
+         */
+        private transient double partialSum[];
         /**
          * weighted roulette wheel.  Likliehood of selection is proportionate to the fitness.
-	 * @preconditions p is sorted
-	 */
-	public Object apply(Object p) {
+         * @preconditions p is sorted
+         */
+        public Object apply(Object p) {
             Population population = (Population) p;
             //@todo would not need calling every time, but how to achieve that we get notified when population changed?
             update(population);
@@ -59,42 +59,42 @@ public class Selectors {
         /**
          * weighted roulette wheel.  Likliehood of selection is proportionate to the fitness.
          * Binary search method (using cached partial sums).
-	 * @see "Goldberg, D. E. Genetic Algorithms in Search, Optimization and Machine Learning. 1989."
-	 * @preconditions p is sorted && partialSum updated
-	 */
+         * @see "Goldberg, D. E. Genetic Algorithms in Search, Optimization and Machine Learning. 1989."
+         * @preconditions p is sorted && partialSum updated
+         */
         private Object selectImpl(Population population) {
             double cutoff = population.getGeneticAlgorithm().getRandom().nextDouble();
             int lower = 0, upper = population.size() - 1;
             while (lower <= upper){
                 int i = lower + (upper - lower) / 2;
                 if (partialSum[i] > cutoff)
-		    upper = i - 1;
+                    upper = i - 1;
                 else
-		    lower = i + 1;
+                    lower = i + 1;
             }
             if (lower >= population.size())
-            	lower = population.size() - 1;
+                lower = population.size() - 1;
             return population.get(lower);
         }
         private void update(Population population) {
-	    partialSum = new double[population.size()];
+            partialSum = new double[population.size()];
             double min = population.get(0, false).getFitness();
             double max = population.get(0, true).getFitness();
             if (max == min)
                 for(int i = 0; i < partialSum.length; i++)
-		    // equal likelihoods
-		    partialSum[i] = (double) (i+1) / (double) partialSum.length;
+                    // equal likelihoods
+                    partialSum[i] = (double) (i+1) / (double) partialSum.length;
             else if ((max > 0 && min >= 0) || (max <= 0 && min < 0)) {
-            	partialSum[0] = population.get(0).getFitness();
-            	for (int i=1; i < partialSum.length; i++)
-		    partialSum[i] = population.get(i).getFitness() + partialSum[i-1];
-            	for (int i = 0; i < partialSum.length; i++)
-		    partialSum[i] /= partialSum[partialSum.length - 1];
+                partialSum[0] = population.get(0).getFitness();
+                for (int i=1; i < partialSum.length; i++)
+                    partialSum[i] = population.get(i).getFitness() + partialSum[i-1];
+                for (int i = 0; i < partialSum.length; i++)
+                    partialSum[i] /= partialSum[partialSum.length - 1];
             }
             else
-            	throw new IllegalArgumentException("rouletteWheel selection requires either strictly negative or strictly positive fitness values");
+                throw new IllegalArgumentException("rouletteWheel selection requires either strictly negative or strictly positive fitness values");
         }
-	public String toString() {return "roulette wheel selector";}
+        public String toString() {return "roulette wheel selector";}
     }
 
     /**
@@ -105,20 +105,20 @@ public class Selectors {
      * @todo which implementation is this?
      */
     public static final Function/*<Chromosome, Population>*/ likelyBetter() {
-	return new LikelyBetterSelector();
+        return new LikelyBetterSelector();
     }
     private static class LikelyBetterSelector extends SelectionImpl {
-	private static final long serialVersionUID = -5845373429801808253L;
-	public Object apply(Object p) {
+        private static final long serialVersionUID = -5845373429801808253L;
+        public Object apply(Object p) {
             Population population = (Population) p;
-            Random	   random = population.getGeneticAlgorithm().getRandom();
-	    double	   selection;
-	    do {
-		selection = random.nextDouble();
-	    } while (Utility.flip(random, selection));
-	    return population.get((int) (selection * population.size()));
-	} 
-	public String toString() {return "likely better selector";}
+            Random         random = population.getGeneticAlgorithm().getRandom();
+            double         selection;
+            do {
+                selection = random.nextDouble();
+            } while (Utility.flip(random, selection));
+            return population.get((int) (selection * population.size()));
+        } 
+        public String toString() {return "likely better selector";}
     } 
 
     /**
@@ -126,23 +126,23 @@ public class Selectors {
      * Tournament selector returns slightly better genomes than roulette wheel.
      */
     public static final Function tournament() {
-	return new TournamentSelector();
+        return new TournamentSelector();
     }
     private static class TournamentSelector extends SelectionImpl {
-	private static final long serialVersionUID = -3254563371130485851L;
-	/**
-	 * The roulette wheel selector used twice per tournament selection.
-	 * @serial
-	 */
-	private final RouletteWheelSelector roulette = new RouletteWheelSelector();
-	public Object apply(Object p) {
-	    Population population = (Population) p;
-	    roulette.update(population);
-	    Genome a = (Genome) roulette.selectImpl(population);
-	    Genome b = (Genome) roulette.selectImpl(population);
-	    return b.getFitness() > a.getFitness() ? b : a;
-	} 
-	public String toString() {return "tournament selector";}
+        private static final long serialVersionUID = -3254563371130485851L;
+        /**
+         * The roulette wheel selector used twice per tournament selection.
+         * @serial
+         */
+        private final RouletteWheelSelector roulette = new RouletteWheelSelector();
+        public Object apply(Object p) {
+            Population population = (Population) p;
+            roulette.update(population);
+            Genome a = (Genome) roulette.selectImpl(population);
+            Genome b = (Genome) roulette.selectImpl(population);
+            return b.getFitness() > a.getFitness() ? b : a;
+        } 
+        public String toString() {return "tournament selector";}
     } 
 
     /**
@@ -150,24 +150,24 @@ public class Selectors {
      * Rank selector.
      */
     public static final Function rank() {
-	return new RankSelector();
+        return new RankSelector();
     }
     private static class RankSelector extends SelectionImpl {
-	private static final long serialVersionUID = 330621762438324420L;
-	/**
-	 * true for best selection, false for worst selection.
-	 * @serial
-	 */
-	private boolean			  whom = true;
-	public Object apply(Object p) {
+        private static final long serialVersionUID = 330621762438324420L;
+        /**
+         * true for best selection, false for worst selection.
+         * @serial
+         */
+        private boolean                   whom = true;
+        public Object apply(Object p) {
             Population population = (Population) p;
-	    int	   count = 1;
-	    double most = population.get(0, whom).getFitness();
-	    for (int i = 1; i < population.size() && population.get(i, whom).getFitness() == most; i++)
-		count++;
-	    return population.get(population.getGeneticAlgorithm().getRandom().nextInt(count), whom);
-	} 
-	public String toString() {return "rank selector";}
+            int    count = 1;
+            double most = population.get(0, whom).getFitness();
+            for (int i = 1; i < population.size() && population.get(i, whom).getFitness() == most; i++)
+                count++;
+            return population.get(population.getGeneticAlgorithm().getRandom().nextInt(count), whom);
+        } 
+        public String toString() {return "rank selector";}
     } 
 
     /**
@@ -175,15 +175,15 @@ public class Selectors {
      * Uniform selector.
      */
     public static final Function uniform() {
-	return new UniformSelector();
+        return new UniformSelector();
     }
     private static class UniformSelector extends SelectionImpl {
-	private static final long serialVersionUID = -4385650629055265254L;
-	public Object apply(Object p) {
+        private static final long serialVersionUID = -4385650629055265254L;
+        public Object apply(Object p) {
             Population population = (Population) p;
-	    return population.get(population.getGeneticAlgorithm().getRandom().nextInt(population.size()));
-	} 
-	public String toString() {return "uniform selector";}
+            return population.get(population.getGeneticAlgorithm().getRandom().nextInt(population.size()));
+        } 
+        public String toString() {return "uniform selector";}
     } 
 
     /**
@@ -205,20 +205,20 @@ abstract class SelectionImpl implements Function/*<Chromosome, Population>*/, Se
      * Generic instantiation clone
      */
     public Object clone() throws CloneNotSupportedException {
-	try {
-	    return (Function) getClass().newInstance();
-	} catch (InstantiationException x) {
-	    throw new CloneNotSupportedException("instantiate: " + getClass().getName());
-	} catch (IllegalAccessException x) {
-	    throw new CloneNotSupportedException("illegally accessed: " + getClass().getName());
-	} 
+        try {
+            return (Function) getClass().newInstance();
+        } catch (InstantiationException x) {
+            throw new CloneNotSupportedException("instantiate: " + getClass().getName());
+        } catch (IllegalAccessException x) {
+            throw new CloneNotSupportedException("illegally accessed: " + getClass().getName());
+        } 
     } 
 
     public boolean equals(Object o) {
-	return o != null && getClass() == o.getClass();
+        return o != null && getClass() == o.getClass();
     }
-	
+        
     public int hashCode() {
-	return getClass().hashCode();
+        return getClass().hashCode();
     }
 }

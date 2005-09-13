@@ -32,9 +32,9 @@ public class NullOutputStream extends OutputStream {
     public void write(int b) {}
 
     public void write(byte[] b, int off, int len) {
-	if (b == null)
-	    throw new NullPointerException();
-	else if ((off < 0) || (off > b.length) || (len < 0) || ((off + len) > b.length) || ((off + len) < 0))
-	    throw new IndexOutOfBoundsException();
+        if (b == null)
+            throw new NullPointerException();
+        else if ((off < 0) || (off > b.length) || (len < 0) || ((off + len) > b.length) || ((off + len) < 0))
+            throw new IndexOutOfBoundsException();
     } 
 }

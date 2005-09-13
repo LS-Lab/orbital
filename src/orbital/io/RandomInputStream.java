@@ -34,14 +34,14 @@ public class RandomInputStream extends InputStream {
      */
     protected Random random;
     public RandomInputStream(Random random) {
-	this.random = random;
+        this.random = random;
     }
 
     /**
      * Changes the random generator used while reading data.
      */
     public void setRandom(Random random) {
-	this.random = random;
+        this.random = random;
     } 
 
     /**
@@ -49,20 +49,20 @@ public class RandomInputStream extends InputStream {
      * Of course, for RandomInputStreams that rather infinitive.
      */
     public int available() {
-	return Integer.MAX_VALUE;
+        return Integer.MAX_VALUE;
     } 
 
     public int read() {
-	return random.nextInt(Byte.MAX_VALUE);
+        return random.nextInt(Byte.MAX_VALUE);
     } 
     public int read(byte[] b) {
-	random.nextBytes(b);
-	return b.length;
+        random.nextBytes(b);
+        return b.length;
     } 
     public int read(byte[] b, int off, int len) {
-	byte[] c = new byte[len];
-	random.nextBytes(c);
-	System.arraycopy(c, 0, b, off, len);
-	return len;
+        byte[] c = new byte[len];
+        random.nextBytes(c);
+        System.arraycopy(c, 0, b, off, len);
+        return len;
     } 
 }

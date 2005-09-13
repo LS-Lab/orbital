@@ -21,7 +21,7 @@ public interface Graph {
     boolean addRoot(Node root);
 
     boolean removeRoot(Node root);
-	
+        
     //@todo introduce createNode(), createEdge(Node a, Node b) factory-methods
     Node createNode();
 }

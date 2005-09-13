@@ -22,26 +22,26 @@ package orbital.logic;
 public
 interface Comparison {
 
-	/**
-	 * a&lt;b: Will compare whether a is less than b under a certain Comparison
-	 * criteria.
-	 * @return whether a is less than b
-	 */
-	boolean less(Object a, Object b);
+        /**
+         * a&lt;b: Will compare whether a is less than b under a certain Comparison
+         * criteria.
+         * @return whether a is less than b
+         */
+        boolean less(Object a, Object b);
 
 
-	/**
-	 * Comparing Implementations.
-	 * @deprecated Use orbital.util.ReverseComparator since JDK1.2.
-	 */
-	static class Comparing {
-		public static final Comparison not(final Comparison comparison) {
-			return new Comparison() {
-				public boolean less(Object a, Object b) {
-					return !comparison.less(a, b);
-				} 
-			};
-		} 
+        /**
+         * Comparing Implementations.
+         * @deprecated Use orbital.util.ReverseComparator since JDK1.2.
+         */
+        static class Comparing {
+                public static final Comparison not(final Comparison comparison) {
+                        return new Comparison() {
+                                public boolean less(Object a, Object b) {
+                                        return !comparison.less(a, b);
+                                } 
+                        };
+                } 
 
-	}
+        }
 }

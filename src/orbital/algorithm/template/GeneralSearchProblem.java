@@ -239,66 +239,66 @@ public interface GeneralSearchProblem/*<A,S>*/ extends MarkovDecisionProblem/*<A
      * @invariants getAction()&isin;A(s)
      */
     public static class Transition implements MarkovDecisionProblem.Transition, Serializable {
-	private static final long serialVersionUID = 257664629450534598L;
-	/**
-	 * the applicable action a&isin;A performed to reach this state.
-	 * @serial
-	 * @todo do we always need this?
-	 */
-	private Object/*>A<*/ action;
-	/**
-	 * the immediate action cost c=c(s,a) of the action performed to reach the state s&#697;.
-	 * @serial
-	 */
-	private Real cost;
-	/**
-	 * Create a new option &lang;a,c&rang;.
-	 * @param action the applicable action a&isin;A to reach the state s&#697;.
-	 * @param cost the immediate action cost c(s,a) of the action performed to reach the state s&#697;.
-	 */
-	public Transition(Object/*>A<*/ action, Real cost) {
-	    this.action = action;
-	    this.cost = cost;
-	}
-	/**
-	 * @deprecated convenience constructor, prefer to use {@link Values#valueOf(double)}..
-	 */
-	public Transition(Object/*>A<*/ action, double cost) {
-	    this(action, Values.getDefaultInstance().valueOf(cost));
-	}
+        private static final long serialVersionUID = 257664629450534598L;
+        /**
+         * the applicable action a&isin;A performed to reach this state.
+         * @serial
+         * @todo do we always need this?
+         */
+        private Object/*>A<*/ action;
+        /**
+         * the immediate action cost c=c(s,a) of the action performed to reach the state s&#697;.
+         * @serial
+         */
+        private Real cost;
+        /**
+         * Create a new option &lang;a,c&rang;.
+         * @param action the applicable action a&isin;A to reach the state s&#697;.
+         * @param cost the immediate action cost c(s,a) of the action performed to reach the state s&#697;.
+         */
+        public Transition(Object/*>A<*/ action, Real cost) {
+            this.action = action;
+            this.cost = cost;
+        }
+        /**
+         * @deprecated convenience constructor, prefer to use {@link Values#valueOf(double)}..
+         */
+        public Transition(Object/*>A<*/ action, double cost) {
+            this(action, Values.getDefaultInstance().valueOf(cost));
+        }
 
-	/**
-	 * Get the action.
-	 * @return the action a performed to reach the state s&#697;.
-	 */
-	public Object/*>A<*/ getAction() {
-	    return action;
-	}
-		
-	protected void setAction(Object/*>A<*/ action) {
-	    this.action = action;
-	}
+        /**
+         * Get the action.
+         * @return the action a performed to reach the state s&#697;.
+         */
+        public Object/*>A<*/ getAction() {
+            return action;
+        }
+                
+        protected void setAction(Object/*>A<*/ action) {
+            this.action = action;
+        }
 
-	public Real getCost() {
-	    return cost;
-	}
+        public Real getCost() {
+            return cost;
+        }
 
-	/**
-	 * 1 since deterministic transition.
-	 */
-	public final Scalar getProbability() {
-	    return Values.ONE;
-	}
-		
-	/**
-	 * Compares options according to their cost.
-	 */
-	public int compareTo(Object o) {
-	    throw new UnsupportedOperationException("functionality removed since it depends on evaluation function comparator");
-	}
-		
-	public String toString() {
-	    return getClass().getName() + "[" + getAction() + ",(" + getCost() + ")]";
-	}
+        /**
+         * 1 since deterministic transition.
+         */
+        public final Scalar getProbability() {
+            return Values.ONE;
+        }
+                
+        /**
+         * Compares options according to their cost.
+         */
+        public int compareTo(Object o) {
+            throw new UnsupportedOperationException("functionality removed since it depends on evaluation function comparator");
+        }
+                
+        public String toString() {
+            return getClass().getName() + "[" + getAction() + ",(" + getCost() + ")]";
+        }
     }
 }

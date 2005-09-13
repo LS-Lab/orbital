@@ -99,7 +99,7 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
     private static final Logger logger = Logger.getLogger(MarkovDecisionProcess.class.getName());
     private static final Values valueFactory = Values.getDefaultInstance();
     public Object solve(AlgorithmicProblem p) {
-    	return solve((MarkovDecisionProblem) p);
+        return solve((MarkovDecisionProblem) p);
     }
     
     /**
@@ -107,20 +107,20 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
      * @serial
      */
     private MarkovDecisionProblem problem;
-	
+        
     /**
      * Get the current problem.
      * @return the problem specified in the last call to solve.
      */
     protected final MarkovDecisionProblem getProblem() {
-	return problem;
+        return problem;
     }
     /**
      * Set the current problem.
      * @param newproblem the problem specified in the last call to solve.
      */
     private final void setProblem(MarkovDecisionProblem newproblem) {
-	this.problem = newproblem;
+        this.problem = newproblem;
     }
     
     /**
@@ -129,8 +129,8 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
      *  or <code>null</code> if no solution could be found.
      */
     public Function/*<S,A>*/ solve(MarkovDecisionProblem p) {
-    	setProblem(p);
-    	return plan();
+        setProblem(p);
+        return plan();
     }
     
     // central virtual methods
@@ -154,39 +154,39 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
      * @todo possible to unify with orbital.algorithm.template.DynamicProgramming?
      */
     public static abstract class DynamicProgramming extends MarkovDecisionProcess implements HeuristicAlgorithm {
-	private static final long serialVersionUID = 6262421425846708636L;
-    	/**
-    	 * the current discount factor &gamma;.
-    	 * @serial
-    	 */
-    	private Real	 discount;
-    	/**
-    	 * the heuristic function h, used for unknown states.
-    	 * @serial
-    	 */
-    	private Function heuristic;
+        private static final long serialVersionUID = 6262421425846708636L;
+        /**
+         * the current discount factor &gamma;.
+         * @serial
+         */
+        private Real     discount;
+        /**
+         * the heuristic function h, used for unknown states.
+         * @serial
+         */
+        private Function heuristic;
 
         /**
-    	 * @param heuristic the heuristic function to use.
+         * @param heuristic the heuristic function to use.
          * @param gamma The discount factor &gamma; describes, how much immediate results are
          *  preferred over future results.
          * @see #setHeuristic(Function)
          * @see #setDiscount(Real)
          */
-    	public DynamicProgramming(Function heuristic, Real gamma) {
-	    this.heuristic = heuristic;
-	    this.discount = gamma;
-    	}
-	/**
-	 * @deprecated convenience constructor, prefer to use {@link Values#valueOf(double)}..
-	 */
-    	public DynamicProgramming(Function heuristic, double gamma) {
-	    this(heuristic, Values.getDefaultInstance().valueOf(gamma));
-	}
+        public DynamicProgramming(Function heuristic, Real gamma) {
+            this.heuristic = heuristic;
+            this.discount = gamma;
+        }
+        /**
+         * @deprecated convenience constructor, prefer to use {@link Values#valueOf(double)}..
+         */
+        public DynamicProgramming(Function heuristic, double gamma) {
+            this(heuristic, Values.getDefaultInstance().valueOf(gamma));
+        }
         
-    	public DynamicProgramming(Function heuristic) {
-	    this(heuristic, 1);
-    	}
+        public DynamicProgramming(Function heuristic) {
+            this(heuristic, 1);
+        }
 
         /**
          * Set the discount factor &gamma;.
@@ -201,53 +201,53 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
          * @todo move to super class?
          */
         public void setDiscount(Real gamma) {
-	    if (!MathUtilities.isin(gamma, Values.ZERO, Values.ONE))
-		throw new IllegalArgumentException("assert that discount " + gamma + " isin [0,1]");
-	    this.discount = gamma;
+            if (!MathUtilities.isin(gamma, Values.ZERO, Values.ONE))
+                throw new IllegalArgumentException("assert that discount " + gamma + " isin [0,1]");
+            this.discount = gamma;
         }
         /**
          * Get the discount factor &gamma;.
          * @postconditions RES&isin;[0,1]
          */
         public Real getDiscount() {
-	    return discount;
+            return discount;
         }
-    	
-    	public Function getHeuristic() {
-	    return heuristic;
-    	}
+        
+        public Function getHeuristic() {
+            return heuristic;
+        }
     
-    	/**
-    	 * Set the heuristic function to use.
-    	 * <p>
-    	 * Note that the new heuristic function will only apply to unknown future states
-    	 * for bootstrapping.
-    	 * States that have already been estimated with the old heuristic function will not be updated.
-    	 * Nevertheless its always safe to set the heuristic function immediately
-    	 * before a call to {@link #plan()}.</p>
-    	 */
-    	public void setHeuristic(Function heuristic) {
-	    this.heuristic = heuristic;
-    	}
+        /**
+         * Set the heuristic function to use.
+         * <p>
+         * Note that the new heuristic function will only apply to unknown future states
+         * for bootstrapping.
+         * States that have already been estimated with the old heuristic function will not be updated.
+         * Nevertheless its always safe to set the heuristic function immediately
+         * before a call to {@link #plan()}.</p>
+         */
+        public void setHeuristic(Function heuristic) {
+            this.heuristic = heuristic;
+        }
     
-    	/**
-    	 * Create a mapping.
-    	 * <p>
-    	 * Overwrite to implement another lookup table than hash maps. f.ex. neural networks etc.
-    	 * However, beware of implicit function approximization and generalization techniques for
-    	 * U, that might disturb the convergence of RTDP.</p>
-    	 * @return an arbitrary table-like implementation ready to keep values for arguments.
-	 * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
-    	 */
-    	protected MutableFunction createMap() {
-	    return new MutableFunction.TableFunction(getEvaluation());
-    	}
+        /**
+         * Create a mapping.
+         * <p>
+         * Overwrite to implement another lookup table than hash maps. f.ex. neural networks etc.
+         * However, beware of implicit function approximization and generalization techniques for
+         * U, that might disturb the convergence of RTDP.</p>
+         * @return an arbitrary table-like implementation ready to keep values for arguments.
+         * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
+         */
+        protected MutableFunction createMap() {
+            return new MutableFunction.TableFunction(getEvaluation());
+        }
 
-    	/**
-    	 * f(s) = h(s).
-    	 */
+        /**
+         * f(s) = h(s).
+         */
         public Function getEvaluation() {
-	    return getHeuristic();
+            return getHeuristic();
         }
     
         /**
@@ -261,41 +261,41 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
          *  &and; Q = min<sub>a'&isin;A(s)</sub> Q(s,a').
          */
         protected orbital.util.Pair/*<A, Number>*/ maximumExpectedUtility(BinaryFunction/*<S,A,Real>*/ Q, Object/*>S<*/ state) {
-	    // search for minimal expected cost applicable action
-	    return PackageUtilities.min(getProblem().actions(state), Functionals.bindFirst(Q, state));
+            // search for minimal expected cost applicable action
+            return PackageUtilities.min(getProblem().actions(state), Functionals.bindFirst(Q, state));
         }
 
-    	/**
-    	 * Get the action-value cost function of an action and state.
-    	 * @param U The evaluation function U:S&rarr;<b>R</b> mapping states to expected cost sum.
-    	 * @return Q<sub>U</sub>:S&times;A(s)&rarr;<b>R</b>; (s,a) &#8614; Q<sub>U</sub>(s,a) = c(s,a) + &gamma;*&sum;<sub>s'&isin;S</sub> <b>P</b>(s'|s,a)*U(s').
-    	 *  Q<sub>U</sub>(s,a) is the action-value cost of the action a&isin;A(s) in state s&isin;S as evaluated by U.
-    	 * @see "C. J. C. H. Watkins. Learning from Delayed Rewards. PhD thesis, Cambridge University, Cambridge, England, 1989."
-    	 */
-    	protected BinaryFunction/*<S,A,Real>*/ getActionValue(final Function/*<S,Real>*/ U) {
-	    return new BinaryFunction/*<S,A,Real>*/() {
-		    public Object apply(Object state, Object action) {
-            		// cost = Q<sub>U</sub>(s,a)
-            		Scalar cost = valueFactory.ZERO;
-			Scalar originalCost = valueFactory.NaN;
-            		if (logger.isLoggable(Level.FINEST)) logger.log(Level.FINEST, "DPMDP.Q", "\tc(" + action + "," + state + ") ...");
-			final MarkovDecisionProblem problem = getProblem();
-			final Iterator r = problem.states(action, state);
-			assert r.hasNext() : "@postconditions";
-            		while (r.hasNext()) {
-			    final Object sp = r.next();
-			    final Transition t = (Transition) problem.transition(action, state, sp);
-			    if (logger.isLoggable(Level.FINEST)) logger.log(Level.FINEST, "DPMDP.Q", "\t    + " + t.getProbability() + " * " + U.apply(sp) + " for " + sp);
-			    cost = (Scalar) cost.add(t.getProbability().multiply((Arithmetic)U.apply(sp)));
-			    final Real c = t.getCost();
-			    assert !originalCost.equals(c, Values.getDefault().valueOf(MathUtilities.getDefaultTolerance())) : "@postconditions(getCost()): cost of transitions with the same action from the same state should be equal. Difference " + ((Real)originalCost.subtract(c)).doubleValue() + "=" + originalCost.subtract(c) + "=" + originalCost + "-" + c;
-			    originalCost = c;
-            		}
-            		if (logger.isLoggable(Level.FINER)) logger.log(Level.FINER, "DPMDP.Q", "\tc(" + action + "," + state + ")\t= " + originalCost + " + " + getDiscount() + " * " +  cost);
-            		return originalCost.add(getDiscount().multiply(cost));
-		    }
-    		};
-    	}
+        /**
+         * Get the action-value cost function of an action and state.
+         * @param U The evaluation function U:S&rarr;<b>R</b> mapping states to expected cost sum.
+         * @return Q<sub>U</sub>:S&times;A(s)&rarr;<b>R</b>; (s,a) &#8614; Q<sub>U</sub>(s,a) = c(s,a) + &gamma;*&sum;<sub>s'&isin;S</sub> <b>P</b>(s'|s,a)*U(s').
+         *  Q<sub>U</sub>(s,a) is the action-value cost of the action a&isin;A(s) in state s&isin;S as evaluated by U.
+         * @see "C. J. C. H. Watkins. Learning from Delayed Rewards. PhD thesis, Cambridge University, Cambridge, England, 1989."
+         */
+        protected BinaryFunction/*<S,A,Real>*/ getActionValue(final Function/*<S,Real>*/ U) {
+            return new BinaryFunction/*<S,A,Real>*/() {
+                    public Object apply(Object state, Object action) {
+                        // cost = Q<sub>U</sub>(s,a)
+                        Scalar cost = valueFactory.ZERO;
+                        Scalar originalCost = valueFactory.NaN;
+                        if (logger.isLoggable(Level.FINEST)) logger.log(Level.FINEST, "DPMDP.Q", "\tc(" + action + "," + state + ") ...");
+                        final MarkovDecisionProblem problem = getProblem();
+                        final Iterator r = problem.states(action, state);
+                        assert r.hasNext() : "@postconditions";
+                        while (r.hasNext()) {
+                            final Object sp = r.next();
+                            final Transition t = (Transition) problem.transition(action, state, sp);
+                            if (logger.isLoggable(Level.FINEST)) logger.log(Level.FINEST, "DPMDP.Q", "\t    + " + t.getProbability() + " * " + U.apply(sp) + " for " + sp);
+                            cost = (Scalar) cost.add(t.getProbability().multiply((Arithmetic)U.apply(sp)));
+                            final Real c = t.getCost();
+                            assert !originalCost.equals(c, Values.getDefault().valueOf(MathUtilities.getDefaultTolerance())) : "@postconditions(getCost()): cost of transitions with the same action from the same state should be equal. Difference " + ((Real)originalCost.subtract(c)).doubleValue() + "=" + originalCost.subtract(c) + "=" + originalCost + "-" + c;
+                            originalCost = c;
+                        }
+                        if (logger.isLoggable(Level.FINER)) logger.log(Level.FINER, "DPMDP.Q", "\tc(" + action + "," + state + ")\t= " + originalCost + " + " + getDiscount() + " * " +  cost);
+                        return originalCost.add(getDiscount().multiply(cost));
+                    }
+                };
+        }
     
         /**
          * Get a greedy policy with respect to an action-value cost function Q.
@@ -306,16 +306,16 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
          * @interal see #maximumExpectedUtility(Object)
          */
         protected Function/*<S,A>*/ getGreedyPolicy(final BinaryFunction/*<S,A,Real>*/ Q) {
-	    return new Function/*<S,A>*/() {
-		    public Object apply(Object state) {
-			if (logger.isLoggable(Level.FINER)) {
-			    logger.log(Level.FINER, "DPMDP.policy", "CHOOSING " + state);
-			    logger.log(Level.FINER, "DPMDP.policy", "CHOSE " + state + " do " + maximumExpectedUtility(Q, state));
-			}
-			// return the action chosen to take
-			return maximumExpectedUtility(Q, state).A;
-		    }
-        	};
+            return new Function/*<S,A>*/() {
+                    public Object apply(Object state) {
+                        if (logger.isLoggable(Level.FINER)) {
+                            logger.log(Level.FINER, "DPMDP.policy", "CHOOSING " + state);
+                            logger.log(Level.FINER, "DPMDP.policy", "CHOSE " + state + " do " + maximumExpectedUtility(Q, state));
+                        }
+                        // return the action chosen to take
+                        return maximumExpectedUtility(Q, state).A;
+                    }
+                };
         }
     }
 }

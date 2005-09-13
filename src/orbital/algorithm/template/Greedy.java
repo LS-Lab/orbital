@@ -29,7 +29,7 @@ import orbital.util.Setops;
  */
 public class Greedy implements AlgorithmicTemplate {
     public Object solve(AlgorithmicProblem p) {
-	return solve((GreedyProblem) p);
+        return solve((GreedyProblem) p);
     } 
 
     /**
@@ -75,25 +75,25 @@ public class Greedy implements AlgorithmicTemplate {
      * @internal optimizable we could remember the index of the current best candidate during search for removing it later on
      */
     public List solve(GreedyProblem p) {
-	List C = p.getInitialCandidates();
-	List S = new LinkedList();
-	while (p.isPartialSolution(S) && !C.isEmpty()) {
+        List C = p.getInitialCandidates();
+        List S = new LinkedList();
+        while (p.isPartialSolution(S) && !C.isEmpty()) {
 
-	    // weighting is quality criterium
-	    // retract x from C such that w(x) is maximal;
-	    final Object x = Setops.argmax(C.iterator(), p.getWeightingFor(S));
-	    C.remove(x);
+            // weighting is quality criterium
+            // retract x from C such that w(x) is maximal;
+            final Object x = Setops.argmax(C.iterator(), p.getWeightingFor(S));
+            C.remove(x);
 
-	    // nextPartialSolution computes new partial solution that includes x if feasible
-	    S = p.nextPartialSolution(S, x);
-	    // generalized case with changing candidates
-	    C = p.nextCandidates(C);
-	} 
+            // nextPartialSolution computes new partial solution that includes x if feasible
+            S = p.nextPartialSolution(S, x);
+            // generalized case with changing candidates
+            C = p.nextCandidates(C);
+        } 
 
-	if (p.isSolution(S))
-	    return S;
-	else
-	    return null;
+        if (p.isSolution(S))
+            return S;
+        else
+            return null;
     } 
 
     /**
@@ -103,11 +103,11 @@ public class Greedy implements AlgorithmicTemplate {
      * @internal note f(n) is considered to be in O(log n).
      */
     public Function complexity() {
-	return (Function) Operations.times.apply(Functions.id, Functions.log);
+        return (Function) Operations.times.apply(Functions.id, Functions.log);
     } 
 
     public Function spaceComplexity() {
-	//TODO: assure
-	return complexity();
+        //TODO: assure
+        return complexity();
     } 
 }

@@ -30,45 +30,45 @@ public class DelegateListIterator/*<A>*/ extends DelegateIterator implements Lis
      * @param delegatee the implementation-ListIterator to that ListIterator operations are delegated.
      */
     protected DelegateListIterator(ListIterator/*<A>*/ delegatee) {
-	super(delegatee);
+        super(delegatee);
     }
 
     // delegation operations
 
     protected void setDelegatee(ListIterator/*<A>*/ delegatee) {
-	super.setDelegatee(delegatee);
+        super.setDelegatee(delegatee);
     }
 
     protected void setDelegatee(Iterator/*<A>*/ delegatee) {
-	if (delegatee instanceof ListIterator/*<A>*/)
-	    setDelegatee((ListIterator/*<A>*/) delegatee);
-	else
-	    throw new IllegalArgumentException("setDelegatee requires ListIterator instance for DelegateListIterators");
+        if (delegatee instanceof ListIterator/*<A>*/)
+            setDelegatee((ListIterator/*<A>*/) delegatee);
+        else
+            throw new IllegalArgumentException("setDelegatee requires ListIterator instance for DelegateListIterators");
     }
 
     // Delegated operations.
 
     public boolean hasPrevious() {
-	return ((ListIterator)getDelegatee()).hasPrevious();
+        return ((ListIterator)getDelegatee()).hasPrevious();
     } 
 
     public Object previous() {
-	return ((ListIterator)getDelegatee()).previous();
+        return ((ListIterator)getDelegatee()).previous();
     } 
 
     public void add(Object o) {
-	((ListIterator)getDelegatee()).add(o);
+        ((ListIterator)getDelegatee()).add(o);
     } 
 
     public void set(Object o) {
-	((ListIterator)getDelegatee()).set(o);
+        ((ListIterator)getDelegatee()).set(o);
     } 
 
     public int nextIndex() {
-	return ((ListIterator)getDelegatee()).nextIndex();
+        return ((ListIterator)getDelegatee()).nextIndex();
     } 
 
     public int previousIndex() {
-	return ((ListIterator)getDelegatee()).previousIndex();
+        return ((ListIterator)getDelegatee()).previousIndex();
     } 
 }

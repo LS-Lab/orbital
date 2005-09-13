@@ -31,7 +31,7 @@ public class DelegateIterator/*<A>*/ implements Iterator/*<A>*/, Serializable {
      * NullPointerExceptions in almost every method.
      */
     private DelegateIterator() {
-	delegatee = null;
+        delegatee = null;
     }
 
     /**
@@ -39,7 +39,7 @@ public class DelegateIterator/*<A>*/ implements Iterator/*<A>*/, Serializable {
      * @param delegatee the implementation-Iterator to that Iterator operations are delegated.
      */
     protected DelegateIterator(Iterator/*<A>*/ delegatee) {
-	this.delegatee = delegatee;
+        this.delegatee = delegatee;
     }
 
     // delegation operations
@@ -55,7 +55,7 @@ public class DelegateIterator/*<A>*/ implements Iterator/*<A>*/, Serializable {
      * @return the implementation-Iterator that Iterator operations are delegated to.
      */
     protected Iterator/*<A>*/ getDelegatee() {
-	return this.delegatee;
+        return this.delegatee;
     } 
 
     /**
@@ -63,20 +63,20 @@ public class DelegateIterator/*<A>*/ implements Iterator/*<A>*/, Serializable {
      * @param delegatee the implementation-Iterator that Iterator operations are delegated to.
      */
     protected void setDelegatee(Iterator/*<A>*/ delegatee) {
-	this.delegatee = delegatee;
+        this.delegatee = delegatee;
     } 
 
     // Delegated operations.
 
     public boolean hasNext() {
-	return getDelegatee().hasNext();
+        return getDelegatee().hasNext();
     } 
 
     public Object next() {
-	return getDelegatee().next();
+        return getDelegatee().next();
     } 
 
     public void remove() {
-	getDelegatee().remove();
+        getDelegatee().remove();
     } 
 }

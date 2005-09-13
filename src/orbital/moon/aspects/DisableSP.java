@@ -16,15 +16,15 @@ import orbital.SP;
  * @author  Andr&eacute; Platzer
  */
 aspect DisableSP extends SPUsage {
-	pointcut skipping(): calls(SP, public static void skipIf(..));
+        pointcut skipping(): calls(SP, public static void skipIf(..));
 
-	/**
-	 * ignore all assertion calls.
-	 */
-	static around() returns void: assertions() || skipping() {
+        /**
+         * ignore all assertion calls.
+         */
+        static around() returns void: assertions() || skipping() {
 
-	}
-	static around() returns boolean: feedbackAssertions() {
-		return true;
-	}
+        }
+        static around() returns boolean: feedbackAssertions() {
+                return true;
+        }
 }

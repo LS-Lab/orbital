@@ -68,30 +68,30 @@ public class Demonstratos extends Applet {
      * @see #start
      */
     public Demonstratos() {
-	out = System.out;
-	try {
-	    System.setOut(out);
-	}
-	catch (SecurityException trial) {}
-	catch (Throwable trial) {}		// this is necessary because Internet Explorer cheats and does not throw a SecurityException
+        out = System.out;
+        try {
+            System.setOut(out);
+        }
+        catch (SecurityException trial) {}
+        catch (Throwable trial) {}              // this is necessary because Internet Explorer cheats and does not throw a SecurityException
     }
 
     public void init() {
-	super.init();
-	String param;
+        super.init();
+        String param;
 
-	param = getParameter("ROWS");
-	int rows = param == null ? 10 : Integer.parseInt(param);
+        param = getParameter("ROWS");
+        int rows = param == null ? 10 : Integer.parseInt(param);
 
-	param = getParameter("COLS");
-	int cols = param == null ? 40 : Integer.parseInt(param);
+        param = getParameter("COLS");
+        int cols = param == null ? 40 : Integer.parseInt(param);
 
-	runnable = getParameter("RUNNABLE");
+        runnable = getParameter("RUNNABLE");
 
-	view = new TextArea(rows, cols);
-	view.setEditable(false);
-	setLayout(new BorderLayout());
-	add("Center", view);	// @version 1.0
+        view = new TextArea(rows, cols);
+        view.setEditable(false);
+        setLayout(new BorderLayout());
+        add("Center", view);    // @version 1.0
     } 
 
     /**
@@ -102,54 +102,54 @@ public class Demonstratos extends Applet {
      * @see Demonstratos#Demonstratos
      */
     public void start() {
-	out = new PrintStream(new TextAreaOutputStream(view));
-	try {
-	    System.setOut(out);
-	} catch (SecurityException trial) {}
+        out = new PrintStream(new TextAreaOutputStream(view));
+        try {
+            System.setOut(out);
+        } catch (SecurityException trial) {}
 
-	if (runnable != null)
-	    try {
-		Runnable r = (Runnable) Class.forName(runnable).newInstance();
-		runnableThread = new Thread(r, "demonstrated");
-		runnableThread.start();
-	    } catch (ClassNotFoundException x) {
-		x.printStackTrace();
-	    } catch (ClassCastException x) {
-		x.printStackTrace();
-	    } catch (IllegalAccessException x) {
-		x.printStackTrace();
-	    } catch (InstantiationException x) {
-		x.printStackTrace();
-	    } 
+        if (runnable != null)
+            try {
+                Runnable r = (Runnable) Class.forName(runnable).newInstance();
+                runnableThread = new Thread(r, "demonstrated");
+                runnableThread.start();
+            } catch (ClassNotFoundException x) {
+                x.printStackTrace();
+            } catch (ClassCastException x) {
+                x.printStackTrace();
+            } catch (IllegalAccessException x) {
+                x.printStackTrace();
+            } catch (InstantiationException x) {
+                x.printStackTrace();
+            } 
     } 
 
     public void stop() {
-	if (runnable != null) {
-	    if (runnableThread != null)
-		runnableThread.stop();
-	} 
+        if (runnable != null) {
+            if (runnableThread != null)
+                runnableThread.stop();
+        } 
     } 
 
     /**
      * Info.
      */
     public String getAppletInfo() {
-	return "Demonstratos Applet that demonstrates the results and output of Applications. (c) 1998 by Andre Platzer";
+        return "Demonstratos Applet that demonstrates the results and output of Applications. (c) 1998 by Andre Platzer";
     } 
 
     /**
      * Parameter Info
      */
     public String[][] getParameterInfo() {
-	String[][] info = {
-	    {
-		"rows", "int", "number of rows in which the result will be displayed"
-	    }, {
-		"cols", "int", "number of columns in which the result will be displayed"
-	    }, {
-		"runnable", "String", "String-name of Class implementing Runnable that contains the main run() Method"
-	    }
-	};
-	return info;
+        String[][] info = {
+            {
+                "rows", "int", "number of rows in which the result will be displayed"
+            }, {
+                "cols", "int", "number of columns in which the result will be displayed"
+            }, {
+                "runnable", "String", "String-name of Class implementing Runnable that contains the main run() Method"
+            }
+        };
+        return info;
     } 
 }

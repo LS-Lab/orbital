@@ -14,37 +14,37 @@ import java.util.*;
  */
 public class EightPuzzle_asynchronous extends EightPuzzle {
     public static void main(String arg[]) {
-	Function	  h = createHeuristic();
-	GeneralSearch s;
+        Function          h = createHeuristic();
+        GeneralSearch s;
 
-	// here we decide which exact search algorithm to use
-	// the single difference in using another search algorithm
-	// would only concern the constructor call
-	s = new AStar(h);
+        // here we decide which exact search algorithm to use
+        // the single difference in using another search algorithm
+        // would only concern the constructor call
+        s = new AStar(h);
 
-	// really solve our problem
-	State solution = (State) s.solve(new EightPuzzle_asynchronous(8));
+        // really solve our problem
+        State solution = (State) s.solve(new EightPuzzle_asynchronous(8));
 
-	System.out.println("Found solution:\n" + solution);
+        System.out.println("Found solution:\n" + solution);
     } 
 
     public EightPuzzle_asynchronous(int tiles) {
-	super(tiles);
+        super(tiles);
     }
 
     public Iterator actions(final Object n) {
-	return new StreamMethod(false) {
-		public void runStream() {
-		    EightPuzzle.State s = (EightPuzzle.State) n;
-		    int   empty[] = indexOf(s.slides, EMPTY);
-		    for (int dir = 0; dir <= MAX_MOVE; dir++) {
-			int[] pos = nextOf(empty, dir);
+        return new StreamMethod(false) {
+                public void runStream() {
+                    EightPuzzle.State s = (EightPuzzle.State) n;
+                    int   empty[] = indexOf(s.slides, EMPTY);
+                    for (int dir = 0; dir <= MAX_MOVE; dir++) {
+                        int[] pos = nextOf(empty, dir);
 
-			if (pos != null)
-			    resumedReturn(pos);
-		    } 
-		}
-	    }.apply();
+                        if (pos != null)
+                            resumedReturn(pos);
+                    } 
+                }
+            }.apply();
     } 
 
 }

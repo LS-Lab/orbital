@@ -16,17 +16,17 @@ import orbital.SP;
  * @author  Andr&eacute; Platzer
  */
 aspect EnableSP extends SPUsage {
-	/**
-	 * ignore all assertion calls.
-	 */
-	static around() returns void: assertions() {
-		if (SP.reporter != null && !SP.reporter.isSkipping())
-			thisJoinPoint.runNext();
-	}
-	static around() returns boolean: feedbackAssertions() {
-		if (SP.reporter != null && !SP.reporter.isSkipping())
-			return thisJoinPoint.runNext();
-		else
-			return true;
-	}
+        /**
+         * ignore all assertion calls.
+         */
+        static around() returns void: assertions() {
+                if (SP.reporter != null && !SP.reporter.isSkipping())
+                        thisJoinPoint.runNext();
+        }
+        static around() returns boolean: feedbackAssertions() {
+                if (SP.reporter != null && !SP.reporter.isSkipping())
+                        return thisJoinPoint.runNext();
+                else
+                        return true;
+        }
 }

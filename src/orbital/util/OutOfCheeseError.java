@@ -17,10 +17,10 @@ package orbital.util;
  */
 public class OutOfCheeseError extends UnknownError {
     public OutOfCheeseError(String message) {
-	super(message);
+        super(message);
     }
 
     public OutOfCheeseError() {
-	super("Don't mention it. ++?????++ Out of Cheese Error. Redo From Start.");
+        super("Don't mention it. ++?????++ Out of Cheese Error. Redo From Start.");
     }
 }

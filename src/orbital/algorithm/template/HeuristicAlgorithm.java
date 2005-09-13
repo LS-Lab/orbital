@@ -69,31 +69,31 @@ public interface HeuristicAlgorithm extends EvaluativeAlgorithm {
      * @todo move to HeuristicAlgorithm.Configuration ?
      */
     public static class Configuration extends AlgorithmicTemplate.Configuration {
-	private static final long serialVersionUID = 8651734898965188478L;
+        private static final long serialVersionUID = 8651734898965188478L;
 
-	/**
-	 * @serial
-	 */
-	private Function heuristic;
-	/**
-	 * @param problem the problem to solve.
-	 * @param heuristic the {@link HeuristicAlgorithm#setHeuristic(Function) heuristic} used for solving.
-	 * @param algorithm the class of the AlgorithmicTemplate to instantiate for solving the problem.
-	 */
-	public Configuration(AlgorithmicProblem/*>Problem<*/ problem, Function heuristic, Class algorithm) {
-	    super(problem, algorithm, HeuristicAlgorithm.class);
-	    this.heuristic = heuristic;
-	}
+        /**
+         * @serial
+         */
+        private Function heuristic;
+        /**
+         * @param problem the problem to solve.
+         * @param heuristic the {@link HeuristicAlgorithm#setHeuristic(Function) heuristic} used for solving.
+         * @param algorithm the class of the AlgorithmicTemplate to instantiate for solving the problem.
+         */
+        public Configuration(AlgorithmicProblem/*>Problem<*/ problem, Function heuristic, Class algorithm) {
+            super(problem, algorithm, HeuristicAlgorithm.class);
+            this.heuristic = heuristic;
+        }
 
-	public Function getHeuristic() {
-	    return heuristic;
-	}
-	
-	public AlgorithmicTemplate getAlgorithm() {
-	    HeuristicAlgorithm algo = (HeuristicAlgorithm) super.getAlgorithm();
-	    algo.setHeuristic(getHeuristic());
-	    return algo;
-	}
+        public Function getHeuristic() {
+            return heuristic;
+        }
+        
+        public AlgorithmicTemplate getAlgorithm() {
+            HeuristicAlgorithm algo = (HeuristicAlgorithm) super.getAlgorithm();
+            algo.setHeuristic(getHeuristic());
+            return algo;
+        }
 
     }
 
@@ -128,81 +128,81 @@ public interface HeuristicAlgorithm extends EvaluativeAlgorithm {
      * @see "Stefan Edelkamp. Symbolic pattern databases in heuristic search planning. In Ghallab, M. and Hertzberg, J. and Traverso, P., editors. Proceedings of the 7th International Conference on Artificial Intelligence Planning and Scheduling (AIPS-02), Toulouse, France, April, 2002, AAAI Press, Menlo Park. pages 274-283"
      */
     public static class PatternDatabaseHeuristic implements Function, Serializable {
-	private static final long serialVersionUID = -4488685150678833742L;
-	/**
-	 * the heuristic function used for states not contained in the pattern database.
-	 * @serial
-	 */
-	private Function heuristic;
-	/**
-	 * the pattern database to use for looking up cost.
-	 * @serial
-	 */
-	private Map patternDatabase;
-	/**
-	 * whether to enter heuristic estimate cost
-	 * into the pattern database for states not yet contained.
-	 * This is almost only useful for very expensive backing heuristic functions.
-	 * @serial
-	 */
-	private boolean autoUpdatePatternDatabase;
-	/**
-	 * Create a new heuristic function supported by a pattern database.
-	 * @param backingHeuristic the heuristic function used for states not contained in the
-	 *  pattern database.
-	 * @param patternDatabase the pattern database to use for looking up cost.
-	 * @param autoUpdatePatternDatabase whether to enter heuristic estimate cost
-	 *  into the pattern database for states not yet contained.
-	 *  This is almost only useful for very expensive backing heuristic functions.
-	 */
-	public PatternDatabaseHeuristic(Function backingHeuristic, Map patternDatabase, boolean autoUpdatePatternDatabase) {
-	    this.heuristic = backingHeuristic;
-	    this.patternDatabase = patternDatabase;
-	    this.autoUpdatePatternDatabase = autoUpdatePatternDatabase;
-	}
-	public PatternDatabaseHeuristic(Function backingHeuristic, Map patternDatabase) {
-	    this(backingHeuristic, patternDatabase, false);
-	}
-	public PatternDatabaseHeuristic(Function backingHeuristic) {
-	    this(backingHeuristic, new HashMap(), false);
-	}
-		
-	/**
-	 * Get the backing heuristic.
-	 * @return the heuristic function used for states not contained in the pattern database.
-	 */
-	public Function getHeuristic() {
-	    return heuristic;
-	}
+        private static final long serialVersionUID = -4488685150678833742L;
+        /**
+         * the heuristic function used for states not contained in the pattern database.
+         * @serial
+         */
+        private Function heuristic;
+        /**
+         * the pattern database to use for looking up cost.
+         * @serial
+         */
+        private Map patternDatabase;
+        /**
+         * whether to enter heuristic estimate cost
+         * into the pattern database for states not yet contained.
+         * This is almost only useful for very expensive backing heuristic functions.
+         * @serial
+         */
+        private boolean autoUpdatePatternDatabase;
+        /**
+         * Create a new heuristic function supported by a pattern database.
+         * @param backingHeuristic the heuristic function used for states not contained in the
+         *  pattern database.
+         * @param patternDatabase the pattern database to use for looking up cost.
+         * @param autoUpdatePatternDatabase whether to enter heuristic estimate cost
+         *  into the pattern database for states not yet contained.
+         *  This is almost only useful for very expensive backing heuristic functions.
+         */
+        public PatternDatabaseHeuristic(Function backingHeuristic, Map patternDatabase, boolean autoUpdatePatternDatabase) {
+            this.heuristic = backingHeuristic;
+            this.patternDatabase = patternDatabase;
+            this.autoUpdatePatternDatabase = autoUpdatePatternDatabase;
+        }
+        public PatternDatabaseHeuristic(Function backingHeuristic, Map patternDatabase) {
+            this(backingHeuristic, patternDatabase, false);
+        }
+        public PatternDatabaseHeuristic(Function backingHeuristic) {
+            this(backingHeuristic, new HashMap(), false);
+        }
+                
+        /**
+         * Get the backing heuristic.
+         * @return the heuristic function used for states not contained in the pattern database.
+         */
+        public Function getHeuristic() {
+            return heuristic;
+        }
 
-	/**
-	 * Get the pattern database.
-	 * @return the pattern database used for looking up cost.
-	 *  It is a Map from states to cost.
-	 */
-	public Map getPatternDatabase() {
-	    return patternDatabase;
-	}
+        /**
+         * Get the pattern database.
+         * @return the pattern database used for looking up cost.
+         *  It is a Map from states to cost.
+         */
+        public Map getPatternDatabase() {
+            return patternDatabase;
+        }
 
-	/**
-	 * Set the pattern database.
-	 * @param patterns the pattern database to use for looking up cost.
-	 *  It is a Map from states to cost.
-	 */
-	public void setPatternDatabase(Map patterns) {
-	    patternDatabase = patterns;
-	}
-		
-	public Object apply(Object o) {
-	    Object/*>S<*/ s = o;
-	    Object v = patternDatabase.get(s);
-	    // did not find a corresponding value in pattern database? Use backing heuristic instead
-	    if (v == null) {
-		v = heuristic.apply(s);
-		if (autoUpdatePatternDatabase)
-		    patternDatabase.put(s, v);
-	    }
-	    return v;
-	}
+        /**
+         * Set the pattern database.
+         * @param patterns the pattern database to use for looking up cost.
+         *  It is a Map from states to cost.
+         */
+        public void setPatternDatabase(Map patterns) {
+            patternDatabase = patterns;
+        }
+                
+        public Object apply(Object o) {
+            Object/*>S<*/ s = o;
+            Object v = patternDatabase.get(s);
+            // did not find a corresponding value in pattern database? Use backing heuristic instead
+            if (v == null) {
+                v = heuristic.apply(s);
+                if (autoUpdatePatternDatabase)
+                    patternDatabase.put(s, v);
+            }
+            return v;
+        }
     }
 }

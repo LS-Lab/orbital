@@ -18,13 +18,13 @@ public class NotIteratableException extends ClassCastException {
     public NotIteratableException() {}
     
     public NotIteratableException(String s) {
-	super(s);
+        super(s);
     }
 
     public NotIteratableException(String s, Class found, Object expected) {
-	super(s + " found: " + found + " expected: " + expected);
+        super(s + " found: " + found + " expected: " + expected);
     }
     public NotIteratableException(Class found, Object expected) {
-	this("", found, expected);
+        this("", found, expected);
     }
 }// NotIteratableException

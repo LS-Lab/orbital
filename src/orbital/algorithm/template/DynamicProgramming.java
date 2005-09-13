@@ -59,7 +59,7 @@ public class DynamicProgramming implements AlgorithmicTemplate {
     private Object[] partialSolutions;
 
     public Object solve(AlgorithmicProblem p) {
-	return solve((DynamicProgrammingProblem) p);
+        return solve((DynamicProgrammingProblem) p);
     } 
 
     /**
@@ -69,37 +69,37 @@ public class DynamicProgramming implements AlgorithmicTemplate {
      * @return the solution object as merged from the partial problems.
      */
     public Object solve(DynamicProgrammingProblem p) {
-	partialSolutions = p.getInitialPartialSolutions();
-	while (!p.isSolution(partialSolutions)) {
+        partialSolutions = p.getInitialPartialSolutions();
+        while (!p.isSolution(partialSolutions)) {
 
-	    // the next part we divided the problem into
-	    int[]  part = p.nextPart();
+            // the next part we divided the problem into
+            int[]  part = p.nextPart();
 
-	    // solve part
-	    Object psol = p.solve(part, partialSolutions);
+            // solve part
+            Object psol = p.solve(part, partialSolutions);
 
-	    // memorize this partial solution
-	    setSolutionPart(part, partialSolutions, psol);
-	} 
+            // memorize this partial solution
+            setSolutionPart(part, partialSolutions, psol);
+        } 
 
-	// merge all partial solutions into the complete solution
-	return p.merge(partialSolutions);
+        // merge all partial solutions into the complete solution
+        return p.merge(partialSolutions);
     } 
 
     /**
      * O(n<sup>2</sup>)
      */
     public Function complexity() {
-	return Functions.pow(Values.getDefaultInstance().valueOf(2));
+        return Functions.pow(Values.getDefaultInstance().valueOf(2));
     } 
 
     public Function spaceComplexity() {
-	//TODO: assure
-	return complexity();
+        //TODO: assure
+        return complexity();
     } 
 
     // Convenience utilities methods @todo move to Utilities
-	
+        
     /**
      * Get the element in the (possibly multi-dimensional) array partialSolutions specified by the part specification.
      * @preconditions partSpecification.length is not lower than the number of dimensions for partialSolutions.
@@ -107,10 +107,10 @@ public class DynamicProgramming implements AlgorithmicTemplate {
      * @see Utility#getPart(Object[],int[])
      */
     public static Object getSolutionPart(int[] partSpecification, Object[] partialSolutions) {
-	return Utility.getPart(partialSolutions, partSpecification);
+        return Utility.getPart(partialSolutions, partSpecification);
     } 
 
     public static void setSolutionPart(int[] partSpecification, Object[] partialSolutions, Object value) {
-	Utility.setPart(partialSolutions, partSpecification, value);
+        Utility.setPart(partialSolutions, partSpecification, value);
     } 
 }

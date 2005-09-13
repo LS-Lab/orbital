@@ -44,17 +44,17 @@ public class InnerCheckedException extends RuntimeException {
      */
     protected Throwable nested;
     public InnerCheckedException(Throwable inner) {
-	this(inner, "unchecked");
+        this(inner, "unchecked");
     }
     public InnerCheckedException(String message, Throwable cause) {
-	super(message, cause);
-	this.nested = cause;
+        super(message, cause);
+        this.nested = cause;
     }
     /**
      * @deprecated Since JDK1.4 use {@link InnerCheckedException#InnerCheckedException(String, Throwable)} instead.
      */
     public InnerCheckedException(Throwable cause, String message) {
-	this(message, cause);
+        this(message, cause);
     }
     
     /**
@@ -63,7 +63,7 @@ public class InnerCheckedException extends RuntimeException {
      */
     //TODO: update for Merlin 1.4
     public Throwable getNextException() {
-	return nested;
+        return nested;
     } 
 
     /**
@@ -71,10 +71,10 @@ public class InnerCheckedException extends RuntimeException {
      * print stream.
      */
     public void printStackTrace() { 
-    	synchronized (System.err) {
-    	    System.err.println(this);
-    	    printStackTrace(System.err);
-    	}
+        synchronized (System.err) {
+            System.err.println(this);
+            printStackTrace(System.err);
+        }
     }
 
     /**
@@ -82,14 +82,14 @@ public class InnerCheckedException extends RuntimeException {
      * print stream.
      */
     public void printStackTrace(PrintStream ps) {
-	synchronized (ps) {
-	    if (nested != null) {
-		ps.print(this);
-		nested.printStackTrace(ps);
-	    } else {
-		super.printStackTrace(ps);
-	    } 
-	} 
+        synchronized (ps) {
+            if (nested != null) {
+                ps.print(this);
+                nested.printStackTrace(ps);
+            } else {
+                super.printStackTrace(ps);
+            } 
+        } 
     } 
 
     /**
@@ -97,18 +97,18 @@ public class InnerCheckedException extends RuntimeException {
      * specified print writer.
      */
     public void printStackTrace(PrintWriter pw) {
-	synchronized (pw) {
-	    if (nested != null) {
-		pw.print(this);
-		nested.printStackTrace(pw);
-	    } else {
-		super.printStackTrace(pw);
-	    } 
-	} 
+        synchronized (pw) {
+            if (nested != null) {
+                pw.print(this);
+                nested.printStackTrace(pw);
+            } else {
+                super.printStackTrace(pw);
+            } 
+        } 
     } 
 
     public String toString() {
-    	String message = getLocalizedMessage();
-    	return (message != null) ? message : super.toString();
+        String message = getLocalizedMessage();
+        return (message != null) ? message : super.toString();
     }
 }

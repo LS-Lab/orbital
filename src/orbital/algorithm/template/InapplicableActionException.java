@@ -18,6 +18,6 @@ public class InapplicableActionException extends IllegalArgumentException {
     public InapplicableActionException() {}
     
     public InapplicableActionException(String s) {
-	super(s);
+        super(s);
     }
 }// InapplicableActionException

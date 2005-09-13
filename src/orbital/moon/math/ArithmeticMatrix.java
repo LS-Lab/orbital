@@ -39,10 +39,10 @@ class ArithmeticMatrix/*<R implements Arithmetic>*/ extends AbstractMatrix/*<R>*
      * It then has width columns and height rows.
      */
     public ArithmeticMatrix(int height, int width) {
-	D = new Arithmetic/*>R<*/[height][width];
+        D = new Arithmetic/*>R<*/[height][width];
     }
     public ArithmeticMatrix(Dimension dim) {
-	this(dim.height, dim.width);
+        this(dim.height, dim.width);
     }
 
     /**
@@ -51,40 +51,40 @@ class ArithmeticMatrix/*<R implements Arithmetic>*/ extends AbstractMatrix/*<R>*
      * @preconditions values is rectangular, i.e. v[i].length==v[i-1].length
      */
     public ArithmeticMatrix(Arithmetic/*>R<*/ values[][]) {
-	for (int i = 1; i < values.length; i++)
-	    Utility.pre(values[i].length == values[i - 1].length, "rectangular array required");
-	D = values;
+        for (int i = 1; i < values.length; i++)
+            Utility.pre(values[i].length == values[i - 1].length, "rectangular array required");
+        D = values;
     }
 
     protected Matrix/*<R>*/ newInstance(Dimension dim) {
-	return new ArithmeticMatrix/*<R>*/(dim);
+        return new ArithmeticMatrix/*<R>*/(dim);
     } 
 
 
 
     public final Dimension dimension() {
-	return new Dimension(D.length != 0 ? D[0].length : 0, D.length);
+        return new Dimension(D.length != 0 ? D[0].length : 0, D.length);
     } 
 
     public Arithmetic/*>R<*/ get(int i, int j) {
-	validate(i, j);
-	return D[i][j];
+        validate(i, j);
+        return D[i][j];
     } 
     public void set(int i, int j, Arithmetic/*>R<*/ m) {
-	validate(i, j);
-	D[i][j] = m;
+        validate(i, j);
+        D[i][j] = m;
     } 
 
     public Vector/*<R>*/ getRow(int r) {
-	validate(r, 0);
-	return new ArithmeticVector/*<R>*/(D[r]);
+        validate(r, 0);
+        return new ArithmeticVector/*<R>*/(D[r]);
     } 
     public void setRow(int r, Vector/*<R>*/ row) throws UnsupportedOperationException {
-	validate(r, row.dimension() - 1);
-	if (row instanceof ArithmeticVector)
-	    D[r] = (Arithmetic/*>R<*/[]) ((ArithmeticVector) row).D.clone();
-	else
-	    super.setRow(r, row);
+        validate(r, row.dimension() - 1);
+        if (row instanceof ArithmeticVector)
+            D[r] = (Arithmetic/*>R<*/[]) ((ArithmeticVector) row).D.clone();
+        else
+            super.setRow(r, row);
     } 
 
     /**
@@ -92,49 +92,49 @@ class ArithmeticMatrix/*<R implements Arithmetic>*/ extends AbstractMatrix/*<R>*
      * @todo could we forget about cloning v?
      */
     protected void set(Arithmetic/*>R<*/[][] v) {
-	D = new Arithmetic/*>R<*/[v.length][];
-	for (int i = 0; i < v.length; i++) {
-	    if (i > 0)
-		Utility.pre(v[i].length == v[i - 1].length, "rectangular array required");
-	    D[i] = (Arithmetic/*>R<*/[]) v[i].clone();
-	} 
-	modCount++;
+        D = new Arithmetic/*>R<*/[v.length][];
+        for (int i = 0; i < v.length; i++) {
+            if (i > 0)
+                Utility.pre(v[i].length == v[i - 1].length, "rectangular array required");
+            D[i] = (Arithmetic/*>R<*/[]) v[i].clone();
+        } 
+        modCount++;
     } 
 
     public Object clone() {
-	return new ArithmeticMatrix/*<R>*/(toArray());
+        return new ArithmeticMatrix/*<R>*/(toArray());
     } 
 
     public Matrix/*<R>*/ insertRows(int index, Matrix/*<R>*/ rows) {
-	if (index != dimension().height)
-	    validate(index, 0);
-	Utility.pre(dimension().width == rows.dimension().width, "Matrix must have same width (number of columns)");
-	Arithmetic/*>R<*/[][] A = new Arithmetic/*>R<*/[dimension().height + rows.dimension().height][dimension().width];
-	for (int i = 0; i < index; i++)
-	    A[i] = D[i];
-	if (rows instanceof ArithmeticMatrix) {
-	    ArithmeticMatrix/*<R>*/ m = (ArithmeticMatrix) rows;
-	    for (int i = 0; i < rows.dimension().height; i++)
-		A[index + i] = m.D[i];
-	} else
-	    for (int i = 0; i < rows.dimension().height; i++)
-		for (int j = 0; j < rows.dimension().width; j++)
-		    A[index + i][j] = rows.get(i, j);
-	for (int i = index; i < dimension().height; i++)
-	    A[rows.dimension().height + i] = D[i];
-	set(A);
-	return this;
+        if (index != dimension().height)
+            validate(index, 0);
+        Utility.pre(dimension().width == rows.dimension().width, "Matrix must have same width (number of columns)");
+        Arithmetic/*>R<*/[][] A = new Arithmetic/*>R<*/[dimension().height + rows.dimension().height][dimension().width];
+        for (int i = 0; i < index; i++)
+            A[i] = D[i];
+        if (rows instanceof ArithmeticMatrix) {
+            ArithmeticMatrix/*<R>*/ m = (ArithmeticMatrix) rows;
+            for (int i = 0; i < rows.dimension().height; i++)
+                A[index + i] = m.D[i];
+        } else
+            for (int i = 0; i < rows.dimension().height; i++)
+                for (int j = 0; j < rows.dimension().width; j++)
+                    A[index + i][j] = rows.get(i, j);
+        for (int i = index; i < dimension().height; i++)
+            A[rows.dimension().height + i] = D[i];
+        set(A);
+        return this;
     } 
 
     public Matrix/*<R>*/ removeRow(int r) {
-	validate(r, 0);
-	Arithmetic/*>R<*/[][] A = new Arithmetic/*>R<*/[dimension().height - 1][dimension().width];
-	for (int i = 0; i < r; i++)
-	    A[i] = D[i];
-	for (int i = r + 1; i < dimension().height; i++)
-	    A[i - 1] = D[i];
-	set(A);
-	return this;
+        validate(r, 0);
+        Arithmetic/*>R<*/[][] A = new Arithmetic/*>R<*/[dimension().height - 1][dimension().width];
+        for (int i = 0; i < r; i++)
+            A[i] = D[i];
+        for (int i = r + 1; i < dimension().height; i++)
+            A[i - 1] = D[i];
+        set(A);
+        return this;
     } 
 
     /**
@@ -142,11 +142,11 @@ class ArithmeticMatrix/*<R implements Arithmetic>*/ extends AbstractMatrix/*<R>*
      * The first index in this array specifies the row, the second is for column.
      */
     public Arithmetic/*>R<*/[][] toArray() {
-	// unlike cloning D, this is safe since it does not lead to shallow copy of the first array dimension
-	Arithmetic/*>R<*/[][] v = new Arithmetic/*>R<*/[D.length][];
-	for (int i = 0; i < v.length; i++)
-	    // we do not need to clone D[i][j] as well?
-	    v[i] = (Arithmetic/*>R<*/[]) D[i].clone();
-	return v;
+        // unlike cloning D, this is safe since it does not lead to shallow copy of the first array dimension
+        Arithmetic/*>R<*/[][] v = new Arithmetic/*>R<*/[D.length][];
+        for (int i = 0; i < v.length; i++)
+            // we do not need to clone D[i][j] as well?
+            v[i] = (Arithmetic/*>R<*/[]) D[i].clone();
+        return v;
     } 
 }

@@ -33,7 +33,7 @@ public class DelegateMap/*<A, B>*/ implements Map/*<A, B>*/, Serializable {
      * NullPointerExceptions in almost every method.
      */
     private DelegateMap() {
-	delegatee = null;
+        delegatee = null;
     }
 
     /**
@@ -41,7 +41,7 @@ public class DelegateMap/*<A, B>*/ implements Map/*<A, B>*/, Serializable {
      * @param delegatee the implementation-map to that map operations are delegated.
      */
     protected DelegateMap(Map/*<A, B>*/ delegatee) {
-	this.delegatee = delegatee;
+        this.delegatee = delegatee;
     }
 
     // delegation operations
@@ -57,7 +57,7 @@ public class DelegateMap/*<A, B>*/ implements Map/*<A, B>*/, Serializable {
      * @return the implementation-map that map operations are delegated to.
      */
     protected Map/*<A, B>*/ getDelegatee() {
-	return this.delegatee;
+        return this.delegatee;
     } 
 
     /**
@@ -65,65 +65,65 @@ public class DelegateMap/*<A, B>*/ implements Map/*<A, B>*/, Serializable {
      * @param delegatee the implementation-map that map operations are delegated to.
      */
     protected void setDelegatee(Map/*<A, B>*/ delegatee) {
-	this.delegatee = delegatee;
+        this.delegatee = delegatee;
     } 
 
     // Delegated operations.
 
     public int size() {
-	return getDelegatee().size();
+        return getDelegatee().size();
     }
 
     public boolean isEmpty() {
-	return getDelegatee().isEmpty();
+        return getDelegatee().isEmpty();
     }
 
     public boolean containsKey(Object/*>A<*/ key) {
-	return getDelegatee().containsKey(key);
+        return getDelegatee().containsKey(key);
     }
 
     public boolean containsValue(Object/*>B<*/ v) {
-	return getDelegatee().containsValue(v);
+        return getDelegatee().containsValue(v);
     }
 
     public Object/*>B<*/ get(Object/*>A<*/ key) {
-	return getDelegatee().get(key);
+        return getDelegatee().get(key);
     }
 
     public Object/*>B<*/ put(Object/*>A<*/ key, Object/*>B<*/ value) {
-	return getDelegatee().put(key, value);
+        return getDelegatee().put(key, value);
     }
 
     public Object/*>B<*/ remove(Object/*>A<*/ key) {
-	return getDelegatee().remove(key);
+        return getDelegatee().remove(key);
     }
 
     public void putAll(Map/*<A, B>*/ t) {
-	getDelegatee().putAll(t);
+        getDelegatee().putAll(t);
     }
 
     public void clear() {
-	getDelegatee().clear();
+        getDelegatee().clear();
     }
 
     public Set/*<A>*/ keySet() {
-	return getDelegatee().keySet();
+        return getDelegatee().keySet();
     }
 
     public Collection/*<B>*/ values() {
-	return getDelegatee().values();
+        return getDelegatee().values();
     }
 
     public Set/*<Entry<A, B>>*/ entrySet() {
-	return getDelegatee().entrySet();
+        return getDelegatee().entrySet();
     }
 
     public boolean equals(Object o) {
-	return Utility.equals(getDelegatee(), o);
+        return Utility.equals(getDelegatee(), o);
     }
 
     public int hashCode() {
-	return Utility.hashCode(getDelegatee());
+        return Utility.hashCode(getDelegatee());
     }
     
 }

@@ -35,27 +35,27 @@ public class Genome extends Gene.List {
     /**
      * version of this class for versioning with serialization and deserialization.
      */
-    private static final long	   serialVersionUID = -6225184727917632864L;
+    private static final long      serialVersionUID = -6225184727917632864L;
 
     /**
      * Compare two Genomes according to their fitness, descending.
      */
     public static final Comparator/*<Genome, Genome>*/ comparator = new FitnessComparator();
     private static class FitnessComparator implements Comparator/*<Genome, Genome>*/, Serializable {
-	private static final long serialVersionUID = -7579598676068557251L;
-	public int compare(Object/*>Genome<*/ o1, Object/*>Genome<*/ o2) {
-	    Genome a = (Genome) o1;
-	    Genome b = (Genome) o2;
-	    double	   aw = a.getFitness();
-	    double	   bw = b.getFitness();
-	    //@xxx won't work for NaN
-	    if (aw == bw)
-		return 0;
-	    else if (aw < bw)
-		return +1;
-	    else
-		return -1;
-	} 
+        private static final long serialVersionUID = -7579598676068557251L;
+        public int compare(Object/*>Genome<*/ o1, Object/*>Genome<*/ o2) {
+            Genome a = (Genome) o1;
+            Genome b = (Genome) o2;
+            double         aw = a.getFitness();
+            double         bw = b.getFitness();
+            //@xxx won't work for NaN
+            if (aw == bw)
+                return 0;
+            else if (aw < bw)
+                return +1;
+            else
+                return -1;
+        } 
     }
     
     /**
@@ -63,8 +63,8 @@ public class Genome extends Gene.List {
      * @serial
      * @see #evaluate(Population, boolean)
      */
-    //Population			population = null;
-	
+    //Population                        population = null;
+        
     /**
      * The fitness this Genome is about to have according to the Algorithm
      * in evaluate().
@@ -73,7 +73,7 @@ public class Genome extends Gene.List {
      * @see #evaluate(Population, boolean)
      * @serial
      */
-    private double	fitness = Double.NaN;
+    private double      fitness = Double.NaN;
 
     public Genome() {}
     /**
@@ -82,23 +82,23 @@ public class Genome extends Gene.List {
      * @see #add(Object)
      */
     public Genome(Gene content) {
-	add(content);
+        add(content);
     }
 
     public Object clone() {
-	Genome r = (Genome) super.clone();
-	r.setFitness(getFitness());
-	// already done in nullary constructor, but to make it clear
-	r.setPopulation(null);
-	return r;
+        Genome r = (Genome) super.clone();
+        r.setFitness(getFitness());
+        // already done in nullary constructor, but to make it clear
+        r.setPopulation(null);
+        return r;
     } 
 
     public boolean equals(Object o) {
-	return new Double(getFitness()).equals(new Double(((Genome) o).getFitness())) && super.equals(o);
+        return new Double(getFitness()).equals(new Double(((Genome) o).getFitness())) && super.equals(o);
     }
-   	
+        
     public int hashCode() {
-	return new Double(getFitness()).hashCode() ^ super.hashCode();
+        return new Double(getFitness()).hashCode() ^ super.hashCode();
     }
 
     // get/set methods
@@ -109,7 +109,7 @@ public class Genome extends Gene.List {
      * @see #setFitness(double)
      */
     public double getFitness() {
-	return fitness;
+        return fitness;
     } 
     /**
      * Whether genome has a fitness != Double.NaN.
@@ -117,17 +117,17 @@ public class Genome extends Gene.List {
      * @see #getFitness()
      */
     public boolean hasFitness() {
-	return !Double.isNaN(getFitness());
+        return !Double.isNaN(getFitness());
     } 
 
     /**
      * Set the fitness calculated.
      */
     public void setFitness(double fitness) {
-	this.fitness = fitness;
+        this.fitness = fitness;
     } 
     public void setFitness(java.lang.Number fitness) {
-	setFitness(fitness.doubleValue());
+        setFitness(fitness.doubleValue());
     } 
     /**
      * Clears the fitness.
@@ -136,9 +136,9 @@ public class Genome extends Gene.List {
      * @see #setFitness(double)
      */
     public void clearFitness() {
-	setFitness(Double.NaN);
+        setFitness(Double.NaN);
     } 
-	
+        
     void setPopulation(Population population) {}
 
     /**
@@ -147,11 +147,11 @@ public class Genome extends Gene.List {
      * if they are modified, the fitness <em>must</em> be cleared and re-evaluated.
      */
     public Object/*>Gene<*/ get(int i) {
-	SecurityManager security = System.getSecurityManager();
-	if (security != null) {
-	    security.checkPermission(new RuntimePermission("accessDeclaredMembers"));
-	} 
-	return super.get(i);
+        SecurityManager security = System.getSecurityManager();
+        if (security != null) {
+            security.checkPermission(new RuntimePermission("accessDeclaredMembers"));
+        } 
+        return super.get(i);
     } 
 
     /**
@@ -159,24 +159,24 @@ public class Genome extends Gene.List {
      * Will clear fitness.
      */
     public Object/*>Gene<*/ set(int i, Object/*>Gene<*/ g) {
-	clearFitness();
-	return super.set(i, g);
+        clearFitness();
+        return super.set(i, g);
     } 
     /**
      * Add one gene.
      * Will clear fitness.
      */
     public boolean add(Object/*>Gene<*/ o) {
-	clearFitness();
-	return super.add(o);
+        clearFitness();
+        return super.add(o);
     } 
     /**
      * Insert one gene.
      * Will clear fitness.
      */
     public void add(int index, Object/*>Gene<*/ o) {
-	clearFitness();
-	super.add(index, o);
+        clearFitness();
+        super.add(index, o);
     } 
 
 
@@ -185,36 +185,36 @@ public class Genome extends Gene.List {
      * @see #get(int)
      */
     public Object/*java.util.List*/ get() {
-	SecurityManager security = System.getSecurityManager();
-	if (security != null) {
-	    security.checkPermission(new RuntimePermission("accessDeclaredMembers"));
-	} 
-	return super.get();
+        SecurityManager security = System.getSecurityManager();
+        if (security != null) {
+            security.checkPermission(new RuntimePermission("accessDeclaredMembers"));
+        } 
+        return super.get();
     } 
     /**
      * Set the Genome data.
      * Will clear fitness.
      */
     public void set(Object/*java.util.List*/ list) {
-	clearFitness();
-	super.set(list);
+        clearFitness();
+        super.set(list);
     } 
 
     // central virtual methods
     // transformation methods
 
     public Gene/*Genome*/ mutate(double probability) {
-	Genome n = (Genome) super.mutate(probability);
-	n.clearFitness();
-	return n;
+        Genome n = (Genome) super.mutate(probability);
+        n.clearFitness();
+        return n;
     } 
 
     public Gene/*Genome*/[] recombine(final Gene[] parents, int childrenCount, double recombinationProbability) {
-	Genome[] children = (Genome[]) super.elementwiseRecombine(parents, childrenCount, recombinationProbability);
-	// fitness changed
-	for (int c = 0; c < children.length; c++)
-	    children[c].clearFitness();
-	return children;
+        Genome[] children = (Genome[]) super.elementwiseRecombine(parents, childrenCount, recombinationProbability);
+        // fitness changed
+        for (int c = 0; c < children.length; c++)
+            children[c].clearFitness();
+        return children;
     } 
 
     /**
@@ -222,9 +222,9 @@ public class Genome extends Gene.List {
      * @return inverted Genome where all data booleans are negated.
      */
     public Gene/*Genome*/ inverse() {
-	Genome r = (Genome) super.inverse();
-	r.clearFitness();
-	return r;
+        Genome r = (Genome) super.inverse();
+        r.clearFitness();
+        return r;
     } 
 
     // fitness evaluation and caching implementation
@@ -240,18 +240,18 @@ public class Genome extends Gene.List {
      * @see #getFitness()
      */
     public void evaluate(Population population, boolean redo) {
-	// neither NaN nor forced to redo
-	if (!(redo || !hasFitness()))
-	    // since nothing changed
-	    return;
-	if (population == null)
-	    throw new IllegalArgumentException("Population null, cannot evaluate genome");
-	final GeneticAlgorithm algorithm = population.getGeneticAlgorithm();
-	if (algorithm == null)
-	    throw new IllegalStateException("Population is not part of a GeneticAlgorithm, cannot evaluate genome");
-	final Function evaluation = algorithm.getEvaluation();
-	if (evaluation == null)
-	    throw new IllegalStateException("use GeneticAlgorithm.setEvaluation to set an evaluation instance, first, cannot evaluate genome");
-	setFitness((java.lang.Number) evaluation.apply(this));
+        // neither NaN nor forced to redo
+        if (!(redo || !hasFitness()))
+            // since nothing changed
+            return;
+        if (population == null)
+            throw new IllegalArgumentException("Population null, cannot evaluate genome");
+        final GeneticAlgorithm algorithm = population.getGeneticAlgorithm();
+        if (algorithm == null)
+            throw new IllegalStateException("Population is not part of a GeneticAlgorithm, cannot evaluate genome");
+        final Function evaluation = algorithm.getEvaluation();
+        if (evaluation == null)
+            throw new IllegalStateException("use GeneticAlgorithm.setEvaluation to set an evaluation instance, first, cannot evaluate genome");
+        setFitness((java.lang.Number) evaluation.apply(this));
     } 
 }

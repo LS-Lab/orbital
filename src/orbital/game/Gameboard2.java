@@ -57,87 +57,87 @@ public class Gameboard2 extends javax.swing.JPanel implements ImageObserver, Ser
     private transient boolean layouting = false;
 
     public Gameboard2() {
-	addMouseListener(new MouseAdapter() {
-		// controller
+        addMouseListener(new MouseAdapter() {
+                // controller
     
-		public void mousePressed(MouseEvent evt) {
-		    dragging = figureOn(evt.getX(), evt.getY());
-		} 
-		public void mouseReleased(MouseEvent evt) {
-		    Position src = dragging;
-		    //@internal if EventHandler wasn't synchronizing events, concurrent synchronization could be required since dragging could already have changed again
-		    dragging = null;
-		    if (src == null || field.getFigure(src) == null)
-			// ignore
-			return;
-		    Position dst = figureOn(evt.getX(), evt.getY());
-		    if (dst == null /*@xxx remove condition || src.equals(dst)*/)
-			// ignore
-			return;
+                public void mousePressed(MouseEvent evt) {
+                    dragging = figureOn(evt.getX(), evt.getY());
+                } 
+                public void mouseReleased(MouseEvent evt) {
+                    Position src = dragging;
+                    //@internal if EventHandler wasn't synchronizing events, concurrent synchronization could be required since dragging could already have changed again
+                    dragging = null;
+                    if (src == null || field.getFigure(src) == null)
+                        // ignore
+                        return;
+                    Position dst = figureOn(evt.getX(), evt.getY());
+                    if (dst == null /*@xxx remove condition || src.equals(dst)*/)
+                        // ignore
+                        return;
 
-		    //@xxx only allow an operation for real players!
+                    //@xxx only allow an operation for real players!
 
-		    Move moveToDst = findValidPath(field.getFigure(src), dst);
-		    // would this be a correct move?
-		    boolean validOperation = moveToDst != null;
-		    Field nextField = null;
-		    try {
-			if (moveToDst != null) {
-			    nextField = (Field)field.clone();
-			    validOperation &= nextField.move(src, moveToDst);
-			}
-		    }
-		    catch (CloneNotSupportedException cannotMoveHypothetically) {
-			// cannot precheck user move, nor predict result
-			logger.log(Level.FINE, "cannot precheck user move {0}-->{1} because of {2}", new Object[] {src, dst, cannotMoveHypothetically});
-		    }
+                    Move moveToDst = findValidPath(field.getFigure(src), dst);
+                    // would this be a correct move?
+                    boolean validOperation = moveToDst != null;
+                    Field nextField = null;
+                    try {
+                        if (moveToDst != null) {
+                            nextField = (Field)field.clone();
+                            validOperation &= nextField.move(src, moveToDst);
+                        }
+                    }
+                    catch (CloneNotSupportedException cannotMoveHypothetically) {
+                        // cannot precheck user move, nor predict result
+                        logger.log(Level.FINE, "cannot precheck user move {0}-->{1} because of {2}", new Object[] {src, dst, cannotMoveHypothetically});
+                    }
 
-		    if (validOperation)
-			field.getFieldChangeMulticaster().movePerformed(new FieldChangeEvent(field, FieldChangeEvent.USER_ACTION | FieldChangeEvent.MOVE,
-											     new Option(nextField, dst, field.getFigure(src), moveToDst)));
-		    else {	// nope, hmm, one of the users wasn't making too much sense of his move
-			logger.log(Level.WARNING, "Wrong move {0}-->{1}", new Object[] {src, dst});
-		    }
-		} 
+                    if (validOperation)
+                        field.getFieldChangeMulticaster().movePerformed(new FieldChangeEvent(field, FieldChangeEvent.USER_ACTION | FieldChangeEvent.MOVE,
+                                                                                             new Option(nextField, dst, field.getFigure(src), moveToDst)));
+                    else {      // nope, hmm, one of the users wasn't making too much sense of his move
+                        logger.log(Level.WARNING, "Wrong move {0}-->{1}", new Object[] {src, dst});
+                    }
+                } 
 
-	    });
+            });
     }
     public Gameboard2(Field f) {
-	this();
-	setField(f);
+        this();
+        setField(f);
     }
 
     public Field getField() {
-	return field;
+        return field;
     } 
 
     /**
      * Set the model for this view.
      */
     public void setField(Field f) {
-	Field old = field;
-	field = f;
-	propertyChangeListeners.firePropertyChange("field", old, field);
-	invalidate();
-	repaint();
-	field.addFieldChangeListener(new FieldChangeAdapter() {
-		//@internal we are transient
-		public void componentChanged(FieldChangeEvent e) {
-		    assert e.getField() == getField() : "we have only registered ourselves to our field " + getField() + " source=" + e.getField();
-		    assert e.getType() == FieldChangeEvent.SET_FIGURE : "SET_FIGURE assumed";
-		    assert e.getChangeInfo() instanceof Position : "assuming position of change is changeInfo";
-		    repaint((Position)e.getChangeInfo());
-		    // tell our listeners
-		    propertyChangeListeners.firePropertyChange("field", null, e.getField());
-		}
-	    });
+        Field old = field;
+        field = f;
+        propertyChangeListeners.firePropertyChange("field", old, field);
+        invalidate();
+        repaint();
+        field.addFieldChangeListener(new FieldChangeAdapter() {
+                //@internal we are transient
+                public void componentChanged(FieldChangeEvent e) {
+                    assert e.getField() == getField() : "we have only registered ourselves to our field " + getField() + " source=" + e.getField();
+                    assert e.getType() == FieldChangeEvent.SET_FIGURE : "SET_FIGURE assumed";
+                    assert e.getChangeInfo() instanceof Position : "assuming position of change is changeInfo";
+                    repaint((Position)e.getChangeInfo());
+                    // tell our listeners
+                    propertyChangeListeners.firePropertyChange("field", null, e.getField());
+                }
+            });
     } 
 
     /**
      * @deprecated Since Orbital1.1 use {@link #getField()}.{@link #getFigure(Position)} instead.
      */
     public Figure getFigure(Position p) {
-	return field.getFigure(p);
+        return field.getFigure(p);
     }
 
     /**
@@ -147,14 +147,14 @@ public class Gameboard2 extends javax.swing.JPanel implements ImageObserver, Ser
      * @deprecated Since Orbital1.1 use {@link #getField()}.{@link #setFigure(Position,Figure)} instead.
      */
     public void setFigure(Position p, Figure what) {
-	field.setFigure(p, what);
-	propertyChangeListeners.firePropertyChange("field", null, field);
-	repaint(p);
+        field.setFigure(p, what);
+        propertyChangeListeners.firePropertyChange("field", null, field);
+        repaint(p);
     }
-	
+        
     public Dimension getPreferredSize() {
-	layouting = true;
-	return field != null ? field.getPreferredSize() : super.getPreferredSize();
+        layouting = true;
+        return field != null ? field.getPreferredSize() : super.getPreferredSize();
     } 
 
     /**
@@ -163,10 +163,10 @@ public class Gameboard2 extends javax.swing.JPanel implements ImageObserver, Ser
      */
     private final PropertyChangeSupport propertyChangeListeners = new PropertyChangeSupport(this);
     public void addPropertyChangeListener(PropertyChangeListener l) {
-	propertyChangeListeners.addPropertyChangeListener(l);
+        propertyChangeListeners.addPropertyChangeListener(l);
     } 
     public void removePropertyChangeListener(PropertyChangeListener l) {
-	propertyChangeListeners.removePropertyChangeListener(l);
+        propertyChangeListeners.removePropertyChangeListener(l);
     } 
 
     
@@ -176,50 +176,50 @@ public class Gameboard2 extends javax.swing.JPanel implements ImageObserver, Ser
      * @see Field#boundsOf(Rectangle, Position)
      */
     public Position figureOn(int x, int y) {
-	if (field == null)
-	    return null;
-	Dimension dim = field.getDimension();
-	return new Position(x * dim.width / size().width, y * dim.height / size().height);	  // @version 1.1
+        if (field == null)
+            return null;
+        Dimension dim = field.getDimension();
+        return new Position(x * dim.width / size().width, y * dim.height / size().height);        // @version 1.1
     } 
 
     // view
     
     public void paintComponent(Graphics g) {
-	if (field == null)
-	    return;
-	field.paint(g, new Rectangle(getSize()));
+        if (field == null)
+            return;
+        field.paint(g, new Rectangle(getSize()));
     } 
 
     /**
      * Repaint the gameboard at a given position.
      */
     public void repaint(Position p) {
-	Graphics g = getGraphics();
-	if (g == null)
-	    return;
+        Graphics g = getGraphics();
+        if (g == null)
+            return;
         Rectangle box = new Rectangle(getSize());
         Rectangle fr = field.boundsOf(box, p);
-	Graphics fg = g.create(fr.x, fr.y, fr.width, fr.height);
-	// local to fg
-	fr.setLocation(0, 0);
-	fg.setColor((p.x & 1 ^ p.y & 1) == 0 ? Color.white : Color.darkGray);
-	fg.fillRect(fr.x, fr.y, fr.width, fr.height);
-	Figure f = field.getFigure(p);
-	if (f != null)
-	    f.paint(fg, fr);
-	fg.dispose();
-    }		
+        Graphics fg = g.create(fr.x, fr.y, fr.width, fr.height);
+        // local to fg
+        fr.setLocation(0, 0);
+        fg.setColor((p.x & 1 ^ p.y & 1) == 0 ? Color.white : Color.darkGray);
+        fg.fillRect(fr.x, fr.y, fr.width, fr.height);
+        Figure f = field.getFigure(p);
+        if (f != null)
+            f.paint(fg, fr);
+        fg.dispose();
+    }           
 
     public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height) {
-	if (infoflags == ImageObserver.ALLBITS) {
-	    if (layouting)
-		doLayout();
-	    else
-		repaint();
-	    layouting = false;
-	    return false;
-	} 
-	return true;
+        if (infoflags == ImageObserver.ALLBITS) {
+            if (layouting)
+                doLayout();
+            else
+                repaint();
+            layouting = false;
+            return false;
+        } 
+        return true;
     } 
 
     // how to move a figure to a destination on user click
@@ -240,23 +240,23 @@ public class Gameboard2 extends javax.swing.JPanel implements ImageObserver, Ser
      * @internal @see Figure#possibleMoves()
      */
     protected Move findValidPath(final Figure source, final Position destination) {
-	for (Iterator i = source.possibleMoves(); i.hasNext(); ) {
-	    //@internal we do not need Option.getField() here
-	    Option   o = (Option) i.next();
-	    Move     move = o.getMove();
-	    Position dst = o.getDestination();
+        for (Iterator i = source.possibleMoves(); i.hasNext(); ) {
+            //@internal we do not need Option.getField() here
+            Option   o = (Option) i.next();
+            Move     move = o.getMove();
+            Position dst = o.getDestination();
 
-	    // if (move.movement.indexOf(Move.Teleport)!=-1)
-	    //      // well Teleport reaches destination
-	    //      return i;
-			
-	    // reaches destination?
-	    if (destination.equals(dst)) {
-		assert dst != null : "destination.equals(null) == false";
-		return move;
-	    }
-	} 
-	return null;
+            // if (move.movement.indexOf(Move.Teleport)!=-1)
+            //      // well Teleport reaches destination
+            //      return i;
+                        
+            // reaches destination?
+            if (destination.equals(dst)) {
+                assert dst != null : "destination.equals(null) == false";
+                return move;
+            }
+        } 
+        return null;
     } 
 
 }

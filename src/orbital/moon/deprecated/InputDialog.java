@@ -25,58 +25,58 @@ import java.awt.BorderLayout;
  */
 public
 class InputDialog extends UserDialog {
-	private static class Debug {
-		private Debug() {}
-		public static void main(String arg[]) throws Exception {
-			System.err.println("Debug");
-			UserDialog dlg = new InputDialog(new Frame(), "InputDialog", "Type input here?");
-			dlg.start();
-			System.out.println(dlg.getResult());
-		} 
-	}
+        private static class Debug {
+                private Debug() {}
+                public static void main(String arg[]) throws Exception {
+                        System.err.println("Debug");
+                        UserDialog dlg = new InputDialog(new Frame(), "InputDialog", "Type input here?");
+                        dlg.start();
+                        System.out.println(dlg.getResult());
+                } 
+        }
 
-	/**
-	 * Contains the label view of the message displayed.
-	 * @serial
-	 */
-	protected Label		messageView;
+        /**
+         * Contains the label view of the message displayed.
+         * @serial
+         */
+        protected Label         messageView;
 
-	/**
-	 * Contains the TextField prompting for input.
-	 * @serial
-	 */
-	protected TextField input;
-	public InputDialog(Frame parent, String title, String message, String defaultInput) {
-		this(parent, title, message);
-		input.setText(defaultInput);
-	}
-	public InputDialog(Frame parent, String title, String message) {
-		this(parent, title);
-		add(messageView = new Label(message), BorderLayout.NORTH);
-	}
+        /**
+         * Contains the TextField prompting for input.
+         * @serial
+         */
+        protected TextField input;
+        public InputDialog(Frame parent, String title, String message, String defaultInput) {
+                this(parent, title, message);
+                input.setText(defaultInput);
+        }
+        public InputDialog(Frame parent, String title, String message) {
+                this(parent, title);
+                add(messageView = new Label(message), BorderLayout.NORTH);
+        }
 
-	public InputDialog(Frame parent, String title) {
-		super(parent, title);
-		add(input = new TextField(), BorderLayout.CENTER);
-		input.addActionListener(this);
-		input.requestFocus();
-	}
+        public InputDialog(Frame parent, String title) {
+                super(parent, title);
+                add(input = new TextField(), BorderLayout.CENTER);
+                input.addActionListener(this);
+                input.requestFocus();
+        }
 
-	protected Container createControl() {
-		Container control = new Panel();
-		control.setLayout(new FlowLayout(FlowLayout.CENTER));
-		Button c;
-		control.add(c = new Button("Ok"));
-		c.addActionListener(this);
-		control.add(c = new Button("Cancel"));
-		c.addActionListener(this);
-		return control;
-	} 
+        protected Container createControl() {
+                Container control = new Panel();
+                control.setLayout(new FlowLayout(FlowLayout.CENTER));
+                Button c;
+                control.add(c = new Button("Ok"));
+                c.addActionListener(this);
+                control.add(c = new Button("Cancel"));
+                c.addActionListener(this);
+                return control;
+        } 
 
-	protected void setResult(String result) {
-		if ("Cancel".equals(result))
-			super.setResult(null);
-		else
-			super.setResult(input.getText());
-	} 
+        protected void setResult(String result) {
+                if ("Cancel".equals(result))
+                        super.setResult(null);
+                else
+                        super.setResult(input.getText());
+        } 
 }

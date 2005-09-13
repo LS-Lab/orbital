@@ -24,7 +24,7 @@ public class ListJungle extends ListGraph {
      */
     protected Node root;
     public ListJungle(GraphNode root) {
-	super(root);
+        super(root);
     }
 
     /**
@@ -32,7 +32,7 @@ public class ListJungle extends ListGraph {
      * Having single root is a property of jungles.
      */
     public Node getRoot() {
-	return root;
+        return root;
     }
 
     /**
@@ -40,11 +40,11 @@ public class ListJungle extends ListGraph {
      * Having single root is a property of jungles.
      */
     public void setRoot(Node root) {
-	this.root = root;
+        this.root = root;
     } 
 
     public Iterator getRoots() {
-	return Arrays.asList(new Node[] {root}).iterator();
+        return Arrays.asList(new Node[] {root}).iterator();
     } 
 
     /**
@@ -52,16 +52,16 @@ public class ListJungle extends ListGraph {
      * bound to a single node due to jungle property.
      */
     public boolean addRoot(Node root) {
-	if (this.root != null)
-	    throw new IllegalStateException("trees can only have a single root");
-	setRoot(root);
-	return true;
+        if (this.root != null)
+            throw new IllegalStateException("trees can only have a single root");
+        setRoot(root);
+        return true;
     }
-	
+        
     public boolean removeRoot(Node root) {
-	if (!this.root.equals(root))
-	    return false;
-	setRoot(null);
-	return true;
+        if (!this.root.equals(root))
+            return false;
+        setRoot(null);
+        return true;
     }
 }

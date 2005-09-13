@@ -27,9 +27,9 @@ import orbital.math.MathUtilities;
  */
 class BasicDataReader extends DataReader {
     public BasicDataReader(Reader input) {
-	super(input);
-	parse.eolIsSignificant(false);
-	parse.whitespaceChars(',', ',');
+        super(input);
+        parse.eolIsSignificant(false);
+        parse.whitespaceChars(',', ',');
     }
 
     /**
@@ -39,80 +39,80 @@ class BasicDataReader extends DataReader {
      * @see #BasicDataReader(java.io.Reader)
      */
     public BasicDataReader(InputStream input) {
-	super(input);
-	parse.eolIsSignificant(false);
-	parse.whitespaceChars(',', ',');
+        super(input);
+        parse.eolIsSignificant(false);
+        parse.whitespaceChars(',', ',');
     }
 
     public String getFormat() {
-	return "basic";
+        return "basic";
     } 
 
     protected int nextToken() throws IOException, EOFException {
-	if (parse.nextToken() == StreamTokenizer.TT_EOF)
-	    throw new EOFException("EOF during read");
-	return parse.ttype;
+        if (parse.nextToken() == StreamTokenizer.TT_EOF)
+            throw new EOFException("EOF during read");
+        return parse.ttype;
     } 
 
     protected int peekNextToken() throws IOException, EOFException {
-	if (!markSupported())
-	    throw new IllegalStateException("underlying stream does not support marking");
-	mark(MARK_LIMIT);
-	try {
-	    return parse.nextToken();
-	} 
-	finally {
-	    reset();
-	} 
+        if (!markSupported())
+            throw new IllegalStateException("underlying stream does not support marking");
+        mark(MARK_LIMIT);
+        try {
+            return parse.nextToken();
+        } 
+        finally {
+            reset();
+        } 
     } 
 
     public Class nextType() throws IOException {
-	switch (peekNextToken()) {
-	case StreamTokenizer.TT_EOF:
-	    return null;
-	case StreamTokenizer.TT_NUMBER:
-	    if (MathUtilities.fract(parse.nval) == .0)
-		return (Integer.MIN_VALUE < parse.nval && parse.nval < Integer.MAX_VALUE) ? Integer.TYPE : Long.TYPE;
-	    else
-		return Double.TYPE;
-	case '#':
-	    return Boolean.TYPE;
-	case '"':
-	    return String.class;
-	default:
-	    return Character.TYPE;
-	}
+        switch (peekNextToken()) {
+        case StreamTokenizer.TT_EOF:
+            return null;
+        case StreamTokenizer.TT_NUMBER:
+            if (MathUtilities.fract(parse.nval) == .0)
+                return (Integer.MIN_VALUE < parse.nval && parse.nval < Integer.MAX_VALUE) ? Integer.TYPE : Long.TYPE;
+            else
+                return Double.TYPE;
+        case '#':
+            return Boolean.TYPE;
+        case '"':
+            return String.class;
+        default:
+            return Character.TYPE;
+        }
     } 
 
     public boolean readBoolean() throws IOException {
-	boolean v;
-	switch (nextToken()) {
-	case '#':
-	    if (nextToken() != StreamTokenizer.TT_WORD)
-		throw newParseException(parse, "boolean value");
-	    if ("true".equalsIgnoreCase(parse.sval))
-		v = true;
-	    else if ("false".equalsIgnoreCase(parse.sval))
-		v = false;
-	    else
-		throw newParseException(parse, "boolean value");
-	    if (nextToken() != '#')
-		throw newParseException(parse, "boolean value");
-	    break;
-	case StreamTokenizer.TT_NUMBER:
-	    v = (0 != parse.nval);
-	    break;
-	default:
-	    throw newParseException(parse, "boolean value");
-	}
-	return v;
+        boolean v;
+        switch (nextToken()) {
+        case '#':
+            if (nextToken() != StreamTokenizer.TT_WORD)
+                throw newParseException(parse, "boolean value");
+            if ("true".equalsIgnoreCase(parse.sval))
+                v = true;
+            else if ("false".equalsIgnoreCase(parse.sval))
+                v = false;
+            else
+                throw newParseException(parse, "boolean value");
+            if (nextToken() != '#')
+                throw newParseException(parse, "boolean value");
+            break;
+        case StreamTokenizer.TT_NUMBER:
+            v = (0 != parse.nval);
+            break;
+        default:
+            throw newParseException(parse, "boolean value");
+        }
+        return v;
     } 
 
     public char readChar() throws IOException {
-	String s = readUTF();
-	if (s.length() != 1)
-	    throw newParseException(parse, "single character string");
-	return s.charAt(0);
+        String s = readUTF();
+        if (s.length() != 1)
+            throw newParseException(parse, "single character string");
+        return s.charAt(0);
     } 
 
     /**
@@ -121,16 +121,16 @@ class BasicDataReader extends DataReader {
      * in the string characters is encoded as <tt>\"</tt> or sometimes <tt>""</tt> to distinguish from delimiters.
      */
     public String readUTF() throws IOException {
-	switch (parse.nextToken()) {
-	case StreamTokenizer.TT_EOF:
-	    throw new EOFException("EOF during readUTF");
-	case '"': {
-	    // XXX: recognize strings like "alles ist ""wunderbar"" hier", too
-	    String s = parse.sval;
-	    return s;
-	}
-	default:
-	    throw newParseException(parse, "string delimiter \"");
+        switch (parse.nextToken()) {
+        case StreamTokenizer.TT_EOF:
+            throw new EOFException("EOF during readUTF");
+        case '"': {
+            // XXX: recognize strings like "alles ist ""wunderbar"" hier", too
+            String s = parse.sval;
+            return s;
+        }
+        default:
+            throw newParseException(parse, "string delimiter \"");
         }
     } 
 }

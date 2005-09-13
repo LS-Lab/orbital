@@ -55,13 +55,13 @@ public class DataWriter extends FilterWriter implements DataOutput {
      * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      */
     public static DataWriter getInstance(Writer wr, String encoding) throws UnsupportedEncodingException, IOException {
-	if (encoding == null)
-	    return null;
-	if ("".equals(encoding) || "default".equalsIgnoreCase(encoding) || "none".equalsIgnoreCase(encoding))
-	    return new DataWriter(wr);
-	if ("basic".equalsIgnoreCase(encoding))
-	    return new BasicDataWriter(wr);
-	throw new UnsupportedEncodingException("no writer found for encoding: " + encoding);
+        if (encoding == null)
+            return null;
+        if ("".equals(encoding) || "default".equalsIgnoreCase(encoding) || "none".equalsIgnoreCase(encoding))
+            return new DataWriter(wr);
+        if ("basic".equalsIgnoreCase(encoding))
+            return new BasicDataWriter(wr);
+        throw new UnsupportedEncodingException("no writer found for encoding: " + encoding);
     } 
 
     /**
@@ -75,7 +75,7 @@ public class DataWriter extends FilterWriter implements DataOutput {
      * Create a DataWriter writing output to the specified character stream.
      */
     public DataWriter(Writer output) {
-	super(output);
+        super(output);
     }
 
     /**
@@ -85,7 +85,7 @@ public class DataWriter extends FilterWriter implements DataOutput {
      * @see #DataWriter(java.io.Writer)
      */
     public DataWriter(OutputStream output) {
-	this(new OutputStreamWriter(output));
+        this(new OutputStreamWriter(output));
     }
 
     /**
@@ -93,7 +93,7 @@ public class DataWriter extends FilterWriter implements DataOutput {
      * @return a String that specifies the format that is supported by this writer.
      */
     public String getFormat() {
-	return "default";
+        return "default";
     } 
 
 
@@ -102,7 +102,7 @@ public class DataWriter extends FilterWriter implements DataOutput {
      * @throws java.lang.UnsupportedOperationException on every call.
      */
     public void write(byte b[]) throws IOException {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     } 
 
     /**
@@ -110,7 +110,7 @@ public class DataWriter extends FilterWriter implements DataOutput {
      * @throws java.lang.UnsupportedOperationException on every call.
      */
     public void write(byte b[], int off, int len) throws IOException {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     } 
 
 
@@ -129,7 +129,7 @@ public class DataWriter extends FilterWriter implements DataOutput {
      * @throws  IOException  if an I/O error occurs.
      */
     public void writeInt(int v) throws IOException {
-	nextToken(StreamTokenizer.TT_NUMBER, "" + v);
+        nextToken(StreamTokenizer.TT_NUMBER, "" + v);
     } 
 
     /**
@@ -146,7 +146,7 @@ public class DataWriter extends FilterWriter implements DataOutput {
      * @throws  IOException  if an I/O error occurs.
      */
     public void writeLong(long v) throws IOException {
-	nextToken(StreamTokenizer.TT_NUMBER, "" + v);
+        nextToken(StreamTokenizer.TT_NUMBER, "" + v);
     } 
 
     /**
@@ -163,7 +163,7 @@ public class DataWriter extends FilterWriter implements DataOutput {
      * @throws  IOException  if an I/O error occurs.
      */
     public void writeDouble(double v) throws IOException {
-	nextToken(StreamTokenizer.TT_NUMBER, "" + v);
+        nextToken(StreamTokenizer.TT_NUMBER, "" + v);
     } 
 
     /**
@@ -180,7 +180,7 @@ public class DataWriter extends FilterWriter implements DataOutput {
      * @throws  IOException  if an I/O error occurs.
      */
     public void writeBoolean(boolean v) throws IOException {
-	nextToken(TT_BOOLEAN, "" + v);
+        nextToken(TT_BOOLEAN, "" + v);
     } 
 
 
@@ -199,7 +199,7 @@ public class DataWriter extends FilterWriter implements DataOutput {
      * @throws  IOException  if an I/O error occurs.
      */
     public void writeChar(int v) throws IOException {
-	nextToken(v, null);
+        nextToken(v, null);
     } 
 
     /**
@@ -210,7 +210,7 @@ public class DataWriter extends FilterWriter implements DataOutput {
      * @throws  IOException  if an I/O error occurs.
      */
     public void writeChars(String s) throws IOException {
-	nextToken(StreamTokenizer.TT_WORD, s);
+        nextToken(StreamTokenizer.TT_WORD, s);
     } 
 
     /**
@@ -221,7 +221,7 @@ public class DataWriter extends FilterWriter implements DataOutput {
      * @see #writeChars(java.lang.String)
      */
     public void writeBytes(String s) throws IOException {
-	nextToken('@', s);
+        nextToken('@', s);
     } 
 
     /**
@@ -236,7 +236,7 @@ public class DataWriter extends FilterWriter implements DataOutput {
      * @throws UnsupportedOperationException if no such encoding is defined for this character stream.
      */
     public void writeUTF(String str) throws IOException {
-	nextToken('"', str);
+        nextToken('"', str);
     } 
 
 
@@ -251,7 +251,7 @@ public class DataWriter extends FilterWriter implements DataOutput {
      * @see #writeInt(int)
      */
     public void writeShort(int v) throws IOException {
-	writeInt(v);
+        writeInt(v);
     } 
 
     /**
@@ -262,7 +262,7 @@ public class DataWriter extends FilterWriter implements DataOutput {
      * @see #writeInt(int)
      */
     public void writeByte(int v) throws IOException {
-	writeInt(v);
+        writeInt(v);
     } 
 
     /**
@@ -273,37 +273,37 @@ public class DataWriter extends FilterWriter implements DataOutput {
      * @see #writeDouble(double)
      */
     public void writeFloat(float v) throws IOException {
-	writeDouble(v);
+        writeDouble(v);
     } 
 
     /**
      * Write an object to the underlying storage or stream.
-     * @throws IOException	if any of the usual Input/Output related exceptions occurs.
+     * @throws IOException      if any of the usual Input/Output related exceptions occurs.
      */
     public void writeObject(Object o) throws IOException {
-	Class c = o.getClass();
-	if (c.equals(Byte.TYPE))
-	    writeByte(((Byte) o).byteValue());
-	else if (c.equals(Short.TYPE))
-	    writeShort(((Short) o).shortValue());
-	else if (c.equals(Integer.TYPE))
-	    writeInt(((Integer) o).intValue());
-	else if (c.equals(Long.TYPE))
-	    writeLong(((Long) o).longValue());
-	else if (c.equals(Float.TYPE))
-	    writeFloat(((Float) o).floatValue());
-	else if (c.equals(Double.TYPE))
-	    writeDouble(((Double) o).doubleValue());
-	else if (o instanceof Number)
-	    ;
+        Class c = o.getClass();
+        if (c.equals(Byte.TYPE))
+            writeByte(((Byte) o).byteValue());
+        else if (c.equals(Short.TYPE))
+            writeShort(((Short) o).shortValue());
+        else if (c.equals(Integer.TYPE))
+            writeInt(((Integer) o).intValue());
+        else if (c.equals(Long.TYPE))
+            writeLong(((Long) o).longValue());
+        else if (c.equals(Float.TYPE))
+            writeFloat(((Float) o).floatValue());
+        else if (c.equals(Double.TYPE))
+            writeDouble(((Double) o).doubleValue());
+        else if (o instanceof Number)
+            ;
 
-	else if (c.equals(Boolean.TYPE))
-	    writeBoolean(((Boolean) o).booleanValue());
-	else if (c.equals(Character.TYPE))
-	    writeChar(((Character) o).charValue());
-	else if (c.equals(String.class))
-	    writeUTF((String) o);
-	throw new IllegalArgumentException("could not handle type of object " + o + " of type " + c);
+        else if (c.equals(Boolean.TYPE))
+            writeBoolean(((Boolean) o).booleanValue());
+        else if (c.equals(Character.TYPE))
+            writeChar(((Character) o).charValue());
+        else if (c.equals(String.class))
+            writeUTF((String) o);
+        throw new IllegalArgumentException("could not handle type of object " + o + " of type " + c);
     } 
 
 
@@ -327,35 +327,35 @@ public class DataWriter extends FilterWriter implements DataOutput {
      * @see java.io.StreamTokenizer#TT_EOL
      */
     protected void nextToken(int ttype, String value) throws IOException {
-	switch (ttype) {
-	case StreamTokenizer.TT_EOF:
-	    throw new IllegalArgumentException("eof should not be written. Simply use close instead");
-	case StreamTokenizer.TT_EOL:
-	    out.write(System.getProperty("line.separator"));
-	    break;
-	case StreamTokenizer.TT_NUMBER:
-	    out.write(value);
-	    out.write(' ');
-	    break;
-	case TT_BOOLEAN:
-	case StreamTokenizer.TT_WORD:
-	    out.write(value);
-	    out.write(System.getProperty("line.separator"));
-	    break;
-	case '\'':
-	case '"':
-	    if (value == null)
-		out.write(ttype);
-	    else
-		out.write((char) ttype + value + (char) ttype);
-	    out.write(' ');	   // write a separator
-	    break;
-	default:
-	    if (value == null)
-		out.write(ttype);
-	    else
-		out.write(value);
-	    out.write(' ');	   // write a separator
-	}
+        switch (ttype) {
+        case StreamTokenizer.TT_EOF:
+            throw new IllegalArgumentException("eof should not be written. Simply use close instead");
+        case StreamTokenizer.TT_EOL:
+            out.write(System.getProperty("line.separator"));
+            break;
+        case StreamTokenizer.TT_NUMBER:
+            out.write(value);
+            out.write(' ');
+            break;
+        case TT_BOOLEAN:
+        case StreamTokenizer.TT_WORD:
+            out.write(value);
+            out.write(System.getProperty("line.separator"));
+            break;
+        case '\'':
+        case '"':
+            if (value == null)
+                out.write(ttype);
+            else
+                out.write((char) ttype + value + (char) ttype);
+            out.write(' ');        // write a separator
+            break;
+        default:
+            if (value == null)
+                out.write(ttype);
+            else
+                out.write(value);
+            out.write(' ');        // write a separator
+        }
     } 
 }

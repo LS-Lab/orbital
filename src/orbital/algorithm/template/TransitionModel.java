@@ -158,7 +158,7 @@ public interface TransitionModel/*<A,S, M extends Transition>*/ {
      * @see GreedyProblem#nextCandidates(List)
      */
     Iterator/*<A>*/ actions(Object/*>S<*/ state);
-	
+        
     /**
      * Get all states reachable with any transitions from the state under a given action.
      * <p>
@@ -189,7 +189,7 @@ public interface TransitionModel/*<A,S, M extends Transition>*/ {
      * @todo rename perhaps to states, but not to nextStates, reachableStates
      */
     Iterator/*<S>*/ states(Object/*>A<*/ action, Object/*>S<*/ state);
-	
+        
     // central operation
     
     /**
@@ -227,38 +227,38 @@ public interface TransitionModel/*<A,S, M extends Transition>*/ {
      * However, it may contain any additional information about the transition.
      * </p>
      * @stereotype Structure
-     * @internal should we always bookkeep the state and action that took us to s´ as well as s´? No.
+     * @internal should we always bookkeep the state and action that took us to sÂ´ as well as sÂ´? No.
      * @version $Id$
      * @author  Andr&eacute; Platzer
      * @todo rename to Transition?
      */
     static interface Transition extends Comparable {
-	/**
-	 * Checks for equality.
-	 * <!-- Implementations will at least check for equal states, but ignore
-	 * the transition probabilities leading to the states.
-	 * However, depending upon concrete application, additional conditions may be checked
-	 * for equality. -->
-	 */
-	boolean equals(Object o);
-		
-	int hashCode();
-		
-	/**
-	 * Compares transition options.
-	 * In nondeterministic cases, implementations will usually
-	 * compare transition options according to their
-	 * probabilities.  Deterministic cases, however, may prefer
-	 * comparisons involving cost or accumulated cost. Those
-	 * comparisons can also be combined. In any case,
-	 * implementations are not required to use any specific order.
-	 */
-	int compareTo(Object o);
+        /**
+         * Checks for equality.
+         * <!-- Implementations will at least check for equal states, but ignore
+         * the transition probabilities leading to the states.
+         * However, depending upon concrete application, additional conditions may be checked
+         * for equality. -->
+         */
+        boolean equals(Object o);
+                
+        int hashCode();
+                
+        /**
+         * Compares transition options.
+         * In nondeterministic cases, implementations will usually
+         * compare transition options according to their
+         * probabilities.  Deterministic cases, however, may prefer
+         * comparisons involving cost or accumulated cost. Those
+         * comparisons can also be combined. In any case,
+         * implementations are not required to use any specific order.
+         */
+        int compareTo(Object o);
 
-	/**
-	 * Get the transition probability.
-	 * @return the transition probability p&isin;[0,1] of taking this transition.
-	 */
-	Scalar getProbability();
+        /**
+         * Get the transition probability.
+         * @return the transition probability p&isin;[0,1] of taking this transition.
+         */
+        Scalar getProbability();
     }
 }

@@ -31,7 +31,7 @@ public interface BinaryFunction/*<A1 implements Arithmetic, A2 implements Arithm
      * @throws UnsupportedOperationException if this function does not implement derivation but could principally be derived.
      */
     BinaryFunction derive();
-	
+        
     /**
      * Integrates this function and returns the resulting indefinite integral &int; f <i>d</i>x<sub>i</sub>.
      * @return the indefinite integral Function &int; f <i>d</i>x<sub>i</sub>.

@@ -35,106 +35,106 @@ public class TraceableClauseImpl extends ClauseImpl {
 
     //@xxx premature functionality and method
     public static void doShow() {
-	Frame f = new Frame("Proof Graph");
-	new Closer(f, true, true);
-	ViewGraph view = new ViewGraph();
-	view.setEdgePainter(new StraightLinePainter());
-	view.setVertexPainter(new StraightLinePainter());
-	//@todo reduce proofGraph to the relevant part, i.e. reachability closure of the resolvent CONTRADICTION
-	Graph proofDAG = reachability(proofGraph, proofDAGRoot);
-	view.setModel(proofDAG);
-	f.add(view);
-	f.setLocation(200, 100);
-	f.setSize(400, 400);
-	view.registerController(new GraphController(view,
-						    new Class[] {TraceableClauseImpl.class},
-						    new String[] {"Clause"},
-						    new Class[] {Integer.class},
-						    new String[] {"Proofstep"}));
-	new RandomNetLayouter().layout(view);
-	f.setVisible(true);
+        Frame f = new Frame("Proof Graph");
+        new Closer(f, true, true);
+        ViewGraph view = new ViewGraph();
+        view.setEdgePainter(new StraightLinePainter());
+        view.setVertexPainter(new StraightLinePainter());
+        //@todo reduce proofGraph to the relevant part, i.e. reachability closure of the resolvent CONTRADICTION
+        Graph proofDAG = reachability(proofGraph, proofDAGRoot);
+        view.setModel(proofDAG);
+        f.add(view);
+        f.setLocation(200, 100);
+        f.setSize(400, 400);
+        view.registerController(new GraphController(view,
+                                                    new Class[] {TraceableClauseImpl.class},
+                                                    new String[] {"Clause"},
+                                                    new Class[] {Integer.class},
+                                                    new String[] {"Proofstep"}));
+        new RandomNetLayouter().layout(view);
+        f.setVisible(true);
     }
 
     /**
      * Return a DAG containing all vertices reachable via edges from root.
      */
     private static Graph reachability(Graph graph, Vertex root) {
-	Graph reachable = new GraphImpl();
-	reachable.add(root);
-	reachabilityHelper(graph, root, reachable);
-	return reachable;
+        Graph reachable = new GraphImpl();
+        reachable.add(root);
+        reachabilityHelper(graph, root, reachable);
+        return reachable;
     }
     private static void reachabilityHelper(Graph graph, Vertex root, Graph reachable) {
-	for (Iterator successors = graph.getToEdges(root).iterator();
-	     successors.hasNext(); ) {
-	    Edge e = (Edge) successors.next();
-	    if (!reachable.getVertices().contains(e.getFromVertex())) {
-		reachable.add(e);
-		reachabilityHelper(graph, e.getFromVertex(), reachable);
-	    } else {
-		reachable.add(e);
-	    }
-	}
+        for (Iterator successors = graph.getToEdges(root).iterator();
+             successors.hasNext(); ) {
+            Edge e = (Edge) successors.next();
+            if (!reachable.getVertices().contains(e.getFromVertex())) {
+                reachable.add(e);
+                reachabilityHelper(graph, e.getFromVertex(), reachable);
+            } else {
+                reachable.add(e);
+            }
+        }
     }
-	
+        
     
     public TraceableClauseImpl(Set/*<Formula>*/ literals) {
-	super(literals);
-	corresponding = proofGraph.getGraphFactory().createVertex(this);
+        super(literals);
+        corresponding = proofGraph.getGraphFactory().createVertex(this);
     }
     public TraceableClauseImpl() {}
     
     // factory-methods
 
     protected Clause newInstance() {
-	return new TraceableClauseImpl();
+        return new TraceableClauseImpl();
     }
 
     protected ClauseImpl construct(Set literals) {
-	return new TraceableClauseImpl(literals);
+        return new TraceableClauseImpl(literals);
     }
 
     // add traces
 
     public Iterator/*_<Clause>_*/ resolveWith(Clause G) {
-	final GraphFactory graphFactory = proofGraph.getGraphFactory();
-	final TraceableClauseImpl G2 = (TraceableClauseImpl) G;
-	final LinkedList r = new LinkedList();
-	for (Iterator resolvents = super.resolveWith(G);
-	     resolvents.hasNext(); ) {
-	    TraceableClauseImpl resolvent = (TraceableClauseImpl) resolvents.next();
-	    ///proofGraph.add(resolvent.corresponding);
-	    final int count = inferenceCount++;
-	    proofGraph.add(graphFactory.createEdge(this.corresponding, resolvent.corresponding, new Integer(count)));
-	    proofGraph.add(graphFactory.createEdge(G2.corresponding, resolvent.corresponding, new Integer(count)));
-	    r.add(resolvent);
-	    if (resolvent.equals(Clause.CONTRADICTION)) {
-		System.out.println("Resolved a contradiction");
-		TraceableClauseImpl.proofDAGRoot = resolvent.corresponding;
-		doShow();
-	    }
-	}
-	return r.iterator();
+        final GraphFactory graphFactory = proofGraph.getGraphFactory();
+        final TraceableClauseImpl G2 = (TraceableClauseImpl) G;
+        final LinkedList r = new LinkedList();
+        for (Iterator resolvents = super.resolveWith(G);
+             resolvents.hasNext(); ) {
+            TraceableClauseImpl resolvent = (TraceableClauseImpl) resolvents.next();
+            ///proofGraph.add(resolvent.corresponding);
+            final int count = inferenceCount++;
+            proofGraph.add(graphFactory.createEdge(this.corresponding, resolvent.corresponding, new Integer(count)));
+            proofGraph.add(graphFactory.createEdge(G2.corresponding, resolvent.corresponding, new Integer(count)));
+            r.add(resolvent);
+            if (resolvent.equals(Clause.CONTRADICTION)) {
+                System.out.println("Resolved a contradiction");
+                TraceableClauseImpl.proofDAGRoot = resolvent.corresponding;
+                doShow();
+            }
+        }
+        return r.iterator();
     }
 
     /*@todo factorization
     public Clause factorize() {
-	final GraphFactory graphFactory = proofGraph.getGraphFactory();
-	final TraceableClauseImpl factor = (TraceableClauseImpl) super.factorize();
-	///proofGraph.add(factor.corresponding);
-	if (!factor.equals(this)) {
-	    // no trivial factorization edges of no new results, please
-	    proofGraph.add(graphFactory.createEdge(this.corresponding, factor.corresponding, new Integer(-(inferenceCount++))));
-	}
-	return factor;
-	}*/
+        final GraphFactory graphFactory = proofGraph.getGraphFactory();
+        final TraceableClauseImpl factor = (TraceableClauseImpl) super.factorize();
+        ///proofGraph.add(factor.corresponding);
+        if (!factor.equals(this)) {
+            // no trivial factorization edges of no new results, please
+            proofGraph.add(graphFactory.createEdge(this.corresponding, factor.corresponding, new Integer(-(inferenceCount++))));
+        }
+        return factor;
+        }*/
 
     // preserve traces
 
     public Clause variant(Signature disjointify) {
-	final TraceableClauseImpl variant = (TraceableClauseImpl) super.variant(disjointify);
-	variant.corresponding = this.corresponding;
-	return variant;
+        final TraceableClauseImpl variant = (TraceableClauseImpl) super.variant(disjointify);
+        variant.corresponding = this.corresponding;
+        return variant;
     }
     
 }// TraceableClauseImpl

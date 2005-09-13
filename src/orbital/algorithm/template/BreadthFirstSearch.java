@@ -41,25 +41,25 @@ public class BreadthFirstSearch extends GeneralSearch {
      * @todo O(|V|+|E|) on a graph (V,E) with vertexes V and edges E.
      */
     public Function complexity() {
-	return (Function) Operations.power.apply(Values.getDefaultInstance().symbol("b"),Functions.id);
+        return (Function) Operations.power.apply(Values.getDefaultInstance().symbol("b"),Functions.id);
     }
     /**
      * O(b<sup>d</sup>) where b is the branching factor and d the solution depth.
      * O(b<sup>d-1</sup>) more precisely.
      */
     public Function spaceComplexity() {
-	return complexity();
+        return complexity();
     }
     /**
      * Optimal only for when costs are uniform.
      * Costs are uniform if they fulfill h<sup>*</sup>(n)=0.
      */
     public boolean isOptimal() {
-    	return true;
+        return true;
     }
 
     protected Iterator createTraversal(GeneralSearchProblem problem) {
-	return new OptionIterator(problem);
+        return new OptionIterator(problem);
     }
 
     /**
@@ -68,43 +68,43 @@ public class BreadthFirstSearch extends GeneralSearch {
      * @author  Andr&eacute; Platzer
      */
     public static class OptionIterator extends GeneralSearch.OptionIterator {
-	private static final long serialVersionUID = -6989557875498264664L;
-	/**
-	 * effectively, nodes is a queue of iterators.
-	 * @serial
-	 */
-	private QueuedSequenceIterator/*_<S>_*/ nodes;
-	public OptionIterator(GeneralSearchProblem problem) {
-	    super(problem);
-	    nodes = new QueuedSequenceIterator(new Iterator[] {Collections.singletonList(problem.getInitialState()).iterator()});
-	}
+        private static final long serialVersionUID = -6989557875498264664L;
+        /**
+         * effectively, nodes is a queue of iterators.
+         * @serial
+         */
+        private QueuedSequenceIterator/*_<S>_*/ nodes;
+        public OptionIterator(GeneralSearchProblem problem) {
+            super(problem);
+            nodes = new QueuedSequenceIterator(new Iterator[] {Collections.singletonList(problem.getInitialState()).iterator()});
+        }
         protected boolean isEmpty() {
-	    return !nodes.hasNext();
+            return !nodes.hasNext();
         }
         protected Object/*>S<*/ select() {
-	    return nodes.next();
+            return nodes.next();
         }
         protected boolean add(Iterator newNodes) {
-	    nodes.add(newNodes);
-	    return newNodes.hasNext();
+            nodes.add(newNodes);
+            return newNodes.hasNext();
         }
     };
 
 
-    //	protected Collection createCollection() {
-    //		// new Queue();
-    //		return new LinkedList();
-    //	}
+    //  protected Collection createCollection() {
+    //          // new Queue();
+    //          return new LinkedList();
+    //  }
     //
     //    protected GeneralSearchProblem.Option select(Collection nodes) {
-    //    	Iterator i = nodes.iterator();
-    //    	GeneralSearchProblem.Option sel = (GeneralSearchProblem.Option) i.next();
-    //    	i.remove();
-    //    	return sel;
+    //          Iterator i = nodes.iterator();
+    //          GeneralSearchProblem.Option sel = (GeneralSearchProblem.Option) i.next();
+    //          i.remove();
+    //          return sel;
     //    }
     //
     //    protected Collection add(Collection newNodes, Collection oldNodes) {
-    //    	oldNodes.addAll(newNodes);
-    //    	return oldNodes;
+    //          oldNodes.addAll(newNodes);
+    //          return oldNodes;
     //    }
 }

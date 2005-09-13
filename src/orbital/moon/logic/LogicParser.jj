@@ -101,7 +101,7 @@ public class LogicParser {
     private transient Type INTEGER_LITERAL_TYPE;
     private transient Type FLOAT_LITERAL_TYPE;
     private transient Type STRING_LITERAL_TYPE;
-	
+        
     /**
      * The root scope, containing only the core signature.
      * @internal never use this scope directly, but always nest it inside another scope.
@@ -118,7 +118,7 @@ public class LogicParser {
      * The current type system used.
      */
     private TypeSystem typeSystem() {
-	return typeSystem;
+        return typeSystem;
     }
 
     /**
@@ -126,38 +126,38 @@ public class LogicParser {
      * @param syntax the expression syntax to use for parsing expressions (formulas).
      */
     public void setSyntax(ExpressionSyntax syntax) {
-	this.syntax = syntax;
-	Signature coreSignature = syntax.coreSignature();
-	this.root = new RootScope(coreSignature);
+        this.syntax = syntax;
+        Signature coreSignature = syntax.coreSignature();
+        this.root = new RootScope(coreSignature);
 
-	this.typeSystem = null;
-	this.TRUTH = queryType(syntax, "truth");
-	this.INDIVIDUAL = queryType(syntax, "individual");
-	// @todo read from syntax.coreSignature().get(...) or from Type.typeSystem()?
-	this.typeSystem = TRUTH != null ? TRUTH.typeSystem() : typeSystem;
-	//@todo should we ask the syntax?
-	this.UNIVERSAL = queryType(syntax, "univ");
-	this.FLOAT_LITERAL_TYPE = queryType(syntax, "real");
-	this.INTEGER_LITERAL_TYPE = queryType(syntax, "integer");
-	this.typeSystem = INTEGER_LITERAL_TYPE != null ? INTEGER_LITERAL_TYPE.typeSystem() : typeSystem;
-	this.STRING_LITERAL_TYPE = queryType(syntax, "string");
+        this.typeSystem = null;
+        this.TRUTH = queryType(syntax, "truth");
+        this.INDIVIDUAL = queryType(syntax, "individual");
+        // @todo read from syntax.coreSignature().get(...) or from Type.typeSystem()?
+        this.typeSystem = TRUTH != null ? TRUTH.typeSystem() : typeSystem;
+        //@todo should we ask the syntax?
+        this.UNIVERSAL = queryType(syntax, "univ");
+        this.FLOAT_LITERAL_TYPE = queryType(syntax, "real");
+        this.INTEGER_LITERAL_TYPE = queryType(syntax, "integer");
+        this.typeSystem = INTEGER_LITERAL_TYPE != null ? INTEGER_LITERAL_TYPE.typeSystem() : typeSystem;
+        this.STRING_LITERAL_TYPE = queryType(syntax, "string");
     }
     /**
      * Query the type (interpretation) of the type with the specified signifier from syntax.
      * @return null if no such type.
      */
     private static Type queryType(ExpressionSyntax syntax, String signifier) {
-	Symbol symbol = syntax.coreSignature().get(signifier, new Expression[0]);
-	if (symbol == null)
-	    return null;
-	return
-	    (Type) (
-		    syntax instanceof Logic
-		    ? ((Logic)syntax).coreInterpretation().get(symbol)
-		    : syntax instanceof MathExpressionSyntax /*@xxx prevent this special case*/
-		    ? ((MathExpressionSyntax)syntax).coreInterpretation().get(symbol)
-		    : null
-		    );
+        Symbol symbol = syntax.coreSignature().get(signifier, new Expression[0]);
+        if (symbol == null)
+            return null;
+        return
+            (Type) (
+                    syntax instanceof Logic
+                    ? ((Logic)syntax).coreInterpretation().get(symbol)
+                    : syntax instanceof MathExpressionSyntax /*@xxx prevent this special case*/
+                    ? ((MathExpressionSyntax)syntax).coreInterpretation().get(symbol)
+                    : null
+                    );
     }
 
     /**
@@ -172,104 +172,104 @@ public class LogicParser {
      * </table>
      */
     protected Type asType(Expression f) {
-	//@xxx
-	if (false && f.getType() != typeSystem().TYPE())
-	    throw new TypeException("would not expect type " + f + " for type expressions @xxx except for other kinds like *->*", typeSystem().TYPE(), f.getType());
-	return myasType(f, syntax.coreSignature());
+        //@xxx
+        if (false && f.getType() != typeSystem().TYPE())
+            throw new TypeException("would not expect type " + f + " for type expressions @xxx except for other kinds like *->*", typeSystem().TYPE(), f.getType());
+        return myasType(f, syntax.coreSignature());
     }
     static Type myasType(Expression f, Signature sigma) {
-	return (Type) ((Formula) f).apply(InterpretationBase.EMPTY(sigma));
+        return (Type) ((Formula) f).apply(InterpretationBase.EMPTY(sigma));
     }
 
     protected Expression combine(Token optok, Expression[] a) throws ParseException {
-    	String op = optok.image;
-    	// normalize alternative notation
-	switch (a.length) {
-	case 1:
-	    if (op.length() == 1)
-		switch (op.charAt(0)) {
-		case '!': /*fall-through*/
-		case '�': op = "~"; break;
-		case '\u25a1': op = "[]"; break;
-		case '\u25c7': op = "<>"; break;
-		default: /*ignore*/
-		}
-	    break;
+        String op = optok.image;
+        // normalize alternative notation
+        switch (a.length) {
+        case 1:
+            if (op.length() == 1)
+                switch (op.charAt(0)) {
+                case '!': /*fall-through*/
+                case '�': op = "~"; break;
+                case '\u25a1': op = "[]"; break;
+                case '\u25c7': op = "<>"; break;
+                default: /*ignore*/
+                }
+            break;
 
-	case 2:
-	    switch (op.length()) {
-	    case 1:
-		switch (op.charAt(0)) {
-		case '\u2227': op = "&"; break;
-		case '\u2228': op = "|"; break;
-		case '\u2260': op = "!="; break;
-		case '\u2264': op = "=<"; break;
-		case '\u2265': op = ">="; break;
-		case '\u2194':
-		case '\u21d4': op = "<->"; break;
-		case '\u2283':
-		case '\u2192':
-		case '\u21d2': op = "->"; break;
-		default: /*ignore*/
-		}
-		break;
+        case 2:
+            switch (op.length()) {
+            case 1:
+                switch (op.charAt(0)) {
+                case '\u2227': op = "&"; break;
+                case '\u2228': op = "|"; break;
+                case '\u2260': op = "!="; break;
+                case '\u2264': op = "=<"; break;
+                case '\u2265': op = ">="; break;
+                case '\u2194':
+                case '\u21d4': op = "<->"; break;
+                case '\u2283':
+                case '\u2192':
+                case '\u21d2': op = "->"; break;
+                default: /*ignore*/
+                }
+                break;
 
-	    case 2:
-		if ("&&".equals(op))
-		    op = "&";
-		else if ("||".equals(op))
-		    op = "|";
-		else if ("=>".equals(op))
-		    op = "->";
-		else if ("\u2228\u0307".equals(op))
-		    // note that this combining diacritical remark de facto has length 2
-		    op = "^";
-		break;
+            case 2:
+                if ("&&".equals(op))
+                    op = "&";
+                else if ("||".equals(op))
+                    op = "|";
+                else if ("=>".equals(op))
+                    op = "->";
+                else if ("\u2228\u0307".equals(op))
+                    // note that this combining diacritical remark de facto has length 2
+                    op = "^";
+                break;
 
-	    case 3:
-		if ("<=>".equals(op))
-		    op = "<->";
-		else if ("xor".equals(op))
-		    op = "^";
-		break;
+            case 3:
+                if ("<=>".equals(op))
+                    op = "<->";
+                else if ("xor".equals(op))
+                    op = "^";
+                break;
 
-	    default: /*ignore*/
-	    }
+            default: /*ignore*/
+            }
 
-	default: /*ignore other arities*/
-	}
-	return composeWrapper(optok, op, a);
+        default: /*ignore other arities*/
+        }
+        return composeWrapper(optok, op, a);
     }
 
     /**
      * quantifiers.
      */
     protected Expression combine(Token optok, Symbol x, Expression a) throws ParseException {
-    	String op = optok.image;
-    	if (op == null || x == null || a == null)
-	    throw new NullPointerException("illegal arguments "+ optok + "," + x + "," + a);
-    	// normalize alternative notation
-    	if (op.length() == 1)
-	    switch (op.charAt(0)) {
-	    case '\u2200': op = "�"; break;
-	    case '\u2203': op = "?"; break;
-	    case '$': op = "free"; break;
-	    default: /*ignore*/
-	    }
-    	if ("all".equals(op))
-	    op = "�";
-    	else if ("some".equals(op))
-	    op = "?";
+        String op = optok.image;
+        if (op == null || x == null || a == null)
+            throw new NullPointerException("illegal arguments "+ optok + "," + x + "," + a);
+        // normalize alternative notation
+        if (op.length() == 1)
+            switch (op.charAt(0)) {
+            case '\u2200': op = "�"; break;
+            case '\u2203': op = "?"; break;
+            case '$': op = "free"; break;
+            default: /*ignore*/
+            }
+        if ("all".equals(op))
+            op = "�";
+        else if ("some".equals(op))
+            op = "?";
 
-	if (!x.isVariable())
-	    throw new AssertionError("parser would only combine quantifiers with variable symbols " + op + " " + x);
-	if (!scope.contains(x))
-	    throw new AssertionError("only symbols in the symbol map of current scope are quantified over");
-	if ("free".equals(op))
-	    throw new AssertionError("quantifier with pure syntactic function and no semantic aspect at all have already been filtered");
-	return composeWrapper(optok, op, new Expression[] {
-	    composeWrapper(optok, ClassicalLogic.LAMBDA, new Expression[] {syntax.createAtomic(x), a})
-	});
+        if (!x.isVariable())
+            throw new AssertionError("parser would only combine quantifiers with variable symbols " + op + " " + x);
+        if (!scope.contains(x))
+            throw new AssertionError("only symbols in the symbol map of current scope are quantified over");
+        if ("free".equals(op))
+            throw new AssertionError("quantifier with pure syntactic function and no semantic aspect at all have already been filtered");
+        return composeWrapper(optok, op, new Expression[] {
+            composeWrapper(optok, ClassicalLogic.LAMBDA, new Expression[] {syntax.createAtomic(x), a})
+        });
     }
 
     // support
@@ -281,9 +281,9 @@ public class LogicParser {
      * @see ExpressionBuilder#compose(Expression,Expression[])
      */
     protected Expression apply(Token optok, Expression[] a, Type reqResult) throws ParseException {
-    	String op = optok.image;
-	Symbol s = scope.getSymbol(op, typeSystem().map(Types.typeOf(a), reqResult), true);
-	return composeWrapper(optok, s, a);
+        String op = optok.image;
+        Symbol s = scope.getSymbol(op, typeSystem().map(Types.typeOf(a), reqResult), true);
+        return composeWrapper(optok, s, a);
     }
 
     /**
@@ -291,13 +291,13 @@ public class LogicParser {
      * @param optok the token that initiated this operation (used in case of ParseExceptions to define the position).
      */
     private Expression composeWrapper(Token optok, Expression op, Expression[] arg) throws ParseException {
-	if (op == null)
-	    throw newParseException("illegal compositor: " + op, optok);
-	try {
-	    return syntax.compose(op, arg);
-    	}
-    	catch (orbital.logic.sign.ParseException ex) {throw newParseException(ex.getMessage(), optok, ex);}
-    	catch (orbital.logic.sign.type.TypeException ex) {throw newParseException(ex.getMessage(), optok, ex);}
+        if (op == null)
+            throw newParseException("illegal compositor: " + op, optok);
+        try {
+            return syntax.compose(op, arg);
+        }
+        catch (orbital.logic.sign.ParseException ex) {throw newParseException(ex.getMessage(), optok, ex);}
+        catch (orbital.logic.sign.type.TypeException ex) {throw newParseException(ex.getMessage(), optok, ex);}
     }
     /**
      * Wraps calls to {@link ExpressionBuilder#compose(Expression,Expression[])} in an exception handling block.
@@ -305,9 +305,9 @@ public class LogicParser {
      * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience method</a>
      */
     private Expression composeWrapper(Token optok, Symbol op, Expression[] arg) throws ParseException {
-	if (op == null)
-	    throw newParseException("illegal compositor: " + op + " (used for " + optok + ")", optok);
-	return composeWrapper(optok, syntax.createAtomic(op), arg);
+        if (op == null)
+            throw newParseException("illegal compositor: " + op + " (used for " + optok + ")", optok);
+        return composeWrapper(optok, syntax.createAtomic(op), arg);
     }
     /**
      * Wraps calls to {@link ExpressionBuilder#compose(Expression,Expression[])} in an exception handling block.
@@ -315,14 +315,14 @@ public class LogicParser {
      * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience method</a>
      */
     private Expression composeWrapper(Token optok, String op, Expression[] arg) throws ParseException {
-	try {
-	    Symbol s = scope.getSymbol(op, typeSystem().map(Types.typeOf(arg), UNIVERSAL), false);
-	    return composeWrapper(optok, s, arg);
-	}
-	catch (IllegalArgumentException illegalOp) {
-	    throw (IllegalArgumentException)
-		new IllegalArgumentException(newParseException(illegalOp.getMessage(), optok).getMessage()).initCause(illegalOp);
-	}
+        try {
+            Symbol s = scope.getSymbol(op, typeSystem().map(Types.typeOf(arg), UNIVERSAL), false);
+            return composeWrapper(optok, s, arg);
+        }
+        catch (IllegalArgumentException illegalOp) {
+            throw (IllegalArgumentException)
+                new IllegalArgumentException(newParseException(illegalOp.getMessage(), optok).getMessage()).initCause(illegalOp);
+        }
     }
 
     /**
@@ -332,143 +332,143 @@ public class LogicParser {
      * @version $Id$
      */
     private class Scope {
-	/**
-	 * the outer parental scope around this scope.
-	 */
-	private Scope outer;
-	/**
-	 * The accumulated signature already occured in the current scope.
-	 */
-	private Signature symbolMap;
+        /**
+         * the outer parental scope around this scope.
+         */
+        private Scope outer;
+        /**
+         * The accumulated signature already occured in the current scope.
+         */
+        private Signature symbolMap;
 
-	/**
-	 * Create a new empty scope.
-	 */
-	public Scope() {
-	    this((Scope)null);
-	}
-	/**
-	 * Create a new scope with predefined symbols.
-	 */
-	protected Scope(Signature predefinedSymbols) {
-	    this();
-	    this.symbolMap = predefinedSymbols;
-	}
-	/**
-	 * Create a new scope within an outer scope.
-	 */
-	public Scope(Scope outer) {
-	    this.outer = outer;
-	    this.symbolMap = new SignatureBase();
-	}
+        /**
+         * Create a new empty scope.
+         */
+        public Scope() {
+            this((Scope)null);
+        }
+        /**
+         * Create a new scope with predefined symbols.
+         */
+        protected Scope(Signature predefinedSymbols) {
+            this();
+            this.symbolMap = predefinedSymbols;
+        }
+        /**
+         * Create a new scope within an outer scope.
+         */
+        public Scope(Scope outer) {
+            this.outer = outer;
+            this.symbolMap = new SignatureBase();
+        }
 
-	/**
-	 * Enter a new scope.
-	 * @return the new inner scope of this outer scope.
-	 */
-	public Scope enter() {
-	    return new Scope(this);
-	}
+        /**
+         * Enter a new scope.
+         * @return the new inner scope of this outer scope.
+         */
+        public Scope enter() {
+            return new Scope(this);
+        }
 
-	/**
-	 * Leave this scope re-entering the parental outer scope.
-	 * @return the outer scope re-entered.
-	 */
-	public Scope leave() {
-	    return outer;
-	}
+        /**
+         * Leave this scope re-entering the parental outer scope.
+         * @return the outer scope re-entered.
+         */
+        public Scope leave() {
+            return outer;
+        }
 
-	/**
-	 * declare a new symbol.
-	 */
-	public void declare(Symbol x) {
-	    if (x == null)
-		throw new NullPointerException("illegal symbol " + x);
-	    else if (!x.isVariable())
-		throw new java.lang.AssertionError("parser would only combine quantifiers with variable symbols " + x);
-	    symbolMap.add(x);
-	}
+        /**
+         * declare a new symbol.
+         */
+        public void declare(Symbol x) {
+            if (x == null)
+                throw new NullPointerException("illegal symbol " + x);
+            else if (!x.isVariable())
+                throw new java.lang.AssertionError("parser would only combine quantifiers with variable symbols " + x);
+            symbolMap.add(x);
+        }
 
-	/**
-	 * declare a new symbol.
-	 */
-	public boolean contains(Symbol x) {
-	    return symbolMap.contains(x) || outer.contains(x);
-	}
-	
-	/**
-	 * Get a symbol of the specified signifier and expected type.
-	 * Will lookup current scope and outer scope.
-	 * @param maxType the maximum type expected as derived from the context.
-	 * @param variable whether the symbol is expected to be a variable.
-	 * @param autoDeclare whether to declare a new symbol if it is unknown,
-	 *  instead of returning <code>null</code>.
-	 * @return the symbol if exists.
-	 * @throws IllegalArgumentException if no such symbol exists.
-	 */
-	public Symbol getSymbol(String signifier, Type maxType, boolean variable, boolean autoDeclare) {
-	    if (maxType == null)
-		throw new NullPointerException("illegal type " + maxType + " for " + signifier);
-	    Symbol s = tryGetSymbol(signifier, maxType, variable, autoDeclare);
-	    if (s == null)
-		throw new IllegalArgumentException("unknown symbol: `" + signifier + "' : =< " + maxType + "\n in " + this);
-	    else
-		return s;
-	}
-	public Symbol getSymbol(String signifier, Type maxType, boolean autoDeclare) {
-	    return getSymbol(signifier, maxType, false, autoDeclare);
-	}
+        /**
+         * declare a new symbol.
+         */
+        public boolean contains(Symbol x) {
+            return symbolMap.contains(x) || outer.contains(x);
+        }
+        
+        /**
+         * Get a symbol of the specified signifier and expected type.
+         * Will lookup current scope and outer scope.
+         * @param maxType the maximum type expected as derived from the context.
+         * @param variable whether the symbol is expected to be a variable.
+         * @param autoDeclare whether to declare a new symbol if it is unknown,
+         *  instead of returning <code>null</code>.
+         * @return the symbol if exists.
+         * @throws IllegalArgumentException if no such symbol exists.
+         */
+        public Symbol getSymbol(String signifier, Type maxType, boolean variable, boolean autoDeclare) {
+            if (maxType == null)
+                throw new NullPointerException("illegal type " + maxType + " for " + signifier);
+            Symbol s = tryGetSymbol(signifier, maxType, variable, autoDeclare);
+            if (s == null)
+                throw new IllegalArgumentException("unknown symbol: `" + signifier + "' : =< " + maxType + "\n in " + this);
+            else
+                return s;
+        }
+        public Symbol getSymbol(String signifier, Type maxType, boolean autoDeclare) {
+            return getSymbol(signifier, maxType, false, autoDeclare);
+        }
 
-	/**
-	 * Get a symbol of the specified signifier and expected type.
-	 * Will lookup current scope and outer scope.
-	 * @param maxType the maximum type expected as derived from the context.
-	 * @param variable whether the symbol is expected to be a variable.
-	 * @param autoDeclare whether to declare a new symbol if it is unknown,
-	 *  instead of returning <code>null</code>.
-	 * @return the symbol or <code>null</code>.
-	 */
-	private Symbol tryGetSymbol(String signifier, Type maxType, boolean variable, boolean autoDeclare) {
-	    Symbol s = tryGetSymbol(signifier, maxType);
-	    if (s != null)
-		return s;
-	    if (outer != null) {
-		// declared in the parent's (outer) scope, but don't autoDeclare there
-		s = outer.tryGetSymbol(signifier, maxType, variable, false);
-		if (s != null)
-		    return s;
-	    }
+        /**
+         * Get a symbol of the specified signifier and expected type.
+         * Will lookup current scope and outer scope.
+         * @param maxType the maximum type expected as derived from the context.
+         * @param variable whether the symbol is expected to be a variable.
+         * @param autoDeclare whether to declare a new symbol if it is unknown,
+         *  instead of returning <code>null</code>.
+         * @return the symbol or <code>null</code>.
+         */
+        private Symbol tryGetSymbol(String signifier, Type maxType, boolean variable, boolean autoDeclare) {
+            Symbol s = tryGetSymbol(signifier, maxType);
+            if (s != null)
+                return s;
+            if (outer != null) {
+                // declared in the parent's (outer) scope, but don't autoDeclare there
+                s = outer.tryGetSymbol(signifier, maxType, variable, false);
+                if (s != null)
+                    return s;
+            }
 
-	    //@internal first look if there is a symbol of parametric type matching ours
-	    //@xxx note that this does not only find those of parametric types, but may get stuck at the first with non-parametric type as well. However this does not incubate problems if only symbols of parameteric types are not overloaded (i.e. their signifier is unique).
-	    s = tryGetSymbol(signifier, typeSystem().UNIVERSAL());
-	    if (s != null && s.getType() instanceof ClassicalLogic.PiAbstractionType)
-		return s;
+            //@internal first look if there is a symbol of parametric type matching ours
+            //@xxx note that this does not only find those of parametric types, but may get stuck at the first with non-parametric type as well. However this does not incubate problems if only symbols of parameteric types are not overloaded (i.e. their signifier is unique).
+            s = tryGetSymbol(signifier, typeSystem().UNIVERSAL());
+            if (s != null && s.getType() instanceof ClassicalLogic.PiAbstractionType)
+                return s;
 
-	    // treated "the default way"
-	    return autoDeclare
-		? variable
-		  ? new SymbolBase(signifier, maxType, null, variable)
-		  : getDefaultSymbol(signifier, maxType)
-		: null;
-	}
-	private Symbol tryGetSymbol(String signifier, Type maxType) {
-	    Symbol s = symbolMap.get(signifier, maxType);
-	    if (s != null) {
-		// we already know it due to a quantifier within whose scope we are
-		//@todo use typeSystem().map(typeSystem().product(arityOf(maxType.domain()), UNIVERSAL), UNIVERSAL) instead to catch even more similarities?
-		Symbol s2 = symbolMap.get(signifier, typeSystem().map(maxType.domain(), typeSystem().UNIVERSAL()));
-		if (!s.equals(s2))
-		    throw new IllegalArgumentException("nonunique names\n\t" + signifier + ":" + maxType + " ressembles\n\t" + s + " of type " + s.getType() +"\n\tand " + s2 + " of type " + s2.getType() + " too much.");
-		else
-		    return s;
-	    }
-	    return s;
-	}
+            // treated "the default way"
+            return autoDeclare
+                ? variable
+                  ? new SymbolBase(signifier, maxType, null, variable)
+                  : getDefaultSymbol(signifier, maxType)
+                : null;
+        }
+        private Symbol tryGetSymbol(String signifier, Type maxType) {
+            Symbol s = symbolMap.get(signifier, maxType);
+            if (s != null) {
+                // we already know it due to a quantifier within whose scope we are
+                //@todo use typeSystem().map(typeSystem().product(arityOf(maxType.domain()), UNIVERSAL), UNIVERSAL) instead to catch even more similarities?
+                Symbol s2 = symbolMap.get(signifier, typeSystem().map(maxType.domain(), typeSystem().UNIVERSAL()));
+                if (!s.equals(s2))
+                    throw new IllegalArgumentException("nonunique names\n\t" + signifier + ":" + maxType + " ressembles\n\t" + s + " of type " + s.getType() +"\n\tand " + s2 + " of type " + s2.getType() + " too much.");
+                else
+                    return s;
+            }
+            return s;
+        }
 
-	public String toString() {
-	    return "{<" + outer + " scope " + symbolMap + ">}";
-	}
+        public String toString() {
+            return "{<" + outer + " scope " + symbolMap + ">}";
+        }
     }
 
     //@todo remove this garbage, because we should always let the user decide what's constant and what's variable, (or at least let him choose the capital/lower convention)
@@ -480,10 +480,10 @@ public class LogicParser {
      * @xxx can we somehow get rid of this?
      */
     static Symbol getDefaultSymbol(String signifier, Type expectedType) {
-	//@xxx currently we (in addition to $) distinguish between variables and constants according to their first character
-	return signifier.charAt(0) == '_'
-	    ? new SymbolBase(signifier, expectedType, null, true)
-	    : new SymbolBase(signifier, expectedType, null, false);
+        //@xxx currently we (in addition to $) distinguish between variables and constants according to their first character
+        return signifier.charAt(0) == '_'
+            ? new SymbolBase(signifier, expectedType, null, true)
+            : new SymbolBase(signifier, expectedType, null, false);
     }
     /**
      * Symbol handling for the root scope.
@@ -491,15 +491,15 @@ public class LogicParser {
      * @version $Id$
      */
     private class RootScope extends Scope {
-	/**
-	 * Create a new scope with predefined symbols.
-	 */
-	protected RootScope(Signature predefinedSymbols) {
-	    super(predefinedSymbols);
-	}
-	public void declare(Symbol x) {
-	    throw new InternalError("modifying the predefined root scope is not allowed");
-	}
+        /**
+         * Create a new scope with predefined symbols.
+         */
+        protected RootScope(Signature predefinedSymbols) {
+            super(predefinedSymbols);
+        }
+        public void declare(Symbol x) {
+            throw new InternalError("modifying the predefined root scope is not allowed");
+        }
     }
 
     /**
@@ -522,58 +522,58 @@ public class LogicParser {
      * @see ModernLogic#proveAll(Reader,ModernLogic,boolean)
      */
     public static final Substitution readTRS(final Reader reader, final ExpressionSyntax syntax, final Function expressionTransformation)
-	throws IOException, orbital.logic.sign.ParseException {
-	final String ruleDelim = "|-";
-	final LineNumberReader rd = new LineNumberReader(reader);
-	final List rules = new LinkedList();
-	String l;
-	while ((l=rd.readLine()) != null) {
-	    final String original = l;
-	    if (l.indexOf('#') >= 0)
-		// strip comment
-		l = l.substring(0, l.indexOf('#'));
-	    l = l.trim();
-	    if (l.length() == 0)
-		continue;
-	    int rule = l.indexOf(ruleDelim);
-	    if (rule < 0)
-		throw new orbital.logic.sign.ParseException("neither comment nor whitespace nor rule", rd.getLineNumber(), 1);
-	    rules.add(
-		      Substitutions.createSingleSidedMatcher(
-							     expressionTransformation.apply(readTRStrace(l.substring(0, rule), syntax, rd.getLineNumber())),
-							     expressionTransformation.apply(readTRStrace(l.substring(rule + ruleDelim.length()), syntax, rd.getLineNumber()))
-							     )
-		      );
-	}
-	return Substitutions.getInstance(new ArrayList(rules));
+        throws IOException, orbital.logic.sign.ParseException {
+        final String ruleDelim = "|-";
+        final LineNumberReader rd = new LineNumberReader(reader);
+        final List rules = new LinkedList();
+        String l;
+        while ((l=rd.readLine()) != null) {
+            final String original = l;
+            if (l.indexOf('#') >= 0)
+                // strip comment
+                l = l.substring(0, l.indexOf('#'));
+            l = l.trim();
+            if (l.length() == 0)
+                continue;
+            int rule = l.indexOf(ruleDelim);
+            if (rule < 0)
+                throw new orbital.logic.sign.ParseException("neither comment nor whitespace nor rule", rd.getLineNumber(), 1);
+            rules.add(
+                      Substitutions.createSingleSidedMatcher(
+                                                             expressionTransformation.apply(readTRStrace(l.substring(0, rule), syntax, rd.getLineNumber())),
+                                                             expressionTransformation.apply(readTRStrace(l.substring(rule + ruleDelim.length()), syntax, rd.getLineNumber()))
+                                                             )
+                      );
+        }
+        return Substitutions.getInstance(new ArrayList(rules));
     }
     /**
      * Add more verbosity to exceptions
      */
     private static final Expression readTRStrace(final String expression, final ExpressionSyntax syntax, int line)
-	throws orbital.logic.sign.ParseException {
-	try {
-	    return syntax.createExpression(expression);
-	}
-	catch (orbital.logic.sign.ParseException ex) {
-	    //@internal add information to exception message
-	    throw new orbital.logic.sign.ParseException(line + ": " + ex + "\nin expression " + expression + " on line " + line,
-							ex.getErrorOffset(),
-							ex.getLineNumber(),
-							ex.getColumnNumber(),
-							ex);
-	}
-	catch (TypeException ex) {
-	    //@internal add information to exception message
-	    throw (TypeException)
-		new TypeException(line + ": " + ex + "\nin expression " + expression + " on line " + line,
-				  ex.getRequired(), ex.getOccurred()).initCause(ex);
-	}
-	catch (IllegalArgumentException ex) {
-	    //@internal add information to exception message
-	    throw (IllegalArgumentException)
-		new IllegalArgumentException(line + ": " + ex + "\nin expression " + expression + " on line " + line).initCause(ex);
-	}
+        throws orbital.logic.sign.ParseException {
+        try {
+            return syntax.createExpression(expression);
+        }
+        catch (orbital.logic.sign.ParseException ex) {
+            //@internal add information to exception message
+            throw new orbital.logic.sign.ParseException(line + ": " + ex + "\nin expression " + expression + " on line " + line,
+                                                        ex.getErrorOffset(),
+                                                        ex.getLineNumber(),
+                                                        ex.getColumnNumber(),
+                                                        ex);
+        }
+        catch (TypeException ex) {
+            //@internal add information to exception message
+            throw (TypeException)
+                new TypeException(line + ": " + ex + "\nin expression " + expression + " on line " + line,
+                                  ex.getRequired(), ex.getOccurred()).initCause(ex);
+        }
+        catch (IllegalArgumentException ex) {
+            //@internal add information to exception message
+            throw (IllegalArgumentException)
+                new IllegalArgumentException(line + ": " + ex + "\nin expression " + expression + " on line " + line).initCause(ex);
+        }
     }
     /**
      * Reads a term-rewrite system from a stream.
@@ -581,20 +581,20 @@ public class LogicParser {
      * @see #readTRS(Reader,ExpressionSyntax,Function)
      */
     public static final Substitution readTRS(final Reader reader, final ExpressionSyntax syntax)
-	throws IOException, orbital.logic.sign.ParseException {
-	return readTRS(reader, syntax, Functions.id);
+        throws IOException, orbital.logic.sign.ParseException {
+        return readTRS(reader, syntax, Functions.id);
     }
 
     /**
      * Create a good parse exception with the specified message for the given token parsed.
      */
     static ParseException newParseException(String message, Token tok, Exception cause) {
-	return (ParseException) newParseException(message, tok).initCause(cause);
+        return (ParseException) newParseException(message, tok).initCause(cause);
     }
     static ParseException newParseException(String message, Token tok) {
-	final ParseException x = new ParseException(message);
-	x.currentToken = tok;
-    	return x;
+        final ParseException x = new ParseException(message);
+        x.currentToken = tok;
+        return x;
     }
 }
 PARSER_END(LogicParser)
@@ -626,7 +626,7 @@ TOKEN :
 | <EQUIV: "\u2194" | "\u21d4" | "<->" | "<=>">
 | <IMPLY: "\u2192" | "\u21d2" | "\u2283" | "->" | "=>">
 | <OR: "\u2228" | "|" | "||">
-	//@todo use a better symbol than ^ for xor. Otherwise 4^5 could mean 4 to the power of 5, or 4 xor 5.
+        //@todo use a better symbol than ^ for xor. Otherwise 4^5 could mean 4 to the power of 5, or 4 xor 5.
 | <XOR: "\u2228\u0307" | "xor" | "^">
 | <AND: "\u2227" | "&" | "&&">
 
@@ -668,16 +668,16 @@ Expression parseFormulas() :
 }
 {   LOOKAHEAD(2)
     "{" expr = expression() {r.add(expr);} ( "," expr = expression() {r.add(expr);} )* "}" <EOF>
-	{
-	    Expression[] exprList = (Expression[]) r.toArray(new Expression[0]);
-	    if (Utility.containsIdenticalTo(exprList, null))
-		throw new AssertionError("empty string \"\" is not a formula, but only an empty set of formulas.");
-	    return new ExpressionSequence(exprList);
-	}
+        {
+            Expression[] exprList = (Expression[]) r.toArray(new Expression[0]);
+            if (Utility.containsIdenticalTo(exprList, null))
+                throw new AssertionError("empty string \"\" is not a formula, but only an empty set of formulas.");
+            return new ExpressionSequence(exprList);
+        }
     | "{" "}" <EOF>
-	{ return new ExpressionSequence(new Expression[0]);}
+        { return new ExpressionSequence(new Expression[0]);}
     | expr = parseFormula()
-	{ return expr; }
+        { return expr; }
 }
 
 
@@ -693,7 +693,7 @@ Expression parseFormula() :
 }
 {
     expr = expression() <EOF>
-	{ return expr; }
+        { return expr; }
 }
 
 /**
@@ -707,7 +707,7 @@ Expression parseTerm() :
 }
 {
     expr = term() <EOF>
-	{ return expr; }
+        { return expr; }
 }
 
 /**
@@ -721,7 +721,7 @@ Type parseType() :
 }
 {
     expr = typeUse() <EOF>
-	{ return expr; }
+        { return expr; }
 }
 
 // formula parsing methods
@@ -733,7 +733,7 @@ Expression expression() :
 {Expression f;}
 {
     f = FreeDeclarationExpression()
-	{return f;}
+        {return f;}
 }
 
 //@todo introduce &jota; x.f operator (by Bertrand Russell)
@@ -753,10 +753,10 @@ Expression FreeDeclarationExpression() :
 }
 {
     (tok = <DECLARE_FREE> x = VariableDeclaration()
-	{
-	    scope.declare(x);
-	    logger.log(Level.FINER, "declared {0}", Types.toTypedString(x));
-	}
+        {
+            scope.declare(x);
+            logger.log(Level.FINER, "declared {0}", Types.toTypedString(x));
+        }
      )*
 
     a = EquivalenceExpression()
@@ -772,7 +772,7 @@ Expression EquivalenceExpression() :
 {Token tok;Expression a,b;}
 {
     a = ImplicationExpression() ( tok = <EQUIV> b = ImplicationExpression() {a = combine(tok, new Expression[]{a,b});} )*
-	{return a;}
+        {return a;}
 }
 
 //@todo introduce reverse implication as well
@@ -780,28 +780,28 @@ Expression ImplicationExpression() :
 {Token tok;Expression a,b;}
 {
     a = InclusiveOrExpression() ( tok = <IMPLY> b = ImplicationExpression() {a = combine(tok, new Expression[]{a,b});} )?
-	{return a;}
+        {return a;}
 }
 
 Expression InclusiveOrExpression() :
 {Token tok;Expression a,b;}
 {
     a = ExclusiveOrExpression() ( tok = <OR> b = ExclusiveOrExpression() {a = combine(tok, new Expression[]{a,b});} )*
-	{return a;}
+        {return a;}
 }
 
 Expression ExclusiveOrExpression() :
 {Token tok;Expression a,b;}
 {
     a = AndExpression() ( tok = <XOR> b = AndExpression() {a = combine(tok, new Expression[]{a,b});} )*
-	{return a;}
+        {return a;}
 }
 
 Expression AndExpression() :
 {Token tok;Expression a,b;}
 {
     a = UnaryExpression() ( tok = <AND> b = UnaryExpression() {a = combine(tok, new Expression[]{a,b});} )*
-	{return a;}
+        {return a;}
 }
 
 // unary operators
@@ -812,11 +812,11 @@ Expression UnaryExpression() :
 {
     tok = <NOT> f = UnaryExpression() {return combine(tok, new Expression[]{f});}
     | f = ModalExpression()
-	{return f;}
+        {return f;}
     | f = QuantifiedExpression()
-	{return f;}
+        {return f;}
     | f = PrimaryExpression()
-	{return f;}
+        {return f;}
 }
 
 // quantifiers
@@ -837,15 +837,15 @@ Expression QuantifiedExpression() :
       )
     )+
     a = UnaryExpression()
-	{
-	    for (Iterator i = xs.iterator(); i.hasNext(); ) {
-		Symbol y = (Symbol) i.next();
-		//@internal note that the tok location is not quite true for multiple quantifiers
-		a = combine(tok, y, a);
-	    }
-	    scope = scope.leave();
-	    return a;
-	}
+        {
+            for (Iterator i = xs.iterator(); i.hasNext(); ) {
+                Symbol y = (Symbol) i.next();
+                //@internal note that the tok location is not quite true for multiple quantifiers
+                a = combine(tok, y, a);
+            }
+            scope = scope.leave();
+            return a;
+        }
 |
     (LOOKAHEAD(<EXISTS>) tok = <EXISTS>
      (
@@ -855,15 +855,15 @@ Expression QuantifiedExpression() :
       )
     )+
     a = UnaryExpression()
-	{
-	    for (Iterator i = xs.iterator(); i.hasNext(); ) {
-		Symbol y = (Symbol) i.next();
-		//@internal note that the tok location is not quite true for multiple quantifiers
-		a = combine(tok, y, a);
-	    }
-	    scope = scope.leave();
-	    return a;
-	}	
+        {
+            for (Iterator i = xs.iterator(); i.hasNext(); ) {
+                Symbol y = (Symbol) i.next();
+                //@internal note that the tok location is not quite true for multiple quantifiers
+                a = combine(tok, y, a);
+            }
+            scope = scope.leave();
+            return a;
+        }       
 }
 
 Expression ModalExpression() :
@@ -882,9 +882,9 @@ Expression PrimaryExpression() :
 {
     (LOOKAHEAD(Atom())  //@xxx sure? Also note that this is a dramatic performance bottleneck
      a = Atom()
-     |	"(" a = expression() ")"
+     |  "(" a = expression() ")"
      )
-	{return a;}
+        {return a;}
 }
 
 /**
@@ -902,20 +902,20 @@ TOKEN :
 
 /**
  * A formula that is a logical atom.
- * @todo better distinguish between variables and constants (with the possibility for both to appear in	compound expressions for PL2)
+ * @todo better distinguish between variables and constants (with the possibility for both to appear in compound expressions for PL2)
  */
 Expression Atom() :
 {Expression a;String r;Token tok;String s = "";Symbol sym;}
 {
     LOOKAHEAD(2)
-	a = CompoundFormula()
-	{return a;}
+        a = CompoundFormula()
+        {return a;}
     |
-	tok = <IDENTIFIER>
-	{return (Expression) syntax.createAtomic(scope.getSymbol(tok.image, TRUTH, true));}
+        tok = <IDENTIFIER>
+        {return (Expression) syntax.createAtomic(scope.getSymbol(tok.image, TRUTH, true));}
     |
-	sym = NumberLiteralValue()
-	{return (Expression) syntax.createAtomic(sym);}
+        sym = NumberLiteralValue()
+        {return (Expression) syntax.createAtomic(sym);}
 }
 
 /**
@@ -929,20 +929,20 @@ Expression CompoundFormula() :
         {return p;}
 |
     tok = <IDENTIFIER> arg = Arguments()
-	{return apply(tok, arg, TRUTH);}
+        {return apply(tok, arg, TRUTH);}
 |   LOOKAHEAD(2)
     "[" tok = <IDENTIFIER> ":" type = typeUse() "]" arg = Arguments()
-	{return composeWrapper(tok,
-			       scope.getSymbol(tok.image, type, true),
-			       arg);}
+        {return composeWrapper(tok,
+                               scope.getSymbol(tok.image, type, true),
+                               arg);}
 |
     p = LambdaAbstractionPredicate() arg = Arguments()
         {
-	    if (arg.length != 1)
- 	        throw newParseException("only unary application of lambda abstractions is supported. Use currying instead.", null);
-	    //@todo which exact optok token?
-	    return composeWrapper(null, p, arg);
-	}
+            if (arg.length != 1)
+                throw newParseException("only unary application of lambda abstractions is supported. Use currying instead.", null);
+            //@todo which exact optok token?
+            return composeWrapper(null, p, arg);
+        }
 }
 
 // relational operators (special predicates on terms)
@@ -951,14 +951,14 @@ Expression CompoundFormula() :
 // {Token tok;Expression a,b;}
 // {
 //     a = RelationalExpression() ( (tok = <EQUAL> | tok = <UNEQUAL>) b = RelationalExpression() {a = combine(tok, new Expression[]{a, b});} )*
-// 	{return a;}
+//      {return a;}
 // }
 
 // Expression RelationalExpression() :
 // {Token tok;Expression a,b;}
 // {
 //     a = term() ( ( tok = <LESS> | tok = <GREATER> | tok = <LESS_EQUAL> | tok = <GREATER_EQUAL> ) b = term() {a = combine(tok, new Expression[]{a, b});} )*
-// 	{return a;}
+//      {return a;}
 // }
 
 //@internal unified EqualityExpression() and RelationalExpression() such that we can replace * by + thereby making it impossible to parse a simple <IDENTIFIER> as such an EqualityExpression()
@@ -968,9 +968,9 @@ Expression EqualityExpression() :
 {
     //@xxx these extra brackets have been introduced temporarily in order to enable parsing (\x. 7>=x)(8) which somehow does not work otherwise (due to a LOOKAHEAD problem)
     "("
-	a = term() ( (tok = <EQUAL> | tok = <UNEQUAL> | tok = <LESS> | tok = <GREATER> | tok = <LESS_EQUAL> | tok = <GREATER_EQUAL> ) b = term() {a = combine(tok, new Expression[]{a, b});} )+
+        a = term() ( (tok = <EQUAL> | tok = <UNEQUAL> | tok = <LESS> | tok = <GREATER> | tok = <LESS_EQUAL> | tok = <GREATER_EQUAL> ) b = term() {a = combine(tok, new Expression[]{a, b});} )+
     ")"
-	{return a;}
+        {return a;}
 }
 
 /**
@@ -1046,11 +1046,11 @@ Expression PrimaryTerm() :
 {Expression a;}
 {
     (   LOOKAHEAD(2)
-     	a = CompoundTerm()
+        a = CompoundTerm()
      |  a = AtomicTerm()
-     |	"(" a = term() ")"
+     |  "(" a = term() ")"
      )
-	{return a;}
+        {return a;}
 }
 
 /**
@@ -1060,16 +1060,16 @@ Expression CompoundTerm() :
 {Token tok; Expression f; Expression[] arg;}
 {
     tok = <IDENTIFIER> arg = Arguments()
-	{return apply(tok, arg, INDIVIDUAL);}
+        {return apply(tok, arg, INDIVIDUAL);}
 |
-	//@todo also allow non-applied LambdaAbstractions like in f((\x.x+2))
+        //@todo also allow non-applied LambdaAbstractions like in f((\x.x+2))
     f = LambdaAbstraction() arg = Arguments()
         {
-	    if (arg.length != 1)
-	        throw newParseException("only unary application of lambda abstractions is supported", null);
-	    //@todo which exact optok token?
-	    return composeWrapper(null, f, arg);
-	}
+            if (arg.length != 1)
+                throw newParseException("only unary application of lambda abstractions is supported", null);
+            //@todo which exact optok token?
+            return composeWrapper(null, f, arg);
+        }
 }
 
 /**
@@ -1102,9 +1102,9 @@ Expression AtomicTerm() :
 {
     (
         s = LiteralValue()
-     |	s = ConstantOrVariable()
+     |  s = ConstantOrVariable()
     )
-	{return (Expression) syntax.createAtomic(s);}
+        {return (Expression) syntax.createAtomic(s);}
 }
 
 // atomic values
@@ -1120,22 +1120,22 @@ TOKEN :
 |
     <FLOATING_POINT_LITERAL:
           <DECIMAL_LITERAL> "." <DECIMAL_LITERAL> (<EXPONENT>)?
-	| <DECIMAL_LITERAL> <EXPONENT>
+        | <DECIMAL_LITERAL> <EXPONENT>
     >
 |
     <#EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
 |
     <STRING_LITERAL:
-	"\""
-			   (   (~["\"","\\","\n","\r"])
-			       | ("\\"
-				  ( ["n","t","b","r","f","\\","'","\""]
-				    | ["0"-"7"] ( ["0"-"7"] )?
-				    | ["0"-"3"] ["0"-"7"] ["0"-"7"]
-				    )
-				  )
-			       )*
-			   "\""
+        "\""
+                           (   (~["\"","\\","\n","\r"])
+                               | ("\\"
+                                  ( ["n","t","b","r","f","\\","'","\""]
+                                    | ["0"-"7"] ( ["0"-"7"] )?
+                                    | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+                                    )
+                                  )
+                               )*
+                           "\""
     >
 |   <#DIGIT : ["0"-"9"]>
 }
@@ -1147,15 +1147,15 @@ TOKEN :
 Symbol LiteralValue() :
 {Token tok;Symbol s;}
 {
-    s = NumberLiteralValue()      	{return s;}
+    s = NumberLiteralValue()            {return s;}
 |   tok = <STRING_LITERAL> {
-	if (tok.image.length() == 3) {
-	    if (!((tok.image.charAt(0) == '\'' && tok.image.charAt(2) == '\'')
-		  || (tok.image.charAt(0) == '"' && tok.image.charAt(2) == '"')))
-	    throw new AssertionError("single character");
-	    return new SymbolBase("\"" + tok.image.charAt(1) + "\"", STRING_LITERAL_TYPE);
-	}
-	return new SymbolBase(tok.image, STRING_LITERAL_TYPE);
+        if (tok.image.length() == 3) {
+            if (!((tok.image.charAt(0) == '\'' && tok.image.charAt(2) == '\'')
+                  || (tok.image.charAt(0) == '"' && tok.image.charAt(2) == '"')))
+            throw new AssertionError("single character");
+            return new SymbolBase("\"" + tok.image.charAt(1) + "\"", STRING_LITERAL_TYPE);
+        }
+        return new SymbolBase(tok.image, STRING_LITERAL_TYPE);
     }
 }
 
@@ -1165,7 +1165,7 @@ Symbol LiteralValue() :
 Symbol NumberLiteralValue() :
 {Token tok;}
 {
-    tok = <INTEGER_LITERAL>      	{return new SymbolBase(tok.image, INTEGER_LITERAL_TYPE);}
+    tok = <INTEGER_LITERAL>             {return new SymbolBase(tok.image, INTEGER_LITERAL_TYPE);}
 |   tok = <FLOATING_POINT_LITERAL>      {return new SymbolBase(tok.image, FLOAT_LITERAL_TYPE);}
 }
 
@@ -1180,18 +1180,18 @@ Symbol ConstantOrVariable() :
 {
     tok = <IDENTIFIER> {signifier = tok.image;}
     /*      (
-	    ( "." tok = <IDENTIFIER>  {signifier += "." + tok.image;} )
-	    )*
+            ( "." tok = <IDENTIFIER>  {signifier += "." + tok.image;} )
+            )*
     */
     {
-	try {
-	    // accept any type
-	    //@xxx which exact type? univ\truth?
-	    return scope.getSymbol(signifier, UNIVERSAL, false);
-	} catch (IllegalArgumentException unknownSymbol) {
-	    // only auto-declare as individual
-	    return scope.getSymbol(signifier, INDIVIDUAL, true);
-	}
+        try {
+            // accept any type
+            //@xxx which exact type? univ\truth?
+            return scope.getSymbol(signifier, UNIVERSAL, false);
+        } catch (IllegalArgumentException unknownSymbol) {
+            // only auto-declare as individual
+            return scope.getSymbol(signifier, INDIVIDUAL, true);
+        }
     }
 }
 
@@ -1205,8 +1205,8 @@ Symbol Variable() :
 {
     tok = <IDENTIFIER> {signifier = tok.image;}
     /*      (
-	    ( "." tok = <IDENTIFIER>  {signifier += "." + tok.image;} )
-	    )*
+            ( "." tok = <IDENTIFIER>  {signifier += "." + tok.image;} )
+            )*
     */
     {return scope.getSymbol(signifier, INDIVIDUAL, true);}
 }
@@ -1232,7 +1232,7 @@ Type typeUse() :
 {
     a = type()
     {
-	return asType(a);
+        return asType(a);
     }
 }
 
@@ -1251,14 +1251,14 @@ Expression MapType() :
 {Token tok;Expression a,b;}
 {
     a = ProductType() ( tok = <IMPLY> b = ProductType() {a = combine(tok, new Expression[]{a,b});} )*
-	{return a;}
+        {return a;}
 }
 
 Expression ProductType() :
 {Token tok;Expression a,b;}
 {
     a = PrimaryType() ( tok = <PRODUCT> b = PrimaryType() {a = apply(tok, new Expression[] {new FormulaSequence(new Expression[] {a,b})}, typeSystem().TYPE());} )*
-	{return a;}
+        {return a;}
 }
 
 Expression PiAbstractionType() :
@@ -1268,7 +1268,7 @@ Expression PiAbstractionType() :
 }
 {
     "(" tok = <PI> xtok = <IDENTIFIER> "."
-	{scope.declare(x = scope.getSymbol(xtok.image, typeSystem().TYPE(), true, true));}
+        {scope.declare(x = scope.getSymbol(xtok.image, typeSystem().TYPE(), true, true));}
     t = type() ")"
 {
     scope = scope.leave();
@@ -1284,14 +1284,14 @@ Expression PrimaryType() :
 {
     LOOKAHEAD(2)
     tok = <IDENTIFIER>
-	{return syntax.createAtomic(scope.getSymbol(tok.image, typeSystem().TYPE(), true));}
+        {return syntax.createAtomic(scope.getSymbol(tok.image, typeSystem().TYPE(), true));}
     |   "[" a = CompoundType() "]"
-	{return a;}
+        {return a;}
     | LOOKAHEAD(2)
-	a = PiAbstractionType()
-	{return a;}
+        a = PiAbstractionType()
+        {return a;}
     |   "(" a = type() ")"
-	{return a;}
+        {return a;}
 }
 
 /**
@@ -1301,7 +1301,7 @@ Expression CompoundType() :
 {Token tok; Expression[] arg;}
 {
     tok = <IDENTIFIER> arg = Types()
-	{return apply(tok, arg, typeSystem().TYPE());}
+        {return apply(tok, arg, typeSystem().TYPE());}
 }
 
 // Parsing Helpers
@@ -1310,26 +1310,26 @@ Expression[] Arguments() :
 {Expression[] s = null;}
 {
     "(" [ s = Argument_list() ] ")"
-	{return s;}
+        {return s;}
 }
 
 Expression[] Argument_list() :
 {List r = new LinkedList();Expression x;}
 {
     x = term() {r.add(x);} ( "," x = term() {r.add(x);} )*
-	{return (Expression[]) r.toArray(new Expression[0]);}
+        {return (Expression[]) r.toArray(new Expression[0]);}
 }
 
 Expression[] Types() :
 {Expression[] s = null;}
 {
     "(" [ s = Type_list() ] ")"
-	{return s;}
+        {return s;}
 }
 
 Expression[] Type_list() :
 {List r = new LinkedList();Expression x;}
 {
     x = type() {r.add(x);} ( "," x = type() {r.add(x);} )*
-	{return (Expression[]) r.toArray(new Expression[0]);}
+        {return (Expression[]) r.toArray(new Expression[0]);}
 }

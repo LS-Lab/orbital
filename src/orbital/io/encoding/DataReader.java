@@ -65,21 +65,21 @@ public class DataReader extends AnyInputStream implements DataInput {
     static final Logger logger = Logger.getLogger(DataReader.class.getName());
 
     public static void main(String arg[]) throws Exception {
-	if (arg.length == 0 || orbital.signe.isHelpRequest(arg)) {
-	    System.out.println(usage);
-	    return;
-	} 
-	DataReader d = getInstance(new java.io.FileReader(arg.length > 1 ? arg[1] : "t"), arg.length > 0 ? arg[0] : "default");
-	if (d == null) {
-	    System.out.println("no decoding is necessary");
-	    return;
-	} 
-	while (d.ready()) {
-	    Object o = d.readObject();
-	    if (o == null) break;
-	    System.out.println(o.getClass() + ":" + o);
-	} 
-	d.close();
+        if (arg.length == 0 || orbital.signe.isHelpRequest(arg)) {
+            System.out.println(usage);
+            return;
+        } 
+        DataReader d = getInstance(new java.io.FileReader(arg.length > 1 ? arg[1] : "t"), arg.length > 0 ? arg[0] : "default");
+        if (d == null) {
+            System.out.println("no decoding is necessary");
+            return;
+        } 
+        while (d.ready()) {
+            Object o = d.readObject();
+            if (o == null) break;
+            System.out.println(o.getClass() + ":" + o);
+        } 
+        d.close();
     } 
     public static final String usage = "usage: " + DataReader.class + " [encoding] [file]" + System.getProperty("line.separator") + "Where encoding is one of: default, none, strict, basic";
 
@@ -127,15 +127,15 @@ public class DataReader extends AnyInputStream implements DataInput {
      * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      */
     public static DataReader getInstance(Reader rd, String encoding) throws UnsupportedEncodingException, IOException {
-	if (encoding == null)
-	    return null;
-	if ("".equals(encoding) || "default".equalsIgnoreCase(encoding) || "none".equalsIgnoreCase(encoding))
-	    return new StrictDataReader(rd);	//XXX: as long as DataReader has errors
-	if ("basic".equalsIgnoreCase(encoding))
-	    return new BasicDataReader(rd);
-	if ("strict".equalsIgnoreCase(encoding))
-	    return new StrictDataReader(rd);
-	throw new UnsupportedEncodingException("no reader found for encoding '" + encoding + "'");
+        if (encoding == null)
+            return null;
+        if ("".equals(encoding) || "default".equalsIgnoreCase(encoding) || "none".equalsIgnoreCase(encoding))
+            return new StrictDataReader(rd);    //XXX: as long as DataReader has errors
+        if ("basic".equalsIgnoreCase(encoding))
+            return new BasicDataReader(rd);
+        if ("strict".equalsIgnoreCase(encoding))
+            return new StrictDataReader(rd);
+        throw new UnsupportedEncodingException("no reader found for encoding '" + encoding + "'");
     } 
 
     /**
@@ -157,15 +157,15 @@ public class DataReader extends AnyInputStream implements DataInput {
      * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      */
     public static DataReader getInstance(InputStream is, String encoding) throws UnsupportedEncodingException, IOException {
-	if (encoding == null)
-	    return null;
-	if ("".equals(encoding) || "default".equalsIgnoreCase(encoding) || "none".equalsIgnoreCase(encoding))
-	    return new DataReader(is);
-	if ("basic".equalsIgnoreCase(encoding))
-	    return new BasicDataReader(is);
-	if ("strict".equalsIgnoreCase(encoding))
-	    return new StrictDataReader(is);
-	throw new UnsupportedEncodingException("no reader found for encoding '" + encoding + "'");
+        if (encoding == null)
+            return null;
+        if ("".equals(encoding) || "default".equalsIgnoreCase(encoding) || "none".equalsIgnoreCase(encoding))
+            return new DataReader(is);
+        if ("basic".equalsIgnoreCase(encoding))
+            return new BasicDataReader(is);
+        if ("strict".equalsIgnoreCase(encoding))
+            return new StrictDataReader(is);
+        throw new UnsupportedEncodingException("no reader found for encoding '" + encoding + "'");
     } 
 
 
@@ -180,39 +180,39 @@ public class DataReader extends AnyInputStream implements DataInput {
      */
 
     /* private */
-    boolean					  skipWhitespaces = true;
+    boolean                                       skipWhitespaces = true;
 
     /**
      * Use and initialize the stream tokenizer specified to parse input.
      * @param returnWhitespaces whether the stream tokenizer should return whitespaces as well
      */
     protected void initialize(StreamTokenizer parse, boolean returnWhitespaces) {
-	this.parse = parse;
-	parse.resetSyntax();
-	parse.wordChars('a', 'z');
-	parse.wordChars('A', 'Z');
-	parse.wordChars(128 + 32, 255);
-	if (returnWhitespaces)
-	    parse.ordinaryChars(0, ' ');
-	else
-	    parse.whitespaceChars(0, ' ');
+        this.parse = parse;
+        parse.resetSyntax();
+        parse.wordChars('a', 'z');
+        parse.wordChars('A', 'Z');
+        parse.wordChars(128 + 32, 255);
+        if (returnWhitespaces)
+            parse.ordinaryChars(0, ' ');
+        else
+            parse.whitespaceChars(0, ' ');
 
-	// parse.commentChar('/');
-	parse.quoteChar('"');
-	parse.quoteChar('\'');
-	parse.parseNumbers();
-	parse.eolIsSignificant(returnWhitespaces);
-	if (returnWhitespaces ||!skipWhitespaces)
-	    for (int i = 0; i < IOUtilities.whitespaces.length(); i++)
-		parse.ordinaryChar(IOUtilities.whitespaces.charAt(i));
+        // parse.commentChar('/');
+        parse.quoteChar('"');
+        parse.quoteChar('\'');
+        parse.parseNumbers();
+        parse.eolIsSignificant(returnWhitespaces);
+        if (returnWhitespaces ||!skipWhitespaces)
+            for (int i = 0; i < IOUtilities.whitespaces.length(); i++)
+                parse.ordinaryChar(IOUtilities.whitespaces.charAt(i));
     } 
 
     /**
      * Create a DataReader parsing input from the specified character stream.
      */
     public DataReader(Reader input) {
-	super(input, true);
-	initialize(new StreamTokenizer(underlying_reader), false);
+        super(input, true);
+        initialize(new StreamTokenizer(underlying_reader), false);
     }
 
     /**
@@ -223,8 +223,8 @@ public class DataReader extends AnyInputStream implements DataInput {
      * @see #DataReader(java.io.Reader)
      */
     public DataReader(InputStream input) {
-	super(input, true);
-	initialize(new StreamTokenizer(underlying_inputstream), false);
+        super(input, true);
+        initialize(new StreamTokenizer(underlying_inputstream), false);
     }
 
     /**
@@ -232,7 +232,7 @@ public class DataReader extends AnyInputStream implements DataInput {
      * @return a String that specifies the format that is supported by this reader.
      */
     public String getFormat() {
-	return "default";
+        return "default";
     } 
 
     // Controlling the StreamTokenizer parse.
@@ -243,11 +243,11 @@ public class DataReader extends AnyInputStream implements DataInput {
      * @security what happens with illegal changes to the object returned?
      */
     public StreamTokenizer getStreamTokenizer() {
-	SecurityManager security = System.getSecurityManager();
-	if (security != null) {
-	    security.checkPermission(new RuntimePermission("accessDeclaredMembers"));
-	} 
-	return parse;
+        SecurityManager security = System.getSecurityManager();
+        if (security != null) {
+            security.checkPermission(new RuntimePermission("accessDeclaredMembers"));
+        } 
+        return parse;
     } 
 
     /**
@@ -255,7 +255,7 @@ public class DataReader extends AnyInputStream implements DataInput {
      * @return the current line number.
      */
     public int getLineNumber() {
-	return parse.lineno();
+        return parse.lineno();
     } 
 
 
@@ -264,7 +264,7 @@ public class DataReader extends AnyInputStream implements DataInput {
      * @throws java.lang.UnsupportedOperationException on every call.
      */
     public void readFully(byte b[]) throws IOException {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     } 
 
     /**
@@ -272,14 +272,14 @@ public class DataReader extends AnyInputStream implements DataInput {
      * @throws java.lang.UnsupportedOperationException on every call.
      */
     public void readFully(byte b[], int off, int len) throws IOException {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     } 
 
     public int skipBytes(int n) throws IOException {
-	long s = skip(n);
-	if (s < Integer.MIN_VALUE || Integer.MAX_VALUE < s)
-	    throw new IOException("skip was too big to fit an int");
-	return (int) s;
+        long s = skip(n);
+        if (s < Integer.MIN_VALUE || Integer.MAX_VALUE < s)
+            throw new IOException("skip was too big to fit an int");
+        return (int) s;
     } 
 
 
@@ -297,12 +297,12 @@ public class DataReader extends AnyInputStream implements DataInput {
      * @throws ParseException if the stream does not contain a parsable int.
      */
     public int readInt() throws IOException {
-	if (nextToken() != StreamTokenizer.TT_NUMBER)
-	    throw newParseException(parse, "integer number");
-	long v = (long) parse.nval;
-	if (v < Integer.MIN_VALUE || v > Integer.MAX_VALUE)
-	    throw newParseException(parse, "int sized integer number");
-	return (int) v;
+        if (nextToken() != StreamTokenizer.TT_NUMBER)
+            throw newParseException(parse, "integer number");
+        long v = (long) parse.nval;
+        if (v < Integer.MIN_VALUE || v > Integer.MAX_VALUE)
+            throw newParseException(parse, "int sized integer number");
+        return (int) v;
     } 
 
     /**
@@ -317,12 +317,12 @@ public class DataReader extends AnyInputStream implements DataInput {
      * @throws ParseException if the stream does not contain a parsable long.
      */
     public long readLong() throws IOException {
-	if (nextToken() != StreamTokenizer.TT_NUMBER)
-	    throw newParseException(parse, "integer number");
-	double v = parse.nval;
-	if (v < Long.MIN_VALUE || v > Long.MAX_VALUE)
-	    throw newParseException(parse, "long sized integer number");
-	return (long) v;
+        if (nextToken() != StreamTokenizer.TT_NUMBER)
+            throw newParseException(parse, "integer number");
+        double v = parse.nval;
+        if (v < Long.MIN_VALUE || v > Long.MAX_VALUE)
+            throw newParseException(parse, "long sized integer number");
+        return (long) v;
     } 
 
     /**
@@ -337,9 +337,9 @@ public class DataReader extends AnyInputStream implements DataInput {
      * @throws ParseException if the stream does not contain a parsable double.
      */
     public double readDouble() throws IOException {
-	if (nextToken() != StreamTokenizer.TT_NUMBER)
-	    throw newParseException(parse, "real number");
-	return parse.nval;
+        if (nextToken() != StreamTokenizer.TT_NUMBER)
+            throw newParseException(parse, "real number");
+        return parse.nval;
     } 
 
     /**
@@ -355,23 +355,23 @@ public class DataReader extends AnyInputStream implements DataInput {
      * @throws ParseException if this stream does not contain a parsable boolean.
      */
     public boolean readBoolean() throws IOException {
-	boolean v;
-	switch (nextToken()) {
-	case StreamTokenizer.TT_WORD:
-	    if ("true".equalsIgnoreCase(parse.sval))
-		v = true;
-	    else if ("false".equalsIgnoreCase(parse.sval))
-		v = false;
-	    else
-		throw newParseException(parse, "boolean value");
-	    break;
-	case StreamTokenizer.TT_NUMBER:
-	    v = (0 != parse.nval);
-	    break;
-	default:
-	    throw newParseException(parse, "boolean value");
-	}
-	return v;
+        boolean v;
+        switch (nextToken()) {
+        case StreamTokenizer.TT_WORD:
+            if ("true".equalsIgnoreCase(parse.sval))
+                v = true;
+            else if ("false".equalsIgnoreCase(parse.sval))
+                v = false;
+            else
+                throw newParseException(parse, "boolean value");
+            break;
+        case StreamTokenizer.TT_NUMBER:
+            v = (0 != parse.nval);
+            break;
+        default:
+            throw newParseException(parse, "boolean value");
+        }
+        return v;
     } 
 
     /**
@@ -384,19 +384,19 @@ public class DataReader extends AnyInputStream implements DataInput {
      * any character.
      */
     public String readWord() throws IOException {
-	switch (nextToken()) {
-	case StreamTokenizer.TT_EOF:
-	    throw new EOFException("EOF during readWord");
-	case StreamTokenizer.TT_EOL:
-	    return System.getProperty("line.separator");
-	case '"':
-	case StreamTokenizer.TT_WORD:
-	    return parse.sval;
-	case StreamTokenizer.TT_NUMBER:
-	    return parse.nval + "";
-	default:
-	    return (char) parse.ttype + "";
-	}
+        switch (nextToken()) {
+        case StreamTokenizer.TT_EOF:
+            throw new EOFException("EOF during readWord");
+        case StreamTokenizer.TT_EOL:
+            return System.getProperty("line.separator");
+        case '"':
+        case StreamTokenizer.TT_WORD:
+            return parse.sval;
+        case StreamTokenizer.TT_NUMBER:
+            return parse.nval + "";
+        default:
+            return (char) parse.ttype + "";
+        }
     } 
 
     /**
@@ -415,9 +415,9 @@ public class DataReader extends AnyInputStream implements DataInput {
      * any character.
      */
     public String readUTF() throws IOException {
-	if (nextToken() != '"')
-	    throw newParseException(parse, "quoted string");
-	return parse.sval;
+        if (nextToken() != '"')
+            throw newParseException(parse, "quoted string");
+        return parse.sval;
     } 
 
     /**
@@ -427,11 +427,11 @@ public class DataReader extends AnyInputStream implements DataInput {
      * @throws  IOException  if an I/O error occurs.
      */
     public String readLine() throws IOException {
-	if (underlying_reader != null)
-	    return IOUtilities.readLine(underlying_reader);
-	if (underlying_inputstream != null)
-	    return IOUtilities.readLine(underlying_inputstream);
-	throw new IllegalStateException("neither reader nor input stream is set");
+        if (underlying_reader != null)
+            return IOUtilities.readLine(underlying_reader);
+        if (underlying_inputstream != null)
+            return IOUtilities.readLine(underlying_inputstream);
+        throw new IllegalStateException("neither reader nor input stream is set");
     } 
 
     /**
@@ -443,16 +443,16 @@ public class DataReader extends AnyInputStream implements DataInput {
      * @throws  IOException   if an I/O error occurs.
      */
     public char readChar() throws IOException {
-	if (!skipWhitespaces)
-	    return (char) read();
-	int v;
-	do {
-	    v = read();
-	    if (v == -1)
-		throw new EOFException("EOF during character readChar");
-	} while (IOUtilities.whitespaces.indexOf(v) >= 0);
-	accepted();
-	return (char) v;
+        if (!skipWhitespaces)
+            return (char) read();
+        int v;
+        do {
+            v = read();
+            if (v == -1)
+                throw new EOFException("EOF during character readChar");
+        } while (IOUtilities.whitespaces.indexOf(v) >= 0);
+        accepted();
+        return (char) v;
     } 
 
 
@@ -473,10 +473,10 @@ public class DataReader extends AnyInputStream implements DataInput {
      * @see #readInt()
      */
     public byte readByte() throws IOException {
-	int v = readInt();
-	if (v < Byte.MIN_VALUE || v > Byte.MAX_VALUE)
-	    throw newParseException(parse, "byte sized integer number");
-	return (byte) v;
+        int v = readInt();
+        if (v < Byte.MIN_VALUE || v > Byte.MAX_VALUE)
+            throw newParseException(parse, "byte sized integer number");
+        return (byte) v;
     } 
 
     /**
@@ -494,10 +494,10 @@ public class DataReader extends AnyInputStream implements DataInput {
      * @see #readInt()
      */
     public int readUnsignedByte() throws IOException {
-	int v = readInt();
-	if (v < 0 || v > Byte.MAX_VALUE - Byte.MIN_VALUE)
-	    throw newParseException(parse, "unsigned byte sized integer number");
-	return v;
+        int v = readInt();
+        if (v < 0 || v > Byte.MAX_VALUE - Byte.MIN_VALUE)
+            throw newParseException(parse, "unsigned byte sized integer number");
+        return v;
     } 
 
     /**
@@ -511,10 +511,10 @@ public class DataReader extends AnyInputStream implements DataInput {
      * @see #readInt()
      */
     public short readShort() throws IOException {
-	int v = readInt();
-	if (v < Short.MIN_VALUE || v > Short.MAX_VALUE)
-	    throw newParseException(parse, "short sized integer number");
-	return (short) v;
+        int v = readInt();
+        if (v < Short.MIN_VALUE || v > Short.MAX_VALUE)
+            throw newParseException(parse, "short sized integer number");
+        return (short) v;
     } 
 
     /**
@@ -530,10 +530,10 @@ public class DataReader extends AnyInputStream implements DataInput {
      * @see #readInt()
      */
     public int readUnsignedShort() throws IOException {
-	int v = readInt();
-	if (v < 0 || v > Short.MAX_VALUE - Short.MIN_VALUE)
-	    throw newParseException(parse, "unsigned short sized integer number");
-	return v;
+        int v = readInt();
+        if (v < 0 || v > Short.MAX_VALUE - Short.MIN_VALUE)
+            throw newParseException(parse, "unsigned short sized integer number");
+        return v;
     } 
 
     /**
@@ -548,48 +548,48 @@ public class DataReader extends AnyInputStream implements DataInput {
      * @see #readDouble()
      */
     public float readFloat() throws IOException {
-	double v = readDouble();
-	if (v < Float.MIN_VALUE || v > Float.MAX_VALUE)
-	    throw newParseException(parse, "float sized real number");
-	return (float) v;
+        double v = readDouble();
+        if (v < Float.MIN_VALUE || v > Float.MAX_VALUE)
+            throw newParseException(parse, "float sized real number");
+        return (float) v;
     } 
 
     /**
      * Read and return an object.
      * @return the object read or null if there was nothing to read.
-     * @throws InvalidClassException	if the class of a serialized object is invalid.
-     * @throws IOException	if any of the usual Input/Output related exceptions occur.
+     * @throws InvalidClassException    if the class of a serialized object is invalid.
+     * @throws IOException      if any of the usual Input/Output related exceptions occur.
      * @throws ParseException if the stream does not contain a parsable object.
      */
     public Object readObject() throws IOException {
-	Class c = nextType();
-	if (c == null)
-	    return null;
-	if (c.equals(Void.TYPE))
-	    return null;
+        Class c = nextType();
+        if (c == null)
+            return null;
+        if (c.equals(Void.TYPE))
+            return null;
 
-	if (c.equals(Byte.TYPE) || c.equals(Byte.class))
-	    return new Byte(readByte());
-	if (c.equals(Short.TYPE) || c.equals(Short.class))
-	    return new Short(readShort());
-	if (c.equals(Integer.TYPE) || c.equals(Integer.class))
-	    return new Integer(readInt());
-	if (c.equals(Long.TYPE) || c.equals(Long.class))
-	    return new Long(readLong());
-	if (c.equals(Float.TYPE) || c.equals(Float.class))
-	    return new Float(readFloat());
-	if (c.equals(Double.TYPE) || c.equals(Double.class))
-	    return new Double(readDouble());
-	if (c.equals(Number.class))
-	    return new Double(readDouble());
+        if (c.equals(Byte.TYPE) || c.equals(Byte.class))
+            return new Byte(readByte());
+        if (c.equals(Short.TYPE) || c.equals(Short.class))
+            return new Short(readShort());
+        if (c.equals(Integer.TYPE) || c.equals(Integer.class))
+            return new Integer(readInt());
+        if (c.equals(Long.TYPE) || c.equals(Long.class))
+            return new Long(readLong());
+        if (c.equals(Float.TYPE) || c.equals(Float.class))
+            return new Float(readFloat());
+        if (c.equals(Double.TYPE) || c.equals(Double.class))
+            return new Double(readDouble());
+        if (c.equals(Number.class))
+            return new Double(readDouble());
 
-	if (c.equals(Boolean.TYPE) || c.equals(Boolean.class))
-	    return new Boolean(readBoolean());
-	if (c.equals(Character.TYPE) || c.equals(Character.class))
-	    return new Character(readChar());
-	if (c.equals(String.class))
-	    return parse.ttype == '"' ? readUTF() : readLine();	   // XXX: word?
-	throw newParseException(parse, "could not handle type of object: ");
+        if (c.equals(Boolean.TYPE) || c.equals(Boolean.class))
+            return new Boolean(readBoolean());
+        if (c.equals(Character.TYPE) || c.equals(Character.class))
+            return new Character(readChar());
+        if (c.equals(String.class))
+            return parse.ttype == '"' ? readUTF() : readLine();    // XXX: word?
+        throw newParseException(parse, "could not handle type of object: ");
     } 
 
 
@@ -603,26 +603,26 @@ public class DataReader extends AnyInputStream implements DataInput {
      * @see #peekNextToken()
      */
     public Class nextType() throws IOException {
-	switch (peekNextToken()) {
-	case StreamTokenizer.TT_EOF:
-	    return null;
-	case StreamTokenizer.TT_EOL:
-	    return Character.TYPE;
-	case StreamTokenizer.TT_NUMBER:
-	    if (MathUtilities.fract(parse.nval) == .0)
-		return (Integer.MIN_VALUE < parse.nval && parse.nval < Integer.MAX_VALUE) ? Integer.TYPE : Long.TYPE;
-	    else
-		return Double.TYPE;
-	case StreamTokenizer.TT_WORD:
-	    if ("true".equalsIgnoreCase(parse.sval) || "false".equalsIgnoreCase(parse.sval))
-		return Boolean.TYPE;
-	    else
-		return String.class;	// XXX: Line / Word
-	case '"':
-	    return String.class;		// XXX: UTF
-	default:
-	    return Character.TYPE;
-	}
+        switch (peekNextToken()) {
+        case StreamTokenizer.TT_EOF:
+            return null;
+        case StreamTokenizer.TT_EOL:
+            return Character.TYPE;
+        case StreamTokenizer.TT_NUMBER:
+            if (MathUtilities.fract(parse.nval) == .0)
+                return (Integer.MIN_VALUE < parse.nval && parse.nval < Integer.MAX_VALUE) ? Integer.TYPE : Long.TYPE;
+            else
+                return Double.TYPE;
+        case StreamTokenizer.TT_WORD:
+            if ("true".equalsIgnoreCase(parse.sval) || "false".equalsIgnoreCase(parse.sval))
+                return Boolean.TYPE;
+            else
+                return String.class;    // XXX: Line / Word
+        case '"':
+            return String.class;                // XXX: UTF
+        default:
+            return Character.TYPE;
+        }
     } 
 
     /**
@@ -638,21 +638,21 @@ public class DataReader extends AnyInputStream implements DataInput {
      */
     // FIXME: buggy for    -1|5,  will return -1, |, -1, | as tokens
     protected int peekNextToken() throws IOException {
-	if (!markSupported())
-	    throw new IllegalStateException("underlying stream does not support marking");
-	mark(MARK_LIMIT);
-	try {
-	    do {
-		if (parse.nextToken() == StreamTokenizer.TT_EOF)
-		    break;
-	    } while (parse.ttype == StreamTokenizer.TT_EOL || (skipWhitespaces && IOUtilities.whitespaces.indexOf(parse.ttype) >= 0));
-	    return parse.ttype;
-	} 
-	finally {
-	    reset();
-	    // clear internal storage for next token
-	    // initialize(new StreamTokenizer(underlying_reader));			//FIXME: does this work?
-	} 
+        if (!markSupported())
+            throw new IllegalStateException("underlying stream does not support marking");
+        mark(MARK_LIMIT);
+        try {
+            do {
+                if (parse.nextToken() == StreamTokenizer.TT_EOF)
+                    break;
+            } while (parse.ttype == StreamTokenizer.TT_EOL || (skipWhitespaces && IOUtilities.whitespaces.indexOf(parse.ttype) >= 0));
+            return parse.ttype;
+        } 
+        finally {
+            reset();
+            // clear internal storage for next token
+            // initialize(new StreamTokenizer(underlying_reader));                      //FIXME: does this work?
+        } 
     } 
 
     /**
@@ -667,12 +667,12 @@ public class DataReader extends AnyInputStream implements DataInput {
      * @see java.io.StreamTokenizer#nextToken()
      */
     protected int nextToken() throws IOException, EOFException {
-	do {
-	    if (parse.nextToken() == StreamTokenizer.TT_EOF)
-		throw new EOFException("EOF during read");
-	} while (parse.ttype == StreamTokenizer.TT_EOL || (skipWhitespaces && IOUtilities.whitespaces.indexOf(parse.ttype) >= 0));
-	accepted();
-	return parse.ttype;
+        do {
+            if (parse.nextToken() == StreamTokenizer.TT_EOF)
+                throw new EOFException("EOF during read");
+        } while (parse.ttype == StreamTokenizer.TT_EOL || (skipWhitespaces && IOUtilities.whitespaces.indexOf(parse.ttype) >= 0));
+        accepted();
+        return parse.ttype;
     } 
 
     /**
@@ -684,22 +684,22 @@ public class DataReader extends AnyInputStream implements DataInput {
      * @see #nextToken()
      */
     private void accepted() throws IOException {
-	while (ready()) {	 // skip all whitespace chars
-	    if (!markSupported())
-		throw new IllegalStateException("underlying stream does not support marking");
-	    mark(4);
-	    if (IOUtilities.whitespaces.indexOf(read()) < 0) {
-		reset();
-		break;
-	    } 
-	} 
+        while (ready()) {        // skip all whitespace chars
+            if (!markSupported())
+                throw new IllegalStateException("underlying stream does not support marking");
+            mark(4);
+            if (IOUtilities.whitespaces.indexOf(read()) < 0) {
+                reset();
+                break;
+            } 
+        } 
     } 
 
     public String toString() {
-	return parse.toString();
+        return parse.toString();
     } 
 
     IOException newParseException(StreamTokenizer parse, String message) {
-	return new IOException(new ParseException(parse, message).toString());
+        return new IOException(new ParseException(parse, message).toString());
     }
 }

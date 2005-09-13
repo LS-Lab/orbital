@@ -93,30 +93,30 @@ public interface Operations /* implements ArithmeticOperations */ {
      * @see Arithmetic#add(Arithmetic)
      */
     public static final BinaryFunction plus = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
-	    //@xxx either add this everywhere, or remove it here (otherwise it won't work)
-	    //private final orbital.logic.imp.Type logicalTypeDeclaration = orbital.logic.imp.Types.map(orbital.logic.imp.Types.product(new orbital.logic.imp.Type[] {orbital.logic.imp.Types.objectType(Arithmetic.class), orbital.logic.imp.Types.objectType(Arithmetic.class)}), orbital.logic.imp.Types.objectType(Arithmetic.class));
-	    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
-		Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer().apply(new Arithmetic[] {
-		    (Arithmetic) x, (Arithmetic) y
-		});
-		return operands[0].add(operands[1]);
-	    } 
-	    public BinaryFunction derive() {
-		return (BinaryFunction) Functionals.genericCompose(new BinaryFunction[][] {
-		    {Functions.binaryone, Functions.binaryone}
-		});
-	    } 
-	    public BinaryFunction integrate(int i) {
-		Utility.pre(0 <= i && i <= 1, "binary integral");
-		return (BinaryFunction) plus.apply( times.apply(Functions.projectFirst, Functions.projectSecond), divide.apply(Functionals.on(i, Functions.square), Values.getDefaultInstance().valueOf(2)));
-	    } 
-	    public Real norm() {
-		return Values.POSITIVE_INFINITY;
-	    }
-	    public String toString() {
-		return "+";
-	    } 
-	};
+            //@xxx either add this everywhere, or remove it here (otherwise it won't work)
+            //private final orbital.logic.imp.Type logicalTypeDeclaration = orbital.logic.imp.Types.map(orbital.logic.imp.Types.product(new orbital.logic.imp.Type[] {orbital.logic.imp.Types.objectType(Arithmetic.class), orbital.logic.imp.Types.objectType(Arithmetic.class)}), orbital.logic.imp.Types.objectType(Arithmetic.class));
+            public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
+                Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer().apply(new Arithmetic[] {
+                    (Arithmetic) x, (Arithmetic) y
+                });
+                return operands[0].add(operands[1]);
+            } 
+            public BinaryFunction derive() {
+                return (BinaryFunction) Functionals.genericCompose(new BinaryFunction[][] {
+                    {Functions.binaryone, Functions.binaryone}
+                });
+            } 
+            public BinaryFunction integrate(int i) {
+                Utility.pre(0 <= i && i <= 1, "binary integral");
+                return (BinaryFunction) plus.apply( times.apply(Functions.projectFirst, Functions.projectSecond), divide.apply(Functionals.on(i, Functions.square), Values.getDefaultInstance().valueOf(2)));
+            } 
+            public Real norm() {
+                return Values.POSITIVE_INFINITY;
+            }
+            public String toString() {
+                return "+";
+            } 
+        };
 
     /**
      * sum &sum;: A<sup>n</sup>&rarr;A; (x<sub>i</sub>) &#8614; &sum;<sub>i</sub> x<sub>i</sub> = <span class="bananaBracket">(|</span>0,+<span class="bananaBracket">|)</span> (x<sub>i</sub>).
@@ -133,22 +133,22 @@ public interface Operations /* implements ArithmeticOperations */ {
      * @todo implements AbstractFunction<Matrix<Arithmetic>,Arithmetic>?
      */
     public static final Function sum = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
-	    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ a) {
-		return Functionals.foldLeft(plus, Values.ZERO, Utility.asIterator(a));
-	    }
-	    public Function derive() {
-		throw new ArithmeticException(this + " is only partially derivable");
-	    } 
-	    public Function integrate() {
-		throw new ArithmeticException(this + " is only (undefinitely) integrable with respect to a single variable");
-	    } 
-	    public Real norm() {
-		return Values.POSITIVE_INFINITY;
-	    }
-	    public String toString() {
-		return "\u2211";
-	    } 
-	};
+            public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ a) {
+                return Functionals.foldLeft(plus, Values.ZERO, Utility.asIterator(a));
+            }
+            public Function derive() {
+                throw new ArithmeticException(this + " is only partially derivable");
+            } 
+            public Function integrate() {
+                throw new ArithmeticException(this + " is only (undefinitely) integrable with respect to a single variable");
+            } 
+            public Real norm() {
+                return Values.POSITIVE_INFINITY;
+            }
+            public String toString() {
+                return "\u2211";
+            } 
+        };
 
     /**
      * minus &minus;: A&rarr;A; x &#8614; &minus;x.
@@ -158,23 +158,23 @@ public interface Operations /* implements ArithmeticOperations */ {
      * @see Arithmetic#minus()
      */
     public static final Function minus = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
-	    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x) {
-		return ((Arithmetic) x).minus();
-	    } 
-	    public Function derive() {
-		return Functions.constant(Values.MINUS_ONE);
-	    } 
-	    public Function integrate() {
-		// return (Function) minus.apply(Functions.id.integrate());
-		return (Function) minus.apply( Operations.divide.apply(Functions.square, Values.getDefaultInstance().valueOf(2)) );
-	    }
-	    public Real norm() {
-		return Values.POSITIVE_INFINITY;
-	    }
-	    public String toString() {
-		return "-";
-	    } 
-	};
+            public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x) {
+                return ((Arithmetic) x).minus();
+            } 
+            public Function derive() {
+                return Functions.constant(Values.MINUS_ONE);
+            } 
+            public Function integrate() {
+                // return (Function) minus.apply(Functions.id.integrate());
+                return (Function) minus.apply( Operations.divide.apply(Functions.square, Values.getDefaultInstance().valueOf(2)) );
+            }
+            public Real norm() {
+                return Values.POSITIVE_INFINITY;
+            }
+            public String toString() {
+                return "-";
+            } 
+        };
 
     /**
      * subtract -: A&times;A&rarr;A; (x,y) &#8614; x-y.
@@ -185,30 +185,30 @@ public interface Operations /* implements ArithmeticOperations */ {
      * @see Arithmetic#subtract(Arithmetic)
      */
     public static final BinaryFunction subtract = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
-	    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
-		Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer().apply(new Arithmetic[] {
-		    (Arithmetic) x, (Arithmetic) y
-		});
-		return operands[0].subtract(operands[1]);
-	    } 
-	    public BinaryFunction derive() {
-		return (BinaryFunction) Functionals.genericCompose(new BinaryFunction[][] {
-		    {Functions.binaryConstant(Values.getDefaultInstance().valueOf(1)), Functions.binaryConstant(Values.MINUS_ONE)}
-		});
-	    } 
-	    public BinaryFunction integrate(int i) {
-		Utility.pre(0 <= i && i <= 1, "binary integral");
-		return i == 0
-		    ? (BinaryFunction) subtract.apply( divide.apply(Functionals.onFirst(Functions.square), Values.getDefaultInstance().valueOf(2)), times.apply(Functions.projectFirst, Functions.projectSecond))
-		    : (BinaryFunction) subtract.apply( times.apply(Functions.projectFirst, Functions.projectSecond), divide.apply(Functionals.onSecond(Functions.square), Values.getDefaultInstance().valueOf(2)));
-	    } 
-	    public Real norm() {
-		return Values.POSITIVE_INFINITY;
-	    }
-	    public String toString() {
-		return "-";
-	    } 
-	};
+            public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
+                Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer().apply(new Arithmetic[] {
+                    (Arithmetic) x, (Arithmetic) y
+                });
+                return operands[0].subtract(operands[1]);
+            } 
+            public BinaryFunction derive() {
+                return (BinaryFunction) Functionals.genericCompose(new BinaryFunction[][] {
+                    {Functions.binaryConstant(Values.getDefaultInstance().valueOf(1)), Functions.binaryConstant(Values.MINUS_ONE)}
+                });
+            } 
+            public BinaryFunction integrate(int i) {
+                Utility.pre(0 <= i && i <= 1, "binary integral");
+                return i == 0
+                    ? (BinaryFunction) subtract.apply( divide.apply(Functionals.onFirst(Functions.square), Values.getDefaultInstance().valueOf(2)), times.apply(Functions.projectFirst, Functions.projectSecond))
+                    : (BinaryFunction) subtract.apply( times.apply(Functions.projectFirst, Functions.projectSecond), divide.apply(Functionals.onSecond(Functions.square), Values.getDefaultInstance().valueOf(2)));
+            } 
+            public Real norm() {
+                return Values.POSITIVE_INFINITY;
+            }
+            public String toString() {
+                return "-";
+            } 
+        };
 
     // junctors of a general group (A,&sdot;)
 
@@ -227,30 +227,30 @@ public interface Operations /* implements ArithmeticOperations */ {
      * @see Arithmetic#scale(Arithmetic)
      */
     public static final BinaryFunction times = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
-	    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
-		Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer().apply(new Arithmetic[] {
-		    (Arithmetic) x, (Arithmetic) y
-		});
-		return operands[0].multiply(operands[1]);
-	    } 
-	    public BinaryFunction derive() {
-		return (BinaryFunction) Functionals.genericCompose(new BinaryFunction[][] {
-		    {Functions.projectSecond, Functions.projectFirst}
-		});
-	    } 
-	    public BinaryFunction integrate(int i) {
-		Utility.pre(0 <= i && i <= 1, "binary integral");
-		return i == 0
-		    ? (BinaryFunction) divide.apply( times.apply(Functionals.onFirst(Functions.square), Functions.projectSecond), Values.getDefaultInstance().valueOf(2))
-		    : (BinaryFunction) divide.apply( times.apply(Functions.projectFirst, Functionals.onSecond(Functions.square)), Values.getDefaultInstance().valueOf(2));
-	    } 
-	    public Real norm() {
-		return Values.POSITIVE_INFINITY;
-	    }
-	    public String toString() {
-		return "*";
-	    } 
-	};
+            public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
+                Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer().apply(new Arithmetic[] {
+                    (Arithmetic) x, (Arithmetic) y
+                });
+                return operands[0].multiply(operands[1]);
+            } 
+            public BinaryFunction derive() {
+                return (BinaryFunction) Functionals.genericCompose(new BinaryFunction[][] {
+                    {Functions.projectSecond, Functions.projectFirst}
+                });
+            } 
+            public BinaryFunction integrate(int i) {
+                Utility.pre(0 <= i && i <= 1, "binary integral");
+                return i == 0
+                    ? (BinaryFunction) divide.apply( times.apply(Functionals.onFirst(Functions.square), Functions.projectSecond), Values.getDefaultInstance().valueOf(2))
+                    : (BinaryFunction) divide.apply( times.apply(Functions.projectFirst, Functionals.onSecond(Functions.square)), Values.getDefaultInstance().valueOf(2));
+            } 
+            public Real norm() {
+                return Values.POSITIVE_INFINITY;
+            }
+            public String toString() {
+                return "*";
+            } 
+        };
 
     /**
      * product &prod;: A<sup>n</sup>&rarr;A; (x<sub>i</sub>) &#8614; &prod;<sub>i</sub> x<sub>i</sub> = <span class="bananaBracket">(|</span>1,&sdot;<span class="bananaBracket">|)</span> (x<sub>i</sub>).
@@ -266,22 +266,22 @@ public interface Operations /* implements ArithmeticOperations */ {
      * @todo
      */
     public static final Function product = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
-	    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ a) {
-		return Functionals.foldLeft(times, Values.ONE, Utility.asIterator(a));
-	    }
-	    public Function derive() {
-		throw new ArithmeticException(this + " is only partially derivable");
-	    } 
-	    public Function integrate() {
-		throw new ArithmeticException(this + " is only (undefinitely) integrable with respect to a single variable");
-	    } 
-	    public Real norm() {
-		return Values.POSITIVE_INFINITY;
-	    }
-	    public String toString() {
-		return "\u220f";
-	    } 
-	};
+            public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ a) {
+                return Functionals.foldLeft(times, Values.ONE, Utility.asIterator(a));
+            }
+            public Function derive() {
+                throw new ArithmeticException(this + " is only partially derivable");
+            } 
+            public Function integrate() {
+                throw new ArithmeticException(this + " is only (undefinitely) integrable with respect to a single variable");
+            } 
+            public Real norm() {
+                return Values.POSITIVE_INFINITY;
+            }
+            public String toString() {
+                return "\u220f";
+            } 
+        };
 
     /**
      * inverse <sup>-1</sup>: A&rarr;A; x &#8614; x<sup>-1</sup>.
@@ -291,22 +291,22 @@ public interface Operations /* implements ArithmeticOperations */ {
      * @see Arithmetic#inverse()
      */
     public static final Function inverse = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
-	    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x) {
-		return ((Arithmetic) x).inverse();
-	    } 
-	    public Function derive() {
-		return Functionals.compose(minus, Functions.pow(Values.getDefaultInstance().valueOf(-2)));
-	    } 
-	    public Function integrate() {
-		return Functions.log;
-	    }
-	    public Real norm() {
-		return Values.POSITIVE_INFINITY;
-	    }
-	    public String toString() {
-		return "^-1";
-	    } 
-	};
+            public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x) {
+                return ((Arithmetic) x).inverse();
+            } 
+            public Function derive() {
+                return Functionals.compose(minus, Functions.pow(Values.getDefaultInstance().valueOf(-2)));
+            } 
+            public Function integrate() {
+                return Functions.log;
+            }
+            public Real norm() {
+                return Values.POSITIVE_INFINITY;
+            }
+            public String toString() {
+                return "^-1";
+            } 
+        };
 
     /**
      * divide &#8725;: A&times;A&rarr;A; (x,y) &#8614; x&#8725;y.
@@ -317,31 +317,31 @@ public interface Operations /* implements ArithmeticOperations */ {
      * @see Arithmetic#divide(Arithmetic)
      */
     public static final BinaryFunction divide = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
-	    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
-		Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer().apply(new Arithmetic[] {
-		    (Arithmetic) x, (Arithmetic) y
-		});
-		return operands[0].divide(operands[1]);
-	    } 
-	    public BinaryFunction derive() {
-		return (BinaryFunction) Functionals.genericCompose(new BinaryFunction[][] {
-		    {Functionals.onSecond(Functions.reciprocal),
-		     Functionals.compose(divide, Functionals.onFirst(minus), Functionals.onSecond(Functions.square))}
-		});
-	    } 
-	    public BinaryFunction integrate(int i) {
-		Utility.pre(0 <= i && i <= 1, "binary integral");
-		return i == 0
-		    ? (BinaryFunction) divide.apply(divide.apply(Functionals.onFirst(Functions.square), Functions.projectSecond), Values.getDefaultInstance().valueOf(2))
-		    : (BinaryFunction) times.apply(Functionals.onSecond(Functions.log), Functions.projectFirst);
-	    } 
-	    public Real norm() {
-		return Values.POSITIVE_INFINITY;
-	    }
-	    public String toString() {
-		return "/";
-	    } 
-	};
+            public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
+                Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer().apply(new Arithmetic[] {
+                    (Arithmetic) x, (Arithmetic) y
+                });
+                return operands[0].divide(operands[1]);
+            } 
+            public BinaryFunction derive() {
+                return (BinaryFunction) Functionals.genericCompose(new BinaryFunction[][] {
+                    {Functionals.onSecond(Functions.reciprocal),
+                     Functionals.compose(divide, Functionals.onFirst(minus), Functionals.onSecond(Functions.square))}
+                });
+            } 
+            public BinaryFunction integrate(int i) {
+                Utility.pre(0 <= i && i <= 1, "binary integral");
+                return i == 0
+                    ? (BinaryFunction) divide.apply(divide.apply(Functionals.onFirst(Functions.square), Functions.projectSecond), Values.getDefaultInstance().valueOf(2))
+                    : (BinaryFunction) times.apply(Functionals.onSecond(Functions.log), Functions.projectFirst);
+            } 
+            public Real norm() {
+                return Values.POSITIVE_INFINITY;
+            }
+            public String toString() {
+                return "/";
+            } 
+        };
 
     // extended junctors
 
@@ -354,30 +354,30 @@ public interface Operations /* implements ArithmeticOperations */ {
      * @see Arithmetic#power(Arithmetic)
      */
     public static final BinaryFunction power = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
-	    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
-		Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer().apply(new Arithmetic[] {
-		    (Arithmetic) x, (Arithmetic) y
-		});
-		return operands[0].power(operands[1]);
-	    } 
-	    public BinaryFunction derive() {
-		return (BinaryFunction) Functionals.genericCompose(new BinaryFunction[][] {
-		    {Functionals.compose(times, Functions.projectSecond, Functionals.compose(power, Functions.projectFirst, Functionals.compose(subtract, Functions.projectSecond, Functions.binaryone))), Functionals.compose(times, Functionals.onFirst(Functions.log), power)}
-		});
-	    } 
-	    public BinaryFunction integrate(int i) {
-		Utility.pre(0 <= i && i <= 1, "binary integral");
-		return i == 0
-		    ? (BinaryFunction) divide.apply(power.apply(Functions.projectFirst, plus.apply(Functions.projectSecond, Values.getDefaultInstance().valueOf(1))), plus.apply(Functions.projectSecond, Values.getDefaultInstance().valueOf(1)))
-		    : (BinaryFunction) divide.apply(power, Functionals.onFirst(Functions.log));
-	    } 
-	    public Real norm() {
-		return Values.POSITIVE_INFINITY;
-	    }
-	    public String toString() {
-		return "^";
-	    } 
-	};
+            public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
+                Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer().apply(new Arithmetic[] {
+                    (Arithmetic) x, (Arithmetic) y
+                });
+                return operands[0].power(operands[1]);
+            } 
+            public BinaryFunction derive() {
+                return (BinaryFunction) Functionals.genericCompose(new BinaryFunction[][] {
+                    {Functionals.compose(times, Functions.projectSecond, Functionals.compose(power, Functions.projectFirst, Functionals.compose(subtract, Functions.projectSecond, Functions.binaryone))), Functionals.compose(times, Functionals.onFirst(Functions.log), power)}
+                });
+            } 
+            public BinaryFunction integrate(int i) {
+                Utility.pre(0 <= i && i <= 1, "binary integral");
+                return i == 0
+                    ? (BinaryFunction) divide.apply(power.apply(Functions.projectFirst, plus.apply(Functions.projectSecond, Values.getDefaultInstance().valueOf(1))), plus.apply(Functions.projectSecond, Values.getDefaultInstance().valueOf(1)))
+                    : (BinaryFunction) divide.apply(power, Functionals.onFirst(Functions.log));
+            } 
+            public Real norm() {
+                return Values.POSITIVE_INFINITY;
+            }
+            public String toString() {
+                return "^";
+            } 
+        };
 
     // order operations
 
@@ -393,25 +393,25 @@ public interface Operations /* implements ArithmeticOperations */ {
      * @todo AbstractBinaryFunction<Comparable,Comparable,Comparable> would be enough
      */
     public static final BinaryFunction min = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
-	    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
-		if (x instanceof Comparable && y instanceof Comparable)
-		    return ((Comparable) x).compareTo(y) <= 0 ? x : y;
-		return Functionals.genericCompose(min, x, y);
-	    } 
-	    public BinaryFunction derive() {
-		throw new UnsupportedOperationException(this + "'");
-	    } 
-	    public BinaryFunction integrate(int i) {
-		Utility.pre(0 <= i && i <= 1, "binary integral");
-		throw new UnsupportedOperationException("integrate " + this);
-	    } 
-	    public Real norm() {
-		return Values.POSITIVE_INFINITY;
-	    }
-	    public String toString() {
-		return "min";
-	    } 
-	};
+            public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
+                if (x instanceof Comparable && y instanceof Comparable)
+                    return ((Comparable) x).compareTo(y) <= 0 ? x : y;
+                return Functionals.genericCompose(min, x, y);
+            } 
+            public BinaryFunction derive() {
+                throw new UnsupportedOperationException(this + "'");
+            } 
+            public BinaryFunction integrate(int i) {
+                Utility.pre(0 <= i && i <= 1, "binary integral");
+                throw new UnsupportedOperationException("integrate " + this);
+            } 
+            public Real norm() {
+                return Values.POSITIVE_INFINITY;
+            }
+            public String toString() {
+                return "min";
+            } 
+        };
 
     /**
      * inf &#8851;: A<sup>n</sup>&rarr;A; (x<sub>i</sub>) &#8614; &#8851;<sub>i</sub> {x<sub>i</sub>} = <span class="bananaBracket">(|</span>&infin;,min<span class="bananaBracket">|)</span> (x<sub>i</sub>).
@@ -432,22 +432,22 @@ public interface Operations /* implements ArithmeticOperations */ {
      * @todo
      */
     public static final Function inf = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
-	    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ a) {
-		return Functionals.foldLeft(min, Values.POSITIVE_INFINITY, Utility.asIterator(a));
-	    }
-	    public Function derive() {
-		throw new UnsupportedOperationException(this + "'");
-	    } 
-	    public Function integrate() {
-		throw new UnsupportedOperationException("integrate " + this);
-	    } 
-	    public Real norm() {
-		return Values.POSITIVE_INFINITY;
-	    }
-	    public String toString() {
-		return "\u2293";
-	    } 
-	};
+            public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ a) {
+                return Functionals.foldLeft(min, Values.POSITIVE_INFINITY, Utility.asIterator(a));
+            }
+            public Function derive() {
+                throw new UnsupportedOperationException(this + "'");
+            } 
+            public Function integrate() {
+                throw new UnsupportedOperationException("integrate " + this);
+            } 
+            public Real norm() {
+                return Values.POSITIVE_INFINITY;
+            }
+            public String toString() {
+                return "\u2293";
+            } 
+        };
 
     /**
      * max: A&times;A&rarr;A; (x,y) &#8614; max {x,y} = &#8852;{x,y}.
@@ -458,25 +458,25 @@ public interface Operations /* implements ArithmeticOperations */ {
      * @see java.lang.Comparable#compareTo(Object)
      */
     public static final BinaryFunction max = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
-	    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
-		if (x instanceof Comparable && y instanceof Comparable)
-		    return ((Comparable) x).compareTo(y) >= 0 ? x : y;
-		return Functionals.genericCompose(max, x, y);
-	    } 
-	    public BinaryFunction derive() {
-		throw new UnsupportedOperationException(this + "'");
-	    } 
-	    public BinaryFunction integrate(int i) {
-		Utility.pre(0 <= i && i <= 1, "binary integral");
-		throw new UnsupportedOperationException("integrate " + this);
-	    } 
-	    public Real norm() {
-		return Values.POSITIVE_INFINITY;
-	    }
-	    public String toString() {
-		return "max";
-	    } 
-	};
+            public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
+                if (x instanceof Comparable && y instanceof Comparable)
+                    return ((Comparable) x).compareTo(y) >= 0 ? x : y;
+                return Functionals.genericCompose(max, x, y);
+            } 
+            public BinaryFunction derive() {
+                throw new UnsupportedOperationException(this + "'");
+            } 
+            public BinaryFunction integrate(int i) {
+                Utility.pre(0 <= i && i <= 1, "binary integral");
+                throw new UnsupportedOperationException("integrate " + this);
+            } 
+            public Real norm() {
+                return Values.POSITIVE_INFINITY;
+            }
+            public String toString() {
+                return "max";
+            } 
+        };
 
     /**
      * sup &#8852;: A<sup>n</sup>&rarr;A; (x<sub>i</sub>) &#8614; &#8852;<sub>i</sub> {x<sub>i</sub>} = <span class="bananaBracket">(|</span>-&infin;,max<span class="bananaBracket">|)</span> (x<sub>i</sub>).
@@ -497,22 +497,22 @@ public interface Operations /* implements ArithmeticOperations */ {
      * @todo
      */
     public static final Function sup = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
-	    public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ a) {
-		return Functionals.foldLeft(max, Values.NEGATIVE_INFINITY, Utility.asIterator(a));
-	    }
-	    public Function derive() {
-		throw new UnsupportedOperationException(this + "'");
-	    } 
-	    public Function integrate() {
-		throw new UnsupportedOperationException("integrate " + this);
-	    } 
-	    public Real norm() {
-		return Values.POSITIVE_INFINITY;
-	    }
-	    public String toString() {
-		return "\u2294";
-	    } 
-	};
+            public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ a) {
+                return Functionals.foldLeft(max, Values.NEGATIVE_INFINITY, Utility.asIterator(a));
+            }
+            public Function derive() {
+                throw new UnsupportedOperationException(this + "'");
+            } 
+            public Function integrate() {
+                throw new UnsupportedOperationException("integrate " + this);
+            } 
+            public Real norm() {
+                return Values.POSITIVE_INFINITY;
+            }
+            public String toString() {
+                return "\u2294";
+            } 
+        };
 
     
     //@internal must be down here such that static initialization of Predicates.equal != null has already happened
@@ -532,29 +532,29 @@ public interface Operations /* implements ArithmeticOperations */ {
      * </p>
      */
     public static final Operations operations = new Operations() {
-	    //@internal neither interfaces nor inner classes can have a static initializer block, so we keep a dummy variable initialization here, even though we could just as well keep it in any other inner class.
-	    private final short dummy = initialize();
-	    private final short initialize() {
-		//@TODO: + and * could have yfy as well? Would avoid 1+(2+3)
-		Notation.setAllNotations(new Object[][] {
-		    {Operations.inverse,					// "^-1"
-		     new NotationSpecification(195, "xf", Notation.POSTFIX)},
-		    {Operations.power,						// "^"
-		     new NotationSpecification(200, "xfy", Notation.INFIX)},
-		    {Operations.times,	                                        // "*" 
-		     new NotationSpecification(400, "yfx", Notation.INFIX)},
-		    {Operations.divide,                                         // "/"
-		     new NotationSpecification(400, "yfx", Notation.INFIX)},
-		    {Operations.minus,						// "-"/1
-		     new NotationSpecification(500, "fx", Notation.PREFIX)},
-		    {Operations.plus,                                        	// "+"
-		     new NotationSpecification(500, "yfx", Notation.INFIX)},
-		    {Operations.subtract,                                       // "-"/2
-		     new NotationSpecification(500, "yfx", Notation.INFIX)}
-		});
-		return Short.MIN_VALUE;
-	    }
-	};
+            //@internal neither interfaces nor inner classes can have a static initializer block, so we keep a dummy variable initialization here, even though we could just as well keep it in any other inner class.
+            private final short dummy = initialize();
+            private final short initialize() {
+                //@TODO: + and * could have yfy as well? Would avoid 1+(2+3)
+                Notation.setAllNotations(new Object[][] {
+                    {Operations.inverse,                                        // "^-1"
+                     new NotationSpecification(195, "xf", Notation.POSTFIX)},
+                    {Operations.power,                                          // "^"
+                     new NotationSpecification(200, "xfy", Notation.INFIX)},
+                    {Operations.times,                                          // "*" 
+                     new NotationSpecification(400, "yfx", Notation.INFIX)},
+                    {Operations.divide,                                         // "/"
+                     new NotationSpecification(400, "yfx", Notation.INFIX)},
+                    {Operations.minus,                                          // "-"/1
+                     new NotationSpecification(500, "fx", Notation.PREFIX)},
+                    {Operations.plus,                                           // "+"
+                     new NotationSpecification(500, "yfx", Notation.INFIX)},
+                    {Operations.subtract,                                       // "-"/2
+                     new NotationSpecification(500, "yfx", Notation.INFIX)}
+                });
+                return Short.MIN_VALUE;
+            }
+        };
 
 }
 
@@ -580,7 +580,7 @@ abstract class PointwiseMethodFunction implements BinaryFunction {
      * elementwise BinaryFunction to work properly.
      */
     protected PointwiseMethodFunction(Method elemental) {
-	this.elemental = elemental;
+        this.elemental = elemental;
     }
 
     /**
@@ -596,14 +596,14 @@ abstract class PointwiseMethodFunction implements BinaryFunction {
      * @see Functionals#genericCompose(BinaryFunction, Object, Object)
      */
     public Object apply(Object x, Object y) {
-	if ((x instanceof Arithmetic && !(x instanceof MathFunctor)) && (y instanceof Arithmetic && !(y instanceof MathFunctor)))
-	    try {
-		return elemental.invoke(x, new Object[] {y});
-	    } catch (IllegalAccessException err) {
-		throw new IllegalArgumentException("argument does not support invocation because of " + err);
-	    } catch (InvocationTargetException err) {
-		throw new IllegalArgumentException("argument does not support invocation because of " + err + ": " + err.getTargetException());
-	    } 
-	return Functionals.genericCompose(this, x, y);
+        if ((x instanceof Arithmetic && !(x instanceof MathFunctor)) && (y instanceof Arithmetic && !(y instanceof MathFunctor)))
+            try {
+                return elemental.invoke(x, new Object[] {y});
+            } catch (IllegalAccessException err) {
+                throw new IllegalArgumentException("argument does not support invocation because of " + err);
+            } catch (InvocationTargetException err) {
+                throw new IllegalArgumentException("argument does not support invocation because of " + err + ": " + err.getTargetException());
+            } 
+        return Functionals.genericCompose(this, x, y);
     } 
 }

@@ -24,11 +24,11 @@ package orbital.logic.functor;
 public
 interface UnaryPredicate extends Functor {
 
-	/**
-	 * Called to apply the UnaryPredicate. <code>P(a)</code>.
-	 * 
-	 * @param arg single Object argument
-	 * @return a boolean.
-	 */
-	boolean apply(Object arg);
+        /**
+         * Called to apply the UnaryPredicate. <code>P(a)</code>.
+         * 
+         * @param arg single Object argument
+         * @return a boolean.
+         */
+        boolean apply(Object arg);
 }

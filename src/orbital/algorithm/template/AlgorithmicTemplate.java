@@ -82,145 +82,145 @@ public interface AlgorithmicTemplate/*<Problem extends AlgorithmicProblem, Solut
      * @version $Id$
      */
     public static /*abstract*/ class Configuration implements AlgorithmicConfiguration, Serializable {
-	private static final long serialVersionUID = -3040364728746853685L;
+        private static final long serialVersionUID = -3040364728746853685L;
 
-	/**
-	 * @serial
-	 */
-	private AlgorithmicProblem/*>Problem<*/ problem;
+        /**
+         * @serial
+         */
+        private AlgorithmicProblem/*>Problem<*/ problem;
     
-	/**
-	 * @serial
-	 */
-	private Class algorithm;
+        /**
+         * @serial
+         */
+        private Class algorithm;
 
-	/**
-	 * Create a new configuration.
-	 * @param problem the problem to solve.
-	 * @param algorithm the class of the AlgorithmicTemplate to instantiate for solving the problem.
-	 */
-	public Configuration(AlgorithmicProblem/*>Problem<*/ problem, Class algorithm) {
-	    this(problem, algorithm, AlgorithmicTemplate.class);
-	}
-	/**
-	 * Create a new configuration limited to certain classes of algorithms.
-	 * @param problem the problem to solve.
-	 * @param algorithm the class of the AlgorithmicTemplate to instantiate for solving the problem.
-	 * @param superClass the class which algorithm must be a subclass of.
-	 */
-	protected Configuration(AlgorithmicProblem/*>Problem<*/ problem, Class algorithm, Class superClass) {
-	    if (!superClass.isAssignableFrom(algorithm))
-		throw new IllegalArgumentException("subclasses of " + superClass + " expected");
-	    this.problem = problem;
-	    this.algorithm = algorithm;
-	}
-	
-	public AlgorithmicProblem/*>Problem<*/ getProblem() {
-	    return problem;
-	}
-	
-	public AlgorithmicTemplate getAlgorithm() {
-	    try {
-		return (AlgorithmicTemplate) algorithm.newInstance();
-	    } catch (InstantiationException ex) {
-		throw (IllegalStateException) new IllegalStateException("algorithm " + algorithm + " does not support nullary constructor").initCause(ex);
-	    } catch (IllegalAccessException ex) {
-		throw (IllegalStateException) new IllegalStateException("algorithm " + algorithm + " does have an accessible nullary constructor").initCause(ex);
-	    } catch (ClassCastException ex) {
-		throw new AssertionError("only subclasses of AlgorithmicTemplate have been accepted");
-	    }
-	}
+        /**
+         * Create a new configuration.
+         * @param problem the problem to solve.
+         * @param algorithm the class of the AlgorithmicTemplate to instantiate for solving the problem.
+         */
+        public Configuration(AlgorithmicProblem/*>Problem<*/ problem, Class algorithm) {
+            this(problem, algorithm, AlgorithmicTemplate.class);
+        }
+        /**
+         * Create a new configuration limited to certain classes of algorithms.
+         * @param problem the problem to solve.
+         * @param algorithm the class of the AlgorithmicTemplate to instantiate for solving the problem.
+         * @param superClass the class which algorithm must be a subclass of.
+         */
+        protected Configuration(AlgorithmicProblem/*>Problem<*/ problem, Class algorithm, Class superClass) {
+            if (!superClass.isAssignableFrom(algorithm))
+                throw new IllegalArgumentException("subclasses of " + superClass + " expected");
+            this.problem = problem;
+            this.algorithm = algorithm;
+        }
+        
+        public AlgorithmicProblem/*>Problem<*/ getProblem() {
+            return problem;
+        }
+        
+        public AlgorithmicTemplate getAlgorithm() {
+            try {
+                return (AlgorithmicTemplate) algorithm.newInstance();
+            } catch (InstantiationException ex) {
+                throw (IllegalStateException) new IllegalStateException("algorithm " + algorithm + " does not support nullary constructor").initCause(ex);
+            } catch (IllegalAccessException ex) {
+                throw (IllegalStateException) new IllegalStateException("algorithm " + algorithm + " does have an accessible nullary constructor").initCause(ex);
+            } catch (ClassCastException ex) {
+                throw new AssertionError("only subclasses of AlgorithmicTemplate have been accepted");
+            }
+        }
 
-	public Object/*>Solution<*/ solve() {
-	    return getAlgorithm().solve(getProblem());
-	}
+        public Object/*>Solution<*/ solve() {
+            return getAlgorithm().solve(getProblem());
+        }
 
-	/**
-	 * Create a new flexible configuration.
-	 * Flexible implementation of algorithmic configuration objects with properties at runtime.
-	 * This implementation will dynamically set the given bean property values at runtime.
-	 * @param problem the problem to solve.
-	 * @param properties the property values used for configuring the algorithm.
-	 *  A Map&lt;String,Object&gt; mapping property names to their values.
-	 * @param algorithm the class of the AlgorithmicTemplate to instantiate for solving the problem.
-	 * @throws IntrospectionException if algorithm could not be introspected.
-	 */
-	public static final Configuration flexible(AlgorithmicProblem/*>Problem<*/ problem, Map properties, Class algorithm) throws IntrospectionException {
-	    return new FlexibleConfiguration(problem, properties, algorithm, AlgorithmicTemplate.class);
-	}
+        /**
+         * Create a new flexible configuration.
+         * Flexible implementation of algorithmic configuration objects with properties at runtime.
+         * This implementation will dynamically set the given bean property values at runtime.
+         * @param problem the problem to solve.
+         * @param properties the property values used for configuring the algorithm.
+         *  A Map&lt;String,Object&gt; mapping property names to their values.
+         * @param algorithm the class of the AlgorithmicTemplate to instantiate for solving the problem.
+         * @throws IntrospectionException if algorithm could not be introspected.
+         */
+        public static final Configuration flexible(AlgorithmicProblem/*>Problem<*/ problem, Map properties, Class algorithm) throws IntrospectionException {
+            return new FlexibleConfiguration(problem, properties, algorithm, AlgorithmicTemplate.class);
+        }
 
-	/**
-	 * Flexible implementation of algorithmic configuration objects with properties at runtime.
-	 * This implementation will dynamically set the given bean property values at runtime.
-	 *
-	 * @author Andr&eacute; Platzer
-	 * @version $Id$
-	 */
-	private static class FlexibleConfiguration extends AlgorithmicTemplate.Configuration {
-	    private static final long serialVersionUID = 8767047546408218154L;
+        /**
+         * Flexible implementation of algorithmic configuration objects with properties at runtime.
+         * This implementation will dynamically set the given bean property values at runtime.
+         *
+         * @author Andr&eacute; Platzer
+         * @version $Id$
+         */
+        private static class FlexibleConfiguration extends AlgorithmicTemplate.Configuration {
+            private static final long serialVersionUID = 8767047546408218154L;
 
-	    /**
-	     * @serial
-	     */
-	    private Map/*<String,PropertyDescriptor>*/ beanProperties;
+            /**
+             * @serial
+             */
+            private Map/*<String,PropertyDescriptor>*/ beanProperties;
     
-	    /**
-	     * @serial
-	     */
-	    private Map/*<String,Object>*/ propertyValues;
+            /**
+             * @serial
+             */
+            private Map/*<String,Object>*/ propertyValues;
 
-	    /**
-	     * Create a new configuration limited to certain classes of algorithms.
-	     * @param problem the problem to solve.
-	     * @param properties the property values used for configuring the algorithm.
-	     *  A Map&lt;String,Object&gt; mapping property names to their values.
-	     * @param algorithm the class of the AlgorithmicTemplate to instantiate for solving the problem.
-	     * @param superClass the class which algorithm must be a subclass of.
-	     * @throws IntrospectionException if algorithm could not be introspected.
-	     */
-	    protected FlexibleConfiguration(AlgorithmicProblem/*>Problem<*/ problem, Map properties, Class algorithm, Class superClass) throws IntrospectionException {
-		super(problem, algorithm, superClass);
-		this.propertyValues = properties;
-		final Class beanClass = algorithm;
-		BeanInfo info = Introspector.getBeanInfo(beanClass, Introspector.USE_ALL_BEANINFO);
-		if (info == null)
-		    throw new IntrospectionException("no BeanInfo for class: " + beanClass);
-		PropertyDescriptor[] beanProperties = info.getPropertyDescriptors();
-		if (beanProperties == null)
-		    throw new IntrospectionException("no PropertyDescriptors for class: " + beanClass);
+            /**
+             * Create a new configuration limited to certain classes of algorithms.
+             * @param problem the problem to solve.
+             * @param properties the property values used for configuring the algorithm.
+             *  A Map&lt;String,Object&gt; mapping property names to their values.
+             * @param algorithm the class of the AlgorithmicTemplate to instantiate for solving the problem.
+             * @param superClass the class which algorithm must be a subclass of.
+             * @throws IntrospectionException if algorithm could not be introspected.
+             */
+            protected FlexibleConfiguration(AlgorithmicProblem/*>Problem<*/ problem, Map properties, Class algorithm, Class superClass) throws IntrospectionException {
+                super(problem, algorithm, superClass);
+                this.propertyValues = properties;
+                final Class beanClass = algorithm;
+                BeanInfo info = Introspector.getBeanInfo(beanClass, Introspector.USE_ALL_BEANINFO);
+                if (info == null)
+                    throw new IntrospectionException("no BeanInfo for class: " + beanClass);
+                PropertyDescriptor[] beanProperties = info.getPropertyDescriptors();
+                if (beanProperties == null)
+                    throw new IntrospectionException("no PropertyDescriptors for class: " + beanClass);
 
-		this.beanProperties = new HashMap();
-		for (int i = 0; i < beanProperties.length; i++)
-		    this.beanProperties.put(beanProperties[i].getName(), beanProperties[i]);
-	    }
-	
-	    public AlgorithmicTemplate getAlgorithm() {
-		AlgorithmicTemplate algo = super.getAlgorithm();
-		setAllProperties(algo);
-		return algo;
-	    }
+                this.beanProperties = new HashMap();
+                for (int i = 0; i < beanProperties.length; i++)
+                    this.beanProperties.put(beanProperties[i].getName(), beanProperties[i]);
+            }
+        
+            public AlgorithmicTemplate getAlgorithm() {
+                AlgorithmicTemplate algo = super.getAlgorithm();
+                setAllProperties(algo);
+                return algo;
+            }
 
-	    private void setAllProperties(AlgorithmicTemplate algorithm) {
-		for (Iterator i = propertyValues.entrySet().iterator(); i.hasNext(); ) {
-		    Map.Entry e = (Map.Entry) i.next();
-		    PropertyDescriptor property = (PropertyDescriptor) beanProperties.get(e.getKey());
-		    if (property == null)
-			throw new IllegalStateException(algorithm + " does not support property " + e.getKey());
-		    try {
-			if (property.getWriteMethod() == null)
-			    throw new InnerCheckedException("read-only property " + e.getKey(), new Exception("read-only property " + e.getKey()));
-			property.getWriteMethod().invoke(algorithm, new Object[] {e.getValue()});
-		    } catch (IllegalAccessException inner) {
-			throw new InnerCheckedException("no access to property write method for property " + e.getKey(), inner);
-		    } catch (InvocationTargetException inner) {
-			if (inner.getTargetException() instanceof IllegalArgumentException)
-			    throw (IllegalArgumentException) inner.getTargetException();
-			else
-			    throw new InnerCheckedException("", inner);
-		    }
-		}
-	    }
-	}// FlexibleConfiguration
-	
+            private void setAllProperties(AlgorithmicTemplate algorithm) {
+                for (Iterator i = propertyValues.entrySet().iterator(); i.hasNext(); ) {
+                    Map.Entry e = (Map.Entry) i.next();
+                    PropertyDescriptor property = (PropertyDescriptor) beanProperties.get(e.getKey());
+                    if (property == null)
+                        throw new IllegalStateException(algorithm + " does not support property " + e.getKey());
+                    try {
+                        if (property.getWriteMethod() == null)
+                            throw new InnerCheckedException("read-only property " + e.getKey(), new Exception("read-only property " + e.getKey()));
+                        property.getWriteMethod().invoke(algorithm, new Object[] {e.getValue()});
+                    } catch (IllegalAccessException inner) {
+                        throw new InnerCheckedException("no access to property write method for property " + e.getKey(), inner);
+                    } catch (InvocationTargetException inner) {
+                        if (inner.getTargetException() instanceof IllegalArgumentException)
+                            throw (IllegalArgumentException) inner.getTargetException();
+                        else
+                            throw new InnerCheckedException("", inner);
+                    }
+                }
+            }
+        }// FlexibleConfiguration
+        
     }
 }

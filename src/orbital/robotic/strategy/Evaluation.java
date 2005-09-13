@@ -67,46 +67,46 @@ public class Evaluation implements Function/*<Object, Number>*/ {
      * constructs an evaluation with a specified selection of a given weighting function.
      */
     public Evaluation(Selection selection, Function/*<Object, Number>*/ weighting) {
-	this.selection = selection;
-	this.weighting = weighting;
-	// TODO: synchronize
-	this.elements = /* Collections.synchronizedList */ (new LinkedList());
-	this.weights = /* Collections.synchronizedList */ (new LinkedList());
+        this.selection = selection;
+        this.weighting = weighting;
+        // TODO: synchronize
+        this.elements = /* Collections.synchronizedList */ (new LinkedList());
+        this.weights = /* Collections.synchronizedList */ (new LinkedList());
     }
     public Evaluation(Function/*<Object, Number>*/ weighting) {
-	this(Selecting.best(), weighting);
+        this(Selecting.best(), weighting);
     }
     public Evaluation() {
-	this(Selecting.best(), new NumberWeighting());
+        this(Selecting.best(), new NumberWeighting());
     }
 
     // get/set methods
 
     public Function/*<Object, Number>*/ getWeighting() {
-	return weighting;
+        return weighting;
     } 
     public void setWeighting(Function/*<Object, Number>*/ w) {
-	weighting = w;
+        weighting = w;
     } 
     public Selection getSelection() {
-	return selection;
+        return selection;
     } 
     public void setSelection(Selection select) {
-	selection = select;
+        selection = select;
     } 
 
     /**
      * Get the weights list.
      */
     public List getWeights() {
-	return Collections.unmodifiableList(weights);
+        return Collections.unmodifiableList(weights);
     } 
 
     /**
      * Get the elements list.
      */
     public List getElements() {
-	return Collections.unmodifiableList(elements);
+        return Collections.unmodifiableList(elements);
     } 
 
     
@@ -115,8 +115,8 @@ public class Evaluation implements Function/*<Object, Number>*/ {
      * Clears the list of objects to be selected from.
      */
     public void clear() {
-	weights.clear();
-	elements.clear();
+        weights.clear();
+        elements.clear();
     } 
 
     /**
@@ -125,8 +125,8 @@ public class Evaluation implements Function/*<Object, Number>*/ {
      * might be threaded parallel to evaluate().
      */
     public boolean add(Object arg) {
-	weightImpl(arg);
-	return true;
+        weightImpl(arg);
+        return true;
     } 
 
     /**
@@ -135,8 +135,8 @@ public class Evaluation implements Function/*<Object, Number>*/ {
      * might be threaded parallel to evaluate().
      */
     public void addAll(Collection list) {
-	for (Iterator i = list.iterator(); i.hasNext(); )
-	    add(i.next());
+        for (Iterator i = list.iterator(); i.hasNext(); )
+            add(i.next());
     } 
 
     /**
@@ -146,7 +146,7 @@ public class Evaluation implements Function/*<Object, Number>*/ {
      * @see #add
      */
     public Object/*>Number<*/ apply(Object arg) {
-	return weightImpl(arg);
+        return weightImpl(arg);
     } 
 
     /**
@@ -154,17 +154,17 @@ public class Evaluation implements Function/*<Object, Number>*/ {
      * @see #evaluate(Selection)
      */
     public Object evaluate() {
-	return evaluate(selection);
+        return evaluate(selection);
     } 
 
     /**
      * Returns the bottommost argument of an evaluation tree.
      */
     public static Object getArg(Object evaluated) {
-	if (evaluated instanceof Pair)
-	    for (Object h = ((Pair) evaluated).B; h instanceof Pair; h = ((Pair) h).B)
-		evaluated = h;
-	return evaluated;
+        if (evaluated instanceof Pair)
+            for (Object h = ((Pair) evaluated).B; h instanceof Pair; h = ((Pair) h).B)
+                evaluated = h;
+        return evaluated;
     } 
 
     /**
@@ -172,20 +172,20 @@ public class Evaluation implements Function/*<Object, Number>*/ {
      * same index for elements and weights is required.
      */
     protected synchronized void add(Object el, Object weight) {
-	elements.add(el);
-	weights.add(weight);
+        elements.add(el);
+        weights.add(weight);
     } 
 
     protected Object/*>Number<*/ weightImpl(final Object arg) {
-	Object/*>Number<*/ weight;
+        Object/*>Number<*/ weight;
 
-	/*concurrent*/ {
-	    //@TODO: might be threaded
-	    weight = weighting.apply(arg);
-	} 
+        /*concurrent*/ {
+            //@TODO: might be threaded
+            weight = weighting.apply(arg);
+        } 
 
-	add(arg, weight);
-	return weight;
+        add(arg, weight);
+        return weight;
     } 
 
     /*
@@ -218,19 +218,19 @@ public class Evaluation implements Function/*<Object, Number>*/ {
      * Returns <code>null</code> if nothing was selected at all.
      */
     private Object evaluate(Selection selection) {
-	Object ev = evaluateMe(selection);
-	if (weighting instanceof Evaluation) {	  // Pair additional Evaluation Objects
-	    Object subev = ((Evaluation) weighting).evaluate();
-	    return new Pair(ev, subev);
-	} else
-	    return ev;
+        Object ev = evaluateMe(selection);
+        if (weighting instanceof Evaluation) {    // Pair additional Evaluation Objects
+            Object subev = ((Evaluation) weighting).evaluate();
+            return new Pair(ev, subev);
+        } else
+            return ev;
     } 
 
     private Object evaluateMe(Selection selection) {
-	int selected = selection.select(Collections.unmodifiableList(weights));
-	if (selected < 0)
-	    return null;
-	return elements.get(selected);
+        int selected = selection.select(Collections.unmodifiableList(weights));
+        if (selected < 0)
+            return null;
+        return elements.get(selected);
     } 
 }
 
@@ -241,6 +241,6 @@ final class NumberWeighting implements Function/*<Object, Number>*/ {
      * returns weight value of an arg by Number.
      */
     public Object/*>Number<*/ apply(Object arg) {
-	return (Number) arg;
+        return (Number) arg;
     } 
 }

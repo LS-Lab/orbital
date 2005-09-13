@@ -15,30 +15,30 @@ import junit.framework.*;
  */
 public class BufferTest extends check.TestCase {
     public static void main(String[] args) {
-	junit.textui.TestRunner.run(suite());
+        junit.textui.TestRunner.run(suite());
     }
     public static Test suite() {
-	return new TestSuite(BufferTest.class);
+        return new TestSuite(BufferTest.class);
     }
     protected void setUp() {
     }
 
     public void testAppendingEditing() {
-	Buffer buf = new Buffer();
-	buf.append("You know now".getBytes());
-	assertEquals(new String(buf.getBytes()), "You know now");
-	buf.append("here is it".getBytes());
-	assertEquals(new String(buf.getBytes()), "You know nowhere is it");
-	buf.append('X', 5);
-	assertEquals(new String(buf.getBytes()), "You know nowhere is itXXXXX");
-	buf.setBuffer("Hello".getBytes());
-	buf.setSize(5);
-	assertEquals(new String(buf.getBytes()), "Hello");
-	buf.append("_World".getBytes());
-	assertEquals(new String(buf.getBytes()), "Hello_World");
-	buf.remove(5, 2);
-	assertEquals(new String(buf.getBytes()), "Helloorld");
-	buf.remove(7, 2);
-	assertEquals(new String(buf.getBytes()), "Helloor");
+        Buffer buf = new Buffer();
+        buf.append("You know now".getBytes());
+        assertEquals(new String(buf.getBytes()), "You know now");
+        buf.append("here is it".getBytes());
+        assertEquals(new String(buf.getBytes()), "You know nowhere is it");
+        buf.append('X', 5);
+        assertEquals(new String(buf.getBytes()), "You know nowhere is itXXXXX");
+        buf.setBuffer("Hello".getBytes());
+        buf.setSize(5);
+        assertEquals(new String(buf.getBytes()), "Hello");
+        buf.append("_World".getBytes());
+        assertEquals(new String(buf.getBytes()), "Hello_World");
+        buf.remove(5, 2);
+        assertEquals(new String(buf.getBytes()), "Helloorld");
+        buf.remove(7, 2);
+        assertEquals(new String(buf.getBytes()), "Helloor");
     } 
 }

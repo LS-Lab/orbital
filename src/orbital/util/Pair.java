@@ -35,55 +35,55 @@ public class Pair/*<T1, T2>*/ extends Object implements Comparable/*_<Pair<T1, T
      * Create a new pair &lang;a, b&rang;.
      */
     public Pair(Object/*>T1<*/ a, Object/*>T2<*/ b) {
-	A = a;
-	B = b;
+        A = a;
+        B = b;
     }
     public Pair() {
-	this(null, null);
+        this(null, null);
     }
 
     /**
      * Checks two Pair objects for equal A and equal B.
      */
     public boolean equals(Object o) {
-	if (o instanceof Pair) {
-	    Pair b = (Pair) o;
-	    return Utility.equals(A, b.A) && Utility.equals(B, b.B);
-	} else
-	    return false;
+        if (o instanceof Pair) {
+            Pair b = (Pair) o;
+            return Utility.equals(A, b.A) && Utility.equals(B, b.B);
+        } else
+            return false;
     } 
-	
+        
     public int hashCode() {
-	return Utility.hashCode(A) ^ (Utility.hashCode(B) << 1);
+        return Utility.hashCode(A) ^ (Utility.hashCode(B) << 1);
     }
 
     /**
      * Compares two Pairs in favor of A (and then B).
      */
     public int compareTo(Object o) {
-	Pair b = (Pair) o;
-	int a = Utility.compare(A, b.A);
-	return a != 0 ? a : Utility.compare(B, b.B);
+        Pair b = (Pair) o;
+        int a = Utility.compare(A, b.A);
+        return a != 0 ? a : Utility.compare(B, b.B);
     } 
 
     public String toString() {
-	return "<" + A + "," + B + ">";
+        return "<" + A + "," + B + ">";
     } 
 
     public Object/*>T1<*/ getA() {
-	return A;
+        return A;
     }
 
     public void setA(Object/*>T1<*/ newA) {
-	this.A = newA;
+        this.A = newA;
     }
 
     public Object/*>T2<*/ getB() {
-	return B;
+        return B;
     }
 
     public void setB(Object/*>T2<*/ newB) {
-	this.B = newB;
+        this.B = newB;
     }
 
 }

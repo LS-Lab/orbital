@@ -93,18 +93,18 @@ public interface Integer extends Rational, Euclidean {
      * return whether v is an integer.
      */
     public static final Predicate/*<Object>*/ isa = new Predicate/*<Object>*/() {
-	    public boolean apply(Object v) {
-		return v instanceof Integer;
-	    }
-	};
+            public boolean apply(Object v) {
+                return v instanceof Integer;
+            }
+        };
 
     /**
      * Checks whether the given number is in the set of integers and not a subset.
      * return whether v&isin;<b>Z</b> is an integer.
      */
     public static final Predicate/*<Object>*/ hasType = new Predicate/*<Object>*/() {
-	    public boolean apply(Object v) {
-		return isa.apply(v);
-	    }
-	};
+            public boolean apply(Object v) {
+                return isa.apply(v);
+            }
+        };
 }

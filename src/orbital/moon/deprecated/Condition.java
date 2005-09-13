@@ -17,10 +17,10 @@ package orbital.logic;
 public
 interface Condition {
 
-	/**
-	 * is called to check whether the Condition is true or false.
-	 * 
-	 * @return returns state of Condition.
-	 */
-	boolean isTrue();
+        /**
+         * is called to check whether the Condition is true or false.
+         * 
+         * @return returns state of Condition.
+         */
+        boolean isTrue();
 }

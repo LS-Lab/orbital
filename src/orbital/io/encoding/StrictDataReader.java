@@ -29,7 +29,7 @@ class StrictDataReader extends DataReader {
      * Create a DataReader parsing input from the specified character stream.
      */
     public StrictDataReader(Reader input) {
-	super(input);
+        super(input);
     }
 
     /**
@@ -40,7 +40,7 @@ class StrictDataReader extends DataReader {
      * @see #StrictDataReader(java.io.Reader)
      */
     public StrictDataReader(InputStream input) {
-	super(input);
+        super(input);
     }
 
     private boolean wouldAcceptEOL = false;
@@ -50,7 +50,7 @@ class StrictDataReader extends DataReader {
      * @return a String that specifies the format that is supported by this reader.
      */
     public String getFormat() {
-	return "strict";
+        return "strict";
     } 
 
 
@@ -63,92 +63,92 @@ class StrictDataReader extends DataReader {
      * any character.
      */
     public String readLine() throws IOException {
-	// initialize(getStreamTokenizer(), true);
-	parse.resetSyntax();
-	parse.eolIsSignificant(true);
-	try {
-	    String nl = System.getProperty("line.separator");
-	    String line = "";
-	    readLineLoop:
-	    while (true) {
-		int typ = parse.nextToken();
-		switch (typ) {
-		case StreamTokenizer.TT_EOF:
-		    if ("".equals(line))
-			line = null;
-		    break readLineLoop;
-		case StreamTokenizer.TT_EOL:
-		    if (wouldAcceptEOL) {	 // might still be last EOL
-			wouldAcceptEOL = false;
+        // initialize(getStreamTokenizer(), true);
+        parse.resetSyntax();
+        parse.eolIsSignificant(true);
+        try {
+            String nl = System.getProperty("line.separator");
+            String line = "";
+            readLineLoop:
+            while (true) {
+                int typ = parse.nextToken();
+                switch (typ) {
+                case StreamTokenizer.TT_EOF:
+                    if ("".equals(line))
+                        line = null;
+                    break readLineLoop;
+                case StreamTokenizer.TT_EOL:
+                    if (wouldAcceptEOL) {        // might still be last EOL
+                        wouldAcceptEOL = false;
         
-			// did we only read whitespaces?
-			for (int i = 0; i < line.length(); i++)
-			    if (IOUtilities.whitespaces.indexOf(line.charAt(i)) < 0)
-				break readLineLoop;
+                        // did we only read whitespaces?
+                        for (int i = 0; i < line.length(); i++)
+                            if (IOUtilities.whitespaces.indexOf(line.charAt(i)) < 0)
+                                break readLineLoop;
         
-			// then restart at next line
-			line = "";
-			continue readLineLoop;
-		    } else
-			break readLineLoop;
-		}
+                        // then restart at next line
+                        line = "";
+                        continue readLineLoop;
+                    } else
+                        break readLineLoop;
+                }
     
-		// EOL recognition has been done above, so
-		// skip useless EOL elongation that we are not interested in
-		if (typ == '\r' || typ == '\n')
-		    continue;
-		line += (char) typ;
-	    } 
-	    return line;
-	}
-	finally {
-	    initialize(getStreamTokenizer(), false);
-	}
+                // EOL recognition has been done above, so
+                // skip useless EOL elongation that we are not interested in
+                if (typ == '\r' || typ == '\n')
+                    continue;
+                line += (char) typ;
+            } 
+            return line;
+        }
+        finally {
+            initialize(getStreamTokenizer(), false);
+        }
 
-	/*
-	 * Alternative implementation
-	 * // implementation using StreamTokenizer, only
-	 * parse.nextToken();
-	 * int line = parse.lineno();
-	 * parse.pushBack();
-	 * logger.log(Level.FINEST,"readLine()","start in line "+line);
-	 * StringBuffer sb = new StringBuffer();
-	 * reading: do {
-	 * parse.nextToken();
-	 * logger.log(Level.FINEST,"readLine()","in line "+parse.lineno());
-	 * if (parse.lineno()>line) {
-	 * parse.pushBack();
-	 * break reading;
-	 * }
-	 * switch(parse.ttype) {
-	 * case StreamTokenizer.TT_EOF:
-	 * if (sb.length()==0)
-	 * throw new EOFException("EOF during read");
-	 * break reading;
-	 * case StreamTokenizer.TT_EOL:
-	 * break reading;
-	 * case StreamTokenizer.TT_NUMBER:
-	 * if (sb.length()>0)
-	 * sb.append(' ');
-	 * sb.append(parse.nval);
-	 * break;
-	 * case StreamTokenizer.TT_WORD:
-	 * if (sb.length()>0)
-	 * sb.append(' ');
-	 * sb.append(parse.sval);
-	 * break;
-	 * default:
-	 * sb.append((char)parse.ttype);
-	 * }
-	 * logger.log(Level.FINEST,"readLine()","\t..>'"+sb.toString()+"'");
-	 * logger.log(Level.FINEST,"readLine()","and line "+parse.lineno());
-	 * if (parse.lineno()>line) {
-	 * parse.pushBack();
-	 * break reading;
-	 * }
-	 * } while(parse.ttype!=StreamTokenizer.TT_EOL && parse.ttype!=StreamTokenizer.TT_EOF);
-	 * return sb.toString();
-	 */
+        /*
+         * Alternative implementation
+         * // implementation using StreamTokenizer, only
+         * parse.nextToken();
+         * int line = parse.lineno();
+         * parse.pushBack();
+         * logger.log(Level.FINEST,"readLine()","start in line "+line);
+         * StringBuffer sb = new StringBuffer();
+         * reading: do {
+         * parse.nextToken();
+         * logger.log(Level.FINEST,"readLine()","in line "+parse.lineno());
+         * if (parse.lineno()>line) {
+         * parse.pushBack();
+         * break reading;
+         * }
+         * switch(parse.ttype) {
+         * case StreamTokenizer.TT_EOF:
+         * if (sb.length()==0)
+         * throw new EOFException("EOF during read");
+         * break reading;
+         * case StreamTokenizer.TT_EOL:
+         * break reading;
+         * case StreamTokenizer.TT_NUMBER:
+         * if (sb.length()>0)
+         * sb.append(' ');
+         * sb.append(parse.nval);
+         * break;
+         * case StreamTokenizer.TT_WORD:
+         * if (sb.length()>0)
+         * sb.append(' ');
+         * sb.append(parse.sval);
+         * break;
+         * default:
+         * sb.append((char)parse.ttype);
+         * }
+         * logger.log(Level.FINEST,"readLine()","\t..>'"+sb.toString()+"'");
+         * logger.log(Level.FINEST,"readLine()","and line "+parse.lineno());
+         * if (parse.lineno()>line) {
+         * parse.pushBack();
+         * break reading;
+         * }
+         * } while(parse.ttype!=StreamTokenizer.TT_EOL && parse.ttype!=StreamTokenizer.TT_EOF);
+         * return sb.toString();
+         */
     } 
 
     /**
@@ -161,57 +161,57 @@ class StrictDataReader extends DataReader {
      */
     public char readChar() throws IOException {
 
-	// implementation using StreamTokenizer, only
-	switch (nextToken()) {
-	case StreamTokenizer.TT_EOF:
-	    throw new EOFException("EOF during readChar");
-	case StreamTokenizer.TT_EOL:
-	    return '\n';
-	case StreamTokenizer.TT_WORD: {
-	    char ch = parse.sval.charAt(0);
-	    if (parse.sval.length() > 1) {	  // XXX: debug. better check whether it works. what's up with "xy7"?
-		logger.log(Level.FINEST, "readChar()", "pushback: '" + parse.sval.substring(1) + "'");
-		parse.sval = parse.sval.substring(1);
-		parse.pushBack();
-	    } 
-	    return ch;
-	} 
-	case StreamTokenizer.TT_NUMBER: {
-	    String s = parse.nval + "";
-	    char   ch = s.charAt(0);
-	    if (s.length() > 1) {	 // XXX: debug. better check whether it works. what's up with "12347.01"?
-		logger.log(Level.FINEST, "readChar()", "pushback: '" + s.substring(1) + "'");
-		parse.nval = Double.parseDouble(s.substring(1));
-		parse.pushBack();
-	    } 
-	    return ch;
-	} 
-	default:
-	    return (char) parse.ttype;
-	}
+        // implementation using StreamTokenizer, only
+        switch (nextToken()) {
+        case StreamTokenizer.TT_EOF:
+            throw new EOFException("EOF during readChar");
+        case StreamTokenizer.TT_EOL:
+            return '\n';
+        case StreamTokenizer.TT_WORD: {
+            char ch = parse.sval.charAt(0);
+            if (parse.sval.length() > 1) {        // XXX: debug. better check whether it works. what's up with "xy7"?
+                logger.log(Level.FINEST, "readChar()", "pushback: '" + parse.sval.substring(1) + "'");
+                parse.sval = parse.sval.substring(1);
+                parse.pushBack();
+            } 
+            return ch;
+        } 
+        case StreamTokenizer.TT_NUMBER: {
+            String s = parse.nval + "";
+            char   ch = s.charAt(0);
+            if (s.length() > 1) {        // XXX: debug. better check whether it works. what's up with "12347.01"?
+                logger.log(Level.FINEST, "readChar()", "pushback: '" + s.substring(1) + "'");
+                parse.nval = Double.parseDouble(s.substring(1));
+                parse.pushBack();
+            } 
+            return ch;
+        } 
+        default:
+            return (char) parse.ttype;
+        }
 
-	/*
-	  Alternative implementation:
-	  // implementation using StreamTokenizer, only
-	  switch(nextToken()) {
-	  case StreamTokenizer.TT_EOF:
-	  throw new EOFException("no more tokens");
-	  case StreamTokenizer.TT_WORD: {
-	  char ch = parse.sval.charAt(0);
-	  if (parse.sval.length()>1) {	//XXX debug. better check whether it works. what's up with "xy7"?
-	  logger.log(Level.FINEST,"readChar()","pushback: '"+parse.sval.substring(1)+"'");
-	  parse.sval = parse.sval.substring(1);
-	  parse.pushBack();
-	  }
-	  return ch;
-	  }
-	  case StreamTokenizer.TT_NUMBER:
-	  //TODO
-	  throw new UnsupportedOperationException("not yet implemented for number case");
-	  default:
-	  return (char)parse.ttype;
-	  }
-	*/
+        /*
+          Alternative implementation:
+          // implementation using StreamTokenizer, only
+          switch(nextToken()) {
+          case StreamTokenizer.TT_EOF:
+          throw new EOFException("no more tokens");
+          case StreamTokenizer.TT_WORD: {
+          char ch = parse.sval.charAt(0);
+          if (parse.sval.length()>1) {  //XXX debug. better check whether it works. what's up with "xy7"?
+          logger.log(Level.FINEST,"readChar()","pushback: '"+parse.sval.substring(1)+"'");
+          parse.sval = parse.sval.substring(1);
+          parse.pushBack();
+          }
+          return ch;
+          }
+          case StreamTokenizer.TT_NUMBER:
+          //TODO
+          throw new UnsupportedOperationException("not yet implemented for number case");
+          default:
+          return (char)parse.ttype;
+          }
+        */
     } 
 
 
@@ -232,29 +232,29 @@ class StrictDataReader extends DataReader {
 
     // XXX: debug for    -1|5,  will return -1, |, -1, | as tokens
     protected int peekNextToken() throws IOException {
-	do {
-	    if (parse.nextToken() == StreamTokenizer.TT_EOF)
-		break;
-	} while (parse.ttype == StreamTokenizer.TT_EOL || (skipWhitespaces && IOUtilities.whitespaces.indexOf(parse.ttype) >= 0));
-	parse.pushBack();
+        do {
+            if (parse.nextToken() == StreamTokenizer.TT_EOF)
+                break;
+        } while (parse.ttype == StreamTokenizer.TT_EOL || (skipWhitespaces && IOUtilities.whitespaces.indexOf(parse.ttype) >= 0));
+        parse.pushBack();
 
-	// System.err.println("peekNextToken(): ("+parse.ttype+") == "+parse);
-	return parse.ttype;
+        // System.err.println("peekNextToken(): ("+parse.ttype+") == "+parse);
+        return parse.ttype;
 
-	/*
-	 * // unfortunately this does not conform with readChar, since that will forget StreamTokenizers internal buffer
-	 * do {
-	 * if (parse.nextToken()==StreamTokenizer.TT_EOF)
-	 * break;
-	 * } while(parse.ttype==StreamTokenizer.TT_EOL || (skipWhitespaces && IOUtilities.whitespaces.indexOf(parse.ttype)>=0));
-	 * parse.pushBack();
-	 * System.err.println("peekNextToken(): ("+parse.ttype+") == "+parse);
-	 * return parse.ttype;
-	 */
+        /*
+         * // unfortunately this does not conform with readChar, since that will forget StreamTokenizers internal buffer
+         * do {
+         * if (parse.nextToken()==StreamTokenizer.TT_EOF)
+         * break;
+         * } while(parse.ttype==StreamTokenizer.TT_EOL || (skipWhitespaces && IOUtilities.whitespaces.indexOf(parse.ttype)>=0));
+         * parse.pushBack();
+         * System.err.println("peekNextToken(): ("+parse.ttype+") == "+parse);
+         * return parse.ttype;
+         */
 
-	// Alternative implementation:
-	// mark, parse and reset
-	// will solely forget streamtokenizers internal single character cache
+        // Alternative implementation:
+        // mark, parse and reset
+        // will solely forget streamtokenizers internal single character cache
     } 
 
     /**
@@ -269,12 +269,12 @@ class StrictDataReader extends DataReader {
      * @see java.io.StreamTokenizer#nextToken()
      */
     protected int nextToken() throws IOException, EOFException {
-	do {
-	    if (parse.nextToken() == StreamTokenizer.TT_EOF)
-		throw new EOFException("EOF during read");
-	} while (parse.ttype == StreamTokenizer.TT_EOL || (skipWhitespaces && IOUtilities.whitespaces.indexOf(parse.ttype) >= 0));
-	accepted();
-	return parse.ttype;
+        do {
+            if (parse.nextToken() == StreamTokenizer.TT_EOF)
+                throw new EOFException("EOF during read");
+        } while (parse.ttype == StreamTokenizer.TT_EOL || (skipWhitespaces && IOUtilities.whitespaces.indexOf(parse.ttype) >= 0));
+        accepted();
+        return parse.ttype;
     } 
 
     /**
@@ -286,33 +286,33 @@ class StrictDataReader extends DataReader {
      * @see #nextToken()
      */
     private void accepted() throws IOException {
-	wouldAcceptEOL = true;
+        wouldAcceptEOL = true;
 
-	// TODO: implement with the streamtokenizer
+        // TODO: implement with the streamtokenizer
 
-	/*
-	  eolIsSignificant(true)
-	  whitespaceChars(none)
-	  while EOL or whitespace
-	  parse.nextToken()
-	  parse.pushBack();
-	*/
+        /*
+          eolIsSignificant(true)
+          whitespaceChars(none)
+          while EOL or whitespace
+          parse.nextToken()
+          parse.pushBack();
+        */
 
-	// Alternative implementation
-	// stream tokenizer is made eolSignificant(false) so this logic transfers to lineno() in readLine()
-	// -> lineno() does not work
-	// implementation using StreamTokenizer, only
+        // Alternative implementation
+        // stream tokenizer is made eolSignificant(false) so this logic transfers to lineno() in readLine()
+        // -> lineno() does not work
+        // implementation using StreamTokenizer, only
 
-	/*
-	  if (!ready())
-	  return;
-	  logger.log(Level.FINEST,"accepted()","pending");
-	  if (parse.nextToken()==StreamTokenizer.TT_EOF)
-	  return;
-	  if (parse.ttype!=StreamTokenizer.TT_EOL)                           // consume eols, but
-	  parse.pushBack();												// pushback if input continues
-	  logger.log(Level.FINEST,"accepted()","is: "+parse);
-	*/
+        /*
+          if (!ready())
+          return;
+          logger.log(Level.FINEST,"accepted()","pending");
+          if (parse.nextToken()==StreamTokenizer.TT_EOF)
+          return;
+          if (parse.ttype!=StreamTokenizer.TT_EOL)                           // consume eols, but
+          parse.pushBack();                                                                                             // pushback if input continues
+          logger.log(Level.FINEST,"accepted()","is: "+parse);
+        */
     } 
 }
 

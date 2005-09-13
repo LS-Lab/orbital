@@ -47,10 +47,10 @@ public class ThresholdAccepting extends ScheduledLocalOptimizerSearch {
      * @preconditions lim<sub>t&rarr;&infin;</sub>schedule(t) = 0 &and; schedule decreases monotonically
      */
     public ThresholdAccepting(Function/*<GeneralSearchProblem.Option, Arithmetic>*/ heuristic, Function/*<Integer, Real>*/ schedule) {
-    	super(heuristic, schedule, FIRST_LOCAL_SELECTION);
+        super(heuristic, schedule, FIRST_LOCAL_SELECTION);
     }
     ThresholdAccepting() {
-	this(null,null);
+        this(null,null);
     }
 
 
@@ -58,31 +58,31 @@ public class ThresholdAccepting extends ScheduledLocalOptimizerSearch {
      * f(n) = h(n).
      */
     public Function getEvaluation() {
-    	return getHeuristic();
+        return getHeuristic();
     }
 
     /**
      * O(&infin;).
      */
     public orbital.math.functional.Function complexity() {
-	return orbital.math.functional.Functions.constant(Values.POSITIVE_INFINITY);
+        return orbital.math.functional.Functions.constant(Values.POSITIVE_INFINITY);
     }
     /**
      * O(b) where b is the branching factor and d the solution depth.
      */
     public orbital.math.functional.Function spaceComplexity() {
-	return orbital.math.functional.Functions.constant(Values.getDefaultInstance().symbol("b"));
+        return orbital.math.functional.Functions.constant(Values.getDefaultInstance().symbol("b"));
     }
     public boolean isOptimal() {
-    	return false;
+        return false;
     }
 
     public boolean isCorrect() {
-	return false;
+        return false;
     }
-	
+        
     protected Iterator createTraversal(final GeneralSearchProblem problem) {
-	return new OptionIterator(getLocalSelection().createLocalRestriction(problem, this), this);
+        return new OptionIterator(getLocalSelection().createLocalRestriction(problem, this), this);
     }
 
     /**
@@ -91,53 +91,53 @@ public class ThresholdAccepting extends ScheduledLocalOptimizerSearch {
      * @author  Andr&eacute; Platzer
      */
     private static class OptionIterator extends LocalOptimizerSearch.OptionIterator {
-	private static final long serialVersionUID = -3674513421043835094L;
-	public OptionIterator(GeneralSearchProblem problem, ScheduledLocalOptimizerSearch algorithm) {
-	    super(problem, algorithm);
-	    this.currentValue = castedApply(algorithm.getEvaluation(), getState()).doubleValue();
-	    this.t = 0;
-	    // initialize to any value !=0 for hasNext() to return true. The real value will be calculated in  in accept(), anyway
-	    this.T = Double.POSITIVE_INFINITY;
-	}
+        private static final long serialVersionUID = -3674513421043835094L;
+        public OptionIterator(GeneralSearchProblem problem, ScheduledLocalOptimizerSearch algorithm) {
+            super(problem, algorithm);
+            this.currentValue = castedApply(algorithm.getEvaluation(), getState()).doubleValue();
+            this.t = 0;
+            // initialize to any value !=0 for hasNext() to return true. The real value will be calculated in  in accept(), anyway
+            this.T = Double.POSITIVE_INFINITY;
+        }
 
-	private double currentValue;
-	private int t;
-	// current temperature scheduled for successive cooling
-	private double T;
+        private double currentValue;
+        private int t;
+        // current temperature scheduled for successive cooling
+        private double T;
 
-	/**
-	 * {@inheritDoc}.
-	 * <p>
-	 * This implementation will always move to better nodes,
-	 * but only move to worse nodes, if they worsen by at most T.</p>
-	 */
-	public boolean accept(Object/*>S<*/ state, Object/*>S<*/ sp) {
-	    final ScheduledLocalOptimizerSearch algorithm = (ScheduledLocalOptimizerSearch) getAlgorithm();
-	    // current temperature scheduled for successive cooling
-	    this.T = castedApply(algorithm.getSchedule(), Values.getDefaultInstance().valueOf(t)).doubleValue();
-	    this.t++;
+        /**
+         * {@inheritDoc}.
+         * <p>
+         * This implementation will always move to better nodes,
+         * but only move to worse nodes, if they worsen by at most T.</p>
+         */
+        public boolean accept(Object/*>S<*/ state, Object/*>S<*/ sp) {
+            final ScheduledLocalOptimizerSearch algorithm = (ScheduledLocalOptimizerSearch) getAlgorithm();
+            // current temperature scheduled for successive cooling
+            this.T = castedApply(algorithm.getSchedule(), Values.getDefaultInstance().valueOf(t)).doubleValue();
+            this.t++;
 
-	    final double value = castedApply(algorithm.getEvaluation(), sp).doubleValue();
-	    final double deltaEnergy = value - currentValue;
+            final double value = castedApply(algorithm.getEvaluation(), sp).doubleValue();
+            final double deltaEnergy = value - currentValue;
 
-	    // usually solution isSolution test is omitted, anyway, but we'll still call
-	    // if (getProblem().isSolution(sp))
-	    //     return true;
+            // usually solution isSolution test is omitted, anyway, but we'll still call
+            // if (getProblem().isSolution(sp))
+            //     return true;
 
-	    // always move to better nodes,
-	    // but move to worse nodes only if they are not too much worse
-	    if (deltaEnergy <= T) {
-		if (logger.isLoggable(Level.FINER))
-		    logger.log(Level.FINER, "threshold accepting update (" + currentValue +") to (" + value + ") delta=" + deltaEnergy);
-		// either an improvement, or decreasing by chance
-		currentValue = value;
-		return true;
-	    } else
-		return false;
-	}
+            // always move to better nodes,
+            // but move to worse nodes only if they are not too much worse
+            if (deltaEnergy <= T) {
+                if (logger.isLoggable(Level.FINER))
+                    logger.log(Level.FINER, "threshold accepting update (" + currentValue +") to (" + value + ") delta=" + deltaEnergy);
+                // either an improvement, or decreasing by chance
+                currentValue = value;
+                return true;
+            } else
+                return false;
+        }
 
-	public boolean hasNext() {
-	    return T != 0;
-	}
+        public boolean hasNext() {
+            return T != 0;
+        }
     };
 }

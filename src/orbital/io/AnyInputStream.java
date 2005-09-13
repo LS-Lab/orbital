@@ -39,7 +39,7 @@ public class AnyInputStream extends Reader /* , InputStream */ {
      * Preferred over underlying_inputstream.
      * @see #underlying_inputstream
      */
-    protected Reader	  underlying_reader = null;
+    protected Reader      underlying_reader = null;
 
     /**
      * The InputStream where data comes from (if no reader is specified).
@@ -51,28 +51,28 @@ public class AnyInputStream extends Reader /* , InputStream */ {
      * Create an any input stream from a character input stream.
      */
     public AnyInputStream(Reader input, boolean forceMarkSupport) {
-	if (forceMarkSupport &&!input.markSupported())
-	    underlying_reader = new BufferedReader(input);
-	else
-	    underlying_reader = input;
-	underlying_inputstream = null;
+        if (forceMarkSupport &&!input.markSupported())
+            underlying_reader = new BufferedReader(input);
+        else
+            underlying_reader = input;
+        underlying_inputstream = null;
     }
     public AnyInputStream(Reader input) {
-	this(input, false);
+        this(input, false);
     }
 
     /**
      * Create an any input stream from a binary input stream.
      */
     public AnyInputStream(InputStream input, boolean forceMarkSupport) {
-	underlying_reader = null;
-	if (forceMarkSupport &&!input.markSupported())
-	    underlying_inputstream = new BufferedInputStream(input);
-	else
-	    underlying_inputstream = input;
+        underlying_reader = null;
+        if (forceMarkSupport &&!input.markSupported())
+            underlying_inputstream = new BufferedInputStream(input);
+        else
+            underlying_inputstream = input;
     }
     public AnyInputStream(InputStream input) {
-	this(input, false);
+        this(input, false);
     }
 
     /**
@@ -80,39 +80,39 @@ public class AnyInputStream extends Reader /* , InputStream */ {
      * Queries underlying Readers or InputStreams if specified in the constructor.
      */
     public boolean ready() throws IOException {
-	if (underlying_reader != null)
-	    return underlying_reader.ready();
-	if (underlying_inputstream != null)
-	    return underlying_inputstream.available() > 0;
-	throw new IllegalStateException("neither reader nor input stream is set");
+        if (underlying_reader != null)
+            return underlying_reader.ready();
+        if (underlying_inputstream != null)
+            return underlying_inputstream.available() > 0;
+        throw new IllegalStateException("neither reader nor input stream is set");
     } 
 
     public int available() throws IOException {
-	if (underlying_reader != null)
-	    return underlying_reader.ready() ? 1 : 0;
-	if (underlying_inputstream != null)
-	    return underlying_inputstream.available();
-	throw new IllegalStateException("neither reader nor input stream is set");
+        if (underlying_reader != null)
+            return underlying_reader.ready() ? 1 : 0;
+        if (underlying_inputstream != null)
+            return underlying_inputstream.available();
+        throw new IllegalStateException("neither reader nor input stream is set");
     } 
 
     public int read() throws IOException {
-	if (underlying_reader != null)
-	    return underlying_reader.read();
-	if (underlying_inputstream != null)
-	    return underlying_inputstream.read();
-	throw new IllegalStateException("neither reader nor input stream is set");
+        if (underlying_reader != null)
+            return underlying_reader.read();
+        if (underlying_inputstream != null)
+            return underlying_inputstream.read();
+        throw new IllegalStateException("neither reader nor input stream is set");
     } 
 
     public int read(char cbuf[], int off, int len) throws IOException {
-	if (underlying_reader != null)
-	    return underlying_reader.read(cbuf, off, len);
-	if (underlying_inputstream != null) {
-	    byte[] b = new byte[len];
-	    for (int i = 0; i < len; i++)
-		b[i] = (byte) cbuf[off + i];
-	    return underlying_inputstream.read(b, 0, len);
-	} 
-	throw new IllegalStateException("neither reader nor input stream is set");
+        if (underlying_reader != null)
+            return underlying_reader.read(cbuf, off, len);
+        if (underlying_inputstream != null) {
+            byte[] b = new byte[len];
+            for (int i = 0; i < len; i++)
+                b[i] = (byte) cbuf[off + i];
+            return underlying_inputstream.read(b, 0, len);
+        } 
+        throw new IllegalStateException("neither reader nor input stream is set");
     } 
 
     /**
@@ -120,11 +120,11 @@ public class AnyInputStream extends Reader /* , InputStream */ {
      * @see java.io.Reader#markSupported()
      */
     public boolean markSupported() {
-	if (underlying_reader != null)
-	    return underlying_reader.markSupported();
-	if (underlying_inputstream != null)
-	    return underlying_inputstream.markSupported();
-	throw new IllegalStateException("neither reader nor input stream is set");
+        if (underlying_reader != null)
+            return underlying_reader.markSupported();
+        if (underlying_inputstream != null)
+            return underlying_inputstream.markSupported();
+        throw new IllegalStateException("neither reader nor input stream is set");
     } 
 
     /**
@@ -134,12 +134,12 @@ public class AnyInputStream extends Reader /* , InputStream */ {
      * @see java.io.Reader#mark(int)
      */
     public void mark(int readAheadLimit) throws IOException {
-	if (underlying_reader != null)
-	    underlying_reader.mark(readAheadLimit);
-	else if (underlying_inputstream != null)
-	    underlying_inputstream.mark(readAheadLimit);
-	else
-	    throw new IOException("mark() not supported");
+        if (underlying_reader != null)
+            underlying_reader.mark(readAheadLimit);
+        else if (underlying_inputstream != null)
+            underlying_inputstream.mark(readAheadLimit);
+        else
+            throw new IOException("mark() not supported");
     } 
 
     /**
@@ -152,23 +152,23 @@ public class AnyInputStream extends Reader /* , InputStream */ {
      * @see java.io.Reader#reset()
      */
     public void reset() throws IOException {
-	if (underlying_reader != null)
-	    underlying_reader.reset();
-	else if (underlying_inputstream != null)
-	    underlying_inputstream.reset();
-	else
-	    throw new IOException("reset() not supported");
+        if (underlying_reader != null)
+            underlying_reader.reset();
+        else if (underlying_inputstream != null)
+            underlying_inputstream.reset();
+        else
+            throw new IOException("reset() not supported");
     } 
 
     /**
      * Closes any underlying Readers or InputStreams if specified in the constructor.
      */
     public void close() throws IOException {
-	if (underlying_reader != null)
-	    underlying_reader.close();
-	underlying_reader = null;
-	if (underlying_inputstream != null)
-	    underlying_inputstream.close();
-	underlying_inputstream = null;
+        if (underlying_reader != null)
+            underlying_reader.close();
+        underlying_reader = null;
+        if (underlying_inputstream != null)
+            underlying_inputstream.close();
+        underlying_inputstream = null;
     } 
 }

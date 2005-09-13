@@ -33,22 +33,22 @@ public abstract class DynamicProgrammingOptimizingProblem implements DynamicProg
      * This should be called in the implementation of {@link DynamicProgrammingProblem#getInitialPartialSolutions()}.
      */
     public void init(Object[] weights) {
-	this.partialWeights = weights;
+        this.partialWeights = weights;
     } 
 
     /**
      * Get the partial weight corresponding to the part specification.
      */
     public double getPartialWeight(int[] part) {
-	Number w = ((Number) Utility.getPart(partialWeights, part));
-	return w == null ? Double.NaN : w.doubleValue();
+        Number w = ((Number) Utility.getPart(partialWeights, part));
+        return w == null ? Double.NaN : w.doubleValue();
     } 
 
     /**
      * Get the partial weights memorized analogue to partialSolutions.
      */
     public Object[] getPartialWeights() {
-	return partialWeights;
+        return partialWeights;
     } 
 
     /**
@@ -72,11 +72,11 @@ public abstract class DynamicProgrammingOptimizingProblem implements DynamicProg
     public abstract Function/*<Object, Number>*/ getWeightingFor(int[] part);
 
     public Object solve(int[] part, Object[] partialSolutions) {
-	Collection options = getOptionsFor(part);
-	Pair optimum = PackageUtilities.max(options.iterator(), getWeightingFor(part));
+        Collection options = getOptionsFor(part);
+        Pair optimum = PackageUtilities.max(options.iterator(), getWeightingFor(part));
 
-	// memorize weights as well in order to do dynamic programming
-	Utility.setPart(partialWeights, part, (Number)optimum.B);
-	return optimum.A;
+        // memorize weights as well in order to do dynamic programming
+        Utility.setPart(partialWeights, part, (Number)optimum.B);
+        return optimum.A;
     } 
 }

@@ -60,30 +60,30 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
      * @see #FIRST_LOCAL_SELECTION
      */
     public LocalOptimizerSearch(Random random, LocalSelection localSelection) {
-	this.random = random;
-	this.localSelection = localSelection;
+        this.random = random;
+        this.localSelection = localSelection;
     }
     public LocalOptimizerSearch(LocalSelection localSelection) {
-	this(new Random(), localSelection);
+        this(new Random(), localSelection);
     }
     //@todo remove
     LocalOptimizerSearch() {
-	this(new Random(), FIRST_LOCAL_SELECTION);
+        this(new Random(), FIRST_LOCAL_SELECTION);
     }
 
     private void setLocalSelection(LocalSelection type) {
-	this.localSelection = type;
+        this.localSelection = type;
     }
     LocalSelection getLocalSelection() {
-	return localSelection;
+        return localSelection;
     }
 
     public Random getRandom() {
-	return random;
+        return random;
     }
 
     public void setRandom(Random randomGenerator) {
-	this.random = randomGenerator;
+        this.random = randomGenerator;
     }
 
     /**
@@ -95,16 +95,16 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
      * @postconditions &not;super
      */
     protected Object/*>S<*/ search(Iterator/*<S>*/ nodes) {
-	Object/*>S<*/ node = null;
-	while (nodes.hasNext()) {
-	    node = nodes.next();
+        Object/*>S<*/ node = null;
+        while (nodes.hasNext()) {
+            node = nodes.next();
 
-	    if (getProblem().isSolution(node))
-		return node;
-    	}
+            if (getProblem().isSolution(node))
+                return node;
+        }
 
-    	// current choice instead of failing
-    	return node;
+        // current choice instead of failing
+        return node;
     }
 
     /**
@@ -121,64 +121,64 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
      * @see LocalOptimizerSearch#FIRST_LOCAL_SELECTION
      */
     public static abstract class LocalSelection implements Serializable {
-	private static final long serialVersionUID = 1471057172168155681L;
-	/**
-	 * the name to display for this enum value
-	 * @serial
-	 */
-	private final String name;
+        private static final long serialVersionUID = 1471057172168155681L;
+        /**
+         * the name to display for this enum value
+         * @serial
+         */
+        private final String name;
 
-	/**
-	 * Ordinal of next enum value to be created
-	 */
-	private static int nextOrdinal = 0;
+        /**
+         * Ordinal of next enum value to be created
+         */
+        private static int nextOrdinal = 0;
 
-	/**
-	 * Table of all canonical references to enum value classes.
-	 */
-	private static LocalSelection[] values = new LocalSelection[3];
+        /**
+         * Table of all canonical references to enum value classes.
+         */
+        private static LocalSelection[] values = new LocalSelection[3];
 
-	/**
-	 * Assign an ordinal to this enum value
-	 * @serial
-	 */
-	private final int ordinal = nextOrdinal++;
+        /**
+         * Assign an ordinal to this enum value
+         * @serial
+         */
+        private final int ordinal = nextOrdinal++;
 
-	LocalSelection(String name) {
-	    this.name = name;
-	    values[nextOrdinal - 1] = this;
-	}
-	/**
-	 * Maintains the guarantee that all equal objects of the enumerated type are also identical.
-	 * @postconditions a.equals(b) &hArr; if a==b.
-	 */
-	public final boolean equals(Object that) {
-	    return super.equals(that);
-	} 
-	public final int hashCode() {
-	    return super.hashCode();
-	} 
+        LocalSelection(String name) {
+            this.name = name;
+            values[nextOrdinal - 1] = this;
+        }
+        /**
+         * Maintains the guarantee that all equal objects of the enumerated type are also identical.
+         * @postconditions a.equals(b) &hArr; if a==b.
+         */
+        public final boolean equals(Object that) {
+            return super.equals(that);
+        } 
+        public final int hashCode() {
+            return super.hashCode();
+        } 
 
-	/**
-	 * Maintains the guarantee that there is only a single object representing each enum constant.
-	 * @serialData canonicalized deserialization
-	 */
-	private Object readResolve() throws java.io.ObjectStreamException {
-	    // canonicalize
-	    return values[ordinal];
-	}
+        /**
+         * Maintains the guarantee that there is only a single object representing each enum constant.
+         * @serialData canonicalized deserialization
+         */
+        private Object readResolve() throws java.io.ObjectStreamException {
+            // canonicalize
+            return values[ordinal];
+        }
 
-	public String toString() {
-	    return this.name;
-	}
+        public String toString() {
+            return this.name;
+        }
 
-	
-	/**
-	 * Restrict the problem locally by decorating it.
-	 * @see PackageUtilities#restrictRandomly(GeneralSearchProblem,int,ProbabilisticAlgorithm)
-	 * @see PackageUtilities#restrictBest(GeneralSearchProblem,Function)
-	 */
-	abstract GeneralSearchProblem createLocalRestriction(GeneralSearchProblem problem, LocalOptimizerSearch algorithm);
+        
+        /**
+         * Restrict the problem locally by decorating it.
+         * @see PackageUtilities#restrictRandomly(GeneralSearchProblem,int,ProbabilisticAlgorithm)
+         * @see PackageUtilities#restrictBest(GeneralSearchProblem,Function)
+         */
+        abstract GeneralSearchProblem createLocalRestriction(GeneralSearchProblem problem, LocalOptimizerSearch algorithm);
     }
 
     // enumeration of LocalSelections
@@ -194,11 +194,11 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
      * @todo why do some authors think that hill climbing should not forget about other alternatives, but remember them as depth-first search does. Will this really be another / or better algorithm, then?
      */
     public static final LocalSelection BEST_LOCAL_SELECTION = new LocalSelection("LocalBest") {
-	    private static final long serialVersionUID = 1233346780667611822L;
-	    GeneralSearchProblem createLocalRestriction(GeneralSearchProblem problem, LocalOptimizerSearch algorithm) {
-		return PackageUtilities.restrictRandomly(PackageUtilities.restrictBest(problem, algorithm.getEvaluation()),1,algorithm);
-	    }
-	};
+            private static final long serialVersionUID = 1233346780667611822L;
+            GeneralSearchProblem createLocalRestriction(GeneralSearchProblem problem, LocalOptimizerSearch algorithm) {
+                return PackageUtilities.restrictRandomly(PackageUtilities.restrictBest(problem, algorithm.getEvaluation()),1,algorithm);
+            }
+        };
     /**
      * + attempt a randomly chosen local transition.
      * In the usual case of accepting only improvements this becomes:
@@ -208,11 +208,11 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
      * random trials until finding an improvement is 2, anyway.
      */
     public static final LocalSelection FIRST_LOCAL_SELECTION = new LocalSelection("LocalFirst") {
-	    private static final long serialVersionUID = 1622132645733195173L;
-	    GeneralSearchProblem createLocalRestriction(GeneralSearchProblem problem, LocalOptimizerSearch algorithm) {
-		return PackageUtilities.restrictRandomly(problem,1,algorithm);
-	    }
-	};
+            private static final long serialVersionUID = 1622132645733195173L;
+            GeneralSearchProblem createLocalRestriction(GeneralSearchProblem problem, LocalOptimizerSearch algorithm) {
+                return PackageUtilities.restrictRandomly(problem,1,algorithm);
+            }
+        };
     /**
      * -- accept the first improvement trying nodes according to a given order.
      * At least for local derivable evaluation functions, the worst
@@ -240,114 +240,114 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
      * @internal note that we do not strictly require knowing the algorithm (its constant getEvaluation() would suffice), but we needs its getRandom() and our descendants might need any additional stuff.
      */
     public static abstract class OptionIterator implements Iterator, Serializable {
-	private static final long serialVersionUID = -658271440377589506L;
-    	/**
-    	 * The search problem to solve.
-    	 * @serial
-	 * @internal we do not use algorithm.getProblem() for performance and (perhaps) update reasons.
-    	 */
-    	private final GeneralSearchProblem/*<A,S>*/ problem;
-    	/**
-    	 * Caching the accumulated cost function of problem.
-	 * @invariants g == problem.getAccumulatedCostFunction()
-	 * @see #problem
-    	 * @serial
-	 * @todo transientize?
-    	 */
-	private final MutableFunction g;
-	/**
-	 * The algorithm using this (randomized) iterator.
-	 * @serial
-	 */
-	private final LocalOptimizerSearch algorithm;
-	/**
-	 * The current state s&isin;S of this transition path.
-	 * @serial
-	 */
-	private Object/*>S<*/ state;
-	/**
-	 * Caching the accumulatedCost g(state).
-	 * @see #state
-	 * @todo transientize
-	 */
-	private Real accumulatedCost;
-	public OptionIterator(GeneralSearchProblem problem, LocalOptimizerSearch algorithm) {
-	    this.algorithm = algorithm;
-	    this.problem = problem;
-	    this.g = problem.getAccumulatedCostFunction();
-	    //@todo super(problem); extend GeneralSearch.OptionIterator and use its select()?
-	    this.state = getProblem().getInitialState();
-	    this.accumulatedCost = castedApply(g, state);
-	    assert accumulatedCost.doubleValue() == 0 : "@postconditions getInitialState(): accumulatedCost==0";
-	}
+        private static final long serialVersionUID = -658271440377589506L;
+        /**
+         * The search problem to solve.
+         * @serial
+         * @internal we do not use algorithm.getProblem() for performance and (perhaps) update reasons.
+         */
+        private final GeneralSearchProblem/*<A,S>*/ problem;
+        /**
+         * Caching the accumulated cost function of problem.
+         * @invariants g == problem.getAccumulatedCostFunction()
+         * @see #problem
+         * @serial
+         * @todo transientize?
+         */
+        private final MutableFunction g;
+        /**
+         * The algorithm using this (randomized) iterator.
+         * @serial
+         */
+        private final LocalOptimizerSearch algorithm;
+        /**
+         * The current state s&isin;S of this transition path.
+         * @serial
+         */
+        private Object/*>S<*/ state;
+        /**
+         * Caching the accumulatedCost g(state).
+         * @see #state
+         * @todo transientize
+         */
+        private Real accumulatedCost;
+        public OptionIterator(GeneralSearchProblem problem, LocalOptimizerSearch algorithm) {
+            this.algorithm = algorithm;
+            this.problem = problem;
+            this.g = problem.getAccumulatedCostFunction();
+            //@todo super(problem); extend GeneralSearch.OptionIterator and use its select()?
+            this.state = getProblem().getInitialState();
+            this.accumulatedCost = castedApply(g, state);
+            assert accumulatedCost.doubleValue() == 0 : "@postconditions getInitialState(): accumulatedCost==0";
+        }
 
-    	/**
-    	 * Get the current problem.
-    	 * @preconditions true
-    	 * @return the problem specified in the last call to solve.
-    	 */
-    	protected final GeneralSearchProblem/*<A,S>*/ getProblem() {
-	    return problem;
-    	}
+        /**
+         * Get the current problem.
+         * @preconditions true
+         * @return the problem specified in the last call to solve.
+         */
+        protected final GeneralSearchProblem/*<A,S>*/ getProblem() {
+            return problem;
+        }
 
-	/**
-	 * Get the algorithm using this (randomized) iterator.
-	 */
-	protected final LocalOptimizerSearch getAlgorithm() {
-	    return algorithm;
-	}
+        /**
+         * Get the algorithm using this (randomized) iterator.
+         */
+        protected final LocalOptimizerSearch getAlgorithm() {
+            return algorithm;
+        }
 
-	/**
-	 * Get the current state s&isin;S of this transition path.
-	 * i.e. the last state returned by {@link #next()}, or the initial state if no transition has
-	 * already occurred.
-	 */
-	protected final Object/*>S<*/ getState() {
-	    return state;
-	}
+        /**
+         * Get the current state s&isin;S of this transition path.
+         * i.e. the last state returned by {@link #next()}, or the initial state if no transition has
+         * already occurred.
+         */
+        protected final Object/*>S<*/ getState() {
+            return state;
+        }
 
-	public Object next() {
-	    final List actions = Setops.asList(problem.actions(state));
-	    if (actions.isEmpty())
-		//@internal note that hasNext() will not respect this case, since it is considered as an error
-		//@xxx should random-restart, silently? Or catch a special exception from outside, and decide random-restart there?
-		throw new NoSuchElementException("There are no transitions from " + state + " thus local optimizer cannot continue.");
-	    //@todo rely on decorators of problem (PackageUtilities.restrictRandomly) to do the randomization?
-	    // either by asserting that actions.size() == 1, or by accepting in the order of actions (with descending probabilities of p1, (1-p1)p2, (1-p1)(1-p2)p3, ...).
+        public Object next() {
+            final List actions = Setops.asList(problem.actions(state));
+            if (actions.isEmpty())
+                //@internal note that hasNext() will not respect this case, since it is considered as an error
+                //@xxx should random-restart, silently? Or catch a special exception from outside, and decide random-restart there?
+                throw new NoSuchElementException("There are no transitions from " + state + " thus local optimizer cannot continue.");
+            //@todo rely on decorators of problem (PackageUtilities.restrictRandomly) to do the randomization?
+            // either by asserting that actions.size() == 1, or by accepting in the order of actions (with descending probabilities of p1, (1-p1)p2, (1-p1)(1-p2)p3, ...).
 
-	    final Object/*>A<*/ a = actions.get(algorithm.getRandom().nextInt(actions.size()));
-	    final Object/*>S<*/ sp = problem.states(a, state).next();
+            final Object/*>A<*/ a = actions.get(algorithm.getRandom().nextInt(actions.size()));
+            final Object/*>S<*/ sp = problem.states(a, state).next();
 
-	    final Real spAccumulatedCost = accumulatedCost.add(((Transition)problem.transition(a,state,sp)).getCost());
-	    g.set(sp, spAccumulatedCost);
+            final Real spAccumulatedCost = accumulatedCost.add(((Transition)problem.transition(a,state,sp)).getCost());
+            g.set(sp, spAccumulatedCost);
 
-	    if (accept(state, sp)) {
-		// accept the transition state->sp
-		this.state = sp;
-		this.accumulatedCost = spAccumulatedCost;
-	    }
+            if (accept(state, sp)) {
+                // accept the transition state->sp
+                this.state = sp;
+                this.accumulatedCost = spAccumulatedCost;
+            }
 
-	    return state;
-	}
+            return state;
+        }
 
-	/**
-	 * The predicate asked whether to accept a transition.
-	 * <div>s&rarr;<sub>a</sub>s&#697; is accepted (and performed) iff accept(s,s&#697;)</div>
-	 * @internal alternative would be a delegation to a BinaryPredicate accept.
-	 */
-	protected abstract boolean accept(Object/*>S<*/ state, Object/*>S<*/ sp);
+        /**
+         * The predicate asked whether to accept a transition.
+         * <div>s&rarr;<sub>a</sub>s&#697; is accepted (and performed) iff accept(s,s&#697;)</div>
+         * @internal alternative would be a delegation to a BinaryPredicate accept.
+         */
+        protected abstract boolean accept(Object/*>S<*/ state, Object/*>S<*/ sp);
 
-	/**
-	 * Decides whether to stop further transitions.
-	 * The predicate asked whether to continue or stop further transition.
-	 * <div>transitions are continued further iff cont(s)</div>
-	 * where s is the current state.
-	 * @internal alternative would be a delegation to a Predicate cont.
-	 */
-	public abstract boolean hasNext();
+        /**
+         * Decides whether to stop further transitions.
+         * The predicate asked whether to continue or stop further transition.
+         * <div>transitions are continued further iff cont(s)</div>
+         * where s is the current state.
+         * @internal alternative would be a delegation to a Predicate cont.
+         */
+        public abstract boolean hasNext();
 
-	public void remove() {
-	    throw new UnsupportedOperationException();
-	}
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
     };
 }

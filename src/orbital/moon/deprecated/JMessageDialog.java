@@ -23,42 +23,42 @@ import java.awt.BorderLayout;
  */
 public
 class JMessageDialog extends UserDialog {
-	private static class Debug {
-		private Debug() {}
-		public static void main(String arg[]) throws Exception {
-			System.err.println("Debug");
-			UserDialog dlg = new JMessageDialog(new Frame(), "JMessageDialog", "This is a very long message which will be displayed in various ways not directly specified here.");
-			dlg.start();
-		} 
-	}
+        private static class Debug {
+                private Debug() {}
+                public static void main(String arg[]) throws Exception {
+                        System.err.println("Debug");
+                        UserDialog dlg = new JMessageDialog(new Frame(), "JMessageDialog", "This is a very long message which will be displayed in various ways not directly specified here.");
+                        dlg.start();
+                } 
+        }
 
-	/**
-	 * Contains the message displayed.
-	 * @serial
-	 */
-	protected String	message;
+        /**
+         * Contains the message displayed.
+         * @serial
+         */
+        protected String        message;
 
-	/**
-	 * Contains the component view used to display the message.
-	 * @serial
-	 */
-	protected Component messageView;
-	public JMessageDialog(Frame parent, String title, String message) {
-		super(parent, title);
-		this.message = message;
-		JTextArea t;
-		add(new JScrollPane(t = new JTextArea(message, 4, 40)), BorderLayout.CENTER);
-		t.setEditable(false);
-		t.setLineWrap(true);
-		t.setWrapStyleWord(true);
-		messageView = t;
+        /**
+         * Contains the component view used to display the message.
+         * @serial
+         */
+        protected Component messageView;
+        public JMessageDialog(Frame parent, String title, String message) {
+                super(parent, title);
+                this.message = message;
+                JTextArea t;
+                add(new JScrollPane(t = new JTextArea(message, 4, 40)), BorderLayout.CENTER);
+                t.setEditable(false);
+                t.setLineWrap(true);
+                t.setWrapStyleWord(true);
+                messageView = t;
 
-		// new PlainDocument(new WrappedPlainView(el));
-	}
+                // new PlainDocument(new WrappedPlainView(el));
+        }
 
-	public void setMessage(String message) throws ClassCastException {
-		if (messageView instanceof JTextComponent)
-			((JTextComponent) messageView).setText(message);
-		this.message = message;
-	} 
+        public void setMessage(String message) throws ClassCastException {
+                if (messageView instanceof JTextComponent)
+                        ((JTextComponent) messageView).setText(message);
+                this.message = message;
+        } 
 }

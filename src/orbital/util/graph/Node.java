@@ -32,7 +32,7 @@ public interface Node {
      * reachable from this node via edges.
      */
     Iterator/*<Node>*/ edges();
-	
+        
     //TODO: Node getNeighbourAtEdge(int index);
 
     // Net-Manipulation

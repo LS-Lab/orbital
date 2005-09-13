@@ -60,24 +60,24 @@ public class AppletFrame extends Frame {
      * <div><kbd>java orbital.AppletFrame <i>className</i> <i>Title</i> (<i>parameter</i>=<i>value</i>)*</kbd></div>
      */
     public static void main(String args[]) throws Exception {
-	if (args.length < 1 || orbital.signe.isHelpRequest(args[0])) {
-	    System.out.println(usage);
-	    return;
-	} 
-	if (args.length == 2 && orbital.signe.isHelpRequest(args[1])) {
-	    System.out.println(usage);
-	    // fall-through and let showApplet display info
-	} 
+        if (args.length < 1 || orbital.signe.isHelpRequest(args[0])) {
+            System.out.println(usage);
+            return;
+        } 
+        if (args.length == 2 && orbital.signe.isHelpRequest(args[1])) {
+            System.out.println(usage);
+            // fall-through and let showApplet display info
+        } 
 
-	UIUtilities.setDefaultLookAndFeel();
-	String className = args[0];
-	String title = args.length > 1 ? args[1] : "Application Title";
-	System.out.println("starting Applet " + className + " '" + title + "'");
-	// strip consumed arguments <className> and <Title>, and pass the remaining args to the applet
-	int consumedArguments = args.length > 1 ? 2 : 1;
-	String remainingArgs[] = new String[args.length - consumedArguments];
-	System.arraycopy(args, consumedArguments, remainingArgs, 0, remainingArgs.length);
-	AppletFrame.showApplet(className, title, remainingArgs);
+        UIUtilities.setDefaultLookAndFeel();
+        String className = args[0];
+        String title = args.length > 1 ? args[1] : "Application Title";
+        System.out.println("starting Applet " + className + " '" + title + "'");
+        // strip consumed arguments <className> and <Title>, and pass the remaining args to the applet
+        int consumedArguments = args.length > 1 ? 2 : 1;
+        String remainingArgs[] = new String[args.length - consumedArguments];
+        System.arraycopy(args, consumedArguments, remainingArgs, 0, remainingArgs.length);
+        AppletFrame.showApplet(className, title, remainingArgs);
     } 
     public static final String usage = "usage: " + AppletFrame.class + " <className> [<Title> (<parameter>=<value>)* | " + orbital.signe.getHelpRequest() + "]" + System.getProperty("line.separator") + "\twill display the applet <className> in a new frame called <Title>." + System.getProperty("line.separator") + "\tThe applet has access to the values assigned to the parameters." + System.getProperty("line.separator") + "\t" + orbital.signe.getHelpRequest() + "\tdisplay available parameter info for applet <className>";
 
@@ -85,23 +85,23 @@ public class AppletFrame extends Frame {
      * Get information on an applet.
      */
     public static String info(Applet a) {
-	final String nl = System.getProperty("line.separator");
-	StringBuffer sb = new StringBuffer("applet ");
-	sb.append(a.getClass().getName());
-	sb.append(nl);
-	sb.append("supports the following parameters:");
-	sb.append(nl);
-	String[][] params = a.getParameterInfo();
-	for (int i = 0; i < params.length; i++) {
-	    for (int j = 0; j < params[i].length; j++)
-		sb.append((j > 0 ? " -- " : "") + params[i][j]);
-	    sb.append(nl);
-	}
-	return sb.toString();
+        final String nl = System.getProperty("line.separator");
+        StringBuffer sb = new StringBuffer("applet ");
+        sb.append(a.getClass().getName());
+        sb.append(nl);
+        sb.append("supports the following parameters:");
+        sb.append(nl);
+        String[][] params = a.getParameterInfo();
+        for (int i = 0; i < params.length; i++) {
+            for (int j = 0; j < params[i].length; j++)
+                sb.append((j > 0 ? " -- " : "") + params[i][j]);
+            sb.append(nl);
+        }
+        return sb.toString();
     }
 
     public static void showApplet(String appletClassName, String title) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-	showApplet(appletClassName, title, null);
+        showApplet(appletClassName, title, null);
     } 
 
     /**
@@ -114,9 +114,9 @@ public class AppletFrame extends Frame {
      * @see #showApplet(Applet, String, String[])
      */
     public static void showApplet(String appletClassName, String title, String args[]) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-	// create an instance of the applet class
-	Applet a = (Applet) Class.forName(appletClassName).newInstance();
-	showApplet(a, title, args);
+        // create an instance of the applet class
+        Applet a = (Applet) Class.forName(appletClassName).newInstance();
+        showApplet(a, title, args);
     } 
 
     /**
@@ -125,7 +125,7 @@ public class AppletFrame extends Frame {
      * comfortable application-like behaviour.
      */
     public static void showApplet(Applet a, String title) {
-	showApplet(a, title, new String[0]);
+        showApplet(a, title, new String[0]);
     }
     /**
      * Show an Applet in a new AppletFrame.
@@ -137,32 +137,32 @@ public class AppletFrame extends Frame {
      *  args is a list of arguments of the form <span class="String">"<i>parameter</i>=<i>value</i>"</span>.
      */
     public static void showApplet(Applet a, String title, String args[]) {
-	if (args.length == 1 && orbital.signe.isHelpRequest(args[0])) {
-	    System.out.println(info(a));
-	} 
+        if (args.length == 1 && orbital.signe.isHelpRequest(args[0])) {
+            System.out.println(info(a));
+        } 
 
-	// create new application frame window
-	AppletFrame frame = new AppletFrame(title);
-	a.setStub(new StandaloneAppletStub(a, frame, args));
+        // create new application frame window
+        AppletFrame frame = new AppletFrame(title);
+        a.setStub(new StandaloneAppletStub(a, frame, args));
 
-	// add applet to frame window
-	frame.add("Center", a);	   // @version 1.0
+        // add applet to frame window
+        frame.add("Center", a);    // @version 1.0
 
-	// initialize the applet
-	a.init();
-	a.start();
+        // initialize the applet
+        a.init();
+        a.start();
 
-	// resize frame window to fit applet
-	// assumes that the applet has its preferred size set
-	frame.pack();
+        // resize frame window to fit applet
+        // assumes that the applet has its preferred size set
+        frame.pack();
 
-	// show the window
-	frame.show();
+        // show the window
+        frame.show();
     } 
 
     // constructor needed to pass window title to class Frame
     public AppletFrame(String name) {
-	super(name);
+        super(name);
     }
 
     /**
@@ -171,12 +171,12 @@ public class AppletFrame extends Frame {
      * @xxx for Rhythmomachia and Seti, x-ing sometimes does not work.
      */
     public boolean handleEvent(Event e) {
-	// Window Destroy event
-	if (e.id == Event.WINDOW_DESTROY) {
-	    System.exit(0);
-	    return true;
-	} 
-	return super.handleEvent(e);
+        // Window Destroy event
+        if (e.id == Event.WINDOW_DESTROY) {
+            System.exit(0);
+            return true;
+        } 
+        return super.handleEvent(e);
     } 
 }
 
@@ -188,41 +188,41 @@ class StandaloneAppletStub implements AppletStub {
     private Frame frame;
     private String args[];
     public StandaloneAppletStub(Applet applet, Frame frame, String args[]) {
-	this.applet = applet;
-	this.frame = frame;
-	this.args = args;
+        this.applet = applet;
+        this.frame = frame;
+        this.args = args;
     }
 
     public boolean isActive() {
-    	return true;
+        return true;
     }
     public URL getDocumentBase() {
-    	return getCodeBase();
+        return getCodeBase();
     }
     public URL getCodeBase() {
-    	try {
-	    //@xxx or applet.getClass().getResource(".");
-	    return new URL("file:///" + System.getProperty("user.dir") + "/");
-    	}
-    	catch(MalformedURLException e) {throw new InnerCheckedException("no codebase", e);}
+        try {
+            //@xxx or applet.getClass().getResource(".");
+            return new URL("file:///" + System.getProperty("user.dir") + "/");
+        }
+        catch(MalformedURLException e) {throw new InnerCheckedException("no codebase", e);}
     }
     public String getParameter(String name) {
-    	if (args == null)
-	    return null;
-    	for (int i = 0; i < args.length; i++) {
-	    int tok = args[i].indexOf('=');
-	    if (tok < 0)
-		continue;
-	    if (args[i].substring(0, tok).equalsIgnoreCase(name))
-		return args[i].substring(tok + 1);
-    	}
-    	return null;
+        if (args == null)
+            return null;
+        for (int i = 0; i < args.length; i++) {
+            int tok = args[i].indexOf('=');
+            if (tok < 0)
+                continue;
+            if (args[i].substring(0, tok).equalsIgnoreCase(name))
+                return args[i].substring(tok + 1);
+        }
+        return null;
     }
     public AppletContext getAppletContext() {
-    	return new StandaloneAppletContext(applet);
+        return new StandaloneAppletContext(applet);
     }
     public void appletResize(int width, int height) {
-    	frame.resize(width, height);
+        frame.resize(width, height);
     }
 }
 
@@ -233,86 +233,86 @@ class StandaloneAppletContext implements AppletContext {
     private Toolkit tk;
     private Applet applet;
     public StandaloneAppletContext(Applet applet) {
-	this.applet = applet;
-	this.tk = applet.getToolkit();
+        this.applet = applet;
+        this.tk = applet.getToolkit();
     }
     public InputStream getStream(String key) {throw new UnsupportedOperationException("new to JDK1.4");}
     public Iterator getStreamKeys() {throw new UnsupportedOperationException("new to JDK1.4");}
     public void setStream(String key, InputStream stream) {throw new UnsupportedOperationException("new to JDK1.4");}
     public AudioClip getAudioClip(URL url) {
-	return new AudioSystemAudioClip(url);
+        return new AudioSystemAudioClip(url);
     }
     public Image getImage(URL url) {
-    	return tk.getImage(url);
+        return tk.getImage(url);
     }
     public Applet getApplet(String name) {
-    	return null;
+        return null;
     }
     public Enumeration getApplets() {
-    	Vector v = new Vector(1);
-    	v.addElement(applet);
-    	return v.elements();
+        Vector v = new Vector(1);
+        v.addElement(applet);
+        return v.elements();
     }
     public void showDocument(URL url) {
         String cmd = System.getProperty("os.command");
         String os = System.getProperty("os.name");
         if (cmd == null)
-	    if (os != null) 
-            	if (os.startsWith("Windows NT") || os.startsWith("Windows 20"))
-		    cmd = "cmd /C start ";
-            	else if (os.startsWith("Windows 9") || os.startsWith("Windows ME"))
-		    cmd = "command.com /C start ";
-            	else if (os.startsWith("Linux") || os.startsWith("Unix"))
-		    cmd = "/bin/sh ${BROWSER} ";
-    	    	else
-		    cmd = "";
-	    else
-		cmd = "";
+            if (os != null) 
+                if (os.startsWith("Windows NT") || os.startsWith("Windows 20"))
+                    cmd = "cmd /C start ";
+                else if (os.startsWith("Windows 9") || os.startsWith("Windows ME"))
+                    cmd = "command.com /C start ";
+                else if (os.startsWith("Linux") || os.startsWith("Unix"))
+                    cmd = "/bin/sh ${BROWSER} ";
+                else
+                    cmd = "";
+            else
+                cmd = "";
         cmd += url;
         try {
-	    Process help = Runtime.getRuntime().exec(cmd);
+            Process help = Runtime.getRuntime().exec(cmd);
         }
         catch(IOException x) {}
     }
     public void showDocument(URL url, String target) {
-    	showDocument(url);
+        showDocument(url);
     }
     public void showStatus(String status) {
-    	System.out.println(status);
+        System.out.println(status);
     }
 }
 
 class AudioSystemAudioClip implements AudioClip {
-    private URL 	  url;
-    private Clip	  clip = null;
+    private URL           url;
+    private Clip          clip = null;
     private Sequencer sequencer = null;
     public AudioSystemAudioClip(URL url) {
-	this.url = url;
+        this.url = url;
     }
 
     protected void init(URL url) throws Exception {
-	try {
+        try {
             AudioInputStream stream = AudioSystem.getAudioInputStream(url);
-            AudioFormat		 format = stream.getFormat();
-            DataLine.Info	 info = new DataLine.Info(Clip.class, stream.getFormat(),
-							  ((int) stream.getFrameLength() * format.getFrameSize()));
+            AudioFormat          format = stream.getFormat();
+            DataLine.Info        info = new DataLine.Info(Clip.class, stream.getFormat(),
+                                                          ((int) stream.getFrameLength() * format.getFrameSize()));
     
             clip = (Clip) AudioSystem.getLine(info);
             clip.open(stream);
         }
         catch (Exception alternative) {
-	    Sequence sequence = MidiSystem.getSequence(url);
-	    sequencer = MidiSystem.getSequencer();
-	    sequencer.open();
+            Sequence sequence = MidiSystem.getSequence(url);
+            sequencer = MidiSystem.getSequencer();
+            sequencer.open();
 
-	    sequencer.setSequence(sequence);
+            sequencer.setSequence(sequence);
         }
     }
 
     private boolean opened() {
         if (clip == null && sequencer == null)
             try {
-            	init(url);
+                init(url);
             }
             catch (Exception ignore) {}
         return clip != null || sequencer != null;
@@ -320,32 +320,32 @@ class AudioSystemAudioClip implements AudioClip {
 
     public void play() {
         if (opened())
-	    if (clip != null)
-		clip.start();
-	    else
-		sequencer.start();
+            if (clip != null)
+                clip.start();
+            else
+                sequencer.start();
     }
 
     public void loop() {
         if (opened())
-	    if (clip != null)
-		clip.loop(Clip.LOOP_CONTINUOUSLY);
-	    else
-		throw new UnsupportedOperationException("midi does not support loop");
+            if (clip != null)
+                clip.loop(Clip.LOOP_CONTINUOUSLY);
+            else
+                throw new UnsupportedOperationException("midi does not support loop");
     }
 
     public void stop() {
         if (opened())
-	    if (clip != null)
-		clip.stop();
-	    else
-		sequencer.stop();
+            if (clip != null)
+                clip.stop();
+            else
+                sequencer.stop();
     }
-	
+        
     protected void finalize() throws Throwable {
-	if (clip != null)
-	    clip.close();
-	if (sequencer != null)
-	    sequencer.close();
+        if (clip != null)
+            clip.close();
+        if (sequencer != null)
+            sequencer.close();
     }
 }

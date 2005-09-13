@@ -28,31 +28,31 @@ public class TypeException extends RuntimeException {
     private final Type occurred;
 
     public TypeException() {
-	this.required = null;
-	this.occurred = null;
+        this.required = null;
+        this.occurred = null;
     }
     
     public TypeException(String message) {
-	this(message, null, null);
+        this(message, null, null);
     }
 
     public TypeException(String message, Type required, Type occurred) {
-	super(message);
-	this.required = required;
-	this.occurred = occurred;
+        super(message);
+        this.required = required;
+        this.occurred = occurred;
     }
     
     /**
      * Get the type that would have been required.
      */
     public Type getRequired() {
-	return required;
+        return required;
     }
 
     /**
      * Get the type that was actually found.
      */
     public Type getOccurred() {
-	return occurred;
+        return occurred;
     }
 }// TypeException

@@ -31,12 +31,12 @@ public final class signe extends Applet implements Runnable {
      * Application-start entry point.
      */
     public static void main(String arg[]) throws Exception {
-	System.err.println("signe");
-	new signe().run();
-	if (arg.length > 0 && ("-??".equals(arg[0]) || "--version".equals(arg[0])))
-	    System.out.println(signe.getManifest());
-	else
-	    System.err.println(signe.getHelpAboutHelp() + "\nuse --version for extended version information");
+        System.err.println("signe");
+        new signe().run();
+        if (arg.length > 0 && ("-??".equals(arg[0]) || "--version".equals(arg[0])))
+            System.out.println(signe.getManifest());
+        else
+            System.err.println(signe.getHelpAboutHelp() + "\nuse --version for extended version information");
     } 
 
     /**
@@ -47,30 +47,30 @@ public final class signe extends Applet implements Runnable {
      * </p>
      */
     public static final boolean isHelpRequest(String arg) {
-	return "-?".equals(arg) || "--help".equals(arg) || "-h".equals(arg) || "/?".equals(arg)
-	    || "\"-?\"".equals(arg) || "\"/?\"".equals(arg);
+        return "-?".equals(arg) || "--help".equals(arg) || "-h".equals(arg) || "/?".equals(arg)
+            || "\"-?\"".equals(arg) || "\"/?\"".equals(arg);
     }
     /**
      * Checks whether the given list of arguments contains a command-line request for help.
      * @see #isHelpRequest(String)
      */
     public static final boolean isHelpRequest(String arg[]) {
-	for (int i = 0; i < arg.length; i++)
-	    if (isHelpRequest(arg[i]))
-		return true;
-	return false;
+        for (int i = 0; i < arg.length; i++)
+            if (isHelpRequest(arg[i]))
+                return true;
+        return false;
     }
     /**
      * Get an argument that works as a command-line request for help.
      */
     public static final String getHelpRequest() {
-	return "--help";
+        return "--help";
     }
     /**
      * Get help about (getting) help.
      */
     public static final String getHelpAboutHelp() {
-	return "use " + getHelpRequest() + " for help";
+        return "use " + getHelpRequest() + " for help";
     }
 
     /**
@@ -82,8 +82,8 @@ public final class signe extends Applet implements Runnable {
      * Applet-init entry point.
      */
     public void init() {
-	add("North", new Label("signe"));		   // @version 1.0
-	add("Center", new TextArea(getInfo() + ", " + getVersion() + "\nBuild " + getBuild()));	   // @version 1.0
+        add("North", new Label("signe"));                  // @version 1.0
+        add("Center", new TextArea(getInfo() + ", " + getVersion() + "\nBuild " + getBuild()));    // @version 1.0
     } 
 
     /**
@@ -95,14 +95,14 @@ public final class signe extends Applet implements Runnable {
      * Runnable-start entry point.
      */
     public void run() {
-	System.out.println(getInfo() + ", " + getVersion());
+        System.out.println(getInfo() + ", " + getVersion());
     } 
 
 
     /**
      * Contains the internal id number information.
      */
-    private static final int	ID = 0xBabe;
+    private static final int    ID = 0xBabe;
 
     /**
      * Contains the id information.
@@ -128,17 +128,17 @@ public final class signe extends Applet implements Runnable {
      * Contains the version information in Dewey Decimal syntax.
      * Thus it consists of positive decimal integers separated by periods ".".
      */
-    private static final String	version = "@VERSION@";
+    private static final String version = "@VERSION@";
 
     /**
      * Contains the unique build number.
      */
-    private static final String	build = "@BUILD@";
+    private static final String build = "@BUILD@";
     
     /**
      * Contains the default name for the <em>Orbital library service</em>.
      */
-    public static final String	DefaultService = "Orbital";
+    public static final String  DefaultService = "Orbital";
 
     /**
      * Contains additional information.
@@ -150,7 +150,7 @@ public final class signe extends Applet implements Runnable {
      * @see #id
      */
     public static String getId() {
-	return id;
+        return id;
     } 
 
     /**
@@ -158,7 +158,7 @@ public final class signe extends Applet implements Runnable {
      * @see #info
      */
     public static String getInfo() {
-	return info;
+        return info;
     } 
 
     /**
@@ -166,7 +166,7 @@ public final class signe extends Applet implements Runnable {
      * @see #creator
      */
     public static String getCreator() {
-	return creator;
+        return creator;
     } 
 
     /**
@@ -174,7 +174,7 @@ public final class signe extends Applet implements Runnable {
      * @see #created
      */
     public static String getCreated() {
-	return created;
+        return created;
     } 
 
     /**
@@ -182,7 +182,7 @@ public final class signe extends Applet implements Runnable {
      * @see #version
      */
     public static String getVersion() {
-	return version;
+        return version;
     } 
 
     /**
@@ -190,7 +190,7 @@ public final class signe extends Applet implements Runnable {
      * @see #build
      */
     public static String getBuild() {
-	return build;
+        return build;
     } 
 
     /**
@@ -200,47 +200,47 @@ public final class signe extends Applet implements Runnable {
      * @return <var>Majorversion</var>.<var>MinorversionMicroversionNanoversionPicoVersion...</var> as a double.
      */
     public static final double getVersionNumber() {
-	assert version.indexOf('-') < 0 : "positive";
-	int majorpos = version.indexOf('.');
-	if (majorpos < 0 || version.indexOf('.', majorpos + 1) < 0)	   // simple major.minor format
-	    return Double.parseDouble(version);
-	assert version.indexOf('.', version.indexOf('.')) > 0 : "two dots in number";
-	StringBuffer release = new StringBuffer(version.substring(0, majorpos) + ".");
-	for (int i = majorpos; i + 1 < version.length(); ) {
-	    int n = version.indexOf('.', i + 1);
-	    if (n < 0)
-		n = version.length();
-	    release.append(version.substring(i + 1, n));
-	    i = n;
-	} 
-	return Double.parseDouble(release.toString());
+        assert version.indexOf('-') < 0 : "positive";
+        int majorpos = version.indexOf('.');
+        if (majorpos < 0 || version.indexOf('.', majorpos + 1) < 0)        // simple major.minor format
+            return Double.parseDouble(version);
+        assert version.indexOf('.', version.indexOf('.')) > 0 : "two dots in number";
+        StringBuffer release = new StringBuffer(version.substring(0, majorpos) + ".");
+        for (int i = majorpos; i + 1 < version.length(); ) {
+            int n = version.indexOf('.', i + 1);
+            if (n < 0)
+                n = version.length();
+            release.append(version.substring(i + 1, n));
+            i = n;
+        } 
+        return Double.parseDouble(release.toString());
     } 
 
     /**
      * Get additional information.
      */
     public static String getNote() {
-	return note;
+        return note;
     }
 
     /**
      * Manifest.
      */
     public static String getManifest() {
-	return getInfo() + ", " + getVersion() + " Build " + getBuild() + " Copyright (c) " + getCreated() + " by " + getCreator() + "\n" + getNote();
+        return getInfo() + ", " + getVersion() + " Build " + getBuild() + " Copyright (c) " + getCreated() + " by " + getCreator() + "\n" + getNote();
     } 
 
     /**
      * Applet-Info.
      */
     public String getAppletInfo() {
-	return "signe Applet that displays the signe: " + getManifest();
+        return "signe Applet that displays the signe: " + getManifest();
     } 
 
     /**
      * Return a string representation of the object.
      */
     public String toString() {
-	return getClass().getName() + "[" + getInfo() + "]";
+        return getClass().getName() + "[" + getInfo() + "]";
     } 
 }

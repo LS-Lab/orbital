@@ -59,9 +59,9 @@ public abstract class Values implements ValueFactory {
      * @see #getInstance(Map)
      */
     public static ValueFactory getInstance() {
-	//@internal notice the explicit mention of the ValuesImpl class (outside a string) to ease the job of packagers and deployment wizards.
-	return instantiate(GetPropertyAction.getProperty(Values.class.getName() + ".implementation",
-							 orbital.moon.math.ValuesImpl.class.getName()));
+        //@internal notice the explicit mention of the ValuesImpl class (outside a string) to ease the job of packagers and deployment wizards.
+        return instantiate(GetPropertyAction.getProperty(Values.class.getName() + ".implementation",
+                                                         orbital.moon.math.ValuesImpl.class.getName()));
     }
 
     /**
@@ -141,13 +141,13 @@ public abstract class Values implements ValueFactory {
      * @todo implement effect of configuration.
      */
     public static ValueFactory getInstance(Map parameters) {
-	ValueFactory factory = getInstance();
-	if (factory instanceof AbstractValues) {
-	    ((AbstractValues)factory).setParameters(parameters);
-	} else if (!parameters.isEmpty()) {
-	    throw new UnsupportedOperationException("Passing parameters to general " + ValueFactory.class + " is not yet supported. Use Values.getInstance() for ignoring the parameter settings, or stick to an implementation extending " + AbstractValues.class);
-	}
-	return factory;
+        ValueFactory factory = getInstance();
+        if (factory instanceof AbstractValues) {
+            ((AbstractValues)factory).setParameters(parameters);
+        } else if (!parameters.isEmpty()) {
+            throw new UnsupportedOperationException("Passing parameters to general " + ValueFactory.class + " is not yet supported. Use Values.getInstance() for ignoring the parameter settings, or stick to an implementation extending " + AbstractValues.class);
+        }
+        return factory;
     }
 
     /**
@@ -161,16 +161,16 @@ public abstract class Values implements ValueFactory {
         try {
             return (Values) Class.forName(className, true, cl).newInstance();
         } catch (ClassNotFoundException ex) {
-	    try {
-		cl = Thread.currentThread().getContextClassLoader();
-		if (cl == null)
-		    cl = ClassLoader.getSystemClassLoader();
-		return (Values) Class.forName(className, true, cl).newInstance();
-	    } catch (Exception ex_again) {
-		throw new FactoryConfigurationError("can't instantiate Values implementation " + className, ex_again);
-	    }
+            try {
+                cl = Thread.currentThread().getContextClassLoader();
+                if (cl == null)
+                    cl = ClassLoader.getSystemClassLoader();
+                return (Values) Class.forName(className, true, cl).newInstance();
+            } catch (Exception ex_again) {
+                throw new FactoryConfigurationError("can't instantiate Values implementation " + className, ex_again);
+            }
         } catch (Exception ex) {
-	    throw new FactoryConfigurationError("can't instantiate Values implementation " + className, ex);
+            throw new FactoryConfigurationError("can't instantiate Values implementation " + className, ex);
         }
     }
     
@@ -179,13 +179,13 @@ public abstract class Values implements ValueFactory {
      */
     private static Values defaultValueFactory;
     static {
-	String defaultValueFactoryClass =
-	    GetPropertyAction.getProperty(Values.class.getName() + ".default", null);
-	defaultValueFactory = defaultValueFactoryClass != null
-	    ? instantiate(defaultValueFactoryClass)
-	    : (Values) getInstance();
+        String defaultValueFactoryClass =
+            GetPropertyAction.getProperty(Values.class.getName() + ".default", null);
+        defaultValueFactory = defaultValueFactoryClass != null
+            ? instantiate(defaultValueFactoryClass)
+            : (Values) getInstance();
     }
-	
+        
     /**
      * Get the (single) default instance of this factory.
      * <p>
@@ -196,7 +196,7 @@ public abstract class Values implements ValueFactory {
      * @see #setDefault(ValueFactory)
      */
     public static final Values getDefaultInstance() {
-	return defaultValueFactory;
+        return defaultValueFactory;
     }
 
     /**
@@ -209,7 +209,7 @@ public abstract class Values implements ValueFactory {
      * @see #setDefault(ValueFactory)
      */
     public static final ValueFactory getDefault() {
-	return defaultValueFactory;
+        return defaultValueFactory;
     }
 
     /**
@@ -229,7 +229,7 @@ public abstract class Values implements ValueFactory {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) sm.checkPermission(new java.util.PropertyPermission
                         ("orbital.math.Values.default", "write"));
-	defaultValueFactory = newValueFactory;
+        defaultValueFactory = newValueFactory;
     }
 
     /**
@@ -240,7 +240,7 @@ public abstract class Values implements ValueFactory {
      * @see #getDefault()
      */
     public static final void setDefault(ValueFactory newValueFactory) {
-	setDefaultInstance((Values)newValueFactory);
+        setDefaultInstance((Values)newValueFactory);
     }
 
 
@@ -326,16 +326,16 @@ public abstract class Values implements ValueFactory {
      * @see java.lang.Short
      */
     public static boolean isPrimitiveWrapper(Class clazz) {
-	if (!Number.class.isAssignableFrom(clazz))
-	    return false;
-	else
-	    //@internal note that those primitive wrapper types are final
-	    return java.lang.Integer.class.equals(clazz)
-		|| java.lang.Long.class.equals(clazz)
-		|| java.lang.Double.class.equals(clazz)
-		|| java.lang.Float.class.equals(clazz)
-		|| java.lang.Byte.class.equals(clazz)
-		|| java.lang.Short.class.equals(clazz);
+        if (!Number.class.isAssignableFrom(clazz))
+            return false;
+        else
+            //@internal note that those primitive wrapper types are final
+            return java.lang.Integer.class.equals(clazz)
+                || java.lang.Long.class.equals(clazz)
+                || java.lang.Double.class.equals(clazz)
+                || java.lang.Float.class.equals(clazz)
+                || java.lang.Byte.class.equals(clazz)
+                || java.lang.Short.class.equals(clazz);
     }
 
     /**
@@ -347,13 +347,13 @@ public abstract class Values implements ValueFactory {
      * @todo when to return java.lang.Float etc.?
      */
     public static Number toPrimitiveWrapper(Scalar val) {
-	if (Integer.hasType.apply(val))
-	    return new java.lang.Integer(((Integer)val).intValue());
-	else if (Real.hasType.apply(val))
-	    return new java.lang.Double(((Real)val).doubleValue());
-	else if (Rational.hasType.apply(val))
-	    return new java.lang.Double(((Real)val).doubleValue());
-	else
-	    throw new IllegalArgumentException("cannot be wrapped in a primitive wrapper type " + val.getClass());
+        if (Integer.hasType.apply(val))
+            return new java.lang.Integer(((Integer)val).intValue());
+        else if (Real.hasType.apply(val))
+            return new java.lang.Double(((Real)val).doubleValue());
+        else if (Rational.hasType.apply(val))
+            return new java.lang.Double(((Real)val).doubleValue());
+        else
+            throw new IllegalArgumentException("cannot be wrapped in a primitive wrapper type " + val.getClass());
     }
 }

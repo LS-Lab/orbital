@@ -24,10 +24,10 @@ final class NaturalComparator implements Comparator  {
      */
     public final boolean equals(Object param1)
     {
-	return param1 instanceof NaturalComparator;
+        return param1 instanceof NaturalComparator;
     }
     public final int hashCode() {
-	return 0;
+        return 0;
     }
 
     /**
@@ -38,7 +38,7 @@ final class NaturalComparator implements Comparator  {
      */
     public int compare(Object param1, Object param2)
     {
-	return ((Comparable)param1).compareTo(param2);
+        return ((Comparable)param1).compareTo(param2);
     }
 
 }

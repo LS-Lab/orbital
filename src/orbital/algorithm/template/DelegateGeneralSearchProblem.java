@@ -37,7 +37,7 @@ public abstract class DelegateGeneralSearchProblem implements GeneralSearchProbl
      * @return value of problem.
      */
     protected GeneralSearchProblem getDelegatee() {
-	return problem;
+        return problem;
     }
     
     /**
@@ -45,11 +45,11 @@ public abstract class DelegateGeneralSearchProblem implements GeneralSearchProbl
      * @param v  Value to assign to problem.
      */
     protected void setDelegatee(GeneralSearchProblem  v) {
-	this.problem = v;
+        this.problem = v;
     }
     
     public DelegateGeneralSearchProblem(GeneralSearchProblem problem){
-	this.problem = problem;
+        this.problem = problem;
     }
 
     // Code for delegation of orbital.algorithm.template.GeneralSearchProblem methods to problem
@@ -62,7 +62,7 @@ public abstract class DelegateGeneralSearchProblem implements GeneralSearchProbl
      */
     public Iterator actions(Object param1)
     {
-	return problem.actions(param1);
+        return problem.actions(param1);
     }
 
     /**
@@ -72,7 +72,7 @@ public abstract class DelegateGeneralSearchProblem implements GeneralSearchProbl
      */
     public Object getInitialState()
     {
-	return problem.getInitialState();
+        return problem.getInitialState();
     }
 
     /**
@@ -82,7 +82,7 @@ public abstract class DelegateGeneralSearchProblem implements GeneralSearchProbl
      */
     public MutableFunction getAccumulatedCostFunction()
     {
-	return problem.getAccumulatedCostFunction();
+        return problem.getAccumulatedCostFunction();
     }
 
     /**
@@ -94,7 +94,7 @@ public abstract class DelegateGeneralSearchProblem implements GeneralSearchProbl
      */
     public Iterator states(Object param1, Object param2)
     {
-	return problem.states(param1, param2);
+        return problem.states(param1, param2);
     }
 
     /**
@@ -107,7 +107,7 @@ public abstract class DelegateGeneralSearchProblem implements GeneralSearchProbl
      */
     public TransitionModel.Transition transition(Object param1, Object param2, Object param3)
     {
-	return problem.transition(param1, param2, param3);
+        return problem.transition(param1, param2, param3);
     }
     // Code for delegation of orbital.algorithm.template.MarkovDecisionProblem methods to problem
 
@@ -119,6 +119,6 @@ public abstract class DelegateGeneralSearchProblem implements GeneralSearchProbl
      */
     public boolean isSolution(Object param1)
     {
-	return problem.isSolution(param1);
+        return problem.isSolution(param1);
     }
 }// DelegateGeneralSearchProblem

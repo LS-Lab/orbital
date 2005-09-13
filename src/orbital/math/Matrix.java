@@ -62,7 +62,7 @@ import java.util.NoSuchElementException;
  */
 public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     // get/set-methods
-	
+        
     /**
      * Returns the dimension of the matrix.
      */
@@ -93,7 +93,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     void set(int i, int j, Arithmetic/*>R<*/ mij) throws UnsupportedOperationException;
 
     // iterator-views
-	
+        
     /**
      * Returns an iterator over the column vectors.
      */
@@ -113,7 +113,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     ListIterator/*_<R>_*/ iterator();
 
     // sub-views
-	
+        
     /**
      * Returns the column vector view of a column.
      * <p>
@@ -172,7 +172,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     Matrix/*<R>*/ subMatrix(int i1, int i2, int j1, int j2);
 
     // various get/set properties
-	
+        
     /**
      * Returns the main-diagonal-vector of this square matrix.
      * The vector that consists of m<sub>i,i</sub>.
@@ -241,7 +241,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * @todo does <span class="matrix">A</span> need to be symmetric? And improve docu
      */
     int isDefinite() throws ArithmeticException;
-	
+        
     /**
      * (linear) rank of this matrix.
      * i.e. the maximum number of column vectors (or row vectors) that are linear independent.
@@ -256,7 +256,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * <p>
      * ||.||:<b>C</b><sup>n&times;m</sup>&rarr;[0,&infin;) is a <dfn>matrix norm</dfn> or consistent if it is a (vector) norm and
      * <ul>
-     *   <li>&forall;<span class="matrix">x</span>&isin;<b>C</b><sup>n&times;m</sup>,<span class="matrix">y</span>&isin;<b>C</b><sup>m&times;l</sup> ||<span class="matrix">x</span>&sdot;<span class="matrix">y</span>|| &le; ||<span class="matrix">x</span>||&sdot;||<span class="matrix">y</span>||	(sub multiplicative)
+     *   <li>&forall;<span class="matrix">x</span>&isin;<b>C</b><sup>n&times;m</sup>,<span class="matrix">y</span>&isin;<b>C</b><sup>m&times;l</sup> ||<span class="matrix">x</span>&sdot;<span class="matrix">y</span>|| &le; ||<span class="matrix">x</span>||&sdot;||<span class="matrix">y</span>|| (sub multiplicative)
      * </ul>
      * ||.|| is <dfn>compatible</dfn> or conform with the vector norms ||.||<sub><b>C</b><sup>n</sup></sub>, ||.||<sub><b>C</b><sup>m</sup></sub> if
      * <ul>
@@ -500,8 +500,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * @return det <span class="matrix">A</span> = |<span class="matrix">A</span>|
      * @preconditions isSquare()
      * @postconditions det() multilinear
-     *  	&& (rank() &lt; dimension().width &hArr; det() = 0)
-     *  	&& IDENTITY(n).det() = 1
+     *          && (rank() &lt; dimension().width &hArr; det() = 0)
+     *          && IDENTITY(n).det() = 1
      * @todo document determinant properties and uniqueness
      * @throws ArithmeticException if this is not a square matrix, since determinant is only defined for square matrices.
      * @todo should R be a commutative ring with one?
@@ -509,12 +509,12 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     Arithmetic/*>R<*/ det() throws ArithmeticException;
 
     // arithmetic-operations
-	
+        
     /**
      * Adds two matrices returning a matrix.
      * @preconditions dimension().equals(B.dimension())
      * @postconditions RES.dimension().equals(dimension())
-     *  	&& RES.get(i, j) == get(i,j) + B.get(i,j)
+     *          && RES.get(i, j) == get(i,j) + B.get(i,j)
      * @attribute associative
      * @attribute neutral (<span class="matrix">O</span>)
      * @attribute inverse (-A)
@@ -526,7 +526,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * Subtracts two matrices returning a matrix.
      * @preconditions dimension().equals(B.dimension())
      * @postconditions RES.dimension().equals(dimension())
-     *  	&& RES.get(i, j) == get(i,j) - B.get(i,j)
+     *          && RES.get(i, j) == get(i,j) - B.get(i,j)
      * @attribute associative
      */
     Matrix/*<R>*/ subtract(Matrix/*<R>*/ B);
@@ -540,7 +540,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * @return the n&times;l matrix <span class="matrix">A</span>&#8729;<span class="matrix">B</span>.
      * @preconditions dimension().width == B.dimension().height
      * @postconditions RES.dimension().height == dimension().height && RES.dimension().width == B.dimension().width
-     *  	&& RES.get(i, j) == getRow(i) &sdot; B.getColumn(j)
+     *          && RES.get(i, j) == getRow(i) &sdot; B.getColumn(j)
      * @attribute associative
      * @attribute neutral (I)
      */
@@ -551,7 +551,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * This is the scalar multiplication.
      * @preconditions true
      * @postconditions RES.dimension().equals(dimension())
-     *  	&& RES.get(i, j) == s &sdot; get(i,j)
+     *          && RES.get(i, j) == s &sdot; get(i,j)
      * @return s&middot;<span class="matrix">A</span>
      * @todo multiply(Arithmetic) would need to determine type of s deep, in case it is not a scalar, but a matrix, or anything in R. Except if we separated ring and scalar (and perhaps tensor) multiplication by name.
      */
@@ -573,7 +573,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * @return the n-dimensional column vector <span class="matrix">A</span>&#8729;v.
      * @preconditions dimension().width == B.dimension()
      * @postconditions RES.dimension() == dimension().height
-     *  	&& RES.get(i) == getRow(i) &sdot; B
+     *          && RES.get(i) == getRow(i) &sdot; B
      */
     Vector/*<R>*/ multiply(Vector/*<R>*/ B);
 
@@ -622,7 +622,7 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
     Matrix/*<R>*/ conjugate();
     //@TODO: introduce public Matrix re() either here, or as a more general function
     //@TODO: introduce public Matrix im()
-	
+        
 
     // diverse decomposition algorithms
 
@@ -655,10 +655,10 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * @return the pseudo inverse <span class="matrix">A</span><sup>+</sup>&isin;<b>R</b><sup>m&times;n</sup> of this matrix <span class="matrix">A</span>&isin;<b>R</b><sup>n&times;m</sup>.
      * @preconditions true
      * @postconditions RES.dimension().equals(transpose().dimension())
-     *  	&& RES.multiply(this).transpose().equals(RES.multiply(this))
-     *  	&& this.multiply(RES).transpose().equals(this.multiply(RES))
-     *  	&& RES.multiply(this).multiply(RES).equals(RES)
-     *  	&& this.multiply(RES).multiply(this).equals(this)
+     *          && RES.multiply(this).transpose().equals(RES.multiply(this))
+     *          && this.multiply(RES).transpose().equals(this.multiply(RES))
+     *          && RES.multiply(this).multiply(RES).equals(RES)
+     *          && this.multiply(RES).multiply(this).equals(this)
      */
     Matrix/*<R>*/ pseudoInverse();
 
@@ -671,8 +671,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * @return this.
      * @preconditions dimension().height == cols.dimension().height
      * @postconditions RES == this
-     *  	&& RES.dimension().height == OLD(dimension().height)
-     *  	&& RES.dimension().width == OLD(dimension().width) + cols.dimension().width
+     *          && RES.dimension().height == OLD(dimension().height)
+     *          && RES.dimension().width == OLD(dimension().width) + cols.dimension().width
      */
     Matrix/*<R>*/ insertColumns(int index, Matrix/*<R>*/ cols);
 
@@ -682,8 +682,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * @preconditions dimension().width == rows.dimension().width
      * @return this.
      * @postconditions RES == this
-     *  	&& RES.dimension().width == OLD(dimension().width)
-     *  	&& RES.dimension().height == OLD(dimension().height) + rows.dimension().height
+     *          && RES.dimension().width == OLD(dimension().width)
+     *          && RES.dimension().height == OLD(dimension().height) + rows.dimension().height
      */
     Matrix/*<R>*/ insertRows(int index, Matrix/*<R>*/ rows);
 
@@ -693,8 +693,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * @return this.
      * @preconditions dimension().height == cols.dimension().height
      * @postconditions RES == this
-     *  	&& RES.dimension().height == OLD(dimension().height)
-     *  	&& RES.dimension().width == OLD(dimension().width) + cols.dimension().width
+     *          && RES.dimension().height == OLD(dimension().height)
+     *          && RES.dimension().width == OLD(dimension().width) + cols.dimension().width
      */
     Matrix/*<R>*/ insertColumns(Matrix/*<R>*/ cols);
 
@@ -704,8 +704,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * @preconditions dimension().width == rows.dimension().width
      * @return this.
      * @postconditions RES == this
-     *  	&& RES.dimension().width == OLD(dimension().width)
-     *  	&& RES.dimension().height == OLD(dimension().height) + rows.dimension().height
+     *          && RES.dimension().width == OLD(dimension().width)
+     *          && RES.dimension().height == OLD(dimension().height) + rows.dimension().height
      */
     Matrix/*<R>*/ insertRows(Matrix/*<R>*/ rows);
 
@@ -714,8 +714,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * @return this.
      * @preconditions c&isin;[0, dimension().width)
      * @postconditions RES == this
-     *  	&& RES.dimension().height == OLD(dimension().height)
-     *  	&& RES.dimension().width == OLD(dimension().width) - 1
+     *          && RES.dimension().height == OLD(dimension().height)
+     *          && RES.dimension().width == OLD(dimension().width) - 1
      */
     Matrix/*<R>*/ removeColumn(int c);
 
@@ -724,8 +724,8 @@ public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
      * @return this.
      * @preconditions r&isin;[0, dimension().height)
      * @postconditions RES == this
-     *  	&& RES.dimension().width == OLD(dimension().width)
-     *  	&& RES.dimension().height == OLD(dimension().height) - 1
+     *          && RES.dimension().width == OLD(dimension().width)
+     *          && RES.dimension().height == OLD(dimension().height) - 1
      */
     Matrix/*<R>*/ removeRow(int r);
 

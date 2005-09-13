@@ -62,18 +62,18 @@ public class Field implements Serializable, Cloneable {
     private FieldChangeSupport changeSupport = new FieldChangeSupport();
 
     public Field(int width, int height) {
-	this.field = new Figure[height][width];
+        this.field = new Figure[height][width];
     }
 
     protected Field(Dimension dimension) {
-	this(dimension.width, dimension.height);
+        this(dimension.width, dimension.height);
     }
 
     /**
      * for serialization and sub type cloning.
      */
     protected Field() {
-	this.field = null;
+        this.field = null;
     }
 
     /**
@@ -81,36 +81,36 @@ public class Field implements Serializable, Cloneable {
      * @note All our fields (also of subclasses) have alread been
      * shallow-copied since we implement Cloneable. Only the figures
      * will get shallow-copied.  Overwrite for different behaviour.
-     * @return		a clone of this Object with the same type, and a deep clone field.
+     * @return          a clone of this Object with the same type, and a deep clone field.
      * @postconditions RES.getClass() == getClass() && "RES.field.equals(this.field)" && RES.field != field
-     * @throws	CloneNotSupportedException Object explicitly does not
+     * @throws  CloneNotSupportedException Object explicitly does not
      * want to be cloned, or does not support a nullary constructor.
      * @todo measure whether Cloneable really helps save time or rather costs time. Also for figures.
      */
     public Object clone() throws CloneNotSupportedException {
-	Field	  f = (Field) super.clone();
-	//@internal undo the shallow-copy of change support since we want different listeners
-	f.changeSupport = new FieldChangeSupport();
-	// deep-copy of field
-	f.field = new Figure[field.length][field[0].length];
-	for (int y = 0; y < field.length; y++) {
-	    for (int x = 0; x < field[0].length; x++) {
-		// Position p = new Position(x, y);
-		// Figure figure = getFigure(p);
-		// f.setFigure(p, figure == null ? null : (Figure) figure.clone());
-		//@internal optimized version
-		Figure figure = (Figure) field[y][x];
-		assert validateFigureKnowledge(figure, new Position(x, y));
-		Figure cf = figure == null ? null : (Figure) figure.clone();
-		f.field[y][x] = cf;
-		if (cf != null) {
-		    // figure might be changed
-		    cf.setField(f);
-		}
-		assert f.validateFigureKnowledge(cf, new Position(x, y));
-	    }
-	}
-	return f;
+        Field     f = (Field) super.clone();
+        //@internal undo the shallow-copy of change support since we want different listeners
+        f.changeSupport = new FieldChangeSupport();
+        // deep-copy of field
+        f.field = new Figure[field.length][field[0].length];
+        for (int y = 0; y < field.length; y++) {
+            for (int x = 0; x < field[0].length; x++) {
+                // Position p = new Position(x, y);
+                // Figure figure = getFigure(p);
+                // f.setFigure(p, figure == null ? null : (Figure) figure.clone());
+                //@internal optimized version
+                Figure figure = (Figure) field[y][x];
+                assert validateFigureKnowledge(figure, new Position(x, y));
+                Figure cf = figure == null ? null : (Figure) figure.clone();
+                f.field[y][x] = cf;
+                if (cf != null) {
+                    // figure might be changed
+                    cf.setField(f);
+                }
+                assert f.validateFigureKnowledge(cf, new Position(x, y));
+            }
+        }
+        return f;
     } 
 
     /**
@@ -118,36 +118,36 @@ public class Field implements Serializable, Cloneable {
      * Figures contained are equal if compared pairwise.
      */
     public boolean equals(Object obj) {
-	if (obj instanceof Field) {
-	    Field		B = (Field) obj;
-	    if (!getDimension().equals(B.getDimension()))
-		return false;
-	    //TODO: return Arrays.equals(field, B.field);
-	    Iterator t = this.iterator();
-	    Iterator e = B.iterator();
-	    while (t.hasNext() && e.hasNext()) {
-		Figure f1 = (Figure) t.next();
-		Figure f2 = (Figure) e.next();
-		if (!Utility.equals(f1, f2))
-		    return false;
-	    }
+        if (obj instanceof Field) {
+            Field               B = (Field) obj;
+            if (!getDimension().equals(B.getDimension()))
+                return false;
+            //TODO: return Arrays.equals(field, B.field);
+            Iterator t = this.iterator();
+            Iterator e = B.iterator();
+            while (t.hasNext() && e.hasNext()) {
+                Figure f1 = (Figure) t.next();
+                Figure f2 = (Figure) e.next();
+                if (!Utility.equals(f1, f2))
+                    return false;
+            }
 
-	    assert !(t.hasNext() || e.hasNext()) : "number of elements must be equal if dimension is equal";
+            assert !(t.hasNext() || e.hasNext()) : "number of elements must be equal if dimension is equal";
 
-	    // well then it's true
-	    return true;
-	} 
-	return false;
+            // well then it's true
+            return true;
+        } 
+        return false;
     } 
-	
+        
     public int hashCode() {
-	throw new InternalError("not yet implemented");
+        throw new InternalError("not yet implemented");
     }
 
     // get/set properties
 
     public Dimension getDimension() {
-	return new Dimension(field[0].length, field.length);
+        return new Dimension(field[0].length, field.length);
     } 
 
     /**
@@ -155,17 +155,17 @@ public class Field implements Serializable, Cloneable {
      * @throws IndexOutOfBoundsException if p is not inRange(p).
      */
     public Figure getFigure(Position p) {
-	if (!inRange(p))
-	    throw new IndexOutOfBoundsException("position " + p + " exceeds bounds " + getDimension());
-	Figure f = field[p.y][p.x];
-	assert validateFigureKnowledge(f, p);
-	return f;
+        if (!inRange(p))
+            throw new IndexOutOfBoundsException("position " + p + " exceeds bounds " + getDimension());
+        Figure f = field[p.y][p.x];
+        assert validateFigureKnowledge(f, p);
+        return f;
     }
     
     private final boolean validateFigureKnowledge(Figure f, Position p) {
-	assert !(f instanceof FigureImpl) || ((FigureImpl)f).getField() == this : "figures know on which field they are: " + f + " on field " + this + " thinks it is on field " + ((FigureImpl)f).getField();
-	assert f == null || (f.x == p.x && f.y == p.y) : "figures know their position: " + f + " knows it is at " + p;
-	return true;
+        assert !(f instanceof FigureImpl) || ((FigureImpl)f).getField() == this : "figures know on which field they are: " + f + " on field " + this + " thinks it is on field " + ((FigureImpl)f).getField();
+        assert f == null || (f.x == p.x && f.y == p.y) : "figures know their position: " + f + " knows it is at " + p;
+        return true;
     }
 
     /**
@@ -176,24 +176,24 @@ public class Field implements Serializable, Cloneable {
      * @internal see #clone()
      */
     public void setFigure(Position p, Figure f) {
-	Figure old = getFigure(p);
-	internalSetFigure(p, f);
-	changeSupport.componentChanged(new FieldChangeEvent(this, FieldChangeEvent.SET_FIGURE, /*p, old, f*/ p));
+        Figure old = getFigure(p);
+        internalSetFigure(p, f);
+        changeSupport.componentChanged(new FieldChangeEvent(this, FieldChangeEvent.SET_FIGURE, /*p, old, f*/ p));
     } 
     private void internalSetFigure(Position p, Figure f) {
-	field[p.y][p.x] = f;
-	if (f != null) {
-	    // f might be changed
-	    f.move(p);
-	    if (f instanceof FigureImpl) {
-		FigureImpl f2 = (FigureImpl)f;
-		if (f2.getField() != null && f2.getField() != this) {
-		    logger.log(Level.WARNING, "unsafe composite figure {0} was in {1} and is transferred to {2} in an unsafe way", new Object[] {f2, f2.getField(), this});
-		}
-	    }
-	    f.setField(this);
-	}
-	assert validateFigureKnowledge(f, p);
+        field[p.y][p.x] = f;
+        if (f != null) {
+            // f might be changed
+            f.move(p);
+            if (f instanceof FigureImpl) {
+                FigureImpl f2 = (FigureImpl)f;
+                if (f2.getField() != null && f2.getField() != this) {
+                    logger.log(Level.WARNING, "unsafe composite figure {0} was in {1} and is transferred to {2} in an unsafe way", new Object[] {f2, f2.getField(), this});
+                }
+            }
+            f.setField(this);
+        }
+        assert validateFigureKnowledge(f, p);
     } 
 
     /**
@@ -201,14 +201,14 @@ public class Field implements Serializable, Cloneable {
      * For games which are not based on turns, the value is undefined.
      */
     public int getTurn() {
-	return turn;
+        return turn;
     } 
 
     /**
      * Set the league that does the current turn.
      */
     protected void setTurn(int leagueThatMoves) {
-	this.turn = leagueThatMoves;
+        this.turn = leagueThatMoves;
     } 
 
     /**
@@ -218,25 +218,25 @@ public class Field implements Serializable, Cloneable {
      * @see Figure#isEmpty()
      */
     public final boolean isEmpty(Position p) {
-	Figure f = getFigure(p);
-	return f == null || f.isEmpty();
+        Figure f = getFigure(p);
+        return f == null || f.isEmpty();
     } 
 
     public Dimension getPreferredSize() {
-	int maxwidth = 0;
-	int maxheight = 0;
-	for (Iterator i = iterateNonEmpty(); i.hasNext(); ) {
-	    Figure f = (Figure) i.next();
-	    Dimension d = f.getPreferredSize();
-	    if (d == null)
-		continue;
-	    if (d.width > maxwidth)
-		maxwidth = d.width;
-	    if (d.height > maxheight)
-		maxheight = d.height;
-	}
-	Dimension fields = getDimension();
-	return new Dimension(fields.width * maxwidth, fields.height * maxheight);
+        int maxwidth = 0;
+        int maxheight = 0;
+        for (Iterator i = iterateNonEmpty(); i.hasNext(); ) {
+            Figure f = (Figure) i.next();
+            Dimension d = f.getPreferredSize();
+            if (d == null)
+                continue;
+            if (d.width > maxwidth)
+                maxwidth = d.width;
+            if (d.height > maxheight)
+                maxheight = d.height;
+        }
+        Dimension fields = getDimension();
+        return new Dimension(fields.width * maxwidth, fields.height * maxheight);
     }
 
     // event management
@@ -248,7 +248,7 @@ public class Field implements Serializable, Cloneable {
      * @param listener  The FieldChangeListener to be added
      */
     public void addFieldChangeListener(FieldChangeListener listener) {
-	changeSupport.addFieldChangeListener(listener);
+        changeSupport.addFieldChangeListener(listener);
     }
 
     /**
@@ -259,7 +259,7 @@ public class Field implements Serializable, Cloneable {
      * @param listener  The FieldChangeListener to be removed
      */
     public void removeFieldChangeListener(FieldChangeListener listener) {
-	changeSupport.removeFieldChangeListener(listener);
+        changeSupport.removeFieldChangeListener(listener);
     }
 
     /**
@@ -268,7 +268,7 @@ public class Field implements Serializable, Cloneable {
      * registered listeners of this field.
      */
     protected final FieldChangeListener getFieldChangeMulticaster() {
-	return changeSupport;
+        return changeSupport;
     }
 
 
@@ -279,13 +279,13 @@ public class Field implements Serializable, Cloneable {
      * @see orbital.robotic.Table#inRange(Point)
      */
     public final boolean inRange(Point p) {
-	if (p == null)
-	    throw new NullPointerException("illegal position: null");
-	if (p.x < 0 || p.x >= field[0].length)
-	    return false;
-	if (p.y < 0 || p.y >= field.length)
-	    return false;
-	return true;
+        if (p == null)
+            throw new NullPointerException("illegal position: null");
+        if (p.x < 0 || p.x >= field[0].length)
+            return false;
+        if (p.y < 0 || p.y >= field.length)
+            return false;
+        return true;
     } 
 
 
@@ -295,14 +295,14 @@ public class Field implements Serializable, Cloneable {
      * @todo make a true iterator whose set method writes through to this field.
      */
     public final Iterator/*_<Figure>_*/ iterator() {
-	Dimension dim = getDimension();
-	List	  v = new ArrayList(dim.height * dim.width);
-	for (int y = 0; y < dim.height; y++) {
-	    for (int x = 0; x < dim.width; x++) {
-		v.add(getFigure(new Position(x, y)));
-	    }
-	}
-	return Setops.unmodifiableIterator(v.iterator());
+        Dimension dim = getDimension();
+        List      v = new ArrayList(dim.height * dim.width);
+        for (int y = 0; y < dim.height; y++) {
+            for (int x = 0; x < dim.width; x++) {
+                v.add(getFigure(new Position(x, y)));
+            }
+        }
+        return Setops.unmodifiableIterator(v.iterator());
     } 
     /**
      * Returns an iterator over all non-empty Figures. Use the Iterator methods on
@@ -311,17 +311,17 @@ public class Field implements Serializable, Cloneable {
      * @todo cache? Can try this out in a subclass.
      */
     public final Iterator/*_<Figure>_*/ iterateNonEmpty() {
-	Dimension dim = getDimension();
-	List	  v = new LinkedList();
-	for (int y = 0; y < dim.height; y++) {
-	    for (int x = 0; x < dim.width; x++) {
-		Position p = new Position(x, y);
-		if (!isEmpty(p)) {
-		    v.add(getFigure(p));
-		}
-	    }
-	}
-	return Setops.unmodifiableIterator(v.iterator());
+        Dimension dim = getDimension();
+        List      v = new LinkedList();
+        for (int y = 0; y < dim.height; y++) {
+            for (int x = 0; x < dim.width; x++) {
+                Position p = new Position(x, y);
+                if (!isEmpty(p)) {
+                    v.add(getFigure(p));
+                }
+            }
+        }
+        return Setops.unmodifiableIterator(v.iterator());
     } 
 
     /**
@@ -344,37 +344,37 @@ public class Field implements Serializable, Cloneable {
      * @todo enhance documentation
      */
     public Iterator expand() {
-	try {
-	    final List l  = new LinkedList();
-	    for (Iterator i = iterateNonEmpty(); i.hasNext(); ) {
-		final Figure figure = (Figure) i.next();
-		Figure org_figure = null;
-		assert (org_figure = (Figure) figure.clone()) != figure : "prepare";
-		for (Iterator j = figure.possibleMoves(); j.hasNext(); ) {
-		    Option o = (Option) j.next();
-		    if (o.getState() != null)
-			// someone already computed the resulting field
-			l.add(o);
-		    else {
-			// we construct the resulting field
-			Move     move = o.getMove();
-			Position destination = o.getDestination();
-			Position org_destination = null;
-			assert (org_destination = (Position) destination.clone()) != figure : "prepare";
-			Field    field = (Field) clone();
-			//@todo optimize since most part is unnecessary. We already know it is a legal move, that it reaches its destination by a valid path, etc. Only, if most methods were final, we still need to check for "field.getFigure(((Position) figure).moving(move, destination);" and then perform "field.swap(figure, destination);"
-			if (field.move((Position) figure, move))
-			    l.add(new Option(field, destination, figure, move));
-			assert destination.equals(org_destination) : "moving on a cloned field does not change our control parameter destination";
-		    }
-		    assert figure.equals(org_figure) : "moving on a cloned field does not change our control parameter figure";
-		}
-	    }
-	    return Setops.unmodifiableIterator(l.iterator());
-    	}
-    	catch (CloneNotSupportedException ass) {
-	    throw (AssertionError) new AssertionError("invariant: sub classes must support nullary constructor for cloning.").initCause(ass);
-    	}
+        try {
+            final List l  = new LinkedList();
+            for (Iterator i = iterateNonEmpty(); i.hasNext(); ) {
+                final Figure figure = (Figure) i.next();
+                Figure org_figure = null;
+                assert (org_figure = (Figure) figure.clone()) != figure : "prepare";
+                for (Iterator j = figure.possibleMoves(); j.hasNext(); ) {
+                    Option o = (Option) j.next();
+                    if (o.getState() != null)
+                        // someone already computed the resulting field
+                        l.add(o);
+                    else {
+                        // we construct the resulting field
+                        Move     move = o.getMove();
+                        Position destination = o.getDestination();
+                        Position org_destination = null;
+                        assert (org_destination = (Position) destination.clone()) != figure : "prepare";
+                        Field    field = (Field) clone();
+                        //@todo optimize since most part is unnecessary. We already know it is a legal move, that it reaches its destination by a valid path, etc. Only, if most methods were final, we still need to check for "field.getFigure(((Position) figure).moving(move, destination);" and then perform "field.swap(figure, destination);"
+                        if (field.move((Position) figure, move))
+                            l.add(new Option(field, destination, figure, move));
+                        assert destination.equals(org_destination) : "moving on a cloned field does not change our control parameter destination";
+                    }
+                    assert figure.equals(org_figure) : "moving on a cloned field does not change our control parameter figure";
+                }
+            }
+            return Setops.unmodifiableIterator(l.iterator());
+        }
+        catch (CloneNotSupportedException ass) {
+            throw (AssertionError) new AssertionError("invariant: sub classes must support nullary constructor for cloning.").initCause(ass);
+        }
     }
 
     /**
@@ -384,23 +384,23 @@ public class Field implements Serializable, Cloneable {
      * @see Figure#moveFigure(Move)
      */
     public boolean move(Position source, Move move) {
-	Position oldSource = null;
-	assert (oldSource = (Position)source.clone()) != null;
-	Figure sourceFigure = getFigure(source);
-	if (sourceFigure == source)
-	    throw new IllegalArgumentException("do not specify positions with those figures on the field that will get moved. Otherwise, their position information will get lost. But source==getFigure(source)");
-	Position destination = sourceFigure.moveFigure(move);
-	assert oldSource.equals(source) : "moving does not change the source position";
-	assert destination != source : "do not specify positions with those figures on the field that will get moved. Otherwise, their position information will get lost. But after move, source==destination";
-	if (destination == null)
-	    return false;
-	//@xxx the arguments are not entirely correct: now, this still is the wrong nextField  for Option, but sourceFigure still is the right source.
-	changeSupport.movePerformed(new FieldChangeEvent(this, FieldChangeEvent.MOVE,
-							 new Option(null, destination, sourceFigure, move)));
-	assert oldSource.equals(source) : "moving does not change the source position";
-	swap(source, destination);
-	assert oldSource.equals(source) : "moving does not change the source position";
-	return true;
+        Position oldSource = null;
+        assert (oldSource = (Position)source.clone()) != null;
+        Figure sourceFigure = getFigure(source);
+        if (sourceFigure == source)
+            throw new IllegalArgumentException("do not specify positions with those figures on the field that will get moved. Otherwise, their position information will get lost. But source==getFigure(source)");
+        Position destination = sourceFigure.moveFigure(move);
+        assert oldSource.equals(source) : "moving does not change the source position";
+        assert destination != source : "do not specify positions with those figures on the field that will get moved. Otherwise, their position information will get lost. But after move, source==destination";
+        if (destination == null)
+            return false;
+        //@xxx the arguments are not entirely correct: now, this still is the wrong nextField  for Option, but sourceFigure still is the right source.
+        changeSupport.movePerformed(new FieldChangeEvent(this, FieldChangeEvent.MOVE,
+                                                         new Option(null, destination, sourceFigure, move)));
+        assert oldSource.equals(source) : "moving does not change the source position";
+        swap(source, destination);
+        assert oldSource.equals(source) : "moving does not change the source position";
+        return true;
     } 
 
     /**
@@ -409,22 +409,22 @@ public class Field implements Serializable, Cloneable {
      * @postconditions EFFECT(swap(a, b)) == EFFECT(swap(b, a))
      */
     protected void swap(Position a, Position b) {
-	if (a.equals(b))
-	    return;
-	Figure fa = getFigure(a);
-	if (fa == a)
-	    throw new IllegalArgumentException("do not specify positions with those figures on the field that will get swapped. Otherwise, their position information will get lost. But a==getFigure(a)");
-	else if (fa == b)
-	    throw new IllegalArgumentException("do not specify positions with those figures on the field that will get swapped. Otherwise, their position information will get lost. But b==getFigure(a)");
-	Figure fb = getFigure(b);
-	if (fb == a)
-	    throw new IllegalArgumentException("do not specify positions with those figures on the field that will get swapped. Otherwise, their position information will get lost. But a==getFigure(b)");
-	else if (fb == b)
-	    throw new IllegalArgumentException("do not specify positions with those figures on the field that will get swapped. Otherwise, their position information will get lost. But b==getFigure(b)");
-	//@internal if we don't set this[b]=null here, this[b]=fa below will complain that this[a]=fb already moved the internal position of fb==this[b] to a. Therefore we first clear this[b] to null.
-	internalSetFigure(b, null);
-	setFigure(a, fb);
-	setFigure(b, fa);
+        if (a.equals(b))
+            return;
+        Figure fa = getFigure(a);
+        if (fa == a)
+            throw new IllegalArgumentException("do not specify positions with those figures on the field that will get swapped. Otherwise, their position information will get lost. But a==getFigure(a)");
+        else if (fa == b)
+            throw new IllegalArgumentException("do not specify positions with those figures on the field that will get swapped. Otherwise, their position information will get lost. But b==getFigure(a)");
+        Figure fb = getFigure(b);
+        if (fb == a)
+            throw new IllegalArgumentException("do not specify positions with those figures on the field that will get swapped. Otherwise, their position information will get lost. But a==getFigure(b)");
+        else if (fb == b)
+            throw new IllegalArgumentException("do not specify positions with those figures on the field that will get swapped. Otherwise, their position information will get lost. But b==getFigure(b)");
+        //@internal if we don't set this[b]=null here, this[b]=fa below will complain that this[a]=fb already moved the internal position of fb==this[b] to a. Therefore we first clear this[b] to null.
+        internalSetFigure(b, null);
+        setFigure(a, fb);
+        setFigure(b, fa);
     } 
 
     /**
@@ -435,11 +435,11 @@ public class Field implements Serializable, Cloneable {
      * @see Gameboard#figureOn(int,int)
      */
     Rectangle boundsOf(Rectangle box, Position p) {
-	Dimension dim = getDimension();
-	int	  wFigure = box.width / dim.width;
-	int	  hFigure = box.height / dim.height;
+        Dimension dim = getDimension();
+        int       wFigure = box.width / dim.width;
+        int       hFigure = box.height / dim.height;
         return new Rectangle(wFigure * p.x, hFigure * p.y, wFigure, hFigure);
-    }		
+    }           
 
     /**
      * Paint a representation of this Field.
@@ -450,26 +450,26 @@ public class Field implements Serializable, Cloneable {
      * @see Figure#paint(Graphics, Rectangle)
      */
     public void paint(Graphics g, Rectangle box) {
-	Dimension dim = getDimension();
-	int	  wFigure = box.width / dim.width;
-	int	  hFigure = box.height / dim.height;
-	if (wFigure == 0 || hFigure == 0)
-	    throw new IllegalStateException("zero figure dimension: " + wFigure + "|" + hFigure);
-	for (int y = 0; y < dim.height; y++) {
-	    for (int x = 0; x < dim.width; x++) {
-		Position p = new Position(x, y);
-		Rectangle fr = boundsOf(box, p);
-		Graphics fg = g.create(fr.x, fr.y, fr.width, fr.height);
-		// local to fg
-		fr.setLocation(0, 0);
-		fg.setColor((x & 1 ^ y & 1) == 0 ? Color.white : Color.darkGray);
-		fg.fillRect(fr.x, fr.y, fr.width, fr.height);
-		if (!isEmpty(p)) {
-		    getFigure(p).paint(fg, fr);
-		}
-		fg.dispose();
-	    }
-	}
+        Dimension dim = getDimension();
+        int       wFigure = box.width / dim.width;
+        int       hFigure = box.height / dim.height;
+        if (wFigure == 0 || hFigure == 0)
+            throw new IllegalStateException("zero figure dimension: " + wFigure + "|" + hFigure);
+        for (int y = 0; y < dim.height; y++) {
+            for (int x = 0; x < dim.width; x++) {
+                Position p = new Position(x, y);
+                Rectangle fr = boundsOf(box, p);
+                Graphics fg = g.create(fr.x, fr.y, fr.width, fr.height);
+                // local to fg
+                fr.setLocation(0, 0);
+                fg.setColor((x & 1 ^ y & 1) == 0 ? Color.white : Color.darkGray);
+                fg.fillRect(fr.x, fr.y, fr.width, fr.height);
+                if (!isEmpty(p)) {
+                    getFigure(p).paint(fg, fr);
+                }
+                fg.dispose();
+            }
+        }
     } 
 
     /**
@@ -487,29 +487,29 @@ public class Field implements Serializable, Cloneable {
      * @see #isEmpty(Position)
      */
     public final int isBeating(Move move, Position destination) {
-	if (!move.isBeating(move.length() - 1) || isEmpty(destination))
-	    // no beat or no target
-	    return Figure.NOONE;
-	return getFigure(destination).getLeague();
+        if (!move.isBeating(move.length() - 1) || isEmpty(destination))
+            // no beat or no target
+            return Figure.NOONE;
+        return getFigure(destination).getLeague();
     } 
 
     /**
      * Returns a string representation of the object.
      */
     public String toString() {
-	Dimension    dim = getDimension();
-	StringBuffer sb = new StringBuffer(20 * dim.width * dim.height);
-	for (int y = 0; y < dim.height; y++) {
-	    for (int x = 0; x < dim.width; x++) {
-		sb.append(getFigure(new Position(x,y)));
-		if (x < dim.width - 1) {
-		    sb.append(',');
-		}
-	    } 
-	    if (y < dim.height - 1) {
-		sb.append(";\n");
-	    }
-	} 
-	return getClass().getName() + "[" + dim + ":" + sb + "]";
+        Dimension    dim = getDimension();
+        StringBuffer sb = new StringBuffer(20 * dim.width * dim.height);
+        for (int y = 0; y < dim.height; y++) {
+            for (int x = 0; x < dim.width; x++) {
+                sb.append(getFigure(new Position(x,y)));
+                if (x < dim.width - 1) {
+                    sb.append(',');
+                }
+            } 
+            if (y < dim.height - 1) {
+                sb.append(";\n");
+            }
+        } 
+        return getClass().getName() + "[" + dim + ":" + sb + "]";
     } 
 }

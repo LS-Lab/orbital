@@ -17,30 +17,30 @@ package orbital.math;
  */
 public
 class Point2D {
-	public int x;
-	public int y;
-	public Point2D() {}
-	public Point2D(int x, int y) {
-		this.x = x;
-		this.y = y;
-	}
-	public Point2D(Point2D B) {
-		x = B.x;
-		y = B.y;
-	}
+        public int x;
+        public int y;
+        public Point2D() {}
+        public Point2D(int x, int y) {
+                this.x = x;
+                this.y = y;
+        }
+        public Point2D(Point2D B) {
+                x = B.x;
+                y = B.y;
+        }
 
-	public boolean equals(Object o) {
-		if (!(o instanceof Point2D))
-			return false;
-		Point2D B = (Point2D) o;
-		return x == B.x && y == B.y;
-	} 
-	
-	public int hashCode() {
-		return x ^ y;
-	}
+        public boolean equals(Object o) {
+                if (!(o instanceof Point2D))
+                        return false;
+                Point2D B = (Point2D) o;
+                return x == B.x && y == B.y;
+        } 
+        
+        public int hashCode() {
+                return x ^ y;
+        }
 
-	public String toString() {
-		return getClass().getName() + "[" + MathUtilities.format(x) + '|' + MathUtilities.format(y) + "]";
-	} 
+        public String toString() {
+                return getClass().getName() + "[" + MathUtilities.format(x) + '|' + MathUtilities.format(y) + "]";
+        } 
 }

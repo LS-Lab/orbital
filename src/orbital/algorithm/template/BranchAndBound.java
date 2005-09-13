@@ -51,15 +51,15 @@ public class BranchAndBound extends DepthFirstBoundingSearch implements Heuristi
      * @see #getEvaluation()
      */
     public BranchAndBound(Function heuristic, Real maximumUpperBound) {
-    	setHeuristic(heuristic);
-    	setContinuedWhenFound(true);
-    	setMaxBound(maximumUpperBound);
+        setHeuristic(heuristic);
+        setContinuedWhenFound(true);
+        setMaxBound(maximumUpperBound);
     }
     /**
      * @deprecated Since Orbital1.1 use {@link #BranchAndBound(Function,Real)} instead.
      */
     public BranchAndBound(Function heuristic, double maximumUpperBound) {
-	this(heuristic, Values.getDefaultInstance().valueOf(maximumUpperBound));
+        this(heuristic, Values.getDefaultInstance().valueOf(maximumUpperBound));
     }
     BranchAndBound() {}
     
@@ -67,7 +67,7 @@ public class BranchAndBound extends DepthFirstBoundingSearch implements Heuristi
      * Get the maximum upper bound for a solution.
      */
     public Real getMaxBound() {
-    	return maxBound;
+        return maxBound;
     }
 
     /**
@@ -76,50 +76,50 @@ public class BranchAndBound extends DepthFirstBoundingSearch implements Heuristi
      *  If there is no solution below this bound, the search will fail.
      */
     public void setMaxBound(Real maximumUpperBound) {
-    	this.maxBound = maximumUpperBound;
-	// firePropertyChange
+        this.maxBound = maximumUpperBound;
+        // firePropertyChange
     }
     /**
      * @deprecated Since Orbital1.1 use {@link #setMaxBound(Real)} instead.
      */
     public void setMaxBound(double maximumUpperBound) {
-	setMaxBound(Values.getDefaultInstance().valueOf(maximumUpperBound));
+        setMaxBound(Values.getDefaultInstance().valueOf(maximumUpperBound));
     }
-	
+        
     public Function getHeuristic() {
-	return heuristic;
+        return heuristic;
     }
 
     public void setHeuristic(Function heuristic) {
-    	if (heuristic == null)
-	    throw new NullPointerException("null is not a heuristic");
-	Function old = this.heuristic;
-	this.heuristic = heuristic;
-	firePropertyChange("heuristic", old, this.heuristic);
+        if (heuristic == null)
+            throw new NullPointerException("null is not a heuristic");
+        Function old = this.heuristic;
+        this.heuristic = heuristic;
+        firePropertyChange("heuristic", old, this.heuristic);
     }
 
     /**
      * f(n) = g(n) + h(n).
      */
     public Function getEvaluation() {
-	return evaluation;
+        return evaluation;
     }
     private transient Function evaluation;
     void firePropertyChange(String property, Object oldValue, Object newValue) {
-	super.firePropertyChange(property, oldValue, newValue);
-	if (!("heuristic".equals(property) || "problem".equals(property)))
-	    return;
-	GeneralSearchProblem problem = getProblem();
-	this.evaluation = problem != null
-	    ? Functionals.compose(Operations.plus, problem.getAccumulatedCostFunction(), getHeuristic())
-	    : null;
-    }	
+        super.firePropertyChange(property, oldValue, newValue);
+        if (!("heuristic".equals(property) || "problem".equals(property)))
+            return;
+        GeneralSearchProblem problem = getProblem();
+        this.evaluation = problem != null
+            ? Functionals.compose(Operations.plus, problem.getAccumulatedCostFunction(), getHeuristic())
+            : null;
+    }   
     /**
      * Sustain transient variable initialization when deserializing.
      */
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-    	in.defaultReadObject();
-	firePropertyChange("heuristic", null, this.heuristic);
+        in.defaultReadObject();
+        firePropertyChange("heuristic", null, this.heuristic);
     }
  
 
@@ -127,10 +127,10 @@ public class BranchAndBound extends DepthFirstBoundingSearch implements Heuristi
      * O(b<sup>d</sup>) where b is the branching factor and d the solution depth.
      */
     public orbital.math.functional.Function complexity() {
-	return (orbital.math.functional.Function) Operations.power.apply(Values.getDefaultInstance().symbol("b"),Functions.id);
+        return (orbital.math.functional.Function) Operations.power.apply(Values.getDefaultInstance().symbol("b"),Functions.id);
     }
     public boolean isOptimal() {
-    	return true;
+        return true;
     }
         
     /**
@@ -138,12 +138,12 @@ public class BranchAndBound extends DepthFirstBoundingSearch implements Heuristi
      * Since better solutions can only be found below this bound.
      */
     protected Object/*>S<*/ processSolution(Object/*>S<*/ node) {
-	setBound((Real/*__*/) getProblem().getAccumulatedCostFunction().apply(node));
-	return node;
+        setBound((Real/*__*/) getProblem().getAccumulatedCostFunction().apply(node));
+        return node;
     }
-	
+        
     protected Object/*>S<*/ solveImpl(GeneralSearchProblem problem) {
-	setBound(getMaxBound());
-	return super.solveImpl(problem);
+        setBound(getMaxBound());
+        return super.solveImpl(problem);
     }
 }

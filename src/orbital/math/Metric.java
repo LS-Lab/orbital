@@ -40,9 +40,9 @@ public interface Metric/*<A>*/ {
      *   && RES&ne;null
      */
     Real distance(Object/*>A<*/ x, Object/*>A<*/ y);
-	
+        
     // induced metric
-	
+        
     /**
      * The metric induced by a norm ||.||.
      * <p>
@@ -52,8 +52,8 @@ public interface Metric/*<A>*/ {
      * @see Normed
      */
     static final Metric/*<Arithmetic>*/ INDUCED = new Metric/*<Arithmetic>*/() {
-	    public Real distance(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
-		return ((Arithmetic/*__*/) x).subtract((Arithmetic/*__*/) y).norm();
-	    }
-	};
+            public Real distance(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
+                return ((Arithmetic/*__*/) x).subtract((Arithmetic/*__*/) y).norm();
+            }
+        };
 }

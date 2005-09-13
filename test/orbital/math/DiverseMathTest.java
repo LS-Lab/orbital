@@ -14,30 +14,30 @@ import junit.framework.*;
  */
 public class DiverseMathTest extends check.TestCase {
     public static void main(String[] args) {
-	junit.textui.TestRunner.run(suite());
+        junit.textui.TestRunner.run(suite());
     }
     public static Test suite() {
-	return new TestSuite(DiverseMathTest.class);
+        return new TestSuite(DiverseMathTest.class);
     }
 
     public void testComplexEmulation() {
-	ComplexEmulation.main(new String[0]);
+        ComplexEmulation.main(new String[0]);
     }
 
     public void testModuloArithmeticTest() {
-	ModuloArithmeticTest.main(new String[0]);
+        ModuloArithmeticTest.main(new String[0]);
     }
 
     public void testPolynomialTest() {
-	PolynomialTest.main(new String[0]);
+        PolynomialTest.main(new String[0]);
     }
 
     public void testGroebner() {
-	Groebner.main(new String[0]);
+        Groebner.main(new String[0]);
     }
 
     public void testRationalEmulation() {
-	RationalEmulation.main(new String[0]);
+        RationalEmulation.main(new String[0]);
     }
 
 }

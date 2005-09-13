@@ -15,30 +15,30 @@ import junit.framework.*;
 public class ClassicalLogicTest extends check.TestCase {
 
     public static void main(String[] args) {
-	junit.textui.TestRunner.run(suite());
+        junit.textui.TestRunner.run(suite());
     }
     public static Test suite() {
-	return new TestSuite(ClassicalLogicTest.class);
+        return new TestSuite(ClassicalLogicTest.class);
     }
     protected void setUp() {
     }
 
     protected void test(String name) {
-	try {
-	    ClassicalLogic.main(new String[] {name});
-	}
-	catch (Throwable ex) {
-	    ex.printStackTrace();
-	    fail(ex.getMessage() + " in file " + name);
-	}
+        try {
+            ClassicalLogic.main(new String[] {name});
+        }
+        catch (Throwable ex) {
+            ex.printStackTrace();
+            fail(ex.getMessage() + " in file " + name);
+        }
     }
     public void testEquivalences() {
-	test("all");
+        test("all");
     }
     public void testGarbage() {
-	test("none");
+        test("none");
     }
     public void testProperties() {
-	test("properties");
+        test("properties");
     }
 }

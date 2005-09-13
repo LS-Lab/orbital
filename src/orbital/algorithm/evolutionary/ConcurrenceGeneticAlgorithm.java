@@ -64,9 +64,9 @@ public class ConcurrenceGeneticAlgorithm extends IncrementalGeneticAlgorithm {
     
     public ConcurrenceGeneticAlgorithm() {
     }
-	
+        
     public int getConcurrenceType() {
-	return concurrenceType;
+        return concurrenceType;
     }
     /**
      * Set the type of concurrence comparison used.
@@ -75,11 +75,11 @@ public class ConcurrenceGeneticAlgorithm extends IncrementalGeneticAlgorithm {
      * @see #ROUND_ROBIN
      */
     public void setConcurrenceType(int type) {
-	if (type < ROUND_ROBIN || FLAT_HIERARCHY < type)
-	    throw new IllegalArgumentException("illegal type " + type);
-	concurrenceType = type;
-	if (getPopulation() != null)
-	    setPopulation(getPopulation());
+        if (type < ROUND_ROBIN || FLAT_HIERARCHY < type)
+            throw new IllegalArgumentException("illegal type " + type);
+        concurrenceType = type;
+        if (getPopulation() != null)
+            setPopulation(getPopulation());
     }
 
     /*//TODO: public ConcurrenceGeneticAlgorithm(int initialLength, int size, double maxCrossover, double maxMutation) {
@@ -87,12 +87,12 @@ public class ConcurrenceGeneticAlgorithm extends IncrementalGeneticAlgorithm {
       }*/
 
     public void setPopulation(Population pop) {
-	//TODO: instantly use ComparingPopulation instead of Population to avoid early calls to evaluate
-	super.setPopulation(convertPopulation(pop));
-	validateInvariant();
-	//XXX: only necessary when recently created @see ComparingPopulation#create
-	//already performed in super class getPopulation().evaluate(false);
-	//validateInvariant();
+        //TODO: instantly use ComparingPopulation instead of Population to avoid early calls to evaluate
+        super.setPopulation(convertPopulation(pop));
+        validateInvariant();
+        //XXX: only necessary when recently created @see ComparingPopulation#create
+        //already performed in super class getPopulation().evaluate(false);
+        //validateInvariant();
     } 
 
     /**
@@ -100,18 +100,18 @@ public class ConcurrenceGeneticAlgorithm extends IncrementalGeneticAlgorithm {
      * if necessary.
      */
     private Population convertPopulation(Population pop) {
-	switch (getConcurrenceType()) {
-	case FLAT_HIERARCHY:
-	    return pop instanceof FlatHierarchyComparingPopulation ? pop : new FlatHierarchyComparingPopulation(pop);
-	case HIERARCHY:
-	    throw new UnsupportedOperationException("hierarchy type not yet implemented");
-	case ROUND_ROBIN:
-	    return pop instanceof RoundRobinComparingPopulation ? pop : new RoundRobinComparingPopulation(pop);
-	default:
-	    throw new IllegalStateException("illegal concurrence type set");
-	}
+        switch (getConcurrenceType()) {
+        case FLAT_HIERARCHY:
+            return pop instanceof FlatHierarchyComparingPopulation ? pop : new FlatHierarchyComparingPopulation(pop);
+        case HIERARCHY:
+            throw new UnsupportedOperationException("hierarchy type not yet implemented");
+        case ROUND_ROBIN:
+            return pop instanceof RoundRobinComparingPopulation ? pop : new RoundRobinComparingPopulation(pop);
+        default:
+            throw new IllegalStateException("illegal concurrence type set");
+        }
     }
-	
+        
     /**
      * Returns the number of concurrence comparisons required for current population.
      * @return the number of concurrence comparisons required evolving
@@ -119,53 +119,53 @@ public class ConcurrenceGeneticAlgorithm extends IncrementalGeneticAlgorithm {
      * @see #getConcurrenceType()
      */
     public int getConcurrenceComparisons() {
-	if (getPopulation() == null)
-	    return Integer.MIN_VALUE;
-	int n = getPopulation().size();
-	switch (getConcurrenceType()) {
-	case FLAT_HIERARCHY:
-	    return n - 1;
-	case HIERARCHY:
-	    return (int) Math.ceil(n * (Math.log(n) / Math.log(2)) / 2);
-	case ROUND_ROBIN:
-	    return (int) Math.ceil(n * (n - 1) / 2.);
-	default:
-	    throw new IllegalStateException("illegal concurrence type set");
-	}
+        if (getPopulation() == null)
+            return Integer.MIN_VALUE;
+        int n = getPopulation().size();
+        switch (getConcurrenceType()) {
+        case FLAT_HIERARCHY:
+            return n - 1;
+        case HIERARCHY:
+            return (int) Math.ceil(n * (Math.log(n) / Math.log(2)) / 2);
+        case ROUND_ROBIN:
+            return (int) Math.ceil(n * (n - 1) / 2.);
+        default:
+            throw new IllegalStateException("illegal concurrence type set");
+        }
     }
 
     public boolean isCorrect() {
-	return false;
+        return false;
     }
 
     public void evolve() {
-	validateInvariant();
-	// insert anywhere
-	super.evolve();
-	// sort again
-	getPopulation().evaluate(true);
-	validateInvariant();
+        validateInvariant();
+        // insert anywhere
+        super.evolve();
+        // sort again
+        getPopulation().evaluate(true);
+        validateInvariant();
     } 
     
     public String toString() {
-	String type;
-	switch (getConcurrenceType()) {
-	case FLAT_HIERARCHY:
-	    type = "FLAT_HIERARCHY";
-	    break;
-	case HIERARCHY:
-	    type = "HIERARCHY";
-	    break;
-	case ROUND_ROBIN:
-	    type = "ROUND_ROBIN";
-	    break;
-	default:
-	    throw new IllegalStateException("illegal concurrence type set");
-	}
-	return super.toString() + type;
+        String type;
+        switch (getConcurrenceType()) {
+        case FLAT_HIERARCHY:
+            type = "FLAT_HIERARCHY";
+            break;
+        case HIERARCHY:
+            type = "HIERARCHY";
+            break;
+        case ROUND_ROBIN:
+            type = "ROUND_ROBIN";
+            break;
+        default:
+            throw new IllegalStateException("illegal concurrence type set");
+        }
+        return super.toString() + type;
     }
     private final void validateInvariant() {
-	assert getPopulation() instanceof ComparingPopulation : "invariant";
+        assert getPopulation() instanceof ComparingPopulation : "invariant";
     }
 }
 
@@ -193,8 +193,8 @@ abstract class ComparingPopulation extends ParallelEvaluationPopulation {
      * Convert a population into a comparing population using its members list reference.
      */
     protected ComparingPopulation(Population original) {
-	setGeneration(original.getGeneration());
-	setMyMembers(original.getMyMembers());
+        setGeneration(original.getGeneration());
+        setMyMembers(original.getMyMembers());
     }
 
     /**
@@ -203,9 +203,9 @@ abstract class ComparingPopulation extends ParallelEvaluationPopulation {
      * @see ParallelEvaluationPopulation#add(Object)
      */
     public boolean add(Object o) {
-	Genome g = (Genome) o;
-	g.setPopulation(this);
-	return getMyMembers().add(g);
+        Genome g = (Genome) o;
+        g.setPopulation(this);
+        return getMyMembers().add(g);
     } 
 
     /**
@@ -217,31 +217,31 @@ abstract class ComparingPopulation extends ParallelEvaluationPopulation {
      * @return the list of weights belonging to the corresponding chromosomes (in the same order).
      */
     protected double[] weight(Genome[] cs) {
-	final Function evaluation = getGeneticAlgorithm().getEvaluation();
-	Object   o = evaluation.apply(new Pair(cs[0], cs[1]));
-	if (o instanceof Pair) {
-	    Pair p = (Pair) o;
-	    return new double[] {((Number) p.A).doubleValue(), ((Number) p.B).doubleValue()};
-	} else {
-	    Number   w = (Number) o;
-	    double[] r = new double[2];
-	    for (int i = 0; i < r.length; i++)
-		r[i] = ((Number) evaluation.apply(cs[i])).doubleValue();
-	    assert new Double(r[0]).equals(w) : "binary comparison evaluation returns the same for Pair(a,b) and a";
-	    return r;
-    	}
+        final Function evaluation = getGeneticAlgorithm().getEvaluation();
+        Object   o = evaluation.apply(new Pair(cs[0], cs[1]));
+        if (o instanceof Pair) {
+            Pair p = (Pair) o;
+            return new double[] {((Number) p.A).doubleValue(), ((Number) p.B).doubleValue()};
+        } else {
+            Number   w = (Number) o;
+            double[] r = new double[2];
+            for (int i = 0; i < r.length; i++)
+                r[i] = ((Number) evaluation.apply(cs[i])).doubleValue();
+            assert new Double(r[0]).equals(w) : "binary comparison evaluation returns the same for Pair(a,b) and a";
+            return r;
+        }
     } 
 
     /**
      * Check whether all members have a fitness value != Double.NaN.
      */
     protected boolean allUpToDate() {
-	for (Iterator i = iterator(); i.hasNext(); )
-	    if (Double.isNaN(((Genome) i.next()).getFitness()))
-		return false;
-	return true;
+        for (Iterator i = iterator(); i.hasNext(); )
+            if (Double.isNaN(((Genome) i.next()).getFitness()))
+                return false;
+        return true;
     }
-			
+                        
     // comparing implementation
 
     /**
@@ -254,25 +254,25 @@ abstract class ComparingPopulation extends ParallelEvaluationPopulation {
      * (Concurrently) compares the given genomes and synchronizedly adds to genome fitnesses.
      */
     class Evaluator implements Runnable {
-	Genome[]  genome;
-	private boolean redo;
-	/**
-	 * The weights calculated once finished with ComparingPopulation#weight(Genome[]).
-	 */
-	double[] weights;
-	public Evaluator(Genome[] genome, boolean redo) {
-	    this.genome = genome;
-	    this.redo = redo;
-	}
-		
-	public void run() {
-	    this.weights = weight(genome);
-	    assert weights.length == 2 : "binary comparison";
-	    for (int i = 0; i < weights.length; i++)
-		synchronized(genome[i]) {
-		    genome[i].setFitness(genome[i].getFitness() + weights[i]);
-		}
-	}
+        Genome[]  genome;
+        private boolean redo;
+        /**
+         * The weights calculated once finished with ComparingPopulation#weight(Genome[]).
+         */
+        double[] weights;
+        public Evaluator(Genome[] genome, boolean redo) {
+            this.genome = genome;
+            this.redo = redo;
+        }
+                
+        public void run() {
+            this.weights = weight(genome);
+            assert weights.length == 2 : "binary comparison";
+            for (int i = 0; i < weights.length; i++)
+                synchronized(genome[i]) {
+                    genome[i].setFitness(genome[i].getFitness() + weights[i]);
+                }
+        }
     };
 }
 
@@ -290,90 +290,90 @@ class FlatHierarchyComparingPopulation extends ComparingPopulation {
 
     public FlatHierarchyComparingPopulation() {}
     public FlatHierarchyComparingPopulation(Population original) {
-	super(original);
+        super(original);
     }
 
     // comparing implementation
 
     public void evaluate(boolean redo) {
-	if (!redo && allUpToDate())
-	    return;
-	else
-	    redo = true;
-	// initialize to 0
-	for (Iterator i = iterator(); i.hasNext(); ) {
-	    ((Genome) i.next()).setFitness(0);
-	} 
+        if (!redo && allUpToDate())
+            return;
+        else
+            redo = true;
+        // initialize to 0
+        for (Iterator i = iterator(); i.hasNext(); ) {
+            ((Genome) i.next()).setFitness(0);
+        } 
 
-	// compare one-by-one, drop the loser
-	List comparing = new ArrayList(getMyMembers());
-	while (comparing.size() >= 2) {
-	    UniqueShuffle p = new UniqueShuffle(comparing.size());
-	    p.reShuffle();
+        // compare one-by-one, drop the loser
+        List comparing = new ArrayList(getMyMembers());
+        while (comparing.size() >= 2) {
+            UniqueShuffle p = new UniqueShuffle(comparing.size());
+            p.reShuffle();
 
-	    // the out list of the genomes to be removed
-	    List out = new LinkedList();
-	    for (int g = 0; g < comparing.size() / 2; g++) {
-		// compare <em>any</em> two
-		Genome[] genome = {
-		    (Genome) comparing.get(p.next()), (Genome) comparing.get(p.next())
-		};
-		if (PARALLEL_MODE) {
-		    Runnable runnable = new Evaluator(genome, redo, out);
-		    synchronized(this) {
-			new Thread(getGenerationEvaluators(), runnable).start();
-		    }
-		} else {
-		    double[] weights = weight(genome);
-		    assert weights.length == 2 : "binary comparison";
-		    for (int i = 0; i < weights.length; i++)
-			genome[i].setFitness(genome[i].getFitness() + weights[i]);
-		    if (weights[0] < weights[1])
-			out.add(genome[0]);
-		    else if (weights[1] < weights[0])
-			out.add(genome[1]);
-		    else {
-			assert weights[0] == weights[1] : "equal weights since no NaN will occur";
-			// the winner in a draw game is randomly choosen
-			out.add(Utility.flip(getGeneticAlgorithm().getRandom(), 0.5) ? genome[0] : genome[1]);
-		    }
-		}
-	    } 
+            // the out list of the genomes to be removed
+            List out = new LinkedList();
+            for (int g = 0; g < comparing.size() / 2; g++) {
+                // compare <em>any</em> two
+                Genome[] genome = {
+                    (Genome) comparing.get(p.next()), (Genome) comparing.get(p.next())
+                };
+                if (PARALLEL_MODE) {
+                    Runnable runnable = new Evaluator(genome, redo, out);
+                    synchronized(this) {
+                        new Thread(getGenerationEvaluators(), runnable).start();
+                    }
+                } else {
+                    double[] weights = weight(genome);
+                    assert weights.length == 2 : "binary comparison";
+                    for (int i = 0; i < weights.length; i++)
+                        genome[i].setFitness(genome[i].getFitness() + weights[i]);
+                    if (weights[0] < weights[1])
+                        out.add(genome[0]);
+                    else if (weights[1] < weights[0])
+                        out.add(genome[1]);
+                    else {
+                        assert weights[0] == weights[1] : "equal weights since no NaN will occur";
+                        // the winner in a draw game is randomly choosen
+                        out.add(Utility.flip(getGeneticAlgorithm().getRandom(), 0.5) ? genome[0] : genome[1]);
+                    }
+                }
+            } 
 
-	    if (PARALLEL_MODE)
-		waitForEvaluators();
-	    comparing.removeAll(out);
-	} 
+            if (PARALLEL_MODE)
+                waitForEvaluators();
+            comparing.removeAll(out);
+        } 
 
-	Collections.sort(getMyMembers(), Genome.comparator);
+        Collections.sort(getMyMembers(), Genome.comparator);
     } 
 
-	
+        
     /**
      * comparing implementation helper thread that updates the out list, automatically.
      */
     class Evaluator extends ComparingPopulation.Evaluator {
-	/** the out list of the genomes to be removed */
-	private List out;
-	public Evaluator(Genome[] genome, boolean redo, List out) {
-	    super(genome, redo);
-	    this.out = out;
-	}
-		
-	public void run() {
-	    super.run();
-	    synchronized(out) {
-		if (weights[0] < weights[1])
-		    out.add(genome[0]);
-		else if (weights[1] < weights[0])
-		    out.add(genome[1]);
-		else {
-		    assert weights[0] == weights[1] : "equal weights since no NaN will occur";
-		    // the winner in a draw game is randomly choosen
-		    out.add(Utility.flip(getGeneticAlgorithm().getRandom(), 0.5) ? genome[0] : genome[1]);
-		}
-	    }
-	}
+        /** the out list of the genomes to be removed */
+        private List out;
+        public Evaluator(Genome[] genome, boolean redo, List out) {
+            super(genome, redo);
+            this.out = out;
+        }
+                
+        public void run() {
+            super.run();
+            synchronized(out) {
+                if (weights[0] < weights[1])
+                    out.add(genome[0]);
+                else if (weights[1] < weights[0])
+                    out.add(genome[1]);
+                else {
+                    assert weights[0] == weights[1] : "equal weights since no NaN will occur";
+                    // the winner in a draw game is randomly choosen
+                    out.add(Utility.flip(getGeneticAlgorithm().getRandom(), 0.5) ? genome[0] : genome[1]);
+                }
+            }
+        }
     };
 }
 
@@ -393,55 +393,55 @@ class FlatHierarchyComparingPopulation extends ComparingPopulation {
  * (aber wie ohne, dass einige ad infinitum abhauen?)
  * O(n-1)
  * @todo thread each evaluation
- * @todo could introduce add(Object) to do Einfügen in O(n) instead of evaluate(true)?
+ * @todo could introduce add(Object) to do EinfÃ¼gen in O(n) instead of evaluate(true)?
  */
 class RoundRobinComparingPopulation extends ComparingPopulation {
     /**
      * version of this class for versioning with serialization and deserialization.
      */
     private static final long serialVersionUID = -3527901944099709659L;
-	
+        
     public RoundRobinComparingPopulation() {}
     public RoundRobinComparingPopulation(Population original) {
-	super(original);
+        super(original);
     }
     
     // comparing implementation
 
     public /*synchronized*/ void evaluate(boolean redo) {
-	if (!redo && allUpToDate())
-	    return;
-	else
-	    redo = true;
-	// initialize to 0
-	for (Iterator i = iterator(); i.hasNext(); ) {
-	    ((Genome) i.next()).setFitness(0);
-	} 
+        if (!redo && allUpToDate())
+            return;
+        else
+            redo = true;
+        // initialize to 0
+        for (Iterator i = iterator(); i.hasNext(); ) {
+            ((Genome) i.next()).setFitness(0);
+        } 
 
-	// compare each with all subsequent ones
-	for (ListIterator j = listIterator(); j.hasNext(); ) {
-	    Genome g1 = (Genome) j.next();
-	    for (ListIterator k = listIterator(j.nextIndex()); k.hasNext(); ) {
-		// compare any distinct two
-		Genome[] genome = {
-		    g1, (Genome) k.next()
-		};
-		if (PARALLEL_MODE) {
-		    Runnable runnable = new Evaluator(genome, redo);
-		    synchronized(this) {
-			new Thread(getGenerationEvaluators(), runnable).start();
-		    }
-		} else {
-		    double[] weights = weight(genome);
-		    assert weights.length == 2 : "binary comparison";
-		    for (int i = 0; i < weights.length; i++)
-			genome[i].setFitness(genome[i].getFitness() + weights[i]);
-		}
-	    } 
-	} 
+        // compare each with all subsequent ones
+        for (ListIterator j = listIterator(); j.hasNext(); ) {
+            Genome g1 = (Genome) j.next();
+            for (ListIterator k = listIterator(j.nextIndex()); k.hasNext(); ) {
+                // compare any distinct two
+                Genome[] genome = {
+                    g1, (Genome) k.next()
+                };
+                if (PARALLEL_MODE) {
+                    Runnable runnable = new Evaluator(genome, redo);
+                    synchronized(this) {
+                        new Thread(getGenerationEvaluators(), runnable).start();
+                    }
+                } else {
+                    double[] weights = weight(genome);
+                    assert weights.length == 2 : "binary comparison";
+                    for (int i = 0; i < weights.length; i++)
+                        genome[i].setFitness(genome[i].getFitness() + weights[i]);
+                }
+            } 
+        } 
 
-	if (PARALLEL_MODE)
-	    waitForEvaluators();
-	Collections.sort(getMyMembers(), Genome.comparator);
+        if (PARALLEL_MODE)
+            waitForEvaluators();
+        Collections.sort(getMyMembers(), Genome.comparator);
     } 
 }

@@ -45,7 +45,7 @@ public class Move implements Serializable {
     /**
      * moves sloping. such that the next two steps are compound and performed as one
      */
-    public static final char Sloping = '/';	   // schräg:  "/LF"
+    public static final char Sloping = '/';        // schrÃ¤g:  "/LF"
 
     /**
      * will beat other things which hinder moving on this step.
@@ -94,25 +94,25 @@ public class Move implements Serializable {
     private String movement;
 
     public Move(char mv) {
-	movement = "" + mv;
+        movement = "" + mv;
     }
     public Move(String mv) {
-	movement = mv;
+        movement = mv;
     }
     public Move() {
-	this(Rest);
+        this(Rest);
     }
-	
+        
     public boolean equals(Object o) {
-	return o instanceof Move && movement.equals(((Move) o).movement);
+        return o instanceof Move && movement.equals(((Move) o).movement);
     }
-	
+        
     public int hashCode() {
-	return movement.hashCode();
+        return movement.hashCode();
     }
 
     public final String getMovementString() {
-	return movement;
+        return movement;
     }
     
     /**
@@ -120,14 +120,14 @@ public class Move implements Serializable {
      * @see #movement
      */
     public final int length() {
-	return movement.length();
+        return movement.length();
     } 
 
     /**
      * Checks whether this move contains a beat(*) at all.
      */
     public final boolean isBeating() {
-	return movement.indexOf(Beating) >= 0;
+        return movement.indexOf(Beating) >= 0;
     } 
 
     /**
@@ -136,24 +136,24 @@ public class Move implements Serializable {
      * @return whether istep or the next step following istep that is no jump(_), is a beat(*).
      */
     public final boolean isBeating(int istep) {
-	if (istep < 0 || istep >= movement.length())
-	    return false;
+        if (istep < 0 || istep >= movement.length())
+            return false;
 
-	// skip all Jumping chars after istep
-	while (movement.charAt(istep) == Jumping)
-	    if (++istep >= movement.length())
-		return false;
+        // skip all Jumping chars after istep
+        while (movement.charAt(istep) == Jumping)
+            if (++istep >= movement.length())
+                return false;
 
-	// is the next step Beating?
-	if (movement.charAt(istep) == Beating)
-	    return true;
-	return false;
+        // is the next step Beating?
+        if (movement.charAt(istep) == Beating)
+            return true;
+        return false;
     } 
 
     /**
      * Returns a string representation of the object.
      */
     public String toString() {
-	return getClass().getName() + "[" + movement + "]";
+        return getClass().getName() + "[" + movement + "]";
     } 
 }

@@ -46,21 +46,21 @@ public abstract class GeneralBoundingSearch extends GeneralSearch implements Eva
      * @see #isOutOfBounds(Object)
      */
     protected Real getBound() {
-	return bound;
+        return bound;
     }
 
     /**
      * Set the current bound.
      */
     protected void setBound(Real bound) {
-	this.bound = bound;
-	//TODO: make "bound" a bound property?
+        this.bound = bound;
+        //TODO: make "bound" a bound property?
     }
     /**
      * @deprecated Since Orbital1.1 use {@link #setBound(Real)} instead.
      */
     protected void setBound(double bound) {
-	setBound(Values.getDefaultInstance().valueOf(bound));
+        setBound(Values.getDefaultInstance().valueOf(bound));
     }
 
     /**
@@ -69,7 +69,7 @@ public abstract class GeneralBoundingSearch extends GeneralSearch implements Eva
      *  a solution has already been found.
      */
     protected boolean isContinuedWhenFound() {
-	return continuedWhenFound;
+        return continuedWhenFound;
     }
 
     /**
@@ -83,7 +83,7 @@ public abstract class GeneralBoundingSearch extends GeneralSearch implements Eva
      *  even better solutions.
      */
     protected void setContinuedWhenFound(boolean continuedWhenFound) {
-	this.continuedWhenFound = continuedWhenFound;
+        this.continuedWhenFound = continuedWhenFound;
     }
 
     /**
@@ -97,7 +97,7 @@ public abstract class GeneralBoundingSearch extends GeneralSearch implements Eva
      * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
      */
     protected Object/*>S<*/ processSolution(Object/*>S<*/ node) {
-	return node;
+        return node;
     }
 
     /**
@@ -114,70 +114,70 @@ public abstract class GeneralBoundingSearch extends GeneralSearch implements Eva
      * @todo would we profit from transforming bound into a Real?
      */
     protected boolean isOutOfBounds(Object/*>S<*/ node) {
-	return getBound().compareTo(castedApply(getEvaluation(), node)) < 0;
+        return getBound().compareTo(castedApply(getEvaluation(), node)) < 0;
     }
-	
-    //	protected Option search(Collection nodes) {
-    //		/* contains current best (minimum) solution */
-    //		Option bestSolution = null;
+        
+    //  protected Option search(Collection nodes) {
+    //          /* contains current best (minimum) solution */
+    //          Option bestSolution = null;
     //
-    //		while (!nodes.isEmpty()) {
-    //    		Option node = select(nodes);
+    //          while (!nodes.isEmpty()) {
+    //                  Option node = select(nodes);
     //
     //            if (isOutOfBounds(node))
-    //            	continue;									// prune node
-    //    		
-    //    		if (problem.isSolution(node)) {
-    //    			Option solution = processSolution(node);
-    //    			if (bestSolution == null || solution.compareTo(bestSolution) < 0)
-    //    				bestSolution = solution;
-    //    			// continue to find even better solutions, or is it enough?
-    //    			if (!isContinuedWhenFound())
-    //    				break;
-    //    		}
-    //    		Collection children = orbital.util.Setops.asList(problem.expand(node));
-    //    		nodes = add(children, nodes);
-    //    	}
+    //                  continue;                                                                       // prune node
+    //                  
+    //                  if (problem.isSolution(node)) {
+    //                          Option solution = processSolution(node);
+    //                          if (bestSolution == null || solution.compareTo(bestSolution) < 0)
+    //                                  bestSolution = solution;
+    //                          // continue to find even better solutions, or is it enough?
+    //                          if (!isContinuedWhenFound())
+    //                                  break;
+    //                  }
+    //                  Collection children = orbital.util.Setops.asList(problem.expand(node));
+    //                  nodes = add(children, nodes);
+    //          }
     //
-    //    	// report best solution or fail
-    //    	return bestSolution;
-    //	}
+    //          // report best solution or fail
+    //          return bestSolution;
+    //  }
 
     /**
-     * {@inheritDoc}	
+     * {@inheritDoc}    
      * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
      * @internal Implemented as an iterative unrolling of a right-linear tail-recursion.
      */
     protected Object/*>S<*/ search(Iterator nodes) {
-	final Function/*<S,Real>*/ g = getProblem().getAccumulatedCostFunction();
-	/* contains current best (minimum) solution */
-	Object/*>S<*/ bestSolution = null;
-	/* contains the accumulated cost of bestSolution, thus the current best accumulated cost */
-	Real bestAccumulatedCost = Values.NaN;
+        final Function/*<S,Real>*/ g = getProblem().getAccumulatedCostFunction();
+        /* contains current best (minimum) solution */
+        Object/*>S<*/ bestSolution = null;
+        /* contains the accumulated cost of bestSolution, thus the current best accumulated cost */
+        Real bestAccumulatedCost = Values.NaN;
 
-	while (nodes.hasNext()) {
-	    Object/*>S<*/ node = nodes.next();
+        while (nodes.hasNext()) {
+            Object/*>S<*/ node = nodes.next();
             
             if (isOutOfBounds(node)) {
-            	nodes.remove();                             // prune node
-            	continue;
+                nodes.remove();                             // prune node
+                continue;
             }
-    		
-	    if (getProblem().isSolution(node)) {
-		Object/*>S<*/ solution = processSolution(node);
-		Real accumulatedCost = castedApply(g, solution);
-		// @link orbital.util.Setops#argmin
-		if (bestSolution == null || accumulatedCost.compareTo(bestAccumulatedCost) < 0) {
-		    bestSolution = solution;
-		    bestAccumulatedCost = accumulatedCost;
-		}
-		// continue to find even better solutions, or is it enough?
-		if (!isContinuedWhenFound())
-		    break;
-	    }
-    	}
+                
+            if (getProblem().isSolution(node)) {
+                Object/*>S<*/ solution = processSolution(node);
+                Real accumulatedCost = castedApply(g, solution);
+                // @link orbital.util.Setops#argmin
+                if (bestSolution == null || accumulatedCost.compareTo(bestAccumulatedCost) < 0) {
+                    bestSolution = solution;
+                    bestAccumulatedCost = accumulatedCost;
+                }
+                // continue to find even better solutions, or is it enough?
+                if (!isContinuedWhenFound())
+                    break;
+            }
+        }
 
-    	// report best solution or fail
-    	return bestSolution;
+        // report best solution or fail
+        return bestSolution;
     }
 }

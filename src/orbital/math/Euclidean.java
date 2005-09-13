@@ -43,7 +43,7 @@ package orbital.math;
  * @todo provide super interface for elements of factorial rings that provide a method R[] factorize()
  */
 public interface Euclidean extends Arithmetic {
-	
+        
     /**
      * Get the Euclidean degree.
      * In case R is a discrete valuation ring, this also is the valuation of Quot(R).
@@ -51,7 +51,7 @@ public interface Euclidean extends Arithmetic {
      * @postconditions RES=&delta;(this)
      */
     Integer degree();
-	
+        
     /**
      * Get the Euclidean &quot;quotient&quot; by g.
      * @return this div g &isin; R.

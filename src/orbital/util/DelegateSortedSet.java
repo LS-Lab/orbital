@@ -24,43 +24,43 @@ public class DelegateSortedSet/*<A>*/ extends DelegateSet/*<A>*/ implements Sort
      * @param delegatee the implementation-SortedSet to that SortedSet operations are delegated.
      */
     protected DelegateSortedSet(SortedSet/*<A>*/ delegatee) {
-	super(delegatee);
+        super(delegatee);
     }
 
     protected void setDelegatee(SortedSet/*<A>*/ delegatee) {
-	super.setDelegatee(delegatee);
+        super.setDelegatee(delegatee);
     }
 
     protected void setDelegatee(Collection/*<A>*/ delegatee) {
-	if (delegatee instanceof SortedSet/*<A>*/)
-	    setDelegatee((SortedSet/*<A>*/) delegatee);
-	else
-	    throw new IllegalArgumentException("setDelegatee requires SortedSet instance for DelegateSortedSets");
+        if (delegatee instanceof SortedSet/*<A>*/)
+            setDelegatee((SortedSet/*<A>*/) delegatee);
+        else
+            throw new IllegalArgumentException("setDelegatee requires SortedSet instance for DelegateSortedSets");
     }
 
     // delegate SortedSet getDelegatee()
 
     public Comparator comparator() {
-	return ((SortedSet) getDelegatee()).comparator();
+        return ((SortedSet) getDelegatee()).comparator();
     }
 
     public Object first() {
-	return ((SortedSet) getDelegatee()).first();
+        return ((SortedSet) getDelegatee()).first();
     }
 
     public Object last() {
-	return ((SortedSet) getDelegatee()).last();
+        return ((SortedSet) getDelegatee()).last();
     }
 
     public SortedSet/*<A>*/ headSet(Object to) {
-	return ((SortedSet) getDelegatee()).headSet(to);
+        return ((SortedSet) getDelegatee()).headSet(to);
     }
 
     public SortedSet/*<A>*/ tailSet(Object from) {
-	return ((SortedSet) getDelegatee()).tailSet(from);
+        return ((SortedSet) getDelegatee()).tailSet(from);
     }
 
     public SortedSet/*<A>*/ subSet(Object from, Object to) {
-	return ((SortedSet) getDelegatee()).subSet(from, to);
+        return ((SortedSet) getDelegatee()).subSet(from, to);
     }
 }

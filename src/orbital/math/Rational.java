@@ -98,17 +98,17 @@ public interface Rational extends Real {
      * return whether v is rational or an integer.
      */
     public static final Predicate/*<Object>*/ isa = new Predicate/*<Object>*/() {
-	    public boolean apply(Object v) {
-		return v instanceof Rational;
-	    }
-	};
+            public boolean apply(Object v) {
+                return v instanceof Rational;
+            }
+        };
     /**
      * Checks whether the given number is in the set of rationals and not a subset.
      * return whether v&isin;<b>Q</b> is a rational and not an integer.
      */
     public static final Predicate/*<Object>*/ hasType = new Predicate/*<Object>*/() {
-	    public boolean apply(Object v) {
-		return isa.apply(v) && !Integer.isa.apply(v);
-	    }
-	};
+            public boolean apply(Object v) {
+                return isa.apply(v) && !Integer.isa.apply(v);
+            }
+        };
 }

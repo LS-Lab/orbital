@@ -116,7 +116,7 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
      * The Population for this GeneticAlgorithm.
      * @serial
      */
-    private Population	  population = null;
+    private Population    population = null;
 
     /**
      * Specifies the algorithm for evaluation of a Genome's fitness.
@@ -129,10 +129,10 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
      * Construct a new GeneticAlgorithm.
      */
     protected GeneticAlgorithm() {
-	if (geneticAlgorithm != null)
-	    // ignore singleton since we only need its getRandom() source
-	    ;//throw new InnerCheckedException(new InstantiationException("current implementation is a singleton"));
-	geneticAlgorithm = this;
+        if (geneticAlgorithm != null)
+            // ignore singleton since we only need its getRandom() source
+            ;//throw new InnerCheckedException(new InstantiationException("current implementation is a singleton"));
+        geneticAlgorithm = this;
     }
 
     /**
@@ -140,90 +140,90 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
      * @see #GeneticAlgorithm()
      */
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-	if (geneticAlgorithm != null)
-	    // ignore singleton since we only need its getRandom() source
-	    ;//throw new InnerCheckedException(new InstantiationException("current implementation is a singleton"));
-	geneticAlgorithm = this;
+        if (geneticAlgorithm != null)
+            // ignore singleton since we only need its getRandom() source
+            ;//throw new InnerCheckedException(new InstantiationException("current implementation is a singleton"));
+        geneticAlgorithm = this;
 
-	// prepare to read the alternate persistent fields
-	java.io.ObjectInputStream.GetField fields = null;
-	try { 
-	    fields = in.readFields();
-	} catch (ClassNotFoundException ex) {
-	    throw new java.io.IOException();
-	}
+        // prepare to read the alternate persistent fields
+        java.io.ObjectInputStream.GetField fields = null;
+        try { 
+            fields = in.readFields();
+        } catch (ClassNotFoundException ex) {
+            throw new java.io.IOException();
+        }
 
-	selection = (Function) fields.get("selection", null);
-	population = (Population) fields.get("population", null);
-	fitnessEvaluation = (Function) fields.get("fitnessEvaluation", null);
-	random = (Random) fields.get("random", null);
+        selection = (Function) fields.get("selection", null);
+        population = (Population) fields.get("population", null);
+        fitnessEvaluation = (Function) fields.get("fitnessEvaluation", null);
+        random = (Random) fields.get("random", null);
 
-	// read the alternate old persistent fields
-	if (fields.defaulted("fitnessEvaluation"))
-	    fitnessEvaluation = (Function) fields.get("fitnessWeighting", null);
+        // read the alternate old persistent fields
+        if (fields.defaulted("fitnessEvaluation"))
+            fitnessEvaluation = (Function) fields.get("fitnessWeighting", null);
 
-	// transfer old persistent fields to population
-	PopulationImpl pop = (PopulationImpl) population;
-	if (!fields.defaulted("parentCount"))
-	    pop.setParentCount(fields.get("parentCount", Integer.MIN_VALUE));
-	if (!fields.defaulted("childrenCount"))
-	    pop.setChildrenCount(fields.get("childrenCount", Integer.MIN_VALUE));
-	if (!fields.defaulted("maximumRecombination"))
-	    pop.setMaximumRecombination(fields.get("maximumRecombination", Double.NaN));
-	if (!fields.defaulted("maximumCrossover")
-	    && fields.defaulted("maximumRecombination"))
-	    // read the alternate old persistent fields
-	    // also read maximumCrossover, if no maximumRecombination was available
-	    pop.setMaximumRecombination(fields.get("maximumCrossover", Double.NaN));
-	if (!fields.defaulted("maximumMutation"))
-	    pop.setMaximumMutation(fields.get("maximumMutation", Double.NaN));
+        // transfer old persistent fields to population
+        PopulationImpl pop = (PopulationImpl) population;
+        if (!fields.defaulted("parentCount"))
+            pop.setParentCount(fields.get("parentCount", Integer.MIN_VALUE));
+        if (!fields.defaulted("childrenCount"))
+            pop.setChildrenCount(fields.get("childrenCount", Integer.MIN_VALUE));
+        if (!fields.defaulted("maximumRecombination"))
+            pop.setMaximumRecombination(fields.get("maximumRecombination", Double.NaN));
+        if (!fields.defaulted("maximumCrossover")
+            && fields.defaulted("maximumRecombination"))
+            // read the alternate old persistent fields
+            // also read maximumCrossover, if no maximumRecombination was available
+            pop.setMaximumRecombination(fields.get("maximumCrossover", Double.NaN));
+        if (!fields.defaulted("maximumMutation"))
+            pop.setMaximumMutation(fields.get("maximumMutation", Double.NaN));
     }
 
     /**
      * Returns a deep copy of this exact type of genetic algorithm.
      */
     public Object clone() {
-	GeneticAlgorithm c;
-	try {
-	    c = (GeneticAlgorithm) getClass().newInstance();
-    	}
-    	catch (InstantiationException e) {throw new InnerCheckedException("invariant: sub classes of " + GeneticAlgorithm.class + " must support nullary constructor for cloning.", e);}
-    	catch (IllegalAccessException e) {throw new InnerCheckedException("invariant: sub classes of " + GeneticAlgorithm.class + " must support nullary constructor for cloning.", e);}
-	c.setPopulation((Population) population.clone());
-	//@todo clone is protected!! for c.setSelection((Function) selection.clone());
-	return c;
+        GeneticAlgorithm c;
+        try {
+            c = (GeneticAlgorithm) getClass().newInstance();
+        }
+        catch (InstantiationException e) {throw new InnerCheckedException("invariant: sub classes of " + GeneticAlgorithm.class + " must support nullary constructor for cloning.", e);}
+        catch (IllegalAccessException e) {throw new InnerCheckedException("invariant: sub classes of " + GeneticAlgorithm.class + " must support nullary constructor for cloning.", e);}
+        c.setPopulation((Population) population.clone());
+        //@todo clone is protected!! for c.setSelection((Function) selection.clone());
+        return c;
     } 
 
     public boolean equals(Object o) {
-	if (o != null && getClass() == o.getClass()) {
-	    GeneticAlgorithm b = (GeneticAlgorithm) o;
-	    // b's selection is allowed to have b assigned, so compare classes, only
-	    return population.equals(b.population) && selection.getClass() == b.selection.getClass();
-	} 
-	return false;
+        if (o != null && getClass() == o.getClass()) {
+            GeneticAlgorithm b = (GeneticAlgorithm) o;
+            // b's selection is allowed to have b assigned, so compare classes, only
+            return population.equals(b.population) && selection.getClass() == b.selection.getClass();
+        } 
+        return false;
     } 
-	
+        
     public int hashCode() {
-	throw new InternalError("not yet implemented");
+        throw new InternalError("not yet implemented");
     }
 
     public String toString() {
-	return getClass().getName();
+        return getClass().getName();
     } 
 
     // get/set methods
-	
+        
     /**
      * Get the population growth factor.
      * @return the factor by which the population size increases with each generation (or decreases if &lt; 1).
      */
     public abstract double getPopulationGrowth();
-	
+        
     /**
      * Get the selection scheme to apply while evolving.
      */
     public Function/*<Population,Genome>*/ getSelection() {
-	return selection;
+        return selection;
     } 
     /**
      * Set the selection scheme to apply while evolving.
@@ -231,7 +231,7 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
      * @see Selectors
      */
     public void setSelection(Function/*<Population,Genome>*/ selector) {
-	this.selection = selector;
+        this.selection = selector;
     } 
 
     /**
@@ -239,21 +239,21 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
      * @todo finalize for performance?
      */
     public Population getPopulation() {
-	return population;
+        return population;
     } 
     /**
      * Set the Population for this GeneticAlgorithm.
      * @internal @see Population#setGeneticAlgorithm(GeneticAlgorithm)
      */
     public void setPopulation(Population pop) {
-	if (!(pop instanceof PopulationImpl))
-	    //@xxx
-	    throw new IllegalArgumentException("use an instance of " + PopulationImpl.class + " having all its properties set.");
-	if (this.population != null)
-	    this.population.setGeneticAlgorithm(null);
-	this.population = pop;
-	this.population.setGeneticAlgorithm(this);
-	this.population.evaluate(false);
+        if (!(pop instanceof PopulationImpl))
+            //@xxx
+            throw new IllegalArgumentException("use an instance of " + PopulationImpl.class + " having all its properties set.");
+        if (this.population != null)
+            this.population.setGeneticAlgorithm(null);
+        this.population = pop;
+        this.population.setGeneticAlgorithm(this);
+        this.population.evaluate(false);
     } 
     /**
      * Get the evaluation function.
@@ -261,7 +261,7 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
      *  It is concrete problem-specific.
      */
     public Function/*<Object, Number>*/ getEvaluation() {
-	return fitnessEvaluation;
+        return fitnessEvaluation;
     } 
     /**
      * Set the evaluation function.
@@ -269,7 +269,7 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
      *  It must be set before use and is concrete problem-specific.
      */
     public void setEvaluation(Function/*<Object, Number>*/ fitnessEvaluation) {
-	this.fitnessEvaluation = fitnessEvaluation;
+        this.fitnessEvaluation = fitnessEvaluation;
     } 
 
     /**
@@ -279,31 +279,31 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
     private Random random = new Random();
 
     public Random getRandom() {
-	return random;
+        return random;
     }
 
     public void setRandom(Random randomGenerator) {
-	random = randomGenerator;
+        random = randomGenerator;
     }
 
     public boolean isCorrect() {
-	return true;
+        return true;
     }
 
     public orbital.math.functional.Function complexity() {
-	//@TODO return infinity instead?
-	return orbital.math.functional.Functions.nondet;
+        //@TODO return infinity instead?
+        return orbital.math.functional.Functions.nondet;
     } 
 
     public orbital.math.functional.Function spaceComplexity() {
-	return (orbital.math.functional.Function) Operations.power.apply(Values.getDefaultInstance().valueOf(getPopulationGrowth()), orbital.math.functional.Functions.id);
+        return (orbital.math.functional.Function) Operations.power.apply(Values.getDefaultInstance().valueOf(getPopulationGrowth()), orbital.math.functional.Functions.id);
     }
 
 
 
     // problem solving methods
     public Object solve(AlgorithmicProblem problem) {
-	return solve((GeneticAlgorithmProblem) problem);
+        return solve((GeneticAlgorithmProblem) problem);
     }
     /**
      * Solve a genetic algorithm problem.
@@ -317,17 +317,17 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
      * @see #evolve()
      */
     public Population solve(GeneticAlgorithmProblem problem) {
-	if (getSelection() == null)
-	    throw new IllegalStateException("no selection function is set");
-	this.setEvaluation(problem.getEvaluation());
-	this.setPopulation(problem.getPopulation());
-	logger.log(Level.FINER, "created", this + System.getProperty("line.separator") + getPopulation());
-	// while stop condition is not true
-	while (!problem.isSolution(getPopulation())) {
-	    evolve();
-	    logger.log(Level.FINER, "evolve", getPopulation());
-	} 
-	return getPopulation();
+        if (getSelection() == null)
+            throw new IllegalStateException("no selection function is set");
+        this.setEvaluation(problem.getEvaluation());
+        this.setPopulation(problem.getPopulation());
+        logger.log(Level.FINER, "created", this + System.getProperty("line.separator") + getPopulation());
+        // while stop condition is not true
+        while (!problem.isSolution(getPopulation())) {
+            evolve();
+            logger.log(Level.FINER, "evolve", getPopulation());
+        } 
+        return getPopulation();
     } 
 
 
@@ -352,216 +352,216 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
      * @todo what about SteadyStateGeneticAlgorithm.setNumberOfReplacements()
      */
     public static class Configuration extends AlgorithmicTemplate.Configuration {
-	private static final long serialVersionUID = 5516965797776057474L;
-	
-	/**
-	 * The selection scheme to apply while evolving.
-	 * @serial
-	 */
-	private Function/*<Population,Genome>*/ selection;
-	/**
-	 * The number of abstract parents required to produce children.
-	 * @serial
-	 */
-	private int			  parentCount = Integer.MIN_VALUE;
+        private static final long serialVersionUID = 5516965797776057474L;
+        
+        /**
+         * The selection scheme to apply while evolving.
+         * @serial
+         */
+        private Function/*<Population,Genome>*/ selection;
+        /**
+         * The number of abstract parents required to produce children.
+         * @serial
+         */
+        private int                       parentCount = Integer.MIN_VALUE;
 
-	/**
-	 * The number of children produced with one reproduction involving parentCount parents.
-	 * @serial
-	 */
-	private int			  childrenCount = Integer.MIN_VALUE;
+        /**
+         * The number of children produced with one reproduction involving parentCount parents.
+         * @serial
+         */
+        private int                       childrenCount = Integer.MIN_VALUE;
 
-	/**
-	 * Maximum probability rating of recombining parental genomes per production.
-	 * @serial
-	 */
-	private double		  maximumRecombination = Double.NaN;
+        /**
+         * Maximum probability rating of recombining parental genomes per production.
+         * @serial
+         */
+        private double            maximumRecombination = Double.NaN;
 
-	/**
-	 * Maximum probability rating of mutation level for reproduction.
-	 * @serial
-	 */
-	private double		  maximumMutation = Double.NaN;
-	/**
-	 * Construct a new configuration.
-	 * @param problem the problem to solve.
-	 * @param selector the selection function Population&rarr;Genome for selecting parents.
-	 * @param parentCount The number of abstract parents required to produce children.
-	 * @param childrenCount The number of children produced with one reproduction involving parentCount parents.
-	 * @param maximumRecombination Maximum recombination rating.
-	 *  Maximum probability rating of recombining parental genomes per production.
-	 * @param maximumMutation Maximum mutation rating.
-	 *  Maximum probability rating of mutation level for reproduction.
-	 * @param algorithm the class of the AlgorithmicTemplate to instantiate for solving the problem.
-	 * @see Selectors
-	 */
-	public Configuration(GeneticAlgorithmProblem/*>Problem<*/ problem, Function selector, int parentCount, int childrenCount, double maximumRecombination, double maximumMutation, Class algorithm) {
-	    this(problem, selector, algorithm);
-	    this.parentCount = parentCount;
-	    this.childrenCount = childrenCount;
-	    setMaximumRecombination(maximumRecombination);
-	    setMaximumMutation(maximumMutation);
-	}
-	public Configuration(GeneticAlgorithmProblem/*>Problem<*/ problem, Function selector, double maximumRecombination, double maximumMutation, Class algorithm) {
-	    this(problem, selector, 2, 2, maximumRecombination, maximumMutation, algorithm);
-	}
-	public Configuration(GeneticAlgorithmProblem/*>Problem<*/ problem, Function selector, Class algorithm) {
-	    super(problem, algorithm, GeneticAlgorithm.class);
-	    this.selection = selector;
-	}
+        /**
+         * Maximum probability rating of mutation level for reproduction.
+         * @serial
+         */
+        private double            maximumMutation = Double.NaN;
+        /**
+         * Construct a new configuration.
+         * @param problem the problem to solve.
+         * @param selector the selection function Population&rarr;Genome for selecting parents.
+         * @param parentCount The number of abstract parents required to produce children.
+         * @param childrenCount The number of children produced with one reproduction involving parentCount parents.
+         * @param maximumRecombination Maximum recombination rating.
+         *  Maximum probability rating of recombining parental genomes per production.
+         * @param maximumMutation Maximum mutation rating.
+         *  Maximum probability rating of mutation level for reproduction.
+         * @param algorithm the class of the AlgorithmicTemplate to instantiate for solving the problem.
+         * @see Selectors
+         */
+        public Configuration(GeneticAlgorithmProblem/*>Problem<*/ problem, Function selector, int parentCount, int childrenCount, double maximumRecombination, double maximumMutation, Class algorithm) {
+            this(problem, selector, algorithm);
+            this.parentCount = parentCount;
+            this.childrenCount = childrenCount;
+            setMaximumRecombination(maximumRecombination);
+            setMaximumMutation(maximumMutation);
+        }
+        public Configuration(GeneticAlgorithmProblem/*>Problem<*/ problem, Function selector, double maximumRecombination, double maximumMutation, Class algorithm) {
+            this(problem, selector, 2, 2, maximumRecombination, maximumMutation, algorithm);
+        }
+        public Configuration(GeneticAlgorithmProblem/*>Problem<*/ problem, Function selector, Class algorithm) {
+            super(problem, algorithm, GeneticAlgorithm.class);
+            this.selection = selector;
+        }
 
-	/**
-	 * Get the selection scheme to apply while evolving.
-	 * @see Selectors
-	 */
-	// roughly corresponds to a (heuristic) evaluation function (that already minimizing choices)
-	public Function/*<Population,Genome>*/ getSelection() {
-	    return selection;
-	}
-	// TODO: perhaps: setSelection(Selection) as well?
+        /**
+         * Get the selection scheme to apply while evolving.
+         * @see Selectors
+         */
+        // roughly corresponds to a (heuristic) evaluation function (that already minimizing choices)
+        public Function/*<Population,Genome>*/ getSelection() {
+            return selection;
+        }
+        // TODO: perhaps: setSelection(Selection) as well?
 
-	/**
-	 * Get the number of abstract parents required to produce children.
-	 */
-	public int getParentCount() {
-	    return parentCount;
-	} 
-	/**
-	 * Set the number of abstract parents required to produce children.
-	 * @preconditions n > 0
-	 */
-	public void setParentCount(int n) {
-	    if (!(n > 0))
-		throw new IllegalArgumentException("parentCount positive");
-	    parentCount = n;
-	} 
-	/**
-	 * Get the number of children produced with one reproduction involving parentCount parents.
-	 */
-	public int getChildrenCount() {
-	    return childrenCount;
-	} 
-	/**
-	 * Set the number of children produced with one reproduction involving parentCount parents.
-	 * @preconditions n >= 0
-	 */
-	public void setChildrenCount(int n) {
-	    if (!(n >= 0))
-		throw new IllegalArgumentException("childrenCount non-negative");
-	    childrenCount = n;
-	} 
+        /**
+         * Get the number of abstract parents required to produce children.
+         */
+        public int getParentCount() {
+            return parentCount;
+        } 
+        /**
+         * Set the number of abstract parents required to produce children.
+         * @preconditions n > 0
+         */
+        public void setParentCount(int n) {
+            if (!(n > 0))
+                throw new IllegalArgumentException("parentCount positive");
+            parentCount = n;
+        } 
+        /**
+         * Get the number of children produced with one reproduction involving parentCount parents.
+         */
+        public int getChildrenCount() {
+            return childrenCount;
+        } 
+        /**
+         * Set the number of children produced with one reproduction involving parentCount parents.
+         * @preconditions n >= 0
+         */
+        public void setChildrenCount(int n) {
+            if (!(n >= 0))
+                throw new IllegalArgumentException("childrenCount non-negative");
+            childrenCount = n;
+        } 
 
-	/**
-	 * Get the maximum probability rating of recombining parental genomes per production.
-	 */
-	public double getMaximumRecombination() {
-	    return maximumRecombination;
-	} 
-	/**
-	 * Set the maximum probability rating of recombining parental genomes per production.
-	 * @preconditions recombination&isin;[0,1] is a probability
-	 */
-	public void setMaximumRecombination(double recombination) {
-	    if (!MathUtilities.isProbability(recombination))
-		throw new IllegalArgumentException("invalid probability " + recombination);
-	    maximumRecombination = recombination;
-	} 
-	/**
-	 * Get the maximum probability rating of mutation level for reproduction.
-	 */
-	public double getMaximumMutation() {
-	    return maximumMutation;
-	} 
-	/**
-	 * Set the maximum probability rating of mutation level for reproduction.
-	 * @preconditions mutation&isin;[0,1] is a probability
-	 */
-	public void setMaximumMutation(double mutation) {
-	    if (!MathUtilities.isProbability(mutation))
-		throw new IllegalArgumentException("invalid probability " + mutation);
-	    maximumMutation = mutation;
-	} 
+        /**
+         * Get the maximum probability rating of recombining parental genomes per production.
+         */
+        public double getMaximumRecombination() {
+            return maximumRecombination;
+        } 
+        /**
+         * Set the maximum probability rating of recombining parental genomes per production.
+         * @preconditions recombination&isin;[0,1] is a probability
+         */
+        public void setMaximumRecombination(double recombination) {
+            if (!MathUtilities.isProbability(recombination))
+                throw new IllegalArgumentException("invalid probability " + recombination);
+            maximumRecombination = recombination;
+        } 
+        /**
+         * Get the maximum probability rating of mutation level for reproduction.
+         */
+        public double getMaximumMutation() {
+            return maximumMutation;
+        } 
+        /**
+         * Set the maximum probability rating of mutation level for reproduction.
+         * @preconditions mutation&isin;[0,1] is a probability
+         */
+        public void setMaximumMutation(double mutation) {
+            if (!MathUtilities.isProbability(mutation))
+                throw new IllegalArgumentException("invalid probability " + mutation);
+            maximumMutation = mutation;
+        } 
 
 
-	/**
-	 * Get GeneticAlgorithm constructor data as well?
-	 */
-	//@todo introduce getMaximumMutation() or even getParentCount()?
-	// TODO: s.a. is no good idea, or what?
+        /**
+         * Get GeneticAlgorithm constructor data as well?
+         */
+        //@todo introduce getMaximumMutation() or even getParentCount()?
+        // TODO: s.a. is no good idea, or what?
 
-	/**
-	 * Get a modified view of the problem.
-	 * Modifies the problem by letting its {@link GeneticAlgorithmProblem#getPopulation()}
-	 * return a PopulationImpl with all properties set according to this configuration.
-	 */
-	public AlgorithmicProblem getProblem() {
-	    final GeneticAlgorithmProblem p = (GeneticAlgorithmProblem) super.getProblem();
-	    return new /*refine/delegate*/ GeneticAlgorithmProblem() {
-		    // Code for delegation of orbital.algorithm.evolutionary.GeneticAlgorithmProblem methods to p
+        /**
+         * Get a modified view of the problem.
+         * Modifies the problem by letting its {@link GeneticAlgorithmProblem#getPopulation()}
+         * return a PopulationImpl with all properties set according to this configuration.
+         */
+        public AlgorithmicProblem getProblem() {
+            final GeneticAlgorithmProblem p = (GeneticAlgorithmProblem) super.getProblem();
+            return new /*refine/delegate*/ GeneticAlgorithmProblem() {
+                    // Code for delegation of orbital.algorithm.evolutionary.GeneticAlgorithmProblem methods to p
 
-		    /**
-		     *
-		     * @return <description>
-		     * @see orbital.algorithm.evolutionary.GeneticAlgorithmProblem#getEvaluation()
-		     */
-		    public Function getEvaluation()
-		    {
-			return p.getEvaluation();
-		    }
+                    /**
+                     *
+                     * @return <description>
+                     * @see orbital.algorithm.evolutionary.GeneticAlgorithmProblem#getEvaluation()
+                     */
+                    public Function getEvaluation()
+                    {
+                        return p.getEvaluation();
+                    }
 
-		    /**
-		     *
-		     * @return <description>
-		     * @see orbital.algorithm.evolutionary.GeneticAlgorithmProblem#getPopulation()
-		     * @see Population#clone()
-		     * @see PopulationImpl#clone()
-		     */
-		    public Population getPopulation()
-		    {
-			Population pop = p.getPopulation();
-			PopulationImpl c;
-			if (pop instanceof PopulationImpl)
-			    c = (PopulationImpl) pop;
-			else {
-			    c = new PopulationImpl(pop.size());
-			    c.setGeneration(pop.getGeneration());
-			    List members = c.getMyMembers();
-			    //@internal direct copy to members without merge is stable and will not reorder equal fitnesses
-			    for (Iterator i = pop.iterator(); i.hasNext(); )
-				members.add((Genome) i.next());
-			}
-			c.setParentCount(getParentCount());
-			c.setChildrenCount(getChildrenCount());
-			c.setMaximumRecombination(getMaximumRecombination());
-			c.setMaximumMutation(getMaximumMutation());
-			return c;
-		    }
+                    /**
+                     *
+                     * @return <description>
+                     * @see orbital.algorithm.evolutionary.GeneticAlgorithmProblem#getPopulation()
+                     * @see Population#clone()
+                     * @see PopulationImpl#clone()
+                     */
+                    public Population getPopulation()
+                    {
+                        Population pop = p.getPopulation();
+                        PopulationImpl c;
+                        if (pop instanceof PopulationImpl)
+                            c = (PopulationImpl) pop;
+                        else {
+                            c = new PopulationImpl(pop.size());
+                            c.setGeneration(pop.getGeneration());
+                            List members = c.getMyMembers();
+                            //@internal direct copy to members without merge is stable and will not reorder equal fitnesses
+                            for (Iterator i = pop.iterator(); i.hasNext(); )
+                                members.add((Genome) i.next());
+                        }
+                        c.setParentCount(getParentCount());
+                        c.setChildrenCount(getChildrenCount());
+                        c.setMaximumRecombination(getMaximumRecombination());
+                        c.setMaximumMutation(getMaximumMutation());
+                        return c;
+                    }
 
-		    /**
-		     *
-		     * @param param1 <description>
-		     * @return <description>
-		     * @see orbital.algorithm.evolutionary.GeneticAlgorithmProblem#isSolution(Population)
-		     */
-		    public boolean isSolution(Population param1)
-		    {
-			return p.isSolution(param1);
-		    }
+                    /**
+                     *
+                     * @param param1 <description>
+                     * @return <description>
+                     * @see orbital.algorithm.evolutionary.GeneticAlgorithmProblem#isSolution(Population)
+                     */
+                    public boolean isSolution(Population param1)
+                    {
+                        return p.isSolution(param1);
+                    }
 
-		};
-	}
-	
-	public AlgorithmicTemplate getAlgorithm() {
-	    GeneticAlgorithm algo = (GeneticAlgorithm) super.getAlgorithm();
-	    algo.setSelection(getSelection());
-	    return algo;
-	}
+                };
+        }
+        
+        public AlgorithmicTemplate getAlgorithm() {
+            GeneticAlgorithm algo = (GeneticAlgorithm) super.getAlgorithm();
+            algo.setSelection(getSelection());
+            return algo;
+        }
 
-	/**
-	 * @posconditions RES instanceof Population
-	 */
-	public Object/*>Population<*/ solve() {
-	    return super.solve();
-	}
+        /**
+         * @posconditions RES instanceof Population
+         */
+        public Object/*>Population<*/ solve() {
+            return super.solve();
+        }
     }
 }

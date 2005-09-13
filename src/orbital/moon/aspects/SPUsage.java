@@ -15,11 +15,11 @@ import orbital.SP;
  * @author  Andr&eacute; Platzer
  */
 abstract aspect SPUsage {
-	/**
-	 * join on assertion specification join points.
-	 */
-	pointcut assertions(): calls(SP, public static void assert(..))
-			|| calls(SP, public static void post(..));
+        /**
+         * join on assertion specification join points.
+         */
+        pointcut assertions(): calls(SP, public static void assert(..))
+                        || calls(SP, public static void post(..));
 
-	pointcut feedbackAssertions(): calls(SP, public static boolean ask(..));
+        pointcut feedbackAssertions(): calls(SP, public static boolean ask(..));
 }

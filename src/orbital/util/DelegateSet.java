@@ -27,17 +27,17 @@ public class DelegateSet/*<A>*/ extends DelegateCollection/*<A>*/ implements Set
      * @param delegatee the implementation-Set to that Set operations are delegated.
      */
     protected DelegateSet(Set/*<A>*/ delegatee) {
-	super(delegatee);
+        super(delegatee);
     }
 
     protected void setDelegatee(Set/*<A>*/ delegatee) {
-	super.setDelegatee(delegatee);
+        super.setDelegatee(delegatee);
     }
 
     protected void setDelegatee(Collection/*<A>*/ delegatee) {
-	if (delegatee instanceof Set/*<A>*/)
-	    setDelegatee((Set/*<A>*/) delegatee);
-	else
-	    throw new IllegalArgumentException("setDelegatee requires Set instance for DelegateSets");
+        if (delegatee instanceof Set/*<A>*/)
+            setDelegatee((Set/*<A>*/) delegatee);
+        else
+            throw new IllegalArgumentException("setDelegatee requires Set instance for DelegateSets");
     }
 }

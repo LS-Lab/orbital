@@ -54,31 +54,31 @@ public class Selections {
      * @return a filter that selects the specified data from the source of data it is applied upon.
      */
     public static final Function/*<Collection, Collection>*/ createSelection(final Function/*<Collection, Collection>*/ what,
-									     final Predicate where,
-									     final Comparator orderBy, final boolean asc) {
-	return new Function/*<Collection, Collection>*/() {
-		public Object/*>Collection<*/ apply(Object/*>Collection<*/ from) {
-		    List sel = new LinkedList();	// selection of Elements with suited Adjectives
+                                                                             final Predicate where,
+                                                                             final Comparator orderBy, final boolean asc) {
+        return new Function/*<Collection, Collection>*/() {
+                public Object/*>Collection<*/ apply(Object/*>Collection<*/ from) {
+                    List sel = new LinkedList();        // selection of Elements with suited Adjectives
         
-		    // for each in FROM
-		    for (Iterator i = ((Collection) from).iterator(); i.hasNext(); ) {
+                    // for each in FROM
+                    for (Iterator i = ((Collection) from).iterator(); i.hasNext(); ) {
         
-			// SELECT element
-			Object el = i.next();
+                        // SELECT element
+                        Object el = i.next();
         
-			// WHERE Adjective suits
-			if (where == null || where.apply(el))
-			    sel.add(el);
-		    } 
+                        // WHERE Adjective suits
+                        if (where == null || where.apply(el))
+                            sel.add(el);
+                    } 
         
-		    // ORDER BY sort ASC|DESC
-		    if (orderBy != null)
-			Collections.sort(sel, asc ? orderBy : new ReverseComparator(orderBy));
+                    // ORDER BY sort ASC|DESC
+                    if (orderBy != null)
+                        Collections.sort(sel, asc ? orderBy : new ReverseComparator(orderBy));
         
-		    // RESULTSET
-		    return (what == null ? sel : what.apply(sel));	   // filter the Data Collection of the selected Elements
-		}
-	    };
+                    // RESULTSET
+                    return (what == null ? sel : what.apply(sel));         // filter the Data Collection of the selected Elements
+                }
+            };
     } 
 
     /**
@@ -97,37 +97,37 @@ public class Selections {
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      */
     public static final Collection select(Function/*<Collection, Collection>*/ what,
-					  Collection from,
-					  Predicate where,
-					  Comparator orderBy, boolean asc) {
-	return (Collection) createSelection(what, where, orderBy, asc).apply(from);
+                                          Collection from,
+                                          Predicate where,
+                                          Comparator orderBy, boolean asc) {
+        return (Collection) createSelection(what, where, orderBy, asc).apply(from);
     } 
 
 
     public static final Collection select(Function/*<Collection, Collection>*/ what, Collection from, Predicate where) {
-	return select(what, from, where, (Comparator) null, true);
+        return select(what, from, where, (Comparator) null, true);
     } 
     public static final Collection select(Function/*<Collection, Collection>*/ what, Collection from) {
-	return select(what, from, (Predicate) null);
+        return select(what, from, (Predicate) null);
     } 
 
     public static final Collection select(Function/*<Collection, Collection>*/ what, Collection from, Collection wherePredicates) {
-	List sel = new LinkedList();	// selection of Elements with suited Adjectives
+        List sel = new LinkedList();    // selection of Elements with suited Adjectives
 
-	// for each in FROM
-	for (Iterator i = from.iterator(), c = wherePredicates.iterator(); i.hasNext(); ) {
+        // for each in FROM
+        for (Iterator i = from.iterator(), c = wherePredicates.iterator(); i.hasNext(); ) {
 
-	    // SELECT element
-	    Object	  el = i.next();
+            // SELECT element
+            Object        el = i.next();
 
-	    Predicate where = (Predicate) c.next();
+            Predicate where = (Predicate) c.next();
 
-	    // WHERE associated Adjective suits
-	    if (where == null || where.apply(el))
-		sel.add(el);
-	} 
+            // WHERE associated Adjective suits
+            if (where == null || where.apply(el))
+                sel.add(el);
+        } 
 
-	// RESULTSET
-	return (what == null ? sel : (Collection) what.apply(sel));	   // filter the Data Collection of the selected Elements
+        // RESULTSET
+        return (what == null ? sel : (Collection) what.apply(sel));        // filter the Data Collection of the selected Elements
     } 
 }

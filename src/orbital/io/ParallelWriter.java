@@ -40,8 +40,8 @@ public class ParallelWriter extends FilterWriter {
      * Create a new parallel writer that writes each character to both output writers simultanously.
      */
     public ParallelWriter(Writer out, Writer parallelOut) {
-	super(out);
-	this.parallel = parallelOut;
+        super(out);
+        this.parallel = parallelOut;
     }
 
     /**
@@ -50,12 +50,12 @@ public class ParallelWriter extends FilterWriter {
      * @throws  IOException  If an I/O error occurs
      */
     public void write(int c) throws IOException {
-	try {
-	    super.write(c);
-	} 
-	finally {
-	    parallel.write(c);
-	} 
+        try {
+            super.write(c);
+        } 
+        finally {
+            parallel.write(c);
+        } 
     } 
 
     /**
@@ -68,12 +68,12 @@ public class ParallelWriter extends FilterWriter {
      * @throws  IOException  If an I/O error occurs
      */
     public void write(char cbuf[], int off, int len) throws IOException {
-	try {
-	    super.write(cbuf, off, len);
-	} 
-	finally {
-	    parallel.write(cbuf, off, len);
-	} 
+        try {
+            super.write(cbuf, off, len);
+        } 
+        finally {
+            parallel.write(cbuf, off, len);
+        } 
     } 
 
     /**
@@ -86,12 +86,12 @@ public class ParallelWriter extends FilterWriter {
      * @throws  IOException  If an I/O error occurs
      */
     public void write(String str, int off, int len) throws IOException {
-	try {
-	    super.write(str, off, len);
-	} 
-	finally {
-	    parallel.write(str, off, len);
-	} 
+        try {
+            super.write(str, off, len);
+        } 
+        finally {
+            parallel.write(str, off, len);
+        } 
     } 
 
     /**
@@ -100,12 +100,12 @@ public class ParallelWriter extends FilterWriter {
      * @throws  IOException  If an I/O error occurs
      */
     public void flush() throws IOException {
-	try {
-	    super.flush();
-	} 
-	finally {
-	    parallel.flush();
-	} 
+        try {
+            super.flush();
+        } 
+        finally {
+            parallel.flush();
+        } 
     } 
 
     /**
@@ -114,12 +114,12 @@ public class ParallelWriter extends FilterWriter {
      * @throws  IOException  If an I/O error occurs
      */
     public void close() throws IOException {
-	try {
-	    super.close();
-	} 
-	finally {
-	    parallel.close();
-	} 
+        try {
+            super.close();
+        } 
+        finally {
+            parallel.close();
+        } 
     } 
 
 }

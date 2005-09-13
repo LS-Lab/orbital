@@ -16,28 +16,28 @@ import java.io.*;
 public class ModalLogicTest extends check.TestCase {
 
     public static void main(String[] args) {
-	junit.textui.TestRunner.run(suite());
+        junit.textui.TestRunner.run(suite());
     }
     public static Test suite() {
-	return new TestSuite(ModalLogicTest.class);
+        return new TestSuite(ModalLogicTest.class);
     }
     protected void setUp() {
     }
 
     protected void test(String name, boolean allTrue) {
-	try {
-	    ModalLogic logic = new ModalLogic();
-	    ModalLogic.proveAll(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/moon/logic/" + name), ClassicalLogic.DEFAULT_CHARSET), logic, allTrue);
-	}
-	catch (Throwable ex) {
-	    ex.printStackTrace();
-	    fail(ex.getMessage() + " in file " + name);
-	}
+        try {
+            ModalLogic logic = new ModalLogic();
+            ModalLogic.proveAll(new InputStreamReader(logic.getClass().getResourceAsStream("/orbital/moon/logic/" + name), ClassicalLogic.DEFAULT_CHARSET), logic, allTrue);
+        }
+        catch (Throwable ex) {
+            ex.printStackTrace();
+            fail(ex.getMessage() + " in file " + name);
+        }
     }
     public void testEquivalences() {
-	test("modal-equivalence.txt", true);
+        test("modal-equivalence.txt", true);
     }
     public void testGarbage() {
-	test("modal-garbage.txt", false);
+        test("modal-garbage.txt", false);
     }
 }

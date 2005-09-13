@@ -34,9 +34,9 @@ import orbital.logic.sign.type.TypeException;
  * @author  Andr&eacute; Platzer
  */
 public interface ExpressionSyntax extends ExpressionBuilder {
-	
+        
     // get/set Properties
-	
+        
     /**
      * Get the core signature which is supported by the language of this expression syntax.
      * <p>
@@ -59,7 +59,7 @@ public interface ExpressionSyntax extends ExpressionBuilder {
     Signature coreSignature();
 
     // methods for querying information about an expression
-	
+        
     /**
      * Scan for the signature &Sigma; of all syntactic symbols in an expression.
      * <p>

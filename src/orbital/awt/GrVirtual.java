@@ -29,21 +29,21 @@ public abstract class GrVirtual extends Graphics {
      * real Graphics Implementation.
      */
     protected GrVirtual(Graphics gr) {
-	this.gr = gr;
+        this.gr = gr;
     }
 
     /**
      * returns the associated real Graphics.
      */
     public Graphics getGraphics() {
-	return gr;
+        return gr;
     } 
 
     /**
      * sets the associated real Graphics.
      */
     public void setGraphics(Graphics gr) {
-	this.gr = gr;
+        this.gr = gr;
     } 
 
     /**
@@ -64,7 +64,7 @@ public abstract class GrVirtual extends Graphics {
      * @param y the y coordinate
      */
     public void translate(int x, int y) {
-	gr.translate(xlate(x), ylate(y));
+        gr.translate(xlate(x), ylate(y));
     } 
 
     /**
@@ -72,7 +72,7 @@ public abstract class GrVirtual extends Graphics {
      * @see #setColor
      */
     public Color getColor() {
-	return gr.getColor();
+        return gr.getColor();
     } 
 
     /**
@@ -83,7 +83,7 @@ public abstract class GrVirtual extends Graphics {
      * @see #getColor
      */
     public void setColor(Color c) {
-	gr.setColor(c);
+        gr.setColor(c);
     } 
 
     /**
@@ -95,7 +95,7 @@ public abstract class GrVirtual extends Graphics {
      * @param y2 the second point's y coordinate
      */
     public void drawLine(int x1, int y1, int x2, int y2) {
-	gr.drawLine(xlate(x1), ylate(y1), xlate(x2), ylate(y2));
+        gr.drawLine(xlate(x1), ylate(y1), xlate(x2), ylate(y2));
     } 
 
     /**
@@ -108,7 +108,7 @@ public abstract class GrVirtual extends Graphics {
      * @see #clearRect
      */
     public void fillRect(int x, int y, int width, int height) {
-	gr.fillRect(xlate(x), ylate(y), xlate(width), ylate(height));
+        gr.fillRect(xlate(x), ylate(y), xlate(width), ylate(height));
     } 
 
     /**
@@ -123,7 +123,7 @@ public abstract class GrVirtual extends Graphics {
      * @see #clearRect
      */
     public void drawRect(int x, int y, int width, int height) {
-	gr.drawRect(xlate(x), ylate(y), xlate(width), ylate(height));
+        gr.drawRect(xlate(x), ylate(y), xlate(width), ylate(height));
     } 
 
     /**
@@ -139,7 +139,7 @@ public abstract class GrVirtual extends Graphics {
      * @see #drawRect
      */
     public void clearRect(int x, int y, int width, int height) {
-	gr.clearRect(xlate(x), ylate(y), xlate(width), ylate(height));
+        gr.clearRect(xlate(x), ylate(y), xlate(width), ylate(height));
     } 
 
     /**
@@ -151,7 +151,7 @@ public abstract class GrVirtual extends Graphics {
      * @see #fillOval
      */
     public void drawOval(int x, int y, int width, int height) {
-	gr.drawOval(xlate(x), ylate(y), xlate(width), ylate(height));
+        gr.drawOval(xlate(x), ylate(y), xlate(width), ylate(height));
     } 
 
     /**
@@ -163,7 +163,7 @@ public abstract class GrVirtual extends Graphics {
      * @see #drawOval
      */
     public void fillOval(int x, int y, int width, int height) {
-	gr.fillOval(xlate(x), ylate(y), xlate(width), ylate(height));
+        gr.fillOval(xlate(x), ylate(y), xlate(width), ylate(height));
     } 
 
     /**
@@ -174,11 +174,11 @@ public abstract class GrVirtual extends Graphics {
      * @see #fillPolygon
      */
     public void drawPolygon(int xPoints[], int yPoints[], int nPoints) {
-	for (int x = 0; x < xPoints.length; x++)
-	    xPoints[x] = xlate(xPoints[x]);
-	for (int y = 0; y < yPoints.length; y++)
-	    yPoints[y] = ylate(yPoints[y]);
-	gr.drawPolygon(xPoints, yPoints, nPoints);
+        for (int x = 0; x < xPoints.length; x++)
+            xPoints[x] = xlate(xPoints[x]);
+        for (int y = 0; y < yPoints.length; y++)
+            yPoints[y] = ylate(yPoints[y]);
+        gr.drawPolygon(xPoints, yPoints, nPoints);
     } 
 
     /**
@@ -187,7 +187,7 @@ public abstract class GrVirtual extends Graphics {
      * @see #fillPolygon
      */
     public void drawPolygon(Polygon p) {
-	drawPolygon(p.xpoints, p.ypoints, p.npoints);
+        drawPolygon(p.xpoints, p.ypoints, p.npoints);
     } 
 
     /**
@@ -199,11 +199,11 @@ public abstract class GrVirtual extends Graphics {
      * @see #drawPolygon
      */
     public void fillPolygon(int xPoints[], int yPoints[], int nPoints) {
-	for (int x = 0; x < xPoints.length; x++)
-	    xPoints[x] = xlate(xPoints[x]);
-	for (int y = 0; y < yPoints.length; y++)
-	    yPoints[y] = ylate(yPoints[y]);
-	gr.fillPolygon(xPoints, yPoints, nPoints);
+        for (int x = 0; x < xPoints.length; x++)
+            xPoints[x] = xlate(xPoints[x]);
+        for (int y = 0; y < yPoints.length; y++)
+            yPoints[y] = ylate(yPoints[y]);
+        gr.fillPolygon(xPoints, yPoints, nPoints);
     } 
 
     /**
@@ -213,7 +213,7 @@ public abstract class GrVirtual extends Graphics {
      * @see #drawPolygon
      */
     public void fillPolygon(Polygon p) {
-	fillPolygon(p.xpoints, p.ypoints, p.npoints);
+        fillPolygon(p.xpoints, p.ypoints, p.npoints);
     } 
 
     /**
@@ -226,7 +226,7 @@ public abstract class GrVirtual extends Graphics {
      * @see #drawBytes
      */
     public void drawString(String str, int x, int y) {
-	gr.drawString(str, xlate(x), ylate(y));
+        gr.drawString(str, xlate(x), ylate(y));
     } 
 
     /**
@@ -240,7 +240,7 @@ public abstract class GrVirtual extends Graphics {
      * @see #drawBytes
      */
     public void drawChars(char data[], int offset, int length, int x, int y) {
-	drawString(new String(data, offset, length), x, y);
+        drawString(new String(data, offset, length), x, y);
     } 
 
     /**
@@ -254,7 +254,7 @@ public abstract class GrVirtual extends Graphics {
      * @see #drawChars
      */
     public void drawBytes(byte data[], int offset, int length, int x, int y) {
-	drawString(new String(data, offset, length), x, y);
+        drawString(new String(data, offset, length), x, y);
     } 
 
     /**
@@ -268,7 +268,7 @@ public abstract class GrVirtual extends Graphics {
      * @see ImageObserver
      */
     public boolean drawImage(Image img, int x, int y, ImageObserver observer) {
-	return gr.drawImage(img, xlate(x), ylate(y), observer);
+        return gr.drawImage(img, xlate(x), ylate(y), observer);
     } 
 
     /**
@@ -285,7 +285,7 @@ public abstract class GrVirtual extends Graphics {
      * @see ImageObserver
      */
     public boolean drawImage(Image img, int x, int y, int width, int height, ImageObserver observer) {
-	return gr.drawImage(img, xlate(x), ylate(y), xlate(width), ylate(height), observer);
+        return gr.drawImage(img, xlate(x), ylate(y), xlate(width), ylate(height), observer);
     } 
 
     /**
@@ -300,7 +300,7 @@ public abstract class GrVirtual extends Graphics {
      * @see ImageObserver
      */
     public boolean drawImage(Image img, int x, int y, Color bgcolor, ImageObserver observer) {
-	return gr.drawImage(img, xlate(x), ylate(y), bgcolor, observer);
+        return gr.drawImage(img, xlate(x), ylate(y), bgcolor, observer);
     } 
 
     /**
@@ -318,7 +318,7 @@ public abstract class GrVirtual extends Graphics {
      * @see ImageObserver
      */
     public boolean drawImage(Image img, int x, int y, int width, int height, Color bgcolor, ImageObserver observer) {
-	return gr.drawImage(img, xlate(x), ylate(y), xlate(width), ylate(height), bgcolor, observer);
+        return gr.drawImage(img, xlate(x), ylate(y), xlate(width), ylate(height), bgcolor, observer);
     } 
 
     /**
@@ -327,7 +327,7 @@ public abstract class GrVirtual extends Graphics {
      * @see #finalize
      */
     public void dispose() {
-	gr.dispose();
+        gr.dispose();
     } 
 
     /**
@@ -335,14 +335,14 @@ public abstract class GrVirtual extends Graphics {
      * @see #dispose
      */
     public void finalize() {
-	dispose();
+        dispose();
     } 
 
     /**
      * Returns a String object representing this Graphic's value.
      */
     public String toString() {
-	return getClass().getName() + "[" + "gr=" + gr + ",color=" + getColor() + "]";
+        return getClass().getName() + "[" + "gr=" + gr + ",color=" + getColor() + "]";
     } 
 
 

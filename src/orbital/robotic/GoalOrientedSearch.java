@@ -40,8 +40,8 @@ public class GoalOrientedSearch extends Search {
      * underlying implementation of the Table searched over.
      */
     public GoalOrientedSearch(int x, int y, int width, int height, Point goal) {
-	super(x, y, width, height);
-	this.goal = goal;
+        super(x, y, width, height);
+        this.goal = goal;
     }
 
     /**
@@ -50,8 +50,8 @@ public class GoalOrientedSearch extends Search {
      * underlying implementation of the Table searched over.
      */
     public GoalOrientedSearch(Rectangle bounds, Point goal) {
-	super(bounds);
-	this.goal = goal;
+        super(bounds);
+        this.goal = goal;
     }
 
     /**
@@ -64,27 +64,27 @@ public class GoalOrientedSearch extends Search {
      * has an Element <code>[i][0]</code> for <i>x</i> and an Element <code>[i][1]</code> for <i>y</i>.
      */
     protected int[][] getSubsequentExplorations(int x, int y) {
-	if (goal.equals(new Point(x, y)))
-	    throw new RecursionStoppedException();	  // stop now
+        if (goal.equals(new Point(x, y)))
+            throw new RecursionStoppedException();        // stop now
 
-	int		dx = x - goal.x;
-	int		dy = y - goal.y;
+        int             dx = x - goal.x;
+        int             dy = y - goal.y;
 
-	boolean xpref = Math.abs(dx) >= Math.abs(dy);	 // x preferred <= dx>=dy
+        boolean xpref = Math.abs(dx) >= Math.abs(dy);    // x preferred <= dx>=dy
 
-	int[][] ds = new int[4][2];
-	ds[xpref ? 0 : 1] = standard_ds[dx < 0 ? 0 : 2];
-	ds[xpref ? 3 : 2] = standard_ds[!(dx < 0) ? 0 : 2];
-	ds[xpref ? 1 : 0] = standard_ds[dy < 0 ? 1 : 3];
-	ds[xpref ? 2 : 3] = standard_ds[!(dy < 0) ? 1 : 3];
+        int[][] ds = new int[4][2];
+        ds[xpref ? 0 : 1] = standard_ds[dx < 0 ? 0 : 2];
+        ds[xpref ? 3 : 2] = standard_ds[!(dx < 0) ? 0 : 2];
+        ds[xpref ? 1 : 0] = standard_ds[dy < 0 ? 1 : 3];
+        ds[xpref ? 2 : 3] = standard_ds[!(dy < 0) ? 1 : 3];
 
-	return ds;
+        return ds;
     } 
 
     private static int standard_ds[][] = {
-	{+1,  0},
-	{ 0, +1},
-	{-1,  0},
-	{ 0, -1}
+        {+1,  0},
+        { 0, +1},
+        {-1,  0},
+        { 0, -1}
     };
 }

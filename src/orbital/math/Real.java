@@ -75,10 +75,10 @@ public interface Real extends Complex, Comparable {
      * return whether v is real (or rational or an integer).
      */
     public static final Predicate/*<Object>*/ isa = new Predicate/*<Object>*/() {
-	    public boolean apply(Object v) {
-		return v instanceof Real;
-	    }
-	};
+            public boolean apply(Object v) {
+                return v instanceof Real;
+            }
+        };
 
     /**
      * Checks whether the given number is in the set of reals and not a subset.
@@ -90,8 +90,8 @@ public interface Real extends Complex, Comparable {
      *  irrational (for machine dimensions).
      */
     public static final Predicate/*<Object>*/ hasType = new Predicate/*<Object>*/() {
-	    public boolean apply(Object v) {
-		return isa.apply(v) && !Rational.isa.apply(v);
-	    }
-	};
+            public boolean apply(Object v) {
+                return isa.apply(v) && !Rational.isa.apply(v);
+            }
+        };
 }

@@ -44,14 +44,14 @@ public class WAStar extends AStar {
      * @see #getEvaluation()
      */
     public WAStar(Real W, Function heuristic) {
-    	super(heuristic);
-    	this.setWeight(W);
+        super(heuristic);
+        this.setWeight(W);
     }
     public WAStar(double W, Function heuristic) {
-    	this(Values.getDefaultInstance().valueOf(W), heuristic);
+        this(Values.getDefaultInstance().valueOf(W), heuristic);
     }
     public WAStar(Function heuristic) {
-	this(1, heuristic);
+        this(1, heuristic);
     }
     WAStar() {}
 
@@ -59,38 +59,38 @@ public class WAStar extends AStar {
      * Get the weighting argument W for the evaluation function.
      */
     public Real getWeight() {
-    	return W;
+        return W;
     }
     /**
      * Get the weighting argument W for the evaluation function.
      */
     public void setWeight(Real W) {
-    	if (!(W.compareTo(Values.ONE) >= 0))
-	    throw new IllegalArgumentException("weighting argument W must be >= 1 for WA*");
-    	this.W = W;
+        if (!(W.compareTo(Values.ONE) >= 0))
+            throw new IllegalArgumentException("weighting argument W must be >= 1 for WA*");
+        this.W = W;
     }
 
     /**
      * f(n) = g(n) + W*h(n).
      */
     public Function getEvaluation() {
-	return evaluation;
+        return evaluation;
     }
     private transient Function evaluation;
     void firePropertyChange(String property, Object oldValue, Object newValue) {
-	super.firePropertyChange(property, oldValue, newValue);
-	if (!("heuristic".equals(property) || "problem".equals(property) || "weight".equals(property)))
-	    return;
-	GeneralSearchProblem problem = getProblem();
-	this.evaluation = problem != null
-	    ? Functionals.compose(Operations.plus, problem.getAccumulatedCostFunction(), Functionals.compose(Operations.times, Functions.constant(getWeight()), getHeuristic()))
-	    : null;
+        super.firePropertyChange(property, oldValue, newValue);
+        if (!("heuristic".equals(property) || "problem".equals(property) || "weight".equals(property)))
+            return;
+        GeneralSearchProblem problem = getProblem();
+        this.evaluation = problem != null
+            ? Functionals.compose(Operations.plus, problem.getAccumulatedCostFunction(), Functionals.compose(Operations.times, Functions.constant(getWeight()), getHeuristic()))
+            : null;
     }
 
     /**
      * at most W times from optimal if heuristic is admissible.
      */
     public boolean isOptimal() {
-    	return false;
+        return false;
     }
 }

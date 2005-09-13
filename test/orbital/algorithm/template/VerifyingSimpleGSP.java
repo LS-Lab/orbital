@@ -11,15 +11,15 @@ import java.util.*;
  */
 class VerifyingSimpleGSP extends SimpleGSP {
     public VerifyingSimpleGSP(int start, int goal) {
-	super(start,goal);
-	this.g = getAccumulatedCostFunction();
+        super(start,goal);
+        this.g = getAccumulatedCostFunction();
     }
     private Function g;
 
     // diverse
     
     public String toString() {
-    	return super.toString() + " with optimal cost " + getOptimalSolutionCost();
+        return super.toString() + " with optimal cost " + getOptimalSolutionCost();
     }
 
     /**
@@ -28,21 +28,21 @@ class VerifyingSimpleGSP extends SimpleGSP {
      * (which we know because we cheat).
      */
     boolean isOptimalSolution(Object n) {
-	return isSolution(n) && !(((Real)g.apply(n)).doubleValue() != getOptimalSolutionCost());
+        return isSolution(n) && !(((Real)g.apply(n)).doubleValue() != getOptimalSolutionCost());
     } 
 
     /**
      * For verifying optimal solutions.
      */
     private int getOptimalSolutionCost() {
-	int goal = getGoal();
-	int start = getStart();
-	return (
-		goal < start			// goal is to the left?
-		? start-goal			// simply step L till reaching the goal
-		: start < goal			// goal is to the right?
-		? (goal-start+1)/2 + (MathUtilities.odd(goal-start) ? 1 : 0)		// step RR until reaching the goal, but for an odd distance step L in between
-		: - PAY_FOR_PASSING		// undo +PAY_FOR_PASSING since initial state already is solution
-		) + PAY_FOR_PASSING;
+        int goal = getGoal();
+        int start = getStart();
+        return (
+                goal < start                    // goal is to the left?
+                ? start-goal                    // simply step L till reaching the goal
+                : start < goal                  // goal is to the right?
+                ? (goal-start+1)/2 + (MathUtilities.odd(goal-start) ? 1 : 0)            // step RR until reaching the goal, but for an odd distance step L in between
+                : - PAY_FOR_PASSING             // undo +PAY_FOR_PASSING since initial state already is solution
+                ) + PAY_FOR_PASSING;
     }
 }

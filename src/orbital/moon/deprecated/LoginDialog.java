@@ -22,31 +22,31 @@ import java.awt.BorderLayout;
 public
 class LoginDialog extends PasswordDialog {
 
-	/**
-	 * @serial
-	 */
-	protected TextField name;
-	public LoginDialog(Frame parent, String title) {
-		super(parent, title);
-		Panel panel;
-		add(panel = new Panel(), BorderLayout.CENTER);
-		panel.setLayout(new GridLayout(2, 1, 10, 5));
-		panel.add(new LabelledComponent("User name", name = new TextField()));
-		panel.add(new LabelledComponent("Password", input));
-		name.setColumns(8);
-		input.setColumns(8);
-	}
+        /**
+         * @serial
+         */
+        protected TextField name;
+        public LoginDialog(Frame parent, String title) {
+                super(parent, title);
+                Panel panel;
+                add(panel = new Panel(), BorderLayout.CENTER);
+                panel.setLayout(new GridLayout(2, 1, 10, 5));
+                panel.add(new LabelledComponent("User name", name = new TextField()));
+                panel.add(new LabelledComponent("Password", input));
+                name.setColumns(8);
+                input.setColumns(8);
+        }
 
-	public LoginDialog(Frame parent, String title, String defaultName) {
-		this(parent, title);
-		name.setText(defaultName);
-	}
+        public LoginDialog(Frame parent, String title, String defaultName) {
+                this(parent, title);
+                name.setText(defaultName);
+        }
 
-	public LoginDialog(Frame parent) {
-		this(parent, "Login Information");
-	}
+        public LoginDialog(Frame parent) {
+                this(parent, "Login Information");
+        }
 
-	public String getResult() {
-		return name.getText() + ':' + super.getResult();
-	} 
+        public String getResult() {
+                return name.getText() + ':' + super.getResult();
+        } 
 }

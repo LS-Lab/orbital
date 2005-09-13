@@ -27,72 +27,72 @@ import java.util.NoSuchElementException;
  */
 public interface Sequence extends ListIterator {
 
-	/**
-	 * Returns the element with index in the Sequence.
-	 * @return the element at the specified index from the current position.
-	 * @throws java.util.NoSuchElementException if element with index is not contained.
-	 */
-	//Object element(int offset) throws NoSuchElementException;
+        /**
+         * Returns the element with index in the Sequence.
+         * @return the element at the specified index from the current position.
+         * @throws java.util.NoSuchElementException if element with index is not contained.
+         */
+        //Object element(int offset) throws NoSuchElementException;
 
-	/**
-	 * Tests if this Sequence has more Elements.
-	 * @preconditions true
-	 * @postconditions RES == (count()!=0)
-	 */
-	boolean hasNext();
+        /**
+         * Tests if this Sequence has more Elements.
+         * @preconditions true
+         * @postconditions RES == (count()!=0)
+         */
+        boolean hasNext();
 
-	/**
-	 * Tests if this Sequence has a previous element.
-	 * @preconditions true
-	 * @postconditions RES == (cursor>0)
-	 */
-	boolean hasPrevious();
+        /**
+         * Tests if this Sequence has a previous element.
+         * @preconditions true
+         * @postconditions RES == (cursor>0)
+         */
+        boolean hasPrevious();
 
-	/**
-	 * Returns the next Element in the Sequence not yet returned by
-	 * element(i) or next().
-	 * @throws java.util.NoSuchElementException   if prerequisite hasNext() is not satisifed.
-	 * @preconditions hasNext()
-	 * @postconditions count()==OLD(count())-1
-	 */
-	Object next() throws NoSuchElementException;
+        /**
+         * Returns the next Element in the Sequence not yet returned by
+         * element(i) or next().
+         * @throws java.util.NoSuchElementException   if prerequisite hasNext() is not satisifed.
+         * @preconditions hasNext()
+         * @postconditions count()==OLD(count())-1
+         */
+        Object next() throws NoSuchElementException;
 
-	/**
-	 * Returns the previous element in the sequence already returned by
-	 * next().
-	 * @throws java.util.NoSuchElementException   if prerequisite hasPrevious() is not satisifed.
-	 * @preconditions hasPrevious()
-	 * @postconditions count()==OLD(count())+1
-	 */
-	Object previous() throws NoSuchElementException;
+        /**
+         * Returns the previous element in the sequence already returned by
+         * next().
+         * @throws java.util.NoSuchElementException   if prerequisite hasPrevious() is not satisifed.
+         * @preconditions hasPrevious()
+         * @postconditions count()==OLD(count())+1
+         */
+        Object previous() throws NoSuchElementException;
 
-	// modification operations
+        // modification operations
 
-	/*
-	 * //TODO: javadoc
-	 * Inserts the specified element into the list (optional operation).  The
-	 * element is inserted immediately before the next element that would be
-	 * returned by <tt>next</tt>, if any, and after the next element that
-	 * would be returned by <tt>previous</tt>, if any.
-	 * 
-	 * @param o the element to insert.
-	 * @throws UnsupportedOperationException if the <tt>add</tt> method is
-	 * not supported by this list iterator.
-	 * @throws ClassCastException if the class of the specified element
-	 * prevents it from being added to this Set.
-	 * @throws IllegalArgumentException if some aspect of this element
-	 * prevents it from being added to this Collection.
-	 * @postconditions count()==OLD(count())+1
-	 */
-	void add(Object o);
+        /*
+         * //TODO: javadoc
+         * Inserts the specified element into the list (optional operation).  The
+         * element is inserted immediately before the next element that would be
+         * returned by <tt>next</tt>, if any, and after the next element that
+         * would be returned by <tt>previous</tt>, if any.
+         * 
+         * @param o the element to insert.
+         * @throws UnsupportedOperationException if the <tt>add</tt> method is
+         * not supported by this list iterator.
+         * @throws ClassCastException if the class of the specified element
+         * prevents it from being added to this Set.
+         * @throws IllegalArgumentException if some aspect of this element
+         * prevents it from being added to this Collection.
+         * @postconditions count()==OLD(count())+1
+         */
+        void add(Object o);
 
-	/**
-	 * Remove the Element from the Sequence that was last returned by next() or previous() or element(int).
-	 * @preconditions hasNext() || hasPrevious()
-	 * @postconditions count()==OLD(count())-1
-	 * @return the object that has been removed.
-	 */
-	void remove();
+        /**
+         * Remove the Element from the Sequence that was last returned by next() or previous() or element(int).
+         * @preconditions hasNext() || hasPrevious()
+         * @postconditions count()==OLD(count())-1
+         * @return the object that has been removed.
+         */
+        void remove();
 
-	void set(Object o);
+        void set(Object o);
 }

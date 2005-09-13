@@ -60,7 +60,7 @@ public abstract class Activation extends Throwable {
      * @param caller the activation corresponding to the method that called this.
      */
     protected Activation(Activation caller) {
-	this.caller = caller;
+        this.caller = caller;
     }
 
     /**
@@ -81,7 +81,7 @@ public abstract class Activation extends Throwable {
      * @return the information sent back to descendant.
      */
     public Object raise(Object information) throws Activation {
-	return caller.raise(information);
+        return caller.raise(information);
     } 
 
     /**
@@ -92,8 +92,8 @@ public abstract class Activation extends Throwable {
      * @see #info()
      */
     protected final void handle(Object information) throws Activation {
-	setInformation(information);
-	throw this;
+        setInformation(information);
+        throw this;
     } 
 
     /**
@@ -109,7 +109,7 @@ public abstract class Activation extends Throwable {
      * @see #information
      */
     public final Object info() {
-	return information;
+        return information;
     } 
 
     /**
@@ -119,6 +119,6 @@ public abstract class Activation extends Throwable {
      * @see #information
      */
     private final void setInformation(Object newInformation) {
-	this.information = newInformation;
+        this.information = newInformation;
     } 
 }

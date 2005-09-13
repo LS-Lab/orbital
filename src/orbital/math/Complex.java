@@ -59,7 +59,7 @@ public interface Complex extends Scalar {
      * @postconditions RES == re().hashCode() ^ im().hashCode()
      */
     int hashCode();
-	
+        
     /**
      * Get the real component.
      * @return &real;(z) = re z = re (a + <b>i</b>b) = a = (z+<span class="conjugate">z</span>) / 2
@@ -121,7 +121,7 @@ public interface Complex extends Scalar {
     boolean isNaN();
     
     // arithmetic operations
-	
+        
     /**
      * adds two Complexes returning a third as a result
      */
@@ -153,10 +153,10 @@ public interface Complex extends Scalar {
      * return whether v is complex, real, rational or an integer.
      */
     public static final Predicate/*<Object>*/ isa = new Predicate/*<Object>*/() {
-	    public boolean apply(Object v) {
-		return v instanceof Complex;
-	    }
-	};
+            public boolean apply(Object v) {
+                return v instanceof Complex;
+            }
+        };
 
     /**
      * Checks whether the given number is a proper complex, i.e. it is
@@ -164,8 +164,8 @@ public interface Complex extends Scalar {
      * return whether v&isin;<b>C</b>\<b>R</b> is complex, but not real.
      */
     public static final Predicate/*<Object>*/ hasType = new Predicate/*<Object>*/() {
-	    public boolean apply(Object v) {
-		return isa.apply(v) && !Real.isa.apply(v);
-	    }
-	};
+            public boolean apply(Object v) {
+                return isa.apply(v) && !Real.isa.apply(v);
+            }
+        };
 }

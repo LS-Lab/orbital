@@ -46,9 +46,9 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * @serial
      */
     private GeneralSearchProblem problem = null;
-	
+        
     // get/set properties
-	
+        
     /**
      * Get the current problem.
      * @preconditions true
@@ -56,15 +56,15 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      *  or <code>null</code> if there is no current problem (since solve has not yet been called etc.).
      */
     protected final GeneralSearchProblem getProblem() {
-	return problem;
+        return problem;
     }
     /**
      * Set the current problem.
      */
     private final void setProblem(GeneralSearchProblem newProblem) {
-	GeneralSearchProblem old = this.problem;
-	this.problem = newProblem;
-	firePropertyChange("problem", old, problem);
+        GeneralSearchProblem old = this.problem;
+        this.problem = newProblem;
+        firePropertyChange("problem", old, problem);
     }
     
     /**
@@ -99,7 +99,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * @see #solve(GeneralSearchProblem)
      */
     public final Object solve(AlgorithmicProblem p) {
-    	return solve((GeneralSearchProblem)p);
+        return solve((GeneralSearchProblem)p);
     }
     
     /**
@@ -115,18 +115,18 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * @see #solveImpl(GeneralSearchProblem)
      */
     public final Object/*>S<*/ solve(GeneralSearchProblem/*<A,S>*/ p) {
-    	setProblem(p);
-	Object/*>S<*/ solution;
-	//    	if (false) {
-	//    		Collection/*<Option>*/ nodes = createCollection();
-	//    		nodes.add(new Option(getProblem().getInitialState()));
-	//    		solution = search(nodes);
-	//    	} else
-	solution = solveImpl(p);
-	boolean incorrect = true;
-	assert (incorrect = this instanceof ProbabilisticAlgorithm && !((ProbabilisticAlgorithm) this).isCorrect()) | true : "initialize for restricting solve@postconditions to correct algorithms";
-    	assert incorrect || (solution == null || p.isSolution(solution)) : "post: solution == null || getProblem().isSolution(solution)";
-    	return solution;
+        setProblem(p);
+        Object/*>S<*/ solution;
+        //      if (false) {
+        //              Collection/*<Option>*/ nodes = createCollection();
+        //              nodes.add(new Option(getProblem().getInitialState()));
+        //              solution = search(nodes);
+        //      } else
+        solution = solveImpl(p);
+        boolean incorrect = true;
+        assert (incorrect = this instanceof ProbabilisticAlgorithm && !((ProbabilisticAlgorithm) this).isCorrect()) | true : "initialize for restricting solve@postconditions to correct algorithms";
+        assert incorrect || (solution == null || p.isSolution(solution)) : "post: solution == null || getProblem().isSolution(solution)";
+        return solution;
     }
 
     // central primitive operations
@@ -154,7 +154,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * @xxx what <em>exactly</em> is the conceptual difference between solveImpl(GeneralSearchProblem) and search(Iterator). Perhaps we could get rid of this method?
      */
     protected Object/*>S<*/ solveImpl(GeneralSearchProblem/*<A,S>*/ problem) {
-	return search(createTraversal(problem));
+        return search(createTraversal(problem));
     }
 
     /**
@@ -197,15 +197,15 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * @internal see orbital.util.Setops#find(Iterator, Predicate) identical implementation
      */
     protected Object/*>S<*/ search(Iterator/*<S>*/ nodes) {
-	while (nodes.hasNext()) {
-	    Object/*>S<*/ node = nodes.next();
+        while (nodes.hasNext()) {
+            Object/*>S<*/ node = nodes.next();
 
-	    if (getProblem().isSolution(node))
-		return node;
-    	}
+            if (getProblem().isSolution(node))
+                return node;
+        }
 
-    	// fail
-    	return null;
+        // fail
+        return null;
     }
 
     /**
@@ -233,46 +233,46 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * @see GeneralSearch#createTraversal(GeneralSearchProblem)
      */
     public static abstract class OptionIterator implements Iterator/*_<S>_*/, Serializable {
-	private static final long serialVersionUID = 6410799454884265654L;
-    	/**
-    	 * The search problem to solve.
-    	 * @serial
-    	 */
-    	private final GeneralSearchProblem/*<A,S>*/ problem;
-    	
-	/**
-	 * The last node selected by {@link #next()}.
-	 * @serial
-	 */
-	private Object/*>S<*/ lastRet = null;
+        private static final long serialVersionUID = 6410799454884265654L;
+        /**
+         * The search problem to solve.
+         * @serial
+         */
+        private final GeneralSearchProblem/*<A,S>*/ problem;
+        
+        /**
+         * The last node selected by {@link #next()}.
+         * @serial
+         */
+        private Object/*>S<*/ lastRet = null;
 
-	/**
-	 * Whether lastRet has already been expanded by {@link #hasNext()}.
-	 * @serial
-	 */
-	private boolean	hasExpanded = false;
-		
-	/**
-	 * Create a traversal iterator over the problem's state options.
-	 * <p>
-	 * Sub classes <em>must</em> add the {@link GeneralSearchProblem#getInitialState() initial state}
-	 * to their internal collection of nodes, such that it will be the (single) element
-	 * expanded first.</p>
-	 * @param problem the problem whose options to iterate in an iterator specific order.
-	 * @postconditions must still add problem.getInitialState() to nodes, such that !isEmpty()
-	 */
-	protected OptionIterator(GeneralSearchProblem/*<A,S>*/ problem) {
-	    this.problem = problem;
-	}
-		
-    	/**
-    	 * Get the current problem.
-    	 * @preconditions true
-    	 * @return the problem specified in the last call to solve.
-    	 */
-    	protected final GeneralSearchProblem/*<A,S>*/ getProblem() {
-	    return problem;
-    	}
+        /**
+         * Whether lastRet has already been expanded by {@link #hasNext()}.
+         * @serial
+         */
+        private boolean hasExpanded = false;
+                
+        /**
+         * Create a traversal iterator over the problem's state options.
+         * <p>
+         * Sub classes <em>must</em> add the {@link GeneralSearchProblem#getInitialState() initial state}
+         * to their internal collection of nodes, such that it will be the (single) element
+         * expanded first.</p>
+         * @param problem the problem whose options to iterate in an iterator specific order.
+         * @postconditions must still add problem.getInitialState() to nodes, such that !isEmpty()
+         */
+        protected OptionIterator(GeneralSearchProblem/*<A,S>*/ problem) {
+            this.problem = problem;
+        }
+                
+        /**
+         * Get the current problem.
+         * @preconditions true
+         * @return the problem specified in the last call to solve.
+         */
+        protected final GeneralSearchProblem/*<A,S>*/ getProblem() {
+            return problem;
+        }
 
         // central template methods
 
@@ -302,72 +302,72 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
 
         // interface Iterator implementation
         
-    	/**
-    	 * {@inheritDoc}
-    	 * @preconditions true
-    	 * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
-    	 */
-    	public boolean hasNext() {
-	    if (!isEmpty())
-		// we still have some nodes in petto
-		return true;
-	    else if (lastRet == null)
-		// we have no more nodes, and none to expand as well
-		return false;
-	    else
-		// we have no more nodes, but we might get some if we expand lastRet
-		return expand();
-    	}
+        /**
+         * {@inheritDoc}
+         * @preconditions true
+         * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
+         */
+        public boolean hasNext() {
+            if (!isEmpty())
+                // we still have some nodes in petto
+                return true;
+            else if (lastRet == null)
+                // we have no more nodes, and none to expand as well
+                return false;
+            else
+                // we have no more nodes, but we might get some if we expand lastRet
+                return expand();
+        }
 
-    	/**
-    	 * {@inheritDoc}
-    	 * <p>
-    	 * Will expand the last element returned, and select a state option to visit.</p>
-    	 * @preconditions hasNext()
-    	 * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
-	 * @todo optimize
-    	 */
-    	public Object/*_>S<_*/ next() {
-	    if (lastRet != null)
-		expand();
-	    if (isEmpty())
-		throw new NoSuchElementException();
-	    hasExpanded = false;
-	    return lastRet = select();
-    	}
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Will expand the last element returned, and select a state option to visit.</p>
+         * @preconditions hasNext()
+         * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
+         * @todo optimize
+         */
+        public Object/*_>S<_*/ next() {
+            if (lastRet != null)
+                expand();
+            if (isEmpty())
+                throw new NoSuchElementException();
+            hasExpanded = false;
+            return lastRet = select();
+        }
 
-    	/**
-    	 * Expands lastRet.
-    	 * <p>
-    	 * Will only expand lastRet, if it has not already been expanded.
-    	 * Particularly, if lastRet has already been expanded, this method will only return <code>false</code>.</p>
-    	 * @preconditions lastRet != null
-    	 * @return whether new nodes were added by this call to expand.
-    	 */
-    	private boolean expand() {
-	    if (lastRet == null)
-		throw new IllegalStateException("cannot expand without a node returned last!");
-	    if (hasExpanded)
-		return false;
-	    Iterator/*<S>*/ children = GeneralSearch.expand(getProblem(), lastRet);
-	    hasExpanded = true;
-	    return add(children);
-    	}
+        /**
+         * Expands lastRet.
+         * <p>
+         * Will only expand lastRet, if it has not already been expanded.
+         * Particularly, if lastRet has already been expanded, this method will only return <code>false</code>.</p>
+         * @preconditions lastRet != null
+         * @return whether new nodes were added by this call to expand.
+         */
+        private boolean expand() {
+            if (lastRet == null)
+                throw new IllegalStateException("cannot expand without a node returned last!");
+            if (hasExpanded)
+                return false;
+            Iterator/*<S>*/ children = GeneralSearch.expand(getProblem(), lastRet);
+            hasExpanded = true;
+            return add(children);
+        }
 
-    	/**
-    	 * Removes from the list of exandable nodes the last element returned by the iterator.
-    	 * <p>
-    	 * When calling this method, the last node that was returned by this iterator will be pruned
-    	 * and not expanded any further.
-    	 * </p>
-    	 * @throws UnsupportedOperationException if the <code>remove</code> operation is not supported by this Iterator.
-	 * @throws IllegalStateException if the <code>next</code> method has not yet been called, or the <code>remove</code> method has already been called after the last call to the <code>next</code> method.
-    	 */
-    	public void remove() {
-    	    if (lastRet == null)
-		throw new IllegalStateException();
-	    lastRet = null;
-    	}
+        /**
+         * Removes from the list of exandable nodes the last element returned by the iterator.
+         * <p>
+         * When calling this method, the last node that was returned by this iterator will be pruned
+         * and not expanded any further.
+         * </p>
+         * @throws UnsupportedOperationException if the <code>remove</code> operation is not supported by this Iterator.
+         * @throws IllegalStateException if the <code>next</code> method has not yet been called, or the <code>remove</code> method has already been called after the last call to the <code>next</code> method.
+         */
+        public void remove() {
+            if (lastRet == null)
+                throw new IllegalStateException();
+            lastRet = null;
+        }
     }
 
     /**
@@ -375,27 +375,27 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * @return S(s) := {t(s,a) &brvbar; a&isin;A(s)}
      */
     static final Iterator expand(final GeneralSearchProblem problem, final Object/*>S<*/ state) {
-	return new Iterator() {
-		final Iterator/*<A>*/ actions = problem.actions(state);
-		final MutableFunction g = problem.getAccumulatedCostFunction();
-		final Real accumulatedCost = castedApply(g, state);
-		public boolean hasNext() {
-		    return actions.hasNext();
-		}
-		public Object next() {
-		    Object/*>A<*/ a = actions.next();
-		    Iterator t = problem.states(a, state);
-		    assert t.hasNext() : "@postconditions GeneralSearchProblem.states(...) non-empty";
-		    Object/*>S<*/ sp = t.next();
-		    assert !t.hasNext() : "@postconditions GeneralSearchProblem.states(...) has length 1";
-		    g.set(sp,
-			  accumulatedCost.add(((Transition)problem.transition(a,state,sp)).getCost()));
-		    return sp;
-		}
-		public void remove() {
-		    actions.remove();
-		}
-	    };
+        return new Iterator() {
+                final Iterator/*<A>*/ actions = problem.actions(state);
+                final MutableFunction g = problem.getAccumulatedCostFunction();
+                final Real accumulatedCost = castedApply(g, state);
+                public boolean hasNext() {
+                    return actions.hasNext();
+                }
+                public Object next() {
+                    Object/*>A<*/ a = actions.next();
+                    Iterator t = problem.states(a, state);
+                    assert t.hasNext() : "@postconditions GeneralSearchProblem.states(...) non-empty";
+                    Object/*>S<*/ sp = t.next();
+                    assert !t.hasNext() : "@postconditions GeneralSearchProblem.states(...) has length 1";
+                    g.set(sp,
+                          accumulatedCost.add(((Transition)problem.transition(a,state,sp)).getCost()));
+                    return sp;
+                }
+                public void remove() {
+                    actions.remove();
+                }
+            };
     }
     
 
@@ -404,31 +404,31 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * and user-friendly exception messages.
      */
     static final Real castedApply(Function/*<S,Real>*/ f, Object/*>S<*/ argument) {
-	final Object o = f.apply(argument);
-	if (o instanceof Real)
-	    return (Real/*__*/)o;
-	else
-	    throw new ClassCastException("the function " + f + " should return objects of " + Real.class + "\nfound: " + o + " of " + (o == null ? "<null>" : o.getClass().toString()));
+        final Object o = f.apply(argument);
+        if (o instanceof Real)
+            return (Real/*__*/)o;
+        else
+            throw new ClassCastException("the function " + f + " should return objects of " + Real.class + "\nfound: " + o + " of " + (o == null ? "<null>" : o.getClass().toString()));
     }
     
     //    /**
     //     * Get a new instance of the implementation data structure.
     //     * <p>
     //     * Implementing methods could return special list implementations like stacks or queues.</p>
-    //	 * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
-    //	 * @todo remove
+    //   * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
+    //   * @todo remove
     //     */
-    //	protected Collection/*<Option>*/ createCollection() {
-    //		return new LinkedList/*<Option>*/();
-    //	}
-	
+    //  protected Collection/*<Option>*/ createCollection() {
+    //          return new LinkedList/*<Option>*/();
+    //  }
+        
 
     //    /**
     //     * Selects an option to visit from nodes.
     //     * @return the selected option after <em>removing</em> it from nodes.
     //     * @preconditions !nodes.isEmpty()
     //     * @postconditions OLD(nodes).contains(RES) && nodes == OLD(nodes) \ {RES}
-    //	 * @todo remove
+    //   * @todo remove
     //     */
     //    protected abstract Option select(Collection/*<Option>*/ nodes);
     //    
@@ -439,51 +439,51 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
     //     * @param oldNodes the old nodes we already knew of. (May be modified by this method).
     //     * @return a list of nodes to explore that contains oldNodes and newNodes.
     //     * @postconditions RES &sube; oldNodes &cup; newNodes
-    //	 * @todo remove
+    //   * @todo remove
     //     */
     //    protected abstract Collection/*<Option>*/ add(Collection/*<Option>*/ newNodes, Collection/*<Option>*/ oldNodes);
-    //	
+    //  
     //    // central virtual methods
     //
-    //	/**
-    //	 * run the general search algorithm scheme.
-    //	 * <p>
-    //	 * Overwrite to provide a whole different search scheme.</p>
-    //	 * @param nodes is the list of nodes to visit (sometimes called open set).
-    //	 * @return the solution found searching the state space starting with nodes.
-    //	 * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
-    //	 * @todo remove
-    //	 */
-    //	protected Option search(Collection/*<Option>*/ nodes) {
-    //		while (!nodes.isEmpty()) {
-    //    		Option node = select(nodes);
+    //  /**
+    //   * run the general search algorithm scheme.
+    //   * <p>
+    //   * Overwrite to provide a whole different search scheme.</p>
+    //   * @param nodes is the list of nodes to visit (sometimes called open set).
+    //   * @return the solution found searching the state space starting with nodes.
+    //   * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
+    //   * @todo remove
+    //   */
+    //  protected Option search(Collection/*<Option>*/ nodes) {
+    //          while (!nodes.isEmpty()) {
+    //                  Option node = select(nodes);
     //
-    //    		if (getProblem().isSolution(node))
-    //    			return node;
-    //    		Collection/*<Option>*/ children = orbital.util.Setops.asList(getProblem().expand(node));
-    //    		nodes = add(children, nodes);
-    //    	}
+    //                  if (getProblem().isSolution(node))
+    //                          return node;
+    //                  Collection/*<Option>*/ children = orbital.util.Setops.asList(getProblem().expand(node));
+    //                  nodes = add(children, nodes);
+    //          }
     //
-    //    	// fail
-    //    	return null;
-    //	}
+    //          // fail
+    //          return null;
+    //  }
 }
 
 
 //@internal Obsolete stuff, can be removed
 //    /**
 //     * Get the accumulated cost of the solution.
-//	 * @preconditions {@link #solve(GeneralSearchProblem)} has finished successfully
+//       * @preconditions {@link #solve(GeneralSearchProblem)} has finished successfully
 //     * @return the accumulated cost that lead to the solution last returned by solve.
 //     * @see #solve(GeneralSearchProblem)
 //     */
-//	public double getCost() {
-//		return cost;
-//	}
+//      public double getCost() {
+//              return cost;
+//      }
 //    
-//	/**
-//	 * The accumulated cost that lead to the solution.
-//	 * @serial
-//	 */
-//	private double cost;
-	
+//      /**
+//       * The accumulated cost that lead to the solution.
+//       * @serial
+//       */
+//      private double cost;
+        

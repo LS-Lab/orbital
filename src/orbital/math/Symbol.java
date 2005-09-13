@@ -29,7 +29,7 @@ public interface Symbol extends Arithmetic, orbital.logic.trs.Variable {
      * @see orbital.logic.sign.Symbol#getSignifier()
      */
     String getSignifier();
-	
+        
     /**
      * Compares for tolerant equality.
      * @return true if this.equals(o), or if tolerance=&infin;.
@@ -51,8 +51,8 @@ public interface Symbol extends Arithmetic, orbital.logic.trs.Variable {
      * @return whether v is a symbol.
      */
     public static final Predicate/*<Object>*/ isa = new Predicate/*<Object>*/() {
-	    public boolean apply(Object v) {
-		return v instanceof Symbol;
-	    }
-	};
+            public boolean apply(Object v) {
+                return v instanceof Symbol;
+            }
+        };
 }

@@ -324,12 +324,12 @@
             description="fix DOS linefeeds (CRLF)">
 <!-- @internal deactivate due to dull encoding changes under linux
         <fixcrlf srcdir="${sources}"
+                 eol="lf" eof="remove" tab="remove" javafiles="yes"
+                 includes="**/*.java, **/*.jj"/>
+        <fixcrlf srcdir="${examples}" tab="remove" javafiles="yes"
                  eol="lf" eof="remove"
                  includes="**/*.java, **/*.jj"/>
-        <fixcrlf srcdir="${examples}"
-                 eol="lf" eof="remove"
-                 includes="**/*.java, **/*.jj"/>
-        <fixcrlf srcdir="${src.tests}"
+        <fixcrlf srcdir="${src.tests}" tab="remove" javafiles="yes"
                  eol="lf" eof="remove"
                  includes="**/*.java, **/*.jj"/>
 -->

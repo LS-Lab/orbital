@@ -15,31 +15,31 @@ import java.io.*;
  */
 public class LambdaTest extends check.TestCase {
     public static void main(String[] args) {
-	junit.textui.TestRunner.run(suite());
+        junit.textui.TestRunner.run(suite());
     }
     public static Test suite() {
-	return new TestSuite(LambdaTest.class);
+        return new TestSuite(LambdaTest.class);
     }
     protected void setUp() {
     }
 
     protected void test(String name, boolean allTrue) {
-	try {
-	    ClassicalLogic logic = new ClassicalLogic();
-	    ClassicalLogic.proveAll(new InputStreamReader(this.getClass().getResourceAsStream(name),
-							  ClassicalLogic.DEFAULT_CHARSET),
-				    logic, allTrue);
-	}
-	catch (Throwable ex) {
-	    ex.printStackTrace();
-	    fail(ex.getMessage() + " in file " + name);
-	}
+        try {
+            ClassicalLogic logic = new ClassicalLogic();
+            ClassicalLogic.proveAll(new InputStreamReader(this.getClass().getResourceAsStream(name),
+                                                          ClassicalLogic.DEFAULT_CHARSET),
+                                    logic, allTrue);
+        }
+        catch (Throwable ex) {
+            ex.printStackTrace();
+            fail(ex.getMessage() + " in file " + name);
+        }
     }
     public void testEquivalences() {
-	test("lambda-equivalence.txt", true);
+        test("lambda-equivalence.txt", true);
     }
     public void testGarbage() {
-	test("lambda-garbage.txt", false);
+        test("lambda-garbage.txt", false);
     }
 }
 

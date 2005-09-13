@@ -50,22 +50,22 @@ public class DepthFirstSearch extends GeneralSearch {
      * @todo O(|V|+|E|) on a graph (V,E) with vertexes V and edges E.
      */
     public Function complexity() {
-	//TODO: think about changing all infinite functions to symbolic or anything which is not(!) constant, but still supports norm=infinity
-	return Functions.constant(Values.POSITIVE_INFINITY);
+        //TODO: think about changing all infinite functions to symbolic or anything which is not(!) constant, but still supports norm=infinity
+        return Functions.constant(Values.POSITIVE_INFINITY);
     }
     /**
      * O(b*d) where b is the branching factor and d the solution depth.
      * O(<span class="Formula">(b-1)*d + 1</span>) more precisely.
      */
     public Function spaceComplexity() {
-	return Functions.linear(Values.getDefaultInstance().symbol("b"));
+        return Functions.linear(Values.getDefaultInstance().symbol("b"));
     }
     public boolean isOptimal() {
-    	return false;
+        return false;
     }
 
     protected Iterator createTraversal(GeneralSearchProblem problem) {
-	return new OptionIterator(problem);
+        return new OptionIterator(problem);
     }
 
     /**
@@ -74,42 +74,42 @@ public class DepthFirstSearch extends GeneralSearch {
      * @author  Andr&eacute; Platzer
      */
     public static class OptionIterator extends GeneralSearch.OptionIterator {
-	private static final long serialVersionUID = 4198888198183455112L;
-	/**
-	 * effectively, nodes is a stack of iterators.
-	 * @serial
-	 */
-	private QueuedSequenceIterator/*_<S>_*/ nodes;
-	public OptionIterator(GeneralSearchProblem problem) {
-	    super(problem);
-	    nodes = new QueuedSequenceIterator(new Iterator[] {Collections.singletonList(problem.getInitialState()).iterator()});
-	}
+        private static final long serialVersionUID = 4198888198183455112L;
+        /**
+         * effectively, nodes is a stack of iterators.
+         * @serial
+         */
+        private QueuedSequenceIterator/*_<S>_*/ nodes;
+        public OptionIterator(GeneralSearchProblem problem) {
+            super(problem);
+            nodes = new QueuedSequenceIterator(new Iterator[] {Collections.singletonList(problem.getInitialState()).iterator()});
+        }
         protected boolean isEmpty() {
-	    return !nodes.hasNext();
+            return !nodes.hasNext();
         }
         protected Object/*>S<*/ select() {
-	    return nodes.next();
+            return nodes.next();
         }
         protected boolean add(Iterator newNodes) {
-	    nodes.add(0, newNodes);
-	    return newNodes.hasNext();
+            nodes.add(0, newNodes);
+            return newNodes.hasNext();
         }
     };
 
-    //	protected Collection createCollection() {
-    //		// new Stack();
-    //		return new LinkedList();
-    //	}
+    //  protected Collection createCollection() {
+    //          // new Stack();
+    //          return new LinkedList();
+    //  }
     //
     //    protected GeneralSearchProblem.Option select(Collection nodes) {
-    //    	Iterator i = nodes.iterator();
-    //    	GeneralSearchProblem.Option sel = (GeneralSearchProblem.Option) i.next();
-    //    	i.remove();
-    //    	return sel;
+    //          Iterator i = nodes.iterator();
+    //          GeneralSearchProblem.Option sel = (GeneralSearchProblem.Option) i.next();
+    //          i.remove();
+    //          return sel;
     //    }
     //
     //    protected Collection add(Collection newNodes, Collection oldNodes) {
-    //    	newNodes.addAll(oldNodes);
-    //    	return newNodes;
+    //          newNodes.addAll(oldNodes);
+    //          return newNodes;
     //    }
 }

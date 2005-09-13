@@ -74,9 +74,9 @@ public abstract class Figure extends Moving {
      * @param type the type we have.
      */
     public Figure(int x, int y, Direction dir, int league, int type) {
-	super(x, y, dir);
-	this.league = league;
-	this.type = type;
+        super(x, y, dir);
+        this.league = league;
+        this.type = type;
     }
 
     // get/set methods and administratives
@@ -86,15 +86,15 @@ public abstract class Figure extends Moving {
      * regardless of the field that they are on.
      */
     public boolean equals(Object obj) {
-	if (obj instanceof Figure) {
-	    Figure f = (Figure) obj;
-	    return super.equals(obj) && (getLeague() == f.getLeague()) && (getType() == f.getType());
-	} 
-	return false;
+        if (obj instanceof Figure) {
+            Figure f = (Figure) obj;
+            return super.equals(obj) && (getLeague() == f.getLeague()) && (getType() == f.getType());
+        } 
+        return false;
     } 
 
     public int hashCode() {
-	return getLeague() + 17 * getType() + 101 * super.hashCode();
+        return getLeague() + 17 * getType() + 101 * super.hashCode();
     } 
 
     // get/set properties
@@ -111,28 +111,28 @@ public abstract class Figure extends Moving {
      * Get the league that this figure belongs to.
      */
     public int getLeague() {
-	return league;
+        return league;
     } 
 
     /**
      * Set the league that this figure belongs to.
      */
     public void setLeague(int l) {
-	this.league = l;
+        this.league = l;
     } 
 
     /**
      * Get the general type of this figure.
      */
     public int getType() {
-	return type;
+        return type;
     } 
 
     /**
      * Set the general type of this figure.
      */
     public void setType(int t) {
-	this.type = t;
+        this.type = t;
     } 
 
     /**
@@ -143,15 +143,15 @@ public abstract class Figure extends Moving {
      * @see #EMPTY
      */
     public boolean isEmpty() {
-	return getLeague() == NOONE || getType() == EMPTY;
+        return getLeague() == NOONE || getType() == EMPTY;
     } 
 
     /**
      * Makes this figure representing an empty figure.
      */
     public void setEmpty() {
-	setLeague(NOONE);
-	setType(EMPTY);
+        setLeague(NOONE);
+        setType(EMPTY);
     } 
 
     // central Figure interface methods
@@ -211,6 +211,6 @@ public abstract class Figure extends Moving {
      * Returns a string representation of this object.
      */
     public String toString() {
-	return getClass().getName() + "[" + getLeague() + ":" + getType() + " @(" + x + '|' + y + ' ' + getDirection().toString() + ")]";
+        return getClass().getName() + "[" + getLeague() + ":" + getType() + " @(" + x + '|' + y + ' ' + getDirection().toString() + ")]";
     } 
 }

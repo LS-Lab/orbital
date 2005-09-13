@@ -58,25 +58,25 @@ import java.util.logging.Level;
  * @version $Id$
  * @author  Andr&eacute; Platzer
  * @todo Skolem-Normalfrom mit KNF-Matrix (mit Erweiterung der Signatur)
- * @todo schlaues pränex-Normalform Bilden, um einfacher skolemisieren zu können. Minimiere die Anzahl der Allquantoren vor den Existenzquantoren.
+ * @todo schlaues prenex-Normalform Bilden, um einfacher skolemisieren zu kÃ¶nnen. Minimiere die Anzahl der Allquantoren vor den Existenzquantoren.
  *  etwa &exist;x&forall;y P &and; &exist;z&forall;w Q  == &exist;x&exist;z &forall;y&forall;w P&and;Q statt == &exist;x&forall;y&exist;z&forall;w P&and;Q denn im ersteren Fall skolemisiert x zu a und z zu b, im zweiteren aber x zu a und z zu f(y).
- *  Oder wähle alternativen (einfacheren?) TRS-Algorithmus Ü 7.95
+ *  Oder wÃ¤hle alternativen (einfacheren?) TRS-Algorithmus Ãœ 7.95
  */
 public abstract class ResolutionBase implements Inference {
     static final Logger logger = Logger.getLogger(ResolutionBase.class.getName());
 
     private static final ClausalFactory clausalFactory = new DefaultClausalFactory();
     protected static ClausalFactory getClausalFactory() {
-	return clausalFactory;
+        return clausalFactory;
     }
     
     /**
      * Add verbosity, i.e. print out a proof tree.
      */
     public void setVerbose(boolean newVerbose) {
-	if (getClausalFactory() instanceof DefaultClausalFactory) {
-	    ((DefaultClausalFactory)getClausalFactory()).setVerbose(newVerbose);
-	}
+        if (getClausalFactory() instanceof DefaultClausalFactory) {
+            ((DefaultClausalFactory)getClausalFactory()).setVerbose(newVerbose);
+        }
     }
 
     /**
@@ -85,26 +85,26 @@ public abstract class ResolutionBase implements Inference {
      */
     public boolean infer(final Formula[] B, final Formula D) {
         final ClausalSet knowledgebase = skolemClauseForm(Arrays.asList(B), "knowledgebase ");
-	// if IllegalStateException occurs here it means ("premises are inconsistent since they already contain a contradiction, so ex falso quodlibet");
+        // if IllegalStateException occurs here it means ("premises are inconsistent since they already contain a contradiction, so ex falso quodlibet");
 
         // negate query since we are a negative test calculus
         final Formula query = D.not();
-	final ClausalSet S = skolemClauseForm(Collections.singleton(query), "negated goal ");
-	// if IllegalStateException occurs here it means return true due to inconsistent query
+        final ClausalSet S = skolemClauseForm(Collections.singleton(query), "negated goal ");
+        // if IllegalStateException occurs here it means return true due to inconsistent query
 
-	logger.log(Level.FINE, "proving that knowledgebase {0} and query {1} are inconsistent", new Object[] {knowledgebase, S});
+        logger.log(Level.FINE, "proving that knowledgebase {0} and query {1} are inconsistent", new Object[] {knowledgebase, S});
         final boolean proven = prove(knowledgebase, S);
-	logger.log(Level.FINE, proven ? "found a proof that knowledgebase {0} and query {1} are inconsistent" : "found no proof that {0} and query {1} are inconsistent", new Object[] {knowledgebase, S});
+        logger.log(Level.FINE, proven ? "found a proof that knowledgebase {0} and query {1} are inconsistent" : "found no proof that {0} and query {1} are inconsistent", new Object[] {knowledgebase, S});
         return proven;
     }
-	
+        
     public boolean isSound() {
-	return true;
+        return true;
     }
 
     public boolean isComplete() {
-	// assuming knowledge base W is consistent, we are refutation-complete
-	return true;
+        // assuming knowledge base W is consistent, we are refutation-complete
+        return true;
     }
 
     /**
@@ -135,37 +135,37 @@ public abstract class ResolutionBase implements Inference {
         // skolemize B and drop quantifiers
         final List/*_<Formula>_*/ skolemizedB = new ArrayList(B.size());
         for (Iterator i = B.iterator(); i.hasNext(); ) {
-	    Formula f = (Formula) i.next();
-	    skolemizedB.add(Utilities.dropQuantifiers(Utilities.skolemForm(f)));
-	    if (logger.isLoggable(Level.FINEST))
-		logger.log(Level.FINEST, "{0} skolemForm( {1} ) == {2}", new Object[] {logPrefix, f, Utilities.skolemForm(f)});
-	}
+            Formula f = (Formula) i.next();
+            skolemizedB.add(Utilities.dropQuantifiers(Utilities.skolemForm(f)));
+            if (logger.isLoggable(Level.FINEST))
+                logger.log(Level.FINEST, "{0} skolemForm( {1} ) == {2}", new Object[] {logPrefix, f, Utilities.skolemForm(f)});
+        }
 
         // convert B to clausalForm clausebase
-	// @internal clausebase = Functionals.map(clausalForm, skolemizedB)
+        // @internal clausebase = Functionals.map(clausalForm, skolemizedB)
         ClausalSet clausebase = getClausalFactory().newClausalSet();
         for (Iterator i = skolemizedB.iterator(); i.hasNext(); ) {
-	    clausebase.addAll(getClausalFactory().asClausalSet((Formula) i.next()));
-	}
+            clausebase.addAll(getClausalFactory().asClausalSet((Formula) i.next()));
+        }
         logger.log(Level.FINER, "{0} as clausal {1}", new Object[] {logPrefix, clausebase});
 
-	// remove tautologies and handle contradictions
-    	// for all clauses F&isin;clausebase
-    	for (Iterator i = clausebase.iterator(); i.hasNext(); ) {
-	    final Clause F = (Clause) i.next();
-	    if (F.equals(Clause.CONTRADICTION))
-		throw new IllegalStateException("clauses are inconsistent since they already contain a contradiction");
-	    else if (F.isElementaryValid())
-		// if F is obviously valid, forget about it for resolving a contradiction
-		i.remove();
-	}
+        // remove tautologies and handle contradictions
+        // for all clauses F&isin;clausebase
+        for (Iterator i = clausebase.iterator(); i.hasNext(); ) {
+            final Clause F = (Clause) i.next();
+            if (F.equals(Clause.CONTRADICTION))
+                throw new IllegalStateException("clauses are inconsistent since they already contain a contradiction");
+            else if (F.isElementaryValid())
+                // if F is obviously valid, forget about it for resolving a contradiction
+                i.remove();
+        }
 
         logger.log(Level.FINE, "{0} finally is {1}", new Object[] {logPrefix, clausebase});
         if (logger.isLoggable(Level.FINEST)) {
-	    for (Iterator i = B.iterator(); i.hasNext(); ) {
-		logger.log(Level.FINEST, "{0} thereby contains transformation of original formula {1}", new Object[] {logPrefix, Utilities.conjunctiveForm((Formula) i.next(), DefaultClausalFactory.isSIMPLIFYING())});
-	    }
-	}
-	return clausebase;
+            for (Iterator i = B.iterator(); i.hasNext(); ) {
+                logger.log(Level.FINEST, "{0} thereby contains transformation of original formula {1}", new Object[] {logPrefix, Utilities.conjunctiveForm((Formula) i.next(), DefaultClausalFactory.isSIMPLIFYING())});
+            }
+        }
+        return clausebase;
     }
 }

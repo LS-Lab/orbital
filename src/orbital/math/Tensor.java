@@ -195,7 +195,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
     Tensor/*<R>*/ subTensorTransposed(int[] permutation);
     
     // norm
-	
+        
     /**
      * Returns the norm || ||<sub>p</sub> of this tensor.
      * <p>This method implements p-norms, where<br>
@@ -212,7 +212,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      * @preconditions Arrays.equals(dimensions(), b.dimension())
      *  otherwise there can only be a purely symbolic result in tensor algebra.
      * @postconditions Arrays.equals(RES.dimensions(), dimensions())
-     *  	&& RES.get(i) == get(i) + b.get(i)
+     *          && RES.get(i) == get(i) + b.get(i)
      * @attribute associative
      * @attribute neutral (0)
      * @attribute inverse (-v)
@@ -225,7 +225,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      * @preconditions Arrays.equals(dimensions(), b.dimension())
      *  otherwise there can only be a purely symbolic result in tensor algebra.
      * @postconditions Arrays.equals(RES.dimensions(), dimensions())
-     *  	&& RES.get(i) == get(i) - b.get(i)
+     *          && RES.get(i) == get(i) - b.get(i)
      * @attribute associative
      */
     Tensor/*<R>*/ subtract(Tensor/*<R>*/ b);
@@ -234,7 +234,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      * Multiplies a scalar with a tensor returning a tensor.
      * @preconditions true
      * @postconditions Arrays.equals(RES.dimensions(), dimensions())
-     *  	&& RES.get(i) == s&sdot;get(i)
+     *          && RES.get(i) == s&sdot;get(i)
      * @attribute associative
      * @attribute left-neutral (1)
      * @return s&middot;this
@@ -246,7 +246,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      * Inner product of a tensor with a tensor returning a tensor.
      * <table>
      *   <tr>
-     *     <td class="nameOfMap" rowspan="2">·</td>
+     *     <td class="nameOfMap" rowspan="2">Â·</td>
      *     <td class="leftOfMap">R<sup>n<sub>0</sub>&times;&#8230;&times;n<sub>r-1</sub>&times;h</sup>&times;R<sup>h&times;m<sub>0</sub>&times;&#8230;&times;m<sub>s-1</sub></sup></td>
      *     <td class="arrowOfMap">&rarr;</td>
      *     <td class="rightOfMap">R<sup>n<sub>0</sub>&times;&#8230;&times;n<sub>r-1</sub>&times;h</sup>&times;R<sup>h&times;m<sub>0</sub>&times;&#8230;&times;m<sub>s-1</sub></sup></td>
@@ -258,7 +258,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
      *   </tr>
      * </table>
      * @preconditions dimensions()[rank()-1] == b.dimensions()[0]
-     * @return the inner product a·b.
+     * @return the inner product aÂ·b.
      * @postconditions RES.dimensions() = {dimensions()[0],&#8230;dimensions()[rank()-2]}&cup;{b.dimensions()[1],&#8230;b.dimensions()[b.rank()-1]}
      * @note inner product is only one (partial) multiplication on graded tensor algebra
      */
@@ -295,7 +295,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
     Tensor/*<R>*/ tensor(Tensor/*<R>*/ b);
 
     // operations on tensors
-	
+        
     /**
      * Returns this tensor transposed.
      */
@@ -309,7 +309,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
 //      * @preconditions 0<=index && index<=dimension()
 //      * @return this.
 //      * @postconditions RES == this
-//      *  	&& RES.dimension() == OLD(dimension()) + 1
+//      *       && RES.dimension() == OLD(dimension()) + 1
 //      */
 //     Tensor/*<R>*/ insert(int index, Arithmetic/*>R<*/ v);
  
@@ -318,7 +318,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
 //      * @preconditions 0<=index && index<=dimension()
 //      * @return this.
 //      * @postconditions RES == this
-//      *  	&& RES.dimension() == OLD(dimension()) + v.dimension()
+//      *       && RES.dimension() == OLD(dimension()) + v.dimension()
 //      */
 //     Tensor/*<R>*/ insertAll(int index, Tensor/*<R>*/ v);
 
@@ -326,7 +326,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
 //      * Append a value to this tensor.
 //      * @return this.
 //      * @postconditions RES == this
-//      *  	&& RES.dimension() == OLD(dimension()) + 1
+//      *       && RES.dimension() == OLD(dimension()) + 1
 //      */
 //     Tensor/*<R>*/ insert(Arithmetic/*>R<*/ v);
 
@@ -334,7 +334,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
 //      * Append all components of a tensor to this tensor.
 //      * @return this.
 //      * @postconditions RES == this
-//      *  	&& RES.dimension() == OLD(dimension()) + v.dimension()
+//      *       && RES.dimension() == OLD(dimension()) + v.dimension()
 //      */
 //     Tensor/*<R>*/ insertAll(Tensor/*<R>*/ v);
 
@@ -342,7 +342,7 @@ public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
 //      * Remove the component at an index from this tensor.
 //      * @return this.
 //      * @postconditions RES == this
-//      *  	&& RES.dimension() == OLD(dimension()) - 1
+//      *       && RES.dimension() == OLD(dimension()) - 1
 //      */
 //     Tensor/*<R>*/ remove(int index);
 }

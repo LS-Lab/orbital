@@ -22,26 +22,26 @@ public class ContainerWeighting extends Evaluation {
      * constructs a ContainerWeighting by a Selection of Weightings.
      */
     public ContainerWeighting(Selection selection, Function/*<Object, Number>*/ weighting) {
-	super(selection, weighting);
+        super(selection, weighting);
     }
     public ContainerWeighting(Function/*<Object, Number>*/ weighting) {
-	super(weighting);
+        super(weighting);
     }
     public ContainerWeighting() {
-	super();
+        super();
     }
 
     /**
      * return weight value of a situation-Object by Number via the Container Evaluation.
      */
     public Object/*>Number<*/ applyContainer(Object arg) {
-	return weightImpl(arg);
+        return weightImpl(arg);
     } 
 
     /**
      * returns weight value of an arg by Number.
      */
     public Object/*>Number<*/ apply(Object arg) {
-	return applyContainer(arg);
+        return applyContainer(arg);
     } 
 }

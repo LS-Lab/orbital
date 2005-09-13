@@ -78,35 +78,35 @@ public class ChartModel implements Serializable {
      * The Range to be displayed visibly.
      * @serial
      */
-    private Range			  range = null;
+    private Range                         range = null;
 
     /**
      * The scale vector.
      * A component value of v<sub>i</sub> says that every v<sub>i</sub> units a mark is drawn on the Chart.
      * @serial
      */
-    private Vector		  scale = null;
+    private Vector                scale = null;
 
     /**
      * Whether rainbow colors are used for graphs that have no color setting.
      * @serial
      */
-    private boolean		  rainbow = false;
+    private boolean               rainbow = false;
     /**
      * the last rainbow color used (not yet reduced modulo number of colors).
      * @serial
      */
-    private int				  rainbowColor = 0;
+    private int                           rainbowColor = 0;
 
     public ChartModel() {
-	graphs = new ArrayList/*<Entry>*/();
+        graphs = new ArrayList/*<Entry>*/();
     }
 
     /**
      * Get the number of graphs displayed.
      */
     public int getGraphCount() {
-	return graphs.size();
+        return graphs.size();
     } 
 
     /**
@@ -116,7 +116,7 @@ public class ChartModel implements Serializable {
      * @see #attributeList()
      */
     public List/*<Entry>*/ getGraphs() {
-	return Collections.unmodifiableList(graphs);
+        return Collections.unmodifiableList(graphs);
     } 
 
     /**
@@ -125,7 +125,7 @@ public class ChartModel implements Serializable {
      * @return an iterator over the elements in this chart model in proper sequence.
      */
     public Iterator iterator() {
-	return Setops.unmodifiableIterator(graphs.iterator());
+        return Setops.unmodifiableIterator(graphs.iterator());
     } 
 
     /**
@@ -133,7 +133,7 @@ public class ChartModel implements Serializable {
      * On the axis<sub>i</sub>, marks will be placed with distance scale<sub>i</sub>.
      */
     public Vector getScale() {
-	return scale;
+        return scale;
     } 
 
     /**
@@ -141,46 +141,46 @@ public class ChartModel implements Serializable {
      * On the axis<sub>i</sub>, marks will be placed with distance scale<sub>i</sub>.
      */
     public void setScale(Vector scale) {
-	if (((Comparable) Operations.inf.apply(scale)).compareTo(Values.ZERO) <= 0)
-	    throw new IllegalArgumentException("Scales must neither negative nor 0");
-	Vector old = this.scale;
-	this.scale = scale;
-	propertyChangeListeners.firePropertyChange("scale", old, scale);
+        if (((Comparable) Operations.inf.apply(scale)).compareTo(Values.ZERO) <= 0)
+            throw new IllegalArgumentException("Scales must neither negative nor 0");
+        Vector old = this.scale;
+        this.scale = scale;
+        propertyChangeListeners.firePropertyChange("scale", old, scale);
     } 
 
     /**
      * Set the scale such that at least a specified number of marks is visible on each axis.
      */
     public void setScaleMarks(double marks) {
-	final Values vf = Values.getDefaultInstance(); 
-	Vector scale = vf.newInstance(range.min.dimension());
-	for (int i = 0; i < scale.dimension(); i++)
-	    //@todo round to get more regular results. Perhaps n scales at the shortest axis, and the same scales at the longer axes
-	    scale.set(i, vf.valueOf(MathUtilities.ceily((((Number) range.max.get(i)).doubleValue() - ((Number) range.min.get(i)).doubleValue()) / marks, MathUtilities.precisionFor(range.getLength(i), 0.1))));
-	setScale(scale);
+        final Values vf = Values.getDefaultInstance(); 
+        Vector scale = vf.newInstance(range.min.dimension());
+        for (int i = 0; i < scale.dimension(); i++)
+            //@todo round to get more regular results. Perhaps n scales at the shortest axis, and the same scales at the longer axes
+            scale.set(i, vf.valueOf(MathUtilities.ceily((((Number) range.max.get(i)).doubleValue() - ((Number) range.min.get(i)).doubleValue()) / marks, MathUtilities.precisionFor(range.getLength(i), 0.1))));
+        setScale(scale);
     } 
 
     /**
      * Get the visible range to be displayed.
      */
     public Range getRange() {
-	return range;
+        return range;
     } 
 
     /**
      * Set the visible range to be displayed.
      */
     public void setRange(Range range) {
-	Range old = this.range;
-	this.range = range;
-	propertyChangeListeners.firePropertyChange("range", old, range);
+        Range old = this.range;
+        this.range = range;
+        propertyChangeListeners.firePropertyChange("range", old, range);
     } 
 
     /**
      * Whether rainbow colors are used for graphs that have no color setting.
      */
     public boolean isRainbow() {
-	return rainbow;
+        return rainbow;
     } 
 
     /**
@@ -189,9 +189,9 @@ public class ChartModel implements Serializable {
      * @see #nextRainbowColor()
      */
     public void setRainbow(boolean rainbowize) {
-	boolean old = this.rainbow;
-	this.rainbow = rainbowize;
-	propertyChangeListeners.firePropertyChange("rainbow", old, rainbow);
+        boolean old = this.rainbow;
+        this.rainbow = rainbowize;
+        propertyChangeListeners.firePropertyChange("rainbow", old, rainbow);
     } 
 
 
@@ -201,13 +201,13 @@ public class ChartModel implements Serializable {
      * @see #isRainbow()
      */
     private float nextRainbowColor() {
-	// TODO: calculate optimal m, s values
-	// float rainbowColor = (rainbowColor+.3107f)%1.0f,		// intuitive
-	rainbowColor = (rainbowColor + rainbowStride) % rainbowModulus;
-	return rainbowColor / (float) rainbowModulus;
+        // TODO: calculate optimal m, s values
+        // float rainbowColor = (rainbowColor+.3107f)%1.0f,             // intuitive
+        rainbowColor = (rainbowColor + rainbowStride) % rainbowModulus;
+        return rainbowColor / (float) rainbowModulus;
     } 
-    private static final int			rainbowModulus = 64;
-    private static final int			rainbowStride = 87;
+    private static final int                    rainbowModulus = 64;
+    private static final int                    rainbowStride = 87;
 
 
     /**
@@ -215,16 +215,16 @@ public class ChartModel implements Serializable {
      */
     private final PropertyChangeSupport propertyChangeListeners = new PropertyChangeSupport(this);
     public void addPropertyChangeListener(PropertyChangeListener listener) {
-	propertyChangeListeners.addPropertyChangeListener(listener);
+        propertyChangeListeners.addPropertyChangeListener(listener);
     } 
     public void removePropertyChangeListener(PropertyChangeListener listener) {
-	propertyChangeListeners.removePropertyChangeListener(listener);
+        propertyChangeListeners.removePropertyChangeListener(listener);
     } 
     public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-	propertyChangeListeners.addPropertyChangeListener(propertyName, listener);
+        propertyChangeListeners.addPropertyChangeListener(propertyName, listener);
     } 
     public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-	propertyChangeListeners.removePropertyChangeListener(propertyName, listener);
+        propertyChangeListeners.removePropertyChangeListener(propertyName, listener);
     } 
 
 
@@ -235,37 +235,37 @@ public class ChartModel implements Serializable {
      * @param attributes map of attributes how graph should be displayed. Use <code>null</code> if for no attributes.
      */
     public void add(Object graph, Map attributes) {
-	if (rainbow) {
-	    if (attributes == null)
-		attributes = new HashMap();
-	    if (!attributes.containsKey("color"))
-		attributes.put("color", Color.getHSBColor(nextRainbowColor(), 0.9f, 0.8f));
-	} 
-	graphs.add(new Entry(graph, attributes));
-	propertyChangeListeners.firePropertyChange("graphs", null, graphs);	   // forget about remembering the old value
+        if (rainbow) {
+            if (attributes == null)
+                attributes = new HashMap();
+            if (!attributes.containsKey("color"))
+                attributes.put("color", Color.getHSBColor(nextRainbowColor(), 0.9f, 0.8f));
+        } 
+        graphs.add(new Entry(graph, attributes));
+        propertyChangeListeners.firePropertyChange("graphs", null, graphs);        // forget about remembering the old value
     } 
 
     /**
      * Add a new graph to be displayed without attributes.
      */
     public void add(Object graph) {
-	add(graph, null);
+        add(graph, null);
     } 
 
     /**
      * Remove a graph.
      */
     public void remove(int index) {
-	graphs.remove(index);
-	propertyChangeListeners.firePropertyChange("graphs", null, graphs);	   // forget about remembering the old value
+        graphs.remove(index);
+        propertyChangeListeners.firePropertyChange("graphs", null, graphs);        // forget about remembering the old value
     } 
 
     /**
      * Remove all graphs.
      */
     public void removeAll() {
-	graphs.clear();
-	propertyChangeListeners.firePropertyChange("graphs", null, graphs);	   // forget about remembering the old value
+        graphs.clear();
+        propertyChangeListeners.firePropertyChange("graphs", null, graphs);        // forget about remembering the old value
     } 
 
     /**
@@ -276,12 +276,12 @@ public class ChartModel implements Serializable {
      * @see #getGraphs()
      */
     public List graphList() {
-	List list = new ArrayList();
-	for (Iterator i = graphs.iterator(); i.hasNext(); ) {
-	    Entry e = (Entry) i.next();
-	    list.add(e.getGraph());
-	} 
-	return Collections.unmodifiableList(list);
+        List list = new ArrayList();
+        for (Iterator i = graphs.iterator(); i.hasNext(); ) {
+            Entry e = (Entry) i.next();
+            list.add(e.getGraph());
+        } 
+        return Collections.unmodifiableList(list);
     } 
 
     /**
@@ -292,12 +292,12 @@ public class ChartModel implements Serializable {
      * @see #getGraphs()
      */
     public List attributeList() {
-	List list = new ArrayList();
-	for (Iterator i = graphs.iterator(); i.hasNext(); ) {
-	    Entry e = (Entry) i.next();
-	    list.add(e.getAttributes());
-	} 
-	return Collections.unmodifiableList(list);
+        List list = new ArrayList();
+        for (Iterator i = graphs.iterator(); i.hasNext(); ) {
+            Entry e = (Entry) i.next();
+            list.add(e.getAttributes());
+        } 
+        return Collections.unmodifiableList(list);
     } 
 
 
@@ -309,97 +309,97 @@ public class ChartModel implements Serializable {
      * is set to default.
      */
     public void setAutoScaling() {
-	Vector min = null;
-	Vector max = null;
-	final Values vf = Values.getDefaultInstance(); 
+        Vector min = null;
+        Vector max = null;
+        final Values vf = Values.getDefaultInstance(); 
 
-	// find minimum and maximum (x|y)-values from matrices
-	for (Iterator i = graphs.iterator(); i.hasNext(); ) {
-	    Entry  e = (Entry) i.next();
-	    Object o = e.getGraph();
-	    if (o instanceof Matrix) {
-		Matrix A = (Matrix) o;
+        // find minimum and maximum (x|y)-values from matrices
+        for (Iterator i = graphs.iterator(); i.hasNext(); ) {
+            Entry  e = (Entry) i.next();
+            Object o = e.getGraph();
+            if (o instanceof Matrix) {
+                Matrix A = (Matrix) o;
 
-		// enlarge min vector if this points Matrix is broader, preserve values
-		if (min == null)
-		    min = (Vector) A.getRow(0).clone();
-		else
-		    while (A.dimension().width > min.dimension())
-			min = min.insert(A.get(0, min.dimension()));
+                // enlarge min vector if this points Matrix is broader, preserve values
+                if (min == null)
+                    min = (Vector) A.getRow(0).clone();
+                else
+                    while (A.dimension().width > min.dimension())
+                        min = min.insert(A.get(0, min.dimension()));
 
-		// enlarge max vector if this points Matrix is broader, preserve values
-		if (max == null)
-		    max = (Vector) A.getRow(0).clone();
-		else
-		    while (A.dimension().width > max.dimension())
-			max = max.insert(A.get(0, min.dimension()));
+                // enlarge max vector if this points Matrix is broader, preserve values
+                if (max == null)
+                    max = (Vector) A.getRow(0).clone();
+                else
+                    while (A.dimension().width > max.dimension())
+                        max = max.insert(A.get(0, min.dimension()));
 
-		// adapt minimum and maximum values
-		//@todo rewrite pure functional
-		for (int c = 0; c < A.dimension().width; c++) {
-		    Vector     col = A.getColumn(c);
-		    Arithmetic m = (Arithmetic) Operations.inf.apply(col);
-		    if (((Comparable) m).compareTo(min.get(c)) < 0)
-			min.set(c, m);
-		    Arithmetic M = (Arithmetic) Operations.sup.apply(col);
-		    if (((Comparable) M).compareTo(max.get(c)) > 0)
-			max.set(c, M);
-		} 
-	    }
-	} 
+                // adapt minimum and maximum values
+                //@todo rewrite pure functional
+                for (int c = 0; c < A.dimension().width; c++) {
+                    Vector     col = A.getColumn(c);
+                    Arithmetic m = (Arithmetic) Operations.inf.apply(col);
+                    if (((Comparable) m).compareTo(min.get(c)) < 0)
+                        min.set(c, m);
+                    Arithmetic M = (Arithmetic) Operations.sup.apply(col);
+                    if (((Comparable) M).compareTo(max.get(c)) > 0)
+                        max.set(c, M);
+                } 
+            }
+        } 
 
-	// use default x-values otherwise (when no Matrix wass found)
-	if (min == null || max == null) {
-	    min = vf.valueOf(new double[] {-4, 0});
-	    max = vf.valueOf(new double[] {+4, 0});
-	}
-
-	// for getSpecifiedPrecision to work, we need to set this right now
-	range = new Range(min, max);
-
-	// find minimum and maximum y-values from functions
-	for (Iterator i = graphs.iterator(); i.hasNext(); ) {
-	    Entry  e = (Entry) i.next();
-	    Object o = e.getGraph();
-	    if (o instanceof Function) {
-		Function f = (Function) o;
-		double precision = getSpecifiedPrecision(e.getAttributes(), DEFAULT_PRECISION_POINTS);
-		//@todo How to determine "bound" min f(x) and max f(x) that do not consider infinite singularities?
-		for (double t = ((Real) min.get(0)).doubleValue(); t < ((Real)max.get(0)).doubleValue(); t += precision) {
-		    Arithmetic v = (Arithmetic) f.apply(vf.valueOf(t + precision));
-		    if (!(v instanceof Scalar))
-			// can only handle functions R->R, here.
-			break;
-		    // adapt minimum and maximum y-values
-		    if (((Comparable) v).compareTo(min.get(1)) < 0)
-			min.set(1, v);
-		    if (((Comparable) v).compareTo(max.get(1)) > 0)
-			max.set(1, v);
-		} 
-	    }
+        // use default x-values otherwise (when no Matrix wass found)
+        if (min == null || max == null) {
+            min = vf.valueOf(new double[] {-4, 0});
+            max = vf.valueOf(new double[] {+4, 0});
         }
 
-	range = new Range(min, max);
+        // for getSpecifiedPrecision to work, we need to set this right now
+        range = new Range(min, max);
 
-	// standard scale: 10 marks
-	setScaleMarks(10);
-	setRange(new Range(min.subtract(scale.scale(vf.valueOf(.3))), max.add(scale.scale(vf.valueOf(.3)))));
+        // find minimum and maximum y-values from functions
+        for (Iterator i = graphs.iterator(); i.hasNext(); ) {
+            Entry  e = (Entry) i.next();
+            Object o = e.getGraph();
+            if (o instanceof Function) {
+                Function f = (Function) o;
+                double precision = getSpecifiedPrecision(e.getAttributes(), DEFAULT_PRECISION_POINTS);
+                //@todo How to determine "bound" min f(x) and max f(x) that do not consider infinite singularities?
+                for (double t = ((Real) min.get(0)).doubleValue(); t < ((Real)max.get(0)).doubleValue(); t += precision) {
+                    Arithmetic v = (Arithmetic) f.apply(vf.valueOf(t + precision));
+                    if (!(v instanceof Scalar))
+                        // can only handle functions R->R, here.
+                        break;
+                    // adapt minimum and maximum y-values
+                    if (((Comparable) v).compareTo(min.get(1)) < 0)
+                        min.set(1, v);
+                    if (((Comparable) v).compareTo(max.get(1)) > 0)
+                        max.set(1, v);
+                } 
+            }
+        }
+
+        range = new Range(min, max);
+
+        // standard scale: 10 marks
+        setScaleMarks(10);
+        setRange(new Range(min.subtract(scale.scale(vf.valueOf(.3))), max.add(scale.scale(vf.valueOf(.3)))));
     } 
 
     double getSpecifiedPrecision(Map attribs, int defaultPrecisionPoints) {
-	int precisionPoints = defaultPrecisionPoints;
-	if (attribs != null) {
-	    Number prec = (Number) attribs.get("precisionPoints");
-	    if (prec != null) 
-		precisionPoints = prec.intValue();
-	}
-	double precision = (((Real)range.max.get(0)).doubleValue() - ((Real)range.min.get(0)).doubleValue()) / precisionPoints;
-	if (attribs != null) {
-	    Number prec = (Number) attribs.get("precision");
-	    if (prec != null)
-		precision = prec.doubleValue();
-    	}
-    	return precision;
+        int precisionPoints = defaultPrecisionPoints;
+        if (attribs != null) {
+            Number prec = (Number) attribs.get("precisionPoints");
+            if (prec != null) 
+                precisionPoints = prec.intValue();
+        }
+        double precision = (((Real)range.max.get(0)).doubleValue() - ((Real)range.min.get(0)).doubleValue()) / precisionPoints;
+        if (attribs != null) {
+            Number prec = (Number) attribs.get("precision");
+            if (prec != null)
+                precision = prec.doubleValue();
+        }
+        return precision;
     }
 
     /**
@@ -413,49 +413,49 @@ public class ChartModel implements Serializable {
      * @author  Andr&eacute; Platzer
      */
     public class Entry implements Serializable {
-	private static final long serialVersionUID = -3709330542731558305L;
-	/**
-	 * @serial
-	 */
-	private Object graph;
+        private static final long serialVersionUID = -3709330542731558305L;
+        /**
+         * @serial
+         */
+        private Object graph;
 
-	/**
-	 * @serial
-	 */
-	private Map	 attributes;
-	public Entry(Object graph, Map attributes) {
-	    this.graph = graph;
-	    this.attributes = attributes;
-	}
-	Entry() {
-	    this(null, null);
-	}
+        /**
+         * @serial
+         */
+        private Map      attributes;
+        public Entry(Object graph, Map attributes) {
+            this.graph = graph;
+            this.attributes = attributes;
+        }
+        Entry() {
+            this(null, null);
+        }
 
-	public Object getGraph() {
-	    return graph;
-	} 
-	public void setGraph(Object graph) {
-	    this.graph = graph;
-	} 
+        public Object getGraph() {
+            return graph;
+        } 
+        public void setGraph(Object graph) {
+            this.graph = graph;
+        } 
 
-	public Map getAttributes() {
-	    return attributes;
-	} 
-	public void setAttributes(Map attributes) {
-	    this.attributes = attributes;
-	} 
+        public Map getAttributes() {
+            return attributes;
+        } 
+        public void setAttributes(Map attributes) {
+            this.attributes = attributes;
+        } 
 
-	public boolean equals(Object o) {
-	    if (o instanceof Entry) {
-		Entry e = (Entry) o;
-		return Utility.equals(getGraph(), e.getGraph())
-		    && Utility.equals(getAttributes(), e.getAttributes());
-	    } 
-	    return false;
-	} 
+        public boolean equals(Object o) {
+            if (o instanceof Entry) {
+                Entry e = (Entry) o;
+                return Utility.equals(getGraph(), e.getGraph())
+                    && Utility.equals(getAttributes(), e.getAttributes());
+            } 
+            return false;
+        } 
 
-	public int hashCode() {
-	    return Utility.hashCode(getGraph()) ^ Utility.hashCode(getAttributes());
-	} 
+        public int hashCode() {
+            return Utility.hashCode(getGraph()) ^ Utility.hashCode(getAttributes());
+        } 
     }
 }

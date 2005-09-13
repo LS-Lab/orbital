@@ -41,12 +41,12 @@ public class QueuedSequenceIterator implements Iterator/*<A>*/, Serializable {
      * The current iterator in <code>iterators</code> whose elements we return.
      * @serial
      */
-    private Iterator/*<A>*/	   current;
+    private Iterator/*<A>*/        current;
     /**
      * The iterator in <code>iterators</code> used to return the last element.
      * @serial
      */
-    private Iterator/*<A>*/	   lastUsed;
+    private Iterator/*<A>*/        lastUsed;
     /**
      * Create a new sequence iterator over an iterator of iterators.
      * @param iterators is an iterator over iterators whose elements this SequenceIterator will provide,
@@ -76,34 +76,34 @@ public class QueuedSequenceIterator implements Iterator/*<A>*/, Serializable {
     }
 
     public boolean hasNext() {
-    	while (true) {
-	    if (current != null && current.hasNext())
-		return true;
-	    if (!iterators.isEmpty()) {
-		if ((current = (Iterator) iterators.remove(0)) == null)
-		    throw new NullPointerException("null is not an iterator");
-	    } else
-		return false;
-    	}
+        while (true) {
+            if (current != null && current.hasNext())
+                return true;
+            if (!iterators.isEmpty()) {
+                if ((current = (Iterator) iterators.remove(0)) == null)
+                    throw new NullPointerException("null is not an iterator");
+            } else
+                return false;
+        }
     }
     public Object/*>A<*/ next() {
-    	while (true) {
-	    if (current != null && current.hasNext()) {
-		lastUsed = current;
-		return current.next();
-	    }
-	    if (!iterators.isEmpty()) {
-		if ((current = (Iterator) iterators.remove(0)) == null)
-		    throw new NullPointerException("null is not an iterator");
-	    } else
-		throw new NoSuchElementException();
-    	}
+        while (true) {
+            if (current != null && current.hasNext()) {
+                lastUsed = current;
+                return current.next();
+            }
+            if (!iterators.isEmpty()) {
+                if ((current = (Iterator) iterators.remove(0)) == null)
+                    throw new NullPointerException("null is not an iterator");
+            } else
+                throw new NoSuchElementException();
+        }
     }
     public void remove() {
-    	if (lastUsed != null)
-	    lastUsed.remove();
-    	else
-	    throw new IllegalStateException();
+        if (lastUsed != null)
+            lastUsed.remove();
+        else
+            throw new IllegalStateException();
     }
     
     // some List methods for adding iterators
@@ -112,21 +112,21 @@ public class QueuedSequenceIterator implements Iterator/*<A>*/, Serializable {
      * Append an iterator to this queued sequence iterator.
      */
     public boolean add(Object/*>Iterator<A><*/ o) {
-    	return iterators.add(o);
+        return iterators.add(o);
     }
 
     /**
      * Insert an iterator at the specified position into this queued sequence iterator.
      */
     public void add(int index, Object/*>Iterator<A><*/ o) {
-    	iterators.add(index, o);
-    	if (index == 0) {
-	    // exchange current iterator
-	    // "push" the rest of the current iteration for later use
-	    iterators.add(1, current);
-	    // use o as the new current iteration
-	    current = (Iterator) o;
-    	}
+        iterators.add(index, o);
+        if (index == 0) {
+            // exchange current iterator
+            // "push" the rest of the current iteration for later use
+            iterators.add(1, current);
+            // use o as the new current iteration
+            current = (Iterator) o;
+        }
     }
     
 }

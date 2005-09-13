@@ -73,67 +73,67 @@ public abstract class StreamMethod extends Thread implements Callback {
         streamMethodCoroutines.setDaemon(false);
     }
 
-    // against dangling threads	(empirically does not seem to be necessary)
-    //	/**
-    //	 * Controller for StreamMethod coroutines that encourages finalization
-    //	 * when number of threads in streamMethodCoroutines is high
-    //	 */
-    //	private static final Thread		 streamMethodCoroutineController = new Thread(streamMethodCoroutines, "Stream method coroutine controller") {
-    //		private final int SUSPICIOUS_THREAD_THRESHOLD = 100;
-    //		private final int CONTROLLER_ACTIVITY_PERIOD = 1000;
-    //		//@todo optimize, we can let this thread wait when activeCount()==0
-    //		public void run() {
-    //			try {
-    //    			while (true) {
-    //    				int activeThreads = Thread.activeCount();
-    //    				if (activeThreads > SUSPICIOUS_THREAD_THRESHOLD) {
+    // against dangling threads (empirically does not seem to be necessary)
+    //  /**
+    //   * Controller for StreamMethod coroutines that encourages finalization
+    //   * when number of threads in streamMethodCoroutines is high
+    //   */
+    //  private static final Thread              streamMethodCoroutineController = new Thread(streamMethodCoroutines, "Stream method coroutine controller") {
+    //          private final int SUSPICIOUS_THREAD_THRESHOLD = 100;
+    //          private final int CONTROLLER_ACTIVITY_PERIOD = 1000;
+    //          //@todo optimize, we can let this thread wait when activeCount()==0
+    //          public void run() {
+    //                  try {
+    //                          while (true) {
+    //                                  int activeThreads = Thread.activeCount();
+    //                                  if (activeThreads > SUSPICIOUS_THREAD_THRESHOLD) {
     //                        System.runFinalization();
     //                        System.gc();
     //                        logger.log(Level.FINER, "run finalization due to {0} threads", new Integer(activeThreads));
     //                        //@todo yield to finalizer such that he has max priority (priority inheritance)
     //                        Thread.yield();
-    //    				} else if (activeThreads == 0)
-    //    					;	// wait for the next Thread in our ThreadGroup to appear, instead of just sleeping a period
-    //    				Thread.sleep(CONTROLLER_ACTIVITY_PERIOD);
-    //    			}
-    //    		}
-    //    		catch (InterruptedException irq) {
-    //				Thread.currentThread().interrupt();
-    //    		}
-    //		}
-    //	};
-    //	static {
+    //                                  } else if (activeThreads == 0)
+    //                                          ;       // wait for the next Thread in our ThreadGroup to appear, instead of just sleeping a period
+    //                                  Thread.sleep(CONTROLLER_ACTIVITY_PERIOD);
+    //                          }
+    //                  }
+    //                  catch (InterruptedException irq) {
+    //                          Thread.currentThread().interrupt();
+    //                  }
+    //          }
+    //  };
+    //  static {
     //        // if coroutines are the only threads left, then nobody seems to need them anymore, so quit
     //        streamMethodCoroutineController.setDaemon(true);
     //        // ordinary priority for streamMethodCoroutineController, because otherwise (higher priority) we might end up controlling finalization only, because we really need 3000 Threads. Or (lower priority) the controller would never get the chance to improve anything at all
     //    }
-		
-	
+                
+        
     /**
      * For autonumbering anonymous threads.
      */
     private static int streamMethodInitNumber;
     private static synchronized int nextStreamMethodNum() {
-	return streamMethodInitNumber++;
+        return streamMethodInitNumber++;
     }
 
     /**
      * Whether this stream method is a synchronous or asynchronous (i.e. concurrent) connector.
      * @serial
      */
-    private final boolean			 synchronousConnector;
+    private final boolean                        synchronousConnector;
 
     /**
      * The queued iterator stream buffering the results.
      * @serial
      */
-    private QueuedIterator			 resultStream;
+    private QueuedIterator                       resultStream;
 
     /**
      * Construct this StreamMethod as a synchronous coroutine stream connector.
      */
     protected StreamMethod() {
-	this(true);
+        this(true);
     }
 
     /**
@@ -147,15 +147,15 @@ public abstract class StreamMethod extends Thread implements Callback {
      *  big buffer for the results, whether they will ever be used or not.</p>
      */
     protected StreamMethod(boolean synchronousConnector) {
-	super(streamMethodCoroutines, "StreamMethod-" + nextStreamMethodNum());
+        super(streamMethodCoroutines, "StreamMethod-" + nextStreamMethodNum());
         // if coroutines are the only threads left, then nobody seems to need them anymore, so quit
         setDaemon(true);
-	this.synchronousConnector = synchronousConnector;
-	this.resultStream = synchronousConnector
-	    ? new ResumingQueuedIterator(this)
-	    : new InquiringQueuedIterator(this);
-	//		if (!streamMethodCoroutineController.isAlive())
-	//	        streamMethodCoroutineController.start();
+        this.synchronousConnector = synchronousConnector;
+        this.resultStream = synchronousConnector
+            ? new ResumingQueuedIterator(this)
+            : new InquiringQueuedIterator(this);
+        //              if (!streamMethodCoroutineController.isAlive())
+        //              streamMethodCoroutineController.start();
     }
 
     /**
@@ -166,12 +166,12 @@ public abstract class StreamMethod extends Thread implements Callback {
      * @return a stream iterator containing the return values of this coroutine.
      */
     public Iterator apply() {
-	// to prevent someone from setting it to null just because run is already done
-	QueuedIterator moribund = resultStream;
-	if (synchronousConnector)
-	    safeSuspend();
-	start();
-	return moribund;
+        // to prevent someone from setting it to null just because run is already done
+        QueuedIterator moribund = resultStream;
+        if (synchronousConnector)
+            safeSuspend();
+        start();
+        return moribund;
     } 
 
     /**
@@ -182,23 +182,23 @@ public abstract class StreamMethod extends Thread implements Callback {
      * @param ret the return-value to pass to the caller
      */
     protected void resumedReturn(Object ret) {
-	synchronized (this) {
-	    resultStream.add(ret);
-	    requested = false;
+        synchronized (this) {
+            resultStream.add(ret);
+            requested = false;
 
-	    logger.log(Level.FINER, "< resumedReturn ", ret);
-	    notifyAll();	// notify of new data
-	} 
+            logger.log(Level.FINER, "< resumedReturn ", ret);
+            notifyAll();        // notify of new data
+        } 
 
-	// let other threads do their job as well
-	Thread.yield();
+        // let other threads do their job as well
+        Thread.yield();
 
-	// sychronous connectors can pause now
-	if (synchronousConnector && !requested)
-	    safeSuspend();
-	checkSuspend();
+        // sychronous connectors can pause now
+        if (synchronousConnector && !requested)
+            safeSuspend();
+        checkSuspend();
 
-	logger.log(Level.FINER, "> resume ... ", ret);
+        logger.log(Level.FINER, "> resume ... ", ret);
     } 
 
     private volatile boolean requested = false;
@@ -207,23 +207,23 @@ public abstract class StreamMethod extends Thread implements Callback {
      * Request next data forcing resume and wait if necessary.
      */
     public void request() {
-	if (isAlive()) {		 // could still produce stream data
-	    requested = true;
-	    if (isSuspended())
-		safeResume();	 // wake up to produce new stream data
+        if (isAlive()) {                 // could still produce stream data
+            requested = true;
+            if (isSuspended())
+                safeResume();    // wake up to produce new stream data
 
-	    // if we have do not have any data but still have a chance to get some, wait
-	    // XXX: synchronized checking for isEmpty or using sychronized collection?
-	    try {
-		while (resultStream != null && resultStream.isEmpty()) {
-		    synchronized (this) {
-			wait();	   // wait for resumedReturn or permanent end of stream
-		    } 
-		} 
-	    } catch (InterruptedException irq) {
-		Thread.currentThread().interrupt();
-	    } 
-	} 
+            // if we have do not have any data but still have a chance to get some, wait
+            // XXX: synchronized checking for isEmpty or using sychronized collection?
+            try {
+                while (resultStream != null && resultStream.isEmpty()) {
+                    synchronized (this) {
+                        wait();    // wait for resumedReturn or permanent end of stream
+                    } 
+                } 
+            } catch (InterruptedException irq) {
+                Thread.currentThread().interrupt();
+            } 
+        } 
     } 
 
     /**
@@ -237,13 +237,13 @@ public abstract class StreamMethod extends Thread implements Callback {
      * Do not call, directly.
      */
     public final void run() {
-	checkSuspend();
-	runStream();
-	logger.log(Level.FINEST, "< return and exit");
-	synchronized (this) {
-	    resultStream = null;	// mark permanent end of stream
-	    notifyAll();			// notify of permanent end of stream
-	} 
+        checkSuspend();
+        runStream();
+        logger.log(Level.FINEST, "< return and exit");
+        synchronized (this) {
+            resultStream = null;        // mark permanent end of stream
+            notifyAll();                        // notify of permanent end of stream
+        } 
     } 
 
     // Safe suspension implementation
@@ -252,7 +252,7 @@ public abstract class StreamMethod extends Thread implements Callback {
      * Common suspension lock.
      * @serial
      */
-    private Object			 suspension = new Object();
+    private Object                       suspension = new Object();
 
     /**
      * Whether we are suspended.
@@ -268,9 +268,9 @@ public abstract class StreamMethod extends Thread implements Callback {
      * @see Thread#suspend()
      */
     protected final void safeSuspend() {
-	synchronized (suspension) {
-	    suspended = true;
-	} 
+        synchronized (suspension) {
+            suspended = true;
+        } 
     } 
 
     /**
@@ -278,40 +278,40 @@ public abstract class StreamMethod extends Thread implements Callback {
      * @see Thread#resume()
      */
     protected final void safeResume() {
-	synchronized (suspension) {
-	    if (!suspended)
-		return;
-	    suspended = false;
-	    suspension.notify();
-	} 
+        synchronized (suspension) {
+            if (!suspended)
+                return;
+            suspended = false;
+            suspension.notify();
+        } 
     } 
 
     /**
      * Whether this thread is safely suspended
      */
     protected final boolean isSuspended() {
-	synchronized (suspension) {
-	    return suspended;
-	} 
+        synchronized (suspension) {
+            return suspended;
+        } 
     } 
 
     /**
      * Checks for suspend and if safe suspended, then waits in a loop.
      */
     private final void checkSuspend() {
-	if (suspended)
-	    try {
-		synchronized (suspension) {
-		    // wait loop when we are (safe) suspended
-		    while (suspended) {
-			suspension.wait();
-			assert !suspended : "if we wait, we should only wake up when we are not suspended any more";
-		    } 
-		} 
-	    } catch (InterruptedException irq) {
-		logger.log(Level.WARNING, "safeSuspend/resumedReturn() had wait interrupted", irq);
-		Thread.currentThread().interrupt();
-	    } 
+        if (suspended)
+            try {
+                synchronized (suspension) {
+                    // wait loop when we are (safe) suspended
+                    while (suspended) {
+                        suspension.wait();
+                        assert !suspended : "if we wait, we should only wake up when we are not suspended any more";
+                    } 
+                } 
+            } catch (InterruptedException irq) {
+                logger.log(Level.WARNING, "safeSuspend/resumedReturn() had wait interrupted", irq);
+                Thread.currentThread().interrupt();
+            } 
     } 
 
     /**
@@ -319,11 +319,11 @@ public abstract class StreamMethod extends Thread implements Callback {
      * @see Thread#stop()
      */
     final void safeStop() {
-	logger.log(Level.FINER, "stop coroutine");
-	// when we are the last thread and blocked (alias safe suspended in checkSuspend()) then we must stop in order for our daemon thread group to stop and quit the virtual machine. But this is already achieved by making only this thread as a daemon!
-	this.interrupt();
-	// let this thread at least have a short chance of packing our things and go
-	Thread.yield(/*this*/);
+        logger.log(Level.FINER, "stop coroutine");
+        // when we are the last thread and blocked (alias safe suspended in checkSuspend()) then we must stop in order for our daemon thread group to stop and quit the virtual machine. But this is already achieved by making only this thread as a daemon!
+        this.interrupt();
+        // let this thread at least have a short chance of packing our things and go
+        Thread.yield(/*this*/);
     }
 
 
@@ -354,26 +354,26 @@ class InquiringQueuedIterator extends QueuedIterator {
      * @serial
      */
     private final StreamMethod method;
-	
+        
     protected final StreamMethod getMethod() {
-	return method;
+        return method;
     }
 
     public InquiringQueuedIterator(StreamMethod method) {
-	super(false);
-	this.method = method;
+        super(false);
+        this.method = method;
     }
 
     public boolean hasNext() {
-	if (super.hasNext())
-	    return true;
-	getMethod().request();
-	return super.hasNext();
+        if (super.hasNext())
+            return true;
+        getMethod().request();
+        return super.hasNext();
     } 
     public Object next() {
-	if (!hasNext())
-	    throw new NoSuchElementException();
-	return super.next();
+        if (!hasNext())
+            throw new NoSuchElementException();
+        return super.next();
     } 
 }
 
@@ -383,7 +383,7 @@ class InquiringQueuedIterator extends QueuedIterator {
 // TODO: do we need this class?
 class ResumingQueuedIterator extends InquiringQueuedIterator {
     public ResumingQueuedIterator(StreamMethod method) {
-	super(method);
+        super(method);
     }
 
     /*
@@ -392,17 +392,17 @@ class ResumingQueuedIterator extends InquiringQueuedIterator {
       return super.next();
       }
     */
-	 
+         
     /**
      * If no client requires this iterator any more, this object should be finalized.
      * Then we (at least try to) stop the stream method thread.
      */
     protected void finalize() throws Throwable {
-	getMethod().safeStop();
-	// how about .stop() as well, because if the thread never gets running again, it will never have a chance to pack his things and go. However, if we simply stop the whole thing, any locks that the thread obtains will not get unlocked.
-	//Thread.yield() was already called in safeStop()
-	getMethod().stop();
-	super.finalize();
-	StreamMethod.logger.log(Level.FINER, "finalizing {0}", getMethod());
+        getMethod().safeStop();
+        // how about .stop() as well, because if the thread never gets running again, it will never have a chance to pack his things and go. However, if we simply stop the whole thing, any locks that the thread obtains will not get unlocked.
+        //Thread.yield() was already called in safeStop()
+        getMethod().stop();
+        super.finalize();
+        StreamMethod.logger.log(Level.FINER, "finalizing {0}", getMethod());
     }
 }

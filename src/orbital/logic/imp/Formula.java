@@ -100,9 +100,9 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
     //@xxx move to Expression? and document (implementation necessary for TRS' fixedPoints and perhaps unification to work)
     boolean equals(Object o);
     int hashCode();
-	
+        
     // Get/Set Methods
-	
+        
     /**
      * Get the set of the free variables of this formula.
      * <p>
@@ -236,7 +236,7 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      * @return FV(this).
      */
     Set/*_<Symbol>_*/ getFreeVariables();
-	
+        
     /**
      * Get the set of the bound variables of this formula.
      * <p>

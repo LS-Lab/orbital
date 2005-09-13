@@ -53,7 +53,7 @@ public abstract class Combinatorical /*implements ListIterator<int[]> like*/ imp
     public abstract int[] previous();
 
     // facade factory
-	
+        
     /**
      * Get a combinatorical instance.
      * @param r the size of the tuples.
@@ -68,7 +68,7 @@ public abstract class Combinatorical /*implements ListIterator<int[]> like*/ imp
      * @see #getCombinations(int, int, boolean)
      */
     public static Combinatorical getInstance(int r, boolean combinations, int n, boolean repetition) {
-	return combinations ? getCombinations(r, n, repetition) : getPermutations(r, n, repetition);
+        return combinations ? getCombinations(r, n, repetition) : getPermutations(r, n, repetition);
     }
 
     /**
@@ -81,10 +81,10 @@ public abstract class Combinatorical /*implements ListIterator<int[]> like*/ imp
      *  those without repetition contain n<b>P</b>r tuples.
      */
     public static Combinatorical getPermutations(int r, int n, boolean repetition) {
-	return repetition ? (Combinatorical) new RepetitivePermutation(r, n) : (Combinatorical) new NonrepetitivePermutation(r, n);
+        return repetition ? (Combinatorical) new RepetitivePermutation(r, n) : (Combinatorical) new NonrepetitivePermutation(r, n);
     }
     public static Combinatorical getPermutations(int n, boolean repetition) {
-	return getPermutations(n, n, repetition);
+        return getPermutations(n, n, repetition);
     }
     /**
      * Get all (generalized) permutations elements.
@@ -92,7 +92,7 @@ public abstract class Combinatorical /*implements ListIterator<int[]> like*/ imp
      *  and n[i] is the number of elements choosable for the element at index i of the tuple.
      */
     public static Combinatorical getPermutations(int[] n) {
-	return new GeneralizedPermutation(n);
+        return new GeneralizedPermutation(n);
     }
 
     /**
@@ -107,106 +107,106 @@ public abstract class Combinatorical /*implements ListIterator<int[]> like*/ imp
      *  those without repetition contain n<b>C</b>r = <big>(</big><span class="doubleIndex"><sup>n</sup><sub>r</sub></span><big>)</big> tuples.
      */
     public static Combinatorical getCombinations(int r, int n, boolean repetition) {
-	return repetition ? (Combinatorical) new RepetitiveCombination(r, n) : new NonrepetitiveCombination(r, n);
+        return repetition ? (Combinatorical) new RepetitiveCombination(r, n) : new NonrepetitiveCombination(r, n);
     }
 
     /**
      * Get an iterator view of a combinatorical iterator.
      */
     public static final ListIterator asIterator(final Combinatorical c) {
-	return new ListIterator() {
-		// Code for delegation of java.util.Iterator methods to c
+        return new ListIterator() {
+                // Code for delegation of java.util.Iterator methods to c
 
-		public String toString()
-		{
-		    return c.toString();
-		}
+                public String toString()
+                {
+                    return c.toString();
+                }
 
-		/**
-		 *
-		 * @return <description>
-		 * @see orbital.algorithm.Combinatorical#next()
-		 */
-		public Object next()
-		{
-		    return c.next();
-		}
+                /**
+                 *
+                 * @return <description>
+                 * @see orbital.algorithm.Combinatorical#next()
+                 */
+                public Object next()
+                {
+                    return c.next();
+                }
 
-		/**
-		 *
-		 * @return <description>
-		 * @see orbital.algorithm.Combinatorical#hasNext()
-		 */
-		public boolean hasNext()
-		{
-		    return c.hasNext();
-		}
+                /**
+                 *
+                 * @return <description>
+                 * @see orbital.algorithm.Combinatorical#hasNext()
+                 */
+                public boolean hasNext()
+                {
+                    return c.hasNext();
+                }
 
-		/**
-		 *
-		 * @return <description>
-		 * @see orbital.algorithm.Combinatorical#previous()
-		 */
-		public Object previous()
-		{
-		    return c.previous();
-		}
+                /**
+                 *
+                 * @return <description>
+                 * @see orbital.algorithm.Combinatorical#previous()
+                 */
+                public Object previous()
+                {
+                    return c.previous();
+                }
 
-		/**
-		 *
-		 * @return <description>
-		 * @see orbital.algorithm.Combinatorical#hasPrevious()
-		 */
-		public boolean hasPrevious()
-		{
-		    return c.hasPrevious();
-		}
+                /**
+                 *
+                 * @return <description>
+                 * @see orbital.algorithm.Combinatorical#hasPrevious()
+                 */
+                public boolean hasPrevious()
+                {
+                    return c.hasPrevious();
+                }
 
-		// implementation of java.util.ListIterator interface
+                // implementation of java.util.ListIterator interface
 
-		/**
-		 *
-		 * @param param1 <description>
-		 */
-		public void add(Object param1)
-		{
-		    throw new UnsupportedOperationException();
-		}
+                /**
+                 *
+                 * @param param1 <description>
+                 */
+                public void add(Object param1)
+                {
+                    throw new UnsupportedOperationException();
+                }
 
-		/**
-		 *
-		 */
-		public void remove()
-		{
-		    throw new UnsupportedOperationException();
-		}
+                /**
+                 *
+                 */
+                public void remove()
+                {
+                    throw new UnsupportedOperationException();
+                }
 
-		/**
-		 *
-		 * @param param1 <description>
-		 */
-		public void set(Object param1)
-		{
-		    throw new UnsupportedOperationException();
-		}
+                /**
+                 *
+                 * @param param1 <description>
+                 */
+                public void set(Object param1)
+                {
+                    throw new UnsupportedOperationException();
+                }
 
-		/**
-		 *
-		 * @return <description>
-		 */
-		public int previousIndex()
-		{
-		    throw new UnsupportedOperationException();
-		}
+                /**
+                 *
+                 * @return <description>
+                 */
+                public int previousIndex()
+                {
+                    throw new UnsupportedOperationException();
+                }
 
-		/**
-		 *
-		 * @return <description>
-		 */
-		public int nextIndex()
-		{
-		    throw new UnsupportedOperationException();
-		}
-	    };
+                /**
+                 *
+                 * @return <description>
+                 */
+                public int nextIndex()
+                {
+                    throw new UnsupportedOperationException();
+                }
+            };
     }
 }

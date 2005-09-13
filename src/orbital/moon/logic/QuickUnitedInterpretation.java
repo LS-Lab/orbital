@@ -41,82 +41,82 @@ class QuickUnitedInterpretation extends InterpretationBase {
      *  i.e. if the signature of the first does not contain a symbol.
      */
     public QuickUnitedInterpretation(Interpretation i1, Interpretation i2) {
-	super(i1.getSignature());
-	this.i1 = i1;
-	this.i2 = i2;
+        super(i1.getSignature());
+        this.i1 = i1;
+        this.i2 = i2;
     }
     
     // Get/Set Properties
 
     public Signature getSignature() {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     } 
 
     public void setSignature(Signature sigma) {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     } 
 
 
     // Basic Map operations.
 
     public Object get(Object symbol) {
-	try {
-	    return i1.get(symbol);
-	}
-	catch (NoSuchElementException trial) {
-	    return i2.get(symbol);
-	}
+        try {
+            return i1.get(symbol);
+        }
+        catch (NoSuchElementException trial) {
+            return i2.get(symbol);
+        }
     } 
 
     public void clear() {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     } 
 
     public Object remove(Object symbol) {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     } 
 
     public Object put(Object symbol, Object value) {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     } 
 
     public void putAll(Map associations) {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     } 
 
     public boolean containsKey(Object symbol) {
-	try {
-	    return i1.containsKey(symbol);
-	}
-	catch (NoSuchElementException trial) {}
-	return i2.containsKey(symbol);
+        try {
+            return i1.containsKey(symbol);
+        }
+        catch (NoSuchElementException trial) {}
+        return i2.containsKey(symbol);
     }
 
     public boolean containsValue(Object v) {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     public boolean isEmpty() {
-	return i1.isEmpty() && i2.isEmpty();
+        return i1.isEmpty() && i2.isEmpty();
     }
 
     public int size() {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     public Set entrySet() {
-	//@internal optimizable
-	return Collections.unmodifiableSet(i2.union(i1).entrySet());
+        //@internal optimizable
+        return Collections.unmodifiableSet(i2.union(i1).entrySet());
     }
 
     public Set keySet() {
-	//@internal optimizable
-	return Collections.unmodifiableSet(i2.union(i1).keySet());
+        //@internal optimizable
+        return Collections.unmodifiableSet(i2.union(i1).keySet());
     }
 
     public Collection values() {
-	//@internal optimizable
-	return Collections.unmodifiableCollection(i2.union(i1).values());
+        //@internal optimizable
+        return Collections.unmodifiableCollection(i2.union(i1).values());
     }
 
     // Extended operations.

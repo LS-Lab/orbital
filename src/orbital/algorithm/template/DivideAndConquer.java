@@ -22,7 +22,7 @@ import orbital.math.functional.Functions;
  */
 public class DivideAndConquer implements AlgorithmicTemplate {
     public Object solve(AlgorithmicProblem p) {
-	return solve((DivideAndConquerProblem) p);
+        return solve((DivideAndConquerProblem) p);
     } 
 
     /**
@@ -31,7 +31,7 @@ public class DivideAndConquer implements AlgorithmicTemplate {
      * @return the solution object as merged from the partial problems.
      */
     public Object solve(DivideAndConquerProblem p) {
-	return solveByDivideAndConquer(p);
+        return solveByDivideAndConquer(p);
     } 
 
     /**
@@ -68,39 +68,39 @@ public class DivideAndConquer implements AlgorithmicTemplate {
      *       <br />
      *       &#8743; &#8707;c&lt;1 p&#8901;f([n/d]) &#8804; c&#8901;f(n) p.t. n&#8712;<b>N</b></td>
      *   </tr>
-     * </table>	 
+     * </table>  
      * Note that we can either choose [<var>n</var>/<var>d</var>] to be the gaussian floor &lfloor;<var>n</var>/<var>d</var>&rfloor;,
      * or the gaussian ceiling &lceil;<var>n</var>/<var>d</var>&rceil;,
      * with both choices achieving the same asymptotic behaviour.
      * </p>
      */
     public Function complexity() {
-	return (Function) Operations.times.apply(Functions.id, Functions.log);
+        return (Function) Operations.times.apply(Functions.id, Functions.log);
     } 
 
     public Function spaceComplexity() {
-	throw new UnsupportedOperationException("not yet implemented");
+        throw new UnsupportedOperationException("not yet implemented");
     } 
 
     /**
-     * @invariants parts is an non­empty array of partial solutions
+     * @invariants parts is an nonÂ­empty array of partial solutions
      * @postconditions solution is a merge of partial solutions.
      */
     private final Object solveByDivideAndConquer(DivideAndConquerProblem p) {
-	if (p.smallEnough()) {	  // base case
-	    return p.basicSolve();
-	} else {				  // recursion
-	    // divide problem
-	    DivideAndConquerProblem[] parts = p.divide();
-	    Object[]				  partialSolutions = new Object[parts.length];
+        if (p.smallEnough()) {    // base case
+            return p.basicSolve();
+        } else {                                  // recursion
+            // divide problem
+            DivideAndConquerProblem[] parts = p.divide();
+            Object[]                              partialSolutions = new Object[parts.length];
 
-	    // conquer partial problems independently
-	    for (int i = 0; i < parts.length; i++) {
-		partialSolutions[i] = solveByDivideAndConquer(parts[i]);
-	    } 
+            // conquer partial problems independently
+            for (int i = 0; i < parts.length; i++) {
+                partialSolutions[i] = solveByDivideAndConquer(parts[i]);
+            } 
 
-	    // merge to solution
-	    return p.merge(partialSolutions);
-	} 
+            // merge to solution
+            return p.merge(partialSolutions);
+        } 
     } 
 }

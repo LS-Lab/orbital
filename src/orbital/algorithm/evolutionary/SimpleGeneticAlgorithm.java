@@ -33,31 +33,31 @@ public class SimpleGeneticAlgorithm extends GeneticAlgorithm {
     }
 
     public double getPopulationGrowth() {
-	PopulationImpl population = (PopulationImpl) getPopulation();
-	return (double) population.getChildrenCount() / population.getParentCount();
+        PopulationImpl population = (PopulationImpl) getPopulation();
+        return (double) population.getChildrenCount() / population.getParentCount();
     } 
 
     // central virtual methods
 
     public void evolve() {
-	PopulationImpl population = (PopulationImpl) getPopulation();
-	PopulationImpl.DataCopy copy = null;
-	assert (copy = new PopulationImpl.DataCopy(population)) != null;
+        PopulationImpl population = (PopulationImpl) getPopulation();
+        PopulationImpl.DataCopy copy = null;
+        assert (copy = new PopulationImpl.DataCopy(population)) != null;
 
-	Population newPopulation = population.newInstance((int) Math.ceil(population.size() * getPopulationGrowth()));
-	newPopulation.setGeneticAlgorithm(this);
-	for (int j = 0; j < population.size(); j += population.getParentCount()) {
-	    Genome children[] = population.reproduce();
+        Population newPopulation = population.newInstance((int) Math.ceil(population.size() * getPopulationGrowth()));
+        newPopulation.setGeneticAlgorithm(this);
+        for (int j = 0; j < population.size(); j += population.getParentCount()) {
+            Genome children[] = population.reproduce();
     
-	    // merge children into new population
-	    for (int i = 0; i < children.length; i++)
-		newPopulation.add(children[i]);
+            // merge children into new population
+            for (int i = 0; i < children.length; i++)
+                newPopulation.add(children[i]);
 
-	    assert copy.validateReferentialIntegrity(population);
-	}
-	newPopulation.setGeneration(population.getGeneration() + 1);
-	//@xxx setPopulation does not work with the BreederControl
-	//@todo caution: Population#evaluate(boolean) is called without neccessity
-	setPopulation(newPopulation);
+            assert copy.validateReferentialIntegrity(population);
+        }
+        newPopulation.setGeneration(population.getGeneration() + 1);
+        //@xxx setPopulation does not work with the BreederControl
+        //@todo caution: Population#evaluate(boolean) is called without neccessity
+        setPopulation(newPopulation);
     } 
 }

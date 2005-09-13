@@ -24,12 +24,12 @@ import orbital.logic.functor.Function;
  */
 public
 interface Weighting extends Function/*<Object, Number>*/ {
-	//TODO: think about replacing by Function<Object, Number>
+        //TODO: think about replacing by Function<Object, Number>
 
-	/**
-	 * Is called to calculate the weight, a given situation has.
-	 * @param situation an Object describing the situation state to be weighed.
-	 * @return returns weight value of an arg.
-	 */
-	//double weight(Object situation);
+        /**
+         * Is called to calculate the weight, a given situation has.
+         * @param situation an Object describing the situation state to be weighed.
+         * @return returns weight value of an arg.
+         */
+        //double weight(Object situation);
 }

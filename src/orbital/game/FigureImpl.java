@@ -73,10 +73,10 @@ public class FigureImpl extends Figure {
      * @param legals the moves that this figure can do legally.
      */
     public FigureImpl(Field fld, int x, int y, Direction dir, int leag, int typ, Image img, Move[] legals) {
-	super(x, y, dir, leag, typ);
-	setImage(img);
-	setField(fld);
-	setLegalMoves(legals);
+        super(x, y, dir, leag, typ);
+        setImage(img);
+        setField(fld);
+        setLegalMoves(legals);
     }
 
     /**
@@ -91,7 +91,7 @@ public class FigureImpl extends Figure {
      * @param legals the moves that this figure can do legally.
      */
     public FigureImpl(int x, int y, Direction dir, int leag, int typ, Image img, Move[] legals) {
-	this(null, x, y, dir, leag, typ, img, legals);
+        this(null, x, y, dir, leag, typ, img, legals);
     }
 
     /**
@@ -105,11 +105,11 @@ public class FigureImpl extends Figure {
      * @param img the image to be displayed for this figure.
      */
     public FigureImpl(int x, int y, Direction dir, int leag, int typ, Image img) {
-	super(x, y, dir, leag, typ);
-	setImage(img);
+        super(x, y, dir, leag, typ);
+        setImage(img);
     }
     public FigureImpl(int x, int y, int leag, int typ) {
-	this(x, y, new Direction(Direction.North), leag, typ, null);
+        this(x, y, new Direction(Direction.North), leag, typ, null);
     }
 
     // get/set properties
@@ -119,28 +119,28 @@ public class FigureImpl extends Figure {
      * @return the Field-Container parent including ALL figures moving around on it.
      */
     public Field getField() {
-	return field;
+        return field;
     } 
 
     /**
      * Set the field which this figure is contained in.
      */
     protected void setField(Field f) {
-	this.field = f;
+        this.field = f;
     } 
 
     /**
      * Get the image currently used to display this figure.
      */
     public Image getImage() {
-	return image;
+        return image;
     } 
 
     /**
      * Set the image currently used to display this figure.
      */
     public void setImage(Image image) {
-	this.image = image;
+        this.image = image;
     } 
 
     /**
@@ -148,7 +148,7 @@ public class FigureImpl extends Figure {
      * Moves do also include beats.
      */
     public Move[] getLegalMoves() {
-	return legalMoves;
+        return legalMoves;
     } 
 
     /**
@@ -156,27 +156,27 @@ public class FigureImpl extends Figure {
      * Moves do also include beats.
      */
     public void setLegalMoves(Move moves[]) {
-	this.legalMoves = moves;
+        this.legalMoves = moves;
     } 
     
     public void setEmpty() {
-	super.setEmpty();
-	setImage(null);
+        super.setEmpty();
+        setImage(null);
     } 
 
     public Dimension getPreferredSize() {
-	Image image = getImage();
-	if (image == null)
-	    return null;
-	//XXX: how do we know of the Gameboard that is our ImageObserver, for images comming up later?
-	Dimension dim = new Dimension(image.getWidth(null), image.getHeight(null));
-	return dim.width >= 0 && dim.height >= 0 ? dim : null;
+        Image image = getImage();
+        if (image == null)
+            return null;
+        //XXX: how do we know of the Gameboard that is our ImageObserver, for images comming up later?
+        Dimension dim = new Dimension(image.getWidth(null), image.getHeight(null));
+        return dim.width >= 0 && dim.height >= 0 ? dim : null;
     }
 
     public void paint(Graphics g, Rectangle box) {
-	Image image = getImage();
-	if (image != null)
-	    g.drawImage(image, box.x, box.y, box.width, box.height, null);
+        Image image = getImage();
+        if (image != null)
+            g.drawImage(image, box.x, box.y, box.width, box.height, null);
     } 
 
     /**
@@ -185,7 +185,7 @@ public class FigureImpl extends Figure {
      * the elements sequentially.
      */
     public final Iterator/*_<Move>_*/ iterator() {
-	return Arrays.asList(getLegalMoves()).iterator();
+        return Arrays.asList(getLegalMoves()).iterator();
     } 
 
     /**
@@ -196,15 +196,15 @@ public class FigureImpl extends Figure {
      * @deprecated Since Orbital1.1 use {@link Figure#possibleMoves()} instead.
      */
     public final Iterator/*_<Move>_*/ iterateValid() {
-	final Move legalMoves[] = getLegalMoves();
-	final List v = new ArrayList(legalMoves.length);
-	for (int i = 0; i < legalMoves.length; i++) {
-	    Position destination = movePath(legalMoves[i]);
-	    // reaches legally => Move valid
-	    if (destination != null)
-		v.add(legalMoves[i]);
-	} 
-	return v.iterator();
+        final Move legalMoves[] = getLegalMoves();
+        final List v = new ArrayList(legalMoves.length);
+        for (int i = 0; i < legalMoves.length; i++) {
+            Position destination = movePath(legalMoves[i]);
+            // reaches legally => Move valid
+            if (destination != null)
+                v.add(legalMoves[i]);
+        } 
+        return v.iterator();
     } 
 
     /**
@@ -217,15 +217,15 @@ public class FigureImpl extends Figure {
      * @deprecated Since Orbital1.1 use {@link Figure#possibleMoves()} instead.
      */
     public final Iterator/*_<Move,Position>_*/ iterateValidPairs() {
-	final Move legalMoves[] = getLegalMoves();
-	final List v = new ArrayList(legalMoves.length);
-	for (int i = 0; i < legalMoves.length; i++) {
-	    Move     move = legalMoves[i];
-	    Position destination = movePath(move);
-	    if (destination != null)					 // reaches legally => move valid
-		v.add(new Pair/*<Move,Position>*/(move, destination));	 //@TODO: Use a Map instead? List(new KeyValuePair())
-	} 
-	return v.iterator();
+        final Move legalMoves[] = getLegalMoves();
+        final List v = new ArrayList(legalMoves.length);
+        for (int i = 0; i < legalMoves.length; i++) {
+            Move     move = legalMoves[i];
+            Position destination = movePath(move);
+            if (destination != null)                                     // reaches legally => move valid
+                v.add(new Pair/*<Move,Position>*/(move, destination));   //@TODO: Use a Map instead? List(new KeyValuePair())
+        } 
+        return v.iterator();
     } 
 
 
@@ -245,17 +245,17 @@ public class FigureImpl extends Figure {
      * @todo explicit constructive iterator?
      */
     public /*final*/ Iterator/*_<Option>_*/ possibleMoves() {
-	if (isEmpty())
-	    throw new IllegalStateException("cannot move empty figure " + this);
-	final Move legalMoves[] = getLegalMoves();
-	final List v = new ArrayList(legalMoves.length);
-	for (int i = 0; i < legalMoves.length; i++) {
-	    Move     move = legalMoves[i];
-	    Position destination = movePath(move);
-	    if (destination != null)					 // reaches legally => move valid
-		v.add(new Option(null, this, move, destination));	 //@TODO: Use a Map instead? List(new KeyValuePair())
-	} 
-	return v.iterator();
+        if (isEmpty())
+            throw new IllegalStateException("cannot move empty figure " + this);
+        final Move legalMoves[] = getLegalMoves();
+        final List v = new ArrayList(legalMoves.length);
+        for (int i = 0; i < legalMoves.length; i++) {
+            Move     move = legalMoves[i];
+            Position destination = movePath(move);
+            if (destination != null)                                     // reaches legally => move valid
+                v.add(new Option(null, this, move, destination));        //@TODO: Use a Map instead? List(new KeyValuePair())
+        } 
+        return v.iterator();
     } 
     
     // methods used to perform moves
@@ -273,20 +273,20 @@ public class FigureImpl extends Figure {
      * @see #moving(Move,Position)
      */
     public Position moveFigure(Move move) {
-	if (isEmpty())
-	    throw new IllegalStateException("cannot move empty figure " + this);
-	if (move == null)
-	    throw new NullPointerException("illegal move: " + move);
-	final Move legalMoves[] = getLegalMoves();
-	// contained in legalMoves?
-	for (int i = 0; i < legalMoves.length; i++)
-	    if (move.equals(legalMoves[i])) {
-		Position destination = movePath(move);
-		return destination != null && moving(move, destination) ? destination : null;
-	    }
-	if (logger.isLoggable(Level.FINER))
-	    logger.log(Level.FINER, "illegal move {0} for {1} not in the {3} options {2}", new Object[] {move, this, Arrays.asList(legalMoves), new Integer(legalMoves.length)});
-	throw new IllegalArgumentException("illegal move: " + move + " for " + this);
+        if (isEmpty())
+            throw new IllegalStateException("cannot move empty figure " + this);
+        if (move == null)
+            throw new NullPointerException("illegal move: " + move);
+        final Move legalMoves[] = getLegalMoves();
+        // contained in legalMoves?
+        for (int i = 0; i < legalMoves.length; i++)
+            if (move.equals(legalMoves[i])) {
+                Position destination = movePath(move);
+                return destination != null && moving(move, destination) ? destination : null;
+            }
+        if (logger.isLoggable(Level.FINER))
+            logger.log(Level.FINER, "illegal move {0} for {1} not in the {3} options {2}", new Object[] {move, this, Arrays.asList(legalMoves), new Integer(legalMoves.length)});
+        throw new IllegalArgumentException("illegal move: " + move + " for " + this);
     } 
 
     /**
@@ -307,7 +307,7 @@ public class FigureImpl extends Figure {
      *  provided that the move itself is a legal move and reaches the given position on the board.
      */
     protected boolean moving(Move move, Position destination) {
-	return true;
+        return true;
     } 
 
 
@@ -354,50 +354,50 @@ public class FigureImpl extends Figure {
      * @todo optimize this hotspot
      */
     final Position movePath(final Move move) {
-	if (move == null)
-	    throw new NullPointerException("null is not a move");
-	final Field  field = getField();
-	boolean      was_jumping = false;	  					// can jump this step
-	final Moving hyp = new Moving(this);				//@todo should we transform this to new Moving(x, y, direction.clone()) such that we don't get a Figure, here?, or to (Moving) super.clone()
-	final String movement = move.getMovementString();
-	if (!field.inRange(hyp))
-	    throw new IllegalStateException("illegal position " + this + " not on field range, so we cannot move at all");
+        if (move == null)
+            throw new NullPointerException("null is not a move");
+        final Field  field = getField();
+        boolean      was_jumping = false;                                               // can jump this step
+        final Moving hyp = new Moving(this);                            //@todo should we transform this to new Moving(x, y, direction.clone()) such that we don't get a Figure, here?, or to (Moving) super.clone()
+        final String movement = move.getMovementString();
+        if (!field.inRange(hyp))
+            throw new IllegalStateException("illegal position " + this + " not on field range, so we cannot move at all");
 
-	moves:
-	for (int i = 0; i < movement.length(); i++) {
-	    switch (movement.charAt(i)) {
-	    case Move.Teleport:
-		throw new UnsupportedOperationException("teleport not yet supported");	  // break moves;				//@TODO: what's then? How do we find the target at all
-	    case Move.Jumping:
-		was_jumping = true;
-		continue moves;
-	    case Move.Sloping:
-		i++;	// skip the step after Sloping to perform two steps as one
-		hyp.move(movement.charAt(i++));	// move first part w/o validation checks
-		break;
-	    case Move.Beating:
-		if (field.isEmpty(hyp) && !was_jumping)	// whether field.getFigure(hyp).league==league is checked later on in another method
-		    return null;
-		was_jumping = false;
-		continue moves;
-	    default:
-		break;
-	    }
+        moves:
+        for (int i = 0; i < movement.length(); i++) {
+            switch (movement.charAt(i)) {
+            case Move.Teleport:
+                throw new UnsupportedOperationException("teleport not yet supported");    // break moves;                               //@TODO: what's then? How do we find the target at all
+            case Move.Jumping:
+                was_jumping = true;
+                continue moves;
+            case Move.Sloping:
+                i++;    // skip the step after Sloping to perform two steps as one
+                hyp.move(movement.charAt(i++)); // move first part w/o validation checks
+                break;
+            case Move.Beating:
+                if (field.isEmpty(hyp) && !was_jumping) // whether field.getFigure(hyp).league==league is checked later on in another method
+                    return null;
+                was_jumping = false;
+                continue moves;
+            default:
+                break;
+            }
 
-	    hyp.move(movement.charAt(i));
-	    if (!field.inRange(hyp))
-		// left the Field
-		return null;
+            hyp.move(movement.charAt(i));
+            if (!field.inRange(hyp))
+                // left the Field
+                return null;
 
-	    if (was_jumping)
-		// when jumping, it doesn't matter who's on the field
-		was_jumping = false;
-	    else if (!(move.isBeating(i + 1) || field.isEmpty(hyp)))
-		// move and not beat => must be empty
-		return null;
-	} 
+            if (was_jumping)
+                // when jumping, it doesn't matter who's on the field
+                was_jumping = false;
+            else if (!(move.isBeating(i + 1) || field.isEmpty(hyp)))
+                // move and not beat => must be empty
+                return null;
+        } 
 
-	return hyp;
+        return hyp;
     } 
 
 }

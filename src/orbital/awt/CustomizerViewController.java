@@ -52,28 +52,28 @@ public class CustomizerViewController extends MouseAdapter implements MouseListe
     private String title;
     private static Function defaultCustomizerFactory;
     static {
-	setDefaultCustomizerFactory(null);
+        setDefaultCustomizerFactory(null);
     }
     public CustomizerViewController(Frame parent, String title) {
-	this.parent = parent;
-	this.title = title;
+        this.parent = parent;
+        this.title = title;
     }
     public CustomizerViewController(Frame parent) {
-	this(parent, null);
+        this(parent, null);
     }
 
     // get/set properties
     public Frame getParent() {
-	return parent;
+        return parent;
     } 
     public void setParent(Frame p) {
-	parent = p;
+        parent = p;
     } 
     public String getTitle() {
-	return title;
+        return title;
     } 
     public void setTitle(String title) {
-	this.title = title;
+        this.title = title;
     } 
 
     /**
@@ -83,21 +83,21 @@ public class CustomizerViewController extends MouseAdapter implements MouseListe
      * is used for beans that do not have a specified bean-specific customizer.
      */
     public static final void setDefaultCustomizerFactory(Function/*<Class,Customizer>*/ newDefaultCustomizerFactory) {
-	CustomizerViewController.defaultCustomizerFactory = newDefaultCustomizerFactory != null
-	    ? newDefaultCustomizerFactory
-	    : new Function() {
-		    public Object apply(Object beanClass) {
-			try {
-			    return new DefaultCustomizer((Class) beanClass);
-			} catch (IntrospectionException e) {
-			    throw new InnerCheckedException("Introspection for Customizer failed: " + e.getMessage(), e);
-			}
-		    }
-		};
+        CustomizerViewController.defaultCustomizerFactory = newDefaultCustomizerFactory != null
+            ? newDefaultCustomizerFactory
+            : new Function() {
+                    public Object apply(Object beanClass) {
+                        try {
+                            return new DefaultCustomizer((Class) beanClass);
+                        } catch (IntrospectionException e) {
+                            throw new InnerCheckedException("Introspection for Customizer failed: " + e.getMessage(), e);
+                        }
+                    }
+                };
     }
 
     private static final Function/*<Class,Customizer>*/ getDefaultCustomizerFactory() {
-	return defaultCustomizerFactory;
+        return defaultCustomizerFactory;
     }
 
     /**
@@ -113,51 +113,51 @@ public class CustomizerViewController extends MouseAdapter implements MouseListe
      * @see #customizerFor(Class)
      */
     public void showCustomizer(Object bean, String displayName) {
-	if (bean instanceof Object[]) {
-	    showCustomizer((Object[])bean, displayName);
-	    return;
-	}
-	try {
-	    Class      beanClass = bean.getClass();
-	    Customizer custom = customizerFor(beanClass);
-	    custom.setObject(bean);
-	    BeanInfo info = Introspector.getBeanInfo(beanClass, Introspector.USE_ALL_BEANINFO);
-	    BeanDescriptor desc = info.getBeanDescriptor();
-	    showCustomizer((Component) custom, displayName != null ? displayName
-			   : (desc == null ? null : desc.getDisplayName()));
-	} catch (IntrospectionException e) {
-	    throw new InnerCheckedException("Introspection for Customizer failed: " + e.getMessage(), e);
-	} catch (ClassCastException e) {
-	    throw new ClassCastException("Customizer for bean " + bean.getClass() + " is invalid: " + e.getMessage());
-	} 
+        if (bean instanceof Object[]) {
+            showCustomizer((Object[])bean, displayName);
+            return;
+        }
+        try {
+            Class      beanClass = bean.getClass();
+            Customizer custom = customizerFor(beanClass);
+            custom.setObject(bean);
+            BeanInfo info = Introspector.getBeanInfo(beanClass, Introspector.USE_ALL_BEANINFO);
+            BeanDescriptor desc = info.getBeanDescriptor();
+            showCustomizer((Component) custom, displayName != null ? displayName
+                           : (desc == null ? null : desc.getDisplayName()));
+        } catch (IntrospectionException e) {
+            throw new InnerCheckedException("Introspection for Customizer failed: " + e.getMessage(), e);
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Customizer for bean " + bean.getClass() + " is invalid: " + e.getMessage());
+        } 
     }
     public void showCustomizer(Object bean) {
-	showCustomizer(bean, null);
+        showCustomizer(bean, null);
     }
     /**
      * Array version
      */
     private void showCustomizer(Object[] bean, String displayName) {
-	JTabbedPane tab = new JTabbedPane();
-	for (int i = 0; i < bean.length; i++) {
-	    if (bean[i] == null)
-		tab.addTab("<Unknown>", new JPanel());
-	    else
-		try {
-		    Class      beanClass = bean[i].getClass();
-		    Customizer custom = customizerFor(beanClass);
-		    custom.setObject(bean[i]);
-		    BeanInfo info = Introspector.getBeanInfo(beanClass, Introspector.USE_ALL_BEANINFO);
-		    BeanDescriptor desc = info.getBeanDescriptor();
-		    tab.addTab(desc == null ? null : desc.getDisplayName(), (Component) custom);
-		} catch (IntrospectionException e) {
-		    throw new InnerCheckedException("Introspection for Customizer failed: " + e.getMessage(), e);
-		} catch (ClassCastException e) {
-		    throw new ClassCastException("Customizer for bean " + bean.getClass() + " is invalid: " + e.getMessage());
-		} 
-	}
-	tab.setSelectedIndex(0);
-	showCustomizer((Component) tab, displayName);
+        JTabbedPane tab = new JTabbedPane();
+        for (int i = 0; i < bean.length; i++) {
+            if (bean[i] == null)
+                tab.addTab("<Unknown>", new JPanel());
+            else
+                try {
+                    Class      beanClass = bean[i].getClass();
+                    Customizer custom = customizerFor(beanClass);
+                    custom.setObject(bean[i]);
+                    BeanInfo info = Introspector.getBeanInfo(beanClass, Introspector.USE_ALL_BEANINFO);
+                    BeanDescriptor desc = info.getBeanDescriptor();
+                    tab.addTab(desc == null ? null : desc.getDisplayName(), (Component) custom);
+                } catch (IntrospectionException e) {
+                    throw new InnerCheckedException("Introspection for Customizer failed: " + e.getMessage(), e);
+                } catch (ClassCastException e) {
+                    throw new ClassCastException("Customizer for bean " + bean.getClass() + " is invalid: " + e.getMessage());
+                } 
+        }
+        tab.setSelectedIndex(0);
+        showCustomizer((Component) tab, displayName);
     } 
 
     /**
@@ -165,9 +165,9 @@ public class CustomizerViewController extends MouseAdapter implements MouseListe
      * Simply displays a dialog, customizer properties and events must already have been set.
      */
     public void showCustomizer(Component custom, String displayName) {
-	// use JFrame.getRootPane().setDefaultButton(JButton);
-	JOptionPane.showMessageDialog(parent, custom, title != null ? title : ("Customize " + displayName), JOptionPane.PLAIN_MESSAGE);
-	//@todo UIUtilities.setCenter(dlg, parent); in already _modal_ JOptionPane.
+        // use JFrame.getRootPane().setDefaultButton(JButton);
+        JOptionPane.showMessageDialog(parent, custom, title != null ? title : ("Customize " + displayName), JOptionPane.PLAIN_MESSAGE);
+        //@todo UIUtilities.setCenter(dlg, parent); in already _modal_ JOptionPane.
     } 
 
     /**
@@ -181,29 +181,29 @@ public class CustomizerViewController extends MouseAdapter implements MouseListe
      * @see orbital.moon.awt.DefaultCustomizer
      */
     public static final Customizer customizerFor(Class beanClass) throws IntrospectionException {
-	try {
-	    BeanInfo info = Introspector.getBeanInfo(beanClass, Introspector.USE_ALL_BEANINFO);
-	    if (info == null)
-		throw new NullPointerException("no BeanInfo for class: " + beanClass);
-	    BeanDescriptor desc = info.getBeanDescriptor();
-	    if (desc == null)
-		throw new NullPointerException("no BeanDescriptor for class: " + beanClass);
-	    Class customizerClass = desc.getCustomizerClass();
-	    if (customizerClass != null)
-		return (Customizer) customizerClass.newInstance();
-	    else
-		return (Customizer) getDefaultCustomizerFactory().apply(beanClass);
-	} catch (InstantiationException x) {
-	    throw new IntrospectionException("Customizer could not be instantiated: " + x.getMessage())/*.initCause(x)*/;
-	} catch (IllegalAccessException x) {
-	    throw new IntrospectionException("Illegal access to Customizer: " + x.getMessage());
-	} catch (ClassCastException x) {
-	    throw new ClassCastException("Customizer for bean is invalid " + x.getMessage());
-	} 
+        try {
+            BeanInfo info = Introspector.getBeanInfo(beanClass, Introspector.USE_ALL_BEANINFO);
+            if (info == null)
+                throw new NullPointerException("no BeanInfo for class: " + beanClass);
+            BeanDescriptor desc = info.getBeanDescriptor();
+            if (desc == null)
+                throw new NullPointerException("no BeanDescriptor for class: " + beanClass);
+            Class customizerClass = desc.getCustomizerClass();
+            if (customizerClass != null)
+                return (Customizer) customizerClass.newInstance();
+            else
+                return (Customizer) getDefaultCustomizerFactory().apply(beanClass);
+        } catch (InstantiationException x) {
+            throw new IntrospectionException("Customizer could not be instantiated: " + x.getMessage())/*.initCause(x)*/;
+        } catch (IllegalAccessException x) {
+            throw new IntrospectionException("Illegal access to Customizer: " + x.getMessage());
+        } catch (ClassCastException x) {
+            throw new ClassCastException("Customizer for bean is invalid " + x.getMessage());
+        } 
     } 
 
     public void mouseClicked(MouseEvent e) {
-	if ((e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK && e.getClickCount() == 2)
-	    showCustomizer(e.getComponent());
+        if ((e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK && e.getClickCount() == 2)
+            showCustomizer(e.getComponent());
     } 
 }

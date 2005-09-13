@@ -29,7 +29,7 @@ import java.awt.Component;
 public class SystemRequestor extends KeyAdapter {
     public static final int INTERRUPT = 2;
     public static final int ABORT = 8;
-    protected Predicate		request;
+    protected Predicate         request;
 
     /**
      * Construct a SystemRequestor calling the given predicate on interrupt and abort requests.
@@ -38,7 +38,7 @@ public class SystemRequestor extends KeyAdapter {
      * or abort the program.
      */
     public SystemRequestor(Predicate requestReactor) {
-	this.request = requestReactor;
+        this.request = requestReactor;
     }
 
     /**
@@ -50,31 +50,31 @@ public class SystemRequestor extends KeyAdapter {
      * @param comp the component to register to.
      */
     public SystemRequestor(Predicate requestReactor, Component comp) {
-	this(requestReactor);
-	comp.addKeyListener(this);
+        this(requestReactor);
+        comp.addKeyListener(this);
     }
 
     /**
      * Check for Abort and Interrupt requests.
      */
     public void keyPressed(KeyEvent e) {
-	if (e.isAltDown()) {
-	    switch (e.getKeyCode()) {
-	    case KeyEvent.VK_COMMA:					 // Alt-, "Alt-Comma" => Interrupt
-		request.apply(new Integer(INTERRUPT));
-		break;
-	    case KeyEvent.VK_PERIOD:				 // Alt-. "Alt-Period" => Abort
-		request.apply(new Integer(ABORT));
-		break;
-	    default:
-		return;
-	    }
-	} else if (e.isControlDown())
+        if (e.isAltDown()) {
+            switch (e.getKeyCode()) {
+            case KeyEvent.VK_COMMA:                                      // Alt-, "Alt-Comma" => Interrupt
+                request.apply(new Integer(INTERRUPT));
+                break;
+            case KeyEvent.VK_PERIOD:                             // Alt-. "Alt-Period" => Abort
+                request.apply(new Integer(ABORT));
+                break;
+            default:
+                return;
+            }
+        } else if (e.isControlDown())
 
-	    // TODO dont go: Ctrl-Break does never occur
-	    if (e.getKeyCode() == KeyEvent.VK_CANCEL)	 // Ctrl-Break
-		request.apply(new Integer(ABORT));
+            // TODO dont go: Ctrl-Break does never occur
+            if (e.getKeyCode() == KeyEvent.VK_CANCEL)    // Ctrl-Break
+                request.apply(new Integer(ABORT));
 
-	// TODO: catch SysReq system request
+        // TODO: catch SysReq system request
     } 
 }

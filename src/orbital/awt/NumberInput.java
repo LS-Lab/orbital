@@ -44,106 +44,106 @@ public class NumberInput extends Panel {
      * Number value
      * @serial
      */
-    protected Number		  nvalue;
+    protected Number              nvalue;
 
     /**
      * the style in which to show.
      * @serial
      */
-    protected int			  style = TYPING;
+    protected int                         style = TYPING;
 
     /**
      * with what precision mouse operations will change the value.
      * @serial
      */
-    protected double		  precision = 1.0;
+    protected double              precision = 1.0;
 
     /**
      * @serial
      */
-    protected boolean		  editable = true;
+    protected boolean             editable = true;
 
     /**
      * @serial
      */
-    protected TextField		  text;
+    protected TextField           text;
     public NumberInput(Number def) {
-	nvalue = def;
-	init();
+        nvalue = def;
+        init();
     }
     public NumberInput() {
-	this(null);
+        this(null);
     }
 
     /**
      * get current Number value
      */
     public Number getValue() {
-	return this.nvalue;
+        return this.nvalue;
     } 
 
     /**
      * set Number to value.
      */
     public void setValue(Number value) {
-	setValueImpl(value);
-	text.setText(MathUtilities.format(nvalue));
+        setValueImpl(value);
+        text.setText(MathUtilities.format(nvalue));
     } 
     private void setValueImpl(Number value) {
-	Number old = nvalue;
-	this.nvalue = value;
-	text.setForeground(getForeground());
-	propertyChangeListeners.firePropertyChange("nvalue", old, nvalue);
+        Number old = nvalue;
+        this.nvalue = value;
+        text.setForeground(getForeground());
+        propertyChangeListeners.firePropertyChange("nvalue", old, nvalue);
     } 
 
     /**
      * get the style in which to show.
      */
     public int getStyle() {
-	return style;
+        return style;
     } 
 
     /**
      * set the style in which to show.
      */
     public void setStyle(int st) {
-	int old = style;
-	style = st;
-	propertyChangeListeners.firePropertyChange("style", old, style);
+        int old = style;
+        style = st;
+        propertyChangeListeners.firePropertyChange("style", old, style);
     } 
 
     /**
      * get precision with that mouse operations will change the value.
      */
     public double getPrecision() {
-	return precision;
+        return precision;
     } 
 
     /**
      * set precision with that mouse operations will change the value.
      */
     public void setPrecision(double new_precision) {
-	double old = precision;
-	precision = new_precision;
-	propertyChangeListeners.firePropertyChange("precision", new Double(old), new Double(precision));
+        double old = precision;
+        precision = new_precision;
+        propertyChangeListeners.firePropertyChange("precision", new Double(old), new Double(precision));
     } 
 
     /**
      * set whether the value can be changed by the user.
      */
     public void setEnabled(boolean b) {
-	Component[] c = getComponents();
-	for (int i = 0; i < c.length; i++)
-	    c[i].setEnabled(b);
-	super.setEnabled(b);
+        Component[] c = getComponents();
+        for (int i = 0; i < c.length; i++)
+            c[i].setEnabled(b);
+        super.setEnabled(b);
     } 
 
     // forward focus to text component
     public void addFocusListener(FocusListener l) {
-	text.addFocusListener(l);
+        text.addFocusListener(l);
     } 
     public void removeFocusListener(FocusListener l) {
-	text.removeFocusListener(l);
+        text.removeFocusListener(l);
     } 
 
     /**
@@ -151,40 +151,40 @@ public class NumberInput extends Panel {
      */
     private final PropertyChangeSupport propertyChangeListeners = new PropertyChangeSupport(this);
     public void addPropertyChangeListener(PropertyChangeListener l) {
-	propertyChangeListeners.addPropertyChangeListener(l);
+        propertyChangeListeners.addPropertyChangeListener(l);
     } 
     public void removePropertyChangeListener(PropertyChangeListener l) {
-	propertyChangeListeners.removePropertyChangeListener(l);
+        propertyChangeListeners.removePropertyChangeListener(l);
     } 
 
     private void init() {
-	removeAll();
-	{
-	    setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
-	    add(text = new TextField(nvalue == null ? "" : MathUtilities.format(nvalue.doubleValue()), 6));
-	    text.addFocusListener(new FocusAdapter() {
-		    public void focusLost(FocusEvent e) {
-			try {
-			    setValueImpl(Double.valueOf(text.getText()));	// don't use setValue !
-			} catch (NumberFormatException x) {
-			    text.setForeground(Color.red);
-			} 
-		    } 
-		});
-	    Button c;
-	    add(c = new HelperButton("+"));
-	    c.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-			setValue(new Double(getValue().doubleValue() + NumberInput.this.precision));
-		    } 
-		});
-	    add(c = new HelperButton("-"));
-	    c.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-			setValue(new Double(getValue().doubleValue() - NumberInput.this.precision));
-		    } 
-		});
-	} 
+        removeAll();
+        {
+            setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
+            add(text = new TextField(nvalue == null ? "" : MathUtilities.format(nvalue.doubleValue()), 6));
+            text.addFocusListener(new FocusAdapter() {
+                    public void focusLost(FocusEvent e) {
+                        try {
+                            setValueImpl(Double.valueOf(text.getText()));       // don't use setValue !
+                        } catch (NumberFormatException x) {
+                            text.setForeground(Color.red);
+                        } 
+                    } 
+                });
+            Button c;
+            add(c = new HelperButton("+"));
+            c.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        setValue(new Double(getValue().doubleValue() + NumberInput.this.precision));
+                    } 
+                });
+            add(c = new HelperButton("-"));
+            c.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        setValue(new Double(getValue().doubleValue() - NumberInput.this.precision));
+                    } 
+                });
+        } 
     } 
 }
 
@@ -194,10 +194,10 @@ public class NumberInput extends Panel {
  */
 class HelperButton extends Button {
     public HelperButton(String s) {
-	super(s);
+        super(s);
     }
 
     public boolean isFocusTraversable() {
-	return false;
+        return false;
     } 
 }

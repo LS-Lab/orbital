@@ -33,7 +33,7 @@ public final class Predicates {
 
 
     // void predicates
-	
+        
     /**
      * A constant predicate.
      * <p>
@@ -42,28 +42,28 @@ public final class Predicates {
      * @author  Andr&eacute; Platzer
      */
     private static final class ConstantPredicate implements VoidPredicate {
-    	private boolean a;
-    	ConstantPredicate(boolean a) {
-	    this.a = a;
-    	}
-    	
-    	public boolean getConstant() {
-	    return a;
-    	}
-    	
-	public boolean apply() {
-	    return a;
-	} 
-	// canonical equality
-	public final boolean equals(Object o) {
-	    return super.equals(o);
-	}
-	public final int hashCode() {
-	    return super.hashCode();
-	}
-	public String toString() {
-	    return a + "";
-	} 
+        private boolean a;
+        ConstantPredicate(boolean a) {
+            this.a = a;
+        }
+        
+        public boolean getConstant() {
+            return a;
+        }
+        
+        public boolean apply() {
+            return a;
+        } 
+        // canonical equality
+        public final boolean equals(Object o) {
+            return super.equals(o);
+        }
+        public final int hashCode() {
+            return super.hashCode();
+        }
+        public String toString() {
+            return a + "";
+        } 
     }
 
     /**
@@ -78,7 +78,7 @@ public final class Predicates {
     
 
     // binary predicates
-	
+        
     /**
      * =.
      * In first-order logic, equality "=" is uniquely determined by
@@ -91,11 +91,11 @@ public final class Predicates {
      * @attribute substitutive
      */
     public static final BinaryPredicate/*<Object,Object>*/ equal = new BinaryPredicate/*<Object,Object>*/() {
-	    public boolean apply(Object a, Object b) {
-		return Utility.equals(a, b);
-	    }
-	    public String toString() { return "="; }
-	};
+            public boolean apply(Object a, Object b) {
+                return Utility.equals(a, b);
+            }
+            public String toString() { return "="; }
+        };
 
     /**
      * &ne;.
@@ -107,11 +107,11 @@ public final class Predicates {
      * @see #equal
      */
     public static final BinaryPredicate/*<Object,Object>*/ unequal = new BinaryPredicate/*<Object,Object>*/() {
-	    public boolean apply(Object a, Object b) {
-		return !Utility.equals(a, b);
-	    }
-	    public String toString() { return "!="; }
-	};
+            public boolean apply(Object a, Object b) {
+                return !Utility.equals(a, b);
+            }
+            public String toString() { return "!="; }
+        };
 
     /**
      * &lt;.
@@ -122,11 +122,11 @@ public final class Predicates {
      * @see java.lang.Comparable
      */
     public static final BinaryPredicate/*<Object,Object>*/ less = new BinaryPredicate/*<Object,Object>*/() {
-	    public boolean apply(Object a, Object b) {
-    		return ((Comparable) a).compareTo(b) < 0;
-	    }
-	    public String toString() { return "<"; }
-	};
+            public boolean apply(Object a, Object b) {
+                return ((Comparable) a).compareTo(b) < 0;
+            }
+            public String toString() { return "<"; }
+        };
 
     /**
      * &gt;.
@@ -137,11 +137,11 @@ public final class Predicates {
      * @see java.lang.Comparable
      */
     public static final BinaryPredicate/*<Object,Object>*/ greater = new BinaryPredicate/*<Object,Object>*/() {
-	    public boolean apply(Object a, Object b) {
-		return ((Comparable) a).compareTo(b) > 0;
-	    }
-	    public String toString() { return ">"; }
-	};
+            public boolean apply(Object a, Object b) {
+                return ((Comparable) a).compareTo(b) > 0;
+            }
+            public String toString() { return ">"; }
+        };
 
     /**
      * &le;.
@@ -152,11 +152,11 @@ public final class Predicates {
      * @see java.lang.Comparable
      */
     public static final BinaryPredicate/*<Object,Object>*/ lessEqual = new BinaryPredicate/*<Object,Object>*/() {
-	    public boolean apply(Object a, Object b) {
-    		return ((Comparable) a).compareTo(b) <= 0;
-	    }
-	    public String toString() { return "=<"; }
-	};
+            public boolean apply(Object a, Object b) {
+                return ((Comparable) a).compareTo(b) <= 0;
+            }
+            public String toString() { return "=<"; }
+        };
 
     /**
      * &ge;.
@@ -167,27 +167,27 @@ public final class Predicates {
      * @see java.lang.Comparable
      */
     public static final BinaryPredicate/*<Object,Object>*/ greaterEqual = new BinaryPredicate/*<Object,Object>*/() {
-	    public boolean apply(Object a, Object b) {
-    		return ((Comparable) a).compareTo(b) >= 0;
-	    }
-	    public String toString() { return ">="; }
-	};
+            public boolean apply(Object a, Object b) {
+                return ((Comparable) a).compareTo(b) >= 0;
+            }
+            public String toString() { return ">="; }
+        };
 
     //@internal must be down here such that static initialization of Predicates.equal != null has already happened
     static {
-	Notation.setAllNotations(new Object[][] {
-	    {Predicates.equal,						// "=="
-	     new NotationSpecification(700, "xfx", Notation.INFIX)},
-	    {Predicates.unequal,					// "!="
-	     new NotationSpecification(700, "xfx", Notation.INFIX)},
-	    {Predicates.greater,					// ">"
-	     new NotationSpecification(700, "xfx", Notation.INFIX)},
-	    {Predicates.less,						// "<"
-	     new NotationSpecification(700, "xfx", Notation.INFIX)},
-	    {Predicates.greaterEqual,				        // ">="
-	     new NotationSpecification(700, "xfx", Notation.INFIX)},
-	    {Predicates.lessEqual,					// "=<"
-	     new NotationSpecification(700, "xfx", Notation.INFIX)}
-	});
+        Notation.setAllNotations(new Object[][] {
+            {Predicates.equal,                                          // "=="
+             new NotationSpecification(700, "xfx", Notation.INFIX)},
+            {Predicates.unequal,                                        // "!="
+             new NotationSpecification(700, "xfx", Notation.INFIX)},
+            {Predicates.greater,                                        // ">"
+             new NotationSpecification(700, "xfx", Notation.INFIX)},
+            {Predicates.less,                                           // "<"
+             new NotationSpecification(700, "xfx", Notation.INFIX)},
+            {Predicates.greaterEqual,                                   // ">="
+             new NotationSpecification(700, "xfx", Notation.INFIX)},
+            {Predicates.lessEqual,                                      // "=<"
+             new NotationSpecification(700, "xfx", Notation.INFIX)}
+        });
     }
 }

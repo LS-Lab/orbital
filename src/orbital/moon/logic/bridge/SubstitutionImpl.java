@@ -48,8 +48,8 @@ public class SubstitutionImpl implements Substitution, Serializable {
      * @preconditions s[i] instanceof {@link Substitution.Matcher}.
      */
     public SubstitutionImpl(Collection/*_<Matcher>_*/ replacements) {
-	if (replacements == null)
-	    throw new NullPointerException("set of elementary replacements of a substituion cannot be " + replacements);
+        if (replacements == null)
+            throw new NullPointerException("set of elementary replacements of a substituion cannot be " + replacements);
         this.replacements = replacements;
     }
     
@@ -61,105 +61,105 @@ public class SubstitutionImpl implements Substitution, Serializable {
       return getReplacements().hashCode();
       }*/
     public boolean equals(Object o) {
-	return (o instanceof Substitution) && getReplacements().equals(((Substitution) o).getReplacements());
+        return (o instanceof Substitution) && getReplacements().equals(((Substitution) o).getReplacements());
     }
     public int hashCode() {
-	return replacements.hashCode();
+        return replacements.hashCode();
     }
 
     public Collection/*_<Matcher>_*/ getReplacements() {
-	return Setops.unmodifiableCollectionLike(replacements);
+        return Setops.unmodifiableCollectionLike(replacements);
     }
-	
-	
+        
+        
     //@todo we should not continue substituting bound variables, as in (&forall; x P(x,y))[x->t] = (&forall; x P(x,y)) or (&lambda; x . f(x))[x->t] = &lambda; x . f(x)
     public Object apply(final Object term) {
-	// apply the first substitution that matches and do not descend
-	for (Iterator/*_<Matcher>_*/ i = replacements.iterator(); i.hasNext(); ) {
-	    Matcher s = (Matcher/*__*/) i.next();
-	    if (s.matches(term))
-		// matches
-		/*
-		 * x[x->s]	= s
-		 */
-		return s.replace(term);
-	}
+        // apply the first substitution that matches and do not descend
+        for (Iterator/*_<Matcher>_*/ i = replacements.iterator(); i.hasNext(); ) {
+            Matcher s = (Matcher/*__*/) i.next();
+            if (s.matches(term))
+                // matches
+                /*
+                 * x[x->s]      = s
+                 */
+                return s.replace(term);
+        }
 
-	// else if none did match
-	if (term == null)
-	    return term;
-	else if (term instanceof orbital.logic.Composite)
+        // else if none did match
+        if (term == null)
+            return term;
+        else if (term instanceof orbital.logic.Composite)
             /*
              * distribute substitution application to all sub terms
-             * f(t1,...tn)[x->s] = f[x->s](t1[x->s],...tn[x->s])	if f/n &isin; &Sigma;
-             * f(t)[x->s] = f[x->s](t[x->s])	if f/n &isin; &Sigma;, t is a generalized component term
+             * f(t1,...tn)[x->s] = f[x->s](t1[x->s],...tn[x->s])        if f/n &isin; &Sigma;
+             * f(t)[x->s] = f[x->s](t[x->s])    if f/n &isin; &Sigma;, t is a generalized component term
              */
-	    try {
+            try {
                 final orbital.logic.Composite f = (orbital.logic.Composite) term;
-		final Object substCompositor = apply(f.getCompositor());
-		final Object substComponent = apply(f.getComponent());
+                final Object substCompositor = apply(f.getCompositor());
+                final Object substComponent = apply(f.getComponent());
                 try {
-		    return f.construct(substCompositor,
-				       substComponent);
+                    return f.construct(substCompositor,
+                                       substComponent);
                 }
                 catch (Throwable illegal) {
-		    orbital.logic.Composite fp;
-		    // try instantiate in another way
+                    orbital.logic.Composite fp;
+                    // try instantiate in another way
                     try {
                         Constructor nullary = f.getClass().getDeclaredConstructor(null);
-    	                //@xxx is there a better solution which does not require accessible tricks? Especially, this trick won't do if we want to use a TRS on maths and functions inside a Browser. See MathPlotter.html stuff
+                        //@xxx is there a better solution which does not require accessible tricks? Especially, this trick won't do if we want to use a TRS on maths and functions inside a Browser. See MathPlotter.html stuff
                         if (!nullary.isAccessible())
-			    nullary.setAccessible(true);
+                            nullary.setAccessible(true);
                         fp = (orbital.logic.Composite) nullary.newInstance(null);
                     }
                     catch (InvocationTargetException ex) {throw (IllegalArgumentException) new IllegalArgumentException("the argument type nullary constructor threw").initCause(ex.getTargetException());}
                     catch (SecurityException denied) {throw new orbital.util.InnerCheckedException("the argument type nullary constructor is not accessible", denied);}
                     catch (NoSuchMethodException ex) {throw (RuntimeException) illegal;}
-		    fp.setCompositor(substCompositor);
-		    fp.setComponent(substComponent);
-		    assert f != null : "we could not have handled null that way";
-		    logger.log(Level.WARNING, "composite object {0} of class {1} does not support construct(Object,Object) but has to be emulated with newInstance and setComponent(Object)/setCompositor(Object), due to\n{2}", new Object[] {f, f.getClass(), illegal});
-		    return fp;
-		}
+                    fp.setCompositor(substCompositor);
+                    fp.setComponent(substComponent);
+                    assert f != null : "we could not have handled null that way";
+                    logger.log(Level.WARNING, "composite object {0} of class {1} does not support construct(Object,Object) but has to be emulated with newInstance and setComponent(Object)/setCompositor(Object), due to\n{2}", new Object[] {f, f.getClass(), illegal});
+                    return fp;
+                }
             }
-	//@todo finally type-safe assert g.getClass() == f.getClass() : "g is a new object of the exact same type as f";
+        //@todo finally type-safe assert g.getClass() == f.getClass() : "g is a new object of the exact same type as f";
             catch (InstantiationException e) {throw (IllegalArgumentException) new IllegalArgumentException("the argument type of " + term.getClass() + " does not support a nullary constructor which is required for substitution").initCause(e);}
             catch (IllegalAccessException e) {throw (IllegalArgumentException) new IllegalArgumentException("the argument type of " + term.getClass() + " does not support a nullary constructor which is requried for substitution").initCause(e);}
-	
-	// almost identical to @see Utility#asIterator, and @see Functionals.ListableFunction
-	//@todo could we really use Functionals.ListableFunction instead? Would we benefit from that?
-	else if (term instanceof Collection)
+        
+        // almost identical to @see Utility#asIterator, and @see Functionals.ListableFunction
+        //@todo could we really use Functionals.ListableFunction instead? Would we benefit from that?
+        else if (term instanceof Collection)
             /*
              * distribute substitution application to all sub terms
-             * {t1,...tn}[x->s] = {t1[x->s],...tn[x->s]}	if {t1,...tn} is a collection
+             * {t1,...tn}[x->s] = {t1[x->s],...tn[x->s]}        if {t1,...tn} is a collection
              */
-	    return Functionals.map(this, (Collection) term);
-	else if (term.getClass().isArray())
+            return Functionals.map(this, (Collection) term);
+        else if (term.getClass().isArray())
             /*
              * distribute substitution application to all sub terms
-             * {t1,...tn}[x->s] = {t1[x->s],...tn[x->s]}	if {t1,...tn} is an array
+             * {t1,...tn}[x->s] = {t1[x->s],...tn[x->s]}        if {t1,...tn} is an array
              */
-	    if (term instanceof Object[])
-		// version for mere non-primitive type Object arrays
-		return Functionals.map(this, (Object[]) term);
-	    else
-		throw new UnsupportedOperationException("substitution of primitive type arrays of " + term.getClass() + " is currently disabled @todo reenable");
-	//@xxx a funny gjc error requires the cast to (Function).
-	//return orbital.math.functional.Functionals.map((Function) this, (Object) term);
-	else if (term instanceof Iterator)
-	    throw new IllegalArgumentException("iterators are not supported, since they should not be necessary for substitution at all");
-	else
-	    // atomic
+            if (term instanceof Object[])
+                // version for mere non-primitive type Object arrays
+                return Functionals.map(this, (Object[]) term);
+            else
+                throw new UnsupportedOperationException("substitution of primitive type arrays of " + term.getClass() + " is currently disabled @todo reenable");
+        //@xxx a funny gjc error requires the cast to (Function).
+        //return orbital.math.functional.Functionals.map((Function) this, (Object) term);
+        else if (term instanceof Iterator)
+            throw new IllegalArgumentException("iterators are not supported, since they should not be necessary for substitution at all");
+        else
+            // atomic
             /*
              * skip atomic parts that are not substituted
-             * y[x->s]	= y	if x&ne;y &isin; Atoms
+             * y[x->s]  = y     if x&ne;y &isin; Atoms
              * also skip the rest
              */
-	    return term;
+            return term;
     }
-	
+        
     public String toString() {
-	return getClass().getName() + replacements;
+        return getClass().getName() + replacements;
     }
 
     /**
@@ -172,37 +172,37 @@ public class SubstitutionImpl implements Substitution, Serializable {
      * @author  Andr&eacute; Platzer
      */
     public static class MatcherImpl implements Matcher, Serializable {
-	private static final long serialVersionUID = -5676492558169571904L;
-    	/**
-    	 * The object against which to match with {@link Object#equals(Object)}.
-    	 * @serial
-    	 */
-    	private Object pattern;
-    	/**
-    	 * Whether to perform substitution at all.
-    	 * @serial
-    	 */
-    	private boolean substituting;
-    	/**
-    	 * The substitute substituting a match is only used if substituting == true.
-    	 * @serial
-    	 */
-    	private Object substitute;
-    	/**
-    	 * Create a new matcher that performs substitution.
-    	 * @param pattern The object against which to match with {@link Object#equals(Object)}.
-    	 * @substitute The substitute substituting terms that matched.
-    	 * @postconditions substituting == true
-    	 */
+        private static final long serialVersionUID = -5676492558169571904L;
+        /**
+         * The object against which to match with {@link Object#equals(Object)}.
+         * @serial
+         */
+        private Object pattern;
+        /**
+         * Whether to perform substitution at all.
+         * @serial
+         */
+        private boolean substituting;
+        /**
+         * The substitute substituting a match is only used if substituting == true.
+         * @serial
+         */
+        private Object substitute;
+        /**
+         * Create a new matcher that performs substitution.
+         * @param pattern The object against which to match with {@link Object#equals(Object)}.
+         * @substitute The substitute substituting terms that matched.
+         * @postconditions substituting == true
+         */
         public MatcherImpl(Object pattern, Object substitute) {
             this(pattern, true, substitute);
         }
     
-    	/**
-    	 * Create a new matcher that does not perform substitution.
-    	 * @param pattern The object against which to match with {@link Object#equals(Object)}.
-    	 * @postconditions substituting == false
-    	 */
+        /**
+         * Create a new matcher that does not perform substitution.
+         * @param pattern The object against which to match with {@link Object#equals(Object)}.
+         * @postconditions substituting == false
+         */
         public MatcherImpl(Object pattern) {
             this(pattern, false, null);
         }
@@ -214,11 +214,11 @@ public class SubstitutionImpl implements Substitution, Serializable {
         }
         
         public boolean equals(Object o) {
-	    //@todo implement better
-	    return (o instanceof Matcher) && pattern().equals(((Matcher) o).pattern());
+            //@todo implement better
+            return (o instanceof Matcher) && pattern().equals(((Matcher) o).pattern());
         }
         public int hashCode() {
-	    return pattern().hashCode();
+            return pattern().hashCode();
         }
 
         // get/set methods
@@ -227,7 +227,7 @@ public class SubstitutionImpl implements Substitution, Serializable {
          * Get the pattern to match for.
          */
         public Object pattern() {
-	    return pattern;
+            return pattern;
         }
     
         /**
@@ -236,7 +236,7 @@ public class SubstitutionImpl implements Substitution, Serializable {
          * @postconditions RES == null &hArr; &not;isSubstituting()
          */
         public Object substitute() {
-	    return substitute;
+            return substitute;
         }
         
         /**
@@ -245,22 +245,22 @@ public class SubstitutionImpl implements Substitution, Serializable {
          *  <code>false</code> if this matcher will not change any matches at all, but only match them.
          */
         protected boolean isSubstituting() {
-	    return substituting;
+            return substituting;
         }
 
         // central methods
-    	
-    	public boolean matches(Object t) {
-	    return pattern().equals(t);
-    	}
+        
+        public boolean matches(Object t) {
+            return pattern().equals(t);
+        }
     
-    	public Object replace(Object t) {
-	    return isSubstituting() ? substitute() : t;
-    	}
-    	
-    	public String toString() {
-	    return pattern() + (isSubstituting() ? "->" + substitute() : "");
-    	}
+        public Object replace(Object t) {
+            return isSubstituting() ? substitute() : t;
+        }
+        
+        public String toString() {
+            return pattern() + (isSubstituting() ? "->" + substitute() : "");
+        }
     } 
 
     /**
@@ -283,48 +283,48 @@ public class SubstitutionImpl implements Substitution, Serializable {
      * @author  Andr&eacute; Platzer
      */
     public static class UnifyingMatcher extends MatcherImpl {
-	private static final long serialVersionUID = 8361601987955616874L;
-    	/**
-    	 * Create a new matcher that performs substitution.
-    	 * @param pattern The object against which to (single side) match with {@link Substitutions#unify(Collection)}.
-    	 * @substitute The substitute substituting terms that matched, after transforming substitute
-    	 *  with the unifier that performed the matching.
-    	 * @postconditions substituting == true
-    	 */
+        private static final long serialVersionUID = 8361601987955616874L;
+        /**
+         * Create a new matcher that performs substitution.
+         * @param pattern The object against which to (single side) match with {@link Substitutions#unify(Collection)}.
+         * @substitute The substitute substituting terms that matched, after transforming substitute
+         *  with the unifier that performed the matching.
+         * @postconditions substituting == true
+         */
         public UnifyingMatcher(Object pattern, Object substitute) {
             super(pattern, substitute);
         }
     
-    	/**
-    	 * Create a new matcher that does not perform substitution.
-    	 * @param pattern The object against which to (single side) match with {@link Substitutions#unify(Collection)}.
-    	 * @postconditions substituting == false
-    	 */
+        /**
+         * Create a new matcher that does not perform substitution.
+         * @param pattern The object against which to (single side) match with {@link Substitutions#unify(Collection)}.
+         * @postconditions substituting == false
+         */
         public UnifyingMatcher(Object pattern) {
             super(pattern);
         }
 
-    	/**
-    	 * The unifier of the last {@link #matches(Object)}-operation for use in {@link #replace(Object)}.
-    	 */
-    	private transient Substitution unifier = null;
+        /**
+         * The unifier of the last {@link #matches(Object)}-operation for use in {@link #replace(Object)}.
+         */
+        private transient Substitution unifier = null;
 
-    	/**
-    	 * Get the unifier of the last {@link #matches(Object)}-operation.
-    	 */
-    	protected Substitution getUnifier() {
-	    return unifier;
-    	}
+        /**
+         * Get the unifier of the last {@link #matches(Object)}-operation.
+         */
+        protected Substitution getUnifier() {
+            return unifier;
+        }
 
-    	//@todo single side match test could be optimized with its own implementation method
-    	public boolean matches(Object t) {
-	    this.unifier = Substitutions.unify(Arrays.asList(new Object[] {pattern(), t}));
-	    return this.unifier != null
-		&& (this.unifier.apply(t).equals(t));
-    	}
+        //@todo single side match test could be optimized with its own implementation method
+        public boolean matches(Object t) {
+            this.unifier = Substitutions.unify(Arrays.asList(new Object[] {pattern(), t}));
+            return this.unifier != null
+                && (this.unifier.apply(t).equals(t));
+        }
     
-    	public Object replace(Object t) {
-	    return isSubstituting() ? getUnifier().apply(substitute()) : t;
-    	}
+        public Object replace(Object t) {
+            return isSubstituting() ? getUnifier().apply(substitute()) : t;
+        }
     }
 }

@@ -11,10 +11,10 @@ import java.util.Observable;
  */
 class PredicateObservable extends Observable {
 
-	/**
-	 * That's what you need to call before a call of notifyObservers.
-	 */
-	public void setChanged() {
-		super.setChanged();
-	} 
+        /**
+         * That's what you need to call before a call of notifyObservers.
+         */
+        public void setChanged() {
+                super.setChanged();
+        } 
 }

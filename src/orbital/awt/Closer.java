@@ -56,7 +56,7 @@ public final class Closer extends WindowAdapter implements ActionListener, Predi
     /**
      * parental frame. If set, will ask before closing.
      */
-    protected Frame		parent;
+    protected Frame             parent;
 
     /**
      * the Component or Window to be closed
@@ -66,14 +66,14 @@ public final class Closer extends WindowAdapter implements ActionListener, Predi
     /**
      * the question to ask when closing. Positively formulated, will close on affirmation.
      */
-    private String		questionOnClosing = "Close window without Saving?";
+    private String              questionOnClosing = "Close window without Saving?";
 
     /**
      * Close instantly.
      * @param comp the component to be closed on demand.
      */
     public Closer(Component comp) {
-	this(null, comp);
+        this(null, comp);
     }
 
     /**
@@ -82,7 +82,7 @@ public final class Closer extends WindowAdapter implements ActionListener, Predi
      * @param register whether this Closer should automatically register to comp's <tt>WindowEvents</tt> for closing events via <code>comp.addWindowListener(this)</code>.
      */
     public Closer(Window comp, boolean register) {
-	this(null, comp, register);
+        this(null, comp, register);
     }
 
     /**
@@ -92,7 +92,7 @@ public final class Closer extends WindowAdapter implements ActionListener, Predi
      * @param definitively whether after a successful close action, Closer should exit the JVM via <code>System.exit(0)</code>.
      */
     public Closer(Window comp, boolean register, boolean definitively) {
-	this(null, comp, register, definitively);
+        this(null, comp, register, definitively);
     }
 
     /**
@@ -101,9 +101,9 @@ public final class Closer extends WindowAdapter implements ActionListener, Predi
      * @param comp the component to be closed on demand.
      */
     public Closer(Frame parent, Component comp) {
-	this();
-	this.parent = parent;
-	this.component = comp;
+        this();
+        this.parent = parent;
+        this.component = comp;
     }
 
     /**
@@ -113,13 +113,13 @@ public final class Closer extends WindowAdapter implements ActionListener, Predi
      * @param register whether this Closer should automatically register to comp's <tt>WindowEvents</tt> for closing events via <code>comp.addWindowListener(this)</code>.
      */
     public Closer(Frame parent, Window comp, boolean register) {
-	this();
-	this.parent = parent;
-	this.component = comp;
-	if (register) {
-	    comp.addKeyListener(new orbital.moon.awt.SystemRequestor(this));
-	    comp.addWindowListener(this);
-	} 
+        this();
+        this.parent = parent;
+        this.component = comp;
+        if (register) {
+            comp.addKeyListener(new orbital.moon.awt.SystemRequestor(this));
+            comp.addWindowListener(this);
+        } 
     }
 
     /**
@@ -131,14 +131,14 @@ public final class Closer extends WindowAdapter implements ActionListener, Predi
      * @param definitively whether after a successful close action, Closer should exit the JVM via <code>System.exit(0)</code>.
      */
     public Closer(Frame parent, Window comp, boolean register, boolean definitively) {
-	this(parent, comp, register);
-	if (definitively)
-	    addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-			// definite close
-			System.exit(0);
-		    } 
-		});
+        this(parent, comp, register);
+        if (definitively)
+            addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        // definite close
+                        System.exit(0);
+                    } 
+                });
     }
 
     /**
@@ -152,22 +152,22 @@ public final class Closer extends WindowAdapter implements ActionListener, Predi
      * @param definitively whether after a successful close action, Closer should exit the JVM via <code>System.exit(0)</code>.
      */
     public Closer(Frame parent, String questionOnClosing, Window comp, boolean register, boolean definitively) {
-	this(parent, comp, register, definitively);
-	this.questionOnClosing = questionOnClosing;
+        this(parent, comp, register, definitively);
+        this.questionOnClosing = questionOnClosing;
     }
 
     private Closer() {
-	addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    if (component instanceof Window) {
-			// dispose
-			component.setVisible(false);
-			((Window) component).dispose();
-		    } else
-			// inivisibilize
-			component.setVisible(false);
-		} 
-	    });
+        addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    if (component instanceof Window) {
+                        // dispose
+                        component.setVisible(false);
+                        ((Window) component).dispose();
+                    } else
+                        // inivisibilize
+                        component.setVisible(false);
+                } 
+            });
     }
 
 
@@ -176,51 +176,51 @@ public final class Closer extends WindowAdapter implements ActionListener, Predi
      * The close action. Will send an ActionEvent "close" to all registered listeners.
      */
     public void close() {
-	// initiate close
-	new Thread(new Runnable() {
-		public void run() {
-		    processActionEvent(new ActionEvent(this, 0xFade, "close"));
-		}
-	    }).start();
+        // initiate close
+        new Thread(new Runnable() {
+                public void run() {
+                    processActionEvent(new ActionEvent(this, 0xFade, "close"));
+                }
+            }).start();
     } 
 
     /**
      * Request to close, but (if parent is specified) only after confirmation.
      */
     public void requestClose() {
-	if (parent != null) new Thread(new Runnable() {
-		public void run() {
-		    if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(parent, questionOnClosing, "Close", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE))
-			/*QuestionDialog confirm = new QuestionDialog(parent, "Close", questionOnClosing);
-			  confirm.start();
-			  if (confirm.getResult().equals("Yes"))*/
-			close();
-		    else
-			;	 // closing request rejected
-		}
-	    }).start();
-	else
-	    close();
+        if (parent != null) new Thread(new Runnable() {
+                public void run() {
+                    if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(parent, questionOnClosing, "Close", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE))
+                        /*QuestionDialog confirm = new QuestionDialog(parent, "Close", questionOnClosing);
+                          confirm.start();
+                          if (confirm.getResult().equals("Yes"))*/
+                        close();
+                    else
+                        ;        // closing request rejected
+                }
+            }).start();
+        else
+            close();
     } 
 
 
     // listeners invocing a requestClose()
 
     public boolean apply(Object a) {
-	// TODO: interrupt instead of close for SystemRequestor.INTERRUPT
-	requestClose();
-	return true;
+        // TODO: interrupt instead of close for SystemRequestor.INTERRUPT
+        requestClose();
+        return true;
     } 
 
     /**
      * when notified, request a close.
      */
     public void actionPerformed(ActionEvent e) {
-	requestClose();
+        requestClose();
     } 
 
     public void windowClosing(WindowEvent e) {
-	requestClose();
+        requestClose();
     } 
 
     /*
@@ -230,7 +230,7 @@ public final class Closer extends WindowAdapter implements ActionListener, Predi
      */
 
 
-    final static String		 actionListenerK = "actionL";
+    final static String          actionListenerK = "actionL";
     transient ActionListener actionListener = null;
 
     /**
@@ -243,9 +243,9 @@ public final class Closer extends WindowAdapter implements ActionListener, Predi
      * @see         #addActionListener(ActionListener)
      */
     protected void processActionEvent(ActionEvent e) {
-	if (actionListener != null) {
-	    actionListener.actionPerformed(e);
-	} 
+        if (actionListener != null) {
+            actionListener.actionPerformed(e);
+        } 
     } 
 
     /**
@@ -258,10 +258,10 @@ public final class Closer extends WindowAdapter implements ActionListener, Predi
      * @see           #removeActionListener(ActionListener)
      */
     public synchronized void addActionListener(ActionListener l) {
-	if (l == null) {
-	    return;
-	} 
-	actionListener = AWTEventMulticaster.add(actionListener, l);
+        if (l == null) {
+            return;
+        } 
+        actionListener = AWTEventMulticaster.add(actionListener, l);
     } 
 
     /**
@@ -269,15 +269,15 @@ public final class Closer extends WindowAdapter implements ActionListener, Predi
      * receives action events from this object.
      * If l is null, no exception is thrown and no action is performed.
      * 
-     * @param         	l     the action listener
-     * @see           	java.awt.event.ActionListener
-     * @see           	#addActionListener(ActionListener)
+     * @param           l     the action listener
+     * @see             java.awt.event.ActionListener
+     * @see             #addActionListener(ActionListener)
      */
     public synchronized void removeActionListener(ActionListener l) {
-	if (l == null) {
-	    return;
-	} 
-	actionListener = AWTEventMulticaster.remove(actionListener, l);
+        if (l == null) {
+            return;
+        } 
+        actionListener = AWTEventMulticaster.remove(actionListener, l);
     } 
 
     /**
@@ -296,13 +296,13 @@ public final class Closer extends WindowAdapter implements ActionListener, Predi
      * @see java.awt.Component#itemListenerK
      */
     private void writeObject(ObjectOutputStream s) throws IOException {
-	throw new NotSerializableException("serialization depends upon AWTEventMulticaster.save()");
+        throw new NotSerializableException("serialization depends upon AWTEventMulticaster.save()");
 
-	/*
-	 * s.defaultWriteObject();
-	 * AWTEventMulticaster.save(s, actionListenerK, actionListener);
-	 * s.writeObject(null);
-	 */
+        /*
+         * s.defaultWriteObject();
+         * AWTEventMulticaster.save(s, actionListenerK, actionListener);
+         * s.writeObject(null);
+         */
     } 
 
     /**
@@ -315,21 +315,21 @@ public final class Closer extends WindowAdapter implements ActionListener, Predi
      * @see #addActionListener(ActionListener)
      */
     private void readObject(ObjectInputStream s) throws ClassNotFoundException, IOException {
-	throw new NotSerializableException("deserialization depends upon serialization");
+        throw new NotSerializableException("deserialization depends upon serialization");
 
-	/*
-	 * s.defaultReadObject();
-	 * 
-	 * Object keyOrNull;
-	 * while(null != (keyOrNull = s.readObject())) {
-	 * String key = ((String)keyOrNull).intern();
-	 * 
-	 * if (actionListenerK == key)
-	 * addActionListener((ActionListener)(s.readObject()));
-	 * 
-	 * else // skip value for unrecognized key
-	 * s.readObject();
-	 * }
-	 */
+        /*
+         * s.defaultReadObject();
+         * 
+         * Object keyOrNull;
+         * while(null != (keyOrNull = s.readObject())) {
+         * String key = ((String)keyOrNull).intern();
+         * 
+         * if (actionListenerK == key)
+         * addActionListener((ActionListener)(s.readObject()));
+         * 
+         * else // skip value for unrecognized key
+         * s.readObject();
+         * }
+         */
     } 
 }

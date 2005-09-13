@@ -28,57 +28,57 @@ public class DelegateList/*<A>*/ extends DelegateCollection/*<A>*/ implements Li
      * @param delegatee the implementation-List to that List operations are delegated.
      */
     protected DelegateList(List/*<A>*/ delegatee) {
-	super(delegatee);
+        super(delegatee);
     }
 
     protected void setDelegatee(List/*<A>*/ delegatee) {
-	super.setDelegatee(delegatee);
+        super.setDelegatee(delegatee);
     }
 
     protected void setDelegatee(Collection/*<A>*/ delegatee) {
-	if (delegatee instanceof List/*<A>*/)
-	    setDelegatee((List/*<A>*/) delegatee);
-	else
-	    throw new IllegalArgumentException("ListDelegatee requires List instance for DelegateLists");
+        if (delegatee instanceof List/*<A>*/)
+            setDelegatee((List/*<A>*/) delegatee);
+        else
+            throw new IllegalArgumentException("ListDelegatee requires List instance for DelegateLists");
     }
 
     public void add(int index, Object/*>A<*/ element) {
-	((List/*<A>*/) getDelegatee()).add(index, element);
+        ((List/*<A>*/) getDelegatee()).add(index, element);
     }
 
     public boolean addAll(int index, Collection/*<A>*/ c) {
-	return ((List/*<A>*/) getDelegatee()).addAll(index, c);
+        return ((List/*<A>*/) getDelegatee()).addAll(index, c);
     }
-	
+        
     public Object/*>A<*/ get(int index) {
-	return ((List/*<A>*/) getDelegatee()).get(index);
+        return ((List/*<A>*/) getDelegatee()).get(index);
     }
-	
+        
     public int indexOf(Object/*>A<*/ o) {
-	return ((List/*<A>*/) getDelegatee()).indexOf(o);
+        return ((List/*<A>*/) getDelegatee()).indexOf(o);
     }
-	
+        
     public int lastIndexOf(Object/*>A<*/ o) {
-	return ((List/*<A>*/) getDelegatee()).lastIndexOf(o);
+        return ((List/*<A>*/) getDelegatee()).lastIndexOf(o);
     }
-	
+        
     public ListIterator/*<A>*/ listIterator() {
-	return ((List/*<A>*/) getDelegatee()).listIterator();
+        return ((List/*<A>*/) getDelegatee()).listIterator();
     }
 
     public ListIterator/*<A>*/ listIterator(int index) {
-	return ((List/*<A>*/) getDelegatee()).listIterator(index);
+        return ((List/*<A>*/) getDelegatee()).listIterator(index);
     }
 
     public Object/*>A<*/ remove(int index) {
-	return ((List/*<A>*/) getDelegatee()).remove(index);
+        return ((List/*<A>*/) getDelegatee()).remove(index);
     }
 
     public Object/*>A<*/ set(int index, Object/*>A<*/ element) {
-	return ((List/*<A>*/) getDelegatee()).set(index, element);
+        return ((List/*<A>*/) getDelegatee()).set(index, element);
     }
 
     public List/*<A>*/ subList(int fromIndex, int toIndex) {
-	return ((List/*<A>*/) getDelegatee()).subList(fromIndex, toIndex);
+        return ((List/*<A>*/) getDelegatee()).subList(fromIndex, toIndex);
     }
 }

@@ -17,10 +17,10 @@ package orbital.util;
  */
 public class GeneralComplexionException extends UnknownError {
     public GeneralComplexionException(String message) {
-	super(message);
+        super(message);
     }
 
     public GeneralComplexionException() {
-	super("General Complexion Exception");
+        super("General Complexion Exception");
     }
 }

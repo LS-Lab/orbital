@@ -26,87 +26,87 @@ import orbital.logic.sign.Expression;
  */
 class ProductFormula extends ProductExpression implements Formula  {
     public ProductFormula(Expression components[]) {
-	super(components);
+        super(components);
     }
     // implementation of orbital.logic.functor.Functor interface
 
     public Formula exists(Symbol param1)
     {
-	// TODO: implement this orbital.logic.imp.Formula method
-	return null;
+        // TODO: implement this orbital.logic.imp.Formula method
+        return null;
     }
 
     public Formula and(Formula param1)
     {
-	// TODO: implement this orbital.logic.imp.Formula method
-	return null;
+        // TODO: implement this orbital.logic.imp.Formula method
+        return null;
     }
 
     public Formula or(Formula param1)
     {
-	// TODO: implement this orbital.logic.imp.Formula method
-	return null;
+        // TODO: implement this orbital.logic.imp.Formula method
+        return null;
     }
 
     public Formula xor(Formula param1)
     {
-	// TODO: implement this orbital.logic.imp.Formula method
-	return null;
+        // TODO: implement this orbital.logic.imp.Formula method
+        return null;
     }
 
     public Set getFreeVariables()
     {
-	// TODO: implement this orbital.logic.imp.Formula method
-	return null;
+        // TODO: implement this orbital.logic.imp.Formula method
+        return null;
     }
 
     public Set getBoundVariables()
     {
-	// TODO: implement this orbital.logic.imp.Formula method
-	return null;
+        // TODO: implement this orbital.logic.imp.Formula method
+        return null;
     }
 
     public Set getVariables()
     {
-	// TODO: implement this orbital.logic.imp.Formula method
-	return null;
+        // TODO: implement this orbital.logic.imp.Formula method
+        return null;
     }
 
     public Object apply(Object param1)
     {
-	// TODO: implement this orbital.logic.imp.Formula method
-	return null;
+        // TODO: implement this orbital.logic.imp.Formula method
+        return null;
     }
 
     public Formula not()
     {
-	// TODO: implement this orbital.logic.imp.Formula method
-	return null;
+        // TODO: implement this orbital.logic.imp.Formula method
+        return null;
     }
 
     public Formula impl(Formula param1)
     {
-	// TODO: implement this orbital.logic.imp.Formula method
-	return null;
+        // TODO: implement this orbital.logic.imp.Formula method
+        return null;
     }
 
     public Formula equiv(Formula param1)
     {
-	// TODO: implement this orbital.logic.imp.Formula method
-	return null;
+        // TODO: implement this orbital.logic.imp.Formula method
+        return null;
     }
 
     public Formula forall(Symbol param1)
     {
-	// TODO: implement this orbital.logic.imp.Formula method
-	return null;
+        // TODO: implement this orbital.logic.imp.Formula method
+        return null;
     }
     // implementation of orbital.logic.sign.Expression interface
 
     public Signature getSignature()
     {
-	// TODO: implement this orbital.logic.sign.Expression method
-	return null;
+        // TODO: implement this orbital.logic.sign.Expression method
+        return null;
     }
 
 }// ProductFormula

@@ -17,10 +17,10 @@ package orbital.util;
  */
 public class Oops extends UnknownError {
     public Oops(String message) {
-	super(message);
+        super(message);
     }
 
     public Oops() {
-	super("Oops!");
+        super("Oops!");
     }
 }

@@ -17,33 +17,33 @@ package orbital.math;
  */
 public
 class Point3D {
-	public int x;
-	public int y;
-	public int z;
-	public Point3D() {}
-	public Point3D(int x, int y, int z) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
-	public Point3D(Point3D B) {
-		x = B.x;
-		y = B.y;
-		z = B.z;
-	}
+        public int x;
+        public int y;
+        public int z;
+        public Point3D() {}
+        public Point3D(int x, int y, int z) {
+                this.x = x;
+                this.y = y;
+                this.z = z;
+        }
+        public Point3D(Point3D B) {
+                x = B.x;
+                y = B.y;
+                z = B.z;
+        }
 
-	public boolean equals(Object o) {
-		if (!(o instanceof Point3D))
-			return false;
-		Point3D B = (Point3D) o;
-		return x == B.x && y == B.y && z == B.z;
-	} 
+        public boolean equals(Object o) {
+                if (!(o instanceof Point3D))
+                        return false;
+                Point3D B = (Point3D) o;
+                return x == B.x && y == B.y && z == B.z;
+        } 
 
-	public int hashCode() {
-		return x ^ y ^ z;
-	}
+        public int hashCode() {
+                return x ^ y ^ z;
+        }
 
-	public String toString() {
-		return "(" + MathUtilities.format(x) + '|' + MathUtilities.format(y) + '|' + MathUtilities.format(z) + ")";
-	} 
+        public String toString() {
+                return "(" + MathUtilities.format(x) + '|' + MathUtilities.format(y) + '|' + MathUtilities.format(z) + ")";
+        } 
 }

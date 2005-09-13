@@ -33,7 +33,7 @@ public interface MutableFunction/*<A, B>*/ extends Function/*<A, B>*/ {
      * @postconditions RES == OLD(apply(arg)) && apply(arg) == value
      */
     Object/*>B<*/ set(Object/*>A<*/ arg, Object/*>B<*/ value);
-	
+        
     /**
      * @throws CloneNotSupportedException if this function does not support cloning.
      * @postconditions RES != RES
@@ -47,96 +47,96 @@ public interface MutableFunction/*<A, B>*/ extends Function/*<A, B>*/ {
      * @see java.util.HashMap
      */
     public static class TableFunction/*<A, B>*/ implements MutableFunction/*<A, B>*/ {
-    	private final boolean cache;
-    	private final Map/* <A, B> */ map;
-    	private Function/*<A, B>*/ initialization;
-    	/**
-    	 * Create a preinitialized table-based mutable function.
-	 * @param map The tabular map in which values are stored.
-    	 * @param initialization The function h to use for implicit lazy initialization f(x) = h(x)
-    	 *  for yet unknown arguments x.
-    	 *  Use <code>null</code> to disable lazy initialization,
-    	 *  leading to <code>null</code> being the value for yet unknown arguments.
-    	 * @param cache whether values lazy initialized via <code>initialization</code> should
-    	 *  be cached in the hash map.
-    	 *  Caching is important when no memory constraints are posed and the initialization
-    	 *  function performs expensive calculation.
-    	 */
-    	public TableFunction(Map/*_<A, B>_*/ map, Function/*<A, B>*/ initialization, boolean cache) {
-	    this.map = map;
-	    this.initialization = initialization;
-	    this.cache = cache;
-    	}
-    	/**
-    	 * Create a table-based mutable function.
-    	 * @param initialization The function h to use for implicit lazy initialization f(x) = h(x)
-    	 *  for yet unknown arguments x.
-    	 *  Use <code>null</code> to disable lazy initialization,
-    	 *  leading to <code>null</code> being the value for yet unknown arguments.
-    	 * @param cache whether values lazy initialized via <code>initialization</code> should
-    	 *  be cached in the hash map.
-    	 *  Caching is important when no memory constraints are posed and the initialization
-    	 *  function performs expensive calculation.
-    	 */
-    	public TableFunction(Function/*<A, B>*/ initialization, boolean cache) {
-	    this(new HashMap/*_<A, B>_*/(), initialization, cache);
-    	}
-    	public TableFunction(Function/*<A, B>*/ initialization) {
-	    this(initialization, true);
-    	}
-    	/**
-    	 * Create a table-based mutable function without lazy initialization.
-    	 */
-    	public TableFunction() {
-	    this(null);
-    	}
+        private final boolean cache;
+        private final Map/* <A, B> */ map;
+        private Function/*<A, B>*/ initialization;
+        /**
+         * Create a preinitialized table-based mutable function.
+         * @param map The tabular map in which values are stored.
+         * @param initialization The function h to use for implicit lazy initialization f(x) = h(x)
+         *  for yet unknown arguments x.
+         *  Use <code>null</code> to disable lazy initialization,
+         *  leading to <code>null</code> being the value for yet unknown arguments.
+         * @param cache whether values lazy initialized via <code>initialization</code> should
+         *  be cached in the hash map.
+         *  Caching is important when no memory constraints are posed and the initialization
+         *  function performs expensive calculation.
+         */
+        public TableFunction(Map/*_<A, B>_*/ map, Function/*<A, B>*/ initialization, boolean cache) {
+            this.map = map;
+            this.initialization = initialization;
+            this.cache = cache;
+        }
+        /**
+         * Create a table-based mutable function.
+         * @param initialization The function h to use for implicit lazy initialization f(x) = h(x)
+         *  for yet unknown arguments x.
+         *  Use <code>null</code> to disable lazy initialization,
+         *  leading to <code>null</code> being the value for yet unknown arguments.
+         * @param cache whether values lazy initialized via <code>initialization</code> should
+         *  be cached in the hash map.
+         *  Caching is important when no memory constraints are posed and the initialization
+         *  function performs expensive calculation.
+         */
+        public TableFunction(Function/*<A, B>*/ initialization, boolean cache) {
+            this(new HashMap/*_<A, B>_*/(), initialization, cache);
+        }
+        public TableFunction(Function/*<A, B>*/ initialization) {
+            this(initialization, true);
+        }
+        /**
+         * Create a table-based mutable function without lazy initialization.
+         */
+        public TableFunction() {
+            this(null);
+        }
         
         public Object clone() {
-	    TableFunction clone = new TableFunction(initialization);
-	    clone.map.putAll(map);
-	    return clone;
+            TableFunction clone = new TableFunction(initialization);
+            clone.map.putAll(map);
+            return clone;
         }
         
         /**
          * Get the initialization function h.
          */
         public Function/*<A, B>*/ getInitialization() {
-	    return initialization;
+            return initialization;
         }
         /**
          * Set the initialization function h to use.
-    	 * @param initialization The function h to use for implicit lazy initialization f(x) = h(x)
-    	 *  for yet unknown arguments x, from now on.
-    	 *  Use <code>null</code> to disable lazy initialization,
-    	 *  leading to <code>null</code> being the value for yet unknown arguments.
-    	 */
+         * @param initialization The function h to use for implicit lazy initialization f(x) = h(x)
+         *  for yet unknown arguments x, from now on.
+         *  Use <code>null</code> to disable lazy initialization,
+         *  leading to <code>null</code> being the value for yet unknown arguments.
+         */
         public void setInitialization(Function/*<A, B>*/ h) {
-	    this.initialization = h;
+            this.initialization = h;
         }
         
-    	/**
-    	 * Get the value of an argument.
-    	 * @return f(x).
-    	 *  Implicitly lazy initializing f(x) = h(x) for yet unknown arguments x.
-    	 */
-    	public Object/*>B<*/ apply(Object/*>A<*/ arg) {
-	    Object/*>B<*/ value = (Object/*>B<*/) map.get(arg);
-	    if (value == null && initialization != null) {
-		value = initialization.apply(arg);
-		if (cache)
-		    map.put(arg, value);
-	    }
-	    return value;
-    	}
+        /**
+         * Get the value of an argument.
+         * @return f(x).
+         *  Implicitly lazy initializing f(x) = h(x) for yet unknown arguments x.
+         */
+        public Object/*>B<*/ apply(Object/*>A<*/ arg) {
+            Object/*>B<*/ value = (Object/*>B<*/) map.get(arg);
+            if (value == null && initialization != null) {
+                value = initialization.apply(arg);
+                if (cache)
+                    map.put(arg, value);
+            }
+            return value;
+        }
     
-    	/**
-    	 * Update the value at an argument.
-    	 * @param arg the argument x whose cost to update.
-    	 * @param value the new value f(x) to set for argument x.
-	 * @return the old value f(arg) prior to updating the function.
-    	 */
-    	public Object/*>B<*/ set(Object/*>A<*/ arg, Object/*>B<*/ value) {
-	    return (Object/*>B<*/) map.put(arg, value);
-    	}
+        /**
+         * Update the value at an argument.
+         * @param arg the argument x whose cost to update.
+         * @param value the new value f(x) to set for argument x.
+         * @return the old value f(arg) prior to updating the function.
+         */
+        public Object/*>B<*/ set(Object/*>A<*/ arg, Object/*>B<*/ value) {
+            return (Object/*>B<*/) map.put(arg, value);
+        }
     }
 }

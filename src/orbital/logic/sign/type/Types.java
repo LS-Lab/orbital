@@ -48,7 +48,7 @@ public final class Types {
      * @see #setDefault(TypeSystem)
      */
     public static final TypeSystem getDefault() {
-	return defaultTypeSystem;
+        return defaultTypeSystem;
     }
 
     /**
@@ -63,7 +63,7 @@ public final class Types {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) sm.checkPermission(new java.util.PropertyPermission
                         ("orbital.logic.imp.TypeSystem.default", "write"));
-	defaultTypeSystem = newTypeSystem;
+        defaultTypeSystem = newTypeSystem;
     }
 
 
@@ -108,13 +108,13 @@ public final class Types {
      * @xxx remove convenience?
      */
     public static final boolean isApplicableTo(Type compositorType, Expression[] args) {
-	try {
-	    compositorType.on(typeOf(args));
-	    return true;
-	}
-	catch (TypeException incompatibleTypes) {
-	    return false;
-	}
+        try {
+            compositorType.on(typeOf(args));
+            return true;
+        }
+        catch (TypeException incompatibleTypes) {
+            return false;
+        }
     }
 
     // Stuff
@@ -127,21 +127,21 @@ public final class Types {
      * @todo 19 optimize this hotspot during proving
      */
     public static final int arityOf(Type type) {
-	final TypeSystem typeSystem = type.typeSystem();
-	return type == typeSystem.ABSURD()
-	    // strict
-	    ? Integer.MIN_VALUE
-	    : type.equals(typeSystem.NOTYPE())
-	    ? 0
-	    : arityOf_perhapsProduct(type);
+        final TypeSystem typeSystem = type.typeSystem();
+        return type == typeSystem.ABSURD()
+            // strict
+            ? Integer.MIN_VALUE
+            : type.equals(typeSystem.NOTYPE())
+            ? 0
+            : arityOf_perhapsProduct(type);
     }
     private static final int arityOf_perhapsProduct(Type type) {
-	if (type instanceof Type.Composite) {
-	    Type.Composite t = (Type.Composite)type;
-	    if (t.getCompositor() == type.typeSystem().product())
-		return ((Type[]) t.getComponent()).length;
-	}
-	return 1;
+        if (type instanceof Type.Composite) {
+            Type.Composite t = (Type.Composite)type;
+            if (t.getCompositor() == type.typeSystem().product())
+                return ((Type[]) t.getComponent()).length;
+        }
+        return 1;
     }
     
     /**
@@ -156,12 +156,12 @@ public final class Types {
      * @todo package protect but share with orbital.moon.logic.
      */
     /*private*/public static final Type typeOf(Typed[] args) {
-	if (args == null || args.length == 0)
-	    return getDefault().NOTYPE();
-	final Type argumentTypes[] = new Type[args.length];
-	for (int i = 0; i < argumentTypes.length; i++)
-	    argumentTypes[i] = args[i].getType();
-	return getDefault().product(argumentTypes);
+        if (args == null || args.length == 0)
+            return getDefault().NOTYPE();
+        final Type argumentTypes[] = new Type[args.length];
+        for (int i = 0; i < argumentTypes.length; i++)
+            argumentTypes[i] = args[i].getType();
+        return getDefault().product(argumentTypes);
     }
 
     /**
@@ -170,14 +170,14 @@ public final class Types {
      * @todo package protect but share with orbital.moon.logic.
      */
     /*private*/public static final Type typeOf(Object args) {
-	if (args == null)
-	    return getDefault().NOTYPE();
-	else if (args instanceof Typed)
-	    return ((Typed)args).getType();
-	else if (args instanceof Typed[])
-	    return typeOf((Typed[])args);
-	else
-	    return null;
+        if (args == null)
+            return getDefault().NOTYPE();
+        else if (args instanceof Typed)
+            return ((Typed)args).getType();
+        else if (args instanceof Typed[])
+            return typeOf((Typed[])args);
+        else
+            return null;
     }
 
     /**
@@ -186,7 +186,7 @@ public final class Types {
      * @xxx we cannot know that ClassicalLogic & Co implement AND as a BinaryFunction, not as a BinaryPredicate<Boolean,Boolean>
      */
     private static final Type declaredTypeOf(Functor.Specification spec) {
-	return getDefault().map(typeOf(spec.getParameterTypes()), getDefault().objectType(spec.getReturnType()));
+        return getDefault().map(typeOf(spec.getParameterTypes()), getDefault().objectType(spec.getReturnType()));
     }
 
     /**
@@ -203,8 +203,8 @@ public final class Types {
      * @fixme we cannot know that ClassicalLogic & Co implement AND as a BinaryFunction, not as a BinaryPredicate<Boolean,Boolean>
      */
     /*private*/public static final Type declaredTypeOf(Functor f) throws IntrospectionException {
-	Type type = getTypeDeclaration(f);
-	return type != null ? type : declaredTypeOf(Functor.Specification.getSpecification(f));
+        Type type = getTypeDeclaration(f);
+        return type != null ? type : declaredTypeOf(Functor.Specification.getSpecification(f));
     }
 
     /**
@@ -217,12 +217,12 @@ public final class Types {
      * @see TypeSystem#objectType(Class)
      */
     private static final Type typeOf(Class[] args) {
-	if (args == null || args.length == 0)
-	    return getDefault().NOTYPE();
-	final Type argumentTypes[] = new Type[args.length];
-	for (int i = 0; i < argumentTypes.length; i++)
-	    argumentTypes[i] = getDefault().objectType(args[i]);
-	return getDefault().product(argumentTypes);
+        if (args == null || args.length == 0)
+            return getDefault().NOTYPE();
+        final Type argumentTypes[] = new Type[args.length];
+        for (int i = 0; i < argumentTypes.length; i++)
+            argumentTypes[i] = getDefault().objectType(args[i]);
+        return getDefault().product(argumentTypes);
     }
 
     /**
@@ -236,22 +236,22 @@ public final class Types {
      * @see orbital.logic.functor.Functor.Specification#getSpecification(orbital.logic.functor.Functor)
      */
     private static Type getTypeDeclaration(Object f) {
-	if (f instanceof Type)
-	    return getDefault().TYPE();
-	Class c = f.getClass();
-	try {
-	    Field spec = getFieldOrInherited(c, "logicalTypeDeclaration");
-	    int   requiredModifier = Modifier.FINAL;
-	    if ((spec.getModifiers() & requiredModifier) == requiredModifier
-		&& Type.class.isAssignableFrom(spec.getType())) {
-		if (true || !spec.isAccessible())
-		    spec.setAccessible(true);
-		return (Type) spec.get(f);
-	    }
-	}
-	catch (NoSuchFieldException trial) {}
-	catch (IllegalAccessException trial) {}
-	return null;
+        if (f instanceof Type)
+            return getDefault().TYPE();
+        Class c = f.getClass();
+        try {
+            Field spec = getFieldOrInherited(c, "logicalTypeDeclaration");
+            int   requiredModifier = Modifier.FINAL;
+            if ((spec.getModifiers() & requiredModifier) == requiredModifier
+                && Type.class.isAssignableFrom(spec.getType())) {
+                if (true || !spec.isAccessible())
+                    spec.setAccessible(true);
+                return (Type) spec.get(f);
+            }
+        }
+        catch (NoSuchFieldException trial) {}
+        catch (IllegalAccessException trial) {}
+        return null;
     }
 
     /**
@@ -259,11 +259,11 @@ public final class Types {
      * @todo move to orbital.util.Utility
      */
     private static Field getFieldOrInherited(Class c, String name) throws NoSuchFieldException {
-	try {
-	    return c.getField(name);
-	}
-	catch (NoSuchFieldException trial) {}
-	return c.getDeclaredField(name);
+        try {
+            return c.getField(name);
+        }
+        catch (NoSuchFieldException trial) {}
+        return c.getDeclaredField(name);
     }
 
     /**
@@ -274,38 +274,38 @@ public final class Types {
      * @see Typed#getType()
      */
     public static final String toTypedString(Typed s) {
-	return s == null
-	    ? "<null>"
-	    //@internal SymbolBase.toString() sometimes already prints like toTypedString, so we omit duplicate type descriptions, here
-	    : (s instanceof Symbol ? ((Symbol)s).getSignifier() : s.toString())
-	    + ':' + s.getType() + (Logger.global.isLoggable(Level.ALL) && s instanceof Variable && ((Variable)s).isVariable() ? "[var]" : "");
+        return s == null
+            ? "<null>"
+            //@internal SymbolBase.toString() sometimes already prints like toTypedString, so we omit duplicate type descriptions, here
+            : (s instanceof Symbol ? ((Symbol)s).getSignifier() : s.toString())
+            + ':' + s.getType() + (Logger.global.isLoggable(Level.ALL) && s instanceof Variable && ((Variable)s).isVariable() ? "[var]" : "");
     }
 
     public static final String toTypedString(Typed s[]) {
-	/* @internal pure functional rewrite would be
-	   MathUtilities.format(Functionals.map(new Function() {
-		    public Object apply(Object s) {
-		    //@internal SymbolBase.toString() sometimes already prints like toTypedString, so we omit duplicate type descriptions, here
-			return (s instanceof Symbol ? ((Symbol)s).getSignifier() : s.toString());
-		    }
-		    }, s)) */
-	if (s == null)
-	    return "<null>";
-	StringBuffer sb = new StringBuffer();
-	sb.append('[');
-	for (int i = 0; i < s.length; i++) {
-	    if (i > 0) {
-		sb.append(", ");
-	    }
-	    Typed si = s[i];
-	    //@internal SymbolBase.toString() sometimes already prints like toTypedString, so we omit duplicate type descriptions, here
-	    sb.append((si instanceof Symbol ? ((Symbol)si).getSignifier() : si.toString()));
-	}
-	sb.append(']');
-	sb.append(' ');
-	sb.append(':');
-	sb.append(' ');
-	sb.append(typeOf(s));
-	return sb.toString();
+        /* @internal pure functional rewrite would be
+           MathUtilities.format(Functionals.map(new Function() {
+                    public Object apply(Object s) {
+                    //@internal SymbolBase.toString() sometimes already prints like toTypedString, so we omit duplicate type descriptions, here
+                        return (s instanceof Symbol ? ((Symbol)s).getSignifier() : s.toString());
+                    }
+                    }, s)) */
+        if (s == null)
+            return "<null>";
+        StringBuffer sb = new StringBuffer();
+        sb.append('[');
+        for (int i = 0; i < s.length; i++) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+            Typed si = s[i];
+            //@internal SymbolBase.toString() sometimes already prints like toTypedString, so we omit duplicate type descriptions, here
+            sb.append((si instanceof Symbol ? ((Symbol)si).getSignifier() : si.toString()));
+        }
+        sb.append(']');
+        sb.append(' ');
+        sb.append(':');
+        sb.append(' ');
+        sb.append(typeOf(s));
+        return sb.toString();
     }
 }// Types

@@ -38,7 +38,7 @@ public final class Functions {
      * @todo publicize?
      */
     static final /*<A,B>*/ Function/*<A,B>*/ constant(Object/*>B<*/ a) {
-	return new ConstantFunction/*<A,A,B>*/(a);
+        return new ConstantFunction/*<A,A,B>*/(a);
     }
     /**
      * constant &acirc;: A<sub>1</sub>&times;A<sub>2</sub>&rarr;B; x &#8614; a .
@@ -46,7 +46,7 @@ public final class Functions {
      * integrate: &int;a<i>d</i>x = a*x</p>
      */
     static final /*<A1,A2,B>*/ BinaryFunction/*<A1,A2,B>*/ binaryConstant(Object/*>B<*/ a) {
-	return new ConstantFunction/*<A1,A2,B>*/(a);
+        return new ConstantFunction/*<A1,A2,B>*/(a);
     }
     /**
      * A constant function.
@@ -68,52 +68,52 @@ public final class Functions {
      * @todo could we change this to Function<A implements Arithmetic,M> or to Function<Arithmetic,M>?
      */
     static final class ConstantFunction/*<A1,A2,B>*/ implements VoidFunction/*<B>*/, Function/*<A1,B>*/, BinaryFunction/*<A1,A2,B>*/, Variable {
-    	private Object/*>B<*/ a;
-    	public ConstantFunction(Object/*>B<*/ a) {
-	    this.a = a;
-    	}
-    	
-	/**
-	 * @structure delegate a:Object
-	 */
-	public boolean isVariable() {
-	    return (a instanceof Variable) && ((Variable) a).isVariable();
-	}
-    	
-	public Object/*>B<*/ apply() {
-	    return a;
-	} 
-	public Object/*>B<*/ apply(Object/*>A1<*/ x) {
-	    return apply();
-	} 
-	public Object/*>B<*/ apply(Object/*>A1<*/ x, Object/*>A2<*/ y) {
-	    return apply();
-	} 
-	public boolean equals(Object o) {
-	    return (o instanceof ConstantFunction)
-		&& Utility.equals(a, ((ConstantFunction) o).a);
-	}
-	public int hashCode() {
-	    return Utility.hashCode(a);
-	}
-	public String toString() {
-	    return a + "";
-	} 
+        private Object/*>B<*/ a;
+        public ConstantFunction(Object/*>B<*/ a) {
+            this.a = a;
+        }
+        
+        /**
+         * @structure delegate a:Object
+         */
+        public boolean isVariable() {
+            return (a instanceof Variable) && ((Variable) a).isVariable();
+        }
+        
+        public Object/*>B<*/ apply() {
+            return a;
+        } 
+        public Object/*>B<*/ apply(Object/*>A1<*/ x) {
+            return apply();
+        } 
+        public Object/*>B<*/ apply(Object/*>A1<*/ x, Object/*>A2<*/ y) {
+            return apply();
+        } 
+        public boolean equals(Object o) {
+            return (o instanceof ConstantFunction)
+                && Utility.equals(a, ((ConstantFunction) o).a);
+        }
+        public int hashCode() {
+            return Utility.hashCode(a);
+        }
+        public String toString() {
+            return a + "";
+        } 
     }
-	
+        
     /**
      * id: A&rarr;A; x &#8614; x .
      */
     public static final Function id = new Function() {
-	    public Object apply(Object x) {
-		return x;
-	    } 
-	    public String toString() {
-		return "id";
-	    } 
-	};
+            public Object apply(Object x) {
+                return x;
+            } 
+            public String toString() {
+                return "id";
+            } 
+        };
 
-	
+        
 
     /**
      * Projects to the first argument, ignoring the second.
@@ -125,14 +125,14 @@ public final class Functions {
      * <p><b><i>Evolves</i>:</b> might be renamed.</p>
      */
     public static final BinaryFunction projectFirst = new BinaryFunction() {
-	    public Object apply(Object first, Object second) {
-		return first;
-	    } 
-	    public String toString() {
-		return "#0";
-	    } 
+            public Object apply(Object first, Object second) {
+                return first;
+            } 
+            public String toString() {
+                return "#0";
+            } 
 
-	};
+        };
 
     /**
      * Projects to the second argument, ignoring the first.
@@ -144,11 +144,11 @@ public final class Functions {
      * <p><b><i>Evolves</i>:</b> might be renamed.</p>
      */
     public static BinaryFunction projectSecond = new BinaryFunction() {
-	    public Object apply(Object first, Object second) {
-		return second;
-	    } 
-	    public String toString() {
-		return "#1";
-	    } 
-	};
+            public Object apply(Object first, Object second) {
+                return second;
+            } 
+            public String toString() {
+                return "#1";
+            } 
+        };
 }

@@ -192,7 +192,7 @@ public interface ValueFactory {
      */
     Scalar valueOf(Number val);
 
-	
+        
     // "named" scalar value constructors
 
     /**
@@ -256,7 +256,7 @@ public interface ValueFactory {
 
 
     // vector constructors and conversion utilities
-	 
+         
     /**
      * Returns a Vector containing the specified arithmetic objects.
      * <p>
@@ -773,7 +773,7 @@ public interface ValueFactory {
 
 
     // arithmetic widening coercer
-	
+        
     /**
      * Get the transformation function for coercing arithmetic
      * objects.  This transformation is a function that transforms an
