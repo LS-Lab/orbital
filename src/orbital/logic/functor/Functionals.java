@@ -1733,8 +1733,15 @@ public class Functionals {
 	//@fixme this does not create an array of type B (but of type A) since we don't actually know that at runtime (also we cannot predict it from f[0] since that may have another type than f[1] has, although they have a common supertype)
 	// so we could first use an Object[], fill it, and meanwhile calculate the supremum type S of all occuring objects, then copy it to an S[].
 	Object/*>B<*/[] r = (Object/*>B<*/[]) Array.newInstance(a.getClass().getComponentType(), a.length);
-	for (int i = 0; i < r.length; i++)
-	    r[i] = f.apply(a[i]);
+	for (int i = 0; i < r.length; i++) {
+	    final Object o = f.apply(a[i]);
+	    try {
+		r[i] = o;
+	    }
+	    catch (ArrayStoreException e) {
+		throw (ArrayStoreException)new ArrayStoreException("attempted to store " + o + "@" + (o == null ? null : o.getClass()) + " into " + r.getClass()).initCause(e);
+	    }
+	}
 	return r;
     } 
     /**
@@ -1886,8 +1893,15 @@ public class Functionals {
 	    throw new IndexOutOfBoundsException("argument arrays must have same length");
 	//Object/*>B<*/[] a = new Object/*>B<*/[x.length]; // is not of correct sub-type
 	Object/*>B<*/[] a = (Object/*>B<*/[]) Array.newInstance(x.getClass().getComponentType(), x.length);
-	for (int i = 0; i < a.length; i++)
-	    a[i] = f.apply(x[i], y[i]);
+	for (int i = 0; i < a.length; i++) {
+	    final Object o = f.apply(x[i], y[i]);
+	    try {
+		a[i] = o;
+	    }
+	    catch (ArrayStoreException e) {
+		throw (ArrayStoreException)new ArrayStoreException("attempted to store " + o + "@" + (o == null ? null : o.getClass()) + " into " + a.getClass()).initCause(e);
+	    }
+	}
 	return a;
     } 
     private static /*<A1, A2, B>*/ Collection/*_<B>_*/ mapInto(BinaryFunction/*<A1, A2, B>*/ f, Iterator/*_<A1>_*/ x, Iterator/*_<A2>_*/ y, Collection/*_<B>_*/ r) {
