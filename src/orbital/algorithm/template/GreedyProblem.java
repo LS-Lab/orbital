@@ -66,7 +66,7 @@ import java.util.List;
  * @author  Andr&eacute; Platzer
  * @see Greedy
  * @todo What's the connection of filtered system of sets with topological filters?
- * @internal  Schrittweises Ausschöpfen alias Raffke Algorithmen alias Greedy Algorithmen.
+ * @internal Schrittweises AusschÃ¶pfen alias Raffke Algorithmen alias Greedy Algorithmen.
  */
 public interface GreedyProblem extends AlgorithmicProblem {
 

@@ -1,7 +1,7 @@
 /**
  * @(#)Arithmetic.java 1.0 1999/08/16 Andre Platzer
  * 
- * Copyright (c) 1999 Andre Platzer. All Rights Reserved.
+ * Copyright (c) 1999-2004 Andre Platzer. All Rights Reserved.
  */
 
 package orbital.math;
@@ -21,7 +21,7 @@ package orbital.math;
  *   <tr>
  *     <td width="5%" rowspan="3"></td>
  *     <td>{@link #add(Arithmetic) add}</td>
- *     <td>+:M×M&rarr;M; (a,b)&#8614;a+b</td>
+ *     <td>+:MÃ—M&rarr;M; (a,b)&#8614;a+b</td>
  *     <td>for magmas</td>
  *   </tr>
  *   <tr>
@@ -31,7 +31,7 @@ package orbital.math;
  *   </tr>
  *   <tr>
  *     <td>{@link #subtract(Arithmetic) subtract}</td>
- *     <td>-:M×M&rarr;M; (a,b)&#8614;a-b = a+(&minus;b)</td>
+ *     <td>-:MÃ—M&rarr;M; (a,b)&#8614;a-b = a+(&minus;b)</td>
  *     <td>for groups</td>
  *   </tr>
  *   <tr>
@@ -40,7 +40,7 @@ package orbital.math;
  *   <tr>
  *     <td width="5%" rowspan="5"></td>
  *     <td>{@link #multiply(Arithmetic) multiply}</td>
- *     <td>&sdot;:M×M&rarr;M; (a,b)&#8614;a&sdot;b=a&#8202;b</td>
+ *     <td>&sdot;:MÃ—M&rarr;M; (a,b)&#8614;a&sdot;b=a&#8202;b</td>
  *     <td>law of composition for rings</td>
  *   </tr>
  *   <tr>
@@ -50,17 +50,17 @@ package orbital.math;
  *   </tr>
  *   <tr>
  *     <td>{@link #divide(Arithmetic) divide}</td>
- *     <td>&#8725;:M×M&rarr;M; (a,b)&#8614;a&#8725;b = a&sdot;b<sup>-1</sup></td>
+ *     <td>&#8725;:MÃ—M&rarr;M; (a,b)&#8614;a&#8725;b = a&sdot;b<sup>-1</sup></td>
  *     <td>for fields</td>
  *   </tr>
  *   <tr>
  *     <td>{@link #scale(Arithmetic) scale}</td>
- *     <td>&middot;:R×M&rarr;M; (&alpha;,x)&#8614;&alpha;&middot;x</td>
+ *     <td>&middot;:RÃ—M&rarr;M; (&alpha;,x)&#8614;&alpha;&middot;x</td>
  *     <td>law of action for R-modules</td>
  *   </tr>
  *   <tr>
  *     <td>{@link Tensor#multiply(Tensor) multiply}</td>
- *     <td>·:M×N&rarr;P; (a,b)&#8614;a&#8729;b=a·b</td>
+ *     <td>Â·:MÃ—N&rarr;P; (a,b)&#8614;a&#8729;b=aÂ·b</td>
  *     <td>{@link Tensor#multiply(Tensor) inner product} for tensors</td>
  *   </tr>
  *   <tr>
@@ -69,7 +69,7 @@ package orbital.math;
  *   <tr>
  *     <td width="5%"></td>
  *     <td>{@link #power(Arithmetic) power}</td>
- *     <td>^:M×M&rarr;M; (a,b)&#8614;a^b = a<sup>b</sup></td>
+ *     <td>^:MÃ—M&rarr;M; (a,b)&#8614;a^b = a<sup>b</sup></td>
  *     <td>for rings,<br />requires &#13266; and <b>e</b><sup>a</sup> in general case,<br />
  *         Will often work only for b&isin;<b>Z</b></td>
  *   </tr>
@@ -77,7 +77,7 @@ package orbital.math;
  * <p>
  * <b>Note:</b> Arithmetic objects may support composition with arithmetic
  * objects of various types other than those in M as well. For simplicity these
- * more general laws with a signature of M<sub>1</sub>×M<sub>2</sub>&rarr;M<sub>0</sub>
+ * more general laws with a signature of M<sub>1</sub>Ã—M<sub>2</sub>&rarr;M<sub>0</sub>
  * are omitted in the table above. Since they are indeed very useful they can nevertheless
  * be implemented. Vectors for example can be multiplied with a scalar as well as a
  * matrix or a vector resulting in different objects.

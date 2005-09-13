@@ -1,7 +1,7 @@
 /**
  * @(#)Normed.java 1.0 2000/08/22 Andre Platzer
  * 
- * Copyright (c) 2000 Andre Platzer. All Rights Reserved.
+ * Copyright (c) 2000-2001 Andre Platzer. All Rights Reserved.
  */
 
 package orbital.math;
@@ -15,7 +15,7 @@ package orbital.math;
  *   <tr> <td colspan="3">||.||:A&rarr;<b>R</b> is a <dfn>norm</dfn> if &forall;a,b&isin;A, &alpha;&isin;S:</td> </tr>
  *   <tr> <td>(pdef)</td> <td>||a||&ge;0 and ||a||=0 &hArr; a=0</td> <td>&quot;positive definite&quot;</td> </tr>
  *   <tr> <td>(&Delta;)</td> <td>||a+b|| &le; ||a|| + ||b||</td> <td>&quot;triangular inequality&quot;</td> </tr>
- *   <tr> <td>(hom)</td> <td>||&lambda;a|| = |&lambda;|·||a||</td> <td>&quot;absolute homogenous&quot;</td> </tr>
+ *   <tr> <td>(hom)</td> <td>||&lambda;a|| = |&lambda;|Â·||a||</td> <td>&quot;absolute homogenous&quot;</td> </tr>
  *   <tr> <td><b>&rArr;</b></td> <td>Properties</td></tr>
  *   <tr> <td>(<span style="text-decoration: overline">&Delta;</span>)</td> <td><big>|</big>||a|| - ||b||<big>|</big> &le; ||a - b||</td> <td>&quot;inverse triangular inequality&quot;</td> </tr>
  * </table>
