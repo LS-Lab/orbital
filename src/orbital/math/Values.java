@@ -11,6 +11,7 @@ import java.util.Map;
 
 // not a strict import. @todo could get rid of this, if we introduce somewhere (not directly in ValueFactory) a way of passing the parameters map.
 import orbital.moon.math.AbstractValues;
+import orbital.moon.GetPropertyAction;
 
 /**
  * Manager for scalar value and arithmetic object value constructor factories.

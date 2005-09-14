@@ -20,6 +20,7 @@ import java.lang.reflect.*;
 
 import java.util.logging.Logger;
 import java.util.logging.Level;
+import orbital.moon.GetPropertyAction;
 
 /**
  * Manager for type system and factories.
@@ -28,7 +29,22 @@ import java.util.logging.Level;
  * Simple applications will generally use {@link #getDefault()} to get the current
  * system default type system. While applications that require more control over
  * the particular arithmetic object implementations will get their own instance
- * and configure it according to their needs.
+ * of {@link TypeSystem} and configure it according to their needs.
+ * </p>
+ * <p>
+ * <table id="SystemProperties" border="2">
+ *   <caption>Properties: type system settings</caption>
+ *   <tr>
+ *     <th>Property Name</th>
+ *     <th>Property Value</th>
+ *   </tr>
+ *   <tr>
+ *     <td><tt>orbital.logic.sign.type.TypeSystem.default</tt></td>
+ *     <td>class name of the initial default TypeSystem implementation returned by {@link TypeSystem#getDefault()}.</td>
+ *   </tr>
+ * </table>
+ * This properties allow a different vendor's factory implementation of type systems
+ * to be "plugged in".
  * </p>
  *
  * @author Andr&eacute; Platzer
@@ -37,9 +53,35 @@ import java.util.logging.Level;
  */
 public final class Types {
     /**
+     * @internal see javax.xml.parser.FactoryFinder#findClassLoader() for a version that - supposedly - runs under every JVM.
+     */
+    private static final TypeSystem instantiate(String className) {
+        ClassLoader cl = TypeSystem.class.getClassLoader();
+        if (cl == null)
+            cl = ClassLoader.getSystemClassLoader();
+
+        try {
+            return (TypeSystem) Class.forName(className, true, cl).newInstance();
+        } catch (ClassNotFoundException ex) {
+            try {
+                cl = Thread.currentThread().getContextClassLoader();
+                if (cl == null)
+                    cl = ClassLoader.getSystemClassLoader();
+                return (TypeSystem) Class.forName(className, true, cl).newInstance();
+            } catch (Exception ex_again) {
+                throw new FactoryConfigurationError("can't instantiate TypeSystem implementation " + className, ex_again);
+            }
+        } catch (Exception ex) {
+            throw new FactoryConfigurationError("can't instantiate TypeSystem implementation " + className, ex);
+        }
+    }
+    
+    /**
      * Default instance.
      */
-    private static TypeSystem defaultTypeSystem = new orbital.moon.logic.sign.type.StandardTypeSystem();
+    private static TypeSystem defaultTypeSystem =
+	instantiate(GetPropertyAction.getProperty(TypeSystem.class.getName() + ".default",
+					  orbital.moon.logic.sign.type.StandardTypeSystem.class.getName()));
 
     /**
      * Get the (single) default type system instance.

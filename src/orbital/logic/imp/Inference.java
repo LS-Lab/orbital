@@ -167,7 +167,7 @@ import orbital.logic.Relation;
  * @see Logic#inference()
  * @see <a href="doc-files/inferential.html">several inference relations</a>
  */
-public interface Inference extends Relation {
+public interface Inference /*extends Relation*/ {
 
     /**
      * Apply the inference relation <span class="inference">|~</span>
