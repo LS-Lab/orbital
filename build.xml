@@ -20,13 +20,21 @@
       Run "ant -projecthelp" to get a list of available targets.
       The default target is "compile".
 
+      Requirements:
+      In order to build all parts of the Orbital library, examples, tests
+      and additional files, you need the following software.
       Dependencies:
       Full compilation and testing of this project requires:
+        JDK 1.4+ from http://java.sun.com/
+        Ant from http://jakarta.apache.org/ant/
         JavaCC from https://javacc.dev.java.net/
         junit.jar from http://www.junit.org/ 
       Optional:
-        Checkstyle http://checkstyle.sourceforge.net/
+        JDepend from http://www.clarkware.com/software/JDepend.html
+        Checkstyle from http://checkstyle.sourceforge.net/
+        Mathematica and JLink from http://wolfram
     </description>
+
 
     <property name="build.compiler" value="modern"/>
     <property name="build.sysclasspath" value="last"/>
@@ -42,18 +50,22 @@
             <format property="TODAY" pattern="MM/dd/yyyy" locale="en,uk"/>
         </tstamp>
 
-        <property name="www.host" value="us9e@rzstud.rz.uni-karlsruhe.de"/>
-        <property name="www.target" value="${www.host}:.public_html/orbital/"/>
+        <!-- distribution information -->
+        <property name="ftp.target"/>
+        <property name="ftp.user"/>
+        <property name="ftp.dir"/>
 
 
         <!-- basedir will be set to parent directory of this file -->
+        <!-- source directories -->
         <property name="lib" value="${basedir}/lib"/>
         <property name="resources" value="${basedir}/resources"/>
         <property name="sources" value="${basedir}/src"/>
-        <property name="src.tests" value="${basedir}/test"/>
+        <property name="sources.tests" value="${basedir}/test"/>
         <property name="examples" value="${basedir}/examples"/>
         <property name="doc" value="${basedir}/doc"/>
 
+        <!-- destination directories -->
         <property name="classes" value="${basedir}/classes"/>
         <property name="dist" value="${basedir}/dist"/>
         <property name="bin" value="${basedir}/bin"/>
@@ -63,11 +75,12 @@
         <property name="doc.dest" value="${dist}/doc"/>
         <property name="doc.api.dest" value="${doc.dest}/api"/>
         <property name="build.tests" value="${basedir}/test"/>
-        <property name="reports.tests" value="${basedir}/report/test"/>
-        <property name="reports.style" value="${basedir}/report/"/>
-        <property name="reports.jdepend" value="${basedir}/report/"/>
+        <property name="reports" value="${basedir}/report"/>
+        <property name="reports.tests" value="${reports}/test"/>
+        <property name="reports.style" value="${reports}"/>
+        <property name="reports.jdepend" value="${reports}"/>
         <property name="build.coverage" value="${basedir}/test/coverage"/>
-        <property name="reports.coverage" value="${basedir}/report/coverage"/>
+        <property name="reports.coverage" value="${reports}/coverage"/>
 
 
         <available property="checkstyle.present" resource="checkstyletask.properties"/>
@@ -177,7 +190,7 @@
         </javac>
 
         <!-- cleanup temporary files from stamp -->
-        <delete dir="${sources}/t" failonerror="false"/>
+        <delete dir="${sources}/transmogrify" failonerror="false"/>
     </target>
 
     <target name="parser" depends="init"
@@ -188,13 +201,13 @@
 
     <target name="stamp" depends="init" unless="signe.isUpToDate"
             description="prepare files for compile">
-        <mkdir dir="${sources}/t"/>
+        <mkdir dir="${sources}/transmogrify"/>
         <!-- @internal due to signe.isUpToDate predication, buildnumber -->
 	<!-- will only increase during clean compilation/jar/dist etc. -->
         <buildnumber/>
         <!-- introduce version information -->
-        <copy file="${sources}/orbital/signe.java" todir="${sources}/t"/>
-        <replace file="${sources}/t/signe.java"
+        <copy file="${sources}/orbital/signe.java" todir="${sources}/transmogrify"/>
+        <replace file="${sources}/transmogrify/signe.java"
 		propertyfile="${basedir}/build.number">
             <replacefilter token="@VERSION@" value="${version}"/>
             <replacefilter token="@BUILD@" property="build.number"/>
@@ -204,7 +217,7 @@
 
     <target name="compile.tests" depends="init, compile.examples"
             description="compile test/*.java (=> ./classes)">
-        <javac srcdir="${src.tests}"
+        <javac srcdir="${sources.tests}"
                destdir="${build.tests}"
                debug="yes"
 	       source="${javac.source}">
@@ -246,7 +259,7 @@
           <formatter type="xml" />
         
           <batchtest fork="yes" haltonfailure="no" todir="${reports.tests}">
-            <fileset dir="${src.tests}">
+            <fileset dir="${sources.tests}">
               <include name="**/*Test*.java" />
               <exclude name="**/AllTests.java" />
               <exclude name="check/TestCase.java" />
@@ -315,9 +328,8 @@
     <target name="run.coverage" depends="init, compile.coverage"
             description="run and report coverage tests">
 	<echo>
-          With assertions turned on, this test suite runs about 3.5 hours. (or about ... hours without ModalLogicTest and PropositionalInferenceTest?)
-	  With assertions turned off, this test suite runs about .... min
-           (but only without orbital.moon.logic.ModalLogicTest).
+          With assertions turned on, this test suite runs about 30 min.
+	  With assertions turned off, this test suite runs about .... min.
           Assertions are set to "${run.tests.jvmarg}"
 	</echo>
         <antcall target="run.tests">
@@ -461,7 +473,7 @@
         <fixcrlf srcdir="${examples}" tab="remove" javafiles="yes"
                  eol="lf" eof="remove"
                  includes="**/*.java, **/*.jj"/>
-        <fixcrlf srcdir="${src.tests}" tab="remove" javafiles="yes"
+        <fixcrlf srcdir="${sources.tests}" tab="remove" javafiles="yes"
                  eol="lf" eof="remove"
                  includes="**/*.java, **/*.jj"/>
 -->
@@ -839,7 +851,7 @@
                 <include name="**/*~"/>
                 <include name="**/.#*"/>
             </fileset>
-            <fileset dir="${src.tests}/" defaultexcludes="no">
+            <fileset dir="${sources.tests}/" defaultexcludes="no">
                 <include name="**/*.bak"/>
                 <include name="**/*~"/>
                 <include name="**/.#*"/>
@@ -858,12 +870,20 @@
     <target name="upload" depends="init, dist.notests"
             description="upload to web site">
         <echo>Uploading</echo>
-	<exec executable="scp" failonerror="true">
-                <arg value="-P 24" />
-		<arg value="${dist}/ap_orbital_rt${version_brief}.zip" />
-		<arg value="${dist}/ap_orbital_doc${version_brief}.zip" />
-		<arg value="${www.target}" />
-	</exec>
+	<input message="Enter password for ${ftp.target}: "
+	    addproperty="pass"/>
+        <ftp server="${ftp.target}"
+             userid="${ftp.user}"
+             remotedir="${ftp.dir}"
+             password="${pass}"
+             verbose="yes"
+             depends="yes">
+             <!-- umask="" -->
+                <fileset dir="${dist}">
+                    <include name="ap_orbital_rt${version_brief}.zip" />
+                    <include name="ap_orbital_doc${version_brief}.zip" />
+                </fileset>
+        </ftp>
         <echo>Success</echo>
     </target>
 
@@ -899,7 +919,7 @@
         classes       = ${classes}
         dist          = ${dist}
         examples      = ${examples}
-        src.tests     = ${src.tests}
+        sources.tests = ${sources.tests}
         build.tests   = ${build.tests}
         reports.tests = ${reports.tests}
 

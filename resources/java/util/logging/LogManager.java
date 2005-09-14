@@ -470,9 +470,9 @@ public class LogManager {
 	    // the global handlers, if they haven't been initialized yet.
 	    initializedGlobalHandlers = true;
 	}
-	Enumeration enum = getLoggerNames();
-	while (enum.hasMoreElements()) {
-	    String name = (String)enum.nextElement();
+	Enumeration e = getLoggerNames();
+	while (e.hasMoreElements()) {
+	    String name = (String)e.nextElement();
 	    resetLogger(name);
 	}
     }
@@ -823,9 +823,9 @@ public class LogManager {
     // Private method to be called when the configuration has
     // changed to apply any level settings to any pre-existing loggers.
     synchronized private void setLevelsOnExistingLoggers() {
-	Enumeration enum = props.propertyNames();
-	while (enum.hasMoreElements()) {
-	    String key = (String)enum.nextElement();
+	Enumeration e = props.propertyNames();
+	while (e.hasMoreElements()) {
+	    String key = (String)e.nextElement();
 	    if (!key.endsWith(".level")) {
 		// Not a level definition.
 		continue;

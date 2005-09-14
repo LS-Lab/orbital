@@ -57,7 +57,7 @@ public abstract class Notation implements Serializable, Comparable {
     /**
      * Table of all canonical references to Notation classes
      */
-    private static Notation[] values = new Notation[8];
+    private static Notation[] values = new Notation[15];
 
     /**
      * Assign an ordinal to this enum value

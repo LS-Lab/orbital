@@ -1,4 +1,4 @@
-package orbital.math;
+package orbital.moon;
 
 import java.security.PrivilegedAction;
 import java.security.AccessController;
@@ -10,7 +10,7 @@ import java.security.AccessControlException;;
  * @see sun.security.action.GetPropertyAction
  * @version $Id$
  */
-class GetPropertyAction implements PrivilegedAction  {
+public class GetPropertyAction implements PrivilegedAction  {
     public static final String getProperty(String propertyName, String defaultValue) {
         try {
             return (String) AccessController.doPrivileged(
