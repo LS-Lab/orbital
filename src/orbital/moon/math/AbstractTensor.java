@@ -43,7 +43,7 @@ import java.util.HashSet;
  * @version $Id$
  * @author  Andr&eacute; Platzer
  */
-abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractProductArithmetic implements Tensor/*<R>*/, Serializable {
+abstract class AbstractTensor/*<R extends Arithmetic>*/ extends AbstractProductArithmetic implements Tensor/*<R>*/, Serializable {
     private static final long serialVersionUID = 7889937971348824822L;
 
     // object-methods
@@ -193,7 +193,7 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractProdu
      * @version $Id$
      * @structure delegates m:AbstractTensor (minimal part)
      */
-    static abstract class TransformedAccessTensor/*<R implements Arithmetic>*/ extends AbstractTensor/*<R>*/ {
+    static abstract class TransformedAccessTensor/*<R extends Arithmetic>*/ extends AbstractTensor/*<R>*/ {
         private static final long serialVersionUID = -3609507213928180122L;
         /**
          * the Tensor to which we grant (transformed) access.
@@ -266,7 +266,7 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractProdu
     public Tensor/*<R>*/ subTensor(int[] i1, int[] i2) {
         return new SubTensor(this, i1, i2);
     } 
-    private static class SubTensor/*<R implements Arithmetic>*/ extends TransformedAccessTensor/*<R>*/ {
+    private static class SubTensor/*<R extends Arithmetic>*/ extends TransformedAccessTensor/*<R>*/ {
         private static final long serialVersionUID = -8431476748988993108L;
         /**
          * contains the offsets in m where this sub-view tensor starts.
@@ -307,7 +307,7 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractProdu
     public Tensor/*<R>*/ subTensor(int level, int index) {
         return new PartTensor/*<R>*/(this, level, index);
     } 
-    private static class PartTensor/*<R implements Arithmetic>*/ extends TransformedAccessTensor/*<R>*/ {
+    private static class PartTensor/*<R extends Arithmetic>*/ extends TransformedAccessTensor/*<R>*/ {
         private static final long serialVersionUID = 4545087879048756777L;
         /**
          * the level l of indices to fix for this view.
@@ -358,7 +358,7 @@ abstract class AbstractTensor/*<R implements Arithmetic>*/ extends AbstractProdu
     public Tensor/*<R>*/ subTensorTransposed(int[] permutation) {
         return new TransposedTensor(this, permutation);
     } 
-    private static class TransposedTensor/*<R implements Arithmetic>*/ extends TransformedAccessTensor/*<R>*/ {
+    private static class TransposedTensor/*<R extends Arithmetic>*/ extends TransformedAccessTensor/*<R>*/ {
         private static final long serialVersionUID = 590361721474800306L;
         /**
          * contains the index permutation for this tensor.

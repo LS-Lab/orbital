@@ -21,7 +21,7 @@ import orbital.logic.functor.Functor;
  * @since Orbital1.0
  * @see orbital.logic.functor.Function
  */
-public interface Function/*<A implements Arithmetic, B implements Arithmetic>*/ extends orbital.logic.functor.Function/*<A, B>*/, MathFunctor {
+public interface Function/*<A extends Arithmetic, B extends Arithmetic>*/ extends orbital.logic.functor.Function/*<A, B>*/, MathFunctor {
 
     /**
      * Derives this function and returns the resulting Function <i>d</i>f/<i>d</i>x.

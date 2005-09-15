@@ -165,7 +165,7 @@ public class ValuesImpl extends AbstractValues {
 
     // vector constructors and conversion utilities
          
-    public /*<R implements Arithmetic>*/ Vector/*<R>*/ valueOf(Arithmetic/*>R<*/[] values) {
+    public /*<R extends Arithmetic>*/ Vector/*<R>*/ valueOf(Arithmetic/*>R<*/[] values) {
         return new ArithmeticVector/*<R>*/(values);
     } 
     //@todo couldn't we even return Vector<Real>?
@@ -180,7 +180,7 @@ public class ValuesImpl extends AbstractValues {
         return v;
     } 
 
-    /*<R implements Arithmetic>*/ Vector/*<R>*/ vector(List/*_<R>_*/ values) {
+    /*<R extends Arithmetic>*/ Vector/*<R>*/ vector(List/*_<R>_*/ values) {
         Vector/*<R>*/   r = newInstance(values.size());
         Iterator/*_<R>_*/   it = values.iterator();
         for (int i = 0; i < values.size(); i++)
@@ -189,18 +189,18 @@ public class ValuesImpl extends AbstractValues {
         return r;
     }
 
-    public /*<R implements Arithmetic>*/ Vector/*<R>*/ newInstance(int dim) {
+    public /*<R extends Arithmetic>*/ Vector/*<R>*/ newInstance(int dim) {
         return new ArithmeticVector/*<R>*/(dim);
     }
 
-    public /*<R implements Scalar>*/ Vector/*<R>*/ BASE(int n, int i) {
+    public /*<R extends Scalar>*/ Vector/*<R>*/ BASE(int n, int i) {
         ArithmeticVector/*<R>*/ base = (ArithmeticVector/*<R>*/) (Vector/*<R>*/) newInstance(n);
         for (int j = 0; j < base.dimension(); j++)
             base.D[j] = (Arithmetic/*>R<*/) (j == i ? ONE : ZERO);
         return base;
     } 
 
-    public /*<R implements Arithmetic>*/ Vector/*<R>*/ CONST(int n, Arithmetic/*>R<*/ c) {
+    public /*<R extends Arithmetic>*/ Vector/*<R>*/ CONST(int n, Arithmetic/*>R<*/ c) {
         ArithmeticVector/*<R>*/ constant = (ArithmeticVector/*<R>*/) (Vector/*<R>*/) newInstance(n);
         Arrays.fill(constant.D, c);
         return constant;
@@ -209,7 +209,7 @@ public class ValuesImpl extends AbstractValues {
 
     // matrix constructors and conversion utilities
 
-    public /*<R implements Arithmetic>*/ Matrix/*<R>*/ valueOf(Arithmetic/*>R<*/[][] values) {
+    public /*<R extends Arithmetic>*/ Matrix/*<R>*/ valueOf(Arithmetic/*>R<*/[][] values) {
         return new ArithmeticMatrix/*<R>*/(values);
     } 
     public Matrix valueOf(double[][] values) {
@@ -226,18 +226,18 @@ public class ValuesImpl extends AbstractValues {
         return v;
     } 
 
-    static /*<R implements Arithmetic>*/ Matrix/*<R>*/ matrix(List/*_<List<R>>_*/ values) {
+    static /*<R extends Arithmetic>*/ Matrix/*<R>*/ matrix(List/*_<List<R>>_*/ values) {
         throw new UnsupportedOperationException("not yet implemented");
     }
 
-    public /*<R implements Arithmetic>*/ Matrix/*<R>*/ newInstance(Dimension dimension) {
+    public /*<R extends Arithmetic>*/ Matrix/*<R>*/ newInstance(Dimension dimension) {
         return new ArithmeticMatrix/*<R>*/(dimension);
     } 
-    public /*<R implements Arithmetic>*/ Matrix/*<R>*/ newInstance(int height, int width) {
+    public /*<R extends Arithmetic>*/ Matrix/*<R>*/ newInstance(int height, int width) {
         return new ArithmeticMatrix/*<R>*/(height, width);
     } 
 
-    public /*<R implements Scalar>*/ Matrix/*<R>*/ IDENTITY(int height, int width) {
+    public /*<R extends Scalar>*/ Matrix/*<R>*/ IDENTITY(int height, int width) {
         if (!(width == height))
             throw new IllegalArgumentException("identity matrix is square");
         ArithmeticMatrix/*<R>*/ identity = (ArithmeticMatrix/*<R>*/) (Matrix/*<R>*/) newInstance(height, width);
@@ -249,13 +249,13 @@ public class ValuesImpl extends AbstractValues {
 
     // tensor constructors
     
-    public /*<R implements Arithmetic>*/ Vector/*<R>*/ tensor(Arithmetic/*>R<*/[] values) {
+    public /*<R extends Arithmetic>*/ Vector/*<R>*/ tensor(Arithmetic/*>R<*/[] values) {
         return valueOf(values);
     }
-    public /*<R implements Arithmetic>*/ Matrix/*<R>*/ tensor(Arithmetic/*>R<*/[][] values) {
+    public /*<R extends Arithmetic>*/ Matrix/*<R>*/ tensor(Arithmetic/*>R<*/[][] values) {
         return valueOf(values);
     }
-    public /*<R implements Arithmetic>*/ Tensor/*<R>*/ tensor(Arithmetic/*>R<*/[][][] values) {
+    public /*<R extends Arithmetic>*/ Tensor/*<R>*/ tensor(Arithmetic/*>R<*/[][][] values) {
         return new ArithmeticTensor(values);
     }
     public Tensor tensor(Object values) {
@@ -299,7 +299,7 @@ public class ValuesImpl extends AbstractValues {
         return t;
     }
 
-    public /*<R implements Arithmetic>*/ Tensor/*<R>*/ ZERO(int[] dimensions) {
+    public /*<R extends Arithmetic>*/ Tensor/*<R>*/ ZERO(int[] dimensions) {
         Tensor zero = newInstance(dimensions);
         for (ListIterator i = zero.iterator(); i.hasNext(); ) {
             i.next();
@@ -310,11 +310,11 @@ public class ValuesImpl extends AbstractValues {
 
     // polynomial constructors and utilities
 
-    public /*<R implements Arithmetic>*/ Polynomial/*<R>*/ polynomial(Object coefficients) {
+    public /*<R extends Arithmetic>*/ Polynomial/*<R>*/ polynomial(Object coefficients) {
         return asPolynomial(tensor(coefficients));
     }
 
-    public /*<R implements Arithmetic>*/ Polynomial/*<R>*/ asPolynomial(Tensor/*<R>*/ coefficients) {
+    public /*<R extends Arithmetic>*/ Polynomial/*<R>*/ asPolynomial(Tensor/*<R>*/ coefficients) {
         // polynomials in 1 variable are converted to UnivariatePolynomials
         switch (coefficients.rank()) {
         case 1:
@@ -325,11 +325,11 @@ public class ValuesImpl extends AbstractValues {
         }
     }
 
-    public /*<R implements Arithmetic>*/ Tensor/*<R>*/ asTensor(Polynomial/*<R>*/ p) {
+    public /*<R extends Arithmetic>*/ Tensor/*<R>*/ asTensor(Polynomial/*<R>*/ p) {
         return ((AbstractMultivariatePolynomial)p).tensorViewOfCoefficients();
     }
 
-    public /*<R implements Arithmetic>*/ Polynomial/*<R>*/ constant(Polynomial/*<R>*/ p) {
+    public /*<R extends Arithmetic>*/ Polynomial/*<R>*/ constant(Polynomial/*<R>*/ p) {
         // Polynomials are currently unmodifiable anyhow.
         //@xxx except via iterator()
         return p;
@@ -349,16 +349,16 @@ public class ValuesImpl extends AbstractValues {
 
     // univariate polynomial constructors and utilities
 
-    public /*<R implements Arithmetic>*/ UnivariatePolynomial/*<R>*/ polynomial(Arithmetic/*>R<*/[] coefficients) {
+    public /*<R extends Arithmetic>*/ UnivariatePolynomial/*<R>*/ polynomial(Arithmetic/*>R<*/[] coefficients) {
         return new ArithmeticUnivariatePolynomial/*<R>*/(coefficients);
     }
 
     // @todo implement a true view flexible for changes (but only if Polynomial.set(...) has been introduced)
-    public /*<R implements Arithmetic>*/ UnivariatePolynomial/*<R>*/ asPolynomial(Vector/*<R>*/ a) {
+    public /*<R extends Arithmetic>*/ UnivariatePolynomial/*<R>*/ asPolynomial(Vector/*<R>*/ a) {
         return polynomial((Arithmetic/*>R<*/[])a.toArray());
     }
 
-    public /*<R implements Arithmetic>*/ UnivariatePolynomial/*<R>*/ constant(UnivariatePolynomial/*<R>*/ p) {
+    public /*<R extends Arithmetic>*/ UnivariatePolynomial/*<R>*/ constant(UnivariatePolynomial/*<R>*/ p) {
         // Polynomials are currently unmodifiable anyhow.
         //@xxx except via iterator()
         return p;
@@ -367,20 +367,20 @@ public class ValuesImpl extends AbstractValues {
 
     // quotient constructors
 
-    public /*<M implements Arithmetic>*/ Quotient/*<M>*/ quotient(Arithmetic/*>M<*/ a, Function/*<M,M>*/ mod) {
+    public /*<M extends Arithmetic>*/ Quotient/*<M>*/ quotient(Arithmetic/*>M<*/ a, Function/*<M,M>*/ mod) {
         return new AbstractQuotient/*<M>*/(a, mod);
     }
-    public /*<M implements Euclidean>*/ Quotient/*<M>*/ quotient(Euclidean/*>M<*/ a, Euclidean/*>M<*/ m) {
+    public /*<M extends Euclidean>*/ Quotient/*<M>*/ quotient(Euclidean/*>M<*/ a, Euclidean/*>M<*/ m) {
         return new AbstractQuotient/*<M>*/(a, m);
     }
-    public /*<R implements Arithmetic>*/ Quotient/*<Polynomial<R,S>>*/ quotient(Polynomial/*<R,S>*/ a, java.util.Set/*_<Polynomial<R,S>>_*/ m, java.util.Comparator/*_<S>_*/ monomialOrder) {
+    public /*<R extends Arithmetic>*/ Quotient/*<Polynomial<R,S>>*/ quotient(Polynomial/*<R,S>*/ a, java.util.Set/*_<Polynomial<R,S>>_*/ m, java.util.Comparator/*_<S>_*/ monomialOrder) {
         assert m.equals(AlgebraicAlgorithms.groebnerBasis(m,monomialOrder)) : m + " is a Groebner basis with respect to " + monomialOrder;
         return quotient(a, AlgebraicAlgorithms.reduce(m, monomialOrder));
     }
 
     // fraction constructors
 
-    public /*<M implements Arithmetic, S implements Arithmetic>*/ Fraction/*<M,S>*/ fraction(Arithmetic/*>M<*/ a, Arithmetic/*<S>*/ s) {
+    public /*<M extends Arithmetic, S extends Arithmetic>*/ Fraction/*<M,S>*/ fraction(Arithmetic/*>M<*/ a, Arithmetic/*<S>*/ s) {
         return new AbstractFraction/*<M,S>*/(a, s);
     }
 

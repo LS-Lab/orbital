@@ -33,7 +33,7 @@ import java.util.NoSuchElementException;
  * @see Values#tensor(Arithmetic[][][])
  * @see Values#tensor(Object)
  */
-public interface Tensor/*<R implements Arithmetic>*/ extends Arithmetic {
+public interface Tensor/*<R extends Arithmetic>*/ extends Arithmetic {
     // object-methods
 
     /**

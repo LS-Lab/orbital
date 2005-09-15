@@ -23,7 +23,7 @@ import orbital.algorithm.Combinatorical;
  * @version $Id$
  * @author  Andr&eacute; Platzer
  */
-class ArithmeticTensor/*<R implements Arithmetic>*/ extends AbstractTensor/*<R>*/ {
+class ArithmeticTensor/*<R extends Arithmetic>*/ extends AbstractTensor/*<R>*/ {
     private static final long serialVersionUID = -6766356302306780151L;
     /**
      * contains the tensor data m<sub>i<sub>1</sub>&times;i<sub>2</sub>&times;&#8230;&times;i<sub>r</sub></sub> as Arithmetic objects.

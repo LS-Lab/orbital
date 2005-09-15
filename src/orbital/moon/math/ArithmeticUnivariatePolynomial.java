@@ -17,7 +17,7 @@ import orbital.util.Setops;
 import orbital.logic.functor.Functionals;
 import orbital.logic.functor.Predicates;
 
-class ArithmeticUnivariatePolynomial/*<R implements Arithmetic>*/ extends AbstractUnivariatePolynomial {
+class ArithmeticUnivariatePolynomial/*<R extends Arithmetic>*/ extends AbstractUnivariatePolynomial {
     private static final long serialVersionUID = -7008637791438268097L;
     /**
      * The coefficients in R.

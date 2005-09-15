@@ -21,7 +21,7 @@ import java.util.ConcurrentModificationException;
 import orbital.util.Utility;
 
 //@todo ensure that multiply((Vector) b) does in fact call multiply(Vector<R>) instead of leading to an infinite recursion. Here and in Matrix stuff
-abstract class AbstractVector/*<R implements Arithmetic>*/ extends AbstractTensor implements Vector/*<R>*/ {
+abstract class AbstractVector/*<R extends Arithmetic>*/ extends AbstractTensor implements Vector/*<R>*/ {
     private static final long serialVersionUID = 372991453454528414L;
 
     // factory-method
@@ -74,7 +74,7 @@ abstract class AbstractVector/*<R implements Arithmetic>*/ extends AbstractTenso
     public Vector/*<R>*/ subVector(int i1, int i2) {
         return new SubVector/*<R>*/(this, i1, i2);
     } 
-    private static class SubVector/*<R implements Arithmetic>*/ extends AbstractVector/*<R>*/ {
+    private static class SubVector/*<R extends Arithmetic>*/ extends AbstractVector/*<R>*/ {
         private static final long serialVersionUID = 1246257328047975917L;
         /**
          * the Vector whose sub-vector we are.

@@ -13,7 +13,7 @@ import java.io.Serializable;
 import orbital.util.Utility;
 
 //@todo this implementation could be optimized to either delaying canonical representation, or performing eager canonicalization but relying on that invariant val==representative lateron
-class AbstractQuotient/*<M implements Arithmetic>*/ implements Quotient/*<M>*/, Serializable {
+class AbstractQuotient/*<M extends Arithmetic>*/ implements Quotient/*<M>*/, Serializable {
     private static final long serialVersionUID = 5546024068517708793L;
     /**
      * The quotient operator applied for each calculation.
@@ -41,7 +41,7 @@ class AbstractQuotient/*<M implements Arithmetic>*/ implements Quotient/*<M>*/, 
     public AbstractQuotient(Euclidean/*>M<*/ val, Euclidean m) {
         this(val, new EuclideanModulo(m));
     }
-    private static class EuclideanModulo/*<M implements Arithmetic>*/ implements Function/*<M,M>*/, Serializable {
+    private static class EuclideanModulo/*<M extends Arithmetic>*/ implements Function/*<M,M>*/, Serializable {
         private static final long serialVersionUID = -8846695670222356251L;
         private final Euclidean m;
         public EuclideanModulo(Euclidean m) {

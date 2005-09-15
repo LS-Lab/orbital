@@ -38,7 +38,7 @@ import orbital.algorithm.Combinatorical;
  * coefficients can then be stored in a HashSet. Perhaps, also sparse
  * tensors could be stored like that.
  */
-abstract class AbstractMultivariatePolynomial/*<R implements Arithmetic>*/ extends AbstractPolynomial/*<R,Vector<Integer>>*/ {
+abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/ extends AbstractPolynomial/*<R,Vector<Integer>>*/ {
     private static final long serialVersionUID = -2237060189065872837L;
     
     /**

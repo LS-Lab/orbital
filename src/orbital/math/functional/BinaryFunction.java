@@ -20,7 +20,7 @@ import orbital.logic.functor.Functor;
  * @author  Andr&eacute; Platzer
  * @since Orbital1.0
  */
-public interface BinaryFunction/*<A1 implements Arithmetic, A2 implements Arithmetic, B implements Arithmetic>*/ extends orbital.logic.functor.BinaryFunction/*<A1, A2, B>*/, MathFunctor {
+public interface BinaryFunction/*<A1 extends Arithmetic, A2 extends Arithmetic, B extends Arithmetic>*/ extends orbital.logic.functor.BinaryFunction/*<A1, A2, B>*/, MathFunctor {
 
     /**
      * Derives this function and returns the resulting BinaryFunction

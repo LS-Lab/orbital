@@ -310,7 +310,7 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
      * The unary left-adjoint.</p>
      * @return f(x,&middot;):A<sub>2</sub>&rarr;B; y &#8614; f(y) := f(x, y)
      */
-    public static /*<A1 implements Arithmetic, A2 implements Arithmetic, B implements Arithmetic>*/ Function/*<A2,B>*/ bindFirst(final BinaryFunction/*<A1,A2,B>*/ f, final Object/*>A1<*/ x) {
+    public static /*<A1 extends Arithmetic, A2 extends Arithmetic, B extends Arithmetic>*/ Function/*<A2,B>*/ bindFirst(final BinaryFunction/*<A1,A2,B>*/ f, final Object/*>A1<*/ x) {
         return new AbstractFunction/*<A2,B>*/() {
                 public Object/*>B<*/ apply(Object/*>A2<*/ y) {
                     return f.apply(x, y);
@@ -337,7 +337,7 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
      * The unary right-adjoint.</p>
      * @return f(&middot;,y):A<sub>1</sub>&rarr;B; x &#8614; f(x) := f(x, y)
      */
-    public static /*<A1 implements Arithmetic, A2 implements Arithmetic, B implements Arithmetic>*/ Function/*<A1,B>*/ bindSecond(final BinaryFunction/*<A1,A2,B>*/ f, final Object/*>A2<*/ y) {
+    public static /*<A1 extends Arithmetic, A2 extends Arithmetic, B extends Arithmetic>*/ Function/*<A1,B>*/ bindSecond(final BinaryFunction/*<A1,A2,B>*/ f, final Object/*>A2<*/ y) {
         return new AbstractFunction/*<A1,B>*/() {
                 public Object/*>B<*/ apply(Object/*>A1<*/ x) {
                     return f.apply(x, y);
@@ -369,7 +369,7 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
      * @return g:A&rarr;B; x &#8614; g(x) := f(x, x)
      * @todo check & verify
      */
-    public static /*<A implements Arithmetic, B implements Arithmetic>*/ Function/*<A,B>*/ bind(final BinaryFunction/*<A,A,B>*/ f) {
+    public static /*<A extends Arithmetic, B extends Arithmetic>*/ Function/*<A,B>*/ bind(final BinaryFunction/*<A,A,B>*/ f) {
         return new AbstractFunction/*<A,B>*/() {
                 public Object/*>B<*/ apply(Object/*>A<*/ x) {
                     return f.apply(x, x);
@@ -397,7 +397,7 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
      * onFirst:  f&rarr;g; (x,y) &#8614; g(x,y) := f(x).</p>
      * <p><b><i>Evolves</i>:</b> might be renamed.</p>
      */
-    public static /*<A1 implements Arithmetic, B implements Arithmetic>*/ BinaryFunction/*<A1, Arithmetic, B>*/ onFirst(final Function/*<A1, B>*/ f) {
+    public static /*<A1 extends Arithmetic, B extends Arithmetic>*/ BinaryFunction/*<A1, Arithmetic, B>*/ onFirst(final Function/*<A1, B>*/ f) {
         return new AbstractBinaryFunction/*<A1,Arithmetic,B>*/() {
                 public Object/*>B<*/ apply(Object/*>A1<*/ first, Object/*>Arithmetic<*/ second) {
                     return f.apply(first);
@@ -426,7 +426,7 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
      * onSecond:  f&rarr;g; (x,y) &#8614; g(x,y) := f(y).</p>
      * <p><b><i>Evolves</i>:</b> might be renamed.</p>
      */
-    public static /*<A2 implements Arithmetic, B implements Arithmetic>*/ BinaryFunction/*<Arithmetic, A2, B>*/ onSecond(final Function/*<A2, B>*/ f) {
+    public static /*<A2 extends Arithmetic, B extends Arithmetic>*/ BinaryFunction/*<Arithmetic, A2, B>*/ onSecond(final Function/*<A2, B>*/ f) {
         return new AbstractBinaryFunction/*<Arithmetic,A2,B>*/() {
                 public Object/*>B<*/ apply(Object/*>Arithmetic<*/ first, Object/*>A2<*/ second) {
                     return f.apply(second);
@@ -464,7 +464,7 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
      * </p>
      * @return f<sup>&harr;</sup>:A<sub>2</sub>&times;A<sub>1</sub>&rarr;B; (x,y) &#8614; f<sup>&harr;</sup>(x,y) := f(y,x)
      */
-    public static /*<A1 implements Arithmetic, A2 implements Arithmetic, B implements Arithmetic>*/ BinaryFunction/*<A2, A1, B>*/ swap(final BinaryFunction/*<A1, A2, B>*/ f) {
+    public static /*<A1 extends Arithmetic, A2 extends Arithmetic, B extends Arithmetic>*/ BinaryFunction/*<A2, A1, B>*/ swap(final BinaryFunction/*<A1, A2, B>*/ f) {
         return new AbstractBinaryFunction/*<A2,A1,B>*/() {
                 public Object/*>B<*/ apply(Object/*>A2<*/ x, Object/*>A1<*/ y) {
                     return f.apply(y, x);

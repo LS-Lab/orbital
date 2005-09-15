@@ -35,7 +35,7 @@ import java.util.ListIterator;
  * @todo implements Function<T,T> instead with T any "compatible" type (see Algebra I) and evaluation of Horner-Scheme
  * @todo rename is there a better name for this class?
  */
-public interface UnivariatePolynomial/*<R implements Arithmetic>*/ extends Euclidean, Polynomial/*<R,Integer>*/, Function/*<R,R>*/ {
+public interface UnivariatePolynomial/*<R extends Arithmetic>*/ extends Euclidean, Polynomial/*<R,Integer>*/, Function/*<R,R>*/ {
     // Get/Set properties
     /**
      * Get the degree of this polynomial.

@@ -22,7 +22,7 @@ import java.util.HashMap;
  * @version $Id$
  * @author  Andr&eacute; Platzer
  */
-class SparsePolynomial/*<R implements Arithmetic, S implements Arithmetic>*/ extends AbstractPolynomial/*<R,S>*/ {
+class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/ extends AbstractPolynomial/*<R,S>*/ {
     private static final long serialVersionUID = -8833160240745985849L;
 
     /**

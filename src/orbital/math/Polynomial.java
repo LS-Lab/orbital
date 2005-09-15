@@ -34,7 +34,7 @@ import java.util.ListIterator;
  * @see "N. Bourbaki, Algebra III.2.7: Free algebras."
  * @todo implements Function<T,T> instead with T any "compatible" type (see Algebra I) and evaluation of Horner-Scheme
  */
-public interface Polynomial/*<R implements Arithmetic, S implements Arithmetic>*/
+public interface Polynomial/*<R extends Arithmetic, S extends Arithmetic>*/
     extends Arithmetic, orbital.math.functional.Function/*<orbital.logic.functor.Function<S,E>,E>*/ {
     // Get/Set properties
     /**
