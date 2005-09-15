@@ -174,7 +174,7 @@ abstract class AbstractPolynomial/*<R implements Arithmetic, S implements Arithm
      * Sets all coefficients of p to 0.
      */
     void setAllZero(Polynomial p) {
-        final Arithmetic/*>R<*/ ZERO = get((Arithmetic/*_>S<_*/)indices().next()).zero();
+        final Arithmetic/*>R<*/ ZERO = get((Arithmetic/*>S<*/)indices().next()).zero();
         for (ListIterator i = p.iterator(); i.hasNext(); ) {
             i.next();
             i.set(ZERO);

@@ -2134,7 +2134,7 @@ public class Functionals {
      * @see <a href="http://wwwhome.cs.utwente.nl/~fokkinga/index.html#mmf91m">Meijer, E. and Fokkinga, M.M. and Paterson, R., Functional Programming with Bananas, Lenses, Envelopes and Barbed Wire, FPCA91: Functional Programming Languages and Computer Architecture, pp. 124--144, volume 523, Lecture Notes in Computer Science, Springer-Verlag, 1991.</a>
      * @todo should we introduce property get methods? But what's a good name for "g" and "p"?
      */
-    public static class Anamorphism/*<A, B>*/ implements Function/*<B, List>*//*_<A>_*/, Serializable {
+    public static class Anamorphism/*<A, B>*/ implements Function/*<B, List<A>>*/, Serializable {
         private static final long serialVersionUID = -1984167910200783901L;
         /**
          * a function g:B&rarr;A&times;B=A||B that returns objects of type {@link orbital.util.Pair}.
@@ -2328,7 +2328,7 @@ public class Functionals {
          * a binary function f:A&times;(A*||B)&rarr;B.
          * @serial
          */
-        private final BinaryFunction/*<A, Pair<Iterator, B>, B>*//*_<A>_*/ f;
+        private final BinaryFunction/*<A, Pair<Iterator<A>, B>, B>*/ f;
 
         /**
          * Constructs a new paramorphism <span class="barbedwireBracket">{|</span>b,f<span class="barbedwireBracket">|}</span>:A<sup>*</sup>&rarr;B.
@@ -2336,7 +2336,7 @@ public class Functionals {
          * @param f is a binary function f:A&times;(A<sup>*</sup>||B)&rarr;B.
          * @return <span class="barbedwireBracket">{|</span>b,f<span class="barbedwireBracket">|}</span> a
          */
-        public Paramorphism(Object/*>B<*/ b, BinaryFunction/*<A, Pair<Iterator, B>, B>*//*_<A>_*/ f) {
+        public Paramorphism(Object/*>B<*/ b, BinaryFunction/*<A, Pair<Iterator<A>, B>, B>*/ f) {
             this.b = b;
             this.f = f;
         }
@@ -2376,7 +2376,7 @@ public class Functionals {
             Object/*>A<*/ x = (/*__*/Object/*>A<*/) ai.next();
             ParallelIterator clone = new ParallelIterator(ai);
             ai = clone.getParallel();
-            return f.apply(x, new Pair/*<Iterator, B>*//*_<A>_*/(clone, apply(ai)));
+            return f.apply(x, new Pair/*<Iterator<A>, B>*/(clone, apply(ai)));
         } 
 
         public String toString() {
@@ -2387,7 +2387,7 @@ public class Functionals {
      * barbedwire <span class="barbedwireBracket">{|</span>b,f<span class="barbedwireBracket">|}</span> a.
      * @see Functionals.Paramorphism#Functionals.Paramorphism(Object, BinaryFunction)
      */
-    public static /*<A, B>*/ Object/*>B<*/ barbedwire(final Object/*>B<*/ b, final BinaryFunction/*<A, Pair<Iterator, B>, B>*//*_<A>_*/ f, Iterator/*_<A>_*/ a) {
+    public static /*<A, B>*/ Object/*>B<*/ barbedwire(final Object/*>B<*/ b, final BinaryFunction/*<A, Pair<Iterator<A>, B>, B>*/ f, Iterator/*_<A>_*/ a) {
         return new Paramorphism/*<A, B>*/(b, f).apply(a);
     } 
     /**
