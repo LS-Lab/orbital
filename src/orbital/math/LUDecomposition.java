@@ -31,7 +31,7 @@ import orbital.logic.functor.Predicates;
  * @see NumericalAlgorithms
  * @note this class is more or less just a workaround for returning multiple values.
  */
-public final class LUDecomposition/*<R implements Arithmetic>*/ implements Serializable {
+public final class LUDecomposition/*<R extends Arithmetic>*/ implements Serializable {
     private static final long serialVersionUID = 4112378842817846198L;
     /**
      * decomposition data, contains lower triangular as well as upper triangular.
@@ -143,7 +143,7 @@ public final class LUDecomposition/*<R implements Arithmetic>*/ implements Seria
      * <p>Number of multiplications is 1/3*(n<sup>3</sup>-n)</p>
      * @preconditions M.isSquare()
      */
-    public static /*<R implements Arithmetic>*/ LUDecomposition/*<R>*/ decompose(Matrix/*<R>*/ M) {
+    public static /*<R extends Arithmetic>*/ LUDecomposition/*<R>*/ decompose(Matrix/*<R>*/ M) {
         return new LUDecomposition/*<R>*/(M);
     }
 

@@ -26,7 +26,7 @@ import orbital.algorithm.Combinatorical;
  * @version $Id$
  * @author  Andr&eacute; Platzer
  */
-class ArithmeticMultivariatePolynomial/*<R implements Arithmetic>*/ extends AbstractMultivariatePolynomial {
+class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/ extends AbstractMultivariatePolynomial {
     private static final long serialVersionUID = -6317707373482862125L;
     /**
      * The coefficients in R.

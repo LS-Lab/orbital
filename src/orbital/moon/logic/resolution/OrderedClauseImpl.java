@@ -44,7 +44,7 @@ public class OrderedClauseImpl extends IndexedClauseImpl {
      * Get all maximal elements of the given set.
      * @postconditions RES = {x&isin;S &brvbar; &not;&exist;y&isin;S y&gt;x}
      */
-    private static /*<T>*/ final Set/*_<T>_*/ getMaximalElements(final Collection/*_<T>_*/ S,
+    private static final /*<T>*/ Set/*_<T>_*/ getMaximalElements(final Collection/*_<T>_*/ S,
                                                                  final Comparator cmp) {
         final BinaryPredicate greater_partial = new BinaryPredicate() {
                     public boolean apply(Object a, Object b) {

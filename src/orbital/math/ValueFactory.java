@@ -266,7 +266,7 @@ public interface ValueFactory {
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      * @see #tensor(Arithmetic[])
      */
-    public abstract /*<R implements Arithmetic>*/ Vector/*<R>*/ valueOf(Arithmetic/*>R<*/[] values);
+    public abstract /*<R extends Arithmetic>*/ Vector/*<R>*/ valueOf(Arithmetic/*>R<*/[] values);
     //@todo couldn't we even return Vector<Real>?
     public abstract Vector valueOf(double[] values);
     public abstract Vector/*<Integer>*/ valueOf(int[] values);
@@ -278,7 +278,7 @@ public interface ValueFactory {
      * @postconditions RES.dimension() == dimension()
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      */
-    public abstract /*<R implements Arithmetic>*/ Vector/*<R>*/ newInstance(int dimension);
+    public abstract /*<R extends Arithmetic>*/ Vector/*<R>*/ newInstance(int dimension);
 
     /**
      * Gets zero Vector, with all elements set to <code>0</code>.
@@ -292,19 +292,19 @@ public interface ValueFactory {
      * These <span class="vector">e<sub>i</sub></span> are the standard base of <b>R</b><sup>n</sup>:
      * &forall;<span class="vector">x</span>&isin;<b>R</b><sup>n</sup> &exist;! x<sub>k</sub>&isin;<b>R</b>: <span class="vector">x</span> = x<sub>1</sub>*<span class="vector">e<sub>1</sub></span> + ... + x<sub>n</sub>*<span class="vector">e<sub>n</sub></span>.
      */
-    public abstract /*<R implements Scalar>*/ Vector/*<R>*/ BASE(int n, int i);
+    public abstract /*<R extends Scalar>*/ Vector/*<R>*/ BASE(int n, int i);
 
     /**
      * Gets a constant Vector, with all elements set to <code>c</code>.
      */
-    public abstract /*<R implements Arithmetic>*/ Vector/*<R>*/ CONST(int n, Arithmetic/*>R<*/ c);
+    public abstract /*<R extends Arithmetic>*/ Vector/*<R>*/ CONST(int n, Arithmetic/*>R<*/ c);
 
 
     /**
      * Returns an unmodifiable view of the specified vector.
      * The result is a <a href="ValueFactory.html#readOnlyView">read only view</a>.
      */
-    /*<R implements Arithmetic>*/ Vector/*<R>*/ constant(Vector/*<R>*/ v);
+    /*<R extends Arithmetic>*/ Vector/*<R>*/ constant(Vector/*<R>*/ v);
 
     // matrix constructors and conversion utilities
 
@@ -324,7 +324,7 @@ public interface ValueFactory {
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      * @see #tensor(Arithmetic[][])
      */
-    public abstract /*<R implements Arithmetic>*/ Matrix/*<R>*/ valueOf(Arithmetic/*>R<*/[][] values);
+    public abstract /*<R extends Arithmetic>*/ Matrix/*<R>*/ valueOf(Arithmetic/*>R<*/[][] values);
     public abstract Matrix valueOf(double[][] values);
     public abstract Matrix/*<Integer>*/ valueOf(int[][] values);
 
@@ -335,40 +335,40 @@ public interface ValueFactory {
      * @postconditions RES.dimension().equals(dimension)
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      */
-    public abstract /*<R implements Arithmetic>*/ Matrix/*<R>*/ newInstance(Dimension dimension);
-    public abstract /*<R implements Arithmetic>*/ Matrix/*<R>*/ newInstance(int height, int width);
+    public abstract /*<R extends Arithmetic>*/ Matrix/*<R>*/ newInstance(Dimension dimension);
+    public abstract /*<R extends Arithmetic>*/ Matrix/*<R>*/ newInstance(int height, int width);
 
     /**
      * Gets zero Matrix, with all elements set to 0.
      */
-    /*<R implements Arithmetic>*/ Matrix/*<R>*/ ZERO(Dimension dim);
-    /*<R implements Arithmetic>*/ Matrix/*<R>*/ ZERO(int height, int width);
+    /*<R extends Arithmetic>*/ Matrix/*<R>*/ ZERO(Dimension dim);
+    /*<R extends Arithmetic>*/ Matrix/*<R>*/ ZERO(int height, int width);
 
     /**
      * Gets the identity Matrix, with all elements set to 0, except the leading diagonal m<sub>i,i</sub> set to 1.
      * @preconditions dim.width == dim.height
      */
-    /*<R implements Arithmetic>*/ Matrix/*<R>*/ IDENTITY(Dimension dim);
+    /*<R extends Arithmetic>*/ Matrix/*<R>*/ IDENTITY(Dimension dim);
     /**
      * Gets the identity Matrix, with all elements set to 0, except the leading diagonal m<sub>i,i</sub> set to 1.
      * @preconditions width == height
      * @see orbital.math.functional.Functions#delta
      * @see #IDENTITY(Dimension)
      */
-    /*<R implements Scalar>*/ Matrix/*<R>*/ IDENTITY(int height, int width);
+    /*<R extends Scalar>*/ Matrix/*<R>*/ IDENTITY(int height, int width);
 
     /**
      * Gets diagonal Matrix, with all elements set to 0, except the leading diagonal m<sub>i,i</sub> set to v<sub>i</sub>.
      * @see orbital.math.functional.Functions#delta
      * @todo turn into a true view?
      */
-    /*<R implements Scalar>*/ Matrix/*<R>*/ DIAGONAL(Vector/*<R>*/ diagon);
+    /*<R extends Scalar>*/ Matrix/*<R>*/ DIAGONAL(Vector/*<R>*/ diagon);
 
     /**
      * Returns an unmodifiable view of the specified matrix.
      * The result is a <a href="ValueFactory.html#readOnlyView">read only view</a>.
      */
-    /*<R implements Arithmetic>*/ Matrix/*<R>*/ constant(Matrix/*<R>*/ m);
+    /*<R extends Arithmetic>*/ Matrix/*<R>*/ constant(Matrix/*<R>*/ m);
     // tensor constructors
     
     /**
@@ -380,7 +380,7 @@ public interface ValueFactory {
      * </p>
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      */
-    /*<R implements Arithmetic>*/ Vector/*<R>*/ tensor(Arithmetic/*>R<*/[] values);
+    /*<R extends Arithmetic>*/ Vector/*<R>*/ tensor(Arithmetic/*>R<*/[] values);
 
     /**
      * Returns a matrix containing the specified arithmetic objects.
@@ -398,8 +398,8 @@ public interface ValueFactory {
      *  The matrix may be backed by this exact array per reference.
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      */
-    /*<R implements Arithmetic>*/ Matrix/*<R>*/ tensor(Arithmetic/*>R<*/[][] values);
-    /*<R implements Arithmetic>*/ Tensor/*<R>*/ tensor(Arithmetic/*>R<*/[][][] values);
+    /*<R extends Arithmetic>*/ Matrix/*<R>*/ tensor(Arithmetic/*>R<*/[][] values);
+    /*<R extends Arithmetic>*/ Tensor/*<R>*/ tensor(Arithmetic/*>R<*/[][][] values);
     /**
      * Returns a tensor of rank k containing the specified arithmetic objects.
      * <p>
@@ -433,7 +433,7 @@ public interface ValueFactory {
     /**
      * Gets zero tensor, with all elements set to 0.
      */
-    /*<R implements Arithmetic>*/ Tensor/*<R>*/ ZERO(int[] dimensions);
+    /*<R extends Arithmetic>*/ Tensor/*<R>*/ ZERO(int[] dimensions);
 
     /**
      * Returns an unmodifiable view of the specified tensor.
@@ -448,7 +448,7 @@ public interface ValueFactory {
      * Note that cloning a constant tensor will not return a constant tensor, but a clone of the
      * specified tensor t.</p>
      */
-    /*<R implements Arithmetic>*/ Tensor/*<R>*/ constant(Tensor/*<R>*/ t);
+    /*<R extends Arithmetic>*/ Tensor/*<R>*/ constant(Tensor/*<R>*/ t);
 
     // polynomial constructors and utilities
 
@@ -471,7 +471,7 @@ public interface ValueFactory {
      * @return the polynomial <var>a</var><sub>0,...,0</sub> + <var>a</var><sub>1,0,...,0</sub>X<sub>1</sub> + <var>a</var><sub>1,1,0,....,0</sub>X<sub>1</sub>X<sub>2</sub> + ... + <var>a</var><sub>2,1,0,....,0</sub>X<sub>1</sub><sup>2</sup>X<sub>2</sub> + ... + <var>a</var><sub>d<sub>1</sub>,...,d<sub>n</sub></sub>X<sub>1</sub><sup>d<sub>1</sub></sup>...&X<sub>n</sub><sup>d<sub>n</sub></sup>.
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      */
-    /*<R implements Arithmetic>*/ Polynomial/*<R>*/ polynomial(Object coefficients);
+    /*<R extends Arithmetic>*/ Polynomial/*<R>*/ polynomial(Object coefficients);
 
     /**
      * Returns a polynomial view of a tensor.
@@ -485,7 +485,7 @@ public interface ValueFactory {
      * @see #polynomial(Object)
      * @see #asTensor(Polynomial)
      */
-    /*<R implements Arithmetic>*/ Polynomial/*<R>*/ asPolynomial(Tensor/*<R>*/ coefficients);
+    /*<R extends Arithmetic>*/ Polynomial/*<R>*/ asPolynomial(Tensor/*<R>*/ coefficients);
     /**
      * Returns a vector view of the coefficients of a polynomial.
      * <p>
@@ -497,13 +497,13 @@ public interface ValueFactory {
      *  and thus is not a multivariate polynomial in the proper sense.
      * @see #asPolynomial(Tensor)
      */
-    /*<R implements Arithmetic>*/ Tensor/*<R>*/ asTensor(Polynomial/*<R>*/ p);
+    /*<R extends Arithmetic>*/ Tensor/*<R>*/ asTensor(Polynomial/*<R>*/ p);
 
     /**
      * Returns an unmodifiable view of the specified polynomial.
      * The result is a <a href="ValueFactory.html#readOnlyView">read only view</a>.
      */
-    /*<R implements Arithmetic>*/ Polynomial/*<R>*/ constant(Polynomial/*<R>*/ p);
+    /*<R extends Arithmetic>*/ Polynomial/*<R>*/ constant(Polynomial/*<R>*/ p);
 
     /**
      * The monomial c&middot;X<sup>i</sup>.
@@ -527,7 +527,7 @@ public interface ValueFactory {
      * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience Method</a>
      * @see #MONOMIAL(Arithmetic,Arithmetic)
      */
-    Polynomial/*<R implements Scalar,S>*/ MONOMIAL(Arithmetic/*>S<*/ exponent);
+    Polynomial/*<R extends Scalar,S>*/ MONOMIAL(Arithmetic/*>S<*/ exponent);
     /**
      * The monomial 1&middot;X<sub>0</sub><sup>i[0]</sup>...X<sub>n-1</sub><sup>i[n-1]</sup>.
      * Note that the coefficient is {@link #ONE 1}&isin;<b>Z</b>.
@@ -536,7 +536,7 @@ public interface ValueFactory {
      * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience Method</a>
      * @see #MONOMIAL(Arithmetic,int[])
      */
-    Polynomial/*<R implements Scalar>*/ MONOMIAL(int[] exponents);
+    Polynomial/*<R extends Scalar>*/ MONOMIAL(int[] exponents);
 
     // univariate polynomial constructors and utilities
 
@@ -553,7 +553,7 @@ public interface ValueFactory {
      * @see #asPolynomial(Vector)
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      */
-    /*<R implements Arithmetic>*/ UnivariatePolynomial/*<R>*/ polynomial(Arithmetic/*>R<*/[] coefficients);
+    /*<R extends Arithmetic>*/ UnivariatePolynomial/*<R>*/ polynomial(Arithmetic/*>R<*/[] coefficients);
     /**
      * @see #polynomial(Arithmetic[])
      * @see #polynomial(Object)
@@ -576,7 +576,7 @@ public interface ValueFactory {
      * @see #asVector(UnivariatePolynomial)
      * @todo implement a true view flexible for changes (but only if Polynomial.set(...) has been introduced)
      */
-    /*<R implements Arithmetic>*/ UnivariatePolynomial/*<R>*/ asPolynomial(Vector/*<R>*/ a);
+    /*<R extends Arithmetic>*/ UnivariatePolynomial/*<R>*/ asPolynomial(Vector/*<R>*/ a);
 
     /**
      * Returns a vector view of the coefficients of a polynomial.
@@ -588,13 +588,13 @@ public interface ValueFactory {
      * @see UnivariatePolynomial#getCoefficients()
      * @see #asPolynomial(Vector)
      */
-    /*<R implements Arithmetic>*/ Vector/*<R>*/ asVector(UnivariatePolynomial/*<R>*/ p);
+    /*<R extends Arithmetic>*/ Vector/*<R>*/ asVector(UnivariatePolynomial/*<R>*/ p);
 
     /**
      * Returns an unmodifiable view of the specified polynomial.
      * The result is a <a href="ValueFactory.html#readOnlyView">read only view</a>.
      */
-    /*<R implements Arithmetic>*/ UnivariatePolynomial/*<R>*/ constant(UnivariatePolynomial/*<R>*/ p);
+    /*<R extends Arithmetic>*/ UnivariatePolynomial/*<R>*/ constant(UnivariatePolynomial/*<R>*/ p);
 
 
     // quotient constructors
@@ -609,7 +609,7 @@ public interface ValueFactory {
      * </p>
      * @param mod is the quotient operator applied (see {@link Quotient#getQuotientOperator()}).
      */
-    /*<M implements Arithmetic>*/ Quotient/*<M>*/ quotient(Arithmetic/*>M<*/ a, Function/*<M,M>*/ mod);
+    /*<M extends Arithmetic>*/ Quotient/*<M>*/ quotient(Arithmetic/*>M<*/ a, Function/*<M,M>*/ mod);
     /**
      * Returns a new quotient a&#772;=[a]&isin;M/(m) of the given
      * value reduced modulo m.
@@ -621,7 +621,7 @@ public interface ValueFactory {
      * inverses modulo m.
      * </p>
      */
-    /*<M implements Euclidean>*/ Quotient/*<M>*/ quotient(Euclidean/*>M<*/ a, Euclidean/*>M<*/ m);
+    /*<M extends Euclidean>*/ Quotient/*<M>*/ quotient(Euclidean/*>M<*/ a, Euclidean/*>M<*/ m);
     /**
      * Returns a new quotient a&#772;=[a]&isin;M/(m) of the given
      * value reduced modulo (m).
@@ -636,7 +636,7 @@ public interface ValueFactory {
      * @preconditions m = AlgebraicAlgorithms.groebnerBasis(m,monomialOrder)
      * @postconditions RES = quotient(a, AlgebraicAlgorithms.reduce(m, monomialOrder))
      */
-    /*<R implements Arithmetic>*/ Quotient/*<Polynomial<R,S>>*/ quotient(Polynomial/*<R,S>*/ a, java.util.Set/*_<Polynomial<R,S>>_*/ m, java.util.Comparator/*_<S>_*/ monomialOrder);
+    /*<R extends Arithmetic>*/ Quotient/*<Polynomial<R,S>>*/ quotient(Polynomial/*<R,S>*/ a, java.util.Set/*_<Polynomial<R,S>>_*/ m, java.util.Comparator/*_<S>_*/ monomialOrder);
 
     // quotient constructor synonyms
 
@@ -668,7 +668,7 @@ public interface ValueFactory {
      * @see #quotient(Arithmetic,Function)
      * @internal only for provoking a compile time type ambiguity error for (Euclidean,Polynomial).
      */
-    /*<M implements Euclidean>*/ Quotient/*<M>*/ quotient(Euclidean/*>M<*/ a, Function/*<M,M>*/ mod);
+    /*<M extends Euclidean>*/ Quotient/*<M>*/ quotient(Euclidean/*>M<*/ a, Function/*<M,M>*/ mod);
     /**
      * (traps type unification error).
      * <p>
@@ -721,7 +721,7 @@ public interface ValueFactory {
      * </p>
      * @todo introduce the second case with explicit checking via a third argument predicate?
      */
-    /*<M implements Arithmetic, S implements Arithmetic>*/ Fraction/*<M,S>*/ fraction(Arithmetic/*>M<*/ a, Arithmetic/*<S>*/ s);
+    /*<M extends Arithmetic, S extends Arithmetic>*/ Fraction/*<M,S>*/ fraction(Arithmetic/*>M<*/ a, Arithmetic/*<S>*/ s);
 
     // symbol constructors
 
@@ -750,7 +750,7 @@ public interface ValueFactory {
      * The result is a structurally unmodifiable <a href="Tensor.html#view">view</a>.
      * @see #asVector(Tensor)
      */
-    /*<R implements ListIterator,  Arithmetic>*/ Vector/*<R>*/ asVector(Matrix/*<R>*/ m);
+    /*<R extends ListIterator,  Arithmetic>*/ Vector/*<R>*/ asVector(Matrix/*<R>*/ m);
     /**
      * Returns a vector view of the specified tensor.
      * The result is a structurally unmodifiable <a href="Tensor.html#view">view</a>.
@@ -758,7 +758,7 @@ public interface ValueFactory {
      * The tensor is interpreted row-wise as a vector.
      * </p>
      */
-    /*<R implements ListIterator,  Arithmetic>*/ Vector/*<R>*/ asVector(Tensor/*<R>*/ t);
+    /*<R extends ListIterator,  Arithmetic>*/ Vector/*<R>*/ asVector(Tensor/*<R>*/ t);
 
 
     /**

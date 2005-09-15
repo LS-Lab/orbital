@@ -612,7 +612,7 @@ public final class AlgebraicAlgorithms {
      * @return h if h is a reduced reduction of f with respect to g.
      * @see #reduce(Collection, Comparator)
      */
-    public static final Polynomial/*<R>*/ reduce(Polynomial/*<R>*/ f, Collection/*_Polynomial<R,S>_*/ g, final Comparator/*_<S>_*/ monomialOrder) {
+    public static final Polynomial/*<R>*/ reduce(Polynomial/*<R>*/ f, Collection/*_<Polynomial<R,S>>_*/ g, final Comparator/*_<S>_*/ monomialOrder) {
         return (Polynomial) reduce(g, monomialOrder).apply(f);
     }
     /**

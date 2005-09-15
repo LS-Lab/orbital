@@ -224,7 +224,7 @@ public abstract class AbstractValues extends Values {
         return CONST(n, Values.ZERO);
     } 
 
-    public /*<R implements Arithmetic>*/ Vector/*<R>*/ constant(final Vector/*<R>*/ v) {
+    public /*<R extends Arithmetic>*/ Vector/*<R>*/ constant(final Vector/*<R>*/ v) {
         return /*refine/delegate Vector*/ new AbstractVector/*<R>*/() {
                 private static final long serialVersionUID = 4473448798599904941L;
                 protected Vector/*<R>*/ newInstance(int d) {
@@ -265,19 +265,19 @@ public abstract class AbstractValues extends Values {
 
     // matrix constructors and conversion utilities
 
-    public /*<R implements Arithmetic>*/ Matrix/*<R>*/ ZERO(Dimension dim) {
+    public /*<R extends Arithmetic>*/ Matrix/*<R>*/ ZERO(Dimension dim) {
         return ZERO(dim.height, dim.width);
     } 
-    public /*<R implements Arithmetic>*/ Matrix/*<R>*/ ZERO(int height, int width) {
+    public /*<R extends Arithmetic>*/ Matrix/*<R>*/ ZERO(int height, int width) {
         return (Matrix) ZERO(new int[] {height, width});
     }
 
-    public /*<R implements Arithmetic>*/ Matrix/*<R>*/ IDENTITY(Dimension dim) {
+    public /*<R extends Arithmetic>*/ Matrix/*<R>*/ IDENTITY(Dimension dim) {
         return IDENTITY(dim.height, dim.width);
     } 
 
     //@todo turn into a true view?
-    public /*<R implements Scalar>*/ Matrix/*<R>*/ DIAGONAL(Vector/*<R>*/ diagon) {
+    public /*<R extends Scalar>*/ Matrix/*<R>*/ DIAGONAL(Vector/*<R>*/ diagon) {
         Matrix/*<R>*/ diagonal = newInstance(new Dimension(diagon.dimension(), diagon.dimension()));
         for (int i = 0; i < diagonal.dimension().height; i++)
             for (int j = 0; j < diagonal.dimension().width; j++)
@@ -285,7 +285,7 @@ public abstract class AbstractValues extends Values {
         return diagonal;
     } 
 
-    public /*<R implements Arithmetic>*/ Matrix/*<R>*/ constant(final Matrix/*<R>*/ m) {
+    public /*<R extends Arithmetic>*/ Matrix/*<R>*/ constant(final Matrix/*<R>*/ m) {
         return /*refine/delegate Matrix*/ new AbstractMatrix/*<R>*/() {
                 private static final long serialVersionUID = 482711902153502751L;
                 protected Matrix/*<R>*/ newInstance(Dimension d) {
@@ -346,7 +346,7 @@ public abstract class AbstractValues extends Values {
 
     // tensor constructors
     
-    public /*<R implements Arithmetic>*/ Tensor/*<R>*/ ZERO(int[] dimensions) {
+    public /*<R extends Arithmetic>*/ Tensor/*<R>*/ ZERO(int[] dimensions) {
         Tensor zero = newInstance(dimensions);
         for (ListIterator i = zero.iterator(); i.hasNext(); ) {
             i.next();
@@ -355,7 +355,7 @@ public abstract class AbstractValues extends Values {
         return zero;
     }
 
-    public /*<R implements Arithmetic>*/ Tensor/*<R>*/ constant(final Tensor/*<R>*/ t) {
+    public /*<R extends Arithmetic>*/ Tensor/*<R>*/ constant(final Tensor/*<R>*/ t) {
         //@todo would we simplify these by providing a hierarchy of delegation things?
         // but then some tensors would no longer be AbstractTensors.
         //@todo so perhaps just identify multiple delegations to Tensor, or to Polynomial etc.
@@ -652,10 +652,10 @@ public abstract class AbstractValues extends Values {
     public final Polynomial/*<R,S>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, Arithmetic/*>S<*/ exponent) {
         return MONOMIAL(coefficient, ArithmeticMultivariatePolynomial.convertIndex(exponent));
     }
-    public final Polynomial/*<R implements Scalar,S>*/ MONOMIAL(Arithmetic/*>S<*/ exponent) {
+    public final Polynomial/*<R extends Scalar,S>*/ MONOMIAL(Arithmetic/*>S<*/ exponent) {
         return MONOMIAL(ONE, exponent);
     }
-    public final Polynomial/*<R implements Scalar>*/ MONOMIAL(int[] exponents) {
+    public final Polynomial/*<R extends Scalar>*/ MONOMIAL(int[] exponents) {
         return MONOMIAL(ONE, exponents);
     }
 
@@ -668,16 +668,16 @@ public abstract class AbstractValues extends Values {
         return (UnivariatePolynomial) polynomial((Object)coefficients);
     }
 
-    public /*<R implements Arithmetic>*/ Vector/*<R>*/ asVector(UnivariatePolynomial/*<R>*/ p) {
+    public /*<R extends Arithmetic>*/ Vector/*<R>*/ asVector(UnivariatePolynomial/*<R>*/ p) {
         return (Vector) asTensor(p);
     }
 
     // quotient constructor synonyms
 
-    public /*<M implements Euclidean>*/ Quotient/*<M>*/ quotient(Euclidean/*>M<*/ a, UnivariatePolynomial m) {
+    public /*<M extends Euclidean>*/ Quotient/*<M>*/ quotient(Euclidean/*>M<*/ a, UnivariatePolynomial m) {
         return quotient(a, (Euclidean)m);
     }
-    public /*<M implements Euclidean>*/ Quotient/*<M>*/ quotient(Euclidean/*>M<*/ a, Function/*<M,M>*/ mod) {
+    public /*<M extends Euclidean>*/ Quotient/*<M>*/ quotient(Euclidean/*>M<*/ a, Function/*<M,M>*/ mod) {
         return quotient((Arithmetic)a, mod);
     }
     public Quotient quotient(Arithmetic a, Polynomial m) {
@@ -693,7 +693,7 @@ public abstract class AbstractValues extends Values {
 
     // conversion methods
 
-    public /*<R implements ListIterator,  Arithmetic>*/ Vector/*<R>*/ asVector(final Matrix/*<R>*/ m) {
+    public /*<R extends ListIterator,  Arithmetic>*/ Vector/*<R>*/ asVector(final Matrix/*<R>*/ m) {
         return /*refine/delegate Vector*/ new AbstractVector/*<R>*/() {
                 private static final long serialVersionUID = 7697252236109892826L;
                 protected Vector/*<R>*/ newInstance(int dim) {
@@ -729,7 +729,7 @@ public abstract class AbstractValues extends Values {
                 public Vector/*<R>*/ remove(int i) { throw new UnsupportedOperationException("structurally unmodifiable view"); }
             };
     }
-    public /*<R implements ListIterator,  Arithmetic>*/ Vector/*<R>*/ asVector(final Tensor/*<R>*/ t) {
+    public /*<R extends ListIterator,  Arithmetic>*/ Vector/*<R>*/ asVector(final Tensor/*<R>*/ t) {
         if (t instanceof Vector)
             return (Vector)t;
         else if (t instanceof Matrix)

@@ -37,7 +37,7 @@ import java.util.logging.Level;
  * @version $Id$
  * @author  Andr&eacute; Platzer
  */
-public/*@xxx*/ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extends AbstractTensor implements Matrix/*<R>*/ {
+public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends AbstractTensor implements Matrix/*<R>*/ {
     private static final Logger logger = Logger.getLogger(Matrix.class.getName());
     private static final long serialVersionUID = 1360625645424730123L;
 
@@ -391,7 +391,7 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extend
     public Vector/*<R>*/ getColumn(int c) {
         return new ColumnVector/*<R>*/(this, c);
     } 
-    private static class ColumnVector/*<R implements Arithmetic>*/ extends AbstractVector/*<R>*/ {
+    private static class ColumnVector/*<R extends Arithmetic>*/ extends AbstractVector/*<R>*/ {
         private static final long serialVersionUID = -5595085518698922020L;
         /**
          * contains the matrix whose column vector we are.
@@ -451,7 +451,7 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extend
     public Vector/*<R>*/ getRow(int r) {
         return new RowVector/*<R>*/(this, r);
     } 
-    private static class RowVector/*<R implements Arithmetic>*/ extends AbstractVector/*<R>*/ {
+    private static class RowVector/*<R extends Arithmetic>*/ extends AbstractVector/*<R>*/ {
         private static final long serialVersionUID = -4915663894227454973L;
         /**
          * contains the matrix whose row vector we are.
@@ -531,7 +531,7 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R implements Arithmetic>*/ extend
           S.set(i - i1, j - j1, get(i, j));
           return S;*/
     } 
-    private static class SubMatrix/*<R implements Arithmetic>*/ extends AbstractMatrix/*<R>*/ {
+    private static class SubMatrix/*<R extends Arithmetic>*/ extends AbstractMatrix/*<R>*/ {
         private static final long serialVersionUID = -3683869698064404738L;
         /**
          * the Matrix whose sub-matrix we are.

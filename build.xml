@@ -202,6 +202,11 @@
         <copy todir="${sources.generics}">
             <fileset dir="${sources}"/>
         </copy>
+        <replaceregexp byline="false">
+            <regexp pattern="/\*&lt;([^&gt;]*)implements"/>
+            <substitution expression="/*&lt;\1extends"/>
+            <fileset dir="${sources.generics}"/>
+        </replaceregexp>
         <!-- incarnate generics -->
         <replace dir="${sources.generics}">
             <replacefilter token="/*_&lt;" value="&lt;"/>

@@ -86,7 +86,7 @@ import java.util.NoSuchElementException;
  * @see Values#valueOf(double[])
  * @todo turn into a template Vector<R implements Arithmetic>
  */
-public interface Vector/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
+public interface Vector/*<R extends Arithmetic>*/ extends Tensor/*<R>*/ {
     // get/set-methods
         
     /**

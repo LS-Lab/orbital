@@ -28,7 +28,7 @@ import java.util.ListIterator;
  * @author  Andr&eacute; Platzer
  * @todo would we profit from extending AbstractPolynomial instead?
  */
-abstract class AbstractUnivariatePolynomial/*<R implements Arithmetic>*/ extends AbstractProductArithmetic implements UnivariatePolynomial/*<R>*/, Serializable {
+abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/ extends AbstractProductArithmetic implements UnivariatePolynomial/*<R>*/, Serializable {
     private static final long serialVersionUID = -5253561352164949692L;
     /**
      * Which implementation of the multiplication to use.

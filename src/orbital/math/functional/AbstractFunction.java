@@ -10,5 +10,5 @@ import orbital.moon.math.functional.AbstractFunctor;
 
 //TODO: make public or make public inner class of Function?
 // this implements the union of MathFunctor and Function, and extends the default pointwise arithmetic operations
-/*private static*/ abstract class AbstractFunction/*<A implements Arithmetic, B implements Arithmetic>*/  extends AbstractFunctor implements Function/*<A,B>*/ {}
+/*private static*/ abstract class AbstractFunction/*<A extends Arithmetic, B extends Arithmetic>*/  extends AbstractFunctor implements Function/*<A,B>*/ {}
 

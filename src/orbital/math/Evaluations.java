@@ -45,7 +45,7 @@ public final class Evaluations {
     /**
      * Returns the total sum of all elements in this Vector.
      */
-    public static /*<R implements Arithmetic>*/ Arithmetic/*>R<*/ sum(Vector/*<R>*/ v) {
+    public static /*<R extends Arithmetic>*/ Arithmetic/*>R<*/ sum(Vector/*<R>*/ v) {
         return (Arithmetic/*>R<*/) Operations.sum.apply(v);
     } 
     public static double sum(double[] v) {
@@ -55,7 +55,7 @@ public final class Evaluations {
     /**
      * Returns the average of all elements in this Vector.
      */
-    public static /*<R implements Arithmetic>*/ Arithmetic average(Vector/*<R>*/ v) {
+    public static /*<R extends Arithmetic>*/ Arithmetic average(Vector/*<R>*/ v) {
         return sum(v).divide(Values.getDefaultInstance().valueOf(v.dimension()));
     } 
     public static double average(double[] v) {
@@ -65,7 +65,7 @@ public final class Evaluations {
     /**
      * Returns the minimum value of all elements in this Vector.
      */
-    public static /*<R implements Arithmetic>*/ Arithmetic/*>R<*/ min(Vector/*<R>*/ v) {
+    public static /*<R extends Arithmetic>*/ Arithmetic/*>R<*/ min(Vector/*<R>*/ v) {
         return (Arithmetic/*>R<*/) Operations.inf.apply(v);
     } 
 
@@ -91,7 +91,7 @@ public final class Evaluations {
     /**
      * Returns the maximum value of all elements in this Vector.
      */
-    public static /*<R implements Arithmetic>*/ Arithmetic/*>R<*/ max(Vector/*<R>*/ v) {
+    public static /*<R extends Arithmetic>*/ Arithmetic/*>R<*/ max(Vector/*<R>*/ v) {
         return (Arithmetic/*>R<*/) Operations.sup.apply(v);
     } 
 
@@ -116,7 +116,7 @@ public final class Evaluations {
     /**
      * Returns the vector with the absolutes of all elements in this Vector.
      */
-    public static /*<R implements Arithmetic>*/ Vector/*<R>*/ abs(Vector/*<R>*/ v) {
+    public static /*<R extends Arithmetic>*/ Vector/*<R>*/ abs(Vector/*<R>*/ v) {
         return Functionals.map(Functions.norm, v);
     } 
     public static double[] abs(double[] v) {
@@ -127,28 +127,28 @@ public final class Evaluations {
     /**
      * Returns the total sum of all elements in this Matrix.
      */
-    public static /*<R implements Arithmetic>*/ Arithmetic/*>R<*/ sum(Matrix/*<R>*/ M) {
+    public static /*<R extends Arithmetic>*/ Arithmetic/*>R<*/ sum(Matrix/*<R>*/ M) {
         return (Arithmetic/*>R<*/) Operations.sum.apply(M);
     } 
 
     /**
      * Returns the average of all elements in this Matrix.
      */
-    public static /*<R implements Arithmetic>*/ Arithmetic average(Matrix/*<R>*/ M) {
+    public static /*<R extends Arithmetic>*/ Arithmetic average(Matrix/*<R>*/ M) {
         return sum(M).divide(Values.getDefaultInstance().valueOf(M.dimension().width * M.dimension().height));
     } 
 
     /**
      * Returns the minimum value of all elements in this Matrix.
      */
-    public static /*<R implements Arithmetic>*/ Arithmetic/*>R<*/ min(Matrix/*<R>*/ M) {
+    public static /*<R extends Arithmetic>*/ Arithmetic/*>R<*/ min(Matrix/*<R>*/ M) {
         return (Arithmetic/*>R<*/) Operations.inf.apply(M);
     } 
 
     /**
      * Returns the maximum value of all elements in this Matrix.
      */
-    public static /*<R implements Arithmetic>*/ Arithmetic/*>R<*/ max(Matrix/*<R>*/ M) {
+    public static /*<R extends Arithmetic>*/ Arithmetic/*>R<*/ max(Matrix/*<R>*/ M) {
         return (Arithmetic/*>R<*/) Operations.sup.apply(M);
     } 
 }

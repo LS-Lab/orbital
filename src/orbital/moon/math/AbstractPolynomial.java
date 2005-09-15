@@ -26,7 +26,7 @@ import orbital.util.Pair;
  *  One part that is general for every S,
  *  and one part that specially assumes S=<b>N</b><sup>n</sup>.
  */
-abstract class AbstractPolynomial/*<R implements Arithmetic, S implements Arithmetic>*/ extends AbstractProductArithmetic implements Polynomial/*<R,S>*/ {
+abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*/ extends AbstractProductArithmetic implements Polynomial/*<R,S>*/ {
     private static final long serialVersionUID = 4336092442446250306L;
         
     public AbstractPolynomial() {

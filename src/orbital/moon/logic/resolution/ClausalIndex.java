@@ -186,7 +186,7 @@ public class ClausalIndex {
     /**
      * Get the list index.get(o) from the index or an empty list if not present.
      */
-    private final Set/*_<Clause/Formula>_*/ getIndex(Object o) {
+    private final Set/*_<Pair<Clause,Formula>>_*/ getIndex(Object o) {
         assert o instanceof Formula;
         Integer hash = (Integer)indexHash.apply(o);
         Set l = (Set)index.get(hash);
@@ -198,7 +198,7 @@ public class ClausalIndex {
      * list if not present.  Contrary to {@link #getIndex(Object)},
      * this method ensures that the list returned occurs in index.
      */
-    private final Set/*_<Clause/Formula>_*/ getIndexEnsure(Object o) {
+    private final Set/*_<Pair<Clause,Formula>>_*/ getIndexEnsure(Object o) {
         assert o instanceof Formula;
         Integer hash = (Integer)indexHash.apply(o);
         Set l = (Set)index.get(hash);

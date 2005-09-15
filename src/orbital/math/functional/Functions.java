@@ -85,7 +85,7 @@ public final class Functions {
      * <p>derive: &acirc;' = 0<br />
      * integrate: &int;a<i>d</i>x = a*x</p>
      */
-    public static final /*<A implements Arithmetic, B implements Arithmetic>*/ Function/*<A,B>*/ constant(Object/*>B<*/ a) {
+    public static final /*<A extends Arithmetic, B extends Arithmetic>*/ Function/*<A,B>*/ constant(Object/*>B<*/ a) {
         return new ConstantFunction/*<A,B>*/(a);
     }
     /**
@@ -106,9 +106,9 @@ public final class Functions {
      *  Nevertheless, we distinguish mathematically constant expressions from expressions variable (alias not constant) with respect to term rewrite systems.
      *  Since mathematically constant expressions are simply VoidFunctions this saves us all a lot of trouble.
      * @todo should we really introduce an interface(or orbital.logic.trs.Variable?) and provide boolean isConstant() {return true;} and getCompositor() {return c;} (why not simply apply();?)
-     * @todo could we change this to Function<A implements Arithmetic,M> or to Function<Arithmetic,M>?
+     * @todo could we change this to Function<A extends Arithmetic,M> or to Function<Arithmetic,M>?
      */
-    static final class ConstantFunction/*<A implements Arithmetic, B implements Arithmetic>*/ extends AbstractFunction/*<A,B>*/ implements orbital.logic.functor.VoidFunction/*<B>*/, Variable {
+    static final class ConstantFunction/*<A extends Arithmetic, B extends Arithmetic>*/ extends AbstractFunction/*<A,B>*/ implements orbital.logic.functor.VoidFunction/*<B>*/, Variable {
         private Object/*>B<*/ a;
         public ConstantFunction(Object/*>B<*/ a) {
             this.a = a;
@@ -221,7 +221,7 @@ public final class Functions {
      * The concrete sets A and B depend on the exact type of a. For instance if a is a Matrix in K<sup>m&times;n</sup>
      * this function is the linear homomorphism K<sup>n</sup>&rarr;K<sup>m</sup>; x &#8614; a*x.</p>
      */
-    public static final /*<M implements Arithmetic>*/ Function/*<M,M>*/ linear(final Arithmetic/*>M<*/ a) {
+    public static final /*<M extends Arithmetic>*/ Function/*<M,M>*/ linear(final Arithmetic/*>M<*/ a) {
         return new AbstractFunction/*<M,M>*/() {
                 public Object/*>M<*/ apply(Object/*>M<*/ x) {
                     return (Object/*>M<*/) a.multiply((Arithmetic) x);
@@ -1144,7 +1144,7 @@ public final class Functions {
      * Step function alias Heaviside function.
      * @see #sign
      * @see #diracDelta
-     * @todo comparable arithmetic objects <C implements Arithmetic & Comparable> instead of Real would be enough
+     * @todo comparable arithmetic objects <C extends Arithmetic & Comparable> instead of Real would be enough
      */
     public static final Function step(final Real t) {
         return new AbstractFunction/*<Real,Integer>*/() {
@@ -1213,7 +1213,7 @@ public final class Functions {
      * @throws IllegalArgumentException if no condition predicate matches for an argument x.
      * @see #step
      */
-    public static final /*<A implements Arithmetic, B implements Arithmetic>*/ Function/*<A,B>*/ piecewise(final Predicate/*<A>*/ cond[], final Function/*<A,B>*/ value[]) {
+    public static final /*<A extends Arithmetic, B extends Arithmetic>*/ Function/*<A,B>*/ piecewise(final Predicate/*<A>*/ cond[], final Function/*<A,B>*/ value[]) {
         Utility.pre(cond.length == value.length, "same number of conditions and values");
         return new AbstractFunction/*<A,B>*/() {
                 private int getIndexOfFirstTrue(Object/*>A<*/ x) {
@@ -1330,10 +1330,10 @@ public final class Functions {
      * @todo couldn't we join constant VoidFunction, Function, BinaryFunction objects like in orbital.logic.functor.Functions.ConstantFunction
      */
     //TODO: some "binary" functions can be defined by onFirst or onSecond of the corresponding unary (or even void) function Functions.constant (how about overhead?)
-    public/*@xxx*/ static final /*<A1 implements Arithmetic, A2 implements Arithmetic, B implements Arithmetic>*/ BinaryFunction/*<A1,A2,B>*/ binaryConstant(final Object/*>B<*/ a) {
+    public/*@xxx*/ static final /*<A1 extends Arithmetic, A2 extends Arithmetic, B extends Arithmetic>*/ BinaryFunction/*<A1,A2,B>*/ binaryConstant(final Object/*>B<*/ a) {
         return new BinaryConstantFunction/*<A1,A2,B>*/(a);
     }
-    static final class BinaryConstantFunction/*<A1 implements Arithmetic, A2 implements Arithmetic, B implements Arithmetic>*/ extends AbstractBinaryFunction/*<A1,A2,B>*/ implements orbital.logic.functor.VoidFunction/*<B>*/{
+    static final class BinaryConstantFunction/*<A1 extends Arithmetic, A2 extends Arithmetic, B extends Arithmetic>*/ extends AbstractBinaryFunction/*<A1,A2,B>*/ implements orbital.logic.functor.VoidFunction/*<B>*/{
         Object/*>B<*/ a;
         public BinaryConstantFunction(Object/*>B<*/ a) {
             this.a = a;
@@ -1552,7 +1552,7 @@ public final class Functions {
  * So one can overwrite some methods to implement fast base cases and let the complex synonym function
  * handle more difficult cases like non-scalars.
  */
-class SynonymFunction/*<A implements Arithmetic, B implements Arithmetic>*/ extends AbstractFunctor implements Function/*<A,B>*/ {
+class SynonymFunction/*<A extends Arithmetic, B extends Arithmetic>*/ extends AbstractFunctor implements Function/*<A,B>*/ {
     /**
      * the synonym function to apply
      */

@@ -21,7 +21,7 @@ import orbital.util.Utility;
  * @version $Id$
  * @author  Andr&eacute; Platzer
  */
-class ArithmeticMatrix/*<R implements Arithmetic>*/ extends AbstractMatrix/*<R>*/ {
+class ArithmeticMatrix/*<R extends Arithmetic>*/ extends AbstractMatrix/*<R>*/ {
     private static final long serialVersionUID = -2994686890096422385L;
     /**
      * contains the Matrix data m<sub>i,j</sub> as Arithmetic objects.

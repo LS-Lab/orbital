@@ -60,7 +60,7 @@ import java.util.NoSuchElementException;
  * @see Values#valueOf(double[][])
  * @todo turn into a template Matrix<R implements Arithmetic>
  */
-public interface Matrix/*<R implements Arithmetic>*/ extends Tensor/*<R>*/ {
+public interface Matrix/*<R extends Arithmetic>*/ extends Tensor/*<R>*/ {
     // get/set-methods
         
     /**

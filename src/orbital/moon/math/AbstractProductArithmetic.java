@@ -33,7 +33,7 @@ import orbital.logic.functor.Predicates;
  * @version $Id$
  * @author  Andr&eacute; Platzer
  */
-abstract class AbstractProductArithmetic/*<R implements Arithmetic, T implements Arithmetic>*/ extends AbstractArithmetic implements Arithmetic, Serializable {
+abstract class AbstractProductArithmetic/*<R extends Arithmetic, T extends Arithmetic>*/ extends AbstractArithmetic implements Arithmetic, Serializable {
     private static final long serialVersionUID = 1257583291254889178L;
 
     /**

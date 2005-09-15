@@ -19,7 +19,7 @@ import java.util.Iterator;
  * @version $Id$
  * @author  Andr&eacute; Platzer
  */
-class ArithmeticVector/*<R implements Arithmetic>*/ extends AbstractVector/*<R>*/ {
+class ArithmeticVector/*<R extends Arithmetic>*/ extends AbstractVector/*<R>*/ {
     private static final long serialVersionUID = 8981505445903028808L;
     /**
      * contains the vector arithmetic data elements

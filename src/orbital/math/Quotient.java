@@ -97,7 +97,7 @@ import orbital.logic.functor.Function;
  * @internal this is an interface "Modulus/Quotient" or thing that extends Arithmetic and provides things like Z/nZ, F_p, and perhaps Q[X]/(X^2+X+1).
  * @todo couldn't we perhaps dynamically extend M at runtime if M is an interface?
  */
-public interface Quotient/*<M implements Arithmetic>*/ extends Arithmetic {
+public interface Quotient/*<M extends Arithmetic>*/ extends Arithmetic {
     // Get/Set Properties
         
     /**
