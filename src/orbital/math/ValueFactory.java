@@ -652,7 +652,7 @@ public interface ValueFactory {
      * </p>
      * @see #quotient(Euclidean,Euclidean)
      */
-    /*<M implements Euclidean>*/ Quotient/*<M>*/ quotient(Euclidean/*>M<*/ a, UnivariatePolynomial m);
+    /*<M extends Euclidean>*/ Quotient/*<M>*/ quotient(Euclidean/*>M<*/ a, UnivariatePolynomial m);
     /**
      * (disambiguates type unification).
      * Returns a new quotient a&#772;=[a]&isin;M/mod

@@ -377,7 +377,7 @@ public abstract class Notation implements Serializable, Comparable {
 
     /**
      * Get the pure formal parameters of a compositor.
-     * @return an argument array filled with the pure arguments #0, #1, #2, ... #n upto the arity n of compositor.
+     * @return an argument array filled with the pure arguments #0, #1, #2, ... #n-1 upto the arity n of compositor.
      * @todo how to achieve pure functions like "*" without any explicit parameters being printed as #0*#1 instead of * or x*y?
      */
     private static Object[] getPureParameters(Object compositor) {

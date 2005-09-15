@@ -66,6 +66,7 @@
         <property name="doc" value="${basedir}/doc"/>
 
         <!-- destination directories -->
+        <property name="sources.generics" value="${basedir}/src-gen"/>
         <property name="classes" value="${basedir}/classes"/>
         <property name="dist" value="${basedir}/dist"/>
         <property name="bin" value="${basedir}/bin"/>
@@ -191,6 +192,43 @@
 
         <!-- cleanup temporary files from stamp -->
         <delete dir="${sources}/transmogrify" failonerror="false"/>
+    </target>
+
+    <!-- @todo stamp as well -->
+    <target name="compile.generics" depends="init, parser"
+            description="compile enabling generics *.java (=> ./classes)">
+        <mkdir dir="${classes}"/>
+        <mkdir dir="${sources.generics}"/>
+        <copy todir="${sources.generics}">
+            <fileset dir="${sources}"/>
+        </copy>
+        <!-- incarnate generics -->
+        <replace dir="${sources.generics}">
+            <replacefilter token="/*_&lt;" value="&lt;"/>
+            <replacefilter token="&gt;_*/" value="&gt;"/>
+
+            <replacefilter token="/*&lt;" value="&lt;"/>
+            <replacefilter token="&gt;*/" value="&gt;"/>
+
+            <!-- replace Object/*_>A<_*/ by A -->
+            <replacefilter token="Object/*_&gt;" value=""/>
+            <replacefilter token="&lt;_*/" value=""/>
+        </replace>
+        <replaceregexp byline="false">
+            <!-- replace Object/*>A<*/ by A -->
+            <!--regexp pattern="[a-zA-Z]*/\*&gt;([a-zA-Z]*)&lt;\*/"/-->
+            <regexp pattern="/\*&gt;([a-zA-Z])&lt;\*/"/>
+            <substitution expression="\1"/>
+            <fileset dir="${sources.generics}"/>
+        </replaceregexp>
+
+        <javac srcdir="${sources.generics}"
+               destdir="${classes}"
+               debug="yes"
+	       source="1.5"
+	       excludes="orbital/moon/aspects/**,orbital/moon/deprecated/*,orbital/*">
+            <classpath refid="project.classpath"/>
+        </javac>
     </target>
 
     <target name="parser" depends="init"
