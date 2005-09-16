@@ -232,7 +232,7 @@ public interface TransitionModel/*<A,S, M extends Transition>*/ {
      * @author  Andr&eacute; Platzer
      * @todo rename to Transition?
      */
-    static interface Transition extends Comparable {
+    static interface Transition extends Comparable/*<Transition>*/ {
         /**
          * Checks for equality.
          * <!-- Implementations will at least check for equal states, but ignore
@@ -253,7 +253,7 @@ public interface TransitionModel/*<A,S, M extends Transition>*/ {
          * comparisons can also be combined. In any case,
          * implementations are not required to use any specific order.
          */
-        int compareTo(Object o);
+        int compareTo(Object/*>Transition<*/ o);
 
         /**
          * Get the transition probability.
