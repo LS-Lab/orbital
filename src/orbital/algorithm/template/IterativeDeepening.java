@@ -8,6 +8,7 @@ package orbital.algorithm.template;
 
 import orbital.logic.functor.Function;
 import java.util.Iterator;
+import orbital.math.Real;
 
 import orbital.math.functional.Functions;
 import orbital.math.functional.Operations;
@@ -24,7 +25,7 @@ import orbital.math.Values;
  * @note is a basic aspect of exploring the search space in (increasing) iterations.
  * @todo @attribute specializes {@link IterativeDeepeningAStar} wit h=0? apart from isContinuedWhenFound
  */
-public class IterativeDeepening extends DepthFirstBoundingSearch {
+public class IterativeDeepening/*<A,S>*/ extends DepthFirstBoundingSearch/*<A,S>*/ {
     private static final long serialVersionUID = 2543606559760442885L;
     /**
      * Whether we have pruned a node during the last call to super.search.
@@ -40,15 +41,15 @@ public class IterativeDeepening extends DepthFirstBoundingSearch {
     /**
      * f(n) = g(n).
      */
-    public Function getEvaluation() {
+    public Function/*<S,Real>*/ getEvaluation() {
         return evaluation;
     }
-    private transient Function evaluation;
+    private transient Function/*<S,Real>*/ evaluation;
     void firePropertyChange(String property, Object oldValue, Object newValue) {
         super.firePropertyChange(property, oldValue, newValue);
         if (!"problem".equals(property))
             return;
-        GeneralSearchProblem problem = getProblem();
+        GeneralSearchProblem/*<A,S>*/ problem = getProblem();
         this.evaluation = problem != null
             ? problem.getAccumulatedCostFunction()
             : null;
@@ -84,7 +85,7 @@ public class IterativeDeepening extends DepthFirstBoundingSearch {
     /**
      * Solve with bounds 0, 1, 2, ... until a solution is found.
      */
-    protected Object/*>S<*/ solveImpl(GeneralSearchProblem problem) {
+    protected Object/*>S<*/ solveImpl(GeneralSearchProblem/*<A,S>*/ problem) {
         int i = 0;
         while (true) {
             setBound(i++);
@@ -98,8 +99,8 @@ public class IterativeDeepening extends DepthFirstBoundingSearch {
         }
     }
 
-    protected Iterator createTraversal(GeneralSearchProblem problem) {
-        return new DepthFirstSearch.OptionIterator(problem);
+    protected Iterator/*<S>*/ createTraversal(GeneralSearchProblem/*<A,S>*/ problem) {
+        return new DepthFirstSearch.OptionIterator/*<A,S>*/(problem);
     }
 
     /**

@@ -216,7 +216,7 @@ public class FigureImpl extends Figure {
      * @postconditions &forall;i&isin;RES moveFigure(i.A).equals(i.B)
      * @deprecated Since Orbital1.1 use {@link Figure#possibleMoves()} instead.
      */
-    public final Iterator/*<Move,Position>*/ iterateValidPairs() {
+    public final Iterator/*<Pair<Move,Position>>*/ iterateValidPairs() {
         final Move legalMoves[] = getLegalMoves();
         final List v = new ArrayList(legalMoves.length);
         for (int i = 0; i < legalMoves.length; i++) {

@@ -45,7 +45,7 @@ public interface AlgorithmicConfiguration/*<Problem extends AlgorithmicProblem, 
      * @return the algorithm, with our additional parameters already adjusted.
      * @postconditions RES&ne;OLD(RES) &or; RES is stateless
      */
-    AlgorithmicTemplate getAlgorithm();
+    AlgorithmicTemplate/*<Problem,Solution>*/ getAlgorithm();
 
     /**
      * Solves the problem with the algorithm with regard to the additional parameters

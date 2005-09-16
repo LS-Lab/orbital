@@ -29,7 +29,7 @@ import orbital.math.Real;
  * @see "Lawler, E.L. and Wood, D.E. Branch-and-bound methods: A survey. Operations Research. 14(4):699-719. 1966."
  * @todo we could just as well formulate Branch-and-bound as a Decorator of GeneralSearchProblem (may be more useful for chaining and combining search algorithm policies). BUT such a decorator cannot easily tell the searching algorithm to continue even though we found a solution, in order to search for a better one. If however, decorated isSolution() would store the solution but return false in order to implement this, then the searching algorithm won't know the last (best) solution found either, but conclude that there is no solution at all.
  */
-public class BranchAndBound extends DepthFirstBoundingSearch implements HeuristicAlgorithm {
+public class BranchAndBound/*<A,S>*/ extends DepthFirstBoundingSearch/*<A,S>*/ implements HeuristicAlgorithm {
     private static final long serialVersionUID = -1698181871423830937L;
     //TODO: is Operations Research Branch and Bound more general than this or equivalent? And what is Branch and Cut?
     /**

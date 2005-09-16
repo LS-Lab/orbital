@@ -80,17 +80,17 @@ abstract class AbstractTensor/*<R extends Arithmetic>*/ extends AbstractProductA
      */
     protected abstract Tensor/*<R>*/ newInstance(int[] dim);
 
-    protected final Arithmetic/*<T>*/ newInstance(Object productIndexSet) {
+    protected final Arithmetic/*>Tensor<R><*/ newInstance(Object productIndexSet) {
         return newInstance((int[]) productIndexSet);
     }
 
     // product
 
-    protected Object productIndexSet(Arithmetic/*<T>*/ productObject) {
+    protected Object productIndexSet(Arithmetic/*>Tensor<R><*/ productObject) {
         return ((Tensor)productObject).dimensions();
     }
 
-    protected ListIterator/*<R>*/ iterator(Arithmetic/*<T>*/ productObject) {
+    protected ListIterator/*<R>*/ iterator(Arithmetic/*>Tensor<R><*/ productObject) {
         return ((Tensor)productObject).iterator();
     }
     

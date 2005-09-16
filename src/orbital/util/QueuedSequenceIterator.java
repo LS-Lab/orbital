@@ -31,7 +31,7 @@ import java.util.LinkedList;
  * @see QueuedIterator
  * @todo could we reunite this with SequenceIterator and QueuedIterator?
  */
-public class QueuedSequenceIterator implements Iterator/*<A>*/, Serializable {
+public class QueuedSequenceIterator/*<A>*/ implements Iterator/*<A>*/, Serializable {
     /**
      * The list of iterators whose elements we return.
      * @serial this class is serializable if and only if all its content iterators are serializable.

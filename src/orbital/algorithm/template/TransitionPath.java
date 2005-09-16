@@ -22,13 +22,13 @@ import orbital.algorithm.template.ProbabilisticAlgorithm;
  * @version $Id$
  */
 
-public class TransitionPath implements Iterator, ProbabilisticAlgorithm, Serializable {
+public class TransitionPath/*<A,S, M extends TransitionModel.Transition>*/ implements Iterator/*<S>*/, ProbabilisticAlgorithm, Serializable {
     private static final long serialVersionUID = 7547930705530088169L;
     /**
      * The transition model &tau; through which to create a path.
      * @serial
      */
-    private final TransitionModel/*<A,S,O>*/ transition;
+    private final TransitionModel/*<A,S,M>*/ transition;
     /**
      * The iterator of the actions to perform.
      * @serial
@@ -50,7 +50,7 @@ public class TransitionPath implements Iterator, ProbabilisticAlgorithm, Seriali
      * @param actions the iterator of the actions to perform.
      * @param initialState the initial state s<sub>0</sub>&isin;S from which to start the path.
      */
-    public TransitionPath(TransitionModel/*<A,S,O>*/ transition, Iterator/*<A>*/ actions, Object/*>S<*/ initialState) {
+    public TransitionPath(TransitionModel/*<A,S,M>*/ transition, Iterator/*<A>*/ actions, Object/*>S<*/ initialState) {
         this.transition = transition;
         this.actions = actions;
         this.state = initialState;
@@ -87,12 +87,12 @@ public class TransitionPath implements Iterator, ProbabilisticAlgorithm, Seriali
      * </p>
      * @return the next state of the path.
      */
-    public Object next() {
-        final Object action = actions.next();
+    public Object/*>S<*/ next() {
+        final Object/*>A<*/ action = actions.next();
         final double r = random.nextDouble();
         double r_sum = 0;
         for (Iterator t = transition.states(action, state); t.hasNext(); ) {
-            Object sp = t.next();
+            Object/*>S<*/ sp = t.next();
             r_sum += ((orbital.math.Real/*@xxx constrained*/)transition.transition(action, state, sp).getProbability()).doubleValue();
             assert 0 <= r_sum && r_sum <= 1+0.0001 : "probability distribution";
             if (r >= r_sum)

@@ -8,6 +8,7 @@ package orbital.moon.logic.functor;
 
 import orbital.logic.functor.Function;
 import orbital.logic.functor.BinaryFunction;
+import java.util.List;
 
 import orbital.logic.functor.Functionals;
 import orbital.logic.functor.Predicates;

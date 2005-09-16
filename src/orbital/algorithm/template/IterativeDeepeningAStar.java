@@ -8,11 +8,11 @@ package orbital.algorithm.template;
 
 import orbital.logic.functor.Function;
 import java.util.Iterator;
+import orbital.math.Real;
 
 import orbital.logic.functor.Functionals;
 import orbital.math.functional.Functions;
 import orbital.math.functional.Operations;
-import orbital.math.Real;
 import orbital.math.Values;
 
 /**
@@ -35,7 +35,8 @@ import orbital.math.Values;
  * @todo why is IDA* with iterators about 11% slower than IDA* with collections?
  * @todo @attribute usually inferior to {@link IterativeExpansion} with still linear space.
  */
-public class IterativeDeepeningAStar extends DepthFirstBoundingSearch implements HeuristicAlgorithm {
+public class IterativeDeepeningAStar/*<A,S>*/ extends DepthFirstBoundingSearch/*<A,S>*/
+    implements HeuristicAlgorithm/*<S>*/ {
     private static final long serialVersionUID = 5814132461076107994L;
     /**
      * Cost of cheapest node pruned, or <code>null</code> if we did not prune a node yet.
@@ -47,14 +48,14 @@ public class IterativeDeepeningAStar extends DepthFirstBoundingSearch implements
      * The applied heuristic cost function h:S&rarr;<b>R</b> embedded in the evaluation function f.
      * @serial
      */
-    private Function heuristic;
+    private Function/*<S,Real>*/ heuristic;
     /**
      * Create a new instance of IDA<sup>*</sup> search.
      * Which is a bounding search using the evaluation function f(n) = g(n) + h(n).
      * @param heuristic the heuristic cost function h:S&rarr;<b>R</b> embedded in the evaluation function f.
      * @see #getEvaluation()
      */
-    public IterativeDeepeningAStar(Function heuristic) {
+    public IterativeDeepeningAStar(Function/*<S,Real>*/ heuristic) {
         setHeuristic(heuristic);
         this.nextBound = null;
         setContinuedWhenFound(false);
@@ -62,11 +63,11 @@ public class IterativeDeepeningAStar extends DepthFirstBoundingSearch implements
     }
     IterativeDeepeningAStar() {}
 
-    public Function getHeuristic() {
+    public Function/*<S,Real>*/ getHeuristic() {
         return heuristic;
     }
 
-    public void setHeuristic(Function heuristic) {
+    public void setHeuristic(Function/*<S,Real>*/ heuristic) {
         Function old = this.heuristic;
         this.heuristic = heuristic;
         firePropertyChange("heuristic", old, this.heuristic);
@@ -75,15 +76,15 @@ public class IterativeDeepeningAStar extends DepthFirstBoundingSearch implements
     /**
      * f(n) = g(n) + h(n).
      */
-    public Function getEvaluation() {
+    public Function/*<S,Real>*/ getEvaluation() {
         return evaluation;
     }
-    private transient Function evaluation;
+    private transient Function/*<S,Real>*/ evaluation;
     void firePropertyChange(String property, Object oldValue, Object newValue) {
         super.firePropertyChange(property, oldValue, newValue);
         if (!("heuristic".equals(property) || "problem".equals(property)))
             return;
-        GeneralSearchProblem problem = getProblem();
+        GeneralSearchProblem/*<A,S>*/ problem = getProblem();
         this.evaluation = problem != null
             ? Functionals.compose(Operations.plus, problem.getAccumulatedCostFunction(), getHeuristic())
             : null;
@@ -127,8 +128,8 @@ public class IterativeDeepeningAStar extends DepthFirstBoundingSearch implements
      * Solve with bounds f(n<sub>0</sub>), f(n<sub>1</sub>), f(n<sub>2</sub>), ... until a solution is found.
      * Where n<sub>0</sub>=root, and n<sub>i</sub> is the cheapest node pruned in iteration i-1.
      */
-    protected Object/*>S<*/ solveImpl(GeneralSearchProblem problem) {
-        final Object n0 = problem.getInitialState();
+    protected Object/*>S<*/ solveImpl(GeneralSearchProblem/*<A,S>*/ problem) {
+        final Object/*>S<*/ n0 = problem.getInitialState();
         nextBound = (Real) getEvaluation().apply(n0);
         Object/*>S<*/ solution;
         do {
@@ -144,8 +145,8 @@ public class IterativeDeepeningAStar extends DepthFirstBoundingSearch implements
         return solution;
     }
 
-    protected Iterator createTraversal(GeneralSearchProblem problem) {
-        return new DepthFirstSearch.OptionIterator(problem);
+    protected Iterator/*<S>*/ createTraversal(GeneralSearchProblem/*<A,S>*/ problem) {
+        return new DepthFirstSearch.OptionIterator/*<A,S>*/(problem);
     }
 
 

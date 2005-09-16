@@ -47,7 +47,7 @@ public class SearchResolution extends ResolutionBase {
      * the search algorithm used.
      * @xxx maybe for reentrance we should always instantiate a new search algorithm for each infer() ?
      */
-    private final GeneralSearch search;
+    private final GeneralSearch/*<Proof,Proof>*/ search;
     public SearchResolution() {
         //@internal we do search for cheapest solutions but for first solution
         //this.search = new IterativeDeepening();
@@ -61,7 +61,7 @@ public class SearchResolution extends ResolutionBase {
         //this.search = new IterativeDeepeningAStar(orbital.math.functional.Functions.constant(Values.getDefaultInstance().valueOf(2)));
         //this.search = new IterativeDeepeningAStar(orbital.math.functional.Functions.constant(Values.getDefaultInstance().valueOf(0)));
 
-        this.search = new IterativeDeepeningAStar(heuristic);
+        this.search = new IterativeDeepeningAStar/*<Proof,Proof>*/(heuristic);
         //@todo since resolution proving is proof confluent, we can use a hill-climber and do not need backtracking, once we provide fairness
         //this.search = new HillClimbing(heuristic);
     }
@@ -105,7 +105,7 @@ public class SearchResolution extends ResolutionBase {
             this.setOfSupport = new ClausalSetImpl(Collections.unmodifiableSet(setOfSupport));
         }
 
-        public Object getInitialState() {
+        public Object/*>Proof<*/ getInitialState() {
             //@internal since the proof states may modify setOfSupport, use a copy so that we can reuse the initial state
             return new Proof(new ClausalSetImpl(setOfSupport), null, Values.ZERO);
         }
@@ -126,7 +126,7 @@ public class SearchResolution extends ResolutionBase {
                     throw new UnsupportedOperationException();
                 }
             };
-        public boolean isSolution(Object n) {
+        public boolean isSolution(Object/*>Proof<*/ n) {
             final ClausalSet S = ((Proof) n).setOfSupport;
             // solely rely on goal lookahead (@see #actions(Object))
             final boolean goal = S.size() == 1 && S.contains(Utilities.CONTRADICTION);
@@ -134,7 +134,7 @@ public class SearchResolution extends ResolutionBase {
             return goal;
         }
         //@todo optimizable by far! And also optimize space by do/undo
-        public Iterator actions(final Object/*>S<*/ n) {
+        public Iterator/*<Proof>*/ actions(final Object/*>Proof<*/ n) {
             return new StreamMethod(ASYNCHRONOUS_EXPAND) {
                     public void runStream() {
                         final ClausalSet S = ((Proof) n).setOfSupport;
@@ -188,12 +188,12 @@ public class SearchResolution extends ResolutionBase {
                 }.apply();
         }
 
-        public Iterator states(Object action, Object state) {
+        public Iterator/*<Proof>*/ states(Object action, Object state) {
             // since A=S
             return Collections.singletonList(action).iterator();
         }
 
-        public TransitionModel.Transition transition(Object action, Object state, Object statep) {
+        public TransitionModel.Transition/*>GeneralSearchProblem.Transition<Proof,Proof><*/ transition(Object/*>Proof<*/ action, Object/*>Proof<*/ state, Object/*>Proof<*/ statep) {
             return new Transition(action, Values.ONE);
         }
     }

@@ -95,7 +95,7 @@ import orbital.math.Scalar;
  * @xxx didn't we model the case of a non-deterministic transition function with type O, and the special case of O=Option being the combined function of stochastic transtition probabilities?
  * @todo improve and generalize TransitionModel (which might also be applicable in the implementation of SimulatedAnnealing)
  */
-public interface TransitionModel/*<A,S, M extends Transition>*/ {
+public interface TransitionModel/*<A,S, M extends TransitionModel.Transition>*/ {
     /**
      * Checks two transition models for equality (optional).
      * <p>

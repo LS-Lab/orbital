@@ -406,7 +406,7 @@ public class Substitutions {
      * @xxx solve the "problem with reverting from constant functions back to normal" perhaps by changing orbital.math.functional.Functionals#genericCompose and orbital.logic.functor.Functionals#genericCompose
      * @todo how do we "schlucken" those parts of substitutions running through our term structure that replace x, since we have bound x. How do we allow substitutions to pass through to the term t, at all?
      */
-    public static final BinaryFunction/*<Variable,Expression, Function<Variable,Expression>>*/ lambda = new BinaryFunction/*<Variable,Expression, Function<Variable,Expression>>*/() {
+    public static final BinaryFunction/*_<Variable,Expression, Function<Variable,Expression>>_*/ lambda = new BinaryFunction/*_<Variable,Expression, Function<Variable,Expression>>_*/() {
             public Object apply(Object x, Object f) {
                 if (!((x instanceof Variable) && ((Variable)x).isVariable()))
                     throw new IllegalArgumentException("usually x should be a " + Variable.class.getName() + " with x.isVariable()==true, however this is not a strict requirement");

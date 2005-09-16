@@ -202,11 +202,6 @@
         <copy todir="${sources.generics}">
             <fileset dir="${sources}"/>
         </copy>
-        <replaceregexp byline="false">
-            <regexp pattern="/\*&lt;([^&gt;]*)implements"/>
-            <substitution expression="/*&lt;\1extends"/>
-            <fileset dir="${sources.generics}"/>
-        </replaceregexp>
         <!-- incarnate generics -->
         <replace dir="${sources.generics}">
             <replacefilter token="/*&lt;" value="&lt;"/>
@@ -215,7 +210,7 @@
         <replaceregexp byline="false">
             <!-- replace Object/*>A<*/ by A -->
             <!--regexp pattern="[a-zA-Z]*/\*&gt;([a-zA-Z]*)&lt;\*/"/-->
-            <regexp pattern="/\*&gt;([a-zA-Z])&lt;\*/"/>
+            <regexp pattern="[a-zA-Z]*/\*\&gt;([a-zA-Z]*)\&lt;\*/"/>
             <substitution expression="\1"/>
             <fileset dir="${sources.generics}"/>
         </replaceregexp>

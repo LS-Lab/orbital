@@ -538,10 +538,10 @@ public class Functionals {
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      * @todo could we somehow generalize this? What about f being a BinaryFunction, or a VoidFunction, or a Predicate?
      */
-    public static final /*<A,B>*/ BinaryFunction/*<Function<A,B>,A, B>*/ apply = new BinaryFunction/*<Function<A,B>,A, B>*/() {
+    public static final /*_<A,B>_*/ BinaryFunction/*_<Function<A,B>,A, B>_*/ apply = new BinaryFunction/*_<Function<A,B>,A, B>_*/() {
             private final Specification callTypeDeclaration = new Specification(new Class[] {
-                Function/*<A,B>*/.class, Object/*>A<*/.class
-            }, Object/*>B<*/.class);
+                Function/*_<A,B>_*/.class, Object/*_>A<_*/.class
+            }, Object/*_>B<_*/.class);
             public Object apply(Object f, Object x) {
                 return ((Function)f).apply(x);
             }
@@ -1275,9 +1275,9 @@ public class Functionals {
      * @see <a href="{@docRoot}/Patterns/Design/Adapter.html">Adapter Pattern</a>
      */
     public static /*<A>*/ Predicate/*<A>*/ onVoid(final VoidPredicate p) {
-        return new PredicateOnVoid(p);
+        return new PredicateOnVoid/*<A>*/(p);
     }
-    private static class PredicateOnVoid implements Predicate {
+    private static class PredicateOnVoid/*<A>*/ implements Predicate {
         private final VoidPredicate p;
         public PredicateOnVoid(VoidPredicate p) {
             this.p = p;
@@ -2183,7 +2183,7 @@ public class Functionals {
          * @param b a value &isin;B.
          * @return the value <span class="lenseBracket">|(</span>g,p<span class="lenseBracket">)|</span> b &isin; A<sup>*</sup> represented as a {@link java.util.List List<A>}.
          */
-        public final Object/*>List<*//*<A>*/ apply(Object/*>B<*/ b) {
+        public final Object/*>List<A><*/ apply(Object/*>B<*/ b) {
             if (p.apply(b))
                 return new LinkedList/*<A>*/();
             Pair/*<A, B>*/ pair = (Pair/*<A, B>*/) g.apply(b);

@@ -47,7 +47,7 @@ public /*template*/ interface Function/*<A, B>*/ extends Functor {
      * specification of these functors.
      * @todo what to specify at runtime when templates are enabled?
      */
-    static final Specification callTypeDeclaration = new Specification(1 /*, new Class[] {A.class}, B.class*/);
+    static final Specification callTypeDeclaration = new Specification(1 /*>, new Class[] {A.class}, B.class<*/);
 
     /**
      * A composed Function.
@@ -68,5 +68,5 @@ public /*template*/ interface Function/*<A, B>*/ extends Functor {
      *  we would not need this interface.
      *  The same goes for similar *.Composite* interface here and in math.functional.
      */
-    static interface Composite extends Functor.Composite, Function/*<A,B>*/ {}
+    static interface Composite/*<A,B>*/ extends Functor.Composite, Function/*<A,B>*/ {}
 }

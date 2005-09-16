@@ -693,7 +693,7 @@ public abstract class AbstractValues extends Values {
 
     // conversion methods
 
-    public /*<R extends ListIterator,  Arithmetic>*/ Vector/*<R>*/ asVector(final Matrix/*<R>*/ m) {
+    public /*<R extends Arithmetic>*/ Vector/*<R>*/ asVector(final Matrix/*<R>*/ m) {
         return /*refine/delegate Vector*/ new AbstractVector/*<R>*/() {
                 private static final long serialVersionUID = 7697252236109892826L;
                 protected Vector/*<R>*/ newInstance(int dim) {
@@ -729,7 +729,7 @@ public abstract class AbstractValues extends Values {
                 public Vector/*<R>*/ remove(int i) { throw new UnsupportedOperationException("structurally unmodifiable view"); }
             };
     }
-    public /*<R extends ListIterator,  Arithmetic>*/ Vector/*<R>*/ asVector(final Tensor/*<R>*/ t) {
+    public /*<R extends Arithmetic>*/ Vector/*<R>*/ asVector(final Tensor/*<R>*/ t) {
         if (t instanceof Vector)
             return (Vector)t;
         else if (t instanceof Matrix)

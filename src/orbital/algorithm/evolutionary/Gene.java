@@ -142,7 +142,7 @@ public interface Gene {
      *  Additionally, only positive numbers should be returned.
      *  So this distance measure only has values in [0,1].
      */
-    Metric/*<Gene, Gene>*/ distanceMeasure();
+    Metric/*<Gene>*/ distanceMeasure();
 
 
     /**

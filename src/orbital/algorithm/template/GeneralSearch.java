@@ -38,14 +38,15 @@ import orbital.math.Values;
  * @todo once we have decided once and for all against expand-Collections we can get rid of createCollection(), select(Collection), add(Collection,Collection), and search(Collection) in our subclasses.
  * @todo should we split this package into orbital.algorithm.template, and orbital.algorithm.search('n'planning) ?
  */
-public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSearchProblem,Object>*/, Serializable {
+public abstract class GeneralSearch/*<A,S>*/
+    implements AlgorithmicTemplate/*<GeneralSearchProblem<A,S>,S>*/, Serializable {
     private static final long serialVersionUID = -2839281671298699169L;
     
     /**
      * The search problem to solve.
      * @serial
      */
-    private GeneralSearchProblem problem = null;
+    private GeneralSearchProblem/*<A,S>*/ problem = null;
         
     // get/set properties
         
@@ -55,13 +56,13 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * @return the problem specified in the last call to solve,
      *  or <code>null</code> if there is no current problem (since solve has not yet been called etc.).
      */
-    protected final GeneralSearchProblem getProblem() {
+    protected final GeneralSearchProblem/*<A,S>*/ getProblem() {
         return problem;
     }
     /**
      * Set the current problem.
      */
-    private final void setProblem(GeneralSearchProblem newProblem) {
+    private final void setProblem(GeneralSearchProblem/*<A,S>*/ newProblem) {
         GeneralSearchProblem old = this.problem;
         this.problem = newProblem;
         firePropertyChange("problem", old, problem);
@@ -98,7 +99,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * @throws ClassCastException if p is not an instance of GeneralSearchProblem.
      * @see #solve(GeneralSearchProblem)
      */
-    public final Object solve(AlgorithmicProblem p) {
+    public final Object solve(AlgorithmicProblem/*>GeneralSearchProblem<A,S><*/ p) {
         return solve((GeneralSearchProblem)p);
     }
     
@@ -232,7 +233,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * @see <a href="{@docRoot}/Patterns/Design/Strategy.html">Strategy</a>
      * @see GeneralSearch#createTraversal(GeneralSearchProblem)
      */
-    public static abstract class OptionIterator implements Iterator/*<S>*/, Serializable {
+    public static abstract class OptionIterator/*<A,S>*/ implements Iterator/*<S>*/, Serializable {
         private static final long serialVersionUID = 6410799454884265654L;
         /**
          * The search problem to solve.
@@ -374,8 +375,8 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * Helper method returning all states reachable with any action from state s.
      * @return S(s) := {t(s,a) &brvbar; a&isin;A(s)}
      */
-    static final Iterator expand(final GeneralSearchProblem problem, final Object/*>S<*/ state) {
-        return new Iterator() {
+    static final /*<A,S>*/ Iterator/*<S>*/ expand(final GeneralSearchProblem/*<A,S>*/ problem, final Object/*>S<*/ state) {
+        return new Iterator/*<S>*/() {
                 final Iterator/*<A>*/ actions = problem.actions(state);
                 final MutableFunction g = problem.getAccumulatedCostFunction();
                 final Real accumulatedCost = castedApply(g, state);
@@ -403,7 +404,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * Applies f on argument with runtime type-safe casting
      * and user-friendly exception messages.
      */
-    static final Real castedApply(Function/*<S,Real>*/ f, Object/*>S<*/ argument) {
+    static final /*<S>*/ Real castedApply(Function/*<S,Real>*/ f, Object/*>S<*/ argument) {
         final Object o = f.apply(argument);
         if (o instanceof Real)
             return (Real/*__*/)o;

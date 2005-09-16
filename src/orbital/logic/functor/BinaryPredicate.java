@@ -67,5 +67,5 @@ public interface BinaryPredicate/*<A1, A2>*/ extends Functor /*abstract template
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(BinaryPredicate, BinaryFunction, BinaryFunction)
      */
-    static interface Composite extends Functor.Composite, BinaryPredicate/*<A1, A2>*/ {}
+    static interface Composite/*<A1,A2>*/ extends Functor.Composite, BinaryPredicate/*<A1, A2>*/ {}
 }

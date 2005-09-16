@@ -40,7 +40,7 @@ public interface GeneticAlgorithmProblem extends AlgorithmicProblem {
      * A genetic algorithm will maximize this objective function.</p>
      * @see orbital.algorithm.template.EvaluativeAlgorithm#getEvaluation()
      */
-    Function/*<Object, Number>*/ getEvaluation();
+    Function/*<Genome, Number>*/ getEvaluation();
 
     /**
      * Generate (<strong>create</strong>) the initial population of genomes.

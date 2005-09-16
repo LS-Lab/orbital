@@ -28,7 +28,7 @@ import orbital.math.Values;
  * @TODO derive subclass SMA*  (Simple Memory-Bound A*)
  * @todo remove? since the DepthFirst behaviour is encapsuled in DepthFirstSearch.OptionIterator.
  */
-abstract class DepthFirstBoundingSearch extends GeneralBoundingSearch {
+abstract class DepthFirstBoundingSearch/*<A,S>*/ extends GeneralBoundingSearch/*<A,S>*/ {
     private static final long serialVersionUID = -2607359820984135258L;
 
     //inherit like DepthFirstSearch
@@ -40,7 +40,7 @@ abstract class DepthFirstBoundingSearch extends GeneralBoundingSearch {
         return Functions.linear(Values.getDefaultInstance().symbol("b"));
     }
 
-    protected Iterator createTraversal(GeneralSearchProblem problem) {
+    protected Iterator createTraversal(GeneralSearchProblem/*<A,S>*/ problem) {
         return new DepthFirstSearch.OptionIterator(problem);
     }
 

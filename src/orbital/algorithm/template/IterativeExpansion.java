@@ -7,6 +7,7 @@
 package orbital.algorithm.template;
 
 import orbital.logic.functor.Function;
+import orbital.math.Real;
 
 import java.util.Iterator;
 import java.io.Serializable;
@@ -18,7 +19,6 @@ import orbital.util.Setops;
 import orbital.logic.functor.Functionals;
 import orbital.math.functional.Functions;
 import orbital.math.functional.Operations;
-import orbital.math.Real;
 import orbital.math.Values;
 
 import java.util.LinkedList;
@@ -48,30 +48,30 @@ import java.util.LinkedList;
  * @note memory-bounded algorithms suffer from transpositions in the search graph.
  * @internal we do not extend GeneralBoundingSearch, since the bounds vary from layer to layer (argument of the recursive call).
  */
-public class IterativeExpansion extends GeneralSearch implements HeuristicAlgorithm {
+public class IterativeExpansion/*<A,S>*/ extends GeneralSearch/*<A,S>*/ implements HeuristicAlgorithm/*<S>*/ {
     private static final long serialVersionUID = 4225973116092481279L;
     /**
      * The applied heuristic cost function h:S&rarr;<b>R</b> embedded in the evaluation function f.
      * @serial
      */
-    private Function heuristic;
+    private Function/*<S,Real>*/ heuristic;
     /**
      * Create a new instance of IDA<sup>*</sup> search.
      * Which is a bounding search using the evaluation function f(n) = g(n) + h(n).
      * @param heuristic the heuristic cost function h:S&rarr;<b>R</b> embedded in the evaluation function f.
      * @see #getEvaluation()
      */
-    public IterativeExpansion(Function heuristic) {
+    public IterativeExpansion(Function/*<S,Real>*/ heuristic) {
         setHeuristic(heuristic);
     }
     IterativeExpansion() {}
 
-    public Function getHeuristic() {
+    public Function/*<S,Real>*/ getHeuristic() {
         return heuristic;
     }
 
-    public void setHeuristic(Function heuristic) {
-        Function old = this.heuristic;
+    public void setHeuristic(Function/*<S,Real>*/ heuristic) {
+        Function/*<S,Real>*/ old = this.heuristic;
         this.heuristic = heuristic;
         firePropertyChange("heuristic", old, this.heuristic);
     }
@@ -79,15 +79,15 @@ public class IterativeExpansion extends GeneralSearch implements HeuristicAlgori
     /**
      * f(n) = g(n) + h(n).
      */
-    public Function getEvaluation() {
+    public Function/*<S,Real>*/ getEvaluation() {
         return evaluation;
     }
-    private transient Function evaluation;
+    private transient Function/*<S,Real>*/ evaluation;
     void firePropertyChange(String property, Object oldValue, Object newValue) {
         super.firePropertyChange(property, oldValue, newValue);
         if (!("heuristic".equals(property) || "problem".equals(property)))
             return;
-        GeneralSearchProblem problem = getProblem();
+        GeneralSearchProblem/*<A,S>*/ problem = getProblem();
         this.evaluation = problem != null
             ? Functionals.compose(Operations.plus, problem.getAccumulatedCostFunction(), getHeuristic())
             : null;
@@ -208,7 +208,7 @@ public class IterativeExpansion extends GeneralSearch implements HeuristicAlgori
      * @version $Id$
      * @see orbital.util.KeyValuePair
      */
-    private static final class NodeInfo implements Comparable, Serializable {
+    private static final class NodeInfo/*<A,S>*/ implements Comparable/*<NodeInfo<A,S>>*/, Serializable {
         private static final long serialVersionUID = -4179466565509314106L;
         /**
          * The node about which this object contains information.
@@ -226,7 +226,7 @@ public class IterativeExpansion extends GeneralSearch implements HeuristicAlgori
         /**
          * @attribute coarser than equals.
          */
-        public int compareTo(Object o) {
+        public int compareTo(Object/*>NodeInfo<A,S><*/ o) {
             NodeInfo b = (NodeInfo)o;
             return getFCost().compareTo(b.getFCost());
         }
@@ -244,7 +244,7 @@ public class IterativeExpansion extends GeneralSearch implements HeuristicAlgori
         }
     }
 
-    protected Iterator createTraversal(GeneralSearchProblem problem) {
+    protected Iterator/*<S>*/ createTraversal(GeneralSearchProblem/*<A,S>*/ problem) {
         //@todo could we transform the recursive algorithm into a traversal iterator?
         throw new AssertionError("should not get called");
     }

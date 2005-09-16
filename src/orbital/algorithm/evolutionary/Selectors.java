@@ -35,7 +35,7 @@ public class Selectors {
      * @preconditions requires either strictly negative or strictly positive fitness values.
      * @see #likelyBetter()
      */
-    public static final Function/*<Chromosome, Population>*/ rouletteWheel() {
+    public static final Function/*<Population, Genome>*/ rouletteWheel() {
         return new RouletteWheelSelector();
     }
     private static class RouletteWheelSelector extends SelectionImpl {
@@ -104,7 +104,7 @@ public class Selectors {
      * @see #rouletteWheel()
      * @todo which implementation is this?
      */
-    public static final Function/*<Chromosome, Population>*/ likelyBetter() {
+    public static final Function/*<Population, Genome>*/ likelyBetter() {
         return new LikelyBetterSelector();
     }
     private static class LikelyBetterSelector extends SelectionImpl {
@@ -199,7 +199,7 @@ public class Selectors {
 /**
  * Selection implementation for selections schemes that do not require preprocessing.
  */
-abstract class SelectionImpl implements Function/*<Chromosome, Population>*/, Serializable {
+abstract class SelectionImpl implements Function/*<Population, Genome>*/, Serializable {
     private static final long serialVersionUID = -3217305129591017547L;
     /**
      * Generic instantiation clone

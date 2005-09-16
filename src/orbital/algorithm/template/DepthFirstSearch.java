@@ -38,7 +38,7 @@ import orbital.math.Values;
  * @internal also has a simple recursive formulation.
  * @internal note Can be made complete for finite state space with bookkeeping to avoid loops.
  */
-public class DepthFirstSearch extends GeneralSearch {
+public class DepthFirstSearch/*<A,S>*/ extends GeneralSearch/*<A,S>*/ {
     private static final long serialVersionUID = -9123082892783190173L;
     //TODO: think about unifying! see Backtracking, Evaluation/ContainerWeighting
 
@@ -64,8 +64,8 @@ public class DepthFirstSearch extends GeneralSearch {
         return false;
     }
 
-    protected Iterator createTraversal(GeneralSearchProblem problem) {
-        return new OptionIterator(problem);
+    protected Iterator/*<S>*/ createTraversal(GeneralSearchProblem/*<A,S>*/ problem) {
+        return new OptionIterator/*<A,S>*/(problem);
     }
 
     /**
@@ -73,14 +73,14 @@ public class DepthFirstSearch extends GeneralSearch {
      * @version $Id$
      * @author  Andr&eacute; Platzer
      */
-    public static class OptionIterator extends GeneralSearch.OptionIterator {
+    public static class OptionIterator/*<A,S>*/ extends GeneralSearch.OptionIterator/*<A,S>*/ {
         private static final long serialVersionUID = 4198888198183455112L;
         /**
          * effectively, nodes is a stack of iterators.
          * @serial
          */
         private QueuedSequenceIterator/*<S>*/ nodes;
-        public OptionIterator(GeneralSearchProblem problem) {
+        public OptionIterator(GeneralSearchProblem/*<A,S>*/ problem) {
             super(problem);
             nodes = new QueuedSequenceIterator(new Iterator[] {Collections.singletonList(problem.getInitialState()).iterator()});
         }
@@ -90,7 +90,7 @@ public class DepthFirstSearch extends GeneralSearch {
         protected Object/*>S<*/ select() {
             return nodes.next();
         }
-        protected boolean add(Iterator newNodes) {
+        protected boolean add(Iterator/*<S>*/ newNodes) {
             nodes.add(0, newNodes);
             return newNodes.hasNext();
         }

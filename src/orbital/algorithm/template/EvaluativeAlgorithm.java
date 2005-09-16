@@ -9,6 +9,7 @@ package orbital.algorithm.template;
 import orbital.logic.functor.Function;
 import java.util.Comparator;
 import java.io.Serializable;
+import orbital.math.Real;
 
 /**
  * Interface for evaluative algorithms.
@@ -43,25 +44,25 @@ public interface EvaluativeAlgorithm/*<S>*/ extends AlgorithmicTemplate {
      * @version $Id$
      * @author  Andr&eacute; Platzer
      */
-    public static class EvaluationComparator implements Comparator, Serializable {
+    public static class EvaluationComparator/*<S>*/ implements Comparator/*<S>*/, Serializable {
         private static final long serialVersionUID = -2014366202163451019L;
         /**
          * the evaluation function used in order to compare two states.
          * @serial
          */
-        private Function evaluationFunction;
+        private Function/*<S,Real>*/ evaluationFunction;
         /**
          * Create a new comparator for states compared by their evaluation values.
          * @param evaluation the evaluation function used in order to compare two states.
          */
-        public EvaluationComparator(Function evaluation) {
+        public EvaluationComparator(Function/*<S,Real>*/ evaluation) {
             this.evaluationFunction = evaluation;
         }
         /**
          * Create a new comparator for states compared by their evaluation values.
          * @param a the heuristic algorithm whose {@link EvaluativeAlgorithm#getEvaluation() evaluation function} used in order to compare two states.
          */
-        public EvaluationComparator(EvaluativeAlgorithm a) {
+        public EvaluationComparator(EvaluativeAlgorithm/*<S>*/ a) {
             this(a.getEvaluation());
         }
 
@@ -75,9 +76,9 @@ public interface EvaluativeAlgorithm/*<S>*/ extends AlgorithmicTemplate {
          * Compares according to evaluation function.
          * @return f(o1).compareTo(f(o2))
          */
-        public final int compare(Object o1, Object o2) {
+        public final int compare(Object o1/*>S<*/, Object/*>S<*/ o2) {
             // get the values f(n) from the cache if possible, otherwise store them
-            Object v1, v2;
+            Object/*>S<*/ v1, v2;
             /*System.err.print("    "+cache.size()+"\t");
               v1 = cache.get(o1);
               if (v1 == null)

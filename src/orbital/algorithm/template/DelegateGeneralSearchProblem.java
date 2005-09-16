@@ -9,6 +9,7 @@ package orbital.algorithm.template;
 import orbital.logic.functor.MutableFunction;
 import java.util.Iterator;
 import java.io.Serializable;
+import orbital.math.Real;
 
 
 /**
@@ -26,17 +27,17 @@ import java.io.Serializable;
  * @version $Id$
  * @structure delegates problem:GeneralSearchProblem
  */
-public abstract class DelegateGeneralSearchProblem implements GeneralSearchProblem, Serializable {
+public abstract class DelegateGeneralSearchProblem/*<A,S>*/ implements GeneralSearchProblem/*<A,S>*/, Serializable {
     private static final long serialVersionUID = 759071020836279592L;
     /**
      * @serialize
      */
-    private GeneralSearchProblem problem;
+    private GeneralSearchProblem/*<A,S>*/ problem;
     /**
      * Get the value of problem.
      * @return value of problem.
      */
-    protected GeneralSearchProblem getDelegatee() {
+    protected GeneralSearchProblem/*<A,S>*/ getDelegatee() {
         return problem;
     }
     
@@ -44,11 +45,11 @@ public abstract class DelegateGeneralSearchProblem implements GeneralSearchProbl
      * Set the value of problem.
      * @param v  Value to assign to problem.
      */
-    protected void setDelegatee(GeneralSearchProblem  v) {
+    protected void setDelegatee(GeneralSearchProblem/*<A,S>*/ v) {
         this.problem = v;
     }
     
-    public DelegateGeneralSearchProblem(GeneralSearchProblem problem){
+    public DelegateGeneralSearchProblem(GeneralSearchProblem/*<A,S>*/ problem){
         this.problem = problem;
     }
 
@@ -60,7 +61,7 @@ public abstract class DelegateGeneralSearchProblem implements GeneralSearchProbl
      * @return <description>
      * @see orbital.algorithm.template.GeneralSearchProblem#actions(Object)
      */
-    public Iterator actions(Object param1)
+    public Iterator/*<A>*/ actions(Object param1)
     {
         return problem.actions(param1);
     }
@@ -70,7 +71,7 @@ public abstract class DelegateGeneralSearchProblem implements GeneralSearchProbl
      * @return <description>
      * @see orbital.algorithm.template.GeneralSearchProblem#getInitialState()
      */
-    public Object getInitialState()
+    public Object/*>S<*/ getInitialState()
     {
         return problem.getInitialState();
     }
@@ -80,7 +81,7 @@ public abstract class DelegateGeneralSearchProblem implements GeneralSearchProbl
      * @return <description>
      * @see orbital.algorithm.template.GeneralSearchProblem#getAccumulatedCostFunction()
      */
-    public MutableFunction getAccumulatedCostFunction()
+    public MutableFunction/*<S,Real>*/ getAccumulatedCostFunction()
     {
         return problem.getAccumulatedCostFunction();
     }
@@ -92,7 +93,7 @@ public abstract class DelegateGeneralSearchProblem implements GeneralSearchProbl
      * @return <description>
      * @see orbital.algorithm.template.GeneralSearchProblem#states(Object, Object)
      */
-    public Iterator states(Object param1, Object param2)
+    public Iterator/*<S>*/ states(Object/*>A<*/ param1, Object/*>S<*/ param2)
     {
         return problem.states(param1, param2);
     }
@@ -105,7 +106,7 @@ public abstract class DelegateGeneralSearchProblem implements GeneralSearchProbl
      * @return <description>
      * @see orbital.algorithm.template.GeneralSearchProblem#transition(Object, Object, Object)
      */
-    public TransitionModel.Transition transition(Object param1, Object param2, Object param3)
+    public TransitionModel.Transition transition(Object/*>A<*/ param1, Object/*>S<*/ param2, Object/*>S<*/ param3)
     {
         return problem.transition(param1, param2, param3);
     }
@@ -117,7 +118,7 @@ public abstract class DelegateGeneralSearchProblem implements GeneralSearchProbl
      * @return <description>
      * @see orbital.algorithm.template.MarkovDecisionProblem#isSolution(Object)
      */
-    public boolean isSolution(Object param1)
+    public boolean isSolution(Object/*>S<*/ param1)
     {
         return problem.isSolution(param1);
     }

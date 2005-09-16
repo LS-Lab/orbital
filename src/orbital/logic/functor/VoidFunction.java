@@ -66,5 +66,5 @@ public interface VoidFunction/*<B>*/ extends Functor {
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(Function, VoidFunction)
      */
-    static interface Composite extends Functor.Composite, VoidFunction/*<B>*/ {}
+    static interface Composite/*<B>*/ extends Functor.Composite, VoidFunction/*<B>*/ {}
 }
