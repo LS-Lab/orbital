@@ -44,7 +44,7 @@ public class OrderedClauseImpl extends IndexedClauseImpl {
      * Get all maximal elements of the given set.
      * @postconditions RES = {x&isin;S &brvbar; &not;&exist;y&isin;S y&gt;x}
      */
-    private static final /*<T>*/ Set/*_<T>_*/ getMaximalElements(final Collection/*_<T>_*/ S,
+    private static final /*<T>*/ Set/*<T>*/ getMaximalElements(final Collection/*<T>*/ S,
                                                                  final Comparator cmp) {
         final BinaryPredicate greater_partial = new BinaryPredicate() {
                     public boolean apply(Object a, Object b) {
@@ -105,7 +105,7 @@ public class OrderedClauseImpl extends IndexedClauseImpl {
      * Copy constructor.
      * @internal transitively public constructors required for Functionals.map to produce Clauses.
      */
-    public OrderedClauseImpl(Set/*_<Formula>_*/ literals) {
+    public OrderedClauseImpl(Set/*<Formula>*/ literals) {
         super(literals);
     }
     public OrderedClauseImpl() {}
@@ -115,13 +115,13 @@ public class OrderedClauseImpl extends IndexedClauseImpl {
      * @attribute lazy-initialization in {@link #getMaximalElements()}, thereafter update in all methods
      * @internal This is a performance advantage, since the index does not need to be established until the first use. This is similar to but simpler than the following idea: perhaps only activate indexing once this clause gets inserted into a clausalset. Up to this point behave like super does
      */
-    private Set/*_<Formula>_*/ maximalElements = null;
+    private Set/*<Formula>*/ maximalElements = null;
 
     /**
      * Get all maximal literals of this clause.
      * @postconditions RES = {x&isin;S &brvbar; &not;&exist;y&isin;S y&gt;x}
      */
-    private final Set/*_<Formula>_*/ getMaximalLiterals() {
+    private final Set/*<Formula>*/ getMaximalLiterals() {
         if (maximalElements == null) {
             // lazy initialization
             this.maximalElements = getMaximalElements(this, order);
@@ -149,9 +149,9 @@ public class OrderedClauseImpl extends IndexedClauseImpl {
         // ordered resolution especially implies that the resolved literal is maximal in the original clauses F and G
         {
             // @internal getResolvableLiterals and getProbableUnifiables have been optimized to return only maximal literals, so first two checks can be turned into mere assertions
-            final Set/*_<Formula>_*/ maximalF = F.getMaximalLiterals();
+            final Set/*<Formula>*/ maximalF = F.getMaximalLiterals();
             assert maximalF.contains(L) : "resolution ordered since " + L + " is in maximal elements\n\t" + maximalF + "\n  of\t" + F;
-            final Set/*_<Formula>_*/ maximalG = G.getMaximalLiterals();
+            final Set/*<Formula>*/ maximalG = G.getMaximalLiterals();
             assert maximalG.contains(K) : "resolution ordered since " + K + " is in maximal elements\n\t" + maximalG + "\n  of\t" + G;
         }
         final Pair p = super.resolventWith2(G, L, K);
@@ -163,7 +163,7 @@ public class OrderedClauseImpl extends IndexedClauseImpl {
             Set RLmu = new HashSet();
             RLmu.add(Lmu);
             RLmu.addAll(R);
-            final Set/*_<Formula>_*/ maximalRLmu = getMaximalElements(RLmu, order);
+            final Set/*<Formula>*/ maximalRLmu = getMaximalElements(RLmu, order);
             // only resolve if Lmu is maximal in resolvent
             if (maximalRLmu.contains(Lmu)) {
                 return R;
@@ -174,11 +174,11 @@ public class OrderedClauseImpl extends IndexedClauseImpl {
         }
     }
 
-    public Iterator/*_<Formula>_*/ getResolvableLiterals() {
+    public Iterator/*<Formula>*/ getResolvableLiterals() {
         return getMaximalLiterals().iterator();
     }
 
-    public Iterator/*_<Formula>_*/ getProbableUnifiables(Formula L) {
+    public Iterator/*<Formula>*/ getProbableUnifiables(Formula L) {
         // only return those maximal literals that qualify for resolution by indexing
         return Setops.intersection(Setops.asSet(getMaximalLiterals().iterator()),
                             Setops.asSet(super.getProbableUnifiables(L)))

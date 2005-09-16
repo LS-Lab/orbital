@@ -90,7 +90,7 @@ abstract class AbstractTensor/*<R extends Arithmetic>*/ extends AbstractProductA
         return ((Tensor)productObject).dimensions();
     }
 
-    protected ListIterator/*_<R>_*/ iterator(Arithmetic/*<T>*/ productObject) {
+    protected ListIterator/*<R>*/ iterator(Arithmetic/*<T>*/ productObject) {
         return ((Tensor)productObject).iterator();
     }
     

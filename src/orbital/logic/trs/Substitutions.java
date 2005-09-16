@@ -100,7 +100,7 @@ public class Substitutions {
      * </p>
      */
     public static final Substitution id = new Substitution() {
-            public Collection/*_<Matcher>_*/ getReplacements() {
+            public Collection/*<Matcher>*/ getReplacements() {
                 return Collections.EMPTY_SET;
             }
             public Object apply(Object a) {
@@ -121,7 +121,7 @@ public class Substitutions {
      * @see #getInstance(Collection,boolean)
      * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      */
-    public static final Substitution getInstance(Collection/*_<Matcher>_*/ replacements) {
+    public static final Substitution getInstance(Collection/*<Matcher>*/ replacements) {
         return getInstance(replacements, true);
     }
     /**
@@ -142,7 +142,7 @@ public class Substitutions {
      * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      * @todo add parameter "boolean alphaConversion" which says whether or not to rename bound variables automatically, in case they would otherwise lead to a clash/collision.
      */
-    public static final Substitution getInstance(Collection/*_<Matcher>_*/ replacements, boolean typeSafe) {
+    public static final Substitution getInstance(Collection/*<Matcher>*/ replacements, boolean typeSafe) {
         if (typeSafe)
             for (Iterator i = replacements.iterator(); i.hasNext(); ) {
                 Matcher m = (Matcher) i.next();
@@ -164,8 +164,8 @@ public class Substitutions {
         return new SubstitutionImpl(replacements);
     }
     // assert precondition of Substitutions.newInstance()
-    private static final boolean validateDistinctPatterns(Collection/*_<Matcher>_*/ replacements) {
-        final List/*_<Matcher>_*/ r = (replacements instanceof List)
+    private static final boolean validateDistinctPatterns(Collection/*<Matcher>*/ replacements) {
+        final List/*<Matcher>*/ r = (replacements instanceof List)
             ? (List) replacements
             : new LinkedList(replacements);
         // compare each with all subsequent ones (round-robin)
@@ -257,11 +257,11 @@ public class Substitutions {
     public static final Substitution compose(Substitution sigma, Substitution tau) {
         assert sigma != null : "we should never attempt to compose " + sigma + " with " + tau;
         assert tau != null : "we should never attempt to compose " + sigma + " with " + tau;
-        Collection/*_<Matcher>_*/ r = new ArrayList/*_<Matcher>_*/(tau.getReplacements().size() + sigma.getReplacements().size());
+        Collection/*<Matcher>*/ r = new ArrayList/*<Matcher>*/(tau.getReplacements().size() + sigma.getReplacements().size());
         // the list of patterns that tau searches for (and could thus must be ignored in sigma)
-        Set/*_<Object>_*/ tauPatterns = new HashSet/*_<Object>_*/(tau.getReplacements().size() << 1);
+        Set/*<Object>*/ tauPatterns = new HashSet/*<Object>*/(tau.getReplacements().size() << 1);
         // apply sigma to substitutes of tau
-        for (Iterator/*_<Matcher>_*/ i = tau.getReplacements().iterator(); i.hasNext(); ) {
+        for (Iterator/*<Matcher>*/ i = tau.getReplacements().iterator(); i.hasNext(); ) {
             Object o = i.next();
             if (o.getClass() != SubstitutionImpl.MatcherImpl.class)
                 throw new UnsupportedOperationException("currently, only exact matchers are supported");
@@ -271,7 +271,7 @@ public class Substitutions {
             tauPatterns.add(s.pattern());
         }
         // union with those replacements in sigma that do not have a pattern that tau already replaced
-        for (Iterator/*_<Matcher>_*/ i = sigma.getReplacements().iterator(); i.hasNext(); ) {
+        for (Iterator/*<Matcher>*/ i = sigma.getReplacements().iterator(); i.hasNext(); ) {
             Matcher s = (Matcher/*__*/) i.next();
             if (tauPatterns.contains(s.pattern()))
                 continue;
@@ -284,7 +284,7 @@ public class Substitutions {
     }
     private static final class ResultCheckingSubstition extends SubstitutionImpl {
         private final Function composed;
-        private ResultCheckingSubstition(Substitution sigma, Substitution tau, Collection/*_<Matcher>_*/ r) {
+        private ResultCheckingSubstition(Substitution sigma, Substitution tau, Collection/*<Matcher>*/ r) {
             super(r);
             this.composed = orbital.logic.functor.Functionals.compose(sigma, tau);
         }

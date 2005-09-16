@@ -506,16 +506,16 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
      * Maps two lists of arguments with a binary function.
      * @see orbital.logic.functor.Functionals#listable(BinaryFunction)
      */
-    public static /*<A1, A2, B>*/ Tensor/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, Tensor/*_<A1>_*/ x, Tensor/*_<A2>_*/ y) {
+    public static /*<A1, A2, B>*/ Tensor/*<B>*/ map(BinaryFunction/*<A1, A2, B>*/ f, Tensor/*<A1>*/ x, Tensor/*<A2>*/ y) {
         Utility.pre(Utility.equalsAll(x.dimensions(), y.dimensions()), "compatible dimensions");
         Tensor r = Values.getDefaultInstance().newInstance(x.dimensions());
         mapInto(f, x.iterator(), y.iterator(), r.iterator());
         return r;
     }
-    public static /*<A1, A2, B>*/ Vector/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, Vector/*_<A1>_*/ x, Vector/*_<A2>_*/ y) {
+    public static /*<A1, A2, B>*/ Vector/*<B>*/ map(BinaryFunction/*<A1, A2, B>*/ f, Vector/*<A1>*/ x, Vector/*<A2>*/ y) {
         return (Vector) map(f, (Tensor)x, (Tensor)y);
     }
-    public static /*<A1, A2, B>*/ Matrix/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, Matrix/*_<A1>_*/ x, Matrix/*_<A2>_*/ y) {
+    public static /*<A1, A2, B>*/ Matrix/*<B>*/ map(BinaryFunction/*<A1, A2, B>*/ f, Matrix/*<A1>*/ x, Matrix/*<A2>*/ y) {
         return (Matrix) map(f, (Tensor)x, (Tensor)y);
     }
 

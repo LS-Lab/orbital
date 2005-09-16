@@ -33,7 +33,7 @@ class PropositionalInference implements Inference {
     }
     public boolean infer(Formula[] B, Formula D) {
         // convert B to clausalForm
-        Set/*_<Set<Formula>>_*/ S = new LinkedHashSet();
+        Set/*<Set<Formula>>*/ S = new LinkedHashSet();
         for (Iterator i = Arrays.asList(B).iterator(); i.hasNext(); ) {
             Formula Bi = (Formula) i.next();
             Utilities.propositionalOnly(Bi.getSignature());
@@ -77,7 +77,7 @@ class PropositionalInference implements Inference {
      * @return <code>false</code> if S is satisfiable,
      *  <code>true</code> if S is unsatisfiable (due to refutation).
      */
-    private boolean refute(Set/*_<Set<Formula>>_*/ S) {
+    private boolean refute(Set/*<Set<Formula>>*/ S) {
         logger.log(Level.FINE, "S = {0}", S);
         if (S.isEmpty()) {
             logger.log(Level.FINE, "satisfiable S = {0}", S);
@@ -85,7 +85,7 @@ class PropositionalInference implements Inference {
         }
         // search for any unit clause
         for (Iterator i = S.iterator(); i.hasNext(); ) {
-            Set/*_<Formula>_*/ C = (Set)i.next();
+            Set/*<Formula>*/ C = (Set)i.next();
             assert C.size() > 0 : "contradictions will have been detected earlier";
             if (C.size() != 1)
                 continue;
@@ -110,16 +110,16 @@ class PropositionalInference implements Inference {
     /**
      * @param S will not be changed
      */
-    private Set/*_<Set<Formula>>_*/ reduce(final Formula C, Set/*_<Set<Formula>>_*/ S) {
+    private Set/*<Set<Formula>>*/ reduce(final Formula C, Set/*<Set<Formula>>*/ S) {
         logger.log(Level.FINER, "reduce({0}, {1})", new Object[] {C, S});
-        Set/*_<Set<Formula>>_*/ S2 = new LinkedHashSet(S.size());
+        Set/*<Set<Formula>>*/ S2 = new LinkedHashSet(S.size());
         final Formula notC = ClassicalLogic.Utilities.negation(C);
         for (Iterator i = S.iterator(); i.hasNext(); ) {
-            Set/*_<Formula>_*/ clause = (Set)i.next();
+            Set/*<Formula>*/ clause = (Set)i.next();
             if (clause.contains(C)) {
                 logger.log(Level.FINEST, "remove clause {0}", clause);
             } else if (clause.contains(notC)) {
-                Set/*_<Formula>_*/ clause2 = new LinkedHashSet(clause);
+                Set/*<Formula>*/ clause2 = new LinkedHashSet(clause);
                 clause2.remove(notC);
                 S2.add(clause2);
                 logger.log(Level.FINEST, "remove literal {0} retaining clause {1}", new Object[] {notC, clause2});

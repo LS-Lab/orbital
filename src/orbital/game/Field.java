@@ -294,7 +294,7 @@ public class Field implements Serializable, Cloneable {
      * the returned object to fetch the elements sequentially.
      * @todo make a true iterator whose set method writes through to this field.
      */
-    public final Iterator/*_<Figure>_*/ iterator() {
+    public final Iterator/*<Figure>*/ iterator() {
         Dimension dim = getDimension();
         List      v = new ArrayList(dim.height * dim.width);
         for (int y = 0; y < dim.height; y++) {
@@ -310,7 +310,7 @@ public class Field implements Serializable, Cloneable {
      * @todo make a true explicit iterator (perhaps even whose set method writes through to this field).
      * @todo cache? Can try this out in a subclass.
      */
-    public final Iterator/*_<Figure>_*/ iterateNonEmpty() {
+    public final Iterator/*<Figure>*/ iterateNonEmpty() {
         Dimension dim = getDimension();
         List      v = new LinkedList();
         for (int y = 0; y < dim.height; y++) {

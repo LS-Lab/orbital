@@ -37,12 +37,12 @@ public class IndexedClauseImpl extends ClauseImpl {
      * Copy constructor.
      * @internal transitively public constructors required for Functionals.map to produce Clauses.
      */
-    public IndexedClauseImpl(Set/*_<Formula>_*/ literals) {
+    public IndexedClauseImpl(Set/*<Formula>*/ literals) {
         super(literals);
     }
     public IndexedClauseImpl() {}
 
-    public Iterator/*_<Formula>_*/ getProbableUnifiables(Formula L) {
+    public Iterator/*<Formula>*/ getProbableUnifiables(Formula L) {
         if (index == null) {
             // lazy initialization
             index = new ClausalIndex();

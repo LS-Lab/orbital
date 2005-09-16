@@ -184,7 +184,7 @@ public class FigureImpl extends Figure {
      * Use the Iterator methods on the returned object to fetch
      * the elements sequentially.
      */
-    public final Iterator/*_<Move>_*/ iterator() {
+    public final Iterator/*<Move>*/ iterator() {
         return Arrays.asList(getLegalMoves()).iterator();
     } 
 
@@ -195,7 +195,7 @@ public class FigureImpl extends Figure {
      * Checks validity of a path to move per {@link #movePath(Move)}.
      * @deprecated Since Orbital1.1 use {@link Figure#possibleMoves()} instead.
      */
-    public final Iterator/*_<Move>_*/ iterateValid() {
+    public final Iterator/*<Move>*/ iterateValid() {
         final Move legalMoves[] = getLegalMoves();
         final List v = new ArrayList(legalMoves.length);
         for (int i = 0; i < legalMoves.length; i++) {
@@ -216,7 +216,7 @@ public class FigureImpl extends Figure {
      * @postconditions &forall;i&isin;RES moveFigure(i.A).equals(i.B)
      * @deprecated Since Orbital1.1 use {@link Figure#possibleMoves()} instead.
      */
-    public final Iterator/*_<Move,Position>_*/ iterateValidPairs() {
+    public final Iterator/*<Move,Position>*/ iterateValidPairs() {
         final Move legalMoves[] = getLegalMoves();
         final List v = new ArrayList(legalMoves.length);
         for (int i = 0; i < legalMoves.length; i++) {
@@ -244,7 +244,7 @@ public class FigureImpl extends Figure {
      * But Figure.move forgot about the destination.
      * @todo explicit constructive iterator?
      */
-    public /*final*/ Iterator/*_<Option>_*/ possibleMoves() {
+    public /*final*/ Iterator/*<Option>*/ possibleMoves() {
         if (isEmpty())
             throw new IllegalStateException("cannot move empty figure " + this);
         final Move legalMoves[] = getLegalMoves();

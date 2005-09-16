@@ -158,7 +158,7 @@ public interface Substitution extends Function/*<Object, Object>*/ {
      * </p>
      * @return the substitution list of matchers used for replacement.
      */
-    Collection/*_<Matcher>_*/ getReplacements();
+    Collection/*<Matcher>*/ getReplacements();
         
     /**
      * Apply this substitution &sigma; to term.

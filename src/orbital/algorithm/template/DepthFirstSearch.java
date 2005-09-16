@@ -79,7 +79,7 @@ public class DepthFirstSearch extends GeneralSearch {
          * effectively, nodes is a stack of iterators.
          * @serial
          */
-        private QueuedSequenceIterator/*_<S>_*/ nodes;
+        private QueuedSequenceIterator/*<S>*/ nodes;
         public OptionIterator(GeneralSearchProblem problem) {
             super(problem);
             nodes = new QueuedSequenceIterator(new Iterator[] {Collections.singletonList(problem.getInitialState()).iterator()});

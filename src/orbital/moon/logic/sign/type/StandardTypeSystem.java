@@ -1007,7 +1007,7 @@ public class StandardTypeSystem implements TypeSystem {
     public Type inf(Type components[]) {
         return infImpl(Arrays.asList(components));
     }
-    private Type infImpl(List/*_<Type>_*/ components) {
+    private Type infImpl(List/*<Type>*/ components) {
         //@internal although we still work on components, t keeps the simplified version of components.
         List/*<Type>*/ t = new LinkedList(components);
         //@internal this canonical simplification also assures strict
@@ -1138,7 +1138,7 @@ public class StandardTypeSystem implements TypeSystem {
     public Type sup(Type components[]) {
         return supImpl(Arrays.asList(components));
     }
-    private Type supImpl(List/*_<Type>_*/ components) {
+    private Type supImpl(List/*<Type>*/ components) {
         //@internal although we still work on components, t keeps the simplified version of components.
         List/*<Type>*/ t = new LinkedList(components);
         //@internal this canonical simplification also assures strict

@@ -57,7 +57,7 @@ public interface Clause extends Set/*<Formula>*/ {
      * Implementation already incorporates some cuts.
      * @return an iterator over the set of all resolvent clauses.
      */
-    Iterator/*_<Clause>_*/ resolveWith(Clause G);
+    Iterator/*<Clause>*/ resolveWith(Clause G);
 
     /**
      * Get all resolvents of variants of F and G, if any. (Resolution rule)
@@ -66,7 +66,7 @@ public interface Clause extends Set/*<Formula>*/ {
      * @see #resolveWith(Clause)
      * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience Method</a>
      */
-    Iterator/*_<Clause>_*/ resolveWithVariant(Clause G);
+    Iterator/*<Clause>*/ resolveWithVariant(Clause G);
 
     /**
      * Get all resolvents of factors of F and G, if any. (Resolution
@@ -81,7 +81,7 @@ public interface Clause extends Set/*<Formula>*/ {
      * @see #factorize()
      * @see #resolveWith(Clause)
      */
-    Iterator/*_<Clause>_*/ resolveWithFactors(Clause G);
+    Iterator/*<Clause>*/ resolveWithFactors(Clause G);
 
     /**
      * Get all factors of F. (factorization rule).
@@ -96,7 +96,7 @@ public interface Clause extends Set/*<Formula>*/ {
      * </p>
      * @return all (proper) factor clauses of this, or <code>&empty;</code> if no factorization was possible.
      */
-    Iterator/*_<Clause>_*/ factorize();
+    Iterator/*<Clause>*/ factorize();
 
     /**
      * Returns true when this clause subsumes D.
@@ -147,7 +147,7 @@ public interface Clause extends Set/*<Formula>*/ {
      * Select some literals of this clause, which are usable for resolution.
      * @postconditions RES &sube; this
      */
-    Iterator/*_<Formula>_*/ getResolvableLiterals();
+    Iterator/*<Formula>*/ getResolvableLiterals();
 
     /**
      * Get (an iterator over) all literals contained in this clause
@@ -160,7 +160,7 @@ public interface Clause extends Set/*<Formula>*/ {
      * @postconditions RES&sube;this &and; RES&supe;getUnifiables(L) 
      * @see #getUnifiables(Formula)
      */
-    Iterator/*_<Formula>_*/ getProbableUnifiables(Formula L);
+    Iterator/*<Formula>*/ getProbableUnifiables(Formula L);
 
     /**
      * Get all literals contained in this clause that unify with
@@ -170,7 +170,7 @@ public interface Clause extends Set/*<Formula>*/ {
      * @postconditions RES = {K&isin;this &exist;mgU{L,K}}
      * @see #getProbableUnifiables(Formula)
      */
-    Set/*_<Formula>_*/ getUnifiables(Formula L);
+    Set/*<Formula>*/ getUnifiables(Formula L);
 
     
     /**

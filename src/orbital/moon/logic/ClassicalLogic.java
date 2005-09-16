@@ -1502,7 +1502,7 @@ public class ClassicalLogic extends ModernLogic {
      * @return all &Sigma;-Interpretations in this Logic (i.e. that can be formed with Signature &Sigma;).
      * @xxx somehow in a formula like (\x. x>2)(7) the numbers 2, and 7 are also subject to interpretation by true or false.
      */
-    private static Iterator/*_<Interpretation>_*/ createAllInterpretations(Signature propositionalSigma, final Signature sigma) {
+    private static Iterator/*<Interpretation>*/ createAllInterpretations(Signature propositionalSigma, final Signature sigma) {
         assert sigma != null && propositionalSigma != null : "signatures are !=null: " + propositionalSigma + ", " + sigma;
         assert sigma.containsAll(propositionalSigma) : propositionalSigma + " subset of " + sigma;
         // determine the non-fixed propositional part of propositionalSigma
@@ -1735,7 +1735,7 @@ public class ClassicalLogic extends ModernLogic {
          * </p>
          * @deprecated Use {@link orbital.moon.logic.resolution.Clause.CONTRADICTION} instead.
          */
-        public static final Set/*_<Formula>_*/ CONTRADICTION = Collections.EMPTY_SET;
+        public static final Set/*<Formula>*/ CONTRADICTION = Collections.EMPTY_SET;
 
         //@internal no more? it seems to be of importance to the static initializer order, that these occur not much earlier than here, because they trigger the static initialization of ModernFormula
         private static final Formula FORMULA_FALSE = (Formula) logic.createAtomic(new SymbolBase("false", Types.TRUTH));
@@ -1755,7 +1755,7 @@ public class ClassicalLogic extends ModernLogic {
          *  {@link orbital.logic.moon.resolution.ClausalFactory#asClausalSet(Formula)}
          *  instead.
          */
-        public static final Set/*_<Set<Formula>>_*/ clausalForm(Formula f, boolean simplifying) {
+        public static final Set/*<Set<Formula>>*/ clausalForm(Formula f, boolean simplifying) {
             try {
                 return (Set)clausalFormClauses.apply(Utilities.conjunctiveForm(f, simplifying));
             }
@@ -1767,7 +1767,7 @@ public class ClassicalLogic extends ModernLogic {
          * Convert a formula (that is in CNF) to a set of clauses.
          * @preconditions term=conjunctiveForm(term)
          */
-        private static final Function/*_<Formula,Set<Set<Formula>>>_*/ clausalFormClauses = new Function() {
+        private static final Function/*<Formula,Set<Set<Formula>>>*/ clausalFormClauses = new Function() {
                 public Object apply(Object term) {
                     assert term instanceof Formula : term + " instanceof Formula";
                     //@todo assert assume right-associative nesting of &
@@ -1777,7 +1777,7 @@ public class ClassicalLogic extends ModernLogic {
                         //@todo could also query ClassicalLogic.LogicFunctions.and etc. from logic.coreInterpretation once
                         if (op == ClassicalLogic.LogicFunctions.and
                             || op == ClassicalLogic.LogicFunctions.andFold) {
-                            Iterator/*_<Formula>_*/ components = Utility.asIterator(f.getComponent());
+                            Iterator/*<Formula>*/ components = Utility.asIterator(f.getComponent());
                             return Setops.unionFold.apply(Functionals.map(clausalFormClauses, components));
                         } else if (op == ClassicalLogic.LogicFunctions.or
                                    || op == ClassicalLogic.LogicFunctions.orFold) {
@@ -1806,7 +1806,7 @@ public class ClassicalLogic extends ModernLogic {
          * Convert a disjunction of literals to a single clause.
          * @return the clause, note that the clause can be further collapsed if it contains true.
          */
-        private static final Function/*_<Formula,Set<Formula>>_*/ clausalFormClause = new Function() {
+        private static final Function/*<Formula,Set<Formula>>*/ clausalFormClause = new Function() {
                 public Object apply(Object term) {
                     assert term instanceof Formula : term + " instanceof Formula";
                     if (term instanceof Composite) {
@@ -1814,7 +1814,7 @@ public class ClassicalLogic extends ModernLogic {
                         Object    op = f.getCompositor();
                         if (op == ClassicalLogic.LogicFunctions.or
                             || op == ClassicalLogic.LogicFunctions.orFold) {
-                            Iterator/*_<Formula>_*/ components = Utility.asIterator(f.getComponent());
+                            Iterator/*<Formula>*/ components = Utility.asIterator(f.getComponent());
                             return Setops.unionFold.apply(Functionals.map(clausalFormClause, components));
                         } else if (op == ClassicalLogic.LogicFunctions.not) {
                             Object c = f.getComponent();
@@ -1849,7 +1849,7 @@ public class ClassicalLogic extends ModernLogic {
          * @internal note that for clauses FV(C)=V(C) &and; BV(C)=&empty;
          * @deprecated Since Orbital 1.2 use {@link orbital.moon.logic.resolution.Clause#getFreeVariables()} instead.
          */
-        static final Signature clausalFreeVariables(Set/*_<Formula>_*/ clause) {
+        static final Signature clausalFreeVariables(Set/*<Formula>*/ clause) {
             // return banana (|&empty;,&cup;|) (map ((&lambda;x)x.freeVariables()), clause)
             Set freeVariables = new LinkedHashSet();
             for (Iterator i = clause.iterator(); i.hasNext(); )

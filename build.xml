@@ -209,15 +209,8 @@
         </replaceregexp>
         <!-- incarnate generics -->
         <replace dir="${sources.generics}">
-            <replacefilter token="/*_&lt;" value="&lt;"/>
-            <replacefilter token="&gt;_*/" value="&gt;"/>
-
             <replacefilter token="/*&lt;" value="&lt;"/>
             <replacefilter token="&gt;*/" value="&gt;"/>
-
-            <!-- replace Object/*_>A<_*/ by A -->
-            <replacefilter token="Object/*_&gt;" value=""/>
-            <replacefilter token="&lt;_*/" value=""/>
         </replace>
         <replaceregexp byline="false">
             <!-- replace Object/*>A<*/ by A -->

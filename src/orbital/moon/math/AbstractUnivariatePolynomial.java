@@ -497,7 +497,7 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/ extends Ab
     protected final Object productIndexSet(Arithmetic/*>T<*/ productObject) {
         return dimensions();
     }
-    protected ListIterator/*_<R>_*/ iterator(Arithmetic/*>T<*/ productObject) {
+    protected ListIterator/*<R>*/ iterator(Arithmetic/*>T<*/ productObject) {
         return ((Polynomial)productObject).iterator();
     }
     protected final Arithmetic/*>T<*/ newInstance(Object productIndexSet) {

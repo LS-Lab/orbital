@@ -52,7 +52,7 @@ public class DefaultClausalFactory implements ClausalFactory {
             : (Clause) new IndexedClauseImpl();
     }
 
-    public Clause createClause(Set/*_<Formula>_*/ literals) {
+    public Clause createClause(Set/*<Formula>*/ literals) {
         return isVerbose()
             ? (Clause)new TraceableClauseImpl(literals)
             //      : new ClauseImpl(literals);
@@ -66,7 +66,7 @@ public class DefaultClausalFactory implements ClausalFactory {
         return new ClausalSetImpl();
     }
 
-    public ClausalSet createClausalSet(Set/*_<Clause>_*/ clauses) {
+    public ClausalSet createClausalSet(Set/*<Clause>*/ clauses) {
         return new ClausalSetImpl(clauses);
     }
 
