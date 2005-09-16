@@ -69,6 +69,9 @@ import orbital.util.Utility;
  *
  * @version $Id$
  * @author  Andr&eacute; Platzer
+ * @param <A> the type of transition actions.
+ * @param <S> the type of transition states.
+ * @param <M> the class representing transitions.
  * @see MarkovDecisionProcess
  * @see <a href="http://www.ldc.usb.ve/~hector">Hector Geffner. Modelling and Problem Solving</a>
  * @see "D. P. Bertsekas. Dynamic Programming: Deterministic and Stochastic Models. Prentice-Hall, Englewood Cliffs, NJ, 1989."

@@ -310,11 +310,11 @@ public class ValuesImpl extends AbstractValues {
 
     // polynomial constructors and utilities
 
-    public /*<R extends Arithmetic>*/ Polynomial/*<R>*/ polynomial(Object coefficients) {
+    public /*_<R extends Arithmetic>_*/ Polynomial/*_<R>_*/ polynomial(Object coefficients) {
         return asPolynomial(tensor(coefficients));
     }
 
-    public /*<R extends Arithmetic>*/ Polynomial/*<R>*/ asPolynomial(Tensor/*<R>*/ coefficients) {
+    public /*<R extends Arithmetic>*/ Polynomial/*<R,Vector<Integer>>*/ asPolynomial(Tensor/*<R>*/ coefficients) {
         // polynomials in 1 variable are converted to UnivariatePolynomials
         switch (coefficients.rank()) {
         case 1:
@@ -325,18 +325,18 @@ public class ValuesImpl extends AbstractValues {
         }
     }
 
-    public /*<R extends Arithmetic>*/ Tensor/*<R>*/ asTensor(Polynomial/*<R>*/ p) {
+    public /*<R extends Arithmetic>*/ Tensor/*<R>*/ asTensor(Polynomial/*<R,Vector<Integer>>*/ p) {
         return ((AbstractMultivariatePolynomial)p).tensorViewOfCoefficients();
     }
 
-    public /*<R extends Arithmetic>*/ Polynomial/*<R>*/ constant(Polynomial/*<R>*/ p) {
+    public /*<R extends Arithmetic, S extends Arithmetic>*/ Polynomial/*<R,S>*/ constant(Polynomial/*<R,S>*/ p) {
         // Polynomials are currently unmodifiable anyhow.
         //@xxx except via iterator()
         return p;
     }
 
     // @internal horribly complicate implementation
-    public final Polynomial/*<R>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, int[] exponents) {
+    public final /*<R extends Arithmetic>*/ Polynomial/*<R,Vector<Integer>>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, int[] exponents) {
         int[] dim = new int[exponents.length];
         for (int k = 0; k < dim.length; k++)
             dim[k] = exponents[k] + 1;
@@ -373,14 +373,14 @@ public class ValuesImpl extends AbstractValues {
     public /*<M extends Euclidean>*/ Quotient/*<M>*/ quotient(Euclidean/*>M<*/ a, Euclidean/*>M<*/ m) {
         return new AbstractQuotient/*<M>*/(a, m);
     }
-    public /*<R extends Arithmetic>*/ Quotient/*<Polynomial<R,S>>*/ quotient(Polynomial/*<R,S>*/ a, java.util.Set/*<Polynomial<R,S>>*/ m, java.util.Comparator/*<S>*/ monomialOrder) {
+    public /*<R extends Arithmetic, S extends Arithmetic>*/ Quotient/*<Polynomial<R,S>>*/ quotient(Polynomial/*<R,S>*/ a, java.util.Set/*<Polynomial<R,S>>*/ m, java.util.Comparator/*<S>*/ monomialOrder) {
         assert m.equals(AlgebraicAlgorithms.groebnerBasis(m,monomialOrder)) : m + " is a Groebner basis with respect to " + monomialOrder;
         return quotient(a, AlgebraicAlgorithms.reduce(m, monomialOrder));
     }
 
     // fraction constructors
 
-    public /*<M extends Arithmetic, S extends Arithmetic>*/ Fraction/*<M,S>*/ fraction(Arithmetic/*>M<*/ a, Arithmetic/*<S>*/ s) {
+    public /*<M extends Arithmetic, S extends M>*/ Fraction/*<M,S>*/ fraction(Arithmetic/*>M<*/ a, Arithmetic/*>S<*/ s) {
         return new AbstractFraction/*<M,S>*/(a, s);
     }
 

@@ -66,5 +66,5 @@ public interface BinaryFunction/*<A1 extends Arithmetic, A2 extends Arithmetic, 
      * @see Functionals#compose(BinaryFunction, BinaryFunction, BinaryFunction)
      */
     static interface Composite/*<A1 extends Arithmetic, A2 extends Arithmetic, B extends Arithmetic>*/
-	extends orbital.logic.functor.BinaryFunction/*<A1,A2,B>*/.Composite, BinaryFunction/*<A1,A2,B>*/, MathFunctor.Composite {}
+	extends orbital.logic.functor.BinaryFunction.Composite/*<A1,A2,B>*/, BinaryFunction/*<A1,A2,B>*/, MathFunctor.Composite {}
 }

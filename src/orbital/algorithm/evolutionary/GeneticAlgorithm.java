@@ -123,7 +123,7 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
      * It must be set before use and is concrete problem-specific.
      * @serial
      */
-    private Function/*<Object, Number>*/ fitnessEvaluation = null;
+    private Function/*<Genome, Number>*/ fitnessEvaluation = null;
 
     /**
      * Construct a new GeneticAlgorithm.
@@ -302,7 +302,7 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
 
 
     // problem solving methods
-    public Object solve(AlgorithmicProblem problem) {
+    public Object/*>Population<*/ solve(AlgorithmicProblem/*>GeneticAlgorithmProblem<*/ problem) {
         return solve((GeneticAlgorithmProblem) problem);
     }
     /**

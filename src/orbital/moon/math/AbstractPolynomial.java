@@ -26,7 +26,9 @@ import orbital.util.Pair;
  *  One part that is general for every S,
  *  and one part that specially assumes S=<b>N</b><sup>n</sup>.
  */
-abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*/ extends AbstractProductArithmetic implements Polynomial/*<R,S>*/ {
+abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
+    extends AbstractProductArithmetic/*<R,S,Polynomial<R,S>>*/
+    implements Polynomial/*<R,S>*/ {
     private static final long serialVersionUID = 4336092442446250306L;
         
     public AbstractPolynomial() {
@@ -70,11 +72,11 @@ abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*
      */
     protected abstract void set(Arithmetic/*>S<*/ i, Arithmetic/*>R<*/ vi);
 
-    protected Object productIndexSet(Arithmetic/*>T<*/ productObject) {
+    protected Object/*>S<*/ productIndexSet(Arithmetic/*>Polynomial<R,S><*/ productObject) {
         return indexSet();
     }
 
-    protected ListIterator/*<R>*/ iterator(Arithmetic/*>T<*/ productObject) {
+    protected ListIterator/*<R>*/ iterator(Arithmetic/*>Polynomial<R,S><*/ productObject) {
         return ((Polynomial)productObject).iterator();
     }
 
@@ -126,14 +128,14 @@ abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*
     public Arithmetic add(Arithmetic b) {
         return add((Polynomial)b);
     }
-    public Polynomial/*<R>*/ add(Polynomial/*<R>*/ b) {
+    public Polynomial/*<R,S>*/ add(Polynomial/*<R,S>*/ b) {
         return (Polynomial) operatorImpl(Operations.plus, b);
     }
         
     public Arithmetic subtract(Arithmetic b) throws ArithmeticException {
         return subtract((Polynomial)b);
     } 
-    public Polynomial/*<R>*/ subtract(Polynomial/*<R>*/ b) {
+    public Polynomial/*<R,S>*/ subtract(Polynomial/*<R,S>*/ b) {
         return (Polynomial) operatorImpl(Operations.subtract, b);
     }
 
@@ -142,14 +144,14 @@ abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*
     }
 
     //@internal subclasses can optimize by far when using knowledge of the structure of S
-    public Polynomial/*<R>*/ multiply(Polynomial/*<R>*/ bb) {
+    public Polynomial/*<R,S>*/ multiply(Polynomial/*<R,S>*/ bb) {
         Polynomial b = (Polynomial)bb;
         if (degreeValue() < 0)
             return this;
         else if (b.degreeValue() < 0)
             return b;
         //@internal assuming the dimensions will grow as required
-        AbstractPolynomial/*<R>*/ ret = (AbstractPolynomial)newInstance(indexSet());
+        AbstractPolynomial/*<R,S>*/ ret = (AbstractPolynomial)newInstance(indexSet());
         setAllZero(ret);
         // ret = &sum;<sub>i&isin;indices(),j&isin;b.indices()</sub> a<sub>i</sub>b<sub>j</sub>X<sup>i * j</sup>
         // perform (very slow) multiplications "jeder mit jedem"

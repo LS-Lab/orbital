@@ -120,7 +120,7 @@ public interface AlgorithmicTemplate/*<Problem extends AlgorithmicProblem, Solut
             return problem;
         }
         
-        public AlgorithmicTemplate getAlgorithm() {
+        public AlgorithmicTemplate/*<Problem,Solution>*/ getAlgorithm() {
             try {
                 return (AlgorithmicTemplate) algorithm.newInstance();
             } catch (InstantiationException ex) {
@@ -159,7 +159,7 @@ public interface AlgorithmicTemplate/*<Problem extends AlgorithmicProblem, Solut
          * @version $Id$
          */
         private static class FlexibleConfiguration/*<Problem extends AlgorithmicProblem, Solution extends Object>*/
-	    extends AlgorithmicTemplate.Configuration {
+	    extends AlgorithmicTemplate.Configuration/*<Problem,Solution>*/ {
             private static final long serialVersionUID = 8767047546408218154L;
 
             /**
@@ -197,13 +197,13 @@ public interface AlgorithmicTemplate/*<Problem extends AlgorithmicProblem, Solut
                     this.beanProperties.put(beanProperties[i].getName(), beanProperties[i]);
             }
         
-            public AlgorithmicTemplate getAlgorithm() {
-                AlgorithmicTemplate algo = super.getAlgorithm();
+            public AlgorithmicTemplate/*<Problem,Solution>*/ getAlgorithm() {
+                AlgorithmicTemplate/*<Problem,Solution>*/ algo = super.getAlgorithm();
                 setAllProperties(algo);
                 return algo;
             }
 
-            private void setAllProperties(AlgorithmicTemplate algorithm) {
+            private void setAllProperties(AlgorithmicTemplate/*<Problem,Solution>*/ algorithm) {
                 for (Iterator i = propertyValues.entrySet().iterator(); i.hasNext(); ) {
                     Map.Entry e = (Map.Entry) i.next();
                     PropertyDescriptor property = (PropertyDescriptor) beanProperties.get(e.getKey());

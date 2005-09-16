@@ -38,7 +38,8 @@ import orbital.algorithm.Combinatorical;
  * coefficients can then be stored in a HashSet. Perhaps, also sparse
  * tensors could be stored like that.
  */
-abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/ extends AbstractPolynomial/*<R,Vector<Integer>>*/ {
+abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
+    extends AbstractPolynomial/*<R,Vector<Integer>>*/ {
     private static final long serialVersionUID = -2237060189065872837L;
     
     /**
@@ -62,9 +63,9 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/ extends 
         return super.hashCode();
     }
 
-    protected Object productIndexSet(Arithmetic/*>T<*/ productObject) {
+    protected Object/*>Vector<Integer><*/ productIndexSet(Arithmetic/*>Polynomial<R,Vector<Integer>><*/ productObject) {
         //@xxx note that this ruins compatibility with instances of superclass, only
-        return dimensions();
+        return Values.getDefault().valueOf(dimensions());
     }
 
     //@xxx we do not ultimately need these following methods, but only have them for performance for S=<b>N</b><sup>n</sup>
@@ -101,9 +102,9 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/ extends 
      * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      * @see #clone()
      */
-    protected abstract Polynomial/*<R>*/ newInstance(int[] dimensions);
+    protected abstract Polynomial/*<R,Vector<Integer>>*/ newInstance(int[] dimensions);
         
-    protected final Arithmetic/*>T<*/ newInstance(Object productIndexSet) {
+    protected final Arithmetic/*>Polynomial<R,Vector<Integer>><*/ newInstance(Object/*>Vector<Integer><*/ productIndexSet) {
         return newInstance((int[])productIndexSet);
     }
 
@@ -311,7 +312,7 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/ extends 
     }
     
     //@todo optimizable by far, but already optimized super.multiply
-    public Polynomial/*<R>*/ multiply(Polynomial/*<R>*/ bb) {
+    public Polynomial/*<R,Vector<Integer>>*/ multiply(Polynomial/*<R,Vector<Integer>>*/ bb) {
         // only cast since Polynomial does not know an equivalent of dimensions()
         AbstractMultivariatePolynomial b = (AbstractMultivariatePolynomial)bb;
         if (degreeValue() < 0)

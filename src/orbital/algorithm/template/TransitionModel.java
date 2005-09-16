@@ -89,6 +89,9 @@ import orbital.math.Scalar;
  *
  * @version $Id$
  * @author  Andr&eacute; Platzer
+ * @param <A> the type of transition actions.
+ * @param <S> the type of transition states.
+ * @param <M> the class representing transitions.
  * @see TransitionPath
  * @see orbital.logic.functor.Function
  * @see orbital.logic.functor.BinaryPredicate

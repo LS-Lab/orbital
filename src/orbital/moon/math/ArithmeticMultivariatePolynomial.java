@@ -26,13 +26,14 @@ import orbital.algorithm.Combinatorical;
  * @version $Id$
  * @author  Andr&eacute; Platzer
  */
-class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/ extends AbstractMultivariatePolynomial {
+class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/
+    extends AbstractMultivariatePolynomial/*<R>*/ {
     private static final long serialVersionUID = -6317707373482862125L;
     /**
      * The coefficients in R.
      * @serial
      */
-    private Tensor coefficients;
+    private Tensor/*<R>*/ coefficients;
     /**
      * Caches the degree value.
      * @see #degree()
@@ -43,7 +44,7 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/ extends Abstrac
         this.CONSTANT_TERM = new int[dimensions.length];
         Arrays.fill(CONSTANT_TERM, 0);
     }
-    public ArithmeticMultivariatePolynomial(Tensor coefficients) {
+    public ArithmeticMultivariatePolynomial(Tensor/*<R>*/ coefficients) {
         set(coefficients);
     }
   
@@ -56,7 +57,7 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/ extends Abstrac
         set(coefficients);
     }
 
-    protected Polynomial/*<R>*/ newInstance(int[] dimensions) {
+    protected Polynomial/*<R,Vector<Integer>>*/ newInstance(int[] dimensions) {
         return new ArithmeticMultivariatePolynomial(dimensions);
     }
 
@@ -68,7 +69,7 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/ extends Abstrac
      * given its coefficients.
      * @internal optimizable by far, start with big indices, not with 0,...,0
      */
-    private int degreeImpl(Tensor coefficients) {
+    private int degreeImpl(Tensor/*<R>*/ coefficients) {
         int d = java.lang.Integer.MIN_VALUE;
         for (Combinatorical index = Combinatorical.getPermutations(coefficients.dimensions()); index.hasNext(); ) {
             final int[] i = index.next();
@@ -96,7 +97,7 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/ extends Abstrac
             throw new IllegalArgumentException("illegal coefficients array: " + coefficients);
         set(Values.getDefaultInstance().tensor(coefficients));
     }
-    private void set(Tensor coefficients) {
+    private void set(Tensor/*<R>*/ coefficients) {
         if (coefficients == null)
             throw new IllegalArgumentException("illegal coefficients array: " + coefficients);
         if (Setops.some(coefficients.iterator(), Functionals.bindSecond(Predicates.equal, null)))
@@ -140,7 +141,7 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/ extends Abstrac
         set(convertIndex(i), vi);
     }
 
-    Tensor tensorViewOfCoefficients() {
+    Tensor/*<R>*/ tensorViewOfCoefficients() {
         return coefficients;
     }
 }

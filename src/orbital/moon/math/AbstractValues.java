@@ -649,13 +649,13 @@ public abstract class AbstractValues extends Values {
     // polynomial constructors and utilities
 
     // @todo implementation could be generalized to non-AbstractMultivariatePolynomials.
-    public final Polynomial/*<R,S>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, Arithmetic/*>S<*/ exponent) {
+    public final /*<R extends Arithmetic, S extends Arithmetic>*/ Polynomial/*<R,S>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, Arithmetic/*>S<*/ exponent) {
         return MONOMIAL(coefficient, ArithmeticMultivariatePolynomial.convertIndex(exponent));
     }
-    public final /*<R extends Scalar,S>*/ Polynomial/*<R,S>*/ MONOMIAL(Arithmetic/*>S<*/ exponent) {
+    public final /*<R extends Scalar,S extends Arithmetic>*/ Polynomial/*<R,S>*/ MONOMIAL(Arithmetic/*>S<*/ exponent) {
         return MONOMIAL(ONE, exponent);
     }
-    public final /*<R extends Scalar,S>*/ Polynomial/*<R,S>*/ MONOMIAL(int[] exponents) {
+    public final /*<R extends Scalar,S extends Arithmetic>*/ Polynomial/*<R,S>*/ MONOMIAL(int[] exponents) {
         return MONOMIAL(ONE, exponents);
     }
 

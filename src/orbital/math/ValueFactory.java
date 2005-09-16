@@ -519,7 +519,7 @@ public interface ValueFactory {
      *  The number of variables is <code>n:=exponents.length</code>.
      * @internal horribly complicate implementation
      */
-    /*<R extends Arithmetic, S extends Arithmetic>*/ Polynomial/*<R,S>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, int[] exponents);
+    /*<R extends Arithmetic>*/ Polynomial/*<R,Vector<Integer>>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, int[] exponents);
     /**
      * The monomial 1&middot;X<sup>i</sup>.
      * Note that the coefficient is {@link #ONE 1}&isin;<b>Z</b>.
@@ -536,7 +536,7 @@ public interface ValueFactory {
      * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience Method</a>
      * @see #MONOMIAL(Arithmetic,int[])
      */
-    /*<R extends Scalar,S>*/ Polynomial/*<R,S>*/ MONOMIAL(int[] exponents);
+    /*<R extends Scalar>*/ Polynomial/*<R,Vector<Integer>>*/ MONOMIAL(int[] exponents);
 
     // univariate polynomial constructors and utilities
 
@@ -721,7 +721,7 @@ public interface ValueFactory {
      * </p>
      * @todo introduce the second case with explicit checking via a third argument predicate?
      */
-    /*<M extends Arithmetic, S extends Arithmetic>*/ Fraction/*<M,S>*/ fraction(Arithmetic/*>M<*/ a, Arithmetic/*>S<*/ s);
+    /*<M extends Arithmetic, S extends M>*/ Fraction/*<M,S>*/ fraction(Arithmetic/*>M<*/ a, Arithmetic/*>S<*/ s);
 
     // symbol constructors
 

@@ -50,7 +50,7 @@ public class Selectors {
          * weighted roulette wheel.  Likliehood of selection is proportionate to the fitness.
          * @preconditions p is sorted
          */
-        public Object apply(Object p) {
+        public Object/*>Genome<*/ apply(Object/*>Population<*/ p) {
             Population population = (Population) p;
             //@todo would not need calling every time, but how to achieve that we get notified when population changed?
             update(population);
@@ -62,7 +62,7 @@ public class Selectors {
          * @see "Goldberg, D. E. Genetic Algorithms in Search, Optimization and Machine Learning. 1989."
          * @preconditions p is sorted && partialSum updated
          */
-        private Object selectImpl(Population population) {
+        private Object/*>Genome<*/ selectImpl(Population population) {
             double cutoff = population.getGeneticAlgorithm().getRandom().nextDouble();
             int lower = 0, upper = population.size() - 1;
             while (lower <= upper){
@@ -109,7 +109,7 @@ public class Selectors {
     }
     private static class LikelyBetterSelector extends SelectionImpl {
         private static final long serialVersionUID = -5845373429801808253L;
-        public Object apply(Object p) {
+        public Object/*>Genome<*/ apply(Object/*>Population<*/ p) {
             Population population = (Population) p;
             Random         random = population.getGeneticAlgorithm().getRandom();
             double         selection;
@@ -135,7 +135,7 @@ public class Selectors {
          * @serial
          */
         private final RouletteWheelSelector roulette = new RouletteWheelSelector();
-        public Object apply(Object p) {
+        public Object/*>Genome<*/ apply(Object/*>Population<*/ p) {
             Population population = (Population) p;
             roulette.update(population);
             Genome a = (Genome) roulette.selectImpl(population);
@@ -159,7 +159,7 @@ public class Selectors {
          * @serial
          */
         private boolean                   whom = true;
-        public Object apply(Object p) {
+        public Object/*>Genome<*/ apply(Object/*>Population<*/ p) {
             Population population = (Population) p;
             int    count = 1;
             double most = population.get(0, whom).getFitness();
@@ -179,7 +179,7 @@ public class Selectors {
     }
     private static class UniformSelector extends SelectionImpl {
         private static final long serialVersionUID = -4385650629055265254L;
-        public Object apply(Object p) {
+        public Object/*>Genome<*/ apply(Object/*>Population<*/ p) {
             Population population = (Population) p;
             return population.get(population.getGeneticAlgorithm().getRandom().nextInt(population.size()));
         } 
