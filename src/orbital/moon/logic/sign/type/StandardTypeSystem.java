@@ -123,7 +123,7 @@ public class StandardTypeSystem implements TypeSystem {
      * @see #subtypeOf
      * @see Functionals#swap(BinaryPredicate)
      */
-    private static final BinaryPredicate supertypeOf/*<Type,Type>*/ = Functionals.swap(subtypeOf);
+    private static final BinaryPredicate/*<Type,Type>*/ supertypeOf = Functionals.swap(subtypeOf);
 
     //@internal tricky: we have to make sure the initialization runs in precisely the right order. Java does not truely care about the initialization order.
     private static final BinaryFunction/*<Type,Type,Type>*/ _map;

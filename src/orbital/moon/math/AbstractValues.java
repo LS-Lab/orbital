@@ -652,10 +652,10 @@ public abstract class AbstractValues extends Values {
     public final Polynomial/*<R,S>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, Arithmetic/*>S<*/ exponent) {
         return MONOMIAL(coefficient, ArithmeticMultivariatePolynomial.convertIndex(exponent));
     }
-    public final Polynomial/*<R extends Scalar,S>*/ MONOMIAL(Arithmetic/*>S<*/ exponent) {
+    public final /*<R extends Scalar,S>*/ Polynomial/*<R,S>*/ MONOMIAL(Arithmetic/*>S<*/ exponent) {
         return MONOMIAL(ONE, exponent);
     }
-    public final Polynomial/*<R extends Scalar>*/ MONOMIAL(int[] exponents) {
+    public final /*<R extends Scalar,S>*/ Polynomial/*<R,S>*/ MONOMIAL(int[] exponents) {
         return MONOMIAL(ONE, exponents);
     }
 
