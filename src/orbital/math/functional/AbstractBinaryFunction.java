@@ -7,5 +7,6 @@
 package orbital.math.functional;
 
 import orbital.moon.math.functional.AbstractFunctor;
+import orbital.math.Arithmetic;
 
 /*private static*/ abstract class AbstractBinaryFunction/*<A1 extends Arithmetic, A2 extends Arithmetic, B extends Arithmetic>*/ extends AbstractFunctor implements BinaryFunction/*<A1,A2,B>*/ {}

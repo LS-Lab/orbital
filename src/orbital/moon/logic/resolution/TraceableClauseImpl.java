@@ -7,6 +7,7 @@
 package orbital.moon.logic.resolution;
 
 import orbital.logic.sign.*;
+import orbital.logic.imp.Formula;
 import java.util.*;
 import dkfz.collections.graph.Vertex;
 import dkfz.collections.graph.Edge;

@@ -8,6 +8,7 @@ package orbital.algorithm.template;
 
 import orbital.logic.functor.Function;
 import java.io.Serializable;
+import orbital.math.Real;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -21,12 +22,12 @@ import java.util.WeakHashMap;
  * @version $Id$
  * @author  Andr&eacute; Platzer
  */
-public interface HeuristicAlgorithm extends EvaluativeAlgorithm {
+public interface HeuristicAlgorithm/*<S>*/ extends EvaluativeAlgorithm/*<S>*/ {
     /**
      * Get the heuristic function used.
      * @return the heuristic cost function h:S&rarr;<b>R</b> estimating h<sup>*</sup>.
      */
-    Function getHeuristic();
+    Function/*<S,Real>*/ getHeuristic();
 
     /**
      * Set the heuristic function to use.
@@ -52,7 +53,7 @@ public interface HeuristicAlgorithm extends EvaluativeAlgorithm {
      * @preconditions heuristic is functional, i.e. x.equals(y) &rArr; heuristic.apply(x).equals(heuristic.apply(y))
      * @see "Pearl, J. Heuristics: Intelligent Search Strategies for Computer Problem Solving. Addison-Wesley, Reading, Massachusetts. 1984."
      */
-    void setHeuristic(Function heuristic);
+    void setHeuristic(Function/*<S,Real>*/ heuristic);
 
     /**
      * {@inheritDoc}.
@@ -60,7 +61,7 @@ public interface HeuristicAlgorithm extends EvaluativeAlgorithm {
      * The evaluation function f may depend upon an {@link #setHeuristic(Function) heuristic cost function} h:S&rarr;<b>R</b>
      * </p>
      */
-    Function getEvaluation();
+    Function/*<S,Real>*/ getEvaluation();
 
     /**
      * Algorithmic configuration objects for heuristic algorithms.
@@ -68,24 +69,25 @@ public interface HeuristicAlgorithm extends EvaluativeAlgorithm {
      * @version $Id$
      * @todo move to HeuristicAlgorithm.Configuration ?
      */
-    public static class Configuration extends AlgorithmicTemplate.Configuration {
+    public static class Configuration/*<Problem extends HeuristicAlgorithm<S>, S>*/
+	extends AlgorithmicTemplate.Configuration/*<Problem,S>*/ {
         private static final long serialVersionUID = 8651734898965188478L;
 
         /**
          * @serial
          */
-        private Function heuristic;
+        private Function/*<S,Real>*/ heuristic;
         /**
          * @param problem the problem to solve.
          * @param heuristic the {@link HeuristicAlgorithm#setHeuristic(Function) heuristic} used for solving.
          * @param algorithm the class of the AlgorithmicTemplate to instantiate for solving the problem.
          */
-        public Configuration(AlgorithmicProblem/*>Problem<*/ problem, Function heuristic, Class algorithm) {
+        public Configuration(AlgorithmicProblem/*>Problem<*/ problem, Function/*<S,Real>*/ heuristic, Class algorithm) {
             super(problem, algorithm, HeuristicAlgorithm.class);
             this.heuristic = heuristic;
         }
 
-        public Function getHeuristic() {
+        public Function/*<S,Real>*/ getHeuristic() {
             return heuristic;
         }
         
@@ -127,18 +129,18 @@ public interface HeuristicAlgorithm extends EvaluativeAlgorithm {
      * @see "Memory-Based Heuristics: Pattern Databases. Culbersion & Schaeffer. 1995."
      * @see "Stefan Edelkamp. Symbolic pattern databases in heuristic search planning. In Ghallab, M. and Hertzberg, J. and Traverso, P., editors. Proceedings of the 7th International Conference on Artificial Intelligence Planning and Scheduling (AIPS-02), Toulouse, France, April, 2002, AAAI Press, Menlo Park. pages 274-283"
      */
-    public static class PatternDatabaseHeuristic implements Function, Serializable {
+    public static class PatternDatabaseHeuristic/*<S>*/ implements Function/*<S,Real>*/, Serializable {
         private static final long serialVersionUID = -4488685150678833742L;
         /**
          * the heuristic function used for states not contained in the pattern database.
          * @serial
          */
-        private Function heuristic;
+        private Function/*<S,Real>*/ heuristic;
         /**
          * the pattern database to use for looking up cost.
          * @serial
          */
-        private Map patternDatabase;
+        private Map/*<S,Real>*/ patternDatabase;
         /**
          * whether to enter heuristic estimate cost
          * into the pattern database for states not yet contained.
@@ -155,15 +157,15 @@ public interface HeuristicAlgorithm extends EvaluativeAlgorithm {
          *  into the pattern database for states not yet contained.
          *  This is almost only useful for very expensive backing heuristic functions.
          */
-        public PatternDatabaseHeuristic(Function backingHeuristic, Map patternDatabase, boolean autoUpdatePatternDatabase) {
+        public PatternDatabaseHeuristic(Function/*<S,Real>*/ backingHeuristic, Map/*<S,Real>*/ patternDatabase, boolean autoUpdatePatternDatabase) {
             this.heuristic = backingHeuristic;
             this.patternDatabase = patternDatabase;
             this.autoUpdatePatternDatabase = autoUpdatePatternDatabase;
         }
-        public PatternDatabaseHeuristic(Function backingHeuristic, Map patternDatabase) {
+        public PatternDatabaseHeuristic(Function/*<S,Real>*/ backingHeuristic, Map/*<S,Real>*/ patternDatabase) {
             this(backingHeuristic, patternDatabase, false);
         }
-        public PatternDatabaseHeuristic(Function backingHeuristic) {
+        public PatternDatabaseHeuristic(Function/*<S,Real>*/ backingHeuristic) {
             this(backingHeuristic, new HashMap(), false);
         }
                 
@@ -171,7 +173,7 @@ public interface HeuristicAlgorithm extends EvaluativeAlgorithm {
          * Get the backing heuristic.
          * @return the heuristic function used for states not contained in the pattern database.
          */
-        public Function getHeuristic() {
+        public Function/*<S,Real>*/ getHeuristic() {
             return heuristic;
         }
 
@@ -180,7 +182,7 @@ public interface HeuristicAlgorithm extends EvaluativeAlgorithm {
          * @return the pattern database used for looking up cost.
          *  It is a Map from states to cost.
          */
-        public Map getPatternDatabase() {
+        public Map/*<S,Real>*/ getPatternDatabase() {
             return patternDatabase;
         }
 
@@ -189,13 +191,13 @@ public interface HeuristicAlgorithm extends EvaluativeAlgorithm {
          * @param patterns the pattern database to use for looking up cost.
          *  It is a Map from states to cost.
          */
-        public void setPatternDatabase(Map patterns) {
+        public void setPatternDatabase(Map/*<S,Real>*/ patterns) {
             patternDatabase = patterns;
         }
                 
-        public Object apply(Object o) {
+        public Object/*>Real<*/ apply(Object/*>S<*/ o) {
             Object/*>S<*/ s = o;
-            Object v = patternDatabase.get(s);
+            Object/*>Real<*/ v = patternDatabase.get(s);
             // did not find a corresponding value in pattern database? Use backing heuristic instead
             if (v == null) {
                 v = heuristic.apply(s);

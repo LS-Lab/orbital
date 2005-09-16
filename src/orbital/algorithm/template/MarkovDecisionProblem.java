@@ -76,7 +76,7 @@ import orbital.util.Utility;
  * @see "A. Barto, S. Bradtke, and S. Singh. Learning to act using real-time dynamic programming. <i>Artificial Intelligence</i>, 72:81-138, 1995."
  * @see "Stanis&#322;aw Lem. Doktor Diagoras in: Sterntageb&uuml;cher, suhrkamp p491, 1978. (original edition 1971)"
  */
-public interface MarkovDecisionProblem/*<A,S,M extends Transition>*/ extends TransitionModel/*<A,S,M>*/, AlgorithmicProblem {
+public interface MarkovDecisionProblem/*<A,S,M extends MarkovDecisionProblem.Transition>*/ extends TransitionModel/*<A,S,M>*/, AlgorithmicProblem {
     /**
      * Check whether the given state is a goal state (a valid solution to the problem).
      * <p>
@@ -105,7 +105,7 @@ public interface MarkovDecisionProblem/*<A,S,M extends Transition>*/ extends Tra
      * @version $Id$
      * @author  Andr&eacute; Platzer
      */
-    static interface Transition extends TransitionModel/*<A,S,M>*/.Transition {
+    static interface Transition/*<A,S,M extends MarkovDecisionProblem.Transition>*/ extends TransitionModel/*<A,S,M>*/.Transition {
         /**
          * Get the cost of taking the action leading to this transition.
          * <p>
@@ -128,7 +128,7 @@ public interface MarkovDecisionProblem/*<A,S,M extends Transition>*/ extends Tra
      * @version $Id$
      * @author  Andr&eacute; Platzer
      */
-    public static class DefaultTransition implements Transition, Serializable {
+    public static class DefaultTransition/*<A,S,M extends MarkovDecisionProblem.Transition>*/ implements Transition/*<A,S,M>*/, Serializable {
         private static final long serialVersionUID = -5421585936741224969L;
         /**
          * the probability of reaching a state (in the corresponding context).

@@ -21,13 +21,13 @@ import orbital.math.Real;
  * @version $Id$
  * @author  Andr&eacute; Platzer
  */
-abstract class ScheduledLocalOptimizerSearch extends LocalOptimizerSearch implements HeuristicAlgorithm {
+abstract class ScheduledLocalOptimizerSearch/*<A,S>*/ extends LocalOptimizerSearch/*<A,S>*/ implements HeuristicAlgorithm/*<S>*/ {
     private static final long serialVersionUID = -8843368383007953329L;
     /**
      * The heuristic cost function h:S&rarr;<b>R</b> to be used as evaluation function f(n) = h(n).
      * @serial
      */
-    private Function/*<GeneralSearchProblem.Option, Arithmetic>*/ heuristic;
+    private Function/*<S, Real>*/ heuristic;
     /**
      * A mapping <b>N</b>&rarr;<b>R</b> from time to "temperature"
      * controlling the cooling, and thus the probability of downward steps.
@@ -75,17 +75,17 @@ abstract class ScheduledLocalOptimizerSearch extends LocalOptimizerSearch implem
      *  or it fails due to a lack of alternative expansion nodes).
      * @param localSelection the variant of local selection used.
      */
-    public ScheduledLocalOptimizerSearch(Function/*<GeneralSearchProblem.Option, Arithmetic>*/ heuristic, Function/*<Integer, Real>*/ schedule, LocalSelection localSelection) {
+    public ScheduledLocalOptimizerSearch(Function/*<S, Real>*/ heuristic, Function/*<Integer, Real>*/ schedule, LocalSelection localSelection) {
         super(localSelection);
         this.heuristic = heuristic;
         this.schedule = schedule;
     }
 
-    public Function/*<GeneralSearchProblem.Option, Arithmetic>*/ getHeuristic() {
+    public Function/*<S, Real>*/ getHeuristic() {
         return heuristic;
     }
 
-    public void setHeuristic(Function/*<GeneralSearchProblem.Option, Arithmetic>*/ heuristic) {
+    public void setHeuristic(Function/*<S, Real>*/ heuristic) {
         this.heuristic = heuristic;
     }
 

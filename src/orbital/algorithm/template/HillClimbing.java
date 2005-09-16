@@ -9,6 +9,7 @@ package orbital.algorithm.template;
 import java.util.Iterator;
 import java.util.Collection;
 import java.util.Random;
+import orbital.math.Real;
 
 import java.util.List;
 
@@ -70,19 +71,19 @@ import orbital.math.Values;
  * @attribute specializes {@link ThresholdAccepting}
  * @see Greedy
  */
-public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgorithm {
+public class HillClimbing/*<A,S>*/ extends LocalOptimizerSearch/*<A,S>*/ implements HeuristicAlgorithm/*<S>*/ {
     private static final long serialVersionUID = -3281919447532950063L;
     /**
      * The applied heuristic cost function h:S&rarr;<b>R</b> embedded in the evaluation function f(n) = h(n).
      * @serial
      */
-    private Function heuristic;
+    private Function/*<S,Real>*/ heuristic;
     /**
      * Create a new instance of hill climbing search.
      * @param heuristic the heuristic cost function h:S&rarr;<b>R</b> to be used as evaluation function f(n) = h(n).
      * @param localSelection the variant of local selection used.
      */
-    public HillClimbing(Function heuristic, LocalSelection localSelection) {
+    public HillClimbing(Function/*<S,Real>*/ heuristic, LocalSelection localSelection) {
         super(localSelection);
         this.heuristic = heuristic;
     }
@@ -90,16 +91,16 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
      * Create a new instance of hill climbing search.
      * @param heuristic the heuristic cost function h:S&rarr;<b>R</b> to be used as evaluation function f(n) = h(n).
      */
-    public HillClimbing(Function heuristic) {
+    public HillClimbing(Function/*<S,Real>*/ heuristic) {
         this(heuristic, BEST_LOCAL_SELECTION);
     }
     HillClimbing() {}
 
-    public Function getHeuristic() {
+    public Function/*<S,Real>*/ getHeuristic() {
         return heuristic;
     }
 
-    public void setHeuristic(Function heuristic) {
+    public void setHeuristic(Function/*<S,Real>*/ heuristic) {
         this.heuristic = heuristic;
     }
 
@@ -108,7 +109,7 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
      * @internal wenn ich sonst einen Übergang wegen zu hoher akkumulierter Kosten verschmähen
      *  würde, käm ich ja nie mehr von meinem eingeschlagenen (evtl. Sackgassen) Pfad weg.
      */
-    public Function getEvaluation() {
+    public Function/*<S,Real>*/ getEvaluation() {
         return getHeuristic();
     }
 
@@ -132,12 +133,12 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
         return false;
     }
 
-    protected Iterator createTraversal(GeneralSearchProblem problem) {
+    protected Iterator/*<S>*/ createTraversal(GeneralSearchProblem/*<A,S>*/ problem) {
         return acceptStep(getLocalSelection().createLocalRestriction(problem, this), this);
     }
 
 
-    private static Iterator acceptStep(GeneralSearchProblem problem, LocalOptimizerSearch algorithm) {
+    private static /*<A,S>*/ Iterator/*<S>*/ acceptStep(GeneralSearchProblem/*<A,S>*/ problem, LocalOptimizerSearch/*<A,S>*/ algorithm) {
         return new OptionIterator_First(problem, algorithm);
     }
     /**
@@ -146,9 +147,9 @@ public class HillClimbing extends LocalOptimizerSearch implements HeuristicAlgor
      * @author  Andr&eacute; Platzer
      * @todo replace by acceptStep(restrictRandomly(problem,algorithm,1))
      */
-    private static class OptionIterator_First extends LocalOptimizerSearch.OptionIterator {
+    private static class OptionIterator_First/*<A,S>*/ extends LocalOptimizerSearch.OptionIterator/*<A,S>*/ {
         private static final long serialVersionUID = -3674513421043835094L;
-        public OptionIterator_First(GeneralSearchProblem problem, LocalOptimizerSearch algorithm) {
+        public OptionIterator_First(GeneralSearchProblem/*<A,S>*/ problem, LocalOptimizerSearch/*<A,S>*/ algorithm) {
             super(problem, algorithm);
             this.currentValue = castedApply(algorithm.getEvaluation(), getState()).doubleValue();
         }

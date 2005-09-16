@@ -91,7 +91,7 @@ import orbital.logic.functor.Function;
  *  DemeGeneticAlgorithm, ParallelDemeGeneticAlgorithm (with parallel population processed in parallel)
  * @todo introduce getConvergence() and getPopulationConvergence()
  */
-public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, AlgorithmicTemplate/*<GeneticSearchProblem,Population>*/, Serializable {
+public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, AlgorithmicTemplate/*<GeneticAlgorithmProblem,Population>*/, Serializable {
     private static final Logger logger = Logger.getLogger(GeneticAlgorithm.class.getName());
     /**
      * version of this class for versioning with serialization and deserialization.
@@ -260,7 +260,7 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
      * @return the evaluation function that specifies the algorithm for evaluation of a Genome's fitness.
      *  It is concrete problem-specific.
      */
-    public Function/*<Object, Number>*/ getEvaluation() {
+    public Function/*<Genome, Number>*/ getEvaluation() {
         return fitnessEvaluation;
     } 
     /**
@@ -268,7 +268,7 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
      * @param fitnessEvaluation the evaluation function that specifies the algorithm for evaluation of a Genome's fitness.
      *  It must be set before use and is concrete problem-specific.
      */
-    public void setEvaluation(Function/*<Object, Number>*/ fitnessEvaluation) {
+    public void setEvaluation(Function/*<Genome, Number>*/ fitnessEvaluation) {
         this.fitnessEvaluation = fitnessEvaluation;
     } 
 
@@ -395,17 +395,17 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
          * @param algorithm the class of the AlgorithmicTemplate to instantiate for solving the problem.
          * @see Selectors
          */
-        public Configuration(GeneticAlgorithmProblem/*>Problem<*/ problem, Function selector, int parentCount, int childrenCount, double maximumRecombination, double maximumMutation, Class algorithm) {
+        public Configuration(GeneticAlgorithmProblem problem, Function selector, int parentCount, int childrenCount, double maximumRecombination, double maximumMutation, Class algorithm) {
             this(problem, selector, algorithm);
             this.parentCount = parentCount;
             this.childrenCount = childrenCount;
             setMaximumRecombination(maximumRecombination);
             setMaximumMutation(maximumMutation);
         }
-        public Configuration(GeneticAlgorithmProblem/*>Problem<*/ problem, Function selector, double maximumRecombination, double maximumMutation, Class algorithm) {
+        public Configuration(GeneticAlgorithmProblem problem, Function selector, double maximumRecombination, double maximumMutation, Class algorithm) {
             this(problem, selector, 2, 2, maximumRecombination, maximumMutation, algorithm);
         }
-        public Configuration(GeneticAlgorithmProblem/*>Problem<*/ problem, Function selector, Class algorithm) {
+        public Configuration(GeneticAlgorithmProblem problem, Function selector, Class algorithm) {
             super(problem, algorithm, GeneticAlgorithm.class);
             this.selection = selector;
         }

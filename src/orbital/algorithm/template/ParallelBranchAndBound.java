@@ -67,9 +67,9 @@ import orbital.math.Real;
  * @see BreadthFirstSearch
  * @todo aspect of parallel exploration.
  */
-public class ParallelBranchAndBound extends BranchAndBound {
+public class ParallelBranchAndBound/*<A,S>*/ extends BranchAndBound/*<A,S>*/ {
     private static final long serialVersionUID = -7665864997088831748L;
-    public ParallelBranchAndBound(Function heuristic, double bound) {
+    public ParallelBranchAndBound(Function/*<S,Real>*/ heuristic, double bound) {
         super(heuristic, bound);
     }
     ParallelBranchAndBound() {}
@@ -87,17 +87,17 @@ public class ParallelBranchAndBound extends BranchAndBound {
         return (orbital.math.functional.Function) Operations.power.apply(Values.getDefaultInstance().symbol("b"), Functions.id);
     }
 
-    protected Object/*>S<*/ solveImpl(GeneralSearchProblem problem) {
+    protected Object/*>S<*/ solveImpl(GeneralSearchProblem/*<A,S>*/ problem) {
         setBound(getMaxBound());
         return search(Collections.singletonList(getProblem().getInitialState()).iterator());
     }
         
-    protected final Iterator createTraversal(GeneralSearchProblem problem) {
+    protected final Iterator/*<S>*/ createTraversal(GeneralSearchProblem/*<A,S>*/ problem) {
         //@todo could we transforme the search algorithm to a traversal iterator or modularize the parallel aspect in another way?
         throw new AssertionError(ParallelBranchAndBound.class + " defines its own search and solveImpl, (currently) without the aid of a traversal iterator");
     }
 
-    protected Object/*>S<*/ search(Iterator nodes) {
+    protected Object/*>S<*/ search(Iterator/*<S>*/ nodes) {
         bestSolution = null;
         //@todo should we stop when a thread in tg throws an uncaught exception? Or ignore it?
         final ThreadGroup bnb = new ThreadGroup("BranchAndBound");

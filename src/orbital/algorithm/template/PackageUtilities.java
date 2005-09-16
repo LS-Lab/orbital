@@ -8,6 +8,7 @@ package orbital.algorithm.template;
 
 import orbital.logic.functor.Function;
 import java.util.Iterator;
+import orbital.math.Real;
 import orbital.util.Pair;
 
 import java.util.List;
@@ -96,13 +97,14 @@ final class PackageUtilities {
      * @return the decorated problem.
      * @note aspect of local randomization.
      */
-    public static final GeneralSearchProblem restrictRandomly(GeneralSearchProblem problem, final int numberOfChoices, final ProbabilisticAlgorithm algorithm) {
-        return new DelegateGeneralSearchProblem(problem) {
+    public static final /*<A,S>*/ GeneralSearchProblem/*<A,S>*/
+	restrictRandomly(GeneralSearchProblem/*<A,S>*/ problem, final int numberOfChoices, final ProbabilisticAlgorithm algorithm) {
+        return new DelegateGeneralSearchProblem/*<A,S>*/(problem) {
                 private static final long serialVersionUID = -4007975459550830964L;
-                public Iterator actions(Object state) {
-                    final List actions = Setops.asList(getDelegatee().actions(state));
+                public Iterator/*<S>*/ actions(Object/*>S<*/ state) {
+                    final List/*<A>*/ actions = Setops.asList(getDelegatee().actions(state));
                     final Random random = algorithm.getRandom();
-                    final List restrictedActions = new ArrayList(numberOfChoices);
+                    final List/*<A>*/ restrictedActions = new ArrayList(numberOfChoices);
                     for (int i = 0; i < Math.min(numberOfChoices, actions.size()); i++) {
                         int index = random.nextInt(actions.size());
                         restrictedActions.add(actions.get(index));
@@ -125,22 +127,23 @@ final class PackageUtilities {
      * @see PackageUtilities#min
      * @todo aspect (I) of locally restricting the search to the most promising actions.
      */
-    public static final GeneralSearchProblem restrictBest(GeneralSearchProblem problem, final Function evaluationFunction) {
+    public static final /*<A,S>*/ GeneralSearchProblem/*<A,S>*/
+	restrictBest(GeneralSearchProblem/*<A,S>*/ problem, final Function/*<S,Real>*/ evaluationFunction) {
         return new DelegateGeneralSearchProblem(problem) {
                 private static final long serialVersionUID = 549567555212455602L;
-                public Iterator actions(Object state) {
-                    final GeneralSearchProblem problem = getDelegatee();
+                public Iterator/*<S>*/ actions(Object/*>S<*/ state) {
+                    final GeneralSearchProblem/*<A,S>*/ problem = getDelegatee();
                     // just a short name for evalutionFunction
-                    final Function f = evaluationFunction;
+                    final Function/*<S,Real>*/ f = evaluationFunction;
                     
-                    Iterator choices = problem.actions(state);
+                    Iterator/*<A>*/ choices = problem.actions(state);
                     if (!choices.hasNext())
                         return choices;
 
                     // search for all with minimum f in choices
                     
                     // contains all choices that are as good as (current) best choice of actions
-                    List elite;
+                    List/*<A>*/ elite;
                     // f(best)
                     Comparable bestValue;
                     {
@@ -153,7 +156,7 @@ final class PackageUtilities {
                         bestValue = (Comparable) f.apply(sp);
                     }
                     while (choices.hasNext()) {
-                        final Object a = choices.next();
+                        final Object/*>A<*/ a = choices.next();
                         final Object/*>S<*/ sp = problem.states(a, state).next();
                         //@internal we may call states(a,state) twice without caching sp. Once here, and once in the application using sp of the final choices
                         final Comparable value = (Comparable) f.apply(sp);
@@ -193,7 +196,7 @@ final class PackageUtilities {
      * @see IterativeBroadening
      * @todo aspect (II) of locally restricting the search to the most promising actions.
      */
-    public static final GeneralSearchProblem restrictTop(final int maximumBranchingFactor, GeneralSearchProblem problem, final Function evaluationFunction) {
+    public static final /*<A,S>*/ GeneralSearchProblem/*<A,S>*/ restrictTop(final int maximumBranchingFactor, GeneralSearchProblem/*<A,S>*/ problem, final Function/*<S,Real>*/ evaluationFunction) {
         throw new UnsupportedOperationException("not yet implemented");
     }
 }

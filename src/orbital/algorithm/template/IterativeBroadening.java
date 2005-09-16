@@ -8,6 +8,7 @@ package orbital.algorithm.template;
 
 import orbital.logic.functor.Function;
 import java.util.Iterator;
+import orbital.math.Real;
 
 import orbital.math.functional.Functions;
 import orbital.math.functional.Operations;
@@ -31,7 +32,7 @@ import java.util.NoSuchElementException;
  * @attribute usually inferior to {@link IterativeDeepening}
  * @todo aspect of iterative broadening of search space.
  */
-public class IterativeBroadening extends DepthFirstBoundingSearch {
+public class IterativeBroadening/*<A,S>*/ extends DepthFirstBoundingSearch/*<A,S>*/ {
     private static final long serialVersionUID = 7810245539762321618L;
     /**
      * Whether we have pruned a node during the last call to super.search.
@@ -44,7 +45,7 @@ public class IterativeBroadening extends DepthFirstBoundingSearch {
         setContinuedWhenFound(true);
     }
         
-    public Function getEvaluation() {
+    public Function/*<S,Real>*/ getEvaluation() {
         throw new UnsupportedOperationException("implicit evaluation function used for iterative broadening");
     }
 
@@ -64,7 +65,7 @@ public class IterativeBroadening extends DepthFirstBoundingSearch {
     /**
      * Solve with bounds 1, 3, 4, 5, ... until a solution is found.
      */
-    protected Object/*>S<*/ solveImpl(GeneralSearchProblem problem) {
+    protected Object/*>S<*/ solveImpl(GeneralSearchProblem/*<A,S>*/ problem) {
         int i = 1;
         while (true) {
             setBound(i++);
@@ -79,8 +80,8 @@ public class IterativeBroadening extends DepthFirstBoundingSearch {
         }
     }
 
-    protected Iterator createTraversal(GeneralSearchProblem problem) {
-        return new OptionIterator(problem);
+    protected Iterator/*<S>*/ createTraversal(GeneralSearchProblem/*<A,S>*/ problem) {
+        return new OptionIterator/*<A,S>*/(problem);
     }
 
     /**
@@ -89,13 +90,13 @@ public class IterativeBroadening extends DepthFirstBoundingSearch {
      * @version $Id$
      * @author  Andr&eacute; Platzer
      */
-    public class OptionIterator extends DepthFirstSearch.OptionIterator {
+    public class OptionIterator/*<A,S>*/ extends DepthFirstSearch.OptionIterator/*<A,S>*/ {
         private static final long serialVersionUID = 3559635773974511101L;
         public OptionIterator(GeneralSearchProblem problem) {
             super(problem);
         }
-        protected boolean add(final Iterator newNodes) {
-            return super.add(new Iterator() {
+        protected boolean add(final Iterator/*<S>*/ newNodes) {
+            return super.add(new Iterator/*<S>*/() {
                     // @see <a href="{@docRoot}/Patterns/Design/Decorator.html">Decorator</a>
                     /**
                      * How often we have successfully expanded by a call to next().
@@ -112,7 +113,7 @@ public class IterativeBroadening extends DepthFirstBoundingSearch {
                         } else
                             return newNodes.hasNext();
                     }
-                    public Object next() {
+                    public Object/*>S<*/ next() {
                         if (isOutOfBounds()) {
                             if (newNodes.hasNext()) {
                                 havePruned = true;
@@ -120,7 +121,7 @@ public class IterativeBroadening extends DepthFirstBoundingSearch {
                             } else
                                 throw new NoSuchElementException();
                         } else {
-                            Object o = newNodes.next();
+                            Object/*>S<*/ o = newNodes.next();
                             expansionCount++;
                             return o;
                         }

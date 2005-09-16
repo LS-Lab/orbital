@@ -7,6 +7,7 @@
 package orbital.algorithm.template;
 
 import java.util.Iterator;
+import orbital.math.Real;
 
 import orbital.logic.functor.Function;
 
@@ -114,7 +115,7 @@ import java.util.logging.Level;
  *  Contrary to simulated annealing with backtracking II.
  * @todo improve simulated annealing, threshold accepting and hill-climbing by remembering and returning the best solution found so far.
  */
-public class SimulatedAnnealing extends ScheduledLocalOptimizerSearch {
+public class SimulatedAnnealing/*<A,S>*/ extends ScheduledLocalOptimizerSearch/*<A,S>*/ {
     private static final long serialVersionUID = -1780030298934767181L;
     private static final Logger logger = Logger.getLogger(SimulatedAnnealing.class.getName());
     /**
@@ -128,7 +129,7 @@ public class SimulatedAnnealing extends ScheduledLocalOptimizerSearch {
      *  or it fails due to a lack of alternative expansion nodes).
      * @preconditions ( lim<sub>t&rarr;&infin;</sub>schedule(t) = 0 &and; schedule decreases monotonically ) || <span class="provable">&#9633;</span>abnormal(schedule)
      */
-    public SimulatedAnnealing(Function/*<GeneralSearchProblem.Option, Arithmetic>*/ heuristic, Function/*<Integer, Real>*/ schedule) {
+    public SimulatedAnnealing(Function/*<S, Real>*/ heuristic, Function/*<Integer, Real>*/ schedule) {
         super(heuristic, schedule, FIRST_LOCAL_SELECTION);
     }
     SimulatedAnnealing() {
@@ -138,7 +139,7 @@ public class SimulatedAnnealing extends ScheduledLocalOptimizerSearch {
     /**
      * f(n) = h(n).
      */
-    public Function getEvaluation() {
+    public Function/*<S,Real>*/ getEvaluation() {
         return getHeuristic();
     }
 
@@ -162,7 +163,7 @@ public class SimulatedAnnealing extends ScheduledLocalOptimizerSearch {
         return false;
     }
         
-    protected Iterator createTraversal(final GeneralSearchProblem problem) {
+    protected Iterator/*<S>*/ createTraversal(final GeneralSearchProblem/*<A,S>*/ problem) {
         return new OptionIterator(getLocalSelection().createLocalRestriction(problem, this), this);
     }
 
@@ -171,9 +172,9 @@ public class SimulatedAnnealing extends ScheduledLocalOptimizerSearch {
      * @version $Id$
      * @author  Andr&eacute; Platzer
      */
-    private static class OptionIterator extends LocalOptimizerSearch.OptionIterator {
+    private static class OptionIterator/*<A,S>*/ extends LocalOptimizerSearch.OptionIterator/*<A,S>*/ {
         private static final long serialVersionUID = -5170488902830279816L;
-        public OptionIterator(GeneralSearchProblem problem, ScheduledLocalOptimizerSearch algorithm) {
+        public OptionIterator(GeneralSearchProblem/*<A,S>*/ problem, ScheduledLocalOptimizerSearch/*<A,S>*/ algorithm) {
             super(problem, algorithm);
             this.currentValue = castedApply(algorithm.getEvaluation(), getState()).doubleValue();
             this.t = 0;
@@ -194,7 +195,7 @@ public class SimulatedAnnealing extends ScheduledLocalOptimizerSearch {
          * depending upon the decrease &Delta;:=f(s&#697;)-f(s).</p>
          */
         public boolean accept(Object/*>S<*/ state, Object/*>S<*/ sp) {
-            final ScheduledLocalOptimizerSearch algorithm = (ScheduledLocalOptimizerSearch) getAlgorithm();
+            final ScheduledLocalOptimizerSearch/*<A,S>*/ algorithm = (ScheduledLocalOptimizerSearch) getAlgorithm();
             // current temperature scheduled for successive cooling
             this.T = castedApply(algorithm.getSchedule(), Values.getDefaultInstance().valueOf(t)).doubleValue();
             this.t++;

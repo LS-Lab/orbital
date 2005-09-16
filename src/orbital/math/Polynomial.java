@@ -35,7 +35,7 @@ import java.util.ListIterator;
  * @todo implements Function<T,T> instead with T any "compatible" type (see Algebra I) and evaluation of Horner-Scheme
  */
 public interface Polynomial/*<R extends Arithmetic, S extends Arithmetic>*/
-    extends Arithmetic, orbital.math.functional.Function/*<orbital.logic.functor.Function<S,E>,E>*/ {
+    extends Arithmetic, orbital.math.functional.Function/*_<orbital.logic.functor.Function<S,E>,E>_*/ {
     // Get/Set properties
     /**
      * Describes the index magma S of our polynomial ring R[S].
@@ -121,7 +121,7 @@ public interface Polynomial/*<R extends Arithmetic, S extends Arithmetic>*/
      * @return f(a) = f((X<sub>k</sub>)<sub>k</sub>)|<sub>(X<sub>k</sub>)<sub>k</sub>=a</sub>.
      * @xxx adapt document
      */
-    Object/*>E<*/ apply(Object/*>orbital.logic.functor.Function<S,E><*/ a);
+    Object/*_>E<_*/ apply(Object/*_>orbital.logic.functor.Function<S,E><_*/ a);
 
     // Arithmetic
     

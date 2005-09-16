@@ -112,7 +112,7 @@ public class ClausalIndex {
      * Get an iterator of all (clause,literal) pairs which could possibly unify with L.
      * @postconditions RES = {(C,K)&isin;this &brvbar; K&isin;C &and; possibly &exist;mgU{L,K}}
      */
-    public Iterator/*<Pair<Clause,Literal>>*/ getProbableUnifiables(Formula L) {
+    public Iterator/*<Pair<Clause,Formula>>*/ getProbableUnifiables(Formula L) {
         return getIndex(L).iterator();
     }
 
@@ -120,7 +120,7 @@ public class ClausalIndex {
      * Get an iterator of all (clause,literal) pairs which could possibly unify with ~L.
      * @postconditions RES = getProbableUnifiables(ClassicalLogic.Utilities.negation(L))
      */
-    public Iterator/*<Pair<Clause,Literal>>*/ getProbableComplements(Formula L) {
+    public Iterator/*<Pair<Clause,Formula>>*/ getProbableComplements(Formula L) {
         Integer hash = (Integer)indexHashNegation.apply(L);
         Set probableUnifiables = (Set)index.get(hash);
         //System.err.println("  complement " + probableUnifiables + " of " + C + "\n    in " + IndexedClausalSetImpl.this);

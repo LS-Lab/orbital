@@ -7,6 +7,7 @@
 package orbital.math.functional;
 
 import orbital.logic.functor.Functor;
+import orbital.math.Arithmetic;
 
 /**
  * This interface encapsulates a binary function "r = f(x,y)".
@@ -64,5 +65,6 @@ public interface BinaryFunction/*<A1 extends Arithmetic, A2 extends Arithmetic, 
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(BinaryFunction, BinaryFunction, BinaryFunction)
      */
-    static interface Composite extends orbital.logic.functor.BinaryFunction/*<A1,A2,B>*/.Composite, BinaryFunction/*<A1,A2,B>*/, MathFunctor.Composite {}
+    static interface Composite/*<A1 extends Arithmetic, A2 extends Arithmetic, B extends Arithmetic>*/
+	extends orbital.logic.functor.BinaryFunction/*<A1,A2,B>*/.Composite, BinaryFunction/*<A1,A2,B>*/, MathFunctor.Composite {}
 }

@@ -615,7 +615,7 @@ public final class AlgebraicAlgorithms {
      * @return h if h is a reduced reduction of f with respect to g.
      * @see #reduce(Collection, Comparator)
      */
-    public static final Polynomial/*<R,S>*/ reduce(Polynomial/*<R,S>*/ f, Collection/*<Polynomial<R,S>>*/ g, final Comparator/*<S>*/ monomialOrder) {
+    public static final /*<R extends Arithmetic, S extends Arithmetic>*/ Polynomial/*<R,S>*/ reduce(Polynomial/*<R,S>*/ f, Collection/*<Polynomial<R,S>>*/ g, final Comparator/*<S>*/ monomialOrder) {
         return (Polynomial) reduce(g, monomialOrder).apply(f);
     }
     /**
@@ -644,7 +644,7 @@ public final class AlgebraicAlgorithms {
         private final Collection/*<Polynomial<R,S>>*/ g;
         private final Comparator/*<S>*/ monomialOrder;
         private final Function/*<Polynomial<R,S>,Polynomial<R,S>>*/ elementaryReduce;
-        public ReductionFunction(Collection/*_Polynomial<R,S>*/ g, Comparator/*<S>*/ newmonomialOrder) {
+        public ReductionFunction(Collection/*<Polynomial<R,S>>*/ g, Comparator/*<S>*/ newmonomialOrder) {
             Utility.pre(Setops.all(g, Functionals.bindSecond(Utility.instanceOf, Polynomial.class)), "collection<" + Polynomial.class.getName() + "> expected");
             this.g = g;
             this.monomialOrder = newmonomialOrder;
@@ -780,7 +780,8 @@ public final class AlgebraicAlgorithms {
      * @see "Buchberger, Bruno. Gr&ouml;bner bases: An algorithmic method in polynomial ideal theory. In Bose, N.K., editor, <i>Recent Trends in Multidimensional Systems Theory</i>. Reidel Publ.Co., 1985."
      * @see "Knuth, Donald E. and Bendix, P.B. Simple word problems in universal algebras. In Leech, J., editor, <i>Computational Problems in Abstract Algebras</i>. p263-297. Pergamon Press, Oxford, 1970."
      */
-    public static final Set/*<Polynomial<R,S>>*/ groebnerBasis(Set/*<Polynomial<R,S>>*/ g, final Comparator/*<S>*/ monomialOrder) {
+    public static final /*<R extends Arithmetic, S extends Arithmetic>*/
+	Set/*<Polynomial<R,S>>*/ groebnerBasis(Set/*<Polynomial<R,S>>*/ g, final Comparator/*<S>*/ monomialOrder) {
         Set/*<Polynomial<R,S>>*/ rgb = reducedGroebnerBasis(g, monomialOrder);
         Set temp, nrgb = null;
         assert (temp = reducedGroebnerBasis(rgb, monomialOrder)).equals(rgb) : "reduced Groebner basis " + temp + " of a reduced Groebner basis equals the former Groebner basis";
@@ -793,13 +794,15 @@ public final class AlgebraicAlgorithms {
     /**
      * Get the reduced Gr&ouml;bner basis of g (Implementation).
      */
-    private static final Set/*<Polynomial<R,S>>*/ reducedGroebnerBasis(Collection/*<Polynomial<R,S>>*/ g, final Comparator/*<S>*/ monomialOrder) {
+    private static final /*<R extends Arithmetic, S extends Arithmetic>*/
+	Set/*<Polynomial<R,S>>*/ reducedGroebnerBasis(Collection/*<Polynomial<R,S>>*/ g, final Comparator/*<S>*/ monomialOrder) {
         return new LinkedHashSet(reduceGroebnerBasis(new ArrayList(groebnerBasisImpl(g, monomialOrder)), monomialOrder));
     }
     /**
      * Get the non-reduced Gr&ouml;bner basis of g (Implementation).
      */
-    private static final Set/*<Polynomial<R,S>>*/ groebnerBasisImpl(Collection/*<Polynomial<R,S>>*/ gg, final Comparator/*<S>*/ monomialOrder) {
+    private static final /*<R extends Arithmetic, S extends Arithmetic>*/
+	Set/*<Polynomial<R,S>>*/ groebnerBasisImpl(Collection/*<Polynomial<R,S>>*/ gg, final Comparator/*<S>*/ monomialOrder) {
         final List/*<Polynomial<R,S>>*/ g = new ArrayList(gg);
         final Values vf = Values.getDefaultInstance();
         ergaenzeGroebnerBasis:
@@ -843,7 +846,8 @@ public final class AlgebraicAlgorithms {
     /**
      * Reduce the Gr&ouml;bner basis g.
      */
-    private static final List/*<Polynomial<R,S>>*/ reduceGroebnerBasis(Collection/*<Polynomial<R,S>>*/ g, final Comparator/*<S>*/ monomialOrder) {
+    private static final /*<R extends Arithmetic, S extends Arithmetic>*/
+	List/*<Polynomial<R,S>>*/ reduceGroebnerBasis(Collection/*<Polynomial<R,S>>*/ g, final Comparator/*<S>*/ monomialOrder) {
         final List basis = new ArrayList(g);
         logger.log(Level.FINE, "reducing Groebner basis {0}", basis);
         replaceWithReductions:
@@ -878,7 +882,8 @@ public final class AlgebraicAlgorithms {
      * Get a collection of those (exponents of) monomials that occur in f
      * (i.e. with coefficient &ne;0).
      */
-    private static Collection/*<S>*/ occurringMonomials(final Polynomial/*<R,S>*/ f) {
+    private static /*<R extends Arithmetic, S extends Arithmetic>*/
+	Collection/*<S>*/ occurringMonomials(final Polynomial/*<R,S>*/ f) {
         return Setops.select(null,
                              Setops.asList(f.indices()),
                              new Predicate() {
@@ -890,7 +895,8 @@ public final class AlgebraicAlgorithms {
     /**
      * Get (the exponent of) the leading monomial l(f) of f.
      */
-    private static Arithmetic/*>S<*/ leadingMonomial(Polynomial/*<R,S>*/ f, Comparator/*<S>*/ monomialOrder) {
+    private static /*<R extends Arithmetic, S extends Arithmetic>*/
+	Arithmetic/*>S<*/ leadingMonomial(Polynomial/*<R,S>*/ f, Comparator/*<S>*/ monomialOrder) {
         return (Arithmetic/*>S<*/) Collections.max(occurringMonomials(f), monomialOrder);
     }
 
@@ -909,7 +915,8 @@ public final class AlgebraicAlgorithms {
     /**
      * Whether the ideal spanned by the given Gr&ouml;bner basis contains all elements of f.
      */
-    private static final boolean containsAll(Set/*<Polynomial<R,S>>*/ groebnerBasis, Collection/*<Polynomial<R,S>>*/ f, Comparator/*<S>*/ monomialOrder) {
+    private static final /*<R extends Arithmetic, S extends Arithmetic>*/
+	boolean containsAll(Set/*<Polynomial<R,S>>*/ groebnerBasis, Collection/*<Polynomial<R,S>>*/ f, Comparator/*<S>*/ monomialOrder) {
         // reduces its arguments with respect to groebnerBasis
         final Function reductor = Functionals.bindFirst(Functionals.apply, reduce(groebnerBasis, monomialOrder));
         //final Arithmetic zero = ((Polynomial)groebnerBasis.iterator().next()).zero();
@@ -929,7 +936,8 @@ public final class AlgebraicAlgorithms {
     /**
      * Whether the two Gr&ouml;bner bases span the same ideal.
      */
-    private static final boolean equalSpan(Set/*<Polynomial<R,S>>*/ groebnerBasis1, Set/*<Polynomial<R,S>>*/ groebnerBasis2, Comparator/*<S>*/ monomialOrder) {
+    private static final /*<R extends Arithmetic, S extends Arithmetic>*/
+	boolean equalSpan(Set/*<Polynomial<R,S>>*/ groebnerBasis1, Set/*<Polynomial<R,S>>*/ groebnerBasis2, Comparator/*<S>*/ monomialOrder) {
         return containsAll(groebnerBasis1, groebnerBasis2, monomialOrder)
             && containsAll(groebnerBasis2, groebnerBasis1, monomialOrder);
     }

@@ -7,6 +7,7 @@
 package orbital.algorithm.template;
 
 import java.util.Iterator;
+import orbital.math.Real;
 
 import orbital.logic.functor.Function;
 
@@ -32,7 +33,7 @@ import java.util.logging.Level;
  * @see SimulatedAnnealing
  * @see HillClimbing
  */
-public class ThresholdAccepting extends ScheduledLocalOptimizerSearch {
+public class ThresholdAccepting/*<A,S>*/ extends ScheduledLocalOptimizerSearch/*<A,S>*/ {
     private static final long serialVersionUID = -1339322840710154421L;
     private static final Logger logger = Logger.getLogger(ThresholdAccepting.class.getName());
     /**
@@ -46,7 +47,7 @@ public class ThresholdAccepting extends ScheduledLocalOptimizerSearch {
      *  or it fails due to a lack of alternative expansion nodes).
      * @preconditions lim<sub>t&rarr;&infin;</sub>schedule(t) = 0 &and; schedule decreases monotonically
      */
-    public ThresholdAccepting(Function/*<GeneralSearchProblem.Option, Arithmetic>*/ heuristic, Function/*<Integer, Real>*/ schedule) {
+    public ThresholdAccepting(Function/*<S, Real>*/ heuristic, Function/*<Integer, Real>*/ schedule) {
         super(heuristic, schedule, FIRST_LOCAL_SELECTION);
     }
     ThresholdAccepting() {
@@ -57,7 +58,7 @@ public class ThresholdAccepting extends ScheduledLocalOptimizerSearch {
     /**
      * f(n) = h(n).
      */
-    public Function getEvaluation() {
+    public Function/*<S,Real>*/ getEvaluation() {
         return getHeuristic();
     }
 
@@ -81,8 +82,8 @@ public class ThresholdAccepting extends ScheduledLocalOptimizerSearch {
         return false;
     }
         
-    protected Iterator createTraversal(final GeneralSearchProblem problem) {
-        return new OptionIterator(getLocalSelection().createLocalRestriction(problem, this), this);
+    protected Iterator/*<S>*/ createTraversal(final GeneralSearchProblem/*<A,S>*/ problem) {
+        return new OptionIterator/*<A,S>*/(getLocalSelection().createLocalRestriction(problem, this), this);
     }
 
     /**
@@ -90,9 +91,9 @@ public class ThresholdAccepting extends ScheduledLocalOptimizerSearch {
      * @version $Id$
      * @author  Andr&eacute; Platzer
      */
-    private static class OptionIterator extends LocalOptimizerSearch.OptionIterator {
+    private static class OptionIterator/*<A,S>*/ extends LocalOptimizerSearch.OptionIterator/*<A,S>*/ {
         private static final long serialVersionUID = -3674513421043835094L;
-        public OptionIterator(GeneralSearchProblem problem, ScheduledLocalOptimizerSearch algorithm) {
+        public OptionIterator(GeneralSearchProblem/*<A,S>*/ problem, ScheduledLocalOptimizerSearch/*<A,S>*/ algorithm) {
             super(problem, algorithm);
             this.currentValue = castedApply(algorithm.getEvaluation(), getState()).doubleValue();
             this.t = 0;
@@ -112,7 +113,7 @@ public class ThresholdAccepting extends ScheduledLocalOptimizerSearch {
          * but only move to worse nodes, if they worsen by at most T.</p>
          */
         public boolean accept(Object/*>S<*/ state, Object/*>S<*/ sp) {
-            final ScheduledLocalOptimizerSearch algorithm = (ScheduledLocalOptimizerSearch) getAlgorithm();
+            final ScheduledLocalOptimizerSearch/*<A,S>*/ algorithm = (ScheduledLocalOptimizerSearch) getAlgorithm();
             // current temperature scheduled for successive cooling
             this.T = castedApply(algorithm.getSchedule(), Values.getDefaultInstance().valueOf(t)).doubleValue();
             this.t++;

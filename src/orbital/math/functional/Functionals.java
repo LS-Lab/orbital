@@ -7,11 +7,11 @@
 package orbital.math.functional;
 
 import orbital.logic.functor.Functor;
+import orbital.math.Arithmetic;
 import orbital.math.Tensor;
 import orbital.math.Vector;
 import orbital.math.Matrix;
 
-import orbital.math.Arithmetic;
 import orbital.logic.sign.concrete.Notation;
 import orbital.math.Values;
 import orbital.math.Scalar;

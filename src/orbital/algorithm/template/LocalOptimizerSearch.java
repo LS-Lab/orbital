@@ -40,7 +40,7 @@ import orbital.math.Values;
  * @todo should we implement HeuristicAlgorithm and provide get/setHeuristic, just because most of our subclasses are?
  * @see Greedy
  */
-public abstract class LocalOptimizerSearch extends GeneralSearch implements ProbabilisticAlgorithm, EvaluativeAlgorithm {
+public abstract class LocalOptimizerSearch/*<A,S>*/ extends GeneralSearch/*<A,S>*/ implements ProbabilisticAlgorithm, EvaluativeAlgorithm/*<S>*/ {
     private static final long serialVersionUID = 465553782601369843L;
     /**
      * The random generator source.
@@ -178,7 +178,7 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
          * @see PackageUtilities#restrictRandomly(GeneralSearchProblem,int,ProbabilisticAlgorithm)
          * @see PackageUtilities#restrictBest(GeneralSearchProblem,Function)
          */
-        abstract GeneralSearchProblem createLocalRestriction(GeneralSearchProblem problem, LocalOptimizerSearch algorithm);
+        abstract /*<A,S>*/ GeneralSearchProblem/*<A,S>*/ createLocalRestriction(GeneralSearchProblem/*<A,S>*/ problem, LocalOptimizerSearch/*<A,S>*/ algorithm);
     }
 
     // enumeration of LocalSelections
@@ -195,7 +195,7 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
      */
     public static final LocalSelection BEST_LOCAL_SELECTION = new LocalSelection("LocalBest") {
             private static final long serialVersionUID = 1233346780667611822L;
-            GeneralSearchProblem createLocalRestriction(GeneralSearchProblem problem, LocalOptimizerSearch algorithm) {
+            /*<A,S>*/ GeneralSearchProblem/*<A,S>*/ createLocalRestriction(GeneralSearchProblem/*<A,S>*/ problem, LocalOptimizerSearch/*<A,S>*/ algorithm) {
                 return PackageUtilities.restrictRandomly(PackageUtilities.restrictBest(problem, algorithm.getEvaluation()),1,algorithm);
             }
         };
@@ -209,7 +209,7 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
      */
     public static final LocalSelection FIRST_LOCAL_SELECTION = new LocalSelection("LocalFirst") {
             private static final long serialVersionUID = 1622132645733195173L;
-            GeneralSearchProblem createLocalRestriction(GeneralSearchProblem problem, LocalOptimizerSearch algorithm) {
+            /*<A,S>*/ GeneralSearchProblem/*<A,S>*/ createLocalRestriction(GeneralSearchProblem/*<A,S>*/ problem, LocalOptimizerSearch/*<A,S>*/ algorithm) {
                 return PackageUtilities.restrictRandomly(problem,1,algorithm);
             }
         };
@@ -239,7 +239,7 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
      * @todo would we benfit from extending GeneralSearchProblem.OptionIterator?
      * @internal note that we do not strictly require knowing the algorithm (its constant getEvaluation() would suffice), but we needs its getRandom() and our descendants might need any additional stuff.
      */
-    public static abstract class OptionIterator implements Iterator, Serializable {
+    public static abstract class OptionIterator/*<A,S>*/ implements Iterator/*<S>*/, Serializable {
         private static final long serialVersionUID = -658271440377589506L;
         /**
          * The search problem to solve.
@@ -254,12 +254,12 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
          * @serial
          * @todo transientize?
          */
-        private final MutableFunction g;
+        private final MutableFunction/*<S,Real>*/ g;
         /**
          * The algorithm using this (randomized) iterator.
          * @serial
          */
-        private final LocalOptimizerSearch algorithm;
+        private final LocalOptimizerSearch/*<A,S>*/ algorithm;
         /**
          * The current state s&isin;S of this transition path.
          * @serial
@@ -271,7 +271,7 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
          * @todo transientize
          */
         private Real accumulatedCost;
-        public OptionIterator(GeneralSearchProblem problem, LocalOptimizerSearch algorithm) {
+        public OptionIterator(GeneralSearchProblem/*<A,S>*/ problem, LocalOptimizerSearch/*<A,S>*/ algorithm) {
             this.algorithm = algorithm;
             this.problem = problem;
             this.g = problem.getAccumulatedCostFunction();
@@ -293,7 +293,7 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
         /**
          * Get the algorithm using this (randomized) iterator.
          */
-        protected final LocalOptimizerSearch getAlgorithm() {
+        protected final LocalOptimizerSearch/*<A,S>*/ getAlgorithm() {
             return algorithm;
         }
 
@@ -306,8 +306,8 @@ public abstract class LocalOptimizerSearch extends GeneralSearch implements Prob
             return state;
         }
 
-        public Object next() {
-            final List actions = Setops.asList(problem.actions(state));
+        public Object/*>S<*/ next() {
+            final List/*<A>*/ actions = Setops.asList(problem.actions(state));
             if (actions.isEmpty())
                 //@internal note that hasNext() will not respect this case, since it is considered as an error
                 //@xxx should random-restart, silently? Or catch a special exception from outside, and decide random-restart there?

@@ -40,8 +40,8 @@ public class Genome extends Gene.List {
     /**
      * Compare two Genomes according to their fitness, descending.
      */
-    public static final Comparator/*<Genome, Genome>*/ comparator = new FitnessComparator();
-    private static class FitnessComparator implements Comparator/*<Genome, Genome>*/, Serializable {
+    public static final Comparator/*<Genome>*/ comparator = new FitnessComparator();
+    private static class FitnessComparator implements Comparator/*<Genome>*/, Serializable {
         private static final long serialVersionUID = -7579598676068557251L;
         public int compare(Object/*>Genome<*/ o1, Object/*>Genome<*/ o2) {
             Genome a = (Genome) o1;

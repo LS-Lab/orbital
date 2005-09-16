@@ -67,5 +67,5 @@ public /*template*/ interface BinaryFunction/*<A1, A2, B>*/ extends Functor {
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(BinaryFunction, BinaryFunction, BinaryFunction)
      */
-    static interface Composite extends Functor.Composite, BinaryFunction/*<A1, A2, B>*/ {}
+    static interface Composite/*<A1,A2, B>*/ extends Functor.Composite, BinaryFunction/*<A1, A2, B>*/ {}
 }

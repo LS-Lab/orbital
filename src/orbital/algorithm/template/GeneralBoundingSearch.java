@@ -24,7 +24,8 @@ import orbital.math.Real;
  * @version $Id$
  * @author  Andr&eacute; Platzer
  */
-public abstract class GeneralBoundingSearch extends GeneralSearch implements EvaluativeAlgorithm {
+public abstract class GeneralBoundingSearch/*<A,S>*/ extends GeneralSearch/*<A,S>*/
+    implements EvaluativeAlgorithm/*<S>*/ {
     private static final long serialVersionUID = -1094428950720102400L;
     /**
      * Whether the search is continued after a solution is found.
@@ -148,7 +149,7 @@ public abstract class GeneralBoundingSearch extends GeneralSearch implements Eva
      * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
      * @internal Implemented as an iterative unrolling of a right-linear tail-recursion.
      */
-    protected Object/*>S<*/ search(Iterator nodes) {
+    protected Object/*>S<*/ search(Iterator/*<S>*/ nodes) {
         final Function/*<S,Real>*/ g = getProblem().getAccumulatedCostFunction();
         /* contains current best (minimum) solution */
         Object/*>S<*/ bestSolution = null;

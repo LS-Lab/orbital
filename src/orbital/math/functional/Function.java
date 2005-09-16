@@ -7,6 +7,7 @@
 package orbital.math.functional;
 
 import orbital.logic.functor.Functor;
+import orbital.math.Arithmetic;
 
 /**
  * This interface encapsulates a mathematical unary function "r = f(x)".
@@ -61,5 +62,6 @@ public interface Function/*<A extends Arithmetic, B extends Arithmetic>*/ extend
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(Function, Function)
      */
-    static interface Composite extends orbital.logic.functor.Function/*<A, B>*/.Composite, Function/*<A, B>*/, MathFunctor.Composite {}
+    static interface Composite/*<A extends Arithmetic, B extends Arithmetic>*/
+	extends orbital.logic.functor.Function/*<A, B>*/.Composite, Function/*<A, B>*/, MathFunctor.Composite {}
 }

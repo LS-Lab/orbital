@@ -8,7 +8,8 @@ package orbital.algorithm.template;
 
 import java.util.Collection;
 import orbital.logic.functor.Function;
-
+import orbital.math.Real;
+ 
 import java.util.List;
 import java.util.LinkedList;
 import java.util.TreeSet;
@@ -29,11 +30,12 @@ import orbital.util.Setops;
  * @author  Andr&eacute; Platzer
  * @see Greedy
  */
-public abstract class BestFirstSearch extends GeneralSearch implements EvaluativeAlgorithm {
+public abstract class BestFirstSearch/*<A,S>*/ extends GeneralSearch/*<A,S>*/
+    implements EvaluativeAlgorithm/*<S>*/ {
     private static final long serialVersionUID = -7753264910951203557L;
 
-    protected Iterator createTraversal(GeneralSearchProblem problem) {
-        return new OptionIterator(problem, getEvaluation());
+    protected Iterator createTraversal(GeneralSearchProblem/*<A,S>*/ problem) {
+        return new OptionIterator/*<A,S>*/(problem, getEvaluation());
     }
 
     /**
@@ -43,7 +45,7 @@ public abstract class BestFirstSearch extends GeneralSearch implements Evaluativ
      * @version $Id$
      * @author  Andr&eacute; Platzer
      */
-    public static class OptionIterator extends GeneralSearch.OptionIterator {
+    public static class OptionIterator/*<A,S>*/ extends GeneralSearch.OptionIterator/*<A,S>*/ {
         private static final long serialVersionUID = 1955160705943645903L;
         /**
          * the sorted list of nodes.
@@ -54,22 +56,22 @@ public abstract class BestFirstSearch extends GeneralSearch implements Evaluativ
         // or even return new PriorityQueue();
 
         // @todo use a data structure that caches the evaluation values and does not need to reevaluate them over and over again, just because we want to sort it.
-        private List       nodes;
+        private List/*<S>*/ nodes;
         /**
          * the comparator used for sorting nodes.
          * @serial
          */
-        private Comparator comparator;
+        private Comparator/*<S>*/ comparator;
         /**
          * {@inheritDoc}
          * @param evaluation the evaluation function to use for sorting the options monotonically.
          *  Usually {@link EvaluativeAlgorithm#getEvaluation()}.
          */
-        public OptionIterator(GeneralSearchProblem problem, Function evaluation) {
+        public OptionIterator(GeneralSearchProblem/*<A,S>*/ problem, Function/*<S,Real>*/ evaluation) {
             super(problem);
-            this.nodes = new LinkedList();
+            this.nodes = new LinkedList/*<S>*/();
             nodes.add(problem.getInitialState());
-            this.comparator = new EvaluationComparator(evaluation);
+            this.comparator = new EvaluationComparator/*<S>*/(evaluation);
         }
         protected boolean isEmpty() {
             return nodes.isEmpty();
@@ -88,7 +90,7 @@ public abstract class BestFirstSearch extends GeneralSearch implements Evaluativ
          * @postconditions sorted(nodes)
          * @see orbital.util.Setops#merge(List, List, Comparator)
          */
-        protected boolean add(Iterator newNodes) {
+        protected boolean add(Iterator/*<S>*/ newNodes) {
             if (!newNodes.hasNext())
                 return false;
             List l = Setops.asList(newNodes);

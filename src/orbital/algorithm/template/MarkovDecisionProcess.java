@@ -94,11 +94,12 @@ import java.util.logging.Level;
  * @todo @see "H. Geffner and B. Bonet. Solving Large POMDPs using Real Time Dynamic Programming."
  * @TODO extend more general base class or interface Planning
  */
-public abstract class MarkovDecisionProcess /*extends Planning*/ implements AlgorithmicTemplate/*<MarkovDecisionProblem,Function>*/, Serializable {
+public abstract class MarkovDecisionProcess/*<A,S,M extends MarkovDecisionProblem.Transition>*/
+    /*extends Planning*/ implements AlgorithmicTemplate/*<MarkovDecisionProblem<A,S,M>,Function<S,A>>*/, Serializable {
     private static final long serialVersionUID = 2351017747303613618L;
     private static final Logger logger = Logger.getLogger(MarkovDecisionProcess.class.getName());
     private static final Values valueFactory = Values.getDefaultInstance();
-    public Object solve(AlgorithmicProblem p) {
+    public Object/*>Function<S,A><*/ solve(AlgorithmicProblem/*>MarkovDecisionProblem<A,S,M><*/ p) {
         return solve((MarkovDecisionProblem) p);
     }
     
@@ -106,20 +107,20 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
      * The MDP problem to solve.
      * @serial
      */
-    private MarkovDecisionProblem problem;
+    private MarkovDecisionProblem/*<A,S,M>*/ problem;
         
     /**
      * Get the current problem.
      * @return the problem specified in the last call to solve.
      */
-    protected final MarkovDecisionProblem getProblem() {
+    protected final MarkovDecisionProblem/*<A,S,M>*/ getProblem() {
         return problem;
     }
     /**
      * Set the current problem.
      * @param newproblem the problem specified in the last call to solve.
      */
-    private final void setProblem(MarkovDecisionProblem newproblem) {
+    private final void setProblem(MarkovDecisionProblem/*<A,S,M>*/ newproblem) {
         this.problem = newproblem;
     }
     
@@ -128,7 +129,7 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
      * @return the solution policy function S&rarr;A found,
      *  or <code>null</code> if no solution could be found.
      */
-    public Function/*<S,A>*/ solve(MarkovDecisionProblem p) {
+    public Function/*<S,A>*/ solve(MarkovDecisionProblem/*<A,S,M>*/ p) {
         setProblem(p);
         return plan();
     }
@@ -153,7 +154,9 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
      * @see "Bellman, R. E. (1957). Dynamic Programming. Princeton University Press, Princeton, New Jersey."
      * @todo possible to unify with orbital.algorithm.template.DynamicProgramming?
      */
-    public static abstract class DynamicProgramming extends MarkovDecisionProcess implements HeuristicAlgorithm {
+    public static abstract class DynamicProgramming/*<A,S,M extends MarkovDecisionProblem.Transition>*/
+	extends MarkovDecisionProcess/*<A,S,M>*/
+	implements HeuristicAlgorithm/*<S>*/ {
         private static final long serialVersionUID = 6262421425846708636L;
         /**
          * the current discount factor &gamma;.
@@ -164,7 +167,7 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
          * the heuristic function h, used for unknown states.
          * @serial
          */
-        private Function heuristic;
+        private Function/*<S,Real>*/ heuristic;
 
         /**
          * @param heuristic the heuristic function to use.
@@ -173,7 +176,7 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
          * @see #setHeuristic(Function)
          * @see #setDiscount(Real)
          */
-        public DynamicProgramming(Function heuristic, Real gamma) {
+        public DynamicProgramming(Function/*<S,Real>*/ heuristic, Real gamma) {
             this.heuristic = heuristic;
             this.discount = gamma;
         }
@@ -184,7 +187,7 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
             this(heuristic, Values.getDefaultInstance().valueOf(gamma));
         }
         
-        public DynamicProgramming(Function heuristic) {
+        public DynamicProgramming(Function/*<S,Real>*/ heuristic) {
             this(heuristic, 1);
         }
 
@@ -213,7 +216,7 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
             return discount;
         }
         
-        public Function getHeuristic() {
+        public Function/*<S,Real>*/ getHeuristic() {
             return heuristic;
         }
     
@@ -226,7 +229,7 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
          * Nevertheless its always safe to set the heuristic function immediately
          * before a call to {@link #plan()}.</p>
          */
-        public void setHeuristic(Function heuristic) {
+        public void setHeuristic(Function/*<S,Real>*/ heuristic) {
             this.heuristic = heuristic;
         }
     
@@ -239,14 +242,14 @@ public abstract class MarkovDecisionProcess /*extends Planning*/ implements Algo
          * @return an arbitrary table-like implementation ready to keep values for arguments.
          * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
          */
-        protected MutableFunction createMap() {
+        protected MutableFunction/*<S,Real>*/ createMap() {
             return new MutableFunction.TableFunction(getEvaluation());
         }
 
         /**
          * f(s) = h(s).
          */
-        public Function getEvaluation() {
+        public Function/*<S,Real>*/ getEvaluation() {
             return getHeuristic();
         }
     

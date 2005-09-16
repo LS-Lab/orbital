@@ -471,7 +471,7 @@ public interface ValueFactory {
      * @return the polynomial <var>a</var><sub>0,...,0</sub> + <var>a</var><sub>1,0,...,0</sub>X<sub>1</sub> + <var>a</var><sub>1,1,0,....,0</sub>X<sub>1</sub>X<sub>2</sub> + ... + <var>a</var><sub>2,1,0,....,0</sub>X<sub>1</sub><sup>2</sup>X<sub>2</sub> + ... + <var>a</var><sub>d<sub>1</sub>,...,d<sub>n</sub></sub>X<sub>1</sub><sup>d<sub>1</sub></sup>...&X<sub>n</sub><sup>d<sub>n</sub></sup>.
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      */
-    /*<R extends Arithmetic>*/ Polynomial/*<R>*/ polynomial(Object coefficients);
+    /*_<R extends Arithmetic>_*/ Polynomial/*_<R>_*/ polynomial(Object coefficients);
 
     /**
      * Returns a polynomial view of a tensor.
@@ -485,7 +485,7 @@ public interface ValueFactory {
      * @see #polynomial(Object)
      * @see #asTensor(Polynomial)
      */
-    /*<R extends Arithmetic>*/ Polynomial/*<R>*/ asPolynomial(Tensor/*<R>*/ coefficients);
+    /*<R extends Arithmetic>*/ Polynomial/*<R,Vector<Integer>>*/ asPolynomial(Tensor/*<R>*/ coefficients);
     /**
      * Returns a vector view of the coefficients of a polynomial.
      * <p>
@@ -497,13 +497,13 @@ public interface ValueFactory {
      *  and thus is not a multivariate polynomial in the proper sense.
      * @see #asPolynomial(Tensor)
      */
-    /*<R extends Arithmetic>*/ Tensor/*<R>*/ asTensor(Polynomial/*<R>*/ p);
+    /*<R extends Arithmetic>*/ Tensor/*<R>*/ asTensor(Polynomial/*<R,Vector<Integer>>*/ p);
 
     /**
      * Returns an unmodifiable view of the specified polynomial.
      * The result is a <a href="ValueFactory.html#readOnlyView">read only view</a>.
      */
-    /*<R extends Arithmetic>*/ Polynomial/*<R>*/ constant(Polynomial/*<R>*/ p);
+    /*<R extends Arithmetic, S extends Arithmetic>*/ Polynomial/*<R,S>*/ constant(Polynomial/*<R,S>*/ p);
 
     /**
      * The monomial c&middot;X<sup>i</sup>.
@@ -511,7 +511,7 @@ public interface ValueFactory {
      * @param exponent the exponent i of the monomial.
      * @todo implementation could be generalized to non-AbstractMultivariatePolynomials.
      */
-    Polynomial/*<R,S>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, Arithmetic/*>S<*/ exponent);
+    /*<R extends Arithmetic, S extends Arithmetic>*/ Polynomial/*<R,S>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, Arithmetic/*>S<*/ exponent);
     /**
      * The monomial c&middot;X<sub>0</sub><sup>i[0]</sup>...X<sub>n-1</sub><sup>i[n-1]</sup>.
      * @param coefficient the coefficient c of the monomial.
@@ -519,7 +519,7 @@ public interface ValueFactory {
      *  The number of variables is <code>n:=exponents.length</code>.
      * @internal horribly complicate implementation
      */
-    Polynomial/*<R>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, int[] exponents);
+    /*<R extends Arithmetic, S extends Arithmetic>*/ Polynomial/*<R,S>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, int[] exponents);
     /**
      * The monomial 1&middot;X<sup>i</sup>.
      * Note that the coefficient is {@link #ONE 1}&isin;<b>Z</b>.
@@ -636,7 +636,7 @@ public interface ValueFactory {
      * @preconditions m = AlgebraicAlgorithms.groebnerBasis(m,monomialOrder)
      * @postconditions RES = quotient(a, AlgebraicAlgorithms.reduce(m, monomialOrder))
      */
-    /*<R extends Arithmetic>*/ Quotient/*<Polynomial<R,S>>*/ quotient(Polynomial/*<R,S>*/ a, java.util.Set/*<Polynomial<R,S>>*/ m, java.util.Comparator/*<S>*/ monomialOrder);
+    /*<R extends Arithmetic, S extends Arithmetic>*/ Quotient/*<Polynomial<R,S>>*/ quotient(Polynomial/*<R,S>*/ a, java.util.Set/*<Polynomial<R,S>>*/ m, java.util.Comparator/*<S>*/ monomialOrder);
 
     // quotient constructor synonyms
 
@@ -721,7 +721,7 @@ public interface ValueFactory {
      * </p>
      * @todo introduce the second case with explicit checking via a third argument predicate?
      */
-    /*<M extends Arithmetic, S extends Arithmetic>*/ Fraction/*<M,S>*/ fraction(Arithmetic/*>M<*/ a, Arithmetic/*<S>*/ s);
+    /*<M extends Arithmetic, S extends Arithmetic>*/ Fraction/*<M,S>*/ fraction(Arithmetic/*>M<*/ a, Arithmetic/*>S<*/ s);
 
     // symbol constructors
 
@@ -750,7 +750,7 @@ public interface ValueFactory {
      * The result is a structurally unmodifiable <a href="Tensor.html#view">view</a>.
      * @see #asVector(Tensor)
      */
-    /*<R extends ListIterator,  Arithmetic>*/ Vector/*<R>*/ asVector(Matrix/*<R>*/ m);
+    /*<R extends Arithmetic>*/ Vector/*<R>*/ asVector(Matrix/*<R>*/ m);
     /**
      * Returns a vector view of the specified tensor.
      * The result is a structurally unmodifiable <a href="Tensor.html#view">view</a>.
@@ -758,7 +758,7 @@ public interface ValueFactory {
      * The tensor is interpreted row-wise as a vector.
      * </p>
      */
-    /*<R extends ListIterator,  Arithmetic>*/ Vector/*<R>*/ asVector(Tensor/*<R>*/ t);
+    /*<R extends Arithmetic>*/ Vector/*<R>*/ asVector(Tensor/*<R>*/ t);
 
 
     /**

@@ -7,9 +7,9 @@
 package orbital.math.functional;
 
 import orbital.logic.functor.Functor;
+import orbital.math.Arithmetic;
 import orbital.math.UnivariatePolynomial;
 
-import orbital.math.Arithmetic;
 import orbital.math.Normed;
 import orbital.logic.functor.Predicate;
 

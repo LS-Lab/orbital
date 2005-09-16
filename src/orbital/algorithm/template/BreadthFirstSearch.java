@@ -32,7 +32,7 @@ import orbital.math.Values;
  * @author  Andr&eacute; Platzer
  * @note is a basic aspect of exploring the search space breadth-first.
  */
-public class BreadthFirstSearch extends GeneralSearch {
+public class BreadthFirstSearch/*<A,S>*/ extends GeneralSearch/*<A,S>*/ {
     private static final long serialVersionUID = -3246910930824688923L;
     /**
      * O(b<sup>d</sup>) where b is the branching factor and d the solution depth.
@@ -58,8 +58,8 @@ public class BreadthFirstSearch extends GeneralSearch {
         return true;
     }
 
-    protected Iterator createTraversal(GeneralSearchProblem problem) {
-        return new OptionIterator(problem);
+    protected Iterator/*<S>*/ createTraversal(GeneralSearchProblem/*<A,S>*/ problem) {
+        return new OptionIterator/*<A,S>*/(problem);
     }
 
     /**
@@ -67,7 +67,7 @@ public class BreadthFirstSearch extends GeneralSearch {
      * @version $Id$
      * @author  Andr&eacute; Platzer
      */
-    public static class OptionIterator extends GeneralSearch.OptionIterator {
+    public static class OptionIterator/*<A,S>*/ extends GeneralSearch.OptionIterator/*<A,S>*/ {
         private static final long serialVersionUID = -6989557875498264664L;
         /**
          * effectively, nodes is a queue of iterators.
@@ -84,7 +84,7 @@ public class BreadthFirstSearch extends GeneralSearch {
         protected Object/*>S<*/ select() {
             return nodes.next();
         }
-        protected boolean add(Iterator newNodes) {
+        protected boolean add(Iterator/*<S>*/ newNodes) {
             nodes.add(newNodes);
             return newNodes.hasNext();
         }

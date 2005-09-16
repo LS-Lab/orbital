@@ -66,5 +66,5 @@ public interface Predicate/*<A>*/ extends Functor /*abstract template extends Fu
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(Predicate, Function)
      */
-    static interface Composite extends Functor.Composite, Predicate/*<A>*/ {}
+    static interface Composite/*<A>*/ extends Functor.Composite, Predicate/*<A>*/ {}
 }
