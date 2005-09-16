@@ -67,7 +67,7 @@ public interface Polynomial/*<R extends Arithmetic, S extends Arithmetic>*/
      *  at least containing all indices of coefficients &ne;0.
      * @postconditions &forall;i&isin;S&#8726;RES get(i)=0
      */
-    Iterator/*_<S>_*/ indices();
+    Iterator/*<S>*/ indices();
 
     /**
      * Get the i-th coefficient.
@@ -107,7 +107,7 @@ public interface Polynomial/*<R extends Arithmetic, S extends Arithmetic>*/
      * Returns an iterator over all coefficients (up to degree).
      * @xxx remove/adapt, whatever. What are "all" coefficients up to "degree" in general?
      */
-    ListIterator/*_<R>_*/ iterator();
+    ListIterator/*<R>*/ iterator();
 
     // function
     

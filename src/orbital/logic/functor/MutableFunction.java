@@ -62,7 +62,7 @@ public interface MutableFunction/*<A, B>*/ extends Function/*<A, B>*/ {
          *  Caching is important when no memory constraints are posed and the initialization
          *  function performs expensive calculation.
          */
-        public TableFunction(Map/*_<A, B>_*/ map, Function/*<A, B>*/ initialization, boolean cache) {
+        public TableFunction(Map/*<A, B>*/ map, Function/*<A, B>*/ initialization, boolean cache) {
             this.map = map;
             this.initialization = initialization;
             this.cache = cache;
@@ -79,7 +79,7 @@ public interface MutableFunction/*<A, B>*/ extends Function/*<A, B>*/ {
          *  function performs expensive calculation.
          */
         public TableFunction(Function/*<A, B>*/ initialization, boolean cache) {
-            this(new HashMap/*_<A, B>_*/(), initialization, cache);
+            this(new HashMap/*<A, B>*/(), initialization, cache);
         }
         public TableFunction(Function/*<A, B>*/ initialization) {
             this(initialization, true);

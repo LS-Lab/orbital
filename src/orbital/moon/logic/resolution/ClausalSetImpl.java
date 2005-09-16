@@ -26,20 +26,20 @@ import orbital.moon.logic.ClassicalLogic;
  * @version $Id$
  * @author  Andr&eacute; Platzer
  */
-public class ClausalSetImpl extends LinkedHashSet/*_<Clause>_*/ implements ClausalSet {
+public class ClausalSetImpl extends LinkedHashSet/*<Clause>*/ implements ClausalSet {
     private static final Formula FORMULA_TRUE = (Formula) new ClassicalLogic().createAtomic(new SymbolBase("true", Types.TRUTH));
 
     /**
      * Copy constructor.
      * @internal transitively public constructors required for Functionals.map to produce Clauses.
      */
-    public ClausalSetImpl(Set/*_<Clause>_*/ clauses) {
+    public ClausalSetImpl(Set/*<Clause>*/ clauses) {
         super(clauses);
         assert Setops.all(clauses, Functionals.bindSecond(Utility.instanceOf, Clause.class)) : "instanceof Set<Formula>";
     }
     public ClausalSetImpl() {}
 
-    public Iterator/*_<Clause>_*/ getProbableComplementsOf(Clause C) {
+    public Iterator/*<Clause>*/ getProbableComplementsOf(Clause C) {
         //@todo use indexing for far better implementation
         return iterator();
     }

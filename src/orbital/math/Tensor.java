@@ -126,7 +126,7 @@ public interface Tensor/*<R extends Arithmetic>*/ extends Arithmetic {
      * @internal it seems better not to introduce a new interface in between Iterator and ListIterator,
      *  since we rely on ListIterators for Matrix.getColumns() etc anyway.
      */
-    ListIterator/*_<R>_*/ iterator();
+    ListIterator/*<R>*/ iterator();
     
     // sub-views
 

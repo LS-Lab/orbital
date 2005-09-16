@@ -97,12 +97,12 @@ public interface Matrix/*<R extends Arithmetic>*/ extends Tensor/*<R>*/ {
     /**
      * Returns an iterator over the column vectors.
      */
-    ListIterator/*_<R>_*/ getColumns();
+    ListIterator/*<R>*/ getColumns();
 
     /**
      * Returns an iterator over the row vectors.
      */
-    ListIterator/*_<R>_*/ getRows();
+    ListIterator/*<R>*/ getRows();
 
     /**
      * Returns an iterator over all components (row-wise).
@@ -110,7 +110,7 @@ public interface Matrix/*<R extends Arithmetic>*/ extends Tensor/*<R>*/ {
      * If you cannot avoid it, call transpose().iterator() to get an iterator over all components, column by column.</p>
      * @return an iterator that iterates over {m<sub>0,0</sub>,&#8230;,m<sub>0,m-1</sub>, m<sub>1,0</sub>,&#8230;,m<sub>1,m-1</sub>,&#8230;, m<sub>n-1,0</sub>,&#8230;,m<sub>n-1,m-1</sub>}.
      */
-    ListIterator/*_<R>_*/ iterator();
+    ListIterator/*<R>*/ iterator();
 
     // sub-views
         

@@ -41,13 +41,13 @@ public class SubstitutionImpl implements Substitution, Serializable {
      * The set of elementary replacements.
      * @serial
      */
-    private Collection/*_<Matcher>_*/ replacements;
+    private Collection/*<Matcher>*/ replacements;
     /**
      * Create a new substitution.
      * @param replacements the set of elementary replacements.
      * @preconditions s[i] instanceof {@link Substitution.Matcher}.
      */
-    public SubstitutionImpl(Collection/*_<Matcher>_*/ replacements) {
+    public SubstitutionImpl(Collection/*<Matcher>*/ replacements) {
         if (replacements == null)
             throw new NullPointerException("set of elementary replacements of a substituion cannot be " + replacements);
         this.replacements = replacements;
@@ -67,7 +67,7 @@ public class SubstitutionImpl implements Substitution, Serializable {
         return replacements.hashCode();
     }
 
-    public Collection/*_<Matcher>_*/ getReplacements() {
+    public Collection/*<Matcher>*/ getReplacements() {
         return Setops.unmodifiableCollectionLike(replacements);
     }
         
@@ -75,7 +75,7 @@ public class SubstitutionImpl implements Substitution, Serializable {
     //@todo we should not continue substituting bound variables, as in (&forall; x P(x,y))[x->t] = (&forall; x P(x,y)) or (&lambda; x . f(x))[x->t] = &lambda; x . f(x)
     public Object apply(final Object term) {
         // apply the first substitution that matches and do not descend
-        for (Iterator/*_<Matcher>_*/ i = replacements.iterator(); i.hasNext(); ) {
+        for (Iterator/*<Matcher>*/ i = replacements.iterator(); i.hasNext(); ) {
             Matcher s = (Matcher/*__*/) i.next();
             if (s.matches(term))
                 // matches

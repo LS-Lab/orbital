@@ -96,7 +96,7 @@ public class TraceableClauseImpl extends ClauseImpl {
 
     // add traces
 
-    public Iterator/*_<Clause>_*/ resolveWith(Clause G) {
+    public Iterator/*<Clause>*/ resolveWith(Clause G) {
         final GraphFactory graphFactory = proofGraph.getGraphFactory();
         final TraceableClauseImpl G2 = (TraceableClauseImpl) G;
         final LinkedList r = new LinkedList();

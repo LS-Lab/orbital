@@ -28,7 +28,7 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/ extends A
     /**
      * Maps indices in S to the corresponding coefficients &iota;(s)&isin;R.
      */
-    private final Map/*_<S,R>_*/ coefficients;
+    private final Map/*<S,R>*/ coefficients;
     /**
      * The index 0&isin;S of the constant term.
      */
@@ -39,7 +39,7 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/ extends A
         this.CONSTANT_TERM = anIndexObject.zero();
         this.coefficients = new HashMap();
     }
-    public SparsePolynomial(Map/*_<S,R>_*/ coefficients) {
+    public SparsePolynomial(Map/*<S,R>*/ coefficients) {
         this.CONSTANT_TERM = ((Arithmetic/*>S<*/)coefficients.keySet().iterator().next()).zero();
         this.coefficients = coefficients;
     }

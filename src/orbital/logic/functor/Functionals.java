@@ -540,8 +540,8 @@ public class Functionals {
      */
     public static final /*<A,B>*/ BinaryFunction/*<Function<A,B>,A, B>*/ apply = new BinaryFunction/*<Function<A,B>,A, B>*/() {
             private final Specification callTypeDeclaration = new Specification(new Class[] {
-                Function/*_<A,B>_*/.class, Object/*_>A<_*/.class
-            }, Object/*_>B<_*/.class);
+                Function/*<A,B>*/.class, Object/*>A<*/.class
+            }, Object/*>B<*/.class);
             public Object apply(Object f, Object x) {
                 return ((Function)f).apply(x);
             }
@@ -1615,21 +1615,21 @@ public class Functionals {
         public Object apply(Object x) {
             // almost identical to @see Utility#asIterator
             // (almost) return map(function, asIterator(x), ...); but with optimized third argument and optimized adequate return-type
-            if (x instanceof Collection/*_<A>_*/) {
-                if (x instanceof List/*_<A>_*/)
-                    return map(this, (List/*_<A>_*/) x);
-                else if (x instanceof SortedSet/*_<A>_*/)
-                    return map(this, (SortedSet/*_<A>_*/) x);
-                else if (x instanceof Set/*_<A>_*/)
-                    return map(this, (Set/*_<A>_*/) x);
+            if (x instanceof Collection/*<A>*/) {
+                if (x instanceof List/*<A>*/)
+                    return map(this, (List/*<A>*/) x);
+                else if (x instanceof SortedSet/*<A>*/)
+                    return map(this, (SortedSet/*<A>*/) x);
+                else if (x instanceof Set/*<A>*/)
+                    return map(this, (Set/*<A>*/) x);
                 else
-                    return map(this, (Collection/*_<A>_*/) x);
-            } else if (x instanceof Iterator/*_<A>_*/) {
+                    return map(this, (Collection/*<A>*/) x);
+            } else if (x instanceof Iterator/*<A>*/) {
                 //@internal could just as well rely on the next case of isIteratable, here
-                if (x instanceof ListIterator/*_<A>_*/)
-                    return map(this, (ListIterator/*_<A>_*/) x);
+                if (x instanceof ListIterator/*<A>*/)
+                    return map(this, (ListIterator/*<A>*/) x);
                 else
-                    return map(this, (Iterator/*_<A>_*/) x);
+                    return map(this, (Iterator/*<A>*/) x);
             } else if (Utility.isIteratable(x))
                 return map(this, (Object) x);
             else
@@ -1661,7 +1661,7 @@ public class Functionals {
      * </p>
      * @preconditions ALWAYS(a.hasNext() &rArr; ((t.hasNext() &rArr; SUCCEEDES(t.set(Object))) &and; (&not;t.hasNext() &rArr; SUCCEEDES(t.add(Object)))))
      */
-    protected static final /*<A, B>*/ void mapInto(Function/*<A, B>*/ f, Iterator/*_<A>_*/ a, ListIterator/*_<B>_*/ r) {
+    protected static final /*<A, B>*/ void mapInto(Function/*<A, B>*/ f, Iterator/*<A>*/ a, ListIterator/*<B>*/ r) {
         while (a.hasNext()) {
             Object/*>A<*/ fa = f.apply((/*__*/Object/*>A<*/) a.next());
             if (r.hasNext()) {
@@ -1672,7 +1672,7 @@ public class Functionals {
             }
         }
     }
-    private static /*<A, B>*/ Collection/*_<B>_*/ mapInto(Function/*<A, B>*/ f, Iterator/*_<A>_*/ a, Collection/*_<B>_*/ r) {
+    private static /*<A, B>*/ Collection/*<B>*/ mapInto(Function/*<A, B>*/ f, Iterator/*<A>*/ a, Collection/*<B>*/ r) {
         while (a.hasNext())
             r.add(f.apply((/*__*/Object/*>A<*/) a.next()));
         return r;
@@ -1701,25 +1701,25 @@ public class Functionals {
      * @postconditions RES.getClass()=a.getClass() or at least compatible
      * @see #listable(Function)
      */
-    public static /*<A, B>*/ Collection/*_<B>_*/ map(Function/*<A, B>*/ f, Collection/*_<A>_*/ a) {
+    public static /*<A, B>*/ Collection/*<B>*/ map(Function/*<A, B>*/ f, Collection/*<A>*/ a) {
         return mapInto(f, a.iterator(), Setops.newCollectionLike(a));
     }
-    public static /*<A, B>*/ List/*_<B>_*/ map(Function/*<A, B>*/ f, List/*_<A>_*/ a) {
-        return (List/*_<B>_*/) map(f, (Collection/*_<B>_*/) a);
+    public static /*<A, B>*/ List/*<B>*/ map(Function/*<A, B>*/ f, List/*<A>*/ a) {
+        return (List/*<B>*/) map(f, (Collection/*<B>*/) a);
     }
-    public static /*<A, B>*/ Set/*_<B>_*/ map(Function/*<A, B>*/ f, Set/*_<A>_*/ a) {
-        return (Set/*_<B>_*/) map(f, (Collection/*_<B>_*/) a);
+    public static /*<A, B>*/ Set/*<B>*/ map(Function/*<A, B>*/ f, Set/*<A>*/ a) {
+        return (Set/*<B>*/) map(f, (Collection/*<B>*/) a);
     }
-    public static /*<A, B>*/ SortedSet/*_<B>_*/ map(Function/*<A, B>*/ f, SortedSet/*_<A>_*/ a) {
-        return (SortedSet/*_<B>_*/) map(f, (Collection/*_<B>_*/) a);
+    public static /*<A, B>*/ SortedSet/*<B>*/ map(Function/*<A, B>*/ f, SortedSet/*<A>*/ a) {
+        return (SortedSet/*<B>*/) map(f, (Collection/*<B>*/) a);
     }
     //@todo 21 introduce Function map(Function) similar to Setops.createSelection?
-    public static /*<A, B>*/ Iterator/*_<B>_*/ map(Function/*<A, B>*/ f, Iterator/*_<A>_*/ a) {
+    public static /*<A, B>*/ Iterator/*<B>*/ map(Function/*<A, B>*/ f, Iterator/*<A>*/ a) {
         //@todo 21 mapping could happen inplace, i.e. return a new Iterator() which transforms just-in-time on demand, instead of in advance
-        return mapInto(f, a, new LinkedList/*_<B>_*/()).iterator();
+        return mapInto(f, a, new LinkedList/*<B>*/()).iterator();
     } 
-    public static /*<A, B>*/ ListIterator/*_<B>_*/ map(Function/*<A, B>*/ f, ListIterator/*_<A>_*/ a) {
-        return ((List) mapInto(f, a, new LinkedList/*_<B>_*/()) ).listIterator();
+    public static /*<A, B>*/ ListIterator/*<B>*/ map(Function/*<A, B>*/ f, ListIterator/*<A>*/ a) {
+        return ((List) mapInto(f, a, new LinkedList/*<B>*/()) ).listIterator();
     } 
     /**
      * Maps a list of arguments with a function.
@@ -1795,20 +1795,20 @@ public class Functionals {
 
         public Object apply(Object x, Object y) {
             // almost identical to @see Utility#asIterator, also @see ListableFunction
-            if ((x instanceof Collection/*_<A1>_*/) && (y instanceof Collection/*_<A2>_*/)) {
-                if ((x instanceof List/*_<A1>_*/) && (y instanceof List/*_<A2>_*/))
-                    return map(this, (List/*_<A1>_*/) x, (List/*_<A2>_*/) y);
-                else if ((x instanceof SortedSet/*_<A1>_*/) && (y instanceof SortedSet/*_<A2>_*/))
-                    return map(this, (SortedSet/*_<A1>_*/) x, (SortedSet/*_<A2>_*/) y);
-                else if ((x instanceof Set/*_<A1>_*/) && (y instanceof Set/*_<A2>_*/))
-                    return map(this, (Set/*_<A1>_*/) x, (Set/*_<A2>_*/) y);
+            if ((x instanceof Collection/*<A1>*/) && (y instanceof Collection/*<A2>*/)) {
+                if ((x instanceof List/*<A1>*/) && (y instanceof List/*<A2>*/))
+                    return map(this, (List/*<A1>*/) x, (List/*<A2>*/) y);
+                else if ((x instanceof SortedSet/*<A1>*/) && (y instanceof SortedSet/*<A2>*/))
+                    return map(this, (SortedSet/*<A1>*/) x, (SortedSet/*<A2>*/) y);
+                else if ((x instanceof Set/*<A1>*/) && (y instanceof Set/*<A2>*/))
+                    return map(this, (Set/*<A1>*/) x, (Set/*<A2>*/) y);
                 else
-                    return map(this, (Collection/*_<A1>_*/) x, (Collection/*_<A2>_*/) y);
-            } else if ((x instanceof Iterator/*_<A1>_*/) && (y instanceof Iterator/*_<A2>_*/)) {
-                if ((x instanceof ListIterator/*_<A1>_*/) && (y instanceof ListIterator/*_<A2>_*/))
-                    return map(this, (ListIterator/*_<A1>_*/) x, (ListIterator/*_<A2>_*/) y);
+                    return map(this, (Collection/*<A1>*/) x, (Collection/*<A2>*/) y);
+            } else if ((x instanceof Iterator/*<A1>*/) && (y instanceof Iterator/*<A2>*/)) {
+                if ((x instanceof ListIterator/*<A1>*/) && (y instanceof ListIterator/*<A2>*/))
+                    return map(this, (ListIterator/*<A1>*/) x, (ListIterator/*<A2>*/) y);
                 else
-                    return map(this, (Iterator/*_<A1>_*/) x, (Iterator/*_<A2>_*/) y);
+                    return map(this, (Iterator/*<A1>*/) x, (Iterator/*<A2>*/) y);
             } else if (Utility.isIteratable(x) && Utility.isIteratable(y))
                 return map(this, (Object) x, (Object) y);
             else
@@ -1840,7 +1840,7 @@ public class Functionals {
      * </p>
      * @preconditions ALWAYS(x.hasNext()&hArr;y.hasNext()) &and; ALWAYS(x.hasNext() &rArr; ((t.hasNext() &rArr; SUCCEEDES(t.set(Object))) &and; (&not;t.hasNext() &rArr; SUCCEEDES(t.add(Object)))))
      */
-    protected static /*<A1, A2, B>*/ void mapInto(BinaryFunction/*<A1, A2, B>*/ f, Iterator/*_<A1>_*/ x, Iterator/*_<A2>_*/ y, ListIterator/*_<B>_*/ t) {
+    protected static /*<A1, A2, B>*/ void mapInto(BinaryFunction/*<A1, A2, B>*/ f, Iterator/*<A1>*/ x, Iterator/*<A2>*/ y, ListIterator/*<B>*/ t) {
         while (x.hasNext() && y.hasNext()) {
             final Object/*>B<*/ fxy = f.apply((/*__*/Object/*>A1<*/) x.next(), (/*__*/Object/*>A2<*/) y.next());
             if (t.hasNext()) {
@@ -1861,26 +1861,26 @@ public class Functionals {
      * @postconditions RES.getClass()=x.getClass() or at least compatible
      * @see #listable(BinaryFunction)
      */
-    public static /*<A1, A2, B>*/ Collection/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, Collection/*_<A1>_*/ x, Collection/*_<A2>_*/ y) {
+    public static /*<A1, A2, B>*/ Collection/*<B>*/ map(BinaryFunction/*<A1, A2, B>*/ f, Collection/*<A1>*/ x, Collection/*<A2>*/ y) {
         if (x.size() != y.size())
             throw new IndexOutOfBoundsException("argument collections must have same size");
         return mapInto(f, x.iterator(), y.iterator(), Setops.newCollectionLike(x));
     } 
-    public static /*<A1, A2, B>*/ List/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, List/*_<A1>_*/ x, List/*_<A2>_*/ y) {
+    public static /*<A1, A2, B>*/ List/*<B>*/ map(BinaryFunction/*<A1, A2, B>*/ f, List/*<A1>*/ x, List/*<A2>*/ y) {
         return (List) map(f, (Collection)x, (Collection)y);
     }
-    public static /*<A1, A2, B>*/ Set/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, Set/*_<A1>_*/ x, Set/*_<A2>_*/ y) {
+    public static /*<A1, A2, B>*/ Set/*<B>*/ map(BinaryFunction/*<A1, A2, B>*/ f, Set/*<A1>*/ x, Set/*<A2>*/ y) {
         return (Set) map(f, (Collection)x, (Collection)y);
     }
-    public static /*<A1, A2, B>*/ SortedSet/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, SortedSet/*_<A1>_*/ x, SortedSet/*_<A2>_*/ y) {
+    public static /*<A1, A2, B>*/ SortedSet/*<B>*/ map(BinaryFunction/*<A1, A2, B>*/ f, SortedSet/*<A1>*/ x, SortedSet/*<A2>*/ y) {
         Utility.pre(Utility.equals(x.comparator(), y.comparator()), "need equal comparators for choosing a comparator for the resulting " + SortedSet.class.getName());
         return (SortedSet) map(f, (Collection)x, (Collection)y);
     }
-    public static /*<A1, A2, B>*/ Iterator/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, Iterator/*_<A1>_*/ x, Iterator/*_<A2>_*/ y) {
-        return mapInto(f, x, y, new LinkedList/*_<B>_*/()).iterator();
+    public static /*<A1, A2, B>*/ Iterator/*<B>*/ map(BinaryFunction/*<A1, A2, B>*/ f, Iterator/*<A1>*/ x, Iterator/*<A2>*/ y) {
+        return mapInto(f, x, y, new LinkedList/*<B>*/()).iterator();
     } 
-    public static /*<A1, A2, B>*/ ListIterator/*_<B>_*/ map(BinaryFunction/*<A1, A2, B>*/ f, ListIterator/*_<A1>_*/ x, ListIterator/*_<A2>_*/ y) {
-        return ((List) mapInto(f, x, y, new LinkedList/*_<B>_*/()) ).listIterator();
+    public static /*<A1, A2, B>*/ ListIterator/*<B>*/ map(BinaryFunction/*<A1, A2, B>*/ f, ListIterator/*<A1>*/ x, ListIterator/*<A2>*/ y) {
+        return ((List) mapInto(f, x, y, new LinkedList/*<B>*/()) ).listIterator();
     } 
     /**
      * Maps two lists of arguments with a BinaryFunction.
@@ -1904,7 +1904,7 @@ public class Functionals {
         }
         return a;
     } 
-    private static /*<A1, A2, B>*/ Collection/*_<B>_*/ mapInto(BinaryFunction/*<A1, A2, B>*/ f, Iterator/*_<A1>_*/ x, Iterator/*_<A2>_*/ y, Collection/*_<B>_*/ r) {
+    private static /*<A1, A2, B>*/ Collection/*<B>*/ mapInto(BinaryFunction/*<A1, A2, B>*/ f, Iterator/*<A1>*/ x, Iterator/*<A2>*/ y, Collection/*<B>*/ r) {
         while (x.hasNext() && y.hasNext())
             r.add(f.apply((/*__*/Object/*>A1<*/) x.next(), (/*__*/Object/*>A2<*/) y.next()));
         if (!(!x.hasNext() && !y.hasNext()))
@@ -1965,13 +1965,13 @@ public class Functionals {
             accumulated = f.apply(accumulated, a[i]);
         return accumulated;
     } 
-    public static /*<A, B>*/ Object/*>A<*/ foldLeft(BinaryFunction/*<A, B, A>*/ f, Object/*>A<*/ c, Iterator/*_<B>_*/ a) {
+    public static /*<A, B>*/ Object/*>A<*/ foldLeft(BinaryFunction/*<A, B, A>*/ f, Object/*>A<*/ c, Iterator/*<B>*/ a) {
         Object/*>A<*/ accumulated = c;
         while (a.hasNext())
             accumulated = f.apply(accumulated, (/*__*/Object/*>B<*/) a.next());
         return accumulated;
     } 
-    public static /*<A, B>*/ Object/*>A<*/ foldLeft(BinaryFunction/*<A, B, A>*/ f, Object/*>A<*/ c, Collection/*_<B>_*/ a) {
+    public static /*<A, B>*/ Object/*>A<*/ foldLeft(BinaryFunction/*<A, B, A>*/ f, Object/*>A<*/ c, Collection/*<B>*/ a) {
         return foldLeft(f, c, a.iterator());
     } 
 
@@ -2003,18 +2003,18 @@ public class Functionals {
     /**
      * efficient foldRight for lists.
      */
-    public static /*<A, B>*/ Object/*>B<*/ foldRight(BinaryFunction/*<A, B, B>*/ f, Object/*>B<*/ c, List/*_<A>_*/ a) {
+    public static /*<A, B>*/ Object/*>B<*/ foldRight(BinaryFunction/*<A, B, B>*/ f, Object/*>B<*/ c, List/*<A>*/ a) {
         Object/*>B<*/ result = c;
         for (ListIterator i = a.listIterator(a.size()); i.hasPrevious(); )
             result = f.apply((/*__*/Object/*>A<*/) i.previous(), result);
         return result;
     } 
-    public static /*<A, B>*/ Object/*>B<*/ foldRight(BinaryFunction/*<A, B, B>*/ f, Object/*>B<*/ c, Collection/*_<A>_*/ a) {
+    public static /*<A, B>*/ Object/*>B<*/ foldRight(BinaryFunction/*<A, B, B>*/ f, Object/*>B<*/ c, Collection/*<A>*/ a) {
         //iterative with copying: return foldRight(f, c, new LinkedList(a));
         //recursive banana
         return banana(c, f, a.iterator());
     } 
-    public static /*<A, B>*/ Object/*>B<*/ foldRight(BinaryFunction/*<A, B, B>*/ f, Object/*>B<*/ c, Iterator/*_<A>_*/ a) {
+    public static /*<A, B>*/ Object/*>B<*/ foldRight(BinaryFunction/*<A, B, B>*/ f, Object/*>B<*/ c, Iterator/*<A>*/ a) {
         //iterative with copying: return foldRight(f, c, Setops.asList(a));
         //recursive banana
         return banana(c, f, a);
@@ -2098,7 +2098,7 @@ public class Functionals {
         public final Object/*>B<*/ apply(Object a) {
             return apply(Utility.asIterator(a));
         } 
-        private final Object/*>B<*/ apply(Iterator/*_<A>_*/ it) {
+        private final Object/*>B<*/ apply(Iterator/*<A>*/ it) {
             if (!it.hasNext())
                 return c;
             else
@@ -2113,7 +2113,7 @@ public class Functionals {
      * @see Functionals.Catamorphism#Functionals.Catamorphism(Object, BinaryFunction)
      * @see #foldRight(BinaryFunction, Object, Iterator)
      */
-    public static /*<A, B>*/ Object/*>B<*/ banana(Object/*>B<*/ c, BinaryFunction/*<A, B, B>*/ f, Iterator/*_<A>_*/ a) {
+    public static /*<A, B>*/ Object/*>B<*/ banana(Object/*>B<*/ c, BinaryFunction/*<A, B, B>*/ f, Iterator/*<A>*/ a) {
         return new Catamorphism/*<A, B>*/(c, f).apply(a);
     } 
 
@@ -2183,9 +2183,9 @@ public class Functionals {
          * @param b a value &isin;B.
          * @return the value <span class="lenseBracket">|(</span>g,p<span class="lenseBracket">)|</span> b &isin; A<sup>*</sup> represented as a {@link java.util.List List<A>}.
          */
-        public final Object/*>List<*//*_<A>_*/ apply(Object/*>B<*/ b) {
+        public final Object/*>List<*//*<A>*/ apply(Object/*>B<*/ b) {
             if (p.apply(b))
-                return new LinkedList/*_<A>_*/();
+                return new LinkedList/*<A>*/();
             Pair/*<A, B>*/ pair = (Pair/*<A, B>*/) g.apply(b);
             List r = (List) apply(pair.B);
             r.add(0, pair.A);
@@ -2199,8 +2199,8 @@ public class Functionals {
      * lense <span class="lenseBracket">|(</span>g,p<span class="lenseBracket">)|</span> b.
      * @see Functionals.Anamorphism#Functionals.Anamorphism(Function, Predicate)
      */
-    public static /*<A, B>*/ List/*_<A>_*/ lense(final Function/*<B, Pair<A, B>>*/ g, final Predicate/*<B>*/ p, Object/*>B<*/ b) {
-        return (List/*_<A>_*/) new Anamorphism/*<A, B>*/(g, p).apply(b);
+    public static /*<A, B>*/ List/*<A>*/ lense(final Function/*<B, Pair<A, B>>*/ g, final Predicate/*<B>*/ p, Object/*>B<*/ b) {
+        return (List/*<A>*/) new Anamorphism/*<A, B>*/(g, p).apply(b);
     } 
 
     /**
@@ -2369,7 +2369,7 @@ public class Functionals {
             // almost identical to @see Utility#asIterator
             return apply(Utility.asIterator(a));
         } 
-        private final Object/*>B<*/ apply(Iterator/*_<A>_*/ ai) {
+        private final Object/*>B<*/ apply(Iterator/*<A>*/ ai) {
             if (!ai.hasNext())
                 return b;
     
@@ -2387,7 +2387,7 @@ public class Functionals {
      * barbedwire <span class="barbedwireBracket">{|</span>b,f<span class="barbedwireBracket">|}</span> a.
      * @see Functionals.Paramorphism#Functionals.Paramorphism(Object, BinaryFunction)
      */
-    public static /*<A, B>*/ Object/*>B<*/ barbedwire(final Object/*>B<*/ b, final BinaryFunction/*<A, Pair<Iterator<A>, B>, B>*/ f, Iterator/*_<A>_*/ a) {
+    public static /*<A, B>*/ Object/*>B<*/ barbedwire(final Object/*>B<*/ b, final BinaryFunction/*<A, Pair<Iterator<A>, B>, B>*/ f, Iterator/*<A>*/ a) {
         return new Paramorphism/*<A, B>*/(b, f).apply(a);
     } 
     /**

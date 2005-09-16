@@ -142,7 +142,7 @@ public class IterativeExpansion extends GeneralSearch implements HeuristicAlgori
             return node.getNode();
         //@internal optimizable by using a (min) heap instead of a list that is kept in sorted order
         // here, we currently use a (sorted) list of NodeInfo sorted by the f-costs
-        final List/*_<NodeInfo>_*/ successors = new LinkedList();
+        final List/*<NodeInfo>*/ successors = new LinkedList();
         {
             final Function f = getEvaluation();
             for (final Iterator i = GeneralSearch.expand(getProblem(), node.getNode()); i.hasNext(); ) {

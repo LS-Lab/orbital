@@ -21,7 +21,7 @@ import orbital.util.Utility;
  * @see Pair
  * @see java.util.Map.Entry
  */
-public class KeyValuePair implements Comparable/*_<Pair<A, B>>_*/, Serializable {
+public class KeyValuePair implements Comparable/*<Pair<A, B>>*/, Serializable {
     private static final long serialVersionUID = 5966210221949749252L;
     public KeyValuePair() {
         this(null, null);

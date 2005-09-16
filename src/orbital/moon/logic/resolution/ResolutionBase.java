@@ -131,9 +131,9 @@ public abstract class ResolutionBase implements Inference {
      * @throws IllegalStateException if the clauses are inconsistent
      * since they already contain a contradiction.
      */
-    static ClausalSet skolemClauseForm(Collection/*_<Formula>_*/ B, String logPrefix) {
+    static ClausalSet skolemClauseForm(Collection/*<Formula>*/ B, String logPrefix) {
         // skolemize B and drop quantifiers
-        final List/*_<Formula>_*/ skolemizedB = new ArrayList(B.size());
+        final List/*<Formula>*/ skolemizedB = new ArrayList(B.size());
         for (Iterator i = B.iterator(); i.hasNext(); ) {
             Formula f = (Formula) i.next();
             skolemizedB.add(Utilities.dropQuantifiers(Utilities.skolemForm(f)));

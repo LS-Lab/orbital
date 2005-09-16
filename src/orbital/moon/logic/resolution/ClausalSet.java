@@ -22,7 +22,7 @@ import java.util.Collections;
  * @author  Andr&eacute; Platzer
  * @todo rename
  */
-public interface ClausalSet extends Set/*_<Clause>_*/ {
+public interface ClausalSet extends Set/*<Clause>*/ {
     /**
      * The contradictory <em>singleton</em> set of clauses {&#9633;}.
      */
@@ -56,7 +56,7 @@ public interface ClausalSet extends Set/*_<Clause>_*/ {
      *  &and; RES &supe; {D&isin;this &brvbar; &exist;L&isin;C &exist;K&isin;D &exist;mgU{L,~K}}
      * @todo 14 rename to getProbableUnifiables(Clause C) and leave negation to our caller (more systematic)?
      */
-    Iterator/*_<Clause>_*/ getProbableComplementsOf(Clause C);
+    Iterator/*<Clause>*/ getProbableComplementsOf(Clause C);
 
     
     /**

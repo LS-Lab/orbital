@@ -141,7 +141,7 @@ class Compositions {
         } 
 
         public void setCompositor(Object f) throws ClassCastException {
-            this.outer = (BinaryFunction/*_<B1, B2, C>_*/) f;
+            this.outer = (BinaryFunction/*<B1, B2, C>*/) f;
         }
         public void setComponent(Object g) throws IllegalArgumentException, ClassCastException {
             BinaryFunction[] a = (BinaryFunction[]) g;

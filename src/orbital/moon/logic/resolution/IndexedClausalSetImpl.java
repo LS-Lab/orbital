@@ -37,14 +37,14 @@ public class IndexedClausalSetImpl extends ClausalSetImpl {
      * Copy constructor.
      * @internal transitively public constructors required for Functionals.map to produce Clauses.
      */
-    public IndexedClausalSetImpl(Set/*_<Clause>_*/ clauses) {
+    public IndexedClausalSetImpl(Set/*<Clause>*/ clauses) {
         //@internal this order is important, otherwise index will not yet have been initialized
         super();
         addAll(clauses);
     }
     public IndexedClausalSetImpl() {}
 
-    public Iterator/*_<Clause>_*/ getProbableComplementsOf(final Clause C) {
+    public Iterator/*<Clause>*/ getProbableComplementsOf(final Clause C) {
         //@internal convert to set and back again to iterator, in order to remove duplicates from distinct iterator parts of the SequenceIterator
         Set res = Setops.asSet(new SequenceIterator(Functionals.map(
                 new Function() {
@@ -63,7 +63,7 @@ public class IndexedClausalSetImpl extends ClausalSetImpl {
     /**
      * Get an iterator of all clauses that contain literals which could possibly unify with L.
      */
-    public Iterator/*_<Clause>_*/ getProbableUnifiables(Formula L) {
+    public Iterator/*<Clause>*/ getProbableUnifiables(Formula L) {
         return index.getProbableUnifiableClauses(L);
     }
     

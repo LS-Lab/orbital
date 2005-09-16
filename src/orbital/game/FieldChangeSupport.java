@@ -147,6 +147,6 @@ class FieldChangeSupport implements FieldChangeListener, java.io.Serializable {
      *
      *  This is transient - its state is written in the writeObject method.
      */
-    transient private java.util.Vector/*_<FieldChangeListener>_*/ listeners = null;
+    transient private java.util.Vector/*<FieldChangeListener>*/ listeners = null;
 
 }// FieldChangeSupport

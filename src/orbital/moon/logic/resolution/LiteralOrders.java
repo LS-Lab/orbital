@@ -106,7 +106,7 @@ public class LiteralOrders {
      * Computes the maximal term depths of variables occuring in f.
      * @see #MAXIMAL_OVERALL_DEPTH
      */
-    private static Map/*_<Symbol,Integer>_*/ computeMaximalDepths(Formula f) {
+    private static Map/*<Symbol,Integer>*/ computeMaximalDepths(Formula f) {
         Map depths = new HashMap();
         computeMaximalDepthsHelper(f, depths, 0);
         return depths;
@@ -118,7 +118,7 @@ public class LiteralOrders {
      * @invariants &forall;x (x!=MAXIMAL_OVERALL_DEPTH &imply; &not;MAXIMAL_OVERALL_DEPTH.equals(x))
      */
     private static final Symbol MAXIMAL_OVERALL_DEPTH = new UniqueSymbol("any_depth_trick", Types.TRUTH, null, false);
-    private static final void computeMaximalDepthsHelper(Formula f, Map/*_<Symbol,Integer>_*/ depths, int currentDepth) {
+    private static final void computeMaximalDepthsHelper(Formula f, Map/*<Symbol,Integer>*/ depths, int currentDepth) {
         if (f instanceof Composite) {
             // true decomposition case
             final Composite c = (Composite) f;

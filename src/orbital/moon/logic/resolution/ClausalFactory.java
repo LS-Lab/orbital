@@ -37,7 +37,7 @@ public interface ClausalFactory {
      * @postconditions RES&ne;RES &and; "RES=literals"
      * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      */
-    Clause createClause(Set/*_<Formula>_*/ literals);
+    Clause createClause(Set/*<Formula>*/ literals);
 
     /**
      * Instantiates a new clausal set.
@@ -54,7 +54,7 @@ public interface ClausalFactory {
      * @postconditions RES&ne;RES &and; "RES=clauses"
      * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      */
-    ClausalSet createClausalSet(Set/*_<Clause>_*/ clauses);
+    ClausalSet createClausalSet(Set/*<Clause>*/ clauses);
 
     // conversion utilities
 

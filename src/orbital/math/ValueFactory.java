@@ -636,7 +636,7 @@ public interface ValueFactory {
      * @preconditions m = AlgebraicAlgorithms.groebnerBasis(m,monomialOrder)
      * @postconditions RES = quotient(a, AlgebraicAlgorithms.reduce(m, monomialOrder))
      */
-    /*<R extends Arithmetic>*/ Quotient/*<Polynomial<R,S>>*/ quotient(Polynomial/*<R,S>*/ a, java.util.Set/*_<Polynomial<R,S>>_*/ m, java.util.Comparator/*_<S>_*/ monomialOrder);
+    /*<R extends Arithmetic>*/ Quotient/*<Polynomial<R,S>>*/ quotient(Polynomial/*<R,S>*/ a, java.util.Set/*<Polynomial<R,S>>*/ m, java.util.Comparator/*<S>*/ monomialOrder);
 
     // quotient constructor synonyms
 

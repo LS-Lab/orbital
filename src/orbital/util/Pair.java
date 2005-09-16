@@ -19,7 +19,7 @@ import orbital.util.Utility;
  * @author  Andr&eacute; Platzer
  * @see KeyValuePair
  */
-public class Pair/*<T1, T2>*/ extends Object implements Comparable/*_<Pair<T1, T2>>_*/, Serializable {
+public class Pair/*<T1, T2>*/ extends Object implements Comparable/*<Pair<T1, T2>>*/, Serializable {
     private static final long serialVersionUID = 9024808570172404957L;
     /**
      * @serial

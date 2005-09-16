@@ -74,7 +74,7 @@ abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*
         return indexSet();
     }
 
-    protected ListIterator/*_<R>_*/ iterator(Arithmetic/*>T<*/ productObject) {
+    protected ListIterator/*<R>*/ iterator(Arithmetic/*>T<*/ productObject) {
         return ((Polynomial)productObject).iterator();
     }
 

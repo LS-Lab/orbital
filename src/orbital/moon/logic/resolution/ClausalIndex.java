@@ -97,7 +97,7 @@ public class ClausalIndex {
      * are possible unifiables).
      * @todo in principle, we could return and memorize the clause and literal which could unify, but this would lead to a catastrophic structure.
      */
-    private final Map/*_<Integer,Set<Pair<Clause,Formula>>>_*/ index = new LinkedHashMap();
+    private final Map/*<Integer,Set<Pair<Clause,Formula>>>*/ index = new LinkedHashMap();
 
     /**
      * Create a new empty index.
@@ -112,7 +112,7 @@ public class ClausalIndex {
      * Get an iterator of all (clause,literal) pairs which could possibly unify with L.
      * @postconditions RES = {(C,K)&isin;this &brvbar; K&isin;C &and; possibly &exist;mgU{L,K}}
      */
-    public Iterator/*_<Pair<Clause,Literal>>_*/ getProbableUnifiables(Formula L) {
+    public Iterator/*<Pair<Clause,Literal>>*/ getProbableUnifiables(Formula L) {
         return getIndex(L).iterator();
     }
 
@@ -120,7 +120,7 @@ public class ClausalIndex {
      * Get an iterator of all (clause,literal) pairs which could possibly unify with ~L.
      * @postconditions RES = getProbableUnifiables(ClassicalLogic.Utilities.negation(L))
      */
-    public Iterator/*_<Pair<Clause,Literal>>_*/ getProbableComplements(Formula L) {
+    public Iterator/*<Pair<Clause,Literal>>*/ getProbableComplements(Formula L) {
         Integer hash = (Integer)indexHashNegation.apply(L);
         Set probableUnifiables = (Set)index.get(hash);
         //System.err.println("  complement " + probableUnifiables + " of " + C + "\n    in " + IndexedClausalSetImpl.this);
@@ -130,28 +130,28 @@ public class ClausalIndex {
     /**
      * Get an iterator of all clauses that contain literals which could possibly unify with L.
      */
-    public Iterator/*_<Clause>_*/ getProbableUnifiableClauses(Formula L) {
+    public Iterator/*<Clause>*/ getProbableUnifiableClauses(Formula L) {
         return projectClause(getProbableUnifiables(L));
     }
 
     /**
      * Get an iterator of all clauses that contain literals which could possibly unify with ~L.
      */
-    public Iterator/*_<Clause>_*/ getProbableComplementClauses(Formula L) {
+    public Iterator/*<Clause>*/ getProbableComplementClauses(Formula L) {
         return projectClause(getProbableComplements(L));
     }
 
     /**
      * Get an iterator of all literals which could possibly unify with L.
      */
-    public Iterator/*_<Formula>_*/ getProbableUnifiableLiterals(Formula L) {
+    public Iterator/*<Formula>*/ getProbableUnifiableLiterals(Formula L) {
         return projectLiteral(getProbableUnifiables(L));
     }
 
     /**
      * Get an iterator of all literals which could possibly unify with ~L.
      */
-    public Iterator/*_<Clause>_*/ getProbableComplementLiterals(Formula L) {
+    public Iterator/*<Clause>*/ getProbableComplementLiterals(Formula L) {
         return projectLiteral(getProbableComplements(L));
     }
 
@@ -161,7 +161,7 @@ public class ClausalIndex {
      * clause twice just because it occurs as (clause,literal1) and
      * (clause,literal2).
      */
-    private final Iterator/*_<Clause>_*/ projectClause(Iterator/*_<Pair<Clause,Formula>>_*/ i) {
+    private final Iterator/*<Clause>*/ projectClause(Iterator/*<Pair<Clause,Formula>>*/ i) {
         Set res = Setops.asSet(Functionals.map(new Function() {
                 public Object apply(Object o) {
                     return ((Pair)o).A;
@@ -175,7 +175,7 @@ public class ClausalIndex {
      * Project an iterator over (clause,literal) pairs to the literals
      * occurring.
      */
-    private final Iterator/*_<Formula>_*/ projectLiteral(Iterator/*_<Pair<Clause,Formula>>_*/ i) {
+    private final Iterator/*<Formula>*/ projectLiteral(Iterator/*<Pair<Clause,Formula>>*/ i) {
         return Functionals.map(new Function() {
                 public Object apply(Object o) {
                     return ((Pair)o).B;
@@ -186,7 +186,7 @@ public class ClausalIndex {
     /**
      * Get the list index.get(o) from the index or an empty list if not present.
      */
-    private final Set/*_<Pair<Clause,Formula>>_*/ getIndex(Object o) {
+    private final Set/*<Pair<Clause,Formula>>*/ getIndex(Object o) {
         assert o instanceof Formula;
         Integer hash = (Integer)indexHash.apply(o);
         Set l = (Set)index.get(hash);
@@ -198,7 +198,7 @@ public class ClausalIndex {
      * list if not present.  Contrary to {@link #getIndex(Object)},
      * this method ensures that the list returned occurs in index.
      */
-    private final Set/*_<Pair<Clause,Formula>>_*/ getIndexEnsure(Object o) {
+    private final Set/*<Pair<Clause,Formula>>*/ getIndexEnsure(Object o) {
         assert o instanceof Formula;
         Integer hash = (Integer)indexHash.apply(o);
         Set l = (Set)index.get(hash);

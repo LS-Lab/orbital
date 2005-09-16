@@ -58,7 +58,7 @@ abstract class AbstractProductArithmetic/*<R extends Arithmetic, T extends Arith
      * @throws ClassCastException if productObject is of type other than T that does not fit this product arithmetic.
      * @throws IllegalArgumentException if productObject does not conform to the requirements of this product arithmetic.
      */
-    protected abstract ListIterator/*_<R>_*/ iterator(Arithmetic/*>T<*/ productObject);
+    protected abstract ListIterator/*<R>*/ iterator(Arithmetic/*>T<*/ productObject);
     
     // factory-methods
     

@@ -170,7 +170,7 @@ public abstract class Figure extends Moving {
      * @postconditions &forall;i&isin;RES (this@pre.moveFigure(i.getMove()).equals(i.getDestination())
      *   &and; i.getFigure()==this@pre)
      */
-    public abstract Iterator/*_<Option>_*/ possibleMoves();
+    public abstract Iterator/*<Option>*/ possibleMoves();
 
     // methods used to perform moves
 

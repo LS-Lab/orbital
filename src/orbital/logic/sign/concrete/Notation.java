@@ -688,7 +688,7 @@ public abstract class Notation implements Serializable, Comparable {
      * @todo use LinkedHashMap instead to ensure sorting??
      * @todo couldn't we switch to storing this in a "Signature" or "Interpretation"?
      */
-    private static Map/*_<Object, NotationSpecification>_*/ compositorNotation;
+    private static Map/*<Object, NotationSpecification>*/ compositorNotation;
 
     static {
         compositorNotation = new HashMap();

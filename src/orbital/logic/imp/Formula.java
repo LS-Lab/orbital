@@ -235,7 +235,7 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      *
      * @return FV(this).
      */
-    Set/*_<Symbol>_*/ getFreeVariables();
+    Set/*<Symbol>*/ getFreeVariables();
         
     /**
      * Get the set of the bound variables of this formula.
@@ -312,7 +312,7 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      *
      * @return BV(this).
      */
-    Set/*_<Symbol>_*/ getBoundVariables();
+    Set/*<Symbol>*/ getBoundVariables();
 
     /**
      * Get the set of all variables of this formula.
@@ -321,7 +321,7 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      * @see #getFreeVariables()
      * @see #getBoundVariables()
      */
-    Set/*_<Symbol>_*/ getVariables();
+    Set/*<Symbol>*/ getVariables();
 
     // interpretation continuation (or evaluation)
     

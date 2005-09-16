@@ -120,7 +120,7 @@ public interface Vector/*<R extends Arithmetic>*/ extends Tensor/*<R>*/ {
      * @postconditions RES.supports(#nextIndex()} &and; RES.supports(#previousIndex()}
      *  &and; RES.supports(#add(Object)} &and; RES.supports(#remove()}
      */
-    ListIterator/*_<R>_*/ iterator();
+    ListIterator/*<R>*/ iterator();
     
     // sub-views
 

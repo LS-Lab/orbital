@@ -232,7 +232,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
      * @see <a href="{@docRoot}/Patterns/Design/Strategy.html">Strategy</a>
      * @see GeneralSearch#createTraversal(GeneralSearchProblem)
      */
-    public static abstract class OptionIterator implements Iterator/*_<S>_*/, Serializable {
+    public static abstract class OptionIterator implements Iterator/*<S>*/, Serializable {
         private static final long serialVersionUID = 6410799454884265654L;
         /**
          * The search problem to solve.
@@ -327,7 +327,7 @@ public abstract class GeneralSearch implements AlgorithmicTemplate/*<GeneralSear
          * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
          * @todo optimize
          */
-        public Object/*_>S<_*/ next() {
+        public Object/*>S<*/ next() {
             if (lastRet != null)
                 expand();
             if (isEmpty())

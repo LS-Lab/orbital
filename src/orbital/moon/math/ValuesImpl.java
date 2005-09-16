@@ -180,9 +180,9 @@ public class ValuesImpl extends AbstractValues {
         return v;
     } 
 
-    /*<R extends Arithmetic>*/ Vector/*<R>*/ vector(List/*_<R>_*/ values) {
+    /*<R extends Arithmetic>*/ Vector/*<R>*/ vector(List/*<R>*/ values) {
         Vector/*<R>*/   r = newInstance(values.size());
-        Iterator/*_<R>_*/   it = values.iterator();
+        Iterator/*<R>*/   it = values.iterator();
         for (int i = 0; i < values.size(); i++)
             r.set(i, (Arithmetic/*>R<*/) it.next());
         assert !it.hasNext() : "iterator should be finished after all elements";
@@ -226,7 +226,7 @@ public class ValuesImpl extends AbstractValues {
         return v;
     } 
 
-    static /*<R extends Arithmetic>*/ Matrix/*<R>*/ matrix(List/*_<List<R>>_*/ values) {
+    static /*<R extends Arithmetic>*/ Matrix/*<R>*/ matrix(List/*<List<R>>*/ values) {
         throw new UnsupportedOperationException("not yet implemented");
     }
 
@@ -373,7 +373,7 @@ public class ValuesImpl extends AbstractValues {
     public /*<M extends Euclidean>*/ Quotient/*<M>*/ quotient(Euclidean/*>M<*/ a, Euclidean/*>M<*/ m) {
         return new AbstractQuotient/*<M>*/(a, m);
     }
-    public /*<R extends Arithmetic>*/ Quotient/*<Polynomial<R,S>>*/ quotient(Polynomial/*<R,S>*/ a, java.util.Set/*_<Polynomial<R,S>>_*/ m, java.util.Comparator/*_<S>_*/ monomialOrder) {
+    public /*<R extends Arithmetic>*/ Quotient/*<Polynomial<R,S>>*/ quotient(Polynomial/*<R,S>*/ a, java.util.Set/*<Polynomial<R,S>>*/ m, java.util.Comparator/*<S>*/ monomialOrder) {
         assert m.equals(AlgebraicAlgorithms.groebnerBasis(m,monomialOrder)) : m + " is a Groebner basis with respect to " + monomialOrder;
         return quotient(a, AlgebraicAlgorithms.reduce(m, monomialOrder));
     }
