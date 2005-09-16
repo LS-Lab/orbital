@@ -67,6 +67,8 @@ import orbital.math.MathUtilities;
  *
  * @version $Id$
  * @author  Andr&eacute; Platzer
+ * @param <A> the type of transition actions.
+ * @param <S> the type of transition states.
  * @see GeneralSearch
  * @see BacktrackingProblem
  * @see MarkovDecisionProblem

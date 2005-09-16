@@ -28,7 +28,9 @@ import java.util.ListIterator;
  * @author  Andr&eacute; Platzer
  * @todo would we profit from extending AbstractPolynomial instead?
  */
-abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/ extends AbstractProductArithmetic implements UnivariatePolynomial/*<R>*/, Serializable {
+abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
+    extends AbstractProductArithmetic/*<R,Integer,UnivariatePolynomial<R>>*/
+    implements UnivariatePolynomial/*<R>*/, Serializable {
     private static final long serialVersionUID = -5253561352164949692L;
     /**
      * Which implementation of the multiplication to use.
@@ -74,7 +76,7 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/ extends Ab
      */
     protected abstract UnivariatePolynomial/*<R>*/ newInstance(int degree);
         
-    protected final Polynomial/*<R>*/ newInstance(int[] dim) {
+    protected final Polynomial/*<R,Integer>*/ newInstance(int[] dim) {
         if (dim.length == 1)
             return newInstance(dim[0]);
         else throw new InternalError("multinomials not supported in this method");
@@ -546,13 +548,13 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/ extends Ab
             throw new ArrayIndexOutOfBoundsException("illegal number of indices (" + i.length + " indices) for univariate polynomial");
     } 
 
-    public Polynomial/*<R,S>*/ add(Polynomial/*<R,S>*/ b) {
+    public Polynomial/*<R,Integer>*/ add(Polynomial/*<R,Integer>*/ b) {
         return add((UnivariatePolynomial)b);
     }
-    public Polynomial/*<R,S>*/ subtract(Polynomial/*<R,S>*/ b) {
+    public Polynomial/*<R,Integer>*/ subtract(Polynomial/*<R,Integer>*/ b) {
         return subtract((UnivariatePolynomial)b);
     }
-    public Polynomial/*<R,S>*/ multiply(Polynomial/*<R,S>*/ b) {
+    public Polynomial/*<R,Integer>*/ multiply(Polynomial/*<R,Integer>*/ b) {
         return multiply((UnivariatePolynomial)b);
     }
 }

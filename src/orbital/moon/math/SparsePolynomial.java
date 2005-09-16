@@ -22,7 +22,8 @@ import java.util.HashMap;
  * @version $Id$
  * @author  Andr&eacute; Platzer
  */
-class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/ extends AbstractPolynomial/*<R,S>*/ {
+class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
+    extends AbstractPolynomial/*<R,S>*/ {
     private static final long serialVersionUID = -8833160240745985849L;
 
     /**
@@ -46,7 +47,7 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/ extends A
     
     // factory-methods
     
-    protected final Arithmetic/*>T<*/ newInstance(Object productIndexSet) {
+    protected final Arithmetic/*>Polynomial<R,S><*/ newInstance(Object/*>S<*/ productIndexSet) {
         return new SparsePolynomial((Arithmetic)productIndexSet);
     }
 

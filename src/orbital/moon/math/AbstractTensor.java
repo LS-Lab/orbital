@@ -43,7 +43,8 @@ import java.util.HashSet;
  * @version $Id$
  * @author  Andr&eacute; Platzer
  */
-abstract class AbstractTensor/*<R extends Arithmetic>*/ extends AbstractProductArithmetic implements Tensor/*<R>*/, Serializable {
+abstract class AbstractTensor/*<R extends Arithmetic>*/
+    extends AbstractProductArithmetic/*<R,int[],Tensor<R>>*/ implements Tensor/*<R>*/, Serializable {
     private static final long serialVersionUID = 7889937971348824822L;
 
     // object-methods

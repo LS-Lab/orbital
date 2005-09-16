@@ -32,8 +32,12 @@ import orbital.logic.functor.Predicates;
  * </p>
  * @version $Id$
  * @author  Andr&eacute; Platzer
+ * @param <R> the (common) component type of the a<sub>i</sub>
+ * @param <I> the index type of i
+ * @param <T> the product type &prod;<sub>i&isin;I</sub> A<sub>i</sub>
  */
-abstract class AbstractProductArithmetic/*<R extends Arithmetic, T extends Arithmetic>*/ extends AbstractArithmetic implements Arithmetic, Serializable {
+abstract class AbstractProductArithmetic/*<R extends Arithmetic, I, T extends Arithmetic>*/
+    extends AbstractArithmetic implements Arithmetic, Serializable {
     private static final long serialVersionUID = 1257583291254889178L;
 
     /**
@@ -41,12 +45,12 @@ abstract class AbstractProductArithmetic/*<R extends Arithmetic, T extends Arith
      * Queries productObject for the index set in an implementation dependent manner.
      * @param productObject the object (a<sub>i</sub>)<sub>i&isin;I</sub> &isin; &prod;<sub>i&isin;I</sub> A<sub>i</sub>
      *  whose components to iterate over.
-     * @return an (memento) description of the index set I.
+     * @return a (memento) description of the index set I.
      * @postconditions RES.supports(#equals(Object)) || RES.getClass().isArray()
      * @throws ClassCastException if productObject is of type other than T that does not fit this product arithmetic.
      * @throws IllegalArgumentException if productObject does not conform to the requirements of this product arithmetic.
      */
-    protected abstract Object productIndexSet(Arithmetic/*>T<*/ productObject);
+    protected abstract Object/*>I<*/ productIndexSet(Arithmetic/*>T<*/ productObject);
 
     /**
      * Creates an iterator for the components of a product object.
@@ -74,7 +78,7 @@ abstract class AbstractProductArithmetic/*<R extends Arithmetic, T extends Arith
      * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      * @see #clone()
      */
-    protected abstract Arithmetic/*>T<*/ newInstance(Object productIndexSet);
+    protected abstract Arithmetic/*>T<*/ newInstance(Object/*>I<*/ productIndexSet);
         
     // object-methods
         

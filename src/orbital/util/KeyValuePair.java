@@ -21,7 +21,7 @@ import orbital.util.Utility;
  * @see Pair
  * @see java.util.Map.Entry
  */
-public class KeyValuePair implements Comparable/*<Pair<A, B>>*/, Serializable {
+public class KeyValuePair/*<A,B>*/ implements Comparable/*<Pair<A, B>>*/, Serializable {
     private static final long serialVersionUID = 5966210221949749252L;
     public KeyValuePair() {
         this(null, null);
@@ -29,7 +29,7 @@ public class KeyValuePair implements Comparable/*<Pair<A, B>>*/, Serializable {
     /**
      * Create a new pair &lang;key, value&rang;.
      */
-    public KeyValuePair(Object key, Object value) {
+    public KeyValuePair(Object/*>A<*/ key, Object/*>B<*/ value) {
         this.key = key;
         this.value = value;
     }
@@ -38,27 +38,27 @@ public class KeyValuePair implements Comparable/*<Pair<A, B>>*/, Serializable {
      * The key for this pair.
      * @serial
      */
-    protected Object key;
+    protected Object/*>A<*/ key;
     /**
      * The value of this pair.
      * @serial
      */
-    protected Object value;
+    protected Object/*>B<*/ value;
 
     /**
      * Get/Set-Methods.
      */
-    public Object getKey() {
+    public Object/*>A<*/ getKey() {
         return key;
     } 
-    public void setKey(Object key) {
+    public void setKey(Object/*>A<*/ key) {
         this.key = key;
     } 
 
-    public Object getValue() {
+    public Object/*>B<*/ getValue() {
         return value;
     } 
-    public void setValue(Object value) {
+    public void setValue(Object/*>B<*/ value) {
         this.value = value;
     } 
 
@@ -70,7 +70,7 @@ public class KeyValuePair implements Comparable/*<Pair<A, B>>*/, Serializable {
      * @throws ClassCastException when neither of the keys in the KeyValuePair objects compared implements <tt>Comparable</tt>,
      * or o is not even a KeyValuePair.
      */
-    public int compareTo(Object o) throws ClassCastException {
+    public int compareTo(Object/*>KeyValuePair<A,B><*/ o) throws ClassCastException {
         if (o instanceof KeyValuePair) {
             KeyValuePair b = (KeyValuePair) o;
             return ((Comparable) key).compareTo(b.key);

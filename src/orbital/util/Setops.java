@@ -213,7 +213,7 @@ public final class Setops {
      * @see orbital.logic.functor.Functionals#foldLeft
      * @see orbital.algorithm.template.EvaluativeAlgorithm.EvaluationComparator
      */
-    public static final Object/*>A<*/ argmin(Iterator/*<A>*/ choices, Function/*<A,Comparable>*/ f) {
+    public static final /*<A>*/ Object/*>A<*/ argmin(Iterator/*<A>*/ choices, Function/*<A,Comparable>*/ f) {
         // search for minimum f in choices
         // current best choice of choices
         Object best = choices.next();
@@ -246,7 +246,7 @@ public final class Setops {
      * @see orbital.logic.functor.Functionals#foldLeft
      * @see orbital.algorithm.template.EvaluativeAlgorithm.EvaluationComparator
      */
-    public static final Object/*>A<*/ argmax(Iterator/*<A>*/ choices, Function/*<A,Comparable>*/ f) {
+    public static final /*<A>*/ Object/*>A<*/ argmax(Iterator/*<A>*/ choices, Function/*<A,Comparable>*/ f) {
         // search for maximum f in choices
         // current best choice of choices
         Object best = choices.next();
@@ -431,7 +431,7 @@ public final class Setops {
      * @see #outer(BinaryFunction, Collection, Collection)
      * @see "Axiom of Choice (for infinite case)"
      */
-    public static Collection/*<List<A>>*/ cross(List/*<Collection<A>>*/ a) {
+    public static /*<A>*/ Collection/*<List<A>>*/ cross(List/*<Collection<A>>*/ a) {
         // n-ary cross product of the elements in optionLists
         List r = new LinkedList();
         r.add(Collections.EMPTY_LIST);
@@ -560,7 +560,7 @@ public final class Setops {
      * Query operations on the returned iterator "read through" to the specified iterator,
      * and attempts to modify the returned iterator result in an UnsupportedOperationException.
      */
-    public static Iterator/*<A>*/ unmodifiableIterator(final Iterator/*<A>*/ i) {
+    public static /*<A>*/ Iterator/*<A>*/ unmodifiableIterator(final Iterator/*<A>*/ i) {
         return new Iterator/*<A>*/() {
                 public boolean hasNext() {return i.hasNext();}
                 public Object/*>A<*/ next()    {return i.next();}
@@ -569,7 +569,7 @@ public final class Setops {
                 }
             };
     }
-    public static ListIterator/*<A>*/ unmodifiableListIterator(final ListIterator/*<A>*/ i) {
+    public static /*<A>*/ ListIterator/*<A>*/ unmodifiableListIterator(final ListIterator/*<A>*/ i) {
         return new ListIterator/*<A>*/() {
                 public boolean hasNext() {return i.hasNext();}
                 public boolean hasPrevious() {return i.hasPrevious();}
@@ -596,7 +596,7 @@ public final class Setops {
      * @see Collections#unmodifiableSet(Set)
      * @see Collections#unmodifiableSortedSet(SortedSet)
      */
-    public static Collection/*<A>*/ unmodifiableCollectionLike(final Collection/*<A>*/ c) {
+    public static /*<A>*/ Collection/*<A>*/ unmodifiableCollectionLike(final Collection/*<A>*/ c) {
         // find a rather similar collection type
         if (c instanceof java.util.SortedSet)
             return Collections.unmodifiableSortedSet((SortedSet)c);
@@ -624,7 +624,7 @@ public final class Setops {
      * @throws UnsupportedOperationException if the destination list-iterator does not support the set operation.
      * @see Collections#copy(List,List)
      */
-    public static void copy(ListIterator dest, Iterator src) {
+    public static /*<A>*/ void copy(ListIterator/*<A>*/ dest, Iterator/*<? extends A>*/ src) {
         while (src.hasNext()) {
             try {
                 dest.next();
@@ -679,7 +679,7 @@ public final class Setops {
      * @postconditions isSorted(RES) && RES = a &cup; b
      * @todo see #mergeSort(Collection, Comparator)
      */
-    public static List/*<A>*/ merge(List/*<A>*/ x, List/*<A>*/ y, Comparator/*<A>*/ comp) {
+    public static /*<A>*/ List/*<A>*/ merge(List/*<A>*/ x, List/*<A>*/ y, Comparator/*<A>*/ comp) {
         return merge(x.iterator(), y.iterator(), comp, new ArrayList(x.size() + y.size()));
     }
     /**
@@ -687,14 +687,14 @@ public final class Setops {
      * @preconditions isSorted(x) && isSorted(y)
      * @postconditions isSorted(RES) && RES = a &cup; b
      */
-    public static List/*<A>*/ merge(Iterator/*<A>*/ x, Iterator/*<A>*/ y, Comparator/*<A>*/ comp) {
+    public static /*<A>*/ List/*<A>*/ merge(Iterator/*<A>*/ x, Iterator/*<A>*/ y, Comparator/*<A>*/ comp) {
         return merge(x, y, comp, new LinkedList());
     }
     /**
      * @preconditions isSorted(x) && isSorted(y)
      * @postconditions isSorted(RES) && RES = a &cup; b
      */
-    private static List/*<A>*/ merge(Iterator/*<A>*/ x, Iterator/*<A>*/ y, Comparator/*<A>*/ comp, List/*<A>*/ r) {
+    private static /*<A>*/ List/*<A>*/ merge(Iterator/*<A>*/ x, Iterator/*<A>*/ y, Comparator/*<A>*/ comp, List/*<A>*/ r) {
         if (x.hasNext() && y.hasNext()) {
             Object   ox = x.next();
             Object   oy = y.next();
@@ -734,12 +734,12 @@ public final class Setops {
      * @preconditions sorted(l)
      * @postconditions sorted(l) &and; object&isin;l
      */
-    public static final void insert(List l, Object object) {
+    public static final /*<A extends Comparable>*/ void insert(List/*<A>*/ l, Object/*>A<*/ object) {
         assert Utility.sorted(l, null) : "@preconditions";
         final Comparable c = (Comparable)object;
-        final ListIterator i = l.listIterator();
+        final ListIterator/*<A>*/ i = l.listIterator();
         while (i.hasNext()) {
-            Object o = i.next();
+            Object/*>A<*/ o = i.next();
             if (c.compareTo(o) <= 0) {
                 i.previous();
                 break;

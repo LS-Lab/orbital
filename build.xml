@@ -194,8 +194,8 @@
         <delete dir="${sources}/transmogrify" failonerror="false"/>
     </target>
 
-    <!-- @todo stamp as well -->
-    <target name="compile.generics" depends="init, parser"
+    <!-- @todo stamp and parser as well -->
+    <target name="compile.generics" depends="init"
             description="compile enabling generics *.java (=> ./classes)">
         <mkdir dir="${classes}"/>
         <mkdir dir="${sources.generics}"/>
@@ -210,7 +210,7 @@
         <replaceregexp byline="false">
             <!-- replace Object/*>A<*/ by A -->
             <!--regexp pattern="[a-zA-Z]*/\*&gt;([a-zA-Z]*)&lt;\*/"/-->
-            <regexp pattern="[a-zA-Z]*/\*\&gt;([a-zA-Z]*)\&lt;\*/"/>
+            <regexp pattern="[a-zA-Z.]*/\*\&gt;([a-zA-Z]*)\&lt;\*/"/>
             <substitution expression="\1"/>
             <fileset dir="${sources.generics}"/>
         </replaceregexp>
