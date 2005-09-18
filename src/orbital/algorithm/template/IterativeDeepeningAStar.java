@@ -35,8 +35,9 @@ import orbital.math.Values;
  * @todo why is IDA* with iterators about 11% slower than IDA* with collections?
  * @todo @attribute usually inferior to {@link IterativeExpansion} with still linear space.
  */
-public class IterativeDeepeningAStar/*<A,S>*/ extends DepthFirstBoundingSearch/*<A,S>*/
-    implements HeuristicAlgorithm/*<S>*/ {
+public class IterativeDeepeningAStar/*<A,S>*/
+    extends DepthFirstBoundingSearch/*<A,S>*/
+    implements HeuristicAlgorithm/*<GeneralSearchProblem<A,S>,S>*/ {
     private static final long serialVersionUID = 5814132461076107994L;
     /**
      * Cost of cheapest node pruned, or <code>null</code> if we did not prune a node yet.

@@ -22,7 +22,8 @@ import java.util.WeakHashMap;
  * @version $Id$
  * @author  Andr&eacute; Platzer
  */
-public interface HeuristicAlgorithm/*<S>*/ extends EvaluativeAlgorithm/*<S>*/ {
+public interface HeuristicAlgorithm/*<Problem extends AlgorithmicProblem, S extends Object>*/
+    extends EvaluativeAlgorithm/*<Problem, S>*/ {
     /**
      * Get the heuristic function used.
      * @return the heuristic cost function h:S&rarr;<b>R</b> estimating h<sup>*</sup>.
@@ -69,7 +70,7 @@ public interface HeuristicAlgorithm/*<S>*/ extends EvaluativeAlgorithm/*<S>*/ {
      * @version $Id$
      * @todo move to HeuristicAlgorithm.Configuration ?
      */
-    public static class Configuration/*<Problem extends HeuristicAlgorithm<S>, S>*/
+    public static class Configuration/*<Problem extends AlgorithmicProblem, S extends Object>*/
 	extends AlgorithmicTemplate.Configuration/*<Problem,S>*/ {
         private static final long serialVersionUID = 8651734898965188478L;
 

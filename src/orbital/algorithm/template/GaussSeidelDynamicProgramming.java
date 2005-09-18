@@ -51,7 +51,9 @@ import java.util.logging.Level;
  * @see DynamicProgramming
  * @see "A. Barto, S. Bradtke, and S. Singh. Learning to act using real-time dynamic programming. <i>Artificial Intelligence</i>, 72:81-138, 1995."
  */
-public class GaussSeidelDynamicProgramming extends MarkovDecisionProcess.DynamicProgramming implements HeuristicAlgorithm {
+public class GaussSeidelDynamicProgramming/*<A,S,M extends MarkovDecisionProblem.Transition>*/
+    extends MarkovDecisionProcess.DynamicProgramming/*<A,S,M>*/
+    implements HeuristicAlgorithm/*<MarkovDecisionProblem<A,S,M>,S>*/ {
     private static final long serialVersionUID = -5923519196510123671L;
     private static final Logger logger = Logger.getLogger(GaussSeidelDynamicProgramming.class.getName());
     /**

@@ -25,7 +25,7 @@ import orbital.math.Real;
  * @author  Andr&eacute; Platzer
  */
 public abstract class GeneralBoundingSearch/*<A,S>*/ extends GeneralSearch/*<A,S>*/
-    implements EvaluativeAlgorithm/*<S>*/ {
+    implements EvaluativeAlgorithm/*<GeneralSearchProblem<A,S>,S>*/ {
     private static final long serialVersionUID = -1094428950720102400L;
     /**
      * Whether the search is continued after a solution is found.

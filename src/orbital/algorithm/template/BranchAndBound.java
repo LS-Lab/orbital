@@ -29,14 +29,16 @@ import orbital.math.Real;
  * @see "Lawler, E.L. and Wood, D.E. Branch-and-bound methods: A survey. Operations Research. 14(4):699-719. 1966."
  * @todo we could just as well formulate Branch-and-bound as a Decorator of GeneralSearchProblem (may be more useful for chaining and combining search algorithm policies). BUT such a decorator cannot easily tell the searching algorithm to continue even though we found a solution, in order to search for a better one. If however, decorated isSolution() would store the solution but return false in order to implement this, then the searching algorithm won't know the last (best) solution found either, but conclude that there is no solution at all.
  */
-public class BranchAndBound/*<A,S>*/ extends DepthFirstBoundingSearch/*<A,S>*/ implements HeuristicAlgorithm {
+public class BranchAndBound/*<A,S>*/
+    extends DepthFirstBoundingSearch/*<A,S>*/
+    implements HeuristicAlgorithm/*<GeneralSearchProblem<A,S>,S>*/ {
     private static final long serialVersionUID = -1698181871423830937L;
     //TODO: is Operations Research Branch and Bound more general than this or equivalent? And what is Branch and Cut?
     /**
      * The applied heuristic cost function h:S&rarr;<b>R</b> embedded in the evaluation function f.
      * @serial
      */
-    private Function heuristic;
+    private Function/*<S,Real>*/ heuristic;
     /**
      * A sufficiently high upper bound for a solution beyond which search will not continue.
      * @serial
@@ -86,14 +88,14 @@ public class BranchAndBound/*<A,S>*/ extends DepthFirstBoundingSearch/*<A,S>*/ i
         setMaxBound(Values.getDefaultInstance().valueOf(maximumUpperBound));
     }
         
-    public Function getHeuristic() {
+    public Function/*<S,Real>*/ getHeuristic() {
         return heuristic;
     }
 
-    public void setHeuristic(Function heuristic) {
+    public void setHeuristic(Function/*<S,Real>*/ heuristic) {
         if (heuristic == null)
             throw new NullPointerException("null is not a heuristic");
-        Function old = this.heuristic;
+        Function/*<S,Real>*/ old = this.heuristic;
         this.heuristic = heuristic;
         firePropertyChange("heuristic", old, this.heuristic);
     }

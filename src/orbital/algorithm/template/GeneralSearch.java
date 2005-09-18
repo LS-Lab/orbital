@@ -95,16 +95,6 @@ public abstract class GeneralSearch/*<A,S>*/
     
     /**
      * Solves a general search problem.
-     * @preconditions p instanceof GeneralSearchProblem.
-     * @throws ClassCastException if p is not an instance of GeneralSearchProblem.
-     * @see #solve(GeneralSearchProblem)
-     */
-    public final Object solve(AlgorithmicProblem/*>GeneralSearchProblem<A,S><*/ p) {
-        return solve((GeneralSearchProblem)p);
-    }
-    
-    /**
-     * Solves a general search problem.
      * <p>
      * This method does not need to be overwritten.
      * Overwrite {@link #solveImpl(GeneralSearchProblem)}, instead.</p>
@@ -115,7 +105,8 @@ public abstract class GeneralSearch/*<A,S>*/
      * @see <a href="{@docRoot}/Patterns/Design/TemplateMethod.html">Template Method</a>
      * @see #solveImpl(GeneralSearchProblem)
      */
-    public final Object/*>S<*/ solve(GeneralSearchProblem/*<A,S>*/ p) {
+    public final Object/*>S<*/ solve(AlgorithmicProblem/*>GeneralSearchProblem<A,S><*/ gp) {
+	GeneralSearchProblem/*<A,S>*/ p = (GeneralSearchProblem)gp;
         setProblem(p);
         Object/*>S<*/ solution;
         //      if (false) {
@@ -383,9 +374,9 @@ public abstract class GeneralSearch/*<A,S>*/
                 public boolean hasNext() {
                     return actions.hasNext();
                 }
-                public Object next() {
+                public Object/*>S<*/ next() {
                     Object/*>A<*/ a = actions.next();
-                    Iterator t = problem.states(a, state);
+                    Iterator/*<S>*/ t = problem.states(a, state);
                     assert t.hasNext() : "@postconditions GeneralSearchProblem.states(...) non-empty";
                     Object/*>S<*/ sp = t.next();
                     assert !t.hasNext() : "@postconditions GeneralSearchProblem.states(...) has length 1";

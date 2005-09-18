@@ -70,7 +70,9 @@ import java.util.logging.Level;
  * @todo introduce sub class Adaptive Real-Time Dynamic Programming that handles unknown models as well.
  * @todo could we plot the resulting evaluation function with a Plot3D in some examples to visualize what's happening?
  */
-public class RealTimeDynamicProgramming extends MarkovDecisionProcess.DynamicProgramming implements HeuristicAlgorithm {
+public class RealTimeDynamicProgramming/*<A,S,M extends MarkovDecisionProblem.Transition>*/
+    extends MarkovDecisionProcess.DynamicProgramming/*<A,S,M>*/
+    implements HeuristicAlgorithm/*<MarkovDecisionProblem<A,S,M>,S>*/ {
     private static final long serialVersionUID = 8603555888863789157L;
     private static final Logger logger = Logger.getLogger(RealTimeDynamicProgramming.class.getName());
     public RealTimeDynamicProgramming(Function heuristic) {

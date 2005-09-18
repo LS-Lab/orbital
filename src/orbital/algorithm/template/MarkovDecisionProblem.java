@@ -108,7 +108,8 @@ public interface MarkovDecisionProblem/*<A,S,M extends MarkovDecisionProblem.Tra
      * @version $Id$
      * @author  Andr&eacute; Platzer
      */
-    static interface Transition/*<A,S,M extends MarkovDecisionProblem.Transition>*/ extends TransitionModel/*<A,S,M>*/.Transition {
+    static interface Transition/*<A,S,M extends MarkovDecisionProblem.Transition>*/
+	extends TransitionModel.Transition {
         /**
          * Get the cost of taking the action leading to this transition.
          * <p>
@@ -131,7 +132,8 @@ public interface MarkovDecisionProblem/*<A,S,M extends MarkovDecisionProblem.Tra
      * @version $Id$
      * @author  Andr&eacute; Platzer
      */
-    public static class DefaultTransition/*<A,S,M extends MarkovDecisionProblem.Transition>*/ implements Transition/*<A,S,M>*/, Serializable {
+    public static class DefaultTransition/*<A,S,M extends MarkovDecisionProblem.Transition>*/
+	implements Transition, Serializable {
         private static final long serialVersionUID = -5421585936741224969L;
         /**
          * the probability of reaching a state (in the corresponding context).
@@ -161,7 +163,7 @@ public interface MarkovDecisionProblem/*<A,S,M extends MarkovDecisionProblem.Tra
                  Values.getDefaultInstance().valueOf(cost));
         }
 
-        public int compareTo(Object o) {
+        public int compareTo(Object/*>TransitionModel.Transition<*/ o) {
             return ((Comparable)getProbability()).compareTo(((Transition)o).getProbability());
         }
                 

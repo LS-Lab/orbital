@@ -48,7 +48,9 @@ import java.util.LinkedList;
  * @note memory-bounded algorithms suffer from transpositions in the search graph.
  * @internal we do not extend GeneralBoundingSearch, since the bounds vary from layer to layer (argument of the recursive call).
  */
-public class IterativeExpansion/*<A,S>*/ extends GeneralSearch/*<A,S>*/ implements HeuristicAlgorithm/*<S>*/ {
+public class IterativeExpansion/*<A,S>*/
+    extends GeneralSearch/*<A,S>*/
+    implements HeuristicAlgorithm/*<GeneralSearchProblem<A,S>,S>*/ {
     private static final long serialVersionUID = 4225973116092481279L;
     /**
      * The applied heuristic cost function h:S&rarr;<b>R</b> embedded in the evaluation function f.

@@ -71,7 +71,8 @@ import orbital.math.Values;
  * @attribute specializes {@link ThresholdAccepting}
  * @see Greedy
  */
-public class HillClimbing/*<A,S>*/ extends LocalOptimizerSearch/*<A,S>*/ implements HeuristicAlgorithm/*<S>*/ {
+public class HillClimbing/*<A,S>*/ extends LocalOptimizerSearch/*<A,S>*/
+    implements HeuristicAlgorithm/*<GeneralSearchProblem<A,S>,S>*/ {
     private static final long serialVersionUID = -3281919447532950063L;
     /**
      * The applied heuristic cost function h:S&rarr;<b>R</b> embedded in the evaluation function f(n) = h(n).

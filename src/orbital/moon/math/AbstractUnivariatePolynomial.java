@@ -496,13 +496,14 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
     public Integer degree() {
         return Values.getDefaultInstance().valueOf(degreeValue());
     }
-    protected final Object productIndexSet(Arithmetic/*>T<*/ productObject) {
+    protected final Object productIndexSet(Arithmetic/*>UnivariatePolynomial<R><*/ productObject) {
         return dimensions();
     }
-    protected ListIterator/*<R>*/ iterator(Arithmetic/*>T<*/ productObject) {
+    protected ListIterator/*<R>*/ iterator(Arithmetic/*>UnivariatePolynomial<R><*/ productObject) {
         return ((Polynomial)productObject).iterator();
     }
-    protected final Arithmetic/*>T<*/ newInstance(Object productIndexSet) {
+    protected final Arithmetic/*>UnivariatePolynomial<R><*/ newInstance(Object/*>Integer<*/ productIndexSet) {
+	//@xxx wrong type case?
         return newInstance((int[])productIndexSet);
     }
 

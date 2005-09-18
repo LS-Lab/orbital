@@ -28,7 +28,7 @@ import orbital.math.Values;
  * @see "Pohl, I. (1973). The avoidance of (relative) catastrophe, heuristic competence, genuine dynamic weighting and computational issues in heuristic problem solving. In Proceedings of the Third International Joint Conference on Artificial Intelligence (IJCAI-73), pages 20-23, Stanford, California, IJCAII."
  * @internal Sustain transient variable initialization when deserializing. Done by AStar.readObject() calling firePropertyChange(...).
  */
-public class WAStar extends AStar {
+public class WAStar/*<A,S>*/ extends AStar/*<A,S>*/ {
     private static final long serialVersionUID = -3210623238172266780L;
     /**
      * the weighting argument W for the evaluation function.
@@ -43,11 +43,11 @@ public class WAStar extends AStar {
      * @preconditions W >= 1.
      * @see #getEvaluation()
      */
-    public WAStar(Real W, Function heuristic) {
+    public WAStar(Real W, Function/*<S,Real>*/ heuristic) {
         super(heuristic);
         this.setWeight(W);
     }
-    public WAStar(double W, Function heuristic) {
+    public WAStar(double W, Function/*<S,Real>*/ heuristic) {
         this(Values.getDefaultInstance().valueOf(W), heuristic);
     }
     public WAStar(Function heuristic) {
@@ -73,15 +73,15 @@ public class WAStar extends AStar {
     /**
      * f(n) = g(n) + W*h(n).
      */
-    public Function getEvaluation() {
+    public Function/*<S,Real>*/ getEvaluation() {
         return evaluation;
     }
-    private transient Function evaluation;
+    private transient Function/*<S,Real>*/ evaluation;
     void firePropertyChange(String property, Object oldValue, Object newValue) {
         super.firePropertyChange(property, oldValue, newValue);
         if (!("heuristic".equals(property) || "problem".equals(property) || "weight".equals(property)))
             return;
-        GeneralSearchProblem problem = getProblem();
+        GeneralSearchProblem/*<A,S>*/ problem = getProblem();
         this.evaluation = problem != null
             ? Functionals.compose(Operations.plus, problem.getAccumulatedCostFunction(), Functionals.compose(Operations.times, Functions.constant(getWeight()), getHeuristic()))
             : null;

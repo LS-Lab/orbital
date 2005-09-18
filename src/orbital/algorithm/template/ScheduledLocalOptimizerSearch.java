@@ -21,7 +21,9 @@ import orbital.math.Real;
  * @version $Id$
  * @author  Andr&eacute; Platzer
  */
-abstract class ScheduledLocalOptimizerSearch/*<A,S>*/ extends LocalOptimizerSearch/*<A,S>*/ implements HeuristicAlgorithm/*<S>*/ {
+abstract class ScheduledLocalOptimizerSearch/*<A,S>*/
+    extends LocalOptimizerSearch/*<A,S>*/
+    implements HeuristicAlgorithm/*<GeneralSearchProblem<A,S>,S>*/ {
     private static final long serialVersionUID = -8843368383007953329L;
     /**
      * The heuristic cost function h:S&rarr;<b>R</b> to be used as evaluation function f(n) = h(n).

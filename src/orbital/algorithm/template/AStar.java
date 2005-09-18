@@ -7,6 +7,7 @@
 package orbital.algorithm.template;
 
 import orbital.logic.functor.Function;
+import orbital.math.Real;
 
 import orbital.logic.functor.Functionals;
 import orbital.math.functional.Functions;
@@ -49,29 +50,30 @@ import orbital.math.Values;
  * @internal A<sup>*</sup> ressembles gradient descent (but with memory).
  * @todo update g(n) to fit minimum cost to reach n?
  */
-public class AStar extends BestFirstSearch implements HeuristicAlgorithm {
+public class AStar/*<A,S>*/ extends BestFirstSearch/*<A,S>*/
+    implements HeuristicAlgorithm/*<GeneralSearchProblem<A,S>,S>*/ {
     private static final long serialVersionUID = 4507556265837848039L;
     /**
      * The applied heuristic cost function h:S&rarr;<b>R</b> embedded in the evaluation function f.
      * @serial
      */
-    private Function heuristic;
+    private Function/*<S,Real>*/ heuristic;
     /**
      * Create a new instance of A<sup>*</sup> search.
      * Which is a best first search using the evaluation function f(n) = g(n) + h(n).
      * @param heuristic the heuristic cost function h:S&rarr;<b>R</b> embedded in the evaluation function f.
      * @see #getEvaluation()
      */
-    public AStar(Function heuristic) {
+    public AStar(Function/*<S,Real>*/ heuristic) {
         setHeuristic(heuristic);
     }
     AStar() {}
 
-    public Function getHeuristic() {
+    public Function/*<S,Real>*/ getHeuristic() {
         return heuristic;
     }
 
-    public void setHeuristic(Function heuristic) {
+    public void setHeuristic(Function/*<S,Real>*/ heuristic) {
         Function old = this.heuristic;
         this.heuristic = heuristic;
         firePropertyChange("heuristic", old, this.heuristic);
@@ -80,15 +82,15 @@ public class AStar extends BestFirstSearch implements HeuristicAlgorithm {
     /**
      * f(n) = g(n) + h(n).
      */
-    public Function getEvaluation() {
+    public Function/*<S,Real>*/ getEvaluation() {
         return evaluation;
     }
-    private transient Function evaluation;
+    private transient Function/*<S,Real>*/ evaluation;
     void firePropertyChange(String property, Object oldValue, Object newValue) {
         super.firePropertyChange(property, oldValue, newValue);
         if (!("heuristic".equals(property) || "problem".equals(property)))
             return;
-        GeneralSearchProblem problem = getProblem();
+        GeneralSearchProblem/*<A,S>*/ problem = getProblem();
         //@todo could transform into a package-protected Support class with a constructor argument of HeuristicAlgorithm
         this.evaluation = problem != null
             ? Functionals.compose(Operations.plus, problem.getAccumulatedCostFunction(), getHeuristic())

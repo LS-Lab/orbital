@@ -240,7 +240,8 @@ public interface GeneralSearchProblem/*<A,S>*/ extends MarkovDecisionProblem/*<A
      * @stereotype Structure
      * @invariants getAction()&isin;A(s)
      */
-    public static class Transition/*<A,S>*/ implements MarkovDecisionProblem.Transition/*<A,S,GeneralSearchProblem.Transition>*/, Serializable {
+    public static class Transition/*<A,S>*/
+	implements MarkovDecisionProblem.Transition/*<A,S,GeneralSearchProblem.Transition>*/, Serializable {
         private static final long serialVersionUID = 257664629450534598L;
         /**
          * the applicable action a&isin;A performed to reach this state.
@@ -295,7 +296,7 @@ public interface GeneralSearchProblem/*<A,S>*/ extends MarkovDecisionProblem/*<A
         /**
          * Compares options according to their cost.
          */
-        public int compareTo(Object o) {
+        public int compareTo(Object/*>TransitionModel.Transition<*/ o) {
             throw new UnsupportedOperationException("functionality removed since it depends on evaluation function comparator");
         }
                 

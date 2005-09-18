@@ -25,7 +25,8 @@ import orbital.math.Real;
  * @version $Id$
  * @author  Andr&eacute; Platzer
  */
-public interface EvaluativeAlgorithm/*<S>*/ extends AlgorithmicTemplate {
+public interface EvaluativeAlgorithm/*<Problem extends AlgorithmicProblem, Solution extends Object>*/
+    extends AlgorithmicTemplate/*<Problem, Solution>*/ {
     /**
      * Get the evaluation function used while processing.
      * <p>
@@ -34,7 +35,7 @@ public interface EvaluativeAlgorithm/*<S>*/ extends AlgorithmicTemplate {
      * @return the <dfn>evaluation function</dfn> f:S&rarr;<b>R</b> used to
      *  evaluate (either utility or cost) value of states.
      */
-    Function/*<S,Real>*/ getEvaluation();
+    Function/*<Solution,Real>*/ getEvaluation();
 
     /**
      * The canonical comparator induced by the evaluation function f(n).
@@ -44,25 +45,25 @@ public interface EvaluativeAlgorithm/*<S>*/ extends AlgorithmicTemplate {
      * @version $Id$
      * @author  Andr&eacute; Platzer
      */
-    public static class EvaluationComparator/*<S>*/ implements Comparator/*<S>*/, Serializable {
+    public static class EvaluationComparator/*<Solution>*/ implements Comparator/*<Solution>*/, Serializable {
         private static final long serialVersionUID = -2014366202163451019L;
         /**
          * the evaluation function used in order to compare two states.
          * @serial
          */
-        private Function/*<S,Real>*/ evaluationFunction;
+        private Function/*<Solution,Real>*/ evaluationFunction;
         /**
          * Create a new comparator for states compared by their evaluation values.
          * @param evaluation the evaluation function used in order to compare two states.
          */
-        public EvaluationComparator(Function/*<S,Real>*/ evaluation) {
+        public EvaluationComparator(Function/*<Solution,Real>*/ evaluation) {
             this.evaluationFunction = evaluation;
         }
         /**
          * Create a new comparator for states compared by their evaluation values.
          * @param a the heuristic algorithm whose {@link EvaluativeAlgorithm#getEvaluation() evaluation function} used in order to compare two states.
          */
-        public EvaluationComparator(EvaluativeAlgorithm/*<S>*/ a) {
+        public /*<Problem extends AlgorithmicProblem>*/ EvaluationComparator(EvaluativeAlgorithm/*<Problem,Solution>*/ a) {
             this(a.getEvaluation());
         }
 
@@ -76,9 +77,9 @@ public interface EvaluativeAlgorithm/*<S>*/ extends AlgorithmicTemplate {
          * Compares according to evaluation function.
          * @return f(o1).compareTo(f(o2))
          */
-        public final int compare(Object o1/*>S<*/, Object/*>S<*/ o2) {
+        public final int compare(Object/*>Solution<*/ o1, Object/*>Solution<*/ o2) {
             // get the values f(n) from the cache if possible, otherwise store them
-            Object/*>S<*/ v1, v2;
+            Object/*>Real<*/ v1, v2;
             /*System.err.print("    "+cache.size()+"\t");
               v1 = cache.get(o1);
               if (v1 == null)
