@@ -302,9 +302,6 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
 
 
     // problem solving methods
-    public Object/*>Population<*/ solve(AlgorithmicProblem/*>GeneticAlgorithmProblem<*/ problem) {
-        return solve((GeneticAlgorithmProblem) problem);
-    }
     /**
      * Solve a genetic algorithm problem.
      * Assuming that the {@link #setSelection(Function) selector} has already been set.
@@ -316,7 +313,8 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
      * @see GeneticAlgorithmProblem#getPopulation()
      * @see #evolve()
      */
-    public Population solve(GeneticAlgorithmProblem problem) {
+    public Object/*>Population<*/ solve(AlgorithmicProblem/*>GeneticAlgorithmProblem<*/ gproblem) {
+	GeneticAlgorithmProblem problem = (GeneticAlgorithmProblem) gproblem;
         if (getSelection() == null)
             throw new IllegalStateException("no selection function is set");
         this.setEvaluation(problem.getEvaluation());
@@ -351,7 +349,7 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
      * @version $Id$
      * @todo what about SteadyStateGeneticAlgorithm.setNumberOfReplacements()
      */
-    public static class Configuration extends AlgorithmicTemplate.Configuration {
+    public static class Configuration extends AlgorithmicTemplate.Configuration/*<GeneticAlgorithmProblem,Population>*/ {
         private static final long serialVersionUID = 5516965797776057474L;
         
         /**
@@ -494,7 +492,7 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
          * Modifies the problem by letting its {@link GeneticAlgorithmProblem#getPopulation()}
          * return a PopulationImpl with all properties set according to this configuration.
          */
-        public AlgorithmicProblem getProblem() {
+        public AlgorithmicProblem/*>GeneticAlgorithmProblem<*/ getProblem() {
             final GeneticAlgorithmProblem p = (GeneticAlgorithmProblem) super.getProblem();
             return new /*refine/delegate*/ GeneticAlgorithmProblem() {
                     // Code for delegation of orbital.algorithm.evolutionary.GeneticAlgorithmProblem methods to p

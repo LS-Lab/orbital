@@ -61,7 +61,7 @@ public abstract class DelegateGeneralSearchProblem/*<A,S>*/ implements GeneralSe
      * @return <description>
      * @see orbital.algorithm.template.GeneralSearchProblem#actions(Object)
      */
-    public Iterator/*<A>*/ actions(Object param1)
+    public Iterator/*<A>*/ actions(Object/*>S<*/ param1)
     {
         return problem.actions(param1);
     }
@@ -106,7 +106,7 @@ public abstract class DelegateGeneralSearchProblem/*<A,S>*/ implements GeneralSe
      * @return <description>
      * @see orbital.algorithm.template.GeneralSearchProblem#transition(Object, Object, Object)
      */
-    public TransitionModel.Transition transition(Object/*>A<*/ param1, Object/*>S<*/ param2, Object/*>S<*/ param3)
+    public TransitionModel.Transition/*>GeneralSearchProblem.Transition<A,S><*/ transition(Object/*>A<*/ param1, Object/*>S<*/ param2, Object/*>S<*/ param3)
     {
         return problem.transition(param1, param2, param3);
     }

@@ -105,6 +105,7 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
     protected abstract Polynomial/*<R,Vector<Integer>>*/ newInstance(int[] dimensions);
         
     protected final Arithmetic/*>Polynomial<R,Vector<Integer>><*/ newInstance(Object/*>Vector<Integer><*/ productIndexSet) {
+	//@xxx wrong type case?
         return newInstance((int[])productIndexSet);
     }
 

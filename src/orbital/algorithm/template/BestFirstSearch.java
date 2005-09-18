@@ -31,7 +31,7 @@ import orbital.util.Setops;
  * @see Greedy
  */
 public abstract class BestFirstSearch/*<A,S>*/ extends GeneralSearch/*<A,S>*/
-    implements EvaluativeAlgorithm/*<S>*/ {
+    implements EvaluativeAlgorithm/*<GeneralSearchProblem<A,S>,S>*/ {
     private static final long serialVersionUID = -7753264910951203557L;
 
     protected Iterator createTraversal(GeneralSearchProblem/*<A,S>*/ problem) {

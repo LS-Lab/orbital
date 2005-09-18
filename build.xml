@@ -201,19 +201,16 @@
         <mkdir dir="${sources.generics}"/>
         <copy todir="${sources.generics}">
             <fileset dir="${sources}"/>
+            <!-- incarnate generics -->
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="/\*&lt;" replace="&lt;" flags="g"/>
+                    <replaceregex pattern="&gt;\*/" replace="&gt;" flags="g"/>
+                    <!-- replace Object/*>A<*/ by A -->
+                    <replaceregex pattern="([a-zA-Z.]+)/\*\&gt;([a-zA-Z&lt;,&gt;.]+)\&lt;\*/" replace="\2" flags="g"/>
+                </tokenfilter>
+            </filterchain>
         </copy>
-        <!-- incarnate generics -->
-        <replace dir="${sources.generics}">
-            <replacefilter token="/*&lt;" value="&lt;"/>
-            <replacefilter token="&gt;*/" value="&gt;"/>
-        </replace>
-        <replaceregexp byline="false">
-            <!-- replace Object/*>A<*/ by A -->
-            <!--regexp pattern="[a-zA-Z]*/\*&gt;([a-zA-Z]*)&lt;\*/"/-->
-            <regexp pattern="[a-zA-Z.]*/\*\&gt;([a-zA-Z]*)\&lt;\*/"/>
-            <substitution expression="\1"/>
-            <fileset dir="${sources.generics}"/>
-        </replaceregexp>
 
         <javac srcdir="${sources.generics}"
                destdir="${classes}"

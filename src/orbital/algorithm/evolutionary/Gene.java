@@ -169,7 +169,7 @@ public interface Gene {
          * @param class the type of the member genes.
          * @param size the initial size of this list. i.e. the initial number of Genes.
          */
-        public List(Class geneType, int size) throws InstantiationException, IllegalAccessException {
+        public List(Class/*<? extends Gene>*/ geneType, int size) throws InstantiationException, IllegalAccessException {
             super(new ArrayList(size));
             for (int i = 0; i < size; i++)
                 add(geneType.newInstance());
@@ -369,7 +369,7 @@ public interface Gene {
                     if (a.size() != b.size())
                         return Values.ONE;
                     double difference = 0;
-                    Iterator i = a.iterator(), j = b.iterator();
+                    Iterator/*<Gene>*/ i = a.iterator(), j = b.iterator();
                     while (i.hasNext() && j.hasNext()) {
                         Gene e = (Gene) i.next();
                         double singleDistance = Math.abs(e.distanceMeasure().distance(e, j.next()).doubleValue());

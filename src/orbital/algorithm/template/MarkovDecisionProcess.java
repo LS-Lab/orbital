@@ -95,13 +95,11 @@ import java.util.logging.Level;
  * @TODO extend more general base class or interface Planning
  */
 public abstract class MarkovDecisionProcess/*<A,S,M extends MarkovDecisionProblem.Transition>*/
-    /*extends Planning*/ implements AlgorithmicTemplate/*<MarkovDecisionProblem<A,S,M>,Function<S,A>>*/, Serializable {
+    /*extends Planning*/
+    implements AlgorithmicTemplate/*<MarkovDecisionProblem<A,S,M>,Function<S,A>>*/, Serializable {
     private static final long serialVersionUID = 2351017747303613618L;
     private static final Logger logger = Logger.getLogger(MarkovDecisionProcess.class.getName());
     private static final Values valueFactory = Values.getDefaultInstance();
-    public Object/*>Function<S,A><*/ solve(AlgorithmicProblem/*>MarkovDecisionProblem<A,S,M><*/ p) {
-        return solve((MarkovDecisionProblem) p);
-    }
     
     /**
      * The MDP problem to solve.
@@ -129,8 +127,8 @@ public abstract class MarkovDecisionProcess/*<A,S,M extends MarkovDecisionProble
      * @return the solution policy function S&rarr;A found,
      *  or <code>null</code> if no solution could be found.
      */
-    public Function/*<S,A>*/ solve(MarkovDecisionProblem/*<A,S,M>*/ p) {
-        setProblem(p);
+    public Object/*>Function<S,A><*/ solve(AlgorithmicProblem/*>MarkovDecisionProblem<A,S,M><*/ p) {
+        setProblem((MarkovDecisionProblem)p);
         return plan();
     }
     
@@ -156,7 +154,7 @@ public abstract class MarkovDecisionProcess/*<A,S,M extends MarkovDecisionProble
      */
     public static abstract class DynamicProgramming/*<A,S,M extends MarkovDecisionProblem.Transition>*/
 	extends MarkovDecisionProcess/*<A,S,M>*/
-	implements HeuristicAlgorithm/*<S>*/ {
+	implements HeuristicAlgorithm/*<MarkovDecisionProblem<A,S,M>,S>*/ {
         private static final long serialVersionUID = 6262421425846708636L;
         /**
          * the current discount factor &gamma;.
@@ -243,7 +241,7 @@ public abstract class MarkovDecisionProcess/*<A,S,M extends MarkovDecisionProble
          * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
          */
         protected MutableFunction/*<S,Real>*/ createMap() {
-            return new MutableFunction.TableFunction(getEvaluation());
+            return new MutableFunction.TableFunction/*<S,Real>*/(getEvaluation());
         }
 
         /**
@@ -277,17 +275,17 @@ public abstract class MarkovDecisionProcess/*<A,S,M extends MarkovDecisionProble
          */
         protected BinaryFunction/*<S,A,Real>*/ getActionValue(final Function/*<S,Real>*/ U) {
             return new BinaryFunction/*<S,A,Real>*/() {
-                    public Object apply(Object state, Object action) {
+                    public Object/*>Real<*/ apply(Object/*>S<*/ state, Object/*>A<*/ action) {
                         // cost = Q<sub>U</sub>(s,a)
                         Scalar cost = valueFactory.ZERO;
                         Scalar originalCost = valueFactory.NaN;
                         if (logger.isLoggable(Level.FINEST)) logger.log(Level.FINEST, "DPMDP.Q", "\tc(" + action + "," + state + ") ...");
-                        final MarkovDecisionProblem problem = getProblem();
-                        final Iterator r = problem.states(action, state);
+                        final MarkovDecisionProblem/*<A,S,M>*/ problem = getProblem();
+                        final Iterator/*<S>*/ r = problem.states(action, state);
                         assert r.hasNext() : "@postconditions";
                         while (r.hasNext()) {
-                            final Object sp = r.next();
-                            final Transition t = (Transition) problem.transition(action, state, sp);
+                            final Object/*>S<*/ sp = r.next();
+                            final Transition/*<A,S,M>*/ t = (Transition) problem.transition(action, state, sp);
                             if (logger.isLoggable(Level.FINEST)) logger.log(Level.FINEST, "DPMDP.Q", "\t    + " + t.getProbability() + " * " + U.apply(sp) + " for " + sp);
                             cost = (Scalar) cost.add(t.getProbability().multiply((Arithmetic)U.apply(sp)));
                             final Real c = t.getCost();
@@ -310,7 +308,7 @@ public abstract class MarkovDecisionProcess/*<A,S,M extends MarkovDecisionProble
          */
         protected Function/*<S,A>*/ getGreedyPolicy(final BinaryFunction/*<S,A,Real>*/ Q) {
             return new Function/*<S,A>*/() {
-                    public Object apply(Object state) {
+                    public Object/*>A<*/ apply(Object/*>S<*/ state) {
                         if (logger.isLoggable(Level.FINER)) {
                             logger.log(Level.FINER, "DPMDP.policy", "CHOOSING " + state);
                             logger.log(Level.FINER, "DPMDP.policy", "CHOSE " + state + " do " + maximumExpectedUtility(Q, state));
