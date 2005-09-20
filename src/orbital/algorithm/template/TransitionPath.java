@@ -91,7 +91,7 @@ public class TransitionPath/*<A,S, M extends TransitionModel.Transition>*/ imple
         final Object/*>A<*/ action = actions.next();
         final double r = random.nextDouble();
         double r_sum = 0;
-        for (Iterator t = transition.states(action, state); t.hasNext(); ) {
+        for (Iterator/*<S>*/ t = transition.states(action, state); t.hasNext(); ) {
             Object/*>S<*/ sp = t.next();
             r_sum += ((orbital.math.Real/*@xxx constrained*/)transition.transition(action, state, sp).getProbability()).doubleValue();
             assert 0 <= r_sum && r_sum <= 1+0.0001 : "probability distribution";

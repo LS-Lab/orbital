@@ -7,6 +7,7 @@
 package orbital.algorithm.template;
 
 import orbital.logic.functor.Function;
+import orbital.math.Real;
 
 import orbital.logic.functor.BinaryFunction;
 
@@ -75,33 +76,33 @@ public class RealTimeDynamicProgramming/*<A,S,M extends MarkovDecisionProblem.Tr
     implements HeuristicAlgorithm/*<MarkovDecisionProblem<A,S,M>,S>*/ {
     private static final long serialVersionUID = 8603555888863789157L;
     private static final Logger logger = Logger.getLogger(RealTimeDynamicProgramming.class.getName());
-    public RealTimeDynamicProgramming(Function heuristic) {
+    public RealTimeDynamicProgramming(Function/*<S,Real>*/ heuristic) {
         super(heuristic);
     }
     
-    protected Function plan() {
+    protected Function/*<S,A>*/ plan() {
         /**
          * estimates U of optimal value function h<sup>*</sup>:S&rarr;<b>R</b>.
          * If h is admissible U will converge (monotonically) up to h<sup>*</sup>.
          * Updated via DP on current states, instead of value iteration on each state until convergence.
          */
-        final MutableFunction U = createMap();
-        final BinaryFunction Q = getActionValue(U);
+        final MutableFunction/*<S,Real>*/ U = createMap();
+        final BinaryFunction/*<S,A,Real>*/ Q = getActionValue(U);
         // alternative: explicitly initialize U(s) = h(s)
         /*for (Iterator i = problem.getStates().iterator(); i.hasNext(); ) {
           Object state = i.next();
           putCost(v, state, getEvaluation().apply(state));
           }*/
-        return new Function() {
-                public Object apply(Object state) {
-                    Pair/*<Object, Number>*/ p = maximumExpectedUtility(Q, state);
+        return new Function/*<S,A>*/() {
+                public Object/*>A<*/ apply(Object/*>S<*/ state) {
+                    Pair/*<A, Real>*/ p = maximumExpectedUtility(Q, state);
 
                     // update U(s) (alias backup)
-                    U.set(state, p.B);
-                    logger.log(Level.FINER, "RTDP", "  U(" + state + ")\t:= " + p.B);
+                    U.set(state, p.getB());
+                    logger.log(Level.FINER, "RTDP", "  U(" + state + ")\t:= " + p.getB());
 
                     // return the action chosen to take
-                    return p.A;
+                    return p.getA();
                 }
             };
     }

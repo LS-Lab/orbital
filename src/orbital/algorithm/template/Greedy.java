@@ -27,11 +27,7 @@ import orbital.util.Setops;
  * @attribute stateless
  * @note an optimization could keep the candidates in a heap if only our GreedyProblem would promise not to remove any candidates (and tells us new candidates only instead of those that we already knew). However which heap to choose might depend on the problem, binomial, fibonacci, ...
  */
-public class Greedy implements AlgorithmicTemplate {
-    public Object solve(AlgorithmicProblem p) {
-        return solve((GreedyProblem) p);
-    } 
-
+public class Greedy/*<C>*/ implements AlgorithmicTemplate/*<GreedyProblem<C>,List<C>>*/ {
     /**
      * solves by greedy.
      * <p id="canonicalGreedy">
@@ -74,14 +70,15 @@ public class Greedy implements AlgorithmicTemplate {
      * @return the list of the candidates chosen for the solution.
      * @internal optimizable we could remember the index of the current best candidate during search for removing it later on
      */
-    public List solve(GreedyProblem p) {
-        List C = p.getInitialCandidates();
-        List S = new LinkedList();
+    public Object/*>List<C><*/ solve(AlgorithmicProblem/*>GreedyProblem<C><*/ gp) {
+	GreedyProblem/*<C>*/ p = (GreedyProblem)gp;
+        List/*<C>*/ C = p.getInitialCandidates();
+        List/*<C>*/ S = new LinkedList/*<C>*/();
         while (p.isPartialSolution(S) && !C.isEmpty()) {
 
             // weighting is quality criterium
             // retract x from C such that w(x) is maximal;
-            final Object x = Setops.argmax(C.iterator(), p.getWeightingFor(S));
+            final Object/*>C<*/ x = Setops.argmax(C.iterator(), p.getWeightingFor(S));
             C.remove(x);
 
             // nextPartialSolution computes new partial solution that includes x if feasible

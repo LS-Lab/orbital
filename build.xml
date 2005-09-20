@@ -207,7 +207,7 @@
                     <replaceregex pattern="/\*&lt;" replace="&lt;" flags="g"/>
                     <replaceregex pattern="&gt;\*/" replace="&gt;" flags="g"/>
                     <!-- replace Object/*>A<*/ by A -->
-                    <replaceregex pattern="([a-zA-Z.]+)/\*\&gt;([a-zA-Z&lt;,&gt;.]+)\&lt;\*/" replace="\2" flags="g"/>
+                    <replaceregex pattern="([a-zA-Z.]+)/\*\&gt;([a-zA-Z0-9&lt;,&gt;.]+)\&lt;\*/" replace="\2" flags="g"/>
                 </tokenfilter>
             </filterchain>
         </copy>

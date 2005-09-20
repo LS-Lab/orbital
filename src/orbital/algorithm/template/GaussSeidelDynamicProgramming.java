@@ -7,6 +7,7 @@
 package orbital.algorithm.template;
 
 import orbital.logic.functor.Function;
+import orbital.math.Real;
 
 import orbital.logic.functor.BinaryFunction;
 
@@ -66,26 +67,26 @@ public class GaussSeidelDynamicProgramming/*<A,S,M extends MarkovDecisionProblem
      * the full set S of <em>all</em> states of the problem.
      * @serial
      */
-    private Collection states;
+    private Collection/*<S>*/ states;
     /**
      * @param states the full set S of <em>all</em> states of the problem.
      * @param tolerance the tolerance value below which the evaluation function is considered
      *  to have converged.
      */
-    public GaussSeidelDynamicProgramming(Function heuristic, Collection states, double tolerance) {
+    public GaussSeidelDynamicProgramming(Function/*<S,Real>*/ heuristic, Collection/*<S>*/ states, double tolerance) {
         super(heuristic);
         this.states = states;
         this.tolerance = tolerance;
     }
     
-    protected Function plan() {
+    protected Function/*<S,A>*/ plan() {
         /**
          * estimates U of optimal value function h<sup>*</sup>:S&rarr;<b>R</b>.
          * If h is admissible U will converge (monotonically) up to h<sup>*</sup>.
          * Updated via DP on current states, instead of value iteration on each state until convergence.
          */
-        final MutableFunction U = createMap();
-        final BinaryFunction Q = getActionValue(U);
+        final MutableFunction/*<S,Real>*/ U = createMap();
+        final BinaryFunction/*<S,A,Real>*/ Q = getActionValue(U);
         // explicitly initialize U(s) = h(s)
         /*for (Iterator i = problem.getStates().iterator(); i.hasNext(); ) {
           Object state = i.next();
@@ -96,18 +97,18 @@ public class GaussSeidelDynamicProgramming/*<A,S,M extends MarkovDecisionProblem
         // value iteration
         do {
             delta = 0;
-            for (Iterator i = states.iterator(); i.hasNext(); ) {
-                Object state = i.next();
+            for (Iterator/*<S>*/ i = states.iterator(); i.hasNext(); ) {
+                Object/*>S<*/ state = i.next();
                 double old = ((Number) U.apply(state)).doubleValue();
                 
                 // search minimal expected cost applicable action
-                Pair/*<Object, Number>*/ p = maximumExpectedUtility(Q, state);
+                Pair/*<A, Real>*/ p = maximumExpectedUtility(Q, state);
 
                 // update U(s) (alias backup)
-                U.set(state, p.B);
-                logger.log(Level.FINER, "GSDP", "  U(" + state + ")\t:= " + p.B);
+                U.set(state, p.getB());
+                logger.log(Level.FINER, "GSDP", "  U(" + state + ")\t:= " + p.getB());
                         
-                delta = Math.max(delta, Math.abs(old - ((Number) p.B).doubleValue()));
+                delta = Math.max(delta, Math.abs(old - ((Number) p.getB()).doubleValue()));
             }
         } while (!(delta < tolerance));
 

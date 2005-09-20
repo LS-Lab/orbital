@@ -527,7 +527,7 @@ public interface ValueFactory {
      * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience Method</a>
      * @see #MONOMIAL(Arithmetic,Arithmetic)
      */
-    /*<R extends Scalar,S>*/ Polynomial/*<R,S>*/ MONOMIAL(Arithmetic/*>S<*/ exponent);
+    /*<R extends Scalar,S extends Arithmetic>*/ Polynomial/*<R,S>*/ MONOMIAL(Arithmetic/*>S<*/ exponent);
     /**
      * The monomial 1&middot;X<sub>0</sub><sup>i[0]</sup>...X<sub>n-1</sub><sup>i[n-1]</sup>.
      * Note that the coefficient is {@link #ONE 1}&isin;<b>Z</b>.

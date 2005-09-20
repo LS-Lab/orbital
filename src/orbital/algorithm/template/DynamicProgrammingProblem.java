@@ -12,7 +12,7 @@ package orbital.algorithm.template;
  * @author  Andr&eacute; Platzer
  * @see DynamicProgramming
  */
-public interface DynamicProgrammingProblem extends AlgorithmicProblem {
+public interface DynamicProgrammingProblem/*<Solution,SolutionPart>*/ extends AlgorithmicProblem {
 
     // TODO: change Object[] to List?
 
@@ -20,14 +20,14 @@ public interface DynamicProgrammingProblem extends AlgorithmicProblem {
      * Get the initial array of partial solutions.
      * @return (possibly a multi-dimensional) array of objects initialized ready to begin solving.
      */
-    Object[] getInitialPartialSolutions();
+    Object/*>SolutionPart<*/[] getInitialPartialSolutions();
 
     /**
      * Check whether the given partial solutions are a valid solution to the problem.
      * @preconditions partialSolutions resulted in repeated calls of solve after a single call to getInitialPartialSolutions.
      * @postconditions RES indicates whether we found a solution to the problem
      */
-    boolean isSolution(Object[] partialSolutions);
+    boolean isSolution(Object/*>SolutionPart<*/[] partialSolutions);
 
     /**
      * Divide this problem into several (dependant) problem parts and return the index description for the next part to solve.
@@ -44,12 +44,12 @@ public interface DynamicProgrammingProblem extends AlgorithmicProblem {
      * @return the solution for this case.
      * @see #nextPart()
      */
-    Object solve(int[] part, Object[] partialSolutions);
+    Object/*>Solution<*/ solve(int[] part, Object/*>SolutionPart<*/[] partialSolutions);
 
     /**
      * Merge several partial solutions to a complete solution.
      * @param partialSolutions partial solutions
      * @return the complete solution consisting of the partial solutions.
      */
-    Object merge(Object[] partialSolutions);
+    Object/*>Solution<*/ merge(Object/*>SolutionPart<*/[] partialSolutions);
 }

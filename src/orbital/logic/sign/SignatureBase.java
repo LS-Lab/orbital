@@ -36,7 +36,7 @@ import java.util.Comparator;
  * @author  Andr&eacute; Platzer
  * @see ExpressionSyntax#scanSignature(java.lang.String)
  */
-public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Signature {
+public class SignatureBase/*<Sigma extends Symbol>*/ extends DelegateSortedSet/*<Sigma>*/ implements Signature/*<Sigma>*/ {
     private static final long serialVersionUID = -2651634605539964276L;
     /**
      * Empty signature &empty;.
@@ -53,23 +53,23 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
      * @preconditions &forall;s&isin;symbols: s instanceof orbital.logic.imp.Symbol
      * @todo 19 optimize the TreeSet which takes time during proving
      */
-    public SignatureBase(Collection/*<Symbol>*/ symbols) {
-        this(new TreeSet/*<Symbol>*/(symbols), true);
+    public SignatureBase(Collection/*<Sigma>*/ symbols) {
+        this(new TreeSet/*<Sigma>*/(symbols), true);
     }
-    public SignatureBase(SortedSet/*<Symbol>*/ symbols) {
-        this(new TreeSet/*<Symbol>*/(symbols), true);
+    public SignatureBase(SortedSet/*<Sigma>*/ symbols) {
+        this(new TreeSet/*<Sigma>*/(symbols), true);
     }
 
     /**
      * Construct an empty signature &empty;.
      */
     public SignatureBase() {
-        super(new TreeSet/*<Symbol>*/());
+        super(new TreeSet/*<Sigma>*/());
     }
 
-    private SignatureBase(SortedSet/*<Symbol>*/ symbols, boolean unusedParameter) {
+    private SignatureBase(SortedSet/*<Sigma>*/ symbols, boolean unusedParameter) {
         super(symbols);
-        assert Setops.all(getDelegatee(), new orbital.logic.functor.Predicate() { public boolean apply(Object s) {return s instanceof Symbol;} }) : "instanceof SortedSet<Symbol>";
+        assert Setops.all(getDelegatee(), new orbital.logic.functor.Predicate() { public boolean apply(Object s) {return s instanceof Symbol;} }) : "instanceof SortedSet<Sigma>";
     }
     
     public boolean equals(Object o) {
@@ -85,8 +85,8 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
     /**
      * Get the set of symbols in this signature.
      */
-    public SortedSet/*<Symbol>*/ getSymbols() {
-        return (SortedSet/*<Symbol>*/) getDelegatee();
+    public SortedSet/*<Sigma>*/ getSymbols() {
+        return (SortedSet/*<Sigma>*/) getDelegatee();
     } 
 
     /**
@@ -94,7 +94,7 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
      * @param symbols the new set of symbols in this signature.
      * @preconditions &forall;s&isin;symbols: s instanceof orbital.logic.imp.Symbol
      */
-    public void setSymbols(SortedSet/*<Symbol>*/ symbols) {
+    public void setSymbols(SortedSet/*<Sigma>*/ symbols) {
         setDelegatee(symbols);
     } 
     
@@ -106,12 +106,12 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
     public boolean contains(String signifier, Object[] arg) {
         return get(signifier, arg) != null;
     }
-    public Symbol get(String signifier, Object[] arg) {
+    public Symbol/*>Sigma<*/ get(String signifier, Object[] arg) {
         //@todo should we call get(signifier, Types.map(Types.typeOf((Expression[])arg)), Types.UNIVERSAL), which was possible.
-        for (Iterator i = iterator(); i.hasNext(); ) {
-            final Object o = i.next();
+        for (Iterator/*<Sigma>*/ i = iterator(); i.hasNext(); ) {
+            final Object/*>Sigma<*/ o = i.next();
             assert o instanceof Symbol : "signature isa " + SortedSet.class.getName() + '<' + Symbol.class.getName() + '>';
-            final Symbol s = (Symbol) o;
+            final Symbol/*>Sigma<*/ s = (Symbol/*>Sigma<*/) o;
             if (signifier.equals(s.getSignifier()))
                 if (arg instanceof Expression[]) {
                     if (Types.isApplicableTo(s.getType(), (Expression[])arg))
@@ -124,11 +124,11 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
         }
         return null;
     }
-    public Symbol get(String signifier, Type maxType) {
-        for (Iterator i = iterator(); i.hasNext(); ) {
-            final Object o = i.next();
+    public Symbol/*>Sigma<*/ get(String signifier, Type maxType) {
+        for (Iterator/*<Sigma>*/ i = iterator(); i.hasNext(); ) {
+            final Object/*>Sigma<*/ o = i.next();
             assert o instanceof Symbol : "signature isa " + SortedSet.class.getName() + '<' + Symbol.class.getName() + '>';
-            final Symbol s = (Symbol) o;
+            final Symbol/*>Sigma<*/ s = (Symbol/*>Sigma<*/) o;
             if (signifier.equals(s.getSignifier()))
                 if (s.getType().subtypeOf(maxType))
                     //@xxx if multiple symbols are compatible use dynamic dispatch / overloading etc.
@@ -139,26 +139,26 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
 
     // Extended Set operations.
 
-    public Signature union(Signature sigma2) {
-        SignatureBase u = newInstance();
+    public Signature/*<Sigma>*/ union(Signature/*<Sigma>*/ sigma2) {
+        SignatureBase/*<Sigma>*/ u = newInstance();
         u.setSymbols(Setops.union(this, sigma2));
         return u;
     } 
 
-    public Signature intersection(Signature sigma2) {
-        SignatureBase s = newInstance();
+    public Signature/*<Sigma>*/ intersection(Signature/*<Sigma>*/ sigma2) {
+        SignatureBase/*<Sigma>*/ s = newInstance();
         s.setSymbols(Setops.intersection(this, sigma2));
         return s;
     } 
 
-    public Signature difference(Signature sigma2) {
-        SignatureBase d = newInstance();
+    public Signature/*<Sigma>*/ difference(Signature/*<Sigma>*/ sigma2) {
+        SignatureBase/*<Sigma>*/ d = newInstance();
         d.setSymbols(Setops.difference(this, sigma2));
         return d;
     } 
 
-    public Signature symmetricDifference(Signature sigma2) {
-        SignatureBase d = newInstance();
+    public Signature/*<Sigma>*/ symmetricDifference(Signature/*<Sigma>*/ sigma2) {
+        SignatureBase/*<Sigma>*/ d = newInstance();
         d.setSymbols(Setops.symmetricDifference(this, sigma2));
         return d;
     } 
@@ -169,7 +169,7 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
     public String toString() {
         StringBuffer str = new StringBuffer(getClass().getName());
         str.append('{');
-        for (Iterator it = iterator(); it.hasNext(); )
+        for (Iterator/*<Sigma>*/ it = iterator(); it.hasNext(); )
             str.append(it.next() + (it.hasNext() ? "," : ""));
         str.append('}');
         return str.toString();
@@ -179,7 +179,7 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
      * Create a new instance of the exact same type.
      * Used to create an object of the same type without copying its data.
      */
-    private SignatureBase newInstance() {
+    private SignatureBase/*<Sigma>*/ newInstance() {
         try {
             return (SignatureBase) getClass().newInstance();
         }
@@ -187,9 +187,9 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
         catch (IllegalAccessException nonconform) {throw new InnerCheckedException("invariant: sub classes of " + SignatureBase.class + " must support nullary constructor for virtual new instance.", nonconform);}
     }
 
-    // some type-safe checks (ensuring implements SortedSet<Symbol>)
+    // some type-safe checks (ensuring implements SortedSet<Sigma>)
 
-    public boolean add(Object o) {
+    public boolean add(Object/*>Sigma<*/ o) {
         if (o instanceof Symbol)
             return super.add(o);
         else
@@ -203,8 +203,9 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
      * The result is a <a href="../../math/Values.html#readOnlyView">read only view</a>.
      * @todo or only structurally unmodifiable because iterator().next().setSignifier will still work?
      */
-    public static final Signature unmodifiableSignature(final Signature s) {
-        return /*refine/delegate Signature*/ new SignatureBase(s) {
+    public static final /*<Sigma extends Symbol>*/
+	Signature/*<Sigma>*/ unmodifiableSignature(final Signature/*<Sigma>*/ s) {
+        return /*refine/delegate Signature*/ new SignatureBase/*<Sigma>*/(s) {
                 private static final long serialVersionUID = -7777832542719541528L;
                 // Code for delegation of java.util.Set methods to s
 
@@ -214,7 +215,7 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
                  * @return <description>
                  * @see java.util.Set#addAll(Collection)
                  */
-                public boolean addAll(Collection param1)
+                public boolean addAll(Collection/*<Sigma>*/ param1)
                 {
                     throw new UnsupportedOperationException();
                 }
@@ -225,7 +226,7 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
                  * @return <description>
                  * @see java.util.Set#add(Object)
                  */
-                public boolean add(Object param1)
+                public boolean add(Object/*>Sigma<*/ param1)
                 {
                     throw new UnsupportedOperationException();
                 }
@@ -235,7 +236,7 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
                  * @return <description>
                  * @see java.util.Set#iterator()
                  */
-                public Iterator iterator()
+                public Iterator/*<Sigma>*/ iterator()
                 {
                     return Setops.unmodifiableIterator(s.iterator());
                 }
@@ -246,7 +247,7 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
                  * @return <description>
                  * @see java.util.Set#remove(Object)
                  */
-                public boolean remove(Object param1)
+                public boolean remove(Object/*>Sigma<*/ param1)
                 {
                     throw new UnsupportedOperationException();
                 }
@@ -266,7 +267,7 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
                  * @return <description>
                  * @see java.util.Set#removeAll(Collection)
                  */
-                public boolean removeAll(Collection param1)
+                public boolean removeAll(Collection/*<Sigma>*/ param1)
                 {
                     throw new UnsupportedOperationException();
                 }
@@ -277,7 +278,7 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
                  * @return <description>
                  * @see java.util.Set#retainAll(Collection)
                  */
-                public boolean retainAll(Collection param1)
+                public boolean retainAll(Collection/*<Sigma>*/ param1)
                 {
                     throw new UnsupportedOperationException();
                 }
@@ -291,7 +292,7 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
                  * @return <description>
                  * @see orbital.logic.imp.Signature#get(String, Type)
                  */
-                public Symbol get(String param1, Type param2)
+                public Symbol/*>Sigma<*/ get(String param1, Type param2)
                 {
                     return s.get(param1, param2);
                 }
@@ -303,7 +304,7 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
                  * @return <description>
                  * @see orbital.logic.imp.Signature#get(String, Object[])
                  */
-                public Symbol get(String param1, Object[] param2)
+                public Symbol/*>Sigma<*/ get(String param1, Object[] param2)
                 {
                     return s.get(param1, param2);
                 }
@@ -314,7 +315,7 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
                  * @return <description>
                  * @see orbital.logic.imp.Signature#union(Signature)
                  */
-                public Signature union(Signature param1)
+                public Signature/*<Sigma>*/ union(Signature/*<Sigma>*/ param1)
                 {
                     return s.union(param1);
                 }
@@ -325,7 +326,7 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
                  * @return <description>
                  * @see orbital.logic.imp.Signature#intersection(Signature)
                  */
-                public Signature intersection(Signature param1)
+                public Signature/*<Sigma>*/ intersection(Signature/*<Sigma>*/ param1)
                 {
                     return s.intersection(param1);
                 }
@@ -336,7 +337,7 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
                  * @return <description>
                  * @see orbital.logic.imp.Signature#difference(Signature)
                  */
-                public Signature difference(Signature param1)
+                public Signature/*<Sigma>*/ difference(Signature/*<Sigma>*/ param1)
                 {
                     return s.difference(param1);
                 }
@@ -347,7 +348,7 @@ public class SignatureBase extends DelegateSortedSet/*<Symbol>*/ implements Sign
                  * @return <description>
                  * @see orbital.logic.imp.Signature#symmetricDifference(Signature)
                  */
-                public Signature symmetricDifference(Signature param1)
+                public Signature/*<Sigma>*/ symmetricDifference(Signature/*<Sigma>*/ param1)
                 {
                     return s.symmetricDifference(param1);
                 }

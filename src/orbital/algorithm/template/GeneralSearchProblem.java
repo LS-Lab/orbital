@@ -77,7 +77,8 @@ import orbital.math.MathUtilities;
  *  Then, of course, we would somehow move getCost to Option. But GSP.getCost returns immediate cost, whereas GSP.Option.getCost returns accumulated cost.
  *  For use in local optimizers, actions() does not need to check for applicability, if states() returns the old state if an action later proofs not applicable, without any harm. However, really following the state space would require applicability checks right ahead.
  */
-public interface GeneralSearchProblem/*<A,S>*/ extends MarkovDecisionProblem/*<A,S,GeneralSearchProblem.Transition>*/ {
+public interface GeneralSearchProblem/*<A,S>*/
+    extends MarkovDecisionProblem/*<A,S,GeneralSearchProblem.Transition>*/ {
     /**
      * Get the initial state of the problem.
      * <p>

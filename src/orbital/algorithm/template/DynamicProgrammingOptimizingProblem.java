@@ -68,8 +68,8 @@ public abstract class DynamicProgrammingOptimizingProblem implements DynamicProg
      * @return the objective weighting function.
      * It will only be used upto the next call of this function.
      */
-    //TODO: change return-type to Function/*<int[], Double>*/
-    public abstract Function/*<Object, Number>*/ getWeightingFor(int[] part);
+    //TODO: change return-type to Function/*<int[], Real>*/
+    public abstract Function/*_<Object, Number>_*/ getWeightingFor(int[] part);
 
     public Object solve(int[] part, Object[] partialSolutions) {
         Collection options = getOptionsFor(part);

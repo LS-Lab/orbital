@@ -8,6 +8,7 @@ package orbital.algorithm.template;
 
 import orbital.logic.functor.Function;
 import java.util.List;
+import orbital.math.Real;
 
 /**
  * Hook class for Greedy Algorithms.
@@ -62,13 +63,14 @@ import java.util.List;
  * </small>
  * </p>
  *
+ * @param <C> the type of individual candidates.
  * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Greedy
  * @todo What's the connection of filtered system of sets with topological filters?
  * @internal Schrittweises Ausschöpfen alias Raffke Algorithmen alias Greedy Algorithmen.
  */
-public interface GreedyProblem extends AlgorithmicProblem {
+public interface GreedyProblem/*<C>*/ extends AlgorithmicProblem {
 
     /**
      * get the initial set of candidates.
@@ -77,7 +79,7 @@ public interface GreedyProblem extends AlgorithmicProblem {
      * @return the initial set of candidates, usually <span class="set">C</span>.
      * @see #nextCandidates(List)
      */
-    List getInitialCandidates();
+    List/*<C>*/ getInitialCandidates();
 
     /**
      * Extends the choices with a new_choice if that is feasible, otherwise nothing is changed.
@@ -89,7 +91,7 @@ public interface GreedyProblem extends AlgorithmicProblem {
      * @return usually <span class="set">M</span>&cup;{x}, the choices extended by the new_choice
      * @see #isPartialSolution(List)
      */
-    List nextPartialSolution(List choices, Object new_choice);
+    List/*<C>*/ nextPartialSolution(List/*<C>*/ choices, Object/*>C<*/ new_choice);
 
     /**
      * Test whether the given list of choices still is a valid (partial) solution.
@@ -100,7 +102,7 @@ public interface GreedyProblem extends AlgorithmicProblem {
      * @see #nextPartialSolution(List,Object)
      * @see #isSolution(List)
      */
-    boolean isPartialSolution(List choices);
+    boolean isPartialSolution(List/*<C>*/ choices);
 
     /**
      * Get the next set of candidates.
@@ -113,7 +115,7 @@ public interface GreedyProblem extends AlgorithmicProblem {
      *  For strict matroids simply <span class="set">C</span>.
      * @see #getInitialCandidates()
      */
-    List nextCandidates(List candidates);
+    List/*<C>*/ nextCandidates(List/*<C>*/ candidates);
 
     /**
      * Check whether the given list of choices is a valid solution to the problem.
@@ -121,7 +123,7 @@ public interface GreedyProblem extends AlgorithmicProblem {
      * @postconditions RES indicates whether we found a solution to the problem
      * @see #isPartialSolution(List)
      */
-    boolean isSolution(List choices);
+    boolean isSolution(List/*<C>*/ choices);
 
 
     /**
@@ -143,6 +145,6 @@ public interface GreedyProblem extends AlgorithmicProblem {
      * @note if this problem is a matroid, greedy will find a soltuion for any weighting function w.
      *  So we could set the weighting function in Greedy, directly, then.
      */
-    Function/*<Object, Number>*/ getWeightingFor(List choices);
+    Function/*<C,Real>*/ getWeightingFor(List/*<C>*/ choices);
 
 }
