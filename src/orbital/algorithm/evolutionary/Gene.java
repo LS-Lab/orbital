@@ -199,8 +199,8 @@ public interface Gene {
          */
         public Object clone() {
             List n = newInstance(size());
-            for (Iterator i = iterator(); i.hasNext(); )
-                n.add(((Gene) i.next()).clone());
+            for (Iterator/*<Gene>*/ i = iterator(); i.hasNext(); )
+                n.add((Gene) ((Gene) i.next()).clone());
             return n;
         } 
     
@@ -239,7 +239,7 @@ public interface Gene {
             if (!MathUtilities.isProbability(probability))
                 throw new IllegalArgumentException("invalid probability " + probability);
             List n = newInstance(size());
-            for (Iterator i = iterator(); i.hasNext(); )
+            for (Iterator/*<Gene>*/ i = iterator(); i.hasNext(); )
                 //TODO: randomly swap adjacent members
                 n.add(((Gene) i.next()).mutate(probability));
             return n;
@@ -259,9 +259,9 @@ public interface Gene {
         protected Gene[] elementwiseRecombine(final Gene[] parents, int childrenCount, double recombinationProbability) {
             if (!MathUtilities.isProbability(recombinationProbability))
                 throw new IllegalArgumentException("invalid probability " + recombinationProbability);
-            List[]                parentsc = (List[]) parents;
-            List[]                children = (List[]) Array.newInstance(parents[0].getClass(), childrenCount);
-            Iterator[]    iterator = new Iterator[parents.length];
+            List[] parentsc = (List[]) parents;
+            List[] children = (List[]) Array.newInstance(parents[0].getClass(), childrenCount);
+            Iterator/*<Gene>*/[] iterator = new Iterator[parents.length];
     
             // create new children gene objects
             for (int i = 0; i < children.length; i++)
@@ -326,8 +326,8 @@ public interface Gene {
         protected Gene[] uniformRecombine(final Gene[] parents, int childrenCount, double recombinationProbability) {
             if (!MathUtilities.isProbability(recombinationProbability))
                 throw new IllegalArgumentException("invalid probability " + recombinationProbability);
-            List[]                parentsc = (List[]) parents;
-            List[]                children = (List[]) Array.newInstance(parents[0].getClass(), childrenCount);
+            List[] parentsc = (List[]) parents;
+            List[] children = (List[]) Array.newInstance(parents[0].getClass(), childrenCount);
             final int     a = parentsc.length;    // a
             final int     n = children.length;    // n
             final double  p = a;                                  // p
@@ -364,8 +364,8 @@ public interface Gene {
         private static final Metric metric = new Metric() {
                 //@todo rewrite pure functionally
                 public Real distance(Object o1, Object o2) {
-                    List   a = (List) o1;
-                    List   b = (List) o2;
+                    List a = (List) o1;
+                    List b = (List) o2;
                     if (a.size() != b.size())
                         return Values.ONE;
                     double difference = 0;

@@ -94,7 +94,7 @@ public class SignatureBase/*<Sigma extends Symbol>*/ extends DelegateSortedSet/*
      * @param symbols the new set of symbols in this signature.
      * @preconditions &forall;s&isin;symbols: s instanceof orbital.logic.imp.Symbol
      */
-    public void setSymbols(SortedSet/*<Sigma>*/ symbols) {
+    public void setSymbols(SortedSet/*<? extends Sigma>*/ symbols) {
         setDelegatee(symbols);
     } 
     
@@ -215,7 +215,7 @@ public class SignatureBase/*<Sigma extends Symbol>*/ extends DelegateSortedSet/*
                  * @return <description>
                  * @see java.util.Set#addAll(Collection)
                  */
-                public boolean addAll(Collection/*<Sigma>*/ param1)
+                public boolean addAll(Collection/*<? extends Sigma>*/ param1)
                 {
                     throw new UnsupportedOperationException();
                 }
@@ -247,7 +247,7 @@ public class SignatureBase/*<Sigma extends Symbol>*/ extends DelegateSortedSet/*
                  * @return <description>
                  * @see java.util.Set#remove(Object)
                  */
-                public boolean remove(Object/*>Sigma<*/ param1)
+                public boolean remove(Object param1)
                 {
                     throw new UnsupportedOperationException();
                 }
@@ -267,7 +267,7 @@ public class SignatureBase/*<Sigma extends Symbol>*/ extends DelegateSortedSet/*
                  * @return <description>
                  * @see java.util.Set#removeAll(Collection)
                  */
-                public boolean removeAll(Collection/*<Sigma>*/ param1)
+                public boolean removeAll(Collection/*<?>*/ param1)
                 {
                     throw new UnsupportedOperationException();
                 }
@@ -278,7 +278,7 @@ public class SignatureBase/*<Sigma extends Symbol>*/ extends DelegateSortedSet/*
                  * @return <description>
                  * @see java.util.Set#retainAll(Collection)
                  */
-                public boolean retainAll(Collection/*<Sigma>*/ param1)
+                public boolean retainAll(Collection/*<?>*/ param1)
                 {
                     throw new UnsupportedOperationException();
                 }

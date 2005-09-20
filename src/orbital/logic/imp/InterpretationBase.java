@@ -57,7 +57,7 @@ public class InterpretationBase/*<Sigma extends Symbol,Denotation>*/
      * there are some special applications.
      */
     public static final /*<Sigma extends Symbol,Denotation>*/
-	Interpretation/*<Sigma,Denotation>*/ EMPTY(Signature/*<Sigma>*/ sigma) {
+	Interpretation/*<Sigma,Denotation>*/ EMPTY(Signature/*<? extends Sigma>*/ sigma) {
         return new InterpretationBase/*<Sigma,Denotation>*/(sigma, Collections.EMPTY_MAP);
     }
 
@@ -75,7 +75,7 @@ public class InterpretationBase/*<Sigma extends Symbol,Denotation>*/
      * @param sigma the signature &Sigma; whose symbols are interpreted by the custom interpretation source.
      *  If sigma is <code>null</code>, then it should be set later with {@link #setSignature(Signature)}.
      */
-    protected InterpretationBase(Signature/*<Sigma>*/ sigma) {
+    protected InterpretationBase(Signature/*<? extends Sigma>*/ sigma) {
         this();
         this.sigma = sigma;
     }
@@ -85,11 +85,11 @@ public class InterpretationBase/*<Sigma extends Symbol,Denotation>*/
      * @param sigma the signature &Sigma; whose symbols to interpret.
      * @param associations the map that associates each symbol in sigma with a value object.
      */
-    public InterpretationBase(Signature/*<Sigma>*/ sigma, Map/*<Sigma,Denotation>*/ associations) {
+    public InterpretationBase(Signature/*<? extends Sigma>*/ sigma, Map/*<? extends Sigma,? extends Denotation>*/ associations) {
         this(sigma);
         putAll(associations);
     }
-    public InterpretationBase(Signature/*<Sigma>*/ sigma, SortedMap/*<Sigma,Denotation>*/ associations) {
+    public InterpretationBase(Signature/*<? extends Sigma>*/ sigma, SortedMap/*<? extends Sigma,? extends Denotation>*/ associations) {
         this(sigma);
         putAll(associations);
     }
@@ -98,7 +98,7 @@ public class InterpretationBase/*<Sigma extends Symbol,Denotation>*/
      * Only for delegation to interpretations used in
      * {@link #unmodifiableInterpretation(Interpretation)}.
      */
-    private InterpretationBase(Interpretation/*<Sigma,Denotation>*/ delegatee) {
+    private InterpretationBase(Interpretation/*<? extends Sigma,? extends Denotation>*/ delegatee) {
         super(delegatee);
         // getSignature() is overwritten, anyway
         this.sigma = null;
@@ -131,7 +131,7 @@ public class InterpretationBase/*<Sigma extends Symbol,Denotation>*/
      * @throws IllegalArgumentException if sigma does not contain a symbol which is interpreted in the current assocation map.
      *  This is not checked if sigma is <code>null</code>.
      */
-    public void setSignature(Signature/*<Sigma>*/ sigma) {
+    public void setSignature(Signature/*<? extends Sigma>*/ sigma) {
         if (sigma != null) {
             for (Iterator/*<Sigma>*/ it = keySet().iterator(); it.hasNext(); ) {
                 Object/*>Sigma<*/ o = it.next();
@@ -155,7 +155,7 @@ public class InterpretationBase/*<Sigma extends Symbol,Denotation>*/
         return referent;
     } 
 
-    public Object/*>Denotation<*/ remove(Object/*>Sigma<*/ symbol) {
+    public Object/*>Denotation<*/ remove(Object symbol) {
         validate(symbol);
         return super.remove(symbol);
     } 
@@ -181,12 +181,12 @@ public class InterpretationBase/*<Sigma extends Symbol,Denotation>*/
         super.putAll(associations);
     } 
 
-    public boolean containsKey(Object/*>Sigma<*/ symbol) {
+    public boolean containsKey(Object symbol) {
         validate(symbol);
         return super.containsKey(symbol);
     } 
 
-    public boolean contains(Object/*>Sigma<*/ symbol) {
+    public boolean contains(Object symbol) {
         return containsKey(symbol);
     } 
 
@@ -223,7 +223,7 @@ public class InterpretationBase/*<Sigma extends Symbol,Denotation>*/
      * @throws NoSuchElementException if the symbol is not in the current signature sigma.
      * @todo optimize this hotspot during proving
      */
-    private final void validate(Object/*>Sigma<*/ symbol) {
+    private final void validate(Object symbol) {
         if (!VALIDATION)
             return;
         try {
@@ -372,7 +372,7 @@ public class InterpretationBase/*<Sigma extends Symbol,Denotation>*/
                  * @return <description>
                  * @see java.util.Map#entrySet()
                  */
-                public Set entrySet()
+                public Set/*<Entry<Sigma,Denotation>>*/ entrySet()
                 {
                     throw new UnsupportedOperationException("not yet implemented: unmodifiable view of entrySet() with unmodifiable entries");
                 }

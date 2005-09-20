@@ -35,7 +35,7 @@ public class DelegateSet/*<A>*/ extends DelegateCollection/*<A>*/ implements Set
     }
 
     protected void setDelegatee(Collection/*<A>*/ delegatee) {
-        if (delegatee instanceof Set/*<A>*/)
+        if (delegatee instanceof Set)
             setDelegatee((Set/*<A>*/) delegatee);
         else
             throw new IllegalArgumentException("setDelegatee requires Set instance for DelegateSets");

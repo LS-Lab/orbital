@@ -36,7 +36,7 @@ public class DelegateList/*<A>*/ extends DelegateCollection/*<A>*/ implements Li
     }
 
     protected void setDelegatee(Collection/*<A>*/ delegatee) {
-        if (delegatee instanceof List/*<A>*/)
+        if (delegatee instanceof List)
             setDelegatee((List/*<A>*/) delegatee);
         else
             throw new IllegalArgumentException("ListDelegatee requires List instance for DelegateLists");
@@ -46,7 +46,7 @@ public class DelegateList/*<A>*/ extends DelegateCollection/*<A>*/ implements Li
         ((List/*<A>*/) getDelegatee()).add(index, element);
     }
 
-    public boolean addAll(int index, Collection/*<A>*/ c) {
+    public boolean addAll(int index, Collection/*<? extends A>*/ c) {
         return ((List/*<A>*/) getDelegatee()).addAll(index, c);
     }
         
@@ -54,11 +54,11 @@ public class DelegateList/*<A>*/ extends DelegateCollection/*<A>*/ implements Li
         return ((List/*<A>*/) getDelegatee()).get(index);
     }
         
-    public int indexOf(Object/*>A<*/ o) {
+    public int indexOf(Object o) {
         return ((List/*<A>*/) getDelegatee()).indexOf(o);
     }
         
-    public int lastIndexOf(Object/*>A<*/ o) {
+    public int lastIndexOf(Object o) {
         return ((List/*<A>*/) getDelegatee()).lastIndexOf(o);
     }
         

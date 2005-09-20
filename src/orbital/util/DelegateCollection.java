@@ -115,7 +115,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      * @return <tt>true</tt> if this collection contains the specified
      * element
      */
-    public boolean contains(Object/*>A<*/ o) {
+    public boolean contains(Object o) {
         return getDelegatee().contains(o);
     } 
 
@@ -147,7 +147,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      * 
      * @return an array containing all of the elements in this collection
      */
-    public Object/*>A<*/[] toArray() {
+    public Object[] toArray() {
         return getDelegatee().toArray();
     } 
 
@@ -195,7 +195,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      * collection.
      */
 
-    public Object/*>A<*/[] toArray(Object/*>A<*/ a[]) {
+    public /*<T>*/ Object/*>T<*/[] toArray(Object/*>T<*/ a[]) {
         return getDelegatee().toArray(a);
     } 
 
@@ -251,7 +251,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      * @throws UnsupportedOperationException remove is not supported by this
      * collection.
      */
-    public boolean remove(Object/*>A<*/ o) {
+    public boolean remove(Object o) {
         return getDelegatee().remove(o);
     } 
 
@@ -267,7 +267,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      * in the specified collection
      * @see #contains(Object)
      */
-    public boolean containsAll(Collection/*<A>*/ c) {
+    public boolean containsAll(Collection/*<?>*/ c) {
         return getDelegatee().containsAll(c);
     } 
 
@@ -293,7 +293,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      * 
      * @see #add(Object)
      */
-    public boolean addAll(Collection/*<A>*/ c) {
+    public boolean addAll(Collection/*<? extends A>*/ c) {
         return getDelegatee().addAll(c);
     } 
 
@@ -314,7 +314,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      * @see #remove(Object)
      * @see #contains(Object)
      */
-    public boolean removeAll(Collection/*<A>*/ c) {
+    public boolean removeAll(Collection/*<?>*/ c) {
         return getDelegatee().removeAll(c);
     } 
 
@@ -334,7 +334,7 @@ public class DelegateCollection/*<A>*/ implements Collection/*<A>*/, Serializabl
      * @see #remove(Object)
      * @see #contains(Object)
      */
-    public boolean retainAll(Collection/*<A>*/ c) {
+    public boolean retainAll(Collection/*<?>*/ c) {
         return getDelegatee().retainAll(c);
     } 
 

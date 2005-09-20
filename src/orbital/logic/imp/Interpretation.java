@@ -262,7 +262,7 @@ public interface Interpretation/*<Sigma extends Symbol,Denotation>*/ extends Map
      * @throws IllegalArgumentException if sigma does not contain a symbol which is interpreted in the current assocation map.
      *  This is not checked if sigma is <code>null</code>.
      */
-    void setSignature(Signature/*<Sigma>*/ sigma);
+    void setSignature(Signature/*<? extends Sigma>*/ sigma);
 
 
     // Basic Map operations.
@@ -276,7 +276,7 @@ public interface Interpretation/*<Sigma extends Symbol,Denotation>*/ extends Map
      * @postconditions symbol.getType().apply(RES)
      * @throws java.util.NoSuchElementException if the symbol is not in the current signature &Sigma;.
      */
-    Object/*>Denotation<*/ get(Object/*>Sigma<*/ symbol);
+    Object/*>Denotation<*/ get(Object symbol);
 
     /**
      * Set the referent associated with the given symbol in this interpretation.
@@ -294,13 +294,13 @@ public interface Interpretation/*<Sigma extends Symbol,Denotation>*/ extends Map
      * @throws orbital.logic.sign.type.TypeException if one of the values is not of the type of its symbol.
      * @throws NullPointerException if associations is <code>null</code>.
      */
-    void putAll(Map/*<Sigma, Denotation>*/ associations);
+    void putAll(Map/*<? extends Sigma, ? extends Denotation>*/ associations);
 
     /**
      * Returns whether the specified symbol is contained in this interpretation assocation map.
      * @throws java.util.NoSuchElementException if the symbol is not in the current signature &Sigma;.
      */
-    boolean containsKey(Object/*>Sigma<*/ symbol);
+    boolean containsKey(Object symbol);
 
     // Extended operations.
 

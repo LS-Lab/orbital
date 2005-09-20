@@ -371,8 +371,8 @@ public final class AlgebraicAlgorithms {
      * Returns greatest common divisor (gcd) of two elements of an (Euclidean) ring.
      * @see #gcd(Euclidean,Euclidean)
      */
-    public static final BinaryFunction gcd = new BinaryFunction/*<Euclidean,Euclidean,Euclidean>*/() {
-            public Object apply(Object a, Object b) {
+    public static final BinaryFunction/*<Euclidean,Euclidean,Euclidean>*/ gcd = new BinaryFunction/*<Euclidean,Euclidean,Euclidean>*/() {
+            public Object/*>Euclidean<*/ apply(Object/*>Euclidean<*/ a, Object/*>Euclidean<*/ b) {
                 return gcd((Euclidean)a, (Euclidean)b);
             }
         };
@@ -409,8 +409,8 @@ public final class AlgebraicAlgorithms {
      * Returns least common multiple (lcm) of two elements of an (Euclidean) ring.
      * @see #lcm(Euclidean,Euclidean)
      */
-    public static final BinaryFunction lcm = new BinaryFunction/*<Euclidean,Euclidean,Euclidean>*/() {
-            public Object apply(Object a, Object b) {
+    public static final BinaryFunction/*<Euclidean,Euclidean,Euclidean>*/ lcm = new BinaryFunction/*<Euclidean,Euclidean,Euclidean>*/() {
+            public Object/*>Euclidean<*/ apply(Object/*>Euclidean<*/ a, Object/*>Euclidean<*/ b) {
                 return lcm((Euclidean)a, (Euclidean)b);
             }
         };
@@ -672,8 +672,8 @@ public final class AlgebraicAlgorithms {
                             assert !cnu.norm().equals(Values.ZERO) : "@postconditions of occurringMonomials(...)";
                             reductionPolynomials:
                             for (int j = 0; j < basis.length; j++) {
-                                final Polynomial/*<R,S>*/ gj = (Polynomial)basis[j].A;
-                                final Arithmetic/*>S<*/ lgj = (Arithmetic)basis[j].B;
+                                final Polynomial/*<R,S>*/ gj = (Polynomial/*>Polynomial<R,S><*/)basis[j].A;
+                                final Arithmetic/*>S<*/ lgj = (Arithmetic/*>S<*/)basis[j].B;
 
                                 // test divisibility
                                 final Arithmetic/*>R<*/ cdiv;
@@ -723,7 +723,7 @@ public final class AlgebraicAlgorithms {
         public int hashCode() {
             return Utility.hashCode(g) ^ Utility.hashCode(monomialOrder);
         }
-        public Object apply(Object f) {
+        public Object/*>Polynomial<R,S><*/ apply(Object/*>Polynomial<R,S><*/ f) {
             logger.log(Level.FINEST, "reducing ({0} with respect to {1} ...", new Object[] {f, g});
             return Functionals.fixedPoint(elementaryReduce, f);
         }
@@ -812,8 +812,8 @@ public final class AlgebraicAlgorithms {
                     final Polynomial/*<R,S>*/ gi = (Polynomial)g.get(i);
                     final Polynomial/*<R,S>*/ gj = (Polynomial)g.get(j);
                     // construct Sgigj = S(g[i], g[j])
-                    final Vector/*>S<*/ lgi = (Vector) leadingMonomial(gi, monomialOrder);
-                    final Vector/*>S<*/ lgj = (Vector) leadingMonomial(gj, monomialOrder);
+                    final Vector/*>S<*/ lgi = (Vector/*>S<*/) leadingMonomial(gi, monomialOrder);
+                    final Vector/*>S<*/ lgj = (Vector/*>S<*/) leadingMonomial(gj, monomialOrder);
                     // construct X^nu and X^mu coprime such that l(X^nu*g[i])==l(X^mu*g[j]) (also @see #lcm(Euclidean,Euclidean))
                     final Vector/*>S<*/ d = Functionals.map(Operations.max, lgi, lgj);
                     final Vector/*>S<*/ nu = d.subtract(lgi);
