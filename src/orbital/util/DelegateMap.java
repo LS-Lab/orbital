@@ -78,15 +78,15 @@ public class DelegateMap/*<A, B>*/ implements Map/*<A, B>*/, Serializable {
         return getDelegatee().isEmpty();
     }
 
-    public boolean containsKey(Object/*>A<*/ key) {
+    public boolean containsKey(Object key) {
         return getDelegatee().containsKey(key);
     }
 
-    public boolean containsValue(Object/*>B<*/ v) {
+    public boolean containsValue(Object v) {
         return getDelegatee().containsValue(v);
     }
 
-    public Object/*>B<*/ get(Object/*>A<*/ key) {
+    public Object/*>B<*/ get(Object key) {
         return getDelegatee().get(key);
     }
 
@@ -94,11 +94,11 @@ public class DelegateMap/*<A, B>*/ implements Map/*<A, B>*/, Serializable {
         return getDelegatee().put(key, value);
     }
 
-    public Object/*>B<*/ remove(Object/*>A<*/ key) {
+    public Object/*>B<*/ remove(Object key) {
         return getDelegatee().remove(key);
     }
 
-    public void putAll(Map/*<A, B>*/ t) {
+    public void putAll(Map/*<? extends A, ? extends B>*/ t) {
         getDelegatee().putAll(t);
     }
 

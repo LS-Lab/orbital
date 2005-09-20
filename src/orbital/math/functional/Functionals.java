@@ -11,6 +11,7 @@ import orbital.math.Arithmetic;
 import orbital.math.Tensor;
 import orbital.math.Vector;
 import orbital.math.Matrix;
+import orbital.math.functional.Functionals;
 
 import orbital.logic.sign.concrete.Notation;
 import orbital.math.Values;
@@ -493,29 +494,29 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
      * Maps a list of arguments with a function.
      * @see orbital.logic.functor.Functionals#listable(Function)
      */
-    public static /*<A, B>*/ Tensor/*<B>*/ map(Function/*<A, B>*/ f, Tensor/*<A>*/ a) {
+    public static /*<A extends Arithmetic, B extends Arithmetic>*/ Tensor/*<B>*/ map(Function/*<A, B>*/ f, Tensor/*<A>*/ a) {
         return (Tensor) map(f, (Object) a);
     }
-    public static /*<A, B>*/ Vector/*<B>*/ map(Function/*<A, B>*/ f, Vector/*<A>*/ a) {
+    public static /*<A extends Arithmetic, B extends Arithmetic>*/ Vector/*<B>*/ map(Function/*<A, B>*/ f, Vector/*<A>*/ a) {
         return (Vector) map(f, (Tensor)a);
     }
-    public static /*<A, B>*/ Matrix/*<B>*/ map(Function/*<A, B>*/ f, Matrix/*<A>*/ a) {
+    public static /*<A extends Arithmetic, B extends Arithmetic>*/ Matrix/*<B>*/ map(Function/*<A, B>*/ f, Matrix/*<A>*/ a) {
         return (Matrix) map(f, (Tensor)a);
     }
     /**
      * Maps two lists of arguments with a binary function.
      * @see orbital.logic.functor.Functionals#listable(BinaryFunction)
      */
-    public static /*<A1, A2, B>*/ Tensor/*<B>*/ map(BinaryFunction/*<A1, A2, B>*/ f, Tensor/*<A1>*/ x, Tensor/*<A2>*/ y) {
+    public static /*<A1 extends Arithmetic, A2 extends Arithmetic, B extends Arithmetic>*/ Tensor/*<B>*/ map(BinaryFunction/*<A1, A2, B>*/ f, Tensor/*<A1>*/ x, Tensor/*<A2>*/ y) {
         Utility.pre(Utility.equalsAll(x.dimensions(), y.dimensions()), "compatible dimensions");
         Tensor r = Values.getDefaultInstance().newInstance(x.dimensions());
         mapInto(f, x.iterator(), y.iterator(), r.iterator());
         return r;
     }
-    public static /*<A1, A2, B>*/ Vector/*<B>*/ map(BinaryFunction/*<A1, A2, B>*/ f, Vector/*<A1>*/ x, Vector/*<A2>*/ y) {
+    public static /*<A1 extends Arithmetic, A2 extends Arithmetic, B extends Arithmetic>*/ Vector/*<B>*/ map(BinaryFunction/*<A1, A2, B>*/ f, Vector/*<A1>*/ x, Vector/*<A2>*/ y) {
         return (Vector) map(f, (Tensor)x, (Tensor)y);
     }
-    public static /*<A1, A2, B>*/ Matrix/*<B>*/ map(BinaryFunction/*<A1, A2, B>*/ f, Matrix/*<A1>*/ x, Matrix/*<A2>*/ y) {
+    public static /*<A1 extends Arithmetic, A2 extends Arithmetic, B extends Arithmetic>*/ Matrix/*<B>*/ map(BinaryFunction/*<A1, A2, B>*/ f, Matrix/*<A1>*/ x, Matrix/*<A2>*/ y) {
         return (Matrix) map(f, (Tensor)x, (Tensor)y);
     }
 

@@ -92,7 +92,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      * @attribute commutative
      * @see Arithmetic#add(Arithmetic)
      */
-    public static final BinaryFunction plus = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
+    public static final BinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/ plus = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
             //@xxx either add this everywhere, or remove it here (otherwise it won't work)
             //private final orbital.logic.imp.Type logicalTypeDeclaration = orbital.logic.imp.Types.map(orbital.logic.imp.Types.product(new orbital.logic.imp.Type[] {orbital.logic.imp.Types.objectType(Arithmetic.class), orbital.logic.imp.Types.objectType(Arithmetic.class)}), orbital.logic.imp.Types.objectType(Arithmetic.class));
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
@@ -132,7 +132,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      * @todo implements AbstractFunction<Vector<Arithmetic>,Arithmetic>?
      * @todo implements AbstractFunction<Matrix<Arithmetic>,Arithmetic>?
      */
-    public static final Function sum = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
+    public static final Function/*<Arithmetic,Arithmetic>*/ sum = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ a) {
                 return Functionals.foldLeft(plus, Values.ZERO, Utility.asIterator(a));
             }
@@ -157,7 +157,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      * integrate: &int;&minus;x <i>d</i>x = &minus;x<sup>2</sup>/2</p>
      * @see Arithmetic#minus()
      */
-    public static final Function minus = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
+    public static final Function/*<Arithmetic,Arithmetic>*/ minus = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x) {
                 return ((Arithmetic) x).minus();
             } 
@@ -184,7 +184,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      * integrate: &int;x<sub>0</sub>-x<sub>1</sub> <i>d</i>x<sub>1</sub> = x<sub>0</sub>*x<sub>1</sub> - x<span class="doubleIndex"><sub>1</sub><sup>2</sup></span>/2</p>
      * @see Arithmetic#subtract(Arithmetic)
      */
-    public static final BinaryFunction subtract = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
+    public static final BinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/ subtract = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
                 Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer().apply(new Arithmetic[] {
                     (Arithmetic) x, (Arithmetic) y
@@ -226,7 +226,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      * @xxx but what about scale?
      * @see Arithmetic#scale(Arithmetic)
      */
-    public static final BinaryFunction times = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
+    public static final BinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/ times = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
                 Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer().apply(new Arithmetic[] {
                     (Arithmetic) x, (Arithmetic) y
@@ -265,7 +265,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      * @see #times
      * @todo
      */
-    public static final Function product = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
+    public static final Function/*<Arithmetic,Arithmetic>*/ product = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ a) {
                 return Functionals.foldLeft(times, Values.ONE, Utility.asIterator(a));
             }
@@ -290,7 +290,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      * integrate: &int;x<sup>-1</sup> <i>d</i>x<sub>1</sub> = &#13266; x</p>
      * @see Arithmetic#inverse()
      */
-    public static final Function inverse = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
+    public static final Function/*<Arithmetic,Arithmetic>*/ inverse = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x) {
                 return ((Arithmetic) x).inverse();
             } 
@@ -316,7 +316,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      * integrate: &int;x<sub>0</sub>&#8725;x<sub>1</sub> <i>d</i>x<sub>1</sub> = x<sub>0</sub>&middot;&#13266;(x<sub>1</sub>)</p>
      * @see Arithmetic#divide(Arithmetic)
      */
-    public static final BinaryFunction divide = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
+    public static final BinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/ divide = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
                 Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer().apply(new Arithmetic[] {
                     (Arithmetic) x, (Arithmetic) y
@@ -353,7 +353,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      * integrate: &int;x<sub>0</sub><sup>x<sub>1</sub></sup> <i>d</i>x<sub>1</sub> = x<sub>0</sub><sup>x<sub>1</sub></sup> / &#13266;(x<sub>0</sub>)</p>
      * @see Arithmetic#power(Arithmetic)
      */
-    public static final BinaryFunction power = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
+    public static final BinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/ power = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
                 Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer().apply(new Arithmetic[] {
                     (Arithmetic) x, (Arithmetic) y
@@ -392,7 +392,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      * @see java.lang.Comparable#compareTo(Object)
      * @todo AbstractBinaryFunction<Comparable,Comparable,Comparable> would be enough
      */
-    public static final BinaryFunction min = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
+    public static final BinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/ min = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
                 if (x instanceof Comparable && y instanceof Comparable)
                     return ((Comparable) x).compareTo(y) <= 0 ? x : y;
@@ -431,7 +431,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      * @see #min
      * @todo
      */
-    public static final Function inf = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
+    public static final Function/*<Arithmetic,Arithmetic>*/ inf = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ a) {
                 return Functionals.foldLeft(min, Values.POSITIVE_INFINITY, Utility.asIterator(a));
             }
@@ -457,7 +457,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      * @attribute distributive #min
      * @see java.lang.Comparable#compareTo(Object)
      */
-    public static final BinaryFunction max = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
+    public static final BinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/ max = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
                 if (x instanceof Comparable && y instanceof Comparable)
                     return ((Comparable) x).compareTo(y) >= 0 ? x : y;
@@ -496,7 +496,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      * @see #max
      * @todo
      */
-    public static final Function sup = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
+    public static final Function/*<Arithmetic,Arithmetic>*/ sup = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ a) {
                 return Functionals.foldLeft(max, Values.NEGATIVE_INFINITY, Utility.asIterator(a));
             }

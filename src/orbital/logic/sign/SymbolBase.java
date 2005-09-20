@@ -148,7 +148,7 @@ public class SymbolBase implements Symbol, Serializable {
      * @internal this order is quicker than comparison according to compares notation precedence in favor of type (lexicographical) in favor of symbol name.
      * @todo 29 optimize these hotspots compareTo(Object) and hashCode() during theorem proving. That signatures are based on TreeSets complicates this problem.
      */
-    public int compareTo(Object o) {
+    public int compareTo(Object/*>Symbol<*/ o) {
         Symbol b = (Symbol) o;
         int a;
         a = Utility.compare(getNotation(), b.getNotation());
