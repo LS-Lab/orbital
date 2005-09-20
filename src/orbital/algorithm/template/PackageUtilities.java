@@ -38,17 +38,18 @@ final class PackageUtilities {
      * @see orbital.util.Setops#argmin(Iterator,Function)
      * @todo replace by ordinary argmin and reevaluate the result's f-value.
      */
-    public static final Pair/*<Object, Comparable>*/ min(Iterator choices, Function f) {
+    public static final /*<M,R extends Comparable>*/
+	Pair/*<M,R>*/ min(Iterator/*<M>*/ choices, Function/*<M,R>*/ f) {
         // (almost) identical to @see orbital.util.Setops#argmin(Iterator,Function)
 
         // search for minimum f in choices
         // current best choice of choices
-        Object best = choices.next();
+        Object/*>M<*/ best = choices.next();
         // f(best)
-        Comparable bestValue = (Comparable) f.apply(best);
+        Comparable/*>R<*/ bestValue = (Comparable/*>R<*/) f.apply(best);
         while (choices.hasNext()) {
-            final Object o = choices.next();
-            final Comparable value = (Comparable) f.apply(o);
+            final Object/*>M<*/ o = choices.next();
+            final Comparable/*>R<*/ value = (Comparable/*>R<*/) f.apply(o);
             if (value.compareTo(bestValue) < 0) {
                 bestValue = value;
                 best = o;
@@ -57,22 +58,23 @@ final class PackageUtilities {
         }
 
         // return the best choice along with its value
-        return new Pair/*<Object, Comparable>*/(best, bestValue);
+        return new Pair/*<M,R>*/(best, bestValue);
     }
     /**
      * @see orbital.util.Setops#argmax(Iterator,Function)
      */
-    public static final Pair/*<Object, Comparable>*/ max(Iterator choices, Function f) {
+    public static final /*<M,R extends Comparable>*/
+	Pair/*<M,R>*/ max(Iterator/*<M>*/ choices, Function/*<M,R>*/ f) {
         // (almost) identical to @see orbital.util.Setops#argmin(Iterator,Function)
 
         // search for maximum f in choices
         // current best choice of choices
-        Object best = choices.next();
+        Object/*>M<*/ best = choices.next();
         // f(best)
-        Comparable bestValue = (Comparable) f.apply(best);
+        Comparable/*>R<*/ bestValue = (Comparable/*>R<*/) f.apply(best);
         while (choices.hasNext()) {
-            final Object o = choices.next();
-            final Comparable value = (Comparable) f.apply(o);
+            final Object/*>M<*/ o = choices.next();
+            final Comparable/*>R<*/ value = (Comparable/*>R<*/) f.apply(o);
             if (value.compareTo(bestValue) > 0) {
                 bestValue = value;
                 best = o;
@@ -81,7 +83,7 @@ final class PackageUtilities {
         }
 
         // return the best choice along with its value
-        return new Pair/*<Object, Comparable>*/(best, bestValue);
+        return new Pair/*<M,R>*/(best, bestValue);
     }
 
     //
@@ -101,7 +103,7 @@ final class PackageUtilities {
 	restrictRandomly(GeneralSearchProblem/*<A,S>*/ problem, final int numberOfChoices, final ProbabilisticAlgorithm algorithm) {
         return new DelegateGeneralSearchProblem/*<A,S>*/(problem) {
                 private static final long serialVersionUID = -4007975459550830964L;
-                public Iterator/*<S>*/ actions(Object/*>S<*/ state) {
+                public Iterator/*<A>*/ actions(Object/*>S<*/ state) {
                     final List/*<A>*/ actions = Setops.asList(getDelegatee().actions(state));
                     final Random random = algorithm.getRandom();
                     final List/*<A>*/ restrictedActions = new ArrayList(numberOfChoices);
@@ -131,7 +133,7 @@ final class PackageUtilities {
 	restrictBest(GeneralSearchProblem/*<A,S>*/ problem, final Function/*<S,Real>*/ evaluationFunction) {
         return new DelegateGeneralSearchProblem(problem) {
                 private static final long serialVersionUID = 549567555212455602L;
-                public Iterator/*<S>*/ actions(Object/*>S<*/ state) {
+                public Iterator/*<A>*/ actions(Object/*>S<*/ state) {
                     final GeneralSearchProblem/*<A,S>*/ problem = getDelegatee();
                     // just a short name for evalutionFunction
                     final Function/*<S,Real>*/ f = evaluationFunction;

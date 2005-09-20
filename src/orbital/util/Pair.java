@@ -19,7 +19,7 @@ import orbital.util.Utility;
  * @author  Andr&eacute; Platzer
  * @see KeyValuePair
  */
-public class Pair/*<T1, T2>*/ extends Object implements Comparable/*<Pair<T1, T2>>*/, Serializable {
+public class Pair/*<T1,T2>*/ extends Object implements Comparable/*<Pair<T1,T2>>*/, Serializable {
     private static final long serialVersionUID = 9024808570172404957L;
     /**
      * @serial
@@ -60,7 +60,7 @@ public class Pair/*<T1, T2>*/ extends Object implements Comparable/*<Pair<T1, T2
     /**
      * Compares two Pairs in favor of A (and then B).
      */
-    public int compareTo(Object o) {
+    public int compareTo(Object/*>Pair<T1,T2><*/ o) {
         Pair b = (Pair) o;
         int a = Utility.compare(A, b.A);
         return a != 0 ? a : Utility.compare(B, b.B);

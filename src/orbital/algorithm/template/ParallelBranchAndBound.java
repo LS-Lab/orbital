@@ -155,12 +155,12 @@ public class ParallelBranchAndBound/*<A,S>*/ extends BranchAndBound/*<A,S>*/ {
      * Implemented as a multi-threaded version of a right-linear tail-recursion.
      */
     private final class ExploreBranch implements Runnable {
-        private final Iterator nodes;
+        private final Iterator/*<S>*/ nodes;
         /**
          * Explore a branch.
          * @param nodes the list of the nodes to explore.
          */
-        public ExploreBranch(Iterator nodes) {
+        public ExploreBranch(Iterator/*<S>*/ nodes) {
             this.nodes = nodes;
         }
 
@@ -196,7 +196,7 @@ public class ParallelBranchAndBound/*<A,S>*/ extends BranchAndBound/*<A,S>*/ {
                         }
                     }
                 }
-                Iterator children = expand(getProblem(), node);
+                Iterator/*<S>*/ children = expand(getProblem(), node);
                 // since nodes implementation is a Stack (DepthFirstSearch)
                 // we don't need to add and pass the rest of nodes on the child threads.
                 Runnable child = new ExploreBranch(children);

@@ -261,7 +261,7 @@ public abstract class MarkovDecisionProcess/*<A,S,M extends MarkovDecisionProble
          * @postconditions RES = (a,Q) &and; a = argmin<sub>a'&isin;A(s)</sub> Q(s,a')
          *  &and; Q = min<sub>a'&isin;A(s)</sub> Q(s,a').
          */
-        protected orbital.util.Pair/*<A, Number>*/ maximumExpectedUtility(BinaryFunction/*<S,A,Real>*/ Q, Object/*>S<*/ state) {
+        protected orbital.util.Pair/*<A, Real>*/ maximumExpectedUtility(BinaryFunction/*<S,A,Real>*/ Q, Object/*>S<*/ state) {
             // search for minimal expected cost applicable action
             return PackageUtilities.min(getProblem().actions(state), Functionals.bindFirst(Q, state));
         }
@@ -293,7 +293,7 @@ public abstract class MarkovDecisionProcess/*<A,S,M extends MarkovDecisionProble
                             originalCost = c;
                         }
                         if (logger.isLoggable(Level.FINER)) logger.log(Level.FINER, "DPMDP.Q", "\tc(" + action + "," + state + ")\t= " + originalCost + " + " + getDiscount() + " * " +  cost);
-                        return originalCost.add(getDiscount().multiply(cost));
+                        return (Real/*__*/) originalCost.add(getDiscount().multiply(cost));
                     }
                 };
         }
@@ -314,7 +314,7 @@ public abstract class MarkovDecisionProcess/*<A,S,M extends MarkovDecisionProble
                             logger.log(Level.FINER, "DPMDP.policy", "CHOSE " + state + " do " + maximumExpectedUtility(Q, state));
                         }
                         // return the action chosen to take
-                        return maximumExpectedUtility(Q, state).A;
+                        return maximumExpectedUtility(Q, state).getA();
                     }
                 };
         }

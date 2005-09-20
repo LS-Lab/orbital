@@ -123,7 +123,7 @@ public class IterativeExpansion/*<A,S>*/
 
     protected Object/*>S<*/ solveImpl(GeneralSearchProblem/*<A,S>*/ problem) {
         Object/*>S<*/ initial = problem.getInitialState();
-        return solveByIterativeExpand(new NodeInfo(initial, (Real)getEvaluation().apply(initial)), Values.POSITIVE_INFINITY);
+        return solveByIterativeExpand(new NodeInfo/*<A,S>*/(initial, (Real)getEvaluation().apply(initial)), Values.POSITIVE_INFINITY);
     }
 
     /**
@@ -134,7 +134,7 @@ public class IterativeExpansion/*<A,S>*/
      *  in order to ensure termination on unsolvable cases, where successors.isEmpty() has already been true.
      *  This differs from the paper.
      */
-    private final Object/*>S<*/ solveByIterativeExpand(final NodeInfo node, final Real bound) {
+    private final Object/*>S<*/ solveByIterativeExpand(final NodeInfo/*<A,S>*/ node, final Real bound) {
         assert bound.compareTo(Values.ZERO) >= 0 && !bound.isNaN() : "bound " + bound + " >= 0";
         //System.err.println(node + "/" + bound);
         if (boundCompare(node.getFCost(), bound) > 0)
@@ -144,14 +144,14 @@ public class IterativeExpansion/*<A,S>*/
             return node.getNode();
         //@internal optimizable by using a (min) heap instead of a list that is kept in sorted order
         // here, we currently use a (sorted) list of NodeInfo sorted by the f-costs
-        final List/*<NodeInfo>*/ successors = new LinkedList();
+        final List/*<NodeInfo<A,S>>*/ successors = new LinkedList/*<NodeInfo<A,S>>*/();
         {
-            final Function f = getEvaluation();
-            for (final Iterator i = GeneralSearch.expand(getProblem(), node.getNode()); i.hasNext(); ) {
-                final Object o = i.next();
+            final Function/*<S,Real>*/ f = getEvaluation();
+            for (final Iterator/*<S>*/ i = GeneralSearch.expand(getProblem(), node.getNode()); i.hasNext(); ) {
+                final Object/*>S<*/ o = i.next();
                 // pathmax
                 final Real fo = (Real) Operations.max.apply(node.getFCost(), f.apply(o));
-                successors.add(new NodeInfo(o, fo));
+                successors.add(new NodeInfo/*<A,S>*/(o, fo));
             }
         }
         if (successors.isEmpty()) {
@@ -164,11 +164,11 @@ public class IterativeExpansion/*<A,S>*/
         assert orbital.util.Utility.sorted(successors, null) : "Collections.sort@post";
         while (boundCompare(node.getFCost(), bound) <= 0) {
             {
-                final NodeInfo best = (NodeInfo)successors.get(0);
+                final NodeInfo/*<A,S>*/ best = (NodeInfo)successors.get(0);
                 assert !Setops.some(successors, new orbital.logic.functor.Predicate() { public boolean apply(Object o) {return ((NodeInfo)o).compareTo(best) < 0;} }) : "best has lowest f-cost";
                 Real newbound = bound;
                 if (successors.size() > 1) {
-                    final NodeInfo secondBest = (NodeInfo)successors.get(1);
+                    final NodeInfo/*<A,S>*/ secondBest = (NodeInfo)successors.get(1);
                     newbound = (Real) Operations.min.apply(bound, secondBest.getFCost());
                     assert !Setops.some(successors.subList(1, successors.size()), new orbital.logic.functor.Predicate() { public boolean apply(Object o) {return ((NodeInfo)o).compareTo(secondBest) < 0;} }) : "second best has second lowest f-cost";
                     //System.err.println(node + "/" + bound + "\t expanding to " + best + "/" + newbound + "\n\t\talternative " + secondBest);

@@ -116,7 +116,7 @@ public class Functionals {
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      * @see #compose
      */
-    public static /*<A, B, C>*/ Function/*<A, C>*/.Composite compose(Function/*<B, C>*/ f, Function/*<A, B>*/ g) {
+    public static /*<A, B, C>*/ Function.Composite/*<A, C>*/ compose(Function/*<B, C>*/ f, Function/*<A, B>*/ g) {
         return new Compositions.CompositeFunction/*<A, B, C>*/(f, g);
     } 
         
@@ -125,7 +125,7 @@ public class Functionals {
      * @return (x,y) &#8614; f<big>(</big>g(x,y),h(x,y)<big>)</big>.
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      */
-    public static /*<A1, A2, B1, B2, C>*/ BinaryFunction/*<A1, A2, C>*/.Composite compose(BinaryFunction/*<B1, B2, C>*/ f, BinaryFunction/*<A1, A2, B1>*/ g, BinaryFunction/*<A1, A2, B2>*/ h) {
+    public static /*<A1, A2, B1, B2, C>*/ BinaryFunction.Composite/*<A1, A2, C>*/ compose(BinaryFunction/*<B1, B2, C>*/ f, BinaryFunction/*<A1, A2, B1>*/ g, BinaryFunction/*<A1, A2, B2>*/ h) {
         return new Compositions.CompositeBinaryFunction/*<A1, A2, B1, B2, C>*/(f, g, h);
     } 
 
@@ -135,7 +135,7 @@ public class Functionals {
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      * @internal see Functionals.BinaryCompositeFunction
      */
-    public static /*<A, B1, B2, C>*/ Function/*<A, C>*/.Composite compose(BinaryFunction/*<B1, B2, C>*/ f, Function/*<A, B1>*/ g, Function/*<A, B2>*/ h) {
+    public static /*<A, B1, B2, C>*/ Function.Composite/*<A, C>*/ compose(BinaryFunction/*<B1, B2, C>*/ f, Function/*<A, B1>*/ g, Function/*<A, B2>*/ h) {
         //todo would we like a BinaryFunction composed with a Function, as well?
         return new BinaryCompositeFunction/*<A, B1, B2, C>*/(f, g, h);
     } 
@@ -155,7 +155,7 @@ public class Functionals {
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(BinaryFunction, Function, Function)
      */
-    private static class BinaryCompositeFunction/*<A, B1, B2, C>*/ extends AbstractCompositeFunctor implements Function/*<A, C>*/.Composite {
+    private static class BinaryCompositeFunction/*<A, B1, B2, C>*/ extends AbstractCompositeFunctor implements Function.Composite/*<A, C>*/ {
         private static final long serialVersionUID = -8125852955148387314L;
         /**
          * @serial
@@ -219,7 +219,7 @@ public class Functionals {
      * @return () &#8614; (f &#8728; g) () = f<big>(</big>g()<big>)</big>.
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      */
-    public static /*<B, C>*/ VoidFunction/*<C>*/.Composite compose(Function/*<B,C>*/ f, VoidFunction/*<B>*/ g) {
+    public static /*<B, C>*/ VoidFunction.Composite/*<C>*/ compose(Function/*<B,C>*/ f, VoidFunction/*<B>*/ g) {
         return new Compositions.CompositeVoidFunction/*<B,C>*/(f, g);
     } 
 
@@ -229,7 +229,7 @@ public class Functionals {
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      * @internal see Functionals.BinaryCompositeVoidFunction
      */
-    public static /*<B1, B2, C>*/ VoidFunction/*<C>*/.Composite compose(BinaryFunction/*<B1, B2, C>*/ f, VoidFunction/*<B1>*/ g, VoidFunction/*<B2>*/ h) {
+    public static /*<B1, B2, C>*/ VoidFunction.Composite/*<C>*/ compose(BinaryFunction/*<B1, B2, C>*/ f, VoidFunction/*<B1>*/ g, VoidFunction/*<B2>*/ h) {
         return new BinaryCompositeVoidFunction/*<B1, B2, C>*/(f, g, h);
     } 
 
@@ -249,7 +249,7 @@ public class Functionals {
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(BinaryFunction, VoidFunction, VoidFunction)
      */
-    private static class BinaryCompositeVoidFunction/*<B1, B2, C>*/ extends AbstractCompositeFunctor implements VoidFunction/*<C>*/.Composite {
+    private static class BinaryCompositeVoidFunction/*<B1, B2, C>*/ extends AbstractCompositeFunctor implements VoidFunction.Composite/*<C>*/ {
         private static final long serialVersionUID = -6605821186125989437L;
         /**
          * @serial
@@ -313,7 +313,7 @@ public class Functionals {
      * @return P &#8728; g = &lambda;x. P<big>(</big>g(x)<big>)</big> = {x&isin;A &brvbar; P<big>(</big>g(x)<big>)</big>}.
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      */
-    public static /*<A, B>*/ Predicate/*<A>*/.Composite compose(Predicate/*<B>*/ P, Function/*<A, B>*/ g) {
+    public static /*<A, B>*/ Predicate.Composite/*<A>*/ compose(Predicate/*<B>*/ P, Function/*<A, B>*/ g) {
         return new Compositions.CompositePredicate/*<A, B>*/(P, g);
     } 
 
@@ -322,7 +322,7 @@ public class Functionals {
      * @return P &#8728; (g &times; h) = &lambda;x,y. P<big>(</big>g(x,y),h(x,y)<big>)</big> = {(x,y)&isin;A<sub>1</sub>&times;A<sub>2</sub> &brvbar; P<big>(</big>g(x,y),h(x,y)<big>)</big>}.
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      */
-    public static /*<A1, A2, B1, B2>*/ BinaryPredicate/*<A1, A2>*/.Composite compose(BinaryPredicate/*<B1, B2>*/ P, BinaryFunction/*<A1, A2, B1>*/ g, BinaryFunction/*<A1, A2, B2>*/ h) {
+    public static /*<A1, A2, B1, B2>*/ BinaryPredicate.Composite/*<A1, A2>*/ compose(BinaryPredicate/*<B1, B2>*/ P, BinaryFunction/*<A1, A2, B1>*/ g, BinaryFunction/*<A1, A2, B2>*/ h) {
         return new Compositions.CompositeBinaryPredicate/*<A1, A2, B1, B2>*/(P, g, h);
     } 
 
@@ -332,7 +332,7 @@ public class Functionals {
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade Pattern</a>
      * @see Functionals.BinaryCompositePredicate
      */
-    public static /*<A, B1, B2>*/ Predicate/*<A>*/.Composite compose(BinaryPredicate/*<B1, B2>*/ P, Function/*<A, B1>*/ g, Function/*<A, B2>*/ h) {
+    public static /*<A, B1, B2>*/ Predicate.Composite/*<A>*/ compose(BinaryPredicate/*<B1, B2>*/ P, Function/*<A, B1>*/ g, Function/*<A, B2>*/ h) {
         return new BinaryCompositePredicate/*<A, B1, B2>*/(P, g, h);
     } 
     /**
@@ -351,7 +351,7 @@ public class Functionals {
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(BinaryPredicate, Function, Function)
      */
-    private static class BinaryCompositePredicate/*<A, B1, B2>*/ extends AbstractCompositeFunctor implements Predicate/*<A>*/.Composite {
+    private static class BinaryCompositePredicate/*<A, B1, B2>*/ extends AbstractCompositeFunctor implements Predicate.Composite/*<A>*/ {
         private  static final long serialVersionUID = 1889190809841496092L;
         /**
          * @serial
@@ -692,7 +692,7 @@ public class Functionals {
             this(f, null);
         }
         public Object/*>B<*/ apply(Object/*>A1<*/ x, Object/*>A2<*/ y) {
-            return ((Function)f.apply(x)).apply(y);
+            return ((Function/*<A2,B>*/)f.apply(x)).apply(y);
         } 
 
         public Object getCompositor() {
@@ -1105,7 +1105,7 @@ public class Functionals {
      * @todo this is &lambda;-abstraction that is subject to &eta;-conversion. Also, the documentation arrows etc. are garbage. See bind*
      */
     public static /*<A1, B>*/ BinaryFunction/*<A1,Object, B>*/ onFirst(final Function/*<A1, B>*/ f) {
-        return new BinaryFunctionOnFirst/*<A1,Object, B>*/(f);
+        return new BinaryFunctionOnFirst/*<A1, B>*/(f);
     } 
     private static class BinaryFunctionOnFirst/*<A1, B>*/ implements BinaryFunction/*<A1,Object, B>*/ {
         private final Function/*<A1, B>*/ f;
@@ -1140,7 +1140,7 @@ public class Functionals {
      * @see <a href="{@docRoot}/Patterns/Design/Adapter.html">Adapter Pattern</a>
      */
     public static /*<A1>*/ BinaryPredicate/*<A1, Object>*/ onFirst(final Predicate/*<A1>*/ p) {
-        return new BinaryPredicateOnFirst/*<A1,Object>*/(p);
+        return new BinaryPredicateOnFirst/*<A1>*/(p);
     } 
     private static class BinaryPredicateOnFirst/*<A1>*/ implements BinaryPredicate/*<A1,Object>*/ {
         private final Predicate/*<A1>*/ f;
@@ -1245,7 +1245,7 @@ public class Functionals {
     public static /*<A, B>*/ Function/*<A, B>*/ onVoid(final VoidFunction/*<B>*/ f) {
         return new FunctionOnVoid/*<A, B>*/(f);
     }
-    private static class FunctionOnVoid/*<A, B>*/ implements Function {
+    private static class FunctionOnVoid/*<A, B>*/ implements Function/*<A, B>*/ {
         private final VoidFunction/*<B>*/ f;
         public FunctionOnVoid(VoidFunction/*<B>*/ f) {
             this.f = f;
@@ -1277,7 +1277,7 @@ public class Functionals {
     public static /*<A>*/ Predicate/*<A>*/ onVoid(final VoidPredicate p) {
         return new PredicateOnVoid/*<A>*/(p);
     }
-    private static class PredicateOnVoid/*<A>*/ implements Predicate {
+    private static class PredicateOnVoid/*<A>*/ implements Predicate/*<A>*/ {
         private final VoidPredicate p;
         public PredicateOnVoid(VoidPredicate p) {
             this.p = p;
@@ -1615,25 +1615,25 @@ public class Functionals {
         public Object apply(Object x) {
             // almost identical to @see Utility#asIterator
             // (almost) return map(function, asIterator(x), ...); but with optimized third argument and optimized adequate return-type
-            if (x instanceof Collection/*<A>*/) {
-                if (x instanceof List/*<A>*/)
-                    return map(this, (List/*<A>*/) x);
-                else if (x instanceof SortedSet/*<A>*/)
-                    return map(this, (SortedSet/*<A>*/) x);
-                else if (x instanceof Set/*<A>*/)
-                    return map(this, (Set/*<A>*/) x);
+            if (x instanceof Collection/*_<A>_*/) {
+                if (x instanceof List/*_<A>_*/)
+                    return map(this, (List/*_<A>_*/) x);
+                else if (x instanceof SortedSet/*_<A>_*/)
+                    return map(this, (SortedSet/*_<A>_*/) x);
+                else if (x instanceof Set/*_<A>_*/)
+                    return map(this, (Set/*_<A>_*/) x);
                 else
-                    return map(this, (Collection/*<A>*/) x);
-            } else if (x instanceof Iterator/*<A>*/) {
+                    return map(this, (Collection/*_<A>_*/) x);
+            } else if (x instanceof Iterator/*_<A>_*/) {
                 //@internal could just as well rely on the next case of isIteratable, here
-                if (x instanceof ListIterator/*<A>*/)
-                    return map(this, (ListIterator/*<A>*/) x);
+                if (x instanceof ListIterator/*_<A>_*/)
+                    return map(this, (ListIterator/*_<A>_*/) x);
                 else
-                    return map(this, (Iterator/*<A>*/) x);
+                    return map(this, (Iterator/*_<A>_*/) x);
             } else if (Utility.isIteratable(x))
                 return map(this, (Object) x);
             else
-                return function.apply((Object/*>A<*/) x);
+                return function.apply((Object/*_>A<_*/) x);
         } 
 
         public boolean equals(Object o) {
@@ -1663,7 +1663,7 @@ public class Functionals {
      */
     protected static final /*<A, B>*/ void mapInto(Function/*<A, B>*/ f, Iterator/*<A>*/ a, ListIterator/*<B>*/ r) {
         while (a.hasNext()) {
-            Object/*>A<*/ fa = f.apply((/*__*/Object/*>A<*/) a.next());
+            Object/*>B<*/ fa = f.apply((/*__*/Object/*>A<*/) a.next());
             if (r.hasNext()) {
                 r.next();
                 r.set(fa);
@@ -1734,7 +1734,7 @@ public class Functionals {
         // so we could first use an Object[], fill it, and meanwhile calculate the supremum type S of all occuring objects, then copy it to an S[].
         Object/*>B<*/[] r = (Object/*>B<*/[]) Array.newInstance(a.getClass().getComponentType(), a.length);
         for (int i = 0; i < r.length; i++) {
-            final Object o = f.apply(a[i]);
+            final Object/*>B<*/ o = f.apply(a[i]);
             try {
                 r[i] = o;
             }
@@ -1894,7 +1894,7 @@ public class Functionals {
         //Object/*>B<*/[] a = new Object/*>B<*/[x.length]; // is not of correct sub-type
         Object/*>B<*/[] a = (Object/*>B<*/[]) Array.newInstance(x.getClass().getComponentType(), x.length);
         for (int i = 0; i < a.length; i++) {
-            final Object o = f.apply(x[i], y[i]);
+            final Object/*>B<*/ o = f.apply(x[i], y[i]);
             try {
                 a[i] = o;
             }

@@ -37,7 +37,9 @@ import java.util.Collections;
  * @see Signature
  * @see java.util.Map
  */
-public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implements Interpretation {
+public class InterpretationBase/*<Sigma extends Symbol,Denotation>*/
+    extends DelegateMap/*<Sigma, Denotation>*/
+    implements Interpretation/*<Sigma,Denotation>*/ {
     private static final long serialVersionUID = 1211049244164642015L;
     /**
      * Whether to validate symbols and interpretation associations of this interpretation.
@@ -47,19 +49,20 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
      * The signature &Sigma; to be interpreted.
      * @serial
      */
-    private Signature sigma;
+    private Signature/*<Sigma>*/ sigma;
 
     /**
      * The empty interpretation &empty; for the given signature.
      * Note that it is generally not useful to use empty interpretations, however
      * there are some special applications.
      */
-    public static final Interpretation EMPTY(Signature sigma) {
-        return new InterpretationBase(sigma, Collections.EMPTY_MAP);
+    public static final /*<Sigma extends Symbol,Denotation>*/
+	Interpretation/*<Sigma,Denotation>*/ EMPTY(Signature/*<Sigma>*/ sigma) {
+        return new InterpretationBase/*<Sigma,Denotation>*/(sigma, Collections.EMPTY_MAP);
     }
 
     private InterpretationBase() {
-        super(new TreeMap());
+        super(new TreeMap/*<Sigma,Denotation>*/());
     }
 
     /**
@@ -72,7 +75,7 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
      * @param sigma the signature &Sigma; whose symbols are interpreted by the custom interpretation source.
      *  If sigma is <code>null</code>, then it should be set later with {@link #setSignature(Signature)}.
      */
-    protected InterpretationBase(Signature sigma) {
+    protected InterpretationBase(Signature/*<Sigma>*/ sigma) {
         this();
         this.sigma = sigma;
     }
@@ -82,11 +85,11 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
      * @param sigma the signature &Sigma; whose symbols to interpret.
      * @param associations the map that associates each symbol in sigma with a value object.
      */
-    public InterpretationBase(Signature sigma, Map associations) {
+    public InterpretationBase(Signature/*<Sigma>*/ sigma, Map/*<Sigma,Denotation>*/ associations) {
         this(sigma);
         putAll(associations);
     }
-    public InterpretationBase(Signature sigma, SortedMap associations) {
+    public InterpretationBase(Signature/*<Sigma>*/ sigma, SortedMap/*<Sigma,Denotation>*/ associations) {
         this(sigma);
         putAll(associations);
     }
@@ -95,7 +98,7 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
      * Only for delegation to interpretations used in
      * {@link #unmodifiableInterpretation(Interpretation)}.
      */
-    private InterpretationBase(Interpretation delegatee) {
+    private InterpretationBase(Interpretation/*<Sigma,Denotation>*/ delegatee) {
         super(delegatee);
         // getSignature() is overwritten, anyway
         this.sigma = null;
@@ -118,7 +121,7 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
     /**
      * Get the signature interpreted.
      */
-    public Signature getSignature() {
+    public Signature/*<Sigma>*/ getSignature() {
         return sigma;
     } 
 
@@ -128,10 +131,10 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
      * @throws IllegalArgumentException if sigma does not contain a symbol which is interpreted in the current assocation map.
      *  This is not checked if sigma is <code>null</code>.
      */
-    public void setSignature(Signature sigma) {
+    public void setSignature(Signature/*<Sigma>*/ sigma) {
         if (sigma != null) {
-            for (Iterator it = keySet().iterator(); it.hasNext(); ) {
-                Object o = it.next();
+            for (Iterator/*<Sigma>*/ it = keySet().iterator(); it.hasNext(); ) {
+                Object/*>Sigma<*/ o = it.next();
                 if (!sigma.contains(o)) {
                     throw new IllegalArgumentException("signature does not contain associated symbol " + o + ". Signature is invalid for this interpretation. You should clear association map first.");
                 }
@@ -144,27 +147,27 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
 
     // Basic Map operations.
 
-    public Object get(Object symbol) {
+    public Object/*>Denotation<*/ get(Object/*>Sigma<*/ symbol) {
         validate(symbol);
         //@todo is this the referent or the signified?
-        Object referent = super.get(symbol);
+        Object/*>Denotation<*/ referent = super.get(symbol);
         assert validate(symbol, referent) : "referent " + referent + " must conform to the specification " + ((Symbol) symbol).getType() + " of the symbol " + symbol;
         return referent;
     } 
 
-    public Object remove(Object symbol) {
+    public Object/*>Denotation<*/ remove(Object/*>Sigma<*/ symbol) {
         validate(symbol);
         return super.remove(symbol);
     } 
 
-    public Object put(Object symbol, Object referent) {
+    public Object/*>Denotation<*/ put(Object/*>Sigma<*/ symbol, Object/*>Denotation<*/ referent) {
         validate(symbol);
         if (!validate(symbol, referent))
             throw new TypeException("referent " + referent + " must conform to the type specification " + ((Symbol) symbol).getType() + " of the symbol " + symbol, ((Symbol) symbol).getType(), Types.typeOf(referent));
         return super.put(symbol, referent);
     } 
 
-    public void putAll(Map associations) {
+    public void putAll(Map/*<? extends Sigma,? extends Denotation>*/ associations) {
         if (sigma != null) {
             for (Iterator it = associations.entrySet().iterator(); it.hasNext(); ) {
                 Map.Entry e = (Map.Entry) it.next();
@@ -178,20 +181,20 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
         super.putAll(associations);
     } 
 
-    public boolean containsKey(Object symbol) {
+    public boolean containsKey(Object/*>Sigma<*/ symbol) {
         validate(symbol);
         return super.containsKey(symbol);
     } 
 
-    public boolean contains(Object symbol) {
+    public boolean contains(Object/*>Sigma<*/ symbol) {
         return containsKey(symbol);
     } 
 
 
     // Extended operations.
 
-    public Interpretation union(Interpretation i2) {
-        InterpretationBase u = newInstance();
+    public Interpretation/*<Sigma,Denotation>*/ union(Interpretation/*<Sigma,Denotation>*/ i2) {
+        InterpretationBase/*<Sigma,Denotation>*/ u = newInstance();
         u.setSignature(getSignature().union(i2.getSignature()));
         u.putAll(this);
         u.putAll(i2);
@@ -220,7 +223,7 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
      * @throws NoSuchElementException if the symbol is not in the current signature sigma.
      * @todo optimize this hotspot during proving
      */
-    private final void validate(Object symbol) {
+    private final void validate(Object/*>Sigma<*/ symbol) {
         if (!VALIDATION)
             return;
         try {
@@ -238,7 +241,7 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
      * Validates that a referent has a valid type for the type specification of symbol.
      * @todo enhance type checks
      */
-    private final boolean validate(Object symbol, Object referent) {
+    private final boolean validate(Object/*>Sigma<*/ symbol, Object/*>Denotation<*/ referent) {
         if (!VALIDATION)
             return true;
         return ((Symbol)symbol).getType().apply(referent);
@@ -249,7 +252,7 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
      * Create a new instance of the exact same type.
      * Used to create an object of the same type without copying its data.
      */
-    private InterpretationBase newInstance() {
+    private InterpretationBase/*<Sigma,Denotation>*/ newInstance() {
         try {
             return (InterpretationBase) getClass().newInstance();
         }
@@ -264,8 +267,9 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
      * Returns an unmodifiable view of the specified interpretation.
      * The result is a <a href="../../math/Values.html#readOnlyView">read only view</a>.
      */
-    public static final Interpretation unmodifiableInterpretation(final Interpretation i) {
-        return /*refine/delegate Interpretation*/ new InterpretationBase(i) {
+    public static final /*<Sigma extends Symbol,Denotation>*/
+	Interpretation/*<Sigma,Denotation>*/ unmodifiableInterpretation(final Interpretation/*<Sigma,Denotation>*/ i) {
+        return /*refine/delegate Interpretation*/ new InterpretationBase/*<Sigma,Denotation>*/(i) {
                 private static final long serialVersionUID = 2999004456165993569L;
                 // Code for delegation of orbital.logic.imp.Interpretation methods to i
 
@@ -276,7 +280,7 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
                  * @return <description>
                  * @see orbital.logic.imp.Interpretation#put(Object, Object)
                  */
-                public Object put(Object param1, Object param2)
+                public Object/*>Denotation<*/ put(Object/*>Sigma<*/ param1, Object/*>Denotation<*/ param2)
                 {
                     throw new UnsupportedOperationException();
                 }
@@ -286,7 +290,7 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
                  * @param param1 <description>
                  * @see orbital.logic.imp.Interpretation#putAll(Map)
                  */
-                public void putAll(Map param1)
+                public void putAll(Map/*<? extends Sigma,? extends Denotation>*/ param1)
                 {
                     throw new UnsupportedOperationException();
                 }
@@ -296,7 +300,7 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
                  * @return <description>
                  * @see orbital.logic.imp.Interpretation#getSignature()
                  */
-                public Signature getSignature()
+                public Signature/*<Sigma>*/ getSignature()
                 {
                     return SignatureBase.unmodifiableSignature(i.getSignature());
                 }
@@ -307,7 +311,7 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
                  * @return <description>
                  * @see orbital.logic.imp.Interpretation#union(Interpretation)
                  */
-                public Interpretation union(Interpretation param1)
+                public Interpretation/*<Sigma,Denotation>*/ union(Interpretation/*<Sigma,Denotation>*/ param1)
                 {
                     return i.union(param1);
                 }
@@ -317,7 +321,7 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
                  * @param param1 <description>
                  * @see orbital.logic.imp.Interpretation#setSignature(Signature)
                  */
-                public void setSignature(Signature param1)
+                public void setSignature(Signature/*<Sigma>*/ param1)
                 {
                     throw new UnsupportedOperationException();
                 }
@@ -329,7 +333,7 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
                  * @return <description>
                  * @see java.util.Map#remove(Object)
                  */
-                public Object remove(Object param1)
+                public Object/*>Denotation<*/ remove(Object/*>Sigma<*/ param1)
                 {
                     throw new UnsupportedOperationException();
                 }
@@ -339,7 +343,7 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
                  * @return <description>
                  * @see java.util.Map#values()
                  */
-                public Collection values()
+                public Collection/*<Denotation>*/ values()
                 {
                     return Collections.unmodifiableCollection(i.values());
                 }
@@ -358,7 +362,7 @@ public class InterpretationBase extends DelegateMap/*<Symbol, Object>*/ implemen
                  * @return <description>
                  * @see java.util.Map#keySet()
                  */
-                public Set keySet()
+                public Set/*<Sigma>*/ keySet()
                 {
                     return Collections.unmodifiableSet(i.keySet());
                 }

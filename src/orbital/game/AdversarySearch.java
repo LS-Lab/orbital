@@ -66,7 +66,7 @@ public abstract class AdversarySearch {
      * @invariants figure.moveFigure(move).equals(destination)
      * @stereotype Structure
      */
-    public static class Option implements Comparable, Serializable {
+    public static class Option/*_<Fld extends Field, F extends Figure>_*/ implements Comparable, Serializable {
         private static final long serialVersionUID = -6512650518865382543L;
         /**
          * the field state s&isin;S of this option node.

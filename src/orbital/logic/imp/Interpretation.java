@@ -222,6 +222,8 @@ import orbital.logic.functor.Functor;
  * @structure extends java.util.Map<Symbol,Object>
  * @invariants (&Sigma; == null &or; keySet() &sube; &Sigma;)
  *              &and; &forall;(s,v)&isin;this s.getType().apply(v)
+ * @param <Sigma> the type of symbols kept in this interpretation.
+ * @param <Denotation> the type of denotating objects.
  * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Logic#satisfy
@@ -232,7 +234,7 @@ import orbital.logic.functor.Functor;
  * @note This interface could be strengthened by extending SortedMap instead of just Map.
  * @todo specialize superclass to SortedMap because Signature is sorted?
  */
-public interface Interpretation extends Map/*<Symbol, Object>*/ {
+public interface Interpretation/*<Sigma extends Symbol,Denotation>*/ extends Map/*<Sigma,Denotation>*/ {
 
     /**
      * Checks two interpretations for extensional equality.
@@ -252,7 +254,7 @@ public interface Interpretation extends Map/*<Symbol, Object>*/ {
     /**
      * Get the signature interpreted.
      */
-    Signature getSignature();
+    Signature/*<Sigma>*/ getSignature();
 
     /**
      * Set the signature interpreted.
@@ -260,7 +262,7 @@ public interface Interpretation extends Map/*<Symbol, Object>*/ {
      * @throws IllegalArgumentException if sigma does not contain a symbol which is interpreted in the current assocation map.
      *  This is not checked if sigma is <code>null</code>.
      */
-    void setSignature(Signature sigma);
+    void setSignature(Signature/*<Sigma>*/ sigma);
 
 
     // Basic Map operations.
@@ -274,7 +276,7 @@ public interface Interpretation extends Map/*<Symbol, Object>*/ {
      * @postconditions symbol.getType().apply(RES)
      * @throws java.util.NoSuchElementException if the symbol is not in the current signature &Sigma;.
      */
-    Object get(Object/*>Symbol<*/ symbol);
+    Object/*>Denotation<*/ get(Object/*>Sigma<*/ symbol);
 
     /**
      * Set the referent associated with the given symbol in this interpretation.
@@ -282,7 +284,7 @@ public interface Interpretation extends Map/*<Symbol, Object>*/ {
      * @throws java.util.NoSuchElementException if the symbol is not in the current signature &Sigma;.
      * @throws orbital.logic.sign.type.TypeException if the referent is not of the type of symbol.
      */
-    Object put(Object/*>Symbol<*/ symbol, Object referent);
+    Object/*>Denotation<*/ put(Object/*>Sigma<*/ symbol, Object/*>Denotation<*/ referent);
 
     /**
      * Copies all of the associations from the specified map to this interpretation.
@@ -292,13 +294,13 @@ public interface Interpretation extends Map/*<Symbol, Object>*/ {
      * @throws orbital.logic.sign.type.TypeException if one of the values is not of the type of its symbol.
      * @throws NullPointerException if associations is <code>null</code>.
      */
-    void putAll(Map/*<Symbol, Object>*/ associations);
+    void putAll(Map/*<Sigma, Denotation>*/ associations);
 
     /**
      * Returns whether the specified symbol is contained in this interpretation assocation map.
      * @throws java.util.NoSuchElementException if the symbol is not in the current signature &Sigma;.
      */
-    boolean containsKey(Object/*>Symbol<*/ symbol);
+    boolean containsKey(Object/*>Sigma<*/ symbol);
 
     // Extended operations.
 
@@ -311,6 +313,6 @@ public interface Interpretation extends Map/*<Symbol, Object>*/ {
      * @return i &cup; i2.
      * @postconditions RES.getClass() == getClass() && this.equals(OLD)
      */
-    Interpretation union(Interpretation i2);
+    Interpretation/*<Sigma,Denotation>*/ union(Interpretation/*<Sigma,Denotation>*/ i2);
 
 }

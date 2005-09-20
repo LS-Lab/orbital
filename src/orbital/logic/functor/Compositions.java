@@ -41,7 +41,7 @@ class Compositions {
      *  we do not need to have this class public.
      *  The same goes for similar .Composite* classes here and in math.functional.
      */
-    /*public*/ static class CompositeFunction/*<A, B, C>*/ extends AbstractCompositeFunctor implements Function/*<A, C>*/.Composite {
+    /*public*/ static class CompositeFunction/*<A, B, C>*/ extends AbstractCompositeFunctor implements Function.Composite/*<A, C>*/ {
         private static final long serialVersionUID = -3564816275499022044L;
         /**
          * @serial
@@ -106,7 +106,7 @@ class Compositions {
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(BinaryFunction, BinaryFunction, BinaryFunction)
      */
-    /*public*/ static class CompositeBinaryFunction/*<A1, A2, B1, B2, C>*/ extends AbstractCompositeFunctor implements BinaryFunction/*<A1, A2, C>*/.Composite {
+    /*public*/ static class CompositeBinaryFunction/*<A1, A2, B1, B2, C>*/ extends AbstractCompositeFunctor implements BinaryFunction.Composite/*<A1, A2, C>*/ {
         private static final long serialVersionUID = 5501060120707478195L;
         /**
          * @serial
@@ -184,7 +184,7 @@ class Compositions {
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(Function, Function)
      */
-    /*public*/ static class CompositeVoidFunction/*<B, C>*/ extends AbstractCompositeFunctor implements VoidFunction/*<C>*/.Composite {
+    /*public*/ static class CompositeVoidFunction/*<B, C>*/ extends AbstractCompositeFunctor implements VoidFunction.Composite/*<C>*/ {
         private static final long serialVersionUID = 3582647885986645043L;
         /**
          * @serial
@@ -247,7 +247,7 @@ class Compositions {
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(Predicate, Function)
      */
-    /*public*/ static class CompositePredicate/*<A, B>*/ extends AbstractCompositeFunctor implements Predicate/*<A>*/.Composite {
+    /*public*/ static class CompositePredicate/*<A, B>*/ extends AbstractCompositeFunctor implements Predicate.Composite/*<A>*/ {
         private static final long serialVersionUID = -967722688216761906L;
         /**
          * @serial
@@ -307,7 +307,7 @@ class Compositions {
      * @author  Andr&eacute; Platzer
      * @see Functionals#compose(BinaryPredicate, BinaryFunction, BinaryFunction)
      */
-    /*public*/ static class CompositeBinaryPredicate/*<A1, A2, B1, B2>*/ extends AbstractCompositeFunctor implements BinaryPredicate/*<A1, A2>*/.Composite {
+    /*public*/ static class CompositeBinaryPredicate/*<A1, A2, B1, B2>*/ extends AbstractCompositeFunctor implements BinaryPredicate.Composite/*<A1, A2>*/ {
         private static final long serialVersionUID = -805916714673823795L;
         /**
          * @serial

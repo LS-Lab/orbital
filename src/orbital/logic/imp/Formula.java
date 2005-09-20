@@ -442,5 +442,5 @@ public interface Formula extends Expression, Function/*<Interpretation, Object>*
      * @author  Andr&eacute; Platzer
      * @version $Id$
      */
-    static interface Composite extends Expression.Composite, Function.Composite, Formula {}
+    static interface Composite extends Expression.Composite, Function.Composite/*<Interpretation, Object>*/, Formula {}
 }
