@@ -16,6 +16,7 @@ import dkfz.collections.graph.GraphFactory;
 import dkfz.collections.graph.*;
 
 import java.awt.*;
+import javax.swing.JFrame;
 import orbital.awt.*;
 import dkfz.collections.graph.view.*;
 
@@ -34,17 +35,19 @@ public class TraceableClauseImpl extends ClauseImpl {
     // the vertex that we correspond to in the proof graph
     private Vertex corresponding;
 
-    //@xxx premature functionality and method
+    /**
+     * @xxx premature functionality and method
+     */
     public static void doShow() {
-        Frame f = new Frame("Proof Graph");
-        new Closer(f, true, true);
+        JFrame f = new JFrame("Proof Graph");
+	f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         ViewGraph view = new ViewGraph();
         view.setEdgePainter(new StraightLinePainter());
         view.setVertexPainter(new StraightLinePainter());
         //@todo reduce proofGraph to the relevant part, i.e. reachability closure of the resolvent CONTRADICTION
         Graph proofDAG = reachability(proofGraph, proofDAGRoot);
         view.setModel(proofDAG);
-        f.add(view);
+        f.getContentPane().add(view);
         f.setLocation(200, 100);
         f.setSize(400, 400);
         view.registerController(new GraphController(view,

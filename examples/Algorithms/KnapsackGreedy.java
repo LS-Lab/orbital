@@ -21,7 +21,7 @@ public class KnapsackGreedy implements GreedyProblem, Function {
         {7,10},{7,10},{8,11},{8,11},{9,13}};
     public static void main(String arg[]) {
         Greedy s = new Greedy();
-        List   solution = s.solve(new KnapsackGreedy(MAXWEIGHT, ItemDesc));
+        List   solution = (List)s.solve(new KnapsackGreedy(MAXWEIGHT, ItemDesc));
         print(solution);
     } 
     public static final int WEIGHT = 0;

@@ -22,8 +22,10 @@ import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import orbital.math.MathUtilities;
-import orbital.io.IOUtilities;
 import java.text.NumberFormat;
+import java.io.Reader;
+import java.io.InputStream;
+import java.io.IOException;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
@@ -40,7 +42,6 @@ import orbital.math.Values;
  * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see orbital.math.MathUtilities
- * @see orbital.io.IOUtilities
  * @see orbital.util.Setops
  * @see orbital.awt.UIUtilities
  * @see orbital.moon.logic.ClassicalLogic.Utilities
@@ -243,9 +244,14 @@ public final class Utility {
     }
 
     /**
+     * The size in bytes of an int-value.
+     * i.e. the number of bytes necessary to store it with a DataOutputStream.
+     */
+    private static final int        INTEGER_SIZE = 4;
+    /**
      * the number of bits that an integer has
      */
-    private static final int INTEGER_BITS = IOUtilities.INTEGER_SIZE << 3;
+    private static final int INTEGER_BITS = INTEGER_SIZE << 3;
 
     /**
      * Get the hashCode of an object (considering all its array components, as sets, as well).
@@ -663,4 +669,60 @@ public final class Utility {
         }
         return sb.toString();
     }
+
+
+    /**
+     * Read a line from an InputStream in human-readable-form as a String.
+     * Reading stops at LF ('\n') or EOF and skips CR ('\r').
+     * @return the line read or null if no single character could be read.
+     * @see #readLine(java.io.InputStream)
+     */
+    public static String readLine(InputStream is) throws IOException {
+        String input = "";
+        while (!Thread.interrupted()) {
+            int ch = is.read();
+            if (ch == -1)
+                if ("".equals(input))
+                    return null;
+                else
+                    break;
+            if (ch == '\r')
+                continue;
+            if (ch == '\n')
+                break;
+            input += (char) ch;
+        } 
+        return input;
+    } 
+
+    /**
+     * Read a line from an InputStream in human-readable-form as a String.
+     * Reading stops at LF ('\n') or EOF and skips CR ('\r').
+     * <p>Prefer using <pre>
+     * BufferedReader rd = new BufferedReader(inner_reader);
+     * // forget about using the inner reader since rd is buffered!
+     * inner_reader = null;
+     * String l = rd.readLine();
+     * </pre>
+     * whenever possible.
+     * @return the line read or null if no single character could be read.
+     * @see java.io.BufferedReader#readLine()
+     */
+    public static String readLine(Reader rd) throws IOException {
+        String input = "";
+        while (!Thread.interrupted()) {
+            int ch = rd.read();
+            if (ch == -1)
+                if ("".equals(input))
+                    return null;
+                else
+                    break;
+            if (ch == '\r')
+                continue;
+            if (ch == '\n')
+                break;
+            input += (char) ch;
+        } 
+        return input;
+    } 
 }

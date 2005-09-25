@@ -20,7 +20,6 @@ import orbital.algorithm.Combinatorical;
 import java.util.Iterator;
 import orbital.util.Utility;
 
-import orbital.io.IOUtilities;
 import orbital.util.SuspiciousError;
 
 import java.util.logging.Logger;

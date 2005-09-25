@@ -39,7 +39,6 @@ import java.util.HashSet;
 import java.util.TreeMap;
 
 import orbital.math.MathUtilities;
-import orbital.io.IOUtilities;
 import orbital.util.InnerCheckedException;
 import java.beans.IntrospectionException;
 

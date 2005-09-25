@@ -4,7 +4,7 @@
  * Copyright (c) 1998 Andre Platzer. All Rights Reserved.
  */
 
-package orbital.awt;
+package orbital.moon.awt;
 
 import java.awt.Component;
 import java.awt.event.ActionListener;

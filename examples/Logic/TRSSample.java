@@ -1,7 +1,7 @@
 import orbital.logic.functor.*;
 import orbital.moon.logic.MathExpressionSyntax;
 import orbital.logic.trs.*;
-import orbital.io.IOUtilities;
+import orbital.util.Utility;
 import orbital.math.functional.Functionals;
 import orbital.math.functional.Functions;
 import orbital.math.*;
@@ -22,7 +22,7 @@ public class TRSSample {
     public static void main(String arg[]) throws Exception {
         System.out.print("Type expression: ");
         System.out.flush();
-        String expr = IOUtilities.readLine(System.in);
+        String expr = Utility.readLine(System.in);
         Object p = new MathExpressionSyntax().createMathExpression(expr);
         System.out.println("Original expression:\t" + expr);
         System.out.println("Parsed function:\t" + p);

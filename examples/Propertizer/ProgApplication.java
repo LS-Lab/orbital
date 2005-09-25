@@ -1,10 +1,10 @@
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.JLabel;
+import javax.swing.*;
 import orbital.awt.CustomizerViewController;
 import orbital.awt.UIUtilities;
 
-public class ProgApplication extends Frame {
+public class ProgApplication extends JFrame {
 
     protected CustomizerViewController custom;
     private ProgSettings                           settings = new ProgSettings();
@@ -34,16 +34,16 @@ public class ProgApplication extends Frame {
         Component p = (Component) java.beans.Beans.instantiate(getClass().getClassLoader(), orbital.awt.NumberInput.class.getName());
         p.addMouseListener(custom);
         Component label;
-        add(label = new JLabel("double-click on the panel to customize this view or choose from menu"), BorderLayout.NORTH);
+        getContentPane();add(label = new JLabel("double-click on the panel to customize this view or choose from menu"), BorderLayout.NORTH);
         label.setForeground(null);
-        add(p, BorderLayout.CENTER);
+        getContentPane().add(p, BorderLayout.CENTER);
         pack();
     }
 
     public static void main(String[] args) throws Exception {
         UIUtilities.setDefaultLookAndFeel();
         ProgApplication f = new ProgApplication();
-        new orbital.awt.Closer(f, true, true);
+	f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setVisible(true);
     } 
 }

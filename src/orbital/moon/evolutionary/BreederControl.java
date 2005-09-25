@@ -12,7 +12,6 @@
 
 package orbital.moon.evolutionary;
 
-import orbital.moon.awt.GUITool;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -27,14 +26,13 @@ import java.lang.reflect.*;
 import orbital.awt.*;
 import orbital.algorithm.evolutionary.*;
 import orbital.awt.CustomizerViewController;
-import orbital.moon.awt.SystemRequestor;
+import orbital.moon.awt.*;
 import orbital.math.Stat;
 import orbital.math.MathUtilities;
 import orbital.logic.functor.Predicate;
 import orbital.logic.functor.Function;
 import java.util.logging.Logger;
 import java.util.logging.*;
-import orbital.io.IOUtilities;
 import orbital.util.InnerCheckedException;
 
 import orbital.signe;
@@ -63,7 +61,7 @@ import java.util.PropertyResourceBundle;
  * @author  Andr&eacute; Platzer
  * @todo could distribute BreederControl and the Server running the GeneticAlgorithm, remotely.
  */
-public class BreederControl extends JFrame implements Runnable, GUITool {
+public class BreederControl extends JFrame implements Runnable {
     private static final long serialVersionUID = -4085070962882209628L;
     /**
      * default values
@@ -232,6 +230,7 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
      */
     public BreederControl() {
         //prior to initializing any other handlers
+	//@todo could get rid of this
         new SystemRequestor(new Predicate() {
                 public boolean apply(Object e) {
                     int i = ((Number) e).intValue();
@@ -244,6 +243,7 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
             }, this);
         custom = new CustomizerViewController(this);
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+	//@todo could get rid of this
         closer = new Closer(this, this, true, false);
         closer.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -468,7 +468,7 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
             this.protocolHandler = null;
         }
         try {
-            this.protocolHandler = new FileHandler(IOUtilities.changeExtension(file, "protocol").toString(), true);
+            this.protocolHandler = new FileHandler(changeExtension(file, "protocol").toString(), true);
             protocolHandler.setFormatter(new SimpleFormatter());
             protocol.addHandler(protocolHandler);
         }
@@ -482,7 +482,7 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
         if (this.file == null)
             return;
         File historyFile;
-        if (!(historyFile = IOUtilities.changeExtension(this.file, ga.getPopulation().getGeneration() + ".breed")).exists())
+        if (!(historyFile = changeExtension(this.file, ga.getPopulation().getGeneration() + ".breed")).exists())
             try {
                 assert !historyFile.exists() : "history files do not overwrite existing";
                 OutputStream os = getOutputStream(historyFile);
@@ -1245,6 +1245,21 @@ public class BreederControl extends JFrame implements Runnable, GUITool {
         stop();
         statusBar.setText(resources.getString("statusbar.breed.stop"));
     }
+
+
+    /**
+     * Change the extension of a file name to a new one.
+     * @param extension the new extension (without '.').
+     * @return file with new extension, replacing the last old extension, if any.
+     */
+    public static File changeExtension(File file, String extension) {
+        String name = file.getName();
+        int        ext = name.lastIndexOf('.');
+        if (ext < 0)
+            return new File(file.getParentFile(), name + "." + extension);
+        else
+            return new File(file.getParentFile(), name.substring(0, ext) + "." + extension);
+    } 
 }
 
 class PopulationTableModel extends AbstractTableModel implements TableModel {

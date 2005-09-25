@@ -4,7 +4,7 @@ import orbital.moon.logic.LogicParser;
 import orbital.logic.trs.*;
 import orbital.logic.sign.Expression;
 import orbital.logic.sign.ParseException;
-import orbital.io.IOUtilities;
+import orbital.util.Utility;
 import java.util.*;
 import java.io.*;
 
@@ -31,13 +31,13 @@ public class GroupTRS {
     public void run() throws Exception {
         System.out.print("Type first expression (A): ");
         System.out.flush();
-        String expr = IOUtilities.readLine(System.in);
+        String expr = Utility.readLine(System.in);
         Object A = parse(expr);
         System.out.println("Original expression:\t" + expr);
         System.out.println("Parsed function:\t" + A);
         System.out.print("Type second expression (B): ");
         System.out.flush();
-        expr = IOUtilities.readLine(System.in);
+        expr = Utility.readLine(System.in);
         Object B = parse(expr);
         System.out.println("Original expression:\t" + expr);
         System.out.println("Parsed function:\t" + B);

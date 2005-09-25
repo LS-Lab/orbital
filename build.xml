@@ -853,6 +853,7 @@
 	        <include name="**/*.class"/>
 		<exclude name="Algorithms/MapView.class"/>
 		<exclude name="Algorithms/util/*"/>
+		<exclude name="Algorithms/orbital/**/*"/>
 	    </fileset>
 	    <fileset dir="${sources}/orbital/moon/logic"
 	        includes="SimpleCharStream.java, Token.java, TokenManager.java, TokenMgrError.java, ParseException.java, LogicParser.java, LogicParserTokenManager.java, LogicParserConstants.java"/>
@@ -867,6 +868,7 @@
             <fileset dir="${doc.dest}"/>
             <fileset dir="${reports.tests}"/>
             <fileset dir="${reports.coverage}"/>
+            <fileset dir="${reports.jdepend}"/>
             <!-- <fileset dir="${basedir}" name="jcoverage.ser"/> -->
         </delete>
     </target>
