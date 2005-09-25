@@ -168,7 +168,7 @@ public class MarkovDecisionProcessTest extends check.TestCase {
         try {
 
             // really obtain a plan
-            Function plan = planner.solve(nav);
+            Function plan = (Function/*__*/)planner.solve(nav);
             
             nav.followPlan(plan, trials);
             

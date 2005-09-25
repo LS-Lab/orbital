@@ -46,7 +46,7 @@ import java.util.TreeMap;
 import java.util.NoSuchElementException;
 
 import orbital.algorithm.Combinatorical;
-import orbital.io.IOUtilities;
+import orbital.util.Utility;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.InputStreamReader;
@@ -236,7 +236,7 @@ public class ClassicalLogic extends ModernLogic {
                 } else if ("table".equalsIgnoreCase(arg[option])) {
                     System.out.print("Type expression: ");
                     System.out.flush();
-                    String expression = IOUtilities.readLine(System.in);
+                    String expression = Utility.readLine(System.in);
                     Formula B = (Formula) logic.createExpression(expression);
                     Signature sigma = B.getSignature();
                     for (Iterator Int = logic.createAllInterpretations(sigma, sigma);

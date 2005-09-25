@@ -34,7 +34,6 @@ import java.util.TreeMap;
 
 import orbital.math.Values;
 import orbital.math.MathUtilities;
-import orbital.io.IOUtilities;
 import orbital.util.InnerCheckedException;
 import java.beans.IntrospectionException;
 
@@ -241,10 +240,10 @@ public class FuzzyLogic extends ModernLogic implements Logic {
         System.out.println("Enter sequence 'A|~C' to verify. Simply leave blank to type 'false' or {} or null.");
         System.out.print("Type base expression (A): ");
         System.out.flush();
-        String expr = "{" + IOUtilities.readLine(System.in) + "}";
+        String expr = "{" + Utility.readLine(System.in) + "}";
         System.out.print("Type sequence expression (C): ");
         System.out.flush();
-        String  expr2 = IOUtilities.readLine(System.in);
+        String  expr2 = Utility.readLine(System.in);
         System.out.println(logic.satisfy(InterpretationBase.EMPTY(SignatureBase.EMPTY), logic.createFormula(expr2)));
         boolean sat = logic.infer(expr, expr2);
         System.out.println(expr + (sat ? " satisfies " : " does not satisfy ") + expr2);

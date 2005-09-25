@@ -7,7 +7,7 @@ import java.util.List;
 import java.io.*;
 import java.awt.*;
 import orbital.math.*;
-import orbital.awt.*;
+import javax.swing.*;
 
 /**
  * Robot navigation. A robot navigates through a labyrinth with either
@@ -39,14 +39,14 @@ public class RobotNavigation implements MarkovDecisionProblem {
         planner = new RealTimeDynamicProgramming(nav.getHeuristic());
         //planner = new GaussSeidelDynamicProgramming(nav.getHeuristic(), nav.allStates(), 0.1);
 
-        Frame f = new Frame();
-        new Closer(f, true, true);
+        JFrame f = new JFrame();
+	f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.add(nav.getView());
         f.pack();
         f.setVisible(true);
 
         // really obtain a plan
-        Function plan = planner.solve(nav);
+        Function plan = (Function)planner.solve(nav);
 
         nav.followPlan(plan, TRIALS);
     }

@@ -7,6 +7,7 @@ import orbital.math.functional.Functions;
 import orbital.awt.*;
 import java.awt.*;
 import java.beans.*;
+import javax.swing.*;
 
 public class Plotting {
     public static void main(String arg[]) throws Exception {
@@ -42,15 +43,15 @@ public class Plotting {
         model.setAutoScaling();
         model.setScale(vf.CONST(2, vf.valueOf(1)));
         System.out.println("Range: " + model.getRange() + " Scalings: " + model.getScale());
-        Frame f = new Frame();
+        JFrame f = new JFrame();
         f.setLayout(new BorderLayout());
         Plot2D view = (Plot2D) Beans.instantiate(Plotting.class.getClassLoader(), Plot2D.class.getName());
         view.setModel(model);
         view.setAutoScaling(true);
         view.addMouseListener(new CustomizerViewController(f));
-        f.add(view, java.awt.BorderLayout.CENTER);
+        f.getContentPane().add(view, java.awt.BorderLayout.CENTER);
         f.setSize(300, 200);
-        new Closer(f, true, true);
+	f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setVisible(true);
     } 
 }

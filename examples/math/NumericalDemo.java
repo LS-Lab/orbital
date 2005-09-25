@@ -4,6 +4,7 @@ import orbital.math.*;
 import orbital.math.functional.*;
 import orbital.awt.*;
 import java.awt.*;
+import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -112,14 +113,14 @@ class NumericalDemo {
         diag.add(b);
         diag.setAutoScaling();
         diag.setScale(vf.CONST(2, vf.valueOf(1)));
-        Frame  frame = new Frame();
+        JFrame  frame = new JFrame();
         Plot2D plot = new Plot2D();
         plot.setModel(diag);
         plot.setAutoScaling(true);
         plot.addMouseListener(new CustomizerViewController(frame));
-        frame.add(plot);
+        frame.getContentPane().add(plot);
         frame.setSize(300, 200);
-        new Closer(frame, true, true);
+	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     } 
 

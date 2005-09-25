@@ -25,7 +25,7 @@ import orbital.logic.sign.concrete.Notation.NotationSpecification;
 
 import orbital.logic.trs.Substitutions;
 import java.lang.reflect.Field;
-import orbital.io.IOUtilities;
+import orbital.util.Utility;
 import java.io.StringReader;
 import java.util.*;
 import java.beans.IntrospectionException;
@@ -56,7 +56,7 @@ public class MathExpressionSyntax implements ExpressionSyntax {
         } 
         System.out.print("Type expression: ");
         System.out.flush();
-        String expr = IOUtilities.readLine(System.in);
+        String expr = Utility.readLine(System.in);
         Object p = new MathExpressionSyntax().createMathExpression(expr);
         System.out.println("Original expression:\t" + expr);
         System.out.println("Parsed function:\t" + p);

@@ -6,7 +6,6 @@ import javax.swing.text.*;
 import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
-import orbital.awt.Closer;
 import java.util.*;
 
 /**
@@ -59,7 +58,7 @@ public class CustomInterpretation extends JFrame {
     public CustomInterpretation() {
         super("Logic example with custom interpretation");
         adjustment = new HashMap();
-        Closer    closer = new Closer(this, true, true);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Container pane = getContentPane();
         pane.setLayout(new BorderLayout());
         JPanel     panel = new JPanel(new BorderLayout());

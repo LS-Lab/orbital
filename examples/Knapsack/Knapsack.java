@@ -1,6 +1,7 @@
 import orbital.algorithm.evolutionary.*;
 import orbital.algorithm.evolutionary.GeneticAlgorithm.Configuration;
 import orbital.logic.functor.Function;
+import java.io.*;
 
 /**
  * Knapsack problem solved with a genetic algorithm.
@@ -9,7 +10,7 @@ import orbital.logic.functor.Function;
  * @author Andr&eacute; Platzer
  * @version $Id$
  */
-public class Knapsack extends orbital.moon.awt.Demonstratos implements Runnable, GeneticAlgorithmProblem {
+public class Knapsack implements Runnable, GeneticAlgorithmProblem {
     static final int MAXWEIGHT = 17;
     static final int ItemDesc[][] = {   // Array of {Weight, Value}
         {3,4}, {3,4}, {3,4}, {3,4}, {3,4},
@@ -22,6 +23,7 @@ public class Knapsack extends orbital.moon.awt.Demonstratos implements Runnable,
 
 
     protected GeneticAlgorithm ga;
+    private final PrintStream out = System.out;
 
     public Knapsack() {}
 
@@ -38,11 +40,9 @@ public class Knapsack extends orbital.moon.awt.Demonstratos implements Runnable,
     } 
 
     public void init() {
-        super.init();
         out.println("init() initializing");
     } 
     public void start() {
-        super.start();
         out.println("start() start thread");
         new Thread(this).start();
     } 
