@@ -356,5 +356,8 @@ public class SubstitutionImpl implements Substitution, Serializable {
 	    }
         }
     
+        public String toString() {
+            return pattern() + (isSubstituting() ? "->" + substitute() + " /; " + condition : "");
+        }
     }
 }
