@@ -10,12 +10,12 @@ import orbital.logic.functor.Function;
 import orbital.logic.functor.BinaryFunction;
 /**
  * Provides type constructors, and factories for types of a
- * type-system. Type constructors create new types depending on some
+ * type system. Type constructors create new types depending on some
  * existing types. Factories, instead, create completely new types.
  * For example, there are type constructors for map types.
  * <p>
  * <pre>
- * [A <def>type-system</def> is a] tractable syntactic method for proving the
+ * [A <def>type system</def> is a] tractable syntactic method for proving the
  * absence of certain program behaviors by classifying phrases
  * according to the kinds of values they compute.<br />
  * (Types and Programming Languages, MIT Press, 2002)
@@ -37,11 +37,11 @@ import orbital.logic.functor.BinaryFunction;
 public interface TypeSystem {
 
     /**
-     * Checks whether two type-systems are equal.
-     * Two type-systems are equal if they produce completely compatible types on all
+     * Checks whether two type systems are equal.
+     * Two type systems are equal if they produce completely compatible types on all
      * operations.
      * <p>
-     * Type-system equality will often only depend on the implementation's classes.
+     * Type system equality will often only depend on the implementation's classes.
      * </p>
      */
     boolean equals(Object o);
@@ -68,7 +68,7 @@ public interface TypeSystem {
      *   <li>(&forall;x) <span class="type">&#8868;</span>(x)</li>
      *   <li>(&forall;<span class="type">&tau;</span>:Type) <span class="type">&tau;</span>&le;<span class="type">&#8868;</span></li>
      * </ul>
-     * This would be the only type of uniform type-systems.
+     * This would be the only type of uniform type systems.
      * @postconditions RES == OLD(RES)
      * @see #ABSURD()
      * @internal everything (besides primitive types) is an instance of or a subclass of our fundamental class.

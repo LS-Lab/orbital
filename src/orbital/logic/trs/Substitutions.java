@@ -207,13 +207,30 @@ public class Substitutions {
     }
 
     /**
-     * Create a new single sided matcher with unification that performs substitution
+     * Create a new single sided matcher with unification that performs a substitution
      * under a given condition.
      * <p>
      * This matcher performs (single sided) matching with means of {@link Substitutions#unify(Collection)}.
      * (See there for a formal definition of single sided matchers).
      * Additionally, if &mu;&isin;mgU({pattern, t}) is the unifier,
      * it will use &mu;(substitute) as a replacement for the specified object t.
+     * However, only those matches &mu; that satisfy the specified condition
+     * predicate will be replaced.</p>
+     * <p>
+     * Consider a rewrite rule
+     * <center><var>x</var><sub>1</sub>+<var>x</var><sub>2</sub> &rarr; <var>x</var><sub>2</sub>  &nbsp;/;&nbsp;  <var>x</var><sub>1</sub>=0</center>
+     * which matches on occurrences of the form <var>x</var><sub>1</sub>+<var>x</var><sub>2</sub> that will be
+     * replaced by the counterpart &mu;(<var>x</var><sub>2</sub>) of <var>x</var><sub>2</sub>
+     * whenever <code>condition</code>(&mu;) holds,
+     * which is that the counterpart &mu;(<var>x</var><sub>1</sub>) of <var>x</var><sub>1</sub>
+     * equals zero. Here, &mu; is the single side matcher substitution that
+     * will be passed to the condition predicate.
+     * For example, an occurrence of <code>(6-3*2)+(5*b)</code> matches to the pattern
+     * <var>x</var><sub>1</sub>+<var>x</var><sub>2</sub> by &mu;={<var>x</var><sub>1</sub>&rarr;<code>(6-3*2)</code>,<var>x</var><sub>2</sub>&rarr;<code>(5*b)</code>}.
+     * Since--after some evaluation--the condition predicate determines that
+     * the counterpart &mu;(<var>x</var><sub>1</sub>)=<code>(6-3*2)</code> turns out to be
+     * zero, a replacement to the substitute &mu;(<var>x</var><sub>2</sub>)=<code>(5*b)</code>
+     * will happen with a rewrite on the basis of the above conditional matcher.
      * </p>
      * <p>
      * <span style="float: left; font-size: 200%">&#9761;</span>
@@ -230,7 +247,7 @@ public class Substitutions {
      * @param condition The additional condition that has to hold for a match.
      *  Thus, this condition has to hold for occurrences that match
      *  (single sidedly) with pattern. The matcher returned will only
-     *  match when condition.apply(&mu;) is true for the single sided matcher
+     *  match when <code>condition.apply(&mu;)</code> is true for the single sided matcher
      *  (resp. unifier) &mu;.
      * @todo improve name (and concept)
      * @todo add a Function argument that may transform the result in the sense of Skolemizing etc?
