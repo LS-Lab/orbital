@@ -12,9 +12,9 @@ import orbital.logic.Composite;
 
 import orbital.logic.functor.Function;
 import orbital.logic.functor.BinaryFunction;
+import orbital.logic.functor.Predicate;
 
 import orbital.logic.functor.Functor;
-import orbital.logic.functor.Predicate;
 
 // for typed unification
 import orbital.logic.sign.type.Type;
@@ -44,7 +44,8 @@ import orbital.util.Setops;
 import orbital.util.Utility;
 
 /**
- * Provides term substitution and unification methods, and the &lambda;-operator.
+ * Provides term substitution, unification methods and the &lambda;-operator.
+ * This class also forms the basis of Term Rewrite Systems (TRS).
  * <p>
  * You can easily run a (possibly even infinite) Term Rewrite System (TRS) with substitutions,
  * like
@@ -206,7 +207,8 @@ public class Substitutions {
     }
 
     /**
-     * Create a new single sided matcher with unification that performs substitution.
+     * Create a new single sided matcher with unification that performs substitution
+     * under a given condition.
      * <p>
      * This matcher performs (single sided) matching with means of {@link Substitutions#unify(Collection)}.
      * (See there for a formal definition of single sided matchers).
@@ -225,7 +227,25 @@ public class Substitutions {
      * @param pattern The object against which to (single side) match with {@link Substitutions#unify(Collection)}.
      * @param substitute The substitute substituting terms that matched, after transforming <code>substitute</code>
      *  with the unifier that performed the matching.
+     * @param condition The additional condition that has to hold for a match.
+     *  Thus, this condition has to hold for occurrences that match
+     *  (single sidedly) with pattern. The matcher returned will only
+     *  match when condition.apply(&mu;) is true for the single sided matcher
+     *  (resp. unifier) &mu;.
      * @todo improve name (and concept)
+     * @todo add a Function argument that may transform the result in the sense of Skolemizing etc?
+     * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
+     */
+    public static final Matcher createSingleSidedMatcher(Object pattern, Object substitute, Predicate/*<Substitution>*/ condition) {
+        return new SubstitutionImpl.ConditionalUnifyingMatcher(pattern, substitute, condition);
+    }
+    /**
+     * Create a new single sided matcher with unification that performs substitution,
+     * without conditions.
+     * @param pattern The object against which to (single side) match with {@link Substitutions#unify(Collection)}.
+     * @param substitute The substitute substituting terms that matched, after transforming <code>substitute</code>
+     *  with the unifier that performed the matching.
+     * @see #createSingleSidedMatcher(Object, Object, Predicate)
      * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      */
     public static final Matcher createSingleSidedMatcher(Object pattern, Object substitute) {
@@ -234,7 +254,7 @@ public class Substitutions {
     /**
      * Create a new single sided matcher with unification that does not perform substitution.
      * @param pattern The object against which to (single side) match with {@link Substitutions#unify(Collection)}.
-     * @see #createSingleSidedMatcher(Object, Object)
+     * @see #createSingleSidedMatcher(Object, Object, Predicate)
      * @see <a href="{@docRoot}/Patterns/Design/FacadeFactory.html">&quot;FacadeFactory&quot;</a>
      */
     public static final Matcher createSingleSidedMatcher(Object pattern) {

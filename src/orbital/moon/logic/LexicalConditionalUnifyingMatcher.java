@@ -17,6 +17,7 @@ import orbital.moon.logic.bridge.SubstitutionImpl.UnifyingMatcher;
  *
  * @version $Id$
  * @author  Andr&eacute; Platzer
+ * @todo Replace by Substitutions.createSingleSidedMatcher(Object,Object,Predicate)
  */
 class LexicalConditionalUnifyingMatcher extends UnifyingMatcher {
     private static final long serialVersionUID = 1239472905613684204L;

@@ -18,6 +18,9 @@ import java.util.Set;
  * encapsulation for basic logic junction operations (called <b>junctors</b>).
  * Logic representations must balance expressiveness and tractability.
  * <p>
+ * Objects representing compound formulas implement {@link Formula.Composite},
+ * which can be used for decomposition and analysis of compound formulas.</p>
+ * <p>
  * <hr size="4" />
  * <a id="Properties"></a>Formulas can formally be classified with these essential characteristics.
  * With <span class="Formula">F&isin;Formula(&Sigma;)</span> the formula F is:

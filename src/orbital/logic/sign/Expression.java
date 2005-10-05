@@ -15,7 +15,8 @@ import orbital.logic.sign.type.Typed;
  * {@link ExpressionBuilder#createAtomic(Symbol)},
  * {@link ExpressionBuilder#compose(Expression,Expression[])},
  * or {@link ExpressionSyntax#createExpression(String)}.
- * Objects representing compound expressions even implement {@link Expression.Composite}.
+ * Objects representing compound expressions implement {@link Expression.Composite},
+ * which can be used for decomposition and analysis of compound expressions.
  * </p>
  * <p>
  * Given a {@link Signature signature} &Sigma; we define a general term algebra and thus the (abstract) syntax of the
