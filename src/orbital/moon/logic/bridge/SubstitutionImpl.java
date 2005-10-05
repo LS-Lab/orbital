@@ -11,6 +11,7 @@ import orbital.logic.Composite;
 import orbital.logic.functor.Functor;
 import orbital.logic.functor.Function;
 import orbital.logic.functor.Functionals;
+import orbital.logic.functor.Predicate;
 
 import java.util.List;
 import java.io.Serializable;
@@ -265,22 +266,10 @@ public class SubstitutionImpl implements Substitution, Serializable {
 
     /**
      * Single sided matcher implementation with unification.
-     * <p>
-     * This class performs (single sided) matching with means of {@link Substitutions#unify(Collection)}.
-     * (See there for a definition of single sided matchers).
-     * Additionally, if &mu;&isin;mgU({pattern, t}) is the unifier,
-     * it will use &mu;(substitute) as a replacement for the specified object t,
-     * if substituting is enabled.</p>
-     * <p>
-     * <span style="float: left; font-size: 200%">&#9761;</span>
-     * Beware of patterns for single sided matchers, that have variables in common
-     * with the terms it is applied on. This will most possibly lead to unexpected results.
-     * It is generally recommended to use uncommon variable names for these patterns, like
-     * <code>_X1, _X2, _X3, ...</code> or <code>$X1, $X2, $X3, ...</code>
-     * which do not occur in regular terms.</p>
      *
      * @version $Id$
      * @author  Andr&eacute; Platzer
+     * @see orbital.logic.trs.Substitutions#createSingleSidedMatcher(Object,Object)
      */
     public static class UnifyingMatcher extends MatcherImpl {
         private static final long serialVersionUID = 8361601987955616874L;
@@ -326,5 +315,46 @@ public class SubstitutionImpl implements Substitution, Serializable {
         public Object replace(Object t) {
             return isSubstituting() ? getUnifier().apply(substitute()) : t;
         }
+    }
+
+    /**
+     * Single sided matcher implementation with unification under conditions.
+     *
+     * @version $Id$
+     * @author  Andr&eacute; Platzer
+     * @see orbital.logic.trs.Substitutions#createSingleSidedMatcher(Object,Object,Predicate)
+     */
+    public static class ConditionalUnifyingMatcher extends UnifyingMatcher {
+        //private static final long serialVersionUID = 0L;
+	/**
+	 * The additional condition that the match has to satisfy.
+	 * @serial
+	 */
+	private final Predicate/*<Substitution>*/ condition;
+        /**
+         * Create a new matcher that performs substitution.
+         * @param pattern The object against which to (single side) match with {@link Substitutions#unify(Collection)}.
+         * @substitute The substitute substituting terms that matched, after transforming substitute
+         *  with the unifier that performed the matching.
+	 * @param condition The additional condition that has to hold for occurrences that
+	 *  match (single sidedly) with pattern. Hence, the matcher returned will only
+	 *  match when condition.apply(&mu;) is true for the single sided matcher
+	 *  (resp. unifier) &mu;.
+         * @postconditions substituting == true
+         */
+        public ConditionalUnifyingMatcher(Object pattern, Object substitute, Predicate/*<Substitution>*/ condition) {
+            super(pattern, substitute);
+	    this.condition = condition;
+        }
+    
+        public boolean matches(Object t) {
+	    if (super.matches(t)) {
+		final Substitution mu = getUnifier();
+		return condition.apply(mu);
+	    } else {
+		return false;
+	    }
+        }
+    
     }
 }

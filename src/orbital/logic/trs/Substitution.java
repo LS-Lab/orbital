@@ -178,7 +178,7 @@ public interface Substitution extends Function/*<Object, Object>*/ {
     Object apply(Object term);
 
     /**
-     * Interface for matching and replacing elementary terms.
+     * Interface for matching and replacing elementary terms within a substitution.
      * <p>
      * Instances of this interface provide the functionality of an
      * elementary replacement x<sub>2</sub>&rarr;t<sub>2</sub>

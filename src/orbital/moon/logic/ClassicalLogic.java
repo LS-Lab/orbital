@@ -1970,6 +1970,7 @@ public class ClassicalLogic extends ModernLogic {
          * @author  Andr&eacute; Platzer
          * @attribute meta
          * @todo could also skolemize second-order quantified predicates
+	 * @todo Replace by Substitutions.createSingleSidedMatcher(Object,Object,Predicate,Function)
          */
         private static class SkolemizingUnifyingMatcher implements Substitution.Matcher{
             //private static final long serialVersionUID = 0
