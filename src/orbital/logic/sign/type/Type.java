@@ -80,8 +80,8 @@ public interface Type extends Comparable, Predicate {
     Type codomain();
 
     /**
-     * Get the type-system that this type stems from.
-     * @return the type-system that created this type.
+     * Get the type system that this type stems from.
+     * @return the type system that created this type.
      */
     TypeSystem typeSystem();
 
