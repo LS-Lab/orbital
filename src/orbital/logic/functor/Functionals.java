@@ -1938,7 +1938,7 @@ public class Functionals {
     /**
      * Folds a list with a BinaryFunction.
      * <p>
-     * foldLeft:  a &#8614; f<big>(</big>f(<small>f(c,a[0])</small>,a[1]),a[2]<big>)</big>, ... .</p>
+     * foldLeft:  a &#8614; f<big>(</big>...f<big>(</big>f(<small>f(c,a[0])</small>,a[1]),a[2]<big>)</big>...<big>)</big></p>
      * <p id="Theory">
      * Corresponds to a left-recursive function.
      * <center>
@@ -1978,7 +1978,7 @@ public class Functionals {
     /**
      * Folds a list with a BinaryFunction.
      * <p>
-     * foldRight:  a &#8614; f<big>(</big>a[0], f(a[1], <small>f(a[2],c)</small>)<big>)</big>, ... .</p>
+     * foldRight:  a &#8614; f<big>(</big>a[0], f(a[1], f(... <small>f(a[n],c)</small>...))<big>)</big></p>
      * <p><a id="Theory"></a>
      * foldRight is the same as the catamorphism or banana of a.</p>
      * <p><a id="Properties"></a>

@@ -57,7 +57,7 @@ abstract class ModernLogic implements Logic {
     /**
      * Whether runtime type checks are enabled.
      */
-    private static /*final*/ boolean TYPE_CHECK = false;//true;
+    private static /*final*/ boolean TYPE_CHECK = true;
     /**
      * Enable or disable runtime type checks.
      */

@@ -22,8 +22,6 @@ public class ResolutionTest extends ClassicalLogicTest {
     public static Test suite() {
         return new TestSuite(ResolutionTest.class);
     }
-    protected void setUp() {
-    }
 
     protected void test(String name) {
         try {
