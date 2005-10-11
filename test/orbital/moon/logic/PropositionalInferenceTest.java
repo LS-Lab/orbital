@@ -22,8 +22,6 @@ public class PropositionalInferenceTest extends ClassicalLogicTest {
     public static Test suite() {
         return new TestSuite(PropositionalInferenceTest.class);
     }
-    protected void setUp() {
-    }
 
     protected void test(String name) {
         try {

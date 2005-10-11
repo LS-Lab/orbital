@@ -33,7 +33,7 @@ public class ConditionalTRS {
         (new ConditionalTRS()).run();
     }
 
-    public ConditionalTRS() {
+    public ConditionalTRS() throws ParseException {
         syntax = new ClassicalLogic();
         // rewrite rules
         rewrite = Substitutions.getInstance(Arrays.asList(new Object[] {

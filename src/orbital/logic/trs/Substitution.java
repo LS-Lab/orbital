@@ -156,7 +156,7 @@ public interface Substitution extends Function/*<Object, Object>*/ {
      * Note that the return-type is not fixed to sets, but would just as well allow lists
      * as implementations although the order is not relevant for variable substitutions.
      * </p>
-     * @return the substitution list of matchers used for replacement.
+     * @return the list of matchers used for replacement in this substitution.
      */
     Collection/*<Matcher>*/ getReplacements();
         
@@ -168,9 +168,14 @@ public interface Substitution extends Function/*<Object, Object>*/ {
      * [x<sub>1</sub>&rarr;t<sub>1</sub>,x<sub>2</sub>&rarr;t<sub>2</sub>,&#8230; x<sub>n</sub>&rarr;t<sub>n</sub>],
      * only the first applicable replacement will be applied on subterms.
      * </p>
+     * @param term the term object that will be decomposed according to
+     *  {@link orbital.logic.Composite} for applying the substitution, with
+     *  variables identified via {@link orbital.logic.trs.Variable#isVariable()}.
+     *  Substitutions automatically {@link orbital.logic.functor.Functionals#map(Function,Collection) map}
+     *  themselves over {@link java.util.Collection} and arrays.
      * @return &sigma;(term)
-     * @preconditions the {@link orbital.logic.Composite}s occuring in term support {@link orbital.logic.Composite#construct(Object,Object)}
-     *  in order to allow being substituted by an object of equal class
+     * @preconditions "the {@link orbital.logic.Composite}s occuring in term support {@link orbital.logic.Composite#construct(Object,Object)}
+     *  in order to allow being substituted by an object of equal class"
      * @throws ArrayStoreException if this method tried to store a part of the result in an array,
      *  but the substitution list produced a replacement of an illegal type.
      * @throws ClassCastException if the substitution list produced a replacement of an illegal type.
@@ -196,7 +201,8 @@ public interface Substitution extends Function/*<Object, Object>*/ {
      * @see Substitutions#createExactMatcher(Object, Object)
      * @see Substitutions#createExactMatcher(Object)
      * @see Substitutions#createSingleSidedMatcher(Object, Object)
-     * @see Substitutions#createSingleSidedMatcher(Object, Object)
+     * @see Substitutions#createSingleSidedMatcher(Object, Object, Predicate)
+     * @see Substitutions#createSingleSidedMatcher(Object)
      * @note in effect this is a local variant of substitution.
      * @todo improve design, document, rename, move?
      */
