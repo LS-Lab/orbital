@@ -472,7 +472,7 @@ public class Substitutions {
      */
     //  public static final Function/*<Variable,Object>*/ lambda(Variable x, Expression f) {
     public static final Function/*<Variable,Object>*/ lambda(Object x, Object f) {
-        return (Function/*<Variable,Expression>*//*__*/) lambda.apply(x, f);
+        return (Function/*_<Variable,Expression>_*//*__*/) lambda.apply(x, f);
     }
 
         

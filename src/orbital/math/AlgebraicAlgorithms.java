@@ -306,7 +306,7 @@ public final class AlgebraicAlgorithms {
                 Function/*<S,Polynomial<R,S>>*/ Xpower =
 		    new Function/*<S,Polynomial<R,S>>*/() {
                         public Object/*>Polynomial<R,S><*/ apply(Object/*>S<*/ i) {
-                            return Values.getDefaultInstance().MONOMIAL((Vector/*>S<*/)i);
+                            return (Polynomial/*<R,S>*/) Values.getDefaultInstance().MONOMIAL((Vector/*>S<*/)i);
                         }
                         public String toString() {
                             return "X0^.*...Xn^.";
@@ -589,7 +589,7 @@ public final class AlgebraicAlgorithms {
      *  Chinese Remainder Theorem.
      * @todo change Arithmetic to Euclidean since the implementation won't work otherwise anyway?
      */
-    public static final Quotient/*<Arithmetic>*/ chineseRemainder(Arithmetic x[], Arithmetic m[]) {
+    public static final Quotient/*<? extends Arithmetic>*/ chineseRemainder(Arithmetic x[], Arithmetic m[]) {
         if (x.length != m.length)
             throw new IllegalArgumentException("must give the same number of congruence values and modulos");
         final Values vf = Values.getDefaultInstance();
@@ -677,10 +677,10 @@ public final class AlgebraicAlgorithms {
 
                                 // test divisibility
                                 final Arithmetic/*>R<*/ cdiv;
-                                final Arithmetic xdiv;
+                                final Arithmetic/*>S<*/ xdiv;
                                 try {
                                     // test divisibility of coefficient cnu by lc(gj)=gj.get(lgj)
-                                    cdiv = cnu.divide(gj.get(lgj));
+                                    cdiv = (Arithmetic/*>R<*/)cnu.divide(gj.get(lgj));
                                     // test divisibility of monomial X^nu by l(gj)
                                     xdiv = nu.subtract(lgj);
                                     //@internal the following is a trick for S=<b>N</b><sup>n</sup> represented as <b>Z</b><sup>n</sup> (get rid when introducing Natural extends Integer)
@@ -691,8 +691,8 @@ public final class AlgebraicAlgorithms {
                                     continue reductionPolynomials;
                                 }
                                 // divisible, then q := cdiv*X<sup>xdiv</sup>
-                                final Polynomial q = vf.MONOMIAL(cdiv, xdiv);
-                                Polynomial reduction = f.subtract(q.multiply(gj));
+                                final Polynomial/*<R,S>*/ q = vf.MONOMIAL(cdiv, xdiv);
+                                Polynomial/*<R,S>*/ reduction = f.subtract(q.multiply(gj));
                                 if (!reduction.get(nu).norm().equals(Values.ZERO)) {
                                     if (MathUtilities.equals(reduction.get(nu).norm(),
                                                              Values.ZERO,

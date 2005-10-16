@@ -94,7 +94,7 @@ public class SignatureBase/*<Sigma extends Symbol>*/ extends DelegateSortedSet/*
      * @param symbols the new set of symbols in this signature.
      * @preconditions &forall;s&isin;symbols: s instanceof orbital.logic.imp.Symbol
      */
-    public void setSymbols(SortedSet/*<? extends Sigma>*/ symbols) {
+    public void setSymbols(SortedSet/*<Sigma>*/ symbols) {
         setDelegatee(symbols);
     } 
     

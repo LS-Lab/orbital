@@ -262,7 +262,7 @@ public interface Interpretation/*<Sigma extends Symbol,Denotation>*/ extends Map
      * @throws IllegalArgumentException if sigma does not contain a symbol which is interpreted in the current assocation map.
      *  This is not checked if sigma is <code>null</code>.
      */
-    void setSignature(Signature/*<? extends Sigma>*/ sigma);
+    void setSignature(Signature/*<Sigma>*/ sigma);
 
 
     // Basic Map operations.
