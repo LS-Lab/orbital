@@ -1633,7 +1633,7 @@ public class Functionals {
             } else if (Utility.isIteratable(x))
                 return map(this, (Object) x);
             else
-                return function.apply((Object/*_>A<_*/) x);
+                return function.apply((Object/*>A<*/) x);
         } 
 
         public boolean equals(Object o) {
@@ -1702,7 +1702,7 @@ public class Functionals {
      * @see #listable(Function)
      */
     public static /*<A, B>*/ Collection/*<B>*/ map(Function/*<A, B>*/ f, Collection/*<A>*/ a) {
-        return mapInto(f, a.iterator(), Setops.newCollectionLike(a));
+        return mapInto(f, a.iterator(), (Collection/*<B>*/)Setops.newCollectionLike(a));
     }
     public static /*<A, B>*/ List/*<B>*/ map(Function/*<A, B>*/ f, List/*<A>*/ a) {
         return (List/*<B>*/) map(f, (Collection/*<B>*/) a);
@@ -1795,20 +1795,20 @@ public class Functionals {
 
         public Object apply(Object x, Object y) {
             // almost identical to @see Utility#asIterator, also @see ListableFunction
-            if ((x instanceof Collection/*<A1>*/) && (y instanceof Collection/*<A2>*/)) {
-                if ((x instanceof List/*<A1>*/) && (y instanceof List/*<A2>*/))
-                    return map(this, (List/*<A1>*/) x, (List/*<A2>*/) y);
-                else if ((x instanceof SortedSet/*<A1>*/) && (y instanceof SortedSet/*<A2>*/))
-                    return map(this, (SortedSet/*<A1>*/) x, (SortedSet/*<A2>*/) y);
-                else if ((x instanceof Set/*<A1>*/) && (y instanceof Set/*<A2>*/))
-                    return map(this, (Set/*<A1>*/) x, (Set/*<A2>*/) y);
+            if ((x instanceof Collection/*_<A1>_*/) && (y instanceof Collection/*_<A2>_*/)) {
+                if ((x instanceof List/*_<A1>_*/) && (y instanceof List/*_<A2>_*/))
+                    return map(this, (List/*_<A1>_*/) x, (List/*_<A2>_*/) y);
+                else if ((x instanceof SortedSet/*_<A1>_*/) && (y instanceof SortedSet/*_<A2>_*/))
+                    return map(this, (SortedSet/*_<A1>_*/) x, (SortedSet/*_<A2>_*/) y);
+                else if ((x instanceof Set/*_<A1>_*/) && (y instanceof Set/*_<A2>_*/))
+                    return map(this, (Set/*_<A1>_*/) x, (Set/*_<A2>_*/) y);
                 else
-                    return map(this, (Collection/*<A1>*/) x, (Collection/*<A2>*/) y);
-            } else if ((x instanceof Iterator/*<A1>*/) && (y instanceof Iterator/*<A2>*/)) {
-                if ((x instanceof ListIterator/*<A1>*/) && (y instanceof ListIterator/*<A2>*/))
-                    return map(this, (ListIterator/*<A1>*/) x, (ListIterator/*<A2>*/) y);
+                    return map(this, (Collection/*_<A1>_*/) x, (Collection/*_<A2>_*/) y);
+            } else if ((x instanceof Iterator/*_<A1>_*/) && (y instanceof Iterator/*_<A2>_*/)) {
+                if ((x instanceof ListIterator/*_<A1>_*/) && (y instanceof ListIterator/*_<A2>_*/))
+                    return map(this, (ListIterator/*_<A1>_*/) x, (ListIterator/*_<A2>_*/) y);
                 else
-                    return map(this, (Iterator/*<A1>*/) x, (Iterator/*<A2>*/) y);
+                    return map(this, (Iterator/*_<A1>_*/) x, (Iterator/*_<A2>_*/) y);
             } else if (Utility.isIteratable(x) && Utility.isIteratable(y))
                 return map(this, (Object) x, (Object) y);
             else
@@ -1864,7 +1864,7 @@ public class Functionals {
     public static /*<A1, A2, B>*/ Collection/*<B>*/ map(BinaryFunction/*<A1, A2, B>*/ f, Collection/*<A1>*/ x, Collection/*<A2>*/ y) {
         if (x.size() != y.size())
             throw new IndexOutOfBoundsException("argument collections must have same size");
-        return mapInto(f, x.iterator(), y.iterator(), Setops.newCollectionLike(x));
+        return mapInto(f, x.iterator(), y.iterator(), (Collection/*<B>*/)Setops.newCollectionLike(x));
     } 
     public static /*<A1, A2, B>*/ List/*<B>*/ map(BinaryFunction/*<A1, A2, B>*/ f, List/*<A1>*/ x, List/*<A2>*/ y) {
         return (List) map(f, (Collection)x, (Collection)y);

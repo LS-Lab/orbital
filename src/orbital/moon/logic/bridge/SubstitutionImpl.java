@@ -107,11 +107,11 @@ public class SubstitutionImpl implements Substitution, Serializable {
                     orbital.logic.Composite fp;
                     // try instantiate in another way
                     try {
-                        Constructor nullary = f.getClass().getDeclaredConstructor(null);
+                        Constructor nullary = f.getClass().getDeclaredConstructor(new Class[0]);
                         //@xxx is there a better solution which does not require accessible tricks? Especially, this trick won't do if we want to use a TRS on maths and functions inside a Browser. See MathPlotter.html stuff
                         if (!nullary.isAccessible())
                             nullary.setAccessible(true);
-                        fp = (orbital.logic.Composite) nullary.newInstance(null);
+                        fp = (orbital.logic.Composite) nullary.newInstance(new Object[0]);
                     }
                     catch (InvocationTargetException ex) {throw (IllegalArgumentException) new IllegalArgumentException("the argument type nullary constructor threw").initCause(ex.getTargetException());}
                     catch (SecurityException denied) {throw new orbital.util.InnerCheckedException("the argument type nullary constructor is not accessible", denied);}

@@ -598,20 +598,20 @@ public final class Utility {
      * @see #asCollection(Object)
      * @see #newIteratableLike(Object)
      */
-    public static /*<A>*/ Iterator/*<A>*/ asIterator(Object a) throws NotIteratableException {
+    public static /*_<A>_*/ Iterator/*_<A>_*/ asIterator(Object a) throws NotIteratableException {
         if (a == null)
             return null;
-        else if (a instanceof Iterator/*<A>*/)
-            return (Iterator/*<A>*/) a;
-        else if (a instanceof Collection/*<A>*/)
-            if (a instanceof List/*<A>*/)
-                return ((List/*<A>*/) a).listIterator();
+        else if (a instanceof Iterator/*_<A>_*/)
+            return (Iterator/*_<A>_*/) a;
+        else if (a instanceof Collection/*_<A>_*/)
+            if (a instanceof List/*_<A>_*/)
+                return ((List/*_<A>_*/) a).listIterator();
             else
-                return ((Collection/*<A>*/) a).iterator();
-        else if (a instanceof Tensor/*<A>*/)
-            return ((Tensor/*<A>*/) a).iterator();
-        else if ((a instanceof Object/*>A<*/[]) && !a.getClass().getComponentType().isArray())
-            return Arrays.asList((Object/*>A<*/[]) a).listIterator();
+                return ((Collection/*_<A>_*/) a).iterator();
+        else if (a instanceof Tensor/*_<A>_*/)
+            return ((Tensor/*_<A>_*/) a).iterator();
+        else if ((a instanceof Object/*_>A<_*/[]) && !a.getClass().getComponentType().isArray())
+            return Arrays.asList((Object/*_>A<_*/[]) a).listIterator();
         else if (a.getClass().isArray())
             return Values.getDefaultInstance().tensor(a).iterator();
         throw new NotIteratableException(a.getClass(), generalizedIteratableTypes);

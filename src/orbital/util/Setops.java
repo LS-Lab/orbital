@@ -528,7 +528,7 @@ public final class Setops {
      * <p>
      * If no such collection could be instantiated, a similar collection is used.</p>
      */
-    public static /*<A>*/ Collection/*<A>*/ newCollectionLike(Collection/*<A>*/ c) {
+    public static /*<A,B>*/ Collection/*<B>*/ newCollectionLike(Collection/*<A>*/ c) {
         try {
             if (c instanceof SortedSet) {
                 // skip and let the special handler below take care of the comparator
