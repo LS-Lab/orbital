@@ -216,6 +216,7 @@
                destdir="${classes}"
                debug="yes"
 	       source="1.5"
+               nowarn="yes"
 	       excludes="orbital/moon/aspects/**,orbital/moon/deprecated/*,orbital/*">
             <classpath refid="project.classpath"/>
         </javac>
