@@ -102,11 +102,31 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
      * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      * @see #clone()
      */
+    protected abstract Polynomial/*<R,Vector<Integer>>*/ newInstance(Vector/*<Integer>*/ dimensions);
+    /**
+     * instantiate a new polynomial with storage for a polynomial of degree.
+     * @param dim the dimension desired for the vector.
+     * @return a vector of the same type as this, dimension as specified
+     * The elements need not be initialized since they will soon be by the calling method.
+     * @postconditions RES != RES
+     * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience Method</a>
+     * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
+     * @see #newInstance(Vector)
+     */
     protected abstract Polynomial/*<R,Vector<Integer>>*/ newInstance(int[] dimensions);
         
     protected final Arithmetic/*>Polynomial<R,Vector<Integer>><*/ newInstance(Object/*>Vector<Integer><*/ productIndexSet) {
-	//@xxx wrong type case?
-        return newInstance((int[])productIndexSet);
+	if (productIndexSet instanceof int[]) {
+	    return newInstance((int[])productIndexSet);
+	} else {
+	    Vector v = (Vector)productIndexSet;
+	    int[] pis = new int[v.dimension()];
+	    for (int i = 0; i < pis.length; i++) {
+		pis[i] = ((Integer)v.get(i)).intValue();
+	    }
+	    return newInstance(pis);
+	}
+	    
     }
 
     // iterator-views

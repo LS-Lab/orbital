@@ -42,7 +42,7 @@ abstract class AbstractProductArithmetic/*<R extends Arithmetic, I, T extends Ar
 
     /**
      * Get the index set underlying the product.
-     * Queries productObject for the index set in an implementation dependent manner.
+     * Queries productObject for the index set in an implementation-dependent manner.
      * @param productObject the object (a<sub>i</sub>)<sub>i&isin;I</sub> &isin; &prod;<sub>i&isin;I</sub> A<sub>i</sub>
      *  whose components to iterate over.
      * @return a (memento) description of the index set I.
@@ -54,7 +54,7 @@ abstract class AbstractProductArithmetic/*<R extends Arithmetic, I, T extends Ar
 
     /**
      * Creates an iterator for the components of a product object.
-     * Queries productObject for the iterator in an implementation dependent manner.
+     * Queries productObject for the iterator in an implementation-dependent manner.
      * @param productObject the object (a<sub>i</sub>)<sub>i&isin;I</sub> &isin; &prod;<sub>i&isin;I</sub> A<sub>i</sub>
      *  whose components to iterate over.
      * @return an iterator that iterates over (a<sub>i</sub>)<sub>i&isin;I</sub>.
