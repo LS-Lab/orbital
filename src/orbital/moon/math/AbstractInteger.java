@@ -194,11 +194,14 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
         public Integer modulo(Integer b) {
             int m = b.intValue();
             int v = intValue() % m;
+            /*@todo nonnegative representatives and implementation of quotient() collide with property of Euclidean rings for -8 divmod -6.
+	       On the other hand, chinese remainder relies on positive representatives.
+	     */
             //@internal assure mathematical nonnegative modulus
             if (v < 0)
                 v += m;
             assert (v - (intValue() % m)) % m == 0 : "change of canonical representative, only";
-            assert v >= 0 : "nonnegative representative chosen";
+            //assert v >= 0 : "nonnegative representative chosen";
             return new Int(v);
         }
         public Euclidean modulo(Euclidean b) {
@@ -273,13 +276,17 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
             return quotient((Integer)b);
         }
         public Integer modulo(Integer b) {
-            long m = b.longValue();
+            final long m = b.longValue();
             long v = longValue() % m;
-            //@internal assure mathematical nonnegative modulus
+            /*@todo nonnegative representatives and implementation of quotient() collide with property of Euclidean rings for -8 divmod -6.
+	       On the other hand, chinese remainder relies on positive representatives.
+	     */
+	    //@internal assure mathematical nonnegative modulus
             if (v < 0)
+		//@internal Math.abs(m)?
                 v += m;
             assert (v - (longValue() % m)) % m == 0 : "change of canonical representative, only";
-            assert v >= 0 : "nonnegative representative chosen";
+            //assert v >= 0 : "nonnegative representative chosen for " + this + " modulo " + b + " = " + (longValue() % m) + " = " + v;
             return new Long(v);
         }
         public Euclidean modulo(Euclidean b) {
