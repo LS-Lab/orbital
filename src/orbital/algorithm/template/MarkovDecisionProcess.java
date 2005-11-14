@@ -100,6 +100,7 @@ public abstract class MarkovDecisionProcess/*<A,S,M extends MarkovDecisionProble
     private static final long serialVersionUID = 2351017747303613618L;
     private static final Logger logger = Logger.getLogger(MarkovDecisionProcess.class.getName());
     private static final Values valueFactory = Values.getDefaultInstance();
+    private static final Real TOLERANCE = valueFactory.valueOf(MathUtilities.getDefaultTolerance());
     
     /**
      * The MDP problem to solve.
@@ -277,8 +278,8 @@ public abstract class MarkovDecisionProcess/*<A,S,M extends MarkovDecisionProble
             return new BinaryFunction/*<S,A,Real>*/() {
                     public Object/*>Real<*/ apply(Object/*>S<*/ state, Object/*>A<*/ action) {
                         // cost = Q<sub>U</sub>(s,a)
-                        Scalar cost = valueFactory.ZERO;
-                        Scalar originalCost = valueFactory.NaN;
+                        Real cost = valueFactory.ZERO;
+                        Real originalCost = valueFactory.NaN;
                         if (logger.isLoggable(Level.FINEST)) logger.log(Level.FINEST, "DPMDP.Q", "\tc(" + action + "," + state + ") ...");
                         final MarkovDecisionProblem/*<A,S,M>*/ problem = getProblem();
                         final Iterator/*<S>*/ r = problem.states(action, state);
@@ -287,9 +288,9 @@ public abstract class MarkovDecisionProcess/*<A,S,M extends MarkovDecisionProble
                             final Object/*>S<*/ sp = r.next();
                             final Transition/*<A,S,M>*/ t = (Transition) problem.transition(action, state, sp);
                             if (logger.isLoggable(Level.FINEST)) logger.log(Level.FINEST, "DPMDP.Q", "\t    + " + t.getProbability() + " * " + U.apply(sp) + " for " + sp);
-                            cost = (Scalar) cost.add(t.getProbability().multiply((Arithmetic)U.apply(sp)));
+                            cost = (Real) cost.add(t.getProbability().multiply((Arithmetic)U.apply(sp)));
                             final Real c = t.getCost();
-                            assert !originalCost.equals(c, Values.getDefault().valueOf(MathUtilities.getDefaultTolerance())) : "@postconditions(getCost()): cost of transitions with the same action from the same state should be equal. Difference " + ((Real)originalCost.subtract(c)).doubleValue() + "=" + originalCost.subtract(c) + "=" + originalCost + "-" + c;
+                            assert originalCost.isNaN() || originalCost.equals(c, TOLERANCE) : "@postconditions(getCost()): cost of transitions with the same action from the same state should be equal. Difference " + ((Real)originalCost.subtract(c)).doubleValue() + "=" + originalCost.subtract(c) + "=" + originalCost + "-" + c;
                             originalCost = c;
                         }
                         if (logger.isLoggable(Level.FINER)) logger.log(Level.FINER, "DPMDP.Q", "\tc(" + action + "," + state + ")\t= " + originalCost + " + " + getDiscount() + " * " +  cost);
