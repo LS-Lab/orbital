@@ -102,7 +102,13 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
      * @see <a href="{@docRoot}/Patterns/Design/FactoryMethod.html">Factory Method</a>
      * @see #clone()
      */
-    protected abstract Polynomial/*<R,Vector<Integer>>*/ newInstance(Vector/*<Integer>*/ dimensions);
+    protected Polynomial/*<R,Vector<Integer>>*/ newInstance(Vector/*<Integer>*/ dimensions) {
+	int[] pis = new int[dimensions.dimension()];
+	for (int i = 0; i < pis.length; i++) {
+	    pis[i] = ((Integer)dimensions.get(i)).intValue();
+	}
+	return newInstance(pis);
+    }
     /**
      * instantiate a new polynomial with storage for a polynomial of degree.
      * @param dim the dimension desired for the vector.
@@ -119,12 +125,7 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
 	if (productIndexSet instanceof int[]) {
 	    return newInstance((int[])productIndexSet);
 	} else {
-	    Vector v = (Vector)productIndexSet;
-	    int[] pis = new int[v.dimension()];
-	    for (int i = 0; i < pis.length; i++) {
-		pis[i] = ((Integer)v.get(i)).intValue();
-	    }
-	    return newInstance(pis);
+	    return newInstance((Vector)productIndexSet);
 	}
 	    
     }
