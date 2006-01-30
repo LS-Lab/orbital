@@ -22,7 +22,7 @@ class NonrepetitivePermutation extends Combinatorical {
     /**
      * struggle to get the first permutation returned as well, without next(int[]) saying finish.
      */
-    private boolean first = true;
+    private boolean first;
     /**
      * @preconditions r <= n
      */
@@ -34,8 +34,17 @@ class NonrepetitivePermutation extends Combinatorical {
         this.permutation = new int[r];
         for (int i = 0; i < permutation.length; i++)
             permutation[i] = i;
+	assert isSorted(permutation) : "initialized to very first sorted permutation " + MathUtilities.format(permutation);
         if (r < n)
             throw new UnsupportedOperationException("r < n not yet implemented");
+	this.first = true;
+    }
+
+    private boolean isVeryFirst() {
+	if (this.first) {
+	    assert isSorted(permutation) : "very first sorted permutation " + MathUtilities.format(permutation);
+	}
+	return this.first;
     }
     
     /**
@@ -46,20 +55,25 @@ class NonrepetitivePermutation extends Combinatorical {
     } 
 
     public boolean hasNext() {
-        int[] copy = (int[]) permutation.clone();
-        return first || permute(copy);
+        return isVeryFirst() || permute((int[]) permutation.clone());
     }
 
     public int[] next() {
-        if (first) {
-            first = false;
+        if (isVeryFirst()) {
+            this.first = false;
             return permutation;
         }
-        else if (permute(permutation))
+	int[] old = (int[]) permutation.clone();
+        if (permute(permutation)) {
             return permutation;
+	} else {
+	    // same as very first permutation _again_ hence finished
+	    // restore initial permutation, i.e. unpermute
+	    System.arraycopy(old,0, permutation,0, old.length);
+	}
         if (r == n)
-            throw new NoSuchElementException();
-        assert r < n : "r < n case because r <= n abd r == n is solved";
+            throw new NoSuchElementException("no more elements for r=n in " + this);
+        assert r < n : "r < n case because r <= n and r == n is solved";
         throw new UnsupportedOperationException("r < n not yet implemented");
     }
 
@@ -75,17 +89,21 @@ class NonrepetitivePermutation extends Combinatorical {
      * Given a current permutation, calculates the next permutation.
      * @param permutation the current permutation array of length k.
      * @param n the number of possible values for each element of the permutation. n = |M|.
-     * @return whether the permutation set is a new one or again the first one.
+     * @return whether the permutation set now is a new one rather than the very first one again.
      */
     public static boolean permute(int permutation[]) {
         int first = 0;
         int last = permutation.length;
-        if (first == last)
+        if (first == last) {
+	    assert isSorted(permutation) : "very first sorted permutation " + MathUtilities.format(permutation);
             return false;
+	}
         int i = first;
         ++i;
-        if (i == last)
+        if (i == last) {
+	    assert isSorted(permutation) : "very first sorted permutation " + MathUtilities.format(permutation);
             return false;
+	}
         i = last;
         --i;
 
@@ -100,10 +118,12 @@ class NonrepetitivePermutation extends Combinatorical {
                 permutation[j] = T;
                 // reverse(ii, last);
                 reverse(permutation, ii, last);
+		assert !isSorted(permutation) : "not very first sorted permutation " + MathUtilities.format(permutation);
                 return true;
             } 
             if (i == first) {
                 reverse(permutation, first, last);
+		assert isSorted(permutation) : "very first sorted permutation " + MathUtilities.format(permutation);
                 return false;
             } 
         } 
@@ -117,6 +137,17 @@ class NonrepetitivePermutation extends Combinatorical {
         } 
     } 
 
+    /**
+     * Whether the given permutation is sorted 0,1,2,3,...,n-1
+     */
+    private static boolean isSorted(int permutation[]) {
+        for (int i = 0; i < permutation.length; i++) {
+            if (permutation[i] != i)
+		return false;
+	}
+	return true;
+    } 
+    
     /**
      * will produce all permutating values.
      * @deprecated

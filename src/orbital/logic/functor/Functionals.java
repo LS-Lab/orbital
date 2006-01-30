@@ -2480,7 +2480,7 @@ public class Functionals {
      * </blockquote>
      * If q = sup ||f'(z)|| &lt; 1, then f is a contraction with q.
      * </p>
-     * @param f the (continuous) functon to apply repeatedly for searching a fixed point.
+     * @param f the (continuous) function to apply repeatedly for searching a fixed point.
      * @param x where to start searching a fixed point.
      * @param maxIteration the maximum number of iterations waiting for a convergence to a fixed point.
      * Will then throw an IterationLimitException
