@@ -94,18 +94,26 @@ public class CombinatoricalTest extends check.TestCase {
                              );*/
             possibilities.add(l);
             count++;
-        } 
+        }
+        assertTrue(testReverse || !c.hasNext(), "finally none is left in " + c);
+	try {
+	    int[] v = c.next();
+	    assertTrue(false, "when hasNext()==false, next() should not yield " + c);
+	}
+	catch (NoSuchElementException expected) {}
+        assertTrue(testReverse || !c.hasNext(), "finally none is left in " + c);
         System.out.println("generated " + count + " which is " +(count == c.count() ? "correct" : "NOT correct"));
         System.out.println("generated " + possibilities);
         assertTrue(count == c.count() , c + " Combinatorical.count()=" + c.count() + " matches Combinatorical.hasNext()=" + count);
         assertTrue(allDifferent(possibilities) , c + " no combinatorical possibility occurs twice in " + possibilities);
-        if (permutation)
+        if (permutation) {
             assertTrue(Setops.all(possibilities, new Predicate() {
                     public boolean apply(Object v) {
                         assertTrue(allDifferent((List/*_<Integer>_*/)v) , c + " for permutations all elements of the permutation are different " + MathUtilities.format(v));
                         return true;
                     }
                 }) , c + " for permutations, all elements of the permutation are different");
+	}
         assertTrue(!c.hasNext(), "wandered through completely, implies that we cannot go further");
         if (testReverse) {
             final ListIterator reverse = possibilities.listIterator(possibilities.size());
