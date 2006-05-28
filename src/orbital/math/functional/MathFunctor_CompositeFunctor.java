@@ -6,6 +6,7 @@
 
 package orbital.math.functional;
 
+import orbital.logic.Composite;
 import orbital.logic.functor.Functor;
 import orbital.math.Arithmetic;
 import orbital.logic.sign.concrete.Notation;
@@ -70,7 +71,7 @@ import orbital.util.Utility;
                         if (o == null || getClass() != o.getClass())
                                 return false;
                         // note that it does not matter to which .Composite we cast since we have already checked for class equality
-                        Composite b = (Composite) o;
+                        orbital.logic.Composite b = (orbital.logic.Composite) o;
                         return Utility.equals(getCompositor(), b.getCompositor())
                                         && Utility.equalsAll(getComponent(), b.getComponent());
                 }
