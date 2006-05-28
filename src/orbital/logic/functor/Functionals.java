@@ -1171,6 +1171,8 @@ public class Functionals {
      * <p>
      * onSecond:  f&#8614;g;.</p>
      * <p><b><i>Evolves</i>:</b> might be renamed or removed.</p>
+     * The resulting function is right-projective, i.e., it is curry constant:
+     * currying the resulting function yields to a constant function.
      * @return (x,y) &#8614; g(x,y) := f(y)
      * @see <a href="{@docRoot}/Patterns/Design/Adapter.html">Adapter Pattern</a>
      */

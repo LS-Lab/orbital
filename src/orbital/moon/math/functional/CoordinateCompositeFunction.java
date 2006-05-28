@@ -11,6 +11,7 @@ import orbital.math.Arithmetic;
 import orbital.logic.sign.concrete.Notation;
 
 import orbital.logic.functor.Functor;
+import orbital.logic.Composite;
 
 import orbital.math.Vector;
 import orbital.math.Scalar;
@@ -113,7 +114,7 @@ import orbital.util.Utility;
     
             public orbital.logic.Composite construct(Object f, Object g) {
                 try {
-                    Composite c = (Composite) getClass().newInstance();
+                    orbital.logic.Composite c = (orbital.logic.Composite) getClass().newInstance();
                     c.setCompositor(f);
                     c.setComponent(g);
                     return c;
