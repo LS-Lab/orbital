@@ -13,10 +13,31 @@ import java.util.ListIterator;
 
 /**
  * Class for combinatorical operations.
+ * <p>
+ * This class can be used to perform combinatorical operations
+ * using the iterator methods of an instance of <tt>Combinatorical</tt>
+ * (usually) obtained via {@link #getInstance(int,boolean,int,boolean)}.
+ * Instances of this class will help to iterate over all
+ * elements of such a combinatorial set like permutations or combinations.
+ * Apart from methods for forward and backward navigation,
+ * a priori counting queries are provided to determine the
+ * number of elements in advance.
+ * </p>
+ * For example, the following code gets all 5 out of 5 permutations
+ * without repetition (i.e., the symmetric group S<sub>5</sub>):
+ * <code>
+ * Combinatorical c = Combinatorical.getPermutations(5, false);
+ * System.out.println(c.count());
+ * while (c.hasNext()) {
+ *    int[] v = c.next();
+ *    System.out.println(orbital.math.MathUtilities.format(v));
+ * }
+ * </code>
  * 
  * @version $Id$
  * @author  Andr&eacute; Platzer
  * @internal is an interface
+ * @see #getInstance(int,boolean,int,boolean)
  */
 public abstract class Combinatorical /*implements ListIterator<int[]> like*/ implements Serializable {
     private static final long serialVersionUID = 8581671329920186455L;
