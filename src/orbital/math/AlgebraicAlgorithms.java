@@ -761,11 +761,28 @@ public final class AlgebraicAlgorithms {
      *   <dt>reduced</dt>
      *   <dd>&forall;g&isin;G g reduced with respect to G\{g}
      *     <div>&rArr; G minimal</div>
+     *     <div>G unique</div>
      *   </dd>
      * </dl>
-     * Two minimal Gr&ouml;bner bases have the same number of elements and the same leading monomials.
-     * There is a unique reduced Gr&ouml;bner basis.
      * </p>
+     * <p>
+     * Two minimal Gr&ouml;bner bases have the same number of elements and the same leading monomials.
+     * There is a unique reduced Gr&ouml;bner basis. Gr&ouml;bner basis were developed
+     * as a canonical simplifier as a means for computation in factor polynomial rings. 
+     * </p>
+     * <h3>Applications</h3>
+     * Let V(I)={x&isin;R<sup>n</sup> : &forall;f&isin;I f(x)=0} be the <dfn>vanishing ideal</dfn>
+     * and G the reduced Gr&ouml;bner basis of the ideal I.
+     * <ul>
+     *   <li>V(I)=&empty; iff G={1}, which means "no solutions"</li>
+     *   <li>V(I) is 0-dimensional iff for each X<sub>i</sub>, G contains an f with a pure leading monomial l(f)=X<sub>i</sub><sup>k</sup>, which means "finitely many solutions"</li> 
+     *   <li>With respect to the <emph>lexicographic term ordering</emph> <var>X<sub>n</sub>&gt;...&gt;X<sub>1</sub></var>,
+     *     G has the <dfn>elimination property</dfn>, i.e. 
+     *     <div>(G)&cap;K[X<sub>1</sub>,&#8230;,X<sub>i</sub>]=(G&cap;K[X<sub>1</sub>,&#8230;,X<sub>n</sub>])</div>
+     *     This relationship of "triangularisation" (in case V(I) is 0-dimensional) is important for successively solving systems of polynomial equations by backsubstitution.
+     *   </li>
+     *   <li>Conversion of parametric equations to implicit form.</li>
+     * </ul>
      * @param g the collection of multinomials that is a generating system of the ideal (g)
      *  for which to construct a Gr&ouml;bner basis.
      * @param monomialOrder the <a href="#monomialOrder">order of monomials</a>, which is decisive for the time complexity.
@@ -774,7 +791,8 @@ public final class AlgebraicAlgorithms {
      *  and to {@link LUDecomposition} in case of linear polynomials.
      * @internal whenever an elementary reduction is possible, use the reduced polynomial instead of the original polynomial.
      * @internal Gr&ouml;bnerBasis = "if the term rewrite system for reduce is confluent"
-     * @internal generalisations to non-fields are possible, see the much more expensive Ritt-reduction.
+     * @internal generalisations to non-field rings (or non-commutative) are possible, see the much more expensive Ritt-reduction.
+     * @internal parallel implementation of Gr&ouml;bner bases possible but communication is required at each S-polynomial discovery. Idea: late check with newly discovered S-polynomials after some time (by versioning of discoveries)?
      * @todo scale to get rid of denominators, and of non-primitive polynomials (divide by gcd of coefficients)
      * @see "Buchberger, Bruno. <i>Ein Algorithmus zum Auffinden der Basiselemente des Restklassenrings nach einem nulldimensionalen Polynomideal</i>. PhD thesis, Universit&auml;t Innsbruck, 1965."
      * @see "Buchberger, Bruno. Gr&ouml;bner bases: An algorithmic method in polynomial ideal theory. In Bose, N.K., editor, <i>Recent Trends in Multidimensional Systems Theory</i>. Reidel Publ.Co., 1985."
@@ -800,6 +818,11 @@ public final class AlgebraicAlgorithms {
     }
     /**
      * Get the non-reduced Gr&ouml;bner basis of g (Implementation).
+     * Using syzygy S-polynomials:
+     * <div>S(f,g) = lcm(l<sub>t</sub>(f),l<sub>t</sub>(g))/l<sub>t</sub>(f) f - lcm(l<sub>t</sub>(f),l<sub>t</sub>(g))/l<sub>t</sub>(g) g</div>
+     * which will let the leading term cancel by construction.
+     * Here, l<sub>t</sub>(f) := l<sub>c</sub>(f) l(f) is the <dfn>leading term</dfn>. 
+     * @internal Beware: we internally use slightly rescaled S-polynomials. 
      */
     private static final /*<R extends Arithmetic, S extends Arithmetic>*/
 	Set/*<Polynomial<R,S>>*/ groebnerBasisImpl(Collection/*<Polynomial<R,S>>*/ gg, final Comparator/*<S>*/ monomialOrder) {
@@ -811,7 +834,9 @@ public final class AlgebraicAlgorithms {
                 for (int j = i + 1; j < g.size(); j++) {
                     final Polynomial/*<R,S>*/ gi = (Polynomial)g.get(i);
                     final Polynomial/*<R,S>*/ gj = (Polynomial)g.get(j);
-                    // construct Sgigj = S(g[i], g[j])
+
+		    // constructing S-polynomials of g[i] and g[j]
+		    // construct Sgigj = S(g[i], g[j])
                     final Vector/*>S<*/ lgi = (Vector/*>S<*/) leadingMonomial(gi, monomialOrder);
                     final Vector/*>S<*/ lgj = (Vector/*>S<*/) leadingMonomial(gj, monomialOrder);
                     // construct X^nu and X^mu coprime such that l(X^nu*g[i])==l(X^mu*g[j]) (also @see #lcm(Euclidean,Euclidean))
@@ -821,17 +846,19 @@ public final class AlgebraicAlgorithms {
                     assert Setops.all(nu.iterator(), mu.iterator(), new orbital.logic.functor.BinaryPredicate() { public boolean apply(Object nui, Object mui) {return nui.equals(Values.ZERO) || mui.equals(Values.ZERO);} }) : "coprime " + vf.MONOMIAL( nu) + " and " + vf.MONOMIAL(mu);
                     // Xpowernugi = 1/lc(g[i]) * X<sup>nu</sup>*g[i]
                     final Polynomial Xpowernugi = vf.MONOMIAL(gi.get(lgi).inverse(), nu).multiply(gi);
-                    // Xpowernugi = 1/lc(g[j]) * X<sup>mu</sup>*g[j]
+                    // Xpowermugj = 1/lc(g[j]) * X<sup>mu</sup>*g[j]
                     final Polynomial Xpowermugj = vf.MONOMIAL(gj.get(lgj).inverse(), mu).multiply(gj);
-                    assert leadingMonomial(Xpowernugi, monomialOrder).equals(leadingMonomial(Xpowermugj, monomialOrder)) : "construction should generate equal leading monomials (" + leadingMonomial(Xpowernugi, monomialOrder) + " of " + Xpowernugi + " and " + leadingMonomial(Xpowermugj, monomialOrder) + " of " + Xpowermugj + ") which vanish by subtraction";
+                    assert leadingMonomial(Xpowernugi, monomialOrder).equals(leadingMonomial(Xpowermugj, monomialOrder)) : "construction should generate equal leading monomials (" + leadingMonomial(Xpowernugi, monomialOrder) + " of " + Xpowernugi + " and " + leadingMonomial(Xpowermugj, monomialOrder) + " of " + Xpowermugj + ") which cancel by subtraction";
                     final Polynomial Sgigj = Xpowernugi.subtract(Xpowermugj);
-                    assert Sgigj.get(d).norm().equals(Values.ZERO) : "construction should generate equal leading monomials which vanish by subtraction";
+                    assert Sgigj.get(d).norm().equals(Values.ZERO) : "construction should generate equal leading monomials which cancel by subtraction";
+
                     // this is the major bottleneck, especially if it turns out that r=0
+		    // @todo Optimize: if lcm(l_t(gi),l_t(gj))=l_t(gi)*l_t(gj), r=0 so no reduction needed
                     final Polynomial r = reduce(Sgigj, g, monomialOrder);
                     logger.log(Level.FINER, "S({0},{1}) = {2} * ({3})  -  {4} * ({5}) = {6} reduced to {7}", new Object[] {gi, gj, vf.MONOMIAL(gi.get(lgi).inverse(), nu), gi, vf.MONOMIAL(gj.get(lgj).inverse(), mu), gj, Sgigj, r});
-                    if (isZeroPolynomial.apply(r))
+                    if (isZeroPolynomial.apply(r)) {
                         logger.log(Level.FINE, "skip reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
-                    else {
+                    } else {
                         logger.log(Level.FINE, "add reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
                         g.add(r);
                         continue ergaenzeGroebnerBasis;
