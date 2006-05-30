@@ -32,7 +32,7 @@
       Optional:
         JDepend from http://www.clarkware.com/software/JDepend.html
         Checkstyle from http://checkstyle.sourceforge.net/
-        Mathematica and JLink from http://wolfram
+        Mathematica and JLink from http://wolfram.com/
     </description>
 
 
@@ -103,6 +103,10 @@
 	<property name="lib.jcoverage" value="${lib}"/>
 	<property name="lib.checkstyle" value="${lib}"/>
 	<property name="lib.jdepend" value="${lib}"/>
+        <!-- the Mathematica kernel binary -->
+        <property name="com.wolfram.jlink.kernel" value="math -mathlink"/>
+        <!-- the Mathematica jlink.jar file -->
+        <property name="com.wolfram.jlink.jar" value="JLink.jar"/>
 
 
         <mkdir dir="${lib}"/>
