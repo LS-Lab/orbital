@@ -86,8 +86,6 @@ import java.awt.TextComponent;
  * 
  * @version $Id$
  * @author  Andr&eacute; Platzer
- * @author  Ute Platzer
- * @author  Rolf Lohaus
  * @see orbital.awt.CustomizerViewController
  * @see orbital.awt.CustomizerViewController#customizerFor(Class)
  * @todo support multiple register tabs for different groups of properties. One register tab for each BeanInfo, and each BeanInfo got from getAdditionalBeanInfo(). Use ResourceBundle for the names of these tabs à la getClass().getName() + ".tab"
