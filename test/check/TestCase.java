@@ -10,7 +10,7 @@ package check;
  * TestCase.java
  *
  *
- * @author <a href="mailto:">Andr&eacute; Platzer</a>
+ * @author Andr&eacute; Platzer
  * @version $Id$
  */
 public abstract class TestCase extends junit.framework.TestCase {

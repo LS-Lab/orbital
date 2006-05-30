@@ -1161,7 +1161,6 @@ public interface Gene {
      * 
      * @version $Id$
      * @author Andr&eacute; Platzer
-     * @author Ute Platzer
      * @see Gene.Number
      */
     public static class Fixed extends Gene.BitSet {
