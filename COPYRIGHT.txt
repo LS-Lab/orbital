@@ -1,3 +1,4 @@
+Copyright Notice and License Agreement
 License Agreement:
 
 This software is the confidential and proprietary information
@@ -13,7 +14,7 @@ a result of using these files or derivatives.
 
 You are not to modify, adapt, translate, reverse engineer, decompile,
 disassemble, or reverse-engeneer the product or attempt to discover
-its source code.  You agree to notify your employees and agents who
+its source code. You agree to notify your employees and agents who
 may have access to the software of the restrictions contained in this
 Agreement and to insure their compliance with these restrictions.
 
@@ -21,5 +22,6 @@ Distribution of these files is prohibited, except if you make sure that:
   (o) this License Agreement and the Copyright notice are contained
   (o) the files are not modified
 
-Copyright (c) 1996-2004 Andre Platzer.
+All files and documents are
+Copyright (c) 1996-2006 Andre Platzer.
 All Rights Reserved.

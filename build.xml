@@ -437,7 +437,9 @@
 	    <!-- @todo rename xxx to todo 1y. Rename fixme to todo 0y. -->
 	    <tag name="xxx" scope="all" description="Todo:" enabled="false"/>
 	    <tag name="fixme" scope="all" description="Fixme:" enabled="false"/>
-	    <taglet name="taglet.StereotypeTaglet" path="${taglet}"/>
+	    <!-- <taglet name="taglet.StereotypeTaglet" path="${taglet}"/>
+              xxx this does not work anymore
+            -->
 	    <group title="Core Packages" packages="orbital.logic*:orbital.math:orbital.math*:orbital.util"/>
 	    <group title="Extension Packages" packages="orbital.algorithm*:orbital.awt"/>
 	    <group title="Implementation Packages" packages="orbital.moon*"/>
@@ -650,8 +652,9 @@
 	        <exclude name="java/**"/>
             </fileset>
             <zipfileset dir="${doc}" prefix="orbital/moon">
-	        <include name="license.txt"/>
 	        <include name="orbital.gif"/>
+            </zipfileset>
+            <zipfileset dir="${basedir}" includes="COPYRIGHT.*">
             </zipfileset>
             <fileset dir="${sources}/orbital">
 	        <include name="META-INF/services/*"/>
@@ -725,8 +728,9 @@
             <fileset dir="${resources}">
 	        <exclude name="java/**"/>
             </fileset>
+            <zipfileset dir="${basedir}" includes="COPYRIGHT.*">
+            </zipfileset>
             <zipfileset dir="${doc}" prefix="orbital/moon">
-	        <include name="license.txt"/>
 	        <include name="orbital.gif"/>
             </zipfileset>
             <fileset dir="${sources}/orbital">
@@ -776,7 +780,6 @@
         <zip destfile="${dist}/ap_orbital_rt${version_brief}.zip" duplicate="fail">
             <zipfileset dir="${basedir}" includes="COPYRIGHT.*" prefix="Orbital"/>
             <zipfileset dir="${doc}" prefix="Orbital">
-	        <include name="license.txt"/>
 	        <include name="orbital.gif"/>
 	        <include name="overview.html"/>
 	    </zipfileset>
@@ -802,8 +805,8 @@
 
         <zip destfile="${dist}/ap_orbital_doc${version_brief}.zip" duplicate="fail">
             <zipfileset dir="${basedir}" includes="COPYRIGHT.*" prefix="Orbital-doc"/>
+            <zipfileset dir="${basedir}" includes="COPYRIGHT.*" prefix="Orbital-doc/api"/>
             <zipfileset dir="${doc}" prefix="Orbital-doc">
-	        <include name="license.txt"/>
 	        <include name="orbital.gif"/>
 	        <include name="orbital.ico"/>
 	        <include name="recommendations.html"/>
