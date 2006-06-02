@@ -1,4 +1,5 @@
-Copyright Notice and License Agreement
+Copyright (c) 1996-2006 Andre Platzer. All rights reserved.
+
 License Agreement:
 
 This software is the confidential and proprietary information
@@ -21,7 +22,3 @@ Agreement and to insure their compliance with these restrictions.
 Distribution of these files is prohibited, except if you make sure that:
   (o) this License Agreement and the Copyright notice are contained
   (o) the files are not modified
-
-All files and documents are
-Copyright (c) 1996-2006 Andre Platzer.
-All Rights Reserved.
