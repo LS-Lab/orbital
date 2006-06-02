@@ -32,7 +32,7 @@
       Optional:
         JDepend from http://www.clarkware.com/software/JDepend.html
         Checkstyle from http://checkstyle.sourceforge.net/
-        Mathematica and JLink from http://wolfram
+        Mathematica and JLink from http://wolfram.com/
     </description>
 
 
@@ -103,6 +103,10 @@
 	<property name="lib.jcoverage" value="${lib}"/>
 	<property name="lib.checkstyle" value="${lib}"/>
 	<property name="lib.jdepend" value="${lib}"/>
+        <!-- the Mathematica kernel binary -->
+        <property name="com.wolfram.jlink.kernel" value="math -mathlink"/>
+        <!-- the Mathematica jlink.jar file -->
+        <property name="com.wolfram.jlink.jar" value="JLink.jar"/>
 
 
         <mkdir dir="${lib}"/>
@@ -402,7 +406,7 @@
                  footer="&lt;b&gt;Orbital library&lt;/b&gt;&lt;br /&gt;${version}: ${timestamp}"
 		 overview="${doc}/overview.html"
                  Private="${doc.internal}">
-            <bottom><![CDATA[<span style='font-size: smaller; font-style: italic;'>Copyright &copy; 1996-2005 Andr&eacute; Platzer<br />All Rights Reserved.</span>]]></bottom>
+            <bottom><![CDATA[<span style='font-size: smaller; font-style: italic;'>Copyright &copy; 1996-2006 Andr&eacute; Platzer<br />All Rights Reserved.</span>]]></bottom>
  	    <packageset dir="${sources}" defaultexcludes="no"
  	         excludes="orbital,orbital/util/graph,orbital/moon,orbital/moon/aspects,orbital/moon/deprecated,orbital/moon/math/**,orbital/moon/logic/bridge,orbital/moon/logic/sign/type,orbital/util/logging">
  	        <include name="orbital/**"/>
@@ -433,7 +437,9 @@
 	    <!-- @todo rename xxx to todo 1y. Rename fixme to todo 0y. -->
 	    <tag name="xxx" scope="all" description="Todo:" enabled="false"/>
 	    <tag name="fixme" scope="all" description="Fixme:" enabled="false"/>
-	    <taglet name="taglet.StereotypeTaglet" path="${taglet}"/>
+	    <!-- <taglet name="taglet.StereotypeTaglet" path="${taglet}"/>
+              xxx this does not work anymore
+            -->
 	    <group title="Core Packages" packages="orbital.logic*:orbital.math:orbital.math*:orbital.util"/>
 	    <group title="Extension Packages" packages="orbital.algorithm*:orbital.awt"/>
 	    <group title="Implementation Packages" packages="orbital.moon*"/>
@@ -646,8 +652,9 @@
 	        <exclude name="java/**"/>
             </fileset>
             <zipfileset dir="${doc}" prefix="orbital/moon">
-	        <include name="license.txt"/>
 	        <include name="orbital.gif"/>
+            </zipfileset>
+            <zipfileset dir="${basedir}" includes="COPYRIGHT.*">
             </zipfileset>
             <fileset dir="${sources}/orbital">
 	        <include name="META-INF/services/*"/>
@@ -721,8 +728,9 @@
             <fileset dir="${resources}">
 	        <exclude name="java/**"/>
             </fileset>
+            <zipfileset dir="${basedir}" includes="COPYRIGHT.*">
+            </zipfileset>
             <zipfileset dir="${doc}" prefix="orbital/moon">
-	        <include name="license.txt"/>
 	        <include name="orbital.gif"/>
             </zipfileset>
             <fileset dir="${sources}/orbital">
@@ -772,7 +780,6 @@
         <zip destfile="${dist}/ap_orbital_rt${version_brief}.zip" duplicate="fail">
             <zipfileset dir="${basedir}" includes="COPYRIGHT.*" prefix="Orbital"/>
             <zipfileset dir="${doc}" prefix="Orbital">
-	        <include name="license.txt"/>
 	        <include name="orbital.gif"/>
 	        <include name="overview.html"/>
 	    </zipfileset>
@@ -798,9 +805,8 @@
 
         <zip destfile="${dist}/ap_orbital_doc${version_brief}.zip" duplicate="fail">
             <zipfileset dir="${basedir}" includes="COPYRIGHT.*" prefix="Orbital-doc"/>
+            <zipfileset dir="${basedir}" includes="COPYRIGHT.*" prefix="Orbital-doc/api"/>
             <zipfileset dir="${doc}" prefix="Orbital-doc">
-	        <include name="license.txt"/>
-	        <include name="changes.txt"/>
 	        <include name="orbital.gif"/>
 	        <include name="orbital.ico"/>
 	        <include name="recommendations.html"/>
