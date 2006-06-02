@@ -406,7 +406,7 @@
                  footer="&lt;b&gt;Orbital library&lt;/b&gt;&lt;br /&gt;${version}: ${timestamp}"
 		 overview="${doc}/overview.html"
                  Private="${doc.internal}">
-            <bottom><![CDATA[<span style='font-size: smaller; font-style: italic;'>Copyright &copy; 1996-2005 Andr&eacute; Platzer<br />All Rights Reserved.</span>]]></bottom>
+            <bottom><![CDATA[<span style='font-size: smaller; font-style: italic;'>Copyright &copy; 1996-2006 Andr&eacute; Platzer<br />All Rights Reserved.</span>]]></bottom>
  	    <packageset dir="${sources}" defaultexcludes="no"
  	         excludes="orbital,orbital/util/graph,orbital/moon,orbital/moon/aspects,orbital/moon/deprecated,orbital/moon/math/**,orbital/moon/logic/bridge,orbital/moon/logic/sign/type,orbital/util/logging">
  	        <include name="orbital/**"/>
@@ -804,7 +804,6 @@
             <zipfileset dir="${basedir}" includes="COPYRIGHT.*" prefix="Orbital-doc"/>
             <zipfileset dir="${doc}" prefix="Orbital-doc">
 	        <include name="license.txt"/>
-	        <include name="changes.txt"/>
 	        <include name="orbital.gif"/>
 	        <include name="orbital.ico"/>
 	        <include name="recommendations.html"/>
