@@ -10,7 +10,7 @@
   <meta name="Description" content="Summary of all features of the Orbital library"/>
   <meta name="Classification" content="documentation/features"/>
   <meta name="Keywords" content="Orbital library, orbital library services, Orbital library for Java, mathematical and statistical utilities and interfaces, graphical utilities and AWT-Extension Beans., a generic framework for logical systems, functional evaluation with functor interfaces, IO-Extensions, networking protocols and corresponding document encoding, Scanner&amp;Parser base classes, a generic game abstraction framework, 3D Worlds engine, Evolutionary (genetic) algorithm implementation, CORBA with inter-ORB protocol, RMI with Sun Remote Method Invocation protocol, Port Servers with socket based internet text protocol, jini fluid objects via jini distributed objects model architecture, term rewrite sytem, symbolic derivation, numerical algorithms, Robinson unification, fixed point operators, symbolic mathematics, arithmetic objects"/>
-  <title>Summary of some Important Features</title>
+  <title>Summary of the Most Important Features of the Orbital Library</title>
 </head>
 
 <body>
