@@ -1,3 +1,5 @@
+Carefully read COPYRIGHT.txt
+
 REQUIREMENTS
 
 At run-time the Orbital library needs a standard Java Virtual

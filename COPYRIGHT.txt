@@ -14,7 +14,7 @@ be liable for any damage suffered by licensee or any third party as
 a result of using these files or derivatives.
 
 You are not to modify, adapt, translate, reverse engineer, decompile,
-disassemble, or reverse-engeneer the product or attempt to discover
+disassemble, or reverse-engineer the product or attempt to discover
 its source code. You agree to notify your employees and agents who
 may have access to the software of the restrictions contained in this
 Agreement and to insure their compliance with these restrictions.

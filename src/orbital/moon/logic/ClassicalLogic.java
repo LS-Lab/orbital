@@ -557,7 +557,7 @@ public class ClassicalLogic extends ModernLogic {
             {Predicates.lessEqual,        // "=<"
              new NotationSpecification(700, "xfx", Notation.INFIX)},
 
-            ///////         {LogicFunctions.forall,       // "�"
+            ///////         {LogicFunctions.forall,       // "all"
             ///////          new NotationSpecification(900, "fy", Notation.PREFIX)},
             ///////         {LogicFunctions.exists,       // "?"
             ///////          new NotationSpecification(900, "fy", Notation.PREFIX)},
@@ -2241,7 +2241,7 @@ public class ClassicalLogic extends ModernLogic {
              * Stored internally as an array of length-2 arrays.
              * @invariants sorted, i.e. precedenceOf[i] < precedenceOf[i+1]
              */
-            {LogicFunctions2.forall,       // "�"
+            {LogicFunctions2.forall,       // "all"
              new NotationSpecification(900, "fy", Notation.PREFIX)},
             {LogicFunctions2.exists,       // "?"
              new NotationSpecification(900, "fy", Notation.PREFIX)}

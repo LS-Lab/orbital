@@ -12,7 +12,7 @@ import java.awt.Dimension;
 import java.util.NoSuchElementException;
 
 /**
- * Represents a tensor t&isin;R<sup>n<sub>0</sub>&times;n<sub>1</sub>&times;&#8230;&times;n<sub>r-1</sub><sup> of dimensions n<sub>0</sub>&times;n<sub>1</sub>&times;&#8230;&times;n<sub>r-1</sub> and rank r.
+ * Represents a tensor t&isin;R<sup>n<sub>0</sub>&times;n<sub>1</sub>&times;&#8230;&times;n<sub>r-1</sub></sup> of dimensions n<sub>0</sub>&times;n<sub>1</sub>&times;&#8230;&times;n<sub>r-1</sub> and rank r.
  * <p>
  * If you intend to use <em>mutable</em> arithmetic elements, note the discussion of
  * mutations per reference vs. explicit cloning in {@link #set(int[],Arithmetic)}

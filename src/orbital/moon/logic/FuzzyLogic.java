@@ -297,7 +297,7 @@ public class FuzzyLogic extends ModernLogic implements Logic {
             {typeSystem.objectType(orbital.math.Real.class, "real"),
              new NotationSpecification(500, typAssoc, Notation.POSTFIX)},
 
-            {LogicFunctions.forall,       // "°"
+            {LogicFunctions.forall,       // "all"
              new NotationSpecification(900, "fxx", Notation.PREFIX)},
             {LogicFunctions.exists,       // "?"
              new NotationSpecification(900, "fxx", Notation.PREFIX)},

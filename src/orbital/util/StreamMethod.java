@@ -36,7 +36,8 @@ import java.util.logging.Level;
  * <p>
  * <b>Note:</b> This class is not necessarily thread-safe. You should not use an instance of
  * StreamMethod from several threads without explicit synchronization.
- * < /br>
+ * </p>
+ * <p>
  * Also make sure that the Thread using the iterator of this StreamMethod coroutine has either
  * the same priority as the creator thread of it and therefore the stream method.
  * Or at least provide that the StreamMethod has the higher one.
