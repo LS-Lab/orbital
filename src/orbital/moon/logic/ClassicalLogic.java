@@ -1684,6 +1684,9 @@ public class ClassicalLogic extends ModernLogic {
 	 *  Observe that, to avoid complexity pitfalls, this will perform partial
 	 *  simplification during the transformation. For performance reasons, the implementation avoids a full simplification.
 	 *  If you need even more simplification, use {@link orbital.moon.logic.resolution.ClausalFactory#asClausalSet(orbital.logic.imp.Formula)} instead.
+	 *  <code>
+	 *  clausalFactory.asClausalSet().toFormula();
+	 *  </code>
          * @todo verify
          * @preconditions true
          * @postconditions RES &equiv; f
