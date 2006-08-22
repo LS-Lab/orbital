@@ -297,7 +297,7 @@ abstract class ModernFormula extends LogicBasis implements Formula {
         public FixedAtomicSymbol(Logic underlyingLogic, Symbol symbol, Object referent, boolean core) {
             super(underlyingLogic, symbol);
             if (symbol.isVariable())
-                throw new IllegalArgumentException("do not use fixed referents for variable symbols");
+                throw new IllegalArgumentException("do not use logical constants with fixed referents for variable symbols " + symbol);
             if (!symbol.getType().apply(referent))
                 throw new TypeException("incompatible interpretation " + referent + " of " + referent.getClass() + " for " + symbol.getType(), symbol.getType(), Types.typeOf(referent));
             this.referent= referent;

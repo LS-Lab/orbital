@@ -281,23 +281,25 @@ abstract class ModernLogic implements Logic {
         assert !("true".equals(signifier) || "false".equals(signifier)) : "true and false are in core signature and no ordinary symbols";
         assert !("�".equals(signifier) || "?".equals(signifier)) : "all and some are in core signature and no ordinary symbols";
 
-        // test for syntactically legal <INTEGER_LITERAL> | <FLOATING_POINT_LITERAL>
-        //@todo could also move to an infinite coreInterpretation()
-        if (symbol.getType().subtypeOf(Types.getDefault().objectType(Arithmetic.class))
-            || symbol.getType().subtypeOf(Types.getDefault().objectType(Number.class)))
-            try {
-                return createFixedSymbol(symbol, Values.getDefaultInstance().valueOf(signifier), false);
-            }
-            catch (NumberFormatException trial) {}
+        if (!symbol.isVariable()) {
+	    if (symbol.getType().subtypeOf(Types.getDefault().objectType(Arithmetic.class))
+		|| symbol.getType().subtypeOf(Types.getDefault().objectType(Number.class)))
+		try {
+		    // test for syntactically legal <INTEGER_LITERAL> | <FLOATING_POINT_LITERAL>
+		    //@todo could also move to an infinite coreInterpretation()
+		    return createFixedSymbol(symbol, Values.getDefaultInstance().valueOf(signifier), false);
+		}
+		catch (NumberFormatException trial) {}
 
-        if (symbol.getType().equals(Types.getDefault().objectType(String.class))) {
-            try {
-                // test for syntactically legal <STRING_LITERAL>
-                isSTRING_LITERAL(symbol);
-                return createSymbol(symbol);
-            }
-            catch (IllegalArgumentException trial) {}
-        }
+	    if (symbol.getType().equals(Types.getDefault().objectType(String.class))) {
+		try {
+		    // test for syntactically legal <STRING_LITERAL>
+		    isSTRING_LITERAL(symbol);
+		    return createSymbol(symbol);
+		}
+		catch (IllegalArgumentException trial) {}
+	    }
+	}
         // test for syntactically legal <IDENTIFIER>
         isIDENTIFIER(symbol);
         return createSymbol(symbol);
@@ -523,7 +525,7 @@ abstract class ModernLogic implements Logic {
             char ch = signifier.charAt(i);
             if ((i > 0 && !(ch == '_' || Character.isLetterOrDigit(ch)))
                 || (i == 0 && !(ch == '_' || Character.isLetter(ch))))
-                throw new IllegalArgumentException("illegal character `" + ch + "' in symbol '" + symbol + "'");
+                throw new IllegalArgumentException("illegal character `" + ch + "' in symbol '" + symbol + "' for identifiers");
         }
     }
 
