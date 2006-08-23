@@ -759,6 +759,7 @@ public class ArithmeticFormat extends Format {
     /**
      * Parse an arithmetic object string representation.
      * @see NumberFormat#parse(String, ParsePosition)
+     * @xxx replace by proper parser, although converting to Format-interface may be difficult.
      */
     public Arithmetic parse(String source, ParsePosition status) {
         int initialIndex = status.getIndex();
@@ -875,6 +876,10 @@ public class ArithmeticFormat extends Format {
                             // non-value part
                             else if (found("+", source, status)) {
                                 assert val == null : "else-case";
+				if (status.getIndex() >= source.length()) {
+				    status.setErrorIndex(status.getIndex());
+				    throw new NumberFormatException("token expected after +");
+				}
                                 if (im == null && imaginaryPart) {
                                     im = vf.valueOf(sign * 1);
                                 }
@@ -882,6 +887,10 @@ public class ArithmeticFormat extends Format {
                                 imaginaryPart = false;
                             } else if (found("-", source, status)) {
                                 assert val == null : "else-case";
+				if (status.getIndex() >= source.length()) {
+				    status.setErrorIndex(status.getIndex());
+				    throw new NumberFormatException("token expected after +");
+				}
                                 if (im == null && imaginaryPart) {
                                     im = vf.valueOf(sign * 1);
                                 }
@@ -964,7 +973,7 @@ public class ArithmeticFormat extends Format {
         ParsePosition status = new ParsePosition(0);
         Arithmetic result = parse(source, status);
         if (status.getIndex() == 0) {
-            throw new ParseException("ArithmeticFormat.parse(String) failed at " + status + " '" + source.charAt(status.getErrorIndex()) + "'", status.getErrorIndex());
+            throw new ParseException("ArithmeticFormat.parse(String) failed at " + status + (status.getErrorIndex() < source.length() ? " '" + source.charAt(status.getErrorIndex()) + "'" : " <beyond length>"), status.getErrorIndex());
         }
         //@todo shouldn't we check whether all (non-whitespace) characters have been parsed? But src.jar says different
         return result;
@@ -985,7 +994,7 @@ public class ArithmeticFormat extends Format {
     }
 
     /**
-     * Checks whether we found a value.
+     * Checks whether we found a value and consumes it if possible.
      * @return whether the value was the next token in source.
      *  If true, the parse position will already have been advanced.
      *  If false, the parse position will not have changed.

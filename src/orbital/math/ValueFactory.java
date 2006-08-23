@@ -740,6 +740,18 @@ public interface ValueFactory {
      * @return an instance of arithmetic that is equal to the representation in s.
      * @throws NumberFormatException if the string does not contain a parsable arithmetic object.
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
+     * @see #valueOf(String)
+     */
+    Arithmetic parse(String s) throws NumberFormatException;
+
+    /**
+     * Returns an arithmetic object whose value is equal to that of the
+     * representation in the specified string.
+     * @param s the string to be parsed.
+     * @return an instance of arithmetic that is equal to the representation in s.
+     * @throws NumberFormatException if the string does not contain a parsable arithmetic object.
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
+     * @see #parse(String)
      */
     Arithmetic valueOf(String s) throws NumberFormatException;
 
