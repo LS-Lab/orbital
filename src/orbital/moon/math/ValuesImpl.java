@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import java.util.List;
 
+import java.text.ParsePosition;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Arrays;
@@ -419,12 +420,23 @@ public class ValuesImpl extends AbstractValues {
     
     // general static methods for scalar values
 
-    public Arithmetic valueOf(String s) throws NumberFormatException {
+    public Arithmetic parse(String s) throws NumberFormatException {
         try {
-            return ArithmeticFormat.getDefaultInstance().parse(s);
+	    final ParsePosition status = new ParsePosition(0);
+            final Arithmetic v = ArithmeticFormat.getDefaultInstance().parse(s, status);
+	    if (status.getIndex() != s.length()) {
+		if (status.getIndex() == 0) {
+		    throw new NumberFormatException("ArithmeticFormat.parse(String) failed at " + status + (status.getErrorIndex() < s.length() ? " '" + s.charAt(status.getErrorIndex()) + "'" : " <beyond length>") + " in " + s);
+		} else {
+		    throw new NumberFormatException("ArithmeticFormat.parse(String) could only parse partial string. Partial result " + v + " up to position " + status + " '" + s.charAt(status.getIndex()) + "' in " + s);
+		}
+	    }
+	    return v;
         }
         catch(ClassCastException x) {throw new NumberFormatException("found " + x.getMessage());}
-        catch(ParseException x) {throw new NumberFormatException(x.toString());}
+    }
+    public Arithmetic valueOf(String s) throws NumberFormatException {
+	return parse(s);
     }
 
     // @todo optimize by avoiding to create intermediate objects, f.ex. convert complex(2+i*0) -> real(2) -> rational(2) -> integer(2) also use OBDD

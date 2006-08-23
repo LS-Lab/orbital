@@ -60,21 +60,23 @@ public class NotationTest extends check.TestCase {
             assertTrue(equalOrDiffer == false, desc);
         }
     }
-    protected void parsable(String expr, boolean expectparsable) {
+    protected Expression parsable(String expr, boolean expectparsable) {
         final String desc = expr + " " + (expectparsable ? "is" : "is not") + " parsable";
         try {
             System.out.println("is this a parsable expression:\t" + expr);
             Expression p = syntax.createExpression(expr);
-            assertTrue(true == expectparsable , desc);
-            return;
+            assertTrue(true == expectparsable , desc + " result=" + p);
+            return p;
         }
-        catch (ParseException fallthrough) {
-            System.out.println(fallthrough);
+        catch (ParseException e) {
+            System.out.println(e);
+            assertTrue(false == expectparsable , desc + " " + e);
         }
-        catch (IllegalArgumentException fallthrough) {
-            System.out.println(fallthrough);
+        catch (IllegalArgumentException e) {
+            System.out.println(e);
+            assertTrue(false == expectparsable , desc + " " + e);
         }
-        assertTrue(false == expectparsable , desc);
+	return null;
     }
     protected void compactedBrackets(String expr, int expectedNumberOfOpenBrackets) {
         Formula f = test(expr);
