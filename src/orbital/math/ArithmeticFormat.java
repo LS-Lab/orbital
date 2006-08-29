@@ -836,6 +836,7 @@ public class ArithmeticFormat extends Format {
                             boolean allowUnitNumberSuffix = false;
                             // collect values
                             if (val == null)
+				//@todo extend such that we also parse real+rational+integer numbers now (but not again complex)
                                 val = realValueOf(numberFormat.parse(source, status));
                                 
                             // collect additional information
