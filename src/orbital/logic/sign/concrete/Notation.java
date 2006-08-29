@@ -431,10 +431,10 @@ public abstract class Notation implements Serializable, Comparable {
      *  changed as a result of the call.
      */
     public static boolean setNotation(Object f, NotationSpecification spec) {
-        SecurityManager security = System.getSecurityManager();
+        /*SecurityManager security = System.getSecurityManager();
         if (security != null) {
             security.checkPermission(new RuntimePermission("setStatic.notationSpecification"));
-        } 
+	    }*/
         return compositorNotation.put(f, spec) != null;
     }
     /**
@@ -443,10 +443,10 @@ public abstract class Notation implements Serializable, Comparable {
      * @return previous value associated with specified compositor, or <code>null</code> if there was no mapping for compositor.
      */
     public static NotationSpecification removeNotation(Object f) {
-        SecurityManager security = System.getSecurityManager();
+        /*SecurityManager security = System.getSecurityManager();
         if (security != null) {
             security.checkPermission(new RuntimePermission("setStatic.notationSpecification"));
-        } 
+	    }*/ 
         return (NotationSpecification/*__*/) compositorNotation.remove(f);
     }
         
