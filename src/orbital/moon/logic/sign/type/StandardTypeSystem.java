@@ -707,7 +707,7 @@ public class StandardTypeSystem implements TypeSystem {
             this.signifier = signifier;
         }
         public String toString() {
-            return "`" + signifier + "�";
+            return "\u0060" + signifier + "\u00b4";
         }
         public boolean equals(Object o) {
             return (o instanceof SpecialType)

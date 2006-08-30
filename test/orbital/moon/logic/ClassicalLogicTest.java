@@ -58,7 +58,7 @@ public class ClassicalLogicTest extends check.TestCase {
 
         final Formula f = (Formula) logic.createAtomic(new SymbolBase("f", Types.getDefault().map(Types.INDIVIDUAL,Types.TRUTH)));
         arguments = new Formula[] {f};
-        FORALL = core.get("�", arguments);
+        FORALL = core.get("\u00b0", arguments);
         assert FORALL != null : "operators in core signature";
         EXISTS = core.get("?", arguments);
         assert EXISTS != null : "operators in core signature";

@@ -313,7 +313,7 @@ abstract class AbstractVector/*<R extends Arithmetic>*/ extends AbstractTensor i
 
     /**
      * This implementation returns the standard scalar product<br />
-     * (x,y) &#8614; &lang;x,y&rang; = x�y = x<sup>T</sup>&sdot;y = <big>&sum;</big><span class="doubleIndex"><sub>i=0</sub><sup>n-1</sup></span> x<sub>i</sub>*y<sub>i</sub>.
+     * (x,y) &#8614; &lang;x,y&rang; = x<sup>T</sup>&sdot;y = <big>&sum;</big><span class="doubleIndex"><sub>i=0</sub><sup>n-1</sup></span> x<sub>i</sub>*y<sub>i</sub>.
      */
     public Arithmetic/*>R<*/ multiply(Vector/*<R>*/ b) {
         Utility.pre(dimension() == b.dimension(), "vectors for dot-product must have equal dimension");

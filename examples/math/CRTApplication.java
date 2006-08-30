@@ -11,7 +11,7 @@ import orbital.math.functional.Operations;
  * regelm&auml;&szlig;ig besuchen. Der erste besuchte sie an einem
  * Montag zum ersten mal, der zweite am darauffolgenden Tag und der
  * Dritte am darauffolgenden Donnerstag. Da sich alle drei in
- * gemeinn&uuml;tzigen Or� ganisationen einbringen, k&ouml;nnen sie
+ * gemeinn&uuml;tzigen Organisationen einbringen, k&ouml;nnen sie
  * leider nicht t&auml;glich die Kneipe besuchen. So kann der erste
  * nur jeden dritten, der Zweite nur jeden vierten und der Dritte nur
  * jeden f&uuml;nften Tag. Trotzdem trafen sie sich am 2. Advent

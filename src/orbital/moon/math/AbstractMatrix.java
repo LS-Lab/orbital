@@ -854,7 +854,7 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends A
      * @preconditions isInvertible()
      * @postconditions multiply(RES).equals(IDENTITIY(dimension()) && RES.multiply(this).equals(IDENTITY(dimension()) && RES.dimension().equals(dimension())
      * @note it has been proven that matrix inversion can be performed exactly as fast as matrix multiplication.
-     * @todo optimize (also consider Willi Sch�nhauer)
+     * @todo optimize (also consider Willi Schoenhauer)
      * @todo join both matrices and transform together up to half width
      * @todo unite with LUDecomposition?
      */
