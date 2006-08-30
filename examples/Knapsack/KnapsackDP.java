@@ -27,11 +27,11 @@ public class KnapsackDP {
 
     /*
      * <ul>
-     * <li> dp[i, j], where i = #Elemente, j = 0..Rucksackgroesse
-     * <li> dp[i, j, 0] == NOSOLUTION <=> Loesung existiert nicht
-     * <li> dp[i, j, 0] == 1 <=> Loesung existiert
-     * <li> dp[i, j, 1] == SOL_LEAVE <=> Loesung existiert ohne i� tes Element
-     * <li> dp[i, j, 1] == SOL_TAKE <=> Loesung existiert mit i� tem Element
+     * <li> dp[i, j], where i = #Elements, j = 0..size of knapsack
+     * <li> dp[i, j, 0] == NOSOLUTION <=> there is no solution
+     * <li> dp[i, j, 0] == 1 <=> there is a solution
+     * <li> dp[i, j, 1] == SOL_LEAVE <=> there is a solution without element i
+     * <li> dp[i, j, 1] == SOL_TAKE <=> there is a solution with element i
      * </ul>
      */
     private double                       dp[][];

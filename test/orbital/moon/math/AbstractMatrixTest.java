@@ -200,7 +200,7 @@ public class AbstractMatrixTest extends check.TestCase {
         //@internal could also use RepeatedTest
         for (int i = 0; i < TEST_REPETITION; i++) {
             int dim = integerArgument(1, 6).intValue();
-            //@todo how to construct other invertible matrices (Basiserg�nzungssatz?)
+            //@todo how to construct other invertible matrices (Basisergaenzungssatz?)
             Matrix T = vf.DIAGONAL(vectorArgument(dim, MIN, MAX));
             assert T.isInvertible() : "T constructed to be invertible";
             Matrix A = matrixArgument(dim,dim, MIN, MAX);

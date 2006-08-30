@@ -1,10 +1,3 @@
-// Title:        Evolutionary genetic algorithms
-// Version:
-// Copyright:    Copyright (c) 1999
-// Author:       Andr� Platzer
-// Company:
-// Description:  front-end for evolutionary algorithms
-
 package orbital.algorithm.evolutionary;
 
 import orbital.moon.evolutionary.ChromosomeCustomizer;

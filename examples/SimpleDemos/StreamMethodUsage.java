@@ -85,9 +85,9 @@ class SquareRoot {
      */
     private static final boolean SYNCHRONOUS_ROOTS = true;
     /**
-     * Get all square roots �sqrt(v) of a value.
+     * Get all square roots &plusmn;sqrt(v) of a value.
      * @param v the value v whose square roots to determine.
-     * @return �sqrt(v) alias {+sqrt(v), - sqrt(v)}.
+     * @return &plusmn;sqrt(v) alias {+sqrt(v), - sqrt(v)}.
      */
     public static final Iterator sqrt(final double v) {
         return new StreamMethod(SYNCHRONOUS_ROOTS) {

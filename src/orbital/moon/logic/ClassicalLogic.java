@@ -110,8 +110,7 @@ import orbital.algorithm.Combinatorical;
  * Alonzo Church (1936) and Alan Turing (1936) simultaneously showed that &#8872; is <a href="../../algorithm/doc-files/computability.html#undecidable">undecidable</a>.
  * (Since the tautological formulas are <a href="../../algorithm/doc-files/computability.html#undecidable">undecidable</a>,
  *  and therefore satisfiable formulas are not even <a href=""../../algorithm/doc-files/computability.html#semi-decidable">semi-decidable</a>.)
- * <span class="@todo is Sch�ning sure?">As a corollary, consistency of formulas is also just semi-decidable.</span>
- * The first constructive proof for a sound and complete calculus for &#8872; was due to Robinson (1965).
+ * The first constructive proof for a sound and complete calculus for &#8872; was due to Alan Robinson (1965).
  * </p>
  * <p>
  * However, Kurt G&ouml;del's <span xml:lang="de">Unvollst&auml;ndigkeitssatz</span> (1931)
@@ -559,7 +558,7 @@ public class ClassicalLogic extends ModernLogic {
 
             ///////         {LogicFunctions.forall,       // "all"
             ///////          new NotationSpecification(900, "fy", Notation.PREFIX)},
-            ///////         {LogicFunctions.exists,       // "?"
+            ///////         {LogicFunctions.exists,       // "some"
             ///////          new NotationSpecification(900, "fy", Notation.PREFIX)},
             //@internal &lambda; is the only non-functional operator, both with (single-shot) lazy evaluation and with eager evaluation.
             {LogicFunctions.lambda,       // "\\"
@@ -593,7 +592,7 @@ public class ClassicalLogic extends ModernLogic {
      * applicable to the given argument type.
      * Thereby we try to unify the &Pi;-abstracted type term with the actual argument type,
      * successively descending into the domains if necessary.
-     * @param argumentType the � priori required application type is
+     * @param argumentType the a priori required application type is
      * the type of the argument passed to the expression of the given
      * &Pi;-abstraction type.
      * @return the application type actually passed as parameter to
@@ -766,7 +765,7 @@ public class ClassicalLogic extends ModernLogic {
             public Object apply(Object f) {
                 throw new LogicException("quantified formulas only have a semantic value with respect to a possibly infinite domain. They are available for inference, but they cannot be interpreted with finite means.");
             }
-            public String toString() { return "�"; }
+            public String toString() { return "\u00b0"; }
 
             static final Type computeTypeDeclaration() {
                 //@todo this causes an initialization dependency cycle. First use non-typed quantifier (or none at all), and only add this generically typed quantifier lateron
@@ -1618,7 +1617,7 @@ public class ClassicalLogic extends ModernLogic {
 	 *  Observe that, to avoid complexity pitfalls, this will perform partial
 	 *  simplification during the transformation. For performance reasons, the implementation avoids a full simplification.
          * @see "Rolf Socher-Ambrosius. Boolean algebra admits no convergent term rewriting system, Springer Lecture Notes in Computer Science 488, RTA '91."
-         * @internal see mathematische Berechnungstheorie vermittelt, da� es nicht immer m�glich ist, mit einer endlichen Folge von Transformationen je zwei beliebig gew�hlte Ausdr�cke in ihre Normalform zu �berf�hren.
+         * @internal see mathematische Berechnungstheorie vermittelt, dass es nicht immer moeglich ist, mit einer endlichen Folge von Transformationen je zwei beliebig gewaehlte Ausdruecke in ihre Normalform zu ueberfuehren.
          * @todo Sollten DNF/KNF von "innen nach aussen" erstellt werden?
          * @internal Note that the transformation into DNF is NP-hard, since the problem
          * SAT<sub>DNF</sub> of satisfiability in DNF is linear in the length of the formula,
@@ -1909,7 +1908,7 @@ public class ClassicalLogic extends ModernLogic {
                 //@internal performs some _X _A |= _A with _X of any generic sort matching
                 new Substitution.Matcher() {
                     //@attribute meta
-                    private final Symbol ALL = logic.coreSignature().get("�", typeSystem.UNIVERSAL());
+                    private final Symbol ALL = logic.coreSignature().get("\u00b0", typeSystem.UNIVERSAL());
                     private final Symbol SOME = logic.coreSignature().get("?", typeSystem.UNIVERSAL());
                     private Object replacement = null;
                     public Object pattern() {

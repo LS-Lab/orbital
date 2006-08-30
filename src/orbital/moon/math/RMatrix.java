@@ -258,8 +258,8 @@ class RMatrix extends AbstractMatrix {
         Utility.pre(dimension().width == B.dimension().height, "Matrix A.B only defined for dimension n by m multiplied with m by l");
         RMatrix b = (RMatrix) B;
         RMatrix ret = new RMatrix(dimension().height, B.dimension().width);
-        //@todo could use section striping for large matrices and cache blocking (Willi Sch�nhauer, Scientific Supercomputing). However we would need to know the cache size then.
-        // faster alternative (according to Tichy and Sch�nhauer)
+        //@todo could use section striping for large matrices and cache blocking (Willi Schoenhauer, Scientific Supercomputing). However we would need to know the cache size then.
+        // faster alternative (according to Tichy and Schoenhauer)
         assert ret.equals(ZERO(ret.dimension())) : "initialization of double[][] to 0 by system";
         for (int i = 0; i < ret.dimension().height; i++)
             for (int k = 0; k < D[i].length; k++) {

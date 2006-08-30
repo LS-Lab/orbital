@@ -1,10 +1,3 @@
-// Title:        Breeder
-// Version:
-// Copyright:    Copyright (c) 1999
-// Author:       Andr� Platzer
-// Company:
-// Description:  front-end for evolutionary algorithms
-
 package orbital.moon.evolutionary;
 
 import orbital.algorithm.evolutionary.*;

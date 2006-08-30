@@ -279,7 +279,7 @@ abstract class ModernLogic implements Logic {
         }
         // ordinary (new) symbols
         assert !("true".equals(signifier) || "false".equals(signifier)) : "true and false are in core signature and no ordinary symbols";
-        assert !("�".equals(signifier) || "?".equals(signifier)) : "all and some are in core signature and no ordinary symbols";
+        assert !("\u00b0".equals(signifier) || "?".equals(signifier)) : "all and some are in core signature and no ordinary symbols";
 
         if (!symbol.isVariable()) {
 	    if (symbol.getType().subtypeOf(Types.getDefault().objectType(Arithmetic.class))

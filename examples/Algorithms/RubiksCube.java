@@ -15,7 +15,7 @@ import util.Basic;
  * arbitrary cube might still take a while.
  * <p id="Theory">
  * For a 2 by 2 cube the (reachable) state space is of size
- * &le; 3<sup>8/sup>�8!.
+ * &le; 3<sup>8/sup>&middot;8!.
  * An upper bound for the size of the state space reachable by performing at most d actions is:
  * (2*3)<sup>d</sup>.
  * So for a depth of 14 steps its size limit is 78364164096.
@@ -25,7 +25,7 @@ import util.Basic;
  * </p>
  * <p>
  * For a 3 by 3 cube the (reachable) state space is of size
- * 2<sup>12</sup>�12!�3<sup>8</sup>�8!/12 &asymp; 4.3*10<sup>19</sup>.
+ * 2<sup>12</sup>&middot;12!&middot;3<sup>8</sup>&middot;8!/12 &asymp; 4.3*10<sup>19</sup>.
  * An upper bound for the size of the state space reachable by performing at most d actions is:
  * <center>1 + (6*2) + (6*2)*11<sup>1</sup> + (6*2)*11<sup>2</sup> + ... + (6*2)*11<sup>n-1</sup> = 1 + (6*2) * 11<sup>n-1</sup> / (11 - 1)</center>
  * Because
@@ -220,7 +220,7 @@ public class RubiksCube implements GeneralSearchProblem {
      * Pose the problem by constructing the initial Rubik's cube state.
      */
     private Cube constructInitialState() {
-        // 'mache einen heilen W�rfel:
+        // 'mache einen heilen Wuerfel:
         Cube c = new Cube(size, 0.0);
         switch (SEQUENCE) {
         case COMPLEX:
