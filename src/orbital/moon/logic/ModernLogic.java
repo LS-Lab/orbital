@@ -282,6 +282,7 @@ abstract class ModernLogic implements Logic {
         assert !("\u00b0".equals(signifier) || "?".equals(signifier)) : "all and some are in core signature and no ordinary symbols";
 
         if (!symbol.isVariable()) {
+	    // test for literals
 	    if (symbol.getType().subtypeOf(Types.getDefault().objectType(Arithmetic.class))
 		|| symbol.getType().subtypeOf(Types.getDefault().objectType(Number.class)))
 		try {
@@ -301,7 +302,7 @@ abstract class ModernLogic implements Logic {
 	    }
 	}
         // test for syntactically legal <IDENTIFIER>
-        isIDENTIFIER(symbol);
+        validateAtomic(symbol);
         return createSymbol(symbol);
     } 
 
@@ -515,17 +516,22 @@ abstract class ModernLogic implements Logic {
     }
 
     /**
-     * Test for syntactically legal <IDENTIFIER>
-     * @throws IllegalArgumentException if signifier is not an IDENTIFIER.
+     * This method validates that a symbol obeys the syntactical conventions
+     * imposed by this logic (if any).
+     * <p>
+     * This implementation tests whether symbol is a syntactically legal identifier.
+     * Overwrite to get different behaviour.
+     * </p>
+     * @throws IllegalArgumentException if signifier is not an identifier.
      * @todo can't we use new LogicParserTokenManager(signifier).getNextToken()?
      */
-    private void isIDENTIFIER(Symbol symbol) {
+    protected void validateAtomic(Symbol symbol) throws IllegalArgumentException {
         String signifier = symbol.getSignifier();
         for (int i = 0; i < signifier.length(); i++) {
             char ch = signifier.charAt(i);
             if ((i > 0 && !(ch == '_' || Character.isLetterOrDigit(ch)))
                 || (i == 0 && !(ch == '_' || Character.isLetter(ch))))
-                throw new IllegalArgumentException("illegal character `" + ch + "' in symbol '" + symbol + "' for identifiers");
+                throw new IllegalArgumentException("illegal character `" + ch + "' in identifeir symbol '" + symbol + "'");
         }
     }
 
