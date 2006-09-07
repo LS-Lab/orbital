@@ -267,8 +267,10 @@ public interface Matrix/*<R extends Arithmetic>*/ extends Tensor/*<R>*/ {
      *   <li>&forall;<span class="matrix">A</span>&isin;<b>C</b><sup>n&times;m</sup>, <span class="vector">x</span>&isin;<b>C</b><sup>m</sup> ||<span class="matrix">A</span>|| = max {||<span class="matrix">A</span>&#8729;<span class="vector">x</span>||<sub><b>C</b><sup>n</sup></sub> / ||<span class="vector">x</span>||<sub><b>C</b><sup>m</sup></sub> &brvbar; <span class="vector">x</span>&ne;0} = max {||<span class="matrix">A</span>&#8729;<span class="vector">x</span>||<sub><b>C</b><sup>n</sup></sub> &brvbar; ||<span class="vector">x</span>||<sub><b>C</b><sup>m</sup></sub>=1}
      * </ul>
      * which is a measure for how much <span class="matrix">A</span> stretches vectors.
+     * Induced norms are compatible with the corresponding vector norm.
+     * Further, induced norms are sub-multiplicative if the same norm is used on <b>C</b><sup>n</sup> and <b>C</b><sup>m</sup> (and n=m).
      * </p>
-     * <p>This method should at least implement those induced p-norms
+     * <p>This method should at least implement the following induced p-norms
      * <ul>
      *   <li>||<span class="matrix">A</span>||<sub>1</sub> = max {&sum;<span class="doubleIndex"><sub>i=1</sub><sup>n</sup></span>|a<sub>ij</sub>| &brvbar; 1&le;j&le;m} is the norm of column sums.</li>
      *   <li>||<span class="matrix">A</span>||<sub>&infin;</sub> = max {&sum;<span class="doubleIndex"><sub>j=1</sub><sup>m</sup></span>|a<sub>ij</sub>| &brvbar; 1&le;i&le;n} is the norm of row sums.</li>
@@ -282,10 +284,11 @@ public interface Matrix/*<R extends Arithmetic>*/ extends Tensor/*<R>*/ {
 
     /**
      * {@inheritDoc}
-     * Usually returns the Frobenius norm of this matrix.
-     * <p>
-     * ||<span class="matrix">A</span>|| = &radic;<span class="text-decoration: overline">(&sum;<span class="doubleIndex"><sub>i=1</sub><sup>n</sup></span>&sum;<span class="doubleIndex"><sub>j=1</sub><sup>m</sup></span> |a<sub>ij</sub>|<sup>2</sup>) the Frobenius norm.
-     * </p>
+     * Returns the sub-multiplicative Frobenius norm of this matrix.
+     * <center>
+     * ||<span class="matrix">A</span>|| = &radic;<span class="text-decoration: overline">(&sum;<span class="doubleIndex"><sub>i=1</sub><sup>n</sup></span>&sum;<span class="doubleIndex"><sub>j=1</sub><sup>m</sup></span> |a<sub>ij</sub>|<sup>2</sup>)
+     * = tr(<span class="matrix">A</span><span class="matrix">A</span><sup>*</sup>)
+     * </center>
      * <p>
      * Note that the Frobenius norm is not a p-norm.
      * It is a norm got by {@link Values#asVector(Matrix) identifying matrices with vectors}.</p>
