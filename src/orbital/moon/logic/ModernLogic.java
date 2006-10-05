@@ -165,19 +165,17 @@ abstract class ModernLogic implements Logic {
 
             // split formula into knowledge and formula
             String knowledge = "";
-            // some term substitutions (currently substitutes only once)
-            final int eq = formula.indexOf("==");
-            int e = eq;
-            if (e >= 0)
-                formula = "(" + formula.substring(0, e) + ")" + " <=> " + "(" + formula.substring(e + 2) + ")";
-            e = Math.max(formula.indexOf("|="), formula.indexOf("|-"));
+            // some convenience term substitutions (currently substitutes only once)
+            int e = formula.indexOf("==");
             if (e >= 0) {
-                knowledge = formula.substring(0, e);
-                formula = formula.substring(e + 2);
-            }
-            if (eq >= 0)
-                //@xxx better use a Parser for this, f.ex. by turning a==b into a|=b and b|=a otherwise we would do garbage for "p->q,r->s==x" or even "p(x,y) |= p(a,b)"
-                formula = formula.replace(',', '&');
+                formula = "(" + formula.substring(0, e) + ")" + " <=> " + "(" + formula.substring(e + 2) + ")";
+            } else {
+		e = Math.max(formula.indexOf("|="), formula.indexOf("|-"));
+		if (e >= 0) {
+		    knowledge = formula.substring(0, e);
+		    formula = formula.substring(e + 2);
+		}
+	    }
 
 
             // infer

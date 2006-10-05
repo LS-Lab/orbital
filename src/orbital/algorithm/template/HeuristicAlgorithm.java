@@ -118,6 +118,7 @@ public interface HeuristicAlgorithm/*<Problem extends AlgorithmicProblem, S exte
      * as it better adapts to the current problem's need. Either way, the basic
      * idea of using a pattern database, especially in the presence of memoisation
      * (dynamically improving the database during the search) is {@link DynamicProgramming dynamic programming}.
+     * Observe the close connection of pattern database heuristics and bidirectional search.
      * </p>
      * <p>
      * To massively reduce memory usage the pattern database could store hash codes
