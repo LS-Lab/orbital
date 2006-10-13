@@ -516,22 +516,10 @@ abstract class ModernLogic implements Logic {
     /**
      * This method validates that a symbol obeys the syntactical conventions
      * imposed by this logic (if any).
-     * <p>
-     * This implementation tests whether symbol is a syntactically legal identifier.
-     * Overwrite to get different behaviour.
-     * </p>
      * @throws IllegalArgumentException if signifier is not an identifier.
      * @todo can't we use new LogicParserTokenManager(signifier).getNextToken()?
      */
-    protected void validateAtomic(Symbol symbol) throws IllegalArgumentException {
-        String signifier = symbol.getSignifier();
-        for (int i = 0; i < signifier.length(); i++) {
-            char ch = signifier.charAt(i);
-            if ((i > 0 && !(ch == '_' || Character.isLetterOrDigit(ch)))
-                || (i == 0 && !(ch == '_' || Character.isLetter(ch))))
-                throw new IllegalArgumentException("illegal character `" + ch + "' in identifeir symbol '" + symbol + "'");
-        }
-    }
+    protected void validateAtomic(Symbol symbol) throws IllegalArgumentException {}
 
     /**
      * Test for syntactically legal <STRING_LITERAL>
