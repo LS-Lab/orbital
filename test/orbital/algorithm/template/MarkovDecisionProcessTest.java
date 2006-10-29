@@ -43,11 +43,12 @@ public class MarkovDecisionProcessTest extends check.TestCase {
     }
 
     protected void setUp() throws IOException {
-        RobotNavigation.setDelay(20);
+        RobotNavigation.setDelay(0);
 
         this.problems = new RobotNavigation[] {
             new RobotNavigation(new FileInputStream("examples/Algorithms/test.lab.txt")),
             new RobotNavigation(new FileInputStream("examples/Algorithms/testshell.lab.txt"))
+            /*new RobotNavigation(new FileInputStream("examples/Algorithms/testmisleading.lab.txt"))*/
         };
 
         this.trials = new int[] {

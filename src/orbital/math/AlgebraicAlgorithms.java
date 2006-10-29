@@ -837,37 +837,68 @@ public final class AlgebraicAlgorithms {
 
 		    // constructing S-polynomials of g[i] and g[j]
 		    // construct Sgigj = S(g[i], g[j])
-                    final Vector/*>S<*/ lgi = (Vector/*>S<*/) leadingMonomial(gi, monomialOrder);
-                    final Vector/*>S<*/ lgj = (Vector/*>S<*/) leadingMonomial(gj, monomialOrder);
-                    // construct X^nu and X^mu coprime such that l(X^nu*g[i])==l(X^mu*g[j]) (also @see #lcm(Euclidean,Euclidean))
-                    final Vector/*>S<*/ d = Functionals.map(Operations.max, lgi, lgj);
-                    final Vector/*>S<*/ nu = d.subtract(lgi);
-                    final Vector/*>S<*/ mu = d.subtract(lgj);
-                    assert Setops.all(nu.iterator(), mu.iterator(), new orbital.logic.functor.BinaryPredicate() { public boolean apply(Object nui, Object mui) {return nui.equals(Values.ZERO) || mui.equals(Values.ZERO);} }) : "coprime " + vf.MONOMIAL( nu) + " and " + vf.MONOMIAL(mu);
-                    // Xpowernugi = 1/lc(g[i]) * X<sup>nu</sup>*g[i]
-                    final Polynomial Xpowernugi = vf.MONOMIAL(gi.get(lgi).inverse(), nu).multiply(gi);
-                    // Xpowermugj = 1/lc(g[j]) * X<sup>mu</sup>*g[j]
-                    final Polynomial Xpowermugj = vf.MONOMIAL(gj.get(lgj).inverse(), mu).multiply(gj);
-                    assert leadingMonomial(Xpowernugi, monomialOrder).equals(leadingMonomial(Xpowermugj, monomialOrder)) : "construction should generate equal leading monomials (" + leadingMonomial(Xpowernugi, monomialOrder) + " of " + Xpowernugi + " and " + leadingMonomial(Xpowermugj, monomialOrder) + " of " + Xpowermugj + ") which cancel by subtraction";
-                    final Polynomial Sgigj = Xpowernugi.subtract(Xpowermugj);
-                    assert Sgigj.get(d).norm().equals(Values.ZERO) : "construction should generate equal leading monomials which cancel by subtraction";
-
-                    // this is the major bottleneck, especially if it turns out that r=0
-		    // @todo Optimize: if lcm(l_t(gi),l_t(gj))=l_t(gi)*l_t(gj), r=0 so no reduction needed
-                    final Polynomial r = reduce(Sgigj, g, monomialOrder);
-                    logger.log(Level.FINER, "S({0},{1}) = {2} * ({3})  -  {4} * ({5}) = {6} reduced to {7}", new Object[] {gi, gj, vf.MONOMIAL(gi.get(lgi).inverse(), nu), gi, vf.MONOMIAL(gj.get(lgj).inverse(), mu), gj, Sgigj, r});
-                    if (isZeroPolynomial.apply(r)) {
-                        logger.log(Level.FINE, "skip reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
-                    } else {
-                        logger.log(Level.FINE, "add reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
-                        g.add(r);
-                        continue ergaenzeGroebnerBasis;
-                    }
+                    final Polynomial Sgigj = sPolynomial(gi, gj, monomialOrder, true);
+		    if (Sgigj == null) {
+			// optimizations know that S(g[i],g[j]) will reduce to 0, hence skip
+                        logger.log(Level.FINE, "skip optimization reduction from {2} and {3}", new Object[] {gi, gj});
+			assert isZeroPolynomial.apply(reduce(sPolynomial(gi, gj, monomialOrder, false), g, monomialOrder)) : "optimization of S-polynomial construction forecasts correctly, i.e., if it will reduce to 0";
+		    } else {
+			// this is the major bottleneck, especially if it turns out that r=0
+			final Polynomial r = reduce(Sgigj, g, monomialOrder);
+			logger.log(Level.FINER, "S({0},{1}) = {2} reduced to {3}", new Object[] {gi, gj, Sgigj, r});
+			if (isZeroPolynomial.apply(r)) {
+			    logger.log(Level.FINE, "skip reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
+			} else {
+			    logger.log(Level.FINE, "add reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
+			    g.add(r);
+			    continue ergaenzeGroebnerBasis;
+			}
+		    }
                 }
             }
             break ergaenzeGroebnerBasis;
         }
         return new LinkedHashSet(g);
+    }
+
+    /**
+     * Construct the syzygy S-polynomial S(f,g) of f and g.
+     * <div>S(f,g) = lcm(l<sub>t</sub>(f),l<sub>t</sub>(g))/l<sub>t</sub>(f) f - lcm(l<sub>t</sub>(f),l<sub>t</sub>(g))/l<sub>t</sub>(g) g</div>
+     * which will let the leading term cancel by construction.
+     * Here, l<sub>t</sub>(f) := l<sub>c</sub>(f) l(f) is the <dfn>leading term</dfn>. 
+     * @internal Beware: we internally use slightly rescaled S-polynomials.
+     * @return S(f,g),
+     *  or <code>null</code> if the S-polynomial is known to reduce to 0 (if <code>optimize==true</code>).
+     * @param optimize, whether to optimize S-polynomial construction and return <code>null</code> objects
+     *  instead of S-polynomials.
+     */
+    private static final /*<R extends Arithmetic, S extends Arithmetic>*/
+	Polynomial/*<R,S>*/ sPolynomial(Polynomial/*<R,S>*/ f, Polynomial/*<R,S>*/ g, final Comparator/*<S>*/ monomialOrder, boolean optimize) {
+        final Values vf = Values.getDefaultInstance();
+	// Gr&ouml;bner rank of g[i], i.e., leading monomial l(g[i])
+	final Vector/*>S<*/ lf = (Vector/*>S<*/) leadingMonomial(f, monomialOrder);
+	final Vector/*>S<*/ lg = (Vector/*>S<*/) leadingMonomial(g, monomialOrder);
+	// construct X^nu and X^mu coprime such that l(X^nu*g[i])==l(X^mu*g[j]) (also @see #lcm(Euclidean,Euclidean))
+	// let d=lcm(l(f),l(g)), or more precisely the exponent of this monomial
+	final Vector/*>S<*/ d = Functionals.map(Operations.max, lf, lg);
+	if (optimize && d.equals(Functionals.map(Operations.plus, lf, lg))) {
+	    // Optimization: if l(f) and l(g) are coprime, i.e., lcm(l(f),l(g))=l(f)*l(g), then S(f,g) reduces to 0 so no reduction needed
+	    return null;
+	}
+	// let nu=lf/d, or more precisely the exponent of this monomial
+	final Vector/*>S<*/ nu = d.subtract(lf);
+	// let mu=lg/d, or more precisely the exponent of this monomial
+	final Vector/*>S<*/ mu = d.subtract(lg);
+	assert Setops.all(nu.iterator(), mu.iterator(), new orbital.logic.functor.BinaryPredicate() { public boolean apply(Object nui, Object mui) {return nui.equals(Values.ZERO) || mui.equals(Values.ZERO);} }) : "coprime " + vf.MONOMIAL( nu) + " and " + vf.MONOMIAL(mu);
+	// Xpowernuf = 1/lc(g[i]) * X<sup>nu</sup>*g[i]
+	final Polynomial Xpowernuf = vf.MONOMIAL(f.get(lf).inverse(), nu).multiply(f);
+	// Xpowermug = 1/lc(g[j]) * X<sup>mu</sup>*g[j]
+	final Polynomial Xpowermug = vf.MONOMIAL(g.get(lg).inverse(), mu).multiply(g);
+	assert leadingMonomial(Xpowernuf, monomialOrder).equals(leadingMonomial(Xpowermug, monomialOrder)) : "construction should generate equal leading monomials (" + leadingMonomial(Xpowernuf, monomialOrder) + " of " + Xpowernuf + " and " + leadingMonomial(Xpowermug, monomialOrder) + " of " + Xpowermug + ") which cancel by subtraction";
+	final Polynomial Sfg = Xpowernuf.subtract(Xpowermug);
+	assert Sfg.get(d).norm().equals(Values.ZERO) : "construction should generate equal leading monomials which cancel by subtraction";
+	logger.log(Level.FINER, "S({0},{1}) = {2} * ({3})  -  {4} * ({5}) = {6}", new Object[] {f, g, vf.MONOMIAL(f.get(lf).inverse(), nu), f, vf.MONOMIAL(g.get(lg).inverse(), mu), g, Sfg});
+	return Sfg;
     }
 
     /**
