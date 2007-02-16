@@ -12,7 +12,7 @@
 ##|- (A=>(B=>C)) => ((A=>B)=>(A=>C))	# Ax2 distributive
 |- (~A=>~B)=>(B=>A)			# Ax3 contra positive
 |- [](A->B)->([]A->[]B)
-A, A=>B |- B				# Mp modus (ponendo) ponens
+A && (A=>B) |- B				# Mp modus (ponendo) ponens
 ## A |- []A					# necessitation "Gödelregel" (for global consequence)
 
 

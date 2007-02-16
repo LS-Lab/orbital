@@ -83,21 +83,21 @@ c->(a<->b) == (c->a)<->(c->b)	# distributive -> over <->
 #
 # implicative properties of |= and thus inference rules
 #
-p->q, p |= q		# Modus (ponendo) ponens	 (resp. assuming p->q, p is sufficient for q. repeated application is forward chaining)
-p->q, ~q |= ~p		# Modus (tollendo) tollens (resp. assuming p->q, q is necessary for p. repeated application is backward chaining)
-p->q, q->r |= p->r	# hypothetical "syllogism" Principle of Syllogism (due to affinity to mode Barbara)
-p|q, ~p |= q		# disjunctive "syllogism"
-p, q |= p&q		# conjunction
+(p->q) && p |= q		# Modus (ponendo) ponens	 (resp. assuming p->q, p is sufficient for q. repeated application is forward chaining)
+(p->q) && ~q |= ~p		# Modus (tollendo) tollens (resp. assuming p->q, q is necessary for p. repeated application is backward chaining)
+(p->q) && (q->r) |= p->r	# hypothetical "syllogism" Principle of Syllogism (due to affinity to mode Barbara)
+(p|q) &&  ~p |= q		# disjunctive "syllogism"
+p && q |= p&q		# conjunction
 p |= p|q		# weakening addition (alias '|' introduction)
 p&q |= p		# weakening subtraction (alias '&' elimination)
 a |= b->a		# weakening conditional
-a->b, b->c |= a->c	# transitivity
-(Gamma&p => a), (Gamma&q->a) |= Gamma&(p|q) => a	# Dilemma rule, lowered from meta statements about |= to statements about implication =>
+(a->b) && (b->c) |= a->c	# transitivity
+(Gamma&p => a) && (Gamma&q->a) |= Gamma&(p|q) => a	# Dilemma rule, lowered from meta statements about |= to statements about implication =>
 #
 # tautological properties of == aka |=| (thus inference rules, as well)
 #
 p->~p == ~p
-(p->q), (p->r) == p->(q&r)
+(p->q) && (p->r) == p->(q&r)
 p->(q->r) == (p&q)->r	# chain rule
 p->(q->r) == (p&q)->r	# distribute aka exportation / importation
 p->(q->r) == (p->q)->(p->r)	# distributive
@@ -106,7 +106,7 @@ p->(q->r) == (p->q)->(p->r)	# distributive
 p->(p->q) |= p->q	# rule of reduction
 p->(q->r) |= q->(p->r)	# Law of Permutation, the 'commutative principle' (Russel/Whitehead. Principia Mathematica. 1910, 99 *2.04)
 ~p->p |= p		# consequentia mirabilis
-(p->r), (q->s) |= (p&q)->(r&s)	# Praeclarum Theorema
+(p->r) && (q->s) |= (p&q)->(r&s)	# Praeclarum Theorema
 |= p->(q->p)		# principle of simplification (Russel/Whitehead. Principia Mathematica. 1910, 100 *2.03)
 |= p->p			# principle of identity (Russel/Whitehead. Principia Mathematica. 1910, 101 *2.08)
 |= p->~~p		# Affirmatio est duplex negatio, principle of double negation (Russel/Whitehead. Principia Mathematica. 1910, 101 f)
@@ -120,13 +120,13 @@ p|q == ~p->q		# | as ~,->
 p&q == ~(p->~q)		# & as ~,->
 ~p->p == p		# self proof
 p->~p |= ~p		# self contradiction
-p->q, ~p->q |= q	# reasoning by cases
+(p->q) && (~p->q) |= q	# reasoning by cases
 ~(p->q) == p&~q		# negative implication
 ~(p<->q) == (p|q)&(~p|~q) # negative equivalence
 ~(p<->q) == p<->~q
 p<->~q == ~p<->q
 p->q |= (p|r)->(q|r)
-p->r, q->r |= (p|q)->r
+(p->r) && (q->r) |= (p|q)->r
 |= (f->g) | (g->f)	# material implication has strange causal relations
 c&a | ~c&b == c&a | ~c&b | a&b	# consensus rule <= (absorbtion,n,tertium non datur,d)
 (c|a) & (~c|b) == (c|a) & (~c|b) & (a|b)	# consensus rule <= (absorbtion,n,tertium non datur,d)
