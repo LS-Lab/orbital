@@ -564,7 +564,7 @@ public class ClassicalLogic extends ModernLogic {
             {LogicFunctions.lambda,       // "\\"
               new NotationSpecification(900, "fxy", NOTATION_LAMBDA)},
             {LogicFunctions.pi,           // "\\\\"
-             new NotationSpecification(900, "fxx", Notation.PREFIX)},
+             new NotationSpecification(900, "fxy", Notation.PREFIX)},
 
             {LogicFunctions.not,          // "~"
              new NotationSpecification(900, "fx", Notation.PREFIX)},

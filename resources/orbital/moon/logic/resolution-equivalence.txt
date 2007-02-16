@@ -54,21 +54,21 @@ a&b->c == a->(b->c)	# exportation / importation [Lex exportationis, Lex importat
 #
 # implicative properties of |= and thus inference rules
 #
-p->q, p |= q		# Modus (ponendo) ponens	 (resp. assuming p->q, p is sufficient for q. repeated application is forward chaining)
-p->q, ~q |= ~p		# Modus (tollendo) tollens (resp. assuming p->q, q is necessary for p. repeated application is backward chaining)
-p->q, q->r |= p->r	# hypothetical "syllogism" Principle of Syllogism (due to affinity to mode Barbara)
-p|q, ~p |= q		# disjunctive "syllogism"
-p, q |= p&q		# conjunction
+(p->q) && p |= q		# Modus (ponendo) ponens	 (resp. assuming p->q, p is sufficient for q. repeated application is forward chaining)
+(p->q) && ~q |= ~p		# Modus (tollendo) tollens (resp. assuming p->q, q is necessary for p. repeated application is backward chaining)
+(p->q) && (q->r) |= p->r	# hypothetical "syllogism" Principle of Syllogism (due to affinity to mode Barbara)
+(p|q) && ~p |= q		# disjunctive "syllogism"
+p && q |= p&q		# conjunction
 p |= p|q		# weakening addition (alias '|' introduction)
 p&q |= p		# weakening subtraction (alias '&' elimination)
 a |= b->a		# weakening conditional
-a->b, b->c |= a->c	# transitivity
-(Gamma&p => a), (Gamma&q->a) |= Gamma&(p|q) => a	# Dilemma rule, lowered from meta statements about |= to statements about implication =>
+(a->b) && (b->c) |= a->c	# transitivity
+(Gamma&p => a) && (Gamma&q->a) |= Gamma&(p|q) => a	# Dilemma rule, lowered from meta statements about |= to statements about implication =>
 #
 # tautological properties of == aka |=| (thus inference rules, as well)
 #
 p->~p == ~p
-(p->q), (p->r) == p->q&r
+(p->q) && (p->r) == p->q&r
 p->(q->r) == (p&q)->r	# chain rule
 p->(q->r) == (p&q)->r	# distribute
 p->(q->r) == (p->q)->(p->r)	# distributive
@@ -77,7 +77,7 @@ p->(q->r) == (p->q)->(p->r)	# distributive
 p->(p->q) |= p->q	# rule of reduction
 p->(q->r) |= q->(p->r)	# Law of Permutation, the 'commutative principle' (Russel/Whitehead. Principia Mathematica. 1910, 99 *2.04)
 ~p->p |= p		# consequentia mirabilis
-p->r, q->s |= p&q->r&s	# Praeclarum Theorema
+(p->r) && (q->s) |= p&q->r&s	# Praeclarum Theorema
 |= p->(q->p)		# principle of simplification (Russel/Whitehead. Principia Mathematica. 1910, 100 *2.03)
 ##inconsistent |= p->p			# principle of identity (Russel/Whitehead. Principia Mathematica. 1910, 101 *2.08)
 ##inconsistent |= p->~~p		# Affirmatio est duplex negatio, principle of double negation (Russel/Whitehead. Principia Mathematica. 1910, 101 f)
@@ -91,14 +91,14 @@ p|q == ~p->q		# | as ~,->
 p&q == ~(p->~q)		# & as ~,->
 #inconsistent? ~p->p == p		# self proof
 p->~p |= ~p		# self contradiction
-p->q, ~p->q |= q	# reasoning by cases
+(p->q) && (~p->q) |= q	# reasoning by cases
 ~(p->q) == p&~q		# negative implication
 ~(p<->q) == (p|q)&(~p|~q) # negative equivalence
 ~(p<->q) == p<->~q
 p<->~q == ~p<->q
 p->q |= (p|r)->(q|r)
-(p->r), (q->s) |= (p&q)->(r&s)	# Praeclarum Theorema
-p->r, q->r |= (p|q)->r
+(p->r) && (q->s) |= (p&q)->(r&s)	# Praeclarum Theorema
+(p->r) && (q->r) |= (p|q)->r
 |= (f->g) | (g->f)	# material implication has strange causal relations
 #
 # definitions
@@ -132,8 +132,8 @@ all x (p(x)->q(x)) |= (all x p(x)) -> (all x q(x))
 #
 all x p(x) |= all x p(f(x))		# variant renaming necessary
 all x all y (p(x) | p(y)) |= some u some v (p(u) & p(v))   # (initial) factorization necessary thus mere resolution without factorization is incomplete
-all x (p(x) | r), all x (p(f(x)) | ~r), ~p(f(a)) | s  |= p(f(b)) & s   # (intermediate) factorization necessary? thus mere resolution without factorization is incomplete
-###@fixme p(0), all x (p(x) -> p(s(x))) |=  some x p(s(s(s(s(x)))))  # some x p(s^2^n(x)) has a resolution of length n+5
+(all x (p(x) | r)) && (all x (p(f(x)) | ~r)) && ~p(f(a)) | s  |= p(f(b)) & s   # (intermediate) factorization necessary? thus mere resolution without factorization is incomplete
+###@fixme p(0) && all x (p(x) -> p(s(x))) |=  some x p(s(s(s(s(x)))))  # some x p(s^2^n(x)) has a resolution of length n+5
 #
 # test cases for variable scope and that no variable renaming variant has been forgotten in the implementation
 #
@@ -150,6 +150,6 @@ all x p(x) |= some y p(f(y))
 |= some x (~p(x) | p(f(x)))
 |= some x some y (~p(x) | p(f(y)))
 |= all x (p(x)&q(x)) -> some y (((p(y)|r)|q(a))&p(b))	# no premature closing in tableaus ([Beckert, Hähnle 2001 Automatisches Beweisen] p39)
-p(n), all x (p(x)->p(s(x))) |= p(s(s(n)))		# fair choice of literals for closure needed for completeness ([Beckert, Hähnle 2001 Automatisches Beweisen] p45)
+p(n) && (all x (p(x)->p(s(x)))) |= p(s(s(n)))		# fair choice of literals for closure needed for completeness ([Beckert, Hähnle 2001 Automatisches Beweisen] p45)
 |= ~((all x p(x)) & (q&~q))					# blind repeated expansion of gamma formulas destroys completeness ([Beckert, Hähnle 2001 Automatisches Beweisen] p45)
-p(a), all x ( (p(b)&b(c)->p(x)) -> ~(q(x)->q(b)|q(c)) ) |= q(d)	# blindly preferring closures destroys completeness ([Beckert, Hähnle 2001 Automatisches Beweisen] p45)
+p(a) && (all x ( (p(b)&b(c)->p(x)) -> ~(q(x)->q(b)|q(c)) )) |= q(d)	# blindly preferring closures destroys completeness ([Beckert, Hähnle 2001 Automatisches Beweisen] p45)

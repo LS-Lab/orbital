@@ -33,7 +33,7 @@ c->(a^b) == (c->a)<->(c->b)	# distributive -> over ^
 $x p(x) |= q(a) | ~p(a)
 p(x) |= q(x)
 some x p(x) |= all x p(x)
-q(x), p(x)->q(x) |= p(x)
+q(x) && (p(x)->q(x)) |= p(x)
 ~(a->b) == ~a&b
 ##@xxx no time (some x p(x)) & (some x q(x)) |= some x (p(x)&q(x))
 ##@xxx no time all x (p(x) | q(x)) |= (all x p(x)) | (all x q(x))
@@ -42,4 +42,4 @@ q(x), p(x)->q(x) |= p(x)
 #
 # Some test cases
 #
-p(a,c), all x all y all y (l(x,y)&l(y,z)->p(x,y,z)) |= all x all y l(x,y)	# test case for bug fixed in ClauseImpl 1.7
+p(a,c) && (all x all y all y (l(x,y)&l(y,z)->p(x,y,z))) |= all x all y l(x,y)	# test case for bug fixed in ClauseImpl 1.7
