@@ -132,7 +132,7 @@ all x (p(x)->q(x)) |= (all x p(x)) -> (all x q(x))
 #
 all x p(x) |= all x p(f(x))		# variant renaming necessary
 all x all y (p(x) | p(y)) |= some u some v (p(u) & p(v))   # (initial) factorization necessary thus mere resolution without factorization is incomplete
-(all x (p(x) | r)) && (all x (p(f(x)) | ~r)) && ~p(f(a)) | s  |= p(f(b)) & s   # (intermediate) factorization necessary? thus mere resolution without factorization is incomplete
+(all x (p(x) | r)) && (all x (p(f(x)) | ~r)) && (~p(f(a)) | s)  |= p(f(b)) & s   # (intermediate) factorization necessary? thus mere resolution without factorization is incomplete
 ###@fixme p(0) && all x (p(x) -> p(s(x))) |=  some x p(s(s(s(s(x)))))  # some x p(s^2^n(x)) has a resolution of length n+5
 #
 # test cases for variable scope and that no variable renaming variant has been forgotten in the implementation
