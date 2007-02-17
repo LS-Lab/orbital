@@ -188,10 +188,11 @@ public abstract class Notation implements Serializable, Comparable {
             public String format(Object compositor, Object arg) {
                 StringBuffer sb = new StringBuffer();
                 if (compositor != null) {
-                    if (compositor instanceof Composite)
-                        // descend into composite compositors. will receive brackets, automatically, since !hasCompactBrackets("")
-                        sb.append(format("", compositor));
-                    else
+                    if (compositor instanceof Composite) {
+                        // @xxx ?should not descend into composite compositors because it would receive brackets, automatically, since !hasCompactBrackets("")
+                        // sb.append(format("", compositor));
+			sb.append(format(null,compositor));
+                    } else
                         sb.append(compositor + "");
                 }
                 if (arg == null)
@@ -267,7 +268,8 @@ public abstract class Notation implements Serializable, Comparable {
     public static final Notation BESTFIX = new Notation("bestfix") {
             private static final long serialVersionUID = 2361099498303659521L;
             public String format(Object compositor, Object arg_) {
-                if (!(compositor instanceof Functor))
+                if (compositor instanceof Composite)
+		    // compound compositors will be formatted in prefix
                     return PREFIX.format(compositor, arg_);
                 //@todo explicitly work on graph-structure induced by Composite without importing orbital.util.graph for this sole reason
                 // however, how to briefly append arguments to the compositor object (just for formatting), then?
@@ -480,9 +482,19 @@ public abstract class Notation implements Serializable, Comparable {
     private static boolean hasCompactBrackets(Object compositor) {
         // distinguish unary from binary registered compositors
         NotationSpecification spec = getNotation(compositor);
-        return spec != null && spec.arity() == 1;
+        return compositor == null || (spec != null && spec.arity() == 1);
     } 
     
+    /**
+     * Whether a compound compositor can be displayed with compact (i.e. invisible) brackets
+     * otherwise needs additional brackets.
+     */
+    private static boolean hasCompactCompositorBrackets(Composite compositor) {
+        // distinguish unary from binary registered compositors
+        NotationSpecification spec = getNotation(compositor.getCompositor());
+        return spec != null && PREFIX.equals(spec.getNotation());
+    } 
+
     /**
      * Whether the specified precedence is "high" such that its compositor is formated
      * without separators.
