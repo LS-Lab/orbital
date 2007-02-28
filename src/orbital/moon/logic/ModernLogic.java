@@ -187,11 +187,13 @@ abstract class ModernLogic implements Logic {
                 Formula f = (Formula) logic.createExpression(formula);
                 String formName[] = {
                     "disjunctive",
-                    "conjunctive"
+                    "conjunctive",
+		    "clausal"
                 };
                 Formula form[] = {
                     ClassicalLogic.Utilities.disjunctiveForm(f, true),
-                    ClassicalLogic.Utilities.conjunctiveForm(f, true)
+                    ClassicalLogic.Utilities.conjunctiveForm(f, true),
+                    new orbital.moon.logic.resolution.DefaultClausalFactory().asClausalSet(f).toFormula()
                 };
                 for (int i = 0; i < form.length; i++) {
                     if (verbose)
