@@ -165,6 +165,33 @@
 	</condition>
     </target>
 
+    <!-- fix urls
+    <target name="fetch-libs" depends="init" >
+
+        <extension id="ext.lib.junit" extensionName="junit.jar" />
+
+        <jarlib-resolve property="lib.junit">
+            <extension refid="ext.lib.junit"/>
+            <url url="http://ovh.dl.sourceforge.net/sourceforge/junit/junit4.2.jar" 
+                 destfile="${lib}/junit.jar"/>
+        </jarlib-resolve>    
+
+        <extension id="ext.lib.jlink"
+            extensionName="com/wolfram/jlink/"
+            specificationVersion="3.1"
+            specificationVendor="Wolfram Research, Inc."/>
+
+        <jarlib-resolve property="lib.jlink">
+            <extension refid="ext.lib.jlink"/>
+            <location location="${com.wolfram.jlink.path}"/>
+            <url url="" 
+                 destfile="${lib}/jlink.jar"/>
+        </jarlib-resolve>    
+
+    </target>
+    -->
+
+
     <target name="prepareEnvironment" depends="init"
             description="prepare system for compiling">
         <javac srcdir="${taglet}"
