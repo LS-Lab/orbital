@@ -45,6 +45,7 @@ import javax.swing.text.BadLocationException;
 
 import java.util.Comparator;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.Arrays;
 
@@ -54,6 +55,7 @@ import java.awt.Insets;
 import java.awt.BorderLayout;
 import orbital.awt.UIUtilities;
 import orbital.util.Utility;
+import orbital.math.MathUtilities; // only for MathUtilities.sign
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
@@ -278,6 +280,7 @@ public class DefaultCustomizer extends JPanel implements Customizer {
         BeanInfo info = getBeanInfo(beanClass);
         if (info == null)
             throw new NullPointerException("no BeanInfo for class: " + beanClass);
+	//@internal this orders properties according to isPreferred(), ordinary, isExpert() and isHidden()
         beanProperties = getAllPropertyDescriptors(info);
         if (beanProperties == null)
             throw new NullPointerException("no PropertyDescriptors for class: " + beanClass);
@@ -625,17 +628,20 @@ public class DefaultCustomizer extends JPanel implements Customizer {
      */
     protected PropertyDescriptor[] getAllPropertyDescriptors(BeanInfo info) {
         BeanInfo additional[] = info.getAdditionalBeanInfo();
-        if (additional == null || additional.length == 0)
-            //RA:
-            return info.getPropertyDescriptors();
+        if (additional == null || additional.length == 0) {
+            // no additional bean info, return sorted version of single bean info
+            SortedSet l = new TreeSet(featureDescriptorComparator);
+            l.addAll(Arrays.asList(info.getPropertyDescriptors()));
+            return (PropertyDescriptor[]) l.toArray(new PropertyDescriptor[0]);
+	}
         // set without duplicates that is not consistent with equals (which does not matter)
         // Caution: using a Set instead of a List here shuffles the property order which Introspector does, anyway (Bug-Id 4088897 closed)
         //@internal perhaps we could also use a LinkedHashSet or even LinkedIdentityHashSet here for keeping the initial order instead of sorting
-        Set l = new TreeSet(featureDescriptorComparator);
+        SortedSet l = new TreeSet(featureDescriptorComparator);
         l.addAll(Arrays.asList(info.getPropertyDescriptors()));
         // add all properties not yet contained
         for (int i = additional.length - 1; i>= 0; i--) {
-            //RS:
+            // recursive
             PropertyDescriptor property[] = getAllPropertyDescriptors(additional[i]);
             if (property == null)
                 continue;
@@ -644,13 +650,39 @@ public class DefaultCustomizer extends JPanel implements Customizer {
         return (PropertyDescriptor[]) l.toArray(new PropertyDescriptor[0]);
     }
     /**
-     * Compare FeatureDescriptors according to their name.
+     * Compare FeatureDescriptors according to their name plus their
+     * isPreferred(), isExpert(), isHidden() properties.
      * Perhaps inconsistent with equals!
      * Not yet serializable
      */
     private static final Comparator featureDescriptorComparator = new Comparator() {
             public int compare(Object a, Object b) {
-                return ((FeatureDescriptor) a).getName().compareTo(((FeatureDescriptor) b).getName());
+		FeatureDescriptor fa = (FeatureDescriptor) a;
+		FeatureDescriptor fb = (FeatureDescriptor) b;
+		int c = MathUtilities.sign(fa.getName().compareTo(fb.getName()));
+		if (c == 0) {
+		    return c;
+		}
+		// shift normalised c according to some extra bonus/malus points
+		if (fa.isPreferred()) {
+		    c -= 10;
+		}
+		if (fb.isPreferred()) {
+		    c += 10;
+		}
+		if (fa.isExpert()) {
+		    c += 5;
+		}
+		if (fb.isExpert()) {
+		    c -= 5;
+		}
+		if (fa.isHidden()) {
+		    c += 20;
+		}
+		if (fb.isHidden()) {
+		    c -= 20;
+		}
+                return c;
             }
         };
 
