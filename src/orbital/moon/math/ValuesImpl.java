@@ -19,6 +19,8 @@ import orbital.logic.functor.Functor;
 import java.util.Collection;
 
 import java.util.List;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 import java.text.ParsePosition;
 import java.util.Iterator;
@@ -42,6 +44,7 @@ import orbital.math.functional.Functions;
  * getValueFactory().getNormalizer().apply((Arithmetic)x) performs internalTypeNormalizer[x.typeId()].apply(x) which only gets called with object of one fitting type.
  */
 public class ValuesImpl extends AbstractValues {
+    private static final Logger logger = Logger.getLogger(ValuesImpl.class.getName());
     // instantiation
 
     public ValuesImpl() {
@@ -52,7 +55,18 @@ public class ValuesImpl extends AbstractValues {
                     Arithmetic operands[] = (Arithmetic[]) o;
                     if (operands.length <= 1)
                         return operands;
-                    return minimumCoerced(operands);
+                    return minimumCoerced(operands, false);
+                } 
+                return o;
+            } 
+            },
+	    new orbital.logic.functor.Function/*<Object[],Object[]>*/() {
+            public Object/*>Object[]<*/ apply(Object/*>Object[]<*/ o) {
+                if (o instanceof Arithmetic[]) {
+                    Arithmetic operands[] = (Arithmetic[]) o;
+                    if (operands.length <= 1)
+                        return operands;
+                    return minimumCoerced(operands, true);
                 } 
                 return o;
             } 
@@ -521,22 +535,35 @@ public class ValuesImpl extends AbstractValues {
     /*
      * @todo optimize hotspot
      */
-    private final Arithmetic[] minimumCoerced(Arithmetic[] a) {
+    private final Arithmetic[] minimumCoerced(Arithmetic[] a, boolean commutative) {
         assert a.length == 2 : "currently for binary operations, only";
         //@todo!
         if (a[0].getClass() == a[1].getClass())
             return a;
         else if (a[0] instanceof Number && a[1] instanceof Number)
             return minimumCoerced((Number) a[0], (Number) a[1]);
-        else if (a[0] instanceof Tensor || a[1] instanceof Tensor)
-            return a;
-        else if (a[0] instanceof MathFunctor || a[0] instanceof Symbol)
+        else if (a[0] instanceof Tensor || a[1] instanceof Tensor) {
+	    if (!(a[0] instanceof Tensor)) {
+		if (commutative)
+		    //@xxx assuming that non-tensors with tensors are commutative (though tensors themselves is not w.r.t. multiplication).
+		    // Would need Arithmetic.isCommutative() and Arithmetic.isRingCommutative() checks for this
+		    return new Arithmetic[] {a[1], a[0]};
+		else
+		    logger.log(Level.FINE, "cannot coerce non-tensor with tensor without commutativity {0} with {1}", a);
+	    }
+	    return a;
+        } else if (a[0] instanceof MathFunctor || a[0] instanceof Symbol)
                 return a;
-        else if (a[1] instanceof MathFunctor || a[1] instanceof Symbol)
-            return new Arithmetic[] {
-                makeSymbolAware(a[0]), a[1]
-            };  //XXX: how exactly?
-        throw new AssertionError("the types of the arguments could not be coerced: " + (a == null ? "null" : a[0].getClass() + "") + " and " + (a[1] == null ? "null" : a[1].getClass() + ""));
+        else if (a[1] instanceof MathFunctor || a[1] instanceof Symbol) {
+	    if (false && commutative)
+		//@xxx do we commute in this case or not?
+		return new Arithmetic[] {a[1], a[0]};
+	    else
+		return new Arithmetic[] {
+		    makeSymbolAware(a[0]), a[1]
+		};  //XXX: how exactly?
+	}
+        throw new IllegalArgumentException("the types of the arguments could not be coerced: " + (a == null ? "null" : a[0].getClass() + "") + " and " + (a[1] == null ? "null" : a[1].getClass() + ""));
     } 
 
     /**

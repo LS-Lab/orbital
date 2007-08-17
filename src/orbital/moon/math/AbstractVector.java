@@ -363,7 +363,10 @@ abstract class AbstractVector/*<R extends Arithmetic>*/ extends AbstractTensor i
         throw new UnsupportedOperationException("vector space is no field");
     } 
     public Arithmetic divide(Arithmetic b) {
-        throw new UnsupportedOperationException("vector space is no field");
+        if (b instanceof Scalar)
+	    return scale(b.inverse());
+	else
+	    throw new UnsupportedOperationException("vector space is no field");
     } 
     public Arithmetic power(Arithmetic b) {
         throw new UnsupportedOperationException("vector space is no field");

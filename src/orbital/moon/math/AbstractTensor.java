@@ -435,6 +435,13 @@ abstract class AbstractTensor/*<R extends Arithmetic>*/
         return (Tensor)super.scale(s);
     } 
 
+    public Arithmetic divide(Arithmetic b) {
+        if (b instanceof Scalar)
+	    return scale(b.inverse());
+	else
+	    return super.divide(b);
+    } 
+
     public Tensor/*<R>*/ multiply(Tensor/*<R>*/ b) {
         //@todo beautify with subTensor(...), or would that lack performance
         final int[] dim = new int[rank() + b.rank() - 2];
