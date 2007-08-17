@@ -8,6 +8,7 @@ package orbital.math;
 
 import java.util.*;
 import orbital.math.functional.Operations;
+import orbital.math.functional.*;
 import junit.framework.*;
 import junit.extensions.*;
 
@@ -27,7 +28,7 @@ public class AlgebraicAlgorithmsTest extends check.TestCase {
     }
     public static Test suite() {
         TestSuite suite = new TestSuite(AlgebraicAlgorithmsTest.class);
-        suite.addTest(new RepeatedTest(new TestCase("add") {
+        suite.addTest(new RepeatedTest(new TestCase("chinese remainder theorem") {
                 public void runTest() {
                     casetestChineseRemainder();
                 }
@@ -36,7 +37,6 @@ public class AlgebraicAlgorithmsTest extends check.TestCase {
     }
     protected void setUp() {
     }
-
     /**
      * @internal similar to the algorithm computing exact solution to integer LGS.
      */
@@ -126,5 +126,64 @@ public class AlgebraicAlgorithmsTest extends check.TestCase {
             {-1,4,-1,0},
             {5,3,0,0}
         }));
+    }
+
+    public void testdSolve() {
+        System.out.println("solving differential equations");
+	final Symbol t = vf.symbol("t");
+	final Real tau = vf.ZERO();
+        Matrix A = vf.valueOf(new double[][] {
+	    {0,1},
+	    {0,0}
+	});
+	Vector b = vf.valueOf(new double[]{0,0});
+	Vector eta = vf.valueOf(new double[]{0,0});
+	Function f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
+	System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
+	System.out.println("  solution at " + 0 + " is " + f.apply(vf.valueOf(0)));
+	System.out.println("  solution at " + 1 + " is " + f.apply(vf.valueOf(1)));
+	System.out.println("  solution at " + t + " is " + f.apply(t));
+
+	eta = vf.valueOf(new double[]{1,2});
+	f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
+	System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
+	System.out.println("  solution at " + 0 + " is " + f.apply(vf.valueOf(0)));
+	System.out.println("  solution at " + 1 + " is " + f.apply(vf.valueOf(1)));
+	System.out.println("  solution at " + t + " is " + f.apply(t));
+	
+	eta = vf.valueOf(new Symbol[]{vf.symbol("z0"),vf.symbol("v0")});
+	f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
+	System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
+	System.out.println("  solution at " + 0 + " is " + f.apply(vf.valueOf(0)));
+	System.out.println("  solution at " + 1 + " is " + f.apply(vf.valueOf(1)));
+	System.out.println("  solution at " + t + " is " + f.apply(t));
+
+        A = vf.valueOf(new double[][] {
+	    {0,1,0},
+	    {0,0,1},
+	    {0,0,0},
+	});
+	b = vf.valueOf(new double[]{0,0,0});
+	eta = vf.valueOf(new Symbol[]{vf.symbol("z0"),vf.symbol("v0"),vf.symbol("a")});
+	System.out.println("train dynamics with constant acceleration a as x3 and initial values of position, velocity and acceleration " + eta);
+	f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
+	System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
+	System.out.println("  solution at " + 0 + " is " + f.apply(vf.valueOf(0)));
+	System.out.println("  solution at " + 1 + " is " + f.apply(vf.valueOf(1)));
+	System.out.println("  solution at " + t + " is " + f.apply(t));
+
+
+	A = vf.valueOf(new double[][] {
+	    {0,1,2},
+	    {0,0,1},
+	    {0,0,0},
+	});
+	b = vf.valueOf(new double[]{0,0,0});
+	eta = vf.valueOf(new double[]{1,2,3});
+	f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
+	System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
+	System.out.println("  solution at " + 0 + " is " + f.apply(vf.valueOf(0)));
+	System.out.println("  solution at " + 1 + " is " + f.apply(vf.valueOf(1)));
+	System.out.println("  solution at " + t + " is " + f.apply(t));
     }
 }

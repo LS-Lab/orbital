@@ -7,6 +7,7 @@
 package orbital.math.functional;
 
 import junit.framework.*;
+import junit.extensions.*;
 
 import orbital.math.*;
 import orbital.math.Vector;
@@ -29,7 +30,12 @@ public class FunctionTest extends check.TestCase {
     private static final int  TEST_REPETITION = 20;
     private static final Values vf = Values.getDefaultInstance();
     private static final Real tolerance = vf.valueOf(1e-8);
+    private static final int DSOLVE_PRECISION_DIGITS = 3;
+    private static final ArithmeticFormat mf = ArithmeticFormat.MATH_EXPORT_FORMAT;
         
+    // the default matrix and vector (ddim.width) dimension
+    private static final Dimension ddim = new Dimension(2,2);
+
     // test type bit mask constants
     public static final int   TYPE_NONE = 0;
 
@@ -49,8 +55,9 @@ public class FunctionTest extends check.TestCase {
         junit.textui.TestRunner.run(suite());
     }
     public static Test suite() {
-        //@internal could perhaps use external RepeatedTest
-        return new TestSuite(FunctionTest.class);
+        //@internal could perhaps use RepeatedTest for testCalculations
+        TestSuite suite = new TestSuite(FunctionTest.class);
+        return suite;
     }
 
     private KernelLink ml;
@@ -76,12 +83,23 @@ public class FunctionTest extends check.TestCase {
             ml.discardAnswer();
 
             // define our imaginary unit
+	    //@xxx could have side effects for testdSolve
             ml.evaluate("i = I;");
             ml.discardAnswer();
         } catch (MathLinkException e) {
             throw new Error("Fatal error opening link: " + e.getMessage());
         }
     }
+    
+    protected void tearDown() throws MathLinkException {
+	try {
+	    ml.discardAnswer();
+	}
+	finally {
+	    ml.close();
+	}
+    }
+
     
     public void testCalculations() {
         MathUtilities.setDefaultPrecisionDigits(17);
@@ -167,9 +185,7 @@ public class FunctionTest extends check.TestCase {
         } catch (MathLinkException ex) {
             System.out.println();
             throw (RuntimeException) new RuntimeException("MathLinkException occurred: " + ex).initCause(ex);
-        } finally {
-            ml.close();
-        }
+        } 
     }
         
     /**
@@ -278,8 +294,8 @@ public class FunctionTest extends check.TestCase {
             // Vector value test
             for (int i = 0; (testType & TYPE_VECTOR) != 0 && i < TEST_REPETITION; i++)
                 try {
-                    final Vector jx = vectorArgument(min,max, componentType);
-                    final Vector jy = vectorArgument(min,max, componentType);
+                    final Vector jx = vectorArgument(min,max, componentType, ddim.width);
+                    final Vector jy = vectorArgument(min,max, componentType, ddim.width);
                     final String  mFunctionCall = mFunction + "[" + listForm(jx) + "," + listForm(jy) + "]";
                     final String  jFunctionCall = jFunction + "[" + jx + "," + jy + "]";
                     ml.evaluate("N[" + mFunctionCall + "]");
@@ -299,8 +315,8 @@ public class FunctionTest extends check.TestCase {
             // Matrix value test
             for (int i = 0; (testType & TYPE_MATRIX) != 0 && i < TEST_REPETITION; i++)
                 try {
-                    final Matrix jx = matrixArgument(min,max, componentType);
-                    final Matrix jy = matrixArgument(min,max, componentType);
+                    final Matrix jx = matrixArgument(min,max, componentType, ddim);
+                    final Matrix jy = matrixArgument(min,max, componentType, ddim);
                     final String  mFunctionCall = mFunction + "[" + listForm(jx) + "," + listForm(jy) + "]";
                     final String  jFunctionCall = jFunction + "[" + jx + "," + jy + "]";
                     ml.evaluate("N[" + mFunctionCall + "]");
@@ -345,6 +361,90 @@ public class FunctionTest extends check.TestCase {
     }
 
 
+    // testing more sophisticated symbolic algorithms
+
+    public void testdSolve() throws MathLinkException {
+	final double MIN = -5;
+	final double MAX = +5;
+	final int componentType = TYPE_INTEGER /*| TYPE_REAL*/;
+
+	for (int rep = 0; rep < TEST_REPETITION; rep++) {
+	    final int n = integerArgument(1,5);
+	    final Dimension dim = new Dimension(n,n);
+	    final Symbol t = vf.symbol("t");
+	    final Real tau = vf.ZERO();
+	    Matrix A = matrixArgument(MIN,MAX, componentType, dim);
+	    // make strict upper diagonal matrix for nilpotence
+	    for (int i = 0; i < A.dimension().height; i++) {
+		for (int j = 0; j <= i && j < A.dimension().width; j++) {
+		    A.set(i, j, vf.ZERO());
+		}
+	    }
+	    Vector b = vf.ZERO(n);
+	    // generalise eta to symbolic
+	    Vector eta = vectorArgument(MIN,MAX, componentType, dim.height);
+	    Function f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
+	    System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
+	    System.out.println("  solution at " + t + " is " + f.apply(t));
+
+	    // compare results to Mathematica's DSolve
+	    try {
+		/*
+		 * Generates essentially the following template
+		 * Module[{A = {{4, -6}, {1, -1}},
+		 *   eta = {2, 5},
+		 *   X},
+		 *  X[t_] = {x1[t], x2[t]};
+		 *  X[t] /. DSolve[Join[MapThread[#1 == #2 &, {X'[t], A.X[t] + b}],
+		 *      MapThread[#1 == #2 &, {X[0], eta}]
+		 *      ],
+		 *     X[t], t] [[1]]
+		 *  ]	      
+		 */
+		final String oursol = mf.format(f.apply(t));
+		// construct {x0[t], x1[t], ... x(n-1)[t]}
+		String dimensionspace = "{";
+		for (int i = 0; i < n; i++) {
+		    dimensionspace += "x" + i + "[" + t + "]";
+		    if (i + 1 < n)
+			dimensionspace += ",";
+		}
+		dimensionspace += "}";
+		String ode = "Module[{X}, X[" + t + "_] = " + dimensionspace + ";\n"
+		    + "X[" + t + "] /.\n"
+		    + "DSolve[Join[\n"
+		    + " MapThread[#1==#2&, {X'[" + t + "], (" + mf.format(A) + ").X[" + t + "] + " + mf.format(b) + "}],\n"
+		    + " MapThread[#1==#2&, {X[" + tau + "], (" + mf.format(eta) + ")}]],\n"
+		    + " X[" + t + "], " + t + "][[1]]\n"
+		    + "]";
+
+		System.out.println(ode);
+		ml.newPacket();
+		ml.evaluate("" + ode + "");
+		ml.waitForAnswer();
+		final String refsol = ml.getExpr().toString();
+		System.out.println("Our solution:\t\t" + oursol);
+		System.out.println("Reference solution:\t" + refsol);
+
+		System.out.println("Simplify[SetPrecision[(" + ode + " == " + oursol + "), " + DSOLVE_PRECISION_DIGITS + "]]");
+		ml.newPacket();
+		ml.evaluate("Simplify[SetPrecision[(\n" + ode + " == \n" + oursol + "),\n " + DSOLVE_PRECISION_DIGITS + "]]");
+		ml.waitForAnswer();
+		final String comparison = ml.getExpr().toString();
+		System.out.println("Result:\t" + comparison);
+		if (!comparison.equals("True"))
+		    System.out.println("dSolve validation FAILED");
+		assertTrue(comparison.equals("True") , " dSolve equivalence: " + oursol + " == " + refsol + " resulting in " + comparison);
+		System.out.println("Next");
+	    }
+	    catch (MathLinkException e) {
+		if (!"machine number overflow".equals(e.getMessage()))
+		    throw e;
+	    }
+	}
+    }
+    
+
     // create (random) argument values
     
     private int integerArgument(int min, int max) {
@@ -363,8 +463,7 @@ public class FunctionTest extends check.TestCase {
         else
             return vf.valueOf(realArgument(min, max));
     }
-    private Matrix matrixArgument(double min, double max, int testType) {
-        Dimension dim = new Dimension(2, 2);
+    private Matrix matrixArgument(double min, double max, int testType, Dimension dim) {
         Matrix x = vf.newInstance(dim);
         if (testType == TYPE_REAL && Utility.flip(random, 0.5))
             // randomly switch to RMatrix
@@ -374,8 +473,7 @@ public class FunctionTest extends check.TestCase {
                 x.set(i,j, randomArgument(min, max, testType));
         return x;
     }
-    private Vector vectorArgument(double min, double max, int testType) {
-        int dim = 2;
+    private Vector vectorArgument(double min, double max, int testType, int dim) {
         Vector x = vf.newInstance(dim);
         if (testType == TYPE_REAL && Utility.flip(random, 0.5))
             // randomly switch to RVector

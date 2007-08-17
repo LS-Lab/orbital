@@ -487,7 +487,7 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
     } 
 
     public String toString() {
-        assert degreeValue() < 0 || !get(degreeValue()).norm().equals(Values.ZERO) : "definition of degree implies that the degree-th (" + degree() + "-th) coefficient (" + get(degreeValue()) + ") is != 0";
+        assert degreeValue() < 0 || !MathUtilities.isZero(get(degreeValue())) : "definition of degree implies that the degree-th (" + degree() + "-th) coefficient (" + get(degreeValue()) + ") is != 0";
         return ArithmeticFormat.getDefaultInstance().format(this);
     }
 

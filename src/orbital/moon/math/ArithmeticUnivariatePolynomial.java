@@ -65,7 +65,7 @@ class ArithmeticUnivariatePolynomial/*<R extends Arithmetic>*/ extends AbstractU
             //@internal we can allow skipping null here, since set(R[]) and set(int,R)
             // check for null. However after new ArithmeticPolynomial(int) there may still be
             // some null values, until all have been set
-            if (coefficients[i] != null && !coefficients[i].norm().equals(Values.ZERO))
+            if (coefficients[i] != null && !MathUtilities.isZero(coefficients[i]))
                 return i;
         return java.lang.Integer.MIN_VALUE;
     }

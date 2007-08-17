@@ -606,7 +606,9 @@ public final class AlgebraicAlgorithms {
         return vf.quotient(xStar, M);
     }
 
+    //
     // Gr&ouml;bner basis
+    //
 
     /**
      * Reduce f with respect to g.
@@ -999,4 +1001,103 @@ public final class AlgebraicAlgorithms {
         return containsAll(groebnerBasis1, groebnerBasis2, monomialOrder)
             && containsAll(groebnerBasis2, groebnerBasis1, monomialOrder);
     }
+
+    //
+    // Differential Equations
+    //
+
+    /**
+     * Symbolically solves ordinary differential equation system.
+     * Solves (in)homogeneous ODE with constant coefficients.
+     * @param A the complex matrix of coefficients.
+     * @param tau the initial time &tau; of the initial values &eta;.
+     * @param eta the complex vector &eta; of initial values.
+     * @param b the inhomogeneous vector.
+     * @return The solution x of the initial value problem
+     *   <center>
+     *     x'(t)=A*x(t) + b(t)<br />
+     *     x(&tau;)=&eta;
+     *   </center>
+     *  which is
+     *   <center>
+     *     x(t)=e<sup>A(t-&tau;)</sup>&eta; + &int;<sub>&tau;</sub><sup>t</sup> e<sup>A(t-s)</sup>b(s) ds
+     *   </center>
+     *  where
+     *   <center>
+     *     e<sup>A(t-&tau;)</sup>&eta; = &sum;<sub>n=0,...</sub> 1/n! A<sup>n</sup>(t-&tau;)<sup>n</sup> &eta;
+     *   </center>
+     * @see "Walter, W. Ordinary Differential Equations Springer, 1998"
+     */
+    public static final /*<R extends Complex>*/
+	orbital.math.functional.Function/*<Real,Vector<R>>*/ dSolve(Matrix/*<R>*/ A, Vector/*<R>*/ b, Real tau, Vector/*<R>*/ eta) {
+	if (!A.isSquare())
+	    throw new IllegalArgumentException("square coefficient matrix expected " + A);
+	if (A.dimension().width != eta.dimension())
+	    throw new IllegalArgumentException("initial value expected of compatible dimension. Dimension " + A.dimension() + " of " + A + " does not fit dimension " + eta.dimension() + " of " + eta);
+	if (A.dimension().height != b.dimension())
+	    throw new IllegalArgumentException("constant vector expected of compatible dimension. Dimension " + A.dimension() + " of " + A + " does not fit dimension " + b.dimension() + " of " + b);
+        final Values vf = Values.getDefaultInstance();
+	if (!MathUtilities.isZero(b))
+	    throw new UnsupportedOperationException("inhomogeneous solutions not yet implemented");
+	// contains the successive powers 1/n!*A^n*eta
+	List/*<Vector<R>>*/ powers = new LinkedList/*<Vector<R>>*/();
+	// index into powers
+	int n = 0;
+	// add A^0*eta=eta
+	powers.add(eta);
+	n++;
+	// contains the successive powers A^n
+	Matrix/*<R>*/ p = A;
+	// contains the successive factorials
+	int f = 1;
+	while (!MathUtilities.isZero(p)) {
+	    if (n > A.dimension().width)
+		throw new UnsupportedOperationException("solving differential equations only implemented for nilpotent systems. Yet " + A + "^n = " + p);
+	    // successive factorial
+	    f *= n;
+	    assert f == MathUtilities.factorial(n) : "on-the-fly factorial " + f + " == " + n + "! = " + MathUtilities.factorial(n);
+	    assert p.equals(A.power(vf.valueOf(n))) : "on-the-fly power " + p + " == " + A + "^" + n + " = " + A.power(vf.valueOf(n));
+	    // append 1/n!*A^n*eta
+	    powers.add(p.multiply(eta).multiply(vf.rational(1,f)));
+	    //powers.add(p.multiply(eta).divide(vf.valueOf(f)));
+	    p = p.multiply(A);
+	    n++;
+	}
+	// the (vectorial-coefficient) univariate polynomial e^(At)eta in t
+	final UnivariatePolynomial/*<Vector<R>>*/ eAeta = vf.polynomial((Vector[])powers.toArray(new Vector/*<R>*/[0]));
+	return MathUtilities.isZero(tau)
+	    ? eAeta
+	    : Functionals.compose(eAeta, Functionals.bindSecond(Operations.subtract, tau));
+	//return new ODESolution(powers, tau);
+    }
+//     private static class ODESolution
+//	extends orbital.moon.math.functional.AbstractFunctor
+// 	implements orbital.math.functional.Function {
+//         private static final Values vf = Values.getDefaultInstance();
+// 	private final List/*<Vector<R>>*/ powers;
+// 	private final Real tau;
+// 	public ODESolution(List/*<Vector<R>>*/ powers, Real tau) {
+// 	    this.powers = powers;
+// 	    this.tau = tau;
+// 	    assert !powers.isEmpty() : "non-empty powers expected";
+// 	}
+
+// 	public Object apply(Object a) {
+// 	    final Arithmetic t = (Arithmetic)a;
+// 	    final Arithmetic t_tau = t.subtract(tau);
+// 	    Iterator i = powers.iterator();
+// 	    assert !powers.isEmpty() && i.hasNext(): "non-empty powers expected";
+// 	    // initial case A^0*eta*(t-tau)^n=eta
+// 	    Arithmetic r = (Arithmetic)i.next();
+// 	    int n = 1;
+// 	    while (i.hasNext()) {
+// 		r = r.add(t_tau.power(vf.valueOf(n)).multiply((Arithmetic)i.next()));
+// 		n++;
+// 	    }
+// 	    return r;
+// 	}
+
+// 	public orbital.math.functional.Function derive() {throw new UnsupportedOperationException("not yet implemented");}
+// 	public orbital.math.functional.Function integrate() {throw new UnsupportedOperationException("not yet implemented");}
+//     }
 }// AlgebraicAlgorithms

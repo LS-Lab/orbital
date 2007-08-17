@@ -841,6 +841,18 @@ public interface ValueFactory {
     Function/*<Object[],Object[]>*/ getCoercer();
 
     /**
+     * Get the transformation function for coercing arithmetic
+     * objects taking into account commutativity.
+     * The returned transformation does the same as {@link #getCoercer()},
+     * except that when <code>commutative=true</code>, the arithmetic objects
+     * passed to it can be swapped to get compatible objects.
+     * @param commutative whether the returned transformation is allowed to
+     *  commute (swap) its arguments provided that this is correct for the given types.
+     * @see #getCoercer()
+     */
+    Function/*<Object[],Object[]>*/ getCoercer(boolean commutative);
+    
+    /**
      * Set the transformation function for coercion.
      * <p>
      * The transformation function set here must fulfill the same criteria that the default one
@@ -850,6 +862,19 @@ public interface ValueFactory {
      * @see #getCoercer()
      */
     void setCoercer(Function/*<Object[],Object[]>*/ coerce) throws SecurityException;
+
+    /**
+     * Set the transformation function for coercion.
+     * <p>
+     * The transformation function set here must fulfill the same criteria that the default one
+     * does as described in the {@link #getCoercer()} method. To simply hook an additional
+     * transformation, implement your transformation function on top of the one got from
+     * {@link #getCoercer()}.</p>
+     * @param commutative whether the given coercer will be allowed to
+     *  commute (swap) its arguments provided that this is correct for the given types.
+     * @see #getCoercer(boolean)
+     */
+    void setCoercer(boolean commuatative, Function/*<Object[],Object[]>*/ coerce) throws SecurityException;
 
     // normalizer
     

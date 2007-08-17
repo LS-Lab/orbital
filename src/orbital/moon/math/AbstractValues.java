@@ -41,6 +41,7 @@ import java.util.Iterator;
  */
 public abstract class AbstractValues extends Values {
     private orbital.logic.functor.Function/*<Object[],Object[]>*/ coercer = null;
+    private orbital.logic.functor.Function/*<Object[],Object[]>*/ commcoercer = null;
     private orbital.logic.functor.Function/*<Arithmetic,Arithmetic>*/ normalizer = null;
     private Map/*<String,Object>*/ parameters = Collections.EMPTY_MAP;
 
@@ -745,15 +746,27 @@ public abstract class AbstractValues extends Values {
         return coercer;
     } 
 
-    protected final void initialSetCoercer(orbital.logic.functor.Function/*<Object[],Object[]>*/ coercer) {
+    public final orbital.logic.functor.Function/*<Object[],Object[]>*/ getCoercer(boolean commutative) {
+        return commutative ? commcoercer : getCoercer();
+    } 
+
+    protected final void initialSetCoercer(orbital.logic.functor.Function/*<Object[],Object[]>*/ coercer,
+					   orbital.logic.functor.Function/*<Object[],Object[]>*/ commcoercer) {
         this.coercer = coercer;
+	this.commcoercer = commcoercer;
     } 
     public final void setCoercer(orbital.logic.functor.Function/*<Object[],Object[]>*/ coercer) throws SecurityException {
+        setCoercer(false, coercer);
+    } 
+    public final void setCoercer(boolean commutative, orbital.logic.functor.Function/*<Object[],Object[]>*/ coercer) throws SecurityException {
         SecurityManager security = System.getSecurityManager();
         if (security != null) {
             security.checkPermission(new java.util.PropertyPermission(ValueFactory.class.getName() + ".coercer", "write"));
         } 
-        initialSetCoercer(coercer);
+        if (commutative)
+	    this.commcoercer = coercer;
+	else
+	    this.coercer = coercer;
     } 
 
     public final orbital.logic.functor.Function/*<Arithmetic,Arithmetic>*/ getNormalizer() {

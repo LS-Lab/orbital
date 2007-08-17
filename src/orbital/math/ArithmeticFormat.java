@@ -99,8 +99,8 @@ public class ArithmeticFormat extends Format {
     private String vectorSuffix                                 = ")";
 
     // <matrixPrefix>
-    // <matrixRowPrefix> el0,0 <matrixSeparator> el0,1 <matrixSeparator> ... el0,(m-1) <matrixRowSuffix>
-    // <matrixRowPrefix> el1,0 <matrixSeparator> el1,1 <matrixSeparator> ... el1,(m-1) <matrixRowSuffix>
+    // <matrixRowPrefix> el0,0 <matrixSeparator> el0,1 <matrixSeparator> ... el0,(m-1) <matrixRowSuffix> <matrixRowSeparator>
+    // <matrixRowPrefix> el1,0 <matrixSeparator> el1,1 <matrixSeparator> ... el1,(m-1) <matrixRowSuffix> <matrixRowSeparator>
     // ...
     // <matrixSuffix> 
     private String matrixPrefix                                 = "";
@@ -167,6 +167,23 @@ public class ArithmeticFormat extends Format {
      */
     private static final ArithmeticFormat defaultFormat = getInstance(Locale.ENGLISH);
         
+    /**
+     * A formatter producing parsable output as exportable to systems like Mathematica.
+     */
+    public static final ArithmeticFormat MATH_EXPORT_FORMAT;
+    static {
+	// Mathematica-like format
+	MATH_EXPORT_FORMAT = new ArithmeticFormat(Locale.ENGLISH);
+	MATH_EXPORT_FORMAT.complexUnit = "I";
+	MATH_EXPORT_FORMAT.vectorPrefix = "{";
+	MATH_EXPORT_FORMAT.vectorSuffix = "}";
+	MATH_EXPORT_FORMAT.matrixPrefix = "{";
+	MATH_EXPORT_FORMAT.matrixRowPrefix = "{";
+	MATH_EXPORT_FORMAT.matrixRowSuffix = "}";
+	MATH_EXPORT_FORMAT.matrixRowSeparator = "," + System.getProperty("line.separator");
+	MATH_EXPORT_FORMAT.matrixSuffix = "}";
+    }
+
     /**
      * Get the default instance of format that does scientific mathematical formatting.
      * Used in {@link Object#toString()} methods in this package.
@@ -679,22 +696,29 @@ public class ArithmeticFormat extends Format {
         for (int i = Math.max(p.degreeValue(),0); i >= 0; i--) {
             Arithmetic ci = p.get(i);
             // only print nonzero elements (but print the 0-th coefficient if it is the only one)
-            if (!ci.norm().equals(Values.ZERO)
+            if (!MathUtilities.isZero(ci)
                 || (i == 0 && result.length() == initialIndex)) {
                 int startIndex = result.length();
+		Arithmetic cone;
+		try {
+		    cone = ci.one();
+		}
+		catch (UnsupportedOperationException nomonoid) {
+		    cone = null;
+		}
                 // whether the coefficient ci has been skipped
-                boolean skipped;
-                if (ci.equals(ci.one()) && i != 0)
-                    // skip 1 (except for constant term)
-                    skipped = true;
-                else if (ci.equals(ci.one().minus()) && i != 0) {
-                    // shorten -1 to - (except for constant term)
-                    result.append(polynomialPlusAlternative);
-                    skipped = true;
-                } else {
-                    format(ci, result, fieldPosition);
-                    skipped = false;
-                }
+                final boolean skipped;
+		if (cone != null && ci.equals(cone) && i != 0)
+		    // skip 1 (except for constant term)
+		    skipped = true;
+		else if (cone != null && ci.equals(cone.minus()) && i != 0) {
+		    // shorten -1 to - (except for constant term)
+		    result.append(polynomialPlusAlternative);
+		    skipped = true;
+		} else {
+		    format(ci, result, fieldPosition);
+		    skipped = false;
+		}
                 // separator for all but the first coefficient,
                 // provided that there is not already an alternative separator
                 if (i < p.degreeValue() &&
