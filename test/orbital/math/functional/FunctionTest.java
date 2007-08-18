@@ -64,6 +64,9 @@ public class FunctionTest extends check.TestCase {
     private Random random;
     protected void setUp() {
         random = new Random();
+    }
+    
+    protected void createMathLink() {
         /*
           (Windows)
           -linkmode launch -linkname 'c:/math40/mathkernel.exe'
@@ -90,18 +93,20 @@ public class FunctionTest extends check.TestCase {
             throw new Error("Fatal error opening link: " + e.getMessage());
         }
     }
+    protected void closeMathLink() {
+	if (ml != null) {
+	    ml.close();
+	    ml = null;
+	}
+    }
     
     protected void tearDown() throws MathLinkException {
-	try {
-	    ml.discardAnswer();
-	}
-	finally {
-	    ml.close();
-	}
+	closeMathLink();
     }
 
     
     public void testCalculations() {
+	createMathLink();
         MathUtilities.setDefaultPrecisionDigits(17);
         try {
             ml.evaluate("2+2");
@@ -185,7 +190,10 @@ public class FunctionTest extends check.TestCase {
         } catch (MathLinkException ex) {
             System.out.println();
             throw (RuntimeException) new RuntimeException("MathLinkException occurred: " + ex).initCause(ex);
-        } 
+        }
+	finally {
+	    closeMathLink();
+	}
     }
         
     /**
@@ -367,28 +375,29 @@ public class FunctionTest extends check.TestCase {
 	final double MIN = -5;
 	final double MAX = +5;
 	final int componentType = TYPE_INTEGER /*| TYPE_REAL*/;
-
-	for (int rep = 0; rep < TEST_REPETITION; rep++) {
-	    final int n = integerArgument(1,5);
-	    final Dimension dim = new Dimension(n,n);
-	    final Symbol t = vf.symbol("t");
-	    final Real tau = vf.ZERO();
-	    Matrix A = matrixArgument(MIN,MAX, componentType, dim);
-	    // make strict upper diagonal matrix for nilpotence
-	    for (int i = 0; i < A.dimension().height; i++) {
-		for (int j = 0; j <= i && j < A.dimension().width; j++) {
-		    A.set(i, j, vf.ZERO());
+	createMathLink();
+	
+	try {
+	    for (int rep = 0; rep < TEST_REPETITION; rep++) {
+		final int n = integerArgument(1,5);
+		final Dimension dim = new Dimension(n,n);
+		final Symbol t = vf.symbol("t");
+		final Real tau = vf.ZERO();
+		Matrix A = matrixArgument(MIN,MAX, componentType, dim);
+		// make strict upper diagonal matrix for nilpotence
+		for (int i = 0; i < A.dimension().height; i++) {
+		    for (int j = 0; j <= i && j < A.dimension().width; j++) {
+			A.set(i, j, vf.ZERO());
+		    }
 		}
-	    }
-	    Vector b = vf.ZERO(n);
-	    // generalise eta to symbolic
-	    Vector eta = vectorArgument(MIN,MAX, componentType, dim.height);
-	    Function f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
-	    System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
-	    System.out.println("  solution at " + t + " is " + f.apply(t));
+		Vector b = vf.ZERO(n);
+		// generalise eta to symbolic
+		Vector eta = vectorArgument(MIN,MAX, componentType, dim.height);
+		Function f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
+		System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
+		System.out.println("  solution at " + t + " is " + f.apply(t));
 
-	    // compare results to Mathematica's DSolve
-	    try {
+		// compare results to Mathematica's DSolve
 		/*
 		 * Generates essentially the following template
 		 * Module[{A = {{4, -6}, {1, -1}},
@@ -423,6 +432,7 @@ public class FunctionTest extends check.TestCase {
 		ml.evaluate("" + ode + "");
 		ml.waitForAnswer();
 		final String refsol = ml.getExpr().toString();
+		ml.newPacket();
 		System.out.println("Our solution:\t\t" + oursol);
 		System.out.println("Reference solution:\t" + refsol);
 
@@ -431,16 +441,20 @@ public class FunctionTest extends check.TestCase {
 		ml.evaluate("Simplify[SetPrecision[(\n" + ode + " == \n" + oursol + "),\n " + DSOLVE_PRECISION_DIGITS + "]]");
 		ml.waitForAnswer();
 		final String comparison = ml.getExpr().toString();
+		ml.newPacket();
 		System.out.println("Result:\t" + comparison);
 		if (!comparison.equals("True"))
 		    System.out.println("dSolve validation FAILED");
 		assertTrue(comparison.equals("True") , " dSolve equivalence: " + oursol + " == " + refsol + " resulting in " + comparison);
 		System.out.println("Next");
 	    }
-	    catch (MathLinkException e) {
-		if (!"machine number overflow".equals(e.getMessage()))
-		    throw e;
-	    }
+	}
+	catch (MathLinkException e) {
+	    if (!"machine number overflow".equals(e.getMessage()))
+		throw e;
+	}
+	finally {
+	    closeMathLink();
 	}
     }
     

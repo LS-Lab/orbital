@@ -555,8 +555,8 @@ public class ValuesImpl extends AbstractValues {
         } else if (a[0] instanceof MathFunctor || a[0] instanceof Symbol)
                 return a;
         else if (a[1] instanceof MathFunctor || a[1] instanceof Symbol) {
-	    if (false && commutative)
-		//@xxx do we commute in this case or not?
+	    if (commutative)
+		//@xxx do we commute in this case or not? Results are better if we do but less deterministic
 		return new Arithmetic[] {a[1], a[0]};
 	    else
 		return new Arithmetic[] {
