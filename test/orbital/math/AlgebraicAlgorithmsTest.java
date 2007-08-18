@@ -17,7 +17,7 @@ import junit.extensions.*;
  * @version $Id$
  */
 public class AlgebraicAlgorithmsTest extends check.TestCase {
-    private static final int TEST_REPETITIONS = 1000;
+    private static final int TEST_REPETITIONS = 0000*1000;
     private static final int MAX = 1000;
     private static final int PRIMES_BIT_LENGTH = 5;
     private static final Comparator order = AlgebraicAlgorithms.DEGREE_REVERSE_LEXICOGRAPHIC;
@@ -180,6 +180,20 @@ public class AlgebraicAlgorithmsTest extends check.TestCase {
 	});
 	b = vf.valueOf(new double[]{0,0,0});
 	eta = vf.valueOf(new double[]{1,2,3});
+	f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
+	System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
+	System.out.println("  solution at " + 0 + " is " + f.apply(vf.valueOf(0)));
+	System.out.println("  solution at " + 1 + " is " + f.apply(vf.valueOf(1)));
+	System.out.println("  solution at " + t + " is " + f.apply(t));
+
+
+        A = vf.valueOf(new double[][] {
+	    {0,1},
+	    {0,0}
+	});
+	b = vf.valueOf(new Arithmetic[]{vf.ZERO,vf.symbol("a")});
+	eta = vf.valueOf(new Symbol[]{vf.symbol("z0"),vf.symbol("v0")});
+	System.out.println("train dynamics with constant acceleration a as inhomogeneous part and initial value " + eta);
 	f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
 	System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
 	System.out.println("  solution at " + 0 + " is " + f.apply(vf.valueOf(0)));

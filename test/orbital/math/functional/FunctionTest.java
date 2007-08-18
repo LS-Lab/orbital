@@ -29,7 +29,7 @@ import orbital.util.*;
 public class FunctionTest extends check.TestCase {
     private static final int  TEST_REPETITION = 20;
     private static final Values vf = Values.getDefaultInstance();
-    private static final Real tolerance = vf.valueOf(1e-8);
+    private static final Real tolerance = vf.valueOf(1e-5);
     private static final int DSOLVE_PRECISION_DIGITS = 3;
     private static final ArithmeticFormat mf = ArithmeticFormat.MATH_EXPORT_FORMAT;
         
@@ -50,6 +50,9 @@ public class FunctionTest extends check.TestCase {
 
     public static final int   TYPE_ALL = TYPE_SCALAR | TYPE_TENSOR;
     public static final int   TYPE_DEFAULT = TYPE_SCALAR;
+    public static final int   TYPE_NUMERIC = TYPE_ALL;
+
+    public static final int   TYPE_SYMBOL = 1<<16;
 
     public static void main(String[] argv) {
         junit.textui.TestRunner.run(suite());
@@ -371,31 +374,46 @@ public class FunctionTest extends check.TestCase {
 
     // testing more sophisticated symbolic algorithms
 
-    public void testdSolve() throws MathLinkException {
-	final double MIN = -5;
-	final double MAX = +5;
-	final int componentType = TYPE_INTEGER /*| TYPE_REAL*/;
-	createMathLink();
-	
+    public void testdSolve_homogeneous_numeric() throws MathLinkException {
+	casetestdSolve(-5, +5, TYPE_INTEGER /*| TYPE_REAL*/, true);
+    }
+    public void testdSolve_inhomogeneous_numeric() throws MathLinkException {
+	casetestdSolve(-5, +5, TYPE_INTEGER /*| TYPE_REAL*/, false);
+    }
+    public void testdSolve_homogeneous_symbolic() throws MathLinkException {
+	casetestdSolve(-5, +5, TYPE_SYMBOL, true);
+    }
+    public void testdSolve_inhomogeneous_symbolic() throws MathLinkException {
+	casetestdSolve(-5, +5, TYPE_SYMBOL, false);
+    }
+    
+    public void casetestdSolve(double MIN, double MAX, int componentType, boolean homogeneous)
+	throws MathLinkException {
+	createMathLink();	
 	try {
 	    for (int rep = 0; rep < TEST_REPETITION; rep++) {
 		final int n = integerArgument(1,5);
 		final Dimension dim = new Dimension(n,n);
 		final Symbol t = vf.symbol("t");
 		final Real tau = vf.ZERO();
-		Matrix A = matrixArgument(MIN,MAX, componentType, dim);
+		Matrix A = matrixArgument(MIN,MAX, componentType&TYPE_NUMERIC, dim);
 		// make strict upper diagonal matrix for nilpotence
 		for (int i = 0; i < A.dimension().height; i++) {
 		    for (int j = 0; j <= i && j < A.dimension().width; j++) {
 			A.set(i, j, vf.ZERO());
 		    }
 		}
-		Vector b = vf.ZERO(n);
-		// generalise eta to symbolic
+		Vector b = homogeneous
+		    ? vf.ZERO(n)
+		    : vectorArgument(MIN,MAX, componentType, dim.height);
 		Vector eta = vectorArgument(MIN,MAX, componentType, dim.height);
 		Function f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
 		System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
 		System.out.println("  solution at " + t + " is " + f.apply(t));
+
+		UnivariatePolynomial fc[] = AlgebraicAlgorithms.componentPolynomials((UnivariatePolynomial)f);
+		assertEquals("vectorial polynomial of component polynomials is the original",
+			     f, AlgebraicAlgorithms.vectorialPolynomial(fc));
 
 		// compare results to Mathematica's DSolve
 		/*
@@ -421,11 +439,12 @@ public class FunctionTest extends check.TestCase {
 		dimensionspace += "}";
 		String ode = "Module[{X}, X[" + t + "_] = " + dimensionspace + ";\n"
 		    + "X[" + t + "] /.\n"
+		    + "Simplify[\n"
 		    + "DSolve[Join[\n"
 		    + " MapThread[#1==#2&, {X'[" + t + "], (" + mf.format(A) + ").X[" + t + "] + " + mf.format(b) + "}],\n"
 		    + " MapThread[#1==#2&, {X[" + tau + "], (" + mf.format(eta) + ")}]],\n"
 		    + " X[" + t + "], " + t + "][[1]]\n"
-		    + "]";
+		    + "]]";
 
 		System.out.println(ode);
 		ml.newPacket();
@@ -436,16 +455,16 @@ public class FunctionTest extends check.TestCase {
 		System.out.println("Our solution:\t\t" + oursol);
 		System.out.println("Reference solution:\t" + refsol);
 
-		System.out.println("Simplify[SetPrecision[(" + ode + " == " + oursol + "), " + DSOLVE_PRECISION_DIGITS + "]]");
+		System.out.println("FullSimplify[SetPrecision[(" + ode + " == " + oursol + "), " + DSOLVE_PRECISION_DIGITS + "]]");
 		ml.newPacket();
-		ml.evaluate("Simplify[SetPrecision[(\n" + ode + " == \n" + oursol + "),\n " + DSOLVE_PRECISION_DIGITS + "]]");
+		ml.evaluate("Simplify[(\n" + ode + " == \n" + oursol + ")]");
 		ml.waitForAnswer();
 		final String comparison = ml.getExpr().toString();
 		ml.newPacket();
 		System.out.println("Result:\t" + comparison);
 		if (!comparison.equals("True"))
 		    System.out.println("dSolve validation FAILED");
-		assertTrue(comparison.equals("True") , " dSolve equivalence: " + oursol + " == " + refsol + " resulting in " + comparison);
+		assertTrue(comparison.equals("True") , " dSolve equivalence:\n " + oursol + " ==\n " + refsol + "\nresulting in " + comparison);
 		System.out.println("Next");
 	    }
 	}
@@ -467,13 +486,16 @@ public class FunctionTest extends check.TestCase {
     private double realArgument(double min, double max) {
         return ((max-min) * random.nextDouble() + min);
     }
-    private Scalar randomArgument(double min, double max, int testType) {
+    private int symbolId = 1;
+    private Arithmetic randomArgument(double min, double max, int testType) {
         if ((testType & TYPE_INTEGER) != 0 && Utility.flip(random, 0.4))
             return vf.valueOf(integerArgument((int)min, (int)max));
         else if ((testType & TYPE_COMPLEX) != 0 && Utility.flip(random, 0.4))
             return vf.complex(realArgument(min, max), realArgument(min, max));
 //      else if ((testType & TYPE_RATIONAL) != 0 && Utility.flip(random, 0.4))
 //          return vf.rational(integerArgument((int)min, (int)max), integerArgument(1, (int)max));
+        else if ((testType & TYPE_SYMBOL) != 0 && Utility.flip(random, 0.4))
+            return vf.symbol("a" + (symbolId++));
         else
             return vf.valueOf(realArgument(min, max));
     }

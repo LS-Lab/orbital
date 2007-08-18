@@ -1,7 +1,7 @@
 /**
- * @(#)MathUtilities.java 1.1 2002-08-21 Andre Platzer
+ * @(#)AlgebraicAlgorithms java 1.1 2002-08-21 Andre Platzer
  * 
- * Copyright (c) 2002 Andre Platzer. All Rights Reserved.
+ * Copyright (c) 2002-2007 Andre Platzer. All Rights Reserved.
  */
 
 package orbital.math;
@@ -12,6 +12,7 @@ import java.io.Serializable;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.Collections;
@@ -1024,7 +1025,7 @@ public final class AlgebraicAlgorithms {
      *   </center>
      *  where
      *   <center>
-     *     e<sup>A(t-&tau;)</sup>&eta; = &sum;<sub>n=0,...</sub> 1/n! A<sup>n</sup>(t-&tau;)<sup>n</sup> &eta;
+     *     e<sup>At</sup> = &sum;<sub>n=0,...</sub> 1/n! A<sup>n</sup>t<sup>n</sup>
      *   </center>
      * @see "Walter, W. Ordinary Differential Equations Springer, 1998"
      */
@@ -1036,15 +1037,20 @@ public final class AlgebraicAlgorithms {
 	    throw new IllegalArgumentException("initial value expected of compatible dimension. Dimension " + A.dimension() + " of " + A + " does not fit dimension " + eta.dimension() + " of " + eta);
 	if (A.dimension().height != b.dimension())
 	    throw new IllegalArgumentException("constant vector expected of compatible dimension. Dimension " + A.dimension() + " of " + A + " does not fit dimension " + b.dimension() + " of " + b);
-        final Values vf = Values.getDefaultInstance();
-	if (!MathUtilities.isZero(b))
-	    throw new UnsupportedOperationException("inhomogeneous solutions not yet implemented");
+	final Values vf = Values.getDefaultInstance();
 	// contains the successive powers 1/n!*A^n*eta
-	List/*<Vector<R>>*/ powers = new LinkedList/*<Vector<R>>*/();
+	List/*<Vector<R>>*/ epowers = new LinkedList/*<Vector<R>>*/();
+	// contains the successive powers 1/n!*A^n*b if needed at all (otherwise null if b=0)
+	List/*<Vector<R>>*/ bpowers =
+	    MathUtilities.isZero(b)
+	    ? null
+	    : new LinkedList/*<Vector<R>>*/();
 	// index into powers
 	int n = 0;
 	// add A^0*eta=eta
-	powers.add(eta);
+	epowers.add(eta);
+	// add A^0*b=b
+	if (bpowers != null) bpowers.add(b);
 	n++;
 	// contains the successive powers A^n
 	Matrix/*<R>*/ p = A;
@@ -1058,46 +1064,104 @@ public final class AlgebraicAlgorithms {
 	    assert f == MathUtilities.factorial(n) : "on-the-fly factorial " + f + " == " + n + "! = " + MathUtilities.factorial(n);
 	    assert p.equals(A.power(vf.valueOf(n))) : "on-the-fly power " + p + " == " + A + "^" + n + " = " + A.power(vf.valueOf(n));
 	    // append 1/n!*A^n*eta
-	    powers.add(p.multiply(eta).multiply(vf.rational(1,f)));
-	    //powers.add(p.multiply(eta).divide(vf.valueOf(f)));
+	    epowers.add(p.multiply(eta).multiply(vf.rational(1,f)));
+	    //epowers.add(p.multiply(eta).divide(vf.valueOf(f)));
+	    // append 1/n!*A^n*b
+	    if (bpowers != null) bpowers.add(p.multiply(b).multiply(vf.rational(1,f)));
+	    // next round
 	    p = p.multiply(A);
 	    n++;
 	}
+
 	// the (vectorial-coefficient) univariate polynomial e^(At)eta in t
-	final UnivariatePolynomial/*<Vector<R>>*/ eAeta = vf.polynomial((Vector[])powers.toArray(new Vector/*<R>*/[0]));
+	final UnivariatePolynomial/*<Vector<R>>*/ eAeta =
+	    vf.polynomial((Vector[])epowers.toArray(new Vector/*<R>*/[0]));
+	if (bpowers != null) {
+	    //@xxx the following snipet does not yet work completely?
+	    // polynomial components of e^A*b
+	    UnivariatePolynomial/*<R>*/[] bpolyc =
+		componentPolynomials(vf.polynomial(
+		    (Vector[])bpowers.toArray(new Vector/*<R>*/[0])));
+	    // component-wise integration
+	    for (int i = 0; i < bpolyc.length; i++) {
+		bpolyc[i] = (UnivariatePolynomial)bpolyc[i].integrate();
+	    }
+	    UnivariatePolynomial/*<Vector<R>>*/ bpoly = vectorialPolynomial(bpolyc);
+	    System.out.println("\tinhom: " + bpoly);
+	    if (!MathUtilities.isZero(tau))
+		throw new UnsupportedOperationException("inhomogeneous solutions not yet implemented for tau!=0");
+	    else
+		return eAeta.add(bpoly);
+	}
+	// shift eAeta by -tau unless that's zero
 	return MathUtilities.isZero(tau)
 	    ? eAeta
 	    : Functionals.compose(eAeta, Functionals.bindSecond(Operations.subtract, tau));
-	//return new ODESolution(powers, tau);
     }
-//     private static class ODESolution
-//	extends orbital.moon.math.functional.AbstractFunctor
-// 	implements orbital.math.functional.Function {
-//         private static final Values vf = Values.getDefaultInstance();
-// 	private final List/*<Vector<R>>*/ powers;
-// 	private final Real tau;
-// 	public ODESolution(List/*<Vector<R>>*/ powers, Real tau) {
-// 	    this.powers = powers;
-// 	    this.tau = tau;
-// 	    assert !powers.isEmpty() : "non-empty powers expected";
-// 	}
 
-// 	public Object apply(Object a) {
-// 	    final Arithmetic t = (Arithmetic)a;
-// 	    final Arithmetic t_tau = t.subtract(tau);
-// 	    Iterator i = powers.iterator();
-// 	    assert !powers.isEmpty() && i.hasNext(): "non-empty powers expected";
-// 	    // initial case A^0*eta*(t-tau)^n=eta
-// 	    Arithmetic r = (Arithmetic)i.next();
-// 	    int n = 1;
-// 	    while (i.hasNext()) {
-// 		r = r.add(t_tau.power(vf.valueOf(n)).multiply((Arithmetic)i.next()));
-// 		n++;
-// 	    }
-// 	    return r;
-// 	}
+    // converters
 
-// 	public orbital.math.functional.Function derive() {throw new UnsupportedOperationException("not yet implemented");}
-// 	public orbital.math.functional.Function integrate() {throw new UnsupportedOperationException("not yet implemented");}
-//     }
+    /**
+     * Converts a univariate polynomial with R-vectorial coefficients
+     * into an array of polynomials obtained by coordinate projections.
+     * @parameter p a vectorial polynomial a<sub>0</sub>+a<sub>1</sub>X+...+a<sub>n</sub>X<sup>n</sup>
+     *  with vectorial coefficients a<sub>i</sub>
+     * @return an array of the respective scalar polynomials
+     *  P<sub>i</sub> = a<sub>0,i</sub>+a<sub>1,i</sub>X+...+a<sub>n,i</sub>X<sup>n</sup>
+     * @see #vectorialPolynomial(UnivariatePolynomial[])
+     */
+    public static final /*<R extends Arithmetic>*/
+	UnivariatePolynomial/*<R>*/[] componentPolynomials(UnivariatePolynomial/*<Vector<R>>*/ p) {
+	final Values vf = Values.getDefaultInstance();
+	Vector/*<R>*/ a0 = (Vector) p.get(0);
+	// a growing list view for the resulting component polynomials
+	List/*<R>*/ piv[] = new List/*<R>*/[a0.dimension()];
+	for (int i = 0; i < piv.length; i++) {
+	    piv[i] = new LinkedList/*<R>*/();
+	}
+	// transfer
+	for (ListIterator i = p.iterator(); i.hasNext(); ) {
+	    Vector/*<R>*/ ak = (Vector/*<R>*/)i.next();
+	    assert ak.dimension() == piv.length : "coefficient vectors are assumed to have uniform dimensions";
+	    for (int j = 0; j < ak.dimension(); j++) {
+		piv[j].add(ak.get(j));
+	    }
+	}
+	UnivariatePolynomial/*<R>*/ pi[] = new UnivariatePolynomial/*<R>*/[piv.length];
+	for (int i = 0; i < pi.length; i++) {
+	    pi[i] = vf.polynomial((Arithmetic/*>R<*/[])piv[i].toArray(new Arithmetic/*>R<*/[0]));
+	}
+	return pi;
+    }
+
+    /**
+     * Converts an array of coordinate polynomials
+     * to a polynomial with R-vectorial coefficients.
+     * @parameter pi an array of scalar coordinate polynomials
+     *  P<sub>i</sub> = a<sub>0,i</sub>+a<sub>1,i</sub>X+...+a<sub>n,i</sub>X<sup>n</sup>
+     * @return a vectorial polynomial a<sub>0</sub>+a<sub>1</sub>X+...+a<sub>n</sub>X<sup>n</sup>
+     *  with vectorial coefficients a<sub>i</sub>=(a<sub>i,1</sub>,...,a<sub>i,k</sub>)
+     * @see #componentPolynomials(UnivariatePolynomial)
+     */
+    public static final /*<R extends Arithmetic>*/
+	UnivariatePolynomial/*<Vector<R>>*/ vectorialPolynomial(UnivariatePolynomial/*<R>*/ pi[]) {
+	final Values vf = Values.getDefaultInstance();
+	// the maximum degree of the polynomials
+	final int deg = ((Integer)Operations.sup.apply(Functionals.map(new Function() {
+		public Object apply(Object pii) {
+		    return ((UnivariatePolynomial)pii).degree();
+		}
+	    }, Arrays.asList(pi)))).intValue();
+	Vector/*<R>*/ pv[] = new Vector/*<R>*/[deg+1];
+	for (int k = 0; k <= deg; k++) {
+	    Arithmetic/*>R<*/ ai[] = new Arithmetic/*>R<*/[pi.length];
+	    for (int i = 0; i < ai.length; i++) {
+		ai[i] = pi[i].get(k);
+	    }
+	    pv[k] = vf.valueOf(ai);
+	}
+	return vf.polynomial(pv);
+    }
+    
+
 }// AlgebraicAlgorithms
