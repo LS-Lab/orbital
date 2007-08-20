@@ -60,6 +60,10 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
         return Utility.hashCode(signifier);
     } 
 
+    //@internal we are never zero or one as these are Integers but not Symbols
+    public boolean isZero() {return false;}
+    public boolean isOne() {return false;}
+    
     // Arithmetic implementation
 
     public Arithmetic zero() {return Values.ZERO;}

@@ -41,6 +41,14 @@ public abstract class AbstractFunctor implements MathFunctor {
         return Metric.INDUCED.distance(this, (MathFunctor)o).compareTo(tolerance) < 0;
     }
 
+    //@internal modulo equality of functions not being decidable and modulo 0 being represented as Function, BinaryFunction, ...
+    public boolean isZero() {
+    	return equals(zero());
+    }
+    public boolean isOne() {
+    	return equals(one());
+    }
+
     //@todo note that we have a problem of arities here. if our subclass is a Function then we should return the Function 0:A->B
     // however, if it is a BinaryFunction then we should return the BinaryFunction 0:A1*A2->B
     // perhaps if we just could define constant functions to be VoidFunction&cap;Function&cap;BinaryFunction this would all be more easy?

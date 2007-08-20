@@ -158,24 +158,6 @@ public final class MathUtilities {
 
 
     /**
-     * Returns whether a is 0 (in its group).
-     * @return a.equals(a.zero())
-     */
-    public static final boolean isZero(Arithmetic a) {
-	// if not symbolic: could possibly accelerate to return a.norm().equals(Values.ZERO)
-        return a.equals(a.zero());
-    } 
-
-    /**
-     * Returns whether a is 1 (in its ring).
-     * @return a.equals(a.one())
-     */
-    public static final boolean isOne(Arithmetic a) {
-        return a.equals(a.one());
-    } 
-    
-
-    /**
      * This function is true only when the value is an even number.
      * @return (value&1)==0.
      */

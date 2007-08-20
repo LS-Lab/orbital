@@ -23,6 +23,14 @@ abstract class AbstractArithmetic implements Arithmetic {
         return Metric.INDUCED.distance(this, (Arithmetic)o).compareTo(tolerance) < 0;
     }
 
+    public boolean isZero() {
+    	return equals(zero());
+    }
+    public boolean isOne() {
+    	return equals(one());
+    }
+
+
     /**
      * Subtracts an arithmetic object from this returning the result.
      * @return this+(&minus;b).
