@@ -199,5 +199,16 @@ public class AlgebraicAlgorithmsTest extends check.TestCase {
 	System.out.println("  solution at " + 0 + " is " + f.apply(vf.valueOf(0)));
 	System.out.println("  solution at " + 1 + " is " + f.apply(vf.valueOf(1)));
 	System.out.println("  solution at " + t + " is " + f.apply(t));
+
+        A = vf.valueOf(new double[][] {
+	    {0}
+	});
+	b = vf.valueOf(new Arithmetic[]{vf.valueOf(2)});
+	eta = vf.valueOf(new Symbol[]{vf.symbol("x0")});
+	f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
+	System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
+	System.out.println("  solution at " + 0 + " is " + f.apply(vf.valueOf(0)));
+	System.out.println("  solution at " + 1 + " is " + f.apply(vf.valueOf(1)));
+	System.out.println("  solution at " + t + " is " + f.apply(t));
     }
 }

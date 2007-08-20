@@ -7,6 +7,8 @@
 package orbital.moon.math;
 import orbital.math.*;
 
+import orbital.math.Integer;
+
 
 import java.math.BigDecimal;
 import orbital.math.functional.Operations;
@@ -122,8 +124,23 @@ abstract class AbstractReal extends AbstractComplex implements Real {
     } 
 
 
-    //@xxx improve all implementations of add(*), subtract(*), etc. to work reliably with new type hierarchy and auto conversion
-    
+    /**
+     * Turn numbers a and b into reals of appropriate (compatible) precision.
+     * @return an array of the converted versions of a and b respectively.
+     */
+    static Real[] makeReal(Number a, Number b) {
+	if (a instanceof orbital.moon.math.Big || b instanceof orbital.moon.math.Big) {
+	    return new Real[] {
+		new Big(a), new Big(b)
+	    };
+	} else {
+	    //@todo could also check whether Float would be sufficient
+	    return new Real[] {
+		new Double(a), new Double(b)
+	    };
+	}
+    }
+
     /**
      * Represents a real number in <b>R</b> as a float value.
      * 
@@ -164,6 +181,8 @@ abstract class AbstractReal extends AbstractComplex implements Real {
             else if (b instanceof Double)
                 //optimized widening
                 return new Double(floatValue() + b.doubleValue());
+            else if (b instanceof Big)
+                return new Big(floatValue()).add(b);
             return (Real) Operations.plus.apply(this, b);
             //@todo check whether b is a big double precision real
         }
@@ -173,6 +192,8 @@ abstract class AbstractReal extends AbstractComplex implements Real {
             else if (b instanceof Double)
                 //optimized widening
                 return new Double(floatValue() - b.doubleValue());
+            else if (b instanceof Big)
+                return new Big(floatValue()).subtract(b);
             return (Real) Operations.subtract.apply(this, b);
         }
         public Arithmetic minus() {
@@ -184,6 +205,8 @@ abstract class AbstractReal extends AbstractComplex implements Real {
             else if (b instanceof Double)
                 //optimized widening
                 return new Double(floatValue() * b.doubleValue());
+            else if (b instanceof Big)
+                return new Big(floatValue()).multiply(b);
             return (Real) Operations.times.apply(this, b);
         }
         public Real divide(Real b) {
@@ -192,6 +215,8 @@ abstract class AbstractReal extends AbstractComplex implements Real {
             else if (b instanceof Double)
                 //optimized widening
                 return new Double(floatValue() / b.doubleValue());
+            else if (b instanceof Big)
+                return new Big(floatValue()).divide(b);
             return (Real) Operations.divide.apply(this, b);
         }
         public Real power(Real b) {
@@ -200,6 +225,8 @@ abstract class AbstractReal extends AbstractComplex implements Real {
             else if (b instanceof Double)
                 //optimized widening
                 return new Double(Math.pow(floatValue(), b.doubleValue()));
+            else if (b instanceof Big)
+                return new Big(floatValue()).power(b);
             return (Real) Operations.power.apply(this, b);
         }
         public Arithmetic inverse() {
@@ -237,53 +264,48 @@ abstract class AbstractReal extends AbstractComplex implements Real {
         } 
     
         public Real add(Real b) {
-            //@todo check whether b is a big arbitrary precision real
-            return new Double(doubleValue() + b.doubleValue());
+            //@xxx what's up with b being an Integer.Int or Integer.Long?
+	    if (b instanceof Double || b instanceof Float)
+                return new Double(doubleValue() + b.doubleValue());
+            else if (b instanceof Big)
+                return new Big(doubleValue()).add(b);
+            return (Real) Operations.plus.apply(this, b);
         }
         public Real subtract(Real b) {
-            return new Double(doubleValue() - b.doubleValue());
+	    if (b instanceof Double || b instanceof Float)
+                return new Double(doubleValue() - b.doubleValue());
+            else if (b instanceof Big)
+                return new Big(doubleValue()).subtract(b);
+            return (Real) Operations.subtract.apply(this, b);
         }
         public Arithmetic minus() {
             return new Double(-doubleValue());
         } 
         public Real multiply(Real b) {
-            return new Double(doubleValue() * b.doubleValue());
+	    if (b instanceof Double || b instanceof Float)
+                return new Double(doubleValue() * b.doubleValue());
+            else if (b instanceof Big)
+                return new Big(doubleValue()).multiply(b);
+            return (Real) Operations.times.apply(this, b);
         }
         public Real divide(Real b) {
-            return new Double(doubleValue() / b.doubleValue());
+	    if (b instanceof Double || b instanceof Float)
+                return new Double(doubleValue() / b.doubleValue());
+            else if (b instanceof Big)
+                return new Big(doubleValue()).divide(b);
+            return (Real) Operations.divide.apply(this, b);
         }
         public Real power(Real b) {
-            return new Double(Math.pow(doubleValue(), b.doubleValue()));
+	    if (b instanceof Double || b instanceof Float)
+                return new Double(Math.pow(doubleValue(), b.doubleValue()));
+            else if (b instanceof Big)
+                return new Big(doubleValue()).power(b);
+            return (Real) Operations.power.apply(this, b);
         }
         public Arithmetic inverse() {
             return new Double(1 / doubleValue());
         } 
 
-        public Arithmetic add(Arithmetic b) {
-            if (b instanceof Real)
-                return add((Real) b);
-            return super.add(b);
-        } 
-        public Arithmetic subtract(Arithmetic b) {
-            if (b instanceof Real)
-                return subtract((Real) b);
-            return super.subtract(b);
-        } 
-        public Arithmetic multiply(Arithmetic b) {
-            if (b instanceof Real)
-                return multiply((Real) b);
-            return super.multiply(b);
-        } 
-        public Arithmetic divide(Arithmetic b) {
-            if (b instanceof Real)
-                return divide((Real) b);
-            return super.divide(b);
-        } 
-        public Arithmetic power(Arithmetic b) {
-            if (b instanceof Real)
-                return power((Real) b);
-            return super.power(b);
-        } 
     }
 
     /**
@@ -292,7 +314,7 @@ abstract class AbstractReal extends AbstractComplex implements Real {
      * @version $Id$
      * @author  Andr&eacute; Platzer
      */
-    static class Big extends AbstractReal {
+    static class Big extends AbstractReal implements orbital.moon.math.Big {
         private static final long serialVersionUID = -5801439569926611104L;
         private static final int ROUNDING_MODE = BigDecimal.ROUND_HALF_EVEN;
     
@@ -307,6 +329,19 @@ abstract class AbstractReal extends AbstractComplex implements Real {
         public Big(BigDecimal v) {
             value = v;
         }
+        public Big(Number v) {
+	    if (v instanceof BigDecimal)
+		value = (BigDecimal)v;
+	    else if (v instanceof orbital.moon.math.Big) {
+		if (v instanceof Big)
+		    value = ((Big)v).value;
+		else if (v instanceof AbstractInteger.Big)
+		    value = new BigDecimal(((AbstractInteger.Big)v).getValue());
+		else
+		    throw new IllegalArgumentException("unknown arbitrary precision type " + v.getClass() + " " + v);
+	    } else
+		value = BigDecimal.valueOf(v.doubleValue());
+        }
     
         public Object clone() {
             return new Big(new BigDecimal(value.unscaledValue(), value.scale()));
@@ -317,52 +352,48 @@ abstract class AbstractReal extends AbstractComplex implements Real {
         } 
     
         public Real add(Real b) {
-            //@todo check whether b is a big arbitrary precision real
-            return new Big(value.add(((Big)b).value));
+            if (b instanceof Big)
+                return new Big(value.add(((Big)b).value));
+            else if (b instanceof Float || b instanceof Double)
+                return new Big(value.add(BigDecimal.valueOf(b.doubleValue())));
+            return (Real) Operations.plus.apply(this, b);
         }
         public Real subtract(Real b) {
-            return new Big(value.subtract(((Big)b).value));
+            if (b instanceof Big)
+                return new Big(value.subtract(((Big)b).value));
+            else if (b instanceof Float || b instanceof Double)
+                return new Big(value.subtract(BigDecimal.valueOf(b.doubleValue())));
+            return (Real) Operations.subtract.apply(this, b);
         }
         public Arithmetic minus() {
             return new Big(value.negate());
         } 
         public Real multiply(Real b) {
-            return new Big(value.multiply(((Big)b).value));
+            if (b instanceof Big)
+                return new Big(value.multiply(((Big)b).value));
+            else if (b instanceof Float || b instanceof Double)
+                return new Big(value.multiply(BigDecimal.valueOf(b.doubleValue())));
+            return (Real) Operations.times.apply(this, b);
         }
         public Real divide(Real b) {
-            return new Big(value.divide(((Big)b).value, ROUNDING_MODE));
+            if (b instanceof Big)
+                return new Big(value.divide(((Big)b).value, ROUNDING_MODE));
+            else if (b instanceof Float || b instanceof Double)
+                return new Big(value.divide(BigDecimal.valueOf(b.doubleValue()), ROUNDING_MODE));
+            return (Real) Operations.divide.apply(this, b);
         }
         public Real power(Real b) {
-            throw new InternalError("not yet implemented");
+	    if (b instanceof Integer) {
+		if (b instanceof AbstractInteger.Int) {
+		    return new Big(value.pow(((Integer)b).intValue()));
+		} else {
+		    throw new ArithmeticException("exponentation is possibly too big");
+		}
+	    } else
+		throw new InternalError("not yet implemented");
         }
         public Arithmetic inverse() {
             return one().divide(this);
-        } 
-
-        public Arithmetic add(Arithmetic b) {
-            if (b instanceof Real)
-                return add((Real) b);
-            return super.add(b);
-        } 
-        public Arithmetic subtract(Arithmetic b) {
-            if (b instanceof Real)
-                return subtract((Real) b);
-            return super.subtract(b);
-        } 
-        public Arithmetic multiply(Arithmetic b) {
-            if (b instanceof Real)
-                return multiply((Real) b);
-            return super.multiply(b);
-        } 
-        public Arithmetic divide(Arithmetic b) {
-            if (b instanceof Real)
-                return divide((Real) b);
-            return super.divide(b);
-        } 
-        public Arithmetic power(Arithmetic b) {
-            if (b instanceof Real)
-                return power((Real) b);
-            return super.power(b);
         } 
     }
 }

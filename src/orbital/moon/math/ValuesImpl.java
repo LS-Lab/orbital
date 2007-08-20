@@ -501,6 +501,7 @@ public class ValuesImpl extends AbstractValues {
         //@xxx adapt better to new Complex>Real>Rational>Integer type hierarchy and conform to a new OBDD (ordered binary decision diagram)
         //@todo partial order with Arithmetic>Scalar>Complex>Real>Rational>Integer and greatest common super type of A,B being A&cup;B = sup {A,B}
         //@todo implement sup along with conversion routines. Perhaps introduce "int AbstractScalar.typeLevel()" and "int AbstractScalar.precisionLevel()" such that we can compute the maximum level of both with just two method calls. And introduce "Object AbstractScalar.convertTo(int typeLevel, int precisionLevel)" for conversion.
+	//@xxx respect precisions, e.g. make Big sticky
         if (Complex.hasType.apply(a) || Complex.hasType.apply(b))
             return new Complex[] {
                 Complex.hasType.apply(a) ? (Complex) a : new AbstractComplex.ComplexImpl(a), Complex.hasType.apply(b) ? (Complex) b : new AbstractComplex.ComplexImpl(b)
@@ -509,25 +510,20 @@ public class ValuesImpl extends AbstractValues {
         // this is a tricky binary decision diagram (optimized), see documentation
         if (Integer.hasType.apply(a)) {
             if (Integer.hasType.apply(b))
-                return new Integer[] {
-                    new AbstractInteger.Long(a), new AbstractInteger.Long(b)
-                };
+                return AbstractInteger.makeInteger(a, b);
         } else {        // a is no integer
             if (!Rational.hasType.apply(a))
-                return new Real[] {
-                    new AbstractReal.Double(a), new AbstractReal.Double(b)
-                };
+                return AbstractReal.makeReal(a, b);
         } 
         
         /* fall-through: all other cases come here */
         if (Rational.hasType.apply(b))
             return new Rational[] {
-                Rational.hasType.apply(a) ? (Rational) a : rational(a.intValue()), Rational.hasType.apply(b) ? (Rational) b : rational(b.intValue())
+                Rational.hasType.apply(a) ? (Rational) a : rational((Integer)a),
+		Rational.hasType.apply(b) ? (Rational) b : rational((Integer)b)
             };
         //@xxx Rational + Integer != Real
-        return new Real[] {
-            new AbstractReal.Double(a), new AbstractReal.Double(b)
-        };
+        return AbstractReal.makeReal(a, b);
     } 
 
     // arithmetic widening coercer
