@@ -433,7 +433,7 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
             final Arithmetic/*>R<*/ ck = (Arithmetic/*>R<*/) ai.divide(bm);
             quotient[k] = ck;
             f0 = f0.subtract(BASE(ck, k).multiply(g));
-            if (f0.norm().equals(Values.ZERO)) {
+            if (MathUtilities.isZero(f0)) {
                 for (int i = k - 1; i >= 0; i--)
                     quotient[i] = R_ZERO;
                 break;
@@ -461,7 +461,7 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
     private UnivariatePolynomial/*<R>*/ representative(Arithmetic/*>R<*/ a[]) {
         int deg;
         for (deg = a.length - 1; deg >= 0; deg--)
-            if (!a[deg].norm().equals(Values.ZERO))
+            if (!MathUtilities.isZero(a[deg]))
                 break;
         if (deg < 0)
             //@todo perhaps prefer {R_ZERO}?

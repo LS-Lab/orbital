@@ -1087,6 +1087,7 @@ public final class AlgebraicAlgorithms {
 		bpolyc[i] = (UnivariatePolynomial)bpolyc[i].integrate();
 	    }
 	    UnivariatePolynomial/*<Vector<R>>*/ bpoly = vectorialPolynomial(bpolyc);
+	    System.out.println("\thom  : " + eAeta);
 	    System.out.println("\tinhom: " + bpoly);
 	    if (!MathUtilities.isZero(tau))
 		throw new UnsupportedOperationException("inhomogeneous solutions not yet implemented for tau!=0");
