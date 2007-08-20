@@ -84,6 +84,7 @@ public final class Functions {
      * constant &acirc;: R&rarr;R; x &#8614; a .
      * <p>derive: &acirc;' = 0<br />
      * integrate: &int;a<i>d</i>x = a*x</p>
+     * @postcondition RES instanceof VoidFunction && RES.apply()==a && \forall x. RES.apply(x)==a
      */
     public static final /*<A extends Arithmetic, B extends Arithmetic>*/ Function/*<A,B>*/ constant(Object/*>B<*/ a) {
         return new ConstantFunction/*<A,B>*/(a);

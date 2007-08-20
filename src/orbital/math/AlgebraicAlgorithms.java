@@ -1042,9 +1042,7 @@ public final class AlgebraicAlgorithms {
 	List/*<Vector<R>>*/ epowers = new LinkedList/*<Vector<R>>*/();
 	// contains the successive powers 1/n!*A^n*b if needed at all (otherwise null if b=0)
 	List/*<Vector<R>>*/ bpowers =
-	    MathUtilities.isZero(b)
-	    ? null
-	    : new LinkedList/*<Vector<R>>*/();
+	    b.isZero() ? null : new LinkedList/*<Vector<R>>*/();
 	// index into powers
 	int n = 0;
 	// add A^0*eta=eta
@@ -1056,7 +1054,7 @@ public final class AlgebraicAlgorithms {
 	Matrix/*<R>*/ p = A;
 	// contains the successive factorials
 	int f = 1;
-	while (!MathUtilities.isZero(p)) {
+	while (!p.isZero()) {
 	    if (n > A.dimension().width)
 		throw new UnsupportedOperationException("solving differential equations only implemented for nilpotent systems. Yet " + A + "^n = " + p);
 	    // successive factorial
@@ -1089,13 +1087,13 @@ public final class AlgebraicAlgorithms {
 	    UnivariatePolynomial/*<Vector<R>>*/ bpoly = vectorialPolynomial(bpolyc);
 	    System.out.println("\thom  : " + eAeta);
 	    System.out.println("\tinhom: " + bpoly);
-	    if (!MathUtilities.isZero(tau))
+	    if (!tau.isZero())
 		throw new UnsupportedOperationException("inhomogeneous solutions not yet implemented for tau!=0");
 	    else
 		return eAeta.add(bpoly);
 	}
 	// shift eAeta by -tau unless that's zero
-	return MathUtilities.isZero(tau)
+	return tau.isZero()
 	    ? eAeta
 	    : Functionals.compose(eAeta, Functionals.bindSecond(Operations.subtract, tau));
     }

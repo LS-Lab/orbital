@@ -127,6 +127,25 @@ public interface Arithmetic extends Normed {
      */
     /*final*/ boolean equals(Object o, Real tolerance);
 
+    // checks
+
+    /**
+     * Checks for identity to 0.
+     * @return Whether this element equals the zero in the corresponding algebraic structure (if it is a unital magma or monoid).
+     * @throws UnsupportedOperationException if this algebraic structure does not have a 0.
+     *  This should not happen for monoids of +.
+     * @postconditions RES == OLD(RES) && RES == equals(zero())
+     */
+    boolean isZero() throws UnsupportedOperationException;
+    /**
+     * Checks for identity to 1.
+     * @return Whether this element equals the 1 in the corresponding algebraic structure (if it is a true ring with 1, or ...).
+     * @throws UnsupportedOperationException if this algebraic structure does not have a 1.
+     *  This should not happen for monoids of &sdot;.
+     * @postconditions RES == OLD(RES) && RES == equals(one())
+     */
+    boolean isOne() throws UnsupportedOperationException;
+
     // constants for laws + and &sdot;
 
     /**

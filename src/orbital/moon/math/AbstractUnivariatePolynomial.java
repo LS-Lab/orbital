@@ -433,7 +433,7 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
             final Arithmetic/*>R<*/ ck = (Arithmetic/*>R<*/) ai.divide(bm);
             quotient[k] = ck;
             f0 = f0.subtract(BASE(ck, k).multiply(g));
-            if (MathUtilities.isZero(f0)) {
+            if (f0.isZero()) {
                 for (int i = k - 1; i >= 0; i--)
                     quotient[i] = R_ZERO;
                 break;
@@ -461,7 +461,7 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
     private UnivariatePolynomial/*<R>*/ representative(Arithmetic/*>R<*/ a[]) {
         int deg;
         for (deg = a.length - 1; deg >= 0; deg--)
-            if (!MathUtilities.isZero(a[deg]))
+            if (!a[deg].isZero())
                 break;
         if (deg < 0)
             //@todo perhaps prefer {R_ZERO}?
@@ -487,7 +487,7 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
     } 
 
     public String toString() {
-        assert degreeValue() < 0 || !MathUtilities.isZero(get(degreeValue())) : "definition of degree implies that the degree-th (" + degree() + "-th) coefficient (" + get(degreeValue()) + ") is != 0";
+        assert degreeValue() < 0 || !get(degreeValue()).isZero() : "definition of degree implies that the degree-th (" + degree() + "-th) coefficient (" + get(degreeValue()) + ") is != 0";
         return ArithmeticFormat.getDefaultInstance().format(this);
     }
 

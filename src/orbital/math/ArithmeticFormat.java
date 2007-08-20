@@ -696,7 +696,7 @@ public class ArithmeticFormat extends Format {
         for (int i = Math.max(p.degreeValue(),0); i >= 0; i--) {
             Arithmetic ci = p.get(i);
             // only print nonzero elements (but print the 0-th coefficient if it is the only one)
-            if (!MathUtilities.isZero(ci)
+            if (!ci.isZero()
                 || (i == 0 && result.length() == initialIndex)) {
                 int startIndex = result.length();
 		Arithmetic cone;

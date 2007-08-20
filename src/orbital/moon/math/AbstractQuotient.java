@@ -90,7 +90,14 @@ class AbstractQuotient/*<M extends Arithmetic>*/ implements Quotient/*<M>*/, Ser
 
     public int hashCode() {
         return representative().hashCode() ^ getQuotientOperator().hashCode();
-    } 
+    }
+    
+    public boolean isZero() {
+    	return equals(zero()); 
+    }
+    public boolean isOne() {
+    	return equals(one()); 
+    }
 
         
     // get/set Properties.
