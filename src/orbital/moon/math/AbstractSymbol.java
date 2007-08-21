@@ -72,9 +72,8 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
     //XXX: pointwise Arithmetic implementation (identical to @see orbital.math.functional.MathFunctor.AbstractFunctor)
     public Arithmetic add(Arithmetic b) throws ArithmeticException {
         // simple-case optimization
-        if (b instanceof Scalar)
-            if (Values.ZERO.equals(b))
-                return this;
+        if (b.isZero())
+	    return this;
         return Functionals.genericCompose(Operations.plus, this, b);
     } 
     public Arithmetic minus() throws ArithmeticException {
@@ -82,9 +81,8 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
     } 
     public Arithmetic subtract(Arithmetic b) throws ArithmeticException {
         // simple-case optimization
-        if (b instanceof Scalar)
-            if (Values.ZERO.equals(b))
-                return this;
+        if (b.isZero())
+	    return this;
         return Functionals.genericCompose(Operations.subtract, this, b);
     } 
 
@@ -96,12 +94,12 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
     public Arithmetic multiply(Arithmetic b) throws ArithmeticException {
         // simple-case optimization
         if (b instanceof Scalar) {
-            if (Values.ONE.equals(b))
+	    if (b.isZero())
+		return zero();
+            else if (b.isOne())
                 return this;
             else if (Values.MINUS_ONE.equals(b))
                 return minus();
-            else if (Values.ZERO.equals(b))
-                return Values.ZERO;
         }
         return Functionals.genericCompose(Operations.times, this, b);
     } 
@@ -111,12 +109,12 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
     public Arithmetic divide(Arithmetic b) throws ArithmeticException {
         // simple-case optimization
         if (b instanceof Scalar) {
-            if (Values.ONE.equals(b))
+	    if (b.isZero())
+                throw new ArithmeticException("division by zero");
+            else if (b.isOne())
                 return this;
             else if (Values.MINUS_ONE.equals(b))
                 return minus();
-            else if (Values.ZERO.equals(b))
-                throw new ArithmeticException("division by zero");
         }
         return Functionals.genericCompose(Operations.divide, this, b);
     } 
@@ -124,18 +122,22 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
     public Arithmetic power(Arithmetic b) throws ArithmeticException {
         // simple-case optimization
         if (b instanceof Scalar) {
-            if (Values.ONE.equals(b))
+	    if (b.isZero()) {
+		if (isZero()) {
+		    assert false : "this never happens as symbols are not identical to 0";
+		    throw new ArithmeticException("0^0 is not uniquely defined");
+		} else
+		    return one();
+	    } else if (b.isOne())
                 return this;
             else if (Values.MINUS_ONE.equals(b))
                 return inverse();
-            else if (Values.ZERO.equals(b))
-                return Values.ONE;
         }
         return Functionals.genericCompose(Operations.power, this, b);
     }
 
     public Real norm() {
-        //@xxx or should we  return Functions.norm.apply(this)?
+        //@xxx or should we  return Functions.norm.apply(this), which isn't a real?
         return Values.NaN;
     } 
 
