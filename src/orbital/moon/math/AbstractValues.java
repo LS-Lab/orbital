@@ -76,60 +76,6 @@ public abstract class AbstractValues extends Values {
         return parameters;
     }
 
-    // Constants
-
-    public Integer ZERO() {
-        return ZEROImpl;
-    }
-    private final Integer ZEROImpl = valueOf(0);
-
-    public Integer ONE() {
-        return ONEImpl;
-    }
-    private final Integer ONEImpl = valueOf(1);
-
-    public Integer MINUS_ONE() {
-        return MINUS_ONEImpl;
-    }
-    private final Integer MINUS_ONEImpl = valueOf(-1);
-
-    public Real POSITIVE_INFINITY() {
-        return POSITIVE_INFINITYImpl;
-    }
-    private final Real POSITIVE_INFINITYImpl = valueOf(java.lang.Double.POSITIVE_INFINITY);
-
-    public Real NEGATIVE_INFINITY() {
-        return NEGATIVE_INFINITYImpl;
-    }
-    private final Real NEGATIVE_INFINITYImpl = valueOf(java.lang.Double.NEGATIVE_INFINITY);
-
-    public Real PI() {
-        return PIImpl;
-    }
-    private final Real PIImpl = valueOf(Math.PI);
-    public Real E() {
-        return EImpl;
-    }
-    private final Real EImpl = valueOf(Math.E);
-
-    public Real NaN() {
-        return NaNImpl;
-    }
-    private final Real NaNImpl = valueOf(java.lang.Double.NaN);
-
-    public Complex I() {
-        return IImpl;
-    }
-    private final Complex IImpl = complex(0, 1);
-    public Complex i() {
-        return IImpl;
-    }
-
-    public Complex INFINITY() {
-        return INFINITYImpl;
-    }
-    private final Complex INFINITYImpl = complex(java.lang.Double.POSITIVE_INFINITY, java.lang.Double.NaN);
-
     // scalar value constructors - facade factory
 
     public Scalar valueOf(Number val) {

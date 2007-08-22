@@ -133,16 +133,28 @@ public class AlgebraicAlgorithmsTest extends check.TestCase {
 	final Symbol t = vf.symbol("t");
 	final Real tau = vf.ZERO();
         Matrix A = vf.valueOf(new double[][] {
-	    {0,1},
-	    {0,0}
+	    {0}
 	});
-	Vector b = vf.valueOf(new double[]{0,0});
-	Vector eta = vf.valueOf(new double[]{0,0});
+	Vector b = vf.valueOf(new Arithmetic[]{vf.valueOf(2)});
+	Vector eta = vf.valueOf(new Symbol[]{vf.symbol("x0")});
 	Function f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
 	System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
 	System.out.println("  solution at " + 0 + " is " + f.apply(vf.valueOf(0)));
 	System.out.println("  solution at " + 1 + " is " + f.apply(vf.valueOf(1)));
 	System.out.println("  solution at " + t + " is " + f.apply(t));
+
+        A = vf.valueOf(new double[][] {
+	    {0,1},
+	    {0,0}
+	});
+	b = vf.valueOf(new double[]{0,0});
+	eta = vf.valueOf(new double[]{0,0});
+	f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
+	System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
+	System.out.println("  solution at " + 0 + " is " + f.apply(vf.valueOf(0)));
+	System.out.println("  solution at " + 1 + " is " + f.apply(vf.valueOf(1)));
+	System.out.println("  solution at " + t + " is " + f.apply(t));
+
 
 	eta = vf.valueOf(new double[]{1,2});
 	f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
@@ -200,15 +212,19 @@ public class AlgebraicAlgorithmsTest extends check.TestCase {
 	System.out.println("  solution at " + 1 + " is " + f.apply(vf.valueOf(1)));
 	System.out.println("  solution at " + t + " is " + f.apply(t));
 
-        A = vf.valueOf(new double[][] {
-	    {0}
+	A = vf.valueOf(new double[][] {
+	    {0,1,0,0},
+	    {0,0,1,0},
+	    {0,0,0,1},
+	    {0,0,0,0},
 	});
-	b = vf.valueOf(new Arithmetic[]{vf.valueOf(2)});
-	eta = vf.valueOf(new Symbol[]{vf.symbol("x0")});
+	b = vf.valueOf(new Arithmetic[]{vf.ZERO,vf.ZERO,vf.ZERO,vf.symbol("b")});
+	eta = vf.valueOf(new Symbol[]{vf.symbol("a1"),vf.symbol("a2"),vf.symbol("a3"),vf.symbol("a4")});
 	f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
 	System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
 	System.out.println("  solution at " + 0 + " is " + f.apply(vf.valueOf(0)));
 	System.out.println("  solution at " + 1 + " is " + f.apply(vf.valueOf(1)));
 	System.out.println("  solution at " + t + " is " + f.apply(t));
+
     }
 }
