@@ -27,32 +27,43 @@ import orbital.util.*;
  * @todo test Rational as well
  */
 public class FunctionTest extends check.TestCase {
-    private static final int  TEST_REPETITION = 20;
-    private static final Values vf = Values.getDefaultInstance();
+    private static final int  TEST_REPETITION = 100/**************20*/;
+    private static final Values vf;
+    static {
+	// set arbitrary precision as default (for adequate comparison with Mathematica)
+	System.setProperty("orbital.math.Values.implementation",
+			   //orbital.moon.math.BigValuesImpl.class.getName());
+			   orbital.moon.math.BigValuesImpl.class.getName());
+	// make format precision compatible with Mathematica for appropriate numerical comparisons
+        MathUtilities.setDefaultPrecisionDigits(17);
+	vf = Values.getDefaultInstance();
+    }	
     private static final Real tolerance = vf.valueOf(1e-5);
     private static final int DSOLVE_PRECISION_DIGITS = 3;
+    private static final int MAX_DSOLVE_DIM = 5;
     private static final ArithmeticFormat mf = ArithmeticFormat.MATH_EXPORT_FORMAT;
         
     // the default matrix and vector (ddim.width) dimension
     private static final Dimension ddim = new Dimension(2,2);
 
     // test type bit mask constants
-    public static final int   TYPE_NONE = 0;
+    public static final int TYPE_NONE = 0;
 
-    public static final int   TYPE_INTEGER = 1;
-    public static final int   TYPE_REAL = 2;
-    public static final int   TYPE_COMPLEX = 4;
-    public static final int   TYPE_SCALAR = TYPE_INTEGER | TYPE_REAL | TYPE_COMPLEX;
+    public static final int TYPE_INTEGER  = 1;
+    public static final int TYPE_RATIONAL = 2;
+    public static final int TYPE_REAL     = 4;
+    public static final int TYPE_COMPLEX  = 8;
+    public static final int TYPE_SCALAR   = TYPE_INTEGER | TYPE_RATIONAL | TYPE_REAL | TYPE_COMPLEX;
 
-    public static final int   TYPE_VECTOR = 32;
-    public static final int   TYPE_MATRIX = 64;
-    public static final int   TYPE_TENSOR = 128 | TYPE_MATRIX | TYPE_VECTOR;
+    public static final int TYPE_VECTOR = 32;
+    public static final int TYPE_MATRIX = 64;
+    public static final int TYPE_TENSOR = 128 | TYPE_MATRIX | TYPE_VECTOR;
 
-    public static final int   TYPE_ALL = TYPE_SCALAR | TYPE_TENSOR;
-    public static final int   TYPE_DEFAULT = TYPE_SCALAR;
-    public static final int   TYPE_NUMERIC = TYPE_ALL;
+    public static final int TYPE_ALL = TYPE_SCALAR | TYPE_TENSOR;
+    public static int       TYPE_DEFAULT = TYPE_SCALAR;
+    public static final int TYPE_NUMERIC = TYPE_ALL;
 
-    public static final int   TYPE_SYMBOL = 1<<16;
+    public static final int TYPE_SYMBOL = 1<<16;
 
     public static void main(String[] argv) {
         junit.textui.TestRunner.run(suite());
@@ -107,10 +118,11 @@ public class FunctionTest extends check.TestCase {
 	closeMathLink();
     }
 
-    
+
     public void testCalculations() {
 	createMathLink();
-        MathUtilities.setDefaultPrecisionDigits(17);
+	TYPE_DEFAULT = TYPE_INTEGER | /*TYPE_RATIONAL|*/ TYPE_REAL | TYPE_COMPLEX;
+	final int scalarTypes = TYPE_DEFAULT;
         try {
             ml.evaluate("2+2");
             ml.waitForAnswer();
@@ -139,54 +151,54 @@ public class FunctionTest extends check.TestCase {
             testFunction("(#1)&",       Functions.id, MIN, MAX, TYPE_ALL, TYPE_ALL);
             testFunction("(1)&",        Functions.one, MIN, MAX, TYPE_ALL, TYPE_ALL);
             testFunction("(0)&",        Functions.zero, MIN, MAX, TYPE_ALL, TYPE_ALL);
-            testFunction("Plus",        Operations.plus, MIN, MAX, TYPE_ALL, TYPE_SCALAR);
-            testFunction("Plus",        Operations.plus, MIN, MAX, TYPE_TENSOR, TYPE_SCALAR);
+            testFunction("Plus",        Operations.plus, MIN, MAX, TYPE_ALL, scalarTypes);
+            testFunction("Plus",        Operations.plus, MIN, MAX, TYPE_TENSOR, scalarTypes);
             testFunction("Plus",        Operations.plus, MIN, MAX, TYPE_TENSOR, TYPE_REAL);
-            testFunction("Subtract",    Operations.subtract, MIN, MAX, TYPE_ALL, TYPE_SCALAR);
+            testFunction("Subtract",    Operations.subtract, MIN, MAX, TYPE_ALL, scalarTypes);
             testFunction("Subtract",    Operations.subtract, MIN, MAX, TYPE_TENSOR, TYPE_REAL);
-            testFunction("Times",       Operations.times, MIN, MAX, TYPE_SCALAR, TYPE_SCALAR);
+            testFunction("Times",       Operations.times, MIN, MAX, scalarTypes, scalarTypes);
             //@todo Operations.times with TYPE_TENSOR
-            testFunction("Dot", Operations.times, MIN, MAX, TYPE_MATRIX, TYPE_SCALAR);
+            testFunction("Dot", Operations.times, MIN, MAX, TYPE_MATRIX, scalarTypes);
             testFunction("Dot", Operations.times, MIN, MAX, TYPE_MATRIX, TYPE_REAL);
             //testFunction("Divide",    Operations.divide, MIN, MAX, TYPE_REAL | TYPE_COMPLEX);
             //testFunction("Power",     Operations.power, MIN, MAX);
-            testFunction("Minus",       Operations.minus, MIN, MAX, TYPE_ALL, TYPE_SCALAR);
+            testFunction("Minus",       Operations.minus, MIN, MAX, TYPE_ALL, scalarTypes);
             //testFunction("Inverse",   Operations.inverse, MIN, MAX, TYPE_MATRIX);
             try {
-                testFunction("Exp",     Functions.exp, -10, 10, TYPE_SCALAR, TYPE_NONE);
-                testFunction("Log",     Functions.log, EPS, MAX, TYPE_SCALAR, TYPE_NONE);
+                testFunction("Exp",     Functions.exp, -10, 10, scalarTypes, TYPE_NONE);
+                testFunction("Log",     Functions.log, EPS, MAX, scalarTypes, TYPE_NONE);
             }
             catch (AssertionError ignore) {
                 ignore.printStackTrace();
             }
                         
-            testFunction("Sqrt",        Functions.sqrt, 0, MAX, TYPE_SCALAR, TYPE_NONE);
+            testFunction("Sqrt",        Functions.sqrt, 0, MAX, scalarTypes, TYPE_NONE);
             testFunction("Abs",         Functions.norm, MIN, MAX, TYPE_ALL, TYPE_ALL);
-            testFunction("(#1^2)&",     Functions.square, MIN, MAX, TYPE_SCALAR | TYPE_MATRIX, TYPE_SCALAR);
+            testFunction("(#1^2)&",     Functions.square, MIN, MAX, scalarTypes | TYPE_MATRIX, scalarTypes);
             //testFunction("DiracDelta",Functions.diracDelta, MIN, MAX);
 
-            testFunction("Sin",         Functions.sin, SMIN, SMAX, TYPE_SCALAR, TYPE_NONE);
-            testFunction("Cos",         Functions.cos, SMIN, SMAX, TYPE_SCALAR, TYPE_NONE);
-            testFunction("Tan",         Functions.tan, SMIN, SMAX, TYPE_SCALAR, TYPE_NONE); //...
-            testFunction("Cot",         Functions.cot, -PI+EPS, -EPS, TYPE_SCALAR, TYPE_NONE); //...
-            testFunction("Cot",         Functions.cot, EPS, PI-EPS, TYPE_SCALAR, TYPE_NONE);
-            testFunction("Csc",         Functions.csc, EPS, SMAX, TYPE_SCALAR, TYPE_NONE);
-            testFunction("Csc",         Functions.csc, SMIN, EPS, TYPE_SCALAR, TYPE_NONE);
-            testFunction("Sec",         Functions.sec, SMIN, SMAX, TYPE_SCALAR, TYPE_NONE);
-            testFunction("Sinh",        Functions.sinh, SMIN, SMAX, TYPE_SCALAR, TYPE_NONE);
-            testFunction("Cosh",        Functions.cosh, SMIN, SMAX, TYPE_SCALAR, TYPE_NONE);
-            testFunction("Tanh",        Functions.tanh, SMIN, SMAX, TYPE_SCALAR, TYPE_NONE);
-            testFunction("Coth",        Functions.coth, EPS, SMAX, TYPE_SCALAR, TYPE_NONE);
-            testFunction("Coth",        Functions.coth, SMIN, EPS, TYPE_SCALAR, TYPE_NONE);
-            testFunction("Csch",        Functions.csch, SMIN, EPS, TYPE_SCALAR, TYPE_NONE);
-            testFunction("Csch",        Functions.csch, EPS, SMAX, TYPE_SCALAR, TYPE_NONE);
-            testFunction("Sech",        Functions.sech, SMIN, SMAX, TYPE_SCALAR, TYPE_NONE);
-            testFunction("ArcCos",      Functions.arccos, -1, 1, TYPE_SCALAR, TYPE_NONE);
-            testFunction("ArcSin",      Functions.arcsin, -1, 1, TYPE_SCALAR, TYPE_NONE);
-            //testFunction("ArcCot",    Functions.arccot, SMIN, SMAX, TYPE_SCALAR, TYPE_NONE);  // differs by PI for negative values. we return positive values
-            testFunction("ArcTan",      Functions.arctan, SMIN, SMAX, TYPE_SCALAR, TYPE_NONE);
-            testFunction("ArcCosh",     Functions.arcosh, 1, SMAX, TYPE_SCALAR, TYPE_NONE);
-            testFunction("ArcSinh",     Functions.arsinh, SMIN, SMAX, TYPE_SCALAR, TYPE_NONE);
+            testFunction("Sin",         Functions.sin, SMIN, SMAX, scalarTypes, TYPE_NONE);
+            testFunction("Cos",         Functions.cos, SMIN, SMAX, scalarTypes, TYPE_NONE);
+            testFunction("Tan",         Functions.tan, SMIN, SMAX, scalarTypes, TYPE_NONE); //...
+            testFunction("Cot",         Functions.cot, -PI+EPS, -EPS, scalarTypes, TYPE_NONE); //...
+            testFunction("Cot",         Functions.cot, EPS, PI-EPS, scalarTypes, TYPE_NONE);
+            testFunction("Csc",         Functions.csc, EPS, SMAX, scalarTypes, TYPE_NONE);
+            testFunction("Csc",         Functions.csc, SMIN, EPS, scalarTypes, TYPE_NONE);
+            testFunction("Sec",         Functions.sec, SMIN, SMAX, scalarTypes, TYPE_NONE);
+            testFunction("Sinh",        Functions.sinh, SMIN, SMAX, scalarTypes, TYPE_NONE);
+            testFunction("Cosh",        Functions.cosh, SMIN, SMAX, scalarTypes, TYPE_NONE);
+            testFunction("Tanh",        Functions.tanh, SMIN, SMAX, scalarTypes, TYPE_NONE);
+            testFunction("Coth",        Functions.coth, EPS, SMAX, scalarTypes, TYPE_NONE);
+            testFunction("Coth",        Functions.coth, SMIN, EPS, scalarTypes, TYPE_NONE);
+            testFunction("Csch",        Functions.csch, SMIN, EPS, scalarTypes, TYPE_NONE);
+            testFunction("Csch",        Functions.csch, EPS, SMAX, scalarTypes, TYPE_NONE);
+            testFunction("Sech",        Functions.sech, SMIN, SMAX, scalarTypes, TYPE_NONE);
+            testFunction("ArcCos",      Functions.arccos, -1, 1, scalarTypes, TYPE_NONE);
+            testFunction("ArcSin",      Functions.arcsin, -1, 1, scalarTypes, TYPE_NONE);
+            //testFunction("ArcCot",    Functions.arccot, SMIN, SMAX, scalarTypes, TYPE_NONE);  // differs by PI for negative values. we return positive values
+            testFunction("ArcTan",      Functions.arctan, SMIN, SMAX, scalarTypes, TYPE_NONE);
+            testFunction("ArcCosh",     Functions.arcosh, 1, SMAX, scalarTypes, TYPE_NONE);
+            testFunction("ArcSinh",     Functions.arsinh, SMIN, SMAX, scalarTypes, TYPE_NONE);
             testFunction("ArcTanh",     Functions.artanh, -1+EPS, 1-EPS, TYPE_REAL | TYPE_COMPLEX, TYPE_NONE);
             System.out.println();
             System.out.println("PASSED");
@@ -374,27 +386,50 @@ public class FunctionTest extends check.TestCase {
 
     // testing more sophisticated symbolic algorithms
 
+    // testing differential equation solving
+
     public void testdSolve_homogeneous_numeric() throws MathLinkException {
-	casetestdSolve(-5, +5, TYPE_INTEGER /*| TYPE_REAL*/, true);
+	FunctionTest.TYPE_DEFAULT = TYPE_INTEGER;
+	casetestdSolve(-1000, +1000, TYPE_INTEGER /*| TYPE_REAL*/, true);
     }
     public void testdSolve_inhomogeneous_numeric() throws MathLinkException {
-	casetestdSolve(-5, +5, TYPE_INTEGER /*| TYPE_REAL*/, false);
+	FunctionTest.TYPE_DEFAULT = TYPE_INTEGER | TYPE_RATIONAL;
+	casetestdSolve(-1000, +1000, TYPE_DEFAULT, false);
     }
     public void testdSolve_homogeneous_symbolic() throws MathLinkException {
-	casetestdSolve(-5, +5, TYPE_SYMBOL, true);
+	FunctionTest.TYPE_DEFAULT = TYPE_INTEGER | TYPE_RATIONAL;
+	casetestdSolve(-1000, +1000, TYPE_SYMBOL, true);
     }
     public void testdSolve_inhomogeneous_symbolic() throws MathLinkException {
-	casetestdSolve(-5, +5, TYPE_SYMBOL, false);
+	FunctionTest.TYPE_DEFAULT = TYPE_INTEGER | TYPE_RATIONAL;
+	casetestdSolve(-1000, +1000, TYPE_SYMBOL, false);
     }
+    /*
+    public void testdSolve_homogeneous_numeric_uni() throws MathLinkException {
+	FunctionTest.TYPE_DEFAULT = TYPE_INTEGER;
+	casetestdSolve(-1, +1, TYPE_DEFAULT, true);
+    }
+    public void testdSolve_inhomogeneous_numeric_uni() throws MathLinkException {
+	FunctionTest.TYPE_DEFAULT = TYPE_INTEGER;
+	casetestdSolve(-1, +1, TYPE_DEFAULT, false);
+    }
+    public void testdSolve_homogeneous_symbolic_uni() throws MathLinkException {
+	FunctionTest.TYPE_DEFAULT = TYPE_INTEGER;
+	casetestdSolve(-1, +1, TYPE_SYMBOL, true);
+    }
+    public void testdSolve_inhomogeneous_symbolic_uni() throws MathLinkException {
+	FunctionTest.TYPE_DEFAULT = TYPE_INTEGER;
+	casetestdSolve(-1, +1, TYPE_SYMBOL, false);
+    }
+    */
     
-    public void casetestdSolve(double MIN, double MAX, int componentType, boolean homogeneous)
+    protected void casetestdSolve(double MIN, double MAX, int componentType, boolean homogeneous)
 	throws MathLinkException {
-	createMathLink();	
+	createMathLink();
 	try {
 	    for (int rep = 0; rep < TEST_REPETITION; rep++) {
-		final int n = integerArgument(1,5);
+		final int n = integerArgument(1,MAX_DSOLVE_DIM);
 		final Dimension dim = new Dimension(n,n);
-		final Symbol t = vf.symbol("t");
 		final Real tau = vf.ZERO();
 		Matrix A = matrixArgument(MIN,MAX, componentType&TYPE_NUMERIC, dim);
 		// make strict upper diagonal matrix for nilpotence
@@ -407,66 +442,177 @@ public class FunctionTest extends check.TestCase {
 		    ? vf.ZERO(n)
 		    : vectorArgument(MIN,MAX, componentType, dim.height);
 		Vector eta = vectorArgument(MIN,MAX, componentType, dim.height);
-		Function f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
-		System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
-		System.out.println("  solution at " + t + " is " + f.apply(t));
-
-		UnivariatePolynomial fc[] = AlgebraicAlgorithms.componentPolynomials((UnivariatePolynomial)f);
-		assertEquals("vectorial polynomial of component polynomials is the original",
-			     f, AlgebraicAlgorithms.vectorialPolynomial(fc));
-
-		// compare results to Mathematica's DSolve
-		/*
-		 * Generates essentially the following template
-		 * Module[{A = {{4, -6}, {1, -1}},
-		 *   eta = {2, 5},
-		 *   X},
-		 *  X[t_] = {x1[t], x2[t]};
-		 *  X[t] /. DSolve[Join[MapThread[#1 == #2 &, {X'[t], A.X[t] + b}],
-		 *      MapThread[#1 == #2 &, {X[0], eta}]
-		 *      ],
-		 *     X[t], t] [[1]]
-		 *  ]	      
-		 */
-		final String oursol = mf.format(f.apply(t));
-		// construct {x0[t], x1[t], ... x(n-1)[t]}
-		String dimensionspace = "{";
-		for (int i = 0; i < n; i++) {
-		    dimensionspace += "x" + i + "[" + t + "]";
-		    if (i + 1 < n)
-			dimensionspace += ",";
-		}
-		dimensionspace += "}";
-		String ode = "Module[{X}, X[" + t + "_] = " + dimensionspace + ";\n"
-		    + "X[" + t + "] /.\n"
-		    + "Simplify[\n"
-		    + "DSolve[Join[\n"
-		    + " MapThread[#1==#2&, {X'[" + t + "], (" + mf.format(A) + ").X[" + t + "] + " + mf.format(b) + "}],\n"
-		    + " MapThread[#1==#2&, {X[" + tau + "], (" + mf.format(eta) + ")}]],\n"
-		    + " X[" + t + "], " + t + "][[1]]\n"
-		    + "]]";
-
-		System.out.println(ode);
-		ml.newPacket();
-		ml.evaluate("" + ode + "");
-		ml.waitForAnswer();
-		final String refsol = ml.getExpr().toString();
-		ml.newPacket();
-		System.out.println("Our solution:\t\t" + oursol);
-		System.out.println("Reference solution:\t" + refsol);
-
-		System.out.println("FullSimplify[SetPrecision[(" + ode + " == " + oursol + "), " + DSOLVE_PRECISION_DIGITS + "]]");
-		ml.newPacket();
-		ml.evaluate("Simplify[(\n" + ode + " == \n" + oursol + ")]");
-		ml.waitForAnswer();
-		final String comparison = ml.getExpr().toString();
-		ml.newPacket();
-		System.out.println("Result:\t" + comparison);
-		if (!comparison.equals("True"))
-		    System.out.println("dSolve validation FAILED");
-		assertTrue(comparison.equals("True") , " dSolve equivalence:\n " + oursol + " ==\n " + refsol + "\nresulting in " + comparison);
-		System.out.println("Next");
+		checkdSolve(A,b,tau,eta);
 	    }
+	}
+	catch (MathLinkException e) {
+	    if (!"machine number overflow".equals(e.getMessage()))
+		throw e;
+	}
+	finally {
+	    closeMathLink();
+	}
+    }
+
+    protected void checkdSolve(Matrix/*<R>*/ A, Vector/*<R>*/ b, Real tau, Vector/*<R>*/ eta)
+	throws MathLinkException {
+	try {
+	    final Symbol t = vf.symbol("t");
+	    Function f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
+	    System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
+	    System.out.println("  solution at " + t + " is " + f.apply(t));
+	    
+	    UnivariatePolynomial fc[] = AlgebraicAlgorithms.componentPolynomials((UnivariatePolynomial)f);
+	    assertEquals("vectorial polynomial of component polynomials is the original",
+			 f, AlgebraicAlgorithms.vectorialPolynomial(fc));
+
+	    // compare results to Mathematica's DSolve
+	    /*
+	     * Generates essentially the following template
+	     * Module[{A = {{4, -6}, {1, -1}},
+	     *   eta = {2, 5},
+	     *   X},
+	     *  X[t_] = {x1[t], x2[t]};
+	     *  X[t] /. DSolve[Join[MapThread[#1 == #2 &, {X'[t], A.X[t] + b}],
+	     *      MapThread[#1 == #2 &, {X[0], eta}]
+	     *      ],
+	     *     X[t], t] [[1]]
+	     *  ]	      
+	     */
+	    final String oursol = mf.format(f.apply(t));
+	    // construct {x0[t], x1[t], ... x(n-1)[t]}
+	    String dimensionspace = "{";
+	    for (int i = 0; i < A.dimension().height; i++) {
+		dimensionspace += "x" + i + "[" + t + "]";
+		if (i + 1 < A.dimension().height)
+		    dimensionspace += ",";
+	    }
+
+	    // as a reference get a solution of the same ODE from Mathematica
+	    dimensionspace += "}";
+	    String ode = "Module[{X}, X[" + t + "_] = " + dimensionspace + ";\n"
+		+ "X[" + t + "] /.\n"
+		+ "Simplify[\n"
+		+ "DSolve[Join[\n"
+		+ " MapThread[#1==#2&, {X'[" + t + "], (" + mf.format(A) + ").X[" + t + "] + " + mf.format(b) + "}],\n"
+		+ " MapThread[#1==#2&, {X[" + tau + "], (" + mf.format(eta) + ")}]],\n"
+		+ " X[" + t + "], " + t + "][[1]]\n"
+		+ "]]";
+	    System.out.println(ode);
+	    ml.newPacket();
+	    final String refsol = ml.evaluateToOutputForm("" + ode + "", 80);
+	    ml.newPacket();
+	    System.out.println("Our solution:\n" + oursol);
+	    System.out.println("Ref.solution:\n" + refsol);
+
+	    // verify in Mathematica that oursol really solves ODE
+	    System.out.println("{True}==Union[FullSimplify["
+			+ " MapThread[#1==#2&,"
+			+ "  {D[" + oursol +"," + t + "], (" + mf.format(A) + ").(" + oursol + ") + " + mf.format(b) + "}\n"
+			+ "]\n"
+			+ "]]");
+	    ml.newPacket();
+	    ml.evaluate("{True}==Union[FullSimplify[N["
+			+ " MapThread[#1==#2&,"
+			+ "  {D[" + oursol +"," + t + "], (" + mf.format(A) + ").(" + oursol + ") + " + mf.format(b) + "}\n"
+			+ "]\n"
+			+ "]]]"
+			);
+	    ml.waitForAnswer();
+	    final String solvesODE = ml.getExpr().toString();
+	    ml.newPacket();
+	    System.out.println("solves ODE?\t" + solvesODE);
+	    if (!solvesODE.equals("True"))
+		System.out.println("dSolve solution validation FAILED");
+	    assertTrue(solvesODE.equals("True") , " dSolve solves ODE\n our solution:\n" + oursol + " \n ref.solution:\n" + refsol + "\n solves " + "x'==\n" + mf.format(A) + ".x + " + mf.format(b) + "\nwith initial value " + mf.format(eta) + "\nresulting in " + solvesODE);
+
+
+	    // compare our solution and reference solution in Mathematica
+	    System.out.println("FullSimplify[SetPrecision[(" + ode + " == " + oursol + "), " + DSOLVE_PRECISION_DIGITS + "]]");
+	    ml.newPacket();
+	    ml.evaluate("Simplify[(\n" + ode + " == \n" + oursol + ")]");
+	    ml.waitForAnswer();
+	    final String comparison = ml.getExpr().toString();
+	    ml.newPacket();
+	    System.out.println("Result:\t" + comparison);
+	    if (!comparison.equals("True"))
+		System.out.println("dSolve comparison validation FAILED");
+	    //assertTrue(comparison.equals("True") , " dSolve equivalence:\n " + oursol + "\n x'==\n" + mf.format(A) + ".x + " + mf.format(b) + "\nwith initial value " + mf.format(ta) + "\nreference solution:\n" + refsol + "\nresulting in " + comparison);
+	}
+	catch (MathLinkException e) {
+	    if (!"machine number overflow".equals(e.getMessage()))
+		throw e;
+	}
+    }
+
+
+    // particular examples
+    public void testdSolveExamples() throws MathLinkException {
+	createMathLink();	
+	try {
+	    System.out.println("solving differential equations");
+	    final Real tau = vf.ZERO();
+	    Matrix A = vf.valueOf(new double[][] {
+		{0}
+	    });
+	    Vector b = vf.valueOf(new Arithmetic[]{vf.valueOf(2)});
+	    Vector eta = vf.valueOf(new Symbol[]{vf.symbol("x0")});
+	    checkdSolve(A, b, tau, eta);
+
+	    A = vf.valueOf(new double[][] {
+		{0,1},
+		{0,0}
+	    });
+	    b = vf.valueOf(new double[]{0,0});
+	    eta = vf.valueOf(new double[]{0,0});
+	    checkdSolve(A, b, tau, eta);
+
+
+	    eta = vf.valueOf(new double[]{1,2});
+	    checkdSolve(A, b, tau, eta);
+	
+	    eta = vf.valueOf(new Symbol[]{vf.symbol("z0"),vf.symbol("v0")});
+	    checkdSolve(A, b, tau, eta);
+
+	    A = vf.valueOf(new double[][] {
+		{0,1,0},
+		{0,0,1},
+		{0,0,0},
+	    });
+	    b = vf.valueOf(new double[]{0,0,0});
+	    eta = vf.valueOf(new Symbol[]{vf.symbol("z0"),vf.symbol("v0"),vf.symbol("a")});
+	    System.out.println("train dynamics with constant acceleration a as x3 and initial values of position, velocity and acceleration " + eta);
+	    checkdSolve(A, b, tau, eta);
+
+
+	    A = vf.valueOf(new double[][] {
+		{0,1,2},
+		{0,0,1},
+		{0,0,0},
+	    });
+	    b = vf.valueOf(new double[]{0,0,0});
+	    eta = vf.valueOf(new double[]{1,2,3});
+	    checkdSolve(A, b, tau, eta);
+
+
+	    A = vf.valueOf(new double[][] {
+		{0,1},
+		{0,0}
+	    });
+	    b = vf.valueOf(new Arithmetic[]{vf.ZERO,vf.symbol("a")});
+	    eta = vf.valueOf(new Symbol[]{vf.symbol("z0"),vf.symbol("v0")});
+	    System.out.println("train dynamics with constant acceleration a as inhomogeneous part and initial value " + eta);
+	    checkdSolve(A, b, tau, eta);
+
+	    A = vf.valueOf(new double[][] {
+		{0,1,0,0},
+		{0,0,1,0},
+		{0,0,0,1},
+		{0,0,0,0},
+	    });
+	    b = vf.valueOf(new Arithmetic[]{vf.ZERO,vf.ZERO,vf.ZERO,vf.symbol("b")});
+	    eta = vf.valueOf(new Symbol[]{vf.symbol("a1"),vf.symbol("a2"),vf.symbol("a3"),vf.symbol("a4")});
+	    checkdSolve(A, b, tau, eta);
 	}
 	catch (MathLinkException e) {
 	    if (!"machine number overflow".equals(e.getMessage()))
@@ -481,23 +627,36 @@ public class FunctionTest extends check.TestCase {
     // create (random) argument values
     
     private int integerArgument(int min, int max) {
-        return min + random.nextInt(max-min);
+        return min + random.nextInt(max-min + 1);
     }
     private double realArgument(double min, double max) {
         return ((max-min) * random.nextDouble() + min);
     }
     private int symbolId = 1;
     private Arithmetic randomArgument(double min, double max, int testType) {
+	if ((testType & (TYPE_INTEGER|TYPE_COMPLEX|TYPE_SYMBOL)) == 0)
+	    // default type if no type that we could possible support/deliver
+	    testType = TYPE_DEFAULT;
         if ((testType & TYPE_INTEGER) != 0 && Utility.flip(random, 0.4))
             return vf.valueOf(integerArgument((int)min, (int)max));
         else if ((testType & TYPE_COMPLEX) != 0 && Utility.flip(random, 0.4))
             return vf.complex(realArgument(min, max), realArgument(min, max));
-//      else if ((testType & TYPE_RATIONAL) != 0 && Utility.flip(random, 0.4))
-//          return vf.rational(integerArgument((int)min, (int)max), integerArgument(1, (int)max));
+	else if ((testType & TYPE_RATIONAL) != 0 && Utility.flip(random, 0.4))
+	    return vf.rational(integerArgument((int)min, (int)max), integerArgument(1, (int)max));
         else if ((testType & TYPE_SYMBOL) != 0 && Utility.flip(random, 0.4))
             return vf.symbol("a" + (symbolId++));
-        else
-            return vf.valueOf(realArgument(min, max));
+        else { // random generator always said no, then choose first applying type
+	    if ((testType & TYPE_INTEGER) != 0)
+		return vf.valueOf(integerArgument((int)min, (int)max));
+	    else if ((testType & TYPE_COMPLEX) != 0)
+		return vf.complex(realArgument(min, max), realArgument(min, max));
+	    //      else if ((testType & TYPE_RATIONAL) != 0)
+	    //          return vf.rational(integerArgument((int)min, (int)max), integerArgument(1, (int)max));
+	    else if ((testType & TYPE_SYMBOL) != 0)
+		return vf.symbol("a" + (symbolId++));
+	    else
+		throw new IllegalArgumentException("no type provided");
+        }
     }
     private Matrix matrixArgument(double min, double max, int testType, Dimension dim) {
         Matrix x = vf.newInstance(dim);

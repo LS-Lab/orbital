@@ -74,6 +74,7 @@ public abstract class Values implements ValueFactory {
      * instantiated. The precise effect of parameters are therefore
      * implementation-dependent. Some parameters, however, have a
      * standard semantics.
+     * Implementations do not need to provide all combinations of parameters, though.
      * <table id="ParameterProperties" border="2">
      *   <caption>Parameters: value factory implementation standard settings</caption>
      *   <tr>
@@ -134,15 +135,22 @@ public abstract class Values implements ValueFactory {
      *       <code>"none"</code> for {@link ValueFactory#narrow(Scalar) explicit normalization}, only.</td>
      *   </tr>
      *   <tr>
-     *     <td><tt>orbital.math.Scalar.fallback</tt></td>
-     *     <td>Use <code>"auto"</code> for automatic fallback to bigger precision when result could otherwise overflow,
-     *       <code>"none"</code> sticks to machine-size at the risk of overflows.</td>
+     *     <td><tt>orbital.math.Scalar.precision</tt></td>
+     *     <td><ul>
+     *       <li><code>"big"</code> for sticking to arbitrary big precision.</li>
+     *       <li><code>"auto"</code> for automatic fallback to bigger precision when result could otherwise overflow</li>
+     *       <li><code>"dynamic"</code> sticks to machine-size for initially machine-sized numbers at the risk of overflows and uses big precision during big precision computations.</li>
+     *       <li><code>"machine"</code> always sticks to machine-size at the risk of overflows regardless of their source (even bigs are reduced to machine size).</li>
+     *     </ul></td>
      *   </tr>
      * </table>
-     * @todo implement effect of configuration.
+     * @todo implement effect of configuration parameters to instantiate the properly flavoured class.
      */
     public static ValueFactory getInstance(Map parameters) {
         ValueFactory factory = getInstance();
+	if (parameters.containsKey("orbital.math.Scalar.precision")) {
+	    throw new UnsupportedOperationException("Promoting 'orbital.math.Scalar.precision' during instantiation of subclasses of 'orbital.math.Values.implementation' is not yet supported. Directly set 'orbital.math.Values.implementation' appropriately instead");
+	}
         if (factory instanceof AbstractValues) {
             ((AbstractValues)factory).setParameters(parameters);
         } else if (!parameters.isEmpty()) {

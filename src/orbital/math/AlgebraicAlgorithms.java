@@ -1146,11 +1146,18 @@ public final class AlgebraicAlgorithms {
 	UnivariatePolynomial/*<Vector<R>>*/ vectorialPolynomial(UnivariatePolynomial/*<R>*/ pi[]) {
 	final Values vf = Values.getDefaultInstance();
 	// the maximum degree of the polynomials
-	final int deg = ((Integer)Operations.sup.apply(Functionals.map(new Function() {
+	final Integer degvalue = (Integer)Operations.sup.apply(Functionals.map(new Function() {
 		public Object apply(Object pii) {
 		    return ((UnivariatePolynomial)pii).degree();
 		}
-	    }, Arrays.asList(pi)))).intValue();
+	    }, Arrays.asList(pi)));
+	if (degvalue == null || degvalue.intValue() < 0) {
+	    // all polynomials are zero
+	    return vf.polynomial(new Vector/*<R>*/[] {
+		vf.ZERO(pi.length)
+	    });
+	}
+	final int deg = degvalue.intValue();
 	Vector/*<R>*/ pv[] = new Vector/*<R>*/[deg+1];
 	for (int k = 0; k <= deg; k++) {
 	    Arithmetic/*>R<*/ ai[] = new Arithmetic/*>R<*/[pi.length];
