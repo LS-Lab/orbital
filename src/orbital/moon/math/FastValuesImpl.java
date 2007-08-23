@@ -66,6 +66,13 @@ public class FastValuesImpl extends ValuesImpl {
     // scalar value constructors - facade factory
     // primitive type conversion methods
 
+    public Rational rational(int p, int q) {
+        return new AbstractRational.Int(p, q);
+    } 
+    public Rational rational(int p) {
+        return new AbstractRational.Int(p);
+    } 
+
     // integer scalar value constructors - facade factory
 
     public Integer valueOf(int val) {

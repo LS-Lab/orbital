@@ -413,11 +413,13 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
      */
     final Arithmetic[] minimumCoerced(Arithmetic[] a, boolean commutative) {
         assert a.length == 2 : "currently for binary operations, only";
-        //@todo!
+	assert a[0] != null && a[1] != null : "coercing non-null values " + a[0] + " and " + a[1];
         if (a[0].getClass() == a[1].getClass())
             return a;
         else if (a[0] instanceof Number && a[1] instanceof Number)
             return minimumCoerced((Number) a[0], (Number) a[1]);
+        else if (a[0] instanceof Scalar && a[1] instanceof Scalar)
+	    throw new IllegalArgumentException("Scalar types are assumed to be instances of Number");
         else if (a[0] instanceof Tensor || a[1] instanceof Tensor) {
 	    if (!(a[0] instanceof Tensor)) {
 		if (commutative)

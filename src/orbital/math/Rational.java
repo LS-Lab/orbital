@@ -91,6 +91,10 @@ public interface Rational extends Real {
      * @postconditions (b != 0 &rarr; RES instanceof Rational)
      */
     Rational power(Integer b);
+    /**
+     * Return a<sup>b</sup>.
+     */
+    Real power(Rational b);
 
 
     /**

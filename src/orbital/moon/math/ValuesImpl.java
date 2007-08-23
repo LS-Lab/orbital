@@ -138,16 +138,16 @@ public class ValuesImpl extends ArithmeticValuesImpl {
     // "named" scalar value constructors
 
     public Rational rational(Integer p, Integer q) {
-        return new AbstractRational.RationalImpl((AbstractInteger) p, (AbstractInteger) q);
+        return new AbstractRational.Impl(p, q);
     } 
     public Rational rational(int p, int q) {
-        return new AbstractRational.RationalImpl(p, q);
+        return new AbstractRational.Impl(valueOf(p), valueOf(q));
     } 
     public Rational rational(Integer p) {
-        return new AbstractRational.RationalImpl((AbstractInteger) p);
+        return new AbstractRational.Impl(p);
     } 
     public Rational rational(int p) {
-        return new AbstractRational.RationalImpl(p);
+        return new AbstractRational.Impl(valueOf(p));
     } 
 
     // complex scalar values constructors

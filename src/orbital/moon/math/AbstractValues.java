@@ -101,7 +101,9 @@ public abstract class AbstractValues extends Values {
         else if (val instanceof java.math.BigDecimal)
             return ((ValueFactory)this).valueOf((java.math.BigDecimal) val);
         else
-            return narrow(valueOf(val.doubleValue()));
+	    //@internal can't be helped. We just can't convert better from unknown representations
+            //return narrow(valueOf(val.doubleValue()));
+	    throw new IllegalArgumentException("Unknown number representation " + val);
     }
 
     // scalar value constructors - facade factory

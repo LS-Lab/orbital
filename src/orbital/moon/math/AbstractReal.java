@@ -18,46 +18,32 @@ abstract class AbstractReal extends AbstractComplex implements Real {
 
     protected AbstractReal() {}
 
+    
     public boolean equals(Object o) {
-        //@xxx this implementation does not work for Integer.Bigs
-        if (Real.isa.apply(o)) {
-            //@internal identical to @see Double#equals(Object)
-            return java.lang.Double.doubleToLongBits(doubleValue()) == java.lang.Double.doubleToLongBits(((Real) o).doubleValue());
-        } else
-            return super.equals(o);
+	if (o instanceof Real) {
+	    return subtract((Arithmetic)o).isZero();
+	} else
+	    return super.equals(o);
     }
-
     public int hashCode() {
-        //@internal identical to @see Double#hashCode()
-        long bits = java.lang.Double.doubleToLongBits(doubleValue());
-        return (int)(bits ^ (bits >>> 32));
+	//@internal identical to @see Double#hashCode()
+	long bits = java.lang.Double.doubleToLongBits(doubleValue());
+	return (int)(bits ^ (bits >>> 32));
     }
-
+    public int compareTo(Object o) {
+	if (o instanceof Real) {
+	    return (int)Math.signum(subtract((Real)o).doubleValue());
+	} else
+	    return super.compareTo(o);
+    }
     public Real norm() {
-        return Values.getDefaultInstance().valueOf(Math.abs(doubleValue()));
+	if (compareTo(zero()) < 0)
+	    return (Real)minus();
+	else 
+	    return this;
     } 
 
     // order
-    public int compareTo(Object o) {
-        return compareToImpl(o);
-    }
-    final int compareToImpl(Object o) {
-        return compare(doubleValue(), ((Real) o).doubleValue());
-    } 
-    //@internal identical to @see Double#compare(double,double)
-    private static int compare(double d1, double d2) {
-        if (d1 < d2)
-            return -1;           // Neither val is NaN, thisVal is smaller
-        if (d1 > d2)
-            return 1;            // Neither val is NaN, thisVal is larger
-
-        long thisBits = java.lang.Double.doubleToLongBits(d1);
-        long anotherBits = java.lang.Double.doubleToLongBits(d2);
-
-        return (thisBits == anotherBits ?  0 : // Values are equal
-                (thisBits < anotherBits ? -1 : // (-0.0, 0.0) or (!NaN, NaN)
-                 1));                          // (0.0, -0.0) or (NaN, !NaN)
-    }
 
     //TODO: optimize using direct + for all Scalars except Complex
     public Arithmetic add(Arithmetic b) {
@@ -166,6 +152,37 @@ abstract class AbstractReal extends AbstractComplex implements Real {
             return new Float(floatValue());
         } 
 
+	public boolean equals(Object o) {
+	    if (o instanceof Double || o instanceof Float) {
+		//@internal identical to @see Double#equals(Object)
+		return java.lang.Double.doubleToLongBits(doubleValue()) == java.lang.Double.doubleToLongBits(((Real) o).doubleValue());
+	    } else
+		return Operations.equal.apply(this, o);
+	}
+
+	public int hashCode() {
+	    //@internal identical to @see Double#hashCode()
+	    long bits = java.lang.Double.doubleToLongBits(doubleValue());
+	    return (int)(bits ^ (bits >>> 32));
+	}
+	public int compareTo(Object o) {
+	    if (o instanceof Double || o instanceof Float) {
+		return Double.compareDouble(value, ((Number)o).doubleValue());
+	    } else
+		return ((Integer) Operations.compare.apply(this, o)).intValue();
+	} 
+
+	public Real norm() {
+	    return Values.getDefaultInstance().valueOf(Math.abs(floatValue()));
+	}
+
+	public boolean isZero() {
+	    return value == 0;
+	} 
+	public boolean isOne() {
+	    return value == 1;
+	} 
+
         public float floatValue() {
             return value;
         } 
@@ -174,6 +191,10 @@ abstract class AbstractReal extends AbstractComplex implements Real {
             return value;
         } 
     
+        public long longValue() {
+            return (long)value;
+        } 
+
         public Real add(Real b) {
             //@xxx what's up with b being an Integer.Int or Integer.Long?
             if (b instanceof Float)
@@ -259,8 +280,56 @@ abstract class AbstractReal extends AbstractComplex implements Real {
             return new Double(doubleValue());
         } 
 
+	public boolean equals(Object o) {
+	    if (o instanceof Double || o instanceof Float) {
+		//@internal identical to @see Double#equals(Object)
+		return java.lang.Double.doubleToLongBits(doubleValue()) == java.lang.Double.doubleToLongBits(((Real) o).doubleValue());
+	    } else
+		return Operations.equal.apply(this, o);
+	}
+
+	public int hashCode() {
+	    //@internal identical to @see Double#hashCode()
+	    long bits = java.lang.Double.doubleToLongBits(doubleValue());
+	    return (int)(bits ^ (bits >>> 32));
+	}
+	public int compareTo(Object o) {
+	    if (o instanceof Double || o instanceof Float) {
+		return compareDouble(value, ((Number)o).doubleValue());
+	    } else
+		return ((Integer) Operations.compare.apply(this, o)).intValue();
+	} 
+
+	//@internal identical to @see Double#compare(double,double)
+	static int compareDouble(double d1, double d2) {
+	    if (d1 < d2)
+		return -1;           // Neither val is NaN, thisVal is smaller
+	    if (d1 > d2)
+		return 1;            // Neither val is NaN, thisVal is larger
+	    long thisBits = java.lang.Double.doubleToLongBits(d1);
+	    long anotherBits = java.lang.Double.doubleToLongBits(d2);
+
+	    return (thisBits == anotherBits ?  0 : // Values are equal
+		    (thisBits < anotherBits ? -1 : // (-0.0, 0.0) or (!NaN, NaN)
+		     1));                          // (0.0, -0.0) or (NaN, !NaN)
+	}
+
+	public Real norm() {
+	    return Values.getDefaultInstance().valueOf(Math.abs(doubleValue()));
+	}
+
+	public boolean isZero() {
+	    return value == 0;
+	} 
+	public boolean isOne() {
+	    return value == 1;
+	} 
+
         public double doubleValue() {
             return value;
+        } 
+        public long longValue() {
+            return (long)value;
         } 
     
         public Real add(Real b) {
@@ -324,7 +393,7 @@ abstract class AbstractReal extends AbstractComplex implements Real {
          */
         private BigDecimal value;
         public Big(double v) {
-            this(new BigDecimal(v));
+            this(BigDecimal.valueOf(v));
         }
         public Big(BigDecimal v) {
             value = v;
@@ -344,13 +413,50 @@ abstract class AbstractReal extends AbstractComplex implements Real {
         }
     
         public Object clone() {
-            return new Big(new BigDecimal(value.unscaledValue(), value.scale()));
+            return new Big(value);
         } 
 
+	public boolean equals(Object v) {
+	    if (v instanceof orbital.moon.math.Big) {
+		if (v instanceof Big)
+		    return value.equals(((Big)v).value);
+		else if (v instanceof AbstractInteger.Big)
+		    return value.equals(new BigDecimal(((AbstractInteger.Big)v).getValue()));
+		else
+		    throw new IllegalArgumentException("unknown arbitrary precision type " + v.getClass() + " " + v);
+	    }
+            return Operations.equal.apply(this, v);
+	}
+	public int compareTo(Object v) {
+	    if (v instanceof orbital.moon.math.Big) {
+		if (v instanceof Big)
+		    return value.compareTo(((Big)v).value);
+		else if (v instanceof AbstractInteger.Big)
+		    return value.compareTo(new BigDecimal(((AbstractInteger.Big)v).getValue()));
+		else
+		    throw new IllegalArgumentException("unknown arbitrary precision type " + v.getClass() + " " + v);
+	    }
+            return ((Integer) Operations.compare.apply(this, v)).intValue();
+	}
+
+        public long longValue() {
+            return value.longValue();
+        } 
         public double doubleValue() {
             return value.doubleValue();
         } 
     
+	public boolean isZero() {
+	    return value.equals(BigDecimal.ZERO);
+	} 
+	public boolean isOne() {
+	    return value.equals(BigDecimal.ONE);
+	} 
+
+	public Real norm() {
+	    return new Big(value.abs());
+	} 
+
         public Real add(Real b) {
             if (b instanceof Big)
                 return new Big(value.add(((Big)b).value));
