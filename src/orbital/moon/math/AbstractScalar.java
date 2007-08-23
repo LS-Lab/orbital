@@ -38,9 +38,6 @@ abstract class AbstractScalar extends Number implements Scalar, Serializable {
     public int intValue() {
         return (int) longValue();
     } 
-    public long longValue() {
-        return (long) doubleValue();
-    } 
     public float floatValue() {
         return (float) doubleValue();
     } 

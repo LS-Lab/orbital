@@ -27,7 +27,7 @@ import orbital.util.*;
  * @todo test Rational as well
  */
 public class FunctionTest extends check.TestCase {
-    private static final int  TEST_REPETITION = 100/**************20*/;
+    private static final int  TEST_REPETITION = 20/**************20*/;
     private static final Values vf;
     static {
 	// set arbitrary precision as default (for adequate comparison with Mathematica)
@@ -66,6 +66,7 @@ public class FunctionTest extends check.TestCase {
     public static final int TYPE_SYMBOL = 1<<16;
 
     public static void main(String[] argv) {
+	//try {new FunctionTest().testdSolve_fully_symbolic();}catch(Exception e) {e.printStackTrace();}
         junit.textui.TestRunner.run(suite());
     }
     public static Test suite() {
@@ -75,9 +76,8 @@ public class FunctionTest extends check.TestCase {
     }
 
     private KernelLink ml;
-    private Random random;
+    private Random random = new Random();
     protected void setUp() {
-        random = new Random();
     }
     
     protected void createMathLink() {
@@ -388,9 +388,65 @@ public class FunctionTest extends check.TestCase {
 
     // testing differential equation solving
 
-    public void testdSolve_homogeneous_numeric() throws MathLinkException {
+    /**
+     * Successively solve all fully symbolic (constant) differential equations.
+     */
+    public void testdSolve_fully_symbolic()
+	throws MathLinkException {
+	createMathLink();
+	try {
+	    for (int n = 1; n < 2+MAX_DSOLVE_DIM; n++) {
+		System.out.println("Fully symbolically solve differential equation of dimension " + n);
+		final Dimension dim = new Dimension(n,n);
+		final Real tau = vf.ZERO();
+		Matrix A = vf.newInstance(dim);
+		for (int i = 0; i < dim.height; i++)
+		    for (int j = 0; j < dim.width; j++)
+			A.set(i,j, vf.symbol("a" + i + j));
+		// make strict upper diagonal matrix for nilpotence
+		for (int i = 0; i < A.dimension().height; i++) {
+		    for (int j = 0; j <= i && j < A.dimension().width; j++) {
+			A.set(i, j, vf.ZERO());
+		    }
+		}
+		Vector b = vf.newInstance(dim.height);
+		for (int i = 0; i < b.dimension(); i++)
+		    b.set(i, vf.symbol("b" + i));
+		Vector eta = vf.newInstance(dim.height);
+		for (int i = 0; i < eta.dimension(); i++)
+		    eta.set(i, vf.symbol("x0" + i));
+		checkdSolve(A,b,tau,eta);
+	    }
+	}
+	catch (MathLinkException e) {
+	    if (!"machine number overflow".equals(e.getMessage()))
+		throw e;
+	}
+	finally {
+	    closeMathLink();
+	}
+    }
+
+    public void testdSolve_homogeneous_numeric_int() throws MathLinkException {
 	FunctionTest.TYPE_DEFAULT = TYPE_INTEGER;
 	casetestdSolve(-1000, +1000, TYPE_INTEGER /*| TYPE_REAL*/, true);
+    }
+    public void testdSolve_inhomogeneous_numeric_int() throws MathLinkException {
+	FunctionTest.TYPE_DEFAULT = TYPE_INTEGER;
+	casetestdSolve(-1000, +1000, TYPE_DEFAULT, false);
+    }
+    public void testdSolve_homogeneous_symbolic_int() throws MathLinkException {
+	FunctionTest.TYPE_DEFAULT = TYPE_INTEGER;
+	casetestdSolve(-1000, +1000, TYPE_SYMBOL, true);
+    }
+    public void testdSolve_inhomogeneous_symbolic_int() throws MathLinkException {
+	FunctionTest.TYPE_DEFAULT = TYPE_INTEGER;
+	casetestdSolve(-1000, +1000, TYPE_SYMBOL, false);
+    }
+
+    public void testdSolve_homogeneous_numeric() throws MathLinkException {
+	FunctionTest.TYPE_DEFAULT = TYPE_INTEGER | TYPE_RATIONAL;
+	casetestdSolve(-1000, +1000, TYPE_DEFAULT, true);
     }
     public void testdSolve_inhomogeneous_numeric() throws MathLinkException {
 	FunctionTest.TYPE_DEFAULT = TYPE_INTEGER | TYPE_RATIONAL;
@@ -404,6 +460,7 @@ public class FunctionTest extends check.TestCase {
 	FunctionTest.TYPE_DEFAULT = TYPE_INTEGER | TYPE_RATIONAL;
 	casetestdSolve(-1000, +1000, TYPE_SYMBOL, false);
     }
+
     /*
     public void testdSolve_homogeneous_numeric_uni() throws MathLinkException {
 	FunctionTest.TYPE_DEFAULT = TYPE_INTEGER;
@@ -458,8 +515,9 @@ public class FunctionTest extends check.TestCase {
 	throws MathLinkException {
 	try {
 	    final Symbol t = vf.symbol("t");
+	    System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\n  with initial value " + eta + " at " + tau);
 	    Function f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
-	    System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
+	    System.out.println("  solution\t" + f);
 	    System.out.println("  solution at " + t + " is " + f.apply(t));
 	    
 	    UnivariatePolynomial fc[] = AlgebraicAlgorithms.componentPolynomials((UnivariatePolynomial)f);
@@ -498,7 +556,6 @@ public class FunctionTest extends check.TestCase {
 		+ " MapThread[#1==#2&, {X[" + tau + "], (" + mf.format(eta) + ")}]],\n"
 		+ " X[" + t + "], " + t + "][[1]]\n"
 		+ "]]";
-	    System.out.println(ode);
 	    ml.newPacket();
 	    final String refsol = ml.evaluateToOutputForm("" + ode + "", 80);
 	    ml.newPacket();
@@ -506,11 +563,6 @@ public class FunctionTest extends check.TestCase {
 	    System.out.println("Ref.solution:\n" + refsol);
 
 	    // verify in Mathematica that oursol really solves ODE
-	    System.out.println("{True}==Union[FullSimplify["
-			+ " MapThread[#1==#2&,"
-			+ "  {D[" + oursol +"," + t + "], (" + mf.format(A) + ").(" + oursol + ") + " + mf.format(b) + "}\n"
-			+ "]\n"
-			+ "]]");
 	    ml.newPacket();
 	    ml.evaluate("{True}==Union[FullSimplify[N["
 			+ " MapThread[#1==#2&,"
@@ -521,22 +573,29 @@ public class FunctionTest extends check.TestCase {
 	    ml.waitForAnswer();
 	    final String solvesODE = ml.getExpr().toString();
 	    ml.newPacket();
-	    System.out.println("solves ODE?\t" + solvesODE);
-	    if (!solvesODE.equals("True"))
+	    if (!solvesODE.equals("True")) {
+		System.out.println("{True}==Union[FullSimplify["
+				   + " MapThread[#1==#2&,"
+				   + "  {D[" + oursol +"," + t + "], (" + mf.format(A) + ").(" + oursol + ") + " + mf.format(b) + "}\n"
+				   + "]\n"
+				   + "]]");
+		System.out.println("Result: " + solvesODE);
 		System.out.println("dSolve solution validation FAILED");
+	    }
 	    assertTrue(solvesODE.equals("True") , " dSolve solves ODE\n our solution:\n" + oursol + " \n ref.solution:\n" + refsol + "\n solves " + "x'==\n" + mf.format(A) + ".x + " + mf.format(b) + "\nwith initial value " + mf.format(eta) + "\nresulting in " + solvesODE);
 
 
 	    // compare our solution and reference solution in Mathematica
-	    System.out.println("FullSimplify[SetPrecision[(" + ode + " == " + oursol + "), " + DSOLVE_PRECISION_DIGITS + "]]");
 	    ml.newPacket();
 	    ml.evaluate("Simplify[(\n" + ode + " == \n" + oursol + ")]");
 	    ml.waitForAnswer();
 	    final String comparison = ml.getExpr().toString();
 	    ml.newPacket();
-	    System.out.println("Result:\t" + comparison);
-	    if (!comparison.equals("True"))
+	    if (!comparison.equals("True")) {
+		System.out.println("Simplify[(\n" + ode + " == \n" + oursol + ")]");
+		System.out.println("Result: " + comparison);
 		System.out.println("dSolve comparison validation FAILED");
+	    }
 	    //assertTrue(comparison.equals("True") , " dSolve equivalence:\n " + oursol + "\n x'==\n" + mf.format(A) + ".x + " + mf.format(b) + "\nwith initial value " + mf.format(ta) + "\nreference solution:\n" + refsol + "\nresulting in " + comparison);
 	}
 	catch (MathLinkException e) {

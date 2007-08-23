@@ -8,6 +8,8 @@ package orbital.math.functional;
 
 import orbital.math.Arithmetic;
 
+import orbital.logic.functor.BinaryPredicate;
+
 import java.util.Iterator;
 import java.util.Collection;
 
@@ -63,6 +65,12 @@ import orbital.logic.sign.concrete.Notation.NotationSpecification;
  *     <span class="Orbital">Arithmetic</span> operands[] <span class="operator">=</span> (<span class="Orbital">Arithmetic</span>[]) <span class="Orbital">Values</span>.getDefaultInstance().getCoercer().apply(<span class="keyword">new</span> <span class="Orbital">Arithmetic</span>[] {x, y});
  *     <span class="keyword">return</span> operands[<span class="Number">0</span>].add(operands[<span class="Number">1</span>]);
  * </pre>
+ * </p>
+ * <p>
+ * In addition, Operations contains arithmetized versions of the comparison predicates
+ * of {@link orbital.logic.functor.Predicates}.
+ * The essential difference is that the implementations in Operations
+ * respect coercing, type compatibility, and precision.
  * </p>
  * 
  * @structure depends {@link orbital.math.ValueFactory#getCoercer()}
@@ -515,6 +523,149 @@ public interface Operations /* implements ArithmeticOperations */ {
         };
 
     
+    // binary predicates
+        
+    /**
+     * =.
+     * In first-order logic, equality "=" is uniquely determined by
+     * <ul>
+     *   <li>reflexive, i.e. &forall;x (x=x)</li>
+     *   <li>substitutive, &forall;&phi;&isin;Formula(&Sigma;) a=b,&phi; &#8872; &phi;[a&rarr;b]</li>
+     * </ul>
+     * @attribute equivalent
+     * @attribute congruent for all f, P
+     * @attribute substitutive
+     */
+    public static final BinaryPredicate/*<Object,Object>*/ equal = new BinaryPredicate/*<Object,Object>*/() {
+            public boolean apply(Object a, Object b) {
+		if (a == b)
+		    return true;
+		if (b == null)
+		    //@xxx is this okay?
+		    return false;
+                Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer(true).apply(new Arithmetic[] {
+                    (Arithmetic) a, (Arithmetic) b
+                });
+                return operands[0].equals(operands[1]);
+            }
+            public String toString() { return "="; }
+        };
+
+    /**
+     * &ne;.
+     * <p>
+     * Inequality is defined as x&ne;y :&hArr; &not;(x=y).
+     * </p>
+     * @attribute irreflexive
+     * @attribute symmetric
+     * @see #equal
+     */
+    public static final BinaryPredicate/*<Object,Object>*/ unequal = new BinaryPredicate/*<Object,Object>*/() {
+            public boolean apply(Object a, Object b) {
+		if (a == b)
+		    return false;
+                Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer(true).apply(new Arithmetic[] {
+                    (Arithmetic) a, (Arithmetic) b
+                });
+                return !operands[0].equals(operands[1]);
+            }
+            public String toString() { return "!="; }
+        };
+
+    /**
+     * Compares two arithmetic numbers.
+     * <p>
+     * Result will be &lt;0 if x&lt;y,
+     * and &gt;0 if x&gt;y
+     * and =0 if x=y.
+     * The result will be representable as an int.
+     * </p>
+     * @attribute strict order
+     * @see java.lang.Comparable
+     */
+    public static final orbital.logic.functor.BinaryFunction/*<Object,Object,Integer>*/ compare = new orbital.logic.functor.BinaryFunction/*<Object,Object,Integer>*/() {
+            public Object/*>Integer<*/ apply(Object a, Object b) {
+                Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer(false).apply(new Arithmetic[] {
+                    (Arithmetic) a, (Arithmetic) b
+                });
+                return Values.getDefault().valueOf(((Comparable) operands[0]).compareTo(operands[1]));
+            }
+            public String toString() { return "cmp"; }
+        };
+
+    /**
+     * &lt;.
+     * <p>
+     * It is true that x&lt;y &hArr; x&le;y &and; x&ne;y.
+     * </p>
+     * @attribute strict order
+     * @see java.lang.Comparable
+     */
+    public static final BinaryPredicate/*<Object,Object>*/ less = new BinaryPredicate/*<Object,Object>*/() {
+            public boolean apply(Object a, Object b) {
+                Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer(false).apply(new Arithmetic[] {
+                    (Arithmetic) a, (Arithmetic) b
+                });
+                return ((Comparable) operands[0]).compareTo(operands[1]) < 0;
+            }
+            public String toString() { return "<"; }
+        };
+
+    /**
+     * &gt;.
+     * <p>
+     * It is defined as x&gt;y :&hArr; y&lt;x.
+     * </p>
+     * @attribute strict order
+     * @see java.lang.Comparable
+     */
+    public static final BinaryPredicate/*<Object,Object>*/ greater = new BinaryPredicate/*<Object,Object>*/() {
+            public boolean apply(Object a, Object b) {
+                Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer(false).apply(new Arithmetic[] {
+                    (Arithmetic) a, (Arithmetic) b
+                });
+                return ((Comparable) operands[0]).compareTo(operands[1]) > 0;
+            }
+            public String toString() { return ">"; }
+        };
+
+    /**
+     * &le;.
+     * <p>
+     * It is true that x&le;y &hArr; x&lt;y &or; x&lt;y.
+     * </p>
+     * @attribute order
+     * @see java.lang.Comparable
+     */
+    public static final BinaryPredicate/*<Object,Object>*/ lessEqual = new BinaryPredicate/*<Object,Object>*/() {
+            public boolean apply(Object a, Object b) {
+                Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer(false).apply(new Arithmetic[] {
+                    (Arithmetic) a, (Arithmetic) b
+                });
+                return ((Comparable) operands[0]).compareTo(operands[1]) <= 0;
+            }
+            public String toString() { return "=<"; }
+        };
+
+    /**
+     * &ge;.
+     * <p>
+     * It is defined as x&ge;y :&hArr; y&le;x.
+     * </p>
+     * @attribute order
+     * @see java.lang.Comparable
+     */
+    public static final BinaryPredicate/*<Object,Object>*/ greaterEqual = new BinaryPredicate/*<Object,Object>*/() {
+            public boolean apply(Object a, Object b) {
+                Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer(false).apply(new Arithmetic[] {
+                    (Arithmetic) a, (Arithmetic) b
+                });
+                return ((Comparable) operands[0]).compareTo(operands[1]) >= 0;
+            }
+            public String toString() { return ">="; }
+        };
+
+
     //@internal must be down here such that static initialization of Predicates.equal != null has already happened
 
     /**

@@ -345,9 +345,34 @@ public final class Functions {
                 } 
                 else if (x instanceof Number)
                     return valueFactory.valueOf(Math.exp(((Number) x).doubleValue()));
-                else if (x instanceof orbital.math.Matrix)
-                    throw new UnsupportedOperationException("not yet implemented - limit or at least jordan normalization required for " + x.getClass());
-                else if (x instanceof orbital.math.Symbol)
+                else if (x instanceof orbital.math.Matrix) {
+		    Matrix A = (Matrix)x;
+		    if (!A.isSquare())
+			throw new IllegalArgumentException("square coefficient matrix expected " + A);
+		    int n = 0;
+		    // add A^0=1
+		    Matrix r = (Matrix)A.one();
+		    // index into powers
+		    n++;
+		    // contains the successive powers A^n
+		    Matrix/*<R>*/ p = A;
+		    // contains the successive factorials
+		    int f = 1;
+		    while (!p.isZero()) {
+			if (n > A.dimension().width)
+			    throw new UnsupportedOperationException("needs Jordan-Normal-Form for matrix that is not nilpotent: " + A);
+			// successive factorial
+			f *= n;
+			assert f == orbital.math.MathUtilities.factorial(n) : "on-the-fly factorial " + f + " == " + n + "! = " + orbital.math.MathUtilities.factorial(n);
+			assert p.equals(A.power(valueFactory.valueOf(n))) : "on-the-fly power " + p + " == " + A + "^" + n + " = " + A.power(valueFactory.valueOf(n));
+			// append 1/n!*A^n
+			r = r.add(p.multiply(valueFactory.rational(1,f)));
+			// next round
+			p = p.multiply(A);
+			n++;
+		    }
+		    return p;
+                } else if (x instanceof orbital.math.Symbol)
                     return valueFactory.symbol("e").power((Arithmetic) x);
                 else
                     return Functionals.genericCompose(this, x);

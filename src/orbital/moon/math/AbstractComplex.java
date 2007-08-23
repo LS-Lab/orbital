@@ -11,6 +11,7 @@ import orbital.math.*;
 import orbital.math.functional.Operations;
 import orbital.math.functional.Functions;
 
+/*@todo add double and Real precision of implementation! */
 abstract class AbstractComplex extends AbstractScalar implements Complex {
     private static final long serialVersionUID = 6174516422770428710L;
 
@@ -47,17 +48,13 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
         return hash;
     } 
 
-    /**
-     * Throws an UnsupportedOperationException if this complex has an imaginary part.
-     */
-    public double doubleValue() {
-        if (imaginaryValue() == 0)
-            return realValue();
-        else
-            throw new UnsupportedOperationException("complex value has no real value");
+    public boolean isZero() {
+	return re().isZero() && im().isZero();
+    }
+    public boolean isOne() {
+	return re().isOne() && im().isZero();
+    }
 
-        // return java.lang.Double.NaN;
-    } 
     
     //@todo think about these shortcuts to re().doubleValue() and im().doubleValue(). They effectively prevent new subclasses of AbstractComplex that wish to reuse some methods.
     abstract double realValue();
@@ -272,6 +269,34 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
             return imaginary;
         } 
     
+	/**
+	 * Throws an UnsupportedOperationException if this complex has an imaginary part.
+	 */
+	public double doubleValue() {
+	    if (im().isZero())
+		return re().doubleValue();
+	    else
+		throw new UnsupportedOperationException("complex value has no real value");
+
+	    // return java.lang.Double.NaN;
+	} 
+	public float floatValue() {
+	    if (im().isZero())
+		return re().floatValue();
+	    else
+		throw new UnsupportedOperationException("complex value has no real value");
+
+	    // return java.lang.Double.NaN;
+	} 
+	public long longValue() {
+	    if (im().isZero())
+		return ((Number)re()).longValue();
+	    else
+		throw new UnsupportedOperationException("complex value has no real value");
+
+	    // return java.lang.Double.NaN;
+	} 
+
         /**
          * Returns the complex conjugated <span class="conjugate">z</span> = z<sup>*</sup> = z'.
          * <p>
