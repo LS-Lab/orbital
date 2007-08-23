@@ -1,8 +1,0 @@
-[PropertyInfo]
-data,boolean[],false,false, ,boolean chromosome data,true,<default>
-fitness,double,false,false, ,fitness associated with this chromosome,true,<default>
-[IconNames]
-
-
-
-
