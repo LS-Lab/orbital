@@ -687,21 +687,22 @@ public interface Operations /* implements ArithmeticOperations */ {
             private final short dummy = initialize();
             private final short initialize() {
                 //@TODO: + and * could have yfy as well? Would avoid 1+(2+3)
+		//@xxx how to avoid amibiguous prints like 7*1/2/3
                 Notation.setAllNotations(new Object[][] {
                     {Operations.inverse,                                        // "^-1"
                      new NotationSpecification(195, "xf", Notation.POSTFIX)},
+                    {Operations.minus,                                          // "-"/1
+                     new NotationSpecification(197, "fx", Notation.PREFIX)},
                     {Operations.power,                                          // "^"
                      new NotationSpecification(200, "xfy", Notation.INFIX)},
                     {Operations.times,                                          // "*" 
-                     new NotationSpecification(400, "yfx", Notation.INFIX)},
+                     new NotationSpecification(400, "yfy", Notation.INFIX)},
                     {Operations.divide,                                         // "/"
-                     new NotationSpecification(400, "yfx", Notation.INFIX)},
-                    {Operations.minus,                                          // "-"/1
-                     new NotationSpecification(500, "fx", Notation.PREFIX)},
+                     new NotationSpecification(400, "xfx", Notation.INFIX)},
                     {Operations.plus,                                           // "+"
-                     new NotationSpecification(500, "yfx", Notation.INFIX)},
+                     new NotationSpecification(500, "yfy", Notation.INFIX)},
                     {Operations.subtract,                                       // "-"/2
-                     new NotationSpecification(500, "yfx", Notation.INFIX)}
+                     new NotationSpecification(500, "xfx", Notation.INFIX)}
                 });
                 return Short.MIN_VALUE;
             }

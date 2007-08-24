@@ -240,16 +240,18 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
         }
         public Integer modulo(Integer b) {
             int m = b.intValue();
-            int v = intValue() % m;
+            int r = intValue() % m;
             /*@todo nonnegative representatives and implementation of quotient() collide with property of Euclidean rings for -8 divmod -6.
 	       On the other hand, chinese remainder relies on positive representatives.
 	     */
             //@internal assure mathematical nonnegative modulus
-            if (v < 0)
-                v += m;
-            assert (v - (intValue() % m)) % m == 0 : "change of canonical representative, only";
-            //assert v >= 0 : "nonnegative representative chosen";
-            return new Int(v);
+            /*if (r < 0)
+                r += m;
+            assert (r - (intValue() % m)) % m == 0 : "change of canonical representative, only";
+	    */
+            //assert r >= 0 : "nonnegative representative chosen";
+	    assert value == (value / m) * m + r : "modulo post: " + this + " = " + (value / m) + "*" + b + " + " + r;
+            return new Int(r);
         }
         public Euclidean modulo(Euclidean b) {
             return modulo((Integer)b);
@@ -392,17 +394,19 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
         }
         public Integer modulo(Integer b) {
             final long m = b.longValue();
-            long v = longValue() % m;
+            long r = longValue() % m;
             /*@todo nonnegative representatives and implementation of quotient() collide with property of Euclidean rings for -8 divmod -6.
 	       On the other hand, chinese remainder relies on positive representatives.
 	     */
 	    //@internal assure mathematical nonnegative modulus
-            if (v < 0)
+            /*if (r < 0)
 		//@internal Math.abs(m)?
-                v += m;
-            assert (v - (longValue() % m)) % m == 0 : "change of canonical representative, only";
-            //assert v >= 0 : "nonnegative representative chosen for " + this + " modulo " + b + " = " + (longValue() % m) + " = " + v;
-            return new Long(v);
+                r += m;
+            assert (r - (longValue() % m)) % m == 0 : "change of canonical representative, only";
+            //assert r >= 0 : "nonnegative representative chosen for " + this + " modulo " + b + " = " + (longValue() % m) + " = " + r;
+	    */
+	    assert value == (value / m) * m + r : "modulo post: " + this + " = " + (value / m) + "*" + b + " + " + r;
+            return new Long(r);
         }
         public Euclidean modulo(Euclidean b) {
             return modulo((Integer)b);
@@ -467,7 +471,8 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
 		if (v instanceof Big)
 		    return value.equals(((Big)v).value);
 		else if (v instanceof AbstractReal.Big)
-		    return new BigDecimal(value).equals(v);
+		    //@internal BigDecimal.equals is mincing with scales. Prefer comparaTo
+		    return new BigDecimal(value).compareTo(((AbstractReal.Big)v).getValue()) == 0;
 		else
 		    throw new IllegalArgumentException("unknown arbitrary precision type " + v.getClass() + " " + v);
 	    }
@@ -565,10 +570,16 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
             return quotient((Integer)b);
         }
         public Integer modulo(Integer b) {
+	    Integer r = moduloImpl(b);
+	    assert this.equals(this.quotient(b).multiply(b).add(r)) : "modulo post: " + this + " = " + this.quotient(b) + "*" + b + " + " + r;
+	    return r;
+	}
+        private Integer moduloImpl(Integer b) {
+	    //@xxx do we need BigInteger.remainder or BigInteger.mod?
             if (b instanceof Big)
-                return new Big(value.mod(((Big)b).value));
+                return new Big(value.remainder(((Big)b).value));
             else if (b instanceof Int || b instanceof Long)
-                return new Big(value.mod(BigInteger.valueOf(b.longValue())));
+                return new Big(value.remainder(BigInteger.valueOf(b.longValue())));
             throw new UnsupportedOperationException("opertion cannot be applied on " + this + " and " + b);
         }
         public Euclidean modulo(Euclidean b) {

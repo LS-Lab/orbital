@@ -46,7 +46,7 @@ class AbstractQuotient/*<M extends Arithmetic>*/ implements Quotient/*<M>*/, Ser
         private final Euclidean m;
         public EuclideanModulo(Euclidean m) {
             //@internal allow M/(0) &cong; M as well
-            this.m = m.norm().equals(Values.ZERO) ? null : m;
+            this.m = m.isZero() ? null : m;
         }
         public boolean equals(Object o) {
             return (o instanceof EuclideanModulo) && Utility.equals(m, ((EuclideanModulo) o).m);
@@ -171,7 +171,7 @@ class AbstractQuotient/*<M extends Arithmetic>*/ implements Quotient/*<M>*/, Ser
             assert representative() instanceof Euclidean : "Euclidean modulo requires elements of the Euclidean ring";
             // 1 = gcd(a,m) = r*a + s*m &hArr; 1 = r*a (mod m) &hArr; r = a^-1 (mod m)
             Euclidean r[] = MathUtilities.gcd(new Euclidean[] {(Euclidean) representative(), m});
-            if (r[r.length - 1].one().equals(r[r.length - 1]))
+            if (r[r.length - 1].isOne())
                 return r[0];
             else
                 throw new ArithmeticException("not invertible since (" + representative() + ", " + m + ") are not coprime");

@@ -658,19 +658,36 @@ public abstract class Notation implements Serializable, Comparable {
          * Where
          * <ul>
          *   <li>f specifies the position of the compositor.</li>
-         *   <li>x specifies the position of an argument with precedence of y &lt; the precedence of f.</li>
-         *   <li>y specifies the position of an argument with precedence of y &le; the precedence of f.</li>
+         *   <li>x specifies the position of an argument with precedence of y &lt; the precedence of f,
+	 *       otherwise brackets will be used.</li>
+         *   <li>y specifies the position of an argument with precedence of y &le; the precedence of f,
+	 *       otherwise brackets will be used.</li>
          * </ul>
          * <table>
          *   <caption>Quick overview of associativty specification</caption>
          *   <tr><th>specification</th> <th>effect</th></tr>
          *   <tr><td colspan="2">(unary) prefix notation</td></tr>
-         *   <tr><td>fx</td> <td>unary prefix notation non-associative</td></tr>
-         *   <tr><td>fy</td> <td>unary prefix notation associative</td></tr>
+         *   <tr><td>fx</td> <td>unary prefix notation non-associative, i.e.,
+	 *       <code>f (f a)</code> needs brackets</td></tr>
+         *   <tr><td>fy</td> <td>unary prefix notation associative, i.e.,
+	 *       <code>f f a</code> needs no brackets but is taken to mean <code>f (f a)</code></td></tr>
+         *   <tr><td colspan="2">(unary) postfix notation</td></tr>
+         *   <tr><td>xf</td> <td>unary postfix notation non-associative, i.e.,
+	 *       <code>(a f) f</code> needs brackets</td></tr>
+         *   <tr><td>yf</td> <td>unary postfix notation associative, i.e.,
+	 *       <code>a f f</code> needs no brackets but is taken to mean <code>a (a f)</code></td></tr>
          *   <tr><td colspan="2">(binary) infix notation</td></tr>
-         *   <tr><td>yfx</td> <td>left associative</td></tr>
-         *   <tr><td>xfy</td> <td>right associative</td></tr>
-         *   <tr><td>xfx</td> <td>non-associative</td></tr>
+         *   <tr><td>yfx</td> <td>left associative, i.e.,
+	 *       <code>a f b f c</code> is taken to mean <code>(a f b) f c</code>, while
+	 *       <code>a f (b f c)</code> needs brackets</td></tr>
+         *   <tr><td>xfy</td> <td>right associative, i.e.,
+	 *       <code>a f b f c</code> is taken to mean <code>a f (b f c)</code>, while
+	 *       <code>(a f b) f c</code> needs brackets</td></tr>
+         *   <tr><td>xfx</td> <td>non-associative, i.e., always use brackets</td></tr>
+         *   <tr><td>yfy</td> <td>full associative, i.e., never use brackets.
+	 *       <code>a f b f c</code> is taken to mean either
+	 *       <code>(a f b) f c</code> or <code>a f (b f c)</code>,
+	 *       as both are equivalent.</td></tr>
          * </table>
          * <p>
          * The compositor position specification used <em>must</em> match the concept of notation objects.

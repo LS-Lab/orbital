@@ -479,7 +479,7 @@ public final class AlgebraicAlgorithms {
             t = (Euclidean) a0.subtract(q.multiply(a1));
             // t == a0.modulo(a1)
             //@todo reenable test once it is working again:
-	    // assert a0.modulo(a1).equals(t) : "a mod b == a - (a div b)*b, i.e. " + a0.modulo(a1) + " == " + a0 + " - " + q + "*" + a1 + " == " + a0 + " - " + q.multiply(a1) + " == " + t;
+	    assert a0.modulo(a1).equals(t) : "a mod b == a - (a div b)*b, i.e. " + a0 + " mod " + a1 + " == " + a0.modulo(a1) + " == " + a0 + " - " + q + "*" + a1 + " == " + a0 + " - " + q.multiply(a1) + " == " + t;
             // (a0, a1) := (a1, a0 mod a1);
             a0 = a1;
             a1 = t;
@@ -1148,12 +1148,17 @@ public final class AlgebraicAlgorithms {
 	UnivariatePolynomial/*<Vector<R>>*/ vectorialPolynomial(UnivariatePolynomial/*<R>*/ pi[]) {
 	final Values vf = Values.getDefaultInstance();
 	// the maximum degree of the polynomials
-	final Integer degvalue = (Integer)Operations.sup.apply(Functionals.map(new Function() {
+	/*final Integer degvalue = (Integer)Operations.sup.apply(Functionals.map(new Function() {
 		public Object apply(Object pii) {
 		    return ((UnivariatePolynomial)pii).degree();
 		}
-	    }, Arrays.asList(pi)));
-	if (degvalue == null || degvalue.intValue() < 0) {
+		}, Arrays.asList(pi)));*/
+	Integer degvalue = vf.valueOf(-1);
+	for (int i = 0; i < pi.length; i++) {
+	    if (pi[i].degree().compareTo(degvalue) > 0)
+		degvalue = pi[i].degree();
+	}
+	if (degvalue.intValue() < 0) {
 	    // all polynomials are zero
 	    return vf.polynomial(new Vector/*<R>*/[] {
 		vf.ZERO(pi.length)

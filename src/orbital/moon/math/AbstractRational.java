@@ -147,10 +147,12 @@ abstract class AbstractRational extends AbstractReal implements Rational {
             if (q < 0) {
                 this.numerator = -p;
                 this.denominator = -q;
-            } else {
+            } else if (q > 0) {
                 this.numerator = p;
                 this.denominator = q;
-            }
+            } else {
+		throw new ArithmeticException("DivisionByZero: Not a rational number: " + p + "/" + q);
+	    }
         }
     
         /**
@@ -321,13 +323,16 @@ abstract class AbstractRational extends AbstractReal implements Rational {
          */
         public Impl(Integer p, Integer q) {
             // normalize
-            if (q.compareTo(q.zero()) < 0) {
+	    int cmp = q.compareTo(q.zero());
+            if (cmp < 0) {
                 this.numerator = (Integer)p.minus();
                 this.denominator = (Integer)q.minus();
-            } else {
+            } else if (cmp > 0) {
                 this.numerator = p;
                 this.denominator = q;
-            }
+            } else {
+		throw new ArithmeticException("DivisionByZero: Not a rational number: " + p + "/" + q);
+	    }
         }
     
         /**
@@ -353,7 +358,7 @@ abstract class AbstractRational extends AbstractReal implements Rational {
 	    return numerator().doubleValue() / denominator().doubleValue();
 	}
 	public long longValue() {
-	    throw new UnsupportedOperationException("not yet implemented");
+	    return (long) doubleValue();
 	} 
 
         // Arithmetic implementation synonyms
@@ -363,6 +368,8 @@ abstract class AbstractRational extends AbstractReal implements Rational {
             //@todo somehow use cofactors instead of division by m
             Integer f1 = (Integer)m.quotient(denominator());
 	    Integer f2 = (Integer)m.quotient(b.denominator());
+	    assert m.modulo(denominator()).isZero() : "lcm is divisible by its factors: " + m + " divisible by " + denominator() + " and " + b.denominator();
+	    assert m.modulo(b.denominator()).isZero() : "lcm is divisible by its factors: " + m + " divisible by " + denominator() + " and " + b.denominator();
             return new Impl(f1.multiply(numerator()).add(f2.multiply(b.numerator())),
 			    m).representative();
         } 
@@ -403,11 +410,12 @@ abstract class AbstractRational extends AbstractReal implements Rational {
             // cancel
             Integer d = (Integer) AlgebraicAlgorithms.gcd(p, q);
             //@todo somehow use cofactors instead of division by d
-            return !d.isOne()
-                ? new Impl((Integer)p.quotient(d), (Integer)q.quotient(d))
-                : changed
-                ? new Impl(p, q)
-                : this;
+            if (!d.isOne()) {
+		assert p.modulo(d).isZero() : "gcd divides its factors: " + p + " divides " + p + " and " + q;
+		assert q.modulo(d).isZero() : "gcd divides its factors: " + p + " divides " + p + " and " + q;
+		return new Impl((Integer)p.quotient(d), (Integer)q.quotient(d));
+	    } else
+		return changed ? new Impl(p, q) : this;
         } 
     }
 

@@ -112,12 +112,6 @@ public class ValuesImpl extends ArithmeticValuesImpl {
     public Integer valueOf(long val) {
         return new AbstractInteger.Long(val);
     }
-    public Integer valueOf(byte val) {
-        return valueOf((int) val);
-    }
-    public Integer valueOf(short val) {
-        return valueOf((int) val);
-    }
     public Integer valueOf(java.math.BigInteger val) {
         return new AbstractInteger.Big(val);
     }
@@ -140,59 +134,14 @@ public class ValuesImpl extends ArithmeticValuesImpl {
     public Rational rational(Integer p, Integer q) {
         return new AbstractRational.Impl(p, q);
     } 
-    public Rational rational(int p, int q) {
-        return new AbstractRational.Impl(valueOf(p), valueOf(q));
-    } 
-    public Rational rational(Integer p) {
-        return new AbstractRational.Impl(p);
-    } 
-    public Rational rational(int p) {
-        return new AbstractRational.Impl(valueOf(p));
-    } 
 
     // complex scalar values constructors
 
-    public Complex complex(Real a, Real b) {
-        return cartesian(a, b);
-    } 
-    public Complex complex(double a, double b) {
-        return cartesian(a, b);
-    } 
-    public Complex complex(float a, float b) {
-        return complex((double)a, (double)b);
-    }
-    public Complex complex(int a, int b) {
-        return complex((double)a, (double)b);
-    }
-    public Complex complex(long a, long b) {
-        return complex((double)a, (double)b);
-    }
-
-    /**
-     * Returns a new (real) complex whose value is equal to a + <b>i</b>*0.
-     * @param a real part.
-     * @return a + <b>i</b>*0.
-     * @see #complex(Real, Real)
-     */
-    public Complex complex(Real a) {
-        return complex(a, Values.ZERO);
-    } 
-    public Complex complex(double a) {
-        return complex(a, 0);
-    } 
-
     public Complex cartesian(Real a, Real b) {
-        return new AbstractComplex.ComplexImpl(a, b);
+        return new AbstractComplex.Impl(a, b);
     } 
     public Complex cartesian(double a, double b) {
-        return new AbstractComplex.ComplexImpl(a, b);
-    } 
-
-    public Complex polar(Real r, Real phi) {
-        return new AbstractComplex.ComplexImpl(r.multiply((Real) Functions.cos.apply(phi)), r.multiply((Real) Functions.sin.apply(phi)));
-    } 
-    public Complex polar(double r, double phi) {
-        return new AbstractComplex.ComplexImpl(r * Math.cos(phi), r * Math.sin(phi));
+        return new AbstractComplex.Double(a, b);
     } 
 
 
@@ -205,9 +154,7 @@ public class ValuesImpl extends ArithmeticValuesImpl {
         //@todo implement sup along with conversion routines. Perhaps introduce "int AbstractScalar.typeLevel()" and "int AbstractScalar.precisionLevel()" such that we can compute the maximum level of both with just two method calls. And introduce "Object AbstractScalar.convertTo(int typeLevel, int precisionLevel)" for conversion.
 	//@xxx respect precisions, e.g. make Big sticky
         if (Complex.hasType.apply(a) || Complex.hasType.apply(b))
-            return new Complex[] {
-                Complex.hasType.apply(a) ? (Complex) a : new AbstractComplex.ComplexImpl(a), Complex.hasType.apply(b) ? (Complex) b : new AbstractComplex.ComplexImpl(b)
-            };
+	    return AbstractComplex.makeComplex(a, b);
 
         // this is a tricky binary decision diagram (optimized), see documentation
         if (Integer.hasType.apply(a)) {

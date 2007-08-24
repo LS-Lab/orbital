@@ -14,8 +14,8 @@ package orbital.math;
  *   <dd>R is an Euclidean ring :&hArr;
  *     &exist;&delta;:R&#8726;{0}&rarr;<b>N</b>
  *     <blockquote>
- *       &forall;f&isin;R&forall;g&isin;R&#8726;{0} &exist;q,r&isin;R f = q&sdot;g + r
- *        =: (f div g)&sdot;g + (f mod g)
+ *       &forall;f&isin;R&forall;g&isin;R&#8726;{0} &exist;q,r&isin;R such that
+ *        <center>f = q&sdot;g + r = (f div g)&sdot;g + (f mod g)</center>
  *     </blockquote>
  *     with &delta;(r) &lt; &delta;(g) &or; r = 0.
  *     <div>
@@ -55,6 +55,7 @@ public interface Euclidean extends Arithmetic {
     /**
      * Get the Euclidean &quot;quotient&quot; by g.
      * @return this div g &isin; R.
+     * @postconditions this.equals(RES.multiply(g).add(this.modulo(RES)))
      * @throws IllegalArgumentException if the argument type is illegal for this operation.
      *  Note: for single type handling it is also allowed to throw a ClassCastException, instead.
      * @note the Euclidean quotient f div g is distinct from the fractional quotient f/g=f.{@link Arithmetic#divide(Arithmetic) divide}(g).
@@ -66,6 +67,7 @@ public interface Euclidean extends Arithmetic {
      * Get the Euclidean remainder, modulo g.
      * @return this mod g &isin; R.
      * @postconditions RES.degree() < g.degree() &or; RES==0
+     *  &and; this.equals(this.quotient(g).multiply(g).add(RES))
      * @throws IllegalArgumentException if the argument type is illegal for this operation.
      *  Note: for single type handling it is also allowed to throw a ClassCastException, instead.
      * @todo rename to remainder(Euclidean)?

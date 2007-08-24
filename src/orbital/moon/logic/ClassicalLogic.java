@@ -488,8 +488,7 @@ public class ClassicalLogic extends ModernLogic {
             } 
         };
 
-    //@todo remove this bugfix that replaces "xfy" by "yfy" associativity only for *.jj parsers to work without inefficient right-associative lookahead.
-    private static final String xfy = "yfy";
+    private static final String yfy = "yfy";
     private static final String typAssoc = "f";  //@xxx should be "fx"?
 
     //@todo unmodifiable view
@@ -569,21 +568,21 @@ public class ClassicalLogic extends ModernLogic {
             {LogicFunctions.not,          // "~"
              new NotationSpecification(900, "fx", Notation.PREFIX)},
             {LogicFunctions.and,          // "&"
-             new NotationSpecification(910, xfy, Notation.INFIX)},
+             new NotationSpecification(910, yfy, Notation.INFIX)},
             {LogicFunctions.andFold,      // "&"
              new NotationSpecification(910, "fy", Notation.PREFIX)},
             {LogicFunctions.xor,          // "^"
-             new NotationSpecification(914, xfy, Notation.INFIX)},
+             new NotationSpecification(914, yfy, Notation.INFIX)},
             {LogicFunctions.or,           // "|"
-             new NotationSpecification(916, xfy, Notation.INFIX)},
+             new NotationSpecification(916, yfy, Notation.INFIX)},
             {LogicFunctions.orFold,       // "|"
              new NotationSpecification(916, "fy", Notation.PREFIX)},
             {LogicFunctions.impl,         // "->"
              new NotationSpecification(920, "xfy", Notation.INFIX)},
             {LogicFunctions.reverseImpl, // "<-"
-             new NotationSpecification(920, "xfx", Notation.INFIX)},
+             new NotationSpecification(921, "xfx", Notation.INFIX)},
             {LogicFunctions.equiv,        // "<->"
-             new NotationSpecification(921, xfy, Notation.INFIX)}
+             new NotationSpecification(922, yfy, Notation.INFIX)}
         }, false, true, true);
     private static final Signature _coreSignature = _coreInterpretation.getSignature();
 
@@ -2280,9 +2279,9 @@ public class ClassicalLogic extends ModernLogic {
              * @invariants sorted, i.e. precedenceOf[i] < precedenceOf[i+1]
              */
             {LogicFunctions2.forall,       // "all"
-             new NotationSpecification(900, "fy", Notation.PREFIX)},
+             new NotationSpecification(890, "fy", Notation.PREFIX)},
             {LogicFunctions2.exists,       // "?"
-             new NotationSpecification(900, "fy", Notation.PREFIX)}
+             new NotationSpecification(890, "fy", Notation.PREFIX)}
         }, false, true, true)
         );
         _coreInterpretation.setSignature(newCore.getSignature());

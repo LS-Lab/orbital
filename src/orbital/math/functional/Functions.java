@@ -305,6 +305,7 @@ public final class Functions {
                     return valueFactory.polar((Real/*__*/)apply(v.norm()), v.arg().divide(valueFactory.valueOf(2)));
                 } 
                 else if (x instanceof Number) {
+		    //@xxx possible loss of precision
                     double r = ((Number) x).doubleValue();
                     if (!(r == r))                      // Double.isNaN
                         return Values.NaN;
@@ -344,6 +345,7 @@ public final class Functions {
                     return valueFactory.polar((Real) apply(z.re()), z.im());
                 } 
                 else if (x instanceof Number)
+		    //@xxx possible loss of precision
                     return valueFactory.valueOf(Math.exp(((Number) x).doubleValue()));
                 else if (x instanceof orbital.math.Matrix) {
 		    Matrix A = (Matrix)x;
@@ -526,6 +528,7 @@ public final class Functions {
     public static final Function tan = new SynonymFunction(Functionals.compose(Operations.divide, sin, cos)) {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x) {
                 if (x instanceof Number && !Complex.hasType.apply(x))
+		    //@xxx possible loss of precision
                     return valueFactory.valueOf(Math.tan(((Number) x).doubleValue()));
                 return super.apply(x);
             } 
