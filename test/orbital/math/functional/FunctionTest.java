@@ -30,17 +30,21 @@ public class FunctionTest extends check.TestCase {
     private static final int  TEST_REPETITION = 20/**************20*/;
     private static final Values vf;
     static {
-	// set arbitrary precision as default (for adequate comparison with Mathematica)
-	System.setProperty("orbital.math.Values.implementation",
-			   //orbital.moon.math.BigValuesImpl.class.getName());
-			   orbital.moon.math.BigValuesImpl.class.getName());
 	// make format precision compatible with Mathematica for appropriate numerical comparisons
         MathUtilities.setDefaultPrecisionDigits(17);
+	// set arbitrary precision as default (for adequate comparison with Mathematica)
+	/*System.setProperty("orbital.math.Values.implementation",
+			   orbital.moon.math.BigValuesImpl.class.getName());*/
+	Map params = new HashMap();
+	params.put("orbital.math.Scalar.precision", "big");
+	Values.setDefault(Values.getInstance(params));
 	vf = Values.getDefaultInstance();
-    }	
+    }
+
     private static final Real tolerance = vf.valueOf(1e-5);
     private static final int DSOLVE_PRECISION_DIGITS = 3;
-    private static final int MAX_DSOLVE_DIM = 5;
+    private static final int MAX_DSOLVE_DIM = 3;
+    private static final int MAX_SYMBOLIC_DSOLVE_DIM = 7;
     private static final ArithmeticFormat mf = ArithmeticFormat.MATH_EXPORT_FORMAT;
         
     // the default matrix and vector (ddim.width) dimension
@@ -75,8 +79,12 @@ public class FunctionTest extends check.TestCase {
         return suite;
     }
 
+    /*
+    private final ArithmeticTestPatternGenerator random
+    = new ArithmeticTestPatternGenerator(-1000, 1000, vf);*/
+
     private KernelLink ml;
-    private Random random = new Random();
+    private final Random random = new Random();
     protected void setUp() {
     }
     
@@ -268,7 +276,7 @@ public class FunctionTest extends check.TestCase {
         final Complex jresult = (Complex) jFunction.apply(x);
         System.out.println(jFunctionCall + " = " + jresult);
         boolean isSuccessful = jresult.equals(mresult, tolerance);
-        assertTrue(isSuccessful , mFunctionCall + " = " + mresult + " != " + jFunctionCall + " = " + jresult + "\tdelta=" + jresult.subtract(mresult));
+        assertTrue(isSuccessful , mFunctionCall + " = " + mresult + " != " + jFunctionCall + "@" + x.getClass() + " = " + jresult + "@" + jresult.getClass() + "\tdelta=" + jresult.subtract(mresult));
     }
 
     /**
@@ -395,7 +403,7 @@ public class FunctionTest extends check.TestCase {
 	throws MathLinkException {
 	createMathLink();
 	try {
-	    for (int n = 1; n < 2+MAX_DSOLVE_DIM; n++) {
+	    for (int n = 1; n < MAX_SYMBOLIC_DSOLVE_DIM; n++) {
 		System.out.println("Fully symbolically solve differential equation of dimension " + n);
 		final Dimension dim = new Dimension(n,n);
 		final Real tau = vf.ZERO();

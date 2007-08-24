@@ -781,7 +781,8 @@ public interface ValueFactory {
      * @postconditions RES.equals(val)
      * @todo optimize by avoiding to create intermediate objects, f.ex. convert complex(2+i*0) -> real(2) -> rational(2) -> integer(2) also use OBDD
      */
-    Scalar narrow(Scalar val);
+    /*<R extends Scalar>*/
+    Scalar/*>R<*/ narrow(Scalar/*>R<*/ val);
 
 
     // arithmetic widening coercer

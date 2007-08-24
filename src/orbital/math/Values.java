@@ -144,15 +144,11 @@ public abstract class Values implements ValueFactory {
      *     </ul></td>
      *   </tr>
      * </table>
-     * @todo implement effect of configuration parameters to instantiate the properly flavoured class.
      */
-    public static ValueFactory getInstance(Map parameters) {
+    public static ValueFactory getInstance(Map/*<String,Object>*/ parameters) {
         ValueFactory factory = getInstance();
-	if (parameters.containsKey("orbital.math.Scalar.precision")) {
-	    throw new UnsupportedOperationException("Promoting 'orbital.math.Scalar.precision' during instantiation of subclasses of 'orbital.math.Values.implementation' is not yet supported. Directly set 'orbital.math.Values.implementation' appropriately instead");
-	}
         if (factory instanceof AbstractValues) {
-            ((AbstractValues)factory).setParameters(parameters);
+            return ((AbstractValues)factory).adjustToParameters(parameters);
         } else if (!parameters.isEmpty()) {
             throw new UnsupportedOperationException("Passing parameters to general " + ValueFactory.class + " is not yet supported. Use Values.getInstance() for ignoring the parameter settings, or stick to an implementation extending " + AbstractValues.class);
         }

@@ -408,8 +408,10 @@ abstract class AbstractReal extends AbstractComplex implements Real {
 		    value = new BigDecimal(((AbstractInteger.Big)v).getValue());
 		else
 		    throw new IllegalArgumentException("unknown arbitrary precision type " + v.getClass() + " " + v);
-	    } else
+	    } else {
+		assert !java.lang.Double.isNaN(v.doubleValue()) && !java.lang.Double.isInfinite(v.doubleValue()) : v + " should neither be NaN nor infinite";
 		value = BigDecimal.valueOf(v.doubleValue());
+	    }
         }
     
         public Object clone() {
@@ -419,9 +421,11 @@ abstract class AbstractReal extends AbstractComplex implements Real {
 	public boolean equals(Object v) {
 	    if (v instanceof orbital.moon.math.Big) {
 		if (v instanceof Big)
-		    return value.equals(((Big)v).value);
+		    //@internal BigDecimal.equals is mincing with scales. Prefer comparaTo
+		    return value.compareTo(((Big)v).value) == 0;
 		else if (v instanceof AbstractInteger.Big)
-		    return value.equals(new BigDecimal(((AbstractInteger.Big)v).getValue()));
+		    //@internal BigDecimal.equals is mincing with scales. Prefer comparaTo
+		    return value.compareTo(new BigDecimal(((AbstractInteger.Big)v).getValue())) == 0;
 		else
 		    throw new IllegalArgumentException("unknown arbitrary precision type " + v.getClass() + " " + v);
 	    }
@@ -439,8 +443,15 @@ abstract class AbstractReal extends AbstractComplex implements Real {
             return ((Integer) Operations.compare.apply(this, v)).intValue();
 	}
 
+        BigDecimal getValue() {
+	    return value;
+	}
+	
+        public int intValue() {
+            return value.intValueExact();
+        } 
         public long longValue() {
-            return value.longValue();
+            return value.longValueExact();
         } 
         public double doubleValue() {
             return value.doubleValue();
@@ -490,14 +501,28 @@ abstract class AbstractReal extends AbstractComplex implements Real {
         }
         public Real power(Real b) {
 	    if (b instanceof Integer) {
-		if (b instanceof AbstractInteger.Int) {
-		    return new Big(value.pow(((Integer)b).intValue()));
-		} else {
-		    throw new ArithmeticException("exponentation is possibly too big");
-		}
-	    } else
-		throw new InternalError("not yet implemented");
+		return power((Integer)b);
+	    }
+	    Real bc = (Real) Values.getDefault().narrow(b);
+	    if (bc instanceof Integer) {
+		return power((Integer)bc);
+	    } else {
+		//@xxx possible loss of precision
+		//throw new InternalError("non-integer exponentiation not yet implemented for big precision: " + this + " ^ " + b);
+		return Values.getDefault().valueOf(Math.pow(doubleValue(), b.doubleValue()));
+	    }
         }
+	private Real power(Integer b) {
+	    if (b instanceof AbstractInteger.Int) {
+		return new Big(value.pow(((Integer)b).intValue()));
+	    } else {
+		final long bv = b.longValue();
+		if (java.lang.Integer.MIN_VALUE <= bv && bv <= java.lang.Integer.MAX_VALUE)
+		    return new Big(value.pow((int)bv));
+		else
+		    throw new ArithmeticException("exponentation is possibly too big: " + this + " ^ " + b);
+	    }
+	}
         public Arithmetic inverse() {
             return one().divide(this);
         } 

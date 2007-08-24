@@ -25,6 +25,8 @@ abstract class AbstractScalar extends Number implements Scalar, Serializable {
     public abstract int compareTo(Object o);
 
     public boolean equals(Object o, Real tolerance) {
+	if (!(o instanceof Scalar))
+	    return false;
         return Metric.INDUCED.distance(this, (Arithmetic)o).compareTo(tolerance) < 0;
     }
 

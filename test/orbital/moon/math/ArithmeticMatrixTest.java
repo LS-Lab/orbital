@@ -25,7 +25,7 @@ public class ArithmeticMatrixTest extends check.TestCase {
     }
     protected void setUp() {
         vf = Values.getDefaultInstance();
-        tolerance = vf.valueOf(1e-6);
+        tolerance = vf.valueOf(1e-3);
         M = new ArithmeticMatrix(vf.valueOf(new double[][] {
             {2, 1, 0, -2},
             {1, 2, 4, 1},
@@ -78,7 +78,7 @@ public class ArithmeticMatrixTest extends check.TestCase {
         assertTrue(N.norm(Double.POSITIVE_INFINITY).equals(vf.valueOf(10.1), tolerance));
         System.out.println("Rank N\t=" + N.linearRank());
         System.out.println("det N\t= |N|=" + N.det());
-        assertTrue(N.det().equals(vf.complex(132.161, 8.06667), tolerance));
+        assertTrue(N.det().equals(vf.complex(132.161, 8.06667), tolerance), N.det() + " equals " + vf.complex(132.161, 8.06667));
         System.out.println("Tr N\t=" + N.trace());
         assertTrue(N.trace().equals(vf.valueOf(1.35)));
         System.out.println("N^-1\t=" + N.inverse());

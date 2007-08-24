@@ -98,7 +98,7 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
 		return zero();
             else if (b.isOne())
                 return this;
-            else if (Values.MINUS_ONE.equals(b))
+            else if (b.one().minus().equals(b))
                 return minus();
         }
         return Functionals.genericCompose(Operations.times, this, b);
@@ -113,7 +113,7 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
                 throw new ArithmeticException("division by zero");
             else if (b.isOne())
                 return this;
-            else if (Values.MINUS_ONE.equals(b))
+            else if (b.one().minus().equals(b))
                 return minus();
         }
         return Functionals.genericCompose(Operations.divide, this, b);
@@ -130,7 +130,7 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
 		    return one();
 	    } else if (b.isOne())
                 return this;
-            else if (Values.MINUS_ONE.equals(b))
+            else if (b.one().minus().equals(b))
                 return inverse();
         }
         return Functionals.genericCompose(Operations.power, this, b);

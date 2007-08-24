@@ -67,9 +67,30 @@ public abstract class AbstractValues extends Values {
         this.normalizer = normalizer;
     }
 
-    // get/set properties
-    
-    public void setParameters(Map/*<String,Object>*/ parameters) {
+    /**
+     * Adjust ValueFactory to the given parameters.
+     * This method returns a possibly new ValueFactory for the given settings.
+     */
+    public ValueFactory adjustToParameters(Map/*<String,Object>*/ parameters) {
+        AbstractValues vf = this;
+	if (parameters.containsKey("orbital.math.Scalar.precision")) {
+	    String prec = (String)parameters.get("orbital.math.Scalar.precision");
+	    if ("big".equalsIgnoreCase(prec) || "arbitrary".equalsIgnoreCase(prec)) {
+		vf = this instanceof BigValuesImpl ? this : new BigValuesImpl();
+	    } else if ("machine".equalsIgnoreCase(prec) || "fast".equalsIgnoreCase(prec)) {
+		vf = this instanceof FastValuesImpl ? this : new FastValuesImpl();
+	    } else if ("dynamic".equalsIgnoreCase(prec) || "default".equalsIgnoreCase(prec)) {
+		vf = this;
+	    } else if ("auto".equalsIgnoreCase(prec)) {
+		throw new UnsupportedOperationException("Setting for 'orbital.math.Scalar.precision' not supported: " + prec);
+	    } else {
+		throw new IllegalArgumentException("Unknown value for 'orbital.math.Scalar.precision' given: " + prec);
+	    }
+	}
+	vf.setParameters(parameters);
+	return vf;
+    }
+    protected void setParameters(Map/*<String,Object>*/ parameters) {
         this.parameters = parameters;
     }
     protected Map/*<String,Object>*/ getParameters() {

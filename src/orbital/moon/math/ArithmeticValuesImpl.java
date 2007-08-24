@@ -70,6 +70,82 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
         initialSetNormalizer(orbital.logic.functor.Functions.id);
     }
 
+    // scalar value constructors - facade factory
+    // primitive type conversion methods
+    // deferring to the most general such method
+
+    // integer scalar value constructors - facade factory
+
+    public Integer valueOf(int val) {
+	return valueOf((long)val);
+    } 
+    public Integer valueOf(byte val) {
+        return valueOf((int) val);
+    }
+    public Integer valueOf(short val) {
+        return valueOf((int) val);
+    }
+
+    // real scalar value constructors - facade factory
+
+    public Real valueOf(float val) {
+        return valueOf((double)val);
+    } 
+
+    // "named" scalar value constructors
+
+    public Rational rational(int p, int q) {
+        return rational(valueOf(p), valueOf(q));
+    } 
+    public Rational rational(Integer p) {
+        return rational(p, (Integer)p.one());
+    } 
+    public Rational rational(int p) {
+        return rational(valueOf(p));
+    } 
+
+    // complex scalar values constructors
+
+    public Complex complex(Real a, Real b) {
+        return cartesian(a, b);
+    } 
+    public Complex complex(double a, double b) {
+        return cartesian(a, b);
+    } 
+    public Complex complex(float a, float b) {
+        return complex((double)a, (double)b);
+    }
+    public Complex complex(int a, int b) {
+        return complex((double)a, (double)b);
+    }
+    public Complex complex(long a, long b) {
+        return complex((double)a, (double)b);
+    }
+
+    /**
+     * Returns a new (real) complex whose value is equal to a + <b>i</b>*0.
+     * @param a real part.
+     * @return a + <b>i</b>*0.
+     * @see #complex(Real, Real)
+     */
+    public Complex complex(Real a) {
+        return complex(a, Values.ZERO);
+    } 
+    public Complex complex(double a) {
+        return complex(a, 0);
+    } 
+
+    public Complex cartesian(double a, double b) {
+        return cartesian(valueOf(a), valueOf(b));
+    } 
+
+    public Complex polar(Real r, Real phi) {
+        return new AbstractComplex.Impl(r.multiply((Real) Functions.cos.apply(phi)), r.multiply((Real) Functions.sin.apply(phi)));
+    } 
+    public Complex polar(double r, double phi) {
+        return new AbstractComplex.Double(r * Math.cos(phi), r * Math.sin(phi));
+    } 
+
     // provides no scalar constructors
 
     // vector constructors and conversion utilities
@@ -373,6 +449,12 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
         }
         if (Real.isa.apply(val)) {
             Real r = (Real) val;
+	    if (r instanceof AbstractReal.Big) {
+		try {
+		    return valueOf(((AbstractReal.Big)r).getValue().toBigIntegerExact());
+		}
+		catch (ArithmeticException fractional) {/*ignore*/}
+	    }
             try {
 		//@xxx also convert bigger integers down
                 if (MathUtilities.isInteger(r.floatValue()))

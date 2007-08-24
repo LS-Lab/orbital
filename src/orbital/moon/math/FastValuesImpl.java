@@ -73,6 +73,10 @@ public class FastValuesImpl extends ValuesImpl {
         return new AbstractRational.Int(p);
     } 
 
+    public Complex cartesian(double a, double b) {
+        return new AbstractComplex.Double(a, b);
+    } 
+
     // integer scalar value constructors - facade factory
 
     public Integer valueOf(int val) {
@@ -82,12 +86,12 @@ public class FastValuesImpl extends ValuesImpl {
         else if (-MAX_CONSTANT <= val && val < 0)
             return negConst[-val];
         else
-            return new AbstractInteger.Big(val);
+            return new AbstractInteger.Int(val);
     } 
     public Integer valueOf(long val) {
         return -MAX_CONSTANT <= val && val <= MAX_CONSTANT
             ? valueOf((int) val)
-            : new AbstractInteger.Big(val);
+            : new AbstractInteger.Long(val);
     }
 
     // vector constructors and conversion utilities
