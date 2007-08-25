@@ -107,7 +107,7 @@ public class SearchResolution extends ResolutionBase {
 
         public Object/*>Proof<*/ getInitialState() {
             //@internal since the proof states may modify setOfSupport, use a copy so that we can reuse the initial state
-            return new Proof(new ClausalSetImpl(setOfSupport), null, Values.ZERO);
+            return new Proof(new ClausalSetImpl(setOfSupport), null, Values.getDefault().ZERO());
         }
         public MutableFunction getAccumulatedCostFunction() {
             return _accumulatedCostFunction;
@@ -194,7 +194,7 @@ public class SearchResolution extends ResolutionBase {
         }
 
         public TransitionModel.Transition/*>GeneralSearchProblem.Transition<Proof,Proof><*/ transition(Object/*>Proof<*/ action, Object/*>Proof<*/ state, Object/*>Proof<*/ statep) {
-            return new Transition(action, Values.ONE);
+            return new Transition(action, Values.getDefault().ONE());
         }
     }
 

@@ -318,7 +318,7 @@ abstract class AbstractVector/*<R extends Arithmetic>*/ extends AbstractTensor i
     public Arithmetic/*>R<*/ multiply(Vector/*<R>*/ b) {
         Utility.pre(dimension() == b.dimension(), "vectors for dot-product must have equal dimension");
         // need Functionals.map(Function,Tensor) and Functionals.foldRight(Function,Object,Tensor)
-        return (Arithmetic/*>R<*/) Functionals.foldRight(Operations.plus, Values.ZERO, Functionals.map(Operations.times, iterator(), b.iterator()));
+        return (Arithmetic/*>R<*/) Functionals.foldRight(Operations.plus, Values.getDefault().ZERO(), Functionals.map(Operations.times, iterator(), b.iterator()));
     } 
 
     public Vector/*<R>*/ multiply(Scalar s) {
@@ -379,8 +379,8 @@ abstract class AbstractVector/*<R extends Arithmetic>*/ extends AbstractTensor i
             r.set(0, (Arithmetic/*>R<*/) get(1).multiply(b.get(2)).subtract(get(2).multiply(b.get(1))));
             r.set(1, (Arithmetic/*>R<*/) get(2).multiply(b.get(0)).subtract(get(0).multiply(b.get(2))));
         } else {
-            r.set(0, (Arithmetic/*>R<*/) Values.ZERO);
-            r.set(1, (Arithmetic/*>R<*/) Values.ZERO);
+            r.set(0, (Arithmetic/*>R<*/) get(0).zero());
+            r.set(1, (Arithmetic/*>R<*/) get(0).zero());
         }
         r.set(2, (Arithmetic/*>R<*/) get(0).multiply(b.get(1)).subtract(get(1).multiply(b.get(0))));
         return r;

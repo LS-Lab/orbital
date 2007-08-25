@@ -203,7 +203,7 @@ public abstract class MarkovDecisionProcess/*<A,S,M extends MarkovDecisionProble
          * @todo move to super class?
          */
         public void setDiscount(Real gamma) {
-            if (!MathUtilities.isin(gamma, Values.ZERO, Values.ONE))
+            if (!MathUtilities.isin(gamma, (Real)gamma.zero(), (Real)gamma.one()))
                 throw new IllegalArgumentException("assert that discount " + gamma + " isin [0,1]");
             this.discount = gamma;
         }

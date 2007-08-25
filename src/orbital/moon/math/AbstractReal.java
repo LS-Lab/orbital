@@ -81,7 +81,7 @@ abstract class AbstractReal extends AbstractComplex implements Real {
     } 
 
     public final Real im() {
-        return Values.ZERO;
+        return (Real)zero();
     } 
 
     final double imaginaryValue() {

@@ -142,7 +142,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final Function/*<Arithmetic,Arithmetic>*/ sum = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ a) {
-                return Functionals.foldLeft(plus, Values.ZERO, Utility.asIterator(a));
+                return Functionals.foldLeft(plus, Values.getDefault().ZERO(), Utility.asIterator(a));
             }
             public Function derive() {
                 throw new ArithmeticException(this + " is only partially derivable");
@@ -275,7 +275,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final Function/*<Arithmetic,Arithmetic>*/ product = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ a) {
-                return Functionals.foldLeft(times, Values.ONE, Utility.asIterator(a));
+                return Functionals.foldLeft(times, Values.getDefault().ONE(), Utility.asIterator(a));
             }
             public Function derive() {
                 throw new ArithmeticException(this + " is only partially derivable");

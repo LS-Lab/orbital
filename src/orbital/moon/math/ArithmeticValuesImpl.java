@@ -130,7 +130,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
      * @see #complex(Real, Real)
      */
     public Complex complex(Real a) {
-        return complex(a, Values.ZERO);
+        return complex(a, (Real)a.zero());
     } 
     public Complex complex(double a) {
         return complex(a, 0);
@@ -302,7 +302,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
         Tensor zero = newInstance(dimensions);
         for (ListIterator i = zero.iterator(); i.hasNext(); ) {
             i.next();
-            i.set(Values.ZERO);
+            i.set(ZERO());
         }
         return zero;
     }

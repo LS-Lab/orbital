@@ -103,7 +103,7 @@ public class IterativeExpansion extends GeneralSearch implements EvaluativeAlgor
 
     //@todo optimizable by far, also modularize to an OptionIterator?
     private final Object/*>S<*/ solveByIterativeExpand(Object/*>S<*/ node, Real bound) {
-	if (!(bound.compareTo(Values.ZERO) >= 0 && !bound.isNaN()))
+	if (!(bound.compareTo(bound.zero()) >= 0 && !bound.isNaN()))
 	    throw new AssertionError("bound " + bound + " is a nonnegative value");
 	Real cost = (Real) getEvaluation().apply(node);
 	System.err.println(node + ",\t" + cost + "/" + bound);

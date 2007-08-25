@@ -447,7 +447,7 @@ public final class NumericalAlgorithms {
          */
         for (int k = 1; k < b.length; k++)
             for (int i = 0; i < b[k].length - k; i++) {
-                Function t = Functionals.compose(Operations.subtract, Functions.constant(Values.ONE), phi);
+                Function t = Functionals.compose(Operations.subtract, Functions.constant(Values.getDefault().ONE()), phi);
                 b[i][k] = (Function) Operations.plus.apply(Operations.times.apply(b[i][k - 1], t), Operations.times.apply(b[i + 1][k - 1], phi));
             } 
 

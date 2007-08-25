@@ -97,8 +97,8 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
     
     // arithmetic operations
         
-    public Arithmetic zero() {return Values.ZERO;}
-    public Arithmetic one() {return Values.ONE;}
+    public Arithmetic zero() {return Values.getDefault().ZERO();}
+    public Arithmetic one() {return Values.getDefault().ONE();}
     
     /**
      * power of complex numbers.
