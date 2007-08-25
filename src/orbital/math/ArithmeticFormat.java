@@ -530,7 +530,7 @@ public class ArithmeticFormat extends Format {
                 
         Real re = v.re();
         Real im = v.im();
-        if (!re.equals(Values.ZERO) || (complexAbbreviateNullReal && im.equals(Values.ZERO)))
+        if (!re.isZero() || (complexAbbreviateNullReal && im.isZero()))
             format(re, result, fieldPosition);
 
         if (fieldPosition.getField() == REAL_FIELD)
@@ -538,16 +538,16 @@ public class ArithmeticFormat extends Format {
         else if (fieldPosition.getField() == IMAGINARY_FIELD)
             fieldPosition.setBeginIndex(result.length());
 
-        if (!(complexAbbreviateNullImaginary && im.equals(Values.ZERO))) {
-            boolean negative = im.compareTo(Values.ZERO) < 0;
+        if (!(complexAbbreviateNullImaginary && im.isZero())) {
+            boolean negative = im.compareTo(im.zero()) < 0;
             if (negative) {
                 im = (Real) im.minus();
                 result.append(complexNegativeSeparator);
-            } else if (!(complexAbbreviateNullRealPositiveSeparator && re.equals(Values.ZERO)))
+            } else if (!(complexAbbreviateNullRealPositiveSeparator && re.isZero()))
                 result.append(complexPositiveSeparator);
             if (!complexUnitLast)
                 result.append(complexUnit);
-            if (!(complexAbbreviateOne && (im.norm().equals(Values.ONE)))) {
+            if (!(complexAbbreviateOne && (im.norm().isOne()))) {
                 if (!complexUnitLast)
                     result.append(complexUnitSeparator);
                 format(im, result, fieldPosition);
@@ -592,7 +592,7 @@ public class ArithmeticFormat extends Format {
         else if (fieldPosition.getField() == DENOMINATOR_FIELD)
             fieldPosition.setBeginIndex(result.length());
 
-        if (logger.isLoggable(Level.FINER) || !v.denominator().equals(Values.ONE)) {
+        if (logger.isLoggable(Level.FINER) || !v.denominator().isOne()) {
             result.append(rationalSeparator);
             numberFormat.format(v.denominator(), result, fieldPosition);
         }
@@ -632,7 +632,7 @@ public class ArithmeticFormat extends Format {
             final Arithmetic ci = p.get(i);
             final boolean constantTerm = Setops.all(i.iterator(), Functionals.bindSecond(Predicates.equal, Values.ZERO));
             // only print nonzero elements (but print the 0-th coefficient if it is the only one)
-            if (!ci.norm().equals(Values.ZERO)
+            if (!ci.norm().isZero()
                 || (constantTerm && p.degreeValue() <= 0)) {
                 int startIndex = result.length();
                 // whether the coefficient ci has been skipped
@@ -659,7 +659,7 @@ public class ArithmeticFormat extends Format {
                 int countk = 0;
                 for (Iterator k = i.iterator(); k.hasNext(); countk++) {
                     final Integer exponent = (Integer)k.next();
-                    if (!exponent.equals(Values.ZERO)) {
+                    if (!exponent.isZero()) {
                         if (firstVariableAfterCoefficient)
                             if (skipped)
                                 // only skip times operator if coefficient was skipped
@@ -933,7 +933,7 @@ public class ArithmeticFormat extends Format {
                         if (im == null)
                             throw new NumberFormatException("real value does not need to be parsed as a complex");
                         else if (re == null)
-                            return vf.complex(Values.ZERO, im);
+                            return vf.complex((Real)im.zero(), im);
                         else
                             return vf.complex(re, im);
                     }

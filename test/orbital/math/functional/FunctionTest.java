@@ -18,6 +18,7 @@ import java.lang.reflect.*;
 import java.util.*;
 import java.awt.Dimension;
 import orbital.util.*;
+import orbital.logic.sign.concrete.Notation;
 
 /**
  * Automatic test-driver checking (some parts of) orbital.math.functional.* against Mathematica.
@@ -589,6 +590,33 @@ public class FunctionTest extends check.TestCase {
 				   + "]]");
 		System.out.println("Result: " + solvesODE);
 		System.out.println("dSolve solution validation FAILED");
+
+		// second chance with full bracket format
+		final Notation oldNotation = Notation.getDefault();
+		Notation.setDefault(Notation.FULLFIX);
+		final String oursol2 = mf.format(f.apply(t));
+		// verify in Mathematica that oursol really solves ODE
+		ml.newPacket();
+		ml.evaluate("{True}==Union[FullSimplify[N["
+			    + " MapThread[#1==#2&,"
+			    + "  {D[" + oursol2 +"," + t + "], (" + mf.format(A) + ").(" + oursol + ") + " + mf.format(b) + "}\n"
+			    + "]\n"
+			    + "]]]"
+			    );
+		ml.waitForAnswer();
+		final String solvesODE2 = ml.getExpr().toString();
+		ml.newPacket();
+		if (!solvesODE2.equals("True")) {
+		    System.out.println("{True}==Union[FullSimplify["
+				       + " MapThread[#1==#2&,"
+				       + "  {D[" + oursol2 +"," + t + "], (" + mf.format(A) + ").(" + oursol + ") + " + mf.format(b) + "}\n"
+				       + "]\n"
+				       + "]]");
+		    System.out.println("Result: " + solvesODE2);
+		    System.out.println("dSolve solution second validation FAILED");
+		}
+		Notation.setDefault(oldNotation);
+		assertTrue(solvesODE2.equals("True") , " dSolve solves ODE on second validation\n our solution:\n" + oursol + "\nour second solution:\n" + oursol2 + " \n ref.solution:\n" + refsol + "\n solves " + "x'==\n" + mf.format(A) + ".x + " + mf.format(b) + "\nwith initial value " + mf.format(eta) + "\nresulting in " + solvesODE2);
 	    }
 	    assertTrue(solvesODE.equals("True") , " dSolve solves ODE\n our solution:\n" + oursol + " \n ref.solution:\n" + refsol + "\n solves " + "x'==\n" + mf.format(A) + ".x + " + mf.format(b) + "\nwith initial value " + mf.format(eta) + "\nresulting in " + solvesODE);
 

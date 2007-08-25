@@ -11,13 +11,14 @@ import orbital.math.functional.Operations;
 import orbital.math.functional.*;
 import junit.framework.*;
 import junit.extensions.*;
+import java.math.BigInteger;
 
 /**
  * A test case, testing .
  * @version $Id$
  */
 public class AlgebraicAlgorithmsTest extends check.TestCase {
-    private static final int TEST_REPETITIONS = 0000*1000;
+    private static final int TEST_REPETITIONS = 1000;
     private static final int MAX = 1000;
     private static final int PRIMES_BIT_LENGTH = 5;
     private static final Comparator order = AlgebraicAlgorithms.DEGREE_REVERSE_LEXICOGRAPHIC;
@@ -35,7 +36,9 @@ public class AlgebraicAlgorithmsTest extends check.TestCase {
             }, TEST_REPETITIONS));
         return suite;
     }
+    private ArithmeticTestPatternGenerator random;
     protected void setUp() {
+	 this.random = new  ArithmeticTestPatternGenerator(-10000,10000);
     }
     /**
      * @internal similar to the algorithm computing exact solution to integer LGS.
@@ -68,7 +71,8 @@ public class AlgebraicAlgorithmsTest extends check.TestCase {
         System.out.println("solution:         " + AlgebraicAlgorithms.chineseRemainder(x,m));
         System.out.println("is unique modulo: " + umod);
         System.out.println();
-        assertEquals(result, AlgebraicAlgorithms.chineseRemainder(x,m).representative());
+	Arithmetic r = AlgebraicAlgorithms.chineseRemainder(x,m).representative();
+        assertTrue(result.equals(r) || result.subtract(r).equals(umod) || result.subtract(r).equals(umod.minus()), "chineseRemainderTheorem: expected " + result + " was " + r + " (mod " + umod + ")");
     }
     
     public void testGroebnerBasisSimple() {
@@ -128,6 +132,62 @@ public class AlgebraicAlgorithmsTest extends check.TestCase {
         }));
     }
 
+    public void testgcd() {
+	for (int i = 0; i < TEST_REPETITIONS; i++) {
+	    int x = random.randomInt();
+	    if (x == 0) x++;
+	    Integer xargs[] = {
+		vf.valueOf(BigInteger.valueOf(x)),
+		vf.valueOf((long)x),
+		vf.valueOf(x)
+	    };
+	    int y = random.randomInt();
+	    if (y == 0) y++;
+	    Integer yargs[] = {
+		vf.valueOf(BigInteger.valueOf(y)),
+		vf.valueOf((long)y),
+		vf.valueOf(y)
+	    };
+	    for (int k = 0; k < xargs.length; k++) {
+		Integer xs = xargs[k];
+		Integer ys = yargs[k];
+		Integer d = (Integer)AlgebraicAlgorithms.gcd(xs, ys);
+		assertTrue(xs.modulo(d).isZero(),
+			   "gcd(" + xs + "," + ys + ") = " + d + " divides " + x  + "\n" + xs + "@" + xs.getClass() + " " + ys + "@" + ys.getClass() + " " + d + "@" + d.getClass());
+		assertTrue(ys.modulo(d).isZero(),
+			   "gcd(" + xs + "," + ys + ") = " + d + " divides " + y  + "\n" + xs + "@" + xs.getClass() + " " + ys + "@" + ys.getClass() + " " + d + "@" + d.getClass());
+	    }
+	}
+    }
+
+    public void testlcm() {
+	for (int i = 0; i < TEST_REPETITIONS; i++) {
+	    int x = random.randomInt();
+	    if (x == 0) x++;
+	    Integer xargs[] = {
+		vf.valueOf(BigInteger.valueOf(x)),
+		vf.valueOf((long)x),
+		vf.valueOf(x)
+	    };
+	    int y = random.randomInt();
+	    if (y == 0) y++;
+	    Integer yargs[] = {
+		vf.valueOf(BigInteger.valueOf(y)),
+		vf.valueOf((long)y),
+		vf.valueOf(y)
+	    };
+	    for (int k = 0; k < xargs.length; k++) {
+		Integer xs = xargs[k];
+		Integer ys = yargs[k];
+		Integer m = (Integer)AlgebraicAlgorithms.lcm(xs, ys);
+		assertTrue(m.modulo(xs).isZero(),
+			   "lcm(" + xs + "," + ys + ") = " + m + " multiple of " + xs + "\n" + xs + "@" + xs.getClass() + " " + ys + "@" + ys.getClass() + " " + m + "@" + m.getClass());
+		assertTrue(m.modulo(ys).isZero(),
+			   "lcm(" + xs + "," + ys + ") = " + m + " multiple of " + ys + "\n" + xs + "@" + xs.getClass() + " " + ys + "@" + ys.getClass() + " " + m + "@" + m.getClass());
+	    }
+	}
+    }
+    
     public void testdSolve() {
         System.out.println("solving differential equations");
 	final Symbol t = vf.symbol("t");

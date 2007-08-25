@@ -123,7 +123,7 @@ public abstract class Notation implements Serializable, Comparable {
     /**
      * Get the notation used for the synonym DEFAULT.
      */
-    protected static final Notation getDefault() {
+    public static final Notation getDefault() {
         return defaultNotation;
     } 
 
@@ -325,6 +325,79 @@ public abstract class Notation implements Serializable, Comparable {
                                             argDesc[i] = inner;
                                         else
                                             argDesc[i] = '(' + inner + ')';
+                                        break;
+                                    default:
+                                        throw new NumberFormatException("wrong associativity specifier " + spec);
+                                    }
+                                } else
+                                    argDesc[i] = inner;
+                            } 
+                            return AUTO.format(((KeyValuePair) node).getKey(), argDesc);
+                        } 
+                    }.apply(root).toString();
+            } 
+
+        };
+
+    /**
+     * Specifies full-bracket mixed notation <code>"(a*(b+f(c))) + d"</code>.
+     * <p>
+     * Delegates to the {@link Notation#getNotation(Object) registered notation}.
+     * Compositors with registered default notation like +, -, *, /, ^ have a notation set.
+     * All unknown symbols are treated as prefix.
+     * </p>
+     * @see #AUTO
+     * @see #BESTFIX
+     */
+    public static final Notation FULLFIX = new Notation("fullfix") {
+            //private static final long serialVersionUID;
+            public String format(Object compositor, Object arg_) {
+                if (compositor instanceof Composite)
+		    // compound compositors will be formatted in prefix
+                    return PREFIX.format(compositor, arg_);
+                //@todo explicitly work on graph-structure induced by Composite without importing orbital.util.graph for this sole reason
+                // however, how to briefly append arguments to the compositor object (just for formatting), then?
+                Node root;
+                if (arg_ == null)
+                    arg_ = getPureParameters(compositor);
+                // convert to function tree
+                Collection arg = Utility.asCollection(arg_);
+                if (arg == null || arg.size() == 0)
+                    root = compositeTree(compositor);
+                else {
+                    root = new ListTree.TreeNode(compositor, compositor.toString());
+                    // root.addAll(Functionals.map(compositeTree, arg));
+                    for (Iterator i = arg.iterator(); i.hasNext(); )
+                        root.add(compositeTree(i.next()));
+                } 
+                // traverse and format
+                return new Function/*<Node, String>*/() {
+                        private StringBuffer sb;
+                        public Object/*>String<*/ apply(Object/*>Node<*/ root) {
+                            return visit((Node) root);
+                        } 
+                        private final String visit(Node node) {
+                            if (node.isLeaf())
+                                return ((KeyValuePair) node).getValue() + "";
+                            NotationSpecification spec = getNotation(((KeyValuePair) node).getKey());
+                            int    apos = 0;
+                            // will contain formatted arguments
+                            String argDesc[] = new String[node.getEdgeCount()];
+                            int    i = 0;
+                            for (Iterator it = node.edges(); it.hasNext(); i++) {
+                                // ignore compositor position in association format specifier
+                                if (spec != null && spec.associativity.charAt(apos) == 'f')
+                                    apos++;
+                                Node                  n = (Node) it.next();
+                                NotationSpecification childSpec = getNotation(((KeyValuePair) n).getKey());
+                                String                inner = visit(n);
+                                // handle associativity if specified
+                                if (spec != null) {
+                                    assert spec.associativity.length() > apos : "wrong associativity specifier " + spec + " for " + ((KeyValuePair) node).getKey() + " at position " + apos + " in argument " + i + " (" + ((KeyValuePair) n).getKey() + ")";
+                                    switch (spec.associativity.charAt(apos++)) {
+                                    case 'x':
+				    case 'y':
+					argDesc[i] = '(' + inner + ')';
                                         break;
                                     default:
                                         throw new NumberFormatException("wrong associativity specifier " + spec);
