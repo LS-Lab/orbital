@@ -135,7 +135,7 @@ public class IterativeExpansion/*<A,S>*/
      *  This differs from the paper.
      */
     private final Object/*>S<*/ solveByIterativeExpand(final NodeInfo/*<A,S>*/ node, final Real bound) {
-        assert bound.compareTo(Values.ZERO) >= 0 && !bound.isNaN() : "bound " + bound + " >= 0";
+        assert bound.compareTo(bound.zero()) >= 0 && !bound.isNaN() : "bound " + bound + " >= 0";
         //System.err.println(node + "/" + bound);
         if (boundCompare(node.getFCost(), bound) > 0)
             {//System.err.println("cut ");

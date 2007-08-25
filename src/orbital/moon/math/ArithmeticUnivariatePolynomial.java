@@ -76,7 +76,7 @@ class ArithmeticUnivariatePolynomial/*<R extends Arithmetic>*/ extends AbstractU
         if (Setops.some(Arrays.asList(coefficients), Functionals.bindSecond(Predicates.equal, null)))
             throw new IllegalArgumentException("illegal coefficients: containing null");
         this.coefficients = coefficients;
-        this.R_ZERO = coefficients.length > 0 ? coefficients[0].zero() : Values.ZERO;
+        this.R_ZERO = coefficients.length > 0 ? coefficients[0].zero() : Values.getDefault().ZERO();
         this.degree = degreeImpl(coefficients);
     }
 
@@ -93,7 +93,7 @@ class ArithmeticUnivariatePolynomial/*<R extends Arithmetic>*/ extends AbstractU
         if (i >= coefficients.length)
             throw new UnsupportedOperationException("setting coefficients beyond the degree not (always) supported");
         coefficients[i] = vi;
-        this.R_ZERO = coefficients.length > 0 ? coefficients[0].zero() : Values.ZERO;
+        this.R_ZERO = coefficients.length > 0 ? coefficients[0].zero() : Values.getDefault().ZERO();
         if (i >= oldDegree)
             this.degree = degreeImpl(coefficients);
     }

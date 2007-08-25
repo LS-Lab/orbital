@@ -632,12 +632,12 @@ public class ArithmeticFormat extends Format {
             final Arithmetic ci = p.get(i);
             final boolean constantTerm = Setops.all(i.iterator(), Functionals.bindSecond(Predicates.equal, Values.ZERO));
             // only print nonzero elements (but print the 0-th coefficient if it is the only one)
-            if (!ci.norm().isZero()
+            if (!ci.isZero()
                 || (constantTerm && p.degreeValue() <= 0)) {
                 int startIndex = result.length();
                 // whether the coefficient ci has been skipped
                 boolean skipped;
-                if (ci.equals(ci.one()) && !constantTerm)
+                if (ci.isOne() && !constantTerm)
                     // skip 1 (except for constant term)
                     skipped = true;
                 else if (ci.equals(ci.one().minus()) && !constantTerm) {
@@ -669,7 +669,7 @@ public class ArithmeticFormat extends Format {
                         else
                             result.append(multinomialVariableTimesOperator);
                         result.append(addIndex ? multinomialVariables[0] + countk : multinomialVariables[countk]);
-                        if (exponent.compareTo(Values.ONE) > 0)
+                        if (exponent.compareTo(Values.getDefault().ONE()) > 0)
                             result.append(multinomialPowerOperator + exponent);
                         firstVariableAfterCoefficient = false;
                     }

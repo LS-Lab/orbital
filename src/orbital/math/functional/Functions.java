@@ -913,7 +913,7 @@ public final class Functions {
                     Arithmetic v = (Arithmetic) x;
                     //@todo choose either this, or SynonymFunction
                     // for |x|<=1 or |x|<1
-                    return ((Arithmetic) log.apply(Values.ONE.add(v).divide(Values.ONE.subtract(v)))).divide(TWO);
+                    return ((Arithmetic) log.apply(v.one().add(v).divide(v.one().subtract(v)))).divide(TWO);
                 }
                 throw new UnsupportedOperationException("not implemented for type: " + x.getClass());
             } 
@@ -943,7 +943,7 @@ public final class Functions {
                     Arithmetic v = (Arithmetic) x;
                     //@todo choose either this, or SynonymFunction
                     // for |x|>1
-                    return ((Arithmetic) log.apply(v.add(Values.ONE).divide(v.subtract(Values.ONE)))).divide(TWO);
+                    return ((Arithmetic) log.apply(v.add(v.one()).divide(v.subtract(v.one())))).divide(TWO);
                 }
                 throw new UnsupportedOperationException("not implemented for type: " + x.getClass());
             } 
@@ -1146,10 +1146,12 @@ public final class Functions {
             public Object/*>Real<*/ apply(Object/*>Real<*/ x) {
                 if (Real.hasType.apply(x)) {
                     Real z = (Real) x;
+		    if (z.isZero())
+			return valueFactory.ZERO();
                     Real abs = z.norm();
-                    return abs.equals(Values.ZERO) ? Values.ZERO : z.divide(abs);
+                    return z.divide(abs);
                 }
-                int cmp = Values.ZERO.compareTo(x);
+                int cmp = valueFactory.ZERO().compareTo(x);
                 return valueFactory.valueOf(cmp < 0 ? -1 : cmp > 0 ? 1 : 0);
             } 
             public Function derive() {
@@ -1205,16 +1207,16 @@ public final class Functions {
      */
     public static final Function diracDelta = new AbstractFunction/*<Arithmetic,Integer>*/() {
             public Object/*>Integer<*/ apply(Object/*>Arithmetic<*/ x) {
-                if (((Normed) x).norm().equals(Values.ZERO))
+                if (((Arithmetic) x).isZero())
                     throw new IllegalArgumentException(x + "");
                 else
-                    return Values.ZERO;
+                    return ((Arithmetic) x).zero();
             } 
             public Function derive() {
                 return diracDelta;
             } 
             public Function integrate() {
-                return step(Values.ZERO);
+                return step(Values.getDefault().ZERO());
             } 
             public Real norm() {
                 return Values.NaN;

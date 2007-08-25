@@ -653,11 +653,12 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends A
 
         //@todo optimize sometime
         // initialize with sign of the optimized determinante of (0:0,0:0)
-        int sign = -MathUtilities.sign(Values.ZERO.compareTo(get(0, 0)));
+	Arithmetic a11 = get(0, 0);
+        int sign = -MathUtilities.sign(((Real)a11.zero()).compareTo(a11));
         if (sign == 0)
             throw new UnsupportedOperationException("only the test for positive definite and negative definite has been implemented yet");
         for (int i = 1; i < dimension().height; i++) {
-            int s = -MathUtilities.sign(Values.ZERO.compareTo(subMatrix(0,i, 0,i).det()));
+            int s = -MathUtilities.sign(((Real)a11.zero()).compareTo(subMatrix(0,i, 0,i).det()));
             if (s != sign)
                 throw new UnsupportedOperationException("only the test for positive definite and negative definite has been implemented yet");
         }
@@ -665,7 +666,7 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends A
     } 
 
     public boolean isInvertible() throws ArithmeticException {
-        return !det().norm().equals(Values.ZERO);                                       // (!) applicable for Double.NaN as well
+        return !det().isZero();                                       // (!) applicable for Double.NaN as well
     } 
     public boolean isRegular() throws ArithmeticException {
         return isInvertible();
@@ -744,13 +745,17 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends A
         if (dimension().width == 2)
             return (Arithmetic/*>R<*/) get(0, 0).multiply(get(1, 1)).subtract(get(1, 0).multiply(get(0, 1)));
 
-        Integer MINUS_ONE = (Integer) Values.ONE.minus();
-        Arithmetic/*>R<*/  det = (Arithmetic/*>R<*/) Values.ZERO;
+	final Arithmetic r = get(0, 0);
+        Integer MINUS_ONE = (Integer) r.one().minus();
+        Arithmetic/*>R<*/  det = (Arithmetic/*>R<*/) r.zero();
         // development of 0-th row
         Matrix/*<R>*/ innerMatrix = ((Matrix) clone()).removeRow(0);
         for (int j = 0; j < dimension().width; j++) {
             // recursion
-            det = (Arithmetic/*>R<*/) det.add(((j & 1) == 0 ? Values.ONE : MINUS_ONE).multiply(get(0, j)).multiply(((Matrix) innerMatrix.clone()).removeColumn(j).det()));
+	    if ((j & 1) == 0)
+		det = (Arithmetic/*>R<*/) det.add(get(0, j).multiply(((Matrix) innerMatrix.clone()).removeColumn(j).det()));
+	    else
+		det = (Arithmetic/*>R<*/) det.subtract(get(0, j).multiply(((Matrix) innerMatrix.clone()).removeColumn(j).det()));
         } 
         return det;
     } 
@@ -871,7 +876,7 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends A
 
             // transform a[i|i]-->1 (diagonal 1s)
             Arithmetic ap = A.get(i, i);
-            if (ap.norm().equals(Values.ZERO))
+            if (ap.isZero())
                 throw new UnsupportedOperationException("pivot: diagonal 0s are not expected, must use pivot. found " + ap);
             Arithmetic apinv = ap.inverse();
 
@@ -893,7 +898,7 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends A
                 // transform a[i|j]-->0 (j!=i)
                 // subtract from all other rows a multiple of the row urow
                 Arithmetic f = A.get(j, i);
-                if (f.norm().equals(Values.ZERO))
+                if (f.isZero())
                     continue;
                 if (logger.isLoggable(Level.FINEST))
                     logger.log(Level.FINEST, "Matrix.inverse() \t{0} - {1}\n\t\t{2} - {3}", new Object[] {A.getRow(j), urow.scale(f), AI.getRow(j), urowI.scale(f)});

@@ -191,7 +191,7 @@ public abstract class AbstractValues extends Values {
     // vector constructors and conversion utilities
 
     public Vector ZERO(int n) {
-        return CONST(n, Values.ZERO);
+        return CONST(n, ZERO());
     } 
 
     public /*<R extends Arithmetic>*/ Vector/*<R>*/ constant(final Vector/*<R>*/ v) {
@@ -320,7 +320,7 @@ public abstract class AbstractValues extends Values {
         Tensor zero = newInstance(dimensions);
         for (ListIterator i = zero.iterator(); i.hasNext(); ) {
             i.next();
-            i.set(Values.ZERO);
+            i.set(ZERO());
         }
         return zero;
     }

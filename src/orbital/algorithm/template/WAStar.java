@@ -65,7 +65,7 @@ public class WAStar/*<A,S>*/ extends AStar/*<A,S>*/ {
      * Get the weighting argument W for the evaluation function.
      */
     public void setWeight(Real W) {
-        if (!(W.compareTo(Values.ONE) >= 0))
+        if (!(W.compareTo(W.one()) >= 0))
             throw new IllegalArgumentException("weighting argument W must be >= 1 for WA*");
         this.W = W;
     }

@@ -153,7 +153,7 @@ public final class LUDecomposition/*<R extends Arithmetic>*/ implements Serializ
      */
     public boolean isInvertible() throws ArithmeticException {
         for (int i = 0; i < A.dimension().height; i++)
-            if (A.get(i, i).norm().equals(Values.ZERO))
+            if (A.get(i, i).isZero())
                 return false;
         return true;
     }
@@ -181,7 +181,7 @@ public final class LUDecomposition/*<R extends Arithmetic>*/ implements Serializ
      * @see Matrix#det()
      */
     public Arithmetic/*>R<*/ det() {
-        Arithmetic/*>R<*/ detU = (Arithmetic/*>R<*/) Functionals.foldRight(Operations.times, Values.ONE, A.getDiagonal().iterator());
+        Arithmetic/*>R<*/ detU = (Arithmetic/*>R<*/) Functionals.foldRight(Operations.times, Values.getDefault().ONE(), A.getDiagonal().iterator());
         return sign ? detU : (Arithmetic/*>R<*/) detU.minus();
     }
 

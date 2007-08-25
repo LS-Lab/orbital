@@ -89,7 +89,7 @@ public class ArithmeticFormatTest extends check.TestCase {
 
     public void testParsable() {
 	assertTrue( vf.ZERO().equals(parsable("0", true)), "parsed 0");
-	assertTrue( vf.ZERO().equals(parsable("-0", true)), "parsed 0");
+	assertTrue( vf.ZERO().equals(parsable("-0", true)), "parsed -0");
 	//assertTrue( vf.ZERO().equals(parsable("+0", true)), "parsed 0");
 	assertTrue( vf.ONE().equals(parsable("1", true)), "parsed unit");
 	assertTrue( vf.valueOf(5).equals(parsable("5", true)), "parsed integer");
@@ -136,7 +136,7 @@ public class ArithmeticFormatTest extends check.TestCase {
         try {
             System.out.println("is this a parsable arithmetic value:\t" + expr);
             Arithmetic p = vf.parse(expr);
-            assertTrue(true == expectparsable , desc + " result=" + p);
+            assertTrue(true == expectparsable , desc + " result=" + p + "@" + p.getClass());
             return p;
         }
         catch (NumberFormatException e) {

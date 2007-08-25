@@ -53,7 +53,7 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
     } 
 
     public boolean equals(Object o, Real tolerance) {
-        return tolerance.isInfinite() && tolerance.compareTo(Values.ZERO) > 0 ? true : equals(o);
+        return tolerance.isInfinite() && tolerance.compareTo(tolerance.zero()) > 0 ? true : equals(o);
     }
 
     public int hashCode() {
@@ -66,8 +66,8 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
     
     // Arithmetic implementation
 
-    public Arithmetic zero() {return Values.ZERO;}
-    public Arithmetic one() {return Values.ONE;}
+    public Arithmetic zero() {return Values.getDefault().ZERO();}
+    public Arithmetic one() {return Values.getDefault().ONE();}
 
     //XXX: pointwise Arithmetic implementation (identical to @see orbital.math.functional.MathFunctor.AbstractFunctor)
     public Arithmetic add(Arithmetic b) throws ArithmeticException {

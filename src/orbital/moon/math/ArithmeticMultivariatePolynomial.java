@@ -74,7 +74,7 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/
         for (Combinatorical index = Combinatorical.getPermutations(coefficients.dimensions()); index.hasNext(); ) {
             final int[] i = index.next();
             final Arithmetic vi = coefficients.get(i);
-            if (vi != null && !vi.norm().equals(Values.ZERO)) {
+            if (vi != null && !vi.isZero()) {
                 final int sum = ((Integer)Operations.sum.apply(Values.getDefaultInstance().valueOf(i))).intValue();
                 if (sum > d)
                     d = sum;
