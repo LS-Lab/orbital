@@ -18,6 +18,7 @@ import orbital.logic.functor.Predicate;
 import orbital.logic.functor.Functor;
 import java.util.Collection;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -454,14 +455,28 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
 		    return valueOf(((AbstractReal.Big)r).getValue().toBigIntegerExact());
 		}
 		catch (ArithmeticException fractional) {/*ignore*/}
+		try {
+		    assert !r.equals(valueOf(((Number)r).longValue())) : "conversion to BigInteger failed hence no conversion to long needs to be attempted " + r;
+		}
+		catch (ArithmeticException nonconform_trial) {/*ignore*/}
+		catch (UnsupportedOperationException nonconform_trial) {/*ignore*/}
+	    } else {
+		try {
+		    // convert to long and check for equality
+		    long l = ((Number)r).longValue();
+		    Integer i = valueOf(l);
+		    if (i.equals(r))
+			return i;
+		    /* // the following alternative code is crap as it doesn't really check for success
+		       final float f = r.floatValue();
+		       //@xxx also convert bigger integers down
+		       if (f in range and MathUtilities.isInteger(f))
+		       return valueOf((long) f);
+		    */
+		}
+		catch (ArithmeticException nonconform_trial) {/*ignore*/}
+		catch (UnsupportedOperationException nonconform_trial) {/*ignore*/}
 	    }
-            try {
-		//@xxx also convert bigger integers down
-                if (MathUtilities.isInteger(r.floatValue()))
-                    return valueOf((long) r.floatValue());
-            } catch (UnsupportedOperationException nonconform_trial) {
-                // ignore
-            } 
             if (Rational.isa.apply(val))
                 return (Rational) val;
             else
