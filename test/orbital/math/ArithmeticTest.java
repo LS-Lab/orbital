@@ -298,7 +298,7 @@ public class ArithmeticTest extends check.TestCase {
 	    }
 	    {
 		int p = random.randomInt();
-		int q = random.randomInt();
+		int q = random.randomInt(1,1000);
 		double x = (double) p / (double) q;
 		Rational args[] = {
 		    vf.rational(p,q),

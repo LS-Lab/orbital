@@ -478,7 +478,7 @@ public final class Functions {
                 return Functionals.compose(Operations.minus, cos);
             }
             public Real norm() {
-                return Values.ONE;
+                return Values.getDefault().ONE();
             }
             public String toString() {
                 return "sin";
@@ -510,7 +510,7 @@ public final class Functions {
                 return sin;
             } 
             public Real norm() {
-                return Values.ONE;
+                return Values.getDefault().ONE();
             }
             public String toString() {
                 return "cos";
@@ -862,7 +862,7 @@ public final class Functions {
             /*public Object apply(Object x) {
               if (x instanceof Arithmetic) {
               Arithmetic v = (Arithmetic) x;
-              return log.apply(v.add((Arithmetic) sqrt.apply(v.multiply(v).add(Values.ONE))));
+              return log.apply(v.add((Arithmetic) sqrt.apply(v.multiply(v).add(Values.getDefault().ONE()))));
               }
               throw new UnsupportedOperationException("not implemented for type: " + x.getClass());
               }*/
@@ -907,7 +907,7 @@ public final class Functions {
      * integrate: &int;artanh x <i>d</i>x = x*artanh x + &#13266;(x<sup>2</sup>-1) / 2</p>
      * @see #tanh
      */
-    public static final Function artanh = new SynonymFunction((Function) Operations.divide.apply(Functionals.compose(log, (Function) Operations.divide.apply(Functionals.bindFirst(Operations.plus, Values.ONE), Functionals.bindFirst(Operations.subtract, Values.ONE))), TWO)) {
+    public static final Function artanh = new SynonymFunction((Function) Operations.divide.apply(Functionals.compose(log, (Function) Operations.divide.apply(Functionals.bindFirst(Operations.plus, Values.getDefault().ONE()), Functionals.bindFirst(Operations.subtract, Values.getDefault().ONE()))), TWO)) {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x) {
                 if (x instanceof Arithmetic) {
                     Arithmetic v = (Arithmetic) x;
@@ -937,7 +937,7 @@ public final class Functions {
      * integrate: &int;arcoth x <i>d</i>x = x*arcoth x + &#13266;(x<sup>2</sup>-1) / 2</p>
      * @see #coth
      */
-    public static final Function arcoth = new SynonymFunction(new SynonymFunction((Function) Operations.divide.apply(Functionals.compose(log, (Function) Operations.divide.apply(Functionals.bindSecond(Operations.plus, Values.ONE), Functionals.bindSecond(Operations.subtract, Values.ONE))), TWO))) {
+    public static final Function arcoth = new SynonymFunction(new SynonymFunction((Function) Operations.divide.apply(Functionals.compose(log, (Function) Operations.divide.apply(Functionals.bindSecond(Operations.plus, Values.getDefault().ONE()), Functionals.bindSecond(Operations.subtract, Values.getDefault().ONE()))), TWO))) {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x) {
                 if (x instanceof Arithmetic) {
                     Arithmetic v = (Arithmetic) x;
@@ -1129,7 +1129,7 @@ public final class Functions {
                 //@todo return logistic * (1 - logistic)
             } 
             public Real norm() {
-                return Values.ONE;
+                return Values.getDefault().ONE();
             }
             public String toString() {
                 return "logistic";
@@ -1161,7 +1161,7 @@ public final class Functions {
                 throw new UnsupportedOperationException("integrate " + this);
             } 
             public Real norm() {
-                return Values.ONE;
+                return Values.getDefault().ONE();
             }
             public String toString() {
                 return "sign";
@@ -1189,7 +1189,7 @@ public final class Functions {
                     return (Function) Operations.times.apply(step(t), Functionals.bindSecond(Operations.subtract, t));
                 } 
                 public Real norm() {
-                    return Values.ONE;
+                    return Values.getDefault().ONE();
                 }
                 public String toString() {
                     return "step_" + t;
@@ -1508,7 +1508,7 @@ public final class Functions {
                 throw new UnsupportedOperationException("integrate delta");
             } 
             public Real norm() {
-                return Values.ONE;
+                return Values.getDefault().ONE();
             }
             public String toString() {
                 return "delta";

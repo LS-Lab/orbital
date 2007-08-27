@@ -65,7 +65,7 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
         return intValue();
     }
     public final Integer denominator() {
-        return Values.ONE;
+        return (Integer)numerator().one();
     }
     final int denominatorValue() {
         return 1;
@@ -272,14 +272,12 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
 	// optimizations
 	public Arithmetic divide(Arithmetic b) {
 	    if (b instanceof Integer) {
-		assert java.lang.Integer.MIN_VALUE <= longValue() && longValue() <= java.lang.Integer.MAX_VALUE && java.lang.Integer.MIN_VALUE <= ((Integer) b).longValue() && ((Integer) b).longValue() <= java.lang.Integer.MAX_VALUE : "avoid possible loss of precision";
 		final Values vf = Values.getDefaultInstance();
-		return vf.narrow(vf.rational((int) intValue(), ((Integer) b).intValue()));
+		return vf.narrow(vf.rational(intValue(), ArithmeticValuesImpl.intValueExact((Integer) b)));
 	    } 
 	    return (Arithmetic) Operations.divide.apply(this, b);
 	} 
 	public Arithmetic inverse() {
-	    assert java.lang.Integer.MIN_VALUE <= longValue() && longValue() <= java.lang.Integer.MAX_VALUE : "possible loss of precision";
 	    return Values.getDefaultInstance().rational(1, intValue());
 	} 
     }
@@ -459,7 +457,7 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
 		else
 		    throw new IllegalArgumentException("unknown arbitrary precision type " + v.getClass() + " " + v);
 	    } else
-		value = BigInteger.valueOf(v.longValue());
+		value = BigInteger.valueOf(ArithmeticValuesImpl.longValueExact(v));
         }
 
         BigInteger getValue() {
@@ -542,14 +540,15 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
             return (Integer) Operations.times.apply(this, b);
         } 
         public Rational power(Integer b) {
-            if (b instanceof Big || b instanceof Long)
-                throw new ArithmeticException("exponentation is possibly too big");
-            else if (b instanceof Int) {
-                return b.compareTo(zero()) >= 0
-                    ? new Big(value.pow(b.intValue()))
-                    : Values.getDefault().rational((Integer/*__*/)one(), Values.getDefault().valueOf(value.pow(-b.intValue())));
-            }
-            return (Integer) Operations.power.apply(this, b);
+	    try {
+		int bv = ArithmeticValuesImpl.intValueExact(b);
+		return bv >= 0
+                    ? new Big(value.pow(bv))
+                    : Values.getDefault().rational((Integer/*__*/)one(), Values.getDefault().valueOf(value.pow(-bv)));
+	    } catch(ArithmeticException ex) {
+		throw new ArithmeticException("exponentation is possibly too big: " + this + " ^ " + b);
+		//return (Integer) Operations.power.apply(this, b);
+	    }
         } 
 	public Real power(Rational b) {
 	    if (b instanceof Integer)

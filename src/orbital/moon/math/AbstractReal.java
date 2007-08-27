@@ -205,7 +205,6 @@ abstract class AbstractReal extends AbstractComplex implements Real {
             else if (b instanceof Big)
                 return new Big(floatValue()).add(b);
             return (Real) Operations.plus.apply(this, b);
-            //@todo check whether b is a big double precision real
         }
         public Real subtract(Real b) {
             if (b instanceof Float)
@@ -410,7 +409,7 @@ abstract class AbstractReal extends AbstractComplex implements Real {
 		    throw new IllegalArgumentException("unknown arbitrary precision type " + v.getClass() + " " + v);
 	    } else {
 		assert !java.lang.Double.isNaN(v.doubleValue()) && !java.lang.Double.isInfinite(v.doubleValue()) : v + " should neither be NaN nor infinite";
-		value = BigDecimal.valueOf(v.doubleValue());
+		value = BigDecimal.valueOf(ArithmeticValuesImpl.doubleValueExact(v));
 	    }
         }
     
@@ -458,10 +457,10 @@ abstract class AbstractReal extends AbstractComplex implements Real {
         } 
     
 	public boolean isZero() {
-	    return value.equals(BigDecimal.ZERO);
+	    return value.compareTo(BigDecimal.ZERO) == 0;
 	} 
 	public boolean isOne() {
-	    return value.equals(BigDecimal.ONE);
+	    return value.compareTo(BigDecimal.ONE) == 0;
 	} 
 
 	public Real norm() {
@@ -507,20 +506,14 @@ abstract class AbstractReal extends AbstractComplex implements Real {
 	    if (bc instanceof Integer) {
 		return power((Integer)bc);
 	    } else {
-		//@xxx possible loss of precision
-		//throw new InternalError("non-integer exponentiation not yet implemented for big precision: " + this + " ^ " + b);
-		return Values.getDefault().valueOf(Math.pow(doubleValue(), b.doubleValue()));
+		return Values.getDefault().valueOf(Math.pow(ArithmeticValuesImpl.doubleValueExact((Number)this), ArithmeticValuesImpl.doubleValueExact(b)));
 	    }
         }
 	private Real power(Integer b) {
-	    if (b instanceof AbstractInteger.Int) {
-		return new Big(value.pow(((Integer)b).intValue()));
-	    } else {
-		final long bv = b.longValue();
-		if (java.lang.Integer.MIN_VALUE <= bv && bv <= java.lang.Integer.MAX_VALUE)
-		    return new Big(value.pow((int)bv));
-		else
-		    throw new ArithmeticException("exponentation is possibly too big: " + this + " ^ " + b);
+	    try {
+		return new Big(ArithmeticValuesImpl.intValueExact(b));
+	    } catch(ArithmeticException ex) {
+		throw new ArithmeticException("exponentation is possibly too big: " + this + " ^ " + b);
 	    }
 	}
         public Arithmetic inverse() {

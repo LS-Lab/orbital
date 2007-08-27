@@ -14,6 +14,7 @@ import orbital.math.Matrix;
 import orbital.math.functional.Functionals;
 
 import orbital.logic.sign.concrete.Notation;
+import orbital.math.ValueFactory;
 import orbital.math.Values;
 import orbital.math.Scalar;
 
@@ -603,11 +604,17 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
         Utility.pre(x != null && x.getClass().isArray()
                     && y != null && y.getClass().isArray(), "map(BinaryFunction, Object, Object) works on arrays of primitive types or their compound wrapper classes, only");
         Utility.pre(Array.getLength(x) == Array.getLength(y), "argument arrays must have same length");
-        final Values vf = Values.getDefaultInstance();
+        final ValueFactory vf = Values.getDefault();
         Object r = Array.newInstance(x.getClass().getComponentType(), Array.getLength(x));
         for (int i = 0; i < Array.getLength(r); i++) {
             Object o = f.apply(vf.valueOf((Number) Array.get(x, i)), vf.valueOf((Number) Array.get(y, i)));
-            Array.set(r, i, Values.isPrimitiveWrapper(o.getClass()) ? o : Values.toPrimitiveWrapper((Scalar)o));
+	    Number p = Values.isPrimitiveWrapper(o.getClass()) ? (Number)o : Values.toPrimitiveWrapper((Scalar)o);
+	    try {
+		Array.set(r, i, p);
+	    }
+	    catch (IllegalArgumentException ex) {
+		throw (IllegalArgumentException) new IllegalArgumentException("ArrayStoreException " + o + " of class " + o.getClass() + " giving " + p + " of class " + p.getClass()).initCause(ex);
+	    }
         }
         return r;
     }

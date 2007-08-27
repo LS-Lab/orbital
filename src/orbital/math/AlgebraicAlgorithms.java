@@ -706,7 +706,7 @@ public final class AlgebraicAlgorithms {
                                         reduction = reduction.subtract(vf.MONOMIAL(reduction.get(nu), nu));
                                     }
                                     if (!reduction.get(nu).isZero()) {
-                                        throw new AssertionError(vf.MONOMIAL(Values.ONE, nu) + " does not occur in " + reduction + " anymore, even after numerical precision correction");
+                                        throw new AssertionError(vf.MONOMIAL(Values.getDefault().ONE(), nu) + " does not occur in " + reduction + " anymore, even after numerical precision correction");
                                     }
                                 }
                                 if (!(INDUCED(monomialOrder).compare(reduction, f) < 0))

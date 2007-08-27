@@ -350,7 +350,7 @@ public abstract class Notation implements Serializable, Comparable {
      * @see #BESTFIX
      */
     public static final Notation FULLFIX = new Notation("fullfix") {
-            //private static final long serialVersionUID;
+            private static final long serialVersionUID = -3155666698040647203L;
             public String format(Object compositor, Object arg_) {
                 if (compositor instanceof Composite)
 		    // compound compositors will be formatted in prefix

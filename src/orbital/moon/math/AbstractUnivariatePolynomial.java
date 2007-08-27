@@ -53,6 +53,10 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
         return super.hashCode();
     }
 
+    public boolean isZero() {
+        assert (degreeValue() < 0) == equals(zero()) : "polynomial is zero iff its degree is negative: " + this;
+	return degreeValue() < 0;
+    }
 
     /**
      * Sets a value for the coefficient specified by index.
@@ -512,7 +516,7 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
     abstract Tensor tensorViewOfCoefficients();
 
     public final Object indexSet() {
-        return Values.ONE;
+        return Values.getDefault().ONE();
     }
     public Iterator indices() {
         if (degreeValue() < 0)

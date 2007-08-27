@@ -60,6 +60,12 @@ abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*
         return hash;
     }
 
+    public boolean isZero() {
+	Integer deg = degree();
+        assert (deg.compareTo(deg.zero()) < 0) == equals(zero()) : "polynomial is zero iff its degree is negative: " + this;
+	return deg.compareTo(deg.zero()) < 0;
+    }
+
     public Integer degree() {
         return Values.getDefaultInstance().valueOf(degreeValue());
     }

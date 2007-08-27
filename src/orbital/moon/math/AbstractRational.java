@@ -279,13 +279,7 @@ abstract class AbstractRational extends AbstractReal implements Rational {
         } 
         
         private Integer validate(Integer i) {
-            if (i instanceof AbstractInteger.Long)
-                //@xxx long is not supported, so this may lead to a loss of precision
-                return i;
-            if (!(i instanceof AbstractInteger.Int))
-                throw new UnsupportedOperationException("the precision of " + i.getClass() + " is currently not yet supported");
-            else
-                return i;
+	    return new AbstractInteger.Int(ArithmeticValuesImpl.intValueExact(i));
         }
     }
 
@@ -299,7 +293,7 @@ abstract class AbstractRational extends AbstractReal implements Rational {
      * @invariant this.normalized(), i.e., denominator() > 0
      */
     static class Impl extends AbstractRational {
-        private static final long serialVersionUID = -8091750706034605583L;
+	private static final long serialVersionUID = 959027468840426219L;
     
         /**
          * The numerator of the Rational.
