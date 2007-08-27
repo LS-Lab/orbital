@@ -135,7 +135,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      * Treats its argument as a list like {@link orbital.logic.functor.Functionals.Catamorphism}.
      * </p>
      * @see orbital.logic.functor.Functionals.Catamorphism
-     * @see Values#ZERO
+     * @see ValueFactory#ZERO()
      * @see #plus
      * @todo implements AbstractFunction<Vector<Arithmetic>,Arithmetic>?
      * @todo implements AbstractFunction<Matrix<Arithmetic>,Arithmetic>?
@@ -170,7 +170,7 @@ public interface Operations /* implements ArithmeticOperations */ {
                 return ((Arithmetic) x).minus();
             } 
             public Function derive() {
-                return Functions.constant(Values.MINUS_ONE);
+                return Functions.constant(Values.getDefault().MINUS_ONE());
             } 
             public Function integrate() {
                 // return (Function) minus.apply(Functions.id.integrate());
@@ -201,7 +201,7 @@ public interface Operations /* implements ArithmeticOperations */ {
             } 
             public BinaryFunction derive() {
                 return (BinaryFunction) Functionals.genericCompose(new BinaryFunction[][] {
-                    {Functions.binaryConstant(Values.getDefaultInstance().valueOf(1)), Functions.binaryConstant(Values.MINUS_ONE)}
+                    {Functions.binaryConstant(Values.getDefault().ONE()), Functions.binaryConstant(Values.getDefault().MINUS_ONE())}
                 });
             } 
             public BinaryFunction integrate(int i) {
@@ -269,7 +269,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      * Treats its argument as a list like {@link orbital.logic.functor.Functionals.Catamorphism}.
      * </p>
      * @see orbital.logic.functor.Functionals.Catamorphism
-     * @see Values#ONE
+     * @see ValueFactory#ONE()
      * @see #times
      * @todo
      */

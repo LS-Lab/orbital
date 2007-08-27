@@ -105,6 +105,15 @@ abstract class AbstractProductArithmetic/*<R extends Arithmetic, I, T extends Ar
         return hash;
     } 
 
+    public boolean isZero() {
+	// return Setops.all(iterator(this), #1.isZero()&);
+        for (Iterator i = iterator(this); i.hasNext(); ) {
+            if (!((Arithmetic)i.next()).isZero())
+		return false;
+        }
+	return true;
+    } 
+
     // arithmetic-operations
         
     private Arithmetic/*>T<*/ operatorImpl(BinaryFunction op, Arithmetic/*>T<*/ b) {

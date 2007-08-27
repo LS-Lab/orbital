@@ -181,6 +181,16 @@ public class BigValuesImpl extends ArithmeticValuesImpl {
      * @todo optimize hotspot
      */
     public Scalar[] minimumCoerced(Number a, Number b) {
+	final Scalar[] r = minimumCoercedImpl(a, b);
+	assert isBig(r[0]) && isBig(r[1]) : "makes big arbitrary precision contents: " + r[0] + "@" + r[0].getClass() + (isBig(r[0]) ? "(big) " : "") + " and " + r[1] + "@" + r[1].getClass() + (isBig(r[1]) ? "(big) " : "") + " out of " + a + " and " + b;
+	return r;
+    }
+    Arithmetic[] minimumCoerced(Arithmetic[] a, boolean commutative) {
+        Arithmetic[] r = super.minimumCoerced(a, commutative);
+	assert !(r[0] instanceof Scalar && r[1] instanceof Scalar) || isBig((Scalar)r[0]) && isBig((Scalar)r[1]) : "makes big arbitrary precision contents: " + r[0] + "@" + r[0].getClass() + (isBig((Scalar)r[0]) ? "(big) " : "") + " and " + r[1] + "@" + r[1].getClass() + (isBig((Scalar)r[1]) ? "(big) " : "") + " out of " + a[0] + " and " + a[1];
+	return r;
+    }
+    private Scalar[] minimumCoercedImpl(Number a, Number b) {
         //@xxx adapt better to new Complex>Real>Rational>Integer type hierarchy and conform to a new OBDD (ordered binary decision diagram)
         //@todo partial order with Arithmetic>Scalar>Complex>Real>Rational>Integer and greatest common super type of A,B being A&cup;B = sup {A,B}
         //@todo implement sup along with conversion routines. Perhaps introduce "int AbstractScalar.typeLevel()" and "int AbstractScalar.precisionLevel()" such that we can compute the maximum level of both with just two method calls. And introduce "Object AbstractScalar.convertTo(int typeLevel, int precisionLevel)" for conversion.
@@ -214,4 +224,22 @@ public class BigValuesImpl extends ArithmeticValuesImpl {
 	};
     } 
 
+
+    /**
+     * Checks that a scalar is all big, i.e., all its number parts are bigs.
+     */
+    private static final boolean isBig(Scalar x) {
+	if (x instanceof Big)
+	    return true;
+	else if (x instanceof Rational) {
+	    Rational r = (Rational)x;
+	    return r.numerator() instanceof Big && r.denominator() instanceof Big;
+	} else if (x instanceof Complex) {
+	    Complex r = (Complex)x;
+	    return isBig(r.re()) && isBig(r.im());
+	} else {
+	    System.err.println("ERROR:\t" + x + "@" + x.getClass() + " is not big");
+	    return false;
+	}
+    }
 }

@@ -94,8 +94,9 @@ class ArithmeticUnivariatePolynomial/*<R extends Arithmetic>*/ extends AbstractU
             throw new UnsupportedOperationException("setting coefficients beyond the degree not (always) supported");
         coefficients[i] = vi;
         this.R_ZERO = coefficients.length > 0 ? coefficients[0].zero() : Values.getDefault().ZERO();
-        if (i >= oldDegree)
+        if (i >= oldDegree) {
             this.degree = degreeImpl(coefficients);
+	}
     }
 
     public Arithmetic/*>R<*/[] getCoefficients() {

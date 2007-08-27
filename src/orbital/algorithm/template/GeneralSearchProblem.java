@@ -291,7 +291,7 @@ public interface GeneralSearchProblem/*<A,S>*/
          * 1 since deterministic transition.
          */
         public final Scalar getProbability() {
-            return Values.ONE;
+            return Values.getDefault().ONE();
         }
                 
         /**

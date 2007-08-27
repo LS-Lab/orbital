@@ -460,7 +460,7 @@ abstract class AbstractTensor/*<R extends Arithmetic>*/
         //@internal optimizable by far (cache optimization and everything) and beautifiable as well
         for (Combinatorical index = Combinatorical.getPermutations(dim); index.hasNext(); ) {
             final int[] ij = index.next();
-            Arithmetic s = Values.ZERO;  //@xxx what's our 0?
+            Arithmetic s = get(ij).zero();
             for (int nu = 0; nu < len; nu++) {
                 final int[] i = new int[d.length];
                 System.arraycopy(ij, 0, i, 0, conv);

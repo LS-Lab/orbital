@@ -437,8 +437,149 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
 	return parse(s);
     }
 
+
+    // precision-safe conversion helpers
+
+    /**
+     * Converts the given scalar to int exactly, throwing exceptions if impossible without loss of precision.
+     * @throws ArithmeticException if conversion results in loss of precision.
+     */
+    static final int intValueExact(Scalar b) {
+	if (b instanceof AbstractInteger.Int) {
+	    return ((Integer)b).intValue();
+	} else {
+	    // convert to int and check for equality
+	    int l;
+	    if (b instanceof Number)
+		l = ((Number)b).intValue();
+	    else if (b instanceof Integer)
+		l = ((Integer)b).intValue();
+	    else
+		throw new IllegalArgumentException("cannot convert to intValue() at all");
+	    Integer i = Values.getDefault().valueOf(l);
+	    if (i.equals(b))
+		return l;
+	    else
+		throw new ArithmeticException("cannot convert to intValueExact: " + b);
+	}
+	/*if (b instanceof AbstractInteger.Int) {
+	    return ((Integer)b).intValue();
+	} else {
+	    //@xxx check implementation
+	    final long bv = b.longValue();
+	    if (java.lang.Integer.MIN_VALUE <= bv && bv <= java.lang.Integer.MAX_VALUE)
+		return (int)bv;
+	    else
+		throw new ArithmeticException("intValueExact conversion with possible loos of precision");
+		}*/
+    }
+    static final int intValueExact(Number b) {
+	if (b instanceof AbstractInteger.Int) {
+	    return ((Integer)b).intValue();
+	} else {
+	    // convert to int and check for equality
+	    int l = b.intValue();
+	    Integer i = Values.getDefault().valueOf(l);
+	    if (i.equals(b))
+		return l;
+	    else
+		throw new ArithmeticException("cannot convert to intValueExact: " + b);
+	}
+    }
+    /**
+     * Converts the given scalar to long exactly, throwing exceptions if impossible without loss of precision.
+     * @throws ArithmeticException if conversion results in loss of precision.
+     */
+    static final long longValueExact(Scalar b) {
+	if (b instanceof AbstractInteger.Int || b instanceof AbstractInteger.Long) {
+	    return ((Integer)b).longValue();
+	} else {
+	    // convert to long and check for equality
+	    long l;
+	    if (b instanceof Number)
+		l = ((Number)b).longValue();
+	    else if (b instanceof Integer)
+		l = ((Integer)b).longValue();
+	    else
+		throw new IllegalArgumentException("cannot convert to longValue() at all");
+	    Integer i = Values.getDefault().valueOf(l);
+	    if (i.equals(b))
+		return l;
+	    else
+		throw new ArithmeticException("cannot convert to longValueExact: " + b);
+	    /* // the following alternative code is crap as it doesn't really check for success
+	       final float f = r.floatValue();
+	       //@xxx also convert bigger integers down
+	       if (f in range and MathUtilities.isInteger(f))
+	       return valueOf((long) f);
+	    */
+	}
+    }
+    static final long longValueExact(Number b) {
+	if (b instanceof AbstractInteger.Int || b instanceof AbstractInteger.Long) {
+	    return ((Integer)b).longValue();
+	} else {
+	    // convert to long and check for equality
+	    long l = b.longValue();
+	    Integer i = Values.getDefault().valueOf(l);
+	    if (i.equals(b))
+		return l;
+	    else
+		throw new ArithmeticException("cannot convert to longValueExact: " + b);
+	}
+    }
+    
+    /**
+     * Converts the given scalar to double exactly, throwing exceptions if impossible without loss of precision.
+     * @throws ArithmeticException if conversion results in loss of precision.
+     */
+    static final double doubleValueExact(Real b) {
+	if (b instanceof AbstractReal.Float || b instanceof AbstractReal.Double) {
+	    return ((Real)b).doubleValue();
+	} else {
+	    // convert to double and check for equality
+	    double l;
+	    if (b instanceof Number)
+		l = ((Number)b).doubleValue();
+	    else if (b instanceof Real)
+		l = ((Integer)b).doubleValue();
+	    else
+		throw new IllegalArgumentException("cannot convert to doubleValue() at all");
+	    Real i = Values.getDefault().valueOf(l);
+	    if (i.equals(b))
+		return l;
+	    else
+		throw new ArithmeticException("cannot convert to doubleValueExact: " + b);
+	    /*//@xxx check implementation
+	final double bv = b.doubleValue();
+	if (!java.lang.Double.isInfinite(bv))
+	    return bv;
+	else
+	    throw new ArithmeticException("doubleValueExact conversion with possible loos of precision");
+	*/
+	}
+    }
+    static final double doubleValueExact(Number b) {
+	if (b instanceof AbstractReal.Float || b instanceof AbstractReal.Double) {
+	    return ((Real)b).doubleValue();
+	} else {
+	    // convert to double and check for equality
+	    double l = b.doubleValue();
+	    Real i = Values.getDefault().valueOf(l);
+	    if (i.equals(b))
+		return l;
+	    else
+		throw new ArithmeticException("cannot convert to doubleValueExact: " + b);
+	}
+    }
+
     // @todo optimize by avoiding to create intermediate objects, f.ex. convert complex(2+i*0) -> real(2) -> rational(2) -> integer(2) also use OBDD
     public final Scalar narrow(Scalar val) {
+	Scalar r = narrowImpl(val);
+	assert val.equals(r) : "narrowing does not change content";
+	return r;
+    }
+    private final Scalar narrowImpl(Scalar val) {
         if (val instanceof Integer)
             return val;
         if (Complex.hasType.apply(val)) {
@@ -462,17 +603,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
 		catch (UnsupportedOperationException nonconform_trial) {/*ignore*/}
 	    } else {
 		try {
-		    // convert to long and check for equality
-		    long l = ((Number)r).longValue();
-		    Integer i = valueOf(l);
-		    if (i.equals(r))
-			return i;
-		    /* // the following alternative code is crap as it doesn't really check for success
-		       final float f = r.floatValue();
-		       //@xxx also convert bigger integers down
-		       if (f in range and MathUtilities.isInteger(f))
-		       return valueOf((long) f);
-		    */
+		    return valueOf(longValueExact(r));
 		}
 		catch (ArithmeticException nonconform_trial) {/*ignore*/}
 		catch (UnsupportedOperationException nonconform_trial) {/*ignore*/}
@@ -485,6 +616,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
             // some other unknown scalar thing
             return val;
     } 
+
 
     /**
      * Get two minimized Arithmetic objects whose values equal the specified numbers,
@@ -508,7 +640,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
     /*
      * @todo optimize hotspot
      */
-    final Arithmetic[] minimumCoerced(Arithmetic[] a, boolean commutative) {
+    Arithmetic[] minimumCoerced(Arithmetic[] a, boolean commutative) {
         assert a.length == 2 : "currently for binary operations, only";
 	assert a[0] != null && a[1] != null : "coercing non-null values " + a[0] + " and " + a[1];
         if (a[0].getClass() == a[1].getClass())

@@ -528,7 +528,7 @@ public class ArithmeticFormat extends Format {
         if (fieldPosition.getField() == REAL_FIELD)
             fieldPosition.setBeginIndex(result.length());
                 
-        Real re = v.re();
+        final Real re = v.re();
         Real im = v.im();
         if (!re.isZero() || (complexAbbreviateNullReal && im.isZero()))
             format(re, result, fieldPosition);

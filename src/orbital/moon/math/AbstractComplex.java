@@ -381,7 +381,7 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
      * @author  Andr&eacute; Platzer
      */
     static class Impl extends AbstractComplex {
-        //private static final long serialVersionUID;
+        private static final long serialVersionUID = -6051859562016470453L;
     
         /**
          * The real component of the Complex.
@@ -405,7 +405,7 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
 		imaginary = ((Complex)a).im();
 	    } else {
 		real = (Real)Values.getDefault().valueOf(a);
-		imaginary = Values.ZERO;
+		imaginary = Values.getDefault().ZERO();
 	    }
         }
     
