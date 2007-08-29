@@ -165,6 +165,7 @@ public class CustomizerViewController extends MouseAdapter implements MouseListe
      * Simply displays a dialog, customizer properties and events must already have been set.
      */
     public void showCustomizer(Component custom, String displayName) {
+	//@todo use a different dialog that also has an apply button and is not modal?
         // use JFrame.getRootPane().setDefaultButton(JButton);
         JOptionPane.showMessageDialog(parent, custom, title != null ? title : ("Customize " + displayName), JOptionPane.PLAIN_MESSAGE);
         //@todo UIUtilities.setCenter(dlg, parent); in already _modal_ JOptionPane.
