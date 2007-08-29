@@ -42,6 +42,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.Document;
 import javax.swing.text.BadLocationException;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import java.util.Comparator;
 import java.util.Set;
@@ -399,6 +401,26 @@ public class DefaultCustomizer extends JPanel implements Customizer {
             } else
                 // property editor is only painting itself, so display inline
                 return new InlinePaintablePropertyEditorComponent(property, peditor);
+        } else if (property.getPropertyType() == Boolean.TYPE || property.getPropertyType() == Boolean.class) {
+            // a checkbox for yes/no
+            JCheckBox editor = new JCheckBox();
+            editor.setName(property.getName());
+            if (property.getWriteMethod() != null)
+                editor.addActionListener(new PropertyEditingChange(peditor));
+            else
+                editor.setEnabled(false);
+            return editor;
+        } else if (Number.class.isAssignableFrom(property.getPropertyType()) || property.getPropertyType().isPrimitive()) {
+            // a spinner for numbers
+	    //@xxx would we need to invoke editor.commitEdit() to ensure it promotes changes?
+            JSpinner editor = new JSpinner(new SpinnerNumberModel());
+	    editor.setEditor(new JSpinner.NumberEditor(editor));
+            editor.setName(property.getName());
+            if (property.getWriteMethod() != null)
+                editor.addChangeListener(new PropertyEditingChange(peditor));
+            else
+                editor.setEnabled(false);
+            return editor;
         } else if (peditor.getTags() != null) {
             // display a choice of all possible tags
             String[] tags = peditor.getTags();
@@ -554,10 +576,14 @@ public class DefaultCustomizer extends JPanel implements Customizer {
                         ;
                     else if ((ed instanceof JTextComponent) || (ed instanceof TextComponent))
                         displaying(ed, ped.getAsText());
-                    else if (ed instanceof JComboBox)
+                    else if (ed instanceof JCheckBox)
+                        ((JCheckBox) ed).setSelected(((Boolean)ped.getValue()).equals(Boolean.TRUE));
+		    else if (ed instanceof JComboBox)
                         ((JComboBox) ed).setSelectedItem(ped.getAsText());
                     else if (ed instanceof java.awt.Choice)
                         ((java.awt.Choice) ed).select(ped.getAsText());
+		    else if (ed instanceof JSpinner)
+                        ((JSpinner) ed).setValue(ped.getValue());
                     else if (ed instanceof NumberInput)
                         //NOTE: NumberInput is no javax.swing.JComponent at all, see javax.swing.S...
                         ((NumberInput) ed).setValue((Number) ped.getValue());
@@ -802,13 +828,13 @@ public class DefaultCustomizer extends JPanel implements Customizer {
 
 
 
-    // visual property editor component forwarding listener
+    // visual property editor component forwarding listeners to beans
         
     /**
      * Reacts on system-default GUI components property editing with redirection to a Property Editor.
-     * Forwards display component specific events to general property changes of the PropertyEditor.
+     * Forwards display-component-specific events to general property changes of the PropertyEditor.
      */
-    private class PropertyEditingChange implements ActionListener, ItemListener, DocumentListener, InputMethodListener, TextListener {
+    private class PropertyEditingChange implements ActionListener, ItemListener, DocumentListener, InputMethodListener, TextListener, ChangeListener {
         protected PropertyEditor peditor;
 
         /**
@@ -832,18 +858,39 @@ public class DefaultCustomizer extends JPanel implements Customizer {
                 return;
             try {
                 Object source = e.getSource();
-                String v;
-                if (source instanceof JComboBox)
-                    v = (String) ((JComboBox) e.getSource()).getSelectedItem();
-                else
+                if (source instanceof JComboBox) {
+                    String v = (String) ((JComboBox) e.getSource()).getSelectedItem();
+		    peditor.setAsText(v);
+                } else if (source instanceof JCheckBox) {
+		    peditor.setValue(Boolean.valueOf(((JCheckBox) e.getSource()).isSelected()));
+		} else {
                     throw new ClassCastException("illegal event source type " + source.getClass());
-                peditor.setAsText(v);
+		}
             } catch (IllegalArgumentException cause) {
                 // TODO: display Dialog or redden the component foreground!
                 logger.log(Level.WARNING, "illegal value", cause);
             } 
-        } 
+        }
+	
+	// ChangeListener
 
+	public void stateChanged(ChangeEvent e) {
+            if (bean == null)
+                return;
+            try {
+                Object source = e.getSource();
+		if (source instanceof JSpinner) {
+		    SpinnerModel spinmodel = ((JSpinner)source).getModel();
+		    peditor.setValue(spinmodel.getValue());
+		} else {
+                    throw new ClassCastException("illegal event source type " + source.getClass());
+		}
+            } catch (IllegalArgumentException cause) {
+                // TODO: display Dialog or redden the component foreground!
+                logger.log(Level.WARNING, "illegal value", cause);
+            } 
+	}
+	
         // ItemListener
 
         /**
