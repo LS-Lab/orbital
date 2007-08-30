@@ -104,14 +104,19 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
     static Integer[] makeInteger(Number a, Number b) {
 	if (a instanceof orbital.moon.math.Big || b instanceof orbital.moon.math.Big) {
 	    return new Integer[] {
-		new Big(a), new Big(b)
+		a instanceof Big ? (Integer)a : new Big(a),
+		b instanceof Big ? (Integer)b : new Big(b)
 	    };
 	} else {
 	    //@todo could also check whether Int would be sufficient
 	    return new Integer[] {
-		new Long(a), new Long(b)
+		a instanceof Long ? (Integer)a : new Long(a),
+		b instanceof Long ? (Integer)b : new Long(b)
 	    };
 	}
+    }
+    static Big makeBigInteger(Integer a) {
+	return a instanceof Big ? (Big)a : new Big((Number)a);
     }
 
 
@@ -456,6 +461,9 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
 		    value = ((Big)v).value;
 		else
 		    throw new IllegalArgumentException("unknown arbitrary precision type " + v.getClass() + " " + v);
+	    } else if (v instanceof Int || v instanceof Long
+		       || v instanceof java.lang.Integer || v instanceof java.lang.Long) {
+		value = BigInteger.valueOf(((Integer)v).longValue());
 	    } else
 		value = BigInteger.valueOf(ArithmeticValuesImpl.longValueExact(v));
         }
@@ -473,6 +481,8 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
 		    return new BigDecimal(value).compareTo(((AbstractReal.Big)v).getValue()) == 0;
 		else
 		    throw new IllegalArgumentException("unknown arbitrary precision type " + v.getClass() + " " + v);
+	    } else if (v instanceof Int || v instanceof Long) {
+		return value.equals(BigInteger.valueOf(((Integer)v).longValue()));
 	    }
             return Operations.equal.apply(this, v);
 	}
@@ -484,6 +494,8 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
 		    return new BigDecimal(value).compareTo(v);
 		else
 		    throw new IllegalArgumentException("unknown arbitrary precision type " + v.getClass() + " " + v);
+	    } else if (v instanceof Int || v instanceof Long) {
+		return value.compareTo(BigInteger.valueOf(((Integer)v).longValue()));
 	    }
             return ((Integer) Operations.compare.apply(this, v)).intValue();
 	}

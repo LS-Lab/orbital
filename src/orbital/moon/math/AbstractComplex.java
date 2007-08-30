@@ -158,12 +158,14 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
     static Complex[] makeComplex(Number a, Number b) {
 	if (a instanceof Impl || b instanceof Impl) {
 	    return new Complex[] {
-		new Impl(a), new Impl(b)
+		a instanceof Impl ? (Complex)a : new Impl(a),
+		b instanceof Impl ? (Complex)b : new Impl(b)
 	    };
 	} else {
 	    //@todo could also check whether Float would be sufficient
 	    return new Complex[] {
-		new Double(a), new Double(b)
+		a instanceof Double ? (Complex)a : new Double(a),
+		b instanceof Double ? (Complex)b : new Double(b)
 	    };
 	}
     }

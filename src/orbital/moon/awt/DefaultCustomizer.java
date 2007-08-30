@@ -401,7 +401,8 @@ public class DefaultCustomizer extends JPanel implements Customizer {
             } else
                 // property editor is only painting itself, so display inline
                 return new InlinePaintablePropertyEditorComponent(property, peditor);
-        } else if (property.getPropertyType() == Boolean.TYPE || property.getPropertyType() == Boolean.class) {
+        } else if (property.getPropertyType() == Boolean.TYPE
+		   || property.getPropertyType() == Boolean.class) {
             // a checkbox for yes/no
             JCheckBox editor = new JCheckBox();
             editor.setName(property.getName());
@@ -410,7 +411,8 @@ public class DefaultCustomizer extends JPanel implements Customizer {
             else
                 editor.setEnabled(false);
             return editor;
-        } else if (Number.class.isAssignableFrom(property.getPropertyType()) || property.getPropertyType().isPrimitive()) {
+        } else if (Number.class.isAssignableFrom(property.getPropertyType())
+		   || property.getPropertyType().isPrimitive() && property.getPropertyType() != Character.TYPE && property.getPropertyType() != Void.TYPE) {
             // a spinner for numbers
 	    //@xxx would we need to invoke editor.commitEdit() to ensure it promotes changes?
             JSpinner editor = new JSpinner(new SpinnerNumberModel());
