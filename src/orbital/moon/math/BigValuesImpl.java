@@ -196,19 +196,23 @@ public class BigValuesImpl extends ArithmeticValuesImpl {
         //@todo implement sup along with conversion routines. Perhaps introduce "int AbstractScalar.typeLevel()" and "int AbstractScalar.precisionLevel()" such that we can compute the maximum level of both with just two method calls. And introduce "Object AbstractScalar.convertTo(int typeLevel, int precisionLevel)" for conversion.
         if (Complex.hasType.apply(a) || Complex.hasType.apply(b))
             return new Complex[] {
-                Complex.hasType.apply(a) ? (Complex) a : new AbstractComplex.Impl(a), Complex.hasType.apply(b) ? (Complex) b : new AbstractComplex.Impl(b)
+                Complex.hasType.apply(a) ? (Complex) a : new AbstractComplex.Impl(a),
+		Complex.hasType.apply(b) ? (Complex) b : new AbstractComplex.Impl(b)
             };
 
         // this is a tricky binary decision diagram (optimized), see documentation
         if (Integer.hasType.apply(a)) {
             if (Integer.hasType.apply(b))
                 return new Integer[] {
-		    new AbstractInteger.Big(a), new AbstractInteger.Big(b)
+		    a instanceof AbstractInteger.Big ? (Integer)a : new AbstractInteger.Big(a),
+		    b instanceof AbstractInteger.Big ? (Integer)b : new AbstractInteger.Big(b)
 		};
         } else {        // a is no integer
             if (!Rational.hasType.apply(a))
+		// a is no integer, no rational, no complex, hence real
                 return new Real[] {
-		    new AbstractReal.Big(a), new AbstractReal.Big(b)
+		    a instanceof AbstractReal.Big ? (Real)a : new AbstractReal.Big(a),
+		    b instanceof AbstractReal.Big ? (Real)b : new AbstractReal.Big(b)
 		};
         }
 	assert Integer.hasType.apply(a) && !Integer.hasType.apply(b) || Rational.hasType.apply(a) : a + " integer or rational but not both integers " + a + " and " + b;
@@ -220,7 +224,8 @@ public class BigValuesImpl extends ArithmeticValuesImpl {
 		Rational.hasType.apply(b) ? (Rational) b : rational((Integer)b)
             };
 	return new Real[] {
-	    new AbstractReal.Big(a), new AbstractReal.Big(b)
+	    a instanceof AbstractReal.Big ? (Real)a : new AbstractReal.Big(a),
+	    b instanceof AbstractReal.Big ? (Real)b : new AbstractReal.Big(b)
 	};
     } 
 

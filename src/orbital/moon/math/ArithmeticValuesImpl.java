@@ -447,6 +447,8 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
     static final int intValueExact(Scalar b) {
 	if (b instanceof AbstractInteger.Int) {
 	    return ((Integer)b).intValue();
+	} else if (b instanceof AbstractReal.Big) {
+	    return ((AbstractReal.Big)b).getValue().intValueExact();
 	} else {
 	    // convert to int and check for equality
 	    int l;
@@ -476,6 +478,10 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
     static final int intValueExact(Number b) {
 	if (b instanceof AbstractInteger.Int) {
 	    return ((Integer)b).intValue();
+	} else if (b instanceof java.lang.Integer) {
+	    return ((Integer)b).intValue();
+	} else if (b instanceof AbstractReal.Big) {
+	    return ((AbstractReal.Big)b).getValue().intValueExact();
 	} else {
 	    // convert to int and check for equality
 	    int l = b.intValue();
@@ -493,6 +499,8 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
     static final long longValueExact(Scalar b) {
 	if (b instanceof AbstractInteger.Int || b instanceof AbstractInteger.Long) {
 	    return ((Integer)b).longValue();
+	} else if (b instanceof AbstractReal.Big) {
+	    return ((AbstractReal.Big)b).getValue().longValueExact();
 	} else {
 	    // convert to long and check for equality
 	    long l;
@@ -518,6 +526,10 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
     static final long longValueExact(Number b) {
 	if (b instanceof AbstractInteger.Int || b instanceof AbstractInteger.Long) {
 	    return ((Integer)b).longValue();
+	} else if (b instanceof java.lang.Integer || b instanceof java.lang.Long) {
+	    return ((Number)b).longValue();
+	} else if (b instanceof AbstractReal.Big) {
+	    return ((AbstractReal.Big)b).getValue().longValueExact();
 	} else {
 	    // convert to long and check for equality
 	    long l = b.longValue();
@@ -534,7 +546,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
      * @throws ArithmeticException if conversion results in loss of precision.
      */
     static final double doubleValueExact(Real b) {
-	if (b instanceof AbstractReal.Float || b instanceof AbstractReal.Double) {
+	if (b instanceof AbstractReal.Float || b instanceof AbstractReal.Double || b instanceof AbstractInteger.Int) {
 	    return ((Real)b).doubleValue();
 	} else {
 	    // convert to double and check for equality
@@ -542,7 +554,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
 	    if (b instanceof Number)
 		l = ((Number)b).doubleValue();
 	    else if (b instanceof Real)
-		l = ((Integer)b).doubleValue();
+		l = ((Real)b).doubleValue();
 	    else
 		throw new IllegalArgumentException("cannot convert to doubleValue() at all");
 	    Real i = Values.getDefault().valueOf(l);
@@ -560,8 +572,10 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
 	}
     }
     static final double doubleValueExact(Number b) {
-	if (b instanceof AbstractReal.Float || b instanceof AbstractReal.Double) {
+	if (b instanceof AbstractReal.Float || b instanceof AbstractReal.Double || b instanceof AbstractInteger.Int) {
 	    return ((Real)b).doubleValue();
+	} else if (b instanceof java.lang.Double || b instanceof java.lang.Float || b instanceof java.lang.Integer) {
+	    return ((Number)b).doubleValue();
 	} else {
 	    // convert to double and check for equality
 	    double l = b.doubleValue();

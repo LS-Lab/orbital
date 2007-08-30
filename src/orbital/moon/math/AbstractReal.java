@@ -117,12 +117,14 @@ abstract class AbstractReal extends AbstractComplex implements Real {
     static Real[] makeReal(Number a, Number b) {
 	if (a instanceof orbital.moon.math.Big || b instanceof orbital.moon.math.Big) {
 	    return new Real[] {
-		new Big(a), new Big(b)
+		a instanceof Big ? (Real)a : new Big(a),
+		b instanceof Big ? (Real)b : new Big(b)
 	    };
 	} else {
 	    //@todo could also check whether Float would be sufficient
 	    return new Real[] {
-		new Double(a), new Double(b)
+		a instanceof Double ? (Real)a : new Double(a),
+		b instanceof Double ? (Real)b : new Double(b)
 	    };
 	}
     }
@@ -407,6 +409,17 @@ abstract class AbstractReal extends AbstractComplex implements Real {
 		    value = new BigDecimal(((AbstractInteger.Big)v).getValue());
 		else
 		    throw new IllegalArgumentException("unknown arbitrary precision type " + v.getClass() + " " + v);
+	    } else if (v instanceof Rational) {
+		Rational r = (Rational)v;
+		//@internal we could also convert numerator() and denominator() to reals and divide
+		value = new BigDecimal(AbstractInteger.makeBigInteger(r.numerator()).getValue())
+		    .divide(new BigDecimal(AbstractInteger.makeBigInteger(r.denominator()).getValue()));
+	    } else if (v instanceof Double || v instanceof Float || v instanceof AbstractInteger.Int
+		       || v instanceof java.lang.Double || v instanceof java.lang.Float || v instanceof java.lang.Integer) {
+		value = BigDecimal.valueOf(((Number)v).doubleValue());
+	    } else if (v instanceof AbstractInteger.Long
+		       || v instanceof java.lang.Long) {
+		value = BigDecimal.valueOf(((Number)v).longValue());
 	    } else {
 		assert !java.lang.Double.isNaN(v.doubleValue()) && !java.lang.Double.isInfinite(v.doubleValue()) : v + " should neither be NaN nor infinite";
 		value = BigDecimal.valueOf(ArithmeticValuesImpl.doubleValueExact(v));
@@ -427,6 +440,10 @@ abstract class AbstractReal extends AbstractComplex implements Real {
 		    return value.compareTo(new BigDecimal(((AbstractInteger.Big)v).getValue())) == 0;
 		else
 		    throw new IllegalArgumentException("unknown arbitrary precision type " + v.getClass() + " " + v);
+	    } else if (v instanceof Double || v instanceof Float || v instanceof AbstractInteger.Int) {
+		return value.compareTo(BigDecimal.valueOf(((Real)v).doubleValue())) == 0;
+	    } else if (v instanceof AbstractInteger.Long) {
+		return value.compareTo(BigDecimal.valueOf(((Integer)v).longValue())) == 0;
 	    }
             return Operations.equal.apply(this, v);
 	}
@@ -438,6 +455,10 @@ abstract class AbstractReal extends AbstractComplex implements Real {
 		    return value.compareTo(new BigDecimal(((AbstractInteger.Big)v).getValue()));
 		else
 		    throw new IllegalArgumentException("unknown arbitrary precision type " + v.getClass() + " " + v);
+	    } else if (v instanceof Double || v instanceof Float || v instanceof AbstractInteger.Int) {
+		return value.compareTo(BigDecimal.valueOf(((Real)v).doubleValue()));
+	    } else if (v instanceof AbstractInteger.Long) {
+		return value.compareTo(BigDecimal.valueOf(((Integer)v).longValue()));
 	    }
             return ((Integer) Operations.compare.apply(this, v)).intValue();
 	}
