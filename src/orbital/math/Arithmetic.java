@@ -120,8 +120,8 @@ public interface Arithmetic extends Normed {
      * Compares two arithmetic objects for tolerant equality.
      * @param tolerance specifies how much the arithmetic objects may differ to be treated as equal.
      * @preconditions true
-     * @postconditions RES &hArr; Metric.INDUCED.distance(this, o).compareTo(tolerance) < 0
-     * @return Whether this &asymp; o. More precisely whether d(this,o) := |this-o| &lt; tolerance.
+     * @postconditions RES &hArr; Metric.INDUCED.distance(this, o).compareTo(tolerance) &le; 0
+     * @return Whether this &asymp; o. More precisely whether d(this,o) := |this-o| &le; tolerance.
      * @attribute derived
      * @todo @xxx sure that we should already move this to Scalar, or even to Arithmetic?
      */

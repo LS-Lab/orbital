@@ -255,7 +255,7 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
                 final double deltare = realValue() - b.realValue();
                 final double deltaim = imaginaryValue() - b.imaginaryValue();
 		final double tol = tolerance.doubleValue();
-                return deltare*deltare + deltaim*deltaim < tol*tol;
+                return deltare*deltare + deltaim*deltaim <= tol*tol;
             } else
                 return super.equals(o, tolerance);
         }

@@ -11,6 +11,7 @@ import orbital.math.Integer;
 
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import orbital.math.functional.Operations;
 
 abstract class AbstractReal extends AbstractComplex implements Real {
@@ -383,10 +384,17 @@ abstract class AbstractReal extends AbstractComplex implements Real {
      * 
      * @version $Id$
      * @author  Andr&eacute; Platzer
+     * @todo respect new java.math.MathContext introduced with Java 1.5
      */
     static class Big extends AbstractReal implements orbital.moon.math.Big {
         private static final long serialVersionUID = -5801439569926611104L;
-        private static final int ROUNDING_MODE = BigDecimal.ROUND_HALF_EVEN;
+        private static MathContext precision = MathContext.UNLIMITED;
+        static MathContext getPrecision() {
+	    return precision;
+	}
+        static void setPrecision(MathContext ctx) {
+	    precision = ctx;
+	}
     
         /**
          * the real value (with machine-sized arbitrary-precision, only, of course).
@@ -514,9 +522,13 @@ abstract class AbstractReal extends AbstractComplex implements Real {
         }
         public Real divide(Real b) {
             if (b instanceof Big)
-                return new Big(value.divide(((Big)b).value, ROUNDING_MODE));
+                return precision != null
+		    ? new Big(value.divide(((Big)b).value, getPrecision()))
+		    : new Big(value.divide(((Big)b).value));
             else if (b instanceof Float || b instanceof Double)
-                return new Big(value.divide(BigDecimal.valueOf(b.doubleValue()), ROUNDING_MODE));
+                return precision != null
+		    ? new Big(value.divide(BigDecimal.valueOf(b.doubleValue()), getPrecision()))
+		    : new Big(value.divide(BigDecimal.valueOf(b.doubleValue())));
             return (Real) Operations.divide.apply(this, b);
         }
         public Real power(Real b) {

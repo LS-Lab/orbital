@@ -19,6 +19,7 @@ import orbital.logic.functor.Functor;
 import java.util.Collection;
 
 import java.math.BigInteger;
+import java.math.MathContext;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -71,6 +72,16 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
         initialSetNormalizer(orbital.logic.functor.Functions.id);
     }
 
+    
+    public int getPrecision() {
+	return AbstractReal.Big.getPrecision().getPrecision();
+    }
+    public void setPrecision(int precision) {
+	AbstractReal.Big.setPrecision(new MathContext(precision, AbstractReal.Big.getPrecision().getRoundingMode()));
+    }
+
+
+    
     // scalar value constructors - facade factory
     // primitive type conversion methods
     // deferring to the most general such method
