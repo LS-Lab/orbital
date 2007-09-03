@@ -77,7 +77,7 @@ public class TaggedPropertyEditorSupport extends PropertyEditorSupport implement
                 super.setValue(value);
                 return;
             }
-        throw new IllegalArgumentException("invalid value specified: '" + value + "'");
+        throw new IllegalArgumentException("invalid value specified: '" + value + "' not in " + MathUtilities.format(getTags()) + " of " + getClass());
     }
         
     public void setAsText(String text) throws IllegalArgumentException {
@@ -86,6 +86,6 @@ public class TaggedPropertyEditorSupport extends PropertyEditorSupport implement
                 setValue(values[i]);
                 return;
             } 
-        throw new IllegalArgumentException("invalid tag specified: '" + text + "'");
+        throw new IllegalArgumentException("invalid tag specified: '" + text + "' not in " + MathUtilities.format(getTags()) + " of " + getClass());
     } 
 }
