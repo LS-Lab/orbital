@@ -17,8 +17,8 @@ import orbital.math.functional.MathFunctor;
 import orbital.logic.functor.Predicate;
 import orbital.logic.functor.Functor;
 import java.util.Collection;
-
 import java.util.List;
+import java.math.MathContext;
 
 import java.text.ParsePosition;
 import java.util.Iterator;

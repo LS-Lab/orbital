@@ -97,6 +97,27 @@ public abstract class AbstractValues extends Values {
         return parameters;
     }
 
+    /**
+     * Facade property.
+     * This method is a facade peudo-property for accessing
+     * {@link Values@getDefault()}.adjustToParameters(Map) representations.
+     * It essentially has the same effect as
+     * {@link Values@setDefault(ValueFactory)}(this.adjustToParameters())
+     */
+    public void setRepresentation(String precision) {
+	Map params = new java.util.HashMap();
+	params.put("orbital.math.Scalar.precision", precision);
+	Values.setDefault(adjustToParameters(params));
+    }
+    public String getRepresentation() {
+	if (!getParameters().containsKey("orbital.math.Scalar.precision")) {
+	    return "big";
+	} else {
+	    return (String)getParameters().get("orbital.math.Scalar.precision");
+	}
+    }
+
+
     // scalar value constructors - facade factory
 
     public Scalar valueOf(Number val) {

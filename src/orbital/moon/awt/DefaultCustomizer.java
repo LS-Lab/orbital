@@ -289,19 +289,23 @@ public class DefaultCustomizer extends JPanel implements Customizer {
 
         this.removeAll();
         this.setLayout(new GridBagLayout());
-        GridBagConstraints l = new GridBagConstraints();        // left labels
+	// left labels
+        GridBagConstraints l = new GridBagConstraints();
         l.anchor = GridBagConstraints.NORTHWEST;
         l.insets = new Insets(0, 0, 0, 12);
-        GridBagConstraints r = new GridBagConstraints();        // right components
+	// right components
+        GridBagConstraints r = new GridBagConstraints();
         r.gridwidth = GridBagConstraints.REMAINDER;
         r.anchor = GridBagConstraints.NORTHWEST;
         r.fill = GridBagConstraints.BOTH;
         r.weightx = 1;
-        GridBagConstraints v = new GridBagConstraints();        // vertical spacing
+	// vertical spacing
+        GridBagConstraints v = new GridBagConstraints();
         v.gridwidth = GridBagConstraints.REMAINDER;
         v.anchor = GridBagConstraints.NORTH;
         v.fill = GridBagConstraints.BOTH;
-        GridBagConstraints f = new GridBagConstraints();        // vertical filler
+	// vertical filler
+        GridBagConstraints f = new GridBagConstraints();
         f.gridwidth = GridBagConstraints.REMAINDER;
         f.anchor = GridBagConstraints.NORTH;
         f.fill = GridBagConstraints.BOTH;
@@ -542,7 +546,7 @@ public class DefaultCustomizer extends JPanel implements Customizer {
         } catch (IntrospectionException e) {
             throw new InnerCheckedException(e);
         } 
-        setVisible(true);
+        //setVisible(true);
     } 
 
     /**
@@ -563,9 +567,9 @@ public class DefaultCustomizer extends JPanel implements Customizer {
                     && beanProperties[i].getReadMethod() == null)
                     //@XXX: what to do for indexed property read methods without support for non-indexed access?
                     continue;
-                Object             v = bean != null ? beanProperties[i].getReadMethod().invoke(bean, null) : null;
+                Object         v = bean != null ? beanProperties[i].getReadMethod().invoke(bean, null) : null;
                 PropertyEditor ped = propertyEditors[i];
-                Component          ed = propertyEditorComponents[i];
+                Component      ed = propertyEditorComponents[i];
                 if (ped == null) {
                     // default non-editable representation
                     displaying(ed, v);
@@ -587,7 +591,7 @@ public class DefaultCustomizer extends JPanel implements Customizer {
 		    else if (ed instanceof JSpinner)
                         ((JSpinner) ed).setValue(ped.getValue());
                     else if (ed instanceof NumberInput)
-                        //NOTE: NumberInput is no javax.swing.JComponent at all, see javax.swing.S...
+                        //NOTE: NumberInput is no javax.swing.JComponent at all
                         ((NumberInput) ed).setValue((Number) ped.getValue());
                     else
                         throw new IllegalStateException("unsupported editor component " + ed + " for property " + beanProperties[i].getName());
@@ -734,8 +738,8 @@ public class DefaultCustomizer extends JPanel implements Customizer {
      */
     private class PropertyUpdater implements PropertyChangeListener {
         protected PropertyDescriptor property;
-        protected PropertyEditor         peditor;
-        protected Component                      propertyEditorComponent;
+        protected PropertyEditor     peditor;
+        protected Component          propertyEditorComponent;
 
         /**
          * Create a new property updater updating the bean's property specified
@@ -770,12 +774,12 @@ public class DefaultCustomizer extends JPanel implements Customizer {
                 Object oldValue = e.getOldValue();
                 Object newValue = e.getNewValue();
                 // whether all has changed from all to everything
-                boolean  allChanged = oldValue == null && newValue == null;
+                boolean allChanged = oldValue == null && newValue == null;
 
                 // get old value from bean, new value from PropertyEditor
                 PropertyEditor ped = peditor != null ? peditor : (PropertyEditor) e.getSource();
-                Object             oldFromBean = property.getReadMethod().invoke(bean, null);
-                Object             newFromPed = ped.getValue();
+                Object         oldFromBean = property.getReadMethod().invoke(bean, null);
+                Object         newFromPed = ped.getValue();
                 logger.log(Level.FINEST, "change verify that old value fired ({0}) equals current value of bean ({2})\n"
                            + "new value fired ({1}) equals value of property editor ({3})", new Object[] {oldValue, newValue, oldFromBean, newFromPed});
 
@@ -787,10 +791,12 @@ public class DefaultCustomizer extends JPanel implements Customizer {
                     newValue = newFromPed;
                 } else if (Utility.equals(newValue, oldValue))
                     // old and new value of event are equal
-                    if (Utility.equals(newFromPed, oldFromBean))
+                    if (Utility.equals(newFromPed, oldFromBean)) {
                         // old value from bean and new value from PropertyEditor are equal, too
+			logger.log(Level.FINEST, "suppressed spurious change of {0} from \"{1}\" to \"{2}\", via {3}, "
+				   + "where current value from bean ({4}) equals new value fired ({5})", new Object[] {property.getName(), oldValue, newValue, e, oldFromBean, newFromPed});
                         return;
-                    else {
+		    } else {
                         // use old values from bean and new values from PropertyEditor, instead
                         oldValue = oldFromBean;
                         newValue = newFromPed;
