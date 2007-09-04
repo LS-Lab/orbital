@@ -12,6 +12,8 @@ import orbital.math.Integer;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
+import java.math.BigInteger;
 import orbital.math.functional.Operations;
 
 abstract class AbstractReal extends AbstractComplex implements Real {
@@ -388,7 +390,8 @@ abstract class AbstractReal extends AbstractComplex implements Real {
      */
     static class Big extends AbstractReal implements orbital.moon.math.Big {
         private static final long serialVersionUID = -5801439569926611104L;
-        private static MathContext precision = MathContext.UNLIMITED;
+	//@xxx change to working precision and dynamically query
+        private static MathContext precision = new MathContext(MathUtilities.getDefaultPrecisionDigits(), RoundingMode.HALF_UP);
         static MathContext getPrecision() {
 	    return precision;
 	}
@@ -406,6 +409,9 @@ abstract class AbstractReal extends AbstractComplex implements Real {
         }
         public Big(BigDecimal v) {
             value = v;
+        }
+        public Big(BigInteger v) {
+            value = new BigDecimal(v);
         }
         public Big(Number v) {
 	    if (v instanceof BigDecimal)

@@ -491,7 +491,7 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
 		if (v instanceof Big)
 		    return value.compareTo(((Big)v).value);
 		else if (v instanceof AbstractReal.Big)
-		    return new BigDecimal(value).compareTo(v);
+		    return new AbstractReal.Big(value).compareTo(v);
 		else
 		    throw new IllegalArgumentException("unknown arbitrary precision type " + v.getClass() + " " + v);
 	    } else if (v instanceof Int || v instanceof Long) {
