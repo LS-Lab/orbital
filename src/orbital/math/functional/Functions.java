@@ -468,6 +468,7 @@ public final class Functions {
                 if (Complex.hasType.apply(x))
                     return ((Arithmetic) sinh.apply(Values.i.multiply((Arithmetic) x))).divide(Values.i);
                 else if (x instanceof Number)
+		    //@xxx possible loss of precision
                     return valueFactory.valueOf(Math.sin(((Number) x).doubleValue()));
                 throw new UnsupportedOperationException("not implemented for type: " + x.getClass());
             } 
@@ -1361,7 +1362,7 @@ public final class Functions {
      * @todo couldn't we join constant VoidFunction, Function, BinaryFunction objects like in orbital.logic.functor.Functions.ConstantFunction
      */
     //TODO: some "binary" functions can be defined by onFirst or onSecond of the corresponding unary (or even void) function Functions.constant (how about overhead?)
-    public/*@xxx*/ static final /*<A1 extends Arithmetic, A2 extends Arithmetic, B extends Arithmetic>*/ BinaryFunction/*<A1,A2,B>*/ binaryConstant(final Object/*>B<*/ a) {
+    public/*@xxx*/ static final /*<A1 extends Arithmetic, A2 extends Arithmetic, B extends Arithmetic>*/ BinaryFunction/*<A1,A2,B>*/ binaryConstant(final Arithmetic/*>B<*/ a) {
         return new BinaryConstantFunction/*<A1,A2,B>*/(a);
     }
     static final class BinaryConstantFunction/*<A1 extends Arithmetic, A2 extends Arithmetic, B extends Arithmetic>*/ extends AbstractBinaryFunction/*<A1,A2,B>*/ implements orbital.logic.functor.VoidFunction/*<B>*/{

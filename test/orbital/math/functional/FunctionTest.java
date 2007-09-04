@@ -719,6 +719,114 @@ public class FunctionTest extends check.TestCase {
     }
     
 
+    public void testndSolve() throws MathLinkException {
+	createMathLink();	
+	try {
+	    Real tau;
+	    Real eta;
+	    Real min, max;
+	    int steps = 50;
+	    BinaryFunction f;
+	    Function y;
+
+	    f = Functions.binaryConstant(vf.valueOf(5));
+	    tau = vf.ZERO();
+	    eta = vf.ZERO();
+	    min = tau;
+	    max = vf.valueOf(4);
+	    checkndSolve(f, tau, eta,
+			 min, max,
+			 steps);
+	
+	    f = Functions.projectSecond;
+	    tau = vf.ZERO();
+	    eta =vf.ONE();
+	    min = tau;
+	    max = vf.valueOf(5);
+	    checkndSolve(f, tau, eta,
+			 min, max,
+			 steps);
+
+	    f = Functionals.onSecond((Function)Operations.plus.apply(Functions.tan, Functions.one));
+	    tau = vf.ONE();
+	    eta = vf.ONE();
+	    min = vf.ONE();
+	    max = vf.valueOf(1.1);
+	    checkndSolve(f, tau, eta,
+			 min, max,
+			 steps);
+	}
+	catch (MathLinkException e) {
+	    if (!"machine number overflow".equals(e.getMessage()))
+		throw e;
+	}
+	finally {
+	    closeMathLink();
+	}
+    }
+    protected void checkndSolve(orbital.math.functional.BinaryFunction/*<Real,Vector<Real>>*/ f, Real tau, Vector/*<Real>*/ eta,
+				Real min, Real max,
+				int steps) throws MathLinkException {
+	System.out.println("solving numerical differential equations");
+	try {
+	    System.out.println("Solving ODE x'(t) == " + f.apply(vf.symbol("t"),vf.symbol("x")) + "\n  with initial value " + eta + " at " + tau + " in range [" + min + "," + max + "]");
+	} catch(Exception ignore) {
+	    System.out.println("Solving ODE x'(t) == " + f + "\n  with initial value " + eta + " at " + tau + " in range [" + min + "," + max + "]");
+	}
+	Function y = NumericalAlgorithms.dSolve(f, tau, eta,
+						min, max,
+						steps, 4);
+	System.out.println("  solution\t" + y);
+	System.out.println("  solution at " + tau + " is " + y.apply(tau));
+	// randomized equality test
+	for (int j = 0; j < TEST_REPETITION; j++) {
+	    Real r = vf.valueOf(realArgument(min.doubleValue(), max.doubleValue()));
+	    System.out.println("\ty(" + r + ") = " + y.apply(r));
+	}
+    }
+    protected void checkndSolve(orbital.math.functional.BinaryFunction/*<Real,Vector<Real>>*/ f, Real tau, Real eta,
+				Real min, Real max,
+				int steps) throws MathLinkException {
+	final Symbol y = vf.symbol("y");
+	final Symbol t = vf.symbol("t");
+	System.out.println("solving numerical differential equations");
+	String ode = null;
+	try {
+	    System.out.println("Solving ODE x'(t) == " + f.apply(t,vf.symbol("x")) + "\n  with initial value " + eta + " at " + tau + " in range [" + min + "," + max + "]");
+	    ode = y + "'[" + t + "] == " + f.apply(t,vf.symbol(y+"["+t+"]"));
+	} catch(Exception ignore) {
+	    System.out.println("Solving ODE x'(t) == " + f + "\n  with initial value " + eta + " at " + tau + " in range [" + min + "," + max + "]");
+	}
+	Function sol = NumericalAlgorithms.dSolve(f, tau, eta,
+						min, max,
+						steps, 4);
+	System.out.println("  solution\t" + sol);
+	System.out.println("  solution at " + tau + " is " + sol.apply(tau));
+	// randomized equality test
+	for (int j = 0; j < TEST_REPETITION; j++) {
+	    Real r = vf.valueOf(realArgument(min.doubleValue(), max.doubleValue()));
+	    Arithmetic jresult = (Arithmetic)sol.apply(r);
+	    System.out.println("\ty(" + r + ") = " + jresult);
+	    if (ode != null) {
+		String node = ""
+		    + "NDSolve[{" + ode + ",\n"
+		    + " " + y + "[" + tau + "] == " + mf.format(eta) + "},\n"
+		    + " " + y + ",{" + t + "," + min + "," + max + "}\n"
+		    + "]";
+		ml.newPacket();
+		ml.evaluate(y + "[" + r + "]" + "/. " + node + "[[1]]");
+		ml.waitForAnswer();
+		final Complex mresult = ((ComplexAdapter) ml.getComplex()).getValue();
+		ml.newPacket();
+		boolean isSuccessful = jresult.equals(mresult, tolerance);
+		if (!isSuccessful)
+		    System.out.println("FAILED " + "NDSolve = " + mresult + " != " + "ndSolve(x'(t)=" + f + ")" + " = " + jresult + "@" + jresult.getClass() + "\tdelta=" + jresult.subtract(mresult));
+		assertTrue(isSuccessful , "NDSolve = " + mresult + " != " + "ndSolve(x'(t)=" + f + ")" + " = " + jresult + "@" + jresult.getClass() + "\tdelta=" + jresult.subtract(mresult));
+	    }
+	}
+    }
+
+
     // create (random) argument values
     
     private int integerArgument(int min, int max) {

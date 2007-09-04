@@ -17,6 +17,7 @@ import orbital.math.functional.Functions;
 import orbital.moon.math.functional.AbstractFunctor;
 
 import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
@@ -51,17 +52,17 @@ public final class NumericalAlgorithms {
     // interpolation type enum values
 
     /**
-     * complete spline interpolation wishing s'(a)=f'(a) and s'(b)=f'(b).
+     * complete spline interpolation with border conditions s'(a)=f'(a) and s'(b)=f'(b).
      */
     public static final int COMPLETE_SPLINE_INTERPOLATION = 1;
 
     /**
-     * natural spline interpolation wishing s''(a)=0 and s''(b)=0.
+     * natural spline interpolation with natural decay conditions s''(a)=0 and s''(b)=0.
      */
     public static final int NATURAL_SPLINE_INTERPOLATION = 2;
 
     /**
-     * periodical spline interpolation wishing s'(a)=s'(b) and s''(a)=s''(b).
+     * periodical spline interpolation with periodicity conditions s'(a)=s'(b) and s''(a)=s''(b).
      * The length of the period is b-a.
      */
     public static final int PERIODICAL_SPLINE_INTERPOLATION = 3;
@@ -227,7 +228,7 @@ public final class NumericalAlgorithms {
      * <p>
      * This method is currently only implemented for cubical spline with k=4.</p>
      * @param k the order of splines desired. k-1 is the grade of the piecewise interpolating polynoms.
-     * @param A the matrix with supporting nodes (first column is &Delta;, second column are y-values).
+     * @param A the matrix with supporting nodes (the first column is the grid &Delta; of x-values, second column are y-values).
      *  A must be <b>ordered</b> by ascending x-values.
      * @param interpolationType specifies which type of interpolation to do (see config).
      * <ul>
@@ -255,7 +256,7 @@ public final class NumericalAlgorithms {
      * <p>
      * This method is currently only implemented for cubical spline with k=4.</p>
      * @param k the order of splines desired. k-1 is the grade of the piecewise interpolating polynoms.
-     * @param A the matrix with supporting nodes (first column is &Delta;, second column are y-values).
+     * @param A the matrix with supporting nodes (the first column is the grid &Delta; of x-values, second column are y-values).
      *  A must be <b>ordered</b> by ascending x-values.
      * @param interpolationType specifies which type of interpolation to do
      * <ul>
@@ -289,6 +290,7 @@ public final class NumericalAlgorithms {
         double[] t = MathUtilities.toDoubleArray(A.getColumn(0));
         double[] f = MathUtilities.toDoubleArray(A.getColumn(1));
         assert t.length == f.length : "same number of supporting x-values as corresponding y-values";
+	assert isSorted(t) : "ordered grid of x-values in " + A;
         int   l = t.length - 2;
         final Values vf = Values.getDefaultInstance();
 
@@ -326,10 +328,10 @@ public final class NumericalAlgorithms {
             break;
         case NATURAL_SPLINE_INTERPOLATION:                                              // natural interpolation
             // s''(a) = 0 = s''(b)
-            mom.set(0, 1, Values.ZERO);                                 // lambda[0]
-            d.set(0, Values.ZERO);                                              // d[0]
-            mom.set(l + 1, l, Values.ZERO);                             // my[l+1]
-            d.set(l + 1, Values.ZERO);                                  // d[l+1]
+            mom.set(0, 1, vf.ZERO());                                 // lambda[0]
+            d.set(0, vf.ZERO());                                              // d[0]
+            mom.set(l + 1, l, vf.ZERO());                             // my[l+1]
+            d.set(l + 1, vf.ZERO());                                  // d[l+1]
             break;
         case PERIODICAL_SPLINE_INTERPOLATION:
             throw new UnsupportedOperationException("periodical spline interpolation not yet implemented");
@@ -482,5 +484,326 @@ public final class NumericalAlgorithms {
         for (int k = 0; k < array.length; k++)
             array[k] = lambda[k] * ((Number) f.apply(a.add(vf.valueOf(k * h)))).doubleValue();
         return b.subtract(a).scale(vf.valueOf(Evaluations.sum(array)));
+    }
+
+    /**
+     * Returns a numerical solution x of the differential equation
+     * x'(t) = f(t,x(t)), x(&tau;)=&eta; on [a,b].
+     * <p>
+     * Currently implemented as an explicit Runge-Kutta method.
+     * </p>
+     * @param f the right-hand side of the differential equation.
+     * @param tau the initial time &tau; of the initial values &eta;.
+     * @param eta the vector &eta; of initial values.
+     * @param step the number m of discretisation steps defining h=(a-b)/m.
+     * @param order the desired order p of the global discretisation error, i.e., with errors in O(h<sup>p</sup>).
+     * @return a numerical solution x of the differential equation system
+     *   <center>
+     *     x'(t)=f(t,x(t)) on [a,b]<br />
+     *     x(&tau;)=&eta;
+     *   </center>
+     * @see AlgebraicAlgorithms#dSolve(Matrix,Vector,Real,Vector)
+     */
+    public static orbital.math.functional.Function dSolve(orbital.math.functional.BinaryFunction f, Real tau, Vector/*<Real>*/ eta,
+							  Real a, Real b,
+							  int steps, int order) {
+	return dSolve(f, tau, eta, a, b, steps, getButcherTableau(order));
+    }
+    /**
+     * Returns a numerical solution x of the differential equation
+     * x'(t) = f(t,x(t)), x(&tau;)=&eta; on [a,b].
+     * <p>
+     * Implements the explicit Runge-Kutta with given Butcher tableau.
+     * <center>x<sub>n+1</sub> = x<sub>n</sub> + h&sum;<sub>i=1</sub><sup>s</sup> b<sub>i</sub>k<sub>i</sub></center>
+     * with
+     * <center>k<sub>i</sub> = f(t<sub>n</sub>+c<sub>i</sub>h, y<sub>n</sub> + h&sum;<sub>j=1</sub><sup>i-1</sup> a<sub>i,j</sub>hk<sub>j</sub></center>
+     * and discretisation step defined as in {@link #dSolve(orbital.math.functional.Function,Real,Vector,Real,Real,int)}.
+     * </p>
+     * @param butcher is a consistent Butcher tableau
+     *   <table>
+     *     <tr><td>c<sub>1</sub></td> </tr>
+     *     <tr><td>c<sub>2</sub></td> <td>a<sub>2,1</sub></td></tr>
+     *     <tr><td>c<sub>3</sub></td> <td>a<sub>3,1</sub></td><td>a<sub>3,2</sub></td></tr>
+     *     <tr><td>...</td> <td></td><td></td><td>...</td></tr>
+     *     <tr><td>c<sub>s</sub></td> <td>a<sub>s,1</sub></td><td>a<sub>s,2</sub></td><td>...</td><td>a<sub>s,s-1</sub></td></tr>
+     *   </table>
+     * @precondition butcher is consistent, i.e., &sum;<sub>j=1</sub><sup>i-1</sup> a<sub>i,j</sub>=c<sub>i</sub>
+     * @see #dSolve(orbital.math.functional.Function,Real,Vector,Real,Real,int)
+     */
+    public static orbital.math.functional.Function dSolve(orbital.math.functional.BinaryFunction/*<Real,Vector<Real>>*/ f, Real tau, Vector/*<Real>*/ eta,
+							  Real min, Real max,
+							  int steps,
+							  Matrix/*<Real>*/ butcher) {
+	if (!MathUtilities.isin(tau, min,max))
+	    throw new IllegalArgumentException("initial point " + eta + " out of solution bounds [" + min + "," + max + "]");
+	if (!isConsistentButcher(butcher))
+	    throw new IllegalArgumentException("Butcher tableau is inconsistent: " + butcher);
+	if (eta.dimension() != 1)
+	    throw new UnsupportedOperationException("not yet implemented for dimension>1: initial values " + eta);
+	if (!tau.equals(min))
+	    throw new UnsupportedOperationException("not yet implemented for inner initial time " + tau + " not being left border of [" + min + "," + max + "]");
+        final ValueFactory vf = Values.getDefault();
+	// discretisation mesh
+	final Real h = max.subtract(min).divide(vf.valueOf(steps));
+	// split Butcher tableau
+	final Vector c = butcher.getColumn(0).subVector(0, butcher.dimension().height - 2);
+	final Vector b = butcher.getRow(butcher.dimension().height - 1).subVector(1, butcher.dimension().width - 1);
+	final Matrix A = butcher.subMatrix(0, butcher.dimension().height - 2,
+					   1, butcher.dimension().width - 1);
+	// number of stages of Runge-Kutta
+	final int s = b.dimension();
+	assert c.dimension() == b.dimension();
+	assert A.dimension().height == s;
+	assert A.dimension().width == s;
+
+	// the list of (t,y) coordinates of supporting nodes of the discretisation
+	Matrix/*<Real>*/ nodes = vf.ZERO(steps, 2);
+
+	int n = 0;
+	// last t-value tn
+	Real tn = tau;
+	// last y-value yn
+	Vector/*<Real>*/ yn = eta;
+	// f(t0=tau,y0=eta)
+	nodes.set(0, 0, tn);
+	nodes.set(0, 1, yn.get(0));
+	n++;
+	while (n < steps) {
+	    final Real tnp1 = tn.add(h);
+	    // ki=(0,0,...,0)
+	    final Vector/*<Vector<Real>>*/ ki = vf.newInstance(s);
+	    for (ListIterator kis = ki.iterator(); kis.hasNext(); ) {
+		kis.next();
+		assert yn.zero() instanceof Vector;
+		kis.set(yn.zero());
+		assert kis.previous() instanceof Vector && yn.zero().equals(kis.next()) : "setting zero has effect";
+	    }
+	    assert orbital.util.Setops.all(ki.iterator(), new orbital.logic.functor.Predicate() {public boolean apply(Object o) {return o instanceof Vector;}}) : "vectorial notation in " + ki;
+	    for (int i = 0; i < s; i++) {
+		// k<sub>i</sub> = f(tn+ci*h, yn + h*A.k)
+		// k<sub>i</sub> = f(t<sub>n</sub>+c<sub>i</sub>h, y<sub>n</sub> + h&sum;<sub>j=1</sub><sup>i-1</sup> a<sub>i,j</sub>hk<sub>j</sub>
+		/*ki.set(i, (Arithmetic)f.apply(
+					      tn.add(c.get(i).multiply(h)),
+					      yn.add(ki.multiply(A).multiply(h))
+					      ));*/
+		// accumulates A.k
+		Vector acc = (Vector)yn.zero();
+		for (int j = 0; j < i; j++) {
+		    assert ki.get(j) instanceof Vector : "assuming vectorial notation " + ki.get(j);
+		    assert A.get(i,j) instanceof Real;
+		    acc = acc.add(((Vector)ki.get(j)).multiply((Real)A.get(i, j)));
+		}
+		Real   tval = tn.add((Real)(c.get(i)).multiply(h));
+		Vector yval = yn.add(acc.multiply(h));
+		Arithmetic fval = (Arithmetic)f.apply(tval, yval);
+		assert fval instanceof Vector : "assuming vectorial functions f(" + tval + ", " + yval + ") = " + fval;
+		ki.set(i, (Vector)fval);
+	    }
+	    // yn+1 = yn + h*(b.ki)
+	    // observe that ki is a vector of vectors, hence the type cast
+	    Vector ynp1 = yn.add(((Vector)ki.multiply(b)).multiply(h));
+	    // f(tn+1,yn+1)
+	    nodes.set(n, 0, tnp1);
+	    assert ynp1.dimension() == 1 : "not yet implemented for dimension>1: initial values " + ynp1;
+	    nodes.set(n, 1, ynp1.get(0));
+	    n++;
+	    tn = tnp1;
+	    yn = ynp1;
+	}
+	return splineInterpolation(4, nodes, NATURAL_SPLINE_INTERPOLATION);
+    }
+
+    /**
+     * Returns a numerical solution x of the one-dimensional differential equation
+     * x'(t) = f(t,x(t)), x(&tau;)=&eta; on [a,b].
+     * @see #dSolve(orbital.math.functional.Function,Real,Vector,Real,Real,int,int)
+     */
+    public static orbital.math.functional.Function dSolve(orbital.math.functional.BinaryFunction f, Real tau, Real eta,
+							  Real a, Real b,
+							  int steps, int order) {
+	return dSolve(f, tau, eta, a, b, steps, getButcherTableau(order));
+    }
+
+    /**
+     * Returns a numerical solution x of the one-dimensional differential equation
+     * x'(t) = f(t,x(t)), x(&tau;)=&eta; on [a,b].
+     * @see #dSolve(orbital.math.functional.Function,Real,Vector,Real,Real,int)
+     */
+    public static orbital.math.functional.Function dSolve(orbital.math.functional.BinaryFunction/*<Real,Real>*/ f, Real tau, Real eta,
+							  Real min, Real max,
+							  int steps,
+							  Matrix/*<Real>*/ butcher) {
+	if (!MathUtilities.isin(tau, min,max))
+	    throw new IllegalArgumentException("initial point " + eta + " out of solution bounds [" + min + "," + max + "]");
+	if (!isConsistentButcher(butcher))
+	    throw new IllegalArgumentException("Butcher tableau is inconsistent: " + butcher);
+	if (!tau.equals(min))
+	    throw new UnsupportedOperationException("not yet implemented for inner initial time " + tau + " not being left border of [" + min + "," + max + "]");
+        final ValueFactory vf = Values.getDefault();
+	// discretisation mesh
+	final Real h = max.subtract(min).divide(vf.valueOf(steps));
+	// split Butcher tableau
+	final Vector c = butcher.getColumn(0).subVector(0, butcher.dimension().height - 2);
+	final Vector b = butcher.getRow(butcher.dimension().height - 1).subVector(1, butcher.dimension().width - 1);
+	final Matrix A = butcher.subMatrix(0, butcher.dimension().height - 2,
+					   1, butcher.dimension().width - 1);
+	// number of stages of Runge-Kutta
+	final int s = b.dimension();
+	assert c.dimension() == b.dimension();
+	assert A.dimension().height == s;
+	assert A.dimension().width == s;
+
+	// the list of (t,y) coordinates of supporting nodes of the discretisation
+	Matrix/*<Real>*/ nodes = vf.ZERO(steps, 2);
+
+	int n = 0;
+	// last t-value tn
+	Real tn = tau;
+	// last y-value yn
+	Real yn = eta;
+	// f(t0=tau,y0=eta)
+	nodes.set(0, 0, tn);
+	nodes.set(0, 1, yn);
+	n++;
+	while (n < steps) {
+	    final Real tnp1 = tn.add(h);
+	    // k=(0,0,...,0)
+	    final Vector/*<Real>*/ k = vf.ZERO(s);
+	    for (int i = 0; i < s; i++) {
+		// k<sub>i</sub> = f(tn+ci*h, yn + h*A.k)
+		// k<sub>i</sub> = f(t<sub>n</sub>+c<sub>i</sub>h, y<sub>n</sub> + h&sum;<sub>j=1</sub><sup>i-1</sup> a<sub>i,j</sub>hk<sub>j</sub>
+		//System.out.println("\t" + tn + " + " + c.get(i) + "*" + h);
+		//System.out.println("\t= " + tn.add(c.get(i).multiply(h)));
+		//System.out.println("\t" + yn + " + " + A + "." + k + "*" + h);
+		//System.out.println("\t= " + yn.add(A.multiply(k).multiply(h)));
+		//k.set(i, (Arithmetic)f.apply(
+		//			     tn.add(c.get(i).multiply(h)),
+		//			     yn.add(A.multiply(k).multiply(h))
+		//			     ));
+		// accumulates A.k
+		Real acc = (Real)yn.zero();
+		for (int j = 0; j < i; j++) {
+		    acc = acc.add(((Real)k.get(j)).multiply((Real)A.get(i, j)));
+		}
+		Real   tval = tn.add((Real)(c.get(i)).multiply(h));
+		Real yval = yn.add(acc.multiply(h));
+		Arithmetic fval = (Arithmetic)f.apply(tval, yval);
+		k.set(i, (Real)fval);
+	    }
+	    // yn+1 = yn + h*(b.k)
+	    // observe that ki is a vector of vectors, hence the type cast
+            Real ynp1 = yn.add((Real)k.multiply(b).multiply(h));
+	    // f(tn+1,yn+1)
+	    nodes.set(n, 0, tnp1);
+	    nodes.set(n, 1, ynp1);
+	    n++;
+	    tn = tnp1;
+	    yn = ynp1;
+	}
+	return splineInterpolation(4, nodes, NATURAL_SPLINE_INTERPOLATION);
+    }
+
+    private static Matrix getButcherTableau(int order) {
+	switch (order) {
+	case 2:
+	    // improved polygons
+	    return Values.getDefault().valueOf(new double[][] {
+		//c,    aij
+		{0,     0,   0},
+		{1/2.,  1/2.,0},
+		// b:
+		{0,     0,   1}  //b
+	    });
+	    /*case 2:
+	    // Heun (p=2)
+	    return Values.getDefault().valueOf(new double[][] {
+		//c,    aij
+		{0,  0,0},
+		{1,  1,0},
+		// b:
+		{0,  1/2.,1/2.}  //b
+		});*/
+	case 3:
+	    // Heun (p=3)
+	    return Values.getDefault().valueOf(new double[][] {
+		//c,    aij
+		{0,     0,   0,    0},
+		{1/3.,  1/3.,0,    0},
+		{2/3.,  0,   2/3., 0},
+		// b:
+		{0,     1/4.,0,   3/4.}  //b
+	    });
+	    /*case 3:
+	    // Kutta, Simpson-Regel (p=3)
+	    return Values.getDefault().valueOf(new double[][] {
+		//c,    aij
+		{0,     0,   0,    0},
+		{1/2.,  1/2.,0,    0},
+		{1,     -1,  2, 0},
+		// b:
+		{0,     1/6.,4/6., 1/6.}  //b
+	    });*/
+	case 4:
+	    // Runge-Kutta 4
+	    return Values.getDefault().valueOf(new double[][] {
+		//c,    aij
+		{0,     0,   0,   0,   0},
+		{1/2.,  1/2.,0,   0,   0},
+		{1/2.,  0,   1/2.,0,   0},
+		{1,     0,   0,   1,   0},
+		// b:
+		{0,     1/6.,2/6.,2/6.,1/6.}  //b
+	    });
+	    /*case 4:
+	    // Runge-Kutta 3/8 rule
+	    return Values.getDefault().valueOf(new double[][] {
+		//c,    aij
+		{0,     0,   0,   0,   0},
+		{1/3.,  1/3.,0,   0,   0},
+		{2/3., -1/3.,1,   0,   0},
+		{1,     1,  -1,   1,   0},
+		// b:
+		{0,     1/8.,3/8.,3/8.,1/8.}  //b
+	    });*/
+	default:
+	    throw new UnsupportedOperationException("No method of order " + order + " supported. Try a different order");
+	}
+    }
+
+    // helpers
+    
+    private static boolean isConsistentButcher(Matrix/*<Real>*/ A) {
+	if (!A.isSquare())
+	    return false;
+	if (!A.get(A.dimension().height-1,0).isZero())
+	    // should carry no information
+	    return false;
+	// test for non-strict upper diagonal matrix
+	for (int i = 0; i < A.dimension().height; i++) {
+	    for (int j = i + 1; j < A.dimension().width; j++) {
+		if (!A.get(i, j).isZero())
+		    // should carry no information
+		    return false;
+	    }
+	}
+        final Real zero = (Real)A.get(0, 0).zero();
+	// each row is consistent
+	for (Iterator i = A.getRows(); i.hasNext(); ) {
+	    Vector v = (Vector)i.next();
+	    if (!i.hasNext())
+		// excluding last b row so skip
+		continue;
+	    if (!MathUtilities.equalsCa(v.get(0), (Real)Operations.sum.apply(v.subVector(1,v.dimension()-1))))
+		return false;
+	}
+	return true;
+    }
+
+    private static boolean isSorted(double a[]) {
+        for (int i = 0; i < a.length - 1; i++) {
+	    if (a[i] > a[i+1])
+		return false;
+	}
+	return true;
     }
 }
