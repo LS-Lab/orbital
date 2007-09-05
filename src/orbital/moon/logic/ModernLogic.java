@@ -170,12 +170,12 @@ abstract class ModernLogic implements Logic {
             if (e >= 0) {
                 formula = "(" + formula.substring(0, e) + ")" + " <=> " + "(" + formula.substring(e + 2) + ")";
             } else {
-		e = Math.max(formula.indexOf("|="), formula.indexOf("|-"));
-		if (e >= 0) {
-		    knowledge = formula.substring(0, e);
-		    formula = formula.substring(e + 2);
-		}
-	    }
+                e = Math.max(formula.indexOf("|="), formula.indexOf("|-"));
+                if (e >= 0) {
+                    knowledge = formula.substring(0, e);
+                    formula = formula.substring(e + 2);
+                }
+            }
 
 
             // infer
@@ -188,7 +188,7 @@ abstract class ModernLogic implements Logic {
                 String formName[] = {
                     "disjunctive",
                     "conjunctive",
-		    "clausal"
+                    "clausal"
                 };
                 Formula form[] = {
                     ClassicalLogic.Utilities.disjunctiveForm(f, true),
@@ -282,25 +282,25 @@ abstract class ModernLogic implements Logic {
         assert !("\u00b0".equals(signifier) || "?".equals(signifier)) : "all and some are in core signature and no ordinary symbols";
 
         if (!symbol.isVariable()) {
-	    // test for literals
-	    if (symbol.getType().subtypeOf(Types.getDefault().objectType(Arithmetic.class))
-		|| symbol.getType().subtypeOf(Types.getDefault().objectType(Number.class)))
-		try {
-		    // test for syntactically legal <INTEGER_LITERAL> | <FLOATING_POINT_LITERAL>
-		    //@todo could also move to an infinite coreInterpretation()
-		    return createFixedSymbol(symbol, Values.getDefaultInstance().valueOf(signifier), false);
-		}
-		catch (NumberFormatException trial) {}
+            // test for literals
+            if (symbol.getType().subtypeOf(Types.getDefault().objectType(Arithmetic.class))
+                || symbol.getType().subtypeOf(Types.getDefault().objectType(Number.class)))
+                try {
+                    // test for syntactically legal <INTEGER_LITERAL> | <FLOATING_POINT_LITERAL>
+                    //@todo could also move to an infinite coreInterpretation()
+                    return createFixedSymbol(symbol, Values.getDefaultInstance().valueOf(signifier), false);
+                }
+                catch (NumberFormatException trial) {}
 
-	    if (symbol.getType().equals(Types.getDefault().objectType(String.class))) {
-		try {
-		    // test for syntactically legal <STRING_LITERAL>
-		    isSTRING_LITERAL(symbol);
-		    return createSymbol(symbol);
-		}
-		catch (IllegalArgumentException trial) {}
-	    }
-	}
+            if (symbol.getType().equals(Types.getDefault().objectType(String.class))) {
+                try {
+                    // test for syntactically legal <STRING_LITERAL>
+                    isSTRING_LITERAL(symbol);
+                    return createSymbol(symbol);
+                }
+                catch (IllegalArgumentException trial) {}
+            }
+        }
         // test for syntactically legal <IDENTIFIER>
         validateAtomic(symbol);
         return createSymbol(symbol);

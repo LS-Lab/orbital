@@ -73,7 +73,7 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
     public Arithmetic add(Arithmetic b) throws ArithmeticException {
         // simple-case optimization
         if (b.isZero())
-	    return this;
+            return this;
         return Functionals.genericCompose(Operations.plus, this, b);
     } 
     public Arithmetic minus() throws ArithmeticException {
@@ -82,7 +82,7 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
     public Arithmetic subtract(Arithmetic b) throws ArithmeticException {
         // simple-case optimization
         if (b.isZero())
-	    return this;
+            return this;
         return Functionals.genericCompose(Operations.subtract, this, b);
     } 
 
@@ -94,8 +94,8 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
     public Arithmetic multiply(Arithmetic b) throws ArithmeticException {
         // simple-case optimization
         if (b instanceof Scalar) {
-	    if (b.isZero())
-		return zero();
+            if (b.isZero())
+                return zero();
             else if (b.isOne())
                 return this;
             else if (b.one().minus().equals(b))
@@ -109,7 +109,7 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
     public Arithmetic divide(Arithmetic b) throws ArithmeticException {
         // simple-case optimization
         if (b instanceof Scalar) {
-	    if (b.isZero())
+            if (b.isZero())
                 throw new ArithmeticException("division by zero");
             else if (b.isOne())
                 return this;
@@ -122,13 +122,13 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
     public Arithmetic power(Arithmetic b) throws ArithmeticException {
         // simple-case optimization
         if (b instanceof Scalar) {
-	    if (b.isZero()) {
-		if (isZero()) {
-		    assert false : "this never happens as symbols are not identical to 0";
-		    throw new ArithmeticException("0^0 is not uniquely defined");
-		} else
-		    return one();
-	    } else if (b.isOne())
+            if (b.isZero()) {
+                if (isZero()) {
+                    assert false : "this never happens as symbols are not identical to 0";
+                    throw new ArithmeticException("0^0 is not uniquely defined");
+                } else
+                    return one();
+            } else if (b.isOne())
                 return this;
             else if (b.one().minus().equals(b))
                 return inverse();

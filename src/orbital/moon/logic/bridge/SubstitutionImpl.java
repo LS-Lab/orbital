@@ -326,34 +326,34 @@ public class SubstitutionImpl implements Substitution, Serializable {
      */
     public static class ConditionalUnifyingMatcher extends UnifyingMatcher {
         //private static final long serialVersionUID = 0L;
-	/**
-	 * The additional condition that the match has to satisfy.
-	 * @serial
-	 */
-	private final Predicate/*<Substitution>*/ condition;
+        /**
+         * The additional condition that the match has to satisfy.
+         * @serial
+         */
+        private final Predicate/*<Substitution>*/ condition;
         /**
          * Create a new matcher that performs substitution.
          * @param pattern The object against which to (single side) match with {@link Substitutions#unify(Collection)}.
          * @substitute The substitute substituting terms that matched, after transforming substitute
          *  with the unifier that performed the matching.
-	 * @param condition The additional condition that has to hold for occurrences that
-	 *  match (single sidedly) with pattern. Hence, the matcher returned will only
-	 *  match when condition.apply(&mu;) is true for the single sided matcher
-	 *  (resp. unifier) &mu;.
+         * @param condition The additional condition that has to hold for occurrences that
+         *  match (single sidedly) with pattern. Hence, the matcher returned will only
+         *  match when condition.apply(&mu;) is true for the single sided matcher
+         *  (resp. unifier) &mu;.
          * @postconditions substituting == true
          */
         public ConditionalUnifyingMatcher(Object pattern, Object substitute, Predicate/*<Substitution>*/ condition) {
             super(pattern, substitute);
-	    this.condition = condition;
+            this.condition = condition;
         }
     
         public boolean matches(Object t) {
-	    if (super.matches(t)) {
-		final Substitution mu = getUnifier();
-		return condition.apply(mu);
-	    } else {
-		return false;
-	    }
+            if (super.matches(t)) {
+                final Substitution mu = getUnifier();
+                return condition.apply(mu);
+            } else {
+                return false;
+            }
         }
     
         public String toString() {

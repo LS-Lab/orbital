@@ -154,8 +154,8 @@ public abstract class MarkovDecisionProcess/*<A,S,M extends MarkovDecisionProble
      * @todo possible to unify with orbital.algorithm.template.DynamicProgramming?
      */
     public static abstract class DynamicProgramming/*<A,S,M extends MarkovDecisionProblem.Transition>*/
-	extends MarkovDecisionProcess/*<A,S,M>*/
-	implements HeuristicAlgorithm/*<MarkovDecisionProblem<A,S,M>,S>*/ {
+        extends MarkovDecisionProcess/*<A,S,M>*/
+        implements HeuristicAlgorithm/*<MarkovDecisionProblem<A,S,M>,S>*/ {
         private static final long serialVersionUID = 6262421425846708636L;
         /**
          * the current discount factor &gamma;.

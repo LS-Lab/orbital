@@ -608,13 +608,13 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
         Object r = Array.newInstance(x.getClass().getComponentType(), Array.getLength(x));
         for (int i = 0; i < Array.getLength(r); i++) {
             Object o = f.apply(vf.valueOf((Number) Array.get(x, i)), vf.valueOf((Number) Array.get(y, i)));
-	    Number p = Values.isPrimitiveWrapper(o.getClass()) ? (Number)o : Values.toPrimitiveWrapper((Scalar)o);
-	    try {
-		Array.set(r, i, p);
-	    }
-	    catch (IllegalArgumentException ex) {
-		throw (IllegalArgumentException) new IllegalArgumentException("ArrayStoreException " + o + " of class " + o.getClass() + " giving " + p + " of class " + p.getClass()).initCause(ex);
-	    }
+            Number p = Values.isPrimitiveWrapper(o.getClass()) ? (Number)o : Values.toPrimitiveWrapper((Scalar)o);
+            try {
+                Array.set(r, i, p);
+            }
+            catch (IllegalArgumentException ex) {
+                throw (IllegalArgumentException) new IllegalArgumentException("ArrayStoreException " + o + " of class " + o.getClass() + " giving " + p + " of class " + p.getClass()).initCause(ex);
+            }
         }
         return r;
     }

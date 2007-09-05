@@ -39,7 +39,7 @@ final class PackageUtilities {
      * @todo replace by ordinary argmin and reevaluate the result's f-value.
      */
     public static final /*<M,R extends Comparable>*/
-	Pair/*<M,R>*/ min(Iterator/*<M>*/ choices, Function/*<M,R>*/ f) {
+        Pair/*<M,R>*/ min(Iterator/*<M>*/ choices, Function/*<M,R>*/ f) {
         // (almost) identical to @see orbital.util.Setops#argmin(Iterator,Function)
 
         // search for minimum f in choices
@@ -64,7 +64,7 @@ final class PackageUtilities {
      * @see orbital.util.Setops#argmax(Iterator,Function)
      */
     public static final /*<M,R extends Comparable>*/
-	Pair/*<M,R>*/ max(Iterator/*<M>*/ choices, Function/*<M,R>*/ f) {
+        Pair/*<M,R>*/ max(Iterator/*<M>*/ choices, Function/*<M,R>*/ f) {
         // (almost) identical to @see orbital.util.Setops#argmin(Iterator,Function)
 
         // search for maximum f in choices
@@ -100,7 +100,7 @@ final class PackageUtilities {
      * @note aspect of local randomization.
      */
     public static final /*<A,S>*/ GeneralSearchProblem/*<A,S>*/
-	restrictRandomly(GeneralSearchProblem/*<A,S>*/ problem, final int numberOfChoices, final ProbabilisticAlgorithm algorithm) {
+        restrictRandomly(GeneralSearchProblem/*<A,S>*/ problem, final int numberOfChoices, final ProbabilisticAlgorithm algorithm) {
         return new DelegateGeneralSearchProblem/*<A,S>*/(problem) {
                 private static final long serialVersionUID = -4007975459550830964L;
                 public Iterator/*<A>*/ actions(Object/*>S<*/ state) {
@@ -130,7 +130,7 @@ final class PackageUtilities {
      * @todo aspect (I) of locally restricting the search to the most promising actions.
      */
     public static final /*<A,S>*/ GeneralSearchProblem/*<A,S>*/
-	restrictBest(GeneralSearchProblem/*<A,S>*/ problem, final Function/*<S,Real>*/ evaluationFunction) {
+        restrictBest(GeneralSearchProblem/*<A,S>*/ problem, final Function/*<S,Real>*/ evaluationFunction) {
         return new DelegateGeneralSearchProblem(problem) {
                 private static final long serialVersionUID = 549567555212455602L;
                 public Iterator/*<A>*/ actions(Object/*>S<*/ state) {

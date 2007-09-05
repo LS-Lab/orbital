@@ -282,29 +282,29 @@ public class DefaultCustomizer extends JPanel implements Customizer {
         BeanInfo info = getBeanInfo(beanClass);
         if (info == null)
             throw new NullPointerException("no BeanInfo for class: " + beanClass);
-	//@internal this orders properties according to isPreferred(), ordinary, isExpert() and isHidden()
+        //@internal this orders properties according to isPreferred(), ordinary, isExpert() and isHidden()
         beanProperties = getAllPropertyDescriptors(info);
         if (beanProperties == null)
             throw new NullPointerException("no PropertyDescriptors for class: " + beanClass);
 
         this.removeAll();
         this.setLayout(new GridBagLayout());
-	// left labels
+        // left labels
         GridBagConstraints l = new GridBagConstraints();
         l.anchor = GridBagConstraints.NORTHWEST;
         l.insets = new Insets(0, 0, 0, 12);
-	// right components
+        // right components
         GridBagConstraints r = new GridBagConstraints();
         r.gridwidth = GridBagConstraints.REMAINDER;
         r.anchor = GridBagConstraints.NORTHWEST;
         r.fill = GridBagConstraints.BOTH;
         r.weightx = 1;
-	// vertical spacing
+        // vertical spacing
         GridBagConstraints v = new GridBagConstraints();
         v.gridwidth = GridBagConstraints.REMAINDER;
         v.anchor = GridBagConstraints.NORTH;
         v.fill = GridBagConstraints.BOTH;
-	// vertical filler
+        // vertical filler
         GridBagConstraints f = new GridBagConstraints();
         f.gridwidth = GridBagConstraints.REMAINDER;
         f.anchor = GridBagConstraints.NORTH;
@@ -406,7 +406,7 @@ public class DefaultCustomizer extends JPanel implements Customizer {
                 // property editor is only painting itself, so display inline
                 return new InlinePaintablePropertyEditorComponent(property, peditor);
         } else if (property.getPropertyType() == Boolean.TYPE
-		   || property.getPropertyType() == Boolean.class) {
+                   || property.getPropertyType() == Boolean.class) {
             // a checkbox for yes/no
             JCheckBox editor = new JCheckBox();
             editor.setName(property.getName());
@@ -416,11 +416,11 @@ public class DefaultCustomizer extends JPanel implements Customizer {
                 editor.setEnabled(false);
             return editor;
         } else if (Number.class.isAssignableFrom(property.getPropertyType())
-		   || property.getPropertyType().isPrimitive() && property.getPropertyType() != Character.TYPE && property.getPropertyType() != Void.TYPE) {
+                   || property.getPropertyType().isPrimitive() && property.getPropertyType() != Character.TYPE && property.getPropertyType() != Void.TYPE) {
             // a spinner for numbers
-	    //@xxx would we need to invoke editor.commitEdit() to ensure it promotes changes?
+            //@xxx would we need to invoke editor.commitEdit() to ensure it promotes changes?
             JSpinner editor = new JSpinner(new SpinnerNumberModel());
-	    editor.setEditor(new JSpinner.NumberEditor(editor));
+            editor.setEditor(new JSpinner.NumberEditor(editor));
             editor.setName(property.getName());
             if (property.getWriteMethod() != null)
                 editor.addChangeListener(new PropertyEditingChange(peditor));
@@ -584,11 +584,11 @@ public class DefaultCustomizer extends JPanel implements Customizer {
                         displaying(ed, ped.getAsText());
                     else if (ed instanceof JCheckBox)
                         ((JCheckBox) ed).setSelected(((Boolean)ped.getValue()).equals(Boolean.TRUE));
-		    else if (ed instanceof JComboBox)
+                    else if (ed instanceof JComboBox)
                         ((JComboBox) ed).setSelectedItem(ped.getAsText());
                     else if (ed instanceof java.awt.Choice)
                         ((java.awt.Choice) ed).select(ped.getAsText());
-		    else if (ed instanceof JSpinner)
+                    else if (ed instanceof JSpinner)
                         ((JSpinner) ed).setValue(ped.getValue());
                     else if (ed instanceof NumberInput)
                         //NOTE: NumberInput is no javax.swing.JComponent at all
@@ -665,7 +665,7 @@ public class DefaultCustomizer extends JPanel implements Customizer {
             SortedSet l = new TreeSet(featureDescriptorComparator);
             l.addAll(Arrays.asList(info.getPropertyDescriptors()));
             return (PropertyDescriptor[]) l.toArray(new PropertyDescriptor[0]);
-	}
+        }
         // set without duplicates that is not consistent with equals (which does not matter)
         // Caution: using a Set instead of a List here shuffles the property order which Introspector does, anyway (Bug-Id 4088897 closed)
         //@internal perhaps we could also use a LinkedHashSet or even LinkedIdentityHashSet here for keeping the initial order instead of sorting
@@ -689,31 +689,31 @@ public class DefaultCustomizer extends JPanel implements Customizer {
      */
     private static final Comparator featureDescriptorComparator = new Comparator() {
             public int compare(Object a, Object b) {
-		FeatureDescriptor fa = (FeatureDescriptor) a;
-		FeatureDescriptor fb = (FeatureDescriptor) b;
-		int c = MathUtilities.sign(fa.getName().compareTo(fb.getName()));
-		if (c == 0) {
-		    return c;
-		}
-		// shift normalised c according to some extra bonus/malus points
-		if (fa.isPreferred()) {
-		    c -= 10;
-		}
-		if (fb.isPreferred()) {
-		    c += 10;
-		}
-		if (fa.isExpert()) {
-		    c += 5;
-		}
-		if (fb.isExpert()) {
-		    c -= 5;
-		}
-		if (fa.isHidden()) {
-		    c += 20;
-		}
-		if (fb.isHidden()) {
-		    c -= 20;
-		}
+                FeatureDescriptor fa = (FeatureDescriptor) a;
+                FeatureDescriptor fb = (FeatureDescriptor) b;
+                int c = MathUtilities.sign(fa.getName().compareTo(fb.getName()));
+                if (c == 0) {
+                    return c;
+                }
+                // shift normalised c according to some extra bonus/malus points
+                if (fa.isPreferred()) {
+                    c -= 10;
+                }
+                if (fb.isPreferred()) {
+                    c += 10;
+                }
+                if (fa.isExpert()) {
+                    c += 5;
+                }
+                if (fb.isExpert()) {
+                    c -= 5;
+                }
+                if (fa.isHidden()) {
+                    c += 20;
+                }
+                if (fb.isHidden()) {
+                    c -= 20;
+                }
                 return c;
             }
         };
@@ -793,10 +793,10 @@ public class DefaultCustomizer extends JPanel implements Customizer {
                     // old and new value of event are equal
                     if (Utility.equals(newFromPed, oldFromBean)) {
                         // old value from bean and new value from PropertyEditor are equal, too
-			logger.log(Level.FINEST, "suppressed spurious change of {0} from \"{1}\" to \"{2}\", via {3}, "
-				   + "where current value from bean ({4}) equals new value fired ({5})", new Object[] {property.getName(), oldValue, newValue, e, oldFromBean, newFromPed});
+                        logger.log(Level.FINEST, "suppressed spurious change of {0} from \"{1}\" to \"{2}\", via {3}, "
+                                   + "where current value from bean ({4}) equals new value fired ({5})", new Object[] {property.getName(), oldValue, newValue, e, oldFromBean, newFromPed});
                         return;
-		    } else {
+                    } else {
                         // use old values from bean and new values from PropertyEditor, instead
                         oldValue = oldFromBean;
                         newValue = newFromPed;
@@ -868,37 +868,37 @@ public class DefaultCustomizer extends JPanel implements Customizer {
                 Object source = e.getSource();
                 if (source instanceof JComboBox) {
                     String v = (String) ((JComboBox) e.getSource()).getSelectedItem();
-		    peditor.setAsText(v);
+                    peditor.setAsText(v);
                 } else if (source instanceof JCheckBox) {
-		    peditor.setValue(Boolean.valueOf(((JCheckBox) e.getSource()).isSelected()));
-		} else {
+                    peditor.setValue(Boolean.valueOf(((JCheckBox) e.getSource()).isSelected()));
+                } else {
                     throw new ClassCastException("illegal event source type " + source.getClass());
-		}
+                }
             } catch (IllegalArgumentException cause) {
                 // TODO: display Dialog or redden the component foreground!
                 logger.log(Level.WARNING, "illegal value", cause);
             } 
         }
-	
-	// ChangeListener
+        
+        // ChangeListener
 
-	public void stateChanged(ChangeEvent e) {
+        public void stateChanged(ChangeEvent e) {
             if (bean == null)
                 return;
             try {
                 Object source = e.getSource();
-		if (source instanceof JSpinner) {
-		    SpinnerModel spinmodel = ((JSpinner)source).getModel();
-		    peditor.setValue(spinmodel.getValue());
-		} else {
+                if (source instanceof JSpinner) {
+                    SpinnerModel spinmodel = ((JSpinner)source).getModel();
+                    peditor.setValue(spinmodel.getValue());
+                } else {
                     throw new ClassCastException("illegal event source type " + source.getClass());
-		}
+                }
             } catch (IllegalArgumentException cause) {
                 // TODO: display Dialog or redden the component foreground!
                 logger.log(Level.WARNING, "illegal value", cause);
             } 
-	}
-	
+        }
+        
         // ItemListener
 
         /**

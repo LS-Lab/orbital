@@ -92,7 +92,7 @@ public class AlgorithmicTable {
                 logger.log(Level.FINER, "introspection", ignore);
             } 
         JFrame f = new JFrame("Comparison of Algorithms");
-	f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JTable table;
         f.getContentPane().add(new JScrollPane(table = new JTable(new ArrayTableModel(columnNames, data))), BorderLayout.CENTER);
         table.setAutoCreateColumnsFromModel(true);

@@ -353,15 +353,15 @@ public abstract class Values implements ValueFactory {
      */
     public static Number toPrimitiveWrapper(Scalar val) {
         if (Integer.hasType.apply(val)) {
-	    //@see duplicate code from ArithmeticValuesImpl.intValueExact()
-	    // convert to int and check for equality
-	    int l = ((Integer)val).intValue();
-	    Integer i = Values.getDefault().valueOf(l);
-	    if (i.equals(val))
-		return new java.lang.Integer(l);
-	    else
-		//@xxx possible loss of precision for big arbitrary precision
-		return new java.lang.Long(((Integer)val).longValue());
+            //@see duplicate code from ArithmeticValuesImpl.intValueExact()
+            // convert to int and check for equality
+            int l = ((Integer)val).intValue();
+            Integer i = Values.getDefault().valueOf(l);
+            if (i.equals(val))
+                return new java.lang.Integer(l);
+            else
+                //@xxx possible loss of precision for big arbitrary precision
+                return new java.lang.Long(((Integer)val).longValue());
         } else if (Real.hasType.apply(val))
             return new java.lang.Double(((Real)val).doubleValue());
         else if (Rational.hasType.apply(val))

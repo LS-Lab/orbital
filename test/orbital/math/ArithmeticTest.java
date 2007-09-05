@@ -34,7 +34,7 @@ public class ArithmeticTest extends check.TestCase {
     protected void setUp() {
         vf = Values.getDefaultInstance();
         tolerance = vf.valueOf(MathUtilities.getDefaultTolerance());
-	random = new ArithmeticTestPatternGenerator(-1000,1000);
+        random = new ArithmeticTestPatternGenerator(-1000,1000);
     }
 
 
@@ -244,107 +244,107 @@ public class ArithmeticTest extends check.TestCase {
 
     // test various doubleValue() etc things.
     public void testValueOf() {
-	for (int i = 0; i < TEST_REPETITIONS; i++) {
-	    {
-		int x = random.randomInt();
-		Integer args[] = {
-		    vf.valueOf(x),
-		    vf.valueOf((long)x),
-		    vf.valueOf(BigInteger.valueOf(x))
-		};
-		for (int k = 0; k < args.length; k++) {
-		    Number xs = (Number) args[k];
-		    assertTrue(x == xs.intValue(),
-			       "intValue() " + x + " == " + xs.intValue() + " of " + xs + "@" + xs.getClass());
-		    assertTrue((long)x == xs.longValue(),
-			       "longValue() " + x + " == " + xs.longValue() + " of " + xs + "@" + xs.getClass());
-		    assertTrue((short)x == xs.shortValue(),
-			       "shortValue() " + x + " == " + xs.shortValue() + " of " + xs + "@" + xs.getClass());
-		    assertTrue((byte)x == xs.byteValue(),
-			       "byteValue() " + x + " == " + xs.byteValue() + " of " + xs + "@" + xs.getClass());
-		    assertTrue((double)x == xs.doubleValue(),
-			       "doubleValue() " + x + " == " + xs.doubleValue() + " of " + xs + "@" + xs.getClass());
-		    assertTrue((float)x == xs.floatValue(),
-			       "floatValue() " + x + " == " + xs.floatValue() + " of " + xs + "@" + xs.getClass());
-		}
-	    }
-	    {
-		double x = random.randomDouble();
-		Real args[] = {
-		    vf.valueOf(x),
-		    vf.valueOf(BigDecimal.valueOf(x))
-		};
-		for (int k = 0; k < args.length; k++) {
-		    Number xs = (Number) args[k];
-		    assertTrue((double)x == xs.doubleValue(),
-			       "doubleValue() " + x + " == " + xs.doubleValue() + " of " + xs + "@" + xs.getClass());
-		    assertTrue((float)x == xs.floatValue(),
-			       "floatValue() " + x + " == " + xs.floatValue() + " of " + xs + "@" + xs.getClass());
-		    try {
-			assertTrue((int)x == xs.intValue(),
-				   "intValue() " + x + " == " + xs.intValue() + " of " + xs + "@" + xs.getClass());
-			assertTrue((long)x == xs.longValue(),
-				   "longValue() " + x + " == " + xs.longValue() + " of " + xs + "@" + xs.getClass());
-			assertTrue((short)x == xs.shortValue(),
-				   "shortValue() " + x + " == " + xs.shortValue() + " of " + xs + "@" + xs.getClass());
-			assertTrue((byte)x == xs.byteValue(),
-				   "byteValue() " + x + " == " + xs.byteValue() + " of " + xs + "@" + xs.getClass());
-		    }
-		    catch (ArithmeticException ex) {
-			if (!ex.getMessage().contains("Rounding"))
-			    throw ex;
-		    }
-		}
-	    }
-	    {
-		int p = random.randomInt();
-		int q = random.randomInt(1,1000);
-		double x = (double) p / (double) q;
-		Rational args[] = {
-		    vf.rational(p,q),
-		    vf.rational(vf.valueOf(p), vf.valueOf(q)),
-		    vf.rational(vf.valueOf(BigInteger.valueOf(p)), vf.valueOf(BigInteger.valueOf(q)))
-		};
-		for (int k = 0; k < args.length; k++) {
-		    Number xs = (Number) args[k];
-		    assertTrue((double)x == xs.doubleValue(),
-			       "doubleValue() " + x + " == " + xs.doubleValue() + " of " + xs + "@" + xs.getClass());
-		    assertTrue((float)x == xs.floatValue(),
-			       "floatValue() " + x + " == " + xs.floatValue() + " of " + xs + "@" + xs.getClass());
-		    try {
-			assertTrue((int)x == xs.intValue(),
-				   "intValue() " + x + " == " + xs.intValue() + " of " + xs + "@" + xs.getClass());
-			assertTrue((long)x == xs.longValue(),
-				   "longValue() " + x + " == " + xs.longValue() + " of " + xs + "@" + xs.getClass());
-			assertTrue((short)x == xs.shortValue(),
-				   "shortValue() " + x + " == " + xs.shortValue() + " of " + xs + "@" + xs.getClass());
-			assertTrue((byte)x == xs.byteValue(),
-				   "byteValue() " + x + " == " + xs.byteValue() + " of " + xs + "@" + xs.getClass());
-		    }
-		    catch (ArithmeticException ex) {
-			if (!ex.getMessage().contains("Rounding"))
-			    throw ex;
-		    }
-		}
-	    }
-	}
+        for (int i = 0; i < TEST_REPETITIONS; i++) {
+            {
+                int x = random.randomInt();
+                Integer args[] = {
+                    vf.valueOf(x),
+                    vf.valueOf((long)x),
+                    vf.valueOf(BigInteger.valueOf(x))
+                };
+                for (int k = 0; k < args.length; k++) {
+                    Number xs = (Number) args[k];
+                    assertTrue(x == xs.intValue(),
+                               "intValue() " + x + " == " + xs.intValue() + " of " + xs + "@" + xs.getClass());
+                    assertTrue((long)x == xs.longValue(),
+                               "longValue() " + x + " == " + xs.longValue() + " of " + xs + "@" + xs.getClass());
+                    assertTrue((short)x == xs.shortValue(),
+                               "shortValue() " + x + " == " + xs.shortValue() + " of " + xs + "@" + xs.getClass());
+                    assertTrue((byte)x == xs.byteValue(),
+                               "byteValue() " + x + " == " + xs.byteValue() + " of " + xs + "@" + xs.getClass());
+                    assertTrue((double)x == xs.doubleValue(),
+                               "doubleValue() " + x + " == " + xs.doubleValue() + " of " + xs + "@" + xs.getClass());
+                    assertTrue((float)x == xs.floatValue(),
+                               "floatValue() " + x + " == " + xs.floatValue() + " of " + xs + "@" + xs.getClass());
+                }
+            }
+            {
+                double x = random.randomDouble();
+                Real args[] = {
+                    vf.valueOf(x),
+                    vf.valueOf(BigDecimal.valueOf(x))
+                };
+                for (int k = 0; k < args.length; k++) {
+                    Number xs = (Number) args[k];
+                    assertTrue((double)x == xs.doubleValue(),
+                               "doubleValue() " + x + " == " + xs.doubleValue() + " of " + xs + "@" + xs.getClass());
+                    assertTrue((float)x == xs.floatValue(),
+                               "floatValue() " + x + " == " + xs.floatValue() + " of " + xs + "@" + xs.getClass());
+                    try {
+                        assertTrue((int)x == xs.intValue(),
+                                   "intValue() " + x + " == " + xs.intValue() + " of " + xs + "@" + xs.getClass());
+                        assertTrue((long)x == xs.longValue(),
+                                   "longValue() " + x + " == " + xs.longValue() + " of " + xs + "@" + xs.getClass());
+                        assertTrue((short)x == xs.shortValue(),
+                                   "shortValue() " + x + " == " + xs.shortValue() + " of " + xs + "@" + xs.getClass());
+                        assertTrue((byte)x == xs.byteValue(),
+                                   "byteValue() " + x + " == " + xs.byteValue() + " of " + xs + "@" + xs.getClass());
+                    }
+                    catch (ArithmeticException ex) {
+                        if (!ex.getMessage().contains("Rounding"))
+                            throw ex;
+                    }
+                }
+            }
+            {
+                int p = random.randomInt();
+                int q = random.randomInt(1,1000);
+                double x = (double) p / (double) q;
+                Rational args[] = {
+                    vf.rational(p,q),
+                    vf.rational(vf.valueOf(p), vf.valueOf(q)),
+                    vf.rational(vf.valueOf(BigInteger.valueOf(p)), vf.valueOf(BigInteger.valueOf(q)))
+                };
+                for (int k = 0; k < args.length; k++) {
+                    Number xs = (Number) args[k];
+                    assertTrue((double)x == xs.doubleValue(),
+                               "doubleValue() " + x + " == " + xs.doubleValue() + " of " + xs + "@" + xs.getClass());
+                    assertTrue((float)x == xs.floatValue(),
+                               "floatValue() " + x + " == " + xs.floatValue() + " of " + xs + "@" + xs.getClass());
+                    try {
+                        assertTrue((int)x == xs.intValue(),
+                                   "intValue() " + x + " == " + xs.intValue() + " of " + xs + "@" + xs.getClass());
+                        assertTrue((long)x == xs.longValue(),
+                                   "longValue() " + x + " == " + xs.longValue() + " of " + xs + "@" + xs.getClass());
+                        assertTrue((short)x == xs.shortValue(),
+                                   "shortValue() " + x + " == " + xs.shortValue() + " of " + xs + "@" + xs.getClass());
+                        assertTrue((byte)x == xs.byteValue(),
+                                   "byteValue() " + x + " == " + xs.byteValue() + " of " + xs + "@" + xs.getClass());
+                    }
+                    catch (ArithmeticException ex) {
+                        if (!ex.getMessage().contains("Rounding"))
+                            throw ex;
+                    }
+                }
+            }
+        }
     }
 
     // check a special bugfix
     public void testSpecial() {
         Real tolerance = vf.valueOf(0.00000001);
-	Real args[] = {
-	    vf.valueOf(-1),
-	    vf.valueOf((long)-1),
-	    vf.valueOf(BigInteger.valueOf(-1)),
-	    vf.valueOf(-1.0),
-	    vf.valueOf(BigDecimal.valueOf(-1.0))
-	};
-	Real expected = vf.valueOf(-0.6420926159343308);
-	for (int i = 0; i < args.length; i++) {
-	    System.out.println("cot(" + args[i] + ") == " + Functions.cot.apply(args[i]) + " == " + expected);
-	    assertTrue(((Arithmetic)Functions.cot.apply(args[i])).equals(expected, tolerance), "cot(" + args[i] + ") == " + Functions.cot.apply(args[i]) + " == " + expected);
-	}
+        Real args[] = {
+            vf.valueOf(-1),
+            vf.valueOf((long)-1),
+            vf.valueOf(BigInteger.valueOf(-1)),
+            vf.valueOf(-1.0),
+            vf.valueOf(BigDecimal.valueOf(-1.0))
+        };
+        Real expected = vf.valueOf(-0.6420926159343308);
+        for (int i = 0; i < args.length; i++) {
+            System.out.println("cot(" + args[i] + ") == " + Functions.cot.apply(args[i]) + " == " + expected);
+            assertTrue(((Arithmetic)Functions.cot.apply(args[i])).equals(expected, tolerance), "cot(" + args[i] + ") == " + Functions.cot.apply(args[i]) + " == " + expected);
+        }
     }
 }
 

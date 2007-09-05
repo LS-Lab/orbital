@@ -314,7 +314,7 @@ public abstract class GeneticAlgorithm implements ProbabilisticAlgorithm, Algori
      * @see #evolve()
      */
     public Object/*>Population<*/ solve(AlgorithmicProblem/*>GeneticAlgorithmProblem<*/ gproblem) {
-	GeneticAlgorithmProblem problem = (GeneticAlgorithmProblem) gproblem;
+        GeneticAlgorithmProblem problem = (GeneticAlgorithmProblem) gproblem;
         if (getSelection() == null)
             throw new IllegalStateException("no selection function is set");
         this.setEvaluation(problem.getEvaluation());

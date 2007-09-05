@@ -93,10 +93,10 @@ class AbstractQuotient/*<M extends Arithmetic>*/ implements Quotient/*<M>*/, Ser
     }
     
     public boolean isZero() {
-    	return equals(zero()); 
+        return equals(zero()); 
     }
     public boolean isOne() {
-    	return equals(one()); 
+        return equals(one()); 
     }
 
         

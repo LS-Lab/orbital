@@ -57,7 +57,7 @@ public class InterpretationBase/*<Sigma extends Symbol,Denotation>*/
      * there are some special applications.
      */
     public static final /*<Sigma extends Symbol,Denotation>*/
-	Interpretation/*<Sigma,Denotation>*/ EMPTY(Signature/*<Sigma>*/ sigma) {
+        Interpretation/*<Sigma,Denotation>*/ EMPTY(Signature/*<Sigma>*/ sigma) {
         return new InterpretationBase/*<Sigma,Denotation>*/(sigma, Collections.EMPTY_MAP);
     }
 
@@ -268,7 +268,7 @@ public class InterpretationBase/*<Sigma extends Symbol,Denotation>*/
      * The result is a <a href="../../math/Values.html#readOnlyView">read only view</a>.
      */
     public static final /*<Sigma extends Symbol,Denotation>*/
-	Interpretation/*<Sigma,Denotation>*/ unmodifiableInterpretation(final Interpretation/*<Sigma,Denotation>*/ i) {
+        Interpretation/*<Sigma,Denotation>*/ unmodifiableInterpretation(final Interpretation/*<Sigma,Denotation>*/ i) {
         return /*refine/delegate Interpretation*/ new InterpretationBase/*<Sigma,Denotation>*/(i) {
                 private static final long serialVersionUID = 2999004456165993569L;
                 // Code for delegation of orbital.logic.imp.Interpretation methods to i

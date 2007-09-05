@@ -34,17 +34,17 @@ class NonrepetitivePermutation extends Combinatorical {
         this.permutation = new int[r];
         for (int i = 0; i < permutation.length; i++)
             permutation[i] = i;
-	assert isSorted(permutation) : "initialized to very first sorted permutation " + MathUtilities.format(permutation);
+        assert isSorted(permutation) : "initialized to very first sorted permutation " + MathUtilities.format(permutation);
         if (r < n)
             throw new UnsupportedOperationException("r < n not yet implemented");
-	this.first = true;
+        this.first = true;
     }
 
     private boolean isVeryFirst() {
-	if (this.first) {
-	    assert isSorted(permutation) : "very first sorted permutation " + MathUtilities.format(permutation);
-	}
-	return this.first;
+        if (this.first) {
+            assert isSorted(permutation) : "very first sorted permutation " + MathUtilities.format(permutation);
+        }
+        return this.first;
     }
     
     /**
@@ -63,14 +63,14 @@ class NonrepetitivePermutation extends Combinatorical {
             this.first = false;
             return permutation;
         }
-	int[] old = (int[]) permutation.clone();
+        int[] old = (int[]) permutation.clone();
         if (permute(permutation)) {
             return permutation;
-	} else {
-	    // same as very first permutation _again_ hence finished
-	    // restore initial permutation, i.e. unpermute
-	    System.arraycopy(old,0, permutation,0, old.length);
-	}
+        } else {
+            // same as very first permutation _again_ hence finished
+            // restore initial permutation, i.e. unpermute
+            System.arraycopy(old,0, permutation,0, old.length);
+        }
         if (r == n)
             throw new NoSuchElementException("no more elements for r=n in " + this);
         assert r < n : "r < n case because r <= n and r == n is solved";
@@ -95,15 +95,15 @@ class NonrepetitivePermutation extends Combinatorical {
         int first = 0;
         int last = permutation.length;
         if (first == last) {
-	    assert isSorted(permutation) : "very first sorted permutation " + MathUtilities.format(permutation);
+            assert isSorted(permutation) : "very first sorted permutation " + MathUtilities.format(permutation);
             return false;
-	}
+        }
         int i = first;
         ++i;
         if (i == last) {
-	    assert isSorted(permutation) : "very first sorted permutation " + MathUtilities.format(permutation);
+            assert isSorted(permutation) : "very first sorted permutation " + MathUtilities.format(permutation);
             return false;
-	}
+        }
         i = last;
         --i;
 
@@ -118,12 +118,12 @@ class NonrepetitivePermutation extends Combinatorical {
                 permutation[j] = T;
                 // reverse(ii, last);
                 reverse(permutation, ii, last);
-		assert !isSorted(permutation) : "not very first sorted permutation " + MathUtilities.format(permutation);
+                assert !isSorted(permutation) : "not very first sorted permutation " + MathUtilities.format(permutation);
                 return true;
             } 
             if (i == first) {
                 reverse(permutation, first, last);
-		assert isSorted(permutation) : "very first sorted permutation " + MathUtilities.format(permutation);
+                assert isSorted(permutation) : "very first sorted permutation " + MathUtilities.format(permutation);
                 return false;
             } 
         } 
@@ -143,9 +143,9 @@ class NonrepetitivePermutation extends Combinatorical {
     private static boolean isSorted(int permutation[]) {
         for (int i = 0; i < permutation.length; i++) {
             if (permutation[i] != i)
-		return false;
-	}
-	return true;
+                return false;
+        }
+        return true;
     } 
     
     /**

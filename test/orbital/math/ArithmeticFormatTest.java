@@ -88,44 +88,44 @@ public class ArithmeticFormatTest extends check.TestCase {
     }
 
     public void testParsable() {
-	assertTrue( vf.ZERO().equals(parsable("0", true)), "parsed 0");
-	assertTrue( vf.ZERO().equals(parsable("-0", true)), "parsed -0");
-	//assertTrue( vf.ZERO().equals(parsable("+0", true)), "parsed 0");
-	assertTrue( vf.ONE().equals(parsable("1", true)), "parsed unit");
-	assertTrue( vf.valueOf(5).equals(parsable("5", true)), "parsed integer");
-	assertTrue( vf.valueOf(5.2).equals(parsable("5.2", true)), "parsed real");
-	assertTrue( vf.rational(2,3).equals(parsable("2/3", true)), "parsed rational");
-	assertTrue( vf.I().equals(parsable("i", true)), "parsed complex unit");
-	assertTrue( vf.complex(2,3).equals(parsable("2+3i", true)), "parsed complex");
-	assertTrue( vf.complex(2,3).equals(parsable("2+3*i", true)), "parsed complex");
-	assertTrue( vf.complex(2,3).equals(parsable("2+3i", true)), "parsed complex");
-	assertTrue( vf.complex(2,-3).equals(parsable("2-3*i", true)), "parsed complex");
-	assertTrue( vf.complex(2,-3).equals(parsable("2-3i", true)), "parsed complex");
-	assertTrue( vf.complex(2,-3).equals(parsable("2+i*-3", true)), "parsed complex");
-	assertTrue( vf.valueOf(new Arithmetic[] {
-	    vf.ONE(), vf.ZERO(), vf.complex(2,3), vf.rational(3,4),vf.ONE().minus()
-	    }).equals(parsable("(1,0,2+3*i,3/4,-1)", true)), "parsed vector");
-	assertTrue( vf.valueOf(new Arithmetic[][] {
-	    {vf.ONE(), vf.ZERO()},
-	    {vf.complex(2,3), vf.rational(3,4)},
-	    {vf.ONE().minus(), vf.valueOf(2)}
-	    }).equals(parsable("[1,0]\n[2+3*i,3/4]\n[-1, 2]", true)), "parsed matrix");
-	// we cannot yet parse polynomials
-	/*assertTrue( vf.polynomial(new Arithmetic[] {
-	    vf.valueOf(-4), vf.valueOf(2), vf.valueOf(3)
-	    }).equals(parsable("-4*X^0+2*X^1+3*X^2", true)), "parsed polynomial");*/
-	// we cannot yet parse rational complex
-	//assertTrue( vf.complex(vf.rational(2,3),vf.rational(3,4)).equals(parsable("2/3+3/4*i", true)), "parsed rational complex");
+        assertTrue( vf.ZERO().equals(parsable("0", true)), "parsed 0");
+        assertTrue( vf.ZERO().equals(parsable("-0", true)), "parsed -0");
+        //assertTrue( vf.ZERO().equals(parsable("+0", true)), "parsed 0");
+        assertTrue( vf.ONE().equals(parsable("1", true)), "parsed unit");
+        assertTrue( vf.valueOf(5).equals(parsable("5", true)), "parsed integer");
+        assertTrue( vf.valueOf(5.2).equals(parsable("5.2", true)), "parsed real");
+        assertTrue( vf.rational(2,3).equals(parsable("2/3", true)), "parsed rational");
+        assertTrue( vf.I().equals(parsable("i", true)), "parsed complex unit");
+        assertTrue( vf.complex(2,3).equals(parsable("2+3i", true)), "parsed complex");
+        assertTrue( vf.complex(2,3).equals(parsable("2+3*i", true)), "parsed complex");
+        assertTrue( vf.complex(2,3).equals(parsable("2+3i", true)), "parsed complex");
+        assertTrue( vf.complex(2,-3).equals(parsable("2-3*i", true)), "parsed complex");
+        assertTrue( vf.complex(2,-3).equals(parsable("2-3i", true)), "parsed complex");
+        assertTrue( vf.complex(2,-3).equals(parsable("2+i*-3", true)), "parsed complex");
+        assertTrue( vf.valueOf(new Arithmetic[] {
+            vf.ONE(), vf.ZERO(), vf.complex(2,3), vf.rational(3,4),vf.ONE().minus()
+            }).equals(parsable("(1,0,2+3*i,3/4,-1)", true)), "parsed vector");
+        assertTrue( vf.valueOf(new Arithmetic[][] {
+            {vf.ONE(), vf.ZERO()},
+            {vf.complex(2,3), vf.rational(3,4)},
+            {vf.ONE().minus(), vf.valueOf(2)}
+            }).equals(parsable("[1,0]\n[2+3*i,3/4]\n[-1, 2]", true)), "parsed matrix");
+        // we cannot yet parse polynomials
+        /*assertTrue( vf.polynomial(new Arithmetic[] {
+            vf.valueOf(-4), vf.valueOf(2), vf.valueOf(3)
+            }).equals(parsable("-4*X^0+2*X^1+3*X^2", true)), "parsed polynomial");*/
+        // we cannot yet parse rational complex
+        //assertTrue( vf.complex(vf.rational(2,3),vf.rational(3,4)).equals(parsable("2/3+3/4*i", true)), "parsed rational complex");
     }
 
     public void testNonValues() {
         String test[] = new String[] {
-	    "ik", "3ij", "i+i", "3i+2i", "ij", "i+", "3+5", "i-",
-	    "3-i-",
-	    "(2, 3/5, 2+3i", "[-4,7]\n[2/3,3/4+2/3i,5",
-	};
+            "ik", "3ij", "i+i", "3i+2i", "ij", "i+", "3+5", "i-",
+            "3-i-",
+            "(2, 3/5, 2+3i", "[-4,7]\n[2/3,3/4+2/3i,5",
+        };
         for (int i=0;i<test.length;i++) {
-	    parsable(test[i], false);
+            parsable(test[i], false);
         }
     }
 
@@ -147,6 +147,6 @@ public class ArithmeticFormatTest extends check.TestCase {
             System.out.println(e);
             assertTrue(false == expectparsable , desc + " " + e);
         }
-	return null;
+        return null;
     }
 }

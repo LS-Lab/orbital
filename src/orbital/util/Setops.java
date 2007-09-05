@@ -273,7 +273,7 @@ public final class Setops {
      * union of two collections.
      */
     public static final /*_<A>_*/ BinaryFunction/*_<Collection<A>,Collection<A>,Collection<A>>_*/ union =
-	new BinaryFunction/*_<Collection<A>,Collection<A>,Collection<A>>_*/() {
+        new BinaryFunction/*_<Collection<A>,Collection<A>,Collection<A>>_*/() {
             public Object/*_>Collection<A><_*/ apply(Object/*_>Collection<A><_*/ a, Object/*_>Collection<A><_*/ b) {
                 return union((Collection)a,(Collection)b);
             }
@@ -284,7 +284,7 @@ public final class Setops {
      * Returns the union of all collections contained in the argument list.
      */
     public static final /*_<A>_*/ Function/*_<Collection<Collection<A>>,Collection<A>>_*/ unionFold =
-	new Function/*_<Collection<Collection<A>>,Collection<A>>_*/() {
+        new Function/*_<Collection<Collection<A>>,Collection<A>>_*/() {
             private SortedSet/*_<A>_*/ EMPTY_SORTED_SET = Collections.unmodifiableSortedSet(new TreeSet());
             public Object/*_>Collection<A><_*/ apply(Object/*_>Collection<Collection<A>><_*/ a) {
                 //@internal using foldRight instead of foldLeft here avoids the dynamic type problem of EMPTY_SORTED_SET in case of incomparable elements
@@ -315,7 +315,7 @@ public final class Setops {
      * intersection of two collections.
      */
     public static final /*_<A>_*/ BinaryFunction/*_<Collection<A>,Collection<A>,Collection<A>>_*/ intersection
-	= new BinaryFunction/*_<Collection<A>,Collection<A>,Collection<A>>_*/() {
+        = new BinaryFunction/*_<Collection<A>,Collection<A>,Collection<A>>_*/() {
             public Object/*_>Collection<A><_*/ apply(Object/*_>Collection<A><_*/ a, Object/*_>Collection<A><_*/ b) {
                 return intersection((Collection)a,(Collection)b);
             }
@@ -326,7 +326,7 @@ public final class Setops {
      * Returns the intersection of all collections contained in the argument list.
      */
     public static final /*_<A>_*/ Function/*_<Collection<Collection<A>>,Collection<A>>_*/ intersectionFold =
-	new Function/*_<Collection<Collection<A>>,Collection<A>>_*/() {
+        new Function/*_<Collection<Collection<A>>,Collection<A>>_*/() {
             public Object/*_>Collection<A><_*/ apply(Object/*_>Collection<Collection<A>><_*/ a) {
                 //@internal the trick intersecting with the first collection is less performant but allowed since the empty intersection is the universe and hence undefined in Java
                 return Functionals.foldLeft(intersection, Utility.asIterator(a).next(), Utility.asIterator(a));

@@ -106,12 +106,12 @@ abstract class AbstractProductArithmetic/*<R extends Arithmetic, I, T extends Ar
     } 
 
     public boolean isZero() {
-	// return Setops.all(iterator(this), #1.isZero()&);
+        // return Setops.all(iterator(this), #1.isZero()&);
         for (Iterator i = iterator(this); i.hasNext(); ) {
             if (!((Arithmetic)i.next()).isZero())
-		return false;
+                return false;
         }
-	return true;
+        return true;
     } 
 
     // arithmetic-operations

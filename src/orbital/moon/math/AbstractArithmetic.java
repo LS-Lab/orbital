@@ -24,10 +24,10 @@ abstract class AbstractArithmetic implements Arithmetic {
     }
 
     public boolean isZero() {
-    	return equals(zero());
+        return equals(zero());
     }
     public boolean isOne() {
-    	return equals(one());
+        return equals(one());
     }
 
 
@@ -70,16 +70,16 @@ abstract class AbstractArithmetic implements Arithmetic {
         catch (ClassCastException e) {
             throw new UnsupportedOperationException("default power only implemented for scalar integer numbers");
         }
-	if (s.intValue() == 0) {
-	    return one();
-	} else {
-	    Arithmetic r = this;
-	    int        n = Math.abs(s.intValue());
-	    for (int i = 1; i < n; i++)
-		r = r.multiply(this);
-	    if (s.intValue() < 0)
-		r = r.inverse();
-	    return r;
-	}
+        if (s.intValue() == 0) {
+            return one();
+        } else {
+            Arithmetic r = this;
+            int        n = Math.abs(s.intValue());
+            for (int i = 1; i < n; i++)
+                r = r.multiply(this);
+            if (s.intValue() < 0)
+                r = r.inverse();
+            return r;
+        }
     } 
 }

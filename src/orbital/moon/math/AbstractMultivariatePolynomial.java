@@ -103,11 +103,11 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
      * @see #clone()
      */
     protected Polynomial/*<R,Vector<Integer>>*/ newInstance(Vector/*<Integer>*/ dimensions) {
-	int[] pis = new int[dimensions.dimension()];
-	for (int i = 0; i < pis.length; i++) {
-	    pis[i] = ((Integer)dimensions.get(i)).intValue();
-	}
-	return newInstance(pis);
+        int[] pis = new int[dimensions.dimension()];
+        for (int i = 0; i < pis.length; i++) {
+            pis[i] = ((Integer)dimensions.get(i)).intValue();
+        }
+        return newInstance(pis);
     }
     /**
      * instantiate a new polynomial with storage for a polynomial of degree.
@@ -122,12 +122,12 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
     protected abstract Polynomial/*<R,Vector<Integer>>*/ newInstance(int[] dimensions);
         
     protected final Arithmetic/*>Polynomial<R,Vector<Integer>><*/ newInstance(Object/*>Vector<Integer><*/ productIndexSet) {
-	if (productIndexSet instanceof int[]) {
-	    return newInstance((int[])productIndexSet);
-	} else {
-	    return newInstance((Vector)productIndexSet);
-	}
-	    
+        if (productIndexSet instanceof int[]) {
+            return newInstance((int[])productIndexSet);
+        } else {
+            return newInstance((Vector)productIndexSet);
+        }
+            
     }
 
     // iterator-views

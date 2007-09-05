@@ -96,11 +96,11 @@ public class CombinatoricalTest extends check.TestCase {
             count++;
         }
         assertTrue(testReverse || !c.hasNext(), "finally none is left in " + c);
-	try {
-	    int[] v = c.next();
-	    assertTrue(false, "when hasNext()==false, next() should not yield " + c);
-	}
-	catch (NoSuchElementException expected) {}
+        try {
+            int[] v = c.next();
+            assertTrue(false, "when hasNext()==false, next() should not yield " + c);
+        }
+        catch (NoSuchElementException expected) {}
         assertTrue(testReverse || !c.hasNext(), "finally none is left in " + c);
         System.out.println("generated " + count + " which is " +(count == c.count() ? "correct" : "NOT correct"));
         System.out.println("generated " + possibilities);
@@ -113,7 +113,7 @@ public class CombinatoricalTest extends check.TestCase {
                         return true;
                     }
                 }) , c + " for permutations, all elements of the permutation are different");
-	}
+        }
         assertTrue(!c.hasNext(), "wandered through completely, implies that we cannot go further");
         if (testReverse) {
             final ListIterator reverse = possibilities.listIterator(possibilities.size());

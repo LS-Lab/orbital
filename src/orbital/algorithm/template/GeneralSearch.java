@@ -106,7 +106,7 @@ public abstract class GeneralSearch/*<A,S>*/
      * @see #solveImpl(GeneralSearchProblem)
      */
     public final Object/*>S<*/ solve(AlgorithmicProblem/*>GeneralSearchProblem<A,S><*/ gp) {
-	GeneralSearchProblem/*<A,S>*/ p = (GeneralSearchProblem)gp;
+        GeneralSearchProblem/*<A,S>*/ p = (GeneralSearchProblem)gp;
         setProblem(p);
         Object/*>S<*/ solution;
         //      if (false) {

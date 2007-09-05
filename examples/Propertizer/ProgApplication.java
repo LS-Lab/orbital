@@ -43,7 +43,7 @@ public class ProgApplication extends JFrame {
     public static void main(String[] args) throws Exception {
         UIUtilities.setDefaultLookAndFeel();
         ProgApplication f = new ProgApplication();
-	f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setVisible(true);
     } 
 }

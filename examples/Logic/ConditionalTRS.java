@@ -38,13 +38,13 @@ public class ConditionalTRS {
         // rewrite rules
         rewrite = Substitutions.getInstance(Arrays.asList(new Object[] {
             Substitutions.createSingleSidedMatcher(syntax.createExpression("_X1&_X2"), 
-						   syntax.createExpression("_X2"), 
-						   new Simplifyable(syntax.createExpression("_X1"))), 
- 	    Substitutions.createSingleSidedMatcher(syntax.createExpression("_X1|false"), 
- 						   syntax.createExpression("_X1")), 
- 	    Substitutions.createSingleSidedMatcher(syntax.createExpression("false|_X1"), 
- 						   syntax.createExpression("_X1"))
-	}));
+                                                   syntax.createExpression("_X2"), 
+                                                   new Simplifyable(syntax.createExpression("_X1"))), 
+            Substitutions.createSingleSidedMatcher(syntax.createExpression("_X1|false"), 
+                                                   syntax.createExpression("_X1")), 
+            Substitutions.createSingleSidedMatcher(syntax.createExpression("false|_X1"), 
+                                                   syntax.createExpression("_X1"))
+        }));
 
     }
 
@@ -56,14 +56,14 @@ public class ConditionalTRS {
         System.out.println("Original expression:\t" + s);
         System.out.println("Parsed expression:\t" + expression);
 
-	// apply the rewrite system step-wise
+        // apply the rewrite system step-wise
         System.out.println("applying " + rewrite);
         System.out.println("is");
         System.out.println("rewrite(A) = " + rewrite.apply(expression));
         System.out.println("rewrite^2(A) = " + rewrite.apply(rewrite.apply(expression)));
         System.out.println("rewrite^3(A) = " + rewrite.apply(rewrite.apply(rewrite.apply(expression))));
 
-	// apply the rewrite system until completion
+        // apply the rewrite system until completion
         Object obj = Functionals.fixedPoint(rewrite, expression);
         System.out.println("TRS:\t\t\tA->" + obj);
     }
@@ -86,22 +86,22 @@ public class ConditionalTRS {
         }
 
         public boolean apply(Object obj) {
-	    try {
-		// the partial single sided matcher
-		Substitution mu = (Substitution)obj;
-		// the counterpart of check in the actual occurrence of the pattern
-		Expression occurrence = (Expression)mu.apply(check);
-		// check whether the occurrence of check is true.  Of
-		// course, it would make even more sense to check
-		// whether it is of the form ~_X3|X3 rather than just
-		// checking for a and b. But this should be sufficient
-		// for a simple demonstration.
-		return occurrence.equals(syntax.createExpression("true")) 
-		    || occurrence.equals(syntax.createExpression("~a|a")) 
-		    || occurrence.equals(syntax.createExpression("~b|b"));
-	    } catch (ParseException parseexception) {
-		throw (AssertionError)(new AssertionError("internal resource damage, syntax expected correct")).initCause(parseexception);
-	    }
+            try {
+                // the partial single sided matcher
+                Substitution mu = (Substitution)obj;
+                // the counterpart of check in the actual occurrence of the pattern
+                Expression occurrence = (Expression)mu.apply(check);
+                // check whether the occurrence of check is true.  Of
+                // course, it would make even more sense to check
+                // whether it is of the form ~_X3|X3 rather than just
+                // checking for a and b. But this should be sufficient
+                // for a simple demonstration.
+                return occurrence.equals(syntax.createExpression("true")) 
+                    || occurrence.equals(syntax.createExpression("~a|a")) 
+                    || occurrence.equals(syntax.createExpression("~b|b"));
+            } catch (ParseException parseexception) {
+                throw (AssertionError)(new AssertionError("internal resource damage, syntax expected correct")).initCause(parseexception);
+            }
         }
 
         public String toString() {

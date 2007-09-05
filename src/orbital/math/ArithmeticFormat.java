@@ -172,16 +172,16 @@ public class ArithmeticFormat extends Format {
      */
     public static final ArithmeticFormat MATH_EXPORT_FORMAT;
     static {
-	// Mathematica-like format
-	MATH_EXPORT_FORMAT = new ArithmeticFormat(Locale.ENGLISH);
-	MATH_EXPORT_FORMAT.complexUnit = "I";
-	MATH_EXPORT_FORMAT.vectorPrefix = "{";
-	MATH_EXPORT_FORMAT.vectorSuffix = "}";
-	MATH_EXPORT_FORMAT.matrixPrefix = "{";
-	MATH_EXPORT_FORMAT.matrixRowPrefix = "{";
-	MATH_EXPORT_FORMAT.matrixRowSuffix = "}";
-	MATH_EXPORT_FORMAT.matrixRowSeparator = "," + System.getProperty("line.separator");
-	MATH_EXPORT_FORMAT.matrixSuffix = "}";
+        // Mathematica-like format
+        MATH_EXPORT_FORMAT = new ArithmeticFormat(Locale.ENGLISH);
+        MATH_EXPORT_FORMAT.complexUnit = "I";
+        MATH_EXPORT_FORMAT.vectorPrefix = "{";
+        MATH_EXPORT_FORMAT.vectorSuffix = "}";
+        MATH_EXPORT_FORMAT.matrixPrefix = "{";
+        MATH_EXPORT_FORMAT.matrixRowPrefix = "{";
+        MATH_EXPORT_FORMAT.matrixRowSuffix = "}";
+        MATH_EXPORT_FORMAT.matrixRowSeparator = "," + System.getProperty("line.separator");
+        MATH_EXPORT_FORMAT.matrixSuffix = "}";
     }
 
     /**
@@ -699,26 +699,26 @@ public class ArithmeticFormat extends Format {
             if (!ci.isZero()
                 || (i == 0 && result.length() == initialIndex)) {
                 int startIndex = result.length();
-		Arithmetic cone;
-		try {
-		    cone = ci.one();
-		}
-		catch (UnsupportedOperationException nomonoid) {
-		    cone = null;
-		}
+                Arithmetic cone;
+                try {
+                    cone = ci.one();
+                }
+                catch (UnsupportedOperationException nomonoid) {
+                    cone = null;
+                }
                 // whether the coefficient ci has been skipped
                 final boolean skipped;
-		if (cone != null && ci.equals(cone) && i != 0)
-		    // skip 1 (except for constant term)
-		    skipped = true;
-		else if (cone != null && ci.equals(cone.minus()) && i != 0) {
-		    // shorten -1 to - (except for constant term)
-		    result.append(polynomialPlusAlternative);
-		    skipped = true;
-		} else {
-		    format(ci, result, fieldPosition);
-		    skipped = false;
-		}
+                if (cone != null && ci.equals(cone) && i != 0)
+                    // skip 1 (except for constant term)
+                    skipped = true;
+                else if (cone != null && ci.equals(cone.minus()) && i != 0) {
+                    // shorten -1 to - (except for constant term)
+                    result.append(polynomialPlusAlternative);
+                    skipped = true;
+                } else {
+                    format(ci, result, fieldPosition);
+                    skipped = false;
+                }
                 // separator for all but the first coefficient,
                 // provided that there is not already an alternative separator
                 if (i < p.degreeValue() &&
@@ -860,7 +860,7 @@ public class ArithmeticFormat extends Format {
                             boolean allowUnitNumberSuffix = false;
                             // collect values
                             if (val == null)
-				//@todo extend such that we also parse real+rational+integer numbers now (but not again complex)
+                                //@todo extend such that we also parse real+rational+integer numbers now (but not again complex)
                                 val = realValueOf(numberFormat.parse(source, status));
                                 
                             // collect additional information
@@ -901,10 +901,10 @@ public class ArithmeticFormat extends Format {
                             // non-value part
                             else if (found("+", source, status)) {
                                 assert val == null : "else-case";
-				if (status.getIndex() >= source.length()) {
-				    status.setErrorIndex(status.getIndex());
-				    throw new NumberFormatException("token expected after +");
-				}
+                                if (status.getIndex() >= source.length()) {
+                                    status.setErrorIndex(status.getIndex());
+                                    throw new NumberFormatException("token expected after +");
+                                }
                                 if (im == null && imaginaryPart) {
                                     im = vf.valueOf(sign * 1);
                                 }
@@ -912,10 +912,10 @@ public class ArithmeticFormat extends Format {
                                 imaginaryPart = false;
                             } else if (found("-", source, status)) {
                                 assert val == null : "else-case";
-				if (status.getIndex() >= source.length()) {
-				    status.setErrorIndex(status.getIndex());
-				    throw new NumberFormatException("token expected after +");
-				}
+                                if (status.getIndex() >= source.length()) {
+                                    status.setErrorIndex(status.getIndex());
+                                    throw new NumberFormatException("token expected after +");
+                                }
                                 if (im == null && imaginaryPart) {
                                     im = vf.valueOf(sign * 1);
                                 }

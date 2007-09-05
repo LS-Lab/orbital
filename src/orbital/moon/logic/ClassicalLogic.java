@@ -1593,28 +1593,28 @@ public class ClassicalLogic extends ModernLogic {
 
         /**
          * Transforms into disjunctive normal form (DNF).
-	 * @see #disjunctiveForm(Formula,boolean)
-	 */
+         * @see #disjunctiveForm(Formula,boolean)
+         */
         public static Formula disjunctiveForm(Formula f) {
             return disjunctiveForm(f, false);
         }
         /**
          * Transforms into disjunctive normal form (DNF).
-	 * <p>
-	 * Note that the conversion to <emph>equivalent</emph> DNF is inherently exponential in the length of the formulas.
-	 * </p>
-	 * <table border="1">
-	 *   <tr><th></th> <th>SAT</th> <th>Tautology</th></tr>
-	 *   <tr><td>CNF</td> <td>NP-complete</td> <td>linear</td></tr>
-	 *   <tr><td>DNF</td> <td>linear</td> <td>Co-NP-complete</td></tr>
-	 * </table>
+         * <p>
+         * Note that the conversion to <emph>equivalent</emph> DNF is inherently exponential in the length of the formulas.
+         * </p>
+         * <table border="1">
+         *   <tr><th></th> <th>SAT</th> <th>Tautology</th></tr>
+         *   <tr><td>CNF</td> <td>NP-complete</td> <td>linear</td></tr>
+         *   <tr><td>DNF</td> <td>linear</td> <td>Co-NP-complete</td></tr>
+         * </table>
          * <p>
          * This TRS terminates but is not confluent, hence it does not lead to a canonical form.
-	 * The canonical form would not be minimal, though.
+         * The canonical form would not be minimal, though.
          * </p>
-	 * @param simplifying Whether to enable simplifying transformations.
-	 *  Observe that, to avoid complexity pitfalls, this will perform partial
-	 *  simplification during the transformation. For performance reasons, the implementation avoids a full simplification.
+         * @param simplifying Whether to enable simplifying transformations.
+         *  Observe that, to avoid complexity pitfalls, this will perform partial
+         *  simplification during the transformation. For performance reasons, the implementation avoids a full simplification.
          * @see "Rolf Socher-Ambrosius. Boolean algebra admits no convergent term rewriting system, Springer Lecture Notes in Computer Science 488, RTA '91."
          * @internal see mathematische Berechnungstheorie vermittelt, dass es nicht immer moeglich ist, mit einer endlichen Folge von Transformationen je zwei beliebig gewaehlte Ausdruecke in ihre Normalform zu ueberfuehren.
          * @todo Sollten DNF/KNF von "innen nach aussen" erstellt werden?
@@ -1659,38 +1659,38 @@ public class ClassicalLogic extends ModernLogic {
 
         /**
          * Transforms into conjunctive normal form (CNF).
-	 * @see #conjunctiveForm(Formula, boolean)
-	 */
+         * @see #conjunctiveForm(Formula, boolean)
+         */
         public static Formula conjunctiveForm(Formula f) {
             return conjunctiveForm(f, false);
         }
         /**
          * Transforms into conjunctive normal form (CNF).
-	 * <p>
-	 * Note that the conversion to <emph>equivalent</emph> CNF is inherently exponential in the length of the formulas.
-	 * </p>
-	 * <table border="1">
-	 *   <tr><th></th> <th>SAT</th> <th>Tautology</th></tr>
-	 *   <tr><td>CNF</td> <td>NP-complete</td> <td>linear</td></tr>
-	 *   <tr><td>DNF</td> <td>linear</td> <td>Co-NP-complete</td></tr>
-	 * </table>
+         * <p>
+         * Note that the conversion to <emph>equivalent</emph> CNF is inherently exponential in the length of the formulas.
+         * </p>
+         * <table border="1">
+         *   <tr><th></th> <th>SAT</th> <th>Tautology</th></tr>
+         *   <tr><td>CNF</td> <td>NP-complete</td> <td>linear</td></tr>
+         *   <tr><td>DNF</td> <td>linear</td> <td>Co-NP-complete</td></tr>
+         * </table>
          * <p>
          * This TRS terminates but is not confluent, hence it does not lead to a canonical form.
-	 * The canonical form would not be minimal, though.
+         * The canonical form would not be minimal, though.
          * </p>
-	 * @param simplifying Whether to enable simplifying transformations.
-	 *  Observe that, to avoid complexity pitfalls, this will perform partial
-	 *  simplification during the transformation. For performance reasons, the implementation avoids a full simplification.
-	 *  If you need even more simplification, use {@link orbital.moon.logic.resolution.ClausalFactory#asClausalSet(orbital.logic.imp.Formula)} instead.
-	 *  <code>
-	 *  clausalFactory.asClausalSet().toFormula();
-	 *  </code>
+         * @param simplifying Whether to enable simplifying transformations.
+         *  Observe that, to avoid complexity pitfalls, this will perform partial
+         *  simplification during the transformation. For performance reasons, the implementation avoids a full simplification.
+         *  If you need even more simplification, use {@link orbital.moon.logic.resolution.ClausalFactory#asClausalSet(orbital.logic.imp.Formula)} instead.
+         *  <code>
+         *  clausalFactory.asClausalSet().toFormula();
+         *  </code>
          * @todo verify
          * @preconditions true
          * @postconditions RES &equiv; f
          * @attribute time complexity exponential
-	 * @see orbital.moon.logic.resolution.ClausalFactory#asClausalSet(orbital.logic.imp.Formula)
-	 * @see "David A. Plaisted &amp; Steven Greenbaum. A structure-preserving clause form translation. <i>J. Symb. Comput., Academic Press, Inc.</i>, <b>1986</b>, 2, 293-304."
+         * @see orbital.moon.logic.resolution.ClausalFactory#asClausalSet(orbital.logic.imp.Formula)
+         * @see "David A. Plaisted &amp; Steven Greenbaum. A structure-preserving clause form translation. <i>J. Symb. Comput., Academic Press, Inc.</i>, <b>1986</b>, 2, 293-304."
          * @see "Rolf Socher-Ambrosius. Boolean algebra admits no convergent term rewriting system, Springer Lecture Notes in Computer Science 488, RTA '91."
          * @todo ~(a|a) == ~a&~a instead of == ~a somehow because of pattern matching
          */
@@ -2007,7 +2007,7 @@ public class ClassicalLogic extends ModernLogic {
          * @author  Andr&eacute; Platzer
          * @attribute meta
          * @todo could also skolemize second-order quantified predicates
-	 * @todo Replace by Substitutions.createSingleSidedMatcher(Object,Object,Predicate,Function)
+         * @todo Replace by Substitutions.createSingleSidedMatcher(Object,Object,Predicate,Function)
          */
         private static class SkolemizingUnifyingMatcher implements Substitution.Matcher{
             //private static final long serialVersionUID = 0
