@@ -725,7 +725,7 @@ public class FunctionTest extends check.TestCase {
 	    Real tau;
 	    Real eta;
 	    Real min, max;
-	    int steps = 50;
+	    int steps = 20;
 	    BinaryFunction f;
 	    Function y;
 
@@ -733,16 +733,18 @@ public class FunctionTest extends check.TestCase {
 	    tau = vf.ZERO();
 	    eta = vf.ZERO();
 	    min = tau;
-	    max = vf.valueOf(4);
+	    max = vf.valueOf(8);
 	    checkndSolve(f, tau, eta,
 			 min, max,
 			 steps);
-	
+
+	    // solution of x'=x,x(0)=1 is e^x
 	    f = Functions.projectSecond;
 	    tau = vf.ZERO();
 	    eta =vf.ONE();
 	    min = tau;
-	    max = vf.valueOf(5);
+	    max = vf.valueOf(3);
+	    steps = 20;
 	    checkndSolve(f, tau, eta,
 			 min, max,
 			 steps);
@@ -787,6 +789,7 @@ public class FunctionTest extends check.TestCase {
     protected void checkndSolve(orbital.math.functional.BinaryFunction/*<Real,Vector<Real>>*/ f, Real tau, Real eta,
 				Real min, Real max,
 				int steps) throws MathLinkException {
+	final Real tolerance = vf.valueOf(0.01);
 	final Symbol y = vf.symbol("y");
 	final Symbol t = vf.symbol("t");
 	System.out.println("solving numerical differential equations");
@@ -802,6 +805,7 @@ public class FunctionTest extends check.TestCase {
 						steps, 4);
 	System.out.println("  solution\t" + sol);
 	System.out.println("  solution at " + tau + " is " + sol.apply(tau));
+	assertTrue(eta.equals(sol.apply(tau), tolerance), "initial value " + eta + "==" + sol.apply(tau) + " respected at " + tau);
 	// randomized equality test
 	for (int j = 0; j < TEST_REPETITION; j++) {
 	    Real r = vf.valueOf(realArgument(min.doubleValue(), max.doubleValue()));
@@ -818,10 +822,11 @@ public class FunctionTest extends check.TestCase {
 		ml.waitForAnswer();
 		final Complex mresult = ((ComplexAdapter) ml.getComplex()).getValue();
 		ml.newPacket();
-		boolean isSuccessful = jresult.equals(mresult, tolerance);
+		// accept tolerance percent of mresult deviation
+		boolean isSuccessful = jresult.equals(mresult, tolerance.multiply(mresult.norm()));
 		if (!isSuccessful)
 		    System.out.println("FAILED " + "NDSolve = " + mresult + " != " + "ndSolve(x'(t)=" + f + ")" + " = " + jresult + "@" + jresult.getClass() + "\tdelta=" + jresult.subtract(mresult));
-		assertTrue(isSuccessful , "NDSolve = " + mresult + " != " + "ndSolve(x'(t)=" + f + ")" + " = " + jresult + "@" + jresult.getClass() + "\tdelta=" + jresult.subtract(mresult));
+		assertTrue(isSuccessful , "NDSolve = " + mresult + " != " + "ndSolve(x'(t)=" + f + ")" + " = " + jresult + "@" + jresult.getClass() + " at " + r + "\tdelta=" + jresult.subtract(mresult));
 	    }
 	}
     }

@@ -528,7 +528,7 @@
     <!-- static code quality checking -->
 
     <target name="fixCRLF" depends="init"
-            description="fix DOS linefeeds (CRLF)">
+            description="fix DOS linefeeds (CRLF) and remove tabs">
 <!-- @internal deactivate due to dull encoding changes under linux
         <fixcrlf srcdir="${sources}"
                  eol="lf" eof="remove" tab="remove" javafiles="yes"

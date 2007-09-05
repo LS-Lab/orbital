@@ -391,7 +391,7 @@ abstract class AbstractReal extends AbstractComplex implements Real {
     static class Big extends AbstractReal implements orbital.moon.math.Big {
         private static final long serialVersionUID = -5801439569926611104L;
 	//@xxx change to working precision and dynamically query
-        private static MathContext precision = new MathContext(MathUtilities.getDefaultPrecisionDigits(), RoundingMode.HALF_UP);
+        private static MathContext precision = new MathContext(Math.max(17,MathUtilities.getDefaultPrecisionDigits()), RoundingMode.HALF_UP);
         static MathContext getPrecision() {
 	    return precision;
 	}
@@ -426,7 +426,10 @@ abstract class AbstractReal extends AbstractComplex implements Real {
 	    } else if (v instanceof Rational) {
 		Rational r = (Rational)v;
 		//@internal we could also convert numerator() and denominator() to reals and divide
-		value = new BigDecimal(AbstractInteger.makeBigInteger(r.numerator()).getValue())
+		value = getPrecision() != null
+		    ? new BigDecimal(AbstractInteger.makeBigInteger(r.numerator()).getValue())
+		    .divide(new BigDecimal(AbstractInteger.makeBigInteger(r.denominator()).getValue()), getPrecision())
+		    : new BigDecimal(AbstractInteger.makeBigInteger(r.numerator()).getValue())
 		    .divide(new BigDecimal(AbstractInteger.makeBigInteger(r.denominator()).getValue()));
 	    } else if (v instanceof Double || v instanceof Float || v instanceof AbstractInteger.Int
 		       || v instanceof java.lang.Double || v instanceof java.lang.Float || v instanceof java.lang.Integer) {
@@ -528,11 +531,11 @@ abstract class AbstractReal extends AbstractComplex implements Real {
         }
         public Real divide(Real b) {
             if (b instanceof Big)
-                return precision != null
+                return getPrecision() != null
 		    ? new Big(value.divide(((Big)b).value, getPrecision()))
 		    : new Big(value.divide(((Big)b).value));
             else if (b instanceof Float || b instanceof Double)
-                return precision != null
+                return getPrecision() != null
 		    ? new Big(value.divide(BigDecimal.valueOf(b.doubleValue()), getPrecision()))
 		    : new Big(value.divide(BigDecimal.valueOf(b.doubleValue())));
             return (Real) Operations.divide.apply(this, b);

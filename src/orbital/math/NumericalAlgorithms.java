@@ -291,7 +291,7 @@ public final class NumericalAlgorithms {
         double[] f = MathUtilities.toDoubleArray(A.getColumn(1));
         assert t.length == f.length : "same number of supporting x-values as corresponding y-values";
 	assert isSorted(t) : "ordered grid of x-values in " + A;
-        int   l = t.length - 2;
+        final int l = t.length - 2;
         final Values vf = Values.getDefaultInstance();
 
         // node distances
@@ -340,13 +340,13 @@ public final class NumericalAlgorithms {
         }
         
         // solve sparse tridiagonal LES with diagonal dominant matrix momentum (is f.ex. LU stable)
-        Vector          solution = (Vector) mom.inverse().multiply(d);
+        Vector solution = (Vector) mom.inverse().multiply(d);
 
         // momentum values m[j] = s_j''[t[j]]
-        double[]        m = MathUtilities.toDoubleArray(solution);
+        double[] m = MathUtilities.toDoubleArray(solution);
 
         // calculate coefficients of spline from momentum values m[j] = s_j''[t[j]]
-        double[][]  coefficients = new double[l + 1][k];
+        double[][] coefficients = new double[l + 1][k];
         for (int j = 0; j < coefficients.length; j++) {
             // Taylor-Series of s_j around t[j]
             // s_j[t[j]]
@@ -631,7 +631,7 @@ public final class NumericalAlgorithms {
      */
     public static orbital.math.functional.Function dSolve(orbital.math.functional.BinaryFunction/*<Real,Real>*/ f, Real tau, Real eta,
 							  Real min, Real max,
-							  int steps,
+							  final int steps,
 							  Matrix/*<Real>*/ butcher) {
 	if (!MathUtilities.isin(tau, min,max))
 	    throw new IllegalArgumentException("initial point " + eta + " out of solution bounds [" + min + "," + max + "]");
