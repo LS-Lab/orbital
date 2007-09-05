@@ -51,7 +51,7 @@ public class Plotting {
         view.addMouseListener(new CustomizerViewController(f));
         f.getContentPane().add(view, java.awt.BorderLayout.CENTER);
         f.setSize(300, 200);
-	f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setVisible(true);
     } 
 }

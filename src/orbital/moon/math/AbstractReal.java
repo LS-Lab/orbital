@@ -23,27 +23,27 @@ abstract class AbstractReal extends AbstractComplex implements Real {
 
     
     public boolean equals(Object o) {
-	if (o instanceof Real) {
-	    return subtract((Arithmetic)o).isZero();
-	} else
-	    return super.equals(o);
+        if (o instanceof Real) {
+            return subtract((Arithmetic)o).isZero();
+        } else
+            return super.equals(o);
     }
     public int hashCode() {
-	//@internal identical to @see Double#hashCode()
-	long bits = java.lang.Double.doubleToLongBits(doubleValue());
-	return (int)(bits ^ (bits >>> 32));
+        //@internal identical to @see Double#hashCode()
+        long bits = java.lang.Double.doubleToLongBits(doubleValue());
+        return (int)(bits ^ (bits >>> 32));
     }
     public int compareTo(Object o) {
-	if (o instanceof Real) {
-	    return (int)Math.signum(subtract((Real)o).doubleValue());
-	} else
-	    return super.compareTo(o);
+        if (o instanceof Real) {
+            return (int)Math.signum(subtract((Real)o).doubleValue());
+        } else
+            return super.compareTo(o);
     }
     public Real norm() {
-	if (compareTo(zero()) < 0)
-	    return (Real)minus();
-	else 
-	    return this;
+        if (compareTo(zero()) < 0)
+            return (Real)minus();
+        else 
+            return this;
     } 
 
     // order
@@ -118,18 +118,18 @@ abstract class AbstractReal extends AbstractComplex implements Real {
      * @return an array of the converted versions of a and b respectively.
      */
     static Real[] makeReal(Number a, Number b) {
-	if (a instanceof orbital.moon.math.Big || b instanceof orbital.moon.math.Big) {
-	    return new Real[] {
-		a instanceof Big ? (Real)a : new Big(a),
-		b instanceof Big ? (Real)b : new Big(b)
-	    };
-	} else {
-	    //@todo could also check whether Float would be sufficient
-	    return new Real[] {
-		a instanceof Double ? (Real)a : new Double(a),
-		b instanceof Double ? (Real)b : new Double(b)
-	    };
-	}
+        if (a instanceof orbital.moon.math.Big || b instanceof orbital.moon.math.Big) {
+            return new Real[] {
+                a instanceof Big ? (Real)a : new Big(a),
+                b instanceof Big ? (Real)b : new Big(b)
+            };
+        } else {
+            //@todo could also check whether Float would be sufficient
+            return new Real[] {
+                a instanceof Double ? (Real)a : new Double(a),
+                b instanceof Double ? (Real)b : new Double(b)
+            };
+        }
     }
 
     /**
@@ -157,36 +157,36 @@ abstract class AbstractReal extends AbstractComplex implements Real {
             return new Float(floatValue());
         } 
 
-	public boolean equals(Object o) {
-	    if (o instanceof Double || o instanceof Float) {
-		//@internal identical to @see Double#equals(Object)
-		return java.lang.Double.doubleToLongBits(doubleValue()) == java.lang.Double.doubleToLongBits(((Real) o).doubleValue());
-	    } else
-		return Operations.equal.apply(this, o);
-	}
+        public boolean equals(Object o) {
+            if (o instanceof Double || o instanceof Float) {
+                //@internal identical to @see Double#equals(Object)
+                return java.lang.Double.doubleToLongBits(doubleValue()) == java.lang.Double.doubleToLongBits(((Real) o).doubleValue());
+            } else
+                return Operations.equal.apply(this, o);
+        }
 
-	public int hashCode() {
-	    //@internal identical to @see Double#hashCode()
-	    long bits = java.lang.Double.doubleToLongBits(doubleValue());
-	    return (int)(bits ^ (bits >>> 32));
-	}
-	public int compareTo(Object o) {
-	    if (o instanceof Double || o instanceof Float) {
-		return Double.compareDouble(value, ((Number)o).doubleValue());
-	    } else
-		return ((Integer) Operations.compare.apply(this, o)).intValue();
-	} 
+        public int hashCode() {
+            //@internal identical to @see Double#hashCode()
+            long bits = java.lang.Double.doubleToLongBits(doubleValue());
+            return (int)(bits ^ (bits >>> 32));
+        }
+        public int compareTo(Object o) {
+            if (o instanceof Double || o instanceof Float) {
+                return Double.compareDouble(value, ((Number)o).doubleValue());
+            } else
+                return ((Integer) Operations.compare.apply(this, o)).intValue();
+        } 
 
-	public Real norm() {
-	    return Values.getDefaultInstance().valueOf(Math.abs(floatValue()));
-	}
+        public Real norm() {
+            return Values.getDefaultInstance().valueOf(Math.abs(floatValue()));
+        }
 
-	public boolean isZero() {
-	    return value == 0;
-	} 
-	public boolean isOne() {
-	    return value == 1;
-	} 
+        public boolean isZero() {
+            return value == 0;
+        } 
+        public boolean isOne() {
+            return value == 1;
+        } 
 
         public float floatValue() {
             return value;
@@ -284,50 +284,50 @@ abstract class AbstractReal extends AbstractComplex implements Real {
             return new Double(doubleValue());
         } 
 
-	public boolean equals(Object o) {
-	    if (o instanceof Double || o instanceof Float) {
-		//@internal identical to @see Double#equals(Object)
-		return java.lang.Double.doubleToLongBits(doubleValue()) == java.lang.Double.doubleToLongBits(((Real) o).doubleValue());
-	    } else
-		return Operations.equal.apply(this, o);
-	}
+        public boolean equals(Object o) {
+            if (o instanceof Double || o instanceof Float) {
+                //@internal identical to @see Double#equals(Object)
+                return java.lang.Double.doubleToLongBits(doubleValue()) == java.lang.Double.doubleToLongBits(((Real) o).doubleValue());
+            } else
+                return Operations.equal.apply(this, o);
+        }
 
-	public int hashCode() {
-	    //@internal identical to @see Double#hashCode()
-	    long bits = java.lang.Double.doubleToLongBits(doubleValue());
-	    return (int)(bits ^ (bits >>> 32));
-	}
-	public int compareTo(Object o) {
-	    if (o instanceof Double || o instanceof Float) {
-		return compareDouble(value, ((Number)o).doubleValue());
-	    } else
-		return ((Integer) Operations.compare.apply(this, o)).intValue();
-	} 
+        public int hashCode() {
+            //@internal identical to @see Double#hashCode()
+            long bits = java.lang.Double.doubleToLongBits(doubleValue());
+            return (int)(bits ^ (bits >>> 32));
+        }
+        public int compareTo(Object o) {
+            if (o instanceof Double || o instanceof Float) {
+                return compareDouble(value, ((Number)o).doubleValue());
+            } else
+                return ((Integer) Operations.compare.apply(this, o)).intValue();
+        } 
 
-	//@internal identical to @see Double#compare(double,double)
-	static int compareDouble(double d1, double d2) {
-	    if (d1 < d2)
-		return -1;           // Neither val is NaN, thisVal is smaller
-	    if (d1 > d2)
-		return 1;            // Neither val is NaN, thisVal is larger
-	    long thisBits = java.lang.Double.doubleToLongBits(d1);
-	    long anotherBits = java.lang.Double.doubleToLongBits(d2);
+        //@internal identical to @see Double#compare(double,double)
+        static int compareDouble(double d1, double d2) {
+            if (d1 < d2)
+                return -1;           // Neither val is NaN, thisVal is smaller
+            if (d1 > d2)
+                return 1;            // Neither val is NaN, thisVal is larger
+            long thisBits = java.lang.Double.doubleToLongBits(d1);
+            long anotherBits = java.lang.Double.doubleToLongBits(d2);
 
-	    return (thisBits == anotherBits ?  0 : // Values are equal
-		    (thisBits < anotherBits ? -1 : // (-0.0, 0.0) or (!NaN, NaN)
-		     1));                          // (0.0, -0.0) or (NaN, !NaN)
-	}
+            return (thisBits == anotherBits ?  0 : // Values are equal
+                    (thisBits < anotherBits ? -1 : // (-0.0, 0.0) or (!NaN, NaN)
+                     1));                          // (0.0, -0.0) or (NaN, !NaN)
+        }
 
-	public Real norm() {
-	    return Values.getDefaultInstance().valueOf(Math.abs(doubleValue()));
-	}
+        public Real norm() {
+            return Values.getDefaultInstance().valueOf(Math.abs(doubleValue()));
+        }
 
-	public boolean isZero() {
-	    return value == 0;
-	} 
-	public boolean isOne() {
-	    return value == 1;
-	} 
+        public boolean isZero() {
+            return value == 0;
+        } 
+        public boolean isOne() {
+            return value == 1;
+        } 
 
         public double doubleValue() {
             return value;
@@ -338,14 +338,14 @@ abstract class AbstractReal extends AbstractComplex implements Real {
     
         public Real add(Real b) {
             //@xxx what's up with b being an Integer.Int or Integer.Long?
-	    if (b instanceof Double || b instanceof Float)
+            if (b instanceof Double || b instanceof Float)
                 return new Double(doubleValue() + b.doubleValue());
             else if (b instanceof Big)
                 return new Big(doubleValue()).add(b);
             return (Real) Operations.plus.apply(this, b);
         }
         public Real subtract(Real b) {
-	    if (b instanceof Double || b instanceof Float)
+            if (b instanceof Double || b instanceof Float)
                 return new Double(doubleValue() - b.doubleValue());
             else if (b instanceof Big)
                 return new Big(doubleValue()).subtract(b);
@@ -355,21 +355,21 @@ abstract class AbstractReal extends AbstractComplex implements Real {
             return new Double(-doubleValue());
         } 
         public Real multiply(Real b) {
-	    if (b instanceof Double || b instanceof Float)
+            if (b instanceof Double || b instanceof Float)
                 return new Double(doubleValue() * b.doubleValue());
             else if (b instanceof Big)
                 return new Big(doubleValue()).multiply(b);
             return (Real) Operations.times.apply(this, b);
         }
         public Real divide(Real b) {
-	    if (b instanceof Double || b instanceof Float)
+            if (b instanceof Double || b instanceof Float)
                 return new Double(doubleValue() / b.doubleValue());
             else if (b instanceof Big)
                 return new Big(doubleValue()).divide(b);
             return (Real) Operations.divide.apply(this, b);
         }
         public Real power(Real b) {
-	    if (b instanceof Double || b instanceof Float)
+            if (b instanceof Double || b instanceof Float)
                 return new Double(Math.pow(doubleValue(), b.doubleValue()));
             else if (b instanceof Big)
                 return new Big(doubleValue()).power(b);
@@ -390,14 +390,14 @@ abstract class AbstractReal extends AbstractComplex implements Real {
      */
     static class Big extends AbstractReal implements orbital.moon.math.Big {
         private static final long serialVersionUID = -5801439569926611104L;
-	//@xxx change to working precision and dynamically query
+        //@xxx change to working precision and dynamically query
         private static MathContext precision = new MathContext(Math.max(17,MathUtilities.getDefaultPrecisionDigits()), RoundingMode.HALF_UP);
         static MathContext getPrecision() {
-	    return precision;
-	}
+            return precision;
+        }
         static void setPrecision(MathContext ctx) {
-	    precision = ctx;
-	}
+            precision = ctx;
+        }
     
         /**
          * the real value (with machine-sized arbitrary-precision, only, of course).
@@ -414,76 +414,76 @@ abstract class AbstractReal extends AbstractComplex implements Real {
             value = new BigDecimal(v);
         }
         public Big(Number v) {
-	    if (v instanceof BigDecimal)
-		value = (BigDecimal)v;
-	    else if (v instanceof orbital.moon.math.Big) {
-		if (v instanceof Big)
-		    value = ((Big)v).value;
-		else if (v instanceof AbstractInteger.Big)
-		    value = new BigDecimal(((AbstractInteger.Big)v).getValue());
-		else
-		    throw new IllegalArgumentException("unknown arbitrary precision type " + v.getClass() + " " + v);
-	    } else if (v instanceof Rational) {
-		Rational r = (Rational)v;
-		//@internal we could also convert numerator() and denominator() to reals and divide
-		value = getPrecision() != null
-		    ? new BigDecimal(AbstractInteger.makeBigInteger(r.numerator()).getValue())
-		    .divide(new BigDecimal(AbstractInteger.makeBigInteger(r.denominator()).getValue()), getPrecision())
-		    : new BigDecimal(AbstractInteger.makeBigInteger(r.numerator()).getValue())
-		    .divide(new BigDecimal(AbstractInteger.makeBigInteger(r.denominator()).getValue()));
-	    } else if (v instanceof Double || v instanceof Float || v instanceof AbstractInteger.Int
-		       || v instanceof java.lang.Double || v instanceof java.lang.Float || v instanceof java.lang.Integer) {
-		value = BigDecimal.valueOf(((Number)v).doubleValue());
-	    } else if (v instanceof AbstractInteger.Long
-		       || v instanceof java.lang.Long) {
-		value = BigDecimal.valueOf(((Number)v).longValue());
-	    } else {
-		assert !java.lang.Double.isNaN(v.doubleValue()) && !java.lang.Double.isInfinite(v.doubleValue()) : v + " should neither be NaN nor infinite";
-		value = BigDecimal.valueOf(ArithmeticValuesImpl.doubleValueExact(v));
-	    }
+            if (v instanceof BigDecimal)
+                value = (BigDecimal)v;
+            else if (v instanceof orbital.moon.math.Big) {
+                if (v instanceof Big)
+                    value = ((Big)v).value;
+                else if (v instanceof AbstractInteger.Big)
+                    value = new BigDecimal(((AbstractInteger.Big)v).getValue());
+                else
+                    throw new IllegalArgumentException("unknown arbitrary precision type " + v.getClass() + " " + v);
+            } else if (v instanceof Rational) {
+                Rational r = (Rational)v;
+                //@internal we could also convert numerator() and denominator() to reals and divide
+                value = getPrecision() != null
+                    ? new BigDecimal(AbstractInteger.makeBigInteger(r.numerator()).getValue())
+                    .divide(new BigDecimal(AbstractInteger.makeBigInteger(r.denominator()).getValue()), getPrecision())
+                    : new BigDecimal(AbstractInteger.makeBigInteger(r.numerator()).getValue())
+                    .divide(new BigDecimal(AbstractInteger.makeBigInteger(r.denominator()).getValue()));
+            } else if (v instanceof Double || v instanceof Float || v instanceof AbstractInteger.Int
+                       || v instanceof java.lang.Double || v instanceof java.lang.Float || v instanceof java.lang.Integer) {
+                value = BigDecimal.valueOf(((Number)v).doubleValue());
+            } else if (v instanceof AbstractInteger.Long
+                       || v instanceof java.lang.Long) {
+                value = BigDecimal.valueOf(((Number)v).longValue());
+            } else {
+                assert !java.lang.Double.isNaN(v.doubleValue()) && !java.lang.Double.isInfinite(v.doubleValue()) : v + " should neither be NaN nor infinite";
+                value = BigDecimal.valueOf(ArithmeticValuesImpl.doubleValueExact(v));
+            }
         }
     
         public Object clone() {
             return new Big(value);
         } 
 
-	public boolean equals(Object v) {
-	    if (v instanceof orbital.moon.math.Big) {
-		if (v instanceof Big)
-		    //@internal BigDecimal.equals is mincing with scales. Prefer comparaTo
-		    return value.compareTo(((Big)v).value) == 0;
-		else if (v instanceof AbstractInteger.Big)
-		    //@internal BigDecimal.equals is mincing with scales. Prefer comparaTo
-		    return value.compareTo(new BigDecimal(((AbstractInteger.Big)v).getValue())) == 0;
-		else
-		    throw new IllegalArgumentException("unknown arbitrary precision type " + v.getClass() + " " + v);
-	    } else if (v instanceof Double || v instanceof Float || v instanceof AbstractInteger.Int) {
-		return value.compareTo(BigDecimal.valueOf(((Real)v).doubleValue())) == 0;
-	    } else if (v instanceof AbstractInteger.Long) {
-		return value.compareTo(BigDecimal.valueOf(((Integer)v).longValue())) == 0;
-	    }
+        public boolean equals(Object v) {
+            if (v instanceof orbital.moon.math.Big) {
+                if (v instanceof Big)
+                    //@internal BigDecimal.equals is mincing with scales. Prefer comparaTo
+                    return value.compareTo(((Big)v).value) == 0;
+                else if (v instanceof AbstractInteger.Big)
+                    //@internal BigDecimal.equals is mincing with scales. Prefer comparaTo
+                    return value.compareTo(new BigDecimal(((AbstractInteger.Big)v).getValue())) == 0;
+                else
+                    throw new IllegalArgumentException("unknown arbitrary precision type " + v.getClass() + " " + v);
+            } else if (v instanceof Double || v instanceof Float || v instanceof AbstractInteger.Int) {
+                return value.compareTo(BigDecimal.valueOf(((Real)v).doubleValue())) == 0;
+            } else if (v instanceof AbstractInteger.Long) {
+                return value.compareTo(BigDecimal.valueOf(((Integer)v).longValue())) == 0;
+            }
             return Operations.equal.apply(this, v);
-	}
-	public int compareTo(Object v) {
-	    if (v instanceof orbital.moon.math.Big) {
-		if (v instanceof Big)
-		    return value.compareTo(((Big)v).value);
-		else if (v instanceof AbstractInteger.Big)
-		    return value.compareTo(new BigDecimal(((AbstractInteger.Big)v).getValue()));
-		else
-		    throw new IllegalArgumentException("unknown arbitrary precision type " + v.getClass() + " " + v);
-	    } else if (v instanceof Double || v instanceof Float || v instanceof AbstractInteger.Int) {
-		return value.compareTo(BigDecimal.valueOf(((Real)v).doubleValue()));
-	    } else if (v instanceof AbstractInteger.Long) {
-		return value.compareTo(BigDecimal.valueOf(((Integer)v).longValue()));
-	    }
+        }
+        public int compareTo(Object v) {
+            if (v instanceof orbital.moon.math.Big) {
+                if (v instanceof Big)
+                    return value.compareTo(((Big)v).value);
+                else if (v instanceof AbstractInteger.Big)
+                    return value.compareTo(new BigDecimal(((AbstractInteger.Big)v).getValue()));
+                else
+                    throw new IllegalArgumentException("unknown arbitrary precision type " + v.getClass() + " " + v);
+            } else if (v instanceof Double || v instanceof Float || v instanceof AbstractInteger.Int) {
+                return value.compareTo(BigDecimal.valueOf(((Real)v).doubleValue()));
+            } else if (v instanceof AbstractInteger.Long) {
+                return value.compareTo(BigDecimal.valueOf(((Integer)v).longValue()));
+            }
             return ((Integer) Operations.compare.apply(this, v)).intValue();
-	}
+        }
 
         BigDecimal getValue() {
-	    return value;
-	}
-	
+            return value;
+        }
+        
         public int intValue() {
             return value.intValueExact();
         } 
@@ -494,16 +494,16 @@ abstract class AbstractReal extends AbstractComplex implements Real {
             return value.doubleValue();
         } 
     
-	public boolean isZero() {
-	    return value.compareTo(BigDecimal.ZERO) == 0;
-	} 
-	public boolean isOne() {
-	    return value.compareTo(BigDecimal.ONE) == 0;
-	} 
+        public boolean isZero() {
+            return value.compareTo(BigDecimal.ZERO) == 0;
+        } 
+        public boolean isOne() {
+            return value.compareTo(BigDecimal.ONE) == 0;
+        } 
 
-	public Real norm() {
-	    return new Big(value.abs());
-	} 
+        public Real norm() {
+            return new Big(value.abs());
+        } 
 
         public Real add(Real b) {
             if (b instanceof Big)
@@ -532,32 +532,32 @@ abstract class AbstractReal extends AbstractComplex implements Real {
         public Real divide(Real b) {
             if (b instanceof Big)
                 return getPrecision() != null
-		    ? new Big(value.divide(((Big)b).value, getPrecision()))
-		    : new Big(value.divide(((Big)b).value));
+                    ? new Big(value.divide(((Big)b).value, getPrecision()))
+                    : new Big(value.divide(((Big)b).value));
             else if (b instanceof Float || b instanceof Double)
                 return getPrecision() != null
-		    ? new Big(value.divide(BigDecimal.valueOf(b.doubleValue()), getPrecision()))
-		    : new Big(value.divide(BigDecimal.valueOf(b.doubleValue())));
+                    ? new Big(value.divide(BigDecimal.valueOf(b.doubleValue()), getPrecision()))
+                    : new Big(value.divide(BigDecimal.valueOf(b.doubleValue())));
             return (Real) Operations.divide.apply(this, b);
         }
         public Real power(Real b) {
-	    if (b instanceof Integer) {
-		return power((Integer)b);
-	    }
-	    Real bc = (Real) Values.getDefault().narrow(b);
-	    if (bc instanceof Integer) {
-		return power((Integer)bc);
-	    } else {
-		return Values.getDefault().valueOf(Math.pow(ArithmeticValuesImpl.doubleValueExact((Number)this), ArithmeticValuesImpl.doubleValueExact(b)));
-	    }
+            if (b instanceof Integer) {
+                return power((Integer)b);
+            }
+            Real bc = (Real) Values.getDefault().narrow(b);
+            if (bc instanceof Integer) {
+                return power((Integer)bc);
+            } else {
+                return Values.getDefault().valueOf(Math.pow(ArithmeticValuesImpl.doubleValueExact((Number)this), ArithmeticValuesImpl.doubleValueExact(b)));
+            }
         }
-	private Real power(Integer b) {
-	    try {
-		return new Big(ArithmeticValuesImpl.intValueExact(b));
-	    } catch(ArithmeticException ex) {
-		throw new ArithmeticException("exponentation is possibly too big: " + this + " ^ " + b);
-	    }
-	}
+        private Real power(Integer b) {
+            try {
+                return new Big(ArithmeticValuesImpl.intValueExact(b));
+            } catch(ArithmeticException ex) {
+                throw new ArithmeticException("exponentation is possibly too big: " + this + " ^ " + b);
+            }
+        }
         public Arithmetic inverse() {
             return one().divide(this);
         } 

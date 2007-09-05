@@ -107,7 +107,7 @@ public class ValuesImpl extends ArithmeticValuesImpl {
     // integer scalar value constructors - facade factory
 
     public Integer valueOf(int val) {
-	return new AbstractInteger.Int(val);
+        return new AbstractInteger.Int(val);
     } 
     public Integer valueOf(long val) {
         return new AbstractInteger.Long(val);
@@ -148,35 +148,35 @@ public class ValuesImpl extends ArithmeticValuesImpl {
     //
 
     public Scalar[] minimumCoerced(Number a, Number b) {
-	//@todo optimize hotspot
+        //@todo optimize hotspot
         //@xxx adapt better to new Complex>Real>Rational>Integer type hierarchy and conform to a new OBDD (ordered binary decision diagram)
         //@todo partial order with Arithmetic>Scalar>Complex>Real>Rational>Integer and greatest common super type of A,B being A&cup;B = sup {A,B}
         //@todo implement sup along with conversion routines. Perhaps introduce "int AbstractScalar.typeLevel()" and "int AbstractScalar.precisionLevel()" such that we can compute the maximum level of both with just two method calls. And introduce "Object AbstractScalar.convertTo(int typeLevel, int precisionLevel)" for conversion.
-	//@xxx respect precisions, e.g. make Big sticky
+        //@xxx respect precisions, e.g. make Big sticky
         if (Complex.hasType.apply(a) || Complex.hasType.apply(b))
-	    return AbstractComplex.makeComplex(a, b);
+            return AbstractComplex.makeComplex(a, b);
 
         // this is a tricky binary decision diagram (optimized), see documentation
         if (Integer.hasType.apply(a)) {
             if (Integer.hasType.apply(b))
                 return AbstractInteger.makeInteger(a, b);
-	    else if (Rational.hasType.apply(b))
-		//@xxx inserted to fix the case Rational + Integer != Real of our BDD. Find a faster BDD solution!
-		return new Rational[] {
-		    rational((Integer)a),
-		    (Rational) b
-		};
+            else if (Rational.hasType.apply(b))
+                //@xxx inserted to fix the case Rational + Integer != Real of our BDD. Find a faster BDD solution!
+                return new Rational[] {
+                    rational((Integer)a),
+                    (Rational) b
+                };
         } else {        // a is no integer
             if (!Rational.hasType.apply(a))
                 return AbstractReal.makeReal(a, b);
         } 
-	assert Integer.hasType.apply(a) && !Integer.hasType.apply(b) || Rational.hasType.apply(a) : a + " integer or rational but not both integers " + a + " and " + b;
+        assert Integer.hasType.apply(a) && !Integer.hasType.apply(b) || Rational.hasType.apply(a) : a + " integer or rational but not both integers " + a + " and " + b;
         
         /* fall-through: all other cases come here */
         if (Rational.isa.apply(b))
             return new Rational[] {
                 Rational.hasType.apply(a) ? (Rational) a : rational((Integer)a),
-		Rational.hasType.apply(b) ? (Rational) b : rational((Integer)b)
+                Rational.hasType.apply(b) ? (Rational) b : rational((Integer)b)
             };
         return AbstractReal.makeReal(a, b);
     } 

@@ -43,10 +43,10 @@ public abstract class AbstractFunctor implements MathFunctor {
 
     //@internal modulo equality of functions not being decidable and modulo 0 being represented as Function, BinaryFunction, ...
     public boolean isZero() {
-    	return equals(zero());
+        return equals(zero());
     }
     public boolean isOne() {
-    	return equals(one());
+        return equals(one());
     }
 
     //@todo note that we have a problem of arities here. if our subclass is a Function then we should return the Function 0:A->B
@@ -59,8 +59,8 @@ public abstract class AbstractFunctor implements MathFunctor {
     // pointwise Arithmetic implementation (identical to @see orbital.math.Symbol)
     public Arithmetic add(Arithmetic b) throws ArithmeticException {
         // simple-case optimization
-	if (b.isZero())
-	    return this;
+        if (b.isZero())
+            return this;
         return Functionals.genericCompose(Operations.plus, this, b);
     } 
     public Arithmetic minus() throws ArithmeticException {
@@ -68,8 +68,8 @@ public abstract class AbstractFunctor implements MathFunctor {
     } 
     public Arithmetic subtract(Arithmetic b) throws ArithmeticException {
         // simple-case optimization
-	if (b.isZero())
-	    return this;
+        if (b.isZero())
+            return this;
         return Functionals.genericCompose(Operations.subtract, this, b);
     } 
     
@@ -80,12 +80,12 @@ public abstract class AbstractFunctor implements MathFunctor {
 
     public Arithmetic multiply(Arithmetic b) throws ArithmeticException {
         // simple-case optimization
-	if (b.isZero())
-	    return b.zero();
-	else if (b.isOne())
-	    return this;
-	else if (b.equals(b.one().minus()))
-	    return minus();
+        if (b.isZero())
+            return b.zero();
+        else if (b.isOne())
+            return this;
+        else if (b.equals(b.one().minus()))
+            return minus();
         return Functionals.genericCompose(Operations.times, this, b);
     } 
     public Arithmetic inverse() throws ArithmeticException {
@@ -93,23 +93,23 @@ public abstract class AbstractFunctor implements MathFunctor {
     } 
     public Arithmetic divide(Arithmetic b) throws ArithmeticException {
         // simple-case optimization
-	if (b.isOne())
-	    return this;
-	else if (b.equals(b.one().minus()))
-	    return minus();
-	else if (b.isZero())
+        if (b.isOne())
+            return this;
+        else if (b.equals(b.one().minus()))
+            return minus();
+        else if (b.isZero())
                 throw new ArithmeticException("division by zero");
         return Functionals.genericCompose(Operations.divide, this, b);
     } 
     
     public Arithmetic power(Arithmetic b) throws ArithmeticException {
         // simple-case optimization
-	if (b.isZero())
-	    return b.one();
-	if (b.isOne())
-	    return this;
-	else if (b.equals(b.one().minus()))
-	    return inverse();
+        if (b.isZero())
+            return b.one();
+        if (b.isOne())
+            return this;
+        else if (b.equals(b.one().minus()))
+            return inverse();
         return Functionals.genericCompose(Operations.power, this, b);
     } 
     

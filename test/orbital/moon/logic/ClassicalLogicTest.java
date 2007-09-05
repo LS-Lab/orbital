@@ -92,40 +92,40 @@ public class ClassicalLogicTest extends check.TestCase {
         final Formula OBJ = (Formula) logic.createAtomic(new SymbolBase("OBJ", SymbolBase.UNIVERSAL_ATOM));
         try {
             Expression e = logic.compose(logic.createAtomic(AND),
-		new Expression[] {
-		    B,
-		    B
-		});
+                new Expression[] {
+                    B,
+                    B
+                });
         }
         catch (TypeException fallthrough) {
             System.out.println(fallthrough);
-	    assertTrue(false, "type-safe expression should be composable");
+            assertTrue(false, "type-safe expression should be composable");
         }
         catch (ParseException fallthrough) {
             System.out.println(fallthrough);
-	    assertTrue(false, "type-safe expression should be composable");
+            assertTrue(false, "type-safe expression should be composable");
         }
         catch (IllegalArgumentException fallthrough) {
             System.out.println(fallthrough);
-	    assertTrue(false, "type-safe expression should be composable");
+            assertTrue(false, "type-safe expression should be composable");
         }
         try {
             Expression e = logic.compose(logic.createAtomic(NOT),
-		new Expression[] {
-		    B
-		});
+                new Expression[] {
+                    B
+                });
         }
         catch (TypeException fallthrough) {
             System.out.println(fallthrough);
-	    assertTrue(false, "type-safe expression should be composable");
+            assertTrue(false, "type-safe expression should be composable");
         }
         catch (ParseException fallthrough) {
             System.out.println(fallthrough);
-	    assertTrue(false, "type-safe expression should be composable");
+            assertTrue(false, "type-safe expression should be composable");
         }
         catch (IllegalArgumentException fallthrough) {
             System.out.println(fallthrough);
-	    assertTrue(false, "type-safe expression should be composable");
+            assertTrue(false, "type-safe expression should be composable");
         }
     }
 
@@ -137,11 +137,11 @@ public class ClassicalLogicTest extends check.TestCase {
         final Formula OBJ = (Formula) logic.createAtomic(new SymbolBase("OBJ", SymbolBase.UNIVERSAL_ATOM));
         try {
             Expression e = logic.compose(logic.createAtomic(AND),
-		new Expression[] {
-		    B,
-		    OBJ
-		});
-	    assertTrue(false, "type-incorrect expression should not be composable");
+                new Expression[] {
+                    B,
+                    OBJ
+                });
+            assertTrue(false, "type-incorrect expression should not be composable");
             return;
         }
         catch (TypeException fallthrough) {
@@ -155,10 +155,10 @@ public class ClassicalLogicTest extends check.TestCase {
         }
         try {
             Expression e = logic.compose(logic.createAtomic(NOT),
-		new Expression[] {
-		    OBJ
-		});
-	    assertTrue(false, "type-incorrect expression should not be composable");
+                new Expression[] {
+                    OBJ
+                });
+            assertTrue(false, "type-incorrect expression should not be composable");
             return;
         }
         catch (TypeException fallthrough) {

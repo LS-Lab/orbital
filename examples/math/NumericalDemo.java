@@ -120,7 +120,7 @@ class NumericalDemo {
         plot.addMouseListener(new CustomizerViewController(frame));
         frame.getContentPane().add(plot);
         frame.setSize(300, 200);
-	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     } 
 

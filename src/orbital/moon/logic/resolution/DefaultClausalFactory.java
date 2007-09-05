@@ -55,7 +55,7 @@ public class DefaultClausalFactory implements ClausalFactory {
     public Clause createClause(Set/*<Formula>*/ literals) {
         return /*isVerbose()
             ? (Clause)new TraceableClauseImpl(literals) :*/
-	      ORDERED
+              ORDERED
             ? (Clause)new OrderedClauseImpl(literals)
             : (Clause)new IndexedClauseImpl(literals);
     }

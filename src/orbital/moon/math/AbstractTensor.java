@@ -437,9 +437,9 @@ abstract class AbstractTensor/*<R extends Arithmetic>*/
 
     public Arithmetic divide(Arithmetic b) {
         if (b instanceof Scalar)
-	    return scale(b.inverse());
-	else
-	    return super.divide(b);
+            return scale(b.inverse());
+        else
+            return super.divide(b);
     } 
 
     public Tensor/*<R>*/ multiply(Tensor/*<R>*/ b) {

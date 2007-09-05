@@ -204,7 +204,7 @@ public class SignatureBase/*<Sigma extends Symbol>*/ extends DelegateSortedSet/*
      * @todo or only structurally unmodifiable because iterator().next().setSignifier will still work?
      */
     public static final /*<Sigma extends Symbol>*/
-	Signature/*<Sigma>*/ unmodifiableSignature(final Signature/*<Sigma>*/ s) {
+        Signature/*<Sigma>*/ unmodifiableSignature(final Signature/*<Sigma>*/ s) {
         return /*refine/delegate Signature*/ new SignatureBase/*<Sigma>*/(s) {
                 private static final long serialVersionUID = -7777832542719541528L;
                 // Code for delegation of java.util.Set methods to s

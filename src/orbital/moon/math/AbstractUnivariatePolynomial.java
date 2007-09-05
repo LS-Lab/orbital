@@ -55,7 +55,7 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
 
     public boolean isZero() {
         assert (degreeValue() < 0) == equals(zero()) : "polynomial is zero iff its degree is negative: " + this;
-	return degreeValue() < 0;
+        return degreeValue() < 0;
     }
 
     /**
@@ -507,7 +507,7 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
         return ((Polynomial)productObject).iterator();
     }
     protected final Arithmetic/*>UnivariatePolynomial<R><*/ newInstance(Object/*>Integer<*/ productIndexSet) {
-	//@xxx wrong type case?
+        //@xxx wrong type case?
         return newInstance((int[])productIndexSet);
     }
 

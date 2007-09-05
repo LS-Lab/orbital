@@ -305,7 +305,7 @@ public final class Functions {
                     return valueFactory.polar((Real/*__*/)apply(v.norm()), v.arg().divide(valueFactory.valueOf(2)));
                 } 
                 else if (x instanceof Number) {
-		    //@xxx possible loss of precision
+                    //@xxx possible loss of precision
                     double r = ((Number) x).doubleValue();
                     if (!(r == r))                      // Double.isNaN
                         return Values.NaN;
@@ -345,35 +345,35 @@ public final class Functions {
                     return valueFactory.polar((Real) apply(z.re()), z.im());
                 } 
                 else if (x instanceof Number)
-		    //@xxx possible loss of precision
+                    //@xxx possible loss of precision
                     return valueFactory.valueOf(Math.exp(((Number) x).doubleValue()));
                 else if (x instanceof orbital.math.Matrix) {
-		    Matrix A = (Matrix)x;
-		    if (!A.isSquare())
-			throw new IllegalArgumentException("square coefficient matrix expected " + A);
-		    int n = 0;
-		    // add A^0=1
-		    Matrix r = (Matrix)A.one();
-		    // index into powers
-		    n++;
-		    // contains the successive powers A^n
-		    Matrix/*<R>*/ p = A;
-		    // contains the successive factorials
-		    int f = 1;
-		    while (!p.isZero()) {
-			if (n > A.dimension().width)
-			    throw new UnsupportedOperationException("needs Jordan-Normal-Form for matrix that is not nilpotent: " + A);
-			// successive factorial
-			f *= n;
-			assert f == orbital.math.MathUtilities.factorial(n) : "on-the-fly factorial " + f + " == " + n + "! = " + orbital.math.MathUtilities.factorial(n);
-			assert p.equals(A.power(valueFactory.valueOf(n))) : "on-the-fly power " + p + " == " + A + "^" + n + " = " + A.power(valueFactory.valueOf(n));
-			// append 1/n!*A^n
-			r = r.add(p.multiply(valueFactory.rational(1,f)));
-			// next round
-			p = p.multiply(A);
-			n++;
-		    }
-		    return p;
+                    Matrix A = (Matrix)x;
+                    if (!A.isSquare())
+                        throw new IllegalArgumentException("square coefficient matrix expected " + A);
+                    int n = 0;
+                    // add A^0=1
+                    Matrix r = (Matrix)A.one();
+                    // index into powers
+                    n++;
+                    // contains the successive powers A^n
+                    Matrix/*<R>*/ p = A;
+                    // contains the successive factorials
+                    int f = 1;
+                    while (!p.isZero()) {
+                        if (n > A.dimension().width)
+                            throw new UnsupportedOperationException("needs Jordan-Normal-Form for matrix that is not nilpotent: " + A);
+                        // successive factorial
+                        f *= n;
+                        assert f == orbital.math.MathUtilities.factorial(n) : "on-the-fly factorial " + f + " == " + n + "! = " + orbital.math.MathUtilities.factorial(n);
+                        assert p.equals(A.power(valueFactory.valueOf(n))) : "on-the-fly power " + p + " == " + A + "^" + n + " = " + A.power(valueFactory.valueOf(n));
+                        // append 1/n!*A^n
+                        r = r.add(p.multiply(valueFactory.rational(1,f)));
+                        // next round
+                        p = p.multiply(A);
+                        n++;
+                    }
+                    return p;
                 } else if (x instanceof orbital.math.Symbol)
                     return valueFactory.symbol("e").power((Arithmetic) x);
                 else
@@ -468,7 +468,7 @@ public final class Functions {
                 if (Complex.hasType.apply(x))
                     return ((Arithmetic) sinh.apply(Values.i.multiply((Arithmetic) x))).divide(Values.i);
                 else if (x instanceof Number)
-		    //@xxx possible loss of precision
+                    //@xxx possible loss of precision
                     return valueFactory.valueOf(Math.sin(((Number) x).doubleValue()));
                 throw new UnsupportedOperationException("not implemented for type: " + x.getClass());
             } 
@@ -529,7 +529,7 @@ public final class Functions {
     public static final Function tan = new SynonymFunction(Functionals.compose(Operations.divide, sin, cos)) {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x) {
                 if (x instanceof Number && !Complex.hasType.apply(x))
-		    //@xxx possible loss of precision
+                    //@xxx possible loss of precision
                     return valueFactory.valueOf(Math.tan(((Number) x).doubleValue()));
                 return super.apply(x);
             } 
@@ -1147,8 +1147,8 @@ public final class Functions {
             public Object/*>Real<*/ apply(Object/*>Real<*/ x) {
                 if (Real.hasType.apply(x)) {
                     Real z = (Real) x;
-		    if (z.isZero())
-			return valueFactory.ZERO();
+                    if (z.isZero())
+                        return valueFactory.ZERO();
                     Real abs = z.norm();
                     return z.divide(abs);
                 }

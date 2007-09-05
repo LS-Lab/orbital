@@ -82,7 +82,7 @@ public interface AlgorithmicTemplate/*<Problem extends AlgorithmicProblem, Solut
      * @version $Id$
      */
     public static /*abstract*/ class Configuration/*<Problem extends AlgorithmicProblem, Solution extends Object>*/
-	implements AlgorithmicConfiguration/*<Problem,Solution>*/, Serializable {
+        implements AlgorithmicConfiguration/*<Problem,Solution>*/, Serializable {
         private static final long serialVersionUID = -3040364728746853685L;
 
         /**
@@ -147,7 +147,7 @@ public interface AlgorithmicTemplate/*<Problem extends AlgorithmicProblem, Solut
          * @throws IntrospectionException if algorithm could not be introspected.
          */
         public static final /*<Problem extends AlgorithmicProblem, Solution extends Object>*/
-	    Configuration/*<Problem, Solution>*/ flexible(AlgorithmicProblem/*>Problem<*/ problem, Map properties, Class algorithm) throws IntrospectionException {
+            Configuration/*<Problem, Solution>*/ flexible(AlgorithmicProblem/*>Problem<*/ problem, Map properties, Class algorithm) throws IntrospectionException {
             return new FlexibleConfiguration/*<Problem, Solution>*/(problem, properties, algorithm, AlgorithmicTemplate.class);
         }
 
@@ -159,7 +159,7 @@ public interface AlgorithmicTemplate/*<Problem extends AlgorithmicProblem, Solut
          * @version $Id$
          */
         private static class FlexibleConfiguration/*<Problem extends AlgorithmicProblem, Solution extends Object>*/
-	    extends AlgorithmicTemplate.Configuration/*<Problem,Solution>*/ {
+            extends AlgorithmicTemplate.Configuration/*<Problem,Solution>*/ {
             private static final long serialVersionUID = 8767047546408218154L;
 
             /**

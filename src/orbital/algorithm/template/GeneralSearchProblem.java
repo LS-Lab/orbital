@@ -242,7 +242,7 @@ public interface GeneralSearchProblem/*<A,S>*/
      * @invariants getAction()&isin;A(s)
      */
     public static class Transition/*<A,S>*/
-	implements MarkovDecisionProblem.Transition/*<A,S,GeneralSearchProblem.Transition>*/, Serializable {
+        implements MarkovDecisionProblem.Transition/*<A,S,GeneralSearchProblem.Transition>*/, Serializable {
         private static final long serialVersionUID = 257664629450534598L;
         /**
          * the applicable action a&isin;A performed to reach this state.

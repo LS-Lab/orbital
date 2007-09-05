@@ -191,7 +191,7 @@ public abstract class Notation implements Serializable, Comparable {
                     if (compositor instanceof Composite) {
                         // @xxx ?should not descend into composite compositors because it would receive brackets, automatically, since !hasCompactBrackets("")
                         // sb.append(format("", compositor));
-			sb.append(format(null,compositor));
+                        sb.append(format(null,compositor));
                     } else
                         sb.append(compositor + "");
                 }
@@ -269,7 +269,7 @@ public abstract class Notation implements Serializable, Comparable {
             private static final long serialVersionUID = 2361099498303659521L;
             public String format(Object compositor, Object arg_) {
                 if (compositor instanceof Composite)
-		    // compound compositors will be formatted in prefix
+                    // compound compositors will be formatted in prefix
                     return PREFIX.format(compositor, arg_);
                 //@todo explicitly work on graph-structure induced by Composite without importing orbital.util.graph for this sole reason
                 // however, how to briefly append arguments to the compositor object (just for formatting), then?
@@ -353,7 +353,7 @@ public abstract class Notation implements Serializable, Comparable {
             private static final long serialVersionUID = -3155666698040647203L;
             public String format(Object compositor, Object arg_) {
                 if (compositor instanceof Composite)
-		    // compound compositors will be formatted in prefix
+                    // compound compositors will be formatted in prefix
                     return PREFIX.format(compositor, arg_);
                 //@todo explicitly work on graph-structure induced by Composite without importing orbital.util.graph for this sole reason
                 // however, how to briefly append arguments to the compositor object (just for formatting), then?
@@ -396,8 +396,8 @@ public abstract class Notation implements Serializable, Comparable {
                                     assert spec.associativity.length() > apos : "wrong associativity specifier " + spec + " for " + ((KeyValuePair) node).getKey() + " at position " + apos + " in argument " + i + " (" + ((KeyValuePair) n).getKey() + ")";
                                     switch (spec.associativity.charAt(apos++)) {
                                     case 'x':
-				    case 'y':
-					argDesc[i] = '(' + inner + ')';
+                                    case 'y':
+                                        argDesc[i] = '(' + inner + ')';
                                         break;
                                     default:
                                         throw new NumberFormatException("wrong associativity specifier " + spec);
@@ -509,7 +509,7 @@ public abstract class Notation implements Serializable, Comparable {
         /*SecurityManager security = System.getSecurityManager();
         if (security != null) {
             security.checkPermission(new RuntimePermission("setStatic.notationSpecification"));
-	    }*/
+            }*/
         return compositorNotation.put(f, spec) != null;
     }
     /**
@@ -521,7 +521,7 @@ public abstract class Notation implements Serializable, Comparable {
         /*SecurityManager security = System.getSecurityManager();
         if (security != null) {
             security.checkPermission(new RuntimePermission("setStatic.notationSpecification"));
-	    }*/ 
+            }*/ 
         return (NotationSpecification/*__*/) compositorNotation.remove(f);
     }
         
@@ -732,35 +732,35 @@ public abstract class Notation implements Serializable, Comparable {
          * <ul>
          *   <li>f specifies the position of the compositor.</li>
          *   <li>x specifies the position of an argument with precedence of y &lt; the precedence of f,
-	 *       otherwise brackets will be used.</li>
+         *       otherwise brackets will be used.</li>
          *   <li>y specifies the position of an argument with precedence of y &le; the precedence of f,
-	 *       otherwise brackets will be used.</li>
+         *       otherwise brackets will be used.</li>
          * </ul>
          * <table>
          *   <caption>Quick overview of associativty specification</caption>
          *   <tr><th>specification</th> <th>effect</th></tr>
          *   <tr><td colspan="2">(unary) prefix notation</td></tr>
          *   <tr><td>fx</td> <td>unary prefix notation non-associative, i.e.,
-	 *       <code>f (f a)</code> needs brackets</td></tr>
+         *       <code>f (f a)</code> needs brackets</td></tr>
          *   <tr><td>fy</td> <td>unary prefix notation associative, i.e.,
-	 *       <code>f f a</code> needs no brackets but is taken to mean <code>f (f a)</code></td></tr>
+         *       <code>f f a</code> needs no brackets but is taken to mean <code>f (f a)</code></td></tr>
          *   <tr><td colspan="2">(unary) postfix notation</td></tr>
          *   <tr><td>xf</td> <td>unary postfix notation non-associative, i.e.,
-	 *       <code>(a f) f</code> needs brackets</td></tr>
+         *       <code>(a f) f</code> needs brackets</td></tr>
          *   <tr><td>yf</td> <td>unary postfix notation associative, i.e.,
-	 *       <code>a f f</code> needs no brackets but is taken to mean <code>a (a f)</code></td></tr>
+         *       <code>a f f</code> needs no brackets but is taken to mean <code>a (a f)</code></td></tr>
          *   <tr><td colspan="2">(binary) infix notation</td></tr>
          *   <tr><td>yfx</td> <td>left associative, i.e.,
-	 *       <code>a f b f c</code> is taken to mean <code>(a f b) f c</code>, while
-	 *       <code>a f (b f c)</code> needs brackets</td></tr>
+         *       <code>a f b f c</code> is taken to mean <code>(a f b) f c</code>, while
+         *       <code>a f (b f c)</code> needs brackets</td></tr>
          *   <tr><td>xfy</td> <td>right associative, i.e.,
-	 *       <code>a f b f c</code> is taken to mean <code>a f (b f c)</code>, while
-	 *       <code>(a f b) f c</code> needs brackets</td></tr>
+         *       <code>a f b f c</code> is taken to mean <code>a f (b f c)</code>, while
+         *       <code>(a f b) f c</code> needs brackets</td></tr>
          *   <tr><td>xfx</td> <td>non-associative, i.e., always use brackets</td></tr>
          *   <tr><td>yfy</td> <td>full associative, i.e., never use brackets.
-	 *       <code>a f b f c</code> is taken to mean either
-	 *       <code>(a f b) f c</code> or <code>a f (b f c)</code>,
-	 *       as both are equivalent.</td></tr>
+         *       <code>a f b f c</code> is taken to mean either
+         *       <code>(a f b) f c</code> or <code>a f (b f c)</code>,
+         *       as both are equivalent.</td></tr>
          * </table>
          * <p>
          * The compositor position specification used <em>must</em> match the concept of notation objects.

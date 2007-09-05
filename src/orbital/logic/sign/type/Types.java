@@ -80,8 +80,8 @@ public final class Types {
      * Default instance.
      */
     private static TypeSystem defaultTypeSystem =
-	instantiate(GetPropertyAction.getProperty(TypeSystem.class.getName() + ".default",
-					  orbital.moon.logic.sign.type.StandardTypeSystem.class.getName()));
+        instantiate(GetPropertyAction.getProperty(TypeSystem.class.getName() + ".default",
+                                          orbital.moon.logic.sign.type.StandardTypeSystem.class.getName()));
 
     /**
      * Get the (single) default type system instance.

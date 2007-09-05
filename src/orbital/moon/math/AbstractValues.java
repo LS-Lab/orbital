@@ -73,22 +73,22 @@ public abstract class AbstractValues extends Values {
      */
     public ValueFactory adjustToParameters(Map/*<String,Object>*/ parameters) {
         AbstractValues vf = this;
-	if (parameters.containsKey("orbital.math.Scalar.precision")) {
-	    String prec = (String)parameters.get("orbital.math.Scalar.precision");
-	    if ("big".equalsIgnoreCase(prec) || "arbitrary".equalsIgnoreCase(prec)) {
-		vf = this instanceof BigValuesImpl ? this : new BigValuesImpl();
-	    } else if ("machine".equalsIgnoreCase(prec) || "fast".equalsIgnoreCase(prec)) {
-		vf = this instanceof FastValuesImpl ? this : new FastValuesImpl();
-	    } else if ("dynamic".equalsIgnoreCase(prec) || "default".equalsIgnoreCase(prec)) {
-		vf = this;
-	    } else if ("auto".equalsIgnoreCase(prec)) {
-		throw new UnsupportedOperationException("Setting for 'orbital.math.Scalar.precision' not supported: " + prec);
-	    } else {
-		throw new IllegalArgumentException("Unknown value for 'orbital.math.Scalar.precision' given: " + prec);
-	    }
-	}
-	vf.setParameters(parameters);
-	return vf;
+        if (parameters.containsKey("orbital.math.Scalar.precision")) {
+            String prec = (String)parameters.get("orbital.math.Scalar.precision");
+            if ("big".equalsIgnoreCase(prec) || "arbitrary".equalsIgnoreCase(prec)) {
+                vf = this instanceof BigValuesImpl ? this : new BigValuesImpl();
+            } else if ("machine".equalsIgnoreCase(prec) || "fast".equalsIgnoreCase(prec)) {
+                vf = this instanceof FastValuesImpl ? this : new FastValuesImpl();
+            } else if ("dynamic".equalsIgnoreCase(prec) || "default".equalsIgnoreCase(prec)) {
+                vf = this;
+            } else if ("auto".equalsIgnoreCase(prec)) {
+                throw new UnsupportedOperationException("Setting for 'orbital.math.Scalar.precision' not supported: " + prec);
+            } else {
+                throw new IllegalArgumentException("Unknown value for 'orbital.math.Scalar.precision' given: " + prec);
+            }
+        }
+        vf.setParameters(parameters);
+        return vf;
     }
     protected void setParameters(Map/*<String,Object>*/ parameters) {
         this.parameters = parameters;
@@ -105,16 +105,16 @@ public abstract class AbstractValues extends Values {
      * {@link Values@setDefault(ValueFactory)}(this.adjustToParameters())
      */
     public void setRepresentation(String precision) {
-	Map params = new java.util.HashMap();
-	params.put("orbital.math.Scalar.precision", precision);
-	Values.setDefault(adjustToParameters(params));
+        Map params = new java.util.HashMap();
+        params.put("orbital.math.Scalar.precision", precision);
+        Values.setDefault(adjustToParameters(params));
     }
     public String getRepresentation() {
-	if (!getParameters().containsKey("orbital.math.Scalar.precision")) {
-	    return "big";
-	} else {
-	    return (String)getParameters().get("orbital.math.Scalar.precision");
-	}
+        if (!getParameters().containsKey("orbital.math.Scalar.precision")) {
+            return "big";
+        } else {
+            return (String)getParameters().get("orbital.math.Scalar.precision");
+        }
     }
 
 
@@ -143,9 +143,9 @@ public abstract class AbstractValues extends Values {
         else if (val instanceof java.math.BigDecimal)
             return ((ValueFactory)this).valueOf((java.math.BigDecimal) val);
         else
-	    //@internal can't be helped. We just can't convert better from unknown representations
+            //@internal can't be helped. We just can't convert better from unknown representations
             //return narrow(valueOf(val.doubleValue()));
-	    throw new IllegalArgumentException("Unknown number representation " + val);
+            throw new IllegalArgumentException("Unknown number representation " + val);
     }
 
     // scalar value constructors - facade factory
@@ -741,9 +741,9 @@ public abstract class AbstractValues extends Values {
     } 
 
     protected final void initialSetCoercer(orbital.logic.functor.Function/*<Object[],Object[]>*/ coercer,
-					   orbital.logic.functor.Function/*<Object[],Object[]>*/ commcoercer) {
+                                           orbital.logic.functor.Function/*<Object[],Object[]>*/ commcoercer) {
         this.coercer = coercer;
-	this.commcoercer = commcoercer;
+        this.commcoercer = commcoercer;
     } 
     public final void setCoercer(orbital.logic.functor.Function/*<Object[],Object[]>*/ coercer) throws SecurityException {
         setCoercer(false, coercer);
@@ -754,9 +754,9 @@ public abstract class AbstractValues extends Values {
             security.checkPermission(new java.util.PropertyPermission(ValueFactory.class.getName() + ".coercer", "write"));
         } 
         if (commutative)
-	    this.commcoercer = coercer;
-	else
-	    this.coercer = coercer;
+            this.commcoercer = coercer;
+        else
+            this.coercer = coercer;
     } 
 
     public final orbital.logic.functor.Function/*<Arithmetic,Arithmetic>*/ getNormalizer() {

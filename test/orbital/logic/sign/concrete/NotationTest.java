@@ -76,7 +76,7 @@ public class NotationTest extends check.TestCase {
             System.out.println(e);
             assertTrue(false == expectparsable , desc + " " + e);
         }
-	return null;
+        return null;
     }
     protected void compactedBrackets(String expr, int expectedNumberOfOpenBrackets) {
         Formula f = test(expr);

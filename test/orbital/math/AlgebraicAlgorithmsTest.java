@@ -38,7 +38,7 @@ public class AlgebraicAlgorithmsTest extends check.TestCase {
     }
     private ArithmeticTestPatternGenerator random;
     protected void setUp() {
-	 this.random = new  ArithmeticTestPatternGenerator(-10000,10000);
+         this.random = new  ArithmeticTestPatternGenerator(-10000,10000);
     }
     /**
      * @internal similar to the algorithm computing exact solution to integer LGS.
@@ -71,7 +71,7 @@ public class AlgebraicAlgorithmsTest extends check.TestCase {
         System.out.println("solution:         " + AlgebraicAlgorithms.chineseRemainder(x,m));
         System.out.println("is unique modulo: " + umod);
         System.out.println();
-	Arithmetic r = AlgebraicAlgorithms.chineseRemainder(x,m).representative();
+        Arithmetic r = AlgebraicAlgorithms.chineseRemainder(x,m).representative();
         assertTrue(result.equals(r) || result.subtract(r).equals(umod) || result.subtract(r).equals(umod.minus()), "chineseRemainderTheorem: expected " + result + " was " + r + " (mod " + umod + ")");
     }
     
@@ -133,158 +133,158 @@ public class AlgebraicAlgorithmsTest extends check.TestCase {
     }
 
     public void testgcd() {
-	for (int i = 0; i < TEST_REPETITIONS; i++) {
-	    int x = random.randomInt();
-	    if (x == 0) x++;
-	    Integer xargs[] = {
-		vf.valueOf(BigInteger.valueOf(x)),
-		vf.valueOf((long)x),
-		vf.valueOf(x)
-	    };
-	    int y = random.randomInt();
-	    if (y == 0) y++;
-	    Integer yargs[] = {
-		vf.valueOf(BigInteger.valueOf(y)),
-		vf.valueOf((long)y),
-		vf.valueOf(y)
-	    };
-	    for (int k = 0; k < xargs.length; k++) {
-		Integer xs = xargs[k];
-		Integer ys = yargs[k];
-		Integer d = (Integer)AlgebraicAlgorithms.gcd(xs, ys);
-		assertTrue(xs.modulo(d).isZero(),
-			   "gcd(" + xs + "," + ys + ") = " + d + " divides " + x  + "\n" + xs + "@" + xs.getClass() + " " + ys + "@" + ys.getClass() + " " + d + "@" + d.getClass());
-		assertTrue(ys.modulo(d).isZero(),
-			   "gcd(" + xs + "," + ys + ") = " + d + " divides " + y  + "\n" + xs + "@" + xs.getClass() + " " + ys + "@" + ys.getClass() + " " + d + "@" + d.getClass());
-	    }
-	}
+        for (int i = 0; i < TEST_REPETITIONS; i++) {
+            int x = random.randomInt();
+            if (x == 0) x++;
+            Integer xargs[] = {
+                vf.valueOf(BigInteger.valueOf(x)),
+                vf.valueOf((long)x),
+                vf.valueOf(x)
+            };
+            int y = random.randomInt();
+            if (y == 0) y++;
+            Integer yargs[] = {
+                vf.valueOf(BigInteger.valueOf(y)),
+                vf.valueOf((long)y),
+                vf.valueOf(y)
+            };
+            for (int k = 0; k < xargs.length; k++) {
+                Integer xs = xargs[k];
+                Integer ys = yargs[k];
+                Integer d = (Integer)AlgebraicAlgorithms.gcd(xs, ys);
+                assertTrue(xs.modulo(d).isZero(),
+                           "gcd(" + xs + "," + ys + ") = " + d + " divides " + x  + "\n" + xs + "@" + xs.getClass() + " " + ys + "@" + ys.getClass() + " " + d + "@" + d.getClass());
+                assertTrue(ys.modulo(d).isZero(),
+                           "gcd(" + xs + "," + ys + ") = " + d + " divides " + y  + "\n" + xs + "@" + xs.getClass() + " " + ys + "@" + ys.getClass() + " " + d + "@" + d.getClass());
+            }
+        }
     }
 
     public void testlcm() {
-	for (int i = 0; i < TEST_REPETITIONS; i++) {
-	    int x = random.randomInt();
-	    if (x == 0) x++;
-	    Integer xargs[] = {
-		vf.valueOf(BigInteger.valueOf(x)),
-		vf.valueOf((long)x),
-		vf.valueOf(x)
-	    };
-	    int y = random.randomInt();
-	    if (y == 0) y++;
-	    Integer yargs[] = {
-		vf.valueOf(BigInteger.valueOf(y)),
-		vf.valueOf((long)y),
-		vf.valueOf(y)
-	    };
-	    for (int k = 0; k < xargs.length; k++) {
-		Integer xs = xargs[k];
-		Integer ys = yargs[k];
-		Integer m = (Integer)AlgebraicAlgorithms.lcm(xs, ys);
-		assertTrue(m.modulo(xs).isZero(),
-			   "lcm(" + xs + "," + ys + ") = " + m + " multiple of " + xs + "\n" + xs + "@" + xs.getClass() + " " + ys + "@" + ys.getClass() + " " + m + "@" + m.getClass());
-		assertTrue(m.modulo(ys).isZero(),
-			   "lcm(" + xs + "," + ys + ") = " + m + " multiple of " + ys + "\n" + xs + "@" + xs.getClass() + " " + ys + "@" + ys.getClass() + " " + m + "@" + m.getClass());
-	    }
-	}
+        for (int i = 0; i < TEST_REPETITIONS; i++) {
+            int x = random.randomInt();
+            if (x == 0) x++;
+            Integer xargs[] = {
+                vf.valueOf(BigInteger.valueOf(x)),
+                vf.valueOf((long)x),
+                vf.valueOf(x)
+            };
+            int y = random.randomInt();
+            if (y == 0) y++;
+            Integer yargs[] = {
+                vf.valueOf(BigInteger.valueOf(y)),
+                vf.valueOf((long)y),
+                vf.valueOf(y)
+            };
+            for (int k = 0; k < xargs.length; k++) {
+                Integer xs = xargs[k];
+                Integer ys = yargs[k];
+                Integer m = (Integer)AlgebraicAlgorithms.lcm(xs, ys);
+                assertTrue(m.modulo(xs).isZero(),
+                           "lcm(" + xs + "," + ys + ") = " + m + " multiple of " + xs + "\n" + xs + "@" + xs.getClass() + " " + ys + "@" + ys.getClass() + " " + m + "@" + m.getClass());
+                assertTrue(m.modulo(ys).isZero(),
+                           "lcm(" + xs + "," + ys + ") = " + m + " multiple of " + ys + "\n" + xs + "@" + xs.getClass() + " " + ys + "@" + ys.getClass() + " " + m + "@" + m.getClass());
+            }
+        }
     }
     
     public void testdSolve() {
         System.out.println("solving differential equations");
-	final Symbol t = vf.symbol("t");
-	final Real tau = vf.ZERO();
+        final Symbol t = vf.symbol("t");
+        final Real tau = vf.ZERO();
         Matrix A = vf.valueOf(new double[][] {
-	    {0}
-	});
-	Vector b = vf.valueOf(new Arithmetic[]{vf.valueOf(2)});
-	Vector eta = vf.valueOf(new Symbol[]{vf.symbol("x0")});
-	Function f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
-	System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
-	System.out.println("  solution at " + 0 + " is " + f.apply(vf.valueOf(0)));
-	System.out.println("  solution at " + 1 + " is " + f.apply(vf.valueOf(1)));
-	System.out.println("  solution at " + t + " is " + f.apply(t));
+            {0}
+        });
+        Vector b = vf.valueOf(new Arithmetic[]{vf.valueOf(2)});
+        Vector eta = vf.valueOf(new Symbol[]{vf.symbol("x0")});
+        Function f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
+        System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
+        System.out.println("  solution at " + 0 + " is " + f.apply(vf.valueOf(0)));
+        System.out.println("  solution at " + 1 + " is " + f.apply(vf.valueOf(1)));
+        System.out.println("  solution at " + t + " is " + f.apply(t));
 
         A = vf.valueOf(new double[][] {
-	    {0,1},
-	    {0,0}
-	});
-	b = vf.valueOf(new double[]{0,0});
-	eta = vf.valueOf(new double[]{0,0});
-	f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
-	System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
-	System.out.println("  solution at " + 0 + " is " + f.apply(vf.valueOf(0)));
-	System.out.println("  solution at " + 1 + " is " + f.apply(vf.valueOf(1)));
-	System.out.println("  solution at " + t + " is " + f.apply(t));
+            {0,1},
+            {0,0}
+        });
+        b = vf.valueOf(new double[]{0,0});
+        eta = vf.valueOf(new double[]{0,0});
+        f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
+        System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
+        System.out.println("  solution at " + 0 + " is " + f.apply(vf.valueOf(0)));
+        System.out.println("  solution at " + 1 + " is " + f.apply(vf.valueOf(1)));
+        System.out.println("  solution at " + t + " is " + f.apply(t));
 
 
-	eta = vf.valueOf(new double[]{1,2});
-	f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
-	System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
-	System.out.println("  solution at " + 0 + " is " + f.apply(vf.valueOf(0)));
-	System.out.println("  solution at " + 1 + " is " + f.apply(vf.valueOf(1)));
-	System.out.println("  solution at " + t + " is " + f.apply(t));
-	
-	eta = vf.valueOf(new Symbol[]{vf.symbol("z0"),vf.symbol("v0")});
-	f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
-	System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
-	System.out.println("  solution at " + 0 + " is " + f.apply(vf.valueOf(0)));
-	System.out.println("  solution at " + 1 + " is " + f.apply(vf.valueOf(1)));
-	System.out.println("  solution at " + t + " is " + f.apply(t));
+        eta = vf.valueOf(new double[]{1,2});
+        f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
+        System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
+        System.out.println("  solution at " + 0 + " is " + f.apply(vf.valueOf(0)));
+        System.out.println("  solution at " + 1 + " is " + f.apply(vf.valueOf(1)));
+        System.out.println("  solution at " + t + " is " + f.apply(t));
+        
+        eta = vf.valueOf(new Symbol[]{vf.symbol("z0"),vf.symbol("v0")});
+        f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
+        System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
+        System.out.println("  solution at " + 0 + " is " + f.apply(vf.valueOf(0)));
+        System.out.println("  solution at " + 1 + " is " + f.apply(vf.valueOf(1)));
+        System.out.println("  solution at " + t + " is " + f.apply(t));
 
         A = vf.valueOf(new double[][] {
-	    {0,1,0},
-	    {0,0,1},
-	    {0,0,0},
-	});
-	b = vf.valueOf(new double[]{0,0,0});
-	eta = vf.valueOf(new Symbol[]{vf.symbol("z0"),vf.symbol("v0"),vf.symbol("a")});
-	System.out.println("train dynamics with constant acceleration a as x3 and initial values of position, velocity and acceleration " + eta);
-	f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
-	System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
-	System.out.println("  solution at " + 0 + " is " + f.apply(vf.valueOf(0)));
-	System.out.println("  solution at " + 1 + " is " + f.apply(vf.valueOf(1)));
-	System.out.println("  solution at " + t + " is " + f.apply(t));
-
-
-	A = vf.valueOf(new double[][] {
-	    {0,1,2},
-	    {0,0,1},
-	    {0,0,0},
-	});
-	b = vf.valueOf(new double[]{0,0,0});
-	eta = vf.valueOf(new double[]{1,2,3});
-	f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
-	System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
-	System.out.println("  solution at " + 0 + " is " + f.apply(vf.valueOf(0)));
-	System.out.println("  solution at " + 1 + " is " + f.apply(vf.valueOf(1)));
-	System.out.println("  solution at " + t + " is " + f.apply(t));
+            {0,1,0},
+            {0,0,1},
+            {0,0,0},
+        });
+        b = vf.valueOf(new double[]{0,0,0});
+        eta = vf.valueOf(new Symbol[]{vf.symbol("z0"),vf.symbol("v0"),vf.symbol("a")});
+        System.out.println("train dynamics with constant acceleration a as x3 and initial values of position, velocity and acceleration " + eta);
+        f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
+        System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
+        System.out.println("  solution at " + 0 + " is " + f.apply(vf.valueOf(0)));
+        System.out.println("  solution at " + 1 + " is " + f.apply(vf.valueOf(1)));
+        System.out.println("  solution at " + t + " is " + f.apply(t));
 
 
         A = vf.valueOf(new double[][] {
-	    {0,1},
-	    {0,0}
-	});
-	b = vf.valueOf(new Arithmetic[]{vf.ZERO,vf.symbol("a")});
-	eta = vf.valueOf(new Symbol[]{vf.symbol("z0"),vf.symbol("v0")});
-	System.out.println("train dynamics with constant acceleration a as inhomogeneous part and initial value " + eta);
-	f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
-	System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
-	System.out.println("  solution at " + 0 + " is " + f.apply(vf.valueOf(0)));
-	System.out.println("  solution at " + 1 + " is " + f.apply(vf.valueOf(1)));
-	System.out.println("  solution at " + t + " is " + f.apply(t));
+            {0,1,2},
+            {0,0,1},
+            {0,0,0},
+        });
+        b = vf.valueOf(new double[]{0,0,0});
+        eta = vf.valueOf(new double[]{1,2,3});
+        f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
+        System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
+        System.out.println("  solution at " + 0 + " is " + f.apply(vf.valueOf(0)));
+        System.out.println("  solution at " + 1 + " is " + f.apply(vf.valueOf(1)));
+        System.out.println("  solution at " + t + " is " + f.apply(t));
 
-	A = vf.valueOf(new double[][] {
-	    {0,1,0,0},
-	    {0,0,1,0},
-	    {0,0,0,1},
-	    {0,0,0,0},
-	});
-	b = vf.valueOf(new Arithmetic[]{vf.ZERO,vf.ZERO,vf.ZERO,vf.symbol("b")});
-	eta = vf.valueOf(new Symbol[]{vf.symbol("a1"),vf.symbol("a2"),vf.symbol("a3"),vf.symbol("a4")});
-	f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
-	System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
-	System.out.println("  solution at " + 0 + " is " + f.apply(vf.valueOf(0)));
-	System.out.println("  solution at " + 1 + " is " + f.apply(vf.valueOf(1)));
-	System.out.println("  solution at " + t + " is " + f.apply(t));
+
+        A = vf.valueOf(new double[][] {
+            {0,1},
+            {0,0}
+        });
+        b = vf.valueOf(new Arithmetic[]{vf.ZERO,vf.symbol("a")});
+        eta = vf.valueOf(new Symbol[]{vf.symbol("z0"),vf.symbol("v0")});
+        System.out.println("train dynamics with constant acceleration a as inhomogeneous part and initial value " + eta);
+        f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
+        System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
+        System.out.println("  solution at " + 0 + " is " + f.apply(vf.valueOf(0)));
+        System.out.println("  solution at " + 1 + " is " + f.apply(vf.valueOf(1)));
+        System.out.println("  solution at " + t + " is " + f.apply(t));
+
+        A = vf.valueOf(new double[][] {
+            {0,1,0,0},
+            {0,0,1,0},
+            {0,0,0,1},
+            {0,0,0,0},
+        });
+        b = vf.valueOf(new Arithmetic[]{vf.ZERO,vf.ZERO,vf.ZERO,vf.symbol("b")});
+        eta = vf.valueOf(new Symbol[]{vf.symbol("a1"),vf.symbol("a2"),vf.symbol("a3"),vf.symbol("a4")});
+        f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
+        System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);
+        System.out.println("  solution at " + 0 + " is " + f.apply(vf.valueOf(0)));
+        System.out.println("  solution at " + 1 + " is " + f.apply(vf.valueOf(1)));
+        System.out.println("  solution at " + t + " is " + f.apply(t));
 
     }
 }

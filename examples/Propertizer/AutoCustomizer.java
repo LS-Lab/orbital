@@ -9,7 +9,7 @@ import javax.swing.*;
 public class AutoCustomizer {
     public static void main(String arg[]) throws Exception {
         javax.swing.JFrame f = new javax.swing.JFrame();
-	f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.getContentPane().setLayout(new java.awt.BorderLayout());
         Component p = (Component) java.beans.Beans.instantiate(AutoCustomizer.class.getClassLoader(), orbital.awt.NumberInput.class.getName());
         p.addMouseListener(new orbital.awt.CustomizerViewController(f));

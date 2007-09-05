@@ -96,7 +96,7 @@ class ArithmeticUnivariatePolynomial/*<R extends Arithmetic>*/ extends AbstractU
         this.R_ZERO = coefficients.length > 0 ? coefficients[0].zero() : Values.getDefault().ZERO();
         if (i >= oldDegree) {
             this.degree = degreeImpl(coefficients);
-	}
+        }
     }
 
     public Arithmetic/*>R<*/[] getCoefficients() {

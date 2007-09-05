@@ -538,11 +538,11 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final BinaryPredicate/*<Object,Object>*/ equal = new BinaryPredicate/*<Object,Object>*/() {
             public boolean apply(Object a, Object b) {
-		if (a == b)
-		    return true;
-		if (b == null)
-		    //@xxx is this okay?
-		    return false;
+                if (a == b)
+                    return true;
+                if (b == null)
+                    //@xxx is this okay?
+                    return false;
                 Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer(true).apply(new Arithmetic[] {
                     (Arithmetic) a, (Arithmetic) b
                 });
@@ -562,8 +562,8 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final BinaryPredicate/*<Object,Object>*/ unequal = new BinaryPredicate/*<Object,Object>*/() {
             public boolean apply(Object a, Object b) {
-		if (a == b)
-		    return false;
+                if (a == b)
+                    return false;
                 Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer(true).apply(new Arithmetic[] {
                     (Arithmetic) a, (Arithmetic) b
                 });
@@ -687,7 +687,7 @@ public interface Operations /* implements ArithmeticOperations */ {
             private final short dummy = initialize();
             private final short initialize() {
                 //@TODO: + and * could have yfy as well? Would avoid 1+(2+3)
-		//@xxx how to avoid amibiguous prints like 7*1/2/3
+                //@xxx how to avoid amibiguous prints like 7*1/2/3
                 Notation.setAllNotations(new Object[][] {
                     {Operations.inverse,                                        // "^-1"
                      new NotationSpecification(195, "xf", Notation.POSTFIX)},

@@ -40,7 +40,7 @@ public class RobotNavigation implements MarkovDecisionProblem {
         //planner = new GaussSeidelDynamicProgramming(nav.getHeuristic(), nav.allStates(), 0.1);
 
         JFrame f = new JFrame();
-	f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.add(nav.getView());
         f.pack();
         f.setVisible(true);

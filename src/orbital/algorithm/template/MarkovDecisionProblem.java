@@ -109,7 +109,7 @@ public interface MarkovDecisionProblem/*<A,S,M extends MarkovDecisionProblem.Tra
      * @author  Andr&eacute; Platzer
      */
     static interface Transition/*<A,S,M extends MarkovDecisionProblem.Transition>*/
-	extends TransitionModel.Transition {
+        extends TransitionModel.Transition {
         /**
          * Get the cost of taking the action leading to this transition.
          * <p>
@@ -133,7 +133,7 @@ public interface MarkovDecisionProblem/*<A,S,M extends MarkovDecisionProblem.Tra
      * @author  Andr&eacute; Platzer
      */
     public static class DefaultTransition/*<A,S,M extends MarkovDecisionProblem.Transition>*/
-	implements Transition, Serializable {
+        implements Transition, Serializable {
         private static final long serialVersionUID = -5421585936741224969L;
         /**
          * the probability of reaching a state (in the corresponding context).

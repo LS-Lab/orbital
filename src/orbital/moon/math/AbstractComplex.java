@@ -49,10 +49,10 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
     } 
 
     public boolean isZero() {
-	return re().isZero() && im().isZero();
+        return re().isZero() && im().isZero();
     }
     public boolean isOne() {
-	return re().isOne() && im().isZero();
+        return re().isOne() && im().isZero();
     }
 
     
@@ -156,18 +156,18 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
      * @return an array of the converted versions of a and b respectively.
      */
     static Complex[] makeComplex(Number a, Number b) {
-	if (a instanceof Impl || b instanceof Impl) {
-	    return new Complex[] {
-		a instanceof Impl ? (Complex)a : new Impl(a),
-		b instanceof Impl ? (Complex)b : new Impl(b)
-	    };
-	} else {
-	    //@todo could also check whether Float would be sufficient
-	    return new Complex[] {
-		a instanceof Double ? (Complex)a : new Double(a),
-		b instanceof Double ? (Complex)b : new Double(b)
-	    };
-	}
+        if (a instanceof Impl || b instanceof Impl) {
+            return new Complex[] {
+                a instanceof Impl ? (Complex)a : new Impl(a),
+                b instanceof Impl ? (Complex)b : new Impl(b)
+            };
+        } else {
+            //@todo could also check whether Float would be sufficient
+            return new Complex[] {
+                a instanceof Double ? (Complex)a : new Double(a),
+                b instanceof Double ? (Complex)b : new Double(b)
+            };
+        }
     }
 
     /**
@@ -220,12 +220,12 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
         }
         public Double(Number a) {
             if (a instanceof Complex) {
-		real = ((Complex)a).re().doubleValue();
-		imaginary = ((Complex)a).im().doubleValue();
-	    } else {
-		real = a.doubleValue();
-		imaginary = 0;
-	    }
+                real = ((Complex)a).re().doubleValue();
+                imaginary = ((Complex)a).im().doubleValue();
+            } else {
+                real = a.doubleValue();
+                imaginary = 0;
+            }
         }
     
         /**
@@ -254,7 +254,7 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
                 AbstractComplex b = (AbstractComplex) o;
                 final double deltare = realValue() - b.realValue();
                 final double deltaim = imaginaryValue() - b.imaginaryValue();
-		final double tol = tolerance.doubleValue();
+                final double tol = tolerance.doubleValue();
                 return deltare*deltare + deltaim*deltaim <= tol*tol;
             } else
                 return super.equals(o, tolerance);
@@ -288,33 +288,33 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
             return imaginary;
         } 
     
-	/**
-	 * Throws an UnsupportedOperationException if this complex has an imaginary part.
-	 */
-	public double doubleValue() {
-	    if (im().isZero())
-		return re().doubleValue();
-	    else
-		throw new UnsupportedOperationException("complex value has no real value");
+        /**
+         * Throws an UnsupportedOperationException if this complex has an imaginary part.
+         */
+        public double doubleValue() {
+            if (im().isZero())
+                return re().doubleValue();
+            else
+                throw new UnsupportedOperationException("complex value has no real value");
 
-	    // return java.lang.Double.NaN;
-	} 
-	public float floatValue() {
-	    if (im().isZero())
-		return re().floatValue();
-	    else
-		throw new UnsupportedOperationException("complex value has no real value");
+            // return java.lang.Double.NaN;
+        } 
+        public float floatValue() {
+            if (im().isZero())
+                return re().floatValue();
+            else
+                throw new UnsupportedOperationException("complex value has no real value");
 
-	    // return java.lang.Double.NaN;
-	} 
-	public long longValue() {
-	    if (im().isZero())
-		return ((Number)re()).longValue();
-	    else
-		throw new UnsupportedOperationException("complex value has no real value");
+            // return java.lang.Double.NaN;
+        } 
+        public long longValue() {
+            if (im().isZero())
+                return ((Number)re()).longValue();
+            else
+                throw new UnsupportedOperationException("complex value has no real value");
 
-	    // return java.lang.Double.NaN;
-	} 
+            // return java.lang.Double.NaN;
+        } 
 
         /**
          * Returns the complex conjugated <span class="conjugate">z</span> = z<sup>*</sup> = z'.
@@ -368,9 +368,9 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
          * @return z<sup>-1</sup> = <span class="conjugate">z</span>/|z|<sup>2</sup>.
          */
         public Arithmetic inverse() {
-	    double real = realValue();
-	    double imaginary = imaginaryValue();
-	    double s = real * real + imaginary * imaginary;
+            double real = realValue();
+            double imaginary = imaginaryValue();
+            double s = real * real + imaginary * imaginary;
             return new Double(realValue() / s, -imaginaryValue() / s);
         } 
     }
@@ -399,16 +399,16 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
     
         public Impl(Real a, Real b) {
             this.real = a;
-	    this.imaginary = b;
+            this.imaginary = b;
         }
         public Impl(Number a) {
             if (a instanceof Complex) {
-		real = ((Complex)a).re();
-		imaginary = ((Complex)a).im();
-	    } else {
-		real = (Real)Values.getDefault().valueOf(a);
-		imaginary = Values.getDefault().ZERO();
-	    }
+                real = ((Complex)a).re();
+                imaginary = ((Complex)a).im();
+            } else {
+                real = (Real)Values.getDefault().valueOf(a);
+                imaginary = Values.getDefault().ZERO();
+            }
         }
     
     
@@ -434,40 +434,40 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
         public Real im() {
             return imaginary;
         } 
-	double realValue() {
-	    return re().doubleValue();
-	}
-	double imaginaryValue() {
-	    return im().doubleValue();
-	}
+        double realValue() {
+            return re().doubleValue();
+        }
+        double imaginaryValue() {
+            return im().doubleValue();
+        }
     
-	/**
-	 * Throws an UnsupportedOperationException if this complex has an imaginary part.
-	 */
-	public double doubleValue() {
-	    if (im().isZero())
-		return re().doubleValue();
-	    else
-		throw new UnsupportedOperationException("complex value has no real value");
+        /**
+         * Throws an UnsupportedOperationException if this complex has an imaginary part.
+         */
+        public double doubleValue() {
+            if (im().isZero())
+                return re().doubleValue();
+            else
+                throw new UnsupportedOperationException("complex value has no real value");
 
-	    // return java.lang.Double.NaN;
-	} 
-	public float floatValue() {
-	    if (im().isZero())
-		return re().floatValue();
-	    else
-		throw new UnsupportedOperationException("complex value has no real value");
+            // return java.lang.Double.NaN;
+        } 
+        public float floatValue() {
+            if (im().isZero())
+                return re().floatValue();
+            else
+                throw new UnsupportedOperationException("complex value has no real value");
 
-	    // return java.lang.Double.NaN;
-	} 
-	public long longValue() {
-	    if (im().isZero())
-		return ((Number)re()).longValue();
-	    else
-		throw new UnsupportedOperationException("complex value has no real value");
+            // return java.lang.Double.NaN;
+        } 
+        public long longValue() {
+            if (im().isZero())
+                return ((Number)re()).longValue();
+            else
+                throw new UnsupportedOperationException("complex value has no real value");
 
-	    // return java.lang.Double.NaN;
-	} 
+            // return java.lang.Double.NaN;
+        } 
 
         /**
          * Returns the complex conjugated <span class="conjugate">z</span> = z<sup>*</sup> = z'.

@@ -31,17 +31,17 @@ public class ArithmeticTestPatternGenerator {
      * Create a test pattern generator for values in the given range [min,max].
      */
     public ArithmeticTestPatternGenerator(double min, double max, ValueFactory valueFactory) {
-	this.random = new Random();
-	this.vf = valueFactory;
-	this.min = min;
-	this.max = max;
+        this.random = new Random();
+        this.vf = valueFactory;
+        this.min = min;
+        this.max = max;
     }
     public ArithmeticTestPatternGenerator(double min, double max) {
-	this(min, max, Values.getDefault());
+        this(min, max, Values.getDefault());
     }
 
     public ArithmeticTestPatternGenerator() {
-	this(-1000, 1000);
+        this(-1000, 1000);
     }
     
     // randomly generate Arithmetic values
@@ -63,22 +63,22 @@ public class ArithmeticTestPatternGenerator {
      * Randomly generate a scalar or symbol from the given list of possible types.
      */
     public Arithmetic randomScalary(double min, double max, List/*<Class>*/ types) {
-	Class t = (Class) types.get(randomInt(0, types.size() - 1));
+        Class t = (Class) types.get(randomInt(0, types.size() - 1));
         if (t == Integer.class)
             return vf.valueOf(randomInt((int)Math.ceil(min), (int)Math.floor(max)));
-	else if (t == Rational.class)
-	    return vf.rational(randomInt((int)min, (int)max), randomInt(1, (int)max));
+        else if (t == Rational.class)
+            return vf.rational(randomInt((int)min, (int)max), randomInt(1, (int)max));
         else if (t == Symbol.class)
             return vf.symbol("a" + (symbolId++));
         else if (t == Complex.class) {
-	    List realtypes = new LinkedList(types);
-	    realtypes.remove(Complex.class);
+            List realtypes = new LinkedList(types);
+            realtypes.remove(Complex.class);
             return vf.complex((Real)randomScalary(min, max, realtypes), (Real)randomScalary(min, max, realtypes));
-	} else
-	    throw new IllegalArgumentException("no known type provided " + types);
+        } else
+            throw new IllegalArgumentException("no known type provided " + types);
     }
     public Arithmetic randomScalary(List/*<Class>*/ types) {
-	return randomScalary(min, max, types);
+        return randomScalary(min, max, types);
     }
 
 
@@ -96,7 +96,7 @@ public class ArithmeticTestPatternGenerator {
         return x;
     }
     public Matrix randomMatrix(List/*<Class>*/ types, Dimension dim) {
-	return randomMatrix(min, max, types, dim);
+        return randomMatrix(min, max, types, dim);
     }
     /**
      * Randomly generate a vector with the given list of possible component types.
@@ -111,14 +111,14 @@ public class ArithmeticTestPatternGenerator {
         return x;
     }
     public Vector randomVector(List/*<Class>*/ types, int dim) {
-	return randomVector(min, max, types, dim);
+        return randomVector(min, max, types, dim);
     }
 
     private static List scalars(List types) {
-	List l = new LinkedList(types);
-	l.remove(Vector.class);
-	l.remove(Matrix.class);
-	l.remove(Tensor.class);
-	return l;
+        List l = new LinkedList(types);
+        l.remove(Vector.class);
+        l.remove(Matrix.class);
+        l.remove(Tensor.class);
+        return l;
     }
 }

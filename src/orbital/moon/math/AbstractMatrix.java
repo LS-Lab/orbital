@@ -653,7 +653,7 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends A
 
         //@todo optimize sometime
         // initialize with sign of the optimized determinante of (0:0,0:0)
-	Arithmetic a11 = get(0, 0);
+        Arithmetic a11 = get(0, 0);
         int sign = -MathUtilities.sign(((Real)a11.zero()).compareTo(a11));
         if (sign == 0)
             throw new UnsupportedOperationException("only the test for positive definite and negative definite has been implemented yet");
@@ -745,17 +745,17 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends A
         if (dimension().width == 2)
             return (Arithmetic/*>R<*/) get(0, 0).multiply(get(1, 1)).subtract(get(1, 0).multiply(get(0, 1)));
 
-	final Arithmetic r = get(0, 0);
+        final Arithmetic r = get(0, 0);
         Integer MINUS_ONE = (Integer) r.one().minus();
         Arithmetic/*>R<*/  det = (Arithmetic/*>R<*/) r.zero();
         // development of 0-th row
         Matrix/*<R>*/ innerMatrix = ((Matrix) clone()).removeRow(0);
         for (int j = 0; j < dimension().width; j++) {
             // recursion
-	    if ((j & 1) == 0)
-		det = (Arithmetic/*>R<*/) det.add(get(0, j).multiply(((Matrix) innerMatrix.clone()).removeColumn(j).det()));
-	    else
-		det = (Arithmetic/*>R<*/) det.subtract(get(0, j).multiply(((Matrix) innerMatrix.clone()).removeColumn(j).det()));
+            if ((j & 1) == 0)
+                det = (Arithmetic/*>R<*/) det.add(get(0, j).multiply(((Matrix) innerMatrix.clone()).removeColumn(j).det()));
+            else
+                det = (Arithmetic/*>R<*/) det.subtract(get(0, j).multiply(((Matrix) innerMatrix.clone()).removeColumn(j).det()));
         } 
         return det;
     } 

@@ -34,32 +34,32 @@ abstract class MathFunctor_CompositeFunctor extends AbstractFunctor implements M
      */
     private Notation notation;
     protected MathFunctor_CompositeFunctor(Notation notation) {
-	setNotation(notation);
+        setNotation(notation);
     }
     protected MathFunctor_CompositeFunctor() {
-	this(null);
+        this(null);
     }
     
     public orbital.logic.Composite construct(Object f, Object g) {
-	try {
-	    orbital.logic.Composite c = (orbital.logic.Composite) getClass().newInstance();
-	    c.setCompositor(f);
-	    c.setComponent(g);
-	    return c;
-	}
-	catch (InstantiationException ass) {
-	    throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite construct(Object,Object)").initCause(ass);
-	}
-	catch (IllegalAccessException ass) {
-	    throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite construct(Object,Object)").initCause(ass);
-	}
+        try {
+            orbital.logic.Composite c = (orbital.logic.Composite) getClass().newInstance();
+            c.setCompositor(f);
+            c.setComponent(g);
+            return c;
+        }
+        catch (InstantiationException ass) {
+            throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite construct(Object,Object)").initCause(ass);
+        }
+        catch (IllegalAccessException ass) {
+            throw (UnsupportedOperationException) new UnsupportedOperationException("invariant: sub classes of " + Functor.Composite.class + " must either support nullary constructor for modification cloning or overwrite construct(Object,Object)").initCause(ass);
+        }
     }
             
     public Notation getNotation() {
-	return notation;
+        return notation;
     }
     public void setNotation(Notation notation) {
-	this.notation = notation == null ? Notation.DEFAULT : notation;
+        this.notation = notation == null ? Notation.DEFAULT : notation;
     }
                 
     /**
@@ -68,16 +68,16 @@ abstract class MathFunctor_CompositeFunctor extends AbstractFunctor implements M
      * their compositors and their components are equal.
      */
     public boolean equals(Object o) {
-	if (o == null || getClass() != o.getClass())
-	    return false;
-	// note that it does not matter to which .Composite we cast since we have already checked for class equality
-	orbital.logic.Composite b = (orbital.logic.Composite) o;
-	return Utility.equals(getCompositor(), b.getCompositor())
-	    && Utility.equalsAll(getComponent(), b.getComponent());
+        if (o == null || getClass() != o.getClass())
+            return false;
+        // note that it does not matter to which .Composite we cast since we have already checked for class equality
+        orbital.logic.Composite b = (orbital.logic.Composite) o;
+        return Utility.equals(getCompositor(), b.getCompositor())
+            && Utility.equalsAll(getComponent(), b.getComponent());
     }
     
     public int hashCode() {
-	return Utility.hashCode(getCompositor()) ^ Utility.hashCodeAll(getComponent());
+        return Utility.hashCode(getCompositor()) ^ Utility.hashCodeAll(getComponent());
     }
     
     /**
@@ -85,6 +85,6 @@ abstract class MathFunctor_CompositeFunctor extends AbstractFunctor implements M
      * @return <code>{@link Notation#format(Object, Object) notation.format}((Functor)getCompositor(), getComponent())</code>.
      */
     public String toString() {
-	return getNotation().format((Functor)getCompositor(), getComponent());
+        return getNotation().format((Functor)getCompositor(), getComponent());
     }
 }

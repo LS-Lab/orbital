@@ -230,7 +230,7 @@ public class BreederControl extends JFrame implements Runnable {
      */
     public BreederControl() {
         //prior to initializing any other handlers
-	//@todo could get rid of this
+        //@todo could get rid of this
         new SystemRequestor(new Predicate() {
                 public boolean apply(Object e) {
                     int i = ((Number) e).intValue();
@@ -243,7 +243,7 @@ public class BreederControl extends JFrame implements Runnable {
             }, this);
         custom = new CustomizerViewController(this);
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-	//@todo could get rid of this
+        //@todo could get rid of this
         closer = new Closer(this, this, true, false);
         closer.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {

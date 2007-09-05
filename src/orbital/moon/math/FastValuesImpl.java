@@ -51,7 +51,7 @@ public class FastValuesImpl extends ValuesImpl {
     private static final Integer posConst[] = new Integer[MAX_CONSTANT + 1];
     private static final Integer negConst[] = new Integer[MAX_CONSTANT + 1];
     static {
-	//@fixme this static initialization somehow is not yet executed before the super constructor is called. Move constants here
+        //@fixme this static initialization somehow is not yet executed before the super constructor is called. Move constants here
         posConst[0] = negConst[0] = new AbstractInteger.Long(0);
         for (int i = 1; i <= MAX_CONSTANT; i++) {
             posConst[i] = new AbstractInteger.Long(i);

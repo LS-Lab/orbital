@@ -71,7 +71,7 @@ public interface HeuristicAlgorithm/*<Problem extends AlgorithmicProblem, S exte
      * @todo move to HeuristicAlgorithm.Configuration ?
      */
     public static class Configuration/*<Problem extends AlgorithmicProblem, S extends Object>*/
-	extends AlgorithmicTemplate.Configuration/*<Problem,S>*/ {
+        extends AlgorithmicTemplate.Configuration/*<Problem,S>*/ {
         private static final long serialVersionUID = 8651734898965188478L;
 
         /**

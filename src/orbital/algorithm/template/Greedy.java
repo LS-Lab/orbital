@@ -71,7 +71,7 @@ public class Greedy/*<C>*/ implements AlgorithmicTemplate/*<GreedyProblem<C>,Lis
      * @internal optimizable we could remember the index of the current best candidate during search for removing it later on
      */
     public Object/*>List<C><*/ solve(AlgorithmicProblem/*>GreedyProblem<C><*/ gp) {
-	GreedyProblem/*<C>*/ p = (GreedyProblem)gp;
+        GreedyProblem/*<C>*/ p = (GreedyProblem)gp;
         List/*<C>*/ C = p.getInitialCandidates();
         List/*<C>*/ S = new LinkedList/*<C>*/();
         while (p.isPartialSolution(S) && !C.isEmpty()) {

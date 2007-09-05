@@ -295,9 +295,9 @@ abstract class AbstractVector/*<R extends Arithmetic>*/ extends AbstractTensor i
             throw new IllegalArgumentException("p-norm defined for p>=1");
         if (p == Double.POSITIVE_INFINITY)
             return (Real/*__*/) Operations.sup.apply(Functionals.map(Functions.norm, this));
-	if (p == 2)
-	    // optimized case
-	    return (Real/*__*/) Functions.sqrt.apply(Operations.sum.apply(Functionals.map(Functions.square, Functionals.map(Functions.norm, iterator()))));
+        if (p == 2)
+            // optimized case
+            return (Real/*__*/) Functions.sqrt.apply(Operations.sum.apply(Functionals.map(Functions.square, Functionals.map(Functions.norm, iterator()))));
         return (Real/*__*/) Operations.power.apply(Operations.sum.apply(Functionals.map(Functions.pow(p), Functionals.map(Functions.norm, iterator()))), Values.getDefaultInstance().valueOf(1 / p));
     } 
 
@@ -367,9 +367,9 @@ abstract class AbstractVector/*<R extends Arithmetic>*/ extends AbstractTensor i
     } 
     public Arithmetic divide(Arithmetic b) {
         if (b instanceof Scalar)
-	    return scale(b.inverse());
-	else
-	    throw new UnsupportedOperationException("vector space is no field");
+            return scale(b.inverse());
+        else
+            throw new UnsupportedOperationException("vector space is no field");
     } 
     public Arithmetic power(Arithmetic b) {
         throw new UnsupportedOperationException("vector space is no field");
