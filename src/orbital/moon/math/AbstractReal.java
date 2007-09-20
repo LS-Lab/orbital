@@ -391,7 +391,8 @@ abstract class AbstractReal extends AbstractComplex implements Real {
     static class Big extends AbstractReal implements orbital.moon.math.Big {
         private static final long serialVersionUID = -5801439569926611104L;
         //@xxx change to working precision and dynamically query
-        private static MathContext precision = new MathContext(Math.max(17,MathUtilities.getDefaultPrecisionDigits()), RoundingMode.HALF_UP);
+        private static MathContext precision = MathContext.DECIMAL128;
+            // = new MathContext(Math.max(17,MathUtilities.getDefaultPrecisionDigits()), RoundingMode.HALF_UP);
         static MathContext getPrecision() {
             return precision;
         }
