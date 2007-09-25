@@ -765,17 +765,24 @@
 
 	<input message="Enter Passphrase for keystore: "
 	    addproperty="pass"/>
-	<signjar jar="${dist}/lib/orbital-core.jar" alias="Andre" storepass="${pass}"/>
-	<signjar jar="${dist}/lib/orbital-ext.jar" alias="Andre" storepass="${pass}"/>
-	<signjar jar="${dist}/lib/orbital${version_brief}.jar" alias="Andre" storepass="${pass}"/>
+        <condition property="signing">
+          <not><equals arg1="${pass}" arg2=""/></not>
+        </condition>
+        <antcall target="jar.sign" />
 
-	<touch datetime="${TODAY} 1:01 am">
+	<touch datetime="${TODAY} 1:20 am">
 	    <fileset dir="${dist}/lib">
 	        <include name="*.jar"/>
 	    </fileset>
 	</touch>
     </target>
 
+    <target name="jar.sign" depends="init"
+            if="signing">
+	<signjar jar="${dist}/lib/orbital-core.jar" alias="Andre" storepass="${pass}"/>
+	<signjar jar="${dist}/lib/orbital-ext.jar" alias="Andre" storepass="${pass}"/>
+	<signjar jar="${dist}/lib/orbital${version_brief}.jar" alias="Andre" storepass="${pass}"/>
+    </target>
 
 
     <target name="dist" depends="init, clean, run.tests, dist.notests"
@@ -802,23 +809,19 @@
         <replace file="${dist}/readme.html" token="@VERSION_DATE@" value="${VERSION_DATE}"/>
 
         <!-- make zip-file -->
-        <zip destfile="${dist}/ap_orbital_rt${version_brief}.zip" duplicate="fail">
+        <zip destfile="${dist}/ap_orbital${version_brief}.zip" duplicate="fail">
             <zipfileset dir="${basedir}" includes="COPYRIGHT.*" prefix="Orbital"/>
-            <zipfileset dir="${doc}" prefix="Orbital">
-	        <include name="orbital.gif"/>
-	        <include name="overview.html"/>
-	    </zipfileset>
             <zipfileset dir="${dist}" prefix="Orbital">
 	        <include name="readme.html"/>
 	    </zipfileset>
-<!--
-            <zipfileset dir="${lib}" prefix="Orbital/lib">
-                <include name="**/*.jar"/>
-                <include name="**/*.zip"/>
-            </zipfileset>
--->
+            <zipfileset dir="${doc}" prefix="Orbital">
+	        <include name="orbital.gif"/>
+	        <include name="overview.html"/>
+	        <include name="recommendations.html"/>
+	    </zipfileset>
             <zipfileset dir="${dist}" includes="lib/*.jar" prefix="Orbital">
                 <exclude name="lib/orbital${version_brief}.jar"/>
+                <exclude name="lib/orbital1.*.jar"/>
             </zipfileset>
             <zipfileset dir="${bin}" prefix="Orbital/bin">
 	        <include name="**/*.bat"/>
@@ -826,21 +829,12 @@
 	        <include name="**/*.html"/>
 	        <include name="policy.all"/>
 	    </zipfileset>
-        </zip>
-
-        <zip destfile="${dist}/ap_orbital_doc${version_brief}.zip" duplicate="fail">
-            <zipfileset dir="${basedir}" includes="COPYRIGHT.*" prefix="Orbital-doc"/>
-            <zipfileset dir="${basedir}" includes="COPYRIGHT.*" prefix="Orbital-doc/api"/>
-            <zipfileset dir="${doc}" prefix="Orbital-doc">
-	        <include name="orbital.gif"/>
-	        <include name="orbital.ico"/>
-	        <include name="recommendations.html"/>
-	    </zipfileset>
-            <zipfileset dir="${dist}" includes="readme.html" prefix="Orbital-doc"/>
-            <zipfileset dir="${doc.dest}" prefix="Orbital-doc">
+            <!-- documentation part -->
+            <zipfileset dir="${basedir}" includes="COPYRIGHT.*" prefix="Orbital/api"/>
+            <zipfileset dir="${doc.dest}" prefix="Orbital">
 	        <exclude name="**/CVS/*"/>
 	    </zipfileset>
-            <zipfileset dir="${examples}" prefix="Orbital-doc/examples">
+            <zipfileset dir="${examples}" prefix="Orbital/examples">
 	        <exclude name="**/CVS/*"/>
 	        <exclude name="**/*.jpx*"/>
 		<exclude name="Algorithms/RubiksCube.patterndb"/>
@@ -848,7 +842,7 @@
 	    </zipfileset>
         </zip>
 
-	<touch datetime="${TODAY} 1:01 am">
+	<touch datetime="${TODAY} 1:20 am">
 	    <fileset dir="${dist}">
 	        <include name="*.zip"/>
 	    </fileset>
