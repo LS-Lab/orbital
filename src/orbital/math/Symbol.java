@@ -10,13 +10,18 @@ import orbital.logic.functor.Predicate;
 
 /**
  * Represents an algebraic or transcendental symbol.
- * 
+ * <p>
  * Algebraic or transcendental symbols behave like arithmetic objects,
  * with the exception that the result of an operation may not have a
  * numeric value but require a symbolic representation again.
- * 
+ * </p>
  * <p> Variables and constants are symbols, for example. Roots of
  * radicals can sometimes be represented as symbols. </p>
+ * <p>Formally, symbols are elements of a term algebra, which is essentially
+ * the free symbolic algebra without relations,
+ * see, e.g., {@link ValueFactory#quotient(Arithmetic,orbital.logic.functor.Function)}
+ * or {@link AlgebraicAlgorithms#reduce(Polynomial,java.util.Collection,java.util.Comparator)}
+ * for generating relations.</p>
  * 
  * @version $Id$
  * @author  Andr&eacute; Platzer

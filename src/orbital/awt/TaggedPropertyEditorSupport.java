@@ -48,6 +48,15 @@ public class TaggedPropertyEditorSupport extends PropertyEditorSupport implement
     protected TaggedPropertyEditorSupport(String[] tags, Object[] values) {
         this(tags, values, null);
     }
+    /* @todo add constructor for enums using
+    private static <E extends Enum<E>> String[] getNames(Enum<E> vals[]) {
+        java.util.List<String> names = new ArrayList<String>();
+        for (Enum<E> r : vals) {
+            names.add(r.toString());
+        }
+        return names.toArray(new String[0]);
+    }
+    */
 
     public String[] getTags() {
         return tags;

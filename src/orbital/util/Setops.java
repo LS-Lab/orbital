@@ -461,7 +461,7 @@ public final class Setops {
     public static /*<A>*/ Set/*<Set<A>>*/ powerset(Set/*<A>*/ s) {
         // list version of the set s (in arbitrary order)
         final Combinatorical c = Combinatorical.getPermutations(s.size(), 2, true);
-        final Set/*<Set<A>>*/ p = new HashSet/*<Set<A>>*/(c.count());
+        final Set/*<Set<A>>*/ p = new LinkedHashSet/*<Set<A>>*/(c.count());
         while (c.hasNext()) {
             int[] choose = c.next();
             Set/*<A>*/ e = (Set)newCollectionLike(s);

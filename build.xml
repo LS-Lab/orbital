@@ -585,7 +585,7 @@
 
     <!-- packaging and distribution -->
 
-    <target name="jar" depends="init, clean.nodoc, compile"
+    <target name="jar" depends="init, clean, compile"
             description="build all dist/*.jar">
         <mkdir dir="${dist}"/>
         <mkdir dir="${dist}/lib"/>
@@ -596,12 +596,12 @@
 	    <manifest>
 	        <attribute name="Built-By" value="${user.name}"/>
 	        <attribute name="Extension-Name" value="orbital-core"/>
-	        <attribute name="Specification-Title" value="Orbital library draft" />
+	        <attribute name="Specification-Title" value="Orbital library specification" />
 	        <attribute name="Specification-Vendor" value="Andre Platzer" />
 	        <attribute name="Specification-Version" value="${version}" />
-	        <attribute name="Implementation-Title" value="The Orbital library core" />
+	        <attribute name="Implementation-Title" value="Orbital library core" />
 	        <attribute name="Implementation-Vendor" value="Andre Platzer" />
-	        <attribute name="Implementation-Vendor-Id" value="orbital.moon.ap" />
+	        <attribute name="Implementation-Vendor-Id" value="www.functologic.com" />
 	        <attribute name="Implementation-Version" value="${version} ${TODAY}" /> 
 	        <attribute name="Package-Title" value="orbital-core" />
 	        <attribute name="Package-Vendor" value="Andre Platzer" />
@@ -609,6 +609,7 @@
 	        <attribute name="Sealed" value="true"/>
 	    </manifest>
 
+            <fileset dir="${basedir}" includes="COPYRIGHT.*"/>
             <fileset dir="${classes}">
                 <include name="orbital/logic/**/*.class"/>
                 <include name="orbital/math/**/*.class"/>
@@ -622,12 +623,12 @@
     	    <manifest>
 	        <attribute name="Built-By" value="${user.name}"/>
     	        <attribute name="Extension-Name" value="orbital-ext"/>
-                <attribute name="Specification-Title" value="Orbital library draft" />
+                <attribute name="Specification-Title" value="Orbital library specification" />
                 <attribute name="Specification-Vendor" value="Andre Platzer" />
                 <attribute name="Specification-Version" value="${version}" />
-                <attribute name="Implementation-Title" value="The Orbital library extension" />
+                <attribute name="Implementation-Title" value="Orbital library extension" />
                 <attribute name="Implementation-Vendor" value="Andre Platzer" />
-                <attribute name="Implementation-Vendor-Id" value="orbital.moon.ap" />
+                <attribute name="Implementation-Vendor-Id" value="www.functologic.com" />
                 <attribute name="Implementation-Version" value="${version} ${TODAY}" /> 
                 <attribute name="Package-Title" value="orbital-ext" />
                 <attribute name="Package-Vendor" value="Andre Platzer" />
@@ -663,6 +664,7 @@
     	        </section -->
             </manifest>
 
+            <fileset dir="${basedir}" includes="COPYRIGHT.*"/>
             <fileset dir="${classes}">
                 <include name="orbital/algorithm/**/*.class"/>
                 <include name="orbital/awt/**/*.class"/>
@@ -679,8 +681,6 @@
             <zipfileset dir="${doc}" prefix="orbital/moon">
 	        <include name="orbital.gif"/>
             </zipfileset>
-            <zipfileset dir="${basedir}" includes="COPYRIGHT.*">
-            </zipfileset>
             <fileset dir="${sources}/orbital">
 	        <include name="META-INF/services/*"/>
             </fileset>
@@ -691,12 +691,12 @@
 	    <manifest>
 	        <attribute name="Built-By" value="${user.name}"/>
 	        <attribute name="Extension-Name" value="orbital"/>
-	        <attribute name="Specification-Title" value="Orbital library draft" />
+	        <attribute name="Specification-Title" value="Orbital library specification" />
 	        <attribute name="Specification-Vendor" value="Andre Platzer" />
 	        <attribute name="Specification-Version" value="${version}" />
-	        <attribute name="Implementation-Title" value="The Orbital library core" />
+	        <attribute name="Implementation-Title" value="Orbital library all" />
 	        <attribute name="Implementation-Vendor" value="Andre Platzer" />
-	        <attribute name="Implementation-Vendor-Id" value="orbital.moon.ap" />
+	        <attribute name="Implementation-Vendor-Id" value="www.functologic.com" />
 	        <attribute name="Implementation-Version" value="${version} ${TODAY}" /> 
 	        <attribute name="Package-Title" value="orbital" />
 	        <attribute name="Package-Vendor" value="Andre Platzer" />
@@ -732,6 +732,7 @@
     	        </section -->
 	    </manifest>
 
+            <fileset dir="${basedir}" includes="COPYRIGHT.*"/>
             <fileset dir="${classes}">
                 <include name="orbital/logic/**/*.class"/>
                 <include name="orbital/math/**/*.class"/>
@@ -753,8 +754,6 @@
             <fileset dir="${resources}">
 	        <exclude name="java/**"/>
             </fileset>
-            <zipfileset dir="${basedir}" includes="COPYRIGHT.*">
-            </zipfileset>
             <zipfileset dir="${doc}" prefix="orbital/moon">
 	        <include name="orbital.gif"/>
             </zipfileset>
@@ -855,7 +854,7 @@
 
     <!-- cleanup -->
 
-    <target name="clean.nodoc" depends="init"
+    <target name="clean" depends="init"
             description="remove all *.class">
         <delete includeEmptyDirs="true" failonerror="false">
             <fileset dir="${sources}/">
@@ -882,7 +881,7 @@
         </delete>
     </target>
 
-    <target name="clean" depends="init, clean.nodoc"
+    <target name="realclean" depends="init, clean"
             description="remove all generated files">
         <delete includeEmptyDirs="true" failonerror="false">
             <fileset dir="${dist}"/>
@@ -895,8 +894,8 @@
         </delete>
     </target>
 
-    <target name="clean.bak" depends="init"
-            description="remove all backup files *.bak, *~, .#*">
+    <target name="cleanup" depends="realclean"
+            description="also remove all backup files *.bak, *~, .#*">
         <delete>
             <fileset dir="${sources}/" defaultexcludes="no">
                 <include name="**/*.bak"/>
