@@ -775,17 +775,34 @@ public final class AlgebraicAlgorithms {
      * as a canonical simplifier as a means for computation in factor polynomial rings. 
      * </p>
      * <h3>Applications</h3>
-     * Let V(I)={x&isin;R<sup>n</sup> : &forall;f&isin;I f(x)=0} be the <dfn>vanishing ideal</dfn>
-     * and G the reduced Gr&ouml;bner basis of the ideal I.
+     * Let V(I)={x&isin;R<sup>n</sup> : &forall;f&isin;I f(x)=0}
+     * be the <dfn>vanishing ideal</dfn> of ideal I
+     * and let G be the reduced Gr&ouml;bner basis of the ideal I
+     * with respect to some monomial ordering.
      * <ul>
-     *   <li>V(I)=&empty; iff G={1}, which means "no solutions"</li>
-     *   <li>V(I) is 0-dimensional iff for each X<sub>i</sub>, G contains an f with a pure leading monomial l(f)=X<sub>i</sub><sup>k</sup>, which means "finitely many solutions"</li> 
      *   <li>With respect to the <emph>lexicographic term ordering</emph> <var>X<sub>n</sub>&gt;...&gt;X<sub>1</sub></var>,
-     *     G has the <dfn>elimination property</dfn>, i.e. 
-     *     <div>(G)&cap;K[X<sub>1</sub>,&#8230;,X<sub>i</sub>]=(G&cap;K[X<sub>1</sub>,&#8230;,X<sub>n</sub>])</div>
+     *     G has the <emph>elimination property</emph>, i.e. 
+     *     <center>(G)&cap;K[X<sub>1</sub>,&#8230;,X<sub>i</sub>] = (G&cap;K[X<sub>1</sub>,&#8230;,X<sub>n</sub>])</center>
      *     This relationship of "triangularisation" (in case V(I) is 0-dimensional) is important for successively solving systems of polynomial equations by backsubstitution.
      *   </li>
-     *   <li>Conversion of parametric equations to implicit form.</li>
+     *   <li>Implicitisation, i.e., converting parametric equations to implicit form.
+     *     For the parametrized surface x<sub>1</sub>=f<sub>1</sub>(t<sub>1</sub>,...,t<sub>m</sub>),...,x<sub>n</sub>=f<sub>n</sub>(t<sub>1</sub>,...,t<sub>m</sub>),
+     *     a Gr&ouml;bner basis (with respect to a monomial order having parameters greater than variables)
+     *     of the
+     *     <center>(x<sub>1</sub>-f<sub>1</sub>(t<sub>1</sub>,...,t<sub>m</sub>),...,x<sub>n</sub>-f<sub>n</sub>(t<sub>1</sub>,...,t<sub>m</sub>))</center>
+     *     yields a basis of which the subset of polynomials without the parameters t<sub>i</sub>
+     *     describes the smallest affine variety containing the original surface.
+     *   </li>
+     *   <li>Deciding equality of ideals by equality of their
+     *     unique reduced Gr&ouml;bner bases with respect to the same monomial ordering.</li>
+     *   <li>Intersecting ideals I=(G) and J=(H)
+     *     as the restriction to polynomials without fresh variable t
+     *     of the Gr&ouml;bner basis of
+     *     <center>{t*G,(1-t)*H}</center>
+     *     with respect to a t&gt;x<sub>1</sub>,...,x<sub>n</sub> monomial order.
+     *   </li>
+     *   <li>V(I)=&empty; iff G={1}, i.e., there are no solutions (when K is algebraically closed)</li>
+     *   <li>V(I) is 0-dimensional iff for each X<sub>i</sub>, G contains an f with a pure leading monomial l(f)=X<sub>i</sub><sup>k</sup>, which means "finitely many solutions" (when K is algebraically closed)</li> 
      * </ul>
      * @param g the collection of multinomials that is a generating system of the ideal (g)
      *  for which to construct a Gr&ouml;bner basis.

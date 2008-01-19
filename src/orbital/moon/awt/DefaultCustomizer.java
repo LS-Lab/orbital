@@ -348,6 +348,9 @@ public class DefaultCustomizer extends JPanel implements Customizer {
             registerPropertyChangeUpdater(beanProperties[i], propertyEditors[i], propertyEditorComponents[i]);
             this.add(propertyEditorComponents[i], r);
             label.setLabelFor(propertyEditorComponents[i]);
+	    if (propertyEditorComponents[i] instanceof JComponent) {
+                ((JComponent)propertyEditorComponents[i]).setToolTipText(beanProperties[i].getShortDescription());
+	    }
         }
 
         // Inserts a vertical filler to occupy any remaining vertical space
