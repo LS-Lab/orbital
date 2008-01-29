@@ -150,9 +150,9 @@ public class CustomizerViewController extends MouseAdapter implements MouseListe
                     BeanInfo info = Introspector.getBeanInfo(beanClass, Introspector.USE_ALL_BEANINFO);
                     BeanDescriptor desc = info.getBeanDescriptor();
                     tab.addTab(desc == null ? null : desc.getDisplayName(),
-			       null,
-			       (Component) custom,
-			       desc == null ? null : desc.getShortDescription());
+                               null,
+                               (Component) custom,
+                               desc == null ? null : desc.getShortDescription());
                 } catch (IntrospectionException e) {
                     throw new InnerCheckedException("Introspection for Customizer failed: " + e.getMessage(), e);
                 } catch (ClassCastException e) {
