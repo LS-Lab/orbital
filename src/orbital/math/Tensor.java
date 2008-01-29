@@ -164,7 +164,7 @@ public interface Tensor/*<R extends Arithmetic>*/ extends Arithmetic {
      * The returned tensor is a structurally unmodifiable <a href="Tensor.html#view">view</a>.</p>
      * @param level the level l of indices to fix for this view.
      * @param index the index c<sub>l</sub> of the tensor part view at the level-th index.
-     * @return a tensor view of the specified part t<sub>i<sub>0</sub>&times;i<sub>1</sub>&times;&#8230;c<sub>l</sub>&#8230;&times;i<sub>r-1</sub></sub> in this tensor.
+     * @return a tensor view of the specified part t<sub>i<sub>0</sub>&times;i<sub>1</sub>&times;&#8230;&times;i<sub>l-1</sub>&times;&c<sub>l</sub>&times;i<sub>l+1</sub>&&timesl&#8230;&times;i<sub>r-1</sub></sub> in this tensor.
      * @postconditions RES.rank() = rank() - 1 &and; ....
      * @see #setSubTensor(int,int,Tensor)
      * @see orbital.logic.functor.Functionals#bindFirst(orbital.logic.functor.BinaryFunction, Object)

@@ -71,9 +71,11 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
     //@xxx we do not ultimately need these following methods, but only have them for performance for S=<b>N</b><sup>n</sup>
     
     /**
-     * Get the the (partial) degree of this polynomial with respect to the single variables.
-     * @see #degree()
-     * @todo rename?
+     * Get the the dimensions of the representation of this polynomial with respect to the single variables.
+     * @internal note the off by one difference of degrees() and dimensions(),
+     * because degrees() means maximum and dimensions() means number.
+     * Also dimensions() can be larger because representation need not be minimal (there can be additional zeros).
+     * @see #degrees()
      */
     protected abstract int[] dimensions();
 
@@ -90,7 +92,29 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
      * @throws UnsupportedOperationException if this polynomial is constant and does not allow modifications.
      */
     protected abstract void set(int[] i, Arithmetic vi);
-        
+
+    
+    public int[] degrees() {
+        final int degrees[] = new int[rank()];
+        Arrays.fill(degrees, -1);
+        Combinatorical cursor = Combinatorical.getPermutations(dimensions());
+	//@todo can be optimized considerably by jumping forward within the permutations when nonzero index is already known.
+        while (cursor.hasNext()) {
+            int[] index = cursor.next();
+            assert degrees.length == index.length;
+            // non-zero coefficient?
+            if (!get(index).isZero()) {
+                // degrees = max(degrees, index)
+                for (int i = 0; i < degrees.length; i++) {
+                    if (index[i] > degrees[i]) {
+                        degrees[i] = index[i];
+                    }
+                }
+            }
+        }
+        return degrees;
+    }
+    
     // factory-methods
     
     /**

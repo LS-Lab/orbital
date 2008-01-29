@@ -58,6 +58,14 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
         return degreeValue() < 0;
     }
 
+    public int rank() {
+        return 1;
+    }
+
+    public int[] degrees() {
+        return new int[] {degreeValue()};
+    }
+    
     /**
      * Sets a value for the coefficient specified by index.
      * Convenience method for {@link #set(Arithmetic,Arithmetic)}.

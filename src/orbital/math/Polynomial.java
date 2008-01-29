@@ -51,7 +51,7 @@ public interface Polynomial/*<R extends Arithmetic, S extends Arithmetic>*/
      * R[<b>N</b><sup>n</sup>]=R[X<sub>0</sub>,...,X<sub>n-1</sub>] in
      * n variables, it may simply be the integer n.
      * </p>
-     * @return an (memento) description of the index set S which is even a magma.
+     * @return a (memento) description of the index set S which is even a magma.
      * @postconditions RES.supports(#equals(Object)) || RES.getClass().isArray()
      */
     Object indexSet();
@@ -59,7 +59,7 @@ public interface Polynomial/*<R extends Arithmetic, S extends Arithmetic>*/
     /**
      * Returns an iterator over the (relevant) indices.
      * <p>
-     * The order of this iterator is not generally defined, but should be deterministical.
+     * The order of this iterator is not generally defined, but should be deterministic.
      * Particularly, the iterator may - but need not - be restricted to occurring indices
      * with coefficients &ne;0.
      * </p>
@@ -83,7 +83,18 @@ public interface Polynomial/*<R extends Arithmetic, S extends Arithmetic>*/
     // graduation
     
     /**
-     * Get the degree of this polynomial.
+     * Get the rank of this polynomial, i.e., the number of distinct variables.
+     * The rank is the number of different variables occurring in the polynomial,
+     * irrespective of their respective degree.
+     * In the polynomial ring R[X<sub>0</sub>,...,X<sub>n-1</sub>], the rank is <var>n</var>.
+     * @postconditions RES&ge;0
+     * @see Tensor#rank()
+     * @throws UnsupportedOperationException if R[S] is not a ring with a meaningful finite rank.
+     */
+    int rank();
+
+    /**
+     * Get the total degree of this polynomial.
      * <p>
      * For example, if S=<b>N</b><sup>n</sup> then this method returns the total degree
      * deg(this) := max {|i|:=&sum;<sub>j=0,...,n-1</sub> i<sub>j</sub> &brvbar; i&isin;<b>N</b><sup>n</sup> &and; a<sub>i</sub>&ne;0}.
@@ -101,6 +112,17 @@ public interface Polynomial/*<R extends Arithmetic, S extends Arithmetic>*/
      */
     int degreeValue();
         
+    /**
+     * Returns the partial degrees of this polynomial for the individual variables X<sub>i</sub>.
+     * <p>
+     * </p>
+     * @return an array d containing the partial degrees d[i] of variable X<sub>i</sub>.
+     * @postconditions RES.length == rank()
+     * @see Tensor#dimensions()
+     * @throws UnsupportedOperationException if R[S] is not a ring with a meaningful finite rank.
+     */
+    int[] degrees();
+
     // iterator views
 
     /**
