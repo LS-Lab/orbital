@@ -142,8 +142,16 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
         return CONSTANT_TERM;
     }
 
+    public int rank() {
+        throw new UnsupportedOperationException("no rank on " + get(CONSTANT_TERM).getClass().getName() + "[" + CONSTANT_TERM.getClass().getName() + "]");
+    }
+
     public int degreeValue() {
         throw new UnsupportedOperationException("no degree on " + get(CONSTANT_TERM).getClass().getName() + "[" + CONSTANT_TERM.getClass().getName() + "]");
+    }
+
+    public int[] degrees() {
+        throw new UnsupportedOperationException("no partial degrees on " + get(CONSTANT_TERM).getClass().getName() + "[" + CONSTANT_TERM.getClass().getName() + "]");
     }
 
     public Arithmetic get(Arithmetic i) {

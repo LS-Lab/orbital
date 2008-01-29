@@ -87,8 +87,11 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/
         return Values.getDefaultInstance().valueOf(coefficients.rank());
     }
 
+    public int rank() {
+        return coefficients.rank();
+    }
+
     public int[] dimensions() {
-        //@todo we should restrict the dimensions to the non-ZERO part.
         return coefficients.dimensions();
     }
     

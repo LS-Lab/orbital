@@ -32,6 +32,7 @@ import java.util.ListIterator;
  * @see Values#polynomial(Object)
  * @see Values#asPolynomial(Vector)
  * @see NumericalAlgorithms#polynomialInterpolation(Matrix)
+ * @invariant rank() == 1
  * @todo implements Function<T,T> instead with T any "compatible" type (see Algebra I) and evaluation of Horner-Scheme
  * @todo rename is there a better name for this class?
  */
