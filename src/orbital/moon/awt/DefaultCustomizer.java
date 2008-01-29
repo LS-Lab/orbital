@@ -46,10 +46,13 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -348,9 +351,9 @@ public class DefaultCustomizer extends JPanel implements Customizer {
             registerPropertyChangeUpdater(beanProperties[i], propertyEditors[i], propertyEditorComponents[i]);
             this.add(propertyEditorComponents[i], r);
             label.setLabelFor(propertyEditorComponents[i]);
-	    if (propertyEditorComponents[i] instanceof JComponent) {
+            if (propertyEditorComponents[i] instanceof JComponent) {
                 ((JComponent)propertyEditorComponents[i]).setToolTipText(beanProperties[i].getShortDescription());
-	    }
+            }
         }
 
         // Inserts a vertical filler to occupy any remaining vertical space
@@ -654,7 +657,8 @@ public class DefaultCustomizer extends JPanel implements Customizer {
      * @see Introspector#getBeanInfo(Class, int)
      */
     protected BeanInfo getBeanInfo(Class cls) throws IntrospectionException {
-        return Introspector.getBeanInfo(cls, Introspector.USE_ALL_BEANINFO);
+        return Introspector.getBeanInfo(cls);
+        //return Introspector.getBeanInfo(cls, Introspector.USE_ALL_BEANINFO);
     }
 
     /**
@@ -663,17 +667,30 @@ public class DefaultCustomizer extends JPanel implements Customizer {
      */
     protected PropertyDescriptor[] getAllPropertyDescriptors(BeanInfo info) {
         BeanInfo additional[] = info.getAdditionalBeanInfo();
+	boolean immediate = false;
         if (additional == null || additional.length == 0) {
+	    try {
+		// try to obtain more immediate beaninfos which do not mess around with the order
+		info = (BeanInfo)Class.forName(beanClass.getName() + "BeanInfo").newInstance();
+		immediate = true;
+	    }
+	    catch (ClassNotFoundException ex) {}
+	    catch (InstantiationException ex) {}
+	    catch (IllegalAccessException ex) {}
+	    catch (ClassCastException ex) {}
+	    //catch (ClassNotFoundException ex) {}
+	    System.out.println(" INFO " + info  + "@" + info.getClass());
             // no additional bean info, return sorted version of single bean info
-            SortedSet l = new TreeSet(featureDescriptorComparator);
-            l.addAll(Arrays.asList(info.getPropertyDescriptors()));
+	    List l = Arrays.asList(info.getPropertyDescriptors());
+	    if (!immediate) {
+                Collections.sort(l, featureDescriptorComparator);
+	    }
             return (PropertyDescriptor[]) l.toArray(new PropertyDescriptor[0]);
         }
         // set without duplicates that is not consistent with equals (which does not matter)
         // Caution: using a Set instead of a List here shuffles the property order which Introspector does, anyway (Bug-Id 4088897 closed)
         //@internal perhaps we could also use a LinkedHashSet or even LinkedIdentityHashSet here for keeping the initial order instead of sorting
-        SortedSet l = new TreeSet(featureDescriptorComparator);
-        l.addAll(Arrays.asList(info.getPropertyDescriptors()));
+        List l = new ArrayList(Arrays.asList(info.getPropertyDescriptors()));
         // add all properties not yet contained
         for (int i = additional.length - 1; i>= 0; i--) {
             // recursive
@@ -682,6 +699,9 @@ public class DefaultCustomizer extends JPanel implements Customizer {
                 continue;
             l.addAll(Arrays.asList(property));
         }
+        if (!immediate) {
+	    Collections.sort(l, featureDescriptorComparator);
+	}
         return (PropertyDescriptor[]) l.toArray(new PropertyDescriptor[0]);
     }
     /**
