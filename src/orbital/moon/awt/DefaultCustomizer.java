@@ -678,9 +678,7 @@ public class DefaultCustomizer extends JPanel implements Customizer {
 	    catch (InstantiationException ex) {}
 	    catch (IllegalAccessException ex) {}
 	    catch (ClassCastException ex) {}
-	    //catch (ClassNotFoundException ex) {}
-	    System.out.println(" INFO " + info  + "@" + info.getClass());
-            // no additional bean info, return sorted version of single bean info
+           // no additional bean info, return sorted version of single bean info
 	    List l = Arrays.asList(info.getPropertyDescriptors());
 	    if (!immediate) {
                 Collections.sort(l, featureDescriptorComparator);
