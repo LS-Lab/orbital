@@ -61,14 +61,14 @@ abstract class AbstractArithmetic implements Arithmetic {
      */
     public Arithmetic power(Arithmetic b) throws ArithmeticException, UnsupportedOperationException {
         if (!(b instanceof Scalar))
-            throw new UnsupportedOperationException("default power only implemented for scalar numbers");
+            throw new UnsupportedOperationException("default power only implemented for scalar numbers, not " + this + "^" + b);
         Integer s;
         try {
             assert b instanceof Scalar;
             s = (Integer) Values.getDefaultInstance().narrow((Scalar) b);
         }
         catch (ClassCastException e) {
-            throw new UnsupportedOperationException("default power only implemented for scalar integer numbers");
+            throw new UnsupportedOperationException("default power only implemented for scalar integer numbers, not " + this + "^" + b);
         }
         if (s.intValue() == 0) {
             return one();
