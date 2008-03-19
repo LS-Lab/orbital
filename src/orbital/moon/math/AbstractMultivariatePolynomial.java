@@ -73,7 +73,7 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
     /**
      * Get the the dimensions of the representation of this polynomial with respect to the single variables.
      * @internal note the off by one difference of degrees() and dimensions(),
-     * because degrees() means maximum and dimensions() means number.
+     * because degrees() means maximum and dimensions() means count.
      * Also dimensions() can be larger because representation need not be minimal (there can be additional zeros).
      * @see #degrees()
      */
@@ -365,6 +365,9 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
             return this;
         else if (b.degreeValue() < 0)
             return b;
+        if (dimensions().length != b.dimensions().length) {
+        	throw new IllegalArgumentException("Cannot multiply polynomials of different polynomial rings with " + dimensions() + " and " + b.dimensions() + " variables");
+        }
         final int[] d = Functionals.map(Operations.plus, dimensions(), b.dimensions());
         Polynomial/*<R>*/ ret = newInstance(d);
         setAllZero(ret);

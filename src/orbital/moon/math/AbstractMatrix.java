@@ -79,7 +79,7 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends A
         try {
             return ((Number) get(i, j)).doubleValue();
         } catch (ClassCastException x) {
-            throw new UnsupportedOperationException("no real number");
+            throw new UnsupportedOperationException("no real number " + get(i, j) + " at (" + i + "," + j + ")" + " of " + this);
         } 
     } 
 
@@ -727,7 +727,7 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends A
             // = Sqrt(maximum eigenvalue (A^* . A))
             throw new UnsupportedOperationException("Spectral norm not yet implemented");
         } 
-        throw new UnsupportedOperationException("only 1, 2 and infinity norms are provided");
+        throw new UnsupportedOperationException("only 1, 2, and infinity norms are provided, not " + p);
     } 
 
     public Arithmetic/*>R<*/ trace() throws ArithmeticException {
@@ -766,7 +766,7 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends A
     public Arithmetic zero() {return Values.getDefaultInstance().ZERO(dimension());}
     public Arithmetic one() {
         if (!isSquare())
-            throw new UnsupportedOperationException("only square matrices have an identity matrix");
+            throw new ArithmeticException("only square matrices have an identity matrix, not " + dimension());
         return Values.getDefaultInstance().IDENTITY(dimension());
     }
     

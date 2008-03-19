@@ -54,7 +54,7 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
         if (b instanceof Integer)
             return power((Integer)b);
         else
-            throw new UnsupportedOperationException("This subclass should overwrite power(Rational) correspondingly " + getClass());
+            throw new UnsupportedOperationException("This subclass should overwrite power(Rational) correspondingly " + getClass() + " for " + this + "^" + b);
     }
 
     // overwrite rational

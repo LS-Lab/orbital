@@ -207,9 +207,9 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
         public Double(Real a, Real b) {
             this(a.doubleValue(), b.doubleValue());
             if (!((a instanceof AbstractReal.Double) || (a instanceof AbstractReal.Float) || (a instanceof Rational)))
-                throw new UnsupportedOperationException("the precision of " + a.getClass() + " is currently not yet supported");
+                throw new UnsupportedOperationException("the precision of " + a.getClass() + " is not yet supported for type " + getClass().getName());
             else if (!((b instanceof AbstractReal.Double) || (b instanceof AbstractReal.Float) ||(b instanceof Rational)))
-                throw new UnsupportedOperationException("the precision of " + b.getClass() + " is currently not yet supported");
+                throw new UnsupportedOperationException("the precision of " + b.getClass() + " is not yet supported for type " + getClass().getName());
         }
     
         /**

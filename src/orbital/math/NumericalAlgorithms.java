@@ -766,7 +766,7 @@ public final class NumericalAlgorithms {
                 {0,     1/8.,3/8.,3/8.,1/8.}  //b
             });*/
         default:
-            throw new UnsupportedOperationException("No method of order " + order + " supported. Try a different order");
+            throw new UnsupportedOperationException("No method of order " + order + " supported. Try a order 2..4");
         }
     }
 

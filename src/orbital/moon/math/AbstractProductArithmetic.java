@@ -158,7 +158,7 @@ abstract class AbstractProductArithmetic/*<R extends Arithmetic, I, T extends Ar
     } 
 
     public Arithmetic inverse() throws ArithmeticException {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("not generally supported " + this);
     } 
 
 }

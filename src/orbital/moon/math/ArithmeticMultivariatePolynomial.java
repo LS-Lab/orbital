@@ -137,8 +137,10 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/
             throw new IllegalArgumentException("illegal coefficient value: " + vi);
         final Integer oldDegree = degree();
         coefficients.set(i, vi);
-        if (oldDegree.compareTo(Operations.sum.apply(Values.getDefaultInstance().valueOf(i))) <= 0)
+        if (oldDegree.compareTo(Operations.sum.apply(Values.getDefaultInstance().valueOf(i))) <= 0) {
+        	// update degree if index is higher than degree (because it might raise) or equal (because it might drop)
             this.degree = degreeImpl(coefficients);
+        }
     }
     public final void set(Arithmetic i, Arithmetic/*>R<*/ vi) {
         set(convertIndex(i), vi);

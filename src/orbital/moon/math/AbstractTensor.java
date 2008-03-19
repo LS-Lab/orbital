@@ -397,16 +397,18 @@ abstract class AbstractTensor/*<R extends Arithmetic>*/
         Utility.pre(part.rank() == rank()-1, "part has compatible rank");
         Utility.pre(Utility.equalsAll(part.dimensions(), embed.dimensions()), "part has compatible dimensions");
         ListIterator dst;
-        Setops.copy(dst = embed.iterator(), part.iterator());
-        assert !dst.hasNext() : "equal dimensions have iterators of equal length";
+        Iterator src = part.iterator();
+        Setops.copy(dst = embed.iterator(), src);
+        assert !dst.hasNext() && !src.hasNext(): "equal dimensions have iterators of equal length";
     } 
     public void setSubTensor(int[] i1, int[] i2, Tensor/*<R>*/ sub) {
         Tensor embed = subTensor(i1, i2);
         Utility.pre(sub.rank() == rank(), "sub tensor has compatible rank");
         Utility.pre(Utility.equalsAll(sub.dimensions(), embed.dimensions()), "sub tensor has compatible dimensions");
         ListIterator dst;
-        Setops.copy(dst = embed.iterator(), sub.iterator());
-        assert !dst.hasNext() : "equal dimensions have iterators of equal length";
+        Iterator src = sub.iterator();
+        Setops.copy(dst = embed.iterator(), src);
+        assert !dst.hasNext() && !src.hasNext(): "equal dimensions have iterators of equal length";
     } 
 
 

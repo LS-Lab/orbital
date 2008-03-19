@@ -71,7 +71,7 @@ class AbstractFraction/*<M extends Arithmetic,S extends Arithmetic>*/ extends Ab
         if (ad instanceof Comparable)
             return ((Comparable) ad).compareTo(b.numerator().multiply(denominator()));
         else
-            throw new UnsupportedOperationException("since the underlying integrity domain " + ad.getClass() + " does not support " + Comparable.class);
+            throw new UnsupportedOperationException("not supported since the underlying integrity domain " + ad.getClass() + " does not support " + Comparable.class);
     } 
     
     public Arithmetic/*>M<*/ numerator() {
@@ -120,7 +120,7 @@ class AbstractFraction/*<M extends Arithmetic,S extends Arithmetic>*/ extends Ab
         if (b instanceof Integer) {
             return power_((Integer) b);
         } else if (b instanceof Fraction)
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException("non-integral power not supported " + this + "^" + b);
         return (Arithmetic) Operations.power.apply(this, b);
     }
 

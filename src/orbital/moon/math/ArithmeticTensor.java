@@ -61,7 +61,7 @@ class ArithmeticTensor/*<R extends Arithmetic>*/ extends AbstractTensor/*<R>*/ {
         if (values == null)
             throw new NullPointerException("illegal tensor " + values);
         else if (!values.getClass().isArray())
-            throw new UnsupportedOperationException("tensors of rank 0 should not get wrapped into tensors of non array type. " + values + " should be an array");
+            throw new IllegalArgumentException("tensors of rank 0 should not get wrapped into tensors of non array type. Content " + values + " should be an array");
         final int[] dim = Utility.dimensions(values);
         // check rectangular and that base type is instanceof Arithmetic or primitive
         Utility.pre(checkRectangular(dim, 0, values), "multi-dimensional array of " + Arithmetic.class + " expected. found " + values);

@@ -454,7 +454,7 @@ public final class AlgebraicAlgorithms {
         default:
             //@todo fold a with gcd, and somehow combine the overall gcd, and the s[i]
             Euclidean d = (Euclidean) Functionals.foldLeft(gcd, elements[0], elements);
-            throw new UnsupportedOperationException("gcd of more than two elements not yet implemented");
+            throw new UnsupportedOperationException("gcd of more than two elements not yet implemented " + MathUtilities.format(elements));
         }
         final Euclidean a = elements[0], b = elements[1];
         final Euclidean ZERO = (Euclidean) a.zero();
