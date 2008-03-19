@@ -64,7 +64,9 @@ class ArithmeticTensor/*<R extends Arithmetic>*/ extends AbstractTensor/*<R>*/ {
             throw new IllegalArgumentException("tensors of rank 0 should not get wrapped into tensors of non array type. Content " + values + " should be an array");
         final int[] dim = Utility.dimensions(values);
         // check rectangular and that base type is instanceof Arithmetic or primitive
-        Utility.pre(checkRectangular(dim, 0, values), "multi-dimensional array of " + Arithmetic.class + " expected. found " + values);
+        if (!checkRectangular(dim, 0, values)) {
+        	throw new IllegalArgumentException("multi-dimensional array of " + Arithmetic.class + " expected. found " + values);
+        }
         final Combinatorical index = Combinatorical.getPermutations(dim);
         // whether the array has primitive types
         final boolean primitive = Values.isPrimitiveWrapper(Utility.getPart(values, index.next()).getClass());
@@ -77,8 +79,11 @@ class ArithmeticTensor/*<R extends Arithmetic>*/ extends AbstractTensor/*<R>*/ {
         while (index.hasNext()) {
             final int[] i = index.next();
             final Object ai = Utility.getPart(values, i);
-            Utility.pre(ai != null, "multi-dimensional array does not contain " + ai);
-            Utility.pre(primitive == Values.isPrimitiveWrapper(ai.getClass()), "multi-dimensional array either consistently has " + Arithmetic.class + " or consistently contains primitive types");
+            if (ai == null)
+            	throw new NullPointerException("multi-dimensional array does not contain " + ai);
+            if (primitive != Values.isPrimitiveWrapper(ai.getClass())) {
+            	throw new IllegalArgumentException("multi-dimensional array either consistently has " + Arithmetic.class + " or consistently contains primitive types");
+            }
             if (primitive) {
                 assert ai instanceof Number : "primitive type get wrapped into instances of " + Number.class;
                 Utility.setPart(D, i, Values.getDefaultInstance().valueOf((Number)ai));

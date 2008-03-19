@@ -352,7 +352,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
             dim[k] = exponents[k] + 1;
         AbstractMultivariatePolynomial m = new ArithmeticMultivariatePolynomial(dim);
         m.set(m.CONSTANT_TERM, coefficient.zero());
-        m.setAllZero(m);
+        m.setZero();
         m.set(exponents, coefficient);
         return m;
     }

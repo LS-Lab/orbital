@@ -30,6 +30,10 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/
     extends AbstractMultivariatePolynomial/*<R>*/ {
     private static final long serialVersionUID = -6317707373482862125L;
     /**
+     * tags a dirty degree, i.e., when the degree cache is possibly out of sync
+     */
+    private static final int DIRTY = java.lang.Integer.MIN_VALUE + 10; 
+    /**
      * The coefficients in R.
      * @serial
      */
@@ -38,7 +42,7 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/
      * Caches the degree value.
      * @see #degree()
      */
-    private transient int degree;
+    private transient int degree = DIRTY;
     public ArithmeticMultivariatePolynomial(int[] dimensions) {
         coefficients = Values.getDefaultInstance().newInstance(dimensions);
         this.CONSTANT_TERM = new int[dimensions.length];
@@ -62,6 +66,9 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/
     }
 
     public final int degreeValue() {
+    	if (degree == DIRTY) {
+    		this.degree = degreeImpl(tensorViewOfCoefficients());
+    	}
         return degree;
     }
     /**
@@ -106,7 +113,7 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/
         if (Setops.some(coefficients.iterator(), Functionals.bindSecond(Predicates.equal, null)))
             throw new IllegalArgumentException("illegal coefficients: containing null");
         this.coefficients = coefficients;
-        this.degree = degreeImpl(coefficients);
+        this.degree = DIRTY;//degreeImpl(coefficients);
         this.CONSTANT_TERM = new int[dimensions().length];
         Arrays.fill(CONSTANT_TERM, 0);
     }
@@ -125,7 +132,9 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/
         return get(convertIndex(i));
     }
     public Arithmetic/*>R<*/ get(int[] i) {
-        Utility.pre(i.length == ((Integer)indexSet()).intValue(), "illegal number of indices (" + i.length + " indices) for a coefficient of a polynomial with " + indexSet() + " variables");
+        if (i.length != ((Integer)indexSet()).intValue()) {
+        	throw new IllegalArgumentException("illegal number of indices (" + i.length + " indices) for a coefficient of a polynomial with " + indexSet() + " variables");
+        }
         for (int k = 0; k < i.length; k++)
             if (i[k] >= dimensions()[k])
                 return get(CONSTANT_TERM).zero();
@@ -135,11 +144,16 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/
     public void set(int[] i, Arithmetic/*>R<*/ vi) {
         if (vi == null)
             throw new IllegalArgumentException("illegal coefficient value: " + vi);
-        final Integer oldDegree = degree();
+        final int oldDegree = degree;
         coefficients.set(i, vi);
-        if (oldDegree.compareTo(Operations.sum.apply(Values.getDefaultInstance().valueOf(i))) <= 0) {
-        	// update degree if index is higher than degree (because it might raise) or equal (because it might drop)
-            this.degree = degreeImpl(coefficients);
+        final int newPotentialDegree = ((Integer)Operations.sum.apply(Values.getDefaultInstance().valueOf(i))).intValue();
+        if (vi.isZero()
+        		? oldDegree == newPotentialDegree
+        		: oldDegree < newPotentialDegree) {
+            // update degree if index is higher than degree and nonzero (because it might raise)
+        	// or equal and we reset to zero (because it might drop)
+        	//@todo delta-degrees can be optimized faster by exploiting that we know the old degree where to start 
+            this.degree = DIRTY;//degreeImpl(coefficients);
         }
     }
     public final void set(Arithmetic i, Arithmetic/*>R<*/ vi) {
@@ -148,5 +162,13 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/
 
     Tensor/*<R>*/ tensorViewOfCoefficients() {
         return coefficients;
+    }
+
+    protected void setZero() {
+    	int[] olddim = null;
+    	assert (olddim = dimensions()) != null;
+    	this.coefficients = (Tensor)coefficients.zero();
+    	this.degree = java.lang.Integer.MIN_VALUE;
+    	assert Utility.equalsAll(dimensions(), olddim) : "dimensions don't change by setting to zero " + MathUtilities.format(dimensions()) + " was " + MathUtilities.format(olddim);
     }
 }
