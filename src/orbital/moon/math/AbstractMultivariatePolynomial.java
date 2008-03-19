@@ -38,6 +38,7 @@ import orbital.algorithm.Combinatorical;
  * coefficients can then be stored in a HashSet. Perhaps, also sparse
  * tensors could be stored like that.
  */
+public
 abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
     extends AbstractPolynomial/*<R,Vector<Integer>>*/ {
     private static final long serialVersionUID = -2237060189065872837L;
@@ -77,7 +78,7 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
      * Also dimensions() can be larger because representation need not be minimal (there can be additional zeros).
      * @see #degrees()
      */
-    protected abstract int[] dimensions();
+    public/*protected*/ abstract int[] dimensions();
 
     /**
      * Get a tensor view of the coefficients.
@@ -98,7 +99,7 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
         final int degrees[] = new int[rank()];
         Arrays.fill(degrees, -1);
         Combinatorical cursor = Combinatorical.getPermutations(dimensions());
-	//@todo can be optimized considerably by jumping forward within the permutations when nonzero index is already known.
+        //@todo can be optimized considerably by jumping forward within the permutations when nonzero index is already known.
         while (cursor.hasNext()) {
             int[] index = cursor.next();
             assert degrees.length == index.length;
@@ -361,23 +362,27 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
     public Polynomial/*<R,Vector<Integer>>*/ multiply(Polynomial/*<R,Vector<Integer>>*/ bb) {
         // only cast since Polynomial does not know an equivalent of dimensions()
         AbstractMultivariatePolynomial b = (AbstractMultivariatePolynomial)bb;
-        if (degreeValue() < 0)
+        if (isZero())
             return this;
-        else if (b.degreeValue() < 0)
+        else if (b.isZero())
             return b;
-        if (dimensions().length != b.dimensions().length) {
+        if (rank() != b.rank() || dimensions().length != b.dimensions().length) {
         	throw new IllegalArgumentException("Cannot multiply polynomials of different polynomial rings with " + dimensions() + " and " + b.dimensions() + " variables");
         }
-        final int[] d = Functionals.map(Operations.plus, dimensions(), b.dimensions());
+        final int[] d = Functionals.map(Operations.plus, degrees(), b.degrees());
+        for (int i = 0; i < d.length; i++) {
+        	// dimensions[i]=degrees[i]+1
+        	d[i]++;
+        }
         Polynomial/*<R>*/ ret = newInstance(d);
-        setAllZero(ret);
+        ((AbstractMultivariatePolynomial)ret).setZero();
         // ret = &sum;<sub>i&isin;dimensions()</sub> a<sub>i</sub>X<sup>i</sup> * b
         // perform (slow) multiplications on monomial base
         for (Combinatorical index = Combinatorical.getPermutations(dimensions()); index.hasNext(); ) {
             int[] i = index.next();
             // si = a<sub>i</sub>X<sup>i</sup> * b
             AbstractMultivariatePolynomial/*<R>*/ si = (AbstractMultivariatePolynomial)newInstance(Functionals.map(Operations.plus, i, b.dimensions()));
-            setAllZero(si);
+            si.setZero();
             final int[] sidim = si.dimensions();
             final int[] sidim_1 = new int[sidim.length];
             for (int k = 0; k < sidim_1.length; k++)

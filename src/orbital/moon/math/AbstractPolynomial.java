@@ -152,13 +152,16 @@ abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*
     //@internal subclasses can optimize by far when using knowledge of the structure of S
     public Polynomial/*<R,S>*/ multiply(Polynomial/*<R,S>*/ bb) {
         Polynomial b = (Polynomial)bb;
+        if (!indexSet().equals(b.indexSet())) {
+        	throw new IllegalArgumentException("Cannot multiply polynomials of different polynomial rings with " + indexSet() + " and " + b.indexSet() + " variables/indices");
+        }
         if (degreeValue() < 0)
             return this;
         else if (b.degreeValue() < 0)
             return b;
         //@internal assuming the dimensions will grow as required
         AbstractPolynomial/*<R,S>*/ ret = (AbstractPolynomial)newInstance(indexSet());
-        setAllZero(ret);
+        ret.setZero();
         // ret = &sum;<sub>i&isin;indices(),j&isin;b.indices()</sub> a<sub>i</sub>b<sub>j</sub>X<sup>i * j</sup>
         // perform (very slow) multiplications "jeder mit jedem"
         for (Iterator index = Setops.cross(indices(), b.indices()); index.hasNext(); ) {
@@ -179,11 +182,11 @@ abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*
     }
 
     /**
-     * Sets all coefficients of p to 0.
+     * Sets all our coefficients to 0.
      */
-    void setAllZero(Polynomial p) {
+    protected void setZero() {
         final Arithmetic/*>R<*/ ZERO = get((Arithmetic/*>S<*/)indices().next()).zero();
-        for (ListIterator i = p.iterator(); i.hasNext(); ) {
+        for (ListIterator i = iterator(); i.hasNext(); ) {
             i.next();
             i.set(ZERO);
         }
