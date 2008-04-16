@@ -134,6 +134,15 @@ c&a | ~c&b == c&a | ~c&b | a&b	# consensus rule <= (absorbtion,n,tertium non dat
 |= (((((p->q)->(~r->~s))->r)->t)->((t->p)->(s->p)))	# Carew Meredith's (1904-1976) sole axiom for propositional calculus. Thought to be the shortest possible single axiom for propositional calculus using ~,->,mp
 
 #
+#
+#
+a->!b == b->!a
+a->!b == (a->!b) & (b->!a)
+a ^ b == a <-> !b
+a ^ b == !(a <-> b)
+(a ^ b) | !a&!b == (a->!b) & (b->!a)
+
+#
 # <-> (or better yet <=>) is a congruence
 #
 c<->d |= (~c) <-> (~d)
