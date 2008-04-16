@@ -128,7 +128,7 @@
 	    <pathelement location="${examples}/SChess"/>
 
             <pathelement path="${build.tests}" />
-	    <pathelement location="${com.wolfram.jlink.path}"/>
+	    <pathelement location="${com.wolfram.jlink.jar}"/>
 
 	    <!-- refid="project.classpath" -->
             <pathelement location="${classes}"/>
@@ -177,13 +177,13 @@
         </jarlib-resolve>    
 
         <extension id="ext.lib.jlink"
-            extensionName="com/wolfram/jlink/"
+            extensionName="com.wolfram.jlink"
             specificationVersion="3.1"
             specificationVendor="Wolfram Research, Inc."/>
 
         <jarlib-resolve property="lib.jlink">
             <extension refid="ext.lib.jlink"/>
-            <location location="${com.wolfram.jlink.path}"/>
+            <location location="${com.wolfram.jlink.jar}"/>
             <url url="" 
                  destfile="${lib}/jlink.jar"/>
         </jarlib-resolve>    

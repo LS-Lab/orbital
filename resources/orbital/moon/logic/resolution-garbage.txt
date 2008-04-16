@@ -27,6 +27,10 @@ c->(a^b) == (c->a)<->(c->b)	# distributive -> over ^
 (a<->b)->c == (a->c)^(b->c)	# codistributive -> over <->
 (a<->b)->c == (a->c)<->(b->c)	# distributive -> over <->
 
+a->!b == a ^ b
+a->!b == a <-> !b
+
+
 #
 # false first-order conjectures
 #
