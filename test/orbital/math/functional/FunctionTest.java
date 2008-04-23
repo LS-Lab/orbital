@@ -21,14 +21,14 @@ import orbital.util.*;
 import orbital.logic.sign.concrete.Notation;
 
 /**
- * Automatic test-driver checking (some parts of) orbital.math.functional.* against Mathematica.
+ * Automatic test-driver checking (some parts of) orbital.math.functional.* randomly against Mathematica for cross-validation.
  *
  * @version $Id$
  * @author  Andr&eacute; Platzer
  * @todo test Rational as well
  */
 public class FunctionTest extends check.TestCase {
-    private static final int  TEST_REPETITION = 20/**************20*/;
+    private static final int TEST_REPETITION = 100;
     private static final Values vf;
     static {
         // make format precision compatible with Mathematica for appropriate numerical comparisons
@@ -268,11 +268,27 @@ public class FunctionTest extends check.TestCase {
         ml.evaluate("N[" + mFunctionCall + "]");
         ml.waitForAnswer();
         System.out.print(mFunctionCall + " = ");
-        Complex mresult;
-//      if (ml.getType() == MathLink.MLTKSYM && "ComplexInfinity".equals(ml.getSymbol()))
-//          mresult = Values.INFINITY;
-//      else
-            mresult = ((ComplexAdapter) ml.getComplex()).getValue();
+        Complex mresult = null;
+        try {
+            Expr la = ml.peekExpr();
+            if (la.numberQ()) {
+               if ("ComplexInfinity".equals(la.toString())) {
+                   mresult = Values.INFINITY;
+                   ml.discardAnswer();
+               } else {
+                   mresult = ((ComplexAdapter) ml.getComplex()).getValue();
+               }
+            } else {
+                // don't know what to do with non-number, assume true
+                System.out.println("FunctionTest doesn't understand " + la);
+                ml.discardAnswer();
+                return;
+            }
+        } catch(MathLinkException ignore) {
+            // assume success
+            System.out.println("FunctionTest doesn't understand " + mresult + " for " + ml.peekExpr());
+            return;
+        }
         System.out.println(mresult);
         final Complex jresult = (Complex) jFunction.apply(x);
         System.out.println(jFunctionCall + " = " + jresult);
