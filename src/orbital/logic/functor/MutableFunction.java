@@ -110,8 +110,8 @@ public interface MutableFunction/*<A, B>*/ extends Function/*<A, B>*/ {
          *  Use <code>null</code> to disable lazy initialization,
          *  leading to <code>null</code> being the value for yet unknown arguments.
          */
-        public void setInitialization(Function/*<A, B>*/ h) {
-            this.initialization = h;
+        public void setInitialization(Function/*<A, B>*/ initialization) {
+            this.initialization = initialization;
         }
         
         /**

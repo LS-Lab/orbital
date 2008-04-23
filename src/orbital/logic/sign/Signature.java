@@ -30,7 +30,7 @@ import java.util.SortedSet;
  * </p>
  * 
  * @param <Sigma> the type of symbols kept in this interpretation.
- * @invariants &forall;s&isin;this: s instanceof {@link orbital.logic.imp.Symbol}
+ * @invariants &forall;s&isin;this: s instanceof {@link orbital.logic.sign.Symbol}
  *  &and; sorted according to {@link orbital.logic.sign.concrete.Notation.NotationSpecification#getPrecedence() precedence}
  * @structure extends java.util.SortedSet<Symbol>
  * @version $Id$

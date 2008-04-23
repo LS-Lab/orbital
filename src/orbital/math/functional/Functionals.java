@@ -493,7 +493,7 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
 
     /**
      * Maps a list of arguments with a function.
-     * @see orbital.logic.functor.Functionals#listable(Function)
+     * @see orbital.logic.functor.Functionals#listable(orbital.logic.functor.Function)
      */
     public static /*<A extends Arithmetic, B extends Arithmetic>*/ Tensor/*<B>*/ map(Function/*<A, B>*/ f, Tensor/*<A>*/ a) {
         return (Tensor) map(f, (Object) a);
@@ -506,7 +506,7 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
     }
     /**
      * Maps two lists of arguments with a binary function.
-     * @see orbital.logic.functor.Functionals#listable(BinaryFunction)
+     * @see orbital.logic.functor.Functionals#listable(orbital.logic.functor.BinaryFunction)
      */
     public static /*<A1 extends Arithmetic, A2 extends Arithmetic, B extends Arithmetic>*/ Tensor/*<B>*/ map(BinaryFunction/*<A1, A2, B>*/ f, Tensor/*<A1>*/ x, Tensor/*<A2>*/ y) {
         Utility.pre(Utility.equalsAll(x.dimensions(), y.dimensions()), "compatible dimensions");

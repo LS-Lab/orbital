@@ -6,6 +6,8 @@
 
 package orbital.logic;
 
+import orbital.logic.trs.Substitution;
+
 /**
  * The base interface for all things that are composed of other things.
  * Such compositions include but are not limited to functors, expressions, and types.
@@ -13,10 +15,10 @@ package orbital.logic;
  * Explicit composition information alas to this interface is
  * required in several situations that have a structurally inductive
  * effect. Like when they need to structurally decompose objects in
- * order to define {@link orbital.logic.sign.Substitution
+ * order to define {@link Substitution
  * substitution}, {@link
- * orbital.logic.sign.Substitutions#unify(Collection) unification},
- * {@link orbital.logic.sign.Substitution$Matcher matching} {@link
+ * orbital.logic.trs.Substitutions#unify(java.util.Collection) unification},
+ * {@link orbital.logic.trs.Substitution.Matcher matching} {@link
  * orbital.logic.sign.concrete.Notation formatting}, {@link
  * orbital.math.functional.Function#derive() derivation},
  * general transformations, etc.

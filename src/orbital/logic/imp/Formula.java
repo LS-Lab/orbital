@@ -93,7 +93,7 @@ import java.util.Set;
  * @structure extends Function<Interpretation,Object>
  * @see Inference#infer
  * @see LogicBasis
- * @see ExpressionSyntax#createAtomic
+ * @see orbital.logic.sign.ExpressionBuilder#createAtomic(Symbol)
  * @see <a href="{@docRoot}/Patterns/Design/Interpreter.html">Interpreter</a>
  * @see "Daniel Leivant. Higher order logic, Chapter 3.6 Formulas as higher order functions. In: Dov M. Gabbay, editor, Handbook of Logic in Artificial Intelligence and Logic Programming, pages 247-248. Oxford University Press. 1994"
  * @note boolean formulas (of propositional logic) can also be represented with (reduced) OBDDs, for performance in some applications.

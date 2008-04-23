@@ -88,7 +88,6 @@ public interface Matrix/*<R extends Arithmetic>*/ extends Tensor/*<R>*/ {
      * @param j the column of the value to set.
      * @param mij the value to set for the element m<sub>i,j</sub> at position (i|j)
      * @throws UnsupportedOperationException if this matrix is constant and does not allow this operation.
-     * @see #modCount
      */
     void set(int i, int j, Arithmetic/*>R<*/ mij) throws UnsupportedOperationException;
 
@@ -128,7 +127,6 @@ public interface Matrix/*<R extends Arithmetic>*/ extends Tensor/*<R>*/ {
     /**
      * Sets the column vector at a column.
      * @preconditions col.dimension() == dimension().height
-     * @see #modCount
      */
     void setColumn(int c, Vector/*<R>*/ col) throws UnsupportedOperationException;
 
@@ -147,7 +145,6 @@ public interface Matrix/*<R extends Arithmetic>*/ extends Tensor/*<R>*/ {
     /**
      * Sets the row vector at a row.
      * @preconditions row.dimension() == dimension().width
-     * @see #modCount
      */
     void setRow(int r, Vector/*<R>*/ row) throws UnsupportedOperationException;
 
@@ -736,7 +733,6 @@ public interface Matrix/*<R extends Arithmetic>*/ extends Tensor/*<R>*/ {
      * Returns an array containing all the elements in this matrix.
      * The first index in this array specifies the row, the second is for column.
      * @postconditions RES[i][j] == get(i, j) && RES != RES
-     * @see #set(Arithmetic[][])
      * @see Object#clone()
      */
     public Arithmetic/*>R<*/[][] toArray();

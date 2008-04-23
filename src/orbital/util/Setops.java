@@ -210,7 +210,7 @@ public final class Setops {
      * @throws NoSuchElementException if !choices.hasNext()
      * @see orbital.math.functional.Operations#inf
      * @see java.util.Collections#min(Collection,Comparator)
-     * @see orbital.logic.functor.Functionals#foldLeft
+     * @see orbital.logic.functor.Functionals#foldLeft(BinaryFunction, Object,Object[])
      * @see orbital.algorithm.template.EvaluativeAlgorithm.EvaluationComparator
      */
     public static final /*<A>*/ Object/*>A<*/ argmin(Iterator/*<A>*/ choices, Function/*<A,Comparable>*/ f) {
@@ -243,7 +243,7 @@ public final class Setops {
      * @throws NoSuchElementException if !choices.hasNext()
      * @see orbital.math.functional.Operations#sup
      * @see java.util.Collections#max(Collection,Comparator)
-     * @see orbital.logic.functor.Functionals#foldLeft
+     * @see orbital.logic.functor.Functionals#foldLeft(BinaryFunction, Object, Object[])
      * @see orbital.algorithm.template.EvaluativeAlgorithm.EvaluationComparator
      */
     public static final /*<A>*/ Object/*>A<*/ argmax(Iterator/*<A>*/ choices, Function/*<A,Comparable>*/ f) {

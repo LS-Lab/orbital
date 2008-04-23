@@ -61,7 +61,7 @@ import java.util.logging.Level;
  * @version $Id$
  * @author  Andr&eacute; Platzer
  * @see Greedy
- * @see DynamicProgramming
+ * @see DynamicProgrammingProblem
  * @todo @see "H. Geffner and B. Bonet. Solving Large POMDPs using Real Time Dynamic Programming."
  * @see "A. Barto, S. Bradtke, and S. Singh. Learning to act using real-time dynamic programming. <i>Artificial Intelligence</i>, 72:81-138, 1995."
  * @see "Bellman, R. E. (1957). Dynamic Programming. Princeton University Press, Princeton, New Jersey."

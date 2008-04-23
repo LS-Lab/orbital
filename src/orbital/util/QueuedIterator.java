@@ -15,6 +15,8 @@ import java.util.LinkedList;
 import java.util.Collections;
 import java.util.NoSuchElementException;
 
+import orbital.logic.functor.BinaryFunction;
+
 /**
  * QueuedIterator is an iterator that queues elements added to it and provides
  * an iterator view to them.

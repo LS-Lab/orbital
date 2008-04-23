@@ -40,7 +40,7 @@ import orbital.moon.GetPropertyAction;
  *   </tr>
  *   <tr>
  *     <td><tt>orbital.logic.sign.type.TypeSystem.default</tt></td>
- *     <td>class name of the initial default TypeSystem implementation returned by {@link TypeSystem#getDefault()}.</td>
+ *     <td>class name of the initial default TypeSystem implementation returned by {@link Types#getDefault()}.</td>
  *   </tr>
  * </table>
  * This properties allow a different vendor's factory implementation of type systems

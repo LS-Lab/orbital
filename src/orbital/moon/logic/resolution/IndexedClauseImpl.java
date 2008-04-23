@@ -20,8 +20,8 @@ import orbital.logic.sign.*;
  * Implementation of a representation of a clauses with clause indexing.
  * @version $Id$
  * @author  Andr&eacute; Platzer
- * @see ClauseIndex
- * @internal straightforward combination of ClauseImpl and ClauseIndex
+ * @see ClausalIndex
+ * @internal straightforward combination of ClauseImpl and ClausalIndex
  */
 public class IndexedClauseImpl extends ClauseImpl {
 

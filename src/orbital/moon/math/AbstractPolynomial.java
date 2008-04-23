@@ -153,7 +153,7 @@ abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*
     public Polynomial/*<R,S>*/ multiply(Polynomial/*<R,S>*/ bb) {
         Polynomial b = (Polynomial)bb;
         if (!indexSet().equals(b.indexSet())) {
-        	throw new IllegalArgumentException("Cannot multiply polynomials of different polynomial rings with " + indexSet() + " and " + b.indexSet() + " variables/indices");
+                throw new IllegalArgumentException("Cannot multiply polynomials of different polynomial rings with " + indexSet() + " and " + b.indexSet() + " variables/indices");
         }
         if (degreeValue() < 0)
             return this;

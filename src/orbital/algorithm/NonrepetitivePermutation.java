@@ -88,7 +88,7 @@ class NonrepetitivePermutation extends Combinatorical {
     /**
      * Given a current permutation, calculates the next permutation.
      * @param permutation the current permutation array of length k.
-     * @param n the number of possible values for each element of the permutation. n = |M|.
+     * n the number of possible values for each element of the permutation. n = |M|.
      * @return whether the permutation set now is a new one rather than the very first one again.
      */
     public static boolean permute(int permutation[]) {

@@ -112,7 +112,7 @@ import orbital.logic.sign.type.Typed;
  * higher arity <var class="meta">n</var> and type
  * <span class="type">&sigma;<sub>1</sub></span>&times;<span class="type">&sigma;<sub>2</sub></span>&times;&#8230;&times;<span class="type">&sigma;<sub><var class="meta">n</var></sub></span>&rarr;<span class="type">&tau;</span>
  * by formally setting <span class="type">&sigma;</span> := <span class="type">&sigma;<sub>1</sub></span>&times;<span class="type">&sigma;<sub>2</sub></span>&times;&#8230;&times;<span class="type">&sigma;<sub><var class="meta">n</var></sub></span>.
- * This brief notation is justified formally by {@link orbital.logic.functor.Functionals#curry(BinaryFunction) currying}
+ * This brief notation is justified formally by {@link orbital.logic.functor.Functionals#curry(orbital.logic.functor.BinaryFunction) currying}
  * or product construction.
  * Also note that <var class="meta.disabled">&upsilon;</var> is not restricted to functions and predicates,
  * but is a meta-variable that may stand for any syntactic compositor.

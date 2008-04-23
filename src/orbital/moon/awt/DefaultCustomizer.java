@@ -1025,7 +1025,6 @@ public class DefaultCustomizer extends JPanel implements Customizer {
          * Create a new property editor component for paintable and customizable
          * property editors.
          * It is delegating paints and double-click customizing to the property editor.
-         * @param property descriptor of the property to update.
          * @param peditor the property editor to set and get the values which from.
          * This property editors set methods will be called after a change
          * and the result of its getValue() method is set for the bean's property.

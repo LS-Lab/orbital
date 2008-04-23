@@ -49,7 +49,6 @@ import orbital.math.Arithmetic;
  * @version $Id$
  * @author  Andr&eacute; Platzer
  * @since Orbital1.0
- * @see MathFunctor.AbstractFunctor
  * @see <a href="doc-files/derive.html">derive()</a>
  */
 public abstract interface MathFunctor extends Functor, Arithmetic {

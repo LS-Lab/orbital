@@ -43,7 +43,7 @@ public class SteadyStateGeneticAlgorithm extends GeneticAlgorithm {
         
     /**
      * Construct a new GeneticAlgorithm.
-     * @param replacement the number of replacements to do at each generation (&le; population.size()).
+     * @param replacements the number of replacements to do at each generation (&le; population.size()).
      *  We will perform as many reproductions such that at least <code>replacement</code> replacements
      *  have occured.
      */

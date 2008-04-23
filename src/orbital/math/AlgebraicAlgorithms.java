@@ -397,7 +397,7 @@ public final class AlgebraicAlgorithms {
      *  and is the earliest example of an integer relation algorithm (Ferguson et al. 1999, also see Ferguson-Forcade algorithm in Ferguson et al. 1999).
      * @note gcd and lcm also exist in factorial rings (unique factorization domains), although they
      *  do not possess the same properties and their computation is far more expensive then.
-     * @see "Ferguson, H. R. P.; Bailey, D. H.; and Arno, S. "Analysis of PSLQ, An Integer Relation Finding Algorithm." Math. Comput. 68, 351-369, 1999."
+     * @see "Ferguson, H. R. P.; Bailey, D. H.; and Arno, S. Analysis of PSLQ, An Integer Relation Finding Algorithm. Math. Comput. 68, 351-369, 1999."
      * @todo optimize
      * @has time complexity gcd&isin;O(log(max{||a||, ||b||}))
      * @todo we could multiply the resulting gcd, r, s by a constant!=0 (which is a unit if R is a field) to obtain a normalized gcd.
@@ -890,7 +890,7 @@ public final class AlgebraicAlgorithms {
      * @internal Beware: we internally use slightly rescaled S-polynomials.
      * @return S(f,g),
      *  or <code>null</code> if the S-polynomial is known to reduce to 0 (if <code>optimize==true</code>).
-     * @param optimize, whether to optimize S-polynomial construction and return <code>null</code> objects
+     * @param optimize whether to optimize S-polynomial construction and return <code>null</code> objects
      *  instead of S-polynomials.
      */
     private static final /*<R extends Arithmetic, S extends Arithmetic>*/

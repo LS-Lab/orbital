@@ -66,9 +66,9 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/
     }
 
     public final int degreeValue() {
-    	if (degree == DIRTY) {
-    		this.degree = degreeImpl(tensorViewOfCoefficients());
-    	}
+        if (degree == DIRTY) {
+                this.degree = degreeImpl(tensorViewOfCoefficients());
+        }
         return degree;
     }
     /**
@@ -133,7 +133,7 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/
     }
     public Arithmetic/*>R<*/ get(int[] i) {
         if (i.length != ((Integer)indexSet()).intValue()) {
-        	throw new IllegalArgumentException("illegal number of indices (" + i.length + " indices) for a coefficient of a polynomial with " + indexSet() + " variables");
+                throw new IllegalArgumentException("illegal number of indices (" + i.length + " indices) for a coefficient of a polynomial with " + indexSet() + " variables");
         }
         for (int k = 0; k < i.length; k++)
             if (i[k] >= dimensions()[k])
@@ -148,11 +148,11 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/
         coefficients.set(i, vi);
         final int newPotentialDegree = ((Integer)Operations.sum.apply(Values.getDefaultInstance().valueOf(i))).intValue();
         if (vi.isZero()
-        		? oldDegree == newPotentialDegree
-        		: oldDegree < newPotentialDegree) {
+                        ? oldDegree == newPotentialDegree
+                        : oldDegree < newPotentialDegree) {
             // update degree if index is higher than degree and nonzero (because it might raise)
-        	// or equal and we reset to zero (because it might drop)
-        	//@todo delta-degrees can be optimized faster by exploiting that we know the old degree where to start 
+                // or equal and we reset to zero (because it might drop)
+                //@todo delta-degrees can be optimized faster by exploiting that we know the old degree where to start 
             this.degree = DIRTY;//degreeImpl(coefficients);
         }
     }
@@ -165,10 +165,10 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/
     }
 
     protected void setZero() {
-    	int[] olddim = null;
-    	assert (olddim = dimensions()) != null;
-    	this.coefficients = (Tensor)coefficients.zero();
-    	this.degree = java.lang.Integer.MIN_VALUE;
-    	assert Utility.equalsAll(dimensions(), olddim) : "dimensions don't change by setting to zero " + MathUtilities.format(dimensions()) + " was " + MathUtilities.format(olddim);
+        int[] olddim = null;
+        assert (olddim = dimensions()) != null;
+        this.coefficients = (Tensor)coefficients.zero();
+        this.degree = java.lang.Integer.MIN_VALUE;
+        assert Utility.equalsAll(dimensions(), olddim) : "dimensions don't change by setting to zero " + MathUtilities.format(dimensions()) + " was " + MathUtilities.format(olddim);
     }
 }

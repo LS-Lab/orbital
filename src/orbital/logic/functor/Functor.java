@@ -287,8 +287,8 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
          * Other apply method names than "apply" are not fully conform with the general functor specification
          * but may sometimes be useful as well.
          * @param method the name of the method to call for applying the functor. Usually <span class="String">"apply"</span>.
-         * @param arity the arity specified. The arity is the number of arguments needed in a call to apply.
          * @param parameterTypes an array of all parameter-types in order of calling. Must have the length arity.
+         * The arity is the number of arguments needed in a call to apply.
          * @param returnType the type of a resulting value.
          * @preconditions parameterTypes&ne;null &and; returnType&ne;null &and; method&ne;null
          * @postconditions <span class="consistent">&#9671;</span>abnormal(name of applyMethod)
@@ -428,7 +428,7 @@ public /*abstract template*/ abstract interface Functor/* abstract <class return
          * @return whether the arguments are assignable to the required parameter types of this symbol.
          *  This especially includes whether the number of arguments matches this symbol's arity.
          * @see #isCompatible(Functor.Specification)
-         * @see Types#isApplicableTo(Type,Expression[])
+         * @see orbital.logic.sign.type.Types#isApplicableTo(orbital.logic.sign.type.Type,orbital.logic.sign.Expression[])
          */
         public boolean isApplicableTo(Object[] args) {
             if ((args == null || args.length == 0) && arity() == 0)

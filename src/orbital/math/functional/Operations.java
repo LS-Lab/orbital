@@ -135,7 +135,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      * Treats its argument as a list like {@link orbital.logic.functor.Functionals.Catamorphism}.
      * </p>
      * @see orbital.logic.functor.Functionals.Catamorphism
-     * @see ValueFactory#ZERO()
+     * @see orbital.math.ValueFactory#ZERO()
      * @see #plus
      * @todo implements AbstractFunction<Vector<Arithmetic>,Arithmetic>?
      * @todo implements AbstractFunction<Matrix<Arithmetic>,Arithmetic>?
@@ -269,7 +269,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      * Treats its argument as a list like {@link orbital.logic.functor.Functionals.Catamorphism}.
      * </p>
      * @see orbital.logic.functor.Functionals.Catamorphism
-     * @see ValueFactory#ONE()
+     * @see orbital.math.ValueFactory#ONE()
      * @see #times
      * @todo
      */

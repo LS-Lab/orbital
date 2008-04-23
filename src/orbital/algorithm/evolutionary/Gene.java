@@ -166,7 +166,7 @@ public interface Gene {
     
         /**
          * new list of Genes.
-         * @param class the type of the member genes.
+         * @param geneType the type of the member genes.
          * @param size the initial size of this list. i.e. the initial number of Genes.
          */
         public List(Class/*<? extends Gene>*/ geneType, int size) throws InstantiationException, IllegalAccessException {

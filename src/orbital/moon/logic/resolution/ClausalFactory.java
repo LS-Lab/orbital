@@ -63,7 +63,7 @@ public interface ClausalFactory {
      * <p>
      * Converts the given formula to CNF in clausal set representation.
      * </p>
-     * @see orbital.moon.logic.ClassicalLogic.Utilities#clausalForm(Formula)
+     * @see orbital.moon.logic.ClassicalLogic.Utilities#clausalForm(Formula,boolean)
      * @postconditions (RES.toFormula() <=> formula) &and; RES in CNF
      */
     ClausalSet asClausalSet(Formula formula);
