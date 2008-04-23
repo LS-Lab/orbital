@@ -12,11 +12,13 @@ import java.util.*;
 
 import orbital.util.Utility;
 
+import junit.framework.*;
+
 /**
  * Automatically generates test cases.
  * @version $Id$
  */
-public class ArithmeticTestPatternGenerator {
+public class ArithmeticTestPatternGenerator extends check.TestCase {
     private final Random random;
     private final ValueFactory vf;
     private double min;
@@ -121,4 +123,8 @@ public class ArithmeticTestPatternGenerator {
         l.remove(Tensor.class);
         return l;
     }
+
+    public void testDummy() {
+    }
+
 }

@@ -26,7 +26,7 @@ public class ClauseTest extends check.TestCase {
         return new TestSuite(ClauseTest.class);
     }
     protected void setUp() {
-        logic = new ClassicalLogic();
+        logic = new ClassicalLogic(ClassicalLogic.SEMANTIC_INFERENCE);
         factory = new DefaultClausalFactory();
     }
 

@@ -66,7 +66,7 @@ public class ClassicalLogicTest extends check.TestCase {
 
     protected void test(String name) {
         try {
-            ClassicalLogic.main(new String[] {name});
+            ClassicalLogic.main(new String[] {"-inference=SEMANTIC_INFERENCE", name});
         }
         catch (Throwable ex) {
             ex.printStackTrace();

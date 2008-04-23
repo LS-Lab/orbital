@@ -25,7 +25,7 @@ public class LambdaTest extends check.TestCase {
 
     protected void test(String name, boolean allTrue) {
         try {
-            ClassicalLogic logic = new ClassicalLogic();
+            ClassicalLogic logic = new ClassicalLogic(ClassicalLogic.SEMANTIC_INFERENCE);
             ClassicalLogic.proveAll(new InputStreamReader(this.getClass().getResourceAsStream(name),
                                                           ClassicalLogic.DEFAULT_CHARSET),
                                     logic, allTrue);
