@@ -281,12 +281,13 @@ public class FunctionTest extends check.TestCase {
             } else {
                 // don't know what to do with non-number, assume true
                 System.out.println("FunctionTest doesn't understand " + la);
-                ml.discardAnswer();
+                ml.newPacket();
                 return;
             }
         } catch(MathLinkException ignore) {
             // assume success
-            System.out.println("FunctionTest doesn't understand " + mresult + " for " + ml.peekExpr());
+            System.out.println("FunctionTest doesn't understand " + mresult);
+            ml.newPacket();
             return;
         }
         System.out.println(mresult);

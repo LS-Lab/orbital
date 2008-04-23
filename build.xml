@@ -95,7 +95,7 @@
         <!-- default value, may be overwritten by 'build.properties',
              has to be relative to basedir! -->
 	<!-- default values, may be overwritten by 'build.properties' -->
-	<property name="javadoc.link.jdk" value="http://java.sun.com/j2se/1.5.0/docs/api/"/>
+	<property name="javadoc.link.jdk" value="http://java.sun.com/javase/6/docs/api/"/>
 	<property name="javadoc.link.jdk.offline" value="false"/>
 	<property name="env.javacchome" value="/usr/share/java"/>
 	<property name="javac.source" value="1.4"/>
