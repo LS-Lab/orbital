@@ -18,9 +18,7 @@ import orbital.logic.sign.Expression.Composite;
 import orbital.logic.sign.ParseException;
 import orbital.logic.sign.type.*;
 
-import orbital.logic.functor.Functor;
 import orbital.logic.functor.*;
-import orbital.logic.functor.Predicates;
 import orbital.logic.trs.*;
 import orbital.moon.logic.bridge.SubstitutionImpl.UnifyingMatcher;
 import orbital.math.functional.Operations;
@@ -57,6 +55,8 @@ import orbital.util.InnerCheckedException;
 import orbital.util.IncomparableException;
 import java.beans.IntrospectionException;
 import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 import orbital.logic.sign.concrete.Notation;
 import orbital.logic.sign.concrete.Notation.NotationSpecification;
@@ -172,6 +172,20 @@ public class ClassicalLogic extends ModernLogic {
         if (orbital.signe.isHelpRequest(arg)) {
             System.out.println(usage);
             System.out.println("Core logical junctors and operators:\n\t" + new ClassicalLogic().coreSignature());
+            System.out.println("Available theorem provers:");
+            ClassicalLogic logic = new ClassicalLogic();
+            Field fields[] = logic.getClass().getDeclaredFields();
+            for (int i = 0; i < fields.length; i++) {
+            	if ((fields[i].getModifiers()&Modifier.STATIC) != 0
+            			&& InferenceMechanism.class.isAssignableFrom(fields[i].getType())) {
+            		System.out.println("  -inference=" + fields[i].getName());
+            		try {
+            			System.out.println("      " + fields[i].get(logic));
+            		}
+            		catch (IllegalAccessException ignore) {}
+            		catch (IllegalArgumentException ignore) {}
+            	}
+            }
             if (Arrays.asList(arg).contains("-verbose")) {
                 System.out.println(" = {");
                 for (Iterator i = new ClassicalLogic().coreSignature().iterator(); i.hasNext(); ) {
@@ -213,7 +227,7 @@ public class ClassicalLogic extends ModernLogic {
                 } else if (arg[option].startsWith("-inference=")) {
                     String mechanismDescription = arg[option].substring("-inference=".length()).toUpperCase();
                     try {
-                        InferenceMechanism mechanism = (InferenceMechanism) logic.getClass().getField(mechanismDescription).get(null);
+                        InferenceMechanism mechanism = (InferenceMechanism) logic.getClass().getField(mechanismDescription).get(logic);
                         if (mechanism.inference() instanceof orbital.moon.logic.resolution.ResolutionBase) {
                             ((orbital.moon.logic.resolution.ResolutionBase) mechanism.inference()).setVerbose(verbose);
                         }
@@ -330,7 +344,7 @@ public class ClassicalLogic extends ModernLogic {
     /**
      * @todo move content to the ResourceBundle.
      */
-    public static final String usage = "usage: [options] [all|none|properties|fol|<filename>|table]\n\tall\tprove important semantic-equivalence expressions\n\tnone\ttry to prove some semantic-garbage expressions\n\tproperties\tprove some properties of classical logic inference relation\n\tfol\tprove important equivalences of first-order logic\n\n\t<filename>\ttry to prove all expressions in the given file\n\ttable\tprint a function table of the expression instead\n\t-\tUse no arguments at all to be asked for expressions\n\t\tto prove.\noptions:\n\t-normalForm\tcheck the conjunctive and disjunctive forms in between\n\t-closure\tprint the universal/existential closures in between\n\t-inference=<inference_mechanism>\tuse ClassicalLogic.<inference_mechanism> instead of semantic inference\n\t-verbose\tbe more verbose (f.ex. print normal forms if -normalForm)\n\t-charset=<encoding>\tthe character set or encoding to use for reading files\n\t-problem\tparse a problem file, i.e. combine all lines into a single problem, instead of assuming single-line conjectures.\n\nTo check whether A and B are equivalent, enter '|= A<->B' or 'A == B'.\nUse -verbose --help to get more help.";
+    public static final String usage = "usage: [options] [all|none|properties|fol|<filename>|table]\n\tall\tprove important semantic-equivalence expressions\n\tnone\ttry to prove some semantic-garbage expressions\n\tproperties\tprove some properties of classical logic inference relation\n\tfol\tprove important equivalences of first-order logic\n\n\t<filename>\ttry to prove all expressions in the given file\n\ttable\tprint a function table of the expression instead\n\t-\tUse no arguments at all to be asked for expressions to prove.\noptions:\n\t-inference=<inference_mechanism>  use the specified prover <inference_mechanism>, see list below\n\t-normalForm\tcheck conjunctive and disjunctive forms of formulas\n\t-closure\tprint universal/existential closures of formulas\n\t-verbose\tbe more verbose (f.ex. print normal forms if -normalForm)\n\t-charset=<encoding>\tthe character set or encoding to use for reading files\n\t-problem\tparse a problem file, i.e. combine all lines into a single problem, instead of assuming single-line conjectures.\n\nTo check whether A and B are equivalent, enter '|= A<->B' or 'A == B'.\nUse -verbose --help to get more help.";
 
 
     
@@ -369,8 +383,15 @@ public class ClassicalLogic extends ModernLogic {
          */
         private static InferenceMechanism[] values = new InferenceMechanism[MAX_INFERENCE_MECHANISMS];
 
-        InferenceMechanism(String name) {
+        /**
+         * a description of this inference mechanism
+         * @serial
+         */
+        private final String description;
+        
+        InferenceMechanism(String name, String description) {
             this.name = name;
+            this.description = description;
             values[nextOrdinal - 1] = this;
         }
 
@@ -394,7 +415,7 @@ public class ClassicalLogic extends ModernLogic {
         } 
 
         public String toString() {
-            return this.name;
+            return this.name + ": " + this.description;
         } 
 
         /**
@@ -422,7 +443,7 @@ public class ClassicalLogic extends ModernLogic {
     private InferenceMechanism inferenceMechanism;
     
     public ClassicalLogic() {
-        this(SEMANTIC_INFERENCE);
+        this(RESOLUTION_INFERENCE);
     }
     /**
      * Create a classical logic with the specified inference mechanism.
@@ -1395,6 +1416,46 @@ public class ClassicalLogic extends ModernLogic {
 
     // enum of inference mechanisms @internal this must be below initialization of coreSignature since Resolution needs it.
     /**
+     * Resolution inference.
+     * Inference mechanism driven by full first-order resolution.
+     * @attribute computability semi-decidable
+     */
+    public static final InferenceMechanism RESOLUTION_INFERENCE = new InferenceMechanism("RESOLUTION",
+    		"First-order resolution prover with set of support and clausal indexing") {
+            private final Inference _resolution = new orbital.moon.logic.resolution.SetOfSupportResolution();
+            Inference inference() {
+                return _resolution;
+            }
+        };
+    public static final InferenceMechanism RESOLUTION_HEURISTIC_INFERENCE = new InferenceMechanism("RESOLUTION_HEURISTIC",
+    		"First-order resolution prover based on heuristic search with set of support and clausal indexing") {
+            private final Inference _resolution = new orbital.moon.logic.resolution.SearchResolution();
+            Inference inference() {
+                return _resolution;
+            }
+        };
+    public static final InferenceMechanism RESOLUTION_SATURATION_INFERENCE = new InferenceMechanism("RESOLUTION_SATURATION",
+    		"Naive first-order resolution prover based on saturation") {
+            private final Inference _resolution = new orbital.moon.logic.resolution.SaturationResolution();
+            Inference inference() {
+                return _resolution;
+            }
+        };
+    /**
+     * Propositional inference.
+     * Inference mechanism specialized for fast propositional inference.
+     * Currently uses Davis-Putnam-Loveland algorithm.
+     * @attribute time complexity CoNP-complete
+     */
+    public static final InferenceMechanism PROPOSITIONAL_INFERENCE = new InferenceMechanism("PROPOSITIONAL",
+    		"Propositional DPLL procedure") {
+            private final Inference _propositional = new PropositionalInference();
+            Inference inference() {
+                return _propositional;
+            }
+        };
+
+    /**
      * Semantic inference with truth-tables.
      * <p>
      * This inference mechanism is usually slow, but has the advantage of involving no calculus
@@ -1403,7 +1464,8 @@ public class ClassicalLogic extends ModernLogic {
      * cases with a very small number of different propositional atoms and large formulas.
      * </p>
      */
-    public static final InferenceMechanism SEMANTIC_INFERENCE = new InferenceMechanism("SEMANTIC_INFERENCE") {
+    public static final InferenceMechanism SEMANTIC_INFERENCE = new InferenceMechanism("SEMANTIC_INFERENCE",
+    		"Propositional inference using simple semantic truth-tables") {
             /**
              * @attribute stateless
              */
@@ -1451,41 +1513,6 @@ public class ClassicalLogic extends ModernLogic {
                 };
             Inference inference() {
                 return _semanticInference;
-            }
-        };
-    /**
-     * Resolution inference.
-     * Inference mechanism driven by full first-order resolution.
-     * @attribute computability semi-decidable
-     */
-    public static final InferenceMechanism RESOLUTION_INFERENCE = new InferenceMechanism("RESOLUTION") {
-            private final Inference _resolution = new orbital.moon.logic.resolution.SetOfSupportResolution();
-            Inference inference() {
-                return _resolution;
-            }
-        };
-    public static final InferenceMechanism RESOLUTION2_INFERENCE = new InferenceMechanism("RESOLUTION2") {
-            private final Inference _resolution = new orbital.moon.logic.resolution.SearchResolution();
-            Inference inference() {
-                return _resolution;
-            }
-        };
-    public static final InferenceMechanism RESOLUTION3_INFERENCE = new InferenceMechanism("RESOLUTION3") {
-            private final Inference _resolution = new orbital.moon.logic.resolution.SaturationResolution();
-            Inference inference() {
-                return _resolution;
-            }
-        };
-    /**
-     * Propositional inference.
-     * Inference mechanism specialized for fast propositional inference.
-     * Currently uses Davis-Putnam-Loveland algorithm.
-     * @attribute time complexity CoNP-complete
-     */
-    public static final InferenceMechanism PROPOSITIONAL_INFERENCE = new InferenceMechanism("PROPOSITIONAL") {
-            private final Inference _propositional = new PropositionalInference();
-            Inference inference() {
-                return _propositional;
             }
         };
 

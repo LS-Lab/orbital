@@ -47,7 +47,7 @@ public final class signe extends Applet implements Runnable {
      * </p>
      */
     public static final boolean isHelpRequest(String arg) {
-        return "-?".equals(arg) || "--help".equals(arg) || "-h".equals(arg) || "/?".equals(arg)
+        return "-?".equals(arg) || "--help".equalsIgnoreCase(arg) || "-help".equalsIgnoreCase(arg) || "-h".equals(arg) || "/?".equals(arg)
             || "\"-?\"".equals(arg) || "\"/?\"".equals(arg);
     }
     /**
