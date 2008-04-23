@@ -27,7 +27,7 @@ import orbital.math.MathUtilities;
  * 
  * @version $Id$
  * @author  Andr&eacute; Platzer
- * @see javax.swing.Spinner
+ * @see javax.swing.JSpinner
  */
 // TODO: register a class as a PropertyEditor for Double.TYPE etc.
 // TODO: display with MathUtilities.format(), but keep original number

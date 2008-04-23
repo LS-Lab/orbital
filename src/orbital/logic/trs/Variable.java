@@ -10,7 +10,7 @@ package orbital.logic.trs;
  * Variable tagging interface.
  * <p>
  * This interface is used to tag classes whose objects are potentially treated as variable expressions
- * subject to binding during {@link orbital.logic.trs.Substitutions#unify(Collection) unification}
+ * subject to binding during {@link orbital.logic.trs.Substitutions#unify(java.util.Collection) unification}
  * and {@link orbital.logic.imp.Inference reasoning}.
  * An object <code>o</code> implementing <code>Variable</code> is treated as a variable iff
  * <code>o.{@link #isVariable()}</code> is <span class="keyword">true</span>.

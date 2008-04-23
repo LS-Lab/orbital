@@ -158,7 +158,7 @@ public interface TransitionModel/*<A,S, M extends TransitionModel.Transition>*/ 
      *  The order of the list can be decisive because for actions with equal costs
      *  the first will be preferred.
      * @postconditions RES=A(s)&sube;A
-     * @see GreedyProblem#nextCandidates(List)
+     * @see GreedyProblem#nextCandidates(java.util.List)
      */
     Iterator/*<A>*/ actions(Object/*>S<*/ state);
         

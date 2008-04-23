@@ -495,7 +495,7 @@ public final class NumericalAlgorithms {
      * @param f the right-hand side of the differential equation.
      * @param tau the initial time &tau; of the initial values &eta;.
      * @param eta the vector &eta; of initial values.
-     * @param step the number m of discretisation steps defining h=(a-b)/m.
+     * @param steps the number m of discretisation steps defining h=(a-b)/m.
      * @param order the desired order p of the global discretisation error, i.e., with errors in O(h<sup>p</sup>).
      * @return a numerical solution x of the differential equation system
      *   <center>
@@ -517,7 +517,7 @@ public final class NumericalAlgorithms {
      * <center>x<sub>n+1</sub> = x<sub>n</sub> + h&sum;<sub>i=1</sub><sup>s</sup> b<sub>i</sub>k<sub>i</sub></center>
      * with
      * <center>k<sub>i</sub> = f(t<sub>n</sub>+c<sub>i</sub>h, y<sub>n</sub> + h&sum;<sub>j=1</sub><sup>i-1</sup> a<sub>i,j</sub>hk<sub>j</sub></center>
-     * and discretisation step defined as in {@link #dSolve(orbital.math.functional.Function,Real,Vector,Real,Real,int)}.
+     * and discretisation step defined as in {@link #dSolve(orbital.math.functional.BinaryFunction,Real,Vector,Real,Real,int,int)}.
      * </p>
      * @param butcher is a consistent Butcher tableau
      *   <table>
@@ -528,7 +528,7 @@ public final class NumericalAlgorithms {
      *     <tr><td>c<sub>s</sub></td> <td>a<sub>s,1</sub></td><td>a<sub>s,2</sub></td><td>...</td><td>a<sub>s,s-1</sub></td></tr>
      *   </table>
      * @precondition butcher is consistent, i.e., &sum;<sub>j=1</sub><sup>i-1</sup> a<sub>i,j</sub>=c<sub>i</sub>
-     * @see #dSolve(orbital.math.functional.Function,Real,Vector,Real,Real,int)
+     * @see #dSolve(orbital.math.functional.BinaryFunction,Real,Vector,Real,Real,int,int)
      */
     public static orbital.math.functional.Function dSolve(orbital.math.functional.BinaryFunction/*<Real,Vector<Real>>*/ f, Real tau, Vector/*<Real>*/ eta,
                                                           Real min, Real max,
@@ -616,7 +616,7 @@ public final class NumericalAlgorithms {
     /**
      * Returns a numerical solution x of the one-dimensional differential equation
      * x'(t) = f(t,x(t)), x(&tau;)=&eta; on [a,b].
-     * @see #dSolve(orbital.math.functional.Function,Real,Vector,Real,Real,int,int)
+     * @see #dSolve(orbital.math.functional.BinaryFunction,Real,Vector,Real,Real,int,int)
      */
     public static orbital.math.functional.Function dSolve(orbital.math.functional.BinaryFunction f, Real tau, Real eta,
                                                           Real a, Real b,
@@ -627,7 +627,7 @@ public final class NumericalAlgorithms {
     /**
      * Returns a numerical solution x of the one-dimensional differential equation
      * x'(t) = f(t,x(t)), x(&tau;)=&eta; on [a,b].
-     * @see #dSolve(orbital.math.functional.Function,Real,Vector,Real,Real,int)
+     * @see #dSolve(orbital.math.functional.BinaryFunction,Real,Vector,Real,Real,int,int)
      */
     public static orbital.math.functional.Function dSolve(orbital.math.functional.BinaryFunction/*<Real,Real>*/ f, Real tau, Real eta,
                                                           Real min, Real max,

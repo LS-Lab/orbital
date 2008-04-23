@@ -627,7 +627,7 @@ public abstract class Notation implements Serializable, Comparable {
         //TODO: do we even need to introduce protected String compositor;? No, because object should know as well?
         /**
          * Create a specification of a compositor's notation.
-         * @see Notation#getAssociativity()
+         * @see NotationSpecification#getAssociativity()
          */
         public NotationSpecification(int precedence, String associativity, Notation notation) {
             this.precedence = precedence;
@@ -636,7 +636,7 @@ public abstract class Notation implements Serializable, Comparable {
         }
         /**
          * Create a specification of a compositor's notation.
-         * @see Notation#getAssociativity()
+         * @see NotationSpecification#getAssociativity()
          */
         public NotationSpecification(int precedence, String associativity, Notation notation, int arity) {
             this(precedence, associativity, notation);
@@ -647,7 +647,7 @@ public abstract class Notation implements Serializable, Comparable {
         }
         /**
          * Create a specification of a compositor's notation.
-         * @see Notation#getAssociativity()
+         * @see NotationSpecification#getAssociativity()
          */
         public NotationSpecification(int precedence, Notation notation, int arity) {
             this(precedence, prefixNonAssociativity(arity), notation);
@@ -658,7 +658,7 @@ public abstract class Notation implements Serializable, Comparable {
          * This constructor will determine the notation object to use for formatting
          * according to the associativity string which must be correct, then!
          * </p>
-         * @see Notation#getAssociativity()
+         * @see NotationSpecification#getAssociativity()
          */
         public NotationSpecification(int precedence, String associativity) {
             this(precedence, associativity, null);

@@ -34,7 +34,7 @@ final class PackageUtilities {
      * @preconditions choices.hasNext()
      * @postconditions RES = (a,v) &and; a = argmin<sub>a'&isin;M</sub> f(a')
      *  &and; v = min<sub>a'&isin;M</sub> f(a').
-     * @throws NoSuchElementException if !choices.hasNext()
+     * @throws java.util.NoSuchElementException if !choices.hasNext()
      * @see orbital.util.Setops#argmin(Iterator,Function)
      * @todo replace by ordinary argmin and reevaluate the result's f-value.
      */

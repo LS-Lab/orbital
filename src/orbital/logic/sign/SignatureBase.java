@@ -283,14 +283,14 @@ public class SignatureBase/*<Sigma extends Symbol>*/ extends DelegateSortedSet/*
                     throw new UnsupportedOperationException();
                 }
 
-                // Code for delegation of orbital.logic.imp.Signature methods to s
+                // Code for delegation of Signature methods to s
 
                 /**
                  *
                  * @param param1 <description>
                  * @param param2 <description>
                  * @return <description>
-                 * @see orbital.logic.imp.Signature#get(String, Type)
+                 * @see Signature#get(String, Type)
                  */
                 public Symbol/*>Sigma<*/ get(String param1, Type param2)
                 {
@@ -302,7 +302,7 @@ public class SignatureBase/*<Sigma extends Symbol>*/ extends DelegateSortedSet/*
                  * @param param1 <description>
                  * @param param2 <description>
                  * @return <description>
-                 * @see orbital.logic.imp.Signature#get(String, Object[])
+                 * @see Signature#get(String, Object[])
                  */
                 public Symbol/*>Sigma<*/ get(String param1, Object[] param2)
                 {
@@ -313,7 +313,7 @@ public class SignatureBase/*<Sigma extends Symbol>*/ extends DelegateSortedSet/*
                  *
                  * @param param1 <description>
                  * @return <description>
-                 * @see orbital.logic.imp.Signature#union(Signature)
+                 * @see Signature#union(Signature)
                  */
                 public Signature/*<Sigma>*/ union(Signature/*<Sigma>*/ param1)
                 {
@@ -324,7 +324,7 @@ public class SignatureBase/*<Sigma extends Symbol>*/ extends DelegateSortedSet/*
                  *
                  * @param param1 <description>
                  * @return <description>
-                 * @see orbital.logic.imp.Signature#intersection(Signature)
+                 * @see Signature#intersection(Signature)
                  */
                 public Signature/*<Sigma>*/ intersection(Signature/*<Sigma>*/ param1)
                 {
@@ -335,7 +335,7 @@ public class SignatureBase/*<Sigma extends Symbol>*/ extends DelegateSortedSet/*
                  *
                  * @param param1 <description>
                  * @return <description>
-                 * @see orbital.logic.imp.Signature#difference(Signature)
+                 * @see Signature#difference(Signature)
                  */
                 public Signature/*<Sigma>*/ difference(Signature/*<Sigma>*/ param1)
                 {
@@ -346,7 +346,7 @@ public class SignatureBase/*<Sigma extends Symbol>*/ extends DelegateSortedSet/*
                  *
                  * @param param1 <description>
                  * @return <description>
-                 * @see orbital.logic.imp.Signature#symmetricDifference(Signature)
+                 * @see Signature#symmetricDifference(Signature)
                  */
                 public Signature/*<Sigma>*/ symmetricDifference(Signature/*<Sigma>*/ param1)
                 {

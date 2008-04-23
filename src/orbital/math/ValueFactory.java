@@ -443,7 +443,7 @@ public interface ValueFactory {
      * <p>
      * Query operations on the returned tensor "read through" to the specified tensor,
      * and attempts to modify the returned tensor, whether direct or via its iterator,
-     * result in an {@link java.util.UnsupportedOperationException}.</p>
+     * result in an {@link java.lang.UnsupportedOperationException}.</p>
      * <p>
      * Note that cloning a constant tensor will not return a constant tensor, but a clone of the
      * specified tensor t.</p>
@@ -630,7 +630,7 @@ public interface ValueFactory {
      * classes are those induced by the
      * {@link AlgebraicAlgorithms#reduce(java.util.Collection,java.util.Comparator) reduction}
      * operator.</p>
-     * @param m the {@link AlgebraicAlgorithms#groebnerBasis(Set,Comparator) Groebner basis}
+     * @param m the {@link AlgebraicAlgorithms#groebnerBasis(java.util.Set,java.util.Comparator) Groebner basis}
      *  modulo whose generated ideal (m) to form the quotients.
      * @param monomialOrder the monomial order applied for reducing polynomials.
      * @preconditions m = AlgebraicAlgorithms.groebnerBasis(m,monomialOrder)

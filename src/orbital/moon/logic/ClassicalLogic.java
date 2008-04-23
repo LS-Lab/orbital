@@ -176,15 +176,15 @@ public class ClassicalLogic extends ModernLogic {
             ClassicalLogic logic = new ClassicalLogic();
             Field fields[] = logic.getClass().getDeclaredFields();
             for (int i = 0; i < fields.length; i++) {
-            	if ((fields[i].getModifiers()&Modifier.STATIC) != 0
-            			&& InferenceMechanism.class.isAssignableFrom(fields[i].getType())) {
-            		System.out.println("  -inference=" + fields[i].getName());
-            		try {
-            			System.out.println("      " + fields[i].get(logic));
-            		}
-            		catch (IllegalAccessException ignore) {}
-            		catch (IllegalArgumentException ignore) {}
-            	}
+                if ((fields[i].getModifiers()&Modifier.STATIC) != 0
+                                && InferenceMechanism.class.isAssignableFrom(fields[i].getType())) {
+                        System.out.println("  -inference=" + fields[i].getName());
+                        try {
+                                System.out.println("      " + fields[i].get(logic));
+                        }
+                        catch (IllegalAccessException ignore) {}
+                        catch (IllegalArgumentException ignore) {}
+                }
             }
             if (Arrays.asList(arg).contains("-verbose")) {
                 System.out.println(" = {");
@@ -1797,7 +1797,7 @@ public class ClassicalLogic extends ModernLogic {
          * The contradictory set of clauses is {&empty;}={&#9633;}
          * while the tautological set of clauses is {}.
          * </p>
-         * @deprecated Use {@link orbital.moon.logic.resolution.Clause.CONTRADICTION} instead.
+         * @deprecated Use {@link orbital.moon.logic.resolution.Clause#CONTRADICTION} instead.
          */
         public static final Set/*<Formula>*/ CONTRADICTION = Collections.EMPTY_SET;
 

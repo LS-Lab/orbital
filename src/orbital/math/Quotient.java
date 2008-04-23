@@ -93,7 +93,7 @@ import orbital.logic.functor.Function;
  * @see <a href="doc-files/AlgebraicStructures.html#quotient">Quotient Structures</a>
  * @see Values#quotient(Arithmetic,Function)
  * @see Values#quotient(Euclidean,Euclidean)
- * @see Values#quotient(Polynomial,Set,Comparator)
+ * @see Values#quotient(Polynomial,java.util.Set,java.util.Comparator)
  * @internal this is an interface "Modulus/Quotient" or thing that extends Arithmetic and provides things like Z/nZ, F_p, and perhaps Q[X]/(X^2+X+1).
  * @todo couldn't we perhaps dynamically extend M at runtime if M is an interface?
  */

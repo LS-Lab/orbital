@@ -65,7 +65,7 @@ class ArithmeticTensor/*<R extends Arithmetic>*/ extends AbstractTensor/*<R>*/ {
         final int[] dim = Utility.dimensions(values);
         // check rectangular and that base type is instanceof Arithmetic or primitive
         if (!checkRectangular(dim, 0, values)) {
-        	throw new IllegalArgumentException("multi-dimensional array of " + Arithmetic.class + " expected. found " + values);
+                throw new IllegalArgumentException("multi-dimensional array of " + Arithmetic.class + " expected. found " + values);
         }
         final Combinatorical index = Combinatorical.getPermutations(dim);
         // whether the array has primitive types
@@ -80,9 +80,9 @@ class ArithmeticTensor/*<R extends Arithmetic>*/ extends AbstractTensor/*<R>*/ {
             final int[] i = index.next();
             final Object ai = Utility.getPart(values, i);
             if (ai == null)
-            	throw new NullPointerException("multi-dimensional array does not contain " + ai);
+                throw new NullPointerException("multi-dimensional array does not contain " + ai);
             if (primitive != Values.isPrimitiveWrapper(ai.getClass())) {
-            	throw new IllegalArgumentException("multi-dimensional array either consistently has " + Arithmetic.class + " or consistently contains primitive types");
+                throw new IllegalArgumentException("multi-dimensional array either consistently has " + Arithmetic.class + " or consistently contains primitive types");
             }
             if (primitive) {
                 assert ai instanceof Number : "primitive type get wrapped into instances of " + Number.class;

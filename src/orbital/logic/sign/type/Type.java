@@ -15,8 +15,8 @@ import orbital.logic.functor.Predicate;
  * &Tau; over {<span class="type">&iota;</span>,<span class="type">&rarr;</span>,<span class="type">()</span>}
  * plus perhaps <big>{</big><span class="type">&times;</span>,<span class="type">&cap;</span>,<span class="type">&cup;</span>,<span class="type">{}</span>,<span class="type">&lang;&rang;</span>,<span class="type">&#12308;&#12309;</span><big>}</big>.
  * Intuitively, {@link Types#INDIVIDUAL <span class="type">&iota;</span>} is the type for individuals,
- * {@link Types#map(Type,Type) <span class="type">&sigma;&rarr;&tau;</span>} the type for maps from <span class="type">&sigma;</span> to <span class="type">&tau;</span>,
- * and {@link Types#predicate(Type) <span class="type">(&sigma;)</span> = <span class="type">&sigma;&rarr;&omicron;</span>} the type for predicates of <span class="type">&sigma;</span>,
+ * {@link TypeSystem#map(Type,Type) <span class="type">&sigma;&rarr;&tau;</span>} the type for maps from <span class="type">&sigma;</span> to <span class="type">&tau;</span>,
+ * and {@link TypeSystem#predicate(Type) <span class="type">(&sigma;)</span> = <span class="type">&sigma;&rarr;&omicron;</span>} the type for predicates of <span class="type">&sigma;</span>,
  * likewise {@link Types#TRUTH <span class="type">&omicron;</span> = <span class="type">()</span>} is the type of truth-values.
  * A type denotes the set of possible values for a quantity.
  * But there is also a precise <a href="../../imp/Interpretation.html#interpretation">semantics</a>.
@@ -95,7 +95,7 @@ public interface Type extends Comparable, Predicate {
      * @return Returns a value &lt; 0 if this &lt; <span class="type">&tau;</span> (this is a proper subtype of <span class="type">&tau;</span>).<br />
      *  Returns a value &gt; 0 if this &gt; <span class="type">&tau;</span> (this is a proper supertype of <span class="type">&tau;</span>).<br />
      *  Returns 0 if this = <span class="type">&tau;</span> (which is the case if and only if this &le; <span class="type">&tau;</span> and this &ge; <span class="type">&tau;</span>).
-     * @throws IncomparableException if the types are incomparable.
+     * @throws orbital.util.IncomparableException if the types are incomparable.
      * @see #subtypeOf(Type)
      * @see TypeSystem#inf()
      * @see TypeSystem#sup()

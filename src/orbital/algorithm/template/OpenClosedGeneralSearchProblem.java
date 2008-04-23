@@ -31,7 +31,7 @@ import java.util.LinkedList;
  *
  * @version $Id$
  * @author  Andr&eacute; Platzer
- * @see DynamicBacktracking
+ * @internal @see DynamicBacktracking
  * @see <a href="{@docRoot}/Patterns/Design/Decorator.html">Decorator</a>
  * @todo optimizable for A* since then we can replace a child c which is already in the open set of candidates by c when c can be reached by a shorter path.
  */

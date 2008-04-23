@@ -261,7 +261,7 @@ public interface TypeSystem {
      * @attribute associative
      * @attribute neutral {@link #UNIVERSAL <span class="type">&#8868;</span>}
      * @attribute commutative
-     * @attribute distributive {@link #sup}
+     * @attribute distributive {@link #sup(Type[])}
      * @attribute idempotent
      * @attribute 
      *   <span class="type">&sigma;</span> &le; <span class="type">&tau;</span>
@@ -301,7 +301,7 @@ public interface TypeSystem {
      * @attribute associative
      * @attribute neutral {@link #ABSURD <span class="type">&perp;</span>}
      * @attribute commutative
-     * @attribute distributive {@link #inf}
+     * @attribute distributive {@link #inf(Type[])}
      * @attribute idempotent
      * @attribute 
      *   <span class="type">&sigma;</span> &le; <span class="type">&tau;</span>

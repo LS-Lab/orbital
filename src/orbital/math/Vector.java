@@ -318,7 +318,6 @@ public interface Vector/*<R extends Arithmetic>*/ extends Tensor/*<R>*/ {
     /**
      * Returns an array containing all the elements in this vector.
      * @postconditions RES[i] == get(i) && RES != RES
-     * @see #set(Arithmetic[])
      * @see Object#clone()
      */
     public Arithmetic/*>R<*/[] toArray();

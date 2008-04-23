@@ -74,7 +74,7 @@ public class BranchAndBound/*<A,S>*/
 
     /**
      * Set the maximum upper bound for a solution.
-     * @param bound is a sufficiently high upper bound for a solution.
+     * @param maximumUpperBound is a sufficiently high upper bound for a solution.
      *  If there is no solution below this bound, the search will fail.
      */
     public void setMaxBound(Real maximumUpperBound) {

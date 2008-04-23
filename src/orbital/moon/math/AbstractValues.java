@@ -100,9 +100,9 @@ public abstract class AbstractValues extends Values {
     /**
      * Facade property.
      * This method is a facade peudo-property for accessing
-     * {@link Values@getDefault()}.adjustToParameters(Map) representations.
+     * {@link Values#getDefault()}.adjustToParameters(Map) representations.
      * It essentially has the same effect as
-     * {@link Values@setDefault(ValueFactory)}(this.adjustToParameters())
+     * {@link Values#setDefault(ValueFactory)}(this.adjustToParameters())
      */
     public void setRepresentation(String precision) {
         Map params = new java.util.HashMap();

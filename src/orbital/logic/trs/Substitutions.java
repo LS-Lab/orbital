@@ -338,7 +338,7 @@ public class Substitutions {
     /**
      * The &lambda;-operator of &lambda;-Calculus.
      * <div>&lambda;:&sigma;&times;&tau;&rarr;(&sigma;&rarr;&tau;); (&lambda;x.f) &#8614; (x&#8614;f)</div>
-     * Usually for &sigma;={@link Variable}, &tau;={@link orbital.logic.imp.Expression}.
+     * Usually for &sigma;={@link Variable}, &tau;={@link orbital.logic.sign.Expression}.
      * Here &lambda; is the formal parameter marker.
      * <p>
      * The &lambda;-Calculus of Alonzo Church (1930) has the following inference rules
@@ -416,7 +416,7 @@ public class Substitutions {
      * <p>
      * The &lambda;-operator is of course implemented as the substitution f[x&rarr;#0].
      * Note that this implementation does not strictly depend on x being an instance of {@link Variable}
-     * and f being an instance of {@link orbital.logic.imp.Expression}. Otherwise it will
+     * and f being an instance of {@link orbital.logic.sign.Expression}. Otherwise it will
      * work fine just as well.
      * </p>
      * <h5>Implementation notes</h5>

@@ -105,7 +105,6 @@ public interface Tensor/*<R extends Arithmetic>*/ extends Arithmetic {
      * @param vi the value to set for the component v<sub>i</sub> at position i.
      * @preconditions valid(i)
      * @throws UnsupportedOperationException if this tensor is constant and does not allow modifications.
-     * @see #modCount
      */
     void set(int[] i, Arithmetic/*>R<*/ vi) throws UnsupportedOperationException;
 
@@ -147,7 +146,7 @@ public interface Tensor/*<R extends Arithmetic>*/ extends Arithmetic {
      * in order to prevent it from inducing undefined behaviour on its backing tensor.
      * Query operations on the returned tensor "read through" to this object,
      * and attempts to structurally modify the returned vector, whether direct or via its iterator,
-     * result in an {@link java.util.UnsupportedOperationException}.
+     * result in an {@link java.lang.UnsupportedOperationException}.
      * However, setting single components will "write through" to the this object.
      * </p>
      * @preconditions i1.length==rank() &and; i2.length==rank() &and; &forall;k i1[k]&le;i2[k] &and; valid(i1) &and; valid(i2)
@@ -175,7 +174,6 @@ public interface Tensor/*<R extends Arithmetic>*/ extends Arithmetic {
      * Sets a part of lesser rank in this tensor.
      * @preconditions part.rank()==rank()-1 &and; Utilities.equalsAll(part.dimensions(), subTensor(level,index).dimensions())
      * @see #subTensor(int,int)
-     * @see #modCount
      * @todo remove since this is a simple derived operation? Or even introduce setSubTensor(int[],int[],Tensor), but Matrix does not have this, either.
      */
     void setSubTensor(int level, int index, Tensor/*<R>*/ part);

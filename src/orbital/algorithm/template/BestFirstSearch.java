@@ -63,7 +63,6 @@ public abstract class BestFirstSearch/*<A,S>*/ extends GeneralSearch/*<A,S>*/
          */
         private Comparator/*<S>*/ comparator;
         /**
-         * {@inheritDoc}
          * @param evaluation the evaluation function to use for sorting the options monotonically.
          *  Usually {@link EvaluativeAlgorithm#getEvaluation()}.
          */
