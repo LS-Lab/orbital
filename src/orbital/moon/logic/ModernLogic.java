@@ -429,7 +429,7 @@ abstract class ModernLogic implements Logic {
      * {@inheritDoc}.
      * Parses single formulas or sequences of formulas delimited by comma and enclosed in curly brackets.
      * Sequences of expressions are represented by a <em>special</em> compound expression encapsulating the array of
-     * expressions as its {@link Expression.Composite#getComponent() component}.
+     * expressions as its {@link orbital.logic.sign.Expression.Composite#getComponent() component}.
      * @todo enhance documentation (and implementation) of how to distinguish this special ExpressionSequence
      * from other compound expressions.
      */

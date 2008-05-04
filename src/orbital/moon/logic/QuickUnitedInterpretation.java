@@ -19,7 +19,7 @@ import orbital.logic.functor.Functor;
 
 /**
  * An interpretation implementation that performs lookup in two other interpretations
- * thereby providing a faster version of {@link Interpretation#union(Interpretation)}.
+ * thereby providing a faster version of {@link orbital.logic.imp.Interpretation#union(orbital.logic.imp.Interpretation)}.
  * This is intended to be used for getting the union of a problem-specific interpretation
  * and the Quick interpretation, quickly.
  * 
