@@ -18,10 +18,11 @@ import java.util.ListIterator;
  * <p>
  * With S=<b>N</b><sup>n</sup> these are the multivariate polynomials in n variables.
  * Of course, the multivariate polynomials are polynomials over polynomial rings:
- * R[X<sub>0</sub>,...,X<sub>n-1</sub>] = R[X<sub>0</sub>][X<sub>1</sub>]...[X<sub>n-1</sub>].
+ * <center>R[X<sub>0</sub>,...,X<sub>n-1</sub>] = R[X<sub>0</sub>][X<sub>1</sub>]...[X<sub>n-1</sub>]</center>
  * The importance of polynomial rings comes from the fact that they are the
  * free commutative and associative R-algebras
- * Libasc<sub>R</sub>(I) := R<sup>(N<sup>(I)</sup>)</sup> = R[(X<sub>i</sub>)<sub>i&isin;I</sub>].
+ * Libasc<sub>R</sub>(I) := R<sup>(N<sup>(I)</sup>)</sup> = R[(X<sub>i</sub>)<sub>i&isin;I</sub>]
+ * and enjoy corresponding universal properties.
  * Although, of course, this is usually restricted to a finite number of variables for the purpose of computation.
  * <!-- @todo could we calculate only infinitely generated algebras as well? -->
  * </p>
@@ -113,7 +114,7 @@ public interface Polynomial/*<R extends Arithmetic, S extends Arithmetic>*/
     int degreeValue();
         
     /**
-     * Returns the partial degrees of this polynomial for the individual variables X<sub>i</sub>.
+     * Returns the multi-degree, i.e., the vector of partial degrees of this polynomial for the individual variables X<sub>i</sub>.
      * <p>
      * </p>
      * @return an array d containing the partial degrees d[i] of variable X<sub>i</sub>.

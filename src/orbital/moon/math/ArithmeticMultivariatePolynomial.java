@@ -44,6 +44,8 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/
      */
     private transient int degree = DIRTY;
     public ArithmeticMultivariatePolynomial(int[] dimensions) {
+    	if (dimensions.length == 0)
+    		throw new IllegalArgumentException("Empty polynomial ring without variables is not supported: specify non-empty list of dimensions instead.");
         coefficients = Values.getDefaultInstance().newInstance(dimensions);
         this.CONSTANT_TERM = new int[dimensions.length];
         Arrays.fill(CONSTANT_TERM, 0);
