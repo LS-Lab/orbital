@@ -765,7 +765,7 @@ public final class AlgebraicAlgorithms {
      *   <dt>reduced</dt>
      *   <dd>&forall;g&isin;G g reduced with respect to G\{g}
      *     <div>&rArr; G minimal</div>
-     *     <div>G unique</div>
+     *     <div>G unique (up to multiplication by constants)</div>
      *   </dd>
      * </dl>
      * </p>

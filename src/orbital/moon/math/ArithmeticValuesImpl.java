@@ -273,7 +273,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
         // tensors of rank 1 or rank 2 are converted to vectors or matrices
         switch (t.rank()) {
         case 0:
-            assert false;
+            throw new IllegalArgumentException("tensor rank 0 undefined from empty dimensions of length 0");
         case 1:
             return validate(tensor((Arithmetic[]) (values instanceof Arithmetic[] ? values : t.toArray__Tensor())),
                             t.dimensions());
@@ -289,7 +289,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
         // tensors of rank 1 or rank 2 are converted to vectors or matrices
         switch (dimensions.length) {
         case 0:
-            assert false;
+            throw new IllegalArgumentException("tensor rank 0 undefined with empyt dimensions of length 0");
         case 1:
             return validate(newInstance(dimensions[0]), dimensions);
         case 2:
