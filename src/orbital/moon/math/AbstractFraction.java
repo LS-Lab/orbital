@@ -60,7 +60,10 @@ class AbstractFraction/*<M extends Arithmetic,S extends Arithmetic>*/ extends Ab
     }
 
     public int hashCode() {
-        throw new UnsupportedOperationException("not yet implemented");
+    	return denominator().isOne()
+        	// ensure hashcode identical with numerator if denominator()==1, i.e., we are not a proper fraction
+        	? numerator().hashCode()
+            : numerator().hashCode() ^ -denominator().hashCode();
     }
 
     public int compareTo(Object o) {
@@ -119,8 +122,13 @@ class AbstractFraction/*<M extends Arithmetic,S extends Arithmetic>*/ extends Ab
     public Arithmetic power(Arithmetic b) {
         if (b instanceof Integer) {
             return power_((Integer) b);
-        } else if (b instanceof Fraction)
-            throw new UnsupportedOperationException("non-integral power not supported " + this + "^" + b);
+        } else if (b instanceof Fraction) {
+        	if (((Fraction)b).denominator().isOne()) {
+                return power_((Integer) b);
+        	} else {
+        		throw new UnsupportedOperationException("non-integral power not supported (" + this + ") ^ (" + b + ")");
+        	}
+        }
         return (Arithmetic) Operations.power.apply(this, b);
     }
 
