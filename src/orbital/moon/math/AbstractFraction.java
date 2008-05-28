@@ -123,13 +123,20 @@ class AbstractFraction/*<M extends Arithmetic,S extends Arithmetic>*/ extends Ab
         if (b instanceof Integer) {
             return power_((Integer) b);
         } else if (b instanceof Fraction) {
-        	if (((Fraction)b).denominator().isOne()) {
-                return power_((Integer) b);
+        	Fraction bb = ((Fraction)b);
+			if (bb.denominator().isOne()) {
+                return power(bb.numerator());
         	} else {
         		throw new UnsupportedOperationException("non-integral power not supported (" + this + ") ^ (" + b + ")");
         	}
+        } else if (b instanceof Scalar) {
+          	Scalar bb = Values.getDefault().narrow((Scalar)b);
+          	if (b instanceof Integer) {
+          		return power_((Integer)bb);
+          	}
+          	// fall-through
         }
-        return (Arithmetic) Operations.power.apply(this, b);
+      	return (Arithmetic) Operations.power.apply(this, b);
     }
 
 
