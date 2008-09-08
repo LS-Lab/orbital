@@ -280,7 +280,7 @@ public class DefaultCustomizer extends JPanel implements Customizer {
      * Will add a property sheet to this DefaultCustomizer panel.
      * @param beanClass for which class of objects this customizer is intended.
      */
-    protected void init(Class beanClass) throws IntrospectionException {
+    public void init(Class beanClass) throws IntrospectionException {
         this.beanClass = beanClass;
         BeanInfo info = getBeanInfo(beanClass);
         if (info == null)

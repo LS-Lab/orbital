@@ -60,9 +60,9 @@ class AbstractFraction/*<M extends Arithmetic,S extends Arithmetic>*/ extends Ab
     }
 
     public int hashCode() {
-    	return denominator().isOne()
-        	// ensure hashcode identical with numerator if denominator()==1, i.e., we are not a proper fraction
-        	? numerator().hashCode()
+        return denominator().isOne()
+                // ensure hashcode identical with numerator if denominator()==1, i.e., we are not a proper fraction
+                ? numerator().hashCode()
             : numerator().hashCode() ^ -denominator().hashCode();
     }
 
@@ -123,20 +123,20 @@ class AbstractFraction/*<M extends Arithmetic,S extends Arithmetic>*/ extends Ab
         if (b instanceof Integer) {
             return power_((Integer) b);
         } else if (b instanceof Fraction) {
-        	Fraction bb = ((Fraction)b);
-			if (bb.denominator().isOne()) {
+                Fraction bb = ((Fraction)b);
+                        if (bb.denominator().isOne()) {
                 return power(bb.numerator());
-        	} else {
-        		throw new UnsupportedOperationException("non-integral power not supported (" + this + ") ^ (" + b + ")");
-        	}
+                } else {
+                        throw new UnsupportedOperationException("non-integral power not supported (" + this + ") ^ (" + b + ")");
+                }
         } else if (b instanceof Scalar) {
-          	Scalar bb = Values.getDefault().narrow((Scalar)b);
-          	if (b instanceof Integer) {
-          		return power_((Integer)bb);
-          	}
-          	// fall-through
+                Scalar bb = Values.getDefault().narrow((Scalar)b);
+                if (b instanceof Integer) {
+                        return power_((Integer)bb);
+                }
+                // fall-through
         }
-      	return (Arithmetic) Operations.power.apply(this, b);
+        return (Arithmetic) Operations.power.apply(this, b);
     }
 
 

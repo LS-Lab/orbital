@@ -265,6 +265,16 @@ public final class AlgebraicAlgorithms {
     private static final class InducedPolynomialComparator/*<R extends Arithmetic, S extends Arithmetic>*/
         implements Comparator/*<Polynomial<R,S>>*/ {
         private final Comparator/*<S>*/ monomialOrder;
+        // pretty-printer adding X^.. notation to exponents
+        private static final Function/*<S,Polynomial<R,S>>*/ Xpower =
+            new Function/*<S,Polynomial<R,S>>*/() {
+                public Object/*>Polynomial<R,S><*/ apply(Object/*>S<*/ i) {
+                    return (Polynomial/*<R,S>*/) Values.getDefaultInstance().MONOMIAL((Vector/*>S<*/)i);
+                }
+                public String toString() {
+                    return "X0^.*...Xn^.";
+                }
+            };
         public InducedPolynomialComparator(Comparator/*<S>*/ monomialOrder) {
             this.monomialOrder = monomialOrder;
         }
@@ -277,8 +287,10 @@ public final class AlgebraicAlgorithms {
             return monomialOrder.hashCode();
         }
         public int compare(Object/*>Polynomial<R,S><*/ p1, Object/*>Polynomial<R,S><*/ p2) {
+                // the reverse ordered monomials occurring in p1
             final SortedSet/*<S>*/ amon = new TreeSet(new ReverseComparator(monomialOrder));
             amon.addAll(occurringMonomials((Polynomial/*<R,S>*/)p1));
+                // the reverse ordered monomials occurring in p2
             final SortedSet/*<S>*/ bmon = new TreeSet(new ReverseComparator(monomialOrder));
             bmon.addAll(occurringMonomials((Polynomial/*<R,S>*/)p2));
             try {
@@ -286,13 +298,14 @@ public final class AlgebraicAlgorithms {
                 // but with lazy evaluation of Functionals.map such that it stops at the first even if the iterators have inequal lengths
                 for (Iterator/*<S>*/ i = amon.iterator(), j = bmon.iterator(); i.hasNext() || j.hasNext(); ) {
                     //@todo which alternative?
-                    if (!i.hasNext() || !j.hasNext())
+                    if (!i.hasNext() || !j.hasNext()) {
                         if (((Polynomial)p1).degreeValue() < 0)
                             return -1;
                         else if (((Polynomial)p2).degreeValue() < 0)
                             return 1;
                         else
                             throw new IndexOutOfBoundsException();
+                    }
                     //              //@todo verify: in case of different number of occurring monomials, the one that has more is greater
                     //              if (!i.hasNext())
                     //                  return -1;
@@ -304,18 +317,9 @@ public final class AlgebraicAlgorithms {
                 }
                 return 0;
             } catch (IndexOutOfBoundsException differentLengthOfMonomials) {
-                Function/*<S,Polynomial<R,S>>*/ Xpower =
-                    new Function/*<S,Polynomial<R,S>>*/() {
-                        public Object/*>Polynomial<R,S><*/ apply(Object/*>S<*/ i) {
-                            return (Polynomial/*<R,S>*/) Values.getDefaultInstance().MONOMIAL((Vector/*>S<*/)i);
-                        }
-                        public String toString() {
-                            return "X0^.*...Xn^.";
-                        }
-                    };
                 throw (IllegalArgumentException)
                     new IllegalArgumentException("incomparable arguments " + p1 + " and " + p2
-                                                 + "\nwith (sorted) monomials " + Functionals.map(Xpower, new LinkedList(amon)) + " and " + Functionals.map(Xpower, new LinkedList(bmon))).initCause(differentLengthOfMonomials);
+                                                 + "\nwith (sorted) monomials occurrences " + Functionals.map(Xpower, new LinkedList(amon)) + " and " + Functionals.map(Xpower, new LinkedList(bmon))).initCause(differentLengthOfMonomials);
             }
         }
     }
