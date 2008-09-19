@@ -38,7 +38,7 @@ public class Greedy/*<C>*/ implements AlgorithmicTemplate/*<GreedyProblem<C>,Lis
      * <span class="keyword">for</span> <var>i</var> <span class="operator">=</span> <span class="Number">1</span> <span class="keyword">to</span> n <span class="keyword">do</span>
      *     <span class="keyword">if</span> <span class="set">S</span><span class="operator">&cup;</span>{e<sub><var>i</var></sub>}&isin;<span class="family">U</span> <span class="keyword">then</span>
      *         <span class="comment">// optionally check that w(e<sub><var>i</var></sub>)&ge;0 if w has negative values</span>
-     *         <span class="set">S</span> <span class="assingment">:=</span> <span class="set">S</span> <span class="operator">&cup;</span> {e<sub><var>i</var></sub>}
+     *         <span class="set">S</span> <span class="assignment">:=</span> <span class="set">S</span> <span class="operator">&cup;</span> {e<sub><var>i</var></sub>}
      *     <span class="keyword">end if</span>
      * <span class="keyword">end for</span>
      * <span class="keyword">return</span> <span class="set">S</span>
