@@ -723,6 +723,12 @@ public interface ValueFactory {
      */
     /*<M extends Arithmetic, S extends M>*/ Fraction/*<M,S>*/ fraction(Arithmetic/*>M<*/ a, Arithmetic/*>S<*/ s);
 
+    /**
+     * Returns a new fraction <span class="Formula">a&#8260;1 &isin; S<sup>-1</sup>M = M<sub>S</sub></span>.
+     * @return canonical embedding of a&isin; M into S<sup>-1</sup>M = M<sub>S</sub></span>.
+     */
+    /*<M extends Arithmetic, S extends M>*/ Fraction/*<M,S>*/ fraction(Arithmetic/*>M<*/ a);
+
     // symbol constructors
 
     /**

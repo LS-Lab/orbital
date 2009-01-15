@@ -682,6 +682,11 @@ public abstract class AbstractValues extends Values {
         return quotient(valueOf(a), valueOf(m));
     }
 
+    public /*<M extends Arithmetic, S extends M>*/ Fraction/*<M,S>*/ fraction(Arithmetic/*>M<*/ a) {
+    	return fraction(a,a.one());
+    }
+
+    
     // conversion methods
 
     public /*<R extends Arithmetic>*/ Vector/*<R>*/ asVector(final Matrix/*<R>*/ m) {
