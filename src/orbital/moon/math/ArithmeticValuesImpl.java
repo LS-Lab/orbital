@@ -694,9 +694,22 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
                 return new Arithmetic[] {
                     makeSymbolAware(a[0]), a[1]
                 };  //XXX: how exactly?
-        }
-        throw new IllegalArgumentException("the types of the arguments could not be coerced: " + (a == null ? "null" : a[0].getClass() + "") + " and " + (a[1] == null ? "null" : a[1].getClass() + ""));
-    } 
+        } else if (a[0] instanceof Fraction) {
+        	if (a[1] instanceof Fraction) {
+                throw new IllegalArgumentException("the types of the arguments could not be coerced: " + (a == null ? "null" : a[0].getClass() + "") + " and " + (a[1] == null ? "null" : a[1].getClass() + ""));
+            } else {
+            	return new Fraction[] {(Fraction)a[0], fraction(a[1])};
+            }
+        } else if (a[1] instanceof Fraction) {
+        	if (a[0] instanceof Fraction) {
+                throw new IllegalArgumentException("the types of the arguments could not be coerced: " + (a == null ? "null" : a[0].getClass() + "") + " and " + (a[1] == null ? "null" : a[1].getClass() + ""));
+            } else {
+            	return new Fraction[] {fraction(a[0]), (Fraction)a[1]};
+            }
+        } else {
+            throw new IllegalArgumentException("the types of the arguments could not be coerced: " + (a == null ? "null" : a[0].getClass() + "") + " and " + (a[1] == null ? "null" : a[1].getClass() + ""));
+        } 
+    }
 
     /**
      * @todo beautify and check whether it is necessary to convert numbers to those symbolic arithmetic function trucs!
