@@ -735,6 +735,10 @@ public final class AlgebraicAlgorithms {
             logger.log(Level.FINEST, "reducing ({0} with respect to {1} ...", new Object[] {f, g});
             return Functionals.fixedPoint(elementaryReduce, f);
         }
+        
+        public String toString() {
+        	return "ReductionFunction[" + g + "; " + monomialOrder + "]";
+        }
     }
 
     /**
