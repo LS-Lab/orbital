@@ -99,6 +99,7 @@ public interface Polynomial/*<R extends Arithmetic, S extends Arithmetic>*/
      * <p>
      * For example, if S=<b>N</b><sup>n</sup> then this method returns the total degree
      * deg(this) := max {|i|:=&sum;<sub>j=0,...,n-1</sub> i<sub>j</sub> &brvbar; i&isin;<b>N</b><sup>n</sup> &and; a<sub>i</sub>&ne;0}.
+     * Further, deg(0) &lt; 0
      * </p>
      * @throws UnsupportedOperationException if R[S] is not a graded ring with a very meaningful graduation.
      *  By providing this option, implementations are not forced to use trivial graduations if no
