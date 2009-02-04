@@ -236,7 +236,8 @@ public final class AlgebraicAlgorithms {
 
     
     /**
-     * The (partial) order on polynomials induced by an admissible total order on monomials.
+     * The partial lexicographial order on polynomials induced by an admissible total order on monomials.
+     * p&gt;q iff the largest monomial which occurs in p or q but not both is in p.
      * <dl class="def" id="monomialOrder">
      * Let &le; &sube; M<sub>n</sub> &times; M<sub>n</sub> be a total order on the monoid of monomials
      * M<sub>n</sub> := {X<sup class="vector">&nu;</sup> := X<sub>1</sub><sup>&nu;<sub>1</sub></sup>&sdot;&#8230;&sdot;X<sub>n</sub><sup>&nu;<sub>n</sub></sup> &brvbar; <span class="vector">&nu;</span>=(&nu;<sub>1</sub>,&#8230;,&nu;<sub>n</sub>) &isin; <b>N</b><sup>n</sup>}.
@@ -297,14 +298,18 @@ public final class AlgebraicAlgorithms {
                 // like Setops.find(Functionals.map("asFunction"(monomialOrder), amon.iterator(), bmon.iterator()), Functionals.bindSecond(Predicates.equal, Values.ZERO));
                 // but with lazy evaluation of Functionals.map such that it stops at the first even if the iterators have inequal lengths
                 for (Iterator/*<S>*/ i = amon.iterator(), j = bmon.iterator(); i.hasNext() || j.hasNext(); ) {
-                    //@todo which alternative?
                     if (!i.hasNext() || !j.hasNext()) {
-                        if (((Polynomial)p1).degreeValue() < 0)
-                            return -1;
-                        else if (((Polynomial)p2).degreeValue() < 0)
-                            return 1;
-                        else
-                            throw new IndexOutOfBoundsException();
+                    	// exactly one of the polynomials has no more occurring monomials
+                    	// the larger polynomial is the one that still has monomials
+                    	if (!i.hasNext()) {
+                    		assert j.hasNext();
+                    		return -1;
+                    	} else if (j.hasNext()) {
+                    		assert i.hasNext();
+                    		return 1;
+                    	} else {
+                    		throw new AssertionError("cannot happen due to tertium non datur");
+                    	}
                     }
                     //              //@todo verify: in case of different number of occurring monomials, the one that has more is greater
                     //              if (!i.hasNext())
