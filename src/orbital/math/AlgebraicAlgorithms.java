@@ -299,17 +299,17 @@ public final class AlgebraicAlgorithms {
                 // but with lazy evaluation of Functionals.map such that it stops at the first even if the iterators have inequal lengths
                 for (Iterator/*<S>*/ i = amon.iterator(), j = bmon.iterator(); i.hasNext() || j.hasNext(); ) {
                     if (!i.hasNext() || !j.hasNext()) {
-                    	// exactly one of the polynomials has no more occurring monomials
-                    	// the larger polynomial is the one that still has monomials
-                    	if (!i.hasNext()) {
-                    		assert j.hasNext();
-                    		return -1;
-                    	} else if (j.hasNext()) {
-                    		assert i.hasNext();
-                    		return 1;
-                    	} else {
-                    		throw new AssertionError("cannot happen due to tertium non datur");
-                    	}
+                        // exactly one of the polynomials has no more occurring monomials
+                        // the larger polynomial is the one that still has monomials
+                        if (!i.hasNext()) {
+                                assert j.hasNext();
+                                return -1;
+                        } else if (j.hasNext()) {
+                                assert i.hasNext();
+                                return 1;
+                        } else {
+                                throw new AssertionError("cannot happen due to tertium non datur");
+                        }
                     }
                     //              //@todo verify: in case of different number of occurring monomials, the one that has more is greater
                     //              if (!i.hasNext())
@@ -742,7 +742,7 @@ public final class AlgebraicAlgorithms {
         }
         
         public String toString() {
-        	return "ReductionFunction[" + g + "; " + monomialOrder + "]";
+                return "ReductionFunction[" + g + "; " + monomialOrder + "]";
         }
     }
 

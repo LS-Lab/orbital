@@ -616,6 +616,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
         }
         if (Real.isa.apply(val)) {
             Real r = (Real) val;
+            // real to int narrowing attempts
             if (r instanceof AbstractReal.Big) {
                 try {
                     return valueOf(((AbstractReal.Big)r).getValue().toBigIntegerExact());
@@ -633,10 +634,19 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
                 catch (ArithmeticException nonconform_trial) {/*ignore*/}
                 catch (UnsupportedOperationException nonconform_trial) {/*ignore*/}
             }
-            if (Rational.isa.apply(val))
-                return (Rational) val;
-            else
+            // rational discovery
+            if (Rational.isa.apply(val)) {
+            	Rational f = (Rational) val;
+            	Rational c = f.representative();
+            	if (c.denominator().isOne()) {
+            		// rational to integer narrowing
+            		return c.numerator();
+            	} else {
+            		return (Rational) val;
+            	}
+            } else {
                 return val;
+            }
         } else
             // some other unknown scalar thing
             return val;
@@ -695,16 +705,16 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
                     makeSymbolAware(a[0]), a[1]
                 };  //XXX: how exactly?
         } else if (a[0] instanceof Fraction) {
-        	if (a[1] instanceof Fraction) {
+                if (a[1] instanceof Fraction) {
                 throw new IllegalArgumentException("the types of the arguments could not be coerced: " + (a == null ? "null" : a[0].getClass() + "") + " and " + (a[1] == null ? "null" : a[1].getClass() + ""));
             } else {
-            	return new Fraction[] {(Fraction)a[0], fraction(a[1])};
+                return new Fraction[] {(Fraction)a[0], fraction(a[1])};
             }
         } else if (a[1] instanceof Fraction) {
-        	if (a[0] instanceof Fraction) {
+                if (a[0] instanceof Fraction) {
                 throw new IllegalArgumentException("the types of the arguments could not be coerced: " + (a == null ? "null" : a[0].getClass() + "") + " and " + (a[1] == null ? "null" : a[1].getClass() + ""));
             } else {
-            	return new Fraction[] {fraction(a[0]), (Fraction)a[1]};
+                return new Fraction[] {fraction(a[0]), (Fraction)a[1]};
             }
         } else {
             throw new IllegalArgumentException("the types of the arguments could not be coerced: " + (a == null ? "null" : a[0].getClass() + "") + " and " + (a[1] == null ? "null" : a[1].getClass() + ""));
