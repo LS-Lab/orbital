@@ -683,7 +683,7 @@ public abstract class AbstractValues extends Values {
     }
 
     public /*<M extends Arithmetic, S extends M>*/ Fraction/*<M,S>*/ fraction(Arithmetic/*>M<*/ a) {
-    	return fraction(a,a.one());
+        return fraction(a,a.one());
     }
 
     

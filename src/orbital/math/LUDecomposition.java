@@ -21,6 +21,7 @@ import orbital.logic.functor.Predicates;
 /**
  * LUDecomposition class, decomposing <span class="matrix">A</span>
  * into <span class="matrix">P</span>&#8729;<span class="matrix">A</span> = <span class="matrix">L</span>&#8729;<span class="matrix">U</span>.
+ * Solves linear equation systems.
  *
  * @version $Id$
  * @author  Andr&eacute; Platzer
@@ -219,7 +220,7 @@ public final class LUDecomposition/*<R extends Arithmetic>*/ implements Serializ
     }
 
     /**
-     * Solve LES <span class="matrix">A</span>&#8729;<span class="vector>x</span>=<span class="vector>b</span>.
+     * Solve linear equation system <span class="matrix">A</span>&#8729;<span class="vector>x</span>=<span class="vector>b</span>.
      * <p>
      * Implementation solves
      * <span class="matrix">L</span>&#8729;<span class="vector">z</span> = <span class="matrix">P</span>&#8729;<span class="vector">b</span>

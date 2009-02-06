@@ -107,6 +107,8 @@
         <property name="com.wolfram.jlink.kernel" value="math -mathlink"/>
         <!-- the Mathematica jlink.jar file -->
         <property name="com.wolfram.jlink.jar" value="JLink.jar"/>
+       <!-- the Mathematica jlink.jar file -->
+        <property name="junit.framework.jar" value="junit.jar"/>
 
 
         <mkdir dir="${lib}"/>
@@ -129,6 +131,7 @@
 
             <pathelement path="${build.tests}" />
 	    <pathelement location="${com.wolfram.jlink.jar}"/>
+	    <pathelement location="${junit.framework.jar}"/>
 
 	    <!-- refid="project.classpath" -->
             <pathelement location="${classes}"/>
