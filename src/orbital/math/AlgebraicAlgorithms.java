@@ -304,7 +304,7 @@ public final class AlgebraicAlgorithms {
                         if (!i.hasNext()) {
                                 assert j.hasNext();
                                 return -1;
-                        } else if (j.hasNext()) {
+                        } else if (!j.hasNext()) {
                                 assert i.hasNext();
                                 return 1;
                         } else {
