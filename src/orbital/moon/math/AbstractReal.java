@@ -554,7 +554,7 @@ abstract class AbstractReal extends AbstractComplex implements Real {
         }
         private Real power(Integer b) {
             try {
-                return new Big(ArithmeticValuesImpl.intValueExact(b));
+                return new Big(getValue().pow(ArithmeticValuesImpl.intValueExact(b)));
             } catch(ArithmeticException ex) {
                 throw new ArithmeticException("exponentation is possibly too big: " + this + " ^ " + b);
             }
