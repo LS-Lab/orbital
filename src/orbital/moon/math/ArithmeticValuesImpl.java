@@ -636,14 +636,14 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
             }
             // rational discovery
             if (Rational.isa.apply(val)) {
-            	Rational f = (Rational) val;
-            	Rational c = f.representative();
-            	if (c.denominator().isOne()) {
-            		// rational to integer narrowing
-            		return c.numerator();
-            	} else {
-            		return (Rational) val;
-            	}
+                Rational f = (Rational) val;
+                Rational c = f.representative();
+                if (c.denominator().isOne()) {
+                        // rational to integer narrowing
+                        return c.numerator();
+                } else {
+                        return (Rational) val;
+                }
             } else {
                 return val;
             }

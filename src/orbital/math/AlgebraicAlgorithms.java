@@ -152,7 +152,7 @@ public final class AlgebraicAlgorithms {
                 final Vector/*<Integer>*/ mu = (Vector/*<Integer>*/) m2;
                 if (nu.dimension() != mu.dimension())
                     throw new IllegalArgumentException("incompatible monomial exponents from polynomial rings with a different number of variables");
-                for (int k = nu.dimension() - 1; k >= 0; k--) {
+                for (int k = 0; k < nu.dimension(); k++) {
                     int index = permutation[k];
                     int c = ((Integer)nu.get(index)).subtract((Integer)mu.get(index)).intValue();
                     if (c != 0)
@@ -162,7 +162,7 @@ public final class AlgebraicAlgorithms {
             }
 
             public String toString() {
-                return AlgebraicAlgorithms.class.getName() + ".REVERSE_LEXICOGRAPHIC";
+                return AlgebraicAlgorithms.class.getName() + ".LEXICOGRAPHIC[" + MathUtilities.format(permutation) +"]";
             }
         };
     }
