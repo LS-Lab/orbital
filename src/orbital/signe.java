@@ -122,7 +122,7 @@ public final class signe extends Applet implements Runnable {
     /**
      * Contains the created information.
      */
-    private static final String created = "1996-2006";
+    private static final String created = "1996-2008";
 
     /**
      * Contains the version information in Dewey Decimal syntax.
