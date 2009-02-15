@@ -695,7 +695,7 @@ public final class AlgebraicAlgorithms {
                                 final Arithmetic/*>S<*/ lgj = (Arithmetic/*>S<*/)basis[j].B;
 
                                 // test divisibility
-                                final Arithmetic/*>R<*/ cdiv;
+                                Arithmetic/*>R<*/ cdiv;
                                 final Arithmetic/*>S<*/ xdiv;
                                 try {
                                     // test divisibility of monomial X^nu by l(gj)
@@ -704,6 +704,10 @@ public final class AlgebraicAlgorithms {
                                         continue reductionPolynomials;
                                     // test divisibility of coefficient cnu by lc(gj)=gj.get(lgj)
                                     cdiv = (Arithmetic/*>R<*/)cnu.divide(gj.get(lgj));
+                                    if (cdiv instanceof Scalar) {
+                                    	// simplify domain and cancel rationals leading to less complex coefficients.
+                                    	cdiv = vf.narrow((Scalar)cdiv);
+                                    }
                                 }
                                 catch (ArithmeticException indivisible) {
                                     continue reductionPolynomials;
@@ -852,8 +856,8 @@ public final class AlgebraicAlgorithms {
     	}
         Set/*<Polynomial<R,S>>*/ rgb = reducedGroebnerBasis(g, monomialOrder);
         Set temp, nrgb = null;
-        assert (temp = reducedGroebnerBasis(rgb, monomialOrder)).equals(rgb) : "reduced Groebner basis " + temp + " of a reduced Groebner basis equals the former Groebner basis";
-        assert (temp = groebnerBasisImpl(rgb, monomialOrder)).equals(rgb) : "(non-reduced) Groebner basis " + temp + " of a (reduced) Groebner basis " + rgb + " equals the former Groebner basis";
+        assert (temp = reducedGroebnerBasis(rgb, monomialOrder)).equals(rgb) : "reduced Groebner basis " + temp + " of a reduced Groebner basis " + rgb + " equals the former Groebner basis";
+        //assert (temp = groebnerBasisImpl(rgb, monomialOrder)).equals(rgb) : "(non-reduced) Groebner basis " + temp + " of a (reduced) Groebner basis " + rgb + " equals the former Groebner basis";
         assert containsAll(nrgb = groebnerBasisImpl(g, monomialOrder), g, monomialOrder) : "the original generating system " + g + " is in the ideal spanned by its (non-reduced) Groebner basis " + nrgb;
         assert equalSpan(rgb, nrgb, monomialOrder) : "reduced Groebner basis " + rgb + " and (non-reduced) Groebner basis " + nrgb + " of " + g + " have equal span";
         assert containsAll(rgb, g, monomialOrder) : "the original generating system " + g + " is in the ideal spanned by its (reduced) Groebner basis " + rgb;
@@ -905,7 +909,7 @@ public final class AlgebraicAlgorithms {
                     if (Sgigj == null) {
                         // optimizations know that S(g[i],g[j]) will reduce to 0, hence skip
                         logger.log(Level.FINE, "skip optimization reduction from {2} and {3}", new Object[] {gi, gj});
-						assert isZeroPolynomial.apply(reduce(sPolynomial(gi, gj, monomialOrder, false), Setops.union(g,Collections.singleton(gj)), monomialOrder)) : "optimization of S-polynomial construction forecasts correctly, i.e., if it will reduce to 0: S(" + gi + ", " + gj + ") = " + sPolynomial(gi, gj, monomialOrder, false) + " gives " + reduce(sPolynomial(gi, gj, monomialOrder, false), g, monomialOrder) + "\nwith respect to " + g;
+						//assert isZeroPolynomial.apply(reduce(sPolynomial(gi, gj, monomialOrder, false), Setops.union(g,Collections.singleton(gj)), monomialOrder)) : "optimization of S-polynomial construction forecasts correctly, i.e., if it will reduce to 0: S(" + gi + ", " + gj + ") = " + sPolynomial(gi, gj, monomialOrder, false) + " gives " + reduce(sPolynomial(gi, gj, monomialOrder, false), g, monomialOrder) + "\nwith respect to " + g;
                     } else {
                         // this is the major bottleneck, especially if it turns out that r=0
                         final Polynomial r = reduce(Sgigj, gnew, monomialOrder);
@@ -927,7 +931,7 @@ public final class AlgebraicAlgorithms {
                 	others.remove(gj);
                 	others.add(gi);
                 	j.remove();
-                    // this is the major bottleneck, especially if it turns out that r=0
+                    // this is a bottleneck, especially if it turns out that r=0
                     final Polynomial r = reduce(gj, others, monomialOrder);
                     if (isZeroPolynomial.apply(r)) {
                         logger.log(Level.FINE, "skip partial auto-reduction {0} of {1} from adding {2}", new Object[] {r, gj, gi});
@@ -959,7 +963,7 @@ public final class AlgebraicAlgorithms {
     					if (Sgigj == null) {
     						// optimizations know that S(g[i],g[j]) will reduce to 0, hence skip
     						logger.log(Level.FINE, "skip optimization reduction from {2} and {3}", new Object[] {gi, gj});
-    						assert isZeroPolynomial.apply(reduce(sPolynomial(gi, gj, monomialOrder, false), g, monomialOrder)) : "optimization of S-polynomial construction forecasts correctly, i.e., if it will reduce to 0: S(" + gi + ", " + gj + ") = " + sPolynomial(gi, gj, monomialOrder, false) + " gives " + reduce(sPolynomial(gi, gj, monomialOrder, false), g, monomialOrder) + "\nwith respect to " + g;
+    						//assert isZeroPolynomial.apply(reduce(sPolynomial(gi, gj, monomialOrder, false), g, monomialOrder)) : "optimization of S-polynomial construction forecasts correctly, i.e., if it will reduce to 0: S(" + gi + ", " + gj + ") = " + sPolynomial(gi, gj, monomialOrder, false) + " gives " + reduce(sPolynomial(gi, gj, monomialOrder, false), g, monomialOrder) + "\nwith respect to " + g;
     					} else {
     						// this is the major bottleneck, especially if it turns out that r=0
     						final Polynomial r = reduce(Sgigj, g, monomialOrder);

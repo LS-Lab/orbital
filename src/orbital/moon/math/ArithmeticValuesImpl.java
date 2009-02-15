@@ -656,7 +656,8 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
                         // rational to integer narrowing
                         return c.numerator();
                 } else {
-                        return (Rational) val;
+                	// could return canceled out or original representative
+                        return (Rational) c;
                 }
             } else {
                 return val;
