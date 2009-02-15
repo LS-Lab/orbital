@@ -875,7 +875,7 @@ public final class AlgebraicAlgorithms {
      * @internal Beware: we internally use slightly rescaled S-polynomials. 
      */
     private static final /*<R extends Arithmetic, S extends Arithmetic>*/
-        Set/*<Polynomial<R,S>>*/ groebnerBasisImpl(Collection/*<Polynomial<R,S>>*/ gg, final Comparator/*<S>*/ monomialOrder) {
+        Set/*<Polynomial<R,S>>*/ groebnerBasisImplF(Collection/*<Polynomial<R,S>>*/ gg, final Comparator/*<S>*/ monomialOrder) {
     	// partial Groebner Basis
     	// @invariant: all S-polynomials within g have already been considered
         final List/*<Polynomial<R,S>>*/ g = new ArrayList();
@@ -893,6 +893,8 @@ public final class AlgebraicAlgorithms {
             // reduce gi with respect to current G
             final Polynomial/*<R,S>*/ gi = (Polynomial)working.poll();
             final Arithmetic lgi = leadingMonomial(gi, monomialOrder);
+            List/*<Polynomial<R,S>>*/ gnew = new LinkedList(g);
+            gnew.add(gi);
             // form all S-polynomials of gi with g
             for (Iterator/*<Polynomial<R,S>>*/ j = g.iterator(); j.hasNext(); ) {
                     final Polynomial/*<R,S>*/ gj = (Polynomial)j.next();
@@ -903,10 +905,10 @@ public final class AlgebraicAlgorithms {
                     if (Sgigj == null) {
                         // optimizations know that S(g[i],g[j]) will reduce to 0, hence skip
                         logger.log(Level.FINE, "skip optimization reduction from {2} and {3}", new Object[] {gi, gj});
-                        assert isZeroPolynomial.apply(reduce(sPolynomial(gi, gj, monomialOrder, false), g, monomialOrder)) : "optimization of S-polynomial construction forecasts correctly, i.e., if it will reduce to 0";
+						assert isZeroPolynomial.apply(reduce(sPolynomial(gi, gj, monomialOrder, false), Setops.union(g,Collections.singleton(gj)), monomialOrder)) : "optimization of S-polynomial construction forecasts correctly, i.e., if it will reduce to 0: S(" + gi + ", " + gj + ") = " + sPolynomial(gi, gj, monomialOrder, false) + " gives " + reduce(sPolynomial(gi, gj, monomialOrder, false), g, monomialOrder) + "\nwith respect to " + g;
                     } else {
                         // this is the major bottleneck, especially if it turns out that r=0
-                        final Polynomial r = reduce(Sgigj, g, monomialOrder);
+                        final Polynomial r = reduce(Sgigj, gnew, monomialOrder);
                         logger.log(Level.FINER, "S({0},{1}) = {2} reduced to {3}", new Object[] {gi, gj, Sgigj, r});
                         if (isZeroPolynomial.apply(r)) {
                             logger.log(Level.FINE, "skip reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
@@ -941,7 +943,7 @@ public final class AlgebraicAlgorithms {
     }
     
     private static final /*<R extends Arithmetic, S extends Arithmetic>*/
-    Set/*<Polynomial<R,S>>*/ groebnerBasisNaive(Collection/*<Polynomial<R,S>>*/ gg, final Comparator/*<S>*/ monomialOrder) {
+    Set/*<Polynomial<R,S>>*/ groebnerBasisImpl(Collection/*<Polynomial<R,S>>*/ gg, final Comparator/*<S>*/ monomialOrder) {
     	final List/*<Polynomial<R,S>>*/ g = new ArrayList(gg);
     	final Values vf = Values.getDefaultInstance();
     	ergaenzeGroebnerBasis:
@@ -957,7 +959,7 @@ public final class AlgebraicAlgorithms {
     					if (Sgigj == null) {
     						// optimizations know that S(g[i],g[j]) will reduce to 0, hence skip
     						logger.log(Level.FINE, "skip optimization reduction from {2} and {3}", new Object[] {gi, gj});
-    						assert isZeroPolynomial.apply(reduce(sPolynomial(gi, gj, monomialOrder, false), g, monomialOrder)) : "optimization of S-polynomial construction forecasts correctly, i.e., if it will reduce to 0";
+    						assert isZeroPolynomial.apply(reduce(sPolynomial(gi, gj, monomialOrder, false), g, monomialOrder)) : "optimization of S-polynomial construction forecasts correctly, i.e., if it will reduce to 0: S(" + gi + ", " + gj + ") = " + sPolynomial(gi, gj, monomialOrder, false) + " gives " + reduce(sPolynomial(gi, gj, monomialOrder, false), g, monomialOrder) + "\nwith respect to " + g;
     					} else {
     						// this is the major bottleneck, especially if it turns out that r=0
     						final Polynomial r = reduce(Sgigj, g, monomialOrder);
