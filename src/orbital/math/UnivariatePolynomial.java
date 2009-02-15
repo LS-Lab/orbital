@@ -99,4 +99,10 @@ public interface UnivariatePolynomial/*<R extends Arithmetic>*/ extends Euclidea
      * @see Object#clone()
      */
     public Arithmetic/*>R<*/[] getCoefficients();
+
+    /**
+     * Returns a vector view of all the coefficients of this polynomial.
+     * @postconditions RES[i]==get(i) &and; RES.length==degree()+1
+     */
+    public Vector/*<R>*/ getCoefficientVector();
 }

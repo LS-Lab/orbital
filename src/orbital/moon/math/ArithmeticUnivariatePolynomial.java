@@ -23,7 +23,7 @@ class ArithmeticUnivariatePolynomial/*<R extends Arithmetic>*/ extends AbstractU
      * The coefficients in R.
      * @serial
      */
-    private Arithmetic/*>R<*/ coefficients[];
+    private Vector/*<R>*/ coefficients;
     /**
      * Caches the degree value.
      * @see #degree()
@@ -31,13 +31,13 @@ class ArithmeticUnivariatePolynomial/*<R extends Arithmetic>*/ extends AbstractU
     private transient int degree;
     public ArithmeticUnivariatePolynomial(int degree) {
         this.coefficients =
-            degree < 0
-            ? new Arithmetic/*>R<*/[0]
-            : new Arithmetic[degree + 1];
+        	Values.getDefault().newInstance(degree < 0
+            ? 0
+            : degree + 1);
         this.degree = java.lang.Integer.MIN_VALUE;
     }
     public ArithmeticUnivariatePolynomial(Arithmetic/*>R<*/ coefficients[]) {
-        set(coefficients);
+        set(Values.getDefault().valueOf(coefficients));
     }
   
     /**  
@@ -60,40 +60,42 @@ class ArithmeticUnivariatePolynomial/*<R extends Arithmetic>*/ extends AbstractU
      * Implementation calculating the degree of a polynomial,
      * given its coefficients.
      */
-    private int degreeImpl(Arithmetic/*>R<*/[] coefficients) {
-        for (int i = coefficients.length - 1; i >= 0; i--)
+    private int degreeImpl(Vector coefficients) {
+        for (int i = coefficients.dimension() - 1; i >= 0; i--) {
             //@internal we can allow skipping null here, since set(R[]) and set(int,R)
             // check for null. However after new ArithmeticPolynomial(int) there may still be
             // some null values, until all have been set
-            if (coefficients[i] != null && !coefficients[i].isZero())
+            if (coefficients.get(i) != null && !coefficients.get(i).isZero()) {
                 return i;
+            }
+         }
         return java.lang.Integer.MIN_VALUE;
     }
         
-    private void set(Arithmetic/*>R<*/ coefficients[]) {
+    private void set(Vector/*<R>*/ coefficients) {
         if (coefficients == null)
             throw new IllegalArgumentException("illegal coefficients array: " + coefficients);
-        if (Setops.some(Arrays.asList(coefficients), Functionals.bindSecond(Predicates.equal, null)))
+        if (Setops.some(coefficients.iterator(), Functionals.bindSecond(Predicates.equal, null)))
             throw new IllegalArgumentException("illegal coefficients: containing null");
         this.coefficients = coefficients;
-        this.R_ZERO = coefficients.length > 0 ? coefficients[0].zero() : Values.getDefault().ZERO();
+        this.R_ZERO = coefficients.dimension() > 0 ? coefficients.get(0).zero() : Values.getDefault().ZERO();
         this.degree = degreeImpl(coefficients);
     }
 
     public Arithmetic/*>R<*/ get(int i) {
-        if (i <= degreeValue() && i >= coefficients.length)
-            throw new ArrayIndexOutOfBoundsException(coefficients.length + "=<" + i + "=<" + degreeValue() + "=" + degreeImpl(coefficients));
-        return i <= degreeValue() ? coefficients[i] : R_ZERO;
+        if (i <= degreeValue() && i >= coefficients.dimension())
+            throw new ArrayIndexOutOfBoundsException(coefficients.dimension() + "=<" + i + "=<" + degreeValue() + "=" + degreeImpl(coefficients));
+        return i <= degreeValue() ? coefficients.get(i) : R_ZERO;
     }
         
     public void set(int i, Arithmetic/*>R<*/ vi) {
         if (vi == null)
             throw new IllegalArgumentException("illegal coefficient value: " + vi);
         final int oldDegree = degreeValue();
-        if (i >= coefficients.length)
+        if (i >= coefficients.dimension())
             throw new UnsupportedOperationException("setting coefficients beyond the degree not (always) supported");
-        coefficients[i] = vi;
-        this.R_ZERO = coefficients.length > 0 ? coefficients[0].zero() : Values.getDefault().ZERO();
+        coefficients.set(i, vi);
+        this.R_ZERO = coefficients.dimension() > 0 ? coefficients.get(0).zero() : Values.getDefault().ZERO();
         if (i >= oldDegree) {
             this.degree = degreeImpl(coefficients);
         }
@@ -102,10 +104,13 @@ class ArithmeticUnivariatePolynomial/*<R extends Arithmetic>*/ extends AbstractU
     public Arithmetic/*>R<*/[] getCoefficients() {
         if (degreeValue() < 0)
             return new Arithmetic/*>R<*/[0];
-        return (Arithmetic/*>R<*/[]) coefficients.clone();
+        return coefficients.toArray();
     } 
 
     Tensor tensorViewOfCoefficients() {
-        return Values.getDefaultInstance().tensor(coefficients);
+        return getCoefficientVector();
     }
+	public Vector getCoefficientVector() {
+		return coefficients;
+	}
 }
