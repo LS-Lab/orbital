@@ -7,6 +7,7 @@
 package orbital.math.functional;
 
 import orbital.logic.functor.Functor;
+import orbital.logic.functor.Predicate;
 import orbital.math.Arithmetic;
 import orbital.math.Tensor;
 import orbital.math.Vector;
@@ -670,4 +671,20 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
     public static BinaryFunction pointwise(BinaryFunction elemental) {
         return new Functions.PointwiseBinaryFunction(elemental);
     }
+
+    /**
+     * Negates predicates
+     * @param p
+     * @return
+     */
+	public static /*<A>*/ Predicate/*<A>*/ not(final Predicate/*<A>*/ p) {
+		return new Predicate/*<A>*/() {
+			public boolean apply(Object o) {
+				return !p.apply(o);
+			}
+			public String toString() {
+				return "!" + p;
+			}			
+		};
+	}
 }

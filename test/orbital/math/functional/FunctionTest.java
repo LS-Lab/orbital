@@ -29,6 +29,7 @@ import orbital.logic.sign.concrete.Notation;
  */
 public class FunctionTest extends check.TestCase {
     private static final int TEST_REPETITION = 100;
+    private static final int TEST_GROEBNER_REPETITION = 5;
     private static final Values vf;
     static {
         // make format precision compatible with Mathematica for appropriate numerical comparisons
@@ -71,8 +72,9 @@ public class FunctionTest extends check.TestCase {
     public static final int TYPE_SYMBOL = 1<<16;
 
     public static void main(String[] argv) {
+        try {new FunctionTest().testGroebner();}catch(Exception e) {e.printStackTrace();}
         //try {new FunctionTest().testdSolve_fully_symbolic();}catch(Exception e) {e.printStackTrace();}
-        junit.textui.TestRunner.run(suite());
+        //junit.textui.TestRunner.run(suite());
     }
     public static Test suite() {
         //@internal could perhaps use RepeatedTest for testCalculations
@@ -168,8 +170,10 @@ public class FunctionTest extends check.TestCase {
             testFunction("Times",       Operations.times, MIN, MAX, scalarTypes, scalarTypes);
             //@todo Operations.times with TYPE_TENSOR
             testFunction("Dot", Operations.times, MIN, MAX, TYPE_MATRIX, scalarTypes);
-            testFunction("Dot", Operations.times, MIN, MAX, TYPE_MATRIX, TYPE_REAL);
-            //testFunction("Divide",    Operations.divide, MIN, MAX, TYPE_REAL | TYPE_COMPLEX);
+            //testFunction("Dot", Operations.times, MIN, MAX, TYPE_MATRIX, TYPE_REAL);
+            testFunction("Inverse",   Operations.inverse, MIN, MAX, TYPE_SCALAR, scalarTypes);
+            testFunction("Divide",    Operations.divide, MIN, MAX, TYPE_REAL | TYPE_COMPLEX, scalarTypes);
+            testFunction("Power",     Operations.power, MIN, MAX, new int[] {TYPE_ALL, TYPE_INTEGER}, scalarTypes);
             //testFunction("Power",     Operations.power, MIN, MAX);
             testFunction("Minus",       Operations.minus, MIN, MAX, TYPE_ALL, scalarTypes);
             //testFunction("Inverse",   Operations.inverse, MIN, MAX, TYPE_MATRIX);
@@ -265,6 +269,7 @@ public class FunctionTest extends check.TestCase {
     private void compareResults(String mFunction, Function jFunction, Scalar x) throws MathLinkException {
         final String  mFunctionCall = mFunction + "[" + x + "]";
         final String  jFunctionCall = jFunction + "[" + x + "]";
+        try {
         ml.evaluate("N[" + mFunctionCall + "]");
         ml.waitForAnswer();
         System.out.print(mFunctionCall + " = ");
@@ -295,17 +300,20 @@ public class FunctionTest extends check.TestCase {
         System.out.println(jFunctionCall + " = " + jresult);
         boolean isSuccessful = jresult.equals(mresult, tolerance);
         assertTrue(isSuccessful , mFunctionCall + " = " + mresult + " != " + jFunctionCall + "@" + x.getClass() + " = " + jresult + "@" + jresult.getClass() + "\tdelta=" + jresult.subtract(mresult));
+        } catch (MathLinkException ex) {
+        	throw new MathLinkException(ex, "Comparing " + mFunction + " and " + jFunction + " on " + x + "  could not evaluate " + ex);
+        }
     }
 
     /**
-     * @param testType the types of arguments to test.
+     * @param testType the respective types of arguments to test.
      * @param componentType the types of components of the arguments to test (if testType includes any tensors).
      * @internal the possible range of arguments is a major problem.
      */
-    private void testFunction(String mFunction, BinaryFunction jFunction, double min, double max, int testType, int componentType) throws MathLinkException {
+    private void testFunction(String mFunction, BinaryFunction jFunction, double min, double max, int[] testType, int componentType) throws MathLinkException {
         try {
             // Integer value test
-            for (int i = 0; (testType & TYPE_INTEGER) != 0 && i < TEST_REPETITION; i++)
+            for (int i = 0; (testType[0] & TYPE_INTEGER) != 0 && (testType[1] & TYPE_INTEGER) != 0 && i < TEST_REPETITION; i++)
                 try {
                     compareResults(mFunction, jFunction,
                                    vf.valueOf(integerArgument((int)Math.ceil(min),(int)Math.floor(max))),
@@ -317,7 +325,7 @@ public class FunctionTest extends check.TestCase {
                 }
     
             // Real value test
-            for (int i = 0; (testType & TYPE_REAL) != 0 && i < TEST_REPETITION; i++)
+            for (int i = 0; (testType[0] & TYPE_REAL) != 0 && (testType[1] & TYPE_REAL) != 0 && i < TEST_REPETITION; i++)
                 try {
                     compareResults(mFunction, jFunction,
                                    vf.valueOf(realArgument(min,max)),
@@ -329,7 +337,7 @@ public class FunctionTest extends check.TestCase {
                 }
     
             // Complex value test
-            for (int i = 0; (testType & TYPE_COMPLEX) != 0 && i < TEST_REPETITION; i++)
+            for (int i = 0; (testType[0] & TYPE_COMPLEX) != 0 && (testType[1] & TYPE_COMPLEX) != 0 && i < TEST_REPETITION; i++)
                 try {
                     compareResults(mFunction, jFunction,
                                    vf.complex(realArgument(min,max),realArgument(min,max)),
@@ -341,7 +349,7 @@ public class FunctionTest extends check.TestCase {
                 }
 
             // Vector value test
-            for (int i = 0; (testType & TYPE_VECTOR) != 0 && i < TEST_REPETITION; i++)
+            for (int i = 0; (testType[0] & TYPE_VECTOR) != 0 && (testType[1] & TYPE_VECTOR) != 0 &&i < TEST_REPETITION; i++)
                 try {
                     final Vector jx = vectorArgument(min,max, componentType, ddim.width);
                     final Vector jy = vectorArgument(min,max, componentType, ddim.width);
@@ -362,7 +370,7 @@ public class FunctionTest extends check.TestCase {
                 }
 
             // Matrix value test
-            for (int i = 0; (testType & TYPE_MATRIX) != 0 && i < TEST_REPETITION; i++)
+            for (int i = 0; (testType[0] & TYPE_MATRIX) != 0 && (testType[1] & TYPE_MATRIX) != 0 && i < TEST_REPETITION; i++)
                 try {
                     final Matrix jx = matrixArgument(min,max, componentType, ddim);
                     final Matrix jy = matrixArgument(min,max, componentType, ddim);
@@ -381,8 +389,24 @@ public class FunctionTest extends check.TestCase {
                     if (!"machine number overflow".equals(e.getMessage()))
                         throw e;
                 }
+                
+                // mixed value test
+                for (int i = 0; (testType[0] & TYPE_SCALAR) != 0 && (testType[1] & TYPE_SCALAR) != 0 && i < TEST_REPETITION; i++)
+                    try {
+                        compareResults(mFunction, jFunction,
+                        			(Scalar)randomArgument(min, max, testType[0]& TYPE_SCALAR),
+                        			(Scalar)randomArgument(min, max, testType[1] & TYPE_SCALAR));
+                    }
+                    catch (MathLinkException e) {
+                        if (!"machine number overflow".equals(e.getMessage()))
+                            throw e;
+                    }
         }
         catch (UnsupportedOperationException ignore) {}
+    }
+
+    private void testFunction(String mFunction, BinaryFunction jFunction, double min, double max, int testType, int componentType) throws MathLinkException {
+        testFunction(mFunction, jFunction, min, max, new int[] {testType, testType}, componentType);
     }
 
     /**
@@ -405,12 +429,97 @@ public class FunctionTest extends check.TestCase {
         }
         catch (MathLinkException e) {
             if (!"machine number overflow".equals(e.getMessage()))
-                throw e;
+            	throw new MathLinkException(e, "Comparing " + mFunction + " and " + jFunction + " on " + x + " and " + y + "  could not evaluate " + e);
         }
     }
 
 
     // testing more sophisticated symbolic algorithms
+
+    // groebner basis tests
+    
+    /**
+     * Randomly test groebner bases
+     */
+    public void testGroebner() throws MathLinkException {
+        createMathLink();       
+        final double MIN = -10;
+        final double MAX = +10;
+        try {
+        	Comparator monomialOrder;
+        	String mmonorder;
+        	monomialOrder = AlgebraicAlgorithms.LEXICOGRAPHIC;
+        	mmonorder = "Lexicographic";
+            for (int i = 0; i < TEST_GROEBNER_REPETITION; i++) {
+            	checkGroebner(MIN,MAX,TYPE_INTEGER, monomialOrder, mmonorder);
+            }
+            for (int i = 0; i < TEST_GROEBNER_REPETITION; i++) {
+            	checkGroebner(MIN,MAX,TYPE_RATIONAL, monomialOrder, mmonorder);
+            }
+            for (int i = 0; i < TEST_GROEBNER_REPETITION; i++) {
+            	checkGroebner(MIN,MAX,TYPE_INTEGER|TYPE_RATIONAL, monomialOrder, mmonorder);
+            }
+        	monomialOrder = AlgebraicAlgorithms.DEGREE_REVERSE_LEXICOGRAPHIC;
+        	mmonorder = "DegreeReverseLexicographic";
+            for (int i = 0; i < TEST_GROEBNER_REPETITION; i++) {
+            	checkGroebner(MIN,MAX,TYPE_INTEGER, monomialOrder, mmonorder);
+            }
+            for (int i = 0; i < TEST_GROEBNER_REPETITION; i++) {
+            	checkGroebner(MIN,MAX,TYPE_RATIONAL, monomialOrder, mmonorder);
+            }
+            for (int i = 0; i < TEST_GROEBNER_REPETITION; i++) {
+            	checkGroebner(MIN,MAX,TYPE_INTEGER|TYPE_RATIONAL, monomialOrder, mmonorder);
+            }
+        }        
+        catch (MathLinkException e) {
+            if (!"machine number overflow".equals(e.getMessage()))
+                throw e;
+        }
+        finally {
+            closeMathLink();
+        }
+   	
+    }
+    private void checkGroebner(double MIN, double MAX, int testType, Comparator monomialOrder, String mmonorder) throws MathLinkException {
+    	Set g = new LinkedHashSet();
+    	final int VARS = 3;
+    	final int DEG = 3;
+    	final int MEMBER_CHECK = 10;
+    	final int vars = integerArgument(1, VARS);
+    	String varlist = "{";
+        final String multinomialVariables[] = {"X", "Y", "Z"};
+    	for (int v = 0; v < vars; v++) {
+    		varlist += (v>0 ? "," : "") +  (vars<=3 ? multinomialVariables[v] : "X" + v);
+    	}
+    	varlist += "}";
+    	int num = integerArgument(1, 6);
+    	for (int p = 0; p < num; p++) {
+    		g.add(polyArgument(MIN, MAX, testType, vars, DEG));
+    		if (g.toString().length() > 100) {
+    			// use string output as complexity bound
+    			break;
+    	    }
+    	}
+    	System.out.println("Computing Groebner Basis of " + g);
+    	//@todo timeout this computation if it takes too long
+    	Collection GB = AlgebraicAlgorithms.groebnerBasis(g, monomialOrder);
+    	System.out.println("Groebner Basis " + GB);
+    	// check if GB is in ideal
+    	for (Iterator j = GB.iterator(); j.hasNext(); ) {
+    		String query = "FullSimplify[PolynomialReduce[" + j.next() + ",GroebnerBasis[" + listForm(g) + "," + varlist + ", MonomialOrder->" + mmonorder + "], " + varlist + ", MonomialOrder->" + mmonorder + "][[2]] == 0]";
+    	    String res = ml.evaluateToInputForm(query, 100);
+    	    assertTrue("True".equals(res), "Groebner Basis element is in ideal " + query );
+    	}
+    	// check identical residues on several examples
+    	for (int k = 0; k < MEMBER_CHECK; k++) {
+    		Polynomial f = polyArgument(MIN, MAX, testType, vars, 4);
+    		System.out.println("Check member " + f);
+    		Polynomial r = AlgebraicAlgorithms.reduce(f, GB, monomialOrder);
+    		String query = "FullSimplify[PolynomialReduce[" + f + ",GroebnerBasis[" + listForm(g) + "," + varlist + ", MonomialOrder->" + mmonorder + "], " + varlist + ", MonomialOrder->" + mmonorder + "][[2]] == " + r + "]";
+    	    String res = ml.evaluateToInputForm(query, 80);
+    	    assertTrue("True".equals(res), "Same residue for each Groebner Basis " + query );
+    	}
+    }
 
     // testing differential equation solving
 
@@ -583,7 +692,7 @@ public class FunctionTest extends check.TestCase {
                 + " X[" + t + "], " + t + "][[1]]\n"
                 + "]]";
             ml.newPacket();
-            final String refsol = ml.evaluateToOutputForm("" + ode + "", 80);
+            final String refsol = ml.evaluateToInputForm("" + ode, 80); //ml.evaluateToOutputForm("" + ode + "", 80);
             ml.newPacket();
             System.out.println("Our solution:\n" + oursol);
             System.out.println("Ref.solution:\n" + refsol);
@@ -763,7 +872,7 @@ public class FunctionTest extends check.TestCase {
             max = vf.valueOf(3);
             steps = 20;
             checkndSolve(f, tau, eta,
-                         min, max,
+                         min, max.divide(vf.valueOf(2)),
                          steps);
 
             f = Functionals.onSecond((Function)Operations.plus.apply(Functions.tan, Functions.one));
@@ -848,7 +957,6 @@ public class FunctionTest extends check.TestCase {
         }
     }
 
-
     // create (random) argument values
     
     private int integerArgument(int min, int max) {
@@ -858,21 +966,34 @@ public class FunctionTest extends check.TestCase {
         return ((max-min) * random.nextDouble() + min);
     }
     private int symbolId = 1;
+    /**
+     * Create random argument of the specified types
+     * @param min
+     * @param max
+     * @param testType
+     * @return
+     */
     private Arithmetic randomArgument(double min, double max, int testType) {
-        if ((testType & (TYPE_INTEGER|TYPE_COMPLEX|TYPE_SYMBOL)) == 0)
+        if ((testType & (TYPE_INTEGER|TYPE_RATIONAL|TYPE_REAL|TYPE_COMPLEX|TYPE_SYMBOL)) == 0)
             // default type if no type that we could possible support/deliver
             testType = TYPE_DEFAULT;
-        if ((testType & TYPE_INTEGER) != 0 && Utility.flip(random, 0.4))
+        if ((testType & TYPE_INTEGER) != 0 && Utility.flip(random, 0.3))
             return vf.valueOf(integerArgument((int)min, (int)max));
-        else if ((testType & TYPE_COMPLEX) != 0 && Utility.flip(random, 0.4))
-            return vf.complex(realArgument(min, max), realArgument(min, max));
         else if ((testType & TYPE_RATIONAL) != 0 && Utility.flip(random, 0.4))
             return vf.rational(integerArgument((int)min, (int)max), integerArgument(1, (int)max));
+        else if ((testType & TYPE_REAL) != 0 && Utility.flip(random, 0.4))
+            return vf.valueOf(realArgument(min, max));
+        else if ((testType & TYPE_COMPLEX) != 0 && Utility.flip(random, 0.4))
+            return vf.complex(realArgument(min, max), realArgument(min, max));
         else if ((testType & TYPE_SYMBOL) != 0 && Utility.flip(random, 0.4))
             return vf.symbol("a" + (symbolId++));
         else { // random generator always said no, then choose first applying type
             if ((testType & TYPE_INTEGER) != 0)
                 return vf.valueOf(integerArgument((int)min, (int)max));
+            else if ((testType & TYPE_RATIONAL) != 0)
+                return vf.rational(integerArgument((int)min, (int)max), integerArgument(1, (int)max));
+            else if ((testType & TYPE_REAL) != 0)
+                return vf.valueOf(realArgument(min, max));
             else if ((testType & TYPE_COMPLEX) != 0)
                 return vf.complex(realArgument(min, max), realArgument(min, max));
             //      else if ((testType & TYPE_RATIONAL) != 0)
@@ -903,6 +1024,22 @@ public class FunctionTest extends check.TestCase {
         return x;
     }
 
+    private Polynomial polyArgument(double min, double max, int testType, int deg[]) {
+        Tensor x = vf.ZERO(deg);
+        for (ListIterator i = x.iterator(); i.hasNext(); ) {
+            i.next();
+        	i.set(randomArgument(min, max, testType));
+        }
+        return vf.asPolynomial(x);
+    }
+    private Polynomial polyArgument(double min, double max, int testType, int varrank, int maxpartialdeg) {
+    	int deg[] = new int[varrank];
+	for (int di = 0; di < deg.length; di++) {
+		deg[di] = integerArgument(1, maxpartialdeg);
+	}
+	return polyArgument(min, max, testType, deg);
+    }
+    
     // Helpers
 
     /**
@@ -973,6 +1110,14 @@ public class FunctionTest extends check.TestCase {
         sb.append('{');
         for (int i = 0; i < m.dimension(); i++)
             sb.append((i == 0 ? "" : ", ") + m.get(i));
+        sb.append('}');
+        return sb.toString();
+    }
+    private String listForm(Collection m) {
+        StringBuffer sb = new StringBuffer();
+        sb.append('{');
+        for (Iterator i = m.iterator(); i.hasNext(); )
+            sb.append(i.next() + (i.hasNext() ? "," : ""));
         sb.append('}');
         return sb.toString();
     }

@@ -327,9 +327,10 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
     public /*<R extends Arithmetic>*/ Polynomial/*<R,Vector<Integer>>*/ asPolynomial(Tensor/*<R>*/ coefficients) {
         // polynomials in 1 variable are converted to UnivariatePolynomials
         switch (coefficients.rank()) {
-        case 1:
-            // @todo implement a true view flexible for changes (but only if Polynomial.set(...) has been introduced)
-            return polynomial((Arithmetic[]) ((AbstractTensor)coefficients).toArray__Tensor());
+//        // turn off this implementation until MONOMIAL also obeys it
+//        case 1:
+//            // @todo implement a true view flexible for changes (but only if Polynomial.set(...) has been introduced)
+//            return polynomial((Arithmetic[]) ((AbstractTensor)coefficients).toArray__Tensor());
         default:
             return new ArithmeticMultivariatePolynomial(coefficients);
         }
@@ -347,6 +348,9 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
 
     // @internal horribly complicate implementation
     public final /*<R extends Arithmetic>*/ Polynomial/*<R,Vector<Integer>>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, int[] exponents) {
+//    	if (exponents.length == 1) {
+//    		return MONOMIAL(exponents[0]);
+//    	}
         int[] dim = new int[exponents.length];
         for (int k = 0; k < dim.length; k++)
             dim[k] = exponents[k] + 1;
@@ -355,6 +359,12 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
         m.setZero();
         m.set(exponents, coefficient);
         return m;
+    }
+    public final /*<R extends Arithmetic>*/ UnivariatePolynomial/*<R>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, int exponent) {
+    	Arithmetic v[] = new Arithmetic[exponent + 1];
+    	Arrays.fill(v, coefficient.zero());
+    	v[exponent] = coefficient;
+    	return polynomial(v);
     }
 
     // univariate polynomial constructors and utilities

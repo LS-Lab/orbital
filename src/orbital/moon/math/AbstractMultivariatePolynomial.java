@@ -71,7 +71,7 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
     //@xxx we do not ultimately need these following methods, but only have them for performance for S=<b>N</b><sup>n</sup>
     
     /**
-     * Get the the dimensions of the representation of this polynomial with respect to the single variables.
+     * Get the number of dimensions of the representation of this polynomial with respect to the single variables.
      * @internal note the off by one difference of degrees() and dimensions(),
      * because degrees() means maximum and dimensions() means count.
      * Also dimensions() can be larger because representation need not be minimal (there can be additional zeros).
@@ -370,7 +370,7 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
         }
         final int[] d = Functionals.map(Operations.plus, degrees(), b.degrees());
         for (int i = 0; i < d.length; i++) {
-        	// dimensions[i]=degrees[i]+1
+        	// assert dimensions[i]=degrees[i]+1
         	d[i]++;
         }
         Polynomial/*<R>*/ ret = newInstance(d);

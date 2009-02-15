@@ -111,6 +111,7 @@ public abstract class Combinatorical /*implements ListIterator<int[]> like*/ imp
      * Get all (generalized) permutations elements.
      * @param n the numbers of elements choosable. r := n.length is the size of the tuples
      *  and n[i] is the number of elements choosable for the element at index i of the tuple.
+     *  They are numbered 0, ..., n[i]-1.
      */
     public static Combinatorical getPermutations(int[] n) {
         return new GeneralizedPermutation(n);
