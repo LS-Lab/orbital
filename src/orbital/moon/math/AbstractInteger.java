@@ -556,7 +556,7 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
                 int bv = ArithmeticValuesImpl.intValueExact(b);
                 return bv >= 0
                     ? new Big(value.pow(bv))
-                    : Values.getDefault().rational((Integer/*__*/)one(), Values.getDefault().valueOf(value.pow(-bv)));
+                    : Values.getDefault().rational((Integer/*__*/)one(), new Big(value.pow(-bv)));
             } catch(ArithmeticException ex) {
                 throw new ArithmeticException("exponentation is possibly too big: " + this + " ^ " + b);
                 //return (Integer) Operations.power.apply(this, b);
