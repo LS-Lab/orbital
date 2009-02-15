@@ -641,7 +641,10 @@ public abstract class AbstractValues extends Values {
 
     // @todo implementation could be generalized to non-AbstractMultivariatePolynomials.
     public final /*<R extends Arithmetic, S extends Arithmetic>*/ Polynomial/*<R,S>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, Arithmetic/*>S<*/ exponent) {
-        return MONOMIAL(coefficient, ArithmeticMultivariatePolynomial.convertIndex(exponent));
+        if (exponent instanceof Integer)
+        	return MONOMIAL(coefficient, ((Integer)exponent).intValue());
+        else
+        	return MONOMIAL(coefficient, ArithmeticMultivariatePolynomial.convertIndex(exponent));
     }
     public final /*<R extends Scalar,S extends Arithmetic>*/ Polynomial/*<R,S>*/ MONOMIAL(Arithmetic/*>S<*/ exponent) {
         return MONOMIAL(ONE, exponent);
@@ -663,7 +666,7 @@ public abstract class AbstractValues extends Values {
     }
 
     public /*<R extends Arithmetic>*/ Vector/*<R>*/ asVector(UnivariatePolynomial/*<R>*/ p) {
-        return (Vector) asTensor(p);
+        return p.getCoefficientVector();
     }
 
     // quotient constructor synonyms

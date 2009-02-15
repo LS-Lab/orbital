@@ -541,7 +541,7 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
     }
 
     public final Arithmetic/*>R<*/ get(Arithmetic i) {
-        return get(((Integer)i).intValue());
+        return get(toIndex(i));
     }
     public final Arithmetic/*>R<*/ get(int[] i) {
         valid(i);
@@ -553,7 +553,19 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
         set(i[0], vi);
     }
     public final void set(Arithmetic i, Arithmetic/*>R<*/ vi) {
-        set(((Integer)i).intValue(), vi);
+        set(toIndex(i), vi);
+    }
+    
+    private static int toIndex(Arithmetic i) {
+    	if (i instanceof Integer) {
+    		return ((Integer)i).intValue();
+    	} else if (i instanceof Vector) {
+    		Vector v = (Vector)i;
+    		if (v.dimension() == 1 && v.get(0) instanceof Integer) {
+    			return ((Integer)v.get(0)).intValue();
+    		}
+    	}
+    	throw new ClassCastException("Cannot convert to index " + i + "@" + i.getClass());
     }
 
     final void valid(int[] i) {
