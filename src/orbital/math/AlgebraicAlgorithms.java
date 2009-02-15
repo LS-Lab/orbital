@@ -856,19 +856,26 @@ public final class AlgebraicAlgorithms {
     	}
         Set/*<Polynomial<R,S>>*/ rgb = reducedGroebnerBasis(g, monomialOrder);
         Set temp, nrgb = null;
-        assert (temp = reducedGroebnerBasis(rgb, monomialOrder)).equals(rgb) : "reduced Groebner basis " + temp + " of a reduced Groebner basis " + rgb + " equals the former Groebner basis";
-        //assert (temp = groebnerBasisImpl(rgb, monomialOrder)).equals(rgb) : "(non-reduced) Groebner basis " + temp + " of a (reduced) Groebner basis " + rgb + " equals the former Groebner basis";
         assert containsAll(nrgb = groebnerBasisImpl(g, monomialOrder), g, monomialOrder) : "the original generating system " + g + " is in the ideal spanned by its (non-reduced) Groebner basis " + nrgb;
+        assert containsAllSPolynomials(nrgb, monomialOrder) : "the (non-reduced) Groebner Basis " + nrgb + " reduces all its S-polynomials to 0";
         assert equalSpan(rgb, nrgb, monomialOrder) : "reduced Groebner basis " + rgb + " and (non-reduced) Groebner basis " + nrgb + " of " + g + " have equal span";
-        assert containsAll(rgb, g, monomialOrder) : "the original generating system " + g + " is in the ideal spanned by its (reduced) Groebner basis " + rgb;
+        assert containsAll(rgb, g, monomialOrder) : "the original generating system " + g + " is in the ideal spanned by its Groebner basis " + rgb;
+        assert containsAllSPolynomials(rgb, monomialOrder) : "the (reduced) Groebner Basis " + rgb + " reduces all its S-polynomials to 0";
+        //assert (temp = reducedGroebnerBasis(rgb, monomialOrder)).equals(rgb) : "reduced Groebner basis " + temp + " of a reduced Groebner basis " + rgb + " equals the former Groebner basis (up to constant factors)";
+        //assert (temp = groebnerBasisImpl(rgb, monomialOrder)).equals(rgb) : "(non-reduced) Groebner basis " + temp + " of a (reduced) Groebner basis " + rgb + " equals the former Groebner basis (up to constant factors)";
         return rgb;
     }
-    /**
+
+	/**
      * Get the reduced Gr&ouml;bner basis of g (Implementation).
      */
     private static final /*<R extends Arithmetic, S extends Arithmetic>*/
         Set/*<Polynomial<R,S>>*/ reducedGroebnerBasis(Collection/*<Polynomial<R,S>>*/ g, final Comparator/*<S>*/ monomialOrder) {
         return new LinkedHashSet(autoReduce(new ArrayList(groebnerBasisImpl(g, monomialOrder)), monomialOrder));
+    }
+    private static final /*<R extends Arithmetic, S extends Arithmetic>*/
+    Set/*<Polynomial<R,S>>*/ groebnerBasisImpl(Collection/*<Polynomial<R,S>>*/ gg, final Comparator/*<S>*/ monomialOrder) {
+    	return groebnerBasisImpl_Opt(gg, monomialOrder);
     }
     /**
      * Get the non-reduced Gr&ouml;bner basis of g (Implementation).
@@ -879,7 +886,7 @@ public final class AlgebraicAlgorithms {
      * @internal Beware: we internally use slightly rescaled S-polynomials. 
      */
     private static final /*<R extends Arithmetic, S extends Arithmetic>*/
-        Set/*<Polynomial<R,S>>*/ groebnerBasisImpl(Collection/*<Polynomial<R,S>>*/ gg, final Comparator/*<S>*/ monomialOrder) {
+        Set/*<Polynomial<R,S>>*/ groebnerBasisImpl_Opt(Collection/*<Polynomial<R,S>>*/ gg, final Comparator/*<S>*/ monomialOrder) {
     	// partial Groebner Basis
     	// @invariant: all S-polynomials within g have already been considered
         final List/*<Polynomial<R,S>>*/ g = new ArrayList();
@@ -947,7 +954,7 @@ public final class AlgebraicAlgorithms {
     }
     
     private static final /*<R extends Arithmetic, S extends Arithmetic>*/
-    Set/*<Polynomial<R,S>>*/ groebnerBasisImplOld(Collection/*<Polynomial<R,S>>*/ gg, final Comparator/*<S>*/ monomialOrder) {
+    Set/*<Polynomial<R,S>>*/ groebnerBasisImpl_Direct(Collection/*<Polynomial<R,S>>*/ gg, final Comparator/*<S>*/ monomialOrder) {
     	final List/*<Polynomial<R,S>>*/ g = new ArrayList(gg);
     	final Values vf = Values.getDefaultInstance();
     	ergaenzeGroebnerBasis:
@@ -1025,6 +1032,7 @@ public final class AlgebraicAlgorithms {
 
     /**
      * Auto-Reduce the set of poynomials g, so that each polynomial is reduced with respect to all the others.
+     * @todo optimize
      */
     private static final /*<R extends Arithmetic, S extends Arithmetic>*/
         List/*<Polynomial<R,S>>*/ autoReduce(Collection/*<Polynomial<R,S>>*/ g, final Comparator/*<S>*/ monomialOrder) {
@@ -1038,7 +1046,7 @@ public final class AlgebraicAlgorithms {
                 others.remove(i);
                 final Polynomial r = reduce(gi, others, monomialOrder);
                 if (!r.equals(gi)) {
-                    // g[i] not reduced with respect to the others, so replace by its reduction
+                    // g[i]  reduced with respect to the others, so replace by its reduction
                     basis.remove(i);
                     if (isZeroPolynomial.apply(r)) 
                         // skip adding 0
@@ -1129,6 +1137,42 @@ public final class AlgebraicAlgorithms {
         return containsAll(groebnerBasis1, groebnerBasis2, monomialOrder)
             && containsAll(groebnerBasis2, groebnerBasis1, monomialOrder);
     }
+
+    /**
+     * Checks that the groebner basis g reduces all its S-polynomials to 0
+     */
+    private static final boolean containsAllSPolynomials(Set gb,
+			Comparator monomialOrder) {
+    	final List/*<Polynomial<R,S>>*/ g = new ArrayList(gb);
+    	final Values vf = Values.getDefaultInstance();
+    	for (int i = 0; i < g.size(); i++) {
+    		final Polynomial/*<R,S>*/ gi = (Polynomial)g.get(i);
+    		for (int j = i + 1; j < g.size(); j++) {
+    			final Polynomial/*<R,S>*/ gj = (Polynomial)g.get(j);
+
+    			// constructing S-polynomials of g[i] and g[j]
+    			// construct Sgigj = S(g[i], g[j])
+    			final Polynomial Sgigj = sPolynomial(gi, gj, monomialOrder, false);
+    			if (Sgigj == null) {
+    				// optimizations know that S(g[i],g[j]) will reduce to 0, hence skip
+    				//logger.log(Level.FINE, "skip optimization reduction from {2} and {3}", new Object[] {gi, gj});
+    				//assert isZeroPolynomial.apply(reduce(sPolynomial(gi, gj, monomialOrder, false), g, monomialOrder)) : "optimization of S-polynomial construction forecasts correctly, i.e., if it will reduce to 0: S(" + gi + ", " + gj + ") = " + sPolynomial(gi, gj, monomialOrder, false) + " gives " + reduce(sPolynomial(gi, gj, monomialOrder, false), g, monomialOrder) + "\nwith respect to " + g;
+    			} else {
+    				// this is the major bottleneck, especially if it turns out that r=0
+    				final Polynomial r = reduce(Sgigj, g, monomialOrder);
+    				//logger.log(Level.FINER, "S({0},{1}) = {2} reduced to {3}", new Object[] {gi, gj, Sgigj, r});
+    				if (isZeroPolynomial.apply(r)) {
+    					//logger.log(Level.FINE, "skip reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
+    				} else {
+    					assert false: "Groebner Basis " + gb + " reduces all its S-polynomials to 0, including S(" + gi + "," + gj + ")=" + Sgigj + " giving " + r;
+    				return false;
+    				}
+    			}
+    		}
+    	}
+    	return true;
+	}
+
 
     //
     // Differential Equations
