@@ -649,6 +649,9 @@ public abstract class AbstractValues extends Values {
     public final /*<R extends Scalar,S extends Arithmetic>*/ Polynomial/*<R,S>*/ MONOMIAL(int[] exponents) {
         return MONOMIAL(ONE, exponents);
     }
+    public final /*<R extends Scalar,S extends Arithmetic>*/ UnivariatePolynomial/*<R,S>*/ MONOMIAL(int exponent) {
+        return MONOMIAL(ONE, exponent);
+    }
 
     // univariate polynomial constructors and utilities
 

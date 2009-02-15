@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.Collections;
@@ -73,8 +74,8 @@ public final class AlgebraicAlgorithms {
      */
     public static final Comparator/*<Vector<Integer>>*/ LEXICOGRAPHIC = new Comparator/*<Vector<Integer>>*/() {
             public int compare(Object/*>Vector<Integer><*/ m1, Object/*>Vector<Integer><*/ m2) {
-                final Vector/*<Integer>*/ nu = (Vector/*<Integer>*/) m1;
-                final Vector/*<Integer>*/ mu = (Vector/*<Integer>*/) m2;
+                final Vector/*<Integer>*/ nu = getExponentVector(m1);
+                final Vector/*<Integer>*/ mu = getExponentVector(m2);
                 if (nu.dimension() != mu.dimension())
                     throw new IllegalArgumentException("incompatible monomial exponents from polynomial rings with a different number of variables");
                 for (Iterator k = nu.iterator(), j = mu.iterator(); k.hasNext() || j.hasNext(); ) {
@@ -86,7 +87,7 @@ public final class AlgebraicAlgorithms {
                 return 0;
             }
 
-            public String toString() {
+			public String toString() {
                 return AlgebraicAlgorithms.class.getName() + ".LEXICOGRAPHIC";
             }
         };
@@ -106,8 +107,8 @@ public final class AlgebraicAlgorithms {
      */
     public static final Comparator/*<Vector<Integer>>*/ REVERSE_LEXICOGRAPHIC = new Comparator/*<Vector<Integer>>*/() {
             public int compare(Object/*>Vector<Integer><*/ m1, Object/*>Vector<Integer><*/ m2) {
-                final Vector/*<Integer>*/ nu = (Vector/*<Integer>*/) m1;
-                final Vector/*<Integer>*/ mu = (Vector/*<Integer>*/) m2;
+                final Vector/*<Integer>*/ nu = getExponentVector(m1);
+                final Vector/*<Integer>*/ mu = getExponentVector(m2);
                 if (nu.dimension() != mu.dimension())
                     throw new IllegalArgumentException("incompatible monomial exponents from polynomial rings with a different number of variables");
                 for (int k = nu.dimension() - 1; k >= 0; k--) {
@@ -148,8 +149,8 @@ public final class AlgebraicAlgorithms {
         checkPermutation(permutation);
         return new Comparator/*<Vector<Integer>>*/() {
             public int compare(Object/*>Vector<Integer><*/ m1, Object/*>Vector<Integer><*/ m2) {
-                final Vector/*<Integer>*/ nu = (Vector/*<Integer>*/) m1;
-                final Vector/*<Integer>*/ mu = (Vector/*<Integer>*/) m2;
+                final Vector/*<Integer>*/ nu = getExponentVector(m1);
+                final Vector/*<Integer>*/ mu = getExponentVector(m2);
                 if (nu.dimension() != mu.dimension())
                     throw new IllegalArgumentException("incompatible monomial exponents from polynomial rings with a different number of variables");
                 for (int k = 0; k < nu.dimension(); k++) {
@@ -202,8 +203,8 @@ public final class AlgebraicAlgorithms {
     public static final Comparator/*<Vector<Integer>>*/ DEGREE(final Comparator/*<Vector<Integer>>*/ monomialBaseOrder) {
         return new Comparator/*<Vector<Integer>>*/() {
             public int compare(Object/*>Vector<Integer><*/ m1, Object/*>Vector<Integer><*/ m2) {
-                final Vector/*<Integer>*/ nu = (Vector/*<Integer>*/) m1;
-                final Vector/*<Integer>*/ mu = (Vector/*<Integer>*/) m2;
+                final Vector/*<Integer>*/ nu = getExponentVector(m1);
+                final Vector/*<Integer>*/ mu = getExponentVector(m2);
                 if (nu.dimension() != mu.dimension())
                     throw new IllegalArgumentException("incompatible monomial exponents from polynomial rings with a different number of variables");
                 int c = ((Integer)Operations.sum.apply(nu)).intValue()
@@ -656,12 +657,17 @@ public final class AlgebraicAlgorithms {
         private static final long serialVersionUID = -51945340881045435L;
         private final Collection/*<Polynomial<R,S>>*/ g;
         private final Comparator/*<S>*/ monomialOrder;
+        private final Comparator/*<S>*/ inducedOrder;
         private final Function/*<Polynomial<R,S>,Polynomial<R,S>>*/ elementaryReduce;
         public ReductionFunction(Collection/*<Polynomial<R,S>>*/ g, Comparator/*<S>*/ newmonomialOrder) {
-            Utility.pre(Setops.all(g, Functionals.bindSecond(Utility.instanceOf, Polynomial.class)), "collection<" + Polynomial.class.getName() + "> expected");
+            if (!Setops.all(g, Functionals.bindSecond(Utility.instanceOf, Polynomial.class))) {
+            	throw new IllegalArgumentException("prerequisite failed: " + "collection<" + Polynomial.class.getName() + "> expected, found violation " + Setops.find(g, Functionals.not(Functionals.bindSecond(Utility.instanceOf, Polynomial.class))) + " in "+ g);
+            }
             this.g = g;
             this.monomialOrder = newmonomialOrder;
-            // enrich g with exponents of leading monomials
+            this.inducedOrder = INDUCED(monomialOrder);
+            // enrich g with exponents of leading monomials for caching
+            // cache (polynomial, leading monomial)
             final Pair/*<Polynomial<R,S>,S>*/[] basis = new Pair[g.size()];
             {
                 Iterator/*<Polynomial<R,S>>*/ it = g.iterator();
@@ -676,7 +682,7 @@ public final class AlgebraicAlgorithms {
                     public Object/*>Polynomial<R,S><*/ apply(Object/*>Polynomial<R,S><*/ o) {
                         final Polynomial/*<R,S>*/ f = (Polynomial)o;
                         final Values vf = Values.getDefaultInstance();
-                        //@internal we would prefer reverse direction, also starting with leading coefficient
+                        //@internal we would prefer reverse direction (because we want to start eliminating large not small monomials), also starting with leading coefficient
                         final SortedSet/*<S>*/ occurring = new TreeSet(new ReverseComparator(monomialOrder));
                         occurring.addAll(occurringMonomials(f));
                         for (Iterator/*<S>*/ index = occurring.iterator(); index.hasNext(); ) {
@@ -692,13 +698,12 @@ public final class AlgebraicAlgorithms {
                                 final Arithmetic/*>R<*/ cdiv;
                                 final Arithmetic/*>S<*/ xdiv;
                                 try {
+                                    // test divisibility of monomial X^nu by l(gj)
+                                    xdiv = divideMonomial(nu, lgj);
+                                    if (xdiv == null)
+                                        continue reductionPolynomials;
                                     // test divisibility of coefficient cnu by lc(gj)=gj.get(lgj)
                                     cdiv = (Arithmetic/*>R<*/)cnu.divide(gj.get(lgj));
-                                    // test divisibility of monomial X^nu by l(gj)
-                                    xdiv = nu.subtract(lgj);
-                                    //@internal the following is a trick for S=<b>N</b><sup>n</sup> represented as <b>Z</b><sup>n</sup> (get rid when introducing Natural extends Integer)
-                                    if (Setops.some(((Vector)xdiv).iterator(), Functionals.bindSecond(Predicates.less, Values.ZERO)))
-                                        continue reductionPolynomials;
                                 }
                                 catch (ArithmeticException indivisible) {
                                     continue reductionPolynomials;
@@ -718,7 +723,7 @@ public final class AlgebraicAlgorithms {
                                         throw new AssertionError(vf.MONOMIAL(Values.getDefault().ONE(), nu) + " does not occur in " + reduction + " anymore, even after numerical precision correction");
                                     }
                                 }
-                                if (!(INDUCED(monomialOrder).compare(reduction, f) < 0))
+								if (!(inducedOrder.compare(reduction, f) < 0))
                                     throw new AssertionError(reduction + "<" + f);
                                 logger.log(Level.FINEST, "elementary reduction {0} - {1} * ({2}) == {3}", new Object[] {f, q, gj, reduction});
                                 return reduction;
@@ -834,6 +839,17 @@ public final class AlgebraicAlgorithms {
      */
     public static final /*<R extends Arithmetic, S extends Arithmetic>*/
         Set/*<Polynomial<R,S>>*/ groebnerBasis(Set/*<Polynomial<R,S>>*/ g, final Comparator/*<S>*/ monomialOrder) {
+    	if (g.isEmpty()) {
+    		return Collections.EMPTY_SET;
+    	} else {
+    		if (g.contains(((Polynomial)g.iterator().next()).zero())) {
+    			g = new LinkedHashSet(g);
+    			g.remove(((Polynomial)g.iterator().next()).zero());
+    	    	if (g.isEmpty()) {
+    	    		return Collections.EMPTY_SET;
+    	    	}
+    		}
+    	}
         Set/*<Polynomial<R,S>>*/ rgb = reducedGroebnerBasis(g, monomialOrder);
         Set temp, nrgb = null;
         assert (temp = reducedGroebnerBasis(rgb, monomialOrder)).equals(rgb) : "reduced Groebner basis " + temp + " of a reduced Groebner basis equals the former Groebner basis";
@@ -848,7 +864,7 @@ public final class AlgebraicAlgorithms {
      */
     private static final /*<R extends Arithmetic, S extends Arithmetic>*/
         Set/*<Polynomial<R,S>>*/ reducedGroebnerBasis(Collection/*<Polynomial<R,S>>*/ g, final Comparator/*<S>*/ monomialOrder) {
-        return new LinkedHashSet(reduceGroebnerBasis(new ArrayList(groebnerBasisImpl(g, monomialOrder)), monomialOrder));
+        return new LinkedHashSet(autoReduce(new ArrayList(groebnerBasisImpl(g, monomialOrder)), monomialOrder));
     }
     /**
      * Get the non-reduced Gr&ouml;bner basis of g (Implementation).
@@ -860,14 +876,26 @@ public final class AlgebraicAlgorithms {
      */
     private static final /*<R extends Arithmetic, S extends Arithmetic>*/
         Set/*<Polynomial<R,S>>*/ groebnerBasisImpl(Collection/*<Polynomial<R,S>>*/ gg, final Comparator/*<S>*/ monomialOrder) {
-        final List/*<Polynomial<R,S>>*/ g = new ArrayList(gg);
+    	// partial Groebner Basis
+    	// @invariant: all S-polynomials within g have already been considered
+        final List/*<Polynomial<R,S>>*/ g = new ArrayList();
+        // working list, start with small polynomials to improve efficiency
+        final PriorityQueue/*<Polynomial<R,S>>*/ working = new PriorityQueue(gg.size()+1, INDUCED(monomialOrder));
+        // auto-reduce original polynomials so that no inter-reductions are possible any more
+        for (Iterator i = autoReduce(gg, monomialOrder).iterator(); i.hasNext(); ) {
+        	working.add(i.next());
+        }
+        // the first element is in the candidate groebner basis, otherwise nothing happens later, all others are in working list
+        g.add(working.poll());
         final Values vf = Values.getDefaultInstance();
-        ergaenzeGroebnerBasis:
-        while (true) {
-            for (int i = 0; i < g.size(); i++) {
-                for (int j = i + 1; j < g.size(); j++) {
-                    final Polynomial/*<R,S>*/ gi = (Polynomial)g.get(i);
-                    final Polynomial/*<R,S>*/ gj = (Polynomial)g.get(j);
+        while (!working.isEmpty()) {
+        	// get (smallest) polynomial from working, moving it to g
+            // reduce gi with respect to current G
+            final Polynomial/*<R,S>*/ gi = (Polynomial)working.poll();
+            final Arithmetic lgi = leadingMonomial(gi, monomialOrder);
+            // form all S-polynomials of gi with g
+            for (Iterator/*<Polynomial<R,S>>*/ j = g.iterator(); j.hasNext(); ) {
+                    final Polynomial/*<R,S>*/ gj = (Polynomial)j.next();
 
                     // constructing S-polynomials of g[i] and g[j]
                     // construct Sgigj = S(g[i], g[j])
@@ -884,15 +912,69 @@ public final class AlgebraicAlgorithms {
                             logger.log(Level.FINE, "skip reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
                         } else {
                             logger.log(Level.FINE, "add reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
-                            g.add(r);
-                            continue ergaenzeGroebnerBasis;
+                            working.add(r);
                         }
+                    }
+            }
+            // add gi to g, moving all polynomials with leading monomials that are multiples of gi' leading monomial to the working list again
+            for (Iterator j = g.iterator(); j.hasNext(); ) {
+                final Polynomial/*<R,S>*/ gj = (Polynomial)j.next();
+                final Arithmetic lgj = leadingMonomial(gj, monomialOrder);
+                if (divideMonomial(lgj, lgi) != null) {
+                	Collection/*<Polynomial<R,S>>*/ others = new LinkedList(g);
+                	others.remove(gj);
+                	others.add(gi);
+                	j.remove();
+                    // this is the major bottleneck, especially if it turns out that r=0
+                    final Polynomial r = reduce(gj, others, monomialOrder);
+                    if (isZeroPolynomial.apply(r)) {
+                        logger.log(Level.FINE, "skip partial auto-reduction {0} of {1} from adding {2}", new Object[] {r, gj, gi});
+                    } else {
+                        logger.log(Level.FINE, "partial auto-reduction {0} of {1} from adding {2}", new Object[] {r, gj, gi});
+                        working.add(r);
                     }
                 }
             }
-            break ergaenzeGroebnerBasis;
+            g.add(gi);
         }
         return new LinkedHashSet(g);
+    }
+    
+    private static final /*<R extends Arithmetic, S extends Arithmetic>*/
+    Set/*<Polynomial<R,S>>*/ groebnerBasisNaive(Collection/*<Polynomial<R,S>>*/ gg, final Comparator/*<S>*/ monomialOrder) {
+    	final List/*<Polynomial<R,S>>*/ g = new ArrayList(gg);
+    	final Values vf = Values.getDefaultInstance();
+    	ergaenzeGroebnerBasis:
+    		while (true) {
+    			for (int i = 0; i < g.size(); i++) {
+    				final Polynomial/*<R,S>*/ gi = (Polynomial)g.get(i);
+    				for (int j = i + 1; j < g.size(); j++) {
+    					final Polynomial/*<R,S>*/ gj = (Polynomial)g.get(j);
+
+    					// constructing S-polynomials of g[i] and g[j]
+    					// construct Sgigj = S(g[i], g[j])
+    					final Polynomial Sgigj = sPolynomial(gi, gj, monomialOrder, true);
+    					if (Sgigj == null) {
+    						// optimizations know that S(g[i],g[j]) will reduce to 0, hence skip
+    						logger.log(Level.FINE, "skip optimization reduction from {2} and {3}", new Object[] {gi, gj});
+    						assert isZeroPolynomial.apply(reduce(sPolynomial(gi, gj, monomialOrder, false), g, monomialOrder)) : "optimization of S-polynomial construction forecasts correctly, i.e., if it will reduce to 0";
+    					} else {
+    						// this is the major bottleneck, especially if it turns out that r=0
+    						final Polynomial r = reduce(Sgigj, g, monomialOrder);
+    						logger.log(Level.FINER, "S({0},{1}) = {2} reduced to {3}", new Object[] {gi, gj, Sgigj, r});
+    						if (isZeroPolynomial.apply(r)) {
+    							logger.log(Level.FINE, "skip reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
+    						} else {
+    							logger.log(Level.FINE, "add reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
+    							g.add(r);
+    							continue ergaenzeGroebnerBasis;
+    						}
+    					}
+    				}
+    			}
+    			break ergaenzeGroebnerBasis;
+    		}
+    	return new LinkedHashSet(g);
     }
 
     /**
@@ -910,8 +992,8 @@ public final class AlgebraicAlgorithms {
         Polynomial/*<R,S>*/ sPolynomial(Polynomial/*<R,S>*/ f, Polynomial/*<R,S>*/ g, final Comparator/*<S>*/ monomialOrder, boolean optimize) {
         final Values vf = Values.getDefaultInstance();
         // Gr&ouml;bner rank of g[i], i.e., leading monomial l(g[i])
-        final Vector/*>S<*/ lf = (Vector/*>S<*/) leadingMonomial(f, monomialOrder);
-        final Vector/*>S<*/ lg = (Vector/*>S<*/) leadingMonomial(g, monomialOrder);
+        final Vector/*>S<*/ lf = getExponentVector(leadingMonomial(f, monomialOrder));
+        final Vector/*>S<*/ lg = getExponentVector(leadingMonomial(g, monomialOrder));
         // construct X^nu and X^mu coprime such that l(X^nu*g[i])==l(X^mu*g[j]) (also @see #lcm(Euclidean,Euclidean))
         // let d=lcm(l(f),l(g)), or more precisely the exponent of this monomial
         final Vector/*>S<*/ d = Functionals.map(Operations.max, lf, lg);
@@ -936,10 +1018,10 @@ public final class AlgebraicAlgorithms {
     }
 
     /**
-     * Reduce the Gr&ouml;bner basis g.
+     * Auto-Reduce the set of poynomials g, so that each polynomial is reduced with respect to all the others.
      */
     private static final /*<R extends Arithmetic, S extends Arithmetic>*/
-        List/*<Polynomial<R,S>>*/ reduceGroebnerBasis(Collection/*<Polynomial<R,S>>*/ g, final Comparator/*<S>*/ monomialOrder) {
+        List/*<Polynomial<R,S>>*/ autoReduce(Collection/*<Polynomial<R,S>>*/ g, final Comparator/*<S>*/ monomialOrder) {
         final List basis = new ArrayList(g);
         logger.log(Level.FINE, "reducing Groebner basis {0}", basis);
         replaceWithReductions:
@@ -974,7 +1056,7 @@ public final class AlgebraicAlgorithms {
      * Get a collection of those (exponents of) monomials that occur in f
      * (i.e. with coefficient &ne;0).
      */
-    private static /*<R extends Arithmetic, S extends Arithmetic>*/
+    public static /*<R extends Arithmetic, S extends Arithmetic>*/
         Collection/*<S>*/ occurringMonomials(final Polynomial/*<R,S>*/ f) {
         return Setops.select(null,
                              Setops.asList(f.indices()),
@@ -989,6 +1071,9 @@ public final class AlgebraicAlgorithms {
      */
     private static /*<R extends Arithmetic, S extends Arithmetic>*/
         Arithmetic/*>S<*/ leadingMonomial(Polynomial/*<R,S>*/ f, Comparator/*<S>*/ monomialOrder) {
+    	if (f.isZero()) {
+    		throw new IllegalArgumentException("zero polynomial has no leading monomial");
+    	}
         return (Arithmetic/*>S<*/) Collections.max(occurringMonomials(f), monomialOrder);
     }
 
@@ -1205,6 +1290,34 @@ public final class AlgebraicAlgorithms {
         }
         return vf.polynomial(pv);
     }
-    
+
+    /**
+     * returns the result of dividing monomial X^a by monomial X^b, or null if this division is impossible.
+     * @param a
+     * @param b
+     * @return X^a/X^b represented as a-b or null if not divisible
+     */
+    private static Arithmetic divideMonomial(Arithmetic a, Arithmetic b) {
+    	// test divisibility of monomial X^a by X^b
+    	Arithmetic div = a.subtract(b);
+    	//@internal the following is a trick for S=<b>N</b><sup>n</sup> represented as <b>Z</b><sup>n</sup> (get rid when introducing Natural extends Integer)
+    	if (Setops.some((getExponentVector(div)).iterator(), Functionals.bindSecond(Predicates.less, Values.ZERO)))
+    		return null;
+    	else {
+    		return div;
+    	}
+    }
+
+    private static Vector/*<Integer>*/ getExponentVector(Object m) {
+		if (m instanceof Vector) {
+			return (Vector)m;
+		} else if (m instanceof Integer) {
+			// univariate case
+			return Values.getDefault().valueOf(new Integer[] {(Integer)m});
+		} else {
+			throw new ClassCastException("Cannot convert exponent representation into Vector<Integer> from " + m);
+		}
+	}
+
 
 }// AlgebraicAlgorithms

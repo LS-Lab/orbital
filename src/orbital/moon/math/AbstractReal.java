@@ -406,8 +406,15 @@ abstract class AbstractReal extends AbstractComplex implements Real {
          */
         private BigDecimal value;
         public Big(double v) {
-            this(BigDecimal.valueOf(v));
+        	this(convert(v));
         }
+		private static BigDecimal convert(double v) {
+			try {
+                return BigDecimal.valueOf(v);
+        	} catch(NumberFormatException ex) {
+        		throw (NumberFormatException)new NumberFormatException("Cannot represent " + v).initCause(ex);
+        	}
+		}
         public Big(BigDecimal v) {
             value = v;
         }

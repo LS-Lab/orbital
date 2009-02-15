@@ -537,6 +537,21 @@ public interface ValueFactory {
      * @see #MONOMIAL(Arithmetic,int[])
      */
     /*<R extends Scalar>*/ Polynomial/*<R,Vector<Integer>>*/ MONOMIAL(int[] exponents);
+    /**
+     * The univariate monomial c&middot;X<sup>e</sup>.
+     * @param coefficient the coefficient c of the monomial.
+     * @param exponent the exponents e of the monomial.
+     * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience Method</a>
+     */
+    /*<R extends Scalar>*/ UnivariatePolynomial/*<R>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, int exponent);
+    /**
+     * The univariate monomial 1&middot;X<sup>e</sup>.
+     * Note that the coefficient is {@link #ONE 1}&isin;<b>Z</b>.
+     * @param exponent the exponents e of the monomial.
+     * @see <a href="{@docRoot}/Patterns/Design/Convenience.html">Convenience Method</a>
+     * @see #MONOMIAL(Arithmetic,int)
+     */
+    /*<R extends Scalar>*/ UnivariatePolynomial/*<R>*/ MONOMIAL(int exponent);
 
     // univariate polynomial constructors and utilities
 
