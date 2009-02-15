@@ -269,15 +269,14 @@ public final class Functions {
      */
     public static final Function square = new SynonymFunction(pow(TWO)) {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x) {
-                if (Complex.hasType.apply(x)) {
-                    Complex v = (Complex) x;
+                if (x instanceof Arithmetic) {
+                    Arithmetic v = (Arithmetic) x;
                     return v.multiply(v);
                 } else if (x instanceof Number) {
                     double v = ((Number) x).doubleValue();
                     return valueFactory.valueOf(v * v);
                 } else {
-                    Arithmetic v = (Arithmetic) x;
-                    return v.multiply(v);
+                    throw new ClassCastException("Cannot square " + x + "@" + x.getClass());
                 }
             } 
             public Real norm() {
@@ -298,12 +297,15 @@ public final class Functions {
      * But just like real numbers, the negative of this is a square root as well.</p>
      * </p>
      */
-    public static final Function sqrt = new SynonymFunction(pow(valueFactory.valueOf(0.5))) {
+    public static final Function sqrt = new SynonymFunction(pow(valueFactory.rational(1,2))) {
             public Object/*>Complex<*/ apply(Object/*>Complex<*/ x) {
                 if (Complex.hasType.apply(x)) {
                     Complex v = (Complex) x;
                     return valueFactory.polar((Real/*__*/)apply(v.norm()), v.arg().divide(valueFactory.valueOf(2)));
                 } 
+                else if (x instanceof Arithmetic) {
+                    return (Arithmetic) super.apply(x);
+                }
                 else if (x instanceof Number) {
                     //@xxx possible loss of precision
                     double r = ((Number) x).doubleValue();

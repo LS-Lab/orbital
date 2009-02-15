@@ -414,8 +414,15 @@ abstract class AbstractTensor/*<R extends Arithmetic>*/
 
     public Real norm() {
         //@todo verify that this really is a norm
-        return (Real/*__*/) Functions.sqrt.apply(Operations.sum.apply(Functionals.map(Functions.square, Functionals.map(Functions.norm, iterator()))));
-    } 
+        //return (Real/*__*/) Functions.sqrt.apply(Operations.sum.apply(Functionals.map(Functions.square, Functionals.map(Functions.norm, iterator()))));
+        Real normsquare = (Real) Operations.sum.apply(Functionals.map(Functions.square, Functionals.map(Functions.norm, iterator())));
+        try {
+            return (Real/*__*/) Functions.sqrt.apply(normsquare);
+        } catch (ArithmeticException overflow) {
+        	//@xxx possible loss of precision but still good enough for zero checks
+        	return Values.getDefault().valueOf(Math.sqrt(normsquare.doubleValue()));
+        }
+   } 
 
     // arithmetic-operations
         
