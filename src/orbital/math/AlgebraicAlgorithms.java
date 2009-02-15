@@ -875,7 +875,7 @@ public final class AlgebraicAlgorithms {
      * @internal Beware: we internally use slightly rescaled S-polynomials. 
      */
     private static final /*<R extends Arithmetic, S extends Arithmetic>*/
-        Set/*<Polynomial<R,S>>*/ groebnerBasisImplF(Collection/*<Polynomial<R,S>>*/ gg, final Comparator/*<S>*/ monomialOrder) {
+        Set/*<Polynomial<R,S>>*/ groebnerBasisImpl(Collection/*<Polynomial<R,S>>*/ gg, final Comparator/*<S>*/ monomialOrder) {
     	// partial Groebner Basis
     	// @invariant: all S-polynomials within g have already been considered
         final List/*<Polynomial<R,S>>*/ g = new ArrayList();
@@ -943,7 +943,7 @@ public final class AlgebraicAlgorithms {
     }
     
     private static final /*<R extends Arithmetic, S extends Arithmetic>*/
-    Set/*<Polynomial<R,S>>*/ groebnerBasisImpl(Collection/*<Polynomial<R,S>>*/ gg, final Comparator/*<S>*/ monomialOrder) {
+    Set/*<Polynomial<R,S>>*/ groebnerBasisImplOld(Collection/*<Polynomial<R,S>>*/ gg, final Comparator/*<S>*/ monomialOrder) {
     	final List/*<Polynomial<R,S>>*/ g = new ArrayList(gg);
     	final Values vf = Values.getDefaultInstance();
     	ergaenzeGroebnerBasis:
