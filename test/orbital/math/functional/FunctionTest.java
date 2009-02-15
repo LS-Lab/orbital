@@ -485,6 +485,7 @@ public class FunctionTest extends check.TestCase {
     	final int VARS = 3;
     	final int DEG = 3;
     	final int MEMBER_CHECK = 10;
+    	final int NUM = 4;
     	final int vars = integerArgument(1, VARS);
     	String varlist = "{";
         final String multinomialVariables[] = {"X", "Y", "Z"};
@@ -492,7 +493,7 @@ public class FunctionTest extends check.TestCase {
     		varlist += (v>0 ? "," : "") +  (vars<=3 ? multinomialVariables[v] : "X" + v);
     	}
     	varlist += "}";
-    	int num = integerArgument(1, 6);
+    	int num = integerArgument(1, NUM);
     	for (int p = 0; p < num; p++) {
     		g.add(polyArgument(MIN, MAX, testType, vars, DEG));
     		if (g.toString().length() > 100) {
