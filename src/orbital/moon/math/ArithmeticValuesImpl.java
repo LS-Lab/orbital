@@ -353,7 +353,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
     // @internal horribly complicate implementation
     public final /*<R extends Arithmetic>*/ Polynomial/*<R,Vector<Integer>>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, int[] exponents) {
     	if (exponents.length == 1) {
-    		return MONOMIAL(exponents[0]);
+    		return MONOMIAL(coefficient, exponents[0]);
     	}
         int[] dim = new int[exponents.length];
         for (int k = 0; k < dim.length; k++)
