@@ -495,7 +495,16 @@ public class FunctionTest extends check.TestCase {
     	varlist += "}";
     	int num = integerArgument(1, NUM);
     	for (int p = 0; p < num; p++) {
-    		g.add(polyArgument(MIN, MAX, testType, vars, DEG));
+    		Polynomial gi = polyArgument(MIN, MAX, testType, vars, DEG);
+    		if (gi.toString().length() > 40) {
+    			// use string output as complexity bound and randomly remove complexity
+    			for (ListIterator i = gi.iterator(); i.hasNext(); ) {
+    				Arithmetic x = (Arithmetic)i.next();
+    				if (Utility.flip(random, 0.75))
+    					i.set(x.zero());
+    			}
+    	    }
+    		g.add(gi);
     		if (g.toString().length() > 100) {
     			// use string output as complexity bound
     			break;
