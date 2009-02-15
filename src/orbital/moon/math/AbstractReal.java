@@ -556,7 +556,11 @@ abstract class AbstractReal extends AbstractComplex implements Real {
             if (bc instanceof Integer) {
                 return power((Integer)bc);
             } else {
-                return Values.getDefault().valueOf(Math.pow(ArithmeticValuesImpl.doubleValueExact((Number)this), ArithmeticValuesImpl.doubleValueExact(b)));
+            	try {
+                    return Values.getDefault().valueOf(Math.pow(ArithmeticValuesImpl.doubleValueExact((Number)this), ArithmeticValuesImpl.doubleValueExact(b)));
+                } catch(ArithmeticException ex) {
+                    throw (ArithmeticException) new ArithmeticException("exponentation is possibly too big: " + this + " ^ " + b).initCause(ex);
+                }
             }
         }
         private Real power(Integer b) {

@@ -6,6 +6,10 @@
 
 package orbital.math;
 
+import orbital.logic.functor.Predicate;
+import orbital.math.functional.Functionals;
+import orbital.util.Setops;
+
 /**
  * Arithmetic is implemented by all <dfn>arithmetic objects</dfn> that behave like algebraic
  * numbers in terms of their compositional laws.
@@ -115,6 +119,45 @@ package orbital.math;
  * @todo would we need something like "implements Typed/orbital.logic.sign.type.Type getType()" which returns Integer, Real, Matrix ... for checking whether two objects have the same abstract mathematical type, regardless of their implementation class. @see MathUtilitiesTest#associated(Arithmetic,Arithmetic)
  */
 public interface Arithmetic extends Normed {
+    /**
+     * Checks recursively whether the given arithmetic object is a numerical quantity, i.e., involves Real numerical approximations somewhere.
+     * <p>
+     * To be precise, for all numbers with machine precision can only be rational.
+     * Nevertheless, we model the difference between (machine precision) reals
+     * and explicit fractional numbers as {@link Rational}s with numerator and denominator.</p>
+     * return whether v&isin;<b>R</b>\<b>Q</b> is real, but not rational and thus
+     *  irrational (for machine dimensions).
+     */
+    public static final Predicate/*<Object>*/ numerical = new Predicate/*<Object>*/() {
+            public boolean apply(Object v) {
+            	if (v instanceof Scalar) {
+            		if (Rational.isa.apply(v)) {
+            			return false;
+            		} else if (Real.hasType.apply(v)) {
+            			return true;
+            		} else if (v instanceof Complex) {
+            			Complex c = (Complex)v;
+            			return apply(c.re()) || apply(c.im());
+            		}
+            	}
+            	if (Symbol.isa.apply(v)) {
+            		return false;
+            	} else if (v instanceof Tensor) {
+            		Tensor c = (Tensor)v;
+            		return Setops.some(c.iterator(), numerical);
+              	} else if (v instanceof Polynomial) {
+            		Polynomial c = (Polynomial)v;
+            		return Setops.some(c.iterator(), numerical);
+            	} else if (v instanceof Fraction) {
+            		Fraction c = (Fraction)v;
+            		return apply(c.numerator()) || apply(c.denominator());
+            	} else if (v instanceof Quotient) {
+            		Quotient c = (Quotient)v;
+            		return apply(c.representative());
+            	}
+                throw new IllegalArgumentException("Cannot determine numerical status of " + v + "@" + v.getClass());
+            }
+        };
 
     /**
      * Compares two arithmetic objects for tolerant equality.

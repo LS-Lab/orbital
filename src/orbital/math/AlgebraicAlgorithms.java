@@ -1080,15 +1080,19 @@ public final class AlgebraicAlgorithms {
     }
 
     /**
-     * tolerant equality to 0 (or roughly 0) for polynomials.
+     * tolerant equality to 0 (or roughly 0) for polynomials with numerical quantities.
      */
     private static final Predicate isZeroPolynomial = new Predicate() {
             public boolean apply(Object p) {
                 Polynomial r = (Polynomial) p;
-                final Values vf = Values.getDefaultInstance();
-                Tensor rt = vf.asTensor(r);
-                return r.degreeValue() < 0
-                    || rt.equals(vf.ZERO(rt.dimensions()), vf.valueOf(MathUtilities.getDefaultTolerance()));
+                if (Arithmetic.numerical.apply(r)) {
+                    final Values vf = Values.getDefaultInstance();
+                    Tensor rt = vf.asTensor(r);
+                    return r.degreeValue() < 0
+                    	|| rt.equals(vf.ZERO(rt.dimensions()), vf.valueOf(MathUtilities.getDefaultTolerance()));
+                } else {
+                	return r.isZero();
+                }
             }
         };
 

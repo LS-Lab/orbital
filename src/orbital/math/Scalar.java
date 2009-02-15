@@ -33,4 +33,5 @@ public interface Scalar extends Arithmetic/*, Comparable*/ {
                 return v instanceof Scalar;
             }
         };
+
 }
