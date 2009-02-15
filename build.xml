@@ -272,6 +272,7 @@
         <copy file="${sources}/orbital/signe.java" todir="${sources}/transmogrify"/>
         <replace file="${sources}/transmogrify/signe.java"
 		propertyfile="${basedir}/build.number">
+		    <!-- @todo stamp svn info -->
             <replacefilter token="@VERSION@" value="${version}"/>
             <replacefilter token="@BUILD@" property="build.number"/>
         </replace>

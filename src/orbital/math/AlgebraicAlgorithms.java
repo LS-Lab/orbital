@@ -854,25 +854,19 @@ public final class AlgebraicAlgorithms {
     	    	}
     		}
     	}
-        Set/*<Polynomial<R,S>>*/ rgb = reducedGroebnerBasis(g, monomialOrder);
+        Set/*<Polynomial<R,S>>*/ rgb = groebnerBasisImpl(g, monomialOrder);
         Set temp, nrgb = null;
-        assert containsAll(nrgb = groebnerBasisImpl(g, monomialOrder), g, monomialOrder) : "the original generating system " + g + " is in the ideal spanned by its (non-reduced) Groebner basis " + nrgb;
-        assert containsAllSPolynomials(nrgb, monomialOrder) : "the (non-reduced) Groebner Basis " + nrgb + " reduces all its S-polynomials to 0";
-        assert equalSpan(rgb, nrgb, monomialOrder) : "reduced Groebner basis " + rgb + " and (non-reduced) Groebner basis " + nrgb + " of " + g + " have equal span";
+//        assert containsAll(nrgb = groebnerBasisImpl(g, monomialOrder), g, monomialOrder) : "the original generating system " + g + " is in the ideal spanned by its (non-reduced) Groebner basis " + nrgb;
+//        assert containsAllSPolynomials(nrgb, monomialOrder) : "the (non-reduced) Groebner Basis " + nrgb + " reduces all its S-polynomials to 0";
+//        assert equalSpan(rgb, nrgb, monomialOrder) : "reduced Groebner basis " + rgb + " and (non-reduced) Groebner basis " + nrgb + " of " + g + " have equal span";
         assert containsAll(rgb, g, monomialOrder) : "the original generating system " + g + " is in the ideal spanned by its Groebner basis " + rgb;
         assert containsAllSPolynomials(rgb, monomialOrder) : "the (reduced) Groebner Basis " + rgb + " reduces all its S-polynomials to 0";
+        assert (temp = new LinkedHashSet(autoReduce(new LinkedList(rgb), monomialOrder))).equals(rgb) : "the Groebner Basis implementation alreay yields auto-reduced Groebner Bases " + rgb + " with auto-reduction " + temp;
         //assert (temp = reducedGroebnerBasis(rgb, monomialOrder)).equals(rgb) : "reduced Groebner basis " + temp + " of a reduced Groebner basis " + rgb + " equals the former Groebner basis (up to constant factors)";
         //assert (temp = groebnerBasisImpl(rgb, monomialOrder)).equals(rgb) : "(non-reduced) Groebner basis " + temp + " of a (reduced) Groebner basis " + rgb + " equals the former Groebner basis (up to constant factors)";
         return rgb;
     }
 
-	/**
-     * Get the reduced Gr&ouml;bner basis of g (Implementation).
-     */
-    private static final /*<R extends Arithmetic, S extends Arithmetic>*/
-        Set/*<Polynomial<R,S>>*/ reducedGroebnerBasis(Collection/*<Polynomial<R,S>>*/ g, final Comparator/*<S>*/ monomialOrder) {
-        return new LinkedHashSet(autoReduce(new ArrayList(groebnerBasisImpl(g, monomialOrder)), monomialOrder));
-    }
     private static final /*<R extends Arithmetic, S extends Arithmetic>*/
     Set/*<Polynomial<R,S>>*/ groebnerBasisImpl(Collection/*<Polynomial<R,S>>*/ gg, final Comparator/*<S>*/ monomialOrder) {
     	return groebnerBasisImpl_Opt(gg, monomialOrder);
@@ -901,11 +895,35 @@ public final class AlgebraicAlgorithms {
         final Values vf = Values.getDefaultInstance();
         while (!working.isEmpty()) {
         	// get (smallest) polynomial from working, moving it to g
-            // reduce gi with respect to current G
-            final Polynomial/*<R,S>*/ gi = (Polynomial)working.poll();
+            // pre-reduce gi with respect to current G
+            final Polynomial/*<R,S>*/ gi = reduce((Polynomial)working.poll(), g, monomialOrder);
+            if (gi.isZero()) {
+            	continue;
+            }
             final Arithmetic lgi = leadingMonomial(gi, monomialOrder);
             List/*<Polynomial<R,S>>*/ gnew = new LinkedList(g);
             gnew.add(gi);
+            // forward subsumtion to avoid divisible leading monomials in g
+            // add gi to g, moving all polynomials with leading monomials that are multiples of gi' leading monomial to the working list again
+            for (Iterator j = g.iterator(); j.hasNext(); ) {
+                final Polynomial/*<R,S>*/ gj = (Polynomial)j.next();
+                final Arithmetic lgj = leadingMonomial(gj, monomialOrder);
+                if (divideMonomial(lgj, lgi) != null) {
+                	Collection/*<Polynomial<R,S>>*/ others = new LinkedList(g);
+                	others.remove(gj);
+                	others.add(gi);
+                	j.remove();
+                    // this is a bottleneck, especially if it turns out that r=0
+                    final Polynomial r = reduce(gj, others, monomialOrder);
+                    if (isZeroPolynomial.apply(r)) {
+                        logger.log(Level.FINE, "skip partial auto-reduction {0} of {1} from adding {2}", new Object[] {r, gj, gi});
+                    } else {
+                        logger.log(Level.FINE, "partial auto-reduction {0} of {1} from adding {2}", new Object[] {r, gj, gi});
+                        working.add(r);
+                    }
+                }
+            }
+            // critical syzygy pair formation
             // form all S-polynomials of gi with g
             for (Iterator/*<Polynomial<R,S>>*/ j = g.iterator(); j.hasNext(); ) {
                     final Polynomial/*<R,S>*/ gj = (Polynomial)j.next();
@@ -929,28 +947,15 @@ public final class AlgebraicAlgorithms {
                         }
                     }
             }
-            // add gi to g, moving all polynomials with leading monomials that are multiples of gi' leading monomial to the working list again
-            for (Iterator j = g.iterator(); j.hasNext(); ) {
-                final Polynomial/*<R,S>*/ gj = (Polynomial)j.next();
-                final Arithmetic lgj = leadingMonomial(gj, monomialOrder);
-                if (divideMonomial(lgj, lgi) != null) {
-                	Collection/*<Polynomial<R,S>>*/ others = new LinkedList(g);
-                	others.remove(gj);
-                	others.add(gi);
-                	j.remove();
-                    // this is a bottleneck, especially if it turns out that r=0
-                    final Polynomial r = reduce(gj, others, monomialOrder);
-                    if (isZeroPolynomial.apply(r)) {
-                        logger.log(Level.FINE, "skip partial auto-reduction {0} of {1} from adding {2}", new Object[] {r, gj, gi});
-                    } else {
-                        logger.log(Level.FINE, "partial auto-reduction {0} of {1} from adding {2}", new Object[] {r, gj, gi});
-                        working.add(r);
-                    }
-                }
-            }
             g.add(gi);
         }
-        return new LinkedHashSet(g);
+        Set nrgb = null;
+        assert (nrgb = new LinkedHashSet(g)) != null;
+        Set rgb = new LinkedHashSet(autoReduce(new ArrayList(g), monomialOrder));
+        assert containsAll(nrgb, g, monomialOrder) : "the original generating system " + g + " is in the ideal spanned by its (non-reduced) Groebner basis " + nrgb;
+        assert containsAllSPolynomials(nrgb, monomialOrder) : "the (non-reduced) Groebner Basis " + nrgb + " reduces all its S-polynomials to 0";
+        assert equalSpan(rgb, nrgb, monomialOrder) : "reduced Groebner basis " + rgb + " and (non-reduced) Groebner basis " + nrgb + " of " + g + " have equal span";
+        return rgb;
     }
     
     private static final /*<R extends Arithmetic, S extends Arithmetic>*/
@@ -987,7 +992,13 @@ public final class AlgebraicAlgorithms {
     			}
     			break ergaenzeGroebnerBasis;
     		}
-    	return new LinkedHashSet(g);
+        Set nrgb = null;
+        assert (nrgb = new LinkedHashSet(g)) != null;
+        Set rgb = new LinkedHashSet(autoReduce(new ArrayList(g), monomialOrder));
+        assert containsAll(nrgb, g, monomialOrder) : "the original generating system " + g + " is in the ideal spanned by its (non-reduced) Groebner basis " + nrgb;
+        assert containsAllSPolynomials(nrgb, monomialOrder) : "the (non-reduced) Groebner Basis " + nrgb + " reduces all its S-polynomials to 0";
+        assert equalSpan(rgb, nrgb, monomialOrder) : "reduced Groebner basis " + rgb + " and (non-reduced) Groebner basis " + nrgb + " of " + g + " have equal span";
+        return rgb;
     }
 
     /**
