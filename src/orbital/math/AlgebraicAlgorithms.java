@@ -916,7 +916,7 @@ public final class AlgebraicAlgorithms {
                     // this is a bottleneck, especially if it turns out that r=0
                     final Polynomial r = reduce(gj, others, monomialOrder);
                     if (isZeroPolynomial.apply(r)) {
-                        logger.log(Level.FINE, "skip partial auto-reduction {0} of {1} from adding {2}", new Object[] {r, gj, gi});
+                        logger.log(Level.FINER, "skip partial auto-reduction {0} of {1} from adding {2}", new Object[] {r, gj, gi});
                     } else {
                         logger.log(Level.FINE, "partial auto-reduction {0} of {1} from adding {2}", new Object[] {r, gj, gi});
                         working.add(r);
@@ -933,21 +933,22 @@ public final class AlgebraicAlgorithms {
                     final Polynomial Sgigj = sPolynomial(gi, gj, monomialOrder, true);
                     if (Sgigj == null) {
                         // optimizations know that S(g[i],g[j]) will reduce to 0, hence skip
-                        logger.log(Level.FINE, "skip optimization reduction from {2} and {3}", new Object[] {gi, gj});
+                        logger.log(Level.FINER, "skip optimization reduction from {2} and {3}", new Object[] {gi, gj});
 						//assert isZeroPolynomial.apply(reduce(sPolynomial(gi, gj, monomialOrder, false), Setops.union(g,Collections.singleton(gj)), monomialOrder)) : "optimization of S-polynomial construction forecasts correctly, i.e., if it will reduce to 0: S(" + gi + ", " + gj + ") = " + sPolynomial(gi, gj, monomialOrder, false) + " gives " + reduce(sPolynomial(gi, gj, monomialOrder, false), g, monomialOrder) + "\nwith respect to " + g;
                     } else {
                         // this is the major bottleneck, especially if it turns out that r=0
                         final Polynomial r = reduce(Sgigj, gnew, monomialOrder);
                         logger.log(Level.FINER, "S({0},{1}) = {2} reduced to {3}", new Object[] {gi, gj, Sgigj, r});
                         if (isZeroPolynomial.apply(r)) {
-                            logger.log(Level.FINE, "skip reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
+                            logger.log(Level.FINER, "skip reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
                         } else {
-                            logger.log(Level.FINE, "add reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
+                            logger.log(Level.FINE, "add work reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
                             working.add(r);
                         }
                     }
             }
             g.add(gi);
+            logger.log(Level.FINE, "add reduction giving size {1} with {0}", new Object[] {gi, new java.lang.Integer(g.size())});
         }
         Set nrgb = null;
         assert (nrgb = new LinkedHashSet(g)) != null;
@@ -974,14 +975,14 @@ public final class AlgebraicAlgorithms {
     					final Polynomial Sgigj = sPolynomial(gi, gj, monomialOrder, true);
     					if (Sgigj == null) {
     						// optimizations know that S(g[i],g[j]) will reduce to 0, hence skip
-    						logger.log(Level.FINE, "skip optimization reduction from {2} and {3}", new Object[] {gi, gj});
+    						logger.log(Level.FINER, "skip optimization reduction from {2} and {3}", new Object[] {gi, gj});
     						//assert isZeroPolynomial.apply(reduce(sPolynomial(gi, gj, monomialOrder, false), g, monomialOrder)) : "optimization of S-polynomial construction forecasts correctly, i.e., if it will reduce to 0: S(" + gi + ", " + gj + ") = " + sPolynomial(gi, gj, monomialOrder, false) + " gives " + reduce(sPolynomial(gi, gj, monomialOrder, false), g, monomialOrder) + "\nwith respect to " + g;
     					} else {
     						// this is the major bottleneck, especially if it turns out that r=0
     						final Polynomial r = reduce(Sgigj, g, monomialOrder);
     						logger.log(Level.FINER, "S({0},{1}) = {2} reduced to {3}", new Object[] {gi, gj, Sgigj, r});
     						if (isZeroPolynomial.apply(r)) {
-    							logger.log(Level.FINE, "skip reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
+    							logger.log(Level.FINER, "skip reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
     						} else {
     							logger.log(Level.FINE, "add reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
     							g.add(r);
