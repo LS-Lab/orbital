@@ -16,7 +16,9 @@ import orbital.math.functional.Operations;
 // @todo non-associative precisions: note that Long+Int and Int+Long etc. may differ due to brutal casting per b.intValue() or even b.longValue().
 abstract class AbstractInteger extends AbstractRational implements Integer {
     private static final long serialVersionUID = -5859818959999970653L;
-    protected AbstractInteger() {}
+    protected AbstractInteger(ValueFactory valueFactory) {
+    	super(valueFactory);
+    }
     
     // Arithmetic implementation synonyms
     public Arithmetic add(Arithmetic b) {
@@ -102,21 +104,23 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
      * @return an array of the converted versions of a and b respectively.
      */
     static Integer[] makeInteger(Number a, Number b) {
+    	//@xxx valueFactory precision compatbility
+    	ValueFactory vf = a instanceof Arithmetic ? ((Arithmetic)a).valueFactory() : b instanceof Arithmetic ? ((Arithmetic)b).valueFactory() : Values.getDefault();
         if (a instanceof orbital.moon.math.Big || b instanceof orbital.moon.math.Big) {
             return new Integer[] {
-                a instanceof Big ? (Integer)a : new Big(a),
-                b instanceof Big ? (Integer)b : new Big(b)
+                a instanceof Big ? (Integer)a : new Big(a, vf),
+                b instanceof Big ? (Integer)b : new Big(b, vf)
             };
         } else {
             //@todo could also check whether Int would be sufficient
             return new Integer[] {
-                a instanceof Long ? (Integer)a : new Long(a),
-                b instanceof Long ? (Integer)b : new Long(b)
+                a instanceof Long ? (Integer)a : new Long(a, vf),
+                b instanceof Long ? (Integer)b : new Long(b, vf)
             };
         }
     }
     static Big makeBigInteger(Integer a) {
-        return a instanceof Big ? (Big)a : new Big((Number)a);
+        return a instanceof Big ? (Big)a : new Big((Number)a, a.valueFactory());
     }
 
 
@@ -135,15 +139,17 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
          * @serial
          */
         private int value;
-        public Int(int v) {
-            value = v;
+        public Int(int v, ValueFactory valueFactory) {
+            super(valueFactory);
+        	value = v;
         }
-        public Int(Number v) {
+        public Int(Number v, ValueFactory valueFactory) {
+        	super(valueFactory);
             value = v.intValue();
         }
         
         public Object clone() {
-            return new Int(intValue());
+            return new Int(intValue(), valueFactory());
         } 
 
         public boolean equals(Object v) {
@@ -186,45 +192,45 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
         // Arithmetic implementation synonyms
         public Integer add(Integer b) {
             if (b instanceof Int)
-                return new Int(intValue() + b.intValue());
+                return new Int(intValue() + b.intValue(), valueFactory());
             else if (b instanceof Long)
-                return new Long(intValue() + b.longValue());
+                return new Long(intValue() + b.longValue(), b.valueFactory());
             else if (b instanceof Big)
-                return new Big(intValue()).add(b);
+                return new Big(intValue(), b.valueFactory()).add(b);
             return (Integer) Operations.plus.apply(this, b);
         } 
         public Integer subtract(Integer b) {
             if (b instanceof Int)
-                return new Int(intValue() - b.intValue());
+                return new Int(intValue() - b.intValue(), valueFactory());
             else if (b instanceof Long)
-                return new Long(intValue() - b.longValue());
+                return new Long(intValue() - b.longValue(), b.valueFactory());
             else if (b instanceof Big)
-                return new Big(intValue()).subtract(b);
+                return new Big(intValue(), b.valueFactory()).subtract(b);
             return (Integer) Operations.subtract.apply(this, b);
         } 
         public Arithmetic minus() {
-            return new Int(-value);
+            return new Int(-value, valueFactory());
         } 
         public Integer multiply(Integer b) {
             if (b instanceof Int)
-                return new Int(intValue() * b.intValue());
+                return new Int(intValue() * b.intValue(), valueFactory());
             else if (b instanceof Long)
-                return new Long(intValue() * b.longValue());
+                return new Long(intValue() * b.longValue(), b.valueFactory());
             else if (b instanceof Big)
-                return new Big(intValue()).multiply(b);
+                return new Big(intValue(), b.valueFactory()).multiply(b);
             return (Integer) Operations.times.apply(this, b);
         } 
         public Rational power(Integer b) {
             if (b instanceof Int) {
                 return b.compareTo(zero()) >= 0
-                    ? new Int((int) Math.pow(intValue(), b.intValue()))
+                    ? new Int((int) Math.pow(intValue(), b.intValue()), valueFactory())
                     : Values.getDefault().rational(1, (int) Math.pow(intValue(), -b.intValue()));
             } else if (b instanceof Long) {
                 return b.compareTo(zero()) >= 0
-                    ? new Long((long) Math.pow(intValue(), b.longValue()))
+                    ? new Long((long) Math.pow(intValue(), b.longValue()), b.valueFactory())
                     : Values.getDefault().rational((Integer/*__*/)one(), Values.getDefault().valueOf((long) Math.pow(intValue(), -b.longValue())));
             } else if (b instanceof Big) {
-                return new Big(intValue()).power(b);
+                return new Big(intValue(), b.valueFactory()).power(b);
             }
             return (Integer) Operations.power.apply(this, b);
         }
@@ -232,13 +238,13 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
             if (b instanceof Integer)
                 return power((Integer)b);
             else
-                return new AbstractReal.Double(value).power(b);
+                return new AbstractReal.Double(value, valueFactory()).power(b);
         }
         
 
         // Euclidean implementation
         public Integer quotient(Integer b) {
-            return new Int(intValue() / b.intValue());
+            return new Int(intValue() / b.intValue(), valueFactory());
         }
         public Euclidean quotient(Euclidean b) {
             return quotient((Integer)b);
@@ -256,7 +262,7 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
             */
             //assert r >= 0 : "nonnegative representative chosen";
             assert value == (value / m) * m + r : "modulo post: " + this + " = " + (value / m) + "*" + b + " + " + r;
-            return new Int(r);
+            return new Int(r, valueFactory());
         }
         public Euclidean modulo(Euclidean b) {
             return modulo((Integer)b);
@@ -267,7 +273,7 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
                 if (b instanceof Int) {
                     int v = ((Number)b).intValue();
                     if (value % v == 0)
-                        return new Int(value / v);
+                        return new Int(value / v, valueFactory());
                 }
                 return Values.getDefault().rational(value, ((Number)b).intValue());
             }
@@ -302,15 +308,17 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
          * @serial
          */
         private long value;
-        public Long(long v) {
+        public Long(long v, ValueFactory valueFactory) {
+        	super(valueFactory);
             value = v;
         }
-        public Long(Number v) {
+        public Long(Number v, ValueFactory valueFactory) {
+        	super(valueFactory);
             value = v.longValue();
         }
         
         public Object clone() {
-            return new Long(longValue());
+            return new Long(longValue(), valueFactory());
         } 
 
         public long longValue() {
@@ -349,35 +357,35 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
         // Arithmetic implementation synonyms
         public Integer add(Integer b) {
             if (b instanceof Long || b instanceof Int)
-                return new Long(longValue() + b.longValue());
+                return new Long(longValue() + b.longValue(), valueFactory());
             else if (b instanceof Big)
-                return new Big(longValue()).add(b);
+                return new Big(longValue(), b.valueFactory()).add(b);
             return (Integer) Operations.plus.apply(this, b);
         }
         public Integer subtract(Integer b) {
             if (b instanceof Long || b instanceof Int)
-                return new Long(longValue() - b.longValue());
+                return new Long(longValue() - b.longValue(), valueFactory());
             else if (b instanceof Big)
-                return new Big(longValue()).subtract(b);
+                return new Big(longValue(), b.valueFactory()).subtract(b);
             return (Integer) Operations.subtract.apply(this, b);
         }
         public Arithmetic minus() {
-            return new Long(-value);
+            return new Long(-value, valueFactory());
         } 
         public Integer multiply(Integer b) {
             if (b instanceof Long || b instanceof Int)
-                return new Long(longValue() * b.longValue());
+                return new Long(longValue() * b.longValue(), valueFactory());
             else if (b instanceof Big)
-                return new Big(longValue()).multiply(b);
+                return new Big(longValue(), b.valueFactory()).multiply(b);
             return (Integer) Operations.times.apply(this, b);
         }
         public Rational power(Integer b) {
             if (b instanceof Long || b instanceof Int) {
                 return b.compareTo(zero()) >= 0
-                    ? new Long((long) Math.pow(longValue(), b.longValue()))
+                    ? new Long((long) Math.pow(longValue(), b.longValue()), valueFactory())
                     : Values.getDefault().rational((Integer/*__*/)one(), Values.getDefault().valueOf((long) Math.pow(longValue(), -b.longValue())));
             } else if (b instanceof Big) {
-                return new Big(longValue()).power(b);
+                return new Big(longValue(), b.valueFactory()).power(b);
             }
             return (Integer) Operations.power.apply(this, b);
         }
@@ -385,12 +393,12 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
             if (b instanceof Integer)
                 return power((Integer)b);
             else
-                return new AbstractReal.Double(value).power(b);
+                return new AbstractReal.Double(value, valueFactory()).power(b);
         }
         
         // Euclidean implementation
         public Integer quotient(Integer b) {
-            return new Long(longValue() / b.longValue());
+            return new Long(longValue() / b.longValue(), valueFactory());
         }
         public Euclidean quotient(Euclidean b) {
             return quotient((Integer)b);
@@ -409,7 +417,7 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
             //assert r >= 0 : "nonnegative representative chosen for " + this + " modulo " + b + " = " + (longValue() % m) + " = " + r;
             */
             assert value == (value / m) * m + r : "modulo post: " + this + " = " + (value / m) + "*" + b + " + " + r;
-            return new Long(r);
+            return new Long(r, valueFactory());
         }
         public Euclidean modulo(Euclidean b) {
             return modulo((Integer)b);
@@ -420,7 +428,7 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
                 if (b instanceof Int || b instanceof Long) {
                     long v = ((Number)b).longValue();
                     if (value % v == 0)
-                        return new Long(value / v);
+                        return new Long(value / v, valueFactory());
                 }
                 ValueFactory vf = Values.getDefault();
                 return vf.rational(vf.valueOf(value), vf.valueOf(((Number)b).longValue()));
@@ -444,16 +452,18 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
          * @serial
          */
         private BigInteger value;
-        public Big(int v) {
-            this(BigInteger.valueOf(v));
+        public Big(int v, ValueFactory valueFactory) {
+            this(BigInteger.valueOf(v), valueFactory);
         }
-        public Big(long v) {
-            this(BigInteger.valueOf(v));
+        public Big(long v, ValueFactory valueFactory) {
+            this(BigInteger.valueOf(v), valueFactory);
         }
-        public Big(BigInteger v) {
+        public Big(BigInteger v, ValueFactory valueFactory) {
+        	super(valueFactory);
             value = v;
         }
-        public Big(Number v) {
+        public Big(Number v, ValueFactory valueFactory) {
+        	super(valueFactory);
             if (v instanceof BigInteger)
                 value = (BigInteger)v;
             else if (v instanceof orbital.moon.math.Big) {
@@ -491,7 +501,7 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
                 if (v instanceof Big)
                     return value.compareTo(((Big)v).value);
                 else if (v instanceof AbstractReal.Big)
-                    return new AbstractReal.Big(value).compareTo(v);
+                    return new AbstractReal.Big(value, valueFactory()).compareTo(v);
                 else
                     throw new IllegalArgumentException("unknown arbitrary precision type " + v.getClass() + " " + v);
             } else if (v instanceof Int || v instanceof Long) {
@@ -501,12 +511,12 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
         }
 
         public Real norm() {
-            return new Big(value.abs());
+            return new Big(value.abs(), valueFactory());
         } 
 
 
         public Object clone() {
-            return new Big(value);
+            return new Big(value, valueFactory());
         } 
 
         public boolean isZero() {
@@ -529,34 +539,34 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
         // Arithmetic implementation synonyms
         public Integer add(Integer b) {
             if (b instanceof Big)
-                return new Big(value.add(((Big)b).value));
+                return new Big(value.add(((Big)b).value), valueFactory());
             else if (b instanceof Int || b instanceof Long)
-                return new Big(value.add(BigInteger.valueOf(b.longValue())));
+                return new Big(value.add(BigInteger.valueOf(b.longValue())), valueFactory());
             return (Integer) Operations.plus.apply(this, b);
         } 
         public Integer subtract(Integer b) {
             if (b instanceof Big)
-                return new Big(value.subtract(((Big)b).value));
+                return new Big(value.subtract(((Big)b).value), valueFactory());
             else if (b instanceof Int || b instanceof Long)
-                return new Big(value.subtract(BigInteger.valueOf(b.longValue())));
+                return new Big(value.subtract(BigInteger.valueOf(b.longValue())), valueFactory());
             return (Integer) Operations.subtract.apply(this, b);
         } 
         public Arithmetic minus() {
-            return new Big(value.negate());
+            return new Big(value.negate(), valueFactory());
         } 
         public Integer multiply(Integer b) {
             if (b instanceof Big)
-                return new Big(value.multiply(((Big)b).value));
+                return new Big(value.multiply(((Big)b).value), valueFactory());
             else if (b instanceof Int || b instanceof Long)
-                return new Big(value.multiply(BigInteger.valueOf(b.longValue())));
+                return new Big(value.multiply(BigInteger.valueOf(b.longValue())), valueFactory());
             return (Integer) Operations.times.apply(this, b);
         } 
         public Rational power(Integer b) {
             try {
                 int bv = ArithmeticValuesImpl.intValueExact(b);
                 return bv >= 0
-                    ? new Big(value.pow(bv))
-                    : Values.getDefault().rational((Integer/*__*/)one(), new Big(value.pow(-bv)));
+                    ? new Big(value.pow(bv), valueFactory())
+                    : Values.getDefault().rational((Integer/*__*/)one(), new Big(value.pow(-bv), valueFactory()));
             } catch(ArithmeticException ex) {
                 throw new ArithmeticException("exponentation is possibly too big: " + this + " ^ " + b);
                 //return (Integer) Operations.power.apply(this, b);
@@ -566,15 +576,15 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
             if (b instanceof Integer)
                 return power((Integer)b);
             else
-                return new AbstractReal.Big(value).power(b);
+                return new AbstractReal.Big(value, valueFactory()).power(b);
         }
 
         // Euclidean implementation
         public Integer quotient(Integer b) {
             if (b instanceof Big)
-                return new Big(value.divide(((Big)b).value));
+                return new Big(value.divide(((Big)b).value), valueFactory());
             else if (b instanceof Int || b instanceof Long)
-                return new Big(value.divide(BigInteger.valueOf(b.longValue())));
+                return new Big(value.divide(BigInteger.valueOf(b.longValue())), valueFactory());
             throw new UnsupportedOperationException("opertion cannot be applied on " + this + " and " + b);
         }
         public Euclidean quotient(Euclidean b) {
@@ -588,9 +598,9 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
         private Integer moduloImpl(Integer b) {
             //@xxx do we need BigInteger.remainder or BigInteger.mod?
             if (b instanceof Big)
-                return new Big(value.remainder(((Big)b).value));
+                return new Big(value.remainder(((Big)b).value), valueFactory());
             else if (b instanceof Int || b instanceof Long)
-                return new Big(value.remainder(BigInteger.valueOf(b.longValue())));
+                return new Big(value.remainder(BigInteger.valueOf(b.longValue())), valueFactory());
             throw new UnsupportedOperationException("opertion cannot be applied on " + this + " and " + b);
         }
         public Euclidean modulo(Euclidean b) {
@@ -604,7 +614,7 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
                     BigInteger bv = ((Big)b).value;
                     BigInteger d[] = value.divideAndRemainder(bv);
                     if (d[1].equals(BigInteger.ZERO))
-                        return new Big(d[0]);
+                        return new Big(d[0], valueFactory());
                 }
                 return Values.getDefault().rational(this, (Integer)b);
             }

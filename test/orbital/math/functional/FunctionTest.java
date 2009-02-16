@@ -72,7 +72,7 @@ public class FunctionTest extends check.TestCase {
     public static final int TYPE_SYMBOL = 1<<16;
 
     public static void main(String[] argv) {
-        try {FunctionTest t=new FunctionTest();t.testGroebnerSpecific();t.testGroebner();}catch(Exception e) {e.printStackTrace();}
+        try {FunctionTest t=new FunctionTest();t.disabled_testGroebnerSpecific();t.testGroebner();}catch(Exception e) {e.printStackTrace();}
         //try {new FunctionTest().testdSolve_fully_symbolic();}catch(Exception e) {e.printStackTrace();}
         //junit.textui.TestRunner.run(suite());
     }
@@ -535,7 +535,7 @@ public class FunctionTest extends check.TestCase {
         }
     }
 
-    public void testGroebnerSpecific() throws MathLinkException {
+    public void disabled_testGroebnerSpecific() throws MathLinkException {
         createMathLink();       
         final double MIN = -10;
         final double MAX = +10;
