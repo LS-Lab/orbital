@@ -419,8 +419,8 @@ abstract class AbstractTensor/*<R extends Arithmetic>*/
         try {
             return (Real/*__*/) Functions.sqrt.apply(normsquare);
         } catch (ArithmeticException overflow) {
-        	//@xxx possible loss of precision but still good enough for zero checks
-        	return Values.getDefault().valueOf(Math.sqrt(normsquare.doubleValue()));
+                //@xxx possible loss of precision but still good enough for zero checks
+                return Values.getDefault().valueOf(Math.sqrt(normsquare.doubleValue()));
         }
    } 
 

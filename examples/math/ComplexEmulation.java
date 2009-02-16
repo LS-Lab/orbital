@@ -45,7 +45,7 @@ public class ComplexEmulation extends MathTest {
         compare(a.multiply(b), ac.multiply(bc));
         System.out.println("(" + a + ") * (" + b + ") + (" + a + ")*i= " + a.multiply(b).add(a.multiply(i)));
         compare(a.multiply(b).add(a.multiply(i)),
-                ac.multiply(bc).add(ac.multiply(vf.i)));
+                ac.multiply(bc).add(ac.multiply(vf.i())));
 
         printArithmetic(a, b, false);
     }

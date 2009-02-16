@@ -14,6 +14,8 @@ import orbital.logic.sign.concrete.Notation;
 
 import orbital.math.Matrix;
 import java.awt.Dimension;
+
+import orbital.math.ValueFactory;
 import orbital.math.Vector;
 import orbital.math.Values;
 
@@ -122,6 +124,10 @@ class ComponentCompositions {
                 di[i] = componentFunction[i].integrate();
             return new ComponentCompositeFunction(di);
         }
+
+		public ValueFactory valueFactory() {
+			return componentFunction.length > 0 ? componentFunction[0].valueFactory() : Values.getDefault();
+		}
     }
 
     /**
@@ -218,6 +224,9 @@ class ComponentCompositions {
             } 
             return sb.toString();
         }
+		public ValueFactory valueFactory() {
+			return componentFunction.length > 0 && componentFunction[0].length > 0 ? componentFunction[0][0].valueFactory() : Values.getDefault();
+		}
     }
 
 
@@ -307,6 +316,9 @@ class ComponentCompositions {
             } 
             return sb.toString();
         }
+		public ValueFactory valueFactory() {
+			return componentFunction.length > 0 && componentFunction[0].length > 0 ? componentFunction[0][0].valueFactory() : Values.getDefault();
+		}
     }
     
 }

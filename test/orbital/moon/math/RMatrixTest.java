@@ -56,7 +56,7 @@ public class RMatrixTest extends check.TestCase {
             vf.valueOf(1), vf.complex(3,-4), vf.rational(-1, 3), vf.rational(1, 2)
         });
         System.out.println(M + "*" + v + "=" + M.multiply(v));
-        assertTrue(!((Complex)M.multiply(v).get(0)).im().equals(Values.ZERO));
+        assertTrue(!((Complex)M.multiply(v).get(0)).im().equals(vf.ZERO()));
     } 
 
 }

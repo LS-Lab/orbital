@@ -13,6 +13,7 @@ import orbital.logic.sign.concrete.Notation;
 import orbital.logic.functor.Functor;
 import orbital.logic.Composite;
 
+import orbital.math.ValueFactory;
 import orbital.math.Vector;
 import orbital.math.Scalar;
 import orbital.math.Values;
@@ -159,4 +160,8 @@ import orbital.util.Utility;
                 public String toString() {
                         return getNotation().format((Functor)getCompositor(), getComponent());
                 }
-        }
+
+                        public ValueFactory valueFactory() {
+                                return componentFunction.length > 0 ? componentFunction[0].valueFactory() : Values.getDefault();
+                        }
+}

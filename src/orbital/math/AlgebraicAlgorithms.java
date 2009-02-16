@@ -87,7 +87,7 @@ public final class AlgebraicAlgorithms {
                 return 0;
             }
 
-			public String toString() {
+                        public String toString() {
                 return AlgebraicAlgorithms.class.getName() + ".LEXICOGRAPHIC";
             }
         };
@@ -661,14 +661,14 @@ public final class AlgebraicAlgorithms {
         private final Function/*<Polynomial<R,S>,Polynomial<R,S>>*/ elementaryReduce;
         public ReductionFunction(Collection/*<Polynomial<R,S>>*/ g, Comparator/*<S>*/ newmonomialOrder) {
             if (!Setops.all(g, Functionals.bindSecond(Utility.instanceOf, Polynomial.class))) {
-            	throw new IllegalArgumentException("prerequisite failed: " + "collection<" + Polynomial.class.getName() + "> expected, found violation " + Setops.find(g, Functionals.not(Functionals.bindSecond(Utility.instanceOf, Polynomial.class))) + " in "+ g);
+                throw new IllegalArgumentException("prerequisite failed: " + "collection<" + Polynomial.class.getName() + "> expected, found violation " + Setops.find(g, Functionals.not(Functionals.bindSecond(Utility.instanceOf, Polynomial.class))) + " in "+ g);
             }
             this.g = g;
             this.monomialOrder = newmonomialOrder;
             this.inducedOrder = INDUCED(monomialOrder);
             if (g.isEmpty()) {
-            	this.elementaryReduce = Functions.id;
-            	return;
+                this.elementaryReduce = Functions.id;
+                return;
             }
             // enrich g with exponents of leading monomials for caching
             // cache (polynomial, leading monomial)
@@ -709,8 +709,8 @@ public final class AlgebraicAlgorithms {
                                     // test divisibility of coefficient cnu by lc(gj)=gj.get(lgj)
                                     cdiv = (Arithmetic/*>R<*/)cnu.divide(gj.get(lgj));
                                     if (cdiv instanceof Scalar) {
-                                    	// simplify domain and cancel rationals leading to less complex coefficients.
-                                    	cdiv = vf.narrow((Scalar)cdiv);
+                                        // simplify domain and cancel rationals leading to less complex coefficients.
+                                        cdiv = vf.narrow((Scalar)cdiv);
                                     }
                                 }
                                 catch (ArithmeticException indivisible) {
@@ -720,8 +720,9 @@ public final class AlgebraicAlgorithms {
                                 final Polynomial/*<R,S>*/ q = vf.MONOMIAL(cdiv, xdiv);
                                 Polynomial/*<R,S>*/ reduction = f.subtract(q.multiply(gj));
                                 if (!reduction.get(nu).isZero()) {
-                                    if (MathUtilities.equals(reduction.get(nu).norm(),
-                                                             Values.ZERO,
+                                        Arithmetic rnu = reduction.get(nu);
+                                    if (MathUtilities.equals(rnu.norm(),
+                                                             rnu.zero(),
                                                              MathUtilities.getDefaultTolerance()
                                                              )) {
                                         //@internal trick correct numerical instabilites
@@ -731,7 +732,7 @@ public final class AlgebraicAlgorithms {
                                         throw new AssertionError(vf.MONOMIAL(Values.getDefault().ONE(), nu) + " does not occur in " + reduction + " anymore, even after numerical precision correction");
                                     }
                                 }
-								if (!(inducedOrder.compare(reduction, f) < 0))
+                                                                if (!(inducedOrder.compare(reduction, f) < 0))
                                     throw new AssertionError(reduction + "<" + f);
                                 logger.log(Level.FINEST, "elementary reduction {0} - {1} * ({2}) == {3}", new Object[] {f, q, gj, reduction});
                                 return reduction;
@@ -847,17 +848,17 @@ public final class AlgebraicAlgorithms {
      */
     public static final /*<R extends Arithmetic, S extends Arithmetic>*/
         Set/*<Polynomial<R,S>>*/ groebnerBasis(Set/*<Polynomial<R,S>>*/ g, final Comparator/*<S>*/ monomialOrder) {
-    	if (g.isEmpty()) {
-    		return Collections.EMPTY_SET;
-    	} else {
-    		if (g.contains(((Polynomial)g.iterator().next()).zero())) {
-    			g = new LinkedHashSet(g);
-    			g.remove(((Polynomial)g.iterator().next()).zero());
-    	    	if (g.isEmpty()) {
-    	    		return Collections.EMPTY_SET;
-    	    	}
-    		}
-    	}
+        if (g.isEmpty()) {
+                return Collections.EMPTY_SET;
+        } else {
+                if (g.contains(((Polynomial)g.iterator().next()).zero())) {
+                        g = new LinkedHashSet(g);
+                        g.remove(((Polynomial)g.iterator().next()).zero());
+                if (g.isEmpty()) {
+                        return Collections.EMPTY_SET;
+                }
+                }
+        }
         logger.log(Level.FINE, "Computing Groebner Basis of {0} with respect to {1}", new Object[] {g, monomialOrder});
         Set/*<Polynomial<R,S>>*/ rgb = groebnerBasisImpl(g, monomialOrder);
         logger.log(Level.FINE, "Groebner Basis is {2} of {0} with respect to {1}", new Object[] {g, monomialOrder, rgb});
@@ -875,7 +876,7 @@ public final class AlgebraicAlgorithms {
 
     private static final /*<R extends Arithmetic, S extends Arithmetic>*/
     Set/*<Polynomial<R,S>>*/ groebnerBasisImpl(Collection/*<Polynomial<R,S>>*/ gg, final Comparator/*<S>*/ monomialOrder) {
-    	return groebnerBasisImpl_Opt(gg, monomialOrder);
+        return groebnerBasisImpl_Opt(gg, monomialOrder);
     }
     /**
      * Get the non-reduced Gr&ouml;bner basis of g (Implementation).
@@ -887,27 +888,27 @@ public final class AlgebraicAlgorithms {
      */
     private static final /*<R extends Arithmetic, S extends Arithmetic>*/
         Set/*<Polynomial<R,S>>*/ groebnerBasisImpl_Opt(final Collection/*<Polynomial<R,S>>*/ gg, final Comparator/*<S>*/ monomialOrder) {
-    	// partial Groebner Basis
-    	// @invariant: all S-polynomials within g have already been considered
+        // partial Groebner Basis
+        // @invariant: all S-polynomials within g have already been considered
         final List/*<Polynomial<R,S>>*/ g = new ArrayList();
         // working list, start with small polynomials to improve efficiency
         final PriorityQueue/*<Polynomial<R,S>>*/ working = new PriorityQueue(gg.size()+1, INDUCED(monomialOrder));
         // auto-reduce original polynomials so that no inter-reductions are possible any more
         for (Iterator i = autoReduce(gg, monomialOrder).iterator(); i.hasNext(); ) {
-        	Polynomial p = (Polynomial)i.next();
-        	assert validate(p, gg) : "auto-reduced polynomial " + p + " in ideal of " + gg;
-        	working.add(p);
+                Polynomial p = (Polynomial)i.next();
+                assert validate(p, gg) : "auto-reduced polynomial " + p + " in ideal of " + gg;
+                working.add(p);
         }
         // the first element is in the candidate groebner basis, otherwise nothing happens later, all others are in working list
         g.add(working.poll());
         final Values vf = Values.getDefaultInstance();
         while (!working.isEmpty()) {
-        	// get (smallest) polynomial from working, moving it to g
+                // get (smallest) polynomial from working, moving it to g
             // pre-reduce gi with respect to current G
             final Polynomial/*<R,S>*/ gi = reduce((Polynomial)working.poll(), g, monomialOrder);
-        	assert validate(gi, gg) : "reduced polynomial " + gi + " from working set in ideal of " + gg;
+                assert validate(gi, gg) : "reduced polynomial " + gi + " from working set in ideal of " + gg;
             if (gi.isZero()) {
-            	continue;
+                continue;
             }
             final Arithmetic lgi = leadingMonomial(gi, monomialOrder);
             // forward subsumption to avoid divisible leading monomials in g
@@ -917,13 +918,13 @@ public final class AlgebraicAlgorithms {
                 final Arithmetic lgj = leadingMonomial(gj, monomialOrder);
                 assert !lgi.equals(lgj) : "leading exponents different as " + gi + " has been reduced with " + g;
                 if (divideMonomial(lgj, lgi) != null) {
-                	Collection/*<Polynomial<R,S>>*/ others = new LinkedList(g);
-                	others.remove(gj);
-                	others.add(gi);
-                	j.remove();
+                        Collection/*<Polynomial<R,S>>*/ others = new LinkedList(g);
+                        others.remove(gj);
+                        others.add(gi);
+                        j.remove();
                     // this is a bottleneck, especially if it turns out that r=0
                     final Polynomial r = reduce(gj, others, monomialOrder);
-                	assert validate(r, gg) : "intra-reduced polynomial " + r + " from G in ideal of " + gg;
+                        assert validate(r, gg) : "intra-reduced polynomial " + r + " from G in ideal of " + gg;
                     if (isZeroPolynomial.apply(r)) {
                         logger.log(Level.FINER, "skip partial auto-reduction {0} of {1} from adding {2}", new Object[] {r, gj, gi});
                     } else {
@@ -945,12 +946,12 @@ public final class AlgebraicAlgorithms {
                     if (Sgigj == null) {
                         // optimizations know that S(g[i],g[j]) will reduce to 0, hence skip
                         logger.log(Level.FINER, "skip optimization reduction from {2} and {3}", new Object[] {gi, gj});
-						//assert isZeroPolynomial.apply(reduce(sPolynomial(gi, gj, monomialOrder, false), Setops.union(g,Collections.singleton(gj)), monomialOrder)) : "optimization of S-polynomial construction forecasts correctly, i.e., if it will reduce to 0: S(" + gi + ", " + gj + ") = " + sPolynomial(gi, gj, monomialOrder, false) + " gives " + reduce(sPolynomial(gi, gj, monomialOrder, false), g, monomialOrder) + "\nwith respect to " + g;
+                                                //assert isZeroPolynomial.apply(reduce(sPolynomial(gi, gj, monomialOrder, false), Setops.union(g,Collections.singleton(gj)), monomialOrder)) : "optimization of S-polynomial construction forecasts correctly, i.e., if it will reduce to 0: S(" + gi + ", " + gj + ") = " + sPolynomial(gi, gj, monomialOrder, false) + " gives " + reduce(sPolynomial(gi, gj, monomialOrder, false), g, monomialOrder) + "\nwith respect to " + g;
                     } else {
-                    	assert validate(Sgigj, gg) : "Syzygy " + Sgigj + " from G in ideal of " + gg;
+                        assert validate(Sgigj, gg) : "Syzygy " + Sgigj + " from G in ideal of " + gg;
                         // this is the major bottleneck, especially if it turns out that r=0
                         final Polynomial r = reduce(Sgigj, gnew, monomialOrder);
-                    	assert validate(r, gg) : "reduced Syzygy " + r + " from G in ideal of " + gg;
+                        assert validate(r, gg) : "reduced Syzygy " + r + " from G in ideal of " + gg;
                         logger.log(Level.FINER, "S({0},{1}) = {2} reduced to {3}", new Object[] {gi, gj, Sgigj, r});
                         if (isZeroPolynomial.apply(r)) {
                             logger.log(Level.FINER, "skip reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
@@ -974,38 +975,38 @@ public final class AlgebraicAlgorithms {
     
     private static final /*<R extends Arithmetic, S extends Arithmetic>*/
     Set/*<Polynomial<R,S>>*/ groebnerBasisImpl_Direct(Collection/*<Polynomial<R,S>>*/ gg, final Comparator/*<S>*/ monomialOrder) {
-    	final List/*<Polynomial<R,S>>*/ g = new ArrayList(gg);
-    	final Values vf = Values.getDefaultInstance();
-    	ergaenzeGroebnerBasis:
-    		while (true) {
-    			for (int i = 0; i < g.size(); i++) {
-    				final Polynomial/*<R,S>*/ gi = (Polynomial)g.get(i);
-    				for (int j = i + 1; j < g.size(); j++) {
-    					final Polynomial/*<R,S>*/ gj = (Polynomial)g.get(j);
+        final List/*<Polynomial<R,S>>*/ g = new ArrayList(gg);
+        final Values vf = Values.getDefaultInstance();
+        ergaenzeGroebnerBasis:
+                while (true) {
+                        for (int i = 0; i < g.size(); i++) {
+                                final Polynomial/*<R,S>*/ gi = (Polynomial)g.get(i);
+                                for (int j = i + 1; j < g.size(); j++) {
+                                        final Polynomial/*<R,S>*/ gj = (Polynomial)g.get(j);
 
-    					// constructing S-polynomials of g[i] and g[j]
-    					// construct Sgigj = S(g[i], g[j])
-    					final Polynomial Sgigj = sPolynomial(gi, gj, monomialOrder, true);
-    					if (Sgigj == null) {
-    						// optimizations know that S(g[i],g[j]) will reduce to 0, hence skip
-    						logger.log(Level.FINER, "skip optimization reduction from {2} and {3}", new Object[] {gi, gj});
-    						//assert isZeroPolynomial.apply(reduce(sPolynomial(gi, gj, monomialOrder, false), g, monomialOrder)) : "optimization of S-polynomial construction forecasts correctly, i.e., if it will reduce to 0: S(" + gi + ", " + gj + ") = " + sPolynomial(gi, gj, monomialOrder, false) + " gives " + reduce(sPolynomial(gi, gj, monomialOrder, false), g, monomialOrder) + "\nwith respect to " + g;
-    					} else {
-    						// this is the major bottleneck, especially if it turns out that r=0
-    						final Polynomial r = reduce(Sgigj, g, monomialOrder);
-    						logger.log(Level.FINER, "S({0},{1}) = {2} reduced to {3}", new Object[] {gi, gj, Sgigj, r});
-    						if (isZeroPolynomial.apply(r)) {
-    							logger.log(Level.FINER, "skip reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
-    						} else {
-    							logger.log(Level.FINE, "add reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
-    							g.add(r);
-    							continue ergaenzeGroebnerBasis;
-    						}
-    					}
-    				}
-    			}
-    			break ergaenzeGroebnerBasis;
-    		}
+                                        // constructing S-polynomials of g[i] and g[j]
+                                        // construct Sgigj = S(g[i], g[j])
+                                        final Polynomial Sgigj = sPolynomial(gi, gj, monomialOrder, true);
+                                        if (Sgigj == null) {
+                                                // optimizations know that S(g[i],g[j]) will reduce to 0, hence skip
+                                                logger.log(Level.FINER, "skip optimization reduction from {2} and {3}", new Object[] {gi, gj});
+                                                //assert isZeroPolynomial.apply(reduce(sPolynomial(gi, gj, monomialOrder, false), g, monomialOrder)) : "optimization of S-polynomial construction forecasts correctly, i.e., if it will reduce to 0: S(" + gi + ", " + gj + ") = " + sPolynomial(gi, gj, monomialOrder, false) + " gives " + reduce(sPolynomial(gi, gj, monomialOrder, false), g, monomialOrder) + "\nwith respect to " + g;
+                                        } else {
+                                                // this is the major bottleneck, especially if it turns out that r=0
+                                                final Polynomial r = reduce(Sgigj, g, monomialOrder);
+                                                logger.log(Level.FINER, "S({0},{1}) = {2} reduced to {3}", new Object[] {gi, gj, Sgigj, r});
+                                                if (isZeroPolynomial.apply(r)) {
+                                                        logger.log(Level.FINER, "skip reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
+                                                } else {
+                                                        logger.log(Level.FINE, "add reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
+                                                        g.add(r);
+                                                        continue ergaenzeGroebnerBasis;
+                                                }
+                                        }
+                                }
+                        }
+                        break ergaenzeGroebnerBasis;
+                }
         Set nrgb = null;
         assert (nrgb = new LinkedHashSet(g)) != null;
         Set rgb = new LinkedHashSet(autoReduce(new ArrayList(g), monomialOrder));
@@ -1035,8 +1036,8 @@ public final class AlgebraicAlgorithms {
         // construct X^nu and X^mu coprime such that l(X^nu*g[i])==l(X^mu*g[j]) (also @see #lcm(Euclidean,Euclidean))
         // let d=lcm(l(f),l(g)), or more precisely the exponent of this monomial
         if (optimize && lf.equals(lg)) {
-        	// identical leading exponents can be reduced
-        	return null;
+                // identical leading exponents can be reduced
+                return null;
         }
         final Vector/*>S<*/ d = Functionals.map(Operations.max, lf, lg);
         if (optimize && d.equals(Functionals.map(Operations.plus, lf, lg))) {
@@ -1114,9 +1115,9 @@ public final class AlgebraicAlgorithms {
      */
     private static /*<R extends Arithmetic, S extends Arithmetic>*/
         Arithmetic/*>S<*/ leadingMonomial(Polynomial/*<R,S>*/ f, Comparator/*<S>*/ monomialOrder) {
-    	if (f.isZero()) {
-    		throw new IllegalArgumentException("zero polynomial has no leading monomial");
-    	}
+        if (f.isZero()) {
+                throw new IllegalArgumentException("zero polynomial has no leading monomial");
+        }
         return (Arithmetic/*>S<*/) Collections.max(occurringMonomials(f), monomialOrder);
     }
 
@@ -1130,9 +1131,9 @@ public final class AlgebraicAlgorithms {
                     final Values vf = Values.getDefaultInstance();
                     Tensor rt = vf.asTensor(r);
                     return r.degreeValue() < 0
-                    	|| rt.equals(vf.ZERO(rt.dimensions()), vf.valueOf(MathUtilities.getDefaultTolerance()));
+                        || rt.equals(vf.ZERO(rt.dimensions()), vf.valueOf(MathUtilities.getDefaultTolerance()));
                 } else {
-                	return r.isZero();
+                        return r.isZero();
                 }
             }
         };
@@ -1171,36 +1172,36 @@ public final class AlgebraicAlgorithms {
      * Checks that the groebner basis g reduces all its S-polynomials to 0
      */
     private static final boolean containsAllSPolynomials(Set gb,
-			Comparator monomialOrder) {
-    	final List/*<Polynomial<R,S>>*/ g = new ArrayList(gb);
-    	final Values vf = Values.getDefaultInstance();
-    	for (int i = 0; i < g.size(); i++) {
-    		final Polynomial/*<R,S>*/ gi = (Polynomial)g.get(i);
-    		for (int j = i + 1; j < g.size(); j++) {
-    			final Polynomial/*<R,S>*/ gj = (Polynomial)g.get(j);
+                        Comparator monomialOrder) {
+        final List/*<Polynomial<R,S>>*/ g = new ArrayList(gb);
+        final Values vf = Values.getDefaultInstance();
+        for (int i = 0; i < g.size(); i++) {
+                final Polynomial/*<R,S>*/ gi = (Polynomial)g.get(i);
+                for (int j = i + 1; j < g.size(); j++) {
+                        final Polynomial/*<R,S>*/ gj = (Polynomial)g.get(j);
 
-    			// constructing S-polynomials of g[i] and g[j]
-    			// construct Sgigj = S(g[i], g[j])
-    			final Polynomial Sgigj = sPolynomial(gi, gj, monomialOrder, false);
-    			if (Sgigj == null) {
-    				// optimizations know that S(g[i],g[j]) will reduce to 0, hence skip
-    				//logger.log(Level.FINE, "skip optimization reduction from {2} and {3}", new Object[] {gi, gj});
-    				//assert isZeroPolynomial.apply(reduce(sPolynomial(gi, gj, monomialOrder, false), g, monomialOrder)) : "optimization of S-polynomial construction forecasts correctly, i.e., if it will reduce to 0: S(" + gi + ", " + gj + ") = " + sPolynomial(gi, gj, monomialOrder, false) + " gives " + reduce(sPolynomial(gi, gj, monomialOrder, false), g, monomialOrder) + "\nwith respect to " + g;
-    			} else {
-    				// this is the major bottleneck, especially if it turns out that r=0
-    				final Polynomial r = reduce(Sgigj, g, monomialOrder);
-    				//logger.log(Level.FINER, "S({0},{1}) = {2} reduced to {3}", new Object[] {gi, gj, Sgigj, r});
-    				if (isZeroPolynomial.apply(r)) {
-    					//logger.log(Level.FINE, "skip reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
-    				} else {
-    					assert false: "Groebner Basis " + gb + " reduces all its S-polynomials to 0, including S(" + gi + "," + gj + ")=" + Sgigj + " giving " + r;
-    				return false;
-    				}
-    			}
-    		}
-    	}
-    	return true;
-	}
+                        // constructing S-polynomials of g[i] and g[j]
+                        // construct Sgigj = S(g[i], g[j])
+                        final Polynomial Sgigj = sPolynomial(gi, gj, monomialOrder, false);
+                        if (Sgigj == null) {
+                                // optimizations know that S(g[i],g[j]) will reduce to 0, hence skip
+                                //logger.log(Level.FINE, "skip optimization reduction from {2} and {3}", new Object[] {gi, gj});
+                                //assert isZeroPolynomial.apply(reduce(sPolynomial(gi, gj, monomialOrder, false), g, monomialOrder)) : "optimization of S-polynomial construction forecasts correctly, i.e., if it will reduce to 0: S(" + gi + ", " + gj + ") = " + sPolynomial(gi, gj, monomialOrder, false) + " gives " + reduce(sPolynomial(gi, gj, monomialOrder, false), g, monomialOrder) + "\nwith respect to " + g;
+                        } else {
+                                // this is the major bottleneck, especially if it turns out that r=0
+                                final Polynomial r = reduce(Sgigj, g, monomialOrder);
+                                //logger.log(Level.FINER, "S({0},{1}) = {2} reduced to {3}", new Object[] {gi, gj, Sgigj, r});
+                                if (isZeroPolynomial.apply(r)) {
+                                        //logger.log(Level.FINE, "skip reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
+                                } else {
+                                        assert false: "Groebner Basis " + gb + " reduces all its S-polynomials to 0, including S(" + gi + "," + gj + ")=" + Sgigj + " giving " + r;
+                                return false;
+                                }
+                        }
+                }
+        }
+        return true;
+        }
 
 
     //
@@ -1381,50 +1382,50 @@ public final class AlgebraicAlgorithms {
      * @return X^a/X^b represented as a-b or null if not divisible
      */
     private static Arithmetic divideMonomial(Arithmetic a, Arithmetic b) {
-    	// test divisibility of monomial X^a by X^b
-    	Arithmetic div = a.subtract(b);
-    	//@internal the following is a trick for S=<b>N</b><sup>n</sup> represented as <b>Z</b><sup>n</sup> (get rid when introducing Natural extends Integer)
-    	if (Setops.some((getExponentVector(div)).iterator(), Functionals.bindSecond(Predicates.less, Values.ZERO)))
-    		return null;
-    	else {
-  //  		Functionals.map(Functionals.asFunction(Operations.greaterEqual), getExponentVector(a), getExponentVector(b));
-    		return div;
-    	}
+        // test divisibility of monomial X^a by X^b
+        Arithmetic div = a.subtract(b);
+        //@internal the following is a trick for S=<b>N</b><sup>n</sup> represented as <b>Z</b><sup>n</sup> (get rid when introducing Natural extends Integer)
+        if (Setops.some((getExponentVector(div)).iterator(), Functionals.bindSecond(Predicates.less, Values.getDefault().ZERO())))
+                return null;
+        else {
+  //            Functionals.map(Functionals.asFunction(Operations.greaterEqual), getExponentVector(a), getExponentVector(b));
+                return div;
+        }
     }
 
     private static Vector/*<Integer>*/ getExponentVector(Object m) {
-		if (m instanceof Vector) {
-			return (Vector)m;
-		} else if (m instanceof Integer) {
-			// univariate case
-			return Values.getDefault().valueOf(new Integer[] {(Integer)m});
-		} else {
-			throw new ClassCastException("Cannot convert exponent representation into Vector<Integer> from " + m);
-		}
-	}
+                if (m instanceof Vector) {
+                        return (Vector)m;
+                } else if (m instanceof Integer) {
+                        // univariate case
+                        return Values.getDefault().valueOf(new Integer[] {(Integer)m});
+                } else {
+                        throw new ClassCastException("Cannot convert exponent representation into Vector<Integer> from " + m);
+                }
+        }
 
     /**
      * Checks whether f is in the ideal generated by G (approximate check)
      * @return
      */
     private static final boolean validate(Polynomial f, Collection/*<Polynomial<R,S>>*/ g) {
-    	return true;
+        return true;
     }
  //  validate against Mathematica
  //   private static final boolean validate(Polynomial f, Collection/*<Polynomial<R,S>>*/ g) {
         /*
-    	final int vars = ((Polynomial)g.iterator().next()).rank();
-    	String varlist = "{";
+        final int vars = ((Polynomial)g.iterator().next()).rank();
+        String varlist = "{";
         final String multinomialVariables[] = {"X", "Y", "Z"};
-    	for (int v = 0; v < vars; v++) {
-    		varlist += (v>0 ? "," : "") +  (vars<=3 ? multinomialVariables[v] : "X" + v);
-    	}
-    	varlist += "}";
-    	String query = "FullSimplify[PolynomialReduce[" + f+ ",GroebnerBasis[" + listForm(g) + "," + varlist + "], " + varlist + "][[2]] == 0]";
-    	String res = ml.evaluateToInputForm(query, 100);
-    	System.out.println(res + " for " + query);
-    	//assert "True".equals(res) : "Groebner Basis element is in ideal " + query );
-    	return "True".equals(res);
+        for (int v = 0; v < vars; v++) {
+                varlist += (v>0 ? "," : "") +  (vars<=3 ? multinomialVariables[v] : "X" + v);
+        }
+        varlist += "}";
+        String query = "FullSimplify[PolynomialReduce[" + f+ ",GroebnerBasis[" + listForm(g) + "," + varlist + "], " + varlist + "][[2]] == 0]";
+        String res = ml.evaluateToInputForm(query, 100);
+        System.out.println(res + " for " + query);
+        //assert "True".equals(res) : "Groebner Basis element is in ideal " + query );
+        return "True".equals(res);
     }
     private static com.wolfram.jlink.KernelLink ml;
     static {createMathLink();}

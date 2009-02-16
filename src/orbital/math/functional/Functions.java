@@ -17,6 +17,8 @@ import orbital.moon.math.functional.AbstractFunctor;
 
 import orbital.math.Matrix;
 import java.awt.Dimension;
+
+import orbital.math.ValueFactory;
 import orbital.math.Vector;
 import orbital.math.Scalar;
 import orbital.math.Complex;
@@ -130,7 +132,7 @@ public final class Functions {
         } 
         public Function derive() {
             Real b = ((Normed) a).norm();
-            return b.isInfinite() || b.isNaN() ? constant(Values.NaN) : zero;
+            return b.isInfinite() || b.isNaN() ? constant(b.valueFactory().NaN()) : zero;
         } 
         public Function integrate() {
             return linear((Arithmetic)a);
@@ -148,6 +150,9 @@ public final class Functions {
         public String toString() {
             return a + "";
         } 
+		public ValueFactory valueFactory() {
+			return ((Arithmetic)a).valueFactory();
+		}
     }
 
     /**
@@ -175,7 +180,7 @@ public final class Functions {
             return symbolic("\u222B" + name + " dx");
         } 
         public Real norm() {
-            return Values.NaN;
+            return valueFactory().NaN();
         }
         public boolean equals(Object o) {
             return (o instanceof SymbolicFunction)
@@ -187,6 +192,9 @@ public final class Functions {
         public String toString() {
             return name + "";
         } 
+		public ValueFactory valueFactory() {
+			return Values.getDefault();
+		}
     } 
 
     /**
@@ -205,7 +213,7 @@ public final class Functions {
                 return (Function) Operations.divide.apply(square, TWO);
             } 
             public Real norm() {
-                return Values.POSITIVE_INFINITY;
+                return valueFactory().POSITIVE_INFINITY();
             }
             public String toString() {
                 return "id";
@@ -280,7 +288,7 @@ public final class Functions {
                 }
             } 
             public Real norm() {
-                return Values.POSITIVE_INFINITY;
+                return valueFactory().POSITIVE_INFINITY();
             }
             public String toString() {
                 return "#0^2";
@@ -299,6 +307,7 @@ public final class Functions {
      */
     public static final Function sqrt = new SynonymFunction(pow(valueFactory.rational(1,2))) {
             public Object/*>Complex<*/ apply(Object/*>Complex<*/ x) {
+            	ValueFactory valueFactory = ((Arithmetic)x).valueFactory();
                 if (Complex.hasType.apply(x)) {
                     Complex v = (Complex) x;
                     return valueFactory.polar((Real/*__*/)apply(v.norm()), v.arg().divide(valueFactory.valueOf(2)));
@@ -310,13 +319,13 @@ public final class Functions {
                     //@xxx possible loss of precision
                     double r = ((Number) x).doubleValue();
                     if (!(r == r))                      // Double.isNaN
-                        return Values.NaN;
+                        return valueFactory.NaN();
                     return r >= 0 ? valueFactory.valueOf(Math.sqrt(r)) : apply(valueFactory.cartesian(r, 0));
                 }
                 return (Complex) super.apply(x);
             } 
             public Real norm() {
-                return Values.POSITIVE_INFINITY;
+                return valueFactory().POSITIVE_INFINITY();
             }
             public String toString() {
                 return "sqrt";
@@ -342,6 +351,7 @@ public final class Functions {
      */
     public static final Function exp = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x) {
+            	ValueFactory valueFactory = ((Arithmetic)x).valueFactory();
                 if (Complex.hasType.apply(x)) {
                     Complex z = (Complex) x;
                     return valueFactory.polar((Real) apply(z.re()), z.im());
@@ -389,7 +399,7 @@ public final class Functions {
                 return this;
             } 
             public Real norm() {
-                return Values.POSITIVE_INFINITY;
+                return valueFactory().POSITIVE_INFINITY();
             }
             public String toString() {
                 //TODO: use e^x and log(x) or remove (x) everywhere, or whatcha want?
@@ -410,6 +420,7 @@ public final class Functions {
      */
     public static final Function log = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x) {
+            	ValueFactory valueFactory = ((Arithmetic)x).valueFactory();
                 if (Complex.hasType.apply(x)) {
                     Complex v = (Complex) x;
                     return valueFactory.cartesian((Real/*__*/) this.apply(v.norm()), v.arg());
@@ -429,7 +440,7 @@ public final class Functions {
                 return (Function) Operations.subtract.apply( Operations.times.apply(id, Functionals.compose(this, Functions.norm)), id);
             }
             public Real norm() {
-                return Values.POSITIVE_INFINITY;
+                return valueFactory().POSITIVE_INFINITY();
             }
             public String toString() {
                 return "log";
@@ -467,8 +478,10 @@ public final class Functions {
      */
     public static final Function sin = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x) {
+            	ValueFactory valueFactory = ((Arithmetic)x).valueFactory();
+            	Complex i = valueFactory.i();
                 if (Complex.hasType.apply(x))
-                    return ((Arithmetic) sinh.apply(Values.i.multiply((Arithmetic) x))).divide(Values.i);
+                    return ((Arithmetic) sinh.apply(i.multiply((Arithmetic) x))).divide(i);
                 else if (x instanceof Number)
                     //@xxx possible loss of precision
                     return valueFactory.valueOf(Math.sin(((Number) x).doubleValue()));
@@ -500,8 +513,10 @@ public final class Functions {
      */
     public static final Function cos = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x) {
+            	ValueFactory valueFactory = ((Arithmetic)x).valueFactory();
+            	Complex i = valueFactory.i();
                 if (Complex.hasType.apply(x))
-                    return cosh.apply(Values.i.multiply((Arithmetic) x));
+                    return cosh.apply(i.multiply((Arithmetic) x));
                 else if (x instanceof Number)
                     return valueFactory.valueOf(Math.cos(((Number) x).doubleValue()));
                 throw new UnsupportedOperationException("not implemented for type: " + x.getClass());
@@ -636,6 +651,7 @@ public final class Functions {
      */
     public static final Function arccos = new AbstractFunction/*<Real,Real>*/() {
             public Object/*>Real<*/ apply(Object/*>Real<*/ x) {
+            	ValueFactory valueFactory = ((Arithmetic)x).valueFactory();
                 if (x instanceof Number)
                     return valueFactory.valueOf(Math.acos(((Number) x).doubleValue()));
                 throw new UnsupportedOperationException("not implemented for type: " + x.getClass());
@@ -647,7 +663,7 @@ public final class Functions {
                 return (Function) Operations.subtract.apply(Operations.times.apply(id, this), Functionals.compose(sqrt, (Function) Functionals.compose(Operations.subtract, one, square)));
             }
             public Real norm() {
-                return Values.PI;
+                return valueFactory().PI();
             }
             public String toString() {
                 return "arccos";
@@ -665,6 +681,7 @@ public final class Functions {
      */
     public static final Function arctan = new AbstractFunction/*<Real,Real>*/() {
             public Object/*>Real<*/ apply(Object/*>Real<*/ x) {
+            	ValueFactory valueFactory = ((Arithmetic)x).valueFactory();
                 if (x instanceof Number)
                     return valueFactory.valueOf(Math.atan(((Number) x).doubleValue()));
                 throw new UnsupportedOperationException("not implemented for type: " + x.getClass());
@@ -676,7 +693,7 @@ public final class Functions {
                 return (Function) Operations.subtract.apply(Operations.times.apply(id, this), Functionals.compose(log, Functionals.compose(Operations.plus, square, one)).divide(TWO));
             }
             public Real norm() {
-                return valueFactory.valueOf(Math.PI / 2);
+                return valueFactory().PI().divide(valueFactory().valueOf(2));
             }
             public String toString() {
                 return "arctan";
@@ -695,6 +712,7 @@ public final class Functions {
     public static final Function arccot = new AbstractFunction/*<Real,Real>*/() {
             private final double PI_HALF = Math.PI / 2;
             public Object/*>Real<*/ apply(Object/*>Real<*/ x) {
+            	ValueFactory valueFactory = ((Arithmetic)x).valueFactory();
                 if (x instanceof Number)
                     return valueFactory.valueOf(PI_HALF - Math.atan(((Number) x).doubleValue()));
                 throw new UnsupportedOperationException("not implemented for type: " + x.getClass());
@@ -706,7 +724,7 @@ public final class Functions {
                 return (Function) Operations.plus.apply(Operations.times.apply(id, this), Functionals.compose(log, Functionals.compose(Operations.plus, square, one)).divide(TWO));
             }
             public Real norm() {
-                return Values.PI;
+                return valueFactory().PI();
             }
             public String toString() {
                 return "arccot";
@@ -876,7 +894,7 @@ public final class Functions {
                 return (Function) Operations.subtract.apply(Operations.times.apply(id, this), Functionals.compose(sqrt, (Function) Functionals.compose(Operations.plus, square, one)));
             }
             public Real norm() {
-                return Values.POSITIVE_INFINITY;
+                return valueFactory().POSITIVE_INFINITY();
             }
             public String toString() {
                 return "arsinh";
@@ -897,7 +915,7 @@ public final class Functions {
                 return (Function) Operations.subtract.apply(Operations.times.apply(id, this), Functionals.compose(sqrt, (Function) Functionals.compose(Operations.subtract, square, one)));
             }
             public Real norm() {
-                return Values.POSITIVE_INFINITY;
+                return valueFactory().POSITIVE_INFINITY();
             }
             public String toString() {
                 return "arcosh";
@@ -927,7 +945,7 @@ public final class Functions {
                 return (Function) Operations.plus.apply(Operations.times.apply(id, this), Functionals.compose(log, Functionals.compose(Operations.subtract, square, one)).divide(TWO));
             }
             public Real norm() {
-                return Values.POSITIVE_INFINITY;
+                return valueFactory().POSITIVE_INFINITY();
             }
             public String toString() {
                 return "artanh";
@@ -957,7 +975,7 @@ public final class Functions {
                 return (Function) Operations.plus.apply(Operations.times.apply(id, this), Functionals.compose(log, Functionals.compose(Operations.subtract, square, one)).divide(TWO));
             }
             public Real norm() {
-                return Values.POSITIVE_INFINITY;
+                return valueFactory().POSITIVE_INFINITY();
             }
             public String toString() {
                 return "arcoth";
@@ -1053,7 +1071,7 @@ public final class Functions {
                 return nondet;
             } 
             public Real norm() {
-                return Values.NaN;
+                return valueFactory().NaN();
             }
             public String toString() {
                 return "nondet";
@@ -1183,7 +1201,7 @@ public final class Functions {
     public static final Function step(final Real t) {
         return new AbstractFunction/*<Real,Integer>*/() {
                 public Object/*>Integer<*/ apply(Object/*>Real<*/ x) {
-                    return valueFactory.valueOf(t.compareTo(x) < 0 ? 0 : 1);
+                    return ((Arithmetic)x).valueFactory().valueOf(t.compareTo(x) < 0 ? 0 : 1);
                 } 
                 public Function derive() {
                     return Functionals.compose(diracDelta, Functionals.bindFirst(Operations.subtract, t));
@@ -1219,10 +1237,10 @@ public final class Functions {
                 return diracDelta;
             } 
             public Function integrate() {
-                return step(Values.getDefault().ZERO());
+                return step(valueFactory().ZERO());
             } 
             public Real norm() {
-                return Values.NaN;
+                return valueFactory().NaN();
             }
             public String toString() {
                 return "diracDelta";
@@ -1348,6 +1366,9 @@ public final class Functions {
         public String toString() {
             return elemental.toString();
         } 
+                public ValueFactory valueFactory() {
+                        return elemental.valueFactory();
+                }
     }
 
 
@@ -1400,6 +1421,9 @@ public final class Functions {
         public String toString() {
             return a + "";
         } 
+                public ValueFactory valueFactory() {
+                        return ((Arithmetic)a).valueFactory();
+                }
     }
 
     /**
@@ -1428,7 +1452,7 @@ public final class Functions {
             return binarySymbolic("\u222B" + name + " d" + (i == 0 ? 'x' : 'y'));
         } 
         public Real norm() {
-            return Values.NaN;
+            return valueFactory().NaN();
         }
         public boolean equals(Object o) {
             return (o instanceof BinarySymbolicFunction)
@@ -1440,6 +1464,9 @@ public final class Functions {
         public String toString() {
             return name + "";
         } 
+                public ValueFactory valueFactory() {
+                        return Values.getDefault();
+                }
     } 
 
     /**
@@ -1467,6 +1494,9 @@ public final class Functions {
                 return "#0";
             } 
 
+                public ValueFactory valueFactory() {
+                        return Values.getDefault();
+                }
         };
 
     /**
@@ -1493,6 +1523,9 @@ public final class Functions {
             public String toString() {
                 return "#1";
             } 
+                public ValueFactory valueFactory() {
+                        return Values.getDefault();
+                }
         };
 
     /**
@@ -1516,6 +1549,9 @@ public final class Functions {
             public String toString() {
                 return "delta";
             } 
+                public ValueFactory valueFactory() {
+                        return Values.getDefault();
+                }
         };
     public static final int delta(int i, int j) {
         return i == j ? 1 : 0;
@@ -1578,6 +1614,9 @@ public final class Functions {
         public String toString() {
             return elemental.toString();
         } 
+                public ValueFactory valueFactory() {
+                        return elemental.valueFactory();
+                }
     }
 }
 

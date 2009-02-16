@@ -258,7 +258,7 @@ public class EightPuzzle implements GeneralSearchProblem {
          */
         int[] tileMoved;
         public State(int[][] slides, int[] tileMoved) {
-            this(slides, tileMoved, Values.NaN);
+            this(slides, tileMoved, Values.getDefault().NaN());
         }
         public State(int[][] slides, Real accumulatedCost) {
             this(slides, null, accumulatedCost);

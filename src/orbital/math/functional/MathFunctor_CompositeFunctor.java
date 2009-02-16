@@ -9,6 +9,8 @@ package orbital.math.functional;
 import orbital.logic.Composite;
 import orbital.logic.functor.Functor;
 import orbital.math.Arithmetic;
+import orbital.math.ValueFactory;
+import orbital.math.Values;
 import orbital.logic.sign.concrete.Notation;
 
 import orbital.moon.math.functional.AbstractFunctor;
@@ -87,4 +89,9 @@ abstract class MathFunctor_CompositeFunctor extends AbstractFunctor implements M
     public String toString() {
         return getNotation().format((Functor)getCompositor(), getComponent());
     }
+
+        public ValueFactory valueFactory() {
+                Object c = getCompositor();
+                return c instanceof Arithmetic ? ((Arithmetic)c).valueFactory() : Values.getDefault();
+        }
 }

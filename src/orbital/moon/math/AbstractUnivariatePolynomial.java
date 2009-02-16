@@ -244,7 +244,7 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
     }
 
     public Real norm() {
-        return degreeValue() < 0 ? Values.ZERO : Values.POSITIVE_INFINITY;
+        return degreeValue() < 0 ? valueFactory().ZERO() : valueFactory().POSITIVE_INFINITY();
     }
 
     //@todo we should also support adding other functions (like in AbstractFunctor)?

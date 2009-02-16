@@ -31,7 +31,7 @@ class ArithmeticUnivariatePolynomial/*<R extends Arithmetic>*/ extends AbstractU
     private transient int degree;
     public ArithmeticUnivariatePolynomial(int degree) {
         this.coefficients =
-        	Values.getDefault().newInstance(degree < 0
+                Values.getDefault().newInstance(degree < 0
             ? 0
             : degree + 1);
         this.degree = java.lang.Integer.MIN_VALUE;
@@ -110,7 +110,7 @@ class ArithmeticUnivariatePolynomial/*<R extends Arithmetic>*/ extends AbstractU
     Tensor tensorViewOfCoefficients() {
         return getCoefficientVector();
     }
-	public Vector getCoefficientVector() {
-		return coefficients;
-	}
+        public Vector getCoefficientVector() {
+                return coefficients;
+        }
 }

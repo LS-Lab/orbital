@@ -323,7 +323,7 @@ public final class NumericalAlgorithms {
             double fdb = ((Number) config[1]).doubleValue();    // f'(b)
             mom.set(0, 1, vf.valueOf(1));                                       // lambda[0]
             d.set(0, vf.valueOf(((f[1] - f[0]) / h[1] - fda) * 6 / h[1]));        // d[0]
-            mom.set(l + 1, l, vf.ONE);                          // my[l+1]
+            mom.set(l + 1, l, vf.ONE());                          // my[l+1]
             d.set(l + 1, vf.valueOf((fdb - (f[l + 1] - f[1]) / h[l + 1]) * 6 / h[l + 1]));        // d[l+1]
             break;
         case NATURAL_SPLINE_INTERPOLATION:                                              // natural interpolation

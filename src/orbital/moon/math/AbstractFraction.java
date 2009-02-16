@@ -49,6 +49,7 @@ class AbstractFraction/*<M extends Arithmetic,S extends Arithmetic>*/ extends Ab
         this(null, null);
     }
     
+    public ValueFactory valueFactory() {return numerator.valueFactory(); }
 
     public boolean equals(Object o) {
         if (o instanceof Fraction) {
@@ -124,15 +125,15 @@ class AbstractFraction/*<M extends Arithmetic,S extends Arithmetic>*/ extends Ab
             return power_((Integer) b);
         } else if (b instanceof Fraction) {
                 Fraction bb = ((Fraction)b);
-                        if (bb.denominator().isOne()) {
-                return power(bb.numerator());
+                if (bb.denominator().isOne()) {
+                    return power(bb.numerator());
                 } else {
-                        throw new UnsupportedOperationException("non-integral power not supported (" + this + ") ^ (" + b + ")");
+                    throw new UnsupportedOperationException("non-integral power not supported (" + this + ") ^ (" + b + ")");
                 }
         } else if (b instanceof Scalar) {
                 Scalar bb = Values.getDefault().narrow((Scalar)b);
                 if (b instanceof Integer) {
-                        return power_((Integer)bb);
+                    return power_((Integer)bb);
                 }
                 // fall-through
         }

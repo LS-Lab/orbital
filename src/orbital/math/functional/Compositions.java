@@ -8,6 +8,8 @@ package orbital.math.functional;
 
 import orbital.logic.functor.Functor;
 import orbital.math.Arithmetic;
+import orbital.math.ValueFactory;
+import orbital.math.Values;
 
 import orbital.logic.sign.concrete.Notation;
 
@@ -95,6 +97,9 @@ class Compositions {
                 return inner.integrate();
             throw new GeneralComplexionException("integrating a composition would require integral substitution");
         }
+		public ValueFactory valueFactory() {
+			return outer.valueFactory();
+		}
     }
 
     /**
@@ -178,5 +183,8 @@ class Compositions {
                 return Functionals.compose(Operations.subtract, left.integrate(i), right.integrate(i));
             throw new GeneralComplexionException("integrating a composition would require integral substitution");
         }
+                public ValueFactory valueFactory() {
+                        return outer.valueFactory();
+                }
     }
 }

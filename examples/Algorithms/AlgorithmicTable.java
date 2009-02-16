@@ -76,7 +76,7 @@ public class AlgorithmicTable {
                     data[i][j++] = new Boolean(algo[i].complexity() != Functions.nondet 
 
                                                //@xxx: norm is infinite for all polynoms, what else!
-                                               &&!(algo[i].complexity().equals(Functions.constant(Values.POSITIVE_INFINITY))));
+                                               &&!(algo[i].complexity().equals(Functions.constant(Values.getDefault().POSITIVE_INFINITY()))));
                 }
                 catch(UnsupportedOperationException x) {logger.log(Level.INFO, "unsupported", x);}
                 try {

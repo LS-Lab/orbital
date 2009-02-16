@@ -51,7 +51,7 @@ public class DepthFirstSearch/*<A,S>*/ extends GeneralSearch/*<A,S>*/ {
      */
     public Function complexity() {
         //TODO: think about changing all infinite functions to symbolic or anything which is not(!) constant, but still supports norm=infinity
-        return Functions.constant(Values.POSITIVE_INFINITY);
+        return Functions.constant(Values.getDefault().POSITIVE_INFINITY());
     }
     /**
      * O(b*d) where b is the branching factor and d the solution depth.

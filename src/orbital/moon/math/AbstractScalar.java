@@ -56,6 +56,9 @@ abstract class AbstractScalar extends Number implements Scalar, Serializable {
         return multiply(alpha);
     }
 
+    //@xxx valueFactory
+    public ValueFactory valueFactory() { return Values.getDefault(); }
+    
     /**
      * Checks whether the given arithmetic object is a number.
      * @return whether v is complex, real, rational or an integer.
