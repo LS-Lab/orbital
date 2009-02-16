@@ -476,7 +476,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final Function/*<Arithmetic,Arithmetic>*/ inf = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ a) {
-                return Functionals.foldLeft(min, ((Arithmetic)a).valueFactory().POSITIVE_INFINITY(), Utility.asIterator(a));
+                return Functionals.foldLeft(min, valueFactory().POSITIVE_INFINITY(), Utility.asIterator(a));
             }
             public Function derive() {
                 throw new UnsupportedOperationException(this + "'");
@@ -547,7 +547,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final Function/*<Arithmetic,Arithmetic>*/ sup = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ a) {
-                return Functionals.foldLeft(max, ((Arithmetic)a).valueFactory().NEGATIVE_INFINITY(), Utility.asIterator(a));
+                return Functionals.foldLeft(max, valueFactory().NEGATIVE_INFINITY(), Utility.asIterator(a));
             }
             public Function derive() {
                 throw new UnsupportedOperationException(this + "'");

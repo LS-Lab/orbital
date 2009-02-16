@@ -48,33 +48,32 @@ public class FastValuesImpl extends ValuesImpl {
      * @xxx note that we should think about the order of static initialization.
      */
     private static final int     MAX_CONSTANT = 10;
-    private static final Integer posConst[] = new Integer[MAX_CONSTANT + 1];
-    private static final Integer negConst[] = new Integer[MAX_CONSTANT + 1];
-    static {
-        //@fixme this static initialization somehow is not yet executed before the super constructor is called. Move constants here
-        posConst[0] = negConst[0] = new AbstractInteger.Long(0);
-        for (int i = 1; i <= MAX_CONSTANT; i++) {
-            posConst[i] = new AbstractInteger.Long(i);
-            negConst[i] = new AbstractInteger.Long(-i);
-        } 
-    } 
+    private final Integer posConst[] = new Integer[MAX_CONSTANT + 1];
+    private final Integer negConst[] = new Integer[MAX_CONSTANT + 1];
 
     // instantiation
 
-    public FastValuesImpl() {}
+    public FastValuesImpl() {
+        //@fixme this static initialization somehow is not yet executed before the super constructor is called. Move constants here
+        posConst[0] = negConst[0] = new AbstractInteger.Long(0, this);
+        for (int i = 1; i <= MAX_CONSTANT; i++) {
+            posConst[i] = new AbstractInteger.Long(i, this);
+            negConst[i] = new AbstractInteger.Long(-i, this);
+        } 
+    }
 
     // scalar value constructors - facade factory
     // primitive type conversion methods
 
     public Rational rational(int p, int q) {
-        return new AbstractRational.Int(p, q);
+        return new AbstractRational.Int(p, q, this);
     } 
     public Rational rational(int p) {
-        return new AbstractRational.Int(p);
+        return new AbstractRational.Int(p, this);
     } 
 
     public Complex cartesian(double a, double b) {
-        return new AbstractComplex.Double(a, b);
+        return new AbstractComplex.Double(a, b, this);
     } 
 
     // integer scalar value constructors - facade factory
@@ -86,12 +85,12 @@ public class FastValuesImpl extends ValuesImpl {
         else if (-MAX_CONSTANT <= val && val < 0)
             return negConst[-val];
         else
-            return new AbstractInteger.Int(val);
+            return new AbstractInteger.Int(val, this);
     } 
     public Integer valueOf(long val) {
         return -MAX_CONSTANT <= val && val <= MAX_CONSTANT
             ? valueOf((int) val)
-            : new AbstractInteger.Long(val);
+            : new AbstractInteger.Long(val, this);
     }
 
     // vector constructors and conversion utilities

@@ -19,8 +19,6 @@ import orbital.math.Integer;
  * @author  Andr&eacute; Platzer
  */
 abstract class AbstractArithmetic implements Arithmetic {
-    //@xxx valueFactory
-    public ValueFactory valueFactory() { return Values.getDefault(); }
     public boolean equals(Object o, Real tolerance) {
         return Metric.INDUCED.distance(this, (Arithmetic)o).compareTo(tolerance) <= 0;
     }

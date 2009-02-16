@@ -107,41 +107,41 @@ public class ValuesImpl extends ArithmeticValuesImpl {
     // integer scalar value constructors - facade factory
 
     public Integer valueOf(int val) {
-        return new AbstractInteger.Int(val);
+        return new AbstractInteger.Int(val, this);
     } 
     public Integer valueOf(long val) {
-        return new AbstractInteger.Long(val);
+        return new AbstractInteger.Long(val, this);
     }
     public Integer valueOf(java.math.BigInteger val) {
-        return new AbstractInteger.Big(val);
+        return new AbstractInteger.Big(val, this);
     }
 
     // real scalar value constructors - facade factory
 
     public Real valueOf(double val) {
-        return new AbstractReal.Double(val);
+        return new AbstractReal.Double(val, this);
     } 
     public Real valueOf(float val) {
         //@xxx return new AbstractReal.Float(val)
-        return new AbstractReal.Double(val);
+        return new AbstractReal.Double(val, this);
     } 
     public Real valueOf(java.math.BigDecimal val) {
-        return new AbstractReal.Big(val);
+        return new AbstractReal.Big(val, this);
     }
 
     // "named" scalar value constructors
 
     public Rational rational(Integer p, Integer q) {
-        return new AbstractRational.Impl(p, q);
+        return new AbstractRational.Impl(p, q, this);
     } 
 
     // complex scalar values constructors
 
     public Complex cartesian(Real a, Real b) {
-        return new AbstractComplex.Impl(a, b);
+        return new AbstractComplex.Impl(a, b, this);
     } 
     public Complex cartesian(double a, double b) {
-        return new AbstractComplex.Double(a, b);
+        return new AbstractComplex.Double(a, b, this);
     } 
 
 

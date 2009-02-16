@@ -59,25 +59,25 @@ public class BigValuesImpl extends ArithmeticValuesImpl {
 
     // instantiation
 
-    private final int     MAX_CONSTANT = 10;
+    private static final int     MAX_CONSTANT = 10;
     private final Integer posConst[] = new Integer[MAX_CONSTANT + 1];
     private final Integer negConst[] = new Integer[MAX_CONSTANT + 1];
     public BigValuesImpl() {
-        posConst[0] = negConst[0] = new AbstractInteger.Big(0);
+        posConst[0] = negConst[0] = new AbstractInteger.Big(0, this);
         for (int i = 1; i <= MAX_CONSTANT; i++) {
-            posConst[i] = new AbstractInteger.Big(i);
-            negConst[i] = new AbstractInteger.Big(-i);
+            posConst[i] = new AbstractInteger.Big(i, this);
+            negConst[i] = new AbstractInteger.Big(-i, this);
         }
         ZEROImpl = valueOf(0);
         ONEImpl = valueOf(1);
         MINUS_ONEImpl = valueOf(-1);
-        POSITIVE_INFINITYImpl = new AbstractReal.Double(java.lang.Double.POSITIVE_INFINITY);
-        NEGATIVE_INFINITYImpl = new AbstractReal.Double(java.lang.Double.NEGATIVE_INFINITY);
+        POSITIVE_INFINITYImpl = new AbstractReal.Double(java.lang.Double.POSITIVE_INFINITY, this);
+        NEGATIVE_INFINITYImpl = new AbstractReal.Double(java.lang.Double.NEGATIVE_INFINITY, this);
         PIImpl = valueOf(Math.PI);
         EImpl = valueOf(Math.E);
-        NaNImpl = new AbstractReal.Double(java.lang.Double.NaN);
+        NaNImpl = new AbstractReal.Double(java.lang.Double.NaN, this);
         IImpl = complex(0, 1);
-        INFINITYImpl = new AbstractComplex.Double(java.lang.Double.POSITIVE_INFINITY, java.lang.Double.NaN);
+        INFINITYImpl = new AbstractComplex.Double(java.lang.Double.POSITIVE_INFINITY, java.lang.Double.NaN, this);
     }
 
     // Constants
@@ -147,32 +147,32 @@ public class BigValuesImpl extends ArithmeticValuesImpl {
         else if (-MAX_CONSTANT <= val && val < 0)
             return negConst[-val];
         else
-            return new AbstractInteger.Big(val);
+            return new AbstractInteger.Big(val, this);
     } 
     public Integer valueOf(long val) {
         return -MAX_CONSTANT <= val && val <= MAX_CONSTANT
             ? valueOf((int) val)
-            : new AbstractInteger.Big(val);
+            : new AbstractInteger.Big(val, this);
     }
     public Integer valueOf(java.math.BigInteger val) {
-        return new AbstractInteger.Big(val);
+        return new AbstractInteger.Big(val, this);
     }
 
     // real scalar value constructors - facade factory
 
     public Real valueOf(double val) {
-        return new AbstractReal.Big(val);
+        return new AbstractReal.Big(val, this);
     } 
     public Real valueOf(java.math.BigDecimal val) {
-        return new AbstractReal.Big(val);
+        return new AbstractReal.Big(val, this);
     }
 
     public Rational rational(Integer p, Integer q) {
-        return new AbstractRational.Impl(p, q);
+        return new AbstractRational.Impl(p, q, this);
     } 
 
     public Complex cartesian(Real a, Real b) {
-        return new AbstractComplex.Impl(a, b);
+        return new AbstractComplex.Impl(a, b, this);
     } 
 
     /*
@@ -196,23 +196,23 @@ public class BigValuesImpl extends ArithmeticValuesImpl {
         //@todo implement sup along with conversion routines. Perhaps introduce "int AbstractScalar.typeLevel()" and "int AbstractScalar.precisionLevel()" such that we can compute the maximum level of both with just two method calls. And introduce "Object AbstractScalar.convertTo(int typeLevel, int precisionLevel)" for conversion.
         if (Complex.hasType.apply(a) || Complex.hasType.apply(b))
             return new Complex[] {
-                Complex.hasType.apply(a) ? (Complex) a : new AbstractComplex.Impl(a),
-                Complex.hasType.apply(b) ? (Complex) b : new AbstractComplex.Impl(b)
+                Complex.hasType.apply(a) ? (Complex) a : new AbstractComplex.Impl(a, this),
+                Complex.hasType.apply(b) ? (Complex) b : new AbstractComplex.Impl(b, this)
             };
 
         // this is a tricky binary decision diagram (optimized), see documentation
         if (Integer.hasType.apply(a)) {
             if (Integer.hasType.apply(b))
                 return new Integer[] {
-                    a instanceof AbstractInteger.Big ? (Integer)a : new AbstractInteger.Big(a),
-                    b instanceof AbstractInteger.Big ? (Integer)b : new AbstractInteger.Big(b)
+                    a instanceof AbstractInteger.Big ? (Integer)a : new AbstractInteger.Big(a, this),
+                    b instanceof AbstractInteger.Big ? (Integer)b : new AbstractInteger.Big(b, this)
                 };
         } else {        // a is no integer
             if (!Rational.hasType.apply(a))
                 // a is no integer, no rational, no complex, hence real
                 return new Real[] {
-                    a instanceof AbstractReal.Big ? (Real)a : new AbstractReal.Big(a),
-                    b instanceof AbstractReal.Big ? (Real)b : new AbstractReal.Big(b)
+                    a instanceof AbstractReal.Big ? (Real)a : new AbstractReal.Big(a, this),
+                    b instanceof AbstractReal.Big ? (Real)b : new AbstractReal.Big(b, this)
                 };
         }
         assert Integer.hasType.apply(a) && !Integer.hasType.apply(b) || Rational.hasType.apply(a) : a + " integer or rational but not both integers " + a + " and " + b;
@@ -224,8 +224,8 @@ public class BigValuesImpl extends ArithmeticValuesImpl {
                 Rational.hasType.apply(b) ? (Rational) b : rational((Integer)b)
             };
         return new Real[] {
-            a instanceof AbstractReal.Big ? (Real)a : new AbstractReal.Big(a),
-            b instanceof AbstractReal.Big ? (Real)b : new AbstractReal.Big(b)
+            a instanceof AbstractReal.Big ? (Real)a : new AbstractReal.Big(a, this),
+            b instanceof AbstractReal.Big ? (Real)b : new AbstractReal.Big(b, this)
         };
     } 
 

@@ -80,6 +80,16 @@ abstract class AbstractProductArithmetic/*<R extends Arithmetic, I, T extends Ar
      */
     protected abstract Arithmetic/*>T<*/ newInstance(Object/*>I<*/ productIndexSet);
         
+    
+    public ValueFactory valueFactory() {
+    	Iterator i = iterator(this);
+    	if (i.hasNext()) {
+    		return ((Arithmetic)i.next()).valueFactory();
+    	} else {
+    		return Values.getDefault();
+    	}
+    }
+    
     // object-methods
         
     /**

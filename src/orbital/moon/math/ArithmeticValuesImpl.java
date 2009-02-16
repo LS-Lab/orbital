@@ -152,10 +152,10 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
     } 
 
     public Complex polar(Real r, Real phi) {
-        return new AbstractComplex.Impl(r.multiply((Real) Functions.cos.apply(phi)), r.multiply((Real) Functions.sin.apply(phi)));
+        return new AbstractComplex.Impl(r.multiply((Real) Functions.cos.apply(phi)), r.multiply((Real) Functions.sin.apply(phi)), this);
     } 
     public Complex polar(double r, double phi) {
-        return new AbstractComplex.Double(r * Math.cos(phi), r * Math.sin(phi));
+        return new AbstractComplex.Double(r * Math.cos(phi), r * Math.sin(phi), this);
     } 
 
     // provides no scalar constructors

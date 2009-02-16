@@ -15,7 +15,9 @@ import orbital.math.functional.Functions;
 abstract class AbstractComplex extends AbstractScalar implements Complex {
     private static final long serialVersionUID = 6174516422770428710L;
 
-    protected AbstractComplex() {}
+    protected AbstractComplex(ValueFactory valueFactory) {
+    	super(valueFactory);
+    }
 
     /**
      * Complex numbers are <em>not</em> ordered.
@@ -156,16 +158,18 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
      * @return an array of the converted versions of a and b respectively.
      */
     static Complex[] makeComplex(Number a, Number b) {
+    	//@xxx valueFactory precision compatbility
+    	ValueFactory vf = a instanceof Arithmetic ? ((Arithmetic)a).valueFactory() : b instanceof Arithmetic ? ((Arithmetic)b).valueFactory() : Values.getDefault();
         if (a instanceof Impl || b instanceof Impl) {
             return new Complex[] {
-                a instanceof Impl ? (Complex)a : new Impl(a),
-                b instanceof Impl ? (Complex)b : new Impl(b)
+                a instanceof Impl ? (Complex)a : new Impl(a, vf),
+                b instanceof Impl ? (Complex)b : new Impl(b, vf)
             };
         } else {
             //@todo could also check whether Float would be sufficient
             return new Complex[] {
-                a instanceof Double ? (Complex)a : new Double(a),
-                b instanceof Double ? (Complex)b : new Double(b)
+                a instanceof Double ? (Complex)a : new Double(a, vf),
+                b instanceof Double ? (Complex)b : new Double(b, vf)
             };
         }
     }
@@ -197,15 +201,16 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
          * @param a real part of the complex number.
          * @param b imaginary part of the complex number.
          */
-        public Double(double a, double b) {
+        public Double(double a, double b, ValueFactory valueFactory) {
+        	super(valueFactory);
             real = a;
             imaginary = b;
         }
-        public Double(Number a, Number b) {
-            this(a.doubleValue(), b.doubleValue());
+        public Double(Number a, Number b, ValueFactory valueFactory) {
+            this(a.doubleValue(), b.doubleValue(), valueFactory);
         }
-        public Double(Real a, Real b) {
-            this(a.doubleValue(), b.doubleValue());
+        public Double(Real a, Real b, ValueFactory valueFactory) {
+            this(a.doubleValue(), b.doubleValue(), valueFactory);
             if (!((a instanceof AbstractReal.Double) || (a instanceof AbstractReal.Float) || (a instanceof Rational)))
                 throw new UnsupportedOperationException("the precision of " + a.getClass() + " is not yet supported for type " + getClass().getName());
             else if (!((b instanceof AbstractReal.Double) || (b instanceof AbstractReal.Float) ||(b instanceof Rational)))
@@ -215,10 +220,11 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
         /**
          * creates a new complex number with real part, only.
          */
-        public Double(double real) {
-            this(real, 0);
+        public Double(double real, ValueFactory valueFactory) {
+            this(real, 0, valueFactory);
         }
-        public Double(Number a) {
+        public Double(Number a, ValueFactory valueFactory) {
+        	super(valueFactory);
             if (a instanceof Complex) {
                 real = ((Complex)a).re().doubleValue();
                 imaginary = ((Complex)a).im().doubleValue();
@@ -231,8 +237,8 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
         /**
          * creates a new complex, zero.
          */
-        public Double() {
-            this(0, 0);
+        public Double(ValueFactory valueFactory) {
+            this(0, 0, valueFactory);
         }
 
         public int hashCode() {
@@ -263,7 +269,7 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
          * creates a copy of a complex number.
          */
         public Object clone() {
-            return new Double(real, imaginary);
+            return new Double(real, imaginary, valueFactory());
         } 
     
         /**
@@ -323,7 +329,7 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
          * @return the complex number a - <b>i</b>*b.
          */
         public Complex conjugate() {
-            return new Double(realValue(), -imaginaryValue());
+            return new Double(realValue(), -imaginaryValue(), valueFactory());
         } 
     
         // arithmetic operations
@@ -332,21 +338,21 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
          * adds two Complexes returning a third as a result
          */
         public Complex add(Complex b) {
-            return new Double(re().add(b.re()), im().add(b.im()));
+            return new Double(re().add(b.re()), im().add(b.im()), valueFactory());
         } 
     
         /**
          * subtracts two Complexes returning a third as a result
          */
         public Complex subtract(Complex b) {
-            return new Double(re().subtract(b.re()), im().subtract(b.im()));
+            return new Double(re().subtract(b.re()), im().subtract(b.im()), valueFactory());
         } 
     
         /**
          * multiplies two Complexes returning a third as a result
          */
         public Complex multiply(Complex b) {
-            return new Double(re().multiply(b.re()).subtract(im().multiply(b.im())), re().multiply(b.im()).add(im().multiply(b.re())));
+            return new Double(re().multiply(b.re()).subtract(im().multiply(b.im())), re().multiply(b.im()).add(im().multiply(b.re())), valueFactory());
         } 
     
         /**
@@ -360,7 +366,7 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
          * The negative of a complex number. Result has the same length but the angle differs by &pi;.
          */
         public Arithmetic minus() {
-            return new Double(-realValue(), -imaginaryValue());
+            return new Double(-realValue(), -imaginaryValue(), valueFactory());
         } 
     
         /**
@@ -371,7 +377,7 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
             double real = realValue();
             double imaginary = imaginaryValue();
             double s = real * real + imaginary * imaginary;
-            return new Double(realValue() / s, -imaginaryValue() / s);
+            return new Double(realValue() / s, -imaginaryValue() / s, valueFactory());
         } 
     }
 
@@ -397,11 +403,13 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
          */
         private Real imaginary;
     
-        public Impl(Real a, Real b) {
+        public Impl(Real a, Real b, ValueFactory valueFactory) {
+        	super(valueFactory);
             this.real = a;
             this.imaginary = b;
         }
-        public Impl(Number a) {
+        public Impl(Number a, ValueFactory valueFactory) {
+        	super(valueFactory);
             if (a instanceof Complex) {
                 real = ((Complex)a).re();
                 imaginary = ((Complex)a).im();
@@ -416,7 +424,7 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
          * creates a copy of a complex number.
          */
         public Object clone() {
-            return new Impl(real, imaginary);
+            return new Impl(real, imaginary, valueFactory());
         } 
     
         /**
@@ -476,7 +484,7 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
          * @return the complex number a - <b>i</b>*b.
          */
         public Complex conjugate() {
-            return new Impl(re(), (Real)im().minus());
+            return new Impl(re(), (Real)im().minus(), valueFactory());
         } 
     
         // arithmetic operations
@@ -485,21 +493,21 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
          * adds two Complexes returning a third as a result
          */
         public Complex add(Complex b) {
-            return new Impl(re().add(b.re()), im().add(b.im()));
+            return new Impl(re().add(b.re()), im().add(b.im()), valueFactory());
         } 
     
         /**
          * subtracts two Complexes returning a third as a result
          */
         public Complex subtract(Complex b) {
-            return new Impl(re().subtract(b.re()), im().subtract(b.im()));
+            return new Impl(re().subtract(b.re()), im().subtract(b.im()), valueFactory());
         } 
     
         /**
          * multiplies two Complexes returning a third as a result
          */
         public Complex multiply(Complex b) {
-            return new Impl(re().multiply(b.re()).subtract(im().multiply(b.im())), re().multiply(b.im()).add(im().multiply(b.re())));
+            return new Impl(re().multiply(b.re()).subtract(im().multiply(b.im())), re().multiply(b.im()).add(im().multiply(b.re())), valueFactory());
         } 
     
         /**
@@ -513,7 +521,7 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
          * The negative of a complex number. Result has the same length but the angle differs by &pi;.
          */
         public Arithmetic minus() {
-            return new Impl((Real)re().minus(), (Real)im().minus());
+            return new Impl((Real)re().minus(), (Real)im().minus(), valueFactory());
         } 
     
         /**
@@ -522,7 +530,7 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
          */
         public Arithmetic inverse() {
             Real s = re().multiply(re()).add(im().multiply(im()));
-            return new Impl(re().divide(s), (Real)im().minus().divide(s));
+            return new Impl(re().divide(s), (Real)im().minus().divide(s), valueFactory());
         } 
     }
 

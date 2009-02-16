@@ -15,7 +15,9 @@ import orbital.util.Utility;
 abstract class AbstractRational extends AbstractReal implements Rational {
     private static final long serialVersionUID = -9129018097987023600L;
 
-    protected AbstractRational() {}
+    protected AbstractRational(ValueFactory valueFactory) {
+    	super(valueFactory);
+    }
 
     public boolean equals(Object o) {
         if (Rational.isa.apply(o)) {
@@ -142,7 +144,8 @@ abstract class AbstractRational extends AbstractReal implements Rational {
          * @postconditions this == normalize(this)
          * @see #representative()
          */
-        public Int(int p, int q) {
+        public Int(int p, int q, ValueFactory valueFactory) {
+        	super(valueFactory);
             // normalize
             if (q < 0) {
                 this.numerator = -p;
@@ -158,16 +161,16 @@ abstract class AbstractRational extends AbstractReal implements Rational {
         /**
          * creates a new rational number with numerator part, only.
          */
-        public Int(int p) {
-            this(p, 1);
+        public Int(int p, ValueFactory valueFactory) {
+            this(p, 1, valueFactory);
         }
     
         /**
          * creates a new rational number with numerator part, only.
          * @preconditions MathUtilities.isInteger(p.doubleValue()) && p.intValue() == p.longValue()
          */
-        public Int(Number p) {
-            this(p.intValue(), 1);
+        public Int(Number p, ValueFactory valueFactory) {
+            this(p.intValue(), 1, valueFactory);
             Utility.pre(MathUtilities.isInteger(p.doubleValue()) && p.intValue() == p.longValue(), "integer value only");
         }
     
@@ -177,8 +180,8 @@ abstract class AbstractRational extends AbstractReal implements Rational {
          * @param q the denominator p/q.
          * @preconditions MathUtilities.isInteger(p.doubleValue()) && p.intValue() == p.longValue() && MathUtilities.isInteger(q.doubleValue()) && q.intValue() == q.longValue()
          */
-        public Int(Number p, Number q) {
-            this(p.intValue(), q.intValue());
+        public Int(Number p, Number q, ValueFactory valueFactory) {
+            this(p.intValue(), q.intValue(), valueFactory);
             Utility.pre(MathUtilities.isInteger(p.doubleValue()) && p.intValue() == p.longValue()
                         && MathUtilities.isInteger(q.doubleValue()) && q.intValue() == q.longValue(), "integer value only");
         }
@@ -186,11 +189,11 @@ abstract class AbstractRational extends AbstractReal implements Rational {
         /**
          * creates a rational zero.
          */
-        public Int() {
-            this(0, 1);
+        public Int(ValueFactory valueFactory) {
+            this(0, 1, valueFactory);
         }
         public Object clone() {
-            return new Int(numerator, denominator);
+            return new Int(numerator, denominator, valueFactory());
         } 
     
         public int compareTo(Object o) {
@@ -232,30 +235,30 @@ abstract class AbstractRational extends AbstractReal implements Rational {
             int m = MathUtilities.lcm(denominatorValue(), b_denominator);
             int f1 = m / denominatorValue(), f2 = m / b_denominator;
             return new Int(f1 * numeratorValue() + f2 * validate(b.numerator()).intValue(),
-                                    m).representative();
+                                    m, valueFactory()).representative();
         } 
         public Rational subtract(Rational b) {
             return add((Rational) b.minus());
         } 
         public Arithmetic minus() {
-            return new Int(-numeratorValue(), denominatorValue());
+            return new Int(-numeratorValue(), denominatorValue(), valueFactory());
         } 
         public Rational multiply(Rational b) {
             return new Int(numeratorValue() * validate(b.numerator()).intValue(),
-                                    denominatorValue() * validate(b.denominator()).intValue()).representative();
+                                    denominatorValue() * validate(b.denominator()).intValue(), valueFactory()).representative();
         } 
         public Rational divide(Rational b) {
             return new Int(numeratorValue() * validate(b.denominator()).intValue(),
-                                    denominatorValue() * validate(b.numerator()).intValue()).representative();
+                                    denominatorValue() * validate(b.numerator()).intValue(), valueFactory()).representative();
         } 
         public Arithmetic inverse() {
-            return new Int(denominatorValue(), numeratorValue());
+            return new Int(denominatorValue(), numeratorValue(), valueFactory());
         } 
         public Rational power(Integer b) {
             long k = b.longValue();
             if (k<0)
                 throw new UnsupportedOperationException("not yet implemented");
-            return new Int((int) Math.pow(numeratorValue(), k), (int) Math.pow(denominatorValue(), k)).representative();
+            return new Int((int) Math.pow(numeratorValue(), k), (int) Math.pow(denominatorValue(), k), valueFactory()).representative();
         }
 
         public Rational representative() {
@@ -272,14 +275,14 @@ abstract class AbstractRational extends AbstractReal implements Rational {
             int d = MathUtilities.gcd(p, q);
             //@todo somehow use cofactors instead of division by d
             return d != 1
-                ? new Int(p / d, q / d)
+                ? new Int(p / d, q / d, valueFactory())
                 : changed
-                ? new Int(p, q)
+                ? new Int(p, q, valueFactory())
                 : this;
         } 
         
         private Integer validate(Integer i) {
-            return new AbstractInteger.Int(ArithmeticValuesImpl.intValueExact(i));
+            return new AbstractInteger.Int(ArithmeticValuesImpl.intValueExact(i), valueFactory());
         }
     }
 
@@ -315,7 +318,8 @@ abstract class AbstractRational extends AbstractReal implements Rational {
          * @postconditions this == normalize(this)
          * @see #representative()
          */
-        public Impl(Integer p, Integer q) {
+        public Impl(Integer p, Integer q, ValueFactory valueFactory) {
+        	super(valueFactory);
             // normalize
             int cmp = q.compareTo(q.zero());
             if (cmp < 0) {
@@ -332,12 +336,12 @@ abstract class AbstractRational extends AbstractReal implements Rational {
         /**
          * creates a new rational number with numerator part, only.
          */
-        public Impl(Integer p) {
-            this(p, (Integer)p.one());
+        public Impl(Integer p, ValueFactory valueFactory) {
+            this(p, (Integer)p.one(), valueFactory);
         }
 
         public Object clone() {
-            return new Impl(numerator, denominator);
+            return new Impl(numerator, denominator, valueFactory());
         } 
     
         public Integer numerator() {
@@ -365,30 +369,30 @@ abstract class AbstractRational extends AbstractReal implements Rational {
             assert m.modulo(denominator()).isZero() : "lcm is divisible by its factors: " + m + " divisible by " + denominator() + " and " + b.denominator();
             assert m.modulo(b.denominator()).isZero() : "lcm is divisible by its factors: " + m + " divisible by " + denominator() + " and " + b.denominator();
             return new Impl(f1.multiply(numerator()).add(f2.multiply(b.numerator())),
-                            m).representative();
+                            m, valueFactory()).representative();
         } 
         public Rational subtract(Rational b) {
             return add((Rational) b.minus());
         } 
         public Arithmetic minus() {
-            return new Impl((Integer)numerator().minus(), denominator());
+            return new Impl((Integer)numerator().minus(), denominator(), valueFactory());
         } 
         public Rational multiply(Rational b) {
             return new Impl(numerator().multiply(b.numerator()),
-                            denominator().multiply(b.denominator())).representative();
+                            denominator().multiply(b.denominator()), valueFactory()).representative();
         } 
         public Rational divide(Rational b) {
             return new Impl(numerator().multiply(b.denominator()),
-                            denominator().multiply(b.numerator())).representative();
+                            denominator().multiply(b.numerator()), valueFactory()).representative();
         } 
         public Arithmetic inverse() {
-            return new Impl(denominator(), numerator());
+            return new Impl(denominator(), numerator(), valueFactory());
         } 
         public Rational power(Integer b) {
             if (b.compareTo(b.zero()) < 0)
-                return new Impl((Integer)denominator().power((Integer)b.minus()), (Integer)numerator().power((Integer)b.minus())).representative();
+                return new Impl((Integer)denominator().power((Integer)b.minus()), (Integer)numerator().power((Integer)b.minus()), valueFactory()).representative();
             else
-                return new Impl((Integer)numerator().power(b), (Integer)denominator().power(b)).representative();
+                return new Impl((Integer)numerator().power(b), (Integer)denominator().power(b), valueFactory()).representative();
         }
 
         public Rational representative() {
@@ -407,9 +411,9 @@ abstract class AbstractRational extends AbstractReal implements Rational {
             if (!d.isOne()) {
                 assert p.modulo(d).isZero() : "gcd divides its factors: " + p + " divides " + p + " and " + q;
                 assert q.modulo(d).isZero() : "gcd divides its factors: " + p + " divides " + p + " and " + q;
-                return new Impl((Integer)p.quotient(d), (Integer)q.quotient(d));
+                return new Impl((Integer)p.quotient(d), (Integer)q.quotient(d), valueFactory());
             } else
-                return changed ? new Impl(p, q) : this;
+                return changed ? new Impl(p, q, valueFactory()) : this;
         } 
     }
 
