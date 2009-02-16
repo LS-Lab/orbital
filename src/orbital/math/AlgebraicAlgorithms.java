@@ -23,7 +23,6 @@ import java.util.TreeSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import orbital.math.functional.Functionals;
 import orbital.logic.functor.Functions;
@@ -1411,5 +1410,57 @@ public final class AlgebraicAlgorithms {
     private static final boolean validate(Polynomial f, Collection/*<Polynomial<R,S>>*/ g) {
     	return true;
     }
+ //  validate against Mathematica
+ //   private static final boolean validate(Polynomial f, Collection/*<Polynomial<R,S>>*/ g) {
+        /*
+    	final int vars = ((Polynomial)g.iterator().next()).rank();
+    	String varlist = "{";
+        final String multinomialVariables[] = {"X", "Y", "Z"};
+    	for (int v = 0; v < vars; v++) {
+    		varlist += (v>0 ? "," : "") +  (vars<=3 ? multinomialVariables[v] : "X" + v);
+    	}
+    	varlist += "}";
+    	String query = "FullSimplify[PolynomialReduce[" + f+ ",GroebnerBasis[" + listForm(g) + "," + varlist + "], " + varlist + "][[2]] == 0]";
+    	String res = ml.evaluateToInputForm(query, 100);
+    	System.out.println(res + " for " + query);
+    	//assert "True".equals(res) : "Groebner Basis element is in ideal " + query );
+    	return "True".equals(res);
+    }
+    private static com.wolfram.jlink.KernelLink ml;
+    static {createMathLink();}
+    
+    protected static void createMathLink() {
+        try {
+            ml = com.wolfram.jlink.MathLinkFactory.createKernelLink("-linkmode launch -linkname '"
+                                                  + System.getProperty("com.wolfram.jlink.kernel")
+                                                  + "'");
+
+            // Get rid of the initial InputNamePacket the kernel will send
+            // when it is launched.
+            ml.discardAnswer();
+
+            // define our imaginary unit
+            //@xxx could have side effects for testdSolve
+            ml.evaluate("i = I;");
+            ml.discardAnswer();
+        } catch (com.wolfram.jlink.MathLinkException e) {
+            throw new Error("Fatal error opening link: " + e.getMessage());
+        }
+    }
+    protected static void closeMathLink() {
+        if (ml != null) {
+            ml.close();
+            ml = null;
+        }
+    }
+    private static String listForm(Collection m) {
+        StringBuffer sb = new StringBuffer();
+        sb.append('{');
+        for (Iterator i = m.iterator(); i.hasNext(); )
+            sb.append(i.next() + (i.hasNext() ? "," : ""));
+        sb.append('}');
+        return sb.toString();
+    }
+    */
 
 }// AlgebraicAlgorithms
