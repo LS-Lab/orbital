@@ -72,7 +72,7 @@ public class FunctionTest extends check.TestCase {
     public static final int TYPE_SYMBOL = 1<<16;
 
     public static void main(String[] argv) {
-        try {new FunctionTest().testGroebner();}catch(Exception e) {e.printStackTrace();}
+        try {FunctionTest t=new FunctionTest();t.testGroebnerSpecific();t.testGroebner();}catch(Exception e) {e.printStackTrace();}
         //try {new FunctionTest().testdSolve_fully_symbolic();}catch(Exception e) {e.printStackTrace();}
         //junit.textui.TestRunner.run(suite());
     }
@@ -478,21 +478,13 @@ public class FunctionTest extends check.TestCase {
         finally {
             closeMathLink();
         }
-   	
     }
     private void checkGroebner(double MIN, double MAX, int testType, Comparator monomialOrder, String mmonorder) throws MathLinkException {
     	Set g = new LinkedHashSet();
-    	final int VARS = 3;
     	final int DEG = 3;
-    	final int MEMBER_CHECK = 10;
+    	final int VARS = 5;
     	final int NUM = 4;
     	final int vars = integerArgument(1, VARS);
-    	String varlist = "{";
-        final String multinomialVariables[] = {"X", "Y", "Z"};
-    	for (int v = 0; v < vars; v++) {
-    		varlist += (v>0 ? "," : "") +  (vars<=3 ? multinomialVariables[v] : "X" + v);
-    	}
-    	varlist += "}";
     	int num = integerArgument(1, NUM);
     	for (int p = 0; p < num; p++) {
     		Polynomial gi = polyArgument(MIN, MAX, testType, vars, DEG);
@@ -510,6 +502,18 @@ public class FunctionTest extends check.TestCase {
     			break;
     	    }
     	}
+    	checkGroebner(g, MIN,MAX,testType, monomialOrder, mmonorder, DEG);
+    }
+
+    private void checkGroebner(Set g, double MIN, double MAX, int testType, Comparator monomialOrder, String mmonorder, int DEG) throws MathLinkException {
+    	final int MEMBER_CHECK = 10;
+    	final int vars = ((Polynomial)g.iterator().next()).rank();
+    	String varlist = "{";
+        final String multinomialVariables[] = {"X", "Y", "Z"};
+    	for (int v = 0; v < vars; v++) {
+    		varlist += (v>0 ? "," : "") +  (vars<=3 ? multinomialVariables[v] : "X" + v);
+    	}
+    	varlist += "}";
     	System.out.println("Computing Groebner Basis of " + g);
     	//@todo timeout this computation if it takes too long
     	Collection GB = AlgebraicAlgorithms.groebnerBasis(g, monomialOrder);
@@ -522,7 +526,7 @@ public class FunctionTest extends check.TestCase {
     	}
     	// check identical residues on several examples
     	for (int k = 0; k < MEMBER_CHECK; k++) {
-    		Polynomial f = polyArgument(MIN, MAX, testType, vars, 4);
+    		Polynomial f = polyArgument(MIN, MAX, testType, vars, DEG);
     		System.out.println("Check member " + f);
     		Polynomial r = AlgebraicAlgorithms.reduce(f, GB, monomialOrder);
     		String query = "FullSimplify[PolynomialReduce[" + f + ",GroebnerBasis[" + listForm(g) + "," + varlist + ", MonomialOrder->" + mmonorder + "], " + varlist + ", MonomialOrder->" + mmonorder + "][[2]] == " + r + "]";
@@ -531,6 +535,49 @@ public class FunctionTest extends check.TestCase {
     	}
     }
 
+    public void testGroebnerSpecific() throws MathLinkException {
+        createMathLink();       
+        final double MIN = -10;
+        final double MAX = +10;
+        final ValueFactory vf = Values.getDefault();
+        try {
+        	final Polynomial mo = vf.MONOMIAL(new int[] {0,0,0,0,0,0,0});
+//        	-1+X0*X6
+//        	-1+X0*X4^2
+//        	-1+X0*X5^2
+//        	X4^2*X6+X3*X6+X1*X5^2+X1*X4^2-X1*X3
+//        	X2^2-2*X1*X6+X1^2
+//        	X6^2-X5^4+X4^4+2*X3*X5^2-X3^2
+//        	-1+X4^4-X3^2    	
+        	Set g = new LinkedHashSet(Arrays.asList(new Polynomial[] {
+        			vf.MONOMIAL(new int[] {1,0,0,0,0,0,1}).subtract(mo),
+        			vf.MONOMIAL(new int[] {1,0,0,0,2,0,0}).subtract(mo),
+        			vf.MONOMIAL(new int[] {1,0,0,0,0,2,0}).subtract(mo),
+        			vf.MONOMIAL(new int[] {0,0,0,0,2,0,1}).add(vf.MONOMIAL(new int[] {0,0,0,1,0,0,1})).add(vf.MONOMIAL(new int[] {0,1,0,0,0,2,0})).add(vf.MONOMIAL(new int[] {0,1,0,0,2,0,0})).subtract(vf.MONOMIAL(new int[] {0,1,0,1,0,0,0})),
+        			vf.MONOMIAL(vf.ONE(), new int[] {0,0,2,0,0,0,0}).add(vf.MONOMIAL(vf.valueOf(-2),new int[] {0,1,0,0,0,0,1})).add(vf.MONOMIAL(new int[] {0,2,0,0,0,0,0})),
+        			vf.MONOMIAL(vf.ONE(), new int[] {0,0,0,0,0,0,2}).subtract(vf.MONOMIAL(new int[] {0,0,0,0,0,4,0})).add(vf.MONOMIAL(new int[] {0,0,0,0,4,0,0})).add(vf.MONOMIAL(vf.valueOf(2), new int[] {0,0,0,1,0,2,0})).subtract(vf.MONOMIAL(new int[] {0,0,0,2,0,0,0})),
+        			vf.MONOMIAL(vf.ONE(), new int[] {0,0,0,0,4,0,0}).subtract(vf.MONOMIAL(new int[] {0,0,0,2,0,0,0})).subtract(mo),
+        	}));
+        	Comparator monomialOrder;
+        	String mmonorder;
+        	monomialOrder = AlgebraicAlgorithms.DEGREE_REVERSE_LEXICOGRAPHIC;
+        	mmonorder = "DegreeReverseLexicographic";
+        	assertTrue(!AlgebraicAlgorithms.reduce(mo, g, monomialOrder).isZero(), "1 is not reducible");
+        	checkGroebner(g, MIN, MAX, TYPE_INTEGER|TYPE_RATIONAL, monomialOrder, mmonorder, 6);
+        	monomialOrder = AlgebraicAlgorithms.LEXICOGRAPHIC;
+        	mmonorder = "Lexicographic";
+           	assertTrue(!AlgebraicAlgorithms.reduce(mo, g, monomialOrder).isZero(), "1 is not reducible");
+            checkGroebner(g, MIN, MAX, TYPE_INTEGER|TYPE_RATIONAL, monomialOrder, mmonorder, 6);
+        }
+        catch (MathLinkException e) {
+            if (!"machine number overflow".equals(e.getMessage()))
+                throw e;
+        }
+        finally {
+            closeMathLink();
+        }
+    }
+    
     // testing differential equation solving
 
     /**
