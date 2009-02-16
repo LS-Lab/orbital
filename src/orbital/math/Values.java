@@ -62,7 +62,7 @@ public abstract class Values implements ValueFactory {
     public static ValueFactory getInstance() {
         //@internal notice the explicit mention of the ValuesImpl class (outside a string) to ease the job of packagers and deployment wizards.
         return instantiate(GetPropertyAction.getProperty(Values.class.getName() + ".implementation",
-                                                         orbital.moon.math.ValuesImpl.class.getName()));
+                                                         orbital.moon.math.BigValuesImpl.class.getName()));
     }
 
     /**
