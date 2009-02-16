@@ -901,8 +901,6 @@ public final class AlgebraicAlgorithms {
             	continue;
             }
             final Arithmetic lgi = leadingMonomial(gi, monomialOrder);
-            List/*<Polynomial<R,S>>*/ gnew = new LinkedList(g);
-            gnew.add(gi);
             // forward subsumtion to avoid divisible leading monomials in g
             // add gi to g, moving all polynomials with leading monomials that are multiples of gi' leading monomial to the working list again
             for (Iterator j = g.iterator(); j.hasNext(); ) {
@@ -923,6 +921,8 @@ public final class AlgebraicAlgorithms {
                     }
                 }
             }
+            List/*<Polynomial<R,S>>*/ gnew = new LinkedList(g);
+            gnew.add(gi);
             // critical syzygy pair formation
             // form all S-polynomials of gi with g
             for (Iterator/*<Polynomial<R,S>>*/ j = g.iterator(); j.hasNext(); ) {
@@ -942,7 +942,7 @@ public final class AlgebraicAlgorithms {
                         if (isZeroPolynomial.apply(r)) {
                             logger.log(Level.FINER, "skip reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
                         } else {
-                            logger.log(Level.FINE, "add work reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj});
+                            logger.log(Level.FINE, "add work size {4} reduction {0} of {1} from {2} and {3}", new Object[] {r, Sgigj, gi, gj, new java.lang.Integer(working.size())});
                             working.add(r);
                         }
                     }
