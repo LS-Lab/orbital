@@ -24,6 +24,12 @@ abstract class AbstractReal extends AbstractComplex implements Real {
     }
 
     
+    public boolean equals(Object o, Real tolerance) {
+        if (o instanceof Real) {
+            return subtract((Real)o).norm().compareTo(tolerance) <= 0;
+        }
+        return super.equals(o, tolerance);
+    }
     public boolean equals(Object o) {
         if (o instanceof Real) {
             return subtract((Arithmetic)o).isZero();
@@ -563,18 +569,28 @@ abstract class AbstractReal extends AbstractComplex implements Real {
             if (b instanceof Integer) {
                 return power((Integer)b);
             }
+            if (isZero() && !b.isZero()) {
+            	return (Real)zero();
+            } else if (isOne()) {
+            	return (Real)one();
+            }
             Real bc = (Real) Values.getDefault().narrow(b);
             if (bc instanceof Integer) {
                 return power((Integer)bc);
             } else {
                 try {
-                    return valueFactory().valueOf(Math.pow(ArithmeticValuesImpl.doubleValueExact((Number)this), ArithmeticValuesImpl.doubleValueExact(b)));
+                    return valueFactory().valueOf(Math.pow(ArithmeticValuesImpl.doubleValueExact((Real)this), ArithmeticValuesImpl.doubleValueExact(b)));
                 } catch(ArithmeticException ex) {
-                    throw (ArithmeticException) new ArithmeticException("exponentation is possibly too big: " + this + " ^ " + b).initCause(ex);
+                    throw (ArithmeticException) new ArithmeticException("exponentation is possibly too big: " + this + " ^ " + b + " where " + (b.isZero() ? "zero" : "non-zero")).initCause(ex);
                 }
             }
         }
         private Real power(Integer b) {
+            if (isZero() && !b.isZero()) {
+            	return (Real)zero();
+            } else if (isOne()) {
+            	return (Real)one();
+            }
             try {
                 return new Big(getValue().pow(ArithmeticValuesImpl.intValueExact(b)), valueFactory());
             } catch(ArithmeticException ex) {

@@ -483,11 +483,11 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
                 l = ((Integer)b).intValue();
             else
                 throw new IllegalArgumentException("cannot convert to intValue() at all");
-            Integer i = Values.getDefault().valueOf(l);
+            Integer i = b.valueFactory().valueOf(l);
             if (i.equals(b))
                 return l;
             else
-                throw new ArithmeticException("cannot convert to intValueExact: " + b);
+                throw new ArithmeticException("cannot convert to intValueExact: " + b + " differs from int " + l);
         }
         /*if (b instanceof AbstractInteger.Int) {
             return ((Integer)b).intValue();
@@ -501,6 +501,9 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
                 }*/
     }
     static final int intValueExact(Number b) {
+    	if (b instanceof Scalar) {
+    		return intValueExact((Scalar)b);
+    	}
         if (b instanceof AbstractInteger.Int) {
             return ((Integer)b).intValue();
         } else if (b instanceof java.lang.Integer) {
@@ -514,7 +517,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
             if (i.equals(b))
                 return l;
             else
-                throw new ArithmeticException("cannot convert to intValueExact: " + b);
+                throw new ArithmeticException("cannot convert to intValueExact: " + b + " differs from int " + l);
         }
     }
     /**
@@ -535,11 +538,11 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
                 l = ((Integer)b).longValue();
             else
                 throw new IllegalArgumentException("cannot convert to longValue() at all");
-            Integer i = Values.getDefault().valueOf(l);
+            Integer i = b.valueFactory().valueOf(l);
             if (i.equals(b))
                 return l;
             else
-                throw new ArithmeticException("cannot convert to longValueExact: " + b);
+                throw new ArithmeticException("cannot convert to longValueExact: " + b + " differs from long " + l);
             /* // the following alternative code is crap as it doesn't really check for success
                final float f = r.floatValue();
                //@xxx also convert bigger integers down
@@ -549,6 +552,9 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
         }
     }
     static final long longValueExact(Number b) {
+    	if (b instanceof Scalar) {
+    		return longValueExact((Scalar)b);
+    	}
         if (b instanceof AbstractInteger.Int || b instanceof AbstractInteger.Long) {
             return ((Integer)b).longValue();
         } else if (b instanceof java.lang.Integer || b instanceof java.lang.Long) {
@@ -562,7 +568,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
             if (i.equals(b))
                 return l;
             else
-                throw new ArithmeticException("cannot convert to longValueExact: " + b);
+                throw new ArithmeticException("cannot convert to longValueExact: " + b + " differs from long " + l);
         }
     }
     
@@ -571,7 +577,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
      * @throws ArithmeticException if conversion results in loss of precision.
      */
     static final double doubleValueExact(Real b) {
-        if (b instanceof AbstractReal.Float || b instanceof AbstractReal.Double || b instanceof AbstractInteger.Int) {
+        if (b instanceof AbstractReal.Float || b instanceof AbstractReal.Double || b instanceof AbstractInteger.Int || b instanceof AbstractInteger.Int) {
             return ((Real)b).doubleValue();
         } else {
             // convert to double and check for equality
@@ -582,11 +588,11 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
                 l = ((Real)b).doubleValue();
             else
                 throw new IllegalArgumentException("cannot convert to doubleValue() at all");
-            Real i = Values.getDefault().valueOf(l);
+            Real i = b.valueFactory().valueOf(l);
             if (i.equals(b))
                 return l;
             else
-                throw new ArithmeticException("cannot convert to doubleValueExact: " + b);
+                throw new ArithmeticException("cannot convert to doubleValueExact: " + b + " differs from double " + l);
             /*//@xxx check implementation
         final double bv = b.doubleValue();
         if (!java.lang.Double.isInfinite(bv))
@@ -597,6 +603,9 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
         }
     }
     static final double doubleValueExact(Number b) {
+    	if (b instanceof Real) {
+    		return doubleValueExact((Real)b);
+    	}
         if (b instanceof AbstractReal.Float || b instanceof AbstractReal.Double || b instanceof AbstractInteger.Int) {
             return ((Real)b).doubleValue();
         } else if (b instanceof java.lang.Double || b instanceof java.lang.Float || b instanceof java.lang.Integer) {
@@ -608,7 +617,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
             if (i.equals(b))
                 return l;
             else
-                throw new ArithmeticException("cannot convert to doubleValueExact: " + b);
+                throw new ArithmeticException("cannot convert to doubleValueExact: " + b + " differs from double " + l);
         }
     }
 

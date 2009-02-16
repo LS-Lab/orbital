@@ -100,26 +100,26 @@ public class BigValuesImpl extends ArithmeticValuesImpl {
     public Real POSITIVE_INFINITY() {
         return POSITIVE_INFINITYImpl;
     }
-    private Real POSITIVE_INFINITYImpl;
+    private Real POSITIVE_INFINITYImpl = new AbstractReal.Double(Double.POSITIVE_INFINITY, this);
 
     public Real NEGATIVE_INFINITY() {
         return NEGATIVE_INFINITYImpl;
     }
-    private Real NEGATIVE_INFINITYImpl;
+    private Real NEGATIVE_INFINITYImpl = new AbstractReal.Double(Double.NEGATIVE_INFINITY, this);
 
     public Real PI() {
         return PIImpl;
     }
-    private Real PIImpl;
+    private Real PIImpl = valueOf(Math.PI);
     public Real E() {
         return EImpl;
     }
-    private Real EImpl;
+    private Real EImpl = valueOf(Math.E);
 
     public Real NaN() {
         return NaNImpl;
     }
-    private Real NaNImpl;
+    private Real NaNImpl = new AbstractReal.Double(Double.NaN, this);
 
     public Complex I() {
         return IImpl;
@@ -132,7 +132,7 @@ public class BigValuesImpl extends ArithmeticValuesImpl {
     public Complex INFINITY() {
         return INFINITYImpl;
     }
-    private Complex INFINITYImpl;
+    private Complex INFINITYImpl = complex(POSITIVE_INFINITY(), NaN());
 
 
     // scalar value constructors - facade factory

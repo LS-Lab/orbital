@@ -312,9 +312,10 @@ public final class Functions {
                     Complex v = (Complex) x;
                     return valueFactory.polar((Real/*__*/)apply(v.norm()), v.arg().divide(valueFactory.valueOf(2)));
                 } 
-                else if (x instanceof Arithmetic) {
-                    return (Arithmetic) super.apply(x);
-                }
+//                else if (x instanceof Arithmetic) {
+//                	// this may be complicated to evaluate
+//                    return (Arithmetic) super.apply(x);
+//                }
                 else if (x instanceof Number) {
                     //@xxx possible loss of precision
                     double r = ((Number) x).doubleValue();

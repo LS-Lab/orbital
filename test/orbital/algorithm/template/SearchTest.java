@@ -123,7 +123,7 @@ public class SearchTest extends check.TestCase {
             try {
                 complete = (algo.complexity() != Functions.nondet 
                             //@xxx: norm is infinite for all polynoms, what else!
-                            && !(algo.complexity().equals(Functions.constant(Values.getDefaultInstance().valueOf(Double.POSITIVE_INFINITY)))));
+                            && !(algo.complexity().equals(Functions.constant(Values.getDefaultInstance().POSITIVE_INFINITY()))));
             }
             catch(UnsupportedOperationException x) {logger.log(Level.INFO, "unsupported", x);}
             try {
