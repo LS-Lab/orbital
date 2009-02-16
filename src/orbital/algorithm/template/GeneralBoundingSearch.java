@@ -154,7 +154,7 @@ public abstract class GeneralBoundingSearch/*<A,S>*/ extends GeneralSearch/*<A,S
         /* contains current best (minimum) solution */
         Object/*>S<*/ bestSolution = null;
         /* contains the accumulated cost of bestSolution, thus the current best accumulated cost */
-        Real bestAccumulatedCost = Values.NaN;
+        Real bestAccumulatedCost = Values.getDefault().NaN();
 
         while (nodes.hasNext()) {
             Object/*>S<*/ node = nodes.next();

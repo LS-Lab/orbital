@@ -272,7 +272,7 @@ public abstract class AbstractValues extends Values {
         Matrix/*<R>*/ diagonal = newInstance(new Dimension(diagon.dimension(), diagon.dimension()));
         for (int i = 0; i < diagonal.dimension().height; i++)
             for (int j = 0; j < diagonal.dimension().width; j++)
-                diagonal.set(i, j, i == j ? diagon.get(i) : (Arithmetic/*>R<*/) ZERO);
+                diagonal.set(i, j, i == j ? diagon.get(i) : (Arithmetic/*>R<*/) ZERO());
         return diagonal;
     } 
 
@@ -642,18 +642,18 @@ public abstract class AbstractValues extends Values {
     // @todo implementation could be generalized to non-AbstractMultivariatePolynomials.
     public final /*<R extends Arithmetic, S extends Arithmetic>*/ Polynomial/*<R,S>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, Arithmetic/*>S<*/ exponent) {
         if (exponent instanceof Integer)
-        	return MONOMIAL(coefficient, ((Integer)exponent).intValue());
+                return MONOMIAL(coefficient, ((Integer)exponent).intValue());
         else
-        	return MONOMIAL(coefficient, ArithmeticMultivariatePolynomial.convertIndex(exponent));
+                return MONOMIAL(coefficient, ArithmeticMultivariatePolynomial.convertIndex(exponent));
     }
     public final /*<R extends Scalar,S extends Arithmetic>*/ Polynomial/*<R,S>*/ MONOMIAL(Arithmetic/*>S<*/ exponent) {
-        return MONOMIAL(ONE, exponent);
+        return MONOMIAL(ONE(), exponent);
     }
     public final /*<R extends Scalar,S extends Arithmetic>*/ Polynomial/*<R,S>*/ MONOMIAL(int[] exponents) {
-        return MONOMIAL(ONE, exponents);
+        return MONOMIAL(ONE(), exponents);
     }
     public final /*<R extends Scalar,S extends Arithmetic>*/ UnivariatePolynomial/*<R,S>*/ MONOMIAL(int exponent) {
-        return MONOMIAL(ONE, exponent);
+        return MONOMIAL(ONE(), exponent);
     }
 
     // univariate polynomial constructors and utilities

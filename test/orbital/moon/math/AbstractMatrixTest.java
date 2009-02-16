@@ -174,7 +174,7 @@ public class AbstractMatrixTest extends check.TestCase {
             Matrix N = M.subMatrix(0,1, 1,3);
             assertTrue( !N.equals(M) , "sub-view different");
             System.out.println("Matrix\n" + M + ", sub-view\n" + N);
-            N.set(1, 1, vf.NEGATIVE_INFINITY);
+            N.set(1, 1, vf.NEGATIVE_INFINITY());
             System.out.println("Matrix\n" + M + ", sub-view\n" + N);
             assertTrue( !M.equals(B2) , "sub-view modifications write through");
 

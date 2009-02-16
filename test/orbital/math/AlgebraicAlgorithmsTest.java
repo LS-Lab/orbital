@@ -263,7 +263,7 @@ public class AlgebraicAlgorithmsTest extends check.TestCase {
             {0,1},
             {0,0}
         });
-        b = vf.valueOf(new Arithmetic[]{vf.ZERO,vf.symbol("a")});
+        b = vf.valueOf(new Arithmetic[]{vf.ZERO(),vf.symbol("a")});
         eta = vf.valueOf(new Symbol[]{vf.symbol("z0"),vf.symbol("v0")});
         System.out.println("train dynamics with constant acceleration a as inhomogeneous part and initial value " + eta);
         f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
@@ -278,7 +278,7 @@ public class AlgebraicAlgorithmsTest extends check.TestCase {
             {0,0,0,1},
             {0,0,0,0},
         });
-        b = vf.valueOf(new Arithmetic[]{vf.ZERO,vf.ZERO,vf.ZERO,vf.symbol("b")});
+        b = vf.valueOf(new Arithmetic[]{vf.ZERO(),vf.ZERO(),vf.ZERO(),vf.symbol("b")});
         eta = vf.valueOf(new Symbol[]{vf.symbol("a1"),vf.symbol("a2"),vf.symbol("a3"),vf.symbol("a4")});
         f = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
         System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + f);

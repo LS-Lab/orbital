@@ -367,7 +367,7 @@ public interface Gene {
                     List a = (List) o1;
                     List b = (List) o2;
                     if (a.size() != b.size())
-                        return Values.ONE;
+                        return Values.getDefault().ONE();
                     double difference = 0;
                     Iterator/*<Gene>*/ i = a.iterator(), j = b.iterator();
                     while (i.hasNext() && j.hasNext()) {
@@ -589,7 +589,7 @@ public interface Gene {
                     BitSet a = (BitSet) o1;
                     BitSet b = (BitSet) o2;
                     if (a.length() != b.length())
-                        return Values.ONE;
+                        return Values.getDefault().ONE();
                     int    differences = 0;
                     for (int i = 0; i < a.length(); i++)
                         if (a.data[i] != b.data[i])

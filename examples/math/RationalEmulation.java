@@ -25,11 +25,11 @@ public class RationalEmulation extends MathTest {
         System.out.println("perform some calculations in Q[X] = Quot(Q[X]) = Quot(Z[X])");
         // create elements in Q(X) = Quot(Q[X]) = Quot(Z[X])
         Fraction/*<Polynomial<Rational>,Polynomial<Rational>>*/ f =
-            vf.fraction(vf.polynomial(new Rational[] {vf.ONE, vf.valueOf(2)}),
-                        vf.polynomial(new Rational[] {vf.ONE, vf.ONE, vf.ONE, vf.ONE, vf.ONE, vf.ONE}));
+            vf.fraction(vf.polynomial(new Rational[] {vf.ONE(), vf.valueOf(2)}),
+                        vf.polynomial(new Rational[] {vf.ONE(), vf.ONE(), vf.ONE(), vf.ONE(), vf.ONE(), vf.ONE()}));
         Fraction/*<Polynomial<Rational>,Polynomial<Rational>>*/ g =
-            vf.fraction(vf.polynomial(new Rational[] {vf.ZERO, vf.ONE, vf.valueOf(2)}),
-                        vf.polynomial(new Rational[] {vf.ONE, vf.valueOf(2), vf.ONE, vf.valueOf(-4)}));
+            vf.fraction(vf.polynomial(new Rational[] {vf.ZERO(), vf.ONE(), vf.valueOf(2)}),
+                        vf.polynomial(new Rational[] {vf.ONE(), vf.valueOf(2), vf.ONE(), vf.valueOf(-4)}));
 
         // perform calculations in Q(X)
         printArithmetic(f,g,true);

@@ -33,9 +33,14 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
      * @serial
      */
     private String signifier;
-    public AbstractSymbol(String signifier) {
+
+        private final ValueFactory valueFactory;
+    public AbstractSymbol(String signifier, ValueFactory vf) {
         this.signifier = signifier;
+        this.valueFactory = vf;
     }
+    
+    public ValueFactory valueFactory() { return valueFactory; }
 
     public String getSignifier() {
         return signifier;
@@ -138,7 +143,7 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
 
     public Real norm() {
         //@xxx or should we  return Functions.norm.apply(this), which isn't a real?
-        return Values.NaN;
+        return valueFactory().NaN();
     } 
 
     public String toString() {

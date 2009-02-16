@@ -15,6 +15,7 @@ import orbital.math.functional.Functionals;
 import orbital.math.functional.Functions;
 import orbital.math.Scalar;
 import orbital.math.Real;
+import orbital.math.ValueFactory;
 import orbital.math.Values;
 
 /**
@@ -115,7 +116,10 @@ public abstract class AbstractFunctor implements MathFunctor {
     
     //@todo should we remove this default implementation?
     public Real norm() {
-        return Values.NaN;
+        return valueFactory().NaN();
     } 
+	public ValueFactory valueFactory() {
+		return Values.getDefault();
+	}
 }
         

@@ -321,6 +321,12 @@ public interface Arithmetic extends Normed {
      */
     Arithmetic power(Arithmetic b) throws ArithmeticException, UnsupportedOperationException;
 
+    //
+    /**
+     * Get the value factory producing this object
+     */
+    ValueFactory valueFactory();
+    
     // representation methods
 
     /**

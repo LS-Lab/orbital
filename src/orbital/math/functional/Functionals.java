@@ -420,6 +420,9 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
                         "#0"                                    //TODO: use #n everywhere //"x", "_"
                     });
                 } 
+        		public ValueFactory valueFactory() {
+        			return f.valueFactory();
+        		}
             };
     } 
 
@@ -448,6 +451,9 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
                         "#1",                                   //"_", "y"
                     });
                 } 
+        		public ValueFactory valueFactory() {
+        			return f.valueFactory();
+        		}
             };
     } 
 
@@ -487,6 +493,9 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
                         "#1", "#0"
                     });
                 } 
+        		public ValueFactory valueFactory() {
+        			return f.valueFactory();
+        		}
             };
     } 
 

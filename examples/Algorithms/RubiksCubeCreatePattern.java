@@ -41,7 +41,7 @@ public class RubiksCubeCreatePattern extends RubiksCube {
                 public Object apply(Object n) {
                     Scalar old = (Scalar) patternDatabase.get(n);
                     Real v = (Real) accumulatedCostFunction.apply(n);
-                    assert v.compareTo(Values.ZERO) >= 0;
+                    assert v.compareTo(v.zero()) >= 0;
 
                     // store better value, since we underestimate
                     if (old == null || v.compareTo(old) < 0)

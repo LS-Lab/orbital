@@ -117,7 +117,7 @@ public class GaussSeidelDynamicProgramming/*<A,S,M extends MarkovDecisionProblem
     }
 
     public orbital.math.functional.Function complexity() {
-        return orbital.math.functional.Functions.constant(orbital.math.Values.POSITIVE_INFINITY);
+        return orbital.math.functional.Functions.constant(orbital.math.Values.getDefault().POSITIVE_INFINITY());
     }
 
     public orbital.math.functional.Function spaceComplexity() {

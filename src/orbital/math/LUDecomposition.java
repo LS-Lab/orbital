@@ -171,7 +171,7 @@ public final class LUDecomposition/*<R extends Arithmetic>*/ implements Serializ
      * @see Matrix#linearRank()
      */
     public int linearRank() {
-        return Setops.count(A.getDiagonal().iterator(), Functionals.compose(Functionals.bindSecond(Predicates.unequal, Values.ZERO), Functions.norm));
+        return Setops.count(A.getDiagonal().iterator(), Functionals.compose(Functionals.bindSecond(Predicates.unequal, Values.getDefault().ZERO()), Functions.norm));
     }
 
     /**

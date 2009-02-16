@@ -278,7 +278,7 @@ public class FunctionTest extends check.TestCase {
             Expr la = ml.peekExpr();
             if (la.numberQ()) {
                if ("ComplexInfinity".equals(la.toString())) {
-                   mresult = Values.INFINITY;
+                   mresult = vf.INFINITY();
                    ml.discardAnswer();
                } else {
                    mresult = ((ComplexAdapter) ml.getComplex()).getValue();
@@ -301,7 +301,7 @@ public class FunctionTest extends check.TestCase {
         boolean isSuccessful = jresult.equals(mresult, tolerance);
         assertTrue(isSuccessful , mFunctionCall + " = " + mresult + " != " + jFunctionCall + "@" + x.getClass() + " = " + jresult + "@" + jresult.getClass() + "\tdelta=" + jresult.subtract(mresult));
         } catch (MathLinkException ex) {
-        	throw new MathLinkException(ex, "Comparing " + mFunction + " and " + jFunction + " on " + x + "  could not evaluate " + ex);
+                throw new MathLinkException(ex, "Comparing " + mFunction + " and " + jFunction + " on " + x + "  could not evaluate " + ex);
         }
     }
 
@@ -394,8 +394,8 @@ public class FunctionTest extends check.TestCase {
                 for (int i = 0; (testType[0] & TYPE_SCALAR) != 0 && (testType[1] & TYPE_SCALAR) != 0 && i < TEST_REPETITION; i++)
                     try {
                         compareResults(mFunction, jFunction,
-                        			(Scalar)randomArgument(min, max, testType[0]& TYPE_SCALAR),
-                        			(Scalar)randomArgument(min, max, testType[1] & TYPE_SCALAR));
+                                                (Scalar)randomArgument(min, max, testType[0]& TYPE_SCALAR),
+                                                (Scalar)randomArgument(min, max, testType[1] & TYPE_SCALAR));
                     }
                     catch (MathLinkException e) {
                         if (!"machine number overflow".equals(e.getMessage()))
@@ -429,7 +429,7 @@ public class FunctionTest extends check.TestCase {
         }
         catch (MathLinkException e) {
             if (!"machine number overflow".equals(e.getMessage()))
-            	throw new MathLinkException(e, "Comparing " + mFunction + " and " + jFunction + " on " + x + " and " + y + "  could not evaluate " + e);
+                throw new MathLinkException(e, "Comparing " + mFunction + " and " + jFunction + " on " + x + " and " + y + "  could not evaluate " + e);
         }
     }
 
@@ -446,29 +446,29 @@ public class FunctionTest extends check.TestCase {
         final double MIN = -10;
         final double MAX = +10;
         try {
-        	Comparator monomialOrder;
-        	String mmonorder;
-        	monomialOrder = AlgebraicAlgorithms.LEXICOGRAPHIC;
-        	mmonorder = "Lexicographic";
+                Comparator monomialOrder;
+                String mmonorder;
+                monomialOrder = AlgebraicAlgorithms.LEXICOGRAPHIC;
+                mmonorder = "Lexicographic";
             for (int i = 0; i < TEST_GROEBNER_REPETITION; i++) {
-            	checkGroebner(MIN,MAX,TYPE_INTEGER, monomialOrder, mmonorder);
+                checkGroebner(MIN,MAX,TYPE_INTEGER, monomialOrder, mmonorder);
             }
             for (int i = 0; i < TEST_GROEBNER_REPETITION; i++) {
-            	checkGroebner(MIN,MAX,TYPE_RATIONAL, monomialOrder, mmonorder);
+                checkGroebner(MIN,MAX,TYPE_RATIONAL, monomialOrder, mmonorder);
             }
             for (int i = 0; i < TEST_GROEBNER_REPETITION; i++) {
-            	checkGroebner(MIN,MAX,TYPE_INTEGER|TYPE_RATIONAL, monomialOrder, mmonorder);
+                checkGroebner(MIN,MAX,TYPE_INTEGER|TYPE_RATIONAL, monomialOrder, mmonorder);
             }
-        	monomialOrder = AlgebraicAlgorithms.DEGREE_REVERSE_LEXICOGRAPHIC;
-        	mmonorder = "DegreeReverseLexicographic";
+                monomialOrder = AlgebraicAlgorithms.DEGREE_REVERSE_LEXICOGRAPHIC;
+                mmonorder = "DegreeReverseLexicographic";
             for (int i = 0; i < TEST_GROEBNER_REPETITION; i++) {
-            	checkGroebner(MIN,MAX,TYPE_INTEGER, monomialOrder, mmonorder);
-            }
-            for (int i = 0; i < TEST_GROEBNER_REPETITION; i++) {
-            	checkGroebner(MIN,MAX,TYPE_RATIONAL, monomialOrder, mmonorder);
+                checkGroebner(MIN,MAX,TYPE_INTEGER, monomialOrder, mmonorder);
             }
             for (int i = 0; i < TEST_GROEBNER_REPETITION; i++) {
-            	checkGroebner(MIN,MAX,TYPE_INTEGER|TYPE_RATIONAL, monomialOrder, mmonorder);
+                checkGroebner(MIN,MAX,TYPE_RATIONAL, monomialOrder, mmonorder);
+            }
+            for (int i = 0; i < TEST_GROEBNER_REPETITION; i++) {
+                checkGroebner(MIN,MAX,TYPE_INTEGER|TYPE_RATIONAL, monomialOrder, mmonorder);
             }
         }        
         catch (MathLinkException e) {
@@ -480,59 +480,59 @@ public class FunctionTest extends check.TestCase {
         }
     }
     private void checkGroebner(double MIN, double MAX, int testType, Comparator monomialOrder, String mmonorder) throws MathLinkException {
-    	Set g = new LinkedHashSet();
-    	final int DEG = 3;
-    	final int VARS = 5;
-    	final int NUM = 4;
-    	final int vars = integerArgument(1, VARS);
-    	int num = integerArgument(1, NUM);
-    	for (int p = 0; p < num; p++) {
-    		Polynomial gi = polyArgument(MIN, MAX, testType, vars, DEG);
-    		if (gi.toString().length() > 40) {
-    			// use string output as complexity bound and randomly remove complexity
-    			for (ListIterator i = gi.iterator(); i.hasNext(); ) {
-    				Arithmetic x = (Arithmetic)i.next();
-    				if (Utility.flip(random, 0.75))
-    					i.set(x.zero());
-    			}
-    	    }
-    		g.add(gi);
-    		if (g.toString().length() > 100) {
-    			// use string output as complexity bound
-    			break;
-    	    }
-    	}
-    	checkGroebner(g, MIN,MAX,testType, monomialOrder, mmonorder, DEG);
+        Set g = new LinkedHashSet();
+        final int DEG = 3;
+        final int VARS = 5;
+        final int NUM = 4;
+        final int vars = integerArgument(1, VARS);
+        int num = integerArgument(1, NUM);
+        for (int p = 0; p < num; p++) {
+                Polynomial gi = polyArgument(MIN, MAX, testType, vars, DEG);
+                if (gi.toString().length() > 40) {
+                        // use string output as complexity bound and randomly remove complexity
+                        for (ListIterator i = gi.iterator(); i.hasNext(); ) {
+                                Arithmetic x = (Arithmetic)i.next();
+                                if (Utility.flip(random, 0.75))
+                                        i.set(x.zero());
+                        }
+            }
+                g.add(gi);
+                if (g.toString().length() > 100) {
+                        // use string output as complexity bound
+                        break;
+            }
+        }
+        checkGroebner(g, MIN,MAX,testType, monomialOrder, mmonorder, DEG);
     }
 
     private void checkGroebner(Set g, double MIN, double MAX, int testType, Comparator monomialOrder, String mmonorder, int DEG) throws MathLinkException {
-    	final int MEMBER_CHECK = 10;
-    	final int vars = ((Polynomial)g.iterator().next()).rank();
-    	String varlist = "{";
+        final int MEMBER_CHECK = 10;
+        final int vars = ((Polynomial)g.iterator().next()).rank();
+        String varlist = "{";
         final String multinomialVariables[] = {"X", "Y", "Z"};
-    	for (int v = 0; v < vars; v++) {
-    		varlist += (v>0 ? "," : "") +  (vars<=3 ? multinomialVariables[v] : "X" + v);
-    	}
-    	varlist += "}";
-    	System.out.println("Computing Groebner Basis of " + g);
-    	//@todo timeout this computation if it takes too long
-    	Collection GB = AlgebraicAlgorithms.groebnerBasis(g, monomialOrder);
-    	System.out.println("Groebner Basis " + GB);
-    	// check if GB is in ideal
-    	for (Iterator j = GB.iterator(); j.hasNext(); ) {
-    		String query = "FullSimplify[PolynomialReduce[" + j.next() + ",GroebnerBasis[" + listForm(g) + "," + varlist + ", MonomialOrder->" + mmonorder + "], " + varlist + ", MonomialOrder->" + mmonorder + "][[2]] == 0]";
-    	    String res = ml.evaluateToInputForm(query, 100);
-    	    assertTrue("True".equals(res), "Groebner Basis element is in ideal " + query );
-    	}
-    	// check identical residues on several examples
-    	for (int k = 0; k < MEMBER_CHECK; k++) {
-    		Polynomial f = polyArgument(MIN, MAX, testType, vars, DEG);
-    		System.out.println("Check member " + f);
-    		Polynomial r = AlgebraicAlgorithms.reduce(f, GB, monomialOrder);
-    		String query = "FullSimplify[PolynomialReduce[" + f + ",GroebnerBasis[" + listForm(g) + "," + varlist + ", MonomialOrder->" + mmonorder + "], " + varlist + ", MonomialOrder->" + mmonorder + "][[2]] == " + r + "]";
-    	    String res = ml.evaluateToInputForm(query, 80);
-    	    assertTrue("True".equals(res), "Same residue for each Groebner Basis " + query );
-    	}
+        for (int v = 0; v < vars; v++) {
+                varlist += (v>0 ? "," : "") +  (vars<=3 ? multinomialVariables[v] : "X" + v);
+        }
+        varlist += "}";
+        System.out.println("Computing Groebner Basis of " + g);
+        //@todo timeout this computation if it takes too long
+        Collection GB = AlgebraicAlgorithms.groebnerBasis(g, monomialOrder);
+        System.out.println("Groebner Basis " + GB);
+        // check if GB is in ideal
+        for (Iterator j = GB.iterator(); j.hasNext(); ) {
+                String query = "FullSimplify[PolynomialReduce[" + j.next() + ",GroebnerBasis[" + listForm(g) + "," + varlist + ", MonomialOrder->" + mmonorder + "], " + varlist + ", MonomialOrder->" + mmonorder + "][[2]] == 0]";
+            String res = ml.evaluateToInputForm(query, 100);
+            assertTrue("True".equals(res), "Groebner Basis element is in ideal " + query );
+        }
+        // check identical residues on several examples
+        for (int k = 0; k < MEMBER_CHECK; k++) {
+                Polynomial f = polyArgument(MIN, MAX, testType, vars, DEG);
+                System.out.println("Check member " + f);
+                Polynomial r = AlgebraicAlgorithms.reduce(f, GB, monomialOrder);
+                String query = "FullSimplify[PolynomialReduce[" + f + ",GroebnerBasis[" + listForm(g) + "," + varlist + ", MonomialOrder->" + mmonorder + "], " + varlist + ", MonomialOrder->" + mmonorder + "][[2]] == " + r + "]";
+            String res = ml.evaluateToInputForm(query, 80);
+            assertTrue("True".equals(res), "Same residue for each Groebner Basis " + query );
+        }
     }
 
     public void testGroebnerSpecific() throws MathLinkException {
@@ -541,32 +541,32 @@ public class FunctionTest extends check.TestCase {
         final double MAX = +10;
         final ValueFactory vf = Values.getDefault();
         try {
-        	final Polynomial mo = vf.MONOMIAL(new int[] {0,0,0,0,0,0,0});
-//        	-1+X0*X6
-//        	-1+X0*X4^2
-//        	-1+X0*X5^2
-//        	X4^2*X6+X3*X6+X1*X5^2+X1*X4^2-X1*X3
-//        	X2^2-2*X1*X6+X1^2
-//        	X6^2-X5^4+X4^4+2*X3*X5^2-X3^2
-//        	-1+X4^4-X3^2    	
-        	Set g = new LinkedHashSet(Arrays.asList(new Polynomial[] {
-        			vf.MONOMIAL(new int[] {1,0,0,0,0,0,1}).subtract(mo),
-        			vf.MONOMIAL(new int[] {1,0,0,0,2,0,0}).subtract(mo),
-        			vf.MONOMIAL(new int[] {1,0,0,0,0,2,0}).subtract(mo),
-        			vf.MONOMIAL(new int[] {0,0,0,0,2,0,1}).add(vf.MONOMIAL(new int[] {0,0,0,1,0,0,1})).add(vf.MONOMIAL(new int[] {0,1,0,0,0,2,0})).add(vf.MONOMIAL(new int[] {0,1,0,0,2,0,0})).subtract(vf.MONOMIAL(new int[] {0,1,0,1,0,0,0})),
-        			vf.MONOMIAL(vf.ONE(), new int[] {0,0,2,0,0,0,0}).add(vf.MONOMIAL(vf.valueOf(-2),new int[] {0,1,0,0,0,0,1})).add(vf.MONOMIAL(new int[] {0,2,0,0,0,0,0})),
-        			vf.MONOMIAL(vf.ONE(), new int[] {0,0,0,0,0,0,2}).subtract(vf.MONOMIAL(new int[] {0,0,0,0,0,4,0})).add(vf.MONOMIAL(new int[] {0,0,0,0,4,0,0})).add(vf.MONOMIAL(vf.valueOf(2), new int[] {0,0,0,1,0,2,0})).subtract(vf.MONOMIAL(new int[] {0,0,0,2,0,0,0})),
-        			vf.MONOMIAL(vf.ONE(), new int[] {0,0,0,0,4,0,0}).subtract(vf.MONOMIAL(new int[] {0,0,0,2,0,0,0})).subtract(mo),
-        	}));
-        	Comparator monomialOrder;
-        	String mmonorder;
-        	monomialOrder = AlgebraicAlgorithms.DEGREE_REVERSE_LEXICOGRAPHIC;
-        	mmonorder = "DegreeReverseLexicographic";
-        	assertTrue(!AlgebraicAlgorithms.reduce(mo, g, monomialOrder).isZero(), "1 is not reducible");
-        	checkGroebner(g, MIN, MAX, TYPE_INTEGER|TYPE_RATIONAL, monomialOrder, mmonorder, 6);
-        	monomialOrder = AlgebraicAlgorithms.LEXICOGRAPHIC;
-        	mmonorder = "Lexicographic";
-           	assertTrue(!AlgebraicAlgorithms.reduce(mo, g, monomialOrder).isZero(), "1 is not reducible");
+                final Polynomial mo = vf.MONOMIAL(new int[] {0,0,0,0,0,0,0});
+//              -1+X0*X6
+//              -1+X0*X4^2
+//              -1+X0*X5^2
+//              X4^2*X6+X3*X6+X1*X5^2+X1*X4^2-X1*X3
+//              X2^2-2*X1*X6+X1^2
+//              X6^2-X5^4+X4^4+2*X3*X5^2-X3^2
+//              -1+X4^4-X3^2            
+                Set g = new LinkedHashSet(Arrays.asList(new Polynomial[] {
+                                vf.MONOMIAL(new int[] {1,0,0,0,0,0,1}).subtract(mo),
+                                vf.MONOMIAL(new int[] {1,0,0,0,2,0,0}).subtract(mo),
+                                vf.MONOMIAL(new int[] {1,0,0,0,0,2,0}).subtract(mo),
+                                vf.MONOMIAL(new int[] {0,0,0,0,2,0,1}).add(vf.MONOMIAL(new int[] {0,0,0,1,0,0,1})).add(vf.MONOMIAL(new int[] {0,1,0,0,0,2,0})).add(vf.MONOMIAL(new int[] {0,1,0,0,2,0,0})).subtract(vf.MONOMIAL(new int[] {0,1,0,1,0,0,0})),
+                                vf.MONOMIAL(vf.ONE(), new int[] {0,0,2,0,0,0,0}).add(vf.MONOMIAL(vf.valueOf(-2),new int[] {0,1,0,0,0,0,1})).add(vf.MONOMIAL(new int[] {0,2,0,0,0,0,0})),
+                                vf.MONOMIAL(vf.ONE(), new int[] {0,0,0,0,0,0,2}).subtract(vf.MONOMIAL(new int[] {0,0,0,0,0,4,0})).add(vf.MONOMIAL(new int[] {0,0,0,0,4,0,0})).add(vf.MONOMIAL(vf.valueOf(2), new int[] {0,0,0,1,0,2,0})).subtract(vf.MONOMIAL(new int[] {0,0,0,2,0,0,0})),
+                                vf.MONOMIAL(vf.ONE(), new int[] {0,0,0,0,4,0,0}).subtract(vf.MONOMIAL(new int[] {0,0,0,2,0,0,0})).subtract(mo),
+                }));
+                Comparator monomialOrder;
+                String mmonorder;
+                monomialOrder = AlgebraicAlgorithms.DEGREE_REVERSE_LEXICOGRAPHIC;
+                mmonorder = "DegreeReverseLexicographic";
+                assertTrue(!AlgebraicAlgorithms.reduce(mo, g, monomialOrder).isZero(), "1 is not reducible");
+                checkGroebner(g, MIN, MAX, TYPE_INTEGER|TYPE_RATIONAL, monomialOrder, mmonorder, 6);
+                monomialOrder = AlgebraicAlgorithms.LEXICOGRAPHIC;
+                mmonorder = "Lexicographic";
+                assertTrue(!AlgebraicAlgorithms.reduce(mo, g, monomialOrder).isZero(), "1 is not reducible");
             checkGroebner(g, MIN, MAX, TYPE_INTEGER|TYPE_RATIONAL, monomialOrder, mmonorder, 6);
         }
         catch (MathLinkException e) {
@@ -877,7 +877,7 @@ public class FunctionTest extends check.TestCase {
                 {0,1},
                 {0,0}
             });
-            b = vf.valueOf(new Arithmetic[]{vf.ZERO,vf.symbol("a")});
+            b = vf.valueOf(new Arithmetic[]{vf.ZERO(),vf.symbol("a")});
             eta = vf.valueOf(new Symbol[]{vf.symbol("z0"),vf.symbol("v0")});
             System.out.println("train dynamics with constant acceleration a as inhomogeneous part and initial value " + eta);
             checkdSolve(A, b, tau, eta);
@@ -888,7 +888,7 @@ public class FunctionTest extends check.TestCase {
                 {0,0,0,1},
                 {0,0,0,0},
             });
-            b = vf.valueOf(new Arithmetic[]{vf.ZERO,vf.ZERO,vf.ZERO,vf.symbol("b")});
+            b = vf.valueOf(new Arithmetic[]{vf.ZERO(),vf.ZERO(),vf.ZERO(),vf.symbol("b")});
             eta = vf.valueOf(new Symbol[]{vf.symbol("a1"),vf.symbol("a2"),vf.symbol("a3"),vf.symbol("a4")});
             checkdSolve(A, b, tau, eta);
         }
@@ -1085,16 +1085,16 @@ public class FunctionTest extends check.TestCase {
         Tensor x = vf.ZERO(deg);
         for (ListIterator i = x.iterator(); i.hasNext(); ) {
             i.next();
-        	i.set(randomArgument(min, max, testType));
+                i.set(randomArgument(min, max, testType));
         }
         return vf.asPolynomial(x);
     }
     private Polynomial polyArgument(double min, double max, int testType, int varrank, int maxpartialdeg) {
-    	int deg[] = new int[varrank];
-	for (int di = 0; di < deg.length; di++) {
-		deg[di] = integerArgument(1, maxpartialdeg);
-	}
-	return polyArgument(min, max, testType, deg);
+        int deg[] = new int[varrank];
+        for (int di = 0; di < deg.length; di++) {
+                deg[di] = integerArgument(1, maxpartialdeg);
+        }
+        return polyArgument(min, max, testType, deg);
     }
     
     // Helpers

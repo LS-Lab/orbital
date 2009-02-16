@@ -19,6 +19,8 @@ import orbital.math.Real;
 
 import orbital.math.MathUtilities;
 import java.lang.reflect.InvocationTargetException;
+
+import orbital.math.ValueFactory;
 import orbital.math.Values;
 import orbital.math.Vector;
 import orbital.math.Matrix;
@@ -119,11 +121,14 @@ public interface Operations /* implements ArithmeticOperations */ {
                 return (BinaryFunction) plus.apply( times.apply(Functions.projectFirst, Functions.projectSecond), divide.apply(Functionals.on(i, Functions.square), Values.getDefaultInstance().valueOf(2)));
             } 
             public Real norm() {
-                return Values.POSITIVE_INFINITY;
+                return valueFactory().POSITIVE_INFINITY();
             }
             public String toString() {
                 return "+";
             } 
+                public ValueFactory valueFactory() {
+                        return Values.getDefault();
+                }
         };
 
     /**
@@ -142,7 +147,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final Function/*<Arithmetic,Arithmetic>*/ sum = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ a) {
-                return Functionals.foldLeft(plus, Values.getDefault().ZERO(), Utility.asIterator(a));
+                return Functionals.foldLeft(plus, valueFactory().ZERO(), Utility.asIterator(a));
             }
             public Function derive() {
                 throw new ArithmeticException(this + " is only partially derivable");
@@ -151,7 +156,7 @@ public interface Operations /* implements ArithmeticOperations */ {
                 throw new ArithmeticException(this + " is only (undefinitely) integrable with respect to a single variable");
             } 
             public Real norm() {
-                return Values.POSITIVE_INFINITY;
+                return valueFactory().POSITIVE_INFINITY();
             }
             public String toString() {
                 return "\u2211";
@@ -170,18 +175,21 @@ public interface Operations /* implements ArithmeticOperations */ {
                 return ((Arithmetic) x).minus();
             } 
             public Function derive() {
-                return Functions.constant(Values.getDefault().MINUS_ONE());
+                return Functions.constant(valueFactory().MINUS_ONE());
             } 
             public Function integrate() {
                 // return (Function) minus.apply(Functions.id.integrate());
-                return (Function) minus.apply( Operations.divide.apply(Functions.square, Values.getDefaultInstance().valueOf(2)) );
+                return (Function) minus.apply( Operations.divide.apply(Functions.square, valueFactory().valueOf(2)) );
             }
             public Real norm() {
-                return Values.POSITIVE_INFINITY;
+                return valueFactory().POSITIVE_INFINITY();
             }
             public String toString() {
                 return "-";
             } 
+                public ValueFactory valueFactory() {
+                        return Values.getDefault();
+                }
         };
 
     /**
@@ -201,21 +209,24 @@ public interface Operations /* implements ArithmeticOperations */ {
             } 
             public BinaryFunction derive() {
                 return (BinaryFunction) Functionals.genericCompose(new BinaryFunction[][] {
-                    {Functions.binaryConstant(Values.getDefault().ONE()), Functions.binaryConstant(Values.getDefault().MINUS_ONE())}
+                    {Functions.binaryConstant(valueFactory().ONE()), Functions.binaryConstant(valueFactory().MINUS_ONE())}
                 });
             } 
             public BinaryFunction integrate(int i) {
                 Utility.pre(0 <= i && i <= 1, "binary integral");
                 return i == 0
-                    ? (BinaryFunction) subtract.apply( divide.apply(Functionals.onFirst(Functions.square), Values.getDefaultInstance().valueOf(2)), times.apply(Functions.projectFirst, Functions.projectSecond))
-                    : (BinaryFunction) subtract.apply( times.apply(Functions.projectFirst, Functions.projectSecond), divide.apply(Functionals.onSecond(Functions.square), Values.getDefaultInstance().valueOf(2)));
+                    ? (BinaryFunction) subtract.apply( divide.apply(Functionals.onFirst(Functions.square), valueFactory().valueOf(2)), times.apply(Functions.projectFirst, Functions.projectSecond))
+                    : (BinaryFunction) subtract.apply( times.apply(Functions.projectFirst, Functions.projectSecond), divide.apply(Functionals.onSecond(Functions.square), valueFactory().valueOf(2)));
             } 
             public Real norm() {
-                return Values.POSITIVE_INFINITY;
+                return valueFactory().POSITIVE_INFINITY();
             }
             public String toString() {
                 return "-";
             } 
+                public ValueFactory valueFactory() {
+                        return Values.getDefault();
+                }
         };
 
     // junctors of a general group (A,&sdot;)
@@ -249,15 +260,18 @@ public interface Operations /* implements ArithmeticOperations */ {
             public BinaryFunction integrate(int i) {
                 Utility.pre(0 <= i && i <= 1, "binary integral");
                 return i == 0
-                    ? (BinaryFunction) divide.apply( times.apply(Functionals.onFirst(Functions.square), Functions.projectSecond), Values.getDefaultInstance().valueOf(2))
-                    : (BinaryFunction) divide.apply( times.apply(Functions.projectFirst, Functionals.onSecond(Functions.square)), Values.getDefaultInstance().valueOf(2));
+                    ? (BinaryFunction) divide.apply( times.apply(Functionals.onFirst(Functions.square), Functions.projectSecond), valueFactory().valueOf(2))
+                    : (BinaryFunction) divide.apply( times.apply(Functions.projectFirst, Functionals.onSecond(Functions.square)), valueFactory().valueOf(2));
             } 
             public Real norm() {
-                return Values.POSITIVE_INFINITY;
+                return valueFactory().POSITIVE_INFINITY();
             }
             public String toString() {
                 return "*";
             } 
+                public ValueFactory valueFactory() {
+                        return Values.getDefault();
+                }
         };
 
     /**
@@ -275,7 +289,13 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final Function/*<Arithmetic,Arithmetic>*/ product = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ a) {
-                return Functionals.foldLeft(times, Values.getDefault().ONE(), Utility.asIterator(a));
+            	Iterator i = Utility.asIterator(a);
+            	Arithmetic o;
+            	if (i.hasNext()) 
+            		o = ((Arithmetic)i.next()).one();
+            	else
+            		o = ((Arithmetic)a).valueFactory().ONE();
+                return Functionals.foldLeft(times, o, Utility.asIterator(a));
             }
             public Function derive() {
                 throw new ArithmeticException(this + " is only partially derivable");
@@ -284,11 +304,14 @@ public interface Operations /* implements ArithmeticOperations */ {
                 throw new ArithmeticException(this + " is only (undefinitely) integrable with respect to a single variable");
             } 
             public Real norm() {
-                return Values.POSITIVE_INFINITY;
+                return valueFactory().POSITIVE_INFINITY();
             }
             public String toString() {
                 return "\u220f";
             } 
+    		public ValueFactory valueFactory() {
+    			return Values.getDefault();
+    		}
         };
 
     /**
@@ -303,17 +326,20 @@ public interface Operations /* implements ArithmeticOperations */ {
                 return ((Arithmetic) x).inverse();
             } 
             public Function derive() {
-                return Functionals.compose(minus, Functions.pow(Values.getDefaultInstance().valueOf(-2)));
+                return Functionals.compose(minus, Functions.pow(valueFactory().valueOf(-2)));
             } 
             public Function integrate() {
                 return Functions.log;
             }
             public Real norm() {
-                return Values.POSITIVE_INFINITY;
+                return valueFactory().POSITIVE_INFINITY();
             }
             public String toString() {
                 return "^-1";
             } 
+                public ValueFactory valueFactory() {
+                        return Values.getDefault();
+                }
         };
 
     /**
@@ -326,7 +352,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final BinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/ divide = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
-                Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer().apply(new Arithmetic[] {
+                Arithmetic operands[] = (Arithmetic[]) ((Arithmetic)x).valueFactory().getCoercer().apply(new Arithmetic[] {
                     (Arithmetic) x, (Arithmetic) y
                 });
                 return operands[0].divide(operands[1]);
@@ -340,15 +366,18 @@ public interface Operations /* implements ArithmeticOperations */ {
             public BinaryFunction integrate(int i) {
                 Utility.pre(0 <= i && i <= 1, "binary integral");
                 return i == 0
-                    ? (BinaryFunction) divide.apply(divide.apply(Functionals.onFirst(Functions.square), Functions.projectSecond), Values.getDefaultInstance().valueOf(2))
+                    ? (BinaryFunction) divide.apply(divide.apply(Functionals.onFirst(Functions.square), Functions.projectSecond), valueFactory().valueOf(2))
                     : (BinaryFunction) times.apply(Functionals.onSecond(Functions.log), Functions.projectFirst);
             } 
             public Real norm() {
-                return Values.POSITIVE_INFINITY;
+                return valueFactory().POSITIVE_INFINITY();
             }
             public String toString() {
                 return "/";
             } 
+                public ValueFactory valueFactory() {
+                        return Values.getDefault();
+                }
         };
 
     // extended junctors
@@ -363,7 +392,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final BinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/ power = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
-                Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer().apply(new Arithmetic[] {
+                Arithmetic operands[] = (Arithmetic[]) ((Arithmetic)x).valueFactory().getCoercer().apply(new Arithmetic[] {
                     (Arithmetic) x, (Arithmetic) y
                 });
                 return operands[0].power(operands[1]);
@@ -376,15 +405,18 @@ public interface Operations /* implements ArithmeticOperations */ {
             public BinaryFunction integrate(int i) {
                 Utility.pre(0 <= i && i <= 1, "binary integral");
                 return i == 0
-                    ? (BinaryFunction) divide.apply(power.apply(Functions.projectFirst, plus.apply(Functions.projectSecond, Values.getDefaultInstance().valueOf(1))), plus.apply(Functions.projectSecond, Values.getDefaultInstance().valueOf(1)))
+                    ? (BinaryFunction) divide.apply(power.apply(Functions.projectFirst, plus.apply(Functions.projectSecond, valueFactory().ONE())), plus.apply(Functions.projectSecond, valueFactory().ONE()))
                     : (BinaryFunction) divide.apply(power, Functionals.onFirst(Functions.log));
             } 
             public Real norm() {
-                return Values.POSITIVE_INFINITY;
+                return valueFactory().POSITIVE_INFINITY();
             }
             public String toString() {
                 return "^";
             } 
+    		public ValueFactory valueFactory() {
+    			return Values.getDefault();
+    		}
         };
 
     // order operations
@@ -414,11 +446,14 @@ public interface Operations /* implements ArithmeticOperations */ {
                 throw new UnsupportedOperationException("integrate " + this);
             } 
             public Real norm() {
-                return Values.POSITIVE_INFINITY;
+                return valueFactory().POSITIVE_INFINITY();
             }
             public String toString() {
                 return "min";
             } 
+    		public ValueFactory valueFactory() {
+    			return Values.getDefault();
+    		}
         };
 
     /**
@@ -441,7 +476,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final Function/*<Arithmetic,Arithmetic>*/ inf = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ a) {
-                return Functionals.foldLeft(min, Values.POSITIVE_INFINITY, Utility.asIterator(a));
+                return Functionals.foldLeft(min, ((Arithmetic)a).valueFactory().POSITIVE_INFINITY(), Utility.asIterator(a));
             }
             public Function derive() {
                 throw new UnsupportedOperationException(this + "'");
@@ -450,11 +485,14 @@ public interface Operations /* implements ArithmeticOperations */ {
                 throw new UnsupportedOperationException("integrate " + this);
             } 
             public Real norm() {
-                return Values.POSITIVE_INFINITY;
+                return valueFactory().POSITIVE_INFINITY();
             }
             public String toString() {
                 return "\u2293";
             } 
+    		public ValueFactory valueFactory() {
+    			return Values.getDefault();
+    		}
         };
 
     /**
@@ -479,11 +517,14 @@ public interface Operations /* implements ArithmeticOperations */ {
                 throw new UnsupportedOperationException("integrate " + this);
             } 
             public Real norm() {
-                return Values.POSITIVE_INFINITY;
+                return valueFactory().POSITIVE_INFINITY();
             }
             public String toString() {
                 return "max";
             } 
+    		public ValueFactory valueFactory() {
+    			return Values.getDefault();
+    		}
         };
 
     /**
@@ -506,7 +547,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final Function/*<Arithmetic,Arithmetic>*/ sup = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ a) {
-                return Functionals.foldLeft(max, Values.NEGATIVE_INFINITY, Utility.asIterator(a));
+                return Functionals.foldLeft(max, ((Arithmetic)a).valueFactory().NEGATIVE_INFINITY(), Utility.asIterator(a));
             }
             public Function derive() {
                 throw new UnsupportedOperationException(this + "'");
@@ -515,11 +556,14 @@ public interface Operations /* implements ArithmeticOperations */ {
                 throw new UnsupportedOperationException("integrate " + this);
             } 
             public Real norm() {
-                return Values.POSITIVE_INFINITY;
+                return valueFactory().POSITIVE_INFINITY();
             }
             public String toString() {
                 return "\u2294";
             } 
+    		public ValueFactory valueFactory() {
+    			return Values.getDefault();
+    		}
         };
 
     

@@ -630,7 +630,7 @@ public class ArithmeticFormat extends Format {
         for (Iterator index = p.indices(); index.hasNext(); ) {
             final Vector/*<Integer>*/ i = (Vector)index.next();
             final Arithmetic ci = p.get(i);
-            final boolean constantTerm = Setops.all(i.iterator(), Functionals.bindSecond(Predicates.equal, Values.ZERO));
+            final boolean constantTerm = Setops.all(i.iterator(), Functionals.bindSecond(Predicates.equal, ci.zero()));
             // only print nonzero elements (but print the 0-th coefficient if it is the only one)
             if (!ci.isZero()
                 || (constantTerm && p.degreeValue() <= 0)) {
@@ -819,7 +819,7 @@ public class ArithmeticFormat extends Format {
                     for (int i = 0; i < v.dimension().height; i++) {
                         col = (List) rows.get(i);
                         for (int j = 0; j < v.dimension().width; j++) {
-                            v.set(i, j, j < col.size() ? (Arithmetic) col.get(j) : Values.ZERO);
+                            v.set(i, j, j < col.size() ? (Arithmetic) col.get(j) : vf.ZERO());
                         } 
                     } 
                     return v;

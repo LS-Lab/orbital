@@ -141,7 +141,7 @@ public class ChartModel implements Serializable {
      * On the axis<sub>i</sub>, marks will be placed with distance scale<sub>i</sub>.
      */
     public void setScale(Vector scale) {
-        if (((Comparable) Operations.inf.apply(scale)).compareTo(Values.ZERO) <= 0)
+        if (((Comparable) Operations.inf.apply(scale)).compareTo(Values.getDefault().ZERO()) <= 0)
             throw new IllegalArgumentException("Scales must neither negative nor 0");
         Vector old = this.scale;
         this.scale = scale;

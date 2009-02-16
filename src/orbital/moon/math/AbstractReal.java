@@ -406,15 +406,15 @@ abstract class AbstractReal extends AbstractComplex implements Real {
          */
         private BigDecimal value;
         public Big(double v) {
-        	this(convert(v));
+                this(convert(v));
         }
-		private static BigDecimal convert(double v) {
-			try {
+                private static BigDecimal convert(double v) {
+                        try {
                 return BigDecimal.valueOf(v);
-        	} catch(NumberFormatException ex) {
-        		throw (NumberFormatException)new NumberFormatException("Cannot represent " + v).initCause(ex);
-        	}
-		}
+                } catch(NumberFormatException ex) {
+                        throw (NumberFormatException)new NumberFormatException("Cannot represent " + v).initCause(ex);
+                }
+                }
         public Big(BigDecimal v) {
             value = v;
         }
@@ -556,7 +556,7 @@ abstract class AbstractReal extends AbstractComplex implements Real {
             if (bc instanceof Integer) {
                 return power((Integer)bc);
             } else {
-            	try {
+                try {
                     return Values.getDefault().valueOf(Math.pow(ArithmeticValuesImpl.doubleValueExact((Number)this), ArithmeticValuesImpl.doubleValueExact(b)));
                 } catch(ArithmeticException ex) {
                     throw (ArithmeticException) new ArithmeticException("exponentation is possibly too big: " + this + " ^ " + b).initCause(ex);

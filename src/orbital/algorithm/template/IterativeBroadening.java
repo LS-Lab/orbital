@@ -51,7 +51,7 @@ public class IterativeBroadening/*<A,S>*/ extends DepthFirstBoundingSearch/*<A,S
 
     public orbital.math.functional.Function complexity() {
         //TODO: think about changing all infinite functions to symbolic or anything which is not constant, but supports norm=infinity
-        return Functions.constant(Values.POSITIVE_INFINITY);
+        return Functions.constant(Values.getDefault().POSITIVE_INFINITY());
     }
     public boolean isOptimal() {
         return false;

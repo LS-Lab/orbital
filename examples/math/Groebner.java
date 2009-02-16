@@ -124,8 +124,8 @@ public class Groebner extends MathTest {
                 {0,1}
             }),
             vf.polynomial(new Arithmetic[][] {
-                {vf.ZERO,beta,vf.valueOf(-1)},
-                {alpha,vf.ZERO,vf.ZERO}
+                {vf.ZERO(),beta,vf.valueOf(-1)},
+                {alpha,vf.ZERO(),vf.ZERO()}
             })
         });
         // the Groebner basis of m

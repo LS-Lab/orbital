@@ -41,6 +41,9 @@ class AbstractQuotient/*<M extends Arithmetic>*/ implements Quotient/*<M>*/, Ser
     public AbstractQuotient(Euclidean/*>M<*/ val, Euclidean m) {
         this(val, new EuclideanModulo(m));
     }
+    
+    public ValueFactory valueFactory() { return value.valueFactory(); }
+
     private static class EuclideanModulo/*<M extends Arithmetic>*/ implements Function/*<M,M>*/, Serializable {
         private static final long serialVersionUID = -8846695670222356251L;
         private final Euclidean m;

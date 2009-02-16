@@ -139,7 +139,7 @@ public class ParallelBranchAndBound/*<A,S>*/ extends BranchAndBound/*<A,S>*/ {
      * @serial
      * @todo serialization?
      */
-    private Real bestAccumulatedCost = Values.NaN;
+    private Real bestAccumulatedCost = Values.getDefault().NaN();
 
     /**
      * Sustain transient variable initialization when deserializing.

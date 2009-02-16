@@ -41,7 +41,7 @@ public class PolynomialEvaluation{
      */
     public static Object apply(Polynomial f, final Arithmetic a) {
         // horner schema is (|0, &lambda;c,b. c+b*a|) for foldRight like banana
-        return Functionals.banana(Values.ZERO, new BinaryFunction() {
+        return Functionals.banana(a.zero(), new BinaryFunction() {
                 public Object apply(Object c, Object b) {
                     return ((Arithmetic)c).add(((Arithmetic)b).multiply(a));
                 }

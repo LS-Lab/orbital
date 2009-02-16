@@ -196,7 +196,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
     public /*<R extends Scalar>*/ Vector/*<R>*/ BASE(int n, int i) {
         ArithmeticVector/*<R>*/ base = (ArithmeticVector/*<R>*/) (Vector/*<R>*/) newInstance(n);
         for (int j = 0; j < base.dimension(); j++)
-            base.D[j] = (Arithmetic/*>R<*/) (j == i ? ONE : ZERO);
+            base.D[j] = (Arithmetic/*>R<*/) (j == i ? ONE() : ZERO());
         return base;
     } 
 
@@ -337,11 +337,11 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
     }
 
     public /*<R extends Arithmetic>*/ Tensor/*<R>*/ asTensor(Polynomial/*<R,Vector<Integer>>*/ p) {
-    	if (p instanceof UnivariatePolynomial) {
-    		return ((UnivariatePolynomial)p).getCoefficientVector();
-    	} else {
+        if (p instanceof UnivariatePolynomial) {
+                return ((UnivariatePolynomial)p).getCoefficientVector();
+        } else {
             return ((AbstractMultivariatePolynomial)p).tensorViewOfCoefficients();
-    	}
+        }
     }
 
     public /*<R extends Arithmetic, S extends Arithmetic>*/ Polynomial/*<R,S>*/ constant(Polynomial/*<R,S>*/ p) {
@@ -352,9 +352,9 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
 
     // @internal horribly complicate implementation
     public final /*<R extends Arithmetic>*/ Polynomial/*<R,Vector<Integer>>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, int[] exponents) {
-    	if (exponents.length == 1) {
-    		return MONOMIAL(coefficient, exponents[0]);
-    	}
+        if (exponents.length == 1) {
+                return MONOMIAL(coefficient, exponents[0]);
+        }
         int[] dim = new int[exponents.length];
         for (int k = 0; k < dim.length; k++)
             dim[k] = exponents[k] + 1;
@@ -365,10 +365,10 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
         return m;
     }
     public final /*<R extends Arithmetic>*/ UnivariatePolynomial/*<R>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, int exponent) {
-    	Arithmetic v[] = new Arithmetic[exponent + 1];
-    	Arrays.fill(v, coefficient.zero());
-    	v[exponent] = coefficient;
-    	return polynomial(v);
+        Arithmetic v[] = new Arithmetic[exponent + 1];
+        Arrays.fill(v, coefficient.zero());
+        v[exponent] = coefficient;
+        return polynomial(v);
     }
 
     // univariate polynomial constructors and utilities
@@ -411,7 +411,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
     // symbol constructors
 
     public Symbol symbol(String signifier) {
-        return new AbstractSymbol(signifier);
+        return new AbstractSymbol(signifier, this);
     }
 
     /**
@@ -656,7 +656,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
                         // rational to integer narrowing
                         return c.numerator();
                 } else {
-                	// could return canceled out or original representative
+                        // could return canceled out or original representative
                         return (Rational) c;
                 }
             } else {

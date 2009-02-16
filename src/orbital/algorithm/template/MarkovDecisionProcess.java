@@ -278,8 +278,8 @@ public abstract class MarkovDecisionProcess/*<A,S,M extends MarkovDecisionProble
             return new BinaryFunction/*<S,A,Real>*/() {
                     public Object/*>Real<*/ apply(Object/*>S<*/ state, Object/*>A<*/ action) {
                         // cost = Q<sub>U</sub>(s,a)
-                        Real cost = valueFactory.ZERO;
-                        Real originalCost = valueFactory.NaN;
+                        Real cost = valueFactory.ZERO();
+                        Real originalCost = valueFactory.NaN();
                         if (logger.isLoggable(Level.FINEST)) logger.log(Level.FINEST, "DPMDP.Q", "\tc(" + action + "," + state + ") ...");
                         final MarkovDecisionProblem/*<A,S,M>*/ problem = getProblem();
                         final Iterator/*<S>*/ r = problem.states(action, state);

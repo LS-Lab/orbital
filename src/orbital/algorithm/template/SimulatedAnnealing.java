@@ -147,7 +147,7 @@ public class SimulatedAnnealing/*<A,S>*/ extends ScheduledLocalOptimizerSearch/*
      * O(&infin;).
      */
     public orbital.math.functional.Function complexity() {
-        return orbital.math.functional.Functions.constant(Values.POSITIVE_INFINITY);
+        return orbital.math.functional.Functions.constant(Values.getDefault().POSITIVE_INFINITY());
     }
     /**
      * O(b) where b is the branching factor and d the solution depth.

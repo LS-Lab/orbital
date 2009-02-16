@@ -123,7 +123,7 @@ public class IterativeExpansion/*<A,S>*/
 
     protected Object/*>S<*/ solveImpl(GeneralSearchProblem/*<A,S>*/ problem) {
         Object/*>S<*/ initial = problem.getInitialState();
-        return solveByIterativeExpand(new NodeInfo/*<A,S>*/(initial, (Real)getEvaluation().apply(initial)), Values.POSITIVE_INFINITY);
+        return solveByIterativeExpand(new NodeInfo/*<A,S>*/(initial, (Real)getEvaluation().apply(initial)), Values.getDefault().POSITIVE_INFINITY());
     }
 
     /**
@@ -156,7 +156,7 @@ public class IterativeExpansion/*<A,S>*/
         }
         if (successors.isEmpty()) {
             //System.err.println("\tupdated cost to " + node + " (due to no successors)");
-            node.setCost(Values.POSITIVE_INFINITY);
+            node.setCost(bound.valueFactory().POSITIVE_INFINITY());
             return null;
         }
         // sort successors in order to have fast access to min and second-best min
@@ -197,7 +197,7 @@ public class IterativeExpansion/*<A,S>*/
      * @see Comparator#compare(Object,Object)
      */
     private static final int boundCompare(Real a, Real b) {
-        if (a.equals(Values.POSITIVE_INFINITY))
+        if (a.equals(a.valueFactory().POSITIVE_INFINITY()))
             //@internal even for b == Values.POSITIVE_INFINITY (here)
             return 1;
         return a.compareTo(b);
