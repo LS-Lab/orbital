@@ -29,7 +29,7 @@ import orbital.logic.sign.concrete.Notation;
  */
 public class FunctionTest extends check.TestCase {
     private static final int TEST_REPETITION = 100;
-    private static final int TEST_GROEBNER_REPETITION = 5;
+    private static final int TEST_GROEBNER_REPETITION = 2;
     private static final Values vf;
     static {
         // make format precision compatible with Mathematica for appropriate numerical comparisons
@@ -72,9 +72,9 @@ public class FunctionTest extends check.TestCase {
     public static final int TYPE_SYMBOL = 1<<16;
 
     public static void main(String[] argv) {
-        try {FunctionTest t=new FunctionTest();t.disabled_testGroebnerSpecific();t.testGroebner();}catch(Exception e) {e.printStackTrace();}
+        //try {FunctionTest t=new FunctionTest();t.disabled_testGroebnerSpecific();t.testGroebner();}catch(Exception e) {e.printStackTrace();}
         //try {new FunctionTest().testdSolve_fully_symbolic();}catch(Exception e) {e.printStackTrace();}
-        //junit.textui.TestRunner.run(suite());
+        junit.textui.TestRunner.run(suite());
     }
     public static Test suite() {
         //@internal could perhaps use RepeatedTest for testCalculations
@@ -130,7 +130,190 @@ public class FunctionTest extends check.TestCase {
     }
 
 
-    public void testCalculations() {
+    final double MIN = -1000;
+    final double MAX = +1000;
+    final double EPS = Double.longBitsToDouble(Double.doubleToLongBits(1.0)+1)-1.0;
+    final double SMIN = -10;
+    final double SMAX = +10;
+    final double PI = Math.PI;
+    final int scalarTypes = TYPE_INTEGER | TYPE_RATIONAL| TYPE_REAL | TYPE_COMPLEX;
+    public void test_calc_id() {
+    	//delta, logistic, reciprocal, sign
+    	//@todo id, zero with tensor once Functions.zero has been adapted
+    	testCalculations("(#1)&",       Functions.id, MIN, MAX, TYPE_ALL, TYPE_ALL);
+    }
+    public void test_calc_1() {
+    	testCalculations("(1)&",        Functions.one, MIN, MAX, TYPE_ALL, TYPE_ALL);
+    }
+    public void test_calc_0() {
+    	testCalculations("(0)&",        Functions.zero, MIN, MAX, TYPE_ALL, TYPE_ALL);
+    }
+    public void test_calc_plus() {
+    	testCalculations("Plus",        Operations.plus, MIN, MAX, TYPE_ALL, scalarTypes);
+    }
+    public void test_calc_plus_tensor() {
+    	testCalculations("Plus",        Operations.plus, MIN, MAX, TYPE_TENSOR, scalarTypes);
+    }
+    public void test_calc_plus_tensor_real() {
+    	testCalculations("Plus",        Operations.plus, MIN, MAX, TYPE_TENSOR, TYPE_REAL);
+    }
+    public void test_calc_subtract() {
+    	testCalculations("Subtract",    Operations.subtract, MIN, MAX, TYPE_ALL, scalarTypes);
+    }
+    public void test_calc_subtract_tensor_real() {
+    	testCalculations("Subtract",    Operations.subtract, MIN, MAX, TYPE_TENSOR, TYPE_REAL);
+    }
+    public void test_calc_times() {
+    	testCalculations("Times",       Operations.times, MIN, MAX, scalarTypes, scalarTypes);
+    }
+    //@todo Operations.times with TYPE_TENSOR
+    public void test_calc_dot() {
+    	testCalculations("Dot", Operations.times, MIN, MAX, TYPE_MATRIX, scalarTypes);
+    }
+    //testCalculations("Dot", Operations.times, MIN, MAX, TYPE_MATRIX, TYPE_REAL);
+    public void test_calc_inverse() {
+    	testCalculations("Inverse",   Operations.inverse, MIN, MAX, TYPE_SCALAR, scalarTypes);
+    }
+    public void test_calc_divide() {
+    	testCalculations("Divide",    Operations.divide, MIN, MAX, TYPE_REAL | TYPE_COMPLEX, scalarTypes);
+    }
+    public void test_calc_power() {
+    	testCalculations("Power",     Operations.power, MIN, MAX, new int[] {TYPE_ALL, TYPE_INTEGER}, scalarTypes);
+    }
+    //testCalculations("Power",     Operations.power, MIN, MAX);
+    public void test_calc_minus() {
+    	testCalculations("Minus",       Operations.minus, MIN, MAX, TYPE_ALL, scalarTypes);
+    }
+    //testCalculations("Inverse",   Operations.inverse, MIN, MAX, TYPE_MATRIX);
+    public void test_calc_exp() {
+    	testCalculations("Exp",     Functions.exp, -10, 10, scalarTypes, TYPE_NONE);
+    }
+    public void test_calc_log() {
+    	testCalculations("Log",     Functions.log, EPS, MAX, scalarTypes, TYPE_NONE);
+    }
+    public void test_calc_sqrt() {
+    	testCalculations("Sqrt",        Functions.sqrt, 0, MAX, scalarTypes, TYPE_NONE);
+    }
+    public void test_calc_abs() {
+    	testCalculations("Abs",         Functions.norm, MIN, MAX, TYPE_ALL, TYPE_ALL);
+    }
+    public void test_calc_pow2() {
+    	testCalculations("(#1^2)&",     Functions.square, MIN, MAX, scalarTypes | TYPE_MATRIX, scalarTypes);
+    }
+    //testCalculations("DiracDelta",Functions.diracDelta, MIN, MAX);
+    public void test_calc_sin() {
+    	testCalculations("Sin",         Functions.sin, SMIN, SMAX, scalarTypes, TYPE_NONE);
+    }
+    public void test_calc_cos() {
+    	testCalculations("Cos",         Functions.cos, SMIN, SMAX, scalarTypes, TYPE_NONE);
+    }
+    public void test_calc_tan() {
+    	testCalculations("Tan",         Functions.tan, SMIN, SMAX, scalarTypes, TYPE_NONE); //...
+    }
+    public void test_calc_cot() {
+    	testCalculations("Cot",         Functions.cot, -PI+EPS, -EPS, scalarTypes, TYPE_NONE); //...
+    }
+    public void test_calc_cot2() {
+    	testCalculations("Cot",         Functions.cot, EPS, PI-EPS, scalarTypes, TYPE_NONE);
+    }
+    public void test_calc_csc() {
+    	testCalculations("Csc",         Functions.csc, EPS, SMAX, scalarTypes, TYPE_NONE);
+    }
+    public void test_calc_csc2() {
+    	testCalculations("Csc",         Functions.csc, SMIN, EPS, scalarTypes, TYPE_NONE);
+    }
+    public void test_calc_sec() {
+    	testCalculations("Sec",         Functions.sec, SMIN, SMAX, scalarTypes, TYPE_NONE);
+    }
+    public void test_calc_sinh() {
+    	testCalculations("Sinh",        Functions.sinh, SMIN, SMAX, scalarTypes, TYPE_NONE);
+    }
+    public void test_calc_cosh() {
+    	testCalculations("Cosh",        Functions.cosh, SMIN, SMAX, scalarTypes, TYPE_NONE);
+    }
+    public void test_calc_tanh() {
+    	testCalculations("Tanh",        Functions.tanh, SMIN, SMAX, scalarTypes, TYPE_NONE);
+    }
+    public void test_calc_coth() {
+    	testCalculations("Coth",        Functions.coth, EPS, SMAX, scalarTypes, TYPE_NONE);
+    }
+    public void test_calc_coth2() {
+    	testCalculations("Coth",        Functions.coth, SMIN, EPS, scalarTypes, TYPE_NONE);
+    }
+    public void test_calc_csch() {
+    	testCalculations("Csch",        Functions.csch, SMIN, EPS, scalarTypes, TYPE_NONE);
+    }
+    public void test_calc_csch2() {
+    	testCalculations("Csch",        Functions.csch, EPS, SMAX, scalarTypes, TYPE_NONE);
+    }
+    public void test_calc_sech() {
+    	testCalculations("Sech",        Functions.sech, SMIN, SMAX, scalarTypes, TYPE_NONE);
+    }
+    public void test_calc_arccos() {
+    	testCalculations("ArcCos",      Functions.arccos, -1, 1, scalarTypes, TYPE_NONE);
+    }
+    public void test_calc_arcsin() {
+    	testCalculations("ArcSin",      Functions.arcsin, -1, 1, scalarTypes, TYPE_NONE);
+    }
+    public void test_calc_arctan() {
+    	//testCalculations("ArcCot",    Functions.arccot, SMIN, SMAX, scalarTypes, TYPE_NONE);  // differs by PI for negative values. we return positive values
+    	testCalculations("ArcTan",      Functions.arctan, SMIN, SMAX, scalarTypes, TYPE_NONE);
+    }
+    public void test_calc_arccosh() {
+    	testCalculations("ArcCosh",     Functions.arcosh, 1, SMAX, scalarTypes, TYPE_NONE);
+    }
+    public void test_calc_arcsinh() {
+    	testCalculations("ArcSinh",     Functions.arsinh, SMIN, SMAX, scalarTypes, TYPE_NONE);
+    }
+    public void test_calc_arctanh() {
+    	testCalculations("ArcTanh",     Functions.artanh, -1+EPS, 1-EPS, TYPE_REAL | TYPE_COMPLEX, TYPE_NONE);
+    }
+ 
+    private void testCalculations(String mFunction, BinaryFunction jFunction, double min, double max, int testType, int componentType) {
+    	testCalculations(mFunction, jFunction, min, max, new int[] {testType,testType}, componentType);
+    }
+
+    private void testCalculations(String mFunction, BinaryFunction jFunction, double min, double max, int[] testType, int componentType) {
+        createMathLink();
+        TYPE_DEFAULT = scalarTypes;
+        try {
+            ml.evaluate("2+2");
+            ml.waitForAnswer();
+            int result = ml.getInteger();
+            System.out.println("2 + 2 = " + result);
+
+            ml.evaluate("2+2*(I+1)");
+            ml.waitForAnswer();
+            Complex result2 = ((ComplexAdapter) ml.getComplex()).getValue();
+            System.out.println("2 + 2*(I+1) = " + result2 + "\t" + result2.getClass());
+                        
+            final double MIN = -1000;
+            final double MAX = +1000;
+            final double EPS = Double.longBitsToDouble(Double.doubleToLongBits(1.0)+1)-1.0;
+            final double SMIN = -10;
+            final double SMAX = +10;
+            final double PI = Math.PI;
+            System.err.println("epsilon = " + EPS + " = " + Long.toString(Double.doubleToLongBits(EPS), 16));
+            System.err.println("1 + epsilon = " + (1 + EPS));
+            System.err.println("-1 + epsilon = " + (-1 + EPS));
+            System.err.println("1 - epsilon = " + (1 - EPS));
+            System.err.println("(1 + epsilon/2) + epsilon/2= " + ((1 + EPS/2) + EPS/2));
+                        
+            //delta, logistic, reciprocal, sign
+            //@todo id, zero with tensor once Functions.zero has been adapted
+            testFunction(mFunction,jFunction, min, max, testType, componentType);
+            System.out.println();
+            System.out.println("PASSED");
+        } catch (MathLinkException ex) {
+            System.out.println();
+            throw (RuntimeException) new RuntimeException("MathLinkException occurred: " + ex).initCause(ex);
+        }
+        finally {
+            closeMathLink();
+        }
+    }
+        
+    private void testCalculations(String mFunction, Function jFunction, double min, double max, int testType, int componentType) {
         createMathLink();
         TYPE_DEFAULT = TYPE_INTEGER | /*TYPE_RATIONAL|*/ TYPE_REAL | TYPE_COMPLEX;
         final int scalarTypes = TYPE_DEFAULT;
@@ -159,60 +342,7 @@ public class FunctionTest extends check.TestCase {
                         
             //delta, logistic, reciprocal, sign
             //@todo id, zero with tensor once Functions.zero has been adapted
-            testFunction("(#1)&",       Functions.id, MIN, MAX, TYPE_ALL, TYPE_ALL);
-            testFunction("(1)&",        Functions.one, MIN, MAX, TYPE_ALL, TYPE_ALL);
-            testFunction("(0)&",        Functions.zero, MIN, MAX, TYPE_ALL, TYPE_ALL);
-            testFunction("Plus",        Operations.plus, MIN, MAX, TYPE_ALL, scalarTypes);
-            testFunction("Plus",        Operations.plus, MIN, MAX, TYPE_TENSOR, scalarTypes);
-            testFunction("Plus",        Operations.plus, MIN, MAX, TYPE_TENSOR, TYPE_REAL);
-            testFunction("Subtract",    Operations.subtract, MIN, MAX, TYPE_ALL, scalarTypes);
-            testFunction("Subtract",    Operations.subtract, MIN, MAX, TYPE_TENSOR, TYPE_REAL);
-            testFunction("Times",       Operations.times, MIN, MAX, scalarTypes, scalarTypes);
-            //@todo Operations.times with TYPE_TENSOR
-            testFunction("Dot", Operations.times, MIN, MAX, TYPE_MATRIX, scalarTypes);
-            //testFunction("Dot", Operations.times, MIN, MAX, TYPE_MATRIX, TYPE_REAL);
-            testFunction("Inverse",   Operations.inverse, MIN, MAX, TYPE_SCALAR, scalarTypes);
-            testFunction("Divide",    Operations.divide, MIN, MAX, TYPE_REAL | TYPE_COMPLEX, scalarTypes);
-            testFunction("Power",     Operations.power, MIN, MAX, new int[] {TYPE_ALL, TYPE_INTEGER}, scalarTypes);
-            //testFunction("Power",     Operations.power, MIN, MAX);
-            testFunction("Minus",       Operations.minus, MIN, MAX, TYPE_ALL, scalarTypes);
-            //testFunction("Inverse",   Operations.inverse, MIN, MAX, TYPE_MATRIX);
-            try {
-                testFunction("Exp",     Functions.exp, -10, 10, scalarTypes, TYPE_NONE);
-                testFunction("Log",     Functions.log, EPS, MAX, scalarTypes, TYPE_NONE);
-            }
-            catch (AssertionError ignore) {
-                ignore.printStackTrace();
-            }
-                        
-            testFunction("Sqrt",        Functions.sqrt, 0, MAX, scalarTypes, TYPE_NONE);
-            testFunction("Abs",         Functions.norm, MIN, MAX, TYPE_ALL, TYPE_ALL);
-            testFunction("(#1^2)&",     Functions.square, MIN, MAX, scalarTypes | TYPE_MATRIX, scalarTypes);
-            //testFunction("DiracDelta",Functions.diracDelta, MIN, MAX);
-
-            testFunction("Sin",         Functions.sin, SMIN, SMAX, scalarTypes, TYPE_NONE);
-            testFunction("Cos",         Functions.cos, SMIN, SMAX, scalarTypes, TYPE_NONE);
-            testFunction("Tan",         Functions.tan, SMIN, SMAX, scalarTypes, TYPE_NONE); //...
-            testFunction("Cot",         Functions.cot, -PI+EPS, -EPS, scalarTypes, TYPE_NONE); //...
-            testFunction("Cot",         Functions.cot, EPS, PI-EPS, scalarTypes, TYPE_NONE);
-            testFunction("Csc",         Functions.csc, EPS, SMAX, scalarTypes, TYPE_NONE);
-            testFunction("Csc",         Functions.csc, SMIN, EPS, scalarTypes, TYPE_NONE);
-            testFunction("Sec",         Functions.sec, SMIN, SMAX, scalarTypes, TYPE_NONE);
-            testFunction("Sinh",        Functions.sinh, SMIN, SMAX, scalarTypes, TYPE_NONE);
-            testFunction("Cosh",        Functions.cosh, SMIN, SMAX, scalarTypes, TYPE_NONE);
-            testFunction("Tanh",        Functions.tanh, SMIN, SMAX, scalarTypes, TYPE_NONE);
-            testFunction("Coth",        Functions.coth, EPS, SMAX, scalarTypes, TYPE_NONE);
-            testFunction("Coth",        Functions.coth, SMIN, EPS, scalarTypes, TYPE_NONE);
-            testFunction("Csch",        Functions.csch, SMIN, EPS, scalarTypes, TYPE_NONE);
-            testFunction("Csch",        Functions.csch, EPS, SMAX, scalarTypes, TYPE_NONE);
-            testFunction("Sech",        Functions.sech, SMIN, SMAX, scalarTypes, TYPE_NONE);
-            testFunction("ArcCos",      Functions.arccos, -1, 1, scalarTypes, TYPE_NONE);
-            testFunction("ArcSin",      Functions.arcsin, -1, 1, scalarTypes, TYPE_NONE);
-            //testFunction("ArcCot",    Functions.arccot, SMIN, SMAX, scalarTypes, TYPE_NONE);  // differs by PI for negative values. we return positive values
-            testFunction("ArcTan",      Functions.arctan, SMIN, SMAX, scalarTypes, TYPE_NONE);
-            testFunction("ArcCosh",     Functions.arcosh, 1, SMAX, scalarTypes, TYPE_NONE);
-            testFunction("ArcSinh",     Functions.arsinh, SMIN, SMAX, scalarTypes, TYPE_NONE);
-            testFunction("ArcTanh",     Functions.artanh, -1+EPS, 1-EPS, TYPE_REAL | TYPE_COMPLEX, TYPE_NONE);
+            testFunction(mFunction,jFunction, min, max, testType, componentType);
             System.out.println();
             System.out.println("PASSED");
         } catch (MathLinkException ex) {
@@ -488,7 +618,7 @@ public class FunctionTest extends check.TestCase {
         int num = integerArgument(1, NUM);
         for (int p = 0; p < num; p++) {
                 Polynomial gi = polyArgument(MIN, MAX, testType, vars, DEG);
-                if (gi.toString().length() > 40) {
+                if (gi.toString().length() > 10) {
                         // use string output as complexity bound and randomly remove complexity
                         for (ListIterator i = gi.iterator(); i.hasNext(); ) {
                                 Arithmetic x = (Arithmetic)i.next();
@@ -497,7 +627,7 @@ public class FunctionTest extends check.TestCase {
                         }
             }
                 g.add(gi);
-                if (g.toString().length() > 100) {
+                if (g.toString().length() > 40) {
                         // use string output as complexity bound
                         break;
             }
