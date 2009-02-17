@@ -712,7 +712,6 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends A
      * @xxx after verifying use {@link AbstractTensor#norm()}.
      */
     public Real norm() {
-    	System.err.println("NORM IS " +Operations.sum.apply(Functionals.map(Functions.square, Functionals.map(Functions.norm, iterator()))));
         return (Real/*__*/) Functions.sqrt.apply(Operations.sum.apply(Functionals.map(Functions.square, Functionals.map(Functions.norm, iterator()))));
     } 
 

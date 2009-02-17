@@ -642,7 +642,13 @@ public final class MathUtilities {
                     return "{}";
                 }
             }
-        } else
+        } else if (Utility.isIteratable(o)) {
+            StringBuffer sb = new StringBuffer();
+            for (Iterator i = Utility.asIterator(o); i.hasNext(); ) {
+                sb.append(format(i.next()) + (i.hasNext() ? ", " : ""));
+            }
+            return "{" + sb.toString() + "}";
+        } else 
             return "" + o;
     } 
 
