@@ -265,7 +265,7 @@ public final class Stat {
         Utility.pre(experiment.dimension().width - 1 == funcs.length, "Experiments parametric data and linear combination of functions must fit");
         if (experiment.dimension().width != 2)
             throw new UnsupportedOperationException("Regression with >2 parameters not yet supported by this method. Use regression(Vector,Matrix,Matrix) instead");
-        final Values vf = Values.getDefaultInstance();
+        final ValueFactory vf = experiment.valueFactory();
         // find maximum argument dimension required by the funcs
         int dimensions[] = new int[funcs.length];
         // foreach Function v in funcs

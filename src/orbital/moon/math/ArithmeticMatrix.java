@@ -38,11 +38,12 @@ class ArithmeticMatrix/*<R extends Arithmetic>*/ extends AbstractMatrix/*<R>*/ {
      * Creates a new Matrix with dimension height&times;width.
      * It then has width columns and height rows.
      */
-    public ArithmeticMatrix(int height, int width) {
-        D = new Arithmetic/*>R<*/[height][width];
+    public ArithmeticMatrix(int height, int width, ValueFactory valueFactory) {
+        super(valueFactory);
+    	D = new Arithmetic/*>R<*/[height][width];
     }
-    public ArithmeticMatrix(Dimension dim) {
-        this(dim.height, dim.width);
+    public ArithmeticMatrix(Dimension dim, ValueFactory valueFactory) {
+        this(dim.height, dim.width, valueFactory);
     }
 
     /**
@@ -50,14 +51,15 @@ class ArithmeticMatrix/*<R extends Arithmetic>*/ extends AbstractMatrix/*<R>*/ {
      * The rows are first index, the columns second index.
      * @preconditions values is rectangular, i.e. v[i].length==v[i-1].length
      */
-    public ArithmeticMatrix(Arithmetic/*>R<*/ values[][]) {
+    public ArithmeticMatrix(Arithmetic/*>R<*/ values[][], ValueFactory valueFactory) {
+    	super(valueFactory);
         for (int i = 1; i < values.length; i++)
             Utility.pre(values[i].length == values[i - 1].length, "rectangular array required");
         D = values;
     }
 
     protected Matrix/*<R>*/ newInstance(Dimension dim) {
-        return new ArithmeticMatrix/*<R>*/(dim);
+        return new ArithmeticMatrix/*<R>*/(dim, valueFactory());
     } 
 
 
@@ -77,7 +79,7 @@ class ArithmeticMatrix/*<R extends Arithmetic>*/ extends AbstractMatrix/*<R>*/ {
 
     public Vector/*<R>*/ getRow(int r) {
         validate(r, 0);
-        return new ArithmeticVector/*<R>*/(D[r]);
+        return new ArithmeticVector/*<R>*/(D[r], valueFactory());
     } 
     public void setRow(int r, Vector/*<R>*/ row) throws UnsupportedOperationException {
         validate(r, row.dimension() - 1);
@@ -102,7 +104,7 @@ class ArithmeticMatrix/*<R extends Arithmetic>*/ extends AbstractMatrix/*<R>*/ {
     } 
 
     public Object clone() {
-        return new ArithmeticMatrix/*<R>*/(toArray());
+        return new ArithmeticMatrix/*<R>*/(toArray(), valueFactory());
     } 
 
     public Matrix/*<R>*/ insertRows(int index, Matrix/*<R>*/ rows) {

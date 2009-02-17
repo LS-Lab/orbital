@@ -589,8 +589,8 @@ public class FunctionTest extends check.TestCase {
             for (int i = 0; i < TEST_GROEBNER_REPETITION; i++) {
                 checkGroebner(MIN,MAX,TYPE_INTEGER|TYPE_RATIONAL, monomialOrder, mmonorder);
             }
-                monomialOrder = AlgebraicAlgorithms.DEGREE_REVERSE_LEXICOGRAPHIC;
-                mmonorder = "DegreeReverseLexicographic";
+                monomialOrder = AlgebraicAlgorithms.DEGREE_LEXICOGRAPHIC;
+                mmonorder = "DegreeLexicographic";
             for (int i = 0; i < TEST_GROEBNER_REPETITION; i++) {
                 checkGroebner(MIN,MAX,TYPE_INTEGER, monomialOrder, mmonorder);
             }
@@ -690,8 +690,8 @@ public class FunctionTest extends check.TestCase {
                 }));
                 Comparator monomialOrder;
                 String mmonorder;
-                monomialOrder = AlgebraicAlgorithms.DEGREE_REVERSE_LEXICOGRAPHIC;
-                mmonorder = "DegreeReverseLexicographic";
+                monomialOrder = AlgebraicAlgorithms.DEGREE_LEXICOGRAPHIC;
+                mmonorder = "DegreeLexicographic";
                 assertTrue(!AlgebraicAlgorithms.reduce(mo, g, monomialOrder).isZero(), "1 is not reducible");
                 checkGroebner(g, MIN, MAX, TYPE_INTEGER|TYPE_RATIONAL, monomialOrder, mmonorder, 6);
                 monomialOrder = AlgebraicAlgorithms.LEXICOGRAPHIC;
@@ -928,24 +928,33 @@ public class FunctionTest extends check.TestCase {
                     System.out.println("Result: " + solvesODE2);
                     System.out.println("dSolve solution second validation FAILED");
                 }
+                ml.evaluate("FullSimplify["
+                        + "  {D[" + oursol2 +"," + t + "], (" + mf.format(A) + ").(" + oursol + ") + " + mf.format(b) + "}\n"
+                        + "]\n"
+                        + "]]"
+                        );
+                ml.waitForAnswer();
+                final String solvesODE3 = ml.getExpr().toString();
+                ml.newPacket();
                 Notation.setDefault(oldNotation);
-                assertTrue(solvesODE2.equals("True") , " dSolve solves ODE on second validation\n our solution:\n" + oursol + "\nour second solution:\n" + oursol2 + " \n ref.solution:\n" + refsol + "\n solves " + "x'==\n" + mf.format(A) + ".x + " + mf.format(b) + "\nwith initial value " + mf.format(eta) + "\nresulting in " + solvesODE2);
+                assertTrue(solvesODE3.equals("True") || solvesODE2.equals("True") , " dSolve solves ODE on second validation\n our solution:\n" + oursol + "\nour second solution:\n" + oursol2 + " \n ref.solution:\n" + refsol + "\n solves " + "x'==\n" + mf.format(A) + ".x + " + mf.format(b) + "\nwith initial value " + mf.format(eta) + "\nresulting in " + solvesODE2);
+            } else {
+                assertTrue(solvesODE.equals("True") , " dSolve solves ODE\n our solution:\n" + oursol + " \n ref.solution:\n" + refsol + "\n solves " + "x'==\n" + mf.format(A) + ".x + " + mf.format(b) + "\nwith initial value " + mf.format(eta) + "\nresulting in " + solvesODE);
             }
-            assertTrue(solvesODE.equals("True") , " dSolve solves ODE\n our solution:\n" + oursol + " \n ref.solution:\n" + refsol + "\n solves " + "x'==\n" + mf.format(A) + ".x + " + mf.format(b) + "\nwith initial value " + mf.format(eta) + "\nresulting in " + solvesODE);
 
 
             // compare our solution and reference solution in Mathematica
             ml.newPacket();
-            ml.evaluate("Simplify[(\n" + ode + " == \n" + oursol + ")]");
+            ml.evaluate("FullSimplify[(\n" + ode + " == \n" + oursol + ")]");
             ml.waitForAnswer();
             final String comparison = ml.getExpr().toString();
             ml.newPacket();
             if (!comparison.equals("True")) {
-                System.out.println("Simplify[(\n" + ode + " == \n" + oursol + ")]");
+                System.out.println("FullSimplify[(\n" + ode + " == \n" + oursol + ")]");
                 System.out.println("Result: " + comparison);
                 System.out.println("dSolve comparison validation FAILED");
             }
-            //assertTrue(comparison.equals("True") , " dSolve equivalence:\n " + oursol + "\n x'==\n" + mf.format(A) + ".x + " + mf.format(b) + "\nwith initial value " + mf.format(ta) + "\nreference solution:\n" + refsol + "\nresulting in " + comparison);
+            assertTrue(comparison.equals("True") , " dSolve equivalence:\n " + oursol + "\n x'==\n" + mf.format(A) + ".x + " + mf.format(b) + "\nwith initial value " + mf.format(eta) + "\nreference solution:\n" + refsol + "\nresulting in " + comparison);
         }
         catch (MathLinkException e) {
             if (!"machine number overflow".equals(e.getMessage()))

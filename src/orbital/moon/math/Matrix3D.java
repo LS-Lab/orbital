@@ -35,17 +35,17 @@ public class Matrix3D extends RMatrix {
      */
     public static final Matrix3D IDENTITY = new Matrix3D(Values.getDefaultInstance().constant(RMatrix.IDENTITY(4)));
     public Matrix3D() {
-        super(4, 4);
+        super(4, 4, Values.getDefault());
         set(IDENTITY);
     }
     public Matrix3D(Matrix B) {
         // we restrict ourselves to AbstractMatrix here, for speed considerations
-        super(((AbstractMatrix)B).toDoubleArray());
+        super(((AbstractMatrix)B).toDoubleArray(), B.valueFactory());
         if (dimension().width != 4 || dimension().height != 4)
             throw new IllegalArgumentException("Matrix3D must be a 4 by 4 Matrix");
     }
     private Matrix3D(double[][] D) {
-        super(D);
+        super(D, Values.getDefault());
         if (dimension().width != 4 || dimension().height != 4)
             throw new IllegalArgumentException("Matrix3D must be a 4 by 4 Matrix");
     }
@@ -78,7 +78,7 @@ public class Matrix3D extends RMatrix {
      * This is a linear isometric transformation.
      */
     public void scale(double sxf, double syf, double szf) {
-        set(this.multiply(DIAGONAL(new RVector(new double[] {sxf, syf, szf, 1}))));
+        set(this.multiply(DIAGONAL(new RVector(new double[] {sxf, syf, szf, 1}, valueFactory()))));
     } 
 
     /**

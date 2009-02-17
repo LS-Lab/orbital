@@ -36,7 +36,7 @@ class RMatrix extends AbstractMatrix {
      * Gets zero Matrix, with all elements set to 0.
      */
     public static final Matrix ZERO(Dimension dim) {
-        RMatrix zero = new RMatrix(dim.height, dim.width);
+        RMatrix zero = new RMatrix(dim.height, dim.width, Values.getDefault());
         for (int i = 0; i < zero.dimension().height; i++)
             Arrays.fill(zero.D[i], 0);
         return zero;
@@ -50,7 +50,7 @@ class RMatrix extends AbstractMatrix {
      * @see Functions#delta
      */
     public static final Matrix IDENTITY(int size) {
-        RMatrix identity = new RMatrix(size, size);        // width, height
+        RMatrix identity = new RMatrix(size, size, Values.getDefault());        // width, height
         for (int i = 0; i < identity.dimension().height; i++)
             for (int j = 0; j < identity.dimension().width; j++)
                 identity.D[i][j] = Functions.delta(i, j);
@@ -66,7 +66,7 @@ class RMatrix extends AbstractMatrix {
      * @see Functions#delta
      */
     public static final Matrix DIAGONAL(Vector diagon) {
-        RMatrix diagonal = new RMatrix(diagon.dimension(), diagon.dimension());    // width, height
+        RMatrix diagonal = new RMatrix(diagon.dimension(), diagon.dimension(), Values.getDefault());    // width, height
         for (int j = 0; j < diagonal.dimension().height; j++)
             for (int i = 0; i < diagonal.dimension().width; i++)
                 diagonal.D[j][i] = Functions.delta(i, j) * ((Number) diagon.get(i)).doubleValue();
@@ -77,7 +77,7 @@ class RMatrix extends AbstractMatrix {
      * Gets a Hilbert Matrix, with all elements m<sub>i,j</sub> set to <code>1 / (i+j+1)</code>.
      */
     public static final Matrix HILBERT(int width, int height) {
-        RMatrix hilbert = new RMatrix(height, width);
+        RMatrix hilbert = new RMatrix(height, width, Values.getDefault());
         for (int j = 0; j < hilbert.dimension().height; j++)
             for (int i = 0; i < hilbert.dimension().width; i++)
                 hilbert.D[j][i] = 1. / (i + j + 1);
@@ -102,11 +102,12 @@ class RMatrix extends AbstractMatrix {
      * Creates a new Matrix with dimension height&times;width.
      * It then has width columns and height rows.
      */
-    public RMatrix(int height, int width) {
+    public RMatrix(int height, int width, ValueFactory valueFactory) {
+    	super(valueFactory);
         D = new double[height][width];
     }
-    public RMatrix(Dimension dim) {
-        this(dim.height, dim.width);
+    public RMatrix(Dimension dim, ValueFactory valueFactory) {
+        this(dim.height, dim.width, valueFactory);
     }
 
     /**
@@ -114,7 +115,8 @@ class RMatrix extends AbstractMatrix {
      * The rows are first index, the columns second index.
      * @preconditions values is rectangular, i.e. values[i].length==values[i-1].length
      */
-    public RMatrix(double values[][]) {
+    public RMatrix(double values[][], ValueFactory valueFactory) {
+    	super(valueFactory);
         set(values);
     }
 
@@ -123,7 +125,8 @@ class RMatrix extends AbstractMatrix {
      * The rows are first index, the columns second index.
      * @preconditions v is rectangular, i.e. v[i].length==v[i-1].length
      */
-    public RMatrix(Arithmetic v[][]) {
+    public RMatrix(Arithmetic v[][], ValueFactory valueFactory) {
+    	super(valueFactory);
         for (int i = 1; i < v.length; i++)
             Utility.pre(v[i].length == v[i - 1].length, "rectangular array required");
         D = new double[v.length][v[0].length];
@@ -133,12 +136,12 @@ class RMatrix extends AbstractMatrix {
     }
 
     protected Matrix newInstance(Dimension dim) {
-        return new RMatrix(dim);
+        return new RMatrix(dim, valueFactory());
     } 
 
     // since Cloneable's default copy is too shallow for 2-dimensional arrays, this method is necessary
     public Object clone() {
-        return new RMatrix(toDoubleArray());
+        return new RMatrix(toDoubleArray(), valueFactory());
     } 
 
     public final Dimension dimension() {
@@ -146,7 +149,7 @@ class RMatrix extends AbstractMatrix {
     } 
 
     public Arithmetic get(int i, int j) {
-        return Values.getDefaultInstance().valueOf(getDoubleValue(i, j));
+        return valueFactory().valueOf(getDoubleValue(i, j));
     } 
     public double getDoubleValue(int i, int j) {
         validate(i, j);
@@ -161,11 +164,11 @@ class RMatrix extends AbstractMatrix {
     } 
 
     public void setColumn(int c, double col[]) {
-        setColumn(c, new RVector(col));
+        setColumn(c, new RVector(col, valueFactory()));
     } 
     public Vector getRow(int r) {
         validate(r, 0);
-        return new RVector(D[r]);
+        return new RVector(D[r], valueFactory());
     } 
     public void setRow(int r, double row[]) {
         validate(r, row.length - 1);
@@ -203,7 +206,7 @@ class RMatrix extends AbstractMatrix {
     }
 
     public Arithmetic det() {
-        return Values.getDefaultInstance().valueOf(determinantImpl());
+        return valueFactory().valueOf(determinantImpl());
     } 
     private double determinantImpl() {
         if (!isSquare())
@@ -225,10 +228,10 @@ class RMatrix extends AbstractMatrix {
     public Matrix add(Matrix B) {
         if (!(B instanceof RMatrix))
             // fall-back to more general operation
-            return new ArithmeticMatrix(toArray()).add(B);
+            return new ArithmeticMatrix(toArray(), valueFactory()).add(B);
         Utility.pre(dimension().equals(B.dimension()), "Matrix A+B only defined for equal dimension");
         RMatrix b = (RMatrix) B;
-        RMatrix ret = new RMatrix(dimension());
+        RMatrix ret = new RMatrix(dimension(), valueFactory());
 
         // element per element
         for (int i = 0; i < dimension().height; i++)
@@ -239,10 +242,10 @@ class RMatrix extends AbstractMatrix {
     public Matrix subtract(Matrix B) {
         if (!(B instanceof RMatrix))
             // fall-back to more general operation
-            return new ArithmeticMatrix(toArray()).subtract(B);
+            return new ArithmeticMatrix(toArray(), valueFactory()).subtract(B);
         Utility.pre(dimension().equals(B.dimension()), "Matrix A-B only defined for equal dimension");
         RMatrix b = (RMatrix) B;
-        RMatrix ret = new RMatrix(dimension());
+        RMatrix ret = new RMatrix(dimension(), valueFactory());
 
         // element per element
         for (int i = 0; i < dimension().height; i++)
@@ -254,10 +257,10 @@ class RMatrix extends AbstractMatrix {
     public Matrix multiply(Matrix B) {
         if (!(B instanceof RMatrix))
             // fall-back to more general operation
-            return new ArithmeticMatrix(toArray()).multiply(B);
+            return new ArithmeticMatrix(toArray(), valueFactory()).multiply(B);
         Utility.pre(dimension().width == B.dimension().height, "Matrix A.B only defined for dimension n by m multiplied with m by l");
         RMatrix b = (RMatrix) B;
-        RMatrix ret = new RMatrix(dimension().height, B.dimension().width);
+        RMatrix ret = new RMatrix(dimension().height, B.dimension().width, valueFactory());
         //@todo could use section striping for large matrices and cache blocking (Willi Schoenhauer, Scientific Supercomputing). However we would need to know the cache size then.
         // faster alternative (according to Tichy and Schoenhauer)
         assert ret.equals(ZERO(ret.dimension())) : "initialization of double[][] to 0 by system";
@@ -279,7 +282,7 @@ class RMatrix extends AbstractMatrix {
     }
          
     public Matrix scale(double s) {
-        RMatrix ret = new RMatrix(dimension());
+        RMatrix ret = new RMatrix(dimension(), valueFactory());
 
         // element per element
         for (int i = 0; i < dimension().height; i++)
@@ -290,7 +293,7 @@ class RMatrix extends AbstractMatrix {
     public Arithmetic scale(Arithmetic s) {
         if (!Real.isa.apply(s))
             // fall-back to more general operation
-            return new ArithmeticMatrix(toArray()).scale(s);
+            return new ArithmeticMatrix(toArray(), valueFactory()).scale(s);
         return scale(((Real)s).doubleValue());
     }
 

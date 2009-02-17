@@ -14,32 +14,43 @@ import junit.framework.*;
  * @version $Id$
  */
 public class RMatrixTest extends check.TestCase {
-    private Values vf;
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(suite());
     }
     protected void setUp() {
-        vf = Values.getDefaultInstance();
     }
     public static Test suite() {
         return new TestSuite(RMatrixTest.class);
     }
 
-    public void testRMatrixAndFallback() {
-        final Values vf = Values.getDefaultInstance();
+    public void testRMatrixAndFallbackDefault() throws Exception {
+        testRMatrixAndFallback(Values.getDefaultInstance());
+    }
+    public void testRMatrixAndFallbackBig() throws Exception {
+        testRMatrixAndFallback(new BigValuesImpl());
+    }
+    public void testRMatrixAndFallbackFast() throws Exception {
+        testRMatrixAndFallback(new FastValuesImpl());
+    }
+    public void testRMatrixAndFallbackVI() throws Exception {
+        testRMatrixAndFallback(new ValuesImpl());
+    }
+
+    public void testRMatrixAndFallback(ValueFactory valueFactory) {
+        final ValueFactory vf = valueFactory;
         Matrix M = new RMatrix(new double[][] {
             {2, 1, 0, -2},
             {1, 2, 4, 1},
             {-2, 1, 2, -2},
             {-3, 0, 1, -4}
-        });
+        }, vf);
         Vector v = new RVector(new double[] {
             1, 2, 1, 2
-        });
+        }, vf);
         Vector u = new RVector(new double[] {
             2, 1, 0, -3
-        });
+        }, vf);
         System.out.println(M + "*" + v + "=" + M.multiply(v));
         assertEquals(M.multiply(v), vf.valueOf(new double[] {
             0, 11, -2, -10

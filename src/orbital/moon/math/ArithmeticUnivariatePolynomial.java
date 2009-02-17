@@ -29,15 +29,17 @@ class ArithmeticUnivariatePolynomial/*<R extends Arithmetic>*/ extends AbstractU
      * @see #degree()
      */
     private transient int degree;
-    public ArithmeticUnivariatePolynomial(int degree) {
-        this.coefficients =
-                Values.getDefault().newInstance(degree < 0
+    public ArithmeticUnivariatePolynomial(int degree, ValueFactory valueFactory) {
+        super(valueFactory);
+    	this.coefficients =
+                valueFactory.newInstance(degree < 0
             ? 0
             : degree + 1);
         this.degree = java.lang.Integer.MIN_VALUE;
     }
-    public ArithmeticUnivariatePolynomial(Arithmetic/*>R<*/ coefficients[]) {
-        set(Values.getDefault().valueOf(coefficients));
+    public ArithmeticUnivariatePolynomial(Arithmetic/*>R<*/ coefficients[], ValueFactory valueFactory) {
+        super(valueFactory);
+    	set(valueFactory.valueOf(coefficients));
     }
   
     /**  
@@ -50,7 +52,7 @@ class ArithmeticUnivariatePolynomial/*<R extends Arithmetic>*/ extends AbstractU
     }
 
     protected UnivariatePolynomial/*<R>*/ newInstance(int degree) {
-        return new ArithmeticUnivariatePolynomial(degree);
+        return new ArithmeticUnivariatePolynomial(degree, valueFactory());
     }
 
     public final int degreeValue() {
@@ -78,7 +80,7 @@ class ArithmeticUnivariatePolynomial/*<R extends Arithmetic>*/ extends AbstractU
         if (Setops.some(coefficients.iterator(), Functionals.bindSecond(Predicates.equal, null)))
             throw new IllegalArgumentException("illegal coefficients: containing null");
         this.coefficients = coefficients;
-        this.R_ZERO = coefficients.dimension() > 0 ? coefficients.get(0).zero() : Values.getDefault().ZERO();
+        this.R_ZERO = coefficients.dimension() > 0 ? coefficients.get(0).zero() : valueFactory().ZERO();
         this.degree = degreeImpl(coefficients);
     }
 
@@ -95,7 +97,7 @@ class ArithmeticUnivariatePolynomial/*<R extends Arithmetic>*/ extends AbstractU
         if (i >= coefficients.dimension())
             throw new UnsupportedOperationException("setting coefficients beyond the degree not (always) supported");
         coefficients.set(i, vi);
-        this.R_ZERO = coefficients.dimension() > 0 ? coefficients.get(0).zero() : Values.getDefault().ZERO();
+        this.R_ZERO = coefficients.dimension() > 0 ? coefficients.get(0).zero() : valueFactory().ZERO();
         if (i >= oldDegree) {
             this.degree = degreeImpl(coefficients);
         }

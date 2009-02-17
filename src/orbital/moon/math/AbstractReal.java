@@ -190,7 +190,7 @@ abstract class AbstractReal extends AbstractComplex implements Real {
         } 
 
         public Real norm() {
-            return Values.getDefaultInstance().valueOf(Math.abs(floatValue()));
+            return valueFactory().valueOf(Math.abs(floatValue()));
         }
 
         public boolean isZero() {
@@ -333,7 +333,7 @@ abstract class AbstractReal extends AbstractComplex implements Real {
         }
 
         public Real norm() {
-            return Values.getDefaultInstance().valueOf(Math.abs(doubleValue()));
+            return valueFactory().valueOf(Math.abs(doubleValue()));
         }
 
         public boolean isZero() {
@@ -439,33 +439,37 @@ abstract class AbstractReal extends AbstractComplex implements Real {
         }
         public Big(Number v, ValueFactory valueFactory) {
         	super(valueFactory);
-            if (v instanceof BigDecimal)
-                value = (BigDecimal)v;
-            else if (v instanceof orbital.moon.math.Big) {
-                if (v instanceof Big)
-                    value = ((Big)v).value;
-                else if (v instanceof AbstractInteger.Big)
-                    value = new BigDecimal(((AbstractInteger.Big)v).getValue());
-                else
-                    throw new IllegalArgumentException("unknown arbitrary precision type " + v.getClass() + " " + v);
-            } else if (v instanceof Rational) {
-                Rational r = (Rational)v;
-                //@internal we could also convert numerator() and denominator() to reals and divide
-                value = getPrecision() != null
-                    ? new BigDecimal(AbstractInteger.makeBigInteger(r.numerator()).getValue())
-                    .divide(new BigDecimal(AbstractInteger.makeBigInteger(r.denominator()).getValue()), getPrecision())
-                    : new BigDecimal(AbstractInteger.makeBigInteger(r.numerator()).getValue())
-                    .divide(new BigDecimal(AbstractInteger.makeBigInteger(r.denominator()).getValue()));
-            } else if (v instanceof Double || v instanceof Float || v instanceof AbstractInteger.Int
-                       || v instanceof java.lang.Double || v instanceof java.lang.Float || v instanceof java.lang.Integer) {
-                value = BigDecimal.valueOf(((Number)v).doubleValue());
-            } else if (v instanceof AbstractInteger.Long
-                       || v instanceof java.lang.Long) {
-                value = BigDecimal.valueOf(((Number)v).longValue());
-            } else {
-                assert !java.lang.Double.isNaN(v.doubleValue()) && !java.lang.Double.isInfinite(v.doubleValue()) : v + " should neither be NaN nor infinite";
-                value = BigDecimal.valueOf(ArithmeticValuesImpl.doubleValueExact(v));
-            }
+        	try {
+        		if (v instanceof BigDecimal)
+        			value = (BigDecimal)v;
+        		else if (v instanceof orbital.moon.math.Big) {
+        			if (v instanceof Big)
+        				value = ((Big)v).value;
+        			else if (v instanceof AbstractInteger.Big)
+        				value = new BigDecimal(((AbstractInteger.Big)v).getValue());
+        			else
+        				throw new IllegalArgumentException("unknown arbitrary precision type " + v.getClass() + " " + v);
+        		} else if (v instanceof Rational) {
+        			Rational r = (Rational)v;
+        			//@internal we could also convert numerator() and denominator() to reals and divide
+        			value = getPrecision() != null
+        			? new BigDecimal(AbstractInteger.makeBigInteger(r.numerator()).getValue())
+        			.divide(new BigDecimal(AbstractInteger.makeBigInteger(r.denominator()).getValue()), getPrecision())
+        			: new BigDecimal(AbstractInteger.makeBigInteger(r.numerator()).getValue())
+        			.divide(new BigDecimal(AbstractInteger.makeBigInteger(r.denominator()).getValue()));
+        		} else if (v instanceof Double || v instanceof Float || v instanceof AbstractInteger.Int
+        				|| v instanceof java.lang.Double || v instanceof java.lang.Float || v instanceof java.lang.Integer) {
+        			value = BigDecimal.valueOf(((Number)v).doubleValue());
+        		} else if (v instanceof AbstractInteger.Long
+        				|| v instanceof java.lang.Long) {
+        			value = BigDecimal.valueOf(((Number)v).longValue());
+        		} else {
+        			assert !java.lang.Double.isNaN(v.doubleValue()) && !java.lang.Double.isInfinite(v.doubleValue()) : v + " should neither be NaN nor infinite";
+        			value = BigDecimal.valueOf(ArithmeticValuesImpl.doubleValueExact(v));
+        		}
+        	} catch (NumberFormatException ex) {
+        		throw (NumberFormatException) new NumberFormatException("Could not represent " + v + " due to " + ex).initCause(ex);
+        	}
         }
     
         public Object clone() {
@@ -569,32 +573,32 @@ abstract class AbstractReal extends AbstractComplex implements Real {
             if (b instanceof Integer) {
                 return power((Integer)b);
             }
-            if (isZero() && !b.isZero()) {
-            	return (Real)zero();
-            } else if (isOne()) {
-            	return (Real)one();
-            }
-            Real bc = (Real) Values.getDefault().narrow(b);
+            Real bc = (Real) valueFactory().narrow(b);
             if (bc instanceof Integer) {
                 return power((Integer)bc);
             } else {
                 try {
                     return valueFactory().valueOf(Math.pow(ArithmeticValuesImpl.doubleValueExact((Real)this), ArithmeticValuesImpl.doubleValueExact(b)));
                 } catch(ArithmeticException ex) {
-                    throw (ArithmeticException) new ArithmeticException("exponentation is possibly too big: " + this + " ^ " + b + " where " + (b.isZero() ? "zero" : "non-zero")).initCause(ex);
+                    if (isZero() && !b.isZero()) {
+                    	return (Real)zero();
+                    } else if (isOne()) {
+                    	return (Real)one();
+                    } else
+                        throw (ArithmeticException) new ArithmeticException("exponentation is possibly too big: " + this + " ^ " + b + " where " + (b.isZero() ? "zero" : "non-zero")).initCause(ex);
                 }
             }
         }
         private Real power(Integer b) {
-            if (isZero() && !b.isZero()) {
-            	return (Real)zero();
-            } else if (isOne()) {
-            	return (Real)one();
-            }
             try {
                 return new Big(getValue().pow(ArithmeticValuesImpl.intValueExact(b)), valueFactory());
             } catch(ArithmeticException ex) {
-                throw new ArithmeticException("exponentation is possibly too big: " + this + " ^ " + b);
+                if (isZero() && !b.isZero()) {
+                	return (Real)zero();
+                } else if (isOne()) {
+                	return (Real)one();
+                } else
+                    throw new ArithmeticException("exponentation is possibly too big: " + this + " ^ " + b);
             }
         }
         public Arithmetic inverse() {

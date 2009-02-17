@@ -636,7 +636,7 @@ public final class Utility {
             return Setops.newCollectionLike((Collection) a);
         else if (a instanceof Tensor)
             //@see AbstractTensor#newInstance
-            return Values.getDefaultInstance().tensor(((Tensor)a).dimensions());
+            return ((Tensor)a).valueFactory().tensor(((Tensor)a).dimensions());
         else if (a.getClass().isArray())
             return Array.newInstance(getComponentType(a), dimensions(a));
         throw new NotIteratableException(a.getClass(), generalizedIteratableTypes);

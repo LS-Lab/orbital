@@ -98,7 +98,7 @@ public final class NumericalAlgorithms {
         Utility.pre(A.isSymmetric() && A.isDefinite() > 0, "Only symmetric and positive-definite matrices can be Cholesky-decomposed");
         // Utility.pre(A.isPositiveDefinite(), "Only positive-definite matrices can be Cholesky-decomposed");
         // we restrict ourselves to AbstractMatrix because they have these fast getDoubleValue methods
-        final Values vf = Values.getDefaultInstance();
+        final ValueFactory vf = A.valueFactory();
         AbstractMatrix A_ = (AbstractMatrix) A;
         AbstractMatrix L = (AbstractMatrix) vf.ZERO(A.dimension().width, A.dimension().width);
         for (int k = 0; k < A_.dimension().width; k++) {
@@ -292,7 +292,7 @@ public final class NumericalAlgorithms {
         assert t.length == f.length : "same number of supporting x-values as corresponding y-values";
         assert isSorted(t) : "ordered grid of x-values in " + A;
         final int l = t.length - 2;
-        final Values vf = Values.getDefaultInstance();
+        final ValueFactory vf = A.valueFactory();
 
         // node distances
         double[]           h = new double[t.length];
@@ -422,7 +422,7 @@ public final class NumericalAlgorithms {
      * @return a vectorial bezier curve with the specified bezier nodes and a parameter from t0 to tz.
      */
     public static Function bezierCurve(double t0, double tz, Matrix bezierNodes) {
-        final Values vf = Values.getDefaultInstance();
+        final ValueFactory vf = bezierNodes.valueFactory();
         /* array of bezier nodes */
         Vector[] bezier = new Vector[bezierNodes.dimension().height];
         {
@@ -449,7 +449,7 @@ public final class NumericalAlgorithms {
          */
         for (int k = 1; k < b.length; k++)
             for (int i = 0; i < b[k].length - k; i++) {
-                Function t = Functionals.compose(Operations.subtract, Functions.constant(Values.getDefault().ONE()), phi);
+                Function t = Functionals.compose(Operations.subtract, Functions.constant(vf.ONE()), phi);
                 b[i][k] = (Function) Operations.plus.apply(Operations.times.apply(b[i][k - 1], t), Operations.times.apply(b[i + 1][k - 1], phi));
             } 
 
@@ -479,7 +479,7 @@ public final class NumericalAlgorithms {
         
         // return (b-a) * &sum;(lambda[k] * f(a + k*h))
         // @see Functionals#banana
-        final Values vf = Values.getDefaultInstance();
+        final ValueFactory vf = a.valueFactory();
         double array[] = new double[lambda.length];
         for (int k = 0; k < array.length; k++)
             array[k] = lambda[k] * ((Number) f.apply(a.add(vf.valueOf(k * h)))).doubleValue();
@@ -542,7 +542,7 @@ public final class NumericalAlgorithms {
             throw new UnsupportedOperationException("not yet implemented for dimension>1: initial values " + eta);
         if (!tau.equals(min))
             throw new UnsupportedOperationException("not yet implemented for inner initial time " + tau + " not being left border of [" + min + "," + max + "]");
-        final ValueFactory vf = Values.getDefault();
+        final ValueFactory vf = eta.valueFactory();
         // discretisation mesh
         final Real h = max.subtract(min).divide(vf.valueOf(steps));
         // split Butcher tableau
@@ -639,7 +639,7 @@ public final class NumericalAlgorithms {
             throw new IllegalArgumentException("Butcher tableau is inconsistent: " + butcher);
         if (!tau.equals(min))
             throw new UnsupportedOperationException("not yet implemented for inner initial time " + tau + " not being left border of [" + min + "," + max + "]");
-        final ValueFactory vf = Values.getDefault();
+        final ValueFactory vf = eta.valueFactory();
         // discretisation mesh
         final Real h = max.subtract(min).divide(vf.valueOf(steps));
         // split Butcher tableau

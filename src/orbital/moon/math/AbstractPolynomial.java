@@ -31,7 +31,8 @@ abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*
     implements Polynomial/*<R,S>*/ {
     private static final long serialVersionUID = 4336092442446250306L;
         
-    public AbstractPolynomial() {
+    protected AbstractPolynomial(ValueFactory valueFactory) {
+    	super(valueFactory);
     }
   
     public boolean equals(Object o) {
@@ -67,7 +68,7 @@ abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*
     }
 
     public Integer degree() {
-        return Values.getDefaultInstance().valueOf(degreeValue());
+        return valueFactory().valueOf(degreeValue());
     }
 
     /**

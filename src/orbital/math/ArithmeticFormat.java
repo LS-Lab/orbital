@@ -669,7 +669,7 @@ public class ArithmeticFormat extends Format {
                         else
                             result.append(multinomialVariableTimesOperator);
                         result.append(addIndex ? multinomialVariables[0] + countk : multinomialVariables[countk]);
-                        if (exponent.compareTo(Values.getDefault().ONE()) > 0)
+                        if (exponent.compareTo(p.valueFactory().ONE()) > 0)
                             result.append(multinomialPowerOperator + exponent);
                         firstVariableAfterCoefficient = false;
                     }
