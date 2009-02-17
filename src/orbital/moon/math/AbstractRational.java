@@ -43,7 +43,7 @@ abstract class AbstractRational extends AbstractReal implements Rational {
     } 
 
     public Real norm() {
-        return Values.getDefaultInstance().rational((Integer)numerator().norm(), (Integer)denominator().norm());
+        return valueFactory().rational((Integer)numerator().norm(), (Integer)denominator().norm());
     }
 
     public boolean isZero() {
@@ -209,14 +209,14 @@ abstract class AbstractRational extends AbstractReal implements Rational {
         } 
 
         public Integer numerator() {
-            return Values.getDefaultInstance().valueOf(numerator);
+            return valueFactory().valueOf(numerator);
         } 
         int numeratorValue() {
             return numerator;
         } 
     
         public Integer denominator() {
-            return Values.getDefaultInstance().valueOf(denominator);
+            return valueFactory().valueOf(denominator);
         } 
         int denominatorValue() {
             return denominator;

@@ -71,8 +71,8 @@ class AbstractSymbol /*extends Functions.constant(signifier)*/ implements Symbol
     
     // Arithmetic implementation
 
-    public Arithmetic zero() {return Values.getDefault().ZERO();}
-    public Arithmetic one() {return Values.getDefault().ONE();}
+    public Arithmetic zero() {return valueFactory().ZERO();}
+    public Arithmetic one() {return valueFactory().ONE();}
 
     //XXX: pointwise Arithmetic implementation (identical to @see orbital.math.functional.MathFunctor.AbstractFunctor)
     public Arithmetic add(Arithmetic b) throws ArithmeticException {

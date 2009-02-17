@@ -38,8 +38,12 @@ import java.util.logging.Level;
  * @author  Andr&eacute; Platzer
  */
 public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends AbstractTensor implements Matrix/*<R>*/ {
-    private static final Logger logger = Logger.getLogger(Matrix.class.getName());
+	private static final Logger logger = Logger.getLogger(Matrix.class.getName());
     private static final long serialVersionUID = 1360625645424730123L;
+
+    protected AbstractMatrix(ValueFactory valueFactory) {
+		super(valueFactory);
+	}
 
     // factory-methods
     
@@ -65,7 +69,7 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends A
         return newInstance(new Dimension(width, height));
     } 
     protected final Tensor/*<R>*/ newInstance(int[] dim) {
-        return dim.length == 2 ? newInstance(dim[0], dim[1]) : Values.getDefaultInstance().newInstance(dim);
+        return dim.length == 2 ? newInstance(dim[0], dim[1]) : valueFactory().newInstance(dim);
     }
 
     // get/set-methods
@@ -409,6 +413,7 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends A
          * creates a new column vector of a matrix.
          */
         public ColumnVector(AbstractMatrix/*<R>*/ m, int column) {
+        	super(m.valueFactory());
             //@todo expectedModCount
             m.validate(0, column);
             this.m = m;
@@ -436,7 +441,7 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends A
         }
     
         public Object clone() {
-            return new ArithmeticVector/*<R>*/(super.toArray());
+            return new ArithmeticVector/*<R>*/(super.toArray(), valueFactory());
         } 
     }
 
@@ -469,6 +474,7 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends A
          * creates a new row vector of a matrix.
          */
         public RowVector(AbstractMatrix/*<R>*/ m, int row) {
+        	super(m.valueFactory());
             m.validate(row, 0);
             this.m = m;
             this.r = row;
@@ -495,7 +501,7 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends A
         }
     
         public Object clone() {
-            return new ArithmeticVector/*<R>*/(super.toArray());
+            return new ArithmeticVector/*<R>*/(super.toArray(), valueFactory());
         } 
     }
 
@@ -567,6 +573,7 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends A
         private transient int expectedModCount = 0;
 
         public SubMatrix(AbstractMatrix/*<R>*/ m, int i1, int i2, int j1, int j2) {
+        	super(m.valueFactory());
             Utility.pre(i1 <= i2 && j1 <= j2, "Ending row cannot be less than starting row. Ending column cannot be less than starting column");
             m.validate(i1, j1);
             m.validate(i2, j2);
@@ -612,7 +619,7 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends A
     
         public Object clone() {
             checkForComodification();
-            return new ArithmeticMatrix/*<R>*/(super.toArray());
+            return new ArithmeticMatrix/*<R>*/(super.toArray(), valueFactory());
         } 
 
         private final void checkForComodification() {
@@ -705,6 +712,7 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends A
      * @xxx after verifying use {@link AbstractTensor#norm()}.
      */
     public Real norm() {
+    	System.err.println("NORM IS " +Operations.sum.apply(Functionals.map(Functions.square, Functionals.map(Functions.norm, iterator()))));
         return (Real/*__*/) Functions.sqrt.apply(Operations.sum.apply(Functionals.map(Functions.square, Functionals.map(Functions.norm, iterator()))));
     } 
 
@@ -763,11 +771,11 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends A
     // arithmetic-operations
         
     //@todo that's not quite true for strange R
-    public Arithmetic zero() {return Values.getDefaultInstance().ZERO(dimension());}
+    public Arithmetic zero() {return valueFactory().ZERO(dimension());}
     public Arithmetic one() {
         if (!isSquare())
             throw new ArithmeticException("only square matrices have an identity matrix, not " + dimension());
-        return Values.getDefaultInstance().IDENTITY(dimension());
+        return valueFactory().IDENTITY(dimension());
     }
     
      public Matrix/*<R>*/ add(Matrix/*<R>*/ B) {
@@ -866,7 +874,7 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends A
     public Arithmetic inverse() throws ArithmeticException {
         assert isSquare() : "only square matrices can be inverted " + this;
         Matrix/*<R>*/ A = (Matrix) clone();                                             
-        Matrix/*<R>*/ AI = Values.getDefaultInstance().IDENTITY(dimension().width, dimension().width);
+        Matrix/*<R>*/ AI = valueFactory().IDENTITY(dimension().width, dimension().width);
         // now transform
         // A        ---> Identity
         // Identity ---> A^-1
@@ -907,7 +915,7 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends A
             } 
         } 
 
-        if (!(A.equals(Values.getDefaultInstance().IDENTITY(dimension().width, dimension().width), Values.getDefaultInstance().valueOf(MathUtilities.getDefaultTolerance()))
+        if (!(A.equals(valueFactory().IDENTITY(dimension().width, dimension().width), valueFactory().valueOf(MathUtilities.getDefaultTolerance()))
               || ValuesImpl.symbolic.apply(A))) {
             logger.log(Level.FINEST, "found a supposed inverse:\n{0}\n but failed to transform to identity matrix:\n{1}\t({2})", new Object[] {AI, A, A.getClass()});
             assert !isInvertible() : "a matrix is singular <=> determinant=0 <=> it cannot be inverted (apart from numerical uncertainty)";

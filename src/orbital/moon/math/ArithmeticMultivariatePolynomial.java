@@ -43,14 +43,16 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/
      * @see #degree()
      */
     private transient int degree = DIRTY;
-    public ArithmeticMultivariatePolynomial(int[] dimensions) {
-        if (dimensions.length == 0)
+    public ArithmeticMultivariatePolynomial(int[] dimensions, ValueFactory valueFactory) {
+        super(valueFactory);
+    	if (dimensions.length == 0)
                 throw new IllegalArgumentException("Empty polynomial ring without variables is not supported: specify non-empty list of dimensions instead.");
-        coefficients = Values.getDefaultInstance().newInstance(dimensions);
+        coefficients = valueFactory.newInstance(dimensions);
         this.CONSTANT_TERM = new int[dimensions.length];
         Arrays.fill(CONSTANT_TERM, 0);
     }
     public ArithmeticMultivariatePolynomial(Tensor/*<R>*/ coefficients) {
+    	super(coefficients.valueFactory());
         set(coefficients);
     }
   
@@ -64,7 +66,7 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/
     }
 
     protected Polynomial/*<R,Vector<Integer>>*/ newInstance(int[] dimensions) {
-        return new ArithmeticMultivariatePolynomial(dimensions);
+        return new ArithmeticMultivariatePolynomial(dimensions, valueFactory());
     }
 
     public final int degreeValue() {
@@ -84,7 +86,7 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/
             final int[] i = index.next();
             final Arithmetic vi = coefficients.get(i);
             if (vi != null && !vi.isZero()) {
-                final int sum = ((Integer)Operations.sum.apply(Values.getDefaultInstance().valueOf(i))).intValue();
+                final int sum = ((Integer)Operations.sum.apply(vi.valueFactory().valueOf(i))).intValue();
                 if (sum > d)
                     d = sum;
             }
@@ -93,7 +95,7 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/
     }
         
     public Object indexSet() {
-        return Values.getDefaultInstance().valueOf(coefficients.rank());
+        return valueFactory().valueOf(coefficients.rank());
     }
 
     public int rank() {
@@ -107,7 +109,7 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/
     private void set(Object coefficients) {
         if (coefficients == null)
             throw new IllegalArgumentException("illegal coefficients array: " + coefficients);
-        set(Values.getDefaultInstance().tensor(coefficients));
+        set(valueFactory().tensor(coefficients));
     }
     private void set(Tensor/*<R>*/ coefficients) {
         if (coefficients == null)
@@ -148,7 +150,7 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/
             throw new IllegalArgumentException("illegal coefficient value: " + vi);
         final int oldDegree = degree;
         coefficients.set(i, vi);
-        final int newPotentialDegree = ((Integer)Operations.sum.apply(Values.getDefaultInstance().valueOf(i))).intValue();
+        final int newPotentialDegree = ((Integer)Operations.sum.apply(vi.valueFactory().valueOf(i))).intValue();
         if (vi.isZero()
                         ? oldDegree == newPotentialDegree
                         : oldDegree < newPotentialDegree) {

@@ -86,11 +86,12 @@ import orbital.util.Utility;
                 } 
 
                 public Object apply(Object x) {
+                	ValueFactory vf = ((Arithmetic)x).valueFactory();
                         // convert single scalar to constant vector
                         if (!(x instanceof Vector) && x instanceof Scalar)
-                                x = Values.getDefaultInstance().CONST(dimension(), (Arithmetic)x);
+                                x = vf.CONST(dimension(), (Arithmetic)x);
                         Vector xv = (Vector) x;
-                        Vector r = Values.getDefaultInstance().newInstance(dimension());
+                        Vector r = vf.newInstance(dimension());
                         for (int i = 0; i < r.dimension(); i++)
                                 r.set(i, (Arithmetic) componentFunction[i].apply(xv.get(i)));
                         return r;

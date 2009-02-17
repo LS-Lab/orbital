@@ -45,7 +45,12 @@ import java.util.HashSet;
  */
 abstract class AbstractTensor/*<R extends Arithmetic>*/
     extends AbstractProductArithmetic/*<R,int[],Tensor<R>>*/ implements Tensor/*<R>*/, Serializable {
-    private static final long serialVersionUID = 7889937971348824822L;
+    
+	protected AbstractTensor(ValueFactory valueFactory) {
+		super(valueFactory);
+	}
+
+	private static final long serialVersionUID = 7889937971348824822L;
 
     // object-methods
         
@@ -210,6 +215,7 @@ abstract class AbstractTensor/*<R extends Arithmetic>*/
         private transient int expectedModCount = 0;
 
         protected TransformedAccessTensor(AbstractTensor/*<R>*/ m) {
+        	super(m.valueFactory());
             this.m = m;
             this.expectedModCount = m.modCount;
         }
@@ -255,7 +261,7 @@ abstract class AbstractTensor/*<R extends Arithmetic>*/
     
         public Object clone() {
             checkForComodification();
-            return new ArithmeticTensor/*<R>*/(super.toArray__Tensor());
+            return new ArithmeticTensor/*<R>*/(super.toArray__Tensor(), valueFactory());
         } 
 
         protected final void checkForComodification() {
@@ -283,7 +289,7 @@ abstract class AbstractTensor/*<R extends Arithmetic>*/
         public SubTensor(AbstractTensor/*<R>*/ m, int[] i1, int[] i2) {
             super(m);
             Utility.pre(i1.length == m.rank() && i2.length == m.rank(), "indices must be of correct rank.");
-            Utility.pre(Setops.all(Values.getDefaultInstance().valueOf(i1).iterator(), Values.getDefaultInstance().valueOf(i2).iterator(), Predicates.lessEqual), "Ending indices cannot be less than starting indices.");
+            Utility.pre(Setops.all(valueFactory().valueOf(i1).iterator(), valueFactory().valueOf(i2).iterator(), Predicates.lessEqual), "Ending indices cannot be less than starting indices.");
             m.validate(i1);
             m.validate(i2);
             this.offset = i1;
@@ -370,13 +376,13 @@ abstract class AbstractTensor/*<R extends Arithmetic>*/
         public TransposedTensor(final AbstractTensor/*<R>*/ m, int[] permutation) {
             super(m);
             Utility.pre(permutation.length == m.rank(), "indices must be of correct rank.");
-            Utility.pre(Setops.all(Values.getDefaultInstance().valueOf(permutation).iterator(), new Predicate() {
+            Utility.pre(Setops.all(m.valueFactory().valueOf(permutation).iterator(), new Predicate() {
                     public boolean apply(Object o) {
                         return (o instanceof Integer) && MathUtilities.isin(((Integer)o).intValue(), 0, m.rank() - 1);
                     }
                 }), "The mapping table of a permutation in S_n contains the integers {0,...,n-1}.");
             //@see Setops.hasDuplicates
-            Utility.pre(new HashSet(Setops.asList(Values.getDefaultInstance().valueOf(permutation).iterator())).size() == m.rank(), "A permutation is bijective, so its mapping table should not contain duplicates.");
+            Utility.pre(new HashSet(Setops.asList(m.valueFactory().valueOf(permutation).iterator())).size() == m.rank(), "A permutation is bijective, so its mapping table should not contain duplicates.");
             this.permutation = permutation;
         }
     
@@ -420,14 +426,14 @@ abstract class AbstractTensor/*<R extends Arithmetic>*/
             return (Real/*__*/) Functions.sqrt.apply(normsquare);
         } catch (ArithmeticException overflow) {
                 //@xxx possible loss of precision but still good enough for zero checks
-                return Values.getDefault().valueOf(Math.sqrt(normsquare.doubleValue()));
+                return valueFactory().valueOf(Math.sqrt(normsquare.doubleValue()));
         }
    } 
 
     // arithmetic-operations
         
     //@todo that's not quite true for strange R
-    public Arithmetic zero() {return Values.getDefaultInstance().ZERO(dimensions());}
+    public Arithmetic zero() {return valueFactory().ZERO(dimensions());}
     public Arithmetic one() {
         throw new UnsupportedOperationException();
     }

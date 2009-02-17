@@ -131,7 +131,7 @@ class AbstractFraction/*<M extends Arithmetic,S extends Arithmetic>*/ extends Ab
                     throw new UnsupportedOperationException("non-integral power not supported (" + this + ") ^ (" + b + ")");
                 }
         } else if (b instanceof Scalar) {
-                Scalar bb = Values.getDefault().narrow((Scalar)b);
+                Scalar bb = valueFactory().narrow((Scalar)b);
                 if (b instanceof Integer) {
                     return power_((Integer)bb);
                 }

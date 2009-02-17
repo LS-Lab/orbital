@@ -29,33 +29,33 @@ import orbital.util.Utility;
  */
 class RVector extends AbstractVector implements Cloneable {
     private static final long serialVersionUID = -4024410371344073971L;
-    /**
-     * Gets zero Vector, with all elements set to <code>0</code>.
-     */
-    public static final Vector ZERO(int length) {
-        return CONST(length, 0);
-    } 
-
-    /**
-     * Gets base Vector <code>i</code>, with all elements set to <code>0</code> except element <code>i</code> set to <code>1</code>.
-     * These <code>e<sub>i</sub></code> are the standard base of <code><b>R</b><sup>n</sup></code>:
-     * <code>&forall;x&isin;<b>R</b><sup>n</sup> &exist;! x<sub>k</sub>&isin;<b>R</b>: x = x<sub>1</sub>*e<sub>1</sub>+...+x<sub>n</sub>*e<sub>n</sub></code>.
-     */
-    public static final Vector BASE(int length, int e_i) {
-        RVector base = new RVector(length);
-        Arrays.fill(base.D, 0);
-        base.D[e_i] = 1;
-        return base;
-    } 
-
-    /**
-     * Gets a constant Vector, with all elements set to <code>c</code>.
-     */
-    public static final Vector CONST(int length, double c) {
-        RVector constant = new RVector(length);
-        Arrays.fill(constant.D, c);
-        return constant;
-    } 
+//    /**
+//     * Gets zero Vector, with all elements set to <code>0</code>.
+//     */
+//    public static final Vector ZERO(int length) {
+//        return CONST(length, 0);
+//    } 
+//
+//    /**
+//     * Gets base Vector <code>i</code>, with all elements set to <code>0</code> except element <code>i</code> set to <code>1</code>.
+//     * These <code>e<sub>i</sub></code> are the standard base of <code><b>R</b><sup>n</sup></code>:
+//     * <code>&forall;x&isin;<b>R</b><sup>n</sup> &exist;! x<sub>k</sub>&isin;<b>R</b>: x = x<sub>1</sub>*e<sub>1</sub>+...+x<sub>n</sub>*e<sub>n</sub></code>.
+//     */
+//    public static final Vector BASE(int length, int e_i) {
+//        RVector base = new RVector(length);
+//        Arrays.fill(base.D, 0);
+//        base.D[e_i] = 1;
+//        return base;
+//    } 
+//
+//    /**
+//     * Gets a constant Vector, with all elements set to <code>c</code>.
+//     */
+//    public static final Vector CONST(int length, double c) {
+//        RVector constant = new RVector(length);
+//        Arrays.fill(constant.D, c);
+//        return constant;
+//    } 
 
     /**
      * contains the vector double data elements
@@ -66,37 +66,40 @@ class RVector extends AbstractVector implements Cloneable {
     /**
      * creates a new Vector with dimension length.
      */
-    public RVector(int length) {
+    public RVector(int length, ValueFactory valueFactory) {
+    	super(valueFactory);
         D = new double[length];
     }
 
     /**
      * creates a new empty Vector with dimension <code>0</code>.
      */
-    public RVector() {
-        this(0);
+    public RVector(ValueFactory valueFactory) {
+        this(0, valueFactory);
     }
 
     /**
      * creates a new Vector from an array of doubles.
      * @todo could we forget about cloning v?
      */
-    public RVector(double values[]) {
+    public RVector(double values[], ValueFactory valueFactory) {
+    	super(valueFactory);
         D = (double[]) values/*.clone()*/;
     }
-    public RVector(Real values[]) {
+    public RVector(Real values[], ValueFactory valueFactory) {
+    	super(valueFactory);
         D = new double[values.length];
         for (int i = 0; i < D.length; i++)
             D[i] = values[i].doubleValue();
     }
-    public RVector(Point p) {
-        this(2);
+    public RVector(Point p, ValueFactory valueFactory) {
+        this(2, valueFactory);
         D[0] = p.x;
         D[1] = p.y;
     }
 
     protected Vector newInstance(int dim) {
-        return new RVector(dim);
+        return new RVector(dim, valueFactory());
     } 
 
 
@@ -106,7 +109,7 @@ class RVector extends AbstractVector implements Cloneable {
 
     public Arithmetic get(int i) {
         validate(i);
-        return Values.getDefaultInstance().valueOf(D[i]);
+        return valueFactory().valueOf(D[i]);
     } 
     public double getDoubleValue(int i) {
         validate(i);
@@ -131,10 +134,10 @@ class RVector extends AbstractVector implements Cloneable {
     public Vector add(Vector b) {
         if (!(b instanceof RVector))
             // fall-back to more general operation
-            return new ArithmeticVector(toArray()).add(b);
+            return new ArithmeticVector(toArray(), valueFactory()).add(b);
         Utility.pre(dimension() == b.dimension(), "Vector A+B only defined for same size");
         RVector bb = (RVector)b;
-        RVector ret = new RVector(dimension());
+        RVector ret = new RVector(dimension(), valueFactory());
         // component-wise
         for (int i = 0; i < dimension(); i++)
             ret.D[i] = D[i] + bb.D[i];
@@ -144,10 +147,10 @@ class RVector extends AbstractVector implements Cloneable {
     public Vector subtract(Vector b) {
         if (!(b instanceof RVector))
             // fall-back to more general operation
-            return new ArithmeticVector(toArray()).subtract(b);
+            return new ArithmeticVector(toArray(), valueFactory()).subtract(b);
         Utility.pre(dimension() == b.dimension(), "Vector A-B only defined for same size");
         RVector bb = (RVector)b;
-        RVector ret = new RVector(dimension());
+        RVector ret = new RVector(dimension(), valueFactory());
         // component-wise
         for (int i = 0; i < dimension(); i++)
             ret.D[i] = D[i] - bb.D[i];
@@ -155,7 +158,7 @@ class RVector extends AbstractVector implements Cloneable {
     }
          
     public Vector scale(double s) {
-        RVector ret = new RVector(dimension());
+        RVector ret = new RVector(dimension(), valueFactory());
 
         // component-wise
         for (int i = 0; i < dimension(); i++)
@@ -166,20 +169,20 @@ class RVector extends AbstractVector implements Cloneable {
     public Arithmetic scale(Arithmetic b) {
         if (!Real.isa.apply(b))
             // fall-back to more general multiplication
-            return new ArithmeticVector(toArray()).scale(b);
+            return new ArithmeticVector(toArray(), valueFactory()).scale(b);
         return scale(((Real)b).doubleValue());
     }
 
     public Arithmetic multiply(Vector b) {
         if (!(b instanceof RVector))
             // fall-back to more general multiplication
-            return new ArithmeticVector(toArray()).multiply(b);
+            return new ArithmeticVector(toArray(), valueFactory()).multiply(b);
         Utility.pre(dimension() == b.dimension(), "vectors for dot-product must have equal dimension");
         RVector bb = (RVector) b;
         double  ret = 0;
         for (int i = 0; i < dimension(); i++)
             ret += D[i] * bb.D[i];
-        return Values.getDefaultInstance().valueOf(ret);
+        return b.valueFactory().valueOf(ret);
     } 
 
     /**
@@ -188,14 +191,14 @@ class RVector extends AbstractVector implements Cloneable {
     public Vector cross(Vector b) {
         if (!(b instanceof RVector))
             // fall-back to more general cross
-            return new ArithmeticVector(toArray()).cross(b);
+            return new ArithmeticVector(toArray(), valueFactory()).cross(b);
         Utility.pre(dimension() == 3 && dimension() == b.dimension(), "domain of cross-product is 3D");
         RVector bb = (RVector) b;
         return new RVector(new double[] {
             getDoubleValue(1) * bb.getDoubleValue(2) - getDoubleValue(2) * bb.getDoubleValue(1),
             getDoubleValue(2) * bb.getDoubleValue(0) - getDoubleValue(0) * bb.getDoubleValue(2),
             getDoubleValue(0) * bb.getDoubleValue(1) - getDoubleValue(1) * bb.getDoubleValue(0)
-        });
+        }, valueFactory());
     } 
 
 

@@ -30,27 +30,29 @@ class ArithmeticVector/*<R extends Arithmetic>*/ extends AbstractVector/*<R>*/ {
     /**
      * creates a new Vector with dimension length.
      */
-    public ArithmeticVector(int length) {
+    public ArithmeticVector(int length, ValueFactory valueFactory) {
+    	super(valueFactory);
         D = new Arithmetic/*>R<*/[length];
     }
 
     /**
      * creates a new empty Vector with dimension <code>0</code>.
      */
-    public ArithmeticVector() {
-        this(0);
+    public ArithmeticVector(ValueFactory valueFactory) {
+        this(0, valueFactory);
     }
 
     /**
      * creates a new Vector from an array of Arithmetic values.
      * @todo could we forget about cloning v?
      */
-    public ArithmeticVector(Arithmetic/*>R<*/ values[]) {
+    public ArithmeticVector(Arithmetic/*>R<*/ values[], ValueFactory valueFactory) {
+    	super(valueFactory);
         D = (Arithmetic/*>R<*/[]) values/*.clone()*/;
     }
 
     protected Vector/*<R>*/ newInstance(int dim) {
-        return new ArithmeticVector/*<R>*/(dim);
+        return new ArithmeticVector/*<R>*/(dim, valueFactory());
     } 
 
     public final int dimension() {
@@ -74,7 +76,7 @@ class ArithmeticVector/*<R extends Arithmetic>*/ extends AbstractVector/*<R>*/ {
     }
 
     public Object clone() {
-        return new ArithmeticVector(toArray());
+        return new ArithmeticVector(toArray(), valueFactory());
     } 
 
     /**

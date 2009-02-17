@@ -40,8 +40,12 @@ import orbital.algorithm.Combinatorical;
  */
 abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
     extends AbstractPolynomial/*<R,Vector<Integer>>*/ {
-    private static final long serialVersionUID = -2237060189065872837L;
+	private static final long serialVersionUID = -2237060189065872837L;
     
+    protected AbstractMultivariatePolynomial(ValueFactory valueFactory) {
+		super(valueFactory);
+	}
+
     /**
      * The index (0,...,0) of the constant term.
      * @invariants subclasses must set this value to {0,...,0}&isin;<b>N</b><sup>indexSet()</sup>
@@ -65,7 +69,7 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
 
     protected Object/*>Vector<Integer><*/ productIndexSet(Arithmetic/*>Polynomial<R,Vector<Integer>><*/ productObject) {
         //@xxx note that this ruins compatibility with instances of superclass, only
-        return Values.getDefault().valueOf(dimensions());
+        return valueFactory().valueOf(dimensions());
     }
 
     //@xxx we do not ultimately need these following methods, but only have them for performance for S=<b>N</b><sup>n</sup>
@@ -187,7 +191,7 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
                 } 
                 public Object next() {
                     try {
-                        Object v = Values.getDefaultInstance().tensor(cursor.next());
+                        Object v = valueFactory().tensor(cursor.next());
                         checkForComodification();
                         return v;
                     }
@@ -201,7 +205,7 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
                 } 
                 public Object previous() {
                     try {
-                        Object v = Values.getDefaultInstance().tensor(cursor.previous());
+                        Object v = valueFactory().tensor(cursor.previous());
                         checkForComodification();
                         return v;
                     }

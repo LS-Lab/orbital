@@ -9,6 +9,8 @@ import orbital.math.*;
 import orbital.math.Integer;
 
 import junit.framework.*;
+
+import java.util.ListIterator;
 import java.util.Random;
 
 import java.awt.Dimension;
@@ -19,7 +21,7 @@ import java.awt.Dimension;
  */
 public class AbstractMatrixTest extends check.TestCase {
     private static final int TEST_REPETITION = 20;
-    private Values vf;
+    private ValueFactory vf;
     private Real tolerance;
     private Matrix/*<Scalar>*/ M1;
     private Matrix/*<Complex>*/ M2;
@@ -34,8 +36,12 @@ public class AbstractMatrixTest extends check.TestCase {
         return new TestSuite(AbstractMatrixTest.class);
     }
     protected void setUp() {
-        vf = Values.getDefaultInstance();
+        ValueFactory vf = Values.getDefaultInstance();
         random = new Random();
+        setUpAgain(vf);
+    }
+    protected void setUpAgain(ValueFactory vf) {
+    	this.vf = vf;
         tolerance = vf.valueOf(1e-6);
         //@xxx produces an error with gjc error: type parameter orbital.math.Arithmetic[] is not within its bound orbital.math.Arithmetic
         // this is because he confuses vf.valueOf(R[]) with vf.valueOf(R[][]) although R is bound to be orbital.math.Arithmetic
@@ -44,23 +50,56 @@ public class AbstractMatrixTest extends check.TestCase {
             {vf.rational(3, 4), vf.rational(1, 2), vf.valueOf(-1)},
             {vf.rational(-1, 2), vf.valueOf(0), vf.rational(1)}
         });
+        checkValues(M1, new Arithmetic[] {vf.valueOf(2), vf.rational(3, 4), vf.rational(-1, 2),
+                vf.rational(3, 4), vf.rational(1, 2), vf.valueOf(-1),
+                vf.rational(-1, 2), vf.valueOf(0), vf.rational(1)});
         v1 = vf.valueOf(new Rational[] {
             vf.valueOf(1), vf.rational(-1, 3), vf.rational(1, 2)
         });
+        checkValues(v1, new Arithmetic[] {vf.valueOf(1), vf.rational(-1, 3), vf.rational(1, 2)});
         M2 = vf.valueOf(new Complex[][] {
             {vf.complex(1, 2), vf.complex(2, -1)},
             {vf.complex(1, -2), vf.complex(-1, -1)}
         });
+        checkValues(M2, new Arithmetic[] {vf.complex(1, 2), vf.complex(2, -1),
+                vf.complex(1, -2), vf.complex(-1, -1)});
         v2 = vf.valueOf(new Scalar[] {
             vf.valueOf(1), vf.complex(1, 2)
         });
+        checkValues(v2, new Arithmetic[] {vf.valueOf(1), vf.complex(1, 2)});
         M3 = vf.valueOf(new Arithmetic[][] {
             {vf.valueOf(2), vf.rational(3, 4)},
             {vf.rational(-1, 2), vf.valueOf(0)}
         });
+        checkValues(M3, new Arithmetic[] {vf.valueOf(2), vf.rational(3, 4),
+            vf.rational(-1, 2), vf.valueOf(0)});
         v3 = vf.valueOf(new Arithmetic[] {
             vf.valueOf(1), vf.rational(-1, 3)
         });
+        checkValues(v3, new Arithmetic[] {vf.valueOf(1), vf.rational(-1, 3)});
+    }
+    
+    /**
+     * checks iterator against the expected values.
+     * @param t
+     * @param values
+     */
+    public void checkValues(Tensor t, Arithmetic[] expvalues) {
+    	ListIterator i = t.iterator();
+    	int k = 0;
+    	while (i.hasNext() && k < expvalues.length) {
+    		assertEquals( "expected element order", i.next(), expvalues[k++]);
+    	}
+    	assertTrue(!i.hasNext(), "tensor iterator not too long " + MathUtilities.format(i) + " in " + t);
+    	assertTrue(k == expvalues.length, "tensor iterator not too short " + MathUtilities.format(expvalues) + " in " + t);
+    	while (i.hasPrevious() && k >= 0) {
+    		assertEquals("expected element order", i.previous(), expvalues[--k]);
+    	}
+    	assertTrue(!i.hasPrevious(), "tensor iterator not too long reverse " + MathUtilities.format(i) + " in " + t);
+    	assertTrue(k == 0, "tensor iterator not too short reverse " + MathUtilities.format(expvalues) + " in " + t);
+    }
+    public void checkValues(Tensor t, double[] expvalues, ValueFactory vf) {
+    	checkValues(t, vf.valueOf(expvalues).toArray());
     }
 
     public void testMixedTypeMatrix() {
@@ -93,9 +132,23 @@ public class AbstractMatrixTest extends check.TestCase {
           System.out.println(hypermatrix.inverse());*/
     } 
 
+    public void testAssertConditionsDefault() throws Exception {
+        testAssertConditions(Values.getDefaultInstance());
+    }
+    public void testAssertConditionsBig() throws Exception {
+        testAssertConditions(new BigValuesImpl());
+    }
+    public void testAssertConditionsFast() throws Exception {
+        testAssertConditions(new FastValuesImpl());
+    }
+    public void testAssertConditionsVI() throws Exception {
+        testAssertConditions(new ValuesImpl());
+    }
+
     // (partial) assertion condition checks
-    public void testAssertConditions() throws Exception {
-        Matrix M = M3;
+    protected void testAssertConditions(ValueFactory vf) throws Exception {
+        setUpAgain(vf);
+    	Matrix M = M3;
         Vector v = v3;
         for (int i = 0; i < 2; i++) {
             System.out.println("reference behaviour part " + i);
@@ -185,8 +238,8 @@ public class AbstractMatrixTest extends check.TestCase {
             assertTrue( !v.equals(b) && !M.equals(B2) , "sub-view modifications write through");
             System.out.println(M + ", row " + v);
 
-            M = new RMatrix(((AbstractMatrix)B).toDoubleArray());
-            v = new RVector(((AbstractVector)b).toDoubleArray());
+            M = new RMatrix(((AbstractMatrix)B).toDoubleArray(), vf);
+            v = new RVector(((AbstractVector)b).toDoubleArray(), vf);
         }
     }
 

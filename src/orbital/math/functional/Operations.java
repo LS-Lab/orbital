@@ -106,7 +106,7 @@ public interface Operations /* implements ArithmeticOperations */ {
             //@xxx either add this everywhere, or remove it here (otherwise it won't work)
             //private final orbital.logic.imp.Type logicalTypeDeclaration = orbital.logic.imp.Types.map(orbital.logic.imp.Types.product(new orbital.logic.imp.Type[] {orbital.logic.imp.Types.objectType(Arithmetic.class), orbital.logic.imp.Types.objectType(Arithmetic.class)}), orbital.logic.imp.Types.objectType(Arithmetic.class));
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
-                Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer(true).apply(new Arithmetic[] {
+                Arithmetic operands[] = (Arithmetic[]) ((Arithmetic)x).valueFactory().getCoercer(true).apply(new Arithmetic[] {
                     (Arithmetic) x, (Arithmetic) y
                 });
                 return operands[0].add(operands[1]);
@@ -118,7 +118,7 @@ public interface Operations /* implements ArithmeticOperations */ {
             } 
             public BinaryFunction integrate(int i) {
                 Utility.pre(0 <= i && i <= 1, "binary integral");
-                return (BinaryFunction) plus.apply( times.apply(Functions.projectFirst, Functions.projectSecond), divide.apply(Functionals.on(i, Functions.square), Values.getDefaultInstance().valueOf(2)));
+                return (BinaryFunction) plus.apply( times.apply(Functions.projectFirst, Functions.projectSecond), divide.apply(Functionals.on(i, Functions.square), valueFactory().valueOf(2)));
             } 
             public Real norm() {
                 return valueFactory().POSITIVE_INFINITY();
@@ -126,9 +126,6 @@ public interface Operations /* implements ArithmeticOperations */ {
             public String toString() {
                 return "+";
             } 
-                public ValueFactory valueFactory() {
-                        return Values.getDefault();
-                }
         };
 
     /**
@@ -147,7 +144,13 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final Function/*<Arithmetic,Arithmetic>*/ sum = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ a) {
-                return Functionals.foldLeft(plus, valueFactory().ZERO(), Utility.asIterator(a));
+            	Iterator i = Utility.asIterator(a);
+            	Arithmetic z;
+            	if (i.hasNext()) 
+            		z = ((Arithmetic)i.next()).zero();
+            	else
+            		z = ((Arithmetic)a).valueFactory().ZERO();
+                return Functionals.foldLeft(plus, z, Utility.asIterator(a));
             }
             public Function derive() {
                 throw new ArithmeticException(this + " is only partially derivable");
@@ -187,9 +190,6 @@ public interface Operations /* implements ArithmeticOperations */ {
             public String toString() {
                 return "-";
             } 
-                public ValueFactory valueFactory() {
-                        return Values.getDefault();
-                }
         };
 
     /**
@@ -202,7 +202,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final BinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/ subtract = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
-                Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer().apply(new Arithmetic[] {
+                Arithmetic operands[] = (Arithmetic[]) ((Arithmetic)x).valueFactory().getCoercer().apply(new Arithmetic[] {
                     (Arithmetic) x, (Arithmetic) y
                 });
                 return operands[0].subtract(operands[1]);
@@ -224,9 +224,6 @@ public interface Operations /* implements ArithmeticOperations */ {
             public String toString() {
                 return "-";
             } 
-                public ValueFactory valueFactory() {
-                        return Values.getDefault();
-                }
         };
 
     // junctors of a general group (A,&sdot;)
@@ -247,7 +244,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final BinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/ times = new AbstractBinaryFunction/*<Arithmetic,Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ x, Object/*>Arithmetic<*/ y) {
-                Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer(true).apply(new Arithmetic[] {
+                Arithmetic operands[] = (Arithmetic[]) ((Arithmetic)x).valueFactory().getCoercer(true).apply(new Arithmetic[] {
                     (Arithmetic) x, (Arithmetic) y
                 });
                 return operands[0].multiply(operands[1]);
@@ -269,9 +266,6 @@ public interface Operations /* implements ArithmeticOperations */ {
             public String toString() {
                 return "*";
             } 
-                public ValueFactory valueFactory() {
-                        return Values.getDefault();
-                }
         };
 
     /**
@@ -337,9 +331,6 @@ public interface Operations /* implements ArithmeticOperations */ {
             public String toString() {
                 return "^-1";
             } 
-                public ValueFactory valueFactory() {
-                        return Values.getDefault();
-                }
         };
 
     /**
@@ -375,9 +366,6 @@ public interface Operations /* implements ArithmeticOperations */ {
             public String toString() {
                 return "/";
             } 
-                public ValueFactory valueFactory() {
-                        return Values.getDefault();
-                }
         };
 
     // extended junctors
@@ -414,9 +402,6 @@ public interface Operations /* implements ArithmeticOperations */ {
             public String toString() {
                 return "^";
             } 
-    		public ValueFactory valueFactory() {
-    			return Values.getDefault();
-    		}
         };
 
     // order operations
@@ -451,9 +436,6 @@ public interface Operations /* implements ArithmeticOperations */ {
             public String toString() {
                 return "min";
             } 
-    		public ValueFactory valueFactory() {
-    			return Values.getDefault();
-    		}
         };
 
     /**
@@ -490,9 +472,6 @@ public interface Operations /* implements ArithmeticOperations */ {
             public String toString() {
                 return "\u2293";
             } 
-    		public ValueFactory valueFactory() {
-    			return Values.getDefault();
-    		}
         };
 
     /**
@@ -522,9 +501,6 @@ public interface Operations /* implements ArithmeticOperations */ {
             public String toString() {
                 return "max";
             } 
-    		public ValueFactory valueFactory() {
-    			return Values.getDefault();
-    		}
         };
 
     /**
@@ -561,9 +537,6 @@ public interface Operations /* implements ArithmeticOperations */ {
             public String toString() {
                 return "\u2294";
             } 
-    		public ValueFactory valueFactory() {
-    			return Values.getDefault();
-    		}
         };
 
     
@@ -587,7 +560,7 @@ public interface Operations /* implements ArithmeticOperations */ {
                 if (b == null)
                     //@xxx is this okay?
                     return false;
-                Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer(true).apply(new Arithmetic[] {
+                Arithmetic operands[] = (Arithmetic[]) ((Arithmetic)a).valueFactory().getCoercer(true).apply(new Arithmetic[] {
                     (Arithmetic) a, (Arithmetic) b
                 });
                 return operands[0].equals(operands[1]);
@@ -608,7 +581,7 @@ public interface Operations /* implements ArithmeticOperations */ {
             public boolean apply(Object a, Object b) {
                 if (a == b)
                     return false;
-                Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer(true).apply(new Arithmetic[] {
+                Arithmetic operands[] = (Arithmetic[]) ((Arithmetic)a).valueFactory().getCoercer(true).apply(new Arithmetic[] {
                     (Arithmetic) a, (Arithmetic) b
                 });
                 return !operands[0].equals(operands[1]);
@@ -629,10 +602,11 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final orbital.logic.functor.BinaryFunction/*<Object,Object,Integer>*/ compare = new orbital.logic.functor.BinaryFunction/*<Object,Object,Integer>*/() {
             public Object/*>Integer<*/ apply(Object a, Object b) {
-                Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer(false).apply(new Arithmetic[] {
+            	ValueFactory vf = ((Arithmetic)a).valueFactory();
+                Arithmetic operands[] = (Arithmetic[]) vf.getCoercer(false).apply(new Arithmetic[] {
                     (Arithmetic) a, (Arithmetic) b
                 });
-                return Values.getDefault().valueOf(((Comparable) operands[0]).compareTo(operands[1]));
+                return vf.valueOf(((Comparable) operands[0]).compareTo(operands[1]));
             }
             public String toString() { return "cmp"; }
         };
@@ -647,7 +621,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final BinaryPredicate/*<Object,Object>*/ less = new BinaryPredicate/*<Object,Object>*/() {
             public boolean apply(Object a, Object b) {
-                Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer(false).apply(new Arithmetic[] {
+                Arithmetic operands[] = (Arithmetic[]) ((Arithmetic)a).valueFactory().getCoercer(false).apply(new Arithmetic[] {
                     (Arithmetic) a, (Arithmetic) b
                 });
                 return ((Comparable) operands[0]).compareTo(operands[1]) < 0;
@@ -665,7 +639,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final BinaryPredicate/*<Object,Object>*/ greater = new BinaryPredicate/*<Object,Object>*/() {
             public boolean apply(Object a, Object b) {
-                Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer(false).apply(new Arithmetic[] {
+                Arithmetic operands[] = (Arithmetic[]) ((Arithmetic)a).valueFactory().getCoercer(false).apply(new Arithmetic[] {
                     (Arithmetic) a, (Arithmetic) b
                 });
                 return ((Comparable) operands[0]).compareTo(operands[1]) > 0;
@@ -683,7 +657,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final BinaryPredicate/*<Object,Object>*/ lessEqual = new BinaryPredicate/*<Object,Object>*/() {
             public boolean apply(Object a, Object b) {
-                Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer(false).apply(new Arithmetic[] {
+                Arithmetic operands[] = (Arithmetic[]) ((Arithmetic)a).valueFactory().getCoercer(false).apply(new Arithmetic[] {
                     (Arithmetic) a, (Arithmetic) b
                 });
                 return ((Comparable) operands[0]).compareTo(operands[1]) <= 0;
@@ -701,7 +675,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final BinaryPredicate/*<Object,Object>*/ greaterEqual = new BinaryPredicate/*<Object,Object>*/() {
             public boolean apply(Object a, Object b) {
-                Arithmetic operands[] = (Arithmetic[]) PackageUtilities.valueFactory.getCoercer(false).apply(new Arithmetic[] {
+                Arithmetic operands[] = (Arithmetic[]) ((Arithmetic)a).valueFactory().getCoercer(false).apply(new Arithmetic[] {
                     (Arithmetic) a, (Arithmetic) b
                 });
                 return ((Comparable) operands[0]).compareTo(operands[1]) >= 0;

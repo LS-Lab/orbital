@@ -520,7 +520,7 @@ public class Functionals extends orbital.logic.functor.Functionals /*@todo uncom
      */
     public static /*<A1 extends Arithmetic, A2 extends Arithmetic, B extends Arithmetic>*/ Tensor/*<B>*/ map(BinaryFunction/*<A1, A2, B>*/ f, Tensor/*<A1>*/ x, Tensor/*<A2>*/ y) {
         Utility.pre(Utility.equalsAll(x.dimensions(), y.dimensions()), "compatible dimensions");
-        Tensor r = Values.getDefaultInstance().newInstance(x.dimensions());
+        Tensor r = x.valueFactory().newInstance(x.dimensions());
         mapInto(f, x.iterator(), y.iterator(), r.iterator());
         return r;
     }

@@ -495,7 +495,7 @@ public final class Functions {
                 return Functionals.compose(Operations.minus, cos);
             }
             public Real norm() {
-                return Values.getDefault().ONE();
+                return valueFactory().ONE();
             }
             public String toString() {
                 return "sin";
@@ -529,7 +529,7 @@ public final class Functions {
                 return sin;
             } 
             public Real norm() {
-                return Values.getDefault().ONE();
+                return valueFactory().ONE();
             }
             public String toString() {
                 return "cos";
@@ -625,7 +625,7 @@ public final class Functions {
     public static final Function arcsin = new AbstractFunction/*<Real,Real>*/() {
             public Object/*>Real<*/ apply(Object/*>Real<*/ x) {
                 if (x instanceof Number)
-                    return Values.getDefaultInstance().valueOf(Math.asin(((Number) x).doubleValue()));
+                    return valueFactory().valueOf(Math.asin(((Number) x).doubleValue()));
                 throw new UnsupportedOperationException("not implemented for type: " + x.getClass());
             } 
             public Function derive() {
@@ -1151,7 +1151,7 @@ public final class Functions {
                 //@todo return logistic * (1 - logistic)
             } 
             public Real norm() {
-                return Values.getDefault().ONE();
+                return valueFactory().ONE();
             }
             public String toString() {
                 return "logistic";
@@ -1183,7 +1183,7 @@ public final class Functions {
                 throw new UnsupportedOperationException("integrate " + this);
             } 
             public Real norm() {
-                return Values.getDefault().ONE();
+                return valueFactory().ONE();
             }
             public String toString() {
                 return "sign";
@@ -1211,7 +1211,7 @@ public final class Functions {
                     return (Function) Operations.times.apply(step(t), Functionals.bindSecond(Operations.subtract, t));
                 } 
                 public Real norm() {
-                    return Values.getDefault().ONE();
+                    return valueFactory().ONE();
                 }
                 public String toString() {
                     return "step_" + t;
@@ -1545,7 +1545,7 @@ public final class Functions {
                 throw new UnsupportedOperationException("integrate delta");
             } 
             public Real norm() {
-                return Values.getDefault().ONE();
+                return valueFactory().ONE();
             }
             public String toString() {
                 return "delta";

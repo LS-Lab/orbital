@@ -71,7 +71,7 @@ abstract class AbstractArithmetic implements Arithmetic {
         Integer s;
         try {
             assert b instanceof Scalar;
-            s = (Integer) Values.getDefaultInstance().narrow((Scalar) b);
+            s = (Integer) b.valueFactory().narrow((Scalar) b);
         }
         catch (ClassCastException e) {
             throw new UnsupportedOperationException("default power only implemented for scalar integer numbers, not " + this + "^" + b);

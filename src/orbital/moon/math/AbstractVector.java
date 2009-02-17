@@ -22,8 +22,11 @@ import orbital.util.Utility;
 
 //@todo ensure that multiply((Vector) b) does in fact call multiply(Vector<R>) instead of leading to an infinite recursion. Here and in Matrix stuff
 abstract class AbstractVector/*<R extends Arithmetic>*/ extends AbstractTensor implements Vector/*<R>*/ {
-    private static final long serialVersionUID = 372991453454528414L;
+	private static final long serialVersionUID = 372991453454528414L;
 
+    protected AbstractVector(ValueFactory valueFactory) {
+		super(valueFactory);
+	}
     // factory-method
         
     /**
@@ -41,7 +44,7 @@ abstract class AbstractVector/*<R extends Arithmetic>*/ extends AbstractTensor i
     protected abstract Vector/*<R>*/ newInstance(int dim);
     
     protected final Tensor/*<R>*/ newInstance(int[] dim) {
-        return dim.length == 1 ? newInstance(dim[0]) : Values.getDefaultInstance().newInstance(dim);
+        return dim.length == 1 ? newInstance(dim[0]) : valueFactory().newInstance(dim);
     }
 
     // get/set-methods
@@ -101,6 +104,7 @@ abstract class AbstractVector/*<R extends Arithmetic>*/ extends AbstractTensor i
         private transient int expectedModCount = 0;
 
         public SubVector(AbstractVector/*<R>*/ v, int i1, int i2) {
+        	super(v.valueFactory());
             if (!(i1 <= i2))
                 throw new IllegalArgumentException("Ending index " + i2 + " cannot be less than starting index " + i1 + ".");
             v.validate(i1);
@@ -145,7 +149,7 @@ abstract class AbstractVector/*<R extends Arithmetic>*/ extends AbstractTensor i
     
         public Object clone() {
             checkForComodification();
-            return new ArithmeticVector/*<R>*/(super.toArray());
+            return new ArithmeticVector/*<R>*/(super.toArray(), valueFactory());
         } 
 
         private final void checkForComodification() {
@@ -298,12 +302,12 @@ abstract class AbstractVector/*<R extends Arithmetic>*/ extends AbstractTensor i
         if (p == 2)
             // optimized case
             return (Real/*__*/) Functions.sqrt.apply(Operations.sum.apply(Functionals.map(Functions.square, Functionals.map(Functions.norm, iterator()))));
-        return (Real/*__*/) Operations.power.apply(Operations.sum.apply(Functionals.map(Functions.pow(p), Functionals.map(Functions.norm, iterator()))), Values.getDefaultInstance().valueOf(1 / p));
+        return (Real/*__*/) Operations.power.apply(Operations.sum.apply(Functionals.map(Functions.pow(p), Functionals.map(Functions.norm, iterator()))), valueFactory().valueOf(1 / p));
     } 
 
     // arithmetic-operations
 
-    public Arithmetic zero() {return Values.getDefaultInstance().ZERO(dimension());}
+    public Arithmetic zero() {return valueFactory().ZERO(dimension());}
     public Arithmetic one() {throw new UnsupportedOperationException("vector spaces do not have a 1");}
     
     public Vector/*<R>*/ add(Vector/*<R>*/ b) {
@@ -321,7 +325,7 @@ abstract class AbstractVector/*<R extends Arithmetic>*/ extends AbstractTensor i
     public Arithmetic/*>R<*/ multiply(Vector/*<R>*/ b) {
         Utility.pre(dimension() == b.dimension(), "vectors for dot-product must have equal dimension");
         // need Functionals.map(Function,Tensor) and Functionals.foldRight(Function,Object,Tensor)
-        return (Arithmetic/*>R<*/) Functionals.foldRight(Operations.plus, Values.getDefault().ZERO(), Functionals.map(Operations.times, iterator(), b.iterator()));
+        return (Arithmetic/*>R<*/) Functionals.foldRight(Operations.plus, b.valueFactory().ZERO(), Functionals.map(Operations.times, iterator(), b.iterator()));
     } 
 
     public Vector/*<R>*/ multiply(Scalar s) {

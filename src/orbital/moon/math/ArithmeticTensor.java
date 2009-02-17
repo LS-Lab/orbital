@@ -39,7 +39,8 @@ class ArithmeticTensor/*<R extends Arithmetic>*/ extends AbstractTensor/*<R>*/ {
     /**
      * Creates a new Tensor with dimension n<sub>1</sub>&times;n<sub>2</sub>&times;&#8230;&times;n<sub>r</sub>.
      */
-    public ArithmeticTensor(int[] dimensions) {
+    public ArithmeticTensor(int[] dimensions, ValueFactory valueFactory) {
+    	super(valueFactory);
         D = (Object[]) Array.newInstance(Arithmetic/*>R<*/.class, dimensions);
     }
 
@@ -48,8 +49,8 @@ class ArithmeticTensor/*<R extends Arithmetic>*/ extends AbstractTensor/*<R>*/ {
      * The rows are first index, the columns second index, etc.
      * @preconditions values is rectangular, i.e. values[i<sub>1</sub>]...[i<sub>k-1</sub>][i<sub>k</sub>].length==values[i<sub>1</sub>]...[i<sub>k-1</sub>][i<sub>k</sub>-1].length etc.
      */
-    public ArithmeticTensor(Object values[]) {
-        this((Object)values);
+    public ArithmeticTensor(Object values[], ValueFactory valueFactory) {
+        this((Object)values, valueFactory);
     }
     /**
      * creates a new Tensor backed by a multi-dimensional array of arithmetic objects.
@@ -57,7 +58,8 @@ class ArithmeticTensor/*<R extends Arithmetic>*/ extends AbstractTensor/*<R>*/ {
      * The rows are first index, the columns second index, etc.
      * @preconditions values is rectangular, i.e. values[i<sub>1</sub>]...[i<sub>k-1</sub>][i<sub>k</sub>].length==values[i<sub>1</sub>]...[i<sub>k-1</sub>][i<sub>k</sub>-1].length etc.
      */
-    public ArithmeticTensor(Object values) {
+    public ArithmeticTensor(Object values, ValueFactory valueFactory) {
+    	super(valueFactory);
         if (values == null)
             throw new NullPointerException("illegal tensor " + values);
         else if (!values.getClass().isArray())
@@ -86,7 +88,7 @@ class ArithmeticTensor/*<R extends Arithmetic>*/ extends AbstractTensor/*<R>*/ {
             }
             if (primitive) {
                 assert ai instanceof Number : "primitive type get wrapped into instances of " + Number.class;
-                Utility.setPart(D, i, Values.getDefaultInstance().valueOf((Number)ai));
+                Utility.setPart(D, i, valueFactory.valueOf((Number)ai));
             }
         }
     }
@@ -122,7 +124,7 @@ class ArithmeticTensor/*<R extends Arithmetic>*/ extends AbstractTensor/*<R>*/ {
     }
 
     protected Tensor/*<R>*/ newInstance(int[] dim) {
-        return new ArithmeticTensor/*<R>*/(dim);
+        return new ArithmeticTensor/*<R>*/(dim, valueFactory());
     } 
 
 
@@ -146,6 +148,6 @@ class ArithmeticTensor/*<R extends Arithmetic>*/ extends AbstractTensor/*<R>*/ {
     } 
 
     public Object clone() {
-        return new ArithmeticTensor/*<R>*/(toArray__Tensor());
+        return new ArithmeticTensor/*<R>*/(toArray__Tensor(), valueFactory());
     } 
 }

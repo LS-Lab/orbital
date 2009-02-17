@@ -271,7 +271,7 @@ public final class AlgebraicAlgorithms {
         private static final Function/*<S,Polynomial<R,S>>*/ Xpower =
             new Function/*<S,Polynomial<R,S>>*/() {
                 public Object/*>Polynomial<R,S><*/ apply(Object/*>S<*/ i) {
-                    return (Polynomial/*<R,S>*/) Values.getDefaultInstance().MONOMIAL((Vector/*>S<*/)i);
+                    return (Polynomial/*<R,S>*/) ((Arithmetic)i).valueFactory().MONOMIAL((Vector/*>S<*/)i);
                 }
                 public String toString() {
                     return "X0^.*...Xn^.";
@@ -362,7 +362,7 @@ public final class AlgebraicAlgorithms {
             final int[] dim = new int[tdim.length + sdim.length];
             System.arraycopy(tdim, 0, dim, 0, tdim.length);
             System.arraycopy(sdim, 0, dim, tdim.length, sdim.length);
-            Tensor r = Values.getDefaultInstance().newInstance(dim);
+            Tensor r = t.valueFactory().newInstance(dim);
             for (Combinatorical index = Combinatorical.getPermutations(r.dimensions()); index.hasNext(); ) {
                 int[] i = index.next();
                 int[] ai = new int[tdim.length];
@@ -604,7 +604,7 @@ public final class AlgebraicAlgorithms {
     public static final Quotient/*<? extends Arithmetic>*/ chineseRemainder(Arithmetic x[], Arithmetic m[]) {
         if (x.length != m.length)
             throw new IllegalArgumentException("must give the same number of congruence values and modulos");
-        final Values vf = Values.getDefaultInstance();
+        final ValueFactory vf = x[0].valueFactory();
         Euclidean xStar = (Euclidean) x[0];
         Euclidean M = (Euclidean) xStar.one();
         for (int i = 1; i < m.length; i++) {
@@ -685,7 +685,7 @@ public final class AlgebraicAlgorithms {
             this.elementaryReduce = new Function/*<Polynomial<R,S>,Polynomial<R,S>>*/() {
                     public Object/*>Polynomial<R,S><*/ apply(Object/*>Polynomial<R,S><*/ o) {
                         final Polynomial/*<R,S>*/ f = (Polynomial)o;
-                        final Values vf = Values.getDefaultInstance();
+                        final ValueFactory vf = f.valueFactory();
                         //@internal we would prefer reverse direction (because we want to start eliminating large not small monomials), also starting with leading coefficient
                         final SortedSet/*<S>*/ occurring = new TreeSet(new ReverseComparator(monomialOrder));
                         occurring.addAll(occurringMonomials(f));
@@ -729,7 +729,7 @@ public final class AlgebraicAlgorithms {
                                         reduction = reduction.subtract(vf.MONOMIAL(reduction.get(nu), nu));
                                     }
                                     if (!reduction.get(nu).isZero()) {
-                                        throw new AssertionError(vf.MONOMIAL(Values.getDefault().ONE(), nu) + " does not occur in " + reduction + " anymore, even after numerical precision correction");
+                                        throw new AssertionError(vf.MONOMIAL(cnu.one(), nu) + " does not occur in " + reduction + " anymore, even after numerical precision correction");
                                     }
                                 }
                                                                 if (!(inducedOrder.compare(reduction, f) < 0))
@@ -901,11 +901,11 @@ public final class AlgebraicAlgorithms {
         }
         // the first element is in the candidate groebner basis, otherwise nothing happens later, all others are in working list
         g.add(working.poll());
-        final Values vf = Values.getDefaultInstance();
         while (!working.isEmpty()) {
                 // get (smallest) polynomial from working, moving it to g
             // pre-reduce gi with respect to current G
             final Polynomial/*<R,S>*/ gi = reduce((Polynomial)working.poll(), g, monomialOrder);
+            final ValueFactory vf = gi.valueFactory();
                 assert validate(gi, gg) : "reduced polynomial " + gi + " from working set in ideal of " + gg;
             if (gi.isZero()) {
                 continue;
@@ -976,11 +976,12 @@ public final class AlgebraicAlgorithms {
     private static final /*<R extends Arithmetic, S extends Arithmetic>*/
     Set/*<Polynomial<R,S>>*/ groebnerBasisImpl_Direct(Collection/*<Polynomial<R,S>>*/ gg, final Comparator/*<S>*/ monomialOrder) {
         final List/*<Polynomial<R,S>>*/ g = new ArrayList(gg);
-        final Values vf = Values.getDefaultInstance();
+        ValueFactory vf;
         ergaenzeGroebnerBasis:
                 while (true) {
                         for (int i = 0; i < g.size(); i++) {
                                 final Polynomial/*<R,S>*/ gi = (Polynomial)g.get(i);
+                                vf = gi.valueFactory();
                                 for (int j = i + 1; j < g.size(); j++) {
                                         final Polynomial/*<R,S>*/ gj = (Polynomial)g.get(j);
 
@@ -1029,7 +1030,7 @@ public final class AlgebraicAlgorithms {
      */
     private static final /*<R extends Arithmetic, S extends Arithmetic>*/
         Polynomial/*<R,S>*/ sPolynomial(final Polynomial/*<R,S>*/ f, final Polynomial/*<R,S>*/ g, final Comparator/*<S>*/ monomialOrder, boolean optimize) {
-        final Values vf = Values.getDefaultInstance();
+        final ValueFactory vf = f.valueFactory();
         // Gr&ouml;bner rank of g[i], i.e., leading monomial l(g[i])
         final Vector/*>S<*/ lf = getExponentVector(leadingMonomial(f, monomialOrder));
         final Vector/*>S<*/ lg = getExponentVector(leadingMonomial(g, monomialOrder));
@@ -1128,7 +1129,7 @@ public final class AlgebraicAlgorithms {
             public boolean apply(Object p) {
                 Polynomial r = (Polynomial) p;
                 if (Arithmetic.numerical.apply(r)) {
-                    final Values vf = Values.getDefaultInstance();
+                    final ValueFactory vf = r.valueFactory();
                     Tensor rt = vf.asTensor(r);
                     return r.degreeValue() < 0
                         || rt.equals(vf.ZERO(rt.dimensions()), vf.valueOf(MathUtilities.getDefaultTolerance()));
@@ -1174,9 +1175,10 @@ public final class AlgebraicAlgorithms {
     private static final boolean containsAllSPolynomials(Set gb,
                         Comparator monomialOrder) {
         final List/*<Polynomial<R,S>>*/ g = new ArrayList(gb);
-        final Values vf = Values.getDefaultInstance();
+        ValueFactory vf;
         for (int i = 0; i < g.size(); i++) {
                 final Polynomial/*<R,S>*/ gi = (Polynomial)g.get(i);
+                vf = gi.valueFactory();
                 for (int j = i + 1; j < g.size(); j++) {
                         final Polynomial/*<R,S>*/ gj = (Polynomial)g.get(j);
 
@@ -1238,7 +1240,7 @@ public final class AlgebraicAlgorithms {
             throw new IllegalArgumentException("initial value expected of compatible dimension. Dimension " + A.dimension() + " of " + A + " does not fit dimension " + eta.dimension() + " of " + eta);
         if (A.dimension().height != b.dimension())
             throw new IllegalArgumentException("constant vector expected of compatible dimension. Dimension " + A.dimension() + " of " + A + " does not fit dimension " + b.dimension() + " of " + b);
-        final Values vf = Values.getDefaultInstance();
+        final ValueFactory vf = eta.valueFactory();
         // contains the successive powers 1/n!*A^n*eta
         List/*<Vector<R>>*/ epowers = new LinkedList/*<Vector<R>>*/();
         // contains the successive powers 1/n!*A^n*b if needed at all (otherwise null if b=0)
@@ -1312,7 +1314,7 @@ public final class AlgebraicAlgorithms {
      */
     public static final /*<R extends Arithmetic>*/
         UnivariatePolynomial/*<R>*/[] componentPolynomials(UnivariatePolynomial/*<Vector<R>>*/ p) {
-        final Values vf = Values.getDefaultInstance();
+        final ValueFactory vf = p.valueFactory();
         Vector/*<R>*/ a0 = (Vector) p.get(0);
         // a growing list view for the resulting component polynomials
         List/*<R>*/ piv[] = new List/*<R>*/[a0.dimension()];
@@ -1345,7 +1347,7 @@ public final class AlgebraicAlgorithms {
      */
     public static final /*<R extends Arithmetic>*/
         UnivariatePolynomial/*<Vector<R>>*/ vectorialPolynomial(UnivariatePolynomial/*<R>*/ pi[]) {
-        final Values vf = Values.getDefaultInstance();
+        final ValueFactory vf = pi.length > 0 ? pi[0].valueFactory() : Values.getDefaultInstance();
         // the maximum degree of the polynomials
         /*final Integer degvalue = (Integer)Operations.sup.apply(Functionals.map(new Function() {
                 public Object apply(Object pii) {
@@ -1385,7 +1387,7 @@ public final class AlgebraicAlgorithms {
         // test divisibility of monomial X^a by X^b
         Arithmetic div = a.subtract(b);
         //@internal the following is a trick for S=<b>N</b><sup>n</sup> represented as <b>Z</b><sup>n</sup> (get rid when introducing Natural extends Integer)
-        if (Setops.some((getExponentVector(div)).iterator(), Functionals.bindSecond(Predicates.less, Values.getDefault().ZERO())))
+        if (Setops.some((getExponentVector(div)).iterator(), Functionals.bindSecond(Predicates.less, a.valueFactory().ZERO())))
                 return null;
         else {
   //            Functionals.map(Functionals.asFunction(Operations.greaterEqual), getExponentVector(a), getExponentVector(b));
@@ -1398,7 +1400,7 @@ public final class AlgebraicAlgorithms {
                         return (Vector)m;
                 } else if (m instanceof Integer) {
                         // univariate case
-                        return Values.getDefault().valueOf(new Integer[] {(Integer)m});
+                        return ((Arithmetic)m).valueFactory().valueOf(new Integer[] {(Integer)m});
                 } else {
                         throw new ClassCastException("Cannot convert exponent representation into Vector<Integer> from " + m);
                 }

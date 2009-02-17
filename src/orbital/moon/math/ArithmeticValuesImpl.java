@@ -163,7 +163,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
     // vector constructors and conversion utilities
          
     public /*<R extends Arithmetic>*/ Vector/*<R>*/ valueOf(Arithmetic/*>R<*/[] values) {
-        return new ArithmeticVector/*<R>*/(values);
+        return new ArithmeticVector/*<R>*/(values, this);
     } 
     public Vector valueOf(double[] values) {
         // kind of map valueOf
@@ -190,7 +190,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
     }
 
     public /*<R extends Arithmetic>*/ Vector/*<R>*/ newInstance(int dim) {
-        return new ArithmeticVector/*<R>*/(dim);
+        return new ArithmeticVector/*<R>*/(dim, this);
     }
 
     public /*<R extends Scalar>*/ Vector/*<R>*/ BASE(int n, int i) {
@@ -210,7 +210,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
     // matrix constructors and conversion utilities
 
     public /*<R extends Arithmetic>*/ Matrix/*<R>*/ valueOf(Arithmetic/*>R<*/[][] values) {
-        return new ArithmeticMatrix/*<R>*/(values);
+        return new ArithmeticMatrix/*<R>*/(values, this);
     } 
     // matrix constructors and conversion utilities
 
@@ -241,10 +241,10 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
     }
 
     public /*<R extends Arithmetic>*/ Matrix/*<R>*/ newInstance(Dimension dimension) {
-        return new ArithmeticMatrix/*<R>*/(dimension);
+        return new ArithmeticMatrix/*<R>*/(dimension, this);
     } 
     public /*<R extends Arithmetic>*/ Matrix/*<R>*/ newInstance(int height, int width) {
-        return new ArithmeticMatrix/*<R>*/(height, width);
+        return new ArithmeticMatrix/*<R>*/(height, width, this);
     } 
 
     public /*<R extends Scalar>*/ Matrix/*<R>*/ IDENTITY(int height, int width) {
@@ -266,10 +266,10 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
         return valueOf(values);
     }
     public /*<R extends Arithmetic>*/ Tensor/*<R>*/ tensor(Arithmetic/*>R<*/[][][] values) {
-        return new ArithmeticTensor(values);
+        return new ArithmeticTensor(values, this);
     }
     public Tensor tensor(Object values) {
-        AbstractTensor t = new ArithmeticTensor(values);
+        AbstractTensor t = new ArithmeticTensor(values, this);
         // tensors of rank 1 or rank 2 are converted to vectors or matrices
         switch (t.rank()) {
         case 0:
@@ -295,7 +295,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
         case 2:
             return validate(newInstance(dimensions[0], dimensions[1]), dimensions);
         default:
-            return validate(new ArithmeticTensor(dimensions), dimensions);
+            return validate(new ArithmeticTensor(dimensions, this), dimensions);
         }
     }
     /**
@@ -358,7 +358,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
         int[] dim = new int[exponents.length];
         for (int k = 0; k < dim.length; k++)
             dim[k] = exponents[k] + 1;
-        AbstractMultivariatePolynomial m = new ArithmeticMultivariatePolynomial(dim);
+        AbstractMultivariatePolynomial m = new ArithmeticMultivariatePolynomial(dim, this);
         m.set(m.CONSTANT_TERM, coefficient.zero());
         m.setZero();
         m.set(exponents, coefficient);
@@ -374,7 +374,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
     // univariate polynomial constructors and utilities
 
     public /*<R extends Arithmetic>*/ UnivariatePolynomial/*<R>*/ polynomial(Arithmetic/*>R<*/[] coefficients) {
-        return new ArithmeticUnivariatePolynomial/*<R>*/(coefficients);
+        return new ArithmeticUnivariatePolynomial/*<R>*/(coefficients, this);
     }
 
     // @todo implement a true view flexible for changes (but only if Polynomial.set(...) has been introduced)

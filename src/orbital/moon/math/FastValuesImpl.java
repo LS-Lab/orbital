@@ -48,19 +48,26 @@ public class FastValuesImpl extends ValuesImpl {
      * @xxx note that we should think about the order of static initialization.
      */
     private static final int     MAX_CONSTANT = 10;
-    private final Integer posConst[] = new Integer[MAX_CONSTANT + 1];
-    private final Integer negConst[] = new Integer[MAX_CONSTANT + 1];
+    private  Integer posConst[] = new Integer[MAX_CONSTANT + 1];
+    private Integer negConst[] = new Integer[MAX_CONSTANT + 1];
 
     // instantiation
 
     public FastValuesImpl() {
-        //@fixme this static initialization somehow is not yet executed before the super constructor is called. Move constants here
+		// this static initialization somehow is not yet executed before the super constructor is called. Move constants here, thus lazy init cache too
+        initCache(); 
+    }
+
+	private void initCache() {
+		// these too steps shouldn't be necessary but they are
+	    this.posConst = new Integer[MAX_CONSTANT + 1];
+	    this.negConst = new Integer[MAX_CONSTANT + 1];
         posConst[0] = negConst[0] = new AbstractInteger.Long(0, this);
         for (int i = 1; i <= MAX_CONSTANT; i++) {
             posConst[i] = new AbstractInteger.Long(i, this);
             negConst[i] = new AbstractInteger.Long(-i, this);
-        } 
-    }
+        }
+	}
 
     // scalar value constructors - facade factory
     // primitive type conversion methods
@@ -79,13 +86,17 @@ public class FastValuesImpl extends ValuesImpl {
     // integer scalar value constructors - facade factory
 
     public Integer valueOf(int val) {
-        // If -MAX_CONSTANT < val < MAX_CONSTANT, return stashed constant
-        if (0 <= val && val <= MAX_CONSTANT)
-            return posConst[val];
-        else if (-MAX_CONSTANT <= val && val < 0)
-            return negConst[-val];
-        else
-            return new AbstractInteger.Int(val, this);
+    	try {
+    		// If -MAX_CONSTANT < val < MAX_CONSTANT, return stashed constant
+    		if (0 <= val && val <= MAX_CONSTANT)
+    			return posConst[val];
+    		else if (-MAX_CONSTANT <= val && val < 0)
+    			return negConst[-val];
+    	} catch (NullPointerException ex) {
+    		initCache();
+    		return valueOf(val);
+    	}
+    	return new AbstractInteger.Int(val, this);
     } 
     public Integer valueOf(long val) {
         return -MAX_CONSTANT <= val && val <= MAX_CONSTANT
@@ -97,12 +108,12 @@ public class FastValuesImpl extends ValuesImpl {
          
     //@todo couldn't we even return Vector<Real>?
     public Vector valueOf(double[] values) {
-        return new RVector(values);
+        return new RVector(values, this);
     } 
 
     // matrix constructors and conversion utilities
 
     public Matrix valueOf(double[][] values) {
-        return new RMatrix(values);
+        return new RMatrix(values, this);
     } 
 }

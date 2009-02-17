@@ -161,7 +161,18 @@ public class BigValuesImpl extends ArithmeticValuesImpl {
     // real scalar value constructors - facade factory
 
     public Real valueOf(double val) {
-        return new AbstractReal.Big(val, this);
+    	try {
+            return new AbstractReal.Big(val, this);
+    	} catch (NumberFormatException ex) {
+    		if (val == Double.POSITIVE_INFINITY)
+    			return POSITIVE_INFINITY();
+    		else if (val == Double.NEGATIVE_INFINITY)
+    			return NEGATIVE_INFINITY();
+    		else if (Double.isNaN(val))
+    			return NaN();
+    		else
+    			throw ex;
+    	}
     } 
     public Real valueOf(java.math.BigDecimal val) {
         return new AbstractReal.Big(val, this);

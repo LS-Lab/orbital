@@ -56,7 +56,7 @@ public final class Evaluations {
      * Returns the average of all elements in this Vector.
      */
     public static /*<R extends Arithmetic>*/ Arithmetic average(Vector/*<R>*/ v) {
-        return sum(v).divide(Values.getDefaultInstance().valueOf(v.dimension()));
+        return sum(v).divide(v.valueFactory().valueOf(v.dimension()));
     } 
     public static double average(double[] v) {
         return sum(v) / v.length;
@@ -135,7 +135,7 @@ public final class Evaluations {
      * Returns the average of all elements in this Matrix.
      */
     public static /*<R extends Arithmetic>*/ Arithmetic average(Matrix/*<R>*/ M) {
-        return sum(M).divide(Values.getDefaultInstance().valueOf(M.dimension().width * M.dimension().height));
+        return sum(M).divide(M.valueFactory().valueOf(M.dimension().width * M.dimension().height));
     } 
 
     /**

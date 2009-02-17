@@ -356,7 +356,7 @@ public abstract class Values implements ValueFactory {
             //@see duplicate code from ArithmeticValuesImpl.intValueExact()
             // convert to int and check for equality
             int l = ((Integer)val).intValue();
-            Integer i = Values.getDefault().valueOf(l);
+            Integer i = val.valueFactory().valueOf(l);
             if (i.equals(val))
                 return new java.lang.Integer(l);
             else

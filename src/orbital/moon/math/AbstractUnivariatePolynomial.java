@@ -42,7 +42,8 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
      * @invariants subclasses must set this value to get(0).zero()
      */
     transient Arithmetic/*>R<*/  R_ZERO;
-    public AbstractUnivariatePolynomial() {
+    public AbstractUnivariatePolynomial(ValueFactory valueFactory) {
+    	super(valueFactory);
     }
   
     public boolean equals(Object o) {
@@ -192,7 +193,7 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
         if (acast instanceof Symbol) {
             // use ordinary evaluation scheme to improve readability
             Arithmetic r = get(0);
-            final Values vf = Values.getDefaultInstance();
+            final ValueFactory vf = acast.valueFactory();
             for (int i = 1; i <= degreeValue(); i++) {
                 Arithmetic ci = get(i);
                 r = r.add(ci.multiply(acast.power(vf.valueOf(i))));
@@ -215,7 +216,7 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
         Arithmetic[] ai = new Arithmetic[degreeValue()];
         if (ai.length == 0)
             return this;
-        final Values vf = Values.getDefaultInstance();
+        final ValueFactory vf = valueFactory();
         for (int i = 1; i <= degreeValue(); i++)
             ai[i - 1] = get(i).multiply(vf.valueOf(i));
         return vf.polynomial(ai);
@@ -228,7 +229,7 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
         if (degreeValue() < 0)
             return this;
         Arithmetic[] ai = new Arithmetic[(degreeValue() + 1) + 1];
-        final Values vf = Values.getDefaultInstance();
+        final ValueFactory vf = valueFactory();
         ai[0] = R_ZERO;
         for (int i = 0; i <= degreeValue(); i++)
             ai[i + 1] = get(i).divide(vf.valueOf(i + 1));
@@ -236,11 +237,11 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
     }
 
     public Arithmetic zero() {
-        return Values.getDefaultInstance().polynomial(new Arithmetic/*>R<*/[] {get(0).zero()});
+        return valueFactory().polynomial(new Arithmetic/*>R<*/[] {get(0).zero()});
     }
 
     public Arithmetic one() {
-        return Values.getDefaultInstance().polynomial(new Arithmetic/*>R<*/[] {get(0).one()});
+        return valueFactory().polynomial(new Arithmetic/*>R<*/[] {get(0).one()});
     }
 
     public Real norm() {
@@ -464,7 +465,7 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
         for (int i = 0; i < k; i++)
             r[i] = R_ZERO;
         r[k] = s;
-        return Values.getDefaultInstance().polynomial(r);
+        return valueFactory().polynomial(r);
     }
 
     /**
@@ -477,16 +478,16 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
                 break;
         if (deg < 0)
             //@todo perhaps prefer {R_ZERO}?
-            return Values.getDefaultInstance().polynomial(new Arithmetic/*>R<*/[0]);
+            return valueFactory().polynomial(new Arithmetic/*>R<*/[0]);
         //assert(deg == max {i&isin;<b>N</b> : a<sub>i</sub> &ne; 0}
         assert 0 <= deg && deg < a.length : "degree " + deg + " is in [0,n]";
         if (deg == a.length - 1)
             // fast shortcut avoiding copy of references in a to r
-            return Values.getDefaultInstance().polynomial(a);
+            return valueFactory().polynomial(a);
         Arithmetic/*>R<*/ r[] = new Arithmetic/*>R<*/[deg + 1];                                                                                    
         for (int i = 0; i < r.length; i++)
             r[i] = a[i];
-        return Values.getDefaultInstance().polynomial(r);
+        return valueFactory().polynomial(r);
     }
         
     public Arithmetic/*>R<*/[] getCoefficients() {
@@ -506,7 +507,7 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
 
     // identical to @see AbstractPolynomial
     public Integer degree() {
-        return Values.getDefaultInstance().valueOf(degreeValue());
+        return valueFactory().valueOf(degreeValue());
     }
     protected final Object productIndexSet(Arithmetic/*>UnivariatePolynomial<R><*/ productObject) {
         return dimensions();
@@ -524,7 +525,7 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
     abstract Tensor tensorViewOfCoefficients();
 
     public final Object indexSet() {
-        return Values.getDefault().ONE();
+        return valueFactory().ONE();
     }
     public Iterator indices() {
         if (degreeValue() < 0)
@@ -532,7 +533,7 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
         //@xxx use Functionals.Anamorphism or something
         java.util.List l = new java.util.ArrayList(degreeValue() + 1);
         for (int i = 0; i <= degreeValue(); i++)
-            l.add(Values.getDefaultInstance().valueOf(i));
+            l.add(valueFactory().valueOf(i));
         return java.util.Collections.unmodifiableList(l).listIterator();
     }
 

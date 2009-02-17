@@ -216,7 +216,7 @@ public abstract class AbstractValues extends Values {
     } 
 
     public /*<R extends Arithmetic>*/ Vector/*<R>*/ constant(final Vector/*<R>*/ v) {
-        return /*refine/delegate Vector*/ new AbstractVector/*<R>*/() {
+        return /*refine/delegate Vector*/ new AbstractVector/*<R>*/(this) {
                 private static final long serialVersionUID = 4473448798599904941L;
                 protected Vector/*<R>*/ newInstance(int d) {
                     assert false : "this method should never get called in this context of constant(...)";
@@ -277,7 +277,7 @@ public abstract class AbstractValues extends Values {
     } 
 
     public /*<R extends Arithmetic>*/ Matrix/*<R>*/ constant(final Matrix/*<R>*/ m) {
-        return /*refine/delegate Matrix*/ new AbstractMatrix/*<R>*/() {
+        return /*refine/delegate Matrix*/ new AbstractMatrix/*<R>*/(this) {
                 private static final long serialVersionUID = 482711902153502751L;
                 protected Matrix/*<R>*/ newInstance(Dimension d) {
                     assert false : "this method should never get called in this context of constant(...)";
@@ -350,7 +350,7 @@ public abstract class AbstractValues extends Values {
         //@todo would we simplify these by providing a hierarchy of delegation things?
         // but then some tensors would no longer be AbstractTensors.
         //@todo so perhaps just identify multiple delegations to Tensor, or to Polynomial etc.
-        return /*refine/delegate Tensor*/ new AbstractTensor/*<R>*/() {
+        return /*refine/delegate Tensor*/ new AbstractTensor/*<R>*/(this) {
                 private static final long serialVersionUID = 3658988168257832220L;
                 protected Tensor/*<R>*/ newInstance(int[] dim) {
                     assert false : "this method should never get called in this context of constant(...)";
@@ -696,12 +696,12 @@ public abstract class AbstractValues extends Values {
     // conversion methods
 
     public /*<R extends Arithmetic>*/ Vector/*<R>*/ asVector(final Matrix/*<R>*/ m) {
-        return /*refine/delegate Vector*/ new AbstractVector/*<R>*/() {
+        return /*refine/delegate Vector*/ new AbstractVector/*<R>*/(this) {
                 private static final long serialVersionUID = 7697252236109892826L;
                 protected Vector/*<R>*/ newInstance(int dim) {
                     return m instanceof RMatrix
-                        ? (Vector) new RVector(dim)
-                        : (Vector) new ArithmeticVector/*<R>*/(dim);
+                        ? (Vector) new RVector(dim, AbstractValues.this)
+                        : (Vector) new ArithmeticVector/*<R>*/(dim, AbstractValues.this);
                 } 
                 public int dimension() {
                     Dimension dim = m.dimension();
