@@ -145,12 +145,11 @@ public interface Operations /* implements ArithmeticOperations */ {
     public static final Function/*<Arithmetic,Arithmetic>*/ sum = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ a) {
             	Iterator i = Utility.asIterator(a);
-            	Arithmetic z;
-            	if (i.hasNext()) 
-            		z = ((Arithmetic)i.next()).zero();
-            	else
-            		z = ((Arithmetic)a).valueFactory().ZERO();
-                return Functionals.foldLeft(plus, z, Utility.asIterator(a));
+            	if (i.hasNext()) {
+            		Arithmetic f = (Arithmetic)i.next();
+                    return Functionals.foldLeft(plus, f, i);
+                } else
+            		return ((Arithmetic)a).valueFactory().ZERO();
             }
             public Function derive() {
                 throw new ArithmeticException(this + " is only partially derivable");
@@ -284,12 +283,10 @@ public interface Operations /* implements ArithmeticOperations */ {
     public static final Function/*<Arithmetic,Arithmetic>*/ product = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ a) {
             	Iterator i = Utility.asIterator(a);
-            	Arithmetic o;
             	if (i.hasNext()) 
-            		o = ((Arithmetic)i.next()).one();
+                    return Functionals.foldLeft(times, (Arithmetic)i.next(), i);
             	else
-            		o = ((Arithmetic)a).valueFactory().ONE();
-                return Functionals.foldLeft(times, o, Utility.asIterator(a));
+            		return ((Arithmetic)a).valueFactory().ONE();
             }
             public Function derive() {
                 throw new ArithmeticException(this + " is only partially derivable");

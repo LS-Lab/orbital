@@ -59,18 +59,18 @@ public class ArithmeticMatrixTest extends check.TestCase {
         return new TestSuite(ArithmeticMatrixTest.class);
     }
 
-    public void testNormDetTrEtcDefault() throws Exception {
-        testNormDetTrEtc(Values.getDefaultInstance());
-    }
+//    public void testNormDetTrEtcDefault() throws Exception {
+//        testNormDetTrEtc(Values.getDefaultInstance());
+//    }
     public void testNormDetTrEtcBig() throws Exception {
         testNormDetTrEtc(new BigValuesImpl());
     }
-    public void testNormDetTrEtcFast() throws Exception {
-        testNormDetTrEtc(new FastValuesImpl());
-    }
-    public void testNormDetTrEtcVI() throws Exception {
-        testNormDetTrEtc(new ValuesImpl());
-    }
+//    public void testNormDetTrEtcFast() throws Exception {
+//        testNormDetTrEtc(new FastValuesImpl());
+//    }
+//    public void testNormDetTrEtcVI() throws Exception {
+//        testNormDetTrEtc(new ValuesImpl());
+//    }
 
     public void testNormDetTrEtc(ValueFactory vf) {
     	setUpAgain(vf);
