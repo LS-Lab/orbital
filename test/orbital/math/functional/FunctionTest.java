@@ -172,7 +172,7 @@ public class FunctionTest extends check.TestCase {
     }
     //testCalculations("Dot", Operations.times, MIN, MAX, TYPE_MATRIX, TYPE_REAL);
     public void test_calc_inverse() {
-    	testCalculations("Inverse",   Operations.inverse, MIN, MAX, TYPE_SCALAR, scalarTypes);
+    	testCalculations("(1/#1)&",   Operations.inverse, MIN, MAX, TYPE_SCALAR, scalarTypes);
     }
     public void test_calc_divide() {
     	testCalculations("Divide",    Operations.divide, MIN, MAX, TYPE_REAL | TYPE_COMPLEX, scalarTypes);
