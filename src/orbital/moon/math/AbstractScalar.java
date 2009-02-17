@@ -11,11 +11,11 @@ import java.io.Serializable;
 
 abstract class AbstractScalar extends Number implements Scalar, Serializable {
     private static final long serialVersionUID = -7969203760535813244L;
-	private final ValueFactory valueFactory;
-	
-	public AbstractScalar(ValueFactory valueFactory) {
-		this.valueFactory = valueFactory;
-	}
+        private final ValueFactory valueFactory;
+        
+        public AbstractScalar(ValueFactory valueFactory) {
+                this.valueFactory = valueFactory;
+        }
 
     /**
      * Compares this object with the specified object for order.

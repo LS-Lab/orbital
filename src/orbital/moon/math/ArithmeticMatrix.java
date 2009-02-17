@@ -40,7 +40,7 @@ class ArithmeticMatrix/*<R extends Arithmetic>*/ extends AbstractMatrix/*<R>*/ {
      */
     public ArithmeticMatrix(int height, int width, ValueFactory valueFactory) {
         super(valueFactory);
-    	D = new Arithmetic/*>R<*/[height][width];
+        D = new Arithmetic/*>R<*/[height][width];
     }
     public ArithmeticMatrix(Dimension dim, ValueFactory valueFactory) {
         this(dim.height, dim.width, valueFactory);
@@ -52,7 +52,7 @@ class ArithmeticMatrix/*<R extends Arithmetic>*/ extends AbstractMatrix/*<R>*/ {
      * @preconditions values is rectangular, i.e. v[i].length==v[i-1].length
      */
     public ArithmeticMatrix(Arithmetic/*>R<*/ values[][], ValueFactory valueFactory) {
-    	super(valueFactory);
+        super(valueFactory);
         for (int i = 1; i < values.length; i++)
             Utility.pre(values[i].length == values[i - 1].length, "rectangular array required");
         D = values;

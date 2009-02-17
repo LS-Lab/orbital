@@ -86,7 +86,7 @@ import orbital.util.Utility;
                 } 
 
                 public Object apply(Object x) {
-                	ValueFactory vf = ((Arithmetic)x).valueFactory();
+                        ValueFactory vf = ((Arithmetic)x).valueFactory();
                         // convert single scalar to constant vector
                         if (!(x instanceof Vector) && x instanceof Scalar)
                                 x = vf.CONST(dimension(), (Arithmetic)x);

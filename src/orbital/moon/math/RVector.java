@@ -67,7 +67,7 @@ class RVector extends AbstractVector implements Cloneable {
      * creates a new Vector with dimension length.
      */
     public RVector(int length, ValueFactory valueFactory) {
-    	super(valueFactory);
+        super(valueFactory);
         D = new double[length];
     }
 
@@ -83,11 +83,11 @@ class RVector extends AbstractVector implements Cloneable {
      * @todo could we forget about cloning v?
      */
     public RVector(double values[], ValueFactory valueFactory) {
-    	super(valueFactory);
+        super(valueFactory);
         D = (double[]) values/*.clone()*/;
     }
     public RVector(Real values[], ValueFactory valueFactory) {
-    	super(valueFactory);
+        super(valueFactory);
         D = new double[values.length];
         for (int i = 0; i < D.length; i++)
             D[i] = values[i].doubleValue();

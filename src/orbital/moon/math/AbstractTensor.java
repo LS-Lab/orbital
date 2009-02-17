@@ -46,11 +46,11 @@ import java.util.HashSet;
 abstract class AbstractTensor/*<R extends Arithmetic>*/
     extends AbstractProductArithmetic/*<R,int[],Tensor<R>>*/ implements Tensor/*<R>*/, Serializable {
     
-	protected AbstractTensor(ValueFactory valueFactory) {
-		super(valueFactory);
-	}
+        protected AbstractTensor(ValueFactory valueFactory) {
+                super(valueFactory);
+        }
 
-	private static final long serialVersionUID = 7889937971348824822L;
+        private static final long serialVersionUID = 7889937971348824822L;
 
     // object-methods
         
@@ -215,7 +215,7 @@ abstract class AbstractTensor/*<R extends Arithmetic>*/
         private transient int expectedModCount = 0;
 
         protected TransformedAccessTensor(AbstractTensor/*<R>*/ m) {
-        	super(m.valueFactory());
+                super(m.valueFactory());
             this.m = m;
             this.expectedModCount = m.modCount;
         }

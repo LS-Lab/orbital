@@ -36,13 +36,13 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
     private final Arithmetic/*>S<*/ CONSTANT_TERM;
 
     public SparsePolynomial(Arithmetic/*>S<*/ anIndexObject) {
-    	super(anIndexObject.valueFactory());
+        super(anIndexObject.valueFactory());
         //@internal assuming (S,+) here
         this.CONSTANT_TERM = anIndexObject.zero();
         this.coefficients = new HashMap();
     }
     public SparsePolynomial(Map/*<S,R>*/ coefficients, ValueFactory valueFactory) {
-    	super(valueFactory);
+        super(valueFactory);
         this.CONSTANT_TERM = ((Arithmetic/*>S<*/)coefficients.keySet().iterator().next()).zero();
         this.coefficients = coefficients;
     }

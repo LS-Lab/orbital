@@ -43,7 +43,7 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
      */
     transient Arithmetic/*>R<*/  R_ZERO;
     public AbstractUnivariatePolynomial(ValueFactory valueFactory) {
-    	super(valueFactory);
+        super(valueFactory);
     }
   
     public boolean equals(Object o) {

@@ -32,7 +32,7 @@ abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*
     private static final long serialVersionUID = 4336092442446250306L;
         
     protected AbstractPolynomial(ValueFactory valueFactory) {
-    	super(valueFactory);
+        super(valueFactory);
     }
   
     public boolean equals(Object o) {

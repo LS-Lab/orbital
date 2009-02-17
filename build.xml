@@ -41,7 +41,7 @@
 
     <target name="init">
         <antstructure output="project.dtd"/>
-        <property name="version" value="1.2.0"/>
+        <property name="version" value="1.2.2"/>
         <property name="version_brief" value="1.2"/>
 
         <tstamp>
@@ -268,12 +268,13 @@
         <!-- @internal due to signe.isUpToDate predication, buildnumber -->
 	<!-- will only increase during clean compilation/jar/dist etc. -->
         <buildnumber/>
+        <exec executable="svnversion" outputproperty="revision" failifexecutionfails="false"/>
         <!-- introduce version information -->
         <copy file="${sources}/orbital/signe.java" todir="${sources}/transmogrify"/>
         <replace file="${sources}/transmogrify/signe.java"
 		propertyfile="${basedir}/build.number">
-		    <!-- @todo stamp svn info -->
             <replacefilter token="@VERSION@" value="${version}"/>
+            <replacefilter token="@REVISION@" value="${revision}"/>
             <replacefilter token="@BUILD@" property="build.number"/>
         </replace>
     </target>

@@ -138,139 +138,139 @@ public class FunctionTest extends check.TestCase {
     final double PI = Math.PI;
     final int scalarTypes = TYPE_INTEGER | TYPE_RATIONAL| TYPE_REAL | TYPE_COMPLEX;
     public void test_calc_id() {
-    	//delta, logistic, reciprocal, sign
-    	//@todo id, zero with tensor once Functions.zero has been adapted
-    	testCalculations("(#1)&",       Functions.id, MIN, MAX, TYPE_ALL, TYPE_ALL);
+        //delta, logistic, reciprocal, sign
+        //@todo id, zero with tensor once Functions.zero has been adapted
+        testCalculations("(#1)&",       Functions.id, MIN, MAX, TYPE_ALL, TYPE_ALL);
     }
     public void test_calc_1() {
-    	testCalculations("(1)&",        Functions.one, MIN, MAX, TYPE_ALL, TYPE_ALL);
+        testCalculations("(1)&",        Functions.one, MIN, MAX, TYPE_ALL, TYPE_ALL);
     }
     public void test_calc_0() {
-    	testCalculations("(0)&",        Functions.zero, MIN, MAX, TYPE_ALL, TYPE_ALL);
+        testCalculations("(0)&",        Functions.zero, MIN, MAX, TYPE_ALL, TYPE_ALL);
     }
     public void test_calc_plus() {
-    	testCalculations("Plus",        Operations.plus, MIN, MAX, TYPE_ALL, scalarTypes);
+        testCalculations("Plus",        Operations.plus, MIN, MAX, TYPE_ALL, scalarTypes);
     }
     public void test_calc_plus_tensor() {
-    	testCalculations("Plus",        Operations.plus, MIN, MAX, TYPE_TENSOR, scalarTypes);
+        testCalculations("Plus",        Operations.plus, MIN, MAX, TYPE_TENSOR, scalarTypes);
     }
     public void test_calc_plus_tensor_real() {
-    	testCalculations("Plus",        Operations.plus, MIN, MAX, TYPE_TENSOR, TYPE_REAL);
+        testCalculations("Plus",        Operations.plus, MIN, MAX, TYPE_TENSOR, TYPE_REAL);
     }
     public void test_calc_subtract() {
-    	testCalculations("Subtract",    Operations.subtract, MIN, MAX, TYPE_ALL, scalarTypes);
+        testCalculations("Subtract",    Operations.subtract, MIN, MAX, TYPE_ALL, scalarTypes);
     }
     public void test_calc_subtract_tensor_real() {
-    	testCalculations("Subtract",    Operations.subtract, MIN, MAX, TYPE_TENSOR, TYPE_REAL);
+        testCalculations("Subtract",    Operations.subtract, MIN, MAX, TYPE_TENSOR, TYPE_REAL);
     }
     public void test_calc_times() {
-    	testCalculations("Times",       Operations.times, MIN, MAX, scalarTypes, scalarTypes);
+        testCalculations("Times",       Operations.times, MIN, MAX, scalarTypes, scalarTypes);
     }
     //@todo Operations.times with TYPE_TENSOR
     public void test_calc_dot() {
-    	testCalculations("Dot", Operations.times, MIN, MAX, TYPE_MATRIX, scalarTypes);
+        testCalculations("Dot", Operations.times, MIN, MAX, TYPE_MATRIX, scalarTypes);
     }
     //testCalculations("Dot", Operations.times, MIN, MAX, TYPE_MATRIX, TYPE_REAL);
     public void test_calc_inverse() {
-    	testCalculations("(1/#1)&",   Operations.inverse, MIN, MAX, TYPE_SCALAR, scalarTypes);
+        testCalculations("(1/#1)&",   Operations.inverse, MIN, MAX, TYPE_SCALAR, scalarTypes);
     }
     public void test_calc_divide() {
-    	testCalculations("Divide",    Operations.divide, MIN, MAX, TYPE_REAL | TYPE_COMPLEX, scalarTypes);
+        testCalculations("Divide",    Operations.divide, MIN, MAX, TYPE_REAL | TYPE_COMPLEX, scalarTypes);
     }
     public void test_calc_power() {
-    	testCalculations("Power",     Operations.power, MIN, MAX, new int[] {TYPE_ALL, TYPE_INTEGER}, scalarTypes);
+        testCalculations("Power",     Operations.power, MIN, MAX, new int[] {TYPE_ALL, TYPE_INTEGER}, scalarTypes);
     }
     //testCalculations("Power",     Operations.power, MIN, MAX);
     public void test_calc_minus() {
-    	testCalculations("Minus",       Operations.minus, MIN, MAX, TYPE_ALL, scalarTypes);
+        testCalculations("Minus",       Operations.minus, MIN, MAX, TYPE_ALL, scalarTypes);
     }
     //testCalculations("Inverse",   Operations.inverse, MIN, MAX, TYPE_MATRIX);
     public void test_calc_exp() {
-    	testCalculations("Exp",     Functions.exp, -10, 10, scalarTypes, TYPE_NONE);
+        testCalculations("Exp",     Functions.exp, -10, 10, scalarTypes, TYPE_NONE);
     }
     public void test_calc_log() {
-    	testCalculations("Log",     Functions.log, EPS, MAX, scalarTypes, TYPE_NONE);
+        testCalculations("Log",     Functions.log, EPS, MAX, scalarTypes, TYPE_NONE);
     }
     public void test_calc_sqrt() {
-    	testCalculations("Sqrt",        Functions.sqrt, 0, MAX, scalarTypes, TYPE_NONE);
+        testCalculations("Sqrt",        Functions.sqrt, 0, MAX, scalarTypes, TYPE_NONE);
     }
     public void test_calc_abs() {
-    	testCalculations("Abs",         Functions.norm, MIN, MAX, TYPE_ALL, TYPE_ALL);
+        testCalculations("Abs",         Functions.norm, MIN, MAX, TYPE_ALL, TYPE_ALL);
     }
     public void test_calc_pow2() {
-    	testCalculations("(#1^2)&",     Functions.square, MIN, MAX, scalarTypes | TYPE_MATRIX, scalarTypes);
+        testCalculations("(#1^2)&",     Functions.square, MIN, MAX, scalarTypes | TYPE_MATRIX, scalarTypes);
     }
     //testCalculations("DiracDelta",Functions.diracDelta, MIN, MAX);
     public void test_calc_sin() {
-    	testCalculations("Sin",         Functions.sin, SMIN, SMAX, scalarTypes, TYPE_NONE);
+        testCalculations("Sin",         Functions.sin, SMIN, SMAX, scalarTypes, TYPE_NONE);
     }
     public void test_calc_cos() {
-    	testCalculations("Cos",         Functions.cos, SMIN, SMAX, scalarTypes, TYPE_NONE);
+        testCalculations("Cos",         Functions.cos, SMIN, SMAX, scalarTypes, TYPE_NONE);
     }
     public void test_calc_tan() {
-    	testCalculations("Tan",         Functions.tan, SMIN, SMAX, scalarTypes, TYPE_NONE); //...
+        testCalculations("Tan",         Functions.tan, SMIN, SMAX, scalarTypes, TYPE_NONE); //...
     }
     public void test_calc_cot() {
-    	testCalculations("Cot",         Functions.cot, -PI+EPS, -EPS, scalarTypes, TYPE_NONE); //...
+        testCalculations("Cot",         Functions.cot, -PI+EPS, -EPS, scalarTypes, TYPE_NONE); //...
     }
     public void test_calc_cot2() {
-    	testCalculations("Cot",         Functions.cot, EPS, PI-EPS, scalarTypes, TYPE_NONE);
+        testCalculations("Cot",         Functions.cot, EPS, PI-EPS, scalarTypes, TYPE_NONE);
     }
     public void test_calc_csc() {
-    	testCalculations("Csc",         Functions.csc, EPS, SMAX, scalarTypes, TYPE_NONE);
+        testCalculations("Csc",         Functions.csc, EPS, SMAX, scalarTypes, TYPE_NONE);
     }
     public void test_calc_csc2() {
-    	testCalculations("Csc",         Functions.csc, SMIN, EPS, scalarTypes, TYPE_NONE);
+        testCalculations("Csc",         Functions.csc, SMIN, EPS, scalarTypes, TYPE_NONE);
     }
     public void test_calc_sec() {
-    	testCalculations("Sec",         Functions.sec, SMIN, SMAX, scalarTypes, TYPE_NONE);
+        testCalculations("Sec",         Functions.sec, SMIN, SMAX, scalarTypes, TYPE_NONE);
     }
     public void test_calc_sinh() {
-    	testCalculations("Sinh",        Functions.sinh, SMIN, SMAX, scalarTypes, TYPE_NONE);
+        testCalculations("Sinh",        Functions.sinh, SMIN, SMAX, scalarTypes, TYPE_NONE);
     }
     public void test_calc_cosh() {
-    	testCalculations("Cosh",        Functions.cosh, SMIN, SMAX, scalarTypes, TYPE_NONE);
+        testCalculations("Cosh",        Functions.cosh, SMIN, SMAX, scalarTypes, TYPE_NONE);
     }
     public void test_calc_tanh() {
-    	testCalculations("Tanh",        Functions.tanh, SMIN, SMAX, scalarTypes, TYPE_NONE);
+        testCalculations("Tanh",        Functions.tanh, SMIN, SMAX, scalarTypes, TYPE_NONE);
     }
     public void test_calc_coth() {
-    	testCalculations("Coth",        Functions.coth, EPS, SMAX, scalarTypes, TYPE_NONE);
+        testCalculations("Coth",        Functions.coth, EPS, SMAX, scalarTypes, TYPE_NONE);
     }
     public void test_calc_coth2() {
-    	testCalculations("Coth",        Functions.coth, SMIN, EPS, scalarTypes, TYPE_NONE);
+        testCalculations("Coth",        Functions.coth, SMIN, EPS, scalarTypes, TYPE_NONE);
     }
     public void test_calc_csch() {
-    	testCalculations("Csch",        Functions.csch, SMIN, EPS, scalarTypes, TYPE_NONE);
+        testCalculations("Csch",        Functions.csch, SMIN, EPS, scalarTypes, TYPE_NONE);
     }
     public void test_calc_csch2() {
-    	testCalculations("Csch",        Functions.csch, EPS, SMAX, scalarTypes, TYPE_NONE);
+        testCalculations("Csch",        Functions.csch, EPS, SMAX, scalarTypes, TYPE_NONE);
     }
     public void test_calc_sech() {
-    	testCalculations("Sech",        Functions.sech, SMIN, SMAX, scalarTypes, TYPE_NONE);
+        testCalculations("Sech",        Functions.sech, SMIN, SMAX, scalarTypes, TYPE_NONE);
     }
     public void test_calc_arccos() {
-    	testCalculations("ArcCos",      Functions.arccos, -1, 1, scalarTypes, TYPE_NONE);
+        testCalculations("ArcCos",      Functions.arccos, -1, 1, scalarTypes, TYPE_NONE);
     }
     public void test_calc_arcsin() {
-    	testCalculations("ArcSin",      Functions.arcsin, -1, 1, scalarTypes, TYPE_NONE);
+        testCalculations("ArcSin",      Functions.arcsin, -1, 1, scalarTypes, TYPE_NONE);
     }
     public void test_calc_arctan() {
-    	//testCalculations("ArcCot",    Functions.arccot, SMIN, SMAX, scalarTypes, TYPE_NONE);  // differs by PI for negative values. we return positive values
-    	testCalculations("ArcTan",      Functions.arctan, SMIN, SMAX, scalarTypes, TYPE_NONE);
+        //testCalculations("ArcCot",    Functions.arccot, SMIN, SMAX, scalarTypes, TYPE_NONE);  // differs by PI for negative values. we return positive values
+        testCalculations("ArcTan",      Functions.arctan, SMIN, SMAX, scalarTypes, TYPE_NONE);
     }
     public void test_calc_arccosh() {
-    	testCalculations("ArcCosh",     Functions.arcosh, 1, SMAX, scalarTypes, TYPE_NONE);
+        testCalculations("ArcCosh",     Functions.arcosh, 1, SMAX, scalarTypes, TYPE_NONE);
     }
     public void test_calc_arcsinh() {
-    	testCalculations("ArcSinh",     Functions.arsinh, SMIN, SMAX, scalarTypes, TYPE_NONE);
+        testCalculations("ArcSinh",     Functions.arsinh, SMIN, SMAX, scalarTypes, TYPE_NONE);
     }
     public void test_calc_arctanh() {
-    	testCalculations("ArcTanh",     Functions.artanh, -1+EPS, 1-EPS, TYPE_REAL | TYPE_COMPLEX, TYPE_NONE);
+        testCalculations("ArcTanh",     Functions.artanh, -1+EPS, 1-EPS, TYPE_REAL | TYPE_COMPLEX, TYPE_NONE);
     }
  
     private void testCalculations(String mFunction, BinaryFunction jFunction, double min, double max, int testType, int componentType) {
-    	testCalculations(mFunction, jFunction, min, max, new int[] {testType,testType}, componentType);
+        testCalculations(mFunction, jFunction, min, max, new int[] {testType,testType}, componentType);
     }
 
     private void testCalculations(String mFunction, BinaryFunction jFunction, double min, double max, int[] testType, int componentType) {

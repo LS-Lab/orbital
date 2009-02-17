@@ -20,7 +20,7 @@ abstract class AbstractReal extends AbstractComplex implements Real {
     private static final long serialVersionUID = -4117614439306224843L;
 
     protected AbstractReal(ValueFactory valueFactory) {
-    	super(valueFactory);
+        super(valueFactory);
     }
 
     
@@ -126,8 +126,8 @@ abstract class AbstractReal extends AbstractComplex implements Real {
      * @return an array of the converted versions of a and b respectively.
      */
     static Real[] makeReal(Number a, Number b) {
-    	//@xxx valueFactory precision compatbility
-    	ValueFactory vf = a instanceof Arithmetic ? ((Arithmetic)a).valueFactory() : b instanceof Arithmetic ? ((Arithmetic)b).valueFactory() : Values.getDefault();
+        //@xxx valueFactory precision compatbility
+        ValueFactory vf = a instanceof Arithmetic ? ((Arithmetic)a).valueFactory() : b instanceof Arithmetic ? ((Arithmetic)b).valueFactory() : Values.getDefault();
        if (a instanceof orbital.moon.math.Big || b instanceof orbital.moon.math.Big) {
             return new Real[] {
                 a instanceof Big ? (Real)a : new Big(a, vf),
@@ -158,10 +158,10 @@ abstract class AbstractReal extends AbstractComplex implements Real {
         private float                    value;
         public Float(float v, ValueFactory valueFactory) {
             super(valueFactory);
-        	value = v;
+                value = v;
         }
         public Float(Number v, ValueFactory valueFactory) {
-        	super(valueFactory);
+                super(valueFactory);
             value = v.floatValue();
         }
     
@@ -286,11 +286,11 @@ abstract class AbstractReal extends AbstractComplex implements Real {
          */
         private double                   value;
         public Double(double v, ValueFactory valueFactory) {
-        	super(valueFactory);
+                super(valueFactory);
             value = v;
         }
         public Double(Number v, ValueFactory valueFactory) {
-        	super(valueFactory);
+                super(valueFactory);
             value = v.doubleValue();
         }
     
@@ -430,46 +430,46 @@ abstract class AbstractReal extends AbstractComplex implements Real {
                 }
                 }
         public Big(BigDecimal v, ValueFactory valueFactory) {
-        	super(valueFactory);
+                super(valueFactory);
             value = v;
         }
         public Big(BigInteger v, ValueFactory valueFactory) {
-        	super(valueFactory);
+                super(valueFactory);
             value = new BigDecimal(v);
         }
         public Big(Number v, ValueFactory valueFactory) {
-        	super(valueFactory);
-        	try {
-        		if (v instanceof BigDecimal)
-        			value = (BigDecimal)v;
-        		else if (v instanceof orbital.moon.math.Big) {
-        			if (v instanceof Big)
-        				value = ((Big)v).value;
-        			else if (v instanceof AbstractInteger.Big)
-        				value = new BigDecimal(((AbstractInteger.Big)v).getValue());
-        			else
-        				throw new IllegalArgumentException("unknown arbitrary precision type " + v.getClass() + " " + v);
-        		} else if (v instanceof Rational) {
-        			Rational r = (Rational)v;
-        			//@internal we could also convert numerator() and denominator() to reals and divide
-        			value = getPrecision() != null
-        			? new BigDecimal(AbstractInteger.makeBigInteger(r.numerator()).getValue())
-        			.divide(new BigDecimal(AbstractInteger.makeBigInteger(r.denominator()).getValue()), getPrecision())
-        			: new BigDecimal(AbstractInteger.makeBigInteger(r.numerator()).getValue())
-        			.divide(new BigDecimal(AbstractInteger.makeBigInteger(r.denominator()).getValue()));
-        		} else if (v instanceof Double || v instanceof Float || v instanceof AbstractInteger.Int
-        				|| v instanceof java.lang.Double || v instanceof java.lang.Float || v instanceof java.lang.Integer) {
-        			value = BigDecimal.valueOf(((Number)v).doubleValue());
-        		} else if (v instanceof AbstractInteger.Long
-        				|| v instanceof java.lang.Long) {
-        			value = BigDecimal.valueOf(((Number)v).longValue());
-        		} else {
-        			assert !java.lang.Double.isNaN(v.doubleValue()) && !java.lang.Double.isInfinite(v.doubleValue()) : v + " should neither be NaN nor infinite";
-        			value = BigDecimal.valueOf(ArithmeticValuesImpl.doubleValueExact(v));
-        		}
-        	} catch (NumberFormatException ex) {
-        		throw (NumberFormatException) new NumberFormatException("Could not represent " + v + " due to " + ex).initCause(ex);
-        	}
+                super(valueFactory);
+                try {
+                        if (v instanceof BigDecimal)
+                                value = (BigDecimal)v;
+                        else if (v instanceof orbital.moon.math.Big) {
+                                if (v instanceof Big)
+                                        value = ((Big)v).value;
+                                else if (v instanceof AbstractInteger.Big)
+                                        value = new BigDecimal(((AbstractInteger.Big)v).getValue());
+                                else
+                                        throw new IllegalArgumentException("unknown arbitrary precision type " + v.getClass() + " " + v);
+                        } else if (v instanceof Rational) {
+                                Rational r = (Rational)v;
+                                //@internal we could also convert numerator() and denominator() to reals and divide
+                                value = getPrecision() != null
+                                ? new BigDecimal(AbstractInteger.makeBigInteger(r.numerator()).getValue())
+                                .divide(new BigDecimal(AbstractInteger.makeBigInteger(r.denominator()).getValue()), getPrecision())
+                                : new BigDecimal(AbstractInteger.makeBigInteger(r.numerator()).getValue())
+                                .divide(new BigDecimal(AbstractInteger.makeBigInteger(r.denominator()).getValue()));
+                        } else if (v instanceof Double || v instanceof Float || v instanceof AbstractInteger.Int
+                                        || v instanceof java.lang.Double || v instanceof java.lang.Float || v instanceof java.lang.Integer) {
+                                value = BigDecimal.valueOf(((Number)v).doubleValue());
+                        } else if (v instanceof AbstractInteger.Long
+                                        || v instanceof java.lang.Long) {
+                                value = BigDecimal.valueOf(((Number)v).longValue());
+                        } else {
+                                assert !java.lang.Double.isNaN(v.doubleValue()) && !java.lang.Double.isInfinite(v.doubleValue()) : v + " should neither be NaN nor infinite";
+                                value = BigDecimal.valueOf(ArithmeticValuesImpl.doubleValueExact(v));
+                        }
+                } catch (NumberFormatException ex) {
+                        throw (NumberFormatException) new NumberFormatException("Could not represent " + v + " due to " + ex).initCause(ex);
+                }
         }
     
         public Object clone() {
@@ -581,9 +581,9 @@ abstract class AbstractReal extends AbstractComplex implements Real {
                     return valueFactory().valueOf(Math.pow(ArithmeticValuesImpl.doubleValueExact((Real)this), ArithmeticValuesImpl.doubleValueExact(b)));
                 } catch(ArithmeticException ex) {
                     if (isZero() && !b.isZero()) {
-                    	return (Real)zero();
+                        return (Real)zero();
                     } else if (isOne()) {
-                    	return (Real)one();
+                        return (Real)one();
                     } else
                         throw (ArithmeticException) new ArithmeticException("exponentation is possibly too big: " + this + " ^ " + b + " where " + (b.isZero() ? "zero" : "non-zero")).initCause(ex);
                 }
@@ -594,9 +594,9 @@ abstract class AbstractReal extends AbstractComplex implements Real {
                 return new Big(getValue().pow(ArithmeticValuesImpl.intValueExact(b)), valueFactory());
             } catch(ArithmeticException ex) {
                 if (isZero() && !b.isZero()) {
-                	return (Real)zero();
+                        return (Real)zero();
                 } else if (isOne()) {
-                	return (Real)one();
+                        return (Real)one();
                 } else
                     throw new ArithmeticException("exponentation is possibly too big: " + this + " ^ " + b);
             }

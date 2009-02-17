@@ -40,11 +40,11 @@ import orbital.algorithm.Combinatorical;
  */
 abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
     extends AbstractPolynomial/*<R,Vector<Integer>>*/ {
-	private static final long serialVersionUID = -2237060189065872837L;
+        private static final long serialVersionUID = -2237060189065872837L;
     
     protected AbstractMultivariatePolynomial(ValueFactory valueFactory) {
-		super(valueFactory);
-	}
+                super(valueFactory);
+        }
 
     /**
      * The index (0,...,0) of the constant term.

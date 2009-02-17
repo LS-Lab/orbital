@@ -38,12 +38,12 @@ import java.util.logging.Level;
  * @author  Andr&eacute; Platzer
  */
 public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends AbstractTensor implements Matrix/*<R>*/ {
-	private static final Logger logger = Logger.getLogger(Matrix.class.getName());
+        private static final Logger logger = Logger.getLogger(Matrix.class.getName());
     private static final long serialVersionUID = 1360625645424730123L;
 
     protected AbstractMatrix(ValueFactory valueFactory) {
-		super(valueFactory);
-	}
+                super(valueFactory);
+        }
 
     // factory-methods
     
@@ -413,7 +413,7 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends A
          * creates a new column vector of a matrix.
          */
         public ColumnVector(AbstractMatrix/*<R>*/ m, int column) {
-        	super(m.valueFactory());
+                super(m.valueFactory());
             //@todo expectedModCount
             m.validate(0, column);
             this.m = m;
@@ -474,7 +474,7 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends A
          * creates a new row vector of a matrix.
          */
         public RowVector(AbstractMatrix/*<R>*/ m, int row) {
-        	super(m.valueFactory());
+                super(m.valueFactory());
             m.validate(row, 0);
             this.m = m;
             this.r = row;
@@ -573,7 +573,7 @@ public/*@xxx*/ abstract class AbstractMatrix/*<R extends Arithmetic>*/ extends A
         private transient int expectedModCount = 0;
 
         public SubMatrix(AbstractMatrix/*<R>*/ m, int i1, int i2, int j1, int j2) {
-        	super(m.valueFactory());
+                super(m.valueFactory());
             Utility.pre(i1 <= i2 && j1 <= j2, "Ending row cannot be less than starting row. Ending column cannot be less than starting column");
             m.validate(i1, j1);
             m.validate(i2, j2);

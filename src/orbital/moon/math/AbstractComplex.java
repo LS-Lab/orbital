@@ -16,7 +16,7 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
     private static final long serialVersionUID = 6174516422770428710L;
 
     protected AbstractComplex(ValueFactory valueFactory) {
-    	super(valueFactory);
+        super(valueFactory);
     }
 
     /**
@@ -158,8 +158,8 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
      * @return an array of the converted versions of a and b respectively.
      */
     static Complex[] makeComplex(Number a, Number b) {
-    	//@xxx valueFactory precision compatbility
-    	ValueFactory vf = a instanceof Arithmetic ? ((Arithmetic)a).valueFactory() : b instanceof Arithmetic ? ((Arithmetic)b).valueFactory() : Values.getDefault();
+        //@xxx valueFactory precision compatbility
+        ValueFactory vf = a instanceof Arithmetic ? ((Arithmetic)a).valueFactory() : b instanceof Arithmetic ? ((Arithmetic)b).valueFactory() : Values.getDefault();
         if (a instanceof Impl || b instanceof Impl) {
             return new Complex[] {
                 a instanceof Impl ? (Complex)a : new Impl(a, vf),
@@ -202,7 +202,7 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
          * @param b imaginary part of the complex number.
          */
         public Double(double a, double b, ValueFactory valueFactory) {
-        	super(valueFactory);
+                super(valueFactory);
             real = a;
             imaginary = b;
         }
@@ -224,7 +224,7 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
             this(real, 0, valueFactory);
         }
         public Double(Number a, ValueFactory valueFactory) {
-        	super(valueFactory);
+                super(valueFactory);
             if (a instanceof Complex) {
                 real = ((Complex)a).re().doubleValue();
                 imaginary = ((Complex)a).im().doubleValue();
@@ -414,8 +414,8 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
                 real = ((Complex)a).re();
                 imaginary = ((Complex)a).im();
             } else {
-                real = (Real)Values.getDefault().valueOf(a);
-                imaginary = Values.getDefault().ZERO();
+                real = (Real)a;
+                imaginary = valueFactory.ZERO();
             }
         }
     

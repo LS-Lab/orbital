@@ -501,9 +501,9 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
                 }*/
     }
     static final int intValueExact(Number b) {
-    	if (b instanceof Scalar) {
-    		return intValueExact((Scalar)b);
-    	}
+        if (b instanceof Scalar) {
+                return intValueExact((Scalar)b);
+        }
         if (b instanceof AbstractInteger.Int) {
             return ((Integer)b).intValue();
         } else if (b instanceof java.lang.Integer) {
@@ -552,9 +552,9 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
         }
     }
     static final long longValueExact(Number b) {
-    	if (b instanceof Scalar) {
-    		return longValueExact((Scalar)b);
-    	}
+        if (b instanceof Scalar) {
+                return longValueExact((Scalar)b);
+        }
         if (b instanceof AbstractInteger.Int || b instanceof AbstractInteger.Long) {
             return ((Integer)b).longValue();
         } else if (b instanceof java.lang.Integer || b instanceof java.lang.Long) {
@@ -603,9 +603,9 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
         }
     }
     static final double doubleValueExact(Number b) {
-    	if (b instanceof Real) {
-    		return doubleValueExact((Real)b);
-    	}
+        if (b instanceof Real) {
+                return doubleValueExact((Real)b);
+        }
         if (b instanceof AbstractReal.Float || b instanceof AbstractReal.Double || b instanceof AbstractInteger.Int) {
             return ((Real)b).doubleValue();
         } else if (b instanceof java.lang.Double || b instanceof java.lang.Float || b instanceof java.lang.Integer) {

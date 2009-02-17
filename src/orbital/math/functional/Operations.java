@@ -146,10 +146,9 @@ public interface Operations /* implements ArithmeticOperations */ {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ a) {
             	Iterator i = Utility.asIterator(a);
             	if (i.hasNext()) {
-            		Arithmetic f = (Arithmetic)i.next();
-                    return Functionals.foldLeft(plus, f, i);
+                    return Functionals.foldLeft(plus, i.next(), i);
                 } else
-            		return ((Arithmetic)a).valueFactory().ZERO();
+            		return ((Arithmetic)a).valueFactory().ZERO(); // could also start folding with 0 and fold including first
             }
             public Function derive() {
                 throw new ArithmeticException(this + " is only partially derivable");
@@ -284,7 +283,7 @@ public interface Operations /* implements ArithmeticOperations */ {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ a) {
             	Iterator i = Utility.asIterator(a);
             	if (i.hasNext()) 
-                    return Functionals.foldLeft(times, (Arithmetic)i.next(), i);
+                    return Functionals.foldLeft(times, i.next(), i);
             	else
             		return ((Arithmetic)a).valueFactory().ONE();
             }
@@ -455,7 +454,12 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final Function/*<Arithmetic,Arithmetic>*/ inf = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ a) {
-                return Functionals.foldLeft(min, valueFactory().POSITIVE_INFINITY(), Utility.asIterator(a));
+            	Iterator i = Utility.asIterator(a);
+            	if (i.hasNext()) {
+                    return Functionals.foldLeft(min, i.next(), i);
+            	} else {
+            		return valueFactory().POSITIVE_INFINITY();
+            	}
             }
             public Function derive() {
                 throw new UnsupportedOperationException(this + "'");
@@ -520,7 +524,12 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final Function/*<Arithmetic,Arithmetic>*/ sup = new AbstractFunction/*<Arithmetic,Arithmetic>*/() {
             public Object/*>Arithmetic<*/ apply(Object/*>Arithmetic<*/ a) {
-                return Functionals.foldLeft(max, valueFactory().NEGATIVE_INFINITY(), Utility.asIterator(a));
+            	Iterator i = Utility.asIterator(a);
+            	if (i.hasNext()) {
+                    return Functionals.foldLeft(max, i.next(), i);
+            	} else {
+            		return valueFactory().NEGATIVE_INFINITY();
+            	}
             }
             public Function derive() {
                 throw new UnsupportedOperationException(this + "'");

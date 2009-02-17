@@ -103,7 +103,7 @@ class RMatrix extends AbstractMatrix {
      * It then has width columns and height rows.
      */
     public RMatrix(int height, int width, ValueFactory valueFactory) {
-    	super(valueFactory);
+        super(valueFactory);
         D = new double[height][width];
     }
     public RMatrix(Dimension dim, ValueFactory valueFactory) {
@@ -116,7 +116,7 @@ class RMatrix extends AbstractMatrix {
      * @preconditions values is rectangular, i.e. values[i].length==values[i-1].length
      */
     public RMatrix(double values[][], ValueFactory valueFactory) {
-    	super(valueFactory);
+        super(valueFactory);
         set(values);
     }
 
@@ -126,7 +126,7 @@ class RMatrix extends AbstractMatrix {
      * @preconditions v is rectangular, i.e. v[i].length==v[i-1].length
      */
     public RMatrix(Arithmetic v[][], ValueFactory valueFactory) {
-    	super(valueFactory);
+        super(valueFactory);
         for (int i = 1; i < v.length; i++)
             Utility.pre(v[i].length == v[i - 1].length, "rectangular array required");
         D = new double[v.length][v[0].length];

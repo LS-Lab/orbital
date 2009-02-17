@@ -17,7 +17,7 @@ import orbital.math.functional.Operations;
 abstract class AbstractInteger extends AbstractRational implements Integer {
     private static final long serialVersionUID = -5859818959999970653L;
     protected AbstractInteger(ValueFactory valueFactory) {
-    	super(valueFactory);
+        super(valueFactory);
     }
     
     // Arithmetic implementation synonyms
@@ -104,8 +104,8 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
      * @return an array of the converted versions of a and b respectively.
      */
     static Integer[] makeInteger(Number a, Number b) {
-    	//@xxx valueFactory precision compatbility
-    	ValueFactory vf = a instanceof Arithmetic ? ((Arithmetic)a).valueFactory() : b instanceof Arithmetic ? ((Arithmetic)b).valueFactory() : Values.getDefault();
+        //@xxx valueFactory precision compatbility
+        ValueFactory vf = a instanceof Arithmetic ? ((Arithmetic)a).valueFactory() : b instanceof Arithmetic ? ((Arithmetic)b).valueFactory() : Values.getDefault();
         if (a instanceof orbital.moon.math.Big || b instanceof orbital.moon.math.Big) {
             return new Integer[] {
                 a instanceof Big ? (Integer)a : new Big(a, vf),
@@ -141,10 +141,10 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
         private int value;
         public Int(int v, ValueFactory valueFactory) {
             super(valueFactory);
-        	value = v;
+                value = v;
         }
         public Int(Number v, ValueFactory valueFactory) {
-        	super(valueFactory);
+                super(valueFactory);
             value = v.intValue();
         }
         
@@ -309,11 +309,11 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
          */
         private long value;
         public Long(long v, ValueFactory valueFactory) {
-        	super(valueFactory);
+                super(valueFactory);
             value = v;
         }
         public Long(Number v, ValueFactory valueFactory) {
-        	super(valueFactory);
+                super(valueFactory);
             value = v.longValue();
         }
         
@@ -459,11 +459,11 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
             this(BigInteger.valueOf(v), valueFactory);
         }
         public Big(BigInteger v, ValueFactory valueFactory) {
-        	super(valueFactory);
+                super(valueFactory);
             value = v;
         }
         public Big(Number v, ValueFactory valueFactory) {
-        	super(valueFactory);
+                super(valueFactory);
             if (v instanceof BigInteger)
                 value = (BigInteger)v;
             else if (v instanceof orbital.moon.math.Big) {

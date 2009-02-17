@@ -16,7 +16,7 @@ abstract class AbstractRational extends AbstractReal implements Rational {
     private static final long serialVersionUID = -9129018097987023600L;
 
     protected AbstractRational(ValueFactory valueFactory) {
-    	super(valueFactory);
+        super(valueFactory);
     }
 
     public boolean equals(Object o) {
@@ -145,7 +145,7 @@ abstract class AbstractRational extends AbstractReal implements Rational {
          * @see #representative()
          */
         public Int(int p, int q, ValueFactory valueFactory) {
-        	super(valueFactory);
+                super(valueFactory);
             // normalize
             if (q < 0) {
                 this.numerator = -p;
@@ -319,7 +319,7 @@ abstract class AbstractRational extends AbstractReal implements Rational {
          * @see #representative()
          */
         public Impl(Integer p, Integer q, ValueFactory valueFactory) {
-        	super(valueFactory);
+                super(valueFactory);
             // normalize
             int cmp = q.compareTo(q.zero());
             if (cmp < 0) {

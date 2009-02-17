@@ -31,7 +31,7 @@ class ArithmeticUnivariatePolynomial/*<R extends Arithmetic>*/ extends AbstractU
     private transient int degree;
     public ArithmeticUnivariatePolynomial(int degree, ValueFactory valueFactory) {
         super(valueFactory);
-    	this.coefficients =
+        this.coefficients =
                 valueFactory.newInstance(degree < 0
             ? 0
             : degree + 1);
@@ -39,7 +39,7 @@ class ArithmeticUnivariatePolynomial/*<R extends Arithmetic>*/ extends AbstractU
     }
     public ArithmeticUnivariatePolynomial(Arithmetic/*>R<*/ coefficients[], ValueFactory valueFactory) {
         super(valueFactory);
-    	set(valueFactory.valueOf(coefficients));
+        set(valueFactory.valueOf(coefficients));
     }
   
     /**  
