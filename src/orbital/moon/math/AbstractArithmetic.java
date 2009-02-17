@@ -20,13 +20,13 @@ import orbital.math.Integer;
  */
 abstract class AbstractArithmetic implements Arithmetic {
     public boolean equals(Object o, Real tolerance) {
-    	try {
+        try {
             return equals(o)
-            	|| Metric.INDUCED.distance(this, (Arithmetic)o).compareTo(tolerance) <= 0;
-    	}
-    	catch (ArithmeticException ex) {
-    		throw (ArithmeticException) new ArithmeticException("arithmetic exception " + ex + " during comparison of " + this + " and " + o + " with tolerance " + tolerance).initCause(ex);
-    	}
+                || Metric.INDUCED.distance(this, (Arithmetic)o).compareTo(tolerance) <= 0;
+        }
+        catch (ArithmeticException ex) {
+                throw (ArithmeticException) new ArithmeticException("arithmetic exception " + ex + " during comparison of " + this + " and " + o + " with tolerance " + tolerance).initCause(ex);
+        }
     }
 
     public boolean isZero() {

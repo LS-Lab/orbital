@@ -45,14 +45,14 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/
     private transient int degree = DIRTY;
     public ArithmeticMultivariatePolynomial(int[] dimensions, ValueFactory valueFactory) {
         super(valueFactory);
-    	if (dimensions.length == 0)
+        if (dimensions.length == 0)
                 throw new IllegalArgumentException("Empty polynomial ring without variables is not supported: specify non-empty list of dimensions instead.");
         coefficients = valueFactory.newInstance(dimensions);
         this.CONSTANT_TERM = new int[dimensions.length];
         Arrays.fill(CONSTANT_TERM, 0);
     }
     public ArithmeticMultivariatePolynomial(Tensor/*<R>*/ coefficients) {
-    	super(coefficients.valueFactory());
+        super(coefficients.valueFactory());
         set(coefficients);
     }
   

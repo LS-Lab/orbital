@@ -40,7 +40,7 @@ class ArithmeticTensor/*<R extends Arithmetic>*/ extends AbstractTensor/*<R>*/ {
      * Creates a new Tensor with dimension n<sub>1</sub>&times;n<sub>2</sub>&times;&#8230;&times;n<sub>r</sub>.
      */
     public ArithmeticTensor(int[] dimensions, ValueFactory valueFactory) {
-    	super(valueFactory);
+        super(valueFactory);
         D = (Object[]) Array.newInstance(Arithmetic/*>R<*/.class, dimensions);
     }
 
@@ -59,7 +59,7 @@ class ArithmeticTensor/*<R extends Arithmetic>*/ extends AbstractTensor/*<R>*/ {
      * @preconditions values is rectangular, i.e. values[i<sub>1</sub>]...[i<sub>k-1</sub>][i<sub>k</sub>].length==values[i<sub>1</sub>]...[i<sub>k-1</sub>][i<sub>k</sub>-1].length etc.
      */
     public ArithmeticTensor(Object values, ValueFactory valueFactory) {
-    	super(valueFactory);
+        super(valueFactory);
         if (values == null)
             throw new NullPointerException("illegal tensor " + values);
         else if (!values.getClass().isArray())

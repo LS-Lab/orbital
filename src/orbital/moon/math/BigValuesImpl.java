@@ -161,18 +161,18 @@ public class BigValuesImpl extends ArithmeticValuesImpl {
     // real scalar value constructors - facade factory
 
     public Real valueOf(double val) {
-    	try {
+        try {
             return new AbstractReal.Big(val, this);
-    	} catch (NumberFormatException ex) {
-    		if (val == Double.POSITIVE_INFINITY)
-    			return POSITIVE_INFINITY();
-    		else if (val == Double.NEGATIVE_INFINITY)
-    			return NEGATIVE_INFINITY();
-    		else if (Double.isNaN(val))
-    			return NaN();
-    		else
-    			throw ex;
-    	}
+        } catch (NumberFormatException ex) {
+                if (val == Double.POSITIVE_INFINITY)
+                        return POSITIVE_INFINITY();
+                else if (val == Double.NEGATIVE_INFINITY)
+                        return NEGATIVE_INFINITY();
+                else if (Double.isNaN(val))
+                        return NaN();
+                else
+                        throw ex;
+        }
     } 
     public Real valueOf(java.math.BigDecimal val) {
         return new AbstractReal.Big(val, this);
@@ -207,8 +207,8 @@ public class BigValuesImpl extends ArithmeticValuesImpl {
         //@todo implement sup along with conversion routines. Perhaps introduce "int AbstractScalar.typeLevel()" and "int AbstractScalar.precisionLevel()" such that we can compute the maximum level of both with just two method calls. And introduce "Object AbstractScalar.convertTo(int typeLevel, int precisionLevel)" for conversion.
         if (Complex.hasType.apply(a) || Complex.hasType.apply(b))
             return new Complex[] {
-                Complex.hasType.apply(a) ? (Complex) a : new AbstractComplex.Impl(a, this),
-                Complex.hasType.apply(b) ? (Complex) b : new AbstractComplex.Impl(b, this)
+                Complex.hasType.apply(a) ? (Complex) makeBig(a) : new AbstractComplex.Impl(makeBig(a), this),
+                Complex.hasType.apply(b) ? (Complex) makeBig(b) : new AbstractComplex.Impl(makeBig(b), this)
             };
 
         // this is a tricky binary decision diagram (optimized), see documentation
@@ -231,25 +231,50 @@ public class BigValuesImpl extends ArithmeticValuesImpl {
         /* fall-through: all other cases come here */
         if (Rational.isa.apply(b))
             return new Rational[] {
-                Rational.hasType.apply(a) ? (Rational) a : rational((Integer)a),
-                Rational.hasType.apply(b) ? (Rational) b : rational((Integer)b)
+                Rational.hasType.apply(a) ? (Rational) makeBig(a) : rational((Integer)makeBig(a)),
+                Rational.hasType.apply(b) ? (Rational) makeBig(b) : rational((Integer)makeBig(b))
             };
         return new Real[] {
             a instanceof AbstractReal.Big ? (Real)a : new AbstractReal.Big(a, this),
             b instanceof AbstractReal.Big ? (Real)b : new AbstractReal.Big(b, this)
         };
-    } 
+    }
+    
+    private Number makeBig(Number a) {
+    	if (a instanceof orbital.moon.math.Big || (a instanceof Scalar && isBig((Scalar)a))) {
+    		return a;
+    	} else if (a instanceof Integer) {
+    		return new AbstractInteger.Big(a, this);
+    	} else if (a instanceof Rational) {
+    		Rational r = (Rational) a;
+    		return (Number)rational((Integer)makeBig((Number)r.numerator()), (Integer)makeBig((Number)r.denominator()));
+    	} else if (a instanceof Real) {
+    		return new AbstractReal.Big(a, this);
+        } else if (a instanceof Complex) {
+    		Complex r = (Complex) a;
+    		return (Number)complex((Real)makeBig((Number)r.re()), (Real)makeBig((Number)r.im()));
+        } else
+    		throw new IllegalArgumentException("Don't know how to handle case " + a + "@" + a.getClass());
+    }
 
 
     /**
      * Checks that a scalar is all big, i.e., all its number parts are bigs.
      */
     private static final boolean isBig(Scalar x) {
-        if (x instanceof Big)
+        if (x instanceof orbital.moon.math.Big) {
             return true;
-        else if (x instanceof Rational) {
+        } else if (x instanceof Integer) {
+            assert !(x instanceof orbital.moon.math.Big) : "already checked " + x.getClass();
+        	assert !(x instanceof AbstractInteger.Big) : "Big implementation hierarchy " + x.getClass();
+            return false;
+        } else if (x instanceof Rational) {
             Rational r = (Rational)x;
-            return r.numerator() instanceof Big && r.denominator() instanceof Big;
+            return r.numerator() instanceof orbital.moon.math.Big && r.denominator() instanceof orbital.moon.math.Big;
+        } else if (x instanceof Real) {
+            assert !(x instanceof orbital.moon.math.Big) : "already checked " + x.getClass();
+        	assert !(x instanceof AbstractReal.Big) : "Big implementation hierarchy " + x.getClass();
+            return false;
         } else if (x instanceof Complex) {
             Complex r = (Complex)x;
             return isBig(r.re()) && isBig(r.im());

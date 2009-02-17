@@ -22,11 +22,11 @@ import orbital.util.Utility;
 
 //@todo ensure that multiply((Vector) b) does in fact call multiply(Vector<R>) instead of leading to an infinite recursion. Here and in Matrix stuff
 abstract class AbstractVector/*<R extends Arithmetic>*/ extends AbstractTensor implements Vector/*<R>*/ {
-	private static final long serialVersionUID = 372991453454528414L;
+        private static final long serialVersionUID = 372991453454528414L;
 
     protected AbstractVector(ValueFactory valueFactory) {
-		super(valueFactory);
-	}
+                super(valueFactory);
+        }
     // factory-method
         
     /**
@@ -104,7 +104,7 @@ abstract class AbstractVector/*<R extends Arithmetic>*/ extends AbstractTensor i
         private transient int expectedModCount = 0;
 
         public SubVector(AbstractVector/*<R>*/ v, int i1, int i2) {
-        	super(v.valueFactory());
+                super(v.valueFactory());
             if (!(i1 <= i2))
                 throw new IllegalArgumentException("Ending index " + i2 + " cannot be less than starting index " + i1 + ".");
             v.validate(i1);

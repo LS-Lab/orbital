@@ -24,7 +24,7 @@ public class ArithmeticMatrixTest extends check.TestCase {
         junit.textui.TestRunner.run(suite());
     }
     protected void setUp() {
-    	test = new AbstractMatrixTest();
+        test = new AbstractMatrixTest();
         setUpAgain(Values.getDefault());
     }
     protected void setUpAgain(ValueFactory vf) {
@@ -73,7 +73,7 @@ public class ArithmeticMatrixTest extends check.TestCase {
     }
 
     public void testNormDetTrEtc(ValueFactory vf) {
-    	setUpAgain(vf);
+        setUpAgain(vf);
         System.out.println("\nM := " + M + "\n");
         System.out.println(M + "*" + v + "=" + M.multiply(v));
         System.out.println(u + "*" + v + "=" + u.multiply(v));

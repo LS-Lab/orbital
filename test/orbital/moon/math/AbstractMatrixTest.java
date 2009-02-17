@@ -41,7 +41,7 @@ public class AbstractMatrixTest extends check.TestCase {
         setUpAgain(vf);
     }
     protected void setUpAgain(ValueFactory vf) {
-    	this.vf = vf;
+        this.vf = vf;
         tolerance = vf.valueOf(1e-6);
         //@xxx produces an error with gjc error: type parameter orbital.math.Arithmetic[] is not within its bound orbital.math.Arithmetic
         // this is because he confuses vf.valueOf(R[]) with vf.valueOf(R[][]) although R is bound to be orbital.math.Arithmetic
@@ -85,21 +85,21 @@ public class AbstractMatrixTest extends check.TestCase {
      * @param values
      */
     public void checkValues(Tensor t, Arithmetic[] expvalues) {
-    	ListIterator i = t.iterator();
-    	int k = 0;
-    	while (i.hasNext() && k < expvalues.length) {
-    		assertEquals( "expected element order", i.next(), expvalues[k++]);
-    	}
-    	assertTrue(!i.hasNext(), "tensor iterator not too long " + MathUtilities.format(i) + " in " + t);
-    	assertTrue(k == expvalues.length, "tensor iterator not too short " + MathUtilities.format(expvalues) + " in " + t);
-    	while (i.hasPrevious() && k >= 0) {
-    		assertEquals("expected element order", i.previous(), expvalues[--k]);
-    	}
-    	assertTrue(!i.hasPrevious(), "tensor iterator not too long reverse " + MathUtilities.format(i) + " in " + t);
-    	assertTrue(k == 0, "tensor iterator not too short reverse " + MathUtilities.format(expvalues) + " in " + t);
+        ListIterator i = t.iterator();
+        int k = 0;
+        while (i.hasNext() && k < expvalues.length) {
+                assertEquals( "expected element order", i.next(), expvalues[k++]);
+        }
+        assertTrue(!i.hasNext(), "tensor iterator not too long " + MathUtilities.format(i) + " in " + t);
+        assertTrue(k == expvalues.length, "tensor iterator not too short " + MathUtilities.format(expvalues) + " in " + t);
+        while (i.hasPrevious() && k >= 0) {
+                assertEquals("expected element order", i.previous(), expvalues[--k]);
+        }
+        assertTrue(!i.hasPrevious(), "tensor iterator not too long reverse " + MathUtilities.format(i) + " in " + t);
+        assertTrue(k == 0, "tensor iterator not too short reverse " + MathUtilities.format(expvalues) + " in " + t);
     }
     public void checkValues(Tensor t, double[] expvalues, ValueFactory vf) {
-    	checkValues(t, vf.valueOf(expvalues).toArray());
+        checkValues(t, vf.valueOf(expvalues).toArray());
     }
 
     public void testMixedTypeMatrix() {
@@ -148,7 +148,7 @@ public class AbstractMatrixTest extends check.TestCase {
     // (partial) assertion condition checks
     protected void testAssertConditions(ValueFactory vf) throws Exception {
         setUpAgain(vf);
-    	Matrix M = M3;
+        Matrix M = M3;
         Vector v = v3;
         for (int i = 0; i < 2; i++) {
             System.out.println("reference behaviour part " + i);

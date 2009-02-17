@@ -39,11 +39,11 @@ import orbital.logic.functor.Predicates;
 abstract class AbstractProductArithmetic/*<R extends Arithmetic, I, T extends Arithmetic>*/
     extends AbstractArithmetic implements Arithmetic, Serializable {
     private static final long serialVersionUID = 1257583291254889178L;
-	private ValueFactory valueFactory;
+        private ValueFactory valueFactory;
 
-	private AbstractProductArithmetic() {}
+        private AbstractProductArithmetic() {}
     protected AbstractProductArithmetic(ValueFactory valueFactory) {
-    	this.valueFactory = valueFactory;
+        this.valueFactory = valueFactory;
     }
 
     /**
@@ -88,13 +88,13 @@ abstract class AbstractProductArithmetic/*<R extends Arithmetic, I, T extends Ar
         
     
     public ValueFactory valueFactory() {
-    	return valueFactory;
-//    	Iterator i = iterator(this);
-//    	if (i.hasNext()) {
-//    		return ((Arithmetic)i.next()).valueFactory();
-//    	} else {
-//    		return Values.getDefault();
-//    	}
+        return valueFactory;
+//      Iterator i = iterator(this);
+//      if (i.hasNext()) {
+//              return ((Arithmetic)i.next()).valueFactory();
+//      } else {
+//              return Values.getDefault();
+//      }
     }
     
     // object-methods

@@ -131,6 +131,11 @@ public final class signe extends Applet implements Runnable {
     private static final String version = "@VERSION@";
 
     /**
+     * Contains the unique revision number.
+     */
+    private static final String revision = "@REVISION@";
+
+    /**
      * Contains the unique build number.
      */
     private static final String build = "@BUILD@";
@@ -143,7 +148,7 @@ public final class signe extends Applet implements Runnable {
     /**
      * Contains additional information.
      */
-    private static final String note = "http://www.functologic.com/";
+    private static final String note = "http://symbolaris.com/";
 
     /**
      * Get the id information.
@@ -178,11 +183,19 @@ public final class signe extends Applet implements Runnable {
     } 
 
     /**
-     * Get the version information.
+     * Get the version string information.
      * @see #version
      */
     public static String getVersion() {
         return version;
+    } 
+
+    /**
+     * Get the unqiue version revision information.
+     * @see #revision
+     */
+    public static String getRevision() {
+        return revision;
     } 
 
     /**
@@ -227,7 +240,7 @@ public final class signe extends Applet implements Runnable {
      * Manifest.
      */
     public static String getManifest() {
-        return getInfo() + ", " + getVersion() + " Build " + getBuild() + " Copyright (c) " + getCreated() + " by " + getCreator() + "\n" + getNote();
+        return getInfo() + ", " + getVersion() + " Revision " + getRevision() + " Build " + getBuild() + " Copyright (c) " + getCreated() + " by " + getCreator() + "\n" + getNote();
     } 
 
     /**

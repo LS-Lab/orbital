@@ -54,20 +54,20 @@ public class FastValuesImpl extends ValuesImpl {
     // instantiation
 
     public FastValuesImpl() {
-		// this static initialization somehow is not yet executed before the super constructor is called. Move constants here, thus lazy init cache too
+                // this static initialization somehow is not yet executed before the super constructor is called. Move constants here, thus lazy init cache too
         initCache(); 
     }
 
-	private void initCache() {
-		// these too steps shouldn't be necessary but they are
-	    this.posConst = new Integer[MAX_CONSTANT + 1];
-	    this.negConst = new Integer[MAX_CONSTANT + 1];
+        private void initCache() {
+                // these too steps shouldn't be necessary but they are
+            this.posConst = new Integer[MAX_CONSTANT + 1];
+            this.negConst = new Integer[MAX_CONSTANT + 1];
         posConst[0] = negConst[0] = new AbstractInteger.Long(0, this);
         for (int i = 1; i <= MAX_CONSTANT; i++) {
             posConst[i] = new AbstractInteger.Long(i, this);
             negConst[i] = new AbstractInteger.Long(-i, this);
         }
-	}
+        }
 
     // scalar value constructors - facade factory
     // primitive type conversion methods
@@ -86,17 +86,17 @@ public class FastValuesImpl extends ValuesImpl {
     // integer scalar value constructors - facade factory
 
     public Integer valueOf(int val) {
-    	try {
-    		// If -MAX_CONSTANT < val < MAX_CONSTANT, return stashed constant
-    		if (0 <= val && val <= MAX_CONSTANT)
-    			return posConst[val];
-    		else if (-MAX_CONSTANT <= val && val < 0)
-    			return negConst[-val];
-    	} catch (NullPointerException ex) {
-    		initCache();
-    		return valueOf(val);
-    	}
-    	return new AbstractInteger.Int(val, this);
+        try {
+                // If -MAX_CONSTANT < val < MAX_CONSTANT, return stashed constant
+                if (0 <= val && val <= MAX_CONSTANT)
+                        return posConst[val];
+                else if (-MAX_CONSTANT <= val && val < 0)
+                        return negConst[-val];
+        } catch (NullPointerException ex) {
+                initCache();
+                return valueOf(val);
+        }
+        return new AbstractInteger.Int(val, this);
     } 
     public Integer valueOf(long val) {
         return -MAX_CONSTANT <= val && val <= MAX_CONSTANT

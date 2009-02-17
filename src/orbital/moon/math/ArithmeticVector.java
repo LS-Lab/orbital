@@ -31,7 +31,7 @@ class ArithmeticVector/*<R extends Arithmetic>*/ extends AbstractVector/*<R>*/ {
      * creates a new Vector with dimension length.
      */
     public ArithmeticVector(int length, ValueFactory valueFactory) {
-    	super(valueFactory);
+        super(valueFactory);
         D = new Arithmetic/*>R<*/[length];
     }
 
@@ -47,7 +47,7 @@ class ArithmeticVector/*<R extends Arithmetic>*/ extends AbstractVector/*<R>*/ {
      * @todo could we forget about cloning v?
      */
     public ArithmeticVector(Arithmetic/*>R<*/ values[], ValueFactory valueFactory) {
-    	super(valueFactory);
+        super(valueFactory);
         D = (Arithmetic/*>R<*/[]) values/*.clone()*/;
     }
 
