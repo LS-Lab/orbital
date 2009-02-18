@@ -30,9 +30,9 @@
         JavaCC from https://javacc.dev.java.net/
         junit.jar from http://www.junit.org/ 
       Optional:
+        Mathematica and JLink from http://wolfram.com/
         JDepend from http://www.clarkware.com/software/JDepend.html
         Checkstyle from http://checkstyle.sourceforge.net/
-        Mathematica and JLink from http://wolfram.com/
     </description>
 
 
@@ -175,7 +175,8 @@
 
         <jarlib-resolve property="lib.junit">
             <extension refid="ext.lib.junit"/>
-            <url url="http://ovh.dl.sourceforge.net/sourceforge/junit/junit4.2.jar" 
+            <location location="${lib}/junit.jar"/>
+            <url url="http://superb-east.dl.sourceforge.net/sourceforge/junit/junit-4.5.jar" 
                  destfile="${lib}/junit.jar"/>
         </jarlib-resolve>    
 
@@ -429,7 +430,7 @@
                  author="true"
                  version="false"
                  use="true"
-		 additionalparam="-source 1.4 -docfilessubdirs -excludedocfilessubdir CVS:**/CVS -keywords"
+		 additionalparam="-source 1.4 -docfilessubdirs -excludedocfilessubdir **/.svn -keywords"
                  encoding="utf-8"
                  docencoding="utf-8"
                  windowtitle="Orbital"
@@ -438,7 +439,7 @@
                  footer="&lt;b&gt;Orbital library&lt;/b&gt;&lt;br /&gt;${version}: ${timestamp}"
 		 overview="${doc}/overview.html"
                  Private="${doc.internal}">
-            <bottom><![CDATA[<span style='font-size: smaller; font-style: italic;'>Copyright &copy; 1996-2006 Andr&eacute; Platzer<br />All Rights Reserved.</span>]]></bottom>
+            <bottom><![CDATA[<span style='font-size: smaller; font-style: italic;'>Copyright &copy; 1996-2009 Andr&eacute; Platzer<br />All Rights Reserved.</span>]]></bottom>
  	    <packageset dir="${sources}" defaultexcludes="no"
  	         excludes="orbital,orbital/util/graph,orbital/moon,orbital/moon/aspects,orbital/moon/deprecated,orbital/moon/math/**,orbital/moon/logic/bridge,orbital/moon/logic/sign/type,orbital/util/logging">
  	        <include name="orbital/**"/>
@@ -494,7 +495,7 @@
 
         <echo file="${doc.api.dest}/stylesheet.css" append="true">	
 	@media screen { a:link, a:visited {color:blue} }
-	@import url("stylist.css");
+	@import url("http://symbolaris.com/stylist.css");
 	</echo>
 
 	<antcall target="jjdoc"/>

@@ -150,7 +150,7 @@ public class AbstractMatrixTest extends check.TestCase {
         setUpAgain(vf);
         Matrix M = M3;
         Vector v = v3;
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 5; i++) {
             System.out.println("reference behaviour part " + i);
             Scalar s = vf.valueOf(-2);
             Matrix B = (Matrix) M.clone();
@@ -227,7 +227,7 @@ public class AbstractMatrixTest extends check.TestCase {
             Matrix N = M.subMatrix(0,1, 1,3);
             assertTrue( !N.equals(M) , "sub-view different");
             System.out.println("Matrix\n" + M + ", sub-view\n" + N);
-            N.set(1, 1, vf.NEGATIVE_INFINITY());
+            N.set(1, 1, vf.valueOf(0.123456));
             System.out.println("Matrix\n" + M + ", sub-view\n" + N);
             assertTrue( !M.equals(B2) , "sub-view modifications write through");
 
