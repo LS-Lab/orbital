@@ -177,6 +177,9 @@ public class FunctionTest extends check.TestCase {
     public void test_calc_divide() {
         testCalculations("Divide",    Operations.divide, MIN, MAX, TYPE_REAL | TYPE_COMPLEX, scalarTypes);
     }
+    public void test_calc_power_small() {
+        testCalculations("Power",     Operations.power, -10, 10, new int[] {TYPE_ALL, TYPE_INTEGER}, scalarTypes);
+    }
     public void test_calc_power() {
         testCalculations("Power",     Operations.power, MIN, MAX, new int[] {TYPE_ALL, TYPE_INTEGER}, scalarTypes);
     }
@@ -884,6 +887,24 @@ public class FunctionTest extends check.TestCase {
             System.out.println("Our solution:\n" + oursol);
             System.out.println("Ref.solution:\n" + refsol);
 
+
+            // compare our solution and reference solution in Mathematica
+            ml.newPacket();
+            ml.evaluate("FullSimplify[(\n" + refsol + " == \n" + oursol + ")]");
+            ml.waitForAnswer();
+            final String comparison = ml.getExpr().toString();
+            ml.newPacket();
+            if (!comparison.equals("True")) {
+                System.out.println("FullSimplify[(\n" + refsol + " == \n" + oursol + ")]");
+                System.out.println("Result: " + comparison);
+                System.out.println("dSolve comparison validation FAILED");
+            }
+            final boolean comparesODE = comparison.equals("True");
+            if (comparesODE) {
+                assertTrue(comparesODE , " dSolve equivalence:\n " + oursol + "\n x'==\n" + mf.format(A) + ".x + " + mf.format(b) + "\nwith initial value " + mf.format(eta) + "\nreference solution:\n" + refsol + "\nresulting in " + comparison);
+                return;
+            }
+
             // verify in Mathematica that oursol really solves ODE
             ml.newPacket();
             ml.evaluate("{True}==Union[FullSimplify[N["
@@ -941,20 +962,6 @@ public class FunctionTest extends check.TestCase {
             } else {
                 assertTrue(solvesODE.equals("True") , " dSolve solves ODE\n our solution:\n" + oursol + " \n ref.solution:\n" + refsol + "\n solves " + "x'==\n" + mf.format(A) + ".x + " + mf.format(b) + "\nwith initial value " + mf.format(eta) + "\nresulting in " + solvesODE);
             }
-
-
-            // compare our solution and reference solution in Mathematica
-            ml.newPacket();
-            ml.evaluate("FullSimplify[(\n" + ode + " == \n" + oursol + ")]");
-            ml.waitForAnswer();
-            final String comparison = ml.getExpr().toString();
-            ml.newPacket();
-            if (!comparison.equals("True")) {
-                System.out.println("FullSimplify[(\n" + ode + " == \n" + oursol + ")]");
-                System.out.println("Result: " + comparison);
-                System.out.println("dSolve comparison validation FAILED");
-            }
-            assertTrue(comparison.equals("True") , " dSolve equivalence:\n " + oursol + "\n x'==\n" + mf.format(A) + ".x + " + mf.format(b) + "\nwith initial value " + mf.format(eta) + "\nreference solution:\n" + refsol + "\nresulting in " + comparison);
         }
         catch (MathLinkException e) {
             if (!"machine number overflow".equals(e.getMessage()))

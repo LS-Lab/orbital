@@ -1,7 +1,7 @@
 /**
  * @(#)signe.java 1.0 1999/01/10 Andre Platzer
  * 
- * Copyright (c) 1996-2004 Andre Platzer. All Rights Reserved.
+ * Copyright (c) 1996-2009 Andre Platzer. All Rights Reserved.
  * 
  * This software is the confidential and proprietary information
  * of Andre Platzer. ("Confidential Information"). You
@@ -122,7 +122,7 @@ public final class signe extends Applet implements Runnable {
     /**
      * Contains the created information.
      */
-    private static final String created = "1996-2008";
+    private static final String created = "1996-2009";
 
     /**
      * Contains the version information in Dewey Decimal syntax.
