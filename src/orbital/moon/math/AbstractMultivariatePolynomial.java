@@ -19,6 +19,7 @@ import orbital.logic.functor.BinaryFunction;
 
 import orbital.math.functional.Operations;
 
+import orbital.util.KeyValuePair;
 import orbital.util.Setops;
 import orbital.logic.functor.Predicates;
 import orbital.util.Utility;
@@ -191,7 +192,7 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
                 } 
                 public Object next() {
                     try {
-                        Object v = valueFactory().tensor(cursor.next());
+                        Object v = valueFactory().valueOf(cursor.next());
                         checkForComodification();
                         return v;
                     }
@@ -205,7 +206,7 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
                 } 
                 public Object previous() {
                     try {
-                        Object v = valueFactory().tensor(cursor.previous());
+                        Object v = valueFactory().valueOf(cursor.previous());
                         checkForComodification();
                         return v;
                     }
@@ -328,6 +329,45 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
             };
     } 
         
+    public Iterator monomials() {
+        return new Iterator() {
+                //@structure delegates to cursor wrapping int[] into Vector<Integer>
+                private final Combinatorical cursor = Combinatorical.getPermutations(dimensions());
+                /**
+                 * The modCount value that the iterator believes that the backing
+                 * object should have. If this expectation is violated, the iterator
+                 * has detected concurrent modification.
+                 */
+                private transient int expectedModCount = modCount;
+                public boolean hasNext() {
+                    return cursor.hasNext();
+                } 
+                public Object next() {
+                    try {
+                    	int[] lastRet;
+                        Object v = valueFactory().valueOf(lastRet = cursor.next());
+                        checkForComodification();
+                        return new KeyValuePair(v, get(lastRet));
+                    }
+                    catch(IndexOutOfBoundsException e) {
+                        checkForComodification();
+                        throw (AssertionError) new AssertionError("cursor should already have thrown a NoSuchElementException").initCause(e);
+                    }
+                } 
+                // UnsupportedOperationException, categorically
+
+                public void remove() {
+                    throw new UnsupportedOperationException("removing elements from an entry set of a polynomial is undefined");
+                } 
+
+                private final void checkForComodification() {
+                    if (modCount != expectedModCount)
+                        throw new ConcurrentModificationException();
+                }
+            };
+    } 
+
+    
     public Arithmetic zero() {
         int[] dim = new int[((Integer)indexSet()).intValue()];
         Arrays.fill(dim, 1);

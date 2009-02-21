@@ -17,6 +17,7 @@ import java.util.ConcurrentModificationException;
 import orbital.logic.functor.Functionals;
 import orbital.logic.functor.BinaryFunction;
 
+import orbital.util.KeyValuePair;
 import orbital.util.Setops;
 import orbital.logic.functor.Predicates;
 
@@ -188,6 +189,46 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
             };
     } 
         
+    public Iterator monomials() {
+        return new Iterator() {
+                private int cursor = 0;
+                private int lastRet = -1;
+                /**
+                 * The modCount value that the iterator believes that the backing
+                 * object should have. If this expectation is violated, the iterator
+                 * has detected concurrent modification.
+                 */
+                private transient int expectedModCount = modCount;
+
+                public boolean hasNext() {
+                    return cursor <= degreeValue();
+                } 
+
+                public Object next() {
+                    try {
+                        Object next = get(cursor);
+                        checkForComodification();
+                        lastRet = cursor++;
+                        return new KeyValuePair(valueFactory().valueOf(lastRet), next);
+                    }
+                    catch(IndexOutOfBoundsException e) {
+                        checkForComodification();
+                        throw new NoSuchElementException();
+                    }
+                } 
+
+                public void remove() {
+                    throw new UnsupportedOperationException();
+                } 
+               
+                private final void checkForComodification() {
+                    if (modCount != expectedModCount)
+                        throw new ConcurrentModificationException();
+                }
+            };
+    } 
+
+    
     public Object/*>R<*/ apply(Object/*>R<*/ a) {
         final Arithmetic/*>R<*/ acast = (Arithmetic/*>R<*/)a;
         if (acast instanceof Symbol) {

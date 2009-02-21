@@ -1222,6 +1222,7 @@ public final class AlgebraicAlgorithms {
     /**
      * Get a collection of those (exponents of) monomials that occur in f
      * (i.e. with coefficient &ne;0).
+     * @see Polynomial#indices()
      */
     public static /*<R extends Arithmetic, S extends Arithmetic>*/
         Collection/*<S>*/ occurringMonomials(final Polynomial/*<R,S>*/ f) {

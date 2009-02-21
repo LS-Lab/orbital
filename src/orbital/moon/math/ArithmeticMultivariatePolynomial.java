@@ -13,6 +13,8 @@ import java.util.ListIterator;
 
 import java.util.Collections;
 import java.util.Arrays;
+import java.util.Iterator;
+
 import orbital.util.Setops;
 import orbital.util.Utility;
 
@@ -97,7 +99,11 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/
     public Object indexSet() {
         return valueFactory().valueOf(coefficients.rank());
     }
-
+    
+    public Iterator entries() {
+    	return coefficients.entries();
+    }
+    
     public int rank() {
         return coefficients.rank();
     }

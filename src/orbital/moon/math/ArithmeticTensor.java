@@ -149,5 +149,6 @@ class ArithmeticTensor/*<R extends Arithmetic>*/ extends AbstractTensor/*<R>*/ {
 
     public Object clone() {
         return new ArithmeticTensor/*<R>*/(toArray__Tensor(), valueFactory());
-    } 
+    }
+
 }

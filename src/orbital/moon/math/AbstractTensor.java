@@ -11,12 +11,15 @@ import orbital.math.Integer;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.Map;
 
 import java.util.NoSuchElementException;
 import java.util.ConcurrentModificationException;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
+
+import orbital.util.KeyValuePair;
 import orbital.util.Setops;
 import orbital.util.InnerCheckedException;
 import orbital.util.Utility;
@@ -46,11 +49,11 @@ import java.util.HashSet;
 abstract class AbstractTensor/*<R extends Arithmetic>*/
     extends AbstractProductArithmetic/*<R,int[],Tensor<R>>*/ implements Tensor/*<R>*/, Serializable {
     
-        protected AbstractTensor(ValueFactory valueFactory) {
-                super(valueFactory);
-        }
+	private static final long serialVersionUID = 7889937971348824822L;
 
-        private static final long serialVersionUID = 7889937971348824822L;
+	protected AbstractTensor(ValueFactory valueFactory) {
+		super(valueFactory);
+	}
 
     // object-methods
         
@@ -116,7 +119,7 @@ abstract class AbstractTensor/*<R extends Arithmetic>*/
 
     public ListIterator iterator() {
         return new ListIterator() {
-                private Combinatorical cursor = Combinatorical.getPermutations(dimensions());
+                private final Combinatorical cursor = Combinatorical.getPermutations(dimensions());
                 private int[] lastRet = null;
                 /**
                  * The modCount value that the iterator believes that the backing
@@ -180,6 +183,79 @@ abstract class AbstractTensor/*<R extends Arithmetic>*/
                 public void add(Object o) {
                     throw new UnsupportedOperationException("adding a single element from a tensor is impossible");
                 } 
+                public void remove() {
+                    throw new UnsupportedOperationException("removing a single element from a tensor is impossible");
+                } 
+
+                private final void checkForComodification() {
+                    if (modCount != expectedModCount)
+                        throw new ConcurrentModificationException();
+                }
+            };
+    } 
+
+	public Iterator indices() {
+		return new Iterator() {
+
+            private final Combinatorical cursor = Combinatorical.getPermutations(dimensions());
+            /**
+             * The modCount value that the iterator believes that the backing
+             * object should have. If this expectation is violated, the iterator
+             * has detected concurrent modification.
+             */
+            private transient int expectedModCount = modCount;
+            public boolean hasNext() {
+                return cursor.hasNext();
+            } 
+            public Object next() {
+                try {
+                    Vector v = valueFactory().valueOf(cursor.next());
+                    checkForComodification();
+                    return v;
+                }
+                catch(IndexOutOfBoundsException e) {
+                    checkForComodification();
+                    throw (AssertionError) new AssertionError("cursor should already have thrown a NoSuchElementException").initCause(e);
+                }
+            } 
+            public void remove() {
+                throw new UnsupportedOperationException("removing a single element from a tensor is impossible");
+            } 
+
+            private final void checkForComodification() {
+                if (modCount != expectedModCount)
+                    throw new ConcurrentModificationException();
+            }
+		};
+	} 
+
+    public Iterator entries() {
+        return new Iterator() {
+                private final Combinatorical cursor = Combinatorical.getPermutations(dimensions());
+                 /**
+                 * The modCount value that the iterator believes that the backing
+                 * object should have. If this expectation is violated, the iterator
+                 * has detected concurrent modification.
+                 */
+                private transient int expectedModCount = modCount;
+                public boolean hasNext() {
+                    return cursor.hasNext();
+                } 
+                public Object next() {
+                    try {
+                    	int[] lastRet;
+                        Object v = get(lastRet = (int[])cursor.next().clone());
+                        checkForComodification();
+                        return new KeyValuePair(valueFactory().valueOf(lastRet), v);
+                    }
+                    catch(IndexOutOfBoundsException e) {
+                        checkForComodification();
+                        throw (AssertionError) new AssertionError("cursor should already have thrown a NoSuchElementException").initCause(e);
+                    }
+                } 
+
+                // UnsupportedOperationException, categorically
+
                 public void remove() {
                     throw new UnsupportedOperationException("removing a single element from a tensor is impossible");
                 } 

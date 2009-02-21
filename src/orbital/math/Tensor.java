@@ -6,6 +6,7 @@
 
 package orbital.math;
 
+import java.util.Iterator;
 import java.util.ListIterator;
 
 import java.awt.Dimension;
@@ -127,6 +128,32 @@ public interface Tensor/*<R extends Arithmetic>*/ extends Arithmetic {
      */
     ListIterator/*<R>*/ iterator();
     
+    /**
+     * Returns an iterator over the (relevant) indices.
+     * <p>
+     * The order of this iterator is not generally defined, but should be deterministic.
+     * Particularly, the iterator may - but need not - be restricted to occurring indices
+     * with coefficients &ne;0.
+     * </p>
+     * @return an iterator over a finite set of indices in Vector&lt;Integer&gt;
+     *  at least containing all indices of coefficients &ne;0.
+     * @postconditions &forall;i&isin;Vector&lt;Integer&gt;&#8726;RES get(i)=0
+     */
+    Iterator/*<Vector<Integer>*/ indices();
+    
+    /**
+     * Returns an iterator over our (relevant) entries (index, coefficient)-pairs.
+     * <p>
+     * The order of this iterator is not generally defined, but should be deterministic.
+     * Particularly, the iterator may - but need not - be restricted to occurring indices
+     * with coefficients &ne;0.
+     * </p>
+     * @return an iterator over a finite set of pairs of indices in Vector&lt;Integer&gt; and coefficients in R
+     *  at least containing all pairs for coefficients &ne;0.
+     * @postconditions &forall;(i,c)&isin;Vector&lt;Integer&gt;&times;R&#8726;RES get(i)=0
+     */
+    Iterator/*<KeyValuePair<Vector<Integer>,R>>*/ entries();
+
     // sub-views
 
     /**

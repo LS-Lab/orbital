@@ -26,6 +26,7 @@ import java.util.logging.Level;
 
 import java.text.ParsePosition;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.ListIterator;
 import java.util.Arrays;
 import java.util.Map;
@@ -350,9 +351,9 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
         switch (coefficients.rank()) {
         // turn off this implementation unless MONOMIAL also obeys it
         case 1:
-        	if (Boolean.TRUE.equals(getParameter("orbital.math.UnivariatePolynomial.sparse", Boolean.FALSE)))
-                return new SparsePolynomial(coefficients);
-        	else
+//        	if (Boolean.TRUE.equals(getParameter("orbital.math.UnivariatePolynomial.sparse", Boolean.FALSE)))
+//                return new SparsePolynomial(coefficients);
+//        	else
                 // @todo implement a true view flexible for changes (but only if Polynomial.set(...) has been introduced)
                 return polynomial((Arithmetic[]) ((AbstractTensor)coefficients).toArray__Tensor());
         default:
@@ -379,17 +380,24 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
 
     // @internal horribly complicate implementation
     public final /*<R extends Arithmetic>*/ Polynomial/*<R,Vector<Integer>>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, int[] exponents) {
-        if (exponents.length == 1 && Boolean.TRUE.equals(getParameter("orbital.math.UnivariatePolynomial.sparse", Boolean.FALSE))) {
-            return MONOMIAL(coefficient, exponents[0]);
+    	if (exponents.length == 1) {
+    		//  && !Boolean.TRUE.equals(getParameter("orbital.math.UnivariatePolynomial.sparse", Boolean.FALSE))
+    		return MONOMIAL(coefficient, exponents[0]);
+    	}
+        if (Boolean.TRUE.equals(getParameter("orbital.math.UnivariatePolynomial.sparse", Boolean.FALSE))) {
+        	Map/*<Vector<Integer>,R>*/ m = new LinkedHashMap();
+        	m.put(valueOf(exponents), coefficient);
+        	return new SparsePolynomial(m, this);
+        } else {
+        	int[] dim = new int[exponents.length];
+        	for (int k = 0; k < dim.length; k++)
+        		dim[k] = exponents[k] + 1;
+        	AbstractMultivariatePolynomial m = new ArithmeticMultivariatePolynomial(dim, this);
+        	m.set(m.CONSTANT_TERM, coefficient.zero());
+        	m.setZero();
+        	m.set(exponents, coefficient);
+        	return m;
         }
-        int[] dim = new int[exponents.length];
-        for (int k = 0; k < dim.length; k++)
-            dim[k] = exponents[k] + 1;
-        AbstractMultivariatePolynomial m = new ArithmeticMultivariatePolynomial(dim, this);
-        m.set(m.CONSTANT_TERM, coefficient.zero());
-        m.setZero();
-        m.set(exponents, coefficient);
-        return m;
     }
     public final /*<R extends Arithmetic>*/ UnivariatePolynomial/*<R>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, int exponent) {
         Arithmetic v[] = new Arithmetic[exponent + 1];
