@@ -28,6 +28,8 @@ import java.text.ParsePosition;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Arrays;
+import java.util.Map;
+
 import orbital.util.Setops;
 import orbital.util.Utility;
 
@@ -80,6 +82,25 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
         AbstractReal.Big.setPrecision(new MathContext(precision, AbstractReal.Big.getPrecision().getRoundingMode()));
     }
 
+    /**
+     * Facade property.
+     * This method is a facade peudo-property for accessing
+     * {@link Values#getDefault()}.adjustToParameters(Map) representations.
+     * It essentially has the same effect as
+     * {@link Values#setDefault(ValueFactory)}(this.adjustToParameters())
+     */
+    public void setSparsePolynomials(String precision) {
+        Map params = new java.util.HashMap();
+        params.put("orbital.math.Polynomial.sparse", precision);
+        Values.setDefault(adaptToParameters(params));
+    }
+    public boolean isSparsePolynomials() {
+        if (!getParameters().containsKey("orbital.math.Polynomial.sparse")) {
+            return false;
+        } else {
+            return Boolean.TRUE.equals(getParameters().get("orbital.math.Polynomial.sparse"));
+        }
+    }
 
     
     // scalar value constructors - facade factory
@@ -327,12 +348,18 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
     public /*<R extends Arithmetic>*/ Polynomial/*<R,Vector<Integer>>*/ asPolynomial(Tensor/*<R>*/ coefficients) {
         // polynomials in 1 variable are converted to UnivariatePolynomials
         switch (coefficients.rank()) {
-        // turn off this implementation until MONOMIAL also obeys it
+        // turn off this implementation unless MONOMIAL also obeys it
         case 1:
-            // @todo implement a true view flexible for changes (but only if Polynomial.set(...) has been introduced)
-            return polynomial((Arithmetic[]) ((AbstractTensor)coefficients).toArray__Tensor());
+        	if (Boolean.TRUE.equals(getParameter("orbital.math.UnivariatePolynomial.sparse", Boolean.FALSE)))
+                return new SparsePolynomial(coefficients);
+        	else
+                // @todo implement a true view flexible for changes (but only if Polynomial.set(...) has been introduced)
+                return polynomial((Arithmetic[]) ((AbstractTensor)coefficients).toArray__Tensor());
         default:
-            return new ArithmeticMultivariatePolynomial(coefficients);
+        	if (Boolean.TRUE.equals(getParameter("orbital.math.Polynomial.sparse", Boolean.FALSE)))
+                return new SparsePolynomial(coefficients);
+        	else
+                return new ArithmeticMultivariatePolynomial(coefficients);
         }
     }
 
@@ -352,8 +379,8 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
 
     // @internal horribly complicate implementation
     public final /*<R extends Arithmetic>*/ Polynomial/*<R,Vector<Integer>>*/ MONOMIAL(Arithmetic/*>R<*/ coefficient, int[] exponents) {
-        if (exponents.length == 1) {
-                return MONOMIAL(coefficient, exponents[0]);
+        if (exponents.length == 1 && Boolean.TRUE.equals(getParameter("orbital.math.UnivariatePolynomial.sparse", Boolean.FALSE))) {
+            return MONOMIAL(coefficient, exponents[0]);
         }
         int[] dim = new int[exponents.length];
         for (int k = 0; k < dim.length; k++)

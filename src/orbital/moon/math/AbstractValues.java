@@ -69,9 +69,9 @@ public abstract class AbstractValues extends Values {
 
     /**
      * Adjust ValueFactory to the given parameters.
-     * This method returns a possibly new ValueFactory for the given settings.
+     * This method returns a (possibly new) ValueFactory for the given settings.
      */
-    public ValueFactory adjustToParameters(Map/*<String,Object>*/ parameters) {
+    public ValueFactory adaptToParameters(Map/*<String,Object>*/ parameters) {
         AbstractValues vf = this;
         if (parameters.containsKey("orbital.math.Scalar.precision")) {
             String prec = (String)parameters.get("orbital.math.Scalar.precision");
@@ -96,6 +96,16 @@ public abstract class AbstractValues extends Values {
     protected Map/*<String,Object>*/ getParameters() {
         return parameters;
     }
+    
+    protected Object getParameter(String name, Object defaultValue) {
+    	if (parameters == null)
+    	    return defaultValue;
+    	Object o = parameters.get(name);
+    	if (o == null)
+    		return defaultValue;
+    	else
+    		return o;
+    }
 
     /**
      * Facade property.
@@ -107,7 +117,7 @@ public abstract class AbstractValues extends Values {
     public void setRepresentation(String precision) {
         Map params = new java.util.HashMap();
         params.put("orbital.math.Scalar.precision", precision);
-        Values.setDefault(adjustToParameters(params));
+        Values.setDefault(adaptToParameters(params));
     }
     public String getRepresentation() {
         if (!getParameters().containsKey("orbital.math.Scalar.precision")) {

@@ -5,16 +5,21 @@
  */
 
 package orbital.moon.math;
+import orbital.algorithm.Combinatorical;
 import orbital.math.*;
+import orbital.math.Integer;
 
 import orbital.math.functional.Function;
+import orbital.math.functional.Operations;
+
+import java.util.Arrays;
 import java.util.ListIterator;
 import java.util.Iterator;
 
 import java.util.ConcurrentModificationException;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * Implementation of polynomials in R[S] with a sparse map of coefficients.
@@ -27,19 +32,29 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
     private static final long serialVersionUID = -8833160240745985849L;
 
     /**
-     * Maps indices in S to the corresponding coefficients &iota;(s)&isin;R.
-     */
-    private final Map/*<S,R>*/ coefficients;
-    /**
-     * The index 0&isin;S of the constant term.
+     * The exponent index 0&isin;S for the constant term of this polynomial.
      */
     private final Arithmetic/*>S<*/ CONSTANT_TERM;
 
+    /**
+     * Maps indices in S to the corresponding coefficients &iota;(s)&isin;R.
+     */
+    private final Map/*<S,R>*/ coefficients;
+
+    /**
+     * tags a dirty degree, i.e., when the degree cache is possibly out of sync
+     */
+    private static final int DIRTY = java.lang.Integer.MIN_VALUE + 10; 
+    /**
+     * Caches the degree value.
+     * @see #degree()
+     */
+    private transient int degree = DIRTY;
     public SparsePolynomial(Arithmetic/*>S<*/ anIndexObject) {
         super(anIndexObject.valueFactory());
         //@internal assuming (S,+) here
         this.CONSTANT_TERM = anIndexObject.zero();
-        this.coefficients = new HashMap();
+        this.coefficients = new LinkedHashMap();
     }
     public SparsePolynomial(Map/*<S,R>*/ coefficients, ValueFactory valueFactory) {
         super(valueFactory);
@@ -110,7 +125,27 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
                     checkForComodification();
         
                     try {
-                        lastRet.setValue((Arithmetic)o);
+                    	final int oldDegree = degree;
+                    	final Arithmetic ci = (Arithmetic)o;
+                    	final int newPotentialDegree = ((Integer)Operations.sum.apply(getExponentVector(lastRet.getKey()))).intValue();
+                    	if (!ci.isZero()) {
+                    		lastRet.setValue(ci);
+                    		if (oldDegree < newPotentialDegree) {
+                    			// update degree if index is higher than degree and nonzero (because it might raise)
+                    			// or equal and we reset to zero (because it might drop)
+                    			//@todo delta-degrees can be optimized faster by exploiting that we know the old degree where to start 
+                    			SparsePolynomial.this.degree = DIRTY;//degreeImpl(coefficients);
+                    		}
+                    	} else {
+                    		// auto-cleanup zero coefficients for sparse representation
+                    		cursor.remove();
+                    		if (oldDegree == newPotentialDegree) {
+                    			// update degree if index is higher than degree and nonzero (because it might raise)
+                    			// or equal and we reset to zero (because it might drop)
+                    			//@todo delta-degrees can be optimized faster by exploiting that we know the old degree where to start 
+                    			SparsePolynomial.this.degree = DIRTY;//degreeImpl(coefficients);
+                    		}
+                    	}
                         expectedModCount = modCount;
                     } catch(IndexOutOfBoundsException e) {
                         throw new ConcurrentModificationException();
@@ -145,15 +180,63 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
     }
 
     public int rank() {
-        throw new UnsupportedOperationException("no rank on " + get(CONSTANT_TERM).getClass().getName() + "[" + CONSTANT_TERM.getClass().getName() + "]");
+    	if (CONSTANT_TERM instanceof Vector) {
+    		return ((Vector)CONSTANT_TERM).dimension();
+    	} else if (CONSTANT_TERM instanceof Integer) {
+    		return 1;
+    	} else {
+            throw new UnsupportedOperationException("no rank on " + get(CONSTANT_TERM).getClass().getName() + "[" + CONSTANT_TERM.getClass().getName() + "]");
+    	}
     }
 
-    public int degreeValue() {
-        throw new UnsupportedOperationException("no degree on " + get(CONSTANT_TERM).getClass().getName() + "[" + CONSTANT_TERM.getClass().getName() + "]");
+    public final int degreeValue() {
+        if (degree == DIRTY) {
+                this.degree = degreeImpl();
+        }
+        return degree;
+    }
+    /**
+     * Implementation calculating the degree of a polynomial,
+     * given its coefficients.
+     * @internal optimizable by far, start with big indices, not with 0,...,0
+     */
+    private int degreeImpl() {
+        int d = java.lang.Integer.MIN_VALUE;
+        for (Iterator/*<Map.Entry<S, R>>*/ i = coefficients.entrySet().iterator(); i.hasNext(); ) {
+        	Map.Entry/*<S, R>*/ e = (Map.Entry)i.next();
+        	Arithmetic xi = (Arithmetic)e.getKey();
+        	Vector v = getExponentVector(xi);
+            final Arithmetic vi = (Arithmetic)e.getValue();
+            if (vi != null && !vi.isZero()) {
+                final int sum = ((Integer)Operations.sum.apply(v)).intValue();
+                if (sum > d)
+                    d = sum;
+            }
+        }
+        //throw new UnsupportedOperationException("no degree on " + get(CONSTANT_TERM).getClass().getName() + "[" + CONSTANT_TERM.getClass().getName() + "]");
+        return d;
     }
 
     public int[] degrees() {
-        throw new UnsupportedOperationException("no partial degrees on " + get(CONSTANT_TERM).getClass().getName() + "[" + CONSTANT_TERM.getClass().getName() + "]");
+        final int degrees[] = new int[rank()];
+        Arrays.fill(degrees, -1);
+        for (Iterator/*<Map.Entry<S, R>>*/ j = coefficients.entrySet().iterator(); j.hasNext(); ) {
+        	Map.Entry/*<S, R>*/ e = (Map.Entry)j.next();
+        	Arithmetic xi = (Arithmetic)e.getKey();
+        	Vector v = getExponentVector(xi);
+            final Arithmetic vi = (Arithmetic)e.getValue();
+            if (vi != null && !vi.isZero()) {
+                // degrees = max(degrees, index)
+                for (int i = 0; i < degrees.length; i++) {
+                	int expo = ((Integer)v.get(i)).intValue();
+                    if (expo > degrees[i]) {
+                        degrees[i] = expo;
+                    }
+                }
+            }
+        }
+        return degrees;
+//      throw new UnsupportedOperationException("no partial degrees on " + get(CONSTANT_TERM).getClass().getName() + "[" + CONSTANT_TERM.getClass().getName() + "]");
     }
 
     public Arithmetic get(Arithmetic i) {
@@ -161,7 +244,26 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
     }
         
     public void set(Arithmetic i, Arithmetic ci) {
-        coefficients.put(i, ci);
+        final int oldDegree = degree;
+        final int newPotentialDegree = ((Integer)Operations.sum.apply(getExponentVector(i))).intValue();
+    	if (!ci.isZero()) {
+            coefficients.put(i, ci);
+    		if (oldDegree < newPotentialDegree) {
+    			// update degree if index is higher than degree and nonzero (because it might raise)
+    			// or equal and we reset to zero (because it might drop)
+    			//@todo delta-degrees can be optimized faster by exploiting that we know the old degree where to start 
+    			this.degree = DIRTY;//degreeImpl(coefficients);
+    		}
+    	} else {
+    		// auto-cleanup zero coefficients for sparse representation
+    		coefficients.remove(i);
+    		if (oldDegree == newPotentialDegree) {
+    			// update degree if index is higher than degree and nonzero (because it might raise)
+    			// or equal and we reset to zero (because it might drop)
+    			//@todo delta-degrees can be optimized faster by exploiting that we know the old degree where to start 
+    			this.degree = DIRTY;//degreeImpl(coefficients);
+    		}
+    	}
     }
 
     public Arithmetic zero() {
@@ -176,4 +278,20 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
         return r;
     }
 
+    /**
+     * Get a vectorial representation of an index for an exponent of a monomial, if possible
+     * @param m
+     * @return
+     * @see orbital.math.AlgebraicAlgorithms#getExponentVector(Object)
+     */
+    private static Vector/*<Integer>*/ getExponentVector(Object m) {
+    	if (m instanceof Vector) {
+    		return (Vector)m;
+    	} else if (m instanceof Integer) {
+    		// univariate case
+    		return ((Arithmetic)m).valueFactory().valueOf(new Integer[] {(Integer)m});
+    	} else {
+    		throw new ClassCastException("Cannot convert exponent representation into Vector<Integer> from " + m);
+    	}
+    }
 }
