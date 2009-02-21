@@ -69,6 +69,19 @@ public interface Polynomial/*<R extends Arithmetic, S extends Arithmetic>*/
      * @postconditions &forall;i&isin;S&#8726;RES get(i)=0
      */
     Iterator/*<S>*/ indices();
+    
+    /**
+     * Returns an iterator over our (relevant) monomials, i.e., pairs of (exponent, coefficient).
+     * <p>
+     * The order of this iterator is not generally defined, but should be deterministic.
+     * Particularly, the iterator may - but need not - be restricted to occurring indices
+     * with coefficients &ne;0.
+     * </p>
+     * @return an iterator over a finite set of pairs of exponents in S and coefficients in R
+     *  at least containing all pairs for coefficients &ne;0.
+     * @postconditions &forall;(i,c)&isin;S&times;R&#8726;RES get(i)=0
+     */
+    Iterator/*<KeyValuePair<S,R>>*/ monomials();
 
     /**
      * Get the i-th coefficient.

@@ -623,7 +623,7 @@ public class ArithmeticFormat extends Format {
         fieldPosition.setEndIndex(0);
         final int initialIndex = result.length();
         // whether we add indices to the variables (X0,X1,X2,X3,... instead of X,Y,Z)
-        final boolean addIndex = ((Integer)p.indexSet()).intValue() > multinomialVariables.length;
+        final boolean addIndex = p.rank() > multinomialVariables.length;
                 
         // @todo improve format
         result.append(multinomialPrefix);

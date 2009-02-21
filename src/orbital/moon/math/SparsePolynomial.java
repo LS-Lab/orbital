@@ -11,6 +11,7 @@ import orbital.math.Integer;
 
 import orbital.math.functional.Function;
 import orbital.math.functional.Operations;
+import orbital.util.KeyValuePair;
 
 import java.util.Arrays;
 import java.util.ListIterator;
@@ -37,6 +38,11 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
     private final Arithmetic/*>S<*/ CONSTANT_TERM;
 
     /**
+     * The 0&isin;R of the coefficient domain.
+     */
+    private final Arithmetic/*>R<*/ COEFFICIENT_ZERO;
+
+    /**
      * Maps indices in S to the corresponding coefficients &iota;(s)&isin;R.
      */
     private final Map/*<S,R>*/ coefficients;
@@ -50,22 +56,45 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
      * @see #degree()
      */
     private transient int degree = DIRTY;
-    public SparsePolynomial(Arithmetic/*>S<*/ anIndexObject) {
+    public SparsePolynomial(Arithmetic zeroCoefficient, Arithmetic/*>S<*/ anIndexObject) {
         super(anIndexObject.valueFactory());
         //@internal assuming (S,+) here
         this.CONSTANT_TERM = anIndexObject.zero();
+        assert zeroCoefficient.isZero() : "zero coefficient should be zero";
+        this.COEFFICIENT_ZERO = zeroCoefficient;
         this.coefficients = new LinkedHashMap();
     }
     public SparsePolynomial(Map/*<S,R>*/ coefficients, ValueFactory valueFactory) {
         super(valueFactory);
-        this.CONSTANT_TERM = ((Arithmetic/*>S<*/)coefficients.keySet().iterator().next()).zero();
+        if (coefficients.isEmpty()) {
+        	throw new IllegalArgumentException("Cannot infer coefficient and exponent domain from empty coefficients");
+        }
+        Map.Entry/*<S,R>*/ e = (Map.Entry)coefficients.entrySet().iterator().next();
+        this.CONSTANT_TERM = ((Arithmetic/*>S<*/)e.getKey()).zero();
+        this.COEFFICIENT_ZERO = ((Arithmetic/*>S<*/)e.getValue()).zero();
         this.coefficients = coefficients;
     }
     
+    public SparsePolynomial(Tensor coeff) {
+        super(coeff.valueFactory());
+        int[] i0 = new int[coeff.rank()];
+        Arrays.fill(i0, 0);
+        this.CONSTANT_TERM = valueFactory().valueOf(i0);
+        this.COEFFICIENT_ZERO = coeff.get(i0);
+        this.coefficients = new LinkedHashMap();
+        for (Iterator i = coeff.entries(); i.hasNext(); ) {
+        	KeyValuePair e = (KeyValuePair) i.next();
+        	Arithmetic vi = (Arithmetic) e.getValue();
+        	if (!vi.isZero()) {
+        		this.coefficients.put(e.getKey(), vi);
+        	}
+        }
+    }
+
     // factory-methods
     
     protected final Arithmetic/*>Polynomial<R,S><*/ newInstance(Object/*>S<*/ productIndexSet) {
-        return new SparsePolynomial((Arithmetic)productIndexSet);
+        return new SparsePolynomial(COEFFICIENT_ZERO, (Arithmetic)productIndexSet);
     }
 
     // iterator-views
@@ -174,6 +203,25 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
                 }
             };
     }
+    
+    public Iterator monomials() {
+    	return new Iterator() {
+            private final Iterator cursor = coefficients.entrySet().iterator();
+			public boolean hasNext() {
+				return cursor.hasNext();
+			}
+
+			public Object next() {
+				Map.Entry e = (Map.Entry) cursor.next();
+				return new KeyValuePair(e.getKey(), e.getValue());
+			}
+
+			public void remove() {
+				cursor.remove();
+			}
+    		
+    	};
+    }
 
     public Object indexSet() {
         return CONSTANT_TERM;
@@ -185,7 +233,7 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
     	} else if (CONSTANT_TERM instanceof Integer) {
     		return 1;
     	} else {
-            throw new UnsupportedOperationException("no rank on " + get(CONSTANT_TERM).getClass().getName() + "[" + CONSTANT_TERM.getClass().getName() + "]");
+            throw new UnsupportedOperationException("no rank on " + this + "[" + CONSTANT_TERM.getClass().getName() + "]");
     	}
     }
 
@@ -240,7 +288,11 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
     }
 
     public Arithmetic get(Arithmetic i) {
-        return (Arithmetic/*__*/) coefficients.get(i);
+        Object ci = coefficients.get(i);
+        if (ci == null)
+        	return COEFFICIENT_ZERO;
+        else
+            return (Arithmetic/*__*/) ci;
     }
         
     public void set(Arithmetic i, Arithmetic ci) {
@@ -268,13 +320,13 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
 
     public Arithmetic zero() {
         SparsePolynomial r = (SparsePolynomial)newInstance(CONSTANT_TERM);
-        r.set(CONSTANT_TERM, get(CONSTANT_TERM).zero());
+        r.set(CONSTANT_TERM, COEFFICIENT_ZERO);
         return r;
     }
 
     public Arithmetic one() {
         SparsePolynomial r = (SparsePolynomial)newInstance(CONSTANT_TERM);
-        r.set(CONSTANT_TERM, get(CONSTANT_TERM).one());
+        r.set(CONSTANT_TERM, COEFFICIENT_ZERO.one());
         return r;
     }
 
