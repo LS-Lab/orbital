@@ -148,7 +148,7 @@ public abstract class Values implements ValueFactory {
     public static ValueFactory getInstance(Map/*<String,Object>*/ parameters) {
         ValueFactory factory = getInstance();
         if (factory instanceof AbstractValues) {
-            return ((AbstractValues)factory).adjustToParameters(parameters);
+            return ((AbstractValues)factory).adaptToParameters(parameters);
         } else if (!parameters.isEmpty()) {
             throw new UnsupportedOperationException("Passing parameters to general " + ValueFactory.class + " is not yet supported. Use Values.getInstance() for ignoring the parameter settings, or stick to an implementation extending " + AbstractValues.class);
         }

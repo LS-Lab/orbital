@@ -98,7 +98,7 @@ public interface Polynomial/*<R extends Arithmetic, S extends Arithmetic>*/
      * Get the total degree of this polynomial.
      * <p>
      * For example, if S=<b>N</b><sup>n</sup> then this method returns the total degree
-     * deg(this) := max {|i|:=&sum;<sub>j=0,...,n-1</sub> i<sub>j</sub> &brvbar; i&isin;<b>N</b><sup>n</sup> &and; a<sub>i</sub>&ne;0}.
+     * deg(this) := max {|i| := &sum;<sub>j=0,...,n-1</sub> i<sub>j</sub> &#160;&brvbar;&#160; i&isin;<b>N</b><sup>n</sup> &and; a<sub>i</sub>&ne;0}.
      * Further, deg(0) &lt; 0
      * </p>
      * @throws UnsupportedOperationException if R[S] is not a graded ring with a very meaningful graduation.
@@ -117,6 +117,9 @@ public interface Polynomial/*<R extends Arithmetic, S extends Arithmetic>*/
     /**
      * Returns the multi-degree, i.e., the vector of partial degrees of this polynomial for the individual variables X<sub>i</sub>.
      * <p>
+     * For example, if S=<b>N</b><sup>n</sup> then this method returns the vector of partial degrees
+     * deg<sub>p</sub>(this) := (max {j &#160;&brvbar;&#160; there is an i&isin;<b>N</b><sup>n</sup> with i<sub>k</sub>=j &and; a<sub>i</sub>&ne;0})<sub>k=0,...,n-1</sub>.
+     * Further, deg_p(f)<sub>k</sub> &lt; 0 iff X<sub>k</sub> does not occur in f.
      * </p>
      * @return an array d containing the partial degrees d[i] of variable X<sub>i</sub>.
      * @postconditions RES.length == rank()
