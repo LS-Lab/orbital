@@ -5,6 +5,8 @@
  */
 
 package orbital.math;
+import orbital.logic.functor.BinaryPredicate;
+import orbital.logic.functor.Predicate;
 import orbital.math.functional.*;
 
 import junit.framework.*;
@@ -179,12 +181,18 @@ public class ArithmeticTest extends check.TestCase {
         }
         assertTrue(op + "("+ x + ") " + " = " + found + " = " + expected, found.equals(expected, tolerance));
     }
+    protected final void testArithmetic(Arithmetic x, Arithmetic y, boolean withDivisions) {
+    	checkArithmetic(Values.getDefault(), x, y, withDivisions);
+    }
+
     /**
-     * Test usual laws with two arithmetic objects.
+     * Check usual laws with one arithmetic object.
      * @param withDivisions whether or not to test laws involving division as well.
      */
-    protected final void testArithmetic(Arithmetic x, Arithmetic y, boolean withDivisions) {
-        Rational a = Values.getDefaultInstance().valueOf(4);
+    public static final boolean checkArithmetic(ValueFactory vf, Arithmetic x, boolean withDivisions) {
+    	if (x instanceof Symbol)
+    		return true;
+        Rational a = vf.valueOf(4);
         Arithmetic zero = x.zero();
         Arithmetic one = x.one();
         System.out.println("(" + zero + ") + (" + x + ") = " + zero.add(x));
@@ -193,8 +201,6 @@ public class ArithmeticTest extends check.TestCase {
 
         assertTrue(zero.add(zero).equals(zero) , "0+0=0 \t(" + zero + ")+(" + zero + ") = " + zero);
 
-        System.out.println("(" + x + ") + (" + y + ") = " + x.add(y));
-
         System.out.println("-(" + x + ") = " + x.minus());
         assertTrue(x.minus().add(x).equals(zero) , "(-x)+x=0 \t-(" + x + ") + (" + x + ") = " + zero);
         assertTrue(x.add(x.minus()).equals(zero) , "x+(-x)=0 \t(" + x + ") + (-(" + x + ")) = " + zero);
@@ -202,7 +208,6 @@ public class ArithmeticTest extends check.TestCase {
         assertTrue(zero.minus().equals(zero) , "-0=0 \t-(" + zero + ") = " + zero);
         assertTrue(zero.subtract(zero).equals(zero) , "0-0=0 \t" + zero + "-(" + zero + ") = " + zero);
 
-        System.out.println("(" + x + ") - (" + y + ") = " + x.subtract(y));
         assertTrue(x.subtract(x).equals(zero) , "x-x=0 \t(" + x + ") - (" + x + ") = " + zero);
 
         System.out.println(a + "*(" + x + ") = " + x.scale(a));
@@ -216,8 +221,24 @@ public class ArithmeticTest extends check.TestCase {
         assertTrue(zero.multiply(one).equals(zero) , "0*1=0 \t(" + zero + ") * (" + one + ") = " + zero);
         assertTrue(one.multiply(zero).equals(zero) , "1*0=0 \t(" + one + ") * (" + zero + ") = " + zero);
         
-        System.out.println("(" + x + ") * (" + y + ") = " + x.multiply(y));
-
+    	assertTrue(x.zero().isZero(), "the zero " + x.zero() + " of " + x + " is zero");
+    	assertTrue(x.one().isOne(), "the one " + x.one() + " of " + x + " is one");
+		assertTrue(x.add(x.minus()).isZero(), "(" + x + ") + -(" + x + ") is zero");
+		assertTrue(x.add(x.minus()).equals(x.zero()), "(" + x + ") + -(" + x + ") = " + x.zero());
+		assertTrue(x.subtract(x).isZero(), "(" + x + ") - (" + x + ") is zero");
+		assertTrue(x.subtract(x).equals(x.zero()), "(" + x + ") - (" + x + ") = " + x.zero());
+		assertTrue(x.add(x.zero()).equals(x), "(" + x + ") + (" + x.zero() + ") = " + x);
+		assertTrue(x.subtract(x.zero()).equals(x), "(" + x + ") - (" + x.zero() + ") = " + x);
+		assertTrue(x.zero().subtract(x).equals(x.minus()), "(" + x.zero() + ") - (" + x + ") = " + x.minus());
+		assertTrue(x.zero().add(x).equals(x), "(" + x.zero() + ") + (" + x + ") = " + x);
+		assertTrue(x.multiply(x.one()).equals(x), "(" + x + ") * (" + x.one() + ") = " + x);
+		assertTrue(x.multiply(x.one().minus()).equals(x.minus()), "(" + x + ") * (" + x.one().minus() + ") = " + x.minus());
+		assertTrue(x.multiply(x.zero()).isZero(), "(" + x + ") * (" + x.zero() + ") is zero");
+		assertTrue(x.multiply(x.zero()).equals(x.zero()), "(" + x + ") * (" + x.zero() + ") = " + x.zero());
+		assertTrue(x.one().multiply(x).equals(x), "(" + x.one() + ") * (" + x + ") = " + x);
+		assertTrue(x.one().minus().multiply(x).equals(x.minus()), "(" + x.one().minus() + ") * (" + x + ") = " + x.minus());
+		assertTrue(x.one().multiply(x).subtract(x).isZero(), "(" + x.one() + ") * (" + x + ") - " + x + " is zero");
+		assertTrue(x.one().multiply(x).subtract(x).equals(x.zero()), "(" + x.one() + ") * (" + x + ") - " + x + " = " + x.zero());
         //@todo commutative +?
 
         if (withDivisions) {
@@ -235,12 +256,44 @@ public class ArithmeticTest extends check.TestCase {
 
             assertTrue(zero.divide(one).equals(zero) , "0/1=0 \t(" + zero + ") / (" + one + ") = " + zero);
             
-            System.out.println("(" + x + ") / (" + y + ") = " + x.divide(y));
-
             //@todo sometimes commutative *?
         }
+        return true;
+    }
+    /**
+     * Test usual laws with two arithmetic objects.
+     * @param withDivisions whether or not to test laws involving division as well.
+     */
+    public static final boolean checkArithmetic(ValueFactory vf, Arithmetic x, Arithmetic y, boolean withDivisions) {
+    	checkArithmetic(vf, x, withDivisions);
+    	checkArithmetic(vf, y, withDivisions);
+    	System.out.println("(" + x + ") + (" + y + ") = " + x.add(y));
+
+    	System.out.println("(" + x + ") - (" + y + ") = " + x.subtract(y));
+    	System.out.println("(" + x + ") * (" + y + ") = " + x.multiply(y));
+    	System.out.println("(" + x + ") / (" + y + ") = " + x.divide(y));
+        return true;
     }
 
+
+    protected final Predicate checkArithmetic(final ValueFactory vf, final boolean withDivisions) {
+    	return new Predicate() {
+    		public boolean apply(Object arg) {
+    			return checkArithmetic(vf, (Arithmetic)arg, withDivisions);
+    		}
+
+    	};
+    }
+    protected final BinaryPredicate checkArithmetics(final ValueFactory vf, final boolean withDivisions) {
+    	return new BinaryPredicate() {
+    		public boolean apply(Object arg, Object arg2) {
+    			return checkArithmetic(vf, (Arithmetic)arg, (Arithmetic)arg2, withDivisions);
+    		}
+
+    	};
+    }
+
+    
 
     // test various doubleValue() etc things.
     public void testValueOf() {

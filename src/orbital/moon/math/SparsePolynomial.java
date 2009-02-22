@@ -240,7 +240,11 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
 
 			public int[] dimensions() {
 				// this permanent recomputation is really slow but better than caching without concurrentModification checks
-			    return ArithmeticValuesImpl.getPartialDimensions(SparsePolynomial.this.coefficients);
+				int[] dim = degrees();
+				for (int i = 0; i < dim.length; i++) {
+					dim[i]++;
+				}
+			    return dim;
 			}
 
 			public Arithmetic get(int[] i) {
@@ -315,12 +319,16 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
             if (vi != null && !vi.isZero()) {
                 // degrees = max(degrees, index)
                 for (int i = 0; i < degrees.length; i++) {
-                        int expo = ((Integer)v.get(i)).intValue();
+                    int expo = ((Integer)v.get(i)).intValue();
                     if (expo > degrees[i]) {
                         degrees[i] = expo;
                     }
                 }
             }
+        }
+        for (int i = 0; i < degrees.length; i++) {
+        	if (degrees[i] < 0)
+        		throw new IllegalStateException("Cannot determine partial degrees " + MathUtilities.format(degrees) + " of " + this);
         }
         return degrees;
 //      throw new UnsupportedOperationException("no partial degrees on " + get(CONSTANT_TERM).getClass().getName() + "[" + CONSTANT_TERM.getClass().getName() + "]");
