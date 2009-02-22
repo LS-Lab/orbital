@@ -314,7 +314,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
     	Tensor t = ZERO(dim);
     	for (Iterator i = indexCoefficientMap.entrySet().iterator(); i.hasNext(); ) {
     		Map.Entry/*<Vector<Integer>, R>*/ e = (Map.Entry) i.next();
-    		t.set(getIndex((Vector)e.getKey()), (Arithmetic) e.getValue());
+    		t.set(ArithmeticMultivariatePolynomial.convertIndex((Arithmetic)e.getKey()), (Arithmetic) e.getValue());
     	}
     	validate(t, dim);
     	assert sameContent(t, indexCoefficientMap) : "identical content mapping from map " + indexCoefficientMap + " to tensor " + t;
@@ -335,7 +335,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
 		}
 		for (Iterator i = indexCoefficientMap.entrySet().iterator(); i.hasNext(); ) {
 			Map.Entry e = (Map.Entry) i.next();
-			assert e.getValue().equals(t.get(getIndex((Vector)e.getKey()))) : "value from map " + e.getValue() + " identical to value in tensor " + t.get(getIndex((Vector)e.getKey())) + " at " + e.getKey();
+			assert e.getValue().equals(t.get(ArithmeticMultivariatePolynomial.convertIndex((Arithmetic)e.getKey()))) : "value from map " + e.getValue() + " identical to value in tensor " + t.get(ArithmeticMultivariatePolynomial.convertIndex((Arithmetic)e.getKey())) + " at " + e.getKey();
 		}
 	    return true;
     }
@@ -371,13 +371,6 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
         return dim;
     }
     
-    private static final int[] getIndex(Vector/*<Integer>*/ v) {
-    	int[] d = new int[v.dimension()];
-    	for (int i = 0; i < d.length; i++) {
-    		d[i] = ((Integer)v.get(i)).intValue();
-    	}
-    	return d;
-    }
 
     public Tensor newInstance(int[] dimensions) {
         // tensors of rank 1 or rank 2 are converted to vectors or matrices
@@ -458,12 +451,32 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
 
     public /*<R extends Arithmetic>*/ Tensor/*<R>*/ asTensor(Polynomial/*<R,Vector<Integer>>*/ p) {
         if (p instanceof UnivariatePolynomial) {
-                return ((UnivariatePolynomial)p).getCoefficientVector();
+            Tensor v = ((UnivariatePolynomial)p).getCoefficientVector();
+            assert checkTensor(p, v);
+            return v;
         } else if (p instanceof AbstractPolynomial) {
-            return ((AbstractPolynomial)p).tensorViewOfCoefficients();
+            Tensor t = ((AbstractPolynomial)p).tensorViewOfCoefficients();
+            assert checkTensor(p, t);
+            return t;
         } else {
         	throw new IllegalArgumentException("Unknown type " + p.getClass() + " in " + p);
         }
+    }
+    private final boolean checkTensor(Polynomial p, Tensor t) {
+    	assert t.rank() == p.rank() : "asTensor preserves rank() " + p.rank() + " = " + t.rank() + " for " + p + "@" + p.getClass();
+    	for (Iterator k = t.entries(); k.hasNext(); ) {
+    		KeyValuePair e = (KeyValuePair) k.next();
+    		Vector i = (Vector)e.getKey();
+    		assert e.getValue().equals(t.get(ArithmeticMultivariatePolynomial.convertIndex(i))) : "entries() of tensor correspond to get(): " + e.getValue() + " =  " + t.get(ArithmeticMultivariatePolynomial.convertIndex(i));
+    		assert t.get(ArithmeticMultivariatePolynomial.convertIndex(i)).equals(p.get(i)) : "tensor.get corresponds to polynomial.get(): " + t.get(ArithmeticMultivariatePolynomial.convertIndex(i)) + " = " + p.get(i);
+    	}
+    	for (Iterator k = p.monomials(); k.hasNext(); ) {
+    		KeyValuePair e = (KeyValuePair) k.next();
+    		Vector i = getExponentVector(e.getKey());
+    		assert e.getValue().equals(p.get((Arithmetic) e.getKey())) : "monomials() of polynomial correspond to get(): " + e.getValue() + " =  " + p.get((Arithmetic) e.getKey());
+    		assert p.get(i).equals(t.get(ArithmeticMultivariatePolynomial.convertIndex(i))) : "polynomial.get corresponds to tensor.get(): " + p.get(i) + " = " + t.get(ArithmeticMultivariatePolynomial.convertIndex(i));
+    	}
+    	return true;
     }
 
     public /*<R extends Arithmetic, S extends Arithmetic>*/ Polynomial/*<R,S>*/ constant(Polynomial/*<R,S>*/ p) {

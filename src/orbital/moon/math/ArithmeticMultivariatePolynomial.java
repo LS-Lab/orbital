@@ -132,6 +132,8 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/
      * Converts an index (exponent) from Vector<Integer> to int[].
      */
     static final int[] convertIndex(Arithmetic indexAsVector) {
+    	if (!(indexAsVector instanceof Vector))
+    		throw new IllegalArgumentException("Unknown index format " + indexAsVector + " of " + indexAsVector.getClass());
         Vector/*<Integer>*/ index = (Vector) indexAsVector;
         int[] i = new int[index.dimension()];
         for (int k = 0; k < i.length; k++)

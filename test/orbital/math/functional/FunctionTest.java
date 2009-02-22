@@ -1125,7 +1125,8 @@ public class FunctionTest extends check.TestCase {
 
 
 	public void testndSolve() throws MathLinkException, ExprFormatException {
-		createMathLink();       
+		createMathLink();    
+		assertTrue(false, "test disabled temporarily");
 		try {
 			Real tau;
 			Real eta;
@@ -1320,7 +1321,7 @@ public class FunctionTest extends check.TestCase {
                         i.set(randomArgument(vf, min, max, testType));
                 }
                 Polynomial p = vf.asPolynomial(x);
-                checkArithmetic(p);
+                AlgebraicAlgorithmsTest.checkPolynomial(vf, p);
                 return p;
         }
 
@@ -1328,6 +1329,8 @@ public class FunctionTest extends check.TestCase {
          * Checks several algebraic properties and relations of an arithmetic object.
          */
         protected boolean checkArithmetic(Arithmetic x) {
+        	if (x instanceof Polynomial)
+        		return AlgebraicAlgorithmsTest.checkPolynomial(vf, (Polynomial)x);
 			return ArithmeticTest.checkArithmetic(vf, x, false);
 		}
         protected final Predicate checkAlgebraic = new Predicate() {
