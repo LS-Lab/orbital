@@ -109,6 +109,12 @@ abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*
         return ((Polynomial)productObject).iterator();
     }
 
+    /**
+     * Get a tensor view of the coefficients.
+     * @xxx somehow get rid of this trick
+     */
+    abstract Tensor tensorViewOfCoefficients();
+
     
     /**
      * Evaluate this polynomial at <var>a</var>.

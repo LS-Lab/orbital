@@ -8,6 +8,8 @@ package orbital.math;
 
 import java.awt.Dimension;
 import java.text.ParseException;
+import java.util.Map;
+
 import orbital.logic.functor.Function;
 
 /**
@@ -418,6 +420,22 @@ public interface ValueFactory {
     Tensor tensor(Object values);
     
     /**
+     * Returns a tensor of rank k containing the specified (partial) map from index to arithmetic object.
+     * <p>
+     * Note that the resulting tensor may or may not be backed by the
+     * specified array.
+     * </p>
+     * <p>
+     * Tensors of type {@link Vector}, and {@link Matrix} are returned for tensors of rank 1 or 2.
+     * </p>
+     * @param indexCoefficientMap a map mapping index to element value.
+     * @preconditions keys in indexCoefficientMap are compatible
+     * @return the tensor (<var>a</var><sub>i</sub>)<sub>i</sub> according to the indices i and elements a<sub>i</sub> in the indexCoefficientMap.
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
+     */
+    /*_<R extends Arithmetic>_*/ Tensor/*_<R>_*/ tensor(Map/*<Vector<Integer>, R>*/ indexCoefficientMap);
+
+    /**
      * Creates a new instance of tensor with the specified dimensions.
      * <p>
      * Tensors of type {@link Vector}, and {@link Matrix} are returned for tensors of rank 1 or 2.
@@ -471,7 +489,24 @@ public interface ValueFactory {
      * @return the polynomial <var>a</var><sub>0,...,0</sub> + <var>a</var><sub>1,0,...,0</sub>X<sub>1</sub> + <var>a</var><sub>1,1,0,....,0</sub>X<sub>1</sub>X<sub>2</sub> + ... + <var>a</var><sub>2,1,0,....,0</sub>X<sub>1</sub><sup>2</sup>X<sub>2</sub> + ... + <var>a</var><sub>d<sub>1</sub>,...,d<sub>n</sub></sub>X<sub>1</sub><sup>d<sub>1</sub></sup>...&X<sub>n</sub><sup>d<sub>n</sub></sup>.
      * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
      */
-    /*_<R extends Arithmetic>_*/ Polynomial/*_<R>_*/ polynomial(Object coefficients);
+    /*_<R extends Arithmetic, S extends Arithmetic>_*/ Polynomial/*_<R,S>_*/ polynomial(Object coefficients);
+
+    /**
+     * Returns a polynomial with the specified (partial) coefficient map.
+     * <p>
+     * Note that the resulting polynomial may or may not be backed by the
+     * specified map.
+     * </p>
+     * <p>
+     * Polynomials of type {@link UnivariatePolynomial}, are returned for
+     * polynomials in one variable.
+     * </p>
+     * @param exponentCoefficientMap a map mapping exponent to coefficient.
+     * @preconditions keys in exponentCoefficientMap are compatible
+     * @return the polynomial <var>a</var><sub>i</sub>X<sup>i</sup> according to the indices i and coefficients a<sub>i</sub> in the exponentCoefficientMap.
+     * @see <a href="{@docRoot}/Patterns/Design/Facade.html">Facade (method)</a>
+     */
+    /*_<R extends Arithmetic, S extends Arithmetic>_*/ Polynomial/*_<R,S>_*/ polynomial(Map/*<S, R>*/ exponentCoefficientMap);
 
     /**
      * Returns a polynomial view of a tensor.

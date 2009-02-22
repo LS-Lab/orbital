@@ -90,13 +90,8 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
      */
     protected abstract int[] dimensions();
 
-    /**
-     * Get a tensor view of the coefficients.
-     * @xxx somehow get rid of this trick
-     */
-    abstract Tensor tensorViewOfCoefficients();
-
     protected abstract Arithmetic get(int[] i);
+ 
     /**
      * Sets a value for the coefficient specified by index.
      * @preconditions i&isin;<b>N</b><sup>n</sup>
