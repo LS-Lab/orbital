@@ -7,7 +7,6 @@
 package orbital.math;
 
 import java.util.*;
-import orbital.math.functional.Operations;
 import orbital.math.functional.*;
 import junit.framework.*;
 import junit.extensions.*;
@@ -287,4 +286,31 @@ public class AlgebraicAlgorithmsTest extends check.TestCase {
         System.out.println("  solution at " + t + " is " + f.apply(t));
 
     }
+    
+    /**
+     * Check properties of polynomials
+     */
+    public static boolean checkPolynomial(ValueFactory vf, Polynomial p) {
+    	ArithmeticTest.checkArithmetic(vf, p, false);
+    	Integer deg = p.degree();
+       	int[] degs = p.degrees();
+        for (Iterator k = p.indices(); k.hasNext(); ) {
+        	Vector i = getExponentVector(k.next());
+        	for (int j = 0; j < i.dimension(); j++) {
+        		assertTrue(((Integer)i.get(j)).compareTo(vf.valueOf(degs[j])) <= 0, "exponents in indices() <= degrees(): " + i + " <= " + MathUtilities.format(degs));
+        	}
+    		assertTrue(((Integer)Operations.sum.apply(i)).compareTo(deg) <= 0, "sum of exponents in indices() <= degree(): " + i + " <= " + deg);
+        }
+    	return true;
+    }
+	protected static Vector/*<Integer>*/ getExponentVector(Object m) {
+	    if (m instanceof Vector) {
+	            return (Vector)m;
+	    } else if (m instanceof Integer) {
+	            // univariate case
+	            return ((Arithmetic)m).valueFactory().valueOf(new Integer[] {(Integer)m});
+	    } else {
+	            throw new ClassCastException("Cannot convert exponent representation into Vector<Integer> from " + m);
+	    }
+	}
 }

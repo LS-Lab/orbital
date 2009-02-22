@@ -32,6 +32,7 @@ import java.util.ListIterator;
 import java.util.Arrays;
 import java.util.Map;
 
+import orbital.util.KeyValuePair;
 import orbital.util.Setops;
 import orbital.util.Utility;
 
@@ -315,10 +316,32 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
     		Map.Entry/*<Vector<Integer>, R>*/ e = (Map.Entry) i.next();
     		t.set(getIndex((Vector)e.getKey()), (Arithmetic) e.getValue());
     	}
-    	return validate(t, dim);
+    	validate(t, dim);
+    	assert sameContent(t, indexCoefficientMap) : "identical content mapping from map " + indexCoefficientMap + " to tensor " + t;
+    	return t;
     }
     
-    /**
+    private static final boolean sameContent(Tensor t, Map indexCoefficientMap) {
+		for (Iterator i = t.entries(); i.hasNext(); ) {
+			KeyValuePair p = (KeyValuePair) i.next();
+			Arithmetic vi = (Arithmetic) p.getValue();
+			if (vi.isZero()) {
+				if (indexCoefficientMap.containsKey(p.getKey())) {
+					assert ((Arithmetic)indexCoefficientMap.get(p.getKey())).isZero() : "zeros only come from (missing entries or) explicit zeros at " + p.getKey();
+				}
+			} else {
+				assert vi.equals(indexCoefficientMap.get(p.getKey())) : "identical values in tensor " + vi + " = " + indexCoefficientMap.get(p.getKey()) + " from map at " + p.getKey();
+			}
+		}
+		for (Iterator i = indexCoefficientMap.entrySet().iterator(); i.hasNext(); ) {
+			Map.Entry e = (Map.Entry) i.next();
+			assert e.getValue().equals(t.get(getIndex((Vector)e.getKey()))) : "value from map " + e.getValue() + " identical to value in tensor " + t.get(getIndex((Vector)e.getKey())) + " at " + e.getKey();
+		}
+	    return true;
+    }
+
+
+	/**
      * Obtain the dimensions of a partial index-coefficient map.
      * @param indexCoefficientMap
      * @return
@@ -445,7 +468,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
 
     public /*<R extends Arithmetic, S extends Arithmetic>*/ Polynomial/*<R,S>*/ constant(Polynomial/*<R,S>*/ p) {
         // Polynomials are currently unmodifiable anyhow.
-        //@xxx except via iterator()
+        //@xxx except via iterator() and asTensor
         return p;
     }
 

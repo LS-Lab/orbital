@@ -179,9 +179,14 @@ public class FunctionTest extends check.TestCase {
         public void test_calc_divide() {
                 testCalculations("Divide",    Operations.divide, MIN, MAX, TYPE_REAL | TYPE_COMPLEX, scalarTypes);
         }
-        public void test_calc_power_specific() {
+        public void test_calc_power_specific839() {
             assertTrue(vf.valueOf(new BigInteger("-839")).power(vf.valueOf(new BigInteger("13"))).equals(vf.valueOf(new BigInteger("-102071733558600433817286813640088718119"))), "(-839)^13=-102071733558600433817286813640088718119");
             assertTrue(vf.valueOf(new BigInteger("-839")).power(vf.valueOf(new BigInteger("-13"))).equals(vf.rational(vf.MINUS_ONE(),vf.valueOf(new BigInteger("102071733558600433817286813640088718119")))), "(-839)^(-13)=-1/102071733558600433817286813640088718119");
+        }
+        public void test_calc_power_specific235() {
+            assertTrue(vf.valueOf(new BigInteger("235")).power(vf.valueOf(new BigInteger("114"))).equals(vf.valueOf(new BigInteger("2003255293326170173089299143840932011646545098342714282893392324739078765198952834874440764945327478470048084145538180664013906365890861937246340933665952330664018713980720474439622253242153397644743292466731942248689689499703916499007139151444789604283869266510009765625"))), "235^114=2003255293326170173089299143840932011646545098342714282893392324739078765198952834874440764945327478470048084145538180664013906365890861937246340933665952330664018713980720474439622253242153397644743292466731942248689689499703916499007139151444789604283869266510009765625");            
+        }
+        public void test_calc_power_specific494() {
             assertTrue(vf.valueOf(new BigInteger("-494")).power(vf.valueOf(new BigInteger("309"))).equals(vf.valueOf(new BigInteger(
             		"-229946719102371565447710703498387918803239577351487409836368736245893"+
             		"3912782459831068926129255046599887644457751487170699209127627018974235"+
@@ -469,7 +474,7 @@ public class FunctionTest extends check.TestCase {
                         System.out.println(mresult);
                         final Complex jresult = (Complex) jFunction.apply(x);
                         System.out.println(jFunctionCall + " = " + jresult);
-                        checkAlgebraic(jresult);
+                        checkArithmetic(jresult);
                         boolean isSuccessful = jresult.equals(mresult, tolerance);
                         assertTrue(isSuccessful , mFunctionCall + " = " + mresult + " != " + jFunctionCall + "@" + x.getClass() + " = " + jresult + "@" + jresult.getClass() + "\tdelta=" + jresult.subtract(mresult));
                 } catch (MathLinkException ex) {
@@ -597,7 +602,7 @@ public class FunctionTest extends check.TestCase {
                         System.out.println(mresult);
                         final Complex jresult = (Complex) jFunction.apply(x, y);
                         System.out.println(jFunctionCall + " = " + jresult);
-                        checkAlgebraic(jresult);
+                        checkArithmetic(jresult);
                         boolean isSuccessful = jresult.equals(mresult, tolerance);
                         assertTrue(isSuccessful , mFunctionCall + " = " + mresult + " != " + jFunctionCall + " = " + jresult + "\tdelta=" + jresult.subtract(mresult));
                 }
@@ -732,7 +737,7 @@ public class FunctionTest extends check.TestCase {
                         Polynomial f = polyArgument(vf, MIN, MAX, testType, vars, DEG);
                         System.out.println("Check member " + f);
                         Polynomial r = AlgebraicAlgorithms.reduce(f, GB, monomialOrder);
-                        checkAlgebraic(r);
+                        checkArithmetic(r);
                         String query = "FullSimplify[PolynomialReduce[" + f + ",GroebnerBasis[" + listForm(g) + "," + varlist + ", MonomialOrder->" + mmonorder + "], " + varlist + ", MonomialOrder->" + mmonorder + "][[2]] == " + r + "]";
                         String res = ml.evaluateToInputForm(query, 80);
                         assertTrue("True".equals(res), "Same residue for each Groebner Basis " + query );
@@ -1253,7 +1258,7 @@ public class FunctionTest extends check.TestCase {
          */
         private Arithmetic randomArgument(ValueFactory vf, double min, double max, int testType) {
         	Arithmetic x = randomArgumentImpl(vf, min, max, testType);
-        	checkAlgebraic(x);
+        	checkArithmetic(x);
         	return x;
         }
         private Arithmetic randomArgumentImpl(ValueFactory vf, double min, double max, int testType) {
@@ -1295,7 +1300,7 @@ public class FunctionTest extends check.TestCase {
                 for (int i = 0; i < dim.height; i++)
                         for (int j = 0; j < dim.width; j++)
                                 x.set(i,j, randomArgument(vf, min, max, testType));
-                checkAlgebraic(x);
+                checkArithmetic(x);
                 return x;
         }
         private Vector vectorArgument(ValueFactory vf, double min, double max, int testType, int dim) {
@@ -1315,40 +1320,20 @@ public class FunctionTest extends check.TestCase {
                         i.set(randomArgument(vf, min, max, testType));
                 }
                 Polynomial p = vf.asPolynomial(x);
-                checkAlgebraic(p);
+                checkArithmetic(p);
                 return p;
         }
 
         /**
          * Checks several algebraic properties and relations of an arithmetic object.
          */
-        protected boolean checkAlgebraic(Arithmetic x) {
-        	if (x instanceof Symbol)
-        		return true;
-        	assertTrue(x.zero().isZero(), "the zero " + x.zero() + " of " + x + " is zero");
-        	assertTrue(x.one().isOne(), "the one " + x.one() + " of " + x + " is one");
-			assertTrue(x.add(x.minus()).isZero(), "(" + x + ") + -(" + x + ") is zero");
-			assertTrue(x.add(x.minus()).equals(x.zero()), "(" + x + ") + -(" + x + ") = " + x.zero());
-			assertTrue(x.subtract(x).isZero(), "(" + x + ") - (" + x + ") is zero");
-			assertTrue(x.subtract(x).equals(x.zero()), "(" + x + ") - (" + x + ") = " + x.zero());
-			assertTrue(x.add(x.zero()).equals(x), "(" + x + ") + (" + x.zero() + ") = " + x);
-			assertTrue(x.subtract(x.zero()).equals(x), "(" + x + ") - (" + x.zero() + ") = " + x);
-			assertTrue(x.zero().subtract(x).equals(x.minus()), "(" + x.zero() + ") - (" + x + ") = " + x.minus());
-			assertTrue(x.zero().add(x).equals(x), "(" + x.zero() + ") + (" + x + ") = " + x);
-			assertTrue(x.multiply(x.one()).equals(x), "(" + x + ") * (" + x.one() + ") = " + x);
-			assertTrue(x.multiply(x.one().minus()).equals(x.minus()), "(" + x + ") * (" + x.one().minus() + ") = " + x.minus());
-			assertTrue(x.multiply(x.zero()).isZero(), "(" + x + ") * (" + x.zero() + ") is zero");
-			assertTrue(x.multiply(x.zero()).equals(x.zero()), "(" + x + ") * (" + x.zero() + ") = " + x.zero());
-			assertTrue(x.one().multiply(x).equals(x), "(" + x.one() + ") * (" + x + ") = " + x);
-			assertTrue(x.one().minus().multiply(x).equals(x.minus()), "(" + x.one().minus() + ") * (" + x + ") = " + x.minus());
-			assertTrue(x.one().multiply(x).subtract(x).isZero(), "(" + x.one() + ") * (" + x + ") - " + x + " is zero");
-			assertTrue(x.one().multiply(x).subtract(x).equals(x.zero()), "(" + x.one() + ") * (" + x + ") - " + x + " = " + x.zero());
-			return true;
+        protected boolean checkArithmetic(Arithmetic x) {
+			return ArithmeticTest.checkArithmetic(vf, x, false);
 		}
         protected final Predicate checkAlgebraic = new Predicate() {
 
 			public boolean apply(Object arg) {
-				return checkAlgebraic((Arithmetic)arg);
+				return checkArithmetic((Arithmetic)arg);
 			}
         	
         };
