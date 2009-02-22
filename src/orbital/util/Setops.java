@@ -6,6 +6,7 @@
 
 package orbital.util;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 import java.util.SortedSet;
@@ -308,6 +309,9 @@ public final class Setops {
     } 
     public static /*<A>*/ SortedSet/*<A>*/ union(SortedSet/*<A>*/ a, SortedSet/*<A>*/ b) {
         return (SortedSet/*<A>*/) union((Collection/*<A>*/) a, (Collection/*<A>*/) b);
+    } 
+    public static /*<A>*/ Iterator/*<A>*/ union(Iterator/*<A>*/ a, Iterator/*<A>*/ b) {
+        return new SequenceIterator(Arrays.asList(new Iterator[] {a, b}));
     } 
 
     

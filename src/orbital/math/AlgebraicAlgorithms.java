@@ -664,11 +664,11 @@ public final class AlgebraicAlgorithms {
     	 */
     	private final boolean symbolicg;
         private final Function/*<Polynomial<R,S>,Polynomial<R,S>>*/ elementaryReduce;
-        public ReductionFunction(Collection/*<Polynomial<R,S>>*/ g, Comparator/*<S>*/ newmonomialOrder) {
+        public ReductionFunction(final Collection/*<Polynomial<R,S>>*/ g, Comparator/*<S>*/ newmonomialOrder) {
             if (!Setops.all(g, Functionals.bindSecond(Utility.instanceOf, Polynomial.class))) {
                 throw new IllegalArgumentException("prerequisite failed: " + "collection<" + Polynomial.class.getName() + "> expected, found violation " + Setops.find(g, Functionals.not(Functionals.bindSecond(Utility.instanceOf, Polynomial.class))) + " in "+ g);
             }
-            this.g = g;
+            this.g = Collections.unmodifiableCollection(g);
     		this.symbolicg = !Setops.some(g, Arithmetic.numerical);
             this.monomialOrder = newmonomialOrder;
             this.inducedOrder = INDUCED(monomialOrder);
@@ -781,11 +781,11 @@ public final class AlgebraicAlgorithms {
     	 * Caches whether any g polynomial is numerical
     	 */
     	private final boolean symbolicg;
-    	public ReductionFunctionFast(Collection/*<Polynomial<R,S>>*/ g, Comparator/*<S>*/ newmonomialOrder) {
+    	public ReductionFunctionFast(final Collection/*<Polynomial<R,S>>*/ g, Comparator/*<S>*/ newmonomialOrder) {
     		if (!Setops.all(g, Functionals.bindSecond(Utility.instanceOf, Polynomial.class))) {
     			throw new IllegalArgumentException("prerequisite failed: " + "collection<" + Polynomial.class.getName() + "> expected, found violation " + Setops.find(g, Functionals.not(Functionals.bindSecond(Utility.instanceOf, Polynomial.class))) + " in "+ g);
     		}
-    		this.g = g;
+    		this.g = Collections.unmodifiableCollection(g);
     		this.symbolicg = !Setops.some(g, Arithmetic.numerical);
     		this.monomialOrder = newmonomialOrder;
     		this.inducedOrder = INDUCED(monomialOrder);
@@ -809,7 +809,7 @@ public final class AlgebraicAlgorithms {
     	public int hashCode() {
     		return Utility.hashCode(g) ^ Utility.hashCode(monomialOrder);
     	}
-    	public Object/*>Polynomial<R,S><*/ apply(Object/*>Polynomial<R,S><*/ o) {
+    	public Object/*>Polynomial<R,S><*/ apply(final Object/*>Polynomial<R,S><*/ o) {
     		logger.log(Level.FINEST, "reducing {0} with respect to {1} ...", new Object[] {o, g});
     		if (g.isEmpty()) {
     			return o;
@@ -970,16 +970,16 @@ public final class AlgebraicAlgorithms {
      */
     public static final /*<R extends Arithmetic, S extends Arithmetic>*/
         Set/*<Polynomial<R,S>>*/ groebnerBasis(Set/*<Polynomial<R,S>>*/ g, final Comparator/*<S>*/ monomialOrder) {
-        if (g.isEmpty()) {
-                return Collections.EMPTY_SET;
-        } else {
-                if (g.contains(((Polynomial)g.iterator().next()).zero())) {
-                        g = new LinkedHashSet(g);
-                        g.remove(((Polynomial)g.iterator().next()).zero());
-                if (g.isEmpty()) {
-                        return Collections.EMPTY_SET;
-                }
-                }
+    	if (g.isEmpty()) {
+    		return Collections.EMPTY_SET;
+    	} else {
+    		if (g.contains(((Polynomial)g.iterator().next()).zero())) {
+    			g = new LinkedHashSet(g);
+    			g.remove(((Polynomial)g.iterator().next()).zero());
+    			if (g.isEmpty()) {
+    				return Collections.EMPTY_SET;
+    			}
+    		}
         }
         logger.log(Level.FINE, "Computing Groebner Basis of {0} with respect to {1}", new Object[] {g, monomialOrder});
         Set/*<Polynomial<R,S>>*/ rgb = groebnerBasisImpl(g, monomialOrder);

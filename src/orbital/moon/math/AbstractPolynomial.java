@@ -209,6 +209,6 @@ abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*
      * return an iterator over all indices occurring in either polynomial.
      */
     private static final Iterator combinedIndices(Polynomial f, Polynomial g) {
-        return Setops.union(Setops.asList(f.indices()), Setops.asList(g.indices())).iterator();
+        return Setops.union(Setops.asSet(f.indices()), Setops.asSet(g.indices())).iterator();
     }
 }
