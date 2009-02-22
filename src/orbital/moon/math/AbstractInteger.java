@@ -49,7 +49,10 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
     public Arithmetic power(Arithmetic b) {
         if (b instanceof Integer)
             //@xxx due to newly compiler error (bug?): call Rational Rational.power(Integer) or Rational Integer.power(Rational)? or Rational Integer.power(Integer)?
-            return ((Integer)this).power((Integer) b);
+            return power((Integer) b);
+        else if (b instanceof Rational)
+            //@xxx due to newly compiler error (bug?): call Rational Rational.power(Integer) or Rational Integer.power(Rational)? or Rational Integer.power(Integer)?
+            return power((Rational) b);
         return (Arithmetic) Operations.power.apply(this, b);
     } 
     public Real power(Rational b) {
@@ -58,6 +61,8 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
         else
             throw new UnsupportedOperationException("This subclass should overwrite power(Rational) correspondingly " + getClass() + " for " + this + "^" + b);
     }
+    
+    public abstract Rational power(Integer b);
 
     // overwrite rational
     public final Integer numerator() {

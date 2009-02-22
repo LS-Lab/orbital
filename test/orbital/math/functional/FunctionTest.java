@@ -287,7 +287,7 @@ public class FunctionTest extends check.TestCase {
 
             ml.evaluate("2+2*(I+1)");
             ml.waitForAnswer();
-            Complex result2 = ((ComplexAdapter) ml.getComplex()).getValue();
+            Complex result2 = getResult(ml);
             System.out.println("2 + 2*(I+1) = " + result2 + "\t" + result2.getClass());
                         
             final double MIN = -1000;
@@ -310,12 +310,15 @@ public class FunctionTest extends check.TestCase {
         } catch (MathLinkException ex) {
             System.out.println();
             throw (RuntimeException) new RuntimeException("MathLinkException occurred: " + ex).initCause(ex);
+        } catch (ExprFormatException ex) {
+            System.out.println();
+            throw (RuntimeException) new RuntimeException("MathLinkException occurred: " + ex).initCause(ex);
         }
         finally {
             closeMathLink();
         }
     }
-        
+
     private void testCalculations(String mFunction, Function jFunction, double min, double max, int testType, int componentType) {
         createMathLink();
         TYPE_DEFAULT = TYPE_INTEGER | /*TYPE_RATIONAL|*/ TYPE_REAL | TYPE_COMPLEX;
@@ -328,7 +331,7 @@ public class FunctionTest extends check.TestCase {
 
             ml.evaluate("2+2*(I+1)");
             ml.waitForAnswer();
-            Complex result2 = ((ComplexAdapter) ml.getComplex()).getValue();
+            Complex result2 = getResult(ml);
             System.out.println("2 + 2*(I+1) = " + result2 + "\t" + result2.getClass());
                         
             final double MIN = -1000;
@@ -349,6 +352,9 @@ public class FunctionTest extends check.TestCase {
             System.out.println();
             System.out.println("PASSED");
         } catch (MathLinkException ex) {
+            System.out.println();
+            throw (RuntimeException) new RuntimeException("MathLinkException occurred: " + ex).initCause(ex);
+        } catch (ExprFormatException ex) {
             System.out.println();
             throw (RuntimeException) new RuntimeException("MathLinkException occurred: " + ex).initCause(ex);
         }
@@ -414,7 +420,7 @@ public class FunctionTest extends check.TestCase {
                    mresult = vf.INFINITY();
                    ml.discardAnswer();
                } else {
-                   mresult = ((ComplexAdapter) ml.getComplex()).getValue();
+                   mresult = getResult(ml);
                }
             } else {
                 // don't know what to do with non-number, assume true
@@ -423,6 +429,11 @@ public class FunctionTest extends check.TestCase {
                 return;
             }
         } catch(MathLinkException ignore) {
+            // assume success
+            System.out.println("FunctionTest doesn't understand " + mresult);
+            ml.newPacket();
+            return;
+        } catch (ExprFormatException ex) {
             // assume success
             System.out.println("FunctionTest doesn't understand " + mresult);
             ml.newPacket();
@@ -553,7 +564,8 @@ public class FunctionTest extends check.TestCase {
             ml.evaluate("N[" + mFunctionCall + "]");
             ml.waitForAnswer();
             System.out.print(mFunctionCall + " = ");
-            final Complex mresult = ((ComplexAdapter) ml.getComplex()).getValue();
+            //@xxx built-in loss of precision
+            final Complex mresult = getResult(ml);
             System.out.println(mresult);
             final Complex jresult = (Complex) jFunction.apply(x, y);
             System.out.println(jFunctionCall + " = " + jresult);
@@ -563,6 +575,9 @@ public class FunctionTest extends check.TestCase {
         catch (MathLinkException e) {
             if (!"machine number overflow".equals(e.getMessage()))
                 throw new MathLinkException(e, "Comparing " + mFunction + " and " + jFunction + " on " + x + " and " + y + "  could not evaluate " + e);
+        }
+        catch (ExprFormatException e) {
+            throw new MathLinkException(e, "Comparing " + mFunction + " and " + jFunction + " on " + x + " and " + y + "  could not evaluate " + e);
         }
     }
 
@@ -1073,7 +1088,7 @@ public class FunctionTest extends check.TestCase {
     }
     
 
-    public void testndSolve() throws MathLinkException {
+    public void testndSolve() throws MathLinkException, ExprFormatException {
         createMathLink();       
         try {
             Real tau;
@@ -1116,6 +1131,10 @@ public class FunctionTest extends check.TestCase {
             if (!"machine number overflow".equals(e.getMessage()))
                 throw e;
         }
+        catch (ExprFormatException e) {
+            if (!"machine number overflow".equals(e.getMessage()))
+                throw e;
+        }
         finally {
             closeMathLink();
         }
@@ -1142,7 +1161,7 @@ public class FunctionTest extends check.TestCase {
     }
     protected void checkndSolve(ValueFactory vf, orbital.math.functional.BinaryFunction/*<Real,Vector<Real>>*/ f, Real tau, Real eta,
                                 Real min, Real max,
-                                int steps) throws MathLinkException {
+                                int steps) throws MathLinkException, ExprFormatException {
         final Real tolerance = vf.valueOf(0.01);
         final Symbol y = vf.symbol("y");
         final Symbol t = vf.symbol("t");
@@ -1174,7 +1193,7 @@ public class FunctionTest extends check.TestCase {
                 ml.newPacket();
                 ml.evaluate(y + "[" + r + "]" + "/. " + node + "[[1]]");
                 ml.waitForAnswer();
-                final Complex mresult = ((ComplexAdapter) ml.getComplex()).getValue();
+                final Complex mresult = getResult(ml);
                 ml.newPacket();
                 // accept tolerance percent of mresult deviation
                 boolean isSuccessful = jresult.equals(mresult, tolerance.multiply(mresult.norm()));
@@ -1270,8 +1289,24 @@ public class FunctionTest extends check.TestCase {
     
     // Helpers
 
-    /**
+	private Complex getResult(MathLink ml) throws MathLinkException, ExprFormatException {
+		Expr e = ml.getExpr();
+		if (e.integerQ()) { //(ml.getType() == MathLink.MLTKINT) {
+			return vf.valueOf(e.asBigInteger());
+		} else if (e.realQ()) { //(ml.getType() == MathLink.MLTKINT) {
+			return vf.valueOf(e.asBigDecimal());
+		} else if (e.complexQ()) {
+			// because of a flaw in the MathLink design, we can lose to double precision here
+			return vf.complex(e.re(), e.im());
+		} else
+			throw new IllegalStateException("Cannot understand as number: " + e);
+		//return ((ComplexAdapter) ml.getComplex()).getValue();
+	}
+        
+
+	/**
      * Adapter class between orbital.math.* and J/Link.
+     * J/Link has a built in loss of precision that we are facing here: ONLY DOUBLE PRECISION SUPPORTED!
      * @structure delegate value:Complex
      */
     public static class ComplexAdapter {
