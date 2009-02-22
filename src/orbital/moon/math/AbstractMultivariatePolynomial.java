@@ -66,7 +66,7 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
             assert eq == eq2 : "fast and full equality yield same result: " +  eq + " and " + eq2 + " for " + this + " and " + b;
             return eq;
         } else if (o instanceof Polynomial) {
-        	return super.equals((Polynomial)o);
+                return super.equals((Polynomial)o);
         }
         return false;
     }
@@ -375,7 +375,7 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
 
     
     public Arithmetic zero() {
-        int[] dim = new int[((Integer)indexSet()).intValue()];
+        int[] dim = new int[rank()];
         Arrays.fill(dim, 1);
         AbstractMultivariatePolynomial r = (AbstractMultivariatePolynomial)newInstance(dim);
         r.set(CONSTANT_TERM, get(CONSTANT_TERM).zero());
@@ -383,7 +383,7 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
     }
 
     public Arithmetic one() {
-        int[] dim = new int[((Integer)indexSet()).intValue()];
+        int[] dim = new int[rank()];
         Arrays.fill(dim, 1);
         AbstractMultivariatePolynomial r = (AbstractMultivariatePolynomial)newInstance(dim);
         r.set(CONSTANT_TERM, get(CONSTANT_TERM).one());
@@ -392,7 +392,7 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
 
     //@todo we should also support adding other functions (like in AbstractFunctor)?
 
-    protected Arithmetic operatorImpl(BinaryFunction op, Arithmetic bb) {
+    protected Arithmetic operatorImpl(orbital.math.functional.BinaryFunction op, Arithmetic bb) {
         // only cast since Polynomial does not (yet?) have iterator(int[])
         AbstractMultivariatePolynomial b = (AbstractMultivariatePolynomial)bb;
         if (!indexSet().equals(b.indexSet()))
@@ -401,10 +401,14 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
         AbstractMultivariatePolynomial/*>T<*/ ret = (AbstractMultivariatePolynomial)newInstance(d);
 
         // component-wise
-        ListIterator dst;
-        Setops.copy(dst = ret.iterator(d), Functionals.map(op, iterator(d), b.iterator(d)));
-        assert !dst.hasNext() : "equal dimensions for iterator view implies equal structure of iterators";
-        return ret;
+        try {
+        	ListIterator dst;
+        	Setops.copy(dst = ret.iterator(d), Functionals.map(op, iterator(d), b.iterator(d)));
+        	assert !dst.hasNext() : "equal dimensions for iterator view implies equal structure of iterators";
+        	return ret;
+        } catch (IndexOutOfBoundsException ex) {
+        	throw (IndexOutOfBoundsException) new IndexOutOfBoundsException(ex + " during a" + op + "b with productIndexSet()  " + productIndexSet(this) + " and " + productIndexSet(b) + " of " + this + "@" + getClass() + " and " + b + "@" + b.getClass()).initCause(ex);
+        }
     }
     
     //@todo optimizable by far, but already optimized super.multiply

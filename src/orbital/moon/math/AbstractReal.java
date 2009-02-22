@@ -581,13 +581,13 @@ abstract class AbstractReal extends AbstractComplex implements Real {
                     return valueFactory().valueOf(Math.pow(ArithmeticValuesImpl.doubleValueExact((Real)this), ArithmeticValuesImpl.doubleValueExact(b)));
                 } catch(ArithmeticException ex) {
                     if (isOne()) {
-                    	return (Real)one();
+                        return (Real)one();
                     } else if (isZero()) {
-                    	if (b.compareTo(b.zero()) > 0) {
-                      	    return (Real)zero();
-                    	} else {
-                    		throw new ArithmeticException("possibly undefined: " + this + " ^ " + b);
-                    	}
+                        if (b.compareTo(b.zero()) > 0) {
+                            return (Real)zero();
+                        } else {
+                                throw new ArithmeticException("possibly undefined: " + this + " ^ " + b);
+                        }
                     } else
                         throw (ArithmeticException) new ArithmeticException("exponentation is possibly too big: " + this + " ^ " + b + " where " + (b.isZero() ? "zero" : "non-zero")).initCause(ex);
                 }
@@ -598,13 +598,13 @@ abstract class AbstractReal extends AbstractComplex implements Real {
                 return new Big(getValue().pow(ArithmeticValuesImpl.intValueExact(b)), valueFactory());
             } catch(ArithmeticException ex) {
                 if (isOne()) {
-                	return (Real)one();
+                        return (Real)one();
                 } else if (isZero()) {
-                	if (b.compareTo(b.zero()) > 0) {
-                  	    return (Real)zero();
-                	} else {
-                		throw new ArithmeticException("possibly undefined: " + this + " ^ " + b);
-                	}
+                        if (b.compareTo(b.zero()) > 0) {
+                            return (Real)zero();
+                        } else {
+                                throw new ArithmeticException("possibly undefined: " + this + " ^ " + b);
+                        }
                 } else
                     throw new ArithmeticException("exponentation is possibly too big: " + this + " ^ " + b);
             }

@@ -65,7 +65,7 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
         //@internal assuming (S,+) here
         this.CONSTANT_TERM = anIndexObject.zero();
         if (!zeroCoefficient.isZero())
-        	throw new IllegalArgumentException("zero coefficient should be zero");
+                throw new IllegalArgumentException("zero coefficient should be zero");
         this.COEFFICIENT_ZERO = zeroCoefficient;
         this.coefficients = new LinkedHashMap();
         assert COEFFICIENT_ZERO.isZero() : "zero coefficient should be zero";
@@ -73,7 +73,7 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
     public SparsePolynomial(Map/*<S,R>*/ coefficients, ValueFactory valueFactory) {
         super(valueFactory);
         if (coefficients.isEmpty()) {
-        	throw new IllegalArgumentException("Cannot infer coefficient and exponent domain from empty coefficients");
+                throw new IllegalArgumentException("Cannot infer coefficient and exponent domain from empty coefficients");
         }
         Map.Entry/*<S,R>*/ e = (Map.Entry)coefficients.entrySet().iterator().next();
         this.CONSTANT_TERM = ((Arithmetic/*>S<*/)e.getKey()).zero();
@@ -90,11 +90,11 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
         this.COEFFICIENT_ZERO = coeff.get(i0).zero();
         this.coefficients = new LinkedHashMap();
         for (Iterator i = coeff.entries(); i.hasNext(); ) {
-        	KeyValuePair e = (KeyValuePair) i.next();
-        	Arithmetic vi = (Arithmetic) e.getValue();
-        	if (!vi.isZero()) {
-        		this.coefficients.put(e.getKey(), vi);
-        	}
+                KeyValuePair e = (KeyValuePair) i.next();
+                Arithmetic vi = (Arithmetic) e.getValue();
+                if (!vi.isZero()) {
+                        this.coefficients.put(e.getKey(), vi);
+                }
         }
         assert COEFFICIENT_ZERO.isZero() : "zero coefficient should be zero";
     }
@@ -162,27 +162,27 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
                     checkForComodification();
         
                     try {
-                    	final int oldDegree = degree;
-                    	final Arithmetic ci = (Arithmetic)o;
-                    	final int newPotentialDegree = ((Integer)Operations.sum.apply(getExponentVector(lastRet.getKey()))).intValue();
-                    	if (!ci.isZero()) {
-                    		lastRet.setValue(ci);
-                    		if (oldDegree < newPotentialDegree) {
-                    			// update degree if index is higher than degree and nonzero (because it might raise)
-                    			// or equal and we reset to zero (because it might drop)
-                    			//@todo delta-degrees can be optimized faster by exploiting that we know the old degree where to start 
-                    			SparsePolynomial.this.degree = DIRTY;//degreeImpl(coefficients);
-                    		}
-                    	} else {
-                    		// auto-cleanup zero coefficients for sparse representation
-                    		cursor.remove();
-                    		if (oldDegree == newPotentialDegree) {
-                    			// update degree if index is higher than degree and nonzero (because it might raise)
-                    			// or equal and we reset to zero (because it might drop)
-                    			//@todo delta-degrees can be optimized faster by exploiting that we know the old degree where to start 
-                    			SparsePolynomial.this.degree = DIRTY;//degreeImpl(coefficients);
-                    		}
-                    	}
+                        final int oldDegree = degree;
+                        final Arithmetic ci = (Arithmetic)o;
+                        final int newPotentialDegree = ((Integer)Operations.sum.apply(getExponentVector(lastRet.getKey()))).intValue();
+                        if (!ci.isZero()) {
+                                lastRet.setValue(ci);
+                                if (oldDegree < newPotentialDegree) {
+                                        // update degree if index is higher than degree and nonzero (because it might raise)
+                                        // or equal and we reset to zero (because it might drop)
+                                        //@todo delta-degrees can be optimized faster by exploiting that we know the old degree where to start 
+                                        SparsePolynomial.this.degree = DIRTY;//degreeImpl(coefficients);
+                                }
+                        } else {
+                                // auto-cleanup zero coefficients for sparse representation
+                                cursor.remove();
+                                if (oldDegree == newPotentialDegree) {
+                                        // update degree if index is higher than degree and nonzero (because it might raise)
+                                        // or equal and we reset to zero (because it might drop)
+                                        //@todo delta-degrees can be optimized faster by exploiting that we know the old degree where to start 
+                                        SparsePolynomial.this.degree = DIRTY;//degreeImpl(coefficients);
+                                }
+                        }
                         expectedModCount = modCount;
                     } catch(IndexOutOfBoundsException e) {
                         throw new ConcurrentModificationException();
@@ -213,22 +213,22 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
     }
     
     public Iterator monomials() {
-    	return new Iterator() {
+        return new Iterator() {
             private final Iterator cursor = coefficients.entrySet().iterator();
-			public boolean hasNext() {
-				return cursor.hasNext();
-			}
+                        public boolean hasNext() {
+                                return cursor.hasNext();
+                        }
 
-			public Object next() {
-				Map.Entry e = (Map.Entry) cursor.next();
-				return new KeyValuePair(e.getKey(), e.getValue());
-			}
+                        public Object next() {
+                                Map.Entry e = (Map.Entry) cursor.next();
+                                return new KeyValuePair(e.getKey(), e.getValue());
+                        }
 
-			public void remove() {
-				cursor.remove();
-			}
-    		
-    	};
+                        public void remove() {
+                                cursor.remove();
+                        }
+                
+        };
     }
 
     public Object indexSet() {
@@ -236,13 +236,13 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
     }
 
     public int rank() {
-    	if (CONSTANT_TERM instanceof Vector) {
-    		return ((Vector)CONSTANT_TERM).dimension();
-    	} else if (CONSTANT_TERM instanceof Integer) {
-    		return 1;
-    	} else {
+        if (CONSTANT_TERM instanceof Vector) {
+                return ((Vector)CONSTANT_TERM).dimension();
+        } else if (CONSTANT_TERM instanceof Integer) {
+                return 1;
+        } else {
             throw new UnsupportedOperationException("no rank on " + this + "[" + CONSTANT_TERM.getClass().getName() + "]");
-    	}
+        }
     }
 
     public final int degreeValue() {
@@ -259,9 +259,9 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
     private int degreeImpl() {
         int d = java.lang.Integer.MIN_VALUE;
         for (Iterator/*<Map.Entry<S, R>>*/ i = coefficients.entrySet().iterator(); i.hasNext(); ) {
-        	Map.Entry/*<S, R>*/ e = (Map.Entry)i.next();
-        	Arithmetic xi = (Arithmetic)e.getKey();
-        	Vector v = getExponentVector(xi);
+                Map.Entry/*<S, R>*/ e = (Map.Entry)i.next();
+                Arithmetic xi = (Arithmetic)e.getKey();
+                Vector v = getExponentVector(xi);
             final Arithmetic vi = (Arithmetic)e.getValue();
             if (vi != null && !vi.isZero()) {
                 final int sum = ((Integer)Operations.sum.apply(v)).intValue();
@@ -277,14 +277,14 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
         final int degrees[] = new int[rank()];
         Arrays.fill(degrees, -1);
         for (Iterator/*<Map.Entry<S, R>>*/ j = coefficients.entrySet().iterator(); j.hasNext(); ) {
-        	Map.Entry/*<S, R>*/ e = (Map.Entry)j.next();
-        	Arithmetic xi = (Arithmetic)e.getKey();
-        	Vector v = getExponentVector(xi);
+                Map.Entry/*<S, R>*/ e = (Map.Entry)j.next();
+                Arithmetic xi = (Arithmetic)e.getKey();
+                Vector v = getExponentVector(xi);
             final Arithmetic vi = (Arithmetic)e.getValue();
             if (vi != null && !vi.isZero()) {
                 // degrees = max(degrees, index)
                 for (int i = 0; i < degrees.length; i++) {
-                	int expo = ((Integer)v.get(i)).intValue();
+                        int expo = ((Integer)v.get(i)).intValue();
                     if (expo > degrees[i]) {
                         degrees[i] = expo;
                     }
@@ -298,7 +298,7 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
     public Arithmetic get(Arithmetic i) {
         Object ci = coefficients.get(i);
         if (ci == null)
-        	return COEFFICIENT_ZERO;
+                return COEFFICIENT_ZERO;
         else
             return (Arithmetic/*__*/) ci;
     }
@@ -306,27 +306,27 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
     public void set(Arithmetic i, Arithmetic ci) {
         final int oldDegree = degree;
         final int newPotentialDegree = ((Integer)Operations.sum.apply(getExponentVector(i))).intValue();
-    	if (!ci.isZero()) {
+        if (!ci.isZero()) {
             coefficients.put(i, ci);
-    		if (oldDegree < newPotentialDegree) {
-    			// update degree if index is higher than degree and nonzero (because it might raise)
-    			// or equal and we reset to zero (because it might drop)
-    			//@todo delta-degrees can be optimized faster by exploiting that we know the old degree where to start 
-    			this.degree = DIRTY;//degreeImpl(coefficients);
-    		}
-    	} else {
-    		// auto-cleanup zero coefficients for sparse representation
-    		coefficients.remove(i);
-    		if (oldDegree == newPotentialDegree) {
-    			// update degree if index is higher than degree and nonzero (because it might raise)
-    			// or equal and we reset to zero (because it might drop)
-    			//@todo delta-degrees can be optimized faster by exploiting that we know the old degree where to start 
-    			this.degree = DIRTY;//degreeImpl(coefficients);
-    		}
-    	}
+                if (oldDegree < newPotentialDegree) {
+                        // update degree if index is higher than degree and nonzero (because it might raise)
+                        // or equal and we reset to zero (because it might drop)
+                        //@todo delta-degrees can be optimized faster by exploiting that we know the old degree where to start 
+                        this.degree = DIRTY;//degreeImpl(coefficients);
+                }
+        } else {
+                // auto-cleanup zero coefficients for sparse representation
+                coefficients.remove(i);
+                if (oldDegree == newPotentialDegree) {
+                        // update degree if index is higher than degree and nonzero (because it might raise)
+                        // or equal and we reset to zero (because it might drop)
+                        //@todo delta-degrees can be optimized faster by exploiting that we know the old degree where to start 
+                        this.degree = DIRTY;//degreeImpl(coefficients);
+                }
+        }
     }
 
-    protected Arithmetic operatorImpl(final BinaryFunction op, Arithmetic bb) {
+    protected Arithmetic operatorImpl(final orbital.math.functional.BinaryFunction op, Arithmetic bb) {
         // only cast since Polynomial does not (yet?) have iterator(int[])
         final SparsePolynomial b = (SparsePolynomial)bb;
         if (!indexSet().equals(b.indexSet()))
@@ -334,38 +334,46 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
         SparsePolynomial/*>T<*/ ret = (SparsePolynomial)newInstance(productIndexSet(this));
 
         // component-wise
-        Iterator res = 
-        Functionals.map(new orbital.logic.functor.Function() {
-            public Object apply(Object o) {
-                //@todo could rewrite pure functional even more (by using pair copy function etc)
-                Arithmetic/*>S<*/ i = (Arithmetic)o;
-                return new KeyValuePair(i, op.apply(get(i), b.get(i)));
-            }
-        }, combinedIndices(this,b));
-        while (res.hasNext()) {
-        	KeyValuePair e = (KeyValuePair) res.next();
-        	ret.set((Arithmetic)e.getKey(), (Arithmetic)e.getValue());
+        try {
+        	Iterator res = 
+        		Functionals.map(new orbital.logic.functor.Function() {
+        			public Object apply(Object o) {
+        				//@todo could rewrite pure functional even more (by using pair copy function etc)
+        				Arithmetic/*>S<*/ i = (Arithmetic)o;
+        				return new KeyValuePair(i, op.apply(get(i), b.get(i)));
+        			}
+        		}, combinedIndices(this,b));
+        	while (res.hasNext()) {
+        		KeyValuePair e = (KeyValuePair) res.next();
+        		ret.set((Arithmetic)e.getKey(), (Arithmetic)e.getValue());
+        	}
+        	return ret;
+        } catch (IndexOutOfBoundsException ex) {
+        	throw (IndexOutOfBoundsException) new IndexOutOfBoundsException(ex + " during a" + op + "b with indexSet()  " + indexSet() + " and " + b.indexSet() + " of " + this + "@" + getClass() + " and " + b + "@" + b.getClass()).initCause(ex);
         }
-        return ret;
     }
-    protected Arithmetic/*>T<*/ operatorImpl(final Function op) {
+    protected Arithmetic/*>T<*/ operatorImpl(final orbital.math.functional.Function op) {
         SparsePolynomial ret = (SparsePolynomial)newInstance(productIndexSet(this));
 
         // component-wise
-        Iterator res = 
-        Functionals.map(new orbital.logic.functor.Function() {
-            public Object apply(Object o) {
-                //@todo could rewrite pure functional even more (by using pair copy function etc)
-                Arithmetic/*>S<*/ i = (Arithmetic)o;
-                return new KeyValuePair(i, op.apply(get(i)));
-            }
-        }, indices());
-        while (res.hasNext()) {
-        	KeyValuePair e = (KeyValuePair) res.next();
-        	ret.set((Arithmetic)e.getKey(), (Arithmetic)e.getValue());
+        try {
+        	Iterator res = 
+        		Functionals.map(new orbital.logic.functor.Function() {
+        			public Object apply(Object o) {
+        				//@todo could rewrite pure functional even more (by using pair copy function etc)
+        				Arithmetic/*>S<*/ i = (Arithmetic)o;
+        				return new KeyValuePair(i, op.apply(get(i)));
+        			}
+        		}, indices());
+        	while (res.hasNext()) {
+        		KeyValuePair e = (KeyValuePair) res.next();
+        		ret.set((Arithmetic)e.getKey(), (Arithmetic)e.getValue());
+        	}
+        	return ret;
+        } catch (IndexOutOfBoundsException ex) {
+        	throw (IndexOutOfBoundsException) new IndexOutOfBoundsException(ex + " during " + op + "a with productIndexSet()  " + productIndexSet(this) +  " of " + this + "@" + getClass()).initCause(ex);
         }
-        return ret;
-} 
+    } 
 
     public Arithmetic zero() {
         SparsePolynomial r = (SparsePolynomial)newInstance(CONSTANT_TERM);
@@ -380,7 +388,7 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
     }
 
     protected void setZero() {
-    	coefficients.clear();
+        coefficients.clear();
     }
     
     /**
@@ -390,13 +398,13 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
      * @see orbital.math.AlgebraicAlgorithms#getExponentVector(Object)
      */
     private static Vector/*<Integer>*/ getExponentVector(Object m) {
-    	if (m instanceof Vector) {
-    		return (Vector)m;
-    	} else if (m instanceof Integer) {
-    		// univariate case
-    		return ((Arithmetic)m).valueFactory().valueOf(new Integer[] {(Integer)m});
-    	} else {
-    		throw new ClassCastException("Cannot convert exponent representation into Vector<Integer> from " + m);
-    	}
+        if (m instanceof Vector) {
+                return (Vector)m;
+        } else if (m instanceof Integer) {
+                // univariate case
+                return ((Arithmetic)m).valueFactory().valueOf(new Integer[] {(Integer)m});
+        } else {
+                throw new ClassCastException("Cannot convert exponent representation into Vector<Integer> from " + m);
+        }
     }
 }

@@ -171,7 +171,7 @@ public final class Setops {
         if (i.hasNext() || j.hasNext())
             throw new IndexOutOfBoundsException("argument iterators must have same length");
         else
-        	return true;
+                return true;
     } 
     /**
      * Checks whether some objects (at least one) in a collection satisfy the specified predicate.
@@ -202,7 +202,7 @@ public final class Setops {
         if (i.hasNext() || j.hasNext())
             throw new IndexOutOfBoundsException("argument iterators must have same length");
         else
-        	return false;
+                return false;
     } 
 
     // arg min / arg max

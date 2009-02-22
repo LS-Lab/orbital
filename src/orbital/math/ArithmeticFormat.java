@@ -701,6 +701,7 @@ public class ArithmeticFormat extends Format {
         // we call the degree of 0 deg(0)=0, here 
         for (int i = Math.max(p.degreeValue(),0); i >= 0; i--) {
             Arithmetic ci = p.get(i);
+            assert ci != null : "coefficient at " + i + " should be non-null";
             // only print nonzero elements (but print the 0-th coefficient if it is the only one)
             if (!ci.isZero()
                 || (i == 0 && result.length() == initialIndex)) {

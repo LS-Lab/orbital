@@ -98,13 +98,13 @@ public abstract class AbstractValues extends Values {
     }
     
     protected Object getParameter(String name, Object defaultValue) {
-    	if (parameters == null)
-    	    return defaultValue;
-    	Object o = parameters.get(name);
-    	if (o == null)
-    		return defaultValue;
-    	else
-    		return o;
+        if (parameters == null)
+            return defaultValue;
+        Object o = parameters.get(name);
+        if (o == null)
+                return defaultValue;
+        else
+                return o;
     }
 
     /**

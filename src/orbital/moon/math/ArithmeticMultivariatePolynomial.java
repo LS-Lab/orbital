@@ -101,7 +101,7 @@ class ArithmeticMultivariatePolynomial/*<R extends Arithmetic>*/
     }
     
     public Iterator entries() {
-    	return coefficients.entries();
+        return coefficients.entries();
     }
     
     public int rank() {
