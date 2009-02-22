@@ -168,7 +168,10 @@ public final class Setops {
         while (i.hasNext() && j.hasNext())
             if (!found.apply((/*__*/Object/*>A1<*/) i.next(), (/*__*/Object/*>A2<*/) j.next()))
                 return false;
-        return !(i.hasNext() || j.hasNext());
+        if (i.hasNext() || j.hasNext())
+        	throw new IllegalArgumentException("incompatible lengths");
+        else
+        	return true;
     } 
     /**
      * Checks whether some objects (at least one) in a collection satisfy the specified predicate.
@@ -196,7 +199,10 @@ public final class Setops {
         while (i.hasNext() && j.hasNext())
             if (found.apply((/*__*/Object/*>A1<*/) i.next(), (/*__*/Object/*>A2<*/) j.next()))
                 return true;
-        return false;
+        if (i.hasNext() || j.hasNext())
+        	throw new IllegalArgumentException("incompatible lengths");
+        else
+        	return false;
     } 
 
     // arg min / arg max

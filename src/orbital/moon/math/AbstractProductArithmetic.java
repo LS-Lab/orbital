@@ -105,8 +105,13 @@ abstract class AbstractProductArithmetic/*<R extends Arithmetic, I, T extends Ar
     public boolean equals(Object o) {
         if (o instanceof Arithmetic) {
             Arithmetic/*>T<*/ b = (Arithmetic) o;
-            return Utility.equalsAll(productIndexSet(this), productIndexSet(b))
-                && Setops.all(iterator(this), iterator(b), Predicates.equal);
+            try {
+                return Utility.equalsAll(productIndexSet(this), productIndexSet(b))
+                    && Setops.all(iterator(this), iterator(b), Predicates.equal);
+            }
+            catch (IllegalArgumentException ex) {
+              	throw (IllegalArgumentException) new IllegalArgumentException("comparison failed, because of " + ex + " for " + this + "\nand " + b + "\ni.e. " + iterator(this) + "\nand " + iterator(b) + " of product index sets " + MathUtilities.format(productIndexSet(this)) + " and " + MathUtilities.format(productIndexSet(b))).initCause(ex);
+            }
         } 
         return false;
     } 

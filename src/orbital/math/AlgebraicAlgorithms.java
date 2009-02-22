@@ -668,7 +668,8 @@ public final class AlgebraicAlgorithms {
             if (!Setops.all(g, Functionals.bindSecond(Utility.instanceOf, Polynomial.class))) {
                 throw new IllegalArgumentException("prerequisite failed: " + "collection<" + Polynomial.class.getName() + "> expected, found violation " + Setops.find(g, Functionals.not(Functionals.bindSecond(Utility.instanceOf, Polynomial.class))) + " in "+ g);
             }
-            this.g = Collections.unmodifiableCollection(g);
+    		//@internal using Collections.unmodifiableCollection would spoil equals
+            this.g = Collections.unmodifiableSet(new LinkedHashSet(g));
     		this.symbolicg = !Setops.some(g, Arithmetic.numerical);
             this.monomialOrder = newmonomialOrder;
             this.inducedOrder = INDUCED(monomialOrder);
@@ -785,7 +786,8 @@ public final class AlgebraicAlgorithms {
     		if (!Setops.all(g, Functionals.bindSecond(Utility.instanceOf, Polynomial.class))) {
     			throw new IllegalArgumentException("prerequisite failed: " + "collection<" + Polynomial.class.getName() + "> expected, found violation " + Setops.find(g, Functionals.not(Functionals.bindSecond(Utility.instanceOf, Polynomial.class))) + " in "+ g);
     		}
-    		this.g = Collections.unmodifiableCollection(g);
+    		//@internal using Collections.unmodifiableCollection would spoil equals
+    		this.g = Collections.unmodifiableSet(new LinkedHashSet(g));
     		this.symbolicg = !Setops.some(g, Arithmetic.numerical);
     		this.monomialOrder = newmonomialOrder;
     		this.inducedOrder = INDUCED(monomialOrder);

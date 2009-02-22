@@ -56,12 +56,18 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
     public boolean equals(Object o) {
         // would need dimensions() to reduce to non-zero part
         //return (o instanceof Polynomial) && super.equals(o);
-        if (o instanceof Polynomial) {
+        if (o instanceof AbstractMultivariatePolynomial) {
             // optimized version of super.equals
             AbstractMultivariatePolynomial/*>T<*/ b = (AbstractMultivariatePolynomial) o;
             final int[] d = Functionals.map(Operations.max, dimensions(), b.dimensions());
-            return Setops.all(iterator(d), b.iterator(d), Predicates.equal);
-        } 
+            boolean eq = Setops.all(iterator(d), b.iterator(d), Predicates.equal);
+            boolean eq2 = false;
+            assert (eq2 = validateEquals(this, b)) || true;
+            assert eq == eq2 : "fast and full equality yield same result: " +  eq + " and " + eq2 + " for " + this + " and " + b;
+            return eq;
+        } else if (o instanceof Polynomial) {
+        	return super.equals((Polynomial)o);
+        }
         return false;
     }
     public int hashCode() {
@@ -403,9 +409,12 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
     
     //@todo optimizable by far, but already optimized super.multiply
     public Polynomial/*<R,Vector<Integer>>*/ multiply(Polynomial/*<R,Vector<Integer>>*/ bb) {
-        // only cast since Polynomial does not know an equivalent of dimensions()
+        if (!(bb instanceof AbstractMultivariatePolynomial)) {
+        	return super.multiply(bb);
+        }
+    	// only cast since Polynomial does not know an equivalent of dimensions()
         AbstractMultivariatePolynomial b = (AbstractMultivariatePolynomial)bb;
-        if (isZero())
+    	if (isZero())
             return this;
         else if (b.isZero())
             return b;

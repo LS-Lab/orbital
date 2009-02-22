@@ -16,6 +16,7 @@ import orbital.math.functional.Functionals;
 import orbital.logic.functor.BinaryFunction;
 import orbital.logic.functor.Predicate;
 import orbital.math.functional.Operations;
+import orbital.util.KeyValuePair;
 import orbital.util.Setops;
 import orbital.util.Pair;
 
@@ -38,18 +39,39 @@ abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*
     public boolean equals(Object o) {
         if (o instanceof Polynomial) {
             final Polynomial/*>T<*/ b = (Polynomial) o;
-            Setops.all(combinedIndices(this, b),
+            boolean eq =  Setops.all(combinedIndices(this, b),
                        new Predicate() {
                            public boolean apply(Object o) {
                                Arithmetic/*>S<*/ i = (Arithmetic)o;
                                return get(i).equals(b.get(i));
                            }
                        });
+            boolean eq2 = false;
+            assert (eq2 = validateEquals(this, b)) || true;
+            assert eq == eq2 : "fast and full equality yield same result: " +  eq + " and " + eq2 + " for " + this + " and " + b;
+            return eq;
         } 
         return false;
     } 
 
-    public int hashCode() {
+    static final boolean validateEquals(Polynomial a, Polynomial b) {
+    	boolean eq1 = true;
+		for (Iterator i = a.monomials(); i.hasNext(); ) {
+			KeyValuePair e = (KeyValuePair) i.next();
+			if (!e.getValue().equals(b.get((Arithmetic) e.getKey())))
+				eq1 = false;
+		}
+    	boolean eq2 = true;
+		for (Iterator i = b.monomials(); i.hasNext(); ) {
+			KeyValuePair e = (KeyValuePair) i.next();
+			if (!e.getValue().equals(a.get((Arithmetic) e.getKey())))
+				eq2 = false;
+		}
+		assert a != b || eq1 && eq2 : "identity implies equality"; 
+		return eq1 && eq2;
+	}
+
+	public int hashCode() {
         //@xxx throw new UnsupportedOperationException("would require dimensions() to reduce to non-zero part");
         // the following is ok (though, perhaps, not very surjective), since 0 has hashCode 0 anyway
         int hash = 0;
