@@ -328,7 +328,7 @@ extends AbstractPolynomial/*<R,S>*/ {
 		}
 		for (int i = 0; i < degrees.length; i++) {
 			if (degrees[i] < 0) {
-				for (int j = 0; i < degrees.length; j++) {
+				for (int j = 0; j < degrees.length; j++) {
 					if (degrees[j] >= 0)
 						throw new IllegalStateException("Cannot determine partial degrees " + MathUtilities.format(degrees) + " of " + this);
 				}
