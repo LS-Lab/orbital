@@ -60,9 +60,11 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
         super(anIndexObject.valueFactory());
         //@internal assuming (S,+) here
         this.CONSTANT_TERM = anIndexObject.zero();
-        assert zeroCoefficient.isZero() : "zero coefficient should be zero";
+        if (!zeroCoefficient.isZero())
+        	throw new IllegalArgumentException("zero coefficient should be zero");
         this.COEFFICIENT_ZERO = zeroCoefficient;
         this.coefficients = new LinkedHashMap();
+        assert COEFFICIENT_ZERO.isZero() : "zero coefficient should be zero";
     }
     public SparsePolynomial(Map/*<S,R>*/ coefficients, ValueFactory valueFactory) {
         super(valueFactory);
@@ -73,6 +75,7 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
         this.CONSTANT_TERM = ((Arithmetic/*>S<*/)e.getKey()).zero();
         this.COEFFICIENT_ZERO = ((Arithmetic/*>S<*/)e.getValue()).zero();
         this.coefficients = coefficients;
+        assert COEFFICIENT_ZERO.isZero() : "zero coefficient should be zero";
     }
     
     public SparsePolynomial(Tensor coeff) {
@@ -80,7 +83,7 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
         int[] i0 = new int[coeff.rank()];
         Arrays.fill(i0, 0);
         this.CONSTANT_TERM = valueFactory().valueOf(i0);
-        this.COEFFICIENT_ZERO = coeff.get(i0);
+        this.COEFFICIENT_ZERO = coeff.get(i0).zero();
         this.coefficients = new LinkedHashMap();
         for (Iterator i = coeff.entries(); i.hasNext(); ) {
         	KeyValuePair e = (KeyValuePair) i.next();
@@ -89,6 +92,7 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
         		this.coefficients.put(e.getKey(), vi);
         	}
         }
+        assert COEFFICIENT_ZERO.isZero() : "zero coefficient should be zero";
     }
 
     // factory-methods

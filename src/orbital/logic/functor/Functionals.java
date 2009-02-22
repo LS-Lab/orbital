@@ -2503,7 +2503,7 @@ public class Functionals {
         try {
             return fixedPoint(f, x, IterationLimitException.MaxIterations);
         }
-        catch (IterationLimitException ex) {throw new IterationLimitException(ex.getMessage() + " with IterationLimitException.MaxIterations=" + IterationLimitException.MaxIterations);}
+        catch (IterationLimitException ex) {throw new IterationLimitException(ex.getMessage() + " with IterationLimitException.MaxIterations=" + IterationLimitException.MaxIterations + " for " + f + " on " + x);}
     } 
 
 }

@@ -90,9 +90,9 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
      * It essentially has the same effect as
      * {@link Values#setDefault(ValueFactory)}(this.adjustToParameters())
      */
-    public void setSparsePolynomials(String precision) {
+    public void setSparsePolynomials(boolean sparse) {
         Map params = new java.util.HashMap();
-        params.put("orbital.math.Polynomial.sparse", precision);
+        params.put("orbital.math.Polynomial.sparse", Boolean.valueOf(sparse));
         Values.setDefault(adaptToParameters(params));
     }
     public boolean isSparsePolynomials() {
