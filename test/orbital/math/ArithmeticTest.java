@@ -186,7 +186,7 @@ public class ArithmeticTest extends check.TestCase {
     }
 
     /**
-     * Check usual laws with one arithmetic object.
+     * Check contract properties of arithmetic objects, i.e., usual laws with one arithmetic object.
      * @param withDivisions whether or not to test laws involving division as well.
      */
     public static final boolean checkArithmetic(ValueFactory vf, Arithmetic x, boolean withDivisions) {

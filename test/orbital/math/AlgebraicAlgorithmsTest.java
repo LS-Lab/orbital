@@ -7,7 +7,11 @@
 package orbital.math;
 
 import java.util.*;
+
+import orbital.logic.functor.Predicate;
 import orbital.math.functional.*;
+import orbital.util.KeyValuePair;
+import orbital.util.Setops;
 import junit.framework.*;
 import junit.extensions.*;
 import java.math.BigInteger;
@@ -81,14 +85,17 @@ public class AlgebraicAlgorithmsTest extends check.TestCase {
                 {0, 1},
                 {1, 0}
             });
+        checkPolynomial(vf, g);
         Set/*_<Polynomial<Rational>>_*/ G = new HashSet();
         G.add(g);
 
         assertEquals(AlgebraicAlgorithms.groebnerBasis(G, order) , G);
+        Setops.all(AlgebraicAlgorithms.groebnerBasis(G, order), checkPolynomial(vf));
 
         Set/*_<Polynomial<Rational>>_*/ H = new HashSet(G);
         H.add(g.multiply(g));
         H.add(g.multiply(g.add(g)).subtract(g));
+        Setops.all(H, checkPolynomial(vf));
         assertEquals(AlgebraicAlgorithms.groebnerBasis(H, order) , G);
     }
 
@@ -102,8 +109,10 @@ public class AlgebraicAlgorithmsTest extends check.TestCase {
             vf.MONOMIAL(new int[] {0,2}).subtract(vf.MONOMIAL(new int[] {3,0}))
             .subtract(vf.MONOMIAL(new int[] {2,0}))
         });
+        Setops.all(m, checkPolynomial(vf));
         // the Groebner basis of m
         final Set gm = AlgebraicAlgorithms.groebnerBasis(new HashSet(m), order);
+        Setops.all(gm, checkPolynomial(vf));
         Quotient/*<Polynomial<Real>>*/ f =
             vf.quotient(vf.polynomial(new double[][] {
                 {2,1},
@@ -288,7 +297,7 @@ public class AlgebraicAlgorithmsTest extends check.TestCase {
     }
     
     /**
-     * Check properties of polynomials
+     * Check contract properties of polynomials
      */
     public static boolean checkPolynomial(ValueFactory vf, Polynomial p) {
     	ArithmeticTest.checkArithmetic(vf, p, false);
@@ -297,11 +306,45 @@ public class AlgebraicAlgorithmsTest extends check.TestCase {
         for (Iterator k = p.indices(); k.hasNext(); ) {
         	Vector i = getExponentVector(k.next());
         	for (int j = 0; j < i.dimension(); j++) {
-        		assertTrue(((Integer)i.get(j)).compareTo(vf.valueOf(degs[j])) <= 0, "exponents in indices() <= degrees(): " + i + " <= " + MathUtilities.format(degs));
+        		assertTrue(p.get(i).isZero() || ((Integer)i.get(j)).compareTo(vf.valueOf(degs[j])) <= 0, "exponents in indices() <= degrees(): exponent " + i + " <= " + MathUtilities.format(degs) + " of " + p.get(i) + " in " + p + "@" + p.getClass());
         	}
-    		assertTrue(((Integer)Operations.sum.apply(i)).compareTo(deg) <= 0, "sum of exponents in indices() <= degree(): " + i + " <= " + deg);
+    		assertTrue(p.get(i).isZero() || ((Integer)Operations.sum.apply(i)).compareTo(deg) <= 0, "sum of exponents in indices() <= degree(): exponent " + i + " <= " + deg + " of " + p.get(i) + " in " + p + "@" + p.getClass());
+        }
+        for (Iterator k = p.monomials(); k.hasNext(); ) {
+        	KeyValuePair e = (KeyValuePair) k.next();
+        	assertTrue(e.getValue().equals(p.get((Arithmetic) e.getKey())), "monomials() of polynomial correspond to get(): " + e.getValue() + " =  " + p.get((Arithmetic) e.getKey()));
+        	assertTrue(p.get((Arithmetic) e.getKey()).equals(e.getValue()), "get and monomials() fit " + e.getValue() + " = " + p.get((Arithmetic) e.getKey())+ " at " + e.getKey() + " in " + p + "@" + p.getClass());
+        }
+        Tensor t = vf.asTensor(p);
+        assertTrue(t.rank() == p.rank(), "asTensor preserves rank() " + p.rank() + " = " + t.rank() + " for " + p + "@" + p.getClass());
+        for (Iterator k = t.entries(); k.hasNext(); ) {
+        	KeyValuePair e = (KeyValuePair) k.next();
+        	Vector i = (Vector)e.getKey();
+        	assertTrue(e.getValue().equals(t.get(getIndex(i))), "entries() of tensor correspond to get(): " + e.getValue() + " =  " + t.get(getIndex(i)));
+        	assertTrue(t.get(getIndex(i)).equals(p.get(i)), "tensor.get corresponds to polynomial.get(): " + t.get(getIndex(i)) + " = " + p.get(i));
+        }
+        for (Iterator k = p.monomials(); k.hasNext(); ) {
+        	KeyValuePair e = (KeyValuePair) k.next();
+        	Vector i = getExponentVector(e.getKey());
+        	assertTrue(e.getValue().equals(p.get((Arithmetic) e.getKey())), "monomials() of polynomial correspond to get(): " + e.getValue() + " =  " + p.get((Arithmetic) e.getKey()));
+        	assertTrue(p.get(i).equals(t.get(getIndex(i))), "polynomial.get corresponds to tensor.get(): " + p.get(i) + " = " + t.get(getIndex(i)));
         }
     	return true;
+    }
+    protected final Predicate checkPolynomial(final ValueFactory vf) {
+    	return new Predicate() {
+    		public boolean apply(Object arg) {
+    			return checkPolynomial(vf, (Polynomial)arg);
+    		}
+
+    	};
+    }
+    private static final int[] getIndex(Vector/*<Integer>*/ v) {
+    	int[] d = new int[v.dimension()];
+    	for (int i = 0; i < d.length; i++) {
+    		d[i] = ((Integer)v.get(i)).intValue();
+    	}
+    	return d;
     }
 	protected static Vector/*<Integer>*/ getExponentVector(Object m) {
 	    if (m instanceof Vector) {
