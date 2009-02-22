@@ -396,7 +396,7 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
         // only cast since Polynomial does not (yet?) have iterator(int[])
         AbstractMultivariatePolynomial b = (AbstractMultivariatePolynomial)bb;
         if (!indexSet().equals(b.indexSet()))
-            throw new IllegalArgumentException("a+b only defined for equal indexSet()");
+            throw new IllegalArgumentException("a" + op + "b only defined for equal indexSet() not for " + indexSet() + " and " + b.indexSet() + " of " + this + " and " + b);
         final int[] d = Functionals.map(Operations.max, dimensions(), b.dimensions());
         AbstractMultivariatePolynomial/*>T<*/ ret = (AbstractMultivariatePolynomial)newInstance(d);
 

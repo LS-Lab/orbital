@@ -384,7 +384,7 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
     		//  && !Boolean.TRUE.equals(getParameter("orbital.math.UnivariatePolynomial.sparse", Boolean.FALSE))
     		return MONOMIAL(coefficient, exponents[0]);
     	}
-        if (Boolean.TRUE.equals(getParameter("orbital.math.UnivariatePolynomial.sparse", Boolean.FALSE))) {
+        if (Boolean.TRUE.equals(getParameter("orbital.math.Polynomial.sparse", Boolean.FALSE))) {
         	Map/*<Vector<Integer>,R>*/ m = new LinkedHashMap();
         	m.put(valueOf(exponents), coefficient);
         	return new SparsePolynomial(m, this);
