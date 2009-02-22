@@ -164,7 +164,7 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
                     try {
                         final int oldDegree = degree;
                         final Arithmetic ci = (Arithmetic)o;
-                        final int newPotentialDegree = ((Integer)Operations.sum.apply(getExponentVector(lastRet.getKey()))).intValue();
+                        final int newPotentialDegree = ((Integer)Operations.sum.apply(ArithmeticValuesImpl.getExponentVector(lastRet.getKey()))).intValue();
                         if (!ci.isZero()) {
                                 lastRet.setValue(ci);
                                 if (oldDegree < newPotentialDegree) {
@@ -230,6 +230,36 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
                 
         };
     }
+    
+    Tensor tensorViewOfCoefficients() {
+    	return new AbstractTensor(valueFactory()) {
+
+			protected Tensor newInstance(int[] dim) {
+				return new ArithmeticTensor(dim, valueFactory());
+			}
+
+			public int[] dimensions() {
+				// this permanent recomputation is really slow but better than caching without concurrentModification checks
+			    return ArithmeticValuesImpl.getPartialDimensions(SparsePolynomial.this.coefficients);
+			}
+
+			public Arithmetic get(int[] i) {
+				return SparsePolynomial.this.get(valueFactory().valueOf(i));
+			}
+
+			public int rank() {
+				return SparsePolynomial.this.rank();
+			}
+
+			public void set(int[] i, Arithmetic vi)
+					throws UnsupportedOperationException {
+				SparsePolynomial.this.set(valueFactory().valueOf(i), vi);
+			}
+    		
+    	};
+    }
+
+
 
     public Object indexSet() {
         return CONSTANT_TERM;
@@ -261,7 +291,7 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
         for (Iterator/*<Map.Entry<S, R>>*/ i = coefficients.entrySet().iterator(); i.hasNext(); ) {
                 Map.Entry/*<S, R>*/ e = (Map.Entry)i.next();
                 Arithmetic xi = (Arithmetic)e.getKey();
-                Vector v = getExponentVector(xi);
+                Vector v = ArithmeticValuesImpl.getExponentVector(xi);
             final Arithmetic vi = (Arithmetic)e.getValue();
             if (vi != null && !vi.isZero()) {
                 final int sum = ((Integer)Operations.sum.apply(v)).intValue();
@@ -277,9 +307,10 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
         final int degrees[] = new int[rank()];
         Arrays.fill(degrees, -1);
         for (Iterator/*<Map.Entry<S, R>>*/ j = coefficients.entrySet().iterator(); j.hasNext(); ) {
-                Map.Entry/*<S, R>*/ e = (Map.Entry)j.next();
-                Arithmetic xi = (Arithmetic)e.getKey();
-                Vector v = getExponentVector(xi);
+        	Map.Entry/*<S, R>*/ e = (Map.Entry)j.next();
+        	Arithmetic xi = (Arithmetic)e.getKey();
+        	Vector v = ArithmeticValuesImpl.getExponentVector(xi);
+        	assert v.dimension() == rank() : "homogeneous rank " + rank() + " == " + v.dimension() + " for exponent " + xi;
             final Arithmetic vi = (Arithmetic)e.getValue();
             if (vi != null && !vi.isZero()) {
                 // degrees = max(degrees, index)
@@ -305,7 +336,7 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
         
     public void set(Arithmetic i, Arithmetic ci) {
         final int oldDegree = degree;
-        final int newPotentialDegree = ((Integer)Operations.sum.apply(getExponentVector(i))).intValue();
+        final int newPotentialDegree = ((Integer)Operations.sum.apply(ArithmeticValuesImpl.getExponentVector(i))).intValue();
         if (!ci.isZero()) {
             coefficients.put(i, ci);
                 if (oldDegree < newPotentialDegree) {
@@ -389,22 +420,5 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
 
     protected void setZero() {
         coefficients.clear();
-    }
-    
-    /**
-     * Get a vectorial representation of an index for an exponent of a monomial, if possible
-     * @param m
-     * @return
-     * @see orbital.math.AlgebraicAlgorithms#getExponentVector(Object)
-     */
-    private static Vector/*<Integer>*/ getExponentVector(Object m) {
-        if (m instanceof Vector) {
-                return (Vector)m;
-        } else if (m instanceof Integer) {
-                // univariate case
-                return ((Arithmetic)m).valueFactory().valueOf(new Integer[] {(Integer)m});
-        } else {
-                throw new ClassCastException("Cannot convert exponent representation into Vector<Integer> from " + m);
-        }
     }
 }

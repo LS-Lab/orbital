@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
@@ -306,7 +307,55 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
             return validate(t, t.dimensions());
         }
     }
+
+    public /*_<R extends Arithmetic>_*/ Tensor/*_<R>_*/ tensor(Map/*<Vector<Integer>, R>*/ indexCoefficientMap) {
+    	int[] dim = getPartialDimensions(indexCoefficientMap);
+    	Tensor t = ZERO(dim);
+    	for (Iterator i = indexCoefficientMap.entrySet().iterator(); i.hasNext(); ) {
+    		Map.Entry/*<Vector<Integer>, R>*/ e = (Map.Entry) i.next();
+    		t.set(getIndex((Vector)e.getKey()), (Arithmetic) e.getValue());
+    	}
+    	return validate(t, dim);
+    }
     
+    /**
+     * Obtain the dimensions of a partial index-coefficient map.
+     * @param indexCoefficientMap
+     * @return
+     */
+    static int[] getPartialDimensions(Map/*<Vector<Integer>,R>*/ indexCoefficientMap) {
+    	if (indexCoefficientMap.isEmpty())
+    		throw new IllegalArgumentException("empty coefficient map gives undefined polynomial ring");
+    	int rank = ((Vector)indexCoefficientMap.keySet().iterator().next()).dimension();
+        final int dim[] = new int[rank];
+        Arrays.fill(dim, -1);
+        for (Iterator/*<Map.Entry<S, R>>*/ j = indexCoefficientMap.entrySet().iterator(); j.hasNext(); ) {
+        	Map.Entry/*<S, R>*/ e = (Map.Entry)j.next();
+        	Arithmetic xi = (Arithmetic)e.getKey();
+        	Vector v = getExponentVector(xi);
+            assert v.dimension() == rank : "homogeneous rank " + rank + " == " + v.dimension() + " for exponent " + xi + " in " + indexCoefficientMap;
+        	final Arithmetic vi = (Arithmetic)e.getValue();
+            if (vi != null && !vi.isZero()) {
+                // dimension = max(dimension + 1, index)
+                for (int i = 0; i < dim.length; i++) {
+                        int expo = ((Integer)v.get(i)).intValue();
+                    if (expo > dim[i]) {
+                        dim[i] = expo + 1;
+                    }
+                }
+            }
+        }
+        return dim;
+    }
+    
+    private static final int[] getIndex(Vector/*<Integer>*/ v) {
+    	int[] d = new int[v.dimension()];
+    	for (int i = 0; i < d.length; i++) {
+    		d[i] = ((Integer)v.get(i)).intValue();
+    	}
+    	return d;
+    }
+
     public Tensor newInstance(int[] dimensions) {
         // tensors of rank 1 or rank 2 are converted to vectors or matrices
         switch (dimensions.length) {
@@ -346,6 +395,26 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
         return asPolynomial(tensor(coefficients));
     }
 
+    public /*_<R extends Arithmetic, S extends Arithmetic>_*/ Polynomial/*_<R,S>_*/ polynomial(Map/*<S, R>*/ exponentCoefficientMap) {
+    	if (exponentCoefficientMap.isEmpty())
+    		throw new IllegalArgumentException("empty coefficient map gives undefined polynomial ring");
+    	int rank = ((Vector)exponentCoefficientMap.keySet().iterator().next()).dimension();
+        switch (rank) {
+        // turn off this implementation unless MONOMIAL also obeys it
+        case 1:
+//              if (Boolean.TRUE.equals(getParameter("orbital.math.UnivariatePolynomial.sparse", Boolean.FALSE)))
+//                return new SparsePolynomial(coefficients);
+//              else
+                // @todo implement a true view flexible for changes (but only if Polynomial.set(...) has been introduced)
+                return polynomial((Arithmetic[]) ((AbstractTensor)tensor(exponentCoefficientMap)).toArray__Tensor());
+        default:
+                if (Boolean.TRUE.equals(getParameter("orbital.math.Polynomial.sparse", Boolean.FALSE)))
+                return new SparsePolynomial(exponentCoefficientMap, this);
+                else
+                return new ArithmeticMultivariatePolynomial(tensor(exponentCoefficientMap));
+        }
+    }
+
     public /*<R extends Arithmetic>*/ Polynomial/*<R,Vector<Integer>>*/ asPolynomial(Tensor/*<R>*/ coefficients) {
         // polynomials in 1 variable are converted to UnivariatePolynomials
         switch (coefficients.rank()) {
@@ -367,8 +436,10 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
     public /*<R extends Arithmetic>*/ Tensor/*<R>*/ asTensor(Polynomial/*<R,Vector<Integer>>*/ p) {
         if (p instanceof UnivariatePolynomial) {
                 return ((UnivariatePolynomial)p).getCoefficientVector();
+        } else if (p instanceof AbstractPolynomial) {
+            return ((AbstractPolynomial)p).tensorViewOfCoefficients();
         } else {
-            return ((AbstractMultivariatePolynomial)p).tensorViewOfCoefficients();
+        	throw new IllegalArgumentException("Unknown type " + p.getClass() + " in " + p);
         }
     }
 
@@ -781,6 +852,24 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
     }
 
     /**
+	 * Get a vectorial representation of an index for an exponent of a monomial, if possible
+	 * @param m
+	 * @return
+	 * @see orbital.math.AlgebraicAlgorithms#getExponentVector(Object)
+	 */
+	protected static Vector/*<Integer>*/ getExponentVector(Object m) {
+	    if (m instanceof Vector) {
+	            return (Vector)m;
+	    } else if (m instanceof Integer) {
+	            // univariate case
+	            return ((Arithmetic)m).valueFactory().valueOf(new Integer[] {(Integer)m});
+	    } else {
+	            throw new ClassCastException("Cannot convert exponent representation into Vector<Integer> from " + m);
+	    }
+	}
+
+
+	/**
      * @todo beautify and check whether it is necessary to convert numbers to those symbolic arithmetic function trucs!
      * @todo xxx see Functionals.genericCompose(*Function, ...) calls to constant(...)
      */
