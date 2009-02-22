@@ -36,6 +36,7 @@ class ArithmeticUnivariatePolynomial/*<R extends Arithmetic>*/ extends AbstractU
             ? 0
             : degree + 1);
         this.degree = java.lang.Integer.MIN_VALUE;
+        this.COEFFICIENT_ZERO = valueFactory.ZERO();
     }
     public ArithmeticUnivariatePolynomial(Arithmetic/*>R<*/ coefficients[], ValueFactory valueFactory) {
         super(valueFactory);
@@ -80,14 +81,14 @@ class ArithmeticUnivariatePolynomial/*<R extends Arithmetic>*/ extends AbstractU
         if (Setops.some(coefficients.iterator(), Functionals.bindSecond(Predicates.equal, null)))
             throw new IllegalArgumentException("illegal coefficients: containing null");
         this.coefficients = coefficients;
-        this.R_ZERO = coefficients.dimension() > 0 ? coefficients.get(0).zero() : valueFactory().ZERO();
+        this.COEFFICIENT_ZERO = coefficients.dimension() > 0 ? coefficients.get(0).zero() : valueFactory().ZERO();
         this.degree = degreeImpl(coefficients);
     }
 
     public Arithmetic/*>R<*/ get(int i) {
         if (i <= degreeValue() && i >= coefficients.dimension())
             throw new ArrayIndexOutOfBoundsException(coefficients.dimension() + "=<" + i + "=<" + degreeValue() + "=" + degreeImpl(coefficients));
-        return i <= degreeValue() ? coefficients.get(i) : R_ZERO;
+        return i <= degreeValue() ? coefficients.get(i) : COEFFICIENT_ZERO;
     }
         
     public void set(int i, Arithmetic/*>R<*/ vi) {
@@ -97,7 +98,7 @@ class ArithmeticUnivariatePolynomial/*<R extends Arithmetic>*/ extends AbstractU
         if (i >= coefficients.dimension())
             throw new UnsupportedOperationException("setting coefficients beyond the degree not (always) supported");
         coefficients.set(i, vi);
-        this.R_ZERO = coefficients.dimension() > 0 ? coefficients.get(0).zero() : valueFactory().ZERO();
+        this.COEFFICIENT_ZERO = coefficients.dimension() > 0 ? coefficients.get(0).zero() : valueFactory().ZERO();
         if (i >= oldDegree) {
             this.degree = degreeImpl(coefficients);
         }

@@ -55,23 +55,23 @@ abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*
     } 
 
     static final boolean validateEquals(Polynomial a, Polynomial b) {
-    	boolean eq1 = true;
-		for (Iterator i = a.monomials(); i.hasNext(); ) {
-			KeyValuePair e = (KeyValuePair) i.next();
-			if (!e.getValue().equals(b.get((Arithmetic) e.getKey())))
-				eq1 = false;
-		}
-    	boolean eq2 = true;
-		for (Iterator i = b.monomials(); i.hasNext(); ) {
-			KeyValuePair e = (KeyValuePair) i.next();
-			if (!e.getValue().equals(a.get((Arithmetic) e.getKey())))
-				eq2 = false;
-		}
-		assert a != b || eq1 && eq2 : "identity implies equality"; 
-		return eq1 && eq2;
-	}
+        boolean eq1 = true;
+                for (Iterator i = a.monomials(); i.hasNext(); ) {
+                        KeyValuePair e = (KeyValuePair) i.next();
+                        if (!e.getValue().equals(b.get((Arithmetic) e.getKey())))
+                                eq1 = false;
+                }
+        boolean eq2 = true;
+                for (Iterator i = b.monomials(); i.hasNext(); ) {
+                        KeyValuePair e = (KeyValuePair) i.next();
+                        if (!e.getValue().equals(a.get((Arithmetic) e.getKey())))
+                                eq2 = false;
+                }
+                assert a != b || eq1 && eq2 : "identity implies equality"; 
+                return eq1 && eq2;
+        }
 
-	public int hashCode() {
+        public int hashCode() {
         //@xxx throw new UnsupportedOperationException("would require dimensions() to reduce to non-zero part");
         // the following is ok (though, perhaps, not very surjective), since 0 has hashCode 0 anyway
         int hash = 0;
@@ -134,7 +134,7 @@ abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*
 
     //@todo we should also support adding other functions (like in AbstractFunctor)?
 
-    protected Arithmetic operatorImpl(final BinaryFunction op, Arithmetic bb) {
+    protected Arithmetic operatorImpl(final orbital.math.functional.BinaryFunction op, Arithmetic bb) {
         final Polynomial b = (Polynomial)bb;
         if (!indexSet().equals(b.indexSet()))
             throw new IllegalArgumentException("a" + op + "b only defined for equal indexSet() not for " + indexSet() + " and " + b.indexSet() + " of " + this + " and " + b);
@@ -142,16 +142,20 @@ abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*
         Polynomial/*>T<*/ ret = (Polynomial) newInstance(indexSet());
 
         // component-wise
-        ListIterator dst;
-        Setops.copy(dst = ret.iterator(), Functionals.map(new orbital.logic.functor.Function() {
-                public Object apply(Object o) {
-                    //@todo could rewrite pure functional even more (by using pair copy function etc)
-                    Arithmetic/*>S<*/ i = (Arithmetic)o;
-                    return op.apply(get(i), b.get(i));
-                }
-            }, combinedIndices(this,b)));
-        assert !dst.hasNext() : "equal indexSet() for iterator view implies equal structure of iterators";
-        return ret;
+        try {
+        	ListIterator dst;
+        	Setops.copy(dst = ret.iterator(), Functionals.map(new orbital.logic.functor.Function() {
+        		public Object apply(Object o) {
+        			//@todo could rewrite pure functional even more (by using pair copy function etc)
+        			Arithmetic/*>S<*/ i = (Arithmetic)o;
+        			return op.apply(get(i), b.get(i));
+        		}
+        	}, combinedIndices(this,b)));
+        	assert !dst.hasNext() : "equal indexSet() for iterator view implies equal structure of iterators";
+            return ret;
+        } catch (IndexOutOfBoundsException ex) {
+        	throw (IndexOutOfBoundsException) new IndexOutOfBoundsException(ex + " during a" + op + "b with indexSet()  " + indexSet() + " and " + b.indexSet() + " of " + this + "@" + getClass() + " and " + b + "@" + b.getClass()).initCause(ex);
+        }
     }
     
     public Arithmetic add(Arithmetic b) {
@@ -208,13 +212,13 @@ abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*
      * Sets all our coefficients to 0.
      */
     protected void setZero() {
-    	Iterator index = indices();
-    	final Arithmetic/*>R<*/ ZERO;
-    	if (index.hasNext())
+        Iterator index = indices();
+        final Arithmetic/*>R<*/ ZERO;
+        if (index.hasNext())
             ZERO = get((Arithmetic/*>S<*/)index.next()).zero();
-    	else {
-    		throw new IllegalStateException("Cannot determine 0 coefficient for " + this + "@" + getClass());
-    	}
+        else {
+                throw new IllegalStateException("Cannot determine 0 coefficient for " + this + "@" + getClass());
+        }
         for (ListIterator i = iterator(); i.hasNext(); ) {
             i.next();
             i.set(ZERO);

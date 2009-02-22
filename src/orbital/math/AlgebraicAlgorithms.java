@@ -659,18 +659,18 @@ public final class AlgebraicAlgorithms {
         private final Collection/*<Polynomial<R,S>>*/ g;
         private final Comparator/*<S>*/ monomialOrder;
         private final Comparator/*<S>*/ inducedOrder;
-    	/**
-    	 * Caches whether any g polynomial is numerical
-    	 */
-    	private final boolean symbolicg;
+        /**
+         * Caches whether any g polynomial is numerical
+         */
+        private final boolean symbolicg;
         private final Function/*<Polynomial<R,S>,Polynomial<R,S>>*/ elementaryReduce;
         public ReductionFunction(final Collection/*<Polynomial<R,S>>*/ g, Comparator/*<S>*/ newmonomialOrder) {
             if (!Setops.all(g, Functionals.bindSecond(Utility.instanceOf, Polynomial.class))) {
                 throw new IllegalArgumentException("prerequisite failed: " + "collection<" + Polynomial.class.getName() + "> expected, found violation " + Setops.find(g, Functionals.not(Functionals.bindSecond(Utility.instanceOf, Polynomial.class))) + " in "+ g);
             }
-    		//@internal using Collections.unmodifiableCollection would spoil equals
+                //@internal using Collections.unmodifiableCollection would spoil equals
             this.g = Collections.unmodifiableSet(new LinkedHashSet(g));
-    		this.symbolicg = !Setops.some(g, Arithmetic.numerical);
+                this.symbolicg = !Setops.some(g, Arithmetic.numerical);
             this.monomialOrder = newmonomialOrder;
             this.inducedOrder = INDUCED(monomialOrder);
             if (g.isEmpty()) {
@@ -727,7 +727,7 @@ public final class AlgebraicAlgorithms {
                                 final Polynomial/*<R,S>*/ q = vf.MONOMIAL(cdiv, xdiv);
                                 Polynomial/*<R,S>*/ reduction = f.subtract(q.multiply(gj));
                                 if (symbolicg) {
-                                	assert reduction.get(nu).isZero() : vf.MONOMIAL(cnu.one(), nu) + " does not occur in " + reduction + " anymore";
+                                        assert reduction.get(nu).isZero() : vf.MONOMIAL(cnu.one(), nu) + " does not occur in " + reduction + " anymore";
                                 } else if (!reduction.get(nu).isZero()) {
                                         Arithmetic rnu = reduction.get(nu);
                                     if (MathUtilities.equals(rnu.norm(),
@@ -770,124 +770,124 @@ public final class AlgebraicAlgorithms {
 
     private static final class ReductionFunctionFast/*<R extends Arithmetic,S extends Arithmetic>*/
     implements Function/*<Polynomial<R,S>,Polynomial<R,S>>*/, Serializable {
-    	//private static final long serialVersionUID;
-    	private final Collection/*<Polynomial<R,S>>*/ g;
-    	private final Comparator/*<S>*/ monomialOrder;
-    	private final Comparator/*<S>*/ inducedOrder;
-    	/**
-    	 * Leading monomial cache
-    	 */
-    	private final Pair/*<Polynomial<R,S>,S>*/[] basis;
-    	/**
-    	 * Caches whether any g polynomial is numerical
-    	 */
-    	private final boolean symbolicg;
-    	public ReductionFunctionFast(final Collection/*<Polynomial<R,S>>*/ g, Comparator/*<S>*/ newmonomialOrder) {
-    		if (!Setops.all(g, Functionals.bindSecond(Utility.instanceOf, Polynomial.class))) {
-    			throw new IllegalArgumentException("prerequisite failed: " + "collection<" + Polynomial.class.getName() + "> expected, found violation " + Setops.find(g, Functionals.not(Functionals.bindSecond(Utility.instanceOf, Polynomial.class))) + " in "+ g);
-    		}
-    		//@internal using Collections.unmodifiableCollection would spoil equals
-    		this.g = Collections.unmodifiableSet(new LinkedHashSet(g));
-    		this.symbolicg = !Setops.some(g, Arithmetic.numerical);
-    		this.monomialOrder = newmonomialOrder;
-    		this.inducedOrder = INDUCED(monomialOrder);
-    		// enrich g with exponents of leading monomials for caching
-    		// cache (polynomial, leading monomial)
-    		this.basis = new Pair[g.size()];
-    		{
-    			Iterator/*<Polynomial<R,S>>*/ it = g.iterator();
-    			for (int i = 0; i < basis.length; i++) {
-    				final Polynomial/*<R,S>*/ gi = (Polynomial) it.next();
-    				final Arithmetic leadingMonomial = leadingMonomial(gi, monomialOrder);
-    				basis[i] = new Pair(gi, leadingMonomial);
-    			}
-    		}
-    	}
-    	public boolean equals(Object o) {
-    		return (o instanceof ReductionFunctionFast)
-    		&& Utility.equals(g, ((ReductionFunctionFast) o).g)
-    		&& Utility.equals(monomialOrder, ((ReductionFunctionFast) o).monomialOrder);
-    	}
-    	public int hashCode() {
-    		return Utility.hashCode(g) ^ Utility.hashCode(monomialOrder);
-    	}
-    	public Object/*>Polynomial<R,S><*/ apply(final Object/*>Polynomial<R,S><*/ o) {
-    		logger.log(Level.FINEST, "reducing {0} with respect to {1} ...", new Object[] {o, g});
-    		if (g.isEmpty()) {
-    			return o;
-    		}
-    		Polynomial f = (Polynomial)o;
-			final ValueFactory vf = f.valueFactory();
-			//@internal we would prefer reverse direction (because we want to start eliminating large not small monomials), also starting with leading coefficient
-			final Queue/*<S>*/ monomials = new PriorityQueue(20, new ReverseComparator(monomialOrder));
-			monomials.addAll(occurringMonomials(f));
-			// caching all monomial exponents occurred so far that cannot be reduced with respect to g.
-			final Set/*<S>*/ noreduction = new LinkedHashSet();
-			leadingReductions:
-			while (!monomials.isEmpty()) {
-				final Arithmetic/*>S<*/ nu = (Arithmetic/*>S<*/) monomials.poll();
-				final Arithmetic/*>R<*/ cnu = f.get(nu);
-				assert !cnu.isZero() : "@postconditions of occurringMonomials(...)";
-				reductionPolynomials:
-					for (int j = 0; j < basis.length; j++) {
-						final Polynomial/*<R,S>*/ gj = (Polynomial/*>Polynomial<R,S><*/)basis[j].A;
-						final Arithmetic/*>S<*/ lgj = (Arithmetic/*>S<*/)basis[j].B;
+        //private static final long serialVersionUID;
+        private final Collection/*<Polynomial<R,S>>*/ g;
+        private final Comparator/*<S>*/ monomialOrder;
+        private final Comparator/*<S>*/ inducedOrder;
+        /**
+         * Leading monomial cache
+         */
+        private final Pair/*<Polynomial<R,S>,S>*/[] basis;
+        /**
+         * Caches whether any g polynomial is numerical
+         */
+        private final boolean symbolicg;
+        public ReductionFunctionFast(final Collection/*<Polynomial<R,S>>*/ g, Comparator/*<S>*/ newmonomialOrder) {
+                if (!Setops.all(g, Functionals.bindSecond(Utility.instanceOf, Polynomial.class))) {
+                        throw new IllegalArgumentException("prerequisite failed: " + "collection<" + Polynomial.class.getName() + "> expected, found violation " + Setops.find(g, Functionals.not(Functionals.bindSecond(Utility.instanceOf, Polynomial.class))) + " in "+ g);
+                }
+                //@internal using Collections.unmodifiableCollection would spoil equals
+                this.g = Collections.unmodifiableSet(new LinkedHashSet(g));
+                this.symbolicg = !Setops.some(g, Arithmetic.numerical);
+                this.monomialOrder = newmonomialOrder;
+                this.inducedOrder = INDUCED(monomialOrder);
+                // enrich g with exponents of leading monomials for caching
+                // cache (polynomial, leading monomial)
+                this.basis = new Pair[g.size()];
+                {
+                        Iterator/*<Polynomial<R,S>>*/ it = g.iterator();
+                        for (int i = 0; i < basis.length; i++) {
+                                final Polynomial/*<R,S>*/ gi = (Polynomial) it.next();
+                                final Arithmetic leadingMonomial = leadingMonomial(gi, monomialOrder);
+                                basis[i] = new Pair(gi, leadingMonomial);
+                        }
+                }
+        }
+        public boolean equals(Object o) {
+                return (o instanceof ReductionFunctionFast)
+                && Utility.equals(g, ((ReductionFunctionFast) o).g)
+                && Utility.equals(monomialOrder, ((ReductionFunctionFast) o).monomialOrder);
+        }
+        public int hashCode() {
+                return Utility.hashCode(g) ^ Utility.hashCode(monomialOrder);
+        }
+        public Object/*>Polynomial<R,S><*/ apply(final Object/*>Polynomial<R,S><*/ o) {
+                logger.log(Level.FINEST, "reducing {0} with respect to {1} ...", new Object[] {o, g});
+                if (g.isEmpty()) {
+                        return o;
+                }
+                Polynomial f = (Polynomial)o;
+                        final ValueFactory vf = f.valueFactory();
+                        //@internal we would prefer reverse direction (because we want to start eliminating large not small monomials), also starting with leading coefficient
+                        final Queue/*<S>*/ monomials = new PriorityQueue(20, new ReverseComparator(monomialOrder));
+                        monomials.addAll(occurringMonomials(f));
+                        // caching all monomial exponents occurred so far that cannot be reduced with respect to g.
+                        final Set/*<S>*/ noreduction = new LinkedHashSet();
+                        leadingReductions:
+                        while (!monomials.isEmpty()) {
+                                final Arithmetic/*>S<*/ nu = (Arithmetic/*>S<*/) monomials.poll();
+                                final Arithmetic/*>R<*/ cnu = f.get(nu);
+                                assert !cnu.isZero() : "@postconditions of occurringMonomials(...)";
+                                reductionPolynomials:
+                                        for (int j = 0; j < basis.length; j++) {
+                                                final Polynomial/*<R,S>*/ gj = (Polynomial/*>Polynomial<R,S><*/)basis[j].A;
+                                                final Arithmetic/*>S<*/ lgj = (Arithmetic/*>S<*/)basis[j].B;
 
-						// test divisibility
-						Arithmetic/*>R<*/ cdiv;
-						final Arithmetic/*>S<*/ xdiv;
-						try {
-							// test divisibility of monomial X^nu by l(gj)
-							xdiv = divideMonomial(nu, lgj);
-							if (xdiv == null)
-								continue reductionPolynomials;
-							// test divisibility of coefficient cnu by lc(gj)=gj.get(lgj)
-							cdiv = (Arithmetic/*>R<*/)cnu.divide(gj.get(lgj));
-							if (cdiv instanceof Scalar) {
-								// simplify domain and cancel rationals leading to less complex coefficients.
-								cdiv = vf.narrow((Scalar)cdiv);
-							}
-						}
-						catch (ArithmeticException indivisible) {
-							continue reductionPolynomials;
-						}
-						// divisible, then q := cdiv*X<sup>xdiv</sup>
-						final Polynomial/*<R,S>*/ q = vf.MONOMIAL(cdiv, xdiv);
-						Polynomial/*<R,S>*/ reduction = f.subtract(q.multiply(gj));
-						if (symbolicg) {
-							assert reduction.get(nu).isZero() : vf.MONOMIAL(cnu.one(), nu) + " does not occur in " + reduction + " anymore";
-						} else if (!reduction.get(nu).isZero()) {
-							Arithmetic rnu = reduction.get(nu);
-							if (MathUtilities.equals(rnu.norm(),
-									rnu.zero(),
-									MathUtilities.getDefaultTolerance()
-							)) {
-								//@internal trick correct numerical instabilites
-								reduction = reduction.subtract(vf.MONOMIAL(reduction.get(nu), nu));
-							}
-							if (!reduction.get(nu).isZero()) {
-								throw new AssertionError(vf.MONOMIAL(cnu.one(), nu) + " does not occur in " + reduction + " anymore, even after numerical precision correction");
-							}
-						}
-						assert inducedOrder.compare(reduction, f) < 0 : reduction + "<" + f;
-						logger.log(Level.FINEST, "elementary reduction {0} - {1} * ({2}) == {3}", new Object[] {f, q, gj, reduction});
-						f =  reduction;
-						monomials.clear();
-						Collection newmons = occurringMonomials(f);
-						newmons.removeAll(noreduction);
-						monomials.addAll(newmons);
-						continue leadingReductions;
-					}
-				// g could not reduce this exponent at all, cache this information and do not try again (assuming fields where division is always possible)
-				noreduction.add(nu);
-			}
+                                                // test divisibility
+                                                Arithmetic/*>R<*/ cdiv;
+                                                final Arithmetic/*>S<*/ xdiv;
+                                                try {
+                                                        // test divisibility of monomial X^nu by l(gj)
+                                                        xdiv = divideMonomial(nu, lgj);
+                                                        if (xdiv == null)
+                                                                continue reductionPolynomials;
+                                                        // test divisibility of coefficient cnu by lc(gj)=gj.get(lgj)
+                                                        cdiv = (Arithmetic/*>R<*/)cnu.divide(gj.get(lgj));
+                                                        if (cdiv instanceof Scalar) {
+                                                                // simplify domain and cancel rationals leading to less complex coefficients.
+                                                                cdiv = vf.narrow((Scalar)cdiv);
+                                                        }
+                                                }
+                                                catch (ArithmeticException indivisible) {
+                                                        continue reductionPolynomials;
+                                                }
+                                                // divisible, then q := cdiv*X<sup>xdiv</sup>
+                                                final Polynomial/*<R,S>*/ q = vf.MONOMIAL(cdiv, xdiv);
+                                                Polynomial/*<R,S>*/ reduction = f.subtract(q.multiply(gj));
+                                                if (symbolicg) {
+                                                        assert reduction.get(nu).isZero() : vf.MONOMIAL(cnu.one(), nu) + " does not occur in " + reduction + " anymore";
+                                                } else if (!reduction.get(nu).isZero()) {
+                                                        Arithmetic rnu = reduction.get(nu);
+                                                        if (MathUtilities.equals(rnu.norm(),
+                                                                        rnu.zero(),
+                                                                        MathUtilities.getDefaultTolerance()
+                                                        )) {
+                                                                //@internal trick correct numerical instabilites
+                                                                reduction = reduction.subtract(vf.MONOMIAL(reduction.get(nu), nu));
+                                                        }
+                                                        if (!reduction.get(nu).isZero()) {
+                                                                throw new AssertionError(vf.MONOMIAL(cnu.one(), nu) + " does not occur in " + reduction + " anymore, even after numerical precision correction");
+                                                        }
+                                                }
+                                                assert inducedOrder.compare(reduction, f) < 0 : reduction + "<" + f;
+                                                logger.log(Level.FINEST, "elementary reduction {0} - {1} * ({2}) == {3}", new Object[] {f, q, gj, reduction});
+                                                f =  reduction;
+                                                monomials.clear();
+                                                Collection newmons = occurringMonomials(f);
+                                                newmons.removeAll(noreduction);
+                                                monomials.addAll(newmons);
+                                                continue leadingReductions;
+                                        }
+                                // g could not reduce this exponent at all, cache this information and do not try again (assuming fields where division is always possible)
+                                noreduction.add(nu);
+                        }
             assert f.equals(new ReductionFunction(g, monomialOrder).apply(o)) : "optimized result " + f + " equals canonical result " + new ReductionFunction(g, monomialOrder).apply(o);
-    		return f;
-    	}
+                return f;
+        }
 
-    	public String toString() {
-    		return "ReductionFunctionFast[" + g + "; " + monomialOrder + "]";
-    	}
+        public String toString() {
+                return "ReductionFunctionFast[" + g + "; " + monomialOrder + "]";
+        }
     }
     
     /**
@@ -978,16 +978,16 @@ public final class AlgebraicAlgorithms {
      */
     public static final /*<R extends Arithmetic, S extends Arithmetic>*/
         Set/*<Polynomial<R,S>>*/ groebnerBasis(Set/*<Polynomial<R,S>>*/ g, final Comparator/*<S>*/ monomialOrder) {
-    	if (g.isEmpty()) {
-    		return Collections.EMPTY_SET;
-    	} else {
-    		if (g.contains(((Polynomial)g.iterator().next()).zero())) {
-    			g = new LinkedHashSet(g);
-    			g.remove(((Polynomial)g.iterator().next()).zero());
-    			if (g.isEmpty()) {
-    				return Collections.EMPTY_SET;
-    			}
-    		}
+        if (g.isEmpty()) {
+                return Collections.EMPTY_SET;
+        } else {
+                if (g.contains(((Polynomial)g.iterator().next()).zero())) {
+                        g = new LinkedHashSet(g);
+                        g.remove(((Polynomial)g.iterator().next()).zero());
+                        if (g.isEmpty()) {
+                                return Collections.EMPTY_SET;
+                        }
+                }
         }
         logger.log(Level.FINE, "Computing Groebner Basis of {0} with respect to {1}", new Object[] {g, monomialOrder});
         Set/*<Polynomial<R,S>>*/ rgb = groebnerBasisImpl(g, monomialOrder);
@@ -1515,25 +1515,25 @@ public final class AlgebraicAlgorithms {
      * @return X^a/X^b represented as a-b or null if not divisible
      */
     private static final Arithmetic divideMonomial(Arithmetic a, Arithmetic b) {
-    	Vector va = getExponentVector(a);
-    	Vector vb = getExponentVector(b);
-    	assert va.dimension() == vb.dimension() : "compatible ranks of polynomial rings";
-    	int dim = va.dimension();
-    	ListIterator i = va.iterator(), j = vb.iterator();
-    	while (i.hasNext()) {
-    		assert i.hasNext() && j.hasNext() : "compatible ranks of polynomial rings";
-    		Integer ai = (Integer)i.next();
-    		Integer bi = (Integer)j.next();
-    		if (ai.compareTo(bi) < 0) {
-    			assert Setops.some((getExponentVector(a.subtract(b))).iterator(), Functionals.bindSecond(Predicates.less, a.valueFactory().ZERO())) : "optimized implementation fits to canonical test";
-    			return null;
-    		}
+        Vector va = getExponentVector(a);
+        Vector vb = getExponentVector(b);
+        assert va.dimension() == vb.dimension() : "compatible ranks of polynomial rings";
+        int dim = va.dimension();
+        ListIterator i = va.iterator(), j = vb.iterator();
+        while (i.hasNext()) {
+                assert i.hasNext() && j.hasNext() : "compatible ranks of polynomial rings";
+                Integer ai = (Integer)i.next();
+                Integer bi = (Integer)j.next();
+                if (ai.compareTo(bi) < 0) {
+                        assert Setops.some((getExponentVector(a.subtract(b))).iterator(), Functionals.bindSecond(Predicates.less, a.valueFactory().ZERO())) : "optimized implementation fits to canonical test";
+                        return null;
+                }
         }
-		assert !i.hasNext() && !j.hasNext() : "compatible ranks of polynomial rings";
+                assert !i.hasNext() && !j.hasNext() : "compatible ranks of polynomial rings";
         // test divisibility of monomial X^a by X^b
         Arithmetic div = a.subtract(b);
         //@internal the following is a trick for S=<b>N</b><sup>n</sup> represented as <b>Z</b><sup>n</sup> (get rid when introducing Natural extends Integer)
-		assert !Setops.some((getExponentVector(div)).iterator(), Functionals.bindSecond(Predicates.less, a.valueFactory().ZERO())) : "optimized implementation fits to canonical test";
+                assert !Setops.some((getExponentVector(div)).iterator(), Functionals.bindSecond(Predicates.less, a.valueFactory().ZERO())) : "optimized implementation fits to canonical test";
 //        if (Setops.some((getExponentVector(div)).iterator(), Functionals.bindSecond(Predicates.less, a.valueFactory().ZERO())))
 //                return null;
 //        else {
@@ -1548,14 +1548,14 @@ public final class AlgebraicAlgorithms {
      * @return
      */
     private static Vector/*<Integer>*/ getExponentVector(Object m) {
-    	if (m instanceof Vector) {
-    		return (Vector)m;
-    	} else if (m instanceof Integer) {
-    		// univariate case
-    		return ((Arithmetic)m).valueFactory().valueOf(new Integer[] {(Integer)m});
-    	} else {
-    		throw new ClassCastException("Cannot convert exponent representation into Vector<Integer> from " + m);
-    	}
+        if (m instanceof Vector) {
+                return (Vector)m;
+        } else if (m instanceof Integer) {
+                // univariate case
+                return ((Arithmetic)m).valueFactory().valueOf(new Integer[] {(Integer)m});
+        } else {
+                throw new ClassCastException("Cannot convert exponent representation into Vector<Integer> from " + m);
+        }
     }
 
     /**

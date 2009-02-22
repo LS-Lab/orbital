@@ -49,11 +49,11 @@ import java.util.HashSet;
 abstract class AbstractTensor/*<R extends Arithmetic>*/
     extends AbstractProductArithmetic/*<R,int[],Tensor<R>>*/ implements Tensor/*<R>*/, Serializable {
     
-	private static final long serialVersionUID = 7889937971348824822L;
+        private static final long serialVersionUID = 7889937971348824822L;
 
-	protected AbstractTensor(ValueFactory valueFactory) {
-		super(valueFactory);
-	}
+        protected AbstractTensor(ValueFactory valueFactory) {
+                super(valueFactory);
+        }
 
     // object-methods
         
@@ -194,8 +194,8 @@ abstract class AbstractTensor/*<R extends Arithmetic>*/
             };
     } 
 
-	public Iterator indices() {
-		return new Iterator() {
+        public Iterator indices() {
+                return new Iterator() {
 
             private final Combinatorical cursor = Combinatorical.getPermutations(dimensions());
             /**
@@ -226,8 +226,8 @@ abstract class AbstractTensor/*<R extends Arithmetic>*/
                 if (modCount != expectedModCount)
                     throw new ConcurrentModificationException();
             }
-		};
-	} 
+                };
+        } 
 
     public Iterator entries() {
         return new Iterator() {
@@ -243,7 +243,7 @@ abstract class AbstractTensor/*<R extends Arithmetic>*/
                 } 
                 public Object next() {
                     try {
-                    	int[] lastRet;
+                        int[] lastRet;
                         Object v = get(lastRet = (int[])cursor.next().clone());
                         checkForComodification();
                         return new KeyValuePair(valueFactory().valueOf(lastRet), v);

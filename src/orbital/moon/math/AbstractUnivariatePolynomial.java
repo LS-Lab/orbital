@@ -43,13 +43,15 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
      * The 0&isin;R of the underlying ring of coefficients.
      * @invariants subclasses must set this value to get(0).zero()
      */
-    transient Arithmetic/*>R<*/  R_ZERO;
+    transient Arithmetic/*>R<*/  COEFFICIENT_ZERO;
     public AbstractUnivariatePolynomial(ValueFactory valueFactory) {
         super(valueFactory);
+        // can be overwritten in subclasses
+        this.COEFFICIENT_ZERO = valueFactory.ZERO();
     }
   
     public boolean equals(Object o) {
-    	// identical degrees imply compatible iterator() so that we do not need iterator(int dim) functions
+        // identical degrees imply compatible iterator() so that we do not need iterator(int dim) functions
         return o instanceof UnivariatePolynomial && degree().equals(((UnivariatePolynomial)o).degree()) && super.equals(o);
     }
 
@@ -95,7 +97,7 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
     protected final Polynomial/*<R,Integer>*/ newInstance(int[] dim) {
         if (dim.length == 1)
             return newInstance(dim[0]);
-        else throw new InternalError("multinomials not supported in this method");
+        else throw new InternalError("multinomials not supported, use ValueFactory.polynomial instead");
     }
 
     // iterator-views
@@ -244,7 +246,7 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
             return r;
         }
         // horner schema is (|0, &lambda;c,b. c+b*a|) for foldRight like banana
-        return Functionals.banana(R_ZERO, new BinaryFunction/*<R,R,R>*/() {
+        return Functionals.banana(COEFFICIENT_ZERO, new BinaryFunction/*<R,R,R>*/() {
                 public Object/*>R<*/ apply(Object/*>R<*/ c, Object/*>R<*/ b) {
                     return (Object/*>R<*/) ((Arithmetic/*>R<*/)c).add(((Arithmetic/*>R<*/)b).multiply(acast));
                     //return ((Arithmetic/*>R<*/)c).add(((Arithmetic/*>R<*/)b).multiply((Arithmetic/*>R<*/)a));
@@ -273,18 +275,20 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
             return this;
         Arithmetic[] ai = new Arithmetic[(degreeValue() + 1) + 1];
         final ValueFactory vf = valueFactory();
-        ai[0] = R_ZERO;
+        ai[0] = COEFFICIENT_ZERO;
         for (int i = 0; i <= degreeValue(); i++)
             ai[i + 1] = get(i).divide(vf.valueOf(i + 1));
         return vf.polynomial(ai);
     }
 
     public Arithmetic zero() {
-        return valueFactory().polynomial(new Arithmetic/*>R<*/[] {get(0).zero()});
+    	assert COEFFICIENT_ZERO != null : "COEFFICIENT_ZERO set";
+        return valueFactory().polynomial(new Arithmetic/*>R<*/[] {/*get(0)*/COEFFICIENT_ZERO.zero()});
     }
 
     public Arithmetic one() {
-        return valueFactory().polynomial(new Arithmetic/*>R<*/[] {get(0).one()});
+    	assert COEFFICIENT_ZERO != null : "COEFFICIENT_ZERO set";
+        return valueFactory().polynomial(new Arithmetic/*>R<*/[] {/*get(0)*/COEFFICIENT_ZERO.one()});
     }
 
     public Real norm() {
@@ -491,7 +495,7 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
             f0 = f0.subtract(BASE(ck, k).multiply(g));
             if (f0.isZero()) {
                 for (int i = k - 1; i >= 0; i--)
-                    quotient[i] = R_ZERO;
+                    quotient[i] = COEFFICIENT_ZERO;
                 break;
             }
         }
@@ -506,7 +510,7 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
     private UnivariatePolynomial/*<R>*/ BASE(Arithmetic/*>R<*/ s, int k) {
         Arithmetic/*>R<*/ r[] = new Arithmetic/*>R<*/[k + 1];
         for (int i = 0; i < k; i++)
-            r[i] = R_ZERO;
+            r[i] = COEFFICIENT_ZERO;
         r[k] = s;
         return valueFactory().polynomial(r);
     }

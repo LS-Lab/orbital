@@ -241,20 +241,20 @@ public class BigValuesImpl extends ArithmeticValuesImpl {
     }
     
     private Number makeBig(Number a) {
-    	if (a instanceof orbital.moon.math.Big || (a instanceof Scalar && isBig((Scalar)a))) {
-    		return a;
-    	} else if (a instanceof Integer) {
-    		return new AbstractInteger.Big(a, this);
-    	} else if (a instanceof Rational) {
-    		Rational r = (Rational) a;
-    		return (Number)rational((Integer)makeBig((Number)r.numerator()), (Integer)makeBig((Number)r.denominator()));
-    	} else if (a instanceof Real) {
-    		return new AbstractReal.Big(a, this);
+        if (a instanceof orbital.moon.math.Big || (a instanceof Scalar && isBig((Scalar)a))) {
+                return a;
+        } else if (a instanceof Integer) {
+                return new AbstractInteger.Big(a, this);
+        } else if (a instanceof Rational) {
+                Rational r = (Rational) a;
+                return (Number)rational((Integer)makeBig((Number)r.numerator()), (Integer)makeBig((Number)r.denominator()));
+        } else if (a instanceof Real) {
+                return new AbstractReal.Big(a, this);
         } else if (a instanceof Complex) {
-    		Complex r = (Complex) a;
-    		return (Number)complex((Real)makeBig((Number)r.re()), (Real)makeBig((Number)r.im()));
+                Complex r = (Complex) a;
+                return (Number)complex((Real)makeBig((Number)r.re()), (Real)makeBig((Number)r.im()));
         } else
-    		throw new IllegalArgumentException("Don't know how to handle case " + a + "@" + a.getClass());
+                throw new IllegalArgumentException("Don't know how to handle case " + a + "@" + a.getClass());
     }
 
 
@@ -266,14 +266,14 @@ public class BigValuesImpl extends ArithmeticValuesImpl {
             return true;
         } else if (x instanceof Integer) {
             assert !(x instanceof orbital.moon.math.Big) : "already checked " + x.getClass();
-        	assert !(x instanceof AbstractInteger.Big) : "Big implementation hierarchy " + x.getClass();
+                assert !(x instanceof AbstractInteger.Big) : "Big implementation hierarchy " + x.getClass();
             return false;
         } else if (x instanceof Rational) {
             Rational r = (Rational)x;
             return r.numerator() instanceof orbital.moon.math.Big && r.denominator() instanceof orbital.moon.math.Big;
         } else if (x instanceof Real) {
             assert !(x instanceof orbital.moon.math.Big) : "already checked " + x.getClass();
-        	assert !(x instanceof AbstractReal.Big) : "Big implementation hierarchy " + x.getClass();
+                assert !(x instanceof AbstractReal.Big) : "Big implementation hierarchy " + x.getClass();
             return false;
         } else if (x instanceof Complex) {
             Complex r = (Complex)x;
