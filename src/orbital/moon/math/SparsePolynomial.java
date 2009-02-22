@@ -348,7 +348,7 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
         }
         return ret;
     }
-    private Arithmetic/*>T<*/ operatorImpl(final Function op) {
+    protected Arithmetic/*>T<*/ operatorImpl(final Function op) {
         SparsePolynomial ret = (SparsePolynomial)newInstance(productIndexSet(this));
 
         // component-wise

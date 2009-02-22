@@ -74,7 +74,7 @@ public class FunctionTest extends check.TestCase {
 	public static void main(String[] argv) {
 		try {FunctionTest t=new FunctionTest();t.testGroebner();t.testGroebnerSparse();}catch(Exception e) {e.printStackTrace();}
 		//try {new FunctionTest().testdSolve_fully_symbolic();}catch(Exception e) {e.printStackTrace();}
-		//junit.textui.TestRunner.run(suite());
+		junit.textui.TestRunner.run(suite());
 	}
 	public static Test suite() {
 		//@internal could perhaps use RepeatedTest for testCalculations

@@ -139,7 +139,7 @@ abstract class AbstractProductArithmetic/*<R extends Arithmetic, I, T extends Ar
 
     // arithmetic-operations
         
-    private Arithmetic/*>T<*/ operatorImpl(BinaryFunction op, Arithmetic/*>T<*/ b) {
+    protected Arithmetic/*>T<*/ operatorImpl(BinaryFunction op, Arithmetic/*>T<*/ b) {
         if (!Utility.equalsAll(productIndexSet(this),productIndexSet(b)))
             throw new IllegalArgumentException("a" + op + "b only defined for equal productIndexSet() not for " + productIndexSet(this) + " and " + productIndexSet(b) + " of " + this + " and " + b);
         Arithmetic/*>T<*/ ret = newInstance(productIndexSet(this));
@@ -150,7 +150,7 @@ abstract class AbstractProductArithmetic/*<R extends Arithmetic, I, T extends Ar
         assert !dst.hasNext() : "equal productIndexSet() implies equal structure of iterators";
         return ret;
     } 
-    private Arithmetic/*>T<*/ operatorImpl(Function op) {
+    protected Arithmetic/*>T<*/ operatorImpl(Function op) {
         Arithmetic/*>T<*/ ret = newInstance(productIndexSet(this));
 
         // component-wise
