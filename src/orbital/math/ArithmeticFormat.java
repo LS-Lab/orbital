@@ -627,7 +627,13 @@ public class ArithmeticFormat extends Format {
                 
         // @todo improve format
         result.append(multinomialPrefix);
-        for (Iterator index = p.indices(); index.hasNext(); ) {
+        Iterator index = p.indices();
+        if (!index.hasNext()) {
+        	result.append(Values.getDefault().ZERO());
+            result.append(multinomialSuffix);
+            return result;
+        }
+        while (index.hasNext()) {
             final Vector/*<Integer>*/ i = (Vector)index.next();
             final Arithmetic ci = p.get(i);
             final boolean constantTerm = Setops.all(i.iterator(), Functionals.bindSecond(Predicates.equal, ci.zero()));

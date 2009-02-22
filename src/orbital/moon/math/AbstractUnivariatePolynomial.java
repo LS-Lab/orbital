@@ -19,6 +19,7 @@ import orbital.logic.functor.BinaryFunction;
 
 import orbital.util.KeyValuePair;
 import orbital.util.Setops;
+import orbital.util.Utility;
 import orbital.logic.functor.Predicates;
 
 import java.util.Iterator;
@@ -48,7 +49,8 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
     }
   
     public boolean equals(Object o) {
-        return (o instanceof UnivariatePolynomial) && super.equals(o);
+    	// identical degrees imply compatible iterator() so that we do not need iterator(int dim) functions
+        return o instanceof UnivariatePolynomial && degree().equals(((UnivariatePolynomial)o).degree()) && super.equals(o);
     }
 
     public int hashCode() {
@@ -554,7 +556,7 @@ abstract class AbstractUnivariatePolynomial/*<R extends Arithmetic>*/
         return dimensions();
     }
     protected ListIterator/*<R>*/ iterator(Arithmetic/*>UnivariatePolynomial<R><*/ productObject) {
-        return ((Polynomial)productObject).iterator();
+        return ((AbstractUnivariatePolynomial)productObject).iterator();
     }
     protected final Arithmetic/*>UnivariatePolynomial<R><*/ newInstance(Object/*>Integer<*/ productIndexSet) {
         //@xxx wrong type case?

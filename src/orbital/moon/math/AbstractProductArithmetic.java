@@ -9,6 +9,7 @@ import orbital.math.*;
 
 import java.io.Serializable;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 
 import java.util.Iterator;
 
@@ -109,8 +110,8 @@ abstract class AbstractProductArithmetic/*<R extends Arithmetic, I, T extends Ar
                 return Utility.equalsAll(productIndexSet(this), productIndexSet(b))
                     && Setops.all(iterator(this), iterator(b), Predicates.equal);
             }
-            catch (IllegalArgumentException ex) {
-              	throw (IllegalArgumentException) new IllegalArgumentException("comparison failed, because of " + ex + " for " + this + "\nand " + b + "\ni.e. " + iterator(this) + "\nand " + iterator(b) + " of product index sets " + MathUtilities.format(productIndexSet(this)) + " and " + MathUtilities.format(productIndexSet(b))).initCause(ex);
+            catch (IndexOutOfBoundsException ex) {
+              	throw (IllegalArgumentException) new IllegalArgumentException("comparison failed, because of " + ex + " for " + this + "\nand " + b + "\ni.e. " + MathUtilities.format(iterator(this)) + "\nand " + MathUtilities.format(iterator(b)) + " of product index sets " + MathUtilities.format(productIndexSet(this)) + " and " + MathUtilities.format(productIndexSet(b))).initCause(ex);
             }
         } 
         return false;
@@ -140,7 +141,7 @@ abstract class AbstractProductArithmetic/*<R extends Arithmetic, I, T extends Ar
         
     private Arithmetic/*>T<*/ operatorImpl(BinaryFunction op, Arithmetic/*>T<*/ b) {
         if (!Utility.equalsAll(productIndexSet(this),productIndexSet(b)))
-            throw new IllegalArgumentException("a" + op + "b only defined for equal productIndexSet()");
+            throw new IllegalArgumentException("a" + op + "b only defined for equal productIndexSet() not for " + productIndexSet(this) + " and " + productIndexSet(b) + " of " + this + " and " + b);
         Arithmetic/*>T<*/ ret = newInstance(productIndexSet(this));
 
         // component-wise

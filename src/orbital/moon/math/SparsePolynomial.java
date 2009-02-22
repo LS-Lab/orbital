@@ -6,13 +6,17 @@
 
 package orbital.moon.math;
 import orbital.algorithm.Combinatorical;
+import orbital.logic.functor.BinaryFunction;
 import orbital.math.*;
 import orbital.math.Integer;
 
 import orbital.math.functional.Function;
+import orbital.math.functional.Functionals;
 import orbital.math.functional.Operations;
 import orbital.util.KeyValuePair;
+import orbital.util.Setops;
 
+import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.ListIterator;
 import java.util.Iterator;
@@ -322,6 +326,47 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
     	}
     }
 
+    protected Arithmetic operatorImpl(final BinaryFunction op, Arithmetic bb) {
+        // only cast since Polynomial does not (yet?) have iterator(int[])
+        final SparsePolynomial b = (SparsePolynomial)bb;
+        if (!indexSet().equals(b.indexSet()))
+            throw new IllegalArgumentException("a" + op + "b only defined for equal indexSet() not for " + indexSet() + " and " + b.indexSet() + " of " + this + " and " + b);
+        SparsePolynomial/*>T<*/ ret = (SparsePolynomial)newInstance(productIndexSet(this));
+
+        // component-wise
+        Iterator res = 
+        Functionals.map(new orbital.logic.functor.Function() {
+            public Object apply(Object o) {
+                //@todo could rewrite pure functional even more (by using pair copy function etc)
+                Arithmetic/*>S<*/ i = (Arithmetic)o;
+                return new KeyValuePair(i, op.apply(get(i), b.get(i)));
+            }
+        }, combinedIndices(this,b));
+        while (res.hasNext()) {
+        	KeyValuePair e = (KeyValuePair) res.next();
+        	ret.set((Arithmetic)e.getKey(), (Arithmetic)e.getValue());
+        }
+        return ret;
+    }
+    private Arithmetic/*>T<*/ operatorImpl(final Function op) {
+        SparsePolynomial ret = (SparsePolynomial)newInstance(productIndexSet(this));
+
+        // component-wise
+        Iterator res = 
+        Functionals.map(new orbital.logic.functor.Function() {
+            public Object apply(Object o) {
+                //@todo could rewrite pure functional even more (by using pair copy function etc)
+                Arithmetic/*>S<*/ i = (Arithmetic)o;
+                return new KeyValuePair(i, op.apply(get(i)));
+            }
+        }, indices());
+        while (res.hasNext()) {
+        	KeyValuePair e = (KeyValuePair) res.next();
+        	ret.set((Arithmetic)e.getKey(), (Arithmetic)e.getValue());
+        }
+        return ret;
+} 
+
     public Arithmetic zero() {
         SparsePolynomial r = (SparsePolynomial)newInstance(CONSTANT_TERM);
         r.set(CONSTANT_TERM, COEFFICIENT_ZERO);
@@ -334,6 +379,10 @@ class SparsePolynomial/*<R extends Arithmetic, S extends Arithmetic>*/
         return r;
     }
 
+    protected void setZero() {
+    	coefficients.clear();
+    }
+    
     /**
      * Get a vectorial representation of an index for an exponent of a monomial, if possible
      * @param m

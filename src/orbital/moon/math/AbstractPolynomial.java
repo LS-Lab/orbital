@@ -137,7 +137,7 @@ abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*
     protected Arithmetic operatorImpl(final BinaryFunction op, Arithmetic bb) {
         final Polynomial b = (Polynomial)bb;
         if (!indexSet().equals(b.indexSet()))
-            throw new IllegalArgumentException("a" + op + "b only defined for equal indexSet()");
+            throw new IllegalArgumentException("a" + op + "b only defined for equal indexSet() not for " + indexSet() + " and " + b.indexSet() + " of " + this + " and " + b);
         //@internal assuming the dimensions will grow as required
         Polynomial/*>T<*/ ret = (Polynomial) newInstance(indexSet());
 
@@ -176,7 +176,7 @@ abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*
     public Polynomial/*<R,S>*/ multiply(Polynomial/*<R,S>*/ bb) {
         Polynomial b = (Polynomial)bb;
         if (!indexSet().equals(b.indexSet())) {
-                throw new IllegalArgumentException("Cannot multiply polynomials of different polynomial rings with " + indexSet() + " and " + b.indexSet() + " variables/indices");
+                throw new IllegalArgumentException("Cannot multiply polynomials of different polynomial rings with " + indexSet() + " and " + b.indexSet() + " variables/indices in (" + this + "@" + getClass() + ") * (" + b + "@" + b.getClass() + ")");
         }
         if (degreeValue() < 0)
             return this;
@@ -208,7 +208,13 @@ abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*
      * Sets all our coefficients to 0.
      */
     protected void setZero() {
-        final Arithmetic/*>R<*/ ZERO = get((Arithmetic/*>S<*/)indices().next()).zero();
+    	Iterator index = indices();
+    	final Arithmetic/*>R<*/ ZERO;
+    	if (index.hasNext())
+            ZERO = get((Arithmetic/*>S<*/)index.next()).zero();
+    	else {
+    		throw new IllegalStateException("Cannot determine 0 coefficient for " + this + "@" + getClass());
+    	}
         for (ListIterator i = iterator(); i.hasNext(); ) {
             i.next();
             i.set(ZERO);
@@ -230,7 +236,7 @@ abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*
     /**
      * return an iterator over all indices occurring in either polynomial.
      */
-    private static final Iterator combinedIndices(Polynomial f, Polynomial g) {
+    static final Iterator combinedIndices(Polynomial f, Polynomial g) {
         return Setops.union(Setops.asSet(f.indices()), Setops.asSet(g.indices())).iterator();
     }
 }

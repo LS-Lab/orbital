@@ -169,7 +169,7 @@ public final class Setops {
             if (!found.apply((/*__*/Object/*>A1<*/) i.next(), (/*__*/Object/*>A2<*/) j.next()))
                 return false;
         if (i.hasNext() || j.hasNext())
-        	throw new IllegalArgumentException("incompatible lengths");
+            throw new IndexOutOfBoundsException("argument iterators must have same length");
         else
         	return true;
     } 
@@ -200,7 +200,7 @@ public final class Setops {
             if (found.apply((/*__*/Object/*>A1<*/) i.next(), (/*__*/Object/*>A2<*/) j.next()))
                 return true;
         if (i.hasNext() || j.hasNext())
-        	throw new IllegalArgumentException("incompatible lengths");
+            throw new IndexOutOfBoundsException("argument iterators must have same length");
         else
         	return false;
     } 

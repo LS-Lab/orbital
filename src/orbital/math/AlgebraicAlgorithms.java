@@ -821,6 +821,8 @@ public final class AlgebraicAlgorithms {
 			//@internal we would prefer reverse direction (because we want to start eliminating large not small monomials), also starting with leading coefficient
 			final Queue/*<S>*/ monomials = new PriorityQueue(20, new ReverseComparator(monomialOrder));
 			monomials.addAll(occurringMonomials(f));
+			// caching all monomial exponents occurred so far that cannot be reduced with respect to g.
+			final Set/*<S>*/ noreduction = new LinkedHashSet();
 			leadingReductions:
 			while (!monomials.isEmpty()) {
 				final Arithmetic/*>S<*/ nu = (Arithmetic/*>S<*/) monomials.poll();
@@ -871,9 +873,13 @@ public final class AlgebraicAlgorithms {
 						logger.log(Level.FINEST, "elementary reduction {0} - {1} * ({2}) == {3}", new Object[] {f, q, gj, reduction});
 						f =  reduction;
 						monomials.clear();
-						monomials.addAll(occurringMonomials(f));
+						Collection newmons = occurringMonomials(f);
+						newmons.removeAll(noreduction);
+						monomials.addAll(newmons);
 						continue leadingReductions;
 					}
+				// g could not reduce this exponent at all, cache this information and do not try again (assuming fields where division is always possible)
+				noreduction.add(nu);
 			}
             assert f.equals(new ReductionFunction(g, monomialOrder).apply(o)) : "optimized result " + f + " equals canonical result " + new ReductionFunction(g, monomialOrder).apply(o);
     		return f;
