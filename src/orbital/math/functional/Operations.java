@@ -20,6 +20,7 @@ import orbital.math.Real;
 import orbital.math.MathUtilities;
 import java.lang.reflect.InvocationTargetException;
 
+import orbital.math.Complex;
 import orbital.math.ValueFactory;
 import orbital.math.Values;
 import orbital.math.Vector;
@@ -606,16 +607,8 @@ public interface Operations /* implements ArithmeticOperations */ {
      * @attribute strict order
      * @see java.lang.Comparable
      */
-    public static final orbital.logic.functor.BinaryFunction/*<Object,Object,Integer>*/ compare = new orbital.logic.functor.BinaryFunction/*<Object,Object,Integer>*/() {
-            public Object/*>Integer<*/ apply(Object a, Object b) {
-            	ValueFactory vf = ((Arithmetic)a).valueFactory();
-                Arithmetic operands[] = (Arithmetic[]) vf.getCoercer(false).apply(new Arithmetic[] {
-                    (Arithmetic) a, (Arithmetic) b
-                });
-                return vf.valueOf(((Comparable) operands[0]).compareTo(operands[1]));
-            }
-            public String toString() { return "cmp"; }
-        };
+    public static final orbital.logic.functor.BinaryFunction/*<Object,Object,Integer>*/ compare = new CompareFunction();
+        
 
     /**
      * &lt;.
@@ -627,10 +620,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final BinaryPredicate/*<Object,Object>*/ less = new BinaryPredicate/*<Object,Object>*/() {
             public boolean apply(Object a, Object b) {
-                Arithmetic operands[] = (Arithmetic[]) ((Arithmetic)a).valueFactory().getCoercer(false).apply(new Arithmetic[] {
-                    (Arithmetic) a, (Arithmetic) b
-                });
-                return ((Comparable) operands[0]).compareTo(operands[1]) < 0;
+            	return CompareFunction.compare((Arithmetic)a, (Arithmetic)b) < 0;
             }
             public String toString() { return "<"; }
         };
@@ -645,10 +635,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final BinaryPredicate/*<Object,Object>*/ greater = new BinaryPredicate/*<Object,Object>*/() {
             public boolean apply(Object a, Object b) {
-                Arithmetic operands[] = (Arithmetic[]) ((Arithmetic)a).valueFactory().getCoercer(false).apply(new Arithmetic[] {
-                    (Arithmetic) a, (Arithmetic) b
-                });
-                return ((Comparable) operands[0]).compareTo(operands[1]) > 0;
+            	return CompareFunction.compare((Arithmetic)a, (Arithmetic)b) > 0;
             }
             public String toString() { return ">"; }
         };
@@ -663,10 +650,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final BinaryPredicate/*<Object,Object>*/ lessEqual = new BinaryPredicate/*<Object,Object>*/() {
             public boolean apply(Object a, Object b) {
-                Arithmetic operands[] = (Arithmetic[]) ((Arithmetic)a).valueFactory().getCoercer(false).apply(new Arithmetic[] {
-                    (Arithmetic) a, (Arithmetic) b
-                });
-                return ((Comparable) operands[0]).compareTo(operands[1]) <= 0;
+            	return CompareFunction.compare((Arithmetic)a, (Arithmetic)b) <= 0;
             }
             public String toString() { return "=<"; }
         };
@@ -681,10 +665,7 @@ public interface Operations /* implements ArithmeticOperations */ {
      */
     public static final BinaryPredicate/*<Object,Object>*/ greaterEqual = new BinaryPredicate/*<Object,Object>*/() {
             public boolean apply(Object a, Object b) {
-                Arithmetic operands[] = (Arithmetic[]) ((Arithmetic)a).valueFactory().getCoercer(false).apply(new Arithmetic[] {
-                    (Arithmetic) a, (Arithmetic) b
-                });
-                return ((Comparable) operands[0]).compareTo(operands[1]) >= 0;
+            	return CompareFunction.compare((Arithmetic)a, (Arithmetic)b) >= 0;
             }
             public String toString() { return ">="; }
         };
@@ -782,4 +763,57 @@ abstract class PointwiseMethodFunction implements BinaryFunction {
             } 
         return Functionals.genericCompose(this, x, y);
     } 
+}
+
+class CompareFunction implements orbital.logic.functor.BinaryFunction/*<Object,Object,Integer>*/ {
+    public Object/*>Integer<*/ apply(Object a, Object b) {
+    	return ((Arithmetic)a).valueFactory().valueOf(compare((Arithmetic)a, (Arithmetic)b));
+    }
+    public static int compare(Arithmetic a, Arithmetic b) {
+    	ValueFactory vf = a.valueFactory();
+    	try {
+    		Arithmetic operands[] = (Arithmetic[]) vf.getCoercer(false).apply(new Arithmetic[] {
+    				a, b
+    		});
+    		return ((Comparable) operands[0]).compareTo(operands[1]);
+    	}
+    	catch(NumberFormatException ex) {
+    		if (a instanceof Complex && b instanceof Complex) {
+    			Complex ac = (Complex)a;
+    			Complex bc = (Complex)b;
+    			// extended order properties for infinities
+    			if (ac.isNaN() || bc.isNaN())
+    				throw ex;
+    			if (ac.equals(bc))
+    				return 0;
+    			if (ac.isInfinite() || bc.isInfinite()) {
+    				if (ac.isInfinite() && !bc.isInfinite()) {
+    					if (ac instanceof Real && ac.equals(vf.POSITIVE_INFINITY()))
+    						return 1;
+    					else if (ac instanceof Real && ac.equals(vf.NEGATIVE_INFINITY()))
+    						return -1;
+    					else
+    						throw ex;
+    				} else if (bc.isInfinite() && !ac.isInfinite()) {
+    					if (bc instanceof Real && bc.equals(vf.POSITIVE_INFINITY()))
+    						return -1;
+    					else if (bc instanceof Real && bc.equals(vf.NEGATIVE_INFINITY()))
+    						return 1;
+    					else
+    						throw ex;
+    				} else {
+    					assert ac.isInfinite() && bc.isInfinite();
+    					if (ac instanceof Real && bc instanceof Real && ac.equals(vf.NEGATIVE_INFINITY()) && bc.equals(vf.POSITIVE_INFINITY()))
+    						return -1;
+    					else if (ac instanceof Real && bc instanceof Real && ac.equals(vf.POSITIVE_INFINITY()) && bc.equals(vf.NEGATIVE_INFINITY()))
+    						return 1;
+    					else
+    						throw ex;
+    				}
+    			}
+    		}
+			throw ex;
+    	}
+    }
+    public String toString() { return "cmp"; }
 }

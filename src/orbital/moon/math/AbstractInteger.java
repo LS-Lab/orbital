@@ -20,6 +20,13 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
         super(valueFactory);
     }
     
+    public boolean isInfinite() {
+    	return false;
+    }
+    public boolean isNaN() {
+    	return false;
+    }
+
     // Arithmetic implementation synonyms
     public Arithmetic add(Arithmetic b) {
         if (b instanceof Integer)
