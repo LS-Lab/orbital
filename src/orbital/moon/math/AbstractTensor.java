@@ -451,7 +451,7 @@ abstract class AbstractTensor/*<R extends Arithmetic>*/
 
         public TransposedTensor(final AbstractTensor/*<R>*/ m, int[] permutation) {
             super(m);
-            Utility.pre(permutation.length == m.rank(), "indices must be of correct rank.");
+            Utility.pre(permutation.length == m.rank(), "indices must be of correct rank: permutation " + MathUtilities.format(permutation) + " not of rank " + m.rank());
             Utility.pre(Setops.all(m.valueFactory().valueOf(permutation).iterator(), new Predicate() {
                     public boolean apply(Object o) {
                         return (o instanceof Integer) && MathUtilities.isin(((Integer)o).intValue(), 0, m.rank() - 1);
@@ -460,9 +460,19 @@ abstract class AbstractTensor/*<R extends Arithmetic>*/
             //@see Setops.hasDuplicates
             Utility.pre(new HashSet(Setops.asList(m.valueFactory().valueOf(permutation).iterator())).size() == m.rank(), "A permutation is bijective, so its mapping table should not contain duplicates.");
             this.permutation = permutation;
+            assert validateDimension(m.dimensions()) : "permuted dimensions";
         }
     
-        public final int[] dimensions() {
+        private boolean validateDimension(int[] dimensions) {
+			int[] dimp = dimensions();
+			assert dimp.length == dimensions.length : "transposed tensor views preserve rank";
+			for (int k = 0; k < dimensions.length; k++) {
+				assert dimp[k] == dimensions[permutation[k]] : "permuted dimension " + MathUtilities.format(dimp) + " of " + MathUtilities.format(dimensions) + " after permutation by " + MathUtilities.format(permutation);
+			}
+			return true;
+		}
+
+		public final int[] dimensions() {
             checkForComodification();
             return transformIndex(getDelegatee().dimensions());
         } 
