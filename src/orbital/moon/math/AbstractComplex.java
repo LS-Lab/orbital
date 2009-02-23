@@ -75,7 +75,8 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
      * @see #norm()
      */
     public Real arg() {
-        return valueFactory().valueOf(Math.atan2(imaginaryValue(), realValue()));
+    	//@xxx possible loss of precision
+        return valueFactory().valueOf(Math.atan2(ArithmeticValuesImpl.doubleValueExact(im()), ArithmeticValuesImpl.doubleValueExact(re())));
         //return Math.acos(realValue() / norm());
     } 
 
@@ -248,7 +249,7 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
         public boolean equals(Object o) {
             if (o instanceof Double) {
                 // optimized version
-                AbstractComplex b = (AbstractComplex) o;
+                AbstractComplex.Double b = (AbstractComplex.Double) o;
                 return java.lang.Double.doubleToLongBits(realValue()) == java.lang.Double.doubleToLongBits(b.realValue())
                     && java.lang.Double.doubleToLongBits(imaginaryValue()) == java.lang.Double.doubleToLongBits(b.imaginaryValue());
             } else
@@ -257,7 +258,7 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
         public boolean equals(Object o, Real tolerance) {
             if (o instanceof Double) {
                 // optimized version
-                AbstractComplex b = (AbstractComplex) o;
+                AbstractComplex.Double b = (AbstractComplex.Double) o;
                 final double deltare = realValue() - b.realValue();
                 final double deltaim = imaginaryValue() - b.imaginaryValue();
                 final double tol = tolerance.doubleValue();
