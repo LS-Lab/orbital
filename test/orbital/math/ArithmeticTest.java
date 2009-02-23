@@ -196,65 +196,66 @@ public class ArithmeticTest extends check.TestCase {
         Arithmetic zero = x.zero();
         Arithmetic one = x.one();
         System.out.println("(" + zero + ") + (" + x + ") = " + zero.add(x));
-        assertTrue(zero.add(x).equals(x) , "0+x=x \t(" + zero + ") + (" + x + ") = " + zero.add(x) + " = " + x);
-        assertTrue(x.add(zero).equals(x) , "x+0=x \t(" + x + ") + (" + zero + ") = " + x);
+        assertTrue(zero.add(x).equals(x) , "0+x=x:\t(" + zero + ") + (" + x + ") = " + zero.add(x) + " = " + x);
+        assertTrue(x.add(zero).equals(x) , "x+0=x:\t(" + x + ") + (" + zero + ") = " + x.add(zero) + " = " + x);
 
-        assertTrue(zero.add(zero).equals(zero) , "0+0=0 \t(" + zero + ")+(" + zero + ") = " + zero);
+        assertTrue(zero.add(zero).equals(zero) , "0+0=0:\t(" + zero + ")+(" + zero + ") = " + zero.add(zero) + " = " + zero);
 
         System.out.println("-(" + x + ") = " + x.minus());
-        assertTrue(x.minus().add(x).equals(zero) , "(-x)+x=0 \t-(" + x + ") + (" + x + ") = " + zero);
-        assertTrue(x.add(x.minus()).equals(zero) , "x+(-x)=0 \t(" + x + ") + (-(" + x + ")) = " + zero);
+        assertTrue(x.minus().add(x).equals(zero) , "(-x)+x=0:\t-(" + x + ") + (" + x + ") = " + x.minus().add(x) + " = " + zero);
+        assertTrue(x.add(x.minus()).equals(zero) , "x+(-x)=0:\t(" + x + ") + (-(" + x + ")) = " + x.add(x.minus()) + " = " + zero);
 
-        assertTrue(zero.minus().equals(zero) , "-0=0 \t-(" + zero + ") = " + zero);
-        assertTrue(zero.subtract(zero).equals(zero) , "0-0=0 \t" + zero + "-(" + zero + ") = " + zero);
+        assertTrue(zero.minus().equals(zero) , "-0=0:\t-(" + zero + ") = " + zero.minus() + " = " + zero);
+        assertTrue(zero.subtract(zero).equals(zero) , "0-0=0:\t" + zero + "-(" + zero + ") = " + zero.subtract(zero) + " = " + zero);
 
-        assertTrue(x.subtract(x).equals(zero) , "x-x=0 \t(" + x + ") - (" + x + ") = " + zero);
+        assertTrue(x.subtract(x).equals(zero) , "x-x=0:\t(" + x + ") - (" + x + ") = " + x.subtract(x) + " = " + zero);
 
         System.out.println(a + "*(" + x + ") = " + x.scale(a));
         System.out.println("(" + one + ") * (" + x + ") = " + one.multiply(x));
-        assertTrue(one.multiply(x).equals(x) , "1*x=x \t" + one + " * (" + x + ") = " + x);
-        assertTrue(x.multiply(one).equals(x) , "x*1=x \t(" + x + ") * " + one + " = " + x);
+        assertTrue(one.multiply(x).equals(x) , "1*x=x:\t" + one + " * (" + x + ") = " + one.multiply(x) + " = " + x);
+        assertTrue(x.multiply(one).equals(x) , "x*1=x:\t(" + x + ") * " + one + " = " + x.multiply(one) + " = " + x);
 
-        assertTrue(zero.multiply(zero).equals(zero) , "0*0=0 \t(" + zero + ") * (" + zero + ") = " + zero);
-        assertTrue(zero.multiply(x).equals(zero) , "0*x=0 \t(" + zero + ") * (" + x + ") = " + zero);
-        assertTrue(x.multiply(zero).equals(zero) , "x*0=0 \t(" + x + ") * (" + zero + ") = " + zero);
-        assertTrue(zero.multiply(one).equals(zero) , "0*1=0 \t(" + zero + ") * (" + one + ") = " + zero);
-        assertTrue(one.multiply(zero).equals(zero) , "1*0=0 \t(" + one + ") * (" + zero + ") = " + zero);
+        assertTrue(zero.multiply(zero).equals(zero) , "0*0=0:\t(" + zero + ") * (" + zero + ") = " + zero.multiply(zero) + " = " + zero.multiply(zero) + " = " + zero);
+        assertTrue(zero.multiply(x).isZero() , "0*x=0:\t(" + zero + ") * (" + x + ") = " + zero.multiply(x) + " is zero");
+        assertTrue(zero.multiply(x).equals(zero) , "0*x=0:\t(" + zero + ") * (" + x + ") = " + zero.multiply(x) + " = " + zero);
+        assertTrue(x.multiply(zero).equals(zero) , "x*0=0:\t(" + x + ") * (" + zero + ") = " + x.multiply(zero) + " = " + zero);
+        assertTrue(zero.multiply(one).equals(zero) , "0*1=0:\t(" + zero + ") * (" + one + ") = " + zero.multiply(one) + " = " + zero);
+        assertTrue(one.multiply(zero).equals(zero) , "1*0=0:\t(" + one + ") * (" + zero + ") = " + one.multiply(zero) + " = " + zero);
         
     	assertTrue(x.zero().isZero(), "the zero " + x.zero() + " of " + x + " is zero");
     	assertTrue(x.one().isOne(), "the one " + x.one() + " of " + x + " is one");
-		assertTrue(x.add(x.minus()).isZero(), "(" + x + ") + -(" + x + ") is zero");
-		assertTrue(x.add(x.minus()).equals(x.zero()), "(" + x + ") + -(" + x + ") = " + x.zero());
-		assertTrue(x.subtract(x).isZero(), "(" + x + ") - (" + x + ") is zero");
-		assertTrue(x.subtract(x).equals(x.zero()), "(" + x + ") - (" + x + ") = " + x.zero());
-		assertTrue(x.add(x.zero()).equals(x), "(" + x + ") + (" + x.zero() + ") = " + x);
-		assertTrue(x.subtract(x.zero()).equals(x), "(" + x + ") - (" + x.zero() + ") = " + x);
-		assertTrue(x.zero().subtract(x).equals(x.minus()), "(" + x.zero() + ") - (" + x + ") = " + x.minus());
-		assertTrue(x.zero().add(x).equals(x), "(" + x.zero() + ") + (" + x + ") = " + x);
-		assertTrue(x.multiply(x.one()).equals(x), "(" + x + ") * (" + x.one() + ") = " + x);
-		assertTrue(x.multiply(x.one().minus()).equals(x.minus()), "(" + x + ") * (" + x.one().minus() + ") = " + x.minus());
-		assertTrue(x.multiply(x.zero()).isZero(), "(" + x + ") * (" + x.zero() + ") is zero");
-		assertTrue(x.multiply(x.zero()).equals(x.zero()), "(" + x + ") * (" + x.zero() + ") = " + x.zero());
-		assertTrue(x.one().multiply(x).equals(x), "(" + x.one() + ") * (" + x + ") = " + x);
-		assertTrue(x.one().minus().multiply(x).equals(x.minus()), "(" + x.one().minus() + ") * (" + x + ") = " + x.minus());
-		assertTrue(x.one().multiply(x).subtract(x).isZero(), "(" + x.one() + ") * (" + x + ") - " + x + " is zero");
-		assertTrue(x.one().multiply(x).subtract(x).equals(x.zero()), "(" + x.one() + ") * (" + x + ") - " + x + " = " + x.zero());
+		assertTrue(x.add(x.minus()).isZero(), "(" + x + ") + -(" + x + ") = " + x.add(x.minus()) + " is zero");
+		assertTrue(x.add(x.minus()).equals(x.zero()), "(" + x + ") + -(" + x + ") = " + x.add(x.minus()) + " = " + x.zero());
+		assertTrue(x.subtract(x).isZero(), "(" + x + ") - (" + x + ") = " + x.subtract(x) + " is zero");
+		assertTrue(x.subtract(x).equals(x.zero()), "(" + x + ") - (" + x + ") = " + x.subtract(x) + " = " + x.zero());
+		assertTrue(x.add(x.zero()).equals(x), "(" + x + ") + (" + x.zero() + ") = " + x.add(x.zero()) + " = " + x);
+		assertTrue(x.subtract(x.zero()).equals(x), "(" + x + ") - (" + x.zero() + ") = " + x.subtract(x.zero()) + " = " + x);
+		assertTrue(x.zero().subtract(x).equals(x.minus()), "(" + x.zero() + ") - (" + x + ") = " + x.zero().subtract(x) + " = " + x.minus());
+		assertTrue(x.zero().add(x).equals(x), "(" + x.zero() + ") + (" + x + ") = " + x.zero().add(x) + " = " + x);
+		assertTrue(x.multiply(x.one()).equals(x), "(" + x + ") * (" + x.one() + ") = " + x.multiply(x.one()) + " = " + x);
+		assertTrue(x.multiply(x.one().minus()).equals(x.minus()), "(" + x + ") * (" + x.one().minus() + ") = " + x.multiply(x.one().minus()) + " = " + x.minus());
+		assertTrue(x.multiply(x.zero()).isZero(), "(" + x + ") * (" + x.zero() + ") = " + x.multiply(x.zero()) + " is zero");
+		assertTrue(x.multiply(x.zero()).equals(x.zero()), "(" + x + ") * (" + x.zero() + ") = " + x.multiply(x.zero()) + " = " + x.zero());
+		assertTrue(x.one().multiply(x).equals(x), "(" + x.one() + ") * (" + x + ") = " + x.one().multiply(x) + " = " + x);
+		assertTrue(x.one().minus().multiply(x).equals(x.minus()), "(" + x.one().minus() + ") * (" + x + ") = " + x.one().minus().multiply(x) + " = " + x.minus());
+		assertTrue(x.one().multiply(x).subtract(x).isZero(), "(" + x.one() + ") * (" + x + ") - " + x + " = " + x.one().multiply(x).subtract(x) + " is zero");
+		assertTrue(x.one().multiply(x).subtract(x).equals(x.zero()), "(" + x.one() + ") * (" + x + ") - " + x + " = " + x.one().multiply(x).subtract(x) + " = " + x.zero());
         //@todo commutative +?
 
         if (withDivisions) {
             System.out.println("(" + x + ")^-1 = " + x.inverse());
-            assertTrue(x.inverse().multiply(x).equals(one) , "x^-1 * x=1 \t(" + x.inverse() + ") * (" + x + ") = " + one);
-            assertTrue(x.multiply(x.inverse()).equals(one) , "x*x^-1=1 \t(" + x + ") * (" + x.inverse() + ") = " + one);
+            assertTrue(x.inverse().multiply(x).equals(one) , "x^-1 * x=1:\t(" + x.inverse() + ") * (" + x + ") = " + one);
+            assertTrue(x.multiply(x.inverse()).equals(one) , "x*x^-1=1:\t(" + x + ") * (" + x.inverse() + ") = " + one);
 
             System.out.println("(" + one + ") / (" + x + ") = " + one.divide(x));
-            assertTrue(one.divide(x).equals(x.inverse()) , "1/x=x^-1 \t" + one + " / (" + x + ") = " + x.inverse());
-            assertTrue(one.inverse().equals(one) , "1^-1=1 \t(" + one + ")^-1 = " + one);
-            assertTrue(one.divide(one).equals(one) , "1/1=1 \t" + one + " / (" + one + ") = " + one);
+            assertTrue(one.divide(x).equals(x.inverse()) , "1/x=x^-1:\t" + one + " / (" + x + ") = " + x.inverse());
+            assertTrue(one.inverse().equals(one) , "1^-1=1:\t(" + one + ")^-1 = " + one);
+            assertTrue(one.divide(one).equals(one) , "1/1=1:\t" + one + " / (" + one + ") = " + one);
 
             System.out.println("(" + x + ") / (" + one + ") = " + x.divide(one));
-            assertTrue(x.divide(one).equals(x) , "x/1=x \t(" + x + ") / 1 = " + x);
+            assertTrue(x.divide(one).equals(x) , "x/1=x:\t(" + x + ") / 1 = " + x);
 
-            assertTrue(zero.divide(one).equals(zero) , "0/1=0 \t(" + zero + ") / (" + one + ") = " + zero);
+            assertTrue(zero.divide(one).equals(zero) , "0/1=0:\t(" + zero + ") / (" + one + ") = " + zero);
             
             //@todo sometimes commutative *?
         }
