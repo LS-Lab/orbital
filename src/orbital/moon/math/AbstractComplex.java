@@ -85,7 +85,7 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
      * @see java.lang.Double#isInfinite(double)
      */
     public boolean isInfinite() {
-        return java.lang.Double.isInfinite(realValue()) || java.lang.Double.isInfinite(imaginaryValue());
+        return re().isInfinite() || im().isInfinite();
     } 
 
     /**
@@ -94,7 +94,7 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
      * @see java.lang.Double#isNaN(double)
      */
     public boolean isNaN() {
-        return java.lang.Double.isNaN(realValue()) || java.lang.Double.isNaN(imaginaryValue());
+        return re().isNaN() || im().isNaN();
     } 
     
     // arithmetic operations

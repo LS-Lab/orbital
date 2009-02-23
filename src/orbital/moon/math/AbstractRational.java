@@ -53,6 +53,13 @@ abstract class AbstractRational extends AbstractReal implements Rational {
         return numerator().equals(denominator());
     }
     
+    public boolean isInfinite() {
+    	return false;
+    }
+    public boolean isNaN() {
+    	return denominator().isZero();
+    }
+    
     // Arithmetic implementation synonyms
     public Arithmetic add(Arithmetic b) {
         if (b instanceof Rational)

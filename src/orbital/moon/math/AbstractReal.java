@@ -55,6 +55,11 @@ abstract class AbstractReal extends AbstractComplex implements Real {
 	} 
 
 	// order
+    public abstract boolean isInfinite();
+    
+    public boolean isNaN() {
+        return java.lang.Double.isNaN(realValue());
+    } 
 
 	//TODO: optimize using direct + for all Scalars except Complex
 	public Arithmetic add(Arithmetic b) {
@@ -200,7 +205,11 @@ abstract class AbstractReal extends AbstractComplex implements Real {
 			return value == 1;
 		} 
 
-		public float floatValue() {
+	    public boolean isInfinite() {
+	        return java.lang.Float.isInfinite(value);
+	    } 
+
+	    public float floatValue() {
 			return value;
 		} 
 
@@ -343,7 +352,11 @@ abstract class AbstractReal extends AbstractComplex implements Real {
 			return value == 1;
 		} 
 
-		public double doubleValue() {
+	    public boolean isInfinite() {
+	        return java.lang.Double.isInfinite(value);
+	    } 
+
+	    public double doubleValue() {
 			return value;
 		} 
 		public long longValue() {
@@ -530,7 +543,16 @@ abstract class AbstractReal extends AbstractComplex implements Real {
 			return value.compareTo(BigDecimal.ONE) == 0;
 		} 
 
-		public Real norm() {
+	    public boolean isInfinite() {
+	    	// until now we have no infinities in Real.Big
+	        return false;
+	    } 
+	    public boolean isNaN() {
+	    	// until now we have no infinities in Real.Big
+	        return value == null;
+	    } 
+
+	    public Real norm() {
 			return new Big(value.abs(), valueFactory());
 		} 
 

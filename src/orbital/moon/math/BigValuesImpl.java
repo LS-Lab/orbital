@@ -270,10 +270,10 @@ public class BigValuesImpl extends ArithmeticValuesImpl {
                 return new AbstractReal.Big(a, this);
         	}
         	catch (NumberFormatException ex) {
-        		Real r = (Real)a;
-        		if (r.isNaN() || r.isInfinite())
-        			return (Number)r;
-        		else
+//        		Real r = (Real)a;
+//        		if (r.isNaN() || r.isInfinite())
+//        			return (Number)r;
+//        		else
         			throw ex;
         	}
         } else if (a instanceof Complex) {
@@ -292,14 +292,18 @@ public class BigValuesImpl extends ArithmeticValuesImpl {
             return true;
         } else if (x instanceof Integer) {
             assert !(x instanceof orbital.moon.math.Big) : "already checked " + x.getClass();
-                assert !(x instanceof AbstractInteger.Big) : "Big implementation hierarchy " + x.getClass();
+            assert !(x instanceof AbstractInteger.Big) : "Big implementation hierarchy " + x.getClass();
             return false;
         } else if (x instanceof Rational) {
             Rational r = (Rational)x;
             return r.numerator() instanceof orbital.moon.math.Big && r.denominator() instanceof orbital.moon.math.Big;
         } else if (x instanceof Real) {
-            assert !(x instanceof orbital.moon.math.Big) : "already checked " + x.getClass();
-                assert !(x instanceof AbstractReal.Big) : "Big implementation hierarchy " + x.getClass();
+            Real r = (Real)x;
+            if (r.isInfinite() || r.isNaN())
+            	// special values count as big until we found Real.Big representations of them
+            	return true;
+        	assert !(x instanceof orbital.moon.math.Big) : "already checked " + x.getClass();
+            assert !(x instanceof AbstractReal.Big) : "Big implementation hierarchy " + x.getClass();
             return false;
         } else if (x instanceof Complex) {
             Complex r = (Complex)x;
