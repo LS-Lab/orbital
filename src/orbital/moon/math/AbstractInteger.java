@@ -21,10 +21,10 @@ abstract class AbstractInteger extends AbstractRational implements Integer {
     }
     
     public boolean isInfinite() {
-    	return false;
+        return false;
     }
     public boolean isNaN() {
-    	return false;
+        return false;
     }
 
     // Arithmetic implementation synonyms

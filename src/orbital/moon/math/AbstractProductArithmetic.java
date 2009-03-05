@@ -146,12 +146,12 @@ abstract class AbstractProductArithmetic/*<R extends Arithmetic, I, T extends Ar
 
         // component-wise
         try {
-        	ListIterator dst;
-        	Setops.copy(dst = iterator(ret), Functionals.map(op, iterator(this), iterator(b)));
-        	assert !dst.hasNext() : "equal productIndexSet() implies equal structure of iterators";
-        	return ret;
+                ListIterator dst;
+                Setops.copy(dst = iterator(ret), Functionals.map(op, iterator(this), iterator(b)));
+                assert !dst.hasNext() : "equal productIndexSet() implies equal structure of iterators";
+                return ret;
         } catch (IndexOutOfBoundsException ex) {
-        	throw (IndexOutOfBoundsException) new IndexOutOfBoundsException(ex + " during a" + op + "b with productIndexSet()  " + productIndexSet(this) + " and " + productIndexSet(b) + " of " + this + "@" + getClass() + " and " + b + "@" + b.getClass()).initCause(ex);
+                throw (IndexOutOfBoundsException) new IndexOutOfBoundsException(ex + " during a" + op + "b with productIndexSet()  " + productIndexSet(this) + " and " + productIndexSet(b) + " of " + this + "@" + getClass() + " and " + b + "@" + b.getClass()).initCause(ex);
         }
     } 
     protected Arithmetic/*>T<*/ operatorImpl(orbital.math.functional.Function op) {
@@ -159,12 +159,12 @@ abstract class AbstractProductArithmetic/*<R extends Arithmetic, I, T extends Ar
 
         // component-wise
         try { 
-        	ListIterator dst;
-        	Setops.copy(dst = iterator(ret), Functionals.map(op, iterator(this)));
-        	assert !dst.hasNext() : "equal productIndexSet() implies equal structure of iterators";
-        	return ret;
+                ListIterator dst;
+                Setops.copy(dst = iterator(ret), Functionals.map(op, iterator(this)));
+                assert !dst.hasNext() : "equal productIndexSet() implies equal structure of iterators";
+                return ret;
         } catch (IndexOutOfBoundsException ex) {
-        	throw (IndexOutOfBoundsException) new IndexOutOfBoundsException(ex + " during " + op + "a with productIndexSet()  " + productIndexSet(this) +  " of " + this + "@" + getClass()).initCause(ex);
+                throw (IndexOutOfBoundsException) new IndexOutOfBoundsException(ex + " during " + op + "a with productIndexSet()  " + productIndexSet(this) +  " of " + this + "@" + getClass()).initCause(ex);
         }
     } 
 

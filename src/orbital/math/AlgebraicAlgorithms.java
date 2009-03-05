@@ -637,11 +637,10 @@ public final class AlgebraicAlgorithms {
      * Reduce<sub>g</sub>:K[X<sub>0</sub>,...,X<sub>n-1</sub>]&rarr;K[X<sub>0</sub>,...,X<sub>n-1</sub>]; f &#8614; "f reduced with respect to g".
      * Performs a division by multiple polynomials.
      * <p>
-     * Iteratedly performs the Buchberger-reduction
-     * <center>f &rarr;<sub>g</sub> h := f - &lambda;<sub>&nu;</sub>/l<sub>c</sub>(g) * X<sup>&nu;</sup>/l(g) * g</center>
-     * where l(g) is the leading monomial in g with leading coefficient l<sub>c</sub>(g), and
-     * f has the multivariate form &sum;<sub>&nu;</sub> &lambda;<sub>&nu;</sub>*X<sup>&nu;</sup>.
-     * For such a reduction, X<sup>&nu;</sup> no longer occurs in h and h<f or h=0.
+     * Iteratedly performs the following Buchberger-reduction for f=&sum;<sub>&nu;</sub> &lambda;<sub>&nu;</sub>*X<sup>&nu;</sup>:
+     * <center>f &rarr;<sub>g</sub> h := f - &lambda;<sub>&nu;</sub>/l<sub>c</sub>(g) * X<sup>&nu;</sup>/l(g) * g  =  f - &lambda;<sub>&nu;</sub>X<sup>&nu;</sup> / (l<sub>c</sub>(g) l(g)) * g</center>
+     * for some g&isin;G with l(g) being the leading monomial in g with leading coefficient l<sub>c</sub>(g) and
+     * For such a reduction, X<sup>&nu;</sup> no longer occurs in h and h&lt;f or h=0.
      * </p>
      * @param g the collection of multinomials for reducing polynomials.
      * @param monomialOrder the <a href="#monomialOrder">order of monomials</a>, which is decisive for the time complexity.

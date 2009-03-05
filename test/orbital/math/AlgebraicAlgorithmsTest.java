@@ -300,60 +300,60 @@ public class AlgebraicAlgorithmsTest extends check.TestCase {
      * Check contract properties of polynomials
      */
     public static boolean checkPolynomial(ValueFactory vf, Polynomial p) {
-    	ArithmeticTest.checkArithmetic(vf, p, false);
-    	Integer deg = p.degree();
-       	int[] degs = p.degrees();
+        ArithmeticTest.checkArithmetic(vf, p, false);
+        Integer deg = p.degree();
+        int[] degs = p.degrees();
         for (Iterator k = p.indices(); k.hasNext(); ) {
-        	Vector i = getExponentVector(k.next());
-        	for (int j = 0; j < i.dimension(); j++) {
-        		assertTrue(p.get(i).isZero() || ((Integer)i.get(j)).compareTo(vf.valueOf(degs[j])) <= 0, "exponents in indices() <= degrees(): exponent " + i + " <= " + MathUtilities.format(degs) + " of " + p.get(i) + " in " + p + "@" + p.getClass());
-        	}
-    		assertTrue(p.get(i).isZero() || ((Integer)Operations.sum.apply(i)).compareTo(deg) <= 0, "sum of exponents in indices() <= degree(): exponent " + i + " <= " + deg + " of " + p.get(i) + " in " + p + "@" + p.getClass());
+                Vector i = getExponentVector(k.next());
+                for (int j = 0; j < i.dimension(); j++) {
+                        assertTrue(p.get(i).isZero() || ((Integer)i.get(j)).compareTo(vf.valueOf(degs[j])) <= 0, "exponents in indices() <= degrees(): exponent " + i + " <= " + MathUtilities.format(degs) + " of " + p.get(i) + " in " + p + "@" + p.getClass());
+                }
+                assertTrue(p.get(i).isZero() || ((Integer)Operations.sum.apply(i)).compareTo(deg) <= 0, "sum of exponents in indices() <= degree(): exponent " + i + " <= " + deg + " of " + p.get(i) + " in " + p + "@" + p.getClass());
         }
         for (Iterator k = p.monomials(); k.hasNext(); ) {
-        	KeyValuePair e = (KeyValuePair) k.next();
-        	assertTrue(e.getValue().equals(p.get((Arithmetic) e.getKey())), "monomials() of polynomial correspond to get(): " + e.getValue() + " =  " + p.get((Arithmetic) e.getKey()));
-        	assertTrue(p.get((Arithmetic) e.getKey()).equals(e.getValue()), "get and monomials() fit " + e.getValue() + " = " + p.get((Arithmetic) e.getKey())+ " at " + e.getKey() + " in " + p + "@" + p.getClass());
+                KeyValuePair e = (KeyValuePair) k.next();
+                assertTrue(e.getValue().equals(p.get((Arithmetic) e.getKey())), "monomials() of polynomial correspond to get(): " + e.getValue() + " =  " + p.get((Arithmetic) e.getKey()));
+                assertTrue(p.get((Arithmetic) e.getKey()).equals(e.getValue()), "get and monomials() fit " + e.getValue() + " = " + p.get((Arithmetic) e.getKey())+ " at " + e.getKey() + " in " + p + "@" + p.getClass());
         }
         Tensor t = vf.asTensor(p);
         assertTrue(t.rank() == p.rank(), "asTensor preserves rank() " + p.rank() + " = " + t.rank() + " for " + p + "@" + p.getClass());
         for (Iterator k = t.entries(); k.hasNext(); ) {
-        	KeyValuePair e = (KeyValuePair) k.next();
-        	Vector i = (Vector)e.getKey();
-        	assertTrue(e.getValue().equals(t.get(getIndex(i))), "entries() of tensor correspond to get(): " + e.getValue() + " =  " + t.get(getIndex(i)));
-        	assertTrue(t.get(getIndex(i)).equals(p.get(i)), "tensor.get corresponds to polynomial.get(): " + t.get(getIndex(i)) + " = " + p.get(i));
+                KeyValuePair e = (KeyValuePair) k.next();
+                Vector i = (Vector)e.getKey();
+                assertTrue(e.getValue().equals(t.get(getIndex(i))), "entries() of tensor correspond to get(): " + e.getValue() + " =  " + t.get(getIndex(i)));
+                assertTrue(t.get(getIndex(i)).equals(p.get(i)), "tensor.get corresponds to polynomial.get(): " + t.get(getIndex(i)) + " = " + p.get(i));
         }
         for (Iterator k = p.monomials(); k.hasNext(); ) {
-        	KeyValuePair e = (KeyValuePair) k.next();
-        	Vector i = getExponentVector(e.getKey());
-        	assertTrue(e.getValue().equals(p.get((Arithmetic) e.getKey())), "monomials() of polynomial correspond to get(): " + e.getValue() + " =  " + p.get((Arithmetic) e.getKey()));
-        	assertTrue(p.get(i).equals(t.get(getIndex(i))), "polynomial.get corresponds to tensor.get(): " + p.get(i) + " = " + t.get(getIndex(i)));
+                KeyValuePair e = (KeyValuePair) k.next();
+                Vector i = getExponentVector(e.getKey());
+                assertTrue(e.getValue().equals(p.get((Arithmetic) e.getKey())), "monomials() of polynomial correspond to get(): " + e.getValue() + " =  " + p.get((Arithmetic) e.getKey()));
+                assertTrue(p.get(i).equals(t.get(getIndex(i))), "polynomial.get corresponds to tensor.get(): " + p.get(i) + " = " + t.get(getIndex(i)));
         }
-    	return true;
+        return true;
     }
     protected final Predicate checkPolynomial(final ValueFactory vf) {
-    	return new Predicate() {
-    		public boolean apply(Object arg) {
-    			return checkPolynomial(vf, (Polynomial)arg);
-    		}
+        return new Predicate() {
+                public boolean apply(Object arg) {
+                        return checkPolynomial(vf, (Polynomial)arg);
+                }
 
-    	};
+        };
     }
     private static final int[] getIndex(Vector/*<Integer>*/ v) {
-    	int[] d = new int[v.dimension()];
-    	for (int i = 0; i < d.length; i++) {
-    		d[i] = ((Integer)v.get(i)).intValue();
-    	}
-    	return d;
+        int[] d = new int[v.dimension()];
+        for (int i = 0; i < d.length; i++) {
+                d[i] = ((Integer)v.get(i)).intValue();
+        }
+        return d;
     }
-	protected static Vector/*<Integer>*/ getExponentVector(Object m) {
-	    if (m instanceof Vector) {
-	            return (Vector)m;
-	    } else if (m instanceof Integer) {
-	            // univariate case
-	            return ((Arithmetic)m).valueFactory().valueOf(new Integer[] {(Integer)m});
-	    } else {
-	            throw new ClassCastException("Cannot convert exponent representation into Vector<Integer> from " + m);
-	    }
-	}
+        protected static Vector/*<Integer>*/ getExponentVector(Object m) {
+            if (m instanceof Vector) {
+                    return (Vector)m;
+            } else if (m instanceof Integer) {
+                    // univariate case
+                    return ((Arithmetic)m).valueFactory().valueOf(new Integer[] {(Integer)m});
+            } else {
+                    throw new ClassCastException("Cannot convert exponent representation into Vector<Integer> from " + m);
+            }
+        }
 }

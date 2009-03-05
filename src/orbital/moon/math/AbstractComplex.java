@@ -75,7 +75,7 @@ abstract class AbstractComplex extends AbstractScalar implements Complex {
      * @see #norm()
      */
     public Real arg() {
-    	//@xxx possible loss of precision
+        //@xxx possible loss of precision
         return valueFactory().valueOf(Math.atan2(ArithmeticValuesImpl.doubleValueExact(im()), ArithmeticValuesImpl.doubleValueExact(re())));
         //return Math.acos(realValue() / norm());
     } 

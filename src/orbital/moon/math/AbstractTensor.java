@@ -464,15 +464,15 @@ abstract class AbstractTensor/*<R extends Arithmetic>*/
         }
     
         private boolean validateDimension(int[] dimensions) {
-			int[] dimp = dimensions();
-			assert dimp.length == dimensions.length : "transposed tensor views preserve rank";
-			for (int k = 0; k < dimensions.length; k++) {
-				assert dimp[k] == dimensions[permutation[k]] : "permuted dimension " + MathUtilities.format(dimp) + " of " + MathUtilities.format(dimensions) + " after permutation by " + MathUtilities.format(permutation);
-			}
-			return true;
-		}
+                        int[] dimp = dimensions();
+                        assert dimp.length == dimensions.length : "transposed tensor views preserve rank";
+                        for (int k = 0; k < dimensions.length; k++) {
+                                assert dimp[k] == dimensions[permutation[k]] : "permuted dimension " + MathUtilities.format(dimp) + " of " + MathUtilities.format(dimensions) + " after permutation by " + MathUtilities.format(permutation);
+                        }
+                        return true;
+                }
 
-		public final int[] dimensions() {
+                public final int[] dimensions() {
             checkForComodification();
             return transformIndex(getDelegatee().dimensions());
         } 

@@ -202,59 +202,59 @@ public class BigValuesImpl extends ArithmeticValuesImpl {
         return r;
     }
     private Scalar[] minimumCoercedImpl(Number a, Number b) {
-    	try {
-    		//@xxx adapt better to new Complex>Real>Rational>Integer type hierarchy and conform to a new OBDD (ordered binary decision diagram)
-    		//@todo partial order with Arithmetic>Scalar>Complex>Real>Rational>Integer and greatest common super type of A,B being A&cup;B = sup {A,B}
-    		//@todo implement sup along with conversion routines. Perhaps introduce "int AbstractScalar.typeLevel()" and "int AbstractScalar.precisionLevel()" such that we can compute the maximum level of both with just two method calls. And introduce "Object AbstractScalar.convertTo(int typeLevel, int precisionLevel)" for conversion.
-    		if (Complex.hasType.apply(a) || Complex.hasType.apply(b))
-    			return new Complex[] {
-    				Complex.hasType.apply(a) ? (Complex) makeBig(a) : new AbstractComplex.Impl(makeBig(a), this),
-    						Complex.hasType.apply(b) ? (Complex) makeBig(b) : new AbstractComplex.Impl(makeBig(b), this)
-    		};
+        try {
+                //@xxx adapt better to new Complex>Real>Rational>Integer type hierarchy and conform to a new OBDD (ordered binary decision diagram)
+                //@todo partial order with Arithmetic>Scalar>Complex>Real>Rational>Integer and greatest common super type of A,B being A&cup;B = sup {A,B}
+                //@todo implement sup along with conversion routines. Perhaps introduce "int AbstractScalar.typeLevel()" and "int AbstractScalar.precisionLevel()" such that we can compute the maximum level of both with just two method calls. And introduce "Object AbstractScalar.convertTo(int typeLevel, int precisionLevel)" for conversion.
+                if (Complex.hasType.apply(a) || Complex.hasType.apply(b))
+                        return new Complex[] {
+                                Complex.hasType.apply(a) ? (Complex) makeBig(a) : new AbstractComplex.Impl(makeBig(a), this),
+                                                Complex.hasType.apply(b) ? (Complex) makeBig(b) : new AbstractComplex.Impl(makeBig(b), this)
+                };
 
-    		// this is a tricky binary decision diagram (optimized), see documentation
-    		if (Integer.hasType.apply(a)) {
-    			if (Integer.hasType.apply(b))
-    				return new Integer[] {
-    					a instanceof AbstractInteger.Big ? (Integer)a : new AbstractInteger.Big(a, this),
-    							b instanceof AbstractInteger.Big ? (Integer)b : new AbstractInteger.Big(b, this)
-    			};
-    		} else {        // a is no integer
-    			if (!Rational.hasType.apply(a))
-    				// a is no integer, no rational, no complex, hence real
-    				return new Real[] {
-    					a instanceof AbstractReal.Big ? (Real)a : new AbstractReal.Big(a, this),
-    							b instanceof AbstractReal.Big ? (Real)b : new AbstractReal.Big(b, this)
-    			};
-    		}
-    		assert Integer.hasType.apply(a) && !Integer.hasType.apply(b) || Rational.hasType.apply(a) : a + " integer or rational but not both integers " + a + " and " + b;
+                // this is a tricky binary decision diagram (optimized), see documentation
+                if (Integer.hasType.apply(a)) {
+                        if (Integer.hasType.apply(b))
+                                return new Integer[] {
+                                        a instanceof AbstractInteger.Big ? (Integer)a : new AbstractInteger.Big(a, this),
+                                                        b instanceof AbstractInteger.Big ? (Integer)b : new AbstractInteger.Big(b, this)
+                        };
+                } else {        // a is no integer
+                        if (!Rational.hasType.apply(a))
+                                // a is no integer, no rational, no complex, hence real
+                                return new Real[] {
+                                        a instanceof AbstractReal.Big ? (Real)a : new AbstractReal.Big(a, this),
+                                                        b instanceof AbstractReal.Big ? (Real)b : new AbstractReal.Big(b, this)
+                        };
+                }
+                assert Integer.hasType.apply(a) && !Integer.hasType.apply(b) || Rational.hasType.apply(a) : a + " integer or rational but not both integers " + a + " and " + b;
 
-    		/* fall-through: all other cases come here */
-    		if (Rational.isa.apply(b))
-    			return new Rational[] {
-    				Rational.hasType.apply(a) ? (Rational) makeBig(a) : rational((Integer)makeBig(a)),
-    						Rational.hasType.apply(b) ? (Rational) makeBig(b) : rational((Integer)makeBig(b))
-    		};
-    		return new Real[] {
-    				a instanceof AbstractReal.Big ? (Real)a : new AbstractReal.Big(a, this),
-    						b instanceof AbstractReal.Big ? (Real)b : new AbstractReal.Big(b, this)
-    		};
-    	}
-    	catch(NumberFormatException ex) {
-    		if (!(a instanceof Complex))
-    			throw ex;
-    		if (!(b instanceof Complex))
-    			throw ex;
-    		Complex ac = (Complex)a;
-    		Complex bc = (Complex)b;
-    		if (ac.isNaN() || ac.isInfinite() || bc.isNaN() || bc.isInfinite()) {
-    			return new Scalar[] {
-    				ac, bc
-    		    };
-    		} else {
-    			throw ex;
-    		}
-    	}
+                /* fall-through: all other cases come here */
+                if (Rational.isa.apply(b))
+                        return new Rational[] {
+                                Rational.hasType.apply(a) ? (Rational) makeBig(a) : rational((Integer)makeBig(a)),
+                                                Rational.hasType.apply(b) ? (Rational) makeBig(b) : rational((Integer)makeBig(b))
+                };
+                return new Real[] {
+                                a instanceof AbstractReal.Big ? (Real)a : new AbstractReal.Big(a, this),
+                                                b instanceof AbstractReal.Big ? (Real)b : new AbstractReal.Big(b, this)
+                };
+        }
+        catch(NumberFormatException ex) {
+                if (!(a instanceof Complex))
+                        throw ex;
+                if (!(b instanceof Complex))
+                        throw ex;
+                Complex ac = (Complex)a;
+                Complex bc = (Complex)b;
+                if (ac.isNaN() || ac.isInfinite() || bc.isNaN() || bc.isInfinite()) {
+                        return new Scalar[] {
+                                ac, bc
+                    };
+                } else {
+                        throw ex;
+                }
+        }
     }
     
     private Number makeBig(Number a) {
@@ -266,16 +266,16 @@ public class BigValuesImpl extends ArithmeticValuesImpl {
                 Rational r = (Rational) a;
                 return (Number)rational((Integer)makeBig((Number)r.numerator()), (Integer)makeBig((Number)r.denominator()));
         } else if (a instanceof Real) {
-        	try {
+                try {
                 return new AbstractReal.Big(a, this);
-        	}
-        	catch (NumberFormatException ex) {
-//        		Real r = (Real)a;
-//        		if (r.isNaN() || r.isInfinite())
-//        			return (Number)r;
-//        		else
-        			throw ex;
-        	}
+                }
+                catch (NumberFormatException ex) {
+//                      Real r = (Real)a;
+//                      if (r.isNaN() || r.isInfinite())
+//                              return (Number)r;
+//                      else
+                                throw ex;
+                }
         } else if (a instanceof Complex) {
                 Complex r = (Complex) a;
                 return (Number)complex((Real)makeBig((Number)r.re()), (Real)makeBig((Number)r.im()));
@@ -300,9 +300,9 @@ public class BigValuesImpl extends ArithmeticValuesImpl {
         } else if (x instanceof Real) {
             Real r = (Real)x;
             if (r.isInfinite() || r.isNaN())
-            	// special values count as big until we found Real.Big representations of them
-            	return true;
-        	assert !(x instanceof orbital.moon.math.Big) : "already checked " + x.getClass();
+                // special values count as big until we found Real.Big representations of them
+                return true;
+                assert !(x instanceof orbital.moon.math.Big) : "already checked " + x.getClass();
             assert !(x instanceof AbstractReal.Big) : "Big implementation hierarchy " + x.getClass();
             return false;
         } else if (x instanceof Complex) {

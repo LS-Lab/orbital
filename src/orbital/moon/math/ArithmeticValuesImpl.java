@@ -310,54 +310,54 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
     }
 
     public /*_<R extends Arithmetic>_*/ Tensor/*_<R>_*/ tensor(Map/*<Vector<Integer>, R>*/ indexCoefficientMap) {
-    	int[] dim = getPartialDimensions(indexCoefficientMap);
-    	Tensor t = ZERO(dim);
-    	for (Iterator i = indexCoefficientMap.entrySet().iterator(); i.hasNext(); ) {
-    		Map.Entry/*<Vector<Integer>, R>*/ e = (Map.Entry) i.next();
-    		t.set(ArithmeticMultivariatePolynomial.convertIndex((Arithmetic)e.getKey()), (Arithmetic) e.getValue());
-    	}
-    	validate(t, dim);
-    	assert sameContent(t, indexCoefficientMap) : "identical content mapping from map " + indexCoefficientMap + " to tensor " + t;
-    	return t;
+        int[] dim = getPartialDimensions(indexCoefficientMap);
+        Tensor t = ZERO(dim);
+        for (Iterator i = indexCoefficientMap.entrySet().iterator(); i.hasNext(); ) {
+                Map.Entry/*<Vector<Integer>, R>*/ e = (Map.Entry) i.next();
+                t.set(ArithmeticMultivariatePolynomial.convertIndex((Arithmetic)e.getKey()), (Arithmetic) e.getValue());
+        }
+        validate(t, dim);
+        assert sameContent(t, indexCoefficientMap) : "identical content mapping from map " + indexCoefficientMap + " to tensor " + t;
+        return t;
     }
     
     private static final boolean sameContent(Tensor t, Map indexCoefficientMap) {
-		for (Iterator i = t.entries(); i.hasNext(); ) {
-			KeyValuePair p = (KeyValuePair) i.next();
-			Arithmetic vi = (Arithmetic) p.getValue();
-			if (vi.isZero()) {
-				if (indexCoefficientMap.containsKey(p.getKey())) {
-					assert ((Arithmetic)indexCoefficientMap.get(p.getKey())).isZero() : "zeros only come from (missing entries or) explicit zeros at " + p.getKey();
-				}
-			} else {
-				assert vi.equals(indexCoefficientMap.get(p.getKey())) : "identical values in tensor " + vi + " = " + indexCoefficientMap.get(p.getKey()) + " from map at " + p.getKey();
-			}
-		}
-		for (Iterator i = indexCoefficientMap.entrySet().iterator(); i.hasNext(); ) {
-			Map.Entry e = (Map.Entry) i.next();
-			assert e.getValue().equals(t.get(ArithmeticMultivariatePolynomial.convertIndex((Arithmetic)e.getKey()))) : "value from map " + e.getValue() + " identical to value in tensor " + t.get(ArithmeticMultivariatePolynomial.convertIndex((Arithmetic)e.getKey())) + " at " + e.getKey();
-		}
-	    return true;
+                for (Iterator i = t.entries(); i.hasNext(); ) {
+                        KeyValuePair p = (KeyValuePair) i.next();
+                        Arithmetic vi = (Arithmetic) p.getValue();
+                        if (vi.isZero()) {
+                                if (indexCoefficientMap.containsKey(p.getKey())) {
+                                        assert ((Arithmetic)indexCoefficientMap.get(p.getKey())).isZero() : "zeros only come from (missing entries or) explicit zeros at " + p.getKey();
+                                }
+                        } else {
+                                assert vi.equals(indexCoefficientMap.get(p.getKey())) : "identical values in tensor " + vi + " = " + indexCoefficientMap.get(p.getKey()) + " from map at " + p.getKey();
+                        }
+                }
+                for (Iterator i = indexCoefficientMap.entrySet().iterator(); i.hasNext(); ) {
+                        Map.Entry e = (Map.Entry) i.next();
+                        assert e.getValue().equals(t.get(ArithmeticMultivariatePolynomial.convertIndex((Arithmetic)e.getKey()))) : "value from map " + e.getValue() + " identical to value in tensor " + t.get(ArithmeticMultivariatePolynomial.convertIndex((Arithmetic)e.getKey())) + " at " + e.getKey();
+                }
+            return true;
     }
 
 
-	/**
+        /**
      * Obtain the dimensions of a partial index-coefficient map.
      * @param indexCoefficientMap
      * @return
      */
     static int[] getPartialDimensions(Map/*<Vector<Integer>,R>*/ indexCoefficientMap) {
-    	if (indexCoefficientMap.isEmpty())
-    		throw new IllegalArgumentException("empty coefficient map gives undefined polynomial ring");
-    	int rank = ((Vector)indexCoefficientMap.keySet().iterator().next()).dimension();
+        if (indexCoefficientMap.isEmpty())
+                throw new IllegalArgumentException("empty coefficient map gives undefined polynomial ring");
+        int rank = ((Vector)indexCoefficientMap.keySet().iterator().next()).dimension();
         final int dim[] = new int[rank];
         Arrays.fill(dim, -1);
         for (Iterator/*<Map.Entry<S, R>>*/ j = indexCoefficientMap.entrySet().iterator(); j.hasNext(); ) {
-        	Map.Entry/*<S, R>*/ e = (Map.Entry)j.next();
-        	Arithmetic xi = (Arithmetic)e.getKey();
-        	Vector v = getExponentVector(xi);
+                Map.Entry/*<S, R>*/ e = (Map.Entry)j.next();
+                Arithmetic xi = (Arithmetic)e.getKey();
+                Vector v = getExponentVector(xi);
             assert v.dimension() == rank : "homogeneous rank " + rank + " == " + v.dimension() + " for exponent " + xi + " in " + indexCoefficientMap;
-        	final Arithmetic vi = (Arithmetic)e.getValue();
+                final Arithmetic vi = (Arithmetic)e.getValue();
             if (vi != null && !vi.isZero()) {
                 // dimension = max(dimension + 1, index)
                 for (int i = 0; i < dim.length; i++) {
@@ -412,9 +412,9 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
     }
 
     public /*_<R extends Arithmetic, S extends Arithmetic>_*/ Polynomial/*_<R,S>_*/ polynomial(Map/*<S, R>*/ exponentCoefficientMap) {
-    	if (exponentCoefficientMap.isEmpty())
-    		throw new IllegalArgumentException("empty coefficient map gives undefined polynomial ring");
-    	int rank = ((Vector)exponentCoefficientMap.keySet().iterator().next()).dimension();
+        if (exponentCoefficientMap.isEmpty())
+                throw new IllegalArgumentException("empty coefficient map gives undefined polynomial ring");
+        int rank = ((Vector)exponentCoefficientMap.keySet().iterator().next()).dimension();
         switch (rank) {
         // turn off this implementation unless MONOMIAL also obeys it
         case 1:
@@ -459,24 +459,24 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
             assert checkTensor(p, t);
             return t;
         } else {
-        	throw new IllegalArgumentException("Unknown type " + p.getClass() + " in " + p);
+                throw new IllegalArgumentException("Unknown type " + p.getClass() + " in " + p);
         }
     }
     private final boolean checkTensor(Polynomial p, Tensor t) {
-    	assert t.rank() == p.rank() : "asTensor preserves rank() " + p.rank() + " = " + t.rank() + " for " + p + "@" + p.getClass();
-    	for (Iterator k = t.entries(); k.hasNext(); ) {
-    		KeyValuePair e = (KeyValuePair) k.next();
-    		Vector i = (Vector)e.getKey();
-    		assert e.getValue().equals(t.get(ArithmeticMultivariatePolynomial.convertIndex(i))) : "entries() of tensor correspond to get(): " + e.getValue() + " =  " + t.get(ArithmeticMultivariatePolynomial.convertIndex(i));
-    		assert t.get(ArithmeticMultivariatePolynomial.convertIndex(i)).equals(p.get(i)) : "tensor.get corresponds to polynomial.get(): " + t.get(ArithmeticMultivariatePolynomial.convertIndex(i)) + " = " + p.get(i);
-    	}
-    	for (Iterator k = p.monomials(); k.hasNext(); ) {
-    		KeyValuePair e = (KeyValuePair) k.next();
-    		Vector i = getExponentVector(e.getKey());
-    		assert e.getValue().equals(p.get((Arithmetic) e.getKey())) : "monomials() of polynomial correspond to get(): " + e.getValue() + " =  " + p.get((Arithmetic) e.getKey());
-    		assert p.get(i).equals(t.get(ArithmeticMultivariatePolynomial.convertIndex(i))) : "polynomial.get corresponds to tensor.get(): " + p.get(i) + " = " + t.get(ArithmeticMultivariatePolynomial.convertIndex(i));
-    	}
-    	return true;
+        assert t.rank() == p.rank() : "asTensor preserves rank() " + p.rank() + " = " + t.rank() + " for " + p + "@" + p.getClass();
+        for (Iterator k = t.entries(); k.hasNext(); ) {
+                KeyValuePair e = (KeyValuePair) k.next();
+                Vector i = (Vector)e.getKey();
+                assert e.getValue().equals(t.get(ArithmeticMultivariatePolynomial.convertIndex(i))) : "entries() of tensor correspond to get(): " + e.getValue() + " =  " + t.get(ArithmeticMultivariatePolynomial.convertIndex(i));
+                assert t.get(ArithmeticMultivariatePolynomial.convertIndex(i)).equals(p.get(i)) : "tensor.get corresponds to polynomial.get(): " + t.get(ArithmeticMultivariatePolynomial.convertIndex(i)) + " = " + p.get(i);
+        }
+        for (Iterator k = p.monomials(); k.hasNext(); ) {
+                KeyValuePair e = (KeyValuePair) k.next();
+                Vector i = getExponentVector(e.getKey());
+                assert e.getValue().equals(p.get((Arithmetic) e.getKey())) : "monomials() of polynomial correspond to get(): " + e.getValue() + " =  " + p.get((Arithmetic) e.getKey());
+                assert p.get(i).equals(t.get(ArithmeticMultivariatePolynomial.convertIndex(i))) : "polynomial.get corresponds to tensor.get(): " + p.get(i) + " = " + t.get(ArithmeticMultivariatePolynomial.convertIndex(i));
+        }
+        return true;
     }
 
     public /*<R extends Arithmetic, S extends Arithmetic>*/ Polynomial/*<R,S>*/ constant(Polynomial/*<R,S>*/ p) {
@@ -888,24 +888,24 @@ public abstract class ArithmeticValuesImpl extends AbstractValues {
     }
 
     /**
-	 * Get a vectorial representation of an index for an exponent of a monomial, if possible
-	 * @param m
-	 * @return
-	 * @see orbital.math.AlgebraicAlgorithms#getExponentVector(Object)
-	 */
-	protected static Vector/*<Integer>*/ getExponentVector(Object m) {
-	    if (m instanceof Vector) {
-	            return (Vector)m;
-	    } else if (m instanceof Integer) {
-	            // univariate case
-	            return ((Arithmetic)m).valueFactory().valueOf(new Integer[] {(Integer)m});
-	    } else {
-	            throw new ClassCastException("Cannot convert exponent representation into Vector<Integer> from " + m);
-	    }
-	}
+         * Get a vectorial representation of an index for an exponent of a monomial, if possible
+         * @param m
+         * @return
+         * @see orbital.math.AlgebraicAlgorithms#getExponentVector(Object)
+         */
+        protected static Vector/*<Integer>*/ getExponentVector(Object m) {
+            if (m instanceof Vector) {
+                    return (Vector)m;
+            } else if (m instanceof Integer) {
+                    // univariate case
+                    return ((Arithmetic)m).valueFactory().valueOf(new Integer[] {(Integer)m});
+            } else {
+                    throw new ClassCastException("Cannot convert exponent representation into Vector<Integer> from " + m);
+            }
+        }
 
 
-	/**
+        /**
      * @todo beautify and check whether it is necessary to convert numbers to those symbolic arithmetic function trucs!
      * @todo xxx see Functionals.genericCompose(*Function, ...) calls to constant(...)
      */
